@@ -1267,6 +1267,7 @@ begin
         if IsSplit then
           SubCell.CellPics.Clear;
       end;
+    EnsureCells;
     GlanceControl.ConfigCells;
   finally
     FConfiguring := False;
