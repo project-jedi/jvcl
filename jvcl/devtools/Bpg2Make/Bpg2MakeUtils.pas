@@ -28,15 +28,15 @@ const
     'MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS) -f$**' + sLineBreak +
     'BRCC = "$(ROOT)\bin\brcc32.exe" $**' + sLineBreak +
     '' + sLineBreak +
-    '#ifndef DCCOPT' + sLineBreak +
+    '!ifndef DCCOPT' + sLineBreak +
     'DCCOPT=-Q -M' + sLineBreak +
-    '#endif' + sLineBreak +
+    '!endif' + sLineBreak +
     '' + sLineBreak +
-    '#ifndef DCC' + sLineBreak +
+    '!ifndef DCC' + sLineBreak +
     'DCC  = "$(ROOT)\bin\dcc32.exe" -U"$(DCPDIR)" -LE"$(DCPDIR)" -LN"$(DCPDIR)" $(DCCOPT) -Q -W -H -M $&.dpk' + sLineBreak +
-    '#else' + sLineBreak +
+    '!else' + sLineBreak +
     'DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT) $&.dpk' + sLineBreak +
-    '#endif' + sLineBreak +
+    '!endif' + sLineBreak +
     '' + sLineBreak +
     '#--------------------------------------------------------------------------------------------------#' + sLineBreak;
 
