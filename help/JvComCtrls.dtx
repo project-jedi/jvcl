@@ -72,6 +72,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  FieldIndex - Description for this parameter
+  FieldRange - Description for this parameter
+  Value      - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -87,13 +92,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddressChanging
 <TITLE TJvIPAddressChanging type>
-Parameters
-  Sender      - Description for this parameter
-  Index       - Description for this parameter
-  Value       - Description for this parameter
-  AllowChange - Description for this parameter
+<COMBINE TJvIpAddressValues.OnChanging>
 ---------------------------------------------------------------------------------------------------
 @@TJvIpAddressMinMax
+<TITLE TJvIpAddressMinMax type>
 Summary
   Write here a summary (1 line)
 Description
@@ -210,6 +212,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender      - Description for this parameter
+  Index       - Description for this parameter
+  Value       - Description for this parameter
+  AllowChange - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -252,11 +259,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvIpAddrFieldChangeEvent
 <TITLE TJvIpAddrFieldChangeEvent type>
-Parameters
-  Sender     - Description for this parameter
-  FieldIndex - Description for this parameter
-  FieldRange - Description for this parameter
-  Value      - Description for this parameter
+<COMBINE TJvIpAddress.OnFieldChange>
 ----------------------------------------------------------------------------------------------------
 @@TJvPageControl
 <TITLEIMG TJvPageControl>
@@ -426,6 +429,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender      - Description for this parameter
+  ToolTipText - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -459,9 +465,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTrackToolTipEvent
 <TITLE TJvTrackToolTipEvent type>
-Parameters
-  Sender      - Description for this parameter
-  ToolTipText - Description for this parameter
+<COMBINE TJvTrackBar.OnToolTip>
 ----------------------------------------------------------------------------------------------------
 @@TJvTrackToolTipSide
 <TITLE TJvTrackToolTipSide type>
@@ -702,6 +706,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Item   - Description for this parameter
+  Page   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -819,7 +827,4 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TPageChangedEvent
 <TITLE TPageChangedEvent type>
-Parameters
-  Sender - Description for this parameter
-  Item   - Description for this parameter
-  Page   - Description for this parameter
+<COMBINE TJvTreeView.OnPageChanged>

@@ -9,11 +9,7 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TDateEvent
 <TITLE TDateEvent type>
-Parameters
-  Sender   - Description for this parameter
-  UserData - Description for this parameter
-  FileDate - Description for this parameter
-  Url      - Description for this parameter
+<COMBINE TJvMultiHttpGrabber.OnDateRetrieved>
 ----------------------------------------------------------------------------------------------------
 @@TJvMultiDateHttpThread
 Summary
@@ -121,6 +117,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender   - Description for this parameter
+  UserData - Description for this parameter
+  FileDate - Description for this parameter
+  Url      - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -130,6 +131,12 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender   - Description for this parameter
+  UserData - Description for this parameter
+  FileName - Description for this parameter
+  FileSize - Description for this parameter
+  Url      - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -139,6 +146,12 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  UserData   - Description for this parameter
+  Stream     - Description for this parameter
+  StreamSize - Description for this parameter
+  Url        - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -148,6 +161,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender   - Description for this parameter
+  UserData - Description for this parameter
+  Url      - Description for this parameter
+  Error    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -157,6 +175,13 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender    - Description for this parameter
+  UserData  - Description for this parameter
+  Position  - Description for this parameter
+  TotalSize - Description for this parameter
+  Url       - Description for this parameter
+  Continue  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -184,6 +209,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender   - Description for this parameter
+  UserData - Description for this parameter
+  Url      - Description for this parameter
+  NewUrl   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -211,6 +241,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender   - Description for this parameter
+  UserData - Description for this parameter
+  Url      - Description for this parameter
+  Name     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -295,67 +330,65 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TOnDoneFile
 <TITLE TOnDoneFile type>
-Parameters
-  Sender   - Description for this parameter
-  UserData - Description for this parameter
-  FileName - Description for this parameter
-  FileSize - Description for this parameter
-  Url      - Description for this parameter
+<COMBINE TJvMultiHttpGrabber.OnDoneFile>
 ----------------------------------------------------------------------------------------------------
 @@TOnDoneStream
 <TITLE TOnDoneStream type>
-Parameters
-  Sender     - Description for this parameter
-  UserData   - Description for this parameter
-  Stream     - Description for this parameter
-  StreamSize - Description for this parameter
-  Url        - Description for this parameter
+<COMBINE TJvMultiHttpGrabber.OnDoneStream>
 ----------------------------------------------------------------------------------------------------
 @@TOnProgress
 <TITLE TOnProgress type>
-Parameters
-  Sender    - Description for this parameter
-  UserData  - Description for this parameter
-  Position  - Description for this parameter
-  TotalSize - Description for this parameter
-  Url       - Description for this parameter
-  Continue  - Description for this parameter
+<COMBINE TJvMultiHttpGrabber.OnProgress>
 ----------------------------------------------------------------------------------------------------
 @@TUrlEvent
 <TITLE TUrlEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    TJvMultiHttpGrabber.OnClosedConnection
+    TJvMultiHttpGrabber.OnClosingConnection
+    TJvMultiHttpGrabber.OnConnectedToServer
+    TJvMultiHttpGrabber.OnConnectingToServer
+    TJvMultiHttpGrabber.OnReceivingResponse
+    TJvMultiHttpGrabber.OnRequestComplete
+    TJvMultiHttpGrabber.OnResolvingName
+    TJvMultiHttpGrabber.OnSendingRequest
 Parameters
   Sender   - Description for this parameter
   UserData - Description for this parameter
   Url      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TUrlEventError
 <TITLE TUrlEventError type>
-Parameters
-  Sender   - Description for this parameter
-  UserData - Description for this parameter
-  Url      - Description for this parameter
-  Error    - Description for this parameter
+<COMBINE TJvMultiHttpGrabber.OnError>
 ----------------------------------------------------------------------------------------------------
 @@TUrlRedirect
 <TITLE TUrlRedirect type>
-Parameters
-  Sender   - Description for this parameter
-  UserData - Description for this parameter
-  Url      - Description for this parameter
-  NewUrl   - Description for this parameter
+<COMBINE TJvMultiHttpGrabber.OnRedirect>
 ----------------------------------------------------------------------------------------------------
 @@TUrlResolved
 <TITLE TUrlResolved type>
-Parameters
-  Sender   - Description for this parameter
-  UserData - Description for this parameter
-  Url      - Description for this parameter
-  Name     - Description for this parameter
+<COMBINE TJvMultiHttpGrabber.OnResolvedName>
 ----------------------------------------------------------------------------------------------------
 @@TUrlSent
 <TITLE TUrlSent type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    TJvMultiHttpGrabber.OnReceivedResponse
+    TJvMultiHttpGrabber.OnRequestSent
 Parameters
   Sender   - Description for this parameter
   UserData - Description for this parameter
   Url      - Description for this parameter
   DataSize - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references

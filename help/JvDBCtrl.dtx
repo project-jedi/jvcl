@@ -9,25 +9,28 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TCheckTitleBtnEvent
 <TITLE TCheckTitleBtnEvent type>
-Parameters
-  Sender  - Description for this parameter
-  ACol    - Description for this parameter
-  Field   - Description for this parameter
-  Enabled - Description for this parameter
+<COMBINE TJvDBGrid.OnCheckButton>
 ----------------------------------------------------------------------------------------------------
 @@TDataValueEvent
 <TITLE TDataValueEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    TJvDBStatusLabel.OnGetRecNo
+    TJvDBStatusLabel.OnGetRecordCount
 Parameters
   Sender  - Description for this parameter
   DataSet - Description for this parameter
   Value   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TDBEditShowEvent
 <TITLE TDBEditShowEvent type>
-Parameters
-  Sender    - Description for this parameter
-  Field     - Description for this parameter
-  AllowEdit - Description for this parameter
+<COMBINE TJvDBGrid.OnShowEditor>
 ----------------------------------------------------------------------------------------------------
 @@TDBLabelOptions
 <TITLE TDBLabelOptions type>
@@ -57,56 +60,37 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TDBStatusKind
 <TITLE TDBStatusKind type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = dsInactive . . dsCalcFields ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TGetBtnParamsEvent
 <TITLE TGetBtnParamsEvent type>
-Parameters
-  Sender     - Description for this parameter
-  Field      - Description for this parameter
-  AFont      - Description for this parameter
-  Background - Description for this parameter
-  SortMarker - Description for this parameter
-  IsDown     - Description for this parameter
+<COMBINE TJvDBGrid.OnGetBtnParams>
 ----------------------------------------------------------------------------------------------------
 @@TGetCellParamsEvent
 <TITLE TGetCellParamsEvent type>
-Parameters
-  Sender     - Description for this parameter
-  Field      - Description for this parameter
-  AFont      - Description for this parameter
-  Background - Description for this parameter
-  Highlight  - Description for this parameter
+<COMBINE TJvDBGrid.OnGetCellParams>
 ----------------------------------------------------------------------------------------------------
 @@TGetCellPropsEvent
 <TITLE TGetCellPropsEvent type>
-Parameters
-  Sender     - Description for this parameter
-  Field      - Description for this parameter
-  AFont      - Description for this parameter
-  Background - Description for this parameter
+<COMBINE TJvDBGrid.OnGetCellProps>
 ----------------------------------------------------------------------------------------------------
 @@TGetStringEvent
 <TITLE TGetStringEvent type>
+<COMBINE TJvDBStatusLabel.OnGetDataName>
+----------------------------------------------------------------------------------------------------
+@@TGlyphAlign
+<TITLE TGlyphAlign type>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Sender - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TGlyphAlign
-<TITLE TGlyphAlign type>
-Description
-  Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = glGlyphLeft . . glGlyphRight ; - for reference)
 ----------------------------------------------------------------------------------------------------
@@ -549,6 +533,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender  - Description for this parameter
+  ACol    - Description for this parameter
+  Field   - Description for this parameter
+  Enabled - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -567,6 +556,13 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  Field      - Description for this parameter
+  AFont      - Description for this parameter
+  Background - Description for this parameter
+  SortMarker - Description for this parameter
+  IsDown     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -576,6 +572,12 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  Field      - Description for this parameter
+  AFont      - Description for this parameter
+  Background - Description for this parameter
+  Highlight  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -585,6 +587,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  Field      - Description for this parameter
+  AFont      - Description for this parameter
+  Background - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -603,6 +610,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender    - Description for this parameter
+  Field     - Description for this parameter
+  AllowEdit - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -612,6 +623,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  ACol   - Description for this parameter
+  Field  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -839,6 +854,8 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -912,7 +929,4 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TTitleClickEvent
 <TITLE TTitleClickEvent type>
-Parameters
-  Sender - Description for this parameter
-  ACol   - Description for this parameter
-  Field  - Description for this parameter
+<COMBINE TJvDBGrid.OnTitleBtnClick>

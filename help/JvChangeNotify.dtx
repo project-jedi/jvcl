@@ -178,6 +178,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender  - Description for this parameter
+  Dir     - Description for this parameter
+  Actions - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -204,33 +208,42 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Index  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvNotifyArray
 <TITLE TJvNotifyArray type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = array [ 0.. MAXIMUM_WAIT_OBJECTS - 1 ] of THandle ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvNotifyError
 <TITLE TJvNotifyError type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    Nothing in this unit.
 Parameters
   Sender - Description for this parameter
   MSg    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvNotifyEvent
 <TITLE TJvNotifyEvent type>
-Parameters
-  Sender  - Description for this parameter
-  Dir     - Description for this parameter
-  Actions - Description for this parameter
+<COMBINE TJvChangeNotify.OnChangeNotify>
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadNotifyEvent
 <TITLE TJvThreadNotifyEvent type>
-Parameters
-  Sender - Description for this parameter
-  Index  - Description for this parameter
+<COMBINE TJvChangeThread.OnChangeNotify>

@@ -7,26 +7,6 @@ Summary
 Author
   Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
-@@SFindCap
-Description
-  Write here a description
-= Find ;
-----------------------------------------------------------------------------------------------------
-@@SNoEditAssigned
-Description
-  Write here a description
-= No edit control assigned! ;
-----------------------------------------------------------------------------------------------------
-@@SNotFound
-Description
-  Write here a description
-= Search string '%s' not found ;
-----------------------------------------------------------------------------------------------------
-@@SReplaceCap
-Description
-  Write here a description
-= Replace ;
-----------------------------------------------------------------------------------------------------
 @@TJvFindReplace
 <TITLEIMG TJvFindReplace>
 JVCLInfo
@@ -141,6 +121,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender    - Description for this parameter
+  Position  - Description for this parameter
+  Terminate - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -240,7 +224,4 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvReplaceProgressEvent
 <TITLE TJvReplaceProgressEvent type>
-Parameters
-  Sender    - Description for this parameter
-  Position  - Description for this parameter
-  Terminate - Description for this parameter
+<COMBINE TJvFindReplace.OnProgress>

@@ -19,6 +19,13 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@JvInterpreterProgram
+<TITLE JvInterpreterProgram variable>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
 @@JvInterpreterRunForm
 <TITLE JvInterpreterRunForm function>
 Summary
@@ -68,6 +75,20 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@JvInterpreterRunReportPreview2Proc
+<TITLE JvInterpreterRunReportPreview2Proc variable>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterRunReportPreviewProc
+<TITLE JvInterpreterRunReportPreviewProc variable>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
 @@JvInterpreterRunUnit
 <TITLE JvInterpreterRunUnit function>
 Summary
@@ -94,11 +115,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInterpreterCreateDfmStream
 <TITLE TJvInterpreterCreateDfmStream type>
-Parameters
-  Sender   - Description for this parameter
-  UnitName - Description for this parameter
-  Stream   - Description for this parameter
-  Done     - Description for this parameter
+<COMBINE TJvInterpreterFm.OnCreateDfmStream>
 ----------------------------------------------------------------------------------------------------
 @@TJvInterpreterFm
 <TITLEIMG TJvInterpreterFm>
@@ -160,6 +177,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender   - Description for this parameter
+  UnitName - Description for this parameter
+  Stream   - Description for this parameter
+  Done     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -169,6 +191,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Stream - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -178,6 +203,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender   - Description for this parameter
+  UnitName - Description for this parameter
+  FileName - Description for this parameter
+  Done     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -274,14 +304,8 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInterpreterFreeDfmStream
 <TITLE TJvInterpreterFreeDfmStream type>
-Parameters
-  Sender - Description for this parameter
-  Stream - Description for this parameter
+<COMBINE TJvInterpreterFm.OnFreeDfmStream>
 ----------------------------------------------------------------------------------------------------
 @@TJvInterpreterGetDfmFileName
 <TITLE TJvInterpreterGetDfmFileName type>
-Parameters
-  Sender   - Description for this parameter
-  UnitName - Description for this parameter
-  FileName - Description for this parameter
-  Done     - Description for this parameter
+<COMBINE TJvInterpreterFm.OnGetDfmFileName>

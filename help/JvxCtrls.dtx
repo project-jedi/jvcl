@@ -13,7 +13,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -39,9 +38,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TChangeStateEvent
 <TITLE TChangeStateEvent type>
-Parameters
-  Sender - Description for this parameter
-  Index  - Description for this parameter
+<COMBINE TJvxCheckListBox.OnStateChange>
 ----------------------------------------------------------------------------------------------------
 @@TCheckKind
 <TITLE TCheckKind type>
@@ -58,10 +55,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TGetItemWidthEvent
 <TITLE TGetItemWidthEvent type>
-Parameters
-  Control - Description for this parameter
-  Index   - Description for this parameter
-  Width   - Description for this parameter
+<COMBINE TJvxCustomListBox.OnGetItemWidth>
 ----------------------------------------------------------------------------------------------------
 @@TGlyphLayout
 <TITLE TGlyphLayout type>
@@ -545,9 +539,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvNumGlyphs
 <TITLE TJvNumGlyphs type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = 1..5 ; - for reference)
 ----------------------------------------------------------------------------------------------------
@@ -638,6 +634,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Canvas - Description for this parameter
+  Rect   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1145,6 +1145,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Index  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1370,6 +1373,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Control - Description for this parameter
+  Index   - Description for this parameter
+  Width   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1445,16 +1452,15 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TPanelDrawEvent
 <TITLE TPanelDrawEvent type>
-Parameters
-  Sender - Description for this parameter
-  Canvas - Description for this parameter
-  Rect   - Description for this parameter
+<COMBINE TJvSecretPanel.OnPaintClient>
 ----------------------------------------------------------------------------------------------------
 @@TPositiveInt
 <TITLE TPositiveInt type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = 1.. MaxInt ; - for reference)
 ----------------------------------------------------------------------------------------------------

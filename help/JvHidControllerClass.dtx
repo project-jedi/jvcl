@@ -7,24 +7,32 @@ Summary
 Author
   Robert Marquardt
 ----------------------------------------------------------------------------------------------------
-@@HidCheck
+@@HidCheck@LongBool
 <TITLE HidCheck function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
   RetVal - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@HidCheck
+@@HidCheck@NTSTATUS
 <TITLE HidCheck function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
   RetVal - Description for this parameter
 See Also
@@ -1070,22 +1078,16 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvHidEnumerateEvent
-<TITLE TJvHidEnumerateEvent type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
 Parameters
   HidDev - Description for this parameter
   Idx    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvHidEnumerateEvent
+<TITLE TJvHidEnumerateEvent type>
+<COMBINE TJvHidDeviceController.OnEnumerate>
 ----------------------------------------------------------------------------------------------------
 @@TJvHidOpenExMode
 <TITLE TJvHidOpenExMode type>
@@ -1358,13 +1360,25 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvHidUnplugEvent
 <TITLE TJvHidUnplugEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    TJvHidDevice.OnUnplug
+    TJvHidDeviceController.OnDeviceUnplug
 Parameters
   HidDev - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPhysicalDescriptor
 <TITLE TJvPhysicalDescriptor type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = array of WORD ; - for reference)

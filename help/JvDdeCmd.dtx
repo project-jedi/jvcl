@@ -15,22 +15,15 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvADCBusyEvent
 <TITLE TJvADCBusyEvent type>
-Parameters
-  Sender - Description for this parameter
-  IsBusy - Description for this parameter
+<COMBINE TJvAppDdeCmd.OnBusyChanged>
 ----------------------------------------------------------------------------------------------------
 @@TJvADCMacroEvent
 <TITLE TJvADCMacroEvent type>
-Parameters
-  Sender     - Description for this parameter
-  CommandStr - Description for this parameter
+<COMBINE TJvAppDdeCmd.OnExecCommand>
 ----------------------------------------------------------------------------------------------------
 @@TJvADCParsedEvent
 <TITLE TJvADCParsedEvent type>
-Parameters
-  Sender     - Description for this parameter
-  Command    - Description for this parameter
-  Parameters - Description for this parameter
+<COMBINE TJvAppDdeCmd.OnExecParsedCmd>
 ----------------------------------------------------------------------------------------------------
 @@TJvAppDdeCmd
 <TITLEIMG TJvAppDdeCmd>
@@ -83,6 +76,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  IsBusy - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -92,6 +88,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  CommandStr - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -101,6 +100,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  Command    - Description for this parameter
+  Parameters - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

@@ -35,6 +35,7 @@ Description
   Description for amLineBreak
 ---------------------------------------------------------------------------------------------------
 @@TBookMark
+<TITLE TBookMark type>
 Summary
   Write here a summary (1 line)
 Description
@@ -48,21 +49,26 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TBookMarkNum
 <TITLE TBookMarkNum type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = 0..9 ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TBookMarks
 <TITLE TBookMarks type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = array [ TBookMarkNum ] of TBookMark ; - for reference)
 ---------------------------------------------------------------------------------------------------
 @@TCellRect
+<TITLE TCellRect type>
 Summary
   Write here a summary (1 line)
 Description
@@ -74,13 +80,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TCommand2Event
 <TITLE TCommand2Event type>
-Parameters
-  Sender  - Description for this parameter
-  Key1    - Description for this parameter
-  Shift1  - Description for this parameter
-  Key2    - Description for this parameter
-  Shift2  - Description for this parameter
-  Command - Description for this parameter
+<COMBINE TJvKeyboard.OnCommand2>
 ----------------------------------------------------------------------------------------------------
 @@TCompletionList
 <TITLE TCompletionList type>
@@ -95,9 +95,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TEditCommand
 <TITLE TEditCommand type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = Word ; - for reference)
 ----------------------------------------------------------------------------------------------------
@@ -914,6 +916,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender    - Description for this parameter
+  OldString - Description for this parameter
+  NewString - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -968,6 +974,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Line   - Description for this parameter
+  Index  - Description for this parameter
+  Attrs  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -995,6 +1006,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Canvas - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1595,6 +1609,13 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender  - Description for this parameter
+  Key1    - Description for this parameter
+  Shift1  - Description for this parameter
+  Key2    - Description for this parameter
+  Shift2  - Description for this parameter
+  Command - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1609,6 +1630,7 @@ See Also
   Remove the 'See Also' section if there are no references
 ---------------------------------------------------------------------------------------------------
 @@TJvSelectionRec
+<TITLE TJvSelectionRec type>
 Summary
   Write here a summary (1 line)
 Description
@@ -1635,6 +1657,7 @@ Description
   Description for SelLineOrgEndX
 ---------------------------------------------------------------------------------------------------
 @@TLineAttr
+<TITLE TLineAttr type>
 Summary
   Write here a summary (1 line)
 Description
@@ -1648,17 +1671,21 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TLineAttrs
 <TITLE TLineAttrs type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = array [ 0.. Max_X ] of TLineAttr ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TMacro
 <TITLE TMacro type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = string ; - for reference)
 ----------------------------------------------------------------------------------------------------
@@ -1683,44 +1710,57 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TOnChangeStatus
 <TITLE TOnChangeStatus type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = TNotifyEvent ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TOnCompletion
 <TITLE TOnCompletion type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    TJvCustomEditor.OnCompletionIdentifier
+    TJvCustomEditor.OnCompletionTemplate
 Parameters
   Sender - Description for this parameter
   Cancel - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TOnCompletionApply
 <TITLE TOnCompletionApply type>
-Parameters
-  Sender    - Description for this parameter
-  OldString - Description for this parameter
-  NewString - Description for this parameter
+<COMBINE TJvCustomEditor.OnCompletionApply>
 ----------------------------------------------------------------------------------------------------
 @@TOnGetLineAttr
 <TITLE TOnGetLineAttr type>
-Parameters
-  Sender - Description for this parameter
-  Line   - Description for this parameter
-  Index  - Description for this parameter
-  Attrs  - Description for this parameter
+<COMBINE TJvCustomEditor.OnGetLineAttr>
 ----------------------------------------------------------------------------------------------------
 @@TOnGutterClick
 <TITLE TOnGutterClick type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    TJvCustomEditor.OnGutterClick
+    TJvCustomEditor.OnGutterDblClick
 Parameters
   Sender - Description for this parameter
   Line   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TOnPaintGutter
 <TITLE TOnPaintGutter type>
-Parameters
-  Sender - Description for this parameter
-  Canvas - Description for this parameter
+<COMBINE TJvCustomEditor.OnPaintGutter>
 ----------------------------------------------------------------------------------------------------
 @@TSelBlockFormat
 <TITLE TSelBlockFormat type>

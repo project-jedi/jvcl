@@ -11,11 +11,20 @@ Author
 <TITLE PRichConversionFormat type>
 <COMBINE TRichConversionFormat>
 ----------------------------------------------------------------------------------------------------
-@@THeadingStyle
-<TITLE THeadingStyle type>
+@@RichEditVersion
+<TITLE RichEditVersion variable>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+----------------------------------------------------------------------------------------------------
+@@THeadingStyle
+<TITLE THeadingStyle type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = 0..9 ; - for reference)
 ----------------------------------------------------------------------------------------------------
@@ -404,6 +413,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Dialog - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -466,6 +478,12 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender      - Description for this parameter
+  Msg         - Description for this parameter
+  StartPos    - Description for this parameter
+  EndPos      - Description for this parameter
+  AllowChange - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -502,6 +520,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender   - Description for this parameter
+  FindText - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -511,6 +532,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender  - Description for this parameter
+  URLText - Description for this parameter
+  Button  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1203,6 +1228,7 @@ Description
   Description for tsTableCell
 ---------------------------------------------------------------------------------------------------
 @@TRichConversionFormat
+<TITLE TRichConversionFormat type>
 Summary
   Write here a summary (1 line)
 Description
@@ -1218,37 +1244,27 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TRichEditFindCloseEvent
 <TITLE TRichEditFindCloseEvent type>
-Parameters
-  Sender - Description for this parameter
-  Dialog - Description for this parameter
+<COMBINE TJvCustomRichEdit.OnCloseFindDialog>
 ----------------------------------------------------------------------------------------------------
 @@TRichEditFindErrorEvent
 <TITLE TRichEditFindErrorEvent type>
-Parameters
-  Sender   - Description for this parameter
-  FindText - Description for this parameter
+<COMBINE TJvCustomRichEdit.OnTextNotFound>
 ----------------------------------------------------------------------------------------------------
 @@TRichEditProtectChangeEx
 <TITLE TRichEditProtectChangeEx type>
-Parameters
-  Sender      - Description for this parameter
-  Msg         - Description for this parameter
-  StartPos    - Description for this parameter
-  EndPos      - Description for this parameter
-  AllowChange - Description for this parameter
+<COMBINE TJvCustomRichEdit.OnProtectChangeEx>
 ----------------------------------------------------------------------------------------------------
 @@TRichEditURLClickEvent
 <TITLE TRichEditURLClickEvent type>
-Parameters
-  Sender  - Description for this parameter
-  URLText - Description for this parameter
-  Button  - Description for this parameter
+<COMBINE TJvCustomRichEdit.OnURLClick>
 ----------------------------------------------------------------------------------------------------
 @@TRichEditVersion
 <TITLE TRichEditVersion type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = 1..3 ; - for reference)
 ----------------------------------------------------------------------------------------------------

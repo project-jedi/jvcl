@@ -19,11 +19,6 @@ Author
 <TITLE PJvHashRecord type>
 <COMBINE TJvHashRecord>
 ----------------------------------------------------------------------------------------------------
-@@RS_INVALID_SimpleXml
-Description
-  Write here a description
-= Invalid XML file ;
-----------------------------------------------------------------------------------------------------
 @@SimpleXmlDecode
 <TITLE SimpleXmlDecode procedure>
 Summary
@@ -50,6 +45,7 @@ See Also
   Remove the 'See Also' section if there are no references
 ---------------------------------------------------------------------------------------------------
 @@TJvHashElem
+<TITLE TJvHashElem type>
 Summary
   Write here a summary (1 line)
 Description
@@ -72,13 +68,16 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvHashList
 <TITLE TJvHashList type>
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = array [ 0..25 ] of PJvHashRecord ; - for reference)
 ---------------------------------------------------------------------------------------------------
 @@TJvHashRecord
+<TITLE TJvHashRecord type>
 Summary
   Write here a summary (1 line)
 Description
@@ -92,23 +91,28 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvOnSimpleProgress
 <TITLE TJvOnSimpleProgress type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    TJvSimpleXml.OnLoadProgress
+    TJvSimpleXml.OnSaveProgress
 Parameters
   Sender   - Description for this parameter
   Position - Description for this parameter
   Total    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvOnSimpleXmlParsed
 <TITLE TJvOnSimpleXmlParsed type>
-Parameters
-  Sender - Description for this parameter
-  Name   - Description for this parameter
+<COMBINE TJvSimpleXml.OnTagParsed>
 ----------------------------------------------------------------------------------------------------
 @@TJvOnValueParsed
 <TITLE TJvOnValueParsed type>
-Parameters
-  Sender - Description for this parameter
-  Name   - Description for this parameter
-  Value  - Description for this parameter
+<COMBINE TJvSimpleXml.OnValueParsed>
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleHashTable
 Summary
@@ -224,6 +228,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Name   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -233,6 +240,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Name   - Description for this parameter
+  Value  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -575,6 +586,7 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+    Nothing in this unit.
 Parameters
   Elems  - Description for this parameter
   Index1 - Description for this parameter
@@ -686,66 +698,15 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElems.Add
+@@TJvSimpleXmlElems.Add@string
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElems.Add
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElems.Add
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElems.Add
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElems.Add
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
   Name - Description for this parameter
 Return value
@@ -754,13 +715,88 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElems.Add
+@@TJvSimpleXmlElems.Add@string@Boolean
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
   Name  - Description for this parameter
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXmlElems.Add@string@Int64
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Name  - Description for this parameter
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXmlElems.Add@string@string
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Name  - Description for this parameter
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXmlElems.Add@string@TStream
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Name  - Description for this parameter
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXmlElems.Add@TJvSimpleXmlElem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
   Value - Description for this parameter
 Return value
   Describe here what the function returns
@@ -796,26 +832,34 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElems.AddFirst
+@@TJvSimpleXmlElems.AddFirst@string
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
-  Value - Description for this parameter
+  Name - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElems.AddFirst
+@@TJvSimpleXmlElems.AddFirst@TJvSimpleXmlElem
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
-  Name - Description for this parameter
+  Value - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -891,24 +935,32 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElems.Delete
+@@TJvSimpleXmlElems.Delete@Integer
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
-  Name - Description for this parameter
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElems.Delete
+@@TJvSimpleXmlElems.Delete@string
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
-  Index - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1225,11 +1277,15 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlProps.Add
+@@TJvSimpleXmlProps.Add@string@Boolean
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
   Name  - Description for this parameter
   Value - Description for this parameter
@@ -1239,11 +1295,15 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlProps.Add
+@@TJvSimpleXmlProps.Add@string@Int64
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
   Name  - Description for this parameter
   Value - Description for this parameter
@@ -1253,11 +1313,15 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlProps.Add
+@@TJvSimpleXmlProps.Add@string@string
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
   Name  - Description for this parameter
   Value - Description for this parameter
@@ -1299,24 +1363,32 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlProps.Delete
+@@TJvSimpleXmlProps.Delete@Integer
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
-  Name - Description for this parameter
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlProps.Delete
+@@TJvSimpleXmlProps.Delete@string
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
-  Index - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1390,6 +1462,7 @@ See Also
   Remove the 'See Also' section if there are no references
 ---------------------------------------------------------------------------------------------------
 @@TXmlVarData
+<TITLE TXmlVarData type>
 Summary
   Write here a summary (1 line)
 Description
@@ -1529,7 +1602,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1540,19 +1612,26 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@XmlCreate@TJvSimpleXmlElem
+<TITLE XmlCreate function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
   AXml - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@XmlCreate
-<TITLE XmlCreate function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

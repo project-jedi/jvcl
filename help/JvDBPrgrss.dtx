@@ -32,6 +32,7 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+    Nothing in this unit.
 Parameters
   CBInfo - Description for this parameter
 See Also
@@ -80,6 +81,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Msg    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -89,6 +93,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender      - Description for this parameter
+  PercentDone - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -98,6 +105,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  AbortQuery - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -107,6 +117,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Flag   - Description for this parameter
+  Msg    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -162,25 +176,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TOnMessageChange
 <TITLE TOnMessageChange type>
-Parameters
-  Sender - Description for this parameter
-  Msg    - Description for this parameter
+<COMBINE TJvDBProgress.OnMessageChange>
 ----------------------------------------------------------------------------------------------------
 @@TOnPercentChange
 <TITLE TOnPercentChange type>
-Parameters
-  Sender      - Description for this parameter
-  PercentDone - Description for this parameter
+<COMBINE TJvDBProgress.OnPercentChange>
 ----------------------------------------------------------------------------------------------------
 @@TOnProgressEvent
 <TITLE TOnProgressEvent type>
-Parameters
-  Sender     - Description for this parameter
-  AbortQuery - Description for this parameter
+<COMBINE TJvDBProgress.OnProgress>
 ----------------------------------------------------------------------------------------------------
 @@TOnTraceEvent
 <TITLE TOnTraceEvent type>
-Parameters
-  Sender - Description for this parameter
-  Flag   - Description for this parameter
-  Msg    - Description for this parameter
+<COMBINE TJvDBProgress.OnTrace>

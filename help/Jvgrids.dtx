@@ -9,67 +9,39 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TAcceptKeyEvent
 <TITLE TAcceptKeyEvent type>
+<COMBINE TJvDrawGrid.OnAcceptEditKey>
+----------------------------------------------------------------------------------------------------
+@@TEditAlignEvent
+<TITLE TEditAlignEvent type>
+<COMBINE TJvDrawGrid.OnGetEditAlign>
+----------------------------------------------------------------------------------------------------
+@@TEditLimitEvent
+<TITLE TEditLimitEvent type>
+<COMBINE TJvDrawGrid.OnGetEditLimit>
+----------------------------------------------------------------------------------------------------
+@@TEditShowEvent
+<TITLE TEditShowEvent type>
+<COMBINE TJvDrawGrid.OnShowEditor>
+----------------------------------------------------------------------------------------------------
+@@TEditStyleEvent
+<TITLE TEditStyleEvent type>
+<COMBINE TJvDrawGrid.OnGetEditStyle>
+----------------------------------------------------------------------------------------------------
+@@TFixedCellCheckEvent
+<TITLE TFixedCellCheckEvent type>
+<COMBINE TJvDrawGrid.OnCheckButton>
+----------------------------------------------------------------------------------------------------
+@@TFixedCellClickEvent
+<TITLE TFixedCellClickEvent type>
+<COMBINE TJvDrawGrid.OnFixedCellClick>
+----------------------------------------------------------------------------------------------------
+@@TInplaceEditStyle
+<TITLE TInplaceEditStyle type>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Sender - Description for this parameter
-  Key    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TEditAlignEvent
-<TITLE TEditAlignEvent type>
-Parameters
-  Sender    - Description for this parameter
-  ACol      - Description for this parameter
-  ARow      - Description for this parameter
-  Alignment - Description for this parameter
-----------------------------------------------------------------------------------------------------
-@@TEditLimitEvent
-<TITLE TEditLimitEvent type>
-Parameters
-  Sender    - Description for this parameter
-  MaxLength - Description for this parameter
-----------------------------------------------------------------------------------------------------
-@@TEditShowEvent
-<TITLE TEditShowEvent type>
-Parameters
-  Sender    - Description for this parameter
-  ACol      - Description for this parameter
-  ARow      - Description for this parameter
-  AllowEdit - Description for this parameter
-----------------------------------------------------------------------------------------------------
-@@TEditStyleEvent
-<TITLE TEditStyleEvent type>
-Parameters
-  Sender - Description for this parameter
-  ACol   - Description for this parameter
-  ARow   - Description for this parameter
-  Style  - Description for this parameter
-----------------------------------------------------------------------------------------------------
-@@TFixedCellCheckEvent
-<TITLE TFixedCellCheckEvent type>
-Parameters
-  Sender  - Description for this parameter
-  ACol    - Description for this parameter
-  ARow    - Description for this parameter
-  Enabled - Description for this parameter
-----------------------------------------------------------------------------------------------------
-@@TFixedCellClickEvent
-<TITLE TFixedCellClickEvent type>
-Parameters
-  Sender - Description for this parameter
-  ACol   - Description for this parameter
-  ARow   - Description for this parameter
-----------------------------------------------------------------------------------------------------
-@@TInplaceEditStyle
-<TITLE TInplaceEditStyle type>
-Description
-  Write here a description
-  No desciption is needed for already described items such as sets,
+  You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = TEditStyle ; - for reference)
 ----------------------------------------------------------------------------------------------------
@@ -199,6 +171,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Key    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -226,6 +201,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender  - Description for this parameter
+  ACol    - Description for this parameter
+  ARow    - Description for this parameter
+  Enabled - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -269,6 +249,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  ACol   - Description for this parameter
+  ARow   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -278,6 +262,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender    - Description for this parameter
+  ACol      - Description for this parameter
+  ARow      - Description for this parameter
+  Alignment - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -287,6 +276,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender    - Description for this parameter
+  MaxLength - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -296,6 +288,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  ACol   - Description for this parameter
+  ARow   - Description for this parameter
+  Style  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -305,6 +302,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender   - Description for this parameter
+  ACol     - Description for this parameter
+  ARow     - Description for this parameter
+  PickList - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -360,6 +362,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender    - Description for this parameter
+  ACol      - Description for this parameter
+  ARow      - Description for this parameter
+  AllowEdit - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -375,8 +382,4 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TPicklistEvent
 <TITLE TPicklistEvent type>
-Parameters
-  Sender   - Description for this parameter
-  ACol     - Description for this parameter
-  ARow     - Description for this parameter
-  PickList - Description for this parameter
+<COMBINE TJvDrawGrid.OnGetPicklist>

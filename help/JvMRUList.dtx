@@ -20,25 +20,15 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TClickMenuEvent
 <TITLE TClickMenuEvent type>
-Parameters
-  Sender     - Description for this parameter
-  RecentName - Description for this parameter
-  Caption    - Description for this parameter
-  UserData   - Description for this parameter
+<COMBINE TJvMRUManager.OnClick>
 ----------------------------------------------------------------------------------------------------
 @@TGetItemEvent
 <TITLE TGetItemEvent type>
-Parameters
-  Sender   - Description for this parameter
-  Caption  - Description for this parameter
-  ShortCut - Description for this parameter
-  UserData - Description for this parameter
+<COMBINE TJvMRUManager.OnGetItemData>
 ----------------------------------------------------------------------------------------------------
 @@TGetItemInfoEvent
 <TITLE TGetItemInfoEvent type>
-Parameters
-  Sender - Description for this parameter
-  Item   - Description for this parameter
+<COMBINE TJvMRUManager.OnGetItemInfo>
 ----------------------------------------------------------------------------------------------------
 @@TJvMRUManager
 <TITLEIMG TJvMRUManager>
@@ -190,6 +180,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  RecentName - Description for this parameter
+  Caption    - Description for this parameter
+  UserData   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -199,6 +194,11 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender   - Description for this parameter
+  Caption  - Description for this parameter
+  ShortCut - Description for this parameter
+  UserData - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -208,6 +208,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender - Description for this parameter
+  Item   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -217,6 +220,13 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  IniFile    - Description for this parameter
+  Section    - Description for this parameter
+  Index      - Description for this parameter
+  RecentName - Description for this parameter
+  UserData   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -226,6 +236,13 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  IniFile    - Description for this parameter
+  Section    - Description for this parameter
+  Index      - Description for this parameter
+  RecentName - Description for this parameter
+  UserData   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -411,13 +428,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TReadItemEvent
 <TITLE TReadItemEvent type>
-Parameters
-  Sender     - Description for this parameter
-  IniFile    - Description for this parameter
-  Section    - Description for this parameter
-  Index      - Description for this parameter
-  RecentName - Description for this parameter
-  UserData   - Description for this parameter
+<COMBINE TJvMRUManager.OnReadItem>
 ----------------------------------------------------------------------------------------------------
 @@TRecentMode
 <TITLE TRecentMode type>
@@ -432,10 +443,4 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TWriteItemEvent
 <TITLE TWriteItemEvent type>
-Parameters
-  Sender     - Description for this parameter
-  IniFile    - Description for this parameter
-  Section    - Description for this parameter
-  Index      - Description for this parameter
-  RecentName - Description for this parameter
-  UserData   - Description for this parameter
+<COMBINE TJvMRUManager.OnWriteItem>
