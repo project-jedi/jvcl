@@ -41,6 +41,10 @@ default: \
   Compile \
   Clean
 
+CleanJcl: \
+  ChangeDirPackageDir \
+  Clean
+
 Bpg2Make.exe:
         @echo [Compiling: Bpg2Make.exe]
         cd $(DEVTOOLS)
@@ -70,11 +74,12 @@ Templates:
         @echo -N"$(JCLROOT)\lib\c$(VERSION)" >> $(PACKAGEDIR)\template.cfg
         @echo -O"$(JCLROOT)\lib\c$(VERSION)\obj" >> $(PACKAGEDIR)\template.cfg
 
-Compile:
-        @echo [Compiling: Packages]
-        cd $(PACKAGEDIR)
-        for %f in ("C*.dpk") do $(DCC) "%f"
-# >error.log
+ChangeDirPackageDir:
+	@cd $(PACKAGEDIR)
+
+Compile: ChangeDirPackageDir
+	@echo [Compiling: Packages]
+	for %f in ("C*.dpk") do $(DCC) "%f"
 
 Clean:
         @echo [Cleaning...]
