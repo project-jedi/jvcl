@@ -417,10 +417,9 @@ procedure TShadowWindow.CreateHandle;
 begin
   inherited CreateHandle;
   {$IFDEF COMPILER6_UP}
-  if HandleAllocated then
+  if HandleAllocated and Assigned(SetLayeredWindowAttributes) then
   begin
-    SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or
-      WS_EX_LAYERED);
+    SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED);
     SetLayeredWindowAttributes(Handle, 0, cShadowAlpha, LWA_ALPHA);
   end;
   {$ENDIF COMPILER6_UP}
