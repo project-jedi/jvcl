@@ -78,10 +78,11 @@ begin
   GetID3v2Version(AName, HasTag, Version);
   if HasTag then
     case Version of
-      ive2_2AndLower: Item.Caption := '<2.3';
+      iveLowerThan2_2: Item.Caption := '<2.2';
+      ive2_2: Item.Caption := '2.2';
       ive2_3: Item.Caption := '2.3';
       ive2_4: Item.Caption := '2.4';
-      ive2_5AndHigher: Item.Caption := '>2.4'
+      iveHigherThan2_4: Item.Caption := '>2.4'
     else
       Item.Caption := '?';
     end
@@ -112,10 +113,11 @@ begin
   GetID3v2Version(AFileName, HasTag, Version);
   if HasTag then
     case Version of
-      ive2_2AndLower: Item.Caption := '<2.3';
+      iveLowerThan2_2: Item.Caption := '<2.2';
+      ive2_2: Item.Caption := '2.2';
       ive2_3: Item.Caption := '2.3';
       ive2_4: Item.Caption := '2.4';
-      ive2_5AndHigher: Item.Caption := '>2.4'
+      iveHigherThan2_4: Item.Caption := '>2.4'
     else
       Item.Caption := '?';
     end

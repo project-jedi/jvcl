@@ -112,9 +112,26 @@ resourcestring
   SNotActive = 'Not active';
 
 const
-  CID3v1Tag = 'TAG'; { do not change case }
+  CID3v1Tag = 'TAG';  { do not change case }
+
   CTagSize = 128;
   CTagIDSize = 3;
+
+//=== Local procedures =======================================================
+
+function TagToStr(P: PChar; MaxLength: Integer): string;
+var
+  Q: PChar;
+begin
+  Q := P;
+  while (P - Q < MaxLength) and (P^ <> #0) do
+    Inc(P);
+
+  { [Q..P) is valid }
+  SetString(Result, Q, P - Q);
+end;
+
+//=== Global procedures ======================================================
 
 function HasID3v1Tag(const AFileName: string): Boolean;
 var
@@ -165,18 +182,6 @@ begin
   finally
     Free;
   end;
-end;
-
-function TagToStr(P: PChar; MaxLength: Integer): string;
-var
-  Q: PChar;
-begin
-  Q := P;
-  while (P - Q < MaxLength) and (P^ <> #0) do
-    Inc(P);
-
-  { [Q..P) is valid }
-  SetString(Result, Q, P - Q);
 end;
 
 function WriteID3v1Tag(const AFileName: string; const ATag: TID3v1Tag): Boolean;
@@ -393,4 +398,3 @@ begin
 end;
 
 end.
-

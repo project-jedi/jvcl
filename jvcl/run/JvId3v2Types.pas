@@ -264,6 +264,19 @@ type
   TJvListType = (ltID3LongText, ltID3ShortText, ltISO_639_2Code, ltISO_639_2Name,
     ltID3Genres);
 
+  TJvID3FrameDef = packed record
+    ShortTextID: array [0..2] of Char;
+    LongTextID: array [0..3] of Char;
+  end;
+
+  { Note: When you change type of S or L to 'string' it will increase the exe size
+          with minimal 475x8 bytes }
+
+  TShortToLongName = record
+    S: array [0..2] of Char;
+    L: PChar;
+  end;
+
   TJvID3TermFinder = class
   private
     FLists: array [TJvListType] of TStringList;
@@ -289,43 +302,6 @@ type
     function ISO_639_2CodeToIndex(const ACode: string): Integer;
     function ISO_639_2NameToIndex(const AName: string): Integer;
     procedure ISO_639_2Names(AStrings: TStrings);
-  end;
-
-function ID3_StringToFrameID(const S: string): TJvID3FrameID;
-var
-  L: Integer;
-begin
-  L := Length(S);
-  with TJvID3TermFinder.Instance do
-    case L of
-      0:
-        Result := fiPaddingFrame;
-      3:
-        if S = #0#0#0 then
-          Result := fiPaddingFrame
-        else
-          Result := ID3ShortTextToFrameID(S);
-      4:
-        if S = #0#0#0#0 then
-          Result := fiPaddingFrame
-        else
-          Result := ID3LongTextToFrameID(S);
-    else
-      Result := fiErrorFrame
-    end;
-end;
-
-type
-  TJvID3FrameDef = packed record
-    ShortTextID: array [0..2] of Char;
-    LongTextID: array [0..3] of Char;
-  end;
-
-  { Note: When you change type of S or L to 'string' it will increase the exe size
-          with minimal 475x8 bytes }
-  TShortToLongName = record
-    S: array [0..2] of Char;
-    L: PChar;
   end;
 
 const
@@ -912,7 +888,7 @@ const
 
   CID3Genres: array[0..147] of PChar = (
 
-    { The following genres is defined in ID3v1 }
+    { The following genres are defined in ID3v1 }
 
     {0}'Blues',
     'Classic Rock',
@@ -1076,86 +1052,13 @@ const
     'SynthPop'
    );
 
-const
   CGenre_HighV1 = 79;
   CGenre_DefaultID = 12;
 
-function ID3_FrameIDToString(const ID: TJvID3FrameID; const Size: Integer): string;
-begin
-  case Size of
-    3:
-      Result := CID3FrameDefs[ID].ShortTextID;
-    4:
-      Result := CID3FrameDefs[ID].LongTextID;
-  else
-    raise Exception.Create(SFrameIDSizeCanOnlyBe34);
-  end;
-end;
-
-function ID3_GenreToID(const AGenre: string; const InclWinampGenres: Boolean): Integer;
-begin
-  Result := TJvID3TermFinder.Instance.ID3GenreToID(AGenre, True);
-end;
-
-function ID3_IDToGenre(const ID: Integer; const InclWinampGenres: Boolean): string;
-const
-  HighValue: array [Boolean] of Byte = (CGenre_HighV1, High(CID3Genres));
-begin
-  { Note : In Winamp, ID = 255 then Genre = '' }
-  if (ID >= Low(CID3Genres)) and (ID <= HighValue[InclWinampGenres]) then
-    Result := CID3Genres[ID]
-  else
-    Result := '';
-end;
-
-function ID3_LongGenreToID(const ALongGenre: string; const InclWinampGenres: Boolean = True): Integer;
-begin
-  Result := TJvID3TermFinder.Instance.ID3LongGenreToID(ALongGenre, InclWinampGenres);
-end;
-
-procedure ID3_Genres(Strings: TStrings; const InclWinampGenres: Boolean);
-begin
-  TJvID3TermFinder.Instance.ID3Genres(Strings, InclWinampGenres);
-end;
-
-function ISO_639_2IsCode(const Code: string): Boolean;
-begin
-  Result := (Length(Code) = 3) and
-    (TJvID3TermFinder.Instance.ISO_639_2CodeToIndex(Code) >= Low(CISO_639_2Data));
-end;
-
-function ISO_639_2CodeToName(const Code: string): string;
 var
-  Index: Integer;
-begin
-  if Length(Code) <> 3 then
-  begin
-    Result := '';
-    Exit;
-  end;
+  GInstance: TJvID3TermFinder = nil;
 
-  Index := TJvID3TermFinder.Instance.ISO_639_2CodeToIndex(Code);
-  if Index >= Low(CISO_639_2Data) then
-    Result := CISO_639_2Data[Index].L
-  else
-    Result := '';
-end;
-
-function ISO_639_2NameToCode(const Name: string): string;
-var
-  Index: Integer;
-begin
-  Index := TJvID3TermFinder.Instance.ISO_639_2NameToIndex(Name);
-  if (Index < Low(CISO_639_2Data)) or (Index > High(CISO_639_2Data)) then
-    Result := ''
-  else
-    Result := CISO_639_2Data[Index].S;
-end;
-
-procedure ISO_639_2Names(Strings: TStrings);
-begin
-  TJvID3TermFinder.Instance.ISO_639_2Names(Strings);
-end;
+//=== Local procedures =======================================================
 
 function IndexOfLongString(Strings: TStrings; const ALongText: string): Integer;
 { Searches for a string in Strings that is a prefix of ALongText, this is used
@@ -1292,7 +1195,110 @@ begin
   Result := -1;
 end;
 
-// === TJvID3TermFinder =====================================================
+//=== Global procedures ======================================================
+
+function ID3_FrameIDToString(const ID: TJvID3FrameID; const Size: Integer): string;
+begin
+  case Size of
+    3:
+      Result := CID3FrameDefs[ID].ShortTextID;
+    4:
+      Result := CID3FrameDefs[ID].LongTextID;
+  else
+    raise Exception.Create(SFrameIDSizeCanOnlyBe34);
+  end;
+end;
+
+procedure ID3_Genres(Strings: TStrings; const InclWinampGenres: Boolean);
+begin
+  TJvID3TermFinder.Instance.ID3Genres(Strings, InclWinampGenres);
+end;
+
+function ID3_GenreToID(const AGenre: string; const InclWinampGenres: Boolean): Integer;
+begin
+  Result := TJvID3TermFinder.Instance.ID3GenreToID(AGenre, True);
+end;
+
+function ID3_IDToGenre(const ID: Integer; const InclWinampGenres: Boolean): string;
+const
+  HighValue: array [Boolean] of Byte = (CGenre_HighV1, High(CID3Genres));
+begin
+  { Note : In Winamp, ID = 255 then Genre = '' }
+  if (ID >= Low(CID3Genres)) and (ID <= HighValue[InclWinampGenres]) then
+    Result := CID3Genres[ID]
+  else
+    Result := '';
+end;
+
+function ID3_LongGenreToID(const ALongGenre: string; const InclWinampGenres: Boolean = True): Integer;
+begin
+  Result := TJvID3TermFinder.Instance.ID3LongGenreToID(ALongGenre, InclWinampGenres);
+end;
+
+function ID3_StringToFrameID(const S: string): TJvID3FrameID;
+var
+  L: Integer;
+begin
+  L := Length(S);
+  with TJvID3TermFinder.Instance do
+    case L of
+      0:
+        Result := fiPaddingFrame;
+      3:
+        if S = #0#0#0 then
+          Result := fiPaddingFrame
+        else
+          Result := ID3ShortTextToFrameID(S);
+      4:
+        if S = #0#0#0#0 then
+          Result := fiPaddingFrame
+        else
+          Result := ID3LongTextToFrameID(S);
+    else
+      Result := fiErrorFrame
+    end;
+end;
+
+function ISO_639_2CodeToName(const Code: string): string;
+var
+  Index: Integer;
+begin
+  if Length(Code) <> 3 then
+  begin
+    Result := '';
+    Exit;
+  end;
+
+  Index := TJvID3TermFinder.Instance.ISO_639_2CodeToIndex(Code);
+  if Index >= Low(CISO_639_2Data) then
+    Result := CISO_639_2Data[Index].L
+  else
+    Result := '';
+end;
+
+function ISO_639_2IsCode(const Code: string): Boolean;
+begin
+  Result := (Length(Code) = 3) and
+    (TJvID3TermFinder.Instance.ISO_639_2CodeToIndex(Code) >= Low(CISO_639_2Data));
+end;
+
+procedure ISO_639_2Names(Strings: TStrings);
+begin
+  TJvID3TermFinder.Instance.ISO_639_2Names(Strings);
+end;
+
+function ISO_639_2NameToCode(const Name: string): string;
+var
+  Index: Integer;
+begin
+  Index := TJvID3TermFinder.Instance.ISO_639_2NameToIndex(Name);
+  if (Index < Low(CISO_639_2Data)) or (Index > High(CISO_639_2Data)) then
+    Result := ''
+  else
+    Result := CISO_639_2Data[Index].S;
+end;
+
+//=== TJvID3TermFinder =======================================================
 
 procedure TJvID3TermFinder.BuildList_ID3Genres;
 var
@@ -1531,9 +1537,6 @@ begin
     Result := TJvID3FrameID(FLists[ltID3ShortText].Objects[I]);
 end;
 
-var
-  GInstance: TJvID3TermFinder = nil;
-
 class function TJvID3TermFinder.Instance: TJvID3TermFinder;
 begin
   if not Assigned(GInstance) then
@@ -1586,6 +1589,4 @@ initialization
 
 finalization
   GInstance.Free;
-
 end.
-

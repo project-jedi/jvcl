@@ -282,13 +282,13 @@ type
   private
     function GetCounter: Cardinal;
     function GetRating: Byte;
-    function GetEmailAddress: string;
+    function GetEMailAddress: string;
     procedure SetCounter(const Value: Cardinal);
     procedure SetRating(const Value: Byte);
-    procedure SetEmailAddress(const Value: string);
+    procedure SetEMailAddress(const Value: string);
   published
     { Do not store dummies }
-    property EmailAddress: string read GetEmailAddress write SetEmailAddress stored False;
+    property EMailAddress: string read GetEMailAddress write SetEMailAddress stored False;
     property Rating: Byte read GetRating write SetRating stored False;
     property Counter: Cardinal read GetCounter write SetCounter stored False;
   end;
@@ -333,67 +333,360 @@ implementation
 uses
   SysUtils, Math;
 
-//=== TJvID3v2 ===============================================================
+//=== Local procedures =======================================================
 
-procedure TJvID3v2.ActiveChanged(Sender: TObject; Activated: Boolean);
+function ExtractMIMETypeFromClassName(AClassName: string): string;
 begin
-  if Activated then
-    FImages.Pictures.RetrievePictures
+  AClassName := AnsiLowerCase(AClassName);
+
+  if (Pos('jpg', AClassName) > 0) or (Pos('jpeg', AClassName) > 0) then
+    Result := 'image/jpeg'
   else
-    FImages.Pictures.RemovePictures;
+  if (Pos('bmp', AClassName) > 0) or (Pos('bitmap', AClassName) > 0) then
+    Result := 'image/bitmap'
+  else
+  if (Pos('gif', AClassName) > 0) then
+    Result := 'image/gif'
+  else
+    Result := 'image/';
 end;
 
-constructor TJvID3v2.Create(AOwner: TComponent);
+//=== TJvID3Images ===========================================================
+
+constructor TJvID3Images.Create(AController: TJvID3Controller);
 begin
-  inherited Create(AOwner);
-  RegisterClient(Self, ActiveChanged);
-
-  FID3Text := TJvID3Text.Create(Self);
-  FWeb := TJvID3Web.Create(Self);
-  FUserDefinedText := TJvID3UDText.Create(Self);
-  FUserDefinedWeb := TJvID3UDUrl.Create(Self);
-  FInvolvedPeople := TJvID3Ipl.Create(Self);
-  FImages := TJvID3Images.Create(Self);
-  FOwner := TJvID3Owner.Create(Self);
-  FPopularimeter := TJvID3Popularimeter.Create(Self);
-
-  { This ensures that possible unicode tags will be translated to ansi }
-  WriteEncodingAs := ifeISO_8859_1;
-  ReadEncodingAs := ifeISO_8859_1;
-
-  Options := [coAutoCorrect, coRemoveEmptyFrames];
+  inherited Create(AController);
+  FPictures := TJvID3Pictures.Create(AController);
+  FInfos := TJvID3PicturesDesc.Create(AController);
 end;
 
-destructor TJvID3v2.Destroy;
+destructor TJvID3Images.Destroy;
 begin
-  UnRegisterClient(Self);
-
-  FID3Text.Free;
-  FWeb.Free;
-  FUserDefinedText.Free;
-  FUserDefinedWeb.Free;
-  FInvolvedPeople.Free;
-  FImages.Free;
-  FOwner.Free;
-  FPopularimeter.Free;
+  FPictures.Free;
+  FInfos.Free;
   inherited Destroy;
 end;
 
-function TJvID3v2.GetPlayCounter: Cardinal;
+//=== TJvID3Ipl ==============================================================
+
+function TJvID3Ipl.GetItemCount: Integer;
 var
-  Frame: TJvID3PlayCounterFrame;
+  Frame: TJvID3DoubleListFrame;
 begin
-  Frame := TJvID3PlayCounterFrame.Find(Self);
+  if not FController.Active then
+    Result := 0
+  else
+  begin
+    Frame := TJvID3DoubleListFrame.Find(FController, fiInvolvedPeople);
+    if Assigned(Frame) then
+      Result := Frame.List.Count
+    else
+      Result := 0;
+  end;
+end;
+
+function TJvID3Ipl.GetJob: string;
+var
+  Frame: TJvID3DoubleListFrame;
+begin
+  if ItemIndex < 0 then
+    Result := ''
+  else
+  begin
+    Frame := TJvID3DoubleListFrame.Find(FController, fiInvolvedPeople);
+    if Assigned(Frame) and (ItemIndex < Frame.List.Count) then
+      Result := Frame.Values[ItemIndex]
+    else
+      Result := '';
+  end;
+end;
+
+function TJvID3Ipl.GetPerson: string;
+var
+  Frame: TJvID3DoubleListFrame;
+begin
+  if ItemIndex < 0 then
+    Result := ''
+  else
+  begin
+    Frame := TJvID3DoubleListFrame.Find(FController, fiInvolvedPeople);
+    if Assigned(Frame) and (ItemIndex < Frame.List.Count) then
+      Result := Frame.List.Names[ItemIndex]
+    else
+      Result := '';
+  end;
+end;
+
+procedure TJvID3Ipl.SetItemIndex(const Value: Integer);
+begin
+  if Value <> FItemIndex then
+  begin
+    FItemIndex := Min(Value, ItemCount - 1);
+  end;
+end;
+
+procedure TJvID3Ipl.SetJob(const Value: string);
+var
+  LPerson: string;
+  Frame: TJvID3DoubleListFrame;
+begin
+  if FController.Active and (ItemIndex >= 0) then
+  begin
+    Frame := TJvID3DoubleListFrame.FindOrCreate(FController, fiInvolvedPeople);
+    if (0 <= ItemIndex) and (ItemIndex < Frame.List.Count) then
+    begin
+      LPerson := Frame.List.Names[ItemIndex];
+      Frame.List[ItemIndex] := Format('%s=%s', [LPerson, Value]);
+    end;
+  end;
+end;
+
+procedure TJvID3Ipl.SetPerson(const Value: string);
+var
+  LJob: string;
+  Frame: TJvID3DoubleListFrame;
+begin
+  if FController.Active and (ItemIndex >= 0) then
+  begin
+    Frame := TJvID3DoubleListFrame.FindOrCreate(FController, fiInvolvedPeople);
+    if (0 <= ItemIndex) and (ItemIndex < Frame.List.Count) then
+    begin
+      LJob := Frame.Values[ItemIndex];
+      Frame.List[ItemIndex] := Format('%s=%s', [Value, LJob]);
+    end;
+  end;
+end;
+
+//=== TJvID3Owner ============================================================
+
+function TJvID3Owner.GetDatePurchased: TDate;
+var
+  Frame: TJvID3OwnershipFrame;
+begin
+  Frame := TJvID3OwnershipFrame.Find(FController);
+  if Assigned(Frame) then
+    Result := Frame.DateOfPurch
+  else
+    Result := 0;
+end;
+
+function TJvID3Owner.GetPrice: string;
+var
+  Frame: TJvID3OwnershipFrame;
+begin
+  Frame := TJvID3OwnershipFrame.Find(FController);
+  if Assigned(Frame) then
+    Result := Frame.PricePayed
+  else
+    Result := '';
+end;
+
+function TJvID3Owner.GetSeller: string;
+var
+  Frame: TJvID3OwnershipFrame;
+begin
+  Frame := TJvID3OwnershipFrame.Find(FController);
+  if Assigned(Frame) then
+    Result := Frame.Seller
+  else
+    Result := '';
+end;
+
+procedure TJvID3Owner.SetDatePurchased(const Value: TDate);
+begin
+  if FController.Active then
+    TJvID3OwnershipFrame.FindOrCreate(FController).DateOfPurch := Value;
+end;
+
+procedure TJvID3Owner.SetPrice(const Value: string);
+begin
+  if FController.Active then
+    TJvID3OwnershipFrame.FindOrCreate(FController).PricePayed := Value;
+end;
+
+procedure TJvID3Owner.SetSeller(const Value: string);
+begin
+  if FController.Active then
+    TJvID3OwnershipFrame.FindOrCreate(FController).Seller := Value;
+end;
+
+//=== TJvID3Persistent =======================================================
+
+constructor TJvID3Persistent.Create(AController: TJvID3Controller);
+begin
+  inherited Create;
+  FController := AController;
+end;
+
+//=== TJvID3Pictures =========================================================
+
+constructor TJvID3Pictures.Create(AController: TJvID3Controller);
+var
+  Index: TJvID3PictureType;
+begin
+  inherited Create(AController);
+
+  for Index := Low(TJvID3PictureType) to High(TJvID3PictureType) do
+  begin
+    FPictures[Index] := TPicture.Create;
+    FPictures[Index].OnChange := PictureChanged;
+  end;
+end;
+
+destructor TJvID3Pictures.Destroy;
+var
+  Index: TJvID3PictureType;
+begin
+  for Index := Low(TJvID3PictureType) to High(TJvID3PictureType) do
+    FPictures[Index].Free;
+  inherited Destroy;
+end;
+
+function TJvID3Pictures.GetPicture(const AType: Integer{TJvID3PictureType}): TPicture;
+begin
+  Result := FPictures[TJvID3PictureType(AType)];
+end;
+
+procedure TJvID3Pictures.PictureChanged(Sender: TObject);
+var
+  Index: TJvID3PictureType;
+begin
+  if FUpdating then
+    Exit;
+
+  for Index := Low(TJvID3PictureType) to High(TJvID3PictureType) do
+    if FPictures[Index] = Sender then
+    begin
+      PictureToFrame(Index);
+      Exit;
+    end;
+end;
+
+procedure TJvID3Pictures.PictureToFrame(const AType: TJvID3PictureType);
+var
+  Frame: TJvID3PictureFrame;
+begin
+  if not FController.Active then
+    Exit;
+
+  Frame := TJvID3PictureFrame.FindOrCreate(FController, AType);
+  Frame.Assign(FPictures[AType]);
+
+  { Borland has made it hard for us to determine the type of picture; let's
+    just look at the Picture.Graphic classname :) This is no way a reliable
+    method thus I don't recommend using TJvID3v2 for pictures }
+
+  Frame.MIMEType := ExtractMIMETypeFromClassName(FPictures[AType].Graphic.ClassName);
+end;
+
+procedure TJvID3Pictures.RemovePictures;
+var
+  Index: TJvID3PictureType;
+begin
+  FUpdating := True;
+  try
+    for Index := Low(TJvID3PictureType) to High(TJvID3PictureType) do
+      FPictures[Index].Assign(nil);
+  finally
+    FUpdating := False;
+  end;
+end;
+
+procedure TJvID3Pictures.RetrievePictures;
+var
+  Frame: TJvID3PictureFrame;
+  Index: TJvID3PictureType;
+begin
+  FUpdating := True;
+  try
+    for Index := Low(TJvID3PictureType) to High(TJvID3PictureType) do
+    begin
+      Frame := TJvID3PictureFrame.Find(FController, Index);
+      FPictures[Index].Assign(Frame);
+    end;
+  finally
+    FUpdating := False;
+  end;
+end;
+
+procedure TJvID3Pictures.SetPicture(const AType: Integer{TJvID3PictureType};
+  const Value: TPicture);
+begin
+  FPictures[TJvID3PictureType(AType)].Assign(Value);
+  //ChangePicture(AType);
+end;
+
+//=== TJvID3PicturesDesc =====================================================
+
+function TJvID3PicturesDesc.GetText(const AType: Integer{TJvID3PictureType}): string;
+var
+  Frame: TJvID3PictureFrame;
+begin
+  Frame := TJvID3PictureFrame.Find(FController, TJvID3PictureType(AType));
+  if Assigned(Frame) then
+    Result := Frame.Description
+  else
+    Result := '';
+end;
+
+procedure TJvID3PicturesDesc.SetText(const AType: Integer{TJvID3PictureType};
+  const Value: string);
+begin
+  if FController.Active then
+    TJvID3PictureFrame.FindOrCreate(FController, TJvID3PictureType(AType)).Description := Value;
+end;
+
+//=== TJvID3Popularimeter ====================================================
+
+function TJvID3Popularimeter.GetCounter: Cardinal;
+var
+  Frame: TJvID3PopularimeterFrame;
+begin
+  Frame := TJvID3PopularimeterFrame.Find(FController);
   if Assigned(Frame) then
     Result := Frame.Counter
   else
     Result := 0;
 end;
 
-procedure TJvID3v2.SetPlayCounter(const Value: Cardinal);
+function TJvID3Popularimeter.GetEMailAddress: string;
+var
+  Frame: TJvID3PopularimeterFrame;
 begin
-  if Active then
-    TJvID3PlayCounterFrame.FindOrCreate(Self).Counter := Value;
+  Frame := TJvID3PopularimeterFrame.Find(FController);
+  if Assigned(Frame) then
+    Result := Frame.EMailAddress
+  else
+    Result := '';
+end;
+
+function TJvID3Popularimeter.GetRating: Byte;
+var
+  Frame: TJvID3PopularimeterFrame;
+begin
+  Frame := TJvID3PopularimeterFrame.Find(FController);
+  if Assigned(Frame) then
+    Result := Frame.Rating
+  else
+    Result := 0;
+end;
+
+procedure TJvID3Popularimeter.SetCounter(const Value: Cardinal);
+begin
+  if FController.Active then
+    TJvID3PopularimeterFrame.FindOrCreate(FController).Counter := Value;
+end;
+
+procedure TJvID3Popularimeter.SetEMailAddress(const Value: string);
+begin
+  if FController.Active then
+    TJvID3PopularimeterFrame.FindOrCreate(FController).EMailAddress := Value;
+end;
+
+procedure TJvID3Popularimeter.SetRating(const Value: Byte);
+begin
+  if FController.Active then
+    TJvID3PopularimeterFrame.FindOrCreate(FController).Rating := Value;
 end;
 
 //=== TJvID3Text =============================================================
@@ -481,25 +774,6 @@ procedure TJvID3Text.SetText(const FrameID: Integer{TJvID3FrameID}; const Value:
 begin
   if FController.Active then
     TJvID3TextFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).Text := Value;
-end;
-
-//=== TJvID3Web ==============================================================
-
-function TJvID3Web.GetText(const FrameID: Integer{TJvID3FrameID}): string;
-var
-  Frame: TJvID3URLFrame;
-begin
-  Frame := TJvID3URLFrame.Find(FController, TJvID3FrameID(FrameID));
-  if Assigned(Frame) then
-    Result := Frame.URL
-  else
-    Result := '';
-end;
-
-procedure TJvID3Web.SetText(const FrameID: Integer{TJvID3FrameID}; const Value: string);
-begin
-  if FController.Active then
-    TJvID3URLFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).URL := Value;
 end;
 
 //=== TJvID3UDText ===========================================================
@@ -664,359 +938,86 @@ begin
     TJvID3URLUserFrame.Find(FController, ItemIndex).URL := Value;
 end;
 
-//=== TJvIdPictures ==========================================================
+//=== TJvID3v2 ===============================================================
 
-function ExtractMIMETypeFromClassName(AClassName: string): string;
+procedure TJvID3v2.ActiveChanged(Sender: TObject; Activated: Boolean);
 begin
-  AClassName := AnsiLowerCase(AClassName);
-
-  if (Pos('jpg', AClassName) > 0) or (Pos('jpeg', AClassName) > 0) then
-    Result := 'image/jpeg'
+  if Activated then
+    FImages.Pictures.RetrievePictures
   else
-    if (Pos('bmp', AClassName) > 0) or (Pos('bitmap', AClassName) > 0) then
-    Result := 'image/bitmap'
-  else
-    if (Pos('gif', AClassName) > 0) then
-    Result := 'image/gif'
-  else
-    Result := 'image/';
+    FImages.Pictures.RemovePictures;
 end;
 
-constructor TJvID3Pictures.Create(AController: TJvID3Controller);
-var
-  Index: TJvID3PictureType;
+constructor TJvID3v2.Create(AOwner: TComponent);
 begin
-  inherited Create(AController);
+  inherited Create(AOwner);
+  RegisterClient(Self, ActiveChanged);
 
-  for Index := Low(TJvID3PictureType) to High(TJvID3PictureType) do
-  begin
-    FPictures[Index] := TPicture.Create;
-    FPictures[Index].OnChange := PictureChanged;
-  end;
+  FID3Text := TJvID3Text.Create(Self);
+  FWeb := TJvID3Web.Create(Self);
+  FUserDefinedText := TJvID3UDText.Create(Self);
+  FUserDefinedWeb := TJvID3UDUrl.Create(Self);
+  FInvolvedPeople := TJvID3Ipl.Create(Self);
+  FImages := TJvID3Images.Create(Self);
+  FOwner := TJvID3Owner.Create(Self);
+  FPopularimeter := TJvID3Popularimeter.Create(Self);
+
+  { This ensures that possible unicode tags will be translated to ansi }
+  WriteEncodingAs := ifeISO_8859_1;
+  ReadEncodingAs := ifeISO_8859_1;
+
+  Options := [coAutoCorrect, coRemoveEmptyFrames];
 end;
 
-destructor TJvID3Pictures.Destroy;
-var
-  Index: TJvID3PictureType;
+destructor TJvID3v2.Destroy;
 begin
-  for Index := Low(TJvID3PictureType) to High(TJvID3PictureType) do
-    FPictures[Index].Free;
+  UnRegisterClient(Self);
+
+  FID3Text.Free;
+  FWeb.Free;
+  FUserDefinedText.Free;
+  FUserDefinedWeb.Free;
+  FInvolvedPeople.Free;
+  FImages.Free;
+  FOwner.Free;
+  FPopularimeter.Free;
   inherited Destroy;
 end;
 
-function TJvID3Pictures.GetPicture(const AType: Integer{TJvID3PictureType}): TPicture;
-begin
-  Result := FPictures[TJvID3PictureType(AType)];
-end;
-
-procedure TJvID3Pictures.PictureChanged(Sender: TObject);
+function TJvID3v2.GetPlayCounter: Cardinal;
 var
-  Index: TJvID3PictureType;
+  Frame: TJvID3PlayCounterFrame;
 begin
-  if FUpdating then
-    Exit;
-
-  for Index := Low(TJvID3PictureType) to High(TJvID3PictureType) do
-    if FPictures[Index] = Sender then
-    begin
-      PictureToFrame(Index);
-      Exit;
-    end;
-end;
-
-procedure TJvID3Pictures.PictureToFrame(const AType: TJvID3PictureType);
-var
-  Frame: TJvID3PictureFrame;
-begin
-  if not FController.Active then
-    Exit;
-
-  Frame := TJvID3PictureFrame.FindOrCreate(FController, AType);
-  Frame.Assign(FPictures[AType]);
-
-  { Borland has made it hard for us to determine the type of picture; let's
-    just look at the Picture.Graphic classname :) This is no way a reliable
-    method thus I don't recommend using TJvID3v2 for pictures }
-
-  Frame.MIMEType := ExtractMIMETypeFromClassName(FPictures[AType].Graphic.ClassName);
-end;
-
-procedure TJvID3Pictures.RemovePictures;
-var
-  Index: TJvID3PictureType;
-begin
-  FUpdating := True;
-  try
-    for Index := Low(TJvID3PictureType) to High(TJvID3PictureType) do
-      FPictures[Index].Assign(nil);
-  finally
-    FUpdating := False;
-  end;
-end;
-
-procedure TJvID3Pictures.RetrievePictures;
-var
-  Frame: TJvID3PictureFrame;
-  Index: TJvID3PictureType;
-begin
-  FUpdating := True;
-  try
-    for Index := Low(TJvID3PictureType) to High(TJvID3PictureType) do
-    begin
-      Frame := TJvID3PictureFrame.Find(FController, Index);
-      FPictures[Index].Assign(Frame);
-    end;
-  finally
-    FUpdating := False;
-  end;
-end;
-
-procedure TJvID3Pictures.SetPicture(const AType: Integer{TJvID3PictureType};
-  const Value: TPicture);
-begin
-  FPictures[TJvID3PictureType(AType)].Assign(Value);
-  //ChangePicture(AType);
-end;
-
-//=== TJvIdImages ============================================================
-
-constructor TJvID3Images.Create(AController: TJvID3Controller);
-begin
-  inherited Create(AController);
-  FPictures := TJvID3Pictures.Create(AController);
-  FInfos := TJvID3PicturesDesc.Create(AController);
-end;
-
-destructor TJvID3Images.Destroy;
-begin
-  FPictures.Free;
-  FInfos.Free;
-  inherited Destroy;
-end;
-
-//=== TJvIdIpl ===============================================================
-
-function TJvID3Ipl.GetItemCount: Integer;
-var
-  Frame: TJvID3DoubleListFrame;
-begin
-  if not FController.Active then
-    Result := 0
-  else
-  begin
-    Frame := TJvID3DoubleListFrame.Find(FController, fiInvolvedPeople);
-    if Assigned(Frame) then
-      Result := Frame.List.Count
-    else
-      Result := 0;
-  end;
-end;
-
-function TJvID3Ipl.GetJob: string;
-var
-  Frame: TJvID3DoubleListFrame;
-begin
-  if ItemIndex < 0 then
-    Result := ''
-  else
-  begin
-    Frame := TJvID3DoubleListFrame.Find(FController, fiInvolvedPeople);
-    if Assigned(Frame) and (ItemIndex < Frame.List.Count) then
-      Result := Frame.Values[ItemIndex]
-    else
-      Result := '';
-  end;
-end;
-
-function TJvID3Ipl.GetPerson: string;
-var
-  Frame: TJvID3DoubleListFrame;
-begin
-  if ItemIndex < 0 then
-    Result := ''
-  else
-  begin
-    Frame := TJvID3DoubleListFrame.Find(FController, fiInvolvedPeople);
-    if Assigned(Frame) and (ItemIndex < Frame.List.Count) then
-      Result := Frame.List.Names[ItemIndex]
-    else
-      Result := '';
-  end;
-end;
-
-procedure TJvID3Ipl.SetItemIndex(const Value: Integer);
-begin
-  if Value <> FItemIndex then
-  begin
-    FItemIndex := Min(Value, ItemCount - 1);
-  end;
-end;
-
-procedure TJvID3Ipl.SetJob(const Value: string);
-var
-  LPerson: string;
-  Frame: TJvID3DoubleListFrame;
-begin
-  if FController.Active and (ItemIndex >= 0) then
-  begin
-    Frame := TJvID3DoubleListFrame.FindOrCreate(FController, fiInvolvedPeople);
-    if (0 <= ItemIndex) and (ItemIndex < Frame.List.Count) then
-    begin
-      LPerson := Frame.List.Names[ItemIndex];
-      Frame.List[ItemIndex] := Format('%s=%s', [LPerson, Value]);
-    end;
-  end;
-end;
-
-procedure TJvID3Ipl.SetPerson(const Value: string);
-var
-  LJob: string;
-  Frame: TJvID3DoubleListFrame;
-begin
-  if FController.Active and (ItemIndex >= 0) then
-  begin
-    Frame := TJvID3DoubleListFrame.FindOrCreate(FController, fiInvolvedPeople);
-    if (0 <= ItemIndex) and (ItemIndex < Frame.List.Count) then
-    begin
-      LJob := Frame.Values[ItemIndex];
-      Frame.List[ItemIndex] := Format('%s=%s', [Value, LJob]);
-    end;
-  end;
-end;
-
-//=== TJvID3Owner ============================================================
-
-function TJvID3Owner.GetDatePurchased: TDate;
-var
-  Frame: TJvID3OwnershipFrame;
-begin
-  Frame := TJvID3OwnershipFrame.Find(FController);
-  if Assigned(Frame) then
-    Result := Frame.DateOfPurch
-  else
-    Result := 0;
-end;
-
-function TJvID3Owner.GetPrice: string;
-var
-  Frame: TJvID3OwnershipFrame;
-begin
-  Frame := TJvID3OwnershipFrame.Find(FController);
-  if Assigned(Frame) then
-    Result := Frame.PricePayed
-  else
-    Result := '';
-end;
-
-function TJvID3Owner.GetSeller: string;
-var
-  Frame: TJvID3OwnershipFrame;
-begin
-  Frame := TJvID3OwnershipFrame.Find(FController);
-  if Assigned(Frame) then
-    Result := Frame.Seller
-  else
-    Result := '';
-end;
-
-procedure TJvID3Owner.SetDatePurchased(const Value: TDate);
-begin
-  if FController.Active then
-    TJvID3OwnershipFrame.FindOrCreate(FController).DateOfPurch := Value;
-end;
-
-procedure TJvID3Owner.SetPrice(const Value: string);
-begin
-  if FController.Active then
-    TJvID3OwnershipFrame.FindOrCreate(FController).PricePayed := Value;
-end;
-
-procedure TJvID3Owner.SetSeller(const Value: string);
-begin
-  if FController.Active then
-    TJvID3OwnershipFrame.FindOrCreate(FController).Seller := Value;
-end;
-
-//=== TJvID3Popularimeter ====================================================
-
-function TJvID3Popularimeter.GetCounter: Cardinal;
-var
-  Frame: TJvID3PopularimeterFrame;
-begin
-  Frame := TJvID3PopularimeterFrame.Find(FController);
+  Frame := TJvID3PlayCounterFrame.Find(Self);
   if Assigned(Frame) then
     Result := Frame.Counter
   else
     Result := 0;
 end;
 
-function TJvID3Popularimeter.GetRating: Byte;
-var
-  Frame: TJvID3PopularimeterFrame;
+procedure TJvID3v2.SetPlayCounter(const Value: Cardinal);
 begin
-  Frame := TJvID3PopularimeterFrame.Find(FController);
-  if Assigned(Frame) then
-    Result := Frame.Rating
-  else
-    Result := 0;
+  if Active then
+    TJvID3PlayCounterFrame.FindOrCreate(Self).Counter := Value;
 end;
 
-function TJvID3Popularimeter.GetEmailAddress: string;
+//=== TJvID3Web ==============================================================
+
+function TJvID3Web.GetText(const FrameID: Integer{TJvID3FrameID}): string;
 var
-  Frame: TJvID3PopularimeterFrame;
+  Frame: TJvID3URLFrame;
 begin
-  Frame := TJvID3PopularimeterFrame.Find(FController);
+  Frame := TJvID3URLFrame.Find(FController, TJvID3FrameID(FrameID));
   if Assigned(Frame) then
-    Result := Frame.EmailAddress
+    Result := Frame.URL
   else
     Result := '';
 end;
 
-procedure TJvID3Popularimeter.SetCounter(const Value: Cardinal);
+procedure TJvID3Web.SetText(const FrameID: Integer{TJvID3FrameID}; const Value: string);
 begin
   if FController.Active then
-    TJvID3PopularimeterFrame.FindOrCreate(FController).Counter := Value;
-end;
-
-procedure TJvID3Popularimeter.SetEmailAddress(const Value: string);
-begin
-  if FController.Active then
-    TJvID3PopularimeterFrame.FindOrCreate(FController).EmailAddress := Value;
-end;
-
-procedure TJvID3Popularimeter.SetRating(const Value: Byte);
-begin
-  if FController.Active then
-    TJvID3PopularimeterFrame.FindOrCreate(FController).Rating := Value;
-end;
-
-//=== TJvIdPicturesDesc ======================================================
-
-function TJvID3PicturesDesc.GetText(const AType: Integer{TJvID3PictureType}): string;
-var
-  Frame: TJvID3PictureFrame;
-begin
-  Frame := TJvID3PictureFrame.Find(FController, TJvID3PictureType(AType));
-  if Assigned(Frame) then
-    Result := Frame.Description
-  else
-    Result := '';
-end;
-
-procedure TJvID3PicturesDesc.SetText(const AType: Integer{TJvID3PictureType};
-  const Value: string);
-begin
-  if FController.Active then
-    TJvID3PictureFrame.FindOrCreate(FController, TJvID3PictureType(AType)).Description := Value;
-end;
-
-{ TJvID3Persistent }
-
-constructor TJvID3Persistent.Create(AController: TJvID3Controller);
-begin
-  inherited Create;
-  FController := AController;
+    TJvID3URLFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).URL := Value;
 end;
 
 end.
-
