@@ -4058,6 +4058,7 @@ var
   CaseSensitive: Boolean;
   CmpProc: function(const Str1, Str2: PChar; MaxLen: Cardinal): Integer;
   IsCharCmp: Boolean;
+  LenSearchEnd, LenSearchStart: Integer;
 begin
   X := CaretX;
   Y := CaretY;
@@ -4131,6 +4132,8 @@ begin
         CmpProc := StrLIComp;
 
       SearchOpen := 1;
+      LenSearchStart := Length(SearchStart);
+      LenSearchEnd := Length(SearchEnd);
       repeat
         Inc(X, SearchDir);
 
@@ -4176,20 +4179,28 @@ begin
         else
         begin
           // word pairs
-          if CmpProc(PChar(Text) + X, PChar(SearchEnd), Length(SearchEnd)) = 0 then // case sensitive
+          if CmpProc(PChar(Text) + X, Pointer(SearchEnd), LenSearchEnd) = 0 then // case sensitive
           begin
-            Dec(SearchOpen);
-            if SearchOpen = 0 then
+            if ((X = 0) or (Text[X + 1 - 1] in Separators)) and
+               ((X + 1 + LenSearchEnd < Length(Text)) or (Text[X + 1 + LenSearchEnd] in Separators)) then
             begin
-              BracketHighlighting.FStop.TopLeft := Point(X + 1, Y);
-              BracketHighlighting.FStop.BottomRight := Point(X + 1 + Length(SearchEnd) - 1, Y);
-              PaintLine(Y);
-              Break;
+              Dec(SearchOpen);
+              if SearchOpen = 0 then
+              begin
+                BracketHighlighting.FStop.TopLeft := Point(X + 1, Y);
+                BracketHighlighting.FStop.BottomRight := Point(X + 1 + Length(SearchEnd) - 1, Y);
+                PaintLine(Y);
+                Break;
+              end;
             end;
           end
           else
-          if CmpProc(PChar(Text) + X, PChar(SearchStart), Length(SearchStart)) = 0 then // case sensitive
-            Inc(SearchOpen);
+          if CmpProc(PChar(Text) + X, Pointer(SearchStart), LenSearchStart) = 0 then // case sensitive
+          begin
+            if ((X = 0) or (Text[X + 1 - 1] in Separators)) and
+               ((X + 1 + LenSearchStart < Length(Text)) or (Text[X + 1 + LenSearchStart] in Separators)) then
+              Inc(SearchOpen);
+          end;
         end;
       until False;
     end;
