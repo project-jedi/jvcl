@@ -32,8 +32,12 @@ unit JvgSysRequirements;
 interface
 
 uses
+  {$IFDEF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent;
+  {$ELSE}
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
+  {$ENDIF USEJVCL}
 
 type
   TglMinVideoVRefreshRate = (frrIgnore, frr70Hertz, frr75Hertz, frr85Hertz);
@@ -52,7 +56,11 @@ type
   TglWarningEvent = procedure(Sender: TObject; var ReportMessage: string;
     var DoShowWarning, DoHalt: Boolean) of object;
 
+  {$IFDEF USEJVCL}
   TJvgSysRequirements = class(TJvComponent)
+  {$ELSE}
+  TJvgSysRequirements = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FEnabled: Boolean;
     FMinColorDepth: TglMinColorDepth;

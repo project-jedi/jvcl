@@ -37,8 +37,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvCompEditorTemplateForm, JvgTypes,
-  JvgLabel;
+  JvgCompEditorTemplateForm, JvgTypes, JvgLabel;
 
 type
   TJvgLabelEditorDlg = class(TJvgCompEditorTemplate)
@@ -181,8 +180,10 @@ var
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   JvDsgnConsts;
+{$ENDIF USEJVCL}
 
 {$R *.dfm}
 
@@ -192,6 +193,11 @@ uses
 {$IFDEF LINUX}
 {$R ../Resources/JvgLabelEditorForm.res}
 {$ENDIF LINUX}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsEditLabel = 'Edit &Label...';
+{$ENDIF !USEJVCL}
 
 function IntToTextStyle(Tag: Integer): TglTextStyle;
 begin

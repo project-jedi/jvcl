@@ -31,13 +31,19 @@ unit JvgSplit;
 interface
 
 uses
+  {$IFDEF USEJVCL}
   Windows, Messages, Classes, Controls, Graphics, ExtCtrls,
   JvComponent, JVCLVer;
+  {$ELSE}
+  Windows, Messages, Classes, Controls, Graphics, ExtCtrls;
+  {$ENDIF USEJVCL}
 
 type
   TJvgSplitter = class(TSplitter)
   private
+    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHotTrack: Boolean;
     FTrackCount: Integer;
     FActive: Boolean;
@@ -55,7 +61,9 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
     property Displace: Boolean read FDisplace write SetDisplace default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default True;
     property TrackCount: Integer read FTrackCount write SetTrackCount default 20;
@@ -64,13 +72,17 @@ type
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   JvThemes;
+{$ENDIF USEJVCL}
 
 constructor TJvgSplitter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF USEJVCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF USEJVCL}
   FKeepSize := 0;
   //..defaults
   Width := 6;
@@ -88,9 +100,12 @@ var
 begin
   with Canvas do
   begin
-
     Brush.Color := Self.Color;
+    {$IFDEF USEJVCL}
     DrawThemedBackground(Self, Canvas, ClientRect);
+    {$ELSE}
+    Canvas.FillRect(ClientRect);
+    {$ENDIF USEJVCL}
 
     if (Align = alBottom) or (Align = alTop) then
     begin

@@ -33,7 +33,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, ComCtrls, CommCtrl, ImgList, FlatSB,
+  {$IFDEF USEJVCL}
   JvComponent,
+  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses;
 
 const
@@ -54,7 +56,11 @@ const
 type
   FOnTNDrawEvent = procedure(Sender: TObject; Msg: TWMPaint) of object;
 
+  {$IFDEF USEJVCL}
   TJvgCustomTreeView = class(TJvCustomTreeView)
+  {$ELSE}
+  TJvgCustomTreeView = class(TCustomTreeView)
+  {$ENDIF USEJVCL}
   private
     FCanvas: TControlCanvas;
     FWallpaper: TBitmap;

@@ -45,6 +45,6 @@
     <File Name="..\..\design\JvgReportParamsForm.pas" Targets="allbutclx" Formname="JvgReportParamsForm" Condition=""/>
     <File Name="..\..\design\JvgRTFPreviewForm.pas" Targets="allbutclx" Formname="fRTFPreview" Condition=""/>
     <File Name="..\..\design\JvgShadowEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCompEditorTemplateForm.pas" Targets="allbutclx" Formname="JvgCompEditorTemplate" Condition=""/>
+    <File Name="..\..\design\JvgCompEditorTemplateForm.pas" Targets="allbutclx" Formname="JvgCompEditorTemplate" Condition=""/>
   </Contains>
 </Package>

@@ -39,7 +39,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvgStringGrid, JvgReport, JvComponent;
+  JvgStringGrid, JvgReport;
 
 type
   TJvgRepParamsEditor = class(TComponentEditor)
@@ -48,7 +48,7 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-  TJvgReportParamsForm = class(TJvForm)
+  TJvgReportParamsForm = class(TForm)
     SB: TScrollBox;
     Panel1: TPanel;
     Panel2: TPanel;
@@ -60,9 +60,17 @@ type
 implementation
 
 uses
-  JvgReportParamsEditor, JvDsgnConsts;
+  {$IFDEF USEJVCL}
+  JvDsgnConsts,
+  {$ENDIF USEJVCL}
+  JvgReportParamsEditor;
 
 {$R *.dfm}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsEditParamsEllipsis = 'Edit params...';
+{$ENDIF !USEJVCL}
 
 procedure TJvgRepParamsEditor.ExecuteVerb(Index: Integer);
 begin

@@ -166,10 +166,7 @@ type
 implementation
 
 type
-  TJvgShowFont = class(TControl)
-  public
-    property Font;
-  end;
+  TControlAccessProtected = class(TControl);
 
 //=== { TJvgTabStyle } =======================================================
 
@@ -186,7 +183,7 @@ begin
   // FFillBackgr := False;
   FParent := TWinControl(AOwner);
   FFont := TFont.Create;
-  Font.Assign(TJvgShowFont(FParent).Font);
+  Font.Assign(TControlAccessProtected(FParent).Font);
   FTextStyle := fstNone;
   FCaptionHAlign := fhaLeft;
   FCaptionVAlign := fvaCenter;
@@ -356,8 +353,6 @@ end;
 
 procedure TJvgTabsWallpaper.SetBitmap(Value: TBitmap);
 begin
-  if Assigned(FBitmap) then FBitmap.Free;
-  FBitmap := TBitmap.Create;
   FBitmap.Assign(Value);
   if Assigned(Value) then
     FBmp := FBitmap

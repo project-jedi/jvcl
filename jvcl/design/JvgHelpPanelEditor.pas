@@ -49,7 +49,17 @@ type
 implementation
 
 uses
-  JvgHelpPanel, JvgRTFPreviewForm, JvDsgnConsts;
+  {$IFDEF USEJVCL}
+  JvDsgnConsts,
+  {$ENDIF USEJVCL}
+  JvgHelpPanel, JvgRTFPreviewForm;
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsRTFAndTextFilesrtftxtrtftxt = 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
+  RsLoadRTFFile = 'Load RTF file';
+  RsPreviewRTFText = 'Preview RTF text';
+{$ENDIF !USEJVCL}
 
 procedure TJvgHelpPanelEditor.ExecuteVerb(Index: Integer);
 var
