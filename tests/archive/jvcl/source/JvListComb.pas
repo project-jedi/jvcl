@@ -101,6 +101,7 @@ type
     FButtonFrame: Boolean;
     FDroppedWidth: Integer;
     FButtonStyle: TJvButtonColors;
+    FIndentSelected: boolean;
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorHighlightText(Value: TColor);
     procedure SetImageList(Value: TImageList);
@@ -114,6 +115,7 @@ type
     procedure SetDroppedWidth(Value: Integer);
     procedure SetDefaultIndent(const Value: Integer);
     procedure SetItems(const Value: TJvListItems); reintroduce;
+    procedure SetIndentSelected(const Value: boolean);
   protected
     procedure CreateWnd; override;
     procedure RecreateWnd;
@@ -137,6 +139,7 @@ type
     property DragCursor;
     property DropDownCount;
     property Items: TJvListItems read FItems write SetItems;
+    property IndentSelected:boolean read FIndentSelected write SetIndentSelected default false;
     property ItemIndex;
     property DefaultIndent: Integer read FDefaultIndent write SetDefaultIndent default 0;
     property DroppedWidth: Integer read GetDroppedWidth write SetDroppedWidth;
@@ -606,7 +609,8 @@ begin
     FillRect(R);
     Brush.Color := TmpCol;
 
-    R.Left := R.Left + Items[Index].Indent;
+    if not (odComboBoxEdit in State) or IndentSelected then // (p3) don't draw indentation for edit item unless explicitly told to do so
+      R.Left := R.Left + Items[Index].Indent;
     if Assigned(FImageList) then
     begin
       Tmp := Items[Index].ImageIndex;
@@ -624,7 +628,7 @@ begin
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
         DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odFocused in State) and
-          (DroppedDown)), TmpR);
+          not (odComboBoxEdit in State)), TmpR);
       end;
       Inc(R.Left, FWidth + 8);
       OrigR.Left := R.Left;
@@ -653,7 +657,9 @@ end;
 
 procedure TJvImageComboBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
-  Height := Max(GetItemHeight(Font) + 2, FHeight);
+  Height := Max(GetItemHeight(Font) + 4, FHeight + (Ord(ButtonFrame) * 4));
+  if Assigned(FImageList) then
+    Height := Max(Height,FImageList.Height + 2);
 end;
 
 procedure TJvImageComboBox.SetColorHighlight(Value: TColor);
@@ -746,6 +752,15 @@ procedure TJvImageComboBox.SetItems(const Value: TJvListItems);
 begin
   FItems.Assign(Value);
   FItems.Update(nil);
+end;
+
+procedure TJvImageComboBox.SetIndentSelected(const Value: boolean);
+begin
+  if FIndentSelected <> Value then
+  begin
+    FIndentSelected := Value;
+    Invalidate;
+  end;
 end;
 
 //=== TJvImageListBox ========================================================
@@ -931,7 +946,7 @@ begin
       // PRY END
       if FButtonFrame then
       begin
-        TmpR := Rect(R.Left + Tmp - 2, R.Top, R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
+        TmpR := Rect(R.Left + Tmp - 2, R.Top + 2, R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
         DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp2 in [0..FImageList.Count - 1]) and (odSelected in State)),
           TmpR);
       end;
@@ -1120,6 +1135,7 @@ begin
   FItems.Assign(Value);
   FItems.Update(nil);
 end;
+
 
 end.
 
