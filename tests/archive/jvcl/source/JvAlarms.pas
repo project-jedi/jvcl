@@ -31,12 +31,10 @@ Known Issues:
 
 unit JvAlarms;
 
-
-
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, ExtCtrls, JvComponent;
+  Windows, SysUtils, Classes, Dialogs, Controls, ExtCtrls, JvComponent;
 
 type
   TJvTriggerKind = (tkOneShot, tkEachSecond, tkEachMinute,
@@ -60,13 +58,13 @@ type
 
   TJvAlarmItems = class(TOwnedCollection)
   private
-    function GetItems(Index: integer): TJVAlarmItem;
-    procedure SetItems(Index: integer; const Value: TJVAlarmItem);
+    function GetItems(Index: Integer): TJVAlarmItem;
+    procedure SetItems(Index: Integer; const Value: TJVAlarmItem);
   public
     constructor Create(AOwner: TPersistent);
     function Add: TJvAlarmItem;
     procedure Assign(Source: TPersistent); override;
-    property Items[Index: integer]: TJVAlarmItem read GetItems write SetItems; default;
+    property Items[Index: Integer]: TJVAlarmItem read GetItems write SetItems; default;
   end;
 
   TJvAlarms = class(TJvComponent)
@@ -77,6 +75,7 @@ type
     FRunning: Boolean;
     FTimer: TTimer;
     FAlarms: TJvAlarmItems;
+    FBusy: Boolean;
     procedure OnTimer(Sender: TObject);
     procedure SetActive(const Value: Boolean);
     procedure SetAlarms(const Value: TJvAlarmItems);
@@ -85,7 +84,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Add(const AName: string; const ATime: TDateTime; const AKind: TJvTriggerKind = tkOneShot);
+    procedure Add(const AName: string; const aTime: TDateTime; const AKind: TJvTriggerKind = tkOneShot);
     procedure Delete(const Idx: Cardinal);
 
     //    property Alarms[Idx: Cardinal]: TJvAlarm read GetAlarm;
@@ -106,7 +105,7 @@ resourcestring
 constructor TJvAlarms.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FAlarms := TJvAlarmItems.Create(self);
+  FAlarms := TJvAlarmItems.Create(Self);
 
   FActive := False;
   FRunning := False;
@@ -129,16 +128,21 @@ end;
 
 {*****************************************************}
 
-procedure TJvAlarms.Add(const AName: string; const ATime: TDateTime; const AKind: TJvTriggerKind);
+procedure TJvAlarms.Add(const AName: string; const aTime: TDateTime; const AKind: TJvTriggerKind);
 begin
-  with FAlarms.Add do
+  // hs (Oneshot-) timed out ? then we ignore this alarm !
+  // works only by calling this funtion directly !
+  if (aTime >= Now) or (AKind <> tkOneShot) then
   begin
-    Name := AName;
-    Time := ATime;
-    Kind := AKind;
+    with FAlarms.Add do
+    begin
+      Name := AName;
+      Time := aTime;
+      Kind := AKind;
+    end;
+    FRunning := Active;
+    FTimer.Enabled := Running;
   end;
-  FRunning := Active;
-  FTimer.Enabled := Running;
 end;
 
 {*****************************************************}
@@ -168,52 +172,76 @@ var
   Stamp: TTimeStamp;
   Year, Month, Day: Word;
   Alarm: TJvAlarmItem;
+  // hs reentry flag added
+  // may be necessary if a userfunction in DoAlarm does not
+  // return (ex.: modal dialogbox ) before the same alarm is activated next time.
+  // it's just a workaround - may be done better :-)
 begin
-  if FAlarms.Count < 1 then
-    Exit;
-  Current := Now;
-  Stamp := DateTimeToTimeStamp(Now);
-  // sort out delayed Timer events which may arrive in bunches
-  if (Stamp.Time - FLast.Time) >= 1000 then
+  if not FBusy then
   begin
-    FLast := Stamp;
-    for I := FAlarms.Count - 1 downto 0 do
-    begin
-      Alarm := Alarms[I];
-      if Current >= Alarm.Time then
+    FBusy := True;
+    try
+      if FAlarms.Count >= 0 then
       begin
-        DoAlarm(Alarm, Current);
-        Stamp := DateTimeToTimeStamp(Alarm.Time);
-        case Alarm.Kind of
-          tkOneShot:
-            Delete(I);
-          tkEachSecond:
-            Inc(Stamp.Time, 1000);
-          tkEachMinute:
-            Inc(Stamp.Time, 60 * 1000);
-          tkEachHour:
-            Inc(Stamp.Time, 60 * 60 * 1000);
-          tkEachDay:
-            Inc(Stamp.Date);
-          tkEachMonth:
-            Stamp := DateTimeToTimeStamp(IncMonth(Alarm.Time, 1));
-          tkEachYear:
+        Current := Now;
+        Stamp := DateTimeToTimeStamp(Now);
+        // sort out delayed Timer events which may arrive in bunches
+        if (Stamp.Time - FLast.Time) >= 1000 then
+        begin
+          FLast := Stamp;
+          for I := FAlarms.Count - 1 downto 0 do
+          begin
+            Alarm := Alarms[I];
+            if Current >= Alarm.Time then
             begin
-              DecodeDate(Current, Year, Month, Day);
-              if IsLeapYear(Year) then
-                Inc(Stamp.Date, 366)
+              // OnAlarm aufrufen - hier am besten keine Funktionen
+              // > 500msec aufrufen, da diese Routine sonst hier kreiselt
+              // und keine weiteren Alarme durchkommen !
+              DoAlarm(Alarm, Current);
+              Stamp := DateTimeToTimeStamp(Alarm.Time);
+              case Alarm.Kind of
+                tkOneShot: ;
+                //hs Delete(i) removed - later on was a reference to 'Alarm.Kind'
+                //  which failed caused by an invalid Alarm
+                tkEachSecond:
+                  Inc(Stamp.Time, 1000);
+                tkEachMinute:
+                  Inc(Stamp.Time, 60 * 1000);
+                tkEachHour:
+                  Inc(Stamp.Time, 60 * 60 * 1000);
+                tkEachDay:
+                  Inc(Stamp.Date);
+                tkEachMonth:
+                  Stamp := DateTimeToTimeStamp(IncMonth(Alarm.Time, 1));
+                tkEachYear:
+                  begin
+                    DecodeDate(Current, Year, Month, Day);
+                    if IsLeapYear(Year) then
+                      Inc(Stamp.Date, 366)
+                    else
+                      Inc(Stamp.Date, 365);
+                  end;
+              end;
+              if Stamp.Time > 24 * 60 * 60 * 1000 then
+              begin
+                Inc(Stamp.Date);
+                Dec(Stamp.Time, 24 * 60 * 60 * 1000);
+              end;
+              if (Alarm.Kind <> tkOneShot) then
+              begin
+                Alarm.Time := TimeStampToDateTime(Stamp);
+              end
+                // hs a better place for 'Delete(i)'
               else
-                Inc(Stamp.Date, 365);
+              begin
+                Delete(I);
+              end;
             end;
+          end;
         end;
       end;
-      if Stamp.Time > 24 * 60 * 60 * 1000 then
-      begin
-        Inc(Stamp.Date);
-        Dec(Stamp.Time, 24 * 60 * 60 * 1000);
-      end;
-      if Alarm.Kind <> tkOneShot then
-        FAlarms[I].Time := TimeStampToDateTime(Stamp);
+    finally
+      FBusy := False;
     end;
   end;
 end;
@@ -235,13 +263,13 @@ begin
 end;
 
 procedure TJvAlarmItems.Assign(Source: TPersistent);
-var i: integer;
+var i: Integer;
 begin
   if Source is TJvAlarmItems then
   begin
     Clear;
-    for i := 0 to TJvAlarmItems(Source).Count - 1 do
-      Add.Assign(TJvAlarmItems(Source).Items[i]);
+    for i := 1 to TJvAlarmItems(Source).Count do
+      Add.Assign(TJvAlarmItems(Source).Items[i - 1]);
     Exit;
   end;
   inherited;
@@ -252,12 +280,12 @@ begin
   inherited Create(AOwner, TJvAlarmItem);
 end;
 
-function TJvAlarmItems.GetItems(Index: integer): TJVAlarmItem;
+function TJvAlarmItems.GetItems(Index: Integer): TJVAlarmItem;
 begin
   Result := TJVAlarmItem(inherited Items[Index]);
 end;
 
-procedure TJvAlarmItems.SetItems(Index: integer;
+procedure TJvAlarmItems.SetItems(Index: Integer;
   const Value: TJVAlarmItem);
 begin
   inherited Items[Index] := Value;
