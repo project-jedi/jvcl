@@ -73,6 +73,7 @@ type
     function GetDisplayName: string; override;
   public
     constructor Create(Collection: TCollection); override;
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure EditCaption;
   published
@@ -595,6 +596,24 @@ end;
 constructor TJvOutlookBarButton.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
+end;
+
+destructor TJvOutlookBarButton.Destroy;
+var
+  OBPage: TJvOutlookBarPage;
+  OB: TJvOutlookBar;
+begin
+  OBPage := TJvOutlookBarPage(TJvOutlookBarButtons(Self.Collection).Owner);
+  OB := TJvOutlookBar(TJvOutlookBarPages(OBPage.Collection).Owner);
+  if Assigned(OB) then
+  begin
+    if OB.FPressedButtonIndex = Index then
+      OB.FPressedButtonIndex := -1;
+    if OB.FLastButtonIndex = Index then
+      OB.FLastButtonIndex := -1;
+    OB.Invalidate;
+  end;
+  inherited Destroy;
 end;
 
 procedure TJvOutlookBarButton.Assign(Source: TPersistent);
