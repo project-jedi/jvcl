@@ -52,10 +52,12 @@ type
     procedure SetText(const Value: string);
     procedure SetStay(const Value: Boolean);
     procedure ApplyText(Value: string);
+    function GetShowing: boolean;
   protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property Showing:boolean read GetShowing;
   published
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Value: Integer read FValue write SetValue default 0;
@@ -162,6 +164,7 @@ begin
   if FValue <> Value then
   begin
     FValue := Value;
+    if csDesigning in ComponentState then Exit;
     FPForm.ProgressBar1.Position := Value;
     if FAutoTimeLeft then
     begin
@@ -202,6 +205,12 @@ begin
   FPForm.Label1.Caption := FText;
   FPForm.Tag := 0;
   FPForm.Show;
+  FPForm.Update;
+end;
+
+function TJvProgressDlg.GetShowing: boolean;
+begin
+  Result := FPForm.Visible;
 end;
 
 end.
