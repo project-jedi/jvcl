@@ -58,7 +58,7 @@ type
     ImageListPackages: TImageList;
     BtnUninstall: TBitBtn;
     ImageListTargets: TImageList;
-    ActionList1: TActionList;
+    ActionListBottom: TActionList;
     ActionInstall: TAction;
     ActionUninstall: TAction;
     ImageOpen: TImage;
@@ -473,6 +473,9 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  imgProjectJEDI.Anchors := [akTop, akRight];
+
+
   Application.HintHidePause := 10000;
   if not FindCmdSwitch('-IgnoreIDE') then
   begin
@@ -502,9 +505,9 @@ begin
   FormMainConfig.Filename := JVCLDir + '\common\jvcl.inc';
   FormMainConfig.BtnQuit.Caption := '&Close';
   FormMainConfig.BtnReload.Click;
-  FormMainConfig.BtnQuit.Glyph := BtnQuit.Glyph;
+  {FormMainConfig.BtnQuit.Glyph := BtnQuit.Glyph;
   FormMainConfig.BtnSave.Glyph := ImageSave.Picture.Bitmap;
-  FormMainConfig.BtnReload.Glyph := ImageOpen.Picture.Bitmap;
+  FormMainConfig.BtnReload.Glyph := ImageOpen.Picture.Bitmap;}
   FormMainConfig.imgProjectJEDI.Picture.Assign(imgProjectJEDI.Picture);
 
   Update_JVCL_INC_Config;

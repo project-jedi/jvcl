@@ -1,11 +1,10 @@
 object FormMake: TFormMake
   Left = 278
   Top = 222
+  Width = 519
+  Height = 196
   BorderIcons = []
-  BorderStyle = bsDialog
   Caption = 'Installing Packages'
-  ClientHeight = 161
-  ClientWidth = 511
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -84,8 +83,6 @@ object FormMake: TFormMake
         Top = 56
         Width = 473
         Height = 17
-        Min = 0
-        Max = 100
         TabOrder = 1
       end
       object ProgressBarTargets: TProgressBar
@@ -93,8 +90,6 @@ object FormMake: TFormMake
         Top = 24
         Width = 473
         Height = 9
-        Min = 0
-        Max = 100
         Smooth = True
         TabOrder = 0
       end

@@ -28,9 +28,9 @@ object FormMain: TFormMain
   object LblPackages: TLabel
     Left = 224
     Top = 48
-    Width = 109
+    Width = 88
     Height = 13
-    Caption = '&Design-time Packages:'
+    Caption = 'JVCL 3 &Packages:'
     FocusControl = ListViewPackages
     OnClick = LblPackagesClick
   end
@@ -152,7 +152,7 @@ object FormMain: TFormMain
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 7
+    TabOrder = 6
     object BevelTop: TBevel
       Left = 0
       Top = 0
@@ -351,7 +351,7 @@ object FormMain: TFormMain
     ShowHint = False
     SmallImages = ImageListPackages
     SortType = stText
-    TabOrder = 1
+    TabOrder = 8
     ViewStyle = vsReport
     OnChange = ListViewPackagesChange
   end
@@ -379,7 +379,7 @@ object FormMain: TFormMain
     ReadOnly = True
     RowSelect = True
     SmallImages = ImageListTargets
-    TabOrder = 2
+    TabOrder = 1
     ViewStyle = vsReport
     OnChange = ListViewTargetsChange
     OnSelectItem = ListViewTargetsSelectItem
@@ -389,14 +389,14 @@ object FormMain: TFormMain
     Top = 381
     Width = 209
     Height = 150
-    Caption = ' jvcl.inc - Options (global) '
-    TabOrder = 3
+    Caption = ' jvcl.inc - Options (global to all IDEs) '
+    TabOrder = 2
     object BtnAdvancedOptions: TBitBtn
       Left = 104
       Top = 117
       Width = 99
       Height = 25
-      Caption = '&Advanced...'
+      Caption = '&Edit jvc.inc'
       TabOrder = 4
       OnClick = BtnAdvancedOptionsClick
       Glyph.Data = {
@@ -506,7 +506,7 @@ object FormMain: TFormMain
     Width = 214
     Height = 163
     BevelOuter = bvNone
-    TabOrder = 4
+    TabOrder = 3
     object Bevel1: TBevel
       Left = 0
       Top = 0
@@ -646,7 +646,7 @@ object FormMain: TFormMain
       Hint = 
         'Activate this option if you do not want the installer to'#13#10'change' +
         ' the IDE'#39's settings but compile the packages.'
-      Caption = 'Compile only (error check)'
+      Caption = 'Compile only (no registry changes)'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
@@ -720,7 +720,7 @@ object FormMain: TFormMain
     Caption = '...'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 6
+    TabOrder = 5
     OnClick = BtnHppFilesBrowseClick
   end
   object EditJCLDir: TEdit
@@ -739,7 +739,7 @@ object FormMain: TFormMain
     ParentShowHint = False
     ReadOnly = True
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 4
   end
   object TitlePanel: TPanel
     Left = 0
@@ -749,8 +749,6 @@ object FormMain: TFormMain
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
-    ParentShowHint = False
-    ShowHint = True
     TabOrder = 0
     object imgProjectJEDI: TImage
       Left = 599
@@ -759,7 +757,6 @@ object FormMain: TFormMain
       Height = 31
       Cursor = crHandPoint
       Hint = 'http://delphi-jedi.org'
-      Anchors = [akTop, akRight]
       AutoSize = True
       Picture.Data = {
         07544269746D617042120000424D421200000000000036040000280000007400
@@ -947,10 +944,10 @@ object FormMain: TFormMain
     ParentShowHint = False
     ShowHint = True
     State = cbChecked
-    TabOrder = 8
+    TabOrder = 7
   end
   object ImageListPackages: TImageList
-    Left = 280
+    Left = 232
     Top = 96
     Bitmap = {
       494C010103000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
@@ -1093,12 +1090,12 @@ object FormMain: TFormMain
       000000000000}
   end
   object ImageListTargets: TImageList
-    Left = 56
+    Left = 16
     Top = 88
   end
-  object ActionList1: TActionList
-    Left = 64
-    Top = 504
+  object ActionListBottom: TActionList
+    Left = 104
+    Top = 544
     object ActionInstall: TAction
       Caption = '&Install'
       OnExecute = BtnInstallClick
@@ -1111,8 +1108,8 @@ object FormMain: TFormMain
     end
   end
   object PopupMenuPackages: TPopupMenu
-    Left = 280
-    Top = 144
+    Left = 264
+    Top = 96
     object MenuSelectAll: TMenuItem
       Caption = 'Select &all'
       OnClick = MenuInvertSelectionClick
