@@ -364,6 +364,8 @@ begin
 
     if FActive then
     begin
+      if FCollection.Count > MAXIMUM_WAIT_OBJECTS then
+        raise EJVCLException.CreateResFmt(@RsEFmtMaxCountExceeded,[MAXIMUM_WAIT_OBJECTS]);
       FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
       for I := 0 to FCollection.Count - 1 do
       begin
