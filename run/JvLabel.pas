@@ -397,6 +397,7 @@ begin
     Inc(Rect.Left, GetImageWidth + Spacing);
   {$IFDEF VisualCLX}
   Canvas.Start;
+  RequiredState(Canvas, [csHandleValid, csFontValid]);
   try
   {$ENDIF VisualCLX}
     DrawShadowText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags,
@@ -538,9 +539,7 @@ var
   MRect: TRect;
   TextX, TextY: Integer;
   Phi: Real;
-  Angle10: Integer;
 begin
-  Angle10 := Angle * 10;
   StrLCopy(@Text, PChar(GetLabelCaption), SizeOf(Text) - 1);
   if (Flags and DT_CALCRECT <> 0) and ((Text[0] = #0) or ShowAccelChar and
     (Text[0] = '&') and (Text[1] = #0)) then
@@ -552,7 +551,7 @@ begin
   try
 //    QPainter_rotate(Canvas.Handle, -(Angle div 2));
 
-    Phi := Angle10 * Pi / 1800;
+    Phi := Angle * Pi / 180;
     if not AutoSize then
     begin
       TextX := Trunc(0.5 * ClientWidth - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
@@ -562,38 +561,42 @@ begin
     end
     else
     begin
-      ClientWidth := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
-      ClientHeight := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
-      TextX := 2;
-      if (Angle10 > 900) and (Angle10 < 2700) then
-        TextX := TextX + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)));
-      if Angle10 > 1800 then
-        TextX := TextX + Trunc(Canvas.TextHeight(Text) * Abs(Sin(Phi)));
-      TextY := 2;
-      if Angle10 < 1800 then
-        TextY := TextY + Trunc(Canvas.TextWidth(Text) * Abs(Sin(Phi)));
-      if (Angle10 > 900) and (Angle10 < 2700) then
-        TextY := TextY + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)));
+      ClientWidth := 6 + Ceil(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
+      ClientHeight := 6 + Ceil(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
+      TextX := 3;
+      TextY := 3;
+      if Angle <= 90 then
+      begin
+        TextX := TextX + Trunc(Canvas.TextHeight(Text) * Sin(Phi)/2);
+        TextY := TextY + Trunc(Canvas.TextWidth(Text) * Sin(Phi) + Canvas.TextHeight(Text) * Cos(Phi)/2);
+      end
+      else if Angle >= 270 then
+        TextX := 3 - Trunc(Canvas.TextHeight(Text) * sin(Phi)/2)
+      else if Angle <= 180 then
+      begin
+        TextX := ClientWidth - 3  - Trunc(Canvas.TextHeight(Text) * Sin(Phi)/2);;
+        TextY := ClientHeight - 3  + Ceil(Canvas.TextHeight(Text) * Cos(Phi));
+      end
+      else  // (180 - 270)
+      begin
+        TextX := ClientWidth - 3 + Ceil(Canvas.TextHeight(Text) * Sin(Phi)/2);
+        TextY := TextY + Ceil(Canvas.TextHeight(Text)* Cos(Phi));
+      end;
     end;
 
 //    QPainter_translate(Canvas.Handle, TextX, TextY);
 //    QPainter_rotate(Canvas.Handle, -(Angle {div 2}));
     if not Enabled then
     begin
-//      Canvas.Font.Color := clBtnHighlight;
-//      Canvas.TextOut(1, 1, Text);
-//      Canvas.Font.Color := clBtnShadow;
-//      Canvas.TextOut(0, 0, Text);
-      SetTextColor(Canvas.handle , clBtnHighlight);
-      TextOutAngle( Canvas.handle, Angle, TextX+1, TextY+1, Text);
-      SetTextColor(Canvas.handle , clBtnShadow);
-      TextOutAngle(Canvas.handle, Angle, TextX, TextY, Text);
+      Canvas.Font.Color := clBtnHighlight;
+      TextOutAngle( Canvas, Angle, TextX+1, TextY+1, Text);
+      Canvas.Font.Color := clBtnShadow;
+      TextOutAngle(Canvas, Angle, TextX, TextY, Text);
     end
     else
       //Canvas.TextOut(0, 0, Text);
     begin
-      SetTextColor(Canvas.handle , Canvas.Font.Color);
-      TextOutAngle(Canvas.handle, Angle, TextX, TextY, Text);
+      TextOutAngle(Canvas, Angle, TextX, TextY, Text);
     end;
   finally
 //    QPainter_restore(Canvas.Handle);
@@ -611,6 +614,9 @@ begin
     FDragging := False;
   with Canvas do
   begin
+    {$IFDEF VisualCLX}
+    Brush.Style := bsSolid;
+    {$ENDIF VisualCLX}
     if not Transparent then
      // only FillRect mode because Transparent is always True on JVCLThemesEnabled
       DrawThemedBackground(Self, Canvas, ClientRect, Self.Color);
@@ -1072,6 +1078,10 @@ begin
   if FAngle <> Value then
   begin
     FAngle := Value;
+    {$IFDEF VisualCLX}
+    if Autosize then
+      AdjustBounds;
+    {$ENDIF VisualCLX}
     Invalidate;
   end;
 end;
