@@ -1,49 +1,59 @@
 Change capitalization of the following units (when moved back to /jvcl):
 
-JVDBEditors.pas       -> JvDBEditors.pas
-JVHLEditEditor.pas    -> JvHLEditEditor.pas
-JvCalc.Res            -> JvCalc.res
-JvConst.Res           -> JvConst.res
-JvCurrEdit.Res        -> JvCurrEdit.res
-JvDBCtrl.Res          -> JvDBCtrl.res
-JvDice.Res            -> JvDice.res
-JvId3v1.pas           -> JvID3v1.pas
-JvId3v2.pas           -> JvID3v2.pas
-JvId3v2Types.pas      -> JvID3v2Types.pas
-JvOUTLOOKBARRES.RES   -> JvOLBar.res
-JvPickDate.Res        -> JvPickDate.res
-JvSpin.Res            -> JvSpin.res
-JvSwitch.Res          -> JvSwitch.res
-JvTIMELINEBITMAPS.RES -> JvTimeLine.res
-Jvgrdcpt.pas          -> JvGrdCpt.pas/JvGradientCaption.pas
-Jvgrids.pas           -> JvGrids.pas
-JvxCtrls.Res          -> JvxCtrls.res
-JvxSlider.Res         -> JvxSlider.res
-jvThumbNails.pas      -> JvThumbnails.pas
+JvBaseEdits.Res -res
+JvPickDate.Res -res
+JvSpin.Res -res
+JvSwitch.Res -res
+JvxCtrls.Res -res
+JvxSlider.Res -res
 
-Note:
+JvBdeUtils.pas -BDE
+JvCabFile.pas -CAB
+JvCpuUsage.pas -CPU
+JvCsvData.pas -CSV
+JvCsvParse.pas -CSV
+JvDdeCmd.pas -DDE
+JvFormToHtml.pas -HTML
+JvFtpGrabber.pas -FTP
+JvgRttiUtils.pas -RTTI
+JvHtControls.pas -HT
+JvHtmlParser.pas -HTML
+JvHttpGrabber.pas -HTTP
+JvId3v1.pas -ID
+JvId3v2.pas -ID
+JvInterpreter_Db.pas -DB
+JvInterpreter_DbCtrls.pas -DB
+JvInterpreter_DbGrids.pas -DB
+JvInterpreter_httpapp.pas -HTTPApp
+JvPcx.pas -PCX
+JvRas32.pas -RAS
+JvRgbToHtml.pas -RGB, HTML
+JvRichEditToHtml.pas -HTML
+JvSimIndicator.pas -SIM
+JvSimLogic.pas -SIM
+JvSimPID.pas -SIM
+JvSimPIDLinker.pas -SIM
+JvSimpleXml.pas -XML
+JvSimScope.pas -SIM
+JvStringListToHtml.pas -HTML
+JvStrToHtml.pas -HTML
+JvXmlDatabase.pas -XML
+JvXmlTree.pas -XML
+JvXorCipher.pas -XOR
 
-JvCOMBOBOX.RES        -> Not used?
-RES_FontBox.RES       -> Not used anymore (JvFontBox.pas->Archive)
-RES_Outlook.RES       -> Not used anymore (JvOutlookPanel.pas->Archive)
+JvCsvBaseEditor.pas -CSV
+JvCsvDataEditor.pas -CSV
+JvCsvDataForm.pas -CSV
+JvHtmlParserEditor.pas -HTML
+
 
 * The Jvx, Jva prefix.
-JvaCtlReg.pas
-JvaDBReg.pas
-JvaDsgn.pas
 JvaScrollText.pas
-
-JvxAnimate.pas
-JvxClock.pas
-JvxCtrls.pas
-JvxDConst.pas
-JvxLogin.pas
-JvxLoginDlg.pas
-JvXorCipher.pas
-JvxRConst.pas
 JvxSlider.pas
+JvxCtrls.pas
+JvxClock.pas
 
 
 * Consistently postfix forms/designers/property editors.
-* Change short form names to longer names, i.e Jvgrdcpt.pas
+* Change short form names to longer names, i.e Jvgrdcpt.pas - JvGradientCaption
   
