@@ -359,12 +359,12 @@ type
     procedure ControlSetAllowGrayed(Value: Boolean);
     procedure ControlSetChecked(Index: Integer; Value: Boolean);
     procedure ControlSetItemEnabled(Index: Integer; Value: Boolean);
-    procedure ControlSetHeader(Index: Integer; Value: Boolean);
     procedure ControlSetState(Index: Integer; Value: TCheckBoxState);
     function ControlGetChecked(Index: Integer): Boolean;
     function ControlGetItemEnabled(Index: Integer): Boolean;
-    function ControlGetHeader(Index: Integer): Boolean;
     function ControlGetState(Index: Integer): TCheckBoxState;
+    procedure ControlSetHeader(Index: Integer; Value: Boolean);
+    function ControlGetHeader(Index: Integer): Boolean;
   end;
 
   TJvDynControlVCLComboBox = class (TComboBox, IUnknown, IJvDynControl,
@@ -1578,9 +1578,20 @@ end;
 
 procedure TJvDynControlVCLCheckListBox.ControlSetHeader(Index: Integer; Value: Boolean);
 begin
+  {$IFDEF COMPILER6_UP}
   {$IFDEF VCL}
   Header[Index] := Value;
   {$ENDIF VCL}
+  {$ENDIF COMPILER6_UP}
+end;
+
+function TJvDynControlVCLCheckListBox.ControlGetHeader(Index: Integer): Boolean;
+begin
+  {$IFDEF COMPILER6_UP}
+  {$IFDEF VCL}
+  Result := Header[Index];
+  {$ENDIF VCL}
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvDynControlVCLCheckListBox.ControlSetState(Index: Integer; Value: TCheckBoxState);
@@ -1598,12 +1609,6 @@ begin
   Result := ItemEnabled[Index];
 end;
 
-function TJvDynControlVCLCheckListBox.ControlGetHeader(Index: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := Header[Index];
-  {$ENDIF VCL}
-end;
 
 function TJvDynControlVCLCheckListBox.ControlGetState(Index: Integer): TCheckBoxState;
 begin
