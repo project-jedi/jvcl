@@ -33,10 +33,17 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls,
-  JvgTypes, JvgUtils, JvgCommClasses, JvComponent;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgUtils, JvgCommClasses;
 
 type
+  {$IFDEF USEJVCL}
   TJvgImageGroup = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgImageGroup = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FImageList: TImageList;
     //    FPassiveMask: TBitmap;
@@ -72,6 +79,14 @@ type
     procedure CreateResBitmap;
     procedure RemakeBackground;
   published
+    property Images: TImageList read FImageList write SetImageList;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
+    property TransparentColor: TColor read FTransparentColor write SetTransparentColor default clOlive;
+    property Masked: Boolean read FMasked write SetMasked default False;
+    property MaskedColor: TColor read FMaskedColor write SetMaskedColor default clOlive;
+    property DisabledMaskColor: TColor read FDisabledMaskColor write SetDisabledMaskColor default clBlack;
+    property AutoTransparentColor: TglAutoTransparentColor read FAutoTrColor write SetAutoTrColor default ftcLeftBottomPixel;
+    property FastDraw: Boolean read FFastDraw write SetFastDraw default False;
     property Align;
     property DragCursor;
     property DragMode;
@@ -89,17 +104,10 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-    property Images: TImageList read FImageList write SetImageList;
-    property Transparent: Boolean read FTransparent write SetTransparent default False;
-    property TransparentColor: TColor read FTransparentColor write SetTransparentColor default clOlive;
-    property Masked: Boolean read FMasked write SetMasked default False;
-    property MaskedColor: TColor read FMaskedColor write SetMaskedColor default clOlive;
-    property DisabledMaskColor: TColor read FDisabledMaskColor write SetDisabledMaskColor default clBlack;
-    property AutoTransparentColor: TglAutoTransparentColor read FAutoTrColor write SetAutoTrColor default ftcLeftBottomPixel;
-    property FastDraw: Boolean read FFastDraw write SetFastDraw default False;
   end;
 
 implementation
+
 uses
   Math;
   

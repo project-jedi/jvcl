@@ -32,10 +32,17 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, SysUtils, ExtCtrls, ImgList,
-  JvgTypes, JvgCommClasses, JvgUtils, JvComponent, JvThemes, JvExControls;
+  {$IFDEF USEJVCL}
+  JvComponent, JvThemes,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, JvgUtils, JvExControls;
 
 type
+  {$IFDEF USEJVCL}
   TJvgProgress = class(TJvGraphicControl, IJvDenySubClassing)
+  {$ELSE}
+  TJvgProgress = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FBevelInner: TPanelBevel;
     FBevelOuter: TPanelBevel;
@@ -65,7 +72,9 @@ type
     procedure SetOptions(Value: TglProgressOptions);
     procedure OnSmthChanged(Sender: TObject);
   protected
+    {$IFDEF USEJVCL}
     procedure TextChanged; override;
+    {$ENDIF USEJVCL}
     procedure Loaded; override;
     procedure Paint; override;
   public
@@ -185,10 +194,12 @@ begin
       FImage.Canvas.Handle );}
 end;
 
+{$IFDEF USEJVCL}
 procedure TJvgProgress.TextChanged;
 begin
   Repaint;
 end;
+{$ENDIF USEJVCL}
 
 procedure TJvgProgress.Paint;
 const
@@ -423,12 +434,16 @@ begin
   if fpoTransparent in FOptions then
   begin
     ControlStyle := ControlStyle - [csOpaque];
+    {$IFDEF USEJVCL}
     IncludeThemeStyle(Self, [csParentBackground]);
+    {$ENDIF USEJVCL}
   end
   else
   begin
     ControlStyle := ControlStyle + [csOpaque];
+    {$IFDEF USEJVCL}
     ExcludeThemeStyle(Self, [csParentBackground]);
+    {$ENDIF USEJVCL}
   end;
   Repaint;
 end;

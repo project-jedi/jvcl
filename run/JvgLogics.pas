@@ -32,15 +32,12 @@ unit JvgLogics;
 interface
 
 uses
-  Classes, SysUtils, Graphics,
   {$IFDEF USEJVCL}
-  JvResources,
+  Classes, SysUtils, Graphics,
+  JvComponent, JvResources;
+  {$ELSE}
+  Classes, SysUtils, Graphics;
   {$ENDIF USEJVCL}
-  JvComponent;
-
-type
-  TLogicRule = (lrEqual, lrBeginWith, lrEndWith, lrContains, lrContainsIn,
-    ltNotEmpty);
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -52,7 +49,11 @@ resourcestring
   RsNotEmpty = 'not empty';
   RsStep = 'Step ';
   RsComments = 'Comments';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
+
+type
+  TLogicRule = (lrEqual, lrBeginWith, lrEndWith, lrContains, lrContainsIn,
+    ltNotEmpty);
 
 const
   LogicRuleLabels: array [TLogicRule] of string = (RsEqualTo,
@@ -69,7 +70,11 @@ type
   TOnTraceMessage = procedure(Sender: TJvgLogics; AStepResult: Boolean;
     const StepResult, ParsedResult, Msg: string) of object;
 
+  {$IFDEF USEJVCL}
   TJvgLogicProducer = class(TJvComponent)
+  {$ELSE}
+  TJvgLogicProducer = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FLogics: TJvgLogics;
     FCommentAreas: TJvgCommentAreas;
@@ -231,7 +236,9 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   JvConsts,
+  {$ENDIF USEJVCL}
   JvgUtils;
 
 //=== { TJvgLogicElement } ===================================================

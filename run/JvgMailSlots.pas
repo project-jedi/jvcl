@@ -33,13 +33,21 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
+  {$IFDEF USEJVCL}
   Controls, Forms, Dialogs, ExtCtrls,
   JvComponent;
+  {$ELSE}
+  Controls, Forms, Dialogs, ExtCtrls;
+  {$ENDIF USEJVCL}
 
 type
   TOnNewMessage = procedure(Sender: TObject; MessageText: string) of object;
 
+  {$IFDEF USEJVCL}
   TJvgMailSlotServer = class(TJvComponent)
+  {$ELSE}
+  TJvgMailSlotServer = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FMailSlotName: string;
     FLastMessage: string;
@@ -61,7 +69,11 @@ type
       FOnNewMessage;
   end;
 
+  {$IFDEF USEJVCL}
   TJvgMailSlotClient = class(TJvComponent)
+  {$ELSE}
+  TJvgMailSlotClient = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FMailSlotName: string;
     FServerName: string;
@@ -82,9 +94,8 @@ implementation
 
 uses
   {$IFDEF USEJVCL}
-  JvResources,
+  JvResources, JvConsts,
   {$ENDIF USEJVCL}
-  JvConsts,
   JvgUtils, JvgTypes;
 
 {$IFNDEF USEJVCL}

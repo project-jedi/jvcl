@@ -51,15 +51,23 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF USEJVCL}
   ComCtrls, Grids,
   JvComponent;
+  {$ELSE}
+  ComCtrls, Grids;
+  {$ENDIF USEJVCL}
 
 type
   TLanguageLoaderOptions = set of (lofTrimSpaces);
   //{опция удаления начальных и завершающих пробелов}
   { Option to Trim first and last spaces [translated] }
 
+  {$IFDEF USEJVCL}
   TJvgLanguageLoader = class(TJvComponent)
+  {$ELSE}
+  TJvgLanguageLoader = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FList: TStringList;
     FOptions: TLanguageLoaderOptions;

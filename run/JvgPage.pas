@@ -39,7 +39,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, CommCtrl, ImgList, ExtCtrls,
-  JvgTypes, JVCLVer, JvgDrawTab, JvgTabComm, JvgCommClasses;
+  {$IFDEF USEJVCL}
+  JVCLVer,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgDrawTab, JvgTabComm, JvgCommClasses;
 
 // (rom) disabled  unused
 //const
@@ -48,7 +51,9 @@ uses
 type
   TJvgPageControl = class(TPageControl)
   private
+    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FGlyphs: TImageList;
     FSingleGlyph: Boolean;
     FTabStyle: TJvgTabStyle;
@@ -104,7 +109,9 @@ type
     property TabColor[Index: Integer]: TColor read GetTabColor write SetTabColor;
     //     property GlyphState[Index: Integer]: Integer read GetGlyphState write SetGlyphState;
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
     property Glyphs: TImageList read FGlyphs write SetGlyphs;
     property SingleGlyph: Boolean read FSingleGlyph write SetSingleGlyph default False;
     property TabStyle: TJvgTabStyle read FTabStyle write SetTabStyle;
