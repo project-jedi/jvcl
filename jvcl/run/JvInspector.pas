@@ -25,6 +25,9 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+   Mar 16, 2004, anonymous:
+    - (Line 7976) do not show own class for TControl selection in property.
+                  make sure that you set ComponentIndex to DisplayIndex
 
     Feb 8, 2004, Olivier Sannier obones@meloo.com
       - Introduced the TJvTypeInfoHelper class to help C++ Builder
@@ -7972,7 +7975,8 @@ begin
         else
           PrefixWithOwner := '';
         for J := 0 to CurOwner.ComponentCount - 1 do
-          if CurOwner.Components[J] is MinClass then
+          // don't allow setting self as property
+          if (CurOwner.Components[J] is MinClass) and (CurOwner.Components[J].ComponentIndex <> self.Parent.DisplayIndex) then
             SL.AddObject(PrefixWithOwner + CurOwner.Components[J].Name, CurOwner.Components[J]);
         if SL.Count > 0 then
         begin
