@@ -93,9 +93,9 @@ unit JvHLEditor;
 interface
 
 uses
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   Windows,
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
   SysUtils, Classes, Graphics,
   JvEditor, JvHLParser;
 

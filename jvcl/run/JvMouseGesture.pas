@@ -21,13 +21,7 @@ Last Modified: 2003-07-10
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
-- Port to Kylix for hook class
------------------------------------------------------------------------------}
-
-{$I jvcl.inc}
-
-{ Description
+Description:
   This unit implements mouse gestures. For this purpose
   actually two classes are available. one is the interpreter
   and can be used to enhance special components like a grid. In
@@ -56,7 +50,14 @@ Known Issues:
 
 
   Note
-  See demo project for usage ...                                }
+  See demo project for usage ...
+
+Known Issues:
+  - Port to Kylix for hook class
+-----------------------------------------------------------------------------}
+
+{$I jvcl.inc}
+
 unit JvMouseGesture;
 
 interface
@@ -64,16 +65,14 @@ interface
 uses
   SysUtils, Classes, Dialogs,
   {$IFDEF MSWINDOWS}
-  Windows, JvComponent,
-  Messages,
-  Forms;
-{$ENDIF}
-{$IFDEF LINUX}
-QForms;
-{$ENDIF}
+  Windows, Messages, Forms,
+  JvComponent;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  QForms;
+  {$ENDIF LINUX}
 
 type
-
   { Description
     This type defines a set of available buttons for the hook.
 
@@ -324,7 +323,7 @@ type
       SetOnJvMouseGestureRightUpperEdge;
   end;
 
-  {$IFDEF MSWINDOWS}
+{$IFDEF MSWINDOWS}
   { Description
     This class implements a application wide mouse hook for mouse gestures.
     Programmers get only one event for a detected mouse gesture:
@@ -337,9 +336,9 @@ type
   TJvMouseGestureHook = class(TComponent)
   private
     { Description
-      true if a hook is installed
+      True if a hook is installed
     }
-    FHookInstalled: boolean;
+    FHookInstalled: Boolean;
     { Description
       Field for hook handle
     }
@@ -394,7 +393,7 @@ type
     { Description
       TRUE if hook was installed successfully
     }
-    property HookInstalled: boolean read FHookInstalled; //true if a hook is installed
+    property HookInstalled: Boolean read FHookInstalled; //True if a hook is installed
     { Description
       handle of hook
     }
@@ -428,13 +427,13 @@ type
     Hook call back function.
     DO NOT USE EXTERN!
   }
-function JvMouseGestureHook(code: integer; wParam: word; lParam: longword): longword; stdcall;
+function JvMouseGestureHook(code: Integer; wParam: Word; lParam: Longword): Longword; stdcall;
 
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 {$IFDEF LINUX}
 // to be done in a later version
-{$ENDIF}
+{$ENDIF LINUX}
 
 implementation
 
@@ -469,7 +468,7 @@ var
 
   {$IFDEF MSWINDOWS}
   JvCurrentHook: HHook = 0; //contains the handle of the currently installed hook
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
 
   { TJvMouseGesture }
 
@@ -620,7 +619,7 @@ end;
 
 procedure TJvMouseGesture.StartMouseGesture(aMouseX, aMouseY: Integer);
 begin
-  if not FActive then exit;
+  if not FActive then Exit;
 
   FLastPushed := #0;
   FGesture := '';
@@ -644,18 +643,18 @@ var
   function InBetween(aValue, aMin, aMax: Double): Boolean;
   begin
     if (aValue >= aMin) and (aValue <= aMax) then
-      result := true
+      Result := True
     else
-      result := False;
+      Result := False;
   end;
 
 begin
-  if not FActive then exit;
+  if not FActive then Exit;
 
   if (not FTrailActive) or (FTrailLength > FTrailLimit) then
   begin
     FTrailActive := False;
-    exit;
+    Exit;
   end;
 
   try
@@ -756,17 +755,17 @@ procedure TJvMouseGesture.EndMouseGesture;
 var
   index: Integer;
 begin
-  if not FActive then exit;
+  if not FActive then Exit;
 
   FTrailActive := False;
 
-  if FGesture = '' then exit;
+  if FGesture = '' then Exit;
 
   // check for custom interpretation first
   if Assigned(FOnJvMouseGestureCustomInterpretation) then
   begin
     FOnJvMouseGestureCustomInterpretation(FGesture);
-    exit;
+    Exit;
   end;
 
   // if no custom interpretation is implemented we chaeck for known gestures
@@ -839,7 +838,7 @@ begin
   if csDesigning in ComponentState then
   begin
     FActive := False;
-    exit;
+    Exit;
   end
   else
   begin
@@ -852,7 +851,7 @@ begin
   //install hook
   FCurrentHook := SetWindowsHookEx(WH_MOUSE, @JvMouseGestureHook, 0, aDwThreadID);
 
-  //return true if it worked (read only for user). User should never see a
+  //return True if it worked (read only for user). User should never see a
   //global var like MouseGestureHookAlreadyInstalled
   if FCurrentHook <> 0 then
     FHookInstalled := True
@@ -928,20 +927,20 @@ end;
 
 //******************************************************************************
 
-function JvMouseGestureHook(Code: integer; wParam: word; lParam: longword): longword; stdcall;
+function JvMouseGestureHook(Code: Integer; wParam: Word; lParam: Longword): Longword; stdcall;
 var
   locY: Integer;
   locX: Integer;
 begin
   if (Code < 0) or not (JvMouseGestureHookActive) then
   begin
-    result := CallNextHookEx(JvCurrentHook, Code, wParam, lParam);
-    exit;
+    Result := CallNextHookEx(JvCurrentHook, Code, wParam, lParam);
+    Exit;
   end;
 
-  result := Code;
+  Result := Code;
 
-  if not JvMouseGestureHookActive then exit;
+  if not JvMouseGestureHookActive then Exit;
 
   with PMouseHookStruct(lParam)^ do
   begin
@@ -956,20 +955,20 @@ begin
   if (wParam = JvMouseButtonDown) then
   begin
     JvMouseGestureInterpreter.StartMouseGesture(locX, locY);
-    exit;
+    Exit;
   end;
   if (wParam = JvMouseButtonUp) then
   begin
     JvMouseGestureInterpreter.EndMouseGesture;
-    exit;
+    Exit;
   end;
 end;
 
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 {$IFDEF LINUX}
 
-{$ENDIF}
+{$ENDIF LINUX}
 
 end.
 

@@ -140,7 +140,7 @@ implementation
 {$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF}  
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -149,7 +149,7 @@ resourcestring
   RsEThreadNotInitializedOrWaiting = 'Cannot run: thread is not Initializing or Waiting';
   RsECannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread';
   RsEReleaseOfUnusedTicket = 'Release of unused ticket';
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 threadvar
   _CurrentMTThread: TMTThread;

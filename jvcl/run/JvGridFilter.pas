@@ -36,9 +36,10 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Grids,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QGrids,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 type

@@ -223,7 +223,7 @@ type
     {$IFDEF COMPILER6_UP}
     property RightButton;
     property LeftButton;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   published
     property AboutJVCL;
     // gets / sets the borderstyle of the control and the scroll-buttons
@@ -464,7 +464,7 @@ begin
   {$IFDEF COMPILER6_UP}
   FLeftBtn.SetSubComponent(True);
   FRightBtn.SetSubComponent(True);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Height := 56;
   BevelInner := bvNone;
   BevelOuter := bvNone;

@@ -28,26 +28,26 @@ Known Issues:
 {$I jvcl.inc}
 
 {$IFDEF COMPILER6_UP}
- {$IFDEF MSWINDOWS}
-  {$WARN UNIT_PLATFORM OFF}
-  {$WARN SYMBOL_PLATFORM OFF}
- {$ENDIF}
-{$ENDIF}
+{$IFDEF MSWINDOWS}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF MSWINDOWS}
+{$ENDIF COMPILER6_UP}
 
 unit JvStrings;
 
 interface
 
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows,
-{$ENDIF}
-{$IFDEF VCL}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
   Graphics,
-{$ENDIF}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics,
-{$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 {regular expressions}
@@ -142,7 +142,7 @@ function PosTextLast(const Findstring, Sourcestring: string): Integer;
 function NameValuesToXML(aText: string): string;
 {$IFDEF MSWINDOWS}
 procedure LoadResourceFile(aFile: string; ms: TMemoryStream);
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 procedure DirFiles(aDir, amask: string; aFileList: TStringList);
 procedure RecurseDirFiles(myDir: string; var aFileList: TStringList);
 procedure RecurseDirProgs(myDir: string; var aFileList: TStringList);
@@ -935,12 +935,7 @@ var
   FileAttrs: Integer;
 begin
   FileAttrs := faAnyFile or faDirectory;
-{$IFDEF MSWINDOWS}
-  if FindFirst(myDir + '\*.*', FileAttrs, sr) = 0 then
-{$ENDIF}
-{$IFDEF LINUX}
-  if FindFirst(myDir + '/*', FileAttrs, sr) = 0 then
-{$ENDIF}
+  if FindFirst(myDir + PathDelim + AllFilePattern, FileAttrs, sr) = 0 then
     while FindNext(sr) = 0 do
     begin
       if (sr.Attr and faDirectory) <> 0 then
@@ -959,17 +954,12 @@ var
   sr: TSearchRec;
   FileAttrs: Integer;
   e: string;
-{$IFDEF LINUX}
+  {$IFDEF LINUX}
   st: TStatBuf;
-{$ENDIF}  
+  {$ENDIF LINUX}
 begin
   FileAttrs := faAnyFile or faDirectory;
-{$IFDEF MSWINDOWS}
-  if FindFirst(myDir + '\*.*', FileAttrs, sr) = 0 then
-{$ENDIF}
-{$IFDEF LINUX}
-  if FindFirst(myDir + '/*', FileAttrs, sr) = 0 then
-{$ENDIF}
+  if FindFirst(myDir + PathDelim + AllFilePattern, FileAttrs, sr) = 0 then
     while FindNext(sr) = 0 do
     begin
       if (sr.Attr and faDirectory) <> 0 then
@@ -984,7 +974,7 @@ begin
         if e = '.exe' then
           aFileList.append(myDir + PathDelim + sr.Name);
       end;
-      {$ENDIF}
+      {$ENDIF MSWINDOWS}
       {$IFDEF LINUX}
       else
       begin
@@ -994,7 +984,7 @@ begin
             aFileList.append(myDir + PathDelim + sr.Name);
         end;
       end;
-      {$ENDIF}
+      {$ENDIF LINUX}
     end;
   FindClose(sr);
 end;

@@ -353,7 +353,7 @@ var
     DestPixel: PColorRGB;
   Delta,
     DestDelta: integer;
-  {$ENDIF}
+  {$ENDIF USE_SCANLINE}
   SrcWidth,
     SrcHeight,
     DstWidth,
@@ -401,7 +401,7 @@ begin
     Src.PixelFormat := pf24bit;
     Dst.PixelFormat := Src.PixelFormat;
     Work.PixelFormat := Src.PixelFormat;
-    {$ENDIF}
+    {$ENDIF USE_SCANLINE}
 
     // --------------------------------------------
     // Pre-calculate filter contributions for a row
@@ -482,7 +482,7 @@ begin
       {$IFDEF USE_SCANLINE}
       SourceLine := Src.ScanLine[k];
       DestPixel := Work.ScanLine[k];
-      {$ENDIF}
+      {$ENDIF USE_SCANLINE}
       for i := 0 to DstWidth - 1 do
       begin
         rgb.r := 0.0;
@@ -494,7 +494,7 @@ begin
           color := SourceLine^[contrib^[i].p^[j].pixel];
           {$ELSE}
           color := Color2RGB(Src.Canvas.Pixels[contrib^[i].p^[j].pixel, k]);
-          {$ENDIF}
+          {$ENDIF USE_SCANLINE}
           weight := contrib^[i].p^[j].weight;
           if (weight = 0.0) then
             continue;
@@ -527,7 +527,7 @@ begin
         inc(DestPixel);
         {$ELSE}
         Work.Canvas.Pixels[i, k] := RGB2Color(color);
-        {$ENDIF}
+        {$ENDIF USE_SCANLINE}
       end;
     end;
 
@@ -616,12 +616,12 @@ begin
     Delta := integer(Work.ScanLine[1]) - integer(SourceLine);
     DestLine := Dst.ScanLine[0];
     DestDelta := integer(Dst.ScanLine[1]) - integer(DestLine);
-    {$ENDIF}
+    {$ENDIF USE_SCANLINE}
     for k := 0 to DstWidth - 1 do
     begin
       {$IFDEF USE_SCANLINE}
       DestPixel := pointer(DestLine);
-      {$ENDIF}
+      {$ENDIF USE_SCANLINE}
       for i := 0 to DstHeight - 1 do
       begin
         rgb.r := 0;
@@ -634,7 +634,7 @@ begin
           color := PColorRGB(integer(SourceLine) + contrib^[i].p^[j].pixel * Delta)^;
           {$ELSE}
           color := Color2RGB(Work.Canvas.Pixels[k, contrib^[i].p^[j].pixel]);
-          {$ENDIF}
+          {$ENDIF USE_SCANLINE}
           weight := contrib^[i].p^[j].weight;
           if (weight = 0.0) then
             continue;
@@ -665,12 +665,12 @@ begin
         inc(integer(DestPixel), DestDelta);
         {$ELSE}
         Dst.Canvas.Pixels[k, i] := RGB2Color(color);
-        {$ENDIF}
+        {$ENDIF USE_SCANLINE}
       end;
       {$IFDEF USE_SCANLINE}
       Inc(SourceLine, 1);
       Inc(DestLine, 1);
-      {$ENDIF}
+      {$ENDIF USE_SCANLINE}
     end;
 
     // Free the memory allocated for vertical filter weights

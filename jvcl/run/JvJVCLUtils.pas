@@ -229,7 +229,7 @@ function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
 
 procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
   SrcDC: HDC; SrcX, SrcY, SrcW, Srch: Integer;
-  {$IFDEF VCL}Palette: HPALETTE;{$ELSE}Dummy: Integer;{$ENDIF}
+  {$IFDEF VCL} Palette: HPALETTE; {$ELSE} Dummy: Integer; {$ENDIF}
   TransparentColor: TColorRef);
 procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
   DstX, DstY: Integer; TransparentColor: TColorRef);
@@ -586,7 +586,7 @@ uses
   SysConst,
   {$IFDEF VCL}
   Consts,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF MSWINDOWS}
   CommCtrl, MMSystem, ShlObj, ActiveX,
   {$ENDIF MSWINDOWS}
@@ -597,11 +597,11 @@ uses
   JclSysInfo, JvConsts, JvProgressUtils, JvResources;
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvConsts.res}
-{$ENDIF}
+{$R ..\Resources\JvConsts.res}
+{$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 {$R ../Resources/JvConsts.res}
-{$ENDIF}
+{$ENDIF LINUX}
 
 {$IFDEF MSWINDOWS}
 const
@@ -760,7 +760,7 @@ begin
       H := H + 360;
   end;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 var
   QC: QColorH;
@@ -1750,11 +1750,7 @@ begin
         TransparentColor := ColorToRGB(TransparentColor);
       StretchBltTransparent(Dest.Handle, DstX, DstY, DstW, DstH,
         Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, Srch,
-        {$IFDEF VCL}
-        Bitmap.Palette,
-        {$ELSE}
-        0,
-        {$ENDIF}
+        {$IFDEF VCL} Bitmap.Palette, {$ELSE} 0, {$ENDIF}
         TransparentColor);
     end;
     {$IFDEF VisualCLX}
@@ -2273,7 +2269,7 @@ begin
   TOpenCustomControl(AForm).DestroyHandle;
   with AForm do
   begin
-    BorderStyle := {$IFDEF VCL}bsNone{$ELSE}fbsNone{$ENDIF};
+    BorderStyle := {$IFDEF VCL} bsNone {$ELSE} fbsNone {$ENDIF};
     BorderIcons := [];
     Parent := AControl;
   end;
@@ -3637,7 +3633,7 @@ begin
   if IniFile is TRegIniFile then
     Result := TRegIniFile(IniFile).ReadString(Section, Ident, Default)
   else
-{$ENDIF}
+{$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       Result := TCustomIniFile(IniFile).ReadString(Section, Ident, Default)
     else
@@ -3653,7 +3649,7 @@ begin
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).WriteString(Section, Ident, Value)
   else
-{$ENDIF}
+{$ENDIF MSWINDOWS}
   begin
     s := Value;
     if s <> '' then
@@ -3674,7 +3670,7 @@ begin
   if IniFile is TRegIniFile then
     Result := TRegIniFile(IniFile).ReadInteger(Section, Ident, Default)
   else
-{$ENDIF}
+{$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       Result := TCustomIniFile(IniFile).ReadInteger(Section, Ident, Default)
     else
@@ -3688,7 +3684,7 @@ begin
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).WriteInteger(Section, Ident, Value)
   else
-{$ENDIF}
+{$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).WriteInteger(Section, Ident, Value);
 end;
@@ -3700,7 +3696,7 @@ begin
   if IniFile is TRegIniFile then
     Result := TRegIniFile(IniFile).ReadBool(Section, Ident, Default)
   else
-{$ENDIF}
+{$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       Result := TCustomIniFile(IniFile).ReadBool(Section, Ident, Default)
     else
@@ -3714,7 +3710,7 @@ begin
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).WriteBool(Section, Ident, Value)
   else
-{$ENDIF}
+{$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).WriteBool(Section, Ident, Value);
 end;
@@ -3725,7 +3721,7 @@ begin
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).EraseSection(Section)
   else
-{$ENDIF}
+{$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).EraseSection(Section);
 end;
@@ -3736,7 +3732,7 @@ begin
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).DeleteKey(Section, Ident)
   else
-{$ENDIF}
+{$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).DeleteKey(Section, Ident);
 end;
@@ -3748,7 +3744,7 @@ begin
 {$IFDEF MSWINDOWS}
   else if IniFile is TRegIniFile then
     TRegIniFile(IniFile).ReadSections(Strings);
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 end;
 *)
 
@@ -3999,7 +3995,7 @@ begin
       if FormStyle in [fsMDIChild, fsMDIForm] then
         TJvNastyForm(Form).FWindowState := WinState
       else
-      {$ENDIF}
+      {$ENDIF VCL}
         WindowState := WinState;
     end;
     Update;

@@ -32,24 +32,18 @@ unit JvXPContainer;
 interface
 
 uses
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   TypInfo,
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Windows, Classes, Controls, Graphics, StdCtrls, JvXPCore, JvXPCoreUtils;
 
 type
-{ TJvXPPaintEvent }
-
   TJvXPPaintEvent = procedure(Sender: TObject; Rect: TRect; ACanvas: TCanvas;
     AFont: TFont) of object;
 
-{ TJvXPEnabledMode }
-
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   TJvXPEnabledMode = (emAffectChilds, emNormal);
-{$ENDIF}
-
-{ TJvXPCustomContainer }
+  {$ENDIF COMPILER6_UP}
 
   TJvXPCustomContainer = class(TJvXPCustomControl)
   private
@@ -57,9 +51,9 @@ type
     FBorderWidth: TBorderWidth;
     FBoundColor: TColor;
     FBoundLines: TJvXPBoundLines;
-  {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     FEnabledMode: TJvXPEnabledMode;
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     FFocusable: Boolean;
     FGlyph: TBitmap;
     FGlyphLayout: TJvXPGlyphLayout;
@@ -68,17 +62,17 @@ type
     FShowCaption: Boolean;
     FSpacing: Byte;
     FWordWrap: Boolean;
-  {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     FOnEnabledChanged: TNotifyEvent;
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     FOnPaint: TJvXPPaintEvent;
     procedure SetAlignment(Value: TAlignment);
     procedure SetBorderWidth(Value: TBorderWidth);
     procedure SetBoundColor(Value: TColor);
     procedure SetBoundLines(Value: TJvXPBoundLines);
-  {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure SetEnabledMode(Value: TJvXPEnabledMode);
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure SetGlyph(Value: TBitmap);
     procedure SetGlyphLayout(Value: TJvXPGlyphLayout);
     procedure SetLayout(Value: TTextLayout);
@@ -89,19 +83,19 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure AdjustClientRect(var Rect: TRect); override;
-  {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure HookEnabledChanged; override;
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure HookMouseDown; override;
     procedure HookPosChanged; override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property BoundColor: TColor read FBoundColor write SetBoundColor default clGray;
     property BoundLines: TJvXPBoundLines read FBoundLines write SetBoundLines default [];
-  {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property EnabledMode: TJvXPEnabledMode read FEnabledMode write SetEnabledMode
       default emNormal;
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property Focusable: Boolean read FFocusable write FFocusable default False;
     property Glyph: TBitmap read FGlyph write SetGlyph;
     property GlyphLayout: TJvXPGlyphLayout read FGlyphLayout write SetGlyphLayout
@@ -115,17 +109,15 @@ type
     property Spacing: Byte read FSpacing write SetSpacing default 5;
     property Width default 185;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
-  {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property OnPaint: TJvXPPaintEvent read FOnPaint write FOnPaint;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
   end;
-
-{ TJvXPContainer }
 
   TJvXPContainer = class(TJvXPCustomContainer)
   published
@@ -137,9 +129,9 @@ type
     property Caption;
     property Color;
     property Enabled;
-  {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property EnabledMode;
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property Focusable;
     property Glyph;
     property GlyphLayout;
@@ -149,9 +141,9 @@ type
     property ShowCaption;
     property Spacing;
     property WordWrap;
-  {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property OnEnabledChanged;
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property OnDblClick;
     property OnPaint;
     property OnResize;
@@ -178,9 +170,9 @@ begin
   FAlignment := taCenter;
   FBoundColor := clGray;
   FBoundLines := [];
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   FEnabledMode := emNormal;
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
   FFocusable := False;
   FGlyph := TBitmap.Create;
   FGlyph.Assign(nil);
@@ -242,7 +234,7 @@ begin
   if Assigned(FOnEnabledChanged) then
     FOnEnabledChanged(Self);
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPCustomContainer.HookMouseDown
@@ -382,7 +374,7 @@ begin
     HookEnabledChanged;
   end;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPCustomContainer.SetGlyph

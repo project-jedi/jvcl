@@ -32,7 +32,7 @@ interface
 uses
   {$IFDEF COMPILER6_UP}
   Variants, RTLConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   SysUtils, Classes;
 
 type

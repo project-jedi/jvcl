@@ -37,7 +37,7 @@ uses
   Types, Variants,
   {$ELSE}
   Windows, Classes,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvInterpreter;
 
 function Point2Var(const Point: TPoint): Variant;

@@ -71,9 +71,10 @@ implementation
 uses
   {$IFDEF VCL}
   Consts,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QConsts,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, TypInfo,
   JvTypes, JvResources;
 

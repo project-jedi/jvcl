@@ -36,9 +36,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-{$IFDEF USE_DXGETTEXT}
+  {$IFDEF USE_DXGETTEXT}
   gnugettext,
-{$ENDIF}
+  {$ENDIF USE_DXGETTEXT}
   StdCtrls;
 
 type
@@ -58,9 +58,9 @@ type
     procedure EnumKeys;
   public
     constructor Create(AOwner: TComponent); override;
-    property CombinedKeyCode : Word read GetCombinedKeyCode write SetCombinedKeyCode;
-    property KeyCode : Word read GetKeyCode;
-    property ShiftState : TShiftState read GetShiftState;
+    property CombinedKeyCode: Word read GetCombinedKeyCode write SetCombinedKeyCode;
+    property KeyCode: Word read GetKeyCode;
+    property ShiftState: TShiftState read GetShiftState;
   end;
 
 implementation
@@ -75,8 +75,7 @@ begin
   inherited Create(AOwner);
   {$IFDEF USE_DXGETTEXT}
   TranslateComponent(Self);
-  {$ENDIF}
-
+  {$ENDIF USE_DXGETTEXT}
   EnumKeys;
 end;
 

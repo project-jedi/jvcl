@@ -1453,7 +1453,7 @@ begin
   RaiseLastOSError;
   {$ELSE}
   RaiseLastWin32Error;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 { function Win32Check(RetVal: BOOL): BOOL; }
@@ -1820,7 +1820,7 @@ begin
     {$IFNDEF PC_MAPPED_EXCEPTIONS} // Linux define symbol
     { EAbstractError }
     AddClass(cSysUtils, EAbstractError, 'EAbstractError');
-    {$ENDIF}
+    {$ENDIF PC_MAPPED_EXCEPTIONS}
     { EIntfCastError }
     AddClass(cSysUtils, EIntfCastError, 'EIntfCastError');
     { EInvalidContainer }

@@ -767,7 +767,7 @@ begin
   {$ENDIF VisualCLX}
   {$IFDEF LINUX}
   libc.system(PChar(AFile + ' &'));
-  {$ENDIF}
+  {$ENDIF LINUX}
 end;
 
 procedure TJvYearGrid.SetHTMLFontName(const Value: string);

@@ -35,7 +35,7 @@ interface
 uses
   {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvInterpreter, SysUtils;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);

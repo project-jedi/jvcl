@@ -253,7 +253,7 @@ implementation
 uses
   {$IFNDEF COMPILER6_UP}
   Forms,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvJVCLUtils;
 
 const

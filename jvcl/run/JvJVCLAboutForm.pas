@@ -109,10 +109,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 
 const
@@ -126,7 +126,7 @@ const
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   cJVCLIni = '/.JVCL';
-  {$ENDIF}
+  {$ENDIF LINUX}
 
 procedure TJvJVCLAboutForm.FormShow(Sender: TObject);
 {$IFDEF MSWINDOWS}
@@ -136,10 +136,10 @@ var
 begin
   {$IFDEF VCL}
   lblVersion.Caption := 'Version: ' + JVCL_VERSIONSTRING;
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   lblVersion.Caption := 'Version: ' + JVCLX_VERSIONSTRING;
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF MSWINDOWS}
   FillChar(VersionInfo, SizeOf(TOSVersionInfoEx), #0);
   VersionInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfoEx);
@@ -193,10 +193,10 @@ var
 begin
   {$IFDEF MSWINDOWS}
   with TIniFile.Create(ExtractFileDir(Application.ExeName) + cJVCLIni) do
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  with TIniFile.Create( GetEnvironmentVariable('HOME') + cJVCLIni ) do
-  {$ENDIF}
+  with TIniFile.Create(GetEnvironmentVariable('HOME') + cJVCLIni) do
+  {$ENDIF LINUX}
   try
     L := ReadInteger(cOptions, cBoundsLeft, -1);
     T := ReadInteger(cOptions, cBoundsTop, -1);

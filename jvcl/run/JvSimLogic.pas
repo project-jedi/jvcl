@@ -332,10 +332,10 @@ type
 implementation
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvSimImages.res}
+{$R ..\Resources\JvSimImages.res}
 {$ELSE}
 {$R ../Resources/JvSimImages.res}
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 // general bin procedure
 

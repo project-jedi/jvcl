@@ -391,7 +391,10 @@ type
 implementation
 
 uses
-  Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}TypInfo,
+  Consts, TypInfo,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF COMPILER6_UP}
   JclBase,
   JvJVCLUtils, JvConsts, JvCtrls, JvResources;
 

@@ -206,7 +206,7 @@ begin
     fgoFluentlyExpand, fgoHideChildrenWhenCollapsed, fgoSaveChildFocus];
   {$IFDEF GL_RUS}
   Font.CharSet := RUSSIAN_CHARSET;
-  {$ENDIF}
+  {$ENDIF GL_RUS}
   FBorder.OnChanged := SmthChanged;
   FCaptionBorder.OnChanged := SmthChanged;
   FGradient.OnChanged := SmthChanged;

@@ -38,7 +38,7 @@ uses
   Contnrs,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Registry, Forms,
   JclBase, JvComponent;
 

@@ -35,10 +35,10 @@ uses
   Classes,
   {$IFDEF VCL}
   Windows, Dialogs, ComCtrls, StdCtrls, Controls, ExtCtrls, Forms,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QDialogs, QComCtrls, QStdCtrls, QControls, QExtCtrls, QForms,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 const
@@ -126,15 +126,15 @@ uses
   SysUtils,
   {$IFDEF VCL}
   CommCtrl,
-  {$ENDIF}
+  {$ENDIF VCL}
   JvConsts, JvTypes, JvResources;
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 const
   EmptyLine = '0.00';

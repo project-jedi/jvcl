@@ -530,8 +530,8 @@ type
   public
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
-    function Add(Image, Mask: TBitmap): Integer; {$IFDEF VisualCLX}override;{$ENDIF}
-    function AddMasked(Image: TBitmap; MaskColor: TColor): Integer; {$IFDEF VisualCLX}override;{$ENDIF}
+    function Add(Image, Mask: TBitmap): Integer; {$IFDEF VisualCLX} override; {$ENDIF}
+    function AddMasked(Image: TBitmap; MaskColor: TColor): Integer; {$IFDEF VisualCLX} override; {$ENDIF}
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
@@ -762,7 +762,7 @@ begin
     Form := GetParentForm(Self);
     if Form <> nil then
       Form.SendCancelMode(nil);
-    {$ENDIF}
+    {$ENDIF VCL}
     DropDownMenu.PopupComponent := Self;
     with ClientToScreen(SmallPointToPoint(Pos)) do
       DropDownMenu.Popup(X, Y);
@@ -879,7 +879,7 @@ begin
       {$IFDEF JVCLThemesEnabled}
       { Windows XP introduced hot states also for non-flat buttons. }
       ThemeServices.ThemesEnabled or
-      {$ENDIF}
+      {$ENDIF JVCLThemesEnabled}
       HotTrack or
       (FFlat and FMouseInControl and Enabled and not FDragging);
 
@@ -1191,7 +1191,7 @@ var
   Button: TThemedButton;
   ToolButton: TThemedToolBar;
   Details: TThemedElementDetails;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 begin
   if not Enabled {and not (csDesigning in ComponentState)} then
   begin
@@ -1550,19 +1550,17 @@ begin
       Perform(CM_MOUSEENTER, 0, 0)
     else
       Perform(CM_MOUSELEAVE, 0, 0);
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     if NewValue then
       MouseEnter(Self)
     else
       MouseLeave(Self);
-    {$ENDIF}
+    {$ENDIF VisualCLX}
 end;
 
 {$IFDEF VCL}
 procedure TJvCustomSpeedButton.WMLButtonDblClk(var Msg: TWMLButtonDown);
-{$ELSE}
-procedure TJvCustomSpeedButton.DblClick;
-{$ENDIF}
 begin
   if not FMenuTracking then
   begin
@@ -1571,6 +1569,19 @@ begin
       DblClick;
   end;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomSpeedButton.DblClick;
+begin
+  if not FMenuTracking then
+  begin
+    inherited DblClick;
+    if FDown then
+      DblClick;
+  end;
+end;
+{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
 procedure TJvCustomSpeedButton.WMPaint(var Msg: TWMPaint);
@@ -2016,7 +2027,8 @@ begin
 end;
 
 {$IFDEF COMPILER6_UP}
- {$IFDEF VCL}
+{$IFDEF VCL}
+
 function TJvSpeedButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   Result := (FClient is TJvSpeedButton) and
@@ -2028,7 +2040,8 @@ begin
   if IsGroupIndexLinked then
     TJvSpeedButton(FClient).GroupIndex := Value;
 end;
- {$ENDIF VCL}
+
+{$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
 
 procedure TJvSpeedButtonActionLink.SetChecked(Value: Boolean);
@@ -2190,7 +2203,7 @@ begin
   if ThemeServices.ThemesEnabled then
     OffsetRect(TextBounds, TextPos.X + Client.Left, TextPos.Y + Client.Top)
   else
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
     OffsetRect(TextBounds, TextPos.X + Client.Left + Offset.X, TextPos.Y + Client.Top + Offset.Y);
 end;
 
@@ -2334,9 +2347,10 @@ begin
             FillRect(Rect(0, 0, iWidth, iHeight));
             {$IFDEF VCL}
             ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_NORMAL);
-            {$ELSE}
+            {$ENDIF VCL}
+            {$IFDEF VisualCLX}
             Images.Draw(TmpImage.Canvas, 0, 0, Index, itImage);
-            {$ENDIF}
+            {$ENDIF VisualCLX}
           end;
           Mask := TBitmap.Create;
           try
@@ -2351,9 +2365,10 @@ begin
               FillRect(Rect(0, 0, iWidth, iHeight));
               {$IFDEF VCL}
               ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_MASK);
-              {$ELSE}
+              {$ENDIF VCL}
+              {$IFDEF VisualCLX}
               Images.Draw(TmpImage.Canvas, 0, 0, Index, itMask);
-              {$ENDIF}
+              {$ENDIF VisualCLX}
             end;
             FIndexs[State] := TJvGlyphList(FGlyphList).Add(TmpImage, Mask);
           finally
@@ -2374,11 +2389,11 @@ begin
           TmpImage.Canvas.Brush.Color := clBtnFace;
           TmpImage.Canvas.FillRect(Rect(0, 0, iWidth, iHeight));
           {$IFDEF VCL}
-          ImageList_Draw(Images.Handle, Index, TmpImage.Canvas.Handle, 0, 0,
-            ILD_NORMAL);
-          {$ELSE}
+          ImageList_Draw(Images.Handle, Index, TmpImage.Canvas.Handle, 0, 0, ILD_NORMAL);
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
           Images.Draw(TmpImage.Canvas, 0, 0, Index, itImage);
-          {$ENDIF}
+          {$ENDIF VisualCLX}
           with TmpImage do
           begin
             for X := 0 to Width - 1 do
@@ -2430,9 +2445,10 @@ begin
   begin
     {$IFDEF VCL}
     ImageList_Draw(FGlyphList.Handle, Index, Canvas.Handle, X, Y, ILD_NORMAL);
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     FGlyphList.Draw(Canvas, X, Y, Index, itMask);
-    {$ENDIF}
+    {$ENDIF VisualCLX}
     Result := Point(FGlyphList.Width, FGlyphList.Height);
   end;
 end;
@@ -2465,16 +2481,18 @@ begin
     if Index >= 0 then
       {$IFDEF VCL}
       ImageList_Draw(FGlyphList.Handle, Index, Canvas.Handle, X, Y, ILD_NORMAL);
-      {$ELSE}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       FGlyphList.Draw(Canvas, X, Y, Index, itImage);
-      {$ENDIF}
+      {$ENDIF VisualCLX}
   end
   else
     {$IFDEF VCL}
     ImageList_Draw(Images.Handle, ImageIndex, Canvas.Handle, X, Y, ILD_NORMAL);
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     Images.Draw(Canvas, X, Y, ImageIndex, itImage);
-    {$ENDIF}
+    {$ENDIF VisualCLX}
   Result := Point(Images.Width, Images.Height);
 end;
 

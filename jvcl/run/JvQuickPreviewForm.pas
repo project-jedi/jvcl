@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Controls, Forms, Dialogs, Buttons, ExtCtrls, StdCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QControls, QForms, QDialogs, QButtons, QExtCtrls, QStdCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvDrawImage, JvComponent;
 
 type
@@ -57,10 +57,10 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure TQuickPreviewForm.BtnUseClick(Sender: TObject);
 

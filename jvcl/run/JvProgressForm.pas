@@ -38,10 +38,11 @@ uses
   {$IFDEF VCL}
   Windows, Forms, Graphics, ExtCtrls, StdCtrls,
   Controls, ComCtrls,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QWindows, QForms, QGraphics, QExtCtrls, QStdCtrls,
   QControls, QComCtrls, QTypes,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -80,17 +81,20 @@ type
 
 implementation
 
-{$IFDEF VCL}
 uses
+  {$IFDEF VCL}
   Consts;
-
-{$R *.dfm}
-{$ELSE}
-uses
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QConsts;
+  {$ENDIF VisualCLX}
 
+{$IFDEF VCL}
+{$R *.dfm}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 class function TfrmProgress.Execute(Frm: TfrmProgress; const ACaption, ALabel: string;
   AImage: TPicture; ATransparent: Boolean; AMin, AMax, APosition, AInterval: Integer;
@@ -172,38 +176,8 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
-procedure TfrmProgress.AddCaption;
-var
-  cw, ch: integer;
-begin
-  if BorderStyle <> fbsToolWindow then
-  begin
-    cw := ClientWidth;
-    ch := ClientHeight;
-    BorderStyle := fbsToolWindow;
-    Height := Height + ch - ClientHeight;
-    Width := Width + cw - ClientWidth;
-  end
-end;
-
-procedure TfrmProgress.RemoveCaption;
-var
-  cw, ch: integer;
-begin
-  if BorderStyle <> fbsNone then
-  begin
-    cw := ClientWidth;
-    ch := ClientHeight;
-    BorderStyle := fbsNone;
-    Height := Height + ch - ClientHeight;
-    Width := Width + cw - ClientWidth;
-  end
-end;
-
-{$ENDIF}
-
 {$IFDEF VCL}
+
 procedure TfrmProgress.AddCaption;
 var
   WindowLong: Cardinal;
@@ -233,7 +207,40 @@ begin
     Update;
   end;
 end;
-{$ENDIF}
+
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+
+procedure TfrmProgress.AddCaption;
+var
+  cw, ch: integer;
+begin
+  if BorderStyle <> fbsToolWindow then
+  begin
+    cw := ClientWidth;
+    ch := ClientHeight;
+    BorderStyle := fbsToolWindow;
+    Height := Height + ch - ClientHeight;
+    Width := Width + cw - ClientWidth;
+  end
+end;
+
+procedure TfrmProgress.RemoveCaption;
+var
+  cw, ch: integer;
+begin
+  if BorderStyle <> fbsNone then
+  begin
+    cw := ClientWidth;
+    ch := ClientHeight;
+    BorderStyle := fbsNone;
+    Height := Height + ch - ClientHeight;
+    Width := Width + cw - ClientWidth;
+  end
+end;
+
+{$ENDIF VisualCLX}
 
 function TfrmProgress.ShowModal: Integer;
 begin

@@ -44,7 +44,7 @@ uses
   {$IFNDEF DelphiPersonalEdition}
   JvInterpreter_Db, JvInterpreter_DBTables, JvInterpreter_DbCtrls,
   JvInterpreter_DbGrids, JvInterpreter_Quickrpt,
-  {$ENDIF}
+  {$ENDIF DelphiPersonalEdition}
   JvInterpreter_JvEditor, JvInterpreterFm,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}

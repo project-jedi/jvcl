@@ -109,12 +109,12 @@ implementation
 {$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
   RsEMethodOnlyForMainThread = '%s method can only be used by the main VCL thread';
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 var
   DataThreadsMan: TMTManager = nil;

@@ -63,9 +63,14 @@ unit JvUIB;
 
 interface
 uses
-  {$IFDEF MSWINDOWS} Windows, {$ENDIF}
-  {$IFDEF USEJVCL} JvComponent, {$ENDIF}
-  Classes, SysUtils, SyncObjs, JvUIBLib, JvUIBase, JvUIBSQLParser;
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  Classes, SysUtils, SyncObjs,
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvUIBLib, JvUIBase, JvUIBSQLParser;
 
 type
 
@@ -100,7 +105,7 @@ type
 TJvUIBComponent = class(TJvComponent)
 {$ELSE}
 TJvUIBComponent = class(TComponent)
-{$ENDIF}
+{$ENDIF USEJVCL}
   private
     FCriticalsection: TCriticalSection;
   public
@@ -333,7 +338,7 @@ TJvUIBComponent = class(TComponent)
     {Rollback transaction but keep transaction handle.}
     procedure RollBackRetaining;
     {Indicate if the transaction is active.}
-{$IFDEF IB71_UP}
+    {$IFDEF IB71_UP}
     { Interbase 7.1 spceficic, Release a savepoint.
       On Firebird 1.5 this must be call by SQL.}
     procedure SavepointRelease(const Name: string);
@@ -343,7 +348,7 @@ TJvUIBComponent = class(TComponent)
     { Interbase 7.1 spceficic, Start a savepoint.
       On Firebird 1.5 this must be call by SQL.}
     procedure SavepointStart(const Name: string);
-{$ENDIF}
+    {$ENDIF IB71_UP}
     property InTransaction: Boolean read GetInTransaction;
     {Transaction handle.}
     property TrHandle: IscTrHandle read FTrHandle;
@@ -600,7 +605,7 @@ TJvUIBComponent = class(TComponent)
 
   TRestoreOption = (roDeactivateIndexes, roNoShadow, roNoValidityCheck,
     roOneRelationAtATime, roReplace, roCreateNewDB, roUseAllSpace
-    {$IFDEF IB71_UP},roValidate{$ENDIF});
+    {$IFDEF IB71_UP}, roValidate {$ENDIF});
 
   TRestoreOptions = set of TRestoreOption;
 
@@ -1881,9 +1886,9 @@ begin
             blr_sql_date  : Params.AddFieldType(Trim(AsString[1]), uftDate);
             blr_sql_time  : Params.AddFieldType(Trim(AsString[1]), uftTime);
             blr_int64     : Params.AddFieldType(Trim(AsString[1]), uftInt64);
-          {$IFDEF IB7_UP}
+            {$IFDEF IB7_UP}
             blr_boolean_dtype : Params.AddFieldType(Trim(AsString[1]), uftBoolean);
-          {$ENDIF}
+            {$ENDIF IB7_UP}
           else
             // shouldn't occur but ...
             raise Exception.Create('Unknow field type.');
@@ -2237,6 +2242,7 @@ begin
 end;
 
 {$IFDEF IB71_UP}
+
 procedure TJvUIBTransaction.SavepointRelease(const Name: string);
 begin
   BeginTransaction;
@@ -2254,7 +2260,8 @@ begin
   BeginTransaction;
   FDataBase.FLibrary.SavepointStart(FTrHandle, Name);
 end;
-{$ENDIF}
+
+{$ENDIF IB71_UP}
 
 function TJvUIBTransaction.GetInTransaction: Boolean;
 begin
@@ -2424,16 +2431,16 @@ end;
 
 procedure TJvUIBComponent.Lock;
 begin
-{$IFDEF UIBTHREADSAFE}
+  {$IFDEF UIBTHREADSAFE}
   FCriticalsection.Enter;
-{$ENDIF}
+  {$ENDIF UIBTHREADSAFE}
 end;
 
 procedure TJvUIBComponent.UnLock;
 begin
-{$IFDEF UIBTHREADSAFE}
+  {$IFDEF UIBTHREADSAFE}
   FCriticalsection.Leave;
-{$ENDIF}
+  {$ENDIF UIBTHREADSAFE}
 end;
 
 { TJvUIBService }
@@ -2776,14 +2783,14 @@ begin
             begin
               Transaction.RollBack;
             end;
-        {$IFDEF IB71_UP}
+          {$IFDEF IB71_UP}
           NodeSavepointSet:
             Transaction.SavepointStart(Grammar.RootNode.Nodes[i].Nodes[0].Value);
           NodeSavepointRelease:
             Transaction.SavepointRelease(Grammar.RootNode.Nodes[i].Nodes[0].Value);
           NodeSavepointUndo:
             Transaction.SavepointRollback(Grammar.RootNode.Nodes[i].Nodes[0].Value);
-        {$ENDIF}
+          {$ENDIF IB71_UP}
           NodeSelect, // perhaps a select statement execute a procedure ...
           NodeInsert,
           NodeDeleteSearched,

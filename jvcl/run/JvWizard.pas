@@ -337,12 +337,16 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Controls, Forms, Graphics, Buttons, ImgList,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QControls, QForms, QGraphics, QButtons, QImgList,
-  {$ENDIF}
-  {$IFDEF COMPILER6_UP}Types, {$ENDIF}
-  {$IFDEF USEJVCL} JvComponent, {$ENDIF}
+  {$ENDIF VisualCLX}
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF COMPILER6_UP}
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
   JvWizardCommon;
 
 type
@@ -916,16 +920,15 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
-  Consts
-  {$ENDIF}
-  {$IFDEF VisualCLX}
-  QConsts
-  {$ENDIF}
   {$IFDEF USEJVCL}
-  , JvResources
+  JvResources,
   {$ENDIF USEJVCL}
-  ;
+  {$IFDEF VCL}
+  Consts;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts;
+  {$ENDIF VisualCLX}
 
 const
   ciButtonWidth = 75;
@@ -947,7 +950,7 @@ resourcestring
 
   RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant';
   RsEInvalidWizardPage = 'The pages belong to another wizard';
-{$ENDIF !USEJVCL}
+{$ENDIF USEJVCL}
 
 type
   { YW - First Button }

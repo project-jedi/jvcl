@@ -786,6 +786,7 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
+
 procedure TJvTLScrollBtn.MouseEnter(Control: TControl);
 begin
   if ThemeServices.ThemesEnabled and not (FMouseInControl) and not (csDesigning in ComponentState) then
@@ -805,7 +806,8 @@ begin
     Invalidate;
   end;
 end;
-{$ENDIF}
+
+{$ENDIF JVCLThemesEnabled}
 
 procedure TJvTLScrollBtn.Paint;
 const
@@ -2331,7 +2333,7 @@ var
   ACanvas: TCanvas;
   {$IFDEF JVCLThemesEnabled}
   Details: TThemedElementDetails;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -2358,7 +2360,7 @@ begin
       end;
     end
     else
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     if FBorderStyle = bsSingle then
     begin
       Frame3D(ACanvas, RW, clBtnShadow, clBtnHighlight, 1);

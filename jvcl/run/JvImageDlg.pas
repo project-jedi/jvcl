@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Graphics, Controls, Forms, ExtCtrls, jpeg,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QExtCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvBaseDlg, JvComponent, JvTypes;
 
 type
@@ -85,10 +85,10 @@ begin
     try
       {$IFDEF VCL}
       Form.BorderStyle := bsDialog;
-      {$ENDIF}
+      {$ENDIF VCL}
       {$IFDEF VisualCLX}
       Form.BorderStyle := fbsDialog;
-      {$ENDIF}
+      {$ENDIF VisualCLX}
       Form.BorderIcons := [biSystemMenu];
       Form.Position := poScreenCenter;
       Image1 := TImage.Create(Form);

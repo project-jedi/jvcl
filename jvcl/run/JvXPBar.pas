@@ -398,9 +398,9 @@ type
 
 implementation
 uses
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   UxTheme,
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   JvThemes;
 
 const
@@ -951,7 +951,7 @@ constructor TJvXPBarColors.Create;
 var
   Details: TThemedElementDetails;
   AColor: COLORREF;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 begin
   inherited Create;
   FBodyColor := $00F7DFD6;

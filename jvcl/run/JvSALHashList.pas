@@ -33,10 +33,10 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc,
-  {$ENDIF}
+  {$ENDIF LINUX}
   Classes, SysUtils;
 
 type

@@ -1,12 +1,12 @@
 {-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License 
-Version 1.1 (the "License"); you may not use this file except in compliance 
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
 http://www.mozilla.org/MPL/
 
-Software distributed under the License is distributed on an "AS IS" basis, 
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for 
-the specific language governing rights and limitations under the License. 
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
 
 The Original Code is: JvVirtualKeySelection.PAS, released 2003-09-29.
 
@@ -23,10 +23,11 @@ located at http://jvcl.sourceforge.net
 
 Description: This unit defines a frame that you can use to select a key code.
 
-
 Known Issues: none known
 -----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
+{$I linuxonly.inc}
 
 unit JvQtKeySelectionFrame;
 
@@ -34,9 +35,9 @@ interface
 
 uses
   Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls,
-{$IFDEF USE_DXGETTEXT}
+  {$IFDEF USE_DXGETTEXT}
   gnugettext,
-{$ENDIF}
+  {$ENDIF USE_DXGETTEXT}
   SysUtils, Classes;
 
 type
@@ -47,8 +48,7 @@ type
     chkCtrl: TCheckBox;
     lblModifiers: TLabel;
   protected
-    FShiftState : TShiftState;
-
+    FShiftState: TShiftState;
     function GetKeyCode: Word;
     function GetShiftState: TShiftState;
     function GetCombinedKeyCode: Word;
@@ -56,9 +56,9 @@ type
     procedure EnumKeys;
   public
     constructor Create(AOwner: TComponent); override;
-    property CombinedKeyCode : Word read GetCombinedKeyCode write SetCombinedKeyCode;
-    property KeyCode : Word read GetKeyCode;
-    property ShiftState : TShiftState read GetShiftState;
+    property CombinedKeyCode: Word read GetCombinedKeyCode write SetCombinedKeyCode;
+    property KeyCode: Word read GetKeyCode;
+    property ShiftState: TShiftState read GetShiftState;
   end;
 
 implementation
@@ -69,26 +69,26 @@ resourcestring
   sNoValidKeyCode = 'This is not a valid key code';
   sInvalidKeyCode = 'Invalid key code';
 
-
 constructor TJvQtKeySelectionFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{$IFDEF USE_DXGETTEXT}
+  {$IFDEF USE_DXGETTEXT}
   TranslateComponent(Self);
-{$ENDIF}
+  {$ENDIF USE_DXGETTEXT}
   EnumKeys;
 end;
 
 procedure TJvQtKeySelectionFrame.EnumKeys;
-var i : integer;
+var
+  I: Integer;
 begin
   with cmbVirtualKey.Items do
   begin
     // add the easy ones
-    for i := ord('0') to ord('9') do
-      AddObject('Key_'+chr(i),  TObject(i));
-    for i := ord('A') to ord('Z') do
-      AddObject('Key_'+chr(i),  TObject(i));
+    for I := Ord('0') to Ord('9') do
+      AddObject('Key_' + Chr(I), TObject(I));
+    for I := Ord('A') to Ord('Z') do
+      AddObject('Key_' + Chr(I), TObject(I));
 
     // then add the others...
 //    AddObject('VK_LBUTTON',    TObject(VK_LBUTTON));
@@ -96,14 +96,14 @@ begin
 //    AddObject('VK_CANCEL',     TObject(VK_CANCEL));
 //    AddObject('VK_MBUTTON',    TObject(VK_MBUTTON));
     AddObject('Key_Backspace', TObject(Key_Backspace));
-    AddObject('Key_Tab',       TObject(Key_Tab));
+    AddObject('Key_Tab', TObject(Key_Tab));
 //  AddObject('VK_CLEAR',      TObject(VK_CLEAR));
-    AddObject('Key_Return',    TObject(Key_Return));
-    AddObject('Key_Shift',     TObject(Key_Shift));
-    AddObject('Key_Control',   TObject(Key_Control));
-    AddObject('Key_Alt',       TObject(Key_Alt));
-    AddObject('Key_Pause',     TObject(Key_Pause));
-    AddObject('Key_CapsLock',  TObject(Key_CapsLock));
+    AddObject('Key_Return', TObject(Key_Return));
+    AddObject('Key_Shift', TObject(Key_Shift));
+    AddObject('Key_Control', TObject(Key_Control));
+    AddObject('Key_Alt', TObject(Key_Alt));
+    AddObject('Key_Pause', TObject(Key_Pause));
+    AddObject('Key_CapsLock', TObject(Key_CapsLock));
 //    AddObject('VK_KANA',       TObject(VK_KANA));
 //    AddObject('VK_HANGUL',     TObject(VK_HANGUL));
 //    AddObject('VK_JUNJA',      TObject(VK_JUNJA));
@@ -114,44 +114,44 @@ begin
 //    AddObject('VK_NONCONVERT', TObject(VK_NONCONVERT));
 //    AddObject('VK_ACCEPT',     TObject(VK_ACCEPT));
 //    AddObject('VK_MODECHANGE', TObject(VK_MODECHANGE));
-    AddObject('Key_Escape',    TObject(Key_Escape));
-    AddObject('Key_Space',     TObject(Key_Space));
-    AddObject('Key_Prior',     TObject(Key_Prior));
-    AddObject('Key_Next',      TObject(Key_Next));
-    AddObject('Key_End',       TObject(Key_End));
-    AddObject('Key_Home',      TObject(Key_Home));
-    AddObject('Key_Left',      TObject(Key_Left));
-    AddObject('Key_Up',        TObject(Key_Up));
-    AddObject('Key_Right',     TObject(Key_Right));
-    AddObject('Key_Down',      TObject(Key_Down));
+    AddObject('Key_Escape', TObject(Key_Escape));
+    AddObject('Key_Space', TObject(Key_Space));
+    AddObject('Key_Prior', TObject(Key_Prior));
+    AddObject('Key_Next', TObject(Key_Next));
+    AddObject('Key_End', TObject(Key_End));
+    AddObject('Key_Home', TObject(Key_Home));
+    AddObject('Key_Left', TObject(Key_Left));
+    AddObject('Key_Up', TObject(Key_Up));
+    AddObject('Key_Right', TObject(Key_Right));
+    AddObject('Key_Down', TObject(Key_Down));
 //    AddObject('VK_SELECT',     TObject(VK_SELECT));
-    AddObject('Key_Print',      TObject(Key_Print));
+    AddObject('Key_Print', TObject(Key_Print));
 //    AddObject('VK_EXECUTE',    TObject(VK_EXECUTE));
-    AddObject('Key_SysReq',    TObject(Key_SysReq));
-    AddObject('Key_Insert',    TObject(Key_Insert));
-    AddObject('Key_Delete',    TObject(Key_Delete));
-    AddObject('Key_Help',      TObject(Key_Help));
+    AddObject('Key_SysReq', TObject(Key_SysReq));
+    AddObject('Key_Insert', TObject(Key_Insert));
+    AddObject('Key_Delete', TObject(Key_Delete));
+    AddObject('Key_Help', TObject(Key_Help));
 //    AddObject('VK_LWIN',       TObject(VK_LWIN));
 //    AddObject('VK_RWIN',       TObject(VK_RWIN));
-    AddObject('Key_Menu',      TObject(Key_Menu));
-    AddObject('Key_Asterisk',  TObject(Key_Asterisk));
-    AddObject('Key_Plus',      TObject(Key_Plus));
+    AddObject('Key_Menu', TObject(Key_Menu));
+    AddObject('Key_Asterisk', TObject(Key_Asterisk));
+    AddObject('Key_Plus', TObject(Key_Plus));
 //    AddObject('VK_SEPARATOR',  TObject(VK_SEPARATOR));
-    AddObject('Key_Minus',     TObject(Key_Minus));
-    AddObject('Key_Period',    TObject(Key_Period));
-    AddObject('Key_Slash',     TObject(Key_Slash));
-    for i := 1 to 35 do
-       AddObject('Qt_F'+inttostr(i), TObject(4143+i));
-    AddObject('Key_Super_L',   TObject(Key_Super_L));
-    AddObject('Key_Super_R',   TObject(Key_Super_R));
-    AddObject('Key_Hyper_L',   TObject(Key_Hyper_L));
-    AddObject('Key_Hyper_R',   TObject(Key_Hyper_R));
+    AddObject('Key_Minus', TObject(Key_Minus));
+    AddObject('Key_Period', TObject(Key_Period));
+    AddObject('Key_Slash', TObject(Key_Slash));
+    for I := 1 to 35 do
+      AddObject('Qt_F' + IntToStr(I), TObject(4143 + I));
+    AddObject('Key_Super_L', TObject(Key_Super_L));
+    AddObject('Key_Super_R', TObject(Key_Super_R));
+    AddObject('Key_Hyper_L', TObject(Key_Hyper_L));
+    AddObject('Key_Hyper_R', TObject(Key_Hyper_R));
 
-    AddObject('Key_NumLock',   TObject(Key_NumLock));
-    AddObject('Key_ScrollLock',TObject(Key_ScrollLock));
-    AddObject('Key_Shift',     TObject(Key_Shift));
+    AddObject('Key_NumLock', TObject(Key_NumLock));
+    AddObject('Key_ScrollLock', TObject(Key_ScrollLock));
+    AddObject('Key_Shift', TObject(Key_Shift));
 //   AddObject('VK_RSHIFT',     TObject(VK_RSHIFT));
-    AddObject('Key_Control',   TObject(Key_Control));
+    AddObject('Key_Control', TObject(Key_Control));
 //   AddObject('VK_RCONTROL',   TObject(VK_RCONTROL));
 //    AddObject('VK_LMENU',      TObject(VK_LMENU));
 //    AddObject('VK_RMENU',      TObject(VK_RMENU));
@@ -187,18 +187,16 @@ begin
     Result := 0;
   end
   else
-  begin
     Result := Word(cmbVirtualKey.Items.Objects[cmbVirtualKey.ItemIndex]);
-  end;
 end;
 
 function TJvQtKeySelectionFrame.GetShiftState: TShiftState;
 begin
   Result := [];
-    if chkShift.Checked then
-      Result := Result + [ssShift];
-    if chkCtrl.Checked then
-      Result := Result + [ssCtrl];
+  if chkShift.Checked then
+    Result := Result + [ssShift];
+  if chkCtrl.Checked then
+    Result := Result + [ssCtrl];
 end;
 
 procedure TJvQtKeySelectionFrame.SetCombinedKeyCode(const Value: Word);
@@ -209,3 +207,4 @@ begin
 end;
 
 end.
+

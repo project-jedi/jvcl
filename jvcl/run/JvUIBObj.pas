@@ -158,9 +158,9 @@ type
 
 implementation
 uses
-{$IFDEF DELPHI6_UP}
+  {$IFDEF DELPHI6_UP}
   VarUtils, Variants,
-{$ENDIF}
+  {$ENDIF DELPHI6_UP}
   ZLib;
 
 function SafeArrayElementTotal(VarArray: PVarArray): Integer;
@@ -184,7 +184,7 @@ function SafeArrayAccessData(VarArray: PVarArray; out Data: Pointer): HRESULT; s
   external oleaut name 'SafeArrayAccessData';
 function SafeArrayUnaccessData(VarArray: PVarArray): HRESULT; stdcall;
   external oleaut name 'SafeArrayUnaccessData';
-{$ENDIF}
+{$ENDIF DELPHI6_UP}
 
 { TJvUIBClient }
 
@@ -518,12 +518,12 @@ begin
     varDate:     Connection.ReadBuffer(TVarData(Result).VDate, 8);
     varOleStr:   TVarData(Result).VOleStr := ReadPWideChar;
     varBoolean:  Connection.ReadBuffer(TVarData(Result).VBoolean, 2);
-{$IFDEF DELPHI6_UP}
+    {$IFDEF DELPHI6_UP}
     varShortInt: Connection.ReadBuffer(TVarData(Result).VShortInt, 1);
     varWord:     Connection.ReadBuffer(TVarData(Result).VWord, 2);
     varLongWord: Connection.ReadBuffer(TVarData(Result).VLongWord, 4);
     varInt64:    Connection.ReadBuffer(TVarData(Result).VInt64, 8);
-{$ENDIF}
+    {$ENDIF DELPHI6_UP}
     varByte:     Connection.ReadBuffer(TVarData(Result).VByte, 1);
     varString:   TVarData(Result).VString := ReadPChar;
   else
@@ -749,12 +749,12 @@ begin
     varDate:     Connection.WriteBuffer(TVarData(Value).VDate, 8);
     varOleStr:   WritePWideChar(TVarData(Value).VOleStr);
     varBoolean:  Connection.WriteBuffer(TVarData(Value).VBoolean, 2);
-{$IFDEF DELPHI6_UP}
+    {$IFDEF DELPHI6_UP}
     varShortInt: Connection.WriteBuffer(TVarData(Value).VShortInt, 1);
     varWord:     Connection.WriteBuffer(TVarData(Value).VWord, 2);
     varLongWord: Connection.WriteBuffer(TVarData(Value).VLongWord, 4);
     varInt64:    Connection.WriteBuffer(TVarData(Value).VInt64, 8);
-{$ENDIF}
+    {$ENDIF DELPHI6_UP}
     varByte:     Connection.WriteBuffer(TVarData(Value).VByte, 1);
     varString:   WritePChar(TVarData(Value).VString);
   else

@@ -211,7 +211,7 @@ begin
   inherited CreateNew(AOwner);
   {$ELSE}
   inherited CreateNew(AOwner, Dummy);
-  {$ENDIF}
+  {$ENDIF DELPHI}
 end;
 
 destructor TJvInterpreterForm.Destroy;

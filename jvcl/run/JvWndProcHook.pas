@@ -987,7 +987,7 @@ begin
       ApplicationHandleException(Self);
     {$ELSE}
     Application.HandleException(Self);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 

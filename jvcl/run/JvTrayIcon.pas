@@ -46,7 +46,7 @@ uses
   Menus, ShellApi,
   {$IFDEF COMPILER6_UP}
   DateUtils,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvConsts, JvTypes, JvComponent;
 
 type

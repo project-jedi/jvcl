@@ -33,10 +33,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Controls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent, JvErrorIndicator;
 
 type
@@ -171,12 +171,12 @@ type
     FItems: TList;
     FValidationSummary: IJvValidationSummary;
     FErrorIndicator: IJvErrorIndicator;
-{$IFNDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     FValidationSummaryComponent: TComponent;
     FErrorIndicatorComponent:TComponent;
     procedure SetValidationSummaryComponent(Value: TComponent);
     procedure SetErrorIndicatorComponent(Value: TComponent);
-{$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure SetValidationSummary(const Value: IJvValidationSummary);
     procedure SetErrorIndicator(const Value: IJvErrorIndicator);
     function GetCount: integer;
@@ -195,13 +195,13 @@ type
     property Items[Index: integer]: TJvBaseValidator read GetItem; default;
     property Count: integer read GetCount;
   published
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property ValidationSummary: IJvValidationSummary read FValidationSummary write SetValidationSummary;
     property ErrorIndicator:IJvErrorIndicator read FErrorIndicator write SetErrorIndicator;
-{$ELSE}
+    {$ELSE}
     property ValidationSummary: TComponent read FValidationSummaryComponent write SetValidationSummaryComponent;
     property ErrorIndicator:TComponent read FErrorIndicatorComponent write SetErrorIndicatorComponent;
-{$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property OnValidateFailed: TJvValidateFailEvent read FOnValidateFailed write FOnValidateFailed;
   end;
 
@@ -239,10 +239,10 @@ uses
   TypInfo,
   {$IFDEF VCL}
   Forms,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JclUnicode, // for reg exp support
   JvTypes, JvResources;
 
@@ -270,6 +270,7 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 // these types and functions were introduced in D6
 type
   TVariantRelationship = (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
@@ -302,7 +303,8 @@ begin
   else
     Result := vrGreaterThan;
 end;
-{$ENDIF}
+
+{$ENDIF COMPILER6_UP}
 
 { TJvBaseValidator }
 
@@ -616,17 +618,17 @@ begin
   inherited;
   if Operation = opRemove then
   begin
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     if (Assigned(ValidationSummary)) and (AComponent.IsImplementorOf(ValidationSummary)) then
       ValidationSummary := nil;
     if (Assigned(ErrorIndicator)) and (AComponent.IsImplementorOf(ErrorIndicator)) then
       ErrorIndicator := nil;
-{$ELSE}
+    {$ELSE}
     if (ValidationSummary = AComponent) then
       ValidationSummary := nil;
     if ErrorIndicator = AComponent then
       ErrorIndicator := nil;
-{$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -640,13 +642,13 @@ end;
 
 procedure TJvValidators.SetValidationSummary(const Value: IJvValidationSummary);
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   ReferenceInterface(FValidationSummary, opRemove);
   FValidationSummary := Value;
   ReferenceInterface(FValidationSummary, opInsert);
-{$ELSE}
+  {$ELSE}
   FValidationSummary := Value;
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 {$IFNDEF COMPILER6_UP}
@@ -697,7 +699,7 @@ begin
   end;
 end;
 
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvValidators.Insert(AValidator: TJvBaseValidator);
 begin
@@ -734,13 +736,13 @@ end;
 
 procedure TJvValidators.SetErrorIndicator(const Value: IJvErrorIndicator);
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   ReferenceInterface(FErrorIndicator, opRemove);
   FErrorIndicator := Value;
   ReferenceInterface(FErrorIndicator, opInsert);
-{$ELSE}
+  {$ELSE}
   FErrorIndicator := Value;
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 { TJvValidationSummary }

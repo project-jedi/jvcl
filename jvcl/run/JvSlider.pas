@@ -33,16 +33,17 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ELSE}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   Types,
-  {$ENDIF}
+  {$ENDIF LINUX}
   SysUtils, Classes,
   {$IFDEF VCL}
   Graphics, Controls, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QExtCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JVCLVer, JvComponent;
 
 type
@@ -119,11 +120,11 @@ type
 implementation
 
 {$IFDEF MSWINDOWS}
- {$R ..\Resources\JvSlider.res}
-{$ENDIF}
+{$R ..\Resources\JvSlider.res}
+{$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
- {$R ../Resources/JvSlider.res}
-{$ENDIF}
+{$R ../Resources/JvSlider.res}
+{$ENDIF LINUX}
 
 constructor TJvSlider.Create(AOwner: TComponent);
 begin

@@ -35,11 +35,11 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, Grids, StdCtrls, Spin, ComCtrls, Buttons, Printers, ExtDlgs,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QGraphics, QControls, QForms, QDialogs,
   QExtCtrls, QGrids, QStdCtrls, QSpin, QComCtrls, QButtons, QPrinters, QExtDlgs,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvGridPrinter, JvComponent;
 
 type

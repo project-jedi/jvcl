@@ -81,17 +81,18 @@ type
   end;
 
 implementation
+
 {$IFDEF USEJVCL}
 uses
   JvJVCLUtils, JvResources;
-{$ENDIF}  
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
   RsActiveStepFormat = 'Step %d of %d';
   RsBackTo = 'Back to';
   RsNextStep = 'Next Step';
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);
 begin
@@ -210,7 +211,7 @@ begin
 //  {$ELSE}
   StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//  {$ENDIF}
+//  {$ENDIF USEJVCL}
 
   // Display Active Page Description
   Canvas.Font.Style:= [];
@@ -222,7 +223,7 @@ begin
 //  {$ELSE}
   DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
     DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//  {$ENDIF}
+//  {$ENDIF USEJVCL}
   Canvas.Font.Style:= [];
   if FShowDivider then
   begin
@@ -254,7 +255,7 @@ begin
 //    {$ELSE}
     StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ENDIF}
+//    {$ENDIF USEJVCL}
     OffsetRect(TextRect, 0, StepHeight);
     S := APage.Caption;
 //    {$IFDEF USEJVCL}
@@ -263,7 +264,7 @@ begin
 //    {$ELSE}
     DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ENDIF}
+//    {$ENDIF USEJVCL}
   end;
 
   { do the next step }
@@ -288,7 +289,7 @@ begin
 //    {$ELSE}
     StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ENDIF}
+//    {$ENDIF USEJVCL}
     OffsetRect(TextRect, 0, StepHeight);
     S := APage.Caption;
 //    {$IFDEF USEJVCL}
@@ -297,7 +298,7 @@ begin
 //    {$ELSE}
     DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ENDIF}
+//    {$ENDIF USEJVCL}
   end;
 end;
 

@@ -34,9 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Graphics,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QWindows, QGraphics,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type

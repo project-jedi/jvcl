@@ -143,10 +143,10 @@ uses
   {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
   Consts,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QConsts,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Typinfo;
 
 const
