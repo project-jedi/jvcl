@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI home page,
+located at http://www.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvSpecialProgress;
 
-{$OBJEXPORTALL On}
+{$ObjExportAll On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,  StdCtrls ,JVCLVer;
 
 type
   TJvSpecialProgress = class(TGraphicControl)
@@ -77,7 +77,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Minimum: Integer read FMinimum write SetMinimum default 0;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
@@ -120,6 +120,7 @@ implementation
 constructor TJvSpecialProgress.Create(AOwner: TComponent);
 begin
   inherited;
+  ControlStyle := ControlStyle + [csOpaque];  // SMM 20020604
   FMaximum := 100;
   FMinimum := 0;
   FTransparent := False;
@@ -165,14 +166,6 @@ var
   FRed, FGreen, FBlue: Real;
   FStart, FEnd: TColor;
 begin
-  //Paint the background
-  if not (FTransparent) then
-  begin
-    Canvas.Brush.Color := FColor;
-    Canvas.Brush.style := bsSolid;
-    Canvas.FillRect(Rect(1, 1, Width - 1, Height - 1));
-  end;
-
   if FStartColor < 0 then
     FStart := GetSysColor(FStartColor and not $80000000)
   else
@@ -219,7 +212,7 @@ begin
       end
       else
       begin
-        //Draw a gradient
+            //Draw a gradient
         if FSolid then
         begin
           Red := (GetRValue(FEnd) - GetRValue(FStart)) / taille;
@@ -271,7 +264,16 @@ begin
 
   taille := savetaille;
 
-  //Draw text ?
+  { SMM 20020604
+    Only paint the background that remains. }
+  if not (FTransparent) then
+  begin
+    Canvas.Brush.Color := FColor;
+    Canvas.Brush.style := bsSolid;
+    Canvas.FillRect(Rect(taille + 1, 1, Width - 1, Height - 1));
+  end;
+
+   //Draw text ?
   if FTextVisible then
   begin
     if FMaximum = FMinimum then
@@ -284,8 +286,7 @@ begin
     if FLeft < 0 then
       FLeft := 0;
     FTop := (Height - Canvas.TextHeight(st)) div 2;
-    if FTop < 0 then
-      FTop := 0;
+    if FTop < 0 then FTop := 0;
     Canvas.Brush.Color := clNone;
     Canvas.Brush.Style := bsClear;
     Canvas.TextOut(FLeft, FTop, st);
@@ -373,7 +374,8 @@ begin
     FPosition := Value;
     if FPosition > FMaximum then
       FPosition := FMaximum
-    else if FPosition < FMinimum then
+    else
+      if FPosition < FMinimum then
       FPosition := FMinimum;
     Invalidate;
   end;
@@ -429,7 +431,8 @@ procedure TJvSpecialProgress.StepIt;
 begin
   if FPosition + FStep > FMaximum then
     Position := FMaximum
-  else if FPosition + FStep < FMinimum then
+  else
+  if FPosition + FStep < FMinimum then
     Position := FMinimum
   else
     Position := FPosition + FStep;
