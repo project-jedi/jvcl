@@ -1750,7 +1750,6 @@ Showing_11=1
 OutputFile=output\WinHELP\JVCL.rtf
 HLPFilename=
 CreatePrintableDocumentation=0
-HelpCompiler=C:\Program Files\Borland\Delphi6\help\tools\hcrtf.exe
 
 [{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Help Project]
 HelpProjectFileAutomatic=1
@@ -3520,7 +3519,6 @@ SupportEnhancedDecompilation=1
 CompileFullTextSearchInformation=1
 CreateBinaryIndex=1
 CreateBinaryTOC=1
-HelpCompiler=C:\Program Files\HTML Help Workshop\hhc.exe
 
 [{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
 UseCSS=1
