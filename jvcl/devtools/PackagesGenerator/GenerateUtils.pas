@@ -49,7 +49,7 @@ uses
   {$ELSE}
   JclDateTime, JclStrings, JclFileUtils, JclSysUtils, JclLogic,
   {$ENDIF NO_JCL}
-  JvSimpleXml;
+  JvSimpleXml, PackageInformation;
 
 
 type
@@ -692,12 +692,12 @@ begin
     Result := StartsWith(GPrefix, Name);
 end;
 
-function BuildPackageName(packageNode : TJvSimpleXmlElem;
-  const target : string) : string;
+function BuildPackageName(xml: TRequiredPackage; const target : string) : string;
 var
   Name : string;
 begin
-  Name := packageNode.Properties.ItemNamed['Name'].Value;
+  Name := xml.Name;
+  {TODO : CrossPlatform packages}
   if HasModelPrefix(Name, target) then
   begin
     Result := ExpandPackageName(Name, target);
@@ -708,60 +708,36 @@ begin
   end;
 end;
 
-function IsNotInPerso(Node : TJvSimpleXmlElem; const target : string) : Boolean;
+function IsNotInPerso(Item: TPackageXmlInfoItem; const target : string) : Boolean;
 var
   persoTarget : string;
-  targets : TStringList;
 begin
   persoTarget := GetPersoTarget(target);
   if persoTarget = '' then
     Result := False
   else
   begin
-    targets := TStringList.Create;
-    try
-      StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
-                   ',',
-                   targets);
-      ExpandTargets(targets);
-      Result := (targets.IndexOf(persoTarget) = -1) and
-                (targets.IndexOf(target) > -1);
-    finally
-      targets.Free;
-    end;
+    Result := not Item.IsIncluded(persoTarget) and
+              Item.IsIncluded(target);
   end;
 end;
 
-function IsOnlyInPerso(Node : TJvSimpleXmlElem; const target : string) : Boolean;
+function IsOnlyInPerso(Item: TPackageXmlInfoItem; const target : string) : Boolean;
 var
   persoTarget : string;
-  targets : TStringList;
 begin
   persoTarget := GetPersoTarget(target);
   if persoTarget = '' then
     Result := False
   else
   begin
-    targets := TStringList.Create;
-    try
-      StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
-                   ',',
-                   targets);
-      ExpandTargets(targets);
-      Result := (targets.IndexOf(persoTarget) > -1) and
-                (targets.IndexOf(target) = -1);
-    finally
-      targets.Free;
-    end;
+    Result := Item.IsIncluded(persoTarget) and
+              not Item.IsIncluded(target);
   end;
 end;
 
-procedure EnsureCondition(lines: TStrings; Node : TJvSimpleXmlElem;
-  const target : string);
-var
-  Condition : string;
+procedure EnsureCondition(lines: TStrings; Condition: string; const target : string);
 begin
-  Condition := Node.Properties.Value('Condition');
   // if there is a condition
   if (Condition <> '') then
   begin
@@ -865,7 +841,7 @@ begin
   StrReplace(Name, '\', TargetList[GetNonPersoTarget(target)].PathSep, [rfReplaceAll]);
 end;
 
-procedure ApplyFormName(fileNode : TJvSimpleXmlElem; Lines : TStrings;
+procedure ApplyFormName(ContainedFile: TContainedFile; Lines : TStrings;
   const target : string);
 var
   formName : string;
@@ -880,8 +856,8 @@ var
   S: string;
   ps: Integer;
 begin
-  formNameAndType := fileNode.Properties.ItemNamed['FormName'].Value;
-  incFileName := fileNode.Properties.ItemNamed['Name'].Value;
+  formNameAndType := ContainedFile.FormName;
+  incFileName := ContainedFile.Name;
 
   // Do the CLX filename replacements if the target is marked as
   // being a CLX target
@@ -987,23 +963,6 @@ begin
   for i := targets.Count - 1 downto 0 do
     if not Assigned(TargetList.ItemsByName[targets[i]]) then
       targets.Delete(i);
-end;
-
-function IsIncluded(Node : TJvSimpleXmlElem; const target : string) : Boolean;
-var
-  targets : TStringList;
-begin
-  targets := TStringList.Create;
-  try
-    StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
-                 ',', targets);
-    ExpandTargets(targets);
-// CaseSensitive doesn't exist in D5 and the default is False anyway
-//    targets.CaseSensitive := False;
-    Result := (targets.IndexOf(target) > -1);
-  finally
-    targets.Free;
-  end;
 end;
 
 function NowUTC : TDateTime;
@@ -1143,27 +1102,22 @@ begin
   end;
 end;
 
-function GetDescription(rootNode: TJvSimpleXmlElem; const target: string): string;
+function GetDescription(xml: TPackageXmlInfo; const target: string): string;
 begin
   if TargetList[GetNonPersoTarget(target)].IsCLX then
-    Result := rootNode.Items.Value('ClxDescription') // meight not exist
+    Result := xml.ClxDescription
   else
-    Result := rootNode.Items.Value('Description');
+    Result := xml.Description;
 end;
 
 function ApplyTemplateAndSave(const path, target, package, extension
- : string; template : TStrings; xml : TJvSimpleXml;
+ : string; template : TStrings; xml : TPackageXmlInfo;
   const templateName, xmlName : string) : string;
 var
   OutFileName : string;
   oneLetterType : string;
   reqPackName : string;
   incFileName : string;
-  rootNode : TJvSimpleXmlElemClassic;
-  requiredNode : TJvSimpleXmlElem;
-  packageNode : TJvSimpleXmlElem;
-  containsNode : TJvSimpleXmlElem;
-  fileNode : TJvSimpleXmlElem;
   outFile : TStringList;
   curLine, curLineTrim : string;
   tmpLines, repeatLines : TStrings;
@@ -1171,8 +1125,7 @@ var
   j : Integer;
   tmpStr : string;
   bcbId : string;
-  bcblibs : string;
-  bcblibsList : TStringList;
+  bcblibsList : TStrings;
   TimeStampLine : Integer;
   Count: Integer;
   containsSomething : Boolean; // true if package will contain something
@@ -1181,7 +1134,6 @@ var
   IgnoreNextSemicolon: Boolean;
 begin
   outFile := TStringList.Create;
-  bcblibsList := TStringList.Create;
   Result := '';
   containsSomething := False;
   repeatSectionUsed := False;
@@ -1190,9 +1142,8 @@ begin
   tmpLines := TStringList.Create;
   try
     // read the xml file
-    rootNode := xml.Root;
-    OutFileName := rootNode.Properties.ItemNamed['Name'].Value;
-    if rootNode.Properties.ItemNamed['Design'].BoolValue then
+    OutFileName := xml.Name;
+    if xml.IsDesign then
     begin
       OutFileName := OutFileName + '-D';
       oneLetterType := 'd';
@@ -1209,10 +1160,6 @@ begin
 
     // The time stamp hasn't been found yet
     TimeStampLine := -1;
-
-    // get the nodes
-    requiredNode := rootNode.Items.ItemNamed['requires'];
-    containsNode := rootNode.Items.ItemNamed['contains'];
 
     // read the lines of the templates and do some replacements
     i := 0;
@@ -1237,20 +1184,19 @@ begin
           end;
 
           AddedLines := 0;
-          for j := 0 to requiredNode.Items.Count -1 do
+          for j := 0 to xml.RequireCount - 1 do
           begin
-            packageNode := requiredNode.Items[j];
             // if this required package is to be included for this target
-            if IsIncluded(packageNode, target) then
+            if xml.Requires[j].IsIncluded(target) then
             begin
               tmpLines.Assign(repeatLines);
-              reqPackName := BuildPackageName(packageNode, target);
+              reqPackName := BuildPackageName(xml.Requires[j], target);
               StrReplaceLines(tmpLines, '%NAME%', reqPackName);
               // We do not say that the package contains something because
               // a package is only interesting if it contains files for
               // the given target
               // containsSomething := True;
-              EnsureCondition(tmpLines, packageNode, target);
+              EnsureCondition(tmpLines, xml.Requires[j].Condition, target);
               outFile.AddStrings(tmpLines);
               Inc(AddedLines);
             end;
@@ -1288,25 +1234,24 @@ begin
           end;
 
           AddedLines := 0;
-          for j := 0 to containsNode.Items.Count -1 do
+          for j := 0 to xml.ContainCount - 1 do
           begin
-            fileNode := containsNode.Items[j];
             // if this included file is to be included for this target
-            if IsIncluded(fileNode, target) then
+            if xml.Contains[j].IsIncluded(target) then
             begin
               tmpLines.Assign(repeatLines);
-              incFileName := fileNode.Properties.ItemNamed['Name'].Value;
-              ApplyFormName(fileNode, tmpLines, target);
+              incFileName := xml.Contains[j].Name;
+              ApplyFormName(xml.Contains[j], tmpLines, target);
               containsSomething := True;
-              EnsureCondition(tmpLines, fileNode, target);
+              EnsureCondition(tmpLines, xml.Contains[j].Condition, target);
               outFile.AddStrings(tmpLines);
               Inc(AddedLines);
 
               // if this included file is not in the associated 'perso'
               // target or only in the 'perso' target then return the
               // 'perso' target name.
-              if IsNotInPerso(fileNode, target) or
-                 IsOnlyInPerso(fileNode, target) then
+              if IsNotInPerso(xml.Contains[j], target) or
+                 IsOnlyInPerso(xml.Contains[j], target) then
                 Result := GetPersoTarget(target);
             end;
           end;
@@ -1342,27 +1287,26 @@ begin
             Inc(i);
           end;
 
-          for j := 0 to containsNode.Items.Count -1 do
+          for j := 0 to xml.ContainCount - 1 do
           begin
-            fileNode := containsNode.Items[j];
             // if this included file is to be included for this target
             // and there is a form associated to the file
-            if IsIncluded(fileNode, target) then
+            if xml.Contains[j].IsIncluded(target) then
             begin
               containsSomething := True;
-              if (fileNode.Properties.ItemNamed['FormName'].Value <> '') then
+              if (xml.Contains[j].FormName <> '') then
               begin
                 tmpLines.Assign(repeatLines);
-                ApplyFormName(fileNode, tmpLines, target);
-                EnsureCondition(tmpLines, fileNode, target);
+                ApplyFormName(xml.Contains[j], tmpLines, target);
+                EnsureCondition(tmpLines, xml.Contains[j].Condition, target);
                 outFile.AddStrings(tmpLines);
               end;
 
               // if this included file is not in the associated 'perso'
               // target or only in the 'perso' target then return the
               // 'perso' target name.
-              if IsNotInPerso(fileNode, target) or
-                 IsOnlyInPerso(fileNode, target) then
+              if IsNotInPerso(xml.Contains[j], target) or
+                 IsOnlyInPerso(xml.Contains[j], target) then
                 Result := GetPersoTarget(target);
             end;
 
@@ -1381,10 +1325,14 @@ begin
 
           // read libs as a string of comma separated value
           bcbId := TargetList[GetNonPersoTarget(target)].Env+TargetList[GetNonPersoTarget(target)].Ver;
-          bcblibs :=  rootNode.Items.ItemNamed[bcbId+'Libs'].Value;
-          if bcblibs <> '' then
+          bcblibsList := nil;
+          if CompareText(bcbId, 'c6') = 0 then
+            bcblibsList := xml.C6Libs
+          else
+          if CompareText(bcbId, 'c5') = 0 then
+            bcblibsList := xml.C5Libs;
+          if bcblibsList <> nil then
           begin
-            StrToStrings(bcblibs, ',', bcblibsList);
             for j := 0 to bcbLibsList.Count - 1 do
             begin
               tmpLines.Assign(repeatLines);
@@ -1404,14 +1352,10 @@ begin
           if MacroReplace(curLine, '%',
             ['NAME%', PathExtractFileNameNoExt(OutFileName),
              'XMLNAME%', ExtractFileName(xmlName),
-             'DESCRIPTION%', GetDescription(rootNode, target),
-             'C5PFLAGS%', EnsurePFlagsCondition(
-                            rootNode.Items.ItemNamed['C5PFlags'].Value, target
-                          ),
-             'C6PFLAGS%', EnsurePFlagsCondition(
-                             rootNode.Items.ItemNamed['C6PFlags'].Value, target
-                          ),
-             'TYPE%', Iff(rootNode.Properties.ItemNamed['Design'].BoolValue, 'DESIGN', 'RUN'),
+             'DESCRIPTION%', GetDescription(xml, target),
+             'C5PFLAGS%', EnsurePFlagsCondition(xml.C5PFlags, target),
+             'C6PFLAGS%', EnsurePFlagsCondition(xml.C6PFlags, target),
+             'TYPE%', Iff(xml.IsDesign, 'DESIGN', 'RUN'),
              'DATETIME%', FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
              'type%', OneLetterType]) then
            begin
@@ -1438,18 +1382,16 @@ begin
     // if a file is not in the associated 'perso'
     // target or only in the 'perso' target then return the
     // 'perso' target name.
-    for j := 0 to requiredNode.Items.Count -1 do
+    for j := 0 to xml.RequireCount - 1 do
     begin
-      packageNode := requiredNode.Items[j];
-      if IsNotInPerso(packageNode, target) or
-         IsOnlyInPerso(packageNode, target) then
+      if IsNotInPerso(xml.Requires[j], target) or
+         IsOnlyInPerso(xml.Requires[j], target) then
         Result := GetPersoTarget(target);
     end;
-    for j := 0 to containsNode.Items.Count -1 do
+    for j := 0 to xml.ContainCount - 1 do
     begin
-      fileNode := containsNode.Items[j];
-      if IsNotInPerso(fileNode, target) or
-         IsOnlyInPerso(fileNode, target) then
+      if IsNotInPerso(xml.Contains[j], target) or
+         IsOnlyInPerso(xml.Contains[j], target) then
         Result := GetPersoTarget(target);
     end;
 
@@ -1462,8 +1404,8 @@ begin
     // the given target
     if not repeatSectionUsed then
     begin
-      for j := 0 to containsNode.Items.Count -1 do
-        if IsIncluded(containsNode.Items[j], target) then
+      for j := 0 to xml.ContainCount - 1 do
+        if xml.Contains[j].IsIncluded(target) then
         begin
           containsSomething := True;
           Break;
@@ -1497,7 +1439,6 @@ begin
   finally
     tmpLines.Free;
     repeatLines.Free;
-    bcblibsList.Free;
     outFile.Free;
   end;
 end;
@@ -1567,30 +1508,12 @@ var
   i : Integer;
   j : Integer;
   templateName, templateNamePers : string;
-  xml : TJvSimpleXml;
+  xml : TPackageXmlInfo;
   xmlName : string;
   template, templatePers : TStringList;
   persoTarget : string;
   target : string;
   incfile : TStringList;
-  XmlFileCache: TStringList;
-
-
-  function GetXmlFile(const xmlName: string): TJvSimpleXML;
-  var
-    i: Integer;
-  begin
-    if XmlFileCache.Find(xmlName, i) then
-      Result := TJvSimpleXML(XmlFileCache.Objects[i])
-    else
-    begin
-      Result := TJvSimpleXML.Create(nil);
-      XmlFileCache.AddObject(xmlName, Result);
-
-      Result.Options := [];
-      Result.Filename := xmlName; // load file
-    end;
-  end;
 
 begin
   Result := True;
@@ -1641,98 +1564,90 @@ begin
   if format <> '' then
     GFormat := Format;
 
-  XmlFileCache := TStringList.Create;
-  try
-    XmlFileCache.Sorted := True;
-    // for all targets
-    for i := 0 to targets.Count - 1 do
+  // for all targets
+  for i := 0 to targets.Count - 1 do
+  begin
+    target := targets[i];
+    SendMsg(SysUtils.Format('Generating packages for %s', [target]));
+    // find all template files for that target
+    if FindFirst(path+TargetToDir(target)+PathSeparator+'template.*', 0, rec) = 0 then
     begin
-      target := targets[i];
-      SendMsg(SysUtils.Format('Generating packages for %s', [target]));
-      // find all template files for that target
-      if FindFirst(path+TargetToDir(target)+PathSeparator+'template.*', 0, rec) = 0 then
-      begin
-        repeat
-          template := TStringList.Create;
-          templatePers := TStringList.Create;
-          try
-            SendMsg(SysUtils.Format(#9'Loaded %s', [rec.Name]));
+      repeat
+        template := TStringList.Create;
+        templatePers := TStringList.Create;
+        try
+          SendMsg(SysUtils.Format(#9'Loaded %s', [rec.Name]));
 
-            templateName := path+TargetToDir(target)+PathSeparator+rec.Name;
-            if IsBinaryFile(templateName) then
-              template.Clear
-            else
-              template.LoadFromFile(templateName);
+          templateName := path+TargetToDir(target)+PathSeparator+rec.Name;
+          if IsBinaryFile(templateName) then
+            template.Clear
+          else
+            template.LoadFromFile(templateName);
 
-            // Try to find a template file named the same as the
-            // current one in the perso directory so it can
-            // be used instead
-            templateNamePers := templateName;
-            templatePers.Assign(template);
-            persoTarget := GetPersoTarget(target);
-            if (persoTarget <> '') and
-               DirectoryExists(path+TargetToDir(persoTarget)) then
+          // Try to find a template file named the same as the
+          // current one in the perso directory so it can
+          // be used instead
+          templateNamePers := templateName;
+          templatePers.Assign(template);
+          persoTarget := GetPersoTarget(target);
+          if (persoTarget <> '') and
+             DirectoryExists(path+TargetToDir(persoTarget)) then
+          begin
+            templateNamePers := path+TargetToDir(persoTarget)+PathSeparator+rec.Name;
+            if FileExists(templateNamePers) then
             begin
-              templateNamePers := path+TargetToDir(persoTarget)+PathSeparator+rec.Name;
-              if FileExists(templateNamePers) then
-              begin
-                if IsBinaryFile(templateNamePers) then
-                  templatePers.Clear
-                else
-                  templatePers.LoadFromFile(templateNamePers);
-              end
+              if IsBinaryFile(templateNamePers) then
+                templatePers.Clear
               else
-              begin
-                templateNamePers := templateName;
-              end
-            end;
-
-            // apply the template for all packages
-            for j := 0 to packages.Count-1 do
+                templatePers.LoadFromFile(templateNamePers);
+            end
+            else
             begin
-             // load (buffered) xml file
-              xmlName := path+'xml'+PathSeparator+packages[j]+'.xml';
-              xml := GetXmlFile(xmlName);
-
-              persoTarget := ApplyTemplateAndSave(
-                                   path,
-                                   target,
-                                   packages[j],
-                                   ExtractFileExt(rec.Name),
-                                   template,
-                                   xml,
-                                   templateName,
-                                   xmlName);
-
-              // if the generation requested a perso target to be done
-              // then generate it now, using the perso template
-              if persoTarget <> '' then
-              begin
-                ApplyTemplateAndSave(
-                   path,
-                   persoTarget,
-                   packages[j],
-                   ExtractFileExt(rec.Name),
-                   templatePers,
-                   xml,
-                   templateNamePers,
-                   xmlName);
-              end;
-            end;
-          finally
-            template.Free;
-            templatePers.Free;
+              templateNamePers := templateName;
+            end
           end;
-        until FindNext(rec) <> 0;
-      end
-      else
-        SendMsg(SysUtils.Format(#9'No template found for %s' , [target]));
-      FindClose(rec);
-    end;
-  finally
-    for i := 0 to XmlFileCache.Count - 1 do
-      XmlFileCache.Objects[i].Free;
-    XmlFileCache.Free;
+
+          // apply the template for all packages
+          for j := 0 to packages.Count - 1 do
+          begin
+           // load (buffered) xml file
+            xmlName := path+'xml'+PathSeparator+packages[j]+'.xml';
+            xml := GetPackageXmlInfo(xmlName);
+
+            persoTarget := ApplyTemplateAndSave(
+                                 path,
+                                 target,
+                                 packages[j],
+                                 ExtractFileExt(rec.Name),
+                                 template,
+                                 xml,
+                                 templateName,
+                                 xmlName);
+
+            // if the generation requested a perso target to be done
+            // then generate it now, using the perso template
+            if persoTarget <> '' then
+            begin
+              ApplyTemplateAndSave(
+                 path,
+                 persoTarget,
+                 packages[j],
+                 ExtractFileExt(rec.Name),
+                 templatePers,
+                 xml,
+                 templateNamePers,
+                 xmlName);
+            end;
+          end;
+        finally
+          template.Free;
+          templatePers.Free;
+        end;
+      until FindNext(rec) <> 0;
+    end
+    else
+      SendMsg(SysUtils.Format(#9'No template found for %s' , [target]));
+    FindClose(rec);
   end;
 {  if makeDof then
   begin
@@ -2131,6 +2046,8 @@ initialization
   AliasList := nil;
   DefinesList := nil;
   ClxReplacementList := nil;
+
+  ExpandPackageTargets := ExpandTargets;
 
 finalization
   TargetList.Free;
