@@ -154,7 +154,7 @@ type
 
   TJvCreateDataset = procedure (Sender:TObject; var Dataset:TDataset) of object;
   TJvSaveDataset = procedure (Sender:TObject; Dataset:TDataset) of object;
-  TJvExportDataset = class(TJvgCommonExport)
+  TJvgExportDataset = class(TJvgCommonExport)
   private
     FOnCreateDest: TJvCreateDataset;
     FOnSaveDest: TJvCreateDataset;
@@ -573,9 +573,9 @@ begin
   FStyles.Assign(Value);
 end;
 
-{ TJvExportDataset }
+{ TJvgExportDataset }
 
-procedure TJvExportDataset.Execute;
+procedure TJvgExportDataset.Execute;
 var
   i, RecNo, RecCount: integer;
   Dest: TDataset;
@@ -728,7 +728,6 @@ procedure TJvgExportXML.Execute;
 var
   RecNo, RecCount: Integer;
   XML: TJvSimpleXML;
-  Root: TJvSimpleXMLElemClassic;
   Header: TJvSimpleXMLElemClassic;
   Table: TJvSimpleXMLElemClassic;
   Field: TJvSimpleXMLElemClassic;
@@ -770,7 +769,6 @@ begin
   Header := CreateNode('Header', XML.Root);
   Table := CreateNode('Table', Header);
   DataSet.Open;
-  RecNo := 0;
   RecCount := DataSet.RecordCount;
   for i := 0 to DataSet.FieldCount - 1 do
   begin

@@ -118,7 +118,7 @@ end;
 
 procedure TfrmSelectColumn.FormActivate(Sender: TObject);
 var
-  i: Integer;
+  i, j: Integer;
   lColumn: TColumn;
 begin
   if Assigned(FJvDBGrid) then
@@ -133,8 +133,8 @@ begin
             lColumn := GetColumn(Fields[i]);
             if Assigned(lColumn) then
             begin
-              clbList.Items.AddObject(Fields[i].DisplayLabel, TObject(lColumn.Index));
-              clbList.Checked[i] := lColumn.Visible and Fields[i].Visible;
+               j := clbList.Items.AddObject(Fields[i].DisplayLabel, TObject(lColumn.Index));
+              clbList.Checked[j] := lColumn.Visible and Fields[i].Visible;
             end;
           end;
       end
@@ -142,8 +142,8 @@ begin
       begin
         for i := 0 to Columns.Count - 1 do
         begin
-          clbList.Items.AddObject(FJvDBGrid.Columns[i].FieldName, TObject(i));
-          clbList.Checked[i] := FJvDBGrid.Columns[i].Visible;
+          j := clbList.Items.AddObject(FJvDBGrid.Columns[i].FieldName, TObject(i));
+          clbList.Checked[j] := FJvDBGrid.Columns[i].Visible;
         end;
       end;
       if clbList.Items.Count > 0 then
