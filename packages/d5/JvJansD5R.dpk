@@ -1,7 +1,7 @@
 package JvJansD5R;
 
-{$R *.RES}
-{$ALIGN ON}
+{$R *.res}
+{$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -26,46 +26,49 @@ package JvJansD5R;
 {$IMPLICITBUILD ON}
 
 requires
-  vcl50,
-  vclx50,
-  VclSmp50;
+  vcl,
+  vclx,
+  VclSmp,
+  rtl,
+  JvCoreD5R;
 
 contains
-  JvMarkupLabel in '..\run\JvMarkupLabel.pas',
-  JvSALCore in '..\run\JvSALCore.pas',
-  JvSALHashList in '..\run\JvSALHashList.pas',
-  JvSALMath in '..\run\JvSALMath.pas',
-  JvSAL in '..\run\JvSAL.pas',
-  JvSticker in '..\run\JvSticker.pas',
-  JvXmlTree in '..\run\JvXmlTree.pas',
-  JvForth in '..\run\JvForth.pas',
-  JvStrings in '..\run\JvStrings.pas',
-  JvYearGridEditForm in '..\run\JvYearGridEditForm.pas' {YearGridEditF},
-  JvYearGrid in '..\run\JvYearGrid.pas',
-  JvTurtle in '..\run\JvTurtle.pas',
-  JvTracker in '..\run\JvTracker.pas',
-  JvAirBrush in '..\run\JvAirBrush.pas',
-  JvGridFilter in '..\run\JvGridFilter.pas',
-  JvGridPreviewForm in '..\run\JvGridPreviewForm.pas' {JvGridPreviewF},
-  JvGridPrinter in '..\run\JvGridPrinter.pas',
-  JvMarkupViewer in '..\run\JvMarkupViewer.pas',
-  JvJanTreeView in '..\run\JvJanTreeView.pas',
-  JvArrayButton in '..\run\JvArrayButton.pas',
-  JvButtonUtils in '..\run\JvButtonUtils.pas',
-  JvPaintFX in '..\run\JvPaintFX.pas',
-  JvBitmapButton in '..\run\JvBitmapButton.pas',
-  JvSpeller in '..\run\JvSpeller.pas' {janSpellerF},
-  JvSimScope in '..\run\JvSimScope.pas',
-  JvSimLogic in '..\run\JvSimLogic.pas',
-  JvSimPID in '..\run\JvSimPID.pas',
-  JvSimPIDLinker in '..\run\JvSimPIDLinker.pas',
-  JvSimIndicator in '..\run\JvSimIndicator.pas',
-  JvShapedButton in '..\run\JvShapedButton.pas',
-  JvPainterEffectsForm in '..\run\JvPainterEffectsForm.pas',
-  JvPainterQBForm in '..\run\JvPainterQBForm.pas',
-  JvQuickPreviewForm in '..\run\JvQuickPreviewForm.pas',
-  JvResample in '..\run\JvResample.pas',
-  JvDrawImage in '..\run\JvDrawImage.pas',
-  JvCSVBaseControls in '..\run\JvCSVBaseControls.pas';
+  JvMarkupLabel in '..\..\run\JvMarkupLabel.pas',
+  JvSALCore in '..\..\run\JvSALCore.pas',
+  JvSALHashList in '..\..\run\JvSALHashList.pas',
+  JvSALMath in '..\..\run\JvSALMath.pas',
+  JvSAL in '..\..\run\JvSAL.pas',
+  JvSticker in '..\..\run\JvSticker.pas',
+  JvXmlTree in '..\..\run\JvXmlTree.pas',
+  JvForth in '..\..\run\JvForth.pas',
+  JvStrings in '..\..\run\JvStrings.pas',
+  JvYearGridEditForm in '..\..\run\JvYearGridEditForm.pas' {YearGridEditF},
+  JvYearGrid in '..\..\run\JvYearGrid.pas',
+  JvTurtle in '..\..\run\JvTurtle.pas',
+  JvTracker in '..\..\run\JvTracker.pas',
+  JvAirBrush in '..\..\run\JvAirBrush.pas',
+  JvGridFilter in '..\..\run\JvGridFilter.pas',
+  JvGridPreviewForm in '..\..\run\JvGridPreviewForm.pas' {JvGridPreviewF},
+  JvGridPrinter in '..\..\run\JvGridPrinter.pas',
+  JvMarkupViewer in '..\..\run\JvMarkupViewer.pas',
+  JvJanTreeView in '..\..\run\JvJanTreeView.pas',
+  JvArrayButton in '..\..\run\JvArrayButton.pas',
+  JvButtonUtils in '..\..\run\JvButtonUtils.pas',
+  JvPaintFX in '..\..\run\JvPaintFX.pas',
+  JvBitmapButton in '..\..\run\JvBitmapButton.pas',
+  JvSpeller in '..\..\run\JvSpeller.pas' {janSpellerF},
+  JvSimScope in '..\..\run\JvSimScope.pas',
+  JvSimLogic in '..\..\run\JvSimLogic.pas',
+  JvSimPID in '..\..\run\JvSimPID.pas',
+  JvSimPIDLinker in '..\..\run\JvSimPIDLinker.pas',
+  JvSimIndicator in '..\..\run\JvSimIndicator.pas',
+  JvShapedButton in '..\..\run\JvShapedButton.pas',
+  JvPainterEffectsForm in '..\..\run\JvPainterEffectsForm.pas',
+  JvPainterQBForm in '..\..\run\JvPainterQBForm.pas',
+  JvQuickPreviewForm in '..\..\run\JvQuickPreviewForm.pas',
+  JvResample in '..\..\run\JvResample.pas',
+  JvDrawImage in '..\..\run\JvDrawImage.pas',
+  JvCSVBaseControls in '..\..\run\JvCSVBaseControls.pas';
 
 end.
+

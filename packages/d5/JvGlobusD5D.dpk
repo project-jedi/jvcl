@@ -1,8 +1,8 @@
 package JvGlobusD5D;
 
-{$R *.RES}
+{$R *.res}
 {$R '..\resources\JvGlobusReg.dcr'}
-{$ALIGN ON}
+{$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -24,35 +24,43 @@ package JvGlobusD5D;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL - Globus VCL Extension Library'}
-{$IMPLICITBUILD OFF}
+{$IMPLICITBUILD ON}
 
 requires
-  vcl50,
-  Vclx50,
-  Vcldb50,
-  VclSmp50,
-  Vclbde50,
-  Qrpt50,
-  vcljpg50,
-  vclie50,
-  DJCL50,
-  JVCL200_R50,
-  GlobusR5;
+  vcl,
+  Vclx,
+  Vcldb,
+  VclSmp,
+  Qrpt,
+  vcljpg,
+  vclie,
+  designide,
+  JvGlobusD5R,
+  JvCustomD5R,
+  JvCtrlsD5R,
+  JvMMD5R,
+  JvDlgsD5R,
+  rtl,
+  vclactnband,
+  JvCoreD5R,
+  DJCL70;
 
 contains
-  JvgRegLibDelphi in '..\design\JvgRegLibDelphi.pas',
-  JvCompEditorTemplate in '..\design\JvCompEditorTemplate.pas' {JvgCompEditorTemplate},
-  JvgLabelEditor in '..\design\JvgLabelEditor.pas' {JvgLabelEditorDlg},
-  JvgReportEditor in '..\design\JvgReportEditor.pas',
-  JvgReportParamEditor in '..\design\JvgReportParamEditor.pas',
-  JvgReportParamEditorForm in '..\design\JvgReportParamEditorForm.pas',
-  JvgShadowEditor in '..\design\JvgShadowEditor.pas',
-  JvgCompDescription in '..\design\JvgCompDescription.pas',
-  JvgComponentListEditor in '..\design\JvgComponentListEditor.pas',
-  JvgPropertyCenter in '..\design\JvgPropertyCenter.pas',
-  JvgHelpPanelEditor in '..\design\JvgHelpPanelEditor.pas',
-  JvgRTFPreviewEditor in '..\design\JvgRTFPreviewEditor.pas',
-  JvgLogicsEditor in '..\design\JvgLogicsEditor.pas',
-  JvgLogicItemEditor in '..\design\JvgLogicItemEditor.pas';
+  JvgRegLibDelphi in '..\..\design\JvgRegLibDelphi.pas',
+  JvCompEditorTemplateForm in '..\..\design\JvCompEditorTemplateForm.pas' {JvgCompEditorTemplate},
+  JvgLabelEditor in '..\..\design\JvgLabelEditor.pas' {JvgLabelEditorDlg},
+  JvgReportEditor in '..\..\design\JvgReportEditor.pas',
+  JvgReportParamEditor in '..\..\design\JvgReportParamEditor.pas',
+  JvgReportParamEditorForm in '..\..\design\JvgReportParamEditorForm.pas',
+  JvgShadowEditor in '..\..\design\JvgShadowEditor.pas',
+  JvgCompDescription in '..\..\design\JvgCompDescription.pas',
+  JvgComponentListEditorForm in '..\..\design\JvgComponentListEditorForm.pas',
+  JvgPropertyCenter in '..\..\design\JvgPropertyCenter.pas',
+  JvgHelpPanelEditor in '..\..\design\JvgHelpPanelEditor.pas',
+  JvgRTFPreviewEditor in '..\..\design\JvgRTFPreviewEditor.pas',
+  JvgLogicsEditorForm in '..\..\design\JvgLogicsEditorForm.pas',
+  JvgLogicItemEditorForm in '..\..\design\JvgLogicItemEditorForm.pas',
+  JvgMultiResourceEditorForm in '..\..\design\JvgMultiResourceEditorForm.pas' {JvgMultipleResourceEdit},
+  JvgMultiResources in '..\..\design\JvgMultiResources.pas';
 
 end.

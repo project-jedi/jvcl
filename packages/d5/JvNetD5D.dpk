@@ -1,0 +1,40 @@
+package JvNetD5D;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Network Components Designtime Package'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  JvNetD5R,
+  designide,
+  JvStdCtrlsD5D;
+
+contains
+  JvNetReg in '..\..\design\JvNetReg.pas',
+  JvMailEditor in '..\..\design\JvMailEditor.pas',
+  JvHtmlParserEditor in '..\..\design\JvHTMLParserEditor.pas',
+  JvFormParser in '..\..\run\JvFormParser.pas' {FormParsers};
+
+end.

@@ -1,4 +1,4 @@
-package JvValidatorsD6R;
+package JvPrintPreviewD5D;
 
 {$R *.res}
 {$ALIGN 8}
@@ -22,19 +22,17 @@ package JvValidatorsD6R;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Validators and Error Provider Components'}
-{$RUNONLY}
+{$DESCRIPTION 'JVCL Print Preview Components'}
+{$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
 requires
   rtl,
-  vcl,
+  designide,
   vclx,
-  JvCoreD6R,
-  DJCL70;
+  JvPrintPreviewD5R;
 
 contains
-  JvValidators in '..\..\run\JvValidators.pas',
-  JvErrProvider in '..\..\run\JvErrProvider.pas';
+  JvPreviewReg in '..\..\design\JvPreviewReg.pas';
 
 end.

@@ -1,4 +1,4 @@
-package JvValidatorsD6R;
+package JvBandsD6R;
 
 {$R *.res}
 {$ALIGN 8}
@@ -14,27 +14,23 @@ package JvValidatorsD6R;
 {$OPTIMIZATION OFF}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS OFF}
-{$REFERENCEINFO OFF}
+{$REFERENCEINFO ON}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES ON}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Validators and Error Provider Components'}
+{$DESCRIPTION 'JVCL Band Objects Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
-  rtl,
-  vcl,
-  vclx,
-  JvCoreD6R,
-  DJCL70;
+  JvCoreD6R;
 
 contains
-  JvValidators in '..\..\run\JvValidators.pas',
-  JvErrProvider in '..\..\run\JvErrProvider.pas';
+  JvBandObject in '..\..\run\JvBandObject.pas',
+  JvBandForms in '..\..\run\JvBandForms.pas';
 
 end.
