@@ -150,7 +150,7 @@ type
       CaseInsensitive, Descending: Boolean);
 {$ENDIF}
     procedure EmptyTable;
-    procedure CopyStructure(Source: TDataSet);
+    procedure CopyStructure(Source: TDataSet;UseAutoIncAsInteger:boolean = false);
     function LoadFromDataSet(Source: TDataSet; RecordCount: Integer;
       Mode: TLoadMode): Integer;
     function SaveToDataSet(Dest: TDataSet; RecordCount: Integer): Integer;
@@ -1331,7 +1331,7 @@ begin
   end;
 end;
 
-procedure TJvMemoryData.CopyStructure(Source: TDataSet);
+procedure TJvMemoryData.CopyStructure(Source: TDataSet;UseAutoIncAsInteger:boolean = false);
 
   procedure CheckDataTypes(FieldDefs: TFieldDefs);
   var
@@ -1339,6 +1339,8 @@ procedure TJvMemoryData.CopyStructure(Source: TDataSet);
   begin
     for I := FieldDefs.Count - 1 downto 0 do
     begin
+      if (FieldDefs.Items[I].DataType = ftAutoInc) and  UseAutoIncAsInteger then
+        FieldDefs.Items[I].DataType := ftInteger;
       if not (FieldDefs.Items[I].DataType in ftSupported) then
         FieldDefs.Items[I].Free
 {$IFDEF COMPILER4_UP}
