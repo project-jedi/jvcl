@@ -61,7 +61,7 @@ type
 
   TJvCustomLinkLabel = class(TJvGraphicControl, IDynamicNodeHandler)
   private
-    FText: TStringList;
+    FLines: TStringList;
     FRenderer: IRenderer;
     FActiveLinkNode: TLinkNode;
     FHotLinks: Boolean;
@@ -120,7 +120,7 @@ type
     property Parser: IParser read FParser;
     property Renderer: IRenderer read FRenderer;  
     property Caption: TCaption read GetText write SetText; 
-    property Text: TStrings read GetStrings write SetStrings;
+    property Lines: TStrings read GetStrings write SetStrings;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;                // Bianconi
     property LinkColor: TColor read GetLinkColor write SetLinkColor default clBlue;
@@ -146,7 +146,7 @@ type
   TJvLinkLabel = class(TJvCustomLinkLabel)
   published
     property Caption;
-    property Text;
+    property Lines;
     property Anchors;
     property Transparent;
     property Layout;                   // Bianconi
@@ -203,7 +203,7 @@ constructor TJvCustomLinkLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLinkCursor := crHandPoint;
-  FText := TStringList.Create;
+  FLines := TStringList.Create;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable]; 
   Width := 160;
   Height := 17;
@@ -228,7 +228,7 @@ end;
 destructor TJvCustomLinkLabel.Destroy;
 begin
   FNodeTree.Free;
-  FText.Free;
+  FLines.Free;
   inherited Destroy;
 end;
 
@@ -568,9 +568,9 @@ procedure TJvCustomLinkLabel.SetText(const Value: TCaption);
 begin
   if Value <> Caption then
   begin
-    Text.Clear; 
-    inherited SetText(Value);  
-    Text.Add(Caption);
+    Lines.Clear;
+    inherited SetText(Value);
+    Lines.Add(Caption);
     FActiveLinkNode := nil; // We're about to free the tree containing the node it's pointing to
     FNodeTree.Free;
     ResetNodeCount;
@@ -646,12 +646,13 @@ end;
 
 function TJvCustomLinkLabel.GetStrings: TStrings;
 begin
-  Result := FText;
+  Result := FLines;
 end;
 
 procedure TJvCustomLinkLabel.SetStrings(const Value: TStrings);
 begin
-  FText.Assign(Value); inherited SetText(FText.Text);
+  FLines.Assign(Value);
+  inherited SetText(FLines.Text);
 end;
 
 // Bianconi

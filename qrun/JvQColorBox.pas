@@ -47,9 +47,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQColorBox;
+
+{$I jvcl.inc}
 
 interface
 

@@ -35,9 +35,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQAni;
+
+{$I jvcl.inc}
 
 interface
 

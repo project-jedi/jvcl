@@ -31,9 +31,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQImageList;
+
+{$I jvcl.inc}
 
 interface
 
@@ -206,8 +206,8 @@ function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitma
 implementation
 
 uses
-  QConsts, 
-  TypInfo, JvQJVCLUtils, JvQResources, JvQFinalize;
+  QConsts, TypInfo,  
+  JvQJVCLUtils, JvQResources, JvQFinalize;
 
 const
   sUnitName = 'JvImageList';
@@ -316,7 +316,7 @@ procedure TJvImageListItem.SetKind(AKind: TJvImageListItemKind);
 begin
   // (usc) remove when MappedResourceBitmap support is finished
   if AKind = ikMappedResourceBitmap then
-    raise EJvImageListError.CreateFmt(RsNotSupportedItemKind, ['ikMappedResourceBitmap']);
+    raise EJvImageListError.CreateResFmt(@RsNotSupportedItemKind, ['ikMappedResourceBitmap']);
 
   if FKind <> AKind then
   begin
@@ -626,12 +626,7 @@ end;
 
 procedure TJvImageList.SetFileName(const Value: TFileName);
 begin
-  {$IFDEF MSWINDOWS}
-  if not SameText(Value, FFileName) then
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  if Value <> FFileName then
-  {$ENDIF LINUX}
+  if not SameFileName(Value, FFileName) then
   begin
     FFileName := Value;
     DoLoadFromFile;

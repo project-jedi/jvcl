@@ -31,9 +31,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQResources;
+
+{$I jvcl.inc}
 
 interface
 
@@ -111,6 +111,8 @@ resourcestring
   RsEInterfaceNotSupported = '%s does not support the %s interface';
   RsECircularReference = 'Circular reference not allowed';
 
+  RsESourceBitmapTooSmall = 'Source bitmap too small';
+
 //=== JvAni.pas ==============================================================
 resourcestring
   RsAniExtension = 'ani';
@@ -165,7 +167,8 @@ resourcestring
   RsNotConnected = 'Not connected';
   RsErrorMessagePrefix = 'Error #';
 
-  RsEInvalidDriverIndex = '%d is an invalid driver index. The maximum value is %d';
+  RsEInvalidDriverIndex = '%d is an invalid driver index. The maximum value is %d'#13#10+
+                          'This may also happen if the device could not be initialized properly.';
 
 //=== JvBackgrounds.pas ======================================================
 resourcestring
@@ -332,6 +335,12 @@ resourcestring
   RsEInvalidColor = 'Invalid color (%d)';
   RsEItemNotForList = 'Item does not belong to this list';
 
+//=== JvCombobox.pas =========================================================
+resourcestring
+  RsCapSelAll = '&Select all';
+  RsCapDeselAll = '&Deselect all';
+  RsENoMoreLength = 'Too many items selected';
+
 //=== JvComputerInfoEx.pas ===================================================
 resourcestring
   RsEReadOnlyProperty = 'This value is read-only and cannot be changed.';
@@ -484,7 +493,7 @@ resourcestring
   RsJvDBGridSelectTitle = 'Select columns';
   RsJvDBGridSelectOK = '&OK';
   RsJvDBGridSelectWarning = 'At least one column must be visible!';
-  RsJvDBGridControlPropertyNotAssigned = 'JvDbControls.EditControls property Control not assigned'; // wpostma.
+  RsEJvDBGridControlPropertyNotAssigned = 'JvDbControls.EditControls property Control not assigned'; // wpostma.
 
 //=== JvDBGridExport.pas =====================================================
 resourcestring
@@ -615,6 +624,11 @@ resourcestring
   RsERedoNotYetImplemented = 'Redo not yet implemented';
   RsEInvalidCompletionMode = 'Invalid JvEditor Completion Mode';
 
+//=== JvEmbeddedForms.pas ====================================================
+resourcestring
+  RsEFormLinkSingleInstanceOnly = 'You only need one form link per form.';
+  RsELinkCircularRef = 'Circular references not allowed.';
+
 //=== JvErrorIndicator.pas ===================================================
 resourcestring
   RsEControlNotFoundInGetError = 'Control not found in GetError';
@@ -725,26 +739,6 @@ resourcestring
 
 resourcestring
   RsNoNewerVersionOfProgramAvailable = 'No newer version of program available';
-
-
-//=== JvgConstSysRequirements.pas ============================================
-
-resourcestring
-  { RUSSIAN
-  RsVideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
-  RsGraphicResolution = 'Разрешение экрана должно быть %s точек или выше. Измените разрешение в свойствах экрана.';
-  RsColorDepth = 'Количество цветов экрана должно быть %s цветов или выше. Измените число цветов в свойствах экрана.';
-  RsSystemFont = 'В системе должен быть установлен %s шрифт. Измените вид шрифта в свойствах экрана.';
-  RsOSPlatform = 'Для работы программы необходима операционная система %s.';
-  }
-  RsVideoVRefreshRate =
-    'The monitor refresh rate should be %d Hertz or higher. Change monitor refresh rate in Monitor Control Panel.';
-  RsGraphicResolution =
-    'The screen resolution should be equal %s pixels or higher. Change screen resolution in Monitor Control Panel.';
-  RsColorDepth =
-    'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
-  RsSystemFont = 'In system small fonts should be established. Change to small fonts in Monitor Control Panel.';
-  RsOSPlatform = 'The program requires %s or better.';
 
 
 //=== JvGenetic.pas ==========================================================
@@ -859,6 +853,26 @@ resourcestring
 
 resourcestring
   RsTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
+
+
+//=== JvgSysRequirements.pas =================================================
+
+resourcestring
+  { RUSSIAN
+  RsVideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
+  RsGraphicResolution = 'Разрешение экрана должно быть %s точек или выше. Измените разрешение в свойствах экрана.';
+  RsColorDepth = 'Количество цветов экрана должно быть %s цветов или выше. Измените число цветов в свойствах экрана.';
+  RsSystemFont = 'В системе должен быть установлен %s шрифт. Измените вид шрифта в свойствах экрана.';
+  RsOSPlatform = 'Для работы программы необходима операционная система %s.';
+  }
+  RsVideoVRefreshRate =
+    'The monitor refresh rate should be %d Hertz or higher. Change monitor refresh rate in Monitor Control Panel.';
+  RsGraphicResolution =
+    'The screen resolution should be equal %s pixels or higher. Change screen resolution in Monitor Control Panel.';
+  RsColorDepth =
+    'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
+  RsSystemFont = 'In system small fonts should be established. Change to small fonts in Monitor Control Panel.';
+  RsOSPlatform = 'The program requires %s or better.';
 
 
 //=== JvgUtils.pas ===========================================================
@@ -1408,6 +1422,10 @@ resourcestring
   RsErrParameterFileExistOverwrite = 'Parameter %s: The file "%s" exists! Overwrite?';
   RsErrParameterDirectoryNotExist = 'Parameter %s: The directory "%s" does not exist!';
 
+//=== JvParameterListTools.pas ===============================================
+resourcestring
+  RsSelectCaption = 'Select...';
+
 //=== JvParserForm.pas =======================================================
 resourcestring
   RsNewObject = 'New';
@@ -1484,10 +1502,6 @@ resourcestring
   RsMyComputer = 'My Computer';
   RsDefaultNoValue = '(value not set)';
   RsUnknownCaption = '(Unknown)';
-
-//=== JvResample.pas =========================================================
-resourcestring
-  RsESourceBitmapTooSmall = 'Source bitmap too small';
 
 //=== JvRichEdit.pas =========================================================
 resourcestring

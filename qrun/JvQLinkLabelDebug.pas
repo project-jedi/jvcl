@@ -33,9 +33,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQLinkLabelDebug;
+
+{$I jvcl.inc}
 
 interface
 

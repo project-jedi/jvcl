@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQColorTrackbar;
+
+{$I jvcl.inc}
 
 interface
 

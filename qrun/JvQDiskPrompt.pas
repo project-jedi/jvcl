@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQDiskPrompt;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQDiskPrompt;
 
 interface
 

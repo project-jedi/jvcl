@@ -28,6 +28,8 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQExCheckLst;
+
 {$I jvcl.inc}
 {MACROINCLUDE JvExControls.macros}
 
@@ -38,12 +40,11 @@ Known Issues:
  * update of this file. Do your changes in the template files.
  ****************************************************************************}
 
-unit JvQExCheckLst;
-
 interface
 
-uses  
-  Types, Qt, QGraphics, QControls, QForms, QCheckLst, QWindows, 
+uses 
+  QGraphics, QControls, QForms, QCheckLst, 
+  Types, Qt, QWindows, 
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
@@ -55,7 +56,8 @@ uses
 
 
 type
-  TJvExCheckListBox = class(TCheckListBox, IJvStdControlEvents, IJvControlEvents, IPerformControl)  
+  TJvExCheckListBox = class(TCheckListBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
+  // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -65,13 +67,23 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+  private
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-    procedure RecreateWnd;
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: integer; override;
     procedure CreateWnd; dynamic;
-    procedure CreateWidget; override; 
+    procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer); 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -99,12 +111,17 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
+  private
+    FCanvas: TCanvas;
+  protected
+    procedure Paint; virtual;
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
   TJvExPubCheckListBox = class(TJvExCheckListBox) 
   end;
   
@@ -164,11 +181,27 @@ function TJvExCheckListBox.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+  
 function TJvExCheckListBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExCheckListBox.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvExCheckListBox.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(self);
 end;
 
 procedure TJvExCheckListBox.BoundsChanged;
@@ -192,6 +225,30 @@ begin
   inherited CreateWidget;
 end;
 
+function TJvExCheckListBox.WidgetFlags: integer;
+begin
+  Result := inherited WidgetFlags or
+    integer(WidgetFlags_WRepaintNoErase) or
+    integer(WidgetFlags_WMouseNoMask);
+end;
+
+function TJvExCheckListBox.EventFilter(Sender: QObjectH; Event: QEventH): boolean;
+begin
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
+end;
+
+procedure TJvExCheckListBox.PaintWindow(PaintDevice: QPaintDeviceH);
+begin
+  WidgetControl_PaintTo(self, PaintDevice, 0, 0);
+end;
+
+procedure TJvExCheckListBox.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
+begin
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
+end;
+  
+
 procedure TJvExCheckListBox.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -201,6 +258,7 @@ end;
 procedure TJvExCheckListBox.DoFocusChanged(Control: TWinControl);
 begin
 end;
+  
 procedure TJvExCheckListBox.DoBoundsChanged;
 begin
 end;
@@ -221,19 +279,34 @@ function TJvExCheckListBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): B
 asm
   JMP   DefaultDoPaintBackground
 end;
+  
 constructor TJvExCheckListBox.Create(AOwner: TComponent);
 begin 
-  WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND} 
-  inherited Create(AOwner);
+  WindowProc := WndProc; 
+  inherited Create(AOwner); 
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged; 
   FHintColor := clInfoBk;
 end;
+
+
+procedure TJvExCheckListBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
+
+procedure TJvExCheckListBox.Paint;
+begin
+  WidgetControl_DefaultPaint(self, Canvas);
+end;
+
 
 destructor TJvExCheckListBox.Destroy;
 begin
   inherited Destroy;
 end;
+  
 
 end.

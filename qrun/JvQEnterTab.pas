@@ -23,23 +23,22 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A unit that converts all Enter keypresses to Tab keypresses.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-{ A unit that converts all Enter keypresses to Tab keypresses. }
-
 unit JvQEnterTab;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, QStdCtrls, 
-  Qt,
-  JvQConsts, 
+  Types, QWindows, QMessages, Classes, QGraphics, QControls, 
+  QForms, Qt, JvQConsts, 
   JvQComponent;
 
 type
@@ -62,6 +61,8 @@ type
   end;
 
 implementation
+
+
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvEnterTab.res}

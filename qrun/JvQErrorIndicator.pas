@@ -30,17 +30,17 @@ edge can make the form's scrollbars "jump up and down"
 (this is caused by the image being moved only when the BlinkThread triggers)
 
 Description:
-A component patterned on the ErrorProvider in .NET:
-"Provides a user interface for indicating that a control
-on a form has an error associated with it."
-To set the error, use the Error property: an empty error string, removes the error image
+  A component patterned on the ErrorProvider in .NET:
+  "Provides a user interface for indicating that a control
+  on a form has an error associated with it."
+  To set the error, use the Error property: an empty error string, removes the error image
 
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQErrorIndicator;
+
+{$I jvcl.inc}
 
 interface
 
@@ -404,8 +404,8 @@ begin
       else
       begin
         Ei := Controls[I];
-        if ((Ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError))
-          or (BlinkStyle = ebsAlwaysBlink) then
+        if ((Ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError)) or
+          (BlinkStyle = ebsAlwaysBlink) then
         begin
           Ei.Error := Value;
           Ei.BlinkCount := cDefBlinkCount;

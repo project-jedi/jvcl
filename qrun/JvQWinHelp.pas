@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
+unit JvQWinHelp;
 
-unit JvQWinHelp platform;
+{$I jvcl.inc}
 
 interface
 

@@ -27,9 +27,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQStringHolder;
+
+{$I jvcl.inc}
 
 interface
 
@@ -362,7 +362,7 @@ end;
 function TJvMacros.IndexOf(const AName: string): Integer;
 begin
   for Result := 0 to Count - 1 do
-    if AnsiCompareText(TJvMacro(Items[Result]).Name, AName) = 0 then
+    if AnsiSameText(TJvMacro(Items[Result]).Name, AName) then
       Exit;
   Result := -1;
 end;
@@ -422,7 +422,7 @@ begin
   for I := 0 to Count - 1 do
   begin
     Result := TJvMacro(inherited Items[I]);
-    if AnsiCompareText(Result.Name, Value) = 0 then
+    if AnsiSameText(Result.Name, Value) then
       Exit;
   end;
   Result := nil;

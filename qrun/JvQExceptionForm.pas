@@ -27,10 +27,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQExceptionForm;
+
 {$I jvcl.inc}
 {$I crossplatform.inc}
-
-unit JvQExceptionForm;
 
 interface
 

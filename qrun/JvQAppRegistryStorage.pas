@@ -30,10 +30,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQAppRegistryStorage;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQAppRegistryStorage;
 
 interface
 

@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQCopyError;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQCopyError;
 
 interface
 

@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQRas32;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQRas32;
 
 interface
 

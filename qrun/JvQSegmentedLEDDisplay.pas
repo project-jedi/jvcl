@@ -32,9 +32,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQSegmentedLEDDisplay;
+
+{$I jvcl.inc}
 
 interface
 
@@ -54,7 +54,6 @@ const
   clDefaultLitColor = TColor($20100002);  
   NullHandle = nil; 
   
-
 type
   TJvCustomSegmentedLEDDisplay = class;
   TJvSegmentedLEDDigits = class;

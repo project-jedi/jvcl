@@ -33,9 +33,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQColorButton;
+
+{$I jvcl.inc}
 
 interface
 
@@ -99,7 +99,7 @@ implementation
 
 uses
   SysUtils, QExtCtrls,
-  JvQColorForm, JvQResources;
+  JvQConsts, JvQColorForm, JvQResources;
 
 constructor TJvColorButton.Create(AOwner: TComponent);
 begin
@@ -218,9 +218,12 @@ procedure TJvColorButton.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   case Key of
     VK_RETURN, VK_SPACE:
-      if not ((ssAlt in Shift) or (ssCtrl in Shift)) then
+      // (rom) accept Shift key pressed at max
+      if Shift * KeyboardShiftStates <= [ssShift] then
         MouseDown(mbLeft, [], 0, 0);
     VK_ESCAPE:
+      // (rom) only accept without Shift, Alt or Ctrl down
+      if Shift * KeyboardShiftStates = [] then
       begin
         FColorForm.Hide;
         Key := 0;
@@ -233,7 +236,8 @@ procedure TJvColorButton.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   case Key of
     VK_RETURN, VK_SPACE:
-      if not ((ssAlt in Shift) or (ssCtrl in Shift)) then
+      // (rom) accept Shift key pressed at max
+      if Shift * KeyboardShiftStates <= [ssShift] then
         MouseUp(mbLeft, [], 0, 0);
   end;
   inherited KeyUp(Key, Shift);

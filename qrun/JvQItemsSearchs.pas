@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQItemsSearchs;
+
+{$I jvcl.inc}
 
 interface
 
@@ -106,7 +106,7 @@ begin
   begin
     while not HasLooped or (I <= StartIndex) do
     begin
-      if AnsiCompareText(Value, Items[I]) = 0 then
+      if AnsiSameText(Value, Items[I]) then
       begin
         Result := I;
         Exit;

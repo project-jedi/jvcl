@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQUninstallControls;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQUninstallControls;
 
 interface
 

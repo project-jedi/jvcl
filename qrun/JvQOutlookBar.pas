@@ -24,22 +24,22 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-// $Id$
-
-{$I jvcl.inc}
-
-unit JvQOutlookBar;
-
-{ Outlook style control. Simpler than TJvLookout)
+Description:
+  Outlook style control. Simpler than TJvLookout)
    Hierarchy:
     TJvCustomOutlookBar
       Pages: TJvOutlookBarPages
         Page: TJvOutlookBarPage
           Buttons: TJvOutlookBarButtons
             Button: TJvOutlookBarButton
-}
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
+unit JvQOutlookBar;
+
+{$I jvcl.inc}
 
 interface
 
@@ -1616,15 +1616,15 @@ begin
     olbsLarge:
       if LargeImages <> nil then
       begin
-        Result.Top := Result.Bottom + Pages[PageIndex].Font.Height - 2;
+        Result.Top := Result.Bottom - abs(Pages[PageIndex].Font.Height) - 2;
         OffsetRect(Result, 0, -4);
       end;
     olbsSmall:
       if SmallImages <> nil then
       begin
         Result.Left := SmallImages.Width + 10;
-        Result.Top := Result.Top + (GetButtonHeight(PageIndex) + Pages[PageIndex].Font.Height) div 2;
-        Result.Bottom := Result.Top - Pages[PageIndex].Font.Height + 2;
+        Result.Top := Result.Top + (GetButtonHeight(PageIndex) - abs(Pages[PageIndex].Font.Height)) div 2;
+        Result.Bottom := Result.Top + abs(Pages[PageIndex].Font.Height) + 2;
         Result.Right := Result.Left + Canvas.TextWidth(Pages[PageIndex].Buttons[ButtonIndex].Caption) + 4;
         OffsetRect(Result, 0, -(H - (Result.Bottom - Result.Top)) div 4);
       end;
@@ -1702,8 +1702,8 @@ procedure TJvCustomOutlookBar.SetBorderStyle(const Value: TBorderStyle);
 begin
   if FBorderStyle <> Value then
   begin
-    FBorderStyle := Value;  
-    RecreateWidget; 
+    FBorderStyle := Value;
+    RecreateWnd;
   end;
 end;
 
@@ -1943,13 +1943,13 @@ begin
   begin
     case Pages[PageIndex].ButtonSize of
       olbsLarge:
-        if LargeImages <> nil then  
-          Result := Result + LargeImages.Height - Pages[PageIndex].Font.Height + cLargeOffset 
+        if LargeImages <> nil then
+          Result := Max(Result, LargeImages.Height + abs(Pages[PageIndex].Font.Height) + cLargeOffset)
         else
           Result := Abs(Pages[PageIndex].Font.Height) + cLargeOffset;
       olbsSmall:
         if SmallImages <> nil then
-          Result := Max(SmallImages.Height, -Pages[PageIndex].Font.Height) + cSmallOffset
+          Result := Max(SmallImages.Height, abs(Pages[PageIndex].Font.Height)) + cSmallOffset
         else
           Result := Abs(Pages[PageIndex].Font.Height) + cSmallOffset;
     end;

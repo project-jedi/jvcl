@@ -33,9 +33,9 @@ This could be rectified by a custom-written formatting routine.
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQValidateEdit;
+
+{$I jvcl.inc}
 
 interface
 

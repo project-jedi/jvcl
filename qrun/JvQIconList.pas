@@ -27,16 +27,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQIconList;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  Types, QWindows, SysUtils,
-  QGraphics,
-  Classes;
+  Types, QWindows, SysUtils, QGraphics, Classes;
 
 type
   TJvIconList = class(TPersistent)

@@ -39,8 +39,7 @@ uses
   JclWin32,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, IniFiles,
-  
-  
+
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons, QWindows,
   
   JclSysInfo,

@@ -33,10 +33,10 @@ Description:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQShellHook;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQShellHook;
 
 interface
 

@@ -28,10 +28,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-unit JvQResample;
-
 // -----------------------------------------------------------------------------
 // Project: bitmap resampler
 // Module: resample
@@ -104,6 +100,10 @@ unit JvQResample;
 // * Fix BoxFilter.
 // * Optimize to use integer math instead of floating point where possible.
 // -----------------------------------------------------------------------------
+
+unit JvQResample;
+
+{$I jvcl.inc}
 
 interface
 

@@ -28,11 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQLookOut;
 
-{ Outlook style control }
+{$I jvcl.inc}
 
 interface
 
@@ -1006,8 +1004,8 @@ end;
 function TJvCustomLookOutButton.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := IsAccel(Key, FCaption) and Enabled and Visible and ParentVisible
-    and (ssAlt in Shift);
+  Result := IsAccel(Key, FCaption) and Enabled and
+    Visible and ParentVisible and (ssAlt in Shift);
   if Result then
     Click
   else

@@ -33,9 +33,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQPageListTreeView;
+
+{$I jvcl.inc}
 
 interface
 
@@ -98,9 +98,9 @@ type
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function CreateNode: TTreeNode;dynamic;
-    function CreateNodes: TTreeNodes;
-    function CanChange(Node: TTreeNode): Boolean;dynamic;
+    function CreateNode: TTreeNode;  dynamic; 
+    function CreateNodes: TTreeNodes; 
+    function CanChange(Node: TTreeNode): Boolean;  dynamic; 
     procedure Change(Node: TTreeNode); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -674,9 +674,7 @@ begin
       ResetPreviousNode(N);
       N.ImageIndex := FNodeImages.SelectedIndex;
       N.SelectedIndex := FNodeImages.SelectedIndex;
-      R := N.DisplayRect; 
-      QWindows. 
-      InvalidateRect(Handle, @R, True);
+      R := N.DisplayRect;  QWindows.InvalidateRect(Handle, @R, True);
       SetPreviousNode(N);
     end;
   end;
@@ -704,9 +702,7 @@ begin
   begin
     FLastSelected.ImageIndex := FNodeImages.ImageIndex;
     FLastSelected.SelectedIndex := FNodeImages.ImageIndex;
-    R := FLastSelected.DisplayRect; 
-    QWindows. 
-    InvalidateRect(Handle, @R, True);
+    R := FLastSelected.DisplayRect;  QWindows.InvalidateRect(Handle, @R, True);
   end;
 end;
 

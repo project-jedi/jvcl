@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQTransparentButton;
+
+{$I jvcl.inc}
 
 interface
 
@@ -796,7 +796,7 @@ begin
       SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
     else
       SetTextColor(DC, ColorToRGB(Self.Font.Color));
-    DrawText(Canvas, Caption, -1, TmpRect, Flags);
+    DrawTextW(DC, PWideChar(Caption), -1, TmpRect, Flags);
   end; 
 end;
 

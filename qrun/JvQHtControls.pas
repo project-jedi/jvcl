@@ -103,9 +103,9 @@ Maciej Kaczkowski:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQHtControls;
+
+{$I jvcl.inc}
 
 interface
 
@@ -329,17 +329,12 @@ procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   CalcWidth: Boolean; MouseX, MouseY: Integer; var MouseOnLink: Boolean;
   var LinkName: string);
   { example for Text parameter : 'Item 1 <b>bold</b> <i>italic ITALIC <br><FONT COLOR="clRed">red <FONT COLOR="clgreen">green <FONT COLOR="clblue">blue </i>' }
-
 function ItemHTDraw(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string): string;
-
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string): Integer;
-
 function ItemHTPlain(const Text: string): string;
-
 function ItemHTHeight(Canvas: TCanvas; const Text: string): Integer;
-
 function PrepareText(A: string): string;
 
 implementation

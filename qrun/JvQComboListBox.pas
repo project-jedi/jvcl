@@ -20,6 +20,9 @@ Portions created by Sébastien Buysse are Copyright (C) 2003 Peter Thornqvist .
 All Rights Reserved.
 
 Contributor(s):
+    dejoy(dejoy att ynl dott gov dott cn)
+    tsoyran(tsoyran@otenet.gr), Jan Verhoeven, Kyriakos Tasos,
+    Andreas Hausladen <ahuser at users dot sourceforge dot net>.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,19 +33,23 @@ Description:
   A listbox that displays a combo box overlay on the selected item. Assign a
   TPopupMenu to the DropdownMenu property and it will be shown when the user clicks the
   combobox button.
+
+History:
+  2004-07-23: Added TJvCheckedComboBox.
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQComboListBox;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  Types, QWindows, QMessages,  
+  QWindows, QMessages,
+  Classes, Types, QGraphics, QControls, QForms, QStdCtrls, QButtons,  
   Qt, JvQExStdCtrls, 
-  Classes, QControls, QGraphics, QStdCtrls, QMenus ;
+  QMenus;
 
 type
   // (p3) these types should *not* be moved to JvTypes (they are only used here)!
@@ -372,7 +379,7 @@ begin
       begin
         AText := Items[Index];
         DoGetText(Index, AText);
-        DrawText(Canvas, AText, Length(AText),
+        DrawText(Canvas.Handle, PChar(AText), Length(AText),
           TmpRect, DT_WORDBREAK or DT_LEFT or DT_TOP or DT_EDITCONTROL or DT_NOPREFIX or DT_END_ELLIPSIS);
       end;
     end;

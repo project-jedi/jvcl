@@ -27,9 +27,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQPropertyStorage;
+
+{$I jvcl.inc}
 
 interface
 
@@ -64,6 +64,7 @@ type
     FPrefix: string;
     FAppStorage: TJvCustomAppStorage;
     FAppStoragePath: string;
+    {
     function StoreIntegerProperty(PropInfo: PPropInfo): string;
     function StoreCharProperty(PropInfo: PPropInfo): string;
     function StoreEnumProperty(PropInfo: PPropInfo): string;
@@ -90,11 +91,16 @@ type
     procedure LoadClassProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadStringsProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadComponentProperty(const S: string; PropInfo: PPropInfo);
+    }
     function CreateInfoList(AComponent: TComponent; StoredList: TStrings): TStrings;
     procedure FreeInfoLists(Info: TStrings);
   protected
     function ReadString(const APath, Item, Default: string): string; virtual;
     procedure WriteString(const APath, Item, Value: string); virtual;
+
+    procedure ReadProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName : string);
+    procedure WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName : string);
+
     procedure EraseSection(const APath: string); virtual;
     function GetItemName(const APropName: string): string; virtual;
     function CreateStorage: TJvPropertyStorage; virtual;
@@ -125,6 +131,7 @@ implementation
 uses
   JvQJCLUtils;
 
+{
 const
   sCount = 'Count';
   sItem = 'Item%d';
@@ -137,6 +144,7 @@ function GetPropType(PropInfo: PPropInfo): PTypeInfo;
 begin
   Result := PropInfo^.PropType^;
 end;
+}
 
 //=== { TJvPropInfoList } ====================================================
 
@@ -289,67 +297,68 @@ begin
 end;
 
 procedure TJvPropertyStorage.LoadAnyProperty(PropInfo: PPropInfo);
-var
-  S, Def: string;
+//var
+//  S, Def: string;
 begin
   try
     if PropInfo <> nil then
     begin
-      case PropInfo^.PropType^.Kind of
-        tkInteger:
-          Def := StoreIntegerProperty(PropInfo);
-        tkChar:
-          Def := StoreCharProperty(PropInfo);
-        tkEnumeration:
-          Def := StoreEnumProperty(PropInfo);
-        tkFloat:
-          Def := StoreFloatProperty(PropInfo);
-        tkWChar:
-          Def := StoreWCharProperty(PropInfo);
-        tkLString:
-          Def := StoreLStringProperty(PropInfo);
-        tkVariant:
-          Def := StoreVariantProperty(PropInfo);
-        tkInt64:
-          Def := StoreInt64Property(PropInfo);
-        tkString:
-          Def := StoreStringProperty(PropInfo);
-        tkSet:
-          Def := StoreSetProperty(PropInfo);
-        tkClass:
-          Def := '';
-      else
-        Exit;
-      end;
-      if (Def <> '') or (PropInfo^.PropType^.Kind in [tkString, tkClass]) or
-        (PropInfo^.PropType^.Kind in [tkLString, tkWChar]) then
-        S := Trim(ReadString(AppStoragePath, GetItemName(PropInfo^.Name), Def))
-      else
-        S := '';
-      case PropInfo^.PropType^.Kind of
-        tkInteger:
-          LoadIntegerProperty(S, PropInfo);
-        tkChar:
-          LoadCharProperty(S, PropInfo);
-        tkEnumeration:
-          LoadEnumProperty(S, PropInfo);
-        tkFloat:
-          LoadFloatProperty(S, PropInfo);
-        tkWChar:
-          LoadWCharProperty(S, PropInfo);
-        tkLString:
-          LoadLStringProperty(S, PropInfo);
-        tkVariant:
-          LoadVariantProperty(S, PropInfo);
-        tkInt64:
-          LoadInt64Property(S, PropInfo);
-        tkString:
-          LoadStringProperty(S, PropInfo);
-        tkSet:
-          LoadSetProperty(S, PropInfo);
-        tkClass:
-          LoadClassProperty(S, PropInfo);
-      end;
+      ReadProperty (AppStoragePath, GetItemName(PropInfo^.Name), TPersistent(FObject), PropInfo^.Name);
+//      case PropInfo^.PropType^.Kind of
+//        tkInteger:
+//          Def := StoreIntegerProperty(PropInfo);
+//        tkChar:
+//          Def := StoreCharProperty(PropInfo);
+//        tkEnumeration:
+//          Def := StoreEnumProperty(PropInfo);
+//        tkFloat:
+//          Def := StoreFloatProperty(PropInfo);
+//        tkWChar:
+//          Def := StoreWCharProperty(PropInfo);
+//        tkLString:
+//          Def := StoreLStringProperty(PropInfo);
+//        tkVariant:
+//          Def := StoreVariantProperty(PropInfo);
+//        tkInt64:
+//          Def := StoreInt64Property(PropInfo);
+//        tkString:
+//          Def := StoreStringProperty(PropInfo);
+//        tkSet:
+//          Def := StoreSetProperty(PropInfo);
+//        tkClass:
+//          Def := '';
+//      else
+//        Exit;
+//      end;
+//      if (Def <> '') or (PropInfo^.PropType^.Kind in [tkString, tkClass]) or
+//        (PropInfo^.PropType^.Kind in [tkLString, tkWChar]) then
+//        S := Trim(ReadString(AppStoragePath, GetItemName(PropInfo^.Name), Def))
+//      else
+//        S := '';
+//      case PropInfo^.PropType^.Kind of
+//        tkInteger:
+//          LoadIntegerProperty(S, PropInfo);
+//        tkChar:
+//          LoadCharProperty(S, PropInfo);
+//        tkEnumeration:
+//          LoadEnumProperty(S, PropInfo);
+//        tkFloat:
+//          LoadFloatProperty(S, PropInfo);
+//        tkWChar:
+//          LoadWCharProperty(S, PropInfo);
+//        tkLString:
+//          LoadLStringProperty(S, PropInfo);
+//        tkVariant:
+//          LoadVariantProperty(S, PropInfo);
+//        tkInt64:
+//          LoadInt64Property(S, PropInfo);
+//        tkString:
+//          LoadStringProperty(S, PropInfo);
+//        tkSet:
+//          LoadSetProperty(S, PropInfo);
+//        tkClass:
+//          LoadClassProperty(S, PropInfo);
+//      end;
     end;
   except
     { ignore any exception }
@@ -357,42 +366,44 @@ begin
 end;
 
 procedure TJvPropertyStorage.StoreAnyProperty(PropInfo: PPropInfo);
-var
-  S: string;
+//var
+//  S: string;
 begin
   if PropInfo <> nil then
   begin
-    case PropInfo^.PropType^.Kind of
-      tkInteger:
-        S := StoreIntegerProperty(PropInfo);
-      tkChar:
-        S := StoreCharProperty(PropInfo);
-      tkEnumeration:
-        S := StoreEnumProperty(PropInfo);
-      tkFloat:
-        S := StoreFloatProperty(PropInfo);
-      tkLString:
-        S := StoreLStringProperty(PropInfo);
-      tkWChar:
-        S := StoreWCharProperty(PropInfo);
-      tkVariant:
-        S := StoreVariantProperty(PropInfo);
-      tkInt64:
-        S := StoreInt64Property(PropInfo);
-      tkString:
-        S := StoreStringProperty(PropInfo);
-      tkSet:
-        S := StoreSetProperty(PropInfo);
-      tkClass:
-        S := StoreClassProperty(PropInfo);
-    else
-      Exit;
-    end;
-    if (S <> '') or (PropInfo^.PropType^.Kind in [tkString, tkLString, tkWChar]) then
-      WriteString(AppStoragePath, GetItemName(PropInfo^.Name), Trim(S));
+    WriteProperty (AppStoragePath, GetItemName(PropInfo^.Name), TPersistent(FObject), PropInfo^.Name);
+//    case PropInfo^.PropType^.Kind of
+//      tkInteger:
+//        S := StoreIntegerProperty(PropInfo);
+//      tkChar:
+//        S := StoreCharProperty(PropInfo);
+//      tkEnumeration:
+//        S := StoreEnumProperty(PropInfo);
+//      tkFloat:
+//        S := StoreFloatProperty(PropInfo);
+//      tkLString:
+//        S := StoreLStringProperty(PropInfo);
+//      tkWChar:
+//        S := StoreWCharProperty(PropInfo);
+//      tkVariant:
+//        S := StoreVariantProperty(PropInfo);
+//      tkInt64:
+//        S := StoreInt64Property(PropInfo);
+//      tkString:
+//        S := StoreStringProperty(PropInfo);
+//      tkSet:
+//        S := StoreSetProperty(PropInfo);
+//      tkClass:
+//        S := StoreClassProperty(PropInfo);
+//    else
+//      Exit;
+//    end;
+//    if (S <> '') or (PropInfo^.PropType^.Kind in [tkString, tkLString, tkWChar]) then
+//      WriteString(AppStoragePath, GetItemName(PropInfo^.Name), Trim(S));
   end;
 end;
 
+{
 function TJvPropertyStorage.StoreIntegerProperty(PropInfo: PPropInfo): string;
 begin
   Result := IntToStr(GetOrdProp(FObject, PropInfo));
@@ -793,6 +804,7 @@ begin
     Loader.Free;
   end;
 end;
+}
 
 procedure TJvPropertyStorage.StoreProperties(PropList: TStrings);
 var
@@ -936,7 +948,7 @@ end;
 function TJvPropertyStorage.ReadString(const APath, Item, Default: string): string;
 begin
   if Assigned(AppStorage) then
-    Result := AppStorage.ReadString(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(Nil, Item, False)]), Default)
+    Result := AppStorage.ReadString(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(Nil, Item, True)]), Default)
   else
     Result := Default;
 end;
@@ -952,6 +964,22 @@ begin
   if Assigned(AppStorage) then
     AppStorage.DeleteSubTree(APath);
 end;
+
+procedure TJvPropertyStorage.ReadProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName : string);
+begin
+  if Assigned(AppStorage) then
+    With AppStorage Do
+      ReadProperty(ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, True)]), PersObj, PropName, False, True);
+end;
+
+procedure TJvPropertyStorage.WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName : string);
+begin
+  if Assigned(AppStorage) then
+    With AppStorage Do
+      WriteProperty(ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, False)]), PersObj, PropName, False);
+end;
+
+
 
 end.
 

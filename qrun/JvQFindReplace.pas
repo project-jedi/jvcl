@@ -34,9 +34,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQFindReplace;
+
+{$I jvcl.inc}
 
 interface
 

@@ -41,9 +41,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQBehaviorLabel;
+
+{$I jvcl.inc}
 
 interface
 

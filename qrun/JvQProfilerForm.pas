@@ -29,9 +29,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQProfilerForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -478,7 +478,7 @@ begin
   lvReport.Items.BeginUpdate;
   for I := lvReport.Items.Count - 1 downto 0 do
     { no calls = not used }
-    if AnsiCompareText(lvReport.Items[I].SubItems[1], '0') = 0 then
+    if lvReport.Items[I].SubItems[1] = '0' then
       lvReport.Items.Delete(I);
   lvReport.Items.EndUpdate;
 end;

@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQTurtle;
+
+{$I jvcl.inc}
 
 interface
 
@@ -38,7 +38,6 @@ uses
   SysUtils, Classes,  
   QGraphics, QControls, Types, QWindows, 
   Math;
-
 
 type
   TRequestBackgroundEvent = procedure(Sender: TObject; Background: string) of object;

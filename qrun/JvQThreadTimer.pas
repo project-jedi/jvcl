@@ -41,9 +41,9 @@ History:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQThreadTimer;
+
+{$I jvcl.inc}
 
 interface
 

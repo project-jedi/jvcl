@@ -332,9 +332,9 @@ Known Issues:
  | Wizard page can be transparent                                            |
  +---------------------------------------------------------------------------+}
 
-{$I jvcl.inc}
-
 unit JvQWizard;
+
+{$I jvcl.inc}
 
 interface
 

@@ -30,17 +30,17 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQSLDMappingEditorDialog;
+
+{$I jvcl.inc}
 
 interface
 
 uses
   Types, QWindows, QMessages, SysUtils, Classes, QGraphics, QControls,
-  QForms, QDialogs, QStdCtrls,
+  QForms, QDialogs, QStdCtrls, QActnList, QMenus,
   JvQBaseDlg, JvQSegmentedLEDDisplay, JvQSegmentedLEDDisplayMapperFrame,
-  QActnList, QMenus, JvQExControls, JvQComponent;
+  JvQExControls, JvQComponent;
 
 type
   TfrmSLDMappingEditorDialog = class(TForm)

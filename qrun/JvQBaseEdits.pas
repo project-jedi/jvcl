@@ -34,9 +34,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQBaseEdits;
+
+{$I jvcl.inc}
 
 interface
 

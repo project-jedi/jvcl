@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQUrlGrabbers;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQUrlGrabbers;
 
 {$HPPEMIT '#pragma link "wininet.lib"'}
 

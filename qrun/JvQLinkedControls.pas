@@ -28,11 +28,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQLinkedControls;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   SysUtils,  
   QControls, 

@@ -46,11 +46,13 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQXPBar;
+
 {$I jvcl.inc}
 
+// sorry no theming as standalone
 
 
-unit JvQXPBar;
 
 interface
 
@@ -62,9 +64,6 @@ uses
   JvQXPCore, JvQXPCoreUtils;
 
 type
-  { Warning: Never change order of enumeration because of
-             hardcoded type casts!
-             (rom) removed those hardcoded typecasts }
   TJvXPBarRollDirection = (rdExpand, rdCollapse);
 
   TJvXPBarRollMode = (rmFixed, rmShrink); // rmFixed is default
@@ -728,7 +727,8 @@ procedure TJvXPBarItem.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
   if Sender is TCustomAction then
     with TCustomAction(Sender) do
-    begin 
+    begin
+      Update; 
       if not CheckDefaults or (Self.Caption = '') or (Self.Caption = Self.Name) then
         Self.Caption := Caption;
       if not CheckDefaults or (Self.Checked = False) then
@@ -1201,7 +1201,8 @@ begin
     { terminate on 'out-of-range' }
     if ((FRollDirection = rdCollapse) and (NewOffset = 0)) or
       ((FRollDirection = rdExpand) and (NewOffset = FWinXPBar.FItemHeight)) then
-      Terminate;
+      Terminate; 
+    WakeUpGUIThread; 
 
     { idle process }
     Sleep(FWinXPBar.FRollDelay);
@@ -1219,7 +1220,8 @@ begin
     TCustomForm(FWinXPBar.Owner).DesignerHook.Modified 
   else
     PostMessage(FWinXPBar.Handle, WM_XPBARAFTERCOLLAPSE,
-      Ord(FRollDirection = rdCollapse), 0);
+      Ord(FRollDirection = rdCollapse), 0); 
+  WakeUpGUIThread; 
 end;
 
 //=== { TJvXPBarColors } =====================================================
@@ -1352,7 +1354,7 @@ const
 begin
   inherited Create(AOwner);
   FStoredHint := '|'; // no one in their right mind uses a pipe as the only character in a hint...
-  ControlStyle := ControlStyle - [csDoubleClicks] + [csAcceptsControls];
+  ControlStyle := ControlStyle - [csDoubleClicks] + [csAcceptsControls, csActionClient];
   ExControlStyle := [csRedrawCaptionChanged];
   ExControlStyle := ExControlStyle + MouseEvents;
   Height := 46;

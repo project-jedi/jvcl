@@ -33,9 +33,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQProgressComponent;
+
+{$I jvcl.inc}
 
 interface
 

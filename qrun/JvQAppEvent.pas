@@ -27,20 +27,16 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQAppEvent;
 
-// (rom) this definitely needs an explanation
-{$C PRELOAD}
+{$I jvcl.inc}
 
 interface
 
-uses 
-  Qt, QTypes, 
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, QActnList,
-  SysUtils, Classes,
-  JvQTypes, JvQComponent, JvQFinalize;
+uses  
+  Qt, QTypes, {QControls,} 
+  SysUtils, Classes, QControls, Types, QGraphics, QForms, QActnList,
+  JvQTypes, JvQComponent;
 
 const
   DefHintColor = clInfoBk;
@@ -146,6 +142,9 @@ type
 
 implementation
 
+uses
+  JvQFinalize;
+
 const
   sUnitName = 'JvAppEvent';
 
@@ -181,7 +180,7 @@ type
     procedure DoMinimize(Sender: TObject);
     procedure DoRestore(Sender: TObject);  
     function DoHelp(HelpType: THelpType; HelpContext: THelpContext;
-      const HelpKeyword: String; const HelpFile: String;
+      const HelpKeyword: string; const HelpFile: string;
       var Handled: Boolean): Boolean;
     procedure DoShortCut(Key: Integer; Shift: TShiftState; var Handled: Boolean);
     procedure DoEvent(Sender: QObjectH; Event: QEventH; var Handled: Boolean); 
@@ -366,7 +365,7 @@ end;
 
 
 function TJvAppEventList.DoHelp(HelpType: THelpType; HelpContext: THelpContext;
-  const HelpKeyword: String; const HelpFile: String;
+  const HelpKeyword: string; const HelpFile: string;
   var Handled: Boolean): Boolean;
 var
   I: Integer;

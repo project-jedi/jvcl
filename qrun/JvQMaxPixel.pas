@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQMaxPixel;
+
+{$I jvcl.inc}
 
 interface
 
@@ -47,6 +47,7 @@ type
     FFont: TFont;
     FOnChanged: TNotifyEvent;
     FParent: TControl;
+    function IsFontStored: Boolean;
     procedure SetFont(const Value: TFont);
     procedure SetLength(const Value: Integer);
     procedure SetUseControlFont(const Value: Boolean);
@@ -54,14 +55,14 @@ type
     procedure FontChanged(Sender: TObject);
     procedure Changed;
   public
-    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
-    function Test(var Value: string; ParentFont: TFont): Boolean;
     constructor Create(AOwner: TControl);
     destructor Destroy; override;
+    function Test(var Value: string; ParentFont: TFont): Boolean;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
     property Length: Integer read FLength write SetLength default 0;
     property UseControlFont: Boolean read FUseControlFont write SetUseControlFont default True;
-    property Font: TFont read FFont write SetFont;
+    property Font: TFont read FFont write SetFont stored IsFontStored;
   end;
 
 implementation
@@ -141,6 +142,11 @@ begin
     finally
       Free;
     end;
+end;
+
+function TJvMaxPixel.IsFontStored: Boolean;
+begin
+  Result := not UseControlFont;
 end;
 
 end.

@@ -24,15 +24,16 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A component that mimicks the time line in MS Team Manager
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQTMTimeLine;
 
-{ A component that mimicks the time line in MS Team Manager }
+{$I jvcl.inc}
 
 interface
 
@@ -40,11 +41,6 @@ uses
   SysUtils, Classes,  
   Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,  
   JvQComponent, JvQExControls;
-
-
-resourcestring
-  SInvalidImage = 'Invalid Image';
-
 
 type
   TJvTLSelFrame = class(TPersistent)
@@ -330,6 +326,11 @@ uses
 {$IFDEF LINUX}
 {$R ../Resources/JvTMTimeLine.res}
 {$ENDIF LINUX}
+
+
+resourcestring
+  SInvalidImage = 'Invalid Image';
+
 
 const
   cMagic = 'Jv.TMTIMELINE1';

@@ -28,16 +28,15 @@ Known Issues: This component does not parse the !DOCTYPE tags but preserves them
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQSimpleXml;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes, 
+  SysUtils, Classes, IniFiles, 
   Variants, 
-  IniFiles,
   JvQFinalize;
 
 type 

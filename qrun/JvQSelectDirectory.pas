@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQSelectDirectory;
+
 {$I jvcl.inc}
 {$I crossplatform.inc}
-
-unit JvQSelectDirectory;
 
 interface
 
@@ -72,13 +72,13 @@ end;
 function TJvSelectDirectory.Execute: Boolean;
 
 var
-  dir: WideString;
+  Dir: WideString;
 
 begin
   FDirectory := InitialDir;  
-  dir := FDirectory;
-  Result := SelectDirectory(Title, InitialDir, dir);
-  FDirectory := dir; 
+  Dir := FDirectory;
+  Result := SelectDirectory(Title, InitialDir, Dir);
+  FDirectory := Dir; 
 end;
 
 end.

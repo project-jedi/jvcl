@@ -29,9 +29,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQStrToHtml;
+
+{$I jvcl.inc}
 
 interface
 
@@ -68,86 +68,79 @@ type
   end;
 
 const
-  Conversions: array [1..79] of TJvHtmlCodeRec = (
+  Conversions: array [1..72] of TJvHtmlCodeRec = (
     (Ch: '"'; Html: '&quot;'),
-    (Ch: 'à'; Html: '&agrave;'),
-    (Ch: 'ç'; Html: '&ccedil;'),
+    (Ch: '<'; Html: '&lt;'),
+    (Ch: '>'; Html: '&gt;'),
+    (Ch: '^'; Html: '&circ;'),
+    (Ch: '~'; Html: '&tild;'),
+    (Ch: '£'; Html: '&pound;'),
+    (Ch: '§'; Html: '&sect;'),
+    (Ch: '°'; Html: '&deg;'),
+    (Ch: '²'; Html: '&sup2;'),
+    (Ch: '³'; Html: '&sup3;'),
+    (Ch: 'µ'; Html: '&micro;'),
+    (Ch: '·'; Html: '&middot;'),
+    (Ch: '¼'; Html: '&frac14;'),
+    (Ch: '½'; Html: '&frac12;'),
+    (Ch: '¿'; Html: '&iquest;'),
+    (Ch: 'À'; Html: '&Agrave;'),
+    (Ch: 'Á'; Html: '&Aacute;'),
+    (Ch: 'Â'; Html: '&Acirc;'),
+    (Ch: 'Ã'; Html: '&Atilde;'),
+    (Ch: 'Ä'; Html: '&Auml;'),
+    (Ch: 'Å'; Html: '&Aring;'),
+    (Ch: 'Æ'; Html: '&AElig;'),
+    (Ch: 'Ç'; Html: '&Ccedil;'),
+    (Ch: 'È'; Html: '&Egrave;'),
+    (Ch: 'É'; Html: '&Eacute;'),
+    (Ch: 'Ê'; Html: '&Ecirc;'),
+    (Ch: 'Ë'; Html: '&Euml;'),
+    (Ch: 'Ì'; Html: '&Igrave;'),
+    (Ch: 'Í'; Html: '&Iacute;'),
+    (Ch: 'Î'; Html: '&Icirc;'),
+    (Ch: 'Ï'; Html: '&Iuml;'),
+    (Ch: 'Ñ'; Html: '&Ntilde;'),
+    (Ch: 'Ò'; Html: '&Ograve;'),
+    (Ch: 'Ó'; Html: '&Oacute;'),
+    (Ch: 'Ô'; Html: '&Ocirc;'),
+    (Ch: 'Õ'; Html: '&Otilde;'),
+    (Ch: 'Ö'; Html: '&Ouml;'),
+    (Ch: 'Ù'; Html: '&Ugrave;'),
+    (Ch: 'Ú'; Html: '&Uacute;'),
+    (Ch: 'Û'; Html: '&Ucirc;'),
+    (Ch: 'Ü'; Html: '&Uuml;'),
+    (Ch: 'Ý'; Html: '&Yacute;'),
+    (Ch: 'ß'; Html: '&szlig;'),
+    (Ch: 'à'; Html: '&aacute;'),
+    (Ch: 'á'; Html: '&agrave;'),
+    (Ch: 'â'; Html: '&acirc;'),
+    (Ch: 'ã'; Html: '&atilde;'),
+    (Ch: 'ä'; Html: '&auml;'),
+    (Ch: 'å'; Html: '&aring;'),
+    (Ch: 'æ'; Html: '&aelig;'),
+    (Ch: 'ç'; Html: 'ccedil;'),
     (Ch: 'é'; Html: '&eacute;'),
     (Ch: 'è'; Html: '&egrave;'),
     (Ch: 'ê'; Html: '&ecirc;'),
-    (Ch: 'ù'; Html: '&ugrave;'),
     (Ch: 'ë'; Html: '&euml;'),
-    (Ch: '<'; Html: '&lt;'),
-    (Ch: '>'; Html: '&gt;'),
-    (Ch: '^'; Html: '&#136;'),
-    (Ch: '~'; Html: '&#152;'),
-    (Ch: '£'; Html: '&#163;'),
-    (Ch: '§'; Html: '&#167;'),
-    (Ch: '°'; Html: '&#176;'),
-    (Ch: '²'; Html: '&#178;'),
-    (Ch: '³'; Html: '&#179;'),
-    (Ch: 'µ'; Html: '&#181;'),
-    (Ch: '·'; Html: '&#183;'),
-    (Ch: '¼'; Html: '&#188;'),
-    (Ch: '½'; Html: '&#189;'),
-    (Ch: '¿'; Html: '&#191;'),
-    (Ch: 'À'; Html: '&#192;'),
-    (Ch: 'Á'; Html: '&#193;'),
-    (Ch: 'Â'; Html: '&#194;'),
-    (Ch: 'Ã'; Html: '&#195;'),
-    (Ch: 'Ä'; Html: '&#196;'),
-    (Ch: 'Å'; Html: '&#197;'),
-    (Ch: 'Æ'; Html: '&#198;'),
-    (Ch: 'Ç'; Html: '&#199;'),
-    (Ch: 'È'; Html: '&#200;'),
-    (Ch: 'É'; Html: '&#201;'),
-    (Ch: 'Ê'; Html: '&#202;'),
-    (Ch: 'Ë'; Html: '&#203;'),
-    (Ch: 'Ì'; Html: '&#204;'),
-    (Ch: 'Í'; Html: '&#205;'),
-    (Ch: 'Î'; Html: '&#206;'),
-    (Ch: 'Ï'; Html: '&#207;'),
-    (Ch: 'Ñ'; Html: '&#209;'),
-    (Ch: 'Ò'; Html: '&#210;'),
-    (Ch: 'Ó'; Html: '&#211;'),
-    (Ch: 'Ô'; Html: '&#212;'),
-    (Ch: 'Õ'; Html: '&#213;'),
-    (Ch: 'Ö'; Html: '&#214;'),
-    (Ch: 'Ù'; Html: '&#217;'),
-    (Ch: 'Ú'; Html: '&#218;'),
-    (Ch: 'Û'; Html: '&#219;'),
-    (Ch: 'Ü'; Html: '&#220;'),
-    (Ch: 'Ý'; Html: '&#221;'),
-    (Ch: 'ß'; Html: '&#223;'),
-    (Ch: 'à'; Html: '&#224;'),
-    (Ch: 'á'; Html: '&#225;'),
-    (Ch: 'â'; Html: '&#226;'),
-    (Ch: 'ã'; Html: '&#227;'),
-    (Ch: 'ä'; Html: '&#228;'),
-    (Ch: 'å'; Html: '&#229;'),
-    (Ch: 'æ'; Html: '&#230;'),
-    (Ch: 'ç'; Html: '&#231;'),
-    (Ch: 'è'; Html: '&#232;'),
-    (Ch: 'é'; Html: '&#233;'),
-    (Ch: 'ê'; Html: '&#234;'),
-    (Ch: 'ë'; Html: '&#235;'),
-    (Ch: 'ì'; Html: '&#236;'),
-    (Ch: 'í'; Html: '&#237;'),
-    (Ch: 'î'; Html: '&#238;'),
-    (Ch: 'ï'; Html: '&#239;'),
-    (Ch: 'ñ'; Html: '&#241;'),
-    (Ch: 'ò'; Html: '&#242;'),
-    (Ch: 'ó'; Html: '&#243;'),
-    (Ch: 'ô'; Html: '&#244;'),
-    (Ch: 'õ'; Html: '&#245;'),
-    (Ch: 'ö'; Html: '&#246;'),
-    (Ch: '÷'; Html: '&#247;'),
-    (Ch: 'ù'; Html: '&#249;'),
-    (Ch: 'ú'; Html: '&#250;'),
-    (Ch: 'û'; Html: '&#251;'),
-    (Ch: 'ü'; Html: '&#252;'),
-    (Ch: 'ý'; Html: '&#253;'),
-    (Ch: 'ÿ'; Html: '&#255;')
+    (Ch: 'ì'; Html: '&igrave;'),
+    (Ch: 'í'; Html: '&iacute;'),
+    (Ch: 'î'; Html: '&icirc;'),
+    (Ch: 'ï'; Html: '&iuml;'),
+    (Ch: 'ñ'; Html: '&ntilde;'),
+    (Ch: 'ò'; Html: '&ograve;'),
+    (Ch: 'ó'; Html: '&oacute;'),
+    (Ch: 'ô'; Html: '&ocirc;'),
+    (Ch: 'õ'; Html: '&otilde;'),
+    (Ch: 'ö'; Html: '&ouml;'),
+    (Ch: '÷'; Html: '&divide;'),
+    (Ch: 'ù'; Html: '&ugrave;'),
+    (Ch: 'ú'; Html: '&uacute;'),
+    (Ch: 'û'; Html: '&ucirc;'),
+    (Ch: 'ü'; Html: '&uuml;'),
+    (Ch: 'ý'; Html: '&yacute;'),
+    (Ch: 'ÿ'; Html: '&yuml;')
     );
 
 constructor TJvStrToHtml.Create(AOwner: TComponent);
@@ -255,10 +248,19 @@ begin
             Ch := Conversions[J].Ch;
             Break;
           end;
+
+        // if no conversion was found, it may actually be a number
         if Ch = #0 then
         begin
-          I := Start;
-          Ch := Value[I];
+          if StrToIntDef(ReplStr, -1) <> -1 then
+          begin
+            Ch := Chr(StrToInt(ReplStr));
+          end
+          else
+          begin
+            I := Start;
+            Ch := Value[I];
+          end;
         end;
       end;
     end;

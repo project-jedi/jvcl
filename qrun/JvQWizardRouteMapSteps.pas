@@ -32,15 +32,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQWizardRouteMapSteps;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, Types, QWindows, 
+  SysUtils, Classes,
+  Types, QWindows, QMessages, QGraphics, QControls, QForms,
   JvQWizard;
 
 type
@@ -241,7 +241,7 @@ begin
   begin
     SetRect(DividerRect, Left + FIndent, TextRect.Bottom + 5, Width - FIndent,
       TextRect.Bottom + 6);
-    DrawEdge(Canvas.Handle, DividerRect, EDGE_RAISED, BF_FLAT OR BF_BOTTOM);
+    QWindows.DrawEdge(Canvas.Handle, DividerRect, EDGE_RAISED, BF_FLAT OR BF_BOTTOM);
   end;
 
   { do the previous step }

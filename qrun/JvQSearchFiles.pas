@@ -26,16 +26,17 @@ Remko Bonte
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Wrapper for a file search engine.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-{$I windowsonly.inc}
-
 unit JvQSearchFiles;
 
-{ Wrapper for a file search engine. }
+{$I jvcl.inc}
+{$I windowsonly.inc}
 
 interface
 
@@ -651,8 +652,8 @@ begin
     doExcludeInvalidDirs    |   False        |  True   | False     | True
     doExcludeCompleteInvalidDirs |   False   |  True   | No Search | True
     }
-    SearchInRootDir := not (soExcludeFilesInRootDir in Options)
-      and (not (soCheckRootDirValid in Options) or IsRootDirValid);
+    SearchInRootDir := not (soExcludeFilesInRootDir in Options) and
+      (not (soCheckRootDirValid in Options) or IsRootDirValid);
 
     if not SearchInRootDir and ((DirOption = doExcludeSubDirs) or
       ((DirOption = doExcludeCompleteInvalidDirs) and
