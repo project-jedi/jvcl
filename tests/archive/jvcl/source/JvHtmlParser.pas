@@ -153,27 +153,24 @@ begin
   end;
 end;
 
-// (rom) better use a TStringList
+// (rom) reimplemented with a TStringList
 
 procedure TJvHtmlParser.AnalyseFile;
 var
-  fich: TextFile;
-  buf, st: string;
+  List: TStringList;
 begin
-  st := '';
-  try
-    AssignFile(fich, FileName);
-    Reset(fich);
-    buf := '';
-    while not Eof(fich) do
-    begin
-      Readln(fich, buf);
-      st := st + buf;
+  begin
+    List := TStringList.Create;
+    try
+      if FileExists(FileName) then
+      begin
+        List.LoadFromFile(FileName);
+        AnalyseString(List.Text);
+      end;
+    finally
+      List.Free;
     end;
-  finally
-    CloseFile(Fich);
   end;
-  AnalyseString(st);
 end;
 
 procedure TJvHtmlParser.AnalyseString(Str: string);

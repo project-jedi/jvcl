@@ -571,7 +571,7 @@ end;
 
 procedure TJvThumbView.Reposition;
 var
-  I: Word;
+  I: Integer;
   Tmp1: Longint;
   Tmp2: Longint;
 begin
@@ -726,8 +726,7 @@ begin
                 TJvThumbnail(FThumbList.Objects[No]).Width) and
                 (Y > TJvThumbnail(FThumbList.Objects[No]).Top) and
                 (Y < TJvThumbnail(FThumbList.Objects[No]).Top +
-                TJvThumbnail(FThumbList.Objects[No]).Height)
-                then
+                TJvThumbnail(FThumbList.Objects[No]).Height) then
                 SetSelected(No)
               else
                 SetSelected(-1)
@@ -888,8 +887,10 @@ end;
 
 procedure TJvThumbView.EmptyList;
 var
-  Metr: Word;
+  Metr: Integer;
 begin
+  // (rom) Metr was of type Word which caused a crash here
+  // (rom) Count = 0 resulted in Count-1 = 65535
   for Metr := 0 to Count - 1 do
     if Assigned(FThumbList.Objects[0]) then
     begin
