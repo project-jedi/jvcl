@@ -5538,7 +5538,28 @@ begin
   P := FSourcePtr;
   FTokenPtr := P;
   case P^ of
-    #32..#255:
+    '@':
+      begin
+        Result := toSymbol;
+
+        NextChar;
+        if P^ = '@' then
+        begin
+          // read till eol
+          NextChar;
+          while P^ in [#32..#255] do
+            NextChar;
+        end
+        else
+        begin
+          // Same as #32..#255
+          NextChar;
+          while P^ in [#33..#255] do
+            NextChar;
+        end;
+      end;
+    { TODO : Ugly }
+    #32..'?', 'A'..#255:
       begin
         NextChar;
         while P^ in [#33..#255] do
