@@ -34,7 +34,7 @@ jconvert.exe: JConvert\jconvert.dpr
 MakeDOF.exe: MakeDOF\MakeDOF.dpr
   $(DCC)
 
-MakeCFG.exe: MakeDOF\MakeCFG.dpr
+MakeCFG.exe: MakeCFG\MakeCFG.dpr
   $(DCC)
 
 Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr
