@@ -36,9 +36,9 @@ uses
   Windows, Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, Types, QGraphics,
+  Qt, Types, QGraphics, QWindows,
   {$ENDIF VisualCLX}
-  JvClxUtils, JvJCLUtils;
+  JvJCLUtils;
 
 type
   TJvExtTextOutOptionsKind = (etoClipped, etoOpaque);
@@ -53,11 +53,11 @@ type
     function TextHeightW(const Text: WideString): Integer;
     procedure TextOutW(X, Y: Integer; const Text: WideString);
     procedure TextRectW(Rect: TRect; X, Y: Integer; const Text: WideString);
-    function ExtTextOutW(X, Y: Integer; Options: TJvExtTextOutOptions; Rect: PRect;
-      const Text: WideString; lpDx: Pointer): Boolean;
+    function ExtTextOutW(X, Y: Integer; Options: TJvExtTextOutOptions;
+      Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
 
-    function ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions; Rect: PRect;
-      const Text: string; lpDx: Pointer): Boolean;
+    function ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions;
+      Rect: PRect; const Text: string; lpDx: Pointer): Boolean;
 
     {$IFDEF VisualCLX}
     procedure TextOutVCL(X, Y: Integer; const Text: WideString);
@@ -68,8 +68,6 @@ type
 
 implementation
 
-{$IFDEF VCL}
-
 function ExtTextOutOptionsToInt(Options: TJvExtTextOutOptions): Integer;
 begin
   Result := 0;
@@ -78,6 +76,8 @@ begin
   if etoOpaque in Options then
     Result := Result or ETO_OPAQUE;
 end;
+
+{$IFDEF VCL}
 
 function TJvUnicodeCanvas.TextExtentW(const Text: WideString): TSize;
 begin
@@ -178,16 +178,32 @@ end;
 
 {$ENDIF VisualCLX}
 
-function TJvUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions; Rect: PRect;
-  const Text: string; lpDx: Pointer): Boolean;
+function TJvUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions;
+  Rect: PRect; const Text: string; lpDx: Pointer): Boolean;
 begin
-  Result := ClxExtTextOut(Self, X, Y, ExtTextOutOptionsToInt(Options), Rect, Text, lpDx);
+  {$IFDEF VCL}
+  Result := Windows.ExtTextOut(Handle, X, Y, ExtTextOutOptionsToInt(Options),
+    Rect, PChar(Text), Length(Text), lpDx);
+  {$ELSE}
+  Start;
+  Result := QWindows.ExtTextOut(Handle, X, Y, ExtTextOutOptionsToInt(Options),
+    Rect, PChar(Text), Length(Text), lpDx);
+  Stop;
+  {$ENDIF VCL}
 end;
 
 function TJvUnicodeCanvas.ExtTextOutW(X, Y: Integer; Options: TJvExtTextOutOptions;
   Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
 begin
-  Result := ClxExtTextOutW(Self, X, Y, ExtTextOutOptionsToInt(Options), Rect, Text, lpDx);
+  {$IFDEF VCL}
+  Result := Windows.ExtTextOutW(Handle, X, Y, ExtTextOutOptionsToInt(Options),
+    Rect, PWideChar(Text), Length(Text), lpDx);
+  {$ELSE}
+  Start;
+  Result := QWindows.ExtTextOutW(Handle, X, Y, ExtTextOutOptionsToInt(Options),
+    Rect, PWideChar(Text), Length(Text), lpDx);
+  Stop;
+  {$ENDIF VCL}
 end;
 
 end.

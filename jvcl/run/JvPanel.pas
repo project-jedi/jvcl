@@ -132,9 +132,9 @@ type
     procedure TextChanged; override;
     procedure Paint; override;
     procedure AdjustSize; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
     {$ELSE}
     procedure BoundsChanged; override;
@@ -616,15 +616,13 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-procedure TJvPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if Transparent then
-    Msg.Result := 1
+    Result := True
   else
-    inherited;
+    Result := inherited DoPaintBackground(Canvas, Param);
 end;
-{$ENDIF VCL}
 
 procedure TJvPanel.SetMultiLine(const Value: Boolean);
 begin

@@ -42,7 +42,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
   ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils, JvFixedEditPopup, JclUnicode,
-  JvUnicodeCanvas;
+  JvUnicodeCanvas, JvComponent;
 
 const
   Max_X = 1024; {max symbols per row}
@@ -50,11 +50,11 @@ const
   {max symbols per row for scrollbar}
   GutterRightMargin = 2;
 
-{$IFDEF VCL}
+  {$IFDEF VCL}
   WM_EDITCOMMAND = WM_USER + $101;
-{$ELSE}
+  {$ELSE}
   WM_EDITCOMMAND = CM_BASE + $101;
-{$ENDIF}
+  {$ENDIF VCL}
 
 const
   sWideLineBreak = WideString(#13#10);
@@ -309,7 +309,7 @@ type
     amInsert, amDelete, amDeleteLine, amLineConcat, amLineBreak
   );
 
-  TJvCustomWideEditor = class(TCustomControl, IFixedPopupIntf)
+  TJvCustomWideEditor = class(TJvCustomControl, IFixedPopupIntf)
   private
     { internal objects }
     FLines: TJvWideEditorStrings;
@@ -419,7 +419,6 @@ type
     FUseFixedPopup: boolean;
 
     { internal message processing }
-    procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMKillFocus(var Msg: TWMSetFocus); message WM_KILLFOCUS;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
@@ -427,14 +426,13 @@ type
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure WMEditCommand(var Msg: TMessage); message WM_EDITCOMMAND;
     procedure WMCopy(var Msg: TMessage); message WM_COPY;
     procedure WMCut(var Msg: TMessage); message WM_CUT;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure WMUndo(var Msg: TMessage); message WM_UNDO;
 
-{$IFDEF VCL}
+    {$IFDEF VCL}
     // (p3) added to be compatible with JvFixedEditPopup
     procedure WMClear(var Msg: TMessage); message WM_CLEAR;
     procedure EMSetReadOnly(var Msg: TMessage); message EM_SETREADONLY;
@@ -445,7 +443,7 @@ type
 
     procedure WMGetText(var Msg: TWMGetText); message WM_GETTEXT;
     procedure WMChar(var Message: TWMChar); message WM_CHAR;
-{$ENDIF}
+    {$ENDIF VCL}
 
     procedure UpdateEditorSize;
     procedure DoCompletionIdentifier(var Cancel: Boolean);
@@ -522,8 +520,9 @@ type
     procedure DoCut; dynamic;
     procedure DoEnter; override;
     procedure DoExit; override;
-    procedure CursorChanged; {$IFDEF VisualCLX} override; {$ELSE} dynamic; {$ENDIF}
-    procedure FontChanged; {$IFDEF VisualCLX} override; {$ELSE} dynamic; {$ENDIF}
+    procedure CursorChanged; override;
+    procedure FontChanged; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
 
     procedure DrawRightMargin;
     procedure PaintSelection;
@@ -1789,15 +1788,9 @@ begin
   end;
 end;
 
-procedure TJvCustomWideEditor.CMFontChanged(var Msg: TMessage);
+function TJvCustomWideEditor.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  inherited;
-  FontChanged;
-end;
-
-procedure TJvCustomWideEditor.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
-begin
-  Msg.Result := 0; // no background erase
+  Result := False; // no background erase
 end;
 
 procedure TJvCustomWideEditor.WMSetCursor(var Msg: TWMSetCursor);
@@ -1874,14 +1867,14 @@ end;
 
 procedure TJvCustomWideEditor.DoEnter;
 begin
-  inherited;
+  inherited DoEnter;
   CreateCaret(Handle, 0, 2, CellRect.Height - 2);
   PaintCaret(True);
 end;
 
 procedure TJvCustomWideEditor.DoExit;
 begin
-  inherited;
+  inherited DoExit;
   if FCompletion.FVisible then
     FCompletion.CloseUp(False);
   DestroyCaret;
@@ -1891,9 +1884,7 @@ procedure TJvCustomWideEditor.CursorChanged;
 var
   P: TPoint;
 begin
-{$IFDEF VisualCLX}
-  inherited;
-{$ENDIF}
+  inherited CursorChanged;
   GetCursorPos(P);
   P := ScreenToClient(P);
   if (P.X < GutterWidth) and (Cursor = crIBeam) then
@@ -1902,9 +1893,7 @@ end;
 
 procedure TJvCustomWideEditor.FontChanged;
 begin
-{$IFDEF VisualCLX}
-  inherited;
-{$ENDIF}
+  inherited FontChanged;
   if HandleAllocated then
     UpdateEditorSize;
 end;
@@ -2314,7 +2303,7 @@ begin
       { it is optimized [translated] }
       OldFTopRow := FTopRow;
       FTopRow := ScrollPos;
-{$IFDEF VCL}
+      {$IFDEF VCL}
       if Abs((OldFTopRow - ScrollPos) * FCellRect.Height) < EditorClient.Height
         then
       begin
@@ -2334,7 +2323,7 @@ begin
         InvalidateRect(Handle, @RUpdate, False);
       end
       else
-{$ENDIF}
+      {$ENDIF VCL}
         Invalidate;
       Update;
     end
@@ -2343,7 +2332,7 @@ begin
       { it is not optimized [translated] }
       OldFLeftCol := FLeftCol;
       FLeftCol := ScrollPos;
-{$IFDEF VCL}
+      {$IFDEF VCL}
       if Abs((OldFLeftCol - ScrollPos) * FCellRect.Width) < EditorClient.Width then
       begin
         R := EditorClient.ClientRect;
@@ -2362,7 +2351,7 @@ begin
         InvalidateRect(Handle, @RUpdate, False);
       end
       else
-{$ENDIF}
+      {$ENDIF VCL}
         Invalidate;
       Update;
     end;
@@ -7036,7 +7025,7 @@ begin
   with TMessage(Message) do
     Message.Result := DefWindowProc(Handle, Msg, WParam, LParam);
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 { TAnsiToWideStrings }
 

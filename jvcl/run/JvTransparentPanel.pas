@@ -31,15 +31,21 @@ unit JvTransparentPanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QExtCtrls, Types
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JvPanel;
 
 type
   TJvTransparentPanel = class(TJvPanel)
   private
     FBackground: TBitmap;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
   protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure CaptureBackground;
     procedure Paint; override;
   public
@@ -117,22 +123,15 @@ begin
     inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-procedure TJvTransparentPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvTransparentPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if csDesigning in ComponentState then
-    inherited
+    Result := inherited DoPaintBackground(Canvas, Param)
   else
   begin
     CaptureBackground;
-    with TCanvas.Create do
-      try
-        Handle := Msg.DC;
-        Draw(0, 0, FBackground);
-      finally
-        Handle := 0;
-        Free;
-      end;
-    Msg.Result := 1;
+    Canvas.Draw(0, 0, FBackground);
+    Result := True;
   end;
 end;
 

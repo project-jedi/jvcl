@@ -2019,9 +2019,7 @@ end;
 
 procedure TJvCustomEditor.FontChanged;
 begin
-  {$IFDEF VisualCLX}
   inherited FontChanged;
-  {$ENDIF VisualCLX}
   if HandleAllocated then
     UpdateEditorSize;
 end;

@@ -32,7 +32,16 @@ unit JvBaseThumbnail;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  {$IFDEF MSWINDOWS}
+  Windows, // TWin32FindData
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Messages, Graphics, Controls, Forms, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QExtCtrls, Types,
+  {$ENDIF VIsualCLX}
+  SysUtils, Classes,
   JvExForms, JvExExtCtrls;
 
 // (rom) TFileName is already declared in SysUtils
@@ -94,7 +103,7 @@ type
   TJvThumbTitle = class(TJvExPanel)
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-     procedure Click; override;
+    procedure Click; override;
     procedure DblClick; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -102,9 +111,11 @@ type
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-      MousePos: TPoint): Boolean; override;
-    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
-    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheelDown(Shift: TShiftState;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -142,15 +153,16 @@ type
     procedure Click; override;
     procedure DblClick; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-      MousePos: TPoint): Boolean; override;
-    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
-    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheelDown(Shift: TShiftState;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
   public
     constructor Create(AOwner: TComponent); override;
-  published
   end;
 
   TJvBaseThumbView = class(TJvExScrollBox)
@@ -353,7 +365,7 @@ begin
 end;
 
 function TJvThumbTitle.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-  MousePos: TPoint): Boolean;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbnail then
     Result := TJvBaseThumbnail(Parent).DoMouseWheel(Shift, WheelDelta, MousePos)
@@ -361,7 +373,8 @@ begin
     Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
 end;
 
-function TJvThumbTitle.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
+function TJvThumbTitle.DoMouseWheelDown(Shift: TShiftState;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbnail then
     Result := TJvBaseThumbnail(Parent).DoMouseWheelDown(Shift, MousePos)
@@ -369,7 +382,8 @@ begin
     Result := inherited DoMouseWheelDown(Shift, MousePos);
 end;
 
-function TJvThumbTitle.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
+function TJvThumbTitle.DoMouseWheelUp(Shift: TShiftState;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbnail then
     Result := TJvBaseThumbnail(Parent).DoMouseWheelUp(Shift, MousePos)
@@ -511,7 +525,7 @@ begin
 end;
 
 function TJvBaseThumbnail.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-  MousePos: TPoint): Boolean;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbView then
     Result := TJvBaseThumbView(Parent).DoMouseWheel(Shift, WheelDelta, MousePos)
@@ -519,7 +533,8 @@ begin
     Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
 end;
 
-function TJvBaseThumbnail.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
+function TJvBaseThumbnail.DoMouseWheelDown(Shift: TShiftState;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbView then
     Result := TJvBaseThumbView(Parent).DoMouseWheelDown(Shift, MousePos)
@@ -527,7 +542,8 @@ begin
     Result := inherited DoMouseWheelDown(Shift, MousePos);
 end;
 
-function TJvBaseThumbnail.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
+function TJvBaseThumbnail.DoMouseWheelUp(Shift: TShiftState;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
   if Parent is TJvBaseThumbView then
     Result := TJvBaseThumbView(Parent).DoMouseWheelUp(Shift, MousePos)
@@ -611,38 +627,37 @@ end;
 
 procedure TFileName.Init;
 var
-  Temp: TWin32FindData;
-  SearchHandle: THandle;
+  {$IFDEF MSWINDOWS}
   Dft: DWORD;
   Lft: TFileTime;
+  {$ENDIF MSWINDOWS}
+  sr: TSearchRec;
 begin
-  SearchHandle := FindFirstFile(PChar(FFileName), Temp);
-  if SearchHandle <> INVALID_HANDLE_VALUE then
+  if FindFirst(FFileName, faAnyFile or faDirectory, sr) = 0 then
   begin
-    FLongName := Temp.cFileName;
-    FShortName := Temp.cAlternateFileName;
+    FindClose(sr);
+
+    FLongName := sr.FindData.cFileName;
+    FShortName := sr.FindData.cAlternateFileName;
     if FLongName = '' then
       FLongName := FShortName;
     if FShortName = '' then
       FShortName := FLongName;
     //fdFileAccessed
-    FileTimeToLocalFileTime(Temp.ftLastAccessTime, Lft);
+    FileTimeToLocalFileTime(sr.FindData.ftLastAccessTime, Lft);
     FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
     FAccessed := Dft;
     //fdFilechanged
-    FileTimeToLocalFileTime(Temp.ftLastwriteTime, Lft);
+    FileTimeToLocalFileTime(sr.FindData.ftLastwriteTime, Lft);
     FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
     FModified := Dft;
     //fdFilecreated
-    FileTimeToLocalFileTime(Temp.ftCreationTime, Lft);
+    FileTimeToLocalFileTime(sr.FindData.ftCreationTime, Lft);
     FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
     FCreated := Dft;
-    FFileSize := (Temp.nFileSizeHigh * MAXDWORD) + Temp.nFileSizeLow;
+    FFileSize := (sr.FindData.nFileSizeHigh * MAXDWORD) + sr.FindData.nFileSizeLow;
     //FFileName:=NewName;
-  end
-  else
-    FFileName := '';
-  Windows.FindClose(SearchHandle);
+  end;
 end;
 
 procedure TFileName.LoadFromStream(AStream: TStream; APos: Integer);

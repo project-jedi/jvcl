@@ -84,11 +84,11 @@ type
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     function GetPageIndex: Integer;
     procedure SetPageIndex(const Value: Integer);
     procedure SetPageList(const Value: TJvCustomPageList);
   protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Booleam; override;
     procedure TextChanged; override;
     procedure ShowingChanged; override;
     procedure ParentColorChanged; override;
@@ -1083,13 +1083,13 @@ begin
     FPageList.PageList.Move(OldIndex, Value);
 end;
 
-procedure TJvCustomPage.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+function TJvCustomPage.DoPaintBackground(Canvas: TCanvas; Param: Integer): Booleam;
 begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and ParentBackground then
-    DrawThemedBackground(Self, Message.DC, ClientRect, Parent.Brush.Handle);
+    DrawThemedBackground(Self, Canvas.Handle, ClientRect, Parent.Brush.Handle);
   {$ENDIF JVCLThemesEnabled}
-  Message.Result := 1;
+  Result := True;
 end;
 
 procedure TJvCustomPage.TextChanged;

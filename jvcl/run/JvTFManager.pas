@@ -773,11 +773,11 @@ type
     property ScheduleManager: TJvTFScheduleManager read FScheduleManager write SetManager;
   end;
 
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
   TJvTFControl = class(TJvCustomControl)
-{$ELSE}
+  {$ELSE}
   TJvTFControl = class(TCustomControl)
-{$ENDIF}
+  {$ENDIF USEJVCL}
   private
     FScheduleManager: TJvTFScheduleManager;
     FSchedules: TStringlist;
