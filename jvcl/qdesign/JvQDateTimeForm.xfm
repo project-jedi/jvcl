@@ -75,6 +75,7 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
     Height = 22
     DoubleBuffered = False
     ButtonFlat = False
+    Color = clBase
     PopupColor = clBase
     TabOrder = 5
   end
@@ -83,14 +84,16 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
     Top = 56
     Width = 101
     Height = 22
+    DoubleBuffered = False
     BorderStyle = bsSingle
     FlatButtons = False
+    Color = clBase
     TabOrder = 6
     Time = 0.500000000000000000
   end
   object PopupMenu1: TPopupMenu
-    Left = 120
-    Top = 40
+    Left = 184
+    Top = 56
     object mnuNow: TMenuItem
       Caption = 'Now'
       OnClick = mnuNowClick
