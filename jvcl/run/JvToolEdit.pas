@@ -308,11 +308,6 @@ type
   { The common parent of TJvFilenameEdit and TJvDirectoryEdit          }
   { For internal use only; it's not intended to be used separately }
 
-{$IFNDEF WIN32}
-const
-  MaxFileLength = SizeOf(TFileName) - 1;
-{$ENDIF}
-
 type
   TExecOpenDialogEvent = procedure(Sender: TObject; var Name: string;
     var Action: Boolean) of object;
@@ -1094,16 +1089,6 @@ begin
   end;
 end;
 
-{$IFNDEF WIN32}
-
-procedure TJvPopupWindow.CreateWnd;
-begin
-  inherited CreateWnd;
-  if csDesigning in ComponentState then
-    SetParent(nil);
-end;
-{$ENDIF}
-
 procedure TJvPopupWindow.WMMouseActivate(var Msg: TMessage);
 begin
   Msg.Result := MA_NOACTIVATE;
@@ -1789,7 +1774,7 @@ var
 begin
   I := GetTextHeight;
   if BorderStyle = bsSingle then
-    I := I + GetSystemMetrics(SM_CYBORDER) * 4 + 1{$IFNDEF WIN32} + (I div 4){$ENDIF};
+    I := I + GetSystemMetrics(SM_CYBORDER) * 4 + 1;
   Result := I;
 end;
 
@@ -1962,7 +1947,7 @@ begin
     Result := ButtonWidth <> Max(Glyph.Width div FButton.NumGlyphs + 6,
       DefEditBtnWidth)
   else if FGlyphKind = gkDropDown then
-    Result := ButtonWidth <> GetSystemMetrics(SM_CXVSCROLL){$IFNDEF WIN32} + 1{$ENDIF}
+    Result := ButtonWidth <> GetSystemMetrics(SM_CXVSCROLL)
   else
     Result := ButtonWidth <> DefEditBtnWidth;
 end;
@@ -1986,7 +1971,7 @@ begin
       ButtonWidth := Max(Glyph.Width div FButton.NumGlyphs + 6, FButton.Width)
     else if FGlyphKind = gkDropDown then
     begin
-      ButtonWidth := GetSystemMetrics(SM_CXVSCROLL){$IFNDEF WIN32} + 1{$ENDIF};
+      ButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
       with FButton do
         ControlStyle := ControlStyle + [csFixedWidth];
     end;
@@ -2085,9 +2070,6 @@ begin
   inherited Create(AOwner);
   OEMConvert := True;
   FAcceptFiles := True;
-{$IFNDEF WIN32}
-  MaxLength := MaxFileLength;
-{$ENDIF}
   ControlState := ControlState + [csCreating];
   try
     GlyphKind := gkDefault; { force update }
