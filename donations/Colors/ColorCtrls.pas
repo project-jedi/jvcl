@@ -74,23 +74,22 @@ type
     FWantDrawBuffer: Boolean;
     function GetColorSpace: TColorSpace;
     procedure SetAxisConfig(const Value: TAxisConfig);
-    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
-    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
+    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure SetWantDrawBuffer(Value: Boolean);
   protected
     procedure Paint; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure DrawFocus;
     procedure DrawFrame(X, Y: Integer);
     procedure SetFullColor(const Value: TFullColor); virtual;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
     procedure MouseColor(Shift: TShiftState; X, Y: Integer); virtual;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure AxisConfigChange; virtual;
     procedure DrawBuffer; virtual;
     procedure ColorSpaceChange; virtual;
@@ -687,7 +686,7 @@ begin
 
   TabStop := True;
 
-  ControlStyle := [csCaptureMouse, csSetCaption, csOpaque];
+  ControlStyle := [csSetCaption, csOpaque];
 end;
 
 destructor TColorComponent.Destroy;
@@ -747,38 +746,33 @@ begin
     FOnColorChange(Self);
 end;
 
-procedure TColorComponent.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  try
-    if AutoMouse and
-      ((ssLeft in Shift) or (ssMiddle in Shift) or (ssRight in Shift)) then
-      MouseColor(Shift, X, Y);
-
-    SetFocus;
-    inherited MouseDown(Button, Shift, X, Y);
-  finally
-    SetCapture(Handle);
-  end;
-end;
-
 procedure TColorComponent.MouseColor(Shift: TShiftState; X, Y: Integer);
 begin
   if Assigned(FOnMouseColor) then
     FOnMouseColor(Self, X, Y);
 end;
 
+procedure TColorComponent.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  SetFocus;
+  try
+    if AutoMouse and (Shift * [ssLeft, ssMiddle, ssRight] <> []) then
+      MouseColor(Shift, X, Y);
+    inherited MouseDown(Button, Shift, X, Y);
+  finally
+    SetCapture(Handle);
+  end;
+end;
+
 procedure TColorComponent.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  if AutoMouse and
-    ((ssLeft in Shift) or (ssMiddle in Shift) or (ssRight in Shift)) then
+  if AutoMouse and (Shift * [ssLeft, ssMiddle, ssRight] <> []) then
     MouseColor(Shift, X, Y);
-
   inherited MouseMove(Shift, X, Y);
 end;
 
-procedure TColorComponent.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TColorComponent.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   try
     inherited MouseUp(Button, Shift, X, Y);
@@ -829,15 +823,15 @@ begin
   Msg.Result := DLGC_WANTARROWS;
 end;
 
-procedure TColorComponent.WMKillFocus(var Msg: TWMKillFocus);
+procedure TColorComponent.DoEnter;
 begin
-  inherited;
+  inherited DoEnter;
   Invalidate;
 end;
 
-procedure TColorComponent.WMSetFocus(var Msg: TWMSetFocus);
+procedure TColorComponent.DoExit;
 begin
-  inherited;
+  inherited DoExit;
   Invalidate;
 end;
 
@@ -861,6 +855,12 @@ begin
 end;
 
 procedure TColorComponent.CMColorChanged(var Msg: TMessage);
+begin
+  inherited;
+  WantDrawBuffer := True;
+end;
+
+procedure TColorComponent.CMSysColorChange(var Msg: TMessage);
 begin
   inherited;
   WantDrawBuffer := True;
@@ -994,12 +994,12 @@ begin
   if ColorSpace.ID = csPredefined then
     with FBuffer.Canvas do
     begin
-      X := 8;
-      Y := 8;
-
       Brush.Color := Color;
       FillRect(Rect(0, 0, Width, Height));
       Pen.Color := clBlack;
+      X := 8;
+      Y := 8;
+      {
       for I := Low(ColorValues) to High(ColorValues) do
       begin
         Brush.Color := ColorValues[I].Value;
@@ -1013,6 +1013,7 @@ begin
       end;
       X := 8;
       Inc(Y, 16+6);
+      }
       for I := Low(SysColorValues) to High(SysColorValues) do
       begin
         Brush.Color := SysColorValues[I].Value;
@@ -1221,36 +1222,72 @@ procedure TColorPanel.MouseColor(Shift: TShiftState; X, Y: Integer);
 var
   MinX, MaxX, MinY, MaxY: Byte;
   AxisX, AxisY: TAxisIndex;
-  PosX, PosY: Integer;
+  I, PosX, PosY: Integer;
 begin
   if not (ssLeft in Shift) then
     Exit;
 
-  AxisX := GetIndexAxisX(AxisConfig);
-  AxisY := GetIndexAxisY(AxisConfig);
-
-  with ColorSpace do
+  if ColorSpace.ID = csPredefined then
   begin
-    MinX := AxisMin[AxisX];
-    MaxX := AxisMax[AxisX];
-    MinY := AxisMin[AxisY];
-    MaxY := AxisMax[AxisY];
+    Dec(X, CrossSize);
+    Dec(Y, CrossSize);
+    PosX := 8;
+    PosY := 8;
+    {
+    for I := Low(ColorValues) to High(ColorValues) do
+    begin
+      if (X >= PosX) and (X < PosX+16) and (Y >= PosY) and (Y < PosY+16) then
+        FullColor := ColorValues[I].Value;
+      Inc(X, 16+6);
+      if PosX > FBuffer.Width - 8 then
+      begin
+        PosX := 8;
+        Inc(PosY, 16+6);
+      end;
+    end;
+    PosX := 8;
+    Inc(PosY, 16+6);
+    }
+    for I := Low(SysColorValues) to High(SysColorValues) do
+    begin
+      if (X >= PosX) and (X < PosX+16) and (Y >= PosY) and (Y < PosY+16) then
+        FullColor := SysColorValues[I].Value;
+      Inc(PosX, 16+6);
+      if PosX > FBuffer.Width - 8 then
+      begin
+        PosX := 8;
+        Inc(PosY, 16+6);
+      end;
+    end;
+  end
+  else
+  begin
+    AxisX := GetIndexAxisX(AxisConfig);
+    AxisY := GetIndexAxisY(AxisConfig);
 
-    PosX := EnsureRange(X - CrossSize, 0, MaxX - MinX);
-    if ReverseAxisX then
-      PosX := MaxX - PosX
-    else
-      PosX := PosX - MinX;
-    PosX := PosX + MinX;
+    with ColorSpace do
+    begin
+      MinX := AxisMin[AxisX];
+      MaxX := AxisMax[AxisX];
+      MinY := AxisMin[AxisY];
+      MaxY := AxisMax[AxisY];
 
-    PosY := EnsureRange(Y - CrossSize, 0, MaxY - MinY);
-    if ReverseAxisY then
-      PosY := MaxY - PosY
-    else
-      PosY := PosY - MinY;
-    PosY := PosY + MinY;
+      PosX := EnsureRange(X - CrossSize, 0, MaxX - MinX);
+      if ReverseAxisX then
+        PosX := MaxX - PosX
+      else
+        PosX := PosX - MinX;
+      PosX := PosX + MinX;
 
-    FullColor := SetAxisValue(SetAxisValue(FullColor, AxisX, Byte(PosX)), AxisY, Byte(PosY));
+      PosY := EnsureRange(Y - CrossSize, 0, MaxY - MinY);
+      if ReverseAxisY then
+        PosY := MaxY - PosY
+      else
+        PosY := PosY - MinY;
+      PosY := PosY + MinY;
+
+      FullColor := SetAxisValue(SetAxisValue(FullColor, AxisX, Byte(PosX)), AxisY, Byte(PosY));
+    end;
   end;
   inherited MouseColor(Shift, X, Y);
 end;
@@ -2233,7 +2270,6 @@ var
   AxisZ: TAxisIndex;
   PosZ: Integer;
   Points: array [0..2] of TPoint;
-  Mask1, Mask2, Mask3: TRect;
 begin
   inherited Paint;
 
@@ -2242,14 +2278,13 @@ begin
   with ColorSpace do
   begin
     PosZ := GetAxisValue(FullColor, AxisZ);
+    // (rom) This shift is simply not in effect. Seems to be a bug of GetAxisValue.
+    // PosZ := PosZ - AxisMin[AxisZ] + ArrowWidth;
+    PosZ := PosZ + ArrowWidth;
     if ((BarOrientation = boHorizontal) and (ColorOrientation = coRightToLeft)) or
       ((BarOrientation = boVertical) and (ColorOrientation = coBottomToTop)) then
-      PosZ := AxisMax[AxisZ] - PosZ
-    else
-      PosZ := PosZ - AxisMin[AxisZ];
+      PosZ := Width - PosZ;
   end;
-
-  PosZ := PosZ + ArrowWidth;
 
   with Canvas do
   begin
@@ -2259,17 +2294,12 @@ begin
           Points[0].X := PosZ - ArrowWidth;
           Points[1].X := PosZ;
           Points[2].X := PosZ + ArrowWidth;
-          Mask2 := Rect(0, 0, ArrowWidth, Height);
-          Mask3 := Rect(Width - ArrowWidth, 0, Width, Height);
           case ArrowPosition of
             apTop:
               begin
                 Points[0].Y := 0;
                 Points[1].Y := ArrowWidth;
                 Points[2].Y := 0;
-                Mask1 := Rect(ArrowWidth, 0, Width - ArrowWidth, ArrowWidth);
-                Mask2 := Rect(0, 0, ArrowWidth, Height);
-                Mask3 := Rect(Width - ArrowWidth, 0, Width, Height);
                 DrawFrame(ArrowWidth, ArrowWidth);
                 Draw(ArrowWidth, ArrowWidth, FBuffer);
               end;
@@ -2278,7 +2308,6 @@ begin
                 Points[0].Y := Height;
                 Points[1].Y := Height - ArrowWidth;
                 Points[2].Y := Height;
-                Mask1 := Rect(ArrowWidth, Height - ArrowWidth, Width - ArrowWidth, Height);
                 DrawFrame(ArrowWidth, 0);
                 Draw(ArrowWidth, 0, FBuffer);
               end;
@@ -2289,15 +2318,12 @@ begin
           Points[0].Y := PosZ - ArrowWidth;
           Points[1].Y := PosZ;
           Points[2].Y := PosZ + ArrowWidth;
-          Mask2 := Rect(0, 0, Width, ArrowWidth);
-          Mask3 := Rect(0, Height - ArrowWidth, Width, Height);
           case ArrowPosition of
             apLeft:
               begin
                 Points[0].X := 0;
                 Points[1].X := ArrowWidth;
                 Points[2].X := 0;
-                Mask1 := Rect(0, ArrowWidth, ArrowWidth, Height - ArrowWidth);
                 DrawFrame(ArrowWidth, ArrowWidth);
                 Draw(ArrowWidth, ArrowWidth, FBuffer);
               end;
@@ -2306,20 +2332,12 @@ begin
                 Points[0].X := Width;
                 Points[1].X := Width - ArrowWidth;
                 Points[2].X := Width;
-                Mask1 := Rect(Width - ArrowWidth, ArrowWidth, Width, Height - ArrowWidth);
                 DrawFrame(0, ArrowWidth);
                 Draw(0, ArrowWidth, FBuffer);
               end;
           end;
         end;
     end;
-    Brush.Color := Color;
-    Brush.Style := bsSolid;
-    Pen.Color := Color;
-    Pen.Style := psSolid;
-    Rectangle(Mask1);
-    Rectangle(Mask2);
-    Rectangle(Mask3);
     Brush.Color := ArrowColor;
     Pen.Color := ArrowColor;
     Polygon(Points);
