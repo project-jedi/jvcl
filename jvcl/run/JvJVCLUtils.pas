@@ -64,21 +64,21 @@ function IconToBitmap3(Ico: HICON; Size: Integer = 32;
 {$ENDIF VCL}
 
 // bitmap manipulation functions
-// NOTE: returned bitmap must be freed by caller!
+// NOTE: Dest bitmap must be freed by caller!
 // get red channel bitmap
-function GetRBitmap(Value: TBitmap): TBitmap;
+procedure GetRBitmap(var Dest: TBitmap; const Source: TBitmap);
 // get green channel bitmap
-function GetGBitmap(Value: TBitmap): TBitmap;
+procedure GetGBitmap(var Dest: TBitmap; const Source: TBitmap);
 // get blue channel bitmap
-function GetBBitmap(Value: TBitmap): TBitmap;
+procedure GetBBitmap(var Dest: TBitmap; const Source: TBitmap);
 // get monochrome bitmap
-function GetMonochromeBitmap(Value: TBitmap): TBitmap;
+procedure GetMonochromeBitmap(var Dest: TBitmap; const Source: TBitmap);
 // get hue bitmap (h part of hsv)
-function GetHueBitmap(Value: TBitmap): TBitmap;
+procedure GetHueBitmap(var Dest: TBitmap; const Source: TBitmap);
 // get saturation bitmap (s part of hsv)
-function GetSaturationBitmap(Value: TBitmap): TBitmap;
-// get value bbitmap (v part of hsv)
-function GetValueBitmap(Value: TBitmap): TBitmap;
+procedure GetSaturationBitmap(var Dest: TBitmap; const Source: TBitmap);
+// get value bitmap (V part of HSV)
+procedure GetValueBitmap(var Dest: TBitmap; const Source: TBitmap);
 
 {$IFDEF MSWINDOWS}
 // hides / shows the a forms caption area
@@ -101,8 +101,8 @@ function CaptureScreen(WndHandle: Longword): TBitmap; overload;
 *)
 
 {$ENDIF MSWINDOWS}
-//Convert RGB Values to HSV
-procedure RGBToHSV(r, g, b: Integer; var h, s, v: Integer);
+
+procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
 
 { from JvVCLUtils }
 
@@ -735,50 +735,51 @@ begin
 end;
 {$ENDIF VCL}
 
-function GetMax(i, j, K: Integer): Integer;
-begin
-  if j > i then
-    i := j;
-  if K > i then
-    i := K;
-  Result := i;
-end;
-
-function GetMin(i, j, K: Integer): Integer;
-begin
-  if j < i then
-    i := j;
-  if K < i then
-    i := K;
-  Result := i;
-end;
-
-procedure RGBToHSV(r, g, b: Integer; var h, s, v: Integer);
+procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
 var
   Delta: Integer;
   Min, Max: Integer;
+
+  function GetMax(I, J, K: Integer): Integer;
+  begin
+    if J > I then
+      I := J;
+    if K > I then
+      I := K;
+    Result := I;
+  end;
+
+  function GetMin(I, J, K: Integer): Integer;
+  begin
+    if J < I then
+      I := J;
+    if K < I then
+      I := K;
+    Result := I;
+  end;
+
 begin
-  Min := GetMin(r, g, b);
-  Max := GetMax(r, g, b);
-  v := Max;
+  Min := GetMin(R, G, B);
+  Max := GetMax(R, G, B);
+  V := Max;
   Delta := Max - Min;
   if Max = 0 then
-    s := 0
+    S := 0
   else
-    s := (255 * Delta) div Max;
-  if s = 0 then
-    h := 0
+    S := (255 * Delta) div Max;
+  if S = 0 then
+    H := 0
   else
   begin
-    if r = Max then
-      h := (60 * (g - b)) div Delta
+    if R = Max then
+      H := (60 * (G - B)) div Delta
     else
-      if g = Max then
-        h := 120 + (60 * (b - r)) div Delta
-      else
-        h := 240 + (60 * (r - g)) div Delta;
-    if h < 0 then
-      h := h + 360;
+    if G = Max then
+      H := 120 + (60 * (B - R)) div Delta
+    else
+      H := 240 + (60 * (R - G)) div Delta;
+    if H < 0 then
+      H := H + 360;
   end;
 end;
 
@@ -889,155 +890,147 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-function GetRBitmap(Value: TBitmap): TBitmap;
+procedure GetRBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
-  i, j: Integer;
-  rowRGB, rowB: PRGBArray;
+  I, J: Integer;
+  Line: PRGBQuadArray;
 begin
-  Value.PixelFormat := pf24bit;
-  Result := TBitmap.Create;
-  Result.PixelFormat := pf24bit;
-  Result.Width := Value.Width;
-  Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  if not Assigned(Dest) then
+    Dest := TBitmap.Create;
+  Dest.Assign(Source);
+  Dest.PixelFormat := pf32bit;
+  for J := Dest.Height - 1 downto 0 do
   begin
-    rowRGB := Value.ScanLine[j];
-    rowB := Result.ScanLine[j];
-    for i := Value.Width - 1 downto 0 do
+    Line := Dest.ScanLine[J];
+    for I := Dest.Width - 1 downto 0 do
     begin
-      TRGBArray(rowB^)[i].rgbtRed := rowRGB[i].rgbtRed;
-      TRGBArray(rowB^)[i].rgbtGreen := 0;
-      TRGBArray(rowB^)[i].rgbtBlue := 0;
+      Line[I].rgbGreen := 0;
+      Line[I].rgbBlue := 0;
     end;
   end;
+  Dest.PixelFormat := Source.PixelFormat;
 end;
 
-function GetBBitmap(Value: TBitmap): TBitmap;
+procedure GetBBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
-  i, j: Integer;
-  rowRGB, rowB: PRGBArray;
+  I, J: Integer;
+  Line: PRGBQuadArray;
 begin
-  Value.PixelFormat := pf24bit;
-  Result := TBitmap.Create;
-  Result.PixelFormat := pf24bit;
-  Result.Width := Value.Width;
-  Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  if not Assigned(Dest) then
+    Dest := TBitmap.Create;
+  Dest.Assign(Source);
+  Dest.PixelFormat := pf32bit;
+  for J := Dest.Height - 1 downto 0 do
   begin
-    rowRGB := Value.ScanLine[j];
-    rowB := Result.ScanLine[j];
-    for i := Value.Width - 1 downto 0 do
+    Line := Dest.ScanLine[J];
+    for I := Dest.Width - 1 downto 0 do
     begin
-      TRGBArray(rowB^)[i].rgbtRed := 0;
-      TRGBArray(rowB^)[i].rgbtGreen := 0;
-      TRGBArray(rowB^)[i].rgbtBlue := rowRGB[i].rgbtBlue;
+      Line[I].rgbRed := 0;
+      Line[I].rgbGreen := 0;
     end;
   end;
+  Dest.PixelFormat := Source.PixelFormat;
 end;
 
-function GetGBitmap(Value: TBitmap): TBitmap;
+procedure GetGBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
-  i, j: Integer;
-  rowRGB, rowB: PRGBArray;
+  I, J: Integer;
+  Line: PRGBQuadArray;
 begin
-  Value.PixelFormat := pf24bit;
-  Result := TBitmap.Create;
-  Result.PixelFormat := pf24bit;
-  Result.Width := Value.Width;
-  Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  if not Assigned(Dest) then
+    Dest := TBitmap.Create;
+  Dest.Assign(Source);
+  Dest.PixelFormat := pf32bit;
+  for J := Dest.Height - 1 downto 0 do
   begin
-    rowRGB := Value.ScanLine[j];
-    rowB := Result.ScanLine[j];
-    for i := Value.Width - 1 downto 0 do
+    Line := Dest.ScanLine[J];
+    for I := Dest.Width - 1 downto 0 do
     begin
-      TRGBArray(rowB^)[i].rgbtRed := 0;
-      TRGBArray(rowB^)[i].rgbtGreen := rowRGB[i].rgbtGreen;
-      TRGBArray(rowB^)[i].rgbtBlue := 0;
+      Line[I].rgbRed := 0;
+      Line[I].rgbBlue := 0;
     end;
   end;
+  Dest.PixelFormat := Source.PixelFormat;
 end;
 
-function GetHueBitmap(Value: TBitmap): TBitmap;
+procedure GetMonochromeBitmap(var Dest: TBitmap; const Source: TBitmap);
+begin
+  if not Assigned(Dest) then
+    Dest := TBitmap.Create;
+  Dest.Assign(Source);
+  Dest.Monochrome := True;
+end;
+
+procedure GetHueBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
-  h, s, v, i, j: Integer;
-  rowRGB, Rows: PRGBArray;
+  I, J, H, S, V: Integer;
+  Line: PRGBQuadArray;
 begin
-  Value.PixelFormat := pf24bit;
-  Result := TBitmap.Create;
-  Result.PixelFormat := pf24bit;
-  Result.Width := Value.Width;
-  Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  if not Assigned(Dest) then
+    Dest := TBitmap.Create;
+  Dest.Assign(Source);
+  Dest.PixelFormat := pf32bit;
+  for J := Dest.Height - 1 downto 0 do
   begin
-    rowRGB := Value.ScanLine[j];
-    Rows := Result.ScanLine[j];
-    for i := Value.Width - 1 downto 0 do
-    begin
-      with rowRGB[i] do
-        RGBToHSV(rgbtRed, rgbtGreen, rgbtBlue, h, s, v);
-      Rows[i].rgbtBlue := h;
-      Rows[i].rgbtGreen := h;
-      Rows[i].rgbtRed := h;
-    end;
+    Line := Dest.ScanLine[J];
+    for I := Dest.Width - 1 downto 0 do
+      with Line[I] do
+      begin
+        RGBToHSV(rgbRed, rgbGreen, rgbBlue, H, S, V);
+        rgbRed := H;
+        rgbGreen := H;
+        rgbBlue := H;
+      end;
   end;
+  Dest.PixelFormat := Source.PixelFormat;
 end;
 
-function GetMonochromeBitmap(Value: TBitmap): TBitmap;
-begin
-  Result := TBitmap.Create;
-  Result.Assign(Value);
-  Result.Monochrome := True;
-end;
-
-function GetSaturationBitmap(Value: TBitmap): TBitmap;
+procedure GetSaturationBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
-  h, s, v, i, j: Integer;
-  rowRGB, Rows: PRGBArray;
+  I, J, H, S, V: Integer;
+  Line: PRGBQuadArray;
 begin
-  Value.PixelFormat := pf24bit;
-  Result := TBitmap.Create;
-  Result.PixelFormat := pf24bit;
-  Result.Width := Value.Width;
-  Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  if not Assigned(Dest) then
+    Dest := TBitmap.Create;
+  Dest.Assign(Source);
+  Dest.PixelFormat := pf32bit;
+  for J := Dest.Height - 1 downto 0 do
   begin
-    rowRGB := Value.ScanLine[j];
-    Rows := Result.ScanLine[j];
-    for i := Value.Width - 1 downto 0 do
-    begin
-      with rowRGB[i] do
-        RGBToHSV(rgbtRed, rgbtGreen, rgbtBlue, h, s, v);
-      Rows[i].rgbtBlue := s;
-      Rows[i].rgbtGreen := s;
-      Rows[i].rgbtRed := s;
-    end;
+    Line := Dest.ScanLine[J];
+    for I := Dest.Width - 1 downto 0 do
+      with Line[I] do
+      begin
+        RGBToHSV(rgbRed, rgbGreen, rgbBlue, H, S, V);
+        rgbRed := S;
+        rgbGreen := S;
+        rgbBlue := S;
+      end;
   end;
+  Dest.PixelFormat := Source.PixelFormat;
 end;
 
-function GetValueBitmap(Value: TBitmap): TBitmap;
+procedure GetValueBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
-  h, s, v, i, j: Integer;
-  rowRGB, Rows: PRGBArray;
+  I, J, H, S, V: Integer;
+  Line: PRGBQuadArray;
 begin
-  Value.PixelFormat := pf24bit;
-  Result := TBitmap.Create;
-  Result.PixelFormat := pf24bit;
-  Result.Width := Value.Width;
-  Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  if not Assigned(Dest) then
+    Dest := TBitmap.Create;
+  Dest.Assign(Source);
+  Dest.PixelFormat := pf32bit;
+  for J := Dest.Height - 1 downto 0 do
   begin
-    rowRGB := Value.ScanLine[j];
-    Rows := Result.ScanLine[j];
-    for i := Value.Width - 1 downto 0 do
-    begin
-      with rowRGB[i] do
-        RGBToHSV(rgbtRed, rgbtGreen, rgbtBlue, h, s, v);
-      Rows[i].rgbtBlue := v;
-      Rows[i].rgbtGreen := v;
-      Rows[i].rgbtRed := v;
-    end;
+    Line := Dest.ScanLine[J];
+    for I := Dest.Width - 1 downto 0 do
+      with Line[I] do
+      begin
+        RGBToHSV(rgbRed, rgbGreen, rgbBlue, H, S, V);
+        rgbRed := V;
+        rgbGreen := V;
+        rgbBlue := V;
+      end;
   end;
+  Dest.PixelFormat := Source.PixelFormat;
 end;
 
 {$IFDEF MSWINDOWS}
