@@ -472,6 +472,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Click; override;
     procedure Paint; override;
+    procedure Loaded; override;
     procedure MouseEnter; dynamic;
     procedure MouseLeave; dynamic;
     function GetImageWidth:integer;virtual;
@@ -2738,6 +2739,7 @@ begin
   FChangeLink.Free;
   FHotTrackFont.Free;
   FFontSave.Free;
+  FreeAndNil(FConsumerSvc);
   inherited;
 end;
 
@@ -2968,6 +2970,12 @@ begin
       DrawFocusRect(Rect);
     end;
   end;
+end;
+
+procedure TJvCustomLabel.Loaded;
+begin
+  inherited Loaded;
+  Provider.Loaded;
 end;
 
 procedure TJvCustomLabel.AdjustBounds;
@@ -3341,19 +3349,20 @@ end;
 
 function TJvCustomLabel.ProviderActive: Boolean;
 begin
-  Result := Provider.ProviderIntf <> nil;
+  Result := (Provider <> nil) and (Provider.ProviderIntf <> nil);
 end;
 
 procedure TJvCustomLabel.ConsumerServiceChanged(Sender: TJvDataConsumer;
   Reason: TJvDataConsumerChangeReason);
 begin
-  if ProviderActive then
+  if ProviderActive or (Reason = ccrProviderSelected) then
     AdjustBounds;
 end;
 
 procedure TJvCustomLabel.NonProviderChange;
 begin
-  Provider.Provider := nil;
+  if Provider <> nil then
+    Provider.Provider := nil;
 end;
 
 function TJvCustomLabel.GetImageWidth: integer;
