@@ -1,6 +1,3 @@
-{$I JVCL.INC}
-unit JvCsvDataEditor;
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -29,23 +26,21 @@ description : TJvCsvDataSet data access component. Design time unit.
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
+unit JvCsvDataEditor;
+
 {
   Design Time unit
   (contains property editors for TCsvDataSource component)
   Written by Warren Postma.
   Donated to Delphi Jedi Project.
-
 }
+
 interface
 
-uses Windows,
-  Messages,
-  Db,
-  SysUtils,
-  Classes,
-  Forms,
-  Dialogs,
-  Graphics,
+uses
+  Windows, Messages, Db, SysUtils, Classes, Forms, Dialogs, Graphics,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -53,17 +48,14 @@ uses Windows,
   {$ENDIF COMPILER6_UP}
   JvCsvData;
 
-
-
 type
-
   { A string property editor makes setting up the CSV Field definitions less painful }
   TJvCsvDefStrProperty = class(TStringProperty)
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
   end;
 
-  { A right clicky on the CSVDataSet will allow you to select the CSV field definitions editor. }
+  { A right click on the CSVDataSet will allow you to select the CSV field definitions editor. }
 {  TCSVDataSetComponentEditor = class(TComponentEditor)
     function GetVerbCount : Integer; override;
     function GetVerb (Index : Integer) : string; override;
@@ -77,20 +69,16 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
-
-{ VCL Register }
 procedure Register;
-
-
-resourcestring
-  sJvCsvDataSetSelectCSVFileToOpen = 'JvCsvDataSet - Select CSV File to Open';
 
 implementation
 
+uses
+  JvCsvDataForm, JvDsgnConsts, JvConsts;
+
 { CsvDataDefStrDsgn= String Editor at design time for CSVDefs }
 
-
-uses JvCsvDataForm; {,DSDESIGN}
+//=== TJvCsvDefStrProperty ===================================================
 
 function TJvCsvDefStrProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -110,9 +98,9 @@ begin
     Dialog.SetCsvStr(OldValue);
     dlgResult := Dialog.ShowModal;
     if dlgResult = idOk then
-      result := Dialog.GetCsvStr
+      Result := Dialog.GetCsvStr
     else
-      result := OldValue;
+      Result := OldValue;
   finally
     Dialog.Free;
     EnableTaskWindows(WindowList);
@@ -124,21 +112,17 @@ var
   s1, s2: string;
   Component: TJvCsvCustomInMemoryDataSet;
 begin
-
   Component := GetComponent(0) as TJvCsvCustomInMemoryDataSet;
 
-  s1 := GetValue();
-  if (s1 = '') then
-    s1 := Component.GetCsvHeader; // todo! read first line of CSV file!
+  s1 := GetValue;
+  if s1 = '' then
+    s1 := Component.GetCsvHeader; // TODO! read first line of CSV file!
   s2 := DoCsvDefDialog(s1);
 
     //if s1<>s2 then begin // on change of csv value.
   SetValue(s2);
     //end
 end;
-
-
-
 
 {
 function TCSVDataSetComponentEditor.GetVerbCount : Integer;
@@ -188,21 +172,22 @@ end;
 }
 
 
-{ TJvFilenameProperty }
+//=== TJvFilenameProperty ====================================================
 
 procedure TJvFilenameProperty.Edit;
-var
-  csvFileOpen: TOpenDialog;
 begin
-  csvFileOpen := TOpenDialog.Create(Application);
-  csvFileOpen.Title := sJvCsvDataSetSelectCSVFileToOpen;
-  csvFileOpen.Filename := GetValue;
-  csvFileOpen.Filter := '*.csv';
-  csvFileOpen.Options := csvFileOpen.Options + [ofPathMustExist];
-  try
-    if csvFileOpen.Execute then SetValue(csvFileOpen.Filename);
-  finally
-    csvFileOpen.Free;
+  with TOpenDialog.Create(Application) do
+  begin
+    Title := SJvCsvDataSetSelectCSVFileToOpen;
+    FileName := GetValue;
+    Filter := '*.csv';
+    Options := Options + [ofPathMustExist];
+    try
+      if Execute then
+        SetValue(FileName);
+    finally
+      Free;
+    end;
   end;
 end;
 
@@ -211,24 +196,17 @@ begin
   Result := [paDialog, paRevertable];
 end;
 
-
-
-// VCL Registration
-
 procedure Register;
 begin
-{ Property Editors }
   RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'CsvFieldDef', TJvCsvDefStrProperty);
 // RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'TableName', TFilenameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'Filename', TJvFileNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'FileName', TJvFileNameProperty);
 
  { Component Editor - Verbs for the Right-Clicky-on-ye-component thing
    Requires a working DSDESIGN.pas source that will compile. }
 // RegisterComponentEditor(TCSVDataSet, TCSVDataSetComponentEditor);
 
-{ Component }
-  RegisterComponents('Jv Data Access', [TJvCSVDataSet]); // {'Data Access'}
-
+  RegisterComponents(SPaletteDBNonVisual, [TJvCSVDataSet]);
 end;
 
 end.

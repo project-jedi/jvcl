@@ -104,11 +104,10 @@ implementation
 
 uses
   Consts,
-  JvStringsForm, JvConsts, JvJVCLUtils, JvBoxProcs;
+  JvStringsForm, JvConsts, JvDsgnConsts, JvJVCLUtils, JvBoxProcs;
 
-resourcestring
-  sItemEditor = 'Item editor';
-  sEnabled = 'Enabled';
+const
+  cFontMSSansSerif = 'MS Sans Serif';
 
 //=== TJvCheckItemsProperty ==================================================
 
@@ -155,12 +154,12 @@ begin
   {Left := 354;
   Top := 338;}
   BorderStyle := bsDialog;
-  Caption := sItemEditor;
+  Caption := SItemEditor;
   ClientHeight := 92;
   ClientWidth := 330;
   Font.Color := clWindowText;
+  Font.Name := cFontMSSansSerif;
   Font.Size := 8;
-  Font.Name := 'MS Sans Serif';
   Font.Style := [];
   Scaled := True;
   Position := poScreenCenter;
@@ -226,7 +225,7 @@ begin
     Top := 40;
     Width := 70;
     Height := 17;
-    Caption := sEnabled;
+    Caption := SEnabled;
     State := cbChecked;
     TabOrder := 4;
   end;
@@ -255,7 +254,7 @@ begin
         ScaleBy(Screen.PixelsPerInch, 96);
         { The ScaleBy method does not scale the font well, so set the
           font back to the original info. }
-        Font.Name := 'MS Sans Serif';
+        Font.Name := cFontMSSansSerif;
         Font.Size := 8;
         Left := (Screen.Width div 2) - (Width div 2);
         Top := (Screen.Height div 2) - (Height div 2);
@@ -283,7 +282,7 @@ begin
   try
     FEdit.Text := '';
     FComboBox.ItemIndex := Integer(cbUnChecked);
-    FEnableBox.Checked := true;
+    FEnableBox.Checked := True;
     if ShowModal = mrOk then
     begin
       Index := CheckList.Items.Add(FEdit.Text);

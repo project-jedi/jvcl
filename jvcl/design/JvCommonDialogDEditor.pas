@@ -49,10 +49,10 @@ type
   end;
 
 
-resourcestring
-  sPreview = 'Preview...';
-
 implementation
+
+uses
+  JvDsgnConsts;
 
 procedure TJvCommonDialogDEditor.ExecuteVerb(Index: Integer);
 begin
@@ -67,7 +67,7 @@ function TJvCommonDialogDEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := sPreview;
+      Result := SPreview;
   end;
 end;
 

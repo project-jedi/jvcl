@@ -58,8 +58,8 @@ type
 
 implementation
 
-resourcestring
-  SPreview = 'Preview...';
+uses
+  JvDsgnConsts;
 
 procedure TJvBaseDlgEditor.Edit;
 begin

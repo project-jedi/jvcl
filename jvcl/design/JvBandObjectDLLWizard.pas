@@ -137,15 +137,11 @@ type
   end;
 
 
-resourcestring
-  sCreatesABandObjectDLLProject = 'Creates a Band Object DLL Project.';
-  sBandObjectDLLWizard = 'Band Object DLL Wizard';
-
 implementation
 
 uses
   SysUtils, Forms, Controls, ComObj,
-  JvBandObjectDLLWizardForm, JvTypes;
+  JvBandObjectDLLWizardForm, JvTypes, JvDsgnConsts;
 
 const
   CrLf2 = #13#10#13#10;
@@ -192,7 +188,7 @@ end;
 
 function TJvBandObjectDLLWizard.GetComment: string;
 begin
-  Result := sCreatesABandObjectDLLProject;
+  Result := SCreatesABandObjectDLLProject;
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -211,7 +207,7 @@ end;
 
 function TJvBandObjectDLLWizard.GetName: string;
 begin
-  Result := sBandObjectDLLWizard;
+  Result := SBandObjectDLLWizard;
 end;
 
 function TJvBandObjectDLLWizard.GetPage: string;
