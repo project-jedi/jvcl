@@ -715,8 +715,8 @@ end;
 
 destructor TJvLookupAutoComplete.Destroy;
 begin
+  SetEdit(nil); // SetEdit accesses FAutoComplete
   FAutoComplete.Free;
-  SetEdit(nil);
   SetListBox(nil);
   FStrings.Free;
   inherited Destroy;
