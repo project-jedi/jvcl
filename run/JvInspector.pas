@@ -25,6 +25,9 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+    Apr 16, 2004, Marcel Bestebroer:
+      - Fixed an issue regarding resizable items or items with non-default
+        sizes in combination with the .Net painter.
     Apr 15, 2004, Marcel Bestebroer:
       - Type mapper also mapped all types of the same class to the first
         mapping of that class (as in all enums mapped to the first added
@@ -4571,7 +4574,7 @@ end;
 procedure TJvInspectorBorlandNETBasePainter.ApplyValueFont;
 begin
   inherited ApplyValueFont;
-  if Item.IsCategory then
+  if Assigned(Item) and Item.IsCategory then
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
 end;
 
