@@ -64,9 +64,6 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    {$IFDEF JVCLThemesEnabled}
-    property ParentBackground default True;
-    {$ENDIF JVCLThemesEnabled}
   end;
 
 implementation
@@ -119,7 +116,7 @@ var
   Bmp: TBitmap;
   DC: THandle;
 begin
-  if ThemeServices.ThemesEnabled and ParentBackground then
+  if ThemeServices.ThemesEnabled then
   begin
 //    DrawThemedBackground(Self, Canvas, ClientRect, Parent.Brush.Color);
     DC := Canvas.Handle;
