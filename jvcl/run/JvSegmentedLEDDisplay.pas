@@ -26,7 +26,6 @@ located at http://jvcl.sourceforge.net
 Known Issues:
   * Automatic unlit color calculation is not working properly. Maybe a function in JclGraphUtil
     can help out there.
-  * Exceptions should be JVCL based
   * String literals need to be converted into resourcestrings
 -----------------------------------------------------------------------------}
 
@@ -39,7 +38,7 @@ interface
 uses
   Classes, Graphics, Windows,
   JclBase,
-  JvComponent;
+  JvComponent, JvTypes;
 
 // Additional color values for unlit color settings (TUnlitColor type)
 const
@@ -59,6 +58,8 @@ type
   TUnlitColor = type TColor;
   TSlantAngle = 0 .. 44;
   TSLDHitInfo= (shiNowhere, shiDigit, shiDigitSegment, shiClientArea);
+
+  EJVCLSegmentedLEDException = class(EJVCLException);
 
   TJvCustomSegmentedLEDDisplay = class(TJvGraphicControl)
   private
@@ -222,9 +223,6 @@ type
     class function MapperClass: TJvSegmentedLEDCharacterMapperClass; virtual; abstract;
     procedure RecalcRefPoints; virtual; abstract;
     procedure RecalcSegments; virtual; abstract;
-    class function SegmentCount: Integer; virtual; abstract;
-    class function GetSegmentName(Index: Integer): string; virtual; abstract;
-    class function GetSegmentIndex(Name: string): Integer; virtual; abstract;
     function GetLitSegColor(Index: Integer): TColor; virtual;
     function GetUnlitSegColor(Index: Integer): TColor; virtual;
     function GetSegmentColor(Index: Integer): TColor;
@@ -249,6 +247,10 @@ type
     function GetHitInfo(X, Y: Integer): TSLDHitInfo; overload;
     function GetHitInfo(X, Y: Integer; out SegmentIndex: Integer): TSLDHitInfo; overload;
     function PtInSegment(SegmentIndex: Integer; Pt: TPoint): Boolean; virtual;
+    class function SegmentCount: Integer; virtual; abstract;
+    class function GetSegmentName(Index: Integer): string; virtual; abstract;
+    class function GetSegmentIndex(Name: string): Integer; virtual; abstract;
+    function GetSegmentStates: Int64;
   end;
 
   TJvBaseSegmentedLEDDigit = class(TJvCustomSegmentedLEDDigit)
@@ -279,12 +281,13 @@ type
     procedure InvalidateRefPoints; override;
     procedure RecalcRefPoints; override;
     procedure RecalcSegments; override;
-    class function SegmentCount: Integer; override;
-    class function GetSegmentName(Index: Integer): string; override;
-    class function GetSegmentIndex(Name: string): Integer; override;
 
     property DPWidth: Integer read GetDPWidth write SetDPWidth;
     property UseDP: Boolean read FUseDP write SetUseDP;
+  public
+    class function SegmentCount: Integer; override;
+    class function GetSegmentName(Index: Integer): string; override;
+    class function GetSegmentIndex(Name: string): Integer; override;
   end;
 
   TJvBaseSegmentedLEDCharacterMapper = class(TJvComponent)
@@ -318,13 +321,13 @@ type
     function GetUseColon: T7SegColonUsage;
     procedure SetUseColon(Value: T7SegColonUsage);
     class function MapperClass: TJvSegmentedLEDCharacterMapperClass; override;
-    class function SegmentCount: Integer; override;
-    class function GetSegmentName(Index: Integer): string; override;
-    class function GetSegmentIndex(Name: string): Integer; override;
     procedure RecalcSegments; override;
     procedure CalcCHSeg(Index: Integer); virtual;
     procedure CalcCLSeg(Index: Integer); virtual;
   public
+    class function SegmentCount: Integer; override;
+    class function GetSegmentName(Index: Integer): string; override;
+    class function GetSegmentIndex(Name: string): Integer; override;
   published
     property UseDP;
     property UseColon: T7SegColonUsage read GetUseColon write SetUseColon;
@@ -375,7 +378,7 @@ begin
   with DigitClassList.LockList do
   try
     if IndexOf(DigitClass) > -1 then
-      raise Exception.Create('Duplicate DigitClass registered.');
+      raise EJVCLSegmentedLEDException.Create('Duplicate DigitClass registered.');
     Add(DigitClass);
     Classes.RegisterClass(DigitClass);
   finally
@@ -488,9 +491,9 @@ begin
     end
     else
     if DigitClass = nil then
-      raise Exception.Create('Cannot specify mapper without DigitClass being set.')
+      raise EJVCLSegmentedLEDException.Create('Cannot specify mapper without DigitClass being set.')
     else
-      raise Exception.Create('Invalid mapper class for current digit class.');
+      raise EJVCLSegmentedLEDException.Create('Invalid mapper class for current digit class.');
   end;
 end;
 
@@ -645,7 +648,7 @@ begin
       if AClass.InheritsFrom(TJvCustomSegmentedLEDDigit) then
         DigitClass := TJvSegmentedLEDDigitClass(FindClass(Value))
       else
-        raise Exception.Create('Invalid class.');
+        raise EJVCLSegmentedLEDException.Create('Invalid class.');
     end
     else
       DigitClass := nil;
@@ -1171,6 +1174,11 @@ begin
   end
   else
     Result := False;
+end;
+
+function TJvCustomSegmentedLEDDigit.GetSegmentStates: Int64;
+begin
+  Result := FSegmentStates;
 end;
 
 //===TJvBaseSegmentedLEDDigit=======================================================================
