@@ -19,7 +19,7 @@ Contributor(s):
   Remko Bonte
   Peter Thörnqvist
 
-Last Modified: 2004-02-01
+Last Modified: 2004-02-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -4602,8 +4602,11 @@ begin
                     ToggleItem(ParIdx);
                   end
                   else if ItemIsExpanded(ParIdx) then
+                  begin
                     // parent is expanded, add the new item to the view.
                     AddChildItem(ParIdx, IJvDataItem(Source));
+                    NotifyViewChanged;
+                  end;
                 end;
               end
               else
