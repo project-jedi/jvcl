@@ -73,7 +73,7 @@
     <File Name="..\..\run\JvCheckTreeView.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorCombo.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvCombobox.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvComCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvComCtrls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvControlBar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvControlPanelButton.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvCoolBar.pas" Targets="allbutclx" Formname="" Condition=""/>
