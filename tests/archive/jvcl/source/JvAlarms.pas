@@ -176,7 +176,7 @@ begin
         Current := Now;
         Stamp := DateTimeToTimeStamp(Now);
         // sort out delayed Timer events which may arrive in bunches
-        if (Stamp.Time - FLast.Time) >= 1000 then
+        if abs(Stamp.Time - FLast.Time) >= 1000 then
         begin
           FLast := Stamp;
           for I := FAlarms.Count - 1 downto 0 do
