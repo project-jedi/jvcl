@@ -112,6 +112,8 @@ type
     procedure SavePlacement; virtual;
     procedure RestorePlacement; virtual;
     property Form: TForm read GetForm;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -123,6 +125,7 @@ type
     function ReadInteger(const Ident: string; Default: Longint): Longint;
     procedure WriteInteger(const Ident: string; Value: Longint);
     procedure EraseSections;
+
   published
     property Active: Boolean read FActive write FActive default True;
     property AppStorage: TJvCustomAppStore read FAppStorage write FAppStorage;
@@ -683,6 +686,14 @@ begin
   end;
   FRestored := True;
   UpdatePlacement;
+end;
+
+procedure TJvFormPlacement.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited;
+  if (Operation = opRemove) and (AComponent = AppStorage) then
+    AppStorage := nil;
 end;
 
 //=== TJvWinMinMaxInfo =======================================================
