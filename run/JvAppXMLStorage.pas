@@ -68,7 +68,7 @@ type
       const ReportListAsValue: Boolean = True); override;
     function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
     procedure SplitKeyPath(const Path: string; out Key, ValueName: string); override;
-    function PathExistsInt(const Path: string): boolean; override;
+    function PathExistsInt(const Path: string): Boolean; override;
     function ValueStoredInt(const Path: string): Boolean; override;
     procedure DeleteValueInt(const Path: string); override;
     procedure DeleteSubTreeInt(const Path: string); override;
@@ -516,7 +516,10 @@ var
   I: Integer;
   Node: TJvSimpleXmlElem;
 begin
-  if AutoReload and not IsUpdating then Reload;
+  Result := nil;
+
+  if AutoReload and not IsUpdating then
+    Reload;
   NodeList := TStringList.Create;
   if StartNode <> nil then
     Node := StartNode
@@ -525,16 +528,13 @@ begin
 
   try
     try
-      StrToStrings(Path, '\', NodeList, false);
+      StrToStrings(Path, '\', NodeList, False);
       for I := 0 to NodeList.Count - 1 do
       begin
         if Assigned(Node.Items.ItemNamed[NodeList[i]]) then
           Node := Node.Items.ItemNamed[NodeList[i]]
         else
-        begin
-          Result := nil;
           Exit;
-        end;
       end;
     finally
       NodeList.Free;
@@ -545,7 +545,7 @@ begin
   Result := Node;
 end;
 
-function TJvCustomAppXMLStorage.PathExistsInt(const Path: string): boolean;
+function TJvCustomAppXMLStorage.PathExistsInt(const Path: string): Boolean;
 var
   SubKey: string;
   ValueName: string;
