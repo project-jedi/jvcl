@@ -48,7 +48,7 @@ type
     PageRect, PrintRect: TRect) of object;
   TJvDrawPageEvent = procedure(Sender: TObject; PageIndex: integer; Canvas: TCanvas;
     PageRect, PrintRect: TRect; var NeedMorePages: boolean) of object;
-  TJvCustomPreviewDoc = class;
+  TJvCustomPreviewControl = class;
 
   IJvPrinter = interface
     ['{FDCCB7CD-8DF7-48B9-9924-CE439AE97999}']
@@ -183,7 +183,7 @@ type
     property ScaleMode: TJvPreviewScaleMode read FScaleMode write SetScaleMode default smFullPage;
   end;
 
-  TJvCustomPreviewDoc = class(TCustomControl)
+  TJvCustomPreviewControl = class(TCustomControl)
   private
     FDummy: integer;
     FBuffer: TBitmap;
@@ -208,6 +208,9 @@ type
     FOnAfterScroll: TNotifyEvent;
     FScrollBars: TScrollStyle;
     FHideScrollBars: boolean;
+    FOnDeviceInfoChange: TNotifyEvent;
+    FOnScaleModeChange: TNotifyEvent;
+    FOnOptionsChange: TNotifyEvent;
     procedure DoOptionsChange(Sender: TObject);
     procedure DoDeviceInfoChange(Sender: TObject);
     procedure DoScaleModeChange(Sender: TObject);
@@ -266,6 +269,10 @@ type
     property OnDrawPreviewPage: TJvDrawPreviewEvent read FOnDrawPreviewPage write FOnDrawPreviewPage;
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnDeviceInfoChange:TNotifyEvent read FOnDeviceInfoChange write FOnDeviceInfoChange;
+    property OnOptionsChange:TNotifyEvent read FOnOptionsChange write FOnOptionsChange;
+    property OnScaleModeChange:TNotifyEvent read FOnScaleModeChange write FOnScaleModeChange;
+
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X: Integer; Y: Integer); override;
   public
@@ -290,7 +297,7 @@ type
     property PageCount: integer read GetPageCount;
   end;
 
-  TJvPreviewDoc = class(TJvCustomPreviewDoc)
+  TJvPreviewControl = class(TJvCustomPreviewControl)
   published
 
     property TopRow;
@@ -301,6 +308,9 @@ type
 
     property Options;
     property OnChange;
+    property OnDeviceInfoChange;
+    property OnOptionsChange;
+    property OnScaleModeChange;
     property OnVertScroll;
     property OnHorzScroll;
     property OnAfterScroll;
@@ -794,9 +804,9 @@ begin
   Result := YPxToInch(Pixels) / 25.4;
 end;
 
-{ TJvCustomPreviewDoc }
+{ TJvCustomPreviewControl }
 
-function TJvCustomPreviewDoc.Add: TMetaFile;
+function TJvCustomPreviewControl.Add: TMetaFile;
 begin
   repeat
     Result := TMetafile.Create;
@@ -809,7 +819,7 @@ begin
 //  PostMessage(Handle, WM_PREVIEWADDPAGE, integer(Result), FPages.Add(Result));
 end;
 
-procedure TJvCustomPreviewDoc.CalcScrollRange;
+procedure TJvCustomPreviewControl.CalcScrollRange;
 var
   si: TScrollInfo;
   factor: double;
@@ -862,7 +872,7 @@ begin
   end;
 end;
 
-procedure TJvCustomPreviewDoc.Clear;
+procedure TJvCustomPreviewControl.Clear;
 var i: integer;
 begin
   for i := 0 to FPages.Count - 1 do
@@ -872,14 +882,14 @@ begin
     Change;
 end;
 
-procedure TJvCustomPreviewDoc.CMCtl3DChanged(var Message: TMessage);
+procedure TJvCustomPreviewControl.CMCtl3DChanged(var Message: TMessage);
 begin
   if NewStyleControls and (FBorderStyle = bsSingle) then
     RecreateWnd;
   inherited;
 end;
 
-constructor TJvCustomPreviewDoc.Create(AOwner: TComponent);
+constructor TJvCustomPreviewControl.Create(AOwner: TComponent);
 begin
   inherited;
   FSelectedPage := -1;
@@ -901,9 +911,10 @@ begin
   FBorderStyle := bsSingle;
   FScrollBars := ssBoth;
   FHideScrollBars := false;
+  TabStop := true;
 end;
 
-procedure TJvCustomPreviewDoc.CreateParams(var Params: TCreateParams);
+procedure TJvCustomPreviewControl.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
 begin
@@ -919,12 +930,12 @@ begin
   end;
 end;
 
-procedure TJvCustomPreviewDoc.Delete(Index: integer);
+procedure TJvCustomPreviewControl.Delete(Index: integer);
 begin
   TMetaFile(FPages[Index]).Free;
 end;
 
-destructor TJvCustomPreviewDoc.Destroy;
+destructor TJvCustomPreviewControl.Destroy;
 begin
   Clear;
   FDeviceInfo.Free;
@@ -933,7 +944,7 @@ begin
   inherited;
 end;
 
-function TJvCustomPreviewDoc.DoAddPage(AMetaFile: TMetaFile;
+function TJvCustomPreviewControl.DoAddPage(AMetaFile: TMetaFile;
   PageIndex: integer): boolean;
 var ACanvas: TMetaFileCanvas;
   APageRect, APrintRect: TRect;
@@ -968,29 +979,35 @@ begin
   ACanvas.Free;
 end;
 
-procedure TJvCustomPreviewDoc.DoDrawPreviewPage(PageIndex: integer;
+procedure TJvCustomPreviewControl.DoDrawPreviewPage(PageIndex: integer;
   Canvas: TCanvas; PageRect, PrintRect: TRect);
 begin
   if Assigned(FOnDrawPreviewPage) then
     FOnDrawPreviewPage(self, PageIndex, Canvas, PageRect, PrintRect);
 end;
 
-procedure TJvCustomPreviewDoc.DoOptionsChange(Sender: TObject);
+procedure TJvCustomPreviewControl.DoOptionsChange(Sender: TObject);
 begin
   Change;
+  if Assigned(FOnOptionsChange) then
+    FOnOptionsChange(self);
 end;
 
-procedure TJvCustomPreviewDoc.DoScaleModeChange(Sender: TObject);
+procedure TJvCustomPreviewControl.DoScaleModeChange(Sender: TObject);
 begin
   Change;
+  if Assigned(FOnScaleModeChange) then
+    FOnScaleModeChange(self);
 end;
 
-procedure TJvCustomPreviewDoc.DoDeviceInfoChange(Sender: TObject);
+procedure TJvCustomPreviewControl.DoDeviceInfoChange(Sender: TObject);
 begin
   Change;
+  if Assigned(FOnDeviceInfoChange) then
+    FOnDeviceInfoChange(self);
 end;
 
-procedure TJvCustomPreviewDoc.DrawPages(ACanvas: TCanvas; Offset: TPoint);
+procedure TJvCustomPreviewControl.DrawPages(ACanvas: TCanvas; Offset: TPoint);
 var i, j, k, m, AOffsetX, AOffsetY, APageIndex: integer;
   APageRect, APrintRect: TRect;
   si: TScrollInfo;
@@ -1091,24 +1108,24 @@ begin
   end;
 end;
 
-procedure TJvCustomPreviewDoc.DrawPreview(PageIndex: integer; APageRect,
+procedure TJvCustomPreviewControl.DrawPreview(PageIndex: integer; APageRect,
   APrintRect: TRect);
 begin
   FBuffer.Canvas.StretchDraw(APrintRect, Pages[PageIndex]);
   DoDrawPreviewPage(PageIndex, FBuffer.Canvas, APageRect, APrintRect);
 end;
 
-function TJvCustomPreviewDoc.GetPage(Index: integer): TMetaFile;
+function TJvCustomPreviewControl.GetPage(Index: integer): TMetaFile;
 begin
   Result := TMetaFile(FPages[Index]);
 end;
 
-function TJvCustomPreviewDoc.GetPageCount: integer;
+function TJvCustomPreviewControl.GetPageCount: integer;
 begin
   Result := FPages.Count;
 end;
 
-procedure TJvCustomPreviewDoc.Paint;
+procedure TJvCustomPreviewControl.Paint;
 begin
   if IsUpdating then
     Exit;
@@ -1121,7 +1138,7 @@ begin
     0, 0, SRCCOPY);
 end;
 
-procedure TJvCustomPreviewDoc.SetBorderStyle(const Value: TBorderStyle);
+procedure TJvCustomPreviewControl.SetBorderStyle(const Value: TBorderStyle);
 begin
   if FBorderStyle <> Value then
   begin
@@ -1130,7 +1147,7 @@ begin
   end;
 end;
 
-procedure TJvCustomPreviewDoc.SetSelectedPage(const Value: integer);
+procedure TJvCustomPreviewControl.SetSelectedPage(const Value: integer);
 begin
   if FSelectedPage <> Value then
   begin
@@ -1139,19 +1156,19 @@ begin
   end;
 end;
 
-procedure TJvCustomPreviewDoc.SetDeviceInfo(const Value: TJvDeviceInfo);
+procedure TJvCustomPreviewControl.SetDeviceInfo(const Value: TJvDeviceInfo);
 begin
   FDeviceInfo.Assign(Value);
 end;
 
-procedure TJvCustomPreviewDoc.SetOptions(
+procedure TJvCustomPreviewControl.SetOptions(
   const Value: TJvPreviewPageOptions);
 begin
   FOptions.Assign(Value);
 end;
 
 {
-procedure TJvCustomPreviewDoc.WMPreviewAddPage(var Message: TMessage);
+procedure TJvCustomPreviewControl.WMPreviewAddPage(var Message: TMessage);
 begin
   with Message do
     DoAddPage(TMetaFile(wParam), lParam);
@@ -1160,13 +1177,13 @@ begin
 end;
 }
 
-procedure TJvCustomPreviewDoc.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TJvCustomPreviewControl.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
   //  inherited;
   Message.Result := 1;
 end;
 
-procedure TJvCustomPreviewDoc.WMSize(var Message: TWMSize);
+procedure TJvCustomPreviewControl.WMSize(var Message: TWMSize);
 var tmpRow:integer;
 begin
   inherited;
@@ -1177,7 +1194,7 @@ begin
     TopRow := tmpRow; // workaround...
 end;
 
-procedure TJvCustomPreviewDoc.WMHScroll(var Msg: TWMHScroll);
+procedure TJvCustomPreviewControl.WMHScroll(var Msg: TWMHScroll);
 var si: TScrollInfo; NewPos, AIncrement: integer;
 begin
   if IsPageMode then
@@ -1217,7 +1234,7 @@ begin
   Refresh;
 end;
 
-procedure TJvCustomPreviewDoc.WMVScroll(var Msg: TWMVScroll);
+procedure TJvCustomPreviewControl.WMVScroll(var Msg: TWMVScroll);
 var si: TScrollInfo; NewPos, AIncrement: integer;
 begin
   AIncrement := FPageHeight + Options.VertSpacing;
@@ -1261,12 +1278,12 @@ begin
   Refresh;
 end;
 
-procedure TJvCustomPreviewDoc.WMGetDlgCode(var Message: TMessage);
+procedure TJvCustomPreviewControl.WMGetDlgCode(var Message: TMessage);
 begin
   Message.Result := DLGC_WANTALLKEYS;
 end;
 
-procedure TJvCustomPreviewDoc.PrintRange(const APrinter: IJvPrinter;
+procedure TJvCustomPreviewControl.PrintRange(const APrinter: IJvPrinter;
   StartPage, EndPage, Copies: integer; Collate: boolean);
 var i, j: integer;
 begin
@@ -1362,7 +1379,7 @@ begin
     APrinter.EndDoc;
 end;
 
-function TJvCustomPreviewDoc.GetOptimalScale: Cardinal;
+function TJvCustomPreviewControl.GetOptimalScale: Cardinal;
 var Val1, Val2: integer;
 begin
   Val1 := (ClientHeight - Options.VertSpacing) div VisibleRows - Options.VertSpacing * 2;
@@ -1370,9 +1387,9 @@ begin
   Result := GetLesserScale(Val1, Val2);
 end;
 
-procedure TJvCustomPreviewDoc.Change;
+procedure TJvCustomPreviewControl.Change;
 begin
-  //  TopRow := 0; // TODO: make this unnecessary...
+  //  TopRow := 0; // DONE: make this unnecessary...
   UpdateSizes;
   UpdateScale;
   // call again since some values might have changed (like scale):
@@ -1383,12 +1400,12 @@ begin
   Refresh;
 end;
 
-procedure TJvCustomPreviewDoc.BeginUpdate;
+procedure TJvCustomPreviewControl.BeginUpdate;
 begin
   Inc(FUpdateCount);
 end;
 
-procedure TJvCustomPreviewDoc.EndUpdate;
+procedure TJvCustomPreviewControl.EndUpdate;
 begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then
@@ -1397,7 +1414,7 @@ begin
     FUpdateCount := 0;
 end;
 
-function TJvCustomPreviewDoc.GetLesserScale(AHeight, AWidth: Cardinal): Cardinal;
+function TJvCustomPreviewControl.GetLesserScale(AHeight, AWidth: Cardinal): Cardinal;
 var DC: HDC;
 begin
   // determine scale factor for both sides, choose lesser
@@ -1421,12 +1438,12 @@ begin
   end;
 end;
 
-function TJvCustomPreviewDoc.IsUpdating: boolean;
+function TJvCustomPreviewControl.IsUpdating: boolean;
 begin
   Result := FUpdateCount <> 0;
 end;
 
-procedure TJvCustomPreviewDoc.SetTopRow(Value: integer);
+procedure TJvCustomPreviewControl.SetTopRow(Value: integer);
 var ARow, tmp: integer;
   si: TScrollInfo;
 begin
@@ -1435,16 +1452,10 @@ begin
   ScrollBy(0, -FScrollPos.Y + tmp);
   FScrollPos.Y := tmp;
   SetScrollPos(Handle, SB_VERT, FScrollPos.Y, true);
-  {  FillChar(si, sizeof(si), 0);
-    si.cbSize := sizeof(si);
-    si.fMask := SIF_ALL;
-    si.nPos := tmp;
-    SetScrollInfo(Handle, SB_VERT, si, true); }
-  //  CalcScrollRange;
   Refresh;
 end;
 
-procedure TJvCustomPreviewDoc.UpdateSizes;
+procedure TJvCustomPreviewControl.UpdateSizes;
 var DC: HDC;
 begin
   // precalc as much as possible to speed up rendering
@@ -1515,40 +1526,40 @@ begin
   end;
 end;
 
-function TJvCustomPreviewDoc.GetTopRow: integer;
+function TJvCustomPreviewControl.GetTopRow: integer;
 begin
   Result := FScrollPos.Y div (FPageHeight + Options.VertSpacing);
 //  Inc(Result, Ord(FScrollPos.Y mod (FPageHeight + Options.VertSpacing) <> 0));
 end;
 
-procedure TJvCustomPreviewDoc.First;
+procedure TJvCustomPreviewControl.First;
 begin
   TopRow := 0;
 end;
 
-procedure TJvCustomPreviewDoc.Last;
+procedure TJvCustomPreviewControl.Last;
 begin
   TopRow := TotalRows;
 end;
 
-procedure TJvCustomPreviewDoc.Next;
+procedure TJvCustomPreviewControl.Next;
 begin
   TopRow := TopRow + 1;
 end;
 
-procedure TJvCustomPreviewDoc.Prior;
+procedure TJvCustomPreviewControl.Prior;
 begin
   TopRow := TopRow - 1;
 end;
 
-function TJvCustomPreviewDoc.ItemAtPos(Pos: TPoint;
+function TJvCustomPreviewControl.ItemAtPos(Pos: TPoint;
   Existing: Boolean): Integer;
 begin
   // TODO: return the page at Pos or -1 if no page or outside range
   // if Existing is false, returns the page that should have been at Pos
 end;
 
-procedure TJvCustomPreviewDoc.SetScrollBars(const Value: TScrollStyle);
+procedure TJvCustomPreviewControl.SetScrollBars(const Value: TScrollStyle);
 begin
   if FScrollBars <> Value then
   begin
@@ -1557,7 +1568,7 @@ begin
   end;
 end;
 
-procedure TJvCustomPreviewDoc.SetHideScrollBars(const Value: boolean);
+procedure TJvCustomPreviewControl.SetHideScrollBars(const Value: boolean);
 begin
   if FHideScrollBars <> Value then
   begin
@@ -1566,7 +1577,7 @@ begin
   end;
 end;
 
-function TJvCustomPreviewDoc.DoMouseWheel(Shift: TShiftState;
+function TJvCustomPreviewControl.DoMouseWheel(Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint): Boolean;
 var Msg: TWMScroll;
 begin
@@ -1586,7 +1597,7 @@ begin
   end;
 end;
 
-procedure TJvCustomPreviewDoc.MouseDown(Button: TMouseButton;
+procedure TJvCustomPreviewControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited;
@@ -1594,12 +1605,12 @@ begin
     SetFocus;
 end;
 
-function TJvCustomPreviewDoc.IsPageMode: boolean;
+function TJvCustomPreviewControl.IsPageMode: boolean;
 begin
   Result := Options.ScaleMode in [smFullPage, smAutoScale, smColsRows];
 end;
 
-procedure TJvCustomPreviewDoc.UpdateScale;
+procedure TJvCustomPreviewControl.UpdateScale;
 begin
   case Options.ScaleMode of
     smFullPage:

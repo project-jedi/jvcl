@@ -96,10 +96,10 @@ type
     procedure BuildControlMenu;
   public
     { Public declarations }
-    pd: TJvPreviewDoc;
-    JvRTF: TJvPreviewRichEditRender;
-    JvTxt: TJvPreviewStringsRender;
-    JvImg: TJvPreviewGraphicRender;
+    pd: TJvPreviewControl;
+    JvRTF: TJvRichEditPreviewer;
+    JvTxt: TJvStringsPreviewer;
+    JvImg: TJvGraphicPreviewer;
   end;
 
 
@@ -151,11 +151,11 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   OpenDialog1.Filter := OpenDialog1.Filter + '|' + GraphicFilter(TGraphic);
-  JvImg := TJvPreviewGraphicRender.Create(self);
-  JvRTF := TJvPreviewRichEditRender.Create(self);
-  JvTxt := TJvPreviewStringsRender.Create(self);
+  JvImg := TJvGraphicPreviewer.Create(self);
+  JvRTF := TJvRichEditPreviewer.Create(self);
+  JvTxt := TJvStringsPreviewer.Create(self);
 
-  pd := TJvPreviewDoc.Create(self);
+  pd := TJvPreviewControl.Create(self);
   pd.Name := 'JvPreviewDoc1';
   pd.Parent := tabPreview;
   pd.Align := alClient;
@@ -230,7 +230,7 @@ begin
     1:
       pd.DeviceInfo.ReferenceHandle := Printer.Handle;
   end;
-  // set 0.5 inch margin
+  // set at least 0.5 inch margins
   pd.DeviceInfo.OffsetLeft := Max(pd.DeviceInfo.InchToXPx(0.5), pd.DeviceInfo.OffsetLeft);
   pd.DeviceInfo.OffsetRight := Max(pd.DeviceInfo.InchToXPx(0.5), pd.DeviceInfo.OffsetRight);
   pd.DeviceInfo.OffsetTop := Max(pd.DeviceInfo.InchToYPx(0.5), pd.DeviceInfo.OffsetTop);
@@ -391,7 +391,7 @@ end;
 
 procedure TfrmMain.Control1Click(Sender: TObject);
 begin
-  with TJvPreviewControlRender.Create(nil) do
+  with TJvControlPreviewer.Create(nil) do
   try
     pd.First;
     PrintPreview := pd;
