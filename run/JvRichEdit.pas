@@ -552,6 +552,7 @@ type
     FOnVerticalScroll: TNotifyEvent;
     FOnConversionProgress: TRichEditProgressEvent;
     FForceUndo: Boolean;
+    FUseFixedPopup: Boolean;
 
     function GetAdvancedTypography: Boolean;
     function GetAutoURLDetect: Boolean;
@@ -685,6 +686,7 @@ type
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
     property ForceUndo: Boolean read FForceUndo write FForceUndo default True;
+    property UseFixedPopup: Boolean read FUseFixedPopup write FUseFixedPopup default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -794,6 +796,7 @@ type
     property TabOrder;
     property TabStop;
     property UndoLimit;
+    property UseFixedPopup;
     property Visible;
     property WantTabs;
     property WantReturns;
@@ -876,7 +879,7 @@ uses
   {$ENDIF UNITVERSIONING}
   OleCtnrs,
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
-  JvThemes, JvConsts, JvResources;
+  JvThemes, JvConsts, JvResources, JvFixedEditPopUp;
 
 type
   PENLink = ^TENLink;
@@ -2287,6 +2290,7 @@ begin
   end;
   FForceUndo := True;
   FCallback := TRichEditOleCallback.Create(Self);
+  FUseFixedPopup := True;
   Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
 end;
 
@@ -2962,7 +2966,9 @@ begin
     finally
       ReleaseObject(ReObject.poleobj);
     end;
-  end;
+  end
+  else if (Result = nil) and UseFixedPopup then
+    Result := FixedDefaultEditPopUp(Self);
 end;
 
 function TJvCustomRichEdit.GetRedoName: TUndoName;
