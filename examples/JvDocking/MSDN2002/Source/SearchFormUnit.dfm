@@ -19,7 +19,7 @@ object SearchForm: TSearchForm
   Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 15
   object Panel1: TPanel
     Left = 0
     Top = 0
@@ -32,31 +32,31 @@ object SearchForm: TSearchForm
     object Label1: TLabel
       Left = 0
       Top = 2
-      Width = 54
-      Height = 12
+      Width = 47
+      Height = 15
       Caption = '&Look for:'
     end
     object Label2: TLabel
       Left = 0
       Top = 44
-      Width = 72
-      Height = 12
+      Width = 59
+      Height = 15
       Caption = 'F&iltered by:'
     end
     object LookforComboBox: TComboBox
       Left = 0
       Top = 19
       Width = 225
-      Height = 20
-      ItemHeight = 12
+      Height = 23
+      ItemHeight = 15
       TabOrder = 0
     end
     object FilteredbyComboBox: TComboBox
       Left = 0
       Top = 63
       Width = 225
-      Height = 20
-      ItemHeight = 12
+      Height = 23
+      ItemHeight = 15
       TabOrder = 1
       Items.Strings = (
         '(no filter)'
@@ -123,6 +123,7 @@ object SearchForm: TSearchForm
     NCPopupMenu = MSDN2002.PopupMenu1
     DirectDrag = False
     ShowHint = True
+    EnableCloseButton = True
     DockStyle = MSDN2002.JvDockVSNetStyle1
     Left = 128
     Top = 88

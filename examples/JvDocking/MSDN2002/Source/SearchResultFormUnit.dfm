@@ -12,12 +12,12 @@ object SearchResultForm: TSearchResultForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'ËÎÌו'
+  Font.Name = #203#206#204#229
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 15
   object ListView1: TListView
     Left = 0
     Top = 0
@@ -27,15 +27,15 @@ object SearchResultForm: TSearchResultForm
     Columns = <
       item
         Caption = 'Title'
-        Width = 200
+        Width = 250
       end
       item
         Caption = 'Location'
-        Width = 200
+        Width = 250
       end
       item
         Caption = 'Rank'
-        Width = 200
+        Width = 250
       end>
     TabOrder = 0
     ViewStyle = vsReport
@@ -46,6 +46,7 @@ object SearchResultForm: TSearchResultForm
     NCPopupMenu = MSDN2002.PopupMenu1
     DirectDrag = False
     ShowHint = True
+    EnableCloseButton = True
     DockStyle = MSDN2002.JvDockVSNetStyle1
     Left = 64
     Top = 88
