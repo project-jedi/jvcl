@@ -6,7 +6,8 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, Menus, StdActns, ActnList, ImgList,
   JvPageScroller, JvComCtrls, JvStatusBar, JvDateTimePicker, JvCombobox, JvLinkLabel,
-  JvEdit, JvSurveyIntf, JvDialogs, JvImage, JvCheckBox, JvValidateEdit;
+  JvEdit, JvSurveyIntf, JvDialogs, JvImage, JvCheckBox, JvValidateEdit,
+  JvRichEd;
 
 type
   TfrmMain = class(TForm)
@@ -34,8 +35,8 @@ type
     Label10: TLabel;
     Label11: TLabel;
     cbItemType: TJvComboBox;
-    reItemChoices: TRichEdit;
-    reItemDescription: TRichEdit;
+    reItemChoices: TJvRichEdit;
+    reItemDescription: TJvRichEdit;
     mmMain: TMainMenu;
     File1: TMenuItem;
     Edit7: TMenuItem;
@@ -98,7 +99,7 @@ type
     Previous1: TMenuItem;
     Next1: TMenuItem;
     N7: TMenuItem;
-    reDescription: TRichEdit;
+    reDescription: TJvRichEdit;
     chkRequired: TJvCheckBox;
     acCopyItem: TAction;
     acPreview: TAction;
