@@ -169,10 +169,10 @@ begin
   rbtRuntime.Checked := True;
   ledC5PFlags.Text := '';
   ledC6PFlags.Text := '';
-  jsgDependencies.RowCount := 2;
   jsgDependencies.Rows[1].Text := '';
-  jsgFiles.RowCount := 2;
+  jsgDependencies.RowCount := 2;
   jsgFiles.Rows[1].Text := '';
+  jsgFiles.RowCount := 2;
 end;
 
 procedure TfrmMain.aevEventsHint(Sender: TObject);
