@@ -15,6 +15,7 @@ Portions created by Peter Thörnqvist are Copyright (C) 2004 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
+André Snepvangers - better TimeRunning
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -634,7 +635,7 @@ type
     function GetIsOnline: Boolean;
     function GetScreenSaver: string;
     function GetDVDRegion: Integer;
-    function GetTimeRunning: Cardinal;
+    function GetTimeRunning: Int64;
     function GetTimeRunningAsString: string;
     function GetNetBIOS: Boolean;
     function GetVersions: TJvAppVersions;
@@ -648,7 +649,7 @@ type
     procedure SetIsOnline(const Value: Boolean);
     procedure SetScreenSaver(const Value: string);
     procedure SetDVDRegion(const Value: Integer);
-    procedure SetTimeRunning(const Value: Cardinal);
+    procedure SetTimeRunning(const Value: Int64);
     procedure SetTimeRunningAsString(const Value: string);
     procedure SetNetBIOS(const Value: Boolean);
     procedure SetVersions(const Value: TJvAppVersions);
@@ -662,7 +663,7 @@ type
   public
     destructor Destroy; override;
   published
-    property TimeRunning: Cardinal read GetTimeRunning write SetTimeRunning stored False;
+    property TimeRunning: Int64 read GetTimeRunning write SetTimeRunning stored False;
     property TimeRunningAsString: string read GetTimeRunningAsString write SetTimeRunningAsString stored False;
     property Online: Boolean read GetIsOnline write SetIsOnline stored False;
     property ScreenSaver: string read GetScreenSaver write SetScreenSaver stored False;
@@ -3015,17 +3016,25 @@ begin
     Result := PathGetLongName(Result);
 end;
 
-function TJvMiscInfo.GetTimeRunning: Cardinal;
+function TJvMiscInfo.GetTimeRunning: Int64;
+var
+  QFreq, QCount:Int64;
 begin
-  Result := GetTickCount;
+   Result := GetTickCount;
+   if QueryPerformanceFrequency(QFreq) then
+   begin
+     QueryPerformanceCounter(QCount);
+     if QFreq <> 0 then
+       Result := (QCount div QFreq) * 1000;
+  end;
 end;
 
 function TJvMiscInfo.GetTimeRunningAsString: string;
 var
   DateTime: TDateTime;
 begin
-  DateTime := GetTickCount / 86400000;
-  Result := Format('%d %s', [Trunc(DateTime), FormatDateTime('hh:mm:ss', DateTime)]);
+  DateTime := GetTimeRunning / 86400000;
+  Result := Format('%d %s', [Trunc(DateTime), TimeToStr(DateTime)]);
 end;
 
 function TJvMiscInfo.GetVersions: TJvAppVersions;
@@ -3099,7 +3108,7 @@ begin
     RaiseReadOnly;
 end;
 
-procedure TJvMiscInfo.SetTimeRunning(const Value: Cardinal);
+procedure TJvMiscInfo.SetTimeRunning(const Value: Int64);
 begin
   RaiseReadOnly;
 end;
