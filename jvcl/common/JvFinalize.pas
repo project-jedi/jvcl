@@ -54,7 +54,7 @@ function AddFinalizeObject(const UnitName: string; Instance: TObject): TObject;
 /// <limitation>
 /// Only global variables are allowed to be specified.
 /// </limitation>
-function AddFinalizeObjectNil(const UnitName: string; var Reference: TObject): TObject;
+function AddFinalizeObjectNil(const UnitName: string; var Reference{: TObject}): TObject;
 
 /// <summary>
 /// AddFinalizeFreeAndNil adds an TObject derived class to the finalize section.
@@ -63,7 +63,7 @@ function AddFinalizeObjectNil(const UnitName: string; var Reference: TObject): T
 /// <limitation>
 /// Only global variables are allowed to be specified.
 /// </limitation>
-function AddFinalizeFreeAndNil(const UnitName: string; var Reference: TObject): TObject;
+function AddFinalizeFreeAndNil(const UnitName: string; var Reference{: TObject}): TObject;
 
 /// <summary>
 /// AddFinalizeMemory adds an memory allocation to the finalize section.
@@ -78,7 +78,7 @@ function AddFinalizeMemory(const UnitName: string; Ptr: Pointer): Pointer;
 /// <limitation>
 /// Only global variables are allowed to be specified.
 /// </limitation>
-function AddFinalizeMemoryNil(const UnitName: string; var Ptr: Pointer): Pointer;
+function AddFinalizeMemoryNil(const UnitName: string; var Ptr{: Pointer}): Pointer;
 
 
 /// <summary>
@@ -373,16 +373,16 @@ begin
   Result := Instance;
 end;
 
-function AddFinalizeObjectNil(const UnitName: string; var Reference: TObject): TObject;
+function AddFinalizeObjectNil(const UnitName: string; var Reference{: TObject}): TObject;
 begin
-  TFinalizeObjectNilItem.Create(UnitName, Reference);
-  Result := Reference;
+  TFinalizeObjectNilItem.Create(UnitName, TObject(Reference));
+  Result := TObject(Reference);
 end;
 
-function AddFinalizeFreeAndNil(const UnitName: string; var Reference: TObject): TObject;
+function AddFinalizeFreeAndNil(const UnitName: string; var Reference{: TObject}): TObject;
 begin
-  TFinalizeFreeAndNilItem.Create(UnitName, Reference);
-  Result := Reference;
+  TFinalizeFreeAndNilItem.Create(UnitName, TObject(Reference));
+  Result := TObject(Reference);
 end;
 
 function AddFinalizeMemory(const UnitName: string; Ptr: Pointer): Pointer;
@@ -391,10 +391,10 @@ begin
   Result := Ptr;
 end;
 
-function AddFinalizeMemoryNil(const UnitName: string; var Ptr: Pointer): Pointer;
+function AddFinalizeMemoryNil(const UnitName: string; var Ptr{: Pointer}): Pointer;
 begin
-  TFinalizeMemoryNilItem.Create(UnitName, Ptr);
-  Result := Ptr;
+  TFinalizeMemoryNilItem.Create(UnitName, Pointer(Ptr));
+  Result := Pointer(Ptr);
 end;
 
 initialization
