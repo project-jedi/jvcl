@@ -35,18 +35,18 @@ interface
 
 uses
   Windows, SysUtils, Classes, Dialogs, Controls, ExtCtrls,
-  JvComponent;
+  JvComponent,
+// Bianconi - To include TJvTriggerKind type
+  JvTypes;
+// End of Bianconi
 
 type
-  TJvTriggerKind = (tkOneShot, tkEachSecond, tkEachMinute,
-    tkEachHour, tkEachDay, tkEachMonth, tkEachYear);
-
   TJvAlarmItem = class(TCollectionItem)
   private
     FName: string;
     FTime: TDateTime;
     FKind: TJvTriggerKind;
-  public
+  public                       
     procedure Assign(Source: TPersistent); override;
   published
     property Name: string read FName write FName;
@@ -54,7 +54,7 @@ type
     property Kind: TJvTriggerKind read FKind write FKind;
   end;
 
-  TJvOnAlarm = procedure(Sender: TObject;
+  TJvAlarmEvent = procedure(Sender: TObject;
     const Alarm: TJvAlarmItem; const TriggerTime: TDateTime) of object;
 
   TJvAlarmItems = class(TOwnedCollection)
@@ -72,7 +72,7 @@ type
   private
     FActive: Boolean;
     FLast: TTimeStamp;
-    FOnAlarm: TJvOnAlarm;
+    FOnAlarm: TJvAlarmEvent;
     FRunning: Boolean;
     FTimer: TTimer;
     FAlarms: TJvAlarmItems;
@@ -93,7 +93,7 @@ type
   published
     property Alarms: TJvAlarmItems read FAlarms write SetAlarms;
     property Active: Boolean read FActive write SetActive default False;
-    property OnAlarm: TJvOnAlarm read FOnAlarm write FOnAlarm;
+    property OnAlarm: TJvAlarmEvent read FOnAlarm write FOnAlarm;
   end;
 
 implementation
@@ -176,7 +176,7 @@ begin
         Current := Now;
         Stamp := DateTimeToTimeStamp(Now);
         // sort out delayed Timer events which may arrive in bunches
-        if abs(Stamp.Time - FLast.Time) >= 1000 then
+        if (Stamp.Time - FLast.Time) >= 1000 then
         begin
           FLast := Stamp;
           for I := FAlarms.Count - 1 downto 0 do

@@ -884,7 +884,11 @@ uses
   {$ENDIF}
   JvxRConst, JvVCLUtils, JvStrUtils, JvFileUtil, JvPickDate, JvBrowseFolder;
 
-{$R ..\resources\JvToolEdit.res}
+{$IFDEF WIN32}
+{$R *.Res}
+{$ELSE}
+{$R *.R16}
+{$ENDIF}
 
 const
   sFileBmp = 'JV_FEDITBMP'; { Filename and directory editor button glyph }
