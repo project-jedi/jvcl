@@ -368,8 +368,10 @@ Summary
 Description
   Call Abort to terminate a search operation started by calling Search. Search will return with
   result False.
+  
+  You can call Abort in an OnProgress event handler.
 See Also
-  Search
+  Search, OnProgress
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.Directories
 Summary
@@ -472,7 +474,6 @@ See Also
   DirParams, Options, RootDirectory
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.OnAbort
-
 Summary
   Occurs when the user calls Abort while the component is searching for files.
 Description
@@ -550,6 +551,15 @@ Parameters
            directory path of the file.
 See Also
   OnBeginScanDir, OnFindDirectory, Options
+----------------------------------------------------------------------------------------------------
+@@TJvSearchFiles.OnProgress
+Summary
+  Occurs periodically during search operations.
+Description
+  \Write an OnProgress event handler to keep the user interface of your program responsive. It also
+  gives you a change to call Abort.
+See Also
+  Abort
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.Options
 Summary

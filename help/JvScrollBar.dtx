@@ -49,54 +49,6 @@ See Also
 @@TJvScrollBar.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
-@@TJvScrollBar.CMCtl3DChanged
-Summary
-  Responds when the Ctrl3D property changes.
-Description
-  CMCtl3DChanged is called automatically when the Ctl3D property changes. It triggers the 
-  OnCtl3DChanged event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the scroll bar of the Ctl3D 
-        change.
-See Also
-  OnCtl3DChanged
-----------------------------------------------------------------------------------------------------
-@@TJvScrollBar.CMMouseEnter
-Summary
-  Responds when the mouse pointer moves over the scroll bar.
-Description
-  CMMouseEnter is called automatically when the mouse pointer moves over the scroll bar. It sets the
-  hint color for the application to the property specified by HintColor, sets the Ctl3D property
-  to true if property HotTrack is true, and triggers the OnMouseEnter event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the scroll bar of the event.
-See Also
-  CMMouseLeave, OnMouseEnter, OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvScrollBar.CMMouseLeave
-Summary
-  Responds when the mouse pointer moves off the scroll bar.
-Description
-  CMMouseEnter is called automatically when the mouse pointer moves off the scroll bar. It resets the
-  hint color for the application, sets the Ctl3D property to false if property HotTrack is true, and
-  triggers the OnMouseLeave event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the scroll bar of the event.
-See Also
-  CMMouseEnter, OnMouseEnter, OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvScrollBar.CMParentColorChanged
-Summary
-  Responds when the color of the parent of the scroll bar changes.
-Description
-  CMParentColorChanged is called automatically when the color of the parent of the scroll bar changes.
-  It triggers the OnParentColorChange event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the scroll bar of the parent
-        color change.
-See Also
-  OnParentColorChange
-----------------------------------------------------------------------------------------------------
 @@TJvScrollBar.HintColor
 Summary
   Determines the color of the hint boxes for the Help Hints for the scroll bar.
