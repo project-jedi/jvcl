@@ -163,7 +163,13 @@ uses
   uJvMouseGesture in '..\JvMouseGesture\uJvMouseGesture.pas' {JvMouseGestureDemoMainFrm},
   JvNavPaneDemoMainForm in '..\JvNavigationPane\JvNavPaneDemoMainForm.pas' {JvNavPaneDemoMainFrm},
   fBalls in '..\JvManagedThreads\Balls\fBalls.pas' {fBouncingBalls},
-  fPhilosophers in '..\JvManagedThreads\Philosophers\fPhilosophers.pas' {frmDiningPhilosophers};
+  fPhilosophers in '..\JvManagedThreads\Philosophers\fPhilosophers.pas' {frmDiningPhilosophers},
+  JvMarkupLabelDemoMainForm in '..\JvMarkupLabel\JvMarkupLabelDemoMainForm.pas' {JvMarkupLabelDemoMainFrm},
+  JvMenusExampleMainForm in '..\JvMenus\JvMenusExampleMainForm.pas' {JvMenusExampleMainFrm},
+  JvOutlookBarCustomDrawDemoMainForm in '..\JvOutlookBarCustomDraw\JvOutlookBarCustomDrawDemoMainForm.pas' {JvOutlookBarCustomDrawDemoMainFrm},
+  PackageModifierMainForm in '..\JvPackageModify\PackageModifierMainForm.pas' {PackageModifierMainFrm},
+  JvPageListTreeViewMainForm in '..\JvPageListTreeView\JvPageListTreeViewMainForm.pas' {JvPageListTreeViewMainFrm},
+  JvPanelDemoFrm in '..\JvPanel\JvPanelDemoFrm.pas' {JvPanelDemoMainFrm};
 
 {$R *.RES}
 
