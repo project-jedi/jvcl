@@ -62,7 +62,6 @@ type
     ActionInstall: TAction;
     ActionUninstall: TAction;
     ImageOpen: TImage;
-    imgProjectJEDI: TImage;
     BevelTop: TBevel;
     PopupMenuPackages: TPopupMenu;
     MenuSelectAll: TMenuItem;
@@ -97,6 +96,9 @@ type
     Label1: TLabel;
     BtnBrowseJCLDir: TButton;
     EditJCLDir: TEdit;
+    TitlePanel: TPanel;
+    imgProjectJEDI: TImage;
+    Label4: TLabel;
     procedure BtnQuitClick(Sender: TObject);
     procedure BtnAdvancedOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
