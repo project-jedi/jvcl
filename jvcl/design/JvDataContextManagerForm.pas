@@ -63,7 +63,6 @@ type
 procedure ManageProviderContexts(AProvider: IJvDataProvider;
   ADesigner: IJvFormDesigner; PropName: string);
 
-
 implementation
 
 uses
@@ -105,7 +104,12 @@ begin
     end;
   end;
   Form.Show;
+  {$IFNDEF BCB5}
+  // If you leave this code under BCB5, you will get this error when
+  // you link the package:
+  // Fatal: Type index 2147479547 is bad in module ..\..\design\JvDataContextManagerForm.pas
   Form.BringToFront;
+  {$ENDIF BCB5}
 end;
 
 //=== TJvContextRootItem =====================================================

@@ -63,7 +63,7 @@ if EXIST ..\devtools\bin\pg.exe goto PgExists
 cd ..\devtools\PackagesGenerator
 SET C5PFLAGS=
 if %VERSION%==5 SET C5PFLAGS=-LUvcl50
-dcc32.exe -e..\bin -I"..\..\Common;%JCLDIR%\source" %C5PFLAGS% -n"..\Dcu" -U"..\..\Run;..\..\Common;%JCLDIR%\source\common;%JCLDIR%\source\windows;%JCLDIR%\source\vcl;%JCLDIR%\source\visclx;..\Dcu" -q -w -h -m pg.dpr
+dcc32.exe -e..\bin -I"..\..\Common;%JCLDIR%\source" %C5PFLAGS% -n"..\Dcu" -U"..\..\Run;..\..\Common;%ROOT%\Lib\Obj;%JCLDIR%\source\common;%JCLDIR%\source\windows;%JCLDIR%\source\vcl;%JCLDIR%\source\visclx;..\Dcu" -q -w -h -m pg.dpr
 echo.
 cd ..\..\packages
 
@@ -83,7 +83,9 @@ cd %JCLDIR%\packages\c%VERSION%
 
 echo Compiling the JCL dcp files...
 : compile the generated packages
-for %%f in ("C*.dpk") do %ROOT%\bin\dcc32 -I"..\..\source;..\..\source\common" -U"..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx" "%%f"
+echo on
+for %%f in ("C*.dpk") do %ROOT%\bin\dcc32 -I"..\..\source;..\..\source\common" -U"..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx;%ROOT%\Lib\Obj" "%%f"
+@echo off
 echo.
 
 echo Copying dcp files...
