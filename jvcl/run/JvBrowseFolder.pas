@@ -198,7 +198,7 @@ type
     FRootDirectoryPath: string;
     FDirectory: string;
     FPosition: TJvFolderPos;
-    FPidl: TItemIDList;
+    FPidl: PItemIDList;
     FStatusText: string;
 
     FHelpButtonHandle: THandle;
@@ -260,7 +260,7 @@ type
     procedure SetExpandedW(const APath: WideString);
     procedure SetExpanded(IDList: PItemIDList); overload;
 
-    property LastPidl: TItemIDList read FPidl write FPidl;
+    property Pidl: PItemIDList read FPidl;
     property Handle: HWND read FDialogWindow;
 
     function Execute: Boolean; override;
@@ -299,12 +299,13 @@ implementation
 
 uses
   SysUtils, ActiveX, Controls, Forms, Consts,
+  JclShell,
   JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvTypes;
 
 {$IFDEF VisualCLX}
 type
   TMessage = Messages.TMessage;
-{$ENDIF VisualCLX}  
+{$ENDIF VisualCLX}
 
 type
   TSHGetFolderPathProc = function(hWnd: HWND; CSIDL: Integer; hToken: THandle;
@@ -893,6 +894,7 @@ end;
 
 destructor TJvBrowseForFolderDialog.Destroy;
 begin
+  PidlFree(FPidl);
   JvFreeObjectInstance(FObjectInstance);
   inherited Destroy;
 end;
@@ -990,6 +992,7 @@ var
   Buffer: array [0..MAX_PATH] of Char;
   Path: string;
   Accept: Boolean;
+  SavePidl: PItemIDList;
 begin
   { Note :
     * If the location specified by the pidl parameter is not part of the file
@@ -1005,17 +1008,23 @@ begin
   else
     Path := '';
 
-  if Assigned(FOnAcceptChange) then
-  begin
-    Accept := True;
-    FOnAcceptChange(Self, Path, Accept);
-    SetOKEnabled(Accept);
+  SavePidl := FPidl;
+  FPidl := IDList;
+  try
+    if Assigned(FOnAcceptChange) then
+    begin
+      Accept := True;
+      FOnAcceptChange(Self, Path, Accept);
+      SetOKEnabled(Accept);
+    end;
+
+    UpdateStatusText(Path);
+
+    if Assigned(FOnChange) then
+      FOnChange(Self, Path);
+  finally
+    FPidl := SavePidl;
   end;
-
-  UpdateStatusText(Path);
-
-  if Assigned(FOnChange) then
-    FOnChange(Self, Path);
 end;
 
 function TJvBrowseForFolderDialog.DoShouldShow(
@@ -1055,7 +1064,6 @@ function TJvBrowseForFolderDialog.Execute: Boolean;
 var
   dspName: array [0..MAX_PATH] of Char;
   BrowseInfo: TBrowseInfo;
-  PIDL: PItemIDList;
   ShellVersion: Cardinal;
   ActiveWindow: HWND;
   WindowList: Pointer;
@@ -1114,23 +1122,25 @@ begin
       ActiveWindow := GetActiveWindow;
       WindowList := DisableTaskWindows(0);
       try
-        PIDL := SHBrowseForFolder(BrowseInfo);
+        if not PidlFree(FPidl) then
+        begin
+          Assert(False);    // FPidl comes from shell, so PidlFree should never fail
+          FPidl:= nil;      // in case building without assertions, need to ensure FPidl is nil
+        end;
+        FPidl := SHBrowseForFolder(BrowseInfo);
       finally
         EnableTaskWindows(WindowList);
         SetActiveWindow(ActiveWindow);
       end;
 
-      Result := PIDL <> nil;
+      Result := FPidl <> nil;
       if Result then
       begin
-        { (rb) This does not work; PIDL^ has variable length }
-        FPidl := PIDL^;
         FDisplayName := BrowseInfo.pszDisplayName;
-        FDirectory := IDListToPath(PIDL);
-        CoTaskMemFree(PIDL);
+        FDirectory := IDListToPath(FPidl);
       end;
 
-      CoTaskMemFree(BrowseInfo.pidlRoot);
+      PidlFree(BrowseInfo.pidlRoot);
     finally
       FDialogWindow := 0;
       FOwnerWindow := 0;
@@ -1157,11 +1167,14 @@ begin
   { This seems not to work ?? : }
   //if psf.GetDisplayNameOf(pidlFolder, SHGDN_NORMAL or SHGDN_FORPARSING, StrRet) <> S_OK then
   //  Exit;
-
-  if DoGetEnumFlags(IDListToPath(pidlFolder), Flags) then
-    Result := S_OK
-  else
-    Result := S_FALSE;
+  try
+    if DoGetEnumFlags(IDListToPath(pidlFolder), Flags) then
+      Result := S_OK
+    else
+      Result := S_FALSE;
+  except
+    Result := E_UNEXPECTED;
+  end;
 
   pgrfFlags := 0;
   for Obj := Low(TJvBrowsableObjectClass) to High(TJvBrowsableObjectClass) do
@@ -1359,10 +1372,14 @@ var
 begin
   psf.GetDisplayNameOf(pidlItem, SHGDN_NORMAL or SHGDN_FORPARSING, StrRet);
 
-  if DoShouldShow(StrRetToString(pidlItem, StrRet)) then
-    Result := S_OK
-  else
-    Result := S_FALSE;
+  try
+    if DoShouldShow(StrRetToString(pidlItem, StrRet)) then
+      Result := S_OK
+    else
+      Result := S_FALSE;
+  except
+    Result := E_UNEXPECTED;
+  end;
 end;
 
 procedure TJvBrowseForFolderDialog.UpdateStatusText(AText: string);
