@@ -3342,7 +3342,7 @@ end;
 
 procedure TJvNavPanelPage.Paint;
 begin
-  inherited;
+  inherited Paint;
   if FBackground.HasImage then
     FBackground.DrawImage(Canvas, ClientRect)
   else
@@ -4605,7 +4605,9 @@ begin
       begin
         OffsetRect(R, 2, -1); // line up with where button caption should have been
         SetBkMode(Canvas.Handle, TRANSPARENT);
-        DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
+        if CloseButton then
+          R := Rect(R.Left, R.Top, FCloseButton.Left, R.Bottom);
+        DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT or DT_END_ELLIPSIS);
       end;
 
       // draw the client areas top rounding, set pixels directly to avoid messing up any background image
@@ -4962,7 +4964,7 @@ end;
 destructor TJvNavPaneToolButton.Destroy;
 begin
   FRealButton.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvNavPaneToolButton.GetAction: TBasicAction;
@@ -5132,7 +5134,9 @@ DrawButton:
           Canvas.Font := Font;
           SetBkMode(Canvas.Handle, TRANSPARENT);
           InflateRect(R, -2, 0);
-          DrawText(Canvas, Caption, Length(Caption), R, DT_LEFT or DT_VCENTER or DT_NOPREFIX);
+          Dec(R.Right, 3 + 7);
+          DrawText(Canvas, Caption, Length(Caption), R, DT_LEFT or DT_VCENTER or DT_NOPREFIX or DT_END_ELLIPSIS);
+          Inc(R.Right, 3 + 7);
           InflateRect(R, 2, 0);
         end;
         R.Left := R.Right - 11;
