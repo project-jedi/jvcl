@@ -109,7 +109,7 @@ uses
   JvID3v2Types;
 
 const
-  CID3v1Tag = 'TAG';
+  CID3v1Tag = 'TAG'; { do not change case }
   CTagSize = 128;
   CTagIDSize = 3;
 
@@ -195,7 +195,9 @@ begin
           Seek(-CTagIDSize, soFromCurrent)
         else
           Seek(0, soFromEnd);
-      end;
+      end
+      else
+        Seek(0, soFromEnd);
 
       //Write it
       Result := Write(ATag, CTagSize) = CTagSize;
@@ -232,11 +234,11 @@ begin
 
   //Set new Tag
   Tag.Identifier := CID3v1Tag;
-  Move(SongName[1], Tag.SongName[0], Min(30, Length(SongName)));
-  Move(Artist[1], Tag.Artist[0], Min(30, Length(Artist)));
-  Move(Album[1], Tag.Album[0], Min(30, Length(Album)));
-  Move(Year[1], Tag.Year[0], Min(4, Length(Year)));
-  Move(Comment[1], Tag.Comment[0], Min(30, Length(Comment)));
+  Move(PChar(SongName)^, Tag.SongName[0], Min(30, Length(SongName)));
+  Move(PChar(Artist)^, Tag.Artist[0], Min(30, Length(Artist)));
+  Move(PChar(Album)^, Tag.Album[0], Min(30, Length(Album)));
+  Move(PChar(Year)^, Tag.Year[0], Min(4, Length(Year)));
+  Move(PChar(Comment)^, Tag.Comment[0], Min(30, Length(Comment)));
   Tag.Genre := FGenre;
   if Tag.Comment[28] = #0 then
     Tag.Comment[29] := Char(FAlbumTrack);
