@@ -577,24 +577,49 @@ begin
   // if there is a condition
   if (Condition <> '') then
   begin
-    // Only Delphi targets directly support conditions
-    if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'D')) then
+    if Condition[1] <> '!' then
     begin
-      lines.Insert(0, '{$IFDEF ' + Condition + '}');
-      lines.Add('{$ENDIF}');
+      // Only Delphi targets directly support conditions
+      if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'D')) then
+      begin
+        lines.Insert(0, '{$IFDEF ' + Condition + '}');
+        lines.Add('{$ENDIF}');
+      end
+      // if we have a C++ Builder target, the only way to enforce the
+      // condition is by looking for it in the DefinesList. If it
+      // is there, the line is left untouched. If not, the line
+      // is emptied, thus enforcing the absence of the condition
+      else if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'C')) then
+      begin
+        if not DefinesList.IsDefined(Condition, target) then
+          lines.Clear;
+      end;
+      // The last possibility is a Kylix target and we are yet to decide
+      // what to do with that. For now, don't touch the line
     end
-    // if we have a C++ Builder target, the only way to enforce the
-    // condition is by looking for it in the DefinesList. If it
-    // is there, the line is left untouched. If not, the line
-    // is emptied, thus enforcing the absence of the condition
-    else if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'C')) then
+    else
     begin
-      if not DefinesList.IsDefined(Condition, target) then
-        lines.Clear;
-    end;
-    // The last possibility is a Kylix target and we are yet to decide
-    // what to do with that. For now, don't touch the line
+      // "not" condition
+      Delete(Condition, 1, 1);
 
+      // Only Delphi targets directly support conditions
+      if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'D')) then
+      begin
+        lines.Insert(0, '{$IFNDEF ' + Condition + '}');
+        lines.Add('{$ENDIF}');
+      end
+      // if we have a C++ Builder target, the only way to enforce the
+      // condition is by looking for it in the DefinesList. If it
+      // is there, the line is left untouched. If not, the line
+      // is emptied, thus enforcing the absence of the condition
+      else if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'C')) then
+      begin
+        if DefinesList.IsDefined(Condition, target) then
+          lines.Clear;
+      end;
+      // The last possibility is a Kylix target and we are yet to decide
+      // what to do with that. For now, don't touch the line
+    end;
   end;
 end;
 
