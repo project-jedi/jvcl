@@ -96,7 +96,6 @@ contains
   JvFormPatch in '..\source\JvFormPatch.pas' {foPatch},
   JvFormPlace in '..\source\JvFormPlace.pas',
   JvFormSerial in '..\source\JvFormSerial.pas' {FormSer},
-  JvFormTips in '..\source\JvFormTips.pas' {FormTip},
   JvFormToHtml in '..\source\JvFormToHtml.pas',
   JvFormWallpaper in '..\source\JvFormWallpaper.pas',
   JvFormWallpaperEdit in '..\source\JvFormWallpaperEdit.pas' {foWallpaperChooser},
