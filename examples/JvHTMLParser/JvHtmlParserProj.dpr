@@ -10,7 +10,6 @@ begin
   Application.Initialize;
   Application.Title := 'JvHtmlParserDemo';
   Application.CreateForm(TJvHTMLParserMainForm, JvHTMLParserMainForm);
-  Application.CreateForm(TJvHTMLParserMainForm, JvHTMLParserMainForm);
   Application.Run;
 end.
 

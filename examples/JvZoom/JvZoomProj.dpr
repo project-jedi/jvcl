@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvZoomMainForm, JvZoomMainForm);
-  Application.CreateForm(TJvZoomMainForm, JvZoomMainForm);
   Application.Run;
 end.

@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvClipboardViewerMainForm, JvClipboardViewerMainForm);
-  Application.CreateForm(TJvClipboardViewerMainForm, JvClipboardViewerMainForm);
   Application.Run;
 end.

@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TTipOfDayMainForm, TipOfDayMainForm);
-  Application.CreateForm(TTipOfDayMainForm, TipOfDayMainForm);
   Application.Run;
 end.

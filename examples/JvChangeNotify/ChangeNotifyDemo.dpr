@@ -11,6 +11,5 @@ begin
   Application.Initialize;
   Application.Title := 'TChangeNotification Demo';
   Application.CreateForm(TChangeNotificationMainForm, ChangeNotificationMainForm);
-  Application.CreateForm(TChangeNotificationMainForm, ChangeNotificationMainForm);
   Application.Run;
 end.

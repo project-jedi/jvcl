@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvBalloonHintMainForm, JvBalloonHintMainForm);
-  Application.CreateForm(TJvBalloonHintMainForm, JvBalloonHintMainForm);
   Application.Run;
 end.

@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvAppHotKeyDemoMainForm, JvAppHotKeyDemoMainForm);
-  Application.CreateForm(TJvAppHotKeyDemoMainForm, JvAppHotKeyDemoMainForm);
   Application.Run;
 end.

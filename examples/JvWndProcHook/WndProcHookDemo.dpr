@@ -8,7 +8,6 @@ uses
 
 begin
   Application.CreateForm(TJvWndProcHookDemoMainForm, JvWndProcHookDemoMainForm);
-  Application.CreateForm(TJvWndProcHookDemoMainForm, JvWndProcHookDemoMainForm);
   Application.Initialize;
   Application.Run;
 end.

@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvScrollingWindowMainForm, JvScrollingWindowMainForm);
-  Application.CreateForm(TJvScrollingWindowMainForm, JvScrollingWindowMainForm);
   Application.Run;
 end.

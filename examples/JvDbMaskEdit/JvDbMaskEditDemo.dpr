@@ -3,7 +3,7 @@ program JvDbMaskEditDemo;
 uses
   Forms,
   JvDbMaskEditDemoFm in 'JvDbMaskEditDemoFm.pas' {Form1},
-  StdCtrls in '..\..\..\..\program files\borland\delphi7\source\vcl\StdCtrls.pas';
+  StdCtrls;
 
 {$R *.res}
 

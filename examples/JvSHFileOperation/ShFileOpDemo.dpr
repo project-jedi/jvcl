@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvShFileOperationMainForm, JvShFileOperationMainForm);
-  Application.CreateForm(TJvShFileOperationMainForm, JvShFileOperationMainForm);
   Application.Run;
 end.

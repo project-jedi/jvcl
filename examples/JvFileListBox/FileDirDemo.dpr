@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TFileListBoxMainForm, FileListBoxMainForm);
-  Application.CreateForm(TFileListBoxMainForm, FileListBoxMainForm);
   Application.Run;
 end.

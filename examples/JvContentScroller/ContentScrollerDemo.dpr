@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TContentScrollerMainForm, ContentScrollerMainForm);
-  Application.CreateForm(TContentScrollerMainForm, ContentScrollerMainForm);
   Application.Run;
 end.

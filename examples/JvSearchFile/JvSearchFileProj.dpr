@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvSearchFileMainForm, JvSearchFileMainForm);
-  Application.CreateForm(TJvSearchFileMainForm, JvSearchFileMainForm);
   Application.Run;
 end.

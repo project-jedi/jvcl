@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvLogFileMainForm, JvLogFileMainForm);
-  Application.CreateForm(TJvLogFileMainForm, JvLogFileMainForm);
   Application.Run;
 end.

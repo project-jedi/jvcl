@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TMailExampleMainForm, MailExampleMainForm);
-  Application.CreateForm(TMailExampleMainForm, MailExampleMainForm);
   Application.Run;
 end.
