@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, CapExec, JVCLData, DelphiData,
-  GenerateUtils, PackageUtils, Utils, Intf;
+  GenerateUtils, PackageUtils, Intf;
 
 type
   TProgressKind = (
@@ -126,7 +126,7 @@ var
 implementation
 
 uses
-  CmdLineUtils, JvConsts;
+  CmdLineUtils, JvConsts, Utils;
 
 resourcestring
   RsGeneratingTemplates = 'Generating templates...';
@@ -308,15 +308,6 @@ end;
 /// should be installed.
 /// </summary>
 function TJVCLCompiler.PrepareJCL(Force: Boolean): Boolean;
-
-  function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
-    const Filename2Fmt: string; const Args2: array of const): Integer;
-  begin
-    Result := FileAge(Format(Filename1Fmt, Args1))
-              -
-              FileAge(Format(Filename2Fmt, Args2));
-  end;
-
 var
   Args: string;
   i, LineNum: Integer;
@@ -713,7 +704,8 @@ var
   Lines: TStrings;
   i, depI: Integer;
   Pkg: TPackageTarget;
-  Dependencies, S: string;
+  Dependencies, S, PasFile: string;
+  DeleteFiles: Boolean;
 begin
   Lines := TStringList.Create;
   try
@@ -794,14 +786,35 @@ begin
          // This is not needed when building the JVCL for BCB because all .obj
          // files will be deleted by the installer before entering compilation
          // process.
+          DeleteFiles := False;
           for depI := 0 to Pkg.Info.ContainCount - 1 do
           begin
+            PasFile := FollowRelativeFilename(Data.JVCLPackagesXmlDir, Pkg.Info.Contains[depI].Name);
             S := ExtractFileName(Pkg.Info.Contains[depI].Name);
             if CompareText(ExtractFileExt(S), '.pas') = 0 then
             begin
               S := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(S, '.obj');
               if FileExists(S) then
-                Lines.Add(#9'-@del /f /q "' + S + '" 2>NUL');
+                if not FileExists(PasFile) or // unknown directory for the .pas file
+                   (CompareFileAge(S, [], PasFile, []) < 0) then
+                begin
+                  DeleteFiles := True;
+                  Break;
+                end;
+            end;
+          end;
+
+          if DeleteFiles then
+          begin
+            for depI := 0 to Pkg.Info.ContainCount - 1 do
+            begin
+              S := ExtractFileName(Pkg.Info.Contains[depI].Name);
+              if CompareText(ExtractFileExt(S), '.pas') = 0 then
+              begin
+                S := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(S, '.obj');
+                if FileExists(S) then
+                  Lines.Add(#9'-@del /f /q "' + S + '" 2>NUL');
+              end;
             end;
           end;
         end;
