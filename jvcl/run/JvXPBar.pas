@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):dejoy
   //dejoy 2004-4-20
-  --add groupindex,AutoCheck,checked property in TJvXPBarItem.
+  --add GroupIndex,AutoCheck,Checked property in TJvXPBarItem.
   --add GetItemClass in TJvXPBarItems.
   --add GetBarItemsClass in TJvXPCustomWinXPBar.
 
@@ -27,6 +27,12 @@ Contributor(s):dierk schmid
   --add property ItemFrameColor in TJvXPBarColors
   //dejoy 2004-4-25
   -- splitt ItemFrameColor to CheckedFrameColor , FocusedFrameColor  in TJvXPBarColors.
+
+Contributors(s):matej golob
+  //matej 2004-5-3
+  --add property BorderColor in TJvXPBarColors.
+  --add property HeaderRounded
+
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -290,7 +296,9 @@ type
     FGradientTo: TColor;
     FGradientFrom: TColor;
     FSeparatorColor: TColor;
+    FBorderColor: TColor;
     FOnChange: TNotifyEvent;
+    procedure SetBorderColor(const Value: TColor);
     procedure SetBodyColor(const Value: TColor);
     procedure SetGradientFrom(const Value: TColor);
     procedure SetGradientTo(const Value: TColor);
@@ -304,6 +312,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Change;
   published
+    property BorderColor: TColor read FBorderColor write SetBorderColor  default clWhite;
     property CheckedColor: TColor read FCheckedColor write SetCheckedColor default dxColor_CheckedColorXP;
     property FocusedColor: TColor read FFocusedColor write SetFocusedColor default dxColor_FocusedColorXP;
     property CheckedFrameColor: TColor read FCheckedFrameColor write SetCheckedFrameColor default dxColor_CheckedFrameColorXP;
@@ -327,6 +336,7 @@ type
     FGradient: TBitmap;
     FGradientWidth: Integer;
     FHeaderFont: TFont;
+    FHeaderRounded: Boolean;
     FHitTest: TJvXPBarHitTest;
     FHotTrack: Boolean;
     FHoverIndex: Integer;
@@ -379,6 +389,7 @@ type
     procedure SetHeaderHeight(const Value: Integer);
     function GetRollHeight: Integer;
     function GetRollWidth: Integer;
+    procedure SetHeaderRounded(const Value: Boolean);
   protected
     {$IFDEF VCL}
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
@@ -412,6 +423,7 @@ type
     property Grouped: Boolean read FGrouped write SetGrouped default False;
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont stored IsFontStored;
     property HeaderHeight: Integer read FHeaderHeight write SetHeaderHeight default 28;
+    property HeaderRounded: Boolean read FHeaderRounded write SetHeaderRounded default True;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default True;
     property HotTrackColor: TColor read FHotTrackColor write SetHotTrackColor default $00FF7C35;
     property Icon: TIcon read FIcon write SetIcon;
@@ -466,6 +478,7 @@ type
     property Grouped;
     property HeaderFont;
     property HeaderHeight;
+    property HeaderRounded;
     property HotTrack;
     property HotTrackColor;
     property Icon;
@@ -846,7 +859,7 @@ begin
         if ShowItemFrame then
         begin
           Brush.Color := lBar.Colors.FocusedColor;
-          if lBar.RoundedItemFrame>0 then
+          if lBar.RoundedItemFrame > 0 then
             RoundedFrame(ACanvas, Rect, lBar.Colors.FocusedFrameColor, lBar.RoundedItemFrame)
           else
           begin
@@ -1325,6 +1338,7 @@ var
 begin
   inherited Create;
   FBodyColor := $00F7DFD6;
+  FBorderColor := clWhite;
   FGradientFrom := clWhite;
   FGradientTo := $00F7D7C6;
   FSeparatorColor := $00F7D7C6;
@@ -1422,6 +1436,15 @@ begin
   end;
 end;
 
+procedure TJvXPBarColors.SetBorderColor(const Value: TColor);
+begin
+  if FBorderColor <> Value then
+  begin
+    FBorderColor := Value;
+    Change;
+  end;
+end;
+
 procedure TJvXPBarColors.SetFocusedColor(const Value: TColor);
 begin
   if FFocusedColor <> Value then
@@ -1478,6 +1501,7 @@ begin
   FFont.OnChange := FontChange;
   FGradient := TBitmap.Create;
   FHeaderHeight := 28;
+  FHeaderRounded := True;
   FGradientWidth := 0;
   FHeaderFont := TFont.Create;
   FHeaderFont.Color := $00840000;
@@ -2011,19 +2035,21 @@ begin
     {$ENDIF VisualCLX}
 
     { draw frame... }
-    Brush.Color := clWhite;
+    Brush.Color := FColors.fBorderColor;
     FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} Rect);
 
-    { ...with cutted edges }
-    OwnColor := TJvXPWinControl(Parent).Color;
-    Pixels[0, Rect.Top] := OwnColor;
-    Pixels[0, Rect.Top + 1] := OwnColor;
-    Pixels[1, Rect.Top] := OwnColor;
-    Pixels[1, Rect.Top + 1] := clWhite;
-    Pixels[Width - 1, Rect.Top] := OwnColor;
-    Pixels[Width - 2, Rect.Top] := OwnColor;
-    Pixels[Width - 1, Rect.Top + 1] := OwnColor;
-    Pixels[Width - 2, Rect.Top + 1] := clWhite;
+    if FHeaderRounded then
+    begin
+      OwnColor := TJvXPWinControl(Parent).Color;
+      Pixels[0, Rect.Top] := OwnColor;
+      Pixels[0, Rect.Top + 1] := OwnColor;
+      Pixels[1, Rect.Top] := OwnColor;
+      Pixels[1, Rect.Top + 1] := FColors.fBorderColor;
+      Pixels[Width - 1, Rect.Top] := OwnColor;
+      Pixels[Width - 2, Rect.Top] := OwnColor;
+      Pixels[Width - 1, Rect.Top + 1] := OwnColor;
+      Pixels[Width - 2, Rect.Top + 1] := FColors.fBorderColor;
+    end;
 
     { draw Button }
     if FShowRollButton and (Width >= 115) then
@@ -2353,6 +2379,15 @@ begin
       Point(Left + R, Top)]);
     Inc(Right);
     Inc(Bottom);
+  end;
+end;
+
+procedure TJvXPCustomWinXPBar.SetHeaderRounded(const Value: Boolean);
+begin
+  if FHeaderRounded <> Value then
+  begin
+    FHeaderRounded := Value;
+    InternalRedraw;
   end;
 end;
 
