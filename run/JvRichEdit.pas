@@ -4184,8 +4184,10 @@ constructor TJvMSTextConversion.Create(const AConverterFileName, AExtensions,
 begin
   inherited Create;
   FExtensions := TStringList.Create;
+  {$IFDEF COMPILER6_UP}
   FExtensions.Delimiter := ' ';
   FExtensions.DelimitedText := AExtensions;
+  {$ENDIF}
   FConverterFileName := AConverterFileName;
   FDescription := ADescription;
   FConverterKind := AKind;
@@ -5683,9 +5685,9 @@ begin
   FFreeStream := False;
   FStream := Stream;
 
-  FSavedPosition := FStream.Seek(0, soCurrent);
-  FStreamSize := FStream.Seek(0, soEnd);
-  FStream.Seek(FSavedPosition, soBeginning);
+  FSavedPosition := FStream.Seek(0, soFromCurrent);
+  FStreamSize := FStream.Seek(0, soFromEnd);
+  FStream.Seek(FSavedPosition, soFromBeginning);
   FConvertByteCount := 0;
 
   Result := True;
