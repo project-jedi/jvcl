@@ -30,8 +30,7 @@ unit JvMTComponents;
 interface
 
 uses
-  JvComponent, SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, SyncObjs, Consts,
+  JvComponent, SysUtils, Classes, SyncObjs, Consts,
   JvMTThreading, JvMTConsts, JvMTData, JvMTSync, JvMTSyncMon;
 
 type
