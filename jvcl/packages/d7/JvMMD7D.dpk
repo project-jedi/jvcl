@@ -29,12 +29,7 @@ package JvMMD7D;
 requires
   JvMMD7R,
   designide,
-  DJCL70,
-  JvCmpD7R,
-  vcl,
-  rtl,
-  vclactnband,
-  vclx;
+  JvCmpD7R;
 
 contains
   JvMMReg in '..\..\design\JvMMReg.pas',

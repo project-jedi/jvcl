@@ -27,13 +27,17 @@ package JvInterpreterD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD7R,
-  JvCtrlsD7R,
-  JvCustomD7R,
+  vcljpg,
+  vcl,
+  rtl,
   dbrtl,
   inet,
+  vclx,
   bdertl,
   vcldb,
+  JvCoreD7R,
+  DJCL70,
+  JvCustomD7R,
   qrpt;
 
 contains

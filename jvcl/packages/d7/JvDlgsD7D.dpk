@@ -27,10 +27,9 @@ package JvDlgsD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD7R,
-  JvCoreD7D,
+  designide,
   JvDlgsD7R,
-  designide;
+  JvCoreD7D;
 
 contains
   JvDlgsReg in '..\..\design\JvDlgsReg.pas',

@@ -28,11 +28,10 @@ package JvDBD7R;
 
 requires
   JvCoreD7R,
-  JvStdCtrlsD7R,
   dbrtl,
   vcldb,
-  vcl,
-  rtl;
+  JvSystemD7R,
+  JvStdCtrlsD7R;
 
 contains
   JvDBConsts in '..\..\common\JvDBConsts.pas',

@@ -29,18 +29,7 @@ package JvAppFrmD7D;
 requires
   JvAppFrmD7R,
   designide,
-  vcl,
-  rtl,
-  vclactnband,
-  vclx,
-  JvCoreD7R,
-  DJCL70,
-  vcljpg,
-  JvStdCtrlsD7R,
-  JvSystemD7R,
-  JvMMD7R,
-  JvCtrlsD7R,
-  JvCmpD7R;
+  JvStdCtrlsD7R;
 
 contains
   JvAppFrmReg in '..\..\design\JvAppFrmReg.pas',

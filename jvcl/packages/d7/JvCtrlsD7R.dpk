@@ -28,6 +28,7 @@ package JvCtrlsD7R;
 
 requires
   JvCoreD7R,
+  JvSystemD7R,
   JvStdCtrlsD7R;
 
 contains

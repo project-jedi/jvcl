@@ -29,15 +29,7 @@ package JvMMD7R;
 requires
   JvCoreD7R,
   JvSystemD7R,
-  JvCmpD7R,
-  designide,
-  JvStdCtrlsD7R,
-  JvCtrlsD7R,
-  vcl,
-  rtl,
-  vclx,
-  DJCL70,
-  vcljpg;
+  JvCtrlsD7R;
 
 contains
   JvGradient in '..\..\run\JvGradient.pas',

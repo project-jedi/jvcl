@@ -49,6 +49,7 @@ contains
   JvDsgnIntf in '..\..\run\JvDsgnIntf.pas',
   JvActnResForm in '..\..\design\JvActnResForm.pas' {JvStandardActions: TDataModule},
   JvDataProviderImpl in '..\..\run\JvDataProviderImpl.pas',
-  JvDataProvider in '..\..\run\JvDataProvider.pas';
+  JvDataProvider in '..\..\run\JvDataProvider.pas',
+  JvCaret in '..\..\run\JvCaret.pas';
 
 end.

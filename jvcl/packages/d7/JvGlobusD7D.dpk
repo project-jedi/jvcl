@@ -27,20 +27,11 @@ package JvGlobusD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
-  vcl,
-  Vclx,
-  Vcldb,
-  VclSmp,
-  Qrpt,
-  vcljpg,
-  vclie,
   designide,
-  DJCL70,
-  JvCoreD7R,
-  JvCustomD7R,
-  JvCtrlsD7R,
   JvGlobusD7R,
+  VclSmp,
+  JvCtrlsD7R,
+  JvCustomD7R,
   JvDlgsD7R,
   JvMMD7R;
 

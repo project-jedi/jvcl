@@ -27,17 +27,12 @@ package JvGlobusD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl,
-  Vclx,
-  Vcldb,
-  VclSmp,
   Qrpt,
-  vcljpg,
-  vclie,
   JvCoreD7R,
-  DJCL70,
-  JvStdCtrlsD7R,
-  JvSystemD7R;
+  vclie,
+  vcldb,
+  JvSystemD7R,
+  JvStdCtrlsD7R;
 
 contains
   JvgAlignForm in '..\..\run\JvgAlignForm.pas' {AlignForm},

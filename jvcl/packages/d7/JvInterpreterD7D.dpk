@@ -28,9 +28,9 @@ package JvInterpreterD7D;
 
 requires
   JvInterpreterD7R,
-  JvCoreD7D,
   designide,
-  dclstd;
+  dclstd,
+  JvCoreD7D;
 
 contains
   JvInterpreterReg in '..\..\design\JvInterpreterReg.pas';

@@ -27,10 +27,10 @@ package JvCtrlsD6D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCtrlsD6R,
   designide,
   dclstd,
-  JvCoreD6D;
+  JvCoreD6D,
+  JvCtrlsD6R;
 
 contains
   JvCtrlsReg in '..\..\design\JvCtrlsReg.pas',
@@ -38,7 +38,7 @@ contains
   JvScrollMaxEditor in '..\..\design\JvScrollMaxEditor.pas',
   JvFooterEditor in '..\..\design\JvFooterEditor.pas',
   JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas',
-  JvSpeedbarForm in '..\..\design\JvSpeedbarForm.pas' {JvSpeedbarEditor}, 
+  JvSpeedbarForm in '..\..\design\JvSpeedbarForm.pas' {JvSpeedbarEditor},
   JvHTHintForm in '..\..\design\JvHTHintForm.pas' {JvHintEditor};
 
 end.

@@ -26,8 +26,6 @@ package JvJansD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl,
-  vclx,
   designide,
   JvJansD7R;
 
