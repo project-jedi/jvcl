@@ -1928,7 +1928,11 @@ begin
   VisibleClients := DockSite.VisibleDockClientCount;
   FDropOnZone := nil;
 
-  MousePos := JvGlobalDockManager.DragObject.DragPos;
+  if JvGlobalDockManager.DragObject <> nil then
+    MousePos := JvGlobalDockManager.DragObject.DragPos
+  else
+    MousePos := Client.ScreenToClient(Mouse.CursorPos);
+
   MapWindowPoints(0, DockSite.Handle, MousePos, 2);
   Zone := InternalHitTest(MousePos, HTFlag);
   if Zone <> nil then
