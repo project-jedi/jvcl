@@ -20,6 +20,14 @@
  The above copyright notice and this permission notice shall be included in
  all copies or substantial portions of the Software.
 
+ The origin of this software must not be misrepresented, you must
+ not claim that you wrote the original software. If you use this
+ software in a product, an acknowledgment in the product documentation
+ would be appreciated but is not required.
+
+ Altered source versions must be plainly marked as such, and must not
+ be misrepresented as being the original software.
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -226,6 +234,16 @@ type
     Y: Longint;
   end;
   PSize = ^TSize;
+  PPoint = Types.PPoint;
+  {$NODEFINE PPoint}
+  TPoint = Types.TPoint;
+  {$NODEFINE TPoint}
+  PRect = Types.PRect;
+  {$NODEFINE PRect}
+  TRect = Types.TRect;
+  {$NODEFINE TRect}
+  TCaption = QTypes.TCaption;
+  {$NODEFINE TCaption}
 
   TTime = TDateTime;
   TDate = TDateTime;
@@ -267,6 +285,8 @@ type
     LParam: Longint;
     Result: Integer;
   end;
+
+procedure WakeUpGuiThread;
 {
   Dummies for ... VCL
  asn: AFAIK use of RightToLeft or LeftToRight is automatic
@@ -280,7 +300,7 @@ function UseRightToLeftAlignment: Boolean;
 var
   NewStyleControls: Boolean = True;
 { colors }
-function GetSysColor(SysColor: Integer): TColorRef;
+function GetSysColor(SysColor: Integer): TColorRef;  // windows SysColor !!
 function SetSysColor(RefColor: TColor; TrueColor: TColorRef): Boolean;
 function SetSysColors(Elements: Integer; const lpaElements;
   const lpaRgbValues): LongBool;
@@ -930,22 +950,30 @@ type
 procedure RequiredState(ACanvas: TCanvas; State: TCanvasState);
 
 { limited implementation of }
-function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
+function DrawText2(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
+
 function DrawText(Handle: QPainterH; Text: PAnsiChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
+
 function DrawTextW(Handle: QPainterH; Text: PWideChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
+
+function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
+  x,y, w, h: Integer; WinFlags: Integer; Angle: Integer = 0): Integer;  overload;
+
+function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
+  var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
 //
-// additional functionality
+// additional functionality DrawText(Canvas, .....
 // - canvas start/stop
 // - sets painterfont
 //
+function DrawText(Canvas :TCanvas; Text: TCaption; Len: Integer;
+  var R: TRect; WinFlags: Integer; Angle: integer = 0): Integer; overload;
+
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
-function DrawText(Canvas :TCanvas; Text: TCaption; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer; overload;
-
 function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
 
@@ -953,10 +981,6 @@ function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
 function DrawTextEx(Handle: QPainterH; Text: PChar; Len: Integer;
   var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
-function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
-  x,y, w, h: Integer; WinFlags: Integer; Angle: Integer): Integer;  overload;
-function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
-  var R: TRect; WinFlags: Integer; Angle: Integer): Integer; overload;
 
 const
   { DrawText format (windows) flags }
@@ -1270,7 +1294,7 @@ function GetViewportExtEx(Handle: QPainterH; Size: PSize): LongBool;
 
 // Text clipping
 function TruncatePath(const FilePath: string; Canvas: TCanvas; MaxLen: Integer): string;
-function TruncateName(const Name: WideString; Canvas: TCanvas; MaxLen: Integer): WideString;
+function TruncateName(const Name: WideString; Canvas: TCanvas; MaxLen: Integer; QtFlags: integer = 0): WideString;
 
 procedure TextOutAngle(Handle: QPainterH; Angle, Left, Top: Integer; Text: WideString); overload;
 procedure TextOutAngle(ACanvas: TCanvas; Angle, Left, Top: Integer; Text: WideString); overload;
@@ -1851,6 +1875,11 @@ begin
 end;
 {----------------------------------------}
 
+procedure WakeUpGuiThread;
+begin
+  QApplication_wakeUpGuiThread(Application.Handle);
+end;
+
 function DrawTextBiDiModeFlagsReadingOnly: Longint;
 begin
   Result := 0;
@@ -1891,11 +1920,9 @@ const
     crHighlight, crHighlightText, crNoRole);
 
 function SetSysColor(RefColor: TColor; TrueColor: TColorRef): Boolean;
-var
-  QC: QColorH;
 begin
-  with Application.Palette do
-    if (TrueColor >= TColor(0)) and (TrueColor <= TColor($FFFFFF)) then
+  with Application.Palette do // asn: positive values or only rgb values?
+    if TrueColor >= TColor(0)  then
     begin
       Result := True;
       case RefColor of
@@ -1905,6 +1932,7 @@ begin
           SetColor(cgDisabled, ColorRoles[-(RefColor+cloDisabled)], TrueColor);
         clActiveNoRole..clActiveForeground:
           SetColor(cgActive, ColorRoles[-(RefColor+cloActive)], TrueColor);
+        (*
         clInfoBk:
           begin
             Application.HintColor := TrueColor;
@@ -1917,12 +1945,14 @@ begin
             QColor_destroy(QC);
             SetColor(cgDisabled, ColorRoles[-(RefColor+cloDisabled)], TrueColor);
           end;
+        *)
       else
         Result := False
       end;
     end
     else  // if
-      Result := False;   // only rgb values are accepted
+      Result := False;   // only rgb values are accepted (asn: see remark above)
+
 end;
 
 function SetSysColors(Elements: Integer; const lpaElements;
@@ -1936,15 +1966,18 @@ begin
   refcolor := PColor(lpaElements);
   realcolor := PColor(lpaRGBvalues);
   Application.Palette.BeginUpdate;
-  for i := 0 to Elements-1 do
-  begin
-    if not SetSysColor( refcolor^, realcolor^)
-    then
-      Result := False;
-    inc(refcolor);
-    inc(realcolor);
+  try
+    for i := 0 to Elements-1 do
+    begin
+      if not SetSysColor( refcolor^, realcolor^)
+      then
+        Result := False;
+      inc(refcolor);
+      inc(realcolor);
+    end;
+  finally
+    Application.Palette.EndUpdate;
   end;
-  Application.Palette.EndUpdate;
 end;
 
 type
@@ -3278,12 +3311,16 @@ begin
 end;
 
 function InvalidateRect(Handle: QWidgetH; R: PRect; EraseBackground: Boolean): LongBool;
+var
+  Control: TWidgetControl;
 begin
   Result := False;
   if Handle = nil then
     Exit;
   try
-    QWidget_repaint(Handle, R, erasebackground);
+    Control := FindControl(Handle);
+    if Control <> nil then
+      Control.InvalidateRect(R^, EraseBackGround);
     Result := True;
   except
     Result := False;
@@ -4335,28 +4372,28 @@ end;
 procedure TextOutAngle(ACanvas: TCanvas; Angle, Left, Top: Integer; Text: WideString);
 begin
   ACanvas.Start;
-  RequiredState(ACanvas, [csHandleValid, csFontValid]);
+  RequiredState(ACanvas, [csHandleValid, csFontValid, csBrushValid]);
   TextOutAngle(ACanvas.Handle, Angle, Left, Top, Text);
   ACanvas.Stop;
 end;
 
 function TextWidth(Handle: QPainterH; Caption: WideString;
-  Flags: Integer): Integer;
+  QtFlags: Integer = 0): Integer;
 var
   R :TRect;
 begin
-  QPainter_boundingRect(Handle, @R, @R, Flags, PWideString(@Caption), -1, nil);
+  QPainter_boundingRect(Handle, @R, @R, QtFlags, PWideString(@Caption), -1, nil);
   Result := R.Right - R.Left;
 end;
 
 function TextHeight(Handle: QPainterH; Caption: WideString; R: TRect;
-  Flags: Integer): Integer;
+  QtFlags: Integer = 0): Integer;
 var
   R1, R2: TRect;
 begin
   R1 := R;
   R1.Bottom := MaxInt;
-  QPainter_boundingRect(Handle, @R1, @R2, Flags, PWideString(@Caption), -1, nil);
+  QPainter_boundingRect(Handle, @R1, @R2, QtFlags, PWideString(@Caption), -1, nil);
   Result := R2.Bottom - R2.Top;
 end;
 
@@ -4406,13 +4443,13 @@ begin
 end;
 
 function TextExtent(Handle: QPainterH; const Caption: WideString; R: TRect;
-  Flags: Integer): TRect;
+  QtFlags: Integer): TRect;
 var
   R2: TRect;
 begin
   R2 := R;
   R2.Bottom := MaxInt;
-  QPainter_boundingRect(Handle, @R2, @Result, Flags, PWideString(@Caption), -1, nil);
+  QPainter_boundingRect(Handle, @R2, @Result, QtFlags, PWideString(@Caption), -1, nil);
 
 //  QPainter_boundingRect(Handle, @Result, @Result, Flags, PWideString(@Caption), -1, nil);
 end;
@@ -4421,15 +4458,15 @@ const
   Ellipses = '...';
 
 function NameEllipsis(const Name: WideString; Handle: QPainterH;
-  MaxLen: Integer): WideString;
+  MaxLen: Integer; QtFlags: integer = 0): WideString;
 var
   I: Integer;
 begin
-  if TextWidth(Handle, Name, 0) > MaxLen then
+  if TextWidth(Handle, Name, QtFlags) > MaxLen then
   begin
     Result := Ellipses;
     I := 0;
-    while TextWidth(Handle, Result, 0) <= MaxLen do
+    while TextWidth(Handle, Result, QtFlags) <= MaxLen do
     begin
       Inc(I);
       Result := LeftStr(Name, I) + Ellipses;
@@ -4442,7 +4479,7 @@ begin
 end;
 
 function WordEllipsis(Words: WideString; Handle: QPainterH; const R: TRect;
-  Flags: Integer): WideString;
+  QtFlags: Integer = 0): WideString;
 var
   R2, R1: TRect;
   ShortedText: WideString;
@@ -4459,7 +4496,7 @@ begin
   Result := ShortedText;
   R1 := R;
   R1.Bottom := MaxInt;
-  QPainter_boundingRect(Handle, @R1, @R2, Flags, PWideString(@Result), -1, nil);
+  QPainter_boundingRect(Handle, @R1, @R2, QtFlags, PWideString(@Result), -1, nil);
   if not RectInsideRect(R2, R) then
   begin
     I := 1;
@@ -4473,7 +4510,7 @@ begin
         Inc(I);
       until I > Length(Words);
       Result := ShortedText + '...';
-      QPainter_boundingRect(Handle, @R1, @R2, Flags, PWideString(@Result), -1, nil);
+      QPainter_boundingRect(Handle, @R1, @R2, QtFlags, PWideString(@Result), -1, nil);
     end;
     While not RectInsideRect(R2, R) and (I > 0) do
     begin
@@ -4484,7 +4521,7 @@ begin
           Break;
       until I <= 1;
       Result := ShortedText + Ellipses;
-      QPainter_boundingRect(Handle, @R1, @R2, Flags, PWideString(@Result), -1, nil);
+      QPainter_boundingRect(Handle, @R1, @R2, QtFlags, PWideString(@Result), -1, nil);
     end;
   end;
 end;
@@ -4505,7 +4542,7 @@ begin
     if AnsiStartsStr(CurPath, FilePath) then
     begin
       F := '~/' + AnsiRightStr(FilePath, Length(FilePath) - Length(CurPath));
-      if TextWidth(Handle, F, 0) <= MaxLen then
+      if TextWidth(Handle, F, SingleLine) <= MaxLen then
       begin
         Result := F;
         Exit;
@@ -4527,12 +4564,12 @@ begin
         begin
           Paths[k] := CurPath; // replace with ellipses
           I := Length(CurPath);
-          while (I > 0) and (TextWidth(Handle, Paths.DelimitedText, 0) > MaxLen) do
+          while (I > 0) and (TextWidth(Handle, Paths.DelimitedText, SingleLine) > MaxLen) do
           begin
             Dec(I);
             Paths[k] := LeftStr(CurPath, I) + Ellipses;// remove a character
           end;
-          if TextWidth(Handle, Paths.DelimitedText, 0) <= MaxLen then
+          if TextWidth(Handle, Paths.DelimitedText, SingleLine) <= MaxLen then
           begin
             Result := Paths.DelimitedText;
             Exit;
@@ -4545,14 +4582,14 @@ begin
       for k := Paths.Count - 2 downto 1 do
         Paths.Delete(k);
       Paths[0] := Ellipses;
-      if TextWidth(Handle, Paths.DelimitedText, 0) > MaxLen then
+      if TextWidth(Handle, Paths.DelimitedText, SingleLine) > MaxLen then
       begin
         CurPath := Paths[1];
         Paths[1] := Ellipses; // replace with ellipses
         //I := 1;
         //Paths[1] := CurPath; // replace with ellipses
         I:= Length(CurPath);
-        while (I > 0)  and (TextWidth(Handle, Paths.DelimitedText, 0) > MaxLen) do
+        while (I > 0)  and (TextWidth(Handle, Paths.DelimitedText, SingleLine) > MaxLen) do
         begin
           Dec(I);
           Paths[I] := LeftStr(CurPath, I) + Ellipses;// remove a character
@@ -4575,17 +4612,17 @@ begin
   end;
 end;
 
-function TruncateName(const Name: WideString; Canvas: TCanvas; MaxLen: Integer): WideString;
+function TruncateName(const Name: WideString; Canvas: TCanvas; MaxLen: Integer; QtFlags: integer = 0): WideString;
 begin
   Canvas.Start;
   try
-    Result := NameEllipsis(Name, Canvas.Handle, MaxLen);
+    Result := NameEllipsis(Name, Canvas.Handle, MaxLen, QtFlags);
   finally
     Canvas.Stop;
   end;
 end;
 
-function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
+function DrawText2(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer;
 var
   Flags: Integer;
@@ -4683,11 +4720,11 @@ begin
   if WinFlags and DT_CALCRECT = 0 then
   begin
     if Flags and ClipName <> 0 then
-      Caption := NameEllipsis(Caption, Handle, R.Right - R.Left)
+      Caption := NameEllipsis(Caption, Handle, R.Right - R.Left, Flags)
     else if Flags and ClipPath <> 0 then
       Caption := FileEllipsis(Caption, Handle, R.Right - R.Left)
     else if Flags and ClipToWord <> 0 then
-      Caption := WordEllipsis(Caption, Handle, R, flags);
+      Caption := WordEllipsis(Caption, Handle, R, Flags);
     QPainter_save(Handle);
     if Flags and DontClip = 0 then // clipping
       IntersectClipRect(Handle, R); // QPainter::drawText() does not clip left/top border
@@ -4742,7 +4779,7 @@ var
   WText: WideString;
 begin
   WText := Text;
-  Result := DrawText(Handle, WText, Len, R, WinFlags);
+  Result := DrawText2(Handle, WText, Len, R, WinFlags);
   if (DT_MODIFYSTRING and WinFlags <> 0) and (Text <> nil) then
   begin
     Move(WText[1], Text^, Length(WText) * SizeOf(WideChar));
@@ -4774,8 +4811,27 @@ begin
   end;
 end;
 
+function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
+  var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer;
+var
+  R2: TRect;
+begin
+  R2:= R;
+  OffsetRect(R2, -R.Left, -R.Top);
+  try
+    QPainter_save(Handle);
+    QPainter_translate(Handle, R.Left, R.Top);
+    QPainter_rotate(Handle, -Angle);
+    Result := DrawText2(Handle, Text, Len, R2, WinFlags);
+  finally
+    QPainter_restore(Handle);
+  end;
+  OffsetRect(R2, R.Left, R.Top);
+  R := R2;
+end;
+
 function DrawText(Canvas: TCanvas; Text: TCaption; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer;
+  var R: TRect; WinFlags: Integer; Angle: integer = 0): Integer;
 var
   ws: WideString;
 begin
@@ -4784,7 +4840,7 @@ begin
   begin
     Start;
     RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
-    Result := DrawTextW(Handle, PWideChar(Text), Len, R, WinFlags);
+    Result := DrawText(Handle, ws, Len, R, WinFlags, Angle);
     Stop;
   end;
 end;
@@ -4801,24 +4857,6 @@ begin
   Result := DrawText(Handle, Text, Len, R, WinFlags);
 end;
 
-function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
-  var R: TRect; WinFlags: Integer; Angle: Integer): Integer;
-var
-  R2: TRect;
-begin
-  R2:= R;
-  OffsetRect(R2, -R.Left, -R.Top);
-  try
-    QPainter_save(Handle);
-    QPainter_translate(Handle, R.Left, R.Top);
-    QPainter_rotate(Handle, -Angle);
-    Result := DrawText(Handle, Text, Len, R2, WinFlags);
-  finally
-    QPainter_restore(Handle);
-  end;
-  OffsetRect(R2, R.Left, R.Top);
-  R := R2;
-end;
 
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
   x,y, w, h: Integer; WinFlags: Integer; Angle: Integer): Integer;
