@@ -117,6 +117,8 @@ SimpleTLTest1.exe \
 TransparentButtonDemo.exe \
 JvLogFileDemo.exe \
 JvTrayIconDemo.exe \
+JvZLibMultipleDemo.exe \
+
 #---------------------------------------------------------------------------------------------------
 
 AppDdeCmdExample.exe: AppDdeCmdExample\AppDdeCmdExample.dpr
@@ -580,6 +582,11 @@ JvLogFileDemo.exe: JvLogFile\JvLogFileDemo.dpr
   cd ..
 JvTrayIconDemo.exe: JvTrayIcon\JvTrayIconDemo.dpr
   cd JvTrayIcon
+  $(DCC) $&.dpr
+  cd ..
+
+JvZLibMultipleDemo.exe: JvZLibMultiple\JvZLibMultipleDemo.dpr
+  cd JvZLibMultiple
   $(DCC) $&.dpr
   cd ..
 
