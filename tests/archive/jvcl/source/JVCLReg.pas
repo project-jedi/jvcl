@@ -362,7 +362,7 @@ begin
       TJvDirectories,
       TJvSystemColors,
       TJvClipboardViewer,
-      TJvSystemPopup,
+      TJvSystemPopup
 
       ]);
 
