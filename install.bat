@@ -1,14 +1,14 @@
 @echo off
 
 set JCLDIR=%1
-if %JCLDIR%!==! set JCLDIR=..\JCL
+REM if %JCLDIR%!==! set JCLDIR=..\JCL
 
 cd install\JVCL3Install
-dcc32 -$O+ -Q JVCL3Install.dpr -E..\..\packages -U%JCLDIR%\source\common -U%JCLDIR%\source\windows -I%JCLDIR%\source\common 
+REM dcc32 -$O+ -Q JVCL3Install.dpr -E..\..\packages -U%JCLDIR%\source\common -U%JCLDIR%\source\windows -I%JCLDIR%\source\common 
+dcc32 -$O+ -Q JVCL3Install.dpr -E..\..\packages
 cd ..\..
 
 if NOT EXIST packages\JVCL3Install.exe goto error
-
 start packages\JVCL3Install.exe
 
 goto end
