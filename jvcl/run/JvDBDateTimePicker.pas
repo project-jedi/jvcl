@@ -61,6 +61,7 @@ type
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure EditingChange(Sender: TObject);
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
@@ -315,8 +316,11 @@ end;
 ///////////////////////////////////////////////////////////////////////////
 
 procedure TJvDBDateTimePicker.KeyDown(var Key: Word; Shift: TShiftState);
+const
+  cAllowedKeysWhenReadOnly = [VK_LEFT, VK_RIGHT];
 begin
-  if FIsReadOnly and not FDataLink.CanModify then
+  { Only allow left and right arrow when read-only, don't care about Shift }
+  if not (Key in cAllowedKeysWhenReadOnly) and FIsReadOnly and not FDataLink.CanModify then
   begin
     if BeepOnError then
       Beep;
@@ -504,6 +508,18 @@ begin
     SendMessage(FPaintControl.Handle, WM_ERASEBKGND, Msg.DC, 0);
     SendMessage(FPaintControl.Handle, WM_PAINT, Msg.DC, 0);
   end;
+end;
+
+procedure TJvDBDateTimePicker.WMLButtonDown(var Msg: TWMLButtonDown);
+begin
+  if FIsReadOnly and not FDataLink.CanModify then
+  begin
+    SendCancelMode(Self);
+    SetFocus;
+    Exit;
+  end;
+
+  inherited;
 end;
 
 end.
