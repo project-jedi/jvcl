@@ -2678,7 +2678,6 @@ object frmMain: TfrmMain
   object JvAppIniFileStorage: TJvAppIniFileStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
-    Buffered = False
     SubStorages = <>
     Left = 120
     Top = 220
