@@ -493,7 +493,7 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   SysUtils,
-  JvJCLUtils;
+  JvConsts, JvJCLUtils;
 
 var
   IntDynControlEngineVCL: TJvDynControlEngine = nil;
@@ -716,13 +716,10 @@ begin
 end;
 
 procedure TJvDynControlVCLFileNameEdit.DefaultOnButtonClick(Sender: TObject);
-var Dialog : TOpenDialog;
 begin
   case FDialogKind of
     jdkOpen:
-    begin
-      Dialog := TOpenDialog.Create(Self);
-      with TOpenDialog(Dialog) do
+      with TOpenDialog.Create(Self) do
         try
           Options := FDialogOptions;
           Title := FDialogTitle;
@@ -731,12 +728,11 @@ begin
           InitialDir := FInitialDir;
           DefaultExt := FDefaultExt;
           FileName := ControlGetValue;
-          if Dialog.Execute then
+          if Execute then
             ControlSetValue(FileName);
         finally
           Free;
         end;
-    end;
     jdkOpenPicture:
       with TOpenPictureDialog.Create(Self) do
         try
@@ -879,12 +875,12 @@ begin
   inherited Create(AOwner);
   FEditControl := TMaskEdit.Create(AOwner);
   FEditControl.Parent := Self;
-  FButton    := TBitBtn.Create(AOwner);
+  FButton := TBitBtn.Create(AOwner);
   FButton.Parent := Self;
   FButton.Align := alRight;
   FButton.OnClick := DefaultOnButtonClick;
   FButton.Caption := '...';
-  Height     := FEditControl.Height;
+  Height := FEditControl.Height;
   FButton.Width := Height;
   FEditControl.Align := alClient;
   BevelInner := bvNone;
@@ -910,20 +906,12 @@ var
 begin
   Dir := ControlGetValue;
   if Dir = '' then
-    if fInitialDir <> '' then
+    if FInitialDir <> '' then
       Dir := FInitialDir
     else
-  {$IFDEF LINUX}
-      Dir := '\';
-  {$ELSE}
-      Dir := '/';
-  {$ENDIF LINUX}
+      Dir := PathDelim;
   if not DirectoryExists(Dir) then
-  {$IFDEF LINUX}
-    Dir := '\';
-  {$ELSE}
-    Dir := '/';
-  {$ENDIF LINUX}
+    Dir := PathDelim;
   {$IFDEF VCL}
   if SelectDirectory(Dir, Opt, HelpContext) then
   {$ENDIF VCL}
@@ -1283,7 +1271,7 @@ begin
   if VarType(Value) = varBoolean then
     Checked := Value
   else
-    Checked := Uppercase(Value) = 'TRUE';
+    Checked := UpperCase(Value) = 'TRUE';
 end;
 
 function TJvDynControlVCLCheckBox.ControlGetValue: Variant;
@@ -1928,8 +1916,9 @@ begin
   WordWrap := Value;
 end;
 
-{$IFDEF VCL}
 //=== { TJvDynControlVCLStaticText } =========================================
+
+{$IFDEF VCL}
 
 procedure TJvDynControlVCLStaticText.ControlSetDefaultProperties;
 begin
@@ -2001,6 +1990,8 @@ begin
   Layout := Value;
 end;
 
+//=== { TJvDynControlEngineVCL } =============================================
+
 function DynControlEngineVCL: TJvDynControlEngine;
 begin
   Result := IntDynControlEngineVCL;
@@ -2008,6 +1999,7 @@ end;
 
 type
   TJvDynControlEngineVCL = class(TJvDynControlEngine)
+  public
     procedure RegisterControls; override;
   end;
 

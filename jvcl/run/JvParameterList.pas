@@ -155,7 +155,7 @@ type
     function GetWinControl: TWinControl;
     function GetWinControlData: Variant; virtual;
     procedure SetWinControlData(Value: Variant); virtual;
-    procedure SetSearchName (Value : string);
+    procedure SetSearchName(Value: string);
 
     procedure SetEnabled(Value: Boolean); virtual;
     procedure SetVisible(Value: Boolean); virtual;
@@ -259,9 +259,9 @@ type
     FHeight: Integer;
     FMaxWidth: Integer;
     FMaxHeight: Integer;
-    FDefaultParameterHeight : Integer;
-    FDefaultParameterWidth : Integer;
-    FDefaultParameterLabelWidth : Integer;
+    FDefaultParameterHeight: Integer;
+    FDefaultParameterWidth: Integer;
+    FDefaultParameterLabelWidth: Integer;
     FOkButtonVisible: Boolean;
     FCancelButtonVisible: Boolean;
     FParameterListPropertyStore: TJvParameterListPropertyStore;
@@ -344,7 +344,7 @@ type
      returns True when ok-button pressed
      This function can be called inside a running thread. It will synchromized
      with the main thread using SynchronizeThread.Synchronize}
-    function ShowParameterDialog(SynchronizeThread: tThread) : Boolean; overload;
+    function ShowParameterDialog(SynchronizeThread: TThread): Boolean; overload;
     { Creates the ParameterDialog }
     procedure CreateParameterDialog;
     { Checks the Disable/Enable-Reason of all Parameters }
@@ -392,9 +392,9 @@ type
     property MaxWidth: Integer read FMaxWidth write FMaxWidth default 400;
     {Maximum ClientHeight of the Dialog}
     property MaxHeight: Integer read FMaxHeight write FMaxHeight default 600;
-    property DefaultParameterHeight: Integer read fDefaultParameterHeight write fDefaultParameterHeight default 0;
-    property DefaultParameterWidth: Integer read fDefaultParameterWidth write fDefaultParameterWidth default 0;
-    property DefaultParameterLabelWidth: Integer read fDefaultParameterLabelWidth write fDefaultParameterLabelWidth default 0;
+    property DefaultParameterHeight: Integer read FDefaultParameterHeight write FDefaultParameterHeight default 0;
+    property DefaultParameterWidth: Integer read FDefaultParameterWidth write FDefaultParameterWidth default 0;
+    property DefaultParameterLabelWidth: Integer read FDefaultParameterLabelWidth write FDefaultParameterLabelWidth default 0;
     property OkButtonVisible: Boolean read FOkButtonVisible write FOkButtonVisible;
     property CancelButtonVisible: Boolean read FCancelButtonVisible write FCancelButtonVisible;
     property HistoryEnabled: Boolean read FHistoryEnabled write FHistoryEnabled;
@@ -831,7 +831,7 @@ begin
     end;
 end;
 
-procedure TJvBaseParameter.SetSearchName (Value : string);
+procedure TJvBaseParameter.SetSearchName(Value: string);
 begin
   FSearchName := Trim(Value);
 end;
@@ -1441,9 +1441,9 @@ begin
 end;
 
 type
-  TAccessThread = class(tThread);
+  TAccessThread = class(TThread);
 
-function TJvParameterList.ShowParameterDialog(SynchronizeThread: tThread) : Boolean;
+function TJvParameterList.ShowParameterDialog(SynchronizeThread: TThread): Boolean;
 begin
   if Count = 0 then
     EJVCLException.CreateRes(@RsENoParametersDefined);
@@ -1451,7 +1451,7 @@ begin
   try
     SetDataToWinControls;
     if Assigned(SynchronizeThread) then
-      TAccessThread(SynchronizeThread).Synchronize (ShowParameterDialogThread)
+      TAccessThread(SynchronizeThread).Synchronize(ShowParameterDialogThread)
     else
       ParameterDialog.ShowModal;
     Result := ParameterDialog.ModalResult = mrOk;

@@ -683,17 +683,19 @@ begin
     ArrangeLabelAndWinControlOnPanel;
 end;
 
-type TAccessCustomControl = class(TCustomControl);
+type
+  TAccessCustomControl = class(TCustomControl);
 
 procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanel;
-Var tmpLabelArrangeMode : TJvParameterLabelArrangeMode;
+var
+  TmpLabelArrangeMode: TJvParameterLabelArrangeMode;
 begin
   if not Assigned(FramePanel) or not Assigned(WinControl) or FArrangeLabelAndWinControlDisabled then
     Exit;
   if (LabelArrangeMode = lamBefore) and not Assigned(LabelControl) then
-    tmpLabelArrangeMode := lamAbove
+    TmpLabelArrangeMode := lamAbove
   else
-    tmpLabelArrangeMode := LabelArrangeMode;
+    TmpLabelArrangeMode := LabelArrangeMode;
 
   if not Assigned(LabelControl) then
   begin
@@ -730,7 +732,7 @@ begin
     LabelControl.Top := 0;
     LabelControl.Left := 0;
   end;
-  if (tmpLabelArrangeMode = lamAbove) or not Assigned(LabelControl) then
+  if (TmpLabelArrangeMode = lamAbove) or not Assigned(LabelControl) then
   begin
     if Assigned(LabelControl) then
       WinControl.Top := LabelControl.Height + 2

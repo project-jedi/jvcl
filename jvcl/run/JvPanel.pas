@@ -142,7 +142,7 @@ type
     procedure Loaded; override;
     procedure Resize; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
-    function GetNextControlByTabOrder (iTabOrder : Integer): TWinControl;
+    function GetNextControlByTabOrder(ATabOrder: Integer): TWinControl;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -245,7 +245,8 @@ type
 implementation
 
 uses
-  JvMouseTimer, Types;
+  Types,
+  JvMouseTimer;
 
 const
   BkModeTransparent = TRANSPARENT;
@@ -496,13 +497,14 @@ begin
     begin
       ThemeServices.DrawElement(Canvas.Handle, ThemeServices.GetElementDetails(tsGripper),
         Rect(ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2,
-             ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2,
-             ClientWidth - BevelWidth - 2, ClientHeight - BevelWidth - 2));
+          ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2,
+          ClientWidth - BevelWidth - 2, ClientHeight - BevelWidth - 2));
     end
     else
     {$ENDIF JVCLThemesEnabled}
       with Canvas do
       begin
+        // (rom) Marlett is not a standard Windows font
         Font.Name := 'Marlett';
         Font.Charset := DEFAULT_CHARSET;
         Font.Size := 12;
@@ -522,7 +524,7 @@ begin
   inherited AdjustSize;
   if Transparent and not IsThemed then
   begin
-   // (ahuser) That is the only way to draw the border of the contained controls.
+    // (ahuser) That is the only way to draw the border of the contained controls.
     Width := Width + 1;
     Width := Width - 1;
   end;
@@ -843,22 +845,23 @@ begin
     ArrangeControls;
 end;
 
-function TJvPanel.GetNextControlByTabOrder (iTabOrder : Integer): TWinControl;
-var i: Integer;
+function TJvPanel.GetNextControlByTabOrder(ATabOrder: Integer): TWinControl;
+var
+  I: Integer;
 begin
   Result := nil;
   for I := 0 to ControlCount - 1 do
     if Controls[I] is TWinControl then
-      if TWinControl(Controls[I]).TabOrder = iTabOrder then
+      if TWinControl(Controls[I]).TabOrder = ATabOrder then
       begin
         Result := TWinControl(Controls[I]);
-        exit;
+        Break;
       end;
 end;
 
 procedure TJvPanel.ArrangeControls;
 var
-  AktX, AktY, NewX, NewY, MaxY, NewMaxX : Integer;
+  AktX, AktY, NewX, NewY, MaxY, NewMaxX: Integer;
   ControlMaxX, ControlMaxY: Integer;
   TmpWidth, TmpHeight: Integer;
   LastTabOrder: Integer;
@@ -886,7 +889,7 @@ begin
       ControlMaxX := TmpWidth - 2 * FArrangeSettings.BorderLeft
     else
       ControlMaxX := -1;
-    if (FArrangeSettings.AutoSize in [asHeight, asBoth])then
+    if (FArrangeSettings.AutoSize in [asHeight, asBoth]) then
       ControlMaxY := TmpHeight - 2 * FArrangeSettings.BorderTop
     else
       ControlMaxY := -1;
@@ -909,15 +912,10 @@ begin
       if CurrControl.Visible or
         ((csDesigning in ComponentState) and FArrangeSettings.ShowNotVisibleAtDesignTime) then
       begin
-        NewMaxX := AktX + CurrControl.Width +
-                   FArrangeSettings.DistanceHorizontal +
-                   FArrangeSettings.BorderLeft;
-        if (((NewMaxX > TmpWidth) AND NOT (FArrangeSettings.AutoSize in [asWidth, asBoth]))
-             OR
-             ((NewMaxX > FArrangeSettings.MaxWidth) and
-              (FArrangeSettings.MaxWidth > 0)
-             )
-           ) and
+        NewMaxX := AktX + CurrControl.Width + FArrangeSettings.DistanceHorizontal +
+          FArrangeSettings.BorderLeft;
+        if (((NewMaxX > TmpWidth) and not (FArrangeSettings.AutoSize in [asWidth, asBoth])) or
+            ((NewMaxX > FArrangeSettings.MaxWidth) and (FArrangeSettings.MaxWidth > 0))) and
            (AktX > FArrangeSettings.BorderLeft) and // Only Valid if there is one control in the current line
            FArrangeSettings.WrapControls then
         begin
@@ -956,7 +954,7 @@ begin
         else
           TmpWidth := 0;
       if (FArrangeSettings.AutoSize in [asHeight, asBoth]) then
-        if ControlMaxY >=0  then
+        if ControlMaxY >= 0 then
           TmpHeight := ControlMaxY + FArrangeSettings.BorderTop
         else
           TmpHeight := 0;
@@ -965,7 +963,7 @@ begin
     end;
     FArrangeWidth := ControlMaxX + 2 * FArrangeSettings.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * FArrangeSettings.BorderTop;
-    if (OldWidth <> TmpWidth) OR (OldHeight <> Height) then
+    if (OldWidth <> TmpWidth) or (OldHeight <> Height) then
       {$IFDEF VCL}
       SendMessage(GetFocus, WM_PAINT, 0, 0);
       {$ENDIF VCL}
@@ -978,16 +976,17 @@ begin
 end;
 
 procedure TJvPanel.SetWidth(Value: Integer);
-var changed : Boolean;
+var
+  Changed: Boolean;
 begin
-  changed := inherited Width <> Value;
+  Changed := inherited Width <> Value;
   inherited Width := Value;
-  if changed then
+  if Changed then
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Value, Height)
     else
     if Parent is TJvPanel then
-       TJvPanel(Parent).ArrangeSettings.Rearrange;
+      TJvPanel(Parent).ArrangeSettings.Rearrange;
 end;
 
 function TJvPanel.GetWidth: Integer;
@@ -996,16 +995,17 @@ begin
 end;
 
 procedure TJvPanel.SetHeight(Value: Integer);
-var changed : Boolean;
+var
+  Changed: Boolean;
 begin
-  changed := inherited Height <> Value;
+  Changed := inherited Height <> Value;
   inherited Height := Value;
-  if changed then
+  if Changed then
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Width, Value)
     else
     if Parent is TJvPanel then
-       TJvPanel(Parent).ArrangeSettings.Rearrange;
+      TJvPanel(Parent).ArrangeSettings.Rearrange;
 end;
 
 function TJvPanel.GetHeight: Integer;

@@ -60,7 +60,7 @@ type
     procedure SetTableSize(const Value: Integer);     
   protected
     function HashProc(Name: string): Integer; virtual;
-    procedure DeleteListIndex(Index: Integer);        
+    procedure DeleteListIndex(Index: Integer);
     function CreateKeyNode(KeyName: string; KeyData: Pointer;
       ListIndex: Integer): TJvDockClientHashNode;
     function CompareKey(Key1, Key2: string): Integer;
@@ -77,6 +77,7 @@ type
     property CurrentSize: Integer read FCurrentSize;
     property TableSize: Integer read FTableSize write SetTableSize;
   end;
+
 implementation
 
 uses
@@ -186,7 +187,6 @@ begin
   Result := -1;
   Index := HashProc(Name);
   Assert((Index >= 0) and (Index < FTableSize), RsDockTableIndexError);
-  ParentNode := nil;
   if FEntryList[Index] = nil then
     FEntryList[Index] := CreateKeyNode(Name, Data, Index)
   else
