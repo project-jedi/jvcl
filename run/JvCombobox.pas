@@ -928,7 +928,7 @@ begin
     end;
   end
   else
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}                                                    
     Result := inherited GetItemCount;
   {$ELSE}
     Result := Items.Count;

@@ -220,7 +220,7 @@ procedure Register;
 implementation
 
 uses
-  Consts, Controls, SysUtils,
+  {$IFNDEF COMPILER6_UP}Consts, {$ENDIF}Controls, {$IFDEF COMPILER6_UP}RTLConsts,{$ENDIF}SysUtils,
   JclRTTI,
   JvConsts;
 
