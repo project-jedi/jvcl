@@ -701,7 +701,7 @@ procedure TJvDesktopAlert.Execute;
 var
   ARect: TRect;
   I, X, Y: Integer;
-  FActiveWindow: HWND;
+  FActiveWindow, FActiveFocus: HWND;
 
   procedure CenterForm(AForm: TForm; ARect: TRect);
   begin
@@ -811,12 +811,24 @@ begin
   end;
   Location.Position := GetStacker.Position;
   if not AutoFocus then
-    FActiveWindow := GetActiveWindow
+  begin
+    FActiveFocus := GetFocus;
+    FActiveWindow := GetActiveWindow;
+  end
   else
+  begin
     FActiveWindow := NullHandle;
+    FActiveFocus := NullHandle;
+  end;
+  FDesktopForm.AllowFocus := AutoFocus;
   FDesktopForm.Show;
-  if not AutoFocus and (FActiveWindow <> NullHandle) then
-    SetActiveWindow(FActiveWindow);
+  if not AutoFocus and (FActiveFocus <> GetFocus) then
+  begin
+    if (FActiveWindow <> NullHandle) then
+      SetActiveWindow(FActiveWindow);
+    if (FActiveFocus <> NullHandle) then
+      SetFocus(FActiveFocus);
+  end;
   GetStacker.Add(FDesktopForm);
 end;
 

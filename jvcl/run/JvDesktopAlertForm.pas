@@ -82,6 +82,7 @@ type
 
     {$IFDEF VCL}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
+    procedure WMActivate(var Message: TWMActivate); message WM_ACTIVATE;
     {$ENDIF VCL}
 
     procedure DoMouseTimer(Sender: TObject);
@@ -113,6 +114,7 @@ type
     CaptionColorFrom: TColor;
     CaptionColorTo: TColor;
     FrameColor: TColor;
+    AllowFocus:boolean;
     constructor Create(AOwner: TComponent); override;
     procedure acCloseExecute(Sender: TObject);
     procedure SetNewTop(const Value: Integer);
@@ -286,6 +288,13 @@ begin
   else
     inherited;
 end;
+
+procedure TJvFormDesktopAlert.WMActivate(var Message: TWMActivate);
+begin
+  if (Message.Active = WA_INACTIVE) or AllowFocus then
+    inherited;
+end;
+
 {$ENDIF VCL}
 
 procedure TJvFormDesktopAlert.acCloseExecute(Sender: TObject);
@@ -625,6 +634,7 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
+
 
 initialization
   {$IFDEF UNITVERSIONING}
