@@ -38,6 +38,11 @@ Changes:
     To simulate JvHotlink, set AutoOpenURL to True, modify HotTrackFont to fit and assign
     a URL (or file-path) to the URL property.
   * JvAngleLabel merged into JvLabel: set Angle > 0 and font to a TrueTrype font to rotate the text // peter3
+
+  Contributor(s):dierk schmid
+  //dierk 2004-5-04
+  --add property RoundedFrame in TJvCustomLabel (Integer>0 is the radius corner)
+
 Known Issues:
 * Images are only displayed in TJvCustomLabel if Angle = 0.
 -----------------------------------------------------------------------------}
@@ -95,6 +100,7 @@ type
     FNeedsResize: boolean;
     FTextEllipsis: TJvTextEllipsis;
     FFrameColor: TColor;
+    FRoundedFrame: Integer;  // DS    
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -120,6 +126,7 @@ type
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetTextEllipsis(Value: TJvTextEllipsis);
     procedure SetFrameColor(const Value: TColor);
+    procedure SetRoundedFrame(const Value: Integer);
   protected
     procedure DoFocusChanged(Control: TWinControl); override;
     procedure TextChanged; override;
@@ -176,6 +183,7 @@ type
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property LeftMargin: Integer read FLeftMargin write SetLeftMargin default 0;
     property RightMargin: Integer read FRightMargin write SetRightMargin default 0;
+    property RoundedFrame: Integer read FRoundedFrame write SetRoundedFrame default 0; //DS
     property ShadowColor: TColor read FShadowColor write SetShadowColor default clBtnHighlight;
     property ShadowSize: Byte read FShadowSize write SetShadowSize default 0;
     property ShadowPos: TShadowPosition read FShadowPos write SetShadowPos default spRightBottom;
@@ -219,6 +227,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property RoundedFrame;    
     property ShadowColor;
     property ShadowSize;
     property ShadowPos;
@@ -260,6 +269,7 @@ function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
   Format: Word; ShadowSize: Byte; ShadowColor: TColorRef;
   ShadowPos: TShadowPosition): Integer;
 
+procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
 
 implementation
 uses
@@ -695,13 +705,25 @@ begin
     {$IFDEF VisualCLX}
     Brush.Style := bsSolid;
     {$ENDIF VisualCLX}
-    if not Transparent then
+
+    if not ((RoundedFrame > 0) and (FrameColor <> clNone)) then
+      // if RoundedFrame then Floodfill background
       // only FillRect mode because Transparent is always True on JVCLThemesEnabled
       DrawThemedBackground(Self, Canvas, ClientRect, Self.Color);
     if FrameColor <> clNone then
     begin
-      Brush.Color := FrameColor;
-      FrameRect(ClientRect);
+      if RoundedFrame=0 then
+      begin
+        Brush.Color := FrameColor;
+        FrameRect(ClientRect);
+      end
+      else
+      begin
+        Brush.Color := Color;
+        FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
+        if not Transparent then
+          FloodFill(ClientRect.Left + 1, ClientRect.Top + RoundedFrame, FrameColor, fsBorder);
+      end;
     end;
     Brush.Style := bsClear;
     Rect := ClientRect;
@@ -1240,6 +1262,45 @@ begin
     Invalidate;
   end;
 end;
+
+procedure TJvCustomLabel.SetRoundedFrame(const Value: Integer);
+begin
+  if FRoundedFrame <> Value then
+  begin
+    // limit range to reasonable values
+    if (Value < Height div 2) and (Value >= 0) then
+    begin
+      FRoundedFrame := Value;
+      Invalidate;
+    end;
+  end;
+end;
+
+
+procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
+begin
+  // draw frame with rounded corners
+  with Canvas, ARect do
+  begin
+    Pen.Color := AColor;
+    Dec(Right);
+    Dec(Bottom);
+    Polygon([
+      Point(Left + R, Top),
+      Point(Right - R, Top),
+      Point(Right, Top + R),
+      Point(Right, Bottom - R),
+      Point(Right - R, Bottom),
+      Point(Left + R, Bottom),
+      Point(Left, Bottom - R),
+      Point(Left, Top + R),
+      Point(Left + R, Top)
+    ]);
+    Inc(Right);
+    Inc(Bottom);
+  end;
+end;
+
 
 end.
 
