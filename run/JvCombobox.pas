@@ -140,7 +140,6 @@ type
     {$IFNDEF COMPILER6_UP}
     function SelectItem(const AnItem: string): Boolean;  // SPM - Ported from D7
     {$ENDIF}
-    function GetItemCount: Integer; {$IFDEF COMPILER6_UP}override;{$ELSE}virtual;{$ENDIF}
     procedure SetConsumerService(Value: TJvDataConsumer);
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer;
@@ -174,7 +173,8 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DestroyWnd; override;
     procedure WndProc(var Msg: TMessage); override; // ain
-    function GetItemText(Index: Integer): string;
+    function GetItemCount: Integer; {$IFDEF COMPILER6_UP}override;{$ELSE}virtual;{$ENDIF}
+    function GetItemText(Index: Integer): string; virtual;
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
