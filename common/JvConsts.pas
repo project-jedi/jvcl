@@ -44,6 +44,9 @@ const
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
+
+const
+  NewStyleControls = True;
 {$ENDIF VisualCLX}
 
 const
