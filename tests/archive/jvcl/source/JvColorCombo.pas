@@ -455,7 +455,7 @@ begin
     //      Items.AddObject(FPrefix + IntToStr(FCustCnt), TObject(Value));
     Inc(FCustCnt);
     ItemIndex := Items.Count - 2;
-    ColorValue := Value;
+    FColorValue := Value;
   end;
 end;
 
@@ -754,10 +754,9 @@ end;
 function TJvColorComboBox.DoInsertColor(AIndex: integer; AColor: TColor;
   var DisplayName: string): boolean;
 begin
+  Result := true;
   if Assigned(FOnInsertColor) then
-    FOnInsertColor(self, AColor, DisplayName, Result)
-  else
-    Result := true;
+    FOnInsertColor(self, AColor, DisplayName, Result);
 end;
 
 procedure TJvColorComboBox.DoBeforeCustom;
