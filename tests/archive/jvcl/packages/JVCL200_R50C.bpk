@@ -195,13 +195,13 @@
     <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JVCL200_R50C.cpp"/>
     <INCLUDEPATH value="..\source;..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\JCL\dcu;..\..\JCL\source"/>
-    <LIBPATH value="..\..\..\..\CBuilder5\Lib;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source"/>
+    <LIBPATH value="j:\lib\;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I..\source -I..\common -I$(BCB)\include -I$(BCB)\include\vcl 
       -I..\..\JCL\dcu -I..\..\JCL\source -src_suffix cpp -boa"/>
-    <CFLAG1 value="-O2 -u- -X- -a8 -b -k- -vi"/>
+    <CFLAG1 value="-O2 -u- -X- -a8 -b- -k- -vi"/>
     <PFLAGS value="-N2..\lib5 -N0..\lib5 -$Y- -$L- -$D- -v -JPHNE -M -LUvcl50"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zn"/>
@@ -216,7 +216,7 @@
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=1
+MajorVer=2
 MinorVer=0
 Release=0
 Build=0
@@ -225,19 +225,23 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1053
+Locale=1033
 CodePage=1252
 
 [Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
+CompanyName=Project JEDI
+FileDescription=Runtime package for JEDI VCL
+FileVersion=2.0.0.0
+InternalName=JVCL200_R50C
+LegalCopyright=Copyright (C) 1999, 2002 Project JEDI 
 LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
+OriginalFilename=JVCL200_R50C.bpl
+ProductName=Runtime package for JEDI VCL
+ProductVersion=2.0.0.0
+
+[Excluded Packages]
+j:\lib\FsMain.bpl=FraserSoft Cpp Formatter
+$(BCB)\Bin\dclite50.bpl=Borland Integrated Translation Environment
 
 [HistoryLists\hlIncludePath]
 Count=10
@@ -253,19 +257,22 @@ Item8=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common
 Item9=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common
 
 [HistoryLists\hlLibraryPath]
-Count=12
-Item0=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source
-Item1=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;D:\Borland\Add\JEDI200\JCL\source
-Item2=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu
-Item3=$(BCB)\Projects\Lib;..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;..\lib5
-Item4=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;..\lib5;
-Item5=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;..\lib5;
-Item6=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;
-Item7=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;
-Item8=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;
-Item9=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;
-Item10=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;
-Item11=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu
+Count=15
+Item0=j:\lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source
+Item1=$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source
+Item2=..\..\..\..\CBuilder5\Lib;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source
+Item3=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source
+Item4=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;D:\Borland\Add\JEDI200\JCL\source
+Item5=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu
+Item6=$(BCB)\Projects\Lib;..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;..\lib5
+Item7=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;..\lib5;
+Item8=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;..\lib5;
+Item9=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;
+Item10=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;
+Item11=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;
+Item12=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;
+Item13=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;
+Item14=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -294,10 +301,5 @@ LinkCGLIB=0
 AddServerUnit=1
 AddClientUnit=1
 PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
   </IDEOPTIONS>
 </PROJECT>

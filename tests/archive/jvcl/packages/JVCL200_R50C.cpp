@@ -2,8 +2,8 @@
 
 #include <vcl.h>
 #pragma hdrstop
-USERES("JVCL200_R50C.res");
-USEPACKAGE("vcl50.bpi");
+//---------------------------------------------------------------------------
+
 USEUNIT("..\source\JvAddPrinter.pas");
 USEUNIT("..\source\JvAlarms.pas");
 USEUNIT("..\source\JvAngleLabel.pas");
@@ -346,12 +346,6 @@ USEFORMNS("..\source\JvDBExcpt.pas", Jvdbexcpt, JvBdeErrorDlg);
 USEFORMNS("..\source\JvFormProgress.pas", Jvformprogress, FormProg);
 USEUNIT("..\source\JvRadioCtl.pas");
 USEFORMNS("..\source\JvExcptDlg.pas", Jvexcptdlg, JvErrorDialog);
-USEPACKAGE("CJCL50.bpi");
-USEPACKAGE("vclx50.bpi");
-USEPACKAGE("vclsmp50.bpi");
-USEPACKAGE("vcldb50.bpi");
-USEPACKAGE("vcljpg50.bpi");
-USEPACKAGE("vclbde50.bpi");
 USEUNIT("..\source\JvThumbImage.pas");
 USEUNIT("..\source\JvBaseThumbnail.pas");
 USEUNIT("..\source\JvThumbviews.pas");
@@ -421,9 +415,17 @@ USEUNIT("..\source\JvStrUtil.pas");
 USEUNIT("..\source\JvTipOfDay.pas");
 USEUNIT("..\source\JvUtils.pas");
 USEUNIT("..\source\JvWndProcHook.pas");
+USERES("JVCL200_R50C.res");
+USEPACKAGE("vcl50.bpi");
 USEPACKAGE("Qrpt50.bpi");
 USEPACKAGE("Inet50.bpi");
 USEPACKAGE("dclstd50.bpi");
+USEPACKAGE("CJCL50.bpi");
+USEPACKAGE("vclx50.bpi");
+USEPACKAGE("vclsmp50.bpi");
+USEPACKAGE("vcldb50.bpi");
+USEPACKAGE("vcljpg50.bpi");
+USEPACKAGE("vclbde50.bpi");
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
