@@ -39,9 +39,9 @@ unit JvQExStdCtrls;
 interface
 
 uses
+  Classes, SysUtils,
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
   Qt, QWindows, QMessages,
-  Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 type
@@ -97,7 +97,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -177,7 +177,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -257,7 +257,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -337,7 +337,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -365,6 +365,7 @@ type
     property Canvas: TCanvas read FCanvas;
   end;
   
+  { QWinCustomControl }
   { QWinControl Begin }
   TJvExCustomComboBox = class(TCustomComboBox)
   { QControl }
@@ -417,7 +418,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -431,11 +432,14 @@ type
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
   published
     property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  public
+    procedure DeleteSelected;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+  { QWinCustomControl }
   { QWinControl Begin }
   TJvExComboBox = class(TComboBox)
   { QControl }
@@ -488,7 +492,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -502,6 +506,8 @@ type
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
   published
     property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  public
+    procedure DeleteSelected;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -559,7 +565,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -656,7 +662,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -753,7 +759,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -833,7 +839,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -913,7 +919,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -993,7 +999,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -1021,6 +1027,7 @@ type
     property Canvas: TCanvas read FCanvas;
   end;
   
+  { QWinCustomControl }
   { QWinControl Begin }
   TJvExCustomListBox = class(TCustomListBox)
   { QControl }
@@ -1073,7 +1080,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -1087,11 +1094,14 @@ type
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
   published
     property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  public
+    procedure DeleteSelected;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+  { QWinCustomControl }
   { QWinControl Begin }
   TJvExListBox = class(TListBox)
   { QControl }
@@ -1144,7 +1154,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -1158,6 +1168,8 @@ type
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
   published
     property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  public
+    procedure DeleteSelected;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -1215,7 +1227,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -1295,7 +1307,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -1375,7 +1387,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -1455,7 +1467,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -1535,7 +1547,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -1615,7 +1627,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -1644,8 +1656,54 @@ type
   end;
   
 
+//function EditCharCaseHandler(Event: QKeyEventH; CharCase: TEditCharCase; Handle: QLineEditH): Boolean;
+
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+(*
+function EditCharCaseHandler(Event: QKeyEventH; CharCase: TEditCharCase; Handle: QLineEditH): Boolean;
+var
+  KeyEvent: QKeyEventH;
+  Key: Integer;
+  KeyText: WideString;
+  S : WideString;
+begin
+  Result := False;
+  if Handle = nil then Exit;
+  Key := QKeyEvent_ascii(Event);
+  if Key = 0 then
+  begin
+    QKeyEvent_text(Event, @S);
+    if Length(S) = 0 then Exit;
+    case CharCase of
+      ecLowerCase:
+	      KeyText := WideLowerCase(S);
+      ecUpperCase:
+	      KeyText := WideUpperCase(S);
+    end;
+    if WideSameStr(KeyText, S) then Exit;
+  end
+  else
+  begin
+    case CharCase of
+      ecLowerCase:
+        KeyText := AnsiLowerCase(Char(Key));
+      ecUpperCase:
+        KeyText := AnsiUpperCase(Char(Key));
+    end;
+    if AnsiSameStr(KeyText, Char(Key)) then Exit;
+    Key := Integer(KeyText[1]);
+  end;
+  KeyEvent := QKeyEvent_create(QEventType_KeyPress, Key, Key,
+    Integer(ButtonState_NoButton), PWideString(@KeyText), False, 1);
+  QApplication_sendEventAndDelete(Handle, KeyEvent);
+  Result := True;
+end;
+*)
 { QWinControl Create }
 
 constructor TJvExButtonControl.Create(AOwner: TComponent);
@@ -1715,7 +1773,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -1755,7 +1813,7 @@ begin
   end;
 end;
 
-function TJvExButtonControl.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExButtonControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -2028,7 +2086,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -2068,7 +2126,7 @@ begin
   end;
 end;
 
-function TJvExButton.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExButton.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -2341,7 +2399,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -2381,7 +2439,7 @@ begin
   end;
 end;
 
-function TJvExCustomCheckBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomCheckBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -2654,7 +2712,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -2694,7 +2752,7 @@ begin
   end;
 end;
 
-function TJvExCheckBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCheckBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -2936,7 +2994,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -2976,7 +3034,7 @@ begin
   end;
 end;
 
-function TJvExCustomComboBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomComboBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -3180,6 +3238,13 @@ begin
 end;
   
  
+
+procedure TJvExCustomComboBox.DeleteSelected;
+begin
+  if (ItemIndex > -1) and (ItemIndex < Items.Count) then
+    Items.Delete(ItemIndex);
+end;
+
 { QWinCustomControl Create }
 
 constructor TJvExComboBox.Create(AOwner: TComponent);
@@ -3218,7 +3283,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -3258,7 +3323,7 @@ begin
   end;
 end;
 
-function TJvExComboBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExComboBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -3462,6 +3527,13 @@ begin
 end;
   
  
+
+procedure TJvExComboBox.DeleteSelected;
+begin
+  if (ItemIndex > -1) and (ItemIndex < Items.Count) then
+    Items.Delete(ItemIndex);
+end;
+
 { QEditControl Create }
 
 constructor TJvExCustomEdit.Create(AOwner: TComponent);
@@ -3471,8 +3543,8 @@ begin
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := self;
+  FCanvas := TQtCanvas.Create;
+  TQtCanvas(FCanvas).QtHandle := Handle;
   
 end;
 
@@ -3512,7 +3584,6 @@ end;
 
 procedure TJvExCustomEdit.WndProc(var Mesg: TMessage);
 begin
-  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -3538,7 +3609,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -3635,7 +3706,7 @@ begin
   end;
 end;
 
-function TJvExCustomEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -3847,8 +3918,8 @@ begin
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := self;
+  FCanvas := TQtCanvas.Create;
+  TQtCanvas(FCanvas).QtHandle := Handle;
   
 end;
 
@@ -3888,7 +3959,6 @@ end;
 
 procedure TJvExEdit.WndProc(var Mesg: TMessage);
 begin
-  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -3914,7 +3984,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -4011,7 +4081,7 @@ begin
   end;
 end;
 
-function TJvExEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -4283,7 +4353,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -4323,7 +4393,7 @@ begin
   end;
 end;
 
-function TJvExCustomMemo.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomMemo.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -4596,7 +4666,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -4636,7 +4706,7 @@ begin
   end;
 end;
 
-function TJvExMemo.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExMemo.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -4909,7 +4979,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -4949,7 +5019,7 @@ begin
   end;
 end;
 
-function TJvExCustomGroupBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomGroupBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -5222,7 +5292,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -5262,7 +5332,7 @@ begin
   end;
 end;
 
-function TJvExGroupBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExGroupBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -5535,7 +5605,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -5575,7 +5645,7 @@ begin
   end;
 end;
 
-function TJvExCustomLCDNumber.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomLCDNumber.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -5848,7 +5918,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -5888,7 +5958,7 @@ begin
   end;
 end;
 
-function TJvExLCDNumber.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExLCDNumber.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -6130,7 +6200,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -6170,7 +6240,7 @@ begin
   end;
 end;
 
-function TJvExCustomListBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomListBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -6374,6 +6444,16 @@ begin
 end;
   
  
+
+procedure TJvExCustomListBox.DeleteSelected;
+var
+  I: integer;
+begin
+  for I := Items.Count - 1 downto 0 do
+    if Selected[I] then
+      Items.Delete(I);
+end;
+
 { QWinCustomControl Create }
 
 constructor TJvExListBox.Create(AOwner: TComponent);
@@ -6412,7 +6492,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -6452,7 +6532,7 @@ begin
   end;
 end;
 
-function TJvExListBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExListBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -6656,6 +6736,15 @@ begin
 end;
   
  
+procedure TJvExListBox.DeleteSelected;
+var
+  I: integer;
+begin
+  for I := Items.Count - 1 downto 0 do
+    if Selected[I] then
+      Items.Delete(I);
+end;
+
 { QWinControl Create }
 
 constructor TJvExRadioButton.Create(AOwner: TComponent);
@@ -6725,7 +6814,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -6765,7 +6854,7 @@ begin
   end;
 end;
 
-function TJvExRadioButton.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExRadioButton.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -7038,7 +7127,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -7078,7 +7167,7 @@ begin
   end;
 end;
 
-function TJvExScrollBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExScrollBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -7351,7 +7440,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -7391,7 +7480,7 @@ begin
   end;
 end;
 
-function TJvExCustomLabel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomLabel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -7664,7 +7753,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -7704,7 +7793,7 @@ begin
   end;
 end;
 
-function TJvExLabel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExLabel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -7909,16 +7998,20 @@ end;
   
  
 
-{$DEFINE UnitName 'JvQExStdCtrls.pas'}
-
+{$IFDEF UNITVERSIONING}
 const
-  UnitVersion = 'JvQExStdCtrls.pas';
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\qrun'
+  );
 
 initialization
-  OutputDebugString(PChar('JvExCLX Loaded: ' + UnitVersion));
+  RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
-  OutputDebugString(PChar('JvExCLX Unloaded: ' + UnitVersion));
-
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -83,14 +83,21 @@ uses
 var
   FieldTypes: array [TFieldType] of string;
 
+procedure ClearFieldTypes;
+var
+  I: TFieldType;
+begin
+  for I := Low(TFieldType) to High(TFieldType) do
+    FieldTypes[I] := '';
+end;
+
 procedure FillFieldTypes;
 var
   ParamString: string;
   I: Integer;
   J: TFieldType;
 begin
-  for J := Low(TFieldType) to High(TFieldType) do
-    FieldTypes[J] := '';
+  ClearFieldTypes;
   ParamString := RsDataTypes;
   J := Low(TFieldType);
   I := 1;
@@ -107,15 +114,6 @@ begin
     if (FieldTypes[Result] <> '') and (FieldTypes[Result] = Value) then
       Exit;
   Result := ftUnknown;
-end;
-
-procedure ClearFieldTypes;
-var
-  I: TFieldType;
-begin
-  for I := Low(TFieldType) to High(TFieldType) do
-    //DisposeStr(FieldTypes[I]);
-    FieldTypes[I] := '';
 end;
 
 procedure DoneQBind;
@@ -324,14 +322,13 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   FillFieldTypes;
 
 finalization
+  DoneQBind;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  DoneQBind;
 
 end.
 

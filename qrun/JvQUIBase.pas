@@ -40,11 +40,12 @@
 
 {$IFDEF USE_IBASE_H}
 (*$HPPEMIT '#include<ibase.h>'*)
-{$ENDIF}
+{$ENDIF USE_IBASE_H}
 
 unit JvQUIBase;
 
 interface
+
 uses
   {$IFDEF MSWINDOWS}
   Windows,
@@ -118,7 +119,7 @@ type
   {$IFNDEF FPC}
   TEXT = {$IFDEF TYPE_IDENTITY} type {$ENDIF} Char; (* To be expunged over time *)
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM TEXT}{$ENDIF}
-  {$ENDIF FPC}
+  {$ENDIF !FPC}
   STEXT = {$IFDEF TYPE_IDENTITY} type {$ENDIF} Char; (* Signed text - very rare *)
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM STEXT}{$ENDIF}
   UTEXT = {$IFDEF TYPE_IDENTITY} type {$ENDIF} Char; (* Unsigned text - common *)
@@ -838,8 +839,8 @@ const
   {$IFNDEF FB15_UP}
   sec_protocol_spx = 3;
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM sec_protocol_spx}{$ENDIF}
-  {$ENDIF FB15_UP}
-  {$ENDIF FIREBIRD}
+  {$ENDIF !FB15_UP}
+  {$ENDIF !FIREBIRD}
 
   sec_protocol_local = 4;
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM sec_protocol_local}{$ENDIF}
@@ -938,7 +939,7 @@ const
   {$IFDEF IB7_UP}
   blr_boolean_dtype = 17;
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM blr_boolean_dtype}{$ENDIF}
-  {$ENDIF}
+  {$ENDIF IB7_UP}
 
   (* Historical alias for pre V6 applications *)
   blr_date = blr_timestamp;
@@ -1147,7 +1148,7 @@ const
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM blr_ties}{$ENDIF}
   blr_percent = 1;
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM blr_percent}{$ENDIF}
-  {$ENDIF}
+  {$ENDIF IB65ORYF867}
 
   blr_agg_count = 83;
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM blr_agg_count}{$ENDIF}
@@ -1942,7 +1943,7 @@ const
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM isc_info_db_marks}{$ENDIF}
   isc_info_db_group_commit = 69;
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM isc_info_db_group_commit}{$ENDIF}
-  {$ENDIF}
+  {$ENDIF IB7_UP}
 
   {$IFDEF IB71_UP}
   isc_info_att_charset = 70;
@@ -2776,7 +2777,7 @@ const
   {$ENDIF MSWINDOWS}
   {$ENDIF FB102_UP}
 
-  {$ENDIF FB15_UP}
+  {$ENDIF !FB15_UP}
 
   {$IFDEF IB65_UP}
   ISCCFG_CPU_AFFINITY_KEY = 21;
@@ -3174,7 +3175,7 @@ const
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM isc_dyn_grant_role}{$ENDIF}
   isc_dyn_grant_user_explicit = 219;
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM isc_dyn_grant_user_explicit}{$ENDIF}
-  {$ENDIF}
+  {$ENDIF FB102ORYF867}
 
   (**********************************
    * Dimension specific information *
@@ -4074,7 +4075,10 @@ type
 
 implementation
 
-uses
+uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   JvQUIBConst;
 
 (*******************************************************************************
@@ -4708,6 +4712,24 @@ begin
   FLIBCritSec.Leave;
   {$ENDIF UIBTHREADSAFE}
 end;
+
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
 
 end.
 

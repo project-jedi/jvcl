@@ -255,7 +255,7 @@ var
     if InSkipList(Items) then Exit;
     for I := 0 to Items.Count - 1 do
     begin
-      if not InSkipList(Items[i]) then
+      if not InSkipList(Items[I]) then
       begin
         AElem := Elem.Items.Add(cItem);
         AElem.Properties.Add(cIndex, I);

@@ -63,25 +63,23 @@ type
 
 
 type
-  HDC = QWindows.HDC;
-  {$EXTERNALSYM HDC}
-  TMessage = QWindows.TMessage;
-  {$EXTERNALSYM TMessage}
-  PMessage = QWindows.PMessage;
-  {$EXTERNALSYM PMessage}
+  // used in JvSpeedButton, JvArrowButton, JvButton CM_BUTTONPRESSED
+  // can be used with (VisualCLX) CM_BUTTONPRESSED
+  TCMButtonPressed = packed record
+    Msg: Cardinal;
+    Control: TControl;  { with VCL Control & Indez are switched }
+    Index: Integer;
+    Result: Longint;    { QButtons.TCMButtonPressed has no Result }
+  end;
+
   PCaptionChar = PWideChar;
-  {$EXTERNALSYM PCaptionChar}
   THintString = WideString;
-  {$EXTERNALSYM THintString}
   THintStringList = TWideStringList;
-
   TJvRGBTriple = TRGBQuad; { VisualCLX does not support pf24bit }
-
-  TWndMethod = procedure(var Mesg: TMessage) of object;
 
 const
   NullHandle = nil; { clx uses typed pointers ! }
-  ikButton: TInputKey = ikReturns;
+  ikButton = ikReturns;
 
 
 type 
@@ -120,16 +118,6 @@ type
   // from JvComponent.pas
   TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo);
   TJvClipboardCommands = set of TJvClipboardCommand;
-
-  // used in JvSpeedButton, JvArrowButton, JvButton CM_BUTTONPRESSED
-  // can be used with  native VisualCLX CM_BUTTONPRESSED
-  TCMButtonPressed = packed record
-    Msg: Cardinal; 
-    Control: TControl; 
-    Index: Integer; 
-    Result: Longint;    { QButtons.TCMButtonPressed has no Result }
-  end;
-  TJvCMButtonPressed = TCMButtonPressed; { for backward compatibility }
 
   // used in JvButton
   TCMForceSize = record
@@ -376,7 +364,7 @@ const
     (Value: clDisabledBackground;      Constant: 'clDisabledBackground';      Description: RsClDisabledBackground),
     (Value: clDisabledShadow;          Constant: 'clDisabledShadow';          Description: RsClDisabledShadow),
     (Value: clDisabledHighlight;       Constant: 'clDisabledHighlight';       Description: RsClDisabledHighlight),
-    (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText) 
+    (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText)
   );
 
 type
@@ -391,156 +379,139 @@ type
     Msg: Integer;
     case Integer of
     0:
-    (
+     (
       WParam: Integer;
       LParam: Integer;
-      Result: Integer
-    );
+      Result: Integer;
+     );
     1:
-    (
+     (
       WParamLo: Word;
       WParamHi: Word;
       LParamLo: Word;
       LParamHi: Word;
       ResultLo: Word;
-      ResultHi: Word
-    );
+      ResultHi: Word;
+     );
     2:
-    ( // WM_NOPARAMS
+     ( // WM_NOPARAMS
       Unused: array[0..3] of Word;
       Handled: LongBool;  // "Result"
-    );
+     );
     3:
-    ( // WM_SCROLL
-      Pos: Integer;         // Wparam
-      ScrollCode: Integer   // Lparam
-    );
+     ( // WM_SCROLL
+      Pos: Integer;         // WParam
+      ScrollCode: Integer;  // LParam
+     );
     4:
-    ( // WM_TIMER
+     ( // WM_TIMER
       TimerID: Integer;     // WParam
-      TimerProc: TTimerProc // LParam
-    );
+      TimerProc: TTimerProc;// LParam
+     );
     5:
-    ( // WM_MOUSEACTIVATE
+     ( // WM_MOUSEACTIVATE
       TopLevel: HWND;       // WParam
       HitTestCode: Word;    // LParamLo
-      MouseMsg: Word        // LParamHi
-    );
+      MouseMsg: Word;       // LParamHi
+     );
     6:
-    ( // WM_MOUSE(WHEEL) | WM_MOVE
+     ( // WM_MOUSE(WHEEL) | WM_MOVE
       case Integer of
       0:
-      ( // WM_MOUSE
+       ( // WM_MOUSE
         Keys: Integer;     // WParam
         // LParam: Pos | (XPos, YPos)
         case Integer of
         0:
-        (
-          Position: TSmallPoint
-        );
+         (
+          Position: TSmallPoint;
+         );
         1:
-        (
+         (
           XPos: Smallint;
-          YPos: Smallint
-        )
-      );
+          YPos: Smallint;
+         )
+       );
       1:
-      ( // WM_MOUSEWHEEL
-        WheelDelta: Integer // WParam
-      );
-    );
-
+       ( // WM_MOUSEWHEEL
+        WheelDelta: Integer; // WParam
+       );
+     );
     7:
-    ( // WM_ACTIVATE
+     ( // WM_ACTIVATE
       Active: Word; { WA_INACTIVE, WA_ACTIVE, WA_CLICKACTIVE } // WParamLo
       Minimized: WordBool;  // WParamHi
-      ActiveWindow: HWND    // LParam
-    );
+      ActiveWindow: HWND;   // LParam
+     );
 
     8:
-    ( // WM_COMMAND
+     ( // WM_COMMAND
       ItemID: Word;         // WParamLo
       NotifyCode: Word;     // WParamHi
-      Ctl: HWND             // LParam
-    );
-
+      Ctl: HWND;            // LParam
+     );
     9:
-    ( // WM_GETICON
-      BigIcon: Longbool
-    );
-
+     ( // WM_GETICON
+      BigIcon: LongBool;
+     );
     10:
-    ( // CM_(FOCUS|CONTROL)CHANGED  | CM_HINTSHOW
-      Reserved: Integer;    // WParam
-
+     ( // CM_(FOCUS|CONTROL)CHANGED  | CM_HINTSHOW
+      Reserved: Integer;      // WParam
       case Integer of
-      0:
-      ( // CM_(CONTROL)CHANGED
-        Child: TControl     // LParam
-      );
-      1:
-      ( // CM_FOCUSCHANGED | CM_FORCESIZE }
-        Sender: TControl  // LParam
-      );
-      2:
-      ( //CM_HINTSHOW
-        HintInfo: PHintInfo
-      )
-    );
-
+        0:
+         ( // CM_(CONTROL)CHANGED
+          Child: TControl;    // LParam
+         );
+        1:
+         ( // CM_FOCUSCHANGED | CM_FORCESIZE }
+          Sender: TControl;   // LParam
+         );
+        2:
+         ( //CM_HINTSHOW
+          HintInfo: PHintInfo;
+         )
+     );
     11:
-    ( // CM_CONTROLLISTCHANGE | CM_(CONTROL)CHANGED (| CM_BUTTONPRESSED for clx)
+     ( // CM_CONTROLLISTCHANGE | CM_(CONTROL)CHANGED (| CM_BUTTONPRESSED for clx)
       Control: TControl;    // WParam
       case Integer of
-      0:
-      ( // CM_(CONTROL)CHANGED
-        Inserting: LongBool     // LParam
-      );
-      1: // CM_BUTTONPRESSED (clx)
-      (
-        Index: Integer;
-      )
-    );
-
+        0:
+         ( // CM_(CONTROL)CHANGED
+          Inserting: LongBool;    // LParam
+         );
+        1: // CM_BUTTONPRESSED (clx)
+         (
+          Index: Integer;
+         )
+     );
     12:
-    ( // CM_HINTSHOWPAUSE
+     ( // CM_HINTSHOWPAUSE
       WasActive: LongBool;
-      Pause: PInteger
-    );
-
+      Pause: PInteger;
+     );
     13:
-    ( // WM_KEY
+     ( // WM_KEY
       CharCode: Word;
       NotUsed: Word;
-      KeyData: Integer
-    );
-
+      KeyData: Integer;
+     );
     14:
-    ( // WM_GETTEXT | WM_SETTEXT
-      TextMax: Integer; // WM_SETTEXT = 0
+     ( // WM_GETTEXT
+      TextMax: Integer;
       Text: PChar
-    );
-
+     );
     15:
-    ( // WM_ERASEBKGND | WM_PAINT
+     ( // WM_ERASEBKGND | WM_PAINT
       DC: HDC;
-      // EM_GET/SETRECT
-      Rect: PRect;
-    );
-
+     );
     16:
-    ( // WM_KILLFOCUS
+     ( // WM_KILLFOCUS
       FocusedWnd: HWND;
-    );
+     );
     17:
-    (
+     (
       NewSize: TSmallPoint; //CM_FORCESIZE wParam
-    );
-    18:
-    ( { alternative naming for CM_BUTTONPRESSED }
-      Button: TControl;
-      GroupIndex: Integer;
-    );
+     ); 
   end;
 
 implementation

@@ -38,9 +38,9 @@ unit JvQExDBGrids;
 interface
 
 uses
+  Classes, SysUtils,
   QGraphics, QControls, QForms, QExtCtrls, QDBGrids,
   Qt, QWindows, QMessages,
-  Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 type
@@ -142,6 +142,11 @@ type
   
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 { QControl Create }
 constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
@@ -474,16 +479,20 @@ begin
 end;
   
 
-{$DEFINE UnitName 'JvQExDBGrids.pas'}
-
+{$IFDEF UNITVERSIONING}
 const
-  UnitVersion = 'JvQExDBGrids.pas';
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\qrun'
+  );
 
 initialization
-  OutputDebugString(PChar('JvExCLX Loaded: ' + UnitVersion));
+  RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
-  OutputDebugString(PChar('JvExCLX Unloaded: ' + UnitVersion));
-
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -38,23 +38,27 @@ interface
 
 uses
   QWindows, QMessages, Classes, QGraphics, QControls, 
-  Qt, JvQConsts, 
-  JvQComponent;
+  Qt, JvQConsts,
+//  JvQComponent;
+  JvQEventFilter;
 
 type
-  TJvEnterAsTab = class(TJvGraphicControl)
+
+//  TJvEnterAsTab = class(TJvGraphicControl)
+  TJvEnterAsTab = class(TJvAppEventFilter)
   private
     FEnterAsTab: Boolean;
     FAllowDefault: Boolean;
-    FBmp: TBitmap;
-  protected  
-    function TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean; virtual; 
-    procedure Paint; override;
+//    FBmp: TBitmap;
+  protected
+//    function TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean; virtual;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
+//    procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
+//    destructor Destroy; override;
+//    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+//      AHeight: Integer); override;
   published
     property EnterAsTab: Boolean read FEnterAsTab write FEnterAsTab default True;
     property AllowDefault: Boolean read FAllowDefault write FAllowDefault default True;
@@ -77,30 +81,33 @@ uses
 
 constructor TJvEnterAsTab.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csNoStdEvents, csFixedHeight, csFixedWidth];
   FEnterAsTab := True;
   FAllowDefault := True;
+  inherited Create(AOwner);
+(*  ControlStyle := ControlStyle + [csNoStdEvents, csFixedHeight, csFixedWidth];
   if csDesigning in ComponentState then
   begin
     FBmp := TBitmap.Create;
-    FBmp.LoadFromResourceName(hInstance, 'DESIGNENTERASTAB');
+    FBmp.LoadFromResourceName(HInstance, 'DESIGNENTERASTAB');
   end
   else
-    Visible := False; 
-  //InstallApplicationHook(TabKeyHook);
+    Visible := False;
+  InstallApplicationHook(TabKeyHook);
+*)
 end;
 
+(*
 destructor TJvEnterAsTab.Destroy;
 begin
-  //UninstallApplicationHook(TabKeyHook); 
+  UninstallApplicationHook(TabKeyHook);
   FBmp.Free;
   inherited Destroy;
 end;
+*)
 
 
-
-function TJvEnterAsTab.TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean;
+//function TJvEnterAsTab.TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean;
+function TJvEnterAsTab.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 var
   ws: WideString;
 begin
@@ -115,9 +122,9 @@ begin
     begin
       ws := Tab;
 
-      QApplication_postEvent(GetParentForm(Self).Handle,
+      QApplication_postEvent(TCustomForm(Owner).Handle,
         QKeyEvent_create(QEventType_KeyPress, Key_Tab, Ord(Tab), 0, @ws, False, 1));
-      QApplication_postEvent(GetParentForm(Self).Handle,
+      QApplication_postEvent(TCustomForm(Owner).Handle,
         QKeyEvent_create(QEventType_KeyRelease, Key_Tab, Ord(Tab), 0, @ws, False, 1));
 
       Result := True;
@@ -125,7 +132,7 @@ begin
   end;
 end;
 
-
+(*
 procedure TJvEnterAsTab.Paint;
 begin
   if not (csDesigning in ComponentState) then
@@ -141,6 +148,7 @@ procedure TJvEnterAsTab.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   inherited SetBounds(ALeft, ATop, 28, 28);
 end;
+*)
 
 {$IFDEF UNITVERSIONING}
 const

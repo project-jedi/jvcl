@@ -83,6 +83,7 @@ type
   published
     property Action;
     property Align;
+    property Alignment;
     property Anchors;
     property AutoSelect;
     property AutoSize;
@@ -296,7 +297,7 @@ begin
       with FCheck do
       begin  
         Parent := Self.ClientArea;
-        Height := Self.ClientArea.Height;
+        Height := Self.ClientHeight;
         Color := Self.Color;
         Left := 3; 
         Width := 15;

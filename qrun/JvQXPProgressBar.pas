@@ -29,11 +29,13 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{.$I jvcl.inc}
+{$I jvcl.inc}
 
 unit JvQXPProgressBar;
 
 interface
+
+
 
 uses
   QWindows, SysUtils, Classes, QGraphics,
@@ -87,7 +89,11 @@ type
     property OnStartDrag;
   end;
 
+
+
 implementation
+
+
 
 uses
   {$IFDEF UNITVERSIONING}
@@ -274,6 +280,8 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
+
 
 end.
 

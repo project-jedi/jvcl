@@ -38,9 +38,9 @@ unit JvQExExtCtrls;
 interface
 
 uses
+  Classes, SysUtils,
   QGraphics, QControls, QForms, QExtCtrls, QNotebook,
   Qt, QWindows, QMessages,
-  Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 type
@@ -291,7 +291,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -366,7 +366,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -443,7 +443,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -518,7 +518,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -593,7 +593,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -673,7 +673,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -753,7 +753,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -828,7 +828,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -907,6 +907,11 @@ type
   
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 { QControl Create }
 constructor TJvExShape.Create(AOwner: TComponent);
@@ -1609,7 +1614,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -1649,7 +1654,7 @@ begin
   end;
 end;
 
-function TJvExCustomControlBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomControlBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1892,7 +1897,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -1932,7 +1937,7 @@ begin
   end;
 end;
 
-function TJvExControlBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExControlBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -2177,7 +2182,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -2217,7 +2222,7 @@ begin
   end;
 end;
 
-function TJvExNotebook.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExNotebook.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -2460,7 +2465,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -2500,7 +2505,7 @@ begin
   end;
 end;
 
-function TJvExCustomPanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -2743,7 +2748,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -2783,7 +2788,7 @@ begin
   end;
 end;
 
-function TJvExPanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -3026,7 +3031,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -3066,7 +3071,7 @@ begin
   end;
 end;
 
-function TJvExPage.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExPage.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -3339,7 +3344,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -3379,7 +3384,7 @@ begin
   end;
 end;
 
-function TJvExCustomRadioGroup.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomRadioGroup.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -3652,7 +3657,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -3692,7 +3697,7 @@ begin
   end;
 end;
 
-function TJvExRadioGroup.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExRadioGroup.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -4188,17 +4193,21 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 end;
 *)
-{$DEFINE UnitName 'JvQExExtCtrls.pas'}
 
+{$IFDEF UNITVERSIONING}
 const
-  UnitVersion = 'JvQExExtCtrls.pas';
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\qrun'
+  );
 
 initialization
-  OutputDebugString(PChar('JvExCLX Loaded: ' + UnitVersion));
+  RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
-  OutputDebugString(PChar('JvExCLX Unloaded: ' + UnitVersion));
-
-
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -38,9 +38,9 @@ unit JvQExComboEdits;
 interface
 
 uses
+  Classes, SysUtils,
   QGraphics, QControls, QForms, QExtCtrls, QComboEdits,
   Qt, QWindows, QMessages,
-  Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 
@@ -97,7 +97,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -194,7 +194,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -292,7 +292,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -396,7 +396,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -459,8 +459,8 @@ begin
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := self;
+  FCanvas := TQtCanvas.Create;
+  TQtCanvas(FCanvas).QtHandle := Handle;
   
 end;
 
@@ -500,7 +500,6 @@ end;
 
 procedure TJvExCustomComboEdit.WndProc(var Mesg: TMessage);
 begin
-  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -526,7 +525,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -623,7 +622,7 @@ begin
   end;
 end;
 
-function TJvExCustomComboEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -835,8 +834,8 @@ begin
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := self;
+  FCanvas := TQtCanvas.Create;
+  TQtCanvas(FCanvas).QtHandle := Handle;
   
 end;
 
@@ -876,7 +875,6 @@ end;
 
 procedure TJvExComboEdit.WndProc(var Mesg: TMessage);
 begin
-  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -902,7 +900,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -999,7 +997,7 @@ begin
   end;
 end;
 
-function TJvExComboEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1229,8 +1227,8 @@ begin
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := self;
+  FCanvas := TQtCanvas.Create;
+  TQtCanvas(FCanvas).QtHandle := Handle;
   FBeepOnError := True;
 end;
 
@@ -1270,7 +1268,6 @@ end;
 
 procedure TJvExCustomComboMaskEdit.WndProc(var Mesg: TMessage);
 begin
-  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1296,7 +1293,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -1393,7 +1390,7 @@ begin
   end;
 end;
 
-function TJvExCustomComboMaskEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomComboMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1617,8 +1614,8 @@ begin
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := self;
+  FCanvas := TQtCanvas.Create;
+  TQtCanvas(FCanvas).QtHandle := Handle;
   FBeepOnError := True;
 end;
 
@@ -1658,7 +1655,6 @@ end;
 
 procedure TJvExComboMaskEdit.WndProc(var Mesg: TMessage);
 begin
-  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1684,7 +1680,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -1781,7 +1777,7 @@ begin
   end;
 end;
 
-function TJvExComboMaskEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExComboMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1986,4 +1982,21 @@ end;
   
 
 {$UNDEF CREATE_CUSTOMCODE} // undefine at file end
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\qrun'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
 end.

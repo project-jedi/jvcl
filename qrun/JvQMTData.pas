@@ -36,9 +36,11 @@ interface
 
 uses
   SysUtils, Classes, Contnrs, SyncObjs,
+  {$IFDEF MSWINDOWS}
   {$IFDEF DEBUGINFO_ON}
-  QWindows,   // for OutputDebugString
+  Windows,   // for OutputDebugString
   {$ENDIF DEBUGINFO_ON}
+  {$ENDIF MSWINDOWS}
   JvQMTSync, JvQMTConsts, JvQMTThreading;
 
 type
@@ -355,6 +357,7 @@ begin
   FVCLReady.Signal;
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -365,22 +368,25 @@ const
   );
 {$ENDIF UNITVERSIONING}
 
-initialization
+
+initialization 
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING} 
 
 finalization
   FreeAndNil(GlobalDataThreadsMan);
+  {$IFDEF MSWINDOWS}
   // (rom) no OutputDebugString in production code
   {$IFDEF DEBUGINFO_ON}
   if DataThreadsMan.ActiveThreads then
     OutputDebugString(
       'Memory leak detected: free MTData objects before application shutdown'); // do not localize
   {$ENDIF DEBUGINFO_ON}
-
+  {$ENDIF MSWINDOWS}
+ 
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING} 
 
 end.

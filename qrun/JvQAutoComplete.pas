@@ -41,8 +41,12 @@ type
     abstract base class. After you have created an instance of a derived class
     you must either assign the AutoCompleteEvent to the OnKeyPress event of the
     control or you must call the AutoComplete method from in a KeyPress event
-    handler. }
-  TJvControlAutoComplete = class(TObject)
+    handler.
+
+
+    (ahuser) 2005-01-31: changed from TObject to TComponent due to Notification()
+    Do not register this component it is more a "TObject" than a TComponent. }
+  TJvControlAutoComplete = class(TComponent)
   private
     FFilter: string;
     FLastTime: Cardinal;
@@ -71,7 +75,7 @@ type
     procedure DoChange; dynamic;
     procedure DoValueChange; dynamic;
   public
-    constructor Create;
+    constructor Create; reintroduce;
     procedure AutoCompleteEvent(Sender: TObject; var Key: Char);
     procedure AutoComplete(var Key: Char); virtual;
 
@@ -91,6 +95,7 @@ type
     FList: TStrings;
     procedure SetEditCtrl(Value: TCustomEdit);
   protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
     procedure GetEditSel(out StartPos, EndPos: Integer); override;
@@ -101,6 +106,7 @@ type
     property List: TStrings read FList write FList;
   public
     constructor Create(AEditCtrl: TCustomEdit; AList: TStrings);
+    destructor Destroy; override;
     property EditCtrl: TCustomEdit read FEditCtrl write SetEditCtrl;
   end;
 
@@ -139,8 +145,10 @@ type
   protected
     procedure SetItemIndex(Index: Integer); override;
     function GetItemIndex: Integer; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AEditCtrl: TCustomEdit; AListBox: TCustomListBox);
+    destructor Destroy; override;
     property ListBox: TCustomListBox read FListBox write SetListBox;
   end;
 
@@ -230,7 +238,7 @@ uses
 
 constructor TJvControlAutoComplete.Create;
 begin
-  inherited Create;
+  inherited Create(nil);
   FActive := True;
   FMaxFilterTime := 500;
 end;
@@ -401,13 +409,35 @@ constructor TJvBaseEditListAutoComplete.Create(AEditCtrl: TCustomEdit;
   AList: TStrings);
 begin
   inherited Create;
-  FEditCtrl := AEditCtrl;
   FList := AList;
+  EditCtrl := AEditCtrl;
+end;
+
+destructor TJvBaseEditListAutoComplete.Destroy;
+begin
+  EditCtrl := nil;
+  inherited Destroy;
+end;
+
+procedure TJvBaseEditListAutoComplete.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  if (Operation = opRemove) and (AComponent = FEditCtrl) then
+  begin
+    FEditCtrl := nil;
+    SetFilter('');
+  end;
+  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvBaseEditListAutoComplete.SetEditCtrl(Value: TCustomEdit);
 begin
+  if Assigned(FEditCtrl) then
+    FEditCtrl.RemoveFreeNotification(Self);
   FEditCtrl := Value;
+  if Assigned(FEditCtrl) then
+    FEditCtrl.FreeNotification(Self);
+
   if FEditCtrl <> nil then
     SetFilter(FEditCtrl.Text)
   else
@@ -528,12 +558,33 @@ begin
     inherited Create(AEditCtrl, nil)
   else
     inherited Create(AEditCtrl, AListBox.Items);
-  FListBox := AListBox;
+  ListBox := AListBox;
+end;
+
+destructor TJvEditListBoxAutoComplete.Destroy;
+begin
+  ListBox := nil;
+  inherited Destroy;
+end;
+
+procedure TJvEditListBoxAutoComplete.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  if (Operation = opRemove) and (AComponent = FListBox) then
+  begin
+    FListBox := nil;
+    List := nil;
+  end;
+  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvEditListBoxAutoComplete.SetListBox(Value: TCustomListBox);
 begin
+  if Assigned(FListBox) then
+    FListBox.RemoveFreeNotification(Self);
   FListBox := Value;
+  if Assigned(FListBox) then
+    FListBox.FreeNotification(Self);
+
   if FListBox <> nil then
     List := FListBox.Items
   else

@@ -19,7 +19,8 @@ The Initial Developer of the Original Code is Oliver Giesen [giesen att lucatec 
 Portions created by Oliver Giesen are Copyright (C) 2002 Lucatec GmbH.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s):
+  Andreas Hausladen
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -81,9 +82,11 @@ implementation
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING} 
   SysUtils,
   JvQConsts, JvQResources;
+
+
 
 function IsChildWindow(const AChild, AParent: HWND): Boolean;
 var
@@ -91,7 +94,6 @@ var
 begin
   {determines whether a window is the child (or grand^x-child) of another}
   LParent := AChild;
-  // (rom) changed to while loop
   if LParent = AParent then
     Result := False // (ahuser) a parent is no child of itself
   else
@@ -112,10 +114,11 @@ begin
 
   inherited CreateNew(AOwner);
 
-  BorderIcons := [];
- // BorderStyle := fbsNone;
+  BorderIcons := [];  
+  BorderStyle := fbsNone; 
   Font := TCustomEditAccessProtected(AOwner).Font;
 
+  Position := poDesigned; // required for D2005
   FEntering := True;
   FLeaving := False;
   FCloseOnLeave := True;
@@ -148,11 +151,13 @@ var
   LScreenRect: TRect;
 begin
   inherited DoShow; 
-    LScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
-  if (Left + Width > LScreenRect.Right) then
-    Left := LScreenRect.Right - Width;
-  if (Top + Height > LScreenRect.Bottom) then
-    Top := Self.Edit.ClientOrigin.Y - Height;
+  begin 
+      LScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
+    if (Left + Width > LScreenRect.Right) then
+      Left := LScreenRect.Right - Width;
+    if (Top + Height > LScreenRect.Bottom) then
+      Top := Self.Edit.ClientOrigin.Y - Height;
+  end;
 end;
 
 function TJvCustomDropDownForm.GetEdit: TCustomEdit;

@@ -531,10 +531,10 @@ procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 
 implementation
 
-uses
+uses 
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}  
+  {$ENDIF UNITVERSIONING}   
   JvQJCLUtils, JvQResources, 
   QMenus;
 
@@ -1917,7 +1917,8 @@ var
         32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal); 
 
       { draw frame... }
-      ACanvas.Brush.Color := FColors.FBorderColor; FrameRect(ACanvas, R);
+      ACanvas.Brush.Color := FColors.FBorderColor;  
+      FrameRect(ACanvas, R); 
 
       if FHeaderRounded then
       begin
@@ -1969,9 +1970,9 @@ var
                 Index := 2; // down
             end;
             if FCollapsed then
-              Bitmap.LoadFromResourceName(hInstance, 'XPEXPAND' + IntToStr(Index))
+              Bitmap.LoadFromResourceName(HInstance, 'XPEXPAND' + IntToStr(Index))
             else
-              Bitmap.LoadFromResourceName(hInstance, 'XPCOLLAPSE' + IntToStr(Index));
+              Bitmap.LoadFromResourceName(HInstance, 'XPCOLLAPSE' + IntToStr(Index));
           end;
           Bitmap.Transparent := True;
           ACanvas.Draw(R.Right - 24, R.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
@@ -2270,6 +2271,7 @@ begin
   end;
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -2285,6 +2287,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.
 

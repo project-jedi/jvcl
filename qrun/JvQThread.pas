@@ -405,8 +405,8 @@ end;
 
 procedure TJvThread.CreateThreadDialogForm;
 begin
-  if Assigned(ThreadDialog) and Not Assigned(fThreadDialogForm) then
-    fThreadDialogForm := ThreadDialog.CreateThreadDialogForm (self);
+  if Assigned(ThreadDialog) and not Assigned(FThreadDialogForm) then
+    FThreadDialogForm := ThreadDialog.CreateThreadDialogForm(Self);
 end;
 
 function TJvThread.GetLastThread: TJvBaseThread;

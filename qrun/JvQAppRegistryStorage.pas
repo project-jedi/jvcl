@@ -71,6 +71,8 @@ type
   private
     FRegHKEY: HKEY;
     FUseOldDefaultRoot: Boolean;
+    FAppNameErrorHandled: Boolean;
+    FCompanyNameErrorHandled: Boolean;
   protected
     procedure Loaded; override;
 
@@ -111,6 +113,7 @@ type
     property Root read GetRoot write SetRoot;
     property SubStorages;
     property UseOldDefaultRoot: Boolean read FUseOldDefaultRoot write SetUseOldDefaultRoot stored True default False ;
+
     property ReadOnly;
   end;
 
@@ -120,7 +123,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils,
+  SysUtils, QDialogs,
   JclRegistry, JclResources, JclStrings, JclFileUtils,
   JvQConsts, JvQResources;
 
@@ -131,6 +134,8 @@ const
   cAppNameMask = '%APPL_NAME%';
   cCompanyNameMask = '%COMPANY_NAME%';
   cOldDefaultRootMask =  cSoftwareKey + '\' + cCompanyNameMask + '\' + cAppNameMask;
+  cDefaultAppName = 'MyJVCLApplication';
+  cDefaultCompanyName = 'MyCompany';
 
 { (rom) disabled unused
 const
@@ -153,6 +158,8 @@ begin
   inherited Create(AOwner);
   FRegHKEY := HKEY_CURRENT_USER;
   FUseOldDefaultRoot := False;
+  FAppNameErrorHandled := False;
+  FCompanyNameErrorHandled := False;
 end;
 
 procedure TJvAppRegistryStorage.SetRoot(const Value: string);
@@ -164,11 +171,25 @@ var
   var
     VersionInfo: TJclFileVersionInfo;
   begin
-    VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
     try
-      Result := VersionInfo.ProductName;
-    finally
-      VersionInfo.Free;
+      VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
+      try
+        Result := VersionInfo.ProductName;
+      finally
+        VersionInfo.Free;
+      end;
+    except
+      on EJclFileVersionInfoError do
+        begin
+          if not FAppNameErrorHandled then
+          begin
+            MessageDlg(Format(RsRootValueReplaceFmt, [cAppNameMask, cDefaultAppName]), mtInformation, [mbOK], 0);
+            FAppNameErrorHandled := True;
+          end;
+          Result := cDefaultAppName;
+        end
+      else
+        raise;
     end;
   end;
 
@@ -176,11 +197,25 @@ var
   var
     VersionInfo: TJclFileVersionInfo;
   begin
-    VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
     try
-      Result := VersionInfo.CompanyName;
-    finally
-      VersionInfo.Free;
+      VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
+      try
+        Result := VersionInfo.CompanyName;
+      finally
+        VersionInfo.Free;
+      end;
+    except
+      on EJclFileVersionInfoError do
+        begin
+          if not FCompanyNameErrorHandled then
+          begin
+            MessageDlg(Format(RsRootValueReplaceFmt, [cCompanyNameMask, cDefaultCompanyName]), mtInformation, [mbOK], 0);
+            FCompanyNameErrorHandled := True;
+          end;
+          Result := cDefaultCompanyName;
+        end
+      else
+        raise;
     end;
   end;
 

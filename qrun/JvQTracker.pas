@@ -39,7 +39,8 @@ interface
 
 uses
   QWindows, QMessages, QGraphics, QControls, QExtCtrls,
-  SysUtils, Classes,
+  SysUtils, Classes, 
+  Qt, 
   JvQComponent;
 
 type
@@ -104,8 +105,7 @@ type
     { Added By Steve Childs, 18/4/00 }
     procedure SetBorderColor(const Value: TColor);
     procedure SetTrackPositionColored(const Value: Boolean);
-  protected
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+  protected 
     procedure DoChangedValue(NewValue: Integer);
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     { Added By Steve Childs, 18/4/00 }
@@ -154,13 +154,16 @@ uses
 
 constructor TJvTracker.Create(AOwner: TComponent);
 begin
+  FMinimum := 0;
+  FMaximum := 100;
+  FValue := 0;
+  FThumbHeight := 16;
+  FThumbWidth := 20;
+  FTrackHeight := 6;
   inherited Create(AOwner);
   Width := 150;
   Height := 24;
   FOrientation := jtbHorizontal;
-  FTrackHeight := 6;
-  FThumbWidth := 20;
-  FThumbHeight := 16;
   FThumbBorder := False;
   FBackColor := clSilver;
   FTrackColor := clGray;
@@ -169,18 +172,17 @@ begin
   FThumbColor := clSilver;
   FCaptionColor := clBlack;
   FShowCaption := True;
-  FMinimum := 0;
-  FMaximum := 100;
-  FValue := 0;
   FCaptionBold := False;
   FBackBorder := False;
   FBackBitmap := TBitmap.Create;
-  FBackBitmap.OnChange := BackBitmapChanged;
+  FBackBitmap.OnChange := BackBitmapChanged; 
+  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground); 
 end;
 
 destructor TJvTracker.Destroy;
 begin
-  FBackBitmap.OnChange := nil;
+  if Assigned(FBackBitmap) then
+    FBackBitmap.OnChange := nil;
   FBackBitmap.Free;
   inherited Destroy;
 end;
@@ -605,14 +607,7 @@ begin
   Invalidate;
 end;
 
-function TJvTracker.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
-{ Added By Steve Childs 18/04/00
-  This elimates the flickering background when the thumb is updated
-}
-begin
-  { Added By Steve Childs 18/04/00 - Tell Windows that we have cleared background }
-  Result := True;
-end;
+
 
 procedure TJvTracker.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin

@@ -38,9 +38,9 @@ unit JvQExCheckLst;
 interface
 
 uses
-  QGraphics, QControls, QForms, QCheckLst, QExtCtrls,
-  Qt, QWindows, QMessages, 
   Classes, SysUtils,
+  QGraphics, QControls, QForms, QCheckLst, QExtCtrls,
+  Qt, QWindows, QMessages,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 type
@@ -96,7 +96,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -117,6 +117,11 @@ type
   end;
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 { QWinCustomControl Create }
 
@@ -156,7 +161,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -196,7 +201,7 @@ begin
   end;
 end;
 
-function TJvExCheckListBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCheckListBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -401,16 +406,20 @@ end;
   
  
 
-{$DEFINE UnitName 'JvQExCheckLst.pas'}
-
+{$IFDEF UNITVERSIONING}
 const
-  UnitVersion = 'JvQExCheckLst.pas';
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\qrun'
+  );
 
 initialization
-  OutputDebugString(PChar('JvExCLX Loaded: ' + UnitVersion));
+  RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
-  OutputDebugString(PChar('JvExCLX Unloaded: ' + UnitVersion));
-
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

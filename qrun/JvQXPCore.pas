@@ -324,10 +324,10 @@ type
 
 implementation
 
-uses
+uses 
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
+  {$ENDIF UNITVERSIONING}
   JvQResources, 
   JvQXPCoreUtils;
 
@@ -881,6 +881,7 @@ begin
   end;
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -896,6 +897,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.
 

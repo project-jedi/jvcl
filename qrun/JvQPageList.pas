@@ -36,8 +36,11 @@ unit JvQPageList;
 interface
 
 uses
-  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, 
-  Qt, 
+  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls,
+  {$IFDEF COMPILER9_UP}
+  Types,
+  {$ENDIF COMPILER9_UP} 
+  Qt, JvQExControls,
   JvQComponent, JvQThemes;
 
 type
@@ -69,9 +72,7 @@ type
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
   protected
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;  
-    function WidgetFlags: Integer; override; 
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function WidgetFlags: Integer; override;
     procedure SetPageIndex(Value: Integer);virtual;
     function GetPageIndex: Integer;virtual;
     procedure SetPageList(Value: TJvCustomPageList);virtual;
@@ -119,7 +120,8 @@ type
     FOnChange: TNotifyEvent;
     FOnChanging: TJvPageChangingEvent;
     FShowDesignCaption: TJvShowDesignCaption;
-    FHiddenPages: TList; 
+    FHiddenPages: TList;
+    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     procedure UpdateEnabled;
     procedure SetPropagateEnable(const Value: Boolean);
     procedure SetShowDesignCaption(const Value: TJvShowDesignCaption);
@@ -266,7 +268,8 @@ begin
   Align := alClient;
   ControlStyle := ControlStyle + [csOpaque, csAcceptsControls, csNoDesignVisible];
 //  IncludeThemeStyle(Self, [csParentBackground]);
-  Visible := False; 
+  Visible := False;
+  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
 end;
 
 
@@ -411,11 +414,6 @@ begin
   end;
 end;
 
-function TJvCustomPage.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin 
-  Result := True;
-end;
-
 procedure TJvCustomPage.TextChanged;
 begin
   inherited TextChanged;
@@ -453,12 +451,6 @@ begin
     end;
 end;
 
-procedure TJvCustomPage.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
-begin
-  Msg.Result := 1;
-end;
-
-
 function TJvCustomPage.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
@@ -477,7 +469,8 @@ begin
   Height := 200;
   Width := 300;
   FShowDesignCaption := sdcCenter;
-  ActivePageIndex := -1;
+  ActivePageIndex := -1; 
+  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground); 
 end;
 
 destructor TJvCustomPageList.Destroy;
@@ -504,7 +497,15 @@ begin
     FOnChange(Self);
 end;
 
-
+procedure TJvCustomPageList.CMDesignHitTest(var Msg: TCMDesignHitTest);
+var
+  Pt: TPoint;
+begin
+  inherited;
+  Pt := SmallPointToPoint(Msg.Pos);
+  if Assigned(ActivePage) and PtInRect(ActivePage.BoundsRect, Pt) then
+    Msg.Result := 1;
+end;
 
 procedure TJvCustomPageList.GetChildren(Proc: TGetChildProc;
   Root: TComponent);

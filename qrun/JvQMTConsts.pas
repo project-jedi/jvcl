@@ -58,12 +58,11 @@ const
 
 implementation
 
+
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
-{$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$RCSfile$';
@@ -78,5 +77,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.

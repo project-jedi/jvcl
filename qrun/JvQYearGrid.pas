@@ -101,7 +101,7 @@ type
 
     {$IFNDEF USECUSTOMGRID}
     procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
-    {$ENDIF USECUSTOMGRID}
+    {$ENDIF !USECUSTOMGRID}
 
     procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
       var HintInfo: THintInfo);
@@ -150,7 +150,7 @@ type
     {$IFNDEF USECUSTOMGRID}
     FOnSelectCell: TSelectCellEvent;
     FOnDrawCell: TDrawCellEvent;
-    {$ENDIF USECUSTOMGRID}
+    {$ENDIF !USECUSTOMGRID}
     FDaysAlignment: TAlignment;
     FDayNamesAlignment: TAlignment;
     FMonthNamesAlignment: TAlignment;
@@ -272,12 +272,11 @@ type
 
 implementation
 
-uses
+uses 
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
-  JvQConsts,
-  JvQResources, 
+  {$ENDIF UNITVERSIONING}
+  JvQConsts, JvQResources, 
   JvQYearGridEditForm;
 
 
@@ -1415,7 +1414,7 @@ begin
   ACol := Coord.X;
   ARow := Coord.Y;
 end;
-{$ENDIF USECUSTOMGRID}
+{$ENDIF !USECUSTOMGRID}
 
 procedure TJvYearGrid.ReadGridYear(Reader: TReader);
 begin
@@ -1548,6 +1547,7 @@ begin
   end;
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1563,5 +1563,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.

@@ -527,7 +527,7 @@ begin
   Result := Copy(S, 1, 7) = cColorItemIDPrefix;
   if Result then
   begin
-    Color := StrToInt('$0' + Copy(S, 8, 8));
+    Color := StrToInt('$0' + Copy(S, 8, 8)); 
   end;
 end;
 
@@ -1598,6 +1598,8 @@ begin
   end;
   if ColorFound then
   begin
+
+
     SetID(cColorItemIDPrefix + IntToHex(ColorValue, 8));
   end
   else
@@ -3761,10 +3763,10 @@ initialization
   MasterColorConsumer := TJvColorConsumer.Create;
 
 finalization
+  MasterColorConsumer := nil;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  MasterColorConsumer := nil;
 
 end.
 

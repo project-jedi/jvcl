@@ -35,6 +35,9 @@ unit JvQItemsSearchs;
 interface
 
 uses
+  {$IFDEF COMPILER9_UP}
+  QWindows,
+  {$ENDIF COMPILER9_UP}
   SysUtils, Classes;
 
 type

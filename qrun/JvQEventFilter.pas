@@ -46,10 +46,26 @@ type
     destructor Destroy; override;
   published
     property Active;
+    property Parent;
     property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   end;
 
+  TJvAppEventFilter = class(TComponent)
+  private
+    FHook: QApplication_hookH;
+  protected
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; virtual; cdecl; abstract; //cdecl;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 procedure TJvEventFilter.SetParent(const Value: TWinControl);
 var
@@ -87,5 +103,40 @@ begin
   if Assigned(FOnEvent) and Active then
     FOnEvent(Receiver, Event, Result);
 end;
+
+constructor TJvAppEventFilter.Create(AOwner: TComponent);
+var
+  Method: TMethod;
+begin
+  inherited Create(AOwner);
+  FHook := QApplication_hook_create(Application.Handle);
+  TEventFilterMethod(Method) := EventFilter;
+  Qt_hook_hook_events(FHook, Method);
+end;
+
+destructor TJvAppEventFilter.Destroy;
+begin
+  if Assigned(FHook) then
+  begin
+    QApplication_hook_destroy(FHook);
+  end;
+  inherited Destroy;
+end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\qrun'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

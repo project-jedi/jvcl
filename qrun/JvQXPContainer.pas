@@ -37,8 +37,9 @@ interface
 
 uses
   TypInfo, Classes,
-  QWindows, QControls, QGraphics, QStdCtrls, QExtCtrls,
-  JvQJCLUtils, JvQXPCore, JvQXPCoreUtils;
+  QWindows, QControls, QGraphics, QStdCtrls, QExtCtrls, 
+  JvQJCLUtils, 
+  JvQXPCore, JvQXPCoreUtils;
 
 type
   TJvXPPaintEvent = procedure(Sender: TObject; Rect: TRect; ACanvas: TCanvas;
@@ -180,10 +181,12 @@ type
 
 implementation
 
+
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+
 
 //=== { TJvXPCustomContainer } ===============================================
 
@@ -213,6 +216,8 @@ begin
   FGlyph.Free;
   inherited Destroy;
 end;
+
+
 
 procedure TJvXPCustomContainer.HookEnabledChanged;
 var
@@ -372,10 +377,10 @@ var
   DrawStyle: Longint;
   CalcRect: TRect;
 
-  procedure DoDrawText(Canvas: TCanvas; const ACaption: TCaption; var ARect: TRect;
-    Flags: Integer);
-  begin
-    DrawText(Canvas, ACaption, -1, ARect, Flags);
+  procedure DoDrawText(ACanvas: TCanvas; const ACaption: TCaption; var ARect: TRect;
+    AFlags: Integer);
+  begin 
+    DrawText(ACanvas, ACaption, -1, ARect, AFlags); 
   end;
 
 begin
@@ -448,6 +453,7 @@ begin
   end;
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -463,5 +469,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.

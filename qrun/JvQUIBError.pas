@@ -29,12 +29,12 @@
 
 unit JvQUIBError;
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 interface
 {$IFDEF USE_IBERROR_H}
 (*$HPPEMIT '#include<iberror.h>' *)
-{$ENDIF}
+{$ENDIF USE_IBERROR_H}
 
 //***********************/
 //*   ISC Error Codes   */
@@ -1216,12 +1216,12 @@ const
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_invalid_label} {$ENDIF}
   isc_dsql_datatypes_not_comparable     = 336003088;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_datatypes_not_comparable} {$ENDIF}
-{$ENDIF}
+{$ENDIF FB15_UP}
 
 {$IFDEF IB65_UP}
   isc_dsql_rows_ties_err                = 336003085;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_rows_ties_err} {$ENDIF}
-{$ENDIF FB15_UP}
+{$ENDIF IB65_UP}
 
   isc_dyn_role_does_not_exist           = 336068796;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dyn_role_does_not_exist} {$ENDIF}
@@ -1618,5 +1618,26 @@ const
 {$ENDIF IB71}
 
 implementation
+
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
 
 end.

@@ -119,15 +119,15 @@ uses
   JvQJVCLUtils, JvQExStdCtrls;
 
 type
-  THyperLinkClick = procedure (Sender: TObject; LinkName: string) of object;
+  THyperLinkClick = procedure(Sender: TObject; LinkName: string) of object;
 
   TJvCustomHTListBox = class(TJvExCustomListBox)
   private
     FHyperLinkClick: THyperLinkClick;
     FHideSel: Boolean;
-    FSelectedColor: TColor;         // <-+-- Kaczkowski: from JvMultiLineListBox
-    FSelectedTextColor: TColor;     // <-+
-    FDisabledTextColor: TColor;     // <-+
+    FColorHighlight: TColor;         // <-+-- Kaczkowski: from JvMultiLineListBox
+    FColorHighlightText: TColor;     // <-+
+    FColorDisabledText: TColor;     // <-+
     procedure SetHideSel(Value: Boolean);
     function GetPlainItems(Index: Integer): string;
   protected
@@ -144,9 +144,9 @@ type
     property HideSel: Boolean read FHideSel write SetHideSel;
 
     // Kaczkowski - moved from JvMultiLineListBox
-    property ColorHighlight: TColor read FSelectedColor write FSelectedColor;
-    property ColorHighlightText: TColor read FSelectedTextColor write FSelectedTextColor;
-    property ColorDisabledText: TColor read FDisabledTextColor write FDisabledTextColor;
+    property ColorHighlight: TColor read FColorHighlight write FColorHighlight;
+    property ColorHighlightText: TColor read FColorHighlightText write FColorHighlightText;
+    property ColorDisabledText: TColor read FColorDisabledText write FColorDisabledText;
     // Kaczkowski - end
     property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
   end;
@@ -207,9 +207,9 @@ type
   private
     FHideSel: Boolean;
     FDropWidth: Integer;
-    FSelectedColor: TColor;         // <-+-- Kaczkowski: from JvMultilineListBox
-    FSelectedTextColor: TColor;     // <-+
-    FDisabledTextColor: TColor;     // <-+
+    FColorHighlight: TColor;         // <-+-- Kaczkowski: from JvMultilineListBox
+    FColorHighlightText: TColor;     // <-+
+    FColorDisabledText: TColor;     // <-+
     procedure SetHideSel(Value: Boolean);
     function GetPlainItems(Index: Integer): string;
     procedure SetDropWidth(ADropWidth: Integer);
@@ -223,14 +223,15 @@ type
     property HideSel: Boolean read FHideSel write SetHideSel;
     property DropWidth: Integer read FDropWidth write SetDropWidth;
     // Kaczkowski - based on JvMultilineListBox
-    property ColorHighlight: TColor read FSelectedColor write FSelectedColor;
-    property ColorHighlightText: TColor read FSelectedTextColor write FSelectedTextColor;
-    property ColorDisabledText: TColor read FDisabledTextColor write FDisabledTextColor;
+    property ColorHighlight: TColor read FColorHighlight write FColorHighlight;
+    property ColorHighlightText: TColor read FColorHighlightText write FColorHighlightText;
+    property ColorDisabledText: TColor read FColorDisabledText write FColorDisabledText;
     // Kaczkowski - end
   end;
 
   TJvHTComboBox = class(TJvCustomHTComboBox)
   published
+    property Anchors;
     property HideSel;
     property DropWidth;
     // Kaczkowski - based on JvMultilineListBox
@@ -294,6 +295,7 @@ type
   published
     property Align;
     // property Alignment;  // Kaczkowski
+    property Anchors;
     property AutoSize;
     property Caption;
     property Color; 
@@ -327,14 +329,14 @@ type
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; Scale: integer = 100);
+  var LinkName: string; Scale: Integer = 100);
   { example for Text parameter : 'Item 1 <b>bold</b> <i>italic ITALIC <br><FONT COLOR="clRed">red <FONT COLOR="clgreen">green <FONT COLOR="clblue">blue </i>' }
 function ItemHTDraw(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: integer = 100): string;
+  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): string;
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
 function ItemHTPlain(const Text: string): string;
-function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: integer = 100): Integer;
+function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
 function PrepareText(const A: string): string;
 
 implementation
@@ -358,14 +360,14 @@ end;
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType; MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; Scale: integer = 100);
+  var LinkName: string; Scale: Integer = 100);
 begin
-  HTMLDrawTextEx(Canvas, Rect, State, Text, Width, CalcType, MouseX, MouseY, MouseOnLink, LInkName, Scale);
+  HTMLDrawTextEx(Canvas, Rect, State, Text, Width, CalcType, MouseX, MouseY, MouseOnLink, LinkName, Scale);
 end;
 // Kaczkowski - end
 
 function ItemHTDraw(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string; Scale: integer = 100): string;
+  const Text: string; Scale: Integer = 100): string;
 begin
   HTMLDrawText(Canvas, Rect, State, Text, Scale);
 end;
@@ -376,19 +378,19 @@ begin
 end;
 
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
 begin
   Result := HTMLTextWidth(Canvas, Rect, State, Text, Scale);
 end;
 
 // Kaczkowski - begin
-function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: integer = 100): Integer;
+function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
 begin
   Result := HTMLTextHeight(Canvas, Text, Scale);
 end;
 
 function IsHyperLink(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-               const Text: string; MouseX, MouseY: Integer; var HyperLink: string): Boolean; overload;
+  const Text: string; MouseX, MouseY: Integer; var HyperLink: string): Boolean; overload;
 var
   W: Integer;
 begin
@@ -411,9 +413,9 @@ constructor TJvCustomHTListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   // Kaczkowski 
-  ColorHighlight := clHighlight;
-  ColorHighlightText := clHighlightText;
-  ColorDisabledText := clGrayText;
+  FColorHighlight := clHighlight;
+  FColorHighlightText := clHighlightText;
+  FColorDisabledText := clGrayText;
   // Kaczkowski
 end;
 
@@ -433,11 +435,11 @@ function TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
 begin
   if odSelected in State then
   begin
-   Canvas.Brush.Color := FSelectedColor;
-   Canvas.Font.Color  := FSelectedTextColor;
+   Canvas.Brush.Color := ColorHighlight;
+   Canvas.Font.Color  := ColorHighlightText;
   end;
   if not Enabled then
-    Canvas.Font.Color := FDisabledTextColor;
+    Canvas.Font.Color := ColorDisabledText;
 
   Canvas.FillRect(Rect);
   ItemHTDraw(Canvas, Rect, State, Items[Index]); 
@@ -482,7 +484,7 @@ begin
   if Self.Selected[I] then
   begin
     State := [odSelected];
-    Canvas.Font.Color := FSelectedTextColor
+    Canvas.Font.Color := FColorHighlightText
   end
   else
     Canvas.Font.Color := Font.Color;
@@ -509,7 +511,7 @@ begin
     if Self.Selected[I] then
     begin
       State := [odSelected];
-      Canvas.Font.Color := FSelectedTextColor
+      Canvas.Font.Color := ColorHighlightText
     end
     else
       Canvas.Font.Color := Font.Color;
@@ -531,9 +533,9 @@ begin
   inherited Create(AOwner);
   // Kaczkowski
   Style := csOwnerDrawVariable;
-  ColorHighlight := clHighlight;
-  ColorHighlightText := clHighlightText;
-  ColorDisabledText := clGrayText;
+  FColorHighlight := clHighlight;
+  FColorHighlightText := clHighlightText;
+  FColorDisabledText := clGrayText;
   // Kaczkowski
 end;
 
@@ -545,11 +547,11 @@ function TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
 begin
   if odSelected in State then
   begin
-    Canvas.Brush.Color := FSelectedColor;
-    Canvas.Font.Color  := FSelectedTextColor;
+    Canvas.Brush.Color := ColorHighlight;
+    Canvas.Font.Color  := ColorHighlightText;
   end;
   if not Enabled then
-    Canvas.Font.Color := FDisabledTextColor;
+    Canvas.Font.Color := ColorDisabledText;
 
   Canvas.FillRect(Rect);
   Inc(Rect.Left, 2);
@@ -730,7 +732,8 @@ begin
   inherited MouseUp(Button,Shift,X,Y);
   R := ClientRect;
   case Layout of
-    tlTop: ;
+    tlTop:
+      ;
     tlBottom:
       R.Top := R.Bottom - ItemHTHeight(Canvas, Caption);
     tlCenter:

@@ -63,9 +63,6 @@ uses
   QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls, QImgList, 
   JvQTypes, JvQComponent, JvQDataProvider, JvQExControls;
 
-const
-  clGrayText = clDisabledText;  
-
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
   TJvLabelRotateAngle = -360..360;
@@ -637,8 +634,10 @@ begin
     begin
       CalcRect := Rect;
       DoDrawText(CalcRect, DrawStyle or DT_CALCRECT);
-      if FLayout = tlBottom then OffsetRect(Rect, 0, Height - CalcRect.Bottom)
-      else OffsetRect(Rect, 0, (Height - CalcRect.Bottom) div 2);
+      if FLayout = tlBottom then
+        OffsetRect(Rect, 0, Height - CalcRect.Bottom)
+      else
+        OffsetRect(Rect, 0, (Height - CalcRect.Bottom) div 2);
     end;
     Rect.Left := MarginLeft;
     Rect.Right := Rect.Right - MarginRight;

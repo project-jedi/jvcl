@@ -40,9 +40,8 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  JvQExStdCtrls, JvQComponent,
-  JvQTypes,
-  JvQFullColorSpaces, JvQFullColorRotate;
+  JvQComponent, JvQExStdCtrls,
+  JvQTypes, JvQFullColorSpaces, JvQFullColorRotate;
 
 type
   TJvFullColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
@@ -280,7 +279,7 @@ type
     property OnColorSpaceChange: TNotifyEvent read FOnColorSpaceChange write FOnColorSpaceChange;
   end;
 
-  TJvCursorPoints = array[0..2] of TPoint;
+  TJvCursorPoints = array [0..2] of TPoint;
 
   TJvFullColorTrackBar = class(TJvFullColorComponent)
   private
@@ -330,8 +329,8 @@ type
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 9;
     property ArrowPosition: TJvArrowPosition read FArrowPosition write SetArrowPosition default apNormal;
-    property ColorOrientation: TJvFullColorOrientation read FColorOrientation write SetColorOrientation default
-      coNormal;
+    property ColorOrientation: TJvFullColorOrientation read FColorOrientation write SetColorOrientation
+      default coNormal;
     property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
     property ValueX: Byte read FValueX write SetValueX stored IsValueXStored;
     property ValueXAuto: Boolean read FValueXAuto write SetValueXAuto stored False;
@@ -373,7 +372,7 @@ type
   protected
     procedure Paint; override;
     procedure CalcSize;
-    procedure SetAutoSize(Value: Boolean); 
+    procedure SetAutoSize(Value: Boolean);  //override;
     procedure GraphicChange(Sender: TObject);
     procedure SetName(const Value: TComponentName); override;
   public
@@ -546,7 +545,7 @@ type
     property OnStartDrag;
   end;
 
-  TJvFullColorArray = array[0..MaxListSize - 1] of TJvFullColor;
+  TJvFullColorArray = array [0..MaxListSize - 1] of TJvFullColor;
   PJvFullColorArray = ^TJvFullColorArray;
 
   TJvFullColorListOperation = (foAllChanged, foDeleted, foAdded, foChanged);
@@ -693,17 +692,16 @@ uses
   RTLConsts,
   {$ELSE}
   QConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS} 
-  JvQResources, JvQConsts,
-  Math, TypInfo,
-  QForms;
+  {$ENDIF HAS_UNIT_RTLCONSTS}
+  Math, TypInfo, QForms, 
+  JvQResources, JvQConsts;
 
 type
-  TJvFullColorAxisConfigs = array[TJvAxisIndex] of TJvAxisIndex;
+  TJvFullColorAxisConfigs = array [TJvAxisIndex] of TJvAxisIndex;
 
 const
-  TabAxisConfigs: array[TJvFullColorAxisConfig] of TJvFullColorAxisConfigs =
-  ((axIndex0, axIndex1, axIndex2),
+  TabAxisConfigs: array [TJvFullColorAxisConfig] of TJvFullColorAxisConfigs =
+   ((axIndex0, axIndex1, axIndex2),
     (axIndex0, axIndex2, axIndex1),
     (axIndex1, axIndex0, axIndex2),
     (axIndex2, axIndex0, axIndex1),
@@ -1134,28 +1132,29 @@ begin
     Result.X := 0;
     Result.Y := 0;
   end
-  else with ColorSpaceManager, ColorSpace[GetColorSpaceID(FullColor)], Result do
-  begin
-    AxisX := GetIndexAxisX(AxisConfig);
-    MinAxis := AxisMin[AxisX];
-    MaxAxis := AxisMax[AxisX];
-    X := GetAxisValue(FullColor, AxisX);
-    if ReverseAxisX then
-      X := MaxAxis - X
-    else
-      X := X - MinAxis;
-    X := ((X * (FBuffer.Width - 1)) div (MaxAxis-MinAxis)) + CrossSize;
+  else
+    with ColorSpaceManager, ColorSpace[GetColorSpaceID(FullColor)], Result do
+    begin
+      AxisX := GetIndexAxisX(AxisConfig);
+      MinAxis := AxisMin[AxisX];
+      MaxAxis := AxisMax[AxisX];
+      X := GetAxisValue(FullColor, AxisX);
+      if ReverseAxisX then
+        X := MaxAxis - X
+      else
+        X := X - MinAxis;
+      X := ((X * (FBuffer.Width - 1)) div (MaxAxis-MinAxis)) + CrossSize;
 
-    AxisY := GetIndexAxisY(AxisConfig);
-    MinAxis := AxisMin[AxisY];
-    MaxAxis := AxisMax[AxisY];
-    Y := GetAxisValue(FullColor, AxisY);
-    if ReverseAxisY then
-      Y := MaxAxis - Y
-    else
-      Y := Y - MinAxis;
-    Y := ((Y * (FBuffer.Height - 1)) div (MaxAxis-MinAxis)) + CrossSize;
-  end;
+      AxisY := GetIndexAxisY(AxisConfig);
+      MinAxis := AxisMin[AxisY];
+      MaxAxis := AxisMax[AxisY];
+      Y := GetAxisValue(FullColor, AxisY);
+      if ReverseAxisY then
+        Y := MaxAxis - Y
+      else
+        Y := Y - MinAxis;
+      Y := ((Y * (FBuffer.Height - 1)) div (MaxAxis-MinAxis)) + CrossSize;
+    end;
 end;
 
 procedure TJvFullColorPanel.InvalidateCursor;
@@ -1529,7 +1528,9 @@ begin
           // (outchy) don't remove, Bitmap colors are stocked as (MSB) 00RRGGBB (LSB)
           // Delphi TColor is (MSB) 00BBGGRR (LSB)
           Line[X] := RGBToBGR(ConvertToColor(Magic1 or (Magic2 shl 8) or (Magic3 shl 16)));
-        end else if (XRelative >= 0.0) then
+        end
+        else
+        if XRelative >= 0.0 then
           Break;         // end of a line
       end;
     end;
@@ -1538,6 +1539,7 @@ begin
 end;
 
 procedure TJvFullColorCircle.Paint;
+
   procedure DrawCross(AFullColor: TJvFullColor; ACrossColor: TColor);
   var
     Point: TPoint;
@@ -1568,6 +1570,7 @@ procedure TJvFullColorCircle.Paint;
       LineTo(Point.X, Point.Y);
     end;
   end;
+
 begin
   inherited Paint;
   with Canvas do
@@ -2970,7 +2973,6 @@ procedure TJvFullColorSpaceCombo.CreateWnd;
 begin
   inherited CreateWnd;
   MakeList;
-  ItemIndex := 0;
 end;
 
 function TJvFullColorSpaceCombo.GetColorSpace: TJvColorSpace;
@@ -3238,7 +3240,7 @@ end;
 procedure TJvFullColorList.Insert(Index: Integer; AColor: TJvFullColor);
 begin
   if (Index > Count) or (Index < 0) then
-    EJvFullColorListError.CreateFmt(sListIndexError, [Index]);
+    EJvFullColorListError.CreateFmt(SListIndexError, [Index]);
 
   if Count = Capacity then
     Grow;
@@ -3305,7 +3307,7 @@ end;
 procedure TJvFullColorList.SetItem(Index: Integer; const Value: TJvFullColor);
 begin
   if (Index >= Count) or (Index < 0) then
-    EJvFullColorListError.CreateFmt(sListIndexError, [Index]);
+    EJvFullColorListError.CreateFmt(SListIndexError, [Index]);
 
   FList^[Index] := Value;
   Change(Index, foChanged);

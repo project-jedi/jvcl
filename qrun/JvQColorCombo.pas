@@ -222,9 +222,7 @@ type
     function AddToMRU: Integer;
     procedure ClearMRU;
     procedure Click; override;
-    {$IFDEF MSWINDOWS}
     function FontSubstitute(const AFontName: string): string;
-    {$ENDIF MSWINDOWS}
     property Text;
     property MRUCount: Integer read FMRUCount;
   published
@@ -842,7 +840,7 @@ begin
     FColorNameMap.Add('clNormalButton=Normal Button');
     FColorNameMap.Add('clNormalLight=Normal Light');
     FColorNameMap.Add('clNormalMidlight=Normal Mid Light');
-    FColorNameMap.Add('clNormalDark=Normal Drak');
+    FColorNameMap.Add('clNormalDark=Normal Dark');
     FColorNameMap.Add('clNormalMid=Normal Mid');
     FColorNameMap.Add('clNormalText=Normal Text');
     FColorNameMap.Add('clNormalBrightText=Normal Bright Text');
@@ -857,7 +855,7 @@ begin
     FColorNameMap.Add('clDisabledButton=Disabled Button');
     FColorNameMap.Add('clDisabledLight=Disabled Light');
     FColorNameMap.Add('clDisabledMidlight=Disabled Mid Light');
-    FColorNameMap.Add('clDisabledDark=Disabled Drak');
+    FColorNameMap.Add('clDisabledDark=Disabled Dark');
     FColorNameMap.Add('clDisabledMid=Disabled Mid');
     FColorNameMap.Add('clDisabledText=Disabled Text');
     FColorNameMap.Add('clDisabledBrightText=Disabled Bright Text');
@@ -872,7 +870,7 @@ begin
     FColorNameMap.Add('clActiveButton=Active Button');
     FColorNameMap.Add('clActiveLight=Active Light');
     FColorNameMap.Add('clActiveMidlight=Active Mid Light');
-    FColorNameMap.Add('clActiveDark=Active Drak');
+    FColorNameMap.Add('clActiveDark=Active Dark');
     FColorNameMap.Add('clActiveMid=Active Mid');
     FColorNameMap.Add('clActiveText=Active Text');
     FColorNameMap.Add('clActiveBrightText=Active Bright Text');
@@ -893,6 +891,7 @@ procedure TJvColorComboBox.Loaded;
 begin
   inherited Loaded;
   GetColors;
+  FontChanged;
 end;
 
 function TJvColorComboBox.DoInsertColor(AIndex: Integer; AColor: TColor;
@@ -1190,10 +1189,8 @@ begin
     if Items.Count = 0 then
       GetFonts;
     ItemIndex := Items.IndexOf(Value);
-    {$IFDEF MSWINDOWS}
     if ItemIndex = -1 then // try to find the font substitute name
       ItemIndex := Items.IndexOf(FontSubstitute(Value));
-    {$ENDIF MSWINDOWS}
     if (ItemIndex = -1) and (foDisableVerify in Options) then // add if allowed to
       ItemIndex := Items.AddObject(Value, TObject(TRUETYPE_FONTTYPE));
   end;
@@ -1204,7 +1201,7 @@ begin
   inherited Loaded;
 //  HandleNeeded;
   Reset;
-//  FontChanged;
+  FontChanged;
 end;
 
 function TJvFontComboBox.GetSorted: Boolean;
@@ -1227,8 +1224,8 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
 function TJvFontComboBox.FontSubstitute(const AFontName: string): string;
+{$IFDEF MSWINDOWS}
 var
   aSize: DWORD;
   AKey: HKey;
@@ -1254,6 +1251,18 @@ begin
     Result := AFontName;
 end;
 {$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+var
+  WResult, Family : Widestring;
+begin
+  Result := AFontName;
+  if AFontName = '' then Exit;
+  Family := AFontName;
+  QFont_substitute(@WResult, @Family);
+  if WResult <> '' then
+    Result := WResult;
+end;
+{$ENDIF LINUX}
 
 procedure TJvFontComboBox.SetShowMRU(const Value: Boolean);
 begin

@@ -80,7 +80,7 @@ type
     FIsEmptyValue: Boolean;
     FEmptyFontColor: TColor;
     FOldFontColor: TColor;
-    FIsLoaded:boolean; 
+    FIsLoaded: Boolean; 
     function GetPasswordChar: Char;
     function IsPasswordCharStored: Boolean;
     procedure SetAlignment(Value: TAlignment);
@@ -116,7 +116,7 @@ type
     function HintShow(var HintInfo: THintInfo): Boolean; override; 
 //    procedure DoSetFocus(FocusedWnd: HWND); override;
 //    procedure DoKillFocus(FocusedWnd: HWND); override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure EnabledChanged; override;
     procedure SetFlat(Value: Boolean); virtual;
     procedure MouseEnter(AControl: TControl); override;
@@ -154,7 +154,7 @@ type
     property HotTrack;
     property PasswordChar;
     property PopupMenu;
-    property ProtectPassword;
+    property ProtectPassword; 
     property EchoMode; 
     property Align;
     property Alignment;
@@ -260,7 +260,8 @@ end;
 
 destructor TJvCustomEdit.Destroy;
 begin
-  FMaxPixel.Free; 
+  FMaxPixel.Free;   
+//  QPixmap_destroy(FNullPixmap); 
   inherited Destroy;
 end;
 
@@ -269,6 +270,7 @@ end;
 procedure TJvCustomEdit.Change;
 var
   St: string;
+  Sel: Integer;
 begin
   inherited Change;
   if not HasParent then
@@ -277,8 +279,9 @@ begin
   FMaxPixel.Test(St, Font);
   if St <> Text then
   begin
+    Sel := SelStart;
     Text := St;
-    SelStart := Min(SelStart, Length(Text));
+    SelStart := Min(Sel, Length(Text));
   end;
 end;
 
@@ -307,6 +310,7 @@ begin
   end;
   Result := inherited HintShow(HintInfo);
 end;
+
 
 
 
@@ -346,8 +350,8 @@ begin
     end;
   end
   else
-    if not (csDesigning in ComponentState) then
-      Font.Color := FOldFontColor;
+  if not (csDesigning in ComponentState) then
+    Font.Color := FOldFontColor;
 end;
 
 procedure TJvCustomEdit.DoEmptyValueExit;
@@ -368,8 +372,8 @@ begin
     end;
   end
   else
-    if not (csDesigning in ComponentState) then
-      Font.Color := FOldFontColor;
+  if not (csDesigning in ComponentState) then
+    Font.Color := FOldFontColor;
 end;
 
 procedure TJvCustomEdit.DoEnter;
@@ -383,12 +387,12 @@ begin
   inherited DoExit; 
 end;
 
-function TJvCustomEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 var
   R: TRect;
 begin
   if Enabled then
-    Result := inherited DoEraseBackground(Canvas, Param)
+    Result := inherited DoPaintBackground(Canvas, Param)
   else
   begin
     Canvas.Brush.Color := FDisabledColor;
@@ -447,6 +451,7 @@ begin
 end;
 
 
+
 function TJvCustomEdit.IsEmpty: Boolean;
 begin
   Result := (Length(Text) = 0);
@@ -466,7 +471,11 @@ end;
 procedure TJvCustomEdit.Loaded;
 begin
   inherited Loaded;
-  FIsLoaded := true;
+  { (rb) I think that csLoading flag can be used instead of FIsLoaded.
+         FIsLoaded is set a bit later to true than csLoading but that
+         does not matter AFAICS
+  }
+  FIsLoaded := True;
   FOldFontColor := Font.Color;
   SelStart := FStreamedSelStart;
   SelLength := FStreamedSelLength;
@@ -525,7 +534,6 @@ begin
 end;
 
 
-
 procedure TJvCustomEdit.Paint;
 var
   S: TCaption;
@@ -545,7 +553,6 @@ begin
       inherited Paint;
   end;
 end;
-
 
 
 procedure TJvCustomEdit.SetAlignment(Value: TAlignment);
@@ -584,12 +591,10 @@ procedure TJvCustomEdit.SetEmptyValue(const Value: string);
 begin
   FEmptyValue := Value;
   if HandleAllocated then
-  begin
     if Focused then
       DoEmptyValueEnter
     else
       DoEmptyValueExit;
-  end;
 end;
 
 procedure TJvCustomEdit.SetFlat(Value: Boolean);
@@ -664,6 +669,8 @@ begin
         (TJvCustomEdit(Owner.Components[I]).GroupIndex = Self.GroupIndex) then
         TJvCustomEdit(Owner.Components[I]).Clear;
 end;
+
+
 
 
 

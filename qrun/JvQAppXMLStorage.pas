@@ -46,14 +46,13 @@ uses
   JvQAppStorage, JvQPropertyStore, JvQSimpleXml;
 
 type
-
   TJvAppXMLStorageOptions = class(TJvAppStorageOptions)
   private
     FWhiteSpaceReplacement: string;
   protected
     procedure SetWhiteSpaceReplacement(const Value: string);
   public
-    constructor Create ; override;
+    constructor Create; override;
   published
     property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
   end;
@@ -117,7 +116,7 @@ type
   // This class handles the flushing into a disk file
   // and publishes a few properties for them to be
   // used by the user in the IDE
-  TJvAppXMLFileStorage = class (TJvCustomAppXMLStorage)
+  TJvAppXMLFileStorage = class(TJvCustomAppXMLStorage)
   public
     procedure Flush; override;
     procedure Reload; override;
@@ -145,42 +144,38 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, TypInfo,
-  JclStrings, JvQJCLUtils,
-  JvQTypes, JvQConsts, JvQResources;
+  JclStrings,
+  JvQJCLUtils, JvQTypes, JvQConsts, JvQResources;
 
 const
   cNullDigit = '0';
   cCount = 'Count';
   cEmptyPath = 'EmptyPath';
 
+//=== { TJvAppXMLStorageOptions } ============================================
 
-//=== { TJvAppXMLStorageOptions } ===================================================
-
-constructor TJvAppXMLStorageOptions.Create ;
+constructor TJvAppXMLStorageOptions.Create;
 begin
   inherited Create;
-  WhiteSpaceReplacement := '';  // to keep the original behaviour
+  FWhiteSpaceReplacement := '';  // to keep the original behaviour
 end;
 
-procedure TJvAppXMLStorageOptions.SetWhiteSpaceReplacement(
-  const Value: string);
+procedure TJvAppXMLStorageOptions.SetWhiteSpaceReplacement(const Value: string);
 begin
   if Value <> FWhiteSpaceReplacement then
-  begin
     if StrContainsChars(Value, AnsiWhiteSpace, True) then
       raise EJVCLException.CreateRes(@RsEWhiteSpaceReplacementCannotContainSpaces)
     else
       FWhiteSpaceReplacement := Value;
-  end
 end;
 
-
-//=== { TJvCustomAppXMLStorage } ===================================================
+//=== { TJvCustomAppXMLStorage } =============================================
 
 constructor TJvCustomAppXMLStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FXml := TJvSimpleXml.Create(nil);
+  // (rom) should probably be a resourcestring
   RootNodeName := 'Configuration';
 end;
 
@@ -197,8 +192,7 @@ begin
   Result := TJvAppXMLStorageOptions;
 end;
 
-function TJvCustomAppXMLStorage.EnsureNoWhiteSpaceInNodeName(
-  NodeName: string): string;
+function TJvCustomAppXMLStorage.EnsureNoWhiteSpaceInNodeName(NodeName: string): string;
 var
   J, K: Integer;
   WSRLength: Integer;
@@ -219,7 +213,7 @@ begin
       else
         begin
           WhiteSpaceCount := StrCharsCount(NodeName, AnsiWhiteSpace);
-          SetLength(FixedNodeName, Length(NodeName)+WhiteSpaceCount*(WSRLength - 1));
+          SetLength(FixedNodeName, Length(NodeName) + WhiteSpaceCount*(WSRLength - 1));
           InsertIndex := 1;
           for J := 1 to Length(NodeName) do
           begin
@@ -436,7 +430,6 @@ begin
   Node := GetNodeFromPath(ParentPath);
 
   if Assigned(Node) and Assigned(Node.Items.ItemNamed[ValueName]) then
-  begin
     try
       Result := Node.Items.ItemNamed[ValueName].Value;
     except
@@ -444,8 +437,7 @@ begin
         Result := Default
       else
         raise;
-    end;
-  end
+    end
   else
   if StorageOptions.DefaultIfValueNotExists then
     Result := Default
@@ -582,8 +574,7 @@ begin
       I := 0;
       repeat
         Name := Node.Items[I].Name;
-        Result := not AnsiSameText(cCount, Name) and
-          not NameIsListItem(Name);
+        Result := not AnsiSameText(cCount, Name) and not NameIsListItem(Name);
         Inc(I);
       until (I = Node.Items.Count) or Result;
     finally
@@ -634,12 +625,10 @@ begin
 
         // If the name is the same as the root AND the first in 
         if not ((I = 0) and (NodeName = Xml.Root.Name)) then
-        begin
           if Assigned(Node.Items.ItemNamed[NodeName]) then
             Node := Node.Items.ItemNamed[NodeName]
           else
             Exit;
-        end;
       end;
     finally
       NodeList.Free;
@@ -677,7 +666,6 @@ begin
   Node := GetNodeFromPath(ParentPath);
 
   if Assigned(Node) and Assigned(Node.Items.ItemNamed[ValueName]) then
-  begin
     try
       Result := Node.Items.ItemNamed[ValueName].BoolValue;
     except
@@ -685,8 +673,7 @@ begin
         Result := Default
       else
         raise;
-    end;
-  end
+    end
   else
   if StorageOptions.DefaultIfValueNotExists then
     Result := Default
@@ -731,7 +718,7 @@ end;
 
 procedure TJvAppXMLFileStorage.Flush;
 begin
-  if (FullFileName <> '') and not Readonly then
+  if (FullFileName <> '') and not ReadOnly then
     Xml.SaveToFile(FullFileName);
 end;
 
@@ -741,18 +728,18 @@ begin
     Xml.LoadFromFile(FullFileName);
 end;
 
-//=== { Common procedures } ===============================================
+//=== { Common procedures } ==================================================
 
 procedure StorePropertyStoreToXmlFile(APropertyStore: TJvCustomPropertyStore;
   const AFileName: string; const AAppStoragePath: string = '');
 var
-  AppStorage: TJvAppXmlFileStorage;
+  AppStorage: TJvAppXMLFileStorage;
   SaveAppStorage: TJvCustomAppStorage;
   SaveAppStoragePath: string;
 begin
   if not Assigned(APropertyStore) then
     Exit;
-  AppStorage := TJvAppXmlFileStorage.Create(nil);
+  AppStorage := TJvAppXMLFileStorage.Create(nil);
   try
     AppStorage.Location := flCustom;
     AppStorage.FileName := AFileName;
@@ -774,13 +761,13 @@ end;
 procedure LoadPropertyStoreFromXmlFile(APropertyStore: TJvCustomPropertyStore;
   const AFileName: string; const AAppStoragePath: string = '');
 var
-  AppStorage: TJvAppXmlFileStorage;
+  AppStorage: TJvAppXMLFileStorage;
   SaveAppStorage: TJvCustomAppStorage;
   SaveAppStoragePath: string;
 begin
   if not Assigned(APropertyStore) then
     Exit;
-  AppStorage := TJvAppXmlFileStorage.Create(nil);
+  AppStorage := TJvAppXMLFileStorage.Create(nil);
   try
     AppStorage.Location := flCustom;
     AppStorage.FileName := AFileName;

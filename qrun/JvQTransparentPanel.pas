@@ -44,7 +44,7 @@ type
   private
     FBackground: TBitmap;
   protected
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure CaptureBackground;
     procedure Paint; override;
   public
@@ -111,10 +111,10 @@ begin
     inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-function TJvTransparentPanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvTransparentPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if csDesigning in ComponentState then
-    Result := inherited DoEraseBackground(Canvas, Param)
+    Result := inherited DoPaintBackground(Canvas, Param)
   else
   begin
     CaptureBackground;

@@ -279,10 +279,12 @@ type
 
 implementation
 
+
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+
 
 //=== { TJvXPCustomButtonActionLink } ========================================
 
@@ -795,7 +797,7 @@ begin
     begin
       Bitmap := TBitmap.Create;
       try
-        Bitmap.LoadFromResourceName(hInstance, PChar('XP' + Copy(GetEnumName(TypeInfo(TJvXPToolType),
+        Bitmap.LoadFromResourceName(HInstance, PChar('XP' + Copy(GetEnumName(TypeInfo(TJvXPToolType),
           Ord(FToolType)), 3, MAXINT)));
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
           JvXPColorizeBitmap(Bitmap, clWhite)
@@ -887,6 +889,7 @@ begin
   LockedInvalidate;
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -902,6 +905,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.
 

@@ -419,6 +419,7 @@ end;
 
 procedure TJvFindReplace.Notification(AComponent: TComponent; Operation: TOperation);
 begin
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FEditControl) then
     FEditControl := nil;
 end;

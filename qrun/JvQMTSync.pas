@@ -39,10 +39,12 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  QWindows, JvQMTConsts;
+  QWindows,
+  JvQMTConsts;
 
 type
   TMTSynchroObject = class(TSynchroObject)
@@ -103,10 +105,10 @@ type
 
 implementation
 
-uses
+uses 
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
+  {$ENDIF UNITVERSIONING}
   JvQResources, 
   JvQMTThreading;
 
@@ -319,15 +321,14 @@ end;
 
 procedure TMTSimpleEvent.ResetEvent;
 begin
-  OutputDebugString('TMTSimpleEvent ResetEvent');
   QWindows.ResetEvent(FHandle);
 end;
 
 procedure TMTSimpleEvent.SetEvent;
 begin
-  OutputDebugString('TMTSimpleEvent SetEvent');
   QWindows.SetEvent(FHandle);
 end;
+
 
 {$IFDEF UNITVERSIONING}
 const
@@ -344,5 +345,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.

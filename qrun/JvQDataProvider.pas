@@ -1667,7 +1667,7 @@ type
   end;
   {$IFNDEF TYPEINFO_ON}
   {$TYPEINFO OFF}
-  {$ENDIF TYPEINFO_ON}
+  {$ENDIF !TYPEINFO_ON}
 
 function THackWriter.GetPropPath: string;
 begin
@@ -4974,7 +4974,7 @@ var
   Finder: IJvDataIDSearch;
   {$IFNDEF ViewList_UseFinder}
   ParIdx: Integer;
-  {$ENDIF ViewList_UseFinder}
+  {$ENDIF !ViewList_UseFinder}
 begin
   {$IFDEF ViewList_UseFinder}
   { The easiest way: use IJvDataIDSearch to locate the item given it's ID value. Scans all items

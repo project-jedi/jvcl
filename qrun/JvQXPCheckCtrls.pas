@@ -132,10 +132,12 @@ type
 
 implementation
 
+
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+
 
 //=== { TJvXPCustomCheckControl } ============================================
 
@@ -334,7 +336,7 @@ begin
       Bitmap := TBitmap.Create;
       try
         Bitmap.Transparent := True;
-        Bitmap.LoadFromResourceName(hInstance, 'XPCHECKBOX');
+        Bitmap.LoadFromResourceName(HInstance, 'XPCHECKBOX');
         if Theme = WindowsXP then
           JvXPColorizeBitmap(Bitmap, dxColor_Chk_Enb_NmSymb_WXP)
         else
@@ -347,6 +349,7 @@ begin
     end;
   end;
 end;
+
 
 {$IFDEF UNITVERSIONING}
 const
@@ -363,6 +366,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.
 

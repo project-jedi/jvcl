@@ -134,6 +134,10 @@ resourcestring
 
 //=== JvAppRegistryStorage.pas ===============================================
 resourcestring
+  RsRootValueReplaceFmt =
+    'The Default Root Value "%s" has been replaced with "%s".' + #13#10 +
+    'Please change the value in the FileVersionInfo Project Properties.';
+
   RsEUnableToCreateKey = 'Unable to create key ''%s''';
   RsEEnumeratingRegistry = 'Error enumerating registry';
 
@@ -491,6 +495,20 @@ resourcestring
 resourcestring
   RsNoneCaption = '(none)';
 
+//=== JvDBActions.pas, JvDynControlEngineDBTools.pas =========================
+resourcestring
+  RsDBPosDialogCaption = 'Change Current Record Position';
+  RsDBPosCurrentPosition = 'Current Position';
+  RsDBPosNewPosition = 'New Position';
+  RsDBPosMovementType = 'Movement Type';
+  RsDBPosAbsolute = 'Absolute';
+  RsDBPosBackward = 'Backward';
+  RsDBPosForward = 'Forward';
+  RsDBPosPercental = 'Percental';
+  RsSRWPostButtonCaption = '&Post';
+  RsSRWCancelButtonCaption = '&Cancel';
+  RsSRWCloseButtonCaption = 'C&lose';
+
 //=== JvDBControls.pas =======================================================
 resourcestring
   RsInactiveData = 'Closed';
@@ -632,8 +650,8 @@ resourcestring
 //=== JvDynControlEngine.pas =================================================
 resourcestring
   RsEIntfCastError = 'SIntfCastError';
-  RsEUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass';
-  RsENoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass';
+  RsEUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass "%s"';
+  RsENoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass "%s"';
   RsENoFocusControl = 'TJvDynControlEngine.CreateLabelControlPanel: AFocusControl must be assigned';
 
 //=== JvDynControlEngineDB.pas ===============================================
@@ -732,6 +750,84 @@ resourcestring
     'Axis %s = %d' + sLineBreak +
     'Axis %s = %d' + sLineBreak +
     'Axis %s = %d';
+
+  Rs_EDuplicateTrackBar     = 'TrackBar already used by component "%s"';
+  Rs_EUnsupportedColorSpace = 'Unsupported color space "%d"';
+
+//=== JvFullColorDialogs.pas =================================================
+resourcestring
+  RsExpandedCaption = '<< &Hide';
+  RsCollapsedCaption = '&Panels >>';
+
+//=== JvFullColorSpaces.pas ==================================================
+resourcestring
+  RsENoTypeInfo         = 'The class %s contains no run time type info' + sLineBreak +
+    '"Class in module" test cannot be executed';
+  RsEUnnamedAxis        = 'Unnamed Color Axis';
+  RsEUnnamedSpace       = 'Unnamed Color Space';
+  RsEUCS                = 'UCS';
+  RsENoName             = 'No Name';
+  RsECSNotFound         = 'Color Space not found: %d';
+  RsEIllegalID          = 'Color Space ID %d is illegal';
+  RsECSAlreadyExists    = 'Color Space Already exists [ID: %d, Name: %s]';
+  RsEInconvertibleColor = 'TColor value $%.8X cannot be converted to TJvFullColor';
+
+  RsRGB_Red       = 'Red';
+  RsRGB_Green     = 'Green';
+  RsRGB_Blue      = 'Blue';
+  RsRGB_FullName  = 'True Color';
+  RsRGB_ShortName = 'RGB';
+
+  RsHLS_Hue        = 'Hue';
+  RsHLS_Lightness  = 'Lightness';
+  RsHLS_Saturation = 'Saturation';
+  RsHLS_FullName   = 'Chromatic Vision';
+  RsHLS_ShortName  = 'HLS';
+
+  RsCMY_Cyan      = 'Cyan';
+  RsCMY_Magenta   = 'Magenta';
+  RsCMY_Yellow    = 'Yellow';
+  RsCMY_FullName  = 'Substractive Vision';
+  RsCMY_ShortName = 'CMY';
+
+  RsYUV_Y         = 'Y Value';
+  RsYUV_U         = 'U Value';
+  RsYUV_V         = 'V Value';
+  RsYUV_FullName  = 'PC Video';
+  RsYUV_ShortName = 'YUV';
+
+  RsHSV_Hue        = 'Hue';
+  RsHSV_Saturation = 'Saturation';
+  RsHSV_Value      = 'Value';
+  RsHSV_FullName   = 'Rotation Vision';
+  RsHSV_ShortName  = 'HSV';
+
+  RsYIQ_Y         = 'Y';
+  RsYIQ_I         = 'I';
+  RsYIQ_Q         = 'Q';
+  RsYIQ_FullName  = 'NTSC US television standard';
+  RsYIQ_ShortName = 'YIQ';
+
+  RsYCC_Y         = 'Y';
+  RsYCC_Cr        = 'Cr';
+  RsYCC_Cb        = 'Cb';
+  RsYCC_FullName  = 'YCrCb';
+  RsYCC_ShortName = 'YCC';
+
+  RsXYZ_X         = 'Y';
+  RsXYZ_Y         = 'Y';
+  RsXYZ_Z         = 'Z';
+  RsXYZ_FullName  = 'CIE XYZ';
+  RsXYZ_ShortName = 'XYZ';
+
+  RsLAB_L         = 'L';
+  RsLAB_A         = 'A';
+  RsLAB_B         = 'B';
+  RsLAB_FullName  = 'CIE LAB';
+  RsLAB_ShortName = 'LAB';
+
+  RsDEF_FullName  = 'Delphi predefined colors';
+  RsDEF_ShortName = 'DEF';
 
 //=== Jvg3DColors.pas ========================================================
 
@@ -1516,6 +1612,42 @@ resourcestring
   RsEMaxNumberOfIDsExceededd = 'Max number of ID''s exceeded (%d)';
   RsEMaxStackSizeExceededd = 'Max stack size exceeded (%d)';
 
+//=== JvProgramVersionCheck.pas ==============================================
+resourcestring
+  RsPVFailedUnableToConnectTo = 'Failed: Unable to connect to %s';
+  RsPVFailedUnableToGet = 'Failed: Unable to get %s';
+  RsPVDownloadFailed = 'Failed: %s';
+  RsPVDefaultVersioninfoFileName = 'versioninfo.ini';
+  RsPVTempFileNameExtension = '.temp';
+  RsPVSiceB = '%6f B';
+  RsPVSiceKB = '%6.2f KB';
+  RsPVSiceMB = '%6.2f MB';
+  RsPVSiceGB = '%6.2f GB';
+  RsPVCReleaseTypeAlpha = 'Alpha';
+  RsPVCReleaseTypeBeta = 'Beta';
+  RsPVCReleaseTypeProduction = 'Production';
+
+  RsPVCDownloading = 'Downloading ...';
+  RsPVCDialogCaption = '%s Upgrade Check';
+  RsPVCDialogExecuteButton = '&Execute';
+  RsPVCNewVersionAvailable = 'A new version (%s) of %s is available!';
+  RsPVCChooseWhichVersion = 'Which &version do you want to install?';
+  RsPVCChooseOperation = '&Choose Operation';
+  RsPVCOperationIgnore = 'I&gnore';
+  RsPVCOperationDownloadOnly = 'Download/Copy &Only';
+  RsPVCOperationDownloadInstall = 'Download/Copy and &Install';
+  RsPVCWhatNewInS = 'What''s new in %s';
+  RsPVCChangesBetween = 'Changes between %s and %s';
+  RsPVCFileDownloadNotSuccessful =
+    'The file download was not successful!' + sLineBreak + 'Please try again manually.';
+  RsPVCDownloadSuccessfulInstallManually =
+    'The file download was successful.' + sLineBreak + 'Install manually from: %s';
+  RsPVCErrorStartingSetup = 'Error starting the setup process.';
+  RsPVCDownloadSuccessfullInstallNow =
+    'The file download was successful.' + sLineBreak +
+    'Do you want to close and install?';
+  RsPVInfoButtonCaption = 'Info';
+
 //=== JvPrvwRender.pas =======================================================
 resourcestring
   RsEAPrintPreviewComponentMustBeAssigne = 'A PrintPreview component must be assigned in CreatePreview!';
@@ -2094,86 +2226,6 @@ resourcestring
   RsFounds = 'Found %s';
   RsToday = 'Today ';
 
-
-//=== JvFullColorCtrls.pas =========================================================
-resourcestring
-  Rs_EDuplicateTrackBar     = 'TrackBar already used by component "%s"';
-  Rs_EUnsupportedColorSpace = 'Unsupported color space "%d"';
-
-//=== JvFullColorDialogs.pas =========================================================
-resourcestring
-  RsExpandedCaption = '<< &Hide';
-  RsCollapsedCaption = '&Panels >>';
-
-//=== JvFullColorSpaces.pas =========================================================
-resourcestring
-  RsENoTypeInfo         = 'The class %s contains no run time type info' + sLineBreak +
-    '"Class in module" test cannot be executed';
-  RsEUnnamedAxis        = 'Unnamed Color Axis';
-  RsEUnnamedSpace       = 'Unnamed Color Space';
-  RsEUCS                = 'UCS';
-  RsENoName             = 'No Name';
-  RsECSNotFound         = 'Color Space not found: %d';
-  RsEIllegalID          = 'Color Space ID %d is illegal';
-  RsECSAlreadyExists    = 'Color Space Already exists [ID: %d, Name: %s]';
-  RsEInconvertibleColor = 'TColor value $%.8X cannot be converted to TJvFullColor';
-
-  RsRGB_Red       = 'Red';
-  RsRGB_Green     = 'Green';
-  RsRGB_Blue      = 'Blue';
-  RsRGB_FullName  = 'True Color';
-  RsRGB_ShortName = 'RGB';
-
-  RsHLS_Hue        = 'Hue';
-  RsHLS_Lightness  = 'Lightness';
-  RsHLS_Saturation = 'Saturation';
-  RsHLS_FullName   = 'Chromatic Vision';
-  RsHLS_ShortName  = 'HLS';
-
-  RsCMY_Cyan      = 'Cyan';
-  RsCMY_Magenta   = 'Magenta';
-  RsCMY_Yellow    = 'Yellow';
-  RsCMY_FullName  = 'Substractive Vision';
-  RsCMY_ShortName = 'CMY';
-
-  RsYUV_Y         = 'Y Value';
-  RsYUV_U         = 'U Value';
-  RsYUV_V         = 'V Value';
-  RsYUV_FullName  = 'PC Video';
-  RsYUV_ShortName = 'YUV';
-
-  RsHSV_Hue        = 'Hue';
-  RsHSV_Saturation = 'Saturation';
-  RsHSV_Value      = 'Value';
-  RsHSV_FullName   = 'Rotation Vision';
-  RsHSV_ShortName  = 'HSV';
-
-  RsYIQ_Y         = 'Y';
-  RsYIQ_I         = 'I';
-  RsYIQ_Q         = 'Q';
-  RsYIQ_FullName  = 'NTSC US television standard';
-  RsYIQ_ShortName = 'YIQ';
-
-  RsYCC_Y         = 'Y';
-  RsYCC_Cr        = 'Cr';
-  RsYCC_Cb        = 'Cb';
-  RsYCC_FullName  = 'YCrCb';
-  RsYCC_ShortName = 'YCC';
-
-  RsXYZ_X         = 'Y';
-  RsXYZ_Y         = 'Y';
-  RsXYZ_Z         = 'Z';
-  RsXYZ_FullName  = 'CIE XYZ';
-  RsXYZ_ShortName = 'XYZ';
-
-  RsLAB_L         = 'L';
-  RsLAB_A         = 'A';
-  RsLAB_B         = 'B';
-  RsLAB_FullName  = 'CIE LAB';
-  RsLAB_ShortName = 'LAB';
-
-  RsDEF_FullName  = 'Delphi predefined colors';
-  RsDEF_ShortName = 'DEF';
 
 //=== not taken into JVCL ====================================================
 {

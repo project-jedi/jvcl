@@ -188,7 +188,7 @@ type
 
     procedure DoExit; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
@@ -845,9 +845,9 @@ begin
   RedrawControl(False);
 end;
 
-function TJvCustomRollOut.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomRollOut.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  //  inherited DoEraseBackground(Canvas, Param);
+  //  inherited DoPaintBackground(Canvas, Param);
   Result := False;
 end;
 
