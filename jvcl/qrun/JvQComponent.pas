@@ -66,13 +66,17 @@ type
   function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
     Flags: Cardinal): LongBool;
 
+type
+  TJvToolWindow = class(TJvExToolWindow);
+
+
 
 type
   TJvComponent = class(TComponent)
   private
     FAboutJVCL: TJVCLAboutInfo;
-  published  
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False; 
+  published
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvGraphicControl = class(TJvExGraphicControl);

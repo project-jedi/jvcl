@@ -30,14 +30,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQDBUtils;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  Classes, SysUtils, DB, IniFiles,
+  Classes, SysUtils, DB,
   JvQAppStorage;
 
 type
@@ -48,9 +48,9 @@ type
   private
     FErrPos: Integer;
   public
-    // The dummy parameter is only there fore BCB compatibility so that
+    // The dummy parameter is only there for BCB compatibility so that
     // when the hpp file gets generated, this constructor generates
-    // a C++ constructor that doesn't already exists
+    // a C++ constructor that doesn't already exist
     constructor Create(const AMessage: string; AErrPos: Integer; DummyForBCB: Integer = 0); overload;
     property ErrPos: Integer read FErrPos;
   end;
@@ -88,7 +88,6 @@ type
 
   TCreateLocateObject = function: TJvLocateObject;
 
-// (rom) changed to var
 var
   CreateLocateObject: TCreateLocateObject = nil;
 
@@ -149,13 +148,13 @@ const
 const
   ServerDateFmt: string[50] = sdfStandard16;
 
-  {.$NODEFINE ftNonTextTypes}
-  (*$HPPEMIT 'namespace JvDBUtils'*)
-  (*$HPPEMIT '{'*)
-  (*$HPPEMIT '#define ftNonTextTypes (System::Set<TFieldType, ftUnknown, ftCursor> () \'*)
-  (*$HPPEMIT '        << ftBytes << ftVarBytes << ftBlob << ftMemo << ftGraphic \'*)
-  (*$HPPEMIT '        << ftFmtMemo << ftParadoxOle << ftDBaseOle << ftTypedBinary << ftCursor )'*)
-  (*$HPPEMIT '}'*)
+{.$NODEFINE ftNonTextTypes}
+(*$HPPEMIT 'namespace JvDBUtils'*)
+(*$HPPEMIT '{'*)
+(*$HPPEMIT '#define ftNonTextTypes (System::Set<TFieldType, ftUnknown, ftCursor> () \'*)
+(*$HPPEMIT '        << ftBytes << ftVarBytes << ftBlob << ftMemo << ftGraphic \'*)
+(*$HPPEMIT '        << ftFmtMemo << ftParadoxOle << ftDBaseOle << ftTypedBinary << ftCursor )'*)
+(*$HPPEMIT '}'*)
 
 type
   Largeint = Longint;
@@ -167,11 +166,15 @@ procedure _DBError(const Msg: string);
 
 implementation
 
-uses 
-  Variants, 
-  DBConsts, Math,
-  QForms, QControls, QDialogs,
-  JvQConsts, JvQResources, JvQTypes, JvQJVCLUtils, JvQJCLUtils;
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  DBConsts, Math, QControls, QForms, QDialogs,
+  JvQJVCLUtils, JvQJCLUtils, JvQTypes, JvQConsts, JvQResources;
 
 { Utility routines }
 
@@ -279,7 +282,7 @@ begin
   with DataSet do
   begin
     First;
-    while not EOF do
+    while not Eof do
     begin
       if MatchesLookup(FLookupField) then
       begin
@@ -410,12 +413,12 @@ var
   Temp: string;
 begin
   Temp := Field.AsString;
-  if not FLookupExact then
+  if not LookupExact then
     SetLength(Temp, Min(Length(FLookupValue), Length(Temp)));
-  if FCaseSensitive then
-    Result := AnsiCompareStr(Temp, FLookupValue) = 0
+  if CaseSensitive then
+    Result := AnsiSameStr(Temp, LookupValue)
   else
-    Result := AnsiCompareText(Temp, FLookupValue) = 0;
+    Result := AnsiSameText(Temp, LookupValue);
 end;
 
 function CreateLocate(DataSet: TDataSet): TJvLocateObject;
@@ -435,9 +438,10 @@ function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
 var
   FieldCount: Integer;
   Fields: TList;
+  Fld : TField;                    {BG}   //else BAD mem leak on 'Field.asString'
   Bookmark: TBookmarkStr;
 
-  function CompareField(Field: TField; Value: Variant): Boolean;
+  function CompareField(var Field: TField; Value: Variant): Boolean; {BG}
   var
     S: string;
   begin
@@ -451,9 +455,9 @@ var
         if loPartialKey in Options then
           Delete(S, Length(Value) + 1, MaxInt);
         if loCaseInsensitive in Options then
-          Result := AnsiCompareText(S, Value) = 0
+          Result := AnsiSameText(S, Value)
         else
-          Result := AnsiCompareStr(S, Value) = 0;
+          Result := AnsiSameStr(S, Value);
       end;
     end
     else
@@ -465,12 +469,18 @@ var
     I: Integer;
   begin
     if FieldCount = 1 then
-      Result := CompareField(TField(Fields.First), KeyValues)
+    begin
+      Fld := TField(Fields.First);      {BG}
+      Result := CompareField(Fld, KeyValues)  {BG}
+    end
     else
     begin
       Result := True;
       for I := 0 to FieldCount - 1 do
-        Result := Result and CompareField(TField(Fields[I]), KeyValues[I]);
+      begin
+        Fld := TField(Fields[I]);                  {BG}
+        Result := Result and CompareField(Fld, KeyValues[I]);  {BG}
+      end;
     end;
   end;
 
@@ -479,7 +489,7 @@ begin
   with DataSet do
   begin
     CheckBrowseMode;
-    if Bof and Eof then
+    if IsEmpty then
       Exit;
   end;
   Fields := TList.Create;
@@ -496,7 +506,7 @@ begin
         with DataSet do
         begin
           First;
-          while not EOF do
+          while not Eof do
           begin
             Result := CompareRecord;
             if Result then
@@ -909,6 +919,22 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

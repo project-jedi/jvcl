@@ -57,6 +57,15 @@ const
   DefHintShortPause = DefHintPause div 10;
   DefHintHidePause = DefHintPause * 5;
 
+
+type
+  { short names }
+  TUIEffect = ( General, AnimateMenu, FadeMenu, AnimateCombo, AnimateTooltip, FadeTooltip );
+  TUIEffects = set of TUIEffect;
+
+
+
+
 type
   TJvAppEvents = class(TJvComponent)
   private
@@ -110,7 +119,11 @@ type
     function GetMouseDragImmediate: Boolean;
     function GetMouseDragThreshold: Integer;
     procedure SetMouseDragImmediate(Value: Boolean);
-    procedure SetMouseDragThreshold(Value: Integer); 
+    procedure SetMouseDragThreshold(Value: Integer);  
+    function GetEffects: TUIEffects;
+    function GetHintFont: TFont;
+    procedure SetEffects(Value: TUIEffects);
+    procedure SetHintFont(Value: TFont); 
   protected
     procedure Loaded; override; 
   public
@@ -120,7 +133,8 @@ type
     procedure CancelDispatch;
   published
     property Chained: Boolean read FChained write FChained default True;
-    property HintColor: TColor read GetHintColor write SetHintColor default DefHintColor;
+    property HintColor: TColor read GetHintColor write SetHintColor default DefHintColor; 
+    property HintFont: TFont read GetHintFont write SetHintFont; 
     property HintPause: Integer read GetHintPause write SetHintPause default DefHintPause;
     property ShowHint: Boolean read GetShowHint write SetShowHint default True;
     property UpdateFormatSettings: Boolean read GetUpdateFormatSettings
@@ -133,6 +147,7 @@ type
       default True;
     property HintShortCuts: Boolean read GetHintShortCuts write SetHintShortCuts
       default True; 
+    property Effects: TUIEffects read GetEffects write SetEffects;  
     property MouseDragImmediate: Boolean read GetMouseDragImmediate
       write SetMouseDragImmediate default True;
     property MouseDragThreshold: Integer read GetMouseDragThreshold
@@ -743,6 +758,29 @@ begin
   if not (csDesigning in ComponentState) then
     Application.ShowMainForm := Value;
 end;
+
+
+function TJvAppEvents.GetEffects: TUIEffects;
+begin
+  Result := TUIEffects(Application.Effects);
+end;
+
+procedure TJvAppEvents.SetEffects(Value: TUIEffects);
+begin
+  Application.Effects := TAppEffects(Value);
+end;
+
+function TJvAppEvents.GetHintFont: TFont;
+begin
+  Result := Screen.HintFont;
+end;
+
+procedure TJvAppEvents.SetHintFont(Value: TFont);
+begin
+  Screen.HintFont := Value;
+end;
+
+
 
 
 

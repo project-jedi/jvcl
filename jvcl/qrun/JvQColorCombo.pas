@@ -45,7 +45,7 @@ interface
 uses
   SysUtils, Classes,
   QForms, QControls, QDialogs, QGraphics, QStdCtrls, Qt,
-  QWindows, JvQComboBox;
+  QWindows, JvQCombobox;
 
 type
   TJvNewColorEvent = procedure(Sender: TObject; Color: TColor; var DisplayName: string; var AllowAdd: Boolean) of
@@ -226,7 +226,7 @@ begin
   finally
     ReleaseDC(0, DC);
   end;
-  Result := TM.tmHeight + 2;
+  Result := TM.tmHeight {$IFDEF MSWINDOWS} + 2 {$ENDIF MSWINDOWS};
 end;
 
 function Max(Val1, Val2: Integer): Integer;

@@ -1235,7 +1235,8 @@ begin
   FButton := TJvEditButton.Create(Self);
   FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
   FButton.Visible := True;
-  FButton.Parent := FBtnControl; 
+  FButton.Parent := FBtnControl;
+  FButton.Align := alClient;
   TJvEditButton(FButton).OnClick := EditButtonClick;
   FAlwaysEnableButton := False;
   (* ++ RDB ++ *)
