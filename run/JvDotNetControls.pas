@@ -227,14 +227,6 @@ uses
 
 //=== TJvDotNetCheckListBox ==================================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetCheckListBox.Create
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
-
 constructor TJvDotNetCheckListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -242,43 +234,17 @@ begin
   WindowProc := InternalWindowProc;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetCheckListBox.Destroy
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvDotNetCheckListBox.Destroy;
 begin
   WindowProc := FOldWindowProc;
   inherited Destroy;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetCheckListBox.InternalWindowProc
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: var Msg: TMessage
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvDotNetCheckListBox.InternalWindowProc(var Msg: TMessage);
 begin
   FOldWindowProc(Msg);
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
-
-//=== TJvDotNetEdit ==========================================================
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetEdit.Create
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
 
 constructor TJvDotNetEdit.Create(AOwner: TComponent);
 begin
@@ -287,27 +253,11 @@ begin
   WindowProc := InternalWindowProc;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetEdit.Destroy
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvDotNetEdit.Destroy;
 begin
   WindowProc := FOldWindowProc;
   inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetEdit.InternalWindowProc
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: var Msg: TMessage
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvDotNetEdit.InternalWindowProc(var Msg: TMessage);
 begin
@@ -317,14 +267,6 @@ end;
 
 //=== TJvDotNetHotKey ========================================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetHotKey.Create
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
-
 constructor TJvDotNetHotKey.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -332,27 +274,11 @@ begin
   WindowProc := InternalWindowProc;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetHotKey.Destroy
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvDotNetHotKey.Destroy;
 begin
   WindowProc := FOldWindowProc;
   inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetHotKey.InternalWindowProc
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: var Msg: TMessage
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvDotNetHotKey.InternalWindowProc(var Msg: TMessage);
 begin
@@ -362,14 +288,6 @@ end;
 
 //=== TJvDotNetListBox =======================================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetListBox.Create
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
-
 constructor TJvDotNetListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -377,27 +295,11 @@ begin
   WindowProc := InternalWindowProc;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetListBox.Destroy
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvDotNetListBox.Destroy;
 begin
   WindowProc := FOldWindowProc;
   inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetListBox.InternalWindowProc
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: var Msg: TMessage
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvDotNetListBox.InternalWindowProc(var Msg: TMessage);
 begin
@@ -407,14 +309,6 @@ end;
 
 //=== TJvDotNetListView ======================================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetListView.Create
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
-
 constructor TJvDotNetListView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -422,27 +316,11 @@ begin
   WindowProc := InternalWindowProc;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetListView.Destroy
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvDotNetListView.Destroy;
 begin
   WindowProc := FOldWindowProc;
   inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetListView.InternalWindowProc
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: var Msg: TMessage
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvDotNetListView.InternalWindowProc(var Msg: TMessage);
 begin
@@ -452,14 +330,6 @@ end;
 
 //=== TJvDotNetMaskEdit ======================================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetMaskEdit.Create
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
-
 constructor TJvDotNetMaskEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -467,27 +337,11 @@ begin
   WindowProc := InternalWindowProc;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetMaskEdit.Destroy
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvDotNetMaskEdit.Destroy;
 begin
   WindowProc := FOldWindowProc;
   inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetMaskEdit.InternalWindowProc
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: var Msg: TMessage
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvDotNetMaskEdit.InternalWindowProc(var Msg: TMessage);
 begin
@@ -497,14 +351,6 @@ end;
 
 //=== TJvDotNetMemo ==========================================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetMemo.Create
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
-
 constructor TJvDotNetMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -512,27 +358,11 @@ begin
   WindowProc := InternalWindowProc;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetMemo.Destroy
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvDotNetMemo.Destroy;
 begin
   WindowProc := FOldWindowProc;
   inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetMemo.InternalWindowProc
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: var Msg: TMessage
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvDotNetMemo.InternalWindowProc(var Msg: TMessage);
 begin
@@ -542,14 +372,6 @@ end;
 
 //=== TJvDotNetRichEdit ======================================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetRichEdit.Create
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
-
 constructor TJvDotNetRichEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -557,27 +379,11 @@ begin
   WindowProc := InternalWindowProc;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetRichEdit.Destroy
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvDotNetRichEdit.Destroy;
 begin
   WindowProc := FOldWindowProc;
   inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetRichEdit.InternalWindowProc
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: var Msg: TMessage
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvDotNetRichEdit.InternalWindowProc(var Msg: TMessage);
 begin
@@ -587,14 +393,6 @@ end;
 
 //=== TJvDotNetScrollBox =====================================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetScrollBox.Create
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
-
 constructor TJvDotNetScrollBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -602,27 +400,11 @@ begin
   WindowProc := InternalWindowProc;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetScrollBox.Destroy
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvDotNetScrollBox.Destroy;
 begin
   WindowProc := FOldWindowProc;
   inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetScrollBox.InternalWindowProc
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: var Msg: TMessage
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvDotNetScrollBox.InternalWindowProc(var Msg: TMessage);
 begin
@@ -632,14 +414,6 @@ end;
 
 //=== TJvDotNetTreeView ======================================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetTreeView.Create
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
-
 constructor TJvDotNetTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -647,27 +421,11 @@ begin
   WindowProc := InternalWindowProc;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetTreeView.Destroy
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvDotNetTreeView.Destroy;
 begin
   WindowProc := FOldWindowProc;
   inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvDotNetTreeView.InternalWindowProc
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: var Msg: TMessage
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvDotNetTreeView.InternalWindowProc(var Msg: TMessage);
 begin
