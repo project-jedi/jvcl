@@ -117,11 +117,11 @@ type
     {$IFDEF VCL}
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); override;
     procedure SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE); override;
+    {$ENDIF VCL}
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
     procedure AssignIconsToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
-    {$ENDIF VCL}
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
     property Animated: Boolean read GetAnimated write SetAnimated;
     property Author: string read GetAuthor;
@@ -185,8 +185,8 @@ begin
   Result := Value + (Value mod 2); // Up Value to nearest word boundary
 end;
 
-{$IFDEF VCL}
 procedure DecreaseBMPColors(Bmp: TBitmap; Colors: Integer);
+{$IFDEF VCL}
 var
   Stream: TStream;
 begin
@@ -201,6 +201,11 @@ begin
   end;
 end;
 {$ENDIF VCL}
+{$IFDEF VisualCLX}
+begin
+  // TODO
+end;
+{$ENDIF VisualCLX}
 
 function GetDInColors(BitCount: Word): Integer;
 begin
@@ -421,11 +426,9 @@ begin
   else
   if Dest is TBitmap then
   begin
-    {$IFDEF VCL}
     if FrameCount > 0 then
       AssignToBitmap(TBitmap(Dest), TBitmap(Dest).Canvas.Brush.Color, True, False)
     else
-    {$ENDIF VCL}
       Dest.Assign(nil);
   end
   else
@@ -986,8 +989,6 @@ begin
       {$ENDIF VisualCLX}
 end;
 
-{$IFDEF VCL}
-
 procedure TJvAni.AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
   DecreaseColors, Vertical: Boolean);
 var
@@ -1079,8 +1080,6 @@ begin
     Temp.Free;
   end;
 end;
-
-{$ENDIF VCL}
 
 initialization
   Classes.RegisterClass(TJvAni);

@@ -89,10 +89,8 @@ type
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
     procedure LoadFromFile(const FileName: string); virtual;
-    {$IFDEF VCL} // DecreaseBMPColors is not VCLX compatible
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
-      DecreaseColors, Vertical: Boolean);
-    {$ENDIF VCL}
+      DecreaseColors, Vertical: Boolean); // DecreaseBMPColors does nothing under VisualCLX
     property IconCount: Integer read GetIconCount;
     property FrameCount: Integer read GetFrameCount;
     property Icons[Index: Integer]: TIcon read GetIcons;
@@ -116,8 +114,8 @@ begin
   Result := Value + (Value mod 2); // Up Value to nearest word boundary
 end;
 
-{$IFDEF VCL}
 procedure DecreaseBMPColors(Bmp: TBitmap; Colors: Integer);
+{$IFDEF VCL}
 var
   Stream: TStream;
 begin
@@ -130,8 +128,13 @@ begin
       Stream.Free;
     end;
   end;
-end;
 {$ENDIF VCL}
+{$IFDEF VisualCLX}
+begin
+  // TODO
+end;
+{$ENDIF VisualCLX}
+end;
 
 function GetDInColors(BitCount: Word): Integer;
 begin
@@ -383,11 +386,9 @@ begin
   else
   if Dest is TBitmap then
   begin
-    {$IFDEF VCL}
     if IconCount > 0 then
       AssignToBitmap(TBitmap(Dest), TBitmap(Dest).Canvas.Brush.Color, True, False)
     else
-    {$ENDIF VCL}
       Dest.Assign(nil);
   end
   else
@@ -788,7 +789,6 @@ begin
       {$ENDIF VisualCLX}
 end;
 
-{$IFDEF VCL}
 procedure TJvAnimatedCursorImage.AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
   DecreaseColors, Vertical: Boolean);
 var
@@ -834,7 +834,6 @@ begin
     Temp.Free;
   end;
 end;
-{$ENDIF VCL}
 
 end.
 
