@@ -142,7 +142,7 @@ type
     property Mode: TJvImageListMode read FMode write SetMode default imPicture;
       // Mode specifies which property the component should use.
       //   imClassic: be a normal TImageList
-      //   imPicture: splitt the image in Picture
+      //   imPicture: split the image in Picture
       //   imResourceIds: load the images by ResourceIds
   end;
 
