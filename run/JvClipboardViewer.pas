@@ -91,6 +91,8 @@ type
     property DragKind;
     property ParentBiDiMode;
     property ViewFormat;
+    property OnImage;
+    property OnText;
     property OnChange;
     property OnContextPopup;
     property OnStartDrag;

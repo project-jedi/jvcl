@@ -133,7 +133,7 @@ type
     Cr = #13;
     Lf = #10;
 {$IFNDEF COMPILER6_UP}
-    sLineBreak = #10#13;
+    SLineBreak = #13#10;
 {$ENDIF}    
 
 type
