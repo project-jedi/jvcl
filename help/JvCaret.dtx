@@ -81,13 +81,6 @@ Description
   CreateCaret will generate and show the caret, provided the <LINK TJvCaret.CaretOwner, caret owner>
   has focus. Raises an EWin32Error exception if the creation failed at the API level.
 ----------------------------------------------------------------------------------------------------
-@@TJvCaret.DestroyCaret
-Summary
-  Hides and destroys the caret.
-Description
-  DestroyCaret will hide and destroy the caret, provided the <LINK TJvCaret.CaretOwner, caret owner>
-  has focus and a caret was perviously created with a call to CreateCaret.
-----------------------------------------------------------------------------------------------------
 @@TJvCaret.DefineProperties
 Summary
   Provides methods to read and write the bitmap.
@@ -97,6 +90,13 @@ Description
   property on another nested persitent, a pseudoproperty is used to save the Bitmap.
 Parameters
   Filer - The filer component used to for loading and saving the component and it's properties.
+----------------------------------------------------------------------------------------------------
+@@TJvCaret.DestroyCaret
+Summary
+  Hides and destroys the caret.
+Description
+  DestroyCaret will hide and destroy the caret, provided the <LINK TJvCaret.CaretOwner, caret owner>
+  has focus and a caret was perviously created with a call to CreateCaret.
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.EndUpdate
 Summary
@@ -148,7 +148,7 @@ Summary
 Description
   \Write an OnChanged handler to respond to changes in the caret settings.
 ----------------------------------------------------------------------------------------------------
-@@TJvCaret.Updatecount
+@@TJvCaret.UpdateCount
 Summary
   Number of BeginUpdate calls to matched by an EndUpdate.
 Description

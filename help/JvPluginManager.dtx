@@ -1,18 +1,77 @@
 ##Package: Plugin
 ##Status: Review
 ----------------------------------------------------------------------------------------------------
-@@JvPluginMan.pas
+@@JvPluginManager.pas
 Summary
   Contains all code to make an application plugin enabled.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Tim Sullivan
 ----------------------------------------------------------------------------------------------------
+@@EJvCantRegisterPlugInError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@EJvExtensionPlugInError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@EJvInitializationCustomPlugInError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@EJvInitializationPlugInError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@EJvLoadPluginError
+Summary
+  Exception class used for plugin loading errors.
+Description
+  EJvLoadPluginError is the exception class used to denote errors in loading a plugin.
+See Also
+  EJvPluginError
+----------------------------------------------------------------------------------------------------
+@@EJvPlugInError
+Summary
+  Base exception class used for plugins.
+Description
+  EJvPluginError is the base exception class used for plugins.
+See Also
+  EJvLoadPluginError
+----------------------------------------------------------------------------------------------------
+@@TJvAfterCommandsEvent
+<TITLE TJvAfterCommandsEvent type>
+<COMBINE TJvPluginManager.OnAfterNewCommand>
+----------------------------------------------------------------------------------------------------
+@@TJvAfterLoadEvent
+<TITLE TJvAfterLoadEvent type>
+<COMBINE TJvPluginManager.OnAfterLoad>
+----------------------------------------------------------------------------------------------------
+@@TJvBeforeCommandsEvent
+<TITLE TJvBeforeCommandsEvent type>
+<COMBINE TJvPluginManager.OnBeforeNewCommand>
+----------------------------------------------------------------------------------------------------
+@@TJvBeforeLoadEvent
+<TITLE TJvBeforeLoadEvent type>
+<COMBINE TJvPluginManager.OnBeforeLoad>
+----------------------------------------------------------------------------------------------------
+@@TJvPlgInErrorEvent
+<TITLE TJvPlgInErrorEvent type>
+<COMBINE TJvPluginManager.OnPlugInError>
+----------------------------------------------------------------------------------------------------
 @@TJvPluginManager
 JVCLInfo
   GROUP=JVCL.FormsAndApp.Application.Plugins
   FLAG=Component
-----------------------------------------------------------------------------------------------------
 <TITLEIMG TJvPluginManager>
 Summary
   Plugin manager.
@@ -30,16 +89,25 @@ Description
   For more information on writing plugins and make applications plugin enabled, take a look at
   <LINK $JVCL.Info.Plugins, Writing plugins and plugin enabled applications>.
 ----------------------------------------------------------------------------------------------------
-@@TJvPluginManager.PluginFolder
+@@TJvPluginManager.AddCustomPlugin
 Summary
-  Folder to scan for plugins.
+  Adds a plugin to the manager.
 Description
-  LoadPlugins reads this property to determine in which folder to scan for plugins.
+  AddCustomPlugin will add the specified plugin to the list of loaded plugins. The plugin will be
+  registered as a custom plugin and will be initialized with the filename <B>CustomPlugin</B>.
 
-  If this property is left blank, LoadPlugins will search in the folder where the application's
-  executable is located, otherwise it will use whatever folder is put in this property.
+  Just as with loading a plugin directly, each command supported by the plugin will be registered
+  using the OnNewCommand event.
+
+  This method can be used to add plugins embedded in the main application or additional plugins
+  embedded in another plugin DLL or package.
+
+  If the initialization of the plugin fails the method will return False, otherwise True will be
+  returned.
+Parameters
+  PlugIn -  Reference to the TJvPlugin instance to register.
 See Also
-  LoadPlugins, Extension
+  OnNewCommand, LoadPlugin
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginManager.Extension
 Summary
@@ -54,83 +122,17 @@ Description
   If you change Extension to another extension you should not specify the dot. The extension will
   not change when you change the \PluginKind property.
 ----------------------------------------------------------------------------------------------------
-@@TJvPluginManager.PluginKind
+@@TJvPluginManager.GetLoadedPlugins
 Summary
-  Type of plugins to use when loading plugins.
+  Fills the specified string list with the names of the loaded plugins.
 Description
-  LoadPlugins reads this property to determine the type of plugin to specify when loading the
-  plugins that were found.
-
-  When you change the value of this property and the Extension property contains the default
-  extension for the old value, the \Extension will be changed to the default extension for the new
-  plugin type.
-See Also
-  Extension, PluginFolder, LoadPlugins
-----------------------------------------------------------------------------------------------------
-@@TJvPluginManager.OnBeforeLoad
-Summary
-  Event called just before a plugin is loaded.
-Description
-  Write an OnBeforeLoad event handler to take additional action before a plugin is loaded. The
-  Filename parameter contains the filename of the plugin about to be loaded. Set AllowLoad to False
-  to prevent the plugin from being loaded (in which case the OnAfterLoad will not be triggered).
-
-  The OnBeforeLoad event will only occur when LoadPlugins is used to scan for and load all plugins
-  in a folder.
+  GetLoadedPlugins will fill the specified string list with the names of all loaded plugins. The
+  specified string list must be provided by the caller. On entry the list will be cleared.
 Parameters
-  Sender -    Reference to this plugin manager
-  Filename -  Name of the package or DLL to load
-  AllowLoad - Flag to indicate if the plugin should be loaded. Set this to False to prevent the
-              plugin from loading.
+  PlugInList -  A TStrings descendant to receive the names of the loaded plugins in. The list will
+                be empties on entry to this method.
 See Also
-  OnAfterLoad, OnErrorLoading, OnNewCommand, LoadPlugins
-----------------------------------------------------------------------------------------------------
-@@TJvPluginManager.OnAfterLoad
-Summary
-  Event called when a plugin has loaded.
-Description
-  Write an OnAfterLoad event handler to take additional action when a plugin has been loaded. The S
-  parameter will contain the filename of the loaded plugin.
-
-  The OnAfterLoad event will only occur when LoadPlugins is used and if the loading of the plugin
-  wasn't blocked by the OnBeforeLoad event.
-Parameters
-  Sender -  Reference to this plugin manager.
-  S -       Filename of the loaded plugin.
-See Also
-  OnBeforeLoad, OnErrorLoading, OnNewCommand, LoadPlugins
-----------------------------------------------------------------------------------------------------
-@@TJvPluginManager.OnErrorLoading
-Summary
-  Event called when an exception has occured while loading a plugin.
-Description
-  Write an OnErrorLoading event handler to responds to exceptions while loading a plugin. The S
-  parameter will contain the message of the exception.
-
-  The OnErrorLoading event will only occur when an exception occurs while loading a plugin found by
-  a call to LoadPlugins.
-Parameters
-  Sender -  Reference to this plugin manager.
-  S -       Value of the exception message property.
-See Also
-  OnAfterLoad, OnBeforeLoad, OnNewCommand, LoadPlugins
-----------------------------------------------------------------------------------------------------
-@@TJvPluginManager.OnNewCommand
-Summary
-  Event called for each command of a loaded plugin.
-Description
-  Write an OnNewCommand event handler to register a command in a loaded plugin. The event will be
-  called for each command in each loaded plugin. The parameters contain the values of their
-  respective properties in the command.
-Parameters
-  Sender -    Reference to the plugin manager component.
-  ACaption -  The value of the command's <LINK TJvPluginCommand.Caption, Caption> property.
-  AHint -     The value of the command's <LINK TJvPluginCommand.Hint, Hint> property.
-  AData -     The value of the command's <LINK TJvPluginCommand.Data, Data> property.
-  ABitmap -   The value of the command's <LINK TJvPluginCommand.Bitmap, Bitmap> property.
-  AEvent -    The value of the command's <LINK TJvPluginCommand.OnExecute, OnExecute> event.
-See Also
-  OnAfterLoad, OnBeforeLoad, OnErrorLoading, LoadPlugins
+  PluginCount, Plugins
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginManager.LoadPlugin
 Summary
@@ -142,7 +144,7 @@ Description
 
   For each command the plugin provides, the OnNewCommand event is called.
 Parameters
-  Filename -  Name of the DLL or package to load.
+  FileName -  Name of the DLL or package to load.
   PlgKind -   Type of plugin (either plgDLL or plgPackage).
 See Also
   Plugins, LoadPlugins
@@ -172,27 +174,109 @@ See Also
   OnAfterLoad, OnBeforeLoad, OnErrorLoading, OnNewCommand, LoadPlugin, Extension, PluginFolder,
   PluginKind
 ----------------------------------------------------------------------------------------------------
-@@TJvPluginManager.UnloadPlugin
+@@TJvPluginManager.OnAfterLoad
 Summary
-  Unloads the specified plugin.
+  Event called when a plugin has loaded.
 Description
-  UnloadPlugin will unload the plugin at the specified index.
+  Write an OnAfterLoad event handler to take additional action when a plugin has been loaded. The S
+  parameter will contain the filename of the loaded plugin.
+
+  The OnAfterLoad event will only occur when LoadPlugins is used and if the loading of the plugin
+  wasn't blocked by the OnBeforeLoad event.
 Parameters
-  index - Zero-based index into the Plugins array of the plugin to unload.
+  Sender     - Reference to this plugin manager.
+  FileName   - Filename of the loaded plugin.
+  ALibHandle - Description for this parameter
+  AllowLoad  - Description for this parameter
 See Also
-  LoadPlugin, Plugins, PluginCount
+  OnBeforeLoad, OnErrorLoading, OnNewCommand, LoadPlugins
 ----------------------------------------------------------------------------------------------------
-@@TJvPluginManager.GetLoadedPlugins
+@@TJvPluginManager.OnAfterNewCommand
 Summary
-  Fills the specified string list with the names of the loaded plugins.
+  Write here a summary (1 line)
 Description
-  GetLoadedPlugins will fill the specified string list with the names of all loaded plugins. The
-  specified string list must be provided by the caller. On entry the list will be cleared.
+  Write here a description
 Parameters
-  PluginList -  A TStrings descendant to receive the names of the loaded plugins in. The list will
-                be empties on entry to this method.
+  Sender  - Description for this parameter
+  APlugIn - Description for this parameter
 See Also
-  PluginCount, Plugins
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvPluginManager.OnBeforeLoad
+Summary
+  Event called just before a plugin is loaded.
+Description
+  Write an OnBeforeLoad event handler to take additional action before a plugin is loaded. The
+  Filename parameter contains the filename of the plugin about to be loaded. Set AllowLoad to False
+  to prevent the plugin from being loaded (in which case the OnAfterLoad will not be triggered).
+
+  The OnBeforeLoad event will only occur when LoadPlugins is used to scan for and load all plugins
+  in a folder.
+Parameters
+  Sender -    Reference to this plugin manager
+  FileName -  Name of the package or DLL to load
+  AllowLoad - Flag to indicate if the plugin should be loaded. Set this to False to prevent the
+              plugin from loading.
+See Also
+  OnAfterLoad, OnErrorLoading, OnNewCommand, LoadPlugins
+----------------------------------------------------------------------------------------------------
+@@TJvPluginManager.OnBeforeNewCommand
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender  - Description for this parameter
+  APlugIn - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvPluginManager.OnErrorLoading
+Summary
+  Event called when an exception has occured while loading a plugin.
+Description
+  Write an OnErrorLoading event handler to responds to exceptions while loading a plugin. The S
+  parameter will contain the message of the exception.
+
+  The OnErrorLoading event will only occur when an exception occurs while loading a plugin found by
+  a call to LoadPlugins.
+Parameters
+  Sender -  Reference to this plugin manager.
+  S -       Value of the exception message property.
+See Also
+  OnAfterLoad, OnBeforeLoad, OnNewCommand, LoadPlugins
+----------------------------------------------------------------------------------------------------
+@@TJvPluginManager.OnNewCommand
+Summary
+  Event called for each command of a loaded plugin.
+Description
+  Write an OnNewCommand event handler to register a command in a loaded plugin. The event will be
+  called for each command in each loaded plugin. The parameters contain the values of their
+  respective properties in the command.
+Parameters
+  Sender -    Reference to the plugin manager component.
+  ACaption -  The value of the command's <LINK TJvPluginCommand.Caption, Caption> property.
+  AHint -     The value of the command's <LINK TJvPluginCommand.Hint, Hint> property.
+  AData -     The value of the command's <LINK TJvPluginCommand.Data, Data> property.
+  AShortCut - Description for this parameter
+  ABitmap -   The value of the command's <LINK TJvPluginCommand.Bitmap, Bitmap> property.
+  AEvent -    The value of the command's <LINK TJvPluginCommand.OnExecute, OnExecute> event.
+See Also
+  OnAfterLoad, OnBeforeLoad, OnErrorLoading, LoadPlugins
+----------------------------------------------------------------------------------------------------
+@@TJvPluginManager.OnPlugInError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  AError - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginManager.PluginCount
 Summary
@@ -204,13 +288,37 @@ Description
 See Also
   Plugins, GetLoadedPlugins
 ----------------------------------------------------------------------------------------------------
+@@TJvPluginManager.PluginFolder
+Summary
+  Folder to scan for plugins.
+Description
+  LoadPlugins reads this property to determine in which folder to scan for plugins.
+
+  If this property is left blank, LoadPlugins will search in the folder where the application's
+  executable is located, otherwise it will use whatever folder is put in this property.
+See Also
+  LoadPlugins, Extension
+----------------------------------------------------------------------------------------------------
+@@TJvPluginManager.PluginKind
+Summary
+  Type of plugins to use when loading plugins.
+Description
+  LoadPlugins reads this property to determine the type of plugin to specify when loading the
+  plugins that were found.
+
+  When you change the value of this property and the Extension property contains the default
+  extension for the old value, the \Extension will be changed to the default extension for the new
+  plugin type.
+See Also
+  Extension, PluginFolder, LoadPlugins
+----------------------------------------------------------------------------------------------------
 @@TJvPluginManager.Plugins
 Summary
   Array of loaded plugins.
 Description
   Plugins is an array of loaded plugins. The index is zero-based and runs from 0 upto PluginCount-1.
 Parameters
-  index - Zero-based index of the plugin to reference. This value must lie within the range 0 ..
+  Index - Zero-based index of the plugin to reference. This value must lie within the range 0 ..
           PluginCount-1.
 See Also
   PluginCount, GetLoadedPlugins
@@ -234,41 +342,44 @@ Parameters
 See Also
   PluginCount, Plugins, TJvPlugin.SendPluginMessage
 ----------------------------------------------------------------------------------------------------
-@@TJvPluginManager.AddCustomPlugin
+@@TJvPluginManager.UnloadPlugin
 Summary
-  Adds a plugin to the manager.
+  Unloads the specified plugin.
 Description
-  AddCustomPlugin will add the specified plugin to the list of loaded plugins. The plugin will be
-  registered as a custom plugin and will be initialized with the filename <B>CustomPlugin</B>.
-
-  Just as with loading a plugin directly, each command supported by the plugin will be registered
-  using the OnNewCommand event.
-
-  This method can be used to add plugins embedded in the main application or additional plugins
-  embedded in another plugin DLL or package.
-
-  If the initialization of the plugin fails the method will return False, otherwise True will be
-  returned.
+  UnloadPlugin will unload the plugin at the specified index.
 Parameters
-  Plugin -  Reference to the TJvPlugin instance to register.
+  Index - Zero-based index into the Plugins array of the plugin to unload.
 See Also
-  OnNewCommand, LoadPlugin
+  LoadPlugin, Plugins, PluginCount
 ----------------------------------------------------------------------------------------------------
-@@EJvPluginError
-Summary
-  Base exception class used for plugins.
-Description
-  EJvPluginError is the base exception class used for plugins.
-See Also
-  EJvLoadPluginError
+@@TNewCommandEvent
+<TITLE TNewCommandEvent type>
+<COMBINE TJvPluginManager.OnNewCommand>
 ----------------------------------------------------------------------------------------------------
-@@EJvLoadPluginError
+@@TPluginInfo
 Summary
-  Exception class used for plugin loading errors.
+  Type denoting an item in the plugin registration database.
 Description
-  EJvLoadPluginError is the exception class used to denote errors in loading a plugin.
-See Also
-  EJvPluginError
+  TPluginInfo is a type denoting an item in the plugin registration database. It holds information
+  about a plugin.
+----------------------------------------------------------------------------------------------------
+@@TPluginInfo.Handle
+Summary
+  Handle of the DLL or package.
+Description
+  Handle of the DLL or package. This value will be 0 for custom plugins.
+----------------------------------------------------------------------------------------------------
+@@TPluginInfo.PlugIn
+Summary
+  Reference to the TJvPlugin instance.
+Description
+  Reference to the TJvPlugin instance.
+----------------------------------------------------------------------------------------------------
+@@TPluginInfo.PluginKind
+Summary
+  Denotes the type of the plugin.
+Description
+  Denotes the type of the plugin.
 ----------------------------------------------------------------------------------------------------
 @@TPluginKind
 <TITLE TPluginKind type>
@@ -285,17 +396,3 @@ Description
   Plugin is in a runtime package.
 @@TPluginKind.plgCustom
   Plugin is a custom plugin (e.g. plugins embedded in the host application).
-----------------------------------------------------------------------------------------------------
-@@TPluginInfo
-<TITLE TPluginInfo type>
-Summary
-  Type denoting an item in the plugin registration database.
-Description
-  TPluginInfo is a type denoting an item in the plugin registration database. It holds information
-  about a plugin.
-@@TPluginInfo.PluginKind
-  Denotes the type of the plugin.
-@@TPluginInfo.Handle
-  Handle of the DLL or package. This value will be 0 for custom plugins.
-@@TPluginInfo.Plugin
-  Reference to the TJvPlugin instance.

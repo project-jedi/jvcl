@@ -1,5 +1,19 @@
 ##Package: StdCtrls
 ##Status: Completed
+##Skip: TParaTableStyle
+##Skip: TRegisterApp
+##Skip: TRtfToForeign32
+##Skip: TIsFormatCorrect32
+##Skip: TInitConverter32
+##Skip: TGetWriteNames
+##Skip: PFN_RTF
+##Skip: TCchFetchLpszError
+##Skip: TForeignToRtf32
+##Skip: TUninitConverter
+##Skip: TJvAttributeType
+##Skip: FCE
+##Skip: TGetReadNames
+##Skip: TFRegisterConverter
 ----------------------------------------------------------------------------------------------------
 @@JvRichEdit.pas
 Summary
@@ -556,7 +570,7 @@ Description
   \Read CanPaste to determine whether the control can paste any format currently on the clipboard.
 See Also
   CanPaste
---------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.CanRedo
 Summary
   Indicates whether there are any actions in the control \redo queue.
@@ -958,14 +972,6 @@ Parameters
   Sender      - Rich Edit control that has fired this event.
   PercentDone - PercentDone is an approximation of how much of the operation has completed. Use 
                  PercentDone to update the position of a progress bar or other indicator.
-----------------------------------------------------------------------------------------------------
-@@TJvCustomRichEdit.OnCtl3DChanged
-Summary
-  Occurs when the Ctl3D property of the rich edit control changes.
-Description
-  \Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
-See Also
-  OnParentColorChange
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnHorizontalScroll
 Summary
@@ -1721,7 +1727,7 @@ Description
   Use IndentationStyle to specify the indentation style.
 See Also
   LeftIndent, FirstIndent
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TJvParaAttributes.LeftIndent
 Summary
   Specifies the indent, in points, of the paragraph relative to the left margin.

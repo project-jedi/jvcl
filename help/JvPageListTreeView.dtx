@@ -41,24 +41,6 @@ Return Value
   Should return true if the page at AIndex can be activated or false otherwise. If AIndex is outside
   the allowable range for the page list, return false.
 ----------------------------------------------------------------------------------------------------
-@@IPageList.SetActivePageIndex
-Summary
-  Changes the currently active page.
-Description
-  SetActivePageIndex is called by the IPageList consumer when it wants to change the currently active page. A call to
-  SetActivePageIndex is mostly preceded by a call to CanChange and SetActivePageIndex is only called if CanChange returns true
-Parameters
-  AIndex - the new 0-based index of the page to make the active page. If AIndex is outside the range of the page list,
-           the IPageList implementation should do nothing
-----------------------------------------------------------------------------------------------------
-@@IPageList.getPageCount
-Summary
-  Returns the number of available pages.
-Description
-  getPageCount is called by the IPageList consumer when it needs to know how many pages are in the page list.
-Return Value
-  Returns the number of pages in the IPageList implementation or 0 if it is empty.
-----------------------------------------------------------------------------------------------------
 @@IPageList.getPageCaption
 Summary
   Returns the caption for a page.
@@ -72,6 +54,24 @@ Return Value
   A string representing the caption of the page. If AIndex is outside the allowable range, this function should return an
   empty string or the value "unknown" or similar and not raise an exception or generate an error.
 ----------------------------------------------------------------------------------------------------
+@@IPageList.getPageCount
+Summary
+  Returns the number of available pages.
+Description
+  getPageCount is called by the IPageList consumer when it needs to know how many pages are in the page list.
+Return Value
+  Returns the number of pages in the IPageList implementation or 0 if it is empty.
+----------------------------------------------------------------------------------------------------
+@@IPageList.SetActivePageIndex
+Summary
+  Changes the currently active page.
+Description
+  SetActivePageIndex is called by the IPageList consumer when it wants to change the currently active page. A call to
+  SetActivePageIndex is mostly preceded by a call to CanChange and SetActivePageIndex is only called if CanChange returns true
+Parameters
+  AIndex - the new 0-based index of the page to make the active page. If AIndex is outside the range of the page list,
+           the IPageList implementation should do nothing
+----------------------------------------------------------------------------------------------------
 @@TJvCustomPage
 Summary
   TJvCustomPage is the base class for a page used by a page list component.
@@ -79,9 +79,6 @@ Description
   Don't create instances of TJvCustomPage. Instead, use it as a base class to derive new page classes from when
   you implement your own TJvCustomPageList descendant. TJvCustomPage defines and implements the basic behavior for a
   page in a TJvCustomPageList.
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPage.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.Height
 Summary
@@ -130,36 +127,11 @@ Parameters
   DefaultDraw - Variable that determines if the default drawing is to be performed after the event
                  returns. Set this to false to suppress normal drawing of the page.
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPage.OnCtl3DChanged
-Summary
-  Occurs when the Ctl3D property of the control changes.
-Description
-  Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
-----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.OnHide
 Summary
   Occurs when the page is hidden.
 Description
   Write an OnHide event handler to take specific action when the control is hidden.
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPage.OnMouseEnter
-Summary
-  Occurs when the mouse pointer moves into the page.
-Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
-  page.
-See Also
-  OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPage.OnMouseLeave
-Summary
-  Occurs when the mouse pointer moves off the page.
-Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  page. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
-See Also
-  OnMouseEnter
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.OnPaint
 Summary
@@ -237,9 +209,6 @@ Description
 
   Do not create instances of TJvCustomPageList. To put a page list on a form,
   use a descendant of TJvCustomPageList, such as <LINK TJvPageList,TJvPageList>.
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPageList.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.ActivePage
 Summary
@@ -340,31 +309,6 @@ Parameters
   AllowChange - set to false to disallow the change. This parameter is true by default.
 See Also
   OnChange, ActivePage, ActivePageIndex
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPageList.OnCtl3DChanged
-Summary
-  Occurs when the Ctl3D property of the page list changes.
-Description
-  Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPageList.OnMouseEnter
-Summary
-  Occurs when the mouse pointer moves over the page list.
-Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
-  page list.
-See Also
-  OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPageList.OnMouseLeave
-Summary
-  Occurs when the mouse pointer moves off the page list.
-Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  page list. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
-See Also
-  OnMouseEnter
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.OnParentColorChange
 Summary
@@ -498,12 +442,6 @@ Note
   item index as possible.
 See Also
   AddChildFirst, AddChild, AddChildObjectFirst, AddChildObject, AddFirst, Add, AddObjectFirst, AddObject, Insert, TJvPageIndexNode
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPageListTreeView.OnCtl3DChanged
-Summary
-  Occurs when the Ctl3D property of the treeview changes.
-Description
-  Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageListTreeView.OnMouseEnter
 Summary

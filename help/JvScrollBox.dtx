@@ -46,6 +46,9 @@ Description
   END                 Scrolls to the right.
   </TABLE>
 ----------------------------------------------------------------------------------------------------
+@@TJvScrollBox.AboutJVCL
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.Create
 Summary
   Creates and initializes a new TJvScrollBox object.
@@ -61,9 +64,6 @@ Parameters
   AOwner - A component, typically the form, that is responsible for freeing the scroll box.
 See Also
   HintColor, HotTrack
-----------------------------------------------------------------------------------------------------
-@@TJvScrollBox.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.HintColor
 Summary
@@ -111,12 +111,6 @@ Parameters
            determine the key pressed. For more information, search for virtual key codes in the Win32
            Developer's Reference (WIN32.HLP).
   Shift - Indicates whether the Shift, Alt, or Ctrl keys are combined with the keystroke.
-----------------------------------------------------------------------------------------------------
-@@TJvScrollBox.OnCtl3DChanged
-Summary
-  Occurs when the Ctl3D property of the scroll box changes.
-Description
-  \Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.OnHorizontalScroll
 Summary

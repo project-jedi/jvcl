@@ -1,5 +1,57 @@
 ##Package: Dlgs
 ##Status: Locked by: Remko Bonte
+##Skip: EShellOleError
+##Skip: FreePIDL
+##Skip: FreePIDLProc
+##Skip: GetOpenFileNameEx
+##Skip: GetOpenFileNameExProc
+##Skip: GetSaveFileNameEx
+##Skip: GetSaveFileNameExProc
+##Skip: LPSOFTDISTINFO
+##Skip: MIMEAssociationDialogA
+##Skip: MIMEAssociationDialogProcA
+##Skip: MIMEAssociationDialogProcW
+##Skip: NewLinkHere
+##Skip: NewLinkHereProc
+##Skip: SHChangeIcon
+##Skip: SHChangeIconProc
+##Skip: SHChangeIconProcW
+##Skip: SHChangeIconW
+##Skip: SHFindComputer
+##Skip: SHFindComputerProc
+##Skip: SHFindFiles
+##Skip: SHFindFilesProc
+##Skip: SHFormatDrive
+##Skip: SHFormatDriveProc
+##Skip: SHHandleDiskFull
+##Skip: SHHandleDiskFullProc
+##Skip: SHNetConnectionDialog
+##Skip: SHNetConnectionDialogProc
+##Skip: SHObjectProperties
+##Skip: SHObjectPropertiesProc
+##Skip: SHOpenWith
+##Skip: SHOpenWithProc
+##Skip: SHOutOfMemoryMessageBox
+##Skip: SHOutOfMemoryMessageBoxProc
+##Skip: SHRunDialog
+##Skip: SHRunDialogProc
+##Skip: SHShutDownDialog
+##Skip: SHShutDownDialogProc
+##Skip: SHStartNetConnectionDialog
+##Skip: SHStartNetConnectionDialogProc
+##Skip: SOFTDISTINFO
+##Skip: SoftwareUpdateMessageBox
+##Skip: SoftwareUpdateMessageBoxProc
+##Skip: TCplApplet
+##Skip: TJvOpenDialog2000
+##Skip: TJvSaveDialog2000
+##Skip: TOpenFileNameEx
+##Skip: TSoftDistInfo
+##Skip: TSpecialFolderInfo
+##Skip: URLAssociationDialogA
+##Skip: URLAssociationDialogProcA
+##Skip: URLAssociationDialogProcW
+##Skip: _tagSOFTDISTINFO
 ----------------------------------------------------------------------------------------------------
 @@JvWinDialogs.pas
 Summary
@@ -18,7 +70,7 @@ Description
   In addition to updating its list of recent documents, the Shell adds a shortcut to the user's Recent
   directory and the Start menu's Documents submenu.
 Parameters
-  Filename - Path and file name of the document to be added.
+  FileName - Path and file name of the document to be added.
 Note
   Only shell32.dll version 4.0 or later.
 See Also
@@ -74,7 +126,7 @@ Summary
   Exception class for errors in JVCL dialog components.
 Description
   EWinDialogError is raised when an error occurs in a JVCL dialog component.
-------------------------
+----------------------------------------------------------------------------------------------------
 @@ExtractIconFromFile
 <TITLE ExtractIconFromFile function>
 Summary
@@ -253,6 +305,30 @@ Parameters
 Return value
   Describe here what the function returns
 See Also
+----------------------------------------------------------------------------------------------------
+@@TJvBrowseFolderDialog
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBrowseFolderDialog.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvBrowseFolderDialog.FolderName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeIconDialog
 <TITLEIMG TJvChangeIconDialog>
@@ -567,7 +643,7 @@ Return Value
 See Also
   ContentType, FileName
 ----------------------------------------------------------------------------------------------------
-@@TJvMIMEAssociationDialog.Filename
+@@TJvMIMEAssociationDialog.FileName
 Summary
   Specifies the name of a file containing data of ContentType's content type.
 Description
@@ -939,6 +1015,7 @@ Return value
 See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateDialog.ReturnValue
+Summary
   Indicates the value returned by the function called by Execute.
 Description
   The TJvSoftwareUpdateDialog component is a wrapper for the SoftwareUpdateMessageBox windows API.
@@ -965,9 +1042,13 @@ See Also
 Summary
 Description
 @@TJvSoftwareUpdateFlags.ufEmail
+  
 @@TJvSoftwareUpdateFlags.ufPreCache
+  
 @@TJvSoftwareUpdateFlags.ufAutoInstall
+  
 @@TJvSoftwareUpdateFlags.ufDeleteSubscription
+  
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo
 Summary
@@ -1112,7 +1193,7 @@ Return Value
   by URL. Returns False if nothing is registered (For example, when the user elects to perform a one-time
   execution via the selected application.)
 ----------------------------------------------------------------------------------------------------
-@@TJvURLAssociationDialog.Filename
+@@TJvURLAssociationDialog.FileName
 Summary
   Specifies the name of the Internet Shortcut file whose \URL's protocol requires a protocol handler.
 Description
@@ -1185,20 +1266,30 @@ Description
 Summary
 Description
 @@TShellLinkInfo.PathName
+  
 @@TShellLinkInfo.Arguments
+  
 @@TShellLinkInfo.Description
+  
 @@TShellLinkInfo.WorkingDirectory
+  
 @@TShellLinkInfo.IconLocation
+  
 @@TShellLinkInfo.IconIndex
+  
 @@TShellLinkInfo.ShowCmd
+  
 @@TShellLinkInfo.HotKey
+  
 ----------------------------------------------------------------------------------------------------
 @@TShellObjectType
 <TITLE TShellObjectType type>
 Summary
 Description
 @@TShellObjectType.sdPathObject
+  
 @@TShellObjectType.sdPrinterObject
+  
 ----------------------------------------------------------------------------------------------------
 @@TShellObjectTypes
 <TITLE TShellObjectTypes type>

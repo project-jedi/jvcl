@@ -8,11 +8,10 @@ Summary
 Author
   Tim Sullivan
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin
+@@TJvPlugIn
 JVCLInfo
   GROUP=JVCL.FormsAndApp.Application.Plugins
   FLAG=Class
-----------------------------------------------------------------------------------------------------
 Summary
   Plugin data module.
 Description
@@ -32,7 +31,7 @@ Description
   For more information on writing plugins and make applications plugin enabled, take a look at
   <LINK $JVCL.Info.Plugins, Writing plugins and plugin enabled applications>.
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.Author
+@@TJvPlugIn.Author
 Summary
   \Author of the plugin.
 Description
@@ -45,7 +44,7 @@ Description
 See Also
   Copyright
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.Commands
+@@TJvPlugIn.Commands
 Summary
   Commands provided by the plugin.
 Description
@@ -57,7 +56,16 @@ Description
 See Also
   TJvPluginCommand
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.Copyright
+@@TJvPlugIn.Configure
+Summary
+  Configures the plugin.
+Description
+  Configure is called by the host application to configure the plugin. As a plugin developer you
+  could override this method, but it's better to just assign a handler to the OnConfigure event.
+See Also
+  OnConfigure
+----------------------------------------------------------------------------------------------------
+@@TJvPlugIn.Copyright
 Summary
   Copyright for the plugin.
 Description
@@ -70,7 +78,7 @@ Description
 See Also
   Author
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.Description
+@@TJvPlugIn.Description
 Summary
   \Description of the plugin.
 Description
@@ -82,35 +90,62 @@ Description
   The host application may read this property to provide additional information about a loaded
   plugin.
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.PluginID
+@@TJvPlugIn.FileName
 Summary
-  Identification (name) of the plugin.
+  Holds the filename of the plugin.
 Description
-  The PluginID property contains the ID (or name) of the plugin.
+  Filename holds the filename of the plugin after it is loaded. This can be usefull to check if the
+  plugin hasn't been renamed.
+----------------------------------------------------------------------------------------------------
+@@TJvPlugIn.HostApplication
+Summary
+  Reference to the TApplication object of the host.
+Description
+  HostApplication is a reference to the TApplication object of the host. You can both read and write
+  to properties (including the MainForm) as well as call methods on this object.
 
-  As a plugin writer you must set this property to the name (it's not required to set this to the
-  Name property or even to a valid Delphi identifier, i.e. spaces and other symbols are allowed) of
-  the plugin. Make sure the identification will be unique. A recommended way of doing this would be
-  to use an identification string in the form of
-  \<<I>company name or abbreviation</I>\><B>.</B>\<<I>plugin name</I>\>.
+  If you write a plugin to store an MDI child for the host application, you should assign the value
+  of this property to your own Application variable and restore your Application variable before you
+  destroy the plugin.
+----------------------------------------------------------------------------------------------------
+@@TJvPlugIn.Initialize
+Summary
+  Initializes the plugin.
+Description
+  Initialize is called by the host application to initialize the plugin.
 
-  The host application uses this property to display and identify which plugin(s) is/are loaded.
+  As a plugin developer you could override this method, but it's better to just assign a handler to
+  the OnInitialize event. The returned value will be that of the event's AllowLoad parameter.
+
+  As a host application developer you will generally not call this method yourself. Initialize is
+  called automatically when the plugin manager loads the plugin.
+Parameters
+  Manager -         Reference to the host application's plugin manager component.
+  HostApplication - Reference to the Application variable of the host.
+  FileName -        Name of the DLL or package the plugin is loaded from. This may contain
+                    <B>CustomPlugin</B> if the plugin is loaded as a custom plugin.
 See Also
-  PluginVersion
+  OnInitialize
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.PluginVersion
+@@TJvPlugIn.InstanceCount
 Summary
-  Version of the plugin.
+  Write here a summary (1 line)
 Description
-  The PluginVersion property contains the version of the plugin.
-
-  As a plugin writer you should set this property to a string containing the version number. You are
-  free to determine how you format the version number (e.g. \<<I>Major</I>\><B>.</B>\<<I>Minor</I>\>
-  or \<<I>Major</I>\><B>.</B>\<<I>Minor</I>\><B>.</B>\<<I>Release</I>\>).
-
-  The host application may use this property to display the version of the plugin.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.OnConfigure
+@@TJvPlugIn.Manager
+Summary
+  Reference to the host's plugin manager.
+Description
+  Manager is a reference to the plugin manager of the host. You must typecast it as
+  TJvPluginManager.
+See Also
+  TJvPluginManager
+----------------------------------------------------------------------------------------------------
+@@TJvPlugIn.OnConfigure
 Summary
   Event called when the host requests to configure the plugin.
 Description
@@ -121,7 +156,7 @@ Parameters
 See Also
   Configure, OnInitialize
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.OnInitialize
+@@TJvPlugIn.OnInitialize
 Summary
   Event called when the host initializes the plugin.
 Description
@@ -138,7 +173,7 @@ Parameters
 See Also
   Initialize, OnConfigure
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.OnPluginMessage
+@@TJvPlugIn.OnPluginMessage
 Summary
   Event called when the host application sent a message.
 Description
@@ -157,35 +192,35 @@ Parameters
   AMessageText -    Additional paramters for the message. See the host application's documentation
                     for the meaning of this string for the message.
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.Configure
+@@TJvPlugIn.PluginID
 Summary
-  Configures the plugin.
+  Identification (name) of the plugin.
 Description
-  Configure is called by the host application to configure the plugin. As a plugin developer you
-  could override this method, but it's better to just assign a handler to the OnConfigure event.
+  The PluginID property contains the ID (or name) of the plugin.
+
+  As a plugin writer you must set this property to the name (it's not required to set this to the
+  Name property or even to a valid Delphi identifier, i.e. spaces and other symbols are allowed) of
+  the plugin. Make sure the identification will be unique. A recommended way of doing this would be
+  to use an identification string in the form of
+  \<<I>company name or abbreviation</I>\><B>.</B>\<<I>plugin name</I>\>.
+
+  The host application uses this property to display and identify which plugin(s) is/are loaded.
 See Also
-  OnConfigure
+  PluginVersion
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.Initialize
+@@TJvPlugIn.PluginVersion
 Summary
-  Initializes the plugin.
+  Version of the plugin.
 Description
-  Initialize is called by the host application to initialize the plugin.
+  The PluginVersion property contains the version of the plugin.
 
-  As a plugin developer you could override this method, but it's better to just assign a handler to
-  the OnInitialize event. The returned value will be that of the event's AllowLoad parameter.
+  As a plugin writer you should set this property to a string containing the version number. You are
+  free to determine how you format the version number (e.g. \<<I>Major</I>\><B>.</B>\<<I>Minor</I>\>
+  or \<<I>Major</I>\><B>.</B>\<<I>Minor</I>\><B>.</B>\<<I>Release</I>\>).
 
-  As a host application developer you will generally not call this method yourself. Initialize is
-  called automatically when the plugin manager loads the plugin.
-Parameters
-  Manager -         Reference to the host application's plugin manager component.
-  HostApplication - Reference to the Application variable of the host.
-  Filename -        Name of the DLL or package the plugin is loaded from. This may contain
-                    <B>CustomPlugin</B> if the plugin is loaded as a custom plugin.
-See Also
-  OnInitialize
+  The host application may use this property to display the version of the plugin.
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.SendPluginMessage
+@@TJvPlugIn.SendPluginMessage
 Summary
   Sends a message to this plugin.
 Description
@@ -207,35 +242,7 @@ Parameters
 See Also
   OnPluginMessage
 ----------------------------------------------------------------------------------------------------
-@@TJvPlugin.HostApplication
-Summary
-  Reference to the TApplication object of the host.
-Description
-  HostApplication is a reference to the TApplication object of the host. You can both read and write
-  to properties (including the MainForm) as well as call methods on this object.
-
-  If you write a plugin to store an MDI child for the host application, you should assign the value
-  of this property to your own Application variable and restore your Application variable before you
-  destroy the plugin.
-----------------------------------------------------------------------------------------------------
-@@TJvPlugin.Manager
-Summary
-  Reference to the host's plugin manager.
-Description
-  Manager is a reference to the plugin manager of the host. You must typecast it as
-  TJvPluginManager.
-See Also
-  TJvPluginManager
-----------------------------------------------------------------------------------------------------
-@@TJvPlugin.Filename
-Summary
-  Holds the filename of the plugin.
-Description
-  Filename holds the filename of the plugin after it is loaded. This can be usefull to check if the
-  plugin hasn't been renamed.
-----------------------------------------------------------------------------------------------------
 @@TJvPluginCommand
-----------------------------------------------------------------------------------------------------
 Summary
   A single plugin command.
 Description
@@ -303,8 +310,16 @@ Parameters
   Sender -  Reference to the sender of the request (usually a menu item or button from the host
             application.
 ----------------------------------------------------------------------------------------------------
-@@TJvPluginCommands
+@@TJvPluginCommand.ShortCut
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvPluginCommands
 Summary
   Collection of plugin commands.
 Description
@@ -313,3 +328,11 @@ Description
   the <LINK TJvPlugin, plugin>.
 See Also
   TJvPlugin, TJvPluginCommand, TJvPlugin.Commands
+----------------------------------------------------------------------------------------------------
+@@TPluginInitializeEvent
+<TITLE TPluginInitializeEvent type>
+<COMBINE TJvPlugIn.OnInitialize>
+----------------------------------------------------------------------------------------------------
+@@TPluginMessageEvent
+<TITLE TPluginMessageEvent type>
+<COMBINE TJvPlugIn.OnPluginMessage>

@@ -25,40 +25,9 @@ Description
   moves the mouse pointer over the control.
 
   Property HintColor can be used to set a different color of the Help hint boxes for the shape.
-
-----------------------------------------------------------------------------------------------------
-@@TJvShape.Create
-Summary
-  Creates and initializes an instance of TJvShape.
-Description
-  Call \Create to create an instance of TJvShape at runtime. A TJvShape component placed on a
-  form at design time is created automatically.
-
-  Pass a single Component as a parameter to provide the shape with an Owner that is responsible
-  for freeing it.
-
-  \Create calls the inherited \Create method, then sets the initial values for the shape as follows:
-
-  * HintColor is set to clInfoBk.
-Parameters
-  AOwner - The owner for the instance of TJvShape.
-See Also
-  HintColor, OnMouseEnter, OnMouseLeave, OnParentColorChange
 ----------------------------------------------------------------------------------------------------
 @@TJvShape.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
-@@TJvShape.CMCtl3DChanged
-Summary
-  Responds when the Ctrl3D property changes.
-Description
-  CMCtl3DChanged is called automatically when the Ctl3D property changes. It triggers the
-  OnCtl3DChanged event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the shape of the Ctl3D
-        change.
-See Also
-  OnCtl3DChanged
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvShape.CMMouseEnter
 Summary
@@ -95,6 +64,24 @@ Parameters
 See Also
   OnParentColorChange
 ----------------------------------------------------------------------------------------------------
+@@TJvShape.Create
+Summary
+  Creates and initializes an instance of TJvShape.
+Description
+  Call \Create to create an instance of TJvShape at runtime. A TJvShape component placed on a
+  form at design time is created automatically.
+
+  Pass a single Component as a parameter to provide the shape with an Owner that is responsible
+  for freeing it.
+
+  \Create calls the inherited \Create method, then sets the initial values for the shape as follows:
+
+  * HintColor is set to clInfoBk.
+Parameters
+  AOwner - The owner for the instance of TJvShape.
+See Also
+  HintColor, OnMouseEnter, OnMouseLeave, OnParentColorChange
+----------------------------------------------------------------------------------------------------
 @@TJvShape.HintColor
 Summary
   Determines the color of the hint boxes for the Help Hints for the shape.
@@ -102,14 +89,6 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
-----------------------------------------------------------------------------------------------------
-@@TJvShape.OnCtl3DChanged
-Summary
-  Occurs when the Ctl3D property of the shape changes.
-Description
-  \Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
-See Also
-  OnParentColorChange
 ----------------------------------------------------------------------------------------------------
 @@TJvShape.OnMouseEnter
 Summary
