@@ -34,7 +34,13 @@ procedure Register;
 implementation
 
 uses
-  Classes, Controls,
+  Classes,
+  {$IFDEF VCL}
+  Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -44,11 +50,11 @@ uses
   {$IFDEF MSWINDOWS}
   JvCreateProcess,
   {$ENDIF MSWINDOWS}
-  JvAlarms, JvConverter, JvDataEmbedded,
-  JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile, JvStringHolder,
-  JvTimeLimit, JvWinHelp, JvTranslator, JvPrint, JvEasterEgg,
-  JvMouseGesture, JvLogFile, JvDataEmbeddedEditor, JvPatcherEditor,
-  JvProfilerForm, JvPageManagerForm, JvDsgnEditors;
+  JvAlarms, JvConverter, JvDataEmbedded, JvEnterTab, JvMergeManager,
+  JvPageManager, JvPatchFile, JvStringHolder, JvTimeLimit, JvWinHelp,
+  JvTranslator, JvPrint, JvEasterEgg, JvMouseGesture, JvLogFile,
+  JvDataEmbeddedEditor, JvPatcherEditor, JvProfilerForm, JvPageManagerForm,
+  JvDsgnEditors;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCmpReg.dcr}
