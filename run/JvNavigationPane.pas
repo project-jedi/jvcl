@@ -817,6 +817,7 @@ type
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMNCPaint(var Msg: TWMNCPaint); message WM_NCPAINT;
     {$ENDIF VCL}
+    procedure AlignButtons;
   protected
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -824,6 +825,7 @@ type
     procedure FontChanged; override;
     procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     {$IFDEF VisualCLX}
+    procedure Loaded; override;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override;
     function WidgetFlags: Integer; override;
     {$ENDIF VisualCLX}
@@ -4665,11 +4667,18 @@ begin
   end;
 end;
 
-procedure TJvCustomNavPaneToolPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+{$IFDEF VisualCLX}
+procedure TJvCustomNavPaneToolPanel.Loaded;
+begin
+  inherited Loaded;
+  AlignButtons;
+end;
+{$ENDIF VisualCLX}
+
+procedure TJvCustomNavPaneToolPanel.AlignButtons;
 var
   AOffset: Integer;
 begin
-  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if HeaderVisible and ShowGrabber then
     AOffset := cToolButtonOffset
   else
@@ -4687,6 +4696,12 @@ begin
     FCloseButton.SetBounds(0, 0, 0, 0);
     FDropDown.SetBounds(0, 0, 0, 0);
   end;
+end;
+
+procedure TJvCustomNavPaneToolPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+  AlignButtons;
 end;
 
 procedure TJvCustomNavPaneToolPanel.SetButtonHeight(const Value: Integer);
