@@ -21,7 +21,6 @@ const
     '</xml>';
   SXMLInvalidName = '<doc><.doc></.doc></doc>';
 
-
 type
   TTestJvSimpleXml = class(TTestCase)
   protected
@@ -57,39 +56,47 @@ var
   AXML: TJvSimpleXML;
   i: integer;
   RootFolder, S: string;
-function FailExpected(const S:String):boolean;
-begin
-  // (p3) not wf and invalid are expected to raise Exceptions, but valid should not, so invert the logic here
-  Result := (S = 'not-wf') or (S = 'invalid')
-end;
+
+  function FailExpected(const S: string): boolean;
+  begin
+    // (p3) "not-wf" and "invalid" are expected to raise Exceptions (if the parser works according to definition), so we need
+    // to check for that
+    Result := (S = 'not-wf') or (S = 'invalid')
+  end;
 
 begin
-  // load James Clark's XML test suite files as defined in the xmltest.xml file 
+  // load James Clark's XML test suite files as defined in the xmltest.xml file
   AXML := TJvSimpleXML.Create(nil);
   try
-    RootFolder := IncludeTrailingPathDelimiter(GetCurrentDir) + 'xmltest\';
+    RootFolder := ExtractFilePath(ParamStr(0)) + 'xmltest\';
+    Check(FileExists(RootFolder + 'xmltest.xml'), 'The xmltest folder must be a subfolder of the applicaiton folder!');
     AXML.LoadFromFile(RootFolder + 'xmltest.xml');
     // AXML.Root.Properties.ItemNamed['PROFILE'].Value
 //    StartExpectingException(ETestFailure);
     for i := 0 to AXML.Root.Items.Count - 1 do
     begin
-      if AXML.Root.Items[i].Properties.Count = 0 then Continue;
+      if (AXML.Root.Items[i].Properties.Count = 0) or (AXML.Root.Items[i].Properties.ItemNamed['URI'] = nil) then
+        Continue;
       S := RootFolder + StringReplace(AXML.Root.Items[i].Properties.ItemNamed['URI'].Value, '/', '\', [rfReplaceAll]);
       if FileExists(S) then
       try
         LoadFromFile(S);
-        // check whether this test should have failed
+        // check whether this test should have failed, but didn't
         with AXML.Root.Items[i].Properties do
-           Check(not FailExpected(ItemNamed['TYPE'].Value),Format('Type: "%s", ID: "%s" Section: "%s > %s" Error: "%s"',
-              [ItemNamed['TYPE'].Value, ItemNamed['ID'].Value, ItemNamed['SECTIONS'].Value,AXML.Root.Items[i].Value,'This test should have failed']));
+          Check(not FailExpected(ItemNamed['TYPE'].Value),
+            Format('Type: "%s", ID: "%s" Section: "%s > %s" Error: "%s"',
+            [ItemNamed['TYPE'].Value, ItemNamed['ID'].Value, ItemNamed['SECTIONS'].Value, AXML.Root.Items[i].Value,
+            'This test should have failed, but didn''t.']));
       except
         on E: TJvSimpleXmlInvalid do
           with AXML.Root.Items[i].Properties do
+            // check whether this is an expected failure and in that case, don't raise exception
             Check(FailExpected(ItemNamed['TYPE'].Value), Format('Type: "%s", ID: "%s" Section: "%s > %s" Error: "%s"',
-              [ItemNamed['TYPE'].Value, ItemNamed['ID'].Value, ItemNamed['SECTIONS'].Value, AXML.Root.Items[i].Value, E.Message]));
+              [ItemNamed['TYPE'].Value, ItemNamed['ID'].Value, ItemNamed['SECTIONS'].Value, AXML.Root.Items[i].Value,
+              E.Message]));
       end;
     end;
-//    StopExpectingException('');
+    //    StopExpectingException('');
   finally
 
     AXML.Free;
