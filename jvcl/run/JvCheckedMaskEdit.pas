@@ -36,22 +36,37 @@ interface
 
 uses
   Windows, Messages, Forms, SysUtils, Classes, Controls, Graphics, StdCtrls,
+  {$IFDEF VisualCLX}
+  QComboEdits, JvQExComboEdits, QComCtrlsEx,
+  {$ENDIF VisualCLX}
   Mask, JvMaskEdit;
 
 type
+  {$IFDEF VCL}
   TJvCustomCheckedMaskEdit = class(TJvCustomMaskEdit)
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  TJvCustomCheckedMaskEdit = class(TJvExCustomComboMaskEdit)
+  {$ENDIF VisualCLX}
   private
     FCheck: TCheckBox;
     FInternalChange: Boolean;
     FOnCheckClick: TNotifyEvent;
+    {$IFDEF VisualCLX}
+    FOnEnabledChanged: TNotifyEvent;
+    {$ENDIF VisualCLX}
     procedure CheckClick(Sender: TObject);
     function GetShowCheckBox: Boolean;
+    {$IFDEF VCL}
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    {$ENDIF VCL}
   protected
     procedure DoCheckClick; dynamic;
+    {$IFDEF VCL}
     procedure DoCtl3DChanged; dynamic;
-    procedure EnabledChanged; override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
+    {$ENDIF VCL}
+    procedure EnabledChanged; override;
 
     function GetChecked: Boolean; virtual;
     procedure SetChecked(const AValue: Boolean); virtual;
@@ -60,13 +75,17 @@ type
     procedure GetInternalMargins(var ALeft, ARight: Integer); virtual;
     procedure UpdateControls; dynamic;
 
+    {$IFDEF VCL}
     procedure CreateParams(var AParams: TCreateParams); override;
     procedure CreateWnd; override;
-
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure CreateWidget; override;
+    procedure ColorChanged; override;
+    {$ENDIF VisualCLX}
     procedure Change; override;
     procedure Resize; override;
     procedure Loaded; override;
-
     procedure BeginInternalChange;
     procedure EndInternalChange;
     function InternalChanging: Boolean;
@@ -74,6 +93,11 @@ type
     property Checked: Boolean read GetChecked write SetChecked;
     property ShowCheckBox: Boolean read GetShowCheckBox write SetShowCheckBox default False;
     property OnCheckClick: TNotifyEvent read FOnCheckClick write FOnCheckClick;
+    {$IFDEF VisualCLX}
+    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FEnabledChanged;
+    {$ENDIF VisualCLX}
+
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -85,38 +109,41 @@ type
     property AutoSelect;
     property AutoSize default False;
     property BorderStyle;
-    property Caret;
     property CharCase;
     property Checked;
     property ClipboardCommands;
     property Color;
     property Constraints;
     property Cursor;
+    {$IFDEF VCL}
     property DisabledColor;
     property DisabledTextColor;
+    property Caret;
     property DragCursor;
     property DragKind;
+    property GroupIndex;
+    property HotTrack;
+    property PasswordChar;
+    property ProtectPassword;
+    property OnKillFocus;
+    property OnSetFocus;
+    {$ENDIF VCL}
     property DragMode;
     property EditMask;
     property Enabled;
     property Font;
-    property GroupIndex;
     property HintColor;
-    property HotTrack;
     property MaxLength;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
-    property PasswordChar;
     property PopupMenu;
-    property ProtectPassword;
     property ReadOnly;
     property ShowHint;
     property ShowCheckBox;
     property Text;
     property TabOrder;
     property Visible;
-
     property OnChange;
     property OnClick;
     property OnCheckClick;
@@ -130,14 +157,12 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    property OnKillFocus;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnParentColorChange;
-    property OnSetFocus;
     property OnStartDrag;
   end;
 
@@ -164,6 +189,7 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomCheckedMaskEdit.CreateParams(var AParams: TCreateParams);
 begin
   inherited CreateParams(AParams);
@@ -176,6 +202,22 @@ begin
   inherited CreateWnd;
   UpdateControls;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomCheckedMaskEdit.CreateWidget;
+begin
+  inherited CreateWidget;
+  UpdateControls;
+end;
+
+procedure TJvCustomCheckedMaskEdit.ColorChanged;
+begin
+  inherited;
+  if assigned(FCheck) then
+    FCheck.Color := Color;
+end;
+{$ENDIF VisualCLX}
 
 function TJvCustomCheckedMaskEdit.GetChecked: Boolean;
 begin
@@ -213,13 +255,19 @@ begin
       FCheck := TCheckBox.Create(Self);
       with FCheck do
       begin
+        {$IFDEF VCL}
         Parent := Self;
         // Align := alLeft;
         if HotTrack then
           Left := 1;
         Top := 1;
-        Width := 15;
         Height := Self.ClientHeight - 2;
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        Parent := Self.ClientArea;
+        Align := alLeft;
+        {$ENDIF VisualCLX}
+        Width := 15;
         Anchors := [akLeft, akTop, akBottom];
         Alignment := taLeftJustify;
         TabStop := False;
@@ -236,6 +284,9 @@ end;
 procedure TJvCustomCheckedMaskEdit.UpdateControls;
 var
   LLeft, LRight: Integer;
+  {$IFDEF VisualCLX}
+  Loc: TRect;
+  {$ENDIF VisualCLX}
 begin
   {UpdateControls gets called whenever the layout of child controls changes.
    It uses GetInternalMargins to determine the left and right margins of the
@@ -243,7 +294,13 @@ begin
   LLeft := 0;
   LRight := 0;
   GetInternalMargins(LLeft, LRight);
+  {$IFDEF VCL}
   SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN or EC_LEFTMARGIN, MakeLong(LLeft, LRight));
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SetRect(Loc, LLeft, 0, ClientWidth - LRight, ClientHeight);
+  SetEditorRect(@Loc);
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomCheckedMaskEdit.GetInternalMargins( var ALeft, ARight: Integer);
@@ -314,6 +371,7 @@ begin
     FOnCheckClick(Self);
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomCheckedMaskEdit.CMCtl3DChanged(var Msg: TMessage);
 begin
   DoCtl3DChanged;
@@ -334,18 +392,23 @@ begin
   UpdateControls;
 end;
 
+procedure TJvCustomCheckedMaskEdit.DoKillFocusEvent(const ANextControl: TWinControl);
+begin
+  if ANextControl <> FCheck then
+    inherited DoKillFocusEvent(ANextControl);
+end;
+{$ENDIF VCL}
+
 procedure TJvCustomCheckedMaskEdit.EnabledChanged;
 begin
   { propagate to child controls: }
   if ShowCheckBox then
     FCheck.Enabled := Self.Enabled;
   inherited EnabledChanged;
-end;
-
-procedure TJvCustomCheckedMaskEdit.DoKillFocusEvent(const ANextControl: TWinControl);
-begin
-  if ANextControl <> FCheck then
-    inherited DoKillFocusEvent(ANextControl);
+  {$IFDEF VisualCLX}
+  if assigned(FOnEnabledChanged) then
+     FOnEnabledChanged(self);
+  {$ENDIF VisualCLX}
 end;
 
 end.
