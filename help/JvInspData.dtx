@@ -99,21 +99,25 @@ Description
   CheckReadAccess is called to check read access, before the data is set
   CheckWriteAccess is called to check write access.
 --------------------------------------------------------------------------------
-@@TJvCustomInspectorData.Inspector
+@@TJvCustomInspectorData.ItemCount
 Summary
-  References the inspector.
+  The number of items attached to this data instance.
 Description
-  Inspector references the inspector the data object is
-  assigned to. Inspector is set automatically depending on the
-  value of Item.
+  ItemCount holds the number of items attached to this data instance. Use Items to retrieve the
+  individual items.
+See Also
+  Items
 --------------------------------------------------------------------------------
-@@TJvCustomInspectorData.Item
+@@TJvCustomInspectorData.Items
 Summary
-  Reference to the item
+  List of items attached to this data instance.
 Description
-  Item references the inspector item this data object is
-  assigned to. Item is set on initialization of the data
-  instance.
+  Items is a list of references to the inspector item this data object is assigned to. This list is
+  filled automatically when new items are added to this data instance.
+  
+  Items is 0-based.
+See Also
+  ItemCount
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorData.Name
 Summary
@@ -135,29 +139,26 @@ Description
   the current RTTI pointer or set TypeInfo to another RTTI
   pointer.
 --------------------------------------------------------------------------------
-@@TJvCustomInspectorData.Create
+@@TJvCustomInspectorData.New
 Summary
-  Instantiate a data instance.
+  Instantiate a data instance and attaches an item to it.
 Description
-  Create instantiates a new data instance with the given
-  parameters. Some classes will provide multiple Create
-  constructors and/or class procedures to aid in proper
-  initialization for the data it is to be representing. Some of
-  the Create procedures might create a group of data instances.
-Parameters
-  AName -       Default name for the data object
-  ATypeInfo -   Default RTTI pointer for the data object
-  AParent -     The parent to which this data should be added.
+  New instantiates a new data instance with the given parameters. If the data referred to by the
+  given parameters already exists, the item will be attached to that data instance, instead of
+  creating a new data instance.
+  
+  Some classes will provide multiple New class functions to aid in proper initialization for the
+  data it is to be representing. Some of the New functions might create a group of data and items.
 --------------------------------------------------------------------------------
-@@TJvCustomInspectorData.CreateChild
+@@TJvCustomInspectorData.NewItem
 Summary
-  Creates the child item for this object.
+  Creates a new child item for this data object.
 Description
-  CreateChild is called after the data instance has been
-  created. CreateChild will then create a proper child item,
-  depending on the item registration databases and/or the
-  BeforeCreateItem event. If the Item property is nil when this
-  method returns, the data instance should be discarded.
+  NewItem can be used to add new items to an existing data instance. NewItem is called by New to
+  create the item for a new data instance.
+  
+  NewItem uses the registration databases and/or the BeforeCreateItem event to determine what kind
+  of item should be generated.
 Parameters
   AParent -   The parent to which the new item should be added.
 --------------------------------------------------------------------------------
@@ -181,23 +182,6 @@ Description
 Parameters
   Buf -   The value to set the data to.
 --------------------------------------------------------------------------------
-@@TJvCustomInspectorData.DoAfterDataCreate
-Summary
-  Calls the inspectors' AfterDataCreate event
-Description
-  DoAfterDataCreate will call the AfterDataCreate event of the inspector if it's
-  assigned. DoAfterDataCreate is called by CreateChild.
---------------------------------------------------------------------------------
-@@TJvCustomInspectorData.DoBeforeItemCreate
-Summary
-  Calls the inspectors' BeforeItemCreate event.
-Description
-  DoBeforeItemCreate calls the BeforeItemCreate event of the inspector if it's
-  assigned. DoBeforeItemCreate is called by CreateChild after it has searched
-  the item registration databases but before it creates the actual item.
-Parameters
-  ItemClass -   Holds the inspector item class to be instantiated.
---------------------------------------------------------------------------------
 @@TJvCustomInspectorData.AsMethod
 Summary
   Access the value as a TMethod integer.
@@ -207,16 +191,6 @@ Description
   RTTI of a TMethod type) an exception will occur. Before the data is read
   CheckReadAccess is called to check read access, before the data is set
   CheckWriteAccess is called to check write access.
---------------------------------------------------------------------------------
-@@TJvCustomInspectorData.Init
-Summary
-  Initializes the Name and TypeInfo properties.
-Description
-  Init initializes the Name and TypeInfo properties. Init is usually called from
-  one of the Create methods.
-Parameters
-  AName -       The name for the data instance
-  ATypeInfo -   The RTTI pointer for the data instance
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorData.Invalidate
 Summary
@@ -300,17 +274,22 @@ Description
   BitOffset holds the bit offset within the set value for this particular
   member. This value is calculcated upon creation of the member data layer.
 --------------------------------------------------------------------------------
-@@TJvInspectorSetMemberData.Create
+@@TJvInspectorSetMemberData.New
 Summary
-  Instantiate a data instance.
+  Instantiate a data instance and attaches an item to it.
 Description
-  Create instantiates a new data instance with the given parameters. Some
-  classes will provide multiple Create constructors and/or class procedures to
-  aid in proper initialization for the data it is to be representing. Some of
-  the Create procedures might create a group of data instances.
+  New instantiates a new data instance with the given parameters. If the data referred to by the
+  given parameters already exists, the item will be attached to that data instance, instead of
+  creating a new data instance.
+  
+  TJvInspectorSetMemberData implements New to allow you to give both the ordinal value as well as
+  a reference to the data instance that references the set.
 Parameters
   Ordinal -     The ordinal value of the member that is to be inspected.
   AParent -     The parent to which this data should be added.
+  ADataParent - A reference to the parent data instance. Since a set member belongs to a set that is
+                referenced by another data instance, this data instance should be handed over to
+                this instance.
 --------------------------------------------------------------------------------
 ## Data layers: Variable/heap data layer
 --------------------------------------------------------------------------------
@@ -334,14 +313,16 @@ Description
   created the data layer (either specifying an address or a variable), the
   address is determined by the constructor.
 --------------------------------------------------------------------------------
-@@TJvInspectorVarData.Create
+@@TJvInspectorVarData.New
 Summary
-  Instantiate a data instance.
+  Instantiate a data instance and attaches an item to it.
 Description
-  Create instantiates a new data instance with the given parameters. Some
-  classes will provide multiple Create constructors and/or class procedures to
-  aid in proper initialization for the data it is to be representing. Some of
-  the Create procedures might create a group of data instances.
+  New instantiates a new data instance with the given parameters. If the data referred to by the
+  given parameters already exists, the item will be attached to that data instance, instead of
+  creating a new data instance.
+  
+  TJvInspectorVarData implements New to allow you to specify a name, type information and either an
+  address or a variable.
 Parameters
   AName -         Default name for the data object
   ATypeInfo -     Default RTTI pointer for the data object
@@ -368,15 +349,28 @@ Description
 
   The data layer provides it's own item registration database.
 --------------------------------------------------------------------------------
-@@TJvInspectorPropData.Create
+@@TJvInspectorPropData.New
 Summary
-  Instantiate a data instance.
+  Instantiate a data instance and attaches an item to it.
 Description
-  Create instantiates a new data instance with the given parameters. The
-  TypeInfo and Name properties are initialized to the property's name and type
-  info. The class procedures could generate multiple or no data instances,
-  depending on the number of properties found that match the given parameters.
-  The constructor creates only one instance for one property.
+  New instantiates a new data instance with the given parameters. If the data referred to by the
+  given parameters already exists, the item will be attached to that data instance, instead of
+  creating a new data instance.
+  
+  TJvInspectorPropData implements New to allow various ways of adding properties:
+
+  * Specifying a parent, an instance and property info record (PPropInfo) to add a single property.
+  * Specifying a parent, an instance and a list of property info records (PPropList) to add multiple
+    properties at a time. For each property a new item is generated, which is returned in the dynamic
+    array.
+  * Specifying a parent, an instance and property type(s) to add all properties of (a) certain type(s)
+    at once. For each property a new item is generated, which is returned in the dynamic array.
+  * Specifying a parent, an instance, property type(s), list of names and wether or not the list
+    represents a list of names to be included or excluded to add the requested properties at once. For
+    each property a new item is generated which is returned in the dynamic array.
+
+  It is possible that with some parameters no items are generated, which will result in an empty
+  dynamic array.
 Parameters
   AParent -       The parent to which this data should be added.
   AInstance -     TObject instance that provides the property values.
@@ -430,18 +424,21 @@ Description
   those events that can be used (eg. if the data can only be accessed as
   strings, it's enough to assign an OnGetAsString and an OnSetAsString event).
 --------------------------------------------------------------------------------
-@@TJvInspectorEventData.Create
+@@TJvInspectorEventData.New
 Summary
-  Instantiate a data instance.
+  Instantiate a data instance and attaches an item to it.
 Description
-  Create instantiates a new data instance with the given parameters. The
-  TypeInfo and Name properties are initialized to the specified parameter
-  values.
+  New instantiates a new data instance with the given parameters. If the data referred to by the
+  given parameters already exists, the item will be attached to that data instance, instead of
+  creating a new data instance.
+
+  TJvInspectorEventData reimplements new to set both a name and the type info for the new instance.
+  If a data instance with the given name and type info already exists, that instance will be used
+  and a new item attached to it.
 Parameters
   AParent -     The parent to which this data should be added.
-  ATypeInfo -   Default RTTI pointer for the data object
-
-
+  ATypeInfo -   Default RTTI pointer for the data object.
+  AName -       Name of the data instance.
 --------------------------------------------------------------------------------
 @@TJvInspectorEventData.DoGetAsFloat
 Summary
@@ -712,23 +709,6 @@ Description
   The data layer provides in the common properties and methods to access
   configuration files/settings databases.
 --------------------------------------------------------------------------------
-@@TJvInspectorCustomConfData.Create
-Summary
-  Instantiate a data instance.
-Description
-  Create instantiates a new data instance with the given
-  parameters. All common properties will be initialized to the given parameters.
-
-  Descendants should call this constructor when creating a single instance,
-  initialize properties for the descendant and finally call CreateChild(AParent)
-  to initialize the instance.
-Parameters
-  AParent - The parent to which this data should be added.
-  AName - The display name of the item.
-  ASection - Section within the configuration file/settings database.
-  AKey - Key within the section of the configuration file/settings database.
-  ATypeInfo - Type info pointer to use.
---------------------------------------------------------------------------------
 @@TJvInspectorCustomConfData.ExistingValue
 Summary
   Indicates wether the specified section and key exist.
@@ -803,15 +783,22 @@ Description
   The data layer implements ExistingValue, ReadValue and WriteValue and provides
   an additional property to hold a reference to the INI-file object.
 --------------------------------------------------------------------------------
-@@TJvInspectorINIFileData.Create
+@@TJvInspectorINIFileData.New
 Summary
-  Instantiate a data instance.
+  Instantiate a data instance and attaches an item to it.
 Description
-  Create instantiates a new data instance with the given
-  parameters. All common properties will be initialized to the given parameters.
-
-  Depending on which overloaded method is called, the ini file will be scanned
-  for sections and/or keys to instantiate.
+  New instantiates a new data instance with the given parameters. If the data referred to by the
+  given parameters already exists, the item will be attached to that data instance, instead of
+  creating a new data instance.
+  
+  Depending on which overloaded method is called, the ini file will be scanned for sections and/or
+  keys to instantiate. For each section/key combination a check is made to see if the instance is
+  unique. If it already exists, the pre-existing data instance is used and a new item is added to
+  it.
+  
+  Using the events you can prevent certain keys being created or even prevent whole sections being
+  scanned. In addition, these events allow you to change the name for the new item instance as well
+  as which type info to attach to it.
 Parameters
   AParent - The parent to which this data should be added.
   AName - The display name of the item.
@@ -853,20 +840,20 @@ Description
   These items do not provide an inspector item class, which is left to the
   item registration database.
 --------------------------------------------------------------------------------
-@@TJvInspectorDBData.Create
+@@TJvInspectorDBData.New
 Summary
-  Instantiate a data instance.
+  Instantiate a data instance and attaches an item to it.
 Description
-  Create instantiates a new data instance with the given
-  parameters. The TypeInfo and Name properties are initialized to <B>nil</B> and
-  the field's DisplayName respectively. When an appropiate item class is
-  searched in the ItemRegistation database, the field's DataType property will
-  be mapped to a proper TypeInfo property. Only when a proper mapping has been
-  made, the search is made for a proper item class.
+  New instantiates a new data instance with the given parameters. If the data referred to by the
+  given parameters already exists, the item will be attached to that data instance, instead of
+  creating a new data instance.
+  
+  New data instances are generated with DisplayName initialized to the DisplayName of the given
+  field and TypeInfo initialized to the type info found in the FieldType mapping database. If no
+  mapping is found there, no item will be created for it.
 
-  The class procedures could generate multiple or no data instances, depending
-  on the number of fields found that match the given parameters. The constructor
-  creates only one instance for one field.
+  Depending on the overloaded method called, multiple items could be created. All of them are
+  returned in the resulting dynamic array.
 Parameters
   AParent -       The parent to which this data should be added.
   ADataSource -   The data source that is to provide the data.

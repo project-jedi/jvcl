@@ -10,6 +10,14 @@
   you can derive a data class to get/set the data by using events. Included in the package are data
   classes to inspect published properties, variables, TDataSources, INI-files and event-based data
   access as well as some internal structures to provide access to individual set members.
+  
+  In addition, each reference to a data object will only be created once. Additional reference will use
+  the same instance. This allows multiple items (even in different inspector controls) reference the same
+  data object. For example: you can create a data instance that points to a Delphi variable 'x' (by calling
+  TJvInspectorVarData.New(Inspector.Root, 'x', TypeInfo(string), x). This will result in a data instance being
+  created to reference the x variable (the New method will return the item that is linked to it). The next time
+  you call the New method to reference the x variable, the data instance of the first item will be used and another
+  item is assigned to it.
 
   * Customized painting/editing for various data types. *
   The base item class is capable of just painting the item and edit it's string representation.
@@ -162,6 +170,21 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TInspectorComponentFlags
 <COMBINE TInspectorComponentFlag>
+----------------------------------------------------------------------------------------------------
+@@TInspectorCompoundItemFlag
+<GROUP TJvInspector.Base>
+Summary
+  Flags used for the compound inspector items.
+Description
+  TInspectorCompoundItemFlag are the available flags for compound items.
+@@TInspectorCompoundItemFlag.icifSingleName
+  Indicates the item is represented by a single name.
+TInspectorCompoundItemFlag.icifSingleNameUseFirstCol
+  Indicates the item's name in single name mode is obtained from the DisplayName of the item associated
+  with the first column.
+----------------------------------------------------------------------------------------------------
+@@TInspectorCompoundItemFlags
+<COMBINE TInspectorCompoundItemFlag>
 ----------------------------------------------------------------------------------------------------
 @@TInspectorClassFlag
 <GROUP TJvInspector.Base>

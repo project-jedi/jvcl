@@ -238,8 +238,9 @@ Description
   QualifiedNames property of it's parent, this name could include the name of
   the parent.
 
-  For all items except the category item, the name is determined by the data
-  layer instance.
+  DisplayName is initialized to the Data.Name property. If no data instance is
+  linked to the item when it's created, DisplayName is initialized to an empty
+  string.
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.DisplayValue
 Summary
@@ -735,7 +736,7 @@ Description
   IsCompountColumn determines if the item is a column of a compound row item. If
   the item is a column, the funtion returns True, otherwise it returns False.
 See Also
-  TJvInspectorCompoundItem
+  TJvInspectorCustomCompoundItem
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Items
 Summary
@@ -1322,24 +1323,6 @@ Parameters
 See Also
   DeleteColumn, InsertColumn
 --------------------------------------------------------------------------------
-@@TJvInspectorCompoundItem.ColumnCount
-Summary
-  Indicates the number of columns.
-Description
-  ColumnCount retrieves the number of columns that are in the column list. Read
-  ColumnCount to find out how many columns the compound item has.
-See Also
-  Columns
---------------------------------------------------------------------------------
-@@TJvInspectorCompoundItem.Columns
-Summary
-  List of columns.
-Description
-  Columns is a 0-based array of columns the compound item has. Use Columns to
-  retrieve an instance of a specific column.
-See Also
-  ColumnCount
---------------------------------------------------------------------------------
 @@TJvInspectorCompoundItem.DeleteColumn
 Summary
   Deletes an item from the column list.
@@ -1354,23 +1337,6 @@ Parameters
   Column - Column to delete.
   Index - Column index to delete.
   Item - Item to delete from the column list.
---------------------------------------------------------------------------------
-@@TJvInspectorCompoundItem.DivideRect
-Summary
-  Divides the specified rectangle over the columns.
-Description
-  Dividerect divides the specified rectangle over the columns (taking into
-  account the columns Width property) and set's the associated item's rectangle
-  accordingly.
-
-  If DivideRect divides the iprValue rectangle, the Painter will be requested to
-  calculate the edit based rectangles.
-Parameters
-  RectKind - The rectangle kind to set.
-  Rect - The rectangle to divide.
-See Also
-  TJvInspectorCompoundColumn.Width, TJvCustomInspector.Painter,
-  TJvInspectorPainter.CalcEditBasedRects
 --------------------------------------------------------------------------------
 @@TJvInspectorCompoundItem.IndexOfColumn
 Summary
@@ -1407,48 +1373,6 @@ Parameters
   ItemIndex - Index into the Items item list of the item to add.
 See Also
   AddColumn, DeleteColumn, ColumnCount, Columns
---------------------------------------------------------------------------------
-@@TJvInspectorCompoundItem.RecalcColumnWidths
-Summary
-  Update column widths
-Description
-  RecalcColumnWidths will recalculate all column widths such that the total
-  width will be 100. If the SetColumn property is set to a column, that column
-  is guarenteed to be the width it was set to.
-
-  RecalcColumnWidths will loop over all colums and adjust there widths if
-  needed. If a columns width would make the total >100, it is resized to a
-  smaller value. If a columns width was set to 0, it will be added to a list
-  of columns to be set after the main loop.
-
-  After the main loop has ended and the total width < 100, a second loop will
-  start to loop over all item for which the width was set to 0. The remaining
-  space will be equally divided over the columns.
-Parameters
-  SetColumn - Column which has to be set to the width that is specified. This
-                column is guarenteed to be set to that width, unless it's
-                width is 0, which means it will be set to whatever width
-                remains after the main loop.
---------------------------------------------------------------------------------
-@@TJvInspectorCompoundItem.SelectedColumn
-Summary
-  Currently selected (focused) column.
-Description
-  SelectedColumn indicates which column currently has the input focus. Read
-  SelectedColumn to determine which column has focus or set it to a column that
-  is to recieve input focus.
-See Also
-  SelectedColumnIndex
---------------------------------------------------------------------------------
-@@TJvInspectorCompoundItem.SelectedColumnIndex
-Summary
-  Index of currently selected (focused) column.
-Description
-  SelectedColumnIndex indicates which column currently has the input focus. Read
-  SelectedColumnIndex to determine which column has focus or set it to a column
-  that is to recieve input focus.
-See Also
-  SelectedColumn
 --------------------------------------------------------------------------------
 @@TJvInspectorClassItem
 --------------------------------------------------------------------------------
@@ -1536,21 +1460,291 @@ Description
   TJvInspectorCustomCategoryItem is an inspector item that represents a
   category. A category is a data-less item that allows you to group several
   items that are related to each other.
-
-  TJvInspectorCustomCategoryItem redeclares the DisplayName property as a
-  writable property to allow the name to be changed.
 --------------------------------------------------------------------------------
-@@TJvInspectorCustomCategoryItem.DisplayName
+@@TJvInspectorCustomCompoundItem
+--------------------------------------------------------------------------------
+<GROUP TJvInspector.Item>
 Summary
-  Holds the name that is displayed.
+  Compound row inspector item.
 Description
-  DisplayName holds the name that is displayed. Depending on the state of the
-  QualifiedNames property of it's parent, this name could include the name of
-  the parent.
+  TJvInspectorCustomCompoundItem is an inspector item that allows some of it's child
+  items to be shown as sub columns of itself. It's primarly intended as a base class
+  for multicolumn items. 
+  
+  Use a TJvInspectorCompoundItem to define a multicolumn item you can manage yourself.
+  
+  TJvInspectorDateTimeItem also descends from TJvInspectorCustomCompoundItem but you have
+  no control over the columns.
+  
+  DisplayName is reimplemented by TJvInspectorCustomCompoundItem to take the
+  SingleName and SingleNameUseFirstCol properties into account when retrieving/setting
+  the DisplayName.
+See Also
+  IsCompoundColumn
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.AddColumnPrim
+Summary
+  Adds the specified child to column list.
+Description
+  AddColumnPrim will add the specified child in the Items list to the Columns list.
+  This will remove the specified item from the Items list (a column item can't
+  be shown as a child item as well). The column is intialized to a width of 0
+  (see Width and WidthSet for more information).
 
-  TJvInspectorCustomCategoryItem redeclares this property as a writeable
-  property to allow the name to be changed. The name can not be read from the
-  data layer, since a category has no underlaying data.
+  AddColumnPrim comes in two overloaded versions: one to add an Item instance and
+  one to add the item at an index in the Items property.
+  
+  This method primarily intended as an internal method to add columns. Some descendants
+  will surface this behaviour through publicly declared methods, others don't but
+  add the columns automatically (such as TJvInspectorDateTimeItem).
+Parameters
+  Item - Item to add as a column. Item is checked to be a child of the compound
+          item.
+  ItemIndex - Index into the Items item list of the item to add.
+See Also
+  DeleteColumnPrim, InsertColumnPrim
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.ColumnCount
+Summary
+  Indicates the number of columns.
+Description
+  ColumnCount retrieves the number of columns that are in the column list. Read
+  ColumnCount to find out how many columns the compound item has.
+See Also
+  Columns
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.Columns
+Summary
+  List of columns.
+Description
+  Columns is a 0-based array of columns the compound item has. Use Columns to
+  retrieve an instance of a specific column.
+See Also
+  ColumnCount
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.CompoundItemFlags
+Summary
+  Determines flags specific for compound items.
+Description
+  CompoundItemFlags determines the options specific for the compound item. Each flag
+  is also represented by a separate property.
+See Also
+  SingleName, SingleNameUseFirstCol
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.DeleteColumnPrim
+Summary
+  Deletes an item from the column list.
+Description
+  DeleteColumnPrim will remove an item from the column list. The item will be moved
+  back to the Items list.
+
+  DeleteColumnPrim comes in three overloaded versions: one to delete a column
+  instance, one to delete the column at an index and one to delete an item
+  instance.
+
+  This method primarily intended as an internal method to delete columns. Some descendants
+  will surface this behaviour through publicly declared methods, others don't but
+  delete the columns automatically (such as TJvInspectorDateTimeItem).
+Parameters
+  Column - Column to delete.
+  Index - Column index to delete.
+  Item - Item to delete from the column list.
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.DivideRect
+Summary
+  Divides the specified rectangle over the columns.
+Description
+  Dividerect divides the specified rectangle over the columns (taking into
+  account the columns Width property) and set's the associated item's rectangle
+  accordingly.
+
+  If DivideRect divides the iprValue rectangle, the Painter will be requested to
+  calculate the edit based rectangles.
+Parameters
+  RectKind - The rectangle kind to set.
+  Rect - The rectangle to divide.
+See Also
+  TJvInspectorCompoundColumn.Width, TJvCustomInspector.Painter,
+  TJvInspectorPainter.CalcEditBasedRects
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.IndexOfColumnPrim
+Summary
+  Locates a specific column.
+Description
+  IndexOfColumnPrim searches for a column and returns the index. If the requested
+  column is not found, -1 will be returned, otherwise it's a 0-based index into
+  the Columns list.
+
+  IndexOfColumnPrim comes in two overloaded versions: one to locate a column
+  instance and one to locate an item instance.
+
+  This method primarily intended as an internal method to locate columns. Some descendants
+  will surface this behaviour through publicly declared methods, others don't (such as TJvInspectorDateTimeItem).
+Parameters
+  Col - Column instance to locate.
+  Item - Item instance to locate.
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.InsertColumnPrim
+Summary
+  Inserts the specified child to column list at a specified index.
+Description
+  InsertColumnPrim will insert the specified child in the Items list to the Columns
+  list at the specified index. This will remove the specified item from the
+  Items list (a column item can't be shown as a child item as well). The column
+  is intialized to a width of 0 (see Width and WidthSet for more information).
+
+  InsertColumnPrim comes in two overloaded versions: one to insert an Item instance
+  and one to insert the item at an index in the Items property.
+
+  This method primarily intended as an internal method to insert columns. Some descendants
+  will surface this behaviour through publicly declared methods, others don't but
+  insert the columns automatically (such as TJvInspectorDateTimeItem).
+Parameters
+  Index - Index at which the item is to be inserted into the column list. This
+           is a 0-based index. The item will be inserted at the index, moving
+           all items at or above the index to the right. If Index = ColumnCount,
+           the item will be added to the column list.
+  Item - Item to add as a column. Item is checked to be a child of the compound
+          item.
+  ItemIndex - Index into the Items item list of the item to add.
+See Also
+  AddColumnPrim, DeleteColumnPrim, ColumnCount, Columns
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.RecalcColumnWidths
+Summary
+  Update column widths
+Description
+  RecalcColumnWidths will recalculate all column widths such that the total
+  width will be 100. If the SetColumn property is set to a column, that column
+  is guarenteed to be the width it was set to.
+
+  RecalcColumnWidths will loop over all colums and adjust there widths if
+  needed. If a columns width would make the total >100, it is resized to a
+  smaller value. If a columns width was set to 0, it will be added to a list
+  of columns to be set after the main loop.
+
+  After the main loop has ended and the total width < 100, a second loop will
+  start to loop over all item for which the width was set to 0. The remaining
+  space will be equally divided over the columns.
+Parameters
+  SetColumn - Column which has to be set to the width that is specified. This
+                column is guarenteed to be set to that width, unless it's
+                width is 0, which means it will be set to whatever width
+                remains after the main loop.
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.SelectedColumn
+Summary
+  Currently selected (focused) column.
+Description
+  SelectedColumn indicates which column currently has the input focus. Read
+  SelectedColumn to determine which column has focus or set it to a column that
+  is to recieve input focus.
+See Also
+  SelectedColumnIndex
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.SelectedColumnIndex
+Summary
+  Index of currently selected (focused) column.
+Description
+  SelectedColumnIndex indicates which column currently has the input focus. Read
+  SelectedColumnIndex to determine which column has focus or set it to a column
+  that is to recieve input focus.
+See Also
+  SelectedColumn
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.SingleName
+Summary
+  Determines if the compound item uses a single name to represent the different
+  columns.
+Description
+  SingleName determines if the compound item uses a single name to represent the
+  different columns.
+  
+  Set SingleName to True if you want only 1 name displayed, regardless of the
+  number of columns.
+  
+  Set SingleName to False if you want separate names displayed for each column.
+  The displayed names are then determined by the DisplayName of the items associated
+  with the columns. <B>Note:</B> when setting SingleName to False, SingleNameUseFirstCol will
+  also be set to False.
+  
+  SingleName maps to the icifSingleName in the CompoundItemFlags property.
+--------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.SingleNameUseFirstCol
+Summary
+  Determines if the single name shown is that of the first column.
+Description
+  SingleNameUseFirstCol determines if the name displayed in SingleName mode, is the
+  DisplayName of the item associated with the first column.
+  
+  Set SingleNameUseFirstCol to True to let the item associated with the first column
+  provide the name to show. <B>Note:</B> setting SingleNameUseFirstCol to True
+  will also set SingleName to True.
+  
+  Set SingleNameUseFirstCol to False to keep the DisplayName of the compound item
+  separated from any column in SingleName mode.
+
+  SingleNameUseFirstCol maps to the icifSingleNameUseFirstCol in the CompoundItemFlags property.
+--------------------------------------------------------------------------------
+@@TJvInspectorDateItem
+--------------------------------------------------------------------------------
+<GROUP TJvInspector.Item>
+Summary
+  TDate inspector item.
+Description
+  TJvInspectorDateItem is an inspector item that allows TDate values to be
+  edited through a simple editor.
+
+  TJvCustomInspectorData registers this item for TDate types.
+--------------------------------------------------------------------------------
+@@TJvInspectorDateItem.Format
+Summary
+  Determines the format for the date.
+Description
+  Format determines the display/edit format of the date string. The format string should only
+  contain the d, dd, m, mm, yy, yyyy or date separator characters. Other settings are not allowed.
+--------------------------------------------------------------------------------
+@@TJvInspectorDateTimeItem
+--------------------------------------------------------------------------------
+<GROUP TJvInspector.Item>
+Summary
+  TDateTime inspector item.
+Description
+  TJvInspectorDateTimItem is a compound inspector item that allows TDateTime values to be edited
+  through two simple editors. The two columns will consist of a TJvInspectorDateItem and a
+  TJvInspectorTimeItem. This item will allow you to set the various settings of the two editors.
+  There's no reference to the two editors used available in the public interface.
+
+  TJvCustomInspectorData registers this item for TDateTime types.
+--------------------------------------------------------------------------------
+@@TJvInspectorDateTimeItem.DateFormat
+Summary
+  Determines the format for the date editor.
+Description
+  DateFormat determines the format of the date editor. DateFormat is a direct reference to the
+  <LINK TJvInspectorDateItem.Format, Format> property of the \TJvInspectorDateItem.
+See Also
+  TJvInspectorDateItem.Format
+--------------------------------------------------------------------------------
+@@TJvInspectorDateTimeItem.TimeShowAMPM
+Summary
+  Determines if the time editor shows AM/PM.
+Description
+  TimeShowAMPM determines if the time editor will show AM/PM or use the 24-hour notation.
+  TimeShowAMPM is a direct reference to the <LINK TJvInspectorTimeItem.ShowAMPM, ShowAMPM> property
+  of the \TJvInspectorTimeItem.
+See Also
+  TJvInspectorTimeItem.ShowAMPM
+--------------------------------------------------------------------------------
+@@TJvInspectorDateTimeItem.TimeShowSeconds
+Summary
+  Determines if the time editor shows seconds.
+Description
+  TimeShowSeconds determines if the time editor will show seconds. TimeShowSeconds is a direct
+  reference to the <LINK TJvInspectorTimeItem.ShowSeconds, ShowSeconds> property of the
+  \TJvInspectorTimeItem.
+See Also
+  TJvInspectorTimeItem.ShowSeconds
 --------------------------------------------------------------------------------
 @@TJvInspectorEnumItem
 --------------------------------------------------------------------------------
@@ -1707,4 +1901,36 @@ Description
 
   TJvCustomInspectorData registers this item for all string types (ie.
   ShortString, AnsiString (=long strings) and WideString).
+--------------------------------------------------------------------------------
+@@TJvInspectorTimeItem
+--------------------------------------------------------------------------------
+<GROUP TJvInspector.Item>
+Summary
+  TTime inspector item.
+Description
+  TJvInspectorTimeItem is an inspector item that allows TTime values to be
+  edited through a simple editor.
+
+  TJvCustomInspectorData registers this item for TTime types.
+--------------------------------------------------------------------------------
+@@TJvInspectorTimeItem.ShowAMPM
+Summary
+  Determines if the editor shows AM/PM.
+Description
+  ShowAMPM determines if the editor will show AM/PM or use the 24-hour notation.
+  
+  Set ShowAMPM to True to allow the editor to display a 12-hour clock and append the AM or PM
+  suffix.
+  
+  Set ShowAMPM to False to allow the editor to display a 24-hour clock.
+--------------------------------------------------------------------------------
+@@TJvInspectorTimeItem.ShowSeconds
+Summary
+  Determines if the editor shows seconds.
+Description
+  ShowSeconds determines if the editor will show seconds.
+  
+  Set ShowSeconds to True to allow the editor to display the seconds.
+  
+  Set ShowSeconds to False to hide the seconds from the editor.
 --------------------------------------------------------------------------------
