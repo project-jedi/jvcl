@@ -65,7 +65,7 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
     Left = 256
     Top = 0
     Width = 86
-    Height = 271
+    Height = 275
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1

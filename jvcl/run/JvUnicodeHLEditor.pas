@@ -115,25 +115,28 @@ uses
 
 function LastNonSpaceChar(const S: WideString): WideChar;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := #0;
-  i := Length(S);
-  while (i > 0) and (S[i] = ' ') do Dec(i);
-  if i > 0 then Result := S[i];
+  I := Length(S);
+  while (I > 0) and (S[I] = ' ') do
+    Dec(I);
+  if I > 0 then
+    Result := S[I];
 end;
 
 function GetTrimChar(const S: WideString; Index: Integer): WideChar;
 var
-  LS, l: Integer;
+  LS, L: Integer;
 begin
   LS := Length(S);
   if LS <> 0 then
   begin
-    l := 1;
-    while (l <= LS) and (s[l] = ' ') do Inc(l);
-    if l <= LS then
-      Result := S[l - 1 + Index]
+    L := 1;
+    while (L <= LS) and (S[L] = ' ') do
+      Inc(L);
+    if L <= LS then
+      Result := S[L - 1 + Index]
     else
       Result := S[Index];
   end
@@ -144,17 +147,18 @@ end;
 function HasStringOpenEnd(Lines: TWStrings; iLine: Integer): Boolean;
 { find C/C++ "line breaker" '\' }
 var
-  i: integer;
+  I: Integer;
   IsOpen: Boolean;
   P, F: PWideChar;
   S: WideString;
 begin
   Result := False;
-  if (iLine < 0) or (iLine >= Lines.Count) then exit;
-  i := iLine - 1;
+  if (iLine < 0) or (iLine >= Lines.Count) then
+    Exit;
+  I := iLine - 1;
   IsOpen := False;
-  if (i >= 0) and (LastNonSpaceChar(Lines[i]) = '\') then // check prior lines
-    IsOpen := HasStringOpenEnd(Lines, i);
+  if (I >= 0) and (LastNonSpaceChar(Lines[I]) = '\') then // check prior lines
+    IsOpen := HasStringOpenEnd(Lines, I);
   S := Lines[iLine];
   F := PWideChar(S);
   P := F;
@@ -167,11 +171,13 @@ begin
       else
       begin
        // count the backslashes
-        i := 1;
-        while (P-1-i > F) and (P[-1-i] = '\') do inc(i);
-        if i mod 2 = 0 then IsOpen := not IsOpen;
+        I := 1;
+        while (P-1-I > F) and (P[-1-I] = '\') do
+          Inc(I);
+        if I mod 2 = 0 then
+          IsOpen := not IsOpen;
       end;
-      inc(P);
+      Inc(P);
     end;
   until P = nil;
   Result := IsOpen;
@@ -379,7 +385,7 @@ const
     ' spacer span strike strong style sub sup table tbody td textarea tfoot' +
     ' th thead title tr tt u ul var wbr xmp ';
 
-  HtmlSpecChars =
+  HTMLSpecChars =
     ' Aacute aacute acirc Acirc acute AElig aelig agrave Agrave alefsym ' +
     ' alpha Alpha AMP amp and ang Aring aring asymp atilde Atilde Auml ' +
     ' auml bdquo beta Beta brvbar bull cap Ccedil ccedil cedil cent chi ' +
@@ -426,9 +432,11 @@ const
     P := PWideChar(S2);
     while P[0] <> #0 do
     begin
-      while P[0] = ' ' do Inc(P);
+      while P[0] = ' ' do
+        Inc(P);
       F := P;
-      while not (P[0] <= #32) do Inc(P);
+      while not (P[0] <= #32) do
+        Inc(P);
       if (P - F) = Len then
         if StrLICompW2(PWideChar(S1), F, Len) = 0 then
           Exit;
@@ -446,9 +454,11 @@ const
     P := PWideChar(S2);
     while P[0] <> #0 do
     begin
-      while P[0] = ' ' do Inc(P);
+      while P[0] = ' ' do
+        Inc(P);
       F := P;
-      while not (P[0] <= #32) do Inc(P);
+      while not (P[0] <= #32) do
+        Inc(P);
       if (P - F) = Len then
         if StrLCompW(PWideChar(S1), F, Len) = 0 then
           Exit;
@@ -498,12 +508,12 @@ const
 
   function IsHtmlTag(const St: WideString): Boolean;
   begin
-    Result := PosI(St, HtmlTags);
+    Result := PosI(St, HTMLTags);
   end;
 
   function IsHtmlSpecChar(const St: WideString): Boolean;
   begin
-    Result := PosI(St, HtmlSpecChars);
+    Result := PosI(St, HTMLSpecChars);
   end;
 
   function IsPerlKeyWord(const St: WideString): Boolean;
@@ -536,7 +546,7 @@ const
         Result := ((LS > 0) and (St[1] = '{')) or
           ((LS > 1) and (((St[1] = '(') and (St[2] = '*')) or
           ((St[1] = '/') and (St[2] = '/'))));
-      hlCBuilder, hlSQL, hlJava, hlPhp, hlNQC:
+      hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
         Result := (LS > 1) and (St[1] = '/') and
           ((St[2] = '*') or (St[2] = '/'));
       hlVB:
@@ -564,7 +574,7 @@ const
       hlPascal:
         Result := ((LS > 0) and ((St[1] = '{') and (St[2] = '$'))) or
           ((LS > 1) and (((St[1] = '(') and (St[2] = '*') and (St[3] = '$'))));
-      {hlCBuilder, hlSQL, hlJava, hlPhp, hlNQC:
+      {hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
       hlVB:
       hlPython, hlPerl:
       hlIni:
@@ -595,7 +605,8 @@ const
   var
     I: Integer;
   begin
-    if iEnd > Max_X then iEnd := Max_X;
+    if iEnd > Max_X then
+      iEnd := Max_X;
     for I := iBeg to iEnd do
       with LineAttrs[I] do
       begin
@@ -615,41 +626,41 @@ const
     I: Integer;
   begin
     I := 0;
-    while (Parser.PCPos[I] <> #0) and CharInSetW(Parser.PCPos[I], [' ', Tab, Lf, Cr]) do
+    while (Parser.pcPos[I] <> #0) and CharInSetW(Parser.pcPos[I], [' ', Tab, Lf, Cr]) do
       Inc(I);
-    Result := Parser.PCPos[I];
+    Result := Parser.pcPos[I];
   end;
 
   procedure TestHtmlSpecChars(const Token: WideString);
   var
-    i, j, iBeg, iEnd: Integer;
+    I, J, iBeg, iEnd: Integer;
     S1: WideString;
     F1: Integer;
   begin
-    i := 1;
+    I := 1;
     F1 := Parser.PosBeg[0];
-    while i <= Length(Token) do
+    while I <= Length(Token) do
     begin
-      if Token[i] = '&' then
+      if Token[I] = '&' then
       begin
-        iBeg := i;
+        iBeg := I;
         iEnd := iBeg;
-        Inc(i);
-        while i <= Length(Token) do
+        Inc(I);
+        while I <= Length(Token) do
         begin
-          if Token[i] = ';' then
+          if Token[I] = ';' then
           begin
-            iEnd := i;
+            iEnd := I;
             Break;
           end;
-          Inc(i);
+          Inc(I);
         end;
         if iEnd > iBeg + 1 then
         begin
           S1 := Copy(Token, iBeg + 1, iEnd - iBeg - 1);
           if IsHtmlSpecChar(S1) then
-            for j := iBeg to iEnd do
-              with LineAttrs[F1 + j] do
+            for J := iBeg to iEnd do
+              with LineAttrs[F1 + J] do
               begin
                 FC := Colors.Preproc.ForeColor;
                 BC := Colors.Preproc.BackColor;
@@ -657,7 +668,7 @@ const
               end;
         end;
       end;
-      Inc(i);
+      Inc(I);
     end;
   end;
 
@@ -708,10 +719,11 @@ var
   S: WideString;
   LS: Integer;
   Token: WideString;
-  i: Integer;
+  I: Integer;
 
 begin
-  if not FSyntaxHighlighting then Exit;
+  if not FSyntaxHighlighting then
+    Exit;
   S := Lines[Line];
   if (FHighlighter = hlNone) and not UserReservedWords then
     C := Colors.PlainText
@@ -773,15 +785,15 @@ begin
   LineAttrs[1].Style := C.Style;
   LineAttrs[1].BC := C.BackColor;
   N := Min(Max_X, Length(S));
-  for i := 2 to N do
-    Move(LineAttrs[1], LineAttrs[i], SizeOf(LineAttrs[1]));
+  for I := 2 to N do
+    Move(LineAttrs[1], LineAttrs[I], SizeOf(LineAttrs[1]));
   if Length(S) < Max_X then
   begin
     LineAttrs[N + 1].FC := Font.Color;
     LineAttrs[N + 1].Style := Font.Style;
     LineAttrs[N + 1].BC := Color;
-    for i := N + 1 + 1 to Max_X do
-      Move(LineAttrs[N + 1], LineAttrs[i], SizeOf(LineAttrs[1]));
+    for I := N + 1 + 1 to Max_X do
+      Move(LineAttrs[N + 1], LineAttrs[I], SizeOf(LineAttrs[1]));
   end;
 
   if (FHighlighter = hlNone) and not UserReservedWords then
@@ -1003,7 +1015,7 @@ var
   P, F: PWideChar;
   MaxLine, MaxScanLine: Integer;
   S: WideString;
-  i, i1, L1: Integer;
+  I, i1, L1: Integer;
 begin
   FLong := lgNone;
   Result := False; // no Invalidate
@@ -1017,7 +1029,8 @@ begin
   MaxLine := Lines.Count - 1;
   if MaxLine > High(FLongDesc) then
     MaxLine := High(FLongDesc);
-  if iLine > MaxLine then Exit;;
+  if iLine > MaxLine then
+    Exit;
 
   MaxScanLine := MaxLine;
   FLong := lgNone;
@@ -1072,110 +1085,110 @@ begin
             FLong := lgNone;
         end;
       end;
-      i := 1;
-      while i <= L1 do
+      I := 1;
+      while I <= L1 do
       begin
         case FHighlighter of
           hlPascal:
             case FLong of
               lgNone: //  not in comment
-                case S[i] of
+                case S[I] of
                   '{':
                     begin
-                      P := StrScanW(F + i, WideChar('}'));
+                      P := StrScanW(F + I, WideChar('}'));
                       if P = nil then
                       begin
-                        if S[i + 1] = '$' then
+                        if S[I + 1] = '$' then
                           FLong := lgPreproc1
                         else
                           FLong := lgComment1;
                         Break;
                       end
                       else
-                        i := P - F + 1;
+                        I := P - F + 1;
                     end;
                   '(':
-                    if {S[i + 1]} F[i] = '*' then
+                    if {S[I + 1]} F[I] = '*' then
                     begin
-                      if {S[i + 2]} F[i + 1] = '$' then
+                      if {S[I + 2]} F[I + 1] = '$' then
                         FLong := lgPreproc2
                       else
                         FLong := lgComment2;
-                      P := StrScanW(F + i + 2, WideChar(')'));
+                      P := StrScanW(F + I + 2, WideChar(')'));
                       if P = nil then
                         Break
                       else
                       begin
                         if P[-1] = '*' then
                           FLong := lgNone;
-                        i := P - F + 1;
+                        I := P - F + 1;
                       end;
                     end;
                   '''':
                     begin
-                      P := StrScanW(F + i + 1, WideChar(''''));
+                      P := StrScanW(F + I + 1, WideChar(''''));
                       if P <> nil then
                       begin
                         i1 := P - F;
                         if P[1] <> '''' then
-                          i := i1
+                          I := i1
                         else
                           { ?? }
                       end
                       else
-                        i := L1 + 1;
+                        I := L1 + 1;
                     end;
                 end;
               lgPreproc1, lgComment1:
                 begin //  {
-                  P := StrScanW(F + i - 1, WideChar('}'));
+                  P := StrScanW(F + I - 1, WideChar('}'));
                   if P <> nil then
                   begin
                     FLong := lgNone;
-                    i := P - F + 1;
+                    I := P - F + 1;
                   end
                   else
-                    i := L1 + 1;
+                    I := L1 + 1;
                 end;
               lgPreproc2, lgComment2:
                 begin //  (*
-                  P := StrScanW(F + i, WideChar(')'));
+                  P := StrScanW(F + I, WideChar(')'));
                   if P = nil then
                     Break
                   else
                   begin
                     if P[-1] = '*' then
                       FLong := lgNone;
-                    i := P - F + 1;
+                    I := P - F + 1;
                   end;
                 end;
             end;
           hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
             case FLong of
               lgNone: //  not in comment
-                case S[i] of
+                case S[I] of
                   '/':
-                    if {S[i + 1]} F[i] = '*' then
+                    if {S[I + 1]} F[I] = '*' then
                     begin
                       FLong := lgComment2;
-                      P := StrScanW(F + i + 2, WideChar('/'));
+                      P := StrScanW(F + I + 2, WideChar('/'));
                       if P = nil then
                         Break
                       else
                       begin
                         if P[-1] = '*' then
                           FLong := lgNone;
-                        i := P - F + 1;
+                        I := P - F + 1;
                       end;
                     end;
                   '"':
                     begin
-                      P := StrScanW(F + i + 1, WideChar('"'));
+                      P := StrScanW(F + I + 1, WideChar('"'));
                       if P <> nil then
                       begin
                         i1 := P - F;
                         if P[1] <> '"' then
-                          i := i1
+                          I := i1
                         else
                           { ?? }
                       end
@@ -1184,10 +1197,10 @@ begin
                       begin
                         if (LastNonSpaceChar(S) = '\') and (HasStringOpenEnd(Lines, iLine)) then
                           FLong := lgString;
-                        i := L1 + 1;
+                        I := L1 + 1;
                       end
                       else
-                        i := L1 + 1;
+                        I := L1 + 1;
                     end;
                   '#':
                     begin
@@ -1200,24 +1213,24 @@ begin
                 end;
               lgComment2:
                 begin //  /*
-                  P := StrScanW(F + i, WideChar('/'));
+                  P := StrScanW(F + I, WideChar('/'));
                   if P = nil then
                     Break
                   else
                   begin
                     if P[-1] = '*' then
                       FLong := lgNone;
-                    i := P - F + 1;
+                    I := P - F + 1;
                   end;
                 end;
               lgString:
                 begin
-                  P := StrScanW(F + i + 1, WideChar('"'));
+                  P := StrScanW(F + I + 1, WideChar('"'));
                   if P <> nil then
                   begin
                     i1 := P - F;
                     if P[1] <> '"' then
-                      i := i1
+                      I := i1
                     else
                       { ?? }
                   end
@@ -1228,7 +1241,7 @@ begin
                       if (LastNonSpaceChar(S) <> '\') or (not HasStringOpenEnd(Lines, iLine)) then
                         FLong := lgNone;
                     end;
-                    i := L1 + 1;
+                    I := L1 + 1;
                   end;
                 end;
               lgPreproc:
@@ -1240,137 +1253,137 @@ begin
           hlPython, hlPerl:
             case FLong of
               lgNone: //  not in comment
-                case S[i] of
+                case S[I] of
                   '#':
-                    i := L1;
+                    I := L1;
                   '"':
                     begin
-                      P := StrScanW(F + i, WideChar('"'));
+                      P := StrScanW(F + I, WideChar('"'));
                       if P = nil then
                       begin
                         FLong := lgString;
                         Break;
                       end
                       else
-                        i := P - F + 1;
+                        I := P - F + 1;
                     end;
                 end;
               lgString: // python and perl long string
                 begin
-                  P := StrScanW(F + i - 1, WideChar('"'));
+                  P := StrScanW(F + I - 1, WideChar('"'));
                   if P <> nil then
                   begin
                     FLong := lgNone;
-                    i := P - F + 1;
+                    I := P - F + 1;
                   end
                   else
-                    i := L1 + 1;
+                    I := L1 + 1;
                 end;
             end;
           hlHtml:
             case FLong of
               lgNone: //  not in comment
-                case S[i] of
+                case S[I] of
                   '<':
                     begin
-                      P := StrScanW(F + i, WideChar('>'));
+                      P := StrScanW(F + I, WideChar('>'));
                       if P = nil then
                       begin
                         FLong := lgTag;
                         Break;
                       end
                       else
-                        i := P - F + 1;
+                        I := P - F + 1;
                     end;
                 end;
               lgTag: // html tag
                 begin
-                  P := StrScanW(F + i - 1, WideChar('>'));
+                  P := StrScanW(F + I - 1, WideChar('>'));
                   if P <> nil then
                   begin
                     FLong := lgNone;
-                    i := P - F + 1;
+                    I := P - F + 1;
                   end
                   else
-                    i := L1 + 1;
+                    I := L1 + 1;
                 end;
             end;
           hlCocoR:
             case FLong of
               lgNone: //  not in comment
-                case S[i] of
+                case S[I] of
                   '(':
-                    if {S[i + 1]} F[i] = '*' then
+                    if {S[I + 1]} F[I] = '*' then
                     begin
                       FLong := lgComment2;
-                      P := StrScanW(F + i + 2, WideChar(')'));
+                      P := StrScanW(F + I + 2, WideChar(')'));
                       if P = nil then
                         Break
                       else
                       begin
                         if P[-1] = '*' then
                           FLong := lgNone;
-                        i := P - F + 1;
+                        I := P - F + 1;
                       end;
                     end;
                   '"':
                     begin
-                      P := StrScanW(F + i + 1, WideChar('"'));
+                      P := StrScanW(F + I + 1, WideChar('"'));
                       if P <> nil then
                       begin
                         i1 := P - F;
                         if P[1] <> '"' then
-                          i := i1
+                          I := i1
                         else
                           { ?? }
                       end
                       else
-                        i := L1 + 1;
+                        I := L1 + 1;
                     end;
                   '''':
                     begin
-                      P := StrScanW(F + i + 1, WideChar(''''));
+                      P := StrScanW(F + I + 1, WideChar(''''));
                       if P <> nil then
                       begin
                         i1 := P - F;
                         if P[1] <> '''' then
-                          i := i1
+                          I := i1
                         else
                           { ?? }
                       end
                       else
-                        i := L1 + 1;
+                        I := L1 + 1;
                     end;
                   '/':
-                    if {S[i + 1]} F[i] = '*' then
+                    if {S[I + 1]} F[I] = '*' then
                     begin
                       FLong := lgComment2;
-                      P := StrScanW(F + i + 2, WideChar('/'));
+                      P := StrScanW(F + I + 2, WideChar('/'));
                       if P = nil then
                         Break
                       else
                       begin
                         if P[-1] = '*' then
                           FLong := lgNone;
-                        i := P - F + 1;
+                        I := P - F + 1;
                       end;
                     end;
                 end;
               lgComment2:
                 begin //  (*
-                  P := StrScanW(F + i, WideChar(')'));
+                  P := StrScanW(F + I, WideChar(')'));
                   if P = nil then
                     Break
                   else
                   begin
                     if P[-1] = '*' then
                       FLong := lgNone;
-                    i := P - F + 1;
+                    I := P - F + 1;
                   end;
                 end;
             end;
         end;
-        Inc(i);
+        Inc(I);
       end;
 
       if (FHighlighter = hlCocoR) and
@@ -1395,7 +1408,7 @@ end;
 function TJvWideHLEditor.FindLongEnd: Integer;
 var
   P, F: PWideChar;
-  i: integer;
+  I: Integer;
 begin
   P := PWideChar(FLine);
   Result := Length(FLine);
@@ -1457,9 +1470,10 @@ begin
                   else
                   begin
                    // count the backslashes
-                    i := 1;
-                    while (P - 1 - i > F) and (P[-1 - i] = '\') do Inc(i);
-                    if i and $01 = 0 then {faster than: if i mod 2 = 0 then}
+                    I := 1;
+                    while (P - 1 - I > F) and (P[-1 - I] = '\') do
+                      Inc(I);
+                    if I and $01 = 0 then {faster than: if I mod 2 = 0 then}
                     begin
                       Result := P - F;
                       Break;
@@ -1497,7 +1511,7 @@ procedure TJvWideHLEditor.TextModified(ACaretX, ACaretY: Integer; Action: TModif
 var
   S: WideString;
   L: Integer;
-{  LP, i: Integer;
+{  LP, I: Integer;
   P: PChar;
   OldProductionsLine: Integer; }
 begin
@@ -1565,13 +1579,13 @@ begin
     LP := Length('productions');
     OldProductionsLine := ProductionsLine;
     ProductionsLine := High(Integer);
-    for i := 0 to Lines.Count - 1 do
+    for I := 0 to Lines.Count - 1 do
     begin
-      P := PWideChar(Lines[i]);
+      P := PWideChar(Lines[I]);
       if (StrLICompW2(P, 'productions', LP) = 0) and
          ((Length(P) = LP) or (P[LP] = ' ')) then
       begin
-        ProductionsLine := i;
+        ProductionsLine := I;
         Break;
       end;
     end;
@@ -1637,29 +1651,40 @@ end;
 function TJvWideHLEditor.GetDelphiColors: Boolean;
   function CompareColor(Symbol: TJvSymbolColor; const DelphiColor: TDelphiColor): Boolean;
   begin
-    Result := (Symbol.ForeColor = DelphiColor.ForeColor) and
-              (Symbol.BackColor = DelphiColor.BackColor) and
-              (Symbol.Style = DelphiColor.Style);
+    Result :=
+     (Symbol.ForeColor = DelphiColor.ForeColor) and
+     (Symbol.BackColor = DelphiColor.BackColor) and
+     (Symbol.Style = DelphiColor.Style);
   end;
 begin
   Result := False;
-  if not CompareColor(Colors.Comment, DelphiColor_Comment) then Exit;
-  if not CompareColor(Colors.Preproc, DelphiColor_Preproc) then Exit;
-  if not CompareColor(Colors.Number, DelphiColor_Number) then Exit;
-  if not CompareColor(Colors.Strings, DelphiColor_Strings) then Exit;
-  if not CompareColor(Colors.Symbol, DelphiColor_Symbol) then Exit;
-  if not CompareColor(Colors.Reserved, DelphiColor_Reserved) then Exit;
-  if not CompareColor(Colors.Identifier, DelphiColor_Identifier) then Exit;
-  if not CompareColor(Colors.PlainText, DelphiColor_PlainText) then Exit;
+  if not CompareColor(Colors.Comment, DelphiColor_Comment) then
+    Exit;
+  if not CompareColor(Colors.Preproc, DelphiColor_Preproc) then
+    Exit;
+  if not CompareColor(Colors.Number, DelphiColor_Number) then
+    Exit;
+  if not CompareColor(Colors.Strings, DelphiColor_Strings) then
+    Exit;
+  if not CompareColor(Colors.Symbol, DelphiColor_Symbol) then
+    Exit;
+  if not CompareColor(Colors.Reserved, DelphiColor_Reserved) then
+    Exit;
+  if not CompareColor(Colors.Identifier, DelphiColor_Identifier) then
+    Exit;
+  if not CompareColor(Colors.PlainText, DelphiColor_PlainText) then
+    Exit;
   Result := True;
 end;
 
 procedure TJvWideHLEditor.SetDelphiColors(Value: Boolean);
+
   procedure SetColor(Symbol: TJvSymbolColor; const DelphiColor: TDelphiColor);
   begin
     with DelphiColor do
       Symbol.SetColor(ForeColor, BackColor, Style);
   end;
+
 begin
   if Value then
   begin

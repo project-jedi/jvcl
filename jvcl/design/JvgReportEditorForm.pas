@@ -90,7 +90,7 @@ type
     Bevel3: TBevel;
     sb_OLE: TSpeedButton;
     sb_SnapToGrid: TSpeedButton;
-    b_Bevel: TSpeedButton;
+    B_Bevel: TSpeedButton;
     sb_Print: TSpeedButton;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
@@ -242,7 +242,7 @@ type
     procedure OnResize_(Sender: TObject);
     procedure OnDrawScrollBox(Sender: TObject);
     procedure UpdatePageSize;
-    procedure ResizeReportControls(l, t, w, h: Integer;
+    procedure ResizeReportControls(L, T, W, H: Integer;
       fUseParamsAsShifts: Boolean);
     procedure ShowComponentPos(Control: TControl);
     procedure AssignEventsToAllComponents;
@@ -925,10 +925,10 @@ end;
 procedure TJvgReportEditorForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
-  l, t, w, h: Integer;
+  L, T, W, H: Integer;
 begin
-  w := 0;
-  h := 0;
+  W := 0;
+  H := 0;
   if (Shift = [ssCtrl]) and (Chr(Key) = 'Z') and FCanUndo then
   begin
     FCanUndo := False;
@@ -937,37 +937,37 @@ begin
 
   if Assigned(ActiveControl) then
     Exit;
-  l := 0;
-  t := 0;
+  L := 0;
+  T := 0;
   case Key of
     VK_UP:
       if Shift = [ssShift] then
-        h := -1
+        H := -1
       else
       if Shift = [ssCtrl] then
-        t := -1;
+        T := -1;
     VK_DOWN:
       if Shift = [ssShift] then
-        h := 1
+        H := 1
       else
       if Shift = [ssCtrl] then
-        t := 1;
+        T := 1;
     VK_LEFT:
       if Shift = [ssShift] then
-        w := -1
+        W := -1
       else
       if Shift = [ssCtrl] then
-        l := -1;
+        L := -1;
     VK_RIGHT:
       if Shift = [ssShift] then
-        w := 1
+        W := 1
       else
       if Shift = [ssCtrl] then
-        l := 1;
+        L := 1;
   else
     Exit;
   end;
-  ResizeReportControls(l, t, w, h, True);
+  ResizeReportControls(L, T, W, H, True);
 
 end;
 
@@ -1037,7 +1037,7 @@ begin
   FSkipSizeUpdate := False;
 end;
 
-procedure TJvgReportEditorForm.ResizeReportControls(l, t, w, h: Integer;
+procedure TJvgReportEditorForm.ResizeReportControls(L, T, W, H: Integer;
   fUseParamsAsShifts: Boolean);
 var
   I: Integer;
@@ -1049,25 +1049,25 @@ begin
           if Selected and (Fixed = 0) then
             if fUseParamsAsShifts then
             begin
-              if l < IGNORE_VALUE then
-                Left := Left + l;
-              if t < IGNORE_VALUE then
-                Top := Top + t;
-              if w < IGNORE_VALUE then
-                Width := Width + w;
-              if h < IGNORE_VALUE then
-                Height := Height + h;
+              if L < IGNORE_VALUE then
+                Left := Left + L;
+              if T < IGNORE_VALUE then
+                Top := Top + T;
+              if W < IGNORE_VALUE then
+                Width := Width + W;
+              if H < IGNORE_VALUE then
+                Height := Height + H;
             end
             else
             begin
-              if l < IGNORE_VALUE then
-                Left := l;
-              if t < IGNORE_VALUE then
-                Top := t;
-              if w < IGNORE_VALUE then
-                Width := w;
-              if h < IGNORE_VALUE then
-                Height := h;
+              if L < IGNORE_VALUE then
+                Left := L;
+              if T < IGNORE_VALUE then
+                Top := T;
+              if W < IGNORE_VALUE then
+                Width := W;
+              if H < IGNORE_VALUE then
+                Height := H;
             end;
 end;
 
@@ -1262,7 +1262,7 @@ begin
         with TJvgReportItem(ComponentList[I]) do
         begin
           PaintTo(Bmp.Canvas);
-          if ContainOle then
+          if ContainOLE then
             OLEContainer.PaintTo(Bmp.Canvas.Handle, Left, Top);
         end;
 

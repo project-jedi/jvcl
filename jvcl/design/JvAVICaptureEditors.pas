@@ -162,7 +162,7 @@ end;
 
 procedure TJvVirtualKeyEditor.SetValue(const Value: string);
 begin
-  SetOrdValue(StrToInt(value));
+  SetOrdValue(StrToInt(Value));
 end;
 
 end.

@@ -99,7 +99,7 @@ type
 procedure ShowEditor(Designer: IDesigner; OutlookBar: TJvCustomOutlookBar);
 var
   I: Integer;
-  AEditor: TfrmOLBEditor;
+  AEditor: TFrmOLBEditor;
 begin
   AEditor := nil;
   for I := 0 to Screen.FormCount - 1 do

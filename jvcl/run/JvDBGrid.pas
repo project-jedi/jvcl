@@ -126,7 +126,7 @@ type
     FPostOnEnter: Boolean;
     FSelectColumn: TSelectColumn;
     FTitleArrow: Boolean;
-    FTitlePopUp: TPopupMenu;
+    FTitlePopup: TPopupMenu;
     FOnShowTitleHint: TJvTitleHintEvent;
     FOnTitleArrowMenuEvent: TNotifyEvent;
     FAlternateRowColor: TColor;
@@ -405,7 +405,7 @@ type
   private
     FDataList: TJvDBLookupList; //  TDBLookupListBox
     FUseDataList: Boolean;
-    FLookupSource: TDatasource;
+    FLookupSource: TDataSource;
   protected
     procedure CloseUp(Accept: Boolean); override;
     procedure DoEditButtonClick; override;
@@ -438,13 +438,13 @@ begin
       ListValue := DataList.KeyValue
     else
     if PickList.ItemIndex <> -1 then
-      ListValue := PickList.Items[Picklist.ItemIndex];
+      ListValue := PickList.Items[PickList.ItemIndex];
     SetWindowPos(ActiveList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
     ListVisible := False;
     if Assigned(FDataList) then
       FDataList.LookupSource := nil; //  ListSource
-    FLookupSource.Dataset := nil;
+    FLookupSource.DataSet := nil;
     Invalidate;
     if Accept then
       if ActiveList = DataList then
@@ -741,7 +741,7 @@ var
 begin
   if MultiSelect and DataLink.Active then
   begin
-    with DataLink.Dataset do
+    with DataLink.DataSet do
     begin
       if Bof and Eof then
         Exit;
@@ -831,8 +831,8 @@ begin
   if dgTitles in Options then
   begin
     Result := 1;
-    if (DataLink <> nil) and (DataLink.Dataset <> nil) and
-      DataLink.Dataset.ObjectView then
+    if (DataLink <> nil) and (DataLink.DataSet <> nil) and
+      DataLink.DataSet.ObjectView then
       for I := 0 to Columns.Count - 1 do
       begin
         if Columns[I].Showing then
@@ -934,11 +934,11 @@ var
 
   procedure NextRow(Select: Boolean);
   begin
-    with DataLink.Dataset do
+    with DataLink.DataSet do
     begin
       DoSelection(Select, 1);
       // Polaris
-      if AutoAppend and EOF and CanModify and (not ReadOnly) and (dgEditing in Options) then
+      if AutoAppend and Eof and CanModify and (not ReadOnly) and (dgEditing in Options) then
         Append;
     end;
   end;
@@ -1544,7 +1544,7 @@ begin
       else
       if Cell.Y >= TitleOffset then
         if Cell.Y - Row <> 0 then
-          DataLink.Dataset.MoveBy(Cell.Y - Row);
+          DataLink.DataSet.MoveBy(Cell.Y - Row);
     end
     else
     begin
@@ -1576,7 +1576,7 @@ begin
               CurrentRowSelected := not CurrentRowSelected;
               if CurrentRowSelected then
               begin
-                with DataLink.Dataset do
+                with DataLink.DataSet do
                 begin
                   DisableControls;
                   try
@@ -1989,7 +1989,7 @@ begin
     begin
       Bmp := GetGridBitmap(gpPopup);
       DrawBitmapTransparent(Canvas, (ARect.Left + ARect.Right - Bmp.Width) div 2,
-        (ARect.Top + ARect.Bottom - Bmp.Height) div 2, Bmp, clwhite);
+        (ARect.Top + ARect.Bottom - Bmp.Height) div 2, Bmp, clWhite);
     end;
 
   InBiDiMode := Canvas.CanvasOrientation = coRightToLeft;
@@ -2184,7 +2184,7 @@ var
   Field: TField;
 begin
   Field := Column.Field;
-  if Assigned(DataSource) and Assigned(DataSource.Dataset) and DataSource.Dataset.Active and
+  if Assigned(DataSource) and Assigned(DataSource.DataSet) and DataSource.DataSet.Active and
     (SelectedRows.IndexOf(DataSource.DataSet.Bookmark) > -1) then
     Include(State, gdSelected);
   NewBackgrnd := Canvas.Brush.Color;
@@ -2432,7 +2432,7 @@ begin
   if not (csDesigning in ComponentState) and not ReadOnly and
     (not (dgRowSelect in Options)) and (dgEditing in Options) and
     Assigned(Column.Field) and (Column.Field is TBooleanField) and
-    Assigned(DataLink) and DataLink.Active and not DataLink.Readonly and
+    Assigned(DataLink) and DataLink.Active and not DataLink.ReadOnly and
     (DataLink.DataSet.State in [dsInsert, dsEdit]) then
   begin
     Column.Field.AsBoolean := not Column.Field.AsBoolean;
@@ -2856,7 +2856,7 @@ begin
     begin
       AtCursorPosition := False;
       HintStr := Columns[ACol].FieldName;
-      ATimeOut := max(ATimeOut, Length(HintStr) * C_TIMEOUT);
+      ATimeOut := Max(ATimeOut, Length(HintStr) * C_TIMEOUT);
       if Assigned(FOnShowTitleHint) and DataLink.Active then
         FOnShowTitleHint(Self, Columns[ACol].Field, HintStr, ATimeOut);
       HideTimeOut := ATimeOut;

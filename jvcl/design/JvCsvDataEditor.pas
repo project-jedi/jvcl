@@ -202,7 +202,7 @@ const
 begin
   RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cCsvFieldDef, TJvCsvDefStrProperty);
 // RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cTableName, TFileNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cFileName, TJvFileNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cFileName, TJvFilenameProperty);
 
  { Component Editor - Verbs for the Right-Clicky-on-ye-component thing
    Requires a working DSDESIGN.pas source that will compile. }

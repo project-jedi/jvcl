@@ -267,7 +267,7 @@ procedure TPictureEditDialog.LoadClick(Sender: TObject);
 begin
   if FileDialog.Execute then
   begin
-    Self.LoadFile(FileDialog.Filename);
+    Self.LoadFile(FileDialog.FileName);
   end;
 end;
 
@@ -282,7 +282,7 @@ begin
       begin
         StartWait;
         try
-          Pic.SaveToFile(Filename);
+          Pic.SaveToFile(FileName);
         finally
           StopWait;
         end;

@@ -147,13 +147,14 @@ const
   sImage = 'Image%d';
 
 {$IFDEF VisualCLX}
+
 type
   TOpenIcon = class(TIcon);
 
-function Bmp2Icon(bmp: TBitmap): TIcon;
+function Bmp2Icon(Bmp: TBitmap): TIcon;
 begin
   Result := TIcon.Create;
-  Result.Assign(bmp);
+  Result.Assign(Bmp);
 end;
 
 function Icon2Bmp(Ico: TIcon): TBitmap;
@@ -164,25 +165,26 @@ end;
 
 procedure CopyIconToClipboard(Ico: TIcon; TransparentColor: TColor);
 var
-  bmp: TBitmap;
+  Bmp: TBitmap;
 begin
-  bmp := Icon2Bmp(Ico);
+  Bmp := Icon2Bmp(Ico);
   Clipboard.Assign(Bmp);
 end;
 
 function CreateIconFromClipboard: TIcon;
 var
-  bmp: TBitmap;
+  Bmp: TBitmap;
 begin
   Result := nil;
-  bmp := TBitmap.create;
+  Bmp := TBitmap.Create;
   try
-    bmp.Assign(Clipboard);
-    Result := Bmp2Icon(bmp);
+    Bmp.Assign(Clipboard);
+    Result := Bmp2Icon(Bmp);
   except
-    bmp.Free;
+    Bmp.Free;
   end;
 end;
+
 {$ENDIF VisualCLX}
 
 procedure EditIconList(IconList: TJvIconList);
@@ -452,7 +454,7 @@ procedure TIconListDialog.Activate;
 begin
   if Focused then
     CheckEnablePaste;
-  inherited;
+  inherited Activate;
 end;
 {$ENDIF VisualCLX}
 

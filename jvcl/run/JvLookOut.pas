@@ -420,7 +420,7 @@ type
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure UpdateControls;
     procedure DoCollapse(Sender: TObject);
-    procedure SetActiveOutLook(Value: TJvLookOutPage);
+    procedure SetActiveOutlook(Value: TJvLookOutPage);
     function GetActiveOutlook: TJvLookOutPage;
     function GetPageCount: Integer;
     function GetPage(Index: Integer): TJvLookOutPage;
@@ -598,7 +598,7 @@ end;
 type
   TJvLookOutButtonActionLink = class(TControlActionLink)
   protected
-    FClient: TJvCustomLookoutButton;
+    FClient: TJvCustomLookOutButton;
     procedure AssignClient(AClient: TObject); override;
     function IsCheckedLinked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
@@ -607,7 +607,7 @@ type
 procedure TJvLookOutButtonActionLink.AssignClient(AClient: TObject);
 begin
   inherited AssignClient(AClient);
-  FClient := AClient as TJvCustomLookoutButton;
+  FClient := AClient as TJvCustomLookOutButton;
 end;
 
 function TJvLookOutButtonActionLink.IsCheckedLinked: Boolean;
@@ -711,9 +711,9 @@ begin
     R := GetClientRect;
 
     if FDown then
-      Frame3d(Canvas, R, clBlack, clWhite, 1)
+      Frame3D(Canvas, R, clBlack, clWhite, 1)
     else
-      Frame3d(Canvas, R, clWhite, clBlack, 1);
+      Frame3D(Canvas, R, clWhite, clBlack, 1);
   end;
 end;
 
@@ -820,9 +820,9 @@ begin
   begin
     R := GetClientRect;
     if FDown then
-      Frame3d(Canvas, R, clBlack, clBtnShadow, 1)
+      Frame3D(Canvas, R, clBlack, clBtnShadow, 1)
     else
-      Frame3d(Canvas, R, clWhite, clBlack, 1);
+      Frame3D(Canvas, R, clWhite, clBlack, 1);
   end;
 end;
 
@@ -936,7 +936,7 @@ begin
     Text := FCaption;
     BorderStyle := bsNone;
     AutoSelect := True;
-    OnKeyPress := EditKeydown;
+    OnKeyPress := EditKeyDown;
     OnMouseDown := EditMouseDown;
     if not Visible then
       Show;
@@ -1475,7 +1475,7 @@ begin
       {$IFDEF VisualCLX}
       repeat
         Application.ProcessMessages;
-      until not QWidget_isVisible(FPopUpMenu.handle);
+      until not QWidget_isVisible(FPopUpMenu.Handle);
       {$ENDIF VisualCLX}
     end;
     { release button }
@@ -1731,7 +1731,7 @@ begin
     //    BorderStyle := bsNone;
     SetBounds(0, 0, Width, cHeight);
     AutoSelect := True;
-    OnKeyPress := EditKeydown;
+    OnKeyPress := EditKeyDown;
     OnMouseDown := EditMouseDown;
     SetFocus;
     SetCapture(FEdit.Handle);
@@ -1908,7 +1908,7 @@ end;
 procedure TJvLookOutPage.ScrollChildren(Start: Word);
 var
   R: TRect;
-  I, x, ACount: Integer; {AList: TList;}
+  I, X, ACount: Integer; {AList: TList;}
   AControl: TControl;
 begin
   if FScrolling <> 0 then
@@ -1929,7 +1929,7 @@ begin
   if FInScroll then
     Exit;
   R := GetClientRect;
-  x := Width;
+  X := Width;
   ACount := GetButtonCount;
   if ACount = 0 then
     Exit;
@@ -1956,7 +1956,7 @@ begin
 
     if FAutoCenter and (AControl is TJvCustomLookOutButton) and
       (TJvCustomLookOutButton(AControl).ImageSize = isLarge) then
-      AControl.Left := (x - AControl.Width) div 2;
+      AControl.Left := (X - AControl.Width) div 2;
   end;
   FInScroll := False;
 end;
@@ -2241,7 +2241,7 @@ end;
 procedure TJvLookOutPage.DrawTopButton;
 var
   R, R2: TRect;
-  DC: hDC;
+  DC: HDC;
   FFlat, FPush: Boolean;
 begin
   if MouseOver then
@@ -2264,7 +2264,7 @@ begin
     begin
       R2 := GetClientRect;
       R2.Top := R.Bottom;
-      Frame3d(Canvas, R2, cl3DDkShadow, clBtnFace, 1);
+      Frame3D(Canvas, R2, cl3DDkShadow, clBtnFace, 1);
     end;
 
     if FPush then
@@ -2272,7 +2272,7 @@ begin
     else
     if MouseOver then
     begin
-      Frame3D(Canvas, R, clBtnHighLight, cl3DDkShadow, 1);
+      Frame3D(Canvas, R, clBtnHighlight, cl3DDkShadow, 1);
       Frame3D(Canvas, R, clBtnFace, clBtnShadow, 1);
     end
     else
@@ -2301,7 +2301,7 @@ begin
     if not Enabled then
     begin
       { draw disabled text }
-      SetTextColor(DC, ColorToRGB(clBtnHighLight));
+      SetTextColor(DC, ColorToRGB(clBtnHighlight));
       OffsetRect(R, 1, 1);
       {$IFDEF VCL}
       DrawText(DC, PChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
@@ -2345,7 +2345,7 @@ begin
 
     Y := 0;
     Source := Rect(0, 0, W, H);
-    while y < Height do
+    while Y < Height do
     begin
       X := 0;
       while X < Width do
@@ -2384,7 +2384,7 @@ begin
     {$IFDEF VisualCLX}
      repeat
        Application.ProcessMessages;
-     until not QWidget_isVisible(FPopUpMenu.handle);
+     until not QWidget_isVisible(FPopUpMenu.Handle);
     {$ENDIF VisualCLX}
     FDown := False;
   end
@@ -2672,7 +2672,7 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TJvLookOut.SetActiveOutLook(Value: TJvLookOutPage);
+procedure TJvLookOut.SetActiveOutlook(Value: TJvLookOutPage);
 var
   I: Integer;
 begin

@@ -141,7 +141,7 @@ begin
   if (Index < 0) or (Index >= JvUrlGrabberClassList.Count) then
     Result := '-1 - ' + None
   else
-    Result := IntToStr(Index) + ' - ' + JvUrlGrabberClassList[Index].GetSupportedUrlName;
+    Result := IntToStr(Index) + ' - ' + JvUrlGrabberClassList[Index].GetSupportedURLName;
 end;
 
 procedure TJvUrlGrabberIndexProperty.GetValues(Proc: TGetStrProc);
@@ -150,7 +150,7 @@ var
 begin
   Proc('-1 - ' + None);
   for I := 0 to JvUrlGrabberClassList.Count - 1 do
-    Proc(IntToStr(I) + ' - ' + JvUrlGrabberClassList[I].GetSupportedUrlName);
+    Proc(IntToStr(I) + ' - ' + JvUrlGrabberClassList[I].GetSupportedURLName);
 end;
 
 procedure TJvUrlGrabberIndexProperty.SetValue(const Value: string);

@@ -22,6 +22,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
+
 {$I jvcl.inc}
 
 unit JvPageListEditorForm;
@@ -79,7 +80,7 @@ type
   private
     FPageList: TJvCustomPageList;
     procedure SetPageList(const Value: TJvCustomPageList);
-    procedure UpdateList(ItemIndex:integer);
+    procedure UpdateList(ItemIndex: Integer);
     procedure SelectPage(const Index: Integer);
     procedure Add(Page: TJvCustomPage);
   public
@@ -101,6 +102,7 @@ type
 procedure ShowPageListEditor(Designer: IDesigner; APageList: TJvCustomPageList);
 
 implementation
+
 uses
   JvDsgnConsts;
 
@@ -149,7 +151,6 @@ end;
 type
   TJvCustomPageAccess = class(TJvCustomPage);
 
-
 procedure TfrmPageListEditor.acAddExecute(Sender: TObject);
 var
   APage: TJvCustomPage;
@@ -165,7 +166,8 @@ begin
 end;
 
 procedure TfrmPageListEditor.acDeleteExecute(Sender: TObject);
-var I:Integer;
+var
+  I: Integer;
 begin
   if Assigned(PageList.ActivePage) then
   begin
@@ -174,7 +176,8 @@ begin
       lbPages.Items.Delete(TJvCustomPageAccess(PageList.ActivePage).PageIndex);
     Designer.SelectComponent(PageList);
     PageList.ActivePage.Free;
-    if I >= lbPages.Items.Count then Dec(i);
+    if I >= lbPages.Items.Count then
+      Dec(I);
     if (I >= 0) and (I < lbPages.Items.Count) then
     begin
       lbPages.ItemIndex := I;
@@ -262,7 +265,6 @@ begin
   end;
 end;
 
-
 procedure TfrmPageListEditor.FormClosed(AForm: TCustomForm);
 begin
   if AForm = Designer.Form then
@@ -275,14 +277,12 @@ begin
     UpdateList(lbPages.ItemIndex);
 end;
 
-
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 
 function TfrmPageListEditor.GetEditState: TEditState;
 begin
   Result := [];
 end;
-
 
 procedure TfrmPageListEditor.SetPageList(const Value: TJvCustomPageList);
 begin
@@ -318,7 +318,7 @@ begin
   end;
 end;
 
-procedure TfrmPageListEditor.UpdateList(ItemIndex: integer);
+procedure TfrmPageListEditor.UpdateList(ItemIndex: Integer);
 var
   I: Integer;
 begin
@@ -374,7 +374,6 @@ begin
     ActivateInspector(Key);
     Key := #0;
   end;
-
 end;
 
 end.

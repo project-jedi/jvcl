@@ -145,7 +145,7 @@ type
     procedure EditButtonClick; dynamic;
     function GetEditAlignment(ACol, ARow: Longint): TAlignment; dynamic;
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; override;
-    procedure GetPicklist(ACol, ARow: Longint; Picklist: TStrings); dynamic;
+    procedure GetPickList(ACol, ARow: Longint; PickList: TStrings); dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -319,7 +319,7 @@ begin
   if FEditStyle <> ieSimple then
     Dec(R.Right, FButtonWidth);
   {$IFDEF VCL}
-  SendMessage(Handle, EM_SETRECTNP, 0, LongInt(@R));
+  SendMessage(Handle, EM_SETRECTNP, 0, Longint(@R));
   SendMessage(Handle, EM_SCROLLCARET, 0, 0);
   if SysLocale.FarEast then
     SetImeCompositionWindow(Font, R.Left, R.Top);
@@ -337,7 +337,7 @@ begin
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
     {$ENDIF VCL}
     if FPickList.ItemIndex > -1 then
-      ListValue := FPickList.Items[FPicklist.ItemIndex];
+      ListValue := FPickList.Items[FPickList.ItemIndex];
     SetWindowPos(FActiveList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
     FListVisible := False;
@@ -1131,9 +1131,9 @@ var
 begin
   if DrawButtons then
   begin
-    if (Shift = [ssLeft]) then
+    if Shift = [ssLeft] then
     begin
-      MousetoCell(X, Y, Cell.X, Cell.Y);
+      MouseToCell(X, Y, Cell.X, Cell.Y);
       if not CompareMem(@Cell, @FCellDown, SizeOf(Cell)) then
       begin
         if (FCellDown.X >= 0) and (FCellDown.Y >= 0) then
@@ -1246,12 +1246,12 @@ begin
   if DrawButtons then
   begin
     TempRect := ARect;
-    if not (gdFixed in aState) then
+    if not (gdFixed in AState) then
     begin
       Canvas.Brush.Color := clBtnFace;
       Canvas.Font.Color := clBtnText;
       Style := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
-      if (FCellDown.X = aCol) and (FCellDown.Y = aRow) then
+      if (FCellDown.X = ACol) and (FCellDown.Y = ARow) then
         Style := Style or DFCS_PUSHED;
       DrawFrameControl(Canvas.Handle, TempRect, DFC_BUTTON, Style);
     end;
@@ -1424,7 +1424,7 @@ begin
     FOnGetEditStyle(Self, ACol, ARow, Result);
 end;
 
-procedure TJvDrawGrid.GetPicklist(ACol, ARow: Longint; PickList: TStrings);
+procedure TJvDrawGrid.GetPickList(ACol, ARow: Longint; PickList: TStrings);
 begin
   if Assigned(FOnGetPicklist) then
     FOnGetPicklist(Self, ACol, ARow, PickList);

@@ -143,7 +143,7 @@ begin
     Exit;
   for I := 0 to C - 1 do
   begin
-    Element := TJvHTMLElement(FElementStack.items[I]);
+    Element := TJvHTMLElement(FElementStack.Items[I]);
     s := Element.Text;
     Canvas.Font.Name := Element.FontName;
     Canvas.Font.Size := Element.FontSize;
@@ -208,12 +208,12 @@ procedure TJvMarkupViewer.ParseHTML(s: string);
 var
   p: Integer;
   se, st: string;
-  ftext: string;
-  fstyle: TFontStyles;
-  fname: string;
-  fsize: Integer;
-  fbreakLine: Boolean;
-  aColor, fColor: TColor;
+  LText: string;
+  FStyle: TFontStyles;
+  FName: string;
+  FSize: Integer;
+  LBreakLine: Boolean;
+  AColor, FColor: TColor;
   Element: TJvHTMLElement;
 
   function HTMLStringToColor(v: string; var col: TColor): Boolean;
@@ -234,7 +234,7 @@ var
     begin
       try
         vv := '$' + Copy(v, 6, 2) + Copy(v, 4, 2) + Copy(v, 2, 2);
-        col := stringtocolor(vv);
+        col := StringToColor(vv);
         Result := True;
       except
         Result := False;
@@ -245,10 +245,10 @@ var
   procedure PushTag;
   begin
     Element := TJvHTMLElement.Create;
-    Element.FontName := fname;
-    Element.FontSize := fsize;
-    Element.FontStyle := fstyle;
-    Element.FontColor := fColor;
+    Element.FontName := FName;
+    Element.FontSize := FSize;
+    Element.FontStyle := FStyle;
+    Element.FontColor := FColor;
     FTagStack.Push(Element);
   end;
 
@@ -257,10 +257,10 @@ var
     Element := FTagStack.pop;
     if Element <> nil then
     begin
-      fname := Element.FontName;
-      fsize := Element.FontSize;
-      fstyle := Element.FontStyle;
-      fcolor := Element.FontColor;
+      FName := Element.FontName;
+      FSize := Element.FontSize;
+      FStyle := Element.FontStyle;
+      FColor := Element.FontColor;
       Element.Free;
     end;
   end;
@@ -268,126 +268,126 @@ var
   procedure PushElement;
   begin
     Element := TJvHTMLElement.Create;
-    Element.Text := ftext;
-    Element.FontName := fname;
-    Element.FontSize := fsize;
-    Element.FontStyle := fstyle;
-    Element.FontColor := fColor;
-    Element.BreakLine := fBreakLine;
-    fBreakLine := False;
+    Element.Text := LText;
+    Element.FontName := FName;
+    Element.FontSize := FSize;
+    Element.FontStyle := FStyle;
+    Element.FontColor := FColor;
+    Element.BreakLine := LBreakLine;
+    LBreakLine := False;
     FElementStack.Push(Element);
   end;
 
-  procedure ParseTag(ss: string);
+  procedure ParseTag(SS: string);
   var
-    pp: Integer;
-    atag, apar, aval: string;
-    havepar: Boolean;
+    PP: Integer;
+    LTag, LPar, LVal: string;
+    HavePar: Boolean;
   begin
-    ss := Trim(ss);
-    havepar := False;
-    pp := Pos(' ', ss);
-    if pp = 0 then
-      atag := ss // tag only
+    SS := Trim(SS);
+    HavePar := False;
+    PP := Pos(' ', SS);
+    if PP = 0 then
+      LTag := SS // tag only
     else
     begin // tag + attributes
-      atag := Copy(ss, 1, pp - 1);
-      ss := Trim(Copy(ss, pp + 1, Length(ss)));
-      havepar := True;
+      LTag := Copy(SS, 1, PP - 1);
+      SS := Trim(Copy(SS, PP + 1, Length(SS)));
+      HavePar := True;
     end;
-    // handle atag
-    atag := LowerCase(atag);
-    if atag = 'br' then
-      fBreakLine := True
+    // handle LTag
+    LTag := LowerCase(LTag);
+    if LTag = 'br' then
+      LBreakLine := True
     else
-    if atag = 'b' then
+    if LTag = 'b' then
     begin // bold
       PushTag;
-      fstyle := fstyle + [fsBold];
+      FStyle := FStyle + [fsBold];
     end
     else
-    if atag = '/b' then
+    if LTag = '/b' then
     begin // cancel bold
-      fstyle := fstyle - [fsBold];
+      FStyle := FStyle - [fsBold];
       PopTag;
     end
     else
-    if atag = 'I' then
+    if LTag = 'I' then
     begin // italic
       PushTag;
-      fstyle := fstyle + [fsItalic];
+      FStyle := FStyle + [fsItalic];
     end
     else
-    if atag = '/I' then
+    if LTag = '/I' then
     begin // cancel italic
-      fstyle := fstyle - [fsItalic];
+      FStyle := FStyle - [fsItalic];
       PopTag;
     end
     else
-    if atag = 'u' then
+    if LTag = 'u' then
     begin // underline
       PushTag;
-      fstyle := fstyle + [fsUnderline];
+      FStyle := FStyle + [fsUnderline];
     end
     else
-    if atag = '/u' then
+    if LTag = '/u' then
     begin // cancel underline
-      fstyle := fstyle - [fsUnderline];
+      FStyle := FStyle - [fsUnderline];
       PopTag;
     end
     else
-    if atag = 'font' then
+    if LTag = 'font' then
       PushTag
     else
-    if atag = '/font' then
+    if LTag = '/font' then
       PopTag;
-    if havepar then
+    if HavePar then
     begin
       repeat
-        pp := Pos('="', ss);
-        if pp > 0 then
+        PP := Pos('="', SS);
+        if PP > 0 then
         begin
-          aPar := LowerCase(Trim(Copy(ss, 1, pp - 1)));
-          Delete(ss, 1, pp + 1);
-          pp := Pos('"', ss);
-          if pp > 0 then
+          LPar := LowerCase(Trim(Copy(SS, 1, PP - 1)));
+          Delete(SS, 1, PP + 1);
+          PP := Pos('"', SS);
+          if PP > 0 then
           begin
-            aVal := Copy(ss, 1, pp - 1);
-            Delete(ss, 1, pp);
-            if aPar = 'face' then
-              fname := aVal
+            LVal := Copy(SS, 1, PP - 1);
+            Delete(SS, 1, PP);
+            if LPar = 'face' then
+              FName := LVal
             else
-            if aPar = 'size' then
+            if LPar = 'size' then
               try
-                fsize := StrToInt(aval);
+                FSize := StrToInt(LVal);
               except
               end
             else
-            if aPar = 'color' then
+            if LPar = 'color' then
               try
-                if HTMLStringToColor(aval, aColor) then
-                  fcolor := aColor;
+                if HTMLStringToColor(LVal, AColor) then
+                  FColor := AColor;
               except
               end
           end;
         end;
-      until pp = 0;
+      until PP = 0;
     end;
   end;
 
 begin
   FElementStack.Clear;
   FTagStack.Clear;
-  fstyle := [];
-  fname := 'arial';
-  fsize := 12;
-  fColor := clBlack;
-  fBreakLine := False;
+  FStyle := [];
+  FName := 'Arial';
+  FSize := 12;
+  FColor := clBlack;
+  LBreakLine := False;
   repeat
     p := Pos('<', s);
     if p = 0 then
     begin
-      fText := s;
+      LText := s;
       PushElement;
     end
     else
@@ -395,7 +395,7 @@ begin
       if p > 1 then
       begin
         se := Copy(s, 1, p - 1);
-        ftext := se;
+        LText := se;
         PushElement;
         Delete(s, 1, p - 1);
       end;
@@ -413,15 +413,15 @@ end;
 procedure TJvMarkupViewer.RenderHTML;
 var
   R: trect;
-  x, y, xav, clw: Integer;
-  baseline: Integer;
+  X, Y, xav, clw: Integer;
+  BaseLine: Integer;
   I, C: Integer;
   el: TJvHTMLElement;
   eol: Boolean;
   ml: Integer; // margin left
   isol, ieol: Integer;
-  maxheight, maxascent: Integer;
-  pendingBreak: Boolean;
+  MaxHeight, MaxAscent: Integer;
+  PendingBreak: Boolean;
 
   procedure SetFont(ee: TJvHTMLElement);
   begin
@@ -436,16 +436,16 @@ var
 
   procedure RenderString(ee: TJvHTMLElement);
   var
-    ss: string;
-    ww: Integer;
+    SS: string;
+    w: Integer;
   begin
     SetFont(ee);
     if ee.SolText <> '' then
     begin
-      ss := ee.SolText;
-      ww := FBmp.Canvas.TextWidth(ss);
-      FBmp.Canvas.TextOut(x, y + baseline - ee.Ascent - FrameTop, ss);
-      x := x + ww;
+      SS := ee.SolText;
+      w := FBmp.Canvas.TextWidth(SS);
+      FBmp.Canvas.TextOut(X, Y + BaseLine - ee.Ascent - FrameTop, SS);
+      X := X + w;
     end;
   end;
 
@@ -463,33 +463,33 @@ begin
   clw := FBmp.Width - FMarginRight;
   ml := MarginLeft;
   FBmp.Canvas.Brush.Style := bsClear;
-  y := FMarginTop;
+  Y := FMarginTop;
   isol := 0;
-  pendingBreak := False;
+  PendingBreak := False;
   repeat
     I := isol;
     xav := clw;
-    maxHeight := 0;
-    maxAscent := 0;
+    MaxHeight := 0;
+    MaxAscent := 0;
     eol := False;
     repeat // scan line
       el := TJvHTMLElement(FElementStack.Items[I]);
       if el.BreakLine then
       begin
-        if not pendingBreak then
+        if not PendingBreak then
         begin
           eol := True;
           ieol := I - 1;
           //  break;
         end;
-        pendingBreak := not pendingBreak;
+        PendingBreak := not PendingBreak;
       end;
-      if not pendingBreak then
+      if not PendingBreak then
       begin
-        if el.Height > maxheight then
-          maxheight := el.Height;
-        if el.Ascent > maxascent then
-          maxAscent := el.Ascent;
+        if el.Height > MaxHeight then
+          MaxHeight := el.Height;
+        if el.Ascent > MaxAscent then
+          MaxAscent := el.Ascent;
         el.Breakup(FBmp.Canvas, xav);
         if el.SolText <> '' then
         begin
@@ -519,21 +519,21 @@ begin
     until eol;
 
     // render line, only when in visible frame
-    x := ml;
-    baseline := maxAscent;
-    if (y + MaxHeight >= FrameTop) and (y <= FrameBottom) then
+    X := ml;
+    BaseLine := MaxAscent;
+    if (Y + MaxHeight >= FrameTop) and (Y <= FrameBottom) then
       for I := isol to ieol do
       begin
         el := TJvHTMLElement(FElementStack.Items[I]);
         RenderString(el);
       end;
-    y := y + maxHeight;
-    if not pendingBreak then
+    Y := Y + MaxHeight;
+    if not PendingBreak then
       isol := ieol
     else
       isol := ieol + 1;
   until (ieol >= C - 1) and (el.EolText = '');
-  PageBottom := y;
+  PageBottom := Y;
 end;
 
 procedure TJvMarkupViewer.ScrollViewer(Sender: TObject);

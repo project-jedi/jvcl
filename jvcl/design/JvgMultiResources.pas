@@ -111,7 +111,7 @@ begin
   if (Component <> Self) and (Operation = opInsert) then
     if (Component is TLabel) or (Component is TListBox) then
     begin
-      Comps.AddObject(Component.name, Component);
+      Comps.AddObject(Component.Name, Component);
       Resources.Add('');
     end;
   {  if (Component <> Self)and(Operation = opRemove) then

@@ -77,7 +77,7 @@ begin
   RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
   RegisterComponents(RsPaletteEdit, [TJvValidateEdit]);
   RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,
-    TJvLookout, {TJvLookOutPage, } TJvExpress]);
+    TJvLookOut, {TJvLookOutPage, } TJvExpress]);
   RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
   RegisterComponents(RsPaletteVisual, [TJvTimeLine, TJvTMTimeLine, TJvChart]);
   RegisterComponents(RsPaletteNonVisual, [TJvScheduledEvents]);
@@ -102,7 +102,7 @@ begin
     cImageIndex, TJvOutlookBarButtonImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvOutlookBarPage,
     cImageIndex, TJvOutlookBarPageImageIndexProperty);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvLookoutButton,
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvLookOutButton,
     cImageIndex, TJvLookOutImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton,
     cImageIndex, TJvLookOutImageIndexProperty);
@@ -127,7 +127,7 @@ begin
   RegisterComponentEditor(TJvLookOut, TJvLookOutEditor);
   RegisterComponentEditor(TJvLookOutPage, TJvLookOutPageEditor);
   RegisterComponentEditor(TJvExpress, TJvExpressEditor);
-  RegisterClass(TJvLookoutPage);
+  RegisterClass(TJvLookOutPage);
 end;
 
 end.

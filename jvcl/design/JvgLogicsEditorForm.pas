@@ -283,8 +283,7 @@ begin
       Pt := ClientToScreen(Pt);
       Selected := True;
       Tag := 1;
-      if (X >= Width - 5) and (X < Width) and (Y >= Height - 5) and (Y <
-        Height) then
+      if (X >= Width - 5) and (X < Width) and (Y >= Height - 5) and (Y < Height) then
         Tag := 2;
       Exit;
     end;
@@ -458,7 +457,7 @@ begin
 
   reReslt.SelStart := Length(reReslt.Text) - Length(ParsedResult);
   reReslt.SelLength := Length(ParsedResult);
-  if tag = 0 then
+  if Tag = 0 then
     reReslt.SelAttributes.Color := clRed
   else
     reReslt.SelAttributes.Color := clGreen;
@@ -619,7 +618,6 @@ begin
 
         Bmp.Free;
       end;
-
   finally
     SelectObject(DC, Pen);
     DeleteObject(SelectObject(DC, OldPen));

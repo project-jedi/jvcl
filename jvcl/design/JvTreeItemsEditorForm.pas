@@ -342,14 +342,14 @@ const
 var
   f: TfrmTreeViewItems;
   il: TCustomImageList;
-  i: Integer;
+  I: Integer;
 begin
   // keep in mind that Self is class here not object
   f := Self.Create(Application);
   try
     f.FTreeView := TreeView;
-    f.tvItems.Items.Assign(THackTreeView(Treeview).Items);
-    il := THackTreeView(Treeview).Images;
+    f.tvItems.Items.Assign(THackTreeView(TreeView).Items);
+    il := THackTreeView(TreeView).Images;
     if il <> nil then
     begin
       f.cbImage.Style := csOwnerDrawFixed;
@@ -367,14 +367,14 @@ begin
       f.cbImage.Tag := Integer(il);
       f.cbSelected.Tag := Integer(il);
     end;
-    il := THackTreeView(Treeview).StateImages;
+    il := THackTreeView(TreeView).StateImages;
     if il <> nil then
     begin
       f.cbState.Style := csOwnerDrawFixed;
       f.cbState.ItemHeight := il.Height;
       f.cbState.Items.Add(cNegItem);
-      for i := 0 to il.Count - 1 do
-        f.cbState.Items.Add(IntToStr(i));
+      for I := 0 to il.Count - 1 do
+        f.cbState.Items.Add(IntToStr(I));
       f.cbState.Tag := Integer(il);
     end;
     f.cbSelected.ItemIndex := 0;
@@ -382,10 +382,10 @@ begin
     f.cbState.ItemIndex := 0;
     f.tvItems.FullExpand;
     if f.tvItems.Items.Count > 0 then
-      f.tvItems.Items.getFirstNode.MakeVisible;
+      f.tvItems.Items.GetFirstNode.MakeVisible;
     Result := f.ShowModal = mrOk;
     if Result then
-      THackTreeView(Treeview).Items.Assign(f.tvItems.Items);
+      THackTreeView(TreeView).Items.Assign(f.tvItems.Items);
   finally
     f.Free;
   end;
@@ -484,8 +484,8 @@ procedure TfrmTreeViewItems.acNodeMoveUpExecute(Sender: TObject);
 begin
   with tvItems.Selected do
   begin
-    if GetPrevSibling <> nil then
-      MoveTo(GetPrevSibling, naInsert)
+    if getPrevSibling <> nil then
+      MoveTo(getPrevSibling, naInsert)
     else
     if Parent <> nil then
       MoveTo(Parent, naInsert);
@@ -498,8 +498,8 @@ var N:TTreeNode;
 begin
   with tvItems.Selected do
   begin
-    if GetNextSibling <> nil then
-      GetNextSibling.MoveTo(tvItems.Selected, naInsert)
+    if getNextSibling <> nil then
+      getNextSibling.MoveTo(tvItems.Selected, naInsert)
     else
     if Parent <> nil then
     begin
@@ -514,7 +514,7 @@ end;
 procedure TfrmTreeViewItems.acNodeMoveRightExecute(Sender: TObject);
 begin
   with tvItems.Selected do
-    MoveTo(GetPrevSibling, naAddChild);
+    MoveTo(getPrevSibling, naAddChild);
   tvItems.FullExpand;
 end;
 
