@@ -6083,7 +6083,11 @@ procedure TJvCustomInspectorItem.Undo;
 begin
   if Editing then
   begin
-    EditCtrl.Undo;
+    if Data.IsAssigned then
+      EditCtrl.Text := DisplayValue
+    else
+      EditCtrl.Text := '';
+    EditCtrl.Modified := False;
     EditCtrl.SelectAll;
   end;
 end;
@@ -6544,8 +6548,11 @@ begin
     HadFocus := EditFocused;
     if DroppedDown then
       CloseUp(False);
-    if not CancelEdits and EditCtrl.Modified and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
+    if not CancelEdits and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
+    begin
       DisplayValue := EditCtrl.Text;
+      InvalidateItem;
+    end;
     FreeAndNil(FListBox);
 
     SetEditCtrl(nil);
