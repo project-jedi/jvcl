@@ -38,8 +38,8 @@ interface
 uses
   Classes, SysUtils, 
   DesignIntf, DesignEditors,  
-  JvQDsgnEditors, JvQStdDsgnEditors, 
-  QWindows, QForms, QImgList, QActnList, Types, QGraphics,
+  JvQDsgnEditors,  
+  Types, QWindows, QForms, QImgList, QActnList, QGraphics,
   TypInfo;
 
 type 

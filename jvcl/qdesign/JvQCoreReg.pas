@@ -44,7 +44,7 @@ implementation
 
 uses
   Classes,
-  QControls, QStdCtrls, QExtCtrls, Types, QGraphics, QActnList, QImgList, QDialogs, 
+  QControls, QStdCtrls, QExtCtrls, QGraphics, QActnList, QImgList, QDialogs, 
   QTypes,  
   DesignEditors, DesignIntf, 
   JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVCLXVer, JvQComponent, JvQActions,
@@ -87,11 +87,8 @@ begin
   // in this case, thus the registration of 'nil' property editors 
   RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
   RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil); 
-//  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TColorPropertyEx);
 
-  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
- 
-  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
+  RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvColorProperty);
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
@@ -114,9 +111,6 @@ begin
 
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
- 
-
-  {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
@@ -130,7 +124,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
- 
+
 
   RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS} TJvSendMailAction, {$ENDIF} TJvWebAction], TJvStandardActions);
   RegisterZoom;

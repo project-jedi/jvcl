@@ -39,9 +39,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList,
-  QComCtrls, QExtCtrls, Types, 
+  SysUtils, Classes,
+  Types, QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList, QToolWin,
+  QComCtrls, QExtCtrls,
   JvQBaseDsgnFrame;
 
 type
@@ -77,14 +77,11 @@ uses
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 uses
-  IniFiles;
+  JvQRegistryIniFile;
 {$ENDIF LINUX}
 
 
-
-
 {$R *.xfm}
-
 
 const
   cLargeButton = 'LargeButton';
@@ -105,16 +102,11 @@ procedure TfmeJvBaseToolbarDesign.StoreSettings;
 begin
   if RegKey <> '' then
     {$IFDEF LINUX}
-    with TIniFile.Create(GetEnvironmentVariable('HOME')+ '/.borland/.borlandrc') do
-      try
-        WriteBool(RegKey, cLargeButton, aiTextLabels.Checked);
-          WriteBool(RegKey, cToolbar, aiShowToolbar.Checked);
-      finally
-        Free;
-      end;
+    with TJvRegistryIniFile.Create do
     {$ENDIF LINUX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do
+    {$ENDIF MSWINDOWS}
     try
       LazyWrite := False;
       if OpenKey(RegKey, True) then
@@ -127,24 +119,17 @@ begin
     finally
       Free;
     end;
-   {$ENDIF MSWINDOWS}
 end;
 
 procedure TfmeJvBaseToolbarDesign.RestoreSettings;
 begin
   if RegKey <> '' then
     {$IFDEF LINUX}
-    with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + '/.borland/.borlandrc') do
-    try
-      if SectionExists(RegKey) then
-          EnableLargeButtons(not ValueExists(RegKey, cLargeButton) or ReadBool(RegKey, cLargeButton, false));
-          ShowToolbar(not ValueExists(RegKey, cToolbar) or ReadBool(RegKey, cToolbar, false));
-    finally
-      Free;
-    end;
+    with TJvRegistryIniFile.Create do
     {$ENDIF LINUX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do
+    {$ENDIF MSWINDOWS}
     try
       if OpenKey(RegKey, False) then
         try
@@ -156,7 +141,6 @@ begin
     finally
       Free;
     end;
-    {$ENDIF MSWINDOWS}
 end;
 
 procedure TfmeJvBaseToolbarDesign.UpdateToolbarSeparators;

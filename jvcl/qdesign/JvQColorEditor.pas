@@ -35,18 +35,34 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, Types, QGraphics, 
+  Types, QWindows, QGraphics, 
   RTLConsts, DesignIntf, DesignEditors,
-  CLXEditors,  
-  JvQDsgnEditors, 
+  CLXEditors, 
+
+  QDialogs,
+  {$IFDEF MSWINDOWS}
+  Registry,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  JvQRegistryIniFile,
+  {$ENDIF LINUX}
+
   JvQConsts, JvQJVCLUtils;
 
+
+const
+  SCustomColors = 'JVCLX Custom Colors';
+
+
 type
-  TJvColorProperty = class(TColorProperty)
+  TJvColorProperty = class(TColorProperty) 
+  protected
+    function GetRegKey: string; dynamic; 
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: string); override; 
+    procedure SetValue(const Value: string); override;  
+    procedure Edit; override; 
   end;
 
 function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
@@ -165,6 +181,97 @@ end;
 procedure TJvColorProperty.SetValue(const Value: string);
 begin
   SetOrdValue(JvStringToColor(Value));
+end;
+
+
+//
+// TColorProperty.Edit uses TColorDialog, but it does not store the
+// customcolors. For design time non volatile customcolors are
+// implemented stored in the Registry under windows and in
+// Linux in an IniFile.
+//
+function TJvColorProperty.GetRegKey: String;
+begin
+  Result := SDelphiKey + PathDelim + SCustomColors;
+end;
+
+procedure TJvColorProperty.Edit;
+var
+  ColorDialog: TColorDialog;
+
+  procedure GetCustomColors;
+  var
+    KeyName: string;
+    KeyValue: string;
+    Suffix: Char;
+  begin
+    with TRegistry.Create do
+    try
+      LazyWrite := False;
+      if OpenKey(GetRegKey, True) then
+      try
+        with ColorDialog.CustomColors do
+        begin
+          Clear;
+          for Suffix := 'A' to 'P' do
+          begin
+            KeyName := 'Color' + Suffix;
+            KeyValue := ReadString(KeyName);
+            Add(KeyName + '=' + KeyValue);
+          end;
+        end;
+      finally
+        CloseKey;
+      end;
+    finally
+      Free;
+    end;
+  end;
+
+  procedure SaveCustomColors;
+  var
+    I: Integer;
+    KeyName: string;
+    KeyValue: string;
+    Suffix: Char;
+  begin
+    with TRegistry.Create do
+    try
+      LazyWrite := False;
+      if OpenKey(GetRegKey, True) then
+      try
+        I := 0;
+        with ColorDialog.CustomColors do
+          for Suffix := 'A' to 'P' do
+          begin
+            KeyName := 'Color' + Suffix;
+            KeyValue := StringReplace(Strings[I], Keyname + '=', '', []);
+            WriteString(KeyName, KeyValue);
+            inc(I);
+          end;
+      finally
+        CloseKey;
+      end;
+    finally
+      Free;
+    end;
+  end;
+
+begin
+  ColorDialog := TColorDialog.Create(nil); //Application);
+  try
+    ColorDialog.Color := ColorFromColormap(GetOrdValue);
+//    ColorDialog.HelpContext := hcDColorEditor;
+//    ColorDialog.HelpType := htContext;
+    GetCustomColors;
+    if ColorDialog.Execute then
+    begin
+      SetOrdValue(ColorDialog.Color);
+      SaveCustomColors;
+    end;
+  finally
+    ColorDialog.Free;
+  end;
 end;
 
 

@@ -34,7 +34,7 @@ unit JvQConsts;
 interface
 
 uses
-  SysUtils, QControls, Types, QGraphics, QWindows;
+  SysUtils, QControls, QGraphics, Types, QWindows;
 
 
 const
@@ -76,7 +76,7 @@ const
   SDelphiKey = 'Software\Borland\Delphi\7.0';   
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  SDelphiKey = '.borland/.jvclx1';
+  SDelphiKey = '.borland/.JEDI';
   {$ENDIF}
   { JvDataProvider constants }
   { Consumer attributes }

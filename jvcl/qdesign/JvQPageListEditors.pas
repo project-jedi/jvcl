@@ -37,7 +37,7 @@ uses
   Classes, SysUtils,  
   QImgList, QGraphics,  
   DesignEditors, DesignIntf, DesignMenus,  
-  JvQPageList, JvQDsgnEditors, JvQStdDsgnEditors;
+  JvQPageList, JvQDsgnEditors;
 
 type
   { a property editor for the ActivePage property of TJvPageList }
