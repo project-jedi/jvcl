@@ -45,7 +45,7 @@ uses
 
 { EJvInterpreterError }
 
-{ constructor Create(AErrCode: integer; AErrPos: integer; AErrName: string; AErrName2: string) }
+{ constructor Create(AErrCode: Integer; AErrPos: Integer; AErrName: string; AErrName2: string) }
 
 procedure EJvInterpreterError_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -66,14 +66,14 @@ begin
   EJvInterpreterError(Args.Obj).Clear;
 end;
 
-{ property Read ErrCode: integer }
+{ property Read ErrCode: Integer }
 
 procedure EJvInterpreterError_Read_ErrCode(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := EJvInterpreterError(Args.Obj).ErrCode;
 end;
 
-{ property Read ErrPos: integer }
+{ property Read ErrPos: Integer }
 
 procedure EJvInterpreterError_Read_ErrPos(var Value: Variant; Args: TJvInterpreterArgs);
 begin

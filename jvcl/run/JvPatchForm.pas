@@ -55,17 +55,16 @@ type
     function SetFromStr: TStringList;
   end;
 
-
-resourcestring
-  sJvPatcherEditorComparingFilesd = 'Jv - Patcher Editor : Comparing files %d%%';
-  sJvPatcherEditorEndStep = 'Jv - Patcher Editor : end step ...';
-
 implementation
 
 uses
   JvConsts;
 
 {$R *.DFM}
+
+resourcestring
+  sJvPatcherEditorComparingFilesd = 'Jv - Patcher Editor : Comparing files %d%%';
+  sJvPatcherEditorEndStep = 'Jv - Patcher Editor : end step ...';
 
 procedure TFoPatch.LoadFromStr(Value: TStringList);
 begin
@@ -112,7 +111,7 @@ begin
   Reset(f);
   Reset(g);
   Caption := Format(sJvPatcherEditorComparingFilesd, [0]);
-  Application.ProcessMessages;
+  Repaint;
   l := Res.Add(IntToStr(FileSize(f)));
   Res.Add(IntToStr(FileSize(g)));
   icount := 0;
@@ -138,7 +137,7 @@ begin
   end;
 
   Caption := sJvPatcherEditorEndStep;
-  Application.ProcessMessages;
+  Repaint;
   if res1 > res2 then
   begin
     //f>g original>patched
@@ -155,7 +154,8 @@ begin
     //telling it's the end ...
     Res.Add('end%' + IntToStr(icount));
   end
-  else if res2 > res1 then
+  else
+  if res2 > res1 then
   begin
     //g>f patched>original
 

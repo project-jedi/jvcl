@@ -44,17 +44,17 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     function GetParentBackground: Boolean;
     procedure SetParentBackground(const Value: Boolean);
-  {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     procedure Paint; override;
-  {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -64,9 +64,9 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
-  {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
   end;
 
 implementation
@@ -122,7 +122,7 @@ var
   Bmp: TBitmap;
   DC: THandle;
 begin
-  if (ThemeServices.ThemesEnabled) and (ParentBackground) then
+  if ThemeServices.ThemesEnabled and ParentBackground then
   begin
 //    DrawThemedBackground(Self, Canvas, ClientRect, Parent.Brush.Color);
     DC := Canvas.Handle;
