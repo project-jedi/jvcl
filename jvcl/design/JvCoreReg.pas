@@ -16,7 +16,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvTypes, JvConsts, JvJCLUtils, JVCLVer, JvComponent, JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
   JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor, JvContextProvider,
-  JvAppRegistryStore, JvAppIniStore, JvColorProvider;
+  JvAppRegistryStore, JvAppIniStore, JvColorProvider, JvColorProviderEditors;
 
 {$R ..\resources\JvCoreReg.dcr}
 
@@ -72,6 +72,7 @@ begin
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
+  RegisterPropertyEditor(TypeInfo(TJvColorProviderMapping), TPersistent, '', TJvColorProviderMappingProperty);
 
   RegisterActions('JVCL', [TJvSendMail, TJvWebAction], TJvStandardActions);
   RegisterZoom;
