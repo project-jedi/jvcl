@@ -108,7 +108,6 @@ contains
   JvFormImage in '..\source\JvFormImage.pas' {FormImg},
   JvFormParser in '..\source\JvFormParser.pas' {FormParsers},
   JvFormPatch in '..\source\JvFormPatch.pas' {foPatch},
-  JvFormPlace in '..\source\JvFormPlace.pas',
   JvTipOfDay in '..\source\JvTipOfDay.pas',
   JvFormToHtml in '..\source\JvFormToHtml.pas',
   JvFormWallpaper in '..\source\JvFormWallpaper.pas',
