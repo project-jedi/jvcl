@@ -30,12 +30,17 @@ unit JvFormPlacement;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
   {$ENDIF COMPILER6_UP}
-  SysUtils, Classes,
-  Windows, Messages, Controls, Forms,
-  JvAppStorage, JvComponent, JvWndProcHook, JvTypes;
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Forms, JvWndProcHook,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QWindows,
+  {$ENDIF VisualCLX}
+  JvAppStorage, JvComponent, JvTypes;
 
 type
   TPlacementOption = (fpState, fpPosition, fpActiveControl);
@@ -80,7 +85,9 @@ type
     FPreventResize: Boolean;
     FWinMinMaxInfo: TJvWinMinMaxInfo;
     FDefMaximize: Boolean;
+    {$IFDEF VCL}
     FWinHook: TJvWindowHook;
+    {$ENDIF VCL}
     FSaveFormShow: TNotifyEvent;
     FSaveFormDestroy: TNotifyEvent;
     FSaveFormCloseQuery: TCloseQueryEvent;
@@ -101,7 +108,9 @@ type
     procedure AddLink(ALink: TJvIniLink);
     procedure NotifyLinks(Operation: TPlacementOperation);
     procedure RemoveLink(ALink: TJvIniLink);
+    {$IFDEF VCL}
     procedure WndMessage(Sender: TObject; var Msg: TMessage; var Handled: Boolean);
+    {$ENDIF VCL}
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
@@ -245,7 +254,12 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
   Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
   JvJVCLUtils, JvJCLUtils, JvPropertyStorage;
 
 const
@@ -263,8 +277,10 @@ begin
     FOptions := [fpState, fpPosition]
   else
     FOptions := [];
+  {$IFDEF VCL}
   FWinHook := TJvWindowHook.Create(Self);
   FWinHook.AfterMessage := WndMessage;
+  {$ENDIF VCL}
   FWinMinMaxInfo := TJvWinMinMaxInfo.Create;
   FWinMinMaxInfo.FOwner := Self;
   FLinks := TList.Create;
@@ -280,7 +296,7 @@ begin
     ReleaseHook;
     RestoreEvents;
   end;
-  FWinMinMaxInfo.Free;
+//  FWinMinMaxInfo.Free;
   inherited Destroy;
 end;
 
@@ -334,8 +350,8 @@ end;
 
 procedure TJvFormPlacement.SetAppStoragePath(Value: string);
 begin
-  if (Value <> '') and (AnsiLastChar(Value) <> '\') then
-    Value := Value + '\';
+  if (Value <> '') and (AnsiLastChar(Value) <> PathDelim) then
+    Value := Value + PathDelim;
   if Value <> AppStoragePath then
     FAppStoragePath := Value;
 end;
@@ -372,14 +388,18 @@ end;
 
 procedure TJvFormPlacement.SetHook;
 begin
+  {$IFDEF VCL}
   if not (csDesigning in ComponentState) and (Owner <> nil) and
     (Owner is TCustomForm) then
     FWinHook.Control := Form;
+  {$ENDIF}
 end;
 
 procedure TJvFormPlacement.ReleaseHook;
 begin
+  {$IFDEF VCL}
   FWinHook.Control := nil;
+  {$ENDIF}
 end;
 
 procedure TJvFormPlacement.CheckToggleHook;
@@ -407,6 +427,7 @@ begin
   FWinMinMaxInfo.Assign(Value);
 end;
 
+{$IFDEF VCL}
 procedure TJvFormPlacement.WndMessage(Sender: TObject; var Msg: TMessage;
   var Handled: Boolean);
 begin
@@ -476,6 +497,7 @@ begin
     Msg.Result := 1;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvFormPlacement.FormShow(Sender: TObject);
 begin
