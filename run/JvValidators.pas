@@ -25,13 +25,19 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvValidators;
 
 interface
 uses
-  Windows, SysUtils, Classes, Controls, JvComponent, JvErrorIndicator;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Controls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls,
+  {$ENDIF}
+  JvComponent, JvErrorIndicator;
 
 type
   EValidatorError = class(Exception);
@@ -231,7 +237,12 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   TypInfo,
+  {$IFDEF VCL}
   Forms,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QForms,
+  {$ENDIF}
   JclUnicode, // for reg exp support
   JvTypes, JvResources;
 
