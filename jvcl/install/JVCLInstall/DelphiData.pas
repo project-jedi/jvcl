@@ -32,7 +32,21 @@ unit DelphiData;
 interface
 
 uses
-  Windows, SysUtils, Classes, Contnrs, Registry;
+  Windows, SysUtils, Classes, Contnrs, Registry, ShlObj;
+
+const
+  BDSVersions: array[1..3] of record
+                                Name: string;
+                                VersionStr: string;
+                                Version: Integer;
+                                CIV: string; // coreide version
+                                ProjectDirResId: Integer;
+                                Supported: Boolean;
+                              end = (
+    (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId: 64507; Supported: False),
+    (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId: 64460; Supported: False),
+    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True)
+  );
 
 type
   TCompileTarget = class;
@@ -44,6 +58,7 @@ type
   private
     function GetItems(Index: Integer): TCompileTarget;
     procedure LoadTargets(const SubKey: string);
+    function IsBDSSupported(const IDEVersionStr: string): Boolean;
   public
     constructor Create;
     property Items[Index: Integer]: TCompileTarget read GetItems; default;
@@ -52,13 +67,17 @@ type
   TCompileTarget = class(TObject)
   private
     FName: string;
+    FIDEName: string;
     FLatestRTLPatch: Integer;
     FLatestUpdate: Integer;
+    FIDEVersion: Integer;
+    FIDEVersionStr: string;
     FVersion: Integer;
     FVersionStr: string;
     FExecutable: string;
     FEdition: string;
     FRootDir: string;
+    FBDSProjectsDir: string;
     FBrowsingPaths: TStrings;
     FDCPOutputDir: string;
     FBPLOutputDir: string;
@@ -70,11 +89,13 @@ type
     FRegistryKey: string;
 
     procedure LoadFromRegistry;
+    function ReadBDSProjectsDir: string;
     procedure LoadPackagesFromRegistry(APackageList: TDelphiPackageList;
       const SubKey: string);
     procedure SavePackagesToRegistry(APackageList: TDelphiPackageList;
       const SubKey: string);
     function GetHomepage: string;
+    procedure GetBDSVersion(out Name: string; out Version: Integer; out VersionStr: string);
     function GetMake: string;
     function GetBplDir: string;
     function GetDcpDir: string;
@@ -103,8 +124,11 @@ type
     property Make: string read GetMake;
 
     property Name: string read FName;
-    property VersionStr: string read FVersionStr;
     property Version: Integer read FVersion;
+    property VersionStr: string read FVersionStr;
+    property IDEName: string read FIDEName;
+    property IDEVersion: Integer read FIDEVersion;
+    property IDEVersionStr: string read FIDEVersionStr;
     property Executable: string read FExecutable; // [Reg->App] x:\path\Delphi.exe
     property RootDir: string read FRootDir; // [Reg->RootDir] x:\path
     property Edition: string read FEdition; // [Reg->Version] PER/PRO/CSS
@@ -117,6 +141,7 @@ type
     property PackageSearchPaths: TStrings read FPackageSearchPaths; // with macros
     property SearchPaths: TStrings read FSearchPaths; // with macros
 
+    property BDSProjectsDir: string read FBDSProjectsDir;
     property BplDir: string read GetBplDir; // macros are expanded
     property DcpDir: string read GetDcpDir; // macros are expanded
 
@@ -165,6 +190,7 @@ uses
   {$ENDIF COMPILER6_UP}
   CmdLineUtils,
   JvConsts;
+
 
 {$IFDEF COMPILER5}
 function AnsiStartsText(const SubStr, Text: string): Boolean;
@@ -259,7 +285,8 @@ begin
         Reg.GetKeyNames(List);
         for i := 0 to List.Count - 1 do
           if List[i][1] in ['1'..'9'] then // only version numbers (not "BDS\DBExpress")
-            Add(TCompileTarget.Create(SubKey, List[i]));
+            if (SubKey <> 'BDS') or IsBDSSupported(List[i]) then
+              Add(TCompileTarget.Create(SubKey, List[i]));
       finally
         List.Free;
       end;
@@ -269,15 +296,34 @@ begin
   end;
 end;
 
+function TCompileTargetList.IsBDSSupported(const IDEVersionStr: string): Boolean;
+var
+  IDEVersion: Integer;
+begin
+  Result := False;
+  IDEVersion := StrToInt(IDEVersionStr[1]);
+  if (IDEVersion >= Low(BDSVersions)) and (IDEVersion <= High(BDSVersions)) then
+    Result := BDSVersions[IDEVersion].Supported;
+end;
+
 { TCompileTarget }
 
 constructor TCompileTarget.Create(const AName, AVersion: string);
 begin
   inherited Create;
-  FName := AName;
-  FVersionStr := AVersion;
-  FVersion := StrToIntDef(Copy(FVersionStr, 1, Pos('.', FVersionStr) - 1), 0);
-  FRegistryKey := KeyBorland + Name + '\' + VersionStr;
+  FIDEName := AName;
+  FIDEVersionStr := AVersion;
+  FIDEVersion := StrToIntDef(Copy(FIDEVersionStr, 1, Pos('.', FIDEVersionStr) - 1), 0);
+  if not IsBDS then
+  begin
+    FName := FIDEName;
+    FVersion := FIDEVersion;
+    FVersionStr := FIDEVersionStr;
+  end
+  else
+    GetBDSVersion(FName, FVersion, FVersionStr);
+
+  FRegistryKey := KeyBorland + IDEName + '\' + IDEVersionStr;
 
   FBrowsingPaths := TStringList.Create;
   FPackageSearchPaths := TStringList.Create;
@@ -327,7 +373,10 @@ begin
 
      // available macros
       if (S = 'delphi') or (S = 'bcb') or (S = 'bds') then // do not localize
-        NewS := FRootDir;
+        NewS := FRootDir
+      else if IsBDS and (S = 'bdsprojectsdir') then
+        NewS := BDSProjectsDir;
+
 
       if NewS <> S then
       begin
@@ -401,12 +450,12 @@ end;
 
 function TCompileTarget.IsBCB: Boolean;
 begin
-  Result := (CompareText(Name, 'Delphi') <> 0) and not IsBDS;
+  Result := (CompareText(Name, 'Delphi') <> 0);
 end;
 
 function TCompileTarget.IsBDS: Boolean;
 begin
-  Result := CompareText(Name, 'BDS') = 0;
+  Result := CompareText(IDEName, 'BDS') = 0;
 end;
 
 function TCompileTarget.IsPersonal: Boolean;
@@ -435,11 +484,14 @@ begin
         FEdition := Reg.ReadString('Version') // do not localize
       else
         FEdition := 'Pers';
-      if Reg.ValueExists('ProductVersion') then
-        FVersionStr := Reg.ReadString('ProductVersion');
 
       FExecutable := Reg.ReadString('App'); // do not localize
       FRootDir := ExcludeTrailingPathDelimiter(Reg.ReadString('RootDir')); // do not localize
+
+      if IsBDS then
+        FBDSProjectsDir := ReadBDSProjectsDir // reads from COREIDExx.XX's resource strings
+      else
+        FBDSProjectsDir := RootDir + '\Projects';
 
      // obtain updates state
       List := TStringList.Create;
@@ -625,6 +677,75 @@ end;
 function TCompileTarget.GetDcpDir: string;
 begin
   Result := ExpandDirMacros(DCPOutputDir);
+end;
+
+procedure TCompileTarget.GetBDSVersion(out Name: string; out Version: Integer; out VersionStr: string);
+begin
+  if (IDEVersion >= Low(BDSVersions)) and (IDEVersion <= High(BDSVersions)) then
+  begin
+    Name := BDSVersions[IDEVersion].Name;
+    VersionStr := BDSVersions[IDEVersion].VersionStr;
+    Version := BDSVersions[IDEVersion].Version;
+  end
+  else
+  begin
+    Name := IDEName;
+    Version := IDEVersion;
+    VersionStr := IDEVersionStr;
+  end;
+end;
+
+function TCompileTarget.ReadBDSProjectsDir: string;
+var
+  h: HMODULE;
+  LocaleName: array[0..4] of Char;
+  Filename: string;
+  PersDir: string;
+begin
+  if IsBDS and (IDEVersion >= Low(BDSVersions)) and (IDEVersion <= High(BDSVersions)) then
+  begin
+    Result := 'Borland Studio Projects'; // do not localize
+
+    FillChar(LocaleName, SizeOf(LocaleName[0]), 0);
+    GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
+    if LocaleName[0] <> #0 then
+    begin
+      Filename := RootDir + '\Bin\coreide' + BDSVersions[IDEVersion].CIV + '.';
+      if FileExists(Filename + LocaleName) then
+        Filename := Filename + LocaleName
+      else
+      begin
+        LocaleName[2] := #0;
+        if FileExists(Filename + LocaleName) then
+          Filename := Filename + LocaleName
+        else
+          Filename := '';
+      end;
+
+      if Filename <> '' then
+      begin
+        h := LoadLibraryEx(PChar(Filename), 0,
+          LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
+        if h <> 0 then
+        begin
+          SetLength(Result, 1024);
+          SetLength(Result, LoadString(h, BDSVersions[IDEVersion].ProjectDirResId, PChar(Result), Length(Result) - 1));
+          FreeLibrary(h);
+        end;
+      end;
+    end;
+
+    SetLength(PersDir, MAX_PATH);
+    if SHGetSpecialFolderPath(0, PChar(PersDir), CSIDL_PERSONAL, False) then
+    begin
+      SetLength(PersDir, StrLen(PChar(PersDir)));
+      Result := ExcludeTrailingPathDelimiter(PersDir) + '\' + Result;
+    end
+    else
+      Result := '';
+  end
+  else
+    Result := '';
 end;
 
 { TDelphiPackageList }

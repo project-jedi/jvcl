@@ -390,6 +390,13 @@ begin
 end;
 
 initialization
-  PackageInstaller := TPackageInstaller.Create(TInstaller.Create);
-
+  try
+    PackageInstaller := TPackageInstaller.Create(TInstaller.Create);
+  except
+    on E: Exception do
+    begin
+      MessageBox(0, PChar(E.Message), PChar(string(E.ClassName)), MB_OK or MB_ICONERROR);
+      Halt(1);
+    end;
+  end;
 end.
