@@ -31,12 +31,12 @@ interface
 
 uses
   SysUtils, Classes, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
-  JvComponent, JvBitBtn, JvTypes;
+  JvComponent, JvCtrls, JvTypes;
 
 type
   EJvFooterError = class(EJVCLException);
 
-  TJvFooterBtn = class(TJvBitBtn)
+  TJvFooterBtn = class(TJvImgBtn)
   private
     FAlignment: TAlignment;
     FButtonIndex: Integer;
