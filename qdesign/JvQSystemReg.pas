@@ -57,6 +57,7 @@ uses
   JvQPerfMon95, JvQComputerInfoEx,
   JvQChangeNotifyEditor, JvQPerfStatEditor, JvQTimerList, JvQTimerListEditor,
   {$ENDIF USEWINDOWS}
+  JvQSystemColors,	
   JvQThread, JvQThreadTimer, JvQTimer, JvQSimpleXml, JvQXMLDatabase,
   JvQFormPlacement, JvQAppXMLStorage, JvQFormPlacementSelectList,
   JvQMinMaxForm, JvQFormPropertiesForm, JvQDsgnEditors;
@@ -85,8 +86,8 @@ begin
   RegisterComponents(RsPaletteSystem, [{TJvComputerInfo, // - do not register this component as default}
     TJvSHFileOperation, TJvChangeNotify, TJvAppInstances, TJvNTEventLog,
     TJvScreenSaver, TJvNTEventLog, TJvScreenSaver, TJvJoystick, TJvSoundControl,
-    {TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
-    TJvPerfStat95, TJvComputerInfoEx]);
+    {TJvDeviceChanged,  TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
+    TJvPerfStat95, TJvComputerInfoEx, TJvSystemColors]);
   RegisterComponents(RsPaletteInternetWork, [TJvRas32, TJvCommStatus]);
   {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [
@@ -97,7 +98,9 @@ begin
     TJvTimer, TJvThread, TJvThreadTimer
     {$IFDEF USEWINDOWS}, TJvTimerList {$ENDIF}
     ]);
-
+  {$IFDEF LINUX}
+  RegisterComponents(RsPaletteVisual,[TJvSystemColors]);	
+  {$ENDIF LINUX}
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage,
