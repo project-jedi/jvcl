@@ -87,17 +87,15 @@ type
     Component: TJvgPropertyCenter;
   end;
 
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
 type
   TDesigner = DesignIntf.IDesigner;
   TFormDesigner = DesignIntf.IDesigner;
-  {$ELSE}
-  {$IFDEF COMPILER4_UP}
+{$ELSE}
 type
   TDesigner = IDesigner;
   TFormDesigner = IFormDesigner;
-  {$ENDIF}
-  {$ENDIF}
+{$ENDIF}
 
 var
   glCompListEditor: TJvgCompListEditor;

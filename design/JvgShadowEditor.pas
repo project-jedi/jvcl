@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, comctrls
-  {$IFDEF COMPILER6_UP}, DesignIntf, DesignWindows, DesignEditors{$ELSE}{$IFDEF COMPILER4_UP}, dsgnintf{$ENDIF}{$ENDIF};
+  {$IFDEF COMPILER6_UP}, DesignIntf, DesignWindows, DesignEditors{$ELSE}, dsgnintf{$ENDIF};
 
 type
 

@@ -60,7 +60,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER4_UP}
 type
   TMyComponent = class(TComponent);
 
@@ -94,7 +93,7 @@ begin
     GetDesigner(Self, Designer);
     if Designer <> nil then
       Designer.Notification(Item, Operation);
-  end;    
+  end;
 end;
 
 procedure DesignerModified(Self: TComponent);
@@ -129,7 +128,7 @@ begin
 end;
 
 {$ELSE}
- 
+
 procedure DesignerSelectComponent(Self: TComponent);
 var
   Designer: IDesignerNotify;
@@ -147,54 +146,6 @@ begin
   end;
 end;
 {$ENDIF COMPILER6_UP}
-
-{$ELSE}
-
-function GetDesigner(Self: TComponent): TDesigner;
-begin
-  Result := nil;
-  while (Self <> nil) and not (Self is TForm) and (Self.Owner <> nil) do
-    Self := Self.Owner;
-  if Self is TForm then
-    Result := (Self as TForm).Designer;
-end;
-
-procedure DesignerNotify(Self, Item: TComponent; Operation: TOperation);
-var
-  Designer: TDesigner;
-begin
-  if csDesigning in Self.ComponentState then
-  begin
-    Designer := GetDesigner(Self);
-    if Designer <> nil then
-      Designer.Notification(Item, Operation);
-  end;
-end;
-
-procedure DesignerModified(Self: TComponent);
-var
-  Designer: TDesigner;
-begin
-  if csDesigning in Self.ComponentState then
-  begin
-    Designer := GetDesigner(Self);
-    if Designer <> nil then Designer.Modified;
-  end;
-end;
-
-procedure DesignerSelectComponent(Self: TComponent);
-var
-  Designer: TDesigner;
-begin
-  if csDesigning in Self.ComponentState then
-  begin
-    Designer := GetDesigner(Self);
-    if Designer is TFormDesigner then
-      (Designer as TFormDesigner).SelectComponent(Self);
-  end;
-end;
-
-{$ENDIF}
 
 initialization
   DrawDesignFrameProc := DrawDesignFrame;
