@@ -364,7 +364,7 @@ type
     function GetFrameRect(Control: TControl): TRect; virtual;
     function GetFrameRectEx(Control: TControl): TRect; virtual;
     function GetSplitterRect(Zone: TJvDockZone): TRect; virtual;
-    function GeTJvDockGrabbersPosition: TJvDockGrabbersPosition; virtual;
+    function GetJvDockGrabbersPosition: TJvDockGrabbersPosition; virtual;
     procedure GetControlBounds(Control: TControl; out CtlBounds: TRect); virtual;
     function GetSplitterLimit(AZone: TJvDockZone; IsCurrent, IsMin: Boolean): Integer; virtual;
     procedure DoGetNextLimit(Zone, AZone: TJvDockZone; var LimitResult: Integer); virtual;
@@ -432,7 +432,7 @@ type
     property GrabberBgColor: TColor read FGrabberBgColor write FGrabberBgColor; // if FGrabberStandardDraw is False, this indicates background color of Grabber. Set to clNone to skip painting the background.
     property GrabberBottomEdgeColor: TColor read FGrabberBottomEdgeColor write FGrabberBottomEdgeColor; // if anything other than clNone, draw a line at bottom edge.
 
-    property GrabbersPosition: TJvDockGrabbersPosition read GeTJvDockGrabbersPosition;
+    property GrabbersPosition: TJvDockGrabbersPosition read GetJvDockGrabbersPosition;
     property MinSize: Integer read GetMinSize write SetMinSize;
     property DockRect: TRect read GetDockRect write SetDockRect;
     property PreviousRect: TRect read FPreviousRect write FPreviousRect;
@@ -1308,12 +1308,12 @@ begin
     begin
       DockServer := TJvDockPanel(AParent).DockServer;
       if Assigned(DockServer) then
-         Write(Indent + '        <dockserver>' + DockServer.Name + '</dockserver>');
+         Write(Indent + '        <dockserver>' + DockServer.Name + '</dockserver>')
       else
          Write(Indent + '        <error>TJvDockPanel has no DockServer</name>');
     end;
     // recurse down:
-    if LevelsLeft > 0) then
+    if (LevelsLeft > 0) then
       if AParent.Parent <> AParent then // don't show controls where they are their own parent!
         _ParentDump(LevelsLeft - 1, AParent.Parent, Indent + '    ', Strs);
     Write(Indent + '      </parent>');
@@ -2709,7 +2709,7 @@ begin
   end;
 end;
 
-function TJvDockTree.GeTJvDockGrabbersPosition: TJvDockGrabbersPosition;
+function TJvDockTree.GetJvDockGrabbersPosition: TJvDockGrabbersPosition;
 begin
   if DockSite.Align in [alTop, alBottom] then
     Result := gpLeft
