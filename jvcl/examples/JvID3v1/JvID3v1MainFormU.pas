@@ -5,8 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvComponent, StdCtrls, Mask, JvToolEdit,
-  JvDragDrop, JvId3v1, ComCtrls, ToolWin, ActnList, ImgList, JvJVCLAbout,
-  JvBaseDlg, JvTipOfDay, JvBalloonHint, JvMaskEdit, JvSpin;
+  JvDragDrop, JvId3v1, ComCtrls, ToolWin, ActnList, ImgList, 
+  JvBaseDlg, JvTipOfDay, JvBalloonHint, JvMaskEdit, JvSpin, JvJVCLAboutForm;
 
 type
   TJvID3v1MainForm = class(TForm)
@@ -71,14 +71,13 @@ var
 implementation
 
 uses
-  JvId3v2Types, JclStrings;
+  JvId3v2Types;
 
 {$R *.dfm}
 
 procedure TJvID3v1MainForm.ChangeFileNameTo(S: string);
 begin
   JvFilenameEdit1.Text := S;
-  S := StrTrimQuotes(S);
   JvFilenameEdit1.Hint := S;
   JvId3v11.FileName := S;
   JvId3v11.Open;
@@ -164,7 +163,7 @@ begin
     if JvFilenameEdit1.Text = '' then
       JvBalloonHint1.ActivateHint(JvFilenameEdit1, 'Empty strings are no file names', ikError, 'Error', 5000)
     else
-      ChangeFileNameTo(JvFilenameEdit1.Text);
+      ChangeFileNameTo(JvFilenameEdit1.FileName);
   end;
 end;
 

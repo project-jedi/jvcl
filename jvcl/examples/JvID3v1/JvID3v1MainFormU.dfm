@@ -223,7 +223,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
     Left = 88
     Top = 128
   end
-  object JvId3v11: TJvId3v1
+  object JvId3v11: TJvID3v1
     Active = False
     Left = 152
     Top = 104
@@ -608,6 +608,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
     ButtonNext.HotTrackFont.Height = -11
     ButtonNext.HotTrackFont.Name = 'MS Sans Serif'
     ButtonNext.HotTrackFont.Style = []
+    ButtonNext.HotTrackFontOptions = []
     ButtonNext.ShowHint = False
     ButtonClose.Caption = '&Close'
     ButtonClose.Flat = False
@@ -617,6 +618,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
     ButtonClose.HotTrackFont.Height = -11
     ButtonClose.HotTrackFont.Name = 'MS Sans Serif'
     ButtonClose.HotTrackFont.Style = []
+    ButtonClose.HotTrackFontOptions = []
     ButtonClose.ShowHint = False
     CheckBoxText = '&Show Tips on Startup'
     HeaderText = 'Did you know...'
@@ -644,6 +646,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
   end
   object JvBalloonHint1: TJvBalloonHint
     DefaultHeader = 'Information'
+    UseBalloonAsApplicationHint = True
     Left = 88
     Top = 80
   end
