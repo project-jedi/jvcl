@@ -171,11 +171,6 @@ uses
   Math,
   JvJCLUtils, JvTypes;
 
-type
-  TFColor = record
-    b, g, r: Byte;
-  end;
-
 function TrimInt(N, Min, Max: Integer): Integer;
 begin
   if N > Max then
@@ -980,7 +975,7 @@ end;
 
 procedure TJvPaintFX.Saturation(const Clip: TBitmap; Amount: Integer);
 var
-  Line: pbytearray;
+  Line: PJvRGBArray;
   Gray, r, g, b, x, y: Integer;
 begin
   for y := 0 to Clip.Height - 1 do
@@ -988,13 +983,13 @@ begin
     Line := Clip.ScanLine[y];
     for x := 0 to Clip.Width - 1 do
     begin
-      r := Line[x * 3];
-      g := Line[x * 3 + 1];
-      b := Line[x * 3 + 2];
+      r := Line[x].rgbRed;
+      g := Line[x].rgbGreen;
+      b := Line[x].rgbBlue;
       Gray := (r + g + b) div 3;
-      Line[x * 3] := IntToByte(Gray + (((r - Gray) * Amount) div 255));
-      Line[x * 3 + 1] := IntToByte(Gray + (((g - Gray) * Amount) div 255));
-      Line[x * 3 + 2] := IntToByte(Gray + (((b - Gray) * Amount) div 255));
+      Line[x].rgbRed   := IntToByte(Gray + (((r - Gray) * Amount) div 255));
+      Line[x].rgbGreen := IntToByte(Gray + (((g - Gray) * Amount) div 255));
+      Line[x].rgbBlue  := IntToByte(Gray + (((b - Gray) * Amount) div 255));
     end;
   end;
 end;
@@ -1006,58 +1001,35 @@ end;
 
 procedure TJvPaintFX.SmoothPoint(const Clip: TBitmap; XK, YK: Integer);
 var
-  Bleu, Vert, Rouge, w, h: Integer;
-  color: TFColor;
-  AColor: TColor;
-  BB, GG, RR: array[1..5] of Integer;
+  Pixel: TColor;
+  B, G, R: Cardinal;
 begin
-  w := Clip.Width;
-  h := Clip.Height;
-  if (XK > 0) and (YK > 0) and (XK < w - 1) and (YK < h - 1) then
+  if (XK > 0) and (YK > 0) and (XK < Clip.Width - 1) and (YK < Clip.Height - 1) then
     with Clip.Canvas do
     begin
-      AColor := ColorToRGB(pixels[XK, YK - 1]);
-      color.r := GetRValue(AColor);
-      color.g := GetGValue(AColor);
-      color.b := GetBValue(AColor);
-      RR[1] := color.r;
-      GG[1] := color.g;
-      BB[1] := color.b;
-      AColor := ColorToRGB(pixels[XK + 1, YK]);
-      color.r := GetRValue(AColor);
-      color.g := GetGValue(AColor);
-      color.b := GetBValue(AColor);
-      RR[2] := color.r;
-      GG[2] := color.g;
-      BB[2] := color.b;
-      AColor := ColorToRGB(pixels[XK, YK + 1]);
-      color.r := GetRValue(AColor);
-      color.g := GetGValue(AColor);
-      color.b := GetBValue(AColor);
-      RR[3] := color.r;
-      GG[3] := color.g;
-      BB[3] := color.b;
-      AColor := ColorToRGB(pixels[XK - 1, YK]);
-      color.r := GetRValue(AColor);
-      color.g := GetGValue(AColor);
-      color.b := GetBValue(AColor);
-      RR[4] := color.r;
-      GG[4] := color.g;
-      BB[4] := color.b;
-      Bleu := (BB[1] + (BB[2] + BB[3] + BB[4])) div 4; (* Valeur moyenne *)
-      Vert := (GG[1] + (GG[2] + GG[3] + GG[4])) div 4; (* en cours d'‚valuation        *)
-      Rouge := (RR[1] + (RR[2] + RR[3] + RR[4])) div 4;
-      color.r := rouge;
-      color.g := vert;
-      color.b := bleu;
-      pixels[XK, YK] := rgb(color.r, color.g, color.b);
+      Pixel := ColorToRGB(Pixels[XK, YK - 1]);
+      R := GetRValue(Pixel);
+      B := GetGValue(Pixel);
+      G := GetBValue(Pixel);
+      Pixel := ColorToRGB(Pixels[XK + 1, YK]);
+      R := R + GetRValue(Pixel);
+      G := G + GetGValue(Pixel);
+      B := B + GetBValue(Pixel);
+      Pixel := ColorToRGB(Pixels[XK, YK + 1]);
+      R := R + GetRValue(Pixel);
+      G := G + GetGValue(Pixel);
+      B := B + GetBValue(Pixel);
+      Pixel := ColorToRGB(Pixels[XK - 1, YK]);
+      R := R + GetRValue(Pixel);
+      G := G + GetGValue(Pixel);
+      B := B + GetBValue(Pixel);
+      Pixels[XK, YK] := RGB(R div 4, G div 4, B div 4);
     end;
 end;
 
 procedure TJvPaintFX.SmoothResize(var Src, Dst: TBitmap);
 var
-  x, y, xP, yP,
-    yP2, xP2: Integer;
+  x, y, xP, yP, yP2, xP2: Integer;
   Read, Read2: PByteArray;
   t, z, z2, iz2: Integer;
   pc: PBytearray;
@@ -1256,34 +1228,29 @@ end;
 procedure TJvPaintFX.Mosaic(const Bm: TBitmap; Size: Integer);
 var
   x, y, i, j: Integer;
-  p1, p2: pbytearray;
-  r, g, b: Byte;
+  p1, p2: PJvRGBArray;
+  P1Val: TJvRGBTriple;
 begin
   y := 0;
   repeat
     p1 := bm.ScanLine[y];
-    //   x:=0;
     repeat
       j := 1;
       repeat
         p2 := bm.ScanLine[y];
         x := 0;
         repeat
-          r := p1[x * 3];
-          g := p1[x * 3 + 1];
-          b := p1[x * 3 + 2];
+          P1Val := p1[x];
           i := 1;
           repeat
-            p2[x * 3] := r;
-            p2[x * 3 + 1] := g;
-            p2[x * 3 + 2] := b;
+            p2[x] := P1Val;
             Inc(x);
             Inc(i);
-          until (x >= bm.Width) or (i > Size);
+          until (i > Size) or (x >= bm.Width);
         until x >= bm.Width;
         Inc(j);
         Inc(y);
-      until (y >= bm.Height) or (j > Size);
+      until (j > Size) or (y >= bm.Height);
     until (y >= bm.Height) or (x >= bm.Width);
   until y >= bm.Height;
 end;
@@ -1300,7 +1267,7 @@ var
   dx, dy: Single;
   OFFSET: Single;
   ty, tx: Integer;
-  weight_x, weight_y: array[0..1] of Single;
+  weight_x, weight_y: array [0..1] of Single;
   weight: Single;
   new_red, new_green: Integer;
   new_blue: Integer;
@@ -1439,13 +1406,13 @@ var
   Bitmap: TBitmap;
   P1, P2: PByteArray;
   b: Integer;
-  fangle: real;
+  Angle: Extended;
   wavex: Integer;
 begin
   Bitmap := TBitmap.Create;
   Bitmap.assign(Clip);
   wavex := Style;
-  fangle := Pi / 2 / Amount;
+  Angle := Pi / 2 / Amount;
   for y := Bitmap.Height - 1 - (2 * Amount) downto Amount do
   begin
     P1 := Bitmap.ScanLine[y];
@@ -1458,11 +1425,11 @@ begin
       P2[x * 3 + 2] := P1[x * 3 + 2];
       case wavex of
         0:
-          b := Amount * Variant(Sin(fangle * x));
+          b := Amount * Variant(Sin(Angle * x));
         1:
-          b := Amount * Variant(Sin(fangle * x) * Cos(fangle * x));
+          b := Amount * Variant(Sin(Angle * x) * Cos(Angle * x));
         2:
-          b := Amount * Variant(Sin(fangle * x) * Sin(Inference * fangle * x));
+          b := Amount * Variant(Sin(Angle * x) * Sin(Inference * Angle * x));
       end;
     end;
   end;
@@ -1529,6 +1496,7 @@ var
   begin
     Result := Variant(Sin(a / 255 * Pi / 2) * 255);
   end;
+
 begin
   for i := 1 to Amount do
     for y := 0 to Clip.Height - 1 do
@@ -1647,7 +1615,7 @@ type
     weight: Single; // Pixel weight
   end;
 
-  TContributorList = array[0..0] of TContributor;
+  TContributorList = array [0..0] of TContributor;
   PContributorList = ^TContributorList;
 
   // List of source pixels contributing to a destination pixel

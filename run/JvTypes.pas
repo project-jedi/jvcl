@@ -129,10 +129,10 @@ type
   TDate = TDateTime;
 
   TRGBQuad = packed record
-    rgbReserved: Byte;
     rgbBlue: Byte;
     rgbGreen: Byte;
     rgbRed: Byte;
+    rgbReserved: Byte;
   end;
 
   TRGBTriple = packed record
