@@ -425,8 +425,8 @@ type
     FImages: TCustomImageList;
     FImageIndex: TImageIndex;
     FButtonType: TJvNavIconButtonType;
-    FDrawPartialMenuFrame: boolean;
-    FTransparentDown: boolean;
+    FDrawPartialMenuFrame: Boolean;
+    FTransparentDown: Boolean;
     procedure DoImagesChange(Sender: TObject);
     procedure SetButtonType(const Value: TJvNavIconButtonType);
     procedure SetImageIndex(const Value: TImageIndex);
@@ -437,8 +437,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property TransparentDown:boolean read FTransparentDown write FTransparentDown default False;
-    property DrawPartialMenuFrame:boolean read FDrawPartialMenuFrame write FDrawPartialMenuFrame default False;
+    property TransparentDown: Boolean read FTransparentDown write FTransparentDown default False;
+    property DrawPartialMenuFrame: Boolean read FDrawPartialMenuFrame write FDrawPartialMenuFrame default False;
     property Images: TCustomImageList read FImages write SetImages;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property ButtonType: TJvNavIconButtonType read FButtonType write SetButtonType;
@@ -710,8 +710,8 @@ type
     procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
     procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure SetParentStyleManager(const Value: Boolean);
-    function GetDrawPartialMenuFrame: boolean;
-    procedure SetDrawPartialMenuFrame(const Value: boolean);
+    function GetDrawPartialMenuFrame: Boolean;
+    procedure SetDrawPartialMenuFrame(const Value: Boolean);
   protected
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -754,7 +754,7 @@ type
     property Visible;
     property Width default 185;
     property Height default 41;
-    property DrawPartialMenuFrame:boolean read GetDrawPartialMenuFrame write SetDrawPartialMenuFrame default False;
+    property DrawPartialMenuFrame: Boolean read GetDrawPartialMenuFrame write SetDrawPartialMenuFrame default False;
     property Buttons: TJvNavPaneToolButtons read FButtons write SetButtons;
     property ButtonColor: TColor read FButtonColor write SetButtonColor default $A6A5A6;
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 25;
@@ -2273,23 +2273,26 @@ end;
 
 procedure TJvNavPanelColors.Assign(Source: TPersistent);
 begin
-  if (Source is TJvNavPanelColors) and (Source <> Self) then
+  if Source is TJvNavPanelColors then
   begin
-    FButtonColorFrom := TJvNavPanelColors(Source).ButtonColorFrom;
-    FButtonColorTo := TJvNavPanelColors(Source).ButtonColorTo;
-    FButtonHotColorFrom := TJvNavPanelColors(Source).ButtonHotColorFrom;
-    FButtonHotColorTo := TJvNavPanelColors(Source).ButtonHotColorTo;
-    FButtonSelectedColorFrom := TJvNavPanelColors(Source).ButtonSelectedColorFrom;
-    FButtonSelectedColorTo := TJvNavPanelColors(Source).ButtonSelectedColorTo;
-    FFrameColor := TJvNavPanelColors(Source).FrameColor;
-    FHeaderColorFrom := TJvNavPanelColors(Source).HeaderColorFrom;
-    FHeaderColorTo := TJvNavPanelColors(Source).HeaderColorTo;
-    FDividerColorFrom := TJvNavPanelColors(Source).DividerColorFrom;
-    FDividerColorTo := TJvNavPanelColors(Source).DividerColorTo;
-    FSplitterColorFrom := TJvNavPanelColors(Source).SplitterColorFrom;
-    FSplitterColorTo := TJvNavPanelColors(Source).SplitterColorTo;
-    FButtonSeparatorColor := TJvNavPanelColors(Source).ButtonSeparatorColor;
-    Change;
+    if Source <> Self then
+    begin
+      FButtonColorFrom := TJvNavPanelColors(Source).ButtonColorFrom;
+      FButtonColorTo := TJvNavPanelColors(Source).ButtonColorTo;
+      FButtonHotColorFrom := TJvNavPanelColors(Source).ButtonHotColorFrom;
+      FButtonHotColorTo := TJvNavPanelColors(Source).ButtonHotColorTo;
+      FButtonSelectedColorFrom := TJvNavPanelColors(Source).ButtonSelectedColorFrom;
+      FButtonSelectedColorTo := TJvNavPanelColors(Source).ButtonSelectedColorTo;
+      FFrameColor := TJvNavPanelColors(Source).FrameColor;
+      FHeaderColorFrom := TJvNavPanelColors(Source).HeaderColorFrom;
+      FHeaderColorTo := TJvNavPanelColors(Source).HeaderColorTo;
+      FDividerColorFrom := TJvNavPanelColors(Source).DividerColorFrom;
+      FDividerColorTo := TJvNavPanelColors(Source).DividerColorTo;
+      FSplitterColorFrom := TJvNavPanelColors(Source).SplitterColorFrom;
+      FSplitterColorTo := TJvNavPanelColors(Source).SplitterColorTo;
+      FButtonSeparatorColor := TJvNavPanelColors(Source).ButtonSeparatorColor;
+      Change;
+    end;
   end
   else
     inherited Assign(Source);
@@ -2470,12 +2473,16 @@ end;
 
 procedure TJvNavPanelFonts.Assign(Source: TPersistent);
 begin
-  if (Source is TJvNavPanelFonts) and (Source <> Self) then
+  if Source is TJvNavPanelFonts then
   begin
-    NavPanelFont := TJvNavPanelFonts(Source).NavPanelFont;
-    DividerFont := TJvNavPanelFonts(Source).DividerFont;
-    HeaderFont := TJvNavPanelFonts(Source).HeaderFont;
+    if source <> Self then
+    begin
+      NavPanelFont := TJvNavPanelFonts(Source).NavPanelFont;
+      DividerFont := TJvNavPanelFonts(Source).DividerFont;
+      HeaderFont := TJvNavPanelFonts(Source).HeaderFont;
+    end;
   end;
+  // (rom) else inherited Assign(Source) missing?
 end;
 
 procedure TJvNavPanelFonts.Change;
@@ -4398,7 +4405,7 @@ begin
   end;
 end;
 
-function TJvNavPaneToolPanel.GetDrawPartialMenuFrame: boolean;
+function TJvNavPaneToolPanel.GetDrawPartialMenuFrame: Boolean;
 begin
   if FDropDown <> nil then
     Result := FDropDown.DrawPartialMenuFrame
@@ -4406,8 +4413,7 @@ begin
     Result := False;
 end;
 
-procedure TJvNavPaneToolPanel.SetDrawPartialMenuFrame(
-  const Value: boolean);
+procedure TJvNavPaneToolPanel.SetDrawPartialMenuFrame(const Value: Boolean);
 begin
   if FDropDown <> nil then
     FDropDown.DrawPartialMenuFrame := Value;

@@ -620,9 +620,9 @@ begin
     Hint := TJvTimeItem(Source).Hint;
     Color := TJvTimeItem(Source).Color;
     TextColor := TJvTimeItem(Source).TextColor;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvTimeItem.Update;
