@@ -78,7 +78,7 @@ begin
     FOwner := FOwner.GetParentComponent;
   // (rom) TForm or TCustomForm?
   if not (FOwner is TForm) then
-    raise EJVCLException.Create(RsEOwnerForm);
+    raise EJVCLException.CreateRes(@RsEOwnerForm);
 end;
 
 destructor TJvWinHelp.Destroy;

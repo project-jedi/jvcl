@@ -3645,7 +3645,7 @@ begin
   Result := FileName;
   if CompareText(ExtractFileExt(FileName), '.lnk') = 0 then
     if ResolveLink(GetAppHandle, FileName, Result) <> 0 then
-      raise EJVCLException.CreateFmt(RsECantGetShortCut, [FileName]);
+      raise EJVCLException.CreateResFmt(@RsECantGetShortCut, [FileName]);
 end;
 
 function ResolveLink(const HWND: HWND; const LinkFile: TFileName;
@@ -5644,7 +5644,7 @@ begin
     Exit;
   end;
   if not (PixelFormat in [pf1bit, pf4bit, pf8bit, pf24bit]) then
-    raise EJVCLException.Create(RsEPixelFormatNotImplemented)
+    raise EJVCLException.CreateRes(@RsEPixelFormatNotImplemented)
   else if PixelFormat in [pf1bit, pf4bit] then
   begin
     P := DIBFromBit(Bitmap.Handle, Bitmap.Palette, PixelFormat, Length);
@@ -5667,7 +5667,7 @@ begin
   try
     BI := PBitmapInfoHeader(Longint(InitData) + SizeOf(TBitmapFileHeader));
     if BI^.biBitCount <> 24 then
-      raise EJVCLException.Create(RsEBitCountNotImplemented);
+      raise EJVCLException.CreateRes(@RsEBitCountNotImplemented);
     Bits := Pointer(Longint(BI) + SizeOf(TBitmapInfoHeader));
     InternalGetDIBSizes(Bitmap.Handle, NewHeaderSize, ImageSize, PixelFormat);
     Length := SizeOf(TBitmapFileHeader) + NewHeaderSize;

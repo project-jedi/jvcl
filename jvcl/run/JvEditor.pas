@@ -2531,7 +2531,7 @@ begin
                 NewCaret := Pos(FCaretChar, NewString) - 1;
               end;
           else
-            raise EJvEditorError.Create(RsEInvalidCompletionMode);
+            raise EJvEditorError.CreateRes(@RsEInvalidCompletionMode);
           end;
           {--- UNDO ---}
           TJvReplaceUndo.Create(TJvCustomEditor(JvEditor), CaretX, CaretY,

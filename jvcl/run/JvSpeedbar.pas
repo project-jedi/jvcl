@@ -2153,7 +2153,7 @@ begin
   if GetOrientation <> Value then
   begin
     if FPosition = bpAuto then
-      raise EJvSpeedbarError.Create(RsEAutoSpeedbarMode);
+      raise EJvSpeedbarError.CreateRes(@RsEAutoSpeedbarMode);
     ApplyOrientation(Value);
   end;
 end;
@@ -2191,7 +2191,7 @@ begin
     X := Width;
     Y := Height;
     if (FPosition = bpAuto) and (Value in [alClient, alNone]) then
-      raise EJvSpeedbarError.Create(RsEAutoSpeedbarMode);
+      raise EJvSpeedbarError.CreateRes(@RsEAutoSpeedbarMode);
     inherited Align := Value;
     if csLoading in ComponentState then
     begin
@@ -2206,7 +2206,7 @@ begin
           ApplyOrientation(boHorizontal);
       else
         if not (csLoading in ComponentState) then
-          raise EJvSpeedbarError.Create(RsEAutoSpeedbarMode);
+          raise EJvSpeedbarError.CreateRes(@RsEAutoSpeedbarMode);
       end;
     FAlign := inherited Align;
   end;

@@ -211,7 +211,7 @@ begin
   begin
     if not (csDesigning in FParent.FOwner.ComponentState) and
            ((Length(Value) = 0) or not DirectoryExists(Value)) then
-      raise EJVCLException.CreateFmt(RsEFmtInvalidPath, [Value]);
+      raise EJVCLException.CreateResFmt(@RsEFmtInvalidPath, [Value]);
     FDir := Value;
   end;
 end;
@@ -243,7 +243,7 @@ begin
   if Count < MAXIMUM_WAIT_OBJECTS then
     Result := TJvChangeItem(inherited Add)
   else
-    raise EJVCLException.CreateFmt(RsEFmtMaxCountExceeded, [MAXIMUM_WAIT_OBJECTS]);
+    raise EJVCLException.CreateResFmt(@RsEFmtMaxCountExceeded, [MAXIMUM_WAIT_OBJECTS]);
 end;
 
 function TJvChangeItems.GetItem(Index: Integer): TJvChangeItem;
@@ -296,7 +296,7 @@ procedure TJvChangeNotify.CheckActive(const Name: string);
 begin
   if Active and
      not ((csDesigning in ComponentState) or (csLoading in ComponentState)) then   //active is now published
-    raise EJVCLException.CreateFmt(RsEFmtCannotChangeName, [Name]);
+    raise EJVCLException.CreateResFmt(@RsEFmtCannotChangeName, [Name]);
 end;
 
 procedure TJvChangeNotify.SetCollection(const Value: TJvChangeItems);
@@ -328,7 +328,7 @@ begin
   SetLength(Result, 256);
   SetLength(Result, FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
     GetLastError, 0, PChar(Result), Length(Result), nil));
-  raise EJVCLException.CreateFmt(RsENotifyErrorFmt, [Result, Msg]);
+  raise EJVCLException.CreateResFmt(@RsENotifyErrorFmt, [Result, Msg]);
 end;
 
 procedure TJvChangeNotify.DoThreadChangeNotify(Sender: TObject; Index: Integer);
@@ -371,7 +371,7 @@ begin
             Flags := Flags or (cActions[cA]);
         S := FCollection[I].Directory;
         if (Length(S) = 0) or not DirectoryExists(S) then
-          raise EJVCLException.CreateFmt(RsEFmtInvalidPathAtIndex, [S, I]);
+          raise EJVCLException.CreateResFmt(@RsEFmtInvalidPathAtIndex, [S, I]);
         FNotifyArray[I] := FindFirstChangeNotification(PChar(S),
           BOOL(FCollection[I].IncludeSubTrees), Flags);
         if FNotifyArray[I] = INVALID_HANDLE_VALUE then

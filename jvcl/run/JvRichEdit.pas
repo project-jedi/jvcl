@@ -4574,7 +4574,7 @@ begin
   if not Assigned(FInitConverter32) or
     not FInitConverter32(ParentWindow, PChar(AnsiUpperCaseFileName(Application.ExeName))) then
 
-    raise EMSTextConversionError.Create(RsECouldNotInitConverter);
+    raise EMSTextConversionError.CreateRes(@RsECouldNotInitConverter);
 end;
 
 function TJvMSTextConversion.IsFormatCorrect(
@@ -4638,7 +4638,7 @@ begin
     Exit;
 
   if GCurrentConverter <> nil then
-    raise EMSTextConversionError.Create(RsEConversionBusy);
+    raise EMSTextConversionError.CreateRes(@RsEConversionBusy);
   GCurrentConverter := Self;
 
   InitConverter;

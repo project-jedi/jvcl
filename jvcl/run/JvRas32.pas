@@ -191,7 +191,7 @@ begin
     FRasEditPhonebookEntry := GetProcAddress(FDll, 'RasEditPhonebookEntryA');
   end
   else
-    raise EJvRasError.Create(RsERasError);
+    raise EJvRasError.CreateRes(@RsERasError);
 end;
 
 destructor TJvRas32.Destroy;

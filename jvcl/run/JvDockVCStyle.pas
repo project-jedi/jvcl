@@ -1424,7 +1424,7 @@ begin
       doHorizontal:
         TempSize := Tree.DockSite.Width;
     else
-      raise Exception.Create(RsEInvalidDockSiteOrientationValue);
+      raise Exception.CreateRes(@RsEInvalidDockSiteOrientationValue);
     end;
 
     if DockSize >= TempSize - (ParentZone.VisibleChildCount) * TJvDockVCTree(Tree).MinSize then
@@ -1595,7 +1595,7 @@ begin
       doHorizontal:
         TempSize := Tree.DockSite.Width;
     else
-      raise Exception.Create(RsEInvalidDockSiteOrientationValue);
+      raise Exception.CreateRes(@RsEInvalidDockSiteOrientationValue);
     end;
 
     if DockSize > TempSize - (ParentZone.VisibleChildCount - 1) * TJvDockVCTree(Tree).MinSize then
@@ -1744,7 +1744,7 @@ begin
       doHorizontal:
         TempSize := Tree.DockSite.Width;
     else
-      raise Exception.Create(RsEInvalidDockSiteOrientationValue);
+      raise Exception.CreateRes(@RsEInvalidDockSiteOrientationValue);
     end;
 
     if DockSize > TempSize - (ParentZone.VisibleChildCount - 1) * TJvDockVCTree(Tree).MinSize then

@@ -376,7 +376,7 @@ begin
     else
       ASection := Section;
     if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.Create(RsEReadValueFailed);
+      raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
     // End of Change
     Result := IniFile.ValueExists(ASection, Key);
   end
@@ -395,7 +395,7 @@ begin
     else
       ASection := Section;
     if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.Create(RsEReadValueFailed);
+      raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
     Result := IniFile.ReadString(ASection, Key, '');
   end
   else
@@ -413,7 +413,7 @@ begin
     else
       ASection := Section;
     if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.Create(RsEWriteValueFailed);
+      raise EJVCLAppStorageError.CreateRes(@RsEWriteValueFailed);
     IniFile.WriteString(ASection, Key, Value);
     if AutoFlush and not IsUpdating then
       Flush;
@@ -463,7 +463,7 @@ begin
     else
       ASection := Section;
     if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.Create(RsEReadValueFailed);
+      raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
     // End of Change
     if IniFile.ValueExists(ASection, Key) then
     begin

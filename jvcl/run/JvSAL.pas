@@ -202,7 +202,7 @@ function TJvSAL.BoolPop: Boolean;
 begin
   Dec(FBSP);
   if FBSP < 0 then
-    raise EJVCLException.Create(RsEBooleanStackUnderflow);
+    raise EJVCLException.CreateRes(@RsEBooleanStackUnderflow);
   Result := FBStack[FBSP];
 end;
 
@@ -211,7 +211,7 @@ begin
   FBStack[FBSP] := AValue;
   Inc(FBSP);
   if FBSP > StackLimit then
-    raise EJVCLException.Create(RsEBooleanStackOverflow);
+    raise EJVCLException.CreateRes(@RsEBooleanStackOverflow);
 end;
 
 procedure TJvSAL.Execute;
@@ -239,7 +239,7 @@ begin
       Application.ProcessMessages;
     end;
     if FStop then
-      raise EJVCLException.Create(RsEProgramStopped);
+      raise EJVCLException.CreateRes(@RsEProgramStopped);
   until PC >= C;
 end;
 
@@ -283,17 +283,17 @@ begin
     begin
       P2 := CharFrom(P, ' ', S);
       if P2 = 0 then
-        raise EJVCLException.CreateFmt(RsEUnterminatedIncludeDirectiveNears, [Copy(S, P, 50)]);
+        raise EJVCLException.CreateResFmt(@RsEUnterminatedIncludeDirectiveNears, [Copy(S, P, 50)]);
       fn := Trim(Copy(S, P + Length(FUseDirective), P2 - P - Length(FUseDirective)));
       if not Assigned(FOnGetUnit) then
-        raise EJVCLException.Create(RsEOngetUnitEventHandlerIsNotAssigned);
+        raise EJVCLException.CreateRes(@RsEOngetUnitEventHandlerIsNotAssigned);
       Handled := False;
       fn := LowerCase(fn);
       if FUnits.IndexOf(fn) = -1 then
       begin
         OnGetUnit(Self, fn, TheUnit, Handled);
         if not Handled then
-          raise EJVCLException.CreateFmt(RsECouldNotIncludeUnits, [fn]);
+          raise EJVCLException.CreateResFmt(@RsECouldNotIncludeUnits, [fn]);
         TheUnit := StringReplace(TheUnit, Cr, ' ', [rfReplaceAll]);
         Delete(S, P, P2 - P);
         Insert(TheUnit, S, P);
@@ -308,7 +308,7 @@ begin
     begin // default= {
       P := Pos(FEndOfComment, S); // default= }
       if P = 0 then
-        raise EJVCLException.CreateFmt(RsEUnterminatedCommentNears, [S]);
+        raise EJVCLException.CreateResFmt(@RsEUnterminatedCommentNears, [S]);
       Delete(S, 1, P + Length(FEndOfComment) - 1);
       S := Trim(S);
     end
@@ -318,7 +318,7 @@ begin
       Delete(S, 1, Length(FStringDelimiter));
       P := Pos(FStringDelimiter, S);
       if P = 0 then
-        raise EJVCLException.CreateFmt(RsEUnterminatedStringNears, [S]);
+        raise EJVCLException.CreateResFmt(@RsEUnterminatedStringNears, [S]);
       Token := Copy(S, 1, P - 1);
       Delete(S, 1, P + Length(FStringDelimiter) - 1);
       S := Trim(S);
@@ -356,7 +356,7 @@ begin
         if Pos(cProc, Token) = 1 then
         begin // begin of procedure
           if Pos(cEndProc, S) = 0 then
-            raise EJVCLException.CreateFmt(RsEUnterminatedProcedureNears, [S]);
+            raise EJVCLException.CreateResFmt(@RsEUnterminatedProcedureNears, [S]);
           APO(Token, xBoSub);
         end
         else
@@ -369,7 +369,7 @@ begin
         if Pos(cVar, Token) = 1 then
         begin // define variable
           if Atoms.IndexOf(Token) <> -1 then
-            raise EJVCLException.CreateFmt(RsEVariablesAllreadyDefineds, [Token, S]);
+            raise EJVCLException.CreateResFmt(@RsEVariablesAllreadyDefineds, [Token, S]);
           A := TJvAtom.Create;
           A.Actor := xDefVariable;
           Atoms.AddObject(Token, A);
@@ -380,7 +380,7 @@ begin
           // find address
           I := Atoms.IndexOf(cVar + Copy(Token, 2, MaxInt));
           if I = -1 then
-            raise EJVCLException.CreateFmt(RsEVariablesIsNotYetDefineds, [Token, S]);
+            raise EJVCLException.CreateResFmt(@RsEVariablesIsNotYetDefineds, [Token, S]);
           A := TJvAtom.Create;
           A.Value := I;
           A.Actor := xVariable;
@@ -395,7 +395,7 @@ begin
             APO(Token, AActor);
         end
         else
-          raise EJVCLException.CreateFmt(RsEProceduresNears, [Token, S]);
+          raise EJVCLException.CreateResFmt(@RsEProceduresNears, [Token, S]);
       end
     end
   end;
@@ -411,7 +411,7 @@ begin
       S := cProc + Copy(S, 1, Length(S) - 2);
       P := Atoms.IndexOf(S);
       if P = -1 then
-        raise EJVCLException.CreateFmt(RsEUndefinedProcedures, [S]);
+        raise EJVCLException.CreateResFmt(@RsEUndefinedProcedures, [S]);
       TJvAtom(Atoms.Objects[I]).Value := P;
     end;
   end;
@@ -421,7 +421,7 @@ function TJvSAL.Pop: Variant;
 begin
   Dec(FSP);
   if FSP < 0 then
-    raise EJVCLException.Create(RsEStackUnderflow);
+    raise EJVCLException.CreateRes(@RsEStackUnderflow);
   Result := FStack[FSP];
 end;
 
@@ -430,7 +430,7 @@ begin
   FStack[FSP] := AValue;
   Inc(FSP);
   if FSP > StackLimit then
-    raise EJVCLException.Create(RsEStackOverflow);
+    raise EJVCLException.CreateRes(@RsEStackOverflow);
 end;
 
 procedure TJvSAL.SetScript(const Value: string);
@@ -497,7 +497,7 @@ function TJvSAL.RPop: Integer;
 begin
   Dec(FRSP);
   if FRSP < 0 then
-    raise EJVCLException.Create(RsEReturnStackUnderflow);
+    raise EJVCLException.CreateRes(@RsEReturnStackUnderflow);
   Result := FRStack[FRSP];
 end;
 
@@ -506,7 +506,7 @@ begin
   FRStack[FRSP] := AValue;
   Inc(FRSP);
   if FRSP > StackLimit then
-    raise EJVCLException.Create(RsEReturnStackOverflow);
+    raise EJVCLException.CreateRes(@RsEReturnStackOverflow);
 end;
 
 // end of subroutine, marked with end-proc
@@ -531,7 +531,7 @@ begin
     if Op = cEndProc then
       Exit;
   until PC >= C;
-  raise EJVCLException.Create(RsECouldNotFindEndOfProcedure);
+  raise EJVCLException.CreateRes(@RsECouldNotFindEndOfProcedure);
 end;
 
 procedure TJvSAL.SetGetUnit(const Value: TOnGetUnitEvent);

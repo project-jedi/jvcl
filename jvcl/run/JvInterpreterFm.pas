@@ -642,14 +642,14 @@ end;
 procedure JvInterpreterRunReportPreview(const FileName: string);
 begin
   if not Assigned(JvInterpreterRunReportPreviewProc) then
-    raise EJVCLException.Create(RsENoReportProc);
+    raise EJVCLException.CreateRes(@RsENoReportProc);
   JvInterpreterRunReportPreviewProc(FileName);
 end;
 
 procedure JvInterpreterRunReportPreview2(const FileName: string; JvInterpreterProgram: TJvInterpreterFm);
 begin
   if not Assigned(JvInterpreterRunReportPreview2Proc) then
-    raise EJVCLException.Create(RsENoReportProc2);
+    raise EJVCLException.CreateRes(@RsENoReportProc2);
   JvInterpreterRunReportPreview2Proc(FileName, JvInterpreterProgram);
 end;
 

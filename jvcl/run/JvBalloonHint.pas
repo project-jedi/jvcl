@@ -382,7 +382,7 @@ begin
   if AParent = nil then
     AParent := AControl.Parent;
   if AParent = nil then
-    raise EInvalidOperation.CreateFmt(RsEParentRequired, [AControl.Name]);
+    raise EInvalidOperation.CreateResFmt(@RsEParentRequired, [AControl.Name]);
   Result := Point;
   Inc(Result.X, AControl.Left);
   Inc(Result.Y, AControl.Top);
@@ -400,7 +400,7 @@ begin
       LParent := LParent.Parent;
   end;
   if LParent = nil then
-    raise EInvalidOperation.CreateFmt(RsEParentGivenNotAParent, [AControl.Name]);
+    raise EInvalidOperation.CreateResFmt(@RsEParentGivenNotAParent, [AControl.Name]);
 end;
 {$ENDIF COMPILER6_UP}
 

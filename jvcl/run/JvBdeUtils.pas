@@ -1365,7 +1365,7 @@ begin
           S := ChangeFileExt(S, TextExt);
         I := FileCreate(S);
         if I < 0 then
-          raise EFCreateError.CreateFmt(SFCreateError, [S]);
+          raise EFCreateError.CreateResFmt(@SFCreateError, [S]);
         FileClose(I);
         BatchMove.Execute;
       end;
@@ -1983,9 +1983,9 @@ var
 begin
   // Make sure the table is open exclusively so we can get the db handle...
   if not Table.Active then
-    raise EDatabaseError.Create(STableNotOpen);
+    raise EDatabaseError.CreateRes(@STableNotOpen);
   if not Table.Exclusive then
-    raise EDatabaseError.Create(STableNotOpenExclusively);
+    raise EDatabaseError.CreateRes(@STableNotOpenExclusively);
 
   // Get the table properties to determine table type...
   Check(DbiGetCursorProps(Table.Handle, Props));
@@ -2015,7 +2015,7 @@ begin
     Check(DbiPackTable(Table.DBHandle, Table.Handle, nil, szDBASE, True))
   else
     // Pack only works on Paradox or dBASE; nothing else...
-    raise EDatabaseError.Create(SNoParadoxDBaseTable);
+    raise EDatabaseError.CreateRes(@SNoParadoxDBaseTable);
   Table.Open;
 end;
 }
@@ -2032,7 +2032,7 @@ var
 begin
   { Make sure that the table is opened and is exclusive }
   if not Table.Active or not Table.Exclusive then
-    raise EDatabaseError.Create(RsETableNotInExclusiveMode);
+    raise EDatabaseError.CreateRes(@RsETableNotInExclusiveMode);
   { Initialize the table descriptor }
   FillChar(TblDesc, SizeOf(CRTblDesc), #0);
   with TblDesc do
@@ -2072,9 +2072,9 @@ var
 begin
   // Make sure the table is open exclusively so we can get the db handle...
   if not Table.Active then
-    raise EDatabaseError.Create(RsETableNotOpen);
+    raise EDatabaseError.CreateRes(@RsETableNotOpen);
   if not Table.Exclusive then
-    raise EDatabaseError.Create(RsETableNotOpenExclusively);
+    raise EDatabaseError.CreateRes(@RsETableNotOpenExclusively);
 
   // Get the table properties to determine table type...
   Check(DbiGetCursorProps(Table.Handle, Props));
@@ -2107,7 +2107,7 @@ begin
     Check(DbiPackTable(Table.DBHandle, Table.Handle, nil, szDBASE, True))
   else
     // Pack only works on Paradox or dBASE; nothing else...
-    raise EDatabaseError.Create(RsENoParadoxDBaseTable);
+    raise EDatabaseError.CreateRes(@RsENoParadoxDBaseTable);
   Table.Open;
 end;
 

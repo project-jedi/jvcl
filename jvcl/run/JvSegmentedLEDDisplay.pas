@@ -404,7 +404,7 @@ begin
   with DigitClassList.LockList do
   try
     if IndexOf(DigitClass) > -1 then
-      raise EJVCLSegmentedLEDException.Create(RsEDuplicateDigitClass);
+      raise EJVCLSegmentedLEDException.CreateRes(@RsEDuplicateDigitClass);
     Add(DigitClass);
     Classes.RegisterClass(DigitClass);
   finally
@@ -674,7 +674,7 @@ begin
       if AClass.InheritsFrom(TJvCustomSegmentedLEDDigit) then
         DigitClass := TJvSegmentedLEDDigitClass(FindClass(Value))
       else
-        raise EJVCLSegmentedLEDException.Create(RsEInvalidClass);
+        raise EJVCLSegmentedLEDException.CreateRes(@RsEInvalidClass);
     end
     else
       DigitClass := nil;
@@ -1712,7 +1712,7 @@ begin
     if StrLIComp(Hdr.ID, PChar(Display.DigitClass.MapperFileID), Length(Display.DigitClass.MapperFileID)) = 0 then
       PrimReadMapping(Hdr, Stream)
     else
-      raise EJVCLSegmentedLEDException.Create(RsEInvalidMappingFile);
+      raise EJVCLSegmentedLEDException.CreateRes(@RsEInvalidMappingFile);
   except
     Stream.Position := OrgPos;
     raise;

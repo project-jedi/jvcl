@@ -516,7 +516,7 @@ end;
 
 constructor TJvHidDeviceReadThread.Create(CreateSuspended: Boolean);
 begin
-  raise EControllerError.Create(RsEDirectThreadCreationNotAllowed);
+  raise EControllerError.CreateRes(@RsEDirectThreadCreationNotAllowed);
 end;
 
 //------------------------------------------------------------------------------
@@ -689,7 +689,7 @@ begin
   FHidFileHandle      := INVALID_HANDLE_VALUE;
   FHidOverlappedRead  := INVALID_HANDLE_VALUE;
   FHidOverlappedWrite := INVALID_HANDLE_VALUE;
-  raise EControllerError.Create(RsEDirectHidDeviceCreationNotAllowed);
+  raise EControllerError.CreateRes(@RsEDirectHidDeviceCreationNotAllowed);
 end;
 
 //------------------------------------------------------------------------------
@@ -744,10 +744,10 @@ begin
   begin
     FAttributes.Size := SizeOf(THIDDAttributes);
     if not HidD_GetAttributes(HidFileHandle, FAttributes) then
-      raise EControllerError.Create(RsEDeviceCannotBeIdentified);
+      raise EControllerError.CreateRes(@RsEDeviceCannotBeIdentified);
   end
   else
-    raise EControllerError.Create(RsEDeviceCannotBeOpened);
+    raise EControllerError.CreateRes(@RsEDeviceCannotBeOpened);
   // the file is closed to stop using up resources
   CloseFile;
 end;
@@ -1686,7 +1686,7 @@ begin
   // this is just to remind you that one controller is sufficient
   Inc(GlobalInstanceCount);
   if GlobalInstanceCount > 1 then
-    raise EControllerError.Create(RsEOnlyOneControllerPerProgram);
+    raise EControllerError.CreateRes(@RsEOnlyOneControllerPerProgram);
 
   FillInList(FList);
   FNumCheckedInDevices := FList.Count;
@@ -2302,7 +2302,7 @@ end;
 function HidCheck(const RetVal: LongBool): LongBool;
 begin
   if not RetVal then
-    raise EHidClientError.Create(RsEHIDBooleanError);
+    raise EHidClientError.CreateRes(@RsEHIDBooleanError);
   Result := RetVal;
 end;
 

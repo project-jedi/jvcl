@@ -154,7 +154,7 @@ var
   S, D: string;
 begin
   if Length(FSourceFiles.Text) = 0 then
-    EJVCLException.Create(RsENoFilesSpecifiedToTJvSHFileOperatio);
+    EJVCLException.CreateRes(@RsENoFilesSpecifiedToTJvSHFileOperatio);
 
   FillChar(SFOS, SizeOf(TShFileOpStruct), #0);
 

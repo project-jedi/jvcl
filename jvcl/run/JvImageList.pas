@@ -1242,7 +1242,7 @@ end;
 
 procedure TJvImageList.ItemListError;
 begin
-  raise EJvImageListError.CreateFmt(RsEWrongImageListMode, ['imItemList']);
+  raise EJvImageListError.CreateResFmt(@RsEWrongImageListMode, ['imItemList']);
 end;
 
 {$IFDEF VCL}

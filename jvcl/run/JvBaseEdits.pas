@@ -661,7 +661,7 @@ begin
       end;
     end;
     if RaiseOnError and (Result <> NewValue) then
-      raise ERangeError.CreateFmt(RsEOutOfRangeXFloat,
+      raise ERangeError.CreateResFmt(@RsEOutOfRangeXFloat,
         [DecimalPlaces, FMinValue, DecimalPlaces, FMaxValue]);
   end;
 end;

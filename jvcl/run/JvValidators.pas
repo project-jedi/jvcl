@@ -364,7 +364,7 @@ end;
 class procedure TJvBaseValidator.GetBaseValidatorInfo(Index:integer;var DisplayName:string;var ABaseValidatorClass:TJvBaseValidatorClass);
 begin
   if  (Index < 0) or (Index >= ValidatorsList.Count) then
-    raise EJVCLException.CreateFmt(RsEInvalidIndexd, [Index]);
+    raise EJVCLException.CreateResFmt(@RsEInvalidIndexd, [Index]);
   DisplayName := ValidatorsList[Index];
   ABaseValidatorClass := TJvBaseValidatorClass(ValidatorsList.Objects[Index]);
 end;
@@ -774,9 +774,9 @@ begin
       Exit;
     end;
     if not Supports(Value, IJvValidationSummary, obj) then
-      raise EValidatorError.CreateFmt(RsEInterfaceNotSupported, [Value.Name, 'IJvValidationSummary']);
+      raise EValidatorError.CreateResFmt(@RsEInterfaceNotSupported, [Value.Name, 'IJvValidationSummary']);
     if Value = Self then
-      raise EValidatorError.Create(RsECircularReference);
+      raise EValidatorError.CreateRes(@RsECircularReference);
     SetValidationSummary(obj);
     FValidationSummaryComponent := Value;
     FValidationSummaryComponent.FreeNotification(Self);
@@ -797,9 +797,9 @@ begin
       Exit;
     end;
     if not Supports(Value, IJvErrorIndicator, obj) then
-      raise EValidatorError.CreateFmt(RsEInterfaceNotSupported, [Value.Name, 'IJvErrorIndicator']);
+      raise EValidatorError.CreateResFmt(@RsEInterfaceNotSupported, [Value.Name, 'IJvErrorIndicator']);
     if Value = Self then
-      raise EValidatorError.Create(RsECircularReference);
+      raise EValidatorError.CreateRes(@RsECircularReference);
     SetErrorIndicator(obj);
     FErrorIndicatorComponent := Value;
     FErrorIndicatorComponent.FreeNotification(Self);

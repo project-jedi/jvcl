@@ -215,7 +215,7 @@ var
 begin
   // Avoid bad signatures
   if (ASignature = '') or (AOffset < 0) or (AGraphicClass = nil) then
-    raise Exception.Create(RsEBadGraphicSignature);
+    raise Exception.CreateRes(@RsEBadGraphicSignature);
   // Should raise an exception if empty signature, negative offset or null class.
   GraphicSignature := TGraphicSignature.Create(ASignature, AOffset, AGraphicClass);
   try

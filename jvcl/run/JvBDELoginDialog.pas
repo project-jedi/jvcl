@@ -397,7 +397,7 @@ begin
             if Assigned(FOnLoginFailure) then
               FOnLoginFailure(Self, GetUserName, FDialog.PasswordEdit.Text)
             else
-              raise EDatabaseError.Create(RsEInvalidUserName);
+              raise EDatabaseError.CreateRes(@RsEInvalidUserName);
           end;
         end
         else
@@ -405,7 +405,7 @@ begin
           if Assigned(FOnLoginFailure) then
             FOnLoginFailure(Self, GetUserName, FDialog.PasswordEdit.Text)
           else
-            raise EDatabaseError.Create(RsEInvalidUserName);
+            raise EDatabaseError.CreateRes(@RsEInvalidUserName);
         end;
       except
         Application.HandleException(Self);

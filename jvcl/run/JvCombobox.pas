@@ -388,7 +388,7 @@ begin
     ComboBox.DeselectProvider;
     Result := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, Longint(PChar(S)));
     if Result < 0 then
-      raise EOutOfResources.Create(SInsertLineError);
+      raise EOutOfResources.CreateRes(@SInsertLineError);
   end;
 end;
 
@@ -437,7 +437,7 @@ begin
   begin
     ComboBox.DeselectProvider;
     if SendMessage(ComboBox.Handle, CB_INSERTSTRING, Index, Longint(PChar(S))) < 0 then
-      raise EOutOfResources.Create(SInsertLineError);
+      raise EOutOfResources.CreateRes(@SInsertLineError);
   end;
 end;
 
@@ -489,7 +489,7 @@ begin
         Obj := InternalList.Objects[0];
         Index := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, Longint(PChar(S)));
         if Index < 0 then
-          raise EOutOfResources.Create(SInsertLineError);
+          raise EOutOfResources.CreateRes(@SInsertLineError);
         SendMessage(ComboBox.Handle, CB_SETITEMDATA, Index, Longint(Obj));
         InternalList.Delete(0);
       end;

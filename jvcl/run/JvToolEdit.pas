@@ -3319,7 +3319,7 @@ begin
       if FDateAutoBetween then
         SetMinDate(Value)
       else
-        raise EJVCLException.CreateFmt(RsEDateMaxLimit, [DateToStr(FMinDate)]);
+        raise EJVCLException.CreateResFmt(@RsEDateMaxLimit, [DateToStr(FMinDate)]);
     FMaxDate := Value;
     UpdatePopup;
     if FDateAutoBetween then
@@ -3338,7 +3338,7 @@ begin
       if FDateAutoBetween then
         SetMaxDate(Value)
       else
-        raise EJVCLException.CreateFmt(RsEDateMinLimit, [DateToStr(FMaxDate)]);
+        raise EJVCLException.CreateResFmt(@RsEDateMinLimit, [DateToStr(FMaxDate)]);
     FMinDate := Value;
     UpdatePopup;
     if FDateAutoBetween then
@@ -3486,15 +3486,15 @@ begin
     begin
       if ((FMinDate <> NullDate) and (FMaxDate <> NullDate) and
         ((Value < FMinDate) or (Value > FMaxDate))) then
-        raise EJVCLException.CreateFmt(RsEDateOutOfRange, [FormatDateTime(FDateFormat, Value),
+        raise EJVCLException.CreateResFmt(@RsEDateOutOfRange, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMinDate), FormatDateTime(FDateFormat, FMaxDate)])
       else
       if (FMinDate <> NullDate) and (Value < FMinDate) then
-        raise EJVCLException.CreateFmt(RsEDateOutOfMin, [FormatDateTime(FDateFormat, Value),
+        raise EJVCLException.CreateResFmt(@RsEDateOutOfMin, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMinDate)])
       else
       if (FMaxDate <> NullDate) and (Value > FMaxDate) then
-        raise EJVCLException.CreateFmt(RsEDateOutOfMax, [FormatDateTime(FDateFormat, Value),
+        raise EJVCLException.CreateResFmt(@RsEDateOutOfMax, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMaxDate)]);
     end;
   inherited SetDate(Value);

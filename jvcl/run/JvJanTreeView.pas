@@ -1174,7 +1174,7 @@ begin
           end; { else }
         end; { case of }
       17: Reduce(9);
-      18: raise EJVCLException.Create(RsEBadTokenState);
+      18: raise EJVCLException.CreateRes(@RsEBadTokenState);
       19:
         begin
           if TokenType = PLUS then
@@ -1323,8 +1323,8 @@ begin
         Pop(Token2);
         CurrToken.Value := -Token1.Value;
       end;
-    11: raise EJVCLException.Create(RsEInvalidReduction);
-    13: raise EJVCLException.Create(RsEInvalidReduction);
+    11: raise EJVCLException.CreateRes(@RsEInvalidReduction);
+    13: raise EJVCLException.CreateRes(@RsEInvalidReduction);
     14:
       begin
         Pop(Token1);

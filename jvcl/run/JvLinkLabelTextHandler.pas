@@ -241,7 +241,7 @@ var
   EndPos: Integer;
 begin
   if not HasNext then
-    raise ETextHandlerError.Create(RsENoMoreWords);
+    raise ETextHandlerError.CreateRes(@RsENoMoreWords);
 
   StartPos := FPos;
   EndPos := FPos;
@@ -640,7 +640,7 @@ begin
         Inc(FPosX, TextWidth(Buffer));
       end
     else
-      raise ETextHandlerError.Create(RsEUnsupported);
+      raise ETextHandlerError.CreateRes(@RsEUnsupported);
 
   FList.Clear;
 end;

@@ -131,7 +131,7 @@ begin
   //FHandle:=CreateMailSlot('\\.\mailslot\MailSlot',0,MAILSLOT_WAIT_FOREVER,nil);
 
   if FHandle = INVALID_HANDLE_VALUE then
-    raise Exception.Create(RsETJvgMailSlotServerErrorCreatingChan);
+    raise Exception.CreateRes(@RsETJvgMailSlotServerErrorCreatingChan);
   FTimer.Enabled := True;
 end;
 
@@ -156,7 +156,7 @@ begin
   // определение наличия сообщения в канале
   { Determining if there's message in channel [translated] }
   if not GetMailSlotInfo(FHandle, nil, MsgSize, @MsgNumber, nil) then
-    raise Exception.Create(RsETJvgMailSlotServerErrorGatheringInf);
+    raise Exception.CreateRes(@RsETJvgMailSlotServerErrorGatheringInf);
   if MsgSize <> MAILSLOT_NO_MESSAGE then
   begin
     // (rom) deactivated  annoying
@@ -170,7 +170,7 @@ begin
       if ReadFile(FHandle, Buffer, MsgSize, Read, nil) then
         MessageText := Buffer
       else
-        raise Exception.Create(RsETJvgMailSlotServerErrorReadingMessa);
+        raise Exception.CreateRes(@RsETJvgMailSlotServerErrorReadingMessa);
     finally
       FreeMem(Buffer);
     end;

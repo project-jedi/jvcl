@@ -228,7 +228,7 @@ begin
     if (TypeList.Text = '') and TypeList.CanFocus then
     begin
       TypeList.SetFocus;
-      raise EJVCLException.Create(RsEInvalidParamFieldType);
+      raise EJVCLException.CreateRes(@RsEInvalidParamFieldType);
     end;
     if ParamValue.Text = '' then
       with InitList.ParamByName(ParamList.Items[ParamList.ItemIndex]) do

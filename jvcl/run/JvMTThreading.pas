@@ -316,7 +316,7 @@ end;
 procedure TMTThread.CheckTerminate;
 begin
   if CurrentMTThread <> Self then
-    raise EMTThreadError.Create(RsECheckTerminateCalledByWrongThread);
+    raise EMTThreadError.CreateRes(@RsECheckTerminateCalledByWrongThread);
 
   if Status = tsTerminating then
     raise EMTTerminateError.Create('');
@@ -446,7 +446,7 @@ begin
     if Status = tsWaiting then
       FIntThread.Resume
     else
-      raise EMTThreadError.Create(RsEThreadNotInitializedOrWaiting);
+      raise EMTThreadError.CreateRes(@RsEThreadNotInitializedOrWaiting);
   finally
     FStatusChange.Release;
   end;
@@ -461,7 +461,7 @@ begin
     else
     begin
       if CurrentMTThread <> Self then
-        raise EMTThreadError.Create(RsECannotChangeNameOfOtherActiveThread);
+        raise EMTThreadError.CreateRes(@RsECannotChangeNameOfOtherActiveThread);
   
       FName := Value;
       if FIntThread <> nil then
@@ -681,7 +681,7 @@ begin
     if FindThread(Ticket, Thread) then
       Thread.DecRef
     else
-      raise EMTThreadError.Create(RsEReleaseOfUnusedTicket);
+      raise EMTThreadError.CreateRes(@RsEReleaseOfUnusedTicket);
 
     // if this was the last reference then the thread must be removed
     TryRemoveThread(Thread);
@@ -739,7 +739,7 @@ begin
         1:
           { Nothing };
        -1:
-         raise EMTThreadError.Create(RsECurThreadIsPartOfManager);
+         raise EMTThreadError.CreateRes(@RsECurThreadIsPartOfManager);
       end;
       Sleep(0);
     end;

@@ -1205,7 +1205,7 @@ begin
     4:
       Result := CID3FrameDefs[ID].LongTextID;
   else
-    raise EJVCLException.Create(RsEFrameIDSizeCanOnlyBe34);
+    raise EJVCLException.CreateRes(@RsEFrameIDSizeCanOnlyBe34);
   end;
 end;
 

@@ -209,7 +209,7 @@ procedure TJvgCaption.Notification(Component: TComponent;
   Operation: TOperation);
 begin
   if (Component <> Self) and (Operation = opInsert) and (Component is TJvgCaption) then
-    raise Exception.Create(RsEOnlyOneInstanceOfTJvgCaption);
+    raise Exception.CreateRes(@RsEOnlyOneInstanceOfTJvgCaption);
 end;
 
 procedure TJvgCaption.SetParentWindowHook;

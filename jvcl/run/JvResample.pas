@@ -371,7 +371,7 @@ begin
   SrcWidth := Src.Width;
   SrcHeight := Src.Height;
   if (SrcWidth < 1) or (SrcHeight < 1) then
-    raise EJVCLException.Create(RsESourceBitmapTooSmall);
+    raise EJVCLException.CreateRes(@RsESourceBitmapTooSmall);
 
   // Create intermediate image to hold horizontal zoom
   Work := TBitmap.Create;

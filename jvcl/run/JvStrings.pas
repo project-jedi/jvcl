@@ -1003,7 +1003,7 @@ begin
   HResInfo := FindResource(HInstance, pchar(aFile), GoodType);
   HGlobal := LoadResource(HInstance, HResInfo);
   if HGlobal = 0 then
-    raise EResNotFound.CreateFmt(RsECannotLoadResource, [aFile]);
+    raise EResNotFound.CreateResFmt(@RsECannotLoadResource, [aFile]);
   Buffer := LockResource(HGlobal);
   ms.clear;
   ms.WriteBuffer(Buffer[0], SizeOfResource(HInstance, HResInfo));
@@ -1365,7 +1365,7 @@ var
   RetValue: string;
 begin
   if ((Length(S) mod 4) <> 0) or (S = '') then
-    raise EJVCLException.Create(RsEIncorrectStringFormat);
+    raise EJVCLException.CreateRes(@RsEIncorrectStringFormat);
 
   SetLength(RetValue, ((Length(S) div 4) - 1) * 3);
   for i := 1 to ((Length(S) div 4) - 1) do

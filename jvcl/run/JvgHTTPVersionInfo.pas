@@ -109,7 +109,7 @@ end;
 function TJvgHTTPVersionInfo.GetVersionInfo(WinControl: TWinControl): Boolean;
 begin
   if Trim(VersionDataURL) = '' then
-    raise Exception.Create(RsEUnknownURLPropertyVersionDataURLIs);
+    raise Exception.CreateRes(@RsEUnknownURLPropertyVersionDataURLIs);
 
   FWebBrowser := TWebBrowser.Create(nil);
   FWebBrowser.Visible := False;

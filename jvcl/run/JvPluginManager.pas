@@ -227,7 +227,7 @@ begin
     begin
       // (rb) No reason to block this
       if {(Length(newValue) > 3) or} Length(NewValue) < 1 then
-        raise EJvPlugInError.Create(RsEErrEmptyExt)
+        raise EJvPlugInError.CreateRes(@RsEErrEmptyExt)
       else
         FExtension := NewValue;
     end;
@@ -363,7 +363,7 @@ begin
       end;
 
       if LibHandle = 0 then
-        raise EJvLoadPluginError.CreateFmt(RsEPluginPackageNotFound, [FileName]);
+        raise EJvLoadPluginError.CreateResFmt(@RsEPluginPackageNotFound, [FileName]);
 
       AllowLoad := True;
       if Assigned(FOnAfterLoad) then
@@ -378,12 +378,12 @@ begin
       // Load the registration procedure
       RegisterProc := GetProcAddress(LibHandle, C_REGISTER_PLUGIN);
       if not Assigned(RegisterProc) then
-        raise EJvLoadPluginError.CreateFmt(RsERegisterPluginNotFound, [C_REGISTER_PLUGIN, FileName]);
+        raise EJvLoadPluginError.CreateResFmt(@RsERegisterPluginNotFound, [C_REGISTER_PLUGIN, FileName]);
 
       // register the plugin
       PlugIn := RegisterProc;
       if PlugIn = nil then
-        raise EJvCantRegisterPlugInError.CreateFmt(RsERegisterPluginFailed, [C_REGISTER_PLUGIN, FileName]);
+        raise EJvCantRegisterPlugInError.CreateResFmt(@RsERegisterPluginFailed, [C_REGISTER_PLUGIN, FileName]);
 
       // make sure we don't load more copies of the plugin than allowed
       if PlugIn.InstanceCount > 0 then // 0 = unlimited

@@ -1242,7 +1242,7 @@ end;
 
 procedure RedoNotImplemented;
 begin
-  raise EJvEditorError.Create(RsERedoNotYetImplemented);
+  raise EJvEditorError.CreateRes(@RsERedoNotYetImplemented);
 end;
 
 procedure TJvUndoBuffer.Add(AUndo: TJvUndo);

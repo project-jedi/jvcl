@@ -138,7 +138,7 @@ uses
 
 procedure TJvMarginSize.AssignError;
 begin
-  raise ERangeError.Create(RsEInvalidValue);
+  raise ERangeError.CreateRes(@RsEInvalidValue);
 end;
 
 procedure TJvMarginSize.AssignTo(Dest: TPersistent);

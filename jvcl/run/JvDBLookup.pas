@@ -640,11 +640,11 @@ begin
   begin
     Inc(P);
     if P^ = #0 then
-      raise EJVCLException.Create(RsEInvalidFormatNotAllowed)
+      raise EJVCLException.CreateRes(@RsEInvalidFormatNotAllowed)
     else
     if not (P^ in ['%', 's', 'S']) then
-      raise EJVCLException.Create(Format(RsEInvalidFormatsNotAllowed,
-        [QuotedStr('%' + P^)]));
+      raise EJVCLException.CreateResFmt(@RsEInvalidFormatsNotAllowed,
+        [QuotedStr('%' + P^)]);
     P := StrScan(P + 1, '%');
   end;
 end;

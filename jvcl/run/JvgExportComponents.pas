@@ -248,7 +248,7 @@ end;
 procedure TJvgCommonExport.Execute;
 begin
   if not Assigned(DataSet) then
-    raise EJvgExportException.Create(RsEDataSetIsUnassigned);
+    raise EJvgExportException.CreateRes(@RsEDataSetIsUnassigned);
   DataSet.Active := True;
   if SaveToFileName <> '' then
     ForceDirectories(ExtractFilePath(SaveToFileName));

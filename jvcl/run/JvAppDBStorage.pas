@@ -181,12 +181,12 @@ function TJvCustomAppDBStorage.DoReadBinary(const Path: string; var Buf;
 var
   Value: string;
 begin
-  raise EJvAppDBStorageError.Create(RsENotSupported);
+  raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
   // TODO -cTESTING -oJVCL: NOT TESTED!!!
   Value := JclMime.MimeDecodeString(DoReadString(Path, ''));
   Result := Length(Value);
   if Result > BufSize then
-    raise EJvAppDBStorageError.CreateFmt(RsEBufTooSmallFmt, [Result]);
+    raise EJvAppDBStorageError.CreateResFmt(@RsEBufTooSmallFmt, [Result]);
   if Length(Value) > 0 then
     Move(Value[1], Buf, Result);
 end;
@@ -220,7 +220,7 @@ procedure TJvCustomAppDBStorage.DoWriteBinary(const Path: string;
 var
   Value, Buf1: string;
 begin
-  raise EJvAppDBStorageError.Create(RsENotSupported);
+  raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
   // TODO -cTESTING -oJVCL: NOT TESTED!!!
   SetLength(Value, BufSize);
   if BufSize > 0 then
@@ -257,13 +257,13 @@ end;
 procedure TJvCustomAppDBStorage.EnumFolders(const Path: string;
   const Strings: TStrings; const ReportListAsValue: Boolean);
 begin
-  raise EJvAppDBStorageError.Create(RsENotSupported);
+  raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
 end;
 
 procedure TJvCustomAppDBStorage.EnumValues(const Path: string;
   const Strings: TStrings; const ReportListAsValue: Boolean);
 begin
-  raise EJvAppDBStorageError.Create(RsENotSupported);
+  raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
 end;
 
 function TJvCustomAppDBStorage.FieldsAssigned: Boolean;

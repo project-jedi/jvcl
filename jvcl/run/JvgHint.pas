@@ -150,7 +150,7 @@ end;
 procedure TJvgHint.Notification(Component: TComponent; Operation: TOperation);
 begin
   if (Component <> Self) and (Operation = opInsert) and (Component is TJvgHint) then
-    raise Exception.Create(RsEOnlyOneInstanceOfTJvgHint);
+    raise Exception.CreateRes(@RsEOnlyOneInstanceOfTJvgHint);
 end;
 
 procedure TJvgHint.InitHint;

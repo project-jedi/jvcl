@@ -146,7 +146,7 @@ type
 
 procedure Error;
 begin
-  EJVCLException.Create(RsENoEditAssigned);
+  EJVCLException.CreateRes(@RsENoEditAssigned);
 end;
 
 { utility }

@@ -736,7 +736,7 @@ begin
   {$IFDEF DEBUGINFO_ON}
   OutputDebugString(PChar('JvCsvDatabaseError in ' + TableName + ': ' + Msg));
   {$ENDIF DEBUGINFO_ON}
-  raise EJvCsvDataSetError.CreateFmt(RsECsvErrFormat, [TableName, Msg]);
+  raise EJvCsvDataSetError.CreateResFmt(@RsECsvErrFormat, [TableName, Msg]);
 end;
 
 // note that file is not being locked!
@@ -2518,7 +2518,7 @@ end;
 procedure TJvCustomCsvDataSet.Flush;
 begin
   if FTableName = '' then
-    raise EJvCsvDataSetError.Create(RsETableNameNotSet);
+    raise EJvCsvDataSetError.CreateRes(@RsETableNameNotSet);
 
   if FFileDirty and FSavesChanges and (Length(FTableName) > 0) then
   begin
@@ -2886,7 +2886,7 @@ begin
         OutputDebugString(PChar('JvCsvDataSet Uniqueness: keyIndex='+IntToStr(keyIndex)+' '+GetRowAsString(keyIndex) ));
         OutputDebugString(PChar('JvCsvDataSet Uniqueness: recordPos='+IntToStr(FRecordPos)+' '+GetRowAsString(FRecordPos) ));
         {$ENDIF DEBUGINFO_ON}
-        raise EJvCsvKeyError.CreateFmt(RsEKeyNotUnique, [FTableName]);
+        raise EJvCsvKeyError.CreateResFmt(@RsEKeyNotUnique, [FTableName]);
         Exit; // never get here, since normally JvCsvDatabaseError raises an exception.
       end;
   end;
@@ -3331,7 +3331,7 @@ begin
  if (RowIndex>=0) and (RowIndex < Count)then
    Result := PCsvRow(Get(RowIndex)) // return pointer to a row item.
  else
-   raise EJvCsvDataSetError.Create(RsECsvNoRecord); { NO Such Record }
+   raise EJvCsvDataSetError.CreateRes(@RsECsvNoRecord); { NO Such Record }
 end;
 
 function TJvCsvRows.GetRowStr(const RowIndex: Integer): string;
@@ -3639,9 +3639,7 @@ begin
   if DataRow = '' then
     Exit;
   if Length(DataRow) >= (MAXLINELENGTH - 1) then
-  begin
-    raise EJvCsvDataSetError.Create(Format(RsECsvStringTooLong, [Copy(DataRow, 1, 40)]));
-  end;
+    raise EJvCsvDataSetError.CreateResFmt(@RsECsvStringTooLong, [Copy(DataRow, 1, 40)]);
   pNewRow := AllocMem(SizeOf(TJvCsvRow));
   StringToCsvRow(DataRow, Separator, pNewRow, True, FEnquoteBackslash);
   pNewRow^.Index := Index;
@@ -3809,7 +3807,7 @@ begin
     end;
     if (Col >= MAXCOLUMNS) or (t >= MAXLINELENGTH) then
     begin
-      raise ERangeError.CreateFmt(RsEInternalLimit, [MAXCOLUMNS]);
+      raise ERangeError.CreateResFmt(@RsEInternalLimit, [MAXCOLUMNS]);
       Exit;
     end;
   end; // end of string, new flag:
@@ -4247,7 +4245,7 @@ begin
         S := Value
       else
         S := Format('#%.2d',[Ord(Value)]);
-      raise EJvCsvDataSetError.CreateFmt(RsECsvInvalidSeparatorFmt,[S]);
+      raise EJvCsvDataSetError.CreateResFmt(@RsECsvInvalidSeparatorFmt,[S]);
     end;
     FSeparator := Value;
   end;
@@ -4283,9 +4281,9 @@ begin
 
   { make sure the range is valid and that the csv schema is the same }
   if (RecNo < 0) or (RecNo >= FData.Count) then
-      raise EJvCsvDataSetError.CreateFmt(RsEProblemReadingRow,[RecNo]);
+      raise EJvCsvDataSetError.CreateResFmt(@RsEProblemReadingRow,[RecNo]);
   if FCsvFieldDef <> dataset.FCsvFieldDef then
-      raise EJvCsvDataSetError.CreateFmt(RsEProblemReadingRow,[RecNo]);
+      raise EJvCsvDataSetError.CreateResFmt(@RsEProblemReadingRow,[RecNo]);
 
   {the ugly hack:}
   CopyMemory(FData[RecNo], dataset.FData[dataset.RecNo], SizeOf(TJvCsvRow));

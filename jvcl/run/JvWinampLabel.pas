@@ -236,7 +236,7 @@ procedure TJvWinampLabel.SetPicture(Value: TPicture);
 begin
   FPicture.Assign(Value);
   if (FPicture.Bitmap.Width <> 155) or (FPicture.Bitmap.Height <> 18) then
-    raise EJVCLException.Create(RsEInvalidSkin);
+    raise EJVCLException.CreateRes(@RsEInvalidSkin);
   FText := '';
   Invalidate;
 end;
@@ -443,14 +443,14 @@ begin
       Rec.Top := Rec.Top + CharHeight;
       Canvas.FillRect(Rec);
       if FActive then
-        BitBlt(Canvas.Handle, 0, 0, Width, CharHeight, FBitmap.Canvas.Handle, FCurPos, 0, srcCopy)
+        BitBlt(Canvas.Handle, 0, 0, Width, CharHeight, FBitmap.Canvas.Handle, FCurPos, 0, SRCCOPY)
       else
       begin
         Rec := ClientRect;
         Rec.Bottom := Rec.Bottom + CharHeight;
         Rec.Left := Rec.Left + (CharWidth * Length(Text));
         Canvas.FillRect(Rec);
-        BitBlt(Canvas.Handle, 0, 0, Width, CharHeight, FBitmap.Canvas.Handle, 0, 0, srcCopy);
+        BitBlt(Canvas.Handle, 0, 0, Width, CharHeight, FBitmap.Canvas.Handle, 0, 0, SRCCOPY);
       end;
     end
     else
@@ -458,10 +458,10 @@ begin
       FScale := Height / CharHeight;
       if FActive then
         StretchBlt(Canvas.Handle, 0, 0, Width, Height, FBitmap.Canvas.Handle, FCurPos, 0, Round(Width / FScale),
-          CharHeight, srcCopy)
+          CharHeight, SRCCOPY)
       else
         StretchBlt(Canvas.Handle, 0, 0, Width, Height, FBitmap.Canvas.Handle, 0, 0, Round(Width / FScale), CharHeight,
-          srcCopy);
+          SRCCOPY);
     end;
   except
   end;

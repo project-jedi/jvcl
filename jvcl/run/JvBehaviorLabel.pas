@@ -463,7 +463,7 @@ end;
 constructor TJvLabelBehavior.Create(ALabel: TJvCustomBehaviorLabel);
 begin
   if ALabel = nil then
-    raise EJVCLException.CreateFmt(RsENeedBehaviorLabel, [ClassName]);
+    raise EJVCLException.CreateResFmt(@RsENeedBehaviorLabel, [ClassName]);
   inherited Create;
   FLabel := ALabel;
   FActive := False;
@@ -815,7 +815,7 @@ begin
     Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
-    raise EJVCLException.CreateFmt(RsENoOwnerLabelParent, [ClassName]);
+    raise EJVCLException.CreateResFmt(@RsENoOwnerLabelParent, [ClassName]);
   inherited Start;
   FOriginalRect := OwnerLabel.BoundsRect;
   Randomize;
@@ -1048,7 +1048,7 @@ begin
     Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
-    raise EJVCLException.CreateFmt(RsENoOwnerLabelParent, [ClassName]);
+    raise EJVCLException.CreateResFmt(@RsENoOwnerLabelParent, [ClassName]);
   inherited Start;
   if FTimer = nil then
   begin

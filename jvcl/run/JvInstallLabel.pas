@@ -191,7 +191,7 @@ end;
 function TJvInstallLabel.GetStyles(Index: Integer): TFontStyles;
 begin
   if not CheckBounds(Index) then
-    raise EJVCLException.CreateFmt(RsEListOutOfBounds, [Index])
+    raise EJVCLException.CreateResFmt(@RsEListOutOfBounds, [Index])
   else
     Result := PStyles(FStyles[Index])^.Style;
 end;
@@ -356,7 +356,7 @@ function TJvInstallLabel.CheckBounds(Index: Integer): Boolean;
 begin
   Result := (Index > -1) and (Index < Lines.Count);
   if not Result then
-    raise EJVCLException.CreateFmt(RsEListOutOfBounds, [Index]);
+    raise EJVCLException.CreateResFmt(@RsEListOutOfBounds, [Index]);
 end;
 
 end.

@@ -117,7 +117,7 @@ type
 constructor TJvCustomDropDownForm.Create(AOwner: TComponent);
 begin
   if not (AOwner is TCustomEdit) then
-    raise EJVCLException.Create(RsETJvCustomDropDownFormCreateOwnerMus);
+    raise EJVCLException.CreateRes(@RsETJvCustomDropDownFormCreateOwnerMus);
 
   inherited CreateNew(AOwner);
 

@@ -302,7 +302,7 @@ begin
   if I > -1 then
     Result := Controls[I].Error
   else
-    raise EJVCLException.Create(RsEControlNotFoundInGetError);
+    raise EJVCLException.CreateRes(@RsEControlNotFoundInGetError);
 end;
 
 function TJvErrorIndicator.GetImageAlignment(AControl: TControl): TJvErrorImageAlignment;
@@ -313,7 +313,7 @@ begin
   if I > -1 then
     Result := Controls[I].ImageAlignment
   else
-    raise EJVCLException.Create(RsEControlNotFoundInGetImageAlignment);
+    raise EJVCLException.CreateRes(@RsEControlNotFoundInGetImageAlignment);
 end;
 
 function TJvErrorIndicator.GetImagePadding(AControl: TControl): Integer;
@@ -324,7 +324,7 @@ begin
   if I > -1 then
     Result := Controls[I].ImagePadding
   else
-    raise EJVCLException.Create(RsEControlNotFoundInGetImagePadding);
+    raise EJVCLException.CreateRes(@RsEControlNotFoundInGetImagePadding);
 end;
 
 function TJvErrorIndicator.IndexOf(AControl: TControl): Integer;
@@ -433,7 +433,7 @@ begin
       UpdateControls;
     end
     else
-      raise EJVCLException.Create(RsEUnableToAddControlInSetError);
+      raise EJVCLException.CreateRes(@RsEUnableToAddControlInSetError);
   end;
 end;
 
@@ -451,7 +451,7 @@ begin
     if I > -1 then
       Controls[I].ImageAlignment := Value
     else
-      raise EJVCLException.Create(RsEUnableToAddControlInSetImageAlignme);
+      raise EJVCLException.CreateRes(@RsEUnableToAddControlInSetImageAlignme);
   end;
 end;
 
@@ -469,7 +469,7 @@ begin
     if I > 1 then
       Controls[I].ImagePadding := Value
     else
-      raise EJVCLException.Create(RsEUnableToAddControlInSetImagePadding);
+      raise EJVCLException.CreateRes(@RsEUnableToAddControlInSetImagePadding);
   end;
 end;
 

@@ -222,7 +222,7 @@ end;
 procedure TJvID3v1.CheckActive;
 begin
   if not FActive then
-    raise EJVCLException.Create(RsENotActive);
+    raise EJVCLException.CreateRes(@RsENotActive);
 end;
 
 procedure TJvID3v1.Close;

@@ -481,7 +481,7 @@ end;
 
 procedure TJvCustomDatePickerEdit.RaiseNoDate;
 begin
-  raise EJVCLException.CreateFmt(RsEMustHaveADate, [Name]);
+  raise EJVCLException.CreateResFmt(@RsEMustHaveADate, [Name]);
 end;
 
 procedure TJvCustomDatePickerEdit.SetAllowNoDate(const AValue: Boolean);

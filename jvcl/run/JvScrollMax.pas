@@ -361,14 +361,14 @@ var
 begin
   Handle := LoadCursor(HInstance, Identifier);
   if Handle = 0 then
-    raise EOutOfResources.Create(RsECannotLoadCursorResource);
+    raise EOutOfResources.CreateRes(@RsECannotLoadCursorResource);
   for Result := 1 to High(TCursor) do
     if Screen.Cursors[Result] = Screen.Cursors[crDefault] then
     begin
       Screen.Cursors[Result] := Handle;
       Exit;
     end;
-  raise EOutOfResources.Create(RsETooManyUserdefinedCursors);
+  raise EOutOfResources.CreateRes(@RsETooManyUserdefinedCursors);
 end;
 }
 
@@ -834,7 +834,7 @@ end;
 procedure TJvScrollMaxBand.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
 begin
   if not ((AParent is TJvScrollMaxBands) or (AParent = nil)) then
-    raise EJvScrollMaxError.Create(RsETJvScrollMaxBandCanBePutOnlyIntoTJv);
+    raise EJvScrollMaxError.CreateRes(@RsETJvScrollMaxBandCanBePutOnlyIntoTJv);
   inherited SetParent(AParent);
   if not (csLoading in ComponentState) then
   begin
@@ -1032,7 +1032,7 @@ begin
     ScrollMax.FOneExpanded then
     for I := 0 to ControlCount - 1 do
       if not (Controls[I] is TJvScrollMaxBand) then
-        raise EJvScrollMaxError.Create(RsETJvScrollMaxCanContainOnlyTJvScroll)
+        raise EJvScrollMaxError.CreateRes(@RsETJvScrollMaxCanContainOnlyTJvScroll)
       else
       if Controls[I] <> AControl then
         (Controls[I] as TJvScrollMaxBand).Expanded := False;
@@ -1042,7 +1042,7 @@ begin
     for I := 0 to ControlCount - 1 do
     begin
       if not (Controls[I] is TJvScrollMaxBand) then
-        raise EJvScrollMaxError.Create(RsETJvScrollMaxCanContainOnlyTJvScroll);
+        raise EJvScrollMaxError.CreateRes(@RsETJvScrollMaxCanContainOnlyTJvScroll);
       if I > 0 then
         T := Controls[I - 1].BoundsRect.Bottom
       else
@@ -1386,7 +1386,7 @@ begin
       Break;
     end;
   if Band = nil then
-    raise EJvScrollMaxError.CreateFmt(RsEControlsNotAChildOfs, [AControl.Name, Parent.Name]);
+    raise EJvScrollMaxError.CreateResFmt(@RsEControlsNotAChildOfs, [AControl.Name, Parent.Name]);
   Band.Expanded := True;
   Rect := AControl.ClientRect;
   Dec(Rect.Top, BevelWidth + BorderWidth + 4);

@@ -214,7 +214,7 @@ var
   ITmpComboBox: IJvDynControlComboBox;
 begin
   if not Assigned(DynControlEngine) then
-    raise EJVCLException.Create(RsEDynControlEngineNotDefined);
+    raise EJVCLException.CreateRes(@RsEDynControlEngineNotDefined);
 
   Operation := AOperation;
   FreeAndNil(FSelectDialog);
@@ -267,20 +267,20 @@ begin
 
   ComboBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ComboBoxPanel', '', alBottom);
   if not Supports(ComboBoxPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
   ListBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ListPanel', '', alClient);
   if not Supports(ListBoxPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
 
   ComboBox := DynControlEngine.CreateComboBoxControl(Self, ComboBoxPanel, 'ComboBox', SelectList);
   if not Supports(ComboBox, IJvDynControlItems, FIComboBoxItems) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   if not Supports(ComboBox, IJvDynControlData, FIComboBoxData) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
 
   IComboBoxItems.ControlSetSorted(True);
   if Supports(ComboBox, IJvDynControlComboBox, ITmpComboBox) then
@@ -311,7 +311,7 @@ begin
   ComboBox.Align := alClient;
 
   if not Supports(OkButton, IJvDynControl, ITmpControl) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpControl do
     case AOperation of
       sloLoad:
@@ -327,7 +327,7 @@ function TJvAppStorageSelectList.GetSelectListPath(AOperation: TJvAppStorageSele
   ACaption: string = ''): string;
 begin
   if not Assigned(AppStorage) then
-    raise EJVCLException.Create(RsEDynAppStorageNotDefined);
+    raise EJVCLException.CreateRes(@RsEDynAppStorageNotDefined);
   try
     LoadSelectList;
     {$IFDEF BCB}

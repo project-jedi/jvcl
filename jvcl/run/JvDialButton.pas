@@ -408,7 +408,7 @@ begin
 
   // Ensure minimum and maximum in right order.
   if AMax < AMin then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
+    raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [ClassName]);
 
   // Limit Position to Min and Max.
   if APosition < AMin then
@@ -462,7 +462,7 @@ var
 begin
   // Error if AMax < AMin
   if AMax < AMin then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
+    raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [ClassName]);
 
   // Confine AnAngle to limits.
   if AnAngle < AMin then
@@ -668,7 +668,7 @@ var
   I: Integer;
 begin
   if (Value < FMin) or (Value > FMax) then
-    raise EInvalidOperation.CreateFmt(SOutOfRange, [FMin, FMax]);
+    raise EInvalidOperation.CreateResFmt(@SOutOfRange, [FMin, FMax]);
   for I := 0 to FTicks.Count - 1 do
   begin
     P := FTicks.Items[I];

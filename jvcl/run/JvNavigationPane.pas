@@ -4329,7 +4329,7 @@ begin
           Canvas, (Width - Images.Width) div 2, (Height - Images.Height) div 2,
           ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
     else
-      raise EJVCLException.Create(RsEUnsupportedButtonType);
+      raise EJVCLException.CreateRes(@RsEUnsupportedButtonType);
   end;
 end;
 
