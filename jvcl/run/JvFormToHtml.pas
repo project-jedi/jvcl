@@ -42,7 +42,7 @@ uses
 type
   TJvFormToHtml = class(TJvComponent)
   public
-    procedure FormToHtml(const Form: TCustomForm; Path: string);
+    procedure FormToHtml(const Form: TCustomForm; const Filename: string);
   end;
 
 implementation
@@ -57,7 +57,7 @@ begin
   Result := Result + 'font-family:' + Font.Name;
 end;
 
-procedure TJvFormToHtml.FormToHtml(const Form: TCustomForm; Path: string);
+procedure TJvFormToHtml.FormToHtml(const Form: TCustomForm; const Filename: string);
 var
   I, J: Integer;
   C: TComponent;
@@ -226,7 +226,7 @@ begin
       HTML.Add(St);
   end;
   HTML.Add('</BODY></HTML>');
-  HTML.SaveToFile(Path);
+  HTML.SaveToFile(Filename);
   HTML.Free;
 end;
 

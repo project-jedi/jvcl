@@ -1,5 +1,5 @@
 ##Package: Net
-##Status: Generated
+##Status: Completed, needs review (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvFormToHtml.pas
 Summary
@@ -11,21 +11,22 @@ Author
 @@TJvFormToHtml
 <TITLEIMG TJvFormToHtml>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Network
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Converts a TForm and content to HTML code.
 Description
-  Write here a description
+  Use a TJvFormToHtml to convert a TForm and its content to the equivalent HTML. Note that TJvFormToHtml
+  can only convert conrtrols also available in HTML (see the description of FormToHTML for a detailed 
+  list of supported controls).
 ----------------------------------------------------------------------------------------------------
 @@TJvFormToHtml.FormToHtml
 Summary
-  Write here a summary (1 line)
+  Converts a form to HTML.
 Description
-  Write here a description
+  Call FormToHTML to convert a form to HTML code. The content of the form (controls and their positions) 
+  is converted to and saved to a file. Note that only controls available in HTML are converted 
+  (edits, memos, buttons, checkboxes, radiobuttons, comboxes, listboxes and labels).
 Parameters
-  Form - Description for this parameter
-  Path - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Form - The form to convert.
+  Filename - The file to save the generated HTML to.
