@@ -228,10 +228,12 @@ type
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TWinControl;
+    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     procedure CustomAlignPosition(Control: TControl; var NewLeft, NewTop, NewWidth,
       NewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo); override;
     {$ENDIF COMPILER6_UP}
+    {$ENDIF VCL}
     procedure DoClearText; override;
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
@@ -1920,7 +1922,6 @@ begin
   UpdateControls;
   UpdateMargins;
 end;
-{$ENDIF VCL}
 
 {$IFDEF COMPILER6_UP}
 procedure TJvCustomComboEdit.CustomAlignPosition(Control: TControl;
@@ -1931,6 +1932,7 @@ begin
     UpdateBtnBounds(NewLeft, NewTop, NewWidth, NewHeight);
 end;
 {$ENDIF COMPILER6_UP}
+{$ENDIF VCL}
 
 class function TJvCustomComboEdit.DefaultImageIndex: TImageIndex;
 begin
