@@ -31,10 +31,15 @@ unit JvTFMonths;
 
 interface
 
-uses Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvTFGlance, JvTFUtils, JvTFManager{$IFDEF UseJVCL}, JvTypes{$ENDIF};
 
 type
+{$IFDEF BCB}
+  TDate = TDateTime;
+{$ENDIF}
+
   TJvTFMonthsScrollSize = (mssMonth, mssWeek);
 
   TJvTFMonths = class(TJvTFCustomGlance)

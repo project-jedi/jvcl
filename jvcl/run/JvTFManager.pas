@@ -44,6 +44,10 @@ type
   // will not automatically bring in 'JvTFUtils' into the uses clause when
   // a TJvTFDrawDWTitleEvent prototype is created.
   TTFDayOfWeek = JvTFUtils.TTFDayOfWeek;
+{$IFDEF BCB}
+  TDate = TDateTime;
+  TTime = TDateTime;
+{$ENDIF}
 
   EJvTFScheduleManagerError = class(Exception);
 
