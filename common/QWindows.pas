@@ -906,7 +906,9 @@ type
   );
 
 { (very) limited implementations of }
-function GetDeviceCaps(Handle: QPainterH; devcap: TDeviceCap): Integer;
+function GetDeviceCaps(Handle: QPainterH; devcap: TDeviceCap): Integer; overload;
+function GetDeviceCaps(Handle: QPaintDeviceH; devcap: TDeviceCap): Integer; overload;
+
 function GetTextMetrics(Handle: QPainterH; var tt: TTextMetric): Integer;
 
 type
@@ -3700,12 +3702,18 @@ begin
 end;
 
 { limited implementation of}
+
 function GetDeviceCaps(Handle: QPainterH; devcap: TDeviceCap): Integer;
+begin
+  Result := GetDeviceCaps(QPainter_device(Handle), devcap);
+end;
+
+function GetDeviceCaps(Handle: QPaintDeviceH; devcap: TDeviceCap): Integer;
 var
   pdm:  QPaintDeviceMetricsH;
 begin
   Result := 0;
-  pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
+  pdm := QPaintDeviceMetrics_create(Handle);
   if pdm <> nil then
   begin
     try
