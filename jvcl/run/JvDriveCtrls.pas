@@ -1486,6 +1486,8 @@ const
   Attributes: array [TFileAttr] of Word = (FILE_ATTRIBUTE_READONLY, FILE_ATTRIBUTE_HIDDEN,
     FILE_ATTRIBUTE_SYSTEM, 0 {faVolumeID}, 0 {faDirectory}, FILE_ATTRIBUTE_ARCHIVE,
     FILE_ATTRIBUTE_READONLY or FILE_ATTRIBUTE_ARCHIVE or FILE_ATTRIBUTE_NORMAL {faNormal});
+  CAllAttributes = FILE_ATTRIBUTE_READONLY or FILE_ATTRIBUTE_HIDDEN or
+    FILE_ATTRIBUTE_SYSTEM or FILE_ATTRIBUTE_ARCHIVE or FILE_ATTRIBUTE_NORMAL;
 var
   OldMode: Cardinal;
 begin
@@ -1507,8 +1509,10 @@ begin
     SaveCursor := Screen.Cursor;
     try
       FSearchFiles.RootDirectory := GetCurrentDir;
-      FSearchFiles.FileParams.FileMask := fMask;
-      FSearchFiles.FileParams.Attributes.ExcludeAttr := not AttrWord;
+      FSearchFiles.FileParams.FileMask := FMask;
+      { CAllAttributes is used to ensure that we do not filter out some new
+        Attributes, such as FILE_ATTRIBUTE_NOT_CONTENT_INDEXED etc }
+      FSearchFiles.FileParams.Attributes.ExcludeAttr := not AttrWord and CAllAttributes;
       if ftDirectory in FileType then
         FSearchFiles.Options := FSearchFiles.Options + [soSearchDirs]
       else
