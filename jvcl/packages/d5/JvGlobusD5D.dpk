@@ -34,13 +34,7 @@ requires
   qrpt50,
   vcljpg50,
   vclie50,
-  JvGlobusD5R,
-  JvCustomD5R,
-  JvCtrlsD5R,
-  JvMMD5R,
-  JvDlgsD5R,
-  JvCoreD5R,
-  DJCL50;
+  JvGlobusD5R;
 
 contains
   JvgRegLibDelphi in '..\..\design\JvgRegLibDelphi.pas',

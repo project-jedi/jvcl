@@ -35,14 +35,8 @@ requires
   vcljpg,
   vclie,
   designide,
-  JvGlobusD6R,
-  JvCustomD6R,
-  JvCtrlsD6R,
-  JvMMD6R,
-  JvDlgsD6R,
   rtl,
-  JvCoreD6R,
-  DJCL60;
+  JvGlobusD6R;
 
 contains
   JvgRegLibDelphi in '..\..\design\JvgRegLibDelphi.pas',

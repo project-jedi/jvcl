@@ -4,6 +4,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
   Width = 566
   Height = 588
   OldCreateOrder = True
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited hwJVCLCompEditor: TJvgWizardHeader
@@ -27,6 +28,8 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
       Top = 89
       Width = 556
       Height = 385
+      ActivePage = tbsTabSheet1
+      TabIndex = 1
       inherited tabMain: TTabSheet
         object JvgGroupBox2: TJvgGroupBox
           Left = 6
@@ -87,7 +90,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           end
           object JvgLabel19: TJvgLabel
             Left = 39
-            Top = 39
+            Top = 43
             Width = 57
             Height = 16
             Anchors = []
@@ -109,7 +112,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           end
           object JvgLabel18: TJvgLabel
             Left = 29
-            Top = 61
+            Top = 65
             Width = 67
             Height = 16
             Anchors = []
@@ -132,9 +135,9 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           object JvgLabel17: TJvgLabel
             Left = 55
             Top = 100
-            Width = 45
+            Width = 42
             Height = 16
-            Caption = 'Highlight:'
+            Caption = 'Highlight'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
@@ -173,7 +176,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           end
           object JvgLabel15: TJvgLabel
             Left = 40
-            Top = 157
+            Top = 154
             Width = 60
             Height = 16
             Caption = 'Background'
@@ -194,7 +197,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           end
           object JvgLabel14: TJvgLabel
             Left = 6
-            Top = 181
+            Top = 178
             Width = 94
             Height = 16
             Caption = 'Background Active'
@@ -215,7 +218,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           end
           object JvgLabel13: TJvgLabel
             Left = 54
-            Top = 214
+            Top = 213
             Width = 46
             Height = 16
             Caption = 'Delineate'
@@ -236,7 +239,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           end
           object JvgLabel10: TJvgLabel
             Left = 23
-            Top = 238
+            Top = 237
             Width = 77
             Height = 16
             Caption = 'DelineateActive'
@@ -255,91 +258,104 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Gradient.Orientation = fgdHorizontal
             Alignment = taLeftJustify
           end
-          object cbtnText: TJvColorButton
-            Left = 106
-            Top = 16
-            Width = 73
-            OtherCaption = '&Other...'
-            Options = []
-          end
-          object cbtnTextActive: TJvColorButton
+          object cbtnText: TComboBox
             Tag = 1
             Left = 106
-            Top = 40
+            Top = 15
             Width = 73
-            OtherCaption = '&Other...'
-            Options = []
-            OnChange = cbtnDelineateActiveChange
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 0
+            OnChange = cLabelColorsChange
           end
-          object cbtnTextDisabled: TJvColorButton
+          object cbtnTextActive: TComboBox
             Tag = 2
             Left = 106
-            Top = 64
+            Top = 39
             Width = 73
-            OtherCaption = '&Other...'
-            Options = []
-            Color = clGray
-            OnChange = cbtnDelineateActiveChange
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 1
+            OnChange = cLabelColorsChange
           end
-          object cbtnHighlight: TJvColorButton
+          object cbtnTextDisabled: TComboBox
             Tag = 3
             Left = 106
-            Top = 96
+            Top = 63
             Width = 73
-            OtherCaption = '&Other...'
-            Options = []
-            Color = clBtnHighlight
-            OnChange = cbtnDelineateActiveChange
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 2
+            OnChange = cLabelColorsChange
           end
-          object cbtnShadow: TJvColorButton
+          object cbtnHighlight: TComboBox
             Tag = 4
             Left = 106
-            Top = 120
+            Top = 95
             Width = 73
-            OtherCaption = '&Other...'
-            Options = []
-            Color = clBtnShadow
-            OnChange = cbtnDelineateActiveChange
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 3
+            OnChange = cLabelColorsChange
           end
-          object cbtnBackground: TJvColorButton
+          object cbtnShadow: TComboBox
             Tag = 5
             Left = 106
-            Top = 152
+            Top = 119
             Width = 73
-            OtherCaption = '&Other...'
-            Options = []
-            Color = clBtnFace
-            OnChange = cbtnDelineateActiveChange
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 4
+            OnChange = cLabelColorsChange
           end
-          object cbtnBackgroundActive: TJvColorButton
+          object cbtnBackground: TComboBox
             Tag = 6
             Left = 106
-            Top = 176
+            Top = 151
             Width = 73
-            OtherCaption = '&Other...'
-            Options = []
-            Color = clBtnFace
-            OnChange = cbtnDelineateActiveChange
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 5
+            OnChange = cLabelColorsChange
           end
-          object cbtnDelineate: TJvColorButton
+          object cbtnBackgroundActive: TComboBox
             Tag = 7
             Left = 106
-            Top = 210
+            Top = 175
             Width = 73
-            OtherCaption = '&Other...'
-            Options = []
-            Color = clWhite
-            OnChange = cbtnDelineateActiveChange
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 6
+            OnChange = cLabelColorsChange
           end
-          object cbtnDelineateActive: TJvColorButton
+          object cbtnDelineate: TComboBox
             Tag = 8
             Left = 106
-            Top = 234
+            Top = 209
             Width = 73
-            OtherCaption = '&Other...'
-            Options = []
-            Color = clWhite
-            OnChange = cbtnDelineateActiveChange
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 7
+            OnChange = cLabelColorsChange
+          end
+          object cbtnDelineateActive: TComboBox
+            Tag = 9
+            Left = 106
+            Top = 233
+            Width = 73
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 8
+            OnChange = cLabelColorsChange
           end
         end
         object gbxPassiveStyle: TJvgGroupBox
@@ -1245,14 +1261,13 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             OnChange = tbarFontSizeChange
           end
         end
-        object cbxFont: TJvFontComboBox
+        object cbxFont: TComboBox
           Left = 440
           Top = 186
           Width = 97
-          Height = 22
-          FontName = 'System'
-          ItemIndex = 0
-          Sorted = False
+          Height = 21
+          Style = csDropDownList
+          ItemHeight = 13
           TabOrder = 7
           OnChange = cbxFontChange
         end
@@ -1483,13 +1498,14 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Interspace = 4
           end
           object cbxGradientOrientation: TComboBox
+            Tag = -1
             Left = 80
             Top = 168
-            Width = 105
-            Height = 22
-            ItemHeight = 14
+            Width = 145
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
             TabOrder = 0
-            Text = 'Horizontal'
             OnChange = cbxGradientOrientationChange
             Items.Strings = (
               'Horizontal'
@@ -1500,76 +1516,27 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
               'HorzConvergent'
               'VertConvergent')
           end
-          object cbtnGradientColorTo: TJvColorButton
+          object cbtnGradientColorTo: TComboBox
             Tag = 2
             Left = 80
             Top = 128
-            Width = 73
-            OtherCaption = '&Other...'
-            Options = []
+            Width = 145
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 1
             OnChange = cbtnGradientColorFromChange
           end
-          object cbtnGradientColorFrom: TJvColorButton
+          object cbtnGradientColorFrom: TComboBox
             Tag = 1
             Left = 80
             Top = 104
-            Width = 73
-            OtherCaption = '&Other...'
-            Options = []
+            Width = 145
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 2
             OnChange = cbtnGradientColorFromChange
-          end
-          object cbxBrushStyle: TJvImageComboBox
-            Left = 80
-            Top = 77
-            Width = 121
-            Height = 24
-            Items = <
-              item
-                Text = 'Solid'
-                ImageIndex = 0
-                Indent = 0
-              end
-              item
-                Text = 'Clear'
-                ImageIndex = 1
-                Indent = 0
-              end
-              item
-                Text = 'Horizontal'
-                ImageIndex = 2
-                Indent = 0
-              end
-              item
-                Text = 'Vertical'
-                ImageIndex = 3
-                Indent = 0
-              end
-              item
-                Text = 'FDiagonal'
-                ImageIndex = 4
-                Indent = 0
-              end
-              item
-                Text = 'BDiagonal'
-                ImageIndex = 5
-                Indent = 0
-              end
-              item
-                Text = 'Cross'
-                ImageIndex = 6
-                Indent = 0
-              end
-              item
-                Text = 'DiagCross'
-                ImageIndex = 7
-                Indent = 0
-              end>
-            ItemIndex = 0
-            DroppedWidth = 145
-            ButtonStyle = fsLighter
-            ImageList = imglBrushes
-            TabOrder = 3
-            OnChange = cbxBrushStyleChange
           end
           object sbarGradientPercentFilling: TScrollBar
             Left = 16
@@ -1577,8 +1544,27 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Width = 201
             Height = 16
             PageSize = 0
-            TabOrder = 4
+            TabOrder = 3
             OnChange = sbarGradientPercentFillingChange
+          end
+          object cbxBrushStyle: TComboBox
+            Tag = -1
+            Left = 80
+            Top = 72
+            Width = 145
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 4
+            Items.Strings = (
+              'Solid'
+              'Clear'
+              'Horizontal'
+              'Vertical'
+              'FDiagonal'
+              'BDiagonal'
+              'Cross'
+              'DiagCross')
           end
         end
         object JvgGroupBox3: TJvgGroupBox
@@ -1848,16 +1834,16 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Filter = 'Bitmaps (*.bmp)|*.bmp'
-    Left = 512
-    Top = 440
+    Left = 248
+    Top = 464
   end
-  object cdlgJvColorDialog1: TJvColorDialog
+  object JvColorDialog1: TColorDialog
     Ctl3D = True
-    Left = 477
-    Top = 444
+    Left = 297
+    Top = 456
   end
   object imglBrushes: TImageList
-    Left = 448
+    Left = 418
     Top = 440
   end
 end
