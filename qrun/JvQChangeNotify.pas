@@ -39,7 +39,9 @@ unit JvQChangeNotify;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  Windows, Messages,
+  QGraphics, QControls, QForms, QDialogs,
   JvQComponent;
 
 type

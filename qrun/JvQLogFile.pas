@@ -34,7 +34,8 @@ unit JvQLogFile;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms,
+  SysUtils, Classes,
+  QControls, QForms,
   JvQComponent;
 
 type

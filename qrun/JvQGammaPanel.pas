@@ -65,7 +65,6 @@ type
     FForegroundColorImg: TImage;
     FBackgroundColorImg: TImage;
     FOnChangeColor: TJvChangeColorEvent;
-    
     procedure ChangeColor(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ColorSeek(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure Exchange(Sender: TObject);
@@ -73,10 +72,9 @@ type
     procedure SetBackgroundColor(const Value: TColor);
     procedure Color1Click(Sender: TObject);
     procedure Color2Click(Sender: TObject);
-  
   protected
-    procedure AdjustSize; override;
-  
+    procedure DoBoundsChanged; override;
+    procedure DoChangeColor(AForegroundColor, ABackgroundColor: TColor); virtual;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -298,8 +296,7 @@ begin
     FForegroundColorImg.Canvas.Brush.Color := FForegroundColor;
     FForegroundColorImg.Canvas.Brush.Style := bsSolid;
     FForegroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-    if Assigned(FOnChangeColor) then
-      FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
+    DoChangeColor(FForegroundColor, FBackgroundColor);
   end
   else
   if Button = mbRight then
@@ -308,8 +305,7 @@ begin
     FBackgroundColorImg.Canvas.Brush.Color := FBackgroundColor;
     FBackgroundColorImg.Canvas.Brush.Style := bsSolid;
     FBackgroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-    if Assigned(FOnChangeColor) then
-      FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
+    DoChangeColor(FForegroundColor, FBackgroundColor);
   end;
 end;
 
@@ -388,14 +384,17 @@ begin
     FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
 end;
 
-
-procedure TJvGammaPanel.AdjustSize;
-
-
+procedure TJvGammaPanel.DoBoundsChanged;
 begin
   Width := 65;
   Height := 250;
   FForegroundColorImg.BringToFront;
+end;
+
+procedure TJvGammaPanel.DoChangeColor(AForegroundColor, ABackgroundColor: TColor);
+begin
+  if Assigned(FOnChangeColor) then
+    FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
 end;
 
 end.

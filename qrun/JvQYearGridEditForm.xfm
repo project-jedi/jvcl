@@ -8,7 +8,7 @@ object YearGridEditForm: TYearGridEditForm
   Caption = 'YearGrid Edit'
   Color = clButton
   Font.Color = clText
-  Font.Height = 13
+  Font.Height = 11
   Font.Name = 'adobe-helvetica'
   Font.Pitch = fpVariable
   Font.Style = []
@@ -17,7 +17,7 @@ object YearGridEditForm: TYearGridEditForm
   Position = poDesktopCenter
   Scaled = False
   OnShow = FormShow
-  PixelsPerInch = 113
+  PixelsPerInch = 96
   object Panel1: TPanel
     Left = 0
     Top = 331

@@ -1208,7 +1208,7 @@ begin
         OrgCallCode.Address := ProcAddress;
 
         WriteProtectedMemory(OrgCallProc, OrgCallCode, SizeOf(OrgCallCode));
-        FlushInstructionCache;//(GetCurrentProcess, OrgCallProc, SizeOf(OrgCallCode));
+        FlushInstructionCache(GetCurrentProcess, OrgCallProc, SizeOf(OrgCallCode));
       end;
     end;
 
@@ -1226,7 +1226,7 @@ begin
     if WriteProtectedMemory(Pointer(Cardinal(ProcAddress) + 1), Code,
          SizeOf(Code)) then
     begin
-      FlushInstructionCache; //(GetCurrentProcess, ProcAddress, SizeOf(Code));
+      FlushInstructionCache(GetCurrentProcess, ProcAddress, SizeOf(Code));
       Result := True;
     end;
   end;
@@ -1247,7 +1247,7 @@ begin
         ProcAddress := OrgCallCode.Address;
 
         Result := WriteProtectedMemory(ProcAddress, OrgCallCode, 1 + SizeOf(TJumpCode));
-        FlushInstructionCache; //(GetCurrentProcess, ProcAddress, SizeOf(OrgCallCode));
+        FlushInstructionCache(GetCurrentProcess, ProcAddress, SizeOf(OrgCallCode));
       end;
     end;
   end;

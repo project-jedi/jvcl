@@ -39,10 +39,13 @@ interface
 uses
   SysUtils, Classes,
   
-  
+
   Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
-  
+
   JvQComponent, JvQExControls;
+
+ResourceString
+  SInvalidImage = 'Invalid image format';
 
 type
   TDate = TDateTime;
@@ -325,7 +328,7 @@ type
 implementation
 
 uses
-  Consts,
+  QConsts,
   JvQJVCLUtils, JvQThemes;
 
 {$IFDEF MSWINDOWS}
