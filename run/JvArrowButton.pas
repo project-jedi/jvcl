@@ -36,9 +36,17 @@ unit JvArrowButton;
 interface
 
 uses
-  SysUtils, Classes, Menus,
-  Windows, Messages, Controls, Forms, Graphics, Buttons, CommCtrl,
-  JvClxUtils, JvComponent;
+  SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Controls, Forms, Graphics, Buttons, CommCtrl, Menus,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QControls, QForms, QGraphics, QButtons, QMenus,
+  {$ENDIF VisualCLX}
+  JvClxUtils, JvComponent, JvTypes;
 
 type
   TJvArrowButton = class(TJvGraphicControl)
@@ -74,13 +82,11 @@ type
     procedure SetArrowWidth(Value: Integer);
     procedure SetFillFont(Value: TFont);
     procedure UpdateTracking;
+    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_BUTTONPRESSED;
+    {$IFDEF VCL}
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMButtonPressed(var Msg: TMessage); message CM_BUTTONPRESSED;
-    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
+    {$ENDIF VCL}
   protected
     FState: TButtonState;
     function GetPalette: HPALETTE; override;
@@ -92,6 +98,12 @@ type
     procedure Paint; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure EnabledChanged; override;
+    procedure FontChanged; override;
+    procedure TextChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1040,13 +1052,13 @@ end;
 
 procedure TJvArrowButton.UpdateExclusive;
 var
-  Msg: TMessage;
+  Msg: TJvCMButtonPressed;
 begin
   if (FGroupIndex <> 0) and (Parent <> nil) then
   begin
     Msg.Msg := CM_BUTTONPRESSED;
-    Msg.WParam := FGroupIndex;
-    Msg.LParam := Longint(Self);
+    Msg.Index := FGroupIndex;
+    Msg.Control := Self;
     Msg.Result := 0;
     Parent.Broadcast(Msg);
   end;
@@ -1150,29 +1162,23 @@ begin
   end;
 end;
 
-procedure TJvArrowButton.WMLButtonDblClk(var Msg: TWMLButtonDown);
-begin
-  inherited;
-  if FDown then
-    DblClick;
-end;
-
-procedure TJvArrowButton.CMEnabledChanged(var Msg: TMessage);
+procedure TJvArrowButton.EnabledChanged;
 const
   NewState: array [Boolean] of TButtonState = (bsDisabled, bsUp);
 begin
+  inherited EnabledChanged;
   TButtonGlyph(FGlyph).CreateButtonGlyph(NewState[Enabled]);
   UpdateTracking;
   Repaint;
 end;
 
-procedure TJvArrowButton.CMButtonPressed(var Msg: TMessage);
+procedure TJvArrowButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
 var
   Sender: TJvArrowButton;
 begin
-  if Msg.WParam = FGroupIndex then
+  if Msg.Index = FGroupIndex then
   begin
-    Sender := TJvArrowButton(Msg.LParam);
+    Sender := TJvArrowButton(Msg.Control);
     if Sender <> Self then
     begin
       if Sender.Down and FDown then
@@ -1186,26 +1192,34 @@ begin
   end;
 end;
 
-procedure TJvArrowButton.CMDialogChar(var Msg: TCMDialogChar);
+function TJvArrowButton.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
 begin
-  with Msg do
-    if IsAccel(CharCode, Caption) and Enabled then
-    begin
-      Click;
-      Result := 1;
-    end
-    else
-      inherited;
+  Result := IsAccel(Key, Caption) and Enabled and (ssAlt in Shift);
+  if Result then
+    Click
+  else
+    Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
-procedure TJvArrowButton.CMFontChanged(var Msg: TMessage);
+procedure TJvArrowButton.FontChanged;
 begin
+  inherited FontChanged;
   Invalidate;
 end;
 
-procedure TJvArrowButton.CMTextChanged(var Msg: TMessage);
+procedure TJvArrowButton.TextChanged;
 begin
+  inherited TextChanged;
   Invalidate;
+end;
+
+{$IFDEF VCL}
+procedure TJvArrowButton.WMLButtonDblClk(var Msg: TWMLButtonDown);
+begin
+  inherited;
+  if FDown then
+    DblClick;
 end;
 
 procedure TJvArrowButton.CMSysColorChange(var Msg: TMessage);
@@ -1216,10 +1230,11 @@ begin
     CreateButtonGlyph(FState);
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvArrowButton.MouseEnter(Control: TControl);
 begin
-  inherited;
+  inherited MouseEnter(Control);
   if FFlat and not FMouseInControl and Enabled then
   begin
     FMouseInControl := True;
@@ -1233,7 +1248,7 @@ end;
 
 procedure TJvArrowButton.MouseLeave(Control: TControl);
 begin
-  inherited;
+  inherited MouseLeave(Control);
   if FFlat and FMouseInControl and Enabled then
   begin
     FMouseInControl := False;

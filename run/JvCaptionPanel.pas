@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 { @abstract(TJvCaptionPanel is a panel that looks like a form, with a Caption area,
   system buttons but is derived from a normal panel.) }
@@ -274,7 +274,8 @@ procedure TJvCapBtn.MouseEnter(Control: TControl);
 var
   R: TRect;
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
   FInside := True;
   if FFlat then
   begin
@@ -284,19 +285,22 @@ begin
     else
       Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1);
   end;
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvCapBtn.MouseLeave(Control: TControl);
 var
   R: TRect;
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
   FInside := False;
   if FFlat then
   begin
     R := ClientRect;
     Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
   end;
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvCapBtn.Paint;

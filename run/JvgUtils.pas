@@ -172,7 +172,9 @@ resourcestring
   RsEDivideBy = 'Divide by 0';
   RsEDuplicateSignsAtPos = 'Duplicate signs at Pos: %d';
   RsEExpressionStringIsEmpty = 'Expression string is empty.';
+{$IFDEF glDEBUG}
   RsEObjectMemoryLeak = 'object memory leak';
+{$ENDIF}
 {$ENDIF USEJVCL}
 
 { debug func }

@@ -37,17 +37,15 @@ uses
   {$ELSE}
   QGraphics, QControls, QForms, QButtons, QMenus,
   {$ENDIF VCL}
-  JVCLVer, JvTypes;
+  JVCLVer, JvTypes, JvExButtons;
 
 type
-  TJvBitBtn = class(TBitBtn)
+  TJvBitBtn = class(TJvExBitBtn)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
@@ -61,25 +59,11 @@ type
     procedure SetHotGlyph(Value: TBitmap);
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
-    {$IFDEF VCL}
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    {$ENDIF VCL}
   protected
-    {$IFDEF VCL}
-    procedure MouseEnter(AControl: TControl); dynamic;
-    procedure MouseLeave(AControl: TControl); dynamic;
-    procedure ParentColorChanged; dynamic;
-    procedure FontChanged; dynamic;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     procedure FontChanged; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -93,8 +77,8 @@ type
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
     property HotGlyph: TBitmap read FHotGlyph write SetHotGlyph;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
@@ -163,20 +147,8 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-procedure TJvBitBtn.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(Self);
-end;
-{$ENDIF VCL}
-
 procedure TJvBitBtn.MouseEnter(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseEnter(AControl);
-  {$ENDIF VisualCLX}
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
@@ -195,24 +167,11 @@ begin
     end;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(AControl);
 end;
-
-{$IFDEF VCL}
-procedure TJvBitBtn.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(Self);
-end;
-{$ENDIF VCL}
 
 procedure TJvBitBtn.MouseLeave(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseLeave(AControl);
-  {$ENDIF VisualCLX}
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if FOver then
@@ -224,40 +183,19 @@ begin
     if FHotTrack then
       Font.Assign(FFontSave);
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(AControl);
 end;
-
-{$IFDEF VCL}
-procedure TJvBitBtn.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  ParentColorChanged;
-end;
-{$ENDIF VCL}
 
 procedure TJvBitBtn.ParentColorChanged;
 begin
-  {$IFDEF VisualCLX}
   inherited ParentColorChanged;
-  {$ENDIF VisualCLX}
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-{$IFDEF VCL}
-procedure TJvBitBtn.CMFontChanged(var Msg: TMessage);
-begin
-  inherited;
-  FontChanged;
-end;
-{$ENDIF VCL}
-
 procedure TJvBitBtn.FontChanged;
 begin
-  {$IFDEF VisualCLX}
   inherited FontChanged;
-  {$ENDIF VisualCLX}
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 

@@ -67,11 +67,10 @@ type
     procedure SetBevelPenStyle(Value: TPenStyle);
     procedure SetBevelPenWidth(Value: Word);
     procedure SetInteriorOffset(Value: Word);
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; dynamic;
+    procedure ParentColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -229,33 +228,32 @@ end;
 
 procedure TJvgBevel.MouseEnter(AControl: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
   end;
-  inherited;
+  inherited MouseEnter(AControl);
 end;
 
 procedure TJvgBevel.MouseLeave(AControl: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
   end;
-  inherited;
-end;
-
-procedure TJvgBevel.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  ParentColorChanged;
+  inherited MouseLeave(AControl);
 end;
 
 procedure TJvgBevel.ParentColorChanged;
 begin
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
