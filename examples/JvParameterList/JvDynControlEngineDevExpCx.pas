@@ -33,6 +33,7 @@ uses
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage,
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox,
+  cxRichEdit,
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type
@@ -67,6 +68,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -95,6 +97,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -128,6 +131,8 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -147,6 +152,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -182,6 +188,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -216,6 +223,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -240,6 +248,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -264,6 +273,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -288,6 +298,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -309,6 +320,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -328,6 +340,36 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetValue(Value: variant);
+    function ControlGetValue: variant;
+
+    procedure ControlSetSorted(Value: boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetWantTabs(Value: boolean);
+    procedure ControlSetWantReturns(Value: boolean);
+    procedure ControlSetWordWrap(Value: boolean);
+    procedure ControlSetScrollBars(Value: TScrollStyle);
+
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxRichEdit = class (TcxRichEdit, IUnknown, IJvDynControl, IJvDynControlData,
+    IJvDynControlItems, IJvDynControlMemo, IJvDynControlDevExpCx, IJvDynControlReadOnly)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -357,6 +399,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -382,6 +425,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -412,6 +456,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -449,6 +494,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
@@ -471,6 +517,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
   end;
 
 
@@ -483,6 +530,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetBorder(ABevelInner: TPanelBevel; ABevelOuter: TPanelBevel; ABevelWidth: integer; ABorderStyle: TBorderStyle; ABorderWidth: integer);
   end;
@@ -497,6 +545,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetAutoSize(Value: boolean);
     procedure ControlSetIncrementalDisplay(Value: boolean);
@@ -521,6 +570,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
   end;
 
@@ -535,6 +585,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetFocusControl(Value: TWinControl);
     procedure ControlSetWordWrap(Value: boolean);
@@ -552,6 +603,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
@@ -566,6 +618,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: integer);
@@ -600,7 +653,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  cxTextEdit, cxControls;
+  cxTextEdit, cxControls, JvJCLUtils;
 
 var
   IntDynControlEngineDevExpCx: TJvDynControlEngineDevExpCx = nil;
@@ -664,6 +717,12 @@ procedure TJvDynControlCxMaskEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 
 end;
+
+procedure TJvDynControlCxMaskEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
 
 procedure TJvDynControlCxMaskEdit.ControlSetValue(Value: variant);
 begin
@@ -735,6 +794,11 @@ end;
 procedure TJvDynControlCxButtonEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
 end;
 
 procedure TJvDynControlCxButtonEdit.ControlSetValue(Value: variant);
@@ -836,6 +900,12 @@ begin
 
 end;
 
+procedure TJvDynControlCxCalcEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 procedure TJvDynControlCxCalcEdit.ControlSetValue(Value: variant);
 begin
   Self.Value := Value;
@@ -892,6 +962,12 @@ procedure TJvDynControlCxSpinEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 
 end;
+
+procedure TJvDynControlCxSpinEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
 
 procedure TJvDynControlCxSpinEdit.ControlSetValue(Value: variant);
 begin
@@ -1044,6 +1120,12 @@ procedure TJvDynControlCxFileNameEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
+procedure TJvDynControlCxFileNameEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 procedure TJvDynControlCxFileNameEdit.ControlSetValue(Value: variant);
 begin
   Text := Value;
@@ -1159,6 +1241,12 @@ procedure TJvDynControlCxDirectoryEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
+procedure TJvDynControlCxDirectoryEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 procedure TJvDynControlCxDirectoryEdit.ControlSetValue(Value: variant);
 begin
   Text := Value;
@@ -1231,6 +1319,12 @@ end;
 procedure TJvDynControlCxDateTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
+
+procedure TJvDynControlCxDateTimeEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
 
 procedure TJvDynControlCxDateTimeEdit.ControlSetValue(Value: variant);
 begin
@@ -1306,6 +1400,12 @@ procedure TJvDynControlCxDateEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
+procedure TJvDynControlCxDateEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 procedure TJvDynControlCxDateEdit.ControlSetValue(Value: variant);
 begin
   Text := Value;
@@ -1380,6 +1480,12 @@ procedure TJvDynControlCxTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
+procedure TJvDynControlCxTimeEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 procedure TJvDynControlCxTimeEdit.ControlSetValue(Value: variant);
 begin
   Text := Value;
@@ -1450,6 +1556,12 @@ begin
   OnClick := Value;
 end;
 
+procedure TJvDynControlCxCheckbox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 procedure TJvDynControlCxCheckbox.ControlSetValue(Value: variant);
 begin
   if VarType(Value) = varBoolean then
@@ -1509,6 +1621,12 @@ begin
   OnClick := Value;
 end;
 
+procedure TJvDynControlCxMemo.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 procedure TJvDynControlCxMemo.ControlSetValue(Value: variant);
 begin
   Text := Value;
@@ -1559,6 +1677,102 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
+//=== TJvDynControlCxRichEdit ====================================================
+
+procedure TJvDynControlCxRichEdit.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetReadOnly(Value: boolean);
+begin
+  Properties.ReadOnly := Value;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetTabOrder(Value: integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
+procedure TJvDynControlCxRichEdit.ControlSetValue(Value: variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxRichEdit.ControlGetValue: variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetSorted(Value: boolean);
+begin
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetItems(Value: TStrings);
+begin
+  Lines.Assign(Value);
+end;
+
+function TJvDynControlCxRichEdit.ControlGetItems: TStrings;
+begin
+  Result := Lines;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetWantTabs(Value: boolean);
+begin
+  Properties.WantTabs := Value;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetWantReturns(Value: boolean);
+begin
+  Properties.WantReturns := Value;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetWordWrap(Value: boolean);
+begin
+  Properties.WordWrap := Value;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetScrollBars(Value: TScrollStyle);
+begin
+  Properties.ScrollBars := Value;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
 //=== TJvDynControlCxRadioGroup ==============================================
 
 procedure TJvDynControlCxRadioGroup.ControlSetDefaultProperties;
@@ -1599,17 +1813,28 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlCxRadioGroup.ControlSetValue(Value: variant);
+procedure TJvDynControlCxRadioGroup.ControlSetHint(const Value: string);
 begin
-  if VarType(Value) in [varSmallint, varInteger] then
+  Hint := Value;
+end;
+
+
+procedure TJvDynControlCxRadioGroup.ControlSetValue(Value: variant);
+var
+  I:    integer;
+begin
+  if VarIsInt(Value) then
     ItemIndex := Value
   else
-    try
-      ItemIndex := Value
-    except
-        // on E: Exception do
-        // ItemIndex := Properties.Items. IndexOf(Value);
-    end;
+  begin
+    ItemIndex := -1;
+    for I := 0 to Properties.Items.Count - 1 do
+      if TcxRadioGroupItem(Properties.Items[I]).Caption = Value then
+      begin
+        ItemIndex := I;
+        break;
+      end;
+  end;
 end;
 
 function TJvDynControlCxRadioGroup.ControlGetValue: variant;
@@ -1690,17 +1915,18 @@ begin
   OnClick := Value;
 end;
 
+procedure TJvDynControlCxListBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 procedure TJvDynControlCxListBox.ControlSetValue(Value: variant);
 begin
-  if VarType(Value) in [varSmallint, varInteger] then
+  if VarIsInt(Value) then
     ItemIndex := Value
   else
-    try
-      ItemIndex := Value
-    except
-      on E: Exception do
-        ItemIndex := Items.IndexOf(Value);
-    end;
+    ItemIndex := Items.IndexOf(Value);
 end;
 
 function TJvDynControlCxListBox.ControlGetValue: variant;
@@ -1785,17 +2011,27 @@ begin
   OnClick := Value;
 end;
 
+procedure TJvDynControlCxCheckListBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 procedure TJvDynControlCxCheckListBox.ControlSetValue(Value: variant);
 begin
-  if VarType(Value) in [varSmallint, varInteger] then
+  if VarIsInt(Value) then
     ItemIndex := Value
   else
-    try
-      ItemIndex := Value
-    except
-      on E: Exception do
-        ItemIndex := Items.IndexOf(Value);
-    end;
+    ItemIndex := Items.IndexOf(Value);
+//  if VarType(Value) in [varSmallint, varInteger] then
+//    ItemIndex := Value
+//  else
+//    try
+//      ItemIndex := Value
+//    except
+//      on E: Exception do
+//        ItemIndex := Items.IndexOf(Value);
+//    end;
 end;
 
 function TJvDynControlCxCheckListBox.ControlGetValue: variant;
@@ -1930,6 +2166,12 @@ begin
   OnClick := Value;
 end;
 
+procedure TJvDynControlCxComboBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 procedure TJvDynControlCxComboBox.ControlSetValue(Value: variant);
 begin
   Text := Value;
@@ -1999,6 +2241,12 @@ procedure TJvDynControlCxGroupBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
+procedure TJvDynControlCxGroupBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 //=== TJvDynControlCxPanel ===================================================
 
 procedure TJvDynControlCxPanel.ControlSetDefaultProperties;
@@ -2028,6 +2276,12 @@ end;
 procedure TJvDynControlCxPanel.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
+
+procedure TJvDynControlCxPanel.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
 
 procedure TJvDynControlCxPanel.ControlSetBorder(ABevelInner: TPanelBevel; ABevelOuter: TPanelBevel; ABevelWidth: integer; ABorderStyle: TBorderStyle; ABorderWidth: integer);
 begin
@@ -2070,6 +2324,12 @@ procedure TJvDynControlCxImage.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
 end;
+
+procedure TJvDynControlCxImage.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
 
 procedure TJvDynControlCxImage.ControlSetAutoSize(Value: boolean);
 begin
@@ -2159,6 +2419,12 @@ procedure TJvDynControlCxScrollBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
+procedure TJvDynControlCxScrollBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 //=== TJvDynControlCxLabel ===================================================
 
 procedure TJvDynControlCxLabel.ControlSetDefaultProperties;
@@ -2185,6 +2451,12 @@ end;
 procedure TJvDynControlCxLabel.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
+
+procedure TJvDynControlCxLabel.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
 
 procedure TJvDynControlCxLabel.ControlSetFocusControl(Value: TWinControl);
 begin
@@ -2229,6 +2501,12 @@ procedure TJvDynControlCxStaticText.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
+procedure TJvDynControlCxStaticText.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
 procedure TJvDynControlCxStaticText.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
@@ -2262,6 +2540,12 @@ procedure TJvDynControlCxButton.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
 end;
+
+procedure TJvDynControlCxButton.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
 
 procedure TJvDynControlCxButton.ControlSetGlyph(Value: TBitmap);
 begin
@@ -2306,28 +2590,29 @@ end;
 
 procedure TJvDynControlEngineDevExpCx.RegisterControls;
 begin
-  IntDynControlEngineDevExpCx.RegisterControl(jctLabel, TJvDynControlCxLabel);
-  IntDynControlEngineDevExpCx.RegisterControl(jctStaticText, TJvDynControlCxStaticText);
-  IntDynControlEngineDevExpCx.RegisterControl(jctButton, TJvDynControlCxButton);
-  IntDynControlEngineDevExpCx.RegisterControl(jctScrollBox, TJvDynControlCxScrollBox);
-  IntDynControlEngineDevExpCx.RegisterControl(jctGroupBox, TJvDynControlCxGroupBox);
-  IntDynControlEngineDevExpCx.RegisterControl(jctPanel, TJvDynControlCxPanel);
-  IntDynControlEngineDevExpCx.RegisterControl(jctImage, TJvDynControlCxImage);
-  IntDynControlEngineDevExpCx.RegisterControl(jctCheckBox, TJvDynControlCxCheckBox);
-  IntDynControlEngineDevExpCx.RegisterControl(jctComboBox, TJvDynControlCxComboBox);
-  IntDynControlEngineDevExpCx.RegisterControl(jctListBox, TJvDynControlCxListBox);
-  IntDynControlEngineDevExpCx.RegisterControl(jctCheckListBox, TJvDynControlCxCheckListBox);
-  IntDynControlEngineDevExpCx.RegisterControl(jctRadioGroup, TJvDynControlCxRadioGroup);
-  IntDynControlEngineDevExpCx.RegisterControl(jctDateTimeEdit, TJvDynControlCxDateTimeEdit);
-  IntDynControlEngineDevExpCx.RegisterControl(jctTimeEdit, TJvDynControlCxTimeEdit);
-  IntDynControlEngineDevExpCx.RegisterControl(jctDateEdit, TJvDynControlCxDateEdit);
-  IntDynControlEngineDevExpCx.RegisterControl(jctEdit, TJvDynControlCxMaskEdit);
-  IntDynControlEngineDevExpCx.RegisterControl(jctCalculateEdit, TJvDynControlCxCalcEdit);
-  IntDynControlEngineDevExpCx.RegisterControl(jctSpinEdit, TJvDynControlCxSpinEdit);
-  IntDynControlEngineDevExpCx.RegisterControl(jctDirectoryEdit, TJvDynControlCxDirectoryEdit);
-  IntDynControlEngineDevExpCx.RegisterControl(jctFileNameEdit, TJvDynControlCxFileNameEdit);
-  IntDynControlEngineDevExpCx.RegisterControl(jctMemo, TJvDynControlCxMemo);
-  IntDynControlEngineDevExpCx.RegisterControl(jctButtonEdit, TJvDynControlCxButtonEdit);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctLabel, TJvDynControlCxLabel);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctStaticText, TJvDynControlCxStaticText);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctButton, TJvDynControlCxButton);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctScrollBox, TJvDynControlCxScrollBox);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctGroupBox, TJvDynControlCxGroupBox);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctPanel, TJvDynControlCxPanel);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctImage, TJvDynControlCxImage);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctCheckBox, TJvDynControlCxCheckBox);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctComboBox, TJvDynControlCxComboBox);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctListBox, TJvDynControlCxListBox);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctCheckListBox, TJvDynControlCxCheckListBox);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctRadioGroup, TJvDynControlCxRadioGroup);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctDateTimeEdit, TJvDynControlCxDateTimeEdit);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctTimeEdit, TJvDynControlCxTimeEdit);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctDateEdit, TJvDynControlCxDateEdit);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctEdit, TJvDynControlCxMaskEdit);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctCalculateEdit, TJvDynControlCxCalcEdit);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctSpinEdit, TJvDynControlCxSpinEdit);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctDirectoryEdit, TJvDynControlCxDirectoryEdit);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctFileNameEdit, TJvDynControlCxFileNameEdit);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctMemo, TJvDynControlCxMemo);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctRichEdit, TJvDynControlCxRichEdit);
+  IntDynControlEngineDevExpCx.RegisterControlType(jctButtonEdit, TJvDynControlCxButtonEdit);
 end;
 
 function TJvDynControlEngineDevExpCx.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
