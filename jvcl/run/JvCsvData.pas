@@ -4061,8 +4061,12 @@ begin
   // extension number to use.
   if FileExists(RemoveFile) then
     DeleteFile(RemoveFile);
-
+{$IFDEF MSWINDOWS}
   Windows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+  QWindows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
+{$ENDIF LINUX}
   Result := True;
 end;
 
