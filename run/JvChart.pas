@@ -1134,9 +1134,9 @@ end;
 
 function  TJvChartOptions.GetPenSecondaryAxisFlag(index:Integer):Boolean;
 begin
-  if (Index < 0) or (Index >= MAX_PEN) then
-    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
-
+  if (Index < 0) or (Index >= Length(FPenSecondaryAxisFlag)) then
+    result := false
+  else
     result := FPenSecondaryAxisFlag[index];
 end;
 
