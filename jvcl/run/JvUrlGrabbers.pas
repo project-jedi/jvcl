@@ -397,6 +397,14 @@ var
   // url grabber classes
   GJvUrlGrabberClassList: TJvUrlGrabberClassList = nil;
 
+procedure RegisterUrlGrabberClasses;
+begin
+    // register the classes
+    GJvUrlGrabberClassList.Add(TJvFtpUrlGrabber);
+    GJvUrlGrabberClassList.Add(TJvHttpUrlGrabber);
+    GJvUrlGrabberClassList.Add(TJvLocalFileUrlGrabber);
+end;
+
 function JvUrlGrabberClassList: TJvUrlGrabberClassList;
 begin
   if not Assigned(GJvUrlGrabberClassList) then
@@ -1113,14 +1121,6 @@ constructor TJvLocalFileUrlGrabberProperties.Create;
 begin
   inherited Create;
   FPreserveAttributes := True;
-end;
-
-procedure RegisterUrlGrabberClasses;
-begin
-    // register the classes
-    GJvUrlGrabberClassList.Add(TJvFtpUrlGrabber);
-    GJvUrlGrabberClassList.Add(TJvHttpUrlGrabber);
-    GJvUrlGrabberClassList.Add(TJvLocalFileUrlGrabber);
 end;
 
 initialization
