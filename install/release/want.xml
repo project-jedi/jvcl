@@ -5,10 +5,12 @@
   <property name="version.minor"    value="0"/>
   <property name="version.release"  value="0"/>
   <property name="version.build"    value="BETA1"/>
+  <property name="jclversion"       value="190" />
   <property name="version"          value="${version.major}.${version.minor}.${version.release}.${version.build}"/>
   <property name="shortversion"     value="${version.major}${version.minor}${version.release}${version.build}"/>
   <!-- JVCL releases -->
   <property name="fullzip"     value="JVCL${shortversion}Complete.zip" />
+  <property name="fulljclzip"  value="JVCL${shortversion}JCL${jclversion}Complete.zip" />
   <property name="srcexzip"    value="JVCL${shortversion}SourceExamples.zip" />
   <property name="srczip"      value="JVCL${shortversion}SourceOnly.zip" />
   <!-- standalone -->
@@ -56,16 +58,25 @@
   </target>
 
   <target name="dist" description="Build JVCL .zip files" >
-    <delete file="${fullzip}" />
-    <zip zipfile="${fullzip}">
+
+    <delete file="${fulljclzip}" />
+    <zip zipfile="${fulljclzip}">
       <fileset>
         <exclude name=".cvsignore" />
-        <exclude name="./jvcl/JvQ*/**" />
-        <exclude name="./jvcl/Q*/**" />
         <exclude name="./jvcl/qcommon/**" />
         <exclude name="./jvcl/qdesign/**" />
         <exclude name="./jvcl/qrun/**" />
         <include name="./jcl/**" />
+        <include name="./jvcl/**" />
+      </fileset>
+    </zip>
+    <delete file="${fullzip}" />
+    <zip zipfile="${fullzip}">
+      <fileset>
+        <exclude name=".cvsignore" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/**" />
       </fileset>
     </zip>
@@ -74,8 +85,6 @@
       <fileset>
         <exclude name=".cvsignore" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/JvQ*/**" />
-        <exclude name="./jvcl/Q*/**" />
         <exclude name="./jvcl/qcommon/**" />
         <exclude name="./jvcl/qdesign/**" />
         <exclude name="./jvcl/qrun/**" />
@@ -97,8 +106,6 @@
     <zip zipfile="${srczip}">
       <fileset>
         <exclude name=".cvsignore" />
-        <exclude name="./jvcl/JvQ*/**" />
-        <exclude name="./jvcl/Q*/**" />
         <exclude name="./jvcl/qcommon/**" />
         <exclude name="./jvcl/qdesign/**" />
         <exclude name="./jvcl/qrun/**" />
@@ -122,8 +129,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/JvQ*/**" />
-        <exclude name="./jvcl/Q*/**" />
         <exclude name="./jvcl/qcommon/**" />
         <exclude name="./jvcl/qdesign/**" />
         <exclude name="./jvcl/qrun/**" />
@@ -141,8 +146,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/JvQ*/**" />
-        <exclude name="./jvcl/Q*/**" />
         <exclude name="./jvcl/qcommon/**" />
         <exclude name="./jvcl/qdesign/**" />
         <exclude name="./jvcl/qrun/**" />
@@ -160,8 +163,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/JvQ*/**" />
-        <exclude name="./jvcl/Q*/**" />
         <exclude name="./jvcl/qcommon/**" />
         <exclude name="./jvcl/qdesign/**" />
         <exclude name="./jvcl/qrun/**" />
@@ -179,8 +180,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/JvQ*/**" />
-        <exclude name="./jvcl/Q*/**" />
         <exclude name="./jvcl/qcommon/**" />
         <exclude name="./jvcl/qdesign/**" />
         <exclude name="./jvcl/qrun/**" />
@@ -198,8 +197,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/JvQ*/**" />
-        <exclude name="./jvcl/Q*/**" />
         <exclude name="./jvcl/qcommon/**" />
         <exclude name="./jvcl/qdesign/**" />
         <exclude name="./jvcl/qrun/**" />
@@ -216,8 +213,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/JvQ*/**" />
-        <exclude name="./jvcl/Q*/**" />
         <exclude name="./jvcl/qcommon/**" />
         <exclude name="./jvcl/qdesign/**" />
         <exclude name="./jvcl/qrun/**" />
@@ -234,8 +229,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/JvQ*/**" />
-        <exclude name="./jvcl/Q*/**" />
         <exclude name="./jvcl/qcommon/**" />
         <exclude name="./jvcl/qdesign/**" />
         <exclude name="./jvcl/qrun/**" />

@@ -34,9 +34,10 @@ This release contains changes, additions and bugfixes too numerous to list here,
 
 If you are currently using JVCL 2.10, please read the documentation *carefully* before installing JVCL 3, especially the migration document.
 
-This release is available in three flavors:
+This release is available in four different flavors:
 - Full install + latest JCL
-- Source and examples
+- Full install without JCL
+- Source and examples only
 - Source only
 
 Later on we will also provide separate downloads for those packages that can be installed in a "stand-alone" mode (JvUIB, JvWizard, JvGlobus, JvManagedThreads, JvDocking, JvXPCtrls and JvDotNetCtrls)
