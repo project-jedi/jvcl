@@ -56,7 +56,7 @@ type
     function TimeoutUnit(Secs: Integer): string;
     procedure CancelAutoClose;
   public
-    constructor CreateNew(AOwner: TComponent); reintroduce;
+    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     function IsDSAChecked: Boolean;
     property Timeout: Integer read FTimeout write FTimeout;
   end;
@@ -506,11 +506,11 @@ begin
     Result := '';
 end;
 
-constructor TDSAMessageForm.CreateNew(AOwner: TComponent);
+constructor TDSAMessageForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 var
   NonClientMetrics: TNonClientMetrics;
 begin
-  inherited CreateNew(AOwner);
+  inherited CreateNew(AOwner, Dummy);
   NonClientMetrics.cbSize := sizeof(NonClientMetrics);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     Font.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont);
