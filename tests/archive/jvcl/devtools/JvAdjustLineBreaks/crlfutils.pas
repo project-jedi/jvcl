@@ -128,7 +128,7 @@ begin
   writeln('NOTE: if you compiled using Delphi 5 or earlier, CRLF->LF is NOT supported!');
 end;
 
-procedure ConvertFile(const Filename:string;ToWindows,CompareBeforeWrite:boolean);
+function ConvertFile(const Filename:string;ToWindows,CompareBeforeWrite:boolean):boolean;
 {$IFDEF COMPILER6_UP}
 const
   cStyle:array[boolean] of TTextLineBreakStyle = (tlbsLF,tlbsCRLF);
@@ -138,6 +138,7 @@ var
   tmp,tmp2:string;
 begin
   // don't convert binary files
+  Result := false;
   if not IsTextFile(Filename) then Exit;
   F := TFileStream.Create(Filename,fmOpenReadWrite or fmShareExclusive );
   try
@@ -156,6 +157,7 @@ begin
   finally
     F.Free;
   end;
+  Result := true;
 end;
 
 function ConvertFiles(const FileMask:string;ToWindows,CompareBeforeWrite,Recurse:boolean):integer;
@@ -177,15 +179,27 @@ begin
         else
         begin
           writeln(FindData.cFileName);
-          ConvertFile(APath + FindData.cFileName,ToWindows,CompareBeforeWrite);
-          Inc(Result);
+          if ConvertFile(APath + FindData.cFileName,ToWindows,CompareBeforeWrite) then
+            Inc(Result);
         end;
-      end
-      else if Recurse and (FindData.cFileName[0] <> '.') then
-        ConvertFiles(IncludeTrailingPathdelimiter(APath + FindData.cFileName) + ExtractFilename(Filemask),ToWindows,CompareBeforeWrite,true);
+      end;
     until not FindNextFile(SearchHandle,FindData);
   finally
     Windows.FindClose(SearchHandle);
+  end;
+  // do sub-folders
+  if Recurse then
+  begin
+    SearchHandle := FindFirstFile(PChar(APath + '*.*'),FindData);
+    if SearchHandle <> INVALID_HANDLE_VALUE then
+    try
+      repeat
+        if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY = FILE_ATTRIBUTE_DIRECTORY) and (FindData.cFileName[0] <> '.') then
+          Inc(Result,ConvertFiles(IncludeTrailingPathdelimiter(APath + FindData.cFileName) + ExtractFilename(Filemask),ToWindows,CompareBeforeWrite,true));
+      until not FindNextFile(SearchHandle,FindData);
+    finally
+      Windows.FindClose(SearchHandle);
+    end;
   end;
 end;
 
