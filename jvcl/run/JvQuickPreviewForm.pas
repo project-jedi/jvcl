@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvQuickPreviewForm;
@@ -39,8 +40,8 @@ type
     ScrollBox1: TScrollBox;
     PreviewImage: TImage;
     Panel1: TPanel;
-    btnUse: TSpeedButton;
-    procedure btnUseClick(Sender: TObject);
+    BtnUse: TSpeedButton;
+    procedure BtnUseClick(Sender: TObject);
   private
     FDrawImage: TJvDrawImage;
   public
@@ -51,7 +52,7 @@ implementation
 
 {$R *.DFM}
 
-procedure TQuickPreviewForm.btnUseClick(Sender: TObject);
+procedure TQuickPreviewForm.BtnUseClick(Sender: TObject);
 
 begin
   if Assigned(FDrawImage) then

@@ -42,7 +42,7 @@ type
     FOnPreview: TJvParentEvent;
     FOnPasswordChange: TJvParentEvent;
   public
-    constructor Create(AOwner: TComponent); override;
+    procedure Loaded; override;
   published
     property OnConfigure: TNotifyEvent read FOnConfigure write FOnConfigure;
     property OnPreview: TJvParentEvent read FOnPreview write FOnPreview;
@@ -52,32 +52,35 @@ type
 
 implementation
 
-constructor TJvScreenSaver.Create(AOwner: TComponent);
+// (rom) moved from Create to Loaded. None of the events can be assigned otherwise.
+
+procedure TJvScreenSaver.Loaded;
 var
-  St: string;
+  S: string;
   Style: Integer;
   H: THandle;
 begin
-  inherited Create(AOwner);
+  inherited Loaded;
   Style := 0;
   if ParamCount <> 0 then
   begin
-    St := UpperCase(ParamStr(1));
-    if St = 'C' then
+    S := UpperCase(ParamStr(1));
+    if S = 'C' then
       Style := 0
     else
-    if St = 'A' then
+    if S = 'A' then
       Style := 1
     else
-    if St = 'P' then
+    if S = 'P' then
       Style := 2
     else
       Style := 3;
   end;
 
-  H := 0;
   if Style in [1, 2] then
-    H := StrToInt(ParamStr(2));
+    H := StrToInt(ParamStr(2))
+  else
+    H := 0;
   case Style of
     0:
       if Assigned(FOnConfigure) then

@@ -40,7 +40,7 @@ type
     FForm: TCustomForm;
     FActive: Boolean;
     FDelay: Cardinal;
-    FImageList: TImageList;
+    FIcons: TImageList;
     FTimer: TTimer;
     FNumber: Integer;
     procedure SetActive(const Value: Boolean);
@@ -51,8 +51,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Icons: TImageList read FImageList write FImageList;
-    property Active: Boolean read FActive write SetActive;
+    property Icons: TImageList read FIcons write FIcons;
+    property Active: Boolean read FActive write SetActive default True;
     property Delay: Cardinal read FDelay write SetDelay default 100;
   end;
 
@@ -63,6 +63,7 @@ begin
   inherited Create(AOwner);
 
   FForm := GetParentForm(TControl(AOwner));
+  FActive := True;
   FNumber := 0;
   FDelay := 100;
 
@@ -84,10 +85,10 @@ end;
 
 procedure TJvFormAnimatedIcon.Animate(Sender: TObject);
 begin
-  if (FImageList <> nil) and (FImageList.Count <> 0) then
+  if (FIcons <> nil) and (FIcons.Count <> 0) then
   begin
-    FNumber := (FNumber + 1) mod FImageList.Count;
-    FImageList.GetIcon(FNumber, TForm(FForm).Icon);
+    FNumber := (FNumber + 1) mod FIcons.Count;
+    FIcons.GetIcon(FNumber, TForm(FForm).Icon);
   end;
 end;
 

@@ -34,21 +34,37 @@ interface
 uses
   Windows, Messages, Classes, SysUtils;
 
+// (rom) definitely goes to JCL
+
 procedure GetProcessList(const SList: TStrings);
 procedure KillProcessByName(Name: string);
 
 const
-  PROCESS_TERMINATE = $0001;
-  PROCESS_CREATE_THREAD = $0002;
-  PROCESS_VM_OPERATION = $0008;
-  PROCESS_VM_READ = $0010;
-  PROCESS_VM_WRITE = $0020;
-  PROCESS_DUP_HANDLE = $0040;
-  PROCESS_CREATE_PROCESS = $0080;
-  PROCESS_SET_QUOTA = $0100;
-  PROCESS_SET_INFORMATION = $0200;
+  // (rom) from WINNT.h
+  PROCESS_TERMINATE         = $0001;
+  {$EXTERNALSYM PROCESS_TERMINATE}
+  PROCESS_CREATE_THREAD     = $0002;
+  {$EXTERNALSYM PROCESS_CREATE_THREAD}
+  PROCESS_SET_SESSIONID     = $0004;
+  {$EXTERNALSYM PROCESS_SET_SESSIONID}
+  PROCESS_VM_OPERATION      = $0008;
+  {$EXTERNALSYM PROCESS_VM_OPERATION}
+  PROCESS_VM_READ           = $0010;
+  {$EXTERNALSYM PROCESS_VM_READ}
+  PROCESS_VM_WRITE          = $0020;
+  {$EXTERNALSYM PROCESS_VM_WRITE}
+  PROCESS_DUP_HANDLE        = $0040;
+  {$EXTERNALSYM PROCESS_DUP_HANDLE}
+  PROCESS_CREATE_PROCESS    = $0080;
+  {$EXTERNALSYM PROCESS_CREATE_PROCESS}
+  PROCESS_SET_QUOTA         = $0100;
+  {$EXTERNALSYM PROCESS_SET_QUOTA}
+  PROCESS_SET_INFORMATION   = $0200;
+  {$EXTERNALSYM PROCESS_SET_INFORMATION}
   PROCESS_QUERY_INFORMATION = $0400;
-  PROCESS_ALL_ACCESS = STANDARD_RIGHTS_REQUIRED or SYNCHRONIZE or $0FFF;
+  {$EXTERNALSYM PROCESS_QUERY_INFORMATION}
+  PROCESS_ALL_ACCESS        = STANDARD_RIGHTS_REQUIRED or SYNCHRONIZE or $0FFF;
+  {$EXTERNALSYM PROCESS_ALL_ACCESS}
 
 implementation
 
@@ -68,6 +84,7 @@ begin
     repeat
       SList.Add(Format('%x, %x: %s', [Pe32.th32ProcessID, Pe32.th32ParentProcessID, Pe32.szExeFile]));
     until not Process32Next(hSnapshot, Pe32);
+
   CloseHandle(hSnapshot);
 end;
 
@@ -88,6 +105,7 @@ begin
           TerminateProcess(hProc, 0);
       end;
     until not Process32Next(hSnapshot, Pe32);
+
   CloseHandle(hSnapshot);
 end;
 

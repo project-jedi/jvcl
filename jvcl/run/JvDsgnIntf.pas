@@ -46,15 +46,15 @@ uses
 
 procedure DrawDesignFrame(Canvas: TCanvas; Rect: TRect);
 
-procedure DesignerNotify(Self, Item: TComponent; Operation: TOperation);
-procedure DesignerModified(Self: TComponent);
-procedure DesignerSelectComponent(Self: TComponent);
+procedure DesignerNotify(ASelf, Item: TComponent; Operation: TOperation);
+procedure DesignerModified(ASelf: TComponent);
+procedure DesignerSelectComponent(ASelf: TComponent);
 
 var
   DrawDesignFrameProc: procedure(Canvas: TCanvas; Rect: TRect);
-  DesignerNotifyProc: procedure(Self, Item: TComponent; Operation: TOperation);
-  DesignerModifiedProc: procedure(Self: TComponent);
-  DesignerSelectComponentProc: procedure(Self: TComponent);
+  DesignerNotifyProc: procedure(ASelf, Item: TComponent; Operation: TOperation);
+  DesignerModifiedProc: procedure(ASelf: TComponent);
+  DesignerSelectComponentProc: procedure(ASelf: TComponent);
 
 type
   TGetProjectNameProc = function: string;
@@ -70,22 +70,22 @@ begin
     DrawDesignFrameProc(Canvas, Rect);
 end;
 
-procedure DesignerNotify(Self, Item: TComponent; Operation: TOperation);
+procedure DesignerNotify(ASelf, Item: TComponent; Operation: TOperation);
 begin
   if Assigned(DesignerNotifyProc) then
-    DesignerNotifyProc(Self, Item, Operation);
+    DesignerNotifyProc(ASelf, Item, Operation);
 end;
 
-procedure DesignerModified(Self: TComponent);
+procedure DesignerModified(ASelf: TComponent);
 begin
   if Assigned(DesignerModifiedProc) then
-    DesignerModifiedProc(Self);
+    DesignerModifiedProc(ASelf);
 end;
 
-procedure DesignerSelectComponent(Self: TComponent);
+procedure DesignerSelectComponent(ASelf: TComponent);
 begin
   if Assigned(DesignerSelectComponentProc) then
-    DesignerSelectComponentProc(Self);
+    DesignerSelectComponentProc(ASelf);
 end;
 
 end.

@@ -44,9 +44,10 @@ type
   TJvBDESQLScript = class(TJvComponent)
   private
     FOnProgress: TOnScriptProgress;
-    FScript: TStrings;
+    FScript: TStringList;
     FCommit: TCommit;
     FDatabase: TDatabase;
+    function GetScript: TStrings;
     procedure SetScript(AValue: TStrings);
     procedure Progress(UserData: Integer; var Cancel: Boolean; Line: Integer);
   public
@@ -55,7 +56,7 @@ type
   published
     procedure Execute;
     property OnProgress: TOnScriptProgress read FOnProgress write FOnProgress;
-    property Script: TStrings read FScript write SetScript;
+    property Script: TStrings read GetScript write SetScript;
     property Commit: TCommit read FCommit write FCommit;
     property Database: TDatabase read FDatabase write FDatabase;
   end;
@@ -72,6 +73,11 @@ destructor TJvBDESQLScript.Destroy;
 begin
   FScript.Free;
   inherited Destroy;
+end;
+
+function TJvBDESQLScript.GetScript: TStrings;
+begin
+  Result := FScript;
 end;
 
 procedure TJvBDESQLScript.SetScript(AValue: TStrings);

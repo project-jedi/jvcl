@@ -1,5 +1,13 @@
 TODO for JVCL 3.0
 ======================
+- JvRGBToHtml.pas to Archive and function RgbToHtml to JCL. // (rom)
+- JvgProcessUtils.pas definitely goes to JCL. // (rom)
+- TJvgStringContainer should be downgraded to a TStringList and moved to JCL. // (rom)
+
+- JvButtonUtils.pas, JvImageForm.pas, JvImageForm.dfm to Archive. // (rom)
+  Files have been integrated into other sources.
+- JvgStepLabel.pas goes to Archive. It is already excluded from JVCL. // (rom)
+
 - JvBaseEdits.pas, JvToolEdit.pas relies on property order. // (rom)
 
 - JvBandForms.pas, JvBandObject.pas contain T2H IFDEFs. Remove or explain. // (rom)

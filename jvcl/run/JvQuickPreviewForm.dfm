@@ -38,14 +38,14 @@ object QuickPreviewForm: TQuickPreviewForm
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    object btnUse: TSpeedButton
+    object BtnUse: TSpeedButton
       Left = 13
       Top = 3
       Width = 33
       Height = 18
       Caption = 'Use'
       Flat = True
-      OnClick = btnUseClick
+      OnClick = BtnUseClick
     end
   end
 end

@@ -31,7 +31,7 @@ unit JvCommonDialogD;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, SysUtils, Classes, Controls,
   JvTypes, JvComponent;
 
 type

@@ -32,7 +32,7 @@ unit JvgPointEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, SysUtils, Classes,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
   {$ELSE COMPILER6_UP}
@@ -51,10 +51,11 @@ procedure Register;
 
 implementation
 
-// (rom) seem obsolete
+{ (rom) disabled seem obsolete
 var
   PPointTypeInfo: PTypeInfo;
   PointTypeInfo: TTypeInfo;
+}
 
 function TJvgPointProperty.GetAttributes: TPropertyAttributes;
 begin

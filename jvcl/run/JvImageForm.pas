@@ -31,16 +31,13 @@ unit JvImageForm;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms,
-  ExtCtrls, Jpeg, JvComponent;
+  SysUtils, Classes, Controls, Forms, ExtCtrls, Jpeg,
+  JvComponent;
 
 type
   TFormImg = class(TJvForm)
     Image1: TImage;
   end;
-
-var
-  FormImg: TFormImg;
 
 implementation
 

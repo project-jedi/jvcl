@@ -32,7 +32,8 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms,
-  JvImageForm, JvBaseDlg, JvTypes;
+  ExtCtrls, Jpeg,
+  JvBaseDlg, JvComponent, JvTypes;
 
 type
   TJvImageDialog = class(TJvCommonDialogP)
@@ -69,16 +70,27 @@ begin
 end;
 
 procedure TJvImageDialog.Execute;
+var
+  Form: TJvForm;
+  Image1: TImage;
 begin
-  with TFormImg.Create(Application) do
+  if (FPicture.Height <> 0) and (FPicture.Width <> 0) then
   begin
-    Image1.Picture.Assign(FPicture);
-    ClientHeight := FPicture.Height;
-    ClientWidth := FPicture.Width;
-    Caption := FTitle;
-    if (FPicture.Height <> 0) and (FPicture.Width <> 0) then
-      ShowModal;
-    Free;
+    Form := TJvForm.Create(Self);
+    try
+      Form.BorderStyle := bsDialog;
+      Form.BorderIcons := [biSystemMenu];
+      Form.Position := poScreenCenter;
+      Image1 := TImage.Create(Form);
+      Image1.Picture.Assign(FPicture);
+      Image1.Parent := Form;
+      Form.ClientHeight := Image1.Height;
+      Form.ClientWidth := Image1.Width;
+      Form.Caption := FTitle;
+      Form.ShowModal;
+    finally
+      Form.Free;
+    end;
   end;
 end;
 
