@@ -3436,10 +3436,10 @@ begin
   XPos := ((XOffset - (XInc * (ColCount - 1))) div 2) + 1;
 
   YOffset := Height - (FSquareSize * RowCount) - 2;
-  if RowCount = 1 then
-    YInc := 0
-  else
-    YInc := YOffset div (RowCount + 1);
+  //if RowCount = 1 then
+  //  YInc := 0
+  //else
+    YInc := YOffset div RowCount;//(RowCount + 1);
   YPos := ((YOffset - (YInc * (RowCount - 1))) div 2) + 1;
 end;
 
