@@ -597,12 +597,12 @@ begin
 
   if TargetConfig.Target.IsBCB and TargetConfig.Build then // CLX for BCB is not supported
   begin
-    // Delete all .obj files because dcc32.exe -JPHNE does not create new .obj
+    // Delete all .obj and .dcu files because dcc32.exe -JPHNE does not create new .obj
     // files if they already exist. And as a result interface changes in a unit
     // let the bcc32.exe compiler fail.
     ObjFiles := TStringList.Create;
     try
-      FindFiles(TargetConfig.UnitOutDir, '*.*', True, ObjFiles, ['.obj']);
+      FindFiles(TargetConfig.UnitOutDir, '*.*', True, ObjFiles, ['.obj', '.dcu']);
       for i := 0 to ObjFiles.Count - 1 do
         DeleteFile(ObjFiles[i]);
     finally
