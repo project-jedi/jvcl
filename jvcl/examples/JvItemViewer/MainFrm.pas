@@ -35,13 +35,9 @@ uses
   Dialogs, StdCtrls, Mask, ExtCtrls, ImgList, ComCtrls, Menus,
   JvToolEdit,
   jpeg, JvPCX, JvGIF, JvAni, JvCursor, 
-    // if you have units that supports other image formats, add them here *before* including JvItemViewer
-//  GraphicEx, // http://www.delphi-gems.com/Graphics.php#GraphicEx
-  JvCustomItemViewer,
-  JvImagesViewer,
-  JvImageListViewer,
-  JvOwnerDrawViewer,
-  JvComponent,
+  // if you have units that supports other image formats, add them here *before* including JvItemViewer
+  //  GraphicEx, // http://www.delphi-gems.com/Graphics.php#GraphicEx
+  JvCustomItemViewer, JvImagesViewer, JvImageListViewer, JvOwnerDrawViewer, JvComponent,
   JvInspector, JvExMask;
 
 type
@@ -94,12 +90,12 @@ type
     procedure DoITVDblClick(Sender: TObject);
     procedure DITVLoadBegin(Sender: TObject);
     procedure DoITVLoadEnd(Sender: TObject);
-    procedure DoITVLoadProgress(Sender: TObject; Item: TJvImageItem; Stage: TProgressStage;
+    procedure DoITVLoadProgress(Sender: TObject; Item: TJvPictureItem; Stage: TProgressStage;
       PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
     procedure DoITV3DrawItem(Sender: TObject; AIndex: Integer; AState: TCustomDrawState; ACanvas: TCanvas; ItemRect,
       TextRect: TRect);
     procedure DoITV3Click(Sender: TObject);
-    procedure ViewItem(Item: TJvImageItem; LoadFromFile: Boolean);
+    procedure ViewItem(Item: TJvPictureItem; LoadFromFile: Boolean);
   public
     ITV: TJvImagesViewer;
     ITV2: TJvImageListViewer;
@@ -331,7 +327,7 @@ begin
   Viewfrompicture1Click(Sender);
 end;
 
-procedure TfrmMain.ViewItem(Item: TJvImageItem; LoadFromFile: Boolean);
+procedure TfrmMain.ViewItem(Item: TJvPictureItem; LoadFromFile: Boolean);
 begin
   if LoadFromFile and FileExists(Item.FileName) then
     TfrmImageViewer.View(Item.FileName, ITV.Options.Transparent, ITV.Color)
@@ -341,7 +337,7 @@ end;
 
 procedure TfrmMain.Viewfromfile1Click(Sender: TObject);
 var
-  Item: TJvImageItem;
+  Item: TJvPictureItem;
 begin
   if ITV.Focused and (ITV.SelectedIndex >= 0) then
   begin
@@ -352,7 +348,7 @@ end;
 
 procedure TfrmMain.Viewfrompicture1Click(Sender: TObject);
 var
-  Item: TJvImageItem;
+  Item: TJvPictureItem;
 begin
   if ITV.Focused and (ITV.SelectedIndex >= 0) then
   begin
@@ -361,9 +357,9 @@ begin
   end;
 end;
 
-procedure TfrmMain.DoITVLoadProgress(Sender: TObject;
-  Item: TJvImageItem; Stage: TProgressStage; PercentDone: Byte;
-  RedrawNow: Boolean; const R: TRect; const Msg: string);
+procedure TfrmMain.DoITVLoadProgress(Sender: TObject; Item: TJvPictureItem;
+  Stage: TProgressStage; PercentDone: Byte; RedrawNow: Boolean;
+  const R: TRect; const Msg: string);
 begin
   if PercentDone >= 100 then
     StatusBar1.Panels[1].Text := ''
@@ -445,7 +441,7 @@ end;
 procedure TfrmMain.Rename1Click(Sender: TObject);
 var
   S: string;
-  AItem: TJvImageItem;
+  AItem: TJvPictureItem;
 begin
   if ITV.SelectedIndex < 0 then
     Exit;
@@ -466,7 +462,7 @@ end;
 
 procedure TfrmMain.Delete1Click(Sender: TObject);
 var
-  AItem: TJvImageItem;
+  AItem: TJvPictureItem;
 begin
   if ITV.SelectedIndex < 0 then
     Exit;

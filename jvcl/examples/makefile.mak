@@ -42,7 +42,7 @@ docking: AdvancePro.exe DockOptionDemo.exe HowToUse.exe MSDN2002Pro.exe VCDemoPr
 #---------------------------------------------------------------------------------------------------
 inspector: InspectorSimpleExample.exe InspExample.exe InspectorDBExample.exe
 #---------------------------------------------------------------------------------------------------
-mega: JVCLDemo.exe
+mega: JVCLMegaDemo.exe
 #---------------------------------------------------------------------------------------------------
 plugin: PlugInDemo.exe SamplePluginOne.dll MDIPlugin.dll MDISample.exe ChangePropertiesPlugin.dll \
 PropertiesPlugInDemo.exe ExceptionPlugin.dll ExceptionPlugInDemo.exe DataPlugin.dll DataPlugInDemo.exe \
@@ -195,7 +195,7 @@ JvClipboardViewerProj.exe: "JvClipboardViewer\JvClipboardViewerProj.dpr"
   $(DCC) $&.dpr
   @cd ..
 
-JVCLDemo.exe: "JVCLMegaDemo\JVCLDemo.dpr"
+JVCLMegaDemo.exe: "JVCLMegaDemo\JVCLMegaDemo.dpr"
   @cd JVCLMegaDemo
   $(DCC) $&.dpr
   @cd ..
