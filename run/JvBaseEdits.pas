@@ -52,6 +52,7 @@ type
     FMinValue: Extended;
     FMaxValue: Extended;
     FDecimalPlaces: Cardinal;
+    FDecimalPlacesAlwaysShown :Boolean; // WAP Added. True means Use 0 instead of # in FormatFloat picture (ie 0.000 versus 0.####). NEW.
     FCheckOnExit: Boolean;
     FZeroEmpty: Boolean;
     FFormatOnEditing: Boolean;
@@ -59,6 +60,10 @@ type
     FDisplayFormat: string;
     // Polaris
     FDecimalPlaceRound: Boolean;
+
+
+    function GetEditFormat:String; // WAP added.
+    
     procedure SetDecimalPlaceRound(Value: Boolean);
 
     procedure SetFocused(Value: Boolean);
@@ -114,6 +119,8 @@ type
     property ImageKind default ikDefault;
     property ButtonWidth default 21; //Polaris 20;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces default 2;
+    property DecimalPlacesAlwaysShown :Boolean read FDecimalPlacesAlwaysShown write FDecimalPlacesAlwaysShown; // WAP Added. True means Use 0 instead of # in FormatFloat picture (ie 0.000 versus 0.####). NEW.
+
     property DisplayFormat: string read GetDisplayFormat write SetDisplayFormat stored IsFormatStored;
     property MaxValue: Extended read FMaxValue write SetMaxValue;
     property MinValue: Extended read FMinValue write SetMinValue;
@@ -211,8 +218,11 @@ type
   protected
     procedure PopupChange; override;
     property EnablePopupChange: Boolean read FEnablePopupChange write FEnablePopupChange default False;
+
+
   public
     constructor Create(AOwner: TComponent); override;
+
   end;
 
   { (rb) why no ButtonFlat property? }
@@ -294,6 +304,7 @@ type
     property DisabledTextColor;
     property DisabledColor;
     (* -- RDB -- *)
+    property DecimalPlacesAlwaysShown; {WAP Added.}
   end;
 
 implementation
@@ -411,6 +422,7 @@ begin
     FDecimalPlaceRound := Value;
     SetValue(CheckValue(FValue, False));
     Invalidate;
+    ReformatEditText;
   end;
 end;
 
@@ -566,6 +578,12 @@ begin
   if FDecimalPlaces <> Value then
   begin
     FDecimalPlaces := Value;
+
+      // WAP Added. Changes to decimal places formerly did not change
+      // FDisplayFormat, which causes both designtime and runtime problems!
+    SetDisplayFormat( GetEditFormat );
+
+    
     SetValue(CheckValue(FValue, False)); // Polaris (?)
     DataChanged;
     Invalidate;
@@ -590,14 +608,24 @@ begin
   Text := '';
 end;
 
+{WAP added GetEditFormat, this code used to be ininline inside DataChanged.}
+function TJvCustomNumEdit.GetEditFormat:String;
+begin
+  result := '0';
+  if FDecimalPlaces > 0 then begin
+    if FDecimalPlacesAlwaysShown then
+       result  := result + '.' + MakeStr('0', FDecimalPlaces)
+    else
+       result  := result + '.' + MakeStr('#', FDecimalPlaces);
+  end;
+end;
+
 procedure TJvCustomNumEdit.DataChanged;
 var
   EditFormat: string;
   WasModified: Boolean;
 begin
-  EditFormat := '0';
-  if FDecimalPlaces > 0 then
-    EditFormat := EditFormat + '.' + MakeStr('#', FDecimalPlaces);
+  EditFormat := GetEditFormat;
   { Changing EditText sets Modified to false }
   WasModified := Modified;
   try
@@ -946,6 +974,8 @@ begin
 end;
 
 //=== { TJvCustomCalcEdit } ==================================================
+
+
 
 constructor TJvCustomCalcEdit.Create(AOwner: TComponent);
 begin
