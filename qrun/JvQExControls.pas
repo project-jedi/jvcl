@@ -543,10 +543,16 @@ begin
       OriginalPainter := Canvas.Handle;
       Canvas.Handle := QPainter_create(Pixmap);
       TControlCanvas(Canvas).StartPaint;
+      {$IFDEF MSWINDOWS}
       QPainter_setClipRegion(Canvas.Handle, EventRegion);
       QPainter_setClipping(Canvas.Handle, True);
       R := Rect(0, 0, 0, 0);
       QRegion_boundingRect(EventRegion, @R);
+      {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+      // asn: region ignored, so paint all
+      R := rect(0, 0, width, height);
+      {$ENDIF LINUX}
     end;
 
     try
