@@ -189,6 +189,10 @@ var
 begin
   //testing the stream load capabilities;
   Astream.Seek(0, 0); //most of the stream error are generated because this is not at the proper position
+  BMP := nil;
+  JPG := nil;
+  WMF := nil;
+  ICO := nil;
   try
     case AType of
       GR_BMP:
