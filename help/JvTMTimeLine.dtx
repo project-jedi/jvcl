@@ -55,7 +55,7 @@ Description
   Objects.
 
   The date numbers of dates that have an associated object, are drawn with the font style as specified
-  by ObjectsFontStyle. Thus, after calling ClearObjects all date numbers will be drawn with the default
+  by ObjectsFontStyle; thus, after calling ClearObjects all date numbers will be drawn with the default
   font style as described by Font.
 See Also
   Objects
@@ -89,9 +89,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.ImageIndex
 Summary
-  Identifies the image displayed at an particular date in the timeline view.
+  Identifies the image displayed at a particular date in the timeline view.
 Description
-  ImageIndex specifies an index into the Images property for a particular date. Thus, associate an image
+  ImageIndex specifies an index into the Images property for a particular date; thus, associate an image
   with a date by setting the ImageIndex property to an index into the Images
   property using the specific date as index into ImageIndex. Look up the image associated with a date
   by reading the ImageIndex property with the specific date as index.
@@ -209,7 +209,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.Objects
 Summary
-  Specifies the object associated with an particular date.
+  Specifies the object associated with a particular date.
 Description
   Associate an object with a date by setting the Objects property using the specific date as index.
   Look up the object associated with a date by reading the Objects property with the specific date
@@ -218,7 +218,7 @@ Description
   The date numbers of dates that have an associated object, are drawn with the font style as specified
   by ObjectsFontStyle.
 Note
-  The control owns the objects in the Objects array. Thus Objects added to the Objects
+  The control owns the objects in the Objects array; thus Objects added to the Objects
   array are freed when the timeline control is destroyed.
 See Also
   ObjectsFontStyle
@@ -282,8 +282,8 @@ Summary
 Description
   Use ReadOnly to determine whether the user can scroll the timeline. If ReadOnly is True,
   no scroll buttons are diplayed, and the user can't scroll the view with the keyboard arrow keys.
-  If ReadOnly is False, scroll buttons are displayed on the view; the user can scroll the timeline view
-  by either pressing theses buttons or by pressing the keyboard arrow keys.
+  If ReadOnly is False, scroll buttons are displayed on the view and the user can scroll the timeline view
+  by either pressing these buttons or by pressing the keyboard arrow keys.
 See Also
   LeftButton, RightButton
 ----------------------------------------------------------------------------------------------------
@@ -307,7 +307,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.SaveToFile
 Summary
-  Saves a the timeline view to the file specified in FileName.
+  Saves the timeline view to the file specified in FileName.
 Description
   Use the SaveToFile method to store timeline view data to a text file. The items can later be reloaded
   from the file into a new timeline view object using the LoadFromFile method.
@@ -385,7 +385,7 @@ Summary
   Specifies whether dotted week seperator lines are shown in the timeline view.
 Description
   If ShowWeeks is True, dotted week seperator lines are shown in the timeline view. These lines
-  are drawn between sunday and monday. Use LineColor to specify the color of the week and month
+  are drawn between Sunday and Monday. Use LineColor to specify the color of the week and month
   seperator lines.
 See Also
   LineColor, MonthFont, ShowMonths, ShowToday

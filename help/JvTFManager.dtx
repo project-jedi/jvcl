@@ -709,7 +709,7 @@ Description
   Specifically, the TJvTFCustomImageMap is part of a TJvTFAppt
   \object and allows you to assign a name to an image from a
   TImageList. You can then reference the image by name or by
-  its index in the map (which is different than the index in
+  its index in the map (which is different from the index in
   the ImageList).
 Note
   The TJvTFScheduleManager.CustomImages is the TImageList that is referenced.
@@ -864,7 +864,7 @@ Description
   Call IndexOf to obtain the position of the first occurrence of an item that matches ADate. An item matches
   ADate if it is identical to ADate or if it differs only in the time portion of ADate.
 
-  IndexOf returns the 0-based index of the item. Thus, if ADate matches the first item in the list,
+  IndexOf returns the 0-based index of the item; thus, if ADate matches the first item in the list,
   IndexOf returns 0, if ADate is the second item, IndexOf returns 1, and so on. If the item does not
   have a match in the list, IndexOf returns -1.
 Parameters
@@ -922,7 +922,7 @@ Description
 Summary
   Event used to retrieve week titles.
 Description
-  Used for a OnDrawDWTitle event, which is fired when day of week title is being drawn. aCanvas provides
+  Used for an OnDrawDWTitle event, which is fired when day of week title is being drawn. aCanvas provides
   a canvas for custom drawing. aRect specifies the bounding rect of the DW title. DOW specifies for
   which day of the week the title is being drawn for. DWName specifies the name of the day of the
   week that will be drawn in the title.
@@ -2658,7 +2658,7 @@ Note
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.Refreshing
 Summary
-  Determines whether the server is currently refreshing it's appointments.
+  Determines whether the server is currently refreshing its appointments.
 Description
   This property will be True if the server is currently in the process of refreshing its appointment
   and schedule objects, False otherwise.

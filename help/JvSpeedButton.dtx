@@ -137,9 +137,9 @@ See Also
 Summary
   Generates an OnClick event or triggers the associated action.
 Description
-  Calling Click generates an OnClick event, or triggers the associated action; Then, if ModalResult
+  Calling Click generates an OnClick event, or triggers the associated action. Then, if ModalResult
   isn't equal to mrNone, it assigns the value of the button’s ModalResult property to the ModalResult
-  property of its parent form; Otherwise it checks if a pop-up menu is associated with the button.
+  property of its parent form. Otherwise it checks if a pop-up menu is associated with the button.
   If so, it pops up that pop-up menu.
 See Also
   ButtonClick, ModalResult
@@ -186,8 +186,8 @@ Summary
   Indicates whether to display the image of the button grayed when the button is inactive.
 Description
   Set GrayedInactive to true to render the image of the button grayed, when the button is
-  <LINK TJvCustomSpeedButton.Flat,flat> and the mouse pointer is not on the button, ie the button
-  is inactive.
+  <LINK TJvCustomSpeedButton.Flat,flat> and the mouse pointer is not on the button (i.e., the button
+  is inactive)
 See Also
   Flat, GrayNewStyle
 ----------------------------------------------------------------------------------------------------
@@ -245,10 +245,12 @@ Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
   the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
   changes in Font are copied to HotTrackFont except Color changes.
+  
   Note that hoFollowFont must be included for any properties to be copied at all.
+  
   To implement the HotTrackFontOptions property in a new control, you should perform the following steps:
     * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default value
+    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default value
       to be DefaultTrackFontOptions (defined in JvTypes).
     * Set the default value in the constructor.
     * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in JvJVCLUtils)
@@ -448,7 +450,7 @@ Description
   The HotTrackImageIndex property determines which image from the Images list
   appears on the button when the mouse pointer passes over the button.
 
-  An image list is zero-based; the first image is indexed by 0, the second by 1, and so forth.
+  An image list is zero-based: the first image is indexed by 0, the second by 1, and so forth.
 See Also
   ImageIndex, Images
 ----------------------------------------------------------------------------------------------------
@@ -460,7 +462,7 @@ Description
   appears on the button. If the HotTrackImageIndex is set, different images appear when the
   mouse pointer passes over the button.
 
-  An image list is zero-based; the first image is indexed by 0, the second by 1, and so forth.
+  An image list is zero-based: the first image is indexed by 0, the second by 1, and so forth.
 See Also
   HotTrackImageIndex, Images
 ----------------------------------------------------------------------------------------------------

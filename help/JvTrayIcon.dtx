@@ -35,7 +35,7 @@ JVCLInfo
 Summary
   Adds an icon to the tray.
 Description
-  Use TJvTrayIcon to add a icon to the taskbar notification area. Applications commonly put icons in
+  Use TJvTrayIcon to add an icon to the taskbar notification area. Applications commonly put icons in
   the status area of the taskbar - also called "tray" - to serve as status indicators. For example,
   an application might put a printer icon in the status area to show that a print job is under way.
   The status area is located at the right edge of the taskbar (if the taskbar is horizontal) or at
@@ -49,7 +49,7 @@ Description
   right-clicking displays a shortcut menu, and double-clicking executes the default shortcut menu command.
 
   The default behaviour of TJvTrayIcon is to automatically hide the application's button on the taskbar,
-  if the user minimizes the application; and not to react on mouse clicks on the tray icon. Use property
+  if the user minimizes the application and not to react on mouse clicks on the tray icon. Use property
   Visibility to alter this behaviour. For example, include tvRestoreClick in Visibility, to automatically
   restore the minimized application when the user clicks the tray icon with the left button. Use
   DropDownMenu or PopupMenu to display a shortcut menu, when the user clicks the icon.
@@ -59,7 +59,7 @@ Description
   each icon for Delay milliseconds in the notification area. Set Animated to false to stop the animation.
 
   Call BalloonHint to display a cartoon-style "balloon" with a stem pointing to the icon in the
-  taskbar notification area. Not all systems support balloon ToolTips; check AcceptBalloons to determine
+  taskbar notification area. Not all systems support balloon ToolTips: check AcceptBalloons to determine
   if balloon ToolTips are supported. Use the OnBalloonClick, OnBalloonHide and OnBalloonShow to react
   on user events.
 ----------------------------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ Summary
 Description
   Use the ApplicationVisible property to control the visibility of the application and the
   application's taskbar button. If ApplicationVisible is set to true, TJvTrayIcon restores the
-  application to it's normal size, if it was minimized, and shows the application's button on the taskbar.
+  application to its normal size, if it was minimized, and shows the application's button on the taskbar.
   If ApplicationVisible is set to false, TJvTrayIcon minimizes the application and removes the application's
   button on the taskbar.
 
@@ -199,9 +199,9 @@ Summary
 Description
   Do not call DoDoubleClick. It is called automatically when the user double-clicks the icon.
   As implemented in TJvTrayIcon, DoDoubleClick checks if an OnDblClick event handler is assigned. If so,
-  DoDoubleClick triggers the OnDblClick event;
+  DoDoubleClick triggers the OnDblClick event.
 
-  If no OnDblClick event handler is assigned; it first checks if property PopupMenu is assigned, and if
+  If no OnDblClick event handler is assigned, then it first checks if property PopupMenu is assigned, and if
   so executes the default shortcut menu command of PopupMenu, if it exists. Finally it checks if
   tvRestoreDbClick or tvMinimizeDbClick is included in property Visibility, and if so restores the
   visibility of the application by including tvVisibleTaskBar in property Visibility, or hides the
@@ -367,8 +367,8 @@ See Also
 Summary
   Occurs when the balloon disappears
 Description
-  Use the OnBalloonClick event handler to respond when the balloon ToolTip disappears; when the icon
-  is deleted, for example. This message is not sent if the balloon is dismissed because of a timeout
+  Use the OnBalloonClick event handler to respond when the balloon ToolTip disappears, e.g., when the icon
+  is deleted. This message is not sent if the balloon is dismissed because of a timeout
   or mouse click by the user.
 See Also
   OnBalloonClick, OnBalloonShow
@@ -408,8 +408,8 @@ Description
   Use the tvRestoreDbClick and tvMinimizeDbClick flags from Visibility to automate the process of
   hiding and restoring the application upon double-clicking of the tray icon.
 Note
-  Assigning an OnDblClick event handler, overrides the tvRestoreDbClick and tvMinimizeDbClick flag in
-  Visibility. Thus the application isn't automatically restored or hidden when the user double-clicks
+  Assigning an OnDblClick event handler overrides the tvRestoreDbClick and tvMinimizeDbClick flag in
+  Visibility; thus, the application isn't automatically restored or hidden when the user double-clicks
   the tray icon.
 See Also
   OnClick, OnMouseDown, OnMouseUp, Visibility
@@ -519,7 +519,7 @@ Summary
   Determines if the application is shown in the task manager.
 Description
   Set VisibleInTaskList to true to show the application in the windows task manager application. Set
-  VisibleInTaskList to false to remove the application from the task manager; the application prevent
+  VisibleInTaskList to false to remove the application from the task manager: the application prevent
   itself from being closed when the user logs off. The application close only when the system is shut
   down.
 
@@ -610,7 +610,7 @@ Description
 @@TTrayVisibility.tvVisibleTaskList
   (Windows 95, 98 and me.) Shows the application in the windows task manager
   application. This is default behaviour. If this flag is not set, <LINK TJvTrayIcon>
-  removes the application from the task manager; the application prevent itself
+  removes the application from the task manager: the application prevent itself
   from being closed when the user logs off. The application close only when the
   system is shut down.
 @@TTrayVisibility.tvAutoHide

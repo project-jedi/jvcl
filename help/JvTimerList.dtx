@@ -25,7 +25,7 @@ Description
   Additionally, you can specify whether the timer should execute indefinitely or a specific number
   of times. Use the Cycled and RepeatCount properties for this task.
 
-  A TJvTimerEvent object can be identified by it's Handle property. But this is not a windows handle.
+  A TJvTimerEvent object can be identified by its Handle property. But this is not a windows handle.
   You can not use it in calls to windows API's. It is just a number that identifies a timer uniquely
   in a timer list.
 See Also
@@ -66,7 +66,7 @@ Description
   Use Enabled to enable or disable the timer. If Enabled is true, the timer responds normally. If
   Enabled is false, the timer does not generate OnTimer events. The default is true.
 Note
-  When you set Enabled to true, the timer list is automatically activated, thus it's
+  When you set Enabled to true, the timer list is automatically activated; thus, its
   <LINK TJvTimerList.Active,Active> property is set to true.
 See Also
   OnTimer
@@ -291,7 +291,7 @@ Description
   <LINK TJvTimerEvent.Enabled, Enabled> property of a timer;
 
   * Setting an <LINK TJvTimerEvent.Enabled,Enabled> property of a TJvTimerEvent object to true,
-     automatically activates the timer list, ie set Active to true.
+     automatically activates the timer list (i.e., set Active to true)
   * When all <LINK TJvTimerEvent.Enabled,Enabled> properties of the timers in a timer list are
      set to false, the timer is automatically deactivated.
 
@@ -306,7 +306,7 @@ See Also
 Summary
   Creates a new timer and adds it to the list.
 Description
-  Add creates an timer and assigns the values passed in the AOnTimer, AInterval, and ACycled parameters
+  Add creates a timer and assigns the values passed in the AOnTimer, AInterval, and ACycled parameters
   to the TJvTimerEvent properties of the same names. Finally the timer is added to the timer list.
 Parameters
   AOnTimer  - A TNotifyEvent procedure that will be called when the timer executes.
@@ -326,7 +326,7 @@ Description
   Use Items to access the properties of the TJvTimerEvent objects maintained by TJvTimerList.
 Note
   At run-time the timer list ensures that this list is sorted based on the Interval property of the
-  timer events. Thus direct access to Events is not recommended, better use 
+  timer events; thus, direct access to Events is not recommended, better use 
   <LINK TJvTimerEvents.ItemByHandle,ItemByHandle> for access to
   timer events and Add for adding a new timer event.
 See Also
@@ -339,7 +339,7 @@ Description
   Write an OnFinish event handler to respond when the timer list is deactivated. The timer list is
   deactivated when Active is set to false or when all timers are done executing.
 
-  A timer is done executing if it's <LINK TJvTimerEvent.Enabled,Enabled> property is set to false or
+  A timer is done executing if its <LINK TJvTimerEvent.Enabled,Enabled> property is set to false or
   property <LINK TJvTimerEvent.Cycled,Cycled> is set to false and the timer has executed
   <LINK TJvTimerEvent.RepeatCount,RepeatCount> times.
 See Also
@@ -349,7 +349,7 @@ See Also
 Summary
   Occurs for each timer that executes.
 Description
-  Write an OnTimers event handler to handle the execution of all timers in 1 procedure. Thus you
+  Write an OnTimers event handler to handle the execution of all timers in 1 procedure; thus, you
   don't have to write a specific event handle for each timer in the list.
 
   The OnTimers event is fired each time a timer's interval is reached.

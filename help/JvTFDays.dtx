@@ -1,5 +1,7 @@
 ##Package: TimeFramework
 ##Status: Incompleted (peter3)
+##Skip: TJvTFApptMap
+##Skip: TJvTFDrawPicInfo
 ----------------------------------------------------------------------------------------------------
 @@JvTFDays.pas
 Summary
@@ -33,27 +35,12 @@ Description
   This type defines a dynamic TPoint array which is used for the TJvTFDays.EnumSelCells method.
 
   This type is not available in the Delphi 3 version of JTF.
+##@@TJvTFApptMap
+##Summary
+##  Provides a sparse matrix implementation for the appointments in a TJvTFDays component.
+##Description
+##  This class is for internal use only.
 ----------------------------------------------------------------------------------------------------
-@@TJvTFGetDaysApptDrawInfoEvent
-<TITLE TJvTFGetDaysApptDrawInfoEvent type>
-Summary
-  Event type used to custom draw an appointment. 
-Description
-  This type is used for the TJvTFDays.OnGetApptDrawInfo event. You can change the properties of the
-  DrawInfo object in order to customize the appearance of the appointment. Please see
-  TJvTFDaysApptDrawInfo for a list of properties that you can change.
-Parameters
-  Sender   - The TJvTFdays control that called the event.
-  Appt     - The appointment that is to be drawn.
-  DrawInfo - Specifies the default appearance of the appointment.
-See Also
-  TJvTFDaysApptDrawInfo
-----------------------------------------------------------------------------------------------------
-@@TJvTFApptMap
-Summary
-  Provides a sparse matrix implementation for the appointments in a TJvTFDays component.
-Description
-  This class is for internal use only.
 @@TJvTFAutoScrollDir
 <TITLE TJvTFAutoScrollDir type>
 Summary
@@ -82,6 +69,19 @@ Summary
 Description
   Extended TStringList that has an OnMove event that is triggered when the Move procedure is called.
 ----------------------------------------------------------------------------------------------------
+@@TJvTFCompNamesList.OnMove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender   - Description for this parameter
+  CurIndex - Description for this parameter
+  NewIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvTFCreateQuickEntryEvent
 <TITLE TJvTFCreateQuickEntryEvent type>
 <COMBINE TJvTFDays.OnCreateQuickEntry>
@@ -91,6 +91,10 @@ Description
 <COMBINE TJvTFDays.OnDateChanging>
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays
+<TITLEIMG TJvTFDays>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Control that can display appointments on a day by day basis.
 Description
@@ -124,7 +128,7 @@ Example:
   <CODE>
     MyEndRow := TimeToRow(anAppt.EndTime);
   </CODE>
-  This may return an incorrect result as shown above. However, if you write:
+  This may return an incorrect result as shown above; however, if you write:
   <CODE>
     MyEndRow := TimeToRow(AdjustEndTime(anAppt.EndTime));
   </CODE>
@@ -173,7 +177,6 @@ Description
 Parameters
   anAppt - The appointment to make visible.
   aCol   - The column of the appointment.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.AutoSizeCols
 Summary
@@ -181,7 +184,6 @@ Summary
 Description
   When true, the grid will automatically size its columns so that all of the columns fit into and completely
   fill the visible area within the grid.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.BorderStyle
 Summary
@@ -197,7 +199,6 @@ Summary
 Description
   This method will return the index of the row that appears at the bottom of the visible area of the grid.
   (This row is not guaranteed to be fully visible.)
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.CalcGroupColHdrsHeight
 Summary
@@ -253,6 +254,11 @@ Description
 
   Since this method applies the AdjustEndTime method, you should always use this method if you need
   to find the start and/or end rows for an appointment. See AdjustEndTime for more information.
+Parameters
+  anAppt    - Description for this parameter
+  SchedDate - Description for this parameter
+  StartRow  - Description for this parameter
+  EndRow    - Description for this parameter
 See Also
   AdjustEndTime
 ----------------------------------------------------------------------------------------------------
@@ -709,6 +715,15 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.HdrAttr
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTFDays.HintProps
 Summary
   Write here a summary (1 line)
 Description
@@ -1268,10 +1283,8 @@ See Also
 @@TJvTFDays.ReleaseSchedule
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   SchedName - Description for this parameter
   SchedDate - Description for this parameter
@@ -1659,40 +1672,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvTFDays.utfHintProps
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@TJvTFDays.ValidSelection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFDays.Ver
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Major   - Description for this parameter
-  Minor   - Description for this parameter
-  Control - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFDays.VerStr
 Summary
   Write here a summary (1 line)
 Description
@@ -1770,10 +1750,8 @@ Description
 @@TJvTFDaysApptAttr.Assign
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   Source - Description for this parameter
 See Also
@@ -1843,10 +1821,8 @@ Description
 @@TJvTFDaysApptBar.Assign
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   Source - Description for this parameter
 See Also
@@ -1971,10 +1947,8 @@ See Also
 @@TJvTFDaysCol.Assign
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   Source - Description for this parameter
 See Also
@@ -2222,17 +2196,6 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvTFDaysCols.CreateForPrinter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aPrinter - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.Add
 Summary
   Write here a summary (1 line)
@@ -2275,6 +2238,17 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvTFDaysCols.CreateForPrinter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aPrinter - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.EnsureMaxColWidth
 Summary
   Write here a summary (1 line)
@@ -2298,6 +2272,8 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -2358,13 +2334,16 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCoord
 <TITLE TJvTFDaysCoord type>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 @@TJvTFDaysCoord.Col
   Description for Col
 @@TJvTFDaysCoord.Row
@@ -2390,6 +2369,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 @@TJvTFDaysCorner.agcTopLeft
   Description for agcTopLeft
 @@TJvTFDaysCorner.agcTopRight
@@ -2408,10 +2390,8 @@ Description
 @@TJvTFDaysFancyRowHdrAttr.Assign
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   Source - Description for this parameter
 See Also
@@ -2472,10 +2452,8 @@ Description
 @@TJvTFDaysGrabHandles.Assign
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   Source - Description for this parameter
 See Also
@@ -2515,6 +2493,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 @@TJvTFDaysGrouping.grNone
   Description for grNone
 @@TJvTFDaysGrouping.grDate
@@ -2533,10 +2514,8 @@ Description
 @@TJvTFDaysHdrAttr.Assign
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   Source - Description for this parameter
 See Also
@@ -2594,6 +2573,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 @@TJvTFDaysOption.agoSizeCols
   Description for agoSizeCols
 @@TJvTFDaysOption.agoSizeRows
@@ -2731,10 +2713,8 @@ Description
 @@TJvTFDaysPrimeTime.Assign
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   Source - Description for this parameter
 See Also
@@ -2769,6 +2749,10 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysPrinter
+<TITLEIMG TJvTFDaysPrinter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
@@ -2942,10 +2926,8 @@ See Also
 @@TJvTFDaysPrinter.FreeDoc
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -3229,6 +3211,8 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  PageNum - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -3423,30 +3407,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvTFDaysPrinter.Ver
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Major   - Description for this parameter
-  Minor   - Description for this parameter
-  Control - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFDaysPrinter.VerStr
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@TJvTFDaysPrinter.VirtualGroupHdrRect
 Summary
   Write here a summary (1 line)
@@ -3488,10 +3448,8 @@ See Also
 @@TJvTFDaysPrinterPageLayout.Assign
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   Source - Description for this parameter
 See Also
@@ -3537,6 +3495,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 @@TJvTFDaysState.agsNormal
   Description for agsNormal
 @@TJvTFDaysState.agsSizeCol
@@ -3581,10 +3542,8 @@ See Also
 @@TJvTFDaysTemplate.Assign
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   Source - Description for this parameter
 See Also
@@ -3705,6 +3664,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 @@TJvTFDaysTemplates.agtNone
   Description for agtNone
 @@TJvTFDaysTemplates.agtLinear
@@ -3721,10 +3683,8 @@ Description
 @@TJvTFDaysThresholds.Assign
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   Source - Description for this parameter
 See Also
@@ -3817,7 +3777,6 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   This type is used by (for reference):
     TJvTFDays.OnMoveCol
     TJvTFDays.OnSizeCol
@@ -3838,7 +3797,6 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   This type is used by (for reference):
     TJvTFDays.OnDrawApptBar
     TJvTFDaysPrinter.OnDrawApptBar
@@ -3858,7 +3816,6 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   This type is used by (for reference):
     TJvTFDays.OnDrawAppt
     TJvTFDaysPrinter.OnDrawAppt
@@ -3877,7 +3834,6 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   This type is used by (for reference):
     TJvTFDays.OnDrawCorner
     TJvTFDaysPrinter.OnDrawCorner
@@ -3895,7 +3851,6 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   This type is used by (for reference):
     TJvTFDays.OnDrawDataCell
     TJvTFDaysPrinter.OnDrawDataCell
@@ -3918,7 +3873,6 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   This type is used by (for reference):
     TJvTFDays.OnDrawColHdr
     TJvTFDays.OnDrawGroupHdr
@@ -3940,12 +3894,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvTFDrawPicInfo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
 @@TJvTFDropApptEvent
 <TITLE TJvTFDropApptEvent type>
 <COMBINE TJvTFDays.OnDropAppt>
@@ -3954,12 +3902,30 @@ Description
 <TITLE TJvTFFailEditorEvent type>
 <COMBINE TJvTFDays.OnFailEditor>
 ----------------------------------------------------------------------------------------------------
+@@TJvTFGetDaysApptDrawInfoEvent
+<TITLE TJvTFGetDaysApptDrawInfoEvent type>
+Summary
+  Event type used to custom draw an appointment. 
+Description
+  This type is used for the TJvTFDays.OnGetApptDrawInfo event. You can change the properties of the
+  DrawInfo object in order to customize the appearance of the appointment. Please see
+  TJvTFDaysApptDrawInfo for a list of properties that you can change.
+Parameters
+  Sender   - The TJvTFdays control that called the event.
+  Appt     - The appointment that is to be drawn.
+  DrawInfo - Specifies the default appearance of the appointment.
+See Also
+  TJvTFDaysApptDrawInfo
+----------------------------------------------------------------------------------------------------
 @@TJvTFGrabStyle
 <TITLE TJvTFGrabStyle type>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 @@TJvTFGrabStyle.gs3D
   Description for gs3D
 @@TJvTFGrabStyle.gsFlat
@@ -3994,6 +3960,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 @@TJvTFRowHdrType.rhGrid
   Description for rhGrid
 @@TJvTFRowHdrType.rhFancy
@@ -4008,10 +3977,8 @@ Description
 @@TJvTFSelCellAttr.Assign
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   Source - Description for this parameter
 See Also
@@ -4051,6 +4018,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 @@TJvTFSelCellStyle.scsSolid
   Description for scsSolid
 @@TJvTFSelCellStyle.scsFrame
@@ -4067,7 +4037,6 @@ Description
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   This type is used by (for reference):
     TJvTFDays.OnShadeCell
     TJvTFDaysPrinter.OnShadeCell
@@ -4090,6 +4059,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 @@TJvTFTimeStampStyle.tssNone
   Description for tssNone
 @@TJvTFTimeStampStyle.tssFullI
@@ -4104,7 +4076,6 @@ Description
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   This type is used by (for reference):
     TJvTFDays.OnUpdateColTitles
     TJvTFDaysPrinter.OnUpdateColTitles
@@ -4116,13 +4087,3 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFVisibleScrollBars
-<TITLE TJvTFVisibleScrollBars type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = set of ( vsbHorz , vsbVert ) ; - for reference)

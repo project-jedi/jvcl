@@ -187,7 +187,7 @@ Summary
 Description
   Use Solid to specify whether the progress bar is solid or segmented. If Solid is set to true, the
   progres bar is solid and the GradientBlocks property is ignored. If Solid is set to false, the progress
-  bar is segmented; GradientBlocks then indicates whether the progress blocks are filled using a
+  bar is segmented. GradientBlocks then indicates whether the progress blocks are filled using a
   two-color gradient fill or using one color.
 See Also
   GradientBlocks
@@ -258,7 +258,7 @@ See Also
 Summary
   Updates the in-memory bitmap of the progress bar.
 Description
-  TJvSpecialProgress uses double buffering to reduces the amount of flicker when the control repaints;
+  TJvSpecialProgress uses double buffering to reduces the amount of flicker when the control repaints.
   The control paints itself to an in-memory bitmap that is then used to \paint the window.
   UpdateBuffer is called automatically when the in-memory bitmap needs to be updated.
 See Also
@@ -269,7 +269,7 @@ Summary
   Recalculates the position of the progress bar.
 Description
   UpdateTaille is called automatically when a property of the progress control changes. UpdateTaille
-  determines whether the position of the progress bar has changed; if so, it calls UpdateBuffer.
+  determines whether the position of the progress bar has changed. If so, it calls UpdateBuffer.
 See Also
   UpdateBuffer
 ----------------------------------------------------------------------------------------------------

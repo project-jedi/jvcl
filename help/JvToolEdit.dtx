@@ -44,11 +44,11 @@ Description
   Call PaintComboEdit to paint the edit box of a combo edit control.
 
   If parameter ACanvas is nil then ACanvas
-  is set to a newly created TCanvas object; it is the responsibility of the caller of PaintComboEdit to
+  is set to a newly created TCanvas object. It is the responsibility of the caller of PaintComboEdit to
   free that object.
 
   PaintComboEdit returns the value of parameter StandardPaint. If StandardPaint is set to true, then only
-  some initialization is done but no painting. Thus in this case the caller should call the standard
+  some initialization is done but no painting; thus, in this case the caller should call the standard
   paint method of the control.
 Parameters
   Editor        - The combo edit control.
@@ -63,16 +63,16 @@ See Also
 @@PaintEdit
 <TITLE PaintEdit function>
 Summary
-  Paints the edit box of a edit control.
+  Paints the edit box of an edit control.
 Description
-  Call PaintEdit to paint the edit box of a edit control.
+  Call PaintEdit to paint the edit box of an edit control.
 
   If parameter ACanvas is nil then ACanvas
-  is set to a newly created TCanvas object; it is the responsibility of the caller of PaintEdit to
+  is set to a newly created TCanvas object. It is the responsibility of the caller of PaintEdit to
   free that object.
 
   PaintEdit returns the value of parameter StandardPaint. If StandardPaint is set to true, then only
-  some initialization is done but no painting. Thus in this case the caller should call the standard
+  some initialization is done but no painting; thus, in this case the caller should call the standard
   paint method of the control.
 Parameters
   Editor            - The edit control.
@@ -227,7 +227,7 @@ Description
 Summary
   Specifies whether the button is always enabled.
 Description
-  If you set AlwaysEnable to true, an user can always click the button of the combo edit control,
+  If you set AlwaysEnable to true, a user can always click the button of the combo edit control,
   even if ReadOnly is set to true.
 See Also
   ReadOnly
@@ -331,14 +331,14 @@ See Also
 Summary
   Specifies the bitmap that appears on the button of the combo edit control. (Obsolete.)
 Description
-  Glyph is maintained for compatibility with older versions of TJvCustomComboEdit and it's
+  Glyph is maintained for compatibility with older versions of TJvCustomComboEdit and its
   descendant classes. It is not used.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.GlyphKind
 Summary
   Specifies the kind of glyph for the edit button. (Obsolete.)
 Description
-  GlyphKind is maintained for compatibility with older versions of TJvCustomComboEdit and it's
+  GlyphKind is maintained for compatibility with older versions of TJvCustomComboEdit and its
   descendant classes. It is not used.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ImageIndex
@@ -375,7 +375,7 @@ See Also
 Summary
   Indicates the number of images that are in the graphic specified in the Glyph property. (Obsolete.)
 Description
-  NumGlyphs is maintained for compatibility with older versions of TJvCustomComboEdit and it's
+  NumGlyphs is maintained for compatibility with older versions of TJvCustomComboEdit and its
   descendant classes. It is not used.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.OnButtonClick
@@ -532,9 +532,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.Formatting
 Summary
-  Indicates whether the control is setting it's text.
+  Indicates whether the control is setting its text.
 Description
-  The control checks Formatting internally to determine whether it is busy formatting it's text.
+  The control checks Formatting internally to determine whether it is busy formatting its text.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.GetDateMask
 Summary
@@ -599,7 +599,7 @@ Summary
 Description
   Use StartOfWeek to specify the day of the left-most column in the pop-up calendar.
 
-  The default value of StartOfWeek is "Mon", ie Monday.
+  The default value of StartOfWeek is "Mon" (Monday).
 See Also
   Weekends
 ----------------------------------------------------------------------------------------------------
@@ -641,7 +641,7 @@ Description
   Use Weekends to specify the days marked as weekend days in the pop-up calendar.
 
   Weekend days are displayed in the color specified by WeekendColor.
-  The default value of Weekends is [Sun], ie only Sunday.
+  The default value of Weekends is [Sun] (i.e., only Sunday)
 See Also
   StartOfWeek, WeekendColor
 ----------------------------------------------------------------------------------------------------
@@ -774,10 +774,10 @@ Summary
   Occurs after the dialog has been shown.
 Description
   Write an OnAfterDialog event handler to do something after the dialog has been shown. Action holds
-  the result of the file or directory selection process, ie whether the user selected a file or
-  directory and pressed OK or cancelled it by pressing Cancel.
+  the result of the file or directory selection process (i.e, whether the user selected a file or
+  directory and pressed OK or cancelled it by pressing Cancel).
 
-  By altering Action you can alter the result of the file or directory selection (ie, if the user
+  By altering Action you can alter the result of the file or directory selection (i.e., if the user
   pressed the Cancel button then Action will be initially false. By setting it to true,
   the combo edit control will act as if the user selected the OK button). By changing Name you
   can alter the selected name.
@@ -1023,6 +1023,6 @@ See Also
   Uses either 2 or 4 digits for the year, depending on the number of digits used to display the year
   in the short date format specified in the Windows control panel.
 @@TYearDigits.dyFour
-  Uses 4 digits for the year, ie 1999, 2000, 2001 etc.
+  Uses 4 digits for the year (e.g., 1999, 2000, 2001 etc.)
 @@TYearDigits.dyTwo
-  Uses 2 digits for the year, ie 99, 00, 01 etc.
+  Uses 2 digits for the year (e.g. 99, 00, 01 etc.)

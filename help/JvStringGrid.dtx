@@ -31,7 +31,7 @@ Description
   No comparison.
 @@TJvSortType.stAutomatic
   The comparison function automatically determines the type of the strings when comparing two strings.
-  If both strings represent a integer, floating-point value or a date, then the two strings are compared
+  If both strings represent an integer, floating-point value or a date, then the two strings are compared
   as integer, floating-point value or data, respectively. Otherwise the two strings are compared as \string.
 @@TJvSortType.stClassic
   The strings in the sort column are sorted without case-sensitivity.
@@ -149,7 +149,7 @@ Summary
 Description
   Call DefaultDrawCell from an OnDrawCell event handler to draw the text in a column cell. If the
   OnGetCellAlignment event handler is assigned, DefaultDrawCell fires the OnGetCellAlignment event
-  to get the alignment for the text; otherwise it uses the Alignment property to align the cell text.
+  to get the alignment for the text. Otherwise it uses the Alignment property to align the cell text.
 Parameters
   AColumn - Indicates the column index of the cell that should be drawn.
   ARow    - Indicates the row index of the cell that should be drawn.
@@ -208,7 +208,7 @@ Summary
 Description
   Use GetCellAlignment to get the alignment of a cell in the grid. If the OnGetCellAlignment event
   handler is assigned, GetCellAlignment fires the OnGetCellAlignment event to get the alignment for
-  the cell; otherwise it returns the value of the Alignment property.
+  the cell. Otherwise it returns the value of the Alignment property.
 Parameters
   AColumn - The column index of the cell.
   ARow    - The row index of the cell that should be drawn.
@@ -240,9 +240,9 @@ See Also
 Summary
   Hides a complete column of the grid.
 Description
-  Call HideCol to hide the column at position Index. This is done by setting it's ColWidth to -1.
+  Call HideCol to hide the column at position Index. This is done by setting its ColWidth to -1.
 Note
-  Calling this method repeatedly does nothing (the hidden column retains it's Index even if it's hidden)
+  Calling this method repeatedly does nothing (the hidden column retains its Index even if it's hidden)
 Parameters
   Index - The index of the column to hide.
 See Also
@@ -252,9 +252,9 @@ See Also
 Summary
   Hides a complete row of the grid.
 Description
-  Call HideRow to hide the column at position Index. This is done by setting it's ColHeight to -1.
+  Call HideRow to hide the column at position Index. This is done by setting its ColHeight to -1.
 Note
-  Calling this method repeatedly does nothing (the hidden row retains it's Index even if it's hidden)
+  Calling this method repeatedly does nothing (the hidden row retains its Index even if it's hidden)
 Parameters
   Index - The index of the row to hide.
 See Also
@@ -333,7 +333,7 @@ Summary
   Indicates whether a specific cell is hidden.
 Description
   Call IsHidden to determine whether a specific cell, as specified by the ACol and ARow parameters,
-  is hidden. A cell is determined to be hidden, if it's RowHeight or ColWidth is less than 0.
+  is hidden. A cell is determined to be hidden, if its RowHeight or ColWidth is less than 0.
 Parameters
   ACol - The column coordinate of the cell.
   ARow - The row coordinate of the cell.
@@ -630,7 +630,7 @@ Summary
 Description
   Call SortGrid to sort the rows in the grid on the value of the \string in the column specified by Column.
 
-  Set Ascending to True for an ascending sort, set Ascending to False for an descending sort.
+  Set Ascending to True for an ascending sort, set Ascending to False for a descending sort.
 
   Set Fixed to True to include the fixed rows in the sort. Set Fixed to False to exclude the fixed rows
   in the sort.
@@ -645,7 +645,7 @@ Description
   Value              Meaning
   -----              -------
   stAutomatic        The comparison function automatically determines the type of the strings when comparing
-                      two strings. If both strings represent a integer, floating-point value or a date, then
+                      two strings. If both strings represent an integer, floating-point value or a date, then
                       the two strings are compared as integer, floating-point value or data, respectively.
                       Otherwise the two strings are compared as \string.
   stClassic          The strings in the sort column are sorted without case-sensitivity.

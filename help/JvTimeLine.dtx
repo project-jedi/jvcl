@@ -170,7 +170,7 @@ Description
   Set ItemHeight to control the height of the items that appear on the timeline control. The ItemHeight
   property is the vertical size in pixels of the individual items.
 
-  Note that an image associated with an item is placed above the caption of that item, thus if you use
+  Note that an image associated with an item is placed above the caption of that item; thus, if you use
   images to display with the items, make sure that ItemHeight is big enough to hold both the image and
   the caption.
 ----------------------------------------------------------------------------------------------------
@@ -438,7 +438,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTimeLine.SaveToFile
 Summary
-  Saves a the timeline view to the file specified in FileName.
+  Saves the timeline view to the file specified in FileName.
 Description
   Use the SaveToFile method to store timeline view data to a text file. The items can later be reloaded
   from the file into a new timeline view object using the LoadFromFile method.
@@ -531,7 +531,7 @@ See Also
 Summary
   Determines whether the timeline view is standard or owner-draw.
 Description
-  Use Style to specify whether the timeline view displays the items in an standard way or displays the
+  Use Style to specify whether the timeline view displays the items in a standard way or displays the
   items in some nonstandard way. In the latter, you must write the code to paint items in the timeline
   view.
 See Also
@@ -691,7 +691,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeItem.Date
 Summary
-  Specifies the date associated with an timeline item.
+  Specifies the date associated with a timeline item.
 Description
   Use \Date to specify the horizontally position of the timeline item in the timeline view.
 See Also
@@ -703,7 +703,7 @@ Summary
 Description
   Use Enabled to enable or disable a timeline item. If Enabled is True, the Click method is called when
   the user selects the item with the mouse. If Enabled is False, the timeline item appears dimmed and
-  the user cannot select it. However, calling the Click method works even when Enabled is False.
+  the user cannot select it, but calling the Click method works even when Enabled is False.
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeItem.Hint
 Summary
@@ -788,8 +788,8 @@ Summary
   Specifies the distance, in pixels, from the top of the timeline view to the top of the item.
 Description
   Use Top to vertically position the timeline item within the timeline view. Items can only be placed
-  at certain vertical positions, called levels. Thus, if you set Top to a value, that isn't equal to
-  a vertical position of a level, then the value of Top is changed by lowering it's value, until it's
+  at certain vertical positions, called levels; thus, if you set Top to a value that isn't equal to
+  a vertical position of a level then the value of Top is changed by lowering its value, until it is
   equal to a vertical position.
 
   Alternatively, you could set property Level.
@@ -912,13 +912,13 @@ Description
 @@TJvTimeLineStyle.tlOwnerDrawFixed
   The timeline view is owner-drawn, but each item in the timeline view has the
   height specified by the <LINK TJvCustomTimeLine.ItemHeight,ItemHeight> property. Each time an item is
-  displayed in an tlOwnerDrawFixed timeline control, the <LINK TJvCustomTimeLine.OnDrawItem,OnDrawItem>
+  displayed in a tlOwnerDrawFixed timeline control, the <LINK TJvCustomTimeLine.OnDrawItem,OnDrawItem>
   event occurs. The event handler for <LINK TJvCustomTimeLine.OnDrawItem,OnDrawItem> draws the specified
   item. The <LINK TJvCustomTimeLine.ItemHeight,ItemHeight> property determines the height of each of the
   items.
 @@TJvTimeLineStyle.tlOwnerDrawVariable
   The timeline view is owner-drawn, and items in the timeline control can be of
-  varying heights. Each time an item is displayed in an tlOwnerDrawVariable
+  varying heights. Each time an item is displayed in a tlOwnerDrawVariable
   timeline control, two events occur. The first is the <LINK TJvCustomTimeLine.OnMeasureItem,OnMeasureItem>
   event. The code for the <LINK TJvCustomTimeLine.OnMeasureItem,OnMeasureItem> handler can set the height
   of each item. Then the <LINK TJvCustomTimeLine.OnDrawItem,OnDrawItem> event occurs. The code for the
