@@ -41,9 +41,6 @@ unit JvDBGridFooter;
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -159,9 +156,14 @@ type
     property SizeGrip default False;
     property OnCalculate: TCalculateEvent read FOnCalculate write FOnCalculate;
     property OnDisplayText: TDisplayTextEvent read FOnDisplayText write FOnDisplayText;
-  end;
+  end;     
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 { TFooterColumn }
 
@@ -588,7 +590,7 @@ begin
       Panels.EndUpdate;
     end;
   end;
-end;
+end;  
 
 {$IFDEF UNITVERSIONING}
 const
@@ -598,16 +600,12 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
-{$ENDIF UNITVERSIONING}
 
 initialization
-  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
 
 finalization
-  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 end.
