@@ -169,7 +169,7 @@ type
     property Constraints;
     {$IFDEF VCL}
     property DragCursor;
-    {$ENDIF}
+    {$ENDIF VCL}
     property DragMode;
     property Font;
     property ParentColor;

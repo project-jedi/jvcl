@@ -34,10 +34,10 @@ uses
   Classes, SysUtils,
   {$IFDEF VCL}
   Windows, Controls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QWindows,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
   {$IFDEF VCL}

@@ -199,7 +199,7 @@ begin
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Result := libc.system(PChar(GetEnvironmentVariable('BROWSER') + ' ' + URI+'&'))<> -1;
-  {$ENDIF}
+  {$ENDIF LINUX}
 end;
 
 //=== TOwnerPointerList ======================================================

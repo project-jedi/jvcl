@@ -65,7 +65,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QConsts,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvTypes, JvFooter, JvDsgnConsts;
 
 //=== TJvFooterEditor ========================================================

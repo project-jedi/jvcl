@@ -59,7 +59,7 @@ type
     procedure CNDropDownClosed(var Msg: TMessage); message CN_DROPDOWNCLOSED;
     {$IFNDEF COMPILER6_UP}
     procedure BuildButtons(AMenu: TMainMenu);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -176,7 +176,7 @@ begin
   for I := 0 to FMenu.Items.Count - 1 do
     Buttons[i].MenuItem := FMenu.Items[I];
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvToolBar.SetMenu(const Value: TMainMenu);
 begin

@@ -38,7 +38,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
   JvTypes,
   {$ENDIF USEJVCL}

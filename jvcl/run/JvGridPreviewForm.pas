@@ -106,10 +106,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 var
   RowHeights: array of Integer;

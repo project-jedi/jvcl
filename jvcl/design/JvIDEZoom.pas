@@ -38,7 +38,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QMenus,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   Classes, SysUtils;
 
 procedure RegisterZoom;

@@ -35,10 +35,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QStdCtrls, Types, QWindows,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
   JvComponent,
   {$ENDIF USEJVCL}

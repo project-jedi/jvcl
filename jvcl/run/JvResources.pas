@@ -1697,9 +1697,9 @@ resourcestring
   RsCl3DLight = 'Highlight 3D elements';
   RsClInfoText = 'Tooltip text';
   RsClInfoBk = 'Tooltip background';
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-// VisualCLX system colors
+  // VisualCLX system colors
   RsClText = 'Edit text';
   RsClForeground = 'Window text';
   RsClBrightText = 'Bright text';
@@ -1763,7 +1763,6 @@ resourcestring
   RsClDesktop = 'Desktop background';
   RsClInfoBk = 'Tooltip background';
   {$ENDIF VisualCLX}
-
 
 //=== JvUrlListGrabber.pas ===================================================
 resourcestring

@@ -35,10 +35,10 @@ uses
   SysUtils, Classes, Windows,
   {$IFDEF VCL}
   Controls, Forms, Menus,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, QControls, QForms, QMenus,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
 type
@@ -105,12 +105,12 @@ function TJvWinHelp.GetOwnerHandle: THandle;
 begin
   Result := 0;
   if (FOwner is TWinControl) and not (csDestroying in TWinControl(FOwner).ComponentState) then
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     Result := TWinControl(FOwner).Handle
-  {$ENDIF}
-  {$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     Result := QWidget_winID(FOwner.Handle);
-  {$ENDIF}
+    {$ENDIF VisualCLX}
   else
   if Application <> nil then
   begin

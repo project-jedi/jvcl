@@ -38,8 +38,10 @@ uses
   QForms, QGraphics, QImgList, QDialogs, QControls, Types, ClxEditors,
   {$ENDIF}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignMenus
-  {$IFDEF VCL}, VCLEditors {$ENDIF VCL};
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ENDIF VCL}
+  DesignIntf, DesignEditors, DesignMenus;
   {$ELSE}
   DsgnIntf;
   {$ENDIF COMPILER6_UP}

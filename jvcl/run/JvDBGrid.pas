@@ -26,7 +26,9 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
+
 unit JvDBGrid;
 
 interface
@@ -574,7 +576,7 @@ begin
   TEdit(Result).OnChange := EditChanged;
   {$ELSE}
   Result := inherited CreateEditor;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 function TJvDBGrid.GetTitleOffset: Byte;

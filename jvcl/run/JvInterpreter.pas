@@ -165,6 +165,8 @@ Upcoming JVCL 3.00
    - (rom) added fix for default properties from ivan_ra  26 Dec 2003
 }
 
+{$I jvcl.inc}
+
 {.$DEFINE JvInterpreter_DEBUG}
 
 {$IFDEF VCL}
@@ -379,8 +381,9 @@ type
     function GetTyp: Word;
   end;
 
-//dejoy change begin
-//move from implementation section to  interface section
+  //dejoy change begin
+  //move from implementation section to  interface section
+
   { interpreter function }
   TJvInterpreterSrcFunction = class(TJvInterpreterIdentifier)
   private
@@ -401,7 +404,7 @@ type
     function CallDll(Args: TJvInterpreterArgs): Variant;
   end;
 
-//dejoy change end
+  //dejoy change end
 
   TCallConvention = set of (ccFastCall, ccStdCall, ccCDecl, ccDynamic,
     ccVirtual, ccClass);

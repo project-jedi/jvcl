@@ -44,7 +44,7 @@ uses
   DesignEditors, DesignIntf,
   {$IFDEF VCL}
   DesignWindows,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
