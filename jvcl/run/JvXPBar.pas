@@ -21,6 +21,10 @@ Contributor(s):dejoy
   --add GetItemClass in TJvXPBarItems.
   --add GetBarItemsClass in TJvXPCustomWinXPBar.
 
+Contributor(s):dierk
+  //dierk 2004-4-23
+  --add RoundedItemFrame property TJvXPCustomWinXPBar (Integer>0 is the edge radius)
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -48,7 +52,7 @@ uses
   Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList, QWindows,
   QTypes, JvTypes, QExtCtrls,
 {$ENDIF VisualCLX}
-  JvXPCore, JvXPCoreUtils;
+  JvConsts, JvXPCore, JvXPCoreUtils;
 
 type
   { Warning: Never change order of enumeration because of
@@ -336,6 +340,7 @@ type
     FHeaderHeight: integer;
     FStoredHint: string;
     FShowItemFrame: boolean;
+    FRoundedItemFrame: Integer;  // DS
     function IsFontStored: Boolean;
     procedure FontChange(Sender: TObject);
     procedure SetCollapsed(Value: Boolean);
@@ -405,7 +410,8 @@ type
     property RollStep: TJvXPBarRollStep read FRollStep write FRollStep default 3;
     property ShowLinkCursor: Boolean read FShowLinkCursor write FShowLinkCursor default True;
     property ShowRollButton: Boolean read FShowRollButton write SetShowRollButton default True;
-    property ShowItemFrame: boolean read FShowItemFrame write FShowItemFrame default False;
+    property ShowItemFrame: boolean read FShowItemFrame write FShowItemFrame;
+    property RoundedItemFrame: Integer read FRoundedItemFrame write FRoundedItemFrame default 1; //DS
 
     property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange write
       FAfterCollapsedChange;
@@ -460,6 +466,7 @@ type
     property ShowLinkCursor;
     property ShowRollButton;
     property ShowItemFrame;
+    property RoundedItemFrame;
 
     property AfterCollapsedChange;
     property BeforeCollapsedChange;
@@ -522,7 +529,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
   end;
-
+procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
 implementation
 {$IFDEF VCL}
 uses
@@ -812,8 +819,13 @@ begin
         if ShowItemFrame then
         begin
           Brush.Color := lBar.Colors.FocusedColor;
-          FillRect(Rect);
-          Frame3D(ACanvas, Rect, clHighlight, clHighlight, 1)
+          if lBar.RoundedItemFrame>0 then
+            RoundedFrame(ACanvas, Rect, clHighlight, lBar.RoundedItemFrame)
+          else
+          begin
+            FillRect(Rect);
+            Frame3D(ACanvas, Rect, clHighlight, clHighlight, 1)
+          end;
         end;
       end
       else if dsClicked in State then
@@ -821,8 +833,13 @@ begin
         if ShowItemFrame then
         begin
           Brush.Color := lBar.Colors.CheckedColor;
-          FillRect(Rect);
-          Frame3D(ACanvas, Rect, clHotLight, clHotLight, 1)
+          if lBar.RoundedItemFrame>0 then
+            RoundedFrame(ACanvas, Rect, clHighlight, lBar.RoundedItemFrame)
+          else
+          begin
+            FillRect(Rect);
+            Frame3D(ACanvas, Rect, clHotLight, clHotLight, 1)
+          end;
         end;
       end
       else
@@ -2152,6 +2169,7 @@ begin
   Result := False; // use default hint window
 end;
 
+
 {$IFNDEF USEJVCL}
 
 procedure TJvXPCustomWinXPBar.CMHintShow(var Msg: TCMHintShow);
@@ -2266,6 +2284,29 @@ function TJvXPBarItemActionLink.DoShowHint(var HintStr: string): Boolean;
 
     inherited DblClick;
   end;
+
+
+procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
+begin
+  // Draw Frame with round edges
+  with Canvas, ARect do
+  begin
+    Pen.Color := AColor;
+    Dec(Right); Dec(Bottom);
+    Polygon([
+      Point(Left + R, Top),
+      Point(Right - R, Top),
+      Point(Right, Top + R),
+      Point(Right, Bottom - R),
+      Point(Right - R, Bottom),
+      Point(Left + R, Bottom),
+      Point(Left, Bottom - R),
+      Point(Left, Top + R),
+      Point(Left + R, Top)
+    ]);
+    Inc(Right); Inc(Bottom);
+  end;
+end;
 
 end.
 
