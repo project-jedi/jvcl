@@ -296,22 +296,6 @@ Description
 @@TDiskStyles
 <TITLE TDiskStyles type>
 <COMBINE TDiskStyle>
-----------------------------------------------------------------------------------------------------
-@@TDropEvent
-<TITLE TDropEvent type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-  This type is used by (for reference):
-    Nothing in this unit.
-Parameters
-  Sender - Description for this parameter
-  Pos    - Description for this parameter
-  Value  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ---------------------------------------------------------------------------------------------------
 @@TFileInformation
 <TITLE TFileInformation type>
@@ -492,6 +476,38 @@ Description
   Description for omFile
 @@TJvOutputMode.omStream
   Description for omStream
+----------------------------------------------------------------------------------------------------
+@@TJvRegKey
+<TITLE TJvRegKey type>
+Summary
+  Indicates a root key.
+Description
+  Use the TJvRegKey type to specify a specific root key.
+  
+  TJvRegKeys is a set of TJvRegKey values.
+@@TJvRegKey.hkClassesRoot
+  The HKEY_CLASSES_ROOT key, used to define types (or classes) of documents and the properties 
+  associated with those types.
+@@TJvRegKey.hkCurrentUser
+  The HKEY_CURRENT_USER key, used for preferences of the current user.
+@@TJvRegKey.hkLocalMachine
+  The HKEY_LOCAL_MACHINE key, used to define the physical state of the computer,
+@@TJvRegKey.hkUsers
+  The HKEY_USERS key, used for defining the default user configuration for new users on the local 
+  computer and the user configuration for the current user.
+@@TJvRegKey.hkCurrentConfig
+  The HKEY_CURRENT_CONFIG key, contains information about the current hardware profile of the
+  local computer system.
+@@TJvRegKey.hkPerformanceData
+  The HKEY_PERFORMANCE_DATA key, allows you to access performance data.
+  Not supported on Windows Me/98/95.
+@@TJvRegKey.hkDynData
+  The HKEY_DYN_DATA key, allows you to collect performance data.
+  Only supported on Windows Me/98/95.
+----------------------------------------------------------------------------------------------------
+@@TJvRegKeys
+<TITLE TJvRegKeys type>
+<COMBINE TJvRegKey>
 ----------------------------------------------------------------------------------------------------
 @@TJvRestart
 <TITLE TJvRestart type>
