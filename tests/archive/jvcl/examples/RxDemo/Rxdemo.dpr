@@ -22,7 +22,7 @@ begin
   Application.Initialize;
 {$ENDIF}
   Application.Title := 'RX Demo';
-  RxErrorIntercept;
+  JvErrorIntercept;
   DBErrorIntercept;
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;

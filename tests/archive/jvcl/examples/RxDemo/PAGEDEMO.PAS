@@ -6,7 +6,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, DBCtrls, DBTables, DB, Mask, ExtCtrls, Grids,
   DBGrids, JvDBCtrl, JvQuery, JvPlacemnt, JvToolEdit, JvPageMngr, JvxCtrls,
-  JvDBComb;
+  JvDBComb, JvComponent;
 
 type
   TClientAssistanceMode = (camNew, camEdit, camDelete, camView);

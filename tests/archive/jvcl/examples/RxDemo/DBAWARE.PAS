@@ -6,7 +6,8 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, DB, DBTables, Grids, DBGrids, JvDBCtrl, ExtCtrls,
   TabNotBk, StdCtrls, Spin, DBCtrls, JvDBQBE, JvLookup, Mask, JvDBIndex,
-  Buttons, JvDBFilter, JvPlacemnt, JvQuery, JvPicclip, JvxCtrls, ComCtrls;
+  Buttons, JvDBFilter, JvPlacemnt, JvQuery, JvPicclip, JvxCtrls, ComCtrls,
+  JvComponent;
 
 type
   TDBAwareForm = class(TForm)

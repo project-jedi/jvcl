@@ -4,7 +4,8 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons, JvxCtrls, ExtCtrls, JvxAnimate;
+  Forms, Dialogs, StdCtrls, Buttons, JvxCtrls, ExtCtrls, JvxAnimate,
+  JvComponent;
 
 type
   TAboutForm = class(TForm)

@@ -1,6 +1,6 @@
 object ClientAssistant: TClientAssistant
-  Left = 197
-  Top = 98
+  Left = 253
+  Top = 180
   BorderStyle = bsDialog
   Caption = 'TJvPageManager  Demo'
   ClientHeight = 335
@@ -123,8 +123,9 @@ object ClientAssistant: TClientAssistant
         Height = 53
         AutoSize = False
         Caption = 
-          'This is the TJvPageManager  component demonstration form. You can u' +
-          'se '#39'Next'#39' or '#39'Back'#39' buttons to move between operation stadies.'
+          'This is the TJvPageManager  component demonstration form. You ca' +
+          'n use '#39'Next'#39' or '#39'Back'#39' buttons to move between operation stadies' +
+          '.'
         WordWrap = True
       end
       object Label16: TLabel
@@ -433,7 +434,7 @@ object ClientAssistant: TClientAssistant
           'nt to change selection criteria.'
         WordWrap = True
       end
-      object Grid: TJvDBGrid 
+      object Grid: TJvDBGrid
         Left = 4
         Top = 60
         Width = 485
@@ -582,7 +583,7 @@ object ClientAssistant: TClientAssistant
         Caption = 'Interests'
         FocusControl = EditINTERESTS
       end
-      object RxLabel1: TJvxLabel 
+      object RxLabel1: TJvxLabel
         Left = 142
         Top = 17
         Width = 293
@@ -719,7 +720,7 @@ object ClientAssistant: TClientAssistant
         TabOrder = 13
         OnChange = EditChange
       end
-      object EditBIRTH_DATE: TJvDBDateEdit 
+      object EditBIRTH_DATE: TJvDBDateEdit
         Left = 142
         Top = 177
         Width = 110
@@ -753,7 +754,7 @@ object ClientAssistant: TClientAssistant
         DataSource = ClientsDS
         TabOrder = 15
       end
-      object EditDATE_OPEN: TJvDBDateEdit 
+      object EditDATE_OPEN: TJvDBDateEdit
         Left = 271
         Top = 55
         Width = 93
@@ -800,7 +801,7 @@ object ClientAssistant: TClientAssistant
     Left = 176
     Top = 304
   end
-  object SearchQuery: TJvQuery 
+  object SearchQuery: TJvQuery
     DatabaseName = 'DBDEMOS'
     SQL.Strings = (
       'SELECT * FROM '
@@ -924,7 +925,7 @@ object ClientAssistant: TClientAssistant
     Left = 208
     Top = 304
   end
-  object FormStorage: TJvFormStorage 
+  object FormStorage: TJvFormStorage
     StoredProps.Strings = (
       'DoSearchBtn.Checked'
       'SkipSearchBtn.Checked'
@@ -933,7 +934,7 @@ object ClientAssistant: TClientAssistant
     Left = 4
     Top = 294
   end
-  object PageManager: TJvPageManager 
+  object PageManager: TJvPageManager
     PageOwner = Notebook
     NextBtn = NextBtn
     PriorBtn = BackBtn
@@ -941,23 +942,23 @@ object ClientAssistant: TClientAssistant
     OnGetNextPage = PageManagerGetNextPage
     Left = 32
     Top = 294
-    object ToDo: TJvPageProxy 
+    object ToDo: TJvPageProxy
       PageName = 'ToDo'
       OnLeave = ToDoLeave
     end
-    object SearchConfirm: TJvPageProxy 
+    object SearchConfirm: TJvPageProxy
       PageName = 'SearchConfirm'
     end
-    object SearchParams: TJvPageProxy 
+    object SearchParams: TJvPageProxy
       PageName = 'SearchParams'
       OnLeave = SearchParamsLeave
     end
-    object ClientsBrowse: TJvPageProxy 
+    object ClientsBrowse: TJvPageProxy
       PageName = 'ClientsBrowse'
       OnLeave = ClientsBrowseLeave
       OnShow = ClientsBrowseShow
     end
-    object ClientEdit: TJvPageProxy 
+    object ClientEdit: TJvPageProxy
       PageName = 'ClientEdit'
       OnEnter = ClientEditEnter
       OnLeave = ClientEditLeave

@@ -1,6 +1,6 @@
 object ToolsForm: TToolsForm
-  Left = 184
-  Top = 170
+  Left = 302
+  Top = 187
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'RX Tools'
@@ -27,7 +27,6 @@ object ToolsForm: TToolsForm
     Width = 504
     Height = 313
     Align = alClient
-    PageIndex = 1
     TabFont.Charset = DEFAULT_CHARSET
     TabFont.Color = clBtnText
     TabFont.Height = -11
@@ -592,6 +591,7 @@ object ToolsForm: TToolsForm
           Height = 21
           Alignment = taRightJustify
           ButtonHint = 'Calculator...|'
+          ButtonFlat = False
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
