@@ -191,9 +191,9 @@ type
     FOnColorChange: TNotifyEvent;
     FClickColorButton:TJvClickColorButtonType;
 
+    FOnColorButtonClick: TNotifyEvent;
     {$IFDEF VCL}
     FColorDialogOptions: TColorDialogOptions;
-    FOnColorButtonClick: TNotifyEvent;
     procedure SetColorDialogOptions(const Value: TColorDialogOptions);
     {$ENDIF VCL}
 
