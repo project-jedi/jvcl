@@ -12,13 +12,16 @@ The Original Code is: JvDBUtils.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
+
+Contributors:
+tia
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -27,15 +30,14 @@ Known Issues:
 
 unit JvDBUtils;
 
-
 interface
 
-uses {$IFDEF WIN32} Windows, Registry, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Classes, SysUtils, DB, {$IFNDEF COMPILER3_UP} DBTables, {$ENDIF} IniFiles;
+uses{$IFDEF WIN32}Windows, Registry, {$ELSE}WinTypes, WinProcs, {$ENDIF}
+  Classes, SysUtils, DB, {$IFNDEF COMPILER3_UP}DBTables, {$ENDIF}IniFiles;
 
 type
 
-{ TJvLocateObject }
+  { TJvLocateObject }
 
   TJvLocateObject = class(TObject)
   private
@@ -121,10 +123,10 @@ const
 const
   { Server Date formats}
   sdfStandard16 = '''"''mm''/''dd''/''yyyy''"'''; {"mm/dd/yyyy"}
-  sdfStandard32 = '''''''dd/mm/yyyy''''''';       {'dd/mm/yyyy'}
-  sdfOracle     = '"TO_DATE(''"dd/mm/yyyy"'', ''DD/MM/YYYY'')"';
-  sdfInterbase  = '"CAST(''"mm"/"dd"/"yyyy"'' AS DATE)"';
-  sdfMSSQL      = '"CONVERT(datetime, ''"mm"/"dd"/"yyyy"'', 103)"';
+  sdfStandard32 = '''''''dd/mm/yyyy'''''''; {'dd/mm/yyyy'}
+  sdfOracle = '"TO_DATE(''"dd/mm/yyyy"'', ''DD/MM/YYYY'')"';
+  sdfInterbase = '"CAST(''"mm"/"dd"/"yyyy"'' AS DATE)"';
+  sdfMSSQL = '"CONVERT(datetime, ''"mm"/"dd"/"yyyy"'', 103)"';
 
 const
   ServerDateFmt: string[50] = sdfStandard16;
@@ -136,32 +138,32 @@ type
 
 const
 {$IFNDEF COMPILER4_UP}
-  {$IFDEF WIN32}
+{$IFDEF WIN32}
   ftBlobTypes = [ftBlob..ftTypedBinary];
-  {$ELSE}
+{$ELSE}
   ftBlobTypes = [ftBlob..ftGraphic];
-  {$ENDIF}
+{$ENDIF}
 {$ELSE}
   ftBlobTypes = [Low(TBlobType)..High(TBlobType)];
 {$ENDIF COMPILER3_UP}
-{$IFDEF COMPILER35_UP} {$NODEFINE ftBlobTypes} {$ENDIF}
+{$IFDEF COMPILER35_UP}{$NODEFINE ftBlobTypes}{$ENDIF}
 
 {$IFNDEF COMPILER4_UP}
   ftNonTextTypes = [ftBytes, ftVarBytes, ftBlob, ftMemo, ftGraphic
-    {$IFDEF WIN32}, ftFmtMemo, ftParadoxOle, ftDBaseOle, ftTypedBinary
-    {$IFDEF COMPILER3_UP}, ftCursor {$ENDIF} {$ENDIF}];
-  {$IFDEF VER110} { C++ Builder 3 or higher }
-  {$NODEFINE ftNonTextTypes}
+{$IFDEF WIN32}, ftFmtMemo, ftParadoxOle, ftDBaseOle, ftTypedBinary
+{$IFDEF COMPILER3_UP}, ftCursor{$ENDIF}{$ENDIF}];
+{$IFDEF VER110} { C++ Builder 3 or higher }
+{$NODEFINE ftNonTextTypes}
   (*$HPPEMIT 'namespace JvDBUtils'*)
   (*$HPPEMIT '{'*)
   (*$HPPEMIT '#define ftNonTextTypes (System::Set<TFieldType, ftUnknown, ftCursor> () \'*)
   (*$HPPEMIT '        << ftBytes << ftVarBytes << ftBlob << ftMemo << ftGraphic \'*)
   (*$HPPEMIT '        << ftFmtMemo << ftParadoxOle << ftDBaseOle << ftTypedBinary << ftCursor )'*)
   (*$HPPEMIT '}'*)
-  {$ENDIF}
+{$ENDIF}
 type
   Largeint = Longint;
-  {$IFDEF VER110} {$NODEFINE Largeint} {$ENDIF}
+{$IFDEF VER110}{$NODEFINE Largeint}{$ENDIF}
 {$ENDIF COMPILER4_UP}
 
 {$IFDEF COMPILER3_UP}
@@ -173,16 +175,18 @@ procedure _DBError(Ident: Word);
 implementation
 
 uses Forms, Controls, Dialogs, Consts, DBConsts, JvDConst, JvVCLUtils, JvFileUtil,
-  JvAppUtils, JvStrUtils, JvMaxMin, {$IFNDEF COMPILER3_UP} JvBdeUtils, {$ENDIF}
-  {$IFNDEF WIN32} JvStr16, {$ENDIF} JvDateUtil;
+  JvAppUtils, JvStrUtils, JvMaxMin, {$IFNDEF COMPILER3_UP}JvBdeUtils, {$ENDIF}
+{$IFNDEF WIN32}JvStr16, {$ENDIF}JvDateUtil{$IFDEF COMPILER6_UP},Variants{$ENDIF};
 
 { Utility routines }
 
 {$IFDEF COMPILER3_UP}
+
 procedure _DBError(const Msg: string);
 begin
   DatabaseError(Msg);
 {$ELSE}
+
 procedure _DBError(Ident: Word);
 begin
   DBError(Ident);
@@ -198,20 +202,25 @@ end;
 
 procedure ConfirmDataSetCancel(DataSet: TDataSet);
 begin
-  if DataSet.State in [dsEdit, dsInsert] then begin
+  if DataSet.State in [dsEdit, dsInsert] then
+  begin
     DataSet.UpdateRecord;
-    if DataSet.Modified then begin
+    if DataSet.Modified then
+    begin
       case MessageDlg(LoadStr(SConfirmSave), mtConfirmation, mbYesNoCancel, 0) of
         mrYes: DataSet.Post;
         mrNo: DataSet.Cancel;
-        else SysUtils.Abort;
+      else
+        SysUtils.Abort;
       end;
     end
-    else DataSet.Cancel;
+    else
+      DataSet.Cancel;
   end;
 end;
 
 {$IFDEF COMPILER3_UP}
+
 function SetToBookmark(ADataSet: TDataSet; ABookmark: TBookmark): Boolean;
 begin
   Result := False;
@@ -232,20 +241,26 @@ procedure RefreshQuery(Query: TDataSet);
 var
   BookMk: TBookmark;
 begin
-  with Query do begin
+  with Query do
+  begin
     DisableControls;
     try
-      if Active then BookMk := GetBookmark else BookMk := nil;
+      if Active then
+        BookMk := GetBookmark
+      else
+        BookMk := nil;
       try
         Close;
         Open;
 {$IFDEF COMPILER3_UP}
         SetToBookmark(Query, BookMk);
 {$ELSE}
-        if Query is TDBDataSet then SetToBookmark(Query, BookMk);
+        if Query is TDBDataSet then
+          SetToBookmark(Query, BookMk);
 {$ENDIF}
       finally
-        if BookMk <> nil then FreeBookmark(BookMk);
+        if BookMk <> nil then
+          FreeBookmark(BookMk);
       end;
     finally
       EnableControls;
@@ -264,10 +279,13 @@ end;
 function TJvLocateObject.LocateFull: Boolean;
 begin
   Result := False;
-  with DataSet do begin
+  with DataSet do
+  begin
     First;
-    while not EOF do begin
-      if MatchesLookup(FLookupField) then begin
+    while not EOF do
+    begin
+      if MatchesLookup(FLookupField) then
+      begin
         Result := True;
         Break;
       end;
@@ -286,8 +304,8 @@ begin
 {$IFDEF COMPILER3_UP}
   Result := FLookupField.FieldKind in [fkData, fkInternalCalc];
 {$ELSE}
-  Result := ({$IFDEF WIN32} FLookupField.FieldKind = fkData {$ELSE}
-    not FLookupField.Calculated {$ENDIF}) and IsFilterApplicable(DataSet);
+  Result := ({$IFDEF WIN32}FLookupField.FieldKind = fkData{$ELSE}
+    not FLookupField.Calculated{$ENDIF}) and IsFilterApplicable(DataSet);
 {$ENDIF}
 end;
 
@@ -302,10 +320,14 @@ begin
   Screen.Cursor := crHourGlass;
   try
     Options := [];
-    if not FCaseSensitive then Include(Options, loCaseInsensitive);
-    if not FLookupExact then Include(Options, loPartialKey);
-    if (FLookupValue = '') then VarClear(Value)
-    else Value := FLookupValue;
+    if not FCaseSensitive then
+      Include(Options, loCaseInsensitive);
+    if not FLookupExact then
+      Include(Options, loPartialKey);
+    if (FLookupValue = '') then
+      VarClear(Value)
+    else
+      Value := FLookupValue;
     Result := DataSet.Locate(FLookupField.FieldName, Value, Options);
   finally
     Screen.Cursor := SaveCursor;
@@ -325,7 +347,8 @@ function TJvLocateObject.Locate(const KeyField, KeyValue: string;
 var
   LookupKey: TField;
 begin
-  if DataSet = nil then begin
+  if DataSet = nil then
+  begin
     Result := False;
     Exit;
   end;
@@ -336,7 +359,8 @@ begin
   FLookupValue := KeyValue;
   FLookupExact := Exact;
   FCaseSensitive := CaseSensitive;
-  if FLookupField.DataType <> ftString then begin
+  if FLookupField.DataType <> ftString then
+  begin
     FCaseSensitive := True;
     try
       CheckFieldType(FLookupField);
@@ -350,13 +374,19 @@ begin
     DataSet.DisableControls;
     try
       Result := MatchesLookup(FLookupField);
-      if not Result then begin
-        if UseKey then Result := LocateKey
-        else begin
-          if FilterApplicable then Result := LocateFilter
-          else Result := LocateFull;
+      if not Result then
+      begin
+        if UseKey then
+          Result := LocateKey
+        else
+        begin
+          if FilterApplicable then
+            Result := LocateFilter
+          else
+            Result := LocateFull;
         end;
-        if not Result then SetToBookmark(DataSet, FBookmark);
+        if not Result then
+          SetToBookmark(DataSet, FBookmark);
       end;
     finally
       DataSet.EnableControls;
@@ -385,14 +415,18 @@ begin
   Temp := Field.AsString;
   if not FLookupExact then
     SetLength(Temp, Min(Length(FLookupValue), Length(Temp)));
-  if FCaseSensitive then Result := AnsiCompareStr(Temp, FLookupValue) = 0
-  else Result := AnsiCompareText(Temp, FLookupValue) = 0;
+  if FCaseSensitive then
+    Result := AnsiCompareStr(Temp, FLookupValue) = 0
+  else
+    Result := AnsiCompareText(Temp, FLookupValue) = 0;
 end;
 
 function CreateLocate(DataSet: TDataSet): TJvLocateObject;
 begin
-  if Assigned(CreateLocateObject) then Result := CreateLocateObject
-  else Result := TJvLocateObject.Create;
+  if Assigned(CreateLocateObject) then
+    Result := CreateLocateObject
+  else
+    Result := TJvLocateObject.Create;
   if (Result <> nil) and (DataSet <> nil) then
     Result.DataSet := DataSet;
 end;
@@ -400,6 +434,7 @@ end;
 { DataSet locate routines }
 
 {$IFDEF WIN32}
+
 function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
 var
@@ -411,16 +446,23 @@ var
   var
     S: string;
   begin
-    if Field.DataType = ftString then begin
-      S := Field.AsString;
-      if (loPartialKey in Options) then
-        Delete(S, Length(Value) + 1, MaxInt);
-      if (loCaseInsensitive in Options) then
-        Result := AnsiCompareText(S, Value) = 0
+    if Field.DataType = ftString then
+    begin
+      if Value = Null then
+        Result := Field.IsNull
       else
-        Result := AnsiCompareStr(S, Value) = 0;
+      begin
+        S := Field.AsString;
+        if (loPartialKey in Options) then
+          Delete(S, Length(Value) + 1, MaxInt);
+        if (loCaseInsensitive in Options) then
+          Result := AnsiCompareText(S, Value) = 0
+        else
+          Result := AnsiCompareStr(S, Value) = 0;
+      end;
     end
-    else Result := (Field.Value = Value);
+    else
+      Result := (Field.Value = Value);
   end;
 
   function CompareRecord: Boolean;
@@ -429,7 +471,8 @@ var
   begin
     if FieldCount = 1 then
       Result := CompareField(TField(Fields.First), KeyValues)
-    else begin
+    else
+    begin
       Result := True;
       for I := 0 to FieldCount - 1 do
         Result := Result and CompareField(TField(Fields[I]), KeyValues[I]);
@@ -438,31 +481,37 @@ var
 
 begin
   Result := False;
-  with DataSet do begin
+  with DataSet do
+  begin
     CheckBrowseMode;
-    if BOF and EOF then Exit;
+    if BOF and EOF then
+      Exit;
   end;
   Fields := TList.Create;
   try
     DataSet.GetFieldList(Fields, KeyFields);
     FieldCount := Fields.Count;
     Result := CompareRecord;
-    if Result then Exit;
+    if Result then
+      Exit;
     DataSet.DisableControls;
     try
       Bookmark := DataSet.Bookmark;
       try
-        with DataSet do begin
+        with DataSet do
+        begin
           First;
-          while not EOF do begin
+          while not EOF do
+          begin
             Result := CompareRecord;
-            if Result then Break;
+            if Result then
+              Break;
             Next;
           end;
         end;
       finally
-        if not Result {$IFDEF COMPILER3_UP} and
-          DataSet.BookmarkValid(PChar(Bookmark)) {$ENDIF} then
+        if not Result{$IFDEF COMPILER3_UP} and
+        DataSet.BookmarkValid(PChar(Bookmark)){$ENDIF} then
           DataSet.Bookmark := Bookmark;
       end;
     finally
@@ -487,8 +536,10 @@ var
 
   function UpStr(const Value: string): string;
   begin
-    if CaseInsensitive then Result := AnsiUpperCase(Value)
-    else Result := Value;
+    if CaseInsensitive then
+      Result := AnsiUpperCase(Value)
+    else
+      Result := Value;
   end;
 
   function GetCurrentStr: string;
@@ -501,10 +552,13 @@ var
 
 begin
   Result := False;
-  if DataSet = nil then Exit;
+  if DataSet = nil then
+    Exit;
   Field := DataSet.FindField(FieldName);
-  if Field = nil then Exit;
-  if Field.DataType = ftString then begin
+  if Field = nil then
+    Exit;
+  if Field.DataType = ftString then
+  begin
     DataSet.DisableControls;
     BookMk := DataSet.GetBookmark;
     try
@@ -512,21 +566,28 @@ begin
       DataSet.First;
       CurrentPos := 0;
       H := DataSet.RecordCount - 1;
-      if Value <> '' then begin
-        while L <= H do begin
+      if Value <> '' then
+      begin
+        while L <= H do
+        begin
           I := (L + H) shr 1;
-          if I <> CurrentPos then DataSet.MoveBy(I - CurrentPos);
+          if I <> CurrentPos then
+            DataSet.MoveBy(I - CurrentPos);
           CurrentPos := I;
           CurrentValue := GetCurrentStr;
           if (UpStr(Value) > CurrentValue) then
             L := I + 1
-          else begin
+          else
+          begin
             H := I - 1;
-            if (UpStr(Value) = CurrentValue) then Result := True;
+            if (UpStr(Value) = CurrentValue) then
+              Result := True;
           end;
         end; { while }
-        if Result then begin
-          if (L <> CurrentPos) then DataSet.MoveBy(L - CurrentPos);
+        if Result then
+        begin
+          if (L <> CurrentPos) then
+            DataSet.MoveBy(L - CurrentPos);
           while (L < DataSet.RecordCount) and
             (UpStr(Value) <> GetCurrentStr) do
           begin
@@ -535,8 +596,10 @@ begin
           end;
         end;
       end
-      else Result := True;
-      if not Result then SetToBookmark(DataSet, BookMk);
+      else
+        Result := True;
+      if not Result then
+        SetToBookmark(DataSet, BookMk);
     finally
       DataSet.FreeBookmark(BookMk);
       DataSet.EnableControls;
@@ -558,13 +621,15 @@ begin
   with DataSet do
     if (Owner <> nil) and (Owner is TCustomForm) then
       Result := GetDefaultSection(Owner as TCustomForm)
-    else Result := Name;
+    else
+      Result := Name;
 end;
 
 function CheckSection(DataSet: TDataSet; const Section: string): string;
 begin
   Result := Section;
-  if Result = '' then Result := DataSetSectionName(DataSet);
+  if Result = '' then
+    Result := DataSetSectionName(DataSet);
 end;
 
 procedure InternalSaveFields(DataSet: TDataSet; IniFile: TObject;
@@ -572,8 +637,10 @@ procedure InternalSaveFields(DataSet: TDataSet; IniFile: TObject;
 var
   I: Integer;
 begin
-  with DataSet do begin
-    for I := 0 to FieldCount - 1 do begin
+  with DataSet do
+  begin
+    for I := 0 to FieldCount - 1 do
+    begin
       IniWriteString(IniFile, CheckSection(DataSet, Section),
         Name + Fields[I].FieldName,
         Format('%d,%d,%d', [Fields[I].Index, Fields[I].DisplayWidth,
@@ -592,21 +659,24 @@ type
   PFieldArray = ^TFieldArray;
   TFieldArray = array[0..(65528 div SizeOf(TFieldInfo)) - 1] of TFieldInfo;
 const
-  Delims = [' ',','];
+  Delims = [' ', ','];
 var
   I, J: Integer;
   S: string;
   FieldArray: PFieldArray;
 begin
-  with DataSet do begin
+  with DataSet do
+  begin
     FieldArray := AllocMemo(FieldCount * SizeOf(TFieldInfo));
     try
-      for I := 0 to FieldCount - 1 do begin
+      for I := 0 to FieldCount - 1 do
+      begin
         S := IniReadString(IniFile, CheckSection(DataSet, Section),
           Name + Fields[I].FieldName, '');
         FieldArray^[I].Field := Fields[I];
         FieldArray^[I].EndIndex := Fields[I].Index;
-        if S <> '' then begin
+        if S <> '' then
+        begin
           FieldArray^[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims),
             FieldArray^[I].EndIndex);
           Fields[I].DisplayWidth := StrToIntDef(ExtractWord(2, S, Delims),
@@ -616,9 +686,12 @@ begin
               Integer(Fields[I].Visible)));
         end;
       end;
-      for I := 0 to FieldCount - 1 do begin
-        for J := 0 to FieldCount - 1 do begin
-          if FieldArray^[J].EndIndex = I then begin
+      for I := 0 to FieldCount - 1 do
+      begin
+        for J := 0 to FieldCount - 1 do
+        begin
+          if FieldArray^[J].EndIndex = I then
+          begin
             FieldArray^[J].Field.Index := FieldArray^[J].EndIndex;
             Break;
           end;
@@ -631,6 +704,7 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 procedure SaveFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile);
 begin
   InternalSaveFields(DataSet, IniFile, DataSetSectionName(DataSet));
@@ -658,7 +732,8 @@ end;
 
 function IsDataSetEmpty(DataSet: TDataSet): Boolean;
 begin
-  with DataSet do Result := (not Active) or (Eof and Bof);
+  with DataSet do
+    Result := (not Active) or (Eof and Bof);
 end;
 
 { SQL expressions }
@@ -672,11 +747,13 @@ function FormatSQLDateRange(Date1, Date2: TDateTime;
   const FieldName: string): string;
 begin
   Result := TrueExpr;
-  if (Date1 = Date2) and (Date1 <> NullDate) then begin
+  if (Date1 = Date2) and (Date1 <> NullDate) then
+  begin
     Result := Format('%s = %s', [FieldName, FormatDateTime(ServerDateFmt,
-      Date1)]);
+        Date1)]);
   end
-  else if (Date1 <> NullDate) or (Date2 <> NullDate) then begin
+  else if (Date1 <> NullDate) or (Date2 <> NullDate) then
+  begin
     if Date1 = NullDate then
       Result := Format('%s < %s', [FieldName,
         FormatDateTime(ServerDateFmt, IncDay(Date2, 1))])
@@ -694,7 +771,8 @@ function FormatSQLDateRangeEx(Date1, Date2: TDateTime;
   const FieldName: string): string;
 begin
   Result := TrueExpr;
-  if (Date1 <> NullDate) or (Date2 <> NullDate) then begin
+  if (Date1 <> NullDate) or (Date2 <> NullDate) then
+  begin
     if Date1 = NullDate then
       Result := Format('%s < %s', [FieldName,
         FormatDateTime(ServerDateFmt, IncDay(Date2, 1))])
@@ -714,15 +792,18 @@ const
   Operators: array[Boolean, 1..2] of string[2] = (('>', '<'), ('>=', '<='));
 begin
   Result := TrueExpr;
-  if (LowValue = HighValue) and (LowValue <> LowEmpty) then begin
+  if (LowValue = HighValue) and (LowValue <> LowEmpty) then
+  begin
     Result := Format('%s = %g', [FieldName, LowValue]);
   end
-  else if (LowValue <> LowEmpty) or (HighValue <> HighEmpty) then begin
+  else if (LowValue <> LowEmpty) or (HighValue <> HighEmpty) then
+  begin
     if LowValue = LowEmpty then
       Result := Format('%s %s %g', [FieldName, Operators[Inclusive, 2], HighValue])
     else if HighValue = HighEmpty then
       Result := Format('%s %s %g', [FieldName, Operators[Inclusive, 1], LowValue])
-    else begin
+    else
+    begin
       Result := Format('(%s %s %g) AND (%s %s %g)',
         [FieldName, Operators[Inclusive, 2], HighValue,
         FieldName, Operators[Inclusive, 1], LowValue]);
@@ -734,7 +815,8 @@ function StrMaskSQL(const Value: string): string;
 begin
   if (Pos('*', Value) = 0) and (Pos('?', Value) = 0) and (Value <> '') then
     Result := '*' + Value + '*'
-  else Result := Value;
+  else
+    Result := Value;
 end;
 
 function FormatSQLCondition(const FieldName, Operator, Value: string;
@@ -749,34 +831,45 @@ begin
   DateValue := NullDate;
   Exact := Exact or not (FieldType in
     [ftString, ftDate, ftTime, ftDateTime]);
-  if FieldType in [ftDate, ftTime, ftDateTime] then begin
+  if FieldType in [ftDate, ftTime, ftDateTime] then
+  begin
     DateValue := StrToDateDef(Value, NullDate);
     EmptyValue := (DateValue = NullDate);
     FieldValue := FormatDateTime(ServerDateFmt, DateValue);
   end
-  else begin
+  else
+  begin
     FieldValue := Value;
     EmptyValue := FieldValue = '';
     if not (Exact or EmptyValue) then
       FieldValue := ReplaceStr(ReplaceStr(StrMaskSQL(FieldValue),
         '*', '%'), '?', '_');
-    if FieldType = ftString then FieldValue := '''' + FieldValue + '''';
+    if FieldType = ftString then
+      FieldValue := '''' + FieldValue + '''';
   end;
   LogicOperator := Operator;
-  if LogicOperator = '' then begin
-    if Exact then LogicOperator := '='
-    else begin
-      if FieldType = ftString then LogicOperator := 'LIKE'
-      else LogicOperator := '>=';
+  if LogicOperator = '' then
+  begin
+    if Exact then
+      LogicOperator := '='
+    else
+    begin
+      if FieldType = ftString then
+        LogicOperator := 'LIKE'
+      else
+        LogicOperator := '>=';
     end;
   end;
-  if EmptyValue then Result := TrueExpr
-  else if (FieldType = ftDateTime) and Exact then begin
+  if EmptyValue then
+    Result := TrueExpr
+  else if (FieldType = ftDateTime) and Exact then
+  begin
     DateValue := IncDay(DateValue, 1);
     Result := Format('(%s >= %s) and (%s < %s)', [FieldName, FieldValue,
       FieldName, FormatDateTime(ServerDateFmt, DateValue)]);
   end
-  else Result := Format('%s %s %s', [FieldName, LogicOperator, FieldValue]);
+  else
+    Result := Format('%s %s %s', [FieldName, LogicOperator, FieldValue]);
 end;
 
 function FormatAnsiSQLCondition(const FieldName, Operator, Value: string;
@@ -785,26 +878,30 @@ var
   S, Esc: string;
 begin
   Esc := '';
-  if not Exact and (FieldType = ftString) then begin
+  if not Exact and (FieldType = ftString) then
+  begin
     S := ReplaceStr(ReplaceStr(ReplaceStr(Value, '/', '//'),
       '_', '/_'), '%', '/%');
-    if S <> Value then Esc := ' ESCAPE''/''';
+    if S <> Value then
+      Esc := ' ESCAPE''/''';
   end
-  else S := Value;
+  else
+    S := Value;
   Result := FormatSQLCondition(FieldName, Operator, S, FieldType, Exact) + Esc;
 end;
 
 procedure CheckRequiredField(Field: TField);
 begin
   with Field do
-    if not ReadOnly and not Calculated and IsNull then begin
+    if not ReadOnly and not Calculated and IsNull then
+    begin
       FocusControl;
 {$IFDEF WIN32}
-  {$IFNDEF COMPILER3_UP}
+{$IFNDEF COMPILER3_UP}
       DBErrorFmt(SFieldRequired, [DisplayName]);
-  {$ELSE}
+{$ELSE}
       DatabaseErrorFmt(SFieldRequired, [DisplayName]);
-  {$ENDIF}
+{$ENDIF}
 {$ELSE}
       DBErrorFmt(SFieldRequired, [DisplayName^]);
 {$ENDIF WIN32}
@@ -824,33 +921,42 @@ var
   I: Integer;
   F, FSrc: TField;
 begin
-  if not (Dest.State in dsEditModes) then _DBError(SNotEditing);
-  if ByName then begin
-    for I := 0 to Source.FieldCount - 1 do begin
+  if not (Dest.State in dsEditModes) then
+    _DBError(SNotEditing);
+  if ByName then
+  begin
+    for I := 0 to Source.FieldCount - 1 do
+    begin
       F := Dest.FindField(Source.Fields[I].FieldName);
-      if F <> nil then begin
+      if F <> nil then
+      begin
 {$IFDEF WIN32}
         F.Value := Source.Fields[I].Value;
 {$ELSE}
         if (F.DataType = Source.Fields[I].DataType) and
           (F.DataSize = Source.Fields[I].DataSize) then
           F.Assign(Source.Fields[I])
-        else F.AsString := Source.Fields[I].AsString;
+        else
+          F.AsString := Source.Fields[I].AsString;
 {$ENDIF}
       end;
     end;
   end
-  else begin
+  else
+  begin
     for I := 0 to Min(Source.FieldDefs.Count - 1, Dest.FieldDefs.Count - 1) do
     begin
       F := Dest.FindField(Dest.FieldDefs[I].Name);
       FSrc := Source.FindField(Source.FieldDefs[I].Name);
-      if (F <> nil) and (FSrc <> nil) then begin
+      if (F <> nil) and (FSrc <> nil) then
+      begin
 {$IFDEF WIN32}
         F.Value := FSrc.Value;
 {$ELSE}
-        if F.DataType = FSrc.DataType then F.Assign(FSrc)
-        else F.AsString := FSrc.AsString;
+        if F.DataType = FSrc.DataType then
+          F.Assign(FSrc)
+        else
+          F.AsString := FSrc.AsString;
 {$ENDIF}
       end;
     end;
@@ -858,3 +964,4 @@ begin
 end;
 
 end.
+
