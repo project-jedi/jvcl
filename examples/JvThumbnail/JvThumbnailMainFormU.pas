@@ -4,7 +4,8 @@ interface
 
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, FileCtrl, ComCtrls, Spin,
-  JvThumbNails, JvSpecialProgress, JvThumbViews, JvBaseThumbnail;
+  JvThumbNails, JvSpecialProgress, JvThumbViews, JvBaseThumbnail,
+  JvListBox, JvDriveCtrls, JvCombobox;
 
 type
   TJvThumbnailMainForm = class(TForm)
@@ -17,7 +18,7 @@ type
     Label3: TLabel;
     Label4: TLabel;
     TrackBar1: TTrackBar;
-    DriveComboBox1: TDriveComboBox;
+    DriveComboBox1: TJvDriveCombo;
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
     SpinEdit1: TSpinEdit;
@@ -25,7 +26,7 @@ type
     CheckBox3: TCheckBox;
     CheckBox4: TCheckBox;
     Panel2: TPanel;
-    DirectoryListBox1: TDirectoryListBox;
+    DirectoryListBox1: TJvDirectoryListBox;
     RadioGroup1: TRadioGroup;
     RadioGroup2: TRadioGroup;
     Panel3: TPanel;
