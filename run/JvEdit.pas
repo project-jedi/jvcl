@@ -83,6 +83,7 @@ type
     FIsEmptyValue: Boolean;
     FEmptyFontColor: TColor;
     FOldFontColor: TColor;
+    FIsLoaded:boolean;
     {$IFDEF JVCLThemesEnabled}
     FThemedPassword: Boolean;
     {$ENDIF JVCLThemesEnabled}
@@ -479,6 +480,8 @@ end;
 
 procedure TJvCustomEdit.DoEmptyValueEnter;
 begin
+  if (csDesigning in ComponentState) or not FIsLoaded or (EmptyValue = '') then
+    Exit;
   if EmptyValue <> '' then
   begin
     if (inherited Text) = EmptyValue then
@@ -496,6 +499,8 @@ end;
 
 procedure TJvCustomEdit.DoEmptyValueExit;
 begin
+  if (csDesigning in ComponentState) or not FIsLoaded or (EmptyValue = '') then
+    Exit;
   if EmptyValue <> '' then
   begin
     if Text = '' then
@@ -599,7 +604,7 @@ begin
   {$ENDIF VCL}
 end;
 
-
+// (ahuser) ProtectPassword has no function under CLX
 function TJvCustomEdit.GetText: TCaption;
 var
   Tmp: Boolean;
@@ -641,6 +646,7 @@ end;
 procedure TJvCustomEdit.Loaded;
 begin
   inherited Loaded;
+  FIsLoaded := true;
   FOldFontColor := Font.Color;
   SelStart := FStreamedSelStart;
   SelLength := FStreamedSelLength;
@@ -859,12 +865,12 @@ end;
 
 procedure TJvCustomEdit.SetText(const Value: TCaption);
 begin
-  if csLoading in ComponentState then
+  if (csLoading in ComponentState) or not FIsLoaded then
   begin
     inherited Text := Value;
     Exit;
   end;
-  FIsEmptyValue := (Value = '');
+  FIsEmptyValue := (Value = '') and (EmptyValue <> '');
   if not FIsEmptyValue then
   begin
     Font.Color := FOldFontColor;
