@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvBalloonHint.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Remko Bonte <remkobonte@myrealbox.com>
-Portions created by Remko Bonte are Copyright (C) 2001 Remko Bonte.
+Portions created by Remko Bonte are Copyright (C) 2002 Remko Bonte.
 All Rights Reserved.
 
 Contributor(s):
@@ -51,9 +51,13 @@ type
   PHintData = ^THintData;
   THintData = record
     RAnchorWindow: TCustomForm;
-    { Position of the stem point inside the client rect of the anchor window: }
+    { Position of the top-left edge of the window balloon inside the client
+      rect of the anchor window (Used to move the balloon window if the
+      anchor window moves): }
     RAnchorPosition: TPoint;
-    { Position of the stem point inside the client rect of the balloon window: }
+    { Position of the stem point inside the client rect of the balloon window
+      (Used the check on resize of the anchor window whether the stem point is
+      still inside the balloon window): }
     RStemPointPosition: TPoint;
     RHeader: string;
     RHint: string;
@@ -93,11 +97,13 @@ type
     procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
-    {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
     procedure WMNCPaint(var Message: TMessage); message WM_NCPAINT;
-    {$ENDIF}
+{$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure NCPaint(DC: HDC); {$IFDEF COMPILER6_UP}override;{$ELSE}virtual;{$ENDIF}
+{$IFDEF COMPILER6_UP}
+    procedure NCPaint(DC: HDC); override;
+{$ENDIF}
     procedure Paint; override;
 
     function CreateRegion: HRGN;
@@ -127,7 +133,7 @@ type
     FAnimationStyle: TJvAnimationStyle;
 
     FShowCloseBtn: Boolean;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
+    FIsAnchored: Boolean;
   protected
     procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMMouseMove(var Message: TWMMouseMove); message WM_MOUSEMOVE;
@@ -165,7 +171,6 @@ type
     procedure SetImages(const Value: TCustomImageList);
     procedure SetApplicationHintOptions(const Value: TJvApplicationHintOptions);
   protected
-
     function HookProc(var Message: TMessage): Boolean;
     procedure Hook;
     procedure Unhook;
@@ -265,9 +270,9 @@ begin
   end;
 end;
 
-function WorkAreaRect:TRect;
+function WorkAreaRect: TRect;
 begin
-  SystemParametersInfo(SPI_GETWORKAREA,0,@Result,0);
+  SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0);
 end;
 
 {$IFNDEF COMPILER6_UP}
@@ -277,23 +282,29 @@ resourcestring
 
 const
   SPI_GETTOOLTIPANIMATION = $1016;
-  {$EXTERNALSYM SPI_GETTOOLTIPANIMATION}
+{$EXTERNALSYM SPI_GETTOOLTIPANIMATION}
   SPI_GETTOOLTIPFADE = $1018;
-  {$EXTERNALSYM SPI_GETTOOLTIPFADE}
+{$EXTERNALSYM SPI_GETTOOLTIPFADE}
 
 type
-  TAnimateWindowProc = function(hWnd: HWND; dwTime: DWORD; dwFlags: DWORD): BOOL; stdcall;
+  TAnimateWindowProc = function(HWND: HWND; dwTime: DWORD; dwFlags: DWORD): BOOL; stdcall;
 var
-  AnimateWindowProc:TAnimateWindowProc = nil;
+  AnimateWindowProc: TAnimateWindowProc = nil;
 {$ENDIF}
 
+function IsWinXP: Boolean;
+begin
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and
+    ((Win32MajorVersion > 5) or
+    (Win32MajorVersion = 5) and (Win32MinorVersion >= 1));
+end;
 
-function InternalClientToParent(AControl:TControl;const Point: TPoint;
+function InternalClientToParent(AControl: TControl; const Point: TPoint;
   AParent: TWinControl): TPoint;
 
 {$IFDEF COMPILER6_UP}
 begin
-  Result := AControl.ClientToParent(Point,AParent);
+  Result := AControl.ClientToParent(Point, AParent);
 end;
 {$ELSE}
 
@@ -490,12 +501,6 @@ begin
   end;
 end;
 
-function IsWinXP: Boolean;
-begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and
-    (Win32MajorVersion >= 5) and (Win32MinorVersion >= 1);
-end;
-
 function TJvBalloonWindow.CalcMsgRect(MaxWidth: Integer): TRect;
 begin
   if FMsg > '' then
@@ -605,7 +610,7 @@ begin
     no solution.
   }
   if IsWinXP then
-    Params.WindowClass.Style := Params.WindowClass.Style or CS_DROPSHADOW
+    Params.WindowClass.Style := Params.WindowClass.Style or CS_DROPSHADOW;
 end;
 
 function TJvBalloonWindow.CreateRegion: HRGN;
@@ -720,22 +725,25 @@ begin
   FSwitchHeight := GetSystemMetrics(SM_CYCURSOR);
 end;
 
+{$IFDEF COMPILER6_UP}
+
 procedure TJvBalloonWindow.NCPaint(DC: HDC);
 begin
+  { Do nothing, thus prevent TJvHintWindow from drawing }
 end;
+{$ENDIF}
 
 procedure TJvBalloonWindow.Paint;
 var
   HintRect: TRect;
   HeaderRect: TRect;
 begin
-  HintRect := ClientRect;
-
   if FShowIcon then
     TGlobalCtrl.Instance.DrawHintImage(Canvas, 12, FDeltaY + 8, Color);
 
   if FMsg > '' then
   begin
+    HintRect := ClientRect;
     Inc(HintRect.Left, 12);
     Inc(HintRect.Top, FDeltaY + FMessageTop);
     Canvas.Font.Color := Screen.HintFont.Color;
@@ -751,6 +759,7 @@ begin
     if FShowIcon then
       Inc(HeaderRect.Left, FImageSize.cx + 8);
     Inc(HeaderRect.Top, FDeltaY + 8);
+    Canvas.Font.Color := Screen.HintFont.Color;
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
     DrawText(Canvas.Handle, PChar(FHeader), -1, HeaderRect, DT_LEFT or DT_NOPREFIX or
       DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
@@ -762,7 +771,7 @@ var
   Region: HRGN;
 begin
   Region := CreateRegion;
-  if SetWindowRgn(Handle, CreateRegion, False) = 0 then
+  if SetWindowRgn(Handle, Region, False) = 0 then
     DeleteObject(Region);
   { MSDN: After a successful call to SetWindowRgn, the system owns the region
     specified by the region handle hRgn. The system does not make a copy of
@@ -790,17 +799,12 @@ begin
   end;
   Message.Result := 1;
 end;
+
 {$IFNDEF COMPILER6_UP}
+
 procedure TJvBalloonWindow.WMNCPaint(var Message: TMessage);
-var
-  DC: HDC;
 begin
-  DC := GetWindowDC(Handle);
-  try
-    NCPaint(DC);
-  finally
-    ReleaseDC(Handle, DC);
-  end;
+  { Do nothing, thus prevent TJvHintWindow from drawing }
 end;
 {$ENDIF}
 
@@ -873,9 +877,6 @@ procedure TJvBalloonHint.ActivateHintPos(AAnchorWindow: TCustomForm; AAnchorPosi
 begin
   CancelHint;
 
-  if not Assigned(AAnchorWindow) then
-    Exit;
-
   with FData do
   begin
     RAnchorWindow := AAnchorWindow;
@@ -885,7 +886,7 @@ begin
     RVisibleTime := VisibleTime;
     RIconKind := AIconKind;
     RImageIndex := AImageIndex;
-    RSwitchHeight := GetSystemMetrics(SM_CYCURSOR);
+    RSwitchHeight := 0;
   end;
 
   InternalActivateHintPos;
@@ -932,7 +933,8 @@ end;
 
 procedure TJvBalloonHint.Hook;
 begin
-  RegisterWndProcHook(FData.RAnchorWindow, HookProc, hoBeforeMsg);
+  if Assigned(FData.RAnchorWindow) then
+    RegisterWndProcHook(FData.RAnchorWindow, HookProc, hoBeforeMsg);
 end;
 
 function TJvBalloonHint.HookProc(var Message: TMessage): Boolean;
@@ -965,35 +967,9 @@ begin
   begin
     RAnchorWindow := LParentForm;
     if LParentForm = ACtrl then
-    begin
-      RAnchorPosition := Point(Width div 2, ClientHeight);
-      case FDefaultBalloonPosition of
-        bpLeftDown, bpRightDown:
-          RSwitchHeight := 0;
-        bpLeftUp, bpRightUp:
-          RSwitchHeight := ClientHeight;
-      end;
-    end
+      RAnchorPosition := Point(Width div 2, ClientHeight)
     else
-    begin
-      RAnchorPosition := InternalClientToParent(ACtrl,Point(Width div 2, Height), LParentForm);
-      case FDefaultBalloonPosition of
-        bpLeftDown, bpRightDown:
-          RSwitchHeight := 0;
-        bpLeftUp, bpRightUp:
-          RSwitchHeight := Height;
-      end;
-    end;
-    if boCustomAnimation in Options then
-    begin
-      RAnimationStyle := FCustomAnimationStyle;
-      RAnimationTime := FCustomAnimationTime;
-    end
-    else
-    begin
-      RAnimationStyle := atBlend;
-      RAnimationTime := 100;
-    end;
+      RAnchorPosition := InternalClientToParent(ACtrl, Point(Width div 2, Height), LParentForm);
 
     RSwitchHeight := ACtrl.Height;
   end;
@@ -1004,6 +980,7 @@ end;
 procedure TJvBalloonHint.InternalActivateHintPos;
 var
   Rect: TRect;
+  Animate: BOOL;
 begin
   with FData do
   begin
@@ -1016,18 +993,56 @@ begin
       RImageIndex := DefaultImageIndex;
     RShowCloseBtn := boShowCloseBtn in Options;
 
+    if not IsWinXP then
+      RAnimationStyle := atNone
+    else if boCustomAnimation in Options then
+    begin
+      RAnimationStyle := FCustomAnimationStyle;
+      RAnimationTime := FCustomAnimationTime;
+    end
+    else
+    begin
+      SystemParametersInfo(SPI_GETTOOLTIPANIMATION, 0, @Animate, 0);
+      if Animate then
+      begin
+        SystemParametersInfo(SPI_GETTOOLTIPFADE, 0, @Animate, 0);
+        if Animate then
+          RAnimationStyle := atBlend
+        else
+          RAnimationStyle := atSlide;
+      end
+      else
+        RAnimationStyle := atNone;
+      RAnimationTime := 100;
+    end;
+
     FActive := True;
     Hook;
+
     Rect := FHint.CalcHintRect(Screen.Width, RHint, @FData);
-    with RAnchorWindow.ClientToScreen(RAnchorPosition) do
-      OffsetRect(Rect, X, Y);
+    if Assigned(RAnchorWindow) then
+      with RAnchorWindow.ClientToScreen(RAnchorPosition) do
+        OffsetRect(Rect, X, Y)
+    else
+      with RAnchorPosition do
+        OffsetRect(Rect, X, Y);
 
     if boPlaySound in Options then
       TGlobalCtrl.Instance.PlaySound(RIconKind);
 
     FHint.InternalActivateHint(Rect, RHint);
-    RAnchorPosition := RAnchorWindow.ScreenToClient(Rect.TopLeft);
-    RStemPointPosition := RAnchorWindow.ScreenToClient(FHint.StemPointPosition);
+
+    { Now we can determine the actual anchor & stempoint position: }
+    if Assigned(RAnchorWindow) then
+    begin
+      RAnchorPosition := RAnchorWindow.ScreenToClient(Rect.TopLeft);
+      RStemPointPosition := RAnchorWindow.ScreenToClient(FHint.StemPointPosition);
+    end
+    else
+    begin
+      RAnchorPosition := Rect.TopLeft;
+      RStemPointPosition := FHint.StemPointPosition;
+    end;
 
     { Last call because of possible CancelHint call in StartHintTimer }
     if RVisibleTime > 0 then
@@ -1114,9 +1129,9 @@ end;
 
 procedure TJvBalloonHint.Unhook;
 begin
-  UnRegisterWndProcHook(FData.RAnchorWindow, HookProc, hoBeforeMsg);
+  if Assigned(FData.RAnchorWindow) then
+    UnRegisterWndProcHook(FData.RAnchorWindow, HookProc, hoBeforeMsg);
 end;
-
 
 { TGlobalCtrl }
 
@@ -1284,7 +1299,7 @@ procedure TGlobalCtrl.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = FMainCtrl) and (Operation = opRemove) then
-    SetMainCtrl(nil);
+    MainCtrl := nil;
 end;
 
 procedure TGlobalCtrl.PlaySound(const AIconKind: TJvIconKind);
@@ -1318,6 +1333,7 @@ begin
 
   if Assigned(FMainCtrl) then
   begin
+    FMainCtrl.CancelHint;
     FMainCtrl.RemoveFreeNotification(Self);
     FMainCtrl.ApplicationHintOptions := FMainCtrl.ApplicationHintOptions - [ahUseBalloonAsHint];
   end;
@@ -1351,11 +1367,6 @@ begin
   end;
 end;
 
-procedure TJvBalloonWindowEx.CMTextChanged(var Message: TMessage);
-begin
-  {}
-end;
-
 procedure TJvBalloonWindowEx.Init(AData: Pointer);
 begin
   Canvas.Font := Screen.HintFont;
@@ -1376,6 +1387,7 @@ begin
     FAnimationStyle := RAnimationStyle;
 
     FSwitchHeight := RSwitchHeight;
+    FIsAnchored := Assigned(RAnchorWindow);
   end;
 
   FImageSize := TGlobalCtrl.Instance.HintImageSize(FIconKind, FImageIndex);
@@ -1392,7 +1404,6 @@ const
     AW_HOR_POSITIVE or AW_SLIDE, AW_VER_NEGATIVE or AW_SLIDE, AW_VER_POSITIVE or AW_SLIDE,
     AW_CENTER, AW_BLEND);
 var
-  Animate: bool;
   AutoValue: Integer;
 begin
   CheckPosition(Rect);
@@ -1414,25 +1425,20 @@ begin
     Rect.Bottom := Screen.DesktopTop;
   SetWindowPos(Handle, HWND_TOPMOST, Rect.Left, Rect.Top, Width, Height,
     SWP_NOACTIVATE);
-  if IsWinXP and Assigned(AnimateWindowProc) and (FAnimationStyle <> atNone) then
+  if (FAnimationStyle <> atNone) and IsWinXP and Assigned(AnimateWindowProc) then
   begin
-    SystemParametersInfo(SPI_GETTOOLTIPANIMATION, 0, @Animate, 0);
-    if Animate then
-    begin
-      if FAnimationStyle in [atSlide, atRoll] then
-        case FCurrentPosition of
-          bpLeftDown, bpRightDown:
-            AutoValue := AW_VER_POSITIVE;
-        else {bpLeftUp, bpRightUp:}
-          AutoValue := AW_VER_NEGATIVE;
-        end
-      else
-        AutoValue := 0;
-      SystemParametersInfo(SPI_GETTOOLTIPFADE, 0, @Animate, 0);
-      { This function will fail on systems other than Windows XP,
-        because of use of the window region: }
-      AnimateWindowProc(Handle, FAnimationTime, CAnimationStyle[FAnimationStyle] or AutoValue);
-    end;
+    if FAnimationStyle in [atSlide, atRoll] then
+      case FCurrentPosition of
+        bpLeftDown, bpRightDown:
+          AutoValue := AW_VER_POSITIVE;
+      else {bpLeftUp, bpRightUp:}
+        AutoValue := AW_VER_NEGATIVE;
+      end
+    else
+      AutoValue := 0;
+    { This function will fail on systems other than Windows XP,
+      because of use of the window region: }
+    AnimateWindowProc(Handle, FAnimationTime, CAnimationStyle[FAnimationStyle] or AutoValue);
   end;
   ShowWindow(Handle, SW_SHOWNOACTIVATE);
   //Invalidate;
@@ -1486,7 +1492,7 @@ end;
 procedure TJvBalloonWindowEx.WMActivateApp(var Message: TWMActivateApp);
 begin
   inherited;
-  if Message.Active = False then
+  if FIsAnchored and (Message.Active = False) then
     FCtrl.CancelHint;
 end;
 
@@ -1547,7 +1553,8 @@ begin
 end;
 
 procedure InitD5Controls;
-var UserHandle:HMODULE;
+var
+  UserHandle: HMODULE;
 begin
   UserHandle := GetModuleHandle('USER32');
   if UserHandle <> 0 then
@@ -1555,16 +1562,10 @@ begin
 end;
 
 initialization
-  {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
   InitD5Controls;
-  {$ENDIF}
+{$ENDIF}
 finalization
   FreeAndNil(GGlobalCtrl);
 end.
-
-
-
-
-
-
 
