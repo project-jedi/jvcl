@@ -20,8 +20,6 @@
     <Package Name="vcljpg" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
-    <Package Name="DJCL50" Targets="D5,D5s" Condition=""/>
-    <Package Name="DJCL60" Targets="D6,D6p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvDualListForm.pas" Targets="all" Formname="JvDualListForm" Condition=""/>

@@ -17,10 +17,7 @@
     <Package Name="vcl" Targets="C6,C6p,D7,D7p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
-    <Package Name="DJCL50" Targets="D5,D5s" Condition=""/>
-    <Package Name="DJCL60" Targets="D6,D6p" Condition=""/>
-    <Package Name="DJCL70" Targets="D7,D7p" Condition=""/>
-    <Package Name="JvCore-R" Targets="D7,D7p" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvPictureEditors.pas" Targets="all" Formname="" Condition=""/>

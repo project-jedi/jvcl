@@ -16,7 +16,6 @@
     <Package Name="dbrtl" Targets="C6,D6,D7" Condition=""/>
     <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
-    <Package Name="DJCL70" Targets="D7,D7p" Condition=""/>
     <Package Name="vcljpg" Targets="D7,D7p" Condition=""/>
   </Requires>
   <Contains>
