@@ -54,7 +54,7 @@ uses
   JvDateTimePicker, JvDatePickerEdit, JvCalendar, JvxSlider, JvTextListBox,
   JvxCheckListBox, JvCombobox, JvCheckTreeView, JvComCtrls, JvCoolBar,
   JvListView, JvHotKey, JvMemo, JvMenus, JvSystemPopup, JvToolBar, JvUpDown,
-  JvMonthCalendar, JvListBox, JvColorCombo,
+  JvMonthCalendar, JvListBox, JvColorCombo, JvScrollBox,
   JvControlPanelButton, JvStartMenuButton, JvRecentMenuButton,
   JvFavoritesButton, 
   {$ENDIF VCL}
@@ -108,7 +108,7 @@ begin
     TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit,
     {$IFDEF VCL}
     TJvHotKey, 
-    TJvIPAddress
+    TJvIPAddress,
     TJvDatePickerEdit,
     {$ENDIF VCL}
     TJvDateEdit]);
