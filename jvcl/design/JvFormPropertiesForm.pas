@@ -114,9 +114,6 @@ uses
 
 {$R *.dfm}
 
-// (rom) needs explanation
-{$D-}
-
 //=== TJvFormStorageEditor ===================================================
 
 procedure TJvFormStorageEditor.ExecuteVerb(Index: Integer);

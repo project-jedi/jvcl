@@ -39,11 +39,16 @@ implementation
 
 uses
   Classes,
+  {$IFDEF USEJVCL}
+  JvDsgnConsts,
+  {$ENDIF USEJVCL}
   JvDotNetControls, JvDBDotNetControls;
   
+{$IFNDEF USEJVCL}
 resourcestring
   RsPaletteDotNet = 'Jv DotNet';
   RsPaletteDotNetDB = 'Jv DotNet DB';
+{$ENDIF USEJVCL}
 
 procedure Register;
 begin

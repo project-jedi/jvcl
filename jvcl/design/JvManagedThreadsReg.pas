@@ -30,9 +30,9 @@ interface
 uses
   Classes,
   {$IFDEF USEJVCL}
-  //JvDsgnConsts,
+  JvDsgnConsts,
   {$ENDIF USEJVCL}
-  JvMtComponents;
+  JvMTComponents;
 
 procedure Register;
 
@@ -40,16 +40,16 @@ implementation
 
 {$R ..\Resources\JvManagedThreadsReg.dcr}
 
-{ IFNDEF USEJVCL}
+{$IFNDEF USEJVCL}
 resourcestring
   RsPaletteMTThreads = 'Jv Threading';
-{ ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteMTThreads, [TJvMtManager, TJvMtThread,
-    TJvMtThreadToVCL, TJvMtVCLToThread, TJvMtThreadToThread, TJvMtSection,
-    TJvMtCountingSection, TJvMtMonitorSection]);
+  RegisterComponents(RsPaletteMTThreads, [TJvMTManager, TJvMTThread,
+    TJvMTThreadToVCL, TJvMTVCLToThread, TJvMTThreadToThread, TJvMTSection,
+    TJvMTCountingSection, TJvMTMonitorSection]);
 end;
 
 end.

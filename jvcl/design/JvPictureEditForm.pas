@@ -100,12 +100,10 @@ type
 implementation
 
 uses
-  TypInfo, SysUtils, Clipbrd, Consts, ShellApi, LibHelp,
+  TypInfo, SysUtils, Clipbrd, Consts, ShellAPI, LibHelp,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvDsgnConsts, JvDirectoryListForm, JvTypes;
 
 {$R *.dfm}
-
-{$D-}
 
 procedure CopyPicture(Pict: TPicture; BackColor: TColor);
 begin
@@ -113,7 +111,7 @@ begin
   begin
     if Pict.Graphic is TIcon then
       CopyIconToClipboard(Pict.Icon, BackColor)
-    { check another specific graphic types here }
+    { check other specific graphic types here }
     else
       Clipboard.Assign(Pict);
   end;
@@ -136,7 +134,7 @@ begin
         NewGraphic.Free;
       end;
     end
-    { check another specific graphic types here }
+    { check other specific graphic types here }
     else
     if Clipboard.HasFormat(CF_PICTURE) then
       Pict.Assign(Clipboard);
@@ -153,7 +151,7 @@ begin
   else
   if Graph = TIcon then
     Result := Clipboard.HasFormat(CF_ICON)
-  { check another graphic types here }
+  { check other graphic types here }
   //else
   //if Graph = TGraphic then
   //  Result := Clipboard.HasFormat(CF_PICTURE)
