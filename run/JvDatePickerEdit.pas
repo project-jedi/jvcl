@@ -716,6 +716,7 @@ begin
   FMask := DateFormatToEditMask(FDateFormat);
   BeginInternalChange;
   try
+    EditMask := EmptyStr;
     Text := EmptyStr;
     EditMask := FMask;
     FEmptyMaskText := Text;
@@ -816,6 +817,17 @@ begin
   if not (Self.Enabled) and Dropped then
     CloseUp;
   FDropButton.Enabled := Self.Enabled;
+end;
+
+procedure TJvCustomDatePickerEdit.CreateWnd;
+begin
+  inherited CreateWnd;
+  SetDateFormat(ShortDateFormat);
+end;
+
+function TJvCustomDatePickerEdit.IsEmptyMaskText(const AText: string): Boolean;
+begin
+  Result := AnsiSameStr(AText, FEmptyMaskText);
 end;
 
 //=== TJvDropCalendar ========================================================
@@ -932,17 +944,6 @@ begin
     FCal.SetFocus
   else
     inherited SetFocus;
-end;
-
-procedure TJvCustomDatePickerEdit.CreateWnd;
-begin
-  inherited CreateWnd;
-  SetDateFormat(ShortDateFormat);
-end;
-
-function TJvCustomDatePickerEdit.IsEmptyMaskText(const AText: string): Boolean;
-begin
-  Result := AnsiSameStr(AText, FEmptyMaskText);
 end;
 
 end.
