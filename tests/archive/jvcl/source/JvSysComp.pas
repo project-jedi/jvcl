@@ -232,8 +232,7 @@ type
 implementation
 
 uses
-  TLHelp32, Psapi, JvMaxMin,
-  JclSysUtils, JvFunctions;
+  JvMaxMin, JclSysUtils, JvFunctions;
 
 resourcestring
   RsListIndex = 'Process list index error';
