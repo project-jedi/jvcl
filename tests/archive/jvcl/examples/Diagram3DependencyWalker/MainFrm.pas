@@ -4,10 +4,18 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   JvDiagramShape, Dialogs, ComCtrls, Menus, ImgList, StdCtrls, ExtCtrls,
-  ActnList;
+  ActnList, IniFiles, PersistSettings;
 
 type
-  TfrmMain = class(TForm)
+  // imposer class for TListBox that implements IPersistSettings (for the skiplist)
+  TListBox = class(StdCtrls.TListBox,IUnknown, IPersistSettings)
+  private
+    {IPersistSettings}
+    procedure Load(Storage:TCustomIniFile);
+    procedure Save(Storage:TCustomIniFile);
+  end;
+
+  TfrmMain = class(TForm, IUnknown, IPersistSettings)
     StatusBar1: TStatusBar;
     mmMain: TMainMenu;
     File1: TMenuItem;
@@ -69,6 +77,10 @@ type
     FFileShapes: TStringlist;
     FLeft, FTop: integer;
     sb: TScrollBox;
+
+    procedure LoadSettings;
+    procedure SaveSettings;
+
     procedure Clear;
     function GetFileShape(const Filename: string): TJvBitmapShape;
     procedure ParseUnits(Files, Errors: TStrings);
@@ -83,6 +95,10 @@ type
     procedure DoShapeClick(Sender: TObject);
     procedure SortItems(ATag: integer; AList: TList;
       InvertedSort: boolean);
+
+    {IPersistSettings}
+    procedure Load(Storage:TCustomIniFile);
+    procedure Save(Storage:TCustomIniFile);
   public
     { Public declarations }
   end;
@@ -93,6 +109,7 @@ var
 implementation
 uses
   JCLParseUses, Clipbrd;
+
 const
   FStartX = 50;
   FStartY = 50;
@@ -399,8 +416,9 @@ begin
   FFileShapes.Duplicates := dupError;
   FLeft := FStartX;
   FTop := FStartY;
-  LoadSkipList;
+  LoadSettings;
   CreateScrollBox(Panel1);
+
 end;
 
 procedure TfrmMain.LoadSkipList;
@@ -429,7 +447,7 @@ end;
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   //  Clear;
-  SaveSkipList;
+  SaveSettings;
   FFileShapes.Free;
 end;
 
@@ -594,6 +612,70 @@ procedure TfrmMain.alMainUpdate(Action: TBasicAction;
 begin
   acDelete.Enabled := lbSkipList.SelCount > 0;
   acClear.Enabled := sb.ControlCount > 0;
+end;
+
+procedure TfrmMain.Load(Storage: TCustomIniFile);
+begin
+  Top := Storage.ReadInteger(ClassName,'Top',Top);
+  Left := Storage.ReadInteger(ClassName,'Left',Left);
+  Width := Storage.ReadInteger(ClassName,'Width',Width);
+  Height := Storage.ReadInteger(ClassName,'Height',Height);
+  acInvertSort.Checked := Storage.ReadBool(ClassName,'InvertSort',false);
+end;
+
+procedure TfrmMain.Save(Storage: TCustomIniFile);
+begin
+  if not IsZoomed(Handle) and not IsIconic(Application.Handle) then
+  begin
+    Storage.WriteInteger(ClassName,'Top',Top);
+    Storage.WriteInteger(ClassName,'Left',Left);
+    Storage.WriteInteger(ClassName,'Width',Width);
+    Storage.WriteInteger(ClassName,'Height',Height);
+    Storage.WriteBool(ClassName,'InvertSort',acInvertSort.Checked);
+  end;
+end;
+
+procedure TfrmMain.LoadSettings;
+var Ini:TIniFile;
+begin
+//  LoadSkipList;
+  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  try
+    PersistSettings.LoadComponents(self,Ini);
+  finally
+    Ini.Free;
+  end;
+end;
+
+procedure TfrmMain.SaveSettings;
+var Ini:TIniFile;
+begin
+//  SaveSkipList;
+  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  try
+    PersistSettings.SaveComponents(self,Ini);
+  finally
+    Ini.Free;
+  end;
+end;
+
+{ TListBox }
+
+procedure TListBox.Load(Storage: TCustomIniFile);
+begin
+  if Storage.SectionExists(Name) then
+  begin
+    Sorted := false;
+    Storage.ReadSection(Name,Items);
+    Sorted := true;
+  end;
+end;
+
+procedure TListBox.Save(Storage: TCustomIniFile);
+var i:integer;
+begin
+  for i := 0 to Items.Count - 1 do
+    Storage.WriteString(Name,Items[i],'');
 end;
 
 end.
