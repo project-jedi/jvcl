@@ -32,10 +32,10 @@ uses
   Windows, Messages, Graphics, Controls, Forms, Mask,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QMask,
+  Qt, QGraphics, QControls, QForms, QMask, Types, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
-  JvThemes, JvExControls;
+  JvTypes, JvThemes, JVCLVer, JvExControls;
 
 {$IFDEF VCL}
  {$DEFINE NeedMouseEnterLeave}
@@ -46,23 +46,23 @@ uses
 {$ENDIF VCL}
 
 type
-  JV_WINCONTROL_EVENTS_BEGIN(CustomMaskEdit)
+  JV_EDITCONTROL_EVENTS_BEGIN(CustomMaskEdit)
   private
     FBeepOnError: Boolean;
   protected
     procedure DoBeepOnError; dynamic;
     procedure SetBeepOnError(Value: Boolean); virtual;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
-  JV_WINCONTROL_EVENTS_END(CustomMaskEdit)
+  JV_EDITCONTROL_EVENTS_END(CustomMaskEdit)
 
-  JV_WINCONTROL_EVENTS_BEGIN(MaskEdit)
+  JV_EDITCONTROL_EVENTS_BEGIN(MaskEdit)
   private
     FBeepOnError: Boolean;
   protected
     procedure DoBeepOnError; dynamic;
     procedure SetBeepOnError(Value: Boolean); virtual;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
-  JV_WINCONTROL_EVENTS_END(CustomMaskEdit)
+  JV_EDITCONTROL_EVENTS_END(MaskEdit)
 
 implementation
 
@@ -71,8 +71,9 @@ implementation
 {$UNDEF CONSTRUCTOR_CODE}
 {$DEFINE CONSTRUCTOR_CODE
   FBeepOnError := True;
+  FClipboardCommands := [caCopy..caUndo];
 }
-JV_WINCONTROL_EVENTS_IMPL_BEGIN(CustomMaskEdit)
+JV_EDITCONTROL_EVENTS_IMPL_BEGIN(CustomMaskEdit)
 procedure TJvExCustomMaskEdit.DoBeepOnError;
 begin
   if BeepOnError then
@@ -83,10 +84,10 @@ procedure TJvExCustomMaskEdit.SetBeepOnError(Value: Boolean);
 begin
   FBeepOnError := Value;
 end;
-JV_WINCONTROL_EVENTS_IMPL_END(CustomMaskEdit)
+JV_EDITCONTROL_EVENTS_IMPL_END(CustomMaskEdit)
 
 
-JV_WINCONTROL_EVENTS_IMPL_BEGIN(MaskEdit)
+JV_EDITCONTROL_EVENTS_IMPL_BEGIN(MaskEdit)
 procedure TJvExMaskEdit.DoBeepOnError;
 begin
   if BeepOnError then
@@ -97,7 +98,7 @@ procedure TJvExMaskEdit.SetBeepOnError(Value: Boolean);
 begin
   FBeepOnError := Value;
 end;
-JV_WINCONTROL_EVENTS_IMPL_END(MaskEdit)
+JV_EDITCONTROL_EVENTS_IMPL_END(MaskEdit)
 
 {$UNDEF CONSTRUCTOR_CODE} // undefine at file end
 end.

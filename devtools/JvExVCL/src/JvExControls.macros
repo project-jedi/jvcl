@@ -65,6 +65,10 @@
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  private
+    FAboutJVCL: TJVCLAboutInfo;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
 *)
 
 // ****************** Win Control **********************
@@ -570,3 +574,155 @@ JV_DIFF_EVENTS_IMPL_CUSTOMCONTROL(ClassName)
 {$DEFINE JV_WINCONTROL_EVENTS_IMPL_END(ClassName) }
 {$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPL_END(ClassName) }
 
+
+
+
+
+// ***********************************************************************
+// * BEGIN - MACROS for the EDIT controls
+// ***********************************************************************
+
+(*$DEFINE JV_EDITCONTROL_EVENTS_BEGIN(ClassName)
+  JV_WINCONTROL_EVENTS_BEGIN1(ClassName, IJvEditControlEvents)
+  private
+    FClipboardCommands: TJvClipboardCommands;
+    {$IFDEF VisualCLX}
+    FEditRect: TRect; // EM_GETRECT
+    procedure EMGetRect(var Msg: TMessage); message EM_GETRECT;
+    procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
+    {$ENDIF VisualCLX}
+  protected
+    function DoUndo: Boolean; dynamic;
+    function DoClearText: Boolean; dynamic;
+    function DoClipboardPaste: Boolean; dynamic;
+    function DoClipboardCopy: Boolean; dynamic;
+    function DoClipboardCut: Boolean; dynamic;
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
+
+    property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
+      write SetClipboardCommands default [caCopy..caUndo];
+  {$IFDEF VisualCLX}
+  public
+    procedure Clear; override;
+    procedure CopyToClipboard; override;
+    procedure CutToClipboard; override;
+    procedure PasteFromClipboard; override;
+    procedure Undo; override;
+  {$ENDIF VisualCLX}
+*)
+
+(*$DEFINE JV_EDITCONTROL_EVENTS_END(ClassName)
+  JV_WINCONTROL_EVENTS_END(ClassName)
+*)
+
+(*$DEFINE JV_EDITCONTROL_EVENTS(ClassName)
+  JV_EDITCONTROL_EVENTS_BEGIN(ClassName)
+  JV_EDITCONTROL_EVENTS_END(ClassName)
+*)
+
+(*$DEFINE JV_EDITCONTROL_EVENTS_IMPL_BEGIN(ClassName)
+JV_WINCONTROL_EVENTS_IMPL_BEGIN(ClassName)
+
+function TJvEx##ClassName.DoClearText: Boolean;
+begin
+ // (ahuser) there is no caClear so we restrict it to caCut
+  Result := caCut in ClipboardCommands;
+end;
+
+function TJvEx##ClassName.DoUndo: Boolean;
+begin
+  Result := caUndo in ClipboardCommands;
+end;
+
+function TJvEx##ClassName.DoClipboardPaste: Boolean;
+begin
+  Result := caPaste in ClipboardCommands;
+end;
+
+function TJvEx##ClassName.DoClipboardCopy: Boolean;
+begin
+  Result := caCopy in ClipboardCommands;
+end;
+
+function TJvEx##ClassName.DoClipboardCut: Boolean;
+begin
+  Result := caCut in ClipboardCommands;
+end;
+
+procedure TJvEx##ClassName.SetClipboardCommands(const Value: TJvClipboardCommands);
+begin
+  FClipboardCommands := Value;
+end;
+
+{$IFDEF VisualCLX}
+procedure TJvEx##ClassName.Clear;
+begin
+  if DoClearText then
+    inherited Clear;
+end;
+
+procedure TJvEx##ClassName.Undo;
+begin
+  if DoUndo then
+    inherited Undo;
+end;
+
+procedure TJvEx##ClassName.CopyToClipboard;
+begin
+  if DoClipboardCopy then
+    inherited CopyToClipboard;
+end;
+
+procedure TJvEx##ClassName.CutToClipboard;
+begin
+  if DoClipboardCut then
+    inherited CutToClipboard;
+end;
+
+procedure TJvEx##ClassName.PasteFromClipboard;
+begin
+  if DoClipboardPaste then
+    inherited PasteFromClipboard;
+end;
+
+procedure TJvEx##ClassName.EMGetRect(var Msg: TMessage);
+begin
+  if Msg.LParam <> 0 then
+  begin
+    if IsRectEmpty(FEditRect) then
+    begin
+      PRect(Msg.LParam)^ := ClientRect;
+      if Self.BorderStyle = bsSingle then
+        InflateRect(PRect(Msg.LParam)^, -2, -2);
+    end
+    else
+      PRect(Msg.LParam)^ := FEditRect;
+  end;
+end;
+
+procedure TJvEx##ClassName.EMSetRect(var Msg: TMessage);
+begin
+  if Msg.LParam <> 0 then
+    FEditRect := PRect(Msg.LParam)^
+  else
+    FEditRect := ClientRect;
+  Invalidate;
+end;
+
+{$ENDIF VisualCLX}
+
+JV_WINCONTROL_EVENTS_IMPL_END(ClassName)
+*)
+
+
+(*$DEFINE JV_EDITCONTROL_EVENTS_IMPL_END(ClassName)
+*)
+
+(*$DEFINE JV_EDITCONTROL_EVENTS_IMPL(ClassName)
+JV_EDITCONTROL_EVENTS_IMPL_BEGIN(ClassName)
+JV_EDITCONTROL_EVENTS_IMPL_END(ClassName)
+*)
+
+// ***********************************************************************
+// * END - MACROS for the EDIT controls
+// ***********************************************************************
