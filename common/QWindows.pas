@@ -306,30 +306,35 @@ type
     rgbtRed: Byte;
   end;
 
+const
+  DEFAULT_PITCH = 0;
+  FIXED_PITCH = 1;
+  VARIABLE_PITCH = 2;
+
+  DEFAULT_CHARSET = 1;
+
+type
   tagTEXTMETRICA = record
-    { supported by QFontMetrics }
     tmHeight: Longint;
     tmAscent: Longint;
     tmDescent: Longint;
-    (* unsupported:
-    tmItalic: Byte;
-    tmUnderlined: Byte;
-    tmStruckOut: Byte;
-    tmPitchAndFamily: Byte;
-    tmCharSet: Byte;
-    tmWeight: Longint;
-    tmInternalLeading: Longint;
+    //tmInternalLeading: Longint; // not supported
     tmExternalLeading: Longint;
     tmAveCharWidth: Longint;
     tmMaxCharWidth: Longint;
-    tmOverhang: Longint;
+    tmWeight: Longint;
+    //tmOverhang: Longint; // not supported
     tmDigitizedAspectX: Longint;
     tmDigitizedAspectY: Longint;
     tmFirstChar: AnsiChar;
     tmLastChar: AnsiChar;
     tmDefaultChar: AnsiChar;
     tmBreakChar: AnsiChar;
-    *)
+    tmItalic: Byte;
+    tmUnderlined: Byte;
+    tmStruckOut: Byte;
+    tmPitchAndFamily: Byte;
+    tmCharSet: Byte;
   end;
   TTextMetric = tagTEXTMETRICA;
 
@@ -782,7 +787,7 @@ type
 
 { (very) limited implementations of }
 function GetDeviceCaps(Handle: QPainterH; devcap: TDeviceCap): Integer;
-function GetTextMetrics(Handle: QPainterH; tt: TTextMetric): Integer;
+function GetTextMetrics(Handle: QPainterH; var tt: TTextMetric): Integer;
 
 type
   TMinMaxInfo = packed record
@@ -3456,16 +3461,52 @@ begin
 end;
 
 { a very limited implementation of }
-function GetTextMetrics(Handle: QPainterH; tt: TTextMetric): Integer;
+function GetTextMetrics(Handle: QPainterH; var tt: TTextMetric): Integer;
 var
-  tm: QFontMetricsH;
+  fm: QFontMetricsH;
+  fi: QFontInfoH;
 begin
-  QPainter_fontMetrics(Handle, @tm);
+  QPainter_fontMetrics(Handle, @fm);
   with tt do
   begin
-    tmHeight := QFontMetrics_height(tm);
-    tmAscent := QFontMetrics_ascent(tm);
-    tmDescent := QFontMetrics_descent(tm);
+    tmHeight := QFontMetrics_height(fm);
+    tmAscent := QFontMetrics_ascent(fm);
+    tmDescent := QFontMetrics_descent(fm);
+    tmAveCharWidth := QFontMetrics_width(fm, 'x');
+    tmMaxCharWidth := QFontMetrics_maxWidth(fm);
+    //tmInternalLeading := 0;
+    tmExternalLeading := QFontMetrics_leading(fm);
+    //tmOverhang := 0;
+
+    fi := QFontInfo_create(QPainter_font(Handle));
+    try
+      QPainter_fontInfo(Handle, fi);
+      case QFontInfo_weight(fi) of
+        25: // Light
+          tmWeight := 300;
+        50: // Normal:
+          tmWeight := 400;
+        63: // DemiBold
+          tmWeight := 600;
+        75: // Bold
+          tmWeight := 700;
+        87: // Black
+          tmWeight := 900;
+      else
+        tmWeight := Round(QFontInfo_weight(fi) * 9.5);
+      end;
+
+      tmItalic := Ord(QFontInfo_italic(fi));
+      tmUnderlined := Ord(QFontInfo_underline(fi));
+      tmStruckOut := Ord(QFontInfo_strikeOut(fi));
+      if QFontInfo_fixedPitch(fi) then
+        tmPitchAndFamily := FIXED_PITCH
+      else
+        tmPitchAndFamily := VARIABLE_PITCH;
+      tmCharSet := DEFAULT_CHARSET;
+    finally
+      QFontInfo_destroy(fi);
+    end;
   end;
   Result := 0;
 end;
@@ -5051,10 +5092,7 @@ begin
     end;
   end
   else // limited implementation
-  begin
     Result := True;
-    QPainter_restore(Handle);
-  end;
 end;
 
 function HWND_DESKTOP: QWidgetH;
