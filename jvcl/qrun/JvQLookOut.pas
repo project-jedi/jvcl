@@ -121,7 +121,7 @@ type
     procedure SetFillColor(Value: TColor);
     procedure SetHighlightFont(Value: TFont);
     procedure SetSpacing(Value: Integer);
-    procedure SetPImSize(Value: Boolean);
+    procedure SetParentImageSize(Value: Boolean);
     procedure SetButtonBorder(Value: TJvButtonBorder);
     procedure SetCaption(Value: TCaption);
     procedure SetSmallImages(Value: TImageList);
@@ -166,7 +166,7 @@ type
     property HighlightFont: TFont read FHighlightFont write SetHighlightFont;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property ImageSize: TJvImageSize read FImageSize write SetImageSize default isLarge;
-    property ParentImageSize: Boolean read FParentImageSize write SetPImSize default True;
+    property ParentImageSize: Boolean read FParentImageSize write SetParentImageSize default True;
     property PopupMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
     property LargeImages: TImageList read FLargeImages write SetLargeImages;
     property Spacing: Integer read FSpacing write SetSpacing default 4; { border offset from bitmap }
@@ -279,7 +279,7 @@ type
   TJvLookOutPage = class(TJvCustomControl)
   private
     FEdit: TEdit;
-    FInScroll: Boolean;
+    FInScroll: Boolean;                 
     FAutoRepeat: Boolean;
     FAutoCenter: Boolean;
     FParentImageSize: Boolean;
@@ -308,8 +308,8 @@ type
     procedure SetAutoRepeat(Value: Boolean);
     procedure SetHighlightFont(Value: TFont);
     procedure SetImageSize(Value: TJvImageSize);
-    procedure SetPImSize(Value: Boolean);
-    procedure SetBitmap(Value: TBitmap);
+    procedure SetParentImageSize(Value: Boolean);
+    procedure SetBitmap(Value: TBitmap);reintroduce;
     procedure SetCaption(Value: TCaption);
     procedure SetMargin(Value: Integer);
     procedure SetButton(Index: Integer; Value: TJvLookOutButton);
@@ -365,7 +365,7 @@ type
     property Bitmap: TBitmap read FBitmap write SetBitmap;
     property ImageSize: TJvImageSize read FImageSize write SetImageSize default isLarge;
     property HighlightFont: TFont read FHighlightFont write SetHighlightFont;
-    property ParentImageSize: Boolean read FParentImageSize write SetPImSize default True;
+    property ParentImageSize: Boolean read FParentImageSize write SetParentImageSize default True;
     property ShowPressed: Boolean read FShowPressed write FShowPressed default False;
     property Caption: TCaption read FCaption write SetCaption;
     property Color;
@@ -1150,7 +1150,7 @@ begin
   begin
     FImageSize := Value;
     if csDesigning in ComponentState then
-      SetPImSize(False);
+      SetParentImageSize(False);
     Invalidate;
   end;
 end;
@@ -1180,7 +1180,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLookOutButton.SetPImSize(Value: Boolean);
+procedure TJvCustomLookOutButton.SetParentImageSize(Value: Boolean);
 begin
   FParentImageSize := Value;
   if FParentImageSize and (Parent is TJvLookOutPage) then
@@ -1427,7 +1427,6 @@ end;
 procedure TJvCustomLookOutButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Tmp: TPoint;
-  Msg: TMsg;
 begin
   if Parent is TJvLookOutPage then
     TJvLookOutPage(Parent).ActiveButton := Self;
@@ -2075,7 +2074,7 @@ begin
   begin
     FImageSize := Value;
     if csDesigning in ComponentState then
-      SetPImSize(False);
+      SetParentImageSize(False);
     { notify children }
     Msg.Msg := CM_IMAGESIZECHANGED;
     Msg.WParam := Longint(Ord(FImageSize));
@@ -2087,7 +2086,7 @@ begin
   end;
 end;
 
-procedure TJvLookOutPage.SetPImSize(Value: Boolean);
+procedure TJvLookOutPage.SetParentImageSize(Value: Boolean);
 begin
   FParentImageSize := Value;
   if FParentImageSize and (FManager <> nil) then
@@ -2321,7 +2320,6 @@ procedure TJvLookOutPage.MouseDown(Button: TMouseButton; Shift: TShiftState; X, 
 var
   R: TRect;
   Tmp: TPoint;
-  Msg: TMsg;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if Assigned(FPopUpMenu) and (Button = mbRight) then
@@ -2331,8 +2329,6 @@ begin
     FPopUpMenu.PopupComponent := Self;
     FPopUpMenu.Popup(Tmp.X, Tmp.Y);
     { wait 'til menu is Done }
-//    while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
-//      {nothing};
     FDown := False;
   end
   else

@@ -150,7 +150,7 @@ uses
   {$IFDEF VisualCLX}
   QConsts,
   {$ENDIF VisualCLX}
-  JvConsts, JvThemes;
+  JvConsts, JvThemes, JvJCLUtils;
 
 type
   TGlyphList = class(TImageList)
@@ -209,14 +209,6 @@ type
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
-
-{$IFDEF VCL}
-function DrawText(Canvas: TCanvas; Caption: TCaption; var R: TRect;
-  Flags: Integer): Integer;
-begin
-  Result := Windows.DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, Flags);
-end;
-{$ENDIF VCL}
 
 procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
 begin
@@ -625,14 +617,13 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      DrawText(Canvas, S, TextBounds, 0);
+      DrawText(Canvas, S, -1, TextBounds, 0);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Canvas, S, TextBounds, 0);
+      DrawText(Canvas, S, -1, TextBounds, 0);
     end
     else
-      DrawText(Canvas, S, TextBounds,
-        DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      DrawText(Canvas, S, -1, TextBounds, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 end;
 
@@ -658,7 +649,7 @@ begin
   begin
     TextBounds := Rect(0, 0, Client.Right - Client.Left, 0);
     S := Caption;
-    DrawText(Canvas, S, TextBounds, DT_CALCRECT);
+    DrawText(Canvas, S, -1, TextBounds, DT_CALCRECT);
     TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom -
       TextBounds.Top);
   end

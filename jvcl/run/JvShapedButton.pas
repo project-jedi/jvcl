@@ -460,8 +460,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -666,8 +666,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -812,8 +812,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -956,8 +956,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -1100,8 +1100,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -1249,8 +1249,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -1590,8 +1590,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -1750,8 +1750,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -1901,8 +1901,8 @@ begin
     end;
     Font := Self.Font;
     if not ActionFocus then
-      DrawText (bm.Canvas.Handle, PChar (Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -2018,8 +2018,8 @@ begin
     end;
     Font := Self.Font;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -2173,8 +2173,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -2325,8 +2325,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -2482,8 +2482,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;
@@ -2631,8 +2631,8 @@ begin
     if (IsHot and (not OdsDown)) then
       Font.Color := FHotColor;
     if not ActionFocus then
-      DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, DT_SINGLELINE or DT_CENTER or dt_VCenter);
+      DrawText(bm.Canvas, Caption, -1,
+        Rect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
     // draw the focus Rect around the text
     Brush.Style := bsSolid;

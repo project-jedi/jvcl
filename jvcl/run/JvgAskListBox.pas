@@ -278,7 +278,7 @@ begin
   Dec(R.Right, 5);
   with Msg.MeasureItemStruct^ do
   begin
-    DrawText(Canvas.Handle, PChar(Items[itemID]),
+    DrawText(Canvas, Items[itemID],
       Length(Items[itemID]), R, DT_CALCRECT or DT_WORDBREAK);
     itemHeight := R.Bottom - R.Top + 6;
     if itemHeight < FItemHeight then
@@ -357,47 +357,47 @@ var
         begin
           Canvas.Font.Color := clBtnHighlight;
           OffsetRect(Rect, -1, -1);
-          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          DrawText(Canvas, szStr, Len, Rect, Align);
           Canvas.Font.Color := clBtnShadow;
           OffsetRect(Rect, 2, 2);
-          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          DrawText(Canvas, szStr, Len, Rect, Align);
           Canvas.Font.Color := FontColor;
           OffsetRect(Rect, -1, -1);
-          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          DrawText(Canvas, szStr, Len, Rect, Align);
         end;
       fstRecessed:
         begin
           Canvas.Font.Color := clBtnShadow;
           OffsetRect(Rect, -1, -1);
-          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          DrawText(Canvas, szStr, Len, Rect, Align);
           Canvas.Font.Color := clBtnHighlight;
           OffsetRect(Rect, 2, 2);
-          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          DrawText(Canvas, szStr, Len, Rect, Align);
           Canvas.Font.Color := FontColor;
           OffsetRect(Rect, -1, -1);
-          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          DrawText(Canvas, szStr, Len, Rect, Align);
         end;
       fstPushed:
         begin
           Canvas.Font.Color := clBtnHighlight;
-          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          DrawText(Canvas, szStr, Len, Rect, Align);
           OffsetRect(Rect, -1, -1);
           Canvas.Font.Color := clBtnShadow;
-          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          DrawText(Canvas, szStr, Len, Rect, Align);
         end;
       fstShadow:
         begin
           Canvas.Font.Color := clBtnShadow;
           OffsetRect(Rect, 2, 2);
-          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          DrawText(Canvas, szStr, Len, Rect, Align);
           Canvas.Font.Color := FontColor;
           OffsetRect(Rect, -2, -2);
-          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          DrawText(Canvas, szStr, Len, Rect, Align);
         end;
     else
       begin
         Canvas.Font.Color := FontColor;
-        DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+        DrawText(Canvas, szStr, Len, Rect, Align);
       end;
     end;
   end;
@@ -582,8 +582,7 @@ begin
   I := -1;
   if NumGlyphs = 1 then
     I := 0
-  else
-  if Index < NumGlyphs then
+  else if Index < NumGlyphs then
     I := Index;
   if I >= 0 then
   begin
@@ -615,8 +614,7 @@ begin
   if (not Assigned(Value)) and Assigned(WallpaperImage) then
     if Assigned(FWallpaper) then
       WallpaperBmp := FWallpaper
-    else
-    if Assigned(FWallpaperImage) then
+    else if Assigned(FWallpaperImage) then
       WallpaperBmp := FWallpaperImage.Picture.Bitmap
     else
       WallpaperBmp := nil;

@@ -559,7 +559,7 @@ begin
     if odSelected in State then
       DrawFocusRect(Rect);
     Inc(Rect.Left, 3);
-    DrawText(Canvas.Handle, PChar(Items[Index]), -1, Rect,
+    DrawText(Canvas, Items[Index], -1, Rect,
       DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
   end;
 end;
@@ -853,13 +853,12 @@ begin
       end;
       InflateRect(Rect, 1, -6);
       tmpR := Rect;
-      DrawText(Canvas.Handle, PChar(Items[Index]), -1, tmpR,
+      DrawText(Canvas, Items[Index], -1, tmpR,
         DT_SINGLELINE or DT_BOTTOM or DT_CENTER or DT_NOPREFIX or DT_CALCRECT);
       Rect.Top := tmpR.Bottom - CanvasMaxTextHeight(Canvas);
       Rect.Left := (Rect.Right - Rect.Left) div 2 - Canvas.TextWidth(PChar(Items[Index])) div 2;
       Rect.Right := Rect.Left + Canvas.TextWidth(PChar(Items[Index]));
-      DrawText(Canvas.Handle, PChar(Items[Index]), -1, Rect,
-        DT_SINGLELINE or DT_CENTER or DT_NOPREFIX);
+      DrawText(Canvas, Items[Index], -1, Rect, DT_SINGLELINE or DT_CENTER or DT_NOPREFIX);
     end
     else
     begin
@@ -869,14 +868,13 @@ begin
         FImages.Draw(Canvas, Rect.Left + FOffset * 2, Rect.Top + FOffset * 2, I);
       end;
       tmpR := Rect;
-      DrawText(Canvas.Handle, PChar(Items[Index]), -1, tmpR,
+      DrawText(Canvas, Items[Index], -1, tmpR,
         DT_SINGLELINE or DT_VCENTER or DT_CENTER or DT_NOPREFIX or DT_CALCRECT);
       Rect.Top := tmpR.Bottom - CanvasMaxTextHeight(Canvas);
       Rect.Bottom := Rect.Top + CanvasMaxTextHeight(Canvas);
       Rect.Left := FImageWidth + FOffset * 3;
       Rect.Right := Rect.Left + Canvas.TextWidth(PChar(Items[Index]));
-      DrawText(Canvas.Handle, PChar(Items[Index]), -1, Rect,
-        DT_SINGLELINE or DT_TOP or DT_NOPREFIX);
+      DrawText(Canvas, Items[Index], -1, Rect, DT_SINGLELINE or DT_TOP or DT_NOPREFIX);
     end;
   end;
   if odFocused in State then

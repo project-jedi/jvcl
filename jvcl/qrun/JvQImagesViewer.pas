@@ -37,9 +37,7 @@ uses
   {$ENDIF MSWINDOWS}
   
   
-  Types, QWindows, QControls, QGraphics, QStdCtrls, QComCtrls,
-  
-  JvQCustomItemViewer;
+  Types, QWindows, QControls, QGraphics, QStdCtrls, QComCtrls, JvQCustomItemViewer;
 
 type
   TJvImageItem = class(TJvViewerItem)
@@ -340,10 +338,10 @@ end;
 { TJvImagesViewer }
 
 constructor TJvImagesViewer.Create(AOwner: TComponent);
-begin
+begin           
   inherited Create(AOwner);
   //  FDirectory := GetCurrentDir;
-  FFileMask := Graphics.GraphicFileMask(TGraphic);
+  FFileMask := QGraphics.GraphicFileMask(TGraphic);
   Color := clWindow;
 end;
 

@@ -1235,8 +1235,8 @@ begin
   if Caption <> '' then
   begin
 //    InflateRect(TextRect, -2, -2);
-    SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), TextRect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    SetBkMode(Canvas.Handle, TRANSPARENT);
+    DrawText(Canvas, Caption, Length(Caption), TextRect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
   end;
   if Active and ShowFocus then
   begin

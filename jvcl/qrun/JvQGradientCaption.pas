@@ -34,7 +34,7 @@ unit JvQGradientCaption;
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Controls, Forms, Menus,
+  QClasses, QGraphics, QControls, QForms, QMenus,
   JvQWndProcHook, JvQJCLUtils, JvQJVCLUtils;
 
 type
@@ -180,7 +180,6 @@ type
 function GradientFormCaption(AForm: TCustomForm; AStartColor: TColor): TJvGradientCaption;
 
 implementation
-
 uses
   SysUtils,
   JvQConsts;

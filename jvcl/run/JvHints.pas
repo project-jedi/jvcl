@@ -298,14 +298,8 @@ var
   const
     Flag: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   begin
-    {$IFDEF VCL}
-    DrawText(FImage.Canvas.Handle, PChar(Caption), -1, R,
-      DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment] or DrawTextBiDiModeFlagsReadingOnly);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     DrawText(FImage.Canvas, Caption, -1, R,
       DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment]);
-    {$ENDIF VisualCLX}
   end;
 
 begin
@@ -445,14 +439,8 @@ var
   X, Y, Factor: Double;
 begin
   Result := Rect(0, 0, MaxWidth, 0);
-  {$IFDEF VCL}
-  DrawText(Canvas.Handle, PChar(AHint), -1, Result,
-    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or DrawTextBiDiModeFlagsReadingOnly);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
   DrawText(Canvas, AHint, -1, Result,
-    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment];
-  {$ENDIF VisualCLX}
+    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or {$IFDEF VCL}DrawTextBiDiModeFlagsReadingOnly{$ENDIF VCL});
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);
   FRect := Result;

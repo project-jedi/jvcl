@@ -452,7 +452,7 @@ var
 begin
   Flags := Format or Alignments[Alignment] or Layouts[Layout] or WordWraps[WordWrap];
   // (p3) Do we need BiDi support here?
-  Result := DrawText(Canvas.Handle, S, aLength, R, Flags);
+  Result := DrawText(Canvas, S, aLength, R, Flags);
 end;
 
 function CenterRect(InnerRect, OuterRect: TRect): TRect;

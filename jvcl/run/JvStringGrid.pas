@@ -748,16 +748,9 @@ begin
   if Length(S) > 0 then
   begin
     InflateRect(Rect, -2, -2);
-    {$IFDEF VCL}
-    DrawText(Canvas.Handle, PChar(S), Length(S), Rect,
-      DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER or
-      Flags[GetCellAlignment(AColumn, ARow, State)]);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     DrawText(Canvas, S, Length(S), Rect,
       DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER or
       Flags[GetCellAlignment(AColumn, ARow, State)]);
-    {$ENDIF VisualCLX}
   end;
 end;
 
