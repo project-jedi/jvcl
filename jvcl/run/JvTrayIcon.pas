@@ -679,12 +679,15 @@ end;
 
 procedure TJvTrayIcon.DoMouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+var HasPopup:boolean;
 begin
+  HasPopup := False;
   if (Button = mbRight) and (FPopupMenu <> nil) then
   begin
     SetForegroundWindow(FHandle);
     FPopupMenu.Popup(X, Y);
     PostMessage(FHandle, WM_NULL, 0, 0);
+    HasPopup := True;
   end
   else if Button = mbLeft then
     if not ApplicationVisible then
@@ -700,7 +703,7 @@ begin
 
   if Assigned(FOnMouseUp) then
     FOnMouseUp(Self, Button, Shift, X, Y);
-  if Assigned(FOnClick) then
+  if Assigned(FOnClick) and not HasPopup then
     FOnClick(Self, Button, Shift, X, Y);
 end;
 
