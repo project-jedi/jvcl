@@ -691,7 +691,7 @@ begin
     DrawDisabledText(DC, PChar(FCaption), -1, TmpRect, Flags)
   else
   begin
-    SetTextColor(DC, Self.Font.Color);
+    SetTextColor(DC, ColorToRGB(Self.Font.Color));
     DrawText(DC, PChar(FCaption), -1, TmpRect, Flags);
   end;
 end;

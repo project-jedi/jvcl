@@ -862,9 +862,9 @@ begin
   end
   else
   if FInsideButton then
-    SetTextColor(DC, FHiFont.Color)
+    SetTextColor(DC, ColorToRGB(FHiFont.Color))
   else
-    SetTextColor(DC, Self.Font.Color);
+    SetTextColor(DC, ColorToRGB(Self.Font.Color));
 
   DrawText(DC, PChar(FCaption), Length(FCaption), TmpRect, Flags);
 end;
