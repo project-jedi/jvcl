@@ -109,11 +109,20 @@ resourcestring
 resourcestring
   SShellNotCompatible = 'Shell not compatible with BrowseForFolder';
 
+//=== JvButtons.pas ==========================================================
+resourcestring
+  SOwnerMustBeForm = '%s owner must be a TForm';
+
 //=== JvCalendar.pas =========================================================
 resourcestring
   sInvalidDateStr = 'Invalid date specification to TMonthCalStrings (%s)';
   SCannotAssign = 'Cannot assign %s to a %s';
   SInvalidArgumentToSetDayStates = 'Invalid argument to SetDayStates';
+  SInvalidAppearance = 'TJvCustomMonthCalendar.CreateWithAppearance: cannot be created without valid Appearance';
+
+//=== JvCaptionButton.pas ====================================================
+resourcestring
+  SOwnerMustBeTCustomForm = 'TJvCaptionButton owner must be a TCustomForm';
 
 //=== JvCaret.pas ============================================================
 resourcestring
@@ -148,6 +157,11 @@ resourcestring
   sGraphScale = 'Graph Scale';
   sYAxisScales = 'Y Axis Scale: %s';
   sNoValuesHere = 'No values here!';
+
+//=== JvCheckedMaskEdit.pas ==================================================
+resourcestring
+  SBeginUnsupportedNestedCall = 'TJvCustomCheckedMaskEdit.BeginInternalChange: Unsupported nested call!';
+  SEndUnsupportedNestedCall = 'TJvCustomCheckedMaskEdit.EndInternalChange: Unsupported nested call!';
 
 //=== JvClipbrd.pas ==========================================================
 resourcestring

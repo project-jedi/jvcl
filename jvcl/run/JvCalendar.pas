@@ -649,7 +649,7 @@ constructor TJvCustomMonthCalendar.CreateWithAppearance(AOwner: TComponent;
   const AAppearance: TJvMonthCalAppearance; const AOwnsAppearance: Boolean);
 begin
   if not Assigned(AAppearance) then
-    raise EMonthCalError.Create('TJvCustomMonthCalendar.CreateWithAppearance: cannot be created without valid Appearance');
+    raise EMonthCalError.Create(SInvalidAppearance);
   CheckCommonControl(ICC_DATE_CLASSES);
   inherited Create(AOwner);
   FAppearance := AAppearance;

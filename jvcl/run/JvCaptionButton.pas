@@ -294,7 +294,7 @@ uses
   {$IFDEF JVCLThemesEnabled}
   UxTheme, JvJVCLUtils, JvJCLUtils, 
   {$ENDIF JVCLThemesEnabled}
-  JvDsgnIntf;
+  JvDsgnIntf, JvTypes, JvResources;
 
 const
   htCaptionButton = HTSIZELAST + 1;
@@ -531,7 +531,7 @@ end;
 constructor TJvCaptionButton.Create(AOwner: TComponent);
 begin
   if not (AOwner is TCustomForm) then
-    raise Exception.Create('TJvCaptionButton owner must be a TCustomForm');
+    raise EJVCLException.Create(SOwnerMustBeTCustomForm);
 
   inherited Create(AOwner);
 
