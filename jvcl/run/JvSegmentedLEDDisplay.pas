@@ -64,6 +64,7 @@ type
     FCharacterMapper: TJvBaseSegmentedLEDCharacterMapper;
     FDigitClass: TJvSegmentedLEDDigitClass;
     FDigits: TJvSegmentedLEDDigits;
+    FDotSize: Integer;
     FFullRefreshNeeded: Boolean;
     FDigitHeight: Integer;
     FDigitSpacing: Integer;
@@ -86,6 +87,7 @@ type
     procedure SetDigitSpacing(Value: Integer);
     procedure SetDigitWidth(Value: Integer);
     procedure SetDigitClass(Value: TJvSegmentedLEDDigitClass);
+    procedure SetDotSize(Value: Integer);
     procedure SetSegmentLitColor(Value: TColor);
     procedure SetSegmentSpacing(Value: Integer);
     procedure SetSegmentThickness(Value: Integer);
@@ -120,11 +122,13 @@ type
     { Width of the digit. This is the width needed for the main segments. Actual width may be
       greater due to margin and/or special markers to the left/right of the digit. }
     property DigitWidth: Integer read FDigitWidth write SetDigitWidth default 20;
+    { Size of the DP type segments }
+    property DotSize: Integer read FDotSize write SetDotSize default 4;
     { Determines if a full repaint/refresh of the control is needed. }
     property FullRefreshNeeded: Boolean read FFullRefreshNeeded;
     { Specifies the color to use for a segment that is lit. }
     property SegmentLitColor: TColor read FSegmentLitColor write SetSegmentLitColor default clWindowText;
-    { Specifies the spacing between adjacent segments. }
+    { Specifies the spacing between adjacent segments. Rounded down to an even value. }
     property SegmentSpacing: Integer read FSegmentSpacing write SetSegmentSpacing default 2;
     { Specifies the thickness of each segment. Rounded down to an even value. }
     property SegmentThickness: Integer read FSegmentThickness write SetSegmentThickness default 2;
@@ -156,6 +160,7 @@ type
     property Digits;
     property DigitSpacing;
     property DigitWidth;
+    property DotSize;
     property SegmentLitColor;
     property SegmentSpacing;
     property SegmentThickness;
@@ -193,6 +198,7 @@ type
     FText: string;
   protected
     // Quick access to Display specified values (slant angle, digit spacing, etc)
+    DotSize: Integer;
     SegmentWidth: Integer;
     SlantAngle: Integer;
     Spacing: Integer;
@@ -542,6 +548,16 @@ begin
   end;
 end;
 
+procedure TJvCustomSegmentedLEDDisplay.SetDotSize(Value: Integer);
+begin
+  Value := Value and not 1;
+  if Value <> DotSize then
+  begin
+    FDotSize := Value;
+    InvalidateDigits;
+  end;
+end;
+
 procedure TJvCustomSegmentedLEDDisplay.SetSegmentLitColor(Value: TColor);
 begin
   if Value <> SegmentLitColor then
@@ -553,6 +569,7 @@ end;
 
 procedure TJvCustomSegmentedLEDDisplay.SetSegmentSpacing(Value: Integer);
 begin
+  Value := Value and not 1;
   if Value <> SegmentSpacing then
   begin
     FSegmentSpacing := Value;
@@ -562,6 +579,7 @@ end;
 
 procedure TJvCustomSegmentedLEDDisplay.SetSegmentThickness(Value: Integer);
 begin
+  Value := Value and not 1;
   if Value <> SegmentThickness then
   begin
     FSegmentThickness := Value;
@@ -771,6 +789,7 @@ begin
   FDigitHeight := 30;
   FDigitSpacing := 2;
   FDigitWidth := 20;
+  FDotSize := 4;
   FSegmentLitColor := clWindowText;
   FSegmentSpacing := 2;
   FSegmentThickness := 2;
@@ -966,6 +985,7 @@ begin
   SlantAngle := Display.Slant;
   Spacing := Display.SegmentSpacing;
   SegmentWidth := Display.SegmentThickness;
+  DotSize := Display.DotSize;
   
   MaxSlantDif := Trunc(Abs(ArcTan(SlantAngle * Pi / 180.0) * Display.DigitHeight));
   FRecalcNeeded := True;
@@ -1052,8 +1072,8 @@ begin
   if UseDP then
   begin
     // Determine if width will suffice for the DP, otherwise set FDPWidth to the required additional width
-    if MaxSlantDif < (Spacing + SegmentWidth) then
-      DPWidth := Spacing + SegmentWidth - MaxSlantDif
+    if MaxSlantDif < (Spacing + DotSize) then
+      DPWidth := Spacing + DotSize - MaxSlantDif
     else
       DPWidth := 0;
   end
@@ -1137,10 +1157,10 @@ procedure TJvBaseSegmentedLEDDigit.CalcDPSeg(Index: Integer);
 var
   UpperLeftPoint: TPoint;
 begin
-  UpperLeftPoint := AngleAdjustPoint(FRefRight + Spacing, FRefBottom - SegmentWidth, SlantAngle);
+  UpperLeftPoint := AngleAdjustPoint(FRefRight + Spacing, FRefBottom - DotSize, SlantAngle);
   SetSegmentRenderInfo(Index, srtCircle, [
     UpperLeftPoint,
-    Point(UpperLeftPoint.X + SegmentWidth, UpperLeftPoint.Y + SegmentWidth)
+    Point(UpperLeftPoint.X + DotSize, UpperLeftPoint.Y + DotSize)
   ]);
 end;
 
@@ -1436,11 +1456,11 @@ procedure TJv7SegmentedLEDDigit.CalcCHSeg(Index: Integer);
 var
   UpperLeftPoint: TPoint;
 begin
-  UpperLeftPoint := AngleAdjustPoint(FRefCenterX - SegmentWidth div 2,
+  UpperLeftPoint := AngleAdjustPoint(FRefCenterX - DotSize div 2,
     (FRefCenterY - FRefTop) div 2 + FRefTop, SlantAngle);
   SetSegmentRenderInfo(Index, srtCircle, [
     UpperLeftPoint,
-    Point(UpperLeftPoint.X + SegmentWidth, UpperLeftPoint.Y + SegmentWidth)
+    Point(UpperLeftPoint.X + DotSize, UpperLeftPoint.Y + DotSize)
   ]);
 end;
 
@@ -1448,11 +1468,11 @@ procedure TJv7SegmentedLEDDigit.CalcCLSeg(Index: Integer);
 var
   UpperLeftPoint: TPoint;
 begin
-  UpperLeftPoint := AngleAdjustPoint(FRefCenterX - SegmentWidth div 2,
-    (FRefBottom - FRefCenterY) div 2 + FRefCenterY - SegmentWidth div 2, SlantAngle);
+  UpperLeftPoint := AngleAdjustPoint(FRefCenterX - DotSize div 2,
+    (FRefBottom - FRefCenterY) div 2 + FRefCenterY - DotSize div 2, SlantAngle);
   SetSegmentRenderInfo(Index, srtCircle, [
     UpperLeftPoint,
-    Point(UpperLeftPoint.X + SegmentWidth, UpperLeftPoint.Y + SegmentWidth)
+    Point(UpperLeftPoint.X + DotSize, UpperLeftPoint.Y + DotSize)
   ]);
 end;
 
@@ -1507,7 +1527,7 @@ begin
   FDefaultMapping['U'] := 62;   // B + C + D + E + F;
   FDefaultMapping['u'] := 28;   // C + D + E;
   FDefaultMapping['y'] := 106;  // B + C + D + F + G;
-  FDefaultMapping['.'] := 256;  // CL;
+  FDefaultMapping[DecimalSeparator] := 256;  // CL;
   FDefaultMapping[':'] := 768;  // CL + CH;
 end;
 
