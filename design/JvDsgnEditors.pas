@@ -48,70 +48,12 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  {$IFDEF VisualCLX}
+  JvQImageIndexEdit,
+  {$ENDIF VisualCLX}
+
   Classes, SysUtils;
 
-{$IFDEF VisualCLX}
-//
-// asn: taken from VCLEditors
-//
-type
-{ ICustomPropertyDrawing
-  Implementing this interface allows a property editor to take over the object
-  inspector's drawing of the name and the value. If paFullWidthName is returned
-  by IProperty.GetAttributes then only PropDrawName will be called. Default
-  implementation of both these methods are provided in DefaultPropDrawName
-  and DefaultPropDrawValue in this unit. }
-  ICustomPropertyDrawing = interface
-    ['{E1A50419-1288-4B26-9EFA-6608A35F0824}']
-    procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
-      ASelected: Boolean);
-    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
-      ASelected: Boolean);
-  end;
-
-{ ICustomPropertyDrawing
-  Implemention this interface allows a property editor to take over the drawing
-  of the drop down list box displayed by the property editor. This is only
-  meaningful to implement if the property editor returns paValueList from
-  IProperty.GetAttributes. The Value parameter is the result of
-  IProperty.GetValue. The implementations ListMeasureWidth and ListMeasureHeight
-  can be left blank since the var parameter is filled in to reasonable defaults
-  by the object inspector. A default implementation of ListDrawValue is supplied
-  in the DefaultPropertyListDrawValue procedure included in this unit }
-  ICustomPropertyListDrawing = interface
-    ['{BE2B8CF7-DDCA-4D4B-BE26-2396B969F8E0}']
-    procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
-      var AWidth: Integer);
-    procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
-      var AHeight: Integer);
-    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean);
-  end;
-
-  TColorPropertyEx = class(TIntegerProperty, ICustomPropertyDrawing,
-    ICustomPropertyListDrawing)
-  public
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-    function GetValue: string; override;
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: string); override;
-
-    { ICustomPropertyListDrawing }
-    procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
-      var AHeight: Integer);
-    procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
-      var AWidth: Integer);
-    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean);
-
-    { CustomPropertyDrawing }
-    procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
-      ASelected: Boolean);
-    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
-      ASelected: Boolean);
-  end;
-{$ENDIF VisualCLX}
 
 type
   // Special TClassProperty, that show events along with all other properties
@@ -205,6 +147,8 @@ type
   end;
 
   {$IFDEF COMPILER6_UP}
+
+  {$IFDEF VCL}
   TJvDefaultImageIndexProperty = class(TIntegerProperty, ICustomPropertyDrawing, ICustomPropertyListDrawing)
   protected
     function ImageList: TCustomImageList; virtual;
@@ -224,6 +168,18 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
   end;
+  {$ENDIF VCL}
+
+  {$IFDEF VisualCLX}
+  TJvDefaultImageIndexProperty = class(TIntegerProperty)
+  protected
+    function ImageList: TCustomImageList; virtual;
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure Edit; override;
+  end;
+  {$ENDIF VisualCLX}
+
   {$ENDIF COMPILER6_UP}
 
   {$IFDEF COMPILER5}
@@ -281,15 +237,6 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
   end;
-
-{$IFDEF VisualCLX}
-procedure DefaultPropertyDrawName(Prop: TPropertyEditor; Canvas: TCanvas;
-  const Rect: TRect);
-procedure DefaultPropertyDrawValue(Prop: TPropertyEditor; Canvas: TCanvas;
-  const Rect: TRect);
-procedure DefaultPropertyListDrawValue(const Value: string; Canvas: TCanvas;
-  const Rect: TRect; Selected: Boolean);
-{$ENDIF VisualCLX}
 
 implementation
 
@@ -623,8 +570,8 @@ function TJvTimeExProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := inherited GetAttributes + [paDialog];
 end;
-
 {$ENDIF VCL}
+
 
 //=== { TJvDefaultImageIndexProperty } =======================================
 
@@ -646,9 +593,15 @@ end;
 
 function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
 begin
+  {$IFDEF VCL}
   Result := [paValueList, paMultiSelect, paRevertable];
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := [paRevertable, paDialog];
+  {$ENDIF VisualCLX}
 end;
 
+{$IFDEF VCL}
 function TJvDefaultImageIndexProperty.GetValue: string;
 begin
   Result := IntToStr(GetOrdValue);
@@ -730,6 +683,8 @@ begin
   else
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
+
+{$ENDIF VCL}
 
 {$ENDIF COMPILER6_UP}
 
@@ -830,6 +785,28 @@ begin
 end;
 
 {$ENDIF COMPILER5}
+
+{$IFDEF VisualCLX}
+procedure TJvDefaultImageIndexProperty.Edit;
+var
+  SelectedIndex: integer;
+  tmp: TImageList;
+begin
+  if ImageList <> nil then
+  begin
+    tmp := TImageList.Create(application);
+    tmp.Assign(ImageList);
+    SelectedIndex := strtoint(GetValue);
+    if EditImageIndex(tmp, SelectedIndex) then
+    begin
+      SetValue(inttostr(SelectedIndex));
+      ImageList.assign(tmp);
+    end;
+    tmp.Free;
+  end;
+end;
+{$ENDIF VisualCLX}
+
 
 //=== { TJvShortCutProperty } ==================================================
 
@@ -1120,230 +1097,6 @@ begin
 end;
 
 {$ENDIF COMPILER6_UP}
-
-//=== { TColorPropertyEx } ==================================================
-
-{$IFDEF VisualCLX}
-
-const
-  { context ids for the Color Editor, from VCLEditors }
-  hcDColorEditor = 25010;
-
-procedure TColorPropertyEx.Edit;
-var
-  ColorDialog: TColorDialog;
-  {$IFDEF MSWINDOWS}
-  IniFile: TRegIniFile;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  IniFile: TJvRegistryIniFile;
-  {$ENDIF LINUX}
-
-  procedure GetCustomColors;
-  begin
-    {$IFDEF MSWINDOWS}
-    IniFile := TRegIniFile.Create(sDelphiKey);
-    try
-      IniFile.ReadSectionValues(SCustomColors, ColorDialog.CustomColors);
-    except
-      { Ignore errors reading values }
-    end;
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
-    IniFile := TJvRegistryIniFile.Create(sDelphiKey);
-    try
-      if IniFile.OpenKey(SCustomColors, False) then
-      begin
-        IniFile.ReadSectionValues(ColorDialog.CustomColors);
-        IniFile.CloseKey;
-      end;
-    except
-      { Ignore errors reading values }
-    end;
-    {$ENDIF LINUX}
-  end;
-
-  procedure SaveCustomColors;
-  var
-    I, P: Integer;
-    S: string;
-  begin
-    {$IFDEF LINUX}
-    if IniFile <> nil then
-    with IniFile, ColorDialog do
-      if OpenKey(SCustomColors, True) then
-      begin
-        for I := 0 to CustomColors.Count - 1 do
-        begin
-          S := CustomColors.Strings[I];
-          P := Pos('=', S);
-          if P <> 0 then
-          begin
-            S := Copy(S, 1, P - 1);
-            WriteString( S, CustomColors.Values[S]);
-          end;
-        end;
-        CloseKey;
-      end;
-    {$ENDIF LINUX}
-    {$IFDEF MSWINDOWS}
-    if IniFile <> nil then
-    with IniFile, ColorDialog do
-        for I := 0 to CustomColors.Count - 1 do
-        begin
-          S := CustomColors.Strings[I];
-          P := Pos('=', S);
-          if P <> 0 then
-          begin
-            S := Copy(S, 1, P - 1);
-            WriteString(SCustomColors, S, CustomColors.Values[S]);
-          end;
-        end;
-    {$ENDIF MSWINDOWS}
-  end;
-
-begin
-  IniFile := nil;
-  ColorDialog := TColorDialog.Create(Application);
-  try
-    GetCustomColors;
-    ColorDialog.Color := GetOrdValue;
-    ColorDialog.HelpContext := hcDColorEditor;
-    if ColorDialog.Execute then
-      SetOrdValue(ColorDialog.Color);
-    SaveCustomColors;
-  finally
-    IniFile.Free;
-    ColorDialog.Free;
-  end;
-end;
-
-function TColorPropertyEx.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paMultiSelect, paDialog, paValueList, paRevertable];
-end;
-
-function TColorPropertyEx.GetValue: string;
-begin
-  Result := ColorToString(TColor(GetOrdValue));
-end;
-
-procedure TColorPropertyEx.GetValues(Proc: TGetStrProc);
-begin
-  GetColorValues(Proc);
-end;
-
-procedure TColorPropertyEx.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
-  ASelected: Boolean);
-begin
-  if GetVisualValue <> '' then
-    ListDrawValue(GetVisualValue, ACanvas, ARect, True) // ASelected
-  else
-    DefaultPropertyDrawValue(Self, ACanvas, ARect);
-end;
-
-procedure TColorPropertyEx.ListDrawValue(const Value: string; ACanvas: TCanvas;
-  const ARect: TRect; ASelected: Boolean);
-var
-  Right: Integer;
-  OldPenColor, OldBrushColor: TColor;
-
-  function ColorToBorderColor(AColor: TColor): TColor;
-  type
-    TColorQuad = record
-      Red: Byte;
-      Green: Byte;
-      Blue: Byte;
-      Alpha: Byte;
-    end;
-  begin
-    if (TColorQuad(AColor).Red > 192) or
-      (TColorQuad(AColor).Green > 192) or
-      (TColorQuad(AColor).Blue > 192) then
-      Result := clBlack
-    else
-    if ASelected then
-      Result := clWhite
-    else
-      Result := AColor;
-  end;
-
-begin
-  Right := (ARect.Bottom - ARect.Top) {* 2} + ARect.Left;
-  if ACanvas = nil then exit;
-  with ACanvas do
-  begin
-    Start;
-    // save off things
-    OldPenColor := Pen.Color;
-    OldBrushColor := Brush.Color;
-
-    // frame things
-    Pen.Color := Brush.Color;
-    Rectangle(ARect.Left, ARect.Top, Right, ARect.Bottom);
-
-    // set things up and do the work
-    Brush.Color := StringToColor(Value);
-    Pen.Color := ColorToBorderColor(ColorToRGB(Brush.Color));
-    Rectangle(ARect.Left + 1, ARect.Top + 1, Right - 1, ARect.Bottom - 1);
-
-    // restore the things we twiddled with
-    Brush.Color := OldBrushColor;
-    Pen.Color := OldPenColor;
-    DefaultPropertyListDrawValue(Value, ACanvas, Rect(Right, ARect.Top, ARect.Right,
-      ARect.Bottom), ASelected);
-    Stop;
-  end;
-end;
-
-procedure TColorPropertyEx.ListMeasureWidth(const Value: string;
-  ACanvas: TCanvas; var AWidth: Integer);
-begin
-  if ACanvas <> nil then
-    AWidth := AWidth + ACanvas.TextHeight('M') {* 2};
-end;
-
-procedure TColorPropertyEx.SetValue(const Value: string);
-var
-  NewValue: Longint;
-begin
-  if IdentToColor(Value, NewValue) then
-    SetOrdValue(NewValue)
-  else
-    inherited SetValue(Value);
-end;
-
-procedure TColorPropertyEx.ListMeasureHeight(const Value: string;
-  ACanvas: TCanvas; var AHeight: Integer);
-begin
-  // No implemenation necessary
-end;
-
-procedure TColorPropertyEx.PropDrawName(ACanvas: TCanvas; const ARect: TRect;
-  ASelected: Boolean);
-begin
-  DefaultPropertyDrawName(Self, ACanvas, ARect);
-end;
-
-procedure DefaultPropertyDrawName(Prop: TPropertyEditor; Canvas: TCanvas;
-  const Rect: TRect);
-begin
-  Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Prop.GetName);
-end;
-
-procedure DefaultPropertyDrawValue(Prop: TPropertyEditor; Canvas: TCanvas;
-  const Rect: TRect);
-begin
-  Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Prop.GetVisualValue);
-end;
-
-procedure DefaultPropertyListDrawValue(const Value: string; Canvas: TCanvas;
-  const Rect: TRect; Selected: Boolean);
-begin
-  Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Value);
-end;
-
-{$ENDIF VisualCLX}
 
 end.
 
