@@ -31,7 +31,7 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, DB, DBCtrls,
-  JvSpin;
+  JvSpin, JvConsts;
 
 type
   TJvDBSpinEdit = class(TJvSpinEdit)
