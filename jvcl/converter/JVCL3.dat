@@ -239,3 +239,5 @@ TJvHttpGrabber=TJvHttpUrlGrabber
 TJvMultiHttpGrabber=TJvUrlListGrabber
 TJvButton=TJvBitBtn
 TJvAppearingLabel=TJvBehaviorLabel
+JvLookup=JvDBLookup
+TJvxTrayIcon=TJvTrayIcon
