@@ -35,7 +35,12 @@ unit JvLED;
 interface
 
 uses
+  {$IFDEF VCL}
   Windows, Messages, Controls, Classes, Graphics,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QControls, QClasses, QGraphics,
+  {$ENDIF}
   JvComponent;
 
 type
@@ -57,8 +62,13 @@ type
     procedure SetStatus(Value: Boolean);
     function GetStatus: Boolean;
     procedure DoBlink(Sender: TObject; BlinkOn: Boolean);
+    {$IFDEF VCL}
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
+    {$ENDIF}
   protected
+    {$IFDEF VisualCLX}
+    procedure ColorChanged; override;
+    {$ENDIF}
     procedure Paint; override;
     property Active: Boolean read GetActive write SetActive default False;
     property Color default clLime;
@@ -111,7 +121,12 @@ implementation
 uses
   SysUtils;
 
+{$IFDEF WINDOWS}
 {$R ..\resources\JvLED.res}
+{$ENDIF}
+{$IFDEF LINUX}
+{$R ../Resources/JvLED.res}
+{$ENDIF}
 
 const
   cMaskLEDName = 'JVTR_MASK_LED';
@@ -287,7 +302,12 @@ begin
   end;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvCustomLED.ColorChanged;
+{$ENDIF}
+{$IFDEF VCL}
 procedure TJvCustomLED.CMColorChanged(var Msg: TMessage);
+{$ENDIF}
 var
   X, Y: Integer;
 begin

@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2004-01-06
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +31,13 @@ unit JvButtonPersistent;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Buttons,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, StdCtrls, Buttons,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QStdCtrls, QButtons,
+  {$ENDIF}
   JvSpeedButton, JvButton, JvTypes;
 
 type

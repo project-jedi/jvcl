@@ -28,7 +28,13 @@ unit JvDiagramShape;
 interface
 
 uses
-  Windows, Controls, Classes, ExtCtrls, Graphics;
+{$IFDEF VCL}
+  Windows, Controls, ExtCtrls, Graphics,
+{$ENDIF}
+{$IFDEF VisualCLX}
+  QControls, QExtCtrls, QGraphics, Types,
+{$ENDIF}
+  Classes;
 
 type
   TJvTextShape = class;
@@ -320,7 +326,13 @@ type
 implementation
 
 uses
-  Messages, SysUtils, ImgList;
+  {$IFDEF VCL}
+  Messages, ImgList,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QImgList,
+  {$ENDIF}
+  SysUtils;
 
 type
   // This type is solely for the acccess to the protected MouseDown method

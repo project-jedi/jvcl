@@ -34,7 +34,13 @@ interface
 { Additional editors for JvInspector. }
 
 uses
-  SysUtils, Windows, Classes, Controls, Graphics, ImgList,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Controls, Graphics, ImgList,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QControls, QGraphics, QImgList,
+  {$ENDIF}
   JvInspector;
 
 type
@@ -145,8 +151,12 @@ type
 implementation
 
 uses
-  StdCtrls, TypInfo,
-  JclRTTI, JvResources;
+  {$IFDEF VCL}
+  StdCtrls,
+  {$ELSE}
+  QStdCtrls,
+  {$ENDIF}
+  TypInfo, JclRTTI, JvResources;
 
 type
   TOpenInspector = class(TJvCustomInspector);

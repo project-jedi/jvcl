@@ -31,7 +31,13 @@ unit JvFormAnimation;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Controls, Forms,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QControls, QForms,
+  {$ENDIF}
   JvComponent;
 
 type

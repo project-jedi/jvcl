@@ -24,10 +24,21 @@ Known Issues:
 unit JvImagesViewer;
 
 {$I jvcl.inc}
+
 interface
+
 uses
-  Windows, SysUtils, Messages, Classes, Controls,
-  Graphics, StdCtrls, ComCtrls, JvCustomItemViewer;
+  SysUtils, Classes,
+  {$IFDEF WINDOWS}
+  Windows, 
+  {$ENDIF}
+  {$IFDEF VCL}
+  Messages, Controls, Graphics, StdCtrls, ComCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QControls, QGraphics, QStdCtrls, QComCtrls,
+  {$ENDIF}
+  JvCustomItemViewer;
 
 type
   TJvImageItem = class(TJvViewerItem)
@@ -144,9 +155,11 @@ type
     //    property BiDiMode;
     property Color;
     property Constraints;
+    {$IFDEF VCL}
     property DockSite;
     property DragCursor;
     property DragKind;
+    {$ENDIF}
     property DragMode;
     property Enabled;
     property Font;
@@ -163,23 +176,26 @@ type
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
+    {$IFDEF VCL}
     property OnDockDrop;
     property OnDockOver;
-    property OnDragOver;
     property OnEndDock;
+    property OnGetSiteInfo;
+    property OnStartDock;
+    property OnUnDock;
+    {$ENDIF}
+    property OnDragOver;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
-    property OnUnDock;
   end;
 
 implementation
+
 uses
   JvJCLUtils;
   
@@ -400,9 +416,11 @@ var
   end;
 begin
   inherited;
+  {$IFDEF WINDOWS}
   if Win32Platform = VER_PLATFORM_WIN32_NT then
     BottomRightShift := 1
   else
+  {$ENDIF}
     BottomRightShift := 0;
   AItem := Items[Index];
   Canvas.Font := Font;
