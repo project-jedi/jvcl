@@ -414,6 +414,7 @@ begin
   FCanvas.Free;
   if FPopup <> nil then
     TJvPopupWindow(FPopup).OnCloseUp := nil;
+  FPopup.Parent := nil;
   FreeAndNil(FPopup);
   inherited Destroy;
 end;
