@@ -49,7 +49,6 @@ type
     JvFormStorage1: TJvFormStorage;
     JvAppIniFileStorage1: TJvAppIniFileStorage;
     JvDesktopAlert1: TJvDesktopAlert;
-    JvDesktopAlertStack1: TJvDesktopAlertStack;
     procedure btnPreviewClick(Sender: TObject);
     procedure Clickme1Click(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);

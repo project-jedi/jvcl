@@ -88,9 +88,9 @@ type
     procedure Wait;
   protected
     procedure DoShow; override;
+    procedure DoClose(var Action: TCloseAction); override;
 
     procedure WMMove(var Message: TWMMove); message WM_MOVE;
-    procedure DoClose(var Action: TCloseAction); override;
   public
     imIcon: TImage;
     lblText: TLabel;
@@ -212,8 +212,7 @@ procedure TJvFormDesktopAlert.CMMouseenter(var Message: TMessage);
 begin
   inherited;
   MouseInControl := true;
-  SetFocus;
-//  BringToFront;
+//  SetFocus;
   FadeTimer.Enabled := false;
   AlphaBlendValue := MaxAlphaBlendValue;
   if Assigned(FOnMouseEnter) then
@@ -417,9 +416,9 @@ end;
 
 procedure TJvFormDesktopAlert.DoShow;
 begin
+  inherited DoShow;
   FadeTimer.Enabled := false;
   AlphaBlendValue := 0;
-
   if ClickableMessage then
     lblText.Cursor := crHandPoint
   else
@@ -442,7 +441,6 @@ begin
   lblText.Width := tbDropDown.Left - lblText.Left;
   lblText.Top := lblHeader.Top + lblHeader.Height;
   FadeIn;
-  inherited;
   MouseTimer.Enabled := true;
 end;
 
