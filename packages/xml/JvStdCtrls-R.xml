@@ -8,7 +8,7 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCLVCL" Targets="C6,C6p" Condition=""/>
