@@ -56,7 +56,7 @@ type
     procedure SetOtherCaption(Value: string);
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
-    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
+    procedure SetColor(const Value: TColor);
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
@@ -74,7 +74,7 @@ type
     property EdgeWidth: Integer read FEdgeWidth write SetEdgeWidth default 4;
     property Options: TColorDialogOptions read FOptions write SetOptions;
     property CustomColors: TStrings read FCustomColors write SetCustomColors;
-    property Color default clBlack;
+    property Color: TColor read FColor write SetColor default clBlack;
     property Enabled;
     property Hint;
     property Height default 21;
@@ -250,11 +250,15 @@ begin
   inherited;
 end;
 
-procedure TJvColorButton.CMColorChanged(var Message: TMessage);
+procedure TJvColorButton.SetColor(const Value: TColor);
 begin
-  inherited;
-  if Assigned(FOnChange) then FOnChange(self);
-  Repaint;
+  if Value <> FColor then
+  begin
+    FColor := Value;
+    if Assigned(FOnChange) then
+      FOnChange(self);
+    Repaint;
+  end;
 end;
 
 end.
