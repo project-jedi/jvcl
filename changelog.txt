@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-11-25:
+- The package generator has been updated to allow for GUID values (D2005 requirement) // obones
 2004-11-22:
 - TJvZoom:
   * Added ZoomPercentage - opposite of ZoomLevel
