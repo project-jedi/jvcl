@@ -37,9 +37,10 @@ uses
   JvDataProvider, JvDataProviderImpl;
 
 type
+  TColorType = (ctStandard, ctSystem, ctCustom);
   TColorItem = record
     Value: TColor;
-//    Names: TDynStringArray;
+    Names: TDynStringArray;
   end;
   TColorItems = array of TColorItem;
 
@@ -48,20 +49,26 @@ type
     FStdColors: TColorItems;
     FSysColors: TColorItems;
     FCstColors: TColorItems;
-  private
+    FCtxList: TDynIntegerArray;
     procedure AddColorStr(const S: string);
   protected
     procedure AddColor(var List: TColorItems; Color: TColor);
     procedure DeleteColor(var List: TColorItems; Index: Integer);
+    procedure RemoveContextList(Index: Integer); virtual;
     class function ItemsClass: TJvDataItemsClass; override;
     function ConsumerClasses: TClassArray; override;
+    procedure ContextDestroying(Context: IJvDataContext); override;
+    function GetColor(List, Index: Integer; out Value: TColor; out Name: string): Boolean;
 
     property StdColors: TColorItems read FStdColors write FStdColors;
     property SysColors: TColorItems read FSysColors write FSysColors;
     property CstColors: TColorItems read FCstColors write FCstColors;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    function GetStandardColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
+    function GetSystemColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
+    function GetCustomColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
+    function FindColor(Value: TColor; out ColorType: TColorType; out Index: Integer): Boolean;
   end;
 
   TJvColorProviderAddItemLocation = (ailUseHeader, ailTop, ailBottom);
@@ -857,7 +864,7 @@ procedure TJvColorHeaderItem.InitImplementers;
 begin
   inherited InitImplementers;
   {$WARNINGS OFF}
-  TJvColorItemsList.CreateParent(Self);
+  TJvColorItemsList.Create(Self);
   {$WARNINGS ON}
 end;
 
@@ -898,6 +905,16 @@ begin
   SetLength(List, High(List));
 end;
 
+procedure TJvColorProvider.RemoveContextList(Index: Integer);
+begin
+  if (Index > -1) and (Index < Length(FCtxList)) then
+  begin
+    if Index < High(FCtxList) then
+      Move(FCtxList[Index + 1], FCtxList[Index], SizeOf(Integer) * (High(FCtxList) - Index));
+    SetLength(FCtxList, High(FCtxList));
+  end;
+end;
+
 class function TJvColorProvider.ItemsClass: TJvDataItemsClass;
 begin
   Result := TJvColorItems;
@@ -909,16 +926,91 @@ begin
   AddToArray(Result, TJvColorProviderSettings);
 end;
 
+procedure TJvColorProvider.ContextDestroying(Context: IJvDataContext);
+var
+  CtxIdx: Integer;
+begin
+  CtxIdx := Context.Contexts.IndexOf(Context);
+  if CtxIdx > -1 then
+    RemoveContextList(CtxIdx);
+end;
+
+function TJvColorProvider.GetColor(List, Index: Integer; out Value: TColor;
+  out Name: string): Boolean;
+var
+  ColorArray: TColorItems;
+  CtxIdx: Integer;
+begin
+  case List of
+    0:
+      ColorArray := FStdColors;
+    1:
+      ColorArray := FSysColors;
+    2:
+      ColorArray := FCstColors;
+    else
+      begin
+        Result := False;
+        Exit;
+      end;
+  end;
+  Result := (Index >= 0) and (Index < Length(ColorArray));
+  if Result then
+  begin
+    Value := ColorArray[Index].Value;
+    CtxIdx := (DataContextsImpl as IJvDataContexts).IndexOf(SelectedContext);
+    if CtxIdx >= 0 then
+      Name := ColorArray[Index].Names[CtxIdx]
+    else
+      Name := '';
+  end;
+end;
+
 constructor TJvColorProvider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   GetColorValues(AddColorStr);
 end;
 
-destructor TJvColorProvider.Destroy;
+function TJvColorProvider.GetStandardColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
 begin
-//  TJvColorItems(DataItemsImpl).ProviderComp := nil;
-  inherited Destroy;
+  Result := GetColor(0, Index, Value, Name);
+end;
+
+function TJvColorProvider.GetSystemColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
+begin
+  Result := GetColor(1, Index, Value, Name);
+end;
+
+function TJvColorProvider.GetCustomColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
+begin
+  Result := GetColor(2, Index, Value, Name);
+end;
+
+function TJvColorProvider.FindColor(Value: TColor; out ColorType: TColorType; out Index: Integer): Boolean;
+begin
+  Index := High(FStdColors);
+  while (Index >= 0) and (FStdColors[Index].Value <> Value) do
+    Dec(Index);
+  if Index >= 0 then
+    ColorType := ctStandard
+  else
+  begin
+    Index := High(FSysColors);
+    while (Index >= 0) and (FSysColors[Index].Value <> Value) do
+      Dec(Index);
+    if Index >= 0 then
+      ColorType := ctSystem
+    else
+    begin
+      Index := High(FCstColors);
+      while (Index >= 0) and (FCstColors[Index].Value <> Value) do
+        Dec(Index);
+      if Index >= 0 then
+        ColorType := ctCustom;
+    end;
+  end;
+  Result := Index >= 0;
 end;
 
 //===TJvColorItemsRenderer==========================================================================
