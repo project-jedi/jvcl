@@ -47,6 +47,15 @@ Description
 See Also
   TJvListBoxBackground.FillMode, TJvListBoxBackground.Image, TJvListBoxBackground.Visible
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.ConsumerStrings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.CreateDragImage
 Summary
   Creates a drag image of the specified string.
@@ -236,6 +245,19 @@ See Also
   DeleteAllButSelected, <LINK TJvCustomListBox.DeleteExactString, DeleteExactString>, DeleteSelected,
   SelectAll, UnselectAll
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.ItemRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.ItemsShowing
 Summary
 	The list of strings the list box currently displays.
@@ -249,6 +271,15 @@ Description
 See Also
 	Items, Provider
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.LimitToClientWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.MaxWidth
 Summary
   Specifies the horizontally scrollable width of the list box, in pixels.
@@ -257,6 +288,32 @@ Description
   If the actual width of the list box is smaller than MaxWidth, and ScrollBars equals ssHorizontal or
   ssBoth, the list box displays the horizontal scroll bar. If the actual width of the list box is equal
   to or greater than MaxWidth, the horizontal scroll bar is hidden.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.MeasureProviderItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index      - Description for this parameter
+  WidthAvail - Description for this parameter
+  ASize      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.MeasureString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S          - Description for this parameter
+  WidthAvail - Description for this parameter
+  ASize      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.MoveSelectedDown
 Summary
@@ -323,6 +380,19 @@ Description
   Parameter Item indicates the string that has been deleted.
 See Also
   OnAddString, OnChange
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnGetText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Index  - Description for this parameter
+  Text   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.OnHorizontalScroll
 Summary
@@ -430,6 +500,9 @@ Description
 Parameters
   Value         - The string to search for.
   CaseSensitive - Indicates whether the match must be case\-sensitive.
+  StartIndex    - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   <LINK TJvCustomListBox.SearchPrefix, SearchPrefix>,
   <LINK TJvCustomListBox.SearchSubString, SearchSubString>
@@ -444,6 +517,9 @@ Description
 Parameters
   Value         - The prefix to search for.
   CaseSensitive - Indicates whether the match must be case\-sensitive.
+  StartIndex    - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   <LINK TJvCustomListBox.SearchExactString, SearchExactString>,
   <LINK TJvCustomListBox.SearchSubString, SearchSubString>
@@ -458,6 +534,9 @@ Description
 Parameters
   Value         - The substring to search for.
   CaseSensitive - Indicates whether the match must be case\-sensitive.
+  StartIndex    - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   <LINK TJvCustomListBox.SearchExactString, SearchExactString>,
   <LINK TJvCustomListBox.SearchPrefix, SearchPrefix>
@@ -582,6 +661,10 @@ Parameters
 See Also
   TJvCustomListBox.OnAddString, TJvCustomListBox.OnDeleteString
 ----------------------------------------------------------------------------------------------------
+@@TJvListBoxDataEvent
+<TITLE TJvListBoxDataEvent type>
+<COMBINE TJvCustomListBox.OnGetText>
+----------------------------------------------------------------------------------------------------
 @@TJvListboxFillMode
 <TITLE TJvListboxFillMode type>
 Summary
@@ -607,7 +690,7 @@ Description
 Parameters
   Sender     - The object that triggered the event.
   Msg        - Represents the parameters of the Windows message.
-  DontScroll - Determines whether the list box will respond to the scroll event, and adjust the
+  dontScroll - Determines whether the list box will respond to the scroll event, and adjust the
                scroll bar.
 See Also
   TJvCustomListBox.OnHorizontalScroll, TJvCustomListBox.OnVerticalScroll
