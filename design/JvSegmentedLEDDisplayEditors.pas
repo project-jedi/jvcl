@@ -42,13 +42,20 @@ type
     {$ENDIF COMPILER6_UP}
   end;
 
-  TUnlitColorProperty = class(TColorProperty)
+  TUnlitColorProperty = class(TColorProperty{$IFDEF COMPILER6_UP}, ICustomPropertyDrawing, ICustomPropertyListDrawing{$ENDIF})
+  {$IFDEF COMPILER6_UP}
+    procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
+    procedure ICustomPropertyDrawing.PropDrawValue = PropDrawValue;
+  {$ENDIF}
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
       const ARect: TRect; ASelected: Boolean); {$IFNDEF COMPILER6_UP}override;{$ENDIF}
+    {$IFDEF COMPILER6_UP}
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
+    {$ENDIF COMPILER6_UP}
   end;
 
 implementation
@@ -219,5 +226,16 @@ begin
     ACanvas.TextRect(TmpRect, TmpRect.Left + 1, TmpRect.Top + 1, Value);
   end;
 end;
+
+{$IFDEF COMPILER6_UP}
+procedure TUnlitColorProperty.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+  ASelected: Boolean);
+begin
+  if GetVisualValue <> '' then
+    ListDrawValue(GetVisualValue, ACanvas, ARect, True{ASelected})
+  else
+    DefaultPropertyDrawValue(Self, ACanvas, ARect);
+end;
+{$ENDIF COMPILER6_UP}
 
 end.
