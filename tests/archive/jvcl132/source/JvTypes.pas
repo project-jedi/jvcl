@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvTypes;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -61,14 +61,14 @@ const
 
 type
   PRGBArray = ^TRGBArray;
-  TRGBArray = array [0..MaxPixelCount - 1] of TRGBTriple;
+  TRGBArray = array[0..MaxPixelCount - 1] of TRGBTriple;
   TBalance = 0..100;
   TVolumeRec = record
     case Byte of
       0:
-       (LongVolume: Longint);
+      (LongVolume: Longint);
       1:
-       (LeftVolume,
+      (LeftVolume,
         RightVolume: Word);
   end;
   { (rom) unused
@@ -129,13 +129,13 @@ type
     StartTag: string;
     EndTag: string;
     MustBe: Integer;
-    Take: Integer;
+    TakeText: Integer;
   end;
 
-{ (rom) unused and silly
-const
-  cr = #13#10;
-}
+  { (rom) unused and silly
+  const
+    cr = #13#10;
+  }
 
 type
   TGradStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
