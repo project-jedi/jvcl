@@ -9,43 +9,44 @@
       ..\lib5\JvExchListboxes.obj ..\lib5\JvFormLists.obj ..\lib5\JvFormLog.obj 
       ..\lib5\JvHtmlParserEditor.obj ..\lib5\JvLogFile.obj 
       ..\lib5\JvLoginDlg.obj ..\lib5\JvPatcherEditor.obj ..\lib5\JVCLMiscal.obj 
-      ..\lib5\JvDateTimeDlg.obj ..\lib5\JvDsgnEditors.obj ..\lib5\JvTimeLineEdit.obj 
-      ..\lib5\JvOutEdit.obj ..\lib5\JvStrLEdit.obj ..\lib5\JvOLBEditor.obj 
+      ..\lib5\JvOutlookEdit.obj ..\lib5\JvDateTimeDlg.obj 
+      ..\lib5\JvDsgnEditors.obj ..\lib5\JvTimeLineEdit.obj ..\lib5\JvOutEdit.obj 
+      ..\lib5\JvStrLEdit.obj ..\lib5\JvOLBEditor.obj 
       ..\lib5\JvChNtfyProperty.obj ..\lib5\JvLCProperty.obj 
-      ..\lib5\JvAppletProperty.obj ..\lib5\JvColors.obj 
-      ..\lib5\JvDsgn.obj ..\lib5\JvCtlReg.obj ..\lib5\JvDBReg.obj 
-      ..\lib5\JvBDEReg.obj ..\lib5\JvImagPrvw.obj ..\lib5\JvCheckItm.obj 
-      ..\lib5\JvDirFrm.obj ..\lib5\JvFormWallpaperEditor.obj 
-      ..\lib5\JvIColEdit.obj ..\lib5\JvGradedit.obj ..\lib5\JvJVCLAbout.obj 
-      ..\lib5\JvMinMaxEd.obj ..\lib5\JvPgMngrEd.obj ..\lib5\JvPictEdit.obj 
-      ..\lib5\JvPresrDsn.obj ..\lib5\JvQBndDlg.obj ..\lib5\JvSbEdit.obj 
-      ..\lib5\JvSelDSFrm.obj ..\lib5\JvTimLstEd.obj ..\lib5\JvActions.obj 
-      ..\lib5\JvActnRes.obj ..\lib5\JvBandObjectDLLWizardForm.obj 
-      ..\lib5\JvBandObjectDLLWizard.obj ..\lib5\JvhtHintEditor.obj 
-      ..\lib5\JvIDEZoom.obj ..\lib5\JvIReg.obj ..\lib5\JvPluginParams.obj 
-      ..\lib5\JvPluginWizard.obj ..\lib5\JvRegAutoEditor.obj 
-      ..\lib5\JvSchedEvntReg.obj ..\lib5\JvTipOfDayProp.obj 
-      ..\lib5\ScheduleEditor.obj ..\lib5\JvToolReg.obj ..\lib5\JVCL200_D50C.obj"/>
+      ..\lib5\JvAppletProperty.obj ..\lib5\JvColors.obj ..\lib5\JvDsgn.obj 
+      ..\lib5\JvCtlReg.obj ..\lib5\JvDBReg.obj ..\lib5\JvBDEReg.obj 
+      ..\lib5\JvImagPrvw.obj ..\lib5\JvCheckItm.obj ..\lib5\JvDirFrm.obj 
+      ..\lib5\JvFormWallpaperEditor.obj ..\lib5\JvIColEdit.obj 
+      ..\lib5\JvGradedit.obj ..\lib5\JvJVCLAbout.obj ..\lib5\JvMinMaxEd.obj 
+      ..\lib5\JvPgMngrEd.obj ..\lib5\JvPictEdit.obj ..\lib5\JvPresrDsn.obj 
+      ..\lib5\JvQBndDlg.obj ..\lib5\JvSbEdit.obj ..\lib5\JvSelDSFrm.obj 
+      ..\lib5\JvTimLstEd.obj ..\lib5\JvActions.obj ..\lib5\JvActnRes.obj 
+      ..\lib5\JvBandObjectDLLWizardForm.obj ..\lib5\JvBandObjectDLLWizard.obj 
+      ..\lib5\JvhtHintEditor.obj ..\lib5\JvIDEZoom.obj ..\lib5\JvIReg.obj 
+      ..\lib5\JvPluginParams.obj ..\lib5\JvPluginWizard.obj 
+      ..\lib5\JvRegAutoEditor.obj ..\lib5\JvSchedEvntReg.obj 
+      ..\lib5\JvTipOfDayProp.obj ..\lib5\ScheduleEditor.obj 
+      ..\lib5\JvToolReg.obj ..\lib5\JVCL200_D50C.obj"/>
     <RESFILES value="JVCL200_D50C.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ..\Source\JvFormLists.dfm ..\Source\JvFormLog.dfm 
       ..\Source\JvDateTimeDlg.dfm ..\Source\JvStrLEdit.dfm 
-      ..\Source\JvOLBEditor.dfm ..\source\JvImagPrvw.dfm ..\source\JvCheckItm.dfm 
-      ..\source\JvDirFrm.dfm ..\source\JvIColEdit.dfm ..\source\JvGradedit.dfm 
-      ..\source\JvJVCLAbout.dfm ..\source\JvMinMaxEd.dfm 
-      ..\source\JvPgMngrEd.dfm ..\source\JvPictEdit.dfm ..\source\JvPresrDsn.dfm 
-      ..\source\JvQBndDlg.dfm ..\source\JvSbEdit.dfm ..\source\JvSelDSFrm.dfm 
-      ..\source\JvTimLstEd.dfm ..\source\JvActnRes.dfm 
+      ..\Source\JvOLBEditor.dfm ..\source\JvImagPrvw.dfm 
+      ..\source\JvCheckItm.dfm ..\source\JvDirFrm.dfm ..\source\JvIColEdit.dfm 
+      ..\source\JvGradedit.dfm ..\source\JvJVCLAbout.dfm 
+      ..\source\JvMinMaxEd.dfm ..\source\JvPgMngrEd.dfm ..\source\JvPictEdit.dfm 
+      ..\source\JvPresrDsn.dfm ..\source\JvQBndDlg.dfm ..\source\JvSbEdit.dfm 
+      ..\source\JvSelDSFrm.dfm ..\source\JvTimLstEd.dfm ..\source\JvActnRes.dfm 
       ..\source\JvBandObjectDLLWizardForm.dfm ..\source\JvhtHintEditor.dfm 
       ..\source\JvPluginParams.dfm ..\source\JvRegAutoEditor.dfm 
       ..\source\ScheduleEditor.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="Vcl50.lib vcljpg50.lib dclstd50.lib"/>
-    <PACKAGES value="vcl50.bpi vcldb50.bpi JVCL200_R50C.bpi dclstd50.bpi vclx50.bpi 
-      vclbde50.bpi vcljpg50.bpi dsnide50.bpi"/>
+    <SPARELIBS value="Vcl50.lib vcljpg50.lib dclstd50.lib Vcldb50.lib dcldb50.lib Vclbde50.lib"/>
+    <PACKAGES value="vcldb50.bpi JVCL200_R50C.bpi dclstd50.bpi vclx50.bpi vclbde50.bpi 
+      vcljpg50.bpi dsnide50.bpi vcl50.bpi dcldb50.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\source"/>
     <PATHRC value=".;"/>
@@ -57,14 +58,15 @@
     <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JVCL200_D50C.cpp"/>
     <INCLUDEPATH value="..\Source;$(BCB)\include;$(BCB)\include\vcl;..\Common"/>
-    <LIBPATH value="j:\lib\;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source"/>
+    <LIBPATH value="..\..\Lib;$(BCB)\Projects\Lib;j:\lib\;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I..\Source -I$(BCB)\include -I$(BCB)\include\vcl -I..\Common -src_suffix 
       cpp -boa"/>
     <CFLAG1 value="-O2 -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
-    <PFLAGS value="-N2..\lib5 -N0..\lib5 -$Y- -$L- -$D- -v -JPHNE -M -LUvcl50 -LUdclstd50"/>
+    <PFLAGS value="-N2..\lib5 -N0..\lib5 -$Y- -$L- -$D- -v -JPHNE -M -LUvcl50 -LUdclstd50 
+      -LUdcldb50"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zn"/>
     <LFLAGS value="-I..\lib5 -D&quot;Designtime package for JEDI VCL&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi"/>
@@ -95,14 +97,13 @@ CompanyName=Project JEDI
 FileDescription=Designtime package for JEDI VCL
 FileVersion=2.0.0.0
 InternalName=JVCL200_D50C
-LegalCopyright=Copyright (C) 1999, 2002 Project JEDI
+LegalCopyright=Copyright (C) 1999, 2003 Project JEDI
 LegalTrademarks=
 OriginalFilename=JVCL200_D50C.bpl
 ProductName=Designtime package for JEDI VCL
 ProductVersion=2.0.0.0
 
 [Excluded Packages]
-j:\lib\FsMain.bpl=FraserSoft Cpp Formatter
 $(BCB)\Bin\dclite50.bpl=Borland Integrated Translation Environment
 
 [HistoryLists\hlIncludePath]
@@ -117,18 +118,6 @@ Item0=j:\lib\;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..
 Item1=j:\lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source
 Item2=$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source
 Item3=j:\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu;..\lib5
-Item4=..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu;..\lib5
-Item5=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu;..\lib5
-Item6=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu;..\ib5
-Item7=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\lib5
-Item8=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu
-Item9=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
-Item10=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
-Item11=j:\lib;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
-Item12=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
-Item13=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
-Item14=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib
-Item15=$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=2
