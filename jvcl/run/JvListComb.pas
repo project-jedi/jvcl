@@ -57,6 +57,11 @@ const
   AllListPropertiesUsed = [puFont, puColorHighlight, puColorHighlightText];
 
 type
+  IJvResetItemHeight = interface
+  ['{29F7C34D-F03C-41FE-8423-0388289A505B}']
+    procedure ResetItemHeight;
+  end;
+
   TJvImageItems = class;
 
   TJvImageItem = class(TCollectionItem)
@@ -131,10 +136,10 @@ type
   end;
 
   {$IFDEF VCL}
-  TJvImageComboBox = class(TJvCustomComboBox)
+  TJvImageComboBox = class(TJvCustomComboBox, IUnknown, IJvResetItemHeight)
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  TJvImageComboBox = class(TCustomComboBox)
+  TJvImageComboBox = class(TCustomComboBox, IUnknown, IJvResetItemHeight)
   {$ENDIF VisualCLX}
   private
     FItems: TJvImageItems;
@@ -160,11 +165,13 @@ type
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorHighlightText(Value: TColor);
     procedure SetImageList(Value: TCustomImageList);
-    procedure ResetItemHeight;
+
     procedure ImageListChange(Sender: TObject);
     procedure SetDefaultIndent(const Value: Integer);
     procedure SetItems(const Value: TJvImageItems); reintroduce;
     procedure SetIndentSelected(const Value: Boolean);
+    { IJvResetItemHeight }
+    procedure ResetItemHeight;
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -245,7 +252,7 @@ type
     property OnStartDrag;
   end;
 
-  TJvImageListBox = class(TJvExCustomListBox)
+  TJvImageListBox = class(TJvExCustomListBox, IUnknown, IJvResetItemHeight)
   private
     FImageList: TCustomImageList;
     FItems: TJvImageItems;
@@ -262,13 +269,14 @@ type
     {$ENDIF VCL}
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorHighlightText(Value: TColor);
-    procedure ResetItemHeight;
     procedure SetImageList(Value: TCustomImageList);
     procedure SetAlignment(Value: TAlignment);
     procedure DrawLeftGlyph(Index: Integer; R: TRect; State: TOwnerDrawState);
     procedure DrawRightGlyph(Index: Integer; R: TRect; State: TOwnerDrawState);
     procedure DrawCenteredGlyph(Index: Integer; R: TRect; State: TOwnerDrawState);
     procedure SetItems(const Value: TJvImageItems);
+    { IJvResetItemHeight }
+    procedure ResetItemHeight;
   protected
     procedure FontChanged; override;
     procedure ImageListChange(Sender: TObject);
@@ -552,18 +560,28 @@ var
 begin
   if Source is TJvImageItems then
   begin
-    Clear;
-    for I := 0 to TJvImageItems(Source).Count - 1 do
-      Add.Assign(TJvImageItems(Source)[I]);
+    BeginUpdate;
+    try
+      Clear;
+      for I := 0 to TJvImageItems(Source).Count - 1 do
+        Add.Assign(TJvImageItems(Source)[I]);
+    finally
+      EndUpdate;
+    end;
   end
   else
   if Source is TStrings then
   begin
-    Clear;
-    for I := 0 to TStrings(Source).Count - 1 do
-      Add.Text := TStrings(Source)[I];
-    if FStrings <> nil then
-      FStrings.Assign(Source);
+    BeginUpdate;
+    try
+      Clear;
+      for I := 0 to TStrings(Source).Count - 1 do
+        Add.Text := TStrings(Source)[I];
+      if FStrings <> nil then
+        FStrings.Assign(Source);
+    finally
+      EndUpdate;
+    end;
   end
   else
     inherited Assign(Source);
@@ -581,10 +599,15 @@ begin
 end;
 
 procedure TJvImageItems.Update(Item: TCollectionItem);
+var W:TPersistent; obj:IJvResetItemHeight;
 begin
+  if UpdateCount <> 0 then Exit;
   inherited Update(Item);
-  if (GetOwner <> nil) and (GetOwner is TWinControl) then
-    TWinControl(GetOwner).Invalidate;
+  W := GetOwner;
+  if Supports(W, IJvResetItemHeight, obj) then
+    obj.ResetItemHeight
+  else if (W is TWinControl) then
+    TWinControl(W).Invalidate;
 end;
 
 //=== { TJvImageComboBox } ===================================================
@@ -811,7 +834,7 @@ begin
     begin
       Tmp := Items[Index].ImageIndex;
       //      R.Left := R.Left + Items[Index].Indent;
-      Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
+      Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
       {$IFDEF VCL}
       // PRY 2002.06.04
       //FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
@@ -861,8 +884,8 @@ end;
 procedure TJvImageComboBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
   Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + (Ord(ButtonFrame) * 4));
-  if Assigned(FImageList) then
-    Height := Max(Height,FImageList.Height);
+//  if Assigned(FImageList) then
+//    Height := Max(Height,FImageList.Height);
 end;
 {$ENDIF VCL}
 
@@ -870,9 +893,10 @@ end;
 procedure TJvImageComboBox.MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
                           var Height, Width: Integer);
 begin
-  Height := GetItemHeight(Font) + 4 ;
-  if Assigned(FImageList) then
-    Height := Max(Height, FImageList.Height + 4);
+  Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + (Ord(ButtonFrame) * 4));
+//  Height := GetItemHeight(Font) + 4 ;
+//  if Assigned(FImageList) then
+//    Height := Max(Height, FImageList.Height + (Ord(ButtonFrame) * 4));
 end;
 
 procedure TJvImageComboBox.SetParent(const AParent: TWidgetControl);
@@ -946,13 +970,13 @@ var
   MaxImageHeight: Integer;
   I: Integer;
 begin
-  MaxImageHeight := 0;
+  MaxImageHeight := GetImageHeight(-1);
   for I := 0 to FItems.Count-1 do
   begin
     if GetImageHeight(I) > MaxImageHeight then
       MaxImageHeight := GetImageHeight(I);
   end;
-  ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + 4);
+  ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + Ord(ButtonFrame) * 4);
 end;
 
 procedure TJvImageComboBox.Change;
@@ -1475,11 +1499,17 @@ end;
 {$IFDEF VCL}
 procedure TJvImageListBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
-  Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + 4);
+  Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + Ord(ButtonFrame) * 4);
 end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
+procedure TJvImageListBox.MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
+                          var Height, Width: Integer);
+begin
+  Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + Ord(ButtonFrame) * 4);
+end;
 
 procedure TJvImageListBox.SetParent(const AParent: TWidgetControl);
 begin
@@ -1487,11 +1517,6 @@ begin
   ResetItemHeight;
 end;
 
-procedure TJvImageListBox.MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
-                          var Height, Width: Integer);
-begin
-  Height := Max(GetItemHeight(Font) + 4, FImageList.Height + 4);
-end;
 
 {$ENDIF VisualCLX}
 
@@ -1512,7 +1537,7 @@ var
   MaxImageHeight: Integer;
   I: Integer;
 begin
-  MaxImageHeight := 0;
+  MaxImageHeight := GetImageHeight(-1);
   for I := 0 to FItems.Count-1 do
   begin
     if GetImageHeight(I) > MaxImageHeight then
@@ -1520,9 +1545,9 @@ begin
   end;
   case FAlignment of
     taLeftJustify, taRightJustify:
-      ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + 4);
+      ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + Ord(ButtonFrame) * 4);
     taCenter:
-      ItemHeight := GetItemHeight(Font) + MaxImageHeight + 8;
+      ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + Ord(ButtonFrame) * 8);
   end;
   Invalidate;
 end;
