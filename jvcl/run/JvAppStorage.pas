@@ -2200,6 +2200,8 @@ begin
             TJvCustomPropertyStore(SubObj).AppStoragePath := Path;
             TJvCustomPropertyStore(SubObj).LoadProperties;
           end
+          else if SubObj is TCollection then
+            ReadCollection(Path, TCollection(SubObj), ClearFirst)
           else
             ReadPersistent(Path, TPersistent(SubObj), True, ClearFirst);
       end;
@@ -2254,6 +2256,8 @@ begin
             TJvCustomPropertyStore(SubObj).AppStorage := Self;
             TJvCustomPropertyStore(SubObj).StoreProperties;
           end
+          else if SubObj is TCollection then
+            WriteCollection(Path, TCollection(SubObj))
           else
             WritePersistent(Path, TPersistent(SubObj), Recursive, nil);
       end;
