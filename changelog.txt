@@ -1,6 +1,12 @@
 Changelog for JVCL 3.0
 ======================
+2004-01-18
+- Ensured all files using TJvDBGrid use the JvDBGrid.pas file // obones
+- Renamed TJvAppXMLStorage to TJvAppXMLFileStorage for consistency // obones
+- Introduced TJvCustomAppMemoryFileStorage, ancestor of all file related storages // obones
+- Reverted FileName to its old type (TFileName) in all file related storages // obones
 2004-01-17:
+- Removed the LeftMargin property of TJvPopupMenu // obones
 - moved TJvPopupListBox to JvComponent and removed it from JvGrids and JvInspector // ahuser
 - changed all WM_SETFOCUS/WM_KILLFOCUS/CM_ENTER/CM_EXIT/CM_FOCUSCHANGED to JvExJCL
   methods (except the USEJVCL'ed units) // ahuser
