@@ -31,7 +31,8 @@ unit JvTranslator;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Forms, TypInfo, ComCtrls, JvSimpleXml, JvComponent;
+  Windows, Messages, SysUtils, Classes, Forms, TypInfo, ComCtrls, JvSimpleXml,
+  JvComponent, IniFiles;
 
 {.$DEFINE GX_OUTLOOK}
 
@@ -53,7 +54,7 @@ type
 
   TJvTranslatorStrings = class(TJvComponent)
   private
-    FList: TStringList;
+    FList: THashedStringList;
     function GetString(const Index: Integer): string;
     procedure SetString(const Index: Integer; const Value: string);
   public
@@ -298,7 +299,7 @@ end;
 constructor TJvTranslatorStrings.Create(AOwner: TComponent);
 begin
   inherited;
-  FList := TStringList.Create;
+  FList := THashedStringList.Create;
 end;
 {*******************************************************************}
 destructor TJvTranslatorStrings.Destroy;
