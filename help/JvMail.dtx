@@ -486,7 +486,7 @@ See Also
   to provide a password and profile name to enable a successful \logon, loLogonUI must be set.
 @@TJvMailLogonOption.loNewSession
   An attempt should be made to create a new session rather than acquire the environment's shared
-  session. If the loNewSession flag is not set, <LINK TJvMail.Logon,Logon> uses an existing shared session.
+  session. If the loNewSession flag is not set, <LINK TJvMail.LogOn,LogOn> uses an existing shared session.
 @@TJvMailLogonOption.loDownloadMail
   An attempt should be made to download all of the user's messages before returning. If this flag is
   not set, messages can be downloaded in the background after Logon returns. Set this flag when you want
@@ -532,7 +532,7 @@ See Also
   The message identifiers returned should be in the order of time received.
   <LINK TJvMail.FindFirstMail,FindFirstMail> or <LINK TJvMail.FindNextMail,FindNextMail> calls
   can take longer if this flag is set. Some implementations cannot honor this request, and if so
-  an EJclMapiError exception is raised. 
+  an EJclMapiError exception is raised.
 @@TJvMailReadOption.roPeek
   <LINK TJvMail.ReadMail,ReadMail> does not mark the message as read. Marking a message as read affects
   its appearance in the user interface and generates a read receipt. If the messaging system
@@ -609,7 +609,7 @@ Description
   Use TJvMailRecipients to represent all the recipients of a message. Each recipient is represented by a
   single TJvMailRecipient object.
 
-  Use the <LINK Add> or <LINK AddRecipient> method to add a single recipient to the collection.
+  Use the Add or AddRecipient method to add a single recipient to the collection.
 See Also
   TJvMail, TJvMailRecipient
 ----------------------------------------------------------------------------------------------------
@@ -633,8 +633,8 @@ Description
 
   Note that you may specify for the new recipient either the
   recipient's name, an address, or a name and address pair. The following table shows how
-  <LINK TJvMail.SendMail,SendMail>
-  handles the variety of information that can be specified:
+  <LINK TJvMail.SendMail,SendMail> handles the variety of information that can be specified:
+
   <TABLE>
   Information        Action
   -----------        ------
@@ -644,7 +644,7 @@ Description
   name and address   No name resolution: name used only for displaying the recipient name.
   </TABLE>
 
-  The following example adds a recipient to the <LINK TJvMail.Recipient,Recipient> list.
+  The following code adds a recipient to the <LINK TJvMail.Recipient,Recipient> list:
   <AUTOLINK OFF>
   <CODE>
   JvMail1.Recipient.AddRecipient('SMTP:someone@somedomain.com', 'Some one');

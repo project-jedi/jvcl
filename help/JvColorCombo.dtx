@@ -1,5 +1,6 @@
 ##Package: StdCtrls
 ##Status: Completed (I) (peter3)
+##Skip: TJvDrawPreviewEvent
 ----------------------------------------------------------------------------------------------------
 @@JvColorCombo.pas
 Summary
@@ -327,7 +328,7 @@ Summary
   Adds the currently selected font to the MRU list.
 Description
   Call AddToMRU to programmatically add the currently selected font to the MRU list. This method only
-  has effect if foMRU is in Options. 
+  has effect if foMRU is in Options.
 Return value
   0 if the item was added (MRU items are always added at the top) or the index of an existing
   item in the MRU list.
@@ -340,7 +341,7 @@ Summary
 Description
   Call ClearMRU to remove all fonts from the MRU list.
 See Also
-  AddtoMRU
+  AddToMRU
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.Device
 Summary
@@ -375,12 +376,12 @@ Summary
   Returns a substitute font for a specific font.
 Description
   Call FontSubstitute to retrieve the name of a substitute font for a font specified by parameter
-  FontName. This might be useful when a font is not installed on a system (for example, a font in
+  AFontName. This might be useful when a font is not installed on a system (for example, a font in
   a specific locale).
 Parameters
-  FontName - The name of the font to search a substitute for.
+  AFontName - The name of the font to search a substitute for.
 Return value
-  Returns the name of a substitute font, or the value of parameter FontName if no substitute is found.
+  Returns the name of a substitute font, or the value of parameter AFontName if no substitute is found.
 See Also
   FontName
 ----------------------------------------------------------------------------------------------------

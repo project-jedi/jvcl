@@ -605,7 +605,7 @@ Description
   ends an OnTerminate event is triggered. If the creation succeeded, and WaitForTerminate is False,
   State is set to psRunning. No event will be triggered if the process ends.
 
-  You can stop the created process by calling <LINK TJvCreateProcess.StopApplication, StopApplication>
+  You can stop the created process by calling <LINK TJvCreateProcess.CloseApplication,CloseApplication>
   \or Terminate.
 
   \Note that you cannot call Run if State is psWaiting.
@@ -642,7 +642,7 @@ Description
   If the state is psWaiting, it means that the component is waiting for a process to end. If the
   process ends an OnTerminate event is fired, and the state changes to psReady. You can call
   StopWaiting to stop waiting for the process to end, it will change the state from psWaiting to
-  psReady. You can also call <LINK TJvCreateProcess.CloseApplication,CloseApplication> or Terminate to 
+  psReady. You can also call <LINK TJvCreateProcess.CloseApplication,CloseApplication> or Terminate to
   stop the running application, but you can
   not call Run to start a new application.
 

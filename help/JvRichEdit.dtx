@@ -145,7 +145,7 @@ Description
 Summary
   Converts rich text data or plain text from one encoding format to another.
 Description
-  Write a TJvConversion descendant to convert rich text data or plain text from one specific encoding 
+  Write a TJvConversion descendant to convert rich text data or plain text from one specific encoding
   format to another. Register the object with a call to
   <LINK TJvCustomRichEdit.RegisterConversionFormat,RegisterConversionFormat>. Registered conversion
   objects are used by TJvRichEdit when either the LoadFromFile, LoadFromStream, SaveToFile or SaveToStream method
@@ -158,11 +158,11 @@ Description
   * IsFormatCorrect, to determine whether the converter can handle a specific file or stream.
     (only for import operations)
   * Open
-  * Multiple <LINK TJvConversion.ConvertRead,ConvertRead> or 
+  * Multiple <LINK TJvConversion.ConvertRead,ConvertRead> or
     <LINK TJvConversion.ConvertWrite,ConvertWrite> calls.
   * Retry, if an error occured, followed again by multiple ConvertRead or ConvertWrite calls.
   * Done, to finalize the converter.
-  
+
   The following objects are descendants of TJvConversion:
   <TABLE>
   Class                 Function
@@ -180,11 +180,11 @@ Summary
 Description
   Call CanHandle to determine whether the converter can import or export files or streams, or whether the
   converter can import or export files with an extension as specified by AExtension.
-  
+
   TJvRichEdit will call CanHandle to determine whether the converter can either import or export
   files and streams, and whether it can import or export files with a particular extension.
-  
-  As implemented in TJvConversion, CanHandle always returns true. Override this method in a 
+
+  As implemented in TJvConversion, CanHandle always returns true. Override this method in a
   descendant class to indicate that the converter can only operate on files with a particular
   extension.
 Parameters
@@ -200,9 +200,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvConversion.ConvertRead
 Summary
-  Reads BufSize bytes from the import source into the memory buffer pointed to by Buffer. 
+  Reads BufSize bytes from the import source into the memory buffer pointed to by Buffer.
 Description
-  A TJvRichEdit control calls ConvertRead multiple times during an import operaration. Each time this 
+  A TJvRichEdit control calls ConvertRead multiple times during an import operaration. Each time this
   method is called the converter should read a chunk of the source file or stream, convert it, and put the
   converted data in Buffer.
 Parameters
@@ -215,14 +215,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvConversion.ConvertWrite
 Summary
-  Writes BufSize bytes to the export destination from the memory buffer pointed to by Buffer. 
+  Writes BufSize bytes to the export destination from the memory buffer pointed to by Buffer.
 Description
-  A TJvRichEdit control calls ConvertWrite multiple times during an export operaration. Each time this 
-  method is called the converter should read the data in Buffer, convert it, and write it to 
+  A TJvRichEdit control calls ConvertWrite multiple times during an export operaration. Each time this
+  method is called the converter should read the data in Buffer, convert it, and write it to
   the destination file or stream.
 Parameters
   Buffer  - A buffer to read from. The buffer contains data from the control that the converter
-             writes to some storage. 
+             writes to some storage.
   BufSize - Size of Buffer.
 Return value
   Returns the number of bytes actually read from Buffer.
@@ -233,7 +233,7 @@ See Also
 Summary
   Finalizes the converter.
 Description
-  Call Done to finalize the converter. 
+  Call Done to finalize the converter.
 
   TJvRichEdit calls Done after a conversion operation is finished,
   to permit the converter to perform any necessary finalization.
@@ -248,7 +248,7 @@ Summary
 Description
   Error returns whether an error occurred during the conversion. The ErrorStr method describes the error.
 
-  As implemented in TJvConversion, Error always returns false. Override this method in a 
+  As implemented in TJvConversion, Error always returns false. Override this method in a
   descendant class to return a meaningful value.
 Return value
   Returns true if an error occurred during the conversion, otherwise false.
@@ -261,10 +261,10 @@ Summary
 Description
   Call ErrorStr to obtain the error message text describing the error that occurred during the conversion.
   Call Error to determine whether an error occurred.
-  
+
   TJvRichEdit uses this method to raise an exception after a failed conversion.
 
-  As implemented in TJvConversion, ErrorStr always returns the empty string. Override this method in a 
+  As implemented in TJvConversion, ErrorStr always returns the empty string. Override this method in a
   descendant class to return a meaningful value.
 Return value
   Returns text describing the error that occurred during the conversion.
@@ -279,7 +279,7 @@ Description
   converter. For example, you can use the return value of a Filter call to set the
   \Filter property of a TOpenDialog component.
 
-  As implemented in TJvConversion, Filter always returns an empty string. Override this method in a 
+  As implemented in TJvConversion, Filter always returns an empty string. Override this method in a
   descendant class to return a meaningful value.
 Return value
   Returns the file masks of the registered converters.
@@ -288,15 +288,15 @@ Return value
 Summary
   Initializes the converter.
 Description
-  Call Init to initialize the converter. 
-  
-  TJvRichEdit calls the Init method of a converter before any other method to permit the converter to 
+  Call Init to initialize the converter.
+
+  TJvRichEdit calls the Init method of a converter before any other method to permit the converter to
   perform any necessary global initialization.
-  
+
   A TJvRichEdit control garantees that method Done is called after procedure Init is called.
 Parameters
-  AParentWindow - A handle to the top-level client window of the application to be used as a parent 
-                  window for the converter. For example, after displaying and closing a dialog box, 
+  AParentWindow - A handle to the top-level client window of the application to be used as a parent
+                  window for the converter. For example, after displaying and closing a dialog box,
                   a converter should reset the focus to this window.
 See Also
   Done
@@ -307,11 +307,11 @@ Summary
 Description
   Call IsFormatCorrect to determine whether the converter can import the file specified by AFileName
   or the stream specified by AStream.
-  
-  TJvRichEdit will call IsFormatCorrect to determine whether the converter recognizes and can convert 
-  the contents of a file or stream. 
 
-  As implemented in TJvConversion, IsFormatCorrect always returns true. Override this method in a 
+  TJvRichEdit will call IsFormatCorrect to determine whether the converter recognizes and can convert
+  the contents of a file or stream.
+
+  As implemented in TJvConversion, IsFormatCorrect always returns true. Override this method in a
   descendant class to check files or streams before the actual import operation.
 Parameters
   AFileName - The file to import.
@@ -328,8 +328,8 @@ See Also
 Summary
   Occurs when the converter is importing or exporting.
 Description
-  For certain descendants of TJvConversion, OnProgress occurs during import or export operations. 
-  OnProgress allows applications to provide feedback to the user about the progress of the slow process.  
+  For certain descendants of TJvConversion, OnProgress occurs during import or export operations.
+  OnProgress allows applications to provide feedback to the user about the progress of the slow process.
 
   Component writers can generate OnProgress events for new descendants of TJvConversion by calling the
   protected DoProgress method. These events are propagated to the TJvRichEdit control.
@@ -343,7 +343,7 @@ Description
   A TJvRichEdit control calls Open to start a conversion operation, either import or export as specified
   by the AKind parameter. This gives the converter a chance to open the source file or
   create the destination file, for example.
-  
+
   Following a successful call to Open will be multiple calls to either ConvertRead or ConvertWrite.
 Parameters
   AFileName - The file to import or export.
@@ -363,7 +363,7 @@ Summary
   Indicates the window used as a parent window for the converter.
 Description
   Read ParentWindow to determine the window that is used as a parent window for the converter.
-  
+
   Call <LINK TJvConversion.Init,Init> to set ParentWindow.
 See Also
   <LINK TJvConversion.Init,Init>
@@ -382,25 +382,25 @@ Summary
 Description
   TJvRichEdit calls Retry after a failed import or export process. If the converter indicates that
   the import or export process can be retried (by returning true) the rich edit control will start
-  the import or export process once again, but now switches the source or target format of its 
+  the import or export process once again, but now switches the source or target format of its
   content from RTF to plaintext or vice versa.
-  
+
   For example if a plain text file is imported as a RTF file, an error will occur. Retrying to import
   the file but now as plain text will then succeed.
 
-  As implemented in TJvConversion, Retry always returns false. Override this method in a 
+  As implemented in TJvConversion, Retry always returns false. Override this method in a
   descendant class to allow retrying of a conversion process.
 Return value
   Returns true if the current conversion process can be retried, false otherwise.
 ----------------------------------------------------------------------------------------------------
 @@TJvConversion.TextKind
 Summary
-  Returns the preferred source or target format of the rich edit content. 
+  Returns the preferred source or target format of the rich edit content.
 Description
   TJvRichEdit calls TextKind to determine what format the converter prefers the content of the rich
   edit to be.
 Return value
-  Returns the preferred source or target format of the rich edit content. 
+  Returns the preferred source or target format of the rich edit content.
 ----------------------------------------------------------------------------------------------------
 @@TJvConversion.UserCancel
 Summary
@@ -470,14 +470,14 @@ See Also
 Summary
   Specifies whether the advanced typography option for line breaking and display is on.
 Description
-  Rich Edit 3.0 can use an advanced typography option for line breaking and display. This elegant 
-  option was added primarily to facilitate handling complex scripts (bidirectional, Indic, and Thai). 
-  In addition, a number of improvements occur for simple scripts. Examples are: 
-  
+  Rich Edit 3.0 can use an advanced typography option for line breaking and display. This elegant
+  option was added primarily to facilitate handling complex scripts (bidirectional, Indic, and Thai).
+  In addition, a number of improvements occur for simple scripts. Examples are:
+
   * Center, right, decimal tabs (See <LINK TJvParaAttributes.TabLeader,TabLeader> and
     <LINK TJvParaAttributes.TabAlignment,TabAlignment>).
   * Fully justified text (See <LINK TJvParaAttributes.Alignment,Alignment>).
-  * Underline averaging, which provides a uniform underline even when adjacent text runs have 
+  * Underline averaging, which provides a uniform underline even when adjacent text runs have
     different font sizes.
 Note
   RichEdit 3.0
@@ -511,12 +511,12 @@ Summary
   Specifies whether to automatically turn on AdvancedTypography when needed.
 Description
   If AutoAdvancedTypography is true, AdvancedTypography is turned on in the following situations:
-  
-  * Property <LINK TJvParaAttributes.TabAlignment,TabAlignment> of <LINK TJvRichEdit.Paragraph,Paragraph>
+
+  * Property <LINK TJvParaAttributes.TabAlignment,TabAlignment> of <LINK TJvCustomRichEdit.Paragraph,Paragraph>
     is set to a value other than taOrdinary.
-  * Property <LINK TJvParaAttributes.TabLeader,TabLeader> of <LINK TJvRichEdit.Paragraph,Paragraph>
+  * Property <LINK TJvParaAttributes.TabLeader,TabLeader> of <LINK TJvCustomRichEdit.Paragraph,Paragraph>
     is set to a value other than tlNone.
-  * Property <LINK TJvParaAttributes.Alignment,Alignment> of <LINK TJvRichEdit.Paragraph,Paragraph>
+  * Property <LINK TJvParaAttributes.Alignment,Alignment> of <LINK TJvCustomRichEdit.Paragraph,Paragraph>
     is set to paJustify.
 Note
   RichEdit 3.0
@@ -715,8 +715,8 @@ See Also
 Summary
   Specifies whether undo should be active for all types of text changes in the control.
 Description
-  Use ForceUndo to specify whether undo should be activated even for replacements in selection. When 
-  ForceUndo is false, changing the text of the control by assigning to the SelText property or by using 
+  Use ForceUndo to specify whether undo should be activated even for replacements in selection. When
+  ForceUndo is false, changing the text of the control by assigning to the SelText property or by using
   the built-in text replace functions cannot be undone. Set ForceUndo to true to make undo available in these circumstances.
 See Also
   SelText, ReplaceDialog
@@ -841,8 +841,8 @@ Summary
   Inserts a bitmap at the current cursor position.
 Description
   Call InsertBitmap to insert a bitmap at the current cursor position.
-  
-  If parameter Sizeable is set to false, but property OLEDragDrop is true, then the user can 
+
+  If parameter Sizeable is set to false, but property OLEDragDrop is true, then the user can
   drag and drop the image, and then resize the image. Set OLEDragDrop to false to completly prevent
   the user from resizing the image. Another way is to set ReadOnly to true.
 Note
@@ -943,8 +943,8 @@ Summary
   Indicates whether to allow OLE drag and drop.
 Description
   Use OLEDragDrop to specify whether to allow OLE drag and drop.
-  
-  OLE drag and drop allows the user to drag data (such as text or graphics) from one control or 
+
+  OLE drag and drop allows the user to drag data (such as text or graphics) from one control or
   application to another (or the same) control or application.
 See Also
   InsertBitmap
@@ -982,11 +982,11 @@ See Also
 Summary
   Occurs when a rich edit control is importing or exporting.
 Description
-  For certain descendants of TJvConversion, OnConversionProgress occurs during import or export operations. 
-  OnConversionProgress allows applications to provide feedback to the user about the progress of the slow process.  
+  For certain descendants of TJvConversion, OnConversionProgress occurs during import or export operations.
+  OnConversionProgress allows applications to provide feedback to the user about the progress of the slow process.
 Parameters
   Sender      - Rich Edit control that has fired this event.
-  PercentDone - PercentDone is an approximation of how much of the operation has completed. Use 
+  PercentDone - PercentDone is an approximation of how much of the operation has completed. Use
                  PercentDone to update the position of a progress bar or other indicator.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnHorizontalScroll
@@ -1237,7 +1237,7 @@ Summary
 Description
   Rich edit controls encode text attributes in RTF format or plain text. To read from or write to files
   that encode
-  text attributes in some other format, a converter is required. The converter is a descendant of 
+  text attributes in some other format, a converter is required. The converter is a descendant of
   TJvConversion that translates between the native file format and RTF or plain text when the text is
   streamed in or out. RegisterConversionFormat sets up an association between a file extension and a
   converter, so that all attempts to stream between a file with that extension and a rich edit control
@@ -1255,11 +1255,11 @@ Summary
 Description
   Call RegisterMSTextConverters to register the text converters supplied by Microsoft. These converters
   can import or export RTF from or to some other format, for example Word documents or html pages.
-  
+
   RegisterMSTextConverters sets up associations between file extension and MS converters, so that all
   attempts to stream between a file with that extension and a rich edit control automatically invoke
   the appropriate converter.
-  
+
   RegisterMSTextConverters registers a TJvMSTextConversion instance for each item found in:
   <AUTOLINK OFF>
   <CODE>
@@ -1561,14 +1561,14 @@ See Also
   TJvParaAttributes.IndentationStyle
 @@TJvIndentationStyle.isRichEdit
   <LINK TJvParaAttributes.LeftIndent,LeftIndent> relative to <LINK TJvParaAttributes.FirstIndent,FirstIndent>.
-  For example, if <LINK TJvParaAttributes.FirstIndent,FirstIndent> equals 2 and 
-  <LINK TJvParaAttributes.LeftIndent,LeftIndent> equals 1 then the first line of the 
+  For example, if <LINK TJvParaAttributes.FirstIndent,FirstIndent> equals 2 and
+  <LINK TJvParaAttributes.LeftIndent,LeftIndent> equals 1 then the first line of the
   paragraph will start at 2 and the following lines at 3.
 @@TJvIndentationStyle.isOffice
   <LINK TJvParaAttributes.FirstIndent,FirstIndent> relative to <LINK TJvParaAttributes.LeftIndent,LeftIndent>
   (like MS Word and WordPad).
-  For example, if <LINK TJvParaAttributes.FirstIndent,FirstIndent> equals 2 and 
-  <LINK TJvParaAttributes.LeftIndent,LeftIndent> equals 1 then the first line of the 
+  For example, if <LINK TJvParaAttributes.FirstIndent,FirstIndent> equals 2 and
+  <LINK TJvParaAttributes.LeftIndent,LeftIndent> equals 1 then the first line of the
   paragraph will start at 3 and the following lines at 1.
 ----------------------------------------------------------------------------------------------------
 @@TJvMSTextConversion
@@ -1577,7 +1577,7 @@ Summary
 Description
   TJvMSTextConversion is a wrapper class for a single MS Text conversion dll. You can register all MS Text
   converters by calling <LINK TJvCustomRichEdit.RegisterMSTextConverters,RegisterMSTextConverters>
-See Also 
+See Also
   TJvCustomRichEdit.RegisterMSTextConverters
 ----------------------------------------------------------------------------------------------------
 @@TJvMSTextConversion.TranslateError
@@ -1679,8 +1679,8 @@ Summary
 Description
   Use Alignment to specify how text is aligned within a paragraph.
 Note
-  For paJustify you need RichEdit 3.0 and 
-  <LINK TJvCustomRichEdit.AdvancedTypography,AdvancedTypography> or 
+  For paJustify you need RichEdit 3.0 and
+  <LINK TJvCustomRichEdit.AdvancedTypography,AdvancedTypography> or
   <LINK TJvCustomRichEdit.AutoAdvancedTypography,AutoAdvancedTypography> must be true.
 See Also
   TJvCustomRichEdit.AdvancedTypography, LeftIndent, RichEditVersion, RightIndent
@@ -1848,7 +1848,7 @@ Description
 Parameters
   Index - The index of the tab, where 0 is the first tab.
 Note
-  RichEdit 3.0 and <LINK TJvCustomRichEdit.AdvancedTypography,AdvancedTypography> or 
+  RichEdit 3.0 and <LINK TJvCustomRichEdit.AdvancedTypography,AdvancedTypography> or
   <LINK TJvCustomRichEdit.AutoAdvancedTypography,AutoAdvancedTypography> needs to be true.
 See Also
   TJvCustomRichEdit.AdvancedTypography, RichEditVersion, Tab, TabCount, TabLeader
@@ -1869,7 +1869,7 @@ Description
 Parameters
   Index - The index of the tab, where 0 is the first tab.
 Note
-  RichEdit 3.0 and <LINK TJvCustomRichEdit.AdvancedTypography,AdvancedTypography> or 
+  RichEdit 3.0 and <LINK TJvCustomRichEdit.AdvancedTypography,AdvancedTypography> or
   <LINK TJvCustomRichEdit.AutoAdvancedTypography,AutoAdvancedTypography> needs to be true.
 See Also
   TJvCustomRichEdit.AdvancedTypography, RichEditVersion, Tab, TabAlignment, TabCount
@@ -1971,7 +1971,7 @@ Description
   Feature                           Description
   --------------------------        -----------------------------------------------------
   \Zoom                             The zoom factor is given by a ratio, see property
-                                     <LINK TJvCustomRichEdit.Zoom,Zoom>. 
+                                     <LINK TJvCustomRichEdit.Zoom,Zoom>.
   Paragraph numbering               Numeric, upper and lower alphabetic, or Roman numeral, see
    (single-level)                    property <LINK TJvParaAttributes.Numbering,Numbering> of
                                      TJvParaAttributes.
@@ -2025,7 +2025,7 @@ See Also
   Right-aligned tab.
 @@TJvTabAlignment.taDecimal
   Decimal tab. (Aligns a decimal point at the tab stop: text or numbers without a decimal point extend
-  to the left of the tab stop) 
+  to the left of the tab stop)
 @@TJvTabAlignment.taVertical
   Word bar tab (vertical bar).
 ----------------------------------------------------------------------------------------------------
@@ -2164,11 +2164,11 @@ Description
   and superscript characters.
 Note
   (= is equals; ~ is approx.)
-  
+
   1 point = 20 twips. (A twip is a TWenthIeth of a Point)
-  
-  For printing: 
-  
+
+  For printing:
+
   72 points = 1 physical inch.<p>
   1440 twips = 1 physical inch.<p>
   1 inch ~ 25,40 mm, thus<p>
@@ -2176,15 +2176,15 @@ Note
   56,7 twips ~ 1 mm
 
   For screen:
-  
+
   72 points ~ 1 logical inch.<p>
   1440 twips ~ 1 logical inch.
-  
+
   The relation between a logical inch and a physical inch depends on your monitor/video driver.
   Windows typically uses 96 pixels per logical inch for small fonts and 120 pixels per logical
   inch for large fonts.
   So, if 1 logical inch = 96 pixels, then
-  
+
   1 pixel = 1/96 logical inch ~ 1440/96 twips = 15 twips = 3/4 point.
 See Also
   SubscriptStyle
@@ -2206,7 +2206,7 @@ Description
   event handler can then permit or disallow the editing of the protected text. If there is no
   OnProtectChange or OnProtectChangeEx event handler, protected text is read-only.
 See Also
-  ConsistentAttributes, Disabled, Hidden, Link, TJvCustomRichEdit.OnProtectChange, 
+  ConsistentAttributes, Disabled, Hidden, Link, TJvCustomRichEdit.OnProtectChange,
   TJvCustomRichEdit.OnProtectChangeEx, Style
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAttributes.RevAuthorIndex
@@ -2286,16 +2286,16 @@ Description
 @@TLineSpacingRule.lsDouble
   Double spacing.
 @@TLineSpacingRule.lsSpecifiedOrMore
-  Property <LINK TJvCustomRichEdit.LineSpacing,LineSpacing> of a TJvCustomRichEdit specifies the
-  spacing from one line to the next, in points; however, if <LINK TJvCustomRichEdit.LineSpacing,
+  Property <LINK TJvParaAttributes.LineSpacing,LineSpacing> of a TJvCustomRichEdit specifies the
+  spacing from one line to the next, in points; however, if <LINK TJvParaAttributes.LineSpacing,
   LineSpacing> specifies a value that is less than single spacing, the control displays single-spaced text.
 @@TLineSpacingRule.lsSpecified
-  Property <LINK TJvCustomRichEdit.LineSpacing,LineSpacing> of a TJvCustomRichEdit specifies the
+  Property <LINK TJvParaAttributes.LineSpacing,LineSpacing> of a TJvCustomRichEdit specifies the
   spacing from one line to the next, in points. The control uses the exact spacing specified, even
-  if <LINK TJvCustomRichEdit.LineSpacing,LineSpacing> specifies a value that is less than single spacing.
+  if <LINK TJvParaAttributes.LineSpacing,LineSpacing> specifies a value that is less than single spacing.
 @@TLineSpacingRule.lsMultiple
-  Property <LINK TJvCustomRichEdit.LineSpacing,LineSpacing> of a TJvCustomRichEdit specifies the
-  spacing, in lines, from one line to the next; thus, setting <LINK TJvCustomRichEdit.LineSpacing,
+  Property <LINK TJvParaAttributes.LineSpacing,LineSpacing> of a TJvCustomRichEdit specifies the
+  spacing, in lines, from one line to the next; thus, setting <LINK TJvParaAttributes.LineSpacing,
   LineSpacing> to 1 produces single-spaced text, 2 is double spaced, 3 is triple spaced, and so on.
 ----------------------------------------------------------------------------------------------------
 @@TParaAlignment
