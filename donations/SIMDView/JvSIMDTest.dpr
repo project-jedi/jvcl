@@ -49,7 +49,7 @@ begin
       Write('Enter the floating point value ',Index,' : ');
       ReadLn(Number);
       if (DecimalSeparator<>'.') then
-        Number:=StringReplace(Number,'.',DecimalSeparator,[rfReplaceAll,rfIgnoreCase]);
+        Number:=StringReplace(Number,DecimalSeparator,'.',[rfReplaceAll,rfIgnoreCase]);
       Val(Number,Values[Index],ErrorCode);
     until (ErrorCode=0);
 
