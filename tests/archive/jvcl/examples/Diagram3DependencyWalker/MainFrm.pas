@@ -15,7 +15,7 @@ type
     procedure Load(Storage: TCustomIniFile);
     procedure Save(Storage: TCustomIniFile);
   end;
-*)  
+ *)
 
   TfrmMain = class(TForm, IUnknown, IPersistSettings)
     StatusBar1: TStatusBar;
@@ -28,7 +28,7 @@ type
     About1: TMenuItem;
     dlgSelectFiles: TOpenDialog;
     il32: TImageList;
-    Clear1: TMenuItem;
+    New1: TMenuItem;
     vertSplitter: TSplitter;
     pnlDiagram: TPanel;
     pnlSkipList: TPanel;
@@ -45,7 +45,7 @@ type
     Add2: TMenuItem;
     Delete2: TMenuItem;
     alMain: TActionList;
-    acSelectFiles: TAction;
+    acOpen: TAction;
     acExit: TAction;
     acSortName: TAction;
     acSortLinksTo: TAction;
@@ -53,14 +53,14 @@ type
     acInvertSort: TAction;
     acAdd: TAction;
     acDelete: TAction;
-    acClear: TAction;
+    acNew: TAction;
     acAbout: TAction;
     byName1: TMenuItem;
     byLinksTo1: TMenuItem;
     LinksFrom1: TMenuItem;
     N3: TMenuItem;
     InvertSort1: TMenuItem;
-    popDiagram: TPopupMenu;
+    popShape: TPopupMenu;
     acUnitStats: TAction;
     Statistics1: TMenuItem;
     Delete3: TMenuItem;
@@ -73,7 +73,7 @@ type
     cbToolbar: TCoolBar;
     tbStandard: TToolBar;
     tbSelectFiles: TToolButton;
-    tbClear: TToolButton;
+    tbNew: TToolButton;
     ToolButton3: TToolButton;
     tbAddSkip: TToolButton;
     tbDelSkip: TToolButton;
@@ -99,18 +99,29 @@ type
     N6: TMenuItem;
     acRefresh: TAction;
     sb: TScrollBox;
+    acSaveBMP: TAction;
+    acCopy: TAction;
+    popDiagram: TPopupMenu;
+    CopyDiagramtoClipboard1: TMenuItem;
+    CopyDiagramtoClipboard2: TMenuItem;
+    N5: TMenuItem;
+    SaveImage1: TMenuItem;
+    N7: TMenuItem;
+    dlgSaveImage: TSaveDialog;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure SbMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-    procedure acSelectFilesExecute(Sender: TObject);
+    procedure acOpenExecute(Sender: TObject);
     procedure acExitExecute(Sender: TObject);
     procedure acArrangeAction(Sender: TObject);
     procedure acInvertSortExecute(Sender: TObject);
     procedure acAddExecute(Sender: TObject);
     procedure acDeleteExecute(Sender: TObject);
     procedure acAboutExecute(Sender: TObject);
-    procedure acClearExecute(Sender: TObject);
+    procedure acNewExecute(Sender: TObject);
     procedure alMainUpdate(Action: TBasicAction;
       var Handled: Boolean);
     procedure acUnitStatsExecute(Sender: TObject);
@@ -122,23 +133,25 @@ type
     procedure acViewSkipListExecute(Sender: TObject);
     procedure acViewToolBarExecute(Sender: TObject);
     procedure acRefreshExecute(Sender: TObject);
+    procedure acSaveBMPExecute(Sender: TObject);
+    procedure acCopyExecute(Sender: TObject);
   private
     { Private declarations }
-    FPrintFormat:TPrintFormat;
+    FPrintFormat: TPrintFormat;
     FFileShapes: TStringlist;
-    FInitialDir:string;
+    FInitialDir: string;
     FLeft, FTop: integer;
 
     procedure LoadSettings;
     procedure SaveSettings;
 
     procedure Clear;
-    procedure CreatePrintOut(Strings: TStrings; AFormat:TPrintFormat=pfText);
+    procedure CreatePrintOut(Strings: TStrings; AFormat: TPrintFormat = pfText);
     function GetFileShape(const Filename: string): TJvBitmapShape;
     procedure ParseUnits(Files, Errors: TStrings);
     procedure ParseUnit(const Filename: string; Errors: TStrings);
-    function GetUses(const Filename: string; AUses: TStrings; var ErrorMessage: string): boolean;
-    procedure Connect(StartShape, EndShape: TJvCustomDiagramShape);
+    function GetUses(const Filename: string; AUsesIntf, AUsesImpl: TStrings; var ErrorMessage: string): boolean;
+    procedure Connect(StartShape, EndShape: TJvCustomDiagramShape; IsInterface: boolean);
     procedure LoadSkipList;
     procedure SaveSkipList;
     function InSkipList(const Filename: string): boolean;
@@ -150,6 +163,7 @@ type
     {IPersistSettings}
     procedure Load(Storage: TCustomIniFile);
     procedure Save(Storage: TCustomIniFile);
+    procedure CreateDiagramBitmap(Bmp: TBitmap);
   public
     { Public declarations }
   end;
@@ -204,9 +218,9 @@ begin
   Result := TChangeCursor.Create(NewCursor);
 end;
 
-function YesNo(const ACaption,AMsg:string):boolean;
+function YesNo(const ACaption, AMsg: string): boolean;
 begin
-  Result := MessageBox(GetFocus,PChar(AMsg),PChar(ACaption),
+  Result := MessageBox(GetFocus, PChar(AMsg), PChar(ACaption),
     MB_YESNO or MB_ICONQUESTION or MB_TASKMODAL) = IDYES;
 end;
 
@@ -393,7 +407,7 @@ begin
     Result.Hint := AFilename;
     Result.ShowHint := True;
     Result.OnClick := DoShapeClick;
-    Result.PopupMenu := popDiagram;
+    Result.PopupMenu := popShape;
     Result.Top := FTop;
     Result.Left := FLeft;
     Result.Parent := sb;
@@ -412,14 +426,17 @@ end;
 
 // (p3) connects two shapes with a single head arrow pointing towards EndShape
 
-procedure TfrmMain.Connect(StartShape, EndShape: TJvCustomDiagramShape);
+procedure TfrmMain.Connect(StartShape, EndShape: TJvCustomDiagramShape; IsInterface: boolean);
 var
   arr: TJvSingleHeadArrow;
 begin
   arr := TJvSingleHeadArrow.Create(self);
   with arr do
   begin
-    LineColour := clBtnShadow;
+    if IsInterface then
+      LineColour := clBlack
+    else
+      LineColour := clBtnFace;
     // Set the start connection
     StartConn.Side := csRight;
     StartConn.Offset := StartShape.Height div 2;
@@ -439,7 +456,7 @@ end;
 // returns true if no errors, any exception message is added to ErrorMessage but th eprocessing
 // is not aborted
 
-function TfrmMain.GetUses(const Filename: string; AUses: TStrings; var ErrorMessage: string): boolean;
+function TfrmMain.GetUses(const Filename: string; AUsesIntf, AUsesImpl: TStrings; var ErrorMessage: string): boolean;
 var
   UL: TUsesList;
   i: integer;
@@ -450,18 +467,19 @@ begin
     with TMemoryStream.Create do
     try
       LoadFromFile(Filename);
-      AUses.Clear;
+      AUsesIntf.Clear;
+      AUSesImpl.Clear;
       P := PChar(Memory);
       with TUnitGoal.Create(P) do
       try
         UL := UsesIntf;
         for i := 0 to UL.Count - 1 do
           if not InSkipList(UL.Items[i]) then
-            AUses.Add(UL.Items[i]);
+            AUsesIntf.Add(UL.Items[i]);
         UL := UsesImpl;
         for i := 0 to UL.Count - 1 do
           if not InSkipList(UL.Items[i]) then
-            AUses.Add(UL.Items[i]);
+            AUsesImpl.Add(UL.Items[i]);
       finally
         Free;
       end;
@@ -481,7 +499,7 @@ end;
 
 procedure TfrmMain.ParseUnit(const Filename: string; Errors: TStrings);
 var
-  AUses: TStringlist;
+  AUsesIntf, AUsesImpl: TStringlist;
   FS: TJvBitmapShape;
   i: integer;
   AFilename, ErrMsg: string;
@@ -489,22 +507,31 @@ begin
   AFilename := ChangeFileExt(ExtractFileName(Filename), '');
   if InSkipList(AFilename) then
     Exit;
-  AUses := TStringlist.Create;
+  AUsesIntf := TStringlist.Create;
+  AUsesImpl := TStringlist.Create;
   FTop := FStartY;
   try
-    if not GetUses(Filename, AUses, ErrMsg) then
+    if not GetUses(Filename, AUsesIntf, AUsesImpl, ErrMsg) then
       Errors.Add(Format('%s: %s', [AFilename, ErrMsg]));
     // add the actual file
     FS := GetFileShape(AFilename);
-    Inc(FLeft,FOffsetX);
-    for i := 0 to AUses.Count - 1 do
+    FS.ImageIndex := 1; // this is a parsed file
+    Inc(FLeft, FOffsetX);
+    for i := 0 to AUsesIntf.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
-      Connect(FS, GetFileShape(ChangeFileExt(ExtractFileName(AUses[i]), '')));
+      Connect(FS, GetFileShape(ChangeFileExt(ExtractFileName(AUsesIntf[i]), '')), true);
+      Inc(FTop, FOffsetY);
+    end;
+    for i := 0 to AUsesImpl.Count - 1 do
+    begin
+      //add the used unit and connect to the parsed file
+      Connect(FS, GetFileShape(ChangeFileExt(ExtractFileName(AUsesImpl[i]), '')), false);
       Inc(FTop, FOffsetY);
     end;
   finally
-    AUses.Free;
+    AUsesIntf.Free;
+    AUsesImpl.Free;
   end;
   Application.ProcessMessages;
 end;
@@ -529,8 +556,7 @@ begin
   finally
     SuspendRedraw(sb, false);
   end;
-  StatusBar1.Panels[0].Text := Format(SParsedStatusFmt,
-    [Files.Count, FFileShapes.Count]);
+  StatusBar1.Panels[0].Text := Format(SParsedStatusFmt, [Files.Count, FFileShapes.Count]);
 end;
 
 // (p3) removes all shapes and links
@@ -560,7 +586,7 @@ end;
 procedure TfrmMain.LoadSkipList;
 var
 //  i: integer;
-  AFilename:string;
+  AFilename: string;
 begin
   AFilename := ExtractFilePath(Application.Exename) + 'SkipList.txt';
   if FileExists(AFilename) then
@@ -620,9 +646,12 @@ begin
   end;
 end;
 
-function iff(Condition:boolean;TrueValue,FalseValue:integer):integer;
+function iff(Condition: boolean; TrueValue, FalseValue: integer): integer;
 begin
-  if Condition then Result := TrueValue else Result := FalseValue;
+  if Condition then
+    Result := TrueValue
+  else
+    Result := FalseValue;
 end;
 
 procedure TfrmMain.SbMouseWheel(Sender: TObject;
@@ -632,9 +661,9 @@ begin
   Handled := true;
   with sb do
     if (ssShift in Shift) and (HorzScrollBar.IsScrollBarVisible) then
-      HorzScrollBar.Position := HorzScrollBar.Position - iff(ssCtrl in Shift,WheelDelta * 3,WheelDelta)
+      HorzScrollBar.Position := HorzScrollBar.Position - iff(ssCtrl in Shift, WheelDelta * 3, WheelDelta)
     else if (VertScrollBar.IsScrollBarVisible) then
-      VertScrollBar.Position := VertScrollBar.Position - iff(ssCtrl in Shift,WheelDelta * 3,WheelDelta);
+      VertScrollBar.Position := VertScrollBar.Position - iff(ssCtrl in Shift, WheelDelta * 3, WheelDelta);
 end;
 
 {
@@ -653,7 +682,7 @@ begin
 end;
 }
 
-procedure TfrmMain.acSelectFilesExecute(Sender: TObject);
+procedure TfrmMain.acOpenExecute(Sender: TObject);
 var
   Errors: TStringlist; // S: string;
 begin
@@ -705,7 +734,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.CreatePrintOut(Strings: TStrings; AFormat:TPrintFormat=pfText);
+procedure TfrmMain.CreatePrintOut(Strings: TStrings; AFormat: TPrintFormat = pfText);
 var
   i, j, ATag: integer;
   UsedByStrings, UsesStrings: TStringlist;
@@ -731,65 +760,65 @@ begin
     for i := 0 to AList.Count - 1 do
     begin
       AShape := TJvBitmapShape(AList[i]);
-      UsesUnits(AShape, UsesStrings,'');
-      UsedByUnits(AShape, UsedByStrings,'');
+      UsesUnits(AShape, UsesStrings, '');
+      UsedByUnits(AShape, UsedByStrings, '');
       case AFormat of
-      pfText:
-      begin
-        Strings.Add(AShape.Caption.Text);
-        Strings.Add('  ' + SUsesColon);
-        if UsesStrings.Count < 1 then
-          Strings.Add('    ' + SNone)
-        else
-          for j := 0 to UsesStrings.Count - 1 do
-            Strings.Add('    ' + UsesStrings[j]);
-        Strings.Add('  ' + SUsedByColon);
-        if UsedByStrings.Count < 1 then
-          Strings.Add('    ' + SNone)
-        else
-          for j := 0 to UsedByStrings.Count - 1 do
-            Strings.Add('    ' + UsedByStrings[j]);
-      end;
-      pfHTML:
-      begin
-        Strings.Add(Format('<h3>%s:</h3>',[AShape.Caption.Text]));
-        if UsesStrings.Count > 0 then
-          Strings.Add(Format('<b>%s</b>',[SUsesColon]));
-        Strings.Add('<ul>');
-        for j := 0 to UsesStrings.Count - 1 do
-          Strings.Add('<li>' + UsesStrings[j]);
-        Strings.Add('</ul>');
-        if UsedByStrings.Count > 0 then
-          Strings.Add(Format('<b>%s</b>',[SUsedByColon]));
-        Strings.Add('<ul>');
-        for j := 0 to UsedByStrings.Count - 1 do
-          Strings.Add('<li>' + UsedByStrings[j]);
-        Strings.Add('</ul>');
-      end;
-      pfXML:
-      begin
-        Strings.Add(Format('<UNIT Name="%s">',[AShape.Caption.Text]));
-          for j := 0 to UsesStrings.Count - 1 do
-            Strings.Add(Format('<USES Name="%s" />',[UsesStrings[j]]));
-          for j := 0 to UsedByStrings.Count - 1 do
-            Strings.Add(Format('<USEDBY Name="%s" />',[UsedByStrings[j]]));
-        Strings.Add('</UNIT>');
-      end;
-      end;  // case
+        pfText:
+          begin
+            Strings.Add(AShape.Caption.Text);
+            Strings.Add('  ' + SUsesColon);
+            if UsesStrings.Count < 1 then
+              Strings.Add('    ' + SNone)
+            else
+              for j := 0 to UsesStrings.Count - 1 do
+                Strings.Add('    ' + UsesStrings[j]);
+            Strings.Add('  ' + SUsedByColon);
+            if UsedByStrings.Count < 1 then
+              Strings.Add('    ' + SNone)
+            else
+              for j := 0 to UsedByStrings.Count - 1 do
+                Strings.Add('    ' + UsedByStrings[j]);
+          end;
+        pfHTML:
+          begin
+            Strings.Add(Format('<h3>%s:</h3>', [AShape.Caption.Text]));
+            if UsesStrings.Count > 0 then
+              Strings.Add(Format('<b>%s</b>', [SUsesColon]));
+            Strings.Add('<ul>');
+            for j := 0 to UsesStrings.Count - 1 do
+              Strings.Add('<li>' + UsesStrings[j]);
+            Strings.Add('</ul>');
+            if UsedByStrings.Count > 0 then
+              Strings.Add(Format('<b>%s</b>', [SUsedByColon]));
+            Strings.Add('<ul>');
+            for j := 0 to UsedByStrings.Count - 1 do
+              Strings.Add('<li>' + UsedByStrings[j]);
+            Strings.Add('</ul>');
+          end;
+        pfXML:
+          begin
+            Strings.Add(Format('<UNIT Name="%s">', [AShape.Caption.Text]));
+            for j := 0 to UsesStrings.Count - 1 do
+              Strings.Add(Format('<USES Name="%s" />', [UsesStrings[j]]));
+            for j := 0 to UsedByStrings.Count - 1 do
+              Strings.Add(Format('<USEDBY Name="%s" />', [UsedByStrings[j]]));
+            Strings.Add('</UNIT>');
+          end;
+      end; // case
     end;
     // insert headers and footers:
     case AFormat of
       pfXML:
-      begin
-        Strings.Insert(0,'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><DependencyWalker>');
-        Strings.Add('</DependencyWalker>');
-      end;
+        begin
+          Strings.Insert(0, '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><DependencyWalker>');
+          Strings.Add('</DependencyWalker>');
+        end;
       pfHTML:
-      begin
-        Strings.Insert(0,Format('<html><head><title>%s</title><link rel="stylesheet" href="DependencyWalker.css" type="text/css"></head>',[SDependencyWalkerTitle]));
-        Strings.Insert(1,Format('<body><h1>%s</h1><hr>',[SDependencyWalkerTitle]));
-        Strings.Add('</body></html>');
-      end;
+        begin
+          Strings.Insert(0, Format('<html><head><title>%s</title><link rel="stylesheet" href="DependencyWalker.css" type="text/css"></head>', [SDependencyWalkerTitle]));
+          Strings.Insert(1, Format('<body><h1>%s</h1><hr>', [SDependencyWalkerTitle]));
+          Strings.Add('</body></html>');
+        end;
     end; //
   finally
     UsedByStrings.Free;
@@ -833,7 +862,7 @@ var
   S: string;
 begin
   S := '';
-  if InputQuery(SAddSkipListTitle,SAddSkipListCaption, S) and (S <> '') and not InSkipList(S) then
+  if InputQuery(SAddSkipListTitle, SAddSkipListCaption, S) and (S <> '') and not InSkipList(S) then
     lbSkipList.Items.Add(ChangeFileExt(ExtractFilename(S), ''));
 end;
 
@@ -841,7 +870,8 @@ procedure TfrmMain.acDeleteExecute(Sender: TObject);
 var
   i: integer;
 begin
-  if not YesNo(SConfirmDelete,SDelSelItemsPrompt) then Exit;
+  if not YesNo(SConfirmDelete, SDelSelItemsPrompt) then
+    Exit;
   with lbSkipList do
     for i := Items.Count - 1 downto 0 do
       if Selected[i] then
@@ -853,20 +883,21 @@ begin
   ShowMessage(SAboutText);
 end;
 
-procedure TfrmMain.acClearExecute(Sender: TObject);
+procedure TfrmMain.acNewExecute(Sender: TObject);
 begin
-  if YesNo(SConfirmDelete,SClearDiagramPrompt) then
+  if YesNo(SConfirmDelete, SClearDiagramPrompt) then
     Clear;
 end;
 
 procedure TfrmMain.alMainUpdate(Action: TBasicAction;
   var Handled: Boolean);
 begin
-  if csFreeNotification in ComponentState then Exit;
+  if csFreeNotification in ComponentState then
+    Exit;
   acDelete.Enabled := lbSkipList.SelCount > 0;
-  acClear.Enabled := sb.ControlCount > 0;
-  acFind.Enabled := acClear.Enabled;
-  acReport.Enabled := acClear.Enabled;
+  acNew.Enabled := sb.ControlCount > 0;
+  acFind.Enabled := acNew.Enabled;
+  acReport.Enabled := acNew.Enabled;
 
   // (p3) this might be too slow on large sets of shapes so comment it out
   // if it gets too sluggish
@@ -882,14 +913,14 @@ begin
   Width := Storage.ReadInteger(ClassName, 'Width', Width);
   Height := Storage.ReadInteger(ClassName, 'Height', Height);
   acInvertSort.Checked := Storage.ReadBool(ClassName, 'InvertSort', false);
-  FPrintFormat := TPrintFormat(Storage.ReadInteger(ClassName,'Print Format',0));
-  FInitialDir  := Storage.ReadString(ClassName,'InitialDir','');
-  pnlSkipList.Width := Storage.ReadInteger(ClassName,'vertSplitter',pnlSkipList.Width);
-  if not acViewStatusBar.Checked = Storage.ReadBool(ClassName,acViewStatusBar.Name,acViewStatusBar.Checked) then
+  FPrintFormat := TPrintFormat(Storage.ReadInteger(ClassName, 'Print Format', 0));
+  FInitialDir := Storage.ReadString(ClassName, 'InitialDir', '');
+  pnlSkipList.Width := Storage.ReadInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
+  if not acViewStatusBar.Checked = Storage.ReadBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked) then
     acViewStatusBar.Execute; // toggle to other state
-  if not acViewToolbar.Checked = Storage.ReadBool(ClassName,acViewToolbar.Name,acViewToolbar.Checked) then
+  if not acViewToolbar.Checked = Storage.ReadBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked) then
     acViewToolbar.Execute;
-  if not acViewSkipList.Checked = Storage.ReadBool(ClassName,acViewSkipList.Name,acViewSkipList.Checked) then
+  if not acViewSkipList.Checked = Storage.ReadBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked) then
     acViewSkipList.Execute;
 end;
 
@@ -903,12 +934,12 @@ begin
     Storage.WriteInteger(ClassName, 'Height', Height);
   end;
   Storage.WriteBool(ClassName, 'InvertSort', acInvertSort.Checked);
-  Storage.WriteInteger(ClassName,'Print Format',Ord(FPrintFormat));
-  Storage.WriteString(ClassName,'InitialDir',FInitialDir);
-  Storage.WriteInteger(ClassName,'vertSplitter',pnlSkipList.Width);
-  Storage.WriteBool(ClassName,acViewStatusBar.Name,acViewStatusBar.Checked);
-  Storage.WriteBool(ClassName,acViewToolbar.Name,acViewToolbar.Checked);
-  Storage.WriteBool(ClassName,acViewSkipList.Name,acViewSkipList.Checked);
+  Storage.WriteInteger(ClassName, 'Print Format', Ord(FPrintFormat));
+  Storage.WriteString(ClassName, 'InitialDir', FInitialDir);
+  Storage.WriteInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
+  Storage.WriteBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked);
+  Storage.WriteBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked);
+  Storage.WriteBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked);
 end;
 
 procedure TfrmMain.LoadSettings;
@@ -970,7 +1001,7 @@ begin
   // (p3) Can't use TJvCustomDiagramShape.DeleteSelecetdShapes here since
   // we need to remove the item from the FFileShapes list as well:
   AShape := GetFirstSelectedShape(sb);
-  if (AShape <> nil) and YesNo(SConfirmDelete,Format(SDelSelItemFmt,[AShape.Caption.Text])) then
+  if (AShape <> nil) and YesNo(SConfirmDelete, Format(SDelSelItemFmt, [AShape.Caption.Text])) then
   begin
     i := FFileShapes.IndexOfObject(AShape);
     if i > -1 then
@@ -981,16 +1012,17 @@ end;
 
 procedure TfrmMain.acReportExecute(Sender: TObject);
 const
-  cFormatExt:array[TPrintFormat] of PChar = ('.txt','.htm','.xml');
+  cFormatExt: array[TPrintFormat] of PChar = ('.txt', '.htm', '.xml');
 var
   S: TStringlist;
-  AFileName:string;
+  AFileName: string;
 begin
   S := TStringlist.Create;
   try
-    if not TfrmPrint.Execute(FPrintFormat) then Exit;
+    if not TfrmPrint.Execute(FPrintFormat) then
+      Exit;
     WaitCursor;
-    CreatePrintOut(S,FPrintFormat);
+    CreatePrintOut(S, FPrintFormat);
     if S.Count > 0 then
     begin
       AFilename := ExtractFilePath(Application.Exename) + 'DependencyWalker' + cFormatExt[FPrintFormat];
@@ -1005,14 +1037,15 @@ end;
 
 
 procedure TfrmMain.acFindExecute(Sender: TObject);
-var S:string;i:integer;
+var S: string;
+  i: integer;
 begin
   S := '';
-  if InputQuery(SFindTitle,SFindNameColon,S) and (S <> '') then
+  if InputQuery(SFindTitle, SFindNameColon, S) and (S <> '') then
   begin
     i := FFileShapes.IndexOf(S);
     if i < 0 then
-      ShowMessageFmt(SFindNotFoundFmt,[S])
+      ShowMessageFmt(SFindNotFoundFmt, [S])
     else
     begin
       TJvCustomDiagramShape(FFileShapes.Objects[i]).Selected := true;
@@ -1024,7 +1057,7 @@ begin
 end;
 
 procedure TfrmMain.acAddToSkipListExecute(Sender: TObject);
-var ASHape:TJvCustomDiagramShape;
+var ASHape: TJvCustomDiagramShape;
 begin
   AShape := GetFirstSelectedShape(sb);
   if AShape <> nil then
@@ -1058,6 +1091,89 @@ end;
 procedure TfrmMain.acRefreshExecute(Sender: TObject);
 begin
   sb.Invalidate;
+end;
+
+function Max(Val1, Val2: integer): integer;
+begin
+  Result := Val1;
+  if Val2 > Val1 then
+    Result := Val2;
+end;
+
+// (p3) probably not the most effective code in the world but it does seem to work...
+
+procedure PaintScrollBox(sb: TScrollBox; Canvas: TCanvas);
+var sbPos: TPoint;
+    tmpPos: integer;
+begin
+  sbPos.X := sb.HorzScrollBar.Position;
+  sbPos.Y := sb.VertScrollBar.Position;
+  try
+    sb.HorzScrollBar.Position := 0;
+    sb.VertScrollBar.Position := 0;
+    while true do
+    begin
+      while true do
+      begin
+        sb.PaintTo(Canvas, sb.HorzScrollBar.Position, sb.VertScrollBar.Position);
+        tmpPos := sb.VertScrollBar.Position;
+        sb.VertScrollBar.Position := sb.VertScrollBar.Position + sb.ClientHeight;
+        if sb.VertScrollBar.Position = tmpPos then
+          Break;
+      end;
+      sb.VertScrollBar.Position := 0;
+      tmpPos := sb.HorzScrollBar.Position;
+      sb.HorzScrollBar.Position := sb.HorzScrollBar.Position + sb.ClientWidth;
+      if sb.HorzScrollBar.Position = tmpPos then
+        Break;
+    end;
+  finally
+    sb.HorzScrollBar.Position := sbPos.X;
+    sb.VertScrollBar.Position := sbPos.Y;
+  end;
+end;
+
+procedure TfrmMain.CreateDiagramBitmap(Bmp: TBitmap);
+begin
+    // add some extra pixels around the edges...
+  bmp.Width := Max(sb.ClientWidth, sb.HorzScrollBar.Range) + 10;
+  bmp.Height := Max(sb.ClientHeight, sb.VertScrollBar.Range) + 10;
+  bmp.Canvas.Brush.Color := sb.Color;
+  bmp.Canvas.FillRect(Rect(0, 0, bmp.Width, bmp.Height));
+  PaintScrollBox(sb, bmp.Canvas);
+end;
+
+procedure TfrmMain.acSaveBMPExecute(Sender: TObject);
+var b: TBitmap;
+begin
+  if dlgSaveImage.Execute then
+  begin
+    b := TBitmap.Create;
+    try
+      CreateDiagramBitmap(b);
+      b.SaveToFile(dlgSaveImage.Filename);
+    finally
+      b.Free;
+    end;
+    ShellExecute(Handle, 'open', PChar(dlgSaveImage.Filename), nil, nil, SW_SHOWNORMAL);
+  end;
+end;
+
+procedure TfrmMain.acCopyExecute(Sender: TObject);
+var
+  AFormat : Word;
+  b:TBitmap;
+  AData:Cardinal;
+  APalette : HPALETTE;
+begin
+  b := TBitmap.Create;
+  try
+    CreateDiagramBitmap(b);
+    b.SaveToClipboardFormat(AFormat,AData,APalette);
+    Clipboard.SetAsHandle(AFormat,AData);
+  finally
+    b.Free;
+  end;
 end;
 
 end.
