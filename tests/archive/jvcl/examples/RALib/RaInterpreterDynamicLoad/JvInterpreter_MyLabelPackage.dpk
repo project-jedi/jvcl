@@ -27,8 +27,9 @@ package JvInterpreter_MyLabelPackage;
 requires
   rtl,
   vcl,
-  rai6,
-  MyLabelPackage;
+  MyLabelPackage,
+  DJCL60,
+  JVCL200_R60;
 
 contains
   JvInterpreter_MyLabel in 'JvInterpreter_MyLabel.pas';

@@ -4,17 +4,15 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Mask, JvCalculatorBox, JvEdit,
-  JvFloatEdit, JvButtonBox, JvImageBox, JvDirectoryBox,
-  JvCustomBox, JvFileNameBox;
+  StdCtrls, Mask, JvEdit, JvToolEdit, JvCurrEdit;
 
 type
   TForm1 = class(TForm)
-    JvFileNameBox1: TJvFileNameBox;
-    JvDirectoryBox1: TJvDirectoryBox;
-    JvImageBox1: TJvImageBox;
-    JvButtonBox1: TJvButtonBox;
-    JvCalculatorBox1: TJvCalculatorBox;
+    JvFileNameBox1: TJvFilenameEdit;
+    JvDirectoryBox1: TJvDirectoryEdit;
+    JvButtonBox1: TJvComboEdit;
+    JvDateEdit1: TJvDateEdit;
+    JvCalcEdit1: TJvCalcEdit;
     procedure JvButtonBox1ButtonClick(Sender: TObject);
   private
   public

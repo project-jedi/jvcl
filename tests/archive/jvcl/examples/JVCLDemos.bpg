@@ -9,20 +9,29 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = JVCLDemo.exe TimeLineDemo.exe AppDdeCmdExample.exe ArrowButtonDemo.exe BmpAnimDemo.exe CaptionButtonDemo.exe \
-  ChangeNotifyDemo.exe ColorButtonDemo.exe ContentScrollerDemo.exe ControlsExample.exe CreateProcessExample.exe \
-  WebMapper.exe UseCase.exe EvnironmentList.exe FileDirDemo.exe FindReplaceDemo.exe BasicDemo.exe CollectionDemo.exe \
-  SimpleHIDWrite.exe GreyMouser.exe ImageWindowDemo.exe Install2LabelDemo.exe JvAniProj.exe JvBrowserFolder.exe \
-  JvClipboardViewerProj.exe JvDataEmbeddedProj.exe DBDTPDemo.exe JvDialogs.exe JvEdits.exe JvHtmlParserProj.exe \
-  InspectorDBExample.exe InspExample.exe JvLinkLabelDemo.exe JvMousePositionnerProj.exe JvMruList.exe JvPlayListProj.exe \
-  JvScreenCaptureProj.exe JvSearchFileProj.exe SpecialProgressTestPrj.exe JvSystemPopupProj.exe SystemPopupTest.exe \
-  JvThreadProj.exe JvTranslatorProj.exe JvTreeViewAsMenu.exe JvWinDialogsDemo.exe JvWindowsTitleProj.exe JvZoomProj.exe \
-  ListCombDemo.exe MailExample.exe MonthCalendarDemo.exe JvObjPickerDemo.exe OLBarDemo.exe ProfilerDemo.exe \
-  RegEditDemo.exe RunDLL32Demo.exe ScrollWinDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDemo.exe \
-  ShFileOpDemo.exe RANotepad.exe MDIapp.exe JvInterpreterEndUser.exe DynamicLoad.exe JvInterpreterTest.exe \
-  ColorHintsTest.exe LineNumbers.exe RAEditorTest.exe RAHLEdPropDlgTest.exe DBTree.exe DBMove.exe RAControls.exe \
-  prjControls.exe EventViewer.exe PlugInDemo.exe SamplePluginOne.dll MDISample.exe MDIPlugin.dll PropertiesPlugInDemo.exe \
-  ChangePropertiesPlugin.dll ExceptionPlugInDemo.exe ExceptionPlugin.dll DataPlugInDemo.exe DataPlugin.dll 
+PROJECTS = JVCLDemo.exe TimeLineDemo.exe AppDdeCmdExample.exe \
+  ArrowButtonDemo.exe BmpAnimDemo.exe CaptionButtonDemo.exe ChangeNotifyDemo.exe \
+  ColorButtonDemo.exe ContentScrollerDemo.exe ControlsExample.exe \
+  CreateProcessExample.exe WebMapper.exe UseCase.exe FileDirDemo.exe \
+  FindReplaceDemo.exe BasicDemo.exe CollectionDemo.exe SimpleHIDWrite.exe \
+  GreyMouser.exe ImageWindowDemo.exe Install2LabelDemo.exe JvAniProj.exe \
+  JvBrowserFolder.exe JvClipboardViewerProj.exe JvDataEmbeddedProj.exe \
+  DBDTPDemo.exe JvDialogs.exe JvEdits.exe JvHtmlParserProj.exe \
+  InspectorDBExample.exe InspExample.exe JvLinkLabelDemo.exe \
+  JvMousePositionnerProj.exe JvMruList.exe JvPlayListProj.exe \
+  JvScreenCaptureProj.exe JvSearchFileProj.exe SpecialProgressTestPrj.exe \
+  JvSystemPopupProj.exe SystemPopupTest.exe JvThreadProj.exe JvTranslatorProj.exe \
+  JvTreeViewAsMenu.exe JvWinDialogsDemo.exe JvWindowsTitleProj.exe JvZoomProj.exe \
+  ListCombDemo.exe MailExample.exe MonthCalendarDemo.exe JvObjPickerDemo.exe \
+  OLBarDemo.exe ProfilerDemo.exe RegEditDemo.exe RunDLL32Demo.exe \
+  ScrollWinDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDemo.exe \
+  ShFileOpDemo.exe RANotepad.exe MDIapp.exe JvInterpreterEndUser.exe \
+  DynamicLoad.exe JvInterpreterTest.exe ColorHintsTest.exe LineNumbers.exe \
+  RAEditorTest.exe RAHLEdPropDlgTest.exe DBTree.exe DBMove.exe RAControls.exe \
+  prjControls.exe EventViewer.exe PlugInDemo.exe SamplePluginOne.dll \
+  MDISample.exe MDIPlugin.dll PropertiesPlugInDemo.exe ChangePropertiesPlugin.dll \
+  ExceptionPlugInDemo.exe ExceptionPlugin.dll DataPlugInDemo.exe DataPlugin.dll \
+  JvAppHotKeyDemo.exe ColorComboDemo.exe EnvironmentList.exe WndProcHookDemo.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -64,9 +73,6 @@ WebMapper.exe: Diagram1WebSiteScanner\WebMapper.dpr
   $(DCC)
 
 UseCase.exe: Diagram2UseCaseEditor\UseCase.dpr
-  $(DCC)
-
-EvnironmentList.exe: EvnironmentList\EvnironmentList.dpr
   $(DCC)
 
 FileDirDemo.exe: FileListBox\FileDirDemo.dpr
@@ -285,5 +291,16 @@ DataPlugInDemo.exe: JvPlugin\5DataAware\DataPlugInDemo.dpr
 DataPlugin.dll: JvPlugin\5DataAware\DataPlugin.dpr
   $(DCC)
 
+JvAppHotKeyDemo.exe: JvAppHotKeyDemo\JvAppHotKeyDemo.dpr
+  $(DCC)
+
+ColorComboDemo.exe: JvColorComboDemo\ColorComboDemo.dpr
+  $(DCC)
+
+EnvironmentList.exe: EnvironmentList\EnvironmentList.dpr
+  $(DCC)
+
+WndProcHookDemo.exe: JvWndProcHookDemo\WndProcHookDemo.dpr
+  $(DCC)
 
 

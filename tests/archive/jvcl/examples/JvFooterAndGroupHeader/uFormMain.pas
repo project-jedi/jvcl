@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, JvFooter, JvGroupHeader;
+  ExtCtrls, StdCtrls, JvFooter, JvGroupHeader, JvButton, JvComponent;
 
 type
   TForm1 = class(TForm)
@@ -18,7 +18,6 @@ type
     JvFooterBtn5: TJvFooterBtn;
     JvFooterBtn6: TJvFooterBtn;
     JvFooterBtn7: TJvFooterBtn;
-    JvFooter1: TJvFooter;
     JvGroupHeader1: TJvGroupHeader;
     JvGroupHeader2: TJvGroupHeader;
   private

@@ -3,11 +3,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvCommonExecDlg, JvRenameError, JvDeleteError,
-  JvCopyError, JvCommonDialogD, JvDiskPrompt, JvProgressDlg, JvCalculator,
+  JvCopyError, JvCommonDialogD, JvDiskPrompt, JvProgressDlg, 
   JvSerialDlg, JvLoginDlg, JvExchListboxes, JvPasswordForm, JvDisconnectNetwork,
   JvConnectNetwork, JvSelectDirectory, JvBaseDlg, JvFindFiles, JvComponent,
   JvWinDialogs, ComCtrls, JvBrowseFolder, JvPageSetupTitled, JvPageSetup,
-  JvAddPrinter, JvSHFmt;
+  JvAddPrinter, JvSHFmt, JvCalc;
 
 type
   TForm1 = class(TForm)
@@ -159,7 +159,8 @@ end;
 procedure TForm1.Button8Click(Sender: TObject);
 begin
   { TODO : BUG - This routine doesn't work }
-  //JvAddPrinterDialog1.execute;
+  { DONE -opeter3 : Works on Win2k... }
+  JvAddPrinterDialog1.execute;
 end;
 
 procedure TForm1.Button9Click(Sender: TObject);

@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 222
   Width = 502
   Height = 222
-  Caption = 'Form1'
+  Caption = 'JvGroupHeader and JvFooter demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -60,6 +60,11 @@ object Form1: TForm1
       Anchors = [akLeft, akBottom]
       Caption = 'Help'
       TabOrder = 0
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
       Alignment = taLeftJustify
       ButtonIndex = 0
       SpaceInterval = 6
@@ -73,6 +78,11 @@ object Form1: TForm1
       Caption = 'OK'
       Default = True
       TabOrder = 1
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
       ButtonIndex = 1
       SpaceInterval = 6
     end
@@ -83,8 +93,13 @@ object Form1: TForm1
       Height = 23
       Anchors = [akRight, akBottom]
       Cancel = True
-      Caption = 'Cancelar'
+      Caption = 'Cancel'
       TabOrder = 2
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
       ButtonIndex = 2
       SpaceInterval = 6
     end
@@ -104,8 +119,13 @@ object Form1: TForm1
       Width = 74
       Height = 23
       Anchors = [akRight, akBottom]
-      Caption = 'Anterior'
+      Caption = 'Previous'
       TabOrder = 0
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
       ButtonIndex = 0
       SpaceInterval = 0
     end
@@ -115,9 +135,14 @@ object Form1: TForm1
       Width = 74
       Height = 23
       Anchors = [akRight, akBottom]
-      Caption = 'Seguinte'
+      Caption = 'Next'
       Default = True
       TabOrder = 1
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
       ButtonIndex = 1
       SpaceInterval = 6
     end
@@ -127,8 +152,13 @@ object Form1: TForm1
       Width = 74
       Height = 23
       Anchors = [akRight, akBottom]
-      Caption = 'Fechar'
+      Caption = 'Close'
       TabOrder = 2
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
       ButtonIndex = 2
       SpaceInterval = 6
     end
@@ -150,6 +180,11 @@ object Form1: TForm1
       Anchors = [akBottom]
       Caption = 'OK'
       TabOrder = 0
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
       Alignment = taCenter
       ButtonIndex = 0
       SpaceInterval = 0

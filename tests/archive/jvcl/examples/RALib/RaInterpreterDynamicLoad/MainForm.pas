@@ -1,4 +1,6 @@
 unit MainForm;
+{ NOTE: to run this demo, compile the packages MyLabelPackage.dpk and JvInterpreter_MyLabelPackage.dpk (in this folder)
+  and move the generated bpl/dcp files to the demos output folder (this is by default the jvcl\bin folder) }
 
 {$INCLUDE JVCL.INC}
 
@@ -29,13 +31,17 @@ implementation
 
 const
 {$IFDEF COMPILER5}
-  PackageFileName    = 'rai5.bpl';
-  ALLPackageFileName = 'raia5.bpl';
+  PackageFileName    = 'JVCL200_R50.bpl';
+  ALLPackageFileName = 'JVCL200_R50.bpl';
 {$ENDIF COMPILER5}
 {$IFDEF COMPILER6}
-  PackageFileName    = 'rai6.bpl';
-  ALLPackageFileName = 'raia6.bpl';
+  PackageFileName    = 'JVCL200_R60.bpl';
+  ALLPackageFileName = 'JVCL200_R60.bpl';
 {$ENDIF COMPILER6}
+{$IFDEF COMPILER7}
+  PackageFileName    = 'JVCL200_R70.bpl';
+  ALLPackageFileName = 'JVCL200_R70.bpl';
+{$ENDIF COMPILER7}
 
 procedure DynamicJvInterpreterRunFormModal(const FileName: TFileName);
 var
