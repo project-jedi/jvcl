@@ -10,10 +10,9 @@
 <hr>
 <p>This document describes the do's and don'ts of component writing
 when you want your Delphi component to work with C++Builder. Many of
-these issues were discovered while creating the JVCL packages for BCB6
-(Enterprise US, update 2). As such there maybe other problems when
-using
-these packages with BCB version 5. If you know of such issues or even
+these issues were discovered while creating and testing the JVCL
+packages with C++ Builder. We are trying to test as much as we can, but
+there might still be other issues. If you know of such issues or even
 any other issues that might help us and other Delphi developers, please
 contact the JVCL team through the newsgroups on talkto.net:<br>
 <a href="news://forums.talkto.net/jedi.vcl">news://forums.talkto.net/jedi.vcl</a></p>
@@ -23,13 +22,27 @@ contact the JVCL team through the newsgroups on talkto.net:<br>
   <li><b>Do not use structures like TPoint and TRect as published
 property types.</b> Instead, if you need this functionality, use
 TJvPoint and TJvRect respectively. They are defined in JvTypes.pas.</li>
-  <li><b>Do not use HDC as a published property type.</b> The reason
-for
-this error is still not found but in the meantime, use LongWord instead.</li>
+  <li><b>Do not use HDC, HWND and all Win32 handle types as published
+property type or parameters to public functions.</b> The compiler will
+generate the header file replacing HANDLE by 'void *' but the object
+file will expect an integer parameter, thus triggering a linker error.
+To work around this, use another type for BCB code. See QC bug #9361
+for more details<br>
+  </li>
+  <li><span style="font-weight: bold;">Do not use const pointer
+parameters</span>. This results in an invalid hpp file being generated.
+An example of const pointer parameter is this: "const param: PInt"
+where PInt is declared like that: "PInt = ^Int". This applies to all
+pointer types in Delphi. See QC bug #7224 for more details.</li>
+  <li><span style="font-weight: bold;">Do not make your Delphi
+interfaces inheritance hierarchy deeper than one level.</span> If you
+do, the generated header file will be invalid and unusable under C++
+Builder. See QC bug #9360 for more details.<br>
+  </li>
   <li><b>Do not declare class methods as dynamic.</b> Use virtual
 instead.</li>
   <li><b>Do not declare class methods as abstract.</b> Use virtual
-instead and provide an empty implementation</li>
+only and provide an empty implementation</li>
   <li><span style="font-weight: bold;">Do not declare a property of
 array type.</span> This is not supported, find another way to achieve
 the same functionnality. This is different from an indexed property, a
@@ -38,7 +51,7 @@ property of array type is something like that: <span
  style="font-style: italic;">TMyArray = array [0..n] of char</span>.<br>
   </li>
   <li><b>Do not use WEAKPACKAGEUNIT if you can avoid it</b>. This will
-in some cases cause a linker error, especially if the unit contains
+in most cases cause a linker error, especially if the unit contains
 constants, resourcestrings and/or global variables.</li>
   <li><span style="font-weight: bold;">Only use Integer in indexed
 property getters or setters</span>. If not, this will cause a E2347
