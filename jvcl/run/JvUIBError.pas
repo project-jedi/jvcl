@@ -24,14 +24,15 @@
 {                                                                              }
 {******************************************************************************}
 
-
-unit JvUIBError;
 {$I JVCL.INC}
 {$I JvUIB.inc}
 
+unit JvUIBError;
+
 interface
+
 {$IFDEF USE_IBERROR_H}
-  (*$HPPEMIT '#include<iberror.h>' *)
+{$HPPEMIT '#include <iberror.h>'}
 {$ENDIF}
 
 
@@ -41,11 +42,11 @@ interface
 
 const
   isc_facility = 20;
-  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_facility}{$ENDIF}
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_facility} {$ENDIF}
   isc_base     = 335544320;
-  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_base}{$ENDIF}
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_base} {$ENDIF}
   isc_factor   = 1;
-  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_factor}{$ENDIF}
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_factor} {$ENDIF}
 
   isc_arg_end		      = 0;  (* end of argument list *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_end} {$ENDIF}
@@ -66,7 +67,7 @@ const
   isc_arg_domain	      = 8;  (* Apollo/Domain error code *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_domain} {$ENDIF}
   isc_arg_dos		      = 9;  (* MSDOS/OS2 error code *)
-  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_dos}{$ENDIF}
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_dos} {$ENDIF}
   isc_arg_mpexl		      = 10; (* HP MPE/XL error code *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_mpexl} {$ENDIF}
   isc_arg_mpexl_ipc	      = 11; (* HP MPE/XL IPC error code *)
@@ -79,10 +80,10 @@ const
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_win32} {$ENDIF}
   isc_arg_warning	      = 18; (* warning argument *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_warning} {$ENDIF}
-{$IFDEF IB7_UP}
+  {$IFDEF IB7_UP}
   isc_arg_sql                 = 19;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_sql} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB7_UP}
 
   isc_arith_except                      = 335544321;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arith_except} {$ENDIF}
@@ -1073,7 +1074,7 @@ const
   isc_service_not_supported             = 335544814;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_service_not_supported} {$ENDIF}
 
-{$IFDEF FB102ORYF867}
+  {$IFDEF FB102ORYF867}
   isc_generator_name                    = 335544815;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_generator_name} {$ENDIF}
   isc_udf_name                          = 335544816;
@@ -1084,9 +1085,9 @@ const
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_bad_skip_param} {$ENDIF}
   isc_io_32bit_exceeded_err             = 335544819;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_io_32bit_exceeded_err} {$ENDIF}
-{$ENDIF}
+  {$ENDIF FB102ORYF867}
 
-{$IFDEF FB15_UP}
+  {$IFDEF FB15_UP}
   isc_invalid_savepoint                 = 335544820;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_invalid_savepoint} {$ENDIF}
   isc_dsql_column_pos_err               = 335544821;
@@ -1111,16 +1112,16 @@ const
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_exec_sql_max_call_exceeded} {$ENDIF}
   isc_conf_access_denied                = 335544831;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_conf_access_denied} {$ENDIF}
-{$ENDIF}
+  {$ENDIF FB15_UP}
 
-{$IFDEF IB71_UP}
+  {$IFDEF IB71_UP}
   isc_savepoint_err                     = 335544815;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_savepoint_err} {$ENDIF}
   isc_generator_name                    = 335544816;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_generator_name} {$ENDIF}
   isc_udf_name                          = 335544817;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_udf_name} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB71_UP}
 
   isc_gfix_db_name                      = 335740929;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gfix_db_name} {$ENDIF}
@@ -1178,10 +1179,10 @@ const
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gfix_mode_req} {$ENDIF}
   isc_gfix_opt_SQL_dialect              = 335741039;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gfix_opt_SQL_dialect} {$ENDIF}
-{$IFDEF IB7_UP}
+  {$IFDEF IB7_UP}
   isc_gfix_commits_opt                  = 335741041;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gfix_commits_opt} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB7_UP}
   isc_dsql_dbkey_from_non_table         = 336003074;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_dbkey_from_non_table} {$ENDIF}
   isc_dsql_transitional_numeric         = 336003075;
@@ -1203,22 +1204,22 @@ const
   isc_dsql_warn_precision_ambiguous2    = 336003084;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_warn_precision_ambiguous2} {$ENDIF}
 
-{$IFDEF FB102ORYF867}
+  {$IFDEF FB102ORYF867}
   isc_dsql_ambiguous_field_name         = 336003085;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_ambiguous_field_name} {$ENDIF}
   isc_dsql_udf_return_pos_err           = 336003086;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_udf_return_pos_err} {$ENDIF}
-{$ENDIF}
+  {$ENDIF FB102ORYF867}
 
-{$IFDEF FB15_UP}
+  {$IFDEF FB15_UP}
   isc_dsql_invalid_label                = 336003087;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_invalid_label} {$ENDIF}
-{$ENDIF}
+  {$ENDIF FB15_UP}
 
-{$IFDEF IB65_UP}
+  {$IFDEF IB65_UP}
   isc_dsql_rows_ties_err                = 336003085;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_rows_ties_err} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB65_UP}
 
   isc_dyn_role_does_not_exist           = 336068796;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dyn_role_does_not_exist} {$ENDIF}
@@ -1253,17 +1254,17 @@ const
   isc_dyn_dtype_conv_invalid            = 336068818;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dyn_dtype_conv_invalid} {$ENDIF}
 
-{$IFDEF FB102ORYF867}
+  {$IFDEF FB102ORYF867}
   isc_dyn_zero_len_id                   = 336068820;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dyn_zero_len_id} {$ENDIF}
-{$ENDIF}
+  {$ENDIF FB102ORYF867}
 
-{$IFDEF IB71_UP}
+  {$IFDEF IB71_UP}
   isc_dyn_gen_does_not_exist            = 336068820;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dyn_gen_does_not_exist} {$ENDIF}
   isc_dyn_delete_generator_failed       = 336068821;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dyn_delete_generator_failed} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB71_UP}
 
   isc_gbak_unknown_switch               = 336330753;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gbak_unknown_switch} {$ENDIF}
@@ -1430,17 +1431,17 @@ const
   isc_gbak_mode_req                     = 336331031;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gbak_mode_req} {$ENDIF}
 
-{$IFDEF FB102ORYF867}
+  {$IFDEF FB102ORYF867}
   isc_gbak_just_data                    = 336331033;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gbak_just_data} {$ENDIF}
   isc_gbak_data_only                    = 336331034;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gbak_data_only} {$ENDIF}
-{$ENDIF}
+  {$ENDIF FB102ORYF867}
 
-{$IFDEF IB71_UP}
+  {$IFDEF IB71_UP}
   isc_gbak_validate_restore             = 336331034;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gbak_validate_restore} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB71_UP}
 
   isc_gsec_cant_open_db                 = 336723983;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gsec_cant_open_db} {$ENDIF}
@@ -1546,14 +1547,14 @@ const
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_license_svc_err_remove} {$ENDIF}
   isc_license_eval_exists               = 336789563;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_license_eval_exists} {$ENDIF}
-{$IFDEF IB7_UP}
+  {$IFDEF IB7_UP}
   isc_smp_cpu_license                   = 336789570;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_smp_cpu_license} {$ENDIF}
   isc_node_locked_full_unlimited_serve  = 336789571;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_node_locked_full_unlimited_serve} {$ENDIF}
   isc_dev_only_full_server_licenses     = 336789572;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dev_only_full_server_licenses} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB7_UP}
   isc_gstat_unknown_switch              = 336920577;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gstat_unknown_switch} {$ENDIF}
   isc_gstat_retry                       = 336920578;
@@ -1569,50 +1570,50 @@ const
   isc_gstat_sysmemex                    = 336920607;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gstat_sysmemex} {$ENDIF}
 
-{$IFDEF FB102}
+  {$IFDEF FB102}
   isc_err_max                           = 699;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
-{$ENDIF}
+  {$ENDIF FB102}
 
-{$IFDEF FB103}
+  {$IFDEF FB103}
   isc_err_max                           = 699;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
-{$ENDIF}
+  {$ENDIF FB103}
 
-{$IFDEF FB15}
+  {$IFDEF FB15}
   isc_err_max                           = 712;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
-{$ENDIF}
+  {$ENDIF FB15}
 
-{$IFDEF YF867}
+  {$IFDEF YF867}
   isc_err_max                           = 699;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
-{$ENDIF}
+  {$ENDIF YF867}
 
-{$IFDEF IB601}
+  {$IFDEF IB601}
   isc_err_max                           = 689;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB601}
 
-{$IFDEF IB602}
+  {$IFDEF IB602}
   isc_err_max                           = 689;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB602}
 
-{$IFDEF IB65}
+  {$IFDEF IB65}
   isc_err_max                           = 690;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB65}
 
-{$IFDEF IB7}
+  {$IFDEF IB7}
   isc_err_max                           = 694;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB7}
 
-{$IFDEF IB71}
+  {$IFDEF IB71}
   isc_err_max                           = 700;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
-{$ENDIF}
+  {$ENDIF IB71}
 
 implementation
 
