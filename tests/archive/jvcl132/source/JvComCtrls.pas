@@ -33,6 +33,13 @@ TJvIpAddress:
 }
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 unit JvComCtrls;
 
@@ -242,7 +249,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ClearSelection;
+    procedure ClearSelection;reintroduce;
     function IsNodeSelected(Node: TTreeNode): Boolean;
     procedure InvalidateNodeIcon(Node: TTreeNode);
     procedure InvalidateSelectedItems;
@@ -261,7 +268,7 @@ type
 implementation
 
 uses
-  JclSysUtils;
+  JclSysUtils, JvComponentFunctions;
 
 { TJvIpAddressRange }
 
@@ -474,7 +481,7 @@ procedure TJvIpAddress.DestroyLocalFont;
 begin
   if LocalFont <> 0 then
   begin
-    Win32Check(DeleteObject(LocalFont));
+    OSCheck(DeleteObject(LocalFont));
     LocalFont := 0;
   end;
 end;
@@ -556,7 +563,7 @@ var
 begin
   ZeroMemory(@LF, Sizeof(TLogFont));
   try
-    Win32Check(GetObject(Font.Handle, Sizeof(LF), @LF) > 0);
+    OSCheck(GetObject(Font.Handle, Sizeof(LF), @LF) > 0);
     DestroyLocalFont;
     LocalFont := CreateFontIndirect(LF);
     Message.Font := LocalFont;
