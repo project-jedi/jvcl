@@ -443,24 +443,29 @@ var
   Index: Integer;
   VisPropName: string;
   PropName: string;
+  PropertyStore: TJvCustomPropertyStore;
 begin
-  if OldPath = '' then
-    OldPath := AppStoragePath;
-  for Index := 0 to GetPropCount(Self) - 1 do
+  if Assigned(AppStorage) then
   begin
-    PropName := GetPropName(Self, Index);
-    VisPropName := AppStorage.TranslatePropertyName(Self, PropName, False);
-    if IgnoreProperties.IndexOf(PropName) >= 0 then
-      Continue;
-    if FIntIgnoreProperties.IndexOf(PropName) >= 0 then
-      Continue;
-    if PropType(Self, GetPropName(Self, Index)) = tkClass then
-      if (TPersistent(GetOrdProp(Self, PropName)) is TJvCustomPropertyStore) then
-        if (TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AppStoragePath =
-          AppStorage.ConcatPaths([OldPath, VisPropName])) or
-          (TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AppStoragePath = '') then
-            TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AppStoragePath :=
-            AppStorage.ConcatPaths([AppStoragePath, VisPropName]);
+    if OldPath = '' then
+      OldPath := AppStoragePath;
+    for Index := 0 to GetPropCount(Self) - 1 do
+    begin
+      PropName := GetPropName(Self, Index);
+      VisPropName := AppStorage.TranslatePropertyName(Self, PropName, False);
+      if IgnoreProperties.IndexOf(PropName) >= 0 then
+        Continue;
+      if FIntIgnoreProperties.IndexOf(PropName) >= 0 then
+        Continue;
+      if PropType(Self, PropName) = tkClass then
+        if (TPersistent(GetOrdProp(Self, PropName)) is TJvCustomPropertyStore) then
+        begin
+          PropertyStore := TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName)));
+          if (PropertyStore.AppStoragePath = AppStorage.ConcatPaths([OldPath, VisPropName])) or
+             (PropertyStore.AppStoragePath = '') then
+            PropertyStore.AppStoragePath := AppStorage.ConcatPaths([AppStoragePath, VisPropName]);
+        end;
+    end;
   end;
 end;
 
@@ -484,6 +489,7 @@ begin
       if Components[Index] is TJvCustomPropertyStore then
         TJvCustomPropertyStore(Components[Index]).AppStorage := Value;
     FAppStorage := Value;
+    UpdateChildPaths;
   end;
 end;
 
