@@ -46,6 +46,7 @@ type
       Shift: TShiftState);
     procedure MemoKeyPress(Sender: TObject; var Key: Char);
     procedure ComboBoxFileNameSelect(Sender: TObject);
+    procedure JvFullColorCircleDialogApply(Sender: TObject);
   public
     Images: array [0..6] of TImage;
     Memos: array [0..6] of TMemo;
@@ -284,11 +285,11 @@ begin
   Delta.AxisRed[axIndex0].SaturationMethod := smRange;
   Delta.AxisRed[axIndex1].Value := 38;
   Delta.AxisRed[axIndex1].SaturationMethod := smRange;
-  Delta.AxisRed[axIndex2].Value := -100;
+  Delta.AxisRed[axIndex2].Value := 0;
   Delta.AxisRed[axIndex2].SaturationMethod := smRange;
   Delta.AxisGreen[axIndex0].Value := 0;
   Delta.AxisGreen[axIndex0].SaturationMethod := smRange;
-  Delta.AxisGreen[axIndex1].Value := 168;
+  Delta.AxisGreen[axIndex1].Value := 68;
   Delta.AxisGreen[axIndex1].SaturationMethod := smRange;
   Delta.AxisGreen[axIndex2].Value := 0;
   Delta.AxisGreen[axIndex2].SaturationMethod := smRange;
@@ -343,6 +344,11 @@ begin
   Delta.AxisBlue[axIndex2].Value := 0;
   Delta.AxisBlue[axIndex2].SaturationMethod := smRange;
   ColorDeltas.Add(Delta);
+end;
+
+procedure TFormMain.JvFullColorCircleDialogApply(Sender: TObject);
+begin
+  RotateCustomValues;
 end;
 
 initialization

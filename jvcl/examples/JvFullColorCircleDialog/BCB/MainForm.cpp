@@ -244,11 +244,11 @@ ColorDeltaVector::ColorDeltaVector()
   Delta->AxisRed->Constituents[axIndex0]->SaturationMethod = smRange;
   Delta->AxisRed->Constituents[axIndex1]->Value = 38;
   Delta->AxisRed->Constituents[axIndex1]->SaturationMethod = smRange;
-  Delta->AxisRed->Constituents[axIndex2]->Value = -100;
+  Delta->AxisRed->Constituents[axIndex2]->Value = 0;
   Delta->AxisRed->Constituents[axIndex2]->SaturationMethod = smRange;
   Delta->AxisGreen->Constituents[axIndex0]->Value = 0;
   Delta->AxisGreen->Constituents[axIndex0]->SaturationMethod = smRange;
-  Delta->AxisGreen->Constituents[axIndex1]->Value = 168;
+  Delta->AxisGreen->Constituents[axIndex1]->Value = 68;
   Delta->AxisGreen->Constituents[axIndex1]->SaturationMethod = smRange;
   Delta->AxisGreen->Constituents[axIndex2]->Value = 0;
   Delta->AxisGreen->Constituents[axIndex2]->SaturationMethod = smRange;
