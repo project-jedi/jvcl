@@ -38,8 +38,6 @@ uses
   JvExControls;
 
 type
-  //
-  // --------------------------------------
   TJvExShape = class(TShape, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -59,9 +57,10 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -69,17 +68,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExPaintBox = class(TPaintBox, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -99,9 +97,10 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -109,17 +108,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExImage = class(TImage, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -139,9 +137,10 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -149,17 +148,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExBevel = class(TBevel, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -179,9 +177,10 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -189,17 +188,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExCustomPanel = class(TCustomPanel, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -226,9 +224,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -236,17 +235,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExPanel = class(TPanel, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -273,9 +271,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -283,17 +282,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExCustomRadioGroup = class(TCustomRadioGroup, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -320,9 +318,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -330,17 +329,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExRadioGroup = class(TRadioGroup, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -367,9 +365,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -377,17 +376,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExSplitter = class(TSplitter, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -407,9 +405,10 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -417,19 +416,18 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
 
 {$IFDEF VCL}
-  //
-  // --------------------------------------
   TJvExCustomControlBar = class(TCustomControlBar, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -456,9 +454,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -466,17 +465,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExControlBar = class(TControlBar, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -503,9 +501,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -513,17 +512,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExPage = class(TPage, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -550,9 +548,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -560,17 +559,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExNotebook = class(TNotebook, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -597,9 +595,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -607,17 +606,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExHeader = class(THeader, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -644,9 +642,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -654,18 +653,17 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
   {$IFDEF COMPILER6_UP}
-  //
-  // --------------------------------------
   TJvExBoundLabel = class(TBoundLabel, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -685,9 +683,10 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -695,17 +694,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExCustomLabeledEdit = class(TCustomLabeledEdit, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -732,9 +730,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -742,17 +741,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExLabeledEdit = class(TLabeledEdit, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -779,9 +777,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -789,17 +788,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExCustomColorBox = class(TCustomColorBox, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -826,9 +824,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -836,17 +835,16 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
-  //
-  // --------------------------------------
   TJvExColorBox = class(TColorBox, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -873,9 +871,10 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -883,23 +882,23 @@ type
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
   {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 
 implementation
 
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExShape.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -988,15 +987,14 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvExShape.Dispatch(var Message);
+procedure TJvExShape.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExPaintBox.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -1085,15 +1083,14 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvExPaintBox.Dispatch(var Message);
+procedure TJvExPaintBox.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExImage.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -1182,15 +1179,14 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvExImage.Dispatch(var Message);
+procedure TJvExImage.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExBevel.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -1279,15 +1275,14 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvExBevel.Dispatch(var Message);
+procedure TJvExBevel.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExCustomPanel.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -1376,6 +1371,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExCustomPanel.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -1406,17 +1402,15 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExCustomPanel.Dispatch(var Message);
+procedure TJvExCustomPanel.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExPanel.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -1505,6 +1499,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExPanel.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -1535,17 +1530,15 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExPanel.Dispatch(var Message);
+procedure TJvExPanel.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExCustomRadioGroup.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -1634,6 +1627,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExCustomRadioGroup.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -1664,17 +1658,15 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExCustomRadioGroup.Dispatch(var Message);
+procedure TJvExCustomRadioGroup.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExRadioGroup.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -1763,6 +1755,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExRadioGroup.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -1793,17 +1786,15 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExRadioGroup.Dispatch(var Message);
+procedure TJvExRadioGroup.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExSplitter.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -1892,17 +1883,16 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvExSplitter.Dispatch(var Message);
+procedure TJvExSplitter.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
 {$ENDIF VCL}
 
 {$IFDEF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExCustomControlBar.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -1991,6 +1981,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExCustomControlBar.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -2021,17 +2012,15 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExCustomControlBar.Dispatch(var Message);
+procedure TJvExCustomControlBar.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExControlBar.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -2120,6 +2109,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExControlBar.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -2150,17 +2140,15 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExControlBar.Dispatch(var Message);
+procedure TJvExControlBar.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExPage.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -2249,6 +2237,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExPage.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -2279,17 +2268,15 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExPage.Dispatch(var Message);
+procedure TJvExPage.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExNotebook.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -2378,6 +2365,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExNotebook.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -2408,17 +2396,15 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExNotebook.Dispatch(var Message);
+procedure TJvExNotebook.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExHeader.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -2507,6 +2493,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExHeader.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -2537,18 +2524,16 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExHeader.Dispatch(var Message);
+procedure TJvExHeader.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
  {$IFDEF COMPILER6_UP}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExBoundLabel.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -2637,15 +2622,14 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvExBoundLabel.Dispatch(var Message);
+procedure TJvExBoundLabel.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExCustomLabeledEdit.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -2734,6 +2718,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExCustomLabeledEdit.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -2764,17 +2749,15 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExCustomLabeledEdit.Dispatch(var Message);
+procedure TJvExCustomLabeledEdit.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExLabeledEdit.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -2863,6 +2846,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExLabeledEdit.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -2893,17 +2877,15 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExLabeledEdit.Dispatch(var Message);
+procedure TJvExLabeledEdit.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExCustomColorBox.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -2992,6 +2974,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExCustomColorBox.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -3022,17 +3005,15 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExCustomColorBox.Dispatch(var Message);
+procedure TJvExCustomColorBox.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
-//
-// -----------------------------------------------------------------------------
 {$IFDEF VCL}
+
 procedure TJvExColorBox.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -3121,6 +3102,7 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
+
 procedure TJvExColorBox.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -3151,13 +3133,12 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
-{$IFDEF VCL}
-procedure TJvExColorBox.Dispatch(var Message);
+procedure TJvExColorBox.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
  {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}

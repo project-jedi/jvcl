@@ -23,13 +23,10 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-
 {$I jvcl.inc}
 
 unit JvExCheckLst;
-
 interface
-
 uses
   {$IFDEF VCL}
   Windows, Messages, Controls, Forms, CheckLst,
@@ -44,7 +41,7 @@ type
   TJvExCheckListBox = class(TCheckListBox, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
-    // TControl
+   // TControl
     procedure VisibleChanged; dynamic;
     procedure EnabledChanged; dynamic;
     procedure TextChanged; dynamic;
@@ -60,7 +57,7 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   protected
-    // TWinControl
+   // TWinControl
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -76,7 +73,7 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  {$IF not declared(PatchedVCLX)}
+   {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -85,7 +82,7 @@ type
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$IFEND}
+   {$IFEND}
   {$ENDIF VisualCLX}
   end;
 
@@ -162,12 +159,9 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
 {$ENDIF VCL}
-
 {$IFDEF VisualCLX}
-{$IF not declared(PatchedVCLX)}
-
+ {$IF not declared(PatchedVCLX)}
 procedure TJvExCheckListBox.MouseEnter(Control: TControl);
 begin
   inherited MouseEnter(Control);
@@ -181,10 +175,8 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
-{$IFEND}
+ {$IFEND}
 {$ENDIF VisualCLX}
-
 {$IFDEF VCL}
 
 procedure TJvExCheckListBox.CursorChanged;
@@ -217,7 +209,6 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-
 procedure TJvExCheckListBox.Dispatch(var Msg);
 begin
   if not DispatchMsg(Self, Msg) then
