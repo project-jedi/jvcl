@@ -1,4 +1,4 @@
-REM @echo off
+echo off
 cd src
 dpp.exe .\build.pas -I..\..\..\common
 
@@ -19,13 +19,13 @@ move JvExComboEdits.i.pas %OUTDIR%\JvExComboEdits.pas
 
 cd ..
 
-jpp -c -dVCL -dWindows -uVisualCLX -uLinux -x..\..\run\ JvExButtons.pas
-jpp -c -dVCL -dWindows -uVisualCLX -uLinux -x..\..\run\ JvExCheckLst.pas
-jpp -c -dVCL -dWindows -uVisualCLX -uLinux -x..\..\run\ JvExComCtrls.pas
-jpp -c -dVCL -dWindows -uVisualCLX -uLinux -x..\..\run\ JvExControls.pas
-jpp -c -dVCL -dWindows -uVisualCLX -uLinux -x..\..\run\ JvExDBGrids.pas
-jpp -c -dVCL -dWindows -uVisualCLX -uLinux -x..\..\run\ JvExExtCtrls.pas
-jpp -c -dVCL -dWindows -uVisualCLX -uLinux -x..\..\run\ JvExForms.pas
-jpp -c -dVCL -dWindows -uVisualCLX -uLinux -x..\..\run\ JvExGrids.pas
-jpp -c -dVCL -dWindows -uVisualCLX -uLinux -x..\..\run\ JvExMask.pas
-jpp -c -dVCL -dWindows -uVisualCLX -uLinux -x..\..\run\ JvExStdCtrls.pas
+jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExButtons.pas
+jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExCheckLst.pas
+jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExComCtrls.pas
+jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExControls.pas
+jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExDBGrids.pas
+jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExExtCtrls.pas
+jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExForms.pas
+jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExGrids.pas
+jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExMask.pas
+jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExStdCtrls.pas
