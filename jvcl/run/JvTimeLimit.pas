@@ -35,6 +35,10 @@ uses
   JvComponent;
 
 type
+{$IFDEF BCB}
+  TDate = TDateTime;
+{$ENDIF}
+
   TJvTimeLimit = class(TJvComponent)
   private
     FDate: TDate;
