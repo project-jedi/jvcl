@@ -377,6 +377,15 @@ type
     property VisibleCount: Integer read GetVisibleCount;
     property VisibleItems[const I: Integer]: TJvCustomInspectorItem read GetVisibleItems;
     property WantTabs: Boolean read GetWantTabs write SetWantTabs;
+
+    { Standard TCustomControl events - these are really events fired by
+      the TEdit control used when editing in a cell! -WAP}
+    property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
+    property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
+    property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
+    property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
+    property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
+    property OnMouseDown: TOnJvInspectorMouseDown read FOnMouseDown write FOnMouseDown;
   public
     constructor Create(AOwner: TComponent); override;
     procedure BeforeDestruction; override;
@@ -389,15 +398,6 @@ type
     { some easier to use methods added by WAP }
     procedure AddComponent(const AComponent: TComponent; DisplayName: string; Expanded: Boolean);
     procedure Clear;
-  published
-    { Standard TCustomControl events - these are really events fired by
-      the TEdit control used when editing in a cell! -WAP}
-    property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
-    property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
-    property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
-    property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
-    property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
-    property OnMouseDown: TOnJvInspectorMouseDown read FOnMouseDown write FOnMouseDown;
   end;
 
   TJvInspector = class(TJvCustomInspector)
@@ -439,6 +439,13 @@ type
     property OnDataValueChanged;
     property OnItemSelected;
     property OnItemValueChanged;
+
+    property OnEnter;
+    property OnContextPopup;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
   end;
 
   TJvInspectorPainter = class(TJvComponent)
