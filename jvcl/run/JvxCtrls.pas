@@ -477,7 +477,7 @@ type
     function GetImageHeight:integer;virtual;
     procedure SetConsumerService(Value: TJvDataConsumer);
     function ProviderActive: Boolean;
-    procedure ConsumerServiceChanged(Sender: TObject);
+    procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure NonProviderChange;
     property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
     property AutoOpenURL: boolean read FAutoOpenURL write FAutoOpenURL;
@@ -3341,7 +3341,8 @@ begin
   Result := Provider.ProviderIntf <> nil;
 end;
 
-procedure TJvCustomLabel.ConsumerServiceChanged(Sender: TObject);
+procedure TJvCustomLabel.ConsumerServiceChanged(Sender: TJvDataConsumer;
+  Reason: TJvDataConsumerChangeReason);
 begin
   if ProviderActive then
     AdjustBounds;
