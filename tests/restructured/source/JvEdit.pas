@@ -46,7 +46,6 @@ This unit is only supported on Windows!
 unit JvEdit;
 {$OBJEXPORTALL On}
 
-
 interface
 
 uses
@@ -117,7 +116,6 @@ type
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: boolean read GetReadOnly write SetReadOnly;
-
 
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -210,7 +208,6 @@ type
 
 implementation
 
-
 { TJvCustomEdit }
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
@@ -259,7 +256,8 @@ var
   st: string;
 begin
   inherited;
-  if not HasParent then Exit;
+  if not HasParent then
+    Exit;
   st := Text;
   FMaxPixel.Test(st, Font);
   if st <> Text then
@@ -269,16 +267,14 @@ begin
 end;
 
 procedure TJvCustomEdit.CreateParams(var Params: TCreateParams);
+const
+  Styles: array[TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
-  case FAlignment of
-    taLeftJustify:
-      Params.Style := Params.Style or ES_LEFT;
-    taRightJustify:
-      Params.Style := Params.Style or ES_RIGHT;
-    taCenter:
-      Params.Style := Params.Style or ES_CENTER;
-  end;
+  Params.Style := Params.Style or Styles[FAlignment];
+  if (FAlignment <> taLeftJustify) and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS)
+    and (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
+    Params.Style := Params.Style or ES_MULTILINE; // needed for Win95
 end;
 
 procedure TJvCustomEdit.CMMouseEnter(var Msg: TMessage);
@@ -482,22 +478,26 @@ end;
 
 procedure TJvCustomEdit.WMCopy(var Msg: TWMCopy);
 begin
-  if caCopy in ClipBoardCommands then inherited;
+  if caCopy in ClipBoardCommands then
+    inherited;
 end;
 
 procedure TJvCustomEdit.WMCut(var Msg: TWMCut);
 begin
-  if caCut in ClipBoardCommands then inherited;
+  if caCut in ClipBoardCommands then
+    inherited;
 end;
 
 procedure TJvCustomEdit.WMPaste(var Msg: TWMPaste);
 begin
-  if caPaste in ClipBoardCommands then inherited;
+  if caPaste in ClipBoardCommands then
+    inherited;
 end;
 
 procedure TJvCustomEdit.WMUndo(var Msg: TWMUndo);
 begin
-  if caUndo in ClipBoardCommands then inherited;
+  if caUndo in ClipBoardCommands then
+    inherited;
 end;
 
 function TJvCustomEdit.GetReadOnly: boolean;
