@@ -17,6 +17,17 @@ SET DCPDIR=%4
 if %JCLDIR%!==! set JCLDIR=..\..\Jcl
 if %ROOT%!==! set ROOT=C:\program files\CBuilder%VERSION%
 
+: --- Create a batch file that will pop the current directory
+: --- Derived from a method written by Frank Sandy in comp.os.msdos.misc
+: --- http://groups.google.com.au/groups?hl=en&lr=&ie=UTF-8&oe=UTF-8&selm=4l57gi%24pmp%40nhj.nlc.net.au&rnum=1
+if %TEMP%!==! set TEMP=.
+echo @echo off > %TEMP%\pop.bat
+echo @prompt $N: > %TEMP%\dummy.bat
+echo. >> %TEMP%\dummy.bat
+echo @prompt cd $P >> %TEMP%\dummy.bat
+command /c %TEMP%\dummy.bat >> %TEMP%\pop.bat
+del %TEMP%\dummy.bat
+
 
 : get rid of the quotes around ROOT, DCPDIR and JCLDIR
 cd ..\devtools\NoQuotes
@@ -57,11 +68,13 @@ copy /D /Y .\jcldcpdpk%VERSION%.tpl "%JCLDIR%\packages\c%VERSION%\template.dpk"
 : generate the packages from the xml files
 ..\devtools\bin\pg -m=JCL -p="%JCLDIR%\Packages" -t=c%VERSION% -x=..\devtools\bin\pgEdit.xml
 
+cd %JCLDIR%\packages\c6
+
 : compile the generated packages
 for %%f in ("%JCLDIR%\packages\c%VERSION%\C*.dpk") do %ROOT%\bin\dcc32 -I"%JCLDIR%\source\common" -U"%JCLDIR%\source\common" -U"%JCLDIR%\source\windows" -U"%JCLDIR%\source\vcl" -U"%JCLDIR%\source\visclx" "%%f"
 
 : copy the resulting files where they should go
-for %%f in (*.dcp) do xcopy /y %%f "%DCPDIR%\%%f"
+for %%f in (*.dcp) do xcopy /y %%f "%DCPDIR%\"
 
 IF ERRORLEVEL 1 GOTO error
 echo.
@@ -73,13 +86,19 @@ del /f /q "%JCLDIR%\packages\c%VERSION%\*.dcu"
 echo.
 echo The JCL DCP files were successfuly created for the JVCL
 echo.
-goto end
+goto restoredir
 
 :error
 echo.
 echo !!!!! ERROR WHILE BUILDING THE JCL DCP FOR THE JVCL !!!!
 echo Please refer to last output for details
 echo.
+goto restoredir
+
+:restoredir
+: -- Restore the original directory
+CALL %TEMP%\pop.bat
+del %TEMP%\pop.bat
 goto end
 
 :help
@@ -105,4 +124,5 @@ SET JCLDIR=
 SET ROOT=
 SET DCPDIR=
 SET MAKE=
+SET _SAVED=
 
