@@ -2594,13 +2594,13 @@ Description
   others or it could be used to profile a person's taste and find other 'good' files by comparing
   people's profiles.
 
-  The frame is very simple. It contains the <LINK TJvID3PopularimeterFrame.EmailAddress,email address>
+  The frame is very simple. It contains the <LINK TJvID3PopularimeterFrame.EMailAddress,email address>
   to the user, a <LINK TJvID3PopularimeterFrame.Rating,rating> and a
   <LINK TJvID3PopularimeterFrame.Counter,play counter>, intended to be increased with one for
   every time the file is played.
 
   There may be more than one populari meter frame in each tag, but only one with the
-  same <LINK TJvID3PopularimeterFrame.EmailAddress,email address>.
+  same <LINK TJvID3PopularimeterFrame.EMailAddress,email address>.
 See Also
   TJvID3PlayCounterFrame
 ----------------------------------------------------------------------------------------------------
@@ -2614,11 +2614,11 @@ Description
 See Also
   Rating, TJvID3PlayCounterFrame.Counter
 ----------------------------------------------------------------------------------------------------
-@@TJvID3PopularimeterFrame.EmailAddress
+@@TJvID3PopularimeterFrame.EMailAddress
 Summary
   Specifies an email address to the user.
 Description
-  Use EmailAddress to specify the email address to the user that made the rating.
+  Use EMailAddress to specify the email address to the user that made the rating.
 See Also
   Rating
 ----------------------------------------------------------------------------------------------------
@@ -2655,7 +2655,7 @@ Parameters
 Return value
   Returns a TJvID3PopularimeterFrame frame with the specified owner identifier, that was found
   in the ID3 tag, or - when no such frame was found - a newly created frame.
-  If a new frame is created, it's EmailAddress property will be set to the value specified by the
+  If a new frame is created, it's EMailAddress property will be set to the value specified by the
   AEmailAddress parameter.
 See Also
   Find
@@ -2670,7 +2670,7 @@ Description
   Use Rating to speciy how good an audio file is. The rating is 1-255 where 1 is worst and 255 is
   best. 0 is unknown.
 See Also
-  Counter, EmailAddress
+  Counter, EMailAddress
 ----------------------------------------------------------------------------------------------------
 @@TJvID3SimpleListFrame
 Summary
