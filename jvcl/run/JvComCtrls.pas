@@ -241,8 +241,11 @@ type
       Images: TCustomImageList; ImageIndex: Integer; const Caption: string;
       const Rect: TRect; Active, Enabled: Boolean); virtual; abstract;
     procedure Change; virtual;
+
     procedure RegisterChange(AControl: TCustomTabControl);
     procedure UnRegisterChange(AControl: TCustomTabControl);
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     destructor Destroy; override;
   end;
@@ -1053,6 +1056,14 @@ begin
   inherited;
 end;
 
+procedure TJvTabControlPainter.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent is TCustomTabControl) then
+    FClients.Remove(AComponent);
+end;
+
 procedure TJvTabControlPainter.RegisterChange(AControl: TCustomTabControl);
 begin
   if FClients = nil then
@@ -1060,6 +1071,7 @@ begin
   if AControl <> nil then
   begin
     FClients.Add(AControl);
+    AControl.FreeNotification(Self);
     AControl.Invalidate;
   end;
 end;
