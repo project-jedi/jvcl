@@ -37,18 +37,19 @@ unit Main;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, JvWizard, JvWizardRouteMapSteps, JvExControls, JvComponent,
-  jpeg, ExtCtrls, StdCtrls,
-  Core, ImgList,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ImgList,
+  Dialogs, JvExControls, JvComponent, jpeg, ExtCtrls, StdCtrls, JvWizard,
+  JvWizardRouteMapSteps, JvWizardRouteMapList,
+  Core,
   ShellAPI, HtHint;
 
 type
   TFormMain = class(TForm)
     JvWizard: TJvWizard;
-    JvWizardRouteMapSteps: TJvWizardRouteMapSteps;
-    ImageLogo: TImage;
     ImageList: TImageList;
+    PanelLogo: TPanel;
+    ImageLogo: TImage;
+    JvWizardRouteMapList1: TJvWizardRouteMapList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure JvWizardActivePageChanging(Sender: TObject;
@@ -58,6 +59,11 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure JvWizardActivePageChanged(Sender: TObject);
     procedure ImageLogoClick(Sender: TObject);
+    procedure JvWizardRouteMapNodes1Displaying(Sender: TObject;
+      const Page: TJvWizardCustomPage; var AllowDisplay: Boolean);
+    procedure JvWizardRouteMapList1DrawItem(Sender: TObject;
+      ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer;
+      var DefaultDraw: Boolean);
   private
     FAppStartFailed: Boolean;
     FFinished: Boolean;
@@ -280,6 +286,7 @@ procedure TFormMain.JvWizardActivePageChanged(Sender: TObject);
 var
   Buttons: TJvWizardButtonSet;
 begin
+  PanelLogo.BringToFront;
   if PackageInstaller.Page <> nil then
   begin
     Buttons := JvWizard.ActivePage.EnabledButtons;
@@ -295,6 +302,22 @@ end;
 procedure TFormMain.ImageLogoClick(Sender: TObject);
 begin
   ShellExecute(Handle, 'open', 'http://projectjedi.sf.net', nil, nil, SW_SHOWNORMAL);
+end;
+
+procedure TFormMain.JvWizardRouteMapNodes1Displaying(Sender: TObject;
+  const Page: TJvWizardCustomPage; var AllowDisplay: Boolean);
+begin
+  AllowDisplay := Page.PageIndex < Page.Wizard.PageCount - 1;
+end;
+
+procedure TFormMain.JvWizardRouteMapList1DrawItem(Sender: TObject;
+  ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer;
+  var DefaultDraw: Boolean);
+begin
+  DefaultDraw := False;
+  ACanvas.Brush.Style := bsClear;
+  ACanvas.Font.Color := clWindow;
+  ACanvas.TextRect(ARect, ARect.Left, ARect.Top, JvWizard.Pages[PageIndex].Caption);
 end;
 
 end.
