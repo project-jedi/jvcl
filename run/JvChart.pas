@@ -2294,7 +2294,9 @@ var
                   ChartCanvas.Pen.Style := Options.GetPenStyle(I);
                   if (i >0) then begin
                     for i2 := 0 to I-1 do begin
-                      Y1 := Round(GraphConstrainedLineY(i2,J));
+                      V := GraphConstrainedLineY(i2,J);
+                      if IsNan(V) then continue;
+                      Y1 := Round(V);
                       if (Y1 = Y) then begin
                           Dec(Y); // Prevent line-overlap. Show dotted line above other line.
                           if ChartCanvas.Pen.Style=psSolid then
