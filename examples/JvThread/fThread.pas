@@ -59,52 +59,58 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TForm1.JvThread1Execute(Sender: TObject; params: Pointer);
 var
- i,j,k: Integer;
+  i, j, k: Integer;
 begin
   //Do the job here
   k := 0;
-  for i:=0 to 1000000 do
-    for j:=0 to 1000000 do
-      begin
-        inc(k);
+  for i := 0 to 1000000 do
+    for j := 0 to 1000000 do
+    begin
+      Inc(k);
 
-        //To use global variable/objects, you have to synchronize (to avoid conflicts)
-        TForm1(params).Value := k;
-        Synchronize(TForm1(params).Stats1);
-      end;
+      //To use global variable/objects, you have to synchronize (to avoid conflicts)
+      TForm1(params).Value := k;
+      Synchronize(TForm1(params).Stats1);
+
+      if JvThread1.Terminated then
+        Break;
+    end;
 end;
 
 procedure TForm1.JvThread2Execute(Sender: TObject; params: Pointer);
 var
- i,j,k: Integer;
+  i, j, k: Integer;
 begin
   //Do the job here
   k := 0;
-  for i:=0 to 1000000 do
-    for j:=0 to 1000000 do
-      begin
-        inc(k,5); //This is the only difference with the other thread
+  for i := 0 to 1000000 do
+    for j := 0 to 1000000 do
+    begin
+      Inc(k,5); //This is the only difference with the other thread
 
-        //To use global variable/objects, you have to synchronize (to avoid conflicts)
-        TForm1(params).Value2 := k;
-        Synchronize(TForm1(params).Stats2);
-      end;
+      //To use global variable/objects, you have to synchronize (to avoid conflicts)
+      TForm1(params).Value2 := k;
+      Synchronize(TForm1(params).Stats2);
+
+      if JvThread2.Terminated then
+        Break;
+    end;
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  JvThread1.Execute(self);
-  (Sender as TButton).Enabled := false;
+  JvThread1.Execute(Self);
+  (Sender as TButton).Enabled := False;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-  JvThread2.Execute(self);
-  (Sender as TButton).Enabled := false;
+  JvThread2.Execute(Self);
+  (Sender as TButton).Enabled := False;
 end;
 
 procedure TForm1.Stats1(Sender: TObject);
