@@ -12,35 +12,35 @@ type
   // Example of a control that implements the IJvErrorProviderClient interface
   TJvErrorClientEdit = class(TEdit, IUnknown, IJvErrorProviderClient)
   private
-    FErrorMessage:WideString;
-    FErrorProvider:IJvErrorProvider;
+    FErrorMessage: WideString;
+    FErrorProvider: IJvErrorProvider;
     {$IFNDEF COMPILER6_UP}
     // D5 and below doesn't support interface properties, so we fake out with a TComponent property
     // and instead check the supported interfaces in the setErrorProviderComp
-    FErrorProviderComp:TComponent;
-    procedure setErrorProviderComp(const Value:TComponent);
+    FErrorProviderComp: TComponent;
+    procedure setErrorProviderComp(const Value: TComponent);
     {$ENDIF}
     { IJvErrorProviderClient}
     procedure UpdateProvider;
     procedure ClearProvider;
   protected
-    procedure setErrorProvider(const Value:IJvErrorProvider);virtual;
-    function getErrorProvider:IJvErrorProvider;virtual;
-    function getControl:TControl;virtual;
-    procedure setErrorMessage(const Value:WideString);virtual;
-    function getErrorMessage:WideString;virtual;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);override;
+    procedure setErrorProvider(const Value: IJvErrorProvider); virtual;
+    function getErrorProvider: IJvErrorProvider; virtual;
+    function getControl: TControl; virtual;
+    procedure setErrorMessage(const Value: WideString); virtual;
+    function getErrorMessage: WideString; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer);override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
     {$IFDEF COMPILER6_UP}
-    property ErrorProvider:IJvErrorProvider read getErrorProvider write setErrorProvider;
+    property ErrorProvider: IJvErrorProvider read getErrorProvider write setErrorProvider;
     {$ELSE}
-    property ErrorProvider:TComponent read FErrorProviderComp write setErrorProviderComp;
+    property ErrorProvider: TComponent read FErrorProviderComp write setErrorProviderComp;
     {$ENDIF}
-    property ErrorMessage:WideString read getErrorMessage write setErrorMessage;
+    property ErrorMessage: WideString read getErrorMessage write setErrorMessage;
   end;
-                
+
   TfrmErrProviderDemo = class(TForm)
     btnClearErrors: TButton;
     memDescription: TMemo;
@@ -75,8 +75,8 @@ type
     procedure chkLargeClick(Sender: TObject);
   private
     { Private declarations }
-    jep:TJvErrorProvider;
-    edClient:TJvErrorClientEdit;
+    jep: TJvErrorProvider;
+    edClient: TJvErrorClientEdit;
     procedure DoClientKey(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   public
@@ -97,19 +97,19 @@ begin
   cbImageAlignment.ItemIndex := 3;
   cbBlinkStyle.ItemIndex := 1;
 
-  jep := TJvErrorProvider.Create(self);
+  jep := TJvErrorProvider.Create(Self);
   jep.Imagelist := il16;
   isPreview.ImageList := TImageList(jep.Imagelist);
   jep.ImageIndex := udImageIndex.Position;
   isPreview.ImageIndex := udImageIndex.Position;
-  udImageIndex.Max := jep.Imagelist.Count-1;
+  udImageIndex.Max := jep.Imagelist.Count - 1;
 
   // Create an edit dynamically that implements the IJvErrorProviderClient interface
   // For this demo, hitting RETURN will display it's Text as an error message
-  edClient := TJvErrorClientEdit.Create(self);
-  edClient.Parent := self;
-  edClient.SetBounds(lblClient.Left,lblClient.Top + lblClient.Height + 4,
-    edClient.Width,edClient.Height);
+  edClient := TJvErrorClientEdit.Create(Self);
+  edClient.Parent := Self;
+  edClient.SetBounds(lblClient.Left, lblClient.Top + lblClient.Height + 4,
+    edClient.Width, edClient.Height);
   edClient.Name := 'JvErrorClientEdit1';
   edClient.ErrorProvider := jep;
   edClient.TabOrder := 2;
@@ -135,7 +135,8 @@ begin
 end;
 
 procedure TfrmErrProviderDemo.btnShowErrorsClick(Sender: TObject);
-var i:integer;
+var
+  i: integer;
 begin
   jep.BeginUpdate; // suspend blinking until all controls have been updated
   // update any previous controls
@@ -144,8 +145,9 @@ begin
   for i := 0 to ComponentCount - 1 do
     if (Components[i] is TWinControl)
       // avoid duplicate icons for the edit/updown combos:
-      and (not (Components[i] is TEdit) or (Components[i] is TJvErrorClientEdit)) then
-        jep.Error[TWinControl(Components[i])] := Format('Example error message for %s',[TWinControl(Components[i]).Name]);
+    and (not (Components[i] is TEdit) or (Components[i] is TJvErrorClientEdit)) then
+      jep.Error[TWinControl(Components[i])] := Format('Example error message for %s',
+        [TWinControl(Components[i]).Name]);
   // update any option changes
   btnUpdate.Click;
   jep.EndUpdate; // restart blinking
@@ -154,10 +156,10 @@ end;
 procedure TfrmErrProviderDemo.btnUpdateClick(Sender: TObject);
 begin
   jep.ImageAlignment[nil] := TJvErrorImageAlignment(cbImageAlignment.ItemIndex);
-  jep.ImagePadding[nil]   := udImagePadding.Position;
-  jep.BlinkStyle         := TJvErrorBlinkStyle(cbBlinkStyle.ItemIndex);
-  jep.BlinkRate          := udBlinkRate.Position;
-  jep.ImageIndex         := udImageIndex.Position;
+  jep.ImagePadding[nil] := udImagePadding.Position;
+  jep.BlinkStyle := TJvErrorBlinkStyle(cbBlinkStyle.ItemIndex);
+  jep.BlinkRate := udBlinkRate.Position;
+  jep.ImageIndex := udImageIndex.Position;
 end;
 
 procedure TfrmErrProviderDemo.udImageIndexClick(Sender: TObject; Button: TUDBtnType);
@@ -183,20 +185,21 @@ end;
 { TJvErrorClientEdit }
 
 procedure TJvErrorClientEdit.ClearProvider;
-var tmp:string;
+var
+  tmp: string;
 begin
   if (FErrorProvider <> nil) and not (csFreeNotification in ComponentState) then
   begin
     tmp := FErrorMessage;
     FErrorMessage := '';
-    FErrorProvider.SetClientError(self);
+    FErrorProvider.SetClientError(Self);
     FErrorMessage := tmp;
   end;
 end;
 
 function TJvErrorClientEdit.getControl: TControl;
 begin
-  Result := self;
+  Result := Self;
 end;
 
 function TJvErrorClientEdit.getErrorMessage: WideString;
@@ -253,25 +256,27 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 procedure TJvErrorClientEdit.setErrorProviderComp(const Value: TComponent);
-var obj:IJvErrorProvider;
+var
+  obj: IJvErrorProvider;
 begin
   if FErrorProviderComp <> Value then
   begin
     if FErrorProviderComp <> nil then
-      FErrorProviderComp.RemoveFreeNotification(self);
+      FErrorProviderComp.RemoveFreeNotification(Self);
     if Value = nil then
     begin
       FErrorProviderComp := nil;
       setErrorProvider(nil);
       Exit;
     end;
-    if not Supports(Value,IJvErrorProvider,obj) then
-      Exception.CreateFmt('%s does not support the IJvErrorProvider interface',[Value.Name]);
+    if not Supports(Value, IJvErrorProvider, obj) then
+      Exception.CreateFmt('%s does not support the IJvErrorProvider interface', [Value.Name]);
     FErrorProviderComp := Value;
     setErrorProvider(obj);
     if FErrorProviderComp <> nil then
-      FErrorProviderComp.FreeNotification(self);
+      FErrorProviderComp.FreeNotification(Self);
   end;
 end;
 {$ENDIF}
@@ -279,7 +284,8 @@ end;
 procedure TJvErrorClientEdit.UpdateProvider;
 begin
   if (FErrorProvider <> nil) then
-    FErrorProvider.SetClientError(self);
+    FErrorProvider.SetClientError(Self);
 end;
 
 end.
+

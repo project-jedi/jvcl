@@ -281,7 +281,7 @@ procedure TfrmMain.acAddResponseExecute(Sender: TObject);
 var i:integer;
 begin
   OpenSurveyDialog.Filter := SResponseFileFilter;
-  OpenSurveyDialog.Filename := Filename;
+//  OpenSurveyDialog.Filename := Filename;
   OpenSurveyDialog.Options := OpenSurveyDialog.Options + [ofAllowMultiSelect];
   if OpenSurveyDialog.Execute then
   begin
@@ -417,43 +417,6 @@ begin
   // save all loaded respones as  a comma-separated lsit
   FSurvey.SurveyTaker.ID := FResponses.CommaText;
   FSurvey.SaveToFile(Filename);
-  (*  X := TJvSimpleXML.Create(nil);
-    try
-      X.Root.Name := 'JVCLREPORT';
-      elem := X.Root.Items.Add('SURVEY');
-      elem.Properties.Add('ID',FSurvey.ID);
-      elem.Properties.Add('Title',FSurvey.Title);
-      elem.Properties.Add('ReleaseDate',ISODateToStr(FSurvey.ReleaseDate));
-      elem.Properties.Add('ExpiryDate',ISODateToStr(FSurvey.ExpiryDate));
-      elem.Properties.Add('HREF',FSurvey.ResultHRef);
-      elem.Properties.Add('Description',FSurvey.Description);
-
-      elem := X.Root.Items.Add('SURVEYTAKERS');
-      for i := 0 to FResponses.Count - 1 do
-        with elem.Items.Add('SURVEYTAKER') do
-          Properties.Add('ID',FResponses[i]);
-
-      elem := X.Root.Items.Add('ITEMS');
-      for i := 0 to FSurvey.Items.Count - 1 do
-      begin
-        with elem.Items.Add('ITEM') do
-        begin
-          Properties.Add('ID',FSurvey.Items[i].ID);
-          Properties.Add('Title',FSurvey.Items[i].ID);
-
-          Properties.Add('Type',EncodeType(FSurvey.Items[i].SurveyType));
-          Properties.Add('Required',FSurvey.Items[i].Required);
-          Properties.Add('Description',FSurvey.Items[i].Description);
-        end;
-      end;
-      elem := X.Root.Items.Add('RESPONSES');
-      for i := 0 to FSurvey.Items.Count - 1 do
-        elem.Items.Add('RESPONSE',EncodeResponse(FSurvey.Items[i].Responses,FSurvey.Items[i].SurveyType));
-      X.SaveToFile(Filename);
-    finally
-      X.Free;
-    end;
-  *)
 end;
 
 procedure TfrmMain.acLoadReportExecute(Sender: TObject);
@@ -491,6 +454,7 @@ begin
   try
     for i := 0 to FSurvey.Items.Count - 1 do
     begin
+      FSurvey.Items[i].SortResponses;
       Result := Result + Format(
         '<h4>Question %d</h4><table class="TableSurveyItemHeader"><tr class="TRSurveyItemHeader">' +
         '<th class="THSurveyItemHeader">Title</th><th class="THSurveyItemHeader">Description</th>' +

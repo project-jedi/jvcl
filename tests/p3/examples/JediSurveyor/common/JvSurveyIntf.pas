@@ -28,6 +28,8 @@ type
     function GetRequired:WordBool;
     procedure SetRequired(const Value:WordBool);
 
+    procedure SortResponses;
+
     property ID:integer read GetID write SetID;
     property Title:WideString read GetTitle write SetTitle;
     property Required:WordBool read GetRequired write SetRequired;

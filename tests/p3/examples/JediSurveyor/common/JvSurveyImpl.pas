@@ -35,6 +35,8 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    procedure SortResponses;
+
     property ID: integer read GetID write SetID;
     property Title: WideString read GetTitle write SetTitle;
     property Description: WideString read GetDescription write SetDescription;
@@ -230,6 +232,43 @@ end;
 procedure TJvSurveyItem.SetTitle(const Value: WideString);
 begin
   FTitle := Value;
+end;
+
+function InvertResponseSort(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := StrToIntDef(List[Index2],0) - StrToIntDef(List[Index1],0);
+end;
+
+procedure TJvSurveyItem.SortResponses;
+var C,C2,R:TStringlist;i,j:integer;tmp:string;
+begin
+  if SurveyType = stFreeForm then Exit;
+  // sort on responses, i.e change '0,0,1,2,0,4' into '4,2,1,0,0,0', choices are sorted accordingly
+  // (p3) there must be a simpler way of doing this...
+  C := TStringlist.Create;
+  C2 := TStringlist.Create;
+  R := TStringlist.Create;
+  try
+    C.Text := DecodeChoice(Choices,SurveyType);
+    C2.Text := C.Text;
+    R.Text := DecodeResponse(Responses,SurveyType);
+    while R.Count < C.Count do R.Add('0');
+    while C.Count < R.Count do R.Delete(R.Count-1);
+    for i := 0 to R.Count - 1 do
+      R.Objects[i] := TObject(i); // save old index
+    R.CustomSort(InvertResponseSort);
+    for i := 0 to R.Count - 1 do
+    begin
+      j := integer(R.Objects[i]);
+      C2[i] := C[j]; // move items according to index
+    end;
+    Choices := EncodeChoice(C2.Text,Surveytype);
+    Responses := EncodeResponse(R.Text,Surveytype);
+  finally
+    C.Free;
+    C2.Free;
+    R.Free;
+  end;
 end;
 
 { TJvSurveyItems }
