@@ -513,6 +513,7 @@ type
     procedure DoBeforeDialog(var FileName: string; var Action: Boolean); dynamic;
     procedure ReceptFileDir(const AFileName: string); virtual; abstract;
     procedure ClearFileList; virtual;
+    procedure Change; override;
     procedure DisableSysErrors;
     procedure EnableSysErrors;
     {$IFDEF VCL}
@@ -4346,6 +4347,21 @@ end;
 procedure TJvFileDirEdit.ClearFileList;
 begin
 end;
+
+procedure TJvFileDirEdit.Change;
+var
+  Ps: Integer;
+begin
+  // The control becomes confused when the Text property has a #10 or #13 in it.
+  Ps := Pos(#10, Text);
+  if Ps = 0 then
+    Ps := Pos(#13, Text);
+  if Ps > 0 then
+    Text := Copy(Text, 1, Ps - 1)
+  else
+    inherited Change;
+end;
+
 
 {$IFDEF JVCLThemesEnabled}
 procedure TJvFileDirEdit.CMSysColorChange(var Msg: TMessage);
