@@ -283,7 +283,6 @@ end;
 // limited implementation of
 function GetSystemMetrics(PropItem: TSysMetrics): Integer;
 var
-
   size: TSize;
 begin
   case PropItem of
@@ -291,20 +290,14 @@ begin
       begin
         QStyle_scrollBarExtent(Application.Style.Handle, @size);
         Result := size.cx;
-
       end;
-
     SM_CYVSCROLL:
       begin
         QStyle_scrollBarExtent(Application.Style.Handle, @size);
         Result := size.cy;
-
       end;
-
     SM_CXSMICON:
-
       Result := 16;
-
     SM_CXICON:
       Result := 32;
     SM_CXSCREEN:
@@ -318,7 +311,6 @@ begin
   else
     Result := 0;
   end;
-
 end;
 
 function RGB(Red, Green, Blue: Integer): TColorRef;
@@ -557,6 +549,7 @@ var
   RecallBrush: TBrush;
   RecallPenPos: TPoint;
   Ch: WideChar;
+  WS: WideString;
   Index, Width: Integer;
   Dx: PInteger;
   R, CellRect: TRect;
@@ -570,99 +563,105 @@ begin
   TOpenCanvas(Canvas).Changed;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  with Canvas do
-  begin
-    Result := False;
-    if (Text = '') then
-      Exit;
-    if (Flags and ETO_CLIPPED <> 0) and (Rect = nil) then
-      Flags := Flags and not ETO_CLIPPED;
+  Canvas.Start;
+  try
+    with Canvas do
+    begin
+      Result := False;
+      if (Text = '') then
+        Exit;
+      if (Flags and ETO_CLIPPED <> 0) and (Rect = nil) then
+        Flags := Flags and not ETO_CLIPPED;
 
-    RecallPenPos := PenPos;
-    Result := True;
-    RecallBrush := nil;
-    try
-      if Flags and ETO_OPAQUE <> 0 then
-      begin
-        if Brush.Style <> bsSolid then
+      RecallPenPos := PenPos;
+      Result := True;
+      RecallBrush := nil;
+      try
+        if Flags and ETO_OPAQUE <> 0 then
         begin
-          RecallBrush := TBrush.Create;
-          RecallBrush.Assign(Brush);
-          Brush.Style := bsSolid;
-        end;
-        if Rect <> nil then
-          FillRect(Rect^);
-      end
-      else
-        if (Brush.Style = bsSolid) then
-        begin
-          RecallBrush := TBrush.Create;
-          RecallBrush.Assign(Brush);
-          Brush.Style := bsClear;
-        end;
-
-      if lpDx = nil then
-      begin
-        if (Flags and ETO_CLIPPED <> 0) then
-          TextRect(Rect^, X, Y, Text)
+          if Brush.Style <> bsSolid then
+          begin
+            RecallBrush := TBrush.Create;
+            RecallBrush.Assign(Brush);
+            Brush.Style := bsSolid;
+          end;
+          if Rect <> nil then
+            FillRect(Rect^);
+        end
         else
-          TextOut(X, Y, Text);
-      end
-      else
-      begin
-       // put each char in it's cell
-        TextLen := Length(Text);
-        if (Flags and ETO_OPAQUE <> 0) and (Rect = nil) then
+          if (Brush.Style = bsSolid) then
+          begin
+            RecallBrush := TBrush.Create;
+            RecallBrush.Assign(Brush);
+            Brush.Style := bsClear;
+          end;
+
+        if lpDx = nil then
         begin
+          if (Flags and ETO_CLIPPED <> 0) then
+            TextRect(Rect^, X, Y, Text)
+          else
+            TextOut(X, Y, Text);
+        end
+        else
+        begin
+         // put each char in it's cell
+          TextLen := Length(Text);
+          if (Flags and ETO_OPAQUE <> 0) and (Rect = nil) then
+          begin
+            Dx := lpDx;
+            Width := 0;
+            for Index := 1 to TextLen do
+            begin
+              Inc(Width, Dx^);
+              Inc(Dx);
+            end;
+            R.Left := X;
+            R.Right := X + Width;
+            R.Top := Y;
+            R.Bottom := Y + TextHeight(Text);
+            FillRect(R);
+          end;
+
           Dx := lpDx;
-          Width := 0;
+          SetLength(WS, 1);
           for Index := 1 to TextLen do
           begin
-            Inc(Width, Dx^);
+            if (Rect <> nil) and (X >= Rect^.Right) then
+              Break;
+
+            WS[1] := Text[Index];
+            if Flags and ETO_CLIPPED <> 0 then
+            begin
+              CellRect.Left := X;
+              CellRect.Right := X + Dx^;
+              CellRect.Top := Rect^.Top;
+              CellRect.Bottom := Rect^.Bottom;
+              if CellRect.Right > Rect^.Right then
+                CellRect.Right := Rect^.Right;
+              TextRect(R, X, Y, WS);
+            end
+            else
+              TextOut(X, Y, WS);
+
+            if Index = TextLen then
+              Break;
+
+            Inc(X, Dx^);
             Inc(Dx);
           end;
-          R.Left := X;
-          R.Right := X + Width;
-          R.Top := Y;
-          R.Bottom := Y + TextHeight(Text);
-          FillRect(R);
         end;
-
-        Dx := lpDx;
-        for Index := 1 to TextLen do
+      finally
+        if Assigned(RecallBrush) then
         begin
-          if (Rect <> nil) and (X >= Rect^.Right) then
-            Break;
-
-          Ch := Text[Index];
-          if Flags and ETO_CLIPPED <> 0 then
-          begin
-            CellRect.Left := X;
-            CellRect.Right := X + Dx^;
-            CellRect.Top := Rect^.Top;
-            CellRect.Bottom := Rect^.Bottom;
-            if CellRect.Right > Rect^.Right then
-              CellRect.Right := Rect^.Right;
-            TextRect(R, X, Y, Ch);
-          end
-          else
-            TextOut(X, Y, Ch);
-
-          if Index = TextLen then
-            Break;
-
-          Inc(X, Dx^);
-          Inc(Dx);
+          Brush.Assign(RecallBrush);
+          RecallBrush.Free;
         end;
       end;
-    finally
-      if Assigned(RecallBrush) then
-      begin
-        Brush.Assign(RecallBrush);
-        RecallBrush.Free;
-      end;
+      PenPos := RecallPenPos;
     end;
-    PenPos := RecallPenPos;
+  finally
+    Canvas.Stop;;
   end;
   {$ENDIF VisualCLX}
 end;
