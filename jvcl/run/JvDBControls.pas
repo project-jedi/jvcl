@@ -3005,8 +3005,7 @@ end;
 procedure TJvDBCalcEdit.DataChanged;
 begin
   inherited;
-  if Assigned(FDataLink) and Assigned(FDataLink.Field) and
-    DecimalPlaceRound then
+  if Assigned(FDataLink) and Assigned(FDataLink.Field) {and DecimalPlaceRound} then
   begin
     EditText := DisplayText;
     try
