@@ -42,8 +42,7 @@ uses
   QWindows, QForms, QControls, Types, QGraphics, QExtCtrls, QDialogs,
   QExtDlgs, QMenus, QStdCtrls, QImgList, 
   ClxImgEdit, DsnConst, 
-  RTLConsts, DesignIntf, DesignEditors, DesignMenus,
-  CLXEditors,  
+  RTLConsts, DesignIntf, DesignEditors, DesignMenus, CLXEditors,  
   Classes, SysUtils;
 
 
@@ -58,8 +57,7 @@ type
   implementation of both these methods are provided in DefaultPropDrawName
   and DefaultPropDrawValue in this unit. }
   ICustomPropertyDrawing = interface
-//    ['{E1A50419-1288-4B26-9EFA-6608A35F0824}']
-    ['{A6BAB90A-7BDA-4C30-9763-D796DA22831A}']
+    ['{E1A50419-1288-4B26-9EFA-6608A35F0824}']
     procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
@@ -76,8 +74,7 @@ type
   by the object inspector. A default implementation of ListDrawValue is supplied
   in the DefaultPropertyListDrawValue procedure included in this unit }
   ICustomPropertyListDrawing = interface
-//    ['{BE2B8CF7-DDCA-4D4B-BE26-2396B969F8E0}']
-    ['{ADF07C5E-483E-4F56-8483-0AAEB4407FB3}']
+    ['{BE2B8CF7-DDCA-4D4B-BE26-2396B969F8E0}']
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
       var AWidth: Integer);
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
@@ -247,7 +244,7 @@ uses
   Registry,
   {$ENDIF MSWINDOWS} 
   {$IFDEF LINUX}
-  JvQRegistryIniFile,
+	JvQRegistryIniFile,
   {$ENDIF LINUX}
   JvQTypes, JvQStringsForm, JvQDsgnConsts, JvQConsts;
 
@@ -861,25 +858,47 @@ const
 procedure TColorPropertyEx.Edit;
 var
   ColorDialog: TColorDialog;
+  {$IFDEF MSWINDOWS}
   IniFile: TRegIniFile;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  IniFile: TJvRegistryIniFile;
+  {$ENDIF LINUX}
 
   procedure GetCustomColors;
   begin
+    {$IFDEF MSWINDOWS}
     IniFile := TRegIniFile.Create(sDelphiKey);
     try
       IniFile.ReadSectionValues(SCustomColors, ColorDialog.CustomColors);
     except
       { Ignore errors reading values }
     end;
-  end;
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    IniFile := TJvRegistryIniFile.Create(sDelphiKey);
+    try
+      if IniFile.OpenKey(SCustomColors, false) then
+      begin
+        IniFile.ReadSectionValues(ColorDialog.CustomColors);
+        IniFile.CloseKey;
+      end;
+    except
+      { Ignore errors reading values }
+    end;
+    {$ENDIF LINUX}
+	end;
 
   procedure SaveCustomColors;
   var
     I, P: Integer;
     S: string;
   begin
+    {$IFDEF LINUX}
     if IniFile <> nil then
-      with ColorDialog do
+    with IniFile, ColorDialog do
+      if OpenKey(SCustomColors, true) then
+      begin
         for I := 0 to CustomColors.Count - 1 do
         begin
           S := CustomColors.Strings[I];
@@ -887,10 +906,26 @@ var
           if P <> 0 then
           begin
             S := Copy(S, 1, P - 1);
-            IniFile.WriteString(SCustomColors, S,
-              CustomColors.Values[S]);
+            WriteString( S, CustomColors.Values[S]);
           end;
         end;
+        CloseKey;
+      end;
+    {$ENDIF LINUX}
+    {$IFDEF MSWINDOWS}
+    if IniFile <> nil then
+    with IniFile, ColorDialog do
+        for I := 0 to CustomColors.Count - 1 do
+        begin
+          S := CustomColors.Strings[I];
+          P := Pos('=', S);
+          if P <> 0 then
+          begin
+            S := Copy(S, 1, P - 1);
+            WriteString(SCustomColors, S, CustomColors.Values[S]);
+          end;
+        end;
+     {$ENDIF MSWINDOWS}
   end;
 
 begin
