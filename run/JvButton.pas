@@ -50,7 +50,6 @@ type
 
   TJvCustomGraphicButton = class(TJvGraphicControl)
   private
-    FCaption: TCaption;
     FStates: TJvButtonMouseStates;
     FBuffer: TBitmap;
     FOnMouseExit: TNotifyEvent;
@@ -66,7 +65,6 @@ type
     FHotFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
     function GetPattern: TBitmap;
-    procedure SetCaption(const Value: TCaption);
     procedure SetFlat(const Value: boolean);
     procedure SetDown(Value: boolean);
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -83,6 +81,7 @@ type
     procedure SetGroupIndex(const Value: integer);
     procedure SetHotFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+
   protected
     function DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: integer): boolean; virtual;
     procedure UpdateExclusive;
@@ -97,13 +96,13 @@ type
     procedure PaintFrame(Canvas: TCanvas); virtual;
     function InsideBtn(X, Y: integer): boolean; virtual;
 
+
     property AllowAllUp: boolean read FAllowAllUp write SetAllowAllUp default false;
     property GroupIndex: integer read FGroupIndex write SetGroupIndex default 0;
 
     property MouseStates: TJvButtonMouseStates read FStates write FStates default [];
     property ForceSameSize: boolean read FForceSameSize write SetForceSameSize default false;
     property Pattern: TBitmap read GetPattern;
-    property Caption: TCaption read FCaption write SetCaption;
     property Flat: boolean read FFlat write SetFlat default true;
     property HotTrack: boolean read FHotTrack write FHotTrack default false;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
@@ -116,6 +115,7 @@ type
     property OnMouseExit: TNotifyEvent read FOnMouseExit write FOnMouseExit;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
+    procedure Click; override;
     procedure SetBounds(ALeft: integer; ATop: integer; AWidth: integer;
       AHeight: integer); override;
     constructor Create(AOwner: TComponent); override;
@@ -154,8 +154,7 @@ type
     procedure DoMouseLeave; dynamic;
     procedure CreateParams(var Params: TCreateParams); override;
     function GetRealCaption: string; dynamic;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     procedure Click; override;
     constructor Create(AOwner: TComponent); override;
@@ -240,7 +239,7 @@ end;
 procedure TJvCustomGraphicButton.CMDialogChar(var Msg: TCMDialogChar);
 begin
   with Msg do
-    if IsAccel(CharCode, FCaption) and Enabled then
+    if IsAccel(CharCode, Caption) and Enabled then
     begin
       Click;
       Result := 1;
@@ -396,15 +395,6 @@ begin
   end;
 end;
 
-procedure TJvCustomGraphicButton.SetCaption(const Value: TCaption);
-begin
-  if FCaption <> Value then
-  begin
-    FCaption := Value;
-    Invalidate;
-  end;
-end;
-
 procedure TJvCustomGraphicButton.SetFlat(const Value: boolean);
 begin
   if FFlat <> Value then
@@ -549,7 +539,7 @@ begin
     begin
       if Sender.Down and Down then
       begin
-        FDown := false;
+        Down := false;
         Exclude(FStates, bsMouseDown);
         Invalidate;
       end;
@@ -754,6 +744,11 @@ begin
   inherited;
   if (Operation = opRemove) and (AComponent = FDropDownMenu) then
     DropDownMenu := nil;
+end;
+
+procedure TJvCustomGraphicButton.Click;
+begin
+  inherited;
 end;
 
 initialization
