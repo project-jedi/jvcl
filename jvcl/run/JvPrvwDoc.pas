@@ -986,6 +986,8 @@ end;
 procedure TJvCustomPreviewControl.Delete(Index: Integer);
 begin
   TMetaFile(FPages[Index]).Free;
+  FPages.Delete(Index);
+  Change;
 end;
 
 destructor TJvCustomPreviewControl.Destroy;
@@ -1582,7 +1584,7 @@ begin
           end
       else
         begin
-          FTotalCols := Max(Min(PageCount - 1, Options.Cols), 1);
+          FTotalCols := Max(Min(PageCount, Options.Cols), 1);
           FVisibleRows := Max(Min(PageCount div Integer(Options.Cols) + Ord(PageCount mod Integer(Options.Cols) <> 0),
             Options.Rows), 1);
         end;
