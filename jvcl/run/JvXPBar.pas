@@ -26,6 +26,13 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+
+{$IFNDEF USEJVCL}
+ // sorry no theming
+  {$UNDEF JVCLThemesEnabled}
+  {$UNDEF JVCLThemesEnabledD56}
+{$ENDIF !USEJVCL}
+
 unit JvXPBar;
 
 interface
@@ -330,7 +337,7 @@ type
     procedure WMAfterXPBarCollapse(var Msg: TMessage);
       message WM_XPBARAFTERCOLLAPSE;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
-    property Colors: TJvXPBarColors read FCOlors write SetColors;
+    property Colors: TJvXPBarColors read FColors write SetColors;
     property Font: TFont read FFont write SetFont stored IsFontStored;
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont stored IsFontStored;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default True;
@@ -400,8 +407,8 @@ implementation
 uses
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
-  {$ENDIF JVCLThemesEnabled}
   JvThemes;
+  {$ENDIF JVCLThemesEnabled}
 
 const
   FC_HEADER_HEIGHT = 34;
@@ -1551,11 +1558,9 @@ begin
   Invalidate;
 end;
 
-
-
 procedure TJvXPCustomWinXPBar.SetColors(const Value: TJvXPBarColors);
 begin
-//
+>//
 end;
 
 end.
