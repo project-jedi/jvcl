@@ -31,7 +31,13 @@ unit JvHtmlParserEditor;
 interface
 
 uses
-  SysUtils, Classes, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}

@@ -34,7 +34,14 @@ procedure Register;
 
 implementation
 uses
-  Classes, Controls, StdCtrls, ExtCtrls, Graphics, ActnList, ImgList, Dialogs,
+  Classes,
+  {$IFDEF VCL}
+  Controls, StdCtrls, ExtCtrls, Graphics, ActnList, ImgList, Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QStdCtrls, QExtCtrls, QGraphics, QActnList, QImgList, QDialogs,
+  QTypes,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -43,25 +50,36 @@ uses
   JvTypes, JvDsgnConsts, JvJCLUtils, JVCLVer, JvComponent,
   JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
   JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor,
-  JvContextProvider, JvAppRegistryStorage, JvAppIniStorage, JvColorProvider,
+  JvAppIniStorage,
+  {$IFDEF MSWINDOWS}
+  JvAppRegistryStorage, JvContextProvider,
   JvColorProviderEditors, JvDataProviderEditors, JvDataProvider,
-  JvDataProviderIntf, JvAppStorage, JvAppStorageSelectList;
+  JvDataProviderIntf,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  JvColorProvider,
+  {$ENDIF VCL}
+  JvAppStorage, JvAppStorageSelectList;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvCoreReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvCoreReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF  VisualCLX}
 
 procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
-  RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
-    TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]);
+  RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent
+    {$IFDEF MSWINDOWS}
+    , TJvContextProvider, TJvColorProvider, TJvColorMappingProvider
+    {$ENDIF MSWINDOWS}
+    ]);
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
-    TJvAppRegistryStorage, TJvAppIniFileStorage, TJvAppStorageSelectList]);
+     {$IFDEF MSWINDOWS}TJvAppRegistryStorage,{$ENDIF}
+     TJvAppIniFileStorage, TJvAppStorageSelectList]);
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
 
@@ -77,10 +95,15 @@ begin
   {$ENDIF COMPILER6_UP}
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+
+  {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(TDate), nil, '', TJvDateExProperty);
   RegisterPropertyEditor(TypeInfo(TTime), nil, '', TJvTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TJvDateTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
+  {$ENDIF VCL}
+
+  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'DirectoryName', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Hint', TJvHintProperty);
@@ -100,14 +123,17 @@ begin
   RegisterPropertyEditor(TypeInfo(Currency), BaseClass, '', TJvFloatProperty);
 
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
+  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
+
+  {$IFDEF VCL}
   RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
   RegisterComponentEditor(TImageList, TJvImageListEditor);
-  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
+  {$ENDIF VCL}
+
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
-
   // DataProvider related editors
   RegisterPropertyEditor(TypeInfo(TJvColorProviderMapping), TPersistent, '', TJvColorProviderMappingProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataConsumer), TPersistent, '', TJvDataConsumerProperty);
@@ -119,7 +145,8 @@ begin
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
 
-  RegisterActions(RsJVCLActionsCategory, [TJvSendMailAction, TJvWebAction], TJvStandardActions);
+  RegisterActions(RsJVCLActionsCategory, [
+  {$IFDEF MSWINDOWS}TJvSendMailAction,{$ENDIF}TJvWebAction], TJvStandardActions);
   RegisterZoom;
 end;
 
