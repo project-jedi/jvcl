@@ -166,7 +166,7 @@ resourcestring
 //=== JvCsvDataEditor.pas ====================================================
 resourcestring
   RsJvCsvDataSetSelectCSVFileToOpen = 'JvCsvDataSet - Select CSV File to Open';
-  RsCsvFilter = '*.csv';
+  RsCsvFilter = 'CSV files (*.csv)|*.csv';
 
 //=== JvCsvDataForm.pas ======================================================
 resourcestring

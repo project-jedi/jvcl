@@ -75,6 +75,7 @@ type
     FOriginalCsvStr: string;
     FTypeChars: array [0..6] of Char;
     FFieldTypeCh: Char;
+    FSeparator: Char;
     procedure ItemChange;
     function MakeString: string; // take changes, put back into string format
     procedure UpdateCsvStr;
@@ -83,6 +84,7 @@ type
   public
     procedure SetCsvStr(ACsvStr: string);
     function GetCsvStr: string;
+    procedure SetSeparator(ASeparator: Char);
   end;
 
 var
@@ -105,7 +107,7 @@ begin
     if S = '' then
       S := ListBoxFields.Items[I]
     else
-      S := S + ',' + ListBoxFields.Items[I];
+      S := S + FSeparator + '"' + ListBoxFields.Items[I] + '"';
   EditCsvStr.Text := S;
 end;
 
@@ -189,6 +191,15 @@ var
   Fields: array of string;
   I, Count: Integer;
   FieldDefStr: string;
+
+  function StripQuotes(S: string): string;
+  begin
+    if (Length(S) >= 2) and (S[1] = '"') and (S[Length(S)] = '"') then
+      Result := Copy(S, 2, Length(S) - 2)
+    else
+      Result := S;
+  end;
+
 begin
   FOriginalCsvStr := ACsvStr;
   FieldDefStr := UpperCase(StrStrip(ACsvStr));
@@ -196,7 +207,7 @@ begin
   SetLength(Fields, MAXCOLUMNS); { MAXCOLUMNS is a constant from CsvDataSource.pas }
   EditCsvStr.Text := ACsvStr;
   if Length(FieldDefStr) > 0 then
-    Count := StrSplit(FieldDefStr, ',', Chr(0), Fields, MAXCOLUMNS)
+    Count := StrSplit(FieldDefStr, FSeparator, Chr(0), Fields, MAXCOLUMNS)
   else
     Count := 0;
 
@@ -205,7 +216,7 @@ begin
     ListBoxFields.Items.Clear;
     if Count > 0 then
       for I := 0 to Count - 1 do
-        ListBoxFields.Items.Add(Fields[I]);
+        ListBoxFields.Items.Add(StripQuotes(Fields[I]));
   finally
     ListBoxFields.ItemIndex := 0;
     ItemChange;
@@ -473,6 +484,11 @@ begin
 // LabelKey.Caption := IntToStr(Key);
   if Key = VK_DELETE then
     SpeedButtonDelClick(Sender);
+end;
+
+procedure TJvCsvDefStrDialog.SetSeparator(ASeparator: Char);
+begin
+  FSeparator := ASeparator;
 end;
 
 end.
