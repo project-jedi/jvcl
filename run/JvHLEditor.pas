@@ -1693,8 +1693,8 @@ begin
     ProductionsLine := High(Integer);
     for i := 0 to Lines.Count - 1 do
     begin
-      P := PChar(Lines[i]);
-      if (StrLIComp(P, 'productions', LP) = 0) and
+      P := PWideChar(Lines[i]);
+      if (StrLICompW2(P, 'productions', LP) = 0) and
          ((Length(P) = LP) or (P[LP] = ' ')) then
       begin
         ProductionsLine := i;
