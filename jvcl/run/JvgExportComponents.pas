@@ -234,6 +234,15 @@ resourcestring
   RsESaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
 {$ENDIF USEJVCL}
 
+{$IFDEF COMPILER5}
+function BoolToStr(Value: Boolean; AsString: Boolean = False): string;
+const
+  BoolStr: array[Boolean, Boolean] of string = (('0', 'False'), ('-1', 'True'));
+begin
+  Result := BoolStr[Value, AsString];
+end;
+{$ENDIF COMPILER5}
+
   { TJvgCommonExport }
 
 procedure TJvgCommonExport.Execute;
