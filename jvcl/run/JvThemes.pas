@@ -856,49 +856,68 @@ end;
 function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect; uType, uState: UINT): BOOL;
 {$IFDEF JVCLThemesEnabled}
 const
-  Mask = DFCS_BUTTON3STATE or DFCS_BUTTONCHECK or DFCS_BUTTONPUSH or
-         DFCS_BUTTONRADIO or DFCS_BUTTONRADIOIMAGE or DFCS_BUTTONRADIOMASK;
+  Mask = $00FF;
 var
   Btn: TThemedButton;
+  ComboBox: TThemedComboBox;
   R: TRect;
   Details: TThemedElementDetails;
 {$ENDIF}
 begin
+  Result := False;
 {$IFDEF JVCLThemesEnabled}
-  if (uType = DFC_BUTTON) and
-     (not (csDesigning in Control.ComponentState)) and
+  if (not (csDesigning in Control.ComponentState)) and
      (ThemeServices.ThemesEnabled) then
   begin
     R := Rect;
 {    if uState and DFCS_ADJUSTRECT <> 0 then
       InflateRect(R, 1, 1);}
 
-    case (uState and Mask) of
-      DFCS_BUTTONPUSH:
+    case uType of
+      DFC_BUTTON:
         begin
-          if uState and (DFCS_TRANSPARENT or DFCS_FLAT) <> 0 then
-          begin
-            Result := DrawFrameControl(DC, Rect, uType, uState);
-            Exit;
-          end;
+          case (uState and Mask) of
+            DFCS_BUTTONPUSH:
+              begin
+                if uState and (DFCS_TRANSPARENT or DFCS_FLAT) = 0 then
+                begin
+                  if uState and DFCS_INACTIVE <> 0 then Btn := tbPushButtonDisabled
+                  else if uState and DFCS_PUSHED <> 0 then Btn := tbPushButtonPressed
+                  else if uState and DFCS_HOT <> 0 then Btn := tbPushButtonHot
+                  else if uState and DFCS_MONO <> 0 then Btn := tbPushButtonDefaulted
+                  else Btn := tbPushButtonNormal;
 
-          if uState and DFCS_INACTIVE <> 0 then Btn := tbPushButtonDisabled
-          else if uState and DFCS_PUSHED <> 0 then Btn := tbPushButtonPressed
-          else if uState and DFCS_HOT <> 0 then Btn := tbPushButtonHot
-          else if uState and DFCS_MONO <> 0 then Btn := tbPushButtonDefaulted
-          else Btn := tbPushButtonNormal;
-
-          Details := ThemeServices.GetElementDetails(Btn);
-          ThemeServices.DrawElement(DC, Details, R);
-          Result := True;
+                  Details := ThemeServices.GetElementDetails(Btn);
+                  ThemeServices.DrawElement(DC, Details, R);
+                  Result := True;
+                end;
+              end;
+          end; // case
         end;
-    else
-      Result := DrawFrameControl(DC, Rect, uType, uState);
-    end;
-  end
-  else
+
+      DFC_SCROLL:
+        begin
+          case (uState and Mask) of
+            DFCS_SCROLLCOMBOBOX:
+              begin
+                if uState and DFCS_INACTIVE <> 0 then ComboBox := tcDropDownButtonDisabled
+                else if uState and DFCS_PUSHED <> 0 then ComboBox := tcDropDownButtonPressed
+                else if uState and DFCS_HOT <> 0 then ComboBox := tcDropDownButtonHot
+                else ComboBox := tcDropDownButtonNormal;
+
+                Details := ThemeServices.GetElementDetails(ComboBox);
+                ThemeServices.DrawElement(DC, Details, R);
+                Result := True;
+              end;
+          end; // clase
+        end;
+
+    end; // case
+  end;
 {$ENDIF}
-  Result := DrawFrameControl(DC, Rect, uType, uState);
+
+  if not Result then
+    Result := DrawFrameControl(DC, Rect, uType, uState);
 end;
 
 procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; R: PRect = nil);
