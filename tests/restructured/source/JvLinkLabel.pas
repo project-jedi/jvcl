@@ -140,6 +140,7 @@ type
     property AboutJVCL;
     property Caption;
     property Text;
+    property Anchors;
     property Transparent;
     property LinkColor;
     property LinkColorClicked;
