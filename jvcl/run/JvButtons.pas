@@ -277,7 +277,9 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
   CommCtrl,
+  {$ENDIF VCL}
   SysUtils, Math,
   JvHtControls, JvDsgnIntf, JvConsts, JvResources, JvTypes, JvThemes;
 
@@ -1762,6 +1764,9 @@ begin
     PaintRect := Rect(0, 0, Width, Height);
     if not NoBorder then
     begin
+      {$IFDEF VisualCLX}
+      QWindows.
+      {$ENDIF VisualCLX}
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
         FillStyles[Transparent] or BF_RECT);
       InflateRect(PaintRect, -1, -1);
