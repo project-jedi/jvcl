@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvDB" Design="0">
   <Description>JVCL Database Components Runtime Package</Description>
-  <C5PFlags>-LUvcl50 -LUvcldb50 -LUCJcl50 -LUCJclVcl50</C5PFlags>
+  <C5PFlags>-LUvcl50 -LUvcldb50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl -LUCJclVcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
@@ -11,7 +11,6 @@
     <Package Name="JvSystem-R" Targets="C5,C6,C6p,D7,D7p" Condition=""/>
     <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
-    <Package Name="CJCLVCL50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="vcldb50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5" Condition=""/>

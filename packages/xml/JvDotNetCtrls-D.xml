@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvDotNetCtrls" Design="-1">
   <Description>JVCL DotNet Controls</Description>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50</C5PFlags>
-  <C6PFlags>-LUDesignIde -LUCJcl</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50(USEJVCL)</C5PFlags>
+  <C6PFlags>-LUDesignIde -LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
@@ -13,6 +13,8 @@
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="vclx50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="JvDotNetCtrls-R" Targets="all" Condition=""/>
+    <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
+    <Package Name="CJCL50" Targets="C5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvDotNetCtrlsReg.pas" Targets="all" Formname="" Condition=""/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvStdCtrls" Design="-1">
   <Description>JVCL Standard Controls</Description>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50 -LUCJclVcl50</C5PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUdclstd.dcp -LUCJcl -LUCJclVcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
@@ -12,7 +12,6 @@
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="dclstd50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
-    <Package Name="CJCLVCL50" Targets="C5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
