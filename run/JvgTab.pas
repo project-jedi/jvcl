@@ -130,6 +130,8 @@ const
     (fldDownUp, fldLeftRight, fldUpDown, fldLeftRight);
 
 constructor TJvgTabControl.Create(AOwner: TComponent);
+const
+  cFontName = 'Arial';
 begin
   inherited Create(AOwner);
   TabStop := False;
@@ -140,8 +142,8 @@ begin
   FFontSelected := TFont.Create;
   FDrawTabStr.Font_ := TFont.Create;
 
-  FTabStyle.Font.Name := 'Arial';
-  FTabSelectedStyle.Font.Name := 'Arial';
+  FTabStyle.Font.Name := cFontName;
+  FTabSelectedStyle.Font.Name := cFontName;
 
   //  if csDesigning in ComponentState then
   //    FTabSelectedStyle.BackgrColor := clbtnHighlight;

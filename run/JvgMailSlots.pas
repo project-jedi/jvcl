@@ -68,7 +68,6 @@ type
     FOnNewMessage: TOnNewMessage;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function Send(str: string): Boolean;
   protected
     procedure Loaded; override;
@@ -189,11 +188,6 @@ begin
   inherited Create(AOwner);
   FMailSlotName := 'MailSlot';
   FServerName := '';
-end;
-
-destructor TJvgMailSlotClient.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvgMailSlotClient.Loaded;

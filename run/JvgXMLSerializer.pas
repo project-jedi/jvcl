@@ -249,7 +249,7 @@ resourcestring
 
 constructor TJvgXMLSerializer.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   //...defaults
   FGenerateFormattedXML := true;
   FStrongConformity := true;
@@ -373,7 +373,6 @@ begin
 
   GetMem(PropList, NumProps * sizeof(pointer));
   try
-
     //{ Получаем список свойств }
     { Getting list of properties  [translated] }
     GetPropInfos(TypeInf, PropList);
@@ -1040,9 +1039,8 @@ begin
   end;
 end;
 
-procedure TJvgXMLSerializer.check(Expr: boolean; const Message: string; E:
-  TJvgXMLSerializerException);
-
+procedure TJvgXMLSerializer.check(Expr: boolean; const Message: string;
+  E: TJvgXMLSerializerException);
 begin
   if not Expr then
     raise E.Create('XMLSerializerException'#13#10#13#10 + Message);

@@ -176,7 +176,6 @@ type
     property IniStorage: TJvFormPlacement read GetStorage write SetStorage;
     property FixedButtons: Boolean read FFixedCellsButtons write SetFixedButtons
       default False;
-
     property OnAcceptEditKey: TAcceptKeyEvent read FOnAcceptEditKey
       write FOnAcceptEditKey;
     property OnCancelEdit: TNotifyEvent read FOnCancelEdit write FOnCancelEdit;
@@ -217,7 +216,9 @@ const
 
 type
   PIntArray = ^TIntArray;
-  TIntArray = array[0..MaxCustomExtents] of Integer;
+  TIntArray = array [0..MaxCustomExtents] of Integer;
+
+//=== TJvGridPopupListBox ====================================================
 
 type
   TJvGridPopupListBox = class;
@@ -658,6 +659,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvInplaceEdit.CMCancelMode(var Msg: TCMCancelMode);
 begin
   if (Msg.Sender <> Self) and (Msg.Sender <> FActiveList) then
@@ -669,6 +671,7 @@ begin
   StopTracking;
   inherited;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvInplaceEdit.DoKillFocus(FocusedWnd: HWND);
@@ -691,6 +694,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvInplaceEdit.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
   with Msg do
@@ -735,9 +739,10 @@ begin
   end;
   inherited WndProc(Message);
 end;
+
 {$ENDIF VCL}
 
-  //=== TJvDrawGrid ===========================================================
+//=== TJvDrawGrid ============================================================
 
 constructor TJvDrawGrid.Create(AOwner: TComponent);
 begin
@@ -1242,7 +1247,7 @@ var
   FrameFlags1, FrameFlags2: DWORD;
   Style: DWORD;
 const
-  EdgeFlag: array[Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
+  EdgeFlag: array [Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
 begin
   if DrawButtons then
   begin

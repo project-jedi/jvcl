@@ -98,7 +98,7 @@ type
       WM_LBUTTONDOWN;
     procedure WMMouseMove(var Message: TWMMouseMove); message WM_MOUSEMOVE;
     procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
-    procedure CMEnabledchanged(var Message: TMessage);
+    procedure CMEnabledChanged(var Message: TMessage);
       message CM_ENABLEDCHANGED;
 
   public
@@ -180,7 +180,7 @@ uses
 
 constructor TJvgGroupBox.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   //  ControlStyle := ControlStyle + [csOpaque];
   FBorder := TJvgBevelOptions.Create;
   FCaptionBorder := TJvgBevelOptions.Create;
@@ -231,13 +231,13 @@ begin
   FIllumination.Free;
   if Assigned(Image) then
     Image.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgGroupBox.DefineProperties(Filer: TFiler);
 begin
-  inherited;
-  Filer.DefineProperty('FullHeight', ReadFullHeight, WriteFullHeight, true);
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('FullHeight', ReadFullHeight, WriteFullHeight, True);
 end;
 
 procedure TJvgGroupBox.CreateParams(var Params: TCreateParams);
@@ -290,7 +290,7 @@ begin
   Screen.Cursor := crDefault;
 end;
 
-procedure TJvgGroupBox.CMEnabledchanged(var Message: TMessage);
+procedure TJvgGroupBox.CMEnabledChanged(var Message: TMessage);
 var
   i: Integer;
 begin

@@ -32,23 +32,25 @@ unit JvgExportComponents;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, JvComponent, Graphics,
-  Controls, Forms, Dialogs, DB;
+  Windows, Messages, SysUtils, Classes, Graphics,
+  Controls, Forms, Dialogs, DB,
+  JvComponent;
 
 type
   TJvExportCaptions = (fecDisplayLabels, fecFieldNames, fecNone);
   TJvExportGetValue = procedure(Sender: TObject; const Field: TField; var Caption: string) of object;
-// RDB Added TDataset to Signature
+  // RDB Added TDataset to Signature
   TJvExportRecordEvent = procedure(Sender: TObject; const Dataset: TDataSet;
-    var AllowExport: boolean) of object;
-// RDB Added TField to Signature
+    var AllowExport: Boolean) of object;
+  // RDB Added TField to Signature
   TJvExportFieldEvent = procedure(Sender: TObject; const Field: TField; var
     FieldValue: string) of object;
 
-  TJvExportProgressEvent = procedure (Sender:TObject; Min, Max, Position:integer; const Msg:string) of object;
+  TJvExportProgressEvent = procedure(Sender:TObject; Min, Max, Position: Integer;
+    const Msg: string) of object;
 
-  TJvGetLineFontEvent = procedure(Sender: TObject; LineNo: integer; const Value:
-    string; Font: TFont) of object;
+  TJvGetLineFontEvent = procedure(Sender: TObject; LineNo: Integer;
+    const Value: string; Font: TFont) of object;
 
   EJvgExportException = class(Exception);
 
@@ -60,19 +62,19 @@ type
     FOnExportRecord: TJvExportRecordEvent;
     FOnGetCaption: TJvExportGetValue;
     FCaptions: TJvExportCaptions;
-    FTransliterateRusToEng: boolean;
-    FMaxFieldSize: integer;
+    FTransliterateRusToEng: Boolean;
+    FMaxFieldSize: Integer;
     FOnGetTableName: TJvExportGetValue;
     FOnProgress: TJvExportProgressEvent;
     procedure SetCaptions(const Value: TJvExportCaptions);
     procedure SetDataSet(const Value: TDataSet);
     procedure SetSaveToFileName(const Value: string);
-    procedure SetMaxFieldSize(const Value: integer);
-    procedure SetTransliterateRusToEng(const Value: boolean);
+    procedure SetMaxFieldSize(const Value: Integer);
+    procedure SetTransliterateRusToEng(const Value: Boolean);
   protected
     function GetFieldValue(const Field: TField): string;
     procedure DoGetTableName(var ATableName:string);virtual;
-    procedure DoProgress(Min, Max, Position:integer; const Msg:string);virtual;
+    procedure DoProgress(Min, Max, Position: Integer; const Msg: string); virtual;
   public
     procedure Execute; virtual;
   protected
@@ -80,9 +82,9 @@ type
     property Captions: TJvExportCaptions read FCaptions write SetCaptions;
     property SaveToFileName: string read FSaveToFileName write
       SetSaveToFileName;
-    property TransliterateRusToEng: boolean read FTransliterateRusToEng write
+    property TransliterateRusToEng: Boolean read FTransliterateRusToEng write
       SetTransliterateRusToEng;
-    property MaxFieldSize: integer read FMaxFieldSize write SetMaxFieldSize;
+    property MaxFieldSize: Integer read FMaxFieldSize write SetMaxFieldSize;
 
     property OnGetCaption: TJvExportGetValue read FOnGetCaption write FOnGetCaption;
     property OnExportRecord: TJvExportRecordEvent read FOnExportRecord write FOnExportRecord;
@@ -96,16 +98,16 @@ type
     FHeader: TStringList;
     FFooter: TStringList;
     FBackgroundPicture: TFileName;
-    FAutoColumnFit: boolean;
-    FExcelVisible: boolean;
-    FCloseExcel: boolean;
+    FAutoColumnFit: Boolean;
+    FExcelVisible: Boolean;
+    FCloseExcel: Boolean;
     FOnGetFooterLineFont: TJvGetLineFontEvent;
     FOnGetHeaderLineFont: TJvGetLineFontEvent;
     FSubHeader: TStringList;
     FSubHeaderFont: TFont;
     FHeaderFont: TFont;
     FFooterFont: TFont;
-    FForceTextFormat:boolean;
+    FForceTextFormat: Boolean;
     FOnGetSubHeaderLineFont: TJvGetLineFontEvent;
     function GetHeader: TStrings;
     function GetFooter: TStrings;
@@ -113,9 +115,9 @@ type
     procedure SetHeader(const Value: TStrings);
     procedure SetFooter(const Value: TStrings);
     procedure SetBackgroundPicture(const Value: TFileName);
-    procedure SetAutoColumnFit(const Value: boolean);
-    procedure SetExcelVisible(const Value: boolean);
-    procedure SetCloseExcel(const Value: boolean);
+    procedure SetAutoColumnFit(const Value: Boolean);
+    procedure SetExcelVisible(const Value: Boolean);
+    procedure SetCloseExcel(const Value: Boolean);
     procedure SetSubHeader(const Value: TStrings);
     procedure SetFooterFont(const Value: TFont);
     procedure SetHeaderFont(const Value: TFont);
@@ -136,13 +138,13 @@ type
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont;
     property SubHeaderFont: TFont read FSubHeaderFont write SetSubHeaderFont;
     property FooterFont: TFont read FFooterFont write SetFooterFont;
-    property AutoColumnFit: boolean read FAutoColumnFit write SetAutoColumnFit
-      default true;
+    property AutoColumnFit: Boolean read FAutoColumnFit write SetAutoColumnFit
+      default True;
     property BackgroundPicture: TFileName read FBackgroundPicture write
       SetBackgroundPicture;
-    property ExcelVisible: boolean read FExcelVisible write SetExcelVisible;
-    property ForceTextFormat: boolean read FForceTextFormat write FForceTextFormat default false;
-    property CloseExcel: boolean read FCloseExcel write SetCloseExcel;
+    property ExcelVisible: Boolean read FExcelVisible write SetExcelVisible;
+    property ForceTextFormat: Boolean read FForceTextFormat write FForceTextFormat default False;
+    property CloseExcel: Boolean read FCloseExcel write SetCloseExcel;
 
     property OnGetHeaderLineFont: TJvGetLineFontEvent read FOnGetHeaderLineFont write FOnGetHeaderLineFont;
     property OnGetSubHeaderLineFont: TJvGetLineFontEvent read FOnGetSubHeaderLineFont write FOnGetSubHeaderLineFont;
@@ -154,6 +156,7 @@ type
 
   TJvCreateDataset = procedure (Sender:TObject; var Dataset:TDataset) of object;
   TJvSaveDataset = procedure (Sender:TObject; Dataset:TDataset) of object;
+
   TJvgExportDataset = class(TJvgCommonExport)
   private
     FOnCreateDest: TJvCreateDataset;
@@ -234,19 +237,19 @@ resourcestring
 {$IFDEF COMPILER5}
 function BoolToStr(Value: Boolean; AsString: Boolean = False): string;
 const
-  BoolStr: array[Boolean, Boolean] of string = (('0', 'False'), ('-1', 'True'));
+  BoolStr: array [Boolean, Boolean] of string = (('0', 'False'), ('-1', 'True'));
 begin
   Result := BoolStr[Value, AsString];
 end;
 {$ENDIF COMPILER5}
 
-  { TJvgCommonExport }
+//=== TJvgCommonExport =======================================================
 
 procedure TJvgCommonExport.Execute;
 begin
   if not Assigned(DataSet) then
     raise EJvgExportException.Create(RsEDataSetIsUnassigned);
-  DataSet.Active := true;
+  DataSet.Active := True;
   if SaveToFileName <> '' then
     ForceDirectories(ExtractFilePath(SaveToFileName));
 end;
@@ -261,22 +264,22 @@ begin
   FDataSet := Value;
 end;
 
-procedure TJvgCommonExport.SetMaxFieldSize(const Value: integer);
+procedure TJvgCommonExport.SetMaxFieldSize(const Value: Integer);
 begin
   FMaxFieldSize := Value;
 end;
 
 procedure TJvgCommonExport.SetSaveToFileName(const Value: string);
 begin
-  FSaveToFileName := trim(Value);
+  FSaveToFileName := Trim(Value);
 end;
 
-procedure TJvgCommonExport.SetTransliterateRusToEng(const Value: boolean);
+procedure TJvgCommonExport.SetTransliterateRusToEng(const Value: Boolean);
 begin
   FTransliterateRusToEng := Value;
 end;
 
-procedure TJvgCommonExport.DoProgress(Min, Max, Position: integer; const Msg: string);
+procedure TJvgCommonExport.DoProgress(Min, Max, Position: Integer; const Msg: string);
 begin
   if Assigned(FOnProgress) then
     FOnProgress(Self, Min, Max, Position, Msg);
@@ -285,18 +288,15 @@ end;
 function TJvgCommonExport.GetFieldValue(const Field: TField): string;
 begin
   Result := Field.AsString;
-  if Assigned(OnExportField) then
-    OnExportField(Self, Field, Result);
+  if Assigned(FOnExportField) then
+    FOnExportField(Self, Field, Result);
 
   if FTransliterateRusToEng then
-    Result := Transliterate(Result, true);
+    Result := Transliterate(Result, True);
 
-  if (FMaxFieldSize > 0) and (Field.DataType in [ftString, ftMemo, ftFmtMemo])
-    then
-  begin
-    if length(Result) > FMaxFieldSize then
-      Result := copy(Result, 1, FMaxFieldSize) + '...';
-  end;
+  if (FMaxFieldSize > 0) and (Field.DataType in [ftString, ftMemo, ftFmtMemo]) then
+    if Length(Result) > FMaxFieldSize then
+      Result := Copy(Result, 1, FMaxFieldSize) + '...';
 end;
 
 procedure TJvgCommonExport.DoGetTableName(var ATableName: string);
@@ -305,7 +305,7 @@ begin
     FOnGetTableName(Self, nil, ATableName);
 end;
 
-{ TJvgExportExcel }
+//=== TJvgExportExcel ========================================================
 
 constructor TJvgExportExcel.Create(AOwner: TComponent);
 begin
@@ -320,7 +320,7 @@ begin
   FHeaderFont.Size := 12;
   FHeaderFont.Style := [fsBold];
   FSubHeaderFont.Size := 10;
-  FAutoColumnFit := true;
+  FAutoColumnFit := True;
 end;
 
 destructor TJvgExportExcel.Destroy;
@@ -336,30 +336,30 @@ end;
 
 procedure TJvgExportExcel.Execute;
 var
-  XL: variant;
-  Sheet: variant;
-  AllowExportRecord: boolean;
-  i, RecCount, RecNo, ColNo, OldRecNo: integer;
+  XL: Variant;
+  Sheet: Variant;
+  AllowExportRecord: Boolean;
+  I, RecCount, RecNo, ColNo, OldRecNo: Integer;
   CellFont: TFont;
 
   procedure InsertStrings(Strings: TStrings; Font: TFont; GetLineFontEvent:
     TJvGetLineFontEvent);
   var
-    i: integer;
+    I: Integer;
   begin
-    for i := 0 to Strings.Count - 1 do
+    for I := 0 to Strings.Count - 1 do
     begin
-      Sheet.Cells[RecNo, ColNo] := Strings[i];
+      Sheet.Cells[RecNo, ColNo] := Strings[I];
       CellFont.Assign(Font);
       if Assigned(FOnGetHeaderLineFont) then
-        OnGetHeaderLineFont(Self, i, Strings[i], CellFont);
+        FOnGetHeaderLineFont(Self, I, Strings[I], CellFont);
 
       Sheet.Cells[RecNo, ColNo].Font.Size := CellFont.Size;
       Sheet.Cells[RecNo, ColNo].Font.Color := CellFont.Color;
       if fsBold in CellFont.Style then
-        Sheet.Cells[RecNo, ColNo].Font.Bold := true;
+        Sheet.Cells[RecNo, ColNo].Font.Bold := True;
       if fsItalic in CellFont.Style then
-        Sheet.Cells[RecNo, ColNo].Font.Italic := true;
+        Sheet.Cells[RecNo, ColNo].Font.Italic := True;
       Inc(RecNo);
     end;
   end;
@@ -388,42 +388,42 @@ begin
     Inc(RecNo, Header.Count + SubHeader.Count);
 
     if FCaptions <> fecNone then
-      for i := 0 to DataSet.FieldCount - 1 do
+      for I := 0 to DataSet.FieldCount - 1 do
       begin
         case FCaptions of
           fecDisplayLabels:
-            if DataSet.Fields[i].DisplayLabel <> '' then
-              Sheet.Cells[RecNo, ColNo + i] :=
-                DataSet.Fields[i].DisplayLabel
+            if DataSet.Fields[I].DisplayLabel <> '' then
+              Sheet.Cells[RecNo, ColNo + I] :=
+                DataSet.Fields[I].DisplayLabel
             else
-              Sheet.Cells[RecNo, ColNo + i] :=
-                DataSet.Fields[i].FieldName;
+              Sheet.Cells[RecNo, ColNo + I] :=
+                DataSet.Fields[I].FieldName;
           fecFieldNames:
-            Sheet.Cells[RecNo, ColNo + i] := DataSet.Fields[i].FieldName;
+            Sheet.Cells[RecNo, ColNo + I] := DataSet.Fields[I].FieldName;
         end;
-        Sheet.Cells[RecNo, ColNo + i].Font.Bold := true;
-        Sheet.Cells[RecNo, ColNo + i].Font.Size := 10;
+        Sheet.Cells[RecNo, ColNo + I].Font.Bold := True;
+        Sheet.Cells[RecNo, ColNo + I].Font.Size := 10;
       end;
 
     Inc(RecNo);
     DataSet.First;
     RecCount := Dataset.RecordCount;
-    while not DataSet.EOF do
+    while not DataSet.Eof do
     begin
-      AllowExportRecord := true;
-      if Assigned(OnExportRecord) then
-        OnExportRecord(Self, Dataset, AllowExportRecord);
+      AllowExportRecord := True;
+      if Assigned(FOnExportRecord) then
+        FOnExportRecord(Self, Dataset, AllowExportRecord);
       if AllowExportRecord then
       begin
-        for i := 0 to DataSet.FieldCount - 1 do
-          if not (DataSet.Fields[i].DataType in [ftBlob, ftGraphic,
+        for I := 0 to DataSet.FieldCount - 1 do
+          if not (DataSet.Fields[I].DataType in [ftBlob, ftGraphic,
             ftParadoxOle, ftDBaseOle, ftTypedBinary,
               ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface,
               ftIDispatch]) then
           begin
             if ForceTextFormat then
               Sheet.Cells.NumberFormat := '@';
-            Sheet.Cells[RecNo, ColNo + i] := GetFieldValue(DataSet.Fields[i]);
+            Sheet.Cells[RecNo, ColNo + I] := GetFieldValue(DataSet.Fields[I]);
           end;
       end;
       DoProgress(0, RecCount, RecNo, '');
@@ -432,8 +432,8 @@ begin
     end;
 
     if FAutoColumnFit then
-      for i := 0 to DataSet.FieldCount - 1 do
-        Sheet.Columns[i + 1].EntireColumn.AutoFit;
+      for I := 0 to DataSet.FieldCount - 1 do
+        Sheet.Columns[I + 1].EntireColumn.AutoFit;
 
     OldRecNo := RecNo;
     RecNo := 1;
@@ -451,13 +451,12 @@ begin
 
     if CloseExcel then
       XL.Quit;
-
   finally
     CellFont.Free;
   end;
 end;
 
-procedure TJvgExportExcel.SetAutoColumnFit(const Value: boolean);
+procedure TJvgExportExcel.SetAutoColumnFit(const Value: Boolean);
 begin
   FAutoColumnFit := Value;
 end;
@@ -467,12 +466,12 @@ begin
   FBackgroundPicture := Value;
 end;
 
-procedure TJvgExportExcel.SetCloseExcel(const Value: boolean);
+procedure TJvgExportExcel.SetCloseExcel(const Value: Boolean);
 begin
   FCloseExcel := Value;
 end;
 
-procedure TJvgExportExcel.SetExcelVisible(const Value: boolean);
+procedure TJvgExportExcel.SetExcelVisible(const Value: Boolean);
 begin
   FExcelVisible := Value;
 end;
@@ -522,7 +521,7 @@ begin
   FSubHeaderFont.Assign(Value);
 end;
 
-{ TJvgExportHTML }
+//=== TJvgExportHTML =========================================================
 
 constructor TJvgExportHTML.Create(AOwner: TComponent);
 begin
@@ -570,49 +569,50 @@ begin
   FStyles.Assign(Value);
 end;
 
-{ TJvgExportDataset }
+//=== TJvgExportDataset ======================================================
 
 procedure TJvgExportDataset.Execute;
 var
-  i, RecNo, RecCount: integer;
+  I, RecNo, RecCount: Integer;
   Dest: TDataset;
-  AllowExportRecord: boolean;
+  AllowExportRecord: Boolean;
   FieldType: TFieldType;
 begin
-  inherited;
+  inherited Execute;
 
   Dest := nil;
   if Assigned(FOnCreateDest) then
     FOnCreateDest(Self, Dest);
-  if Dest = nil then Exit;
+  if Dest = nil then
+    Exit;
   Dest.Close;
-  for i := 0 to DataSet.FieldCount - 1 do
+  for I := 0 to DataSet.FieldCount - 1 do
   begin
-    FieldType := DataSet.Fields[i].DataType;
+    FieldType := DataSet.Fields[I].DataType;
     if FieldType = ftAutoInc then
       FieldType := ftInteger;
-    Dest.FieldDefs.Add(DataSet.Fields[i].Name, FieldType,
-      DataSet.Fields[i].Size, DataSet.Fields[i].Required);
+    Dest.FieldDefs.Add(DataSet.Fields[I].Name, FieldType,
+      DataSet.Fields[I].Size, DataSet.Fields[I].Required);
   end;
 
   Dest.Open;
   try
     DataSet.First;
     RecCount := DataSet.RecordCount;
-    RecNo    := 0;
+    RecNo := 0;
     while not DataSet.EOF do
     begin
-      AllowExportRecord := true;
-      if Assigned(OnExportRecord) then
-        OnExportRecord(Self, DataSet, AllowExportRecord);
+      AllowExportRecord := True;
+      if Assigned(FOnExportRecord) then
+        FOnExportRecord(Self, DataSet, AllowExportRecord);
       if AllowExportRecord then
       begin
         Dest.Append;
-        for i := 0 to DataSet.FieldCount - 1 do
-          if DataSet.Fields[i].DataType in [ftString, ftMemo] then
-            Dest.Fields[i].Value := GetFieldValue(DataSet.Fields[i])
+        for I := 0 to DataSet.FieldCount - 1 do
+          if DataSet.Fields[I].DataType in [ftString, ftMemo] then
+            Dest.Fields[I].Value := GetFieldValue(DataSet.Fields[I])
           else
-            Dest.Fields[i].Value := DataSet.Fields[i].Value;
+            Dest.Fields[I].Value := DataSet.Fields[I].Value;
         Dest.Post;
       end;
       DoProgress(0, RecCount, RecNo, '');
@@ -628,8 +628,7 @@ begin
   end;
 end;
 
-
-{ TJvgExportXML }
+//=== TJvgExportXML ==========================================================
 (*
 procedure TJvgExportXML.Execute;
 var
@@ -640,9 +639,9 @@ var
   Field: TJvSimpleXMLElemClassic;
   Records: TJvSimpleXMLElemClassic;
   XMLRecord: TJvSimpleXMLElemClassic;
-  AllowExportRecord: boolean;
+  AllowExportRecord: Boolean;
   AName, FieldValue: string;
-  i: integer;
+  I: Integer;
 
   function CreateNode(Name: string; Base: TJvSimpleXMLElemClassic):
       TJvSimpleXMLElemClassic;
@@ -668,14 +667,14 @@ begin
   {$IFDEF DEBUG}
   dbg.LogInteger('FieldCount', DataSet.FieldCount);
   {$ENDIF DEBUG}
-  for i := 0 to DataSet.FieldCount - 1 do
+  for I := 0 to DataSet.FieldCount - 1 do
   begin
     Field := CreateNode('Field', Table);
-    Field.Properties.Add('Name', DataSet.Fields[i].DisplayName);
-    Field.Properties.Add('Size', DataSet.Fields[i].Size);
-    Field.Properties.Add('DataType', Ord(DataSet.Fields[i].DataType));
-    Field.Properties.Add('Blob', BoolToStr(DataSet.Fields[i].IsBlob));
-    Field.Properties.Add('Required', BoolToStr(DataSet.Fields[i].Required));
+    Field.Properties.Add('Name', DataSet.Fields[I].DisplayName);
+    Field.Properties.Add('Size', DataSet.Fields[I].Size);
+    Field.Properties.Add('DataType', Ord(DataSet.Fields[I].DataType));
+    Field.Properties.Add('Blob', BoolToStr(DataSet.Fields[I].IsBlob));
+    Field.Properties.Add('Required', BoolToStr(DataSet.Fields[I].Required));
     {$IFDEF DEBUG}
     dbg.LogObject('Properties', Field.Properties);
     {$ENDIF DEBUG}
@@ -689,23 +688,23 @@ begin
     Inc(RecNo);
     XMLRecord := CreateNode('Record', Records);
     XMLRecord.Properties.Add('Nr', RecNo);
-    AllowExportRecord := true;
+    AllowExportRecord := True;
     if Assigned(OnExportRecord) then
       OnExportRecord(Self, Dataset, AllowExportRecord);
     if AllowExportRecord then
     begin
-      for i := 0 to DataSet.FieldCount - 1 do
+      for I := 0 to DataSet.FieldCount - 1 do
       begin
-        if not (DataSet.Fields[i].DataType in [ftBlob, ftGraphic,
+        if not (DataSet.Fields[I].DataType in [ftBlob, ftGraphic,
           ftParadoxOle, ftDBaseOle, ftTypedBinary,
             ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface,
             ftIDispatch]) then
         begin
           Field := CreateNode('RecordField', XMLRecord);
-          Field.Properties.Add('Name', DataSet.Fields[i].DisplayName);
-          FieldValue := DataSet.Fields[i].AsString;
+          Field.Properties.Add('Name', DataSet.Fields[I].DisplayName);
+          FieldValue := DataSet.Fields[I].AsString;
           if Assigned(OnExportField) then
-            OnExportField(Self, DataSet.Fields[i], FieldValue);
+            OnExportField(Self, DataSet.Fields[I], FieldValue);
         end;
         Field.Value := FieldValue;
       end;
@@ -719,8 +718,6 @@ begin
 end;
 *)
 
-{ TJvgExportXML }
-
 procedure TJvgExportXML.Execute;
 var
   RecNo, RecCount: Integer;
@@ -730,33 +727,34 @@ var
   Field: TJvSimpleXMLElemClassic;
   Records: TJvSimpleXMLElemClassic;
   XMLRecord: TJvSimpleXMLElemClassic;
-  AllowExportRecord: boolean;
+  AllowExportRecord: Boolean;
   Fieldvalue: string;
-  i: integer;
+  I: Integer;
 
   function CreateNode(Name: string; Base: TJvSimpleXMLElemClassic):
       TJvSimpleXMLElemClassic;
   begin
-    result := TJvSimpleXMLElemClassic.Create(XML.Root);
-    Base.Items.add(result);
-    result.Name := Name;
-  end; // CreateNode
+    Result := TJvSimpleXMLElemClassic.Create(XML.Root);
+    Base.Items.Add(Result);
+    Result.Name := Name;
+  end;
 
-  procedure AddFieldName( Field : TJvSimpleXMLElemClassic);
-  Var
-     Caption : String;
+  procedure AddFieldName(Field: TJvSimpleXMLElemClassic);
+  var
+    Caption: string;
   begin
     Caption := '';
     if Self.FCaptions = fecDisplayLabels then
-      Caption := DataSet.Fields[i].DisplayName;
+      Caption := DataSet.Fields[I].DisplayName;
     if Self.FCaptions = fecFieldNames then
-      Caption := DataSet.Fields[i].FullName;
-    if Self.FCaptions = fecNone then (* NIX *);
+      Caption := DataSet.Fields[I].FullName;
+    if Self.FCaptions = fecNone then
+      (* empty *);
 
     if Assigned(FOnGetCaption) then
-       FOnGetCaption(Self, DataSet.Fields[i], Caption );
+       FOnGetCaption(Self, DataSet.Fields[I], Caption);
       Field.Properties.Add('Name', Caption);
-  end;    // AddFieldName
+  end;
 
 begin
   XML := TJvSimpleXML.Create(Self);
@@ -767,52 +765,48 @@ begin
   Table := CreateNode('Table', Header);
   DataSet.Open;
   RecCount := DataSet.RecordCount;
-  for i := 0 to DataSet.FieldCount - 1 do
+  for I := 0 to DataSet.FieldCount - 1 do
   begin
     Field := CreateNode('Field', Table);
 
     AddFieldName(Field);
-    Field.Properties.Add('Size', DataSet.Fields[i].Size);
-    Field.Properties.Add('DataType', FieldTypeNames[DataSet.Fields[i].DataType]);
-    Field.Properties.Add('Blob', BoolToStr(DataSet.Fields[i].IsBlob, True));
-    Field.Properties.Add('Required', BoolToStr(DataSet.Fields[i].Required, True));
+    Field.Properties.Add('Size', DataSet.Fields[I].Size);
+    Field.Properties.Add('DataType', FieldTypeNames[DataSet.Fields[I].DataType]);
+    Field.Properties.Add('Blob', BoolToStr(DataSet.Fields[I].IsBlob, True));
+    Field.Properties.Add('Required', BoolToStr(DataSet.Fields[I].Required, True));
   end;
   Records := CreateNode('Records', XML.Root);
   DataSet.First;
   RecNo := 0;
-  while not DataSet.EOF do
+  while not DataSet.Eof do
   begin
     Inc(RecNo);
     XMLRecord := CreateNode('Record', Records);
     XMLRecord.Properties.Add('Nr', RecNo);
-    AllowExportRecord := true;
-    if Assigned(OnExportRecord) then
-      OnExportRecord(Self, Dataset, AllowExportRecord);
+    AllowExportRecord := True;
+    if Assigned(FOnExportRecord) then
+      FOnExportRecord(Self, DataSet, AllowExportRecord);
     if AllowExportRecord then
-    begin
-      for i := 0 to DataSet.FieldCount - 1 do
-      begin
-        if not (DataSet.Fields[i].DataType in [ftBlob, ftGraphic,
+      for I := 0 to DataSet.FieldCount - 1 do
+        if not (DataSet.Fields[I].DataType in [ftBlob, ftGraphic,
           ftParadoxOle, ftDBaseOle, ftTypedBinary,
             ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface,
             ftIDispatch]) then
         begin
           Field := CreateNode('RecordField', XMLRecord);
           AddFieldName(Field);
-          FieldValue := DataSet.Fields[i].AsString;
-          if Assigned(OnExportfield) then
-            OnExportField(Self, DataSet.Fields[i], Fieldvalue);
+          FieldValue := DataSet.Fields[I].AsString;
+          if Assigned(FOnExportField) then
+            FOnExportField(Self, DataSet.Fields[I], Fieldvalue);
           Field.Value := Fieldvalue;
         end;
-      end;
-    end;
     DoProgress(0, RecCount, RecNo, '');
     DataSet.Next;
   end;
   DoProgress(0, RecCount, RecCount, '');
 
   XML.SaveToFile(Self.FSaveToFileName);
-end; // TJvgExportXML.Execute
+end;
 
 end.
 
