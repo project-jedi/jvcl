@@ -31,22 +31,11 @@ unit JvScrollText;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  Graphics, Controls, Forms, StdCtrls,
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, StdCtrls,
   JvStaticText, JvTypes, JvImageDrawThread, JVCLVer, JvComponent;
 
 type
   TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel
-  {$IFDEF VisualCLX}
-  TStaticText = TLabel;
-  {$ENDIF VisualCLX}
-
   TJvScrollText = class(TJvCustomControl)
   private
     FText: TJvStaticText;
