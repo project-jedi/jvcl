@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-25
+Last Modified: 2004-02-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -141,7 +141,12 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
   Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
   JvConsts, JvThemes;
 
 type
@@ -770,7 +775,9 @@ begin
   inherited Create(AOwner);
   SetBounds(0, 0, 42, 25);
   ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
   FGlyph := TButtonGlyph.Create;
   TButtonGlyph(FGlyph).OnChange := GlyphChanged;
   FFillFont := TFont.Create;
@@ -998,7 +1005,9 @@ begin
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    Application.ProcessMessages;
+    repeat
+      Application.ProcessMessages
+    until IsWindowVisible(FPopup.Handle) = false  ;
     {$ENDIF VisualCLX}
   end;
 
