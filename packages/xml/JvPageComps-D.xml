@@ -24,5 +24,6 @@
     <File Name="..\..\design\JvTreeItemsEditorForm.pas" Targets="all" Formname="frmTreeViewItems" Condition=""/>
     <File Name="..\..\design\JvPageListEditorForm.pas"  Targets="all" Formname="frmPageListEditor" Condition=""/>
     <File Name="..\..\design\JvPageListEditors.pas"  Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvNavPaneEditors.pas"  Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
