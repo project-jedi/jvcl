@@ -47,6 +47,8 @@ uses Classes, Controls, Windows, VFW, MMSystem, SysUtils, Graphics, Messages;
 
 resourcestring NOT_CONNECTED = 'Not connected';
                ERROR_MSG = 'Error #';
+               INVALID_DRIVER_INDEX = '%d is an invalid driver index.'+
+                                      ' The maximum value is %d';
 
 type
   TJvScrollPos = class (TPersistent)
@@ -292,6 +294,12 @@ type
   // the driver index (-1 if not connected, 0-9 if connected as there are at most 10 drivers
   // according to Microsoft documentation. But there can be more than 1 source per driver...
   TJvDriverIndex = -1..9;
+
+  // The exception trigerred when an invalid index driver index is given
+  EInvalidDriverIndex = class (Exception)
+  public
+    constructor Create(Index : TJvDriverIndex; MaxIndex : TJvDriverIndex);
+  end;
 
   // what a driver can do on the system
   TJvDriverCaps = set of (dcOverlay,             // overlay rendering
@@ -1334,7 +1342,7 @@ end;
 
 procedure TJvAVICapture.SetDriverIndex(nIndex : TJvDriverIndex);
 begin
-  if Connect(nIndex) then 
+  if Connect(nIndex) then
   begin
     FDriverIndex := nIndex;
   end;
@@ -1531,7 +1539,7 @@ end;
 function TJvAVICapture.Connect(driver : TJvDriverIndex) : Boolean;
 begin
   // Request a handle, will create the AviCap internal window
-  // will crash if no parent set
+  // will trigger an exception if no parent is set
   HandleNeeded;
 
   if driver = -1 then
@@ -1557,6 +1565,11 @@ begin
       FAudioFormat.Update;
       UpdateCaptureStatus;
 
+    end
+    else
+    begin
+      // if not, trigger an exception
+      raise EInvalidDriverIndex.Create(driver, Drivers.Count-1); 
     end;
   end;
   AdjustSize;
@@ -1901,6 +1914,13 @@ begin
     StartSingleFrameCapture
   else
     StopSingleFrameCapture;
+end;
+
+{ EInvalidDriverIndex }
+
+constructor EInvalidDriverIndex.Create(Index : TJvDriverIndex; MaxIndex: TJvDriverIndex);
+begin
+  inherited CreateFmt(INVALID_DRIVER_INDEX, [Index, MaxIndex]);
 end;
 
 end.
