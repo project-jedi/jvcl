@@ -33,14 +33,17 @@ unit JvaScrollText;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF}
   {$IFDEF VCL}
-  Windows, Controls, ExtCtrls, Forms, Graphics,
+  Controls, ExtCtrls, Forms, Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QControls, QExtCtrls, QForms, QGraphics,
+  Types, QWindows, QControls, QExtCtrls, QForms, QGraphics,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JvComponent, JvClxUtils;
+  JvComponent;
 
 type
   TJvaScrollText = class(TJvCustomControl)
