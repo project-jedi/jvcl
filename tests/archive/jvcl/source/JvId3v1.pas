@@ -52,17 +52,19 @@ type
     FAlbum: string;
     FComment: string;
     FYear: string;
-    FGenre: string;
+    FGenre: Byte;
     FFileName: TFileName;
     FActive: Boolean;
     FAlbumTrack: Byte;
     FStreamedActive: Boolean;
     FHasTag: Boolean;
     FHasTagDirty: Boolean;
+    function GetGenreAsString: string;
     function GetHasTag: Boolean;
     procedure Reset;
     procedure SetActive(const Value: Boolean);
     procedure SetFileName(const Value: TFileName);
+    procedure SetGenreAsString(const Value: string);
   protected
     procedure CheckActive;
 
@@ -90,7 +92,8 @@ type
     property Album: string read FAlbum write FAlbum stored False;
     property Year: string read FYear write FYear stored False;
     property Comment: string read FComment write FComment stored False;
-    property Genre: string read FGenre write FGenre stored False;
+    property Genre: Byte read FGenre write FGenre stored False;
+    property GenreAsString: string read GetGenreAsString write SetGenreAsString stored False;
     property AlbumTrack: Byte read FAlbumTrack write FAlbumTrack stored False;
   end;
 
@@ -234,7 +237,7 @@ begin
   Move(Album[1], Tag.Album[0], Min(30, Length(Album)));
   Move(Year[1], Tag.Year[0], Min(4, Length(Year)));
   Move(Comment[1], Tag.Comment[0], Min(30, Length(Comment)));
-  Tag.Genre := ID3_GenreToID_v1(FGenre);
+  Tag.Genre := FGenre;
   if Tag.Comment[28] = #0 then
     Tag.Comment[29] := Char(FAlbumTrack);
 
@@ -266,6 +269,11 @@ begin
     if SavedActive then
       Open;
   end;
+end;
+
+function TJvId3v1.GetGenreAsString: string;
+begin
+  Result := ID3_IDToGenre(Genre);
 end;
 
 function TJvId3v1.GetHasTag: Boolean;
@@ -312,7 +320,7 @@ begin
     FYear := TagToStr(PChar(@Tag.Year), 4);
     FComment := TagToStr(PChar(@Tag.Comment), 30);
     // (p3) missing genre added
-    FGenre := ID3_IDToGenre_v1(Tag.Genre);
+    FGenre := Tag.Genre;
     if Tag.Comment[28] = #0 then
       FAlbumTrack := Byte(Tag.Comment[29])
     else
@@ -336,7 +344,7 @@ begin
   FAlbum := '';
   FYear := '';
   FComment := '';
-  FGenre := '';
+  FGenre := 255;
 end;
 
 procedure TJvId3v1.SetActive(const Value: Boolean);
@@ -348,7 +356,8 @@ begin
   begin
     if Value = FActive then
       Exit;
-    if Value then
+    FActive := Value;
+    if FActive then
       DoOpen
     else
       DoClose;
@@ -371,6 +380,11 @@ begin
     if SavedActive then
       Open;
   end;
+end;
+
+procedure TJvId3v1.SetGenreAsString(const Value: string);
+begin
+  Genre := ID3_GenreToID(Value);
 end;
 
 end.

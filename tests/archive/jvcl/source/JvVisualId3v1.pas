@@ -164,7 +164,7 @@ begin
   FId3Tag.OnChange := Changed;
 
   FId3v1 := TJvId3v1.Create(Self);
-  ID3_Genres_v1(FCombo1.Items);
+  ID3_Genres(FCombo1.Items);
   FEditFont.OnChange := FontChanged;
   FLabelFont.OnChange := FontChanged;
   FontChanged(Self);
@@ -288,7 +288,7 @@ begin
   FId3Tag.Comment := Trim(FId3v1.Comment);
   FId3Tag.Year := Trim(FId3v1.Year);
   FId3Tag.SongName := Trim(FId3v1.SongName);
-  FId3Tag.Genre := FId3v1.Genre;
+  FId3Tag.Genre := ID3_IDToGenre(FId3v1.Genre);
 end;
 
 procedure TJvVisualId3v1.WriteTag;
@@ -300,13 +300,13 @@ begin
     Album := FId3Tag.Album;
     Year := FId3Tag.Year;
     Comment := FId3Tag.Comment;
-    Genre := FId3Tag.Genre;
+    Genre := ID3_GenreToID(FId3Tag.Genre);
 
     Commit;
   end;
 
   { Reload to be sure }
-  ReadTag;
+  Self.ReadTag;
 end;
 
 procedure TJvVisualId3v1.SetEditColor(const Value: TColor);

@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils,
   JclUnicode,
-  JvComponent, JvID3v2Types;
+  JvComponent, JvID3v2Types, JvID3v1;
 
 type
   EJvID3Error = class(Exception);
@@ -1086,6 +1086,11 @@ type
     { Returns the nr. of frames of type AFrameID in the tag }
     function GetFrameCountFor(const AFrameID: TJvID3FrameID): Cardinal;
 
+    function CopyToID3v1(const DoOverwrite: Boolean = True): Boolean;
+    procedure CopyToID3v1Ctrl(AID3v1: TJvId3v1; const DoOverwrite: Boolean = True);
+    function CopyFromID3v1(const DoOverwrite: Boolean = True): Boolean; overload;
+    procedure CopyFromID3v1Ctrl(AID3v1: TJvId3v1; const DoOverwrite: Boolean = True);
+
     procedure EnsureExists(const FrameIDs: TJvID3FrameIDs);
 
     property Designer: TJvID3ControllerDesigner read FDesigner;
@@ -1109,6 +1114,8 @@ procedure GetID3v2Version(const AFileName: string; var HasTag: Boolean;
   var Version: TJvID3Version);
 function ExtToMIMEType(const Ext: string): string;
 function MIMETypeToExt(const MIMEType: string): string;
+function GenreToNiceGenre(const AGenre: string): string;
+function NiceGenreToGenre(const ANiceGenre: string): string;
 
 implementation
 
@@ -2225,6 +2232,176 @@ begin
     Result := '.' + Result;
 end;
 
+function GenreToNiceGenre(const AGenre: string): string;
+{ References to the ID3v1 genres can be made by, as first byte, enter "("
+  followed by a number from the genres list (appendix A) and ended with a ")"
+  character. This is optionally followed by a refinement, e.g. "(21)" or
+  "(4)Eurodisco". Several references can be made in the same frame, e.g.
+  "(51)(39)". If the refinement should begin with a "(" character it should
+  be replaced with "((", e.g. "((I can figure out any genre)" or
+  "(55)((I think...)".
+
+  The following new content types is defined in ID3v2 and is implemented in
+  the same way as the numerig content types, e.g. "(RX)".
+
+    RX        Remix
+    CR        Cover
+}
+var
+  State: Integer;
+  Start: Integer;
+  I: Integer;
+
+  procedure GotoState0;
+  begin
+    State := 0;
+    Start := I + 1;
+  end;
+
+  procedure AddString(const S: string);
+  begin
+    if Result > '' then
+    begin
+      if (S = '') or (S[1] = ' ') then
+        Result := Result + S
+      else
+        Result := Result + ' ' + S;
+    end
+    else
+      Result := S;
+    GotoState0;
+  end;
+
+  procedure AddReference(const AReference: string);
+  var
+    iReference: Integer;
+    Genre: string;
+  begin
+    iReference := StrToIntDef(AReference, -1);
+    if iReference < 0 then
+    begin
+      State := -1;
+      Exit;
+    end;
+
+    Genre := ID3_IDToGenre(iReference);
+    if Genre = '' then
+    begin
+      State := -1;
+      Exit;
+    end;
+
+    AddString(ID3_IDToGenre(iReference));
+    GotoState0;
+  end;
+
+begin
+  Result := '';
+  State := 0;
+  I := 1;
+  Start := I;
+
+  while (State >= 0) and (I <= Length(AGenre)) do
+  begin
+    case State of
+      0:
+        if AGenre[I] = '(' then
+          State := 1
+        else
+          State := -1;
+      1:
+        case AGenre[I] of
+          '(':
+            begin
+              Start := I;
+              State := -1;
+            end;
+          '0'..'9':
+            State := 2;
+          'R':
+            State := 3; // expect 'RX' = 'Remix'
+          'C':
+            State := 5; // expect 'CR' = 'Cover'
+          ')':
+            GotoState0;
+        else
+          State := -1;
+        end;
+      2:
+        case AGenre[I] of
+          '0'..'9':
+            ;
+          ')':
+            AddReference(Copy(AGenre, Start + 1, I - Start - 1));
+        else
+          State := -1;
+        end;
+      3, 5:
+        if ((State = 3) and (AGenre[I] = 'X')) or
+          ((State = 5) and (AGenre[I] = 'R')) then
+          Inc(State)
+        else
+          State := -1;
+      4, 6:
+        if AGenre[I] = ')' then
+        begin
+          if State = 4 then
+            AddString('Remix')
+          else
+            AddString('Cover')
+        end
+        else
+          State := -1;
+    end;
+    Inc(I);
+  end;
+
+  if Start < Length(AGenre) then
+    AddString(Copy(AGenre, Start, MaxInt));
+end;
+
+function NiceGenreToGenre(const ANiceGenre: string): string;
+var
+  S: string;
+
+  procedure AddAndDelete(const Add: string; const DelCount: Integer);
+  begin
+    Result := Result + Add;
+    Delete(S, 1, DelCount);
+    while (S > '') and (S[1] = ' ') do
+      Delete(S, 1, 1);
+  end;
+
+var
+  GenreID: Integer;
+begin
+  Result := '';
+  S := ANiceGenre;
+  while True do
+  begin
+    GenreID := ID3_LongGenreToID(S);
+    if GenreID <> 255 then
+      AddAndDelete(Format('(%d)', [GenreID]), Length(ID3_IDToGenre(GenreID)))
+    else
+    { Specials }
+    if AnsiStrLIComp(PChar(S), 'remix', 5) = 0 then
+      AddAndDelete('(RX)', 5)
+    else
+    if AnsiStrLIComp(PChar(S), 'cover', 5) = 0 then
+      AddAndDelete('(CR)', 5)
+    else
+      Break;
+  end;
+
+  if S > '' then
+  begin
+    if S[1] = '(' then
+      Result := Result + '(' + S
+    else
+      Result := Result + S;
+  end;
+end;
+
 procedure RemoveUnsynchronisationScheme(Source, Dest: TStream; BytesToRead: Integer);
 const
   MaxBufSize = $F000;
@@ -3209,6 +3386,212 @@ begin
     {$ELSE}
     Application.HandleException(ExceptObject)
     {$ENDIF}
+  end;
+end;
+
+function TJvID3Controller.CopyFromID3v1(
+  const DoOverwrite: Boolean): Boolean;
+var
+  ID3v1Ctrl: TJvId3v1;
+begin
+  if not Active then
+    ID3Error(SID3ControllerNotActive, Self);
+
+  ID3v1Ctrl := TJvId3v1.Create(nil);
+  try
+    ID3v1Ctrl.FileName := FileName;
+    ID3v1Ctrl.Open;
+    Result := ID3v1Ctrl.HasTag;
+    if Result then
+      CopyFromID3v1Ctrl(ID3v1Ctrl, DoOverwrite);
+  finally
+    ID3v1Ctrl.Free;
+  end;
+end;
+
+procedure TJvID3Controller.CopyFromID3v1Ctrl(AID3v1: TJvId3v1;
+  const DoOverwrite: Boolean);
+
+  function GetFrame(AFrameID: TJvID3FrameID): TJvID3Frame;
+  begin
+    Result := FFrames.FrameByID(AFrameID);
+    if Assigned(Result) and not DoOverwrite then
+      { If the frame already exists, and we don't want to overwrite, return nil }
+      Result := nil
+    else
+    if not Assigned(Result) then
+      { If the frame does not exists, create one }
+      Result := AddFrame(AFrameID);
+  end;
+
+var
+  Frame: TJvID3Frame;
+  SP: TJvID3StringPair;
+  Year: Word;
+begin
+  { There is a lot of extra code, because it may be possible that some frame
+    is not encoded in ISO-8859-1 }
+
+  if not Assigned(AID3v1) then
+    Exit;
+
+  // Songname
+  Frame := GetFrame(fiTitle);
+  if Assigned(Frame) then
+    SetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding, AID3v1.SongName);
+
+  // Artist
+  Frame := GetFrame(fiLeadArtist);
+  if Assigned(Frame) then
+  begin
+    SetStringA(SP, Frame.Encoding, AID3v1.Artist);
+    TJvID3CustomTextFrame(Frame).NewText(SP);
+  end;
+
+  // Album
+  Frame := GetFrame(fiAlbum);
+  if Assigned(Frame) then
+    SetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding, AID3v1.Album);
+
+  // Year
+  Year := StrToIntDef(AID3v1.Year, 0);
+  if Year > 0 then
+  begin
+    if Version = ive2_4 then
+    begin
+      Frame := GetFrame(fiRecordingTime);
+      if Assigned(Frame) then
+        TJvID3TimestampFrame(Frame).FValue := EncodeDate(Year, 1, 1);
+    end
+    else
+    begin
+      Frame := GetFrame(fiYear);
+      if Assigned(Frame) then
+        TJvID3NumberFrame(Frame).FValue := Year;
+    end;
+  end;
+
+  // Comment
+  Frame := GetFrame(fiComment);
+  if Assigned(Frame) then
+    SetStringA(TJvID3ContentFrame(Frame).FText, Frame.Encoding, AID3v1.Comment);
+
+  // Genre
+  Frame := GetFrame(fiContentType);
+  if Assigned(Frame) then
+  begin
+    if AID3v1.Genre = 255 then
+      SetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding, '')
+    else
+      SetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding,
+        Format('(%d)', [AID3v1.Genre]));
+  end;
+
+  // AlbumTrack
+  if AID3v1.AlbumTrack > 0 then
+  begin
+    Frame := GetFrame(fiTrackNum);
+    if Assigned(Frame) then
+      SetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding, IntToStr(AID3v1.AlbumTrack));
+  end;
+end;
+
+function TJvID3Controller.CopyToID3v1(const DoOverwrite: Boolean): Boolean;
+var
+  ID3v1Ctrl: TJvId3v1;
+begin
+  if not Active then
+    ID3Error(SID3ControllerNotActive, Self);
+
+  ID3v1Ctrl := TJvId3v1.Create(nil);
+  try
+    ID3v1Ctrl.FileName := FileName;
+    ID3v1Ctrl.Open;
+    CopyToID3v1Ctrl(ID3v1Ctrl, DoOverwrite);
+    Result := ID3v1Ctrl.Commit;
+  finally
+    ID3v1Ctrl.Free;
+  end;
+end;
+
+procedure TJvID3Controller.CopyToID3v1Ctrl(AID3v1: TJvId3v1;
+  const DoOverwrite: Boolean);
+var
+  S: string;
+  SP: TJvID3StringPair;
+  Frame: TJvID3Frame;
+  Track, P: Integer;
+  I: Integer;
+  YearSet, CommentSet: Boolean;
+begin
+  { There is a lot of extra code, because it may be possible that some frame
+    is not encoded in ISO-8859-1 }
+
+  if not Assigned(AID3v1) then
+    Exit;
+
+  YearSet := False;
+  CommentSet := False;
+
+  for I := 0 to FrameCount - 1 do
+  begin
+    Frame := FFrames[I];
+
+    with AID3v1 do
+      case Frame.FrameID of
+        fiTitle:
+          if DoOverwrite or (SongName = '') then
+            SongName := Copy(GetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding), 1, 30);
+        fiLeadArtist:
+          if DoOverwrite or (Artist = '') then
+          begin
+            { Note: fiLeadArtist has multiple lines }
+            TJvID3CustomTextFrame(Frame).GetText(SP);
+            S := GetStringA(SP, Frame.Encoding);
+            Artist := Copy(S, 1, 30);
+          end;
+        fiAlbum:
+          if DoOverwrite or (Album = '') then
+            Album := Copy(GetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding), 1, 30);
+        fiYear:
+          if not YearSet and (DoOverwrite or (Year = '')) then
+          begin
+            Year := Format('%.4d', [TJvID3NumberFrame(Frame).Value]);
+            YearSet := True;
+          end;
+        fiRecordingTime:
+          if not YearSet and (DoOverwrite or (Year = '')) then
+          begin
+            Year := Format('%.4d', [YearOfDate(TJvID3TimeStampFrame(Frame).Value)]);
+            YearSet := True;
+          end;
+        fiComment:
+          { Note : there may be more than 1 fiComment frame in the tag, just
+                   pick the first we encounter }
+          if not CommentSet and (DoOverwrite or (SongName = '')) then
+          begin
+            Comment := Copy(GetStringA(TJvID3ContentFrame(Frame).FText, Frame.Encoding), 1, 30);
+            CommentSet := True;
+          end;
+        fiContentType:
+          if DoOverwrite or (Genre = 255) then
+            Genre := ID3_LongGenreToID(
+              GetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding));
+        fiTrackNum:
+          if DoOverwrite or (AlbumTrack = 0) then
+          begin
+            S := GetStringA(TJvID3TextFrame(Frame).FText, Frame.Encoding);
+            P := Pos('/', S);
+            if P > 0 then
+              Track := StrToIntDef(Copy(S, 1, P - 1), 0)
+            else
+              Track := StrToIntDef(S, 0);
+            if (Track < 0) or (Track > 255) then
+              Track := 0;
+
+            AlbumTrack := Byte(Track);
+          end;
+      end;
   end;
 end;
 
@@ -6081,8 +6464,7 @@ begin
             TPicture(Dest).LoadFromFile(TmpFileName)
           else
           if Dest is TGraphic then
-            TGraphic(Dest).LoadFromFile(TmpFileName)
-          else
+            TGraphic(Dest).LoadFromFile(TmpFileName);
         except
           on EInvalidGraphic do
             ; { Do nothing }

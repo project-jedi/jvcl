@@ -238,12 +238,11 @@ function ID3_StringToFrameID(const S: string): TJvID3FrameID;
 function ID3_FrameIDToString(const ID: TJvID3FrameID): string;
 
 { Genre procedures }
-function ID3_GenreToID_v1(const AGenre: string): Integer;
-function ID3_GenreToID_v2(const AGenre: string): Integer;
-function ID3_IDToGenre_v1(const ID: Integer): string;
-function ID3_IDToGenre_v2(const ID: Integer): string;
-procedure ID3_Genres_v1(Strings: TStrings);
-procedure ID3_Genres_v2(Strings: TStrings);
+function ID3_GenreToID(const AGenre: string; const InclWinampGenres: Boolean = True): Integer;
+{ searches for a genre that is a prefix for AGenreLong }
+function ID3_LongGenreToID(const ALongGenre: string; const InclWinampGenres: Boolean = True): Integer;
+function ID3_IDToGenre(const ID: Integer; const InclWinampGenres: Boolean = True): string;
+procedure ID3_Genres(Strings: TStrings; const InclWinampGenres: Boolean = True);
 
 { Language ISO 639-2 procedures }
 function ISO_639_2IsCode(const Code: string): Boolean;
@@ -256,7 +255,7 @@ procedure ISO_639_2Names(Strings: TStrings);
 implementation
 
 uses
-  SysUtils;
+  Math, SysUtils;
 
 type
   TJvListType = (ltID3LongText, ltID3ShortText, ltISO_639_2Code, ltISO_639_2Name,
@@ -280,8 +279,9 @@ type
     function ID3LongTextToFrameID(const S: string): TJvID3FrameID;
     function ID3ShortTextToFrameID(const S: string): TJvID3FrameID;
 
-    function ID3GenreToID(const AGenre: string; const OnlyV1: Boolean): Integer;
-    procedure ID3Genres(AStrings: TStrings; const OnlyV1: Boolean);
+    function ID3GenreToID(const AGenre: string; const InclWinampGenres: Boolean): Integer;
+    procedure ID3Genres(AStrings: TStrings; const InclWinampGenres: Boolean);
+    function ID3LongGenreToID(const ALongGenre: string; const InclWinampGenres: Boolean): Integer;
 
     function ISO_639_2CodeToIndex(const ACode: string): Integer;
     function ISO_639_2NameToIndex(const AName: string): Integer;
@@ -904,7 +904,7 @@ const
     (S: 'zun'; L: 'Zuni')
     );
 
-  CID3Genres: array[0..125] of PChar = (
+  CID3Genres: array[0..147] of PChar = (
 
     { The following genres is defined in ID3v1 }
 
@@ -975,7 +975,7 @@ const
     'Native American',
     'Cabaret',
     'New Wave',
-    'Psychadelic',
+    'Psychedelic', // = 'Psychadelic' in ID3 docs, 'Psychedelic' in winamp.
     'Rave',
     'Showtunes',
     {70}'Trailer',
@@ -1034,9 +1034,40 @@ const
     {120}'Duet',
     'Punk Rock',
     'Drum Solo',
-    'A capella',
+    'A capella', // A Capella
     'Euro-House',
-    'Dance Hall'
+    'Dance Hall',
+
+    { winamp ?? genres }
+
+    'Goa',
+    'Drum & Bass',
+    'Club-House',
+    'Hardcore',
+    {130}'Terror',
+    'Indie',
+    'BritPop',
+    'Negerpunk',
+    'Polsk Punk',
+    'Beat',
+    'Christian Gangsta Rap',
+    'Heavy Metal',
+    'Black Metal',
+    'Crossover',
+    {140}'Contemporary Christian',
+    'Christian Rock',
+
+    { winamp 1.91 genres }
+
+    'Merengue',
+    'Salsa',
+    'Trash Metal',
+
+    { winamp 1.92 genres }
+
+    'Anime',
+    'JPop',
+    'SynthPop'
    );
 
 const
@@ -1048,40 +1079,30 @@ begin
   Result := CID3FrameDefs[ID].LongTextID;
 end;
 
-function ID3_GenreToID_v1(const AGenre: string): Integer;
+function ID3_GenreToID(const AGenre: string; const InclWinampGenres: Boolean): Integer;
 begin
   Result := TJvID3TermFinder.Instance.ID3GenreToID(AGenre, True);
 end;
 
-function ID3_GenreToID_v2(const AGenre: string): Integer;
+function ID3_IDToGenre(const ID: Integer; const InclWinampGenres: Boolean): string;
+const
+  HighValue: array [Boolean] of Byte = (CGenre_HighV1, High(CID3Genres));
 begin
-  Result := TJvID3TermFinder.Instance.ID3GenreToID(AGenre, False);
-end;
-
-function ID3_IDToGenre_v1(const ID: Integer): string;
-begin
-  if (ID >= Low(CID3Genres)) and (ID <= CGenre_HighV1) then
+  { Note : In Winamp, ID = 255 then Genre = '' }
+  if (ID >= Low(CID3Genres)) and (ID <= HighValue[InclWinampGenres]) then
     Result := CID3Genres[ID]
   else
     Result := '';
 end;
 
-function ID3_IDToGenre_v2(const ID: Integer): string;
+function ID3_LongGenreToID(const ALongGenre: string; const InclWinampGenres: Boolean = True): Integer;
 begin
-  if (ID >= Low(CID3Genres)) and (ID <= High(CID3Genres)) then
-    Result := CID3Genres[ID]
-  else
-    Result := '';
+  Result := TJvID3TermFinder.Instance.ID3LongGenreToID(ALongGenre, InclWinampGenres);
 end;
 
-procedure ID3_Genres_v1(Strings: TStrings);
+procedure ID3_Genres(Strings: TStrings; const InclWinampGenres: Boolean);
 begin
-  TJvID3TermFinder.Instance.ID3Genres(Strings, True);
-end;
-
-procedure ID3_Genres_v2(Strings: TStrings);
-begin
-  TJvID3TermFinder.Instance.ID3Genres(Strings, False);
+  TJvID3TermFinder.Instance.ID3Genres(Strings, InclWinampGenres);
 end;
 
 function ISO_639_2IsCode(const Code: string): Boolean;
@@ -1121,6 +1142,76 @@ end;
 procedure ISO_639_2Names(Strings: TStrings);
 begin
   TJvID3TermFinder.Instance.ISO_639_2Names(Strings);
+end;
+
+function IndexOfLongString(Strings: TStrings; const ALongText: string): Integer;
+{ Searches for a string in Strings that is a prefix of ALongText, this is used
+  by the ID3 genres; problem is that some strings may have the same prefix, ie
+
+  Pop
+  Pop/Funk
+  Pop-Folk
+
+  If we search for a prefix for 'Pop/Funk or something' the binary search
+  may return 'Pop', thus we use FindFrom to search some more
+}
+
+  function FindFrom(const Index: Integer) : Integer;
+  begin
+    if Length(ALongText) > Length(Strings[Index]) then
+    begin
+      Result := Index + 1;
+
+      { Strings is sorted thus it's only usefull to look at higher indexes than
+        Index ie only at higher indexes are possibly longer prefixes of ALongText }
+      while (Result < Strings.Count) and
+        (AnsiStrLIComp(PChar(Strings[Result]), PChar(ALongText), Length(Strings[Result])) = 0) do
+
+        Inc(Result);
+
+      { Strings[Result] is not ok, Strings[Result-1] is ok }
+      Dec(Result);
+    end
+    else
+    if Length(ALongText) < Length(Strings[Index]) then
+    begin
+      Result := Index - 1;
+
+      while (Result >= 0) and (Length(Strings[Result]) > Length(ALongText)) do
+        Dec(Result);
+
+      if (Result >= 0) and
+        (AnsiStrLIComp(PChar(Strings[Result]), PChar(ALongText), Length(Strings[Result])) <> 0) then
+        { Not found }
+        Result := -1;
+    end
+    else
+      Result := Index;
+  end;
+var
+  Top, Mid, C: Integer;
+begin
+  Result := 0;
+  Top := Strings.Count - 1;
+  while Result <= Top do
+  begin
+    Mid := (Result + Top) shr 1;
+    C := AnsiStrLIComp(PChar(Strings[Mid]), PChar(ALongText),
+      Min(Length(Strings[Mid]), Length(ALongText)));
+    if C < 0 then
+      Result := Mid + 1
+    else
+    if C = 0 then
+    begin
+      Result := FindFrom(Mid);
+      Exit;
+    end
+    else { C > 0 }
+      Top := Mid - 1;
+  end;
+
+  { Nothing found }
+  Result := -1;
 end;
 
 // === TJvID3TermFinder =====================================================
@@ -1241,7 +1332,7 @@ begin
 end;
 
 procedure TJvID3TermFinder.ID3Genres(AStrings: TStrings;
-  const OnlyV1: Boolean);
+  const InclWinampGenres: Boolean);
 var
   I: Integer;
 begin
@@ -1252,8 +1343,13 @@ begin
     AStrings.BeginUpdate;
     try
       AStrings.Clear;
+
+      { In Winamp, ID = 255 then Genre = '' }
+      if InclWinampGenres then
+        AStrings.AddObject('', TObject(255));
+
       for I := 0 to FLists[ltID3Genres].Count - 1 do
-        if not OnlyV1 or (Integer(Objects[I]) <= CGenre_HighV1) then
+        if InclWinampGenres or (Integer(Objects[I]) <= CGenre_HighV1) then
           AStrings.AddObject(Strings[I], Objects[I]);
     finally
       AStrings.EndUpdate;
@@ -1261,18 +1357,60 @@ begin
   end;
 end;
 
-function TJvID3TermFinder.ID3GenreToID(const AGenre: string; const OnlyV1: Boolean): Integer;
+function TJvID3TermFinder.ID3GenreToID(const AGenre: string; const InclWinampGenres: Boolean): Integer;
+const
+  { In Winamp, ID = 255 then Genre = '' }
+  CDefaultGenre: array [Boolean] of Byte = (CGenre_DefaultID, 255);
 begin
   BuildList_ID3Genres;
 
-  Result := FLists[ltID3Genres].IndexOf(AGenre);
-  if OnlyV1 and (Result > CGenre_HighV1) then
+  if AGenre = '' then
+    Result := CDefaultGenre[InclWinampGenres]
+  else
+  begin
+    Result := FLists[ltID3Genres].IndexOf(AGenre);
+
+    { Special case: 'Psychadelic' }
+    if (Result < 0) and (AnsiCompareText(AGenre, 'psychadelic') = 0) then
+      Result := FLists[ltID3Genres].IndexOf('Psychedelic');
+
+    if not InclWinampGenres and (Result > CGenre_HighV1) then
+      Result := -1;
+
+    if Result >= 0 then
+      Result := Integer(FLists[ltID3Genres].Objects[Result])
+    else
+      Result := CDefaultGenre[InclWinampGenres];
+  end;
+end;
+
+function TJvID3TermFinder.ID3LongGenreToID(const ALongGenre: string;
+  const InclWinampGenres: Boolean): Integer;
+const
+  { In Winamp, ID = 255 then Genre = '' }
+  CDefaultGenre: array [Boolean] of Byte = (CGenre_DefaultID, 255);
+begin
+  BuildList_ID3Genres;
+
+  if ALongGenre = '' then
+  begin
+    Result := CDefaultGenre[InclWinampGenres];
+    Exit;
+  end;
+
+  Result := IndexOfLongString(FLists[ltID3Genres], ALongGenre);
+
+  { Special case: 'Psychadelic' }
+  if (Result < 0) and (AnsiStrLIComp(PChar(ALongGenre), 'psychadelic', Length(ALongGenre)) = 0) then
+    Result := FLists[ltID3Genres].IndexOf('Psychedelic');
+
+  if not InclWinampGenres and (Result > CGenre_HighV1) then
     Result := -1;
 
   if Result >= 0 then
     Result := Integer(FLists[ltID3Genres].Objects[Result])
   else
-    Result := CGenre_DefaultID;
+    Result := CDefaultGenre[InclWinampGenres];
 end;
 
 function TJvID3TermFinder.ID3LongTextToFrameID(

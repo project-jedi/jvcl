@@ -85,9 +85,7 @@ type
     procedure WMGetMinMaxInfo(var Message: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
   protected
     procedure Activated; override;
-    {$IFDEF COMPILER6_UP}
     function UniqueName(Component: TComponent): string; override;
-    {$ENDIF}
   public
     function ForEachSelection(Proc: TSelectionProc): Boolean;
     function DoNewFrame: TJvID3Frame;
@@ -95,13 +93,12 @@ type
     {$IFDEF COMPILER6_UP}
     function EditAction(Action: TEditAction): Boolean; override;
     procedure ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent); override;
-    { (rb) ?? Don't know how this is handled in D5 }
     procedure SelectionChanged(const ADesigner: IDesigner; const ASelection: IDesignerSelections); override;
     procedure ItemsModified(const Designer: IDesigner); override;
     {$ELSE}
+    procedure SelectionChanged(ASelection: TDesignerSelectionList); override;
     procedure EditAction(Action: TEditAction); override;
     procedure ComponentDeleted(Component: IPersistent); override;
-    function UniqueName(Component: TComponent): string; override;
     procedure FormModified; override;
     {$ENDIF}
 
@@ -129,9 +126,20 @@ type
     property FrameDescription[const FrameID: TJvID3FrameID]: string read GetFrameDescription;
   end;
 
-procedure ShowFramesEditor(Designer: IDesigner; AController: TJvID3Controller);
-function CreateFramesEditor(Designer: IDesigner; AController: TJvID3Controller;
-  var Shared: Boolean): TJvID3FramesEditor;
+procedure ShowFramesEditor(
+  {$IFDEF COMPILER6_UP}
+  Designer: IDesigner;
+  {$ELSE}
+  Designer: IFormDesigner;
+  {$ENDIF}
+  AController: TJvID3Controller);
+function CreateFramesEditor(
+  {$IFDEF COMPILER6_UP}
+  Designer: IDesigner;
+  {$ELSE}
+  Designer: IFormDesigner;
+  {$ENDIF}
+  AController: TJvID3Controller; var Shared: Boolean): TJvID3FramesEditor;
 
 implementation
 
@@ -242,7 +250,13 @@ const
     'Compressed meta frame' {fiMetaCompression}
     );
 
-procedure ShowFramesEditor(Designer: IDesigner; AController: TJvID3Controller);
+procedure ShowFramesEditor(
+  {$IFDEF COMPILER6_UP}
+  Designer: IDesigner;
+  {$ELSE}
+  Designer: IFormDesigner;
+  {$ENDIF}
+  AController: TJvID3Controller);
 var
   FramesEditor: TJvID3FramesEditor;
   vShared: Boolean;
@@ -252,8 +266,13 @@ begin
     FramesEditor.Show;
 end;
 
-function CreateFramesEditor(Designer: IDesigner; AController: TJvID3Controller;
-  var Shared: Boolean): TJvID3FramesEditor;
+function CreateFramesEditor(
+  {$IFDEF COMPILER6_UP}
+  Designer: IDesigner;
+  {$ELSE}
+  Designer: IFormDesigner;
+  {$ENDIF}
+  AController: TJvID3Controller; var Shared: Boolean): TJvID3FramesEditor;
 begin
   Shared := True;
   if AController.Designer <> nil then
@@ -263,11 +282,7 @@ begin
   else
   begin
     Result := TJvID3FramesEditor.Create(Application);
-    {$IFDEF COMPILER6_UP}
     Result.Designer := Designer;
-    {$ELSE}
-    Result.Designer := Designer as IFormDesigner;
-    {$ENDIF}
     Result.Controller := AController;
     Shared := False;
   end;
@@ -277,7 +292,6 @@ end;
 
 procedure TJvID3FramesEditor.Activated;
 begin
-  { (rb) Don't know equivalent in D5 }
   {$IFDEF COMPILER6_UP}
   Designer.Activate;
   {$ENDIF}
@@ -296,10 +310,9 @@ begin
   P := ExtractPersistent(Component);
   if P = Controller then
     Controller := nil
-  { (rb) Doesn't work in D5? }
-  //else
-  //if (P is TJvID3Frame) and (TJvID3Frame(P).Controller = Controller) then
-  //  UpdateDisplay;
+  else
+  if (P is TJvID3Frame) and (TJvID3Frame(P).Controller = Controller) then
+    UpdateDisplay;
 end;
 {$ENDIF}
 
@@ -329,11 +342,11 @@ end;
 function TJvID3FramesEditor.EditAction(Action: TEditAction): Boolean;
 {$ELSE}
 procedure TJvID3FramesEditor.EditAction(Action: TEditAction);
-var
-  Result: Boolean;
 {$ENDIF}
 begin
+  {$IFDEF COMPILER6_UP}
   Result := True;
+  {$ENDIF}
   case Action of
     {eaCut: Cut;
     eaCopy: Copy;
@@ -345,8 +358,10 @@ begin
         SelectAll;
         UpdateSelection;
       end;
+  {$IFDEF COMPILER6_UP}
   else
     Result := False;
+  {$ENDIF}
   end;
 end;
 
@@ -384,8 +399,7 @@ procedure TJvID3FramesEditor.ItemsModified(const Designer: IDesigner);
 procedure TJvID3FramesEditor.FormModified;
 {$ENDIF}
 begin
-  if not (csDestroying in ComponentState) then
-    UpdateCaption;
+  UpdateCaption;
 end;
 
 procedure TJvID3FramesEditor.MoveFrames(MoveOffset: Integer);
@@ -509,6 +523,9 @@ end;
 {$IFDEF COMPILER6_UP}
 procedure TJvID3FramesEditor.SelectionChanged(const ADesigner: IDesigner;
   const ASelection: IDesignerSelections);
+{$ELSE}
+procedure TJvID3FramesEditor.SelectionChanged(ASelection: TDesignerSelectionList);
+{$ENDIF}
 var
   I: Integer;
   S: Boolean;
@@ -535,7 +552,6 @@ begin
         Selected[I] := S;
     end;
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvID3FramesEditor.SetController(Value: TJvID3Controller);
 begin
@@ -627,16 +643,15 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
-type
-  TDesignerSelectionList = IDesignerSelections;
-{$ENDIF}
-
 procedure TJvID3FramesEditor.UpdateSelection;
 var
   I: Integer;
   Frame: TJvID3Frame;
-  ComponentList: TDesignerSelectionList; // = Interface for D6 up
+  {$IFDEF COMPILER6_UP}
+  ComponentList: IDesignerSelections;
+  {$ELSE}
+  ComponentList: TDesignerSelectionList;
+  {$ENDIF}
 begin
   if Active then
   begin
@@ -644,8 +659,8 @@ begin
     ComponentList := TDesignerSelections.Create;
     {$ELSE}
     ComponentList := TDesignerSelectionList.Create;
-    try
     {$ENDIF}
+    try
       with FrameListBox do
         for I := 0 to Items.Count - 1 do
           if Selected[I] then
@@ -656,11 +671,17 @@ begin
           end;
       if ComponentList.Count = 0 then
         ComponentList.Add(Controller);
-      Designer.SetSelections(ComponentList);
-    {$IFNDEF COMPILER6_UP}
-    finally
+    except
+      {$IFNDEF COMPILER6_UP}
+      // In D6 up it's an interface, so no need to free up
       ComponentList.Free;
+      {$ENDIF}
+      raise;
     end;
+    {$IFDEF COMPILER6_UP}
+    Designer.SetSelections(ComponentList);
+    {$ELSE}
+    SetSelection(ComponentList);
     {$ENDIF}
   end;
 end;
