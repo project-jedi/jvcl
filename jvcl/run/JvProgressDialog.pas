@@ -273,7 +273,10 @@ begin
   DoShow;
   StoreValues;
   try
-    FForm.Position := FScreenPosition; // added 28/05/2004, RK
+// asn: commented out 24-06-2004,
+//      you cannot assign to a nil fform
+//    FForm.Position := FScreenPosition; // added 28/05/2004, RK
+//
     if TfrmProgress.Execute(TfrmProgress(FForm), Caption, Text, Image, Transparent, Min, Max, Position, Interval,
       ShowCancel or (csDesigning in ComponentState), Smooth, InternalDoProgress, InternalDoCancel) then
       Result := mrOK;
