@@ -2,8 +2,8 @@
 
 #include <vcl.h>
 #pragma hdrstop
-USERES("JVCL200_D50C.res");
-USEPACKAGE("vcl50.bpi");
+//---------------------------------------------------------------------------
+
 USEUNIT("..\source\JVCLReg.pas");
 USEUNIT("..\Source\JvAlarmsEditor.pas");
 USEUNIT("..\Source\JvBaseDlgEditor.pas");
@@ -28,7 +28,6 @@ USEFORMNS("..\Source\JvOBEdFrm.pas", Jvobedfrm, frmOLBarEditFrm);
 USEUNIT("..\Source\JvChNtfyProperty.pas");
 USEUNIT("..\Source\JvLCProperty.pas");
 USEUNIT("..\source\JvAppletProperty.pas");
-USEUNIT("..\source\JvLConst.pas");
 USEUNIT("..\source\JvHintProp.pas");
 USEUNIT("..\source\JvColors.pas");
 USEUNIT("..\source\JvDsgn.pas");
@@ -50,12 +49,6 @@ USEFORMNS("..\source\JvQBndDlg.pas", Jvqbnddlg, JvQueryParamsDialog);
 USEFORMNS("..\source\JvSbEdit.pas", Jvsbedit, JvSpeedbarEditor);
 USEFORMNS("..\source\JvSelDSFrm.pas", Jvseldsfrm, JvSelectDataSetForm);
 USEFORMNS("..\source\JvTimLstEd.pas", Jvtimlsted, JvTimerItemsEditor);
-USEPACKAGE("vcldb50.bpi");
-USEPACKAGE("JVCL200_R50C.bpi");
-USEPACKAGE("dclstd50.bpi");
-USEPACKAGE("vclx50.bpi");
-USEPACKAGE("vclbde50.bpi");
-USEPACKAGE("vcljpg50.bpi");
 USEUNIT("..\source\JvActions.pas");
 USEFORMNS("..\source\JvActnRes.pas", Jvactnres, JvStandardActions); /* TDataModule: File Type */
 USEFORMNS("..\source\JvBandObjectDLLWizardForm.pas", Jvbandobjectdllwizardform, zWizardForm);
@@ -70,7 +63,15 @@ USEUNIT("..\source\JvSchedEvntReg.pas");
 USEUNIT("..\source\JvTipOfDayProp.pas");
 USEFORMNS("..\source\ScheduleEditor.pas", Scheduleeditor, frmScheduleEditor);
 USEUNIT("..\source\JvToolReg.pas");
+USERES("JVCL200_D50C.res");
+USEPACKAGE("vcldb50.bpi");
+USEPACKAGE("JVCL200_R50C.bpi");
+USEPACKAGE("dclstd50.bpi");
+USEPACKAGE("vclx50.bpi");
+USEPACKAGE("vclbde50.bpi");
+USEPACKAGE("vcljpg50.bpi");
 USEPACKAGE("dsnide50.bpi");
+USEPACKAGE("vcl50.bpi");
 //---------------------------------------------------------------------------
 #//---------------------------------------------------------------------------
 #pragma package(smart_init)
