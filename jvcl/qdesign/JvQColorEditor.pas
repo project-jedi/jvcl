@@ -41,14 +41,12 @@ uses
   JvQDsgnEditors, 
   JvQConsts, JvQJVCLUtils;
 
-type  
-  TJvColorProperty = class(TColorPropertyEx) 
+type
+  TJvColorProperty = class(TColorProperty)
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: string); override;
-    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean);  virtual ;
+    procedure SetValue(const Value: string); override; 
   end;
 
 function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
@@ -169,29 +167,7 @@ begin
   SetOrdValue(JvStringToColor(Value));
 end;
 
-procedure TJvColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
-  const ARect: TRect; ASelected: Boolean);
-var
-  Rght: Integer;
-  OldPenColor, OldBrushColor: TColor;
-begin
-  Rght := (ARect.Bottom - ARect.Top) + ARect.Left;
-  with ACanvas do
-  try
-    OldPenColor := Pen.Color;
-    OldBrushColor := Brush.Color;
-    Pen.Color := Brush.Color;
-    Rectangle(ARect.Left, ARect.Top, Rght, ARect.Bottom);
-    Brush.Color := JvStringToColor(Value);
-    Pen.Color := JvColorToBorderColor(ColorToRGB(Brush.Color), ASelected);
-    Rectangle(ARect.Left + 1, ARect.Top + 1, Rght - 1, ARect.Bottom - 1);
-    Brush.Color := OldBrushColor;
-    Pen.Color := OldPenColor;
-  finally
-    ACanvas.TextRect(Rect(Rght, ARect.Top, ARect.Right, ARect.Bottom),
-      Rght + 1, ARect.Top + 1, Value);
-  end;
-end;
+
 
 end.
 

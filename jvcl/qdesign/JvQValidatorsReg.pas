@@ -49,7 +49,8 @@ uses
   Classes, 
   DesignEditors, DesignIntf, 
   JvQDsgnConsts,
-  JvQErrorIndicator, JvQValidators, JvQValidatorsEditorForm, JvQDsgnEditors;
+  JvQErrorIndicator, JvQValidators, JvQValidatorsEditorForm,
+  JvQDsgnEditors, JvQStdDsgnEditors;
 
 procedure Register;
 begin

@@ -15,7 +15,8 @@ uses
   Classes, QControls, 
   DesignIntf, DesignEditors,
   CLXEditors, 
-  JvQDsgnConsts, 
+  JvQDsgnConsts,
+  JvQJanTreeView,
   JvQMarkupLabel, JvQMarkupViewer, JvQSAL, JvQSALCore, JvQSALMath,
   JvQYearGrid, JvQTracker, JvQAirBrush, JvQGridFilter, JvQGridPrinter,
   JvQArrayButton, JvQForth, JvQTurtle, JvQPaintFX, JvQDrawImage,
@@ -51,7 +52,8 @@ begin
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
   RegisterComponents(RsPaletteJans, [TJvMarkupLabel, TJvMarkupViewer, TJvSAL, 
     TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
-    TJvGridFilter, TJvGridPrinter, 
+    TJvGridFilter, TJvGridPrinter,
+    TJvJanTreeview,
     TJvPaintFX, TJvDrawImage,
     TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller ]);
   // Simulator Components

@@ -38,7 +38,7 @@ uses
   SysUtils, 
   DesignIntf, DesignEditors, DesignMenus, CLXEditors,   
   QImgList, 
-  JvQDsgnEditors, JvQTransparentButton;
+  JvQStdDsgnEditors, JvQTransparentButton;
 
 type
   TJvTBImagesProperty = class(TJvDefaultImageIndexProperty)

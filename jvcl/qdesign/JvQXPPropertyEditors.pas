@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, 
   DesignIntf, DesignEditors,  
-  JvQDsgnEditors,  
+  JvQDsgnEditors, JvQStdDsgnEditors, 
   QWindows, QForms, QImgList, QActnList, Types, QGraphics,
   TypInfo;
 
