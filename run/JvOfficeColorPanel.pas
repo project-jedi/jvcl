@@ -86,7 +86,13 @@ type
     (cbctColorsButton, cbctAutoButton, cbctOtherButton, cbctNone);
   TJvPropertiesChangedEvent = procedure(Sender: TObject; PropName: string) of object;
 
-  TJvColorSpeedButton = class(TJvSpeedButton);
+  TJvColorSpeedButton = class(TJvSpeedButton)
+  private
+    FButtonColor: TColor;
+    procedure SetButtonColor(const Value: TColor);
+  public
+    property ButtonColor:TColor read FButtonColor write SetButtonColor;
+  end;
 
   TJvSubColorButton = class(TJvColorSpeedButton)
   private
@@ -99,8 +105,6 @@ type
     constructor Create(AOwner: TComponent); override;
     property Canvas;
     property EdgeWidth: Integer read GetEdgeWidth write SetEdgeWidth;
-  published
-    property Color;
   end;
 
   // (ahuser) TJvColorDialog is not registered as component
@@ -514,12 +518,12 @@ var
   B, X, Y: Integer;
   FColor: TColor;
 begin
-  inherited Paint;
   if not Visible then
     Exit;
+  inherited Paint;
 
   if Enabled then
-    FColor := Color
+    FColor := ButtonColor
   else
     FColor := clGray;
   if EdgeWidth >= 0 then
@@ -596,8 +600,8 @@ begin
     Tag := MaxColorButtonNumber + 1;
     Down := True;
     AllowAllUp := True;
-    Color := FProperties.AutoColor;
-    Hint := ColorToString(Color);
+    ButtonColor := FProperties.AutoColor;
+    Hint := ColorToString(ButtonColor);
     Visible := False;
     OnClick := ColorButtonClick;
   end;
@@ -608,8 +612,8 @@ begin
     Parent := Self;
     GroupIndex := 1;
     Tag := MaxColorButtonNumber + 2;
-    Color := clDefault;
-    Hint := ColorToString(Color);
+    ButtonColor := clDefault;
+    Hint := ColorToString(ButtonColor);
     AllowAllUp := True;
     Visible := False;
     OnClick := ColorButtonClick;
@@ -655,10 +659,10 @@ begin
       Parent := Self;
       GroupIndex := 1;
       AllowAllUp := True;
-      Color := SubColorButtonColors[I];
+      ButtonColor := SubColorButtonColors[I];
       Tag := I;
       Flat := True;
-      Hint := ColorToString(Color);
+      Hint := ColorToString(ButtonColor);
       OnClick := ColorButtonClick;
     end;
   end;
@@ -759,8 +763,8 @@ begin
     if FColorDialog.Execute then
     begin
       SetSelectedColor(FColorDialog.Color);
-      FOtherButton.Color := FSelectedColor;
-      FOtherButton.Hint := ColorToString(FOtherButton.Color);
+      FOtherButton.ButtonColor := FSelectedColor;
+      FOtherButton.Hint := ColorToString(FOtherButton.ButtonColor);
     end
     else
       Exit;
@@ -775,7 +779,7 @@ begin
     for I := 0 to MaxColorButtonNumber - 1 do
       FColorButtons[I].Down := FColorButtons[I] = Sender;
     {$ENDIF VisualCLX}
-    SetSelectedColor(TJvSubColorButton(Sender).Color);
+    SetSelectedColor(TJvSubColorButton(Sender).ButtonColor);
   end;
 end;
 
@@ -818,13 +822,13 @@ begin
   begin
     FSelectedColor := Value;
     Color := Value;
-    if FAutoButton.Color = Value then
+    if FAutoButton.ButtonColor = Value then
       FAutoButton.Down := True
     else
     begin
       FAutoButton.Down := False;
       for I := 0 to MaxColorButtonNumber - 1 do
-        if FColorButtons[I].Color = Value then
+        if FColorButtons[I].ButtonColor = Value then
         begin
           FColorButtons[I].Down := True;
           Break;
@@ -958,7 +962,7 @@ begin
     FOtherButton.Hint := Properties.OtherHint
   else
   if Cmp(PropName, 'AutoColor') then
-    FAutoButton.Color := Properties.AutoColor
+    FAutoButton.ButtonColor := Properties.AutoColor
   else
   if Cmp(PropName, 'ShowColorHint') then
   begin
@@ -971,6 +975,17 @@ begin
     LFlag := True;
   if LFlag then
     AdjustColorButtons;
+end;
+
+{ TJvColorSpeedButton }
+
+procedure TJvColorSpeedButton.SetButtonColor(const Value: TColor);
+begin
+  if FButtonColor <> Value then
+  begin
+    FButtonColor := Value;
+    Invalidate;
+  end;
 end;
 
 end.

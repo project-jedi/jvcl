@@ -143,7 +143,7 @@ begin
   HintColor := Application.HintColor;
   FInited := False;
   FShowDragBar := True;
-
+//  Scaled := False;
   AutoScroll := False;
   {$IFDEF VCL}
   BorderStyle := bsDialog;
