@@ -1069,6 +1069,20 @@ type
     property TimeShowSeconds: Boolean read GetTimeShowSeconds write SetTimeShowSeconds;
   end;
 
+  TJvInspectorTStringsItem = class(TJvCustomInspectorItem)
+  private
+  protected
+    procedure ContentsChanged(Sender: TObject);
+    function GetDisplayValue: string; override;
+    procedure Edit; override;
+    procedure SetDisplayValue(const Value: string); override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+  public
+    constructor Create(const AParent: TJvCustomInspectorItem;
+      const AData: TJvCustomInspectorData); override;
+  published
+  end;
+
   //----------------------------------------------------------------------------
   // Inspector data classes
   //----------------------------------------------------------------------------
@@ -7352,6 +7366,177 @@ begin
   AddColumnPrim(FTime);
 end;
 
+{ TJvInspectorTStringsItem }
+
+procedure TJvInspectorTStringsItem.ContentsChanged(Sender: TObject);
+var
+  Obj: TStrings;
+begin
+  Obj := TStrings(Data.AsOrdinal);
+  Obj.Text := TMemo(Sender).Lines.Text;
+end;
+
+function TJvInspectorTStringsItem.GetDisplayValue: string;
+var
+  Obj: TObject;
+begin
+  Obj := TObject(Data.AsOrdinal);
+  if not Multiline then
+  begin
+    if Obj <> nil then
+      Result := Result + '('+ Obj.ClassName + ')'
+    else
+      Result := Result + '(' + GetTypeData(Data.TypeInfo).ClassType.ClassName + ')';
+  end
+  else
+    Result := TStrings(Obj).Text
+end;
+
+type
+  TSLEditorForm = class(TCustomForm)
+  public
+    grp: TGroupBox;
+    lbl: TLabel;
+    mm: TMemo;
+    btnOK: TButton;
+    btnCancel: TButton;
+    OnContentsChanged: TNotifyevent;
+    constructor CreateNew(AOwner: TComponent); reintroduce;
+    procedure MemoChanged(Sender: TObject);
+  end;
+
+  constructor TSLEditorForm.CreateNew(AOwner: TComponent);
+  begin
+    inherited CreateNew(AOwner);
+    Caption := 'String list editor';
+    Width := 435;
+    Height := 305;
+    BorderIcons := [biSystemMenu];
+    grp := TGroupBox.Create(Self);
+    grp.Parent := Self;
+    grp.Left := 10;
+    grp.Top := 10;
+    grp.Width := ClientWidth - 20;
+    grp.Height := 230;
+    grp.Anchors := [akTop, akLeft, akRight, akBottom];
+    lbl := TLabel.Create(Self);
+    lbl.Parent := grp;
+    lbl.Caption := '';
+    lbl.AutoSize := False;
+    lbl.Left := 10;
+    lbl.Top := 10;
+    lbl.Width := grp.ClientWidth - 20;
+    lbl.Anchors := [akTop, akLeft, akRight];
+    mm := TMemo.Create(Self);
+    mm.Parent := grp;
+    mm.Left := 10;
+    mm.Top := 30;
+    mm.Width := grp.ClientWidth - 20;
+    mm.Height := grp.ClientHeight - 40;
+    mm.Anchors := [akTop, akLeft, akRight, akBottom];
+    mm.ScrollBars := ssBoth;
+    mm.WordWrap := False;
+    mm.WantReturns := True;
+    mm.WantTabs := False;
+    mm.OnChange := MemoChanged;
+    btnOK := TButton.Create(Self);
+    btnOK.Parent := Self;
+    btnOK.ModalResult := mrOK;
+    btnOK.Default := True;
+    btnOK.Caption := '&OK';
+    btnOK.Left := ClientWidth - 15 - 2 * btnOK.Width;
+    btnOK.Top := ClientHeight - 5 - btnOK.Height;
+    btnOK.Anchors := [akRight, akBottom];
+    btnCancel := TButton.Create(Self);
+    btnCancel.Parent := Self;
+    btnCancel.ModalResult := mrCancel;
+    btnCancel.Cancel := True;
+    btnCancel.Caption := 'Cancel';
+    btnCancel.Left := ClientWidth - 10 - btnCancel.Width;
+    btnCancel.Top := ClientHeight - 5 - btnCancel.Height;
+    btnCancel.Anchors := [akRight, akBottom];
+    Constraints.MinWidth := 2 * btnOK.Width + 25 + (Width - ClientWidth);
+    Constraints.MinHeight := (ClientHeight - mm.ClientHeight) + 43 + (Height - ClientHeight);
+  end;
+
+  procedure TSLEditorForm.MemoChanged(Sender: TObject);
+  var
+    I: Integer;
+  begin
+    I := mm.Lines.Count;
+    if I <> 1 then
+      lbl.Caption := IntToStr(I) + ' lines'
+    else
+      lbl.Caption := '1 line';
+    if @OnContentsChanged <> nil then
+      OnContentsChanged(Sender);
+  end;
+
+procedure TJvInspectorTStringsItem.Edit;
+var
+  SL: TStrings;
+begin
+  with TSLEditorForm.CreateNew(Inspector) do
+  try
+    SL := TStrings(Data.AsOrdinal);
+    mm.Lines.Assign(SL);
+    if AutoUpdate then
+      OnContentsChanged := ContentsChanged;
+    if ShowModal = mrOK then
+      SL.Assign(mm.Lines)
+  finally
+    Free;
+  end;
+end;
+
+procedure TJvInspectorTStringsItem.SetDisplayValue(const Value: string);
+var
+  Obj: TObject;
+begin
+  if Multiline then
+  begin
+    Obj := TObject(Data.AsOrdinal);
+    TStrings(Obj).Text := Value;
+  end;
+end;
+
+procedure TJvInspectorTStringsItem.SetFlags(const Value: TInspectorItemFlags);
+var
+  OldMask: TInspectorItemFlags;
+  NewMask: TInspectorItemFlags;
+begin
+  { The item has either an edit button or is multiline. If one of them is set, the otherone will
+    removed }
+  OldMask := Flags * [iifEditButton, iifMultiLine];
+  NewMask := Value * [iifEditButton, iifMultiLine];
+  if OldMask <> NewMask then
+  begin
+    if Multiline and not (iifEditButton in OldMask) and (iifEditButton in NewMask) then
+      inherited SetFlags(Value - [iifMultiline]) // iifEditButton has changed
+    else if not Multiline and (iifEditButton in OldMask) and (iifMultiline in NewMask) then
+      inherited SetFlags(Value - [iifEditButton]) // iifMultiline has changed
+    else
+      inherited SetFlags(Value);                  // Neither flag has changed. Should never occur.
+  end
+  else                                            // Flags have not changed
+    inherited SetFlags(Value);
+  if RowSizing <> nil then
+  begin
+    RowSizing.Sizable := Multiline;               // Update sizable state
+    if not Multiline then
+      RowSizing.SizingFactor := irsNoReSize
+    else
+      RowSizing.SizingFactor := irsValueHeight;
+  end;
+end;
+
+constructor TJvInspectorTStringsItem.Create(const AParent: TJvCustomInspectorItem; const AData: TJvCustomInspectorData);
+begin
+  inherited Create(AParent, AData);
+  RowSizing.MinHeight := irsItemHeight;
+  Flags := Flags + [iifEditButton];
+end;
+
 { TJvCustomInspectorData }
 
 constructor TJvCustomInspectorData.CreatePrim(const AName: string;
@@ -9335,7 +9520,7 @@ begin
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(BYTEBOOL)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(WORDBOOL)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(LONGBOOL)));
-    Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorStringItem, TypeInfo(TStrings)));
+    Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorTStringsItem, TypeInfo(TStrings)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorComponentItem, TypeInfo(TComponent)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorDateItem, TypeInfo(TDate)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorTimeItem, TypeInfo(TTime)));
