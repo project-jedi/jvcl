@@ -822,7 +822,12 @@ begin
 
         DoDrawText(Rect, DT_EXPANDTABS or DT_CALCRECT or WordWraps[FWordWrap]);
 
-        Rect := R; // restore
+        Dec(Rect.Left, MarginLeft);
+        Dec(Rect.Top, MarginTop);
+        Inc(Rect.Right, MarginRight);
+        Inc(Rect.Bottom, MarginBottom);
+        //InflateRect(Rect, Margin, Margin);
+
         Inc(Rect.Bottom, MarginTop);
       end
       else
