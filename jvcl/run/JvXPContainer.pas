@@ -224,7 +224,7 @@ begin
   inherited HookEnabledChanged;
   if FEnabledMode = emAffectChilds then
     for I := 0 to ControlCount - 1 do
-      if Controls[i].Enabled := Enabled;
+      Controls[i].Enabled := Enabled;
   if Assigned(FOnEnabledChanged) then
     FOnEnabledChanged(Self);
 end;
