@@ -11,12 +11,14 @@ unit JvFillBasicImpl;
 interface
 
 uses
-  Windows, Classes, SysUtils, Graphics, JvFillIntf{$IFNDEF COMPILER6UP}, ComObj{$ENDIF};
+  Windows, Classes, SysUtils, Graphics, JvFillIntf{$IFNDEF COMPILER6UP}, ComObj{$ENDIF},
+  JvComponent;
 
 type
   // Basic implementers
   TJvBaseFillerTextItemImpl = class(TAggregatedObject)
   protected
+    function Item: IFillerItem;
     function getCaption: string; virtual; abstract;
     procedure setCaption(const Value: string); virtual; abstract;
   public
@@ -67,6 +69,8 @@ type
     constructor CreateParent(const Parent: IFillerItem);
   end;
 
+  TJvFillerItemsClass = class of TJvFillerItems;
+
   TJvFillerItemsList = class(TJvFillerItems)
   private
     FList: TInterfaceList;
@@ -78,6 +82,7 @@ type
     function MeasureItem(ACanvas:TCanvas; Index: integer; AOptions: TPersistent = nil): TSize; override;
   public
     procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
 
     property List: TInterfaceList read FList;
   end;
@@ -102,7 +107,44 @@ type
     property TextImpl: TJvBaseFillerTextItemImpl read FTextImpl implements IFillerItemText;
   end;
 
+  TJvCustomFiller = class(TJvComponent, {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}
+    IBaseFiller, IFiller, IFillerItems)
+  private
+    FFillerItemsImpl: TJvFillerItems;
+    FNotifiers: TInterfaceList;
+  protected
+    procedure NotifyConsumers(ChangeReason: TJvFillerChangeReason);
+    class function ItemsClass: TJvFillerItemsClass; virtual;
+    {$IFNDEF COMPILER6_UP}
+    { IInterfaceComponentReference }
+    function GetComponent: TComponent;
+    {$ENDIF COMPILER6_UP}
+    { IFiller }
+    function getSupports: TJvFillerSupports; virtual; 
+    function getOptionClass: TJvFillerOptionsClass; virtual;
+    procedure RegisterChangeNotify(AFillerNotify: IFillerNotify); virtual;
+    procedure UnRegisterChangeNotify(AFillerNotify: IFillerNotify); virtual; 
+
+    { IFillerItems }
+    property FillerItemsImpl: TJvFillerItems read FFillerItemsImpl implements IFillerItems;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure BeforeDestruction; override;
+  end;
+
 implementation
+
+uses
+  JvTypes;
+
+{ TJvBaseFillerTextItemImpl }
+
+function TJvBaseFillerTextItemImpl.Item: IFillerItem;
+begin
+  if not Succeeded(QueryInterface(IFillerItem, Result)) then
+    raise EJVCLException.Create('Text implementation does not support IFillerItem interface.');
+end;
 
 { TJvFillerTextItem }
 
@@ -200,6 +242,12 @@ begin
   FList := TInterfaceList.Create;
 end;
 
+procedure TJvFillerItemsList.BeforeDestruction;
+begin
+  inherited BeforeDestruction;
+  FList.Free;
+end;
+
 { TJvFillerItem }
 
 function TJvFillerItem.GetItems: IFillerItems;
@@ -219,6 +267,72 @@ constructor TJvFillerTextItem.Create(AItems: IFillerItems; TextImplClass: TJvFil
 begin
   inherited Create(AItems);
   FTextImpl := TextImplClass.Create(Self);
+end;
+
+{ TJvCustomFiller }
+
+procedure TJvCustomFiller.NotifyConsumers(ChangeReason: TJvFillerChangeReason);
+var
+  I: Integer;
+begin
+  for I := 0 to FNotifiers.Count - 1 do
+    (FNotifiers[I] as IFillerNotify).FillerChanging(Self, ChangeReason);
+end;
+
+class function TJvCustomFiller.ItemsClass: TJvFillerItemsClass;
+begin
+  Result := TJvFillerItemsList;
+end;
+
+{$IFNDEF COMPILER6_UP}
+function TJvCustomFiller.GetComponent: TComponent;
+begin
+  Result := Self;
+end;
+{$ENDIF COMPILER6_UP}
+
+function TJvCustomFiller.getSupports: TJvFillerSupports;
+begin
+  Result := [];
+end;
+
+function TJvCustomFiller.getOptionClass: TJvFillerOptionsClass;
+begin
+  Result := nil;
+end;
+
+procedure TJvCustomFiller.RegisterChangeNotify(AFillerNotify: IFillerNotify);
+begin
+  if FNotifiers.IndexOf(AFillerNotify) < 0 then
+    FNotifiers.Add(AFillerNotify);
+end;
+
+procedure TJvCustomFiller.UnRegisterChangeNotify(AFillerNotify: IFillerNotify);
+begin
+  FNotifiers.Remove(AFillerNotify);
+end;
+
+constructor TJvCustomFiller.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FNotifiers := TInterfaceList.Create;
+  if ItemsClass <> nil then
+    FFillerItemsImpl := ItemsClass.CreateFiller(Self)
+  else
+    raise EJVCLException.Create('Can''t create a filler without an IFillerItems implementation.');
+end;
+
+destructor TJvCustomFiller.Destroy;
+begin
+  FNotifiers.Clear;
+  FFillerItemsImpl.Free;
+  inherited Destroy;
+end;
+
+procedure TJvCustomFiller.BeforeDestruction;
+begin
+  inherited BeforeDestruction;
+  NotifyConsumers(frDestroy);
 end;
 
 end.

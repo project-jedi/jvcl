@@ -34,6 +34,7 @@ contains
   JvFillBasicImpl in '..\source\JvFillBasicImpl.pas',
   JvFillerControls in '..\source\JvFillerControls.pas',
   JvFillFontList in '..\source\JvFillFontList.pas',
-  JvFillIntf in '..\source\JvFillIntf.pas';
+  JvFillIntf in '..\source\JvFillIntf.pas',
+  JvFillStringList in '..\source\JvFillStringList.pas';
 
 end.

@@ -9,28 +9,11 @@ uses
   JvFillBasicImpl, JvFillIntf;
 
 type
-  TJvFontFiller = class(TComponent, {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}IBaseFiller, IFiller, IFillerItems)
-  private
-    FFillerItemsImpl: TJvFillerItems;
-    FNotifiers: TInterfaceList;
+  TJvFontFiller = class(TJvCustomFiller)
   protected
-    procedure NotifyConsumers(ChangeReason: TJvFillerChangeReason);
-    {$IFNDEF COMPILER6_UP}
-    { IInterfaceComponentReference }
-    function GetComponent: TComponent;
-    {$ENDIF COMPILER6_UP}
-    { IFiller }
-    function getSupports: TJvFillerSupports;
-    function getOptionClass: TJvFillerOptionsClass;
-    procedure RegisterChangeNotify(AFillerNotify: IFillerNotify);
-    procedure UnRegisterChangeNotify(AFillerNotify: IFillerNotify);
-
-    { IFillerItems }
-    property FillerItemsImpl: TJvFillerItems read FFillerItemsImpl implements IFillerItems;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure BeforeDestruction; override;
+    class function ItemsClass: TJvFillerItemsClass; override;
+    function getSupports: TJvFillerSupports; override;
+    function getOptionClass: TJvFillerOptionsClass; override;
   end;
 
   TFontFillerOptions = class(TJvFillerOptions)
@@ -152,20 +135,10 @@ end;
 
 { TJvFontFiller }
 
-procedure TJvFontFiller.NotifyConsumers(ChangeReason: TJvFillerChangeReason);
-var
-  I: Integer;
+class function TJvFontFiller.ItemsClass: TJvFillerItemsClass;
 begin
-  for I := 0 to FNotifiers.Count - 1 do
-    (FNotifiers[I] as IFillerNotify).FillerChanging(Self, ChangeReason);
+  Result := TJvFontItems;
 end;
-
-{$IFNDEF COMPILER6_UP}
-function TJvFontFiller.GetComponent: TComponent;
-begin
-  Result := Self;
-end;
-{$ENDIF COMPILER6_UP}
 
 function TJvFontFiller.getSupports: TJvFillerSupports;
 begin
@@ -175,36 +148,6 @@ end;
 function TJvFontFiller.getOptionClass: TJvFillerOptionsClass;
 begin
   Result := TFontFillerOptions;
-end;
-
-procedure TJvFontFiller.RegisterChangeNotify(AFillerNotify: IFillerNotify);
-begin
-  if FNotifiers.IndexOf(AFillerNotify) < 0 then
-    FNotifiers.Add(AFillerNotify);
-end;
-
-procedure TJvFontFiller.UnRegisterChangeNotify(AFillerNotify: IFillerNotify);
-begin
-  FNotifiers.Remove(AFillerNotify);
-end;
-
-constructor TJvFontFiller.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FNotifiers := TInterfaceList.Create;
-  FFillerItemsImpl := TJvFontItems.CreateFiller(Self);
-end;
-
-destructor TJvFontFiller.Destroy;
-begin
-  FNotifiers.Clear;
-  FFillerItemsImpl.Free;
-  inherited Destroy;
-end;
-
-procedure TJvFontFiller.BeforeDestruction;
-begin
-  NotifyConsumers(frDestroy);
 end;
 
 { TFontFillerOptions }

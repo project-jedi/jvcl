@@ -3,7 +3,7 @@ unit JvFillBasicImpl;
 interface
 
 uses
-  Windows, Classes, SysUtils, Graphics, JvFillIntf_mbe2;
+  Windows, Classes, SysUtils, Graphics, JvFillIntf_mbe2, ComObj;
 
 type
   // Basic implementers
