@@ -98,6 +98,7 @@ begin
 {$IFDEF COMPLIB_VCL}
   {$IFDEF COMPILER6_UP}
   {$WARN SYMBOL_DEPRECATED OFF}
+  {$ENDIF}
   if RaiseList <> nil then
   begin
     Result := PRaiseFrame(RaiseList)^.ExceptObject;
@@ -105,7 +106,6 @@ begin
   end
   else
     Result := nil;
-  {$ENDIF}
 {$ENDIF COMPLIB_VCL}
 {$IFDEF LINUX}
   // XXX: changing exception in stack frame is not supported on Kylix

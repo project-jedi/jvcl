@@ -64,8 +64,6 @@ begin
 end;
 
 procedure TfrmProgressDialogDemo.DoNonModalShow;
-var
-  i: integer;
 begin
   // Show, Hide and Cancelled is used in non-modal mood
   pd.OnProgress := nil; // not needed
