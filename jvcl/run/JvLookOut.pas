@@ -432,7 +432,7 @@ type
     {$ENDIF VCL}
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
   protected
-    procedure SetAutoSize(Value: Boolean); override;
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override;{$ENDIF}
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -1221,7 +1221,7 @@ begin
     if csDesigning in ComponentState then
     begin
       Brush.Color := clBlack;
-      FrameRect(R);
+      FrameRect({$IFDEF VisualCLX}Canvas,{$ENDIF} R);
     end;
 
     if (FImageSize = isSmall) and Assigned(FSmallImages) then
@@ -1268,7 +1268,12 @@ begin
       Canvas.Font := Font;
 
     //    W := FSpacing  + W;
+    {$IFDEF VCL}
     SetBkMode(Canvas.Handle, Windows.Transparent);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    SetBkMode(Canvas.Handle, QWindows.Transparent);
+    {$ENDIF VisualCLX}
     R := GetClientRect;
     if (ImageSize = isLarge) and Assigned(FLargeImages) then
       R.Top := R.Top + FLargeImages.Height + (FSpacing * 2)
@@ -1335,7 +1340,12 @@ begin
   if csDesigning in ComponentState then
   begin
     Canvas.Brush.Color := clBlack;
+    {$IFDEF VCL}
     Canvas.FrameRect(R);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FrameRect(Canvas, R);
+    {$ENDIF VisualCLX}
     Canvas.Brush.Color := Color;
   end;
 
@@ -2292,7 +2302,12 @@ begin
   { draw top caption }
   R := GetClientRect;
   R.Bottom := cHeight;
+  {$IFDEF VCL}
   SetBkMode(DC, Windows.Transparent);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SetBkMode(DC, QWindows.Transparent);
+  {$ENDIF VisualCLX}
   if FCaption <> '' then
   begin
     if not Enabled then
@@ -2454,7 +2469,12 @@ begin
     FFlatButtons := Value;
     //    for I := 0 to PageCount - 1 do
     //      Pages[I].DrawTopButton;
+    {$IFDEF VCL}
     RecreateWnd;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    RecreateWidget;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -2562,7 +2582,12 @@ begin
   if FBorderStyle <> Value then
   begin
     FBorderStyle := Value;
+    {$IFDEF VCL}
     RecreateWnd;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    RecreateWidget;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -2692,6 +2717,7 @@ begin
   FPages[Index] := Value;
 end;
 
+{$IFDEF VCL}
 procedure TJvLookOut.WMNCCalcSize(var Msg: TWMNCCalcSize);
 begin
   with Msg.CalcSize_Params^ do
@@ -2701,6 +2727,7 @@ begin
       InflateRect(rgrc[0], -2, -2);
   inherited;
 end;
+{$ENDIF VCL}
 
 
 procedure TJvLookOut.WMNCPaint(var Msg: TMessage);
@@ -2710,9 +2737,15 @@ var
 begin
   DC := GetWindowDC(Handle);
   try
-    Windows.GetClientRect(Handle, RC);
+    {$IFDEF VCL}
+    Windows.
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    QWindows.
+    {$ENDIF VisualCLX}
+    GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
-    MapWindowPoints(0, Handle, RW, 2);
+    MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
@@ -2728,9 +2761,21 @@ begin
     else
     begin
       Canvas.Brush.Color := Color;
-      Windows.FrameRect(DC, RW, Canvas.Brush.Handle);
+      {$IFDEF VCL}
+      Windows.
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      QWindows.
+      {$ENDIF VisualCLX}
+      FrameRect(DC, RW, Canvas.Brush.Handle);
       InflateRect(RW, -1, -1);
-      Windows.FrameRect(DC, RW, Canvas.Brush.Handle);
+      {$IFDEF VCL}
+      Windows.
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      QWindows.
+      {$ENDIF VisualCLX}
+      FrameRect(DC, RW, Canvas.Brush.Handle);
       InflateRect(RW, 1, 1);
     end;
     { Erase parts not drawn }
@@ -2769,7 +2814,7 @@ end;
 procedure TJvExpress.Paint;
 begin
   {$IFDEF VisualCLX}
-  Perform(WN_NCPAINT, 1, 0);
+  Perform(WM_NCPAINT, 0, 0);
   {$ENDIF VisualCLX}
   if not FBitmap.Empty then
   begin
@@ -2939,9 +2984,15 @@ var
 begin
   DC := GetWindowDC(Handle);
   try
-    Windows.GetClientRect(Handle, RC);
+    {$IFDEF VCL}
+    Windows.
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    QWindows.
+    {$ENDIF VisualCLX}
+    GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
-    MapWindowPoints(0, Handle, RW, 2);
+    MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
