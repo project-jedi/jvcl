@@ -175,6 +175,7 @@ end;
 function TInstaller.GetJclDir: WideString;
 var
   i: Integer;
+  Dir: string;
 begin
   Result := '';
   for i := 0 to Data.Targets.Count - 1 do
@@ -183,11 +184,14 @@ begin
       Result := Data.TargetConfig[i].JCLDir;
       Exit;
     end;
-  Result := Format(sJclRootDirFromJVCLDir, [ExtractFileDir(JVCLDir)]);
+  Dir := ExtractFileDir(JVCLDir);
+  if (Dir <> '') and (Length(Dir) = 3) and (Dir[3] = '\') then { remove backslash }
+    Delete(Dir, 3, 1);
+  Result := Format(sJclRootDirFromJVCLDir, [Dir]);
   if not DirectoryExists(Result) then
     Result := ''
   else
-    Result := Format(sJclRootDirName, [ExtractFileDir(JVCLDir)]);
+    Result := Format(sJclRootDirName, [Dir]);
 end;
 
 procedure TInstaller.SetJCLDir(const Value: WideString);

@@ -169,7 +169,7 @@ begin
       Lbl.Cursor := crHandPoint;
       Lbl.OnClick := Installer.DoHomepageClick;
     end
-    else if (Config.MissingJCL and (Installer.JCLDir = '')) or Config.OutdatedJCL then
+    else if Config.MissingJCL or (Installer.JCLDir = '') or Config.OutdatedJCL then
     begin
       Control.Enabled := False;
       Control.Checked := False;
