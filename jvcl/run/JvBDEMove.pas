@@ -21,16 +21,10 @@ Last Modified: 2002-07-04
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-component   : TJvDBMove
-description : database batchmove
+Description:
+  database batchmove
 
-Known Issues:
------------------------------------------------------------------------------}
-
-{$I jvcl.inc}
-
-{
- history:
+History:
   1.23 - added suport for table names with extensions;
 
  Note: All referenced fields MUST be Integer
@@ -47,7 +41,11 @@ Known Issues:
   );
   TempTable = '_RATMP1_.DB';
   BeforePost = user defined unique generation procedure;
- }
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I jvcl.inc}
 
 unit JvBDEMove;
 
@@ -74,9 +72,9 @@ type
     FDTable: TTable;
     FTempTable: string;
     FRTable: TTable; { temporary table }
-    FTables: TStrings;
-    FReferences: TStrings;
-    FMappings: TStrings;
+    FTables: TStringList;
+    FReferences: TStringList;
+    FMappings: TStringList;
     FFieldRefs: TList;
 
     FProgress: Boolean;
@@ -90,6 +88,9 @@ type
     FOnPostError: TDataSetErrorEvent;
 
     procedure DoMove;
+    function GetTables: TStrings;
+    function GetReferences: TStrings;
+    function GetMappings: TStrings;
     procedure SetTables(Value: TStrings);
     procedure SetReferences(Value: TStrings);
     procedure SetMappings(Value: TStrings);
@@ -108,10 +109,10 @@ type
   published
     property Source: string read FSource write FSource;
     property Destination: string read FDestination write FDestination;
-    property Tables: TStrings read FTables write SetTables;
+    property Tables: TStrings read GetTables write SetTables;
     property TempTable: string read FTempTable write FTempTable;
-    property References: TStrings read FReferences write SetReferences;
-    property Mappings: TStrings read FMappings write SetMappings;
+    property References: TStrings read GetReferences write SetReferences;
+    property Mappings: TStrings read GetMappings write SetMappings;
     property OnMoveRecord: TMoveEvent read FOnMoveRecord write FOnMoveRecord;
     property OnPostError: TDataSetErrorEvent read FOnPostError write FOnPostError;
     property Progress: Boolean read FProgress write FProgress default False;
@@ -171,6 +172,11 @@ begin
   inherited Destroy;
 end;
 
+function TJvDBMove.GetTables: TStrings;
+begin
+  Result := FTables;
+end;
+
 procedure TJvDBMove.SetTables(Value: TStrings);
 begin
   FTables.Assign(Value);
@@ -187,27 +193,37 @@ begin
       FTables[I] := Trim(SubStr(FTables[I], 0, '='));
 end;
 
+function TJvDBMove.GetReferences: TStrings;
+begin
+  Result := FReferences;
+end;
+
 procedure TJvDBMove.SetReferences(Value: TStrings);
 begin
-  TStringList(FReferences).Assign(Value);
+  FReferences.Assign(Value);
+end;
+
+function TJvDBMove.GetMappings: TStrings;
+begin
+  Result := FMappings;
 end;
 
 procedure TJvDBMove.SetMappings(Value: TStrings);
 begin
-  TStringList(FMappings).Assign(Value);
+  FMappings.Assign(Value);
 end;
 
 function TJvDBMove.Map(const TableName, FieldName: string): string;
 begin
   if FieldName = '' then
   begin
-    Result := TStringList(FMappings).Values[TableName];
+    Result := FMappings.Values[TableName];
     if Result = '' then
       Result := TableName;
   end
   else
   begin
-    Result := SubStrEnd(TStringList(FMappings).Values[ChangeFileExt(TableName, '') +
+    Result := SubStrEnd(FMappings.Values[ChangeFileExt(TableName, '') +
       '.' + FieldName], 0, '.');
     if Result = '' then
       Result := FieldName;
@@ -324,7 +340,7 @@ begin
             Cmp(SFieldName, FieldRef.SFieldName) then
           begin
             FieldRef.MasterRef := False;
-            break;
+            Break;
           end;
       FFieldRefs.Add(FieldRef);
     end;
@@ -339,7 +355,7 @@ type
     HasRef: Boolean;
   end;
 var
-  MasterFields: array [0..1023 {Max_Columns}] of TRef;
+  MasterFields: array [0..1023] of TRef; // Max_Columns
   HasMaster, HasDetail: Boolean;
   AllFixups: Boolean;
   I, TableIndex: Integer;
@@ -392,7 +408,6 @@ var
             MasterFields[SFieldIndex].Value,
               FDTable.Fields[DTFieldIndex].AsVariant]);
         except;
-
         end;
   end;
 
@@ -413,9 +428,7 @@ var
               FDTable.Fields[DFieldIndex].AsVariant]),
               cNewValue); }
           if FRTable.Locate(cTable + ';' + cField + ';' + cOldValue,
-            VarArrayOf([
-              STableIndex + 1,
-              SFieldIndex + 1,
+            VarArrayOf([STableIndex + 1, SFieldIndex + 1,
               FDTable.Fields[DFieldIndex].AsVariant]), []) then
             FDTable.Fields[DFieldIndex].AsVariant := FRTable[cNewValue]
           else
@@ -431,6 +444,9 @@ var
   end;
 
   procedure MoveRecord(TableIndex: Integer);
+  var
+    F: Integer;
+    Action: TMoveAction;
 
     procedure MoveField(FieldIndex: Integer);
     begin
@@ -450,9 +466,6 @@ var
       end;
     end;
 
-  var
-    F: Integer;
-    Action: TMoveAction;
   begin
     FDTable.Append;
     try

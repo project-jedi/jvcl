@@ -1158,6 +1158,14 @@ resourcestring
   RsErrorConnection = 'Unable to connect';
   RsAgent = 'TJvMultiHTTPGrabber Delphi Component';
 
+//=== JvNTEventLog.pas =======================================================
+resourcestring
+  RsLogError = 'Error';
+  RsLogWarning = 'Warning';
+  RsLogInformation = 'Information';
+  RsLogSuccessAudit = 'Success Audit';
+  RsLogFailureAudit = 'Failure Audit';
+
 //=== JvObjectPickerDialog.pas ===============================================
 resourcestring
   RsAttributeIndexOutOfBounds = '%d is not a valid attribute index';

@@ -56,11 +56,11 @@ type
     FDummy: Cardinal;
     FDummyW: Word;
     FDummyS: string;
-    FCap: TJoyCaps;
-    FCaps2: TJoyCaps;
-    FszRegKey: string;
-    FszOEMVxD: string;
-    FszPName: string;
+    FCapabilities: TJoyCaps;
+    FCapsDummy: TJoyCaps;
+    FRegKey: string;
+    FOEMVxD: string;
+    FProductName: string;
     FDummyI: Integer;
     FDummyB: Boolean;
     FJoyNumber: Integer;
@@ -85,13 +85,13 @@ type
     property Button4Pressed: Boolean read GetButton4 write FDummyB stored False;
     property Manufacturer: Word read FJoy.wMid write FDummyW stored False;
     property ProductIdentifier: Word read FJoy.wPid write FDummyW stored False;
-    property ProductName: string read FszPName write FDummyS stored False;
+    property ProductName: string read FProductName write FDummyS stored False;
     property XMin: Cardinal read FJoy.wXMin write FDummy stored False;
     property XMax: Cardinal read FJoy.wXMax write FDummy stored False;
     property YMin: Cardinal read FJoy.wYMin write FDummy stored False;
     property YMax: Cardinal read FJoy.wYMax write FDummy stored False;
-    property Zmin: Cardinal read FJoy.wZmin write FDummy stored False;
-    property Zmax: Cardinal read FJoy.wZmax write FDummy stored False;
+    property ZMin: Cardinal read FJoy.wZmin write FDummy stored False;
+    property ZMax: Cardinal read FJoy.wZmax write FDummy stored False;
     property NumButtons: Cardinal read FJoy.wNumButtons write FDummy stored False;
     property PeriodMin: Cardinal read FJoy.wPeriodMin write FDummy stored False;
     property PeriodMax: Cardinal read FJoy.wPeriodMax write FDummy stored False;
@@ -101,18 +101,17 @@ type
     property UMax: Cardinal read FJoy.wUMax write FDummy stored False;
     property VMin: Cardinal read FJoy.wVMin write FDummy stored False;
     property VMax: Cardinal read FJoy.wVMax write FDummy stored False;
-    { (rb) FCaps2 is also a dummy, weird name }
-    property Capabilities: TJoyCaps read FCap write FCaps2 stored False;
+    property Capabilities: TJoyCaps read FCapabilities write FCapsDummy stored False;
     property MaxAxis: Cardinal read FJoy.wMaxAxes write FDummy stored False;
     property NumAxis: Cardinal read FJoy.wNumAxes write FDummy stored False;
     property MaxButtons: Cardinal read FJoy.wMaxButtons write FDummy stored False;
-    property RegKey: string read FszRegKey write FDummyS stored False;
-    property OemVXD: string read FszOEMVxD write FDummyS stored False;
+    property RegKey: string read FRegKey write FDummyS stored False;
+    property OemVxD: string read FOEMVxD write FDummyS stored False;
   end;
 
   TJvJoystick = class(TJvComponent)
   private
-    FJoy: Boolean;
+    FJoyDummy: Boolean;
     FJoy1: TJoystick;
     FJoy2: TJoystick;
     FJoystick1: Boolean;
@@ -147,9 +146,8 @@ type
   published
     property Joy1Threshold: MMRESULT read GetThreshold1 write SetThreshold1;
     property Joy2Threshold: MMRESULT read GetThreshold2 write SetThreshold2;
-    { (rb) FJoy is a dummy, weird name }
-    property HasJoystick1: Boolean read GetJoystick1 write FJoy stored False;
-    property HasJoystick2: Boolean read GetJoystick2 write FJoy stored False;
+    property HasJoystick1: Boolean read GetJoystick1 write FJoyDummy stored False;
+    property HasJoystick2: Boolean read GetJoystick2 write FJoyDummy stored False;
     property PollTime: Cardinal read FPoll write FPoll default 50;
     property CaptureJoystick1: Boolean read FCapture1 write SetCapture1 default False;
     property CaptureJoystick2: Boolean read FCapture2 write SetCapture2 default False;
@@ -173,7 +171,7 @@ uses
 
 constructor TJvJoystick.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FJoyStick1 := joyGetNumDevs > 0;
   FJoystick2 := joyGetNumDevs > 1;
   FJoy1 := TJoystick.CreateJoy(Self, JOYSTICKID1);
@@ -193,7 +191,7 @@ begin
     joyReleaseCapture(JOYSTICKID1);
   if FCapture2 then
     joyReleaseCapture(JOYSTICKID2);
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvJoystick.GetJoystick1: Boolean;
@@ -363,24 +361,24 @@ begin
   FJoyNumber := Joy;
   if joyGetDevCaps(Joy, @FJoy, SizeOf(FJoy)) = MMSYSERR_NODRIVER then
     raise EJVCLException.Create(RsEJoystickError);
-  FCap := [];
+  FCapabilities := [];
   if (JOYCAPS_HASZ and FJoy.wCaps) = JOYCAPS_HASZ then
-    FCap := FCap + [joHasZCoordinate];
+    FCapabilities := FCapabilities + [joHasZCoordinate];
   if (JOYCAPS_HASR and FJoy.wCaps) = JOYCAPS_HASR then
-    FCap := FCap + [joHasRudder];
+    FCapabilities := FCapabilities + [joHasRudder];
   if (JOYCAPS_HASU and FJoy.wCaps) = JOYCAPS_HASU then
-    FCap := FCap + [joHasUCoordinate];
+    FCapabilities := FCapabilities + [joHasUCoordinate];
   if (JOYCAPS_HASV and FJoy.wCaps) = JOYCAPS_HASV then
-    FCap := FCap + [joHasVCoordinate];
+    FCapabilities := FCapabilities + [joHasVCoordinate];
   if (JOYCAPS_HASPOV and FJoy.wCaps) = JOYCAPS_HASPOV then
-    FCap := FCap + [joHasPointOfVue];
+    FCapabilities := FCapabilities + [joHasPointOfVue];
   if (JOYCAPS_POV4DIR and FJoy.wCaps) = JOYCAPS_POV4DIR then
-    FCap := FCap + [joHasPointOfVDiscrete];
+    FCapabilities := FCapabilities + [joHasPointOfVDiscrete];
   if (JOYCAPS_POVCTS and FJoy.wCaps) = JOYCAPS_POVCTS then
-    FCap := FCap + [joHasPointOfVContinuous];
-  FszRegKey := FJoy.szRegKey;
-  FszOEMVxD := FJoy.szOEMVxD;
-  FszPName := FJoy.szPName;
+    FCapabilities := FCapabilities + [joHasPointOfVContinuous];
+  FRegKey := FJoy.szRegKey;
+  FOEMVxD := FJoy.szOEMVxD;
+  FProductName := FJoy.szPName;
 end;
 
 function TJoystick.GetButton1: Boolean;

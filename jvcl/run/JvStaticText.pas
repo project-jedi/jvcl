@@ -23,16 +23,14 @@ Last Modified: 2000-10-22
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
-=============
 Changes 2002-10-22:
-===================
-Totally reimplemented (though a lot of code was taken from original TStaticText) to add new properties:
-WordWrap, Layout (vertial Alignment), TextMargins (to offset from the edges)
+  Totally reimplemented (though a lot of code was taken from original TStaticText) to add new properties:
+  WordWrap, Layout (vertial Alignment), TextMargins (to offset from the edges)
 
-Also adds virtual DrawItem and AdjustBounds methods to make it easier to derive new
-components that handles the drawing differently
+  Also adds virtual DrawItem and AdjustBounds methods to make it easier to derive new
+  components that handles the drawing differently
 
+Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
@@ -86,7 +84,6 @@ type
     procedure SetShowAccelChar(Value: Boolean);
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetLayout(const Value: TTextLayout);
-
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure SetTextMargins(const Value: TJvTextMargins);
     procedure SetWordWrap(const Value: Boolean);
@@ -183,6 +180,7 @@ type
   end;
 
 implementation
+
 uses
   JvJVCLUtils, JvThemes;
 
@@ -208,7 +206,6 @@ begin
   FAutoSize := True;
   FShowAccelChar := True;
   FHotTrackFontOptions := DefaultTrackFontOptions;
-  //  ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
 destructor TJvCustomStaticText.Destroy;
@@ -497,7 +494,7 @@ end;
 procedure TJvTextMargins.Change;
 begin
   if Assigned(FOnChange) then
-    FOnChange(self);
+    FOnChange(Self);
 end;
 
 procedure TJvTextMargins.SetX(const Value: Word);
@@ -517,7 +514,6 @@ begin
     Change;
   end;
 end;
-
 
 end.
 
