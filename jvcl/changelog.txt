@@ -1,5 +1,14 @@
 Changelog for JVCL 3.0
 ======================
+2004-07-21
+- TJvDesktopAlert now has styles, use the StyleOptions property to define the parameters // obones
+- TJvDesktopAlert can now use the Grow From Center grow // obones
+- Introduced TJvDesktopAlert.StyleOptions.StartSteps and EndSteps to control the number of
+  steps in the start and end animations // obones
+- TJvDesktopAlert.FadeInTime is replaced by TJvDesktopAlert.StyleOptions.StartInterval // obones
+- TJvDesktopAlert.FadeOutTime is replaced by TJvDesktopAlert.StyleOptions.EndInterval // obones
+- TJvDesktopAlert.WaitTime is replaced by TJvDesktopAlert.StyleOptions.DisplayDuration // obones
+- TJvDesktopAlert.AlphaBlendValue is removed, use TJvDesktopAlert.StyleOptions.CurrentStep // obones
 2004-07-13
 - TJvStrToHtml now always encodes known special characters as HTML named entities. 
   It still understands numerical entities when decoding  // obones

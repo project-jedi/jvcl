@@ -17,14 +17,14 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object lblHeader: TLabel
+  object Label1: TLabel
     Left = 8
     Top = 8
     Width = 38
     Height = 13
     Caption = 'Header:'
   end
-  object lblMessages: TLabel
+  object Label2: TLabel
     Left = 8
     Top = 56
     Width = 46
@@ -40,7 +40,7 @@ object frmMain: TfrmMain
   end
   object Label4: TLabel
     Left = 8
-    Top = 184
+    Top = 172
     Width = 140
     Height = 13
     Caption = 'Number of "custom" buttons :'
@@ -55,9 +55,9 @@ object frmMain: TfrmMain
   object Label6: TLabel
     Left = 176
     Top = 104
-    Width = 87
+    Width = 84
     Height = 13
-    Caption = 'Fade In Time (ms):'
+    Caption = 'Start interval (ms):'
   end
   object Label7: TLabel
     Left = 176
@@ -69,9 +69,9 @@ object frmMain: TfrmMain
   object Label8: TLabel
     Left = 176
     Top = 184
-    Width = 95
+    Width = 81
     Height = 13
-    Caption = 'Fade Out Time (ms):'
+    Caption = 'End interval (ms):'
   end
   object Label9: TLabel
     Left = 176
@@ -79,6 +79,27 @@ object frmMain: TfrmMain
     Width = 44
     Height = 13
     Caption = 'Location:'
+  end
+  object Label12: TLabel
+    Left = 268
+    Top = 184
+    Width = 50
+    Height = 13
+    Caption = 'End steps:'
+  end
+  object Label13: TLabel
+    Left = 268
+    Top = 104
+    Width = 53
+    Height = 13
+    Caption = 'Start steps:'
+  end
+  object Label14: TLabel
+    Left = 8
+    Top = 300
+    Width = 23
+    Height = 13
+    Caption = 'Style'
   end
   object btnPreview: TButton
     Left = 264
@@ -110,7 +131,7 @@ object frmMain: TfrmMain
   end
   object btnBrowse: TButton
     Left = 64
-    Top = 144
+    Top = 140
     Width = 75
     Height = 25
     Caption = 'Browse...'
@@ -925,9 +946,9 @@ object frmMain: TfrmMain
         FC072EFF}
     end
   end
-  object edtCustomBtns: TEdit
+  object Edit1: TEdit
     Left = 8
-    Top = 200
+    Top = 188
     Width = 121
     Height = 21
     TabOrder = 5
@@ -935,10 +956,10 @@ object frmMain: TfrmMain
   end
   object udButtons: TUpDown
     Left = 129
-    Top = 200
+    Top = 188
     Width = 15
     Height = 21
-    Associate = edtCustomBtns
+    Associate = Edit1
     Min = 0
     Max = 24
     Position = 2
@@ -947,7 +968,7 @@ object frmMain: TfrmMain
   end
   object chkClickable: TCheckBox
     Left = 16
-    Top = 240
+    Top = 220
     Width = 150
     Height = 17
     Caption = 'Message can be clicked'
@@ -957,7 +978,7 @@ object frmMain: TfrmMain
   end
   object chkMovable: TCheckBox
     Left = 16
-    Top = 258
+    Top = 238
     Width = 150
     Height = 17
     Caption = 'Form can be moved'
@@ -967,7 +988,7 @@ object frmMain: TfrmMain
   end
   object chkClose: TCheckBox
     Left = 16
-    Top = 277
+    Top = 257
     Width = 150
     Height = 17
     Caption = 'Allow manual close'
@@ -975,7 +996,7 @@ object frmMain: TfrmMain
     State = cbChecked
     TabOrder = 9
   end
-  object edtNumWindows: TEdit
+  object Edit2: TEdit
     Left = 8
     Top = 360
     Width = 121
@@ -988,7 +1009,7 @@ object frmMain: TfrmMain
     Top = 360
     Width = 15
     Height = 21
-    Associate = edtNumWindows
+    Associate = Edit2
     Min = 1
     Max = 24
     Position = 1
@@ -997,7 +1018,7 @@ object frmMain: TfrmMain
   end
   object chkShowDropDown: TCheckBox
     Left = 16
-    Top = 296
+    Top = 276
     Width = 150
     Height = 17
     Caption = 'Show dropdown menu'
@@ -1005,60 +1026,60 @@ object frmMain: TfrmMain
     State = cbChecked
     TabOrder = 12
   end
-  object edtFadeIn: TEdit
+  object Edit3: TEdit
     Left = 176
     Top = 120
-    Width = 121
+    Width = 69
     Height = 21
     TabOrder = 13
     Text = '25'
   end
   object udFadeIn: TUpDown
-    Left = 297
+    Left = 245
     Top = 120
     Width = 15
     Height = 21
-    Associate = edtFadeIn
+    Associate = Edit3
     Min = 0
     Max = 10000
     Position = 25
     TabOrder = 14
     Wrap = False
   end
-  object edtDisplay: TEdit
+  object Edit4: TEdit
     Left = 176
     Top = 160
-    Width = 121
+    Width = 69
     Height = 21
     TabOrder = 15
-    Text = '1400'
+    Text = '1 400'
   end
   object udWait: TUpDown
-    Left = 297
+    Left = 245
     Top = 160
     Width = 15
     Height = 21
-    Associate = edtDisplay
+    Associate = Edit4
     Min = 0
     Max = 32767
     Position = 1400
     TabOrder = 16
     Wrap = False
   end
-  object edtFadeOut: TEdit
+  object Edit5: TEdit
     Left = 176
     Top = 200
-    Width = 121
+    Width = 69
     Height = 21
     TabOrder = 17
     Text = '50'
   end
   object udFadeOut: TUpDown
-    Left = 297
+    Left = 245
     Top = 200
     Width = 15
     Height = 21
-    Associate = edtFadeOut
+    Associate = Edit5
     Min = 0
     Max = 10000
     Position = 50
@@ -1084,7 +1105,7 @@ object frmMain: TfrmMain
       'dapOwnerFormCenter'
       'dapActiveFormCenter')
   end
-  object grbFormSize: TGroupBox
+  object GroupBox1: TGroupBox
     Left = 176
     Top = 272
     Width = 177
@@ -1121,6 +1142,58 @@ object frmMain: TfrmMain
       TabOrder = 1
       Text = '0'
     end
+  end
+  object Edit6: TEdit
+    Left = 268
+    Top = 200
+    Width = 69
+    Height = 21
+    TabOrder = 21
+    Text = '10'
+  end
+  object udEndSteps: TUpDown
+    Left = 337
+    Top = 200
+    Width = 15
+    Height = 21
+    Associate = Edit6
+    Min = 0
+    Max = 10000
+    Position = 10
+    TabOrder = 22
+    Wrap = False
+  end
+  object Edit7: TEdit
+    Left = 268
+    Top = 120
+    Width = 69
+    Height = 21
+    TabOrder = 23
+    Text = '10'
+  end
+  object udStartSteps: TUpDown
+    Left = 337
+    Top = 120
+    Width = 15
+    Height = 21
+    Associate = Edit7
+    Min = 0
+    Max = 10000
+    Position = 10
+    TabOrder = 24
+    Wrap = False
+  end
+  object cmbStyle: TComboBox
+    Left = 8
+    Top = 316
+    Width = 137
+    Height = 21
+    Style = csDropDownList
+    ItemHeight = 13
+    TabOrder = 25
+    Items.Strings = (
+      'asFade'
+      'asCenterGrow')
   end
   object PopupMenu1: TPopupMenu
     Left = 152
@@ -2486,7 +2559,9 @@ object frmMain: TfrmMain
       'udFadeIn.Position'
       'udFadeOut.Position'
       'udWait.Position'
-      'udWindowCount.Position')
+      'udWindowCount.Position'
+      'udEndSteps.Position'
+      'udStartSteps.Position')
     StoredValues = <>
     Left = 56
     Top = 112

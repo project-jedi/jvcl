@@ -27,22 +27,31 @@
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)"/>
     <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH);..\..\..\Resources"/>
     <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I$(INCLUDEPATH) -src_suffix cpp 
+    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I$(INCLUDEPATH) -src_suffix cpp
       -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
-      -tW -tWM"/>
+    <CFLAG1 value="-Od -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c -tW -tWM"/>
     <PFLAGS value="-N2..\..\..\dcu -N0..\..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-I..\..\..\dcu -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+    <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <OTHERFILES value=""/>
   </LINKER>
+  <FILELIST>
+      <FILE FILENAME="JvDesktopAlertDemo.cpp" FORMNAME="" UNITNAME="JvDesktopAlertDemo" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="MainForm.cpp" FORMNAME="frmMain" UNITNAME="MainForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
   <IDEOPTIONS>
 [Version Info]
 IncludeVerInfo=0
