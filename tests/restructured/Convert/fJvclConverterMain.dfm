@@ -4599,6 +4599,13 @@ object frmMain: TfrmMain
       000000000000}
   end
   object JvSearchFiles1: TJvSearchFiles
+    Options = [soOwnerData, soSearchFiles]
+    ErrorResponse = erIgnore
+    DirParams.LastChangeAfter = 29221
+    DirParams.LastChangeBefore = 29221
+    FileParams.SearchTypes = [stFileMask]
+    FileParams.LastChangeAfter = 29221
+    FileParams.LastChangeBefore = 29221
     OnFindFile = JvSearchFiles1FindFile
     Left = 48
     Top = 88

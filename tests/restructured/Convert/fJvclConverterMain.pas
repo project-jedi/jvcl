@@ -522,8 +522,8 @@ begin
   if JvBrowseFolder1.Execute then
     begin
       JvSearchFiles1.RootDirectory := JvBrowseFolder1.Directory;
-      if JvSearchFiles1.SearchParams.FileMask = '' then
-        JvSearchFiles1.SearchParams.FileMask := '*.pas;*.dpr;*.dpk';
+      if JvSearchFiles1.FileParams.FileMask = '' then
+        JvSearchFiles1.FileParams.FileMask := '*.pas;*.dpr;*.dpk';
       JvSearchFiles1.Search;
     end;
 end;
@@ -601,7 +601,7 @@ begin
     with TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini')) do
       try
         JvSearchFiles1.RootDirectory := ReadString('Settings', 'Path', '');
-        JvSearchFiles1.SearchParams.FileMask := ReadString('Settings', 'Mask', '*.dpr;*.dpk;*.pas');
+        JvSearchFiles1.FileParams.FileMask := ReadString('Settings', 'Mask', '*.dpr;*.dpk;*.pas');
         fCurrentDataFile := ReadString('Settings', 'DATFile', '');
         mnuBackup.Checked := ReadBool('Settings', 'Backup', true);
         mnuWholeWords.Checked := ReadBool('Settings', 'WholeWords', true);
@@ -623,7 +623,7 @@ begin
     with TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini')) do
       try
         WriteString('Settings', 'Path', JvSearchFiles1.RootDirectory);
-        WriteString('Settings', 'Mask', JvSearchFiles1.SearchParams.FileMask);
+        WriteString('Settings', 'Mask', JvSearchFiles1.FileParams.FileMask);
         WriteString('Settings', 'DATFile', fCurrentDataFile);
         WriteBool('Settings', 'Backup', mnuBackup.Checked);
         WriteBool('Settings', 'WholeWords', mnuWholeWords.Checked);
@@ -642,9 +642,9 @@ procedure TfrmMain.mnuFileMaskClick(Sender: TObject);
 var
   S: string;
 begin
-  S := JvSearchFiles1.SearchParams.FileMask;
+  S := JvSearchFiles1.FileParams.FileMask;
   if InputQuery('File Mask', 'Set new file mask:', S) and (S <> '') then
-    JvSearchFiles1.SearchParams.FileMask := S;
+    JvSearchFiles1.FileParams.FileMask := S;
 end;
 
 procedure TfrmMain.ActionList1Update(Action: TBasicAction;
