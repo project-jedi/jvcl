@@ -44,14 +44,14 @@ implementation
 
 uses
   Classes,
-  QControls, QImgList, QActnList, 
-  DesignEditors, DesignIntf, 
-  JvQDsgnConsts, 
+  QControls, QImgList, QActnList,
+  DesignEditors, DesignIntf,
+  JvQDsgnConsts,
   {$IFDEF USEWINDOWS}
   JvQUninstallControls, JvQCharMap,
   {$ENDIF USEWINDOWS}
-  JvQDsgnIntf, 
-  QTypes, 
+  JvQDsgnIntf,
+  QTypes,
   JvQZoom, JvQBehaviorLabel, JvQArrowButton, JvQaScrollText, JvQClock,
   JvQContentScroller, JvQColorBox, JvQColorButton, JvQDice, JvQFooter,
   JvQGroupHeader, JvQHint, JvQHtControls, JvQInstallLabel, JvQItemsPanel,
@@ -60,7 +60,7 @@ uses
   JvQTransparentButton, JvQColorForm, JvQImageDrawThread, JvQWinampLabel,
   JvQComponentPanel, JvQButtons, JvQCaptionPanel, JvQScrollMax, JvQMovableBevel,
   JvQComboListBox, JvQOfficeColorButton, JvQOfficeColorPanel,
-  JvQNetscapeSplitter,
+  JvQNetscapeSplitter, JvQListComb,
   JvQDsgnEditors, JvQScrollMaxEditor, JvQBehaviorLabelEditor, JvQGroupHeaderEditor,
   JvQFooterEditor, JvQSpeedbarForm, JvQTransparentButtonEditors, JvQRollOutEditor;
 
@@ -84,9 +84,8 @@ begin
     TJvComponentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
     TJvHTLabel, TJvWinampLabel]);
-
-
-  RegisterComponents(RsPaletteListComboTree, [ TJvHTListBox, TJvHTComboBox]);
+  RegisterComponents(RsPaletteListComboTree, [TJvImageComboBox, TJvImageListBox,
+    TJvHTListBox, TJvHTComboBox]);
 
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);

@@ -183,7 +183,7 @@ begin
   end;
 end;
 
-//=== TJvActivePageProperty ==================================================
+//=== { TJvActivePageProperty } ==============================================
 
 function TJvActivePageProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -204,7 +204,7 @@ begin
   end;
 end;
 
-//=== TJvSettingsTreeImagesProperty ==========================================
+//=== { TJvSettingsTreeImagesProperty } ======================================
 
 function TJvSettingsTreeImagesProperty.ImageList: TCustomImageList;
 var
@@ -220,7 +220,7 @@ begin
     Result := nil;
 end;
 
-//=== TJvShowDesignCaptionProperty ===========================================
+//=== { TJvShowDesignCaptionProperty } =======================================
 
 function TJvShowDesignCaptionProperty.GetAttributes: TPropertyAttributes;
 begin

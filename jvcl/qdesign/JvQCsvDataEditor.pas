@@ -85,7 +85,9 @@ function DoCsvDefDialog(OldValue: string): string;
 var
   Dialog: TJvCsvDefStrDialog;
   dlgResult: Integer;
+  {$IFDEF MSWINDOWS}
   WindowList: Pointer;
+  {$ENDIF MSWINDOWS}
 begin
   {$IFDEF MSWINDOWS}
   WindowList := DisableTaskWindows(0);

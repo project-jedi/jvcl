@@ -159,7 +159,7 @@ begin
   end;
 end;
 
-//=== TJvValidatorComponent ==================================================
+//=== { TJvValidatorComponent } ==============================================
 
 procedure TJvValidatorComponent.ExecuteVerb(Index: Integer);
 begin
@@ -434,7 +434,7 @@ begin
   ToolBar1.Width := 0;
 end;
 
-//=== TJvPropertyValidateProperty ============================================
+//=== { TJvPropertyValidateProperty } ========================================
 
 function TJvPropertyValidateProperty.GetAttributes: TPropertyAttributes;
 begin

@@ -54,7 +54,7 @@ uses
   QConsts, 
   JvQTypes, JvQFooter, JvQDsgnConsts;
 
-//=== TJvFooterEditor ========================================================
+//=== { TJvFooterEditor } ====================================================
 
 function TJvFooterEditor.GetVerbCount: Integer;
 begin

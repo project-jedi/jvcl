@@ -133,7 +133,7 @@ begin
   Form.BringToFront;
 end;
 
-//=== TJvProviderRootItem ====================================================
+//=== { TJvProviderRootItem } ================================================
 
 type
   TJvProviderRootItem = class(TJvBaseDataItem)
@@ -155,7 +155,7 @@ begin
     Result := TExtensibleInterfacedPersistent(GetItems.GetImplementer).GetInterface(IID, Obj);
 end;
 
-//=== TfrmDataProviderDesigner ===============================================
+//=== { TfrmDataProviderDesigner } ===========================================
 
 procedure TfrmDataProviderDesigner.ResetSelection;
 begin

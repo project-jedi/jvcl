@@ -300,7 +300,7 @@ begin
     Result := 0;
 end;
   
-//=== TJvFilenameProperty ====================================================
+//=== { TJvFilenameProperty } ================================================
 
 procedure TJvFilenameProperty.Edit;
 begin
@@ -339,7 +339,7 @@ begin
     Result := RsFileName;
 end;
 
-//=== TJvDirectoryProperty ===================================================
+//=== { TJvDirectoryProperty } ===============================================
 
 procedure TJvDirectoryProperty.Edit;
 var
@@ -371,7 +371,7 @@ begin
     Result := RsDirectory;
 end;
 
-//=== TJvHintProperty ========================================================
+//=== { TJvHintProperty } ====================================================
 
 function TJvHintProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -406,7 +406,7 @@ begin
   end;
 end;
 
-//=== TJvStringsProperty =====================================================
+//=== { TJvStringsProperty } =================================================
 
 procedure TJvStringsProperty.Edit;
 var
@@ -442,7 +442,7 @@ begin
 end;
 
 
-//=== TJvStringsProperty =====================================================
+//=== { TJvStringsProperty } =================================================
 
 
 procedure TJvStringsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
@@ -486,7 +486,7 @@ end;
 
 
 
-//=== TJvDefaultImageIndexProperty ===========================================
+//=== { TJvDefaultImageIndexProperty } =======================================
 
 
 
@@ -595,7 +595,7 @@ end;
 
 
 
-//=== TJvShortCutProperty ======================================================
+//=== { TJvShortCutProperty } ==================================================
 
 function TJvShortCutProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -669,7 +669,7 @@ begin
   end;
 end;
 
-//=== TJvNosortEnumProperty ==================================================
+//=== { TJvNosortEnumProperty } ==============================================
 
 function TJvNosortEnumProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -680,14 +680,14 @@ procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin 
 end;
 
-//=== TJvExeNameProperty =====================================================
+//=== { TJvExeNameProperty } =================================================
 
 function TJvExeNameProperty.GetFilter: string;
 begin
   Result := RsExecutableFilesExeExeAllFiles;
 end;
 
-//=== TJvIntegerProperty =====================================================
+//=== { TJvIntegerProperty } =================================================
 
 function TJvIntegerProperty.GetValue: string;
 begin
@@ -706,7 +706,7 @@ begin
   inherited SetValue(IntToStr(L));
 end;
 
-//=== TJvFloatProperty =======================================================
+//=== { TJvFloatProperty } ===================================================
 
 function TJvFloatProperty.GetValue: string;
 const
@@ -806,14 +806,14 @@ begin
   Result := 2;
 end;
 
-//=== TJvWeekDayProperty =====================================================
+//=== { TJvWeekDayProperty } =================================================
 
 function TJvWeekDayProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList];
 end;
 
-//=== TJvComponentFormProperty ===============================================
+//=== { TJvComponentFormProperty } ===========================================
 
 procedure TJvComponentFormProperty.GetValues(Proc: TGetStrProc);
 var
@@ -843,11 +843,11 @@ begin
     inherited SetValue(Value);
 end;
 
-//=== TJvPersistentProperty ==================================================
+//=== { TJvPersistentProperty } ==============================================
 
 
 
-//=== TColorPropertyEx ======================================================
+//=== { TColorPropertyEx } ==================================================
 
 
 

@@ -57,7 +57,7 @@ implementation
 uses
   QForms, QDialogs;
 
-//=== TCSVFileNameProperty ===================================================
+//=== { TCSVFileNameProperty } ===============================================
 
 procedure TCSVFileNameProperty.Edit;
 begin
@@ -76,7 +76,7 @@ begin
   Result := [paDialog];
 end;
 
-//=== TCSVFieldProperty ======================================================
+//=== { TCSVFieldProperty } ==================================================
 
 function TCSVFieldProperty.GetAttributes: TPropertyAttributes;
 begin

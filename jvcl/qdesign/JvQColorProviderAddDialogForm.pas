@@ -113,7 +113,7 @@ type
     constructor Create(AOwner: IJvDataItems; AColor: TColor);
   end;
 
-// === TBtnColorItem ==========================================================
+//=== { TBtnColorItem } ======================================================
 
 function TBtnColorItem.Get_Color: TColor;
 begin
@@ -131,7 +131,7 @@ begin
   FColor := AColor;
 end;
 
-// === TfrmAddColor ===========================================================
+//=== { TfrmAddColor } =======================================================
 
 procedure TfrmAddColor.SetColorType(Value: TColorType);
 begin
