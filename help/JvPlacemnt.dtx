@@ -1,4 +1,4 @@
-## Locked by: Remko Bonte
+## Finished by: Remko Bonte
 ----------------------------------------------------------------------------------------------------
 @@JvPlacemnt.pas
 <GROUP JVCL.FileRef>
@@ -11,352 +11,446 @@ Author
 @@TJvFormPlacement
 <TITLEIMG TJvFormPlacement>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.FormsAndApp.Sizing
   FLAG=Component
 Summary
-  Enables storing and retrieving the placement of a form.
+  Enables storing and retrieving the placement and size of a form.
 Description
-  To use the component, specify which properties you want to save in the Options property, and set
-  the IniFileName and IniSection property to the filename of your applications initialization file.
-  Set the UseRegistry property to True to use Windows system registry instead of an ini-file.
+  TJvFormPlacement is a base class for the TJvFormStorage component. These components provide a
+  quick method for storing and retrieving data to a storage - either the system registry or an
+  ini file.
 
-  You can then set property Active to True to allow automatically save and restore the specified 
-  properties, or call the RestoreFormPlacement and SaveFormPlacement methods to retrieve or save
-  the form. The MinMaxInfo property provides an easy way to limit a form's minimum and maximum
-  tracking size.
+  The TJvFormPlacement component enables automatically storing and retrieving the placement and
+  size of its parent form.
 
-  Using class TJvFormPlacement
+  To use this component, do the following:
 
-  Set Active property to True to enable save and restore parent form's size and position.
-  When IniFileName is set to the empty string the default name for the INI-file (or Registry Key) will
-  be used.
-  If UseRegistry is True, TJvFormPlacement uses standard TRegIniFile class. So
-  the IniFileName passed to a TJvFormPlacement component becomes a subkey under the system registry's
-  root key (HKEY_CURRENT_USER by default).
-
-  You can handle the OnSavePlacement ans OnRestorePlacement events to save and restore additional
-  information to the initialization file or Windows Registry.
-
-  The TJvFormPlacement and TJvFormStorage components provides a quick method for saving size and position 
-  of its parent form.
-
-  This component also allows control of a parent form with style bsSizeable to have the Minumum and
-  Maximum sizes controlled by the developer.
+  * Drop an TJvFormPlacement on a form.
+  * Use Options to specify what information about the parent form should be stored.
+  * Use UseRegistry to specify whether either the system registry or an ini file should be used as
+    storage.
+  * Use the IniFileName and IniSection properties to specify the location in the storage to save
+    and read the data to.
+  * You can then set property Active to True to allow automatically save and restore the specified
+    properties, or call the RestoreFormPlacement and SaveFormPlacement methods at run-time to
+    retrieve or save the form.
+  * The MinMaxInfo property provides an easy way to limit a sizable form's minimum and maximum
+    tracking size.
+  * Write OnSavePlacement and OnRestorePlacement event handlers to save and restore additional
+    information, but you could also use the TJvFormStorage for this task.
+  * Link the TJvFormPlacement (or TJvFormStorage) component to the IniStorage property of other
+    components to save and load information specific for these components (TJvCheckListBox,
+    TJvDrawGrid, TJvSpeedbar, TJvMRUManager, TJvDBGrid) with no additional code.
 See Also
   TJvFormStorage
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Active
 Summary
-  Write here a summary (1 line)
+  Indicates whether the component automatically restores and saves the form's placement.
 Description
-  This property will activate the processing required to save and restore the form's positions.
-  If active = False, the component has no effect
+  If Active is set to True, the component automatically restores the form's placement when the
+  form is shown, and saves the form's placement when the form is closed.
+
+  The component writes the form's placement data to the registry - if UseRegistry is set to True -
+  or to an ini file - if UseRegistry is set to False.
+
+  Alternatively, you can call the RestoreFormPlacement and SaveFormPlacement methods to
+  explicitly restore and save the form's placement.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RestoreFormPlacement, SaveFormPlacement, UseRegistry
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.EraseSections
 Summary
-  Write here a summary (1 line)
+  Erases all sections used by this component of the storage.
 Description
-  Deletes all sections in INI file (or registry) whose name is IniSection property
+  Call EraseSection to remove all sections, all their keys, and their data values from the storage. The
+  storage is either the registry - if UseRegistry is set to True - or an ini file - if UseRegistry is
+  set to False.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <LINK Version>
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Form
 Summary
-  Write here a summary (1 line)
+  Provides access to the form which placement is controlled by the component.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Form to access the form - the owner of this component - which placement is controlled
+  by this component.
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.IniFile
 Summary
-  Internal Tinifile object if any
+  Provides access to the TIniFile object used to store and retrieve information from an ini file.
 Description
-  This property specifies the INI file to use. When this is specified, the form's metric information will be stored inside the INI file, and inside the section.
-
-  When IniFileName is set to the empty string the default name for the INI-file (or Registry Key) will be used.
+  Use IniFile to access the TIniFile object that is used - if UseRegistry is set to False - to
+  store and retrieve information from an ini file.
+Note
+  IniFile may be nil.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IniFileName, RegIniFile, UseRegistry
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.IniFileName
 Summary
-  The IniFileName property is used to tell a saver component the name of the initialization (ini) file
-  it is to write to and read from.
+  Specifies either the name of the ini file or the registry key to be used as location for the stored data.
 Description
-  INI file name (or registry main key)
-  If empty, the component uses the application exe name.
+  If UseRegistry is set to False, IniFileName specifies the name of the ini file to read and to
+  which to write information. If you set IniFileName to an empty \string, the return value of
+  function GetDefaultIniName determines the name of the ini file.
 
-  If UseRegistry property is set to True (32-bit version only), then this property specifies Windows
-  system registry key name.
-
-  If you do not specify a value of this property, then default name returned by GetDefaultIniName 
-  (or GetDefaultIniRegKey for registry) will be used.
+  If UseRegistry is set to True, IniFileName specifies the registry key of the data value into which
+  to write the form's placement data. If you set IniFileName to an empty \string, function
+  GetDefaultIniRegKey is used to determine a default registry key. Additionally, property IniSection
+  specifies a sub key; that is added to the key specified by IniFileName; the concatenated key specifies
+  the actual registry key.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IniSection, RegistryRoot, UseRegistry
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.IniFileObject
 Summary
-  Write here a summary (1 line)
+  Provides access to the object used to store and retrieve information from the storage.
 Description
-  This is an IniFileObject. It encapsulates the information so that instead of the information being
-  stored inside the INI file, it is stored inside the registry instead.
-  Returns the internal TInifile or TRegIniFile depending on UseRegistry property value
+  Use IniFileObject to access the object that is used to store and retrieve information from the
+  storage - either the system registry or a specific ini file.
+
+  If UseRegistry is set to True, IniFileObject returns the same object as IniFile. If UseRegistry
+  is set to False, IniFile returns the same object as RegIniFile.
+
+  Use IniFileObject as parameter, for calls to functions such as IniReadSections, IniEraseSection etc.
+Note
+  IniFileObject may be nil.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IniFile, RegIniFile, UseRegistry
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.IniSection
 Summary
-  Write here a summary (1 line)
+  Specifies either the section of the ini file or a sub registry key as location for the stored data.
 Description
-  The IniSection is the section of the IniFile which the information will be stored in. If you specify
-  blank, the information about your form's metrics will not be saved.
-  INI section.
-  
-  If empty the component uses the form class name
+  If UseRegistry is set to False, IniSection specifies the section of the ini file that contain the
+  keys to which to write the form's placement data.
+
+  If UseRegistry is set to True, IniSection specifies the sub registry key of the data value into
+  which to write the write the information. The value of property IniSection is added to the key
+  specified by IniFileName, the concatenated key specifies the actual registry key.
+
+  If you set IniSection to an empty \string, function GetDefaultSection is used to determine a section
+  of the ini file. This functionis used whether or not you have set UseRegistry to True.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IniFileName, UseRegistry
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.MinMaxInfo
 Summary
-  Write here a summary (1 line)
+  Specifies the size constraints for the form.
 Description
-  This property allows control of a parent form with style bsSizeable to have the minimum and maximum
-  sizes controlled by the developer.
-  
-  min and max info
+  Use MinMaxInfo to specify the minimum and maximum width and height of the form.
+
+  When MinMaxInfo contains maximum or minimum values, the form cannot be resized to violate those
+  constraints.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.OnRestorePlacement
 Summary
-  When the screen is restored, this event is triggered.
-  Fired once the component has read form placement from INI file or registry.
+  Occurs after the form's placement has been retrieved and restored.
 Description
-  You can supply an event handler to read other INI dependent  values that are not managed by the 
-  component (using ReadInteger and ReadString methods)
+  Write an OnRestorePlacement event handler to respond after the the form's placement has been
+  retrieved and restored. For example you can read other values from the storage that are not managed
+  by the component - using the ReadInteger and ReadString methods.
+
+  This event is fired before the control that has focus on the form is retrieved and restored, thus
+  you can alter this restoring behaviour in an event handler by modifying property Options.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnSavePlacement
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.OnSavePlacement
 Summary
-  When the screen is being saved, this event is triggered.
-  Fired once the component has saved form placement to INI file or registry.
+  Occurs after the form's placement has been stored.
 Description
-  You can supply an event handler to write other INI dependent  values that are not managed by the
-  component (using WriteInteger and WriteString methods)
+  Write an OnSavePlacement event handler to respond after the form's placement has been stored.
+  For example you can write other values to the storage that are not managed
+  by the component - using the WriteInteger and WriteString methods.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnRestorePlacement
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Options
 Summary
-  What to store/retrieve (state, position, active control)
+  Specifies which information to store and retrieve from the storage.
 Description
-  The Options property tells the TJvFormPlacement component which parts of the parent form it should
-  read and write to the specified IniFileName.
+  Use Options to specify whether to store and retrieve:
+
+  * How the form appears on the screen: minimized, maximized, or in a normal state.
+  * The placement of the form: the form's normal, minimized and maximized size and position and its
+    minimum and maximum tracking size, use MinMaxInfo to specify values other than the system-defined
+    default values.
+  * The control that has focus on the form.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MinMaxInfo
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.PreventResize
 Summary
-  Write here a summary (1 line)
+  Specifies whether the component prevents the form from being resized.
 Description
-  If True, the user will not be able to resize the form
-  This property prevents the form from being resized. Setting this to true prevents the form from being resized.
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set PreventResize to True, to prevent the form from being resized. For example, you can drop an
+  TJvFormPlacement component on a MDI child form, and set PreventResize to True, to prevent the
+  user from resizing the child form.
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.ReadInteger
 Summary
-  Write here a summary (1 line)
+  Retrieves an integer value from the storage.
 Description
-  Allows to read an integer value from the INI used by the component.
+  Call ReadInteger to retrieve an integer value from the storage. The storage is either the registry -
+  if UseRegistry is set to True - or an ini file - if UseRegistry is set to False.
+
+  If the registry is used, then:
+
+    * RegistryRoot determines the root registry key,
+    * IniFileName determines the main key, IniSection determines the sub key, and
+    * Parameter Ident identifies the name of the data value to return.
+
+  If an ini file is used, then:
+
+    * IniFileName specifies the name of the ini file,
+    * IniSection identifies the section in the file, and
+    * Parameter Ident identifies the name of the key from which to retrieve the value.
+
 Parameters
-  Ident   - Description for this parameter
-  Default - Description for this parameter
-Return value
-  Describe here what the function returns
+  Ident :    Identifies the name of the data value or ini key from which to retrieve the value.
+  Default :  Specifies an integer value to use if there is no key corresponding to the value specified by
+           IniFileName and IniSection, or no data value corresponding to parameter Ident.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IniFileName, IniSection, <LINK ReadString>, UseRegistry, <LINK WriteInteger>
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.ReadString
 Summary
-  Write here a summary (1 line)
+  Retrieves a string value from the storage.
 Description
-  Allows to read a string value from the INI used by the component.
+  Call ReadString to retrieve an integer value from the storage. The storage is either the registry -
+  if UseRegistry is set to True - or an ini file - if UseRegistry is set to False.
+
+  If the registry is used, then:
+
+    * RegistryRoot determines the root registry key,
+    * IniFileName and IniSection determine the key, and
+    * Parameter Ident identifies the name of the data value to return.
+
+  If an ini file is used, then:
+
+    * IniFileName specifies the name of the ini file,
+    * IniSection identifies the section in the file, and
+    * Parameter Ident identifies the name of the key from which to retrieve the value.
 Parameters
-  Ident   - Description for this parameter
-  Default - Description for this parameter
-Return value
-  Describe here what the function returns
+  Ident   - Identifies the name of the data value from which to retrieve the value.
+  Default - Specifies an string value to use if there is no key corresponding to the value specified by
+             IniFileName and IniSection, or no data value corresponding to parameter Ident.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IniFileName, IniSection, <LINK ReadInteger>, UseRegistry, <LINK WriteString>
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.RegIniFile
 Summary
-  Write here a summary (1 line)
+  Provides access to the TRegIniFile object used to store and retrieve information from the system registry.
 Description
-  This is used internally. It encapsulates the contents of the Ini file to the registry (something
-  like mapping A to B).
-  Returns the internal TRegIniFile if any
+  Use RegIniFile to access the TRegIniFile object that is used - if UseRegistry is set to True - to
+  store and retrieve information from the system registry.
+Note
+  RegIniFile may be nil.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IniFile, UseRegistry
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.RegistryRoot
 Summary
-  Write here a summary (1 line)
+  Specifies the root registry key to write the form placement data to.
 Description
-  Allows to set the registry root (only if UseRegistry is true).
+  Use RegistryRoot to specify the root registry key of the location in the registry where to the
+  form placement data is written to.
+Note
+  UseRegistry must be set to True, to use the registry as storage instead of a ini file.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UseRegistry, IniFileName
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.RestoreFormPlacement
 Summary
-  Restores form placement in reading the INI file or registry 
+  Restores the form's placement to the placement retrieved from the storage.
 Description
-  The RestoreFormPlacement method loads all the properties specified in the related Options property
-  from the initialization file or registry key specified in IniFileName independently of Active property
-  value.
+  Call RestoreFormPlacement to explicitly restore the form's placement to the placement retrieved
+  from the storage.
+
+  If Active is set to True, the component automatically restores the placement information when the
+  form is shown; thus no call to RestoreFormPlacement is needed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Active, SaveFormPlacement
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.SaveFormPlacement
 Summary
-  Forces the component to save current form placement
+  Stores the form's placement information in the storage.
 Description
-  The SaveFormPlacement method saves all the properties specified in the related Options property
-  from the initialization file or registry key specified in IniFileName independently of Active
-  property value.
+  Call SaveFormPlacement to explicitly store the form's placement in the storage.
+
+  If Active is set to True, the component automatically stores the placement information when the form
+  is closed; thus no call to SaveFormPlacement is needed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Active, RestoreFormPlacement
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.UseRegistry
 Summary
-  Write here a summary (1 line)
+  Specifies whether to use the registry or an ini file as storage for the form's placement.
 Description
-  This property is enabled under Delphi 2.0 It maps the INI file to the registry instead.
-  If True, information are stored/retreieves from the registry (else from a standard INI file stored
-  in Windows directory by default).
+  Set UseRegistry to True to store the form's placement data in the system registry, set UseRegistry
+  to False to store the data in an ini file.
+
+  If UseRegistry is set to False, then:
+
+  * IniFileName specifies the name of the ini file. You can set it an empty \string; then the
+    application's file name is used as the name of the ini file.
+  * IniSection specifies the section of the ini file from which to read and to which to write information.
+
+  If UseRegistry is set to True, then:
+
+  * IniFileName specifies the registry key of the data value into which to write the form's placement data.
+    You can set IniFileName to an empty \string; then the component constructs a registry key from the
+    application's title or file name.
+  * Additionally, property IniSection specifies a sub key; that is added to the key specified by
+    IniFileName; the concatenated key specifies the actual registry key.
+
+  The following code writes the form placement data to the system registry at location
+  HKEY_CURRENT_USER\\Software\\MyApp\\FormPlacement\\Form1\\:
+  <AUTOLINK OFF>
+  <CODE>
+  JvFormPlacement1.UseRegistry := True;
+  JvFormPlacement1.RegistryRoot := prCurrentUser;
+  JvFormPlacement1.IniFileName := 'Software\\MyApp\\FormPlacement';
+  JvFormPlacement1.IniSection := 'Form1';
+  JvFormPlacement1.SaveFormPlacement;
+  </CODE>
+  <AUTOLINK ON>
 Note
-  if you application stores a lot of user preferences in INI, do not use the Registry!
-  If a user wants to use another computer, he/she will loose all settings... A standard INI is not
-  as "modern" and "futurist" as the registry, but an application INI file can be easely copied using
-  common handlings ...
+  Using an ini file has as advantage that it can be easily copied; for example if a user wants to 
+  use the same settings on another computer.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RegistryRoot, IniFileName
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Version
 Summary
-  Write here a summary (1 line)
+  Specifies a version number.
 Description
-  The version number blocks the internal restore function when the version read from the INI
-  (or Registry) is less than the one set in the component.
+  Use Version to prevent the component from retrieving the form's placement from out-of-date information
+  in the storage.
+
+  The Version number is stored together with the form's placement information in the storage. Then, before
+  the component retrieves the placement info from the storage, it compares the stored version number with
+  the value specified by Version. If the stored version is less then the value specified by Version, the
+  component does <i>not</i> retrieve the placement info.
+
+  Thus increase Version each time stored placement information becomes out-of-date.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EraseSections
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.WriteInteger
 Summary
-  Write here a summary (1 line)
+  Writes an integer value to the storage.
 Description
-  Allows to write an integer value into the component INI file or registry
+  Call WriteInteger to store an integer value in the storage. The storage is either the registry -
+  if UseRegistry is set to True - or an ini file - if UseRegistry is set to False.
+
+  If the registry is used, then:
+    * RegistryRoot determines the root registry key,
+    * IniFileName determines the main key, IniSection determines the sub key, and
+    * Parameter Ident identifies the name of the data value into which to write.
+
+  If an ini file is used, then:
+    * IniFileName specifies the name of the ini file,
+    * IniSection identifies the section in the file, and
+    * Parameter Ident identifies the name of the key for which to set a value.
 Parameters
-  Ident - Description for this parameter
-  Value - Description for this parameter
+  Ident - Identifies the name of the data value or ini key into which to write.
+  Value - The integer value to write.
 See Also
-  WriteString
+  IniFileName, IniSection, ReadInteger, UseRegistry, WriteString
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.WriteString
 Summary
-  Write here a summary (1 line)
+  Writes a \string value to the storage.
 Description
-  Allows to write a string value into the component INI file or registry
+  Call WriteInteger to store an integer value in the storage. The storage is either the registry -
+  if UseRegistry is set to True - or an ini file - if UseRegistry is set to False.
+
+  If the registry is used, then:
+    * RegistryRoot determines the root registry key,
+    * IniFileName and IniSection determine the key, and
+    * Parameter Ident identifies the name of the data value into which to write.
+
+  If an ini file is used, then:
+    * IniFileName specifies the name of the ini file,
+    * IniSection identifies the section in the file, and
+    * Parameter Ident identifies the name of the key for which to set a value.
 Parameters
-  Ident - Description for this parameter
-  Value - Description for this parameter
+  Ident - Identifies the name of the data value or ini key into which to write.
+  Value - The \string value to write.
 See Also
-  WriteInteger
+  IniFileName, IniSection, ReadString, UseRegistry, WriteInteger
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage
 <TITLEIMG TJvFormStorage>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.FormsAndApp.Sizing,
   FLAG=Component
 Summary
-  The TJvFormStorage component is a direct descendent of TJvFormPlacement.
+  General storage component.
 Description
-  In 32-bit version, when UseRegistry is True, TJvFormStorage uses standard TRegIniFile class. So
-  the IniFileName passed to a TJvFormStorage component becomes a subkey under the system registry's
-  root key (HKEY_CURRENT_USER by default).
-  
-  TJvFormStorage will work with any component or control you might have. Even 3rd party controls or
-  controls you have designed yourself.
-  
-  Using class TJvFormStorage
-  
-  At design-time use component editor to add published properties of any other components to list of 
-  stored properties of TJvFormStorage component.
-  To save and restore the position of TRxSplitter component add to stored properties the Width or 
-  Height (according to Align property) of one of splitted controls (ControlFirst or ControlSecond).
+  Use a TJvFormStorage component to store and retrieve data from a storage - either the system
+  registry or an ini file. The component can store, retrieve and restore published properties of
+  any component on the form.
 
-  To save and restore active page of tabbed controls (TNotebook, TTabbedNotebook or TPageControl) store 
-  ActivePage or PageIndex property.
+  For example you can use the component to save the position of a splitter, the text of an edit
+  control or the checked value of a checkbox on closure of a form, and later retrieve and restore
+  the properties of these components on re-opening of the form.
 
-  You can save and restore text of edit controls by adding to stored properties the Text property for 
-  TEdit or Lines property for TMemo.
+  TJvFormStorage descends from TJvFormPlacement, thus it also enables you to store and retrieve the
+  forms placement.
 
-  Use TJvFormStorage to save and restore state of windowed controls such as TCheckBox, TRadioGroup etc.
-  Link the TJvFormStorage (or TJvFormPlacement) component to IniStorage property of some another components 
-  to save and load information specific for these components (TRxCheckListBox, TRxDrawGrid, TSpeedbar, 
-  TMRUManager, TRxDBGrid) with no additional code.
+  To use this component, do the following:
 
-  TJvFormStorage component allows you to read and write virtually any component published property to
-  an INI file or the system Registry with virtually no code.
-
-  It additionally will save any published properties to an INI file or the registry to be restored
-  when the form is created.
+  * Drop an TJvFormStorage on a form.
+  * Use either the <LINK TJvFormStorage_StoredProps_Editor,StoredProps editor> by double-clicking
+    the component, or the component's properties, to specify which properties of what components 
+    you want to be stored and retrieved.
+  * Use <LINK TJvFormPlacement.UseRegistry,UseRegistry> to specify whether either the system
+    registry or an ini file should be used as storage.
+  * Use the <LINK TJvFormPlacement.IniFileName,IniFileName> and <LINK TJvFormPlacement.IniSection,
+    IniSection> properties to specify the location in the storage to save and read the data to.
+  * You can then set property <LINK TJvFormPlacement.Active,Active> to True to allow automatically
+    save and restore the specified properties, or call the <LINK TJvFormPlacement.RestoreFormPlacement,
+    RestoreFormPlacement> and <LINK TJvFormPlacement.SaveFormPlacement,SaveFormPlacement> methods
+    at run-time to retrieve and store the form.
+  * Link the TJvFormStorage (or TJvFormPlacement) component to the IniStorage property of other
+    components to save and load information specific for these components (TJvCheckListBox,
+    TJvDrawGrid, TJvSpeedbar, TJvMRUManager, TJvDBGrid) with no additional code.
 See Also
   TJvFormPlacement
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.SetNotification
 Summary
-  Write here a summary (1 line)
+  Ensures that the storage component is notified that a component with a stored property is going to be destroyed.
 Description
-  Internal use. do not call directly.
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SetNotification is called by the storage component, after an update of StoredProps. It ensures that
+  the components whose properties are listed in StoredProps notify the storage component when they
+  are going to be destroyed.
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.StoredProps
 Summary
-  Write here a summary (1 line)
+  Lists all controls and their stored properties, that are managed by the storage component.
 Description
-  List of stored (and retrieved) properties.
-  You do not have to modify this property but to use the specialized design time property editor.
-  StoredProps contains the forms controls you have selected or chosen to have their properties stored into a file.
+  Use StoredProps to directly determine the components and their properties that are managed by the
+  storage component. The format of the list is:
+
+  <code>component.property</code>
+
+  Thus for example:
+
+  <code>
+  CheckBox1.Checked
+  Button1.Caption
+  </code>
+
+  A <LINK TJvFormStorage_StoredProps_Editor,StoredProps editor> is provided for design-time
+  editing of the StoredProps property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StoredValue
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.StoredValue
 Summary
@@ -365,88 +459,113 @@ Description
   Use the StoredValue property to get or set the value represented by a stored value object with a
   particular name.
 See Also
-  TJvStoredValues.Items, TJvStoredValues.Values
+  TJvStoredValues.Items, TJvStoredValues.Values, StoredProps
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.StoredValues
 Summary
-  References the stored value objects in the list by their name.
+  Contains the stored values for a storage component.
 Description
-  Access StoredValues at runtime to view and set stored value names and values dynamically 
-  (at design time use the collection editor for the StoredValues property to set stored value 
-  information). StoredValues is a zero-based array of TJvStoredValue objects. Index specifies the 
-  array element to access.
-  
+  Access StoredValues at runtime to view and set stored value names and values dynamically
+  (at design time use the collection editor for the StoredValues property to set stored value
+  information). StoredValues can be accessed as a zero-based array of TJvStoredValue objects.
+  Index specifies the array element to access.
+
   The following code assumes that the storage component has 3 stored value objects, and sets and
   stores their values.
   <CODE>
   JvFormStorage1.StoredValues[0].Value := 'Germany';
   JvFormStorage1.StoredValues[1].Value := 'Berlin';
-  JvFormStorage1.StoredValues[2].Value := 420000;
+  JvFormStorage1.StoredValues[2].Value := 10331000;
   JvFormStorage1.StoredValues.SaveValues;
   </CODE>
 Note
   An easier way to set and retrieve values of stored value objects when the name of each stored value
-  object is known is to call StoredValue. StoredValue cannot, however, be used to change a stored 
+  object is known is to call StoredValue. StoredValue cannot, however, be used to change a stored
   value’s name.
 See Also
-  StoredValue, TJvStoredValues
+  StoredValue, TJvStoredValues, TJvStoredValues.Items
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink
 Summary
-  Write here a summary (1 line)
+  Helper class used by objects that store data in a storage to coordinate to respond to storage events.
 Description
-  Internal object centralizing INI actions (save / restore)
+  Use TJvIniLink in any object that stores data in a storage to represent its link to a storage
+  component or that needs to respond to storage events.
+
+  The constructor of the object that stores data in a storage should call the constructor of TJvIniLink,
+  and initialize any relevant properties. The object can then respond to the OnLoad and OnSave
+  events to store or retrieve it's data from the storage.
+See Also
+  TJvFormStorage, TJvFormPlacement
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.IniObject
 Summary
-  Write here a summary (1 line)
+  Provides access to the object used to store and retrieve information from the storage.
 Description
-  INI object (TInifile or TRegIniFile)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use IniObject to access the object that is used to store and retrieve information from the
+  storage - either the system registry or a specific ini file.
+
+  If property <LINK TJvFormPlacement.UseRegistry,UseRegistry> of Storage is set to True, IniObject
+  returns a TRegIniFile object. If property <LINK TJvFormPlacement.UseRegistry,UseRegistry> of Storage
+  is set to False, IniObject returns a TIniFile object.
+
+  Use IniObject as parameter, for calls to functions such as IniReadSections, IniEraseSection etc.
+Note
+  Storage must be set otherwise IniObject is nil. Access IniObject only in OnLoad or OnSave event
+  handlers.
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.OnLoad
 Summary
-  Write here a summary (1 line)
+  Occurs when the storage component notifies the link a storage load event.
 Description
-  Fired when a load from INI occurs
+  Write an OnLoad event handler to take specific actions when the storage component specified by
+  property Storage notifies the link a storage load event.
+
+  Objects that use a TJvIniLink object typically write an OnLoad event handler to retrieve it's specific
+  data from the storage.
 See Also
   OnSave
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.OnSave
 Summary
-  Write here a summary (1 line)
+  Occurs when the storage component notifies the link a storage save event.
 Description
-  Fired when save to INI occurs
+  Write an OnSave event handler to take specific actions when the storage component specified by
+  property Storage notifies the link a storage save event.
+
+  Objects that use a TJvIniLink object typically write an OnSave event handler to store it's specific
+  data to the storage.
 See Also
   OnLoad
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.RootSection
 Summary
-  Write here a summary (1 line)
+  Indicates the root section used by the storage component.
 Description
-  Root section for all linked INI
+  Read RootSection to determine the root section used by the storage component Storage.
+Note
+  Storage must be set otherwise RootSection is an empty \string.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IniObject, Storage
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.Storage
 Summary
-  Write here a summary (1 line)
+  Specifies the storage component that manages the storage.
 Description
-  Storage object
+  Read Storage to determine the storage component that manages the storage. The TJvIniLink
+  responds to storage events that are send by Storage, by notifying the object that owns the
+  TJvIniLink object - by triggering the OnLoad and OnSave envents.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvFormPlacement.Active, TJvFormPlacement.RestoreFormPlacement, TJvFormPlacement.SaveFormPlacement,
+  IniObject
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue
 Summary
   Represents a stored value.
 Description
   Use the properties of a TJvStoredValue object to get or set the value of a stored value. Storage
-  components create TJvStoredValue objects to represent a data value stored in a INI file or in the 
-  registry.
+  components such as TJvFormStorage create TJvStoredValue objects to represent a data value stored
+  in a ini file or in the system registry.
 See Also
   TJvFormStorage, TJvStoredValues
 ----------------------------------------------------------------------------------------------------
@@ -463,15 +582,15 @@ Summary
   Specifies a key to be used for encoding and decoding the stored value.
 Description
   Use KeyString to specify a key that will be used for encoding and decoding the stored value.
-  
-  If you specify an empty string for KeyString, the stored value is <i>not</i> encoded.
+
+  If you specify an empty \string for KeyString, the stored value is <i>not</i> encoded.
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Name
 Summary
-  Specifies the name of the stored value. 
+  Specifies the name of the stored value.
 Description
   Use Name to identify a particular stored value within a TJvStoredValues object. Name specifies
-  a string that identifies the name of the data value into which to store the value. 
+  a \string that identifies the name of the data value into which to store the value.
 See Also
   Value
 ----------------------------------------------------------------------------------------------------
@@ -479,23 +598,26 @@ See Also
 Summary
   Occurs after the stored value is restored.
 Description
-  Write here a description
+  Write an OnRestore event handler to take specific actions after the stored value is retrieved from
+  the storage. Typically, you use this event to read the Value property of the stored value object, 
+  and take action depending on the value of Value.
 See Also
-  OnSave, Restore
+  OnSave, Restore, Value
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.OnSave
 Summary
   Occurs before the stored value is saved.
 Description
-  Write here a description
+  Write an OnSave event handler to take specific actions before the stored value is stored to
+  the storage. Typically, you use this event to set the Value property of the stored value object.
 See Also
-  OnRestore, Restore
+  OnRestore, Save, Value
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Restore
 Summary
   Restores the stored value.
 Description
-  Call Restore to set property Value to the data value read from the INI file or registry at a location 
+  Call Restore to set property Value to the data value read from the ini file or registry at a location
   specified by the Name property.
 See Also
   OnRestore, Save
@@ -504,7 +626,7 @@ See Also
 Summary
   Saves the stored value.
 Description
-  Call Save to write the value of property Value to the INI file or registry at a location 
+  Call Save to write the value of property Value to the ini file or registry at a location
   specified by the Name property.
 See Also
   OnSave, Restore
@@ -520,16 +642,26 @@ Description
 Summary
   Represents the value of the stored value as a Variant.
 Description
-  Use Value in generic code that manipulates the values of stored values without needing to know 
+  Use Value in generic code that manipulates the values of stored values without needing to know
   the type the stored value represent.
+  
+  \Write OnRestore and OnSave event handles to set the value just before it's saved or get it just
+  after it's read from the storage.
 See Also
-  Clear
+  Clear, OnRestore, OnSave
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValueEvent
 <TITLE TJvStoredValueEvent type>
+Summary
+  Type for event handlers that let an application process data after it is retrieved from or before 
+  it is saved to the storage.
+Description
+  Use TJvStoredValueEvent to edit the value of data before it's written to the storage or after it's
+  read from the storage.
 Parameters
-  Sender - Description for this parameter
-  Value  - Description for this parameter
+  Sender - Identifies the storage component that is about to store Value to a storage or has retrieved 
+           Value from the storage.
+  Value  - Data value that the storage component just retrieved from or is about to save to a storage.
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues
 Summary
@@ -551,13 +683,12 @@ See Also
 Summary
   Finds the index number of a stored value in the Items array from its name.
 Description
-  Use the IndexOf method to locate the position of a stored value in the Items property array. 
-  IndexOf returns a value from zero (the first position) to Count - 1. 
+  Use the IndexOf method to locate the position of a stored value in the Items property array.
 Parameters
   Name - Specifies the name of the stored value as the Name parameter.
 Return value
-  Returns the position of the stored value specified by Name in the Items property array.
-  If Items contains no stored value with the specified Name, the return value is -1.
+  Returns a value from zero (the first position) to Count - 1, if Items contains a stored value
+  with the specified Name. Otherwise the return value is -1.
 See Also
   Items, TJvStoredValue.Name
 ----------------------------------------------------------------------------------------------------
@@ -569,18 +700,18 @@ Description
   to Count - 1. Items can reference a particular stored value by its index, but the Values property
   is preferred, because it does not depend on the order of the stored values.
 See Also
-  IndexOf, StoredValue, Values
+  IndexOf, StoredValue, Values, TJvFormStorage.StoredValues
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.RestoreValues
 Summary
   Restores the values represented by the stored value objects in the list.
 Description
-  Call RestoreValues to restore the values of all stored value objects in the Items list. 
-  Alternatively call the <LINK TJvStoredValue.Restore,Restore> method of a specific stored value object 
+  Call RestoreValues to restore the values of all stored value objects in the Items list.
+  Alternatively call the <LINK TJvStoredValue.Restore,Restore> method of a specific stored value object
   to restore that stored value.
-  
+
   Restoring a value of a stored value object means that the <LINK TJvStoredValue.Value,Value> property
-  of the stored value object is read from the INI file or registry at a location specified by
+  of the stored value object is read from the ini file or registry at a location specified by
   it's <LINK TJvStoredValue.Name,Name> property.
 See Also
   TJvStoredValue.OnRestore, TJvStoredValue.Restore, SaveValues
@@ -589,12 +720,12 @@ See Also
 Summary
   Saves the values represented by the stored value objects in the list.
 Description
-  Call SaveValues to save the values of all stored value objects in the Items list. 
-  Alternatively call the <LINK TJvStoredValue.Save,Save> method of a specific stored value object 
+  Call SaveValues to save the values of all stored value objects in the Items list.
+  Alternatively call the <LINK TJvStoredValue.Save,Save> method of a specific stored value object
   to save only that stored value.
-  
+
   Saving a value of a stored value object means that the <LINK TJvStoredValue.Value,Value> property
-  of the stored value object is written to the INI file or registry at a location specified by
+  of the stored value object is written to the ini file or registry at a location specified by
   it's <LINK TJvStoredValue.Name,Name> property.
 See Also
   TJvStoredValue.OnSave, TJvStoredValue.Save, RestoreValues
@@ -603,10 +734,10 @@ See Also
 Summary
   Identifies the storage component that uses the stored values collection to represent all of its stored values.
 Description
-  Check the value of the Storage property to determine the storage component that is associated with
+  \Check the value of the Storage property to determine the storage component that is associated with
   the TJvStoredValues object.
-  
-  Use the properties of the storage component to obtain additional information. 
+
+  Use the properties of the storage component to obtain additional information.
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.StoredValue
 Summary
@@ -629,13 +760,13 @@ See Also
 @@TJvWinMinMaxInfo
 Summary
   Contains information about a window's maximized size and position and its minimum and maximum
-  tracking size. 
+  tracking size.
 Description
   TJvWinMinMaxInfo is a wrapper for the windows MINMAXINFO structure.
 
   Internal object storing form min and max size, position.
-  
-  This class contains the metrics of the form. It is used by FormPlacement's options to store 
+
+  This class contains the metrics of the form. It is used by FormPlacement's options to store
   information about the form.
 See Also
   TJvFormPlacement, TJvFormStorage
@@ -646,7 +777,7 @@ Summary
 Description
   A TJvFormPlacement component reads DefaultMinMaxInfo to check whether to override the system-defined
   default values for the window's maximized size and position and its minimum and maximum
-  tracking size. 
+  tracking size.
 Return value
   Returns True if all properties of the TWinMinMaxInfo are set to 0.
 ----------------------------------------------------------------------------------------------------
@@ -694,10 +825,10 @@ See Also
 Summary
   Specifies the minimum tracking height of the form at run-time.
 Description
-  The system maintains a minimum and maximum tracking size for a form that has a sizing border. 
+  The system maintains a minimum and maximum tracking size for a form that has a sizing border.
   The maximum tracking height is the largest window height you can produce by dragging the sizing border.
 
-  A form's minimum and maximum tracking sizes are set to system-defined default values when the 
+  A form's minimum and maximum tracking sizes are set to system-defined default values when the
   system creates the window. Use the MaxTrackHeight property to override one of these default values.
 Note
   MaxTrackHeight does <not> override the system-defined default value, if you set it to 0.
@@ -708,10 +839,10 @@ See Also
 Summary
   Specifies the maximum tracking width of the form at run-time.
 Description
-  The system maintains a minimum and maximum tracking size for a form that has a sizing border. 
+  The system maintains a minimum and maximum tracking size for a form that has a sizing border.
   The maximum tracking width is the largest window width you can produce by dragging the sizing border.
 
-  A form's minimum and maximum tracking sizes are set to system-defined default values when the 
+  A form's minimum and maximum tracking sizes are set to system-defined default values when the
   system creates the window. Use the MaxTrackWidth property to override one of these default values.
 Note
   MaxTrackWidth does <not> override the system-defined default value, if you set it to 0.
@@ -722,11 +853,11 @@ See Also
 Summary
   Specifies the minimum tracking height of the form at run-time.
 Description
-  The system maintains a minimum and maximum tracking size for a form that has a sizing border. 
+  The system maintains a minimum and maximum tracking size for a form that has a sizing border.
   The minimum tracking height is the smallest window height you can produce by dragging the form's
-  sizing border. 
+  sizing border.
 
-  A form's minimum and maximum tracking sizes are set to system-defined default values when the 
+  A form's minimum and maximum tracking sizes are set to system-defined default values when the
   system creates the window. Use the MinTrackHeight property to override one of these default values.
 Note
   MinTrackHeight does <not> override the system-defined default value, if you set it to 0.
@@ -737,40 +868,34 @@ See Also
 Summary
   Specifies the minimum tracking width of the form at run-time.
 Description
-  The system maintains a minimum and maximum tracking size for a form that has a sizing border. 
+  The system maintains a minimum and maximum tracking size for a form that has a sizing border.
   The minimum tracking width is the smallest window width you can produce by dragging the form's
-  sizing border. 
+  sizing border.
 
-  A form's minimum and maximum tracking sizes are set to system-defined default values when the 
+  A form's minimum and maximum tracking sizes are set to system-defined default values when the
   system creates the window. Use the MinTrackWidth property to override one of these default values.
 Note
   MinTrackWidth does <not> override the system-defined default value, if you set it to 0.
 See Also
   MaxTrackHeight, MaxTrackWidth, MinTrackHeight
 ----------------------------------------------------------------------------------------------------
-@@TPlacementOperation
-<TITLE TPlacementOperation type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-@@TPlacementOperation.poSave
-  Description for poSave
-@@TPlacementOperation.poRestore
-  Description for poRestore
-----------------------------------------------------------------------------------------------------
 @@TPlacementOption
 <TITLE TPlacementOption type>
 Summary
-  Defines the possible values for the Options property of the TJvFormPlacement or TJvFormStorage components.
+  Defines values that represents information about a form that a TJvFormPlacement component can store.
 Description
-  Write here a description
+  Use the TPlacementOption type to specify information about a form that a TJvFormPlacement component
+  can store.
+
+  TPlacementOptions is a set of TPlacementOption values.
 @@TPlacementOption.fpState
+  How the form appears on the screen: minimized, maximized, or in a normal state.
   state of form (normal, minimize, maximize);
 @@TPlacementOption.fpPosition
-  Top, Left, Height and Width of form;
+  The placement of the form: the form's normal, minimized and maximized size and position and its
+  minimum and maximum tracking size.
 @@TPlacementOption.fpActiveControl
-  current Active Control on the form (value of the ActiveControl property).
+  The control that has focus on the form. (Specified by the ActiveControl property of the form).
 ----------------------------------------------------------------------------------------------------
 @@TPlacementOptions
 <TITLE TPlacementOptions type>
@@ -794,3 +919,43 @@ Description
   The HKEY_USERS key.
 @@TPlacementRegRoot.prDynData
   The HKEY_DYN_DATA key.
+----------------------------------------------------------------------------------------------------
+@@TJvFormStorage_StoredProps_Editor
+<TITLE StoredProps editor>
+<Description>
+  Use the StoredProps editor to define which properties to store and retrieve by the JvFormStorage
+  component.
+
+  To open the StoredProps editor:
+
+  1. Place an JvFormStorage component on the form.
+  2. Do one of the following:
+    * Double-click that component, or
+    * With the component selected, double-click the StoredProps property in the Object Inspector
+      to invoke the StoredProps editor.
+
+  <b>Form Properties</b>
+
+  \Check the "Active Control" control to let the storage component store on closing of the form
+  and retrieve and restore on showing of the form, the control that has focus on the form.
+
+  \Check "Form Position" to indicate that the component should store and retrieve the placement of the
+  form: the form's normal, minimized and maximized size and position and its minimum and maximum
+  tracking size.
+
+  \Check the "Window State" control to indicate that the way how the form
+  appears on the screen - minimized, maximized, or in a normal state - should be stored and retrieved
+  by the component.
+
+  <b>Stored Properties</b>
+
+  To add a property of a component to the storage component:
+
+  1. Select the component where from a property to add in the Components list.
+  2. Select the property of the component to add in the Properties list.
+  3. Choose Add.
+
+  The selected component and it's property are displayed in the Stored Properties list box. For example,
+  <code>CheckBox1.Checked</code>
+See Also
+  TJvFormStorage.StoredProps
