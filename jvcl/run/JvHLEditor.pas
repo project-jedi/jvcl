@@ -1553,6 +1553,7 @@ procedure TJvHLEditor.TextModified(ACaretX, ACaretY: Integer; Action: TModifiedA
   const Text: string);
 var
   S: string;
+  L:integer;
 {  LP, i: Integer;
   P: PChar;
   OldProductionsLine: Integer; }
@@ -1603,10 +1604,11 @@ begin
     begin
      // comment <-> preproc
       S := Lines[ACaretY];
-      if ((ACaretX > 1) and (S[ACaretX - 1] = '{')) or
-         ((ACaretX > 2) and (S[ACaretX - 2] = '(') and (S[ACaretX - 1] = '*')) or
-         ((ACaretX > 1) and (S[ACaretX] = '{')) or
-         ((ACaretX > 2) and (S[ACaretX - 1] = '(') and (S[ACaretX] = '*')) then
+      L := Length(S);
+      if ((L > 1) and (S[ACaretX - 1] = '{')) or
+         ((L > 2) and (S[ACaretX - 2] = '(') and (S[ACaretX - 1] = '*')) or
+         ((L > 1) and (S[ACaretX] = '{')) or
+         ((L > 2) and (S[ACaretX - 1] = '(') and (S[ACaretX] = '*')) then
       begin
         if RescanLong(ACaretY) then
           Invalidate;

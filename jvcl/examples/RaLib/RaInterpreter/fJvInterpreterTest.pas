@@ -33,18 +33,15 @@ interface
 
 
 uses
-{$IFDEF COMPILER3_UP} 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, ComCtrls,
   JvInterpreter, JvInterpreterFm, JvEditor, JvHLParser, JvHLEditor,
-  Db, DBTables, Grids, DBGrids, Quickrpt, QRCtrls
- {$IFDEF COMPILER6_UP}, Variants, JvComponent, JvFormPlacement {$ENDIF};
-{$ELSE}
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, JvRegAuto, ComCtrls,
-  JvInterpreter, JvInterpreterFm, JvEditor, JvHLParser, JvHLEditor,
-  Db, DBTables, Grids, DBGrids, Quickrep;
-{$ENDIF}
+  Db, DBTables, Grids, DBGrids,
+ {$IFDEF COMPILER6_UP}
+   Variants,
+   {$ENDIF}
+ JvExControls, JvComponent, JvFormPlacement;
+
 
 type
   TTest = class(TForm)
@@ -349,24 +346,24 @@ begin
 end;
 
 procedure TTest.bRunReportClick(Sender: TObject);
-var
-  QuickRep1: TQuickRep;
+// var
+//   QuickRep1: TQuickRep;
 begin
-  if OpenDialog1.Execute then
-  begin
-    with JvInterpreterProgram1.MakeForm(OpenDialog1.FileName) do
-      try
-       {$IFDEF COMPILER3_UP}
-        QuickRep1 := (FindComponent('QuickRep1') as TQuickRep);
-       {$ELSE}
-        QuickRep1 := (FindComponent('QuickReport1') as TQuickRep);
-       {$ENDIF COMPILER3_UP}
-        if QuickRep1 = nil then raise Exception.Create('QuickRep1 not found on this form');
-        QuickRep1.Preview;
-      finally { wrap up }
-        Free;
-      end;    { try/finally }
-  end;
+//   if OpenDialog1.Execute then
+//   begin
+//     with JvInterpreterProgram1.MakeForm(OpenDialog1.FileName) do
+//       try
+//        {$IFDEF COMPILER3_UP}
+//         QuickRep1 := (FindComponent('QuickRep1') as TQuickRep);
+//        {$ELSE}
+//         QuickRep1 := (FindComponent('QuickReport1') as TQuickRep);
+//        {$ENDIF COMPILER3_UP}
+//         if QuickRep1 = nil then raise Exception.Create('QuickRep1 not found on this form');
+//         QuickRep1.Preview;
+//       finally { wrap up }
+//         Free;
+//       end;    { try/finally }
+//   end;
 end;
 
 procedure TTest.ComboBox1Change(Sender: TObject);

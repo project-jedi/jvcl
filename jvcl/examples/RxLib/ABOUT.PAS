@@ -67,7 +67,7 @@ uses JvConsts, ShellAPI;
 
 procedure RxWebSite; 
 begin
-  ShellExecute(Application.Handle, nil, 'http://rx.demo.ru', nil,
+  ShellExecute(Application.Handle, nil, 'http://jvcl.sf.net', nil,
     nil, SW_SHOWNOACTIVATE);
 end;
 

@@ -34,8 +34,9 @@ interface
 
 uses
   Windows, Messages, {$IFDEF COMPILER6_UP} Variants, {$ENDIF} SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, JvEditor, JvHLEditor, Menus,
-  ShellApi, JvInterpreter, ImgList, JvComponent, JvHLEditorPropertyForm, JvFormPlacement;
+  ComCtrls, JvEditor, JvEditorCommon, JvHLEditor, Menus,
+  ShellApi, JvInterpreter, ImgList, JvComponent, JvHLEditorPropertyForm, JvFormPlacement,
+  JvExControls;
 
 const
   WM_CHECKFILEMODIFIED = WM_USER + $101;
@@ -103,7 +104,7 @@ type
   private
     FFileName: TFileName;
     FileTime: Integer;
-    Exts: array[THighlighter] of string;
+    Exts: array[TJvHighlighter] of string;
     Capt: string;
     BaseLine: Integer;
     procedure OpenFile(AFileName: TFileName);
@@ -283,12 +284,12 @@ end;    { UpdateEditorSettings }
 procedure TMain.SetHighlighter;
 var
   Ext: TFileName;
-  i, H: THighlighter;
+  i, H: TJvHighlighter;
 begin
   Ext := ExtractFileExt(FFileName);
   H := hlNone;
   if RAHLEditor1.SyntaxHighlighting then
-    for i := Low(THighlighter) to High(THighlighter) do
+    for i := Low(TJvHighlighter) to High(TJvHighlighter) do
       if FileEquMasks(FFileName, Exts[i]) then
       begin
         H := i;
@@ -304,10 +305,10 @@ begin
 end;
 
 procedure TMain.raCommonAfterLoad(Sender: TObject);
-var
-  i: THighlighter;
+// var
+//   i: TJvHighlighter;
 begin
-//!!!  for i := Low(THighlighter) to High(THighlighter) do
+//!!!  for i := Low(TJvHighlighter) to High(TJvHighlighter) do
 //!!!    Exts[i] := Trim(raCommon.ReadString('Highlighters', HighLighters[i], Exts[i]));
   RAHLEdPropDlg1.Restore;
   UpdateEditorSettings;

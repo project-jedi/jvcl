@@ -31,7 +31,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, JvButtons, JvEditor, JvHLEditor,
-  fJvHLEdPropDlgTestParams, JvComponent, JvHLEditorPropertyForm;
+  fJvHLEdPropDlgTestParams, JvComponent, JvHLEditorPropertyForm,
+  JvExButtons, JvExControls;
 
 type
   TForm1 = class(TForm)

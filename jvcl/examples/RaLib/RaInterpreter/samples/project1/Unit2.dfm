@@ -1,6 +1,6 @@
 object Form2: TForm2
-  Left = 198
-  Top = 264
+  Left = 307
+  Top = 248
   Width = 442
   Height = 381
   Caption = 'Form2'
@@ -79,11 +79,9 @@ object Form2: TForm2
     OnClick = Button3Click
   end
   object RegAuto1: TJvFormStorage
-    RegPath = 'Software\JVCL\JvInterpreterTest'
-    IniFile = '$HOME/.NONAME'
-    SaveWindowPlace = True
-    Left = 240
-    Top = 224
+    StoredValues = <>
+    Left = 232
+    Top = 104
   end
   object Table1: TTable
     Left = 192
