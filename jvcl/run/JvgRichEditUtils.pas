@@ -37,9 +37,9 @@ uses
   Windows, Messages, Graphics, ComCtrls, Classes;
 
 procedure AddNl(RE: TRichEdit);
-procedure AddText(RE: TRichEdit; Str: string; TxtSize: Integer;
+procedure AddText(RE: TRichEdit; const Str: string; TxtSize: Integer;
   TxtStyle: TFontStyles; TxtColor: TColor);
-procedure AddTextNl(RE: TRichEdit; Str: string; TxtSize: Integer;
+procedure AddTextNl(RE: TRichEdit; const Str: string; TxtSize: Integer;
   TxtStyle: TFontStyles; TxtColor: TColor);
 procedure DoSyntaxHighlight(Memo: TRichEdit);
 
@@ -50,7 +50,7 @@ begin
   RE.Lines.Add('');
 end;
 
-procedure AddText(RE: TRichEdit; Str: string; TxtSize: Integer;
+procedure AddText(RE: TRichEdit; const Str: string; TxtSize: Integer;
   TxtStyle: TFontStyles; TxtColor: TColor);
 var
   Pos1, Pos2: Integer;
@@ -72,7 +72,7 @@ begin
   end;
 end;
 
-procedure AddTextNl(RE: TRichEdit; Str: string; TxtSize: Integer;
+procedure AddTextNl(RE: TRichEdit; const Str: string; TxtSize: Integer;
   TxtStyle: TFontStyles; TxtColor: TColor);
 begin
   RE.Lines.Add('');

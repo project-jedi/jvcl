@@ -49,7 +49,7 @@ type
   private
     FJvEditor: TJvCustomEditor;
     procedure StringsChanged(Sender: TObject);
-    procedure SetInternal(Index: Integer; Value: string);
+    procedure SetInternal(Index: Integer; const Value: string);
     procedure ReLine;
     procedure SetLockText(const Text: string);
   protected
@@ -422,7 +422,7 @@ begin
   end;
 end;
 
-procedure TJvEditorStrings.SetInternal(Index: Integer; Value: string);
+procedure TJvEditorStrings.SetInternal(Index: Integer; const Value: string);
 begin
   JvEditor.LockUpdate;
   try

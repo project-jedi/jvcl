@@ -374,7 +374,7 @@ type
     procedure SplitterMouseDown(OnZone: TJvDockZone; MousePos: TPoint); virtual;
     procedure SplitterMouseUp; virtual;
     procedure ResetBounds(Force: Boolean); virtual;
-    procedure WriteControlName(Stream: TStream; ControlName: string);
+    procedure WriteControlName(Stream: TStream; const ControlName: string);
     procedure ReadControlName(Stream: TStream; var ControlName: string);
     procedure ShowControl(Control: TControl);
     procedure HideControl(Control: TControl);
@@ -2964,7 +2964,7 @@ begin
     DoSaveZone(Stream, Zone.NextSibling, Level);
 end;
 
-procedure TJvDockTree.WriteControlName(Stream: TStream; ControlName: string);
+procedure TJvDockTree.WriteControlName(Stream: TStream; const ControlName: string);
 var
   NameLen: Integer;
 begin

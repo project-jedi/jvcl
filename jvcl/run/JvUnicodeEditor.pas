@@ -52,7 +52,7 @@ type
   private
     FJvEditor: TJvCustomWideEditor;
     procedure StringsChanged(Sender: TObject);
-    procedure SetInternal(Index: Integer; Value: WideString);
+    procedure SetInternal(Index: Integer; const Value: WideString);
     procedure ReLine;
     procedure SetLockText(const Text: WideString);
   protected
@@ -428,7 +428,7 @@ begin
   end;
 end;
 
-procedure TJvEditorWideStrings.SetInternal(Index: Integer; Value: WideString);
+procedure TJvEditorWideStrings.SetInternal(Index: Integer; const Value: WideString);
 begin
   JvEditor.LockUpdate;
   try

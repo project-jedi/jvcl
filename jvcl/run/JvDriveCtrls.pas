@@ -660,6 +660,7 @@ begin
 end;
 
 procedure TJvDriveCombo.Change;
+
   function FirstChar(const S: string): Char;
   begin
     if Length(S) > 0 then
@@ -667,6 +668,7 @@ procedure TJvDriveCombo.Change;
     else
       Result := #0;
   end;
+
 begin
   if ItemIndex <> -1 then
     FItemIndex := ItemIndex
@@ -1005,7 +1007,7 @@ end;
 
 //=== { TJvDirectoryListBox } ================================================
 
-function AddPathBackslash(Path: string): string;
+function AddPathBackslash(const Path: string): string;
 begin
   Result := Path;
   if (Length(Path) > 1) and (AnsiLastChar(Path) <> '\') then

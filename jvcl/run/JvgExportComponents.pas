@@ -732,7 +732,7 @@ var
   FieldValue: string;
   I: Integer;
 
-  function CreateNode(Name: string; Base: TJvSimpleXMLElemClassic):
+  function CreateNode(const Name: string; Base: TJvSimpleXMLElemClassic):
       TJvSimpleXMLElemClassic;
   begin
     Result := TJvSimpleXMLElemClassic.Create(XML.Root);

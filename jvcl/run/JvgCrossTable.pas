@@ -348,11 +348,11 @@ type
     RowsOnCurrPage: Integer;
 
     procedure PrintTable(Canvas: TCanvas);
-    procedure CalcResults(Str: string; ColNo, RowNo: Integer);
+    procedure CalcResults(const Str: string; ColNo, RowNo: Integer);
 
-    procedure SetColumnFieldName(Value: string);
-    procedure SetRowFieldName(Value: string);
-    procedure SetValueFieldName(Value: string);
+    procedure SetColumnFieldName(const Value: string);
+    procedure SetRowFieldName(const Value: string);
+    procedure SetValueFieldName(const Value: string);
     procedure SetDataSet(Value: TDataSet);
     procedure SetOptions(Value: TPCTOptions);
 
@@ -612,10 +612,8 @@ const
   SingleLine: array[Boolean] of Integer = (DT_WORDBREAK,
     DT_SINGLELINE);
 begin
-
   with Canvas do
   begin
-
     if (ColNo = -1) or (RowNo = -1) then //...Draw Caption
     begin
       I := max(0, ColNo);
@@ -646,7 +644,6 @@ begin
         R.Right := R.Left + CaptColWidth;
         R.Bottom := R.Top + RowHeight;
       end;
-
     end
     else //...Draw Cell
     begin
@@ -738,7 +735,6 @@ begin
       R.Top := R.Top + max(0, (R.Bottom - R_.Bottom) div 2);
       DrawText(Handle, PChar(Str), -1, R, DT_CENTER or DT_WORDBREAK);
     end;
-
   end;
 end;
 
@@ -1136,7 +1132,7 @@ begin
   FDataSource := Value;
 end;}
 
-procedure TJvgPrintCrossTable.CalcResults(Str: string; ColNo, RowNo: Integer);
+procedure TJvgPrintCrossTable.CalcResults(const Str: string; ColNo, RowNo: Integer);
 begin
   //...if event is assigned then user should calculates results himself
   if Assigned(OnCalcResult) then
@@ -1175,17 +1171,17 @@ begin
   FDataSet := Value;
 end;
 
-procedure TJvgPrintCrossTable.SetColumnFieldName(Value: string);
+procedure TJvgPrintCrossTable.SetColumnFieldName(const Value: string);
 begin
   FColumnFieldName := Value;
 end;
 
-procedure TJvgPrintCrossTable.SetRowFieldName(Value: string);
+procedure TJvgPrintCrossTable.SetRowFieldName(const Value: string);
 begin
   FRowFieldName := Value;
 end;
 
-procedure TJvgPrintCrossTable.SetValueFieldName(Value: string);
+procedure TJvgPrintCrossTable.SetValueFieldName(const Value: string);
 begin
   FValueFieldName := Value;
 end;

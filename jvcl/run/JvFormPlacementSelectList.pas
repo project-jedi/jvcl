@@ -40,8 +40,8 @@ type
     function GetStoragePath : string; override;
   public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function RestoreFormStorage(ACaption: string = '') : Boolean;
-    function SaveFormStorage(ACaption: string = '') : Boolean;
+    function RestoreFormStorage(const ACaption: string = '') : Boolean;
+    function SaveFormStorage(const ACaption: string = '') : Boolean;
   published
     property FormStorage: TJvFormStorage read GetFormStorage write SetFormStorage;
   end;
@@ -90,7 +90,7 @@ begin
     FFormStorage := nil;
 end;
 
-function TJvFormStorageSelectList.RestoreFormStorage(ACaption: string = '') : Boolean;
+function TJvFormStorageSelectList.RestoreFormStorage(const ACaption: string = '') : Boolean;
 var
   OldPath: string;
 begin
@@ -107,7 +107,7 @@ begin
     Result := False;
 end;
 
-function TJvFormStorageSelectList.SaveFormStorage(ACaption: string = '') : Boolean;
+function TJvFormStorageSelectList.SaveFormStorage(const ACaption: string = '') : Boolean;
 var
   OldPath: string;
 begin

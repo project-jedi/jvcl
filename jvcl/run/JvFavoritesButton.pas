@@ -49,7 +49,7 @@ type
     procedure PopupCreate(Sender: TObject);
     procedure DirectoryClick(Sender: TObject);
     procedure DynBuild(Item: TMenuItem; Directory: string);
-    procedure AddIconFrom(Path: string);
+    procedure AddIconFrom(const Path: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -200,7 +200,7 @@ begin
   DynBuild((Sender as TMenuItem), (Sender as TMenuItem).Hint);
 end;
 
-procedure TJvFavoritesButton.AddIconFrom(Path: string);
+procedure TJvFavoritesButton.AddIconFrom(const Path: string);
 var
   FileInfo: SHFILEINFO;
   Bmp: TBitmap;

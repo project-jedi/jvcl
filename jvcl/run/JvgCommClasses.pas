@@ -102,7 +102,7 @@ type
     property BrushStyle: TBrushStyle read FBrushStyle write SetBrushStyle default bsSolid;
   public
     constructor Create; override;
-    procedure TextOut(DC: HDC; Str: string; TextR: TRect; X, Y: Integer);
+    procedure TextOut(DC: HDC; const Str: string; TextR: TRect; X, Y: Integer);
     function GetColorFromGradientLine(GradientLineWidth, Position: Word): COLORREF;
   end;
 
@@ -634,7 +634,7 @@ begin
     trunc(c3F + Step3 * Position));
 end;
 
-procedure TJvgCustomGradient.TextOut(DC: HDC; Str: string; TextR: TRect; X, Y: Integer);
+procedure TJvgCustomGradient.TextOut(DC: HDC; const Str: string; TextR: TRect; X, Y: Integer);
 var
   I, Steps: Integer;
   r: TRect;

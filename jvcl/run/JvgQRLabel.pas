@@ -50,7 +50,7 @@ type
   protected
     procedure Paint; override;
     procedure Print(OfsX, OfsY: Integer); override;
-    procedure PaintLabel(Caption: string; Canvas: TCanvas; OfsX, OfsY: Integer);
+    procedure PaintLabel(const Caption: string; Canvas: TCanvas; OfsX, OfsY: Integer);
   published
     property Direction: TglLabelDir read FDirection write SetDirection
       default fldLeftRight;
@@ -72,7 +72,7 @@ type
   private
     FDataSet: TDataSet;
     FDataField: string;
-    procedure SetDataField(Value: string);
+    procedure SetDataField(const Value: string);
   protected
     procedure Paint; override;
     procedure Print(OfsX, OfsY: Integer); override;
@@ -103,7 +103,7 @@ begin
   PaintLabel(Caption, Canvas, 0, 0);
 end;
 
-procedure TJvgQRLabel.PaintLabel(Caption: string; Canvas: TCanvas; OfsX, OfsY: Integer);
+procedure TJvgQRLabel.PaintLabel(const Caption: string; Canvas: TCanvas; OfsX, OfsY: Integer);
 var
   FreeFontHandle: THandle;
   R: TRect;
@@ -282,7 +282,7 @@ begin
   end;
 end;
 
-procedure TJvgQRDBText.SetDataField(Value: string);
+procedure TJvgQRDBText.SetDataField(const Value: string);
 begin
   if FDataField <> Value then
   begin

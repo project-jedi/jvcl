@@ -70,14 +70,14 @@ var
   TempFileName: string;
   Buffer: array [0..MAX_PATH] of Char;
 
-  function DeleteEOLs(Str: string): string;
+  function DeleteEOLs(const Str: string): string;
   var
     I: Integer;
   begin
-    for I := 1 to Length(Str) do
-      if Str[I] = Cr then
-        Str[I] := ' ';
     Result := Str;
+    for I := 1 to Length(Result) do
+      if Result[I] = Cr then
+        Result[I] := ' ';
   end;
 
 begin

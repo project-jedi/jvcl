@@ -200,7 +200,7 @@ begin
   end;
 end;
 
-function InternalGetTextWidth(Font: TFont; Caption: string): Integer;
+function InternalGetTextWidth(Font: TFont; const Caption: string): Integer;
 var
   Canvas: TCanvas;
   PS: TPaintStruct;

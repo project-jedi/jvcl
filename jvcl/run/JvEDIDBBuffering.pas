@@ -71,15 +71,15 @@ type
     destructor Destroy; override;
     procedure BuildProfile; virtual; abstract;
     procedure ClearProfile; virtual;
-    procedure AddElement(SegmentId, ElementId, ElementType: string;
+    procedure AddElement(const SegmentId, ElementId, ElementType: string;
       MaximumLength: Integer); virtual;
-    procedure UpdateElement(SegmentId, ElementId, ElementType: string;
+    procedure UpdateElement(const SegmentId, ElementId, ElementType: string;
       MaximumLength, Count: Integer); virtual;
-    procedure AddSegment(SegmentId, OwnerLoopId, ParentLoopId: string); virtual;
-    procedure AddLoop(OwnerLoopId, ParentLoopId: string); virtual;
-    function ElementExist(SegmentId, ElementId: string): Boolean; virtual;
-    function SegmentExist(SegmentId, OwnerLoopId, ParentLoopId: string): Boolean; virtual;
-    function LoopExist(OwnerLoopId, ParentLoopId: string): Boolean; virtual;
+    procedure AddSegment(const SegmentId, OwnerLoopId, ParentLoopId: string); virtual;
+    procedure AddLoop(const OwnerLoopId, ParentLoopId: string); virtual;
+    function ElementExist(const SegmentId, ElementId: string): Boolean; virtual;
+    function SegmentExist(const SegmentId, OwnerLoopId, ParentLoopId: string): Boolean; virtual;
+    function LoopExist(const OwnerLoopId, ParentLoopId: string): Boolean; virtual;
   published
     property ElementProfiles: TDataSet read FElementProfiles write FElementProfiles;
     property SegmentProfiles: TDataSet read FSegmentProfiles write FSegmentProfiles;
@@ -159,25 +159,25 @@ type
     FOnResolveFieldDefDataType: TJvResolveFieldDefTypeEvent;
     FOnBeforeApplyElementFilter: TJvBeforeApplyElementFilterEvent;
     procedure CreateFieldDefs(FieldDefs: TJvEDIFieldDefs;
-      TableName, OwnerLoopId, ParentLoopId: string; DefaultUpdateStatus: TUpdateStatus);
-    procedure CreateLoopFieldDefs(FieldDefs: TJvEDIFieldDefs; TableName, ParentLoopId: string;
+      const TableName, OwnerLoopId, ParentLoopId: string; DefaultUpdateStatus: TUpdateStatus);
+    procedure CreateLoopFieldDefs(FieldDefs: TJvEDIFieldDefs; const TableName, ParentLoopId: string;
       DefaultUpdateStatus: TUpdateStatus);
   protected
     procedure DoBeforeOpenDataSets; virtual;
     procedure DoAfterOpenDataSets; virtual;
     procedure DoBeforeCloseDataSets; virtual;
     procedure DoAfterCloseDataSets; virtual;
-    procedure DoTableExists(TableName: string; var TableExists: Boolean); virtual;
-    procedure DoCreateTable(FieldDefs: TJvEDIFieldDefs; TableName: string); virtual;
-    procedure DoCheckForFieldChanges(FieldDefs: TJvEDIFieldDefs; TableName: string); virtual;
-    procedure DoAlterTable(FieldDefs: TJvEDIFieldDefs; TableName: string); virtual;
+    procedure DoTableExists(const TableName: string; var TableExists: Boolean); virtual;
+    procedure DoCreateTable(FieldDefs: TJvEDIFieldDefs; const TableName: string); virtual;
+    procedure DoCheckForFieldChanges(FieldDefs: TJvEDIFieldDefs; const TableName: string); virtual;
+    procedure DoAlterTable(FieldDefs: TJvEDIFieldDefs; const TableName: string); virtual;
     procedure DoResolveFieldDefDataType(FieldDef: TJvEDIFieldDef); virtual;
-    procedure DoBeforeApplyElementFilter(DataSet: TDataSet; Table: string;
+    procedure DoBeforeApplyElementFilter(DataSet: TDataSet; const Table: string;
       var ApplyFilter: Boolean); virtual;
     //
     procedure OpenProfileDataSets; virtual;
     procedure CloseProfileDataSets; virtual;
-    function TableExists(TableName: string): Boolean; virtual;
+    function TableExists(const TableName: string): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SyncProfilesWithBuffer; virtual;
@@ -242,7 +242,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvEDIDBProfiler.AddElement(SegmentId, ElementId, ElementType: string;
+procedure TJvEDIDBProfiler.AddElement(const SegmentId, ElementId, ElementType: string;
   MaximumLength: Integer);
 begin
   with FElementProfiles do
@@ -257,7 +257,7 @@ begin
   end;
 end;
 
-procedure TJvEDIDBProfiler.AddLoop(OwnerLoopId, ParentLoopId: string);
+procedure TJvEDIDBProfiler.AddLoop(const OwnerLoopId, ParentLoopId: string);
 begin
   with FLoopProfiles do
   begin
@@ -268,7 +268,7 @@ begin
   end;
 end;
 
-procedure TJvEDIDBProfiler.AddSegment(SegmentId, OwnerLoopId, ParentLoopId: string);
+procedure TJvEDIDBProfiler.AddSegment(const SegmentId, OwnerLoopId, ParentLoopId: string);
 begin
   with FSegmentProfiles do
   begin
@@ -305,28 +305,28 @@ begin
     FOnAfterProfiledTransactionSet(TransactionSet);
 end;
 
-function TJvEDIDBProfiler.ElementExist(SegmentId, ElementId: string): Boolean;
+function TJvEDIDBProfiler.ElementExist(const SegmentId, ElementId: string): Boolean;
 begin
   FElementProfiles.First;
   Result := FElementProfiles.Locate(Field_SegmentId + ';' + Field_ElementId,
     VarArrayOf([SegmentId, ElementId]), [loCaseInsensitive]);
 end;
 
-function TJvEDIDBProfiler.LoopExist(OwnerLoopId, ParentLoopId: string): Boolean;
+function TJvEDIDBProfiler.LoopExist(const OwnerLoopId, ParentLoopId: string): Boolean;
 begin
   FLoopProfiles.First;
   Result := FLoopProfiles.Locate(Field_OwnerLoopId + ';' + Field_ParentLoopId,
     VarArrayOf([OwnerLoopId, ParentLoopId]), [loCaseInsensitive]);
 end;
 
-function TJvEDIDBProfiler.SegmentExist(SegmentId, OwnerLoopId, ParentLoopId: string): Boolean;
+function TJvEDIDBProfiler.SegmentExist(const SegmentId, OwnerLoopId, ParentLoopId: string): Boolean;
 begin
   FSegmentProfiles.First;
   Result := FSegmentProfiles.Locate(Field_SegmentId + ';' + Field_OwnerLoopId + ';' +
     Field_ParentLoopId, VarArrayOf([SegmentId, OwnerLoopId, ParentLoopId]), [loCaseInsensitive]);
 end;
 
-procedure TJvEDIDBProfiler.UpdateElement(SegmentId, ElementId, ElementType: string;
+procedure TJvEDIDBProfiler.UpdateElement(const SegmentId, ElementId, ElementType: string;
   MaximumLength, Count: Integer);
 begin
   with FElementProfiles do
@@ -526,7 +526,7 @@ begin
     FOnAfterOpenDataSets(Self);
 end;
 
-procedure TJvEDIDBBuffer.DoAlterTable(FieldDefs: TJvEDIFieldDefs; TableName: string);
+procedure TJvEDIDBBuffer.DoAlterTable(FieldDefs: TJvEDIFieldDefs; const TableName: string);
 begin
   if Assigned(FOnAlterTable) then
     FOnAlterTable(FieldDefs, TableName);
@@ -550,26 +550,26 @@ begin
     FOnBeforeOpenDataSets(Self);
 end;
 
-procedure TJvEDIDBBuffer.DoCheckForFieldChanges(FieldDefs: TJvEDIFieldDefs; TableName: string);
+procedure TJvEDIDBBuffer.DoCheckForFieldChanges(FieldDefs: TJvEDIFieldDefs; const TableName: string);
 begin
   if Assigned(FOnCheckForFieldChanges) then
     FOnCheckForFieldChanges(FieldDefs, TableName);
 end;
 
-procedure TJvEDIDBBuffer.DoCreateTable(FieldDefs: TJvEDIFieldDefs; TableName: string);
+procedure TJvEDIDBBuffer.DoCreateTable(FieldDefs: TJvEDIFieldDefs; const TableName: string);
 begin
   if Assigned(FOnCreateTable) then
     FOnCreateTable(FieldDefs, TableName);
 end;
 
-procedure TJvEDIDBBuffer.DoTableExists(TableName: string; var TableExists: Boolean);
+procedure TJvEDIDBBuffer.DoTableExists(const TableName: string; var TableExists: Boolean);
 begin
   if Assigned(FOnTableExists) then
     FOnTableExists(TableName, TableExists);
 end;
 
 procedure TJvEDIDBBuffer.CreateFieldDefs(FieldDefs: TJvEDIFieldDefs;
-  TableName, OwnerLoopId, ParentLoopId: string; DefaultUpdateStatus: TUpdateStatus);
+  const TableName, OwnerLoopId, ParentLoopId: string; DefaultUpdateStatus: TUpdateStatus);
 var
   FieldDef: TJvEDIFieldDef;
   ApplyFilter: Boolean;
@@ -701,7 +701,7 @@ begin
   FieldDefs.Free;
 end;
 
-function TJvEDIDBBuffer.TableExists(TableName: string): Boolean;
+function TJvEDIDBBuffer.TableExists(const TableName: string): Boolean;
 begin
   Result := False;
   DoTableExists(TableName, Result);
@@ -714,7 +714,7 @@ begin
 end;
 
 procedure TJvEDIDBBuffer.CreateLoopFieldDefs(FieldDefs: TJvEDIFieldDefs;
-  TableName, ParentLoopId: string; DefaultUpdateStatus: TUpdateStatus);
+  const TableName, ParentLoopId: string; DefaultUpdateStatus: TUpdateStatus);
 var
   FieldDef: TJvEDIFieldDef;
 begin
@@ -740,7 +740,7 @@ begin
   FieldDef.UpdateStatus := DefaultUpdateStatus;
 end;
 
-procedure TJvEDIDBBuffer.DoBeforeApplyElementFilter(DataSet: TDataSet; Table: string;
+procedure TJvEDIDBBuffer.DoBeforeApplyElementFilter(DataSet: TDataSet; const Table: string;
   var ApplyFilter: Boolean);
 begin
   if Assigned(FOnBeforeApplyElementFilter) then
