@@ -14,7 +14,15 @@ if %3!==! goto help
 SET PACKAGE=%1
 SET DIR=%2
 SET ROOT=%3
-SET ROOT=%ROOT:"=%
+
+: get rid of the quotes around %ROOT%
+cd ..\devtools\NoQuotes
+if NOT EXIST ..\bin\NoQuotes.exe dcc32.exe NoQuotes.dpr
+cd ..\bin
+NoQuotes ROOT %ROOT%
+Call NoQuotesBatch.bat
+del /f NoQuotesBatch.bat
+cd ..\..\packages
 
 SET JCLDIR=%4
 
