@@ -13,7 +13,7 @@
     <File Name="..\..\qrun\JvQExceptionForm.pas" Targets="" Formname="JvErrorDialog" Condition=""/>
     <File Name="..\..\qrun\JvQFindFiles.pas" Targets="" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQFindReplace.pas" Targets="" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQImageDlg.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQImageDlg.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQLoginForm.pas" Targets="" Formname="JvLoginForm" Condition=""/>
     <File Name="..\..\qrun\JvQObjectPickerDialog.pas" Targets="" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQPageSetup.pas" Targets="" Formname="" Condition=""/>
@@ -29,7 +29,7 @@
     <File Name="..\..\qrun\JvQWinDialogs.pas" Targets="" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQAddPrinter.pas" Targets="" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQCommonDialogD.pas" Targets="" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQCommonExecDlg.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCommonExecDlg.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQConnectNetwork.pas" Targets="" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQCopyError.pas" Targets="" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQDeleteError.pas" Targets="" Formname="" Condition=""/>
