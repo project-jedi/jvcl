@@ -69,6 +69,7 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property Align;
+    property Anchors;
     property Caption;
     property Color;
     property DragCursor;
