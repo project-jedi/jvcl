@@ -36,7 +36,7 @@ unit JvWndProcHook;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  Windows, Messages, SysUtils, Controls, Forms, Classes, 
   JvComponent, JvFinalize;
 
 type
@@ -88,9 +88,6 @@ function UnRegisterWndProcHook(AHandle: HWND; Hook: TJvControlHook;
 procedure ReleaseObj(AObject: TObject);
 
 implementation
-
-uses
-  JvJVCLUtils;
 
 const
   sUnitName = 'JvWndProcHook';
@@ -612,7 +609,7 @@ begin
   begin
     TMethod(FOldWndProc).Data := nil;
     TMethod(FOldWndProc).Code := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
-    SetWindowLong(FHandle, GWL_WNDPROC, Integer(JvMakeObjectInstance(WindowProc)));
+    SetWindowLong(FHandle, GWL_WNDPROC, Integer(MakeObjectInstance(WindowProc)));
     FHooked := True;
   end;
 end;
@@ -659,7 +656,7 @@ begin
     Ptr := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
     SetWindowLong(FHandle, GWL_WNDPROC, Integer(TMethod(FOldWndProc).Code));
     FHooked := False;
-    JvFreeObjectInstance(Ptr);
+    FreeObjectInstance(Ptr);
   end;
 end;
 
@@ -952,7 +949,7 @@ begin
 
   FReleasing.Free;
   if FHandle <> 0 then
-    DeallocateHWndEx(FHandle);
+    DeallocateHWnd(FHandle);
 
   inherited Destroy;
 end;
@@ -960,7 +957,7 @@ end;
 function TJvReleaser.GetHandle: HWND;
 begin
   if FHandle = 0 then
-    FHandle := AllocateHWndEx(WndProc);
+    FHandle := AllocateHWnd(WndProc);
   Result := FHandle;
 end;
 

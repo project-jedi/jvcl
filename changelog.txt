@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2004-03-30
+- Removed JCL dependency from JvJCLUtils, JvJVCLUtils, JvWndProcHook, JvMenus // ahuser
+- Moved JvFormPlacement related code from JvJVCLUtils to JvFormPlacement // ahuser
 2004-03-27
 - Rewrite of TJvTrayIcon; Added OnContextPopup // remkobonte
 2004-03-26

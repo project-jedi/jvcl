@@ -31,7 +31,7 @@ unit JvMenus;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Classes,
   ExtCtrls, ImgList, Menus,
   JvTypes, JvWndProcHook, JVCLVer, JvFinalize;
 
@@ -705,10 +705,10 @@ implementation
 
 uses
   CommCtrl, Consts, Math,
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Types,
-{$ENDIF COMPILER6_UP}
-  JvConsts, JvJVCLUtils, JvJCLUtils;
+  {$ENDIF COMPILER6_UP}
+  JvConsts, JvJCLUtils, JvJVCLUtils;
 
 const
   sUnitName = 'JvMenus';
@@ -1280,7 +1280,7 @@ end;
 procedure TJvPopupList.Add(Popup: TPopupMenu);
 begin
   if Count = 0 then
-    Window := AllocateHWndEx(WndProc);
+    Window := AllocateHWnd(WndProc);
   inherited Add(Popup);
 end;
 
@@ -1288,7 +1288,7 @@ procedure TJvPopupList.Remove(Popup: TPopupMenu);
 begin
   inherited Remove(Popup);
   if Count = 0 then
-    DeallocateHWndEx(Window);
+    DeallocateHWnd(Window);
 end;
 
 procedure TJvMainMenu.SetItemPainter(const Value: TJvCustomMenuItemPainter);
@@ -1933,15 +1933,15 @@ begin
   end;
 
   case TextVAlignment of
-    vaMiddle: Inc(ARect.Top, ((ARect.Bottom - ARect.Top + 1) - Canvas.TextHeight(DelChars(Text, '&'))) div 2);
-    vaBottom: ARect.Top := ARect.Bottom - Canvas.TextHeight(DelChars(Text, '&'));
+    vaMiddle:
+      Inc(ARect.Top, ((ARect.Bottom - ARect.Top + 1) - Canvas.TextHeight(DelChars(Text, '&'))) div 2);
+    vaBottom:
+      ARect.Top := ARect.Bottom - Canvas.TextHeight(DelChars(Text, '&'));
   end;
 
   // if a top level menu item then draw text centered horizontally
   if not IsPopup then
-  begin
     ARect.Left := ARect.Left + ((ARect.Right - ARect.Left) - Canvas.TextWidth(DelChars(Text, '&'))) div 2;
-  end;
 
   if (mdDisabled in FState) then
   begin
