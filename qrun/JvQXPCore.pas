@@ -130,20 +130,20 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   end;
-  
 
-  
+
+
   TJvXPWinControl = class(TJvWinControl)
-  
+    function GetColor: TColor;
   published
-    property Color;
+    property Color: TColor read GetColor;
   end;
 
   { baseclass for focusable control descendants. }
 
-  
+
   TJvXPCustomControl = class(TJvCustomControl)
-  
+
   private
     FClicking: Boolean;
     FDrawState: TJvXPDrawState;
@@ -153,7 +153,7 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     
-    
+
   protected
     ExControlStyle: TJvXPControlStyle;
     procedure InternalRedraw; dynamic;
@@ -173,7 +173,7 @@ type
     procedure BeginUpdate; dynamic;
     procedure EndUpdate; dynamic;
     procedure LockedInvalidate; dynamic;
-    
+
     procedure AdjustSize; override;
     procedure BorderChanged; dynamic;
     procedure EnabledChanged; override;
@@ -349,7 +349,10 @@ uses
 {$R ../Resources/JvXPCore.res}
 
 
-
+function  TJvXPWinControl.GetColor: TColor;
+begin
+  Result := QColorColor(QWidget_backgroundColor(Handle));
+end;
 
 //=== TJvXPCustomComponent ===================================================
 
