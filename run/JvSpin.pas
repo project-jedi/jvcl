@@ -49,19 +49,10 @@ type
   private
     FDown: TSpinButtonState;
     FDragging: Boolean;
-    FInvalidate: Boolean;
-
-    { Custom up arrow: }
-    FUpBitmap: TBitmap;
-    { Custom down arrow: }
-    FDownBitmap: TBitmap;
-    { Buffered buttons with various states: }
-    FTopDownBtn: TBitmap;
-    FBottomDownBtn: TBitmap;
-    FNotDownBtn: TBitmap;
+    FUpBitmap: TBitmap; // Custom up arrow
+    FDownBitmap: TBitmap; // Custom down arrow
+    FButtonBitmaps: Pointer;
     {$IFDEF JVCLThemesEnabled}
-    FTopHotBtn: TBitmap;
-    FBottomHotBtn: TBitmap;
     FMouseInTopBtn: Boolean;
     FMouseInBottomBtn: Boolean;
     {$ENDIF JVCLThemesEnabled}
@@ -78,26 +69,19 @@ type
     procedure TopClick;
     procedure BottomClick;
     procedure GlyphChanged(Sender: TObject);
-    function GetUpGlyph: TBitmap;
     function GetDownGlyph: TBitmap;
-    procedure SetUpGlyph(Value: TBitmap);
-    procedure SetDownGlyph(Value: TBitmap);
+    function GetUpGlyph: TBitmap;
     procedure SetDown(Value: TSpinButtonState);
+    procedure SetDownGlyph(Value: TBitmap);
     procedure SetFocusControl(Value: TWinControl);
-
-    procedure DrawAllBitmap;
-    procedure DrawBitmap(ABitmap: TBitmap; ADownState: TSpinButtonState);
-    {$IFDEF JVCLThemesEnabled}
-    procedure DrawAllBitmapClassicThemed;
-    procedure DrawAllBitmapDiagonalThemed;
-    {$ENDIF JVCLThemesEnabled}
-
+    procedure SetUpGlyph(Value: TBitmap);
     procedure TimerExpired(Sender: TObject);
     {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     {$ENDIF VCL}
   protected
-    procedure EnabledChanged; override;
+    procedure CheckButtonBitmaps;
+    procedure RemoveButtonBitmaps;
     procedure Paint; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -231,7 +215,7 @@ type
     procedure DoClipboardCut; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+      {$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint): Boolean; override;
     procedure DoBoundsChanged; override;
     procedure EnabledChanged; override;
     procedure DoEnter; override;
@@ -266,13 +250,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    {$IFDEF VisualCLX}
-    
-    {$ENDIF VisualCLX}
-
     property AsInteger: Longint read GetAsInteger write SetAsInteger default 0;
     property Text;
-    //Polaris  published
     property Alignment: TAlignment read FAlignment write SetAlignment
       default taLeftJustify;
     property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
@@ -282,17 +261,11 @@ type
     property Increment: Extended read FIncrement write FIncrement stored IsIncrementStored;
     property MaxValue: Extended read FMaxValue write SetMaxValue stored IsMaxStored;
     property MinValue: Extended read FMinValue write SetMinValue stored IsMinStored;
-    //Polaris
-    //property CheckOnExit: Boolean read FCheckOnExit write FCheckOnExit default False;
-    //property CheckOnChange: Boolean read FCheckOnChange write FCheckOnChange default False;
     property CheckOptions: TJvCheckOptions read FCheckOptions write FCheckOptions default [coCheckOnChange, coCheckOnExit, coCropBeyondLimit];
     property CheckMinValue: Boolean read FCheckMinValue write SetCheckMinValue stored StoreCheckMinValue;
-    //default False;
     property CheckMaxValue: Boolean read FCheckMaxValue write SetCheckMaxValue stored StoreCheckMaxValue;
-    //default False;
-    //Polaris
     property ValueType: TValueType read FValueType write SetValueType
-      default {$IFDEF BCB} vtInt {$ELSE} vtInteger {$ENDIF};
+      default{$IFDEF BCB}vtInt{$ELSE}vtInteger{$ENDIF};
     property Value: Extended read GetValue write SetValue stored IsValueStored;
     property Thousands: Boolean read FThousands write SetThousands default False;
     property OnBottomClick: TNotifyEvent read FOnBottomClick write FOnBottomClick;
@@ -400,9 +373,9 @@ uses
   UxTheme,
   {$IFNDEF COMPILER7_UP}
   TmSchema,
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  JvJCLUtils, JvConsts, JvResources;
+  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSpin.Res}
@@ -421,348 +394,7 @@ const
   InitRepeatPause = 400; { pause before repeat timer (ms) }
   RepeatPause = 100;
 
-function DefBtnWidth: Integer;
-begin
-  Result := GetSystemMetrics(SM_CXVSCROLL);
-  if Result > 15 then
-    Result := 15;
-end;
-
-function RemoveThousands(const AValue: string): string;
-begin
-  if DecimalSeparator <> ThousandSeparator then
-    Result := DelChars(AValue, ThousandSeparator)
-  else
-    Result := AValue;
-end;
-
-function TextToValText(const AValue: string): string;
-begin
-  Result := DelRSpace(AValue);
-  if DecimalSeparator <> ThousandSeparator then
-    Result := DelChars(Result, ThousandSeparator);
-
-  if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
-    Result := ReplaceStr(Result, '.', DecimalSeparator);
-  if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
-    Result := ReplaceStr(Result, ',', DecimalSeparator);
-
-  if Result = '' then
-    Result := '0'
-  else
-  if Result = '-' then
-    Result := '-0';
-end;
-
-//=== TJvSpinButton ==========================================================
-
-procedure TJvSpinButton.BottomClick;
-begin
-  if Assigned(FOnBottomClick) then
-  begin
-    FOnBottomClick(Self);
-    if not (csLButtonDown in ControlState) then
-      FDown := sbNotDown;
-  end;
-end;
-
-procedure TJvSpinButton.EnabledChanged;
-begin
-  inherited EnabledChanged;
-  //>Polaris
-  //  FInvalidate := True;
-  //  Invalidate;
-  GlyphChanged(Self);
-  //<Polaris
-end;
-
-procedure TJvSpinButton.CMSysColorChange(var Msg: TMessage);
-begin
-  inherited;
-  { The buttons we draw are buffered, thus we need to repaint them to theme changes etc. }
-  GlyphChanged(Self);
-end;
-
-constructor TJvSpinButton.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FButtonStyle := sbsDefault;
-  FUpBitmap := TBitmap.Create;
-  FDownBitmap := TBitmap.Create;
-  //FUpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtn); // Polaris
-  //FDownBitmap.Handle := LoadBitmap(HInstance, sSpinDownBtn); // Polaris
-  FUpBitmap.OnChange := GlyphChanged;
-  FDownBitmap.OnChange := GlyphChanged;
-  Height := 20;
-  Width := 20;
-  FTopDownBtn := TBitmap.Create;
-  FBottomDownBtn := TBitmap.Create;
-  FNotDownBtn := TBitmap.Create;
-  {$IFDEF JVCLThemesEnabled}
-  FTopHotBtn := TBitmap.Create;
-  FBottomHotBtn := TBitmap.Create;
-  {$ENDIF JVCLThemesEnabled}
-  DrawAllBitmap;
-  FLastDown := sbNotDown;
-end;
-
-destructor TJvSpinButton.Destroy;
-begin
-  FTopDownBtn.Free;
-  FBottomDownBtn.Free;
-  FNotDownBtn.Free;
-  {$IFDEF JVCLThemesEnabled}
-  FTopHotBtn.Free;
-  FBottomHotBtn.Free;
-  {$ENDIF JVCLThemesEnabled}
-  FUpBitmap.Free;
-  FDownBitmap.Free;
-  FRepeatTimer.Free;
-  inherited Destroy;
-end;
-
-procedure TJvSpinButton.DrawAllBitmap;
-begin
-  {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
-  begin
-    if FButtonStyle = sbsClassic then
-      DrawAllBitmapClassicThemed
-    else
-      DrawAllBitmapDiagonalThemed;
-    Exit;
-  end;
-  {$ENDIF JVCLThemesEnabled}
-
-  DrawBitmap(FTopDownBtn, sbTopDown);
-  DrawBitmap(FBottomDownBtn, sbBottomDown);
-  DrawBitmap(FNotDownBtn, sbNotDown);
-end;
-
-{$IFDEF JVCLThemesEnabled}
-procedure TJvSpinButton.DrawAllBitmapClassicThemed;
-type
-  TButtonPartState = (bpsNormal, bpsHot, bpsPressed);
-const
-  CDetails: array [Boolean, TButtonPartState] of TThemedSpin = (
-    (tsUpNormal, tsUpHot, tsUpPressed),
-    (tsDownNormal, tsDownHot, tsDownPressed)
-    );
-var
-  TopRect, BottomRect: TRect;
-  TopRegion_TopAbove, BottomRegion_TopAbove: HRGN;
-  TopRegion_BottomAbove, BottomRegion_BottomAbove: HRGN;
-
-  procedure ConstructThemedButton(ABitmap: TBitmap; const AUpState, ADownState: TButtonPartState);
-  var
-    Details: TThemedElementDetails;
-  begin
-    with ABitmap do
-    begin
-      Height := Self.Height;
-      Width := Self.Width;
-
-      with Canvas do
-      begin
-        { Select only top button }
-        if AUpState = bpsNormal then
-          SelectClipRgn(Handle, TopRegion_BottomAbove)
-        else
-          SelectClipRgn(Handle, TopRegion_TopAbove);
-        { Copy top button }
-        Details := ThemeServices.GetElementDetails(CDetails[False, AUpState]);
-        ThemeServices.DrawElement(Handle, Details, TopRect);
-        { Select only bottom button }
-        if AUpState = bpsNormal then
-          SelectClipRgn(Handle, BottomRegion_BottomAbove)
-        else
-          SelectClipRgn(Handle, BottomRegion_TopAbove);
-        { Copy bottom button }
-        Details := ThemeServices.GetElementDetails(CDetails[True, ADownState]);
-        ThemeServices.DrawElement(Handle, Details, BottomRect);
-        { Remove clipping restriction }
-        SelectClipRgn(Handle, 0);
-      end;
-    end;
-  end;
-
-begin
-  TopRect := Rect(0, 0, Width, Height div 2);
-  InflateRect(TopRect, 1, 1);
-
-  BottomRect := Rect(0, TopRect.Bottom, Width, Height);
-  InflateRect(BottomRect, 1, 1);
-
-  { Construct the regions (needed because the up & down buttons overlap
-    each other) }
-  with TopRect do
-  begin
-    TopRegion_TopAbove := CreateRectRgn(Left, Top, Right, Bottom + 1);
-    TopRegion_BottomAbove := CreateRectRgn(Left, Top, Right, Bottom);
-  end;
-  with BottomRect do
-  begin
-    BottomRegion_TopAbove := CreateRectRgn(Left, Top + 1, Right, Bottom);
-    BottomRegion_BottomAbove := CreateRectRgn(Left, Top, Right, Bottom);
-  end;
-  try
-    { Draw the buttons }
-    ConstructThemedButton(FTopDownBtn, bpsPressed, bpsNormal);
-    ConstructThemedButton(FBottomDownBtn, bpsNormal, bpsPressed);
-    ConstructThemedButton(FNotDownBtn, bpsNormal, bpsNormal);
-    ConstructThemedButton(FTopHotBtn, bpsHot, bpsNormal);
-    ConstructThemedButton(FBottomHotBtn, bpsNormal, bpsHot);
-  finally
-    DeleteObject(TopRegion_TopAbove);
-    DeleteObject(BottomRegion_TopAbove);
-    DeleteObject(TopRegion_BottomAbove);
-    DeleteObject(BottomRegion_BottomAbove);
-  end;
-end;
-
-procedure TJvSpinButton.DrawAllBitmapDiagonalThemed;
-type
-  TButtonPartState = (bpsNormal, bpsHot, bpsPressed);
-const
-  CDetails: array [TButtonPartState] of TThemedButton =
-    (tbPushButtonNormal, tbPushButtonHot, tbPushButtonPressed);
-var
-  TemplateButtons: array [TButtonPartState] of TBitmap;
-  ThemeColors: array [0..2] of Cardinal;
-  ButtonRect: TRect;
-  PaintRect: TRect;
-  TopRegion, BottomRegion: HRGN;
-  UpArrowPos, DownArrowPos: TPoint;
-  UpArrowRect, DownArrowRect: TRect;
-
-  procedure ConstructThemedButton(ABitmap: TBitmap; const AUpState, ADownState: TButtonPartState);
-  begin
-    with ABitmap do
-    begin
-      Height := Self.Height;
-      Width := Self.Width;
-
-      with Canvas do
-      begin
-        { Select only top button }
-        SelectClipRgn(Handle, TopRegion);
-        { Copy top button }
-        ABitmap.Canvas.Draw(0, 0, TemplateButtons[AUpState]);
-        { Select only bottom button }
-        SelectClipRgn(Handle, BottomRegion);
-        { Copy bottom button }
-        ABitmap.Canvas.Draw(0, 0, TemplateButtons[ADownState]);
-        { Remove clipping restriction }
-        SelectClipRgn(Handle, 0);
-
-        { Draw diagonal }
-        Pen.Color := ThemeColors[0];
-        MoveTo(PaintRect.Left, PaintRect.Bottom - 2);
-        LineTo(PaintRect.Right - 1, PaintRect.Top - 1);
-
-        Pen.Color := ThemeColors[1];
-        MoveTo(PaintRect.Right - 1, PaintRect.Top);
-        LineTo(PaintRect.Right - 1, PaintRect.Top);
-        LineTo(PaintRect.Left, PaintRect.Bottom - 1);
-
-        Pen.Color := ThemeColors[2];
-        MoveTo(PaintRect.Left + 1, PaintRect.Bottom - 1);
-        LineTo(PaintRect.Right, PaintRect.Top);
-
-        { Draw up arraw }
-        with UpArrowPos do
-          Draw(X, Y, FUpBitmap);
-
-        { Draw bottom arrow }
-        with DownArrowPos do
-          Draw(X, Y, FDownBitmap);
-      end;
-    end;
-  end;
-
-var
-  ptButton: array [0..2] of TPoint;
-  State: TButtonPartState;
-  Details: TThemedElementDetails;
-begin
-  TemplateButtons[bpsNormal] := TBitmap.Create;
-  TemplateButtons[bpsHot] := TBitmap.Create;
-  TemplateButtons[bpsPressed] := TBitmap.Create;
-  try
-    ButtonRect := Bounds(0, 0, Width, Height);
-    PaintRect := ButtonRect;
-    InflateRect(ButtonRect, 1, 1);
-    InflateRect(PaintRect, -1, -1);
-    { Init templates }
-    for State := Low(TButtonPartState) to High(TButtonPartState) do
-      with TemplateButtons[State] do
-      begin
-        Height := Self.Height;
-        Width := Self.Width;
-        Details := ThemeServices.GetElementDetails(CDetails[State]);
-        ThemeServices.DrawElement(Canvas.Handle, Details, ButtonRect);
-      end;
-
-    { Init diagonal colors }
-    Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
-    with Details do
-    begin
-      GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_EDGELIGHTCOLOR, ThemeColors[0]);
-      GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_BORDERCOLORHINT, ThemeColors[1]);
-      GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_EDGESHADOWCOLOR, ThemeColors[2]);
-    end;
-
-    if FUpBitmap.Handle = 0 then
-      FUpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtn);
-    if FDownBitmap.Handle = 0 then
-      FDownBitmap.Handle := LoadBitmap(HInstance, sSpinDownBtn);
-    try
-      FUpBitmap.Transparent := True;
-      FDownBitmap.Transparent := True;
-      { Init arrow positions }
-      UpArrowPos := Point(
-        Round((Width / 4) - (FUpBitmap.Width / 2)) + 1,
-        Round((Height / 4) - (FUpBitmap.Height / 2)) + 1);
-      DownArrowPos := Point(
-        Round((3 * Width / 4) - (FDownBitmap.Width / 2)) - 1,
-        Round((3 * Height / 4) - (FDownBitmap.Height / 2)) - 1);
-
-      UpArrowRect := Bounds(0, 0, FUpBitmap.Width, FUpBitmap.Height);
-      DownArrowRect := Bounds(0, 0, FDownBitmap.Width, FDownBitmap.Height);
-
-      { Init regions, needed to draw the triangles }
-      ptButton[0] := Point(ButtonRect.Left, ButtonRect.Bottom);
-      ptButton[1] := Point(ButtonRect.Left, ButtonRect.Top);
-      ptButton[2] := Point(ButtonRect.Right, ButtonRect.Top);
-      TopRegion := CreatePolygonRgn(ptButton, 3, WINDING);
-      ptButton[0] := Point(ButtonRect.Right, ButtonRect.Top);
-      ptButton[1] := Point(ButtonRect.Right, ButtonRect.Bottom);
-      ptButton[2] := Point(ButtonRect.Left, ButtonRect.Bottom);
-      BottomRegion := CreatePolygonRgn(ptButton, 3, WINDING);
-      try
-        { Draw the buttons }
-        ConstructThemedButton(FTopDownBtn, bpsPressed, bpsNormal);
-        ConstructThemedButton(FBottomDownBtn, bpsNormal, bpsPressed);
-        ConstructThemedButton(FNotDownBtn, bpsNormal, bpsNormal);
-        ConstructThemedButton(FTopHotBtn, bpsHot, bpsNormal);
-        ConstructThemedButton(FBottomHotBtn, bpsNormal, bpsHot);
-      finally
-        DeleteObject(TopRegion);
-        DeleteObject(BottomRegion);
-      end;
-    finally
-      FUpBitmap.Handle := 0;
-      FDownBitmap.Handle := 0;
-    end;
-  finally
-    TemplateButtons[bpsNormal].Free;
-    TemplateButtons[bpsHot].Free;
-    TemplateButtons[bpsPressed].Free;
-  end;
-end;
-{$ENDIF JVCLThemesEnabled}
-
-(*Polaris
+  (*Polaris
 procedure TJvSpinButton.DrawBitmap(ABitmap: TBitmap; ADownState: TSpinButtonState);
 var
   R, RSrc: TRect;
@@ -850,466 +482,10 @@ begin
   end;
 end;
 *)
+
 type
   TColorArray = array [0..2] of TColor;
 
-procedure TJvSpinButton.DrawBitmap(ABitmap: TBitmap; ADownState: TSpinButtonState);
-const
-  CColors: TColorArray = (clBtnShadow, clBtnHighlight, clWindowFrame {clBtnFace});
-var
-  R, RSrc: TRect;
-  DRect: Integer;
-  Flags: array [0..1] of DWORD;
-  LColors: TColorArray;
-  LGlyph: array [0..1] of Boolean;
-  {Temp: TBitmap;}
-
-  procedure JvDraw;
-  begin
-    { buttons }
-    with ABitmap.Canvas do
-    begin
-      LColors := CColors;
-      if ADownState = sbTopDown then
-      begin
-        LColors[0] := clBtnFace;
-        LColors[2] := clBtnHighlight;
-        Flags[0] := EDGE_SUNKEN;
-      end;
-      if ADownState = sbBottomDown then
-      begin
-        LColors[1] := clWindowFrame;
-        LColors[2] := clBtnShadow;
-        Flags[1] := EDGE_SUNKEN;
-      end;
-      DrawEdge(Handle, R, Flags[0], BF_TOPLEFT or BF_SOFT);
-      DrawEdge(Handle, R, Flags[1], BF_BOTTOMRIGHT or BF_SOFT);
-      InflateRect(R, -1, -1);
-
-      Pen.Color := LColors[0];
-      MoveTo(R.Left, R.Bottom - 2);
-      LineTo(R.Right - 1, R.Top - 1);
-
-      Pen.Color := LColors[2];
-      MoveTo(R.Right - 1, R.Top);
-      LineTo(R.Right - 1, R.Top);
-      LineTo(R.Left, R.Bottom - 1);
-
-      Pen.Color := LColors[1];
-      MoveTo(R.Left + 1, R.Bottom - 1);
-      LineTo(R.Right, R.Top);
-
-      { top glyph }
-      DRect := 1;
-      if ADownState = sbTopDown then
-        Inc(DRect);
-
-      if LGlyph[0] then
-        FUpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtn);
-      if LGlyph[1] then
-        FDownBitmap.Handle := LoadBitmap(HInstance, sSpinDownBtn);
-
-      R := Bounds(Round((Width / 4) - (FUpBitmap.Width / 2)) + DRect,
-        Round((Height / 4) - (FUpBitmap.Height / 2)) + DRect, FUpBitmap.Width,
-        FUpBitmap.Height);
-      RSrc := Bounds(0, 0, FUpBitmap.Width, FUpBitmap.Height);
-      BrushCopy(R, FUpBitmap, RSrc, FUpBitmap.TransparentColor);
-      { bottom glyph }
-      R := Bounds(Round((3 * Width / 4) - (FDownBitmap.Width / 2)) - 1,
-        Round((3 * Height / 4) - (FDownBitmap.Height / 2)) - 1,
-        FDownBitmap.Width, FDownBitmap.Height);
-      RSrc := Bounds(0, 0, FDownBitmap.Width, FDownBitmap.Height);
-      BrushCopy(R, FDownBitmap, RSrc, FDownBitmap.TransparentColor);
-      FUpBitmap.Handle := 0;
-      FDownBitmap.Handle := 0;
-    end;
-  end;
-
-  procedure PoleDraw;
-  var
-    X, Y, I, J, H: Integer;
-    R1: TRect;
-  begin
-    with ABitmap.Canvas do
-    begin
-      { top glyph }
-      H := Height div 2;
-      R := Bounds(0, 0, Width, H);
-      if ADownState = sbTopDown then
-        Flags[0] := EDGE_SUNKEN
-      else
-        R.Bottom := R.Bottom + 1;
-      if ADownState = sbBottomDown then
-        Flags[1] := EDGE_SUNKEN;
-      if LGlyph[0] then
-        FUpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtnPole);
-      RSrc := R;
-      DrawEdge(Handle, R, Flags[0], BF_RECT or BF_SOFT or BF_ADJUST);
-      R1 := Bounds(0, H, Width, Height);
-      R1.Bottom := Height;
-      DrawEdge(Handle, R1, Flags[1], BF_RECT or BF_SOFT or BF_ADJUST);
-      I := R.Bottom - R.Top - 1;
-      J := R1.Bottom - R1.Top - 1;
-      Y := RSrc.Top + (H - FUpBitmap.Height) div 2;
-      //      if I >= (J+1) then
-      if ADownState = sbTopDown then
-        OffsetRect(R1, 0, 1);
-
-      R1.Bottom := R1.Top + I;
-      if J - FUpBitmap.Height < 0 then
-        Y := R.Top;
-      {Glyph}
-      FUpBitmap.Transparent := True;
-      X := (Width - FUpBitmap.Width) div 2;
-      IntersectClipRect(Handle, R.Left, R.Top, R.Right, R.Bottom);
-      Draw(X, Y, FUpBitmap);
-      SelectClipRgn(Handle, 0);
-      RSrc := Bounds(0, H, Width, Height);
-      RSrc.Bottom := Height;
-      if LGlyph[1] then
-        FDownBitmap.Handle := LoadBitmap(HInstance, sSpinDownBtnPole);
-      FDownBitmap.Transparent := True;
-      X := (Width - FDownBitmap.Width) div 2;
-      Y := R1.Top + (I - FDownBitmap.Height) div 2;
-      if I - FDownBitmap.Height < 0 then
-      begin
-        Dec(R1.Top);
-        Y := R1.Bottom - FDownBitmap.Height
-      end;
-      IntersectClipRect(Handle, R1.Left, R1.Top, R1.Right, R1.Bottom);
-      Draw(X, Y, FDownBitmap);
-      SelectClipRgn(Handle, 0);
-    end;
-  end;
-
-begin
-  LGlyph[0] := FUpBitmap.Handle = 0;
-  LGlyph[1] := FDownBitmap.Handle = 0;
-  try
-    ABitmap.Height := Height;
-    ABitmap.Width := Width;
-    FillChar(Flags, SizeOf(Flags), EDGE_RAISED);
-    with ABitmap.Canvas do
-    begin
-      R := Bounds(0, 0, Width, Height);
-      Pen.Width := 1;
-      Brush.Color := clBtnFace;
-      Brush.Style := bsSolid;
-      FillRect(R);
-    end;
-    if FButtonStyle = sbsClassic then
-      PoleDraw
-    else
-      JvDraw;
-  finally
-    if LGlyph[0] then
-      FUpBitmap.Handle := 0;
-    if LGlyph[1] then
-      FDownBitmap.Handle := 0;
-  end;
-end;
-
-function TJvSpinButton.GetDownGlyph: TBitmap;
-begin
-  Result := FDownBitmap;
-end;
-
-function TJvSpinButton.GetUpGlyph: TBitmap;
-begin
-  Result := FUpBitmap;
-end;
-
-procedure TJvSpinButton.GlyphChanged(Sender: TObject);
-begin
-  FInvalidate := True;
-  Invalidate;
-end;
-
-procedure TJvSpinButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  inherited MouseDown(Button, Shift, X, Y);
-  if (Button = mbLeft) and Enabled then
-  begin
-    if (FFocusControl <> nil) and FFocusControl.TabStop and
-      FFocusControl.CanFocus and (GetFocus <> FFocusControl.Handle) then
-      FFocusControl.SetFocus;
-    if FDown = sbNotDown then
-    begin
-      FLastDown := FDown;
-      //>Polaris
-      if ((FButtonStyle = sbsDefault) and (Y > (-(Height / Width) * X + Height))) or
-        ((FButtonStyle = sbsClassic) and (Y > (Height div 2))) then
-      begin
-        FDown := sbBottomDown;
-        BottomClick;
-      end
-      else
-      begin
-        FDown := sbTopDown;
-        TopClick;
-      end;
-      if FLastDown <> FDown then
-      begin
-        FLastDown := FDown;
-        Repaint;
-      end;
-      if FRepeatTimer = nil then
-        FRepeatTimer := TTimer.Create(Self);
-      FRepeatTimer.OnTimer := TimerExpired;
-      FRepeatTimer.Interval := InitRepeatPause;
-      FRepeatTimer.Enabled := True;
-    end;
-    FDragging := True;
-  end;
-end;
-
-function TJvSpinButton.MouseInBottomBtn(const P: TPoint): Boolean;
-begin
-  with P do
-    Result :=
-      ((FButtonStyle = sbsDefault)) and (Y > (-(Width / Height) * X + Height)) or
-      ((FButtonStyle = sbsClassic) and (Y > (Height div 2)));
-end;
-
-procedure TJvSpinButton.MouseMove(Shift: TShiftState; X, Y: Integer);
-var
-  NewState: TSpinButtonState;
-begin
-  inherited MouseMove(Shift, X, Y);
-  if FDragging then
-  begin
-    if (X >= 0) and (X <= Width) and (Y >= 0) and (Y <= Height) then
-    begin
-      NewState := FDown;
-      //>Polaris
-      if MouseInBottomBtn(Point(X, Y)) then
-      begin
-        if FDown <> sbBottomDown then
-        begin
-          if FLastDown = sbBottomDown then
-            FDown := sbBottomDown
-          else
-            FDown := sbNotDown;
-          if NewState <> FDown then
-            Repaint;
-        end;
-      end
-      else
-      begin
-        if FDown <> sbTopDown then
-        begin
-          if FLastDown = sbTopDown then
-            FDown := sbTopDown
-          else
-            FDown := sbNotDown;
-          if NewState <> FDown then
-            Repaint;
-        end;
-      end;
-    end
-    else
-    if FDown <> sbNotDown then
-    begin
-      FDown := sbNotDown;
-      Repaint;
-    end;
-  end
-  {$IFDEF JVCLThemesEnabled}
-  else
-  if (FMouseInTopBtn or FMouseInBottomBtn) and ThemeServices.ThemesEnabled then
-  begin
-    if MouseInBottomBtn(Point(X, Y)) then
-    begin
-      if not FMouseInBottomBtn then
-      begin
-        FMouseInTopBtn := False;
-        FMouseInBottomBtn := True;
-        Repaint;
-      end;
-    end
-    else
-    begin
-      if not FMouseInTopBtn then
-      begin
-        FMouseInTopBtn := True;
-        FMouseInBottomBtn := False;
-        Repaint;
-      end;
-    end;
-  end;
-  {$ENDIF JVCLThemesEnabled}
-end;
-
-procedure TJvSpinButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  inherited MouseUp(Button, Shift, X, Y);
-  if FDragging then
-  begin
-    FDragging := False;
-    if (X >= 0) and (X <= Width) and (Y >= 0) and (Y <= Height) then
-    begin
-      FDown := sbNotDown;
-      FLastDown := sbNotDown;
-      Repaint;
-    end;
-  end;
-end;
-
-procedure TJvSpinButton.Notification(AComponent: TComponent;
-  Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FFocusControl) then
-    FFocusControl := nil;
-end;
-
-procedure TJvSpinButton.Paint;
-begin
-  if not Enabled and not (csDesigning in ComponentState) then
-    FDragging := False;
-  if (FNotDownBtn.Height <> Height) or (FNotDownBtn.Width <> Width) or
-    FInvalidate then
-    DrawAllBitmap;
-  FInvalidate := False;
-  with Canvas do
-    case FDown of
-      sbNotDown:
-        {$IFDEF JVCLThemesEnabled}
-        if ThemeServices.ThemesEnabled then
-        begin
-          if FMouseInTopBtn then
-            Draw(0, 0, FTopHotBtn)
-          else
-          if FMouseInBottomBtn then
-            Draw(0, 0, FBottomHotBtn)
-          else
-            Draw(0, 0, FNotDownBtn);
-        end
-        else
-        {$ENDIF JVCLThemesEnabled}
-          Draw(0, 0, FNotDownBtn);
-      sbTopDown:
-        Draw(0, 0, FTopDownBtn);
-      sbBottomDown:
-        Draw(0, 0, FBottomDownBtn);
-    end;
-end;
-
-//>Polaris
-
-procedure TJvSpinButton.SetButtonStyle(Value: TJvSpinButtonStyle);
-begin
-  if Value <> FButtonStyle then
-  begin
-    FButtonStyle := Value;
-    GlyphChanged(Self);
-  end;
-end;
-//<Polaris
-
-procedure TJvSpinButton.SetDown(Value: TSpinButtonState);
-var
-  OldState: TSpinButtonState;
-begin
-  OldState := FDown;
-  FDown := Value;
-  if OldState <> FDown then
-    Repaint;
-end;
-
-procedure TJvSpinButton.SetDownGlyph(Value: TBitmap);
-begin
-  if Value <> nil then
-    FDownBitmap.Assign(Value)
-      //  else FDownBitmap.Handle := LoadBitmap(HInstance, sSpinDownBtn);
-//Polaris
-  else
-    FDownBitmap.Handle := 0;
-end;
-
-procedure TJvSpinButton.SetFocusControl(Value: TWinControl);
-begin
-  FFocusControl := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
-end;
-
-procedure TJvSpinButton.SetUpGlyph(Value: TBitmap);
-begin
-  if Value <> nil then
-    FUpBitmap.Assign(Value)
-      //  else FUpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtn);
-//>Polaris
-  else
-    FUpBitmap.Handle := 0;
-end;
-
-procedure TJvSpinButton.TimerExpired(Sender: TObject);
-begin
-  FRepeatTimer.Interval := RepeatPause;
-  if (FDown <> sbNotDown) and MouseCapture then
-  begin
-    try
-      if FDown = sbBottomDown then
-        BottomClick
-      else
-        TopClick;
-    except
-      FRepeatTimer.Enabled := False;
-      raise;
-    end;
-  end;
-end;
-
-procedure TJvSpinButton.TopClick;
-begin
-  if Assigned(FOnTopClick) then
-  begin
-    FOnTopClick(Self);
-    if not (csLButtonDown in ControlState) then
-      FDown := sbNotDown;
-  end;
-end;
-
-{$IFDEF JVCLThemesEnabled}
-procedure TJvSpinButton.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  { (rb) only themed spin buttons have hot states, so it's not necessairy
-         to calc FMouseInBottomBtn and FMouseInTopBtn for non-themed apps }
-  if not FMouseInTopBtn and not FMouseInBottomBtn then
-  begin
-    if MouseInBottomBtn(ScreenToClient(Mouse.CursorPos)) then
-      FMouseInBottomBtn := True
-    else
-      FMouseInTopBtn := True;
-    if ThemeServices.ThemesEnabled then
-      Repaint;
-    inherited MouseEnter(Control);
-  end;
-end;
-
-procedure TJvSpinButton.MouseLeave(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FMouseInTopBtn or FMouseInBottomBtn then
-  begin
-    FMouseInTopBtn := False;
-    FMouseInBottomBtn := False;
-    if ThemeServices.ThemesEnabled then
-      Repaint;
-    inherited MouseLeave(Control);
-  end;
-end;
-{$ENDIF JVCLThemesEnabled}
-
-//=== TJvUpDown ==============================================================
-
-type
   TJvUpDown = class(TCustomUpDown)
   private
     FChanging: Boolean;
@@ -1325,66 +501,143 @@ type
     property OnClick;
   end;
 
-constructor TJvUpDown.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  Orientation := udVertical;
-  Min := -1;
-  Max := 1;
-  Position := 0;
-end;
+  { The face of a spin button is stored because they are a bit to complex to
+    calculate everytime in a Paint method. There are multiple bitmaps stored
+    for a single spin button, eg disable/top-down/bottom down etc.
 
-destructor TJvUpDown.Destroy;
-begin
-  OnClick := nil;
-  inherited Destroy;
-end;
+    The face bitmaps of a spin button are stored in a TSpinButtonBitmaps
+    object. Multiple spin buttons can use the same TSpinButtonBitmaps object.
+    (That is, identical spin buttons (same height, width, button kind etc.) use the
+    same TSpinButtonbitmaps objects) The TSpinButtonBitmaps objects are managed
+    by a single TSpinButtonBitmapsManager object.
+  }
 
-procedure TJvUpDown.ScrollMessage(var Msg: TWMVScroll);
-begin
-  if Msg.ScrollCode = SB_THUMBPOSITION then
-  begin
-    if not FChanging then
-    begin
-      FChanging := True;
-      try
-        if Msg.Pos > 0 then
-          Click(btNext)
-        else
-        if Msg.Pos < 0 then
-          Click(btPrev);
-        if HandleAllocated then
-          SendMessage(Handle, UDM_SETPOS, 0, 0);
-      finally
-        FChanging := False;
-      end;
-    end;
+  TSpinButtonBitmapsManager = class;
+
+  TSpinButtonBitmaps = class
+  private
+    FManager: TSpinButtonBitmapsManager;
+    FHeight: Integer;
+    FWidth: Integer;
+    FStyle: TJvSpinButtonStyle;
+    FClientCount: Integer;
+
+    FTopDownBtn: TBitmap;
+    FBottomDownBtn: TBitmap;
+    FNotDownBtn: TBitmap;
+    FDisabledBtn: TBitmap;
+    FCustomGlyphs: Boolean;
+    FResetOnDraw: Boolean;
+    {$IFDEF JVCLThemesEnabled}
+    FTopHotBtn: TBitmap;
+    FBottomHotBtn: TBitmap;
+    FIsThemed: Boolean;
+    {$ENDIF JVCLThemesEnabled}
+  protected
+    procedure DrawAllBitmap;
+    procedure DrawBitmap(ABitmap: TBitmap; ADownState: TSpinButtonState; const Enabled: Boolean);
+    procedure PoleDrawArrows(ACanvas: TCanvas; const AState: TSpinButtonState; const Enabled: Boolean;
+      AUpArrow, ADownArrow: TBitmap);
+    procedure JvDrawArrows(ACanvas: TCanvas; const AState: TSpinButtonState; const Enabled: Boolean;
+      AUpArrow, ADownArrow: TBitmap);
+    {$IFDEF JVCLThemesEnabled}
+    procedure DrawAllBitmapClassicThemed;
+    procedure DrawAllBitmapDiagonalThemed;
+    procedure DrawDiagonalThemedArrows(ACanvas: TCanvas; const AState: TSpinButtonState; const Enabled: Boolean;
+      AUpArrow, ADownArrow: TBitmap);
+    {$ENDIF JVCLThemesEnabled}
+    procedure Reset;
+
+    function CompareWith(const AWidth, AHeight: Integer; const AStyle: TJvSpinButtonStyle;
+      const ACustomGlyphs: Boolean): Integer;
+  public
+    constructor Create(AManager: TSpinButtonBitmapsManager; const AWidth, AHeight: Integer;
+      const AStyle: TJvSpinButtonStyle; const ACustomGlyphs: Boolean); virtual;
+    destructor Destroy; override;
+
+    procedure AddClient;
+    procedure RemoveClient;
+
+    procedure Draw(ACanvas: TCanvas; const ADown: TSpinButtonState;
+      const AEnabled, AMouseInTopBtn, AMouseInBottomBtn: Boolean);
+    procedure DrawGlyphs(ACanvas: TCanvas; const AState: TSpinButtonState; const Enabled: Boolean;
+      AUpArrow, ADownArrow: TBitmap);
+
+    property Width: Integer read FWidth;
+    property Height: Integer read FHeight;
+    property Style: TJvSpinButtonStyle read FStyle;
+    property CustomGlyphs: Boolean read FCustomGlyphs;
   end;
+
+  TSpinButtonBitmapsManager = class
+  private
+    FClientCount: Integer;
+    FList: TList;
+  protected
+    function Find(const Width, Height: Integer; const AButtonStyle: TJvSpinButtonStyle;
+      const ACustomGlyphs: Boolean; var Index: Integer): Boolean;
+    procedure Remove(Obj: TObject);
+  public
+    constructor Create; virtual;
+    destructor Destroy; override;
+
+    function WantButtons(const Width, Height: Integer; const AButtonStyle: TJvSpinButtonStyle;
+      const ACustomGlyphs: Boolean): TSpinButtonBitmaps;
+
+    procedure AddClient;
+    procedure RemoveClient;
+  end;
+
+var
+  GSpinButtonBitmapsManager: TSpinButtonBitmapsManager = nil;
+
+//=== Local procedures =======================================================
+
+function SpinButtonBitmapsManager: TSpinButtonBitmapsManager;
+begin
+  if GSpinButtonBitmapsManager = nil then
+    GSpinButtonBitmapsManager := TSpinButtonBitmapsManager.Create;
+  Result := GSpinButtonBitmapsManager;
 end;
 
-procedure TJvUpDown.WMHScroll(var Msg: TWMHScroll);
+function DefBtnWidth: Integer;
 begin
-  ScrollMessage(TWMVScroll(Msg));
+  Result := GetSystemMetrics(SM_CXVSCROLL);
+  if Result > 15 then
+    Result := 15;
 end;
 
-procedure TJvUpDown.WMVScroll(var Msg: TWMVScroll);
+function RemoveThousands(const AValue: string): string;
 begin
-  ScrollMessage(Msg);
-end;
-
-procedure TJvUpDown.Resize;
-begin
-  if Width <> DefBtnWidth then
-    Width := DefBtnWidth
+  if DecimalSeparator <> ThousandSeparator then
+    Result := DelChars(AValue, ThousandSeparator)
   else
-    inherited Resize; 
+    Result := AValue;
+end;
+
+function TextToValText(const AValue: string): string;
+begin
+  Result := DelRSpace(AValue);
+  if DecimalSeparator <> ThousandSeparator then
+    Result := DelChars(Result, ThousandSeparator);
+
+  if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
+    Result := ReplaceStr(Result, '.', DecimalSeparator);
+  if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
+    Result := ReplaceStr(Result, ',', DecimalSeparator);
+
+  if Result = '' then
+    Result := '0'
+  else
+  if Result = '-' then
+    Result := '-0';
 end;
 
 //=== TJvCustomSpinEdit ======================================================
 
 procedure TJvCustomSpinEdit.Change;
 var
-//  OldText: string;
+  //  OldText: string;
   OldSelStart: Integer;
 begin
   { (rb) Maybe move to CMTextChanged }
@@ -1393,12 +646,12 @@ begin
 
   FChanging := True;
   try
-//    OldText := inherited Text;
+    //    OldText := inherited Text;
     OldSelStart := SelStart;
     try
       if not (csDesigning in ComponentState) and (coCheckOnChange in CheckOptions) then
       begin
-        CheckValueRange(Value, not (coCropBeyondLimit in CheckOptions)); 
+        CheckValueRange(Value, not (coCropBeyondLimit in CheckOptions));
         SetValue(CheckValue(Value));
       end;
     except
@@ -1412,8 +665,8 @@ begin
     inherited Change;
     FOldValue := Value;
   end;
-//  if CompareText(inherited Text, OldText) <> 0 then
-//    inherited Change;
+  //  if CompareText(inherited Text, OldText) <> 0 then
+  //    inherited Change;
 
   SelStart := OldSelStart;
 end;
@@ -1443,7 +696,6 @@ begin
   end;
 end;
 
-//Polaris
 function TJvCustomSpinEdit.CheckValueRange(NewValue: Extended; RaiseOnError: Boolean): Extended;
 begin
   Result := CheckValue(NewValue);
@@ -1453,6 +705,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomSpinEdit.CMBiDiModeChanged(var Msg: TMessage);
 begin
   inherited;
@@ -1466,53 +719,8 @@ begin
   ResizeButton;
   SetEditRect;
 end;
+
 {$ENDIF VCL}
-
-procedure TJvCustomSpinEdit.EnabledChanged;
-begin
-  inherited EnabledChanged;
-  if FUpDown <> nil then
-  begin
-    FUpDown.Enabled := Enabled;
-    ResizeButton;
-  end;
-  if FButton <> nil then
-    FButton.Enabled := Enabled;
-end;
-
-procedure TJvCustomSpinEdit.DoEnter;
-begin
-  SetFocused(True);
-  if AutoSelect and not (csLButtonDown in ControlState) then
-    SelectAll;
-  inherited DoEnter;
-end;
-
-procedure TJvCustomSpinEdit.DoExit;
-begin
-  SetFocused(False);
-  try
-    if not (csDesigning in ComponentState) and (coCheckOnExit in CheckOptions) then
-    begin
-      CheckValueRange(Value, not (coCropBeyondLimit in CheckOptions));
-      SetValue(CheckValue(Value));
-    end;
-  except
-    SetFocused(True);
-    SelectAll;
-    if CanFocus then
-      SetFocus;
-    raise;
-  end;
-  inherited DoExit;
-end;
-
-procedure TJvCustomSpinEdit.FontChanged;
-begin
-  inherited FontChanged;
-  ResizeButton;
-  SetEditRect;
-end;
 
 constructor TJvCustomSpinEdit.Create(AOwner: TComponent);
 begin
@@ -1575,8 +783,6 @@ begin
   end;
 end;
 
-//Polaris
-
 function TJvCustomSpinEdit.DefaultDisplayFormat: string;
 begin
   Result := ',0.##';
@@ -1599,6 +805,92 @@ begin
     FUpDown := nil;
   end;
   inherited Destroy;
+end;
+
+procedure TJvCustomSpinEdit.DoBoundsChanged;
+var
+  MinHeight: Integer;
+begin
+  MinHeight := GetMinHeight;
+  { text edit bug: if size to less than minheight, then edit ctrl does
+    not display the text }
+  if Height < MinHeight then
+    Height := MinHeight
+  else
+  begin
+    ResizeButton;
+    SetEditRect;
+    inherited DoBoundsChanged;
+  end;
+end;
+
+procedure TJvCustomSpinEdit.DoClipboardCut;
+begin
+  if FEditorEnabled and not ReadOnly then
+    inherited DoClipboardCut;
+end;
+
+procedure TJvCustomSpinEdit.DoClipboardPaste;
+begin
+  if FEditorEnabled and not ReadOnly then
+    inherited DoClipboardPaste;
+
+  { Polaris code:
+  if not FEditorEnabled or ReadOnly then
+    Exit;
+  V := Value;
+  inherited;
+  try
+    StrToFloat(Text);
+  except
+    SetValue(V);
+  end;
+  }
+end;
+
+procedure TJvCustomSpinEdit.DoEnter;
+begin
+  SetFocused(True);
+  if AutoSelect and not (csLButtonDown in ControlState) then
+    SelectAll;
+  inherited DoEnter;
+end;
+
+procedure TJvCustomSpinEdit.DoExit;
+begin
+  SetFocused(False);
+  try
+    if not (csDesigning in ComponentState) and (coCheckOnExit in CheckOptions) then
+    begin
+      CheckValueRange(Value, not (coCropBeyondLimit in CheckOptions));
+      SetValue(CheckValue(Value));
+    end;
+  except
+    SetFocused(True);
+    SelectAll;
+    if CanFocus then
+      SetFocus;
+    raise;
+  end;
+  inherited DoExit;
+end;
+
+procedure TJvCustomSpinEdit.DoKillFocus(FocusedWnd: HWND);
+begin
+  if ([coCropBeyondLimit, coCheckOnExit] <= CheckOptions) and
+    not (csDesigning in ComponentState) then
+    SetValue(CheckValue(Value));
+  inherited DoKillFocus(FocusedWnd);
+end;
+
+function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+  {$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint): Boolean;
+begin
+  if WheelDelta > 0 then
+    UpClick(nil)
+  else
+    DownClick(nil);
+  Result := True;
 end;
 
 procedure TJvCustomSpinEdit.DownClick(Sender: TObject);
@@ -1624,6 +916,25 @@ begin
     if Assigned(FOnBottomClick) then
       FOnBottomClick(Self);
   end;
+end;
+
+procedure TJvCustomSpinEdit.EnabledChanged;
+begin
+  inherited EnabledChanged;
+  if FUpDown <> nil then
+  begin
+    FUpDown.Enabled := Enabled;
+    ResizeButton;
+  end;
+  if FButton <> nil then
+    FButton.Enabled := Enabled;
+end;
+
+procedure TJvCustomSpinEdit.FontChanged;
+begin
+  inherited FontChanged;
+  ResizeButton;
+  SetEditRect;
 end;
 
 {function TJvCustomSpinEdit.TryGetValue(var Value: Extended): Boolean;
@@ -1658,7 +969,7 @@ function TJvCustomSpinEdit.GetButtonKind: TSpinButtonKind;
 begin
   if NewStyleControls then
     Result := FButtonKind
-  //>Polaris
+      //>Polaris
   else
   begin
     Result := bkDiagonal;
@@ -1773,12 +1084,13 @@ begin
 end;
 
 procedure TJvCustomSpinEdit.KeyPress(var Key: Char);
-var I: Integer;
+var
+  I: Integer;
 begin
- // andreas
+  // andreas
   if (Key = DecimalSeparator) and (ValueType = vtFloat) then
   begin
-   { If the key is the decimal separator move the caret behind it. }
+    { If the key is the decimal separator move the caret behind it. }
     I := Pos(DecimalSeparator, Text);
     if I <> 0 then
     begin
@@ -1810,8 +1122,6 @@ begin
     end;
   end;
 end;
-
-//Polaris
 
 procedure TJvCustomSpinEdit.Loaded;
 begin
@@ -1883,36 +1193,36 @@ begin
       FUpDown.Align := alRight;
   end
   else
-    if FButton <> nil then
-    begin { bkDiagonal }
-      if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then
-        if FButtonKind = bkClassic then
-          R := Bounds(Width - DefBtnWidth - 4, -1, DefBtnWidth, Height - 3)
-        else
-          R := Bounds(Width - Height - 1, -1, Height - 3, Height - 3)
+  if FButton <> nil then
+  begin { bkDiagonal }
+    if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then
+      if FButtonKind = bkClassic then
+        R := Bounds(Width - DefBtnWidth - 4, -1, DefBtnWidth, Height - 3)
       else
-        if FButtonKind = bkClassic then
-          R := Bounds(Width - DefBtnWidth, 0, DefBtnWidth, Height)
-        else
-          R := Bounds(Width - Height, 0, Height, Height);
-      if BiDiMode = bdRightToLeft then
+        R := Bounds(Width - Height - 1, -1, Height - 3, Height - 3)
+    else
+      if FButtonKind = bkClassic then
+      R := Bounds(Width - DefBtnWidth, 0, DefBtnWidth, Height)
+    else
+      R := Bounds(Width - Height, 0, Height, Height);
+    if BiDiMode = bdRightToLeft then
+    begin
+      if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then
       begin
-        if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then
-        begin
-          R.Left := -1;
-          R.Right := Height - 4;
-        end
-        else
-        begin
-          R.Left := 0;
-          R.Right := Height;
-        end;
+        R.Left := -1;
+        R.Right := Height - 4;
+      end
+      else
+      begin
+        R.Left := 0;
+        R.Right := Height;
       end;
-      with R do
-        FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top);
-      //Polaris
-      FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
     end;
+    with R do
+      FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top);
+    //Polaris
+    FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
+  end;
 end;
 
 procedure TJvCustomSpinEdit.SetAlignment(Value: TAlignment);
@@ -2006,8 +1316,6 @@ begin
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
 end;
 
-//Polaris
-
 procedure TJvCustomSpinEdit.SetFocused(Value: Boolean);
 begin
   if Value <> FFocused then
@@ -2021,17 +1329,17 @@ end;
 procedure TJvCustomSpinEdit.SetMaxValue(NewValue: Extended);
 var
   Z: Boolean;
-  B: Boolean;
+  b: Boolean;
 begin
   if NewValue <> FMaxValue then
   begin
-    B := not StoreCheckMaxValue;
+    b := not StoreCheckMaxValue;
     Z := (FMaxValue = 0) <> (NewValue = 0);
     FMaxValue := NewValue;
     if Z and FLCheckMaxValue then
     begin
       SetCheckMaxValue(CheckDefaultRange(True));
-      if B and FLCheckMinValue then
+      if b and FLCheckMinValue then
         SetCheckMinValue(CheckDefaultRange(False));
     end;
     SetValue(Value);
@@ -2041,17 +1349,17 @@ end;
 procedure TJvCustomSpinEdit.SetMinValue(NewValue: Extended);
 var
   Z: Boolean;
-  B: Boolean;
+  b: Boolean;
 begin
   if NewValue <> FMinValue then
   begin
-    B := not StoreCheckMinValue;
+    b := not StoreCheckMinValue;
     Z := (FMinValue = 0) <> (NewValue = 0);
     FMinValue := NewValue;
     if Z and FLCheckMinValue then
     begin
       SetCheckMinValue(CheckDefaultRange(False));
-      if B and FLCheckMaxValue then
+      if b and FLCheckMaxValue then
         SetCheckMaxValue(CheckDefaultRange(True));
     end;
     SetValue(Value);
@@ -2070,7 +1378,7 @@ begin
   begin
     FValueType := NewType;
     Value := GetValue;
-    if FValueType in [{$IFDEF BCB} vtInt {$ELSE} vtInteger {$ENDIF}, vtHex] then
+    if FValueType in [{$IFDEF BCB}vtInt{$ELSE}vtInteger{$ENDIF}, vtHex] then
     begin
       FIncrement := Round(FIncrement);
       if FIncrement = 0 then
@@ -2128,62 +1436,352 @@ begin
   end;
 end;
 
-procedure TJvCustomSpinEdit.DoKillFocus(FocusedWnd: HWND);
-begin
-  if ([coCropBeyondLimit, coCheckOnExit] <= CheckOptions) and
-     not (csDesigning in ComponentState) then
-    SetValue(CheckValue(Value));
-  inherited DoKillFocus(FocusedWnd);
-end;
+//=== TJvSpinButton ==========================================================
 
-function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
+procedure TJvSpinButton.BottomClick;
 begin
-  if WheelDelta > 0 then
-    UpClick(nil)
-  else
-    DownClick(nil);
-  Result := True;
-end;
-
-procedure TJvCustomSpinEdit.DoClipboardPaste;
-begin
-  if FEditorEnabled and not ReadOnly then
-    inherited DoClipboardPaste;
-
-  { Polaris code:
-  if not FEditorEnabled or ReadOnly then
-    Exit;
-  V := Value;
-  inherited;
-  try
-    StrToFloat(Text);
-  except
-    SetValue(V);
-  end;
-  }
-end;
-
-procedure TJvCustomSpinEdit.DoClipboardCut;
-begin
-  if FEditorEnabled and not ReadOnly then
-    inherited DoClipboardCut;
-end;
-
-procedure TJvCustomSpinEdit.DoBoundsChanged;
-var
-  MinHeight: Integer;
-begin
-  MinHeight := GetMinHeight;
-  { text edit bug: if size to less than minheight, then edit ctrl does
-    not display the text }
-  if Height < MinHeight then
-    Height := MinHeight
-  else
+  if Assigned(FOnBottomClick) then
   begin
-    ResizeButton;
-    SetEditRect;
-    inherited DoBoundsChanged;
+    FOnBottomClick(Self);
+    if not (csLButtonDown in ControlState) then
+      FDown := sbNotDown;
+  end;
+end;
+
+procedure TJvSpinButton.CheckButtonBitmaps;
+begin
+  if Assigned(FButtonBitmaps) and
+    ((TSpinButtonBitmaps(FButtonBitmaps).Height <> Height) or
+     (TSpinButtonBitmaps(FButtonBitmaps).Width <> Width)) then
+    RemoveButtonBitmaps;
+
+  if FButtonBitmaps = nil then
+  begin
+    FButtonBitmaps := SpinButtonBitmapsManager.WantButtons(Width, Height, ButtonStyle,
+      not FUpBitmap.Empty or not FDownBitmap.Empty);
+    TSpinButtonBitmaps(FButtonBitmaps).AddClient;
+  end;
+end;
+
+procedure TJvSpinButton.CMSysColorChange(var Msg: TMessage);
+begin
+  // The buttons we draw are buffered, thus we need to repaint them to theme changes etc.
+  if FButtonBitmaps <> nil then
+    TSpinButtonBitmaps(FButtonBitmaps).Reset;
+end;
+
+constructor TJvSpinButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FButtonStyle := sbsDefault;
+  FUpBitmap := TBitmap.Create;
+  FDownBitmap := TBitmap.Create;
+  FUpBitmap.OnChange := GlyphChanged;
+  FDownBitmap.OnChange := GlyphChanged;
+  Height := 20;
+  Width := 20;
+  FLastDown := sbNotDown;
+  FButtonBitmaps := nil;
+
+  SpinButtonBitmapsManager.AddClient;
+end;
+
+destructor TJvSpinButton.Destroy;
+begin
+  RemoveButtonBitmaps;
+  SpinButtonBitmapsManager.RemoveClient;
+
+  FUpBitmap.Free;
+  FDownBitmap.Free;
+  FRepeatTimer.Free;
+  inherited Destroy;
+end;
+
+function TJvSpinButton.GetDownGlyph: TBitmap;
+begin
+  Result := FDownBitmap;
+end;
+
+function TJvSpinButton.GetUpGlyph: TBitmap;
+begin
+  Result := FUpBitmap;
+end;
+
+procedure TJvSpinButton.GlyphChanged(Sender: TObject);
+begin
+  if Sender is TBitmap then
+  (Sender as TBitmap).Transparent := True;
+  RemoveButtonBitmaps;
+  Invalidate;
+end;
+
+procedure TJvSpinButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if (Button = mbLeft) and Enabled then
+  begin
+    if (FFocusControl <> nil) and FFocusControl.TabStop and
+      FFocusControl.CanFocus and (GetFocus <> FFocusControl.Handle) then
+      FFocusControl.SetFocus;
+    if FDown = sbNotDown then
+    begin
+      FLastDown := FDown;
+      //>Polaris
+      if ((FButtonStyle = sbsDefault) and (Y > (-(Height / Width) * X + Height))) or
+        ((FButtonStyle = sbsClassic) and (Y > (Height div 2))) then
+      begin
+        FDown := sbBottomDown;
+        BottomClick;
+      end
+      else
+      begin
+        FDown := sbTopDown;
+        TopClick;
+      end;
+      if FLastDown <> FDown then
+      begin
+        FLastDown := FDown;
+        Repaint;
+      end;
+      if FRepeatTimer = nil then
+        FRepeatTimer := TTimer.Create(Self);
+      FRepeatTimer.OnTimer := TimerExpired;
+      FRepeatTimer.Interval := InitRepeatPause;
+      FRepeatTimer.Enabled := True;
+    end;
+    FDragging := True;
+  end;
+end;
+
+{$IFDEF JVCLThemesEnabled}
+procedure TJvSpinButton.MouseEnter(Control: TControl);
+begin
+  if csDesigning in ComponentState then
+    Exit;
+  { (rb) only themed spin buttons have hot states, so it's not necessairy
+         to calc FMouseInBottomBtn and FMouseInTopBtn for non-themed apps }
+  if not FMouseInTopBtn and not FMouseInBottomBtn then
+  begin
+    if MouseInBottomBtn(ScreenToClient(Mouse.CursorPos)) then
+      FMouseInBottomBtn := True
+    else
+      FMouseInTopBtn := True;
+    if ThemeServices.ThemesEnabled then
+      Repaint;
+    inherited MouseEnter(Control);
+  end;
+end;
+{$ENDIF JVCLThemesEnabled}
+
+function TJvSpinButton.MouseInBottomBtn(const P: TPoint): Boolean;
+begin
+  with P do
+    Result :=
+      ((FButtonStyle = sbsDefault)) and (Y > (-(Width / Height) * X + Height)) or
+      ((FButtonStyle = sbsClassic) and (Y > (Height div 2)));
+end;
+
+{$IFDEF JVCLThemesEnabled}
+procedure TJvSpinButton.MouseLeave(Control: TControl);
+begin
+  if csDesigning in ComponentState then
+    Exit;
+  if FMouseInTopBtn or FMouseInBottomBtn then
+  begin
+    FMouseInTopBtn := False;
+    FMouseInBottomBtn := False;
+    if ThemeServices.ThemesEnabled then
+      Repaint;
+    inherited MouseLeave(Control);
+  end;
+end;
+{$ENDIF JVCLThemesEnabled}
+
+procedure TJvSpinButton.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  NewState: TSpinButtonState;
+begin
+  inherited MouseMove(Shift, X, Y);
+  if FDragging then
+  begin
+    if (X >= 0) and (X <= Width) and (Y >= 0) and (Y <= Height) then
+    begin
+      NewState := FDown;
+      //>Polaris
+      if MouseInBottomBtn(Point(X, Y)) then
+      begin
+        if FDown <> sbBottomDown then
+        begin
+          if FLastDown = sbBottomDown then
+            FDown := sbBottomDown
+          else
+            FDown := sbNotDown;
+          if NewState <> FDown then
+            Repaint;
+        end;
+      end
+      else
+      begin
+        if FDown <> sbTopDown then
+        begin
+          if FLastDown = sbTopDown then
+            FDown := sbTopDown
+          else
+            FDown := sbNotDown;
+          if NewState <> FDown then
+            Repaint;
+        end;
+      end;
+    end
+    else
+    if FDown <> sbNotDown then
+    begin
+      FDown := sbNotDown;
+      Repaint;
+    end;
+  end
+  {$IFDEF JVCLThemesEnabled}
+  else
+  if (FMouseInTopBtn or FMouseInBottomBtn) and ThemeServices.ThemesEnabled then
+  begin
+    if MouseInBottomBtn(Point(X, Y)) then
+    begin
+      if not FMouseInBottomBtn then
+      begin
+        FMouseInTopBtn := False;
+        FMouseInBottomBtn := True;
+        Repaint;
+      end;
+    end
+    else
+    begin
+      if not FMouseInTopBtn then
+      begin
+        FMouseInTopBtn := True;
+        FMouseInBottomBtn := False;
+        Repaint;
+      end;
+    end;
+  end;
+  {$ENDIF JVCLThemesEnabled}
+end;
+
+procedure TJvSpinButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  if FDragging then
+  begin
+    FDragging := False;
+    if (X >= 0) and (X <= Width) and (Y >= 0) and (Y <= Height) then
+    begin
+      FDown := sbNotDown;
+      FLastDown := sbNotDown;
+      Repaint;
+    end;
+  end;
+end;
+
+procedure TJvSpinButton.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FFocusControl) then
+    FFocusControl := nil;
+end;
+
+procedure TJvSpinButton.Paint;
+begin
+  CheckButtonBitmaps;
+
+  if not Enabled and not (csDesigning in ComponentState) then
+    FDragging := False;
+
+  {$IFDEF JVCLThemesEnabled}
+  TSpinButtonBitmaps(FButtonBitmaps).Draw(Canvas, FDown, Enabled, FMouseInTopBtn, FMouseInBottomBtn);
+  {$ELSE}
+  TSpinButtonBitmaps(FButtonBitmaps).Draw(Canvas, FDown, Enabled, False, False);
+  {$ENDIF JVCLThemesEnabled}
+  if not FUpBitmap.Empty or not FDownBitmap.Empty then
+    TSpinButtonBitmaps(FButtonBitmaps).DrawGlyphs(Canvas, FDown, Enabled, FUpBitmap, FDownBitmap);
+end;
+
+procedure TJvSpinButton.RemoveButtonBitmaps;
+begin
+  if Assigned(FButtonBitmaps) then
+  begin
+    TSpinButtonBitmaps(FButtonBitmaps).RemoveClient;
+    FButtonBitmaps := nil;
+  end;
+end;
+
+procedure TJvSpinButton.SetButtonStyle(Value: TJvSpinButtonStyle);
+begin
+  if Value <> FButtonStyle then
+  begin
+    FButtonStyle := Value;
+    GlyphChanged(Self);
+  end;
+end;
+
+procedure TJvSpinButton.SetDown(Value: TSpinButtonState);
+var
+  OldState: TSpinButtonState;
+begin
+  OldState := FDown;
+  FDown := Value;
+  if OldState <> FDown then
+    Repaint;
+end;
+
+procedure TJvSpinButton.SetDownGlyph(Value: TBitmap);
+begin
+  if Value <> nil then
+    FDownBitmap.Assign(Value)
+  else
+    FDownBitmap.Handle := 0;
+end;
+
+procedure TJvSpinButton.SetFocusControl(Value: TWinControl);
+begin
+  FFocusControl := Value;
+  if Value <> nil then
+    Value.FreeNotification(Self);
+end;
+
+procedure TJvSpinButton.SetUpGlyph(Value: TBitmap);
+begin
+  if Value <> nil then
+    FUpBitmap.Assign(Value)
+  else
+    FUpBitmap.Handle := 0;
+end;
+
+procedure TJvSpinButton.TimerExpired(Sender: TObject);
+begin
+  FRepeatTimer.Interval := RepeatPause;
+  if (FDown <> sbNotDown) and MouseCapture then
+  begin
+    try
+      if FDown = sbBottomDown then
+        BottomClick
+      else
+        TopClick;
+    except
+      FRepeatTimer.Enabled := False;
+      raise;
+    end;
+  end;
+end;
+
+procedure TJvSpinButton.TopClick;
+begin
+  if Assigned(FOnTopClick) then
+  begin
+    FOnTopClick(Self);
+    if not (csLButtonDown in ControlState) then
+      FDown := sbNotDown;
   end;
 end;
 
@@ -2194,11 +1792,7 @@ end;
 constructor TJvSpinEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  //{$IFDEF MSWINDOWS}
-  //  FButtonKind := bkDiagonal;
-  //{$ENDIF MSWINDOWS}
   Text := '0';
-  //  RecreateButton;
 end;
 
 function TJvSpinEdit.GetValue: Extended;
@@ -2263,5 +1857,811 @@ begin
   end;
 end;
 
-end.
+//=== TJvUpDown ==============================================================
 
+constructor TJvUpDown.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Orientation := udVertical;
+  Min := -1;
+  Max := 1;
+  Position := 0;
+end;
+
+destructor TJvUpDown.Destroy;
+begin
+  OnClick := nil;
+  inherited Destroy;
+end;
+
+procedure TJvUpDown.Resize;
+begin
+  if Width <> DefBtnWidth then
+    Width := DefBtnWidth
+  else
+    inherited Resize;
+end;
+
+procedure TJvUpDown.ScrollMessage(var Msg: TWMVScroll);
+begin
+  if Msg.ScrollCode = SB_THUMBPOSITION then
+  begin
+    if not FChanging then
+    begin
+      FChanging := True;
+      try
+        if Msg.Pos > 0 then
+          Click(btNext)
+        else
+        if Msg.Pos < 0 then
+          Click(btPrev);
+        if HandleAllocated then
+          SendMessage(Handle, UDM_SETPOS, 0, 0);
+      finally
+        FChanging := False;
+      end;
+    end;
+  end;
+end;
+
+procedure TJvUpDown.WMHScroll(var Msg: TWMHScroll);
+begin
+  ScrollMessage(TWMVScroll(Msg));
+end;
+
+procedure TJvUpDown.WMVScroll(var Msg: TWMVScroll);
+begin
+  ScrollMessage(Msg);
+end;
+
+//=== TSpinButtonBitmaps =====================================================
+
+procedure TSpinButtonBitmaps.AddClient;
+begin
+  Inc(FClientCount);
+end;
+
+function TSpinButtonBitmaps.CompareWith(const AWidth, AHeight: Integer;
+  const AStyle: TJvSpinButtonStyle; const ACustomGlyphs: Boolean): Integer;
+begin
+  // used by the binary search
+  Result := Self.Width - AWidth;
+  if Result = 0 then
+  begin
+    Result := Self.Height - AHeight;
+    if Result = 0 then
+    begin
+      Result := Ord(Self.Style) - Ord(AStyle);
+      if Result = 0 then
+        Result := Ord(Self.CustomGlyphs) - Ord(ACustomGlyphs);
+    end;
+  end;
+end;
+
+constructor TSpinButtonBitmaps.Create(AManager: TSpinButtonBitmapsManager;
+  const AWidth, AHeight: Integer; const AStyle: TJvSpinButtonStyle; const ACustomGlyphs: Boolean);
+begin
+  inherited Create;
+  FManager := AManager;
+  FWidth := AWidth;
+  FHeight := AHeight;
+  FStyle := AStyle;
+  FCustomGlyphs := ACustomGlyphs;
+
+  FTopDownBtn := TBitmap.Create;
+  FBottomDownBtn := TBitmap.Create;
+  FNotDownBtn := TBitmap.Create;
+  FDisabledBtn := TBitmap.Create;
+  {$IFDEF JVCLThemesEnabled}
+  FTopHotBtn := TBitmap.Create;
+  FBottomHotBtn := TBitmap.Create;
+  {$ENDIF JVCLThemesEnabled}
+
+  DrawAllBitmap;
+end;
+
+destructor TSpinButtonBitmaps.Destroy;
+begin
+  FManager.Remove(Self);
+
+  FTopDownBtn.Free;
+  FBottomDownBtn.Free;
+  FNotDownBtn.Free;
+  FDisabledBtn.Free;
+  {$IFDEF JVCLThemesEnabled}
+  FTopHotBtn.Free;
+  FBottomHotBtn.Free;
+  {$ENDIF JVCLThemesEnabled}
+
+  inherited Destroy;
+end;
+
+procedure TSpinButtonBitmaps.Draw(ACanvas: TCanvas;
+  const ADown: TSpinButtonState; const AEnabled, AMouseInTopBtn, AMouseInBottomBtn: Boolean);
+begin
+  if FResetOnDraw then
+  begin
+    DrawAllBitmap;
+    FResetOnDraw := False;
+  end;
+
+  with ACanvas do
+    if not AEnabled then
+      Draw(0, 0, FDisabledBtn)
+    else
+      case ADown of
+        sbNotDown:
+          {$IFDEF JVCLThemesEnabled}
+          if FIsThemed then
+          begin
+            if AMouseInTopBtn then
+              Draw(0, 0, FTopHotBtn)
+            else
+            if AMouseInBottomBtn then
+              Draw(0, 0, FBottomHotBtn)
+            else
+              Draw(0, 0, FNotDownBtn);
+          end
+          else
+          {$ENDIF JVCLThemesEnabled}
+            Draw(0, 0, FNotDownBtn);
+        sbTopDown:
+          Draw(0, 0, FTopDownBtn);
+        sbBottomDown:
+          Draw(0, 0, FBottomDownBtn);
+      end;
+end;
+
+procedure TSpinButtonBitmaps.DrawAllBitmap;
+begin
+  {$IFDEF JVCLThemesEnabled}
+  FIsThemed := ThemeServices.ThemesEnabled;
+  if FIsThemed then
+  begin
+    if FStyle = sbsClassic then
+      DrawAllBitmapClassicThemed
+    else
+      DrawAllBitmapDiagonalThemed;
+    Exit;
+  end;
+  {$ENDIF JVCLThemesEnabled}
+
+  DrawBitmap(FTopDownBtn, sbTopDown, True);
+  DrawBitmap(FBottomDownBtn, sbBottomDown, True);
+  DrawBitmap(FNotDownBtn, sbNotDown, True);
+  DrawBitmap(FDisabledBtn, sbNotDown, False);
+end;
+
+{$IFDEF JVCLThemesEnabled}
+
+procedure TSpinButtonBitmaps.DrawAllBitmapClassicThemed;
+type
+  TButtonPartState = (bpsNormal, bpsHot, bpsPressed, bpsDisabled);
+const
+  CDetails: array [Boolean, TButtonPartState] of TThemedSpin = (
+    (tsUpNormal, tsUpHot, tsUpPressed, tsUpDisabled),
+    (tsDownNormal, tsDownHot, tsDownPressed, tsDownDisabled)
+    );
+var
+  TopRect, BottomRect: TRect;
+  TopRegion_TopAbove, BottomRegion_TopAbove: HRGN;
+  TopRegion_BottomAbove, BottomRegion_BottomAbove: HRGN;
+
+  procedure ConstructThemedButton(ABitmap: TBitmap; const AUpState, ADownState: TButtonPartState);
+  var
+    Details: TThemedElementDetails;
+  begin
+    with ABitmap do
+    begin
+      Height := Self.Height;
+      Width := Self.Width;
+
+      with Canvas do
+      begin
+        // Select only top button 
+        if AUpState = bpsNormal then
+          SelectClipRgn(Handle, TopRegion_BottomAbove)
+        else
+          SelectClipRgn(Handle, TopRegion_TopAbove);
+        // Copy top button
+        Details := ThemeServices.GetElementDetails(CDetails[False, AUpState]);
+        ThemeServices.DrawElement(Handle, Details, TopRect);
+        // Select only bottom button
+        if AUpState = bpsNormal then
+          SelectClipRgn(Handle, BottomRegion_BottomAbove)
+        else
+          SelectClipRgn(Handle, BottomRegion_TopAbove);
+        // Copy bottom button
+        Details := ThemeServices.GetElementDetails(CDetails[True, ADownState]);
+        ThemeServices.DrawElement(Handle, Details, BottomRect);
+        // Remove clipping restriction
+        SelectClipRgn(Handle, 0);
+      end;
+    end;
+  end;
+
+begin
+  TopRect := Rect(0, 0, Width, Height div 2);
+  InflateRect(TopRect, 1, 1);
+
+  BottomRect := Rect(0, TopRect.Bottom, Width, Height);
+  InflateRect(BottomRect, 1, 1);
+
+  { Construct the regions (needed because the up & down buttons overlap
+    each other) }
+  with TopRect do
+  begin
+    TopRegion_TopAbove := CreateRectRgn(Left, Top, Right, Bottom + 1);
+    TopRegion_BottomAbove := CreateRectRgn(Left, Top, Right, Bottom);
+  end;
+  with BottomRect do
+  begin
+    BottomRegion_TopAbove := CreateRectRgn(Left, Top + 1, Right, Bottom);
+    BottomRegion_BottomAbove := CreateRectRgn(Left, Top, Right, Bottom);
+  end;
+  try
+    { Draw the buttons }
+    ConstructThemedButton(FTopDownBtn, bpsPressed, bpsNormal);
+    ConstructThemedButton(FBottomDownBtn, bpsNormal, bpsPressed);
+    ConstructThemedButton(FNotDownBtn, bpsNormal, bpsNormal);
+    ConstructThemedButton(FTopHotBtn, bpsHot, bpsNormal);
+    ConstructThemedButton(FBottomHotBtn, bpsNormal, bpsHot);
+    ConstructThemedButton(FDisabledBtn, bpsDisabled, bpsDisabled);
+  finally
+    DeleteObject(TopRegion_TopAbove);
+    DeleteObject(BottomRegion_TopAbove);
+    DeleteObject(TopRegion_BottomAbove);
+    DeleteObject(BottomRegion_BottomAbove);
+  end;
+end;
+
+procedure TSpinButtonBitmaps.DrawAllBitmapDiagonalThemed;
+type
+  TButtonPartState = (bpsNormal, bpsHot, bpsPressed, bpsDisabled);
+const
+  CDetails: array [TButtonPartState] of TThemedButton =
+    (tbPushButtonNormal, tbPushButtonHot, tbPushButtonPressed, tbPushButtonDisabled);
+var
+  TemplateButtons: array [TButtonPartState] of TBitmap;
+  ThemeColors: array [0..2] of Cardinal;
+  ButtonRect: TRect;
+  PaintRect: TRect;
+  TopRegion, BottomRegion: HRGN;
+  UpBitmap, DownBitmap: TBitmap;
+
+  procedure ConstructThemedButton(ABitmap: TBitmap; const AUpState, ADownState: TButtonPartState);
+  begin
+    with ABitmap do
+    begin
+      Height := Self.Height;
+      Width := Self.Width;
+
+      with Canvas do
+      begin
+        { Select only top button }
+        SelectClipRgn(Handle, TopRegion);
+        { Copy top button }
+        ABitmap.Canvas.Draw(0, 0, TemplateButtons[AUpState]);
+        { Select only bottom button }
+        SelectClipRgn(Handle, BottomRegion);
+        { Copy bottom button }
+        ABitmap.Canvas.Draw(0, 0, TemplateButtons[ADownState]);
+        { Remove clipping restriction }
+        SelectClipRgn(Handle, 0);
+
+        { Draw diagonal }
+        Pen.Color := ThemeColors[0];
+        MoveTo(PaintRect.Left, PaintRect.Bottom - 2);
+        LineTo(PaintRect.Right - 1, PaintRect.Top - 1);
+
+        Pen.Color := ThemeColors[1];
+        MoveTo(PaintRect.Right - 1, PaintRect.Top);
+        LineTo(PaintRect.Right - 1, PaintRect.Top);
+        LineTo(PaintRect.Left, PaintRect.Bottom - 1);
+
+        Pen.Color := ThemeColors[2];
+        MoveTo(PaintRect.Left + 1, PaintRect.Bottom - 1);
+        LineTo(PaintRect.Right, PaintRect.Top);
+
+        if not CustomGlyphs then
+          DrawDiagonalThemedArrows(ABitmap.Canvas, sbNotDown,
+            AUpState <> bpsDisabled, UpBitmap, DownBitmap);
+      end;
+    end;
+  end;
+
+var
+  ptButton: array [0..2] of TPoint;
+  State: TButtonPartState;
+  Details: TThemedElementDetails;
+begin
+  TemplateButtons[bpsNormal] := TBitmap.Create;
+  TemplateButtons[bpsHot] := TBitmap.Create;
+  TemplateButtons[bpsPressed] := TBitmap.Create;
+  TemplateButtons[bpsDisabled] := TBitmap.Create;
+  try
+    ButtonRect := Bounds(0, 0, Width, Height);
+    PaintRect := ButtonRect;
+    InflateRect(ButtonRect, 1, 1);
+    InflateRect(PaintRect, -1, -1);
+    { Init templates }
+    for State := Low(TButtonPartState) to High(TButtonPartState) do
+      with TemplateButtons[State] do
+      begin
+        Height := Self.Height;
+        Width := Self.Width;
+        Details := ThemeServices.GetElementDetails(CDetails[State]);
+        ThemeServices.DrawElement(Canvas.Handle, Details, ButtonRect);
+      end;
+
+    { Init diagonal colors }
+    Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
+    with Details do
+    begin
+      GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_EDGELIGHTCOLOR, ThemeColors[0]);
+      GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_BORDERCOLORHINT, ThemeColors[1]);
+      GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_EDGESHADOWCOLOR, ThemeColors[2]);
+    end;
+
+    UpBitmap := nil;
+    DownBitmap := nil;
+    try
+      if not CustomGlyphs then
+      begin
+        UpBitmap := TBitmap.Create;
+        UpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtn);
+        UpBitmap.Transparent := True;
+        DownBitmap := TBitmap.Create;
+        DownBitmap.Handle := LoadBitmap(HInstance, sSpinDownBtn);
+        DownBitmap.Transparent := True;
+      end;
+
+      { Init regions, needed to draw the triangles }
+      ptButton[0] := Point(ButtonRect.Left, ButtonRect.Bottom);
+      ptButton[1] := Point(ButtonRect.Left, ButtonRect.Top);
+      ptButton[2] := Point(ButtonRect.Right, ButtonRect.Top);
+      TopRegion := CreatePolygonRgn(ptButton, 3, WINDING);
+      ptButton[0] := Point(ButtonRect.Right, ButtonRect.Top);
+      ptButton[1] := Point(ButtonRect.Right, ButtonRect.Bottom);
+      ptButton[2] := Point(ButtonRect.Left, ButtonRect.Bottom);
+      BottomRegion := CreatePolygonRgn(ptButton, 3, WINDING);
+      try
+        { Draw the buttons }
+        ConstructThemedButton(FTopDownBtn, bpsPressed, bpsNormal);
+        ConstructThemedButton(FBottomDownBtn, bpsNormal, bpsPressed);
+        ConstructThemedButton(FNotDownBtn, bpsNormal, bpsNormal);
+        ConstructThemedButton(FTopHotBtn, bpsHot, bpsNormal);
+        ConstructThemedButton(FBottomHotBtn, bpsNormal, bpsHot);
+        ConstructThemedButton(FDisabledBtn, bpsDisabled, bpsDisabled);
+      finally
+        DeleteObject(TopRegion);
+        DeleteObject(BottomRegion);
+      end;
+    finally
+      UpBitmap.Free;
+      DownBitmap.Free;
+    end;
+  finally
+    TemplateButtons[bpsNormal].Free;
+    TemplateButtons[bpsHot].Free;
+    TemplateButtons[bpsPressed].Free;
+    TemplateButtons[bpsDisabled].Free;
+  end;
+end;
+
+{$ENDIF JVCLThemesEnabled}
+
+procedure TSpinButtonBitmaps.DrawBitmap(ABitmap: TBitmap;
+  ADownState: TSpinButtonState; const Enabled: Boolean);
+const
+  CColors: TColorArray = (clBtnShadow, clBtnHighlight, cl3DDkShadow);
+var
+  ButtonRect: TRect;
+  LColors: TColorArray;
+  UpArrow, DownArrow: TBitmap;
+
+  procedure JvDraw;
+  var
+    TopFlags, BottomFlags: DWORD;
+    R: TRect;
+  begin
+    TopFlags := EDGE_RAISED;
+    BottomFlags := EDGE_RAISED;
+    R := ButtonRect;
+
+    with ABitmap.Canvas do
+    begin
+      LColors := CColors;
+      if ADownState = sbTopDown then
+      begin
+        LColors[0] := clBtnFace;
+        LColors[2] := clBtnHighlight;
+        TopFlags := EDGE_SUNKEN;
+      end;
+      if ADownState = sbBottomDown then
+      begin
+        LColors[1] := clWindowFrame;
+        LColors[2] := clBtnShadow;
+        BottomFlags := EDGE_SUNKEN;
+      end;
+      DrawEdge(Handle, R, TopFlags, BF_TOPLEFT or BF_SOFT);
+      DrawEdge(Handle, R, BottomFlags, BF_BOTTOMRIGHT or BF_SOFT);
+      InflateRect(R, -1, -1);
+
+      Pen.Color := LColors[0];
+      MoveTo(R.Left, R.Bottom - 2);
+      LineTo(R.Right - 1, R.Top - 1);
+
+      Pen.Color := LColors[2];
+      MoveTo(R.Right - 1, R.Top);
+      LineTo(R.Right - 1, R.Top);
+      LineTo(R.Left, R.Bottom - 1);
+
+      Pen.Color := LColors[1];
+      MoveTo(R.Left + 1, R.Bottom - 1);
+      LineTo(R.Right, R.Top);
+
+      if not CustomGlyphs then
+      begin
+        UpArrow.Handle := LoadBitmap(HInstance, sSpinUpBtn);
+        UpArrow.Transparent := True;
+        DownArrow.Handle := LoadBitmap(HInstance, sSpinDownBtn);
+        DownArrow.Transparent := True;
+        JvDrawArrows(ABitmap.Canvas, ADownState, Enabled, UpArrow, DownArrow);
+      end;
+    end;
+  end;
+
+  procedure PoleDraw;
+  var
+    H: Integer;
+    TopFlags, BottomFlags: DWORD;
+    R, R1: TRect;
+    RSrc: TRect;
+  begin
+    TopFlags := EDGE_RAISED;
+    BottomFlags := EDGE_RAISED;
+
+    with ABitmap.Canvas do
+    begin
+      { top glyph }
+      H := Height div 2;
+      R := Bounds(0, 0, Width, H);
+      if ADownState = sbTopDown then
+        TopFlags := EDGE_SUNKEN
+      else
+        R.Bottom := R.Bottom + 1;
+      if ADownState = sbBottomDown then
+        BottomFlags := EDGE_SUNKEN;
+      RSrc := R;
+      DrawEdge(Handle, R, TopFlags, BF_RECT or BF_SOFT or BF_ADJUST);
+      R1 := Bounds(0, H, Width, Height);
+      R1.Bottom := Height;
+      DrawEdge(Handle, R1, BottomFlags, BF_RECT or BF_SOFT or BF_ADJUST);
+
+      if not CustomGlyphs then
+      begin
+        UpArrow.Handle := LoadBitmap(HInstance, sSpinUpBtnPole);
+        UpArrow.Transparent := True;
+        DownArrow.Handle := LoadBitmap(HInstance, sSpinDownBtnPole);
+        DownArrow.Transparent := True;
+        PoleDrawArrows(ABitmap.Canvas, ADownState, Enabled, UpArrow, DownArrow);
+      end;
+    end;
+  end;
+
+begin
+  UpArrow := nil;
+  DownArrow := nil;
+  try
+    if not CustomGlyphs then
+    begin
+      UpArrow := TBitmap.Create;
+      DownArrow := TBitmap.Create;
+    end;
+
+    ABitmap.Height := Height;
+    ABitmap.Width := Width;
+
+    with ABitmap.Canvas do
+    begin
+      ButtonRect := Bounds(0, 0, Width, Height);
+      Pen.Width := 1;
+      Brush.Color := clBtnFace;
+      Brush.Style := bsSolid;
+      FillRect(ButtonRect);
+    end;
+    if FStyle = sbsClassic then
+      PoleDraw
+    else
+      JvDraw;
+  finally
+    UpArrow.Free;
+    DownArrow.Free;
+  end;
+end;
+
+{$IFDEF JVCLThemesEnabled}
+
+procedure TSpinButtonBitmaps.DrawDiagonalThemedArrows(ACanvas: TCanvas; const AState: TSpinButtonState;
+  const Enabled: Boolean; AUpArrow, ADownArrow: TBitmap);
+var
+  UpArrowPos, DownArrowPos: TPoint;
+//  UpArrowRect, DownArrowRect: TRect;
+  DisabledBitmap: TBitmap;
+begin
+  { Init arrow positions }
+  UpArrowPos := Point(
+    Round((Width / 4) - (AUpArrow.Width / 2)) + 1,
+    Round((Height / 4) - (AUpArrow.Height / 2)) + 1);
+  DownArrowPos := Point(
+    Round((3 * Width / 4) - (ADownArrow.Width / 2)) - 1,
+    Round((3 * Height / 4) - (ADownArrow.Height / 2)) - 1);
+
+  //UpArrowRect := Bounds(0, 0, AUpArrow.Width, AUpArrow.Height);
+  //DownArrowRect := Bounds(0, 0, ADownArrow.Width, ADownArrow.Height);
+
+  with ACanvas do
+  begin
+    { Draw up arraw }
+    if Enabled then
+    begin
+      with UpArrowPos do
+        Draw(X, Y, AUpArrow)
+    end
+    else
+    begin
+      DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
+      try
+        with UpArrowPos do
+          Draw(X, Y, DisabledBitmap);
+      finally
+        DisabledBitmap.Free;
+      end;
+    end;
+
+    { Draw bottom arrow }
+    if Enabled then
+      with DownArrowPos do
+        Draw(X, Y, ADownArrow)
+    else
+    begin
+      DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
+      try
+        with DownArrowPos do
+          Draw(X, Y, DisabledBitmap);
+      finally
+        DisabledBitmap.Free;
+      end;
+    end;
+  end;
+end;
+
+{$ENDIF JVCLThemesEnabled}
+
+procedure TSpinButtonBitmaps.DrawGlyphs(ACanvas: TCanvas; const AState: TSpinButtonState; const Enabled: Boolean;
+  AUpArrow, ADownArrow: TBitmap);
+begin
+  {$IFDEF JVCLThemesEnabled}
+  if FIsThemed then
+  begin
+    if FStyle <> sbsClassic then
+      DrawDiagonalThemedArrows(ACanvas, AState, Enabled, AUpArrow, ADownArrow);
+    Exit;
+  end;
+  {$ENDIF JVCLThemesEnabled}
+  if FStyle = sbsClassic then
+    PoleDrawArrows(ACanvas, AState, Enabled, AUpArrow, ADownArrow)
+  else
+    JvDrawArrows(ACanvas, AState, Enabled, AUpArrow, ADownArrow)
+end;
+
+procedure TSpinButtonBitmaps.JvDrawArrows(ACanvas: TCanvas; const AState: TSpinButtonState;
+  const Enabled: Boolean; AUpArrow, ADownArrow: TBitmap);
+var
+  Dest, Source: TRect;
+  DeltaRect: Integer;
+  DisabledBitmap: TBitmap;
+begin
+  { buttons }
+  with ACanvas do
+  begin
+    { top glyph }
+    DeltaRect := 1;
+    if AState = sbTopDown then
+      Inc(DeltaRect);
+
+    Dest := Bounds(Round((Width / 4) - (AUpArrow.Width / 2)) + DeltaRect,
+      Round((Height / 4) - (AUpArrow.Height / 2)) + DeltaRect, AUpArrow.Width,
+      AUpArrow.Height);
+    Source := Bounds(0, 0, AUpArrow.Width, AUpArrow.Height);
+
+    if Enabled then
+      BrushCopy(Dest, AUpArrow, Source, AUpArrow.TransparentColor)
+    else
+    begin
+      DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
+      try
+        BrushCopy(Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
+      finally
+        DisabledBitmap.Free;
+      end;
+    end;
+
+    { bottom glyph }
+    Dest := Bounds(Round((3 * Width / 4) - (ADownArrow.Width / 2)) - 1,
+      Round((3 * Height / 4) - (ADownArrow.Height / 2)) - 1,
+      ADownArrow.Width, ADownArrow.Height);
+    Source := Bounds(0, 0, ADownArrow.Width, ADownArrow.Height);
+
+    if Enabled then
+      BrushCopy(Dest, ADownArrow, Source, ADownArrow.TransparentColor)
+    else
+    begin
+      DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
+      try
+        BrushCopy(Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
+      finally
+        DisabledBitmap.Free;
+      end;
+    end;
+  end;
+end;
+
+procedure TSpinButtonBitmaps.PoleDrawArrows(ACanvas: TCanvas;
+  const AState: TSpinButtonState; const Enabled: Boolean; AUpArrow, ADownArrow: TBitmap);
+var
+  X, Y, I, J, H: Integer;
+  R1: TRect;
+  R: TRect;
+  DisabledBitmap: TBitmap;
+begin
+  with ACanvas do
+  begin
+    H := Height div 2;
+    R := Bounds(0, 0, Width, H);
+    if AState = sbTopDown then
+    else
+      R.Bottom := R.Bottom + 1;
+    R1 := Bounds(0, H, Width, Height);
+    R1.Bottom := Height;
+    I := R.Bottom - R.Top - 1;
+    J := R1.Bottom - R1.Top - 1;
+    Y := R.Top + (H - AUpArrow.Height) div 2;
+    if AState = sbTopDown then
+      OffsetRect(R1, 0, 1);
+
+    R1.Bottom := R1.Top + I;
+    if J - AUpArrow.Height < 0 then
+      Y := R.Top;
+    X := (Width - AUpArrow.Width) div 2;
+
+    IntersectClipRect(Handle, R.Left, R.Top, R.Right, R.Bottom);
+    if Enabled then
+      Draw(X, Y, AUpArrow)
+    else
+    begin
+      DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
+      try
+        Draw(X, Y, DisabledBitmap);
+      finally
+        DisabledBitmap.Free;
+      end;
+    end;
+    SelectClipRgn(Handle, 0);
+
+    X := (Width - ADownArrow.Width) div 2;
+    Y := R1.Top + (I - ADownArrow.Height) div 2;
+    if I - ADownArrow.Height < 0 then
+    begin
+      Dec(R1.Top);
+      Y := R1.Bottom - ADownArrow.Height
+    end;
+
+    IntersectClipRect(Handle, R1.Left, R1.Top, R1.Right, R1.Bottom);
+    if Enabled then
+      Draw(X, Y, ADownArrow)
+    else
+    begin
+      DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
+      try
+        Draw(X, Y, DisabledBitmap);
+      finally
+        DisabledBitmap.Free;
+      end;
+    end;
+    SelectClipRgn(Handle, 0);
+  end;
+end;
+
+procedure TSpinButtonBitmaps.RemoveClient;
+begin
+  Dec(FClientCount);
+  if FClientCount = 0 then
+    Self.Free;
+end;
+
+procedure TSpinButtonBitmaps.Reset;
+begin
+  FResetOnDraw := True;
+end;
+
+//=== TSpinButtonBitmapsManager ==============================================
+
+procedure TSpinButtonBitmapsManager.AddClient;
+begin
+  Inc(FClientCount);
+end;
+
+constructor TSpinButtonBitmapsManager.Create;
+begin
+  inherited Create;
+  FList := TList.Create;
+end;
+
+destructor TSpinButtonBitmapsManager.Destroy;
+begin
+  while FList.Count > 0 do
+    // this will implicitly remove the object from the list
+    TObject(FList[0]).Free;
+
+  FList.Free;
+  inherited Destroy;
+end;
+
+function TSpinButtonBitmapsManager.Find(const Width, Height: Integer;
+  const AButtonStyle: TJvSpinButtonStyle; const ACustomGlyphs: Boolean;
+  var Index: Integer): Boolean;
+var
+  L, H, I, C: Integer;
+begin
+  // same binary search as Classes.TStringList.Find
+  Result := False;
+  L := 0;
+  H := FList.Count - 1;
+  while L <= H do
+  begin
+    I := (L + H) shr 1;
+    C := TSpinButtonBitmaps(FList[I]).CompareWith(Width, Height, AButtonStyle, ACustomGlyphs);
+    if C < 0 then
+      L := I + 1
+    else
+    begin
+      H := I - 1;
+      if C = 0 then
+      begin
+        Result := True;
+        L := I;
+      end;
+    end;
+  end;
+  Index := L;
+end;
+
+procedure TSpinButtonBitmapsManager.Remove(Obj: TObject);
+begin
+  FList.Remove(Obj);
+end;
+
+procedure TSpinButtonBitmapsManager.RemoveClient;
+begin
+  Dec(FClientCount);
+  if FClientCount = 0 then
+  begin
+    if Self = GSpinButtonBitmapsManager then
+      GSpinButtonBitmapsManager := nil;
+    Self.Free;
+  end;
+end;
+
+function TSpinButtonBitmapsManager.WantButtons(const Width, Height: Integer;
+  const AButtonStyle: TJvSpinButtonStyle; const ACustomGlyphs: Boolean): TSpinButtonBitmaps;
+var
+  Index: Integer;
+begin
+  if not Find(Width, Height, AButtonStyle, ACustomGlyphs, Index) then
+    FList.Insert(Index, TSpinButtonBitmaps.Create(Self, Width, Height, AButtonStyle, ACustomGlyphs));
+  Result := TSpinButtonBitmaps(FList[Index]);
+end;
+
+end.
