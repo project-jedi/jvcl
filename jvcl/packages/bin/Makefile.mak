@@ -198,6 +198,7 @@ CompilePackages:
 	#
 	@call tmp.bat
 	-@del tmp.bat >NUL
+	@cd bin
 
 ################################################################################
 Clean:
