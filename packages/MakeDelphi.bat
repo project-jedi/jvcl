@@ -58,7 +58,7 @@ REM It will work if %MAKE% is something like:
 REM   C:\PROGRA~1\Borland\Delphi7\bin\make.exe
 REM   "C:\Program Files\Borland\Delphi7\bin\make.exe"
 
-%MAKE% -f "%PACKAGE%.mak" %TARGETS% %4 %5 %6 %7 %8 %9
+%MAKE% -f "%PACKAGE%.mak" %4 %5 %6 %7 %8 %9 %TARGETS%
 
 IF ERRORLEVEL 1 GOTO error
 echo.
@@ -92,6 +92,12 @@ echo     PackageName2      The directory where the personal packages for the
 echo                       given group are. e.g. "d6per"
 echo.
 echo Any additional argument (up to the 9th) will be passed to make
+echo The TARGETS environment variable should contain the name of the 
+echo packages to be built separated by spaces:
+echo SET TARGETS=JvCoreC6R.bpl JvCoreC6D.bpl
+echo If not specified, all packages will be built.
+echo.
+echo Delphi must be closed before running this batch file
 echo.
 :end
 
