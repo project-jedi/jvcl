@@ -32,12 +32,12 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Forms, ComCtrls, Menus, Dialogs,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QForms, QComCtrls, QMenus, QDialogs,
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   JvSimpleXml, JvComponent;
 
 type
@@ -47,7 +47,8 @@ type
     FSkipList: TList;
     function IsObject(const Obj: TClass; const ClassName: string): Boolean;
   protected
-    function FindItemNamed(Root: TJvSimpleXMLElem; const AName: string; ARecurse: boolean = false): TJvSimpleXMLElem; virtual;
+    function FindItemNamed(Root: TJvSimpleXMLElem; const AName: string;
+      ARecurse: Boolean = False): TJvSimpleXMLElem; virtual;
     procedure TranslateComponent(const Component: TComponent; const Elem: TJvSimpleXmlElem); virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -62,15 +63,15 @@ type
     // Call UnskipProperty to unregister a class property so it won't be skip when reading/writing
     // If SkipClass has already been called for this class, does nothing
     procedure UnskipProperty(AClass: TClass; const PropName: string);
-    // Returns true if the specifed class/object/property is in the skip list
-    function InSkipList(AClass: TClass): boolean; overload;
-    function InSkipList(Obj: TObject): boolean; overload;
-    function InSkipList(AClass: TClass; const PropName: string): boolean; overload;
-    function InSkipList(Obj: TObject; const PropName: string): boolean; overload;
+    // Returns True if the specifed class/object/property is in the skip list
+    function InSkipList(AClass: TClass): Boolean; overload;
+    function InSkipList(Obj: TObject): Boolean; overload;
+    function InSkipList(AClass: TClass; const PropName: string): Boolean; overload;
+    function InSkipList(Obj: TObject; const PropName: string): Boolean; overload;
     procedure ClearSkipList;
     // ComponentToXML converts a TComponent and, optionally, it's owned components to an XML string
     // and returns it
-    function ComponentToXML(const AComponent: TComponent; Recurse: boolean): string;
+    function ComponentToXML(const AComponent: TComponent; Recurse: Boolean): string;
     // Translate the entire Application using the file Filename
     procedure Translate(const FileName: string); overload;
     // Translate the entire Application using a stream
@@ -111,8 +112,8 @@ type
     FList: THashedStringList;
     function GetString(Index: Integer): string;
     procedure SetString(Index: Integer; const Value: string);
-    function GetCount: integer;
-    function GetValue(Index: integer): string;
+    function GetCount: Integer;
+    function GetValue(Index: Integer): string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -120,35 +121,52 @@ type
     function Add(const Name: string; var Value: string): Integer;
     // (p3) this is weird: GetString returns the *Name* but SetString sets the *Value*...
     property Strings[Index: Integer]: string read GetString write SetString; default;
-    property Value[Index: integer]: string read GetValue;
-    property Count: integer read GetCount;
+    property Value[Index: Integer]: string read GetValue;
+    property Count: Integer read GetCount;
   end;
 
 implementation
 
 uses
-  TypInfo, JvConsts;
+  TypInfo,
+  JvConsts;
+
+const
+  cName = 'Name';
+  cItem = 'Item';
+  cIndex = 'Index';
+  cColumn = 'Column';
+  cValue = 'Value';
+  cVariables = 'Variables';
+  cTTreeNodes = 'TTreeNodes';
+  cTListItems = 'TListItems';
+  cTStrings = 'TStrings';
+  cTCollection = 'TCollection';
+  cTComponent = 'TComponent';
+  cTJvTranslatorStrings = 'TJvTranslatorStrings';
+  cNewline = '\n';
+
 type
   PSkipPropRec = ^TSkipPropRec;
   TSkipPropRec = record
     AClass: TClass;
-    AProps: TStringlist;
+    AProps: TStringList;
   end;
 
 function InternalGetWideStrProp(Instance: TObject; const PropName: string): WideString; overload;
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Result := GetWideStrProp(Instance, PropName);
-{$ELSE}
+  {$ELSE}
   Result := GetStrProp(Instance, PropName);
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
 function InternalGetPropList(AObject: TObject; out PropList: PPropList): Integer;
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Result := GetPropList(AObject, PropList);
-{$ELSE}
+  {$ELSE}
   Result := GetTypeData(AObject.ClassInfo)^.PropCount;
   if Result > 0 then
   begin
@@ -156,7 +174,7 @@ begin
     GetPropInfos(AObject.ClassInfo, PropList);
   end;
   Result := GetPropList(AObject.ClassInfo, tkProperties, PropList);
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
 //=== TJvTranslator ==========================================================
@@ -165,7 +183,7 @@ constructor TJvTranslator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FXML := TJvSimpleXml.Create(nil);
-  SkipProperty(TComponent, 'Name');
+  SkipProperty(TComponent, cName);
 end;
 
 destructor TJvTranslator.Destroy;
@@ -176,34 +194,36 @@ begin
   inherited Destroy;
 end;
 
-function TJvTranslator.FindItemNamed(Root: TJvSimpleXMLElem; const AName: string; ARecurse: boolean): TJvSimpleXMLElem;
+function TJvTranslator.FindItemNamed(Root: TJvSimpleXMLElem; const AName: string; ARecurse: Boolean): TJvSimpleXMLElem;
 var
-  i: integer;
+  I: Integer;
 begin
   Result := nil;
   if Root = nil then
     Root := FXML.Root;
   if AnsiSameText(Root.Name, AName) then
     Result := Root
-  else if not ARecurse then
+  else
+  if not ARecurse then
     Result := Root.Items.ItemNamed[AName]
   else
-    for i := 0 to Root.Items.Count - 1 do
+    for I := 0 to Root.Items.Count - 1 do
     begin
-      Result := FindItemNamed(Root.Items[i], AName, true);
-      if Result <> nil then Break;
+      Result := FindItemNamed(Root.Items[I], AName, True);
+      if Result <> nil then
+        Break;
     end;
 end;
 
 function TJvTranslator.IsObject(const Obj: TClass; const ClassName: string): Boolean;
 begin
-  if (Obj = nil) then
+  if Obj = nil then
     Result := False
   else
     Result := SameText(Obj.ClassName, ClassName) or (IsObject(Obj.ClassParent, ClassName));
 end;
 
-function TJvTranslator.ComponentToXML(const AComponent: TComponent; Recurse: boolean): string;
+function TJvTranslator.ComponentToXML(const AComponent: TComponent; Recurse: Boolean): string;
 var
   AName: string;
   AElem: TJvSimpleXMLElem;
@@ -221,9 +241,9 @@ var
     N := Nodes.GetFirstNode;
     while Assigned(N) do
     begin
-      AElem := Elem.Items.Add('Item');
-      AElem.Properties.Add('Index', N.Index);
-      AElem.Properties.Add('Value', N.Text);
+      AElem := Elem.Items.Add(cItem);
+      AElem.Properties.Add(cIndex, N.Index);
+      AElem.Properties.Add(cValue, N.Text);
       {
             AElem.Properties.Add('ImageIndex',N.ImageIndex);
             AElem.Properties.Add('SelectedIndex',N.SelectedIndex);
@@ -234,61 +254,61 @@ var
 
   procedure ListItemsToXML(Items: TListItems; Elem: TJvSimpleXmlElem);
   var
-    i, j: integer;
+    I, J: Integer;
     AElem: TJvSimpleXmlElem;
   begin
     // format: <Items>
     //           <Item Index="" Column="" Value="" />
     // TODO
-    for i := 0 to Items.Count - 1 do
+    for I := 0 to Items.Count - 1 do
     begin
-      AElem := Elem.Items.Add('Item');
-      AElem.Properties.Add('Index', i);
-      AElem.Properties.Add('Column', 0);
-      AElem.Properties.Add('Value', Items[i].Caption);
-      for j := 0 to Items[i].SubItems.Count - 1 do
+      AElem := Elem.Items.Add(cItem);
+      AElem.Properties.Add(cIndex, I);
+      AElem.Properties.Add(cColumn, 0);
+      AElem.Properties.Add(cValue, Items[I].Caption);
+      for J := 0 to Items[I].SubItems.Count - 1 do
       begin
-        AElem := Elem.Items.Add('Item');
-        AElem.Properties.Add('Index', i);
-        AElem.Properties.Add('Column', j + 1);
-        AElem.Properties.Add('Value', Items[i].SubItems[j]);
+        AElem := Elem.Items.Add(cItem);
+        AElem.Properties.Add(cIndex, I);
+        AElem.Properties.Add(cColumn, J + 1);
+        AElem.Properties.Add(cValue, Items[I].SubItems[J]);
       end;
     end;
   end;
 
   procedure StringsToXML(Strings: TStrings; Elem: TJvSimpleXmlElem);
   var
-    i: integer;
+    I: Integer;
     AElem: TJvSimpleXmlElem;
   begin
     // format: <Items>
     //           <Item Index="" Value="" />
-    for i := 0 to Strings.Count - 1 do
+    for I := 0 to Strings.Count - 1 do
     begin
-      AElem := Elem.Items.Add('Item');
-      AElem.Properties.Add('Index', i);
-      AElem.Properties.Add('Value', Strings[i]);
+      AElem := Elem.Items.Add(cItem);
+      AElem.Properties.Add(cIndex, I);
+      AElem.Properties.Add(cValue, Strings[I]);
     end;
   end;
 
   procedure TranslatorStringsToXML(AStrings: TJvTranslatorStrings; Elem: TJvSimpleXMLElem);
   var
-    i: integer;
+    I: Integer;
     AElem: TJvSimpleXMLElem;
   begin
     // I'm not sure how to create a translation template for this component, so this is just a guess...
-    Elem.Name := 'Variables';
-    for i := 0 to AStrings.Count - 1 do
+    Elem.Name := cVariables;
+    for I := 0 to AStrings.Count - 1 do
     begin
-      AElem := Elem.Items.Add('Item');
-      AElem.Properties.Add('Name', AStrings[i]);
-      AElem.Properties.Add('Value', AStrings.Value[i]);
+      AElem := Elem.Items.Add(cItem);
+      AElem.Properties.Add(cName, AStrings[I]);
+      AElem.Properties.Add(cValue, AStrings.Value[I]);
     end;
   end;
 
   procedure ObjectToXML(AnObject: TObject; Elem: TJvSimpleXmlElem);
   var
-    j, Count: integer;
+    J, Count: Integer;
     PropList: PPropList;
     PropName: string;
     PropInfo: PPropInfo;
@@ -298,9 +318,9 @@ var
     if (AnObject <> nil) and not InSkipList(AnObject) then
     begin
       Count := InternalGetPropList(AnObject, PropList);
-      for j := 0 to Count - 1 do
+      for J := 0 to Count - 1 do
       begin
-        PropInfo := PropList[j];
+        PropInfo := PropList[J];
         PropName := PropInfo^.Name;
         try
           if (PropInfo^.SetProc = nil) or InSkipList(AnObject, PropName) then
@@ -317,22 +337,26 @@ var
             tkClass:
               begin
                 AnObj := GetObjectProp(AnObject, PropName);
-                if IsObject(AnObj.ClassType, 'TTreeNodes') then
+                if IsObject(AnObj.ClassType, cTTreeNodes) then
                   TreeNodesToXML(TTreeNodes(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, 'TListItems') then
+                else
+                if IsObject(AnObj.ClassType, cTListItems) then
                   ListItemsToXML(TListItems(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, 'TStrings') then
+                else
+                if IsObject(AnObj.ClassType, cTStrings) then
                   StringsToXML(TStrings(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, 'TCollection') then
+                else
+                if IsObject(AnObj.ClassType, cTCollection) then
                   CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName))
-                else if not IsObject(AnObj.ClassType, 'TComponent') then
+                else
+                if not IsObject(AnObj.ClassType, cTComponent) then
                   // NB! TComponents are excluded because most of the time, a published TComponent
                   // property references another component on the form. In some cases, however, a TComponent
                   // *can* be an internal component and this code won't list it.
-                  // No known solution yet (no, HasParent/GetparentComponent doesn't work here)
+                  // No known solution yet (no, HasParent/GetParentComponent doesn't work here)
                   ObjectToXML(AnObj, Elem.Items.Add(PropName));
               end;
-          end; // case
+          end;
         except
           //
         end;
@@ -342,33 +366,34 @@ var
 
   procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXmlElem);
   var
-    i: integer;
+    I: Integer;
   begin
-    for i := 0 to Collection.Count - 1 do
-      ObjectToXML(Collection.Items[i], Elem.Items.Add(Collection.Items[i].DisplayName));
+    for I := 0 to Collection.Count - 1 do
+      ObjectToXML(Collection.Items[I], Elem.Items.Add(Collection.Items[I].DisplayName));
   end;
 
-  procedure InnerComponentToXML(AComponent: TComponent; Elem: TJvSimpleXmlElem; Recurse: boolean);
+  procedure InnerComponentToXML(AComponent: TComponent; Elem: TJvSimpleXmlElem; Recurse: Boolean);
   var
-    i, Count: integer;
+    I, Count: Integer;
     PropList: PPropList;
     PropName: string;
     PropInfo: PPropInfo;
     AnObj: TObject;
   begin
 
-    if AComponent = nil then Exit;
+    if AComponent = nil then
+      Exit;
     if not InSkipList(AComponent) then
     begin
-      if IsObject(AComponent.ClassType, 'TJvTranslatorStrings') then
+      if IsObject(AComponent.ClassType, cTJvTranslatorStrings) then
       begin
         TranslatorStringsToXML(TJvTranslatorStrings(AComponent), Elem);
         Exit;
       end;
       Count := InternalGetPropList(AComponent, PropList);
-      for i := 0 to Count - 1 do
+      for I := 0 to Count - 1 do
       begin
-        PropInfo := PropList[i];
+        PropInfo := PropList[I];
         PropName := PropInfo^.Name;
         try
           if InSkipList(AComponent, PropName) or (PropInfo^.SetProc = nil) then
@@ -385,52 +410,58 @@ var
             tkClass:
               begin
                 AnObj := GetObjectProp(AComponent, PropName);
-                if IsObject(AnObj.ClassType, 'TTreeNodes') then
+                if IsObject(AnObj.ClassType, cTTreeNodes) then
                   TreeNodesToXML(TTreeNodes(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, 'TListItems') then
+                else
+                if IsObject(AnObj.ClassType, cTListItems) then
                   ListItemsToXML(TListItems(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, 'TStrings') then
+                else
+                if IsObject(AnObj.ClassType, cTStrings) then
                   StringsToXML(TStrings(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, 'TCollection') then
+                else
+                if IsObject(AnObj.ClassType, cTCollection) then
                   CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName))
-                else if not IsObject(AnObj.ClassType, 'TComponent') then
+                else
+                if not IsObject(AnObj.ClassType, cTComponent) then
                   // NB! TComponents are excluded because most of the time, a published TComponent
                   // property references another component on the form. In some cases, however, a TComponent
                   // *can* be an internal component and this code won't list it.
                   // No known solution yet (no, HasParent/GetparentComponent doesn't work here)
                   ObjectToXML(AnObj, Elem.Items.Add(PropName));
               end;
-          end; // case
+          end;
         except
           //
         end;
       end;
     end;
     if Recurse then
-      for i := 0 to AComponent.ComponentCount - 1 do
-        if (AComponent.Components[i].Name <> '') then
-          InnerComponentToXML(AComponent.Components[i], Elem.Items.Add(AComponent.Components[i].Name), true);
+      for I := 0 to AComponent.ComponentCount - 1 do
+        if AComponent.Components[I].Name <> '' then
+          InnerComponentToXML(AComponent.Components[I], Elem.Items.Add(AComponent.Components[I].Name), True);
   end;
+
 begin
   Result := '';
   FXML.Root.Clear;
-  if AComponent = nil then Exit;
+  if AComponent = nil then
+    Exit;
   if AComponent is TApplication then
   begin
     AName := TApplication(AComponent).Title
-    FXML.Root.Name := 'Translation'; // DO NOT LOCALIZE
+      FXML.Root.Name := 'Translation'; // DO NOT LOCALIZE
     AElem := FXML.Root.Items.Add(AName);
   end
   else
     AName := TComponent(AComponent).Name;
-    AElem := FXML.Root;
-    FXML.Root.Name := AName;
-  end;
-  if AName <> '' then
-  begin
-    InnerComponentToXML(AComponent, AElem, Recurse);
-    Result := FXML.Root.SaveToString;
-  end;
+  AElem := FXML.Root;
+  FXML.Root.Name := AName;
+end;
+if AName <> '' then
+begin
+  InnerComponentToXML(AComponent, AElem, Recurse);
+  Result := FXML.Root.SaveToString;
+end;
 end;
 
 procedure TJvTranslator.Translate(const FileName: string);
@@ -453,24 +484,24 @@ end;
 
 procedure TJvTranslator.TranslateScreen(const FileName: string);
 var
-  i: Integer;
+  I: Integer;
 begin
   try
     FXML.LoadFromFile(FileName);
-    for i := 0 to Screen.FormCount - 1 do
-      Translate(Screen.Forms[i]);
+    for I := 0 to Screen.FormCount - 1 do
+      Translate(Screen.Forms[I]);
   except
   end;
 end;
 
 procedure TJvTranslator.TranslateScreen(const Stream: TStream);
 var
-  i: Integer;
+  I: Integer;
 begin
   try
     FXML.LoadFromStream(Stream);
-    for i := 0 to Screen.FormCount - 1 do
-      Translate(Screen.Forms[i]);
+    for I := 0 to Screen.FormCount - 1 do
+      Translate(Screen.Forms[I]);
   except
   end;
 end;
@@ -497,7 +528,7 @@ var
 
   function AnalyseCRLF(Value: string): string;
   begin
-    Result := StringReplace(Value, '\n', sLineBreak, [rfReplaceAll]);
+    Result := StringReplace(Value, cNewline, sLineBreak, [rfReplaceAll]);
   end;
 
   procedure TransStrings(const Obj: TObject; const Elem: TJvSimpleXmlElem);
@@ -509,9 +540,9 @@ var
     else
       for I := 0 to Elem.Items.Count - 1 do
       begin
-        J := Elem.Items[I].Properties.IntValue('Index', MaxInt);
+        J := Elem.Items[I].Properties.IntValue(cIndex, MaxInt);
         if J < TStrings(Obj).Count then
-          TStrings(Obj).Strings[J] := Elem.Items[I].Properties.Value('Value');
+          TStrings(Obj).Strings[J] := Elem.Items[I].Properties.Value(cValue);
       end;
   end;
 
@@ -521,9 +552,9 @@ var
   begin
     for I := 0 to Elem.Items.Count - 1 do
     begin
-      J := Elem.Items[I].Properties.IntValue('Index', MaxInt);
+      J := Elem.Items[I].Properties.IntValue(cIndex, MaxInt);
       if J < TTreeNodes(Obj).Count then
-        TTreeNodes(Obj).Item[J].Text := Elem.Items[I].Properties.Value('Value');
+        TTreeNodes(Obj).Item[J].Text := Elem.Items[I].Properties.Value(cValue);
     end;
   end;
 
@@ -534,9 +565,9 @@ var
     with TJvTranslatorStrings(Component) do
       for I := 0 to Elem.Items.Count - 1 do
       begin
-        J := TJvTranslatorStrings(Component).IndexOf(Elem.Items[I].Properties.Value('Name'));
+        J := TJvTranslatorStrings(Component).IndexOf(Elem.Items[I].Properties.Value(cName));
         if J <> -1 then
-          TJvTranslatorStrings(Component).Strings[J] := AnalyseCRLF(Elem.Items[I].Properties.Value('Value'));
+          TJvTranslatorStrings(Component).Strings[J] := AnalyseCRLF(Elem.Items[I].Properties.Value(cValue));
       end;
   end;
 
@@ -546,18 +577,18 @@ var
   begin
     for I := 0 to Elem.Items.Count - 1 do
     begin
-      J := Elem.Items[I].Properties.IntValue('Index', MaxInt);
+      J := Elem.Items[I].Properties.IntValue(cIndex, MaxInt);
       if J < TListItems(Obj).Count then
         with TListItems(Obj).Item[J] do
         begin
-          J := Elem.Items[I].Properties.IntValue('Column', MaxInt);
+          J := Elem.Items[I].Properties.IntValue(cColumn, MaxInt);
           if J = 0 then
-            Caption := Elem.Items[I].Properties.Value('Value')
+            Caption := Elem.Items[I].Properties.Value(cValue)
           else
           begin
             Dec(J);
             if J < SubItems.Count then
-              SubItems[J] := Elem.Items[I].Properties.Value('Value');
+              SubItems[J] := Elem.Items[I].Properties.Value(cValue);
           end;
         end;
     end;
@@ -569,7 +600,7 @@ var
     PropInfo: PPropInfo;
     S: string;
   begin
-    if (Obj = nil) then
+    if Obj = nil then
       Exit;
     for I := 0 to Elem.Properties.Count - 1 do
     try
@@ -578,7 +609,7 @@ var
       if (PropInfo <> nil) and (PropInfo^.SetProc <> nil) and not InSkipList(Obj, Elem.Properties[I].Name) then
         case PropInfo^.PropType^.Kind of
           tkstring, tkLString, tkWString:
-            SetStrProp(Obj, PropInfo, StringReplace(Elem.Properties[I].Value, '\n', sLineBreak, []));
+            SetStrProp(Obj, PropInfo, StringReplace(Elem.Properties[I].Value, cNewline, sLineBreak, []));
           tkSet:
             SetSetProp(Obj, PropInfo, Elem.Properties[I].Value);
           tkEnumeration:
@@ -610,13 +641,14 @@ var
   var
     I, J: Integer;
   begin
-    if (Obj = nil) then Exit;
+    if Obj = nil then
+      Exit;
     for I := 0 to Elem.Items.Count - 1 do
     begin
-      J := Elem.Items[I].Properties.IntValue('Index', -1);
+      J := Elem.Items[I].Properties.IntValue(cIndex, -1);
       if J = -1 then
         Continue;
-      if (j < Collection.Count) then
+      if J < Collection.Count then
       begin
         TransProperties(Collection.Items[J], Elem.Items[I]);
         TransObject(Collection.Items[J], Elem.Items[I]);
@@ -631,8 +663,9 @@ var
     S: string;
     lObj: TObject;
   begin
-    if (Obj = nil) then Exit;
-    if IsObject(Obj.ClassType, 'TCollection') then
+    if Obj = nil then
+      Exit;
+    if IsObject(Obj.ClassType, cTCollection) then
       TranslateCollection(TCollection(Obj), Elem)
     else
       for I := 0 to Elem.Items.Count - 1 do
@@ -642,7 +675,7 @@ var
         if (PropInfo <> nil) and (PropInfo^.SetProc <> nil) and not InSkipList(Obj, Elem.Items[I].Name) then
           case PropInfo^.PropType^.Kind of
             tkString, tkLString:
-              SetStrProp(Obj, PropInfo, StringReplace(Elem.Items[I].Value, '\n', sLineBreak, []));
+              SetStrProp(Obj, PropInfo, StringReplace(Elem.Items[I].Value, cNewline, sLineBreak, []));
             tkSet:
               SetSetProp(Obj, PropInfo, Elem.Items[I].Value);
             tkEnumeration:
@@ -674,7 +707,7 @@ var
   end;
 
 begin
-  if IsObject(Component.ClassType, 'TJvTranslatorStrings') then
+  if IsObject(Component.ClassType, cTJvTranslatorStrings) then
   begin
     TransVars;
     Exit;
@@ -708,11 +741,13 @@ begin
           if (PropInfo <> nil) and (PropInfo^.SetProc <> nil) and not InSkipList(Component, Elem.Items[I].Name) then
           begin
             Obj := GetObjectProp(Component, Elem.Items[I].Name);
-            if IsObject(Obj.ClassType, 'TStrings') then
+            if IsObject(Obj.ClassType, cTStrings) then
               TransStrings(Obj, Elem.Items[I])
-            else if IsObject(Obj.ClassType, 'TTreeNodes') then
+            else
+            if IsObject(Obj.ClassType, cTTreeNodes) then
               TransTreeNodes(Obj, Elem.Items[I])
-            else if IsObject(Obj.ClassType, 'TListItems') then
+            else
+            if IsObject(Obj.ClassType, cTListItems) then
               TransListItems(Obj, Elem.Items[I])
             else
             begin
@@ -737,7 +772,7 @@ begin
     S := Form.Name
   else
     S := Copy(Form.Name, 1, J - 1);
-  lElem := FindItemNamed(nil, S, true);
+  lElem := FindItemNamed(nil, S, True);
   if lElem <> nil then
     TranslateComponent(Form, lElem)
 end;
@@ -747,15 +782,15 @@ var
   lElem: TJvSimpleXmlElem;
 begin
   Result := '';
-  lElem := FindItemNamed(nil, Category, true);
+  lElem := FindItemNamed(nil, Category, True);
   if lElem <> nil then
   begin
-    lElem := FindItemNamed(lElem, Item, true);
+    lElem := FindItemNamed(lElem, Item, True);
     if lElem <> nil then
     begin
       Result := lElem.Value;
       if Result = '' then
-        Result := lElem.Properties.Value('Value');
+        Result := lElem.Properties.Value(cValue);
     end;
   end;
 end;
@@ -767,15 +802,15 @@ end;
 
 procedure TJvTranslator.UnskipClass(AClass: TClass);
 begin
-  UnskipProperty(AClass,'');
+  UnskipProperty(AClass, '');
 end;
 
-function TJvTranslator.InSkipList(AClass: TClass): boolean;
+function TJvTranslator.InSkipList(AClass: TClass): Boolean;
 begin
-  Result := InSkipList(AClass,'');
+  Result := InSkipList(AClass, '');
 end;
 
-function TJvTranslator.InSkipList(Obj: TObject): boolean;
+function TJvTranslator.InSkipList(Obj: TObject): Boolean;
 begin
   if Obj = nil then
     Result := InSkipList(nil)
@@ -783,7 +818,7 @@ begin
     Result := InSkipList(Obj.ClassType);
 end;
 
-function TJvTranslator.InSkipList(Obj: TObject; const PropName: string): boolean;
+function TJvTranslator.InSkipList(Obj: TObject; const PropName: string): Boolean;
 begin
   if Obj = nil then
     Result := InSkipList(nil, PropName)
@@ -791,24 +826,24 @@ begin
     Result := InSkipList(Obj.ClassType, PropName);
 end;
 
-function TJvTranslator.InSkipList(AClass: TClass; const PropName: string): boolean;
+function TJvTranslator.InSkipList(AClass: TClass; const PropName: string): Boolean;
 var
-  i: integer;
-  P:PSkipPropRec;
+  I: Integer;
+  P: PSkipPropRec;
 begin
-  Result := false;
-  if (FSkipList <> nil) then
-    for i := 0 to FSkipList.Count - 1 do
+  Result := False;
+  if FSkipList <> nil then
+    for I := 0 to FSkipList.Count - 1 do
     begin
-      P := PSkipPropRec(FSkipList[i]);
+      P := PSkipPropRec(FSkipList[I]);
       if (P^.AClass = AClass) or AClass.InheritsFrom(P^.AClass) then
       begin
         if ((PropName = '') and (P^.AProps.Count = 0)) or (P^.AProps.IndexOf(PropName) > -1) then
         begin
-          Result := true;
+          Result := True;
           if PropName = '' then
             // move item to beginning of list since it is very likely that we want to access this class very soon
-            FSkipList.Move(i,0);
+            FSkipList.Move(I, 0);
           Break;
         end;
       end;
@@ -892,12 +927,12 @@ begin
   PString(FList.Objects[Index])^ := Value;
 end;
 
-function TJvTranslatorStrings.GetCount: integer;
+function TJvTranslatorStrings.GetCount: Integer;
 begin
   Result := FList.Count;
 end;
 
-function TJvTranslatorStrings.GetValue(Index: integer): string;
+function TJvTranslatorStrings.GetValue(Index: Integer): string;
 begin
   if (Index >= 0) and (Index < Count) and (FList.Objects[Index] <> nil) then
     Result := PString(FList.Objects[Index])^
@@ -907,26 +942,27 @@ end;
 
 procedure TJvTranslator.SkipProperty(AClass: TClass; const PropName: string);
 var
-  i: integer;
+  I: Integer;
   P: PSkipPropRec;
 begin
   if FSkipList = nil then
     FSkipList := TList.Create;
-  for i := 0 to FSkipList.Count - 1 do
-    if (PSkipPropRec(FSkipList[i])^.AClass = AClass) then
+  for I := 0 to FSkipList.Count - 1 do
+    if PSkipPropRec(FSkipList[I])^.AClass = AClass then
     begin
-      P := PSkipPropRec(FSkipList[i]);
+      P := PSkipPropRec(FSkipList[I]);
       if PropName = '' then
         P^.AProps.Clear // skip entire class
-      else if P^.AProps.Count > 0 then // only add if the class is not skipped as a whole
+      else
+      if P^.AProps.Count > 0 then // only add if the class is not skipped as a whole
         P^.AProps.Add(PropName); // the list is sorted, so property name will only be added once
       Exit;
     end;
   // class not found, so add new class record to list
   New(P);
   P^.AClass := AClass;
-  P^.AProps := TStringlist.Create;
-  P^.AProps.Sorted := true;
+  P^.AProps := TStringList.Create;
+  P^.AProps.Sorted := True;
   if PropName <> '' then
     P^.AProps.Add(PropName); // skip this property only
   FSkipList.Add(P);
@@ -936,27 +972,29 @@ end;
 
 procedure TJvTranslator.UnskipProperty(AClass: TClass; const PropName: string);
 var
-  i, j: integer;
+  I, J: Integer;
   P: PSkipPropRec;
 begin
   if FSkipList <> nil then
   begin
-    for i := 0 to FSkipList.Count - 1 do
-      if PSkipPropRec(FSkipList[i])^.AClass = AClass then
+    for I := 0 to FSkipList.Count - 1 do
+      if PSkipPropRec(FSkipList[I])^.AClass = AClass then
       begin
-        P := PSkipPropRec(FSkipList[i]);
+        P := PSkipPropRec(FSkipList[I]);
         if PropName <> '' then
-          j := P^.AProps.IndexOf(PropName)
+          J := P^.AProps.IndexOf(PropName)
         else
         begin
-          j := -1;
+          J := -1;
           P^.AProps.Clear;
         end;
-        if j > -1 then P^.AProps.Delete(j);
-        if P^.AProps.Count = 0 then // remove the entry when there are no properties skipped or if this is a UnskipClass call
+        if J > -1 then
+          P^.AProps.Delete(J);
+        if P^.AProps.Count = 0 then
+          // remove the entry when there are no properties skipped or if this is a UnskipClass call
         begin
           P^.AProps.Free;
-          FSkipList.Delete(i);
+          FSkipList.Delete(I);
           Dispose(P);
         end;
         if FSkipList.Count = 0 then
@@ -968,14 +1006,14 @@ end;
 
 procedure TJvTranslator.ClearSkipList;
 var
-  i: integer;
+  I: Integer;
 begin
   if FSkipList <> nil then
   begin
-    for i := 0 to FSkipList.Count - 1 do
+    for I := 0 to FSkipList.Count - 1 do
     begin
-      PSkipPropRec(FSkipList[i]).AProps.Free;
-      Dispose(PSkipPropRec(FSkipList[i]));
+      PSkipPropRec(FSkipList[I]).AProps.Free;
+      Dispose(PSkipPropRec(FSkipList[I]));
     end;
     FreeAndNil(FSkipList);
   end;

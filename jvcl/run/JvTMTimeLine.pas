@@ -155,8 +155,8 @@ type
     procedure CursorChanged; override;
     procedure EnabledChanged; override;
     procedure Paint; override;
-    function DoMouseWheelDown(Shift: TShiftState; {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean; override;
-    function DoMouseWheelUp(Shift: TShiftState;{$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheelDown(Shift: TShiftState; {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState;{$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -326,9 +326,15 @@ type
 implementation
 
 uses
-  Consts, JvJVCLUtils, JvThemes;
+  Consts,
+  JvJVCLUtils, JvThemes;
 
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTMTimeLine.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvTMTimeLine.res}
+{$ENDIF LINUX}
 
 const
   cMagic = 'Jv.TMTIMELINE1';
@@ -553,12 +559,12 @@ begin
   FTimer.Enabled := False;
   case FBtnDown of
     bdLeft:
-      if (ssCtrl in FShift) then
+      if ssCtrl in FShift then
         ScrollDate(Sender, -LargeChange)
       else
         ScrollDate(Sender, -SmallChange);
     bdRight:
-      if (ssCtrl in FShift) then
+      if ssCtrl in FShift then
         ScrollDate(Sender, LargeChange)
       else
         ScrollDate(Sender, SmallChange);
@@ -875,14 +881,14 @@ begin
     // erase old selection
     R := GetRectForDate(FSelDate);
     InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
-    {$IFDEF VisualCLX}QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
+    {$IFDEF VisualCLX} QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
     FSelDate := Value;
     if Enabled then
     begin
       // draw new selection
       R := GetRectForDate(FSelDate);
       InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
-      {$IFDEF VisualCLX}QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
+      {$IFDEF VisualCLX} QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
     end;
   end;
 end;
@@ -1285,7 +1291,7 @@ begin
 end;
 
 function TJvCustomTMTimeline.DoMouseWheelDown(Shift: TShiftState;
-  {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then
@@ -1293,7 +1299,7 @@ begin
 end;
 
 function TJvCustomTMTimeline.DoMouseWheelUp(Shift: TShiftState;
-  {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelUp(Shift, MousePos);
   if not Result then
