@@ -40,8 +40,6 @@ type
     FBorderStyle: TBorderStyle;
     FImageList: TCustomImageList;
     FIndex: Integer;
-    FOnEnter: TNotifyEvent;
-    FOnExit: TNotifyEvent;
     FDown: Boolean;
     FShowClick: Boolean;
     FImageChangeLink: TChangeLink;
@@ -50,12 +48,12 @@ type
     procedure SetIndex(Value: Integer);
     procedure SetImageList(Value: TCustomImageList);
     procedure ImageListChange(Sender: Tobject);
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ColorChanged; override;
     procedure PaintFrame; virtual;
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -84,8 +82,8 @@ type
     property ParentShowHint;
     property Hint;
     property ShowHint;
-    property OnMouseEnter: TNotifyEvent read FOnEnter write FOnEnter;
-    property OnMouseLeave: TNotifyEvent read FOnExit write FOnExit;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnClick;
     property OnMouseDown;
     property OnMouseMove;
@@ -249,12 +247,9 @@ begin
     PaintFrame;
 end;
 
-procedure TJvImageSquare.CMMouseEnter(var Msg: TMessage);
+procedure TJvImageSquare.MouseEnter(Control: TControl);
 begin
   inherited;
-  if (csDesigning in ComponentState) then Exit;
-  if Assigned(FOnEnter) then
-    FOnEnter(Self);
   if ColorToRGB(TmpColor) <> ColorToRGB(FHiColor) then
   begin
     TmpColor := FHiColor;
@@ -262,13 +257,10 @@ begin
   end;
 end;
 
-procedure TJvImageSquare.CMMouseLeave(var Msg: TMessage);
+procedure TJvImageSquare.MouseLeave(Control: TControl);
 begin
-  inherited;
-  if (csDesigning in ComponentState) then Exit;
   FDown := False;
-  if Assigned(FOnExit) then
-    FOnExit(Self);
+  inherited;
   if ColorToRGB(TmpColor) <> ColorToRGB(FBackColor) then
   begin
     TmpColor := FBackColor;
@@ -276,7 +268,7 @@ begin
   end;
 end;
 
-procedure TJvImageSquare.CMColorChanged(var Message: TMessage);
+procedure TJvImageSquare.ColorChanged;
 begin
   inherited;
   FBackColor := Color;

@@ -110,8 +110,6 @@ type
     FOnEdited: TJvLookOutEditedEvent;
     FLargeImageChangeLink: TChangeLink;
     FSmallImageChangeLink: TChangeLink;
-    FMouseEnter: TNotifyEvent;
-    FMouseExit: TNotifyEvent;
     procedure SetGroupIndex(Value: Integer);
     procedure UpdateExclusive;
     procedure SetCentered(Value: Boolean);
@@ -132,8 +130,6 @@ type
     procedure ImageListChange(Sender: TObject);
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMButtonPressed(var Msg: TMessage); message CM_LOOKOUTBUTTONPRESSED;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentImageSizeChanged(var Msg: TMessage); message CM_IMAGESIZECHANGED;
     procedure CMLeaveButton(var Msg: TMessage); message CM_LEAVEBUTTON;
     procedure CmVisibleChanged(var M: TMessage); message CM_VISIBLECHANGED;
@@ -149,8 +145,8 @@ type
     procedure PaintFrame; virtual;
     procedure SetParent(AParent: TWinControl); override;
     procedure Paint; override;
-    procedure MouseEnter; virtual;
-    procedure MouseExit; virtual;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -195,8 +191,8 @@ type
     property Top;
     property Visible;
     property Width default 60;
-    property OnMouseEnter: TNotifyEvent read FMouseEnter write FMouseEnter;
-    property OnMouseExit: TNotifyEvent read FMouseExit write FMouseEXit;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnClick;
     property OnMouseDown;
     property OnMouseMove;
@@ -1364,22 +1360,9 @@ begin
   end;
 end;
 
-procedure TJvCustomLookOutButton.MouseEnter;
-begin
-  if Assigned(FMouseEnter) then
-    FMouseEnter(Self);
-end;
-
-procedure TJvCustomLookOutButton.MouseExit;
-begin
-  if Assigned(FMouseExit) then
-    FMouseExit(Self);
-end;
-
-procedure TJvCustomLookOutButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomLookOutButton.MouseEnter(Control: TControl);
 begin
   inherited;
-  MouseEnter;
   FOver := True;
   if FFillColor = clNone then
     PaintFrame
@@ -1387,10 +1370,9 @@ begin
     Invalidate;
 end;
 
-procedure TJvCustomLookOutButton.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomLookOutButton.MouseLeave(Control: TControl);
 begin
   inherited;
-  MouseExit;
   if FOver and not FStayDown then
   begin
     FOver := False;

@@ -61,9 +61,11 @@ type
     FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
   protected
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
+    procedure ColorChanged; dynamic;
 
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -223,6 +225,12 @@ end;
 
 { TJvGraphicControl }
 
+procedure TJvGraphicControl.CMColorChanged(var Message: TMessage);
+begin
+  inherited;
+  ColorChanged;
+end;
+
 procedure TJvGraphicControl.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
@@ -233,6 +241,11 @@ procedure TJvGraphicControl.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   MouseLeave(Self);
+end;
+
+procedure TJvGraphicControl.ColorChanged;
+begin
+  // do nothing
 end;
 
 procedure TJvGraphicControl.MouseEnter(Control: TControl);
