@@ -38,13 +38,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, 
-  {$ENDIF VCL}
-  Graphics, Controls, Forms, StdCtrls, ExtCtrls, ImgList,
-  {$IFDEF VisualCLX}
-  QWindows, 
-  {$ENDIF VisualCLX}
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ImgList,
   {$IFDEF BCB}
   JvTypes, // TDate / TTime macros
   {$ENDIF BCB}
