@@ -634,9 +634,6 @@ begin
 
   TargetList.SaveToFile(ChangeFileExt(ParamStr(0), '.ini'));
 
-
-  // (ahuser) Should we really ask the user?
-//  if MessageDlg('Are you sure?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   for i := 0 to TargetList.Count - 1 do
   begin
     if (TargetList[i].CompileFor) and (TargetList[i].IsOldJVCLInstalled > 0) then
@@ -701,13 +698,27 @@ begin
         TargetList[i].RegistryUninstall;
         if RemoveBplDcp then
         begin
-         // delete .bpl and .dcp files
+          if Target.IsBCB then
+          begin
+           // remove .hpp files  !! WARNING: This will delete every Jv*.hpp file
+            DeleteFilesEx(Target.HppFilesDir, 'Jv*.hpp');
+          end;
+         // delete .dcu files
+          DeleteFilesEx(JVCLDir + '\' + Target.LibDir, '*.dcu');
+         
+         // delete .bpl, .dcp, .bpi, .lib files
           Make := TMakeFile.Create(JVCLPackageDir + '\' + Target.BpgName);
           try
             for MakeTargetIndex := 0 to Make.TargetCount - 1 do
             begin
               DeleteFile(Target.BplDir + '\' + Make.Targets[MakeTargetIndex].Name);
               DeleteFile(Target.DcpDir + '\' + ChangeFileExt(Make.Targets[MakeTargetIndex].Name, '.dcp'));
+              if Target.IsBCB then
+              begin
+                DeleteFile(Target.BplDir + '\' + ChangeFileExt(Make.Targets[MakeTargetIndex].Name, '.dcp'));
+                DeleteFile(Target.DcpDir + '\' + ChangeFileExt(Make.Targets[MakeTargetIndex].Name, '.bpi'));
+                DeleteFile(Target.DcpDir + '\' + ChangeFileExt(Make.Targets[MakeTargetIndex].Name, '.lib'));
+              end;
             end;
           finally
             Make.Free;

@@ -181,6 +181,14 @@ begin
     FormMake.MemoLog.SelAttributes.Style := [fsBold];
     FormMake.MemoLog.SelLength := 0;
   end
+  else if StartsWith(FCurLine, '** ') then
+  begin
+    IncPkgProgressBar;
+    FormMake.MemoLog.SelStart := FormMake.MemoLog.SelStart - Length(FCurLine) - 2;
+    FormMake.MemoLog.SelLength := Length(FCurLine);
+    FormMake.MemoLog.SelAttributes.Style := [fsBold];
+    FormMake.MemoLog.SelLength := 0;
+  end
   else if Has(FCurLine, ['hint: ', 'hinweis: ', 'suggestion: ']) then
   begin
     FormMake.MemoLog.SelStart := FormMake.MemoLog.SelStart - Length(FCurLine) - 2;
@@ -273,6 +281,7 @@ var
   Files: TStrings;
   PackageList: TPackageList;
   i: Integer;
+  b: Boolean;
 begin
   Result := True;
 
@@ -305,8 +314,19 @@ begin
 
   if (IsJCL) and (FTarget.IsBCB) and (FTarget.InstallJcl) and (FTarget.Build) then
   begin
-    DeleteDcuFiles(OutDir, StartDir + '\xyz');
-    DeleteDcuFiles(OutDir + '\obj', StartDir + '\xyz');
+    b := False;
+    CaptureLine('** Deleting dcu files...', b);
+    DeleteJclDcuFiles(OutDir, StartDir + '\xyz');
+    DeleteJclDcuFiles(OutDir + '\obj', StartDir + '\xyz');
+  end;
+
+  // generate resources if necessary
+  if not FileExists(JVCLDir + '\Resources\JvCoreReg.dcr') then
+  begin
+    b := False;
+    CaptureLine('** Generating resources...', b);
+    CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
+      '-f makefile.mak', JVCLDir + '\images', CaptureLine);
   end;
 
   if (not IsJCL) or (FTarget.InstallJcl and FTarget.IsBCB) then
@@ -436,7 +456,9 @@ begin
   Aborted := Self.Aborted;
   FCurLine := TrimRight(Line);
   if StartsWith(Line, 'Compiling package: ') then
-    FAction := 'Compiling ' + ChangeFileExt(Copy(Line, 20, MaxInt), '');
+    FAction := 'Compiling ' + ChangeFileExt(Copy(Line, 20, MaxInt), '')
+  else if StartsWith(Line, '** ') then
+    FAction := Copy(Line, 4, MaxInt);
   Synchronize(UpdateCurLine);
 end;
 
