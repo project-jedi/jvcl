@@ -1,36 +1,46 @@
 ##Package: MM
-##Status: Locked to Olivier
+##Status: Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvAnimatedImage.pas
 Summary
   Contains the TJvAnimatedImage component.
-<INCLUDE JVCL.UnitText.dtx>
+  <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-##----------------------------------------------------------------------------------------------------
-##@@HookBitmap
-##<TITLE HookBitmap procedure>
-##Summary
-##  Write here a summary (1 line)
-##Description
-##  Write here a description
-##See Also
-##  List here other properties, methods (comma seperated)
-##  Remove the 'See Also' section if there are no references
+  ##-------------------------------------------------------------------------------------------------
+  --
+  ##@@HookBitmap
+  ##<TITLE HookBitmap procedure>
+  ##Summary
+  ##  Write here a summary (1 line)
+  ##Description
+  ##  Write here a description
+  ##See Also
+  ##  List here other properties, methods (comma seperated)
+  ##  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TGlyphOrientation
 <TITLE TGlyphOrientation type>
 Summary
-  Write here a summary (1 line)
+  Indicates the orientation of a glyph in a TJvAnimatedImage component
 Description
-  Write here a description
+  By orientation, we mean the direction in which the Glyph is cut according to the NumGlpyhs property
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAnimatedImage.Glyph, TJvAnimatedImage.NumGlyphs
+
+
+----------------------------------------------------------------------------------------------------
 @@TGlyphOrientation.goHorizontal
-  Description for goHorizontal
+The Glyph will be cut horizontally
+
+
+----------------------------------------------------------------------------------------------------
 @@TGlyphOrientation.goVertical
-  Description for goVertical
+The glyph will be cut vertically
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage
 <TITLEIMG TJvAnimatedImage>
@@ -38,147 +48,138 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A component that animates a glyph
 Description
-  Write here a description
+  The Glyph property is cut according to the NumGlyph property and each subglyph is considered as a
+  frame for the animation to be performed
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.Active
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If true, the animation is performed.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.AsyncDrawing
 Summary
-  Write here a summary (1 line)
+  Determines if the drawing thread is synchronised to the main VCL thread
 Description
-  Write here a description
+  If true, the drawing thread is not synchronized to the main VCL thread. This leads to a risk of
+  exception and should not be used.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTimer.SyncEvent
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.Center
 Summary
-  Write here a summary (1 line)
+  Determines if the animation is drawn centered in the control
 Description
-  Write here a description
+  For Center to have an impact, you must set AutoSize and Stretch to False
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AutoSize, Stretch
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.Glyph
 Summary
-  Write here a summary (1 line)
+  The glyph to use for the animation
 Description
-  Write here a description
+  Depending on the value of Orientation, the glyph will be cut along its width or its height to
+  determine the frames to use for the animation.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GlyphNum, NumGlyphs, Orientation
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.GlyphNum
 Summary
-  Write here a summary (1 line)
+  Indicate which sub-glyph in Glyph is to be displayed at the start of the animation
 Description
-  Write here a description
+  At runtime, this value is updated to indicate which glyph is being displayed
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Glyph, NumGlyphs, InactiveGlyph
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.InactiveGlyph
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  The subglyph to display when the image is inactive
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Active, GlyphNum
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.Interval
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The interval in milliseconds between each frame
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.NumGlyphs
 Summary
-  Write here a summary (1 line)
+  The number of frames in the Glyph property
 Description
-  Write here a description
+  The subglyphs (frames) will be cut according to the orientation
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Glyph, Orientation
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.OnFrameChanged
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Even triggered when a frame has been changed
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.OnStart
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Even triggered when the animation starts
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnStop
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.OnStop
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Event triggered when the animation stops
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnStart
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.Opaque
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If True the background of the image is not transparent
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.Orientation
 Summary
-  Write here a summary (1 line)
+  The orientation used to create the frames from Glyph
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If orientation is goHorizontal, the Glyph property will be cut along its width
+  If orientation is goVertical, the Glyph property will be cut along its height
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.Stretch
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  If true, the image is stretched to fit in the control size
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Center, AutoSize
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.TransparentColor
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Indicate which color is to be considered transparent in the glyph
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageControl
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  An image that can do buffered painting
+
+

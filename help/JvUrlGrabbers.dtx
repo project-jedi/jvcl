@@ -1,24 +1,12 @@
 ##Package: Net
-##Status: Locked to Olivier
+##Status: Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvUrlGrabbers.pas
 Summary
-  Contains the TJvUrlGrabber component and its descendents.
+  Contains descendents of TJvCustomUrlGrabber for common URLs.
   <INCLUDE JVCL.UnitText.dtx>
 Author
   Olivier Sannier
-
-
-----------------------------------------------------------------------------------------------------
-@@JvUrlGrabberClassList
-<TITLE JvUrlGrabberClassList function>
-Summary
-  Returns the list of register Url Grabbers
-Description
-  The TJvUrlListGrabber component needs to know which object to use for a given URL. This function
-  gives a list of classes that can handle URLs
-See Also
-  TJvUrlListGrabber, TJvUrlGrabberClassList
 
 
 ----------------------------------------------------------------------------------------------------
@@ -47,7 +35,7 @@ FTP transfer in ASCII mode
 Summary
   This is the grabber for FTP URLs
 Description
-  This grabber handles FTP URLs, that is URLs that start with ftp://
+  This grabber handles FTP URLs, that is URLs that start with 'ftp://'
 
 
 ----------------------------------------------------------------------------------------------------
@@ -62,6 +50,8 @@ Return value
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabber.GetDefaultPropertiesClass
+Summary
+  Returns the class to use to display default properties for this type of grabber
 Return value
   Returns TJvFtpUrlGrabberDefaultProperties
 
@@ -96,772 +86,137 @@ Summary
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberDefaultProperties
 Summary
-  Write here a summary (1 line)
+  A class that holds default properties for TJvFtpUrlGrabber
 Description
-  Write here a description
+  This class is used by TJvUrlGrabber to display the default properties of the TJvFtpUrlGrabber
+  objects it may create
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberDefaultProperties.Mode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvFtpUrlGrabber.Mode>
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberDefaultProperties.Passive
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvFtpUrlGrabber.Passive>
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberThread
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  The thread used to grad FTP URLs
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberThread.Grabber
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvGrabberStatus
-<TITLE TJvGrabberStatus type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvGrabberStatus.gsStopped
-Description for gsStopped
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvGrabberStatus.gsConnecting
-Description for gsConnecting
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvGrabberStatus.gsGrabbing
-Description for gsGrabbing
+  Provides an easy access to the grabber associated with the thread
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabber
 Summary
-  Write here a summary (1 line)
+  This a grabber for HTPP URLs
 Description
-  Write here a description
+  This grabber handles HTTP URLs, that is URLs that start with 'http://'
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabber.CanGrab
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the
-  inherited method
+  Returns True if the URL is a HTTP URL
 Parameters
-  Url - Description for this parameter
+  Url - The URL to test
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the URL is a HTTP URL, that is it starts with 'http://'
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabber.GetDefaultPropertiesClass
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the
-  inherited method
+  Returns the class to use to display default properties for this type of grabber
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns TJvHttpUrlGrabberDefaultProperties
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabberDefaultProperties
 Summary
-  Write here a summary (1 line)
+  A class that holds default properties for TJvHttpUrlGrabber
 Description
-  Write here a description
+  This class is used by TJvUrlGrabber to display the default properties of the TJvHttpUrlGrabber
+  objects it may create
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabberThread
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  The thread used to grad HTTP URLs
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabberThread.Grabber
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Provides an easy access to the grabber associated with the thread
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber
+@@TJvLocalFileUrlGrabber
 Summary
-  Ancestor of all URL grabbers
+  This a grabber for Local File URLs
 Description
-  This class is the ancestor of all the Url Grabbers and declares the required methods that a grabber
-  must provide.
-  Do not instanciate a TJvUrlGrabber directly, simply use one of its descendants. This family of
-  classes is used by TJvUrlListGrabber to allow downloading a list of URLs
+  This grabber handles Local File URLs, that is URLs that start with 'file://', '?:\' or '\\'
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.Agent
+@@TJvLocalFileUrlGrabber.PreserveAttributes
 Summary
-  The Agent to impersonate
-Description
-  Most protocols use an agent name to identify the software used to communicate. Use this property to
-  indicate the agent string.
+  If True, the attributes of the source file will be copied to the destination file
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.CanGrab
+@@TJvLocalFileUrlGrabber.CanGrab
 Summary
-  Returns true if the given Url is supported by the grabber
-Description
-  This function must return True if the given URL can be grabbed by the class being asked. It returns
-  False otherwise.
-  It MUST be overriden in the derived classes but cannot be abstract because of C++ Builder
-  compatibility issues
+  Return true if the URL is a Local File URL
 Parameters
-  Url - The Url to test
+  Url - The URL to test
 Return value
-  True if the Url is supported, False otherwise
+  True if the URL is a Local File URL, that is it starts with 'file://', '?:\', '\\' or the URL
+  indicates an existing file
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.FileName
+@@TJvLocalFileUrlGrabber.GetDefaultPropertiesClass
 Summary
-  The name of the file to write to if OutputMode is omFile
-See Also
-  OutputMode
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.GetDefaultPropertiesClass
-Summary
-  This function returns the class of a property holder to be displayed in the object inspector. 
-Description
-  This property holder will be used by TJvUrlListGrabber to let the user specify default properties
-  and will be passed to this class when created to handle a specific URL.
-  It MUST be overriden in the derived classes but cannot be abstract because of C++ Builder
-  compatibility issues
+  Returns the class to use to display default properties for this type of grabber
 Return value
-  A class derived from TJvUrlGrabberDefaultPropertiesClass
+  Returns TJvLocalFileUrlGrabberDefaultProperties
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnClosingConnection
+@@TJvLocalFileUrlGrabberDefaultProperties
 Summary
-  This event when the connection is about to be closed
-See Also
-  OnConnectionClosed
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnConnectedToServer
-Summary
-  This event is triggerred when the connection to the server has been established
-See Also
-  OnConnectingToServer
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnConnectingToServer
-Summary
-  This event is triggerred when about to connect to the server
-See Also
-  OnConnectedToServer
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnConnectionClosed
-Summary
-  This event is triggered when the connection has been closed
-See Also
-  OnClosingConnection
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnDoneFile
-Summary
-  This event is triggered when the write operation in the file is finished
-See Also
-  OnDoneStream, OutputMode
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnDoneStream
-Summary
-  This event is triggered when the write operation in the stream is finished
-See Also
-  OnDoneFile, OutputMode
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnError
-Summary
-  This event is triggered when an error has occured
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnNameResolved
-Summary
-  This event is triggered when the name used in the Url has been resolved
-See Also
-  OnResolvingName
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnProgress
-Summary
-  This event is triggered while the grabbing is in progress
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnReceivingResponse
-Summary
-  Write here a summary (1 line)
+  A class that holds default properties for TJvLocalFileUrlGrabber
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This class is used by TJvUrlGrabber to display the default properties of the TJvLocalFileUrlGrabber
+  objects it may create
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnRedirect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvLocalFileUrlGrabberDefaultProperties.PreserveAttributes
+<COMBINE TJvLocalFileUrlGrabber.PreserveAttributes>
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnRequestComplete
+@@TJvLocalFileUrlGrabberThread
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The thread used to grad Local File URLs
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnRequestSent
+@@TJvLocalFileUrlGrabberThread.Grabber
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnResolvingName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnResponseReceived
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnSendingRequest
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OnStateChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.OutputMode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.Password
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.Start
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.Status
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.Stop
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.Url
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabber.UserName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberClass
-<TITLE TJvUrlGrabberClass type>
-Summary
-  Defines the metaclass for TJvUrlGrabber.
-Description
-  TJvUrlGrabberClass is the metaclass for TJvUrlGrabber. Its value is the class reference for
-  TJvUrlGrabber or for one of its descendants.
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberClassList
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberClassList.Add
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AGrabberClass - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberClassList.CreateFor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Url                         - Description for this parameter
-  DefaultPropertiesCollection - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberClassList.Insert
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index         - Description for this parameter
-  AGrabberClass - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberClassList.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberClassList.Populate
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  DefaultPropertiesList - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultProperties
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultProperties.Agent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultProperties.EditorTrick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultProperties.FileName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultProperties.OutputMode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultProperties.Password
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultProperties.SupportedURLName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultProperties.UserName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultPropertiesClass
-<TITLE TJvUrlGrabberDefaultPropertiesClass type>
-Summary
-  Defines the metaclass for TJvUrlGrabberDefaultProperties.
-Description
-  TJvUrlGrabberDefaultPropertiesClass is the metaclass for TJvUrlGrabberDefaultProperties. Its value
-  is the class reference for
-  TJvUrlGrabberDefaultProperties or for one of its descendants.
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultPropertiesList
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultPropertiesList.Add
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Item - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultPropertiesList.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultPropertiesList.Count
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultPropertiesList.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefaultPropertiesList.ItemsNamed
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Name - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefPropEdTrick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberDefPropEdTrick.DefaultProperties
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberList
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberList.Add
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AGrabber - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberList.Insert
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index    - Description for this parameter
-  AGrabber - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberList.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberThread
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvUrlGrabberThreadClass
-<TITLE TJvUrlGrabberThreadClass type>
-Summary
-  Defines the metaclass for TJvUrlGrabberThread.
-Description
-  TJvUrlGrabberThreadClass is the metaclass for TJvUrlGrabberThread. Its value is the class reference
-  for
-  TJvUrlGrabberThread or for one of its descendants.
+  Provides an easy access to the grabber associated with the thread
 
 

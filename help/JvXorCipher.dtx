@@ -1,12 +1,14 @@
 ##Package: Crypt
-##Status: Locked to Olivier
+##Status: Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvXorCipher.pas
 Summary
   Contains the TJvXorCipher component.
-<INCLUDE JVCL.UnitText.dtx>
+  <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXORCipher
 <TITLEIMG TJvXORCipher>
@@ -14,81 +16,89 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A component that can encode and decode using the XOR algorithm
 Description
-  Write here a description
+  The XOR algorithm is really simple and as such really easy to crack. However it is fast and uses a
+  symetrical algorithm:
+  
+  Encoded = Decoded XOR Pivot
+  Decoded = Encoded XOR Pivot
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXORCipher.Decode
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Decodes the given strings
 Parameters
-  Strings - Description for this parameter
+  Strings - The strings to be decoded
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Pivot, Encode
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXORCipher.Decoded
 Summary
-  Write here a summary (1 line)
+  The decoded counterpart of Encoded
 Description
-  Write here a description
+  Set this value to update the Encoded property with the encoded value
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Encoded
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXORCipher.DecodeStream
 Summary
-  Write here a summary (1 line)
+  Decodes the given stream into a new stream
 Description
-  Write here a description
+  The returned stream is created by the function and MUST be freed by the caller
 Parameters
-  Value - Description for this parameter
+  Value - The source stream
 Return value
-  Describe here what the function returns
+  A new stream containing the encoded values
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EncodeStream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXORCipher.Encode
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Encodes the given strings
 Parameters
-  Strings - Description for this parameter
+  Strings - The strings to encode
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Pivot, Decode
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXORCipher.Encoded
 Summary
-  Write here a summary (1 line)
+  The encoded counterpart of Decoded
 Description
-  Write here a description
+  Set this value to update the Decoded property with the decoded value
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Decoded
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXORCipher.EncodeStream
 Summary
-  Write here a summary (1 line)
+  Encodes the given stream into a new stream
 Description
-  Write here a description
+  The returned stream is created by the function and MUST be freed by the caller
 Parameters
-  Value - Description for this parameter
+  Value - The source stream
 Return value
-  Describe here what the function returns
+  A new stream containing the encoded values
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DecodeStream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXORCipher.Pivot
 Summary
-  Write here a summary (1 line)
+  The pivot to use for encoding/decoding
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The formula is that:
+  Result = Value XOR Pivot
+
+

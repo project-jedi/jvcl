@@ -1,12 +1,14 @@
 ##Package: Crypt
-##Status: Locked to Olivier
+##Status: Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvVigenereCipher.pas
 Summary
   Contains the TJvVigenereCipher component.
-<INCLUDE JVCL.UnitText.dtx>
+  <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVigenereCipher
 <TITLEIMG TJvVigenereCipher>
@@ -14,81 +16,106 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A component that encodes according to the Vigenere cipher method
 Description
-  Write here a description
+  Here is a short explanation of the vigenere cipher, inspired by the much more complete available at
+  this address:
+  http://it.geocities.com/teutoburgo/java/javi/algorithm.htmlEncodeStream, Key
+  
+  For each letter of the Key, a new alphabet is created by shifting the usual alphabet to start at
+  the same letter as in the key. For instance, if the key is CUP then three alphabets are created:
+  
+   CDEFGHIJKLMNOPQRSTUVWXYZAB
+   UVWXYZABCDEFGHIJKLMNOPQRST
+   PQRSTUVWXYZABCDEFGHIJKLMNO
+  
+  When enconding a string, each alphabet is used in turn as a lookup table. For instance, if we
+  encode HELLO, then we have this:
+  
+  H --> J
+  E --> Y
+  L --> A
+  L --> N
+  O --> I
+  
+  As you can see, the same letter is not always encoded by the same letter, thus making statistical
+  analysis a bit harder. The implementation in this component considers an alphabet of 255
+  characters, thus encoding every single character no matter what its value is.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVigenereCipher.Decode
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Decodes the given strings using the Key
 Parameters
-  Strings - Description for this parameter
+  Strings - The strings to decode
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Encode, Key
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVigenereCipher.Decoded
 Summary
-  Write here a summary (1 line)
+  The decoded counterpart of Encoded
 Description
-  Write here a description
+  Set this value to get the encoded version in the Encoded property
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Encoded, Key
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVigenereCipher.DecodeStream
 Summary
-  Write here a summary (1 line)
+  Decodes the given stream
 Description
-  Write here a description
+  This function creates a stream and returns it, thus leaving the responsibility of freeing it to the
+  caller
 Parameters
-  Value - Description for this parameter
+  Value - The stream to decode
 Return value
-  Describe here what the function returns
+  An encoded stream
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EncodeStream, Key
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVigenereCipher.Encode
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Encodes the given strings using the Key
 Parameters
-  Strings - Description for this parameter
+  Strings - The strings to encode
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Decode, Key
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVigenereCipher.Encoded
 Summary
-  Write here a summary (1 line)
+  The encoded counterpart of Decoded
 Description
-  Write here a description
+  Set this value to get the decoded version in the Decoded property
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Decoded, Key
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVigenereCipher.EncodeStream
 Summary
-  Write here a summary (1 line)
+  Encodes the given stream
 Description
-  Write here a description
+  This function creates a stream and returns it, thus leaving the responsibility of freeing it to the
+  caller
 Parameters
-  Value - Description for this parameter
+  Value - The stream to encode
 Return value
-  Describe here what the function returns
+  A decoded stream
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DecodeStream, Key
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVigenereCipher.Key
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The key used for the enconding/decoding
+
+
