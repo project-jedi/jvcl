@@ -1,6 +1,6 @@
 object SSEForm: TSSEForm
-  Left = 91
-  Top = 341
+  Left = 280
+  Top = 354
   Width = 850
   Height = 305
   Caption = 'SSEForm'
@@ -38,6 +38,7 @@ object SSEForm: TSSEForm
     PopupMenu = PopupMenuRegs
     TabOrder = 0
     OnDrawItem = ListBoxRegsDrawItem
+    OnMouseDown = ListBoxRegsMouseDown
   end
   object ListBoxMXCSR: TListBox
     Left = 787
@@ -61,6 +62,7 @@ object SSEForm: TSSEForm
     OnMouseMove = ListBoxMXCSRMouseMove
   end
   object PopupMenuRegs: TPopupMenu
+    AutoPopup = False
     Left = 64
     Top = 48
     object MenuItemDisplay: TMenuItem
@@ -121,6 +123,10 @@ object SSEForm: TSSEForm
         ShortCut = 16436
         OnClick = MenuItemFormatClick
       end
+    end
+    object MenuItemModify: TMenuItem
+      Caption = '&Modify'
+      OnClick = MenuItemModifyClick
     end
     object MenuItemSeparator2: TMenuItem
       Caption = '-'

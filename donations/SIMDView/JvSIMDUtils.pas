@@ -32,6 +32,62 @@ interface
 uses
   Windows;
 
+resourcestring
+  RsSSE     = 'SSE';
+  RsMMX     = 'MMX';
+  RsSSE1    = 'SSE1';
+  RsSSE2    = 'SSE2';
+  RsSSE3    = 'SSE3';
+  Rs3DNow   = '3DNow!';
+  RsExMMX   = 'Extensions to MMX';
+  RsEx3DNow = 'Extensions to 3DNow!';
+  RsLong    = '64-bit Core';
+
+  RsTrademarks = 'MMX is a trademark of Intel Corporation.'+sLineBreak+
+                 '3DNow! is a registered trademark of Advanced Micro Devices.';
+
+  RsNoSIMD    = 'No SIMD registers found';
+  RsNoSSE     = 'SSE are not supported on this processor';
+  RsNo128SIMD = 'No 128-bit-register SIMD';
+  RsNo64SIMD  = 'No 64-bit-register SIMD';
+
+  RsVectorIE  = 'IE  ';
+  RsVectorDE  = 'DE  ';
+  RsVectorZE  = 'ZE  ';
+  RsVectorOE  = 'OE  ';
+  RsVectorUE  = 'UE  ';
+  RsVectorPE  = 'PE  ';
+  RsVectorDAZ = 'DAZ ';   //  (Only in Intel P4, Intel Xeon and AMD)
+  RsVectorIM  = 'IM  ';
+  RsVectorDM  = 'DM  ';
+  RsVectorZM  = 'ZM  ';
+  RsVectorOM  = 'OM  ';
+  RsVectorUM  = 'UM  ';
+  RsVectorPM  = 'PM  ';
+  RsVectorRC  = 'RC  ';
+  RsVectorFZ  = 'FZ  ';
+
+  RsVectorIEText  = 'Invalid-operation exception';
+  RsVectorDEText  = 'Denormal-operand exception';
+  RsVectorZEText  = 'Zero-divide exception';
+  RsVectorOEText  = 'Overflow exception';
+  RsVectorUEText  = 'Underflow exception';
+  RsVectorPEText  = 'Precision exception';
+  RsVectorDAZText = 'Denormal are zeros';      //  (Only in Intel P4, Intel Xeon and AMD)
+  RsVectorIMText  = 'Invalid-operation mask';
+  RsVectorDMText  = 'Denormal-operand mask';
+  RsVectorZMText  = 'Zero-divide mask';
+  RsVectorOMText  = 'Overflow mask';
+  RsVectorUMText  = 'Underflow mask';
+  RsVectorPMText  = 'Precision mask';
+  RsVectorRCText  = 'Rounding control';
+  RsVectorFZText  = 'Flush to zero';
+
+  RsRoundToNearest  = 'Round to nearest';
+  RsRoundDown       = 'Round down';
+  RsRoundUp         = 'Round up';
+  RsRoundTowardZero = 'Round toward zero';
+
 type
   TJvMMContentType = (mt8Bytes, mt4Words, mt2DWords);
 
@@ -135,8 +191,8 @@ type
     MXCSR        : TJvMXCSR;                 // bytes from 24  to 27
     MXCSRMask    : TJvMXCSR;                 // bytes from 28  to 31
     FPURegisters : TJvFPURegisters;          // bytes from 32  to 159
-    XMMRegisters : TJvXMMRegisters;          // bytes from 160 to 287
-    Reserved4    : array [416..511] of Byte; // bytes from 288 to 512
+    XMMRegisters : TJvXMMRegisters;          // bytes from 160 to 415
+    Reserved4    : array [416..511] of Byte; // bytes from 416 to 512
   end;
 
   TJvContext = packed record
@@ -144,70 +200,11 @@ type
      VectorContext : TJvVectorFrame;
   end;
 
-resourcestring
-  RsVendorIntel = 'GenuineIntel';
-  RsVendorAMD   = 'AuthenticAMD';
-
-  RsMMX     = 'MMX';
-  RsSSE1    = 'SSE1';
-  RsSSE2    = 'SSE2';
-  RsSSE3    = 'SSE3';
-  Rs3DNow   = '3DNow!';
-  RsExMMX   = 'Extensions to MMX';
-  RsEx3DNow = 'Extensions to 3DNow!';
-  RsLong    = '64-Bit-Core';
-
-  RsTrademarks = 'MMX is a trademark of Intel Corporation.'+sLineBreak+
-                 '3DNow! is a registered trademark of Advanced Micro Devices.';
-                 // SSE not registered by Intel Corp. ???? cannot find any reference
-                 // to the registered name
-
-  RsNoSIMD    = 'No SIMD registers found';
-  RsNo128SIMD = 'No 128-bit-wide-register SIMD';
-  RsNo64SIMD  = 'No 64-bit-wide-register SIMD';
-
-  RsVectorIE  = 'IE  ';
-  RsVectorDE  = 'DE  ';
-  RsVectorZE  = 'ZE  ';
-  RsVectorOE  = 'OE  ';
-  RsVectorUE  = 'UE  ';
-  RsVectorPE  = 'PE  ';
-  RsVectorDAZ = 'DAZ ';   //  (Only in Intel P4, Intel Xeon and AMD)
-  RsVectorIM  = 'IM  ';
-  RsVectorDM  = 'DM  ';
-  RsVectorZM  = 'ZM  ';
-  RsVectorOM  = 'OM  ';
-  RsVectorUM  = 'UM  ';
-  RsVectorPM  = 'PM  ';
-  RsVectorRC  = 'RC  ';
-  RsVectorFZ  = 'FZ  ';
-
-  RsVectorIEText  = 'Invalid-operation exception';
-  RsVectorDEText  = 'Denormal-operand exception';
-  RsVectorZEText  = 'Zero-divide exception';
-  RsVectorOEText  = 'Overflow exception';
-  RsVectorUEText  = 'Underflow exception';
-  RsVectorPEText  = 'Precision exception';
-  RsVectorDAZText = 'Denormal are zeros';      //  (Only in Intel P4, Intel Xeon and AMD)
-  RsVectorIMText  = 'Invalid-operation mask';
-  RsVectorDMText  = 'Denormal-operand mask';
-  RsVectorZMText  = 'Zero-divide mask';
-  RsVectorOMText  = 'Overflow mask';
-  RsVectorUMText  = 'Underflow mask';
-  RsVectorPMText  = 'Precision mask';
-  RsVectorRCText  = 'Rounding control';
-  RsVectorFZText  = 'Flush to zero';
-
-  RsRoundToNearest  = 'Round to nearest';
-  RsRoundDown       = 'Round down';
-  RsRoundUp         = 'Round up';
-  RsRoundTowardZero = 'Round toward zero';
-
 type
   TBitDescription = record
     BitCount: 0..2;
-    ShortName: string; // only if BitCount>0
-    LongName: string;  // only if BitCount>0
+    ShortName: string;            // only if BitCount>0
+    LongName: string;             // only if BitCount>0
     Names: array [0..3] of string // only if BitCount=2
   end;
 
@@ -235,6 +232,22 @@ const
       (BitCount:1; ShortName:RsVectorFZ;  LongName:RsVectorFZText)    //mbFlushToZero
     );
 
+type
+  TJvSIMDDisplay = ( sdBytes, sdWords, sdDWords, sdQWords, sdSingles, sdDoubles );
+
+  TJvSIMDValue = packed record
+    case Display: TJvSIMDDisplay of
+      sdBytes   : (ValueByte: Byte;      );
+      sdWords   : (ValueWord: Word;      );
+      sdDWords  : (ValueDWord: Cardinal; );
+      sdQWords  : (ValueQWord: Int64;    );
+      sdSingles : (ValueSingle: Single;  );
+      sdDoubles : (ValueDouble: Double;  );
+  end;
+
+  TJvSIMDFormat = ( sfBinary, sfSigned, sfUnsigned, sfHexa );
+
+function FormatValue(Value:TJvSIMDValue; Format: TJvSIMDFormat):string;
 
 const
   CONTEXT_EXTENDED_REGISTERS = CONTEXT_i386 or $20;
@@ -252,81 +265,104 @@ function GetVectorContext(hThread: THandle; out VectorContext:TJvVectorFrame): B
 // return the XMM registers for the specified thread, this thread must be suspended
 function SetVectorContext(hThread: THandle; const VectorContext:TJvVectorFrame): Boolean;
 
-// return if the processor supports the CPUID instruction
-function IsCPUIDSupported: Boolean;
-
-type
-  TCPUIDResult = record
-    eaxValue : Cardinal;
-    ebxValue : Cardinal;
-    ecxValue : Cardinal;
-    edxValue : Cardinal;
-  end;
-
-// execute a cpuid call with eax = Value
-function CallCPUID (Value:Cardinal): TCPUIDResult;
-
-type
-  TProcessorVendor = array [0..11] of Char;
-
-// return the processor brand see constants above
-function ProcessorVendor: string;
-
-type
-  TVendorID = (viIntel, viAMD, viOther);
-
-// return the processor vendorID
-function ProcessorVendorID: TVendorID;
-
-type
-  _IntelSIMD = (isMMX, isSSE1, isSSE2, isSSE3);
-  TIntelSIMD = set of _IntelSIMD;
-
-// return the processor SSE version for intel processors
-function IntelSIMD: TIntelSIMD;
-
-type
-  _AMDSIMD = (asMMX, as3DNow, asExMMX, asEx3DNow, asSSE1, asSSE2, asLong);
-  TAMDSIMD = set of _AMDSIMD;
-
-// return the processor 3DNow! version for AMD processors
-function AMDSIMD: TAMDSIMD;
-
-// return if the processor supports 64-bit-wide operands SIMD
-function Is64BitSIMDPresent: Boolean;
-
-// return if the processor supports 128-bit-wide operands SIMD
-function Is128BitSIMDPresent: Boolean;
-
-// return the SIMD version as a string
-function SIMDString: string;
-
-// process function calls to get the processor informations
-procedure GetProcessorInfo;
-
 implementation
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   SysUtils;
 
-type
-  TProcessorInfo = record
-    CPUIDSupported: Boolean;
-    Vendor: string;
-    SIMDString: string;
-    SIMD64String: string;
-    SIMD128String: string;
-    case VendorID: TVendorID of
-      viIntel : (IntelSIMD: TIntelSIMD);
-      viAMD   : (AMDSIMD: TAMDSIMD);
-  end;
-
+function FormatBinary(Value: TJvSIMDValue): string;
 var
-  ProcessorInfo: TProcessorInfo;
-  ProcessorInfoValid: Boolean = False;
+  I:Byte;
+const
+  Width: array [sdBytes..sdQWords] of Byte = (8, 16, 32, 64);
+begin
+  Assert(Value.Display<sdSingles);
+  Result:=StringOfChar('0',Width[Value.Display]);
+  for I:=1 to Width[Value.Display] do
+  begin
+    if (Value.ValueQWord and 1)<>0
+      then Result[Width[Value.Display]-I+1]:='1';
+    Value.ValueQWord:=Value.ValueQWord shr 1;
+  end;
+end;
+
+function FormatSigned(Value: TJvSIMDValue): string;
+const
+  Width: array [sdBytes..sdQWords] of Byte = (4, 6, 11, 20);
+begin
+  Assert(Value.Display<sdSingles);
+  case Value.Display of
+    sdBytes  : Result:=IntToStr(ShortInt(Value.ValueByte));
+    sdWords  : Result:=IntToStr(SmallInt(Value.ValueWord));
+    sdDWords : Result:=IntToStr(Integer(Value.ValueDWord));
+    sdQWords : Result:=IntToStr(Value.ValueQWord);
+    else       Result := '';
+  end;
+  Result:=StringOfChar(' ',Width[Value.Display]-Length(Result))+Result;
+end;
+
+function FormatUnsigned(Value: TJvSIMDValue): string;
+const
+  Width: array [sdBytes..sdQWords] of Byte = (3, 5, 10, 20);
+begin
+  Assert(Value.Display<sdSingles);
+  case Value.Display of
+    sdBytes  : Result:=IntToStr(Byte(Value.ValueByte));
+    sdWords  : Result:=IntToStr(Word(Value.ValueWord));
+    sdDWords : Result:=IntToStr(Cardinal(Value.ValueDWord));
+    sdQWords : Result:=IntToStr(Value.ValueQWord);
+    else       Result := '';
+  end;
+  Result:=StringOfChar(' ',Width[Value.Display]-Length(Result))+Result;
+end;
+
+function FormatHexa(Value: TJvSIMDValue): string;
+const
+  Width: array [sdBytes..sdQWords] of Byte = (2, 4, 8, 16);
+begin
+  Assert(Value.Display<sdSingles);
+  case Value.Display of
+    sdBytes  : Result := IntToHex(Value.ValueByte,Width[sdBytes]);
+    sdWords  : Result := IntToHex(Value.ValueWord,Width[sdWords]);
+    sdDWords : Result := IntToHex(Value.ValueDWord,Width[sdDWords]);
+    sdQWords : Result := IntToHex(Value.ValueQWord,Width[sdQWords]);
+    else       Result := '';
+  end;
+end;
+
+function FormatFloat(Value:TJvSIMDValue): string;
+begin
+  Assert(Value.Display>=sdSingles);
+  case Value.Display of
+    sdSingles : Result := FloatToStr(Value.ValueSingle);
+    sdDoubles : Result := FloatToStr(Value.ValueDouble);
+    else        Result := '';
+  end;
+  Result:=StringOfChar(' ',22-Length(Result))+Result;     // 22 = max string length of a double value
+end;
+
+function FormatValue(Value:TJvSIMDValue; Format: TJvSIMDFormat): string;
+type
+  TFormatFunction = function (Value:TJvSIMDValue): string;
+var
+  FormatFunction: TFormatFunction;
+begin
+  Result := '';
+  case Format of
+    sfBinary   : FormatFunction := FormatBinary;
+    sfSigned   : FormatFunction := FormatSigned;
+    sfUnsigned : FormatFunction := FormatUnsigned;
+    sfHexa     : FormatFunction := FormatHexa;
+    else         Exit;
+  end;
+  case Value.Display of
+    sdBytes..sdQWords    : Result := FormatFunction(Value);
+    sdSingles..sdDoubles : Result := FormatFloat(Value);
+  end;
+end;
 
 function GetThreadContext(hThread: THandle;
   var lpContext: TJvContext): BOOL;
@@ -335,327 +371,6 @@ function GetThreadContext(hThread: THandle;
 function SetThreadContext(hThread: THandle;
   const lpContext: TJvContext): BOOL;
   stdcall; external kernel32 name 'SetThreadContext';
-
-function CallCPUID (Value:Cardinal): TCPUIDResult;
-// eax = Value
-// edx = pointer to the result
-asm
-  push        ebx                               // save ebx value
-  push        edi                               // save edi value
-  mov         edi,        Result                // move destination to edi
-//  mov         eax,        Value  // Value is in eax
-  cpuid                                         // call cpuid with eax=Value
-  mov         [edi].TCPUIDResult.eaxValue, eax  // save eax in the result record
-  mov         [edi].TCPUIDResult.ebxValue, ebx  // save ebx in the result record
-  mov         [edi].TCPUIDResult.ecxValue, ecx  // save ecx in the result record
-  mov         [edi].TCPUIDResult.edxValue, edx  // save edx in the result record
-  pop         edi                               // restore edi
-  pop         ebx                               // restore ebx
-end;
-
-function IsCPUIDSupported: Boolean;
-begin
-  if (not ProcessorInfoValid) then
-    GetProcessorInfo;
-  Result := ProcessorInfo.CPUIDSupported;
-end;
-
-function GetIsCPUIDSupported: Boolean;
-// according to Intel's and AMD's x86-processor documentation, CPUID instruction
-// is supported if bit 21 of the EFlags register can be cleared and set
-asm
-  pushfd                                // push EFLAGS on the stack
-  pop         eax                       // Get EFlags in eax
-  mov         edx,        eax           // save eax in edx
-  xor         eax,        (1 shl 21)    // toggle cpuid bit
-  and         edx,        (1 shl 21)    // save only cpuid bit
-  push        eax                       // push eax on the stack
-  popfd                                 // save changes to eflags
-  pushfd                                // push eflags on the stack
-  pop         eax                       // get Eflags in eax
-  mov         ecx,        eax           // save eax in ecx
-  and         eax,        (1 shl 21)    // save only cpuid bit
-  xor         eax,        edx           // test if cpuid bit is changed
-  jz          @@NoCPUID                 // if zero, CPUID is not supported
-  xor         ecx,        (1 shl 21)    // toggle cpuid bit
-  push        ecx                       // push ecx on the stack
-  popfd                                 // save changes to eflags
-  pushfd                                // push eflags on the stack
-  pop         eax                       // get eflags in eax
-  and         eax,        (1 shl 21)    // only cpuid bit
-  xor         eax,        edx           // test if cpuid bit is the same than in the beginning
-  jnz         @@NoCPUID                 // if different, CPUID is not supported
-  mov         Result,     True          // CPUID is supported
-  jmp         @@CPUIDEnd
-@@NoCPUID:
-  mov         Result,     False         // CPUID is not supported
-@@CPUIDEnd:
-end;
-
-function ProcessorVendor: string;
-begin
-  if (not ProcessorInfoValid) then
-    GetProcessorInfo;
-  Result := ProcessorInfo.Vendor;
-end;
-
-function GetProcessorVendor: string;
-// when calling cpuid with eax=0, Vendor is return in the string [ebx,edx,ecx]
-begin
-  SetLength(Result,12);
-  with CallCPUID(0) do
-  begin
-    CopyMemory(@Result[1],@ebxValue,4);
-    CopyMemory(@Result[5],@edxValue,4);
-    CopyMemory(@Result[9],@ecxValue,4);
-  end;
-end;
-
-function ProcessorVendorID: TVendorID;
-begin
-  if (not ProcessorInfoValid) then
-    GetProcessorInfo;
-  Result := ProcessorInfo.VendorID;
-end;
-
-function GetProcessorVendorID: TVendorID;
-var
-  VendorName: string;
-begin
-  VendorName := ProcessorVendor;
-  if CompareText(VendorName,RsVendorIntel)=0 then
-    Result := viIntel
-  else if CompareText(VendorName,RsVendorAMD)=0 then
-    Result := viAMD
-  else Result := viOther;
-end;
-
-function IntelSIMD: TIntelSIMD;
-begin
-  if (not ProcessorInfoValid) then
-    GetProcessorInfo;
-  Result := ProcessorInfo.IntelSIMD;
-end;
-
-function GetIntelSIMD: TIntelSIMD;
-var
-  FeatureInformations: Cardinal;
-  ExFeatureInformations: Cardinal;
-begin
-  Result := [];
-  if CallCPUID(0).eaxValue >= 1 then
-    with CallCPUID(1) do
-  begin
-    FeatureInformations := edxValue;
-    ExFeatureInformations := ecxValue;
-    if (FeatureInformations and (1 shl 23))<>0 then
-      Include(Result,isMMX);
-    if (FeatureInformations and (1 shl 25))<>0 then
-      Include(Result,isSSE1);
-    if (FeatureInformations and (1 shl 26))<>0 then
-      Include(Result,isSSE2);
-    if (ExFeatureInformations and 1)<>0 then
-      Include(Result,isSSE3);
-  end;
-end;
-
-procedure GetIntelSIMDStrings;
-  function AppendStr(Left, Right: string): string;
-  begin
-    if Left = '' then
-      Result := Right
-    else
-      Result := Left+','+Right;
-  end;
-begin
-  if (not ProcessorInfoValid) then
-    GetProcessorInfo;
-  with ProcessorInfo do
-  begin
-    SIMDString := '';
-    SIMD64String := '';
-    SIMD128String := '';
-    if (VendorID <> viIntel) then
-      Exit;
-    if (isMMX in IntelSIMD) then
-    begin
-      SIMDString := AppendStr(SIMDString,RsMMX);
-      SIMD64String := AppendStr(SIMD64String,RsMMX);
-    end;
-    if (isSSE1 in IntelSIMD) then
-    begin
-      SIMDString := AppendStr(SIMDString,RsSSE1);
-      SIMD128String := AppendStr(SIMD128String,RsSSE1);
-    end;
-    if (isSSE2 in IntelSIMD) then
-    begin
-      SIMDString := AppendStr(SIMDString,RsSSE2);
-      SIMD128String := AppendStr(SIMD128String,RsSSE2);
-    end;
-    if (isSSE3 in IntelSIMD) then
-    begin
-      SIMDString := AppendStr(SIMDString,RsSSE3);
-      SIMD128String := AppendStr(SIMD128String,RsSSE3);
-    end;
-  end;
-end;
-
-function AMDSIMD: TAMDSIMD;
-begin
-  if (not ProcessorInfoValid) then
-    GetProcessorInfo;
-  Result := ProcessorInfo.AMDSIMD;
-end;
-
-function GetAMDSIMD: TAMDSIMD;
-var
-  StandardFeatureSupports: Cardinal;
-  AMDFeatureSupports: Cardinal;
-begin
-  Result := [];
-  if CallCPUID(0).eaxValue >= 1 then
-  with CallCPUID(1) do
-  begin
-    StandardFeatureSupports := edxValue;
-    if (StandardFeatureSupports and (1 shl 23))<>0 then
-      Include(Result,asMMX);
-    if (StandardFeatureSupports and (1 shl 25))<>0 then
-      Include(Result,asSSE1);
-    if (StandardFeatureSupports and (1 shl 26))<>0 then
-      Include(Result,asSSE2);
-  end;
-  if CallCPUID($80000000).eaxValue >= $80000001 then
-    with CallCPUID($80000001) do
-  begin
-    AMDFeatureSupports := edxValue;
-    if (AMDFeatureSupports and (1 shl 22))<>0 then
-      Include(Result,asExMMX);
-    if (AMDFeatureSupports and (1 shl 29))<>0 then
-      Include(Result,asLong);
-    if (AMDFeatureSupports and (1 shl 30))<>0 then
-      Include(Result,asEx3DNow);
-    if (AMDFeatureSupports and (1 shl 31))<>0 then
-      Include(Result,as3DNow);
-  end;
-end;
-
-procedure GetAMDSIMDStrings;
-  function AppendStr(Left, Right: string): string;
-  begin
-    if Left = '' then
-      Result := Right
-    else
-      Result := Left+','+Right;
-  end;
-begin
-  if (not ProcessorInfoValid) then
-    GetProcessorInfo;
-  with ProcessorInfo do
-  begin
-    SIMDString := '';
-    SIMD64String := '';
-    SIMD128String := '';
-    if (VendorID <> viAMD) then
-      Exit;
-    if (asMMX in AMDSIMD) then
-    begin
-      SIMDString := AppendStr(SIMDString,RsMMX);
-      SIMD64String := AppendStr(SIMD64String,RsMMX);
-    end;
-    if (as3DNow in AMDSIMD) then
-    begin
-      SIMDString := AppendStr(SIMDString,Rs3DNow);
-      SIMD64String := AppendStr(SIMD64String,Rs3DNow);
-    end;
-    if (asExMMX in AMDSIMD) then
-    begin
-      SIMDString := AppendStr(SIMDString,RsExMMX);
-      SIMD64String := AppendStr(SIMD64String,RsExMMX);
-    end;
-    if (asEx3DNow in AMDSIMD) then
-    begin
-      SIMDString := AppendStr(SIMDString,RsEx3DNow);
-      SIMD64String := AppendStr(SIMD64String,RsEx3DNow);
-    end;
-    if (asSSE1 in AMDSIMD) then
-    begin
-      SIMDString := AppendStr(SIMDString,RsSSE1);
-      SIMD128String := AppendStr(SIMD128String,RsSSE1);
-    end;
-    if (asSSE2 in AMDSIMD) then
-    begin
-      SIMDString := AppendStr(SIMDString,RsSSE2);
-      SIMD128String := AppendStr(SIMD128String,RsSSE2);
-    end;
-    if (asLong in AMDSIMD) then
-    begin
-      SIMDString := AppendStr(SIMDString,RsLong);
-      SIMD128String := AppendStr(SIMD128String,RsLong);
-    end;
-  end;
-end;
-
-function SIMDString: string;
-begin
-  if (not ProcessorInfoValid) then
-    GetProcessorInfo;
-  Result := ProcessorInfo.SIMDString;
-end;
-
-procedure GetProcessorInfo;
-begin
-  FillMemory(@ProcessorInfo,SizeOf(ProcessorInfo),0);
-  ProcessorInfoValid := True;
-  with ProcessorInfo do
-  begin
-    CPUIDSupported := GetIsCPUIDSupported;
-    if (CPUIDSupported) then
-    begin
-      Vendor := GetProcessorVendor;
-      VendorID := GetProcessorVendorID;
-      case VendorID of
-        viIntel :
-          begin
-            IntelSIMD := GetIntelSIMD;
-            GetIntelSIMDStrings;
-          end;
-        viAMD   :
-          begin
-            AMDSIMD := GetAMDSIMD;
-            GetAMDSIMDStrings;
-          end;
-      end;
-      if SIMDString = '' then
-        SIMDString := RsNoSIMD;
-      if SIMD128String = '' then
-        SIMD128String := RsNo128SIMD;
-      if SIMD64String = '' then
-        SIMD64String := RsNo64SIMD;
-    end;
-  end;
-end;
-
-function Is128BitSIMDPresent: Boolean;
-// SSE and 3dNow! are 128-bit-wide operands
-begin
-  case ProcessorVendorID of
-    viIntel : Result := (IntelSIMD * [isSSE1, isSSE2, isSSE3])<>[];
-    viAMD   : Result := (AMDSIMD * [as3DNow, asEx3DNow, asSSE1, asSSE2])<>[];
-    //viOther,
-    else      Result := False;
-  end;
-end;
-
-function Is64BitSIMDPresent: Boolean;
-// MMX are 64-bit-wide operands
-begin
-  case ProcessorVendorID of
-    viIntel : Result := isMMX in IntelSIMD;
-    viAMD   : Result := (AMDSIMD * [asMMX, asExMMX])<>[];
-    //viOther,
-    else      Result := False;
-  end;
-end;
 
 function GetVectorContext(hThread: THandle; out VectorContext:TJvVectorFrame): Boolean;
 var

@@ -31,12 +31,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ToolsApi, Grids, ExtCtrls, Menus, JvSIMDUtils;
+  Dialogs, StdCtrls, ToolsApi, Grids, ExtCtrls, Menus, JclSysInfo, JvSIMDUtils;
 
 type
-  TSIMDDisplay = ( sdBytes, sdWords, sdDWords, sdQWords, sdSingles, sdDoubles );
-  TSIMDFormat = ( sfBinary, sfSigned, sfUnsigned, sfHexa );
-
   TSSEForm = class(TForm)
     Splitter: TSplitter;
     ListBoxRegs: TListBox;            // ListBoxRegs.Items.Objetcs         Bit 0 : Changed
@@ -60,6 +57,7 @@ type
     MenuItemDoubles: TMenuItem;
     MenuItemSeparator2: TMenuItem;
     MenuItemStayOnTop: TMenuItem;
+    MenuItemModify: TMenuItem;
     procedure ListBoxMXCSRDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure ListBoxMXCSRMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -72,17 +70,18 @@ type
     procedure MenuItemFormatClick(Sender: TObject);
     procedure MenuItemDisplayClick(Sender: TObject);
     procedure MenuItemStayOnTopClick(Sender: TObject);
+    procedure ListBoxRegsMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure MenuItemModifyClick(Sender: TObject);
   private
     FServices:IOTADebuggerServices;
     FVectorFrame:TJvVectorFrame;
-    FDisplay:TSIMDDisplay;
-    FFormat:TSIMDFormat;
-    function FormatBinary(Value: Int64; nbDigit: Byte): string;
-    function FormatHexa(Value: Int64; nbDigit: Byte): string;
-    function FormatSigned(Value: Int64; nbDigit: Byte): string;
-    function FormatUnsigned(Value: Int64; nbDigit: Byte): string;
-    procedure SetDisplay(const Value: TSIMDDisplay);
-    procedure SetFormat(const Value: TSIMDFormat);
+    FDisplay:TJvSIMDDisplay;
+    FFormat:TJvSIMDFormat;
+    FCpuInfo: TCpuInfo;
+    FCpuInfoValid: Boolean;
+    procedure SetDisplay(const Value: TJvSIMDDisplay);
+    procedure SetFormat(const Value: TJvSIMDFormat);
   protected
     procedure DoClose(var Action: TCloseAction); override;
   public
@@ -92,8 +91,9 @@ type
     procedure SetThreadValues;
     procedure GetThreadValues;
     procedure FormatRegs;
-    property Format:TSIMDFormat read FFormat write SetFormat;
-    property Display:TSIMDDisplay read FDisplay write SetDisplay;
+    function CpuInfo: TCpuInfo;
+    property Format:TJvSIMDFormat read FFormat write SetFormat;
+    property Display:TJvSIMDDisplay read FDisplay write SetDisplay;
   end;
 
 var
@@ -103,8 +103,9 @@ implementation
 
 uses
 {$IFDEF UNITVERSIONING}
-  JclUnitVersioning;
+  JclUnitVersioning,
 {$ENDIF UNITVERSIONING}
+  JvSIMDModifyForm;
 
 {$R *.dfm}
 
@@ -115,16 +116,20 @@ var
   J:Integer;
 begin
   inherited Create(AOwner);
+  FCpuInfoValid := False;
   FServices:=AServices;
   ListBoxMXCSR.Items.Clear;
-  for I:=mbInvalidOperationException to mbFlushToZero do
-    if MXCSRBitsDescription[I].BitCount<>0 then
+  with CpuInfo do
+    for I:=mbInvalidOperationException to mbFlushToZero do
+      if (MXCSRBitsDescription[I].BitCount<>0) then
       ListBoxMXCSR.Items.AddObject('0',TObject(I));
   ListBoxRegs.Items.Clear;
-  if (ProcessorVendorID=viAMD) and (asLong in AMDSIMD) then
-    J := 16
-  else
-    J := 8;
+  with CpuInfo do
+    if (CpuType = CPU_TYPE_AMD) and (HasExtendedInfo)
+      and ((AMDSpecific.ExFeatures and EAMD_LONG_FLAG)<>0) then
+      J := 16
+    else
+      J := 8;
   while (J>-1) do   // 16 128-bit registers + 1 cardinal (MXCSR)
   begin
     ListBoxRegs.Items.InsertObject(0,'0',nil);
@@ -148,6 +153,16 @@ end;
 destructor TSSEForm.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TSSEForm.CpuInfo: TCpuInfo;
+begin
+  if not FCpuInfoValid then
+  begin
+    JclSysInfo.GetCpuInfo(FCpuInfo);
+    FCpuInfoValid := True;
+  end;
+  Result := FCpuInfo;
 end;
 
 procedure TSSEForm.ListBoxMXCSRDrawItem(Control: TWinControl;
@@ -238,7 +253,7 @@ end;
 procedure TSSEForm.ListBoxMXCSRMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  AIndex:Integer;
+  AIndex: Integer;
 begin
   if (Button=mbRight) then
     with (Sender as TListBox) do
@@ -250,6 +265,18 @@ begin
       with ClientToScreen(Point(X,Y)) do
         PopupMenu.Popup(X,Y);
     end;
+  end;
+end;
+
+procedure TSSEForm.ListBoxRegsMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if (Button=mbRight) then
+    with (Sender as TListBox) do
+  begin
+    MenuItemModify.Enabled := ItemAtPos(Point(X,Y),True)>0;
+    with ClientToScreen(Point(X,Y)) do
+      PopupMenu.Popup(X,Y);
   end;
 end;
 
@@ -314,10 +341,12 @@ begin
   ListBoxMXCSR.Invalidate;
   ListBoxRegs.Items.Objects[0]:=MakeFlag(NewVectorFrame.MXCSR<>FVectorFrame.MXCSR);
   ListBoxRegs.Items.Strings[0]:=IntToHex(Cardinal(NewVectorFrame.MXCSR),8);
-  if (ProcessorVendorID=viAMD) and (asLong in AMDSIMD) then
-    Index:=16
-  else
-    Index:=8;
+  with CpuInfo do
+    if (CpuType = CPU_TYPE_AMD) and (HasExtendedInfo)
+      and ((AMDSpecific.ExFeatures and EAMD_LONG_FLAG)<>0) then
+      Index:=16
+    else
+      Index:=8;
   while (Index>0) do
   begin
     ListBoxRegs.Items.Objects[Index]:=MakeFlag(NewVectorFrame.XMMRegisters.LongXMM[Index-1],
@@ -334,106 +363,56 @@ begin
   GetThreadValues;
 end;
 
-function TSSEForm.FormatBinary(Value:Int64; nbDigit:Byte):string;
-var
-  I:Byte;
-begin
-  Result:=StringOfChar('0',nbDigit);
-  for I:=1 to nbDigit do
-  begin
-    if (Value and 1)<>0
-      then Result[nbDigit-I+1]:='1';
-    Value:=Value shr 1;
-  end;
-end;
-
-function TSSEForm.FormatSigned(Value:Int64; nbDigit:Byte):string;
-begin
-  case Display of
-    sdBytes : Result:=IntToStr(ShortInt(Value));
-    sdWords : Result:=IntToStr(SmallInt(Value));
-    sdDWords : Result:=IntToStr(Integer(Value));
-    sdQWords : Result:=IntToStr(Value);
-  end;
-  Result:=StringOfChar(' ',nbDigit-Length(Result))+Result;
-end;
-
-function TSSEForm.FormatUnsigned(Value:Int64; nbDigit:Byte):string;
-begin
-  case Display of
-    sdBytes : Result:=IntToStr(Byte(Value));
-    sdWords : Result:=IntToStr(Word(Value));
-    sdDWords : Result:=IntToStr(Cardinal(Value));
-    sdQWords : Result:=IntToStr(Value);
-  end;
-  Result:=StringOfChar(' ',nbDigit-Length(Result))+Result;
-end;
-
-function TSSEForm.FormatHexa(Value:Int64; nbDigit:Byte):string;
-begin
-  Result:=IntToHex(Value,nbDigit);
-end;
-
 procedure TSSEForm.FormatRegs;
-const
-  // number of chars per column
-  ColumnWidth : array[sdBytes..sdQWords,TSIMDFormat] of Byte =
-     // Bytes
-       ( ( 8, 4, 3, 2 ),          // (binary, signed, unsigned, hexa)
-     // Words
-         ( 16, 6, 5, 4 ),
-     // DWords
-         ( 32, 11, 10, 8 ),
-     // QWords
-         ( 64, 20, 20, 16 ) );
-type
-  TFormatFunction = function (Value:int64; nbDigit:Byte):string of Object;
-var
-  FormatFunc:TFormatFunction;
-
-  function FormatFloat(Value:Extended;MaxLength:Byte):string;
-  begin
-    Result:=FloatToStr(Value);
-    Result:=StringOfChar(' ',MaxLength-Length(Result))+Result;
-  end;
   function FormatReg(AReg:TJvXMMRegister):string;
   var
     I:Integer;
+    Value: TJvSIMDValue;
   begin
     Result:='';
+    Value.Display := Display;
     case Display of
       sdBytes   : for I:=High(AReg.Bytes) downto Low(AReg.Bytes) do
-                    Result:=Result+' '+FormatFunc(AReg.Bytes[I],
-                            ColumnWidth[sdBytes,Format]);
+                  begin
+                    Value.ValueByte := AReg.Bytes[I];
+                    Result:=Result+' '+FormatValue(Value,Format);
+                  end;
       sdWords   : for I:=High(AReg.Words) downto Low(AReg.Words) do
-                    Result:=Result+' '+FormatFunc(AReg.Words[I],
-                            ColumnWidth[sdWords,Format]);
+                  begin
+                    Value.ValueWord := AReg.Words[I];
+                    Result:=Result+' '+FormatValue(Value,Format);
+                  end;
       sdDWords  : for I:=High(AReg.DWords) downto Low(AReg.DWords) do
-                    Result:=Result+' '+FormatFunc(AReg.DWords[I],
-                            ColumnWidth[sdDWords,Format]);
+                  begin
+                    Value.ValueDWord := AReg.DWords[I];
+                    Result:=Result+' '+FormatValue(Value,Format);
+                  end;
       sdQWords  : for I:=High(AReg.QWords) downto Low(AReg.QWords) do
-                    Result:=Result+' '+FormatFunc(AReg.QWords[I],
-                            ColumnWidth[sdQWords,Format]);
+                  begin
+                    Value.ValueQWord := AReg.QWords[I];
+                    Result:=Result+' '+FormatValue(Value,Format);
+                  end;
       sdSingles : for I:=High(AReg.Singles) downto Low(AReg.Singles) do
-                    Result:=Result+' '+FormatFloat(AReg.Singles[I],21);
+                  begin
+                    Value.ValueSingle := AReg.Singles[I];
+                    Result:=Result+' '+FormatValue(Value,sfBinary);
+                  end;
       sdDoubles : for I:=High(AReg.Doubles) downto Low(AReg.Doubles) do
-                    Result:=Result+' '+FormatFloat(AReg.Doubles[I],22);
+                  begin
+                    Value.ValueDouble := AReg.Doubles[I];
+                    Result:=Result+' '+FormatValue(Value,sfBinary);
+                  end;
     end;
   end;
 var
   Index:Integer;
 begin
-  case Format of
-    sfBinary   : FormatFunc:=FormatBinary;
-    sfSigned   : FormatFunc:=FormatSigned;
-    sfUnsigned : FormatFunc:=FormatUnsigned;
-    sfHexa     : FormatFunc:=FormatHexa;
-    else Exit;
-  end;
-  if (ProcessorVendorID=viAMD) and (asLong in AMDSIMD) then
-    Index:=16
-  else
-    Index:=8;
+  with CpuInfo do
+    if (CpuType = CPU_TYPE_AMD) and (HasExtendedInfo)
+      and ((AMDSpecific.ExFeatures and EAMD_LONG_FLAG)<>0) then
+      Index:=16
+    else
+      Index:=8;
   while (Index>0) do
   begin
     ListBoxRegs.Items.Strings[Index]:=FormatReg(FVectorFrame.XMMRegisters.LongXMM[Index-1]);
@@ -444,10 +423,10 @@ end;
 
 procedure TSSEForm.MenuItemFormatClick(Sender: TObject);
 begin
-  Format:=TSIMDFormat((Sender as TMenuItem).Tag);
+  Format:=TJvSIMDFormat((Sender as TMenuItem).Tag);
 end;
 
-procedure TSSEForm.SetDisplay(const Value: TSIMDDisplay);
+procedure TSSEForm.SetDisplay(const Value: TJvSIMDDisplay);
 var
   AEnabled:Boolean;
 begin
@@ -468,7 +447,7 @@ begin
   FormatRegs;
 end;
 
-procedure TSSEForm.SetFormat(const Value: TSIMDFormat);
+procedure TSSEForm.SetFormat(const Value: TJvSIMDFormat);
 begin
   FFormat := Value;
   MenuItemBinary.Checked:=Value=sfBinary;
@@ -480,7 +459,7 @@ end;
 
 procedure TSSEForm.MenuItemDisplayClick(Sender: TObject);
 begin
-  Display:=TSIMDDisplay((Sender as TMenuItem).Tag);
+  Display:=TJvSIMDDisplay((Sender as TMenuItem).Tag);
 end;
 
 procedure TSSEForm.DoClose(var Action: TCloseAction);
@@ -507,6 +486,16 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
     );
+
+procedure TSSEForm.MenuItemModifyClick(Sender: TObject);
+begin
+  with TJvSIMDModifyFrm.Create(Self) do
+  begin
+    Icon.Assign(Self.Icon);
+    Execute;
+    Free;
+  end;
+end;
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

@@ -31,7 +31,7 @@ interface
 
 uses
   Windows, Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs,
-  Forms, ComCtrls, JvSIMDViewForm;
+  Forms, ComCtrls, JclSysInfo, JvSIMDViewForm;
 
 type
   TProcessReference = record
@@ -60,6 +60,8 @@ type
     FSSEMenuItem:TMenuItem;
     FViewDebugMenu:TMenuItem;
     FForm:TSSEForm;
+    FCpuInfo: TCpuInfo;
+    FCpuInfoValid: Boolean;
     procedure CheckToolBarButton(AToolBar:TToolBar);
   protected
     // IOTAWizard
@@ -70,6 +72,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function CpuInfo: TCpuInfo;
+    function GetSSEString: string;
     procedure ActionExecute(Sender:TObject);
     procedure ActionUpdate(Sender:TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -114,23 +118,23 @@ procedure Register;
 implementation
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   JvSIMDUtils;
 
 procedure Register;
 begin
-  RegisterPackageWizard(TIDESSEWizard.Create);      
+  RegisterPackageWizard(TIDESSEWizard.Create);
 end;
 
 { TIDESSEWizard }
 
 procedure TIDESSEWizard.ActionExecute(Sender: TObject);
 begin
-  if not (Is128BitSIMDPresent) then
+  if CpuInfo.SSE = 0 then
   begin
-    MessageDlg(RsNo128SIMD,mtError,[mbAbort],0);
+    MessageDlg(RsNoSSE,mtError,[mbAbort],0);
     Exit;
   end;
   if not Assigned(FForm) then
@@ -138,7 +142,7 @@ begin
     FForm:=TSSEForm.Create(Application,FDebuggerServices);
     FForm.Icon:=FIcon;
     FForm.OnDestroy:=FormDestroy;
-    FForm.Caption := SIMDString;
+    FForm.Caption := GetSSEString;
   end;
   FForm.Show;
 end;
@@ -148,8 +152,8 @@ var
   AProcess:IOTAProcess;
   AThread:IOTAThread;
 begin
-  if not (Is128BitSIMDPresent) then
-    FSSEAction.Enabled:=False
+  if CpuInfo.SSE = 0 then
+      FSSEAction.Enabled:=False
   else begin
     AProcess:=FDebuggerServices.CurrentProcess;
     AThread:=nil;
@@ -189,6 +193,16 @@ begin
     then FForm.Close;
 end;
 
+function TIDESSEWizard.CpuInfo: TCpuInfo;
+begin
+  if not FCpuInfoValid then
+  begin
+    GetCpuInfo(FCpuInfo);
+    FCpuInfoValid := True;
+  end;
+  Result := FCpuInfo;
+end;
+
 constructor TIDESSEWizard.Create;
 var
   I:Integer;
@@ -197,6 +211,8 @@ var
   Category:string;
 begin
   inherited Create;
+
+  FCpuInfoValid := False;
 
   FForm:=nil;
   Assert(Supports(BorlandIDEServices,IOTAServices,FServices),
@@ -216,7 +232,7 @@ begin
   FIcon.Handle:=LoadIcon(FindResourceHInstance(HInstance),'SIMDICON');
 
   FSSEAction:=TAction.Create(nil);
-  FSSEAction.Caption := SIMDString;
+  FSSEAction.Caption := RsSSE;
   FSSEAction.Shortcut:=Shortcut(Ord('D'),[ssCtrl,ssAlt]);
   FSSEAction.Visible:=True;
   FSSEAction.OnExecute:=ActionExecute;
@@ -293,12 +309,31 @@ end;
 
 function TIDESSEWizard.GetIDString: string;
 begin
-  Result:='outch.'+ClassName;
+  Result:='jvcl.'+ClassName;
 end;
 
 function TIDESSEWizard.GetName: string;
 begin
   Result:=ClassName;
+end;
+
+function TIDESSEWizard.GetSSEString: string;
+begin
+  Result := '';
+  with CpuInfo do
+  begin
+    Result := '';
+    case SSE of
+      0  : Result := RsNoSSE;
+      1  : Result := RsSSE1;
+      2  : Result := RsSSE1 + ',' + RsSSE2;
+      3  : Result := RsSSE1 + ',' + RsSSE2 + ',' + RsSSE3;
+      else Result := RsSSE+IntToStr(SSE);
+    end;
+    if (CpuType = CPU_TYPE_AMD) and (HasExtendedInfo)
+      and ((AMDSpecific.ExFeatures and EAMD_LONG_FLAG)<>0) then
+      Result := Result + ',' + RsLong;
+  end;
 end;
 
 function TIDESSEWizard.GetState: TWizardState;

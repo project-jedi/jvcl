@@ -34,7 +34,6 @@ uses
 
 var
    Values: array [0..3] of single;
-   MXCSR: Cardinal;
    Index: Integer;
    Number: String;
 begin
@@ -57,7 +56,7 @@ begin
     WriteLn('Value ',Index,' is : ',Values[Index]:2:3);
 
   WriteLn;
-  WriteLn('Starting computations...');
+  WriteLn('Starting computations : Values*2 ...');
   asm
   // breakpoint here
   // hit ctrl+alt+D or go to View/Debug window and open the last item

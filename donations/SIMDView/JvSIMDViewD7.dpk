@@ -37,6 +37,7 @@ requires
 contains
   JvSIMDViewForm in 'JvSIMDViewForm.pas' {SSEForm},
   JvSIMDView in 'JvSIMDView.pas',
-  JvSIMDUtils in 'JvSIMDUtils.pas';
+  JvSIMDUtils in 'JvSIMDUtils.pas',
+  JvSIMDModifyForm in 'JvSIMDModifyForm.pas' {JvSIMDModifyFrm};
 
 end.
