@@ -16,12 +16,13 @@ All Rights Reserved.
 
 Contributor(s):
 
+Last Modified: 2003-12-31
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
 
 {$I jvcl.inc}
 
@@ -37,19 +38,21 @@ type
 
   TJvDockBaseZone = class(TObject)
   private
-    FBaseTree: TJvDockBaseTree;      
+    FBaseTree: TJvDockBaseTree;
     FChildZone: TJvDockBaseZone;
-    FNextSibling: TJvDockBaseZone;   
-    FPrevSibling: TJvDockBaseZone;   
-    FParentZone: TJvDockBaseZone;    
+    FNextSibling: TJvDockBaseZone;
+    FPrevSibling: TJvDockBaseZone;
+    FParentZone: TJvDockBaseZone;
   protected
-    function GetNextSibingCount: Integer; 
-    function GetPrevSibingCount: Integer; 
+    function GetNextSibingCount: Integer;
+    function GetPrevSibingCount: Integer;
   public
     constructor Create(BaseTree: TJvDockBaseTree); virtual;
+    destructor Destroy; override;
+
     function CreateChildZone: TJvDockBaseZone;
     function GetParentZone: TJvDockBaseZone; virtual;
-    function GetChildCount: Integer;      
+    function GetChildCount: Integer;
     function GetChildZone(Index: Word): TJvDockBaseZone;
     property BaseTree: TJvDockBaseTree read FBaseTree write FBaseTree;
     property ChildZone: TJvDockBaseZone read FChildZone write FChildZone;
@@ -206,15 +209,25 @@ begin
   // (rom) added inherited Create
   inherited Create;
   FBaseTree := BaseTree;
-  ChildZone := nil;
-  NextSibling := nil;
-  PrevSibling := nil;
-  ParentZone := nil;
+  FChildZone := nil;
+  FNextSibling := nil;
+  FPrevSibling := nil;
+  FParentZone := nil;
 end;
 
 function TJvDockBaseZone.CreateChildZone: TJvDockBaseZone;
 begin
   Result := nil;
+end;
+
+destructor TJvDockBaseZone.Destroy;
+begin
+  FBaseTree := nil;
+  FChildZone := nil;
+  FNextSibling := nil;
+  FPrevSibling := nil;
+  FParentZone := nil;
+  inherited;
 end;
 
 function TJvDockBaseZone.GetChildCount: Integer;
@@ -236,8 +249,8 @@ end;
 
 function TJvDockBaseZone.GetChildZone(Index: Word): TJvDockBaseZone;
 begin
-  Result := ChildZone;
-  while Index > 0 do
+  Result := FChildZone;
+  while (Index > 0) and (Result <> nil) do
   begin
     Result := Result.NextSibling;
     Dec(Index);
@@ -862,4 +875,6 @@ begin
 end;
 
 end.
+
+
 

@@ -16,12 +16,13 @@ All Rights Reserved.
 
 Contributor(s):
 
+Last Modified: 2004-01-29
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
 
 {$I jvcl.inc}
 
@@ -959,6 +960,7 @@ var
 
 begin
   inherited CustomLoadZone(Stream, Zone);
+  if Zone = nil then Exit;
   Stream.Read(TJvDockVSNETZone(Zone).FVSPaneVisible, SizeOf(TJvDockVSNETZone(Zone).VSPaneVisible));
   if DockSite is TJvDockVSPopupPanel then
   begin

@@ -16,12 +16,13 @@ All Rights Reserved.
 
 Contributor(s):
 
+Last Modified: 2003-12-31
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
 
 {$I jvcl.inc}
 
@@ -375,8 +376,8 @@ end;
 
 destructor TJvDockInfoTree.Destroy;
 begin
-  FDataStream.Free;
   inherited Destroy;
+  FreeAndNil(FDataStream);
 end;
 
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromApp(Control: TControl);
@@ -825,8 +826,7 @@ begin
     end;
     SetDockControlInfo(TJvDockInfoZone(TreeZone));
   end
-  else
-  if FJvDockInfoStyle = isJVCLWriteInfo then
+  else if FJvDockInfoStyle = isJVCLWriteInfo then
   begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), FAppStorage do
@@ -875,7 +875,7 @@ procedure TJvDockInfoTree.ScanTreeZone(TreeZone: TJvDockBaseZone);
 var
   I: Integer;
 begin
-  FJvDockInfoStyle := isReadFileInfo;
+//  FJvDockInfoStyle := isReadFileInfo;
   if (FJvDockInfoStyle = isReadFileInfo) or (FJvDockInfoStyle = isReadRegInfo) then
   begin
     for I := 0 to TreeZone.GetChildCount - 1 do
@@ -885,8 +885,7 @@ begin
     end;
     SetDockControlInfo(TJvDockInfoZone(TreeZone));
   end
-  else
-  if FJvDockInfoStyle = isWriteFileInfo then
+  else if FJvDockInfoStyle = isWriteFileInfo then
   begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), DockInfoIni do
@@ -1004,7 +1003,7 @@ begin
     Host := FindDockHost(DockFormName);
     if (Host = nil) and (ATreeZone.GetChildControlCount > 1) then
       Host := CreateHostControl(ATreeZone);
-    if (Host <> nil) and (DockClientData <> '') then
+    if (Host <> nil) and (DockClientData <> '') and (FDataStream <> nil) then
     begin
       FDataStream.Clear;
 

@@ -16,12 +16,13 @@ All Rights Reserved.
 
 Contributor(s):
 
+Last Modified: 2003-12-31
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
 
 {$I jvcl.inc}
 
@@ -219,11 +220,11 @@ type
   TJvDockBasicConjoinServerOptionClass = class of TJvDockBasicConjoinServerOption;
   TJvDockBasicTabServerOptionClass = class of TJvDockBasicTabServerOption;
 
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
   TJvDockBasicStyle = class(TJvComponent)
-  {$ELSE}
+{$ELSE}
   TJvDockBasicStyle = class(TComponent)
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
   private
     FDockPanelClass: TJvDockPanelClass;
     FDockSplitterClass: TJvDockSplitterClass;
@@ -351,11 +352,11 @@ type
     function DockClientWindowProc(DockClient: TJvDockClient; var Msg: TMessage): Boolean; override;
   end;
 
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
   TJvDockBaseControl = class(TJvComponent)
-  {$ELSE}
+{$ELSE}
   TJvDockBaseControl = class(TComponent)
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
   private
     FEnableDock: Boolean;
     FLeftDock: Boolean;
@@ -1495,25 +1496,27 @@ procedure SaveDockTreeToFile(FileName: string);
 var
   JvDockInfoTree: TJvDockInfoTree;
   I: Integer;
+  MemFile: TMemIniFile;
 begin
   HideAllPopupPanel(nil);
-
-  JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
+  MemFile := nil;
+  MemFile := TMemIniFile.Create(Filename);
   try
-    for I := 0 to Screen.CustomFormCount - 1 do
-      if (Screen.CustomForms[I].Parent = nil) and
-        ((FindDockClient(Screen.CustomForms[I]) <> nil) or (FindDockServer(Screen.CustomForms[I]) <> nil)) then
-        JvDockInfoTree.CreateZoneAndAddInfoFromApp(Screen.CustomForms[I]);
-
-    JvDockInfoTree.DockInfoIni := TMemIniFile.Create(FileName);
+    JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
     try
+      for I := 0 to Screen.CustomFormCount - 1 do
+        if (Screen.CustomForms[I].Parent = nil) and
+          ((FindDockClient(Screen.CustomForms[I]) <> nil) or (FindDockServer(Screen.CustomForms[I]) <> nil)) then
+          JvDockInfoTree.CreateZoneAndAddInfoFromApp(Screen.CustomForms[I]);
+
+      JvDockInfoTree.DockInfoIni := MemFile;
       JvDockInfoTree.WriteInfoToIni;
-      TMemIniFile(JvDockInfoTree.DockInfoIni).UpdateFile;
+      MemFile.UpdateFile;
     finally
-      JvDockInfoTree.DockInfoIni.Free;
+      JvDockInfoTree.Free;
     end;
   finally
-    JvDockInfoTree.Free;
+    MemFile.Free;
   end;
 end;
 
@@ -1521,6 +1524,7 @@ procedure LoadDockTreeFromFile(FileName: string);
 var
   JvDockInfoTree: TJvDockInfoTree;
   Form: TForm;
+  MemFile: TMemIniFile;
 begin
   HideAllPopupPanel(nil);
 
@@ -1532,20 +1536,18 @@ begin
 
   JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
 
+  MemFile := TMemIniFile.Create(FileName);
   JvDockLockWindow(nil);
   try
-    JvDockInfoTree.DockInfoIni := TMemIniFile.Create(FileName);
-    try
-      JvGlobalDockIsLoading := True;
-      JvDockInfoTree.ReadInfoFromIni;
-    finally
-      JvDockInfoTree.DockInfoIni.Free;
-      JvGlobalDockIsLoading := False;
-    end;
+    JvDockInfoTree.DockInfoIni := MemFile;
+    JvGlobalDockIsLoading := True;
+    JvDockInfoTree.ReadInfoFromIni;
+    JvGlobalDockIsLoading := False;
   finally
     Form.Release;
     JvDockUnLockWindow;
     JvDockInfoTree.Free;
+    MemFile.Free;
   end;
   ReshowAllVisibleWindow;
 end;
