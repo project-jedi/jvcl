@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvDataProvider.pas, released on --.
+The Original Code is: JvDataProvider.pas, released on 2003-12-24.
 
 The Initial Developers of the Original Code are Marcel Bestebroer, Peter
 Thörnqvist and Remko Bonte
@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-11-10
+Last Modified: 2003-12-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -145,19 +145,6 @@ type
     function NewByKind(Kind: Integer): IJvDataItem;
   end;
 
-  { base search interface. Can be supported by IJvDataItems implementers if the implementation needs
-    it.
-
-    The basic idea is to declare additional interfaces to implement searching on other properties
-    as well. eg. for the color filler:
-
-      IDataColorSearch = interface
-        function IndexOfTColor(Color: TColor; const Recursive: Boolean = False): Integer;
-      end;
-
-    IJvDataItems implement those search interface that apply for the implementation.
-    The recursive parameter has a default parameter value so it could be left out. }
-
   IJvDataIDSearch = interface
     ['{0F5BDC79-893B-45C9-94E9-C2B2FD4ABFE7}']
     function Find(ID: string; const Recursive: Boolean = False): IJvDataItem;
@@ -181,26 +168,17 @@ type
     property Implementer: TObject read GetImplementer;
   end;
 
-  { Rendering interface for an item. Provides support for both rendering and measuring of the item.
-    Implemented by IJvDataItem. }
   IJvDataItemRenderer = interface
     ['{9E877A0D-01C2-4204-AA74-84D6516BBEB9}']
-    { Render the item to the specified canvas in the specified rectangle. }
     procedure Draw(ACanvas: TCanvas; var ARect: TRect; State: TProviderDrawStates);
-    { Measure the item. }
     function Measure(ACanvas: TCanvas): TSize;
   end;
 
-  { Supported by the IJvDataItem implementer if it supports text. }
   IJvDataItemText = interface
   ['{94FA56D9-281B-4252-B46D-15E7BADA70DA}']
-    { Retrieve the text of the item. }
     function GetCaption: string;
-    { Set the text of the item. }
     procedure SetCaption(const Value: string);
-    { Determines if the item's caption can be modified by a UI control (such as an edit control). }
     function Editable: Boolean;
-    { Get or set the text of the item. }
     property Caption: string read GetCaption write SetCaption;
   end;
 
@@ -235,11 +213,8 @@ type
     property Visible: TDataItemState read Get_Visible write Set_Visible;
   end;
 
-  { Support interface for provider editor. Must be implemented by IJvDataItem implementers who
-    allow their item to be edited in the provider editor. }
   IJvDataItemDesigner = interface
     ['{8F1A1283-2D13-4A28-9616-08B3EF73F29A}']
-    { Number of actions/menu items. }
     function GetVerbCount: Integer;
     function GetVerb(Index: Integer; out Caption: string; out Enabled, Checked, Visible,
       RadioItem: Boolean): Boolean;
@@ -268,24 +243,17 @@ type
     function AttributeApplies(Attr: Integer): Boolean;
   end;
 
-  { Consumer support interface to retrieve the selected provider. Used by the various property
-    editors. }
   IJvDataConsumerProvider = interface
     ['{1F01D2E5-2ACB-4B84-AFE6-67E563FB470B}']
     function GetProvider: IJvDataProvider;
   end;
 
-  { Consumer support interface to retrieve or set the selected context. Used by the various
-    property editors. }
   IJvDataConsumerContext = interface
     ['{7AA9F53D-BBD4-4B64-916A-AAF4AB25A496}']
     function GetContext: IJvDataContext;
     procedure SetContext(Value: IJvDataContext);
   end;
 
-  { Consumer support interface to retrieve the state of an item as specified by the consumer.
-    disNotUsed means the state is not supported by the consumer and should be taken from the
-    item instead. }
   IJvDataConsumerItemState = interface
     ['{09EBDED8-502E-4C2E-9842-312850FF3358}']
     function Enabled(Item: IJvDataItem): TDataItemState;
@@ -293,9 +261,6 @@ type
     function Visible(Item: IJvDataItem): TDataItemState;
   end;
 
-  { Consumer support interface to get or set the (root) item to render. Consumers that only support
-    showing a single item use this interface to specify which item is to be displayed, while
-    consumers that can render trees use it to specify the root item to show. }
   IJvDataConsumerItemSelect = interface
     ['{F11554AE-263D-4C04-BCDB-79F04DE89609}']
     function GetItem: IJvDataItem;
@@ -312,139 +277,73 @@ type
     procedure Set_LevelIndent(Value: Integer);
     procedure RebuildView;
     procedure ExpandTreeTo(Item: IJvDataItem);
-    { Toggles an item's expanded state. If an item becomes expanded, the item's sub item as present
-      in the IJvDataItems instance will be added; if an item becomes collapsed the sub items are
-      removed from the view. }
     procedure ToggleItem(Index: Integer);
-    { Locate an item in the view list, returning it's absolute index. }
     function IndexOfItem(Item: IJvDataItem): Integer;
-    { Locate an item ID in the view list, returning it's absolute index. }
     function IndexOfID(ID: TJvDataItemID): Integer;
-    { Locate an item in the view list, returning it's index in the parent item. }
     function ChildIndexOfItem(Item: IJvDataItem): Integer;
-    { Locate an item ID in the view list, returning it's index in the parent item. }
     function ChildIndexOfID(ID: TJvDataItemID): Integer;
-    { Retrieve the IJvDataItem reference given the absolute index into the view list. }
     function Item(Index: Integer): IJvDataItem;
-    { Retrieve an items level given the absolute index into the view list. }
     function ItemLevel(Index: Integer): Integer;
-    { Retrieve an items expanded state given the absolute index into the view list. }
     function ItemIsExpanded(Index: Integer): Boolean;
-    { Determine if an item has children given the absolute index into the view list. }
     function ItemHasChildren(Index: Integer): Boolean;
-    { Retrieve an items parent given the absolute index into the view list. }
     function ItemParent(Index: Integer): IJvDataItem;
-    { Retrieve an items parent absolute index given the absolute index into the view list. }
     function ItemParentIndex(Index: Integer): Integer;
-    { Retrieve an items sibling given an absolute index. }
-    function ItemSibling(Index: Integer): IJvDataItem; 
-    { Retrieve the index of an items sibling given an absolute index. }
+    function ItemSibling(Index: Integer): IJvDataItem;
     function ItemSiblingIndex(Index: Integer): Integer;
-    { Retrieve the IJvDataItem reference given the child index and a parent item. }
     function SubItem(Parent: IJvDataItem; Index: Integer): IJvDataItem; overload;
-    { Retrieve the IJvDataItem reference given the child index and a parent absolute index. }
     function SubItem(Parent, Index: Integer): IJvDataItem; overload;
-    { Retrieve the absolute index given a child index and a parent item. }
     function SubItemIndex(Parent: IJvDataItem; Index: Integer): Integer; overload;
-    { Retrieve the absolute index given a child index and a parent absolute index. }
     function SubItemIndex(Parent, Index: Integer): Integer; overload;
-    { Retrieve info on grouping; each bit represents a level, if the bit is set the item at that
-      level has another sibling. Can be used to render tree lines. }
     function ItemGroupInfo(Index: Integer): TDynIntegerArray;
-    { Retrieve the number of viewable items. }
     function Count: Integer;
-    { Level of auto expanding. -1 is infinite, 0 is none. }
     property AutoExpandLevel: Integer read Get_AutoExpandLevel write Set_AutoExpandLevel;
-    { Expand automatically if an item is added to the provider and it would not be visible by
-      default (i.e. one of the parents are still in collapsed state). }
     property ExpandOnNewItem: Boolean read Get_ExpandOnNewItem write Set_ExpandOnNewItem;
-    { Indentation in pixels for each level. Used by the rendering engine. }
     property LevelIndent: Integer read Get_LevelIndent write Set_LevelIndent;
   end;
 
-  { Consumer support interface to be used as a callback for IJvDataConsumerClientNotify
-    implementations. Used to add or remove the link, as well as be notified if a change occured
-    at the client that may result in the link being removed (at the discretion of the server
-    implementation) }
   IJvDataConsumerServerNotify = interface
     ['{636CF1CD-6A5A-414F-9506-EAC461202119}']
-    { Add a client notifier, to be called when this consumer changes. Will call Client.LinkAdded
-      when the link was succesful. }
     procedure AddClient(Client: IJvDataConsumerClientNotify);
-    { Remove a client notifier. Will call Client.LinkRemoved when done. }
     procedure RemoveClient(Client: IJvDataConsumerClientNotify);
-    { Called when the consumer belonging to the client has selected another provider. The server
-      may at this point decide to remove the link or keep it. }
     procedure NotifyProviderChanged(Client: IJvDataConsumerClientNotify);
-    { Determine if the specified client is valid for this server. }
     function IsValidClient(Client: IJvDataConsumerClientNotify): Boolean;
   end;
 
-  { Consumer support interface to be notified if another consumer has changed it's selected
-    (current) item. Used to react to changes of another consumer. For example, if another consumer
-    lists contexts related to this consumer and the context list consumer selects a different
-    context, this interface's implementer can switch the context of it's own consumer. }
   IJvDataConsumerClientNotify = interface
     ['{D1AAAFDF-BEB1-44DB-B8D8-A60080CEF3C7}']
-    { Called when the server consumer has selected another item. }
     procedure ItemSelected(Server: IJvDataConsumerServerNotify; Value: IJvDataItem);
-    { Called when the server has added this client to it's list. The provided Server interface
-      can be used to notify the server if another provider is selected for this consumer or remove
-      the link if the consumer is ending. }
     procedure LinkAdded(Server: IJvDataConsumerServerNotify);
-    { Called when the server has disconnected this client. }
     procedure LinkRemoved(Server: IJvDataConsumerServerNotify);
   end;
 
-  { Provider context list interface. Note that there is always an implicit (nameless) context
-    at the provider, even if there is no IJvDataContexts interface available. }
   IJvDataContexts = interface
     ['{BA5DC787-29C6-40FA-9542-F0A1E92A2B30}']
-    { Reference to the provider. }
     function Provider: IJvDataProvider;
-    { Reference to the parent context (ancestor context). }
     function Ancestor: IJvDataContext;
-    { Number of contexts. }
     function GetCount: Integer;
-    { Array of available contexts. }
     function GetContext(Index: Integer): IJvDataContext;
-    { Retrieve a context by name. Returns nil if the context does not exist. Name may be a path to
-      the context (e.g.: 'Context1\Context1.1\Context1.1.3' or '..\Context1.2') }
     function GetContextByName(Name: string): IJvDataContext;
-    { Retrieve the index of the specified context. If the context does not belong to this list the
-      function will return -1. }
     function IndexOf(Ctx: IJvDataContext): Integer;
   end;
 
-  { Support interface for IJvDataContexts to allow adding/deleting contexts. }
   IJvDataContextsManager = interface
     ['{A94D62CA-F9B4-4DAA-9091-86D01A962BB1}']
-    { Add a context. }
     function Add(Context: IJvDataContext): IJvDataContext;
-    { Create a new context and add it to the list. }
     function New: IJvDataContext;
-    { Delete the specified context. }
     procedure Delete(Context: IJvDataContext);
-    { Clear the list of contexts. }
     procedure Clear;
   end;
 
   IJvDataContext = interface
     ['{F226D92A-3493-4EF8-9CE6-037357EB0CEA}']
-    { Retrieve the implementing instance. }
     function GetImplementer: TObject;
-    { Reference to the context manager. }
     function Contexts: IJvDataContexts;
-    { Unique name of the context (used at design time and by the streaming system). }
     function Name: string;
-    { Determines if the context can be deleted. Some providers may generate some fixed contexts that
-      should never be deleted if the Context Manager is used. }
     function IsDeletable: Boolean;
   end;
 
   IJvDataContextManager = interface
     ['{530367D8-601C-4E36-B5F0-357160497C50}']
-    { Allows the name to be changed. }
     procedure SetName(Value: string);
   end;
 
