@@ -1217,7 +1217,7 @@ end;
 destructor TJvTabBarItem.Destroy;
 begin
   PopupMenu := nil;
-  FVisible := False; // CanSelect returns false 
+  Visible := False; // CanSelect returns false 
   {$IFDEF COMPILER5}
   TOwnedCollection(GetOwner).Notify(Self, cnDeleting);
   {$ENDIF COMPILER5}
