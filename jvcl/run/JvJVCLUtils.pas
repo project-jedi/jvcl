@@ -6009,9 +6009,7 @@ end;
 
 { begin JvCtrlUtils }
 
-//==============================================================================
-// ToolBarMenu
-//==============================================================================
+//=== ToolBarMenu ============================================================
 
 procedure JvCreateToolBarMenu(AForm: TForm; AToolBar: TToolBar;
   AMenu: TMainMenu);
@@ -6071,9 +6069,7 @@ begin
   AForm.Menu := nil;
 end;
 
-//==============================================================================
-// ListView functions
-//==============================================================================
+//=== ListView functions =====================================================
 
 procedure JvListViewToStrings(ListView: TListView; Strings: TStrings;
   SelectedOnly: Boolean; Headers: Boolean);
@@ -6369,9 +6365,7 @@ begin
 end;
 {$ENDIF VCL}
 
-//==============================================================================
-// MessageBox
-//==============================================================================
+//== MessageBox ==============================================================
 
 function JvMessageBox(const Text, Caption: string; Flags: DWORD): Integer;
 begin

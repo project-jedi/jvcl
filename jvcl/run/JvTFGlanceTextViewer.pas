@@ -105,8 +105,7 @@ type
     property MouseLine: Integer read FMouseLine write SetMouseLine;
     procedure UpdateDDBtnRect;
 
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-                        X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseAccel(X, Y: Integer);
 
@@ -115,10 +114,10 @@ type
 
     property Replicating: Boolean read FReplicating;
     procedure Paint; override;
-    procedure DrawDDButton(aCanvas: TCanvas);
-    procedure DrawArrow(aCanvas: TCanvas; aRect: TRect; Direction: TJvTFDirection);
-    procedure DrawScrollUpBtn(aCanvas: TCanvas; aCellRect: TRect);
-    procedure DrawScrollDnBtn(aCanvas: TCanvas; aCellRect: TRect);
+    procedure DrawDDButton(ACanvas: TCanvas);
+    procedure DrawArrow(ACanvas: TCanvas; aRect: TRect; Direction: TJvTFDirection);
+    procedure DrawScrollUpBtn(ACanvas: TCanvas; aCellRect: TRect);
+    procedure DrawScrollDnBtn(ACanvas: TCanvas; aCellRect: TRect);
     function GetStartEndString(Appt: TJvTFAppt): string;
 
     function CalcLineHeight: Integer;
@@ -139,14 +138,14 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure PaintTo(aCanvas: TCanvas; DrawInfo: TJvTFGlTxtVwDrawInfo); overload;
+    procedure PaintTo(ACanvas: TCanvas; DrawInfo: TJvTFGlTxtVwDrawInfo); overload;
 
     property Viewer: TJvTFGlanceTextViewer read FViewer;
     property GlanceControl: TJvTFCustomGlance read GetGlanceControl;
 
     // editor management routines
     //procedure EditAppt(Col, Row: Integer; Appt: TJvTFAppt);
-    procedure EditAppt(aCell: TJvTFGlanceCell; RelLine: Integer; Appt: TJvTFAppt);
+    procedure EditAppt(ACell: TJvTFGlanceCell; RelLine: Integer; Appt: TJvTFAppt);
     procedure FinishEditAppt;
     function Editing: Boolean;
     function CanEdit: Boolean;
@@ -159,7 +158,6 @@ type
 
     function GetApptAt(X, Y: Integer): TJvTFAppt;
     function GetApptAccel(X, Y: Integer): TJvTFAppt;
-  published
   end;
 
   TJvTFLineDDClickEvent = procedure(Sender: TObject; LineNum: Integer) of object;
@@ -179,8 +177,7 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property Color: TColor read FColor write SetColor default clBlue;
-    property FontColor: TColor read FFontColor write SetFontColor
-      default clWhite;
+    property FontColor: TColor read FFontColor write SetFontColor default clWhite;
   end;
 
   TJvTFGlTxtVwEditorAlign = (eaLine, eaCell);
@@ -192,16 +189,14 @@ type
     FEditorAlign: TJvTFGlTxtVwEditorAlign;
     FOnLineDDClick: TJvTFLineDDClickEvent;
     FShowStartEnd: Boolean;
-
     FTopLines: TStringList;
     FSelApptAttr: TJvTFTxtVwApptAttr;
     FSelAppt: TJvTFAppt;
-
     procedure SetLineSpacing(Value: Integer);
     procedure SetSelApptAttr(Value: TJvTFTxtVwApptAttr);
     procedure SetEditorAlign(Value: TJvTFGlTxtVwEditorAlign);
     procedure SetShowStartEnd(Value: Boolean);
-    function GetCellString(aCell: TJvTFGlanceCell): string;
+    function GetCellString(ACell: TJvTFGlanceCell): string;
   protected
     procedure SetVisible(Value: Boolean); override;
     procedure SetGlanceControl(Value: TJvTFCustomGlance); override;
@@ -219,27 +214,24 @@ type
 
     procedure Refresh; override;
     procedure Realign; override;
-    procedure PaintTo(aCanvas: TCanvas; aCell: TJvTFGlanceCell); override;
-    function GetDrawInfo(aCell: TJvTFGlanceCell): TJvTFGlTxtVwDrawInfo;
+    procedure PaintTo(ACanvas: TCanvas; ACell: TJvTFGlanceCell); override;
+    function GetDrawInfo(ACell: TJvTFGlanceCell): TJvTFGlTxtVwDrawInfo;
     procedure ResetTopLines;
     property SelAppt: TJvTFAppt read FSelAppt;
 
-    procedure SetTopLine(aCell: TJvTFGlanceCell; Value: Integer);
-    function GetTopLine(aCell: TJvTFGlanceCell): Integer;
+    procedure SetTopLine(ACell: TJvTFGlanceCell; Value: Integer);
+    function GetTopLine(ACell: TJvTFGlanceCell): Integer;
     function GetApptAt(X, Y: Integer): TJvTFAppt; override;
 
     // editor management routines
-    procedure EditAppt(aCell: TJvTFGlanceCell; RelLine: Integer; Appt: TJvTFAppt);
+    procedure EditAppt(ACell: TJvTFGlanceCell; RelLine: Integer; Appt: TJvTFAppt);
     procedure FinishEditAppt; override;
     function Editing: Boolean; override;
     function CanEdit: Boolean; override;
   published
-    property LineSpacing: Integer read FLineSpacing write SetLineSpacing
-      default 0;
-    property OnLineDDClick: TJvTFLineDDClickEvent read FOnLineDDClick
-      write FOnLineDDClick;
-    property SelApptAttr: TJvTFTxtVwApptAttr read FSelApptAttr
-      write SetSelApptAttr;
+    property LineSpacing: Integer read FLineSpacing write SetLineSpacing default 0;
+    property OnLineDDClick: TJvTFLineDDClickEvent read FOnLineDDClick write FOnLineDDClick;
+    property SelApptAttr: TJvTFTxtVwApptAttr read FSelApptAttr write SetSelApptAttr;
     property EditorAlign: TJvTFGlTxtVwEditorAlign read FEditorAlign
       write SetEditorAlign default eaLine;
     property ShowStartEnd: Boolean read FShowStartEnd
@@ -258,10 +250,7 @@ resourcestring
   RsEGlanceControlNotAssigned = 'GlanceControl not assigned';
 {$ENDIF USEJVCL}
 
-function TJvTFGVTextControl.CalcAbsLineNum(Y: Integer): Integer;
-begin
-  Result := Y div CalcLineHeight;
-end;
+//=== { TJvTFGVTextControl } =================================================
 
 constructor TJvTFGVTextControl.Create(AOwner: TComponent);
 begin
@@ -288,14 +277,19 @@ begin
   //   Beep;
 end;
 
-procedure TJvTFGVTextControl.DrawDDButton(aCanvas: TCanvas);
+function TJvTFGVTextControl.CalcAbsLineNum(Y: Integer): Integer;
 begin
-  with aCanvas do
+  Result := Y div CalcLineHeight;
+end;
+
+procedure TJvTFGVTextControl.DrawDDButton(ACanvas: TCanvas);
+begin
+  with ACanvas do
   begin
     Brush.Color := clBtnFace;
     FillRect(FDDBtnRect);
 
-    DrawArrow(aCanvas, FDDBtnRect, dirDown);
+    DrawArrow(ACanvas, FDDBtnRect, dirDown);
 
     Pen.Color := clBlack;
     Polyline([FDDBtnRect.TopLeft, Point(FDDBtnRect.Right, FDDBtnRect.Top),
@@ -346,16 +340,16 @@ procedure TJvTFGVTextControl.Paint;
 var
   DrawInfo: TJvTFGlTxtVwDrawInfo;
 begin
-{
-All drawing should be done in a PaintTo method.  PaintTo should have aCanvas
-and aRect Params.  All drawing code within PaintTo should rely solely on
-the aCanvas and aRect parameters given.
+  {
+  All drawing should be done in a PaintTo method.  PaintTo should have ACanvas
+  and aRect Params.  All drawing code within PaintTo should rely solely on
+  the ACanvas and aRect parameters given.
 
-This method (Paint) should then call PaintTo(Canvas, ClientRect) to draw the
-info on the viewer control.  TJvTFCustomGlance.DrawCell should call
-PaintTo(PaintBuffer, CellBodyRect(Col, Row, Selected, False)) to draw the
-info on the GlanceControl.
-}
+  This method (Paint) should then call PaintTo(Canvas, ClientRect) to draw the
+  info on the viewer control.  TJvTFCustomGlance.DrawCell should call
+  PaintTo(PaintBuffer, CellBodyRect(Col, Row, Selected, False)) to draw the
+  info on the GlanceControl.
+  }
 
   Viewer.SetTo(Viewer.PhysicalCell);
   DrawInfo := Viewer.GetDrawInfo(Viewer.Cell);
@@ -379,15 +373,10 @@ info on the GlanceControl.
 }
 end;
 
-procedure TJvTFGVTextControl.PaintTo(aCanvas: TCanvas; DrawInfo: TJvTFGlTxtVwDrawInfo);
+procedure TJvTFGVTextControl.PaintTo(ACanvas: TCanvas; DrawInfo: TJvTFGlTxtVwDrawInfo);
 var
-  I,
-  NextLineTop,
-  LastLine: Integer;
-  aRect,
-  LineRect,
-  TxtRect,
-  BtnRect: TRect;
+  I, NextLineTop, LastLine: Integer;
+  aRect, LineRect, TxtRect, BtnRect: TRect;
   Flags: UINT;
   Txt: string;
   PTxt: PChar;
@@ -397,7 +386,7 @@ var
 begin
   Viewer.SetTo(DrawInfo.Cell);
 
-  with aCanvas do
+  with ACanvas do
   begin
     aRect := DrawInfo.aRect;
 
@@ -468,7 +457,7 @@ begin
 
       PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
       StrPCopy(PTxt, Txt);
-      Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+      Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
       StrDispose(PTxt);
 
       Inc(NextLineTop, CalcLineHeight);
@@ -479,24 +468,24 @@ begin
   begin
     if not Replicating and (FMousePtInfo.RelLineNum < Viewer.ApptCount) and
        FMouseInControl then
-      DrawDDButton(aCanvas);
+      DrawDDButton(ACanvas);
 
     BtnRect := ScrollUpBtnRect(DrawInfo.aRect);
     if not Windows.IsRectEmpty(BtnRect) then
-      DrawScrollUpBtn(aCanvas, DrawInfo.aRect);
+      DrawScrollUpBtn(ACanvas, DrawInfo.aRect);
 
     BtnRect := ScrollDnBtnRect(DrawInfo.aRect);
     if not Windows.IsRectEmpty(BtnRect) then
-      DrawScrollDnBtn(aCanvas, DrawInfo.aRect);
+      DrawScrollDnBtn(ACanvas, DrawInfo.aRect);
 
     {
     if TopLine > 0 then
-      DrawScrollUpBtn(aCanvas, DrawInfo.aRect);
+      DrawScrollUpBtn(ACanvas, DrawInfo.aRect);
 
     BottomLine := TopLine + FullViewableLines - 1;
     LastLine := LineCount - 1;
     if BottomLine < LastLine then
-      DrawScrollDnBtn(aCanvas, DrawInfo.aRect);
+      DrawScrollDnBtn(ACanvas, DrawInfo.aRect);
     }
   end;
 end;
@@ -534,28 +523,24 @@ begin
   end;
 end;
 
-procedure TJvTFGVTextControl.DrawArrow(aCanvas: TCanvas; aRect: TRect;
+procedure TJvTFGVTextControl.DrawArrow(ACanvas: TCanvas; aRect: TRect;
   Direction: TJvTFDirection);
 var
-  I,
-  ArrowHeight,
-  ArrowWidth,
-  BaseX,
-  BaseY: Integer;
+  I, ArrowHeight, ArrowWidth, BaseX, BaseY: Integer;
 begin
   ArrowWidth := RectWidth(aRect) - 2;
   if not Odd(ArrowWidth) then
     Dec(ArrowWidth);
   ArrowHeight := (ArrowWidth + 1) div 2;
 
-  Case Direction of
+  case Direction of
     dirUp:
       begin
         BaseX := aRect.Left + RectWidth(aRect) div 2 - ArrowWidth div 2;
         BaseY := aRect.Top + RectHeight(aRect) div 2 + ArrowHeight div 2 - 1;
 
         for I := ArrowHeight downto 1 do
-          with aCanvas do
+          with ACanvas do
           begin
             MoveTo(BaseX, BaseY);
             LineTo(BaseX + I * 2 - 1, BaseY);
@@ -569,7 +554,7 @@ begin
         BaseY := aRect.Top + RectHeight(aRect) div 2 - ArrowHeight div 2 + 1;
 
         for I := ArrowHeight downto 1 do
-        with aCanvas do
+        with ACanvas do
           begin
             MoveTo(BaseX, BaseY);
             LineTo(BaseX + I * 2 - 1, BaseY);
@@ -583,7 +568,7 @@ begin
         BaseY := aRect.Top + RectHeight(aRect) div 2 - ArrowWidth div 2;
 
         for I := ArrowHeight downto 1 do
-          with aCanvas do
+          with ACanvas do
           begin
             MoveTo(BaseX, BaseY);
             LineTo(BaseX, BaseY + I * 2 - 1);
@@ -596,7 +581,7 @@ begin
     BaseY := aRect.Top + RectHeight(aRect) div 2 - ArrowWidth div 2;
 
     for I := ArrowHeight downto 1 do
-      with aCanvas do
+      with ACanvas do
       begin
         MoveTo(BaseX, BaseY);
         LineTo(BaseX, BaseY + I * 2 - 1);
@@ -626,19 +611,21 @@ begin
   inherited DoExit;
   FMouseLine := -1; 
 end;
+
 {
 function TJvTFGVTextControl.LineCount: Integer;
 var
-  aCell: TJvTFGlanceCell;
+  ACell: TJvTFGlanceCell;
   I: Integer;
 begin
   Result := 0;
-  aCell := Viewer.GlanceControl.Cells.Cells[Viewer.Col, Viewer.Row];
+  ACell := Viewer.GlanceControl.Cells.Cells[Viewer.Col, Viewer.Row];
 
-  for I := 0 to aCell.ScheduleCount - 1 do
-    Inc(Result, aCell.Schedules[I].ApptCount);
+  for I := 0 to ACell.ScheduleCount - 1 do
+    Inc(Result, ACell.Schedules[I].ApptCount);
 end;
 }
+
 function TJvTFGVTextControl.LineCount: Integer;
 begin
   Result := Viewer.ApptCount;
@@ -796,8 +783,8 @@ begin
 
       Pen.Color := clBlack;
       Polyline([Point(0, 0), Point(Width - 1, 0),
-                Point(Width - 1, Height - 1), Point(0, Height - 1),
-                Point(0, 0)]);
+        Point(Width - 1, Height - 1), Point(0, Height - 1),
+        Point(0, 0)]);
 
       MoveTo(2, 2);
       LineTo(14, 2);
@@ -827,8 +814,8 @@ begin
 
       Pen.Color := clBlack;
       Polyline([Point(0, 0), Point(Width - 1, 0),
-                Point(Width - 1, Height - 1), Point(0, Height - 1),
-                Point(0, 0)]);
+        Point(Width - 1, Height - 1), Point(0, Height - 1),
+        Point(0, 0)]);
 
       MoveTo(9, 2);
       LineTo(11, 2);
@@ -844,21 +831,21 @@ begin
   end;
 end;
 
-procedure TJvTFGVTextControl.DrawScrollDnBtn(aCanvas: TCanvas; aCellRect: TRect);
+procedure TJvTFGVTextControl.DrawScrollDnBtn(ACanvas: TCanvas; aCellRect: TRect);
 var
   aRect: TRect;
 begin
   aRect := ScrollDnBtnRect(aCellRect);
-  Windows.BitBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
+  Windows.BitBlt(ACanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
     RectHeight(aRect), FScrollDnBtnBMP.Canvas.Handle, 0, 0, SRCCOPY);
 end;
 
-procedure TJvTFGVTextControl.DrawScrollUpBtn(aCanvas: TCanvas; aCellRect: TRect);
+procedure TJvTFGVTextControl.DrawScrollUpBtn(ACanvas: TCanvas; aCellRect: TRect);
 var
   aRect: TRect;
 begin
   aRect := ScrollUpBtnRect(aCellRect);
-  Windows.BitBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
+  Windows.BitBlt(ACanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
     RectHeight(aRect), FScrollUpBtnBMP.Canvas.Handle, 0, 0, SRCCOPY);
 end;
 
@@ -931,7 +918,7 @@ begin
 end;
 }
 
-procedure TJvTFGVTextControl.EditAppt(aCell: TJvTFGlanceCell; RelLine: Integer; Appt: TJvTFAppt);
+procedure TJvTFGVTextControl.EditAppt(ACell: TJvTFGlanceCell; RelLine: Integer; Appt: TJvTFAppt);
 var
   EditLine: Integer;
   EditorRect: TRect;
@@ -942,7 +929,7 @@ begin
      ((EditLine < 0) or (EditLine > AbsLineCount)) then
     Exit;
 
-  Viewer.MoveTo(aCell);
+  Viewer.MoveTo(ACell);
 
   if Viewer.EditorAlign = eaLine then
   begin
@@ -1083,12 +1070,7 @@ begin
     Viewer.Visible := False;
 end;
 
-{ TJvTFGlanceTextViewer }
-
-procedure TJvTFGlanceTextViewer.Change;
-begin
-  Refresh;
-end;
+//=== { TJvTFGlanceTextViewer } ==============================================
 
 constructor TJvTFGlanceTextViewer.Create(AOwner: TComponent);
 begin
@@ -1111,12 +1093,17 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvTFGlanceTextViewer.Change;
+begin
+  Refresh;
+end;
+
 procedure TJvTFGlanceTextViewer.SetEditorAlign(Value: TJvTFGlTxtVwEditorAlign);
 begin
   FEditorAlign := Value;
 end;
 
-function TJvTFGlanceTextViewer.GetDrawInfo(aCell: TJvTFGlanceCell): TJvTFGlTxtVwDrawInfo;
+function TJvTFGlanceTextViewer.GetDrawInfo(ACell: TJvTFGlanceCell): TJvTFGlTxtVwDrawInfo;
 var
   Attr: TJvTFGlanceCellAttr;
 begin
@@ -1125,20 +1112,20 @@ begin
 
   with Result do
   begin
-    Cell := aCell;
-    Attr := GlanceControl.GetCellAttr(aCell);
+    Cell := ACell;
+    Attr := GlanceControl.GetCellAttr(ACell);
     Font := Attr.Font;
     Color := Attr.Color;
-    aRect := GlanceControl.CalcCellBodyRect(aCell,
-      GlanceControl.CellIsSelected(aCell), False);
+    aRect := GlanceControl.CalcCellBodyRect(ACell,
+      GlanceControl.CellIsSelected(ACell), False);
   end;
 end;
 
-function TJvTFGlanceTextViewer.GetTopLine(aCell: TJvTFGlanceCell): Integer;
+function TJvTFGlanceTextViewer.GetTopLine(ACell: TJvTFGlanceCell): Integer;
 var
   I: Integer;
 begin
-  I := FTopLines.IndexOf(GetCellString(aCell));
+  I := FTopLines.IndexOf(GetCellString(ACell));
   if I > -1 then
     Result := Integer(FTopLines.Objects[I])
   else
@@ -1163,9 +1150,9 @@ begin
   inherited Notify(Sender, Code);
 end;
 
-procedure TJvTFGlanceTextViewer.PaintTo(aCanvas: TCanvas; aCell: TJvTFGlanceCell);
+procedure TJvTFGlanceTextViewer.PaintTo(ACanvas: TCanvas; ACell: TJvTFGlanceCell);
 begin
-  FViewControl.PaintTo(aCanvas, GetDrawInfo(aCell));
+  FViewControl.PaintTo(ACanvas, GetDrawInfo(ACell));
 end;
 
 procedure TJvTFGlanceTextViewer.ParentReconfig;
@@ -1228,7 +1215,7 @@ begin
   FSelApptAttr.Assign(Value);
 end;
 
-procedure TJvTFGlanceTextViewer.SetTopLine(aCell: TJvTFGlanceCell; Value: Integer);
+procedure TJvTFGlanceTextViewer.SetTopLine(ACell: TJvTFGlanceCell; Value: Integer);
 var
   I: Integer;
   CellStr: string;
@@ -1241,7 +1228,7 @@ begin
   // wrong cell due to repainting as the hint window would hide/show.
   GlanceControl.CheckViewerApptHint(-1, -1);
 
-  CellStr := GetCellString(aCell);
+  CellStr := GetCellString(ACell);
   I := FTopLines.IndexOf(CellStr);
   if I > -1 then
     if Value = 0 then
@@ -1283,10 +1270,10 @@ begin
   Result := FViewControl.CanEdit;
 end;
 
-procedure TJvTFGlanceTextViewer.EditAppt(aCell: TJvTFGlanceCell; RelLine: Integer;
+procedure TJvTFGlanceTextViewer.EditAppt(ACell: TJvTFGlanceCell; RelLine: Integer;
   Appt: TJvTFAppt);
 begin
-  FViewControl.EditAppt(aCell, RelLine, Appt);
+  FViewControl.EditAppt(ACell, RelLine, Appt);
 end;
 
 function TJvTFGlanceTextViewer.Editing: Boolean;
@@ -1299,18 +1286,18 @@ begin
   FViewControl.FinishEditAppt;
 end;
 
-function TJvTFGlanceTextViewer.GetCellString(aCell: TJvTFGlanceCell): string;
+function TJvTFGlanceTextViewer.GetCellString(ACell: TJvTFGlanceCell): string;
 begin
   Result := '';
-  if Assigned(aCell) then
+  if Assigned(ACell) then
   begin
-    Result := IntToStr(aCell.ColIndex) + ',' + IntToStr(aCell.RowIndex);
-    if aCell.IsSubcell then
+    Result := IntToStr(ACell.ColIndex) + ',' + IntToStr(ACell.RowIndex);
+    if ACell.IsSubcell then
       Result := Result + 'S';
   end;
 end;
 
-{ TJvTFGVTxtEditor }
+//=== { TJvTFGVTxtEditor } ===================================================
 
 constructor TJvTFGVTxtEditor.Create(AOwner: TComponent);
 begin
@@ -1354,7 +1341,14 @@ begin
     TJvTFGVTextControl(Owner).FinishEditAppt;
 end;
 
-{ TJvTFTxtVwApptAttr }
+//=== { TJvTFTxtVwApptAttr } =================================================
+
+constructor TJvTFTxtVwApptAttr.Create(AOwner: TComponent);
+begin
+  inherited Create;
+  FColor := clBlue;
+  FFontColor := clWhite;
+end;
 
 procedure TJvTFTxtVwApptAttr.Assign(Source: TPersistent);
 begin
@@ -1372,13 +1366,6 @@ procedure TJvTFTxtVwApptAttr.Change;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
-end;
-
-constructor TJvTFTxtVwApptAttr.Create(AOwner: TComponent);
-begin
-  inherited Create;
-  FColor := clBlue;
-  FFontColor := clWhite;
 end;
 
 procedure TJvTFTxtVwApptAttr.SetColor(Value: TColor);

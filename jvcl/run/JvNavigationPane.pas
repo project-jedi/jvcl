@@ -2145,7 +2145,7 @@ begin
     FSplitter.OnMouseUp := Value;
 end;
 
-//=== { TJvNavIconButton } ==================================================
+//=== { TJvNavIconButton } ===================================================
 
 constructor TJvNavIconButton.Create(AOwner: TComponent);
 begin
@@ -4350,7 +4350,7 @@ begin
     FOnChange(Sender);
 end;
 
-//=== { TJvCustomNavPaneToolPanel } ================================================
+//=== { TJvCustomNavPaneToolPanel } ==========================================
 
 constructor TJvCustomNavPaneToolPanel.Create(AOwner: TComponent);
 begin
@@ -4362,8 +4362,9 @@ begin
   FBackground := TJvNavPaneBackgroundImage.Create;
   FBackground.OnChange := DoImagesChange;
 
-  ControlStyle := [csAcceptsControls, {$IFDEF VCL} csCaptureMouse, {$ENDIF VCL} csClickEvents,
-  csOpaque, csDoubleClicks, csReplicatable];
+  ControlStyle := [csAcceptsControls,
+    {$IFDEF VCL} csCaptureMouse, {$ENDIF} csClickEvents,
+    csOpaque, csDoubleClicks, csReplicatable];
 
   FButtons := TJvNavPaneToolButtons.Create(Self);
   FStyleLink := TJvNavStyleLink.Create;

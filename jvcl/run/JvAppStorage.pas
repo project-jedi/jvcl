@@ -834,7 +834,7 @@ begin
   end;
 end;
 
-//=== { TJvCustomAppStorageOptions } ===========================================
+//=== { TJvCustomAppStorageOptions } =========================================
 
 constructor TJvCustomAppStorageOptions.Create;
 begin
@@ -943,7 +943,7 @@ begin
   FDefaultIfValueNotExists := Value;
 end;
 
-//=== { TJvCustomAppStorage } ==================================================
+//=== { TJvCustomAppStorage } ================================================
 
 constructor TJvCustomAppStorage.Create(AOwner: TComponent);
 begin
@@ -2219,7 +2219,7 @@ begin
   Result := (FCryptEnabledStatus > 0);
 end;
 
-//=== { TJvAppStorage } ========================================================
+//=== { TJvAppStorage } ======================================================
 
 function TJvAppStorage.IsFolderInt(const Path: string; ListIsValue: Boolean): Boolean;
 begin
@@ -2326,7 +2326,7 @@ begin
   raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
-//=== { TJvAppSubStorages } ====================================================
+//=== { TJvAppSubStorages } ==================================================
 
 constructor TJvAppSubStorages.Create(AOwner: TJvCustomAppStorage);
 begin
@@ -2429,7 +2429,7 @@ begin
   end;
 end;
 
-//=== { TJvAppSubStorage } =====================================================
+//=== { TJvAppSubStorage } ===================================================
 
 function TJvAppSubStorage.GetOwnerStore: TJvCustomAppStorage;
 begin

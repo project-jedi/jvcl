@@ -16,9 +16,6 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
   PopupMenu = popTree
   Scaled = False
   OnResize = FormResize
-  DesignSize = (
-    464
-    237)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
@@ -111,9 +108,6 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      102
-      195)
     object btnLink: TButton
       Left = 5
       Top = 24

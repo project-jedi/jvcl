@@ -2068,7 +2068,7 @@ const
 var
   GlobalTypeInfoHelpersList: TClassList;
 
-//=== { TOpenEdit } ==========================================================#
+//=== { TOpenEdit } ==========================================================
 
 {$IFDEF VisualCLX}
 

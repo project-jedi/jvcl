@@ -1737,13 +1737,6 @@ type
     property GridEndTime: TTime read FGridEndTime write SetGridEndTime;
   end;
 
-  {$IFDEF Jv_TIMEBLOCKS}
-// REMOVE, replaced by DOWToBorl in JvTFUtils
-//function DOWToBorl(aDOW: TTFDayOfWeek): Integer;
-// REMOVE, replaced by BorlToDOW in JvTFUtils
-//function BorlToDOW(BorlDOW: Integer): TTFDayOfWeek;
-  {$ENDIF Jv_TIMEBLOCKS}
-
 implementation
 
 uses
@@ -1861,25 +1854,7 @@ begin
     Result := I2;
 end;
 
-{$IFDEF Jv_TIMEBLOCKS}
-{
-// remove
-function DOWToBorl(aDOW: TTFDayOfWeek): Integer;
-begin
-  Result := Ord(aDOW) + 1;
-end;
-
-// remove
-function BorlToDOW(BorlDOW: Integer): TTFDayOfWeek;
-begin
-  Result := TTFDayOfWeek(BorlDOW - 1);
-end;
-}
-{$ENDIF Jv_TIMEBLOCKS}
-
-{ TJvTFApptMapApptData }
-
-{ TJvTFDaysTemplate }
+//=== { TJvTFDaysTemplate } ==================================================
 
 constructor TJvTFDaysTemplate.Create(anApptGrid: TJvTFDays);
 begin
@@ -2218,7 +2193,7 @@ begin
   ApptGrid.ProcessBatches;
 end;
 
-{ TJvTFDaysPrimeTime }
+//=== { TJvTFDaysPrimeTime } =================================================
 
 constructor TJvTFDaysPrimeTime.Create(anApptGrid: TJvTFDays);
 begin
@@ -2299,7 +2274,7 @@ begin
     inherited Assign(Source);
 end;
 
-{ TJvTFInPlaceApptEditor }
+//=== { TJvTFInPlaceApptEditor } =============================================
 
 constructor TJvTFInPlaceApptEditor.Create(AOwner: TComponent);
 begin
@@ -2338,13 +2313,12 @@ begin
   end;
 end;
 
-{ TJvTFApptMap }
+//=== { TJvTFApptMap } =======================================================
 
 constructor TJvTFApptMap.Create(aGridCol: TJvTFDaysCol);
 begin
   inherited Create;
   FGridCol := aGridCol;
-
   FData := TJvTFSparseMatrix.Create;
 end;
 
@@ -2646,7 +2620,7 @@ begin
   end;
 end;
 
-{ TJvTFDaysThresholds }
+//=== { TJvTFDaysThresholds } ================================================
 
 constructor TJvTFDaysThresholds.Create(AOwner: TJvTFDays);
 begin
@@ -2774,7 +2748,7 @@ begin
     inherited Assign(Source);
 end;
 
-{ TJvTFDaysScrollBar }
+//=== { TJvTFDaysScrollBar } =================================================
 
 constructor TJvTFDaysScrollBar.Create(AOwner: TComponent);
 begin
@@ -2822,7 +2796,7 @@ begin
   SetScrollInfo(Handle, SB_CTL, Info, True);
 end;
 
-{ TJvTFDaysCol }
+//=== { TJvTFDaysCol } =======================================================
 
 constructor TJvTFDaysCol.Create(Collection: TCollection);
 begin
@@ -3335,7 +3309,7 @@ begin
   Result := FMap.Location[Row, Col];
 end;
 
-{ TJvTFDaysCols }
+//=== { TJvTFDaysCols } ======================================================
 
 constructor TJvTFDaysCols.Create(aApptGrid: TJvTFDays);
 begin
@@ -3598,7 +3572,7 @@ begin
     Items[I].UpdateTitles;
 end;
 
-{ TJvTFDaysFancyRowHdrAttr }
+//=== { TJvTFDaysFancyRowHdrAttr } ===========================================
 
 constructor TJvTFDaysFancyRowHdrAttr.Create(AOwner: TJvTFDays);
 begin
@@ -3698,7 +3672,7 @@ begin
     inherited Assign(Source);
 end;
 
-{ TJvTFDaysHdrAttr }
+//=== { TJvTFDaysHdrAttr } ===================================================
 
 constructor TJvTFDaysHdrAttr.Create(AOwner: TJvTFDays);
 begin
@@ -3785,6 +3759,7 @@ begin
     Change;
   end;
 end;
+
 {$ENDIF Jv_TIMEBLOCKS}
 
 procedure TJvTFDaysHdrAttr.Change;
@@ -3835,7 +3810,7 @@ begin
   end;
 end;
 
-{ TJvTFDaysApptBar }
+//=== { TJvTFDaysApptBar } ===================================================
 
 constructor TJvTFDaysApptBar.Create(anApptGrid: TJvTFDays);
 begin
@@ -3917,7 +3892,7 @@ begin
   end;
 end;
 
-{ TJvTFDaysApptAttr }
+//=== { TJvTFDaysApptAttr } ==================================================
 
 constructor TJvTFDaysApptAttr.Create(anApptGrid: TJvTFDays);
 begin
@@ -4032,7 +4007,7 @@ begin
   end;
 end;
 
-{ TJvTFSelCellAttr }
+//=== { TJvTFSelCellAttr } ===================================================
 
 constructor TJvTFSelCellAttr.Create(anApptGrid: TJvTFDays);
 begin
@@ -4090,7 +4065,7 @@ begin
     inherited Assign(Source);
 end;
 
-{ TJvTFDaysGrabHandles }
+//=== { TJvTFDaysGrabHandles } ===============================================
 
 constructor TJvTFDaysGrabHandles.Create(anApptGrid: TJvTFDays);
 begin
@@ -4151,7 +4126,7 @@ begin
     inherited Assign(Source);
 end;
 
-{ TJvTFDays }
+//=== { TJvTFDays } ==========================================================
 
 constructor TJvTFDays.Create(AOwner: TComponent);
 begin
@@ -4411,7 +4386,7 @@ var
   begin
     Result := GetClientRect;
     {$IFDEF Jv_TIMEBLOCKS}
-      // ok
+    // ok
     Inc(Result.Left, CalcBlockRowHdrsWidth);
     {$ELSE}
       // remove
@@ -5243,7 +5218,6 @@ end;
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
-
 procedure TJvTFDays.DrawDataCell(ACanvas: TCanvas; ColIndex, RowIndex: Integer);
 var
   SelFrameRect,
@@ -6224,7 +6198,7 @@ begin
             {$IFDEF Jv_TIMEBLOCKS}
            // ok
             DrawFrame(ACanvas, ARect, False, GridLineColor);
-        {$ELSE}
+            {$ELSE}
            // remove
            //DrawFrame(ACanvas, ARect, False);
             {$ENDIF Jv_TIMEBLOCKS}
@@ -8109,7 +8083,6 @@ end;
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
-
 procedure TJvTFDays.CalcMoveStartEnd(Appt: TJvTFAppt; Coord: TJvTFDaysCoord;
   KeepDates, KeepTimes: Boolean; var StartDT, EndDT: TDateTime);
 var
@@ -8478,7 +8451,6 @@ end;
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
-
 procedure TJvTFDays.SetSelStart(Value: TPoint);
 var
   TimeBlock,
@@ -8630,7 +8602,6 @@ end;
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
-
 procedure TJvTFDays.SetSelEnd(Value: TPoint);
 var
   SameName,
@@ -8645,10 +8616,6 @@ var
     StartRow,
     EndRow: Integer;
 
-          //////////////////////////////////////
-          //      SUBORDINATE ROUTINE
-          //////////////////////////////////////
-
   procedure CheckFollowMouse;
   begin
     if (TimeBlocks.Count > 0) and
@@ -8657,7 +8624,6 @@ var
       SelStart := Point(Value.X, SelStart.Y);
   end;
 
-// MAIN ROUTINE
 begin
   {
   This routine enforces the rules by which cells can be selected.
@@ -9019,7 +8985,6 @@ end;
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
-
 function TJvTFDays.PtToCell(X, Y: Integer): TJvTFDaysCoord;
 var
   ColNum,
@@ -9223,7 +9188,6 @@ end;
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
-
 function TJvTFDays.CellRect(Col, Row: Integer): TRect;
 var
   I: Integer;
@@ -9355,7 +9319,6 @@ end;
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
-
 function TJvTFDays.VirtualCellRect(Col, Row: Integer): TRect;
 var
   I: Integer;
@@ -11127,25 +11090,25 @@ begin
     if RectWidth(CalcRect) > RectWidth(TxtRect) then
       StrPCopy(PTxt, '');
   end
-    {$IFDEF Jv_TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // okay to leave
   else
-  if (ColTitleStyle = ctsRotated) then
+  if ColTitleStyle = ctsRotated then
    //DrawAngleText(ACanvas, TxtRect, UseAttr.TitleRotation, Txt);
     DrawAngleText(ACanvas, TxtRect, TxtBounds, UseAttr.TitleRotation,
       taCenter, vaCenter, Txt);
   {$ELSE}
   // remove
   //; // semi-colon needed to terminate last end
-    {$ENDIF Jv_TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
     {$IFDEF Jv_TIMEBLOCKS}
-  // okay to leave
+    // okay to leave
     if ColTitleStyle <> ctsRotated then
       Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
-  {$ELSE}
-  // remove
-  //Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
+    {$ELSE}
+    // remove
+    //Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
     {$ENDIF Jv_TIMEBLOCKS}
 
     StrDispose(PTxt);
@@ -11180,7 +11143,6 @@ begin
     FOnDrawColHdr(Self, ACanvas, ARect, Index, ColIsSelected(Index));
 end;
 
-//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
 
@@ -11632,7 +11594,6 @@ begin
 end;
 
 {$ENDIF Jv_TIMEBLOCKS}
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 procedure TJvTFDays.SetGridEndTime(Value: TTime);
 var
@@ -12055,7 +12016,7 @@ begin
   Refresh;
 end;
 
-{ TJvTFDaysPrinter }
+//=== { TJvTFDaysPrinter } ===================================================
 
 function TJvTFDaysPrinter.AdjustEndTime(ATime: TTime): TTime;
 begin
@@ -14561,7 +14522,7 @@ begin
       Cols[I].RefreshMap;
 end;
 
-{ TJvTFDaysPrinterPageLayout }
+//=== { TJvTFDaysPrinterPageLayout } =========================================
 
 procedure TJvTFDaysPrinterPageLayout.Assign(Source: TPersistent);
 begin
@@ -14624,7 +14585,7 @@ begin
   end;
 end;
 
-{ TJvTFCompNamesList }
+//=== { TJvTFCompNamesList } =================================================
 
 procedure TJvTFCompNamesList.Move(CurIndex, NewIndex: Integer);
 begin
@@ -14635,7 +14596,8 @@ end;
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
-{ TJvTFDaysTimeBlock }
+
+//=== { TJvTFDaysTimeBlock } =================================================
 
 procedure TJvTFDaysTimeBlock.Assign(Source: TPersistent);
 begin
@@ -14728,7 +14690,7 @@ begin
   end;
 end;
 
-{ TJvTFDaysTimeBlocks }
+//=== { TJvTFDaysTimeBlocks } ================================================
 
 function TJvTFDaysTimeBlocks.Add: TJvTFDaysTimeBlock;
 begin
@@ -14798,7 +14760,7 @@ begin
   inherited SetItem(Index, Value);
 end;
 
-{ TJvTFDaysBlockProps }
+//=== { TJvTFDaysBlockProps } ================================================
 
 procedure TJvTFDaysBlockProps.Assign(Source: TPersistent);
 begin
@@ -14937,9 +14899,10 @@ begin
   FSelBlockHdrAttr.Assign(Value);
   DaysControl.Invalidate;
 end;
+
 {$ENDIF Jv_TIMEBLOCKS}
 
-{ TJvTFDaysApptDrawInfo }
+//=== { TJvTFDaysApptDrawInfo } ==============================================
 
 constructor TJvTFDaysApptDrawInfo.Create;
 begin

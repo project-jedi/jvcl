@@ -198,7 +198,7 @@ uses
   JvConsts, JvJVCLUtils;
 
 
-//=== { TJvLockedBitmap } ======================================================
+//=== { TJvLockedBitmap } ====================================================
 
 // (rom) do we really need this ugly hack?
 // (ahuser) lets try without the hook by using TJvLockedBitmap directly

@@ -132,7 +132,7 @@ type
     FErrCode: Integer;
     FPosition: Cardinal;
   public
-    constructor Create(AErrCode: Integer; APosition: Cardinal; dummy: Integer = 0);
+    constructor Create(AErrCode: Integer; APosition: Cardinal; Dummy: Integer = 0);
     property ErrCode: Integer read FErrCode;
     property Position: Cardinal read FPosition;
   end;
@@ -156,9 +156,9 @@ implementation
 uses
   JvConsts;
 
-//=== EJvIParserError ========================================================
+//=== { EJvIParserError } ====================================================
 
-constructor EJvIParserError.Create(AErrCode: Integer; APosition: Cardinal; dummy: Integer = 0);
+constructor EJvIParserError.Create(AErrCode: Integer; APosition: Cardinal; Dummy: Integer = 0);
 begin
   inherited Create('');
   FErrCode := AErrCode;
@@ -529,7 +529,7 @@ begin
     FHistoryPtr := FHistorySize + FHistoryPtr;
 end;
 
-//=== { TJvIParserW (Unicode) } ================================================
+//=== { TJvIParserW } ========================================================
 
 constructor TJvIParserW.Create;
 begin

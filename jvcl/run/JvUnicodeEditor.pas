@@ -366,7 +366,7 @@ type
 
   TJvUndoBufferAccessProtected = class(TJvUndoBuffer);
 
-//=== { TJvEditorWideStrings } ===================================================
+//=== { TJvEditorWideStrings } ===============================================
 
 constructor TJvEditorWideStrings.Create;
 begin
@@ -707,7 +707,7 @@ begin
   end;
 end;
 
-//=== { TJvCustomWideEditor } ====================================================
+//=== { TJvCustomWideEditor } ================================================
 
 constructor TJvCustomWideEditor.Create(AOwner: TComponent);
 begin
@@ -724,8 +724,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomWideEditor.PaintLineText(Line: Integer; ColBeg, ColEnd: Integer;
-  var ColPainted: Integer);
+procedure TJvCustomWideEditor.PaintLineText(Line: Integer;
+  ColBeg, ColEnd: Integer; var ColPainted: Integer);
 var
   Ch: WideString;
   iC, jC, SL, MX: Integer;
@@ -2257,7 +2257,7 @@ begin
   GetEditor.SetCaretInternal(CaretX, CaretY);
 end;
 
-//=== { TJvUnindentColumnUndo } ================================================
+//=== { TJvUnindentColumnUndo } ==============================================
 
 constructor TJvUnindentColumnUndo.Create(AJvEditor: TJvCustomWideEditor;
   ACaretX, ACaretY, ABegX, ABegY: Integer; const AText: WideString);
@@ -2328,7 +2328,7 @@ begin
 end;
 
 
-//=== { TJvDeleteLineUndo } ======================================================
+//=== { TJvDeleteLineUndo } ==================================================
 
 {procedure TJvDeleteLineUndo.Redo;
 begin

@@ -448,7 +448,7 @@ uses
   CommCtrl, Graphics, DBConsts,
   JvThemes;
 
-//=== { TJvLookupDataSourceLink } ==================================================
+//=== { TJvLookupDataSourceLink } ============================================
 
 procedure TJvLookupDataSourceLink.ActiveChanged;
 begin
@@ -1289,7 +1289,7 @@ begin
   end;
 end;
 
-//=== { TJvTreePopupDataList } ===================================================
+//=== { TJvTreePopupDataList } ===============================================
 
 constructor TJvTreePopupDataList.Create(AOwner: TComponent);
 begin

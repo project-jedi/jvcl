@@ -247,7 +247,7 @@ begin
     FClient.ImageIndex := Value;
 end;
 
-//=== { TJvCustomImageButton } ==========================================================
+//=== { TJvCustomImageButton } ===============================================
 
 constructor TJvCustomImageButton.Create(AOwner: TComponent);
 begin

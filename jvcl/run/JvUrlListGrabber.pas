@@ -751,7 +751,7 @@ begin
     OnProgress(Self, TJvCustomUrlGrabber(Grabber), Position, TotalSize, Url, Continue);
 end;
 
-//=== { TJvCustomUrlGrabber } ======================================================
+//=== { TJvCustomUrlGrabber } ================================================
 
 constructor TJvCustomUrlGrabber.Create(AOwner: TComponent; AUrl: string;
   DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
@@ -980,7 +980,7 @@ begin
   inherited Items[Index] := AGrabber;
 end;
 
-//=== { TJvCustomUrlGrabberClassList } =============================================
+//=== { TJvCustomUrlGrabberClassList } =======================================
 
 function TJvUrlGrabberClassList.Add(AGrabberClass: TJvCustomUrlGrabberClass): Integer;
 begin
@@ -1028,7 +1028,7 @@ begin
   inherited Items[Index] := AGrabberClass;
 end;
 
-//=== { TJvCustomUrlGrabberThread } ================================================
+//=== { TJvCustomUrlGrabberThread } ==========================================
 
 constructor TJvCustomUrlGrabberThread.Create(Grabber: TJvCustomUrlGrabber);
 begin
@@ -1067,7 +1067,7 @@ begin
   FGrabber.DoStatus;
 end;
 
-//=== { TJvUrlGrabberDefaultPropertiesList } ===========================
+//=== { TJvUrlGrabberDefaultPropertiesList } =================================
 
 constructor TJvUrlGrabberDefaultPropertiesList.Create(AOwner: TJvUrlListGrabber);
 begin
@@ -1130,42 +1130,7 @@ begin
     FDefaultProperties := GrabberDefaults;
 end;
 
-//=== { TJvCustomUrlGrabberDefaultProperties } =====================================
-
-procedure TJvCustomUrlGrabberDefaultProperties.Assign(Source: TPersistent);
-begin
-  if Source is TJvCustomUrlGrabberDefaultProperties then
-    with Source as TJvCustomUrlGrabberDefaultProperties do
-    begin
-      Self.Agent := Agent;
-      Self.Port := Port;
-      Self.Password := Password;
-      Self.UserName := UserName;
-      Self.FileName := FileName;
-      Self.OutputMode := OutputMode;
-    end
-  else
-    inherited Assign(Source);
-end;
-
-constructor TJvCustomUrlGrabberDefaultProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
-begin
-  inherited Create;
-  FEditorTrick := TJvUrlGrabberDefPropEdTrick.Create(Self);
-
-  FFileName := DefaultOutputFileName;
-  FAgent := JediAgent;
-  FUserName := '';
-  FPassword := '';
-  FFileName := DefaultOutputFileName;
-  FOutputMode := omFile;
-end;
-
-destructor TJvCustomUrlGrabberDefaultProperties.Destroy;
-begin
-  FEditorTrick.Free;
-  inherited Destroy;
-end;
+//=== { TDFMPropertiesCollection } ===========================================
 
 type
   // In order to store the Default Properties for every possible
@@ -1184,7 +1149,6 @@ type
   TDFMPropertiesCollectionItem = class(TCollectionItem)
   private
     FOwnValue: Boolean;
-
     FValue: TJvCustomUrlGrabberDefaultProperties;
     FUrlType: string;
     procedure SetValue(const Value: TJvCustomUrlGrabberDefaultProperties);
@@ -1220,6 +1184,8 @@ begin
   end;
 end;
 
+//=== { TDFMPropertiesCollectionItem } =======================================
+
 constructor TDFMPropertiesCollectionItem.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
@@ -1229,12 +1195,10 @@ destructor TDFMPropertiesCollectionItem.Destroy;
 begin
   if FOwnValue then
     FValue.Free;
-
-  inherited;
+  inherited Destroy;
 end;
 
-procedure TDFMPropertiesCollectionItem.SetValue(
-  const Value: TJvCustomUrlGrabberDefaultProperties);
+procedure TDFMPropertiesCollectionItem.SetValue(const Value: TJvCustomUrlGrabberDefaultProperties);
 begin
   FValue := Value;
   FOwnValue := False;
@@ -1256,6 +1220,43 @@ begin
         FValue := JvUrlGrabberClassList[I].GetDefaultPropertiesClass.Create(nil);
       end;
   end;
+end;
+
+//=== { TJvCustomUrlGrabberDefaultProperties } ===============================
+
+constructor TJvCustomUrlGrabberDefaultProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
+begin
+  inherited Create;
+  FEditorTrick := TJvUrlGrabberDefPropEdTrick.Create(Self);
+
+  FFileName := DefaultOutputFileName;
+  FAgent := JediAgent;
+  FUserName := '';
+  FPassword := '';
+  FFileName := DefaultOutputFileName;
+  FOutputMode := omFile;
+end;
+
+destructor TJvCustomUrlGrabberDefaultProperties.Destroy;
+begin
+  FEditorTrick.Free;
+  inherited Destroy;
+end;
+
+procedure TJvCustomUrlGrabberDefaultProperties.Assign(Source: TPersistent);
+begin
+  if Source is TJvCustomUrlGrabberDefaultProperties then
+    with Source as TJvCustomUrlGrabberDefaultProperties do
+    begin
+      Self.Agent := Agent;
+      Self.Port := Port;
+      Self.Password := Password;
+      Self.UserName := UserName;
+      Self.FileName := FileName;
+      Self.OutputMode := OutputMode;
+    end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvUrlGrabberDefaultPropertiesList.Read(Reader: TReader);

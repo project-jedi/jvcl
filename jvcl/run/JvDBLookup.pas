@@ -3371,7 +3371,7 @@ begin
   Visible := True;
 end;
 
-//=== { TJvDBLookupEdit } ======================================================
+//=== { TJvDBLookupEdit } ====================================================
 
 constructor TJvDBLookupEdit.Create(AOwner: TComponent);
 begin

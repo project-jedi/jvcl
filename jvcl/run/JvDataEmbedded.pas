@@ -17,17 +17,17 @@ All Rights Reserved.
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
  Added TJvComponentEmbedded and TJvPersistentEmbedded from dejoy 2004-07-30:
- Override DefineUnPublishedProperties to define property in DefineUnPublishedProperties,
+ Override DefineUnpublishedProperties to define property in DefineUnpublishedProperties,
 
   If you want to define a general property, use DoDefineProperty,
   If you want to define a binary property, use DoDefineBinaryProperty.
-  Override ReadUnPublished and WriteUnPublished to read or write non-published properties.
-  You can use DefinePropertyIs in ReadUnPublished or WriteUnPublished  to detect which propety is
-  being processed.
+  Override ReadUnpublished and WriteUnpublished to read or write non-published properties.
+  You can use DefinePropertyIs in ReadUnpublished or WriteUnpublished  to detect which
+  property is being processed.
 
-  If you have many unpublished properties to process, you don't need to write a lot of WriteXXX or
-  ReadXXX procedures to process them. Instead, just override DefineUnPublishedProperties, ReadUnPublished
-  and WriteUnPublished
+  If you have many unpublished properties to process, you don't need to write a lot of
+  WriteXXX or ReadXXX procedures to process them. Instead, just override
+  DefineUnpublishedProperties, ReadUnpublished and WriteUnpublished
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -49,27 +49,25 @@ uses
 type
   {$IFNDEF COMPILER6_UP}
   TInterfacedPersistent = class(TPersistent);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   TJvPersistentEmbedded = class(TInterfacedPersistent)
   private
     FFiler: TFiler;
     FFilerTag: string;
   protected
     procedure DefineProperties(Filer: TFiler); override;
-    procedure DefineUnPublishedProperties(Filer: TFiler); virtual;
-    function DefinePropertyIs(const Name: string): boolean; dynamic;
-    procedure DoDefineProperty(const Name: string; HasData: boolean); dynamic;
-    procedure DoDefineBinaryProperty(const Name: string; HasData: boolean); dynamic;
-    procedure ReadUnPublished(Reader: TReader); overload; dynamic;
-    procedure WriteUnPublished(Writer: TWriter); overload; dynamic;
-    procedure ReadUnPublished(Stream: TStream); overload; dynamic;
-    procedure WriteUnPublished(Stream: TStream); overload; dynamic;
+    procedure DefineUnpublishedProperties(Filer: TFiler); virtual;
+    function DefinePropertyIs(const Name: string): Boolean; dynamic;
+    procedure DoDefineProperty(const Name: string; HasData: Boolean); dynamic;
+    procedure DoDefineBinaryProperty(const Name: string; HasData: Boolean); dynamic;
+    procedure ReadUnpublished(Reader: TReader); overload; dynamic;
+    procedure WriteUnpublished(Writer: TWriter); overload; dynamic;
+    procedure ReadUnpublished(Stream: TStream); overload; dynamic;
+    procedure WriteUnpublished(Stream: TStream); overload; dynamic;
   public
     procedure SaveToStream(Stream: TStream); virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
   end;
-
-
 
   TJvComponentEmbedded = class(TComponent)
   private
@@ -77,19 +75,18 @@ type
     FFilerTag: string;
   protected
     procedure DefineProperties(Filer: TFiler); override;
-    procedure DefineUnPublishedProperties(Filer: TFiler); virtual;
-    function DefinePropertyIs(const Name: string): boolean; dynamic;
-    procedure DoDefineProperty(const Name: string; HasData: boolean); dynamic;
-    procedure DoDefineBinaryProperty(const Name: string; HasData: boolean); dynamic;
-    procedure ReadUnPublished(Reader: TReader); overload; dynamic;
-    procedure WriteUnPublished(Writer: TWriter); overload; dynamic;
-    procedure ReadUnPublished(Stream: TStream); overload; dynamic;
-    procedure WriteUnPublished(Stream: TStream); overload; dynamic;
+    procedure DefineUnpublishedProperties(Filer: TFiler); virtual;
+    function DefinePropertyIs(const Name: string): Boolean; dynamic;
+    procedure DoDefineProperty(const Name: string; HasData: Boolean); dynamic;
+    procedure DoDefineBinaryProperty(const Name: string; HasData: Boolean); dynamic;
+    procedure ReadUnpublished(Reader: TReader); overload; dynamic;
+    procedure WriteUnpublished(Writer: TWriter); overload; dynamic;
+    procedure ReadUnpublished(Stream: TStream); overload; dynamic;
+    procedure WriteUnpublished(Stream: TStream); overload; dynamic;
   public
     procedure SaveToStream(Stream: TStream); virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
   end;
-
 
   TJvDataEmbedded = class(TJvComponentEmbedded)
   private
@@ -105,14 +102,14 @@ type
     procedure SetStream(const Value: TStream);
     procedure SetSize(const Value: Integer);
   protected
-    procedure DefineUnPublishedProperties(Filer: TFiler); override;
-    procedure ReadUnPublished(Stream: TStream); override;
-    procedure WriteUnPublished(Stream: TStream); override;
+    procedure DefineUnpublishedProperties(Filer: TFiler); override;
+    procedure ReadUnpublished(Stream: TStream); override;
+    procedure WriteUnpublished(Stream: TStream); override;
     procedure DoLoading; virtual;
     procedure DoLoaded; virtual;
     procedure DoSaving; virtual;
     procedure DoSaved; virtual;
-    procedure Change;virtual;
+    procedure Change; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -132,6 +129,11 @@ type
   end;
 
 implementation
+
+const
+  cEmbeddedData = 'EmbeddedData';
+
+//=== { TJvDataEmbedded } ====================================================
 
 constructor TJvDataEmbedded.Create(AOwner: TComponent);
 begin
@@ -184,174 +186,17 @@ begin
   Change;
 end;
 
-{ TJvComponentEmbedded }
-
-procedure TJvComponentEmbedded.DefineProperties(Filer: TFiler);
+procedure TJvDataEmbedded.DefineUnpublishedProperties(Filer: TFiler);
 begin
-  FFiler := Filer;
-  inherited DefineProperties(Filer);
-  DefineUnPublishedProperties(Filer);
+  inherited DefineUnpublishedProperties(Filer);
+  DoDefineBinaryProperty(cEmbeddedData, FStream.Size > 0);
 end;
 
-function TJvComponentEmbedded.DefinePropertyIs(const Name: string): boolean;
-begin
-  Result := AnsiSameText(FFilerTag, Name);
-end;
-
-procedure TJvComponentEmbedded.DefineUnPublishedProperties(Filer: TFiler);
-begin
-//
-end;
-
-procedure TJvComponentEmbedded.DoDefineBinaryProperty(const Name: string; HasData: boolean);
-begin
-  FFilerTag := Name;
-  if Assigned(FFiler) and (Name <> '') then
-    FFiler.DefineBinaryProperty(Name, ReadUnPublished, WriteUnPublished, HasData);
-end;
-
-procedure TJvComponentEmbedded.DoDefineProperty(const Name: string; HasData: boolean);
-begin
-  FFilerTag := Name;
-  if Assigned(FFiler) and (Name <> '') then
-    FFiler.DefineProperty(Name, ReadUnPublished, WriteUnPublished, HasData);
-end;
-
-procedure TJvComponentEmbedded.ReadUnPublished(Reader: TReader);
-begin
-
-end;
-
-procedure TJvComponentEmbedded.LoadFromStream(Stream: TStream);
-begin
-  if (Stream = nil) or (Stream.Size = 0) then Exit;
-  Stream.ReadComponent(Self);
-end;
-
-procedure TJvComponentEmbedded.ReadUnPublished(Stream: TStream);
-begin
-
-end;
-
-procedure TJvComponentEmbedded.WriteUnPublished(Writer: TWriter);
-begin
-
-end;
-
-procedure TJvComponentEmbedded.SaveToStream(Stream: TStream);
-begin
-  Stream.WriteComponent(Self);
-end;
-
-procedure TJvComponentEmbedded.WriteUnPublished(Stream: TStream);
-begin
-
-end;
-
-type
-
-  TPersistentWrapper = class(TComponent)
-  private
-    FPersistent: TPersistent;
-  published
-    property Persistent: TPersistent read FPersistent write FPersistent;
-  end;
-
-
-{ TJvPersistentEmbedded }
-
-procedure TJvPersistentEmbedded.DefineProperties(Filer: TFiler);
-begin
-  FFiler := Filer;
-  inherited DefineProperties(Filer);
-  DefineUnPublishedProperties(Filer);
-end;
-
-function TJvPersistentEmbedded.DefinePropertyIs(const Name: string): boolean;
-begin
-  Result := AnsiSameText(FFilerTag, Name);
-end;
-
-procedure TJvPersistentEmbedded.DefineUnPublishedProperties(Filer: TFiler);
-begin
-//
-end;
-
-procedure TJvPersistentEmbedded.DoDefineBinaryProperty(const Name: string; HasData: boolean);
-begin
-  FFilerTag := Name;
-  if Assigned(FFiler) and (Name <> '') then
-    FFiler.DefineBinaryProperty(Name, ReadUnPublished, WriteUnPublished, HasData);
-end;
-
-procedure TJvPersistentEmbedded.DoDefineProperty(const Name: string;
-  HasData: boolean);
-begin
-  FFilerTag := Name;
-  if Assigned(FFiler) and (Name <> '') then
-    FFiler.DefineProperty(Name, ReadUnPublished, WriteUnPublished, HasData);
-end;
-
-procedure TJvPersistentEmbedded.LoadFromStream(Stream: TStream);
-var
-  m: TPersistentWrapper;
-begin
-  if (Stream = nil) or (Stream.Size = 0) then Exit;
-  m := TPersistentWrapper.Create(nil);
-  try
-    m.FPersistent := Self;
-    Stream.ReadComponent(m);
-    m.FPersistent := nil;
-  finally
-    m.Free;
-  end;
-end;
-
-procedure TJvPersistentEmbedded.ReadUnPublished(Stream: TStream);
-begin
-//
-end;
-
-procedure TJvPersistentEmbedded.ReadUnPublished(Reader: TReader);
-begin
-//
-end;
-
-procedure TJvPersistentEmbedded.SaveToStream(Stream: TStream);
-var
-  m: TPersistentWrapper;
-begin
-  m := TPersistentWrapper.Create(nil);
-  try
-    m.FPersistent := Self;
-    Stream.WriteComponent(m);
-  finally
-    m.Free;
-  end;
-end;
-
-procedure TJvPersistentEmbedded.WriteUnPublished(Writer: TWriter);
-begin
-
-end;
-
-procedure TJvPersistentEmbedded.WriteUnPublished(Stream: TStream);
-begin
-
-end;
-
-
-procedure TJvDataEmbedded.DefineUnPublishedProperties(Filer: TFiler);
-begin
-  inherited DefineUnPublishedProperties(Filer);
-  DoDefineBinaryProperty('EmbeddedData', FStream.Size > 0);
-end;
-
-procedure TJvDataEmbedded.ReadUnPublished(Stream: TStream);
+procedure TJvDataEmbedded.ReadUnpublished(Stream: TStream);
 var
   I: Integer;
 begin
-  if DefinePropertyIs('EmbeddedData') then
+  if DefinePropertyIs(cEmbeddedData) then
   begin
     Stream.Read(I, SizeOf(I));
     FStream.Clear;
@@ -360,11 +205,11 @@ begin
   end;
 end;
 
-procedure TJvDataEmbedded.WriteUnPublished(Stream: TStream);
+procedure TJvDataEmbedded.WriteUnpublished(Stream: TStream);
 var
   I: Integer;
 begin
-  if DefinePropertyIs('EmbeddedData') then
+  if DefinePropertyIs(cEmbeddedData) then
   begin
     I := FStream.Size;
     Stream.Write(I, SizeOf(I));
@@ -388,28 +233,188 @@ end;
 
 procedure TJvDataEmbedded.DoLoaded;
 begin
-  if Assigned(FOnLoaded) then FOnLoaded(Self);
+  if Assigned(FOnLoaded) then
+    FOnLoaded(Self);
   Change;
 end;
 
 procedure TJvDataEmbedded.DoLoading;
 begin
-  if Assigned(FOnLoading) then FOnLoading(Self);
+  if Assigned(FOnLoading) then
+    FOnLoading(Self);
 end;
 
 procedure TJvDataEmbedded.DoSaved;
 begin
-  if Assigned(FOnSaved) then FOnSaved(Self);
+  if Assigned(FOnSaved) then
+    FOnSaved(Self);
 end;
 
 procedure TJvDataEmbedded.DoSaving;
 begin
-  if Assigned(FOnSaving) then FOnSaving(Self);
+  if Assigned(FOnSaving) then
+    FOnSaving(Self);
 end;
 
 procedure TJvDataEmbedded.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+//=== { TJvComponentEmbedded } ===============================================
+
+procedure TJvComponentEmbedded.DefineProperties(Filer: TFiler);
+begin
+  FFiler := Filer;
+  inherited DefineProperties(Filer);
+  DefineUnpublishedProperties(Filer);
+end;
+
+function TJvComponentEmbedded.DefinePropertyIs(const Name: string): Boolean;
+begin
+  Result := AnsiSameText(FFilerTag, Name);
+end;
+
+procedure TJvComponentEmbedded.DefineUnpublishedProperties(Filer: TFiler);
+begin
+//
+end;
+
+procedure TJvComponentEmbedded.DoDefineBinaryProperty(const Name: string; HasData: Boolean);
+begin
+  FFilerTag := Name;
+  if Assigned(FFiler) and (Name <> '') then
+    FFiler.DefineBinaryProperty(Name, ReadUnpublished, WriteUnpublished, HasData);
+end;
+
+procedure TJvComponentEmbedded.DoDefineProperty(const Name: string; HasData: Boolean);
+begin
+  FFilerTag := Name;
+  if Assigned(FFiler) and (Name <> '') then
+    FFiler.DefineProperty(Name, ReadUnpublished, WriteUnpublished, HasData);
+end;
+
+procedure TJvComponentEmbedded.ReadUnpublished(Reader: TReader);
+begin
+
+end;
+
+procedure TJvComponentEmbedded.LoadFromStream(Stream: TStream);
+begin
+  if (Stream <> nil) and (Stream.Size > 0) then
+    Stream.ReadComponent(Self);
+end;
+
+procedure TJvComponentEmbedded.ReadUnpublished(Stream: TStream);
+begin
+
+end;
+
+procedure TJvComponentEmbedded.WriteUnpublished(Writer: TWriter);
+begin
+
+end;
+
+procedure TJvComponentEmbedded.SaveToStream(Stream: TStream);
+begin
+  Stream.WriteComponent(Self);
+end;
+
+procedure TJvComponentEmbedded.WriteUnpublished(Stream: TStream);
+begin
+
+end;
+
+//=== { TJvPersistentEmbedded } ==============================================
+
+type
+  TPersistentWrapper = class(TComponent)
+  private
+    FPersistent: TPersistent;
+  published
+    property Persistent: TPersistent read FPersistent write FPersistent;
+  end;
+
+procedure TJvPersistentEmbedded.DefineProperties(Filer: TFiler);
+begin
+  FFiler := Filer;
+  inherited DefineProperties(Filer);
+  DefineUnpublishedProperties(Filer);
+end;
+
+function TJvPersistentEmbedded.DefinePropertyIs(const Name: string): Boolean;
+begin
+  Result := AnsiSameText(FFilerTag, Name);
+end;
+
+procedure TJvPersistentEmbedded.DefineUnpublishedProperties(Filer: TFiler);
+begin
+//
+end;
+
+procedure TJvPersistentEmbedded.DoDefineBinaryProperty(const Name: string; HasData: Boolean);
+begin
+  FFilerTag := Name;
+  if Assigned(FFiler) and (Name <> '') then
+    FFiler.DefineBinaryProperty(Name, ReadUnpublished, WriteUnpublished, HasData);
+end;
+
+procedure TJvPersistentEmbedded.DoDefineProperty(const Name: string; HasData: Boolean);
+begin
+  FFilerTag := Name;
+  if Assigned(FFiler) and (Name <> '') then
+    FFiler.DefineProperty(Name, ReadUnpublished, WriteUnpublished, HasData);
+end;
+
+procedure TJvPersistentEmbedded.LoadFromStream(Stream: TStream);
+var
+  M: TPersistentWrapper;
+begin
+  if (Stream <> nil) and (Stream.Size > 0) then
+  begin
+    M := TPersistentWrapper.Create(nil);
+    try
+      M.Persistent := Self;
+      Stream.ReadComponent(M);
+      M.Persistent := nil;
+    finally
+      M.Free;
+    end;
+  end;
+end;
+
+procedure TJvPersistentEmbedded.ReadUnpublished(Stream: TStream);
+begin
+//
+end;
+
+procedure TJvPersistentEmbedded.ReadUnpublished(Reader: TReader);
+begin
+//
+end;
+
+procedure TJvPersistentEmbedded.SaveToStream(Stream: TStream);
+var
+  M: TPersistentWrapper;
+begin
+  M := TPersistentWrapper.Create(nil);
+  try
+    M.Persistent := Self;
+    Stream.WriteComponent(M);
+  finally
+    M.Free;
+  end;
+end;
+
+procedure TJvPersistentEmbedded.WriteUnpublished(Writer: TWriter);
+begin
+
+end;
+
+procedure TJvPersistentEmbedded.WriteUnpublished(Stream: TStream);
+begin
+
 end;
 
 end.
