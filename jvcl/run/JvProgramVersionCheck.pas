@@ -32,7 +32,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes,
   {$IFDEF USE_3RDPARTY_INDY}
-  idhttp, idftp,
+  IdHTTP, IdFtp,
   {$ENDIF USE_3RDPARTY_INDY}
   {$IFDEF USE_3RDPARTY_ICS}
   HttpProt, FtpCli,
@@ -515,13 +515,7 @@ const
 implementation
 
 uses
-  SysUtils, Dialogs, Controls, ComCtrls, StdCtrls,
-  {$IFDEF MSWINDOWS}
-  Forms,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QForms,
-  {$ENDIF UNIX}
+  SysUtils, Dialogs, Controls, ComCtrls, StdCtrls, Forms,
   JclBase, JclFileUtils, JclShell,
   JvDSADialogs, JvParameterListParameter, JvResources;
 
