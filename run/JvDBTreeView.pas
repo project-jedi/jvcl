@@ -1074,7 +1074,21 @@ begin
       begin
         if FDataLink.Edit then
           FDataLink.DataSet.FieldByName(FItemField).Text := Item.pszText;
-        Change2(Self.Selected); {?}
+        try
+          FDataLink.DataSet.Post;
+          Change2(Self.Selected); {?}
+        except
+          on e: Exception do begin
+            DataLink.DataSet.Cancel;
+            if InAddChild then
+            begin
+              Self.Selected.Free;
+              if Sel <> nil then
+                Selected := Sel;
+            end;
+            raise Exception.Create(e.message);  // stupid
+          end;
+        end;
       end
       else
       begin
@@ -1303,7 +1317,7 @@ begin
       if not IsEditing then
       begin
         Sel := Selected;
-        if [ssAlt] = Shift then
+        if not Assigned(Selected) or ([ssAlt] = Shift) then
           //AddChild
           AddChildNode(Selected, True).EditText
         else
