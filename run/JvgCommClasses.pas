@@ -129,6 +129,7 @@ type
     procedure SetGType(Value: TThreeDGradientType);
   public
     constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Depth: Word read FDepth write SetDepth default 16;
     property GType: TThreeDGradientType read FGType write SetGType default fgtFlat;
@@ -145,6 +146,7 @@ type
     procedure Changed; virtual;
   public
     constructor Create;
+    procedure Assign(Source: TPersistent); override;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
     property Horizontal: TglHorAlign read FHorizontal write SetHorizontal
@@ -163,6 +165,7 @@ type
   protected
     procedure Changed; virtual;
   public
+    procedure Assign(Source: TPersistent); override;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
     property X: Integer read FX write SetX;
@@ -207,6 +210,7 @@ type
     procedure SetInteriorOffset(Value: Word);
   public
     constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Active: Boolean read FActive write SetActive default True;
     property BevelPenStyle: TPenStyle read FBevelPenStyle write SetBevelPenStyle default psSolid;
@@ -220,6 +224,7 @@ type
     procedure SetShadowDepth(Value: Integer);
   public
     constructor Create;
+    procedure Assign(Source: TPersistent); override;
   published
     property ShadowDepth: Integer read FShadowDepth write SetShadowDepth default 2;
   end;
@@ -237,6 +242,7 @@ type
     procedure Changed; virtual;
   public
     constructor Create;
+    procedure Assign(Source: TPersistent); override;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
     property Passive: TglTextStyle read FPassive write SetPassive default fstRaised;
@@ -264,6 +270,7 @@ type
     procedure Changed; virtual;
   public
     constructor Create; virtual;
+    procedure Assign(Source: TPersistent); override;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   protected
     property Text: TColor read FText write SetText default clBlack;
@@ -302,6 +309,7 @@ type
     procedure SetColorShadowShift(Value: Integer);
   public
     constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
   protected
     property TextActive: TColor read FTextActive write SetTextActive default clBlack;
     property DelineateActive: TColor read FDelineateActive write SetDelineateActive default clWhite;
@@ -341,6 +349,7 @@ type
     procedure SetClientActive(Value: TColor);
   public
     constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Text;
     property Delineate;
@@ -379,6 +388,7 @@ type
   public
     constructor Create; virtual;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     function HighlightColor: TColor;
     function ShadowColor: TColor;
     property OnChanged: TNotifyEvent read FOnChanged write SetOnChanged;
@@ -401,6 +411,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Gradient: TJvgGradient read FGradient write SetGradient;
     property Color;
@@ -428,6 +439,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property BtnColor: TColor read FBtnColor write SetBtnColor;
     property BtnFont: TFont read FBtnFont write SetBtnFont;
@@ -453,6 +465,7 @@ type
     property ShadowColor: TColor read FShadowColor write SetShadowColor default clBtnShadow;
   public
     constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
   end;
 
   TJvgCustomTextBoxStyle = class(TJvgCustomBoxStyle)
@@ -466,6 +479,7 @@ type
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default clWindow;
   public
     constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
   end;
 
   TJvgTextBoxStyle = class(TJvgCustomTextBoxStyle)
@@ -502,6 +516,7 @@ type
     procedure Changed; virtual;
   public
     constructor Create;
+    procedure Assign(Source: TPersistent); override;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
     property Count: Cardinal read FCount write SetCount default 0;
@@ -516,9 +531,9 @@ type
 implementation
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Math,
   JvgUtils;
 
@@ -535,15 +550,15 @@ begin
 end;
 
 procedure TJvgTwainColors.Assign(Source: TPersistent);
-var sourceColors: TJvgTwainColors;
+var
+  src: TJvgTwainColors;
 begin
   if Source is TJvgTwainColors then
   begin
     if Source = Self then Exit;
-    sourceColors := TJvgTwainColors(Source);
-    RGBFromColor := sourceColors.RGBFromColor;
-    RGBToColor := sourceColors.RGBToColor;
-    Changed;
+    src := TJvgTwainColors(Source);
+    FromColor := src.FromColor;
+    ToColor := src.ToColor;
   end
   else
     inherited Assign(Source);
@@ -590,7 +605,8 @@ begin
 end;
 
 procedure TJvgCustomGradient.Assign(Source: TPersistent);
-var sourceGradient: TJvgCustomGradient;
+var
+  sourceGradient: TJvgCustomGradient;
 begin
   // always call inherited, because TJvgTwainColors copies some data as well
   inherited Assign(Source);
@@ -598,12 +614,13 @@ begin
   begin
     if Source = Self then Exit;
     sourceGradient := TJvgCustomGradient(Source);
-    Active := sourceGradient.Active;
-    BufferedDraw := sourceGradient.BufferedDraw;
-    Orientation := sourceGradient.Orientation;
-    Steps := sourceGradient.Steps;
-    PercentFilling := sourceGradient.PercentFilling;
-    BrushStyle := sourceGradient.BrushStyle;
+    FActive := sourceGradient.Active;
+    FBufferedDraw := sourceGradient.BufferedDraw;
+    FOrientation := sourceGradient.Orientation;
+    FSteps := sourceGradient.Steps;
+    FPercentFilling := sourceGradient.PercentFilling;
+    FBrushStyle := sourceGradient.BrushStyle;
+    Changed;
   end;
 end;
 
@@ -749,6 +766,21 @@ begin
   FActive := True;
 end;
 
+procedure TJvg3DGradient.Assign(Source: TPersistent);
+var
+  src: TJvg3DGradient;
+begin
+  inherited Assign(Source);
+  if Source is TJvg3DGradient then
+  begin
+    if Source = Self then Exit;
+    src := TJvg3DGradient(Source);
+    FDepth := src.Depth;
+    FGType := src.GType;
+    Changed;
+  end;
+end;
+
 procedure TJvg3DGradient.SetGType(Value: TThreeDGradientType);
 begin
   if FGType <> Value then
@@ -777,6 +809,22 @@ begin
   FVertical := fvaTop;
 end;
 
+procedure TJvg2DAlign.Assign(Source: TPersistent);
+var
+  src: TJvg2DAlign;
+begin
+  if Source is TJvg2DAlign then
+  begin
+    if Source = Self then Exit;
+    src := TJvg2DAlign(Source);
+    FHorizontal := src.Horizontal;
+    FVertical := src.Vertical;
+    Changed;
+  end
+  else
+    inherited Assign(Source);
+end;
+
 procedure TJvg2DAlign.Changed;
 begin
   if Assigned(FOnChanged) then
@@ -802,6 +850,22 @@ begin
 end;
 
 //=== { TJvgPointClass } =====================================================
+
+procedure TJvgPointClass.Assign(Source: TPersistent);
+var
+  src: TJvgPointClass;
+begin
+  if Source is TJvgPointClass then
+  begin
+    if Source = Self then Exit;
+    src := TJvgPointClass(Source);
+    FX := src.X;
+    FY := src.Y;
+    Changed;
+  end
+  else
+    inherited Assign(Source);
+end;
 
 procedure TJvgPointClass.Changed;
 begin
@@ -836,16 +900,18 @@ begin
 end;
 
 procedure TJvgBevelOptions.Assign(Source: TPersistent);
-var sourceBevel: TJvgBevelOptions;
+var
+  src: TJvgBevelOptions;
 begin
   if Source is TJvgBevelOptions then
   begin
     if Source = Self then Exit;
-    sourceBevel := TJvgBevelOptions(Source);
-    Inner := sourceBevel.Inner;
-    Outer := sourceBevel.Outer;
-    Sides := sourceBevel.Sides;
-    Bold := sourceBevel.Bold;
+    src := TJvgBevelOptions(Source);
+    FInner := src.Inner;
+    FOuter := src.Outer;
+    FSides := src.Sides;
+    FBold := src.Bold;
+    Changed;
   end
   else
     inherited Assign(Source);
@@ -951,6 +1017,20 @@ begin
   FShadowDepth := 2;
 end;
 
+procedure TJvgIllumination.Assign(Source: TPersistent);
+var
+  src: TJvgIllumination;
+begin
+  inherited Assign(Source);
+  if Source is TJvgIllumination then
+  begin
+    if Source = Self then Exit;
+    src := TJvgIllumination(Source);
+    FShadowDepth := src.ShadowDepth;
+    Changed;
+  end;
+end;
+
 procedure TJvgIllumination.SetShadowDepth(Value: Integer);
 begin
   if Value < 0 then
@@ -970,6 +1050,23 @@ begin
   FActive := fstRaised;
   FPassive := fstRaised;
   FDisabled := fstPushed;
+end;
+
+procedure TJvgLabelTextStyles.Assign(Source: TPersistent);
+var
+  src: TJvgLabelTextStyles;
+begin
+  if Source is TJvgLabelTextStyles then
+  begin
+    if Source = self then Exit;
+    src := TJvgLabelTextStyles(Source);
+    FPassive := src.Passive;
+    FActive := src.Active;
+    FDisabled := src.Disabled;
+    Changed;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvgLabelTextStyles.Changed;
@@ -1016,6 +1113,26 @@ begin
   FHighlight := clBtnHighlight;
   FShadow := clBtnShadow;
   FBackground := clBtnFace;
+end;
+
+procedure TJvgCustomTextColors.Assign(Source: TPersistent);
+var
+  src: TJvgCustomTextColors;
+begin
+  if Source is TJvgCustomTextColors then
+  begin
+    if Source = Self then Exit;
+    src := TJvgCustomTextColors(Source);
+    FText := src.Text;
+    FTextDisabled := src.TextDisabled;
+    FDelineate := src.Delineate;
+    FShadow := src.Shadow;
+    FHighlight := src.Highlight;
+    FBackground := src.Background;
+    Changed;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvgCustomTextColors.Changed;
@@ -1092,6 +1209,26 @@ begin
   FBackgroundActive := clBtnFace;
 end;
 
+procedure TJvgCustomLabelColors.Assign(Source: TPersistent);
+var
+  src: TJvgCustomLabelColors;
+begin
+  inherited Assign(Source);
+  if Source is TJvgCustomLabelColors then
+  begin
+    if Source = Self then Exit;
+    src := TJvgCustomLabelColors(Source);
+    FTextActive := src.TextActive;
+    FDelineateActive := src.DelineateActive;
+    FAutoHighlight := src.AutoHighlight;
+    FAutoShadow := src.AutoShadow;
+    FColorHighlightShift := src.ColorHighlightShift;
+    FColorShadowShift := src.ColorShadowShift;
+    FBackgroundActive := src.BackgroundActive;
+    Changed;
+  end;
+end;
+
 procedure TJvgCustomLabelColors.SetTextActive(Value: TColor);
 begin
   if FTextActive <> Value then
@@ -1166,6 +1303,23 @@ begin
   FClientActive := clBtnFace;
 end;
 
+procedure TJvgGroupBoxColors.Assign(Source: TPersistent);
+var
+  src: TJvgGroupBoxColors;
+begin
+  inherited Assign(Source);
+  if Source is TJvgGroupBoxColors then
+  begin
+    if Source = Self then Exit;
+    src := TJvgGroupBoxColors(Source);
+    FCaption := src.Caption;
+    FCaptionActive := src.CaptionActive;
+    FClient := src.Client;
+    FClientActive := src.ClientActive;
+    Changed;
+  end;
+end;
+
 procedure TJvgGroupBoxColors.SetCaption(Value: TColor);
 begin
   if Value <> FCaption then
@@ -1210,6 +1364,23 @@ begin
   FActive := True;
   FBevelPenStyle := psSolid;
   FBevelPenWidth := 1;
+end;
+
+procedure TJvgExtBevelOptions.Assign(Source: TPersistent);
+var
+  src: TJvgExtBevelOptions;
+begin
+  inherited Assign(Source);
+  if Source is TJvgExtBevelOptions then
+  begin
+    if Source = Self then Exit;
+    src := TJvgExtBevelOptions(Source);
+    FActive := src.Active;
+    FBevelPenStyle := src.BevelPenStyle;
+    FBevelPenWidth := src.BevelPenWidth;
+    FInteriorOffset := src.InteriorOffset;
+    Changed;
+  end;
 end;
 
 procedure TJvgExtBevelOptions.SetActive(Value: Boolean);
@@ -1262,6 +1433,24 @@ begin
   FFont.Free;
   FBevel.Free;
   inherited Destroy;
+end;
+
+procedure TJvgCustomListBoxItemStyle.Assign(Source: TPersistent);
+var
+  src: TJvgCustomListBoxItemStyle;
+begin
+  if Source is TJvgCustomListBoxItemStyle then
+  begin
+    if Source = Self then Exit;
+    src := TJvgCustomListBoxItemStyle(Source);
+    FColor := src.Color;
+    FDelineateColor := src.DelineateColor;
+    FTextStyle := src.TextStyle;
+    Font := src.Font;
+    Bevel := src.Bevel; // invokes OnChanged
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvgCustomListBoxItemStyle.SetOnChanged(Value: TNotifyEvent);
@@ -1343,6 +1532,20 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvgListBoxItemStyle.Assign(Source: TPersistent);
+var
+  src: TJvgListBoxItemStyle;
+begin
+  inherited Assign(Source);
+  if Source is TJvgListBoxItemStyle then
+  begin
+    if Source = Self then Exit;
+    src := TJvgListBoxItemStyle(Source);
+    TextGradient := src.TextGradient;
+    Gradient := src.Gradient;
+  end
+end;
+
 procedure TJvgListBoxItemStyle.SetOnChanged(Value: TNotifyEvent);
 begin
   inherited SetOnChanged(Value);
@@ -1372,6 +1575,21 @@ destructor TJvgAskListBoxItemStyle.Destroy;
 begin
   FBtnFont.Free;
   inherited Destroy;
+end;
+
+procedure TJvgAskListBoxItemStyle.Assign(Source: TPersistent);
+var
+  src: TJvgAskListBoxItemStyle;
+begin
+  inherited Assign(Source);
+  if Source is TJvgAskListBoxItemStyle then
+  begin
+    if Source = Self then Exit;
+    src := TJvgAskListBoxItemStyle(Source);
+    FBtnColor := src.BtnColor;
+    FBtnTextStyle := src.BtnTextStyle;
+    BtnFont := src.BtnFont; // calls Changed
+  end;
 end;
 
 procedure TJvgAskListBoxItemStyle.SetBtnColor(Value: TColor);
@@ -1411,6 +1629,22 @@ begin
   FShadowColor := clBtnShadow;
 end;
 
+procedure TJvgCustomBoxStyle.Assign(Source: TPersistent);
+var
+  src: TJvgCustomBoxStyle;
+begin
+  inherited Assign(Source);
+  if Source is TJvgCustomBoxStyle then
+  begin
+    if Source = Self then Exit;
+    src := TJvgCustomBoxStyle(Source);
+    FPenStyle := src.PenStyle;
+    FHighlightColor := src.HighlightColor;
+    FShadowColor := src.ShadowColor;
+    Changed;
+  end;
+end;
+
 procedure TJvgCustomBoxStyle.SetPenStyle(Value: TPenStyle);
 begin
   if Value <> FPenStyle then
@@ -1447,6 +1681,21 @@ begin
   FBackgroundColor := clWindow;
 end;
 
+procedure TJvgCustomTextBoxStyle.Assign(Source: TPersistent);
+var
+  src: TJvgCustomTextBoxStyle;
+begin
+  inherited Assign(Source);
+  if Source is TJvgCustomTextBoxStyle then
+  begin
+    if Source = Self then Exit;
+    src := TJvgCustomTextBoxStyle(Source);
+    FTextColor := src.TextColor;
+    FBackgroundColor := src.BackgroundColor;
+    Changed;
+  end;
+end;
+
 procedure TJvgCustomTextBoxStyle.SetTextColor(Value: TColor);
 begin
   if Value <> FTextColor then
@@ -1472,6 +1721,27 @@ begin
   inherited Create;
   FStyle := bvLowered;
   FThickness := 1;
+end;
+
+procedure TJvgBevelLines.Assign(Source: TPersistent);
+var
+  src: TJvgBevelLines;
+begin
+  if Source is TJvgBevelLines then
+  begin
+    if Source = Self then Exit;
+    src := TJvgBevelLines(Source);
+    FCount := src.Count;
+    FStep := src.Step;
+    FOrigin := src.Origin;
+    FStyle := src.Style;
+    FBold := src.Bold;
+    FThickness := src.Thickness;
+    FIgnoreBorder := src.IgnoreBorder;
+    Changed;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvgBevelLines.Changed;
@@ -1798,7 +2068,7 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 
