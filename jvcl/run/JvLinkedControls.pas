@@ -93,8 +93,8 @@ uses
 
 function CheckLinkControlEnabled(Enabled, Checked:Boolean; Options:TJvLinkedControlsOptions):boolean;
 begin
-  Result := ((loLinkChecked in Options) and (Checked or (loInvertChecked in Options))) or
-            ((loLinkEnabled in Options) and (Enabled or (loInvertEnabled in Options)));
+  Result := ((loLinkChecked in Options) and ((not Checked and (loInvertChecked in Options) or (Checked and not (loInvertChecked in Options))))) or
+            ((loLinkEnabled in Options) and (not Enabled and (loInvertEnabled in Options)) or (Enabled and not (loInvertEnabled in Options)));
 end;
 
 //=== TJvLinkedControl =======================================================
