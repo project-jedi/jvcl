@@ -500,7 +500,7 @@ var
   I: Integer;
   TmpItem: TJvCustomInspectorItem;
 begin
-  SetLength(Result, DS.FieldCount);
+  SetLength(Result, ADataSource.DataSet.FieldCount);
   DS := ADataSource.DataSet;
   IArr := 0;
   for I := 0 to DS.FieldCount - 1 do
