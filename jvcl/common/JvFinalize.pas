@@ -39,28 +39,29 @@ type
 /// AddFinalizeProc adds a TFinalizeProc to the finalize section.
 /// The procedure is called on finalization.
 /// </summary>
-procedure AddFinalizeProc(FinalizeProc: TFinalizeProc);
+procedure AddFinalizeProc(const UnitName: string; FinalizeProc: TFinalizeProc);
 
 /// <summary>
 /// AddFinalizeObject adds an TObject derived class to the finalize section.
 /// The object is destroyed on finalization.
 /// </summary>
-function AddFinalizeObject(Instance: TObject): TObject;
+function AddFinalizeObject(const UnitName: string; Instance: TObject): TObject;
 
 /// <summary>
 /// AddFinalizeObjectNil adds an TObject derived class to the finalize section.
 /// The object is destroyed and the reference is set to nil on finalization.
+/// The object is freed by "Obj.Free; Obj := nil;"
 /// </summary>
 /// <limitation>
 /// Only global variables are allowed to be specified.
 /// </limitation>
-function AddFinalizeObjectNil(var Reference: TObject): TObject;
+function AddFinalizeObjectNil(const UnitName: string; var Reference: TObject): TObject;
 
 /// <summary>
 /// AddFinalizeMemory adds an memory allocation to the finalize section.
 /// The memory is released on finalization.
 /// </summary>
-function AddFinalizeMemory(Ptr: Pointer): Pointer;
+function AddFinalizeMemory(const UnitName: string; Ptr: Pointer): Pointer;
 
 /// <summary>
 /// AddFinalizeMemory adds an memory allocation to the finalize section.
@@ -69,7 +70,14 @@ function AddFinalizeMemory(Ptr: Pointer): Pointer;
 /// <limitation>
 /// Only global variables are allowed to be specified.
 /// </limitation>
-function AddFinalizeMemoryNil(var Ptr: Pointer): Pointer;
+function AddFinalizeMemoryNil(const UnitName: string; var Ptr: Pointer): Pointer;
+
+
+/// <summary>
+/// FinalizeUnit finalizes all items from the unit UnitName. The UnitName is
+/// case sensitive.
+/// </summary>
+procedure FinalizeUnit(const UnitName: string);
 
 implementation
 
@@ -77,36 +85,112 @@ type
   TFinalizeItem = class(TObject)
   private
     FNext: TFinalizeItem;
+    FUnitName: string;
   public
-    constructor Create(ANext: TFinalizeItem);
+    constructor Create(const AUnitName: string);
 
-    property Next: TFinalizeItem read FNext;
+    property Next: TFinalizeItem read FNext write FNext;
+    property UnitName: string read FUnitName;
   end;
+
+  TFinalizeUnitItem = class(TObject)
+    UnitName: string;
+    Items: TFinalizeItem;
+    Next: TFinalizeUnitItem;
+
+    constructor Create(AUnitName: string; ANext: TFinalizeUnitItem);
+    destructor Destroy; override;
+  end;
+
+var
+  FinalizeUnitList: TFinalizeUnitItem = nil;
 
 { TFinalizeItem }
 
-constructor TFinalizeItem.Create(ANext: TFinalizeItem);
+constructor TFinalizeItem.Create(const AUnitName: string);
+var
+  P: TFinalizeUnitItem;
 begin
   inherited Create;
-  FNext := ANext;
+  P := FinalizeUnitList;
+  while P <> nil do
+  begin
+    if P.UnitName = AUnitName then
+      Break;
+    P := P.Next;
+  end;
+  if P = nil then
+  begin
+    FinalizeUnitList := TFinalizeUnitItem.Create(AUnitName, FinalizeUnitList);
+    P := FinalizeUnitList;
+  end;
+  FNext := P.Items;
+  P.Items := Self;
 end;
 
-var
-  FinalizeList: TFinalizeItem = nil;
 
-procedure FinalizeUnits;
+{ TFinalizeUnitItem }
+
+constructor TFinalizeUnitItem.Create(AUnitName: string; ANext: TFinalizeUnitItem);
+begin
+  inherited Create;
+  UnitName := AUnitName;
+  Next := ANext;
+end;
+
+destructor TFinalizeUnitItem.Destroy;
 var
   P: TFinalizeItem;
 begin
-  while FinalizeList <> nil do
+ // this code also works if the finalization code adds a new finalize object
+  while Items <> nil do
   begin
-    P := FinalizeList;
-    FinalizeList := P.Next;
+    P := Items;
+    Items := P.Next;
     try
       P.Free;
     except
-      // ignore
     end;
+  end;
+  inherited Destroy;
+end;
+
+procedure FinalizeUnits;
+var
+  P: TFinalizeUnitItem;
+begin
+  while FinalizeUnitList <> nil do
+  begin
+    P := FinalizeUnitList;
+    FinalizeUnitList := P.Next;
+    P.Free;
+  end;
+end;
+
+procedure FinalizeUnit(const UnitName: string);
+var
+  N, P: TFinalizeUnitItem;
+begin
+  N := nil;
+  P := FinalizeUnitList;
+  if P = nil then
+    Exit;
+  while P <> nil do
+  begin
+    if P.UnitName = UnitName then
+    begin
+      if N = nil then
+        FinalizeUnitList := P.Next
+      else
+        N.Next := P.Next;
+      try
+        P.Free;
+      except
+      end;
+      Break;
+    end;
+    N := P;
+    P := P.Next;
   end;
 end;
 
@@ -117,7 +201,7 @@ type
   private
     FFinalizeProc: TFinalizeProc;
   public
-    constructor Create(AFinalizeProc: TFinalizeProc; ANext: TFinalizeItem);
+    constructor Create(const AUnitName: string; AFinalizeProc: TFinalizeProc);
     destructor Destroy; override;
   end;
 
@@ -125,7 +209,7 @@ type
   private
     FInstance: TObject;
   public
-    constructor Create(AInstance: TObject; ANext: TFinalizeItem);
+    constructor Create(const AUnitName: string; AInstance: TObject);
     destructor Destroy; override;
   end;
 
@@ -133,7 +217,7 @@ type
   private
     FReference: ^TObject;
   public
-    constructor Create(var AReference: TObject; ANext: TFinalizeItem);
+    constructor Create(const AUnitName: string; var AReference: TObject);
     destructor Destroy; override;
   end;
 
@@ -141,7 +225,7 @@ type
   private
     FPtr: Pointer;
   public
-    constructor Create(APtr: Pointer; ANext: TFinalizeItem);
+    constructor Create(const AUnitName: string; APtr: Pointer);
     destructor Destroy; override;
   end;
 
@@ -149,15 +233,16 @@ type
   private
     FPtr: ^Pointer;
   public
-    constructor Create(var APtr: Pointer; ANext: TFinalizeItem);
+    constructor Create(const AUnitName: string; var APtr: Pointer);
     destructor Destroy; override;
   end;
 
 { TFinalizeProcItem }
 
-constructor TFinalizeProcItem.Create(AFinalizeProc: TFinalizeProc; ANext: TFinalizeItem);
+constructor TFinalizeProcItem.Create(const AUnitName: string;
+  AFinalizeProc: TFinalizeProc);
 begin
-  inherited Create(ANext);
+  inherited Create(AUnitName);
   FFinalizeProc := AFinalizeProc;
 end;
 
@@ -170,9 +255,10 @@ end;
 
 { TFinalizeObjectItem }
 
-constructor TFinalizeObjectItem.Create(AInstance: TObject; ANext: TFinalizeItem);
+constructor TFinalizeObjectItem.Create(const AUnitName: string;
+  AInstance: TObject);
 begin
-  inherited Create(ANext);
+  inherited Create(AUnitName);
   FInstance := AInstance;
 end;
 
@@ -185,9 +271,10 @@ end;
 
 { TFinalizeObjectNilItem }
 
-constructor TFinalizeObjectNilItem.Create(var AReference: TObject; ANext: TFinalizeItem);
+constructor TFinalizeObjectNilItem.Create(const AUnitName: string;
+  var AReference: TObject);
 begin
-  inherited Create(ANext);
+  inherited Create(AUnitName);
   FReference := @AReference;
 end;
 
@@ -201,9 +288,9 @@ end;
 
 { TFinalizeMemoryItem }
 
-constructor TFinalizeMemoryItem.Create(APtr: Pointer; ANext: TFinalizeItem);
+constructor TFinalizeMemoryItem.Create(const AUnitName: string; APtr: Pointer);
 begin
-  inherited Create(ANext);
+  inherited Create(AUnitName);
   FPtr := APtr;
 end;
 
@@ -217,10 +304,10 @@ end;
 
 { TFinalizeMemoryNilItem }
 
-constructor TFinalizeMemoryNilItem.Create(var APtr: Pointer;
-  ANext: TFinalizeItem);
+constructor TFinalizeMemoryNilItem.Create(const AUnitName: string;
+  var APtr: Pointer);
 begin
-  inherited Create(ANext);
+  inherited Create(AUnitName);
   FPtr := @APtr;
 end;
 
@@ -237,32 +324,32 @@ end;
 
 // -----------------------------------------------------------------------------
 
-procedure AddFinalizeProc(FinalizeProc: TFinalizeProc);
+procedure AddFinalizeProc(const UnitName: string; FinalizeProc: TFinalizeProc);
 begin
-  FinalizeList := TFinalizeProcItem.Create(FinalizeProc, FinalizeList);
+  TFinalizeProcItem.Create(UnitName, FinalizeProc);
 end;
 
-function AddFinalizeObject(Instance: TObject): TObject;
+function AddFinalizeObject(const UnitName: string; Instance: TObject): TObject;
 begin
-  FinalizeList := TFinalizeObjectItem.Create(Instance, FinalizeList);
+  TFinalizeObjectItem.Create(UnitName, Instance);
   Result := Instance;
 end;
 
-function AddFinalizeObjectNil(var Reference: TObject): TObject;
+function AddFinalizeObjectNil(const UnitName: string; var Reference: TObject): TObject;
 begin
-  FinalizeList := TFinalizeObjectNilItem.Create(Reference, FinalizeList);
+  TFinalizeObjectNilItem.Create(UnitName, Reference);
   Result := Reference;
 end;
 
-function AddFinalizeMemory(Ptr: Pointer): Pointer;
+function AddFinalizeMemory(const UnitName: string; Ptr: Pointer): Pointer;
 begin
-  FinalizeList := TFinalizeMemoryItem.Create(Ptr, FinalizeList);
+  TFinalizeMemoryItem.Create(UnitName, Ptr);
   Result := Ptr;
 end;
 
-function AddFinalizeMemoryNil(var Ptr: Pointer): Pointer;
+function AddFinalizeMemoryNil(const UnitName: string; var Ptr: Pointer): Pointer;
 begin
-  FinalizeList := TFinalizeMemoryNilItem.Create(Ptr, FinalizeList);
+  TFinalizeMemoryNilItem.Create(UnitName, Ptr);
   Result := Ptr;
 end;
 
@@ -272,3 +359,4 @@ finalization
   FinalizeUnits;
 
 end.
+
