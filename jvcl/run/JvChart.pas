@@ -35,12 +35,16 @@ Last Modified:
                       cvs logs. NEW: OnChartClick event.
                       RENAME: Options.ThickLineWidth  -> Options.PenLineWidth
                       RENAME: Values                  -> ValueIndex
+  2004-04-10 - (WP) - Much improved Charting! Beta-Quality in most places.
+                      Significant property reorganization and renaming.
+                      Primary and Secondary Y (vertical) Axis support.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-  WARNING: BETA VERSION. STILL IN DEVELOPMENT. Needs more visual refinement.
+  MARCH 2004 -JVCL3BETA- STILL IN DEVELOPMENT. REPORT PROBLEMS TO JEDI JVCL
+  BUG TRACKING SYSTEM (AKA 'MANTIS') AND THE JEDI.VCL NEWSGROUP!
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
@@ -202,13 +206,13 @@ type
         property YGap: Double read FYGap;
         property YGap1:Double read FYGap1; // Gap multiplication factor for value scaling. 
 
+        property YLegends: TStrings read GetYLegends write SetYLegends;     { Y Axis Legends as Strings }
 
     published
         property YMax: Double read FYMax write SetYMax;
         property YMin: Double read FYMin write FYMin;
         property YValueCount: Integer read FYValueCount write FYValueCount; // Number of vertical divisions in the chart
         property YLegendDecimalPlaces: Integer read FYLegendDecimalPlaces write FYLegendDecimalPlaces;
-        property YLegends: TStrings read GetYLegends write SetYLegends;     { Y Axis Legends as Strings }
         property DefaultYLegends: Integer read FDefaultYLegends write FDefaultYLegends default JvDefaultYLegends;
 
 
@@ -425,7 +429,8 @@ type
     property PenLineWidth: Integer read FPenLineWidth write FPenLineWidth default 1;
     property AxisLineWidth: Integer read FAxisLineWidth write FAxisLineWidth default 2;
     { more and more design time. these ones not sure about whether they are designtime or not.}
-    property XValueCount: Integer read FXValueCount write FXValueCount;
+    property XValueCount: Integer read FXValueCount write FXValueCount default 10;
+
     {Font properties}
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont;
     property LegendFont: TFont read FLegendFont write SetLegendFont;
@@ -443,7 +448,8 @@ type
   TJvChart = class(TJvGraphicControl) // formerly was a child of TImage
   private
     FUpdating :Boolean; // PREVENT ENDLES EVENT LOOPING.
-
+    FAutoPlot:Boolean; // Default is true.
+    FAutoPlotDone:Boolean; // Has paint method called PlotGraph already?
 
 
     FOnChartClick:TJvChartClickEvent; // mouse click event
@@ -563,11 +569,13 @@ type
     function DestRect: TRect; // from TImage
 
 
+    procedure DesignModePaint; // Invoked by Paint method when we're in design mode.
+
     procedure Paint; override; // from TImage
     procedure Resize; override; // from TControl
     procedure Loaded; override;
     { draw dummy data for design mode}
-    procedure DesignMode;
+
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     property ChartCanvas: TCanvas read GetCanvas;
@@ -610,6 +618,7 @@ type
     property Picture: TPicture read FPicture; // write SetPicture;
 
 
+    property AutoPlot:Boolean read FAutoPlot write FAutoPlot default true; // Default is true.
 
 
     // NEW: Ability to highlight a particular sample by setting the Cursor position!
@@ -820,6 +829,7 @@ begin
     FOwner := owner;
     FYLegends := TStringList.Create;
     FDefaultYLegends := JvDefaultYLegends;
+
 end;
 
 destructor TJvChartYAxisOptions.Destroy;
@@ -840,8 +850,8 @@ end;
 
 procedure TJvChartYAxisOptions.Normalize;
 begin
-  if FYMax < FYMin then
-    FYMax := FYMin+1.0;
+  if (FYMax-FYMin)<0.00001 then // make sure that there is some difference here!
+    FYMax := FYMin+10;
 
   if ( DefaultYLegends>0 ) and (YValueCount=0) then
     YValueCount := DefaultYLegends;
@@ -1009,6 +1019,7 @@ begin
   FPenLineWidth := 1;
   FAxisLineWidth := 3;
 
+  FXValueCount := 10;
 
   FXAxisLegendSkipBy := 1;
 
@@ -1257,24 +1268,6 @@ begin
   FXStartOffset := Offset;
 end;
 
-procedure TJvChart.DesignMode;
-var
-  I, J: Integer;
-begin
-  //   ResetGraphModule;
-  if Options.XValueCount < JvDefaultYLegends then
-    Options.XValueCount := JvDefaultYLegends;
-    
-  for J := 0 to Options.PenCount - 1 do
-    Data[J, 0] := 0.0; // Always Zero.
-  for I := 1 to Options.XValueCount - 1 do
-    for J := 0 to Options.PenCount - 1 do
-      Data[J, I] := Random((I mod 5) * 25) * J + (1500 * J);
-  AutoFormatGraph;
-  FContainsNegative := False;
-  ResizeChartCanvas;
-  //   Invalidate happens in PlotGraph which is called from here.
-end;
 
 { GRAPH }
 {**************************************************************************}
@@ -1289,6 +1282,7 @@ begin
   inherited Create(AOwner); {by TImage...}
 //   Color := clWindow;
   FPicture := TPicture.Create;
+  FAutoPlot := true;
 
   FCursorPosition := -1; // Invisible until CursorPosition is set >=0 to make it visible. 
 
@@ -1328,8 +1322,6 @@ begin
       Width := 300;
       Height := 300;
     end;
-
-    DesignMode;
 
   end;
 
@@ -1431,49 +1423,55 @@ end;
 
 { PAINT }
 
-procedure TJvChart.Paint; { based on TImage.Paint }
+procedure TJvChart.DesignModePaint;
 var
   DesignStr: string;
   tw,th:Integer;
-
 begin
-  if (csDesigning in ComponentState) or
-    (Options.ChartKind = ckChartNone) then // Blank.
-  begin
-    //Canvas.Pen.Style := psClear;
-    //Canvas.Pen.Color := clBtnFace;
-    //Canvas.Brush.Style := bsSolid;
     ChartCanvas.Brush.Color := Options.PaperColor;
     ChartCanvas.Rectangle(0, 0, Width, Height);
-    
+
     DesignStr := ClassName + JvChartDesigntimeLabel;
 
-    { designtime component label }
-    if csDesigning in ComponentState then
-    begin
-      tw := Canvas.TextWidth(DesignStr);
-      th := Canvas.TextHeight(DesignStr);
-      //Canvas.Pen.Style := psDot;
-      //Canvas.Rectangle( (width div 2) - (tw div 2), (height div 2) - (th div 2), tw, th);
-      if (tw<Width) and (th<Height) then 
-        Canvas.TextOut( (width div 2) - (tw div 2), (height div 2) - (th div 2),DesignStr);
+    if (Abs(Options.PrimaryYAxis.YMax)<0.000001) and (Abs(Options.PrimaryYAxis.YMin)<0.000001) then begin
+        Options.PrimaryYAxis.YMax := 10.0; // Reasonable non-zero default, so that charting works!
     end;
-
 
     Options.PrimaryYAxis.Normalize;
     Options.SecondaryYAxis.Normalize;
-
-
-
     GraphSetup;
+    PrimaryYAxisLabels;
     GraphXAxis;
     GraphXAxisDivisionMarkers;
     GraphYAxis;
     GraphYAxisDivisionMarkers;
 
+    { designtime component label }
+    tw := Canvas.TextWidth(DesignStr);
+    th := Canvas.TextHeight(DesignStr);
 
+    ChartCanvas.Brush.Color := Options.PaperColor;
+    ChartCanvas.Pen.Color := Color;
+    
+      //Canvas.Pen.Style := psDot;
+      //Canvas.Rectangle( (width div 2) - (tw div 2), (height div 2) - (th div 2), tw, th);
+      if (tw<Width) and (th<Height) then
+        Canvas.TextOut( (width div 2) - (tw div 2), (height div 2) - (th div 2),DesignStr);
+
+end;
+
+procedure TJvChart.Paint; { based on TImage.Paint }
+begin
+  if (csDesigning in ComponentState) then// or (Options.ChartKind = ckChartNone) then // Blank.
+  begin
+    DesignModePaint;
   end
   else begin
+    if FAutoPlot and (not FAutoPlotDone) then begin
+        FAutoPlotDone:= true;
+        PlotGraph; // Makes sure something is visible in the TPicture.
+    end;
+
     with inherited Canvas do
       StretchDraw(DestRect, Picture.Graphic);
 
@@ -1735,30 +1733,30 @@ end;
 
 // These set up variables used for all the rest of the plotting functions.
 procedure TJvChart.GraphSetup;
+var
+ pyvc,vc:Integer;
 begin
-  Options.XValueCount := FData.ValueCount;
-  if (Options.XValueCount<1) then begin
-    Options.XPixelGap := 0.0;
-    Options.PrimaryYAxis.YPixelGap := 0.0;
-    Options.SecondaryYAxis.YPixelGap := 0.0;
-    exit;
-  end;
+  if FData.ValueCount>0 then 
+     Options.XValueCount := FData.ValueCount;
 
-  Options.XPixelGap := ( (Options.XEnd-1) - Options.XStartOffset ) /
-    (Options.XValueCount);
+  { Get x value count }
+  vc := Options.XValueCount;
+  if (vc<1) then
+      vc := 1;
 
-  //Options.PrimaryYAxis.Normalize;
-  //Options.SecondaryYAxis.Normalize;
+  { Get y value count }
+  pyvc := Options.PrimaryYAxis.YValueCount;
+  if (pyvc < 1) then
+      pyvc := 1;
 
-
-
+  Options.XPixelGap := ( (Options.XEnd-1) - Options.XStartOffset ) / vc;
 
   FXOrigin := Options.XStartOffset + Options.XPixelGap * (Options.XOrigin);
   FYOrigin := Options.YStartOffset +
-    Round(Options.PrimaryYAxis.YPixelGap * (Options.PrimaryYAxis.YValueCount - Options.YOrigin));
+    Round(Options.PrimaryYAxis.YPixelGap * (pyvc - Options.YOrigin));
 
   if Options.YOrigin < 0 then
-    FYTempOrigin := Options.YStartOffset + Round(Options.PrimaryYAxis.YPixelGap * Options.PrimaryYAxis.YValueCount)
+    FYTempOrigin := Options.YStartOffset + Round(Options.PrimaryYAxis.YPixelGap * pyvc)
   else
     FYTempOrigin := Round(yOrigin);
 
@@ -1767,7 +1765,7 @@ begin
    { NEW: Box around entire chart area. }
   MyRectangle(Round(xOrigin),
     Options.YStartOffset,
-    Round(Options.XStartOffset + Options.XPixelGap * Options.XValueCount ),
+    Round(Options.XStartOffset + Options.XPixelGap * vc ),
     yTempOrigin);
 
   ChartCanvas.Brush.Style := bsSolid;
@@ -1902,141 +1900,6 @@ var
 
     { Here be lots of local functions }
 
-    procedure PlotGraphStackedBar;  {LOCAL to TJvChart.PlotGraph}
-    var
-        I,J:integer;
-
-    begin
-        for J := 0 to Options.XValueCount - 1 do
-        begin
-          yOldOrigin := 0;
-          for I := 0 to Options.PenCount - 1 do
-          begin
-            if Options.GetPenStyle(I)<>psClear then begin
-
-            if Options.XPixelGap < 3.0 then
-                ChartCanvas.Pen.Color := Options.GetPenColor(I); // greek-out the borders
-
-            MyColorRectangle(I,
-              Round((xOrigin + J * Options.XPixelGap)+(Options.XPixelGap/6) ),
-              Round(yOrigin - yOldOrigin),
-              Round(xOrigin + (J + 1) * Options.XPixelGap  - nStackGap),
-              Round((yOrigin - yOldOrigin) -
-              ((FData.Value[I, J] / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap)));
-            yOldOrigin := Round(yOldOrigin +
-              ((FData.Value[I, J] / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap));
-            end;
-          end;
-        end;
-     end;
-
-
-  procedure PlotGraphBar;  {LOCAL to TJvChart.PlotGraph}
-  var
-        I,J,N:integer;
-        BarCount : Double;
-        V,BarGap :Double;
-        function BarXPosition( index:Integer):Integer;
-        begin
-              result := Round( xOrigin + (index * BarGap) );
-        end;
-  begin
-
-        BarCount := Options.PenCount * Options.XValueCount;
-        BarGap :=  ((( Options.XEnd-1) - Options.XStartOffset) /    BarCount );
-
-        for I := 0 to Options.PenCount - 1 do
-          for J := 0 to Options.XValueCount - 1 do
-          begin
-
-             N := (J* Options.PenCount)+I; // Which Bar Number!?
-
-                // Plot a rectangle for each Bar in our bar chart...
-
-            X := BarXPosition( N )+1;
-
-            // Make a space between groups, 4 pixels per XValue index:
-            //Dec(X,4);
-            //Inc(X, 2*J);
-
-            Y := yTempOrigin;
-            Assert(Y<Height);
-            Assert(Y>0);
-            Assert(X>0);
-            if (X>=Width) then
-                OutputDebugString('foo!');
-            Assert(X<Width);
-
-            X2 := BarXPosition(N+1)-3;
-
-            // Make a space between groups, 4 pixels per XValue index:
-            //Dec(X2,4);
-            //Inc(X2, 2*J);
-
-            V := FData.Value[I, J];
-            if IsNan(V) then
-                continue;
-
-            Y2 := Round(yOrigin - ((V / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap));
-
-            Assert(Y2<Height);
-            Assert(Y2>0);
-            if (Y2>=Y) then
-                Y2 := Y-1;
-            Assert(Y2<Y);
-
-            Assert(X2>0);
-            //if (X2<Width) then
-              //  OutputDebugString('foo!');
-            //Assert(X2<Width);
-            //Assert(X2>X);
-            if (X2-X)<4 then
-                X2 := X + 4; // minimum bar width.
-
-            if Options.PenCount > 1 then
-              if X2 > X then
-                Dec(X2); // Additional 1 pixel gap
-            if Options.GetPenStyle(I) <> psClear then
-                MyColorRectangle(I, X, Y, X2, Y2);
-          end;
-        {add average line for the type...}
-        if Options.ChartKind = ckChartBarAverage then
-        begin
-          SetLineColor(-3);
-          ChartCanvas.MoveTo(Round(xOrigin + 1 * Options.XPixelGap),
-            Round(yOrigin - ((Options.AverageValue[1] / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap)));
-          for J := 2 to Options.XValueCount do
-            MyPenLineTo(Round(xOrigin + J * Options.XPixelGap),
-              Round(yOrigin - ((Options.AverageValue[J] / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap)));
-          SetLineColor(-3);
-        end;
-      end;
-
-
-    // Keep Y in visible chart range:
-    function GraphConstrainedLineY(Pen,Sample:Integer): Double; {LOCAL to TJvChart.PlotGraph}
-    var
-      v:Double;
-      PenAxisOpt:TJvChartYAxisOptions;
-    begin
-      v := FData.Value[Pen,Sample];
-      PenAxisOpt := Options.GetPenAxis(Pen);
-      if IsNan(v) then begin
-          result := NaN; // blank placeholder value in chart!
-          exit;
-      end;
-      if ( PenAxisOpt.YGap < 0.0000001 ) then begin
-          result := 0.0; // can't chart! YGap is near zero, zero, or negative.
-          exit;
-      end;
-      Result := (yOrigin - ((v/ PenAxisOpt.YGap) * PenAxisOpt.YPixelGap));
-      if Result >= (yOrigin - 1) then
-        Result := Round(yOrigin) - 1  // hit the top of the chart
-      else
-      if Result < 1 + (yOrigin - (Options.YEnd - PenAxisOpt.YPixelGap)) then
-        Result := 1 + Round(yOrigin - (Options.YEnd - PenAxisOpt.YPixelGap));
-    end;
-
     { Draw symbol markers and text labels on a chart... }
     procedure PlotGraphChartMarkers;  {LOCAL to TJvChart.PlotGraph}
     var
@@ -2048,6 +1911,11 @@ var
         LastX,LastY:Integer;
         MinIndex,MaxIndex:Array of Integer;
     begin
+          ChartCanvas.Brush.Color := Options.PaperColor;
+          ChartCanvas.Pen.Style := psSolid;
+          ChartCanvas.Pen.Color := Options.AxisLineColor;
+          ChartCanvas.Brush.Style := bsSolid;
+          
           vc := Options.XValueCount;
           LastX := Round(xOrigin);
           LastY := 0;
@@ -2175,6 +2043,155 @@ var
             end;{for}
           end; {for}
     end; {PlotGraphChartMarkers}
+
+    
+    procedure PlotGraphStackedBar;  {LOCAL to TJvChart.PlotGraph}
+    var
+        I,J:integer;
+
+    begin
+        for J := 0 to Options.XValueCount - 1 do
+        begin
+          yOldOrigin := 0;
+          for I := 0 to Options.PenCount - 1 do
+          begin
+            if Options.GetPenStyle(I)<>psClear then begin
+
+            if Options.XPixelGap < 3.0 then
+                ChartCanvas.Pen.Color := Options.GetPenColor(I); // greek-out the borders
+
+            MyColorRectangle(I,
+              Round((xOrigin + J * Options.XPixelGap)+(Options.XPixelGap/6) ),
+              Round(yOrigin - yOldOrigin),
+              Round(xOrigin + (J + 1) * Options.XPixelGap  - nStackGap),
+              Round((yOrigin - yOldOrigin) -
+              ((FData.Value[I, J] / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap)));
+            yOldOrigin := Round(yOldOrigin +
+              ((FData.Value[I, J] / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap));
+            end;
+          end;
+        end;
+     end;
+
+
+  procedure PlotGraphBar;  {LOCAL to TJvChart.PlotGraph}
+  var
+        I,J,N:integer;
+        BarCount : Double;
+        V,BarGap :Double;
+        function BarXPosition( index:Integer):Integer;
+        begin
+              result := Round( xOrigin + (index * BarGap) );
+        end;
+  begin
+
+        BarCount := Options.PenCount * Options.XValueCount;
+        BarGap :=  ((( Options.XEnd-1) - Options.XStartOffset) /    BarCount );
+
+        for I := 0 to Options.PenCount - 1 do begin
+
+          if Options.GetPenAxis(I).YGap = 0 then continue; // Can't plot this one.
+          
+          for J := 0 to Options.XValueCount - 1 do
+          begin
+
+             N := (J* Options.PenCount)+I; // Which Bar Number!?
+
+                // Plot a rectangle for each Bar in our bar chart...
+
+            X := BarXPosition( N )+1;
+
+            // Make a space between groups, 4 pixels per XValue index:
+            //Dec(X,4);
+            //Inc(X, 2*J);
+
+            Y := yTempOrigin;
+            Assert(Y<Height);
+            Assert(Y>0);
+            Assert(X>0);
+            if (X>=Width) then
+                OutputDebugString('foo!');
+            Assert(X<Width);
+
+            X2 := BarXPosition(N+1)-3;
+
+            // Make a space between groups, 4 pixels per XValue index:
+            //Dec(X2,4);
+            //Inc(X2, 2*J);
+
+            V := FData.Value[I, J];
+            if IsNan(V) then
+                continue;
+
+            Y2 := Round(yOrigin - ((V / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap));
+
+            Assert(Y2<Height);
+            Assert(Y2>0);
+            if (Y2>=Y) then
+                Y2 := Y-1;
+            Assert(Y2<Y);
+
+            Assert(X2>0);
+            //if (X2<Width) then
+              //  OutputDebugString('foo!');
+            //Assert(X2<Width);
+            //Assert(X2>X);
+
+            if Options.PenCount > 1 then
+              if X2 > X then
+                Dec(X2); // Additional 1 pixel gap
+                
+            if Options.GetPenStyle(I) <> psClear then begin
+                if (X2-X)<4 then // don't draw black line around bar if it is a very narrow bar.
+                  ChartCanvas.Pen.Style := psClear
+                else
+                  ChartCanvas.Pen.Style := Options.GetPenStyle(I);
+            
+                MyColorRectangle(I, X, Y, X2, Y2);
+            end;
+          end; {for}
+        end; {for}
+        {add average line for the type...}
+        if Options.ChartKind = ckChartBarAverage then
+        begin
+          SetLineColor(-3);
+          ChartCanvas.MoveTo(Round(xOrigin + 1 * Options.XPixelGap),
+            Round(yOrigin - ((Options.AverageValue[1] / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap)));
+          for J := 2 to Options.XValueCount do
+            MyPenLineTo(Round(xOrigin + J * Options.XPixelGap),
+              Round(yOrigin - ((Options.AverageValue[J] / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap)));
+          SetLineColor(-3);
+        end;
+
+        // NEW: Add markers to bar chart:
+        PlotGraphChartMarkers;
+
+      end;
+
+
+    // Keep Y in visible chart range:
+    function GraphConstrainedLineY(Pen,Sample:Integer): Double; {LOCAL to TJvChart.PlotGraph}
+    var
+      v:Double;
+      PenAxisOpt:TJvChartYAxisOptions;
+    begin
+      v := FData.Value[Pen,Sample];
+      PenAxisOpt := Options.GetPenAxis(Pen);
+      if IsNan(v) then begin
+          result := NaN; // blank placeholder value in chart!
+          exit;
+      end;
+      if ( PenAxisOpt.YGap < 0.0000001 ) then begin
+          result := 0.0; // can't chart! YGap is near zero, zero, or negative.
+          exit;
+      end;
+      Result := (yOrigin - ((v/ PenAxisOpt.YGap) * PenAxisOpt.YPixelGap));
+      if Result >= (yOrigin - 1) then
+        Result := Round(yOrigin) - 1  // hit the top of the chart
+      else
+      if Result < 1 + (yOrigin - (Options.YEnd - PenAxisOpt.YPixelGap)) then
+        Result := 1 + Round(yOrigin - (Options.YEnd - PenAxisOpt.YPixelGap));
+    end;
 
 
     procedure PlotGraphChartLine; {LOCAL to TJvChart.PlotGraph}
@@ -2383,10 +2400,26 @@ begin { ------------------- PlotGraph begins... Enough local functions for ya? -
 
    {Draw header and other stuff...}
   GraphSetup;
-   // TODO: Make this a little nicer. Maybe no data should be a property set by user instead of a fixed resource string?
-  if Options.XValueCount = 0 then
+
+  // If FData.ValueCount is zero we can preview the visual appearance of the chart,
+  // but there is no plotting of pens that can occur, so stop now...
+  if (FData.ValueCount=0 )then // EMPTY!
   begin
-    MyRightTextOut(Round(xOrigin), Round(yOrigin), RsNoData);
+    { draw a blank chart. Component shouldn't just be a white square, it makes
+      users think we're broken, when we're not, they just haven't given us any
+      data.}
+    Options.PrimaryYAxis.Normalize;
+    Options.SecondaryYAxis.Normalize;
+    GraphSetup;
+    PrimaryYAxisLabels;
+
+    GraphXAxis;
+    GraphXAxisDivisionMarkers;
+    GraphYAxis;
+    GraphYAxisDivisionMarkers;
+
+    ChartCanvas.Font.Color := clRed;
+    MyLeftTextOut(Round(xOrigin), Round(yOrigin)+4, RsNoData);
     Invalidate;
     Exit;
   end;
@@ -2747,6 +2780,8 @@ begin
   if Assigned(FOnOptionsChangeEvent) then begin
     FOnOptionsChangeEvent(Self);
   end;
+  if FAutoPlot then 
+    FAutoPlotDone := false; // Next paint will also call PlotGraph
 end;
 
 
@@ -2834,8 +2869,8 @@ begin
 
   if not Assigned(Data) then
     exit; //safety.
-  if Data.ValueCount = 0 then
-    exit; // no use, there's no data yet.
+//  if Data.ValueCount = 0 then
+//    exit; // no use, there's no data yet.
 
   Options.PrimaryYAxis.Normalize;
   Options.SecondaryYAxis.Normalize;
@@ -3716,9 +3751,9 @@ end;
 procedure TJvChart.MyDrawAxisMark(X1, Y1, X2, Y2: Integer);
 begin
   SetSolidLines;
+  ChartCanvas.Pen.Width := 1; // always width 1
   ChartCanvas.MoveTo(X1, Y1);
-  //ChartCanvas.LineTo(X2, Y2);
-  MyAxisLineTo(X2, Y2);
+  ChartCanvas.LineTo(X2, Y2);
 end;
 
 procedure TJvChart.MyDrawDotLine(X1, Y1, X2, Y2: Integer);
