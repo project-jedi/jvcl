@@ -20,7 +20,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2004-02-25
+Last Modified: 2000-02-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -41,9 +41,10 @@ uses
   SysUtils, Classes,
   
   
-  Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, Types, QWindows,
+  Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, QButtons, Types,
+  QWindows,
   
-  JvQComponent, JvQConsts, JvQTypes, JvQExStdCtrls;
+  JvQComponent, JvQConsts, JvQTypes, JvQExStdCtrls, JvQThemes;
 
 type
   TJvButtonMouseState = (bsMouseInside, bsMouseDown);
@@ -159,6 +160,15 @@ type
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
     procedure Click; override;
+  end;
+
+  // TJvDropDownButton draws a DropDown button with the DropDown glyph
+  // (also themed). It ignores the properties Glyph and Flat
+  TJvDropDownButton = class(TSpeedButton)
+  protected
+    procedure Paint; override;
+  public
+    constructor Create(AOwner: TComponent); override;
   end;
 
 implementation
@@ -563,6 +573,7 @@ begin
     FDropDownMenu.PopupComponent := Self;
     FDropDownMenu.Popup(GetClientOrigin.X, GetClientOrigin.Y + Height);
     
+    
     MouseLeave(Self);
     
   end;
@@ -700,6 +711,57 @@ begin
   end;
   Repaint;
 end;
+
+// == TJvDropDownButton ===================================================
+
+constructor TJvDropDownButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 16;
+  Height := 16;
+end;
+
+procedure TJvDropDownButton.Paint;
+var
+  PaintRect: TRect;
+  DrawFlags: Integer;
+  dc: HDC;
+  Bmp: TBitmap;
+begin
+  // adjust FState and FDragging
+  dc := Canvas.Handle;
+  Bmp := TBitmap.Create;
+  try
+    Bmp.Width := 1;
+    Bmp.Height := 1;
+    Canvas.Handle := Bmp.Canvas.Handle;
+    try
+      inherited Paint;
+    finally
+      Canvas.Handle := dc;
+    end;
+  finally
+    Bmp.Free;
+  end;
+
+  PaintRect := Rect(0, 0, Width, Height);
+  DrawFlags := DFCS_SCROLLCOMBOBOX or DFCS_ADJUSTRECT;
+  if FState in [bsDown, bsExclusive] then
+    DrawFlags := DrawFlags or DFCS_PUSHED;
+
+  
+  begin
+    
+    Canvas.Start;
+    
+    DrawFrameControl(Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags);
+
+    
+    Canvas.Stop;
+    
+  end;
+end;
+
 
 initialization
 

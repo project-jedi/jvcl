@@ -41,6 +41,7 @@ interface
 
 uses
   
+  
   Types, QWindows, QTypes, QControls, QForms, QStdCtrls, QComCtrls,
   
   SysUtils, Classes,
@@ -122,19 +123,15 @@ end;
 
 procedure TJvProgressComponent.Execute;
 begin
-  {$IFDEF BCB}
   if not Assigned(FForm) then
-    FForm := TJvProgressForm.CreateNew(Self, 1);
-  {$ELSE}
-  if not Assigned(FForm) then
-    FForm := TJvProgressForm.CreateNew(Self);
-  {$ENDIF BCB}
+    FForm := TJvProgressForm.CreateNew(Self, 1); // BCB compatible
   try
     FForm.Caption := Caption;
     with FForm do
     begin
       ClientWidth := 307;
       ClientHeight := 98;
+      
       
       BorderStyle := fbsDialog;
       

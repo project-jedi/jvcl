@@ -232,7 +232,7 @@ type
     property LeftButton;
     
   published
-    property AboutJVCLX;
+    // property AboutJVCL; //X;
     // gets / sets the borderstyle of the control and the scroll-buttons
     property BorderStyle;
     // gets / sets the width of the buttons

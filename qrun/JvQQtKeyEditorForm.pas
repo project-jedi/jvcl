@@ -37,18 +37,18 @@ interface
 uses
   SysUtils, Classes, QGraphics, QControls, QForms,
   QDialogs, QStdCtrls, QButtons,
-  JvQQtKeySelectionFrame, JvQComponent, QQControls, QQStdCtrls, QQButtons ;
+  JvQQtKeySelectionFrame, JvQComponent ;
 
 type
   TfrmJvQtKeyEditor = class(TJvForm)
     bbtOk: TBitBtn;
     bbtCancel: TBitBtn;
   private
-    FEditingFrame: TJvVirtualKeySelectionFrame;
+    FEditingFrame: TJvQtKeySelectionFrame;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property EditingFrame: TJvVirtualKeySelectionFrame read FEditingFrame;
+    property EditingFrame: TJvQtKeySelectionFrame read FEditingFrame;
   end;
 
 implementation
@@ -58,7 +58,7 @@ implementation
 constructor TfrmJvQtKeyEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FEditingFrame := TJvVirtualKeySelectionFrame.Create(Self);
+  FEditingFrame := TJvQtKeySelectionFrame.Create(Self);
   with FEditingFrame do
   begin
     Left := 4;

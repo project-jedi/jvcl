@@ -207,6 +207,7 @@ begin
     not IsDefaultCaret then
   begin
     
+    
     if QWindows.DestroyCaret then
     
       FCaretCreated := False;

@@ -1845,6 +1845,7 @@ begin
   if Length(strText) = 0 then
     exit;
   
+  
   MyAxisFont;
   
   if Options.XStartOffset > 10 then
@@ -1856,6 +1857,7 @@ begin
     if vert < 0 then
       vert := 0;
     horiz := 2;
+    
     
     TextOutAngle(ChartCanvas, 90, horiz, vert, strText);
     

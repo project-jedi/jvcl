@@ -229,6 +229,7 @@ begin
     Application.HintColor := FHintColor;
     if HotTrack then
       
+      
       BorderStyle := bsSingle;
       
     FOver := True;
@@ -245,6 +246,7 @@ begin
     Application.HintColor := FSaved;
     if FHotTrack then
       
+      
       BorderStyle := bsSingle; // maybe bsNone
       
     FOver := False;
@@ -258,13 +260,15 @@ begin
   if Value then
   begin
     
+    
     BorderStyle := bsSingle; // maybe bsNone
     
   end
   else
   begin
     
-    BorderStyle := bsSingle; 
+    
+    BorderStyle := bsSingle;
     
   end;
 end;

@@ -361,8 +361,9 @@ begin
   begin
     FAlignment := Value;
     
+    
     inherited Alignment := FAlignment;
-    Invalidate; // (ahuser) clx draws the edit control itself
+    Invalidate;
     
   end;
 end;
@@ -604,6 +605,7 @@ begin
   if Value <> FFlat then
   begin
     FFlat := Value;
+    
     
     if FFlat then
       BorderStyle := bsNone

@@ -119,6 +119,7 @@ begin
   with Canvas do
   begin
     
+    
     Txt := Text;
     Start;
     
@@ -128,9 +129,6 @@ begin
       H := TextHeight('0');
       R := Rect(0, H div 2 - 1, Width, Height);
       
-      if True then
-      
-      begin
         Inc(R.Left);
         Inc(R.Top);
         Brush.Color := clBtnHighlight;
@@ -139,9 +137,7 @@ begin
         
         OffsetRect(R, -1, -1);
         Brush.Color := clBtnShadow;
-      end
-      else
-        Brush.Color := clWindowFrame;
+      
       
       QWindows.FrameRect(Canvas, R);
       

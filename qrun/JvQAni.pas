@@ -135,7 +135,11 @@ function LoadJvAniDialog: TJvAni;
 implementation
 
 uses
-  QConsts, Math,
+  
+  
+  QConsts,
+  
+  Math,
   JvQJVCLUtils, JvQJCLUtils, JvQIconList, JvQConsts, JvQResources;
 
 //=== TJvAnimatedCursorImage helper ==========================================
@@ -936,6 +940,7 @@ procedure TJvAni.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   if Assigned(FIcons) and (FIcons.Count > 0) then
     if (Frames[Index] <> nil) and not Frames[Index].Icon.Empty then
+      
       
       ACanvas.Draw(ARect.Left, ARect.Top, Frames[Index].Icon);
       

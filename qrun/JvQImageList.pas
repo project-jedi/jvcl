@@ -188,6 +188,7 @@ begin
       Bmp.Width := Width;
       Bmp.Height := Height;
       
+      
       Bmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
         Bitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));
       
@@ -235,6 +236,7 @@ begin
       Bmp.Width := Width;
       Bmp.Height := Height;
       
+      
       Bmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
         Bitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));
       
@@ -242,6 +244,7 @@ begin
       MaskBmp.Width := 0; // clear bitmap
       MaskBmp.Width := Width;
       MaskBmp.Height := Height;
+      
       
       MaskBmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
         MaskBitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));

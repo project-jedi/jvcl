@@ -800,6 +800,7 @@ begin
 end;
 
 
+
 function TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
 
@@ -910,6 +911,7 @@ begin
 end;
 
 
+
 function TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
 
@@ -924,6 +926,7 @@ begin
 
   Canvas.FillRect(Rect);
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
+  
   
   Result := True;
   
@@ -941,6 +944,7 @@ function TJvCustomHTComboBox.GetPlainItems(Index: Integer): string;
 begin
   Result := ItemHTPlain(Items[Index]);
 end;
+
 
 
 procedure TJvCustomHTComboBox.CreateWidget;
@@ -1034,6 +1038,7 @@ begin
     AdjustSize;
     
     Rect := ClientRect;
+    
     
     Canvas.Font.Assign(Font);
     Rect.Bottom := ItemHTHeight(Canvas, Caption);

@@ -38,6 +38,7 @@ interface
 uses
   SysUtils, Classes,
   
+  
   QWindows, QGraphics,
   
   JvQTypes, JvQComponent;
