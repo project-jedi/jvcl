@@ -401,7 +401,7 @@ implementation
 uses
   Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}TypInfo,
   JclBase,
-  JvConsts, JvCtrls;
+  JvConsts, JvCtrls, JvResources;
 
 const
   AlignFlags: array [TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -1533,7 +1533,7 @@ begin
         else if Supports(Item, IJvDataItemText, ItemText) then
           Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Caption)
         else
-          Canvas.TextRect(Rect, Rect.Left, Rect.Top, SDataItemRenderHasNoText);
+          Canvas.TextRect(Rect, Rect.Left, Rect.Top, RsDataItemRenderHasNoText);
       end;
     end;
   finally
@@ -1593,7 +1593,7 @@ begin
         else if Supports(Item, IJvDataItemText, ItemText) then
           ASize := Canvas.TextExtent(ItemText.Caption)
         else
-          ASize := Canvas.TextExtent(SDataItemRenderHasNoText);
+          ASize := Canvas.TextExtent(RsDataItemRenderHasNoText);
         Inc(ASize.cx, VL.ItemLevel(Index) * VL.LevelIndent);
       end;
     end;

@@ -402,7 +402,7 @@ end;
 
 procedure TJvCustomDatePickerEdit.RaiseNoDate;
 begin
-  raise Exception.CreateFmt(SMustHaveADate, [Name]);
+  raise EJVCLException.CreateFmt(RsEMustHaveADate, [Name]);
 end;
 
 procedure TJvCustomDatePickerEdit.SetAllowNoDate(const AValue: Boolean);

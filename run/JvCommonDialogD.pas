@@ -103,7 +103,7 @@ begin
     FOwnerWindow := HWND_DESKTOP;
   SetupApiDllHandle := LoadLibrary('SETUPAPI.DLL');
   if SetupApiDllHandle = 0 then
-    raise EJVCLException.Create(RC_ErrorSetupDll);
+    raise EJVCLException.Create(RsEErrorSetupDll);
 end;
 
 destructor TJvCommonDialogD.Destroy;

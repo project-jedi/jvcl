@@ -297,13 +297,6 @@ const
   DPA_ConsumerDisplaysList   = 3;
 
 resourcestring
-  SExtensibleIntObjDuplicateClass = 'Implementation of that class already exists.';
-  SExtensibleIntObjCollectionExpected = 'Expected collection.';
-  SExtensibleIntObjClassNameExpected = 'Missing ClassName property';
-  SExtensibleIntObjInvalidClass = 'Invalid class type.';
-  SDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
-  SDataProviderNeedsItemsImpl = 'Can''t create a data provider without an IJvDataItems implementation.';
-
   { JvUrlListGrabber }
   sENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
 

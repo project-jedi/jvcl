@@ -905,7 +905,7 @@ constructor TJvaCaptionButton.Create(AOwner: TComponent);
 
 begin
   if not (AOwner is TForm) then
-    raise EJVCLException.CreateFmt(SOwnerMustBeForm, [ClassName]);
+    raise EJVCLException.CreateFmt(RsEOwnerMustBeForm, [ClassName]);
   inherited Create(AOwner);
 
   FGlyph := TJvButtonGlyph.Create;

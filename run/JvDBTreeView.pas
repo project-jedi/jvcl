@@ -776,7 +776,7 @@ var
       begin
         DetailValue := V[1];
         if DetailValue = FStartMasterValue then
-          raise EJvDBTreeViewError.Create(sInternalError);
+          raise EJvDBTreeViewError.Create(RsEInternalError);
       end;
     end;
   end;

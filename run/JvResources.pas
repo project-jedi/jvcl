@@ -35,8 +35,8 @@ interface
 
 //=== used in several files ==================================================
 resourcestring
-  RC_ErrorSetupDll = 'Unable to find SetupApi.dll';
-  sInternalError = 'internal error';
+  RsEErrorSetupDll = 'Unable to find SetupApi.dll';
+  RsEInternalError = 'internal error';
   RC_EmptyItem = '<Empty>';
   sUnterminatedStringNears = 'unterminated string near %s';
   sStackOverflow = 'stack overflow';
@@ -52,6 +52,7 @@ resourcestring
 
   RsEID3NoController = 'No controller specified.';
   RsDatabaseName = 'Database name: %s';
+  RsDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
 
 //=== JvAni.pas ==============================================================
 resourcestring
@@ -127,71 +128,71 @@ resourcestring
 
 //=== JvBehaviorLabel.pas ====================================================
 resourcestring
-  sNone = '(none)';
-  sNeedBehaviorLabel = 'Cannot call TJvLabelBehavior.Create with ALabel = nil!';
-  sNoOwnerLabelParent = 'OwnerLabel.Parent is nil in %s.Start!';
+  RsNoneCaption = '(none)';
+  RsENeedBehaviorLabel = 'Cannot call %s.Create with ALabel = nil';
+  RsENoOwnerLabelParent = 'OwnerLabel.Parent is nil in %s.Start';
 
 //=== JvBrowseFolder.pas =====================================================
 resourcestring
-  SShellNotCompatible = 'Shell not compatible with BrowseForFolder';
+  RsEShellNotCompatible = 'Shell not compatible with BrowseForFolder';
 
 //=== JvButtons.pas ==========================================================
 resourcestring
-  SOwnerMustBeForm = '%s owner must be a TForm';
+  RsEOwnerMustBeForm = '%s owner must be a TForm';
 
 //=== JvCalendar.pas =========================================================
 resourcestring
-  sInvalidDateStr = 'Invalid date specification to TMonthCalStrings (%s)';
-  SCannotAssign = 'Cannot assign %s to a %s';
-  SInvalidArgumentToSetDayStates = 'Invalid argument to SetDayStates';
-  SInvalidAppearance = 'TJvCustomMonthCalendar.CreateWithAppearance: cannot be created without valid Appearance';
+  RsEInvalidDateStr = 'Invalid date specification to TMonthCalStrings (%s)';
+  RsECannotAssign = 'Cannot assign %s to a %s';
+  RsEInvalidArgumentToSetDayStates = 'Invalid argument to SetDayStates';
+  RsEInvalidAppearance = 'TJvCustomMonthCalendar.CreateWithAppearance: cannot be created without valid Appearance';
 
 //=== JvCaptionButton.pas ====================================================
 resourcestring
-  SOwnerMustBeTCustomForm = 'TJvCaptionButton owner must be a TCustomForm';
+  RsEOwnerMustBeTCustomForm = 'TJvCaptionButton owner must be a TCustomForm';
 
 //=== JvCaret.pas ============================================================
 resourcestring
-  SInvalidCaretOwner = 'TJvCaret.Create: cannot be created without a valid Owner';
+  RsEInvalidCaretOwner = '%s: cannot be created without a valid Owner';
 
 //=== JvChangeNotify.pas =====================================================
 resourcestring
-  sFileNameChange = 'Filename Change';
-  sDirectoryNameChange = 'Directory Name Change';
-  sAttributesChange = 'Attributes Change';
-  sSizeChange = 'Size Change';
-  sWriteChange = 'Write Change';
-  sSecurityChange = 'Security Change';
-  sFmtCannotChangeName = 'Cannot change %s when active';
-  sFmtInvalidPath = 'Invalid or empty path (%s)';
-  sFmtMaxCountExceeded = 'Maximum of %d items allowed';
-  SFmtInvalidPathAtIndex = 'Invalid or empty path ("%s") at index %d';
+  RsFileNameChange = 'Filename Change';
+  RsDirectoryNameChange = 'Directory Name Change';
+  RsAttributesChange = 'Attributes Change';
+  RsSizeChange = 'Size Change';
+  RsWriteChange = 'Write Change';
+  RsSecurityChange = 'Security Change';
+  RsEFmtCannotChangeName = 'Cannot change %s when active';
+  RsEFmtInvalidPath = 'Invalid or empty path (%s)';
+  RsEFmtMaxCountExceeded = 'Maximum of %d items exceeded';
+  RsEFmtInvalidPathAtIndex = 'Invalid or empty path ("%s") at index %d';
 
 //=== JvChart.pas ============================================================
 resourcestring
-  sDataIndexCannotBeNegative = 'Data: index cannot be negative';
-  sDataIndexTooLargeProbablyAnInternal = 'Data: index too large. probably an internal error.';
-  sGetAverageValueIndexNegative = 'GetAverageValue: Index negative';
-  sSetAverageValueIndexNegative = 'SetAverageValue: Index negative';
-  sJvChartOptionsPenCountPenCountOutOf = 'JvChart.Options.PenCount - PenCount out of range';
-  sJvChartOptionsXStartOffsetValueOutO = 'JvChart.Options.XStartOffset  - value out of range';
-  sNoData = 'No data.';
-  sUnableToGetCanvas = 'Unable to get canvas';
-  sGraphHeader = 'Graph Header';
-  sCurrentHeaders = 'Current Header: %s';
-  sXAxisHeaders = 'X Axis Header: %s';
-  sGraphScale = 'Graph Scale';
-  sYAxisScales = 'Y Axis Scale: %s';
-  sNoValuesHere = 'No values here!';
+  RsEDataIndexCannotBeNegative = 'Data: index cannot be negative';
+  RsEDataIndexTooLargeProbablyAnInternal = 'Data: index too large. probably an internal error.';
+  RsEGetAverageValueIndexNegative = 'GetAverageValue: Index negative';
+  RsESetAverageValueIndexNegative = 'SetAverageValue: Index negative';
+  RsEChartOptionsPenCountPenCountOutOf = 'JvChart.Options.PenCount - PenCount out of range';
+  RsEChartOptionsXStartOffsetValueOutO = 'JvChart.Options.XStartOffset  - value out of range';
+  RsEUnableToGetCanvas = 'Unable to get canvas';
+  RsNoData = 'No data.';
+  RsGraphHeader = 'Graph Header';
+  RsCurrentHeaders = 'Current Header: %s';
+  RsXAxisHeaders = 'X Axis Header: %s';
+  RsGraphScale = 'Graph Scale';
+  RsYAxisScales = 'Y Axis Scale: %s';
+  RsNoValuesHere = 'No values here!';
 
 //=== JvCheckedMaskEdit.pas ==================================================
 resourcestring
-  SBeginUnsupportedNestedCall = 'TJvCustomCheckedMaskEdit.BeginInternalChange: Unsupported nested call!';
-  SEndUnsupportedNestedCall = 'TJvCustomCheckedMaskEdit.EndInternalChange: Unsupported nested call!';
+  RsEBeginUnsupportedNestedCall = 'TJvCustomCheckedMaskEdit.BeginInternalChange: Unsupported nested call!';
+  RsEEndUnsupportedNestedCall = 'TJvCustomCheckedMaskEdit.EndInternalChange: Unsupported nested call!';
 
 //=== JvClipbrd.pas ==========================================================
 resourcestring
-  SNoRenderFormatEventGiven = 'No OnRenderFormat was given.';
+  RsENoRenderFormatEventGiven = 'No OnRenderFormat was given';
 
 //=== JvColorButton.pas ======================================================
 resourcestring
@@ -204,39 +205,39 @@ resourcestring
 
 //=== JvColorProvider.pas ====================================================
 resourcestring
-  SDelphiConstantNames = 'Delphi constant names';
-  SEnglishNames = 'English names';
-  SSpecifiedMappingError = 'Specified mapping does not belong to the current provider';
-  SCustomColors = 'Custom colors';
-  SStandardColors = 'Standard colors';
-  SSystemColors = 'System colors';
-  SAlreadyRegistered = '''%s'' is already registered';
+  RsDelphiConstantNames = 'Delphi constant names';
+  RsEnglishNames = 'English names';
+  RsCustomColors = 'Custom colors';
+  RsStandardColors = 'Standard colors';
+  RsSystemColors = 'System colors';
   SNoSettings = '(no settings)';
-  SNoICR = 'Component does not support IInterfaceComponentReference';
-  SNoColProv = 'Component does not support IJvColorProvider';
-  SMappingCollectionExpected = 'Mapping collection expected';
-  SExpectedMappingName = 'Expected mapping name';
-  SExpectedNameMappings = 'Expected name mappings';
-  SInvalidNameMappingSpecification = 'Invalid name mapping specification';
-  SUnknownColor = 'Unknown color ''%s''';
-  SInvalidColor = 'Invalid color (%d)';
-  SItemNotForList = 'Item does not belong to this list';
+  RsESpecifiedMappingError = 'Specified mapping does not belong to the current provider';
+  RsEAlreadyRegistered = '''%s'' is already registered';
+  RsENoICR = 'Component does not support IInterfaceComponentReference';
+  RsENoColProv = 'Component does not support IJvColorProvider';
+  RsEMappingCollectionExpected = 'Mapping collection expected';
+  RsEExpectedMappingName = 'Expected mapping name';
+  RsEExpectedNameMappings = 'Expected name mappings';
+  RsEInvalidNameMappingSpecification = 'Invalid name mapping specification';
+  RsEUnknownColor = 'Unknown color ''%s''';
+  RsEInvalidColor = 'Invalid color (%d)';
+  RsEItemNotForList = 'Item does not belong to this list';
 
 //=== JvComponentPanel.pas ===================================================
 resourcestring
-  SInvalidButtonCount = 'Invalid ButtonCount';
+  RsEInvalidButtonCount = 'Invalid ButtonCount';
 
 //=== JvContextProvider.pas ==================================================
 resourcestring
-  SNoContextAssigned = 'No context has been assigned to this item.';
-  SNoContextItem = 'Specified item is not a context item.';
-  SNotSupportedIInterfaceComponentReference = 'Component does not support IInterfaceComponentReference.';
-  SNotSupportedIJvDataProvider = 'Component does not support IJvDataProvider.';
+  RsENoContextAssigned = 'No context has been assigned to this item.';
+  RsENoContextItem = 'Specified item is not a context item.';
+  RsENotSupportedIInterfaceComponentReference = 'Component does not support IInterfaceComponentReference.';
+  RsENotSupportedIJvDataProvider = 'Component does not support IJvDataProvider.';
 
 //=== JvCreateProcess.pas ====================================================
 resourcestring
-  RsProcessIsRunning = 'Can''t perform this operation when process is running';
-  RsProcessNotRunning = 'Process is not running';
+  RsEProcessIsRunning = 'Can''t perform this operation when process is running';
+  RsEProcessNotRunning = 'Process is not running';
   RsIdle = 'Idle';
   RsNormal = 'Normal';
   RsHigh = 'High';
@@ -260,75 +261,82 @@ resourcestring
 
 //=== JvCsvData.pas ==========================================================
 resourcestring
-  sProblemReadingRow = 'Problem reading row %d';
-  sNoRecord = 'No records';
-  sTimeTConvError = 'SetFieldData Error - TimeT-to-DateTime conversion error.';
-  sFieldTypeNotHandled = 'SetFieldData Error - Field type not handled.';
-  sUnableToLocateCSVFileInfo = 'Unable to locate CSV file information for field %s';
-  sPhysicalLocationOfCSVField = 'Physical location of CSV field %s unknown.';
-  sInvalidFieldTypeCharacter = 'Invalid field type character: %s';
-  sUnexpectedError = 'Unexpected error parsing CSV Field Definitions';
-  sFieldDefinitionError = 'Field Definition Error. CsvFieldDef, FieldDefs, and file contents must match.';
-  sInvalidCsvKeyDef = 'Invalid CsvKeyDef property. InternalInitFieldDefs failed.';
-  sInternalErrorParsingCsvKeyDef = 'Internal Error parsing CsvKeyDef. InternalInitFieldDefs failed.';
-  sContainsField = 'CsvKeyDef contains field ''%s'' which is not defined. InternalInitFieldDefs failed.';
-  sInsertBlocked = 'InternalAddRecord Can''t Add. Insert blocked.';
-  sPostingHasBeenBlocked = 'Posting to this database has been blocked.';
-  sKeyNotUnique = '%s - Key is not unique ';
-  sCannotInsertNewRow = 'Can''t insert new row. Insert blocked.';
-  sCannotPost = 'Post: Can''t post. Not in not dsEdit or dsInsert mode';
-  sSortFailedCommaSeparated = 'Sort failed. You must give a comma separated list of field names.';
-  sSortFailedFieldNames = 'Sort failed. Unable to parse field names. ';
-  sSortFailedInvalidFieldNameInList = 'Sort failed. Invalid field name in list: %s';
-  sDataSetNotOpen = 'AppendRowString: DataSet is not open (active not set to true)';
-  sErrorProcessingFirstLine = 'Error processing first line of CSV file.';
-  sFieldInFileButNotInDefinition = 'ProcessCsvHeaderRow: Field %s found in file, but not in field definitions.';
-  sCsvFieldLocationError = 'Csv field location error: %s';
-  sFieldNotFound = 'Field %s not found in the data file.';
-  sCsvStringTooLong = 'CSV String is too long: %s...';
-  sInternalLimit = 'JvCsvData - Internal Limit of MAXCOLUMNS (%d) reached. CSV Data has too many columns';
-  sErrorRowItem = '<ERROR>';
-  sTableNameNotSet = 'TJvCsvCustomInMemorYDataSet.FTableName is not set.';
+  RsECsvErrFormat = '%s: %s';
+  RsEProblemReadingRow = 'Problem reading row %d';
+  RsENoRecord = 'No records';
+  RsETimeTConvError = 'SetFieldData Error - TimeT-to-DateTime conversion error.';
+  RsEFieldTypeNotHandled = 'SetFieldData Error - Field type not handled.';
+  RsEUnableToLocateCSVFileInfo = 'Unable to locate CSV file information for field %s';
+  RsEPhysicalLocationOfCSVField = 'Physical location of CSV field %s unknown.';
+  RsEInvalidFieldTypeCharacter = 'Invalid field type character: %s';
+  RsEUnexpectedError = 'Unexpected error parsing CSV Field Definitions';
+  RsEFieldDefinitionError = 'Field Definition Error. CsvFieldDef, FieldDefs, and file contents must match.';
+  RsEInvalidCsvKeyDef = 'Invalid CsvKeyDef property. InternalInitFieldDefs failed.';
+  RsEInternalErrorParsingCsvKeyDef = 'Internal Error parsing CsvKeyDef. InternalInitFieldDefs failed.';
+  RsEContainsField = 'CsvKeyDef contains field ''%s'' which is not defined. InternalInitFieldDefs failed.';
+  RsEInsertBlocked = 'InternalAddRecord Can''t Add. Insert blocked.';
+  RsEPostingHasBeenBlocked = 'Posting to this database has been blocked.';
+  RsEKeyNotUnique = '%s - Key is not unique ';
+  RsECannotInsertNewRow = 'Can''t insert new row. Insert blocked.';
+  RsECannotPost = 'Post: Can''t post. Not in not dsEdit or dsInsert mode';
+  RsESortFailedCommaSeparated = 'Sort failed. You must give a comma separated list of field names.';
+  RsESortFailedFieldNames = 'Sort failed. Unable to parse field names. ';
+  RsESortFailedInvalidFieldNameInList = 'Sort failed. Invalid field name in list: %s';
+  RsEDataSetNotOpen = 'AppendRowString: DataSet is not open (active not set to true)';
+  RsEErrorProcessingFirstLine = 'Error processing first line of CSV file.';
+  RsEFieldInFileButNotInDefinition = 'ProcessCsvHeaderRow: Field %s found in file, but not in field definitions.';
+  RsECsvFieldLocationError = 'Csv field location error: %s';
+  RsEFieldNotFound = 'Field %s not found in the data file.';
+  RsECsvStringTooLong = 'CSV String is too long: %s...';
+  RsEInternalLimit = 'JvCsvData - Internal Limit of MAXCOLUMNS (%d) reached. CSV Data has too many columns';
+  RsETableNameNotSet = 'TJvCsvCustomInMemorYDataSet.FTableName is not set.';
 
-  sGetMode = 'GetMode???';
-  sNoTableName = 'noTableName';
-  sTableNameRequired = 'LoadFromFile=True, so a TableName is required';
-  sInternalCompare = 'InternalCompare. Nil value detected.';
+  RsEGetMode = 'GetMode???';
+  RsENoTableName = 'noTableName';
+  RsETableNameRequired = 'LoadFromFile=True, so a TableName is required';
+  RsEInternalCompare = 'InternalCompare. Nil value detected.';
+
+  RsErrorRowItem = '<ERROR>';
 
 //=== JvCsvParse.pas =========================================================
 resourcestring
-  sInvalidHexLiteral = 'HexStrToInt: Invalid hex literal';
+  RsEInvalidHexLiteral = 'HexStrToInt: Invalid hex literal';
 
 //=== JvDataProviderImpl.pas =================================================
 resourcestring
-  sItemsMayNotBeMovedInTheMainTree = 'Items may not be moved in the main tree.';
-  sInvalidIndex = 'Invalid index';
-  sItemCanNotBeDeleted = 'Item can not be deleted.';
-  sContextNameExpected = 'Context name expected.';
-  sConsumerStackIsEmpty = 'Consumer stack is empty.';
-  sContextStackIsEmpty = 'Context stack is empty.';
-  sAContextWithThatNameAlreadyExists = 'A context with that name already exists.';
-  sCannotCreateAContextWithoutAContext = 'Cannot create a context without a context list owner.';
-  sComponentDoesNotSupportTheIJvDataPr = 'Component does not support the IJvDataProvider interface.';
-  sComponentDoesNotSupportTheIInterfac = 'Component does not support the IInterfaceComponentReference interface.';
-  sYouMustSpecifyAProviderBeforeSettin = 'You must specify a provider before setting the context.';
-  sProviderHasNoContextNameds = 'Provider has no context named "%s"';
-  sProviderDoesNotSupportContexts = 'Provider does not support contexts.';
-  sTheSpecifiedContextIsNotPartOfTheSa = 'The specified context is not part of the same provider.';
-  sYouMustSpecifyAProviderBeforeSettin_ = 'You must specify a provider before setting the item.';
-  sItemNotFoundInTheSelectedContext = 'Item not found in the selected context.';
-  sViewListOutOfSync = 'ViewList out of sync';
+  RsEItemsMayNotBeMovedInTheMainTree = 'Items may not be moved in the main tree.';
+  RsEInvalidIndex = 'Invalid index';
+  RsEItemCanNotBeDeleted = 'Item can not be deleted.';
+  RsEContextNameExpected = 'Context name expected.';
+  RsEConsumerStackIsEmpty = 'Consumer stack is empty.';
+  RsEContextStackIsEmpty = 'Context stack is empty.';
+  RsEAContextWithThatNameAlreadyExists = 'A context with that name already exists.';
+  RsECannotCreateAContextWithoutAContext = 'Cannot create a context without a context list owner.';
+  RsEComponentDoesNotSupportTheIJvDataPr = 'Component does not support the IJvDataProvider interface.';
+  RsEComponentDoesNotSupportTheIInterfac = 'Component does not support the IInterfaceComponentReference interface.';
+  RsEYouMustSpecifyAProviderBeforeSettin = 'You must specify a provider before setting the context.';
+  RsEProviderHasNoContextNameds = 'Provider has no context named "%s"';
+  RsEProviderDoesNotSupportContexts = 'Provider does not support contexts.';
+  RsETheSpecifiedContextIsNotPartOfTheSa = 'The specified context is not part of the same provider.';
+  RsEYouMustSpecifyAProviderBeforeSettin_ = 'You must specify a provider before setting the item.';
+  RsEItemNotFoundInTheSelectedContext = 'Item not found in the selected context.';
+  RsEViewListOutOfSync = 'ViewList out of sync';
 
-  sProviderIsNoIJvDataConsumer = 'Provider property of ''%s'' does not point to a IJvDataConsumer.';
-  SComponentIsNotDataConsumer = 'Component ''%s'' is not a data consumer.';
-  sCannotAddNil = 'Cannot add a nil pointer.';
-  sConsumerNoSupportIJvDataConsumerClientNotify =
-    'Consumer does not support the ''IJvDataConsumerClientNotify'' interface.';
-  sNotifierNoSupprtIJvDataConsumer = 'Notifier does not support the ''IJvDataConsumer'' interface.';
+  RsEProviderIsNoIJvDataConsumer = 'Provider property of ''%s'' does not point to a IJvDataConsumer.';
+  RsEComponentIsNotDataConsumer = 'Component ''%s'' is not a data consumer.';
+  RsECannotAddNil = 'Cannot add a nil pointer.';
+  RsEConsumerNoSupportIJvDataConsumerClientNotify = 'Consumer does not support the ''IJvDataConsumerClientNotify'' interface.';
+  RsENotifierNoSupprtIJvDataConsumer = 'Notifier does not support the ''IJvDataConsumer'' interface.';
+
+  RsEExtensibleIntObjDuplicateClass = 'Implementation of that class already exists.';
+  RsEExtensibleIntObjCollectionExpected = 'Expected collection.';
+  RsEExtensibleIntObjClassNameExpected = 'Missing ClassName property';
+  RsEExtensibleIntObjInvalidClass = 'Invalid class type.';
+  RsEDataProviderNeedsItemsImpl = 'Can''t create a data provider without an IJvDataItems implementation.';
 
 //=== JvDatePickerEdit.pas ===================================================
 resourcestring
-  SMustHaveADate = '%s must have a date!';
+  RsEMustHaveADate = '%s must have a date!';
 
 //=== JvDateTimePicker.pas ===================================================
 resourcestring

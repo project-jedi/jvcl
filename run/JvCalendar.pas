@@ -422,7 +422,7 @@ begin
   else
     SourceName := Source.ClassName;
   if (Source = nil) or not (Source is TJvMonthCalColors) then
-    raise EConvertError.CreateFmt(SCannotAssign, [SourceName, ClassName]);
+    raise EConvertError.CreateFmt(RsECannotAssign, [SourceName, ClassName]);
   FBackColor := TJvMonthCalColors(Source).BackColor;
   FTextColor := TJvMonthCalColors(Source).TextColor;
   FTitleBackColor := TJvMonthCalColors(Source).TitleBackColor;
@@ -535,7 +535,7 @@ end;
 (*function TMonthCalStrings.Add(const S: string): Integer;
 begin
   if AnsiPos('=', S) <> 7 then
-    raise EMonthCalError.CreateFmt(sInvalidDateStr, [S]);
+    raise EMonthCalError.CreateFmt(RsEInvalidDateStr, [S]);
 
   Result := IndexOfName(Copy(S, 1, 6));
   if Result > -1 then
@@ -597,7 +597,7 @@ end;
 function TMonthCalStrings.AddObject(const S: string; AObject: TObject): Integer;
 begin
   if AnsiPos('=', S) <> 7 then
-    raise EMonthCalError.CreateFmt(sInvalidDateStr, [S]);
+    raise EMonthCalError.CreateFmt(RsEInvalidDateStr, [S]);
 
   Result := IndexOfName(Copy(S, 1, 6));
   if Result > -1 then
@@ -649,7 +649,7 @@ constructor TJvCustomMonthCalendar.CreateWithAppearance(AOwner: TComponent;
   const AAppearance: TJvMonthCalAppearance; const AOwnsAppearance: Boolean);
 begin
   if not Assigned(AAppearance) then
-    raise EMonthCalError.Create(SInvalidAppearance);
+    raise EMonthCalError.Create(RsEInvalidAppearance);
   CheckCommonControl(ICC_DATE_CLASSES);
   inherited Create(AOwner);
   FAppearance := AAppearance;
@@ -1102,7 +1102,7 @@ begin
     Exit;
   Index := High(DayStates) - Low(DayStates);
   if (Index < MonthCount) or (Index < VisibleMonths) then
-    raise EMonthCalError.Create(SInvalidArgumentToSetDayStates);
+    raise EMonthCalError.Create(RsEInvalidArgumentToSetDayStates);
   SendMessage(Handle, MCM_SETDAYSTATE, MonthCount, longint(@DayStates));
 end;
 

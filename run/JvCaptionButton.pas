@@ -531,7 +531,7 @@ end;
 constructor TJvCaptionButton.Create(AOwner: TComponent);
 begin
   if not (AOwner is TCustomForm) then
-    raise EJVCLException.Create(SOwnerMustBeTCustomForm);
+    raise EJVCLException.Create(RsEOwnerMustBeTCustomForm);
 
   inherited Create(AOwner);
 

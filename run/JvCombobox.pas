@@ -267,7 +267,7 @@ implementation
 
 uses
   Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}TypInfo,
-  JvConsts;
+  JvConsts, JvResources;
 
 //===TJvComboBoxStrings=============================================================================
 
@@ -718,7 +718,7 @@ begin
             else if Supports(Item, IJvDataItemText, ItemText) then
               Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Caption)
             else
-              Canvas.TextRect(Rect, Rect.Left, Rect.Top, SDataItemRenderHasNoText);
+              Canvas.TextRect(Rect, Rect.Left, Rect.Top, RsDataItemRenderHasNoText);
           end
           else
             InvokeOrgRender := True;
@@ -1049,7 +1049,7 @@ begin
           if Supports(Item, IJvDataItemText, ItemText) then
             Result := ItemText.Caption
           else
-            Result := SDataItemRenderHasNoText;
+            Result := RsDataItemRenderHasNoText;
         end
         else
           TJvComboBoxStrings(Items).Error(SListIndexError, Index);

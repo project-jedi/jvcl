@@ -36,15 +36,15 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Forms, ShellAPI, SyncObjs,
   Contnrs,
-  JclBase, JclStrings,
-  JvComponent;
+  JclStrings,
+  JvComponent, JvTypes;
 
 const
   CCPS_BufferSize = 1024;
   CCPS_MaxBufferSize = 65536;
 
 type
-  EJvProcessError = EJclError;
+  EJvProcessError = EJVCLException;
 
   TJvProcessPriority = (ppIdle, ppNormal, ppHigh, ppRealTime);
 
@@ -220,7 +220,7 @@ implementation
 uses
   Math,
   JclSysUtils,
-  JvJCLUtils, JvTypes, JvResources;
+  JvJCLUtils, JvResources;
 
 const
   CM_READ = WM_USER + 1;
@@ -955,17 +955,13 @@ end;
 procedure TJvCreateProcess.CheckNotWaiting;
 begin
   if FState = psWaiting then
-    {$TYPEDADDRESS OFF}
-    raise EJvProcessError.CreateResRec(@RsProcessIsRunning);
-    {$TYPEDADDRESS ON}
+    raise EJvProcessError.Create(RsEProcessIsRunning);
 end;
 
 procedure TJvCreateProcess.CheckRunning;
 begin
   if FState = psReady then
-    {$TYPEDADDRESS OFF}
-    raise EJvProcessError.CreateResRec(@RsProcessNotRunning);
-    {$TYPEDADDRESS ON}
+    raise EJvProcessError.Create(RsEProcessNotRunning);
 end;
 
 function TJvCreateProcess.CloseApplication(SendQuit: Boolean): Boolean;
