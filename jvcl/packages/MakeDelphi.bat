@@ -68,7 +68,7 @@ del /f /q %DIR%\*.cfg
 if NOT !%DIR2%==! del /f /q %DIR2%\*.cfg
 
 echo.
-echo The JVCL was successfuly built for %2
+echo The JVCL was successfuly built for %1
 echo.
 goto end
 
@@ -82,14 +82,14 @@ goto end
 :help
 echo MakeDelphi.bat - Builds the JVCL for Delphi
 echo.
-echo Usage:    MakeDelphi PackageName PackageDirectory DelphiDirectory
+echo Usage:    MakeDelphi PackageName [DelphiDirectory] [PackageName2]
 echo.
 echo     PackageName       The name of the group file to use without "Packages"
 echo                       e.g. "d6"
 echo     DelphiDirectory   The place where Delphi is installed.
 echo                       e.g. "C:\Program Files\Delphi6" (or %%DELDIR%%)
-echo     PackageName2      The directory where the personal packages for the 
-echo                       given group are. e.g. "d6"
+echo     PackageName2      The directory where the personal packages for the
+echo                       given group are. e.g. "d6per"
 echo.
 echo Any additional argument (up to the 9th) will be passed to make
 echo.
