@@ -115,6 +115,7 @@ type
     property ImeName;
     property OEMConvert;
     {property ParentBiDiMode;}
+    property ParentCtl3D;
     property PasswordChar;
     property ProtectPassword;
     property OnKillFocus;

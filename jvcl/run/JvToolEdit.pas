@@ -237,6 +237,7 @@ type
     function GetFlat: Boolean;
     procedure ReadCtl3D(Reader: TReader);
     procedure SetFlat(const Value: Boolean);
+    function IsFlatStored: Boolean;
     {$ENDIF VCL}
     function BtnWidthStored: Boolean;
     function GetButtonFlat: Boolean;
@@ -387,7 +388,7 @@ type
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow; // RDB
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText; // RDB
     {$IFDEF VCL}
-    property Flat: Boolean read GetFlat write SetFlat default False;
+    property Flat: Boolean read GetFlat write SetFlat {$IFDEF VisualCLX}default False;{$ENDIF VisualCLX}{$IFDEF VCL}stored IsFlatStored;{$ENDIF VCL}
     {$ENDIF VCL}
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
@@ -446,6 +447,7 @@ type
     property ImeName;
     property OEMConvert;
     property ParentBiDiMode;
+    property ParentCtl3D;
     property OnEndDock;
     property OnStartDock;
     {$ENDIF VCL}
@@ -634,6 +636,7 @@ type
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem];
     property Flat;
+    property ParentCtl3D;
     { (rb) Obsolete; added 'stored False', eventually remove }
     property FileEditStyle: TFileEditStyle read GetFileEditStyle write SetFileEditStyle stored False;
     {$ENDIF VCL}
@@ -740,6 +743,7 @@ type
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem, acfFileSysDirs];
     property Flat;
+    property ParentCtl3D;
     property DialogOptions: TSelectDirOpts read FOptions write FOptions default [sdAllowCreate];
     {$ENDIF VCL}
     property InitialDir: string read FInitialDir write FInitialDir;
@@ -968,6 +972,7 @@ type
     property DragKind;
     property Flat;
     property ParentBiDiMode;
+    property ParentCtl3D;
     property ImeMode;
     property ImeName;
     property OnEndDock;
@@ -2506,6 +2511,14 @@ function TJvCustomComboEdit.IsCustomGlyph: Boolean;
 begin
   Result := Assigned(Glyph) and (ImageKind = ikCustom);
 end;
+
+{$IFDEF VCL}
+function TJvCustomComboEdit.IsFlatStored: Boolean;
+begin
+  { Same as IsCtl3DStored }
+  Result := not ParentCtl3D;
+end;
+{$ENDIF VCL}
 
 function TJvCustomComboEdit.IsImageIndexStored: Boolean;
 begin
