@@ -66,9 +66,9 @@ configfile:
 	@echo -E"$(BIN)">>"$(CFG)"
 	@echo -I"$(SRCP)">>"$(CFG)"
 	@echo -N"$(DCU)">>"$(CFG)"
-	@echo -R"$(SRCP)">">$(CFG)"
+	@echo -R"$(SRCP)">>"$(CFG)"
 	@echo -U"$(SRCP)">>"$(CFG)"
-	@echo -U"$(ROOT)\Lib\Obj">">$(CFG)"
+	@echo -U"$(ROOT)\Lib\Obj">>$(CFG)"
 
 isu.exe: ITEStrip\isu.dpr
   cd ITEStrip
