@@ -52,6 +52,7 @@ type
     property PreserveLeadingTrailingBlanks: Boolean
       read FPreserveLeadingTrailingBlanks
       write SetPreserveLeadingTrailingBlanks default false;
+    property FloatAsString default true;
   end;
 
   // Storage to INI file, all in memory. This is the base class
@@ -191,6 +192,7 @@ begin
   inherited Create;
   FReplaceCRLF := False;
   FPreserveLeadingTrailingBlanks := False;
+  FloatAsString := true;
 end;
 
 procedure TJvAppIniStorageOptions.SetReplaceCRLF(Value: Boolean);
@@ -348,27 +350,34 @@ function TJvCustomAppIniStorage.DoReadFloat(const Path: string; Default: Extende
 var
   Section: string;
   Key: string;
-//  Value: string;
-  Value: Extended;
+  Value: string;
+//  Value: Extended;
 begin
   SplitKeyPath(Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
-    Value := 0.0;
-    ReadBinary(Path, @Value, Sizeof(Value));
-    Result := Value;
-//    Value := ReadValue(Section, Key);
-//    if Value = '' then
-//      Value := cNullDigit;
-//    Result := StrToFloat(Value);
+// Temporary Removed until bug is fixed
+//    Value := 0.0;
+//    ReadBinary(Path, @Value, Sizeof(Value));
+//    Result := Value;
+    Value := ReadValue(Section, Key);
+    if Value = '' then
+      Value := cNullDigit;
+    Result := StrToFloat(Value);
   end
   else
     Result := Default;
 end;
 
 procedure TJvCustomAppIniStorage.DoWriteFloat(const Path: string; Value: Extended);
+var
+  Section: string;
+  Key: string;
 begin
-  WriteBinary(Path, @Value, SizeOf(Value));
+  SplitKeyPath(Path, Section, Key);
+  WriteValue(Section, Key, FloatToStr(Value));
+// Temporary Removed until bug is fixed
+//  WriteBinary(Path, @Value, SizeOf(Value));
 end;
 
 function TJvCustomAppIniStorage.DoReadString(const Path: string; const Default: string): string;
