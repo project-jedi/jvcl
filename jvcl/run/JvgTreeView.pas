@@ -758,7 +758,7 @@ begin
   if ChecksScheme > -1 then
   begin
     StateImages.Clear;
-    if StateImages.ResourceLoad(rtBitmap, 'CHECKS' + IntToStr(Value), clOlive) then
+    if StateImages.ResourceLoad(rtBitmap, 'JvgCheckTreeViewCHECKS' + IntToStr(Value), clOlive) then
     begin
       StateImages.GetBitmap(1, FGlyphUnChecked);
       StateImages.GetBitmap(2, FGlyphChecked);

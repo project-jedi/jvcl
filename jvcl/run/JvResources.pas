@@ -588,6 +588,10 @@ resourcestring
   RsEErrorCommandStart = 'Invalid command start format';
   RsEErrorCommandFormat = 'Invalid command format: %s';
 
+//=== JvDesktopAlertForm.pas =================================================
+resourcestring
+  RsClose = 'Close';
+
 //=== JvDrawImage.pas ========================================================
 resourcestring
   RsImageMustBeSquare = 'image must be square for Spirographs';

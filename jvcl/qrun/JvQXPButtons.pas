@@ -307,7 +307,7 @@ end;
 
 procedure TJvXPCustomButtonActionLink.SetImageIndex(Value: Integer);
 begin
-  inherited;
+  inherited SetImageIndex(Value);
   (FClient as TJvXPCustomButton).FImageIndex := Value;
   (FClient as TJvXPCustomButton).Invalidate;
 end;
@@ -488,7 +488,7 @@ var
 begin
   //
   // it's not possible to call the 'HookMouseUp' or 'HookMouseLeave' methods,
-  // because we don't want to call there event handlers.
+  // because we don't want to call their event handlers.
   //
   if dsClicked in DrawState then
   begin
@@ -724,7 +724,7 @@ end;
 destructor TJvXPCustomToolButton.Destroy;
 begin
   FChangeLink.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvXPCustomToolButton.HookResized;
@@ -797,8 +797,8 @@ begin
     begin
       Bitmap := TBitmap.Create;
       try
-        Bitmap.LoadFromResourceName(HInstance, PChar('XP' + Copy(GetEnumName(TypeInfo(TJvXPToolType),
-          Ord(FToolType)), 3, MAXINT)));
+        Bitmap.LoadFromResourceName(HInstance, PChar('JvXPCustomToolButton' + Copy(GetEnumName(TypeInfo(TJvXPToolType),
+          Ord(FToolType)), 3, MaxInt)));
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
           JvXPColorizeBitmap(Bitmap, clWhite)
         else
@@ -836,7 +836,7 @@ procedure TJvXPCustomToolButton.MouseDown(Button: TMouseButton;
 var
   P: TPoint; 
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   if Assigned(DropDownMenu) then
   begin
     P := ClientToScreen(Point(0, Height));

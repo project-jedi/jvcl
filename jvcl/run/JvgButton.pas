@@ -316,7 +316,7 @@ begin
   FOptions := [boRaisedInactive, boShadowSurround, boShiftMouseOnPush,
     boChangeColorWhenActive, boChangeColorWhenPushed,
     boBlinkWhenActive];
-  if DefaultGlyphsList.ResourceLoad(rtBitmap, 'FRDEFBUTTON', clNone) then
+  if DefaultGlyphsList.ResourceLoad(rtBitmap, 'JvgButtonDEFAULT', clNone) then
   begin
     FGlyphsList := DefaultGlyphsList;
     GetBitmaps;

@@ -859,7 +859,7 @@ begin
     GlyphDisabled := nil;
   end
   else
-    //if (csDesigning in ComponentState){and not(csLoading in ComponentState)}then
+  //if (csDesigning in ComponentState){and not(csLoading in ComponentState)}then
   begin
     if not Assigned(FGlyphOn) then
       FGlyphOn := TBitmap.Create;
@@ -867,9 +867,9 @@ begin
       FGlyphOff := TBitmap.Create;
     if not Assigned(FGlyphDisabled) then
       FGlyphDisabled := TBitmap.Create;
-    FGlyphOn.LoadFromResourceName(HInstance, 'ON');
-    FGlyphOff.LoadFromResourceName(HInstance, 'OFF');
-    FGlyphDisabled.LoadFromResourceName(HInstance, 'DISABLED');
+    FGlyphOn.LoadFromResourceName(HInstance, 'JvgON');
+    FGlyphOff.LoadFromResourceName(HInstance, 'JvgOFF');
+    FGlyphDisabled.LoadFromResourceName(HInstance, 'JvgDISABLED');
 
     FGlyphOn.Transparent := True;
     FGlyphOn.TransparentMode := tmAuto;
@@ -878,7 +878,6 @@ begin
     FGlyphDisabled.Transparent := True;
     FGlyphDisabled.TransparentMode := tmAuto;
   end;
-
 end;
 
 procedure TJvgCheckBox.SetAlignment(const Value: TLeftRight);

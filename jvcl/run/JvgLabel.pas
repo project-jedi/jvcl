@@ -1398,10 +1398,10 @@ begin
   end
   else
   begin
-    FGlyphOn.LoadFromResourceName(HInstance, 'ON');
-    FGlyphOff.LoadFromResourceName(HInstance, 'OFF');
+    FGlyphOn.LoadFromResourceName(HInstance, 'JvgON');
+    FGlyphOff.LoadFromResourceName(HInstance, 'JvgOFF');
     FGlyphDisabled := TBitmap.Create;
-    FGlyphDisabled.LoadFromResourceName(HInstance, 'DISABLED');
+    FGlyphDisabled.LoadFromResourceName(HInstance, 'JvgDISABLED');
   end;
 end;
 

@@ -1970,9 +1970,9 @@ var
                 Index := 2; // down
             end;
             if FCollapsed then
-              Bitmap.LoadFromResourceName(HInstance, 'XPEXPAND' + IntToStr(Index))
+              Bitmap.LoadFromResourceName(HInstance, 'JvXPCustomWinXPBarEXPAND' + IntToStr(Index))
             else
-              Bitmap.LoadFromResourceName(HInstance, 'XPCOLLAPSE' + IntToStr(Index));
+              Bitmap.LoadFromResourceName(HInstance, 'JvXPCustomWinXPBarCOLLAPSE' + IntToStr(Index));
           end;
           Bitmap.Transparent := True;
           ACanvas.Draw(R.Right - 24, R.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);

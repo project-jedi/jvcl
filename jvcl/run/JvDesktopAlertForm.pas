@@ -136,7 +136,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Menus, SysUtils,
-  JvJVCLUtils, JvDesktopAlert;
+  JvJVCLUtils, JvDesktopAlert, JvResources;
 
 {.$R *.dfm} // not needed
 
@@ -250,7 +250,7 @@ begin
   lblText.Anchors := [akLeft..akBottom];
 
   acClose := TAction.Create(Self);
-  acClose.Caption := 'Close';
+  acClose.Caption := RsClose;
 
   acClose.ShortCut := ShortCut(VK_F4, [ssAlt]); // 32883
   acClose.OnExecute := acCloseExecute;
@@ -705,9 +705,7 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   RegisterClasses([TLabel, TImage, TAction, TJvDesktopAlertButton, TJvLabel]);
-
 
 {$IFDEF UNITVERSIONING}
 finalization
