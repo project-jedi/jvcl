@@ -43,13 +43,18 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvDockGlobals, JvDockControlForm, JvDockPropertyEditors,
+  {$IFDEF USEJVCL}
+  JvDsgnConsts,
+  {$ELSE}
+  JvDockGlobals,
+  {$ENDIF USEJVCL}
+  JvDockControlForm, JvDockPropertyEditors,
   JvDockVIDStyle, JvDockDelphiStyle,
   JvDockVCStyle, JvDockVSNetStyle;
 
 procedure Register;
 begin
-  RegisterComponents(RsDockProductName, [TJvDockServer, TJvDockClient,
+  RegisterComponents(RsPaletteDocking, [TJvDockServer, TJvDockClient,
     TJvDockDelphiStyle,TJvDockVCStyle, TJvDockVIDStyle,TJvDockVSNetStyle]);
   {$IFNDEF USEJVCL}
   RegisterComponentEditor(TJvDockBaseControl, TJvDockControlEditor);

@@ -6,6 +6,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
+    <Package Name="JvCore-D" Targets="all" Condition="USEJVCL"/>
     <Package Name="JvXPCtrls-R" Targets="all" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>

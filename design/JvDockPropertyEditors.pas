@@ -71,17 +71,17 @@ implementation
 uses
   Classes, SysUtils, Dialogs,
   {$IFDEF USEJVCL}
-  // JvDsgnConsts,
+  JvDsgnConsts,
   {$ENDIF USEJVCL}
   JvDockGlobals;
 
-{ IFNDEF USEJVCL}
+{$IFNDEF USEJVCL}
 resourcestring
   RsDockNewPage = 'Ne&w Page';
   RsDockNextPage = 'Ne&xt Page';
   RsDockPreviousPage = '&Previous Page';
   RsDockDeletePage = '&Delete Page';
-{ ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 

@@ -35,13 +35,8 @@ uses
   JvDockControlForm, JvDockInfo, JvDockSupportControl;
 
 resourcestring
-  RsDockProductName = 'Jv Docking';
-  RsNewPage = 'New Page';
-  RsNextPage = 'Next Page';
-  RsPrevPage = 'Previous Page';
-  RsDelPage = 'Delete Page';
-
   {$IFNDEF USEJVCL}
+  RsPaletteDocking = 'Jv Docking';
   RsDockServerName = 'JVCL Dock Server Component';
   RsDockClientName = 'JVCL Dock Client Component';
   RsDockStyleName = 'JVCL Dock Style Component';

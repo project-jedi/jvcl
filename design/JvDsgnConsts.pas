@@ -620,10 +620,12 @@ resourcestring
 {$ENDIF USEJVCL}
 
 //=== JvXPPropertyEditors.pas ================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsItemEditorEllipsis = 'Item Editor...';
   RsDefaultColorItem = 'Restore Default Colors';
   RsDefaultFontsItem = 'Restore Default Fonts';
+{$ENDIF USEJVCL}
 
 //=== DataProvider design time constants =====================================
 resourcestring

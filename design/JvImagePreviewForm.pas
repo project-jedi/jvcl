@@ -86,10 +86,6 @@ uses
 
 {$R *.dfm}
 
-// (rom) this needs explanation
-{$I+}
-{$D-}
-
 function SelectImage(var AFileName: string; const Extensions, Filter: string): Boolean;
 var
   ErrMode: Cardinal;
