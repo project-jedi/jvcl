@@ -23,22 +23,21 @@ begin
   WriteLn('   pg [-m=MODEL] [-x=CONFIGFILE] [-t=TARGETS]');
   WriteLn('      [-p=PATH] [-r=PREFIX] [-f=FORMAT] [-i=INCLUDEFILE] [-d]');
   WriteLn;
-  WriteLn(#9'-h'#9#9'prints this help message');
-  WriteLn(#9'-m=MODEL'#9'The name of the model to use');
-  WriteLn(#9#9#9'  Defaults to "JVCL"');
-  WriteLn(#9'-x=CONFIGFILE'#9'Location of the xml configuration file');
-  WriteLn(#9#9#9'  Defaults to "pgEdit.xml"');
-  WriteLn(#9'-t=TARGETS'#9'comma separated list of targets');
-  WriteLn(#9#9#9'  Defaults to "all"');
-  WriteLn(#9'-p=PATH'#9#9'the path to packages');
-  WriteLn(#9#9#9'  Defaults to the value from the model');
-  WriteLn(#9'-r=PREFIX'#9'Prefix to use for package name generation');
-  WriteLn(#9#9#9'  Defaults to the value from the model');
-  WriteLn(#9'-f=FORMAT'#9'Format of generated package name');
-  WriteLn(#9#9#9'  Defaults to the value from the model');
-  WriteLn(#9'-i=INCLUDEFILE'#9'Location of the include file');
-  WriteLn(#9#9#9'  Defaults to the value from the model');
-  WriteLn(#9'-d'#9#9'Generates the DOFs files where applicable');
+  WriteLn('     -h              Prints this help message');
+  WriteLn('     -m=MODEL        The name of the model to use');
+  WriteLn('                       Defaults to "JVCL"');
+  WriteLn('     -x=CONFIGFILE   Location of the xml configuration file');
+  WriteLn('                       Defaults to "pgEdit.xml"');
+  WriteLn('     -t=TARGETS      Comma separated list of targets');
+  WriteLn('                       Defaults to "all"');
+  WriteLn('     -p=PATH         The path to packages');
+  WriteLn('                       Defaults to the value from the model');
+  WriteLn('     -r=PREFIX       Prefix to use for package name generation');
+  WriteLn('                       Defaults to the value from the model');
+  WriteLn('     -f=FORMAT       Format of generated package name');
+  WriteLn('                       Defaults to the value from the model');
+  WriteLn('     -i=INCLUDEFILE  Location of the include file');
+  WriteLn('                       Defaults to the value from the model');
 end;
 
 procedure Error(const Msg : string);
@@ -152,7 +151,6 @@ begin
                       XmlConfig,
                       ModelName,
                       ErrMsg,
-                      FindCmdLineSwitch('d', ['-', '/'], True),
                       packagesPath,
                       prefix,
                       Format,
