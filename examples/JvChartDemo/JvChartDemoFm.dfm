@@ -22,7 +22,7 @@ object JvChartDemoForm: TJvChartDemoForm
     Left = 124
     Top = 35
     Width = 597
-    Height = 405
+    Height = 400
     Align = alClient
     Options.XAxisValuesPerDivision = 10
     Options.XAxisDateTimeMode = False
@@ -31,12 +31,13 @@ object JvChartDemoForm: TJvChartDemoForm
     Options.XOrigin = 0
     Options.YOrigin = 0
     Options.YStartOffset = 42
-    Options.PrimaryYAxis.YMax = 20
+    Options.PrimaryYAxis.YMax = 20.000000000000000000
     Options.PrimaryYAxis.YDivisions = 20
     Options.PrimaryYAxis.YLegendDecimalPlaces = 1
-    Options.SecondaryYAxis.YMax = 140
+    Options.SecondaryYAxis.YMax = 140.000000000000000000
     Options.SecondaryYAxis.YLegendDecimalPlaces = 0
     Options.SecondaryYAxis.DefaultYLegends = 60
+    Options.MouseDragObjects = False
     Options.Legend = clChartLegendBelow
     Options.LegendRowCount = 1
     Options.PenLineWidth = 2
@@ -61,13 +62,14 @@ object JvChartDemoForm: TJvChartDemoForm
     Options.AxisLineColor = clBlack
     Options.CursorColor = clBlack
     Options.CursorStyle = psDot
+    OnChartPaint = ChartChartPaint
+    OnBeginFloatingMarkerDrag = ChartBeginFloatingMarkerDrag
+    OnEndFloatingMarkerDrag = ChartEndFloatingMarkerDrag
   end
   object Splitter1: TSplitter
     Left = 121
     Top = 35
-    Width = 3
-    Height = 405
-    Cursor = crHSplit
+    Height = 400
   end
   object PanelTop: TPanel
     Left = 0
@@ -329,12 +331,33 @@ object JvChartDemoForm: TJvChartDemoForm
       Caption = '(TODO: Fix broken chart types)'
       Enabled = False
     end
+    object SpeedButtonTestMouseOver: TSpeedButton
+      Left = 139
+      Top = 5
+      Width = 26
+      Height = 25
+      Hint = 'Floating Markers Demo (new JAN 2005!)'
+      GroupIndex = 1
+      Flat = True
+      Glyph.Data = {
+        F6000000424DF600000000000000760000002800000010000000100000000100
+        0400000000008000000000000000000000001000000000000000000000000000
+        8000008000000080800080000000800080008080000080808000C0C0C0000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00D88888888888
+        888D79FFFFFFFFFFFF98999FFFFFFFFFF99979CFFFFFFFFFCF987FFCFFFFFFFF
+        CFF87FFCFFFFFFFCFFF87FFCFFFFFFFCFFF87FFFCFFFFFCFFFF87FFFCFFFFFCF
+        FFF87FFFCFFFFFCFFFF87FFFFCFFFCFFFFF87FFFFCFFFCFFFFF87FFFFFCFFCFF
+        FFF87FFFFFC9CFFFFFF87FFFFF999FFFFFF8D77777797777777D}
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = SpeedButtonTestMouseOverClick
+    end
   end
   object ListBox1: TListBox
     Left = 0
     Top = 35
     Width = 121
-    Height = 405
+    Height = 400
     Align = alLeft
     Color = clBtnFace
     Font.Charset = OEM_CHARSET
@@ -352,7 +375,6 @@ object JvChartDemoForm: TJvChartDemoForm
     OnDblClick = ListBox1DblClick
   end
   object ColorDialog1: TColorDialog
-    Ctl3D = True
     Options = [cdFullOpen]
     Left = 625
     Top = 4
@@ -363,8 +385,6 @@ object JvChartDemoForm: TJvChartDemoForm
     Font.Height = -13
     Font.Name = 'System'
     Font.Style = []
-    MinFontSize = 0
-    MaxFontSize = 0
     Options = []
     Left = 656
     Top = 5
