@@ -4591,6 +4591,13 @@ begin
                 ExecInherited := False;
             end;
           end;
+          if (Message.Msg = WM_KEYDOWN) and (KeyDataToShiftState(Message.LParam) = []) and (
+            Message.WParam in [VK_DOWN, VK_UP, VK_NEXT, VK_PRIOR]) then
+          begin
+            PostMessage(Inspector.Handle, Message.Msg, Message.WParam, Message.LParam);
+            Message.Result := 1;
+            ExecInherited := False;
+          end;
       end;
   end;
   if ExecInherited then
@@ -8749,8 +8756,8 @@ begin
   CheckWriteAccess;
   if TypeInfo.Kind = tkInt64 then
   begin
-    if (Value < GetTypeData(TypeInfo).MinValue) or
-        (Value > GetTypeData(TypeInfo).MaxValue) then
+    if (Value < GetTypeData(TypeInfo).MinInt64Value) or
+        (Value > GetTypeData(TypeInfo).MaxInt64Value) then
       raise ERangeError.CreateFmt(SOutOfRange, [GetTypeData(TypeInfo).MinValue,
         GetTypeData(TypeInfo).MaxValue]);
     PInt64(Address)^ := Value;
@@ -9437,8 +9444,8 @@ begin
   CheckWriteAccess;
   if TypeInfo.Kind = tkInt64 then
   begin
-    if (Value < GetTypeData(TypeInfo).MinValue) or
-        (Value > GetTypeData(TypeInfo).MaxValue) then
+    if (Value < GetTypeData(TypeInfo).MinInt64Value) or
+        (Value > GetTypeData(TypeInfo).MaxInt64Value) then
       raise ERangeError.CreateFmt(SOutOfRange, [GetTypeData(TypeInfo).MinValue,
         GetTypeData(TypeInfo).MaxValue]);
     DoSetAsInt64(Value);
