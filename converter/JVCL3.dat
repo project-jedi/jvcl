@@ -207,3 +207,7 @@ TJvProgressEvent=TJvHTTPProgressEvent
 TJvPrintProgressEvent=TJvProgressEvent
 TProgress=TJvProgressEvent
 JvgRegLibDelphi=JvGlobusReg
+WidthOf=JvJCLUtils.RectWidth
+HeightOf=JvJCLUtils.RectHeight
+IsPointInRect=JvJCLUtils.PtInRectExclusive
+PointInRect=JvJCLUtils.PtInRectInclusive
