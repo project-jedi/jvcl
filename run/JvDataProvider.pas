@@ -5512,6 +5512,10 @@ begin
 end;
 
 initialization
+  {$IFDEF VisualCLX}
+  GroupDescendentsWith(TExtensibleInterfacedPersistent, TControl);
+  GroupDescendentsWith(TAggregatedPersistent, TControl);
+  {$ENDIF VisualCLX}
   RegisterClasses([
     // Items related
     TJvDataItemsList, TJvCustomDataItemsImages, TJvCustomDataItemsTextRenderer,
