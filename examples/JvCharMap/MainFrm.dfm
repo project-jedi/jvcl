@@ -1,7 +1,8 @@
 object Form1: TForm1
-  Left = 193
-  Top = 107
-  AutoScroll = False
+  Left = 313
+  Top = 122
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'JvCharMap Demo'
   ClientHeight = 404
   ClientWidth = 547
@@ -24,6 +25,9 @@ object Form1: TForm1
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
+    DesignSize = (
+      547
+      125)
     object Label1: TLabel
       Left = 8
       Top = 8
@@ -48,16 +52,16 @@ object Form1: TForm1
       Caption = '&Columns:'
       FocusControl = udColumns
     end
-    object Button2: TButton
+    object btnFont: TButton
       Left = 216
       Top = 92
       Width = 75
       Height = 25
       Caption = '&Font...'
       TabOrder = 10
-      OnClick = Button2Click
+      OnClick = btnFontClick
     end
-    object CheckBox1: TCheckBox
+    object chkZoomPanel: TCheckBox
       Left = 8
       Top = 52
       Width = 113
@@ -66,7 +70,7 @@ object Form1: TForm1
       Checked = True
       State = cbChecked
       TabOrder = 6
-      OnClick = CheckBox1Click
+      OnClick = chkZoomPanelClick
     end
     object Edit1: TEdit
       Left = 8
@@ -122,7 +126,7 @@ object Form1: TForm1
       TabOrder = 5
       OnClick = udColumnsClick
     end
-    object JvColorComboBox1: TJvColorComboBox
+    object cbColor: TJvColorComboBox
       Left = 8
       Top = 94
       Width = 97
@@ -188,7 +192,7 @@ object Form1: TForm1
       DroppedDownWidth = 97
       TabOrder = 8
     end
-    object JvFontComboBox1: TJvFontComboBox
+    object cbFont: TJvFontComboBox
       Left = 112
       Top = 94
       Width = 97
@@ -198,24 +202,35 @@ object Form1: TForm1
       Sorted = False
       TabOrder = 9
     end
-    object CheckBox2: TCheckBox
+    object chkUnicode: TCheckBox
       Left = 126
       Top = 52
       Width = 97
       Height = 17
       Caption = '&Unicode'
       TabOrder = 7
-      OnClick = CheckBox2Click
+      OnClick = chkUnicodeClick
     end
-    object RichEdit1: TRichEdit
+    object reInfo: TRichEdit
       Left = 312
-      Top = 16
+      Top = 48
       Width = 222
-      Height = 97
+      Height = 65
       Anchors = [akLeft, akTop, akRight, akBottom]
+      ParentShowHint = False
       ScrollBars = ssBoth
-      TabOrder = 11
+      ShowHint = True
+      TabOrder = 12
       WordWrap = False
+    end
+    object btnSelect: TButton
+      Left = 448
+      Top = 16
+      Width = 75
+      Height = 25
+      Caption = 'Se&lect'
+      TabOrder = 11
+      OnClick = btnSelectClick
     end
   end
   object FontDialog1: TFontDialog

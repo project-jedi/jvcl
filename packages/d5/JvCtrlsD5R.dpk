@@ -74,6 +74,7 @@ contains
   JvHint in '..\..\run\JvHint.pas',
   JvMovableBevel in '..\..\run\JvMovableBevel.pas',
   JvPlaylist in '..\..\run\JvPlaylist.pas',
-  JvComboListBox in '..\..\run\JvComboListBox.pas';
+  JvComboListBox in '..\..\run\JvComboListBox.pas',
+  JvCharMap in '..\..\run\JvCharMap.pas';
 
 end.
