@@ -1153,13 +1153,17 @@ begin
             Text := '';
         end
         else
+        begin
+          Item := nil;
           Text := '';
+        end;
         Click;
         {$IFNDEF COMPILER6_UP}
         Change;
         {$ELSE}
         Select;
         {$ENDIF COMPILER6_UP}
+        Provider.ItemSelected(Item);
       finally
         Provider.Leave;
       end;
