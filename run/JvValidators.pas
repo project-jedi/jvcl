@@ -102,7 +102,7 @@ type
     property Enabled: boolean read FEnabled write FEnabled;
     // the message to display in case of error
     property ErrorMessage: string read FErrorMessage write FErrorMessage;
-    // trhiggered when Valid is set to false
+    // triggered when Valid is set to false
     property OnValidateFailed: TNotifyEvent read FOnValidateFailed write FOnValidateFailed;
   end;
 
@@ -235,8 +235,9 @@ uses
 {$IFDEF COMPILER6_UP}
   Variants,
 {$ENDIF}
-  TypInfo, Forms,
-  JclUnicode; // for reg exp support
+  TypInfo,
+  JclUnicode, // for reg exp support
+  Forms;
 var
   FValidatorsList:TStringList = nil;
 
@@ -812,4 +813,5 @@ initialization
 finalization
   FValidatorsList.Free;
 end.
+
 
