@@ -736,6 +736,7 @@ begin
   inherited Create(AOwner);
   FLinks := TJvPageLinks.Create;
   FLinks.FTreeView := self;
+  ReadOnly := true;
 end;
 
 function TJvCustomPageListTreeView.CreateNode: TTreeNode;
