@@ -1,4 +1,29 @@
-unit MainFrm;
+{******************************************************************
+
+                       JEDI-VCL Demo
+
+ Copyright (C) 2002 Project JEDI
+
+ Original author:
+
+ Contributor(s):
+
+ You may retrieve the latest version of this file at the JEDI-JVCL
+ home page, located at http://jvcl.sourceforge.net
+
+ The contents of this file are used with permission, subject to
+ the Mozilla Public License Version 1.1 (the "License"); you may  
+ not use this file except in compliance with the License. You may 
+ obtain a copy of the License at
+ http://www.mozilla.org/MPL/MPL-1_1Final.html
+
+ Software distributed under the License is distributed on an
+ "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or   
+ implied. See the License for the specific language governing
+ rights and limitations under the License.
+
+******************************************************************}
+unit JvOutlookBarCustomDrawDemoMainForm;
 
 interface
 
@@ -8,7 +33,7 @@ uses
   JvNavigationPane, StdCtrls;
 
 type
-  TForm1 = class(TForm)
+  TJvOutlookBarCustomDrawDemoMainFrm = class(TForm)
     JvOutlookBar1: TJvOutlookBar;
     ImageList1: TImageList;
     ImageList2: TImageList;
@@ -20,24 +45,24 @@ type
     procedure FormCreate(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure ComboBox2Change(Sender: TObject);
-  private
-    { Private declarations }
   public
     { Public declarations }
-    procedure DoCustomDraw(Sender:TObject; ACanvas:TCanvas; ARect:TRect;
-    AStage:TJvOutlookBarCustomDrawStage; AIndex:integer; ADown, AInside:boolean; var DefaultDraw:boolean);
+    procedure DoCustomDraw(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
+    AStage: TJvOutlookBarCustomDrawStage; AIndex:integer; ADown, AInside: boolean;
+    var DefaultDraw:boolean);
   end;
 
 var
-  Form1: TForm1;
+  JvOutlookBarCustomDrawDemoMainFrm: TJvOutlookBarCustomDrawDemoMainFrm;
 
 implementation
+
 uses
   JvJVCLUtils;
 
 {$R *.dfm}
 
-procedure TForm1.DoCustomDraw(Sender: TObject; ACanvas: TCanvas; ARect: TRect; AStage: TJvOutlookBarCustomDrawStage; AIndex: integer; ADown,  AInside: boolean; var DefaultDraw:boolean);
+procedure TJvOutlookBarCustomDrawDemoMainFrm.DoCustomDraw(Sender: TObject; ACanvas: TCanvas; ARect: TRect; AStage: TJvOutlookBarCustomDrawStage; AIndex: integer; ADown,  AInside: boolean; var DefaultDraw:boolean);
 begin
   DefaultDraw := False;
   case AStage of
@@ -74,7 +99,7 @@ begin
   end;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TJvOutlookBarCustomDrawDemoMainFrm.FormCreate(Sender: TObject);
 begin
   ComboBox1.ItemIndex := 0;
   JvOutlookBar1.OnCustomDraw := DoCustomDraw;
@@ -83,13 +108,13 @@ begin
   ComboBox2Change(ComboBox2);
 end;
 
-procedure TForm1.ComboBox1Change(Sender: TObject);
+procedure TJvOutlookBarCustomDrawDemoMainFrm.ComboBox1Change(Sender: TObject);
 begin
   JvNavPaneStyleManager1.Theme := TJvNavPanelTheme(ComboBox1.ItemIndex);
   JvOutlookBar1.Invalidate;
 end;
 
-procedure TForm1.ComboBox2Change(Sender: TObject);
+procedure TJvOutlookBarCustomDrawDemoMainFrm.ComboBox2Change(Sender: TObject);
 begin
   JvOutlookBar1.ButtonSize := TJvBarButtonSize(ComboBox2.ItemIndex);
 end;
