@@ -40,10 +40,10 @@ uses
   Controls, Forms, StdCtrls, ExtCtrls, Dialogs, Buttons, jpeg,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons,
+  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons,
   {$ENDIF VisualCLX}
   JclSysInfo, JVCLVer,
-  JvBaseDlg, JvComponent, QGraphics;
+  JvBaseDlg, JvComponent;
 
 type
   TJvJVCLAboutForm = class(TJvForm)
