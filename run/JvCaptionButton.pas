@@ -1080,7 +1080,6 @@ end;
 
 destructor TGlobalXPData.Destroy;
 begin
-  UnloadMsimg32Dll;
   FCaptionButtons.Free;
   inherited Destroy;
 end;
@@ -1469,8 +1468,7 @@ begin
   if csDesigning in ComponentState then
     Exit;
 
-  if FToolTipHandle <> 0 then
-    DestroyToolTip;
+  DestroyToolTip;
 
   if Wnd = 0 then
     Exit;
@@ -2583,7 +2581,7 @@ begin
 
           * Switching from 'windows classic' style to 'windows XP' style
             ( delphi 7 bug) }
-        ThemeServices.ApplyThemeChange;
+        ThemeServices.UpdateThemes;
         GlobalXPData.Update;
         {$ENDIF JVCLThemesEnabled}
       end;
@@ -2595,7 +2593,7 @@ begin
 
           * Non-themed application and switching system font size }
         if not ThemeServices.ThemesEnabled then
-          ThemeServices.ApplyThemeChange;
+          ThemeServices.UpdateThemes;
         {$ENDIF JVCLThemesEnabled}
       end;
     WM_SETTEXT:
