@@ -27,16 +27,15 @@ package JvQStdCtrlsK3D;
 {$DEFINE VisualCLX}
 
 requires
-  JvQCoreD7D,
-  JvQStdCtrlsD7R,
   designide,
   visualclx,
   rtl,
-  JvQCoreD7R;
+  JvQCoreK3D,
+  JvQCoreK3R;
 
 contains
-  JvQCheckedItemsForm in '..\..\qdesign\JvQCheckedItemsForm.pas' {JvCheckItemsEditor},
-  JvQProgressEditor in '..\..\qdesign\JvQProgressEditor.pas',
-  JvQStdCtrlsReg in '..\..\qdesign\JvQStdCtrlsReg.pas';
+  JvQCheckedItemsForm in '../../qdesign/JvQCheckedItemsForm.pas' {JvCheckItemsEditor},
+  JvQProgressEditor in '../../qdesign/JvQProgressEditor.pas',
+  JvQStdCtrlsReg in '../../qdesign/JvQStdCtrlsReg.pas';
 
 end.

@@ -27,19 +27,23 @@ package JvQDlgsK3R;
 {$DEFINE VisualCLX}
 
 requires
-  JvQCoreD7R,
-  JvQStdCtrlsD7R,
-  JvQSystemD7R,
   rtl,
-  visualclx;
+  visualclx,
+  JvQCoreK3R,
+  JvQStdCtrlsK3R,
+  JvQSystemK3R,
+  DJcl,
+  DJclVClx,
+  vcl;
 
 contains
-  JvQDualListForm in '..\..\qrun\JvQDualListForm.pas' {JvDualListForm},
-  JvQImageDlg in '..\..\qrun\JvQImageDlg.pas',
-  JvQProgressComponent in '..\..\qrun\JvQProgressComponent.pas',
-  JvQProgressDialog in '..\..\qrun\JvQProgressDialog.pas',
-  JvQProgressForm in '..\..\qrun\JvQProgressForm.pas' {frmProgress},
-  JvQDualList in '..\..\qrun\JvQDualList.pas',
-  JvQCommonExecDlg in '..\..\qrun\JvQCommonExecDlg.pas';
+  JvQDualListForm in '../../qrun/JvQDualListForm.pas' {JvDualListForm},
+  JvQImageDlg in '../../qrun/JvQImageDlg.pas',
+  JvQProgressComponent in '../../qrun/JvQProgressComponent.pas',
+  JvQProgressDialog in '../../qrun/JvQProgressDialog.pas',
+  JvQProgressForm in '../../qrun/JvQProgressForm.pas' {frmProgress},
+  JvQDualList in '../../qrun/JvQDualList.pas',
+  JvQCommonExecDlg in '../../qrun/JvQCommonExecDlg.pas',
+  JvQTipOfDay in '../../qrun/JvQTipOfDay.pas';
 
 end.

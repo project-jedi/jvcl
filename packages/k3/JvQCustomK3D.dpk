@@ -27,12 +27,11 @@ package JvQCustomK3D;
 {$DEFINE VisualCLX}
 
 requires
-  JvQCoreD7D,
-  JvQCustomD7R,
   designide,
-  dclclxstd;
+  JvQCoreK3D,
+  JvQCustomK3R;
 
 contains
-  JvQCustomReg in '..\..\qdesign\JvQCustomReg.pas';
+  JvQCustomReg in '../../qdesign/JvQCustomReg.pas';
 
 end.
