@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: dclJvDb6.dpk, released on 2002-07-04.
+The Original Code is: dclJvxDb6.dpk, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
@@ -18,14 +18,14 @@ All Rights Reserved.
 Last Modified: 2002-07-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://JVCL.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-package dclJvDb6;
+package dclJvxDb6;
 
 {$R *.res}
 {$ALIGN 8}
@@ -49,18 +49,18 @@ package dclJvDb6;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'Jv Library Database Components'}
+{$DESCRIPTION 'Jvx Library Database Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
 requires
   dcldb,
-  DclJv6,
-  JvDB6,
+  DclJvx6,
+  JvxDB6,
   designide;
 
 contains
-  JvSelDSFrm in 'JvSelDSFrm.pas',
-  JvDBReg in 'JvDBReg.pas';
+  JvxSelDSFrm in 'JvxSelDSFrm.pas',
+  JvxDBReg in 'JvxDBReg.pas';
 
 end.

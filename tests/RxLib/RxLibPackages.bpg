@@ -9,27 +9,27 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = dclJvdb6.bpl dclJvbd6.bpl dclJv6.bpl Jvbde6.bpl JvCtl6.bpl JvDB6.bpl
+PROJECTS = dclJvxdb6.bpl dclJvxbd6.bpl dclJvx6.bpl Jvxbde6.bpl JvxCtl6.bpl JvxDB6.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-dclJvdb6.bpl: dclJvdb6.dpk
+dclJvxdb6.bpl: dclJvxdb6.dpk
   $(DCC)
 
-dclJvbd6.bpl: dclJvbd6.dpk
+dclJvxbd6.bpl: dclJvxbd6.dpk
   $(DCC)
 
-dclJv6.bpl: dclJv6.dpk
+dclJvx6.bpl: dclJvx6.dpk
   $(DCC)
 
-Jvbde6.bpl: Jvbde6.dpk
+Jvxbde6.bpl: Jvxbde6.dpk
   $(DCC)
 
-JvCtl6.bpl: JvCtl6.dpk
+JvxCtl6.bpl: JvxCtl6.dpk
   $(DCC)
 
-JvDB6.bpl: JvDB6.dpk
+JvxDB6.bpl: JvxDB6.dpk
   $(DCC)
 
 
