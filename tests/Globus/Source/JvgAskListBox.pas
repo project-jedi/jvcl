@@ -28,6 +28,10 @@ Known Issues:
 
 {$I JVCL.INC}
 
+unit JvgAskListBox;
+
+interface
+
 { ListBox-based component  that provides  convenient  interface  for
  realization of the different  tests for users.  Component  is  very
  useful during setup and install processes.
@@ -35,9 +39,6 @@ Known Issues:
  glyphs on own items and fill background  with  bitmap.  You can set
  different fonts  for  selected  item  and  for  other  list  items.
 }
-unit JvgAskListBox;
-
-interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
@@ -46,14 +47,9 @@ uses
   JvgTypes, JvgCommClasses;
 
 type
-  TPushedButtons = record
-    Total: Word;
-    FirstColumn: Word;
-  end;
-
-  TglAskLBOptions_ = (aloAutoScroll, aloIgnoreMouse, aloShowFocus,
+  TglAskLBOption = (aloAutoScroll, aloIgnoreMouse, aloShowFocus,
     aloTransparentButtons, aloWordWrap);
-  TglAskLBOptions = set of TglAskLBOptions_;
+  TglAskLBOptions = set of TglAskLBOption;
 
   TJvgAskListBox = class(TCustomListBox)
   private
@@ -83,7 +79,7 @@ type
     FButtons: TStringList;
     FButtonWidth: Word;
     FOptions: TglAskLBOptions;
-      //'''''''''''''''''''''''''''''''''''''''''
+    //'''''''''''''''''''''''''''''''''''''''''
     WallpaperBmp: TBitmap;
     TmpBitmap: TBitmap;
     BtnRect: TRect;

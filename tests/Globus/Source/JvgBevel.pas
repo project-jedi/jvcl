@@ -36,7 +36,7 @@ unit JvgBevel;
 interface
 
 uses
-  Windows, Messages, Classes, Controls, Graphics, ExtCtrls,
+  Windows, Messages, Classes, Controls, Graphics, ExtCtrls, Forms,
   JvComponent,
   JvgTypes, JvgCommClasses, JvgUtils;
 
@@ -53,9 +53,14 @@ type
     FGradient: TJvgGradient;
     FVertLines: TJvgBevelLines;
     FHorLines: TJvgBevelLines;
-    //    FMouseSentencive	  : Boolean;
     FExternalCanvas: TCanvas;
-    procedure OnSmthChanged(Sender: TObject);
+    FHintColor: TColor;
+    FSaved: TColor;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    FOnParentColorChanged: TNotifyEvent;
+    FOver: Boolean;
+    procedure SomethingChanged(Sender: TObject);
     procedure SetBevelInner(Value: TPanelBevel);
     procedure SetBevelOuter(Value: TPanelBevel);
     procedure SetBevelSides(Value: TglSides);
@@ -63,15 +68,14 @@ type
     procedure SetBevelPenStyle(Value: TPenStyle);
     procedure SetBevelPenWidth(Value: Word);
     procedure SetInteriorOffset(Value: Word);
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   public
-    // (rom) better full property
-    Ctrl3D: Boolean;
-    procedure Paint; override;
-    property ExternalCanvas: TCanvas read FExternalCanvas write FExternalCanvas;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Paint; override;
+    property ExternalCanvas: TCanvas read FExternalCanvas write FExternalCanvas stored False;
     procedure Loaded; override;
   published
     {$IFDEF COMPILER5_UP}
@@ -94,7 +98,6 @@ type
     property OnStartDrag;
     property DragCursor;
     property DragMode;
-    property Canvas;
     property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvLowered;
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvNone;
     property BevelSides: TglSides read FBevelSides write SetBevelSides
@@ -104,8 +107,12 @@ type
     property BevelPenWidth: Word read FBevelPenWidth write SetBevelPenWidth default 1;
     property InteriorOffset: Word read FInteriorOffset write SetInteriorOffset default 0;
     property Gradient: TJvgGradient read FGradient write FGradient;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property VertLines: TJvgBevelLines read FVertLines write FVertLines;
     property HorLines: TJvgBevelLines read FHorLines write FHorLines;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   end;
 
 implementation
@@ -120,19 +127,20 @@ begin
   Width := 50;
   Height := 50;
   FBevelInner := bvLowered;
-  //  FBevelOuter := bvNone;
+  FHintColor := clInfoBk;
+  FBevelOuter := bvNone;
   FBevelSides := [fsdLeft, fsdTop, fsdRight, fsdBottom];
   FBevelPenStyle := psSolid;
   FBevelPenWidth := 1;
-  Ctrl3D := True;
-  FGradient.OnChanged := OnSmthChanged;
-  FVertLines.OnChanged := OnSmthChanged;
-  FHorLines.OnChanged := OnSmthChanged;
+  FGradient.OnChanged := SomethingChanged;
+  FVertLines.OnChanged := SomethingChanged;
+  FHorLines.OnChanged := SomethingChanged;
+  FOver := False;
 end;
 
 destructor TJvgBevel.Destroy;
 begin
-  Gradient.Free;
+  FGradient.Free;
   FVertLines.Free;
   FHorLines.Free;
   inherited Destroy;
@@ -154,45 +162,39 @@ var
   procedure DrawLines(R_: TRect; Direction: TglLinesDir; Lines:
     TJvgBevelLines);
   var
-    i: Integer;
+    I: Integer;
   begin
     if Direction = fldVertical then
     begin
-      if Ctrl3D then
-        BoxSides := [fsdLeft, fsdRight]
-      else
-        BoxSides := [fsdLeft];
+      BoxSides := [fsdLeft, fsdRight];
       if Lines.IgnoreBorder then
       begin
-        R_.top := R.top;
+        R_.Top := R.Top;
         R_.Bottom := R.Bottom;
       end;
     end
     else
     begin
-      if Ctrl3D then
-        BoxSides := [fsdTop, fsdBottom]
-      else
-        BoxSides := [fsdTop];
+      BoxSides := [fsdTop, fsdBottom];
       if Lines.IgnoreBorder then
       begin
-        R_.left := R.left;
+        R_.Left := R.Left;
         R_.Right := R.Right;
       end;
     end;
 
-    for i := 1 to Lines.Count do
+    for I := 1 to Lines.Count do
     begin
       case Direction of
         fldVertical:
           begin
-            R_.left := MulDiv(i, Width, Lines.Count + 1);
+            R_.Left := MulDiv(I, Width, Lines.Count + 1);
             R_.Right := R_.Left + Lines.Thickness + Integer(Lines.Bold);
           end;
       else {fldHorizontal:}
         begin
-          R_.Top := MulDiv(i, Height, Lines.Count + 1);
-          //	  if i = 1 then Dec( R_.Top, Lines.Thickness );
+          R_.Top := MulDiv(I, Height, Lines.Count + 1);
+          //	  if I = 1 then Dec( R_.Top, Lines.Thickness );
           R_.Bottom := R_.Top + Lines.Thickness + Integer(Lines.Bold);
         end;
       end;
@@ -213,7 +215,7 @@ begin
     TargetCanvas := Canvas;
   R := ClientRect;
   InflateRect(R, -FInteriorOffset, -FInteriorOffset);
-  GradientBox(TargetCanvas.handle, R, Gradient,
+  GradientBox(TargetCanvas.Handle, R, Gradient,
     Integer(FBevelPenStyle), FBevelPenWidth);
 
   R := ClientRect;
@@ -228,40 +230,59 @@ begin
   DrawLines(R_, fldVertical, VertLines);
 end;
 
-procedure TJvgBevel.CMMouseEnter(var Msg: TMessage);
+procedure TJvgBevel.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+procedure TJvgBevel.CMMouseEnter(var Msg: TMessage);
+begin
+  if not FOver then
+  begin
+    FSaved := Application.HintColor;
+    // for D7...
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
+    FOver := True;
+  end;
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
 end;
 
 procedure TJvgBevel.CMMouseLeave(var Msg: TMessage);
 begin
-  inherited;
+  if FOver then
+  begin
+    Application.HintColor := FSaved;
+    FOver := False;
+  end;
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
 end;
 
-procedure TJvgBevel.OnSmthChanged(Sender: TObject);
+procedure TJvgBevel.SomethingChanged(Sender: TObject);
 begin
   Repaint;
 end;
 
 procedure TJvgBevel.SetBevelOuter(Value: TPanelBevel);
-//var R: TRect;
 begin
   if FBevelOuter <> Value then
   begin
-    //  R:=ClientRect; InflateRect( R, -5, -5 );
     FBevelOuter := Value;
-    Invalidate; // ValidateRect( canvas.handle, @R );
+    Invalidate;
   end;
 end;
 
 procedure TJvgBevel.SetBevelInner(Value: TPanelBevel);
-//var R: TRect;
 begin
   if FBevelInner <> Value then
   begin
-    //  R:=ClientRect; InflateRect( R, -5, -5 );
     FBevelInner := Value;
-    Invalidate; //ValidateRect( canvas.handle, @R );
+    Invalidate;
   end;
 end;
 
