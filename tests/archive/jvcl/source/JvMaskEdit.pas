@@ -16,9 +16,11 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com],
                 Rob den Braasem [rbraasem@xs4all.nl],
-                Oliver Giesen [ogware@gmx.net].
+                Oliver Giesen [ogware@gmx.net],
+                Peter Thornqvist [peter3@peter3.com].
 
-Last Modified: 2002-12-24
+
+Last Modified: 2002-12-27
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -119,6 +121,8 @@ type
   public
     procedure DefaultHandler(var Msg);override;
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
     property Entering: Boolean read FEntering;
     property Leaving: Boolean read FLeaving;
   protected
@@ -276,10 +280,19 @@ begin
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
   FClipBoardCommands := [caCopy..caUndo];
-  FGroupIndex := -1; 
+  FGroupIndex := -1;
   (* -- RDB -- *)
   FEntering:= False;
   FLeaving:= False;
+end;
+
+{**************************************************}
+
+destructor TJvCustomMaskEdit.Destroy;
+begin
+  FCaret.OnChanged := NIL;
+  FreeAndNil(FCaret);
+  inherited;
 end;
 
 {**************************************************}
