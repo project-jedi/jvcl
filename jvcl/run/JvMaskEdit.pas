@@ -36,12 +36,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Graphics, Controls, Mask, Forms,
-  {$ENDIF VCL}
+  SysUtils, Classes, Graphics, Controls, Mask, Forms,
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QMask, QForms, QWindows, QTypes,
+  QWindows, QTypes,
   {$ENDIF VisualCLX}
   JvComponent, JvTypes, JvCaret, JvToolEdit, JvExMask;
 
@@ -108,7 +105,6 @@ type
     property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
-    property GroupIndex;
     property HintColor;
     property HotTrack;
     property ProtectPassword;
@@ -129,6 +125,7 @@ type
     property EditMask;
     property Font;
     {$IFDEF VCL}
+    property GroupIndex;
     property ImeMode;
     property ImeName;
     {$ENDIF VCL}
