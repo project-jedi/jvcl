@@ -41,8 +41,8 @@ uses
   Buttons, Menus,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls, QButtons,
-  QMenus, QWindows,
+  Types, QWindows, QGraphics, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
+  QButtons, QMenus,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvColorBox;
