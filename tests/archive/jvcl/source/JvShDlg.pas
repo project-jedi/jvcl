@@ -275,8 +275,8 @@ function ShRestartDialogA(hWnd: HWND; lpstrReason: PChar; uFlags: UINT): integer
 function ShRestartDialogW(hWnd: HWND; lpstrReason: PWideChar; uFlags: UINT): integer; external shell32 index 59;
 function ShPickIconDlgA(hwndOwner: HWND; var lpstrFile: PChar; nMaxFile: DWORD; var lpdwIconIndex: integer): bool; external shell32 index 62;
 function ShPickIconDlgW(hwndOwner: HWND; var lpstrFile: PWideChar; nMaxFile: DWORD; var lpdwIconIndex: integer): bool; external shell32 index 62;
-procedure ShRunFileDlgA(hwndOwner: HWND; hIcon: HICON; lpStrDirectory, lpStrTitle, lpStrDescription: LPCSTR; uFlags: UINT); external shell32 index 61
-procedure ShRunFileDlgW(hwndOwner: HWND; hIcon: HICON; lpStrDirectory, lpStrTitle, lpStrDescription: LPCWSTR; uFlags: UINT); external shell32 index 61
+procedure ShRunFileDlgA(hwndOwner: HWND; hIcon: HICON; lpStrDirectory, lpStrTitle, lpStrDescription: LPCSTR; uFlags: UINT); external shell32 index 61;
+procedure ShRunFileDlgW(hwndOwner: HWND; hIcon: HICON; lpStrDirectory, lpStrTitle, lpStrDescription: LPCWSTR; uFlags: UINT); external shell32 index 61;
 function SHFindFiles(pidlRoot, pidlSavedSearch: PItemIDList): bool; external shell32 index 90;
 function SHFindComputer(pidlRoot, pidlSavedSearch: PItemIDList): bool; external shell32 index 91;
 function SHObjectPropertiesA(hwndOwner: HWND; uFlags: UINT; lpStrName, lpStrParameters: PChar): bool; external shell32 index 178;
