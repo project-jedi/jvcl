@@ -17,7 +17,7 @@ object IndexResultForm: TIndexResultForm
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 15
   object ListView1: TListView
     Left = 0
     Top = 0
@@ -27,11 +27,11 @@ object IndexResultForm: TIndexResultForm
     Columns = <
       item
         Caption = 'Title'
-        Width = 200
+        Width = 250
       end
       item
         Caption = 'Location'
-        Width = 200
+        Width = 250
       end>
     TabOrder = 0
     ViewStyle = vsReport
@@ -42,6 +42,7 @@ object IndexResultForm: TIndexResultForm
     NCPopupMenu = MSDN2002.PopupMenu1
     DirectDrag = False
     ShowHint = True
+    EnableCloseButton = True
     DockStyle = MSDN2002.JvDockVSNetStyle1
     Left = 64
     Top = 88
