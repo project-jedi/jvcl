@@ -43,11 +43,16 @@ type
     Label1: TLabel;
     Label2: TLabel;
     sbResults: TStatusBar;
+    chkAutoValidate: TCheckBox;
     procedure btnLoadClick(Sender: TObject);
     procedure btnValidateClick(Sender: TObject);
     procedure reXMLChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
+    procedure LoadXML(const Filename:string);
+  protected
     { Private declarations }
+    procedure WMDropFiles(var Message: TWMDropFiles); message WM_DROPFILES;
   public
     { Public declarations }
   end;
@@ -56,13 +61,14 @@ var
   Form1: TForm1;
 
 implementation
+uses ShellAPI;
 
 {$R *.dfm}
 
 procedure TForm1.btnLoadClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
-    reXML.Lines.LoadFromFile(OpenDialog1.Filename);
+    LoadXML(OpenDialog1.Filename);
 end;
 
 procedure TForm1.btnValidateClick(Sender: TObject);
@@ -86,6 +92,30 @@ end;
 procedure TForm1.reXMLChange(Sender: TObject);
 begin
   btnValidate.Enabled := reXML.GetTextLen > 0;
+end;
+
+procedure TForm1.WMDropFiles(var Message: TWMDropFiles);
+var buf:string;
+begin
+  SetLength(buf, DragQueryFile(Message.Drop, 0, nil, 0) + 1);
+  DragQueryFile(Message.Drop, 0, PChar(buf), Length(buf));
+  LoadXML(PChar(buf));
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  DragAcceptFiles(Handle, true);
+end;
+
+procedure TForm1.LoadXML(const Filename: string);
+begin
+  if FileExists(Filename) then
+  begin
+    reXML.Lines.LoadFromFile(Filename);
+    reXMLChange(nil);
+    if chkAutoValidate.Checked then
+      btnValidate.Click;
+  end;
 end;
 
 end.
