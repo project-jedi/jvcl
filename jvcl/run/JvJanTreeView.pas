@@ -167,7 +167,14 @@ type
     procedure SetUpKeyMappings;
     procedure ParserGetVar(Sender: TObject; VarName: string; var Value: Extended; var Found: Boolean);
     procedure ParserParseError(Sender: TObject; ParseError: Integer);
+    {$IFDEF VCL}
     procedure DoCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure DoCustomDrawItem(Sender: TCustomViewControl; Node: TCustomViewItem;
+       Canvas: TCanvas; const Rect:TRect; State: TCustomDrawState;
+       Stage: TCustomDrawStage; var DefaultDraw: Boolean);
+    {$ENDIF VisualCLX}
     procedure SetColorFormulas(const Value: Boolean);
     procedure SetFormuleColor(const Value: TColor);
     procedure SetDefaultExt(const Value: string);
@@ -627,13 +634,28 @@ begin
   end;
 end;
 
+{$IFDEF VisualCLX}
+type
+  TCustomViewItemAccessProtected = class(TCustomViewItem);
+
+procedure TJvJanTreeView.DoCustomDrawItem(Sender: TCustomViewControl; Node: TCustomViewItem;
+       Canvas: TCanvas; const Rect:TRect; State: TCustomDrawState;
+       Stage: TCustomDrawStage; var DefaultDraw: Boolean);
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvJanTreeView.DoCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+{$ENDIF VCL}
 var
   S: string;
   R: TRect;
 begin
+  {$IFDEF VCL}
   S := Node.Text;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  S := TCustomViewItemAccessProtected(Node).Caption;
+  {$ENDIF VisualCLX}
   if (cdsSelected in State) or (cdsFocused in State) then
   begin
     DefaultDraw := True;
@@ -642,7 +664,7 @@ begin
   if (Copy(S, 1, 7) = 'http://') or (Copy(S, 1, 7) = 'mailto:') then
     with Canvas do
     begin
-      R := Node.DisplayRect(True);
+      R := Node.DisplayRect{$IFDEF VCL}(True){$ENDIF};
       Font := Self.Font;
       Font.Style := Font.Style + [fsUnderline];
       Font.Color := clBlue;
@@ -653,7 +675,7 @@ begin
   if FColorFormulas and (Pos('=', S) > 0) then
     with Canvas do
     begin
-      R := Node.DisplayRect(True);
+      R := Node.DisplayRect{$IFDEF VCL}(True){$ENDIF};
       Font := Self.Font;
       Font.Color := FFormuleColor;
       TextRect(R, R.Left, R.Top, S);
