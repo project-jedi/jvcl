@@ -19,7 +19,7 @@ Contributor(s):
   Remko Bonte
   Peter Thörnqvist
 
-Last Modified: 2003-12-11
+Last Modified: 2004-01-21
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -2038,7 +2038,7 @@ begin
   I := FAdditionalIntfImpl.Count - 1;
   while (I >= 0) and not IsStreamableExtension(TAggregatedPersistentEx(FAdditionalIntfImpl[I])) do
     Dec(I);
-  Filer.DefineProperty('Implementers', ReadImplementers, WriteImplementers, I >= 0);
+  Filer.DefineProperty('Extensions', ReadImplementers, WriteImplementers, I >= 0);
 end;
 
 procedure TExtensibleInterfacedPersistent.ReadImplementers(Reader: TReader);
