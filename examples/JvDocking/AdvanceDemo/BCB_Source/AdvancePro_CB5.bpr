@@ -12,13 +12,9 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) Main.dfm Unit1.dfm Unit2.dfm Unit3.dfm Unit4.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="DockControl_CB5.lib"/>
-    <SPARELIBS value="Vcl50.lib DockControl_CB5.lib"/>
-    <PACKAGES value="Vcl50.bpi Vclx50.bpi bcbsmp50.bpi Vcldb50.bpi vclado50.bpi ibsmp50.bpi 
-      VCLBDE50.bpi vcldbx50.bpi Qrpt50.bpi TeeUI50.bpi TeeDB50.bpi Tee50.bpi 
-      Dss50.bpi TeeQR50.bpi VCLIB50.bpi Vclmid50.bpi vclie50.bpi Inetdb50.bpi 
-      Inet50.bpi NMFast50.bpi webmid50.bpi bcbie50.bpi dclocx50.bpi 
-      bcb2kaxserver50.bpi"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value=""/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
@@ -29,19 +25,19 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="AdvancePro_CB5.cpp"/>
-    <INCLUDEPATH value="&quot;e:\Program Files\Borland\CBuilder5\Projects&quot;;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="&quot;e:\Program Files\Borland\CBuilder5\Projects&quot;;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\Source"/>
+    <INCLUDEPATH value="..\..\..\..\run;..\..\..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\..\run"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I&quot;e:\Program Files\Borland\CBuilder5\Projects&quot; -I..\..\..\source 
+    <IDLCFLAGS value="-I..\..\..\..\run -I..\..\..\..\common
       -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tW -tWM"/>
     <PFLAGS value="-N2..\Bin -N0..\Bin -$YD -$W -$O- -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-l&quot;F:\zhou\俺的备份\DockManager\Demo\AdvanceDemo\Bin\&quot; -I..\Bin -D&quot;&quot; -aa 
+    <LFLAGS value="-L..\..\..\..\run -I..\Bin -D&quot;&quot; -aa
       -Tpe -x -Gn -v"/>
   </OPTIONS>
   <LINKER>

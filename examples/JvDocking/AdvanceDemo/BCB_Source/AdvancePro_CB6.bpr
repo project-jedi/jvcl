@@ -12,15 +12,9 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) Main.dfm Unit1.dfm Unit2.dfm Unit3.dfm Unit4.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="DockControl_CB6.lib"/>
-    <SPARELIBS value="vcl.lib rtl.lib DockControl_CB6.lib"/>
-    <PACKAGES value="vcl.bpi rtl.bpi dbrtl.bpi adortl.bpi vcldb.bpi vclx.bpi bdertl.bpi 
-      vcldbx.bpi ibxpress.bpi dsnap.bpi cds.bpi bdecds.bpi qrpt.bpi teeui.bpi 
-      teedb.bpi tee.bpi dss.bpi teeqr.bpi visualclx.bpi visualdbclx.bpi 
-      dsnapcrba.bpi dsnapcon.bpi bcbsmp.bpi vclie.bpi xmlrtl.bpi inet.bpi 
-      inetdbbde.bpi inetdbxpress.bpi inetdb.bpi nmfast.bpi webdsnap.bpi 
-      bcbie.bpi websnap.bpi soaprtl.bpi dclocx.bpi dbexpress.bpi dbxcds.bpi 
-      indy.bpi bcb2kaxserver.bpi"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value=""/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
@@ -31,20 +25,20 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="AdvancePro_CB6.cpp"/>
-    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\..\..\Source"/>
-    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\Source"/>
+    <INCLUDEPATH value="..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl;..\..\..\..\common"/>
+    <LIBPATH value="..\..\..\..\run;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I..\..\..\Source -src_suffix cpp 
-      -D_DEBUG -boa"/>
+    <IDLCFLAGS value="-I..\..\..\..\run -I$(BCB)\include -I$(BCB)\include\vcl 
+      -I..\..\..\..\common -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tW -tWM"/>
     <PFLAGS value="-N2..\Bin -N0..\Bin -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\Bin -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+    <LFLAGS value="-I..\Bin -L..\..\..\..\run -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -94,14 +88,18 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=2
-Item0=$(BCB)\include;$(BCB)\include\vcl;..\..\..\Source
-Item1=E:\Program Files\Borland\CBuilder6\Projects;F:\zhou\俺的备份\DockManager\Demo\AdvanceDemo\BCB_Source\新建文件夹;$(BCB)\include;$(BCB)\include\vcl
+Count=5
+Item0=..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl;..\..\..\..\common
+Item1=..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl;..\..\..\common
+Item2=..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl;..\..\..\Source
+Item3=$(BCB)\include;$(BCB)\include\vcl;..\..\..\Source
+Item4=E:\Program Files\Borland\CBuilder6\Projects;F:\zhou\????\DockManager\Demo\AdvanceDemo\BCB_Source\?????;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=2
-Item0=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\Source
-Item1=$(BCB)\Projects\Lib;E:\Program Files\Borland\CBuilder6\Projects;F:\zhou\俺的备份\DockManager\Demo\AdvanceDemo\BCB_Source\新建文件夹;$(BCB)\lib\obj;$(BCB)\lib
+Count=3
+Item0=..\..\..\..\run;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\Source
+Item1=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\Source
+Item2=$(BCB)\Projects\Lib;E:\Program Files\Borland\CBuilder6\Projects;F:\zhou\????\DockManager\Demo\AdvanceDemo\BCB_Source\?????;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1

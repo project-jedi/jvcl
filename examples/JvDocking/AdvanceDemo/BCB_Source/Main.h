@@ -15,6 +15,7 @@
 #include <ComCtrls.hpp>
 #include <Menus.hpp>
 #include <ToolWin.hpp>
+#include "JvComponent.hpp"
 
 //---------------------------------------------------------------------------
 class TMainForm : public TForm
