@@ -21,14 +21,16 @@
  rights and limitations under the License.
 
 ******************************************************************}
+{$I jvcl.inc}
 unit MainFrm;
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, ExtCtrls, ActnList, Menus, HTTPApp, HTTPProd,
+  Dialogs, StdCtrls, ComCtrls, ExtCtrls, ActnList, Menus, HTTPApp,
+  {$IFDEF COMPILER6_UP}HTTPProd,{$ENDIF}
   JvExExtCtrls, JvNetscapeSplitter, JvExComCtrls, JvListView, JvExStdCtrls,
-  JvRichEdit;
+  JvRichEdit, JvRadioGroup, JvDotNetControls;
 
 type
   TfrmMain = class(TForm)
@@ -42,11 +44,11 @@ type
     acSaveAs: TAction;
     pnlLeft: TPanel;
     vertSplitter: TJvNetscapeSplitter;
-    lvItems: TJvListView;
+    lvItems: TJvDotNetListView;
     pnlRight: TPanel;
     Label2: TLabel;
-    reAnswer: TJvRichEdit;
-    reQuestion: TJvRichEdit;
+    reAnswer: TJvDotNetRichEdit;
+    reQuestion: TJvDotNetRichEdit;
     Label1: TLabel;
     mmMain: TMainMenu;
     File1: TMenuItem;
@@ -124,6 +126,8 @@ type
     procedure acNextItemExecute(Sender: TObject);
     procedure acPrevItemExecute(Sender: TObject);
     procedure acFullScreenExecute(Sender: TObject);
+    procedure JvRadioGroup1ItemHint(Sender: TObject; Index: Integer;
+      var AHint: String);
   private
     { Private declarations }
     LastFilename, LastHTMLFile: string;
@@ -577,6 +581,12 @@ begin
   end;
   SetWindowPlacement(Handle,@WP);
 
+end;
+
+procedure TfrmMain.JvRadioGroup1ItemHint(Sender: TObject; Index: Integer;
+  var AHint: String);
+begin
+  AHint := Format('This is the hint for item %d',[Index + 1]);
 end;
 
 end.

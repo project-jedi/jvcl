@@ -87,7 +87,7 @@ type
     procedure Scroll(Distance : Integer);
     procedure ReadList;
     procedure ClearList;
-    procedure Change;override;
+    procedure Select; override;
     procedure Notification(Component : TComponent;Operation : TOperation);override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -248,7 +248,6 @@ constructor TJvDBCustomSearchComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDataLink := TJvSearchComboBoxLink.Create(Self);
-  Style := csDropDownList;
   FChanging := False;
 end;
 
@@ -285,7 +284,7 @@ begin
   FDataLink.DataSource := Value;
 end;
 
-procedure TJvDBCustomSearchComboBox.Change;
+procedure TJvDBCustomSearchComboBox.Select;
 begin
   if not FChanging and (ItemIndex <> -1) and
     (FDataLink.DataSet <> nil) and (FDataLink.DataField <> nil) then
@@ -297,7 +296,7 @@ begin
       FChanging := False;
     end;
   end;
-  inherited Change;
+  inherited;
 end;
 
 procedure TJvDBCustomSearchComboBox.Refresh;
@@ -365,7 +364,6 @@ begin
   if Assigned(FDataLink.DataSet) and (DataResult<>'') then
     Result := FDataLink.DataSet.Lookup(DataField,Text,DataResult);
 end;
-
 
 end.
 

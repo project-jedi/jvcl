@@ -72,6 +72,8 @@ type
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
     procedure WmAutoSelect(var Message:TMessage); message WM_AUTOSELECT;
+    function GetItemIndex: integer;
+    procedure SetItemIndex(const Value: integer);
   protected
     function CreateListItem: TListItem; override;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
@@ -114,6 +116,9 @@ type
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
     procedure SetFocus; override;
+    {$IFNDEF COMPILER6_UP}
+    property ItemIndex:integer read GetItemIndex write SetItemIndex;
+    {$ENDIF}
   published
     property AutoSelect:boolean read FAutoSelect write FAutoSelect default True;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
@@ -1172,6 +1177,21 @@ begin
   if AutoSelect and (Selected = nil) and (Items.Count > 0) then
     PostMessage(Handle, WM_AUTOSELECT, integer(Items[0]), 1);
 end;
+{$IFNDEF COMPILER6_UP}
+function TJvListView.GetItemIndex: integer;
+begin
+  if Selected <> nil then
+    Result := Selected.Index
+  else
+    Result := -1;
+end;
+
+procedure TJvListView.SetItemIndex(const Value: integer);
+begin
+  if (Value >= 0) and (Value < Items.Count) then
+    Items[Value].Selected := True;
+end;
+{$ENDIF !COMPILER6_UP}
 
 end.
 

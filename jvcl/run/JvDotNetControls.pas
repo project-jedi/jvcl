@@ -36,6 +36,8 @@ uses
   Forms, Classes, Windows, Messages, Graphics, Controls,
   StdCtrls, ComCtrls, Mask,
   {$IFDEF USEJVCL}
+  JvRichEdit, JvListView, JvCheckListBox, JvEdit, JvHotKey,
+  JvListBox, JvMaskEdit, JvMemo, JvComCtrls, JvScrollBox, JvToolEdit,
   CheckLst,
   JVCLVer;
   {$ELSE}
@@ -43,175 +45,167 @@ uses
   {$ENDIF USEJVCL}
 
 type
+  {$IFDEF USEJVCL}
+  TJvDotNetCheckListBox = class(TJvCheckListBox)
+  {$ELSE}
   TJvDotNetCheckListBox = class(TCheckListBox)
+  {$ENDIF}
   private
-    {$IFDEF USEJVCL}
-    FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
+  {$IFDEF USEJVCL}
+  TJvDotNetEdit = class(TJvEdit)
+  {$ELSE}
   TJvDotNetEdit = class(TEdit)
+  {$ENDIF}
   private
-    {$IFDEF USEJVCL}
-    FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
+  {$IFDEF USEJVCL}
+  TJvDotNetHotKey = class(TJvHotKey)
+  {$ELSE}
   TJvDotNetHotKey = class(THotKey)
+  {$ENDIF USEJVCL}
   private
-    {$IFDEF USEJVCL}
-    FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
+  {$IFDEF USEJVCL}
+  TJvDotNetListBox = class(TJvListBox)
+  {$ELSE}
   TJvDotNetListBox = class(TListBox)
+  {$ENDIF USEJVCL}
   private
-    {$IFDEF USEJVCL}
-    FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
+  {$IFDEF USEJVCL}
+  TJvDotNetListView = class(TJvListView)
+  {$ELSE}
   TJvDotNetListView = class(TListView)
+  {$ENDIF USEJVCL}
   private
-    {$IFDEF USEJVCL}
-    FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
+  {$IFDEF USEJVCL}
+  TJvDotNetMaskEdit = class(TJvMaskEdit)
+  {$ELSE}
   TJvDotNetMaskEdit = class(TMaskEdit)
+  {$ENDIF USEJVCL}
   private
-    {$IFDEF USEJVCL}
-    FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
+
+  {$IFDEF USEJVCL}
+  TJvDotNetMemo = class(TJvMemo)
+  {$ELSE}
   TJvDotNetMemo = class(TMemo)
+  {$ENDIF USEJVCL}
   private
-    {$IFDEF USEJVCL}
-    FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
+  {$IFDEF USEJVCL}
+  TJvDotNetRichEdit = class(TJvRichEdit)
+  {$ELSE}
   TJvDotNetRichEdit = class(TRichEdit)
+  {$ENDIF}
   private
-    {$IFDEF USEJVCL}
-    FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
+  {$IFDEF USEJVCL}
+  TJvDotNetScrollBox = class(TJvScrollBox)
+  {$ELSE}
   TJvDotNetScrollBox = class(TScrollBox)
+ {$ENDIF USEJVCL}
   private
-    {$IFDEF USEJVCL}
-    FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  end;
   {$IFDEF USEJVCL}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  TJvDotNetTreeView = class(TJvTreeView)
+  {$ELSE}
+  TJvDotNetTreeView = class(TTreeView)
   {$ENDIF USEJVCL}
+  private
+    FHighlighted: Boolean;
+    FOldWindowProc: TWndMethod;
+    procedure InternalWindowProc(var Msg: TMessage);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
-  TJvDotNetTreeView = class(TTreeView)
+  {$IFDEF USEJVCL}
+  TJvDotNetFilenameEdit = class(TJvFilenameEdit)
   private
-    {$IFDEF USEJVCL}
-    FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
+  TJvDotNetDirectoryEdit = class(TJvDirectoryEdit)
+  private
+    FHighlighted: Boolean;
+    FOldWindowProc: TWndMethod;
+    procedure InternalWindowProc(var Msg: TMessage);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+  {$ENDIF USEJVCL}
 
 (* TJvDotNetCustomControl = class(TWinControl)
   published
@@ -432,5 +426,50 @@ begin
   FOldWindowProc(Msg);
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
+
+{$IFDEF USEJVCL}
+{ TJvDotNetFilenameEdit }
+
+constructor TJvDotNetFilenameEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FOldWindowProc := WindowProc;
+  WindowProc := InternalWindowProc;
+end;
+
+destructor TJvDotNetFilenameEdit.Destroy;
+begin
+  WindowProc := FOldWindowProc;
+  inherited Destroy;
+end;
+
+procedure TJvDotNetFilenameEdit.InternalWindowProc(var Msg: TMessage);
+begin
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
+end;
+
+{ TJvDotNetDirectoryEdit }
+
+constructor TJvDotNetDirectoryEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FOldWindowProc := WindowProc;
+  WindowProc := InternalWindowProc;
+end;
+
+destructor TJvDotNetDirectoryEdit.Destroy;
+begin
+  WindowProc := FOldWindowProc;
+  inherited Destroy;
+end;
+
+procedure TJvDotNetDirectoryEdit.InternalWindowProc(var Msg: TMessage);
+begin
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
+end;
+
+{$ENDIF USEJVCL}
 
 end.

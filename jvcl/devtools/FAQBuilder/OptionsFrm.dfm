@@ -16,9 +16,6 @@ object frmOptions: TfrmOptions
   Position = poScreenCenter
   Scaled = False
   OnResize = FormResize
-  DesignSize = (
-    417
-    418)
   PixelsPerInch = 96
   TextHeight = 13
   object pcOptions: TPageControl
@@ -28,13 +25,9 @@ object frmOptions: TfrmOptions
     Height = 356
     ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 0
     TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'
-      DesignSize = (
-        399
-        328)
       object Label1: TLabel
         Left = 12
         Top = 12
@@ -83,7 +76,7 @@ object frmOptions: TfrmOptions
         Caption = '&Document title:'
         FocusControl = edTitle
       end
-      object edQImage: TJvFilenameEdit
+      object edQImage: TJvDotNetFilenameEdit
         Left = 12
         Top = 30
         Width = 371
@@ -94,12 +87,12 @@ object frmOptions: TfrmOptions
           'Image files|*.gif;*.jpg;*.jpeg;*.png|GIF files|*.gif|JPEG files|' +
           '*.jpg;*.jpeg|PNG files|*.png|All files|*.*'
         DialogTitle = 'Select image'
-        ButtonFlat = False
+        ButtonFlat = True
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
         Text = 'q.gif'
       end
-      object edAImage: TJvFilenameEdit
+      object edAImage: TJvDotNetFilenameEdit
         Left = 12
         Top = 82
         Width = 371
@@ -110,12 +103,12 @@ object frmOptions: TfrmOptions
           'Image files|*.gif;*.jpg;*.jpeg;*.png|GIF files|*.gif|JPEG files|' +
           '*.jpg;*.jpeg|PNG files|*.png|All files|*.*'
         DialogTitle = 'Select image'
-        ButtonFlat = False
+        ButtonFlat = True
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 1
         Text = 'a.gif'
       end
-      object edStyleSheet: TJvFilenameEdit
+      object edStyleSheet: TJvDotNetFilenameEdit
         Left = 12
         Top = 186
         Width = 371
@@ -124,34 +117,58 @@ object frmOptions: TfrmOptions
         AddQuotes = False
         Filter = 'Style sheets|*.css|All files|*.*'
         DialogTitle = 'Select stylesheet'
-        ButtonFlat = False
+        ButtonFlat = True
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 3
         Text = 'default.css'
       end
-      object edImagePath: TEdit
+      object edImagePath: TJvDotNetEdit
         Left = 12
         Top = 134
         Width = 371
         Height = 21
+        PasswordChar = #0
+        GroupIndex = -1
+        MaxPixel.Font.Charset = DEFAULT_CHARSET
+        MaxPixel.Font.Color = clWindowText
+        MaxPixel.Font.Height = -11
+        MaxPixel.Font.Name = 'MS Sans Serif'
+        MaxPixel.Font.Style = []
+        Modified = False
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 2
         Text = 'images/'
       end
-      object edStyleSheetPath: TEdit
+      object edStyleSheetPath: TJvDotNetEdit
         Left = 12
         Top = 239
         Width = 371
         Height = 21
+        PasswordChar = #0
+        GroupIndex = -1
+        MaxPixel.Font.Charset = DEFAULT_CHARSET
+        MaxPixel.Font.Color = clWindowText
+        MaxPixel.Font.Height = -11
+        MaxPixel.Font.Name = 'MS Sans Serif'
+        MaxPixel.Font.Style = []
+        Modified = False
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 4
         Text = 'styles/'
       end
-      object edTitle: TEdit
+      object edTitle: TJvDotNetEdit
         Left = 12
         Top = 288
         Width = 371
         Height = 21
+        PasswordChar = #0
+        GroupIndex = -1
+        MaxPixel.Font.Charset = DEFAULT_CHARSET
+        MaxPixel.Font.Color = clWindowText
+        MaxPixel.Font.Height = -11
+        MaxPixel.Font.Name = 'MS Sans Serif'
+        MaxPixel.Font.Style = []
+        Modified = False
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 5
         Text = 'Frequently Asked Questions'
@@ -179,7 +196,7 @@ object frmOptions: TfrmOptions
         FAHeight = 278
         FCWidth = 22
         FCHeight = 22
-        object reFooter: TJvRichEdit
+        object reFooter: TJvDotNetRichEdit
           Left = 5
           Top = 25
           Width = 385
@@ -214,7 +231,7 @@ object frmOptions: TfrmOptions
         FAHeight = 278
         FCWidth = 22
         FCHeight = 22
-        object reHeader: TJvRichEdit
+        object reHeader: TJvDotNetRichEdit
           Left = 5
           Top = 25
           Width = 385
@@ -250,7 +267,7 @@ object frmOptions: TfrmOptions
         FAHeight = 278
         FCWidth = 22
         FCHeight = 22
-        object reItem: TJvRichEdit
+        object reItem: TJvDotNetRichEdit
           Left = 5
           Top = 25
           Width = 385
