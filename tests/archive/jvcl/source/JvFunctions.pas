@@ -35,11 +35,14 @@ interface
 
 uses
   Windows, Graphics, Classes, Messages, Controls,
-  ComCtrls, SysUtils, ShellApi, JvTypes;
+  ComCtrls, SysUtils, ShellApi, JvTypes, ImgList;
 
 //Transform an icon to a bitmap
 function IconToBitmap(ico: HIcon): TBitmap;
 {$EXTERNALSYM IconToBitmap}
+// Transform an icon to a bitmap using an image list
+function IconToBitmap2(ico: HIcon;Size:integer=32;TransparentColor:TColor=clNone): TBitmap;
+{$EXTERNALSYM IconToBitmap2}
 
 //Open an object with the shell (url or something like that)
 procedure OpenObject(Value: PChar); overload;
@@ -246,10 +249,27 @@ begin
   i := TPicture.Create;
   i.Icon.Handle := ico;
   Result := TBitmap.Create;
-  Result.Height := 32;
-  Result.Width := 32;
+  Result.Height := i.Icon.Height;
+  Result.Width := i.Icon.Width;
   Result.Canvas.Draw(0, 0, i.icon);
   i.Free;
+end;
+
+function IconToBitmap2(ico: HIcon;Size:integer=32;TransparentColor:TColor=clNone): TBitmap;
+begin
+  // (p3) this seems to generate "better" bitmaps...
+  with TImageList.CreateSize(Size,Size) do
+  try
+//    DrawingStyle := dsTransparent;
+    ImageList_AddIcon(Handle,ico);
+    Result := TBitmap.Create;
+    if TransparentColor <> clNone then
+      Result.TransparentColor := TransparentColor; 
+    Result.Transparent := true;
+    GetBitmap(0,Result);
+  finally
+    Free;
+  end;
 end;
 
 {*****************************************************}
@@ -1340,6 +1360,8 @@ end;
 
 function BooleanToInteger(const pb: boolean): integer;
 begin
+  // (p3) this works as well:
+  // Result := Ord(pb);
   if pb then
     Result := 1
   else
