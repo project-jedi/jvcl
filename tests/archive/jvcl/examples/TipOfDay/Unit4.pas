@@ -1,4 +1,4 @@
-{$I JEDI.INC}
+{$I JVCL.INC}
 unit Unit4;
 
 interface
