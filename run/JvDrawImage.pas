@@ -4801,7 +4801,7 @@ begin
   Dst.Width := w;
   Dst.Height := h;
   Dst.PixelFormat := pf24bit;
-  FX.Solorize(Clip, Dst, am);
+  FX.Solarize(Clip, Dst, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
   QuickPreviewF.PreviewImage.update;
