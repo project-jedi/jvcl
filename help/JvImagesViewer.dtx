@@ -10,70 +10,6 @@ Author
   Peter Thörnqvist
 
 ----------------------------------------------------------------------------------------------------
-@@TJvImageItem
-Summary
-  Defines an item in the Items array of a TJvImagesViewer control.
-Description
-  The TJvImagesViewer displays images either from disk or from other sources. Each item in its Items
-  array is of type TJvImageItem. Use the properties and methods of TJvImageItem to modify how the image
-  is displayed in the TJvImagesViewer control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvImageItem.Caption
-Summary
-  Specifies the text to display for the item.
-Description
-  Use Caption to specify the text to display along with the image.
-
-----------------------------------------------------------------------------------------------------
-@@TJvImageItem.FileName
-Summary
-  Specifies the file name of the file on disk the item is displaying.
-Description
-  Use Filename to set the file on disk the item should be displaying. When changing Filename, the item
-  is not updated directly. Instead, Picture is set to nil and the next time the TJvImagesViewer control
-  requests the image, it is loaded from disk. This means that an item that is never displayed, will not
-  be loaded at all.
-See Also
-  TJvImageItem.Picture
-
-----------------------------------------------------------------------------------------------------
-@@TJvImageItem.Picture
-Summary
-  Provides access to the image the item is displaying.
-Description
-  Use the Picture property to access the image the item is displaying or to modify the properties of
-  the image. For example, if you want to dis lay images that are not on disk, assign an image from
-  another source to the Picture property at run-time.
-See Also
-  TJvImageItem.FileName
-
-----------------------------------------------------------------------------------------------------
-@@TJvImageItem.ReduceMemoryUsage
-Summary
-  Minimizes memory usage.
-Description
-  ReduceMemoryUsage minimizes the memory used by the item by freeing the Picture object but only if
-  Filename specifies an existing file (no check is done to determine if Filename is a valid image
-  file). When the Picture property of the item is accessed the next time, the image is recreated from
-  disk.
-
-  You don't have to call ReduceMemoryUsage directly. It is called automatically by the TJvImagesViewer
-  when its Options.ReduceMemoryUsage property is true.
-See Also
-  TJvImageItem.FileName, TJvImageItem.Picture
-
-----------------------------------------------------------------------------------------------------
-@@TJvImageItem.Refresh
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvImageLoadErrorEvent
 <TITLE TJvImageLoadErrorEvent type>
 <COMBINE TJvImagesViewer.OnLoadError>
@@ -293,4 +229,68 @@ Description
   Use Transparent to specify whether images are drawn transparently or not.
 Note
   Not all image formats supports the notion of transparency.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPictureItem
+Summary
+  Defines an item in the Items array of a TJvImagesViewer control.
+Description
+  The TJvImagesViewer displays images either from disk or from other sources. Each item in its Items
+  array is of type TJvPictureItem. Use the properties and methods of TJvPictureItem to modify how the
+  image is displayed in the TJvImagesViewer control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPictureItem.Caption
+Summary
+  Specifies the text to display for the item.
+Description
+  Use Caption to specify the text to display along with the image.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPictureItem.FileName
+Summary
+  Specifies the file name of the file on disk the item is displaying.
+Description
+  Use Filename to set the file on disk the item should be displaying. When changing Filename, the item
+  is not updated directly. Instead, Picture is set to nil and the next time the TJvImagesViewer control
+  requests the image, it is loaded from disk. This means that an item that is never displayed, will not
+  be loaded at all.
+See Also
+  TJvPictureItem.Picture
+
+----------------------------------------------------------------------------------------------------
+@@TJvPictureItem.Picture
+Summary
+  Provides access to the image the item is displaying.
+Description
+  Use the Picture property to access the image the item is displaying or to modify the properties of
+  the image. For example, if you want to dis lay images that are not on disk, assign an image from
+  another source to the Picture property at run-time.
+See Also
+  TJvPictureItem.FileName
+
+----------------------------------------------------------------------------------------------------
+@@TJvPictureItem.ReduceMemoryUsage
+Summary
+  Minimizes memory usage.
+Description
+  ReduceMemoryUsage minimizes the memory used by the item by freeing the Picture object but only if
+  Filename specifies an existing file (no check is done to determine if Filename is a valid image
+  file). When the Picture property of the item is accessed the next time, the image is recreated from
+  disk.
+
+  You don't have to call ReduceMemoryUsage directly. It is called automatically by the TJvImagesViewer
+  when its Options.ReduceMemoryUsage property is true.
+See Also
+  TJvPictureItem.FileName, TJvPictureItem.Picture
+
+----------------------------------------------------------------------------------------------------
+@@TJvPictureItem.Refresh
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
