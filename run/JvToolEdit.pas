@@ -3737,6 +3737,7 @@ end;
 constructor TJvFilenameEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FAddQuotes := True;
   {$IFDEF VCL}
   FAutoCompleteOptions := [acoAutosuggestForceOn, acoFileSystem];
   {$ENDIF VCL}
