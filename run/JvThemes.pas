@@ -1773,11 +1773,6 @@ begin
   end;
 end;
 
-initialization
-
-finalization
-  FinalizeUnit(sUnitName);
-
 {$ENDIF COMPILER7_UP}
 
 {$ELSE} // JVCLThemesEnabled
@@ -1795,6 +1790,117 @@ begin
 end;
 
 {$ENDIF JVCLThemesEnabled}
+
+
+{$IFDEF JVCLThemesEnabled}
+
+// copied from JclSysUtils.pas - keep them here
+type
+  TDynamicIndexList = array [0..MaxInt div 16] of Word;
+  PDynamicIndexList = ^TDynamicIndexList;
+  TDynamicAddressList = array [0..MaxInt div 16] of Pointer;
+  PDynamicAddressList = ^TDynamicAddressList;
+
+function GetDynamicMethodCount(AClass: TClass): Integer; assembler;
+asm
+        MOV     EAX, [EAX].vmtDynamicTable
+        TEST    EAX, EAX
+        JE      @@Exit
+        MOVZX   EAX, WORD PTR [EAX]
+@@Exit:
+end;
+  
+function GetDynamicIndexList(AClass: TClass): PDynamicIndexList; assembler;
+asm
+        MOV     EAX, [EAX].vmtDynamicTable
+        ADD     EAX, 2
+end;
+
+function GetDynamicAddressList(AClass: TClass): PDynamicAddressList; assembler;
+asm
+        MOV     EAX, [EAX].vmtDynamicTable
+        MOVZX   EDX, WORD PTR [EAX]
+        ADD     EAX, EDX
+        ADD     EAX, EDX
+        ADD     EAX, 2
+end;
+
+
+var
+  OrgWinControlWMPaintClient: procedure(Instance: TObject; var Msg: TMessage);
+
+procedure FixedWMPaintClient(Instance: TObject; var Msg: TMessage);
+var
+  idSave: Integer;
+begin
+  if Msg.Msg = WM_PRINTCLIENT then
+  begin
+    idSave := SaveDC(HDC(Msg.WParam));
+    try
+      OrgWinControlWMPaintClient(Instance, Msg);
+    finally
+      RestoreDC(HDC(Msg.WParam), idSave);
+    end;
+  end
+  else
+    OrgWinControlWMPaintClient(Instance, Msg);
+end;
+
+function FindWMPrintClient: PPointer;
+var
+  IdxList: PDynamicIndexList;
+  i: Integer;
+begin
+  IdxList := GetDynamicIndexList(TWinControl);
+  for i := 0 to GetDynamicMethodCount(TWinControl) - 1 do
+    if IdxList[i] = WM_PRINTCLIENT then
+    begin
+      Result := @(GetDynamicAddressList(TWinControl)[i]);
+      Exit;
+    end;
+  Result := nil;
+end;
+
+procedure InitializeWMPrintClientFix;
+var
+  NewProc: Pointer;
+  Proc: PPointer;
+  n: Cardinal;
+begin
+  Proc := FindWMPrintClient();
+  if Proc <> nil then
+  begin
+    OrgWinControlWMPaintClient := Proc^;
+    NewProc := @FixedWMPaintClient;
+    WriteProcessMemory(GetCurrentProcess, Proc, @NewProc, SizeOf(NewProc), n);
+  end;
+end;
+
+procedure FinalizeWMPrintClientFix;
+var
+  NewProc: Pointer;
+  Proc: PPointer;
+  n: Cardinal;
+begin
+  Proc := FindWMPrintClient();
+  if Proc <> nil then
+  begin
+    NewProc := @OrgWinControlWMPaintClient;
+    WriteProcessMemory(GetCurrentProcess, Proc, @NewProc, SizeOf(NewProc), n);
+  end;
+end;
+
+initialization
+  InitializeWMPrintClientFix;
+
+finalization
+  FinalizeWMPrintClientFix;
+{$IFNDEF COMPILER7_UP}
+  FinalizeUnit(sUnitName);
+{$ENDIF !COMPILER7UP}
+
+{$ENDIF JVCLThemesEnabled}
+
 
 end.
 
