@@ -22,10 +22,6 @@ DCPDIR = $(ROOT)\Projects\bpl
 LIBDIR = $(ROOT)\Projects\lib
 !endif
 
-!ifndef HPPDIR
-HPPDIR = $(ROOT)\Include\Vcl
-!endif
-
 #-------------------------------------------------------------------------------
 
 !ifndef EDITION
