@@ -20,10 +20,10 @@
 { UIB Constants                                                                }
 {                                                                              }
 { Unit owner:    Henri Gourvest                                                }
-{ Last modified: Mar 16, 2003                                                  }
+{ Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
-{$I JVCL.INC}
+{$I JCL.INC}
 {$I JvUIB.inc}
 unit JvUIBConst;
 
@@ -60,41 +60,74 @@ ResourceString
   EUIB_UNEXPECTEDERROR     = 'Unexpected error.';
   EUIB_FIELDNUMNOTFOUND    = 'Field num: %d not found.';
   EUIB_FIELDSTRNOTFOUND    = 'Field "%s" not found.';
+  EUIB_PARAMSTRNOTFOUND    = 'Parameter "%s" not found.';
   EUIB_BLOBFIELDNOTFOUND   = 'Blob field num: %d not found.';
   EUIB_FETCHBLOBNOTSET     = 'FetchBlob property must be set to use this method.';
-
+  EUIB_INDEXERROR          = 'Index out of bound (%d)';
+  EUIB_SIZENAME            = 'Size name too big (%s)';
+  EUIB_MUSTBEPREPARED      = 'The query must be prepared first.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Can''t connect to server.';
   EJvUIB_ClassNotFound = 'Class not found.';
   EJvUIB_DataType      = 'Data type error.';
-{$ELSE}
-  {$IFDEF UIBLANG_FR}
-    sUIBTrue             = 'Vrai';
-    sUIBFalse            = 'Faux';
-
-    // UIB Errors
-    EUIB_INVALIDEIBVERSION   = 'Version de base de données incorrecte, vérifiez les options de compilation.';
-    EUIB_CANTLOADLIB         = 'Impossible de charger la DLL: %s.';
-    EUIB_DBHANDLEALLREADYSET = 'Le handle de la base de données est déjà défini, déconnectez d''abord la base de données.';
-    EUIB_TRANSACTIONNOTDEF   = 'La transaction n''est pas définie';
-    EUIB_DATABASENOTDEF      = 'La base de données n''est pas définie.';
-    EUIB_QUERYNOTOPEN        = 'La requête n''est pas encore ouverte.';
-    EUIB_CASTERROR           = 'Transtypage incorrect.';
-    EUIB_UNEXPECTEDERROR     = 'Erreur innatendue.';
-    EUIB_FIELDNUMNOTFOUND    = 'Le champ numéro: %d ''esxiste pas.';
-    EUIB_FIELDSTRNOTFOUND    = 'Le champ "%s" n''existe pas.';
-    EUIB_BLOBFIELDNOTFOUND   = 'Le champ Blob numéro: %d n''existe pas.';
-    EUIB_FETCHBLOBNOTSET     = 'La propriété FetchBlob doit être activée pour utiliser cette méthode.';
-
-
-    // ORB Errors
-    EJvUIB_CantConnect   = 'Impossible de se connecter au serveur.';
-    EJvUIB_ClassNotFound = 'La Classe n''a pas été trouvée.';
-    EJvUIB_DataType      = 'Erreur de type de donnée.';
-  {$ENDIF}
 {$ENDIF}
 
+{$IFDEF UIBLANG_FR}
+  sUIBTrue             = 'Vrai';
+  sUIBFalse            = 'Faux';
+
+  // UIB Errors
+  EUIB_INVALIDEIBVERSION   = 'Version de base de données incorrecte, vérifiez les options de compilation.';
+  EUIB_CANTLOADLIB         = 'Impossible de charger la DLL: %s.';
+  EUIB_DBHANDLEALLREADYSET = 'Le handle de la base de données est déjà défini, déconnectez d''abord la base de données.';
+  EUIB_TRANSACTIONNOTDEF   = 'La transaction n''est pas définie';
+  EUIB_DATABASENOTDEF      = 'La base de données n''est pas définie.';
+  EUIB_QUERYNOTOPEN        = 'La requête n''est pas encore ouverte.';
+  EUIB_CASTERROR           = 'Transtypage incorrect.';
+  EUIB_UNEXPECTEDERROR     = 'Erreur innatendue.';
+  EUIB_FIELDNUMNOTFOUND    = 'Le champ numéro: %d ''esxiste pas.';
+  EUIB_FIELDSTRNOTFOUND    = 'Le champ "%s" n''existe pas.';
+  EUIB_PARAMSTRNOTFOUND    = 'Le Parametre "%s" n''existe pas.';
+  EUIB_BLOBFIELDNOTFOUND   = 'Le champ Blob numéro: %d n''existe pas.';
+  EUIB_FETCHBLOBNOTSET     = 'La propriété FetchBlob doit être activée pour utiliser cette méthode.';
+  EUIB_INDEXERROR          = 'Indice de liste hors limites (%d)';
+  EUIB_SIZENAME            = 'La taille du nom est trop grande (%s)';
+  EUIB_MUSTBEPREPARED      = 'La requete doit d''abord etre préparée.';
+
+  // ORB Errors
+  EJvUIB_CantConnect   = 'Impossible de se connecter au serveur.';
+  EJvUIB_ClassNotFound = 'La Classe n''a pas été trouvée.';
+  EJvUIB_DataType      = 'Erreur de type de donnée.';
+{$ENDIF}
+
+{$IFDEF UIBLANG_CZ}
+  sUIBTrue             = 'Ano';
+  sUIBFalse            = 'Ne';
+
+  // UIB Errors
+  EUIB_INVALIDEIBVERSION   = 'Nekorektní verze databázového serveru, zkontrolujte nastavení kompileru.';
+  EUIB_CANTLOADLIB         = 'Nelze naèíst knihovnu: %s.';
+  EUIB_DBHANDLEALLREADYSET = 'Kanál databáze je již pøipraven, nejdøíve odpojte databázi.';
+  EUIB_TRANSACTIONNOTDEF   = 'Transakce není pøiøazena.';
+  EUIB_DATABASENOTDEF      = 'Databáze není pøiøazena.';
+  EUIB_QUERYNOTOPEN        = 'Dotaz není otevøen.';
+  EUIB_CASTERROR           = 'Chyba bsazení.';
+  EUIB_UNEXPECTEDERROR     = 'Neznámá chyba.';
+  EUIB_FIELDNUMNOTFOUND    = 'Položka èíslo: %d neexistuje.';
+  EUIB_FIELDSTRNOTFOUND    = 'Položka "%s" neexistuje.';
+  EUIB_PARAMSTRNOTFOUND    = 'Parametr "%s" neexistuje.';
+  EUIB_BLOBFIELDNOTFOUND   = 'Blob záznam èíslo: %d neexistuje.';
+  EUIB_FETCHBLOBNOTSET     = 'Vlastnost FetchBlob musí být nastavena pro použití této metody.';
+  EUIB_INDEXERROR          = 'Index je mimo rozsah (%d)';
+  EUIB_SIZENAME            = 'Velikost názvu je pøíliš velká (%s)';
+  EUIB_MUSTBEPREPARED      = 'Dotaz musí být nejdøíve pøipraven (prepared).';
+
+  // ORB Errors
+  EJvUIB_CantConnect   = 'Nelze pøipojit server.';
+  EJvUIB_ClassNotFound = 'Tøída neexistuje.';
+  EJvUIB_DataType      = 'Chybný typ dat.';
+{$ENDIF}
 
 implementation
 

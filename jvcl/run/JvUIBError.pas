@@ -20,15 +20,13 @@
 { Interbase & FireBird Error Codes                                             }
 {                                                                              }
 { Unit owner:    Henri Gourvest                                                }
-{ Last modified: Jun 08, 2003                                                  }
+{ Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
 
 
 unit JvUIBError;
-{$IFNDEF BCB}
 {$I JCL.INC}
-{$ENDIF}
 {$I JvUIB.inc}
 
 interface
@@ -1091,6 +1089,37 @@ const
 {$IFDEF FB15_UP}
   isc_invalid_savepoint                 = 335544820;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_invalid_savepoint} {$ENDIF}
+  isc_dsql_column_pos_err               = 335544821;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_column_pos_err} {$ENDIF}
+  isc_dsql_agg_where_err                = 335544822;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_agg_where_err} {$ENDIF}
+  isc_dsql_agg_group_err                = 335544823;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_agg_group_err} {$ENDIF}
+  isc_dsql_agg_column_err               = 335544824;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_agg_column_err} {$ENDIF}
+  isc_dsql_agg_having_err               = 335544825;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_agg_having_err} {$ENDIF}
+  isc_dsql_agg_nested_err               = 335544826;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_agg_nested_err} {$ENDIF}
+  isc_exec_sql_invalid_arg              = 335544827;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_exec_sql_invalid_arg} {$ENDIF}
+  isc_exec_sql_invalid_req              = 335544828;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_exec_sql_invalid_req} {$ENDIF}
+  isc_exec_sql_invalid_var              = 335544829;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_exec_sql_invalid_var} {$ENDIF}
+  isc_exec_sql_max_call_exceeded        = 335544830;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_exec_sql_max_call_exceeded} {$ENDIF}
+  isc_conf_access_denied                = 335544831;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_conf_access_denied} {$ENDIF}
+{$ENDIF}
+
+{$IFDEF IB71_UP}
+  isc_savepoint_err                     = 335544815;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_savepoint_err} {$ENDIF}
+  isc_generator_name                    = 335544816;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_generator_name} {$ENDIF}
+  isc_udf_name                          = 335544817;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_udf_name} {$ENDIF}
 {$ENDIF}
 
   isc_gfix_db_name                      = 335740929;
@@ -1181,6 +1210,11 @@ const
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_udf_return_pos_err} {$ENDIF}
 {$ENDIF}
 
+{$IFDEF FB15_UP}
+  isc_dsql_invalid_label                = 336003087;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_invalid_label} {$ENDIF}
+{$ENDIF}
+
 {$IFDEF IB65_UP}
   isc_dsql_rows_ties_err                = 336003085;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_rows_ties_err} {$ENDIF}
@@ -1222,6 +1256,13 @@ const
 {$IFDEF FB102ORYF867}
   isc_dyn_zero_len_id                   = 336068820;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dyn_zero_len_id} {$ENDIF}
+{$ENDIF}
+
+{$IFDEF IB71_UP}
+  isc_dyn_gen_does_not_exist            = 336068820;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dyn_gen_does_not_exist} {$ENDIF}
+  isc_dyn_delete_generator_failed       = 336068821;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dyn_delete_generator_failed} {$ENDIF}
 {$ENDIF}
 
   isc_gbak_unknown_switch               = 336330753;
@@ -1396,6 +1437,11 @@ const
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gbak_data_only} {$ENDIF}
 {$ENDIF}
 
+{$IFDEF IB71_UP}
+  isc_gbak_validate_restore             = 336331034;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gbak_validate_restore} {$ENDIF}
+{$ENDIF}
+
   isc_gsec_cant_open_db                 = 336723983;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_gsec_cant_open_db} {$ENDIF}
   isc_gsec_switches_error               = 336723984;
@@ -1528,13 +1574,18 @@ const
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
 {$ENDIF}
 
-{$IFDEF YF867}
+{$IFDEF FB103}
   isc_err_max                           = 699;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
 {$ENDIF}
 
 {$IFDEF FB15}
-  isc_err_max                           = 700;
+  isc_err_max                           = 712;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
+{$ENDIF}
+
+{$IFDEF YF867}
+  isc_err_max                           = 699;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
 {$ENDIF}
 
@@ -1555,6 +1606,11 @@ const
 
 {$IFDEF IB7}
   isc_err_max                           = 694;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
+{$ENDIF}
+
+{$IFDEF IB71}
+  isc_err_max                           = 700;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
 {$ENDIF}
 

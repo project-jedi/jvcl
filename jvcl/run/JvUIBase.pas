@@ -18,20 +18,22 @@
 { 2003 of these individuals.                                                   }
 {                                                                              }
 { Interbase & FireBird Borland Compliant API Conversion.                       }
-{   Interbase 6.x, 7.0                                                         }
+{   Interbase 6.x, 7.0, 7.1                                                    }
 {   FireBird 1.x                                                               }
+{   Yaffil                                                                     }
 {  To use a specific version of Interbase or FireBird you must Define compiler }
-{  Options in "Interbase.inc"                                                  }
+{  Options in "JvUIB.inc"                                                      }
 {                                                                              }
 { Unit owner:    Henri Gourvest                                                }
-{ Last modified: Jun 08, 2003                                                  }
+{ Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
 
-{$IFNDEF BCB}
 {$I JCL.INC}
-{$ENDIF}
 {$I JvUIB.inc}
+
+{$ALIGN ON}
+{$MINENUMSIZE 4}
 
 {$IFDEF USE_IBASE_H}
   (*$HPPEMIT '#include<ibase.h>'*)
@@ -42,31 +44,31 @@ unit JvUIBase;
 interface
 uses
 {$IFDEF MSWINDOWS} Windows, {$ENDIF}
-{$IFDEF LINUX} libc, {$ENDIF}
+{$IFDEF LINUX}{$IFDEF FPC}DL,{$ELSE} libc,{$ENDIF}{$ENDIF}
 SysUtils, SyncObjs;
 
 (* Basic data types *)
 type
 {$IFNDEF DELPHI6_UP}
+{$IFNDEF FPC}
   PPointer = ^Pointer;
   PPChar   = ^PChar;
 {$ENDIF}
+{$ENDIF}
 
+  UCHAR  = {$IFDEF TYPE_IDENTITY}type {$ENDIF}char;
+  {$IFNDEF FPC}{$NODEFINE UCHAR}{$ENDIF}
+  USHORT = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Word;
+  {$IFNDEF FPC}{$NODEFINE USHORT}{$ENDIF}
+  ULONG = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Cardinal;
+  {$IFNDEF FPC}{$NODEFINE ULONG}{$ENDIF}
 
   SCHAR  = {$IFDEF TYPE_IDENTITY}type {$ENDIF}char;
-  {$NODEFINE SCHAR}
-  UCHAR  = {$IFDEF TYPE_IDENTITY}type {$ENDIF}char;
-  {$NODEFINE UCHAR}
+  {$IFNDEF FPC}{$NODEFINE SCHAR}{$ENDIF}
   SSHORT = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Smallint;
-  {$NODEFINE SSHORT}
-  USHORT = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Word;
-  {$NODEFINE USHORT}
-
-
+  {$IFNDEF FPC}{$NODEFINE SSHORT}{$ENDIF}
   SLONG = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Integer;
-  {$NODEFINE SLONG}
-  ULONG = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Cardinal;
-  {$NODEFINE ULONG}
+  {$IFNDEF FPC}{$NODEFINE SLONG}{$ENDIF}
 
   SQUAD = record
     high : SLONG;
@@ -110,15 +112,17 @@ type
 {$ENDIF}
 
 //typedef unsigned char BOOLEAN; (Delphi Compatible)
+{$IFNDEF FPC}
   TEXT  = {$IFDEF TYPE_IDENTITY}type {$ENDIF} Char; (* To be expunged over time *)
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM TEXT} {$ENDIF}
+{$ENDIF}
   STEXT = {$IFDEF TYPE_IDENTITY}type {$ENDIF} Char; (* Signed text - very rare *)
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM STEXT} {$ENDIF}
   UTEXT = {$IFDEF TYPE_IDENTITY}type {$ENDIF} Char; (* Unsigned text - common *)
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM UTEXT} {$ENDIF}
-//typedef unsigned char BYTE;		/* Unsigned byte - common */(Delphi Compatible)
-  SBYTE = {$IFDEF TYPE_IDENTITY}type {$ENDIF} Byte;	(* Signed byte - rare usage *)
-  {$NODEFINE SBYTE}
+//typedef unsigned char BYTE;  /* Unsigned byte - common */(Delphi Compatible)
+  SBYTE = {$IFDEF TYPE_IDENTITY}type {$ENDIF} Byte; (* Signed byte - rare usage *)
+  {$IFNDEF FPC}{$NODEFINE SBYTE}{$ENDIF}
   STATUS = {$IFDEF TYPE_IDENTITY}type {$ENDIF} Longint;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM STATUS} {$ENDIF}
   IPTR = {$IFDEF TYPE_IDENTITY}type {$ENDIF} Longint;
@@ -140,16 +144,17 @@ type
 {$IFDEF FB15_UP}
 { TODO -oHG : TRANSLATE }
 //#define FB_NELEM(x)	((int)(sizeof(x) / sizeof(x[0])))
+//#define FB_ALIGN(n,b) ((n+b-1)&~(b-1))
 {$ENDIF}
 
 const
-  GDS_TRUE	= 1;
+  GDS_TRUE = 1;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM GDS_TRUE} {$ENDIF}
-  GDS_FALSE	= 0;
+  GDS_FALSE = 0;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM GDS_FALSE} {$ENDIF}
 
 //{$IFNDEF __cplusplus}
-//  GDS__TRUE	 = GDS_TRUE;
+//  GDS__TRUE  = GDS_TRUE;
 //  {$IFDEF USE_IBASE_H} {$EXTERNALSYM GDS__TRUE} {$ENDIF}
 //  GDS__FALSE = GDS_FALSE;
 //  {$IFDEF USE_IBASE_H} {$EXTERNALSYM GDS__FALSE} {$ENDIF}
@@ -172,7 +177,7 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISC_FALSE} {$ENDIF}
 
 //{$IFNDEF __cplusplus}
-//  ISC__TRUE	 = ISC_TRUE;
+//  ISC__TRUE  = ISC_TRUE;
 //  {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISC__TRUE} {$ENDIF}
 //  ISC__FALSE = ISC_FALSE;
 //  {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISC__FALSE} {$ENDIF}
@@ -181,8 +186,8 @@ const
 type
 
 //#if (defined __osf__ && defined __alpha)
-//#define  ISC_LONG	int
-//#define  ISC_ULONG	unsigned int
+//#define  ISC_LONG int
+//#define  ISC_ULONG unsigned int
 //#else
 
   ISC_LONG = {$IFDEF TYPE_IDENTITY}type {$ENDIF} Integer;
@@ -198,7 +203,7 @@ type
 //#endif
 
 {$IFDEF IB7_UP}
-  ISC_BOOLEAN	= {$IFDEF TYPE_IDENTITY}type {$ENDIF} Smallint;
+  ISC_BOOLEAN = {$IFDEF TYPE_IDENTITY}type {$ENDIF} Smallint;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISC_BOOLEAN} {$ENDIF}
   ISCBoolean = ISC_BOOLEAN;
   PISCBoolean = ^ISCBoolean;
@@ -239,7 +244,10 @@ const
 {$IFDEF IB7_UP}
   METADATALENGTH = 68;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM METADATALENGTH} {$ENDIF}
+{$ELSE}
+  METADATALENGTH = 32;
 {$ENDIF}
+
 
 (******************************************************************
  * Define type, export and other stuff based on c/c++ and Windows *
@@ -252,7 +260,7 @@ type
 //#if (defined(_MSC_VER) && defined(_WIN32)) || \
 //    (defined(__BORLANDC__) && defined(__WIN32__))
 //#  define  ISC_FAR
-//#  define  ISC_EXPORT_VARARG	__cdecl
+//#  define  ISC_EXPORT_VARARG __cdecl
   ISC_INT64 = {$IFDEF TYPE_IDENTITY}type {$ENDIF} int64;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISC_INT64} {$ENDIF}
   ISCInt64 = ISC_INT64;
@@ -320,7 +328,7 @@ type
 
   ISC_QUAD = GDS_QUAD;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISC_QUAD} {$ENDIF}
-  TISCQuad = type ISC_QUAD;
+  TISCQuad = {$IFDEF TYPE_IDENTITY}type{$ENDIF} ISC_QUAD;
   PISCQuad = ^TISCQuad;
 
   PISCArrayBound = ^TISCArrayBound;
@@ -349,7 +357,7 @@ type
   TISCArrayDescV2 = ISC_ARRAY_DESC_V2;
 
 const
-  ARR_DESC_VERSION2		     = 2;
+  ARR_DESC_VERSION2       = 2;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ARR_DESC_VERSION2} {$ENDIF}
 
   ARR_DESC_CURRENT_VERSION = ARR_DESC_VERSION2;
@@ -369,7 +377,7 @@ type
   TISCBlobDescV2 = ISC_BLOB_DESC_V2;
 
 const
-  BLB_DESC_VERSION2		    = 2;
+  BLB_DESC_VERSION2      = 2;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLB_DESC_VERSION2} {$ENDIF}
   BLB_DESC_CURRENT_VERSION = BLB_DESC_VERSION2;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLB_DESC_CURRENT_VERSION} {$ENDIF}
@@ -382,25 +390,25 @@ type
     array_desc_dtype         : Char;
     array_desc_scale         : Char;
     array_desc_length        : Word;
-    array_desc_field_name    : array[0..31] of Char;
-    array_desc_relation_name : array[0..31] of Char;
+    array_desc_field_name    : array[0..METADATALENGTH - 1] of Char;
+    array_desc_relation_name : array[0..METADATALENGTH - 1] of Char;
     array_desc_dimensions    : Smallint;
     array_desc_flags         : Smallint;
     array_desc_bounds        : array[0..15] of TISCArrayBound;
   end;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISC_ARRAY_DESC} {$ENDIF}
-  TISCArrayDesc = type ISC_ARRAY_DESC;
+  TISCArrayDesc = {$IFDEF TYPE_IDENTITY}type{$ENDIF} ISC_ARRAY_DESC;
 
   PISCBlobDesc = ^TISCBlobDesc;
   ISC_BLOB_DESC = record
     blob_desc_subtype       : Smallint;
     blob_desc_charset       : Smallint;
     blob_desc_segment_size  : Smallint;
-    blob_desc_field_name    : array[0..31] of Char;
-    blob_desc_relation_name : array[0..31] of Char;
+    blob_desc_field_name    : array[0..METADATALENGTH - 1] of Char;
+    blob_desc_relation_name : array[0..METADATALENGTH - 1] of Char;
   end;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISC_BLOB_DESC} {$ENDIF}
-  TISCBlobDesc = type ISC_BLOB_DESC;
+  TISCBlobDesc = {$IFDEF TYPE_IDENTITY}type{$ENDIF} ISC_BLOB_DESC;
 
 (***************************
  * Blob control structure  *
@@ -442,15 +450,6 @@ type
   end;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM BSTREAM} {$ENDIF}
   TBStream = BSTREAM;
-
-(* Three ugly macros, one even using octal radix... sigh... *)
-
-  function getb(p: PBStream): Char;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM getb} {$ENDIF}
-  function putb(x: Char; p: PBStream): Integer;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM putb} {$ENDIF}
-  function putbx(x: Char; p: PBStream): Integer;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM putbx} {$ENDIF}
 
 (********************************************************************
  * CVC: Public blob interface definition held in val.h.             *
@@ -624,33 +623,33 @@ const
 type
   PXSQLVarV1 = ^TXSQLVarV1;
   XSQLVAR_V1 = record
-    sqltype	   : SmallInt;	     // datatype of field
-    sqlscale	   : SmallInt;	     // scale factor
-    sqlsubtype     : SmallInt;	     // datatype subtype
-    sqllen	   : SmallInt;	     // length of data area
-    sqldata        : PChar;          // address of data
-    sqlind         : PSmallInt;      // address of indicator variable
-    sqlname_length : SmallInt;       // length of sqlname field
-    sqlname: array[0..31] of char;   // name of field, name length + space for NULL
-    relname_length : SmallInt;       // length of relation name
-    relname: array[0..31] of char;   // field's relation name + space for NULL
-    ownname_length : SmallInt;       // length of owner name
-    ownname: array[0..31] of char;   // relation's owner name + space for NULL
-    aliasname_length : SmallInt;     // length of alias name
-    aliasname: array[0..31] of char; // relation's alias name + space for  NULL
+    sqltype        : SmallInt;                       // datatype of field
+    sqlscale       : SmallInt;                       // scale factor
+    sqlsubtype     : SmallInt;                       // datatype subtype
+    sqllen         : SmallInt;                       // length of data area
+    sqldata        : PChar;                          // address of data
+    sqlind         : PSmallInt;                      // address of indicator variable
+    sqlname_length : SmallInt;                       // length of sqlname field
+    sqlname: array[0..METADATALENGTH - 1] of char;   // name of field, name length + space for NULL
+    relname_length : SmallInt;                       // length of relation name
+    relname: array[0..METADATALENGTH - 1] of char;   // field's relation name + space for NULL
+    ownname_length : SmallInt;                       // length of owner name
+    ownname: array[0..METADATALENGTH - 1] of char;   // relation's owner name + space for NULL
+    aliasname_length : SmallInt;                     // length of alias name
+    aliasname: array[0..METADATALENGTH - 1] of char; // relation's alias name + space for  NULL
   end;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM XSQLVAR_V1} {$ENDIF}
   TXSQLVarV1 = XSQLVAR_V1;
 
   PXSQLVar = ^TXSQLVar;
   XSQLVAR = record
-    sqltype	     : Smallint;                            // datatype of field
-    sqlscale	     : Smallint;                            // scale factor
-    sqlprecision     : Smallint;                            // precision : Reserved for future
-    sqlsubtype	     : Smallint;                            // datatype subtype
-    sqllen	     : Smallint;                            // length of data area
-    sqldata	     : Pchar;                               // address of data
-    sqlind	     : PSmallint;                           // address of indicator variable
+    sqltype      : Smallint;                                // datatype of field
+    sqlscale    : Smallint;                                 // scale factor
+    sqlprecision : Smallint;                                // precision : Reserved for future
+    sqlsubtype  : Smallint;                                 // datatype subtype
+    sqllen      : Smallint;                                 // length of data area
+    sqldata      : Pchar;                                   // address of data
+    sqlind      : PSmallint;                                // address of indicator variable
     sqlname_length   : Smallint;                            // length of sqlname field
     sqlname          : array[0..METADATALENGTH-1] of char;  // name of field, name length + space  for NULL
     relname_length   : Smallint;                            // length of relation name
@@ -673,17 +672,17 @@ type
     sqldata          : PChar;                 // address of data
     sqlind           : PSmallint;             // address of indicator variable
     sqlname_length   : Smallint;              // length of sqlname field
-    sqlname          : array[0..31] of char;  // name of field, name length + space for NULL
+    sqlname          : array[0..METADATALENGTH - 1] of char;  // name of field, name length + space for NULL
     relname_length   : Smallint;              // length of relation name
-    relname          : array[0..31] of char;  // field's relation name + space for NULL
+    relname          : array[0..METADATALENGTH - 1] of char;  // field's relation name + space for NULL
     ownname_length   : Smallint;              // length of owner name
-    ownname          : array[0..31] of char;  // relation's owner name + space for  NULL
+    ownname          : array[0..METADATALENGTH - 1] of char;  // relation's owner name + space for  NULL
     aliasname_length : Smallint;              // length of alias name
-    aliasname        : array[0..31] of char;  // relation's alias name + space for NULL
+    aliasname        : array[0..METADATALENGTH - 1] of char;  // relation's alias name + space for NULL
   end;
 {$ENDIF}
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM XSQLVAR} {$ENDIF}
-  TXSQLVar = type XSQLVAR;
+  TXSQLVar = {$IFDEF TYPE_IDENTITY}type{$ENDIF} XSQLVAR;
 
   PXSQLDA = ^TXSQLDA;
   XSQLDA = record
@@ -706,7 +705,7 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM SQLDA_VERSION1} {$ENDIF}
 
 {$IFDEF IB7_UP}
-  SQLDA_VERSION2		       = 2;
+  SQLDA_VERSION2         = 2;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM SQLDA_VERSION2} {$ENDIF}
 {$ENDIF}
 
@@ -740,47 +739,47 @@ const
 type
   isc_att_handle  = PPointer;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_att_handle} {$ENDIF}
-  IscAttHandle = type isc_att_handle;
+  IscAttHandle = {$IFDEF TYPE_IDENTITY}type{$ENDIF} isc_att_handle;
   PIscAttHandle = ^IscAttHandle;
 
   isc_blob_handle = PPointer;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_blob_handle} {$ENDIF}
-  IscBlobHandle = type isc_blob_handle;
+  IscBlobHandle = {$IFDEF TYPE_IDENTITY}type{$ENDIF} isc_blob_handle;
   PIscBlobHandle = ^IscBlobHandle;
 
   isc_db_handle   = PPointer;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_db_handle} {$ENDIF}
-  IscDbHandle = type isc_db_handle;
+  IscDbHandle = {$IFDEF TYPE_IDENTITY}type{$ENDIF} isc_db_handle;
   PIscDbHandle = ^IscDbHandle;
 
   isc_form_handle = PPointer;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_form_handle} {$ENDIF}
-  IscFormHandle = type isc_form_handle;
+  IscFormHandle = {$IFDEF TYPE_IDENTITY}type{$ENDIF} isc_form_handle;
   PIscFormHandle = ^IscFormHandle;
 
   isc_req_handle = PPointer;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_req_handle} {$ENDIF}
-  IscReqHandle = type isc_req_handle;
+  IscReqHandle = {$IFDEF TYPE_IDENTITY}type{$ENDIF} isc_req_handle;
   PIscReqHandle = ^IscReqHandle;
 
   isc_stmt_handle = PPointer;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_stmt_handle} {$ENDIF}
-  IscStmtHandle = type isc_stmt_handle;
+  IscStmtHandle = {$IFDEF TYPE_IDENTITY}type{$ENDIF} isc_stmt_handle;
   PIscStmtHandle = ^IscStmtHandle;
 
   isc_svc_handle = PPointer;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_svc_handle} {$ENDIF}
-  IscSvcHandle = type isc_svc_handle;
+  IscSvcHandle = {$IFDEF TYPE_IDENTITY}type{$ENDIF} isc_svc_handle;
   PIscSvcHandle = ^IscSvcHandle;
 
   isc_tr_handle = PPointer;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_tr_handle} {$ENDIF}
-  IscTrHandle = type isc_tr_handle;
+  IscTrHandle = {$IFDEF TYPE_IDENTITY}type{$ENDIF} isc_tr_handle;
   PIscTrHandle = ^IscTrHandle;
 
   isc_win_handle = PPointer;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_win_handle} {$ENDIF}
-  IscWinHandle = type isc_win_handle;
+  IscWinHandle = {$IFDEF TYPE_IDENTITY}type{$ENDIF} isc_win_handle;
   PIscWinHandle = ^IscWinHandle;
 
   isc_callback = procedure;
@@ -796,589 +795,6 @@ type
  * OSRI database functions *
  ***************************)
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
-
-  // Attaches to an existing database.
-  function isc_attach_database(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_attach_database} {$ENDIF}
-    user_status : PISCStatus;
-    file_length : Smallint;
-    file_name   : PChar;
-    handle      : PIscDbHandle;
-    dpb_length  : SmallInt;
-    dpb         : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  // Return the address of whatever is passed in
-  function isc_array_gen_sdl(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_gen_sdl} {$ENDIF}
-    status            : PISCStatus;
-    desc              : PISCArrayDesc;
-    sdl_buffer_length : PSmallInt;
-    sdl_buffer        : PChar;
-    sdl_length        : PSmallInt): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF IB7_UP}
-  function isc_array_gen_sdl2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_gen_sdl2} {$ENDIF}
-    status            : PISCStatus;
-	  desc              : PISCArrayDescV2;
-	  sdl_buffer_length : PSmallInt;
-	  sdl_buffer        : PChar;
-	  sdl_length        : PSmallInt): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  function isc_array_get_slice(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_get_slice} {$ENDIF}
-    status       : PISCStatus;
-    db_handle    : PIscDbHandle;
-    trans_handle : PIscTrHandle;
-    array_id     : PISCQuad;
-    desc         : PISCArrayDesc;
-    array_       : PPointer;
-    slice_length : PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF IB7_UP}
-  function isc_array_get_slice2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_get_slice2} {$ENDIF}
-   status       : PISCStatus;
-	 db_handle    :	PIscDbHandle;
-	 trans_handle :	PIscTrHandle;
-	 array_id     :	PISCQuad;
-	 desc         :	PISCArrayDescV2;
-	 array_       :	PPointer;
-	 slice_length :	PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  function isc_array_lookup_bounds(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_lookup_bounds} {$ENDIF}
-    status        : PISCStatus;
-    db_handle     : PIscDbHandle;
-    trans_handle  : PIscTrHandle;
-    relation_name : PChar;
-    field_name    : PChar;
-    desc          : PISCArrayDesc): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF IB7_UP}
-  function isc_array_lookup_bounds2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_lookup_bounds2} {$ENDIF}
-    status        : PISCStatus;
-    db_handle     : PIscDbHandle;
-    trans_handle  : PIscTrHandle;
-    relation_name : PChar;
-    field_name    : PChar;
-    desc          : PISCArrayDescV2): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  function isc_array_lookup_desc(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_lookup_desc} {$ENDIF}
-    status        : PISCStatus;
-    db_handle     : PIscDbHandle;
-    trans_handle  : PIscTrHandle;
-    relation_name : PChar;
-    field_name    : PChar;
-    desc          : PISCArrayDesc): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF IB7_UP}
-  function isc_array_lookup_desc2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_lookup_desc2} {$ENDIF}
-    status        : PISCStatus;
-    db_handle     : PIscDbHandle;
-    trans_handle  : PIscTrHandle;
-    relation_name : PChar;
-    field_name    : PChar;
-    desc          : PISCArrayDescV2): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  function isc_array_set_desc(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_set_desc} {$ENDIF}
-    status        : PISCStatus;
-    relation_name : PChar;
-    field_name    : PChar;
-    sql_dtype     : PSmallint;
-    sql_length    : PSmallint;
-    dimensions    : PSmallint;
-    desc          : PISCArrayDesc): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF IB7_UP}
-  function isc_array_set_desc2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_set_desc2} {$ENDIF}
-    status        : PISCStatus;
-    relation_name : PChar;
-    field_name    : PChar;
-    sql_dtype     : PSmallint;
-    sql_length    : PSmallint;
-    dimensions    : PSmallint;
-    desc          : PISCArrayDescV2): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  function isc_array_put_slice(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_put_slice} {$ENDIF}
-    status       : PISCStatus;
-    db_handle    : PIscDbHandle;
-    trans_handle : PIscTrHandle;
-    array_id     : PISCQuad;
-    desc         : PISCArrayDesc;
-    array_       : PPointer;
-    slice_length : PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF IB7_UP}
-  function isc_array_put_slice2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_array_put_slice2} {$ENDIF}
-    status       : PISCStatus;
-    db_handle    : PIscDbHandle;
-    trans_handle : PIscTrHandle;
-    array_id     : PISCQuad;
-    desc         : PISCArrayDescV2;
-    array_       : PPointer;
-    slice_length : PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  procedure isc_blob_default_desc(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_blob_default_desc} {$ENDIF}
-    desc          : PISCBlobDesc;
-    relation_name : PChar;
-    field_name    : PChar); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF IB7_UP}
-  procedure isc_blob_default_desc2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_blob_default_desc2} {$ENDIF}
-    desc          : PISCBlobDescV2;
-    relation_name : PChar;
-    field_name    : PChar); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  function isc_blob_gen_bpb(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_blob_gen_bpb} {$ENDIF}
-    status            : PISCStatus;
-    to_desc           : PISCBlobDesc;
-    from_desc         : PISCBlobDesc;
-    bpb_buffer_length : Word;
-    bpb_buffer        : PChar;
-    bpb_length        : PWord): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF IB7_UP}
-  function isc_blob_gen_bpb2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_blob_gen_bpb2} {$ENDIF}
-    status            : PISCStatus;
-    to_desc           : PISCBlobDescV2;
-    from_desc         : PISCBlobDescV2;
-    bpb_buffer_length : Word;
-    bpb_buffer        : PChar;
-    bpb_length        : PWord): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  function isc_blob_info(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_blob_info} {$ENDIF}
-    user_status   : PISCStatus;
-    blob_handle   : PIscBlobHandle;
-    item_length   : Smallint;
-    items         : PChar;
-    buffer_length : Smallint;
-    buffer        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_blob_lookup_desc(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_blob_lookup_desc} {$ENDIF}
-    status        : PISCStatus;
-    db_handle     : PIscDbHandle;
-    trans_handle  : PIscTrHandle;
-    relation_name : PChar;
-    field_name    : PChar;
-    desc          : PISCBlobDesc;
-    global        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF IB7_UP}
-  function isc_blob_lookup_desc2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_blob_lookup_desc2} {$ENDIF}
-    status        : PISCStatus;
-    db_handle     : PIscDbHandle;
-    trans_handle  : PIscTrHandle;
-    relation_name : PChar;
-    field_name    : PChar;
-    desc          : PISCBlobDescV2;
-    global        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  function isc_blob_set_desc(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_blob_set_desc} {$ENDIF}
-    status        : PISCStatus;
-    relation_name : PChar;
-    field_name    : PChar;
-    subtype       : Smallint;
-    charset       : Smallint;
-    segment_size  : Smallint;
-    desc          : PISCBlobDesc): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF IB7_UP}
-  function isc_blob_set_desc2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_blob_set_desc} {$ENDIF}
-    status        : PISCStatus;
-    relation_name : PChar;
-    field_name    : PChar;
-    subtype       : Smallint;
-    charset       : Smallint;
-    segment_size  : Smallint;
-    desc          : PISCBlobDescV2): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  function isc_cancel_blob(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_cancel_blob} {$ENDIF}
-    user_status : PISCStatus;
-    blob_handle : PIscBlobHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_cancel_events(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_cancel_events} {$ENDIF}
-    user_status  : PISCStatus;
-    handle       : PIscDbHandle;
-    id           : PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_close_blob(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_close_blob} {$ENDIF}
-    user_status : PISCStatus;
-    blob_handle : PIscBlobHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_commit_retaining(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_commit_retaining} {$ENDIF}
-    user_status: PISCStatus;
-    tra_handle : PIscTrHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_commit_transaction(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_commit_transaction} {$ENDIF}
-    user_status : PISCStatus;
-    tra_handle  : PIscTrHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_create_blob(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_create_blob} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    tra_handle  : PIscTrHandle;
-    blob_handle : PIscBlobHandle;
-    blob_id     : PISCQuad): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_create_blob2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_create_blob2} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    tra_handle  : PIscTrHandle;
-    blob_handle : PIscBlobHandle;
-    blob_id     : PISCQuad;
-    bpb_length  : Smallint;
-    bpb         : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_create_database(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_create_database} {$ENDIF}
-    user_status : PISCStatus;
-    file_length : Smallint;
-    file_name   : PChar;
-    handle      : PIscDbHandle;
-    dpb_length  : Smallint;
-    dpb         : PChar;
-    db_type     : Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_database_info(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_database_info} {$ENDIF}
-    user_status   : PISCStatus;
-    handle        : PIscDbHandle;
-    item_length   : Smallint;
-    items         : PChar;
-    buffer_length : Smallint;
-    buffer        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  procedure isc_decode_date(date: PISCQuad; times: PPointer);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_decode_date} {$ENDIF}
-
-  procedure isc_decode_sql_date(date: PISCDate; times_arg: PPointer);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_decode_sql_date} {$ENDIF}
-
-  procedure isc_decode_sql_time(sql_time: PISCTime; times_arg : PPointer);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_decode_sql_time} {$ENDIF}
-
-  procedure isc_decode_timestamp(date: PISCTimeStamp; times_arg : PPointer);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_decode_timestamp} {$ENDIF}
-
-  function isc_detach_database(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_detach_database} {$ENDIF}
-   user_status : PISCStatus;
-   handle      : PIscDbHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_drop_database(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_drop_database} {$ENDIF}
-    user_status : PISCStatus;
-    handle      : PIscDbHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_allocate_statement(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_allocate_statement} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    stmt_handle : PIscStmtHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_alloc_statement2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_alloc_statement2} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    stmt_handle : PIscStmtHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_describe(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_describe} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_handle : PIscStmtHandle;
-    dialect     : Word;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_describe_bind(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_describe_bind} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_handle : PIscStmtHandle;
-    dialect     : Word;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_exec_immed2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_exec_immed2} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    tra_handle  : PIscTrHandle;
-    length      : Word;
-    string_     : PChar;
-    dialect     : Word;
-    in_sqlda    : PXSQLDA;
-    out_sqlda   : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_execute(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_execute} {$ENDIF}
-    user_status : PISCStatus;
-    tra_handle  : PIscTrHandle;
-    stmt_handle : PIscStmtHandle;
-    dialect     : Word;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_execute2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_execute2} {$ENDIF}
-    user_status : PISCStatus;
-    tra_handle  : PIscTrHandle;
-    stmt_handle : PIscStmtHandle;
-    dialect     : Word;
-    in_sqlda    : PXSQLDA;
-    out_sqlda   : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_execute_immediate(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_execute_immediate} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    tra_handle  : PIscTrHandle;
-    length      : Word;
-    string_     : PChar;
-    dialect     : Word;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_fetch(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_fetch} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_handle : PIscStmtHandle;
-    dialect     : Word;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_finish(db_handle: PIscDbHandle): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_finish} {$ENDIF}
-
-  function isc_dsql_free_statement(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_free_statement} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_handle : PIscStmtHandle;
-    option      : Word): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_insert(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_insert} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_handle : PIscStmtHandle;
-    dialect     : Word;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_prepare(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_prepare} {$ENDIF}
-    user_status : PISCStatus;
-    tra_handle  : PIscTrHandle;
-    stmt_handle : PIscStmtHandle;
-    length      : Word;
-    string_     : PChar;
-    dialect     : Word;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_set_cursor_name(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_set_cursor_name} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_handle : PIscStmtHandle;
-    cursor      : PChar;
-    type_       : Word): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_sql_info(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_sql_info} {$ENDIF}
-    user_status   : PISCStatus;
-    stmt_handle   : PIscStmtHandle;
-    item_length   : Smallint;
-    items         : PChar;
-    buffer_length : Smallint;
-    buffer        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  procedure isc_encode_date(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_encode_date} {$ENDIF}
-    times : PPointer;
-    date  : PISCQuad); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  procedure isc_encode_sql_date(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_encode_sql_date} {$ENDIF}
-  times_arg : PPointer;
-  date      : PISCDate); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  procedure isc_encode_sql_time(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_encode_sql_time} {$ENDIF}
-   times_arg : PPointer;
-   isc_time  : PISCTime); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  procedure isc_encode_timestamp(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_encode_timestamp} {$ENDIF}
-    times_arg : PPointer;
-    date      : PISCTimeStamp); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_event_block(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_event_block} {$ENDIF}
-    event_buffer  : PPChar;
-    result_buffer : PPChar;
-    count         : Word;
-    name_buffer   : array of PChar): ISCLong; cdecl;
-
-  procedure isc_event_counts(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_event_counts} {$ENDIF}
-    result_vector : PISCULong;
-    buffer_length : Smallint;
-    event_buffer  : PChar;
-    result_buffer : PChar); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  (* 17 May 2001 - isc_expand_dpb is DEPRECATED FB15 *)
-  procedure isc_expand_dpb(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_expand_dpb} {$ENDIF}
-   dpb         : PPChar;
-   dpb_size    : PSmallint;
-   name_buffer : array of PChar); cdecl;
-
-  function isc_modify_dpb(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_modify_dpb} {$ENDIF}
-    dpb        : PPChar;
-    dpb_length : PSmallint;
-    type_      : Word;
-    str        : PChar;
-    str_len    : Smallint): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_free(blk: PChar): ISCLong; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_free} {$ENDIF}
-
-  function isc_get_segment(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_get_segment} {$ENDIF}
-    user_status   : PISCStatus;
-    blob_handle   : PIscBlobHandle;
-    length        : PWord;
-    buffer_length : Word;
-    buffer        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_get_slice(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_get_slice} {$ENDIF}
-    user_status   : PISCStatus;
-    db_handle     : PIscDbHandle;
-    tra_handle    : PIscTrHandle;
-    array_id      : PISCQuad;
-    sdl_length    : Smallint;
-    sdl           : PChar;
-    param_length  : Smallint;
-    param         : PISCLong;
-    slice_length  : ISCLong;
-    slice         : PPointer;
-    return_length : PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_interprete(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_interprete} {$ENDIF}
-    buffer        : PChar;
-    status_vector : PPISCStatus): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_open_blob(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_open_blob} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    tra_handle  : PIscTrHandle;
-    blob_handle : PIscBlobHandle;
-    blob_id     : PISCQuad): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_open_blob2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_open_blob2} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    tra_handle  : PIscTrHandle;
-    blob_handle : PIscBlobHandle;
-    blob_id     : PISCQuad;
-    bpb_length  : Word;
-    bpb         : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_prepare_transaction2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_prepare_transaction2} {$ENDIF}
-    user_status : PISCStatus;
-    tra_handle  : PIscTrHandle;
-    msg_length  : ISCUShort;
-    msg         : PISCUChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  procedure isc_print_sqlerror(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_print_sqlerror} {$ENDIF}
-    sqlcode       : ISCShort;
-    status_vector : PISCStatus); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_print_status(status_vector: PISCStatus): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_print_status} {$ENDIF}
-
-  function isc_put_segment(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_put_segment} {$ENDIF}
-    user_status   : PISCStatus;
-    blob_handle   : PIscBlobHandle;
-    buffer_length : Word;
-    buffer        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_put_slice(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_put_slice} {$ENDIF}
-    user_status  : PISCStatus;
-    db_handle    : PIscDbHandle;
-    tra_handle   : PIscTrHandle;
-    array_id     : PISCQuad;
-    sdl_length   : Smallint;
-    sdl          : PChar;
-    param_length : Smallint;
-    param        : PISCLong;
-    slice_length : ISCLong;
-    slice        : PPointer): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_que_events(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_que_events} {$ENDIF}
-    user_status : PISCStatus;
-    handle      : PIscDbHandle;
-    id          : PISCLong;
-    length      : ISCUShort;
-    events      : PISCUChar;
-    ast         : IscCallback;
-    arg         : PPointer): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_rollback_retaining(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_rollback_retaining} {$ENDIF}
-    status_vector : PISCStatus;
-    trans_handle  : PIscTrHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_rollback_transaction(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_rollback_transaction} {$ENDIF}
-    user_status : PISCStatus;
-    tra_handle  : PIscTrHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-
 type
   // Parameter for transaction on multiple Database, see
   PISCTEB = ^TISCTEB;
@@ -1388,62 +804,6 @@ type
     Address : PChar;
   end;
 
-  function isc_start_multiple(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_start_multiple} {$ENDIF}
-    user_status : PISCStatus;
-    tra_handle  : PIscTrHandle;
-    count       : Smallint;
-    vector      : PISCTEB): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_start_transaction(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_start_transaction} {$ENDIF}
-    user_status : PISCStatus;
-    tra_handle  : PIscTrHandle;
-    count       : Smallint;
-    db_handle   : PIscDbHandle;
-    tpb_length  : ISCUShort;
-    tpb_ad      : PChar): ISCStatus; cdecl;
-
-  function isc_sqlcode(user_status: PISCStatus): ISCLong;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_sqlcode} {$ENDIF}
-
-  procedure isc_sql_interprete(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_sql_interprete} {$ENDIF}
-    SQLCODE       : Smallint;
-    buffer        : PChar;
-    buffer_length : Smallint); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_transaction_info(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_transaction_info} {$ENDIF}
-    user_status   : PISCStatus;
-    tra_handle    : PIscTrHandle;
-    item_length   : Smallint;
-    items         : PChar;
-    buffer_length : Smallint;
-    buffer        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_transact_request(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_transact_request} {$ENDIF}
-    user_status    : PISCStatus;
-    db_handle      : PIscDbHandle;
-    tra_handle     : PIscTrHandle;
-    blr_length     : Word;
-    blr            : PChar;
-    in_msg_length  : Word;
-    in_msg         : PChar;
-    out_msg_length : Word;
-    out_msg        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_vax_integer(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_vax_integer} {$ENDIF}
-    ptr    : PChar;
-    length : Smallint): ISCLong; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_portable_integer(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_portable_integer} {$ENDIF}
-    ptr    : PChar;
-    length : Smallint): ISCInt64; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
 
 (*************************************
  * Security Functions and structures *
@@ -1503,525 +863,6 @@ type
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM USER_SEC_DATA} {$ENDIF}
   TUserSecData = USER_SEC_DATA;
 
-  function isc_add_user(status: PISCStatus; user_data: PUserSecData): Integer;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_add_user} {$ENDIF}
-  function isc_delete_user(status: PISCStatus; user_data: PUserSecData): Integer;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_delete_user} {$ENDIF}
-  function isc_modify_user(status: PISCStatus; user_data: PUserSecData): Integer;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_modify_user} {$ENDIF}
-
-(**********************************
- *  Other OSRI functions          *
- **********************************)
-
-  function isc_compile_request(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_compile_request} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    req_handle  : PIscReqHandle;
-    blr_length  : Smallint;
-    blr         : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_compile_request2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_compile_request2} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    req_handle  : PIscReqHandle;
-    blr_length  : Smallint;
-    blr         : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_ddl(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_ddl} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    tra_handle  : PIscTrHandle;
-    length      : Smallint;
-    ddl         : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_prepare_transaction(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_prepare_transaction} {$ENDIF}
-    user_status : PISCStatus;
-    tra_handle  : PIscTrHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_receive(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_receive} {$ENDIF}
-    user_status : PISCStatus;
-    req_handle  : PIscReqHandle;
-    msg_type    : Smallint;
-    msg_length  : Smallint;
-    msg         : PPointer;
-    level       : Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_reconnect_transaction(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_reconnect_transaction} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    tra_handle  : PIscTrHandle;
-    length      : Smallint;
-    id          : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_release_request(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_release_request} {$ENDIF}
-    user_status : PISCStatus;
-    req_handle  : PIscReqHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_request_info(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_request_info} {$ENDIF}
-    user_status   : PISCStatus;
-    req_handle    : PIscReqHandle;
-    level         : Smallint;
-    item_length   : Smallint;
-    items         : PChar;
-    buffer_length : Smallint;
-    buffer        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_seek_blob(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_seek_blob} {$ENDIF}
-    user_status : PISCStatus;
-    blob_handle : PIscBlobHandle;
-    mode        : Smallint;
-    offset      : ISCLong;
-    Result_     : PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_send(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_send} {$ENDIF}
-    user_status : PISCStatus;
-    req_handle  : PIscReqHandle;
-    msg_type    : Smallint;
-    msg_length  : Smallint;
-    msg         : PPointer;
-    level       : Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-
-  function isc_start_and_send(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_start_and_send} {$ENDIF}
-    user_status : PISCStatus;
-    req_handle  : PIscReqHandle;
-    tra_handle  : PIscTrHandle;
-    msg_type    : Smallint;
-    msg_length  : Smallint;
-    msg         : PPointer;
-    level       : Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_start_request(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_start_request} {$ENDIF}
-    user_status : PISCStatus;
-    req_handle  : PIscReqHandle;
-    tra_handle  : PIscTrHandle;
-    level       : Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_unwind_request(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_unwind_request} {$ENDIF}
-    user_status : PISCStatus;
-    req_handle  : PIscTrHandle;
-    level       : Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_wait_for_event(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_wait_for_event} {$ENDIF}
-    user_status : PISCStatus;
-    handle      : PIscDbHandle;
-    length      : Smallint;
-    events      : PChar;
-    buffer      : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-
-(*****************************
- * Other Sql functions       *
- *****************************)
-
- // HG: Dreprecated, in reality it call DSQL methods
-
-  function isc_close(user_status: PISCStatus; name: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_close} {$ENDIF}
-
-  function isc_declare(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_declare} {$ENDIF}
-    user_status : PISCStatus;
-    statement   : PChar;
-    cursor      : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_describe(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_describe} {$ENDIF}
-    user_status : PISCStatus;
-    name        : PChar;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_describe_bind(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_describe_bind} {$ENDIF}
-    user_status : PISCStatus;
-    name        : PChar;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_execute(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_execute} {$ENDIF}
-    user_status  : PISCStatus;
-    trans_handle : PIscTrHandle;
-    name         : PChar;
-    sqlda        : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_execute_immediate(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_execute_immediate} {$ENDIF}
-    user_status  : PISCStatus;
-    db_handle    : PIscDbHandle;
-    trans_handle : PIscTrHandle;
-    length       : PSmallint;
-    string_      : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_fetch(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_fetch} {$ENDIF}
-    user_status : PISCStatus;
-    name        : PChar;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_open(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_open} {$ENDIF}
-    user_status  : PISCStatus;
-    trans_handle : PIscTrHandle;
-    name         : PChar;
-    sqlda        : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_prepare(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_prepare} {$ENDIF}
-    user_status  : PISCStatus;
-    db_handle    : PIscDbHandle;
-    trans_handle : PIscTrHandle;
-    name         : PChar;
-    length       : PSmallint;
-    string_      : PChar;
-    sqlda        : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-
-(*************************************
- * Other Dynamic sql functions       *
- *************************************)
-
-  function isc_dsql_execute_m(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_execute_m} {$ENDIF}
-    user_status : PISCStatus;
-    tra_handle  : PIscTrHandle;
-    stmt_handle : PIscStmtHandle;
-    blr_length  : Word;
-    blr         : PChar;
-    msg_type    : Word;
-    msg_length  : Word;
-    msg         : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_execute2_m(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_execute2_m} {$ENDIF}
-    user_status    : PISCStatus;
-    tra_handle     : PIscTrHandle;
-    stmt_handle    : PIscStmtHandle;
-    in_blr_length  : Word;
-    in_blr         : PChar;
-    in_msg_type    : Word;
-    in_msg_length  : Word;
-    in_msg         : PChar;
-    out_blr_length : Word;
-    out_blr        : PChar;
-    out_msg_type   : Word;
-    out_msg_length : Word;
-    out_msg        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_execute_immediate_m(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_execute_immediate_m} {$ENDIF}
-    user_status : PISCStatus;
-    db_handle   : PIscDbHandle;
-    tra_handle  : PIscTrHandle;
-    length      : Word;
-    string_     : PChar;
-    dialect     : Word;
-    blr_length  : Word;
-    blr         : PChar;
-    msg_type    : Word;
-    msg_length  : Word;
-    msg         : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_exec_immed3_m(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_exec_immed3_m} {$ENDIF}
-    user_status    : PISCStatus;
-    db_handle      : PIscDbHandle;
-    tra_handle     : PIscTrHandle;
-    Length         : Word;
-    string_        : PChar;
-    dialect        : Word;
-    in_blr_length  : Word;
-    in_blr         : PChar;
-    in_msg_type    : Word;
-    in_msg_length  : Word;
-    in_msg         : PChar;
-    out_blr_length : Word;
-    out_blr        : PChar;
-    out_msg_type   : Word;
-    out_msg_length : Word;
-    out_msg        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_fetch_m(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_fetch_m} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_handle : PIscStmtHandle;
-    blr_length  : Word;
-    blr         : PChar;
-    msg_type    : Word;
-    msg_length  : Word;
-    msg         : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_insert_m(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_insert_m} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_handle : PIscStmtHandle;
-    blr_length  : Word;
-    blr         : PChar;
-    msg_type    : Word;
-    msg_length  : Word;
-    msg         : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_prepare_m(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_prepare_m} {$ENDIF}
-    user_status   : PISCStatus;
-    tra_handle    : PIscTrHandle;
-    stmt_handle   : PIscStmtHandle;
-    length        : Word;
-    string_       : PChar;
-    dialect       : Word;
-    item_length   : Word;
-    items         : PChar;
-    buffer_length : Word;
-    buffer        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_dsql_release(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dsql_release} {$ENDIF}
-    user_status : PISCStatus;
-    name        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_close(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_close} {$ENDIF}
-    user_status : PISCStatus;
-    name        : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_declare(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_declare} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_name   : PChar;
-    cursor      : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_describe(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_describe} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_name   : PChar;
-    dialect     : Word;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_describe_bind(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_describe_bind} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_name   : PChar;
-    dialect     : Word;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_execute(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_execute} {$ENDIF}
-    user_status  : PISCStatus;
-    trans_handle : PIscTrHandle;
-    stmt_name    : PChar;
-    dialect      : Word;
-    sqlda        : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_execute2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_execute2} {$ENDIF}
-    user_status  : PISCStatus;
-    trans_handle : PIscTrHandle;
-    stmt_name    : PChar;
-    dialect      : Word;
-    in_sqlda     : PXSQLDA;
-    out_sqlda    : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_execute_immed(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_execute_immed} {$ENDIF}
-    user_status  : PISCStatus;
-    db_handle    : PIscDbHandle;
-    trans_handle : PIscTrHandle;
-    length       : Word;
-    string_      : PChar;
-    dialect      : Word;
-    sqlda        : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_fetch(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_fetch} {$ENDIF}
-    user_status : PISCStatus;
-    cursor_name : PChar;
-    dialect     : Word;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_open(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_open} {$ENDIF}
-    user_status  : PISCStatus;
-    trans_handle : PIscTrHandle;
-    cursor_name  : PChar;
-    dialect      : Word;
-    sqlda        : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_open2(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_open2} {$ENDIF}
-    user_status  : PISCStatus;
-    trans_handle : PIscTrHandle;
-    cursor_name  : PChar;
-    dialect      : Word;
-    in_sqlda     : PXSQLDA;
-    out_sqlda    : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_insert(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_insert} {$ENDIF}
-    user_status : PISCStatus;
-    cursor_name : PChar;
-    dialect     : Word;
-    sqlda       : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_prepare(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_prepare} {$ENDIF}
-    user_status  : PISCStatus;
-    db_handle    : PIscDbHandle;
-    trans_handle : PIscTrHandle;
-    stmt_name    : PChar;
-    length       : Word;
-    string_      : PChar;
-    dialect      : Word;
-    sqlda        : PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_embed_dsql_release(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_embed_dsql_release} {$ENDIF}
-    user_status : PISCStatus;
-    stmt_name   : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-
-(******************************
- * Other Blob functions       *
- ******************************)
-
-  function BLOB_open(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLOB_open} {$ENDIF}
-    blob   : IscBlobHandle;
-    buffer : PChar;
-   length  : Integer): PBStream; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function BLOB_put(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLOB_put} {$ENDIF}
-    x      : Char;
-    Stream : PBStream): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function BLOB_close(Stream: PBStream): integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLOB_close} {$ENDIF}
-
-  function BLOB_get(Stream: PBStream): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLOB_get} {$ENDIF}
-
-{$IFDEF INTERBASEORFIREBIRD}
-  function BLOB_display(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLOB_display} {$ENDIF}
-    blob_id     : PISCQuad;
-    database    : IscDbHandle;
-    transaction : IscTrHandle;
-    field_name  : PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  function BLOB_dump(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLOB_dump} {$ENDIF}
-    blob_id     : PISCQuad;
-    database    : IscDbHandle;
-    transaction : IscTrHandle;
-    file_name   : PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function BLOB_edit(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLOB_edit} {$ENDIF}
-    blob_id     : PISCQuad;
-    database    : IscDbHandle;
-    transaction : IscTrHandle;
-    field_name  : PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function BLOB_load(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLOB_load} {$ENDIF}
-    blob_id     : PISCQuad;
-    database    : IscDbHandle;
-    transaction : IscTrHandle;
-    file_name   : PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function BLOB_text_dump(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLOB_text_dump} {$ENDIF}
-    blob_id     : PISCQuad;
-    database    : IscDbHandle;
-    transaction : IscTrHandle;
-    file_name   : PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function BLOB_text_load(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM BLOB_text_load} {$ENDIF}
-    blob_id     : PISCQuad;
-    database    : IscDbHandle;
-    transaction : IscTrHandle;
-    file_name   : PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function Bopen(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM Bopen} {$ENDIF}
-    blob_id     : PISCQuad;
-    database    : IscDbHandle;
-    transaction : IscTrHandle;
-    mode        : PChar): PBStream; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-(******************************
- * Other Misc functions       *
- ******************************)
-
-  function isc_ftof(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_ftof} {$ENDIF}
-    string_ : PChar;
-    length1 : Word;
-    field   : PChar;
-    length2 : Word): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_print_blr(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_print_blr} {$ENDIF}
-    blr               : PChar;
-    callback          : IscCallback;
-    callback_argument : PPointer;
-    language          : Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF INTERBASEORFIREBIRD}
-  procedure isc_set_debug(flag :integer); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_set_debug} {$ENDIF}
-{$ENDIF}
-
-  procedure isc_qtoq(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_qtoq} {$ENDIF}
-    quad1 : PISCQuad;
-    quad2 : PISCQuad); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  procedure isc_vtof(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_vtof} {$ENDIF}
-    string1 : PChar;
-    string2 : PChar;
-    length  : Word); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  procedure isc_vtov(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_vtov} {$ENDIF}
-    string1 : PChar;
-    string2 : PChar;
-    length  : Smallint); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_version(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_version} {$ENDIF}
-    db_handle         : PIscDbHandle;
-    callback          : IscCallback;
-    callback_argument : PPointer): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-{$IFDEF FB15_UP}
- (*	API to be used to tell InterBase to reset it's
-    FPE handler - eg: client has an FPE of it's own
-    and just changed it. *)
-  function isc_reset_fpe(fpe_status: Word): ISCLong; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_reset_fpe} {$ENDIF}
-{$ENDIF}
 
 (*****************************************
  * Service manager functions             *
@@ -2031,58 +872,6 @@ type
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ADD_SPB_LENGTH} {$ENDIF}
   procedure ADD_SPB_NUMERIC(var p: PChar; data: integer);
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ADD_SPB_NUMERIC} {$ENDIF}
-
-
-  function isc_service_attach(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_service_attach} {$ENDIF}
-    status_vector  : PISCStatus;
-    service_length : Word;
-    service_name   : PChar;
-    handle         : PIscSvcHandle;
-    spb_length     : Word;
-    spb            : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_service_detach(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_service_detach} {$ENDIF}
-    status_vector : PISCStatus;
-    handle        : PIscSvcHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_service_query(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_service_query} {$ENDIF}
-    status_vector      : PISCStatus;
-    svc_handle         : PIscSvcHandle;
-    reserved           : PIscResvHandle;
-    send_spb_length    : Word;
-    send_spb           : PChar;
-    request_spb_length : Word;
-    request_spb        : PChar;
-    buffer_length      : Word;
-    buffer             : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-  function isc_service_start(
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_service_start} {$ENDIF}
-    status_vector : PISCStatus;
-    svc_handle    : PIscSvcHandle;
-    reserved      : PIscResvHandle;
-    spb_length    : Word;
-    spb           : PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-
-(********************************
- * Client information functions *
- ********************************)
-
-{$IFDEF IB7ORFB15}
-  procedure isc_get_client_version(version: PChar); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_get_client_version} {$ENDIF}
-  function isc_get_client_major_version: Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_get_client_major_version} {$ENDIF}
-  function isc_get_client_minor_version: Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_get_client_minor_version} {$ENDIF}
-{$ENDIF}
-
-//#ifdef __cplusplus
-//} /* extern "C" */
-//#endif
 
 
 (***************************************************
@@ -2145,14 +934,13 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_sql_date} {$ENDIF}
   blr_sql_time  = 13;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_sql_time} {$ENDIF}
+  blr_int64     = 16;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_int64} {$ENDIF}
 
 {$IFDEF IB7_UP}
   blr_boolean_dtype = 17;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_boolean_dtype} {$ENDIF}
 {$ENDIF}
-
-  blr_int64     = 16;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_int64} {$ENDIF}
 
 (* Historical alias for pre V6 applications *)
   blr_date   = blr_timestamp;
@@ -2564,33 +1352,6 @@ const
   blr_current_time     = 162;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_current_time} {$ENDIF}
 
-{$IFNDEF FB15_UP} // removed in FB15 beta 1
-(* These verbs were added in 6.0, primarily to support 64-bit integers *)
-
-  blr_add2               = 163;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_add2} {$ENDIF}
-  blr_subtract2            = 164;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_subtract2} {$ENDIF}
-  blr_multiply2            = 165;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_multiply2} {$ENDIF}
-  blr_divide2             = 166;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_divide2} {$ENDIF}
-  blr_agg_total2           = 167;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_agg_total2} {$ENDIF}
-  blr_agg_total_distinct2   = 168;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_agg_total_distinct2} {$ENDIF}
-  blr_agg_average2         = 169;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_agg_average2} {$ENDIF}
-  blr_agg_average_distinct2 = 170;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_agg_average_distinct2} {$ENDIF}
-  blr_average2            = 171;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_average2} {$ENDIF}
-  blr_gen_id2             = 172;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_gen_id2} {$ENDIF}
-  blr_set_generator2       = 173;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_set_generator2} {$ENDIF}
-{$ENDIF}
-
 {$IFDEF FB102ORYF867}
 (* FB1 specific BLR *)
   blr_current_role = 174;
@@ -2607,25 +1368,41 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_boolean_false} {$ENDIF}
 {$ENDIF}
 
+{$IFDEF IB71_UP}
+(* These verbs were added in 7.1 for SQL savepoint support *)
+  blr_start_savepoint2     = 176;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_start_savepoint2} {$ENDIF}
+  blr_release_savepoint    = 177;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_release_savepoint} {$ENDIF}
+  blr_rollback_savepoint   = 178;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_rollback_savepoint} {$ENDIF}
+{$ENDIF}
+
 {$IFDEF FB15_UP}
-(* FB2 specific BLR *)
+  (* FB 1.5 specific BLR *)
   blr_exec_sql       = 176;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_exec_sql} {$ENDIF}
   blr_internal_info  = 177;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_internal_info} {$ENDIF}
   blr_nullsfirst     = 178;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_nullsfirst} {$ENDIF}
-  blr_writelock		   = 179;
+  blr_writelock     = 179;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_writelock} {$ENDIF}
-  (* This codes are for user-defined savepoints
-    as opposed to the system ones defined earlier *)
-  blr_user_savepoint = 180;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_user_savepoint} {$ENDIF}
-  blr_undo_savepoint = 181;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_undo_savepoint} {$ENDIF}
+
   (* This codes reuse BLR code space *)
-  blr_post_arg	     = 163;
+  blr_post_arg      = 163;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_post_arg} {$ENDIF}
+
+  (* These codes are actions for user-defined savepoints *)
+
+  blr_savepoint_set	            = 0;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_savepoint_set} {$ENDIF}
+  blr_savepoint_release	        = 1;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_savepoint_release} {$ENDIF}
+  blr_savepoint_undo	          = 2;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_savepoint_undo} {$ENDIF}
+  blr_savepoint_release_single	= 3;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM blr_savepoint_release_single} {$ENDIF}
 {$ENDIF}
 
 
@@ -2771,7 +1548,7 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_gstat_attach} {$ENDIF}
 
 {$IFDEF FB103_UP}
-  isc_dpb_set_db_charset	   = 68;
+  isc_dpb_set_db_charset    = 68;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_set_db_charset} {$ENDIF}
 {$ENDIF}
 
@@ -2783,24 +1560,28 @@ const
 {$ENDIF}
 
 {$IFDEF YF867_UP}
-  isc_dpb_numeric_scale_reduction	 = 70;
+  isc_dpb_numeric_scale_reduction  = 70;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_numeric_scale_reduction} {$ENDIF}
 
-  isc_dpb_sec_flags	               = 91;
+  isc_dpb_sec_flags                = 91;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_flags} {$ENDIF}
-  isc_dpb_sec_type	               = 92;
+  isc_dpb_sec_type                = 92;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_type} {$ENDIF}
-  isc_dpb_sec_principal	           = 93;
+  isc_dpb_sec_principal            = 93;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_principal} {$ENDIF}
-  isc_dpb_sec_srv_name	           = 94;
+  isc_dpb_sec_srv_name            = 94;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_srv_name} {$ENDIF}
 {$ENDIF}
 
 {$IFDEF IB7_UP}
-  isc_dpb_set_group_commit	  = 70;
+  isc_dpb_set_group_commit   = 70;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_set_group_commit} {$ENDIF}
 {$ENDIF}
 
+{$IFDEF IB71_UP}
+  isc_dpb_gbak_validate       = 71;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_gbak_validate} {$ENDIF}
+{$ENDIF}
 
 {$IFDEF IB65}
    isc_dpb_Max_Value = 69;
@@ -2808,18 +1589,22 @@ const
   {$IFDEF IB7}
      isc_dpb_Max_Value = 70;
   {$ELSE}
-    {$IFDEF FB15}
-       isc_dpb_Max_Value = 68;
+    {$IFDEF IB71}
+      isc_dpb_Max_Value = 71;
     {$ELSE}
-      {$IFDEF FB103}
+      {$IFDEF FB15}
          isc_dpb_Max_Value = 68;
       {$ELSE}
-        {$IFDEF YF867}
-          isc_dpb_Max_Value = 70;
+        {$IFDEF FB103}
+           isc_dpb_Max_Value = 68;
         {$ELSE}
-          isc_dpb_Max_Value = 67;
+          {$IFDEF YF867}
+            isc_dpb_Max_Value = 70;
+          {$ELSE}
+            isc_dpb_Max_Value = 67;
+          {$ENDIF}
         {$ENDIF}
-      {$ENDIF}        
+      {$ENDIF}
     {$ENDIF}
   {$ENDIF}
 {$ENDIF}
@@ -2862,21 +1647,21 @@ const
  * isc_dpb_sec_flags specific flags *
  ************************************)
 
-  isc_dpb_sec_delegation	    = 1;
+  isc_dpb_sec_delegation     = 1;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_delegation} {$ENDIF}
-  isc_dpb_sec_mutual_auth	    = 2;
+  isc_dpb_sec_mutual_auth     = 2;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_mutual_auth} {$ENDIF}
-  isc_dpb_sec_replay	        = 4;
+  isc_dpb_sec_replay         = 4;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_replay} {$ENDIF}
-  isc_dpb_sec_sequence	      = 8;
+  isc_dpb_sec_sequence       = 8;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_sequence} {$ENDIF}
-  isc_dpb_sec_confidentiality	= 16;
+  isc_dpb_sec_confidentiality = 16;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_confidentiality} {$ENDIF}
-  isc_dpb_sec_integrity	      = 32;
+  isc_dpb_sec_integrity       = 32;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_integrity} {$ENDIF}
-  isc_dpb_sec_anonymous	      = 64;
+  isc_dpb_sec_anonymous       = 64;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_anonymous} {$ENDIF}
-  isc_dpb_sec_transport	      = $08000000;	// use transport security if supported by underlying protocol
+  isc_dpb_sec_transport       = $08000000; // use transport security if supported by underlying protocol
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dpb_sec_transport} {$ENDIF}
 {$ENDIF}
 
@@ -3041,6 +1826,12 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_isc_version} {$ENDIF}
   isc_info_base_level      = 13;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_base_level} {$ENDIF}
+
+{$IFDEF IB71_UP}
+  isc_info_svr_maj_ver     =  isc_info_base_level;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_svr_maj_ver} {$ENDIF}
+{$ENDIF}
+
   isc_info_page_size       = 14;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_page_size} {$ENDIF}
   isc_info_num_buffers     = 15;
@@ -3160,23 +1951,31 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_db_group_commit} {$ENDIF}
 {$ENDIF}
 
+{$IFDEF IB71_UP}
+  isc_info_att_charset      = 70;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_att_charset} {$ENDIF}
+  isc_info_svr_min_ver      = 71;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_att_charset} {$ENDIF}
+{$ENDIF}
+
 {$IFDEF FB102ORYF867}
-  frb_info_att_charset        = 101;
+  frb_info_att_charset         = 101;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM frb_info_att_charset} {$ENDIF}
-  isc_info_db_class           = 102;
+  isc_info_db_class            = 102;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_db_class} {$ENDIF}
-  isc_info_firebird_version   = 103;
+  isc_info_firebird_version    = 103;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_firebird_version} {$ENDIF}
-  isc_info_oldest_transaction = 104;
+  isc_info_oldest_transaction  = 104;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_oldest_transaction} {$ENDIF}
-  isc_info_oldest_active      = 105;
+  isc_info_oldest_active       = 105;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_oldest_active} {$ENDIF}
-  isc_info_oldest_snapshot    = 106;
+  isc_info_oldest_snapshot     = 106;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_oldest_snapshot} {$ENDIF}
-  isc_info_next_transaction   = 107;
+  isc_info_next_transaction    = 107;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_next_transaction} {$ENDIF}
-  isc_info_db_provider        = 108;
+  isc_info_db_provider         = 108;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_db_provider} {$ENDIF}
+  isc_info_active_transactions = 109;
 {$ENDIF}
 
   isc_info_version = isc_info_isc_version;
@@ -3772,6 +2571,12 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_spb_res_create} {$ENDIF}
   isc_spb_res_use_all_space  = $4000;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_spb_res_use_all_space} {$ENDIF}
+  
+{$IFDEF IB71_UP}
+  isc_spb_res_validate       = $8000;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_spb_res_validate} {$ENDIF}
+{$ENDIF}
+
 
 (******************************************
  * Parameters for isc_spb_res_access_mode *
@@ -3869,6 +2674,12 @@ const
   isc_info_sql_batch_fetch         = 24;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_sql_batch_fetch} {$ENDIF}
 
+{$IFDEF IB71_UP}
+  isc_info_sql_precision           = 25;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_sql_precision} {$ENDIF}
+{$ENDIF}
+
+
 (*********************************
  * SQL information return values *
  *********************************)
@@ -3908,7 +2719,7 @@ const
 (***********************************
  * Server configuration key values *
  ***********************************)
-
+{$IFNDEF FB15_UP}
   ISCCFG_LOCKMEM_KEY      = 0;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISCCFG_LOCKMEM_KEY} {$ENDIF}
   ISCCFG_LOCKSEM_KEY      = 1;
@@ -3967,6 +2778,8 @@ const
   {$ENDIF}
 {$ENDIF}
 
+{$ENDIF FB15_UP}
+
 {$IFDEF IB65_UP}
   ISCCFG_CPU_AFFINITY_KEY  = 21;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISCCFG_CPU_AFFINITY_KEY} {$ENDIF}
@@ -3981,8 +2794,15 @@ const
 {$IFDEF IB7_UP}
   ISCCFG_MAX_THREADS_KEY = 25;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISCCFG_MAX_THREADS_KEY} {$ENDIF}
-  ISCCFG_ADMIN_DB_KEY	   = 26;
+  ISCCFG_ADMIN_DB_KEY    = 26;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISCCFG_ADMIN_DB_KEY} {$ENDIF}
+{$ENDIF}
+
+{$IFDEF IB71_UP}
+  ISCCFG_USE_SANCTUARY_KEY = 27;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISCCFG_USE_SANCTUARY_KEY} {$ENDIF}
+  ISCCFG_ENABLE_HT_KEY     = 28;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISCCFG_ENABLE_HT_KEY} {$ENDIF}
 {$ENDIF}
 
 {$IFDEF YF867_UP}
@@ -4113,6 +2933,12 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dyn_delete_filter} {$ENDIF}
   isc_dyn_delete_function          = 33;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dyn_delete_function} {$ENDIF}
+
+{$IFDEF IB71_UP}
+  isc_dyn_delete_generator         = 217;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dyn_delete_generator} {$ENDIF}
+{$ENDIF}
+
   isc_dyn_delete_shadow            = 35;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dyn_delete_shadow} {$ENDIF}
   isc_dyn_grant                    = 30;
@@ -4532,6 +3358,16 @@ const
  * Last $dyn value assigned *
  ****************************)
 
+{$IFDEF FB15}
+  isc_dyn_last_dyn_value           = 219;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dyn_last_dyn_value} {$ENDIF}
+{$ENDIF}
+
+{$IFDEF FB103}
+  isc_dyn_last_dyn_value           = 219;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dyn_last_dyn_value} {$ENDIF}
+{$ENDIF}
+
 {$IFDEF FB102}
   isc_dyn_last_dyn_value           = 219;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dyn_last_dyn_value} {$ENDIF}
@@ -4542,6 +3378,10 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dyn_last_dyn_value} {$ENDIF}
 {$ENDIF}
 
+{$IFDEF IB71}
+  isc_dyn_last_dyn_value           = 217;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_dyn_last_dyn_value} {$ENDIF}
+{$ENDIF}
 
 (******************************************
  * Array slice description language (SDL) *
@@ -4667,7 +3507,7 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM SQL_INT64} {$ENDIF}
 
 {$IFDEF IB7_UP}
-  SQL_BOOLEAN   			              = 590;
+  SQL_BOOLEAN                    = 590;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM SQL_BOOLEAN} {$ENDIF}
 {$ENDIF}
 
@@ -4716,16 +3556,6 @@ const
   isc_blob_typed_binary             = 24;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_blob_typed_binary} {$ENDIF}
 
-(* Deprecated definitions maintained for compatibility only *)
-
-//  isc_info_db_SQL_dialect          = 62;
-//  isc_dpb_SQL_dialect              = 63;
-//  isc_dpb_set_db_SQL_dialect       = 65;
-
-
-var
-  LIBCritSec: TCriticalSection;
-
 (*******************************************************************************
  *    LINK LIBRARY                                                             *
  *******************************************************************************)
@@ -4754,10 +3584,418 @@ var
   {$ENDIF}
 {$ENDIF}
 
-{$IFDEF INTERBASE_DYNAMIC_LINK}
-function LoadGDS32(const lib: string): Boolean;
-function UnLoadGDS32: Boolean;
-{$ENDIF}
+
+type
+
+  TUIBaseLibrary = class
+  private
+  {$IFDEF MSWINDOWS}
+    FGDS32Lib : THandle;
+  {$ENDIF}
+  {$IFDEF LINUX}
+    FCryptLib : Pointer;
+    FGDS32Lib : Pointer;
+  {$ENDIF}
+    FLIBCritSec: TCriticalSection;
+  protected
+    BLOB_close: function(Stream: PBStream): integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+  {$IFDEF INTERBASEORFIREBIRD}
+    BLOB_display: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
+      field_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+  {$ENDIF}
+    BLOB_dump: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
+      file_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    BLOB_edit: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
+      field_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    BLOB_get: function(Stream: PBStream): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    BLOB_load: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
+      file_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    BLOB_open: function(blob: IscBlobHandle; buffer: PChar; length: Integer): PBStream;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    BLOB_put: function(x: Char; Stream: PBStream): Integer;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    BLOB_text_dump: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
+      file_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    BLOB_text_load: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
+      file_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    Bopen: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
+      mode: PChar): PBStream; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_add_user: function(status: PISCStatus; user_data: PUserSecData): Integer;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_array_gen_sdl: function(status: PISCStatus; desc: PISCArrayDesc; sdl_buffer_length: PSmallInt;
+      sdl_buffer: PChar; sdl_length: PSmallInt): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_array_get_slice: function(status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; array_id: PISCQuad; desc: PISCArrayDesc; array_: PPointer;
+      slice_length: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_array_lookup_bounds: function(status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; relation_name, field_name: PChar;
+      desc: PISCArrayDesc): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_array_lookup_desc: function(status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; relation_name, field_name: PChar;
+      desc: PISCArrayDesc): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_array_put_slice: function(status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; array_id: PISCQuad; desc: PISCArrayDesc; array_: PPointer;
+      slice_length: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_array_set_desc: function(status: PISCStatus; relation_name, field_name: PChar;
+      sql_dtype, sql_length, dimensions: PSmallint; desc: PISCArrayDesc): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_attach_database: function(user_status: PISCStatus; file_length: Smallint;
+      file_name: PChar; handle: PIscDbHandle; dpb_length: SmallInt; dpb: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_blob_default_desc: procedure(desc: PISCBlobDesc; relation_name, field_name: PChar);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_blob_gen_bpb: function(status: PISCStatus; to_desc, from_desc: PISCBlobDesc;
+      bpb_buffer_length: Word; bpb_buffer: PChar; bpb_length: PWord): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_blob_info: function(user_status: PISCStatus; blob_handle: PIscBlobHandle;
+      item_length: Smallint; items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_blob_lookup_desc: function(status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; relation_name, field_name: PChar; desc: PISCBlobDesc;
+      global: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_blob_set_desc: function(status: PISCStatus; relation_name, field_name: PChar;
+      subtype, charset, segment_size: Smallint; desc: PISCBlobDesc): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_cancel_blob: function(user_status: PISCStatus; blob_handle: PIscBlobHandle): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_cancel_events: function(user_status: PISCStatus; handle: PIscDbHandle;
+      id: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_close: function(user_status: PISCStatus; name: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_close_blob: function(user_status: PISCStatus;
+      blob_handle: PIscBlobHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_commit_retaining: function(user_status: PISCStatus;
+      tra_handle: PIscTrHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_commit_transaction: function(user_status: PISCStatus;
+      tra_handle: PIscTrHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_compile_request: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      req_handle: PIscReqHandle; blr_length: Smallint;
+      blr: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_compile_request2: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      req_handle: PIscReqHandle; blr_length: Smallint;
+      blr: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_create_blob: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      tra_handle: PIscTrHandle; blob_handle: PIscBlobHandle;
+      blob_id: PISCQuad): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_create_blob2: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      tra_handle: PIscTrHandle; blob_handle: PIscBlobHandle; blob_id: PISCQuad;
+      bpb_length: Smallint; bpb: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_create_database: function(user_status: PISCStatus; file_length: Smallint;
+      file_name: PChar; handle: PIscDbHandle; dpb_length: Smallint; dpb: PChar;
+      db_type: Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_database_info: function(user_status: PISCStatus; handle: PIscDbHandle;
+      item_length: Smallint; items: PChar; buffer_length: Smallint;
+      buffer: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_ddl: function(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
+      length: Smallint; ddl: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_declare: function(user_status: PISCStatus; statement,
+      cursor: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_decode_date: procedure(date: PISCQuad; times: PPointer);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_decode_sql_date: procedure(date: PISCDate; times_arg: PPointer);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_decode_sql_time: procedure(sql_time: PISCTime; times_arg: PPointer);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_decode_timestamp: procedure(date: PISCTimeStamp; times_arg: PPointer);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_delete_user: function(status: PISCStatus; user_data: PUserSecData): Integer;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_describe: function(user_status: PISCStatus; name: PChar; sqlda: PXSQLDA): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_describe_bind: function(user_status: PISCStatus; name: PChar; sqlda: PXSQLDA): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_detach_database: function(user_status: PISCStatus; handle: PIscDbHandle): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_drop_database: function(user_status: PISCStatus; handle: PIscDbHandle): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_alloc_statement2: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      stmt_handle: PIscStmtHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_allocate_statement: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      stmt_handle: PIscStmtHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_describe: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
+      dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_describe_bind: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
+      dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_exec_immed2: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      tra_handle: PIscTrHandle; length: Word; string_: PChar; dialect: Word; in_sqlda,
+      out_sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_exec_immed3_m: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      tra_handle: PIscTrHandle; Length: Word; string_: PChar; dialect, in_blr_length: Word;
+      in_blr: PChar; in_msg_type, in_msg_length: Word; in_msg: PChar; out_blr_length: Word;
+      out_blr: PChar; out_msg_type, out_msg_length: Word; out_msg: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_execute: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
+      stmt_handle: PIscStmtHandle; dialect: Word; sqlda: PXSQLDA): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_execute_immediate: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      tra_handle: PIscTrHandle; length: Word; string_: PChar; dialect: Word;
+      sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_execute_immediate_m: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      tra_handle: PIscTrHandle; length: Word; string_: PChar; dialect, blr_length: Word;
+      blr: PChar; msg_type, msg_length: Word; msg: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_execute_m: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
+      stmt_handle: PIscStmtHandle; blr_length: Word; blr: PChar; msg_type, msg_length: Word;
+      msg: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_execute2: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
+      stmt_handle: PIscStmtHandle; dialect: Word; in_sqlda, out_sqlda: PXSQLDA): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_execute2_m: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
+      stmt_handle: PIscStmtHandle; in_blr_length: Word; in_blr: PChar; in_msg_type,
+      in_msg_length: Word; in_msg: PChar; out_blr_length: Word; out_blr: PChar;
+      out_msg_type, out_msg_length: Word; out_msg: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_fetch: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
+      dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_fetch_m: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
+      blr_length: Word; blr: PChar; msg_type, msg_length: Word; msg: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_finish: function(db_handle: PIscDbHandle): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_free_statement: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
+      option: Word): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_insert: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
+      dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_insert_m: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
+      blr_length: Word; blr: PChar; msg_type, msg_length: Word; msg: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_prepare: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
+      stmt_handle: PIscStmtHandle; length: Word; string_: PChar; dialect: Word;
+      sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_prepare_m: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
+      stmt_handle: PIscStmtHandle; length: Word; string_: PChar; dialect, item_length: Word;
+      items: PChar; buffer_length: Word; buffer: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_release: function(user_status: PISCStatus; name: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_set_cursor_name: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
+      cursor: PChar; type_: Word): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_dsql_sql_info: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
+      item_length: Smallint; items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_close: function(user_status: PISCStatus; name: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_declare: function(user_status: PISCStatus; stmt_name, cursor: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_describe: function(user_status: PISCStatus; stmt_name: PChar;
+      dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_describe_bind: function(user_status: PISCStatus; stmt_name: PChar;
+      dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_execute: function(user_status: PISCStatus; trans_handle: PIscTrHandle;
+      stmt_name: PChar; dialect: Word; sqlda: PXSQLDA): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_execute_immed: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; length: Word; string_: PChar; dialect: Word;
+      sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_execute2: function(user_status: PISCStatus; trans_handle: PIscTrHandle;
+      stmt_name: PChar; dialect: Word; in_sqlda, out_sqlda: PXSQLDA): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_fetch: function(user_status: PISCStatus; cursor_name: PChar;
+      dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_insert: function(user_status: PISCStatus; cursor_name: PChar;
+      dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_open: function(user_status: PISCStatus; trans_handle: PIscTrHandle;
+      cursor_name: PChar; dialect: Word; sqlda: PXSQLDA): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_open2: function(user_status: PISCStatus; trans_handle: PIscTrHandle;
+      cursor_name: PChar; dialect: Word; in_sqlda, out_sqlda: PXSQLDA): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_prepare: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; stmt_name: PChar; length: Word; string_: PChar;
+      dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_embed_dsql_release: function(user_status: PISCStatus; stmt_name: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_encode_date: procedure(times: PPointer; date: PISCQuad);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_encode_sql_date: procedure(times_arg: PPointer; date: PISCDate);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_encode_sql_time: procedure(times_arg: PPointer; isc_time: PISCTime);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_encode_timestamp: procedure(times_arg: PPointer; date: PISCTimeStamp);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_event_block: function(event_buffer, result_buffer: PPChar;
+      count: Word; name_buffer: PPChar): ISCLong; cdecl;
+    isc_event_counts: procedure(result_vector: PISCULong; buffer_length: Smallint;
+      event_buffer, result_buffer: PChar); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_execute: function(user_status: PISCStatus; trans_handle: PIscTrHandle;
+      name: PChar; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_execute_immediate: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; length: PSmallint; string_: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_expand_dpb: procedure(dpb: PPChar; dpb_size: PSmallint; name_buffer: PPChar); cdecl;
+    isc_fetch: function(user_status: PISCStatus; name: PChar; sqlda: PXSQLDA): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_free: function(blk: PChar): ISCLong; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_ftof: function(string_: PChar; length1: Word; field: PChar; length2: Word): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_get_segment: function(user_status: PISCStatus; blob_handle: PIscBlobHandle; length: PWord;
+      buffer_length: Word; buffer: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_get_slice: function(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
+      array_id: PISCQuad; sdl_length: Smallint; sdl: PChar; param_length: Smallint; param: PISCLong;
+      slice_length: ISCLong; slice: PPointer; return_length: PISCLong): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_interprete: function(buffer: PChar; status_vector: PPISCStatus): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_modify_dpb: function(dpb: PPChar; dpb_length: PSmallint; type_: Word;
+      str: PChar; str_len: Smallint): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_modify_user: function(status: PISCStatus; user_data: PUserSecData): Integer;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_open: function(user_status: PISCStatus; trans_handle: PIscTrHandle; name: PChar;
+      sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_open_blob: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      tra_handle: PIscTrHandle; blob_handle: PIscBlobHandle; blob_id: PISCQuad): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_open_blob2: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      tra_handle: PIscTrHandle; blob_handle: PIscBlobHandle; blob_id: PISCQuad; bpb_length: Word;
+      bpb: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_portable_integer: function(ptr: PChar; length: Smallint): ISCInt64;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_prepare: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; name: PChar; length: PSmallint; string_: PChar;
+      sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_prepare_transaction: function(user_status: PISCStatus; tra_handle: PIscTrHandle): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_prepare_transaction2: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
+      msg_length: ISCUShort; msg: PISCUChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall;{$ENDIF}
+    isc_print_blr: function(blr: PChar; callback: IscCallback; callback_argument: PPointer;
+      language: Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_print_sqlerror: procedure(sqlcode: ISCShort; status_vector: PISCStatus);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_print_status: function(status_vector: PISCStatus): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_put_segment: function(user_status: PISCStatus; blob_handle: PIscBlobHandle;
+      buffer_length: Word; buffer: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_put_slice: function(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
+      array_id: PISCQuad; sdl_length: Smallint; sdl: PChar; param_length: Smallint; param: PISCLong;
+      slice_length: ISCLong; slice: PPointer): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_qtoq: procedure(quad1, quad2: PISCQuad); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_que_events: function(user_status: PISCStatus; handle: PIscDbHandle; id: PISCLong;
+      length: ISCUShort; events: PISCUChar; ast: IscCallback; arg: PPointer): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_receive: function(user_status: PISCStatus; req_handle: PIscReqHandle; msg_type,
+      msg_length: Smallint; msg: PPointer; level: Smallint): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_reconnect_transaction: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      tra_handle: PIscTrHandle; length: Smallint; id: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_release_request: function(user_status: PISCStatus; req_handle: PIscReqHandle): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_request_info: function(user_status: PISCStatus; req_handle: PIscReqHandle; level,
+      item_length: Smallint; items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_rollback_retaining: function(status_vector: PISCStatus; trans_handle: PIscTrHandle): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_rollback_transaction: function(user_status: PISCStatus; tra_handle: PIscTrHandle): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_seek_blob: function(user_status: PISCStatus; blob_handle: PIscBlobHandle; mode: Smallint;
+      offset: ISCLong; Result_: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_send: function(user_status: PISCStatus; req_handle: PIscReqHandle; msg_type,
+      msg_length: Smallint; msg: PPointer; level: Smallint): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_service_attach: function(status_vector: PISCStatus; service_length: Word;
+      service_name: PChar; handle: PIscSvcHandle; spb_length: Word; spb: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_service_detach: function(status_vector: PISCStatus; handle: PIscSvcHandle): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_service_query: function(status_vector: PISCStatus; svc_handle: PIscSvcHandle;
+      reserved: PIscResvHandle; send_spb_length: Word; send_spb: PChar; request_spb_length: Word;
+      request_spb: PChar; buffer_length: Word; buffer: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_service_start: function(status_vector: PISCStatus; svc_handle: PIscSvcHandle;
+      reserved: PIscResvHandle; spb_length: Word; spb: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+  {$IFDEF INTERBASEORFIREBIRD}
+    isc_set_debug: procedure(flag: integer); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+  {$ENDIF}
+    isc_sql_interprete: procedure(SQLCODE: Smallint; buffer: PChar; buffer_length: Smallint);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_sqlcode: function(user_status: PISCStatus): ISCLong;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_start_and_send: function(user_status: PISCStatus; req_handle: PIscReqHandle;
+      tra_handle: PIscTrHandle; msg_type, msg_length: Smallint; msg: PPointer;
+      level: Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_start_multiple: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
+      count: Smallint; vector: PISCTEB): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_start_request: function(user_status: PISCStatus; req_handle: PIscReqHandle;
+      tra_handle: PIscTrHandle; level: Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_start_transaction: function(user_status: PISCStatus; tra_handle: PIscTrHandle; count: Smallint;
+      db_handle: PIscDbHandle; tpb_length: ISCUShort; tpb_ad: PChar): ISCStatus; cdecl;
+    isc_transact_request: function(user_status: PISCStatus; db_handle: PIscDbHandle;
+      tra_handle: PIscTrHandle; blr_length: Word; blr: PChar; in_msg_length: Word; in_msg: PChar;
+      out_msg_length: Word; out_msg: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_transaction_info: function(user_status: PISCStatus; tra_handle: PIscTrHandle; item_length: Smallint;
+      items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_unwind_request: function(user_status: PISCStatus; req_handle: PIscTrHandle;
+      level: Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_vax_integer: function(ptr: PChar; length: Smallint): ISCLong;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_version: function(db_handle: PIscDbHandle; callback: IscCallback;
+      callback_argument: PPointer): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_vtof: procedure(string1, string2: PChar; length: Word);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_vtov: procedure(string1, string2: PChar; length: Smallint);
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_wait_for_event: function(user_status: PISCStatus; handle: PIscDbHandle;
+      length: Smallint; events, buffer: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+  {$IFDEF FB15_UP}
+    isc_reset_fpe: function(fpe_status: Word): ISCLong; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+  {$ENDIF}
+  {$IFDEF IB7_UP}
+    isc_array_gen_sdl2: function(status: PISCStatus; desc: PISCArrayDescV2;
+      sdl_buffer_length: PSmallInt; sdl_buffer: PChar; sdl_length: PSmallInt): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_array_get_slice2: function(status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; array_id: PISCQuad; desc: PISCArrayDescV2; array_: PPointer;
+      slice_length: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_array_lookup_bounds2: function(status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; relation_name, field_name: PChar; desc: PISCArrayDescV2): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_array_lookup_desc2: function(status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; relation_name, field_name: PChar;
+      desc: PISCArrayDescV2): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_array_put_slice2: function(status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; array_id: PISCQuad; desc: PISCArrayDescV2; array_: PPointer;
+      slice_length: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_array_set_desc2: function(status: PISCStatus; relation_name, field_name: PChar;
+      sql_dtype, sql_length, dimensions: PSmallint; desc: PISCArrayDescV2): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_blob_default_desc2: procedure(desc: PISCBlobDescV2; relation_name,
+      field_name: PChar); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_blob_gen_bpb2: function(status: PISCStatus; to_desc, from_desc: PISCBlobDescV2;
+      bpb_buffer_length: Word; bpb_buffer: PChar; bpb_length: PWord): ISCStatus;
+      {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_blob_lookup_desc2: function(status: PISCStatus; db_handle: PIscDbHandle;
+      trans_handle: PIscTrHandle; relation_name, field_name: PChar; desc: PISCBlobDescV2;
+      global: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_blob_set_desc2: function(status: PISCStatus; relation_name, field_name: PChar; subtype, charset,
+      segment_size: Smallint; desc: PISCBlobDescV2): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+  {$ENDIF}
+  {$IFDEF IB7ORFB15}
+    isc_get_client_version: procedure(version: PChar); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_get_client_major_version: function: Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_get_client_minor_version: function: Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+  {$ENDIF}
+  {$IFDEF IB71_UP}
+    isc_release_savepoint: function(status: PISCStatus; TrHandle: PIscTrHandle;
+      name: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_rollback_savepoint: function(status: PISCStatus; TrHandle: PIscTrHandle;
+      name: PChar; Option: Word): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+    isc_start_savepoint: function(status: PISCStatus; TrHandle: PIscTrHandle;
+      name: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
+  {$ENDIF}
+    procedure Lock;
+    procedure UnLock;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function getb(p: PBStream): Char;
+    function putb(x: Char; p: PBStream): Integer;
+    function putbx(x: Char; p: PBStream): Integer;
+    function Loaded: Boolean;
+    function UnLoad: Boolean;
+    function Load(const lib: string = GDS32DLL): Boolean;
+  end;
 
 implementation
 uses JvUIBConst;
@@ -4765,44 +4003,6 @@ uses JvUIBConst;
 (*******************************************************************************
  *    MACROS                                                                   *
  *******************************************************************************)
-
-  // getb(p) (--(p)->bstr_cnt >= 0 ? *(p)->bstr_ptr++ & 0377: BLOB_get (p))
-  function getb(p: PBStream): Char;
-  begin
-    Dec(p^.bstr_cnt);
-    if (p^.bstr_cnt >= 0) then
-    begin
-      result := Char(Integer(p^.bstr_ptr^) and Integer(0377));
-      Inc(p^.bstr_ptr);
-    end else
-      Result := Char(BLOB_get(p));
-  end;
-
-  //#define putb(x,p) (((x) == '\n' || (!(--(p)->bstr_cnt))) ? BLOB_put ((x),p) : ((int) (*(p)->bstr_ptr++ = (unsigned) (x))))
-  function putb(x: Char; p: PBStream): Integer;
-  begin
-    Dec(p^.bstr_cnt);
-    if (x = Chr(Integer('n') - Integer('a'))) or (p^.bstr_cnt = 0) then
-      result := BLOB_put(x, p)
-    else begin
-      p^.bstr_ptr^ := Char(x);
-      result := Cardinal(x);
-      Inc(p^.bstr_ptr^);
-    end;
-  end;
-
-  //#define putbx(x,p) ((!(--(p)->bstr_cnt)) ? BLOB_put ((x),p) : ((int) (*(p)->bstr_ptr++ = (unsigned) (x))))
-  function putbx(x: Char; p: PBStream): Integer;
-  begin
-    Dec(p^.bstr_cnt);
-    if (p^.bstr_cnt = 0) then
-      result := BLOB_put(x, p)
-    else begin
-      p^.bstr_ptr^ := Char(x);
-      Inc(p^.bstr_ptr^);
-      result := Cardinal(x);
-    end;
-  end;
 
   //#define XSQLDA_LENGTH(n) (sizeof (XSQLDA) + ((n)-1) * sizeof (XSQLVAR))
   function XSQLDA_LENGTH(n: Integer): Integer;
@@ -4836,593 +4036,272 @@ uses JvUIBConst;
     Inc (p);
   end;
 
+{ TUIBLibrary }
 
-{$IFDEF INTERBASE_DYNAMIC_LINK}
-var
-{$IFDEF MSWINDOWS}
-  GDS32Lib : THandle = 0;
-{$ENDIF}
-{$IFDEF LINUX}
-  CryptLib : Pointer = nil;
-  GDS32Lib : Pointer = nil;
-{$ENDIF}
+constructor TUIBaseLibrary.Create;
+begin
+  FLIBCritSec := TCriticalSection.Create;
+  {$IFDEF MSWINDOWS}
+    FGDS32Lib := 0;
+  {$ENDIF}
+  {$IFDEF LINUX}
+    FCryptLib := nil;
+    FGDS32Lib := nil;
+  {$ENDIF}
+end;
 
-  _BLOB_close: function(Stream: PBStream): integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$IFDEF INTERBASEORFIREBIRD}
-  _BLOB_display: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    field_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-  _BLOB_dump: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    file_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _BLOB_edit: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    field_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _BLOB_get: function(Stream: PBStream): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _BLOB_load: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    file_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _BLOB_open: function(blob: IscBlobHandle; buffer: PChar; length: Integer): PBStream;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _BLOB_put: function(x: Char; Stream: PBStream): Integer;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _BLOB_text_dump: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    file_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _BLOB_text_load: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    file_name: PChar): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _Bopen: function(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    mode: PChar): PBStream; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_add_user: function(status: PISCStatus; user_data: PUserSecData): Integer;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_array_gen_sdl: function(status: PISCStatus; desc: PISCArrayDesc; sdl_buffer_length: PSmallInt;
-    sdl_buffer: PChar; sdl_length: PSmallInt): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_array_get_slice: function(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; array_id: PISCQuad; desc: PISCArrayDesc; array_: PPointer;
-    slice_length: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_array_lookup_bounds: function(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; relation_name, field_name: PChar;
-    desc: PISCArrayDesc): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_array_lookup_desc: function(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; relation_name, field_name: PChar;
-    desc: PISCArrayDesc): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_array_put_slice: function(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; array_id: PISCQuad; desc: PISCArrayDesc; array_: PPointer;
-    slice_length: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_array_set_desc: function(status: PISCStatus; relation_name, field_name: PChar;
-    sql_dtype, sql_length, dimensions: PSmallint; desc: PISCArrayDesc): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_attach_database: function(user_status: PISCStatus; file_length: Smallint;
-    file_name: PChar; handle: PIscDbHandle; dpb_length: SmallInt; dpb: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_blob_default_desc: procedure(desc: PISCBlobDesc; relation_name, field_name: PChar);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_blob_gen_bpb: function(status: PISCStatus; to_desc, from_desc: PISCBlobDesc;
-    bpb_buffer_length: Word; bpb_buffer: PChar; bpb_length: PWord): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_blob_info: function(user_status: PISCStatus; blob_handle: PIscBlobHandle;
-    item_length: Smallint; items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_blob_lookup_desc: function(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; relation_name, field_name: PChar; desc: PISCBlobDesc;
-    global: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_blob_set_desc: function(status: PISCStatus; relation_name, field_name: PChar;
-    subtype, charset, segment_size: Smallint; desc: PISCBlobDesc): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_cancel_blob: function(user_status: PISCStatus; blob_handle: PIscBlobHandle): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_cancel_events: function(user_status: PISCStatus; handle: PIscDbHandle;
-    id: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_close: function(user_status: PISCStatus; name: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_close_blob: function(user_status: PISCStatus;
-    blob_handle: PIscBlobHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_commit_retaining: function(user_status: PISCStatus;
-    tra_handle: PIscTrHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_commit_transaction: function(user_status: PISCStatus;
-    tra_handle: PIscTrHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_compile_request: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    req_handle: PIscReqHandle; blr_length: Smallint;
-    blr: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_compile_request2: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    req_handle: PIscReqHandle; blr_length: Smallint;
-    blr: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_create_blob: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; blob_handle: PIscBlobHandle;
-    blob_id: PISCQuad): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_create_blob2: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; blob_handle: PIscBlobHandle; blob_id: PISCQuad;
-    bpb_length: Smallint; bpb: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_create_database: function(user_status: PISCStatus; file_length: Smallint;
-    file_name: PChar; handle: PIscDbHandle; dpb_length: Smallint; dpb: PChar;
-    db_type: Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_database_info: function(user_status: PISCStatus; handle: PIscDbHandle;
-    item_length: Smallint; items: PChar; buffer_length: Smallint;
-    buffer: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_ddl: function(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
-    length: Smallint; ddl: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_declare: function(user_status: PISCStatus; statement,
-    cursor: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_decode_date: procedure(date: PISCQuad; times: PPointer);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_decode_sql_date: procedure(date: PISCDate; times_arg: PPointer);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_decode_sql_time: procedure(sql_time: PISCTime; times_arg: PPointer);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_decode_timestamp: procedure(date: PISCTimeStamp; times_arg: PPointer);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_delete_user: function(status: PISCStatus; user_data: PUserSecData): Integer;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_describe: function(user_status: PISCStatus; name: PChar; sqlda: PXSQLDA): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_describe_bind: function(user_status: PISCStatus; name: PChar; sqlda: PXSQLDA): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_detach_database: function(user_status: PISCStatus; handle: PIscDbHandle): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_drop_database: function(user_status: PISCStatus; handle: PIscDbHandle): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_alloc_statement2: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    stmt_handle: PIscStmtHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_allocate_statement: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    stmt_handle: PIscStmtHandle): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_describe: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_describe_bind: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_exec_immed2: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; length: Word; string_: PChar; dialect: Word; in_sqlda,
-    out_sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_exec_immed3_m: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; Length: Word; string_: PChar; dialect, in_blr_length: Word;
-    in_blr: PChar; in_msg_type, in_msg_length: Word; in_msg: PChar; out_blr_length: Word;
-    out_blr: PChar; out_msg_type, out_msg_length: Word; out_msg: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_execute: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; dialect: Word; sqlda: PXSQLDA): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_execute_immediate: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; length: Word; string_: PChar; dialect: Word;
-    sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_execute_immediate_m: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; length: Word; string_: PChar; dialect, blr_length: Word;
-    blr: PChar; msg_type, msg_length: Word; msg: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_execute_m: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; blr_length: Word; blr: PChar; msg_type, msg_length: Word;
-    msg: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_execute2: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; dialect: Word; in_sqlda, out_sqlda: PXSQLDA): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_execute2_m: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; in_blr_length: Word; in_blr: PChar; in_msg_type,
-    in_msg_length: Word; in_msg: PChar; out_blr_length: Word; out_blr: PChar;
-    out_msg_type, out_msg_length: Word; out_msg: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_fetch: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_fetch_m: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    blr_length: Word; blr: PChar; msg_type, msg_length: Word; msg: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_finish: function(db_handle: PIscDbHandle): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_free_statement: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    option: Word): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_insert: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_insert_m: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    blr_length: Word; blr: PChar; msg_type, msg_length: Word; msg: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_prepare: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; length: Word; string_: PChar; dialect: Word;
-    sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_prepare_m: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; length: Word; string_: PChar; dialect, item_length: Word;
-    items: PChar; buffer_length: Word; buffer: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_release: function(user_status: PISCStatus; name: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_set_cursor_name: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    cursor: PChar; type_: Word): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_dsql_sql_info: function(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    item_length: Smallint; items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_close: function(user_status: PISCStatus; name: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_declare: function(user_status: PISCStatus; stmt_name, cursor: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_describe: function(user_status: PISCStatus; stmt_name: PChar;
-    dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_describe_bind: function(user_status: PISCStatus; stmt_name: PChar;
-    dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_execute: function(user_status: PISCStatus; trans_handle: PIscTrHandle;
-    stmt_name: PChar; dialect: Word; sqlda: PXSQLDA): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_execute_immed: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; length: Word; string_: PChar; dialect: Word;
-    sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_execute2: function(user_status: PISCStatus; trans_handle: PIscTrHandle;
-    stmt_name: PChar; dialect: Word; in_sqlda, out_sqlda: PXSQLDA): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_fetch: function(user_status: PISCStatus; cursor_name: PChar;
-    dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_insert: function(user_status: PISCStatus; cursor_name: PChar;
-    dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_open: function(user_status: PISCStatus; trans_handle: PIscTrHandle;
-    cursor_name: PChar; dialect: Word; sqlda: PXSQLDA): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_open2: function(user_status: PISCStatus; trans_handle: PIscTrHandle;
-    cursor_name: PChar; dialect: Word; in_sqlda, out_sqlda: PXSQLDA): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_prepare: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; stmt_name: PChar; length: Word; string_: PChar;
-    dialect: Word; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_embed_dsql_release: function(user_status: PISCStatus; stmt_name: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_encode_date: procedure(times: PPointer; date: PISCQuad);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_encode_sql_date: procedure(times_arg: PPointer; date: PISCDate);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_encode_sql_time: procedure(times_arg: PPointer; isc_time: PISCTime);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_encode_timestamp: procedure(times_arg: PPointer; date: PISCTimeStamp);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_event_block: function(event_buffer, result_buffer: PPChar;
-    count: Word; name_buffer: array of PChar): ISCLong; cdecl;
-  _isc_event_counts: procedure(result_vector: PISCULong; buffer_length: Smallint;
-    event_buffer, result_buffer: PChar); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_execute: function(user_status: PISCStatus; trans_handle: PIscTrHandle;
-    name: PChar; sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_execute_immediate: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; length: PSmallint; string_: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_expand_dpb: procedure(dpb: PPChar; dpb_size: PSmallint; name_buffer: array of PChar); cdecl;
-  _isc_fetch: function(user_status: PISCStatus; name: PChar; sqlda: PXSQLDA): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_free: function(blk: PChar): ISCLong; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_ftof: function(string_: PChar; length1: Word; field: PChar; length2: Word): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_get_segment: function(user_status: PISCStatus; blob_handle: PIscBlobHandle; length: PWord;
-    buffer_length: Word; buffer: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_get_slice: function(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
-    array_id: PISCQuad; sdl_length: Smallint; sdl: PChar; param_length: Smallint; param: PISCLong;
-    slice_length: ISCLong; slice: PPointer; return_length: PISCLong): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_interprete: function(buffer: PChar; status_vector: PPISCStatus): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_modify_dpb: function(dpb: PPChar; dpb_length: PSmallint; type_: Word;
-    str: PChar; str_len: Smallint): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_modify_user: function(status: PISCStatus; user_data: PUserSecData): Integer;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_open: function(user_status: PISCStatus; trans_handle: PIscTrHandle; name: PChar;
-    sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_open_blob: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; blob_handle: PIscBlobHandle; blob_id: PISCQuad): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_open_blob2: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; blob_handle: PIscBlobHandle; blob_id: PISCQuad; bpb_length: Word;
-    bpb: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_portable_integer: function(ptr: PChar; length: Smallint): ISCInt64;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_prepare: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; name: PChar; length: PSmallint; string_: PChar;
-    sqlda: PXSQLDA): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_prepare_transaction: function(user_status: PISCStatus; tra_handle: PIscTrHandle): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_prepare_transaction2: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    msg_length: ISCUShort; msg: PISCUChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall;{$ENDIF}
-  _isc_print_blr: function(blr: PChar; callback: IscCallback; callback_argument: PPointer;
-    language: Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_print_sqlerror: procedure(sqlcode: ISCShort; status_vector: PISCStatus);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_print_status: function(status_vector: PISCStatus): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_put_segment: function(user_status: PISCStatus; blob_handle: PIscBlobHandle;
-    buffer_length: Word; buffer: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_put_slice: function(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
-    array_id: PISCQuad; sdl_length: Smallint; sdl: PChar; param_length: Smallint; param: PISCLong;
-    slice_length: ISCLong; slice: PPointer): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_qtoq: procedure(quad1, quad2: PISCQuad); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_que_events: function(user_status: PISCStatus; handle: PIscDbHandle; id: PISCLong;
-    length: ISCUShort; events: PISCUChar; ast: IscCallback; arg: PPointer): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_receive: function(user_status: PISCStatus; req_handle: PIscReqHandle; msg_type,
-    msg_length: Smallint; msg: PPointer; level: Smallint): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_reconnect_transaction: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; length: Smallint; id: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_release_request: function(user_status: PISCStatus; req_handle: PIscReqHandle): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_request_info: function(user_status: PISCStatus; req_handle: PIscReqHandle; level,
-    item_length: Smallint; items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_rollback_retaining: function(status_vector: PISCStatus; trans_handle: PIscTrHandle): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_rollback_transaction: function(user_status: PISCStatus; tra_handle: PIscTrHandle): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_seek_blob: function(user_status: PISCStatus; blob_handle: PIscBlobHandle; mode: Smallint;
-    offset: ISCLong; Result_: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_send: function(user_status: PISCStatus; req_handle: PIscReqHandle; msg_type,
-    msg_length: Smallint; msg: PPointer; level: Smallint): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_service_attach: function(status_vector: PISCStatus; service_length: Word;
-    service_name: PChar; handle: PIscSvcHandle; spb_length: Word; spb: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_service_detach: function(status_vector: PISCStatus; handle: PIscSvcHandle): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_service_query: function(status_vector: PISCStatus; svc_handle: PIscSvcHandle;
-    reserved: PIscResvHandle; send_spb_length: Word; send_spb: PChar; request_spb_length: Word;
-    request_spb: PChar; buffer_length: Word; buffer: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_service_start: function(status_vector: PISCStatus; svc_handle: PIscSvcHandle;
-    reserved: PIscResvHandle; spb_length: Word; spb: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$IFDEF INTERBASEORFIREBIRD}
-  _isc_set_debug: procedure(flag: integer); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-  _isc_sql_interprete: procedure(SQLCODE: Smallint; buffer: PChar; buffer_length: Smallint);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_sqlcode: function(user_status: PISCStatus): ISCLong;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_start_and_send: function(user_status: PISCStatus; req_handle: PIscReqHandle;
-    tra_handle: PIscTrHandle; msg_type, msg_length: Smallint; msg: PPointer;
-    level: Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_start_multiple: function(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    count: Smallint; vector: PISCTEB): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_start_request: function(user_status: PISCStatus; req_handle: PIscReqHandle;
-    tra_handle: PIscTrHandle; level: Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_start_transaction: function(user_status: PISCStatus; tra_handle: PIscTrHandle; count: Smallint;
-    db_handle: PIscDbHandle; tpb_length: ISCUShort; tpb_ad: PChar): ISCStatus; cdecl;
-  _isc_transact_request: function(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; blr_length: Word; blr: PChar; in_msg_length: Word; in_msg: PChar;
-    out_msg_length: Word; out_msg: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_transaction_info: function(user_status: PISCStatus; tra_handle: PIscTrHandle; item_length: Smallint;
-    items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_unwind_request: function(user_status: PISCStatus; req_handle: PIscTrHandle;
-    level: Smallint): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_vax_integer: function(ptr: PChar; length: Smallint): ISCLong;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_version: function(db_handle: PIscDbHandle; callback: IscCallback;
-    callback_argument: PPointer): Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_vtof: procedure(string1, string2: PChar; length: Word);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_vtov: procedure(string1, string2: PChar; length: Smallint);
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_wait_for_event: function(user_status: PISCStatus; handle: PIscDbHandle;
-    length: Smallint; events, buffer: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$IFDEF FB15_UP}
-  _isc_reset_fpe: function(fpe_status: Word): ISCLong; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-{$IFDEF IB7_UP}
-  _isc_array_gen_sdl2: function(status: PISCStatus; desc: PISCArrayDescV2;
-    sdl_buffer_length: PSmallInt; sdl_buffer: PChar; sdl_length: PSmallInt): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_array_get_slice2: function(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; array_id: PISCQuad; desc: PISCArrayDescV2; array_: PPointer;
-    slice_length: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_array_lookup_bounds2: function(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; relation_name, field_name: PChar; desc: PISCArrayDescV2): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_array_lookup_desc2: function(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; relation_name, field_name: PChar;
-    desc: PISCArrayDescV2): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_array_put_slice2: function(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; array_id: PISCQuad; desc: PISCArrayDescV2; array_: PPointer;
-    slice_length: PISCLong): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_array_set_desc2: function(status: PISCStatus; relation_name, field_name: PChar;
-    sql_dtype, sql_length, dimensions: PSmallint; desc: PISCArrayDescV2): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_blob_default_desc2: procedure(desc: PISCBlobDescV2; relation_name,
-    field_name: PChar); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_blob_gen_bpb2: function(status: PISCStatus; to_desc, from_desc: PISCBlobDescV2;
-    bpb_buffer_length: Word; bpb_buffer: PChar; bpb_length: PWord): ISCStatus;
-    {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_blob_lookup_desc2: function(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; relation_name, field_name: PChar; desc: PISCBlobDescV2;
-    global: PChar): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_blob_set_desc2: function(status: PISCStatus; relation_name, field_name: PChar; subtype, charset,
-    segment_size: Smallint; desc: PISCBlobDescV2): ISCStatus; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-{$IFDEF IB7ORFB15}
-  _isc_get_client_version: procedure(version: PChar); {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_get_client_major_version: function: Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-  _isc_get_client_minor_version: function: Integer; {$IFDEF LINUX} cdecl; {$ELSE} stdcall; {$ENDIF}
-{$ENDIF}
-
-  function GDS32Loaded: Boolean;
+  // getb(p) (--(p)->bstr_cnt >= 0 ? *(p)->bstr_ptr++ & 0377: BLOB_get (p))
+  function TUIBaseLibrary.getb(p: PBStream): Char;
   begin
-{$IFDEF MSWINDOWS}
-    Result := GDS32Lib > HINSTANCE_ERROR;
-{$ENDIF}
-{$IFDEF LINUX}
-    Result := GDS32Lib <> nil;
-{$ENDIF}
+    Dec(p^.bstr_cnt);
+    if (p^.bstr_cnt >= 0) then
+    begin
+      result := Char(Integer(p^.bstr_ptr^) and Integer(0377));
+      Inc(p^.bstr_ptr);
+    end else
+      Result := Char(BLOB_get(p));
   end;
 
-  function UnLoadGDS32: Boolean;
+  //#define putb(x,p) (((x) == '\n' || (!(--(p)->bstr_cnt))) ? BLOB_put ((x),p) : ((int) (*(p)->bstr_ptr++ = (unsigned) (x))))
+  function TUIBaseLibrary.putb(x: Char; p: PBStream): Integer;
   begin
-    Result:= True;
-    if GDS32Loaded then
-    begin
-{$IFDEF MSWINDOWS}
-      Result := FreeLibrary(GDS32Lib);
-      GDS32Lib := 0;
-{$ENDIF}
-{$IFDEF LINUX}
-      GDS32Lib := nil;
-      if CryptLib <> nil then
-      begin
-        dlclose(CryptLib);
-        CryptLib := nil;
-      end;
-{$ENDIF}
-      _BLOB_close                   := nil;
-{$IFDEF INTERBASEORFIREBIRD}
-      _BLOB_display                 := nil;
-{$ENDIF}
-      _BLOB_dump                    := nil;
-      _BLOB_edit                    := nil;
-      _BLOB_get                     := nil;
-      _BLOB_load                    := nil;
-      _BLOB_open                    := nil;
-      _BLOB_put                     := nil;
-      _BLOB_text_dump               := nil;
-      _BLOB_text_load               := nil;
-      _Bopen                        := nil;
-      _isc_add_user                 := nil;
-      _isc_array_gen_sdl            := nil;
-      _isc_array_get_slice          := nil;
-      _isc_array_lookup_bounds      := nil;
-      _isc_array_lookup_desc        := nil;
-      _isc_array_put_slice          := nil;
-      _isc_array_set_desc           := nil;
-      _isc_attach_database          := nil;
-      _isc_blob_default_desc        := nil;
-      _isc_blob_gen_bpb             := nil;
-      _isc_blob_info                := nil;
-      _isc_blob_lookup_desc         := nil;
-      _isc_blob_set_desc            := nil;
-      _isc_cancel_blob              := nil;
-      _isc_cancel_events            := nil;
-      _isc_close                    := nil;
-      _isc_close_blob               := nil;
-      _isc_commit_retaining         := nil;
-      _isc_commit_transaction       := nil;
-      _isc_compile_request          := nil;
-      _isc_compile_request2         := nil;
-      _isc_create_blob              := nil;
-      _isc_create_blob2             := nil;
-      _isc_create_database          := nil;
-      _isc_database_info            := nil;
-      _isc_ddl                      := nil;
-      _isc_declare                  := nil;
-      _isc_decode_date              := nil;
-      _isc_decode_sql_date          := nil;
-      _isc_decode_sql_time          := nil;
-      _isc_decode_timestamp         := nil;
-      _isc_delete_user              := nil;
-      _isc_describe                 := nil;
-      _isc_describe_bind            := nil;
-      _isc_detach_database          := nil;
-      _isc_drop_database            := nil;
-      _isc_dsql_alloc_statement2    := nil;
-      _isc_dsql_allocate_statement  := nil;
-      _isc_dsql_describe            := nil;
-      _isc_dsql_describe_bind       := nil;
-      _isc_dsql_exec_immed2         := nil;
-      _isc_dsql_exec_immed3_m       := nil;
-      _isc_dsql_execute             := nil;
-      _isc_dsql_execute_immediate   := nil;
-      _isc_dsql_execute_immediate_m := nil;
-      _isc_dsql_execute_m           := nil;
-      _isc_dsql_execute2            := nil;
-      _isc_dsql_execute2_m          := nil;
-      _isc_dsql_fetch               := nil;
-      _isc_dsql_fetch_m             := nil;
-      _isc_dsql_finish              := nil;
-      _isc_dsql_free_statement      := nil;
-      _isc_dsql_insert              := nil;
-      _isc_dsql_insert_m            := nil;
-      _isc_dsql_prepare             := nil;
-      _isc_dsql_prepare_m           := nil;
-      _isc_dsql_release             := nil;
-      _isc_dsql_set_cursor_name     := nil;
-      _isc_dsql_sql_info            := nil;
-      _isc_embed_dsql_close         := nil;
-      _isc_embed_dsql_declare       := nil;
-      _isc_embed_dsql_describe      := nil;
-      _isc_embed_dsql_describe_bind := nil;
-      _isc_embed_dsql_execute       := nil;
-      _isc_embed_dsql_execute_immed := nil;
-      _isc_embed_dsql_execute2      := nil;
-      _isc_embed_dsql_fetch         := nil;
-      _isc_embed_dsql_insert        := nil;
-      _isc_embed_dsql_open          := nil;
-      _isc_embed_dsql_open2         := nil;
-      _isc_embed_dsql_prepare       := nil;
-      _isc_embed_dsql_release       := nil;
-      _isc_encode_date              := nil;
-      _isc_encode_sql_date          := nil;
-      _isc_encode_sql_time          := nil;
-      _isc_encode_timestamp         := nil;
-      _isc_event_block              := nil;
-      _isc_event_counts             := nil;
-      _isc_execute                  := nil;
-      _isc_execute_immediate        := nil;
-      _isc_expand_dpb               := nil;
-      _isc_fetch                    := nil;
-      _isc_free                     := nil;
-      _isc_ftof                     := nil;
-      _isc_get_segment              := nil;
-      _isc_get_slice                := nil;
-      _isc_interprete               := nil;
-      _isc_modify_dpb               := nil;
-      _isc_modify_user              := nil;
-      _isc_open                     := nil;
-      _isc_open_blob                := nil;
-      _isc_open_blob2               := nil;
-      _isc_portable_integer         := nil;
-      _isc_prepare                  := nil;
-      _isc_prepare_transaction      := nil;
-      _isc_prepare_transaction2     := nil;
-      _isc_print_blr                := nil;
-      _isc_print_sqlerror           := nil;
-      _isc_print_status             := nil;
-      _isc_put_segment              := nil;
-      _isc_put_slice                := nil;
-      _isc_qtoq                     := nil;
-      _isc_que_events               := nil;
-      _isc_receive                  := nil;
-      _isc_reconnect_transaction    := nil;
-      _isc_release_request          := nil;
-      _isc_request_info             := nil;
-      _isc_rollback_retaining       := nil;
-      _isc_rollback_transaction     := nil;
-      _isc_seek_blob                := nil;
-      _isc_send                     := nil;
-      _isc_service_attach           := nil;
-      _isc_service_detach           := nil;
-      _isc_service_query            := nil;
-      _isc_service_start            := nil;
-{$IFDEF INTERBASEORFIREBIRD}
-      _isc_set_debug                := nil;
-{$ENDIF}
-      _isc_sql_interprete           := nil;
-      _isc_sqlcode                  := nil;
-      _isc_start_and_send           := nil;
-      _isc_start_multiple           := nil;
-      _isc_start_request            := nil;
-      _isc_start_transaction        := nil;
-      _isc_transact_request         := nil;
-      _isc_transaction_info         := nil;
-      _isc_unwind_request           := nil;
-      _isc_vax_integer              := nil;
-      _isc_version                  := nil;
-      _isc_vtof                     := nil;
-      _isc_vtov                     := nil;
-      _isc_wait_for_event           := nil;
-{$IFDEF FB15_UP}
-      _isc_reset_fpe                := nil;
-{$ENDIF}
-{$IFDEF IB7_UP}
-      _isc_array_gen_sdl2           := nil;
-      _isc_array_gen_sdl2           := nil;
-      _isc_array_get_slice2         := nil;
-      _isc_array_lookup_bounds2     := nil;
-      _isc_array_lookup_desc2       := nil;
-      _isc_array_put_slice2         := nil;
-      _isc_array_set_desc2          := nil;
-      _isc_blob_default_desc2       := nil;
-      _isc_blob_gen_bpb2            := nil;
-      _isc_blob_lookup_desc2        := nil;
-      _isc_blob_set_desc2           := nil;
-{$ENDIF}
-{$IFDEF IB7ORFB15}
-      _isc_get_client_version       := nil;
-      _isc_get_client_major_version := nil;
-      _isc_get_client_minor_version := nil;
-{$ENDIF}
+    Dec(p^.bstr_cnt);
+    if (x = Chr(Integer('n') - Integer('a'))) or (p^.bstr_cnt = 0) then
+      result := BLOB_put(x, p)
+    else begin
+      p^.bstr_ptr^ := Char(x);
+      result := Cardinal(x);
+      Inc(p^.bstr_ptr^);
     end;
   end;
 
-  function LoadGDS32(const lib: string): Boolean;
+  //#define putbx(x,p) ((!(--(p)->bstr_cnt)) ? BLOB_put ((x),p) : ((int) (*(p)->bstr_ptr++ = (unsigned) (x))))
+  function TUIBaseLibrary.putbx(x: Char; p: PBStream): Integer;
+  begin
+    Dec(p^.bstr_cnt);
+    if (p^.bstr_cnt = 0) then
+      result := BLOB_put(x, p)
+    else begin
+      p^.bstr_ptr^ := Char(x);
+      Inc(p^.bstr_ptr^);
+      result := Cardinal(x);
+    end;
+  end;
+
+  function TUIBaseLibrary.Loaded: Boolean;
+  begin
+{$IFDEF MSWINDOWS}
+    Result := FGDS32Lib > HINSTANCE_ERROR;
+{$ENDIF}
+{$IFDEF LINUX}
+    Result := FGDS32Lib <> nil;
+{$ENDIF}
+  end;
+
+  function TUIBaseLibrary.UnLoad: Boolean;
+  begin
+    Lock;
+    try
+      Result:= True;
+      if Loaded then
+      begin
+  {$IFDEF MSWINDOWS}
+        Result := Boolean(FreeLibrary(FGDS32Lib));
+        FGDS32Lib := 0;
+  {$ENDIF}
+  {$IFDEF LINUX}
+        FGDS32Lib := nil;
+        if FCryptLib <> nil then
+        begin
+          dlclose(FCryptLib);
+          FCryptLib := nil;
+        end;
+  {$ENDIF}
+        BLOB_close                   := nil;
+  {$IFDEF INTERBASEORFIREBIRD}
+        BLOB_display                 := nil;
+  {$ENDIF}
+        BLOB_dump                    := nil;
+        BLOB_edit                    := nil;
+        BLOB_get                     := nil;
+        BLOB_load                    := nil;
+        BLOB_open                    := nil;
+        BLOB_put                     := nil;
+        BLOB_text_dump               := nil;
+        BLOB_text_load               := nil;
+        Bopen                        := nil;
+        isc_add_user                 := nil;
+        isc_array_gen_sdl            := nil;
+        isc_array_get_slice          := nil;
+        isc_array_lookup_bounds      := nil;
+        isc_array_lookup_desc        := nil;
+        isc_array_put_slice          := nil;
+        isc_array_set_desc           := nil;
+        isc_attach_database          := nil;
+        isc_blob_default_desc        := nil;
+        isc_blob_gen_bpb             := nil;
+        isc_blob_info                := nil;
+        isc_blob_lookup_desc         := nil;
+        isc_blob_set_desc            := nil;
+        isc_cancel_blob              := nil;
+        isc_cancel_events            := nil;
+        isc_close                    := nil;
+        isc_close_blob               := nil;
+        isc_commit_retaining         := nil;
+        isc_commit_transaction       := nil;
+        isc_compile_request          := nil;
+        isc_compile_request2         := nil;
+        isc_create_blob              := nil;
+        isc_create_blob2             := nil;
+        isc_create_database          := nil;
+        isc_database_info            := nil;
+        isc_ddl                      := nil;
+        isc_declare                  := nil;
+        isc_decode_date              := nil;
+        isc_decode_sql_date          := nil;
+        isc_decode_sql_time          := nil;
+        isc_decode_timestamp         := nil;
+        isc_delete_user              := nil;
+        isc_describe                 := nil;
+        isc_describe_bind            := nil;
+        isc_detach_database          := nil;
+        isc_drop_database            := nil;
+        isc_dsql_alloc_statement2    := nil;
+        isc_dsql_allocate_statement  := nil;
+        isc_dsql_describe            := nil;
+        isc_dsql_describe_bind       := nil;
+        isc_dsql_exec_immed2         := nil;
+        isc_dsql_exec_immed3_m       := nil;
+        isc_dsql_execute             := nil;
+        isc_dsql_execute_immediate   := nil;
+        isc_dsql_execute_immediate_m := nil;
+        isc_dsql_execute_m           := nil;
+        isc_dsql_execute2            := nil;
+        isc_dsql_execute2_m          := nil;
+        isc_dsql_fetch               := nil;
+        isc_dsql_fetch_m             := nil;
+        isc_dsql_finish              := nil;
+        isc_dsql_free_statement      := nil;
+        isc_dsql_insert              := nil;
+        isc_dsql_insert_m            := nil;
+        isc_dsql_prepare             := nil;
+        isc_dsql_prepare_m           := nil;
+        isc_dsql_release             := nil;
+        isc_dsql_set_cursor_name     := nil;
+        isc_dsql_sql_info            := nil;
+        isc_embed_dsql_close         := nil;
+        isc_embed_dsql_declare       := nil;
+        isc_embed_dsql_describe      := nil;
+        isc_embed_dsql_describe_bind := nil;
+        isc_embed_dsql_execute       := nil;
+        isc_embed_dsql_execute_immed := nil;
+        isc_embed_dsql_execute2      := nil;
+        isc_embed_dsql_fetch         := nil;
+        isc_embed_dsql_insert        := nil;
+        isc_embed_dsql_open          := nil;
+        isc_embed_dsql_open2         := nil;
+        isc_embed_dsql_prepare       := nil;
+        isc_embed_dsql_release       := nil;
+        isc_encode_date              := nil;
+        isc_encode_sql_date          := nil;
+        isc_encode_sql_time          := nil;
+        isc_encode_timestamp         := nil;
+        isc_event_block              := nil;
+        isc_event_counts             := nil;
+        isc_execute                  := nil;
+        isc_execute_immediate        := nil;
+        isc_expand_dpb               := nil;
+        isc_fetch                    := nil;
+        isc_free                     := nil;
+        isc_ftof                     := nil;
+        isc_get_segment              := nil;
+        isc_get_slice                := nil;
+        isc_interprete               := nil;
+        isc_modify_dpb               := nil;
+        isc_modify_user              := nil;
+        isc_open                     := nil;
+        isc_open_blob                := nil;
+        isc_open_blob2               := nil;
+        isc_portable_integer         := nil;
+        isc_prepare                  := nil;
+        isc_prepare_transaction      := nil;
+        isc_prepare_transaction2     := nil;
+        isc_print_blr                := nil;
+        isc_print_sqlerror           := nil;
+        isc_print_status             := nil;
+        isc_put_segment              := nil;
+        isc_put_slice                := nil;
+        isc_qtoq                     := nil;
+        isc_que_events               := nil;
+        isc_receive                  := nil;
+        isc_reconnect_transaction    := nil;
+        isc_release_request          := nil;
+        isc_request_info             := nil;
+        isc_rollback_retaining       := nil;
+        isc_rollback_transaction     := nil;
+        isc_seek_blob                := nil;
+        isc_send                     := nil;
+        isc_service_attach           := nil;
+        isc_service_detach           := nil;
+        isc_service_query            := nil;
+        isc_service_start            := nil;
+  {$IFDEF INTERBASEORFIREBIRD}
+        isc_set_debug                := nil;
+  {$ENDIF}
+        isc_sql_interprete           := nil;
+        isc_sqlcode                  := nil;
+        isc_start_and_send           := nil;
+        isc_start_multiple           := nil;
+        isc_start_request            := nil;
+        isc_start_transaction        := nil;
+        isc_transact_request         := nil;
+        isc_transaction_info         := nil;
+        isc_unwind_request           := nil;
+        isc_vax_integer              := nil;
+        isc_version                  := nil;
+        isc_vtof                     := nil;
+        isc_vtov                     := nil;
+        isc_wait_for_event           := nil;
+  {$IFDEF FB15_UP}
+        isc_reset_fpe                := nil;
+  {$ENDIF}
+  {$IFDEF IB7_UP}
+        isc_array_gen_sdl2           := nil;
+        isc_array_gen_sdl2           := nil;
+        isc_array_get_slice2         := nil;
+        isc_array_lookup_bounds2     := nil;
+        isc_array_lookup_desc2       := nil;
+        isc_array_put_slice2         := nil;
+        isc_array_set_desc2          := nil;
+        isc_blob_default_desc2       := nil;
+        isc_blob_gen_bpb2            := nil;
+        isc_blob_lookup_desc2        := nil;
+        isc_blob_set_desc2           := nil;
+  {$ENDIF}
+  {$IFDEF IB7ORFB15}
+        isc_get_client_version       := nil;
+        isc_get_client_major_version := nil;
+        isc_get_client_minor_version := nil;
+  {$ENDIF}
+  {$IFDEF IB71_UP}
+        isc_release_savepoint        := nil;
+        isc_rollback_savepoint       := nil;
+        isc_start_savepoint          := nil;
+  {$ENDIF}
+      end;
+    finally
+      UnLock;
+    end;
+  end;
+
+{$IFDEF FPC}
+{$IFDEF LINUX}
+const
+  RTLD_GLOBAL = $101;
+{$ENDIF}
+{$ENDIF}
+
+  function TUIBaseLibrary.Load(const lib: string = GDS32DLL): Boolean;
 {$IFDEF LINUX}
     function GetProcAddress(Lib: Pointer; Name : PChar): Pointer;
     begin
@@ -5430,1533 +4309,309 @@ var
     end;
 {$ENDIF}
   begin
-    LIBCritSec.Enter;
+    FLIBCritSec.Enter;
     try
-      Result := GDS32Loaded;
+      Result := Loaded;
       if (not Result) then
       begin
   {$IFDEF MSWINDOWS}
-        GDS32Lib := LoadLibrary(PChar(lib));
+        FGDS32Lib := LoadLibrary(PChar(lib));
   {$ENDIF}
   {$IFDEF LINUX}
-        CryptLib := dlopen('libcrypt.so', RTLD_GLOBAL); // Service
-        GDS32Lib := dlopen(PChar(lib), RTLD_GLOBAL);
+        FCryptLib := dlopen('libcrypt.so', RTLD_GLOBAL); // Service
+        FGDS32Lib := dlopen(PChar(lib), RTLD_GLOBAL);
   {$ENDIF}
-        if GDS32Loaded then
+        if Loaded then
         begin
-          _BLOB_close                   := GetProcAddress(GDS32Lib, 'BLOB_close');
+          BLOB_close                   := GetProcAddress(FGDS32Lib, 'BLOB_close');
   {$IFDEF INTERBASEORFIREBIRD}
-          _BLOB_display                 := GetProcAddress(GDS32Lib, 'BLOB_display');
+          BLOB_display                 := GetProcAddress(FGDS32Lib, 'BLOB_display');
   {$ENDIF}
-          _BLOB_dump                    := GetProcAddress(GDS32Lib, 'BLOB_dump');
-          _BLOB_edit                    := GetProcAddress(GDS32Lib, 'BLOB_edit');
-          _BLOB_get                     := GetProcAddress(GDS32Lib, 'BLOB_get');
-          _BLOB_load                    := GetProcAddress(GDS32Lib, 'BLOB_load');
-          _BLOB_open                    := GetProcAddress(GDS32Lib, 'BLOB_open');
-          _BLOB_put                     := GetProcAddress(GDS32Lib, 'BLOB_put');
-          _BLOB_text_dump               := GetProcAddress(GDS32Lib, 'BLOB_text_dump');
-          _BLOB_text_load               := GetProcAddress(GDS32Lib, 'BLOB_text_load');
-          _Bopen                        := GetProcAddress(GDS32Lib, 'Bopen');
-          _isc_add_user                 := GetProcAddress(GDS32Lib, 'isc_add_user');
-          _isc_array_gen_sdl            := GetProcAddress(GDS32Lib, 'isc_array_gen_sdl');
-          _isc_array_get_slice          := GetProcAddress(GDS32Lib, 'isc_array_get_slice');
-          _isc_array_lookup_bounds      := GetProcAddress(GDS32Lib, 'isc_array_lookup_bounds');
-          _isc_array_lookup_desc        := GetProcAddress(GDS32Lib, 'isc_array_lookup_desc');
-          _isc_array_put_slice          := GetProcAddress(GDS32Lib, 'isc_array_put_slice');
-          _isc_array_set_desc           := GetProcAddress(GDS32Lib, 'isc_array_set_desc');
-          _isc_attach_database          := GetProcAddress(GDS32Lib, 'isc_attach_database');
-          _isc_blob_default_desc        := GetProcAddress(GDS32Lib, 'isc_blob_default_desc');
-          _isc_blob_gen_bpb             := GetProcAddress(GDS32Lib, 'isc_blob_gen_bpb');
-          _isc_blob_info                := GetProcAddress(GDS32Lib, 'isc_blob_info');
-          _isc_blob_lookup_desc         := GetProcAddress(GDS32Lib, 'isc_blob_lookup_desc');
-          _isc_blob_set_desc            := GetProcAddress(GDS32Lib, 'isc_blob_set_desc');
-          _isc_cancel_blob              := GetProcAddress(GDS32Lib, 'isc_cancel_blob');
-          _isc_cancel_events            := GetProcAddress(GDS32Lib, 'isc_cancel_events');
-          _isc_close                    := GetProcAddress(GDS32Lib, 'isc_close');
-          _isc_close_blob               := GetProcAddress(GDS32Lib, 'isc_close_blob');
-          _isc_commit_retaining         := GetProcAddress(GDS32Lib, 'isc_commit_retaining');
-          _isc_commit_transaction       := GetProcAddress(GDS32Lib, 'isc_commit_transaction');
-          _isc_compile_request          := GetProcAddress(GDS32Lib, 'isc_compile_request');
-          _isc_compile_request2         := GetProcAddress(GDS32Lib, 'isc_compile_request2');
-          _isc_create_blob              := GetProcAddress(GDS32Lib, 'isc_create_blob');
-          _isc_create_blob2             := GetProcAddress(GDS32Lib, 'isc_create_blob2');
-          _isc_create_database          := GetProcAddress(GDS32Lib, 'isc_create_database');
-          _isc_database_info            := GetProcAddress(GDS32Lib, 'isc_database_info');
-          _isc_ddl                      := GetProcAddress(GDS32Lib, 'isc_ddl');
-          _isc_declare                  := GetProcAddress(GDS32Lib, 'isc_declare');
-          _isc_decode_date              := GetProcAddress(GDS32Lib, 'isc_decode_date');
-          _isc_decode_sql_date          := GetProcAddress(GDS32Lib, 'isc_decode_sql_date');
-          _isc_decode_sql_time          := GetProcAddress(GDS32Lib, 'isc_decode_sql_time');
-          _isc_decode_timestamp         := GetProcAddress(GDS32Lib, 'isc_decode_timestamp');
-          _isc_delete_user              := GetProcAddress(GDS32Lib, 'isc_delete_user');
-          _isc_describe                 := GetProcAddress(GDS32Lib, 'isc_describe');
-          _isc_describe_bind            := GetProcAddress(GDS32Lib, 'isc_describe_bind');
-          _isc_detach_database          := GetProcAddress(GDS32Lib, 'isc_detach_database');
-          _isc_drop_database            := GetProcAddress(GDS32Lib, 'isc_drop_database');
-          _isc_dsql_alloc_statement2    := GetProcAddress(GDS32Lib, 'isc_dsql_alloc_statement2');
-          _isc_dsql_allocate_statement  := GetProcAddress(GDS32Lib, 'isc_dsql_allocate_statement');
-          _isc_dsql_describe            := GetProcAddress(GDS32Lib, 'isc_dsql_describe');
-          _isc_dsql_describe_bind       := GetProcAddress(GDS32Lib, 'isc_dsql_describe_bind');
-          _isc_dsql_exec_immed2         := GetProcAddress(GDS32Lib, 'isc_dsql_exec_immed2');
-          _isc_dsql_exec_immed3_m       := GetProcAddress(GDS32Lib, 'isc_dsql_exec_immed3_m');
-          _isc_dsql_execute             := GetProcAddress(GDS32Lib, 'isc_dsql_execute');
-          _isc_dsql_execute_immediate   := GetProcAddress(GDS32Lib, 'isc_dsql_execute_immediate');
-          _isc_dsql_execute_immediate_m := GetProcAddress(GDS32Lib, 'isc_dsql_execute_immediate_m');
-          _isc_dsql_execute_m           := GetProcAddress(GDS32Lib, 'isc_dsql_execute_m');
-          _isc_dsql_execute2            := GetProcAddress(GDS32Lib, 'isc_dsql_execute2');
-          _isc_dsql_execute2_m          := GetProcAddress(GDS32Lib, 'isc_dsql_execute2_m');
-          _isc_dsql_fetch               := GetProcAddress(GDS32Lib, 'isc_dsql_fetch');
-          _isc_dsql_fetch_m             := GetProcAddress(GDS32Lib, 'isc_dsql_fetch_m');
-          _isc_dsql_finish              := GetProcAddress(GDS32Lib, 'isc_dsql_finish');
-          _isc_dsql_free_statement      := GetProcAddress(GDS32Lib, 'isc_dsql_free_statement');
-          _isc_dsql_insert              := GetProcAddress(GDS32Lib, 'isc_dsql_insert');
-          _isc_dsql_insert_m            := GetProcAddress(GDS32Lib, 'isc_dsql_insert_m');
-          _isc_dsql_prepare             := GetProcAddress(GDS32Lib, 'isc_dsql_prepare');
-          _isc_dsql_prepare_m           := GetProcAddress(GDS32Lib, 'isc_dsql_prepare_m');
-          _isc_dsql_release             := GetProcAddress(GDS32Lib, 'isc_dsql_release');
-          _isc_dsql_set_cursor_name     := GetProcAddress(GDS32Lib, 'isc_dsql_set_cursor_name');
-          _isc_dsql_sql_info            := GetProcAddress(GDS32Lib, 'isc_dsql_sql_info');
-          _isc_embed_dsql_close         := GetProcAddress(GDS32Lib, 'isc_embed_dsql_close');
-          _isc_embed_dsql_declare       := GetProcAddress(GDS32Lib, 'isc_embed_dsql_declare');
-          _isc_embed_dsql_describe      := GetProcAddress(GDS32Lib, 'isc_embed_dsql_describe');
-          _isc_embed_dsql_describe_bind := GetProcAddress(GDS32Lib, 'isc_embed_dsql_describe_bind');
-          _isc_embed_dsql_execute       := GetProcAddress(GDS32Lib, 'isc_embed_dsql_execute');
-          _isc_embed_dsql_execute_immed := GetProcAddress(GDS32Lib, 'isc_embed_dsql_execute_immed');
-          _isc_embed_dsql_execute2      := GetProcAddress(GDS32Lib, 'isc_embed_dsql_execute2');
-          _isc_embed_dsql_fetch         := GetProcAddress(GDS32Lib, 'isc_embed_dsql_fetch');
-          _isc_embed_dsql_insert        := GetProcAddress(GDS32Lib, 'isc_embed_dsql_insert');
-          _isc_embed_dsql_open          := GetProcAddress(GDS32Lib, 'isc_embed_dsql_open');
-          _isc_embed_dsql_open2         := GetProcAddress(GDS32Lib, 'isc_embed_dsql_open2');
-          _isc_embed_dsql_prepare       := GetProcAddress(GDS32Lib, 'isc_embed_dsql_prepare');
-          _isc_embed_dsql_release       := GetProcAddress(GDS32Lib, 'isc_embed_dsql_release');
-          _isc_encode_date              := GetProcAddress(GDS32Lib, 'isc_encode_date');
-          _isc_encode_sql_date          := GetProcAddress(GDS32Lib, 'isc_encode_sql_date');
-          _isc_encode_sql_time          := GetProcAddress(GDS32Lib, 'isc_encode_sql_time');
-          _isc_encode_timestamp         := GetProcAddress(GDS32Lib, 'isc_encode_timestamp');
-          _isc_event_block              := GetProcAddress(GDS32Lib, 'isc_event_block');
-          _isc_event_counts             := GetProcAddress(GDS32Lib, 'isc_event_counts');
-          _isc_execute                  := GetProcAddress(GDS32Lib, 'isc_execute');
-          _isc_execute_immediate        := GetProcAddress(GDS32Lib, 'isc_execute_immediate');
-          _isc_expand_dpb               := GetProcAddress(GDS32Lib, 'isc_expand_dpb');
-          _isc_fetch                    := GetProcAddress(GDS32Lib, 'isc_fetch');
-          _isc_free                     := GetProcAddress(GDS32Lib, 'isc_free');
-          _isc_ftof                     := GetProcAddress(GDS32Lib, 'isc_ftof');
-          _isc_get_segment              := GetProcAddress(GDS32Lib, 'isc_get_segment');
-          _isc_get_slice                := GetProcAddress(GDS32Lib, 'isc_get_slice');
-          _isc_interprete               := GetProcAddress(GDS32Lib, 'isc_interprete');
-          _isc_modify_dpb               := GetProcAddress(GDS32Lib, 'isc_modify_dpb');
-          _isc_modify_user              := GetProcAddress(GDS32Lib, 'isc_modify_user');
-          _isc_open                     := GetProcAddress(GDS32Lib, 'isc_open');
-          _isc_open_blob                := GetProcAddress(GDS32Lib, 'isc_open_blob');
-          _isc_open_blob2               := GetProcAddress(GDS32Lib, 'isc_open_blob2');
-          _isc_portable_integer         := GetProcAddress(GDS32Lib, 'isc_portable_integer');
-          _isc_prepare                  := GetProcAddress(GDS32Lib, 'isc_prepare');
-          _isc_prepare_transaction      := GetProcAddress(GDS32Lib, 'isc_prepare_transaction');
-          _isc_prepare_transaction2     := GetProcAddress(GDS32Lib, 'isc_prepare_transaction2');
-          _isc_print_blr                := GetProcAddress(GDS32Lib, 'isc_print_blr');
-          _isc_print_sqlerror           := GetProcAddress(GDS32Lib, 'isc_print_sqlerror');
-          _isc_print_status             := GetProcAddress(GDS32Lib, 'isc_print_status');
-          _isc_put_segment              := GetProcAddress(GDS32Lib, 'isc_put_segment');
-          _isc_put_slice                := GetProcAddress(GDS32Lib, 'isc_put_slice');
-          _isc_qtoq                     := GetProcAddress(GDS32Lib, 'isc_qtoq');
-          _isc_que_events               := GetProcAddress(GDS32Lib, 'isc_que_events');
-          _isc_receive                  := GetProcAddress(GDS32Lib, 'isc_receive');
-          _isc_reconnect_transaction    := GetProcAddress(GDS32Lib, 'isc_reconnect_transaction');
-          _isc_release_request          := GetProcAddress(GDS32Lib, 'isc_release_request');
-          _isc_request_info             := GetProcAddress(GDS32Lib, 'isc_request_info');
-          _isc_rollback_retaining       := GetProcAddress(GDS32Lib, 'isc_rollback_retaining');
-          _isc_rollback_transaction     := GetProcAddress(GDS32Lib, 'isc_rollback_transaction');
-          _isc_seek_blob                := GetProcAddress(GDS32Lib, 'isc_seek_blob');
-          _isc_send                     := GetProcAddress(GDS32Lib, 'isc_send');
-          _isc_service_attach           := GetProcAddress(GDS32Lib, 'isc_service_attach');
-          _isc_service_detach           := GetProcAddress(GDS32Lib, 'isc_service_detach');
-          _isc_service_query            := GetProcAddress(GDS32Lib, 'isc_service_query');
-          _isc_service_start            := GetProcAddress(GDS32Lib, 'isc_service_start');
+          BLOB_dump                    := GetProcAddress(FGDS32Lib, 'BLOB_dump');
+          BLOB_edit                    := GetProcAddress(FGDS32Lib, 'BLOB_edit');
+          BLOB_get                     := GetProcAddress(FGDS32Lib, 'BLOB_get');
+          BLOB_load                    := GetProcAddress(FGDS32Lib, 'BLOB_load');
+          BLOB_open                    := GetProcAddress(FGDS32Lib, 'BLOB_open');
+          BLOB_put                     := GetProcAddress(FGDS32Lib, 'BLOB_put');
+          BLOB_text_dump               := GetProcAddress(FGDS32Lib, 'BLOB_text_dump');
+          BLOB_text_load               := GetProcAddress(FGDS32Lib, 'BLOB_text_load');
+          Bopen                        := GetProcAddress(FGDS32Lib, 'Bopen');
+          isc_add_user                 := GetProcAddress(FGDS32Lib, 'isc_add_user');
+          isc_array_gen_sdl            := GetProcAddress(FGDS32Lib, 'isc_array_gen_sdl');
+          isc_array_get_slice          := GetProcAddress(FGDS32Lib, 'isc_array_get_slice');
+          isc_array_lookup_bounds      := GetProcAddress(FGDS32Lib, 'isc_array_lookup_bounds');
+          isc_array_lookup_desc        := GetProcAddress(FGDS32Lib, 'isc_array_lookup_desc');
+          isc_array_put_slice          := GetProcAddress(FGDS32Lib, 'isc_array_put_slice');
+          isc_array_set_desc           := GetProcAddress(FGDS32Lib, 'isc_array_set_desc');
+          isc_attach_database          := GetProcAddress(FGDS32Lib, 'isc_attach_database');
+          isc_blob_default_desc        := GetProcAddress(FGDS32Lib, 'isc_blob_default_desc');
+          isc_blob_gen_bpb             := GetProcAddress(FGDS32Lib, 'isc_blob_gen_bpb');
+          isc_blob_info                := GetProcAddress(FGDS32Lib, 'isc_blob_info');
+          isc_blob_lookup_desc         := GetProcAddress(FGDS32Lib, 'isc_blob_lookup_desc');
+          isc_blob_set_desc            := GetProcAddress(FGDS32Lib, 'isc_blob_set_desc');
+          isc_cancel_blob              := GetProcAddress(FGDS32Lib, 'isc_cancel_blob');
+          isc_cancel_events            := GetProcAddress(FGDS32Lib, 'isc_cancel_events');
+          isc_close                    := GetProcAddress(FGDS32Lib, 'isc_close');
+          isc_close_blob               := GetProcAddress(FGDS32Lib, 'isc_close_blob');
+          isc_commit_retaining         := GetProcAddress(FGDS32Lib, 'isc_commit_retaining');
+          isc_commit_transaction       := GetProcAddress(FGDS32Lib, 'isc_commit_transaction');
+          isc_compile_request          := GetProcAddress(FGDS32Lib, 'isc_compile_request');
+          isc_compile_request2         := GetProcAddress(FGDS32Lib, 'isc_compile_request2');
+          isc_create_blob              := GetProcAddress(FGDS32Lib, 'isc_create_blob');
+          isc_create_blob2             := GetProcAddress(FGDS32Lib, 'isc_create_blob2');
+          isc_create_database          := GetProcAddress(FGDS32Lib, 'isc_create_database');
+          isc_database_info            := GetProcAddress(FGDS32Lib, 'isc_database_info');
+          isc_ddl                      := GetProcAddress(FGDS32Lib, 'isc_ddl');
+          isc_declare                  := GetProcAddress(FGDS32Lib, 'isc_declare');
+          isc_decode_date              := GetProcAddress(FGDS32Lib, 'isc_decode_date');
+          isc_decode_sql_date          := GetProcAddress(FGDS32Lib, 'isc_decode_sql_date');
+          isc_decode_sql_time          := GetProcAddress(FGDS32Lib, 'isc_decode_sql_time');
+          isc_decode_timestamp         := GetProcAddress(FGDS32Lib, 'isc_decode_timestamp');
+          isc_delete_user              := GetProcAddress(FGDS32Lib, 'isc_delete_user');
+          isc_describe                 := GetProcAddress(FGDS32Lib, 'isc_describe');
+          isc_describe_bind            := GetProcAddress(FGDS32Lib, 'isc_describe_bind');
+          isc_detach_database          := GetProcAddress(FGDS32Lib, 'isc_detach_database');
+          isc_drop_database            := GetProcAddress(FGDS32Lib, 'isc_drop_database');
+          isc_dsql_alloc_statement2    := GetProcAddress(FGDS32Lib, 'isc_dsql_alloc_statement2');
+          isc_dsql_allocate_statement  := GetProcAddress(FGDS32Lib, 'isc_dsql_allocate_statement');
+          isc_dsql_describe            := GetProcAddress(FGDS32Lib, 'isc_dsql_describe');
+          isc_dsql_describe_bind       := GetProcAddress(FGDS32Lib, 'isc_dsql_describe_bind');
+          isc_dsql_exec_immed2         := GetProcAddress(FGDS32Lib, 'isc_dsql_exec_immed2');
+          isc_dsql_exec_immed3_m       := GetProcAddress(FGDS32Lib, 'isc_dsql_exec_immed3_m');
+          isc_dsql_execute             := GetProcAddress(FGDS32Lib, 'isc_dsql_execute');
+          isc_dsql_execute_immediate   := GetProcAddress(FGDS32Lib, 'isc_dsql_execute_immediate');
+          isc_dsql_execute_immediate_m := GetProcAddress(FGDS32Lib, 'isc_dsql_execute_immediate_m');
+          isc_dsql_execute_m           := GetProcAddress(FGDS32Lib, 'isc_dsql_execute_m');
+          isc_dsql_execute2            := GetProcAddress(FGDS32Lib, 'isc_dsql_execute2');
+          isc_dsql_execute2_m          := GetProcAddress(FGDS32Lib, 'isc_dsql_execute2_m');
+          isc_dsql_fetch               := GetProcAddress(FGDS32Lib, 'isc_dsql_fetch');
+          isc_dsql_fetch_m             := GetProcAddress(FGDS32Lib, 'isc_dsql_fetch_m');
+          isc_dsql_finish              := GetProcAddress(FGDS32Lib, 'isc_dsql_finish');
+          isc_dsql_free_statement      := GetProcAddress(FGDS32Lib, 'isc_dsql_free_statement');
+          isc_dsql_insert              := GetProcAddress(FGDS32Lib, 'isc_dsql_insert');
+          isc_dsql_insert_m            := GetProcAddress(FGDS32Lib, 'isc_dsql_insert_m');
+          isc_dsql_prepare             := GetProcAddress(FGDS32Lib, 'isc_dsql_prepare');
+          isc_dsql_prepare_m           := GetProcAddress(FGDS32Lib, 'isc_dsql_prepare_m');
+          isc_dsql_release             := GetProcAddress(FGDS32Lib, 'isc_dsql_release');
+          isc_dsql_set_cursor_name     := GetProcAddress(FGDS32Lib, 'isc_dsql_set_cursor_name');
+          isc_dsql_sql_info            := GetProcAddress(FGDS32Lib, 'isc_dsql_sql_info');
+          isc_embed_dsql_close         := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_close');
+          isc_embed_dsql_declare       := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_declare');
+          isc_embed_dsql_describe      := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_describe');
+          isc_embed_dsql_describe_bind := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_describe_bind');
+          isc_embed_dsql_execute       := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_execute');
+          isc_embed_dsql_execute_immed := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_execute_immed');
+          isc_embed_dsql_execute2      := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_execute2');
+          isc_embed_dsql_fetch         := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_fetch');
+          isc_embed_dsql_insert        := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_insert');
+          isc_embed_dsql_open          := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_open');
+          isc_embed_dsql_open2         := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_open2');
+          isc_embed_dsql_prepare       := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_prepare');
+          isc_embed_dsql_release       := GetProcAddress(FGDS32Lib, 'isc_embed_dsql_release');
+          isc_encode_date              := GetProcAddress(FGDS32Lib, 'isc_encode_date');
+          isc_encode_sql_date          := GetProcAddress(FGDS32Lib, 'isc_encode_sql_date');
+          isc_encode_sql_time          := GetProcAddress(FGDS32Lib, 'isc_encode_sql_time');
+          isc_encode_timestamp         := GetProcAddress(FGDS32Lib, 'isc_encode_timestamp');
+          isc_event_block              := GetProcAddress(FGDS32Lib, 'isc_event_block');
+          isc_event_counts             := GetProcAddress(FGDS32Lib, 'isc_event_counts');
+          isc_execute                  := GetProcAddress(FGDS32Lib, 'isc_execute');
+          isc_execute_immediate        := GetProcAddress(FGDS32Lib, 'isc_execute_immediate');
+          isc_expand_dpb               := GetProcAddress(FGDS32Lib, 'isc_expand_dpb');
+          isc_fetch                    := GetProcAddress(FGDS32Lib, 'isc_fetch');
+          isc_free                     := GetProcAddress(FGDS32Lib, 'isc_free');
+          isc_ftof                     := GetProcAddress(FGDS32Lib, 'isc_ftof');
+          isc_get_segment              := GetProcAddress(FGDS32Lib, 'isc_get_segment');
+          isc_get_slice                := GetProcAddress(FGDS32Lib, 'isc_get_slice');
+          isc_interprete               := GetProcAddress(FGDS32Lib, 'isc_interprete');
+          isc_modify_dpb               := GetProcAddress(FGDS32Lib, 'isc_modify_dpb');
+          isc_modify_user              := GetProcAddress(FGDS32Lib, 'isc_modify_user');
+          isc_open                     := GetProcAddress(FGDS32Lib, 'isc_open');
+          isc_open_blob                := GetProcAddress(FGDS32Lib, 'isc_open_blob');
+          isc_open_blob2               := GetProcAddress(FGDS32Lib, 'isc_open_blob2');
+          isc_portable_integer         := GetProcAddress(FGDS32Lib, 'isc_portable_integer');
+          isc_prepare                  := GetProcAddress(FGDS32Lib, 'isc_prepare');
+          isc_prepare_transaction      := GetProcAddress(FGDS32Lib, 'isc_prepare_transaction');
+          isc_prepare_transaction2     := GetProcAddress(FGDS32Lib, 'isc_prepare_transaction2');
+          isc_print_blr                := GetProcAddress(FGDS32Lib, 'isc_print_blr');
+          isc_print_sqlerror           := GetProcAddress(FGDS32Lib, 'isc_print_sqlerror');
+          isc_print_status             := GetProcAddress(FGDS32Lib, 'isc_print_status');
+          isc_put_segment              := GetProcAddress(FGDS32Lib, 'isc_put_segment');
+          isc_put_slice                := GetProcAddress(FGDS32Lib, 'isc_put_slice');
+          isc_qtoq                     := GetProcAddress(FGDS32Lib, 'isc_qtoq');
+          isc_que_events               := GetProcAddress(FGDS32Lib, 'isc_que_events');
+          isc_receive                  := GetProcAddress(FGDS32Lib, 'isc_receive');
+          isc_reconnect_transaction    := GetProcAddress(FGDS32Lib, 'isc_reconnect_transaction');
+          isc_release_request          := GetProcAddress(FGDS32Lib, 'isc_release_request');
+          isc_request_info             := GetProcAddress(FGDS32Lib, 'isc_request_info');
+          isc_rollback_retaining       := GetProcAddress(FGDS32Lib, 'isc_rollback_retaining');
+          isc_rollback_transaction     := GetProcAddress(FGDS32Lib, 'isc_rollback_transaction');
+          isc_seek_blob                := GetProcAddress(FGDS32Lib, 'isc_seek_blob');
+          isc_send                     := GetProcAddress(FGDS32Lib, 'isc_send');
+          isc_service_attach           := GetProcAddress(FGDS32Lib, 'isc_service_attach');
+          isc_service_detach           := GetProcAddress(FGDS32Lib, 'isc_service_detach');
+          isc_service_query            := GetProcAddress(FGDS32Lib, 'isc_service_query');
+          isc_service_start            := GetProcAddress(FGDS32Lib, 'isc_service_start');
   {$IFDEF INTERBASEORFIREBIRD}
-          _isc_set_debug                := GetProcAddress(GDS32Lib, 'isc_set_debug');
+          isc_set_debug                := GetProcAddress(FGDS32Lib, 'isc_set_debug');
   {$ENDIF}
-          _isc_sql_interprete           := GetProcAddress(GDS32Lib, 'isc_sql_interprete');
-          _isc_sqlcode                  := GetProcAddress(GDS32Lib, 'isc_sqlcode');
-          _isc_start_and_send           := GetProcAddress(GDS32Lib, 'isc_start_and_send');
-          _isc_start_multiple           := GetProcAddress(GDS32Lib, 'isc_start_multiple');
-          _isc_start_request            := GetProcAddress(GDS32Lib, 'isc_start_request');
-          _isc_start_transaction        := GetProcAddress(GDS32Lib, 'isc_start_transaction');
-          _isc_transact_request         := GetProcAddress(GDS32Lib, 'isc_transact_request');
-          _isc_transaction_info         := GetProcAddress(GDS32Lib, 'isc_transaction_info');
-          _isc_unwind_request           := GetProcAddress(GDS32Lib, 'isc_unwind_request');
-          _isc_vax_integer              := GetProcAddress(GDS32Lib, 'isc_vax_integer');
-          _isc_version                  := GetProcAddress(GDS32Lib, 'isc_version');
-          _isc_vtof                     := GetProcAddress(GDS32Lib, 'isc_vtof');
-          _isc_vtov                     := GetProcAddress(GDS32Lib, 'isc_vtov');
-          _isc_wait_for_event           := GetProcAddress(GDS32Lib, 'isc_wait_for_event');
+          isc_sql_interprete           := GetProcAddress(FGDS32Lib, 'isc_sql_interprete');
+          isc_sqlcode                  := GetProcAddress(FGDS32Lib, 'isc_sqlcode');
+          isc_start_and_send           := GetProcAddress(FGDS32Lib, 'isc_start_and_send');
+          isc_start_multiple           := GetProcAddress(FGDS32Lib, 'isc_start_multiple');
+          isc_start_request            := GetProcAddress(FGDS32Lib, 'isc_start_request');
+          isc_start_transaction        := GetProcAddress(FGDS32Lib, 'isc_start_transaction');
+          isc_transact_request         := GetProcAddress(FGDS32Lib, 'isc_transact_request');
+          isc_transaction_info         := GetProcAddress(FGDS32Lib, 'isc_transaction_info');
+          isc_unwind_request           := GetProcAddress(FGDS32Lib, 'isc_unwind_request');
+          isc_vax_integer              := GetProcAddress(FGDS32Lib, 'isc_vax_integer');
+          isc_version                  := GetProcAddress(FGDS32Lib, 'isc_version');
+          isc_vtof                     := GetProcAddress(FGDS32Lib, 'isc_vtof');
+          isc_vtov                     := GetProcAddress(FGDS32Lib, 'isc_vtov');
+          isc_wait_for_event           := GetProcAddress(FGDS32Lib, 'isc_wait_for_event');
 
   {$IFDEF FB15_UP}
-          _isc_reset_fpe                := GetProcAddress(GDS32Lib, 'isc_reset_fpe');
+          isc_reset_fpe                := GetProcAddress(FGDS32Lib, 'isc_reset_fpe');
   {$ENDIF}
   {$IFDEF IB7_UP}
-          _isc_array_gen_sdl2           := GetProcAddress(GDS32Lib, 'isc_array_gen_sdl2');
-          _isc_array_get_slice2         := GetProcAddress(GDS32Lib, 'isc_array_get_slice2');
-          _isc_array_lookup_bounds2     := GetProcAddress(GDS32Lib, 'isc_array_lookup_bounds2');
-          _isc_array_lookup_desc2       := GetProcAddress(GDS32Lib, 'isc_array_lookup_desc2');
-          _isc_array_put_slice2         := GetProcAddress(GDS32Lib, 'isc_array_put_slice2');
-          _isc_array_set_desc2          := GetProcAddress(GDS32Lib, 'isc_array_set_desc2');
-          _isc_blob_default_desc2       := GetProcAddress(GDS32Lib, 'isc_blob_default_desc2');
-          _isc_blob_gen_bpb2            := GetProcAddress(GDS32Lib, 'isc_blob_gen_bpb2');
-          _isc_blob_lookup_desc2        := GetProcAddress(GDS32Lib, 'isc_blob_lookup_desc2');
-          _isc_blob_set_desc2           := GetProcAddress(GDS32Lib, 'isc_blob_set_desc2');
+          isc_array_gen_sdl2           := GetProcAddress(FGDS32Lib, 'isc_array_gen_sdl2');
+          isc_array_get_slice2         := GetProcAddress(FGDS32Lib, 'isc_array_get_slice2');
+          isc_array_lookup_bounds2     := GetProcAddress(FGDS32Lib, 'isc_array_lookup_bounds2');
+          isc_array_lookup_desc2       := GetProcAddress(FGDS32Lib, 'isc_array_lookup_desc2');
+          isc_array_put_slice2         := GetProcAddress(FGDS32Lib, 'isc_array_put_slice2');
+          isc_array_set_desc2          := GetProcAddress(FGDS32Lib, 'isc_array_set_desc2');
+          isc_blob_default_desc2       := GetProcAddress(FGDS32Lib, 'isc_blob_default_desc2');
+          isc_blob_gen_bpb2            := GetProcAddress(FGDS32Lib, 'isc_blob_gen_bpb2');
+          isc_blob_lookup_desc2        := GetProcAddress(FGDS32Lib, 'isc_blob_lookup_desc2');
+          isc_blob_set_desc2           := GetProcAddress(FGDS32Lib, 'isc_blob_set_desc2');
   {$ENDIF}
   {$IFDEF IB7ORFB15}
-          _isc_get_client_version       := GetProcAddress(GDS32Lib, 'isc_get_client_version');
-          _isc_get_client_major_version := GetProcAddress(GDS32Lib, 'isc_get_client_major_version');
-          _isc_get_client_minor_version := GetProcAddress(GDS32Lib, 'isc_get_client_minor_version');
+          isc_get_client_version       := GetProcAddress(FGDS32Lib, 'isc_get_client_version');
+          isc_get_client_major_version := GetProcAddress(FGDS32Lib, 'isc_get_client_major_version');
+          isc_get_client_minor_version := GetProcAddress(FGDS32Lib, 'isc_get_client_minor_version');
   {$ENDIF}
-          Result := Assigned(_BLOB_close) and Assigned(_BLOB_dump) and
-            Assigned(_BLOB_edit) and Assigned(_BLOB_get) and Assigned(_BLOB_load) and
-            Assigned(_BLOB_open) and Assigned(_BLOB_put) and Assigned(_BLOB_text_dump) and
-            Assigned(_BLOB_text_load) and Assigned(_Bopen) and Assigned(_isc_add_user) and
-            Assigned(_isc_array_gen_sdl) and Assigned(_isc_array_get_slice) and
-            Assigned(_isc_array_lookup_bounds) and Assigned(_isc_array_lookup_desc) and
-            Assigned(_isc_array_put_slice) and Assigned(_isc_array_set_desc) and
-            Assigned(_isc_attach_database) and Assigned(_isc_blob_default_desc) and
-            Assigned(_isc_blob_gen_bpb) and Assigned(_isc_blob_info) and
-            Assigned(_isc_blob_lookup_desc) and Assigned(_isc_blob_set_desc) and
-            Assigned(_isc_cancel_blob) and Assigned(_isc_cancel_events) and Assigned(_isc_close) and
-            Assigned(_isc_close_blob) and Assigned(_isc_commit_retaining) and
-            Assigned(_isc_commit_transaction) and Assigned(_isc_compile_request) and
-            Assigned(_isc_compile_request2) and Assigned(_isc_create_blob) and
-            Assigned(_isc_create_blob2) and Assigned(_isc_create_database) and
-            Assigned(_isc_database_info) and Assigned(_isc_ddl) and Assigned(_isc_declare) and
-            Assigned(_isc_decode_date) and Assigned(_isc_decode_sql_date) and
-            Assigned(_isc_decode_sql_time) and Assigned(_isc_decode_timestamp) and
-            Assigned(_isc_delete_user) and Assigned(_isc_describe) and Assigned(_isc_describe_bind) and
-            Assigned(_isc_detach_database) and Assigned(_isc_drop_database) and
-            Assigned(_isc_dsql_alloc_statement2) and Assigned(_isc_dsql_allocate_statement) and
-            Assigned(_isc_dsql_describe) and Assigned(_isc_dsql_describe_bind) and
-            Assigned(_isc_dsql_exec_immed2) and Assigned(_isc_dsql_exec_immed3_m) and
-            Assigned(_isc_dsql_execute) and Assigned(_isc_dsql_execute_immediate) and
-            Assigned(_isc_dsql_execute_immediate_m) and Assigned(_isc_dsql_execute_m) and
-            Assigned(_isc_dsql_execute2) and Assigned(_isc_dsql_execute2_m) and
-            Assigned(_isc_dsql_fetch) and Assigned(_isc_dsql_fetch_m) and
-            Assigned(_isc_dsql_finish) and Assigned(_isc_dsql_free_statement) and
-            Assigned(_isc_dsql_insert) and Assigned(_isc_dsql_insert_m) and
-            Assigned(_isc_dsql_prepare) and Assigned(_isc_dsql_prepare_m) and
-            Assigned(_isc_dsql_release) and Assigned(_isc_dsql_set_cursor_name) and
-            Assigned(_isc_dsql_sql_info) and Assigned(_isc_embed_dsql_close) and
-            Assigned(_isc_embed_dsql_declare) and Assigned(_isc_embed_dsql_describe) and
-            Assigned(_isc_embed_dsql_describe_bind) and Assigned(_isc_embed_dsql_execute) and
-            Assigned(_isc_embed_dsql_execute_immed) and Assigned(_isc_embed_dsql_execute2) and
-            Assigned(_isc_embed_dsql_fetch) and Assigned(_isc_embed_dsql_insert) and
-            Assigned(_isc_embed_dsql_open) and Assigned(_isc_embed_dsql_open2) and
-            Assigned(_isc_embed_dsql_prepare) and Assigned(_isc_embed_dsql_release) and
-            Assigned(_isc_encode_date) and Assigned(_isc_encode_sql_date) and
-            Assigned(_isc_encode_sql_time) and Assigned(_isc_encode_timestamp) and
-            Assigned(_isc_event_block) and Assigned(_isc_event_counts) and Assigned(_isc_execute) and
-            Assigned(_isc_execute_immediate) and Assigned(_isc_expand_dpb) and
-            Assigned(_isc_free) and Assigned(_isc_ftof) and Assigned(_isc_get_segment) and
-            Assigned(_isc_fetch) and Assigned(_isc_get_slice) and Assigned(_isc_interprete) and
-            Assigned(_isc_modify_dpb) and Assigned(_isc_modify_user) and Assigned(_isc_open) and
-            Assigned(_isc_open_blob) and Assigned(_isc_open_blob2) and Assigned(_isc_portable_integer) and
-            Assigned(_isc_prepare) and Assigned(_isc_prepare_transaction) and
-            Assigned(_isc_prepare_transaction2) and Assigned(_isc_print_blr) and
-            Assigned(_isc_print_sqlerror) and Assigned(_isc_print_status) and Assigned(_isc_put_segment) and
-            Assigned(_isc_put_slice) and Assigned(_isc_qtoq) and Assigned(_isc_que_events) and
-            Assigned(_isc_receive) and Assigned(_isc_reconnect_transaction) and
-            Assigned(_isc_release_request) and Assigned(_isc_request_info) and
-            Assigned(_isc_rollback_retaining) and Assigned(_isc_rollback_transaction) and
-            Assigned(_isc_seek_blob) and Assigned(_isc_send) and Assigned(_isc_service_attach) and
-            Assigned(_isc_service_detach) and Assigned(_isc_service_query) and
-            Assigned(_isc_service_start) and Assigned(_isc_sql_interprete) and
-            Assigned(_isc_sqlcode) and Assigned(_isc_start_and_send) and Assigned(_isc_start_multiple) and
-            Assigned(_isc_start_request) and Assigned(_isc_start_transaction) and
-            Assigned(_isc_transact_request) and Assigned(_isc_transaction_info) and
-            Assigned(_isc_unwind_request) and Assigned(_isc_vax_integer) and
-            Assigned(_isc_version) and Assigned(_isc_vtof) and Assigned(_isc_vtov) and
-            Assigned(_isc_wait_for_event)
+  {$IFDEF IB71_UP}
+          isc_release_savepoint        := GetProcAddress(FGDS32Lib, 'isc_release_savepoint');
+          isc_rollback_savepoint       := GetProcAddress(FGDS32Lib, 'isc_rollback_savepoint');
+          isc_start_savepoint          := GetProcAddress(FGDS32Lib, 'isc_start_savepoint');
+  {$ENDIF}
+
+          Result := Assigned(BLOB_close) and Assigned(BLOB_dump) and
+            Assigned(BLOB_edit) and Assigned(BLOB_get) and Assigned(BLOB_load) and
+            Assigned(BLOB_open) and Assigned(BLOB_put) and Assigned(BLOB_text_dump) and
+            Assigned(BLOB_text_load) and Assigned(Bopen) and Assigned(isc_add_user) and
+            Assigned(isc_array_gen_sdl) and Assigned(isc_array_get_slice) and
+            Assigned(isc_array_lookup_bounds) and Assigned(isc_array_lookup_desc) and
+            Assigned(isc_array_put_slice) and Assigned(isc_array_set_desc) and
+            Assigned(isc_attach_database) and Assigned(isc_blob_default_desc) and
+            Assigned(isc_blob_gen_bpb) and Assigned(isc_blob_info) and
+            Assigned(isc_blob_lookup_desc) and Assigned(isc_blob_set_desc) and
+            Assigned(isc_cancel_blob) and Assigned(isc_cancel_events) and Assigned(isc_close) and
+            Assigned(isc_close_blob) and Assigned(isc_commit_retaining) and
+            Assigned(isc_commit_transaction) and Assigned(isc_compile_request) and
+            Assigned(isc_compile_request2) and Assigned(isc_create_blob) and
+            Assigned(isc_create_blob2) and Assigned(isc_create_database) and
+            Assigned(isc_database_info) and Assigned(isc_ddl) and Assigned(isc_declare) and
+            Assigned(isc_decode_date) and Assigned(isc_decode_sql_date) and
+            Assigned(isc_decode_sql_time) and Assigned(isc_decode_timestamp) and
+            Assigned(isc_delete_user) and Assigned(isc_describe) and Assigned(isc_describe_bind) and
+            Assigned(isc_detach_database) and Assigned(isc_drop_database) and
+            Assigned(isc_dsql_alloc_statement2) and Assigned(isc_dsql_allocate_statement) and
+            Assigned(isc_dsql_describe) and Assigned(isc_dsql_describe_bind) and
+            Assigned(isc_dsql_exec_immed2) and Assigned(isc_dsql_exec_immed3_m) and
+            Assigned(isc_dsql_execute) and Assigned(isc_dsql_execute_immediate) and
+            Assigned(isc_dsql_execute_immediate_m) and Assigned(isc_dsql_execute_m) and
+            Assigned(isc_dsql_execute2) and Assigned(isc_dsql_execute2_m) and
+            Assigned(isc_dsql_fetch) and Assigned(isc_dsql_fetch_m) and
+            Assigned(isc_dsql_finish) and Assigned(isc_dsql_free_statement) and
+            Assigned(isc_dsql_insert) and Assigned(isc_dsql_insert_m) and
+            Assigned(isc_dsql_prepare) and Assigned(isc_dsql_prepare_m) and
+            Assigned(isc_dsql_release) and Assigned(isc_dsql_set_cursor_name) and
+            Assigned(isc_dsql_sql_info) and Assigned(isc_embed_dsql_close) and
+            Assigned(isc_embed_dsql_declare) and Assigned(isc_embed_dsql_describe) and
+            Assigned(isc_embed_dsql_describe_bind) and Assigned(isc_embed_dsql_execute) and
+            Assigned(isc_embed_dsql_execute_immed) and Assigned(isc_embed_dsql_execute2) and
+            Assigned(isc_embed_dsql_fetch) and Assigned(isc_embed_dsql_insert) and
+            Assigned(isc_embed_dsql_open) and Assigned(isc_embed_dsql_open2) and
+            Assigned(isc_embed_dsql_prepare) and Assigned(isc_embed_dsql_release) and
+            Assigned(isc_encode_date) and Assigned(isc_encode_sql_date) and
+            Assigned(isc_encode_sql_time) and Assigned(isc_encode_timestamp) and
+            Assigned(isc_event_block) and Assigned(isc_event_counts) and Assigned(isc_execute) and
+            Assigned(isc_execute_immediate) and Assigned(isc_expand_dpb) and
+            Assigned(isc_free) and Assigned(isc_ftof) and Assigned(isc_get_segment) and
+            Assigned(isc_fetch) and Assigned(isc_get_slice) and Assigned(isc_interprete) and
+            Assigned(isc_modify_dpb) and Assigned(isc_modify_user) and Assigned(isc_open) and
+            Assigned(isc_open_blob) and Assigned(isc_open_blob2) and Assigned(isc_portable_integer) and
+            Assigned(isc_prepare) and Assigned(isc_prepare_transaction) and
+            Assigned(isc_prepare_transaction2) and Assigned(isc_print_blr) and
+            Assigned(isc_print_sqlerror) and Assigned(isc_print_status) and Assigned(isc_put_segment) and
+            Assigned(isc_put_slice) and Assigned(isc_qtoq) and Assigned(isc_que_events) and
+            Assigned(isc_receive) and Assigned(isc_reconnect_transaction) and
+            Assigned(isc_release_request) and Assigned(isc_request_info) and
+            Assigned(isc_rollback_retaining) and Assigned(isc_rollback_transaction) and
+            Assigned(isc_seek_blob) and Assigned(isc_send) and Assigned(isc_service_attach) and
+            Assigned(isc_service_detach) and Assigned(isc_service_query) and
+            Assigned(isc_service_start) and Assigned(isc_sql_interprete) and
+            Assigned(isc_sqlcode) and Assigned(isc_start_and_send) and Assigned(isc_start_multiple) and
+            Assigned(isc_start_request) and Assigned(isc_start_transaction) and
+            Assigned(isc_transact_request) and Assigned(isc_transaction_info) and
+            Assigned(isc_unwind_request) and Assigned(isc_vax_integer) and
+            Assigned(isc_version) and Assigned(isc_vtof) and Assigned(isc_vtov) and
+            Assigned(isc_wait_for_event)
   {$IFDEF INTERBASEORFIREBIRD}
-            and Assigned(_isc_set_debug) and Assigned(_BLOB_display)
+            and Assigned(isc_set_debug) and Assigned(BLOB_display)
   {$ENDIF}
   {$IFDEF FB15_UP}
-            and Assigned(_isc_reset_fpe)
+            and Assigned(isc_reset_fpe)
   {$ENDIF}
   {$IFDEF IB7_UP}
-            and Assigned(_isc_array_gen_sdl2) and Assigned(_isc_array_get_slice2)
-            and Assigned(_isc_array_lookup_bounds2) and Assigned(_isc_array_lookup_desc2)
-            and Assigned(_isc_array_put_slice2) and Assigned(_isc_array_set_desc2)
-            and Assigned(_isc_blob_default_desc2) and Assigned(_isc_blob_gen_bpb2)
-            and Assigned(_isc_blob_lookup_desc2) and Assigned(_isc_blob_set_desc2)
+            and Assigned(isc_array_gen_sdl2) and Assigned(isc_array_get_slice2)
+            and Assigned(isc_array_lookup_bounds2) and Assigned(isc_array_lookup_desc2)
+            and Assigned(isc_array_put_slice2) and Assigned(isc_array_set_desc2)
+            and Assigned(isc_blob_default_desc2) and Assigned(isc_blob_gen_bpb2)
+            and Assigned(isc_blob_lookup_desc2) and Assigned(isc_blob_set_desc2)
   {$ENDIF}
   {$IFDEF IB7ORFB15}
-            and Assigned(_isc_get_client_version) and Assigned(_isc_get_client_major_version) and
-            Assigned(_isc_get_client_minor_version)
+            and Assigned(isc_get_client_version) and Assigned(isc_get_client_major_version) and
+            Assigned(isc_get_client_minor_version)
+  {$ENDIF}
+  {$IFDEF IB71_UP}
+            and Assigned(isc_release_savepoint) and Assigned(isc_rollback_savepoint)
+            and Assigned(isc_start_savepoint)
   {$ENDIF}
            ;
           if not Result then
            begin
-             UnLoadGDS32;
+             UnLoad;
              raise Exception.Create(EUIB_INVALIDEIBVERSION);
            end;
         end else
           raise Exception.CreateFmt(EUIB_CANTLOADLIB, [lib]);
       end;
     finally
-      LIBCritSec.Leave;
+      FLIBCritSec.Leave;
     end;
   end;
-
-
-  { GDS32 methods}
-
-  function BLOB_close(Stream: PBStream): integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _BLOB_close(Stream);
-  end;
-
-{$IFDEF INTERBASEORFIREBIRD}
-  function BLOB_display(blob_id: PISCQuad; database: IscDbHandle; transaction:
-    IscTrHandle; field_name: PChar): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _BLOB_display(blob_id, database, transaction, field_name);
-  end;
-{$ENDIF}
-
-  function BLOB_dump(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    file_name: PChar): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _BLOB_dump(blob_id, database, transaction, file_name);
-  end;
-
-  function BLOB_edit(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    field_name: PChar): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _BLOB_edit(blob_id, database, transaction, field_name);
-  end;
-
-  function BLOB_get(Stream: PBStream): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _BLOB_get(Stream);
-  end;
-
-  function BLOB_load(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    file_name: PChar): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _BLOB_load(blob_id, database, transaction, file_name);
-  end;
-
-  function BLOB_open(blob: IscBlobHandle; buffer: PChar; length: Integer): PBStream;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _BLOB_open(blob, buffer, length);
-  end;
-
-  function BLOB_put(x: Char; Stream: PBStream): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _BLOB_put(x, Stream);
-  end;
-
-  function BLOB_text_dump(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    file_name: PChar): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _BLOB_text_dump(blob_id, database, transaction, file_name);
-  end;
-
-  function BLOB_text_load(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    file_name: PChar): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _BLOB_text_load(blob_id, database, transaction, file_name);
-  end;
-
-  function Bopen(blob_id: PISCQuad; database: IscDbHandle; transaction: IscTrHandle;
-    mode: PChar): PBStream;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _Bopen(blob_id, database, transaction, mode);
-  end;
-
-  function isc_add_user(status: PISCStatus; user_data: PUserSecData): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_add_user(status, user_data);
-  end;
-
-  function isc_array_gen_sdl(status: PISCStatus; desc: PISCArrayDesc; sdl_buffer_length: PSmallInt;
-    sdl_buffer: PChar; sdl_length: PSmallInt): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_gen_sdl(status, desc, sdl_buffer_length, sdl_buffer, sdl_length);
-  end;
-
-  function isc_array_get_slice(status: PISCStatus; db_handle: PIscDbHandle; trans_handle: PIscTrHandle;
-    array_id: PISCQuad; desc: PISCArrayDesc; array_: PPointer; slice_length: PISCLong): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_get_slice(status, db_handle, trans_handle, array_id, desc, array_, slice_length);
-  end;
-
-  function isc_array_lookup_bounds(status: PISCStatus; db_handle: PIscDbHandle; trans_handle: PIscTrHandle;
-    relation_name, field_name: PChar; desc: PISCArrayDesc): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_lookup_bounds(status, db_handle, trans_handle, relation_name, field_name, desc);
-  end;
-
-  function isc_array_lookup_desc(status: PISCStatus; db_handle: PIscDbHandle; trans_handle: PIscTrHandle;
-    relation_name, field_name: PChar; desc: PISCArrayDesc): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_lookup_desc(status, db_handle, trans_handle, relation_name, field_name, desc);
-  end;
-
-  function isc_array_put_slice(status: PISCStatus; db_handle: PIscDbHandle; trans_handle: PIscTrHandle;
-    array_id: PISCQuad; desc: PISCArrayDesc; array_: PPointer; slice_length: PISCLong): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_put_slice(status, db_handle, trans_handle, array_id, desc, array_, slice_length);
-  end;
-
-  function isc_array_set_desc(status: PISCStatus; relation_name, field_name: PChar; sql_dtype, sql_length,
-    dimensions: PSmallint; desc: PISCArrayDesc): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_set_desc(status, relation_name, field_name, sql_dtype, sql_length, dimensions, desc);
-  end;
-
-  function isc_attach_database(user_status: PISCStatus; file_length: Smallint; file_name: PChar;
-    handle: PIscDbHandle; dpb_length: SmallInt; dpb: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_attach_database(user_status, file_length, file_name, handle, dpb_length, dpb);
-  end;
-
-  procedure isc_blob_default_desc(desc: PISCBlobDesc; relation_name, field_name: PChar);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_blob_default_desc(desc, relation_name, field_name);
-  end;
-
-  function isc_blob_gen_bpb(status: PISCStatus; to_desc: PISCBlobDesc; from_desc: PISCBlobDesc;
-    bpb_buffer_length: Word; bpb_buffer: PChar; bpb_length: PWord): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_blob_gen_bpb(status, to_desc, from_desc, bpb_buffer_length, bpb_buffer, bpb_length);
-  end;
-
-  function isc_blob_info(user_status: PISCStatus; blob_handle: PIscBlobHandle; item_length: Smallint;
-    items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_blob_info(user_status, blob_handle, item_length, items, buffer_length, buffer);
-  end;
-
-  function isc_blob_lookup_desc(status: PISCStatus; db_handle: PIscDbHandle; trans_handle: PIscTrHandle;
-    relation_name, field_name: PChar; desc: PISCBlobDesc; global: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_blob_lookup_desc(status, db_handle, trans_handle, relation_name, field_name, desc, global);
-  end;
-
-  function isc_blob_set_desc(status: PISCStatus; relation_name, field_name: PChar; subtype, charset,
-    segment_size: Smallint; desc: PISCBlobDesc): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_blob_set_desc(status, relation_name, field_name, subtype, charset, segment_size, desc);
-  end;
-
-  function isc_cancel_blob(user_status: PISCStatus; blob_handle: PIscBlobHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_cancel_blob(user_status, blob_handle);
-  end;
-
-  function isc_cancel_events(user_status: PISCStatus; handle: PIscDbHandle; id: PISCLong): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_cancel_events(user_status, handle, id);
-  end;
-
-  function isc_close(user_status: PISCStatus; name: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_close(user_status, name);
-  end;
-
-  function isc_close_blob(user_status: PISCStatus; blob_handle: PIscBlobHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_close_blob(user_status, blob_handle);
-  end;
-
-  function isc_commit_retaining(user_status: PISCStatus; tra_handle: PIscTrHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_commit_retaining(user_status, tra_handle);
-  end;
-
-  function isc_commit_transaction(user_status: PISCStatus; tra_handle: PIscTrHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_commit_transaction(user_status, tra_handle);
-  end;
-
-  function isc_compile_request(user_status: PISCStatus; db_handle: PIscDbHandle; req_handle: PIscReqHandle;
-    blr_length: Smallint; blr: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_compile_request(user_status, db_handle, req_handle, blr_length, blr);
-  end;
-
-  function isc_compile_request2(user_status: PISCStatus; db_handle: PIscDbHandle; req_handle: PIscReqHandle;
-    blr_length: Smallint; blr: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_compile_request2(user_status, db_handle, req_handle, blr_length, blr);
-  end;
-
-  function isc_create_blob(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
-    blob_handle: PIscBlobHandle; blob_id: PISCQuad): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_create_blob(user_status, db_handle, tra_handle, blob_handle, blob_id);
-  end;
-
-  function isc_create_blob2(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
-    blob_handle: PIscBlobHandle; blob_id: PISCQuad; bpb_length: Smallint; bpb: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_create_blob2(user_status, db_handle, tra_handle, blob_handle, blob_id, bpb_length, bpb);
-  end;
-
-  function isc_create_database(user_status: PISCStatus; file_length: Smallint; file_name: PChar;
-    handle: PIscDbHandle; dpb_length: Smallint; dpb: PChar; db_type: Smallint): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_create_database(user_status, file_length, file_name, handle, dpb_length, dpb, db_type);
-  end;
-
-  function isc_database_info(user_status: PISCStatus; handle: PIscDbHandle; item_length: Smallint;
-    items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_database_info(user_status, handle, item_length, items, buffer_length, buffer);
-  end;
-
-  function isc_ddl(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
-    length: Smallint; ddl: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_ddl(user_status, db_handle, tra_handle, length, ddl);
-  end;
-
-  function isc_declare(user_status: PISCStatus; statement, cursor: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_declare(user_status, statement, cursor);
-  end;
-
-  procedure isc_decode_date(date: PISCQuad; times: PPointer);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_decode_date(date, times);
-  end;
-
-  procedure isc_decode_sql_date(date: PISCDate; times_arg: PPointer);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_decode_sql_date(date, times_arg);
-  end;
-
-  procedure isc_decode_sql_time(sql_time: PISCTime; times_arg: PPointer);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_decode_sql_time(sql_time, times_arg);
-  end;
-
-  procedure isc_decode_timestamp(date: PISCTimeStamp; times_arg: PPointer);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_decode_timestamp(date, times_arg);
-  end;
-
-  function isc_delete_user(status: PISCStatus; user_data: PUserSecData): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_delete_user(status, user_data);
-  end;
-
-  function isc_describe(user_status: PISCStatus; name: PChar; sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_describe(user_status, name, sqlda);
-  end;
-
-  function isc_describe_bind(user_status: PISCStatus; name: PChar; sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_describe_bind(user_status, name, sqlda);
-  end;
-
-  function isc_detach_database(user_status: PISCStatus; handle: PIscDbHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_detach_database(user_status, handle);
-  end;
-
-  function isc_drop_database(user_status: PISCStatus; handle: PIscDbHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_drop_database(user_status, handle);
-  end;
-
-  function isc_dsql_alloc_statement2(user_status: PISCStatus; db_handle: PIscDbHandle;
-    stmt_handle: PIscStmtHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_alloc_statement2(user_status, db_handle, stmt_handle);
-  end;
-
-  function isc_dsql_allocate_statement(user_status: PISCStatus; db_handle: PIscDbHandle;
-    stmt_handle: PIscStmtHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_allocate_statement(user_status, db_handle, stmt_handle);
-  end;
-
-  function isc_dsql_describe(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    dialect: Word; sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_describe(user_status, stmt_handle, dialect, sqlda);
-  end;
-
-  function isc_dsql_describe_bind(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    dialect: Word; sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_describe_bind(user_status, stmt_handle, dialect, sqlda);
-  end;
-
-  function isc_dsql_exec_immed2(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; length: Word; string_: PChar; dialect: Word; in_sqlda,
-    out_sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_exec_immed2(user_status, db_handle, tra_handle, length, string_, dialect,
-      in_sqlda, out_sqlda);
-  end;
-
-  function isc_dsql_exec_immed3_m(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; Length: Word; string_: PChar; dialect, in_blr_length: Word;
-    in_blr: PChar; in_msg_type, in_msg_length: Word; in_msg: PChar; out_blr_length: Word;
-    out_blr: PChar; out_msg_type, out_msg_length: Word; out_msg: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_exec_immed3_m(user_status, db_handle, tra_handle, Length, string_, dialect,
-      in_blr_length, in_blr, in_msg_type, in_msg_length, in_msg, out_blr_length, out_blr,
-      out_msg_type, out_msg_length, out_msg);
-  end;
-
-  function isc_dsql_execute(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; dialect: Word; sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_execute(user_status, tra_handle, stmt_handle, dialect, sqlda);
-  end;
-
-  function isc_dsql_execute_immediate(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; length: Word; string_: PChar; dialect: Word; sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_execute_immediate(user_status, db_handle, tra_handle, length, string_, dialect, sqlda);
-  end;
-
-  function isc_dsql_execute_immediate_m(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; length: Word; string_: PChar; dialect, blr_length: Word; blr: PChar;
-    msg_type, msg_length: Word; msg: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_execute_immediate_m(user_status, db_handle, tra_handle, length, string_,
-    dialect, blr_length, blr, msg_type, msg_length, msg);
-  end;
-
-  function isc_dsql_execute_m(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; blr_length: Word; blr: PChar; msg_type, msg_length: Word;
-    msg: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_execute_m(user_status, tra_handle, stmt_handle, blr_length, blr, msg_type,
-      msg_length, msg);
-  end;
-
-  function isc_dsql_execute2(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; dialect: Word; in_sqlda, out_sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_execute2(user_status, tra_handle, stmt_handle, dialect, in_sqlda, out_sqlda);
-  end;
-
-  function isc_dsql_execute2_m(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; in_blr_length: Word; in_blr: PChar; in_msg_type, in_msg_length: Word;
-    in_msg: PChar; out_blr_length: Word; out_blr: PChar; out_msg_type, out_msg_length: Word;
-    out_msg: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_execute2_m(user_status, tra_handle, stmt_handle, in_blr_length, in_blr,
-      in_msg_type, in_msg_length, in_msg, out_blr_length, out_blr, out_msg_type, out_msg_length,
-      out_msg);
-  end;
-
-  function isc_dsql_fetch(user_status: PISCStatus; stmt_handle: PIscStmtHandle; dialect: Word;
-    sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_fetch(user_status, stmt_handle, dialect, sqlda);
-  end;
-
-  function isc_dsql_fetch_m(user_status: PISCStatus; stmt_handle: PIscStmtHandle; blr_length: Word;
-    blr: PChar; msg_type, msg_length: Word; msg: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_fetch_m(user_status, stmt_handle, blr_length, blr, msg_type, msg_length, msg);
-  end;
-
-  function isc_dsql_finish(db_handle: PIscDbHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_finish(db_handle);
-  end;
-
-  function isc_dsql_free_statement(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    option: Word): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_free_statement(user_status, stmt_handle, option);
-  end;
-
-  function isc_dsql_insert(user_status: PISCStatus; stmt_handle: PIscStmtHandle; dialect: Word;
-    sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_insert(user_status, stmt_handle, dialect, sqlda);
-  end;
-
-  function isc_dsql_insert_m(user_status: PISCStatus; stmt_handle: PIscStmtHandle; blr_length: Word;
-    blr: PChar; msg_type, msg_length: Word; msg: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_insert_m(user_status, stmt_handle, blr_length, blr, msg_type, msg_length, msg);
-  end;
-
-  function isc_dsql_prepare(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; length: Word; string_: PChar; dialect: Word;
-    sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_prepare(user_status, tra_handle, stmt_handle, length, string_, dialect, sqlda);
-  end;
-
-  function isc_dsql_prepare_m(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    stmt_handle: PIscStmtHandle; length: Word; string_: PChar; dialect, item_length: Word;
-    items: PChar; buffer_length: Word; buffer: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_prepare_m(user_status, tra_handle, stmt_handle, length, string_, dialect,
-      item_length, items, buffer_length, buffer);
-  end;
-
-  function isc_dsql_release(user_status: PISCStatus; name: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_release(user_status, name);
-  end;
-
-  function isc_dsql_set_cursor_name(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    cursor: PChar; type_: Word): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_set_cursor_name(user_status, stmt_handle, cursor, type_);
-  end;
-
-  function isc_dsql_sql_info(user_status: PISCStatus; stmt_handle: PIscStmtHandle;
-    item_length: Smallint; items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_dsql_sql_info(user_status, stmt_handle, item_length, items, buffer_length, buffer);
-  end;
-
-  function isc_embed_dsql_close(user_status: PISCStatus; name: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_close(user_status, name);
-  end;
-
-  function isc_embed_dsql_declare(user_status: PISCStatus; stmt_name, cursor: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_declare(user_status, stmt_name, cursor);
-  end;
-
-  function isc_embed_dsql_describe(user_status: PISCStatus; stmt_name: PChar; dialect: Word;
-    sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_describe(user_status, stmt_name, dialect, sqlda);
-  end;
-
-  function isc_embed_dsql_describe_bind(user_status: PISCStatus; stmt_name: PChar; dialect: Word;
-    sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_describe_bind(user_status, stmt_name, dialect, sqlda);
-  end;
-
-  function isc_embed_dsql_execute(user_status: PISCStatus; trans_handle: PIscTrHandle;
-    stmt_name: PChar; dialect: Word; sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_execute(user_status, trans_handle, stmt_name, dialect, sqlda);
-  end;
-
-  function isc_embed_dsql_execute_immed(user_status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; length: Word; string_: PChar; dialect: Word; sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_execute_immed(user_status, db_handle, trans_handle, length, string_,
-      dialect, sqlda);
-  end;
-
-  function isc_embed_dsql_execute2(user_status: PISCStatus; trans_handle: PIscTrHandle;
-    stmt_name: PChar; dialect: Word; in_sqlda, out_sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_execute2(user_status, trans_handle, stmt_name, dialect, in_sqlda, out_sqlda);
-  end;
-
-  function isc_embed_dsql_fetch(user_status: PISCStatus; cursor_name: PChar; dialect: Word;
-    sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_fetch(user_status, cursor_name, dialect, sqlda);
-  end;
-
-  function isc_embed_dsql_insert(user_status: PISCStatus; cursor_name: PChar; dialect: Word;
-    sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_insert(user_status, cursor_name, dialect, sqlda);
-  end;
-
-  function isc_embed_dsql_open(user_status: PISCStatus; trans_handle: PIscTrHandle;
-    cursor_name: PChar; dialect: Word; sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_open(user_status, trans_handle, cursor_name, dialect, sqlda);
-  end;
-
-  function isc_embed_dsql_open2(user_status: PISCStatus; trans_handle: PIscTrHandle;
-    cursor_name: PChar; dialect: Word; in_sqlda, out_sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_open2(user_status, trans_handle, cursor_name, dialect, in_sqlda, out_sqlda);
-  end;
-
-  function isc_embed_dsql_prepare(user_status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; stmt_name: PChar; length: Word; string_: PChar; dialect: Word;
-    sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_prepare(user_status, db_handle, trans_handle, stmt_name, length,
-    string_, dialect, sqlda);
-  end;
-
-  function isc_embed_dsql_release(user_status: PISCStatus; stmt_name: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_embed_dsql_release(user_status, stmt_name);
-  end;
-
-  procedure isc_encode_date(times: PPointer; date: PISCQuad);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_encode_date(times, date);
-  end;
-
-  procedure isc_encode_sql_date(times_arg: PPointer; date: PISCDate);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_encode_sql_date(times_arg, date);
-  end;
-
-  procedure isc_encode_sql_time(times_arg: PPointer; isc_time: PISCTime);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_encode_sql_time(times_arg, isc_time);
-  end;
-
-  procedure isc_encode_timestamp(times_arg: PPointer; date: PISCTimeStamp);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_encode_timestamp(times_arg, date);
-  end;
-
-  function isc_event_block(event_buffer, result_buffer: PPChar; count: Word;
-    name_buffer: array of PChar): ISCLong;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_event_block(event_buffer, result_buffer, count, name_buffer);
-  end;
-
-  procedure isc_event_counts(result_vector: PISCULong; buffer_length: Smallint; event_buffer,
-    result_buffer: PChar);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_event_counts(result_vector, buffer_length, event_buffer, result_buffer);
-  end;
-
-  function isc_execute(user_status: PISCStatus; trans_handle: PIscTrHandle; name: PChar;
-    sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_execute(user_status, trans_handle, name, sqlda);
-  end;
-
-  function isc_execute_immediate(user_status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; length: PSmallint; string_: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_execute_immediate(user_status, db_handle, trans_handle, length, string_);;
-  end;
-
-  procedure isc_expand_dpb(dpb: PPChar; dpb_size: PSmallint; name_buffer: array of PChar);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_expand_dpb(dpb, dpb_size, name_buffer);
-  end;
-
-  function isc_fetch(user_status: PISCStatus; name: PChar; sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_fetch(user_status, name, sqlda);
-  end;
-
-  function isc_free(blk: PChar): ISCLong;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_free(blk);
-  end;
-
-  function isc_ftof(string_: PChar; length1: Word; field: PChar; length2: Word): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_ftof(string_, length1, field, length2);
-  end;
-
-  function isc_get_segment(user_status: PISCStatus; blob_handle: PIscBlobHandle; length: PWord;
-    buffer_length: Word; buffer: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_get_segment(user_status, blob_handle, length, buffer_length, buffer);
-  end;
-
-  function isc_get_slice(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
-    array_id: PISCQuad; sdl_length: Smallint; sdl: PChar; param_length: Smallint; param: PISCLong;
-    slice_length: ISCLong; slice: PPointer; return_length: PISCLong): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_get_slice(user_status, db_handle, tra_handle, array_id, sdl_length, sdl,
-      param_length, param, slice_length, slice, return_length);
-  end;
-
-  function isc_interprete(buffer: PChar; status_vector: PPISCStatus): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_interprete(buffer, status_vector);
-  end;
-
-  function isc_modify_dpb(dpb: PPChar; dpb_length: PSmallint; type_: Word; str: PChar;
-    str_len: Smallint): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_modify_dpb(dpb, dpb_length, type_, str, str_len);
-  end;
-
-  function isc_modify_user(status: PISCStatus; user_data: PUserSecData): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_modify_user(status, user_data);
-  end;
-
-  function isc_open(user_status: PISCStatus; trans_handle: PIscTrHandle; name: PChar;
-    sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_open(user_status, trans_handle, name, sqlda);
-  end;
-
-  function isc_open_blob(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
-    blob_handle: PIscBlobHandle; blob_id: PISCQuad): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_open_blob(user_status, db_handle, tra_handle, blob_handle, blob_id);
-  end;
-
-  function isc_open_blob2(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
-    blob_handle: PIscBlobHandle; blob_id: PISCQuad; bpb_length: Word; bpb: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_open_blob2(user_status, db_handle, tra_handle, blob_handle, blob_id, bpb_length, bpb);
-  end;
-
-  function isc_portable_integer(ptr: PChar; length: Smallint): ISCInt64;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_portable_integer(ptr, length);
-  end;
-
-  function isc_prepare(user_status: PISCStatus; db_handle: PIscDbHandle; trans_handle: PIscTrHandle;
-    name: PChar; length: PSmallint; string_: PChar; sqlda: PXSQLDA): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_prepare(user_status, db_handle, trans_handle, name, length, string_, sqlda);
-  end;
-
-  function isc_prepare_transaction(user_status: PISCStatus; tra_handle: PIscTrHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_prepare_transaction(user_status, tra_handle);
-  end;
-
-  function isc_prepare_transaction2(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    msg_length: ISCUShort; msg: PISCUChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_prepare_transaction2(user_status, tra_handle, msg_length, msg);
-  end;
-
-  function isc_print_blr(blr: PChar; callback: IscCallback; callback_argument: PPointer;
-    language: Smallint): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_print_blr(blr, callback, callback_argument, language);
-  end;
-
-  procedure isc_print_sqlerror(sqlcode: ISCShort; status_vector: PISCStatus);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_print_sqlerror(sqlcode, status_vector);
-  end;
-
-  function isc_print_status(status_vector: PISCStatus): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_print_status(status_vector);
-  end;
-
-  function isc_put_segment(user_status: PISCStatus; blob_handle: PIscBlobHandle;
-    buffer_length: Word; buffer: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_put_segment(user_status, blob_handle, buffer_length, buffer);
-  end;
-
-  function isc_put_slice(user_status: PISCStatus; db_handle: PIscDbHandle; tra_handle: PIscTrHandle;
-    array_id: PISCQuad; sdl_length: Smallint; sdl: PChar; param_length: Smallint; param: PISCLong;
-    slice_length: ISCLong; slice: PPointer): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_put_slice(user_status, db_handle, tra_handle, array_id, sdl_length, sdl,
-      param_length, param, slice_length, slice);
-  end;
-
-  procedure isc_qtoq(quad1, quad2: PISCQuad);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_qtoq(quad1, quad2);
-  end;
-
-  function isc_que_events(user_status: PISCStatus; handle: PIscDbHandle; id: PISCLong;
-    length: ISCUShort; events: PISCUChar; ast: IscCallback; arg: PPointer): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_que_events(user_status, handle, id, length, events, ast, arg);
-  end;
-
-  function isc_receive(user_status: PISCStatus; req_handle: PIscReqHandle; msg_type,
-   msg_length: Smallint; msg: PPointer; level: Smallint): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_receive(user_status, req_handle, msg_type, msg_length, msg, level);
-  end;
-
-  function isc_reconnect_transaction(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; length: Smallint; id: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_reconnect_transaction(user_status, db_handle, tra_handle, length, id);
-  end;
-
-  function isc_release_request(user_status: PISCStatus; req_handle: PIscReqHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_release_request(user_status, req_handle);
-  end;
-
-  function isc_request_info(user_status: PISCStatus; req_handle: PIscReqHandle; level,
-    item_length: Smallint; items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_request_info(user_status, req_handle, level, item_length, items,
-      buffer_length, buffer);
-  end;
-
-  function isc_rollback_retaining(status_vector: PISCStatus; trans_handle: PIscTrHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_rollback_retaining(status_vector, trans_handle);
-  end;
-
-  function isc_rollback_transaction(user_status: PISCStatus; tra_handle: PIscTrHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_rollback_transaction(user_status, tra_handle);
-  end;
-
-  function isc_seek_blob(user_status: PISCStatus; blob_handle: PIscBlobHandle; mode: Smallint;
-    offset: ISCLong; Result_: PISCLong): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_seek_blob(user_status, blob_handle, mode, offset, Result_);
-  end;
-
-  function isc_send(user_status: PISCStatus; req_handle: PIscReqHandle; msg_type,
-    msg_length: Smallint; msg: PPointer; level: Smallint): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_send(user_status, req_handle, msg_type, msg_length, msg,level);
-  end;
-
-  function isc_service_attach(status_vector: PISCStatus; service_length: Word; service_name: PChar;
-    handle: PIscSvcHandle; spb_length: Word; spb: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_service_attach(status_vector, service_length, service_name, handle, spb_length, spb);
-  end;
-
-  function isc_service_detach(status_vector: PISCStatus; handle: PIscSvcHandle): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_service_detach(status_vector, handle);
-  end;
-
-  function isc_service_query(status_vector: PISCStatus; svc_handle: PIscSvcHandle;
-    reserved: PIscResvHandle; send_spb_length: Word; send_spb: PChar; request_spb_length: Word;
-    request_spb: PChar; buffer_length: Word; buffer: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_service_query(status_vector, svc_handle, reserved, send_spb_length, send_spb,
-    request_spb_length, request_spb, buffer_length, buffer);
-  end;
-
-  function isc_service_start(status_vector: PISCStatus; svc_handle: PIscSvcHandle;
-    reserved: PIscResvHandle; spb_length: Word; spb: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_service_start(status_vector, svc_handle, reserved, spb_length, spb);
-  end;
   
-{$IFDEF INTERBASEORFIREBIRD}
-  procedure isc_set_debug(flag: integer);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_set_debug(flag);
-  end;
+destructor TUIBaseLibrary.Destroy;
+begin
+  UnLoad;
+  FLIBCritSec.Free;
+  inherited;
+end;
+
+procedure TUIBaseLibrary.Lock;
+begin
+{$IFDEF UIBTHREADSAFE}
+  FLIBCritSec.Enter;
 {$ENDIF}
+end;
 
-  procedure isc_sql_interprete(SQLCODE: Smallint; buffer: PChar; buffer_length: Smallint);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_sql_interprete(SQLCODE, buffer, buffer_length);
-  end;
-
-  function isc_sqlcode(user_status: PISCStatus): ISCLong;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_sqlcode(user_status);
-  end;
-
-  function isc_start_and_send(user_status: PISCStatus; req_handle: PIscReqHandle; tra_handle: PIscTrHandle;
-    msg_type, msg_length: Smallint; msg: PPointer; level: Smallint): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_start_and_send(user_status, req_handle, tra_handle, msg_type, msg_length, msg, level);
-  end;
-
-  function isc_start_multiple(user_status: PISCStatus; tra_handle: PIscTrHandle; count: Smallint;
-    vector: PISCTEB): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_start_multiple(user_status, tra_handle, count, vector);
-  end;
-
-  function isc_start_request(user_status: PISCStatus; req_handle: PIscReqHandle;
-    tra_handle: PIscTrHandle; level: Smallint): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_start_request(user_status, req_handle, tra_handle, level);
-  end;
-
-  function isc_start_transaction(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    count: Smallint; db_handle: PIscDbHandle; tpb_length: ISCUShort; tpb_ad: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_start_transaction(user_status, tra_handle, count, db_handle, tpb_length, tpb_ad);
-  end;
-
-  function isc_transact_request(user_status: PISCStatus; db_handle: PIscDbHandle;
-    tra_handle: PIscTrHandle; blr_length: Word; blr: PChar; in_msg_length: Word; in_msg: PChar;
-    out_msg_length: Word; out_msg: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_transact_request(user_status, db_handle, tra_handle, blr_length, blr,
-    in_msg_length, in_msg, out_msg_length, out_msg);
-  end;
-
-  function isc_transaction_info(user_status: PISCStatus; tra_handle: PIscTrHandle;
-    item_length: Smallint; items: PChar; buffer_length: Smallint; buffer: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_transaction_info(user_status, tra_handle, item_length, items, buffer_length, buffer);
-  end;
-
-  function isc_unwind_request(user_status: PISCStatus; req_handle: PIscTrHandle; level: Smallint): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_unwind_request(user_status, req_handle, level);
-  end;
-
-  function isc_vax_integer(ptr: PChar; length: Smallint): ISCLong;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_vax_integer(ptr, length);
-  end;
-
-  function isc_version(db_handle: PIscDbHandle; callback: IscCallback; callback_argument: PPointer): Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_version(db_handle, callback, callback_argument);
-  end;
-
-  procedure isc_vtof(string1, string2: PChar; length: Word);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_vtof(string1, string2, length);
-  end;
-
-  procedure isc_vtov(string1, string2: PChar; length: Smallint);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_vtov(string1, string2, length);
-  end;
-
-  function isc_wait_for_event(user_status: PISCStatus; handle: PIscDbHandle; length: Smallint;
-    events, buffer: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_wait_for_event(user_status, handle, length, events, buffer);
-  end;
-
-{$IFDEF FB15_UP}
-  function isc_reset_fpe(fpe_status: Word): ISCLong;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_reset_fpe(fpe_status);
-  end;
+procedure TUIBaseLibrary.UnLock;
+begin
+{$IFDEF UIBTHREADSAFE}
+  FLIBCritSec.Leave;
 {$ENDIF}
-
-{$IFDEF IB7_UP}
-  function isc_array_gen_sdl2(status: PISCStatus; desc:	PISCArrayDescV2;
-    sdl_buffer_length:	PSmallInt; sdl_buffer: PChar; sdl_length: PSmallInt): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_gen_sdl2(status, desc, sdl_buffer_length, sdl_buffer, sdl_length);
-  end;
-
-  function  isc_array_get_slice2(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; array_id: PISCQuad; desc: PISCArrayDescV2; array_: PPointer;
-    slice_length: PISCLong): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_get_slice2(status, db_handle, trans_handle, array_id, desc, array_,
-      slice_length);
-  end;
-
-  function isc_array_lookup_bounds2(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; relation_name, field_name: PChar; desc: PISCArrayDescV2): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_lookup_bounds2(status, db_handle, trans_handle, relation_name, field_name, desc);
-  end;
-
-  function isc_array_lookup_desc2(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; relation_name, field_name: PChar; desc: PISCArrayDescV2): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_lookup_desc2(status, db_handle, trans_handle, relation_name, field_name,
-      desc);
-  end;
-
-  function isc_array_put_slice2(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; array_id: PISCQuad; desc: PISCArrayDescV2;
-    array_: PPointer; slice_length: PISCLong): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_put_slice2(status, db_handle, trans_handle, array_id, desc, array_,
-      slice_length);
-  end;
-
-  function isc_array_set_desc2(status: PISCStatus; relation_name, field_name: PChar; sql_dtype,
-    sql_length, dimensions: PSmallint; desc: PISCArrayDescV2): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_array_set_desc2(status, relation_name, field_name, sql_dtype, sql_length,
-      dimensions, desc);
-  end;
-
-  procedure isc_blob_default_desc2(desc: PISCBlobDescV2; relation_name, field_name: PChar);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_blob_default_desc2(desc, relation_name, field_name);
-  end;
-
-  function isc_blob_gen_bpb2(status: PISCStatus; to_desc, from_desc: PISCBlobDescV2;
-    bpb_buffer_length: Word; bpb_buffer: PChar; bpb_length: PWord): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_blob_gen_bpb2(status, to_desc, from_desc, bpb_buffer_length, bpb_buffer, bpb_length);
-  end;
-
-  function isc_blob_lookup_desc2(status: PISCStatus; db_handle: PIscDbHandle;
-    trans_handle: PIscTrHandle; relation_name, field_name: PChar; desc: PISCBlobDescV2;
-    global: PChar): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_blob_lookup_desc2(status, db_handle, trans_handle, relation_name, field_name,
-      desc, global);
-  end;
-
-  function isc_blob_set_desc2(status: PISCStatus; relation_name, field_name: PChar; subtype, charset,
-    segment_size: Smallint; desc: PISCBlobDescV2): ISCStatus;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_blob_set_desc2(status, relation_name, field_name, subtype, charset,
-      segment_size, desc);
-  end;
-{$ENDIF}
-{$IFDEF IB7ORFB15}
-  procedure isc_get_client_version(version: PChar);
-  begin
-    LoadGDS32(GDS32DLL);
-    _isc_get_client_version(version);
-  end;
-
-  function isc_get_client_major_version: Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_get_client_major_version;
-  end;
-
-  function isc_get_client_minor_version: Integer;
-  begin
-    LoadGDS32(GDS32DLL);
-    Result := _isc_get_client_minor_version;
-  end;
-
-{$ENDIF}
-
-{$ELSE}
-  function  BLOB_close                    ; external GDS32DLL;
-{$IFDEF INTERBASEORFIREBIRD}
-  function  BLOB_display                  ; external GDS32DLL;
-{$ENDIF}
-  function  BLOB_dump                     ; external GDS32DLL;
-  function  BLOB_edit                     ; external GDS32DLL;
-  function  BLOB_get                      ; external GDS32DLL;
-  function  BLOB_load                     ; external GDS32DLL;
-  function  BLOB_open                     ; external GDS32DLL;
-  function  BLOB_put                      ; external GDS32DLL;
-  function  BLOB_text_dump                ; external GDS32DLL;
-  function  BLOB_text_load                ; external GDS32DLL;
-  function  Bopen                         ; external GDS32DLL;
-  function  isc_add_user                  ; external GDS32DLL;
-  function  isc_array_gen_sdl             ; external GDS32DLL;
-  function  isc_array_get_slice           ; external GDS32DLL;
-  function  isc_array_lookup_bounds       ; external GDS32DLL;
-  function  isc_array_lookup_desc         ; external GDS32DLL;
-  function  isc_array_put_slice           ; external GDS32DLL;
-  function  isc_array_set_desc            ; external GDS32DLL;
-  function  isc_attach_database           ; external GDS32DLL;
-  procedure isc_blob_default_desc         ; external GDS32DLL;
-  function  isc_blob_gen_bpb              ; external GDS32DLL;
-  function  isc_blob_info                 ; external GDS32DLL;
-  function  isc_blob_lookup_desc          ; external GDS32DLL;
-  function  isc_blob_set_desc             ; external GDS32DLL;
-  function  isc_cancel_blob               ; external GDS32DLL;
-  function  isc_cancel_events             ; external GDS32DLL;
-  function  isc_close                     ; external GDS32DLL;
-  function  isc_close_blob                ; external GDS32DLL;
-  function  isc_commit_retaining          ; external GDS32DLL;
-  function  isc_commit_transaction        ; external GDS32DLL;
-  function  isc_compile_request           ; external GDS32DLL;
-  function  isc_compile_request2          ; external GDS32DLL;
-  function  isc_create_blob               ; external GDS32DLL;
-  function  isc_create_blob2              ; external GDS32DLL;
-  function  isc_create_database           ; external GDS32DLL;
-  function  isc_database_info             ; external GDS32DLL;
-  function  isc_ddl                       ; external GDS32DLL;
-  function  isc_declare                   ; external GDS32DLL;
-  procedure isc_decode_date               ; external GDS32DLL;
-  procedure isc_decode_sql_date           ; external GDS32DLL;
-  procedure isc_decode_sql_time           ; external GDS32DLL;
-  procedure isc_decode_timestamp          ; external GDS32DLL;
-  function  isc_delete_user               ; external GDS32DLL;
-  function  isc_describe                  ; external GDS32DLL;
-  function  isc_describe_bind             ; external GDS32DLL;
-  function  isc_detach_database           ; external GDS32DLL;
-  function  isc_drop_database             ; external GDS32DLL;
-  function  isc_dsql_alloc_statement2     ; external GDS32DLL;
-  function  isc_dsql_allocate_statement   ; external GDS32DLL;
-  function  isc_dsql_describe             ; external GDS32DLL;
-  function  isc_dsql_describe_bind        ; external GDS32DLL;
-  function  isc_dsql_exec_immed2          ; external GDS32DLL;
-  function  isc_dsql_exec_immed3_m        ; external GDS32DLL;
-  function  isc_dsql_execute              ; external GDS32DLL;
-  function  isc_dsql_execute_immediate    ; external GDS32DLL;
-  function  isc_dsql_execute_immediate_m  ; external GDS32DLL;
-  function  isc_dsql_execute_m            ; external GDS32DLL;
-  function  isc_dsql_execute2             ; external GDS32DLL;
-  function  isc_dsql_execute2_m           ; external GDS32DLL;
-  function  isc_dsql_fetch                ; external GDS32DLL;
-  function  isc_dsql_fetch_m              ; external GDS32DLL;
-  function  isc_dsql_finish               ; external GDS32DLL;
-  function  isc_dsql_free_statement       ; external GDS32DLL;
-  function  isc_dsql_insert               ; external GDS32DLL;
-  function  isc_dsql_insert_m             ; external GDS32DLL;
-  function  isc_dsql_prepare              ; external GDS32DLL;
-  function  isc_dsql_prepare_m            ; external GDS32DLL;
-  function  isc_dsql_release              ; external GDS32DLL;
-  function  isc_dsql_set_cursor_name      ; external GDS32DLL;
-  function  isc_dsql_sql_info             ; external GDS32DLL;
-  function  isc_embed_dsql_close          ; external GDS32DLL;
-  function  isc_embed_dsql_declare        ; external GDS32DLL;
-  function  isc_embed_dsql_describe       ; external GDS32DLL;
-  function  isc_embed_dsql_describe_bind  ; external GDS32DLL;
-  function  isc_embed_dsql_execute        ; external GDS32DLL;
-  function  isc_embed_dsql_execute_immed  ; external GDS32DLL;
-  function  isc_embed_dsql_execute2       ; external GDS32DLL;
-  function  isc_embed_dsql_fetch          ; external GDS32DLL;
-  function  isc_embed_dsql_insert         ; external GDS32DLL;
-  function  isc_embed_dsql_open           ; external GDS32DLL;
-  function  isc_embed_dsql_open2          ; external GDS32DLL;
-  function  isc_embed_dsql_prepare        ; external GDS32DLL;
-  function  isc_embed_dsql_release        ; external GDS32DLL;
-  procedure isc_encode_date               ; external GDS32DLL;
-  procedure isc_encode_sql_date           ; external GDS32DLL;
-  procedure isc_encode_sql_time           ; external GDS32DLL;
-  procedure isc_encode_timestamp          ; external GDS32DLL;
-  function  isc_event_block               ; external GDS32DLL;
-  procedure isc_event_counts              ; external GDS32DLL;
-  function  isc_execute                   ; external GDS32DLL;
-  function  isc_execute_immediate         ; external GDS32DLL;
-  procedure isc_expand_dpb                ; external GDS32DLL;
-  function  isc_fetch                     ; external GDS32DLL;
-  function  isc_free                      ; external GDS32DLL;
-  function  isc_ftof                      ; external GDS32DLL;
-  function  isc_get_segment               ; external GDS32DLL;
-  function  isc_get_slice                 ; external GDS32DLL;
-  function  isc_interprete                ; external GDS32DLL;
-  function  isc_modify_dpb                ; external GDS32DLL;
-  function  isc_modify_user               ; external GDS32DLL;
-  function  isc_open                      ; external GDS32DLL;
-  function  isc_open_blob                 ; external GDS32DLL;
-  function  isc_open_blob2                ; external GDS32DLL;
-  function  isc_portable_integer          ; external GDS32DLL;
-  function  isc_prepare                   ; external GDS32DLL;
-  function  isc_prepare_transaction       ; external GDS32DLL;
-  function  isc_prepare_transaction2      ; external GDS32DLL;
-  function  isc_print_blr                 ; external GDS32DLL;
-  procedure isc_print_sqlerror            ; external GDS32DLL;
-  function  isc_print_status              ; external GDS32DLL;
-  function  isc_put_segment               ; external GDS32DLL;
-  function  isc_put_slice                 ; external GDS32DLL;
-  procedure isc_qtoq                      ; external GDS32DLL;
-  function  isc_que_events                ; external GDS32DLL;
-  function  isc_receive                   ; external GDS32DLL;
-  function  isc_reconnect_transaction     ; external GDS32DLL;
-  function  isc_release_request           ; external GDS32DLL;
-  function  isc_request_info              ; external GDS32DLL;
-  function  isc_rollback_retaining        ; external GDS32DLL;
-  function  isc_rollback_transaction      ; external GDS32DLL;
-  function  isc_seek_blob                 ; external GDS32DLL;
-  function  isc_send                      ; external GDS32DLL;
-  function  isc_service_attach            ; external GDS32DLL;
-  function  isc_service_detach            ; external GDS32DLL;
-  function  isc_service_query             ; external GDS32DLL;
-  function  isc_service_start             ; external GDS32DLL;
-{$IFDEF INTERBASEORFIREBIRD}
-  procedure isc_set_debug                 ; external GDS32DLL;
-{$ENDIF}
-  procedure isc_sql_interprete            ; external GDS32DLL;
-  function  isc_sqlcode                   ; external GDS32DLL;
-  function  isc_start_and_send            ; external GDS32DLL;
-  function  isc_start_multiple            ; external GDS32DLL;
-  function  isc_start_request             ; external GDS32DLL;
-  function  isc_start_transaction         ; external GDS32DLL;
-  function  isc_transact_request          ; external GDS32DLL;
-  function  isc_transaction_info          ; external GDS32DLL;
-  function  isc_unwind_request            ; external GDS32DLL;
-  function  isc_vax_integer               ; external GDS32DLL;
-  function  isc_version                   ; external GDS32DLL;
-  procedure isc_vtof                      ; external GDS32DLL;
-  procedure isc_vtov                      ; external GDS32DLL;
-  function  isc_wait_for_event            ; external GDS32DLL;
-{$IFDEF FB15_UP}
-  function  isc_reset_fpe                 ; external GDS32DLL;
-{$ENDIF}
-{$IFDEF IB7_UP}
-  function  isc_array_gen_sdl2            ; external GDS32DLL;
-  function  isc_array_get_slice2          ; external GDS32DLL;
-  function  isc_array_lookup_bounds2      ; external GDS32DLL;
-  function  isc_array_lookup_desc2        ; external GDS32DLL;
-  function  isc_array_put_slice2          ; external GDS32DLL;
-  function  isc_array_set_desc2           ; external GDS32DLL;
-  procedure isc_blob_default_desc2        ; external GDS32DLL;
-  function  isc_blob_gen_bpb2             ; external GDS32DLL;
-  function  isc_blob_lookup_desc2         ; external GDS32DLL;
-  function  isc_blob_set_desc2            ; external GDS32DLL;
-{$ENDIF}
-{$IFDEF IB7ORFB15}
-  procedure isc_get_client_version        ; external GDS32DLL;
-  function  isc_get_client_major_version  ; external GDS32DLL;
-  function  isc_get_client_minor_version  ; external GDS32DLL;
-{$ENDIF}
-
-{$ENDIF}
-
-initialization
-  LIBCritSec := TCriticalSection.Create;
-
-finalization
-  LIBCritSec.Free;
-{$IFDEF INTERBASE_DYNAMIC_LINK}
-  UnLoadGDS32;
-{$ENDIF}
+end;
 
 end.
 
