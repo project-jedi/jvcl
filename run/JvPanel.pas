@@ -251,6 +251,15 @@ uses
 const
   BkModeTransparent = TRANSPARENT;
 
+function IsThemed: Boolean;
+begin
+  {$IFDEF JVCLThemesEnabled}
+  Result := ThemeServices.ThemesEnabled;
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
+end;
+
 //=== TJvArrangeSettings =====================================================
 
 constructor TJvArrangeSettings.Create(APanel: TJvPanel);
@@ -384,7 +393,7 @@ end;
 procedure TJvPanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  if Transparent then
+  if Transparent and not IsThemed then
   begin
     if not (csDesigning in ComponentState) then
       Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
@@ -448,7 +457,7 @@ begin
     Exit;
   end;
   Canvas.Brush.Color := Color;
-  if not Transparent then
+  if not Transparent or IsThemed then
     DrawThemedBackground(Self, Canvas, ClientRect)
   else
     Canvas.Brush.Style := bsClear;
@@ -488,7 +497,7 @@ begin
         Brush.Style := bsClear;
         X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
         Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
-        if Transparent then
+        if Transparent and not IsThemed then
           SetBkMode(Handle, BkModeTransparent);
         TextOut(X, Y, 'o');
       end;
@@ -497,7 +506,7 @@ end;
 procedure TJvPanel.AdjustSize;
 begin
   inherited AdjustSize;
-  if Transparent then
+  if Transparent and not IsThemed then
   begin
    // (ahuser) That is the only way to draw the border of the contained controls.
     Width := Width + 1;
@@ -579,7 +588,7 @@ begin
       if not Enabled then
         Font.Color := clGrayText;
       //draw text
-      if Transparent then
+      if Transparent and not IsThemed then
         SetBkMode(Canvas.Handle, BkModeTransparent);
       {$IFDEF VCL}
       DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags);
@@ -604,7 +613,7 @@ begin
   if not MouseOver then
   begin
     FOldColor := Color;
-    if not Transparent then
+    if not Transparent or IsThemed then
     begin
       Color := HotColor;
       MouseTimer.Attach(Self);
@@ -617,7 +626,7 @@ procedure TJvPanel.MouseLeave(Control: TControl);
 begin
   if MouseOver then
   begin
-    if not Transparent then
+    if not Transparent or IsThemed then
     begin
       Color := FOldColor;
       MouseTimer.Detach(Self);
@@ -631,12 +640,15 @@ begin
   if Value <> FTransparent then
   begin
     FTransparent := Value;
-    {$IFDEF VCL}
-    RecreateWnd;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Masked := FTransparent;
-    {$ENDIF VisualCLX}
+    if not IsThemed then
+    begin
+      {$IFDEF VCL}
+      RecreateWnd;
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Masked := FTransparent;
+      {$ENDIF VisualCLX}
+    end;
   end;
 end;
 
@@ -660,7 +672,7 @@ end;
 
 function TJvPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  if Transparent then
+  if Transparent and not IsThemed then
     Result := True
   else
     Result := inherited DoPaintBackground(Canvas, Param);
@@ -694,7 +706,7 @@ begin
   if FHotColor <> Value then
   begin
     FHotColor := Value;
-    if not Transparent then
+    if not Transparent or IsThemed then
       Invalidate;
   end;
 end;
@@ -769,7 +781,7 @@ end;
 procedure TJvPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-  if Transparent then
+  if Transparent and not IsThemed then
     Invalidate;
 end;
 
