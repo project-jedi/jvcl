@@ -1,10 +1,10 @@
 object Form1: TForm1
-  Left = 197
-  Top = 107
+  Left = 327
+  Top = 118
   BorderStyle = bsDialog
   Caption = 'JvBehaviorLabel Demo'
-  ClientHeight = 303
-  ClientWidth = 573
+  ClientHeight = 300
+  ClientWidth = 572
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -24,7 +24,7 @@ object Form1: TForm1
     BehaviorOptions.Interval = 5
     Alignment = taCenter
     AutoSize = False
-    Caption = 'BREAK THE CODE'
+    Caption = 'x6/yhjSkhHHDski"=90sd'
     Color = clBlack
     Font.Charset = ANSI_CHARSET
     Font.Color = clLime
@@ -33,6 +33,7 @@ object Form1: TForm1
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
+    ShowAccelChar = False
   end
   object lblAppearing: TJvBehaviorLabel
     Left = 300

@@ -27,7 +27,7 @@ object frmMain: TfrmMain
     Font.Height = -21
     Font.Name = 'MS Shell Dlg 2'
     Font.Style = []
-    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgCancelOnExit]
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgCancelOnExit, dgMultiSelect]
     ParentFont = False
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
@@ -35,11 +35,12 @@ object frmMain: TfrmMain
     TitleFont.Height = -11
     TitleFont.Name = 'MS Shell Dlg 2'
     TitleFont.Style = []
+    MultiSelect = True
     TitleButtons = True
     AlternateRowColor = 16768667
     TitleArrow = True
     AutoSizeColumns = True
-    AutoSizeColumnIndex = 3
+    AutoSizeColumnIndex = -2
     Columns = <
       item
         Expanded = False

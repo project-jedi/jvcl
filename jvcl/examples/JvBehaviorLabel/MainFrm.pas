@@ -70,8 +70,11 @@ implementation
 
 procedure TForm1.btnCodeBreakClick(Sender: TObject);
 begin
+  Randomize;
   lblCodeBreaker.OnStart := nil;
   lblCodeBreaker.OnStop := nil;
+  if lblCodeBreaker.Caption = TJvLabelCodeBreaker(lblCodeBreaker.BehaviorOptions).DecodedText then
+    lblCodeBreaker.Caption := 'x6/yhjSkhHHDski"=90sd';
   // this might trigger the OnStart/OnStop events, so set to nil
   lblCodeBreaker.BehaviorOptions.Active := not lblCodeBreaker.BehaviorOptions.Active;
   lblCodeBreaker.OnStart := DoCodeBreakStart;
@@ -90,7 +93,8 @@ end;
 
 procedure TForm1.btnAppearClick(Sender: TObject);
 begin
-  lblAppearing.BehaviorOptions.Active := not lblAppearing.BehaviorOptions.Active; 
+  lblAppearing.Alignment := taCenter;
+  lblAppearing.BehaviorOptions.Active := not lblAppearing.BehaviorOptions.Active;
 end;
 
 procedure TForm1.btnBlinkClick(Sender: TObject);
