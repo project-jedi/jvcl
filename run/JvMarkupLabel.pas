@@ -32,7 +32,7 @@ unit JvMarkupLabel;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, JvComponent, JvMarkupCommon;
+  Windows, SysUtils, Classes, Graphics, Controls, JvComponent, JvMarkupCommon;
 
 type
   TJvMarkupLabel = class(TJvGraphicControl)
