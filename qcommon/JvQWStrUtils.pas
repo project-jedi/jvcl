@@ -13,19 +13,23 @@ The Original Code is: WStrUtils.PAS, released on 2004-01-25
 The Initial Developers of the Original Code are: Andreas Hausladen <Andreas dott Hausladen att gmx dott de>
 All Rights Reserved.
 
-Last Modified: 2004-02-13
-
 Contributers:
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+This is a light weight Unicode unit. For more features use JclUnicode.
+
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
+
 {$I jvcl.inc}
 
 unit JvQWStrUtils;
+
 interface
+
 uses
   SysUtils, Classes;
 
@@ -34,10 +38,20 @@ const
   BOM_MSB_FIRST = WideChar($FFFE);
 
 type
-  TWideFileOptionsType = (
+  TSearchFlag = (
+    sfCaseSensitive,    // match letter case
+    sfIgnoreNonSpacing, // ignore non-spacing characters in search
+    sfSpaceCompress,    // handle several consecutive white spaces as one white space
+                        // (this applies to the pattern as well as the search text)
+    sfWholeWordOnly     // match only text at end/start and/or surrounded by white spaces
+  );
+  TSearchFlags = set of TSearchFlag;
+
+  TWideFileOptionsType =
+   (
     foAnsiFile,  // loads/writes an ANSI file
     foUnicodeLB  // reads/writes BOM_LSB_FIRST/BOM_MSB_FIRST
-  );
+   );
   TWideFileOptions = set of TWideFileOptionsType;
 
   TWStrings = class;
@@ -52,7 +66,6 @@ type
     FNameValueSeparator: WideChar;
     FLineSeparator: WideString;
     FUpdateCount: Integer;
-
     function GetCommaText: WideString;
     function GetDelimitedText: WideString;
     function GetName(Index: Integer): WideString;
@@ -115,10 +128,8 @@ type
     procedure SaveToStream(Stream: TStream;
       WideFileOptions: TWideFileOptions = []); virtual;
     procedure SetText(Text: PWideChar); virtual;
-
     function GetDelimtedTextEx(ADelimiter, AQuoteChar: WideChar): WideString;
     procedure SetDelimtedTextEx(ADelimiter, AQuoteChar: WideChar; const Value: WideString);
-
     property Capacity: Integer read GetCapacity write SetCapacity;
     property CommaText: WideString read GetCommaText write SetCommaText;
     property Count: Integer read GetCount;
@@ -136,7 +147,7 @@ type
     property Text: WideString read GetTextStr write SetTextStr;
   end;
 
- // do not replace by JclUnicode.TWideStringList (speed and size issue)
+  // do not replace by JclUnicode.TWideStringList (speed and size issue)
   PWStringItem = ^TWStringItem;
   TWStringItem = record
     FString: WideString;
@@ -174,7 +185,7 @@ type
     procedure Delete(Index: Integer); override;
     procedure Exchange(Index1, Index2: Integer); override;
     function Find(const S: WideString; var Index: Integer): Boolean; virtual;
-      // Find() also works with unsorted lists
+    // Find() also works with unsorted lists
     function IndexOf(const S: WideString): Integer; override;
     procedure InsertObject(Index: Integer; const S: WideString;
       AObject: TObject); override;
@@ -189,6 +200,7 @@ type
 
   TWideStringList = TWStringList;
   TWideStrings = TWStrings;
+
 
 // WideChar functions
 function CharToWideChar(Ch: AnsiChar): WideChar;
@@ -242,20 +254,36 @@ uses
   {$ENDIF !COMPILER6_UP}
   Math;
 
+{$IFDEF COMPILER5}
+// (ahuser) Delphi 5 does not know Sign and I will not depend on JCL in this
+//          unit.
+function Sign(A: Integer): Integer;
+begin
+  if A < 0 then
+    Result := -1
+  else if A > 0 then
+    Result := 1
+  else
+    Result := 0;
+end;
+{$ENDIF COMPILER6_UP}
+
 procedure SwapWordByteOrder(P: PChar; Len: Cardinal);
-var b: Char;
+var
+  B: Char;
 begin
   while Len > 0 do
   begin
-    b := P[0];
+    B := P[0];
     P[0] := P[1];
-    P[1] := b;
+    P[1] := B;
     Inc(P, 2);
     Dec(Len);
   end;
 end;
 
 // WideChar functions
+
 function CharToWideChar(Ch: Char): WideChar;
 var
   WS: WideString;
@@ -273,6 +301,7 @@ begin
 end;
 
 // PWideChar functions
+
 procedure MoveWideChar(const Source; var Dest; Count: Integer);
 begin
   Move(Source, Dest, Count * SizeOf(WideChar));
@@ -313,10 +342,10 @@ begin
 end;
 
 function StrLICompW2(S1, S2: PWideChar; MaxLen: Integer): Integer;
- // faster than the JclUnicode.StrLICompW function
 var
   P1, P2: WideString;
 begin
+  // faster than the JclUnicode.StrLICompW function
   SetString(P1, S1, Min(MaxLen, StrLenW(S1)));
   SetString(P2, S2, Min(MaxLen, StrLenW(S2)));
   Result := WideCompareText(P1, P2);
@@ -327,20 +356,21 @@ var
   NullWide: WideChar;
 begin
   Result := 0;
-  if (S1 = S2) then // "equal" and "nil" case
+  if S1 = S2 then // "equal" and "nil" case
     Exit;
   NullWide := #0;
 
-  if S1 = nil then S1 := @NullWide
-  else if S2 = nil then S2 := @NullWide;
-  while (S1[0] = S2[0]) and (S1[0] <> #0) and (S2[0] <> #0) do
+  if S1 = nil then
+    S1 := @NullWide
+  else
+  if S2 = nil then
+    S2 := @NullWide;
+  while (S1^ = S2^) and (S1^ <> #0) and (S2^ <> #0) do
   begin
     Inc(S1);
     Inc(S2);
   end;
-  Result := Integer(S1[0]) - Integer(S2[0]);
-  if Result < 0 then Result := -1
-  else if Result > 0 then Result := 1;
+  Result := Sign(Integer(S1^) - Integer(S2^));
 end;
 
 function StrLCompW(S1, S2: PWideChar; MaxLen: Integer): Integer;
@@ -348,21 +378,22 @@ var
   NullWide: WideChar;
 begin
   Result := 0;
-  if (S1 = S2) then // "equal" and "nil" case
+  if S1 = S2 then // "equal" and "nil" case
     Exit;
   NullWide := #0;
 
-  if S1 = nil then S1 := @NullWide
-  else if S2 = nil then S2 := @NullWide;
-  while (MaxLen > 0) and (S1[0] = S2[0]) and (S1[0] <> #0) and (S2[0] <> #0) do
+  if S1 = nil then
+    S1 := @NullWide
+  else
+  if S2 = nil then
+    S2 := @NullWide;
+  while (MaxLen > 0) and (S1^ = S2[0]) and (S1^ <> #0) and (S2^ <> #0) do
   begin
     Inc(S1);
     Inc(S2);
     Dec(MaxLen);
   end;
-  Result := Integer(S1[0]) - Integer(S2[0]);
-  if Result < 0 then Result := -1
-  else if Result > 0 then Result := 1;
+  Result := Sign(Integer(S1^) - Integer(S2^));
 end;
 
 function StrIComp(S1, S2: PWideChar; MaxLen: Integer): Integer;
@@ -374,17 +405,18 @@ begin
     Exit;
   NullWide := #0;
 
-  if S1 = nil then S1 := @NullWide
-  else if S2 = nil then S2 := @NullWide;
-  while (MaxLen > 0) and (S1[0] = S2[0]) and (S1[0] <> #0) and (S2[0] <> #0) do
+  if S1 = nil then
+    S1 := @NullWide
+  else
+  if S2 = nil then
+    S2 := @NullWide;
+  while (MaxLen > 0) and (S1^ = S2^) and (S1^ <> #0) and (S2^ <> #0) do
   begin
     Inc(S1);
     Inc(S2);
     Dec(MaxLen);
   end;
-  Result := Integer(S1[0]) - Integer(S2[0]);
-  if Result < 0 then Result := -1
-  else if Result > 0 then Result := 1;
+  Result := Sign(Integer(S1^) - Integer(S2^));
 end;
 
 function StrPosW(S, SubStr: PWideChar): PWideChar;
@@ -393,18 +425,18 @@ var
   I: Integer;
 begin
   Result := nil;
-  if (S = nil) or (SubStr = nil) or
-     (S[0] = #0) or (SubStr[0] = #0) then Exit;
+  if (S = nil) or (SubStr = nil) or (S^ = #0) or (SubStr^ = #0) then
+    Exit;
   Result := S;
-  while Result[0] <> #0 do
+  while Result^ <> #0 do
   begin
-    if Result[0] <> SubStr[0] then
+    if Result^ <> SubStr^ then
       Inc(Result)
     else
     begin
       P := Result + 1;
-      I := 0;
-      while (P[0] <> #0) and (P[0] = SubStr[I]) do
+      I := 1;
+      while (P^ <> #0) and (P^ = SubStr[I]) do
       begin
         Inc(I);
         Inc(P);
@@ -422,47 +454,39 @@ function StrLenW(P: PWideChar): Integer;
 begin
   Result := 0;
   if P <> nil then
-  begin
     while P[Result] <> #0 do
       Inc(Result);
-  end;
 end;
 
 function StrScanW(P: PWideChar; Ch: WideChar): PWideChar;
 begin
   Result := P;
   if Result <> nil then
-  begin
-    while (Result[0] <> #0) and (Result[0] <> Ch) do
+    while (Result^ <> #0) and (Result^ <> Ch) do
       Inc(Result);
-  end;
 end;
 
 function StrEndW(P: PWideChar): PWideChar;
 begin
   Result := P;
   if Result <> nil then
-  begin
-    while Result[0] <> #0 do
+    while Result^ <> #0 do
       Inc(Result);
-  end;
 end;
 
 function StrCopyW(Dest, Source: PWideChar): PWideChar;
 begin
   Result := Dest;
-  if (Dest <> nil) then
+  if Dest <> nil then
   begin
     if Source <> nil then
-    begin
-      while Source[0] <> #0 do
+      while Source^ <> #0 do
       begin
-        Dest[0] := Source[0];
+        Dest^ := Source^;
         Inc(Source);
         Inc(Dest);
       end;
-    end;
-    Dest[0] := #0;
+    Dest^ := #0;
   end;
 end;
 
@@ -472,30 +496,29 @@ begin
   if (Dest <> nil) and (MaxLen > 0) then
   begin
     if Source <> nil then
-    begin
-      while (MaxLen > 0) and (Source[0] <> #0) do
+      while (MaxLen > 0) and (Source^ <> #0) do
       begin
-        Dest[0] := Source[0];
+        Dest^ := Source^;
         Inc(Source);
         Inc(Dest);
         Dec(MaxLen);
       end;
-    end;
-    Dest[0] := #0;
+    Dest^ := #0;
   end;
 end;
 
 function StrCatW(Dest, Source: PWideChar): PWideChar;
 begin
   Result := Dest;
-  while Dest[0] <> #0 do Inc(Dest);
+  while Dest^ <> #0 do
+    Inc(Dest);
   StrCopyW(Dest, Source);
 end;
 
 function StrLCatW(Dest, Source: PWideChar; MaxLen: Integer): PWideChar;
 begin
   Result := Dest;
-  while Dest[0] <> #0 do
+  while Dest^ <> #0 do
   begin
     Inc(Dest);
     Dec(MaxLen);
@@ -505,6 +528,7 @@ end;
 
 
 // WideString functions
+
 function WidePos(const SubStr, S: WideString): Integer;
 var
   P: PWideChar;
@@ -516,8 +540,9 @@ begin
     Result := 0;
 end;
 
-function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 // original code by Mike Lischke (extracted from JclUnicode.pas)
+
+function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 var
   P, Src,
   Dest: PWideChar;
@@ -525,7 +550,7 @@ var
 begin
   AddCount := 0;
   P := StrScanW(PWideChar(S), Quote);
-  while (P <> nil) do
+  while P <> nil do
   begin
     Inc(P);
     Inc(AddCount);
@@ -558,8 +583,9 @@ begin
   end;
 end;
 
-function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 // original code by Mike Lischke (extracted from JclUnicode.pas)
+
+function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 var
   P, Dest: PWideChar;
   DropCount: Integer;
@@ -631,9 +657,10 @@ end;
 {$ELSE}
 
 // missing function in Delphi 5
+
 function WideCompareText(const S1, S2: WideString): Integer;
 begin
-  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
     Result := AnsiCompareText(string(S1), string(S2))
   else
     Result := CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
@@ -642,7 +669,7 @@ end;
 
 function WideCompareStr(const S1, S2: WideString): Integer;
 begin
-  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
     Result := AnsiCompareStr(string(S1), string(S2))
   else
     Result := CompareStringW(LOCALE_USER_DEFAULT, 0,
@@ -669,12 +696,14 @@ var
 begin
   L := Length(S);
   I := 1;
-  while (I <= L) and (S[I] <= ' ') do Inc(I);
+  while (I <= L) and (S[I] <= ' ') do
+    Inc(I);
   if I > L then
     Result := ''
   else
   begin
-    while S[L] <= ' ' do Dec(L);
+    while S[L] <= ' ' do
+      Dec(L);
     Result := Copy(S, I, L - I + 1);
   end;
 end;
@@ -685,7 +714,8 @@ var
 begin
   L := Length(S);
   I := 1;
-  while (I <= L) and (S[I] <= ' ') do Inc(I);
+  while (I <= L) and (S[I] <= ' ') do
+    Inc(I);
   Result := Copy(S, I, Maxint);
 end;
 
@@ -694,7 +724,8 @@ var
   I: Integer;
 begin
   I := Length(S);
-  while (I > 0) and (S[I] <= ' ') do Dec(I);
+  while (I > 0) and (S[I] <= ' ') do
+    Dec(I);
   Result := Copy(S, 1, I);
 end;
 
@@ -718,7 +749,22 @@ begin
     Dec(Result);
 end;
 
-{ TWStrings }
+//=== TWStrings ==============================================================
+
+constructor TWStrings.Create;
+begin
+  inherited Create;
+  // FLineSeparator := WideChar($2028);
+  {$IFDEF MSWINDOWS}
+  FLineSeparator := WideChar(13) + '' + WideChar(10); // compiler wants it this way
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  FLineSeparator := WideChar(10);
+  {$ENDIF LINUX}
+  FNameValueSeparator := '=';
+  FDelimiter := ',';
+  FQuoteChar := '"';
+end;
 
 function TWStrings.Add(const S: WideString): Integer;
 begin
@@ -733,26 +779,26 @@ end;
 
 procedure TWStrings.AddStrings(Strings: TWStrings);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Strings.Count - 1 do
-    AddObject(Strings.GetP(i)^, Strings.Objects[i]);
+  for I := 0 to Strings.Count - 1 do
+    AddObject(Strings.GetP(I)^, Strings.Objects[I]);
 end;
 
 procedure TWStrings.AddStrings(Strings: TStrings);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Strings.Count - 1 do
-    AddObject(Strings.Strings[i], Strings.Objects[i]);
+  for I := 0 to Strings.Count - 1 do
+    AddObject(Strings.Strings[I], Strings.Objects[I]);
 end;
 
 procedure TWStrings.AddStringsTo(Dest: TStrings);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
-    Dest.AddObject(GetP(i)^, Objects[i]);
+  for I := 0 to Count - 1 do
+    Dest.AddObject(GetP(I)^, Objects[I]);
 end;
 
 procedure TWStrings.Append(const S: WideString);
@@ -799,7 +845,7 @@ end;
 
 procedure TWStrings.AssignTo(Dest: TPersistent);
 var
-  i: Integer;
+  I: Integer;
 begin
   if Dest is TStrings then
   begin
@@ -813,8 +859,8 @@ begin
       TStrings(Dest).QuoteChar := WideCharToChar(QuoteChar);
       TStrings(Dest).Delimiter := WideCharToChar(Delimiter);
       {$ENDIF COMPILER6_UP}
-      for i := 0 to Count - 1 do
-        TStrings(Dest).AddObject(GetP(i)^, Objects[i]);
+      for I := 0 to Count - 1 do
+        TStrings(Dest).AddObject(GetP(I)^, Objects[I]);
     finally
       TStrings(Dest).EndUpdate;
     end;
@@ -835,30 +881,15 @@ begin
   Result := WideCompareText(S1, S2);
 end;
 
-constructor TWStrings.Create;
-begin
-  inherited Create;
-  // FLineSeparator := WideChar($2028);
-  {$IFDEF MSWINDOWS}
-  FLineSeparator := WideChar(13) + '' + WideChar(10); // compiler wants it this way
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  FLineSeparator := WideChar(10);
-  {$ENDIF LINUX}
-  FNameValueSeparator := '=';
-  FDelimiter := ',';
-  FQuoteChar := '"';
-end;
-
 function TWStrings.CreateAnsiStringList: TStrings;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := TStringList.Create;
   try
     Result.BeginUpdate;
-    for i := 0 to Count - 1 do
-      Result.AddObject(GetP(i)^, Objects[i]);
+    for I := 0 to Count - 1 do
+      Result.AddObject(GetP(I)^, Objects[I]);
     Result.EndUpdate;
   except
     Result.Free;
@@ -893,13 +924,13 @@ end;
 
 function TWStrings.Equals(Strings: TStrings): Boolean;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := False;
   if Strings.Count = Count then
   begin
-    for i := 0 to Count - 1 do
-      if Strings[i] <> PStrings[i]^ then
+    for I := 0 to Count - 1 do
+      if Strings[I] <> PStrings[I]^ then
         Exit;
     Result := True;
   end;
@@ -907,13 +938,13 @@ end;
 
 function TWStrings.Equals(Strings: TWStrings): Boolean;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := False;
   if Strings.Count = Count then
   begin
-    for i := 0 to Count - 1 do
-      if Strings[i] <> PStrings[i]^ then
+    for I := 0 to Count - 1 do
+      if Strings[I] <> PStrings[I]^ then
         Exit;
     Result := True;
   end;
@@ -973,7 +1004,7 @@ function TWStrings.GetDelimtedTextEx(ADelimiter, AQuoteChar: WideChar): WideStri
 var
   S: WideString;
   P: PWideChar;
-  i, Num: Integer;
+  I, Num: Integer;
 begin
   Num := GetCount;
   if (Num = 1) and (GetP(0)^ = '') then
@@ -983,7 +1014,7 @@ begin
     Result := '';
     for I := 0 to Count - 1 do
     begin
-      S := GetP(i)^;
+      S := GetP(I)^;
       P := PWideChar(S);
       while True do
       begin
@@ -1007,12 +1038,12 @@ end;
 
 function TWStrings.GetName(Index: Integer): WideString;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := GetP(Index)^;
-  i := WidePos(FNameValueSeparator, Result);
-  if i > 0 then
-    SetLength(Result, i - 1);
+  I := WidePos(FNameValueSeparator, Result);
+  if I > 0 then
+    SetLength(Result, I - 1);
 end;
 
 function TWStrings.GetObject(Index: Integer): TObject;
@@ -1027,20 +1058,20 @@ end;
 
 function TWStrings.GetTextStr: WideString;
 var
-  i: Integer;
+  I: Integer;
   Len, LL: Integer;
   P: PWideChar;
   W: PWideString;
 begin
   Len := 0;
   LL := Length(LineSeparator);
-  for i := 0 to Count - 1 do
-    Inc(Len, Length(GetP(i)^) + LL);
+  for I := 0 to Count - 1 do
+    Inc(Len, Length(GetP(I)^) + LL);
   SetLength(Result, Len);
   P := PWideChar(Result);
-  for i := 0 to Count - 1 do
+  for I := 0 to Count - 1 do
   begin
-    W := GetP(i);
+    W := GetP(I);
     Len := Length(W^);
     if Len > 0 then
     begin
@@ -1068,12 +1099,12 @@ end;
 
 function TWStrings.GetValueFromIndex(Index: Integer): WideString;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := GetP(Index)^;
-  i := WidePos(FNameValueSeparator, Result);
-  if i > 0 then
-    System.Delete(Result, 1, i)
+  I := WidePos(FNameValueSeparator, Result);
+  if I > 0 then
+    System.Delete(Result, 1, I)
   else
     Result := '';
 end;
@@ -1189,12 +1220,10 @@ begin
     Clear;
     Reader.ReadListBegin;
     while not Reader.EndOfList do
-    begin
       if Reader.NextValue in [vaLString, vaString] then
         Add(Reader.ReadString)
       else
         Add(Reader.ReadWideString);
-    end;
     Reader.ReadListEnd;
   finally
     EndUpdate;
@@ -1285,16 +1314,13 @@ begin
       Add(S);
 
       while True do
-      begin
         case P[0] of
           WideChar(1)..WideChar(32):
             Inc(P);
         else
           Break;
         end;
-      end;
       if P[0] = ADelimiter then
-      begin
         repeat
           Inc(P);
           case P[0] of
@@ -1304,7 +1330,6 @@ begin
             Break;
           end;
         until False;
-      end;
     end;
   finally
     EndUpdate;
@@ -1336,9 +1361,7 @@ begin
           while True do
           begin
             case P[0] of
-              WideChar(0),
-              WideChar(10),
-              WideChar(13):
+              WideChar(0), WideChar(10), WideChar(13):
                 Break;
             end;
             Inc(P);
@@ -1351,8 +1374,10 @@ begin
           end
           else
             AddObject('', nil);
-          if P[0] = WideChar(13) then Inc(P);
-          if P[0] = WideChar(10) then Inc(P);
+          if P[0] = WideChar(13) then
+            Inc(P);
+          if P[0] = WideChar(10) then
+            Inc(P);
         end;
       end;
     end;
@@ -1373,16 +1398,14 @@ begin
   if Idx >= 0 then
     SetValueFromIndex(Idx, Value)
   else
-  begin
-    if Value <> '' then
-      Add(Name + NameValueSeparator + Value);
-  end;
+  if Value <> '' then
+    Add(Name + NameValueSeparator + Value);
 end;
 
 procedure TWStrings.SetValueFromIndex(Index: Integer; const Value: WideString);
 var
   S: WideString;
-  i: Integer;
+  I: Integer;
 begin
   if Value = '' then
     Delete(Index)
@@ -1391,9 +1414,9 @@ begin
     if Index < 0 then
       Index := Add('');
     S := GetP(Index)^;
-    i := WidePos(NameValueSeparator, S);
-    if i > 0 then
-      System.Delete(S, i, MaxInt);
+    I := WidePos(NameValueSeparator, S);
+    if I > 0 then
+      System.Delete(S, I, MaxInt);
     S := S + NameValueSeparator + Value;
     Put(Index, S);
   end;
@@ -1401,18 +1424,33 @@ end;
 
 procedure TWStrings.WriteData(Writer: TWriter);
 var
-  i: Integer;
+  I: Integer;
 begin
   Writer.WriteListBegin;
-  for i := 0 to Count - 1 do
-     Writer.WriteWideString(GetP(i)^);
+  for I := 0 to Count - 1 do
+     Writer.WriteWideString(GetP(I)^);
   Writer.WriteListEnd;
 end;
 
-{ TWStringList }
+//=== TWStringList ===========================================================
 
-function TWStringList.AddObject(const S: WideString;
-  AObject: TObject): Integer;
+constructor TWStringList.Create;
+begin
+  inherited Create;
+  FList := TList.Create;
+end;
+
+destructor TWStringList.Destroy;
+begin
+  FOnChange := nil;
+  FOnChanging := nil;
+  Inc(FUpdateCount); // do not call unnecessary functions
+  Clear;
+  FList.Free;
+  inherited Destroy;
+end;
+
+function TWStringList.AddObject(const S: WideString; AObject: TObject): Integer;
 begin
   if not Sorted then
     Result := Count
@@ -1441,14 +1479,14 @@ end;
 
 procedure TWStringList.Clear;
 var
-  i: Integer;
+  I: Integer;
   Item: PWStringItem;
 begin
   if FUpdateCount = 0 then
     Changing;
-  for i := 0 to Count - 1 do
+  for I := 0 to Count - 1 do
   begin
-    Item := PWStringItem(FList[i]);
+    Item := PWStringItem(FList[I]);
     Item.FString := '';
     FreeMem(Item);
   end;
@@ -1463,12 +1501,6 @@ begin
     Result := WideCompareStr(S1, S2)
   else
     Result := WideCompareText(S1, S2);
-end;
-
-constructor TWStringList.Create;
-begin
-  inherited Create;
-  FList := TList.Create;
 end;
 
 threadvar
@@ -1515,16 +1547,6 @@ begin
     Changed;
 end;
 
-destructor TWStringList.Destroy;
-begin
-  FOnChange := nil;
-  FOnChanging := nil;
-  Inc(FUpdateCount); // do not call unnecessary functions
-  Clear;
-  FList.Free;
-  inherited Destroy;
-end;
-
 procedure TWStringList.Exchange(Index1, Index2: Integer);
 begin
   if FUpdateCount = 0 then
@@ -1547,7 +1569,9 @@ begin
     begin
       I := (L + H) shr 1;
       C := CompareStrings(GetItem(I).FString, S);
-      if C < 0 then L := I + 1 else
+      if C < 0 then
+        L := I + 1
+      else
       begin
         H := I - 1;
         if C = 0 then
