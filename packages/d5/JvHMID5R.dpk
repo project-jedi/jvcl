@@ -34,6 +34,6 @@ requires
 contains
   JvSegmentedLEDDisplay in '..\..\run\JvSegmentedLEDDisplay.pas',
   JvLED in '..\..\run\JvLED.pas',
-  JvRadioControl in '..\..\run\JvRadioControl.pas';
+  JvDialButton in '..\..\run\JvDialButton.pas';
 
 end.
