@@ -297,7 +297,7 @@ type
     var Allow: Boolean) of object;
   TInspectorValueErrorEvent = procedure(Sender: TObject; Item: TJvCustomInspectorItem;
     ExceptObject: Exception) of object;
-  TInspectorValueChangingEvent = procedure(Sender: TObject; Item: TJvCustomInspectorItem; const NewValue: string; var AllowChange: Boolean) of object;
+  TInspectorValueChangingEvent = procedure(Sender: TObject; Item: TJvCustomInspectorItem; var NewValue: string; var AllowChange: Boolean) of object;
   // new event types (sept 2004) -wp
   TInspectorBeforeEditEvent = procedure(Sender: TObject; Item: TJvCustomInspectorItem; Edit: TCustomEdit) of object;
 
@@ -411,7 +411,7 @@ type
     procedure DoDataValueChanged(const Data: TJvCustomInspectorData); virtual;
     procedure DoItemSelected; virtual;
     procedure DoItemValueChanged(const Item: TJvCustomInspectorItem); virtual;
-    function DoItemValueChanging(const Item: TJvCustomInspectorItem; const NewValue: string): Boolean; virtual;
+    function DoItemValueChanging(const Item: TJvCustomInspectorItem; var NewValue: string): Boolean; virtual;
     function DoItemValueError(Item: TJvCustomInspectorItem): Boolean; virtual;
     function GetAfterDataCreate: TInspectorDataEvent; virtual;
     function GetAfterItemCreate: TInspectorItemEvent; virtual;
@@ -2878,7 +2878,7 @@ begin
     FOnItemValueChanged(Self, Item);
 end;
 
-function TJvCustomInspector.DoItemValueChanging(const Item: TJvCustomInspectorItem; const NewValue: string): Boolean;
+function TJvCustomInspector.DoItemValueChanging(const Item: TJvCustomInspectorItem; var NewValue: string): Boolean;
 begin
   Result := True;
   if Assigned(FOnItemValueChanging) then
@@ -5520,32 +5520,37 @@ end;
 procedure TJvCustomInspectorItem.Apply;
 var
   TmpOnChange: TNotifyEvent;
+  NewValue: string;
 begin
   try
-    if Editing and (EditCtrl <> nil) and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) and
-       Inspector.DoItemValueChanging(Self, EditCtrl.Text) then
+    if Editing and (EditCtrl <> nil) then
     begin
-      try
-        DisplayValue := EditCtrl.Text;
-      except
-        if not Inspector.DoItemValueError(Self) then
-          raise;
-      end;
-      InvalidateItem;
-      if EditCtrl <> nil then
+      NewValue := EditCtrl.Text;
+      if (not Data.IsAssigned or (DisplayValue <> NewValue)) and
+         Inspector.DoItemValueChanging(Self, NewValue) then
       begin
-        TmpOnChange := TCustomEditAccessProtected(EditCtrl).OnChange;
-        TCustomEditAccessProtected(EditCtrl).OnChange := nil;
         try
-          if Data.IsAssigned then
-            EditCtrl.Text := DisplayValue
-          else
-            EditCtrl.Text := '';
-        finally
-          TCustomEditAccessProtected(EditCtrl).OnChange := TmpOnChange;
+          DisplayValue := NewValue;
+        except
+          if not Inspector.DoItemValueError(Self) then
+            raise;
         end;
+        InvalidateItem;
+        if EditCtrl <> nil then
+        begin
+          TmpOnChange := TCustomEditAccessProtected(EditCtrl).OnChange;
+          TCustomEditAccessProtected(EditCtrl).OnChange := nil;
+          try
+            if Data.IsAssigned then
+              EditCtrl.Text := DisplayValue
+            else
+              EditCtrl.Text := '';
+          finally
+            TCustomEditAccessProtected(EditCtrl).OnChange := TmpOnChange;
+          end;
+        end;
+        Inspector.DoItemValueChanged(Self);
       end;
-      Inspector.DoItemValueChanged(Self);
     end;
   finally
     if Editing and (EditCtrl <> nil) then
