@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Remko Bonte <remkobonte@myrealbox.com>
 
-Last Modified: 2003-27-05
+Last Modified: 2003-05-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
