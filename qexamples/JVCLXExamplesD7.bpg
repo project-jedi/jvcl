@@ -15,7 +15,8 @@ PROJECTS = TransparentButtonDemo2.exe ArrowButtonDemo.exe JvQCheckBoxDemo.exe \
   JvQLEDDemo.exe JvQLogFileDemo.exe JvQMarkupLabelDemo.exe JvQNavPaneDemo.exe \
   OfficeColorButtonDemo.exe OLBarDemo.exe JvQProgressDialogDemo.exe \
   JvQStarfieldDemo.exe TipsDemo.exe SimpleTLTest1.exe JvQValidatorsDemo.exe \
-  WinXPBarDemo.exe SimpleDemo.exe TransparentButtonDemo.exe
+  WinXPBarDemo.exe SimpleDemo.exe TransparentButtonDemo.exe JvQLinkLabelDemo.exe \
+  JvQOutlookBarCustomDrawDemo.exe JvQZoomProj.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -87,6 +88,15 @@ SimpleDemo.exe: JvXPControls\Simple\SimpleDemo.dpr
   $(DCC)
 
 TransparentButtonDemo.exe: JvTransparentButton\TransparentButtonDemo.dpr
+  $(DCC)
+
+JvQLinkLabelDemo.exe: JvLinkLabel\JvQLinkLabelDemo.dpr
+  $(DCC)
+
+JvQOutlookBarCustomDrawDemo.exe: JvOutlookBarCustomDraw\JvQOutlookBarCustomDrawDemo.dpr
+  $(DCC)
+
+JvQZoomProj.exe: JvZoom\JvQZoomProj.dpr
   $(DCC)
 
 
