@@ -87,7 +87,7 @@ procedure TJvXorCipher.Decode(Strings: TStrings);
 var
   I: Integer;
 begin
-  for I := 1 to Strings.Count - 1 do
+  for I := 0 to Strings.Count - 1 do
     Strings[I] := Crypt(Strings[I]);
 end;
 
