@@ -42,13 +42,13 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvCoreC6R.cpp"/>
     <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <LIBPATH value="C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I..\..\resources 
-      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
+    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I$(BCB)\include 
+      -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
     <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
@@ -124,17 +124,19 @@ Comments=
 
 [HistoryLists\hlIncludePath]
 Count=3
-Item0=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl
-Item1=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl
+Item0=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl
+Item1=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl
 Item2=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\..\JCL\source
 
 [HistoryLists\hlLibraryPath]
-Count=5
-Item0=C:\Prog\delphi6\Lib\JCL\dcu;c:\prog\cbuilder6\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
-Item1=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
-Item2=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common;..\..\..\JCL\dcu;..\..\..\JCL\source
-Item3=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\JCL\dcu;..\..\..\JCL\source
-Item4=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib
+Count=7
+Item0=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item1=C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item2=C:\Prog\delphi6\Lib\JCL\dcu;c:\prog\cbuilder6\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item3=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item4=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item5=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item6=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
