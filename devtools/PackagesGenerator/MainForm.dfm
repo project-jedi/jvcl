@@ -168,7 +168,7 @@ object frmMain: TfrmMain
       DragKind = dkDock
       DragMode = dmAutomatic
       TabOrder = 2
-      object Label1: TLabel
+      object lblPackagesLocation: TLabel
         Left = 4
         Top = 4
         Width = 105
@@ -204,30 +204,65 @@ object frmMain: TfrmMain
     object lblDependencies: TLabel
       Left = 12
       Top = 132
-      Width = 69
+      Width = 72
       Height = 13
       Alignment = taRightJustify
+      AutoSize = False
       Caption = 'Dependencies'
     end
     object lblFiles: TLabel
-      Left = 60
+      Left = 12
       Top = 328
-      Width = 21
+      Width = 72
       Height = 13
       Alignment = taRightJustify
+      AutoSize = False
       Caption = 'Files'
     end
-    object ledName: TLabeledEdit
+    object lblName: TLabel
+      Left = 12
+      Top = 16
+      Width = 72
+      Height = 13
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = 'Name'
+    end
+    object lblDescription: TLabel
+      Left = 12
+      Top = 36
+      Width = 72
+      Height = 13
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = 'Description'
+    end
+    object lblC5PFlags: TLabel
+      Left = 12
+      Top = 452
+      Width = 72
+      Height = 13
+      Alignment = taRightJustify
+      Anchors = [akLeft, akBottom]
+      AutoSize = False
+      Caption = 'BCB5 PFlags'
+    end
+    object lblC6PFlags: TLabel
+      Left = 12
+      Top = 476
+      Width = 72
+      Height = 13
+      Alignment = taRightJustify
+      Anchors = [akLeft, akBottom]
+      AutoSize = False
+      Caption = 'BCB6 PFlags'
+    end
+    object ledName: TEdit
       Left = 92
       Top = 8
       Width = 393
       Height = 21
       Anchors = [akLeft, akTop, akRight]
-      EditLabel.Width = 28
-      EditLabel.Height = 13
-      EditLabel.Caption = 'Name'
-      LabelPosition = lpLeft
-      LabelSpacing = 8
       TabOrder = 0
       OnChange = ledNameChange
     end
@@ -254,45 +289,30 @@ object frmMain: TfrmMain
       TabOrder = 2
       OnClick = rbtDesignClick
     end
-    object ledDescription: TLabeledEdit
+    object ledDescription: TEdit
       Left = 92
       Top = 32
       Width = 545
       Height = 21
       Anchors = [akLeft, akTop, akRight]
-      EditLabel.Width = 53
-      EditLabel.Height = 13
-      EditLabel.Caption = 'Description'
-      LabelPosition = lpLeft
-      LabelSpacing = 8
       TabOrder = 3
       OnChange = ledDescriptionChange
     end
-    object ledC5PFlags: TLabeledEdit
+    object ledC5PFlags: TEdit
       Left = 92
       Top = 448
       Width = 545
       Height = 21
       Anchors = [akLeft, akRight, akBottom]
-      EditLabel.Width = 71
-      EditLabel.Height = 13
-      EditLabel.Caption = 'BCB5 PFLAGS'
-      LabelPosition = lpLeft
-      LabelSpacing = 8
       TabOrder = 4
       OnChange = ledC5PFlagsChange
     end
-    object ledC6PFlags: TLabeledEdit
+    object ledC6PFlags: TEdit
       Left = 92
       Top = 472
       Width = 545
       Height = 21
       Anchors = [akLeft, akRight, akBottom]
-      EditLabel.Width = 71
-      EditLabel.Height = 13
-      EditLabel.Caption = 'BCB6 PFLAGS'
-      LabelPosition = lpLeft
-      LabelSpacing = 8
       TabOrder = 5
       OnChange = ledC6PFlagsChange
     end
