@@ -1,3 +1,8 @@
+2002-10-13
+- Fixed some memory leaks in JvInspector //marcelb
+- Added OnItemValueChanged/OnDataValueChanged events to TJvCustomInspector //marcelb
+- Added OnValueChanged event to TJvCustomInspectorItem //marcelb
+- Added OnValueChanged event to TJvCustomInspectorData //marcelb
 2002-10-10
 - Added Oliver Giesens date components to the D6 packages
 - Added JvStdActions, JvDialogActns and JvActnRes to D6 DT package
