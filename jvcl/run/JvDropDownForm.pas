@@ -36,12 +36,9 @@ unit JvDropDownForm;
 interface
 
 uses
-  Windows,
-  {$IFDEF VCL}
-  Messages,
-  {$ENDIF VCL}
+  Windows, Messages,
   {$IFDEF VisualCLX}
-  Qt, Types,
+  Qt,
   {$ENDIF VisualCLX}
   Classes, Controls, StdCtrls, Forms,
   JvTypes, JvExForms;

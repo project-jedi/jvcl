@@ -32,14 +32,7 @@ unit JvDice;
 interface
 
 uses
-  Windows,
-  {$IFDEF VCL}
-  Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, Controls,
+  Windows, Messages, Classes, Graphics, Controls,
   JvTimer, JvComponent, JvExControls;
 
 type
