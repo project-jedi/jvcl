@@ -35,8 +35,7 @@ unit JvQScrollBar;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QStdCtrls, Types, 
+  SysUtils, Classes, QGraphics, QControls, QForms, QStdCtrls,
   JvQExStdCtrls;
 
 type

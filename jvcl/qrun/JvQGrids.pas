@@ -34,11 +34,8 @@ unit JvQGrids;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  Classes,  
-  Qt, QTypes, QControls, QGraphics, QStdCtrls, QForms, QGrids, Types, QWindows, 
+  Classes, QControls, QWindows, QMessages, Types, QGraphics, QStdCtrls, QForms, QGrids, // Windows after Controls 
+  Qt, QTypes, 
   JvQConsts, JvQAppStorage, JvQFormPlacement, JvQComponent, JvQExGrids;
 
 type
@@ -463,7 +460,7 @@ begin
     begin { esEllipsis }
       if FPressed then
         Flags := BF_FLAT;
-      DrawEdge(DC, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or Flags);
+      QWindows.DrawEdge(DC, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or Flags);
       W := 2;
       G := (FButtonWidth - LeftOffs * 2 - 3 * W) div 2;
       if G <= 0 then
@@ -1118,8 +1115,8 @@ begin
       if ((FrameFlags1 and BF_BOTTOM) = 0) and
         (goFixedVertLine in Options) then
         Inc(TempRect.Bottom, GridLineWidth);
-      DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
-      DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
+      QWindows.DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
+      QWindows.DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
     end;
   end;
   if FDefaultDrawing and not (csDesigning in ComponentState) and

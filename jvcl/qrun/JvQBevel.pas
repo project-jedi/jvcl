@@ -35,8 +35,7 @@ unit JvQBevel;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QExtCtrls, QControls, QForms, 
+  QWindows, QMessages, Classes, QControls,
   JvQThemes, JvQExExtCtrls;
 
 type

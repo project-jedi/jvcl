@@ -34,7 +34,7 @@ unit JvQParameterListParameter;
 interface
 
 uses
-  Classes, SysUtils, QStdCtrls, QExtCtrls, Types, QGraphics, QForms,
+  Classes, SysUtils, QStdCtrls, QExtCtrls, QGraphics, QForms,
   QControls, QFileCtrls, QDialogs, QComCtrls, QButtons, 
   Variants,  
   JvQTypes, 
@@ -115,11 +115,16 @@ type
   TJvArrangeParameter = class(TJvNoDataParameter)
   private
     FArrangeSettings: TJvArrangeSettings;
+    FParentControl: TWinControl;
   protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
+    function GetParentControl : TWinControl;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
+    procedure ArrangeControls;
+    property ParentControl: TWinControl read GetParentControl write fParentControl;
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Color;
@@ -149,15 +154,8 @@ type
 
   TJvGroupBoxParameter = class(TJvArrangeParameter)
   private
-    FGroupBox: TWinControl;
   protected
     function GetParameterNameExt: string; override;
-    procedure SetEnabled(Value: Boolean); override;
-    procedure SetVisible(Value: Boolean); override;
-    procedure SetHeight(Value: Integer); override;
-    procedure SetWidth(Value: Integer); override;
-    procedure SetTabOrder(Value: Integer); override;
-    property GroupBox: TWinControl read FGroupBox write FGroupBox;
   public
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   end;
@@ -519,7 +517,7 @@ begin
               CancelButton, HelpButton, ADynControlEngine);
 end;
 
-//=== TJvNoDataParameter =====================================================
+//=== { TJvNoDataParameter } =================================================
 
 constructor TJvNoDataParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -532,7 +530,7 @@ begin
   Result := True;
 end;
 
-//=== TJvButtonParameter =====================================================
+//=== { TJvButtonParameter } =================================================
 
 function TJvButtonParameter.GetParameterNameExt: string;
 begin
@@ -581,7 +579,7 @@ begin
     end;
 end;
 
-//=== TJvBasePanelEditParameter ==============================================
+//=== { TJvBasePanelEditParameter } ==========================================
 
 constructor TJvBasePanelEditParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -792,7 +790,7 @@ begin
   end;
 end;
 
-//=== TJvLabelParameter ======================================================
+//=== { TJvLabelParameter } ==================================================
 
 procedure TJvLabelParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
@@ -800,7 +798,7 @@ begin
     GetParameterName, Caption);
 end;
 
-//=== TJvImageParameter ======================================================
+//=== { TJvImageParameter } ==================================================
 
 constructor TJvImageParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -868,12 +866,17 @@ begin
     end;
 end;
 
-//=== TJvArrangeParameter ====================================================
+//=== { TJvArrangeParameter } ================================================
 
 constructor TJvArrangeParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   FArrangeSettings := TJvArrangeSettings.Create(nil);
+  FArrangeSettings.BorderLeft := 2;
+  FArrangeSettings.BorderTop := 2;
+  FArrangeSettings.DistanceVertical := 2;
+  FArrangeSettings.DistanceHorizontal := 2;
+  FArrangeSettings.AutoArrange := True;
 end;
 
 destructor TJvArrangeParameter.Destroy;
@@ -882,12 +885,35 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvArrangeParameter.ArrangeControls;
+begin
+  if Assigned(FParentControl) and
+     (FParentControl is TJvPanel) then
+    TJvPanel(FParentControl).ArrangeControls;
+end;
+
 procedure TJvArrangeParameter.SetArrangeSettings(Value: TJvArrangeSettings);
 begin
   FArrangeSettings.Assign(Value);
 end;
 
-//=== TJvPanelParameter ======================================================
+procedure TJvArrangeParameter.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = FParentControl) and (Operation = opRemove) then
+    FParentControl := nil;
+end;
+
+function TJvArrangeParameter.GetParentControl : TWinControl;
+begin
+  if Assigned(FParentControl) then
+    Result := FParentControl
+  else
+    Result := WinControl;
+end;
+
+
+//=== { TJvPanelParameter } ==================================================
 
 constructor TJvPanelParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -929,7 +955,7 @@ begin
     ITmpPanel.ControlSetBorder(BevelInner, BevelOuter, BevelWidth, BorderStyle, BorderWidth);
 end;
 
-//=== TJvGroupBoxParameter ===================================================
+//=== { TJvGroupBoxParameter } ===============================================
 
 function TJvGroupBoxParameter.GetParameterNameExt: string;
 begin
@@ -940,54 +966,54 @@ procedure TJvGroupBoxParameter.CreateWinControlOnParent(ParameterParent: TWinCon
 var
   Panel: TJvPanel;
 begin
-  GroupBox := DynControlEngine.CreateGroupBoxControl(Self, ParameterParent,
+  WinControl := DynControlEngine.CreateGroupBoxControl(Self, ParameterParent,
     GetParameterName, Caption);
   Panel := TJvPanel.Create(ParameterParent.Owner);
-  WinControl := Panel;
+  ParentControl := Panel;
   Panel.Name := GetParameterName;
   Panel.ArrangeSettings := ArrangeSettings;
   Panel.Bevelinner := bvNone;
   Panel.BevelOuter := bvNone;
-  Panel.Parent := GroupBox;
+  Panel.Parent := WinControl;
   Panel.Align := alClient;
   Panel.Visible := True;
   Panel.Caption := '';
   Panel.Color := Color;
 end;
 
-procedure TJvGroupBoxParameter.SetEnabled(Value: Boolean);
-begin
-  inherited SetEnabled(Value);
-  if Assigned(GroupBox) then
-    GroupBox.Enabled := Value;
-end;
+//procedure TJvGroupBoxParameter.SetEnabled(Value: Boolean);
+//begin
+//  inherited SetEnabled(Value);
+//  if Assigned(Wincontrol) then
+//    Wincontrol.Enabled := Value;
+//end;
+//
+//procedure TJvGroupBoxParameter.SetVisible(Value: Boolean);
+//begin
+//  inherited SetVisible(Value);
+//  if Assigned(Wincontrol) then
+//    Wincontrol.Visible := Value;
+//end;
+//
+//procedure TJvGroupBoxParameter.SetHeight(Value: Integer);
+//begin
+//  if Assigned(GroupBox) then
+//    GroupBox.Height := Value;
+//end;
+//
+//procedure TJvGroupBoxParameter.SetWidth(Value: Integer);
+//begin
+//  if Assigned(GroupBox) then
+//    GroupBox.Width := Value;
+//end;
+//
+//procedure TJvGroupBoxParameter.SetTabOrder(Value: Integer);
+//begin
+//  if Assigned(GroupBox) then
+//    GroupBox.TabOrder := Value;
+//end;
 
-procedure TJvGroupBoxParameter.SetVisible(Value: Boolean);
-begin
-  inherited SetVisible(Value);
-  if Assigned(GroupBox) then
-    GroupBox.Visible := Value;
-end;
-
-procedure TJvGroupBoxParameter.SetHeight(Value: Integer);
-begin
-  if Assigned(GroupBox) then
-    GroupBox.Height := Value;
-end;
-
-procedure TJvGroupBoxParameter.SetWidth(Value: Integer);
-begin
-  if Assigned(GroupBox) then
-    GroupBox.Width := Value;
-end;
-
-procedure TJvGroupBoxParameter.SetTabOrder(Value: Integer);
-begin
-  if Assigned(GroupBox) then
-    GroupBox.TabOrder := Value;
-end;
-
-//=== TJvListParameter =======================================================
+//=== { TJvListParameter } ===================================================
 
 constructor TJvListParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1013,22 +1039,24 @@ begin
     ItemIndex := I
   else
     ItemIndex := -1;
+  if not VariantAsItemIndex then
+    Inherited SetAsVariant (Value);
 end;
 
 function TJvListParameter.GetAsString: string;
 begin
-  if (ItemIndex >= 0) and (ItemIndex < ItemList.Count) then
-    Result := ItemList[ItemIndex]
+  if VariantAsItemIndex then
+    if (ItemIndex >= 0) and (ItemIndex < ItemList.Count) then
+      Result := ItemList[ItemIndex]
+    else
+      Result := ''
   else
-    Result := ''
+    Result := Inherited GetAsString;
 end;
 
 procedure TJvListParameter.SetAsInteger(Value: Integer);
 begin
-  if (Value >= 0) and (Value < ItemList.Count) then
-    ItemIndex := Value
-  else
-    ItemIndex := -1;
+  ItemIndex := Value
 end;
 
 function TJvListParameter.GetAsInteger: Integer;
@@ -1038,20 +1066,24 @@ end;
 
 procedure TJvListParameter.SetAsVariant(Value: Variant);
 begin
-  if VariantAsItemIndex then
-    if VarType(Value) in [varSmallInt, varInteger, varByte , varShortInt, varWord, varLongWord ] then
-      ItemIndex := Value
-    else
-      inherited SetAsString(Value)
+  if VarIsNull (Value) then
+    ItemIndex := -1
   else
-    inherited SetAsString(Value);
+    if VariantAsItemIndex then
+      if VarType(Value) in [varSmallInt, varInteger, varByte , varShortInt, varWord, varLongWord ] then
+        ItemIndex := Value
+      else
+        SetAsString(Value)
+    else
+      SetAsString(Value);
 end;
 
 function TJvListParameter.GetAsVariant: Variant;
 begin
   Result := inherited GetAsVariant;
-  if VarToStr(Result) = '-1' then
-    Result := NULL;
+  if VariantAsItemIndex then
+    if VarToStr(Result) = '-1' then
+      Result := NULL;
 end;
 
 function TJvListParameter.GetItemList: TStrings;
@@ -1068,16 +1100,27 @@ end;
 
 procedure TJvListParameter.SetItemIndex(Value: Integer);
 begin
-  if Value >= ItemList.Count then
-    FItemIndex := ItemList.Count - 1
+  if Assigned(ItemList) then
+  begin
+    if Value >= ItemList.Count then
+      FItemIndex := ItemList.Count - 1
+    else
+      FItemIndex := Value;
+    if VariantAsItemIndex then
+      inherited SetAsVariant(FItemIndex)
+    else if (FItemIndex >= 0) and (FItemIndex < ItemList.Count) then
+      inherited SetAsVariant(ItemList[FItemIndex])
+    else
+      inherited SetAsVariant('');
+  end
   else
-    FItemIndex := Value;
-  if VariantAsItemIndex then
-    inherited SetAsVariant(FItemIndex)
-  else if (Value >= 0) and (Value < ItemList.Count) then
-    inherited SetAsVariant(ItemList[Value])
-  else
-    inherited SetAsVariant('');
+  begin
+    FItemIndex := -1;
+    if VariantAsItemIndex then
+      inherited SetAsVariant(FItemIndex)
+    else
+      inherited SetAsVariant('');
+  end;
 end;
 
 function TJvListParameter.GetWinControlData: Variant;
@@ -1140,10 +1183,10 @@ end;
 procedure TJvListParameter.GetData;
 begin
   inherited GetData;
-  if Assigned(WinControl) then
-    ItemIndex := ItemList.IndexOf(AsString)
-  else
-    ItemIndex := -1;
+//  if Assigned(WinControl) then
+//    ItemIndex := ItemList.IndexOf(Inherited GetAsString)
+//  else
+//    ItemIndex := -1;
 end;
 
 procedure TJvListParameter.SetData;
@@ -1154,7 +1197,7 @@ begin
   //    ItemList.IndexOf (AsString) := ItemIndex;
 end;
 
-//=== TJvRadioGroupParameter =================================================
+//=== { TJvRadioGroupParameter } =============================================
 
 procedure TJvRadioGroupParameter.Assign(Source: TPersistent);
 begin
@@ -1178,7 +1221,7 @@ begin
     ITmpRadioGroup.ControlSetColumns(Columns);
 end;
 
-//=== TJvCheckBoxParameter ===================================================
+//=== { TJvCheckBoxParameter } ===============================================
 
 procedure TJvCheckBoxParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
@@ -1186,7 +1229,7 @@ begin
     GetParameterName, Caption);
 end;
 
-//=== TJvComboBoxParameter ===================================================
+//=== { TJvComboBoxParameter } ===============================================
 
 procedure TJvComboBoxParameter.Assign(Source: TPersistent);
 begin
@@ -1234,7 +1277,7 @@ begin
     ITmpItems.ControlSetSorted(Sorted);
 end;
 
-//=== TJvListBoxParameter ====================================================
+//=== { TJvListBoxParameter } ================================================
 
 procedure TJvListBoxParameter.Assign(Source: TPersistent);
 begin
@@ -1280,7 +1323,7 @@ begin
   Result := FState = cbChecked;
 end;
 
-//=== TJvCheckListBoxParameter ====================================================
+//=== { TJvCheckListBoxParameter } ================================================
 
 constructor TJvCheckListBoxParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1420,7 +1463,7 @@ begin
   Inherited SetItemList(Value);
 end;
 
-//=== TJvTimeParameter ===================================================
+//=== { TJvTimeParameter } ===============================================
 
 procedure TJvTimeParameter.Assign(Source: TPersistent);
 begin
@@ -1448,7 +1491,7 @@ begin
     DynControlTime.ControlSetFormat(Format);
 end;
 
-//=== TJvDateTimeParameter ===================================================
+//=== { TJvDateTimeParameter } ===============================================
 
 procedure TJvDateTimeParameter.Assign(Source: TPersistent);
 begin
@@ -1485,7 +1528,7 @@ begin
     end;
 end;
 
-//=== TJvDateParameter ===================================================
+//=== { TJvDateParameter } ===============================================
 
 procedure TJvDateParameter.Assign(Source: TPersistent);
 begin
@@ -1522,7 +1565,7 @@ begin
     end;
 end;
 
-//=== TJvEditParameter =======================================================
+//=== { TJvEditParameter } ===================================================
 
 constructor TJvEditParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1566,7 +1609,7 @@ begin
   end;
 end;
 
-//=== TJvButtonEditParameter ================================================
+//=== { TJvButtonEditParameter } ============================================
 
 function TJvButtonEditParameter.GetParameterNameExt: string;
 begin
@@ -1592,7 +1635,7 @@ begin
     OnButtonClick := TJvButtonEditParameter(Source).OnButtonClick;
 end;
 
-//=== TJvNumberEditParameter ================================================
+//=== { TJvNumberEditParameter } ============================================
 
 procedure TJvNumberEditParameter.Assign(Source: TPersistent);
 begin
@@ -1601,7 +1644,7 @@ begin
     EditorType := TJvNumberEditParameter(Source).EditorType;
 end;
 
-//=== TJvIntegerEditParameter ================================================
+//=== { TJvIntegerEditParameter } ============================================
 
 constructor TJvIntegerEditParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1685,7 +1728,7 @@ begin
     Result := True;
 end;
 
-//=== TJvDoubleEditParameter =================================================
+//=== { TJvDoubleEditParameter } =============================================
 
 constructor TJvDoubleEditParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1701,7 +1744,6 @@ procedure TJvDoubleEditParameter.CreateWinControl(AParameterParent: TWinControl)
 var
   DynCtrlEdit: IJvDynControlEdit;
 begin
-  WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
     WinControl := DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName)
   else if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
@@ -1771,7 +1813,7 @@ begin
     Result := True;
 end;
 
-//=== TJvFileNameParameter ===================================================
+//=== { TJvFileNameParameter } ===============================================
 
 procedure TJvFileNameParameter.Assign(Source: TPersistent);
 begin
@@ -1859,7 +1901,7 @@ begin
   Result := True;
 end;
 
-//=== TJvDirectoryParameter ==================================================
+//=== { TJvDirectoryParameter } ==============================================
 
 procedure TJvDirectoryParameter.Assign(Source: TPersistent);
 begin
@@ -1909,7 +1951,7 @@ begin
   Result := True;
 end;
 
-///=== TJvMemoParameter ======================================================
+///=== { TJvMemoParameter } ==================================================
 
 constructor TJvMemoParameter.Create(AParameterList: TJvParameterList);
 begin

@@ -36,7 +36,7 @@ unit JvQCopyError;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  Windows, Classes,
   JvQCommonDialogD, JvQTypes;
 
 type
@@ -66,8 +66,7 @@ type
 implementation
 
 uses
-  SetupApi,
-  JclSysUtils;
+  QSetUpApi;
 
 constructor TJvCopyError.Create(AOwner: TComponent);
 begin
@@ -86,8 +85,8 @@ var
   Required: DWORD;
   Res: array [0..255] of Char;
 begin
-  case SetupCopyError(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
-      PChar(PathToSource), PChar(SourceFile), PCharOrNil(TargetFile),
+  case SetupCopyError(OwnerWindow, Pointer(Title), Pointer(DiskName),
+      PChar(PathToSource), PChar(SourceFile), Pointer(TargetFile),
       FWin32ErrorCode, JvDiskStylesToDWORD(Style), Res, SizeOf(Res), @Required) of
     DPROMPT_SUCCESS:
       begin

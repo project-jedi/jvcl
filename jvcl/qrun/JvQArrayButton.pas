@@ -35,8 +35,8 @@ unit JvQArrayButton;
 interface
 
 uses  
-  Types, QGraphics, QControls, QForms, QExtCtrls, QButtons, QWindows, 
-  SysUtils, Classes,
+  Types, QWindows, 
+  Classes, QGraphics, QControls, QForms, 
   JvQComponent, JvQTypes;
 
 type
@@ -115,6 +115,7 @@ type
 implementation
 
 uses
+  QExtCtrls, QButtons,
   JvQJCLUtils, JvQThemes;
 
 constructor TJvArrayButton.Create(AOwner: TComponent);

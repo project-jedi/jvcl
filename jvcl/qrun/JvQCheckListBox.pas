@@ -40,13 +40,11 @@ unit JvQCheckListBox;
 interface
 
 uses
-  QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QCheckLst, QControls, QForms,
-  JvQItemsSearchs, JvQExCheckLst;
+  QWindows, QMessages, SysUtils, Classes, QControls,
+  JvQExCheckLst;
 
 type
-  TJvCheckListBox = class(TJvExCheckListBox)
-  private 
-  protected 
+  TJvCheckListBox = class(TJvExCheckListBox) 
   public
     constructor Create(AOwner: TComponent); override;
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -76,6 +74,9 @@ type
   end;
 
 implementation
+
+uses
+  JvQItemsSearchs;
 
 type
   // Used for the load/save methods

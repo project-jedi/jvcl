@@ -36,8 +36,8 @@ unit JvQCommStatus;
 interface
 
 uses
-  Windows, SysUtils, Classes,
-  JvQTypes, JvQComponent;
+  Windows, Classes,
+  JvQComponent;
 
 type
   TJvCommPort = 0..8;
@@ -80,6 +80,9 @@ type
   end;
 
 implementation
+
+uses
+  SysUtils;
 
 //=== { TJvCommStatus } ======================================================
 

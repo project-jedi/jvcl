@@ -50,6 +50,8 @@ located at http://jvcl.sourceforge.net
 Known Issues:
   MARCH 2004 -JVCL3BETA- STILL IN DEVELOPMENT. REPORT PROBLEMS TO JEDI JVCL
   BUG TRACKING SYSTEM (AKA 'MANTIS') AND THE JEDI.VCL NEWSGROUP!
+  JUNE 23 2004 -JVCL3BETA- Negative values and anything other than 0 in
+                YMin properties was causing problems. Fixed. -WPostma. 
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -60,19 +62,22 @@ unit JvQChart;
 interface
 
 uses
-  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}  
-  QGraphics, QControls, QForms, QDialogs, QExtCtrls, QPrinters, QClipbrd,
+  Windows, Messages,
+  {$ENDIF MSWINDOWS} 
   Types, QWindows, 
-  JvQComponent, JvQJCLUtils, JvQResources;
+  Classes, QGraphics, QControls,
+  JvQComponent;
 
 const
   JvChartVersion = 300; // ie, version 3.00
 
   JvDefaultHintColor = TColor($00DDFBFA);
   JvDefaultAvgLineColor = TColor($00EEDDDD);
+  JvDefaultDivisionLineColor=clLtGray;//NEW!
+  JvDefaultShadowColor=clLtGray;//NEW!
+
+
 
   JvDefaultYLegends = 20;
   MaxShowXValueInLegends = 10;
@@ -182,6 +187,7 @@ type
     FDefaultYLegends: Integer; // Number of default Y legends.
     FYPixelGap: Double;
     procedure SetYMax(NewYMax: Double);
+    procedure SetYMin(NewYMin: Double);
 //     procedure SetYGap(newYgap: Double);
     function GetYLegends: TStrings;
     procedure SetYLegends(Value: TStrings);
@@ -199,7 +205,7 @@ type
     property YLegends: TStrings read GetYLegends write SetYLegends; { Y Axis Legends as Strings }
   published
     property YMax: Double read FYMax write SetYMax;
-    property YMin: Double read FYMin write FYMin;
+    property YMin: Double read FYMin write SetYMin;
     property YDivisions: Integer read FYDivisions write SetYDivisions default 10;
       // Number of vertical divisions in the chart
         // YDivisions->YDivisions
@@ -300,11 +306,16 @@ type
     FLegend: TJvChartLegend; // was FShowLegend, now     Legend=clChartLegendRight
     FPenLineWidth: Integer;
     FAxisLineWidth: Integer;
+
+    //COLORS:
     FPaperColor: TColor;
-    FAxisLineColor: TColor;
-    FHintColor: TColor;
-    FAverageLineColor: TColor;
-    FCursorColor: TColor; // Sample indicator - Cursor color
+    FDivisionLineColor:TColor; // NEW! Division line
+    FShadowColor:TColor;       // NEW! Shadow color
+    FAxisLineColor: TColor;     // Color of box around chart plot area.
+    FHintColor: TColor;         // Hint box color
+    FAverageLineColor: TColor; // Pen color for Charts with auto-average lines.
+    FCursorColor: TColor; // Sample indicator Cursor color
+
     FCursorStyle: TPenStyle; // Cursor style.
     { event interface }
     procedure NotifyOptionsChange;
@@ -352,7 +363,7 @@ type
     property PenCount: Integer read FPenCount write SetPenCount default 1;
     property XGap: Double read FXGap write FXGap;
     property XOrigin: Integer read FXOrigin write FXOrigin;
-    property YOrigin: Integer read FYOrigin write FYOrigin;
+    property YOrigin: Integer read FYOrigin write FYOrigin; // Position of bottom of chart (not always the zero origin)
     property XStartOffset: Longint read FXStartOffset write SetXStartOffset default 45;
     property YStartOffset: Longint read FYStartOffset write FYStartOffset default 10;
     { Y Range }
@@ -381,6 +392,10 @@ type
     property LegendFont: TFont read FLegendFont write SetLegendFont;
     property AxisFont: TFont read FAxisFont write SetAxisFont;
     { Color properties}
+    property DivisionLineColor:TColor read FDivisionLineColor write FDivisionLineColor default JvDefaultDivisionLineColor; // NEW! Division line
+    property ShadowColor:TColor read FShadowColor write FShadowColor default JvDefaultShadowColor;       // NEW! Shadow color
+
+
     property PaperColor: TColor read FPaperColor write SetPaperColor;
     property AxisLineColor: TColor read FAxisLineColor write FAxisLineColor;
     property HintColor: TColor read FHintColor write FHintColor default JvDefaultHintColor;
@@ -511,7 +526,8 @@ type
     destructor Destroy; override;
     {General procedures for the graph...}
     procedure ResetGraphModule; {Call this before totally new values and Pen}
-    procedure AutoFormatGraph; {Call this after new values}
+    //procedure AutoFormatGraph; {XXX BAD CODE. TO BE DELETED. MAY BE REPLACED LATER BY NEW AutoRange FUNCTION!}
+
     procedure PlotGraph; {Update screen / draw graph to screen}
     procedure PrintGraph; {Send picture to printer; all printing done by component}
     procedure AddGraphToOpenPrintCanvas(XStartPos, YStartPos, GraphWidth, GraphHeight: Longint);
@@ -552,14 +568,11 @@ type
     property OnChartClick: TJvChartClickEvent read FOnChartClick write FOnChartClick;
   end;
 
-//var
-// JvChart_PaintCounter : Integer;
-
 implementation
 
 uses
-  Math, // VCL math: function isNan, constant NaN. 
-  JvQJVCLUtils, JvQConsts;
+  SysUtils, Math, QForms, QDialogs, QPrinters, QClipbrd, 
+  JvQJVCLUtils, JvQConsts, JvQResources;
 
 const
   CHART_SANITY_LIMIT = 30000;
@@ -587,7 +600,7 @@ const
   DEFAULT_VALUE_COUNT = 100;
     // By Default TJvChartData holds 100 values per pen. Grows autofragellisticexpialidociously. :-)
 
-//=== TJvChartData ===========================================================
+//=== { TJvChartData } =======================================================
 
 constructor TJvChartData.Create;
 var
@@ -727,7 +740,7 @@ begin
 end;
 
 
-//=== TJvChartYAxisOptions ===================================================
+//=== { TJvChartYAxisOptions } ===============================================
 
 constructor TJvChartYAxisOptions.Create(Owner: TJvChartOptions);
 begin
@@ -784,7 +797,7 @@ begin
 
   YPixelGap := ((FOwner.YEnd - 1) / VC); // Vertical Pixels Per Value Division counter.
 
-  (*CheckYDivisions := Round((YMax + (YGap - 1)) / YGap);
+  (*CheckYDivisions := Round(((YMax-YMin) + (YGap - 1)) / YGap);
   if CheckYDivisions<>YDivisions then
       YDivisions :=CheckYDivisions;  *)
 
@@ -795,20 +808,48 @@ begin
   if YDivisions < MinYDivisions then
   begin
     YDivisions := MinYDivisions;
-    FYGap := YMax / YDivisions;
+    FYGap := (YMax-YMin) / YDivisions;
   end
   else
   begin
     if YDivisions > MaxYDivisions then
     begin
       YDivisions := MaxYDivisions;
-      FYGap := YMax / YDivisions;
+      FYGap := (YMax-YMin) / YDivisions;
     end;
   end;
 end;
 
+procedure TJvChartYAxisOptions.SetYMin(NewYMin: Double);
+begin
+  if (NewYMin=FYMin) then exit;
+
+  FYMin := NewYMin;
+
+  if not Assigned(FOwner) then
+    Exit;
+  if not Assigned(FOwner.FOwner) then
+    Exit;
+  if (csLoading in FOwner.FOwner.ComponentState) then
+    Exit;
+
+  // Rework other values around new YMin:
+  Normalize;
+  FOwner.NotifyOptionsChange;
+  {NEW: Auto-Regenerate Y Axis Labels}
+  if Assigned(FYLegends) then begin
+    if FYLegends.Count>0 then begin
+        FYLegends.Clear;
+        FOwner.FOwner.PrimaryYAxisLabels;
+    end;
+  end;
+
+end;
+
 procedure TJvChartYAxisOptions.SetYMax(NewYMax: Double);
 begin
+  if (NewYMax=FYMax) then exit;
+
   FYMax := NewYMax;
 
   if not Assigned(FOwner) then
@@ -818,9 +859,19 @@ begin
   if (csLoading in FOwner.FOwner.ComponentState) then
     Exit;
 
+
   // Rework other values around new YMax:
   Normalize;
   FOwner.NotifyOptionsChange;
+  
+  {NEW: Auto-Regenerate Y Axis Labels}
+  if Assigned(FYLegends) then begin
+    if FYLegends.Count>0 then begin
+        FYLegends.Clear;
+        FOwner.FOwner.PrimaryYAxisLabels;
+    end;
+  end;
+    
 end;
 
 (*procedure TJvChartYAxisOptions.SetYGap(newYgap: Double);
@@ -865,7 +916,7 @@ begin
   FOwner.NotifyOptionsChange;
 end;
 
-//=== TJvChartOptions ========================================================
+//=== { TJvChartOptions } ====================================================
 
 constructor TJvChartOptions.Create(Owner: TJvChart);
 begin
@@ -919,6 +970,9 @@ begin
   FPaperColor := clWhite;
   FAxisLineColor := clBlack;
   FAverageLineColor := JvDefaultAvgLineColor;
+  FDivisionLineColor  := JvDefaultDivisionLineColor; // NEW!
+  FShadowColor := JvDefaultShadowColor; //NEW!
+
 
   FHeaderFont := TFont.Create;
   FLegendFont := TFont.Create;
@@ -996,6 +1050,7 @@ begin
   end;
 end;
 
+
 function TJvChartOptions.GetPenColor(Index: Integer): TColor;
 begin
   // Don't check for out of range values, since we use that on purpose in this
@@ -1004,9 +1059,9 @@ begin
     jvChartAverageLineColorIndex:
       Result := FAverageLineColor;
     jvChartDivisionLineColorIndex: // horizontal and vertical division line color
-      Result := clLtGray; // TODO Make this a property.
+      Result := FDivisionLineColor;
     jvChartShadowColorIndex: // legend shadow (light gray)
-      Result := clLtGray; // TODO Make this a property.
+      Result := FShadowColor; 
     jvChartAxisColorIndex:
       Result := FAxisLineColor; // get property.
     jvChartHintColorIndex:
@@ -1188,7 +1243,7 @@ begin
   FXStartOffset := Offset;
 end;
 
-//=== TJvChart ===============================================================
+//=== { TJvChart } ===========================================================
 
 { GRAPH }
 {**************************************************************************}
@@ -1340,8 +1395,14 @@ begin
 
   DesignStr := ClassName + RsChartDesigntimeLabel;
 
+  if (Options.PrimaryYAxis.YMin>=Options.PrimaryYAxis.YMax) then begin
+     if Options.PrimaryYAxis.YMax>0 then
+        Options.PrimaryYAxis.YMin := 0.0;
+  end;
+  
   if (Abs(Options.PrimaryYAxis.YMax) < 0.000001) and (Abs(Options.PrimaryYAxis.YMin) < 0.000001) then
     Options.PrimaryYAxis.YMax := 10.0; // Reasonable non-zero default, so that charting works!
+
 
   Options.PrimaryYAxis.Normalize;
   Options.SecondaryYAxis.Normalize;
@@ -1367,10 +1428,6 @@ end;
 
 procedure TJvChart.Paint; { based on TImage.Paint }
 begin
-  // April 2004 - Flicker Reduction!
-//  Inc(JvChart_PaintCounter);
-//  OutputDebugString(PChar('JvChart_PaintCounter='+IntToStr(JvChart_PaintCounter)));
-
   if csDesigning in ComponentState then // or (Options.ChartKind = ckChartNone) then // Blank.
     DesignModePaint
   else
@@ -1474,7 +1531,7 @@ begin
       FormatStr := FormatStr + '0';
     for I := 0 to Options.PrimaryYAxis.YDivisions do // NOTE! Don't make this YDivisions-1 That'd be bad! !!!!
     begin
-      YDivision := I * Options.PrimaryYAxis.YGap;
+      YDivision := Options.PrimaryYAxis.YMin+ (I * Options.PrimaryYAxis.YGap);
       if Decimals <= 0 then
         YDivisionStr := IntToStr(Round(YDivision)) // Whole Numbers Only.
       else
@@ -1491,8 +1548,16 @@ begin
   end;
 end;
 
-{ Setup Graph Formatting Properties }
+{ Setup Graph Formatting Properties
 
+  *** AutoFormatGraph CONSIDERED HARMFUL. REMOVED. ***
+  This procedure does nothing helpful, and will be removed from CVS soon.
+  What it *does* do is wildly screw up plotting of graphs with negative
+  values in it.
+  -Wpostma.
+}
+
+(* XXXX BAD CODE. TO BE DELETED SOON. Wpostma.
 procedure TJvChart.AutoFormatGraph;
 var
   V, NYMax, NYMin: Double;
@@ -1579,11 +1644,6 @@ begin
     Options.YOrigin := Round(-NYMin / Options.PrimaryYAxis.YGap);
   end;
 
-(*  if Options.PrimaryYAxis.YGap = 0 then
-  begin
-    Options.PrimaryYAxis.YGap := 1;
-    Options.PrimaryYAxis.YDivisions := Round(NYMax * NPen);
-  end;*)
 
   if Options.PrimaryYAxis.YDivisions = 0 then
     Options.PrimaryYAxis.YDivisions := 1;
@@ -1629,6 +1689,8 @@ begin
 
   PlotGraph;
 end;
+ XXX BAD CODE. READ WARNING ABOVE.
+*)
 
 procedure TJvChart.CountGraphAverage;
 var
@@ -2097,7 +2159,7 @@ var
       Result := 0.0; // can't chart! YGap is near zero, zero, or negative.
       Exit;
     end;
-    Result := (YOrigin - ((V / PenAxisOpt.YGap) * PenAxisOpt.YPixelGap));
+    Result := (YOrigin - (((V-PenAxisOpt.YMin) / PenAxisOpt.YGap) * PenAxisOpt.YPixelGap));
     if Result >= (YOrigin - 1) then
       Result := Round(YOrigin) - 1 // hit the top of the chart
     else
@@ -2285,6 +2347,8 @@ begin { Enough local functions for ya? -WP }
       Options.SecondaryYAxis.YGap := 1;
   *)
 
+  PrimaryYAxisLabels; // Make sure there are Y Axis labels!
+
   { Resize Header area according to HeaderFont size }
   if not PrintInSession then
   begin
@@ -2337,7 +2401,6 @@ begin { Enough local functions for ya? -WP }
     Options.PrimaryYAxis.Normalize;
     Options.SecondaryYAxis.Normalize;
     GraphSetup;
-    PrimaryYAxisLabels;
 
     GraphXAxis;
     GraphXAxisDivisionMarkers;
@@ -2488,9 +2551,10 @@ begin
           Break;
 
       // Label X axis above or below?
-      if FContainsNegative then
-        MyLeftTextOut(Options.FXLegendHoriz, Options.YEnd + 3, Options.XLegends[I])
-      else
+      if FContainsNegative then begin
+         if I < Options.XLegends.Count then // fix exception. June 23, 2004- WPostma.
+            MyLeftTextOut(Options.FXLegendHoriz, Options.YEnd + 3, Options.XLegends[I])
+      end else
       if I < Options.XLegends.Count then
         MyLeftTextOut(Options.FXLegendHoriz,
           {bottom:} FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
@@ -2858,11 +2922,9 @@ begin
   else
     Exit;
 
-  AutoFormatGraph;
-(*  NotifyOptionsChange; // Fire event before we auto-format graph. Allows some customization to occur here.
-  AutoFormatGraph;
+//XXX  AutoFormatGraph; BAD CODE REMOVED. Wpostma. Call PlotGraph instead.
   PlotGraph;
-  Invalidate;*)
+
 end;
 
 // NEW: X Axis Header has to move to make room if there is a horizontal
@@ -3591,7 +3653,6 @@ procedure TJvChart.MyAxisFont;
 begin
   ChartCanvas.Brush.Color := clWhite;
   ChartCanvas.Font.Assign(Options.AxisFont);
-  SetBkMode( ChartCanvas.Handle, OPAQUE);
 end;
 
 
@@ -3805,9 +3866,6 @@ begin
     TempData.Free;
   end;
 end;
-
-//initialization {debug code}
-// JvChart_PaintCounter := 0;
 
 end.
 

@@ -37,11 +37,11 @@ unit JvQCharMap;
 
 interface
 uses
-  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}  
-  Qt, QGraphics, QControls, QForms, QGrids, Types, QWindows, 
+  {$ENDIF MSWINDOWS} 
+  Qt, Types, QWindows, 
+  Classes, QGraphics, QControls, QGrids,
   JvQComponent, JvQExControls, JvQExGrids;
 
 type
@@ -329,7 +329,7 @@ type
 implementation
 
 uses
-  Math;
+  SysUtils, Math, QForms;
 
 const
   cShadowAlpha = 100;

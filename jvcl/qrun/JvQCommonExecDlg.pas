@@ -35,9 +35,9 @@ unit JvQCommonExecDlg;
 interface
 
 uses  
-  QControls, Types, QWindows, 
-  SysUtils, Classes,
-  JvQBaseDlg, JvQTypes;
+  Types, QWindows, 
+  Classes,
+  JvQBaseDlg;
 
 type
   TJvCommonExecDialog = class(TJvCommonDialogP)
@@ -49,6 +49,9 @@ type
   end;
 
 implementation
+
+uses
+  QControls, JvQTypes;
 
 constructor TJvCommonExecDialog.Create(AOwner: TComponent);
 begin

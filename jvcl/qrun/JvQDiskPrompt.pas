@@ -36,7 +36,7 @@ unit JvQDiskPrompt;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  Windows, Classes,
   JvQCommonDialogD, JvQTypes;
 
 type
@@ -64,8 +64,7 @@ type
 implementation
 
 uses
-  SetupApi,
-  JclSysUtils;
+  QSetUpApi;
 
 constructor TJvDiskPrompt.Create(AOwner: TComponent);
 begin
@@ -83,8 +82,8 @@ var
   Required: DWORD;
   Res: array [0..255] of Char;
 begin
-  case SetupPromptForDisk(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
-      PCharOrNil(PathToSource), PChar(FileSought), PCharOrNil(TagFile),
+  case SetupPromptForDisk(OwnerWindow, Pointer(Title), Pointer(DiskName),
+      Pointer(PathToSource), PChar(FileSought), Pointer(TagFile),
       JvDiskStylesToDWORD(Style), Res, SizeOf(Res), Required) of
     DPROMPT_SUCCESS:
       begin

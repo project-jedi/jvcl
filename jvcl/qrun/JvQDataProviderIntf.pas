@@ -35,9 +35,9 @@ unit JvQDataProviderIntf;
 
 interface
 
-uses
-  Classes,  
-  Types, QGraphics, QImgList, 
+uses  
+  Types, 
+  Classes, QGraphics, QImgList,
   JclBase, JvQTypes;
 
 type

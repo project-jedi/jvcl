@@ -39,11 +39,10 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}  
-  QGraphics, QControls, QImgList, 
-  SysUtils, Classes,
-  JvQFinalize;
+  Windows, CommCtrl,
+  {$ENDIF MSWINDOWS} 
+  Types, QWindows, 
+  SysUtils, Classes, QGraphics, QControls, QImgList;
 
 type
   TJvImageListMode = (imClassic, imPicture, imResourceIds, imItemList);
@@ -130,7 +129,8 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
-    procedure EndUpdate; 
+    procedure EndUpdate;  
+    procedure GetIcon(Index: Integer; Ico: TIcon); 
     procedure SaveToFile(const Filename: string);
     procedure SaveToStream(Stream: TStream); virtual;
     procedure LoadFromFile(const Filename: string);
@@ -205,9 +205,9 @@ function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitma
 
 implementation
 
-uses  
+uses
   QConsts, 
-  TypInfo, JvQJVCLUtils, JvQResources;
+  TypInfo, JvQJVCLUtils, JvQResources, JvQFinalize;
 
 const
   sUnitName = 'JvImageList';
@@ -870,6 +870,23 @@ begin
       ; // do nothing
   end;
 end;
+
+
+
+
+procedure TJvImageList.GetIcon(Index: Integer; Ico: TIcon);
+var
+  Bmp: TBitmap;
+begin
+  Bmp := TBitmap.Create;
+  try
+    GetBitmap(Index, Bmp);
+    Ico.Assign(Bmp);
+  finally
+    Bmp.Free;
+  end;
+end;
+
 
 
 

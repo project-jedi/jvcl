@@ -42,7 +42,7 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  SysUtils, Classes, IniFiles,
+  Classes,
   JvQAppStorage, JvQSimpleXml;
 
 type
@@ -57,6 +57,8 @@ type
     FXml: TJvSimpleXml;
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
+
+    function DefaultExtension : string; override;
 
     function GetRootNodeName: string;
     procedure SetRootNodeName(const Value: string);
@@ -110,13 +112,14 @@ type
     property FileName;
     property Location;
     property RootNodeName;
+    property SubStorages;
     property OnGetFileName;
   end;
 
 implementation
 
 uses
-  TypInfo,
+  SysUtils, TypInfo,
   JclStrings,
   JvQTypes, JvQConsts, JvQResources;
 
@@ -638,6 +641,11 @@ end;
 procedure TJvCustomAppXMLStorage.SetAsString(const Value: string);
 begin
   Xml.LoadFromString(Value);
+end;
+
+function TJvCustomAppXMLStorage.DefaultExtension : string;
+begin
+  Result := 'xml';
 end;
 
 //=== { TJvAppXMLFileStorage } ===============================================

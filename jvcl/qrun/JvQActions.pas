@@ -115,7 +115,7 @@ implementation
 
 {$IFDEF MSWINDOWS}
 
-//=== TJvSendMailAction ======================================================
+//=== { TJvSendMailAction } ==================================================
 
 constructor TJvSendMailAction.Create(AOwner: TComponent);
 begin
@@ -135,7 +135,7 @@ begin
   Result := MailOptions.Execute;
 end;
 
-//=== TJvSendMailOptions =====================================================
+//=== { TJvSendMailOptions } =================================================
 
 constructor TJvSendMailOptions.Create;
 begin
@@ -241,7 +241,7 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-//=== TJvWebAction ===========================================================
+//=== { TJvWebAction } =======================================================
 
 function TJvWebAction.Execute: Boolean;
 begin

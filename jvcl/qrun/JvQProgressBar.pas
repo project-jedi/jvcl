@@ -35,8 +35,8 @@ unit JvQProgressBar;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QForms, QComCtrls, QWindows, 
+  QWindows, QMessages, 
+  SysUtils, Classes, Types, QGraphics, QControls, QForms, QComCtrls,
   JvQExComCtrls;
 
 type
@@ -207,8 +207,8 @@ var
 begin
   R := ClientRect;
   ACanvas.Brush.Color := Color;
-  ACanvas.FillRect(R);
-  DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
+  ACanvas.FillRect(R);  
+  DrawEdge(ACanvas, R, esNone, esLowered, ebRect); 
   if BarSize = 0 then
     Exit;
   ACanvas.Brush.Color := BarColor;

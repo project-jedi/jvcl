@@ -44,7 +44,7 @@ uses
   {$IFDEF LINUX}
   Libc, QWindows,
   {$ENDIF LINUX}
-  SysUtils, Classes, IniFiles,
+  Classes, IniFiles,
   JvQAppStorage;
 
 type
@@ -57,6 +57,8 @@ type
     FDefaultSection: string;
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
+    function DefaultExtension : string; override;
+
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
@@ -108,6 +110,7 @@ type
 implementation
 
 uses
+  SysUtils,
   JvQTypes, JvQResources;
 
 const
@@ -557,6 +560,12 @@ begin
     TmpList.Free;
   end;
 end;
+
+function TJvCustomAppIniStorage.DefaultExtension : string;
+begin
+  Result := 'xml';
+end;
+
 
 //=== { TJvAppIniFileStorage } ===============================================
 

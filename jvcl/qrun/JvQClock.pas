@@ -36,12 +36,10 @@ unit JvQClock;
 
 interface
 
-uses
-  SysUtils,  Classes,  
-  Types, QGraphics, QControls,
-  QForms, QExtCtrls, QMenus, QWindows,   
-  SysConst, 
-  JvQTimer, JvQComponent, JvQThemes, JvQExControls;
+uses  
+  Types, QWindows, 
+  Classes, QGraphics, QControls,
+  JvQTimer, JvQComponent, JvQExControls;
 
 type
   TShowClock = (scDigital, scAnalog);
@@ -155,13 +153,11 @@ type
 
 implementation
 
+uses  
+  SysConst, 
+  SysUtils, QForms, QExtCtrls, QConsts,
+  JvQThemes;
 
-
-uses
-  QConsts;
-
-
-// (rom) changed to var
 var
   Registered: Boolean = False;
 

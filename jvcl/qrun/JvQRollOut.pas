@@ -191,8 +191,8 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-    procedure ParentColorChanged; override;  
-    procedure CreateWidget; override; 
+    procedure ParentColorChanged; override;
+    procedure CreateWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -542,16 +542,12 @@ begin
   RedrawControl(False);
 end;
 
-
-
-
-procedure TJvCustomRollOut.CreateWidget;
+procedure TJvCustomRollOut.CreateWnd;
 begin
-  inherited CreateWidget;
+  inherited CreateWnd;
   if not Collapsed then
     UpdateGroup;
 end;
-
 
 procedure TJvCustomRollOut.AlignControls(AControl: TControl; var Rect: TRect);
 begin

@@ -34,9 +34,9 @@ unit JvQTransparentPanel;
 
 interface
 
-uses  
-  QGraphics, QControls, QExtCtrls, Types, Qt, QWindows, 
-  SysUtils, Classes,
+uses
+  QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QControls, QExtCtrls, 
+  Qt, 
   JvQPanel;
 
 type

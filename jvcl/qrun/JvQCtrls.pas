@@ -38,9 +38,8 @@ unit JvQCtrls;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QStdCtrls, QImgList, QActnList, Types, QWindows, 
-  JvQButton, JvQFinalize;
+  QWindows, QMessages, Classes, Types, QGraphics, QControls, QStdCtrls, QImgList,
+  JvQButton;
 
 
 const
@@ -195,8 +194,8 @@ type
 implementation
 
 uses
-  QConsts,
-  JvQThemes, JvQJCLUtils;
+  QConsts, SysUtils, QForms, QActnList, 
+  JvQJCLUtils, JvQThemes, JvQFinalize;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCtrls.res}

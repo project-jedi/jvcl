@@ -36,14 +36,10 @@ unit JvQCalc;
 
 interface
 
-uses 
-  Variants, 
-  Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QMenus, QExtCtrls, QButtons, QClipbrd,
-  SysUtils, // SysUtils after Windows because both define Beep 
-  QImgList, 
-  JvQToolEdit, JvQSpeedButton, JvQBaseDlg, JvQExExtCtrls;
+uses
+  QWindows, QMessages, Classes, QControls, QForms, QStdCtrls, QMenus, QExtCtrls, 
+  QImgList, Types,
+  JvQBaseDlg;
 
 const
   DefCalcPrecision = 15;
@@ -116,8 +112,10 @@ procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
 
 implementation
 
-uses
-  Math,
+uses 
+  Variants, 
+  SysUtils, Math, QGraphics, QButtons, QClipbrd,
+  JvQToolEdit, JvQSpeedButton, JvQExExtCtrls,
   JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQResources;
 
 {$IFDEF MSWINDOWS}

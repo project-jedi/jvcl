@@ -34,8 +34,8 @@ unit JvQBoxProcs;
 interface
 
 uses  
-  QGraphics, QControls, QStdCtrls, Types, QWindows, 
-  Classes;
+  Types, QWindows, 
+  Classes, QControls;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
 procedure BoxMoveAllItems(SrcList, DstList: TWinControl);
@@ -51,7 +51,8 @@ function BoxCanDropItem(List: TWinControl; X, Y: Integer;
 
 implementation
 
-
+uses 
+  QStdCtrls;
 
 
 const

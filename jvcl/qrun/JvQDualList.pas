@@ -33,9 +33,9 @@ unit JvQDualList;
 
 interface
 
-uses
-  Classes,  
-  QControls, QTypes, 
+uses 
+  QTypes, 
+  Classes, QControls,
   JvQComponent;
 
 type
@@ -90,9 +90,8 @@ type
 implementation
 
 uses
-  SysUtils,  
-  QConsts, QForms, 
-  JvQDualListForm, JvQResources, JvQJVCLUtils;
+  QConsts, SysUtils, QForms,
+  JvQDualListForm, JvQResources;
 
 constructor TJvDualListDialog.Create(AOwner: TComponent);
 begin

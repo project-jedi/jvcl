@@ -343,7 +343,7 @@ procedure Launch(const AFile: string);
 implementation
 
 uses
-  Math, 
+  Math,
   JvQConsts, JvQResources;
 
 { some utility functions }

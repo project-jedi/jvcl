@@ -39,7 +39,8 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}  
-  Types, Qt, QWindows, QGraphics, QControls, QForms, QStdCtrls, 
+  Types, Qt, QWindows, 
+  QGraphics, QControls, QForms, QStdCtrls,
   JvQThemes, JvQExControls, JvQExStdCtrls;
 
 type

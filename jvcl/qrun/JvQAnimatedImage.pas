@@ -40,9 +40,9 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  Types, QGraphics, QControls, QForms, 
+  QGraphics, QControls, 
   Qt, QWindows, 
-  SysUtils, Classes,
+  Classes,
   JvQTimer, JvQComponent;
 
 type
@@ -172,6 +172,7 @@ type
 implementation
 
 uses
+  QForms,
   //JclSysUtils,
   JvQConsts, JvQJVCLUtils;
 

@@ -60,9 +60,8 @@ unit JvQLabel;
 interface
 
 uses
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, QStdCtrls, QImgList,
-  SysUtils, Classes,
-  JvQTypes, JvQComponent, JvQConsts, JvQExControls, JvQDataProvider, JvQDataProviderIntf;
+  QWindows, QMessages, Classes, Types, QGraphics, QControls, QStdCtrls, QImgList, 
+  JvQTypes, JvQComponent, JvQDataProvider;
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
@@ -198,6 +197,7 @@ type
 
   TJvLabel = class(TJvCustomLabel)
   published
+    property Action;
     property Align;
     property Alignment;
     property AutoSize;
@@ -263,8 +263,9 @@ procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 implementation
 
 uses
-  Math,
-  JvQThemes, JvQJCLUtils, JvQJVCLUtils;
+  SysUtils, Math, QForms,
+  JvQDataProviderIntf,
+  JvQConsts, JvQThemes, JvQJCLUtils, JvQJVCLUtils;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);

@@ -38,8 +38,7 @@ unit JvQAnimate;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QComCtrls, 
+  Classes, QControls,
   JvQThemes, JvQExComCtrls;
 
 

@@ -40,9 +40,8 @@ unit JvQColorButton;
 interface
 
 uses  
-  Types, QWindows, QGraphics, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
-  QButtons, QMenus, 
-  SysUtils, Classes,
+  Types, QWindows, 
+  Classes, QGraphics, QControls, QForms, QDialogs,
   JvQColorBox;
 
 type
@@ -99,6 +98,7 @@ type
 implementation
 
 uses
+  SysUtils, QExtCtrls,
   JvQColorForm, JvQResources;
 
 constructor TJvColorButton.Create(AOwner: TComponent);

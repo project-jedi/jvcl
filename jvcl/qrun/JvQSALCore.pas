@@ -105,7 +105,7 @@ type
 implementation
 
 uses
-  Math, 
+  Math,
   JvQConsts, JvQResources;
 
 procedure TJvSALCore.AddProcedures(ASal: TJvSAL);

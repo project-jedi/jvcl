@@ -48,9 +48,10 @@ unit JvQBehaviorLabel;
 interface
 
 uses
-  SysUtils, Classes,  
-  QTypes, QControls, QGraphics, QStdCtrls, QExtCtrls, QForms, Types, 
-  JvQExStdCtrls, JvQFinalize;
+  Classes,  
+  QTypes, Types, 
+  QControls, QExtCtrls,
+  JvQExStdCtrls;
 
 type
   TJvCustomBehaviorLabel = class;
@@ -388,7 +389,8 @@ procedure GetRegisteredLabelBehaviorOptions(Strings: TStrings);
 implementation
 
 uses
-  JvQTypes, JvQResources;
+  SysUtils, QForms,
+  JvQTypes, JvQResources, JvQFinalize;
 
 const
   sUnitName = 'JvBehaviorLabel';

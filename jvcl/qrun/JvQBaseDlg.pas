@@ -35,8 +35,7 @@ unit JvQBaseDlg;
 interface
 
 uses
-  SysUtils, Classes,  
-  QDialogs, 
+  QDialogs,
   JVCLXVer, JvQComponent;
 
 type 

@@ -35,12 +35,12 @@ unit JvQAirBrush;
 interface
 
 uses
-  SysUtils, Classes,
+  Classes,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}  
   Types, QWindows, QGraphics, 
-  JvQTypes, JvQComponent;
+  JvQComponent;
 
 type
   TJvAirBrushShape = (absRound, absSquare, absLeftSlash, absRightSlash,

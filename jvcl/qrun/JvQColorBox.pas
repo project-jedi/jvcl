@@ -54,9 +54,8 @@ unit JvQColorBox;
 interface
 
 uses  
-  QForms, QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, QButtons,
-  QMenus, Types, 
-  SysUtils, Classes,
+  Types, 
+  Classes, QGraphics, QControls, QForms, QMenus,
   JvQComponent;
 
 type
@@ -162,6 +161,7 @@ type
 implementation
 
 uses
+  QExtCtrls, QButtons,
   JvQThemes;
 
 const

@@ -34,10 +34,9 @@ unit JvQButtonPersistent;
 
 interface
 
-uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QStdCtrls, QButtons, 
-  JvQSpeedButton, JvQButton, JvQTypes;
+uses 
+  Classes, QGraphics, QControls,
+  JvQTypes;
 
 type
   TJvButtonPersistent = class(TPersistent)
@@ -81,6 +80,10 @@ type
   end;
 
 implementation
+
+uses
+  QStdCtrls, QButtons,
+  JvQSpeedButton, JvQButton;
 
 constructor TJvButtonPersistent.Create;
 begin

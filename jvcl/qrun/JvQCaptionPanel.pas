@@ -47,10 +47,10 @@ interface
  {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
 
 
-uses
-  SysUtils, Classes,  
-  Types, Qt, QWindows, QGraphics, QControls, QForms, QDialogs, QExtCtrls, 
-  JvQComponent, JvQThemes, JvQExControls;
+uses  
+  Types, Qt, QWindows, 
+  Classes, QGraphics, QControls, QForms,
+  JvQComponent, JvQExControls;
 
 type
   TJvCapBtnStyle = (capClose, capMax, capMin, capRestore, capHelp);
@@ -183,7 +183,7 @@ type
 implementation
 
 uses
-  JvQConsts;
+  SysUtils, QExtCtrls;
 
 //=== { TJvCapBtn } ==========================================================
 

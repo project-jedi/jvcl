@@ -35,8 +35,8 @@ unit JvQRadioGroup;
 interface
 
 uses
-  SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QToolWin, 
+  QWindows, QMessages,
+  SysUtils, Classes, Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QToolWin, 
   QTypes, 
   JvQJCLUtils, JvQThemes, JvQExControls, JvQExExtCtrls;
 

@@ -117,7 +117,7 @@ begin
   Result := (PTagInfo(Item1).BeginPos - PTagInfo(Item2).BeginPos);
 end;
 
-//=== TJvHTMLParser ==========================================================
+//=== { TJvHTMLParser } ======================================================
 
 constructor TJvHTMLParser.Create(AOwner: TComponent);
 begin
@@ -162,7 +162,8 @@ var
   Obj: TJvParserInfo;
   Cap: string;
 begin
-  FParser.Assign(Value);
+  if FParser <> Value then // make sure we don't assign to ourselves (that will clear the list)
+    FParser.Assign(Value);
   FKeys.Clear;
   I := 0;
   while I < FParser.Count do
@@ -405,7 +406,7 @@ begin
   FTagList := Value;
 end;
 
-//=== TTagInfoList ===========================================================
+//=== { TTagInfoList } =======================================================
 
 procedure TTagInfoList.AddValue(const Value: TTagInfo);
 var

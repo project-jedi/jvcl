@@ -34,11 +34,10 @@ unit JvQButton;
 
 interface
 
-uses
-  SysUtils, Classes, 
-  Types, QGraphics, QControls, QForms, QStdCtrls, QMenus, QButtons, 
-  Qt, QWindows, 
-  JvQComponent, JvQConsts, JvQTypes, JvQExStdCtrls, JvQThemes, JvQFinalize;
+uses 
+  Qt, 
+  QWindows, QMessages, Classes, Types, QGraphics, QControls, QMenus, QButtons,
+  JvQComponent, JvQConsts, JvQTypes, JvQExStdCtrls;
 
 type
   TJvButtonMouseState = (bsMouseInside, bsMouseDown);
@@ -166,7 +165,8 @@ type
 implementation
 
 uses
-  JvQJVCLUtils;
+  SysUtils, QForms,
+  JvQJVCLUtils, JvQThemes, JvQFinalize;
 
 const
   sUnitName = 'JvButton';
@@ -374,8 +374,8 @@ begin
     else
       Exit;  
     repeat
-      Application.ProcessMessages; // (ahuser) does this really do the job?
-    until not QWidget_isVisible(DropDownMenu.handle); // (asn) it did not, now it does 
+      Application.ProcessMessages;
+    until not QWidget_isVisible(DropDownMenu.handle); 
     { release button }
     MouseUp(Button, Shift, X, Y);
   end;

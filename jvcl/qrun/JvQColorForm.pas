@@ -37,10 +37,9 @@ unit JvQColorForm;
 
 interface
 
-uses
-  SysUtils, Classes,  
-  Types, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls, QDialogs,
-  QWindows, 
+uses  
+  Types, Qt, QWindows, 
+  Classes, QGraphics, QControls, QForms, QButtons, QDialogs, 
   JvQColorBox;
 
 const
@@ -89,7 +88,8 @@ type
 implementation
 
 uses
-  JvQColorButton, JvQConsts;
+  QExtCtrls, 
+  JvQColorButton;
 
 constructor TJvColorForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin

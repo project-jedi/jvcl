@@ -35,8 +35,7 @@ unit JvQImage;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QExtCtrls, QControls, QForms, 
+  SysUtils, Classes, QGraphics, QExtCtrls, QControls, QForms,
   JvQExExtCtrls;
 
 type

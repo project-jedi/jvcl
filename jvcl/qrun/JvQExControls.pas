@@ -557,11 +557,11 @@ begin
 //        QPixmap_fill(Pixmap, Instance.Parent.Handle, QWidget_x(Instance.Handle), QWidget_y(Instance.Handle));
       OriginalPainter := Canvas.Handle;
       Canvas.Handle := QPainter_create(Pixmap);
-      TControlCanvas(Canvas).StartPaint;
       QPainter_setClipRegion(Canvas.Handle, EventRegion);
       QPainter_setClipping(Canvas.Handle, True);
       R := Rect(0, 0, 0, 0);
       QRegion_boundingRect(EventRegion, @R);
+      TControlCanvas(Canvas).StartPaint;
     end;
 
     try
@@ -610,7 +610,11 @@ begin
       if Instance is TCustomControl then
         TCustomControlAccessProtected(Instance).Paint
       else
+      begin
+//        Canvas.Brush.Assign(Instance.Brush);
+//        Canvas.FillRect(Rect(0, 0, Instance.Width, Instance.Height));
         Intf.Paint;
+      end;
 
     finally
       if Pixmap <> nil then
