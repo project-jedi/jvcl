@@ -41,6 +41,10 @@ uses
   JVCLVer, JvComponent;
 
 type
+  {$IFDEF VisualCLX}
+  TCommonDialog = TCustomDialog;
+  {$ENDIF}
+
   TJvCommonDialog = class(TCommonDialog)
   private
     FAboutJVCL: TJVCLAboutInfo;
