@@ -52,6 +52,8 @@ contains
   JvProviderTreeListFrame in '..\..\design\JvProviderTreeListFrame.pas' {fmeJvProviderTreeList: TFrame},
   JvProviderToolbarFrame in '..\..\design\JvProviderToolbarFrame.pas',
   JvDataConsumerItemSelectForm in '..\..\design\JvDataConsumerItemSelectForm.pas' {frmJvDataConsumerItemSelect},
-  JvDataProviderDesignerForm in '..\..\design\JvDataProviderDesignerForm.pas' {frmDataProviderDesigner};
+  JvDataProviderDesignerForm in '..\..\design\JvDataProviderDesignerForm.pas' {frmDataProviderDesigner},
+  JvDataContextManagerForm in '..\..\design\JvDataContextManagerForm.pas' {frmJvDataContextManager},
+  JvDataConsumerContextSelectForm in '..\..\design\JvDataConsumerContextSelectForm.pas' {frmDataConsumerContextSelect: TFrame};
 
 end.
