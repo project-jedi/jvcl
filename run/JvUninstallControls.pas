@@ -48,15 +48,19 @@ type
   private
     FDisplayMode: TJvUCBDisplayModes;
     FShowAll: Boolean;
+    FShowEmptyValues: Boolean;
     function GetItems: TStrings;
     function GetDisplayName: string;
     function GetSection: string;
     function GetUninstallString: string;
     procedure SetShowAll(const Value: Boolean);
+    procedure SetShowEmptyValues(const Value: Boolean);
     procedure SetDisplayMode(const Value: TJvUCBDisplayModes);
     procedure Rebuild;
     function GetProperties: TStrings;
     function GetHKey: HKEY;
+    function GetHKeyName: string;
+    procedure SetSorted(const Value: boolean);
   protected
     {$IFDEF VCL}
     procedure CreateHandle; override;
@@ -67,17 +71,21 @@ type
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
-    procedure Clear; {$IFDEF VCL} {$IFDEF COMPILER6_UP} override; {$ENDIF} {$ENDIF}
+    procedure Clear;
+    {$IFDEF VCL}{$IFDEF COMPILER6_UP} override;
+    {$ENDIF}{$ENDIF}
+    procedure RefreshItem;
     property Items: TStrings read GetItems;
     property Section: string read GetSection;
     property HKey: HKEY read GetHKey;
+    property HKeyName: string read GetHKeyName;
     property UninstallString: string read GetUninstallString;
     property DisplayName: string read GetDisplayName;
     property Properties: TStrings read GetProperties;
   published
-    property ShowAll: Boolean read FShowAll write SetShowAll;
-    property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode
-      default [hkCurrentUser, hkLocalMachine];
+    property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode default [hkCurrentUser, hkLocalMachine];
+    property ShowAll: Boolean read FShowAll write SetShowAll default False;
+    property ShowEmptyValues: Boolean read FShowEmptyValues write SetShowEmptyValues default False;
     property Color;
     {$IFDEF VCL}
     property DragCursor;
@@ -99,7 +107,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property Sorted;
+    property Sorted write SetSorted;
     property Style;
     property TabOrder;
     property TabStop;
@@ -127,14 +135,18 @@ type
   private
     FShowAll: Boolean;
     FDisplayMode: TJvUCBDisplayModes;
+    FShowEmptyValues: Boolean;
     function GetItems: TStrings;
     function GetDisplayName: string;
     function GetSection: string;
     function GetUninstallString: string;
     procedure SetShowAll(const Value: Boolean);
+    procedure SetShowEmptyValues(const Value: Boolean);
     procedure SetDisplayMode(const Value: TJvUCBDisplayModes);
     function GetProperties: TStrings;
     function GetHKey: HKEY;
+    function GetHKeyName: string;
+    procedure SetSorted(const Value: boolean);
   protected
     {$IFDEF VCL}
     procedure CreateHandle; override;
@@ -145,7 +157,10 @@ type
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
-    procedure Clear; {$IFDEF VCL} {$IFDEF COMPILER6_UP} override; {$ENDIF} {$ENDIF}
+    procedure Clear;
+    {$IFDEF VCL}{$IFDEF COMPILER6_UP} override;
+    {$ENDIF}{$ENDIF}
+    procedure RefreshItem;
     procedure Rebuild;
     property Items: TStrings read GetItems;
     property Section: string read GetSection;
@@ -153,11 +168,12 @@ type
     property DisplayName: string read GetDisplayName;
     property Properties: TStrings read GetProperties;
     property HKey: HKEY read GetHKey;
+    property HKeyName: string read GetHKeyName;
   published
     property Align;
-    property ShowAll: Boolean read FShowAll write SetShowAll;
-    property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode
-      default [hkCurrentUser, hkLocalMachine];
+    property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode default [hkCurrentUser, hkLocalMachine];
+    property ShowAll: Boolean read FShowAll write SetShowAll default False;
+    property ShowEmptyValues: Boolean read FShowEmptyValues write SetShowEmptyValues default False;
     property Color;
     {$IFDEF VCL}
     property DragCursor;
@@ -178,7 +194,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property Sorted;
+    property Sorted write SetSorted;
     property TabOrder;
     property TabStop;
     property Visible;
@@ -209,39 +225,145 @@ const
   cUninstallString = 'UninstallString';
   cDisplayName = 'DisplayName';
 
-  FKey: array [TJvUCBDisplayMode] of DWORD =
-    (HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE);
+  FKey: array[TJvUCBDisplayMode] of DWORD = (HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE);
 
 type
-  TUninstallInfo = class(TObject)
+  TJvUninstallInfo = class(TObject)
   private
     FSection: string;
     FHKey: HKEY;
     FProperties: TStringList;
+    FHKEYName: string;
     function GetProperties: TStrings;
 //    procedure SetProperties(const Value: TStrings); make Delphi 5 compiler happy // andreas
   public
     destructor Destroy; override;
     property HKey: HKEY read FHKey write FHKey;
+    property HKEYName: string read FHKEYName write FHKEYName;
     property Section: string read FSection write FSection;
     property Properties: TStrings read GetProperties {write SetProperties // make Delphi 5 compiler happy // andreas};
   end;
 
-procedure GetUninstallApps(DisplayModes: TJvUCBDisplayModes; Strings: TStrings; ShowAll: Boolean);
+  TSafeRegIniFile = class(TRegIniFile)
+  public
+    function ReadString(const Section, Ident, Default: string): string;
+  end;
+
+//=== TJvUninstallInfo ====================================================
+
+destructor TJvUninstallInfo.Destroy;
+begin
+  FProperties.Free;
+  inherited Destroy;
+end;
+
+function TJvUninstallInfo.GetProperties: TStrings;
+begin
+  if FProperties = nil then
+    FProperties := TStringList.Create;
+  Result := FProperties;
+end;
+
+{ make Delphi 5 compiler happy // andreas
+procedure TJvUninstallInfo.SetProperties(const Value: TStrings);
+begin
+  if FProperties = nil then
+    FProperties := TStringlist.Create;
+  FProperties.Assign(Value);
+end;}
+
+//=== TSafeRegIniFile ====================================================
+
+function TSafeRegIniFile.ReadString(const Section, Ident, Default: string): string;
+var
+  Key, OldKey: HKEY;
+  Len: Integer;
+  RegData: TRegDataType;
+  Buffer: array[0..4095] of byte;
+  function BufToStr(Buffer: array of byte; BufSize: Integer): string;
+  var
+    I: Integer;
+  begin
+    Result := '';
+    for I := 0 to Min(sizeof(Buffer), BufSize) - 1 do
+      Result := Result + ' ' + IntToHex(Buffer[I], 2);
+  end;
+
+  function ExpandEnvVar(const S: string): string;
+  begin
+    SetLength(Result, ExpandEnvironmentStrings(PChar(S), nil, 0));
+    ExpandEnvironmentStrings(PChar(S), PChar(Result), Length(Result));
+  end;
+begin
+  Key := GetKey(Section);
+  if Key <> 0 then
+  try
+    OldKey := CurrentKey;
+    SetCurrentKey(Key);
+    try
+      if ValueExists(Ident) then
+      begin
+        RegData := GetDataType(Ident);
+        case RegData of
+          rdString, rdExpandString:
+            begin
+              Len := GetDataSize(Ident);
+              if Len > 0 then
+              begin
+                SetString(Result, nil, Len);
+                GetData(Ident, PChar(Result), Len, RegData);
+                SetLength(Result, StrLen(PChar(Result)));
+                if RegData = rdExpandString then
+                  Result := ExpandEnvVar(Result);
+              end
+              else
+                Result := '';
+            end;
+          rdInteger:
+            begin
+              GetData(Ident, @Len, sizeof(Len), RegData);
+              Result := IntToStr(Len);
+            end;
+          rdBinary:
+            begin
+              Len := GetDataSize(Ident);
+              if Len > 0 then
+              begin
+                GetData(Ident, @Buffer, sizeof(Buffer), RegData);
+                Result := BufToStr(Buffer, Min(Len, sizeof(buffer)));
+              end
+              else
+                Result := '';
+            end;
+        end;
+      end
+      else
+        Result := Default;
+    finally
+      SetCurrentKey(OldKey);
+    end;
+  finally
+    RegCloseKey(Key);
+  end
+  else
+    Result := Default;
+end;
+
+procedure GetUninstallApps(DisplayModes: TJvUCBDisplayModes; Strings: TStrings; ShowAll, ShowEmptyValues: Boolean);
 var
   I: Integer;
   FFolders, FItems: TStringList;
   Tmp: string;
-  Reg: TRegIniFile;
+  Reg: TSafeRegIniFile;
   Dm: TJvUCBDisplayMode;
-  UI: TUninstallInfo;
+  UI: TJvUninstallInfo;
 
   function BufToStr(Buffer: array of byte; BufSize: Integer): string;
   var
     I: Integer;
   begin
     Result := '';
-    for I := 0 to Min(sizeof(Buffer),BufSize) - 1 do
+    for I := 0 to BufSize - 1 do
       Result := Result + ' ' + IntToHex(Buffer[I], 2);
   end;
 
@@ -251,52 +373,36 @@ var
     ExpandEnvironmentStrings(PChar(S), PChar(Result), Length(Result));
   end;
 
-  procedure MakeProps(Reg: TRegIniFile; const Section: string; Items, Props: TStrings);
+  procedure ReadProperties(Reg: TSafeRegIniFile; const Section: string; ShowEmptyValues: boolean; Items, Props: TStrings);
   var
     I: Integer;
-    BufTmp: string;
-    BufSize:Cardinal;
-    Buffer: array [0..4095] of Byte;
-    DValue: Cardinal;
+    Tmp: string;
   begin
     Reg.OpenKeyReadOnly(Section);
     for I := 0 to Items.Count - 1 do
     begin
-      case Reg.GetDataType(Items[I]) of
-        rdString:
-          BufTmp := Reg.ReadString('', Items[I], '');
-        rdExpandString:
-          BufTmp := ExpandEnvVar(Reg.ReadString('', Items[I], ''));
-        rdInteger:
-          begin
-            BufSize := SizeOf(DValue);
-            RegQueryValueEx(Reg.CurrentKey, PChar(Items[I]), nil, nil, PByte(@DValue), @BufSize);
-            BufTmp := IntToStr(DValue);
-          end;
-        rdBinary:
-          begin
-            BufSize := Reg.GetDataSize(Items[I]);
-            if BufSize > 0 then
-              try
-                Reg.ReadBinaryData(Items[I], Buffer, sizeof(Buffer));
-                BufTmp := BufToStr(Buffer,Reg.GetDataSize(Items[I]));
-              except
-                BufTmp := '';
-              end;
-          end;
-      end;
-      if BufTmp <> '' then
-        Props.Add(Format('%s=%s', [Items[I], BufTmp]));
+      Tmp := Reg.ReadString('', Items[i], '');
+      if (Tmp <> '') or ShowEmptyValues then
+        Props.Add(Format('%s=%s', [Items[I], Tmp]));
     end;
     Reg.CloseKey;
   end;
 
+  function DMToStr(DM: TJvUCBDisplayMode): string;
+  begin
+    case DM of
+      hkCurrentUser:
+        Result := 'HKEY_CURRENT_USER';
+      hkLocalMachine:
+        Result := 'HKEY_LOCAL_MACHINE';
+    end;
+  end;
 begin
   FFolders := TStringList.Create;
   FItems := TStringList.Create;
-  Reg := TRegIniFile.Create('');
-//  FFolders.Sorted := True;
   Strings.BeginUpdate;
+  Reg := TSafeRegIniFile.Create('');
+//  FFolders.Sorted := True;
   with Reg do
   try
     for Dm := Low(FKey) to High(FKey) do
@@ -313,13 +419,14 @@ begin
               FFolders.Delete(I)
             else
             begin
-              UI := TUninstallInfo.Create;
+              UI := TJvUninstallInfo.Create;
               if Tmp = '' then
                 Tmp := FFolders[I];
               UI.HKey := RootKey;
+              UI.HKeyName := DMToStr(Dm);
               UI.Section := cUninstallPath + FFolders[I];
               ReadSection(FFolders[I], FItems);
-              MakeProps(Reg, FFolders[I], FItems, UI.Properties);
+              ReadProperties(Reg, FFolders[I], ShowEmptyValues, FItems, UI.Properties);
               Strings.AddObject(Tmp, UI);
               OpenKeyReadOnly(cUninstallPath);
             end;
@@ -329,7 +436,7 @@ begin
   finally
     Free;
     FFolders.Free;
-    FITems.Free;
+    FItems.Free;
     Strings.EndUpdate;
   end;
 end;
@@ -357,7 +464,7 @@ begin
     Exit;
   I := ItemIndex;
   Clear;
-  GetUninstallApps(DisplayMode, Items, ShowAll);
+  GetUninstallApps(DisplayMode, Items, ShowAll, ShowEmptyValues);
   ItemIndex := I;
   if (Items.Count > 0) and (ItemIndex < 0) then
     ItemIndex := 0;
@@ -366,7 +473,7 @@ end;
 function TJvUninstallComboBox.GetDisplayName: string;
 begin
   if ItemIndex > -1 then
-    Result := TUninstallInfo(Items.Objects[ItemIndex]).Properties.Values[cDisplayName]
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).Properties.Values[cDisplayName]
   else
     Result := '';
 end;
@@ -379,7 +486,7 @@ end;
 function TJvUninstallComboBox.GetSection: string;
 begin
   if ItemIndex > -1 then
-    Result := TUninstallInfo(Items.Objects[ItemIndex]).Section
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).Section
   else
     Result := '';
 end;
@@ -387,7 +494,7 @@ end;
 function TJvUninstallComboBox.GetUninstallString: string;
 begin
   if ItemIndex > -1 then
-    Result := TUninstallInfo(Items.Objects[ItemIndex]).Properties.Values[cUninstallString]
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).Properties.Values[cUninstallString]
   else
     Result := '';
 end;
@@ -410,6 +517,15 @@ begin
   end;
 end;
 
+procedure TJvUninstallComboBox.SetShowEmptyValues(const Value: Boolean);
+begin
+  if FShowEmptyValues <> Value then
+  begin
+    FShowEmptyValues := Value;
+    Rebuild;
+  end;
+end;
+
 procedure TJvUninstallComboBox.Clear;
 var
   I: Integer;
@@ -422,6 +538,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvUninstallComboBox.CreateHandle;
 begin
   inherited CreateHandle;
@@ -430,6 +547,7 @@ begin
 end;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
+
 procedure TJvUninstallComboBox.CreateWidget;
 begin
   inherited CreateWidget;
@@ -442,14 +560,39 @@ function TJvUninstallComboBox.GetProperties: TStrings;
 begin
   Result := nil;
   if ItemIndex > -1 then
-    Result := TUninstallInfo(Items.Objects[ItemIndex]).Properties;
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).Properties;
 end;
 
 function TJvUninstallComboBox.GetHKey: HKEY;
 begin
   Result := 0;
   if ItemIndex > -1 then
-    Result := TUninstallInfo(Items.Objects[ItemIndex]).HKey;
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).HKey;
+end;
+
+function TJvUninstallComboBox.GetHKeyName: string;
+begin
+  Result := '';
+  if ItemIndex > -1 then
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).HKeyName;
+end;
+
+procedure TJvUninstallComboBox.SetSorted(const Value: boolean);
+var
+  S: string;
+begin
+  if Value <> inherited Sorted then
+  begin
+    if ItemIndex > -1 then
+      S := Items[ItemIndex]
+    else
+      S := '';
+    inherited Sorted := Value;
+    if not Value then
+      Rebuild;
+    if S <> '' then
+      ItemIndex := Items.IndexOf(S);
+  end;
 end;
 
 //=== TJvUninstallListBox ====================================================
@@ -469,7 +612,7 @@ end;
 function TJvUninstallListBox.GetDisplayName: string;
 begin
   if ItemIndex > -1 then
-    Result := TUninstallInfo(Items.Objects[ItemIndex]).Properties.Values[cDisplayName]
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).Properties.Values[cDisplayName]
   else
     Result := '';
 end;
@@ -477,7 +620,7 @@ end;
 function TJvUninstallListBox.GetUninstallString: string;
 begin
   if ItemIndex > -1 then
-    Result := TUninstallInfo(Items.Objects[ItemIndex]).Properties.Values[cUninstallString]
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).Properties.Values[cUninstallString]
   else
     Result := '';
 end;
@@ -490,7 +633,7 @@ end;
 function TJvUninstallListBox.GetSection: string;
 begin
   if ItemIndex > -1 then
-    Result := TUninstallInfo(Items.Objects[ItemIndex]).Section
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).Section
   else
     Result := '';
 end;
@@ -509,6 +652,15 @@ begin
   if FShowAll <> Value then
   begin
     FShowAll := Value;
+    Rebuild;
+  end;
+end;
+
+procedure TJvUninstallListBox.SetShowEmptyValues(const Value: Boolean);
+begin
+  if FShowEmptyValues <> Value then
+  begin
+    FShowEmptyValues := Value;
     Rebuild;
   end;
 end;
@@ -533,14 +685,14 @@ begin
     Exit;
   I := ItemIndex;
   Clear;
-  GetUninstallApps(DisplayMode, Items, ShowAll);
+  GetUninstallApps(DisplayMode, Items, ShowAll, ShowEmptyValues);
   ItemIndex := I;
   if (Items.Count > 0) and (ItemIndex < 0) then
     ItemIndex := 0;
 end;
 
-
 {$IFDEF VCL}
+
 procedure TJvUninstallListBox.CreateHandle;
 begin
   inherited CreateHandle;
@@ -549,6 +701,7 @@ begin
 end;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
+
 procedure TJvUninstallListBox.CreateWidget;
 begin
   inherited CreateWidget;
@@ -561,38 +714,51 @@ function TJvUninstallListBox.GetProperties: TStrings;
 begin
   Result := nil;
   if ItemIndex > -1 then
-    Result := TUninstallInfo(Items.Objects[ItemIndex]).Properties;
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).Properties;
 end;
 
 function TJvUninstallListBox.GetHKey: HKEY;
 begin
   Result := 0;
   if ItemIndex > -1 then
-    Result := TUninstallInfo(Items.Objects[ItemIndex]).HKey;
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).HKey;
 end;
 
-//=== TUninstallInfo ====================================================
-
-destructor TUninstallInfo.Destroy;
+function TJvUninstallListBox.GetHKeyName: string;
 begin
-  FProperties.Free;
-  inherited Destroy;
+  Result := '';
+  if ItemIndex > -1 then
+    Result := TJvUninstallInfo(Items.Objects[ItemIndex]).HKeyName;
 end;
 
-function TUninstallInfo.GetProperties: TStrings;
+procedure TJvUninstallListBox.SetSorted(const Value: boolean);
+var
+  S: string;
 begin
-  if FProperties = nil then
-    FProperties := TStringList.Create;
-  Result := FProperties;
+  if Value <> inherited Sorted then
+  begin
+    if ItemIndex > -1 then
+      S := Items[ItemIndex]
+    else
+      S := '';
+    inherited Sorted := Value;
+    if not Value then
+      Rebuild;
+    if S <> '' then
+      ItemIndex := Items.IndexOf(S);
+  end;
 end;
 
-{ make Delphi 5 compiler happy // andreas
-procedure TUninstallInfo.SetProperties(const Value: TStrings);
+procedure TJvUninstallComboBox.RefreshItem;
 begin
-  if FProperties = nil then
-    FProperties := TStringlist.Create;
-  FProperties.Assign(Value);
-end;}
+  Click;
+  Change;
+end;
+
+procedure TJvUninstallListBox.RefreshItem;
+begin
+  Click;
+end;
 
 end.
 
