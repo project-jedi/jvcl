@@ -55,6 +55,9 @@ const
   {new 2003}
 function StrSplit(const inString: String; const splitChar, quoteChar: Char;
   var OutStrings: array of String; MaxSplit: Integer): Integer;
+  {new 2004}
+function StrSplitStrings( const inString:String; const splitChar,quoteChar:Char; OutStrings:TStrings):Integer;
+
 
   { circa 1998-2001 classic functions }
 function StrStrip(s: String): String; // Strip whitespace, carriage returns, linefeeds.
@@ -861,6 +864,36 @@ begin
   Inc(SplitCounter);
   Result := SplitCounter;
 end;
+// NEW 2004 WP
+function StrSplitStrings( const inString:String; const splitChar,quoteChar:Char; OutStrings:TStrings):Integer;
+var
+  t,Len,SplitCounter:Integer;
+  Ch:Char;
+  inQuotes:Boolean;
+  OutString:String;
+begin
+   inQuotes := false;
+   Len := Length(inString);
+   OutStrings.Clear;
+   SplitCounter := 0; // ALWAYS ASSUME THAT ZERO IS VALID IN THE OUTGOING ARRAY.
+
+   for t := 1 to Len do begin
+        Ch := inString[t];
+        if (Ch = splitChar) and (not inQuotes) then begin
+                OutStrings.Add(OutString);
+                OutString:='';
+                Inc(SplitCounter);
+        end else begin
+          OutString := OutString + ch;
+          if (ch = quoteChar) then
+              inQuotes := not inQuotes;
+        end;
+   end;
+   OutStrings.Add(OutString);
+   Inc(SplitCounter);
+   result := SplitCounter;
+end;
+//--end NEW--
 
 end.
 
