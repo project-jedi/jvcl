@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvCrypt" Design="-1">
+  <Description>JVCL Encryption and Compression Components</Description>
+  <C5PFlags/>
+  <C6PFlags/>
+  <Requires>
+    <Package Name="JvCrypt-R" Targets="all" Condition=""/>
+    <Package Name="vcl50" Targets="C5" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvCryptReg.pas" Targets="all" Formname="" Condition=""/>
+  </Contains>
+</Package>
