@@ -1181,23 +1181,30 @@ begin
   FNumCheckedInDevices  := 0;
   FNumCheckedOutDevices := 0;
   FNumUnpluggedDevices  := 0;
-  if LoadSetupApi then
-    LoadHid;
-  if IsHidLoaded then
-    HidD_GetHidGuid(FHidGuid)
-  else
-    FHidGuid := cHidGuid;
-
   // this is just to remind you that one controller is sufficient
   Inc(GlobalInstanceCount);
-  if GlobalInstanceCount > 1 then
-    raise EControllerError.Create('Only one TJvHidDeviceController allowed per program');
+  if (csDesigning in ComponentState) and (GlobalInstanceCount > 1) then
+    ShowMessage('One instance per application is sufficient. Note that at this time we can make no' +
+      'distinction between multiple applications in a project group, as the counter is managed in ' +
+      'the JVCL runtime package, which is always a single instance.');
+//    raise EControllerError.Create('Only one TJvHidDeviceController allowed per program');
 
-  FillInList(FList);
-  FNumCheckedInDevices := FList.Count;
-  if IsHidLoaded then
-    // only hook messages if there is a HID DLL
-    Application.HookMainWindow(EventPipe);
+  // while in design mode we do not want a "live" connection, especially when used in application groups
+  if not (csDesigning in ComponentState) then
+  begin
+    if LoadSetupApi then
+      LoadHid;
+    if IsHidLoaded then
+      HidD_GetHidGuid(FHidGuid)
+    else
+      FHidGuid := cHidGuid;
+
+    FillInList(FList);
+    FNumCheckedInDevices := FList.Count;
+    if IsHidLoaded then
+      // only hook messages if there is a HID DLL
+      Application.HookMainWindow(EventPipe);
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -1225,27 +1232,33 @@ begin
   FDevUnplugEvent    := nil;
   OnEnumerate        := nil;
   // unhook event pipe
-  if IsHidLoaded then
-    Application.UnhookMainWindow(EventPipe);
+  if not (csDesigning in ComponentState) then
+  begin
+    if IsHidLoaded then
+      Application.UnhookMainWindow(EventPipe);
 
-  if Assigned(FList) then
-    for I := 0 to FList.Count - 1 do
-    begin
-      HidDev := FList.Items[I];
-      with HidDev do
+    if Assigned(FList) then
+      for I := 0 to FList.Count - 1 do
       begin
-        // set to uncontrolled
-        FMyController := nil;
-        if IsCheckedOut then
-          DoUnplug // pull the plug for checked out TJvHidDevices
-        else
-          Free;    // kill TJvHidDevices which are not checked out
+        HidDev := FList.Items[I];
+        with HidDev do
+        begin
+          // set to uncontrolled
+          FMyController := nil;
+          if IsCheckedOut then
+            DoUnplug // pull the plug for checked out TJvHidDevices
+          else
+            Free;    // kill TJvHidDevices which are not checked out
+        end;
       end;
-    end;
-  FList.Free;
+    FList.Free;
 
-  UnloadHid;
-  UnloadSetupApi;
+    if GlobalInstanceCount = 0 then
+    begin
+      UnloadHid;
+      UnloadSetupApi;
+    end;
+  end;
 
   inherited Destroy;
 end;
