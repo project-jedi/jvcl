@@ -201,7 +201,7 @@ type
       SortType: TJvSortType = stClassic; BlankTop: Boolean = True);
     // Sort grid using the column inidices in ColOrder. For example if ColOrder contains
     // [1, 3, 0, 2], column 3 is used when the items in column 1 are identical
-    procedure SortGridByCols(ColOrder: array of Integer);
+    procedure SortGridByCols(ColOrder: array of Integer; Fixed: Boolean = False);
     procedure SaveToFile(FileName: string);
     procedure LoadFromFile(FileName: string);
     procedure LoadFromCSV(FileName: string; Separator: Char = ';'; QuoteChar: Char = '"'; StripQuotes: Boolean = True);
@@ -1353,9 +1353,9 @@ begin
     FOnSaveProgress(Self, Position, Count);
 end;
 
-procedure TJvStringGrid.SortGridByCols(ColOrder: array of Integer);
+procedure TJvStringGrid.SortGridByCols(ColOrder: array of Integer; Fixed: Boolean);
 var
-  I, J: Integer;
+  I, J, FirstRow: Integer;
   Sorted: Boolean;
 
   function Sort(Row1, Row2: Integer): Integer;
@@ -1377,18 +1377,24 @@ var
 
 begin
   // (p3) is this really necessary? Doesn't seem so to me...
-  if SizeOf(ColOrder) div SizeOf(I) <> ColCount then
-    Exit;
-
+  //      No, it isn't... Removed by Dom
+  //if SizeOf(ColOrder) div SizeOf(I) <> ColCount then
+  //  Exit;
+    
   for I := 0 to High(ColOrder) do
     if (ColOrder[I] < 0) or (ColOrder[I] >= ColCount) then
       Exit;
 
-  J := 0;
+  if Fixed then
+    FirstRow := 0
+  else
+    FirstRow := FixedRows;
+
+  J := FirstRow;
   Sorted := False;
   repeat
     Inc(J);
-    for I := 0 to RowCount - 2 do
+    for I := FirstRow to RowCount - 2 do
       if Sort(I, I + 1) > 0 then
       begin
         MoveRow(I + 1, I);
