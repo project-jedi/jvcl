@@ -31,8 +31,8 @@ unit JvTranslatorMainFormU;
 interface
 
 uses
-  Windows, Messages, SysUtils, {$IFDEF DELPHI6_UP} Variants,{$ENDIF} Classes, Graphics, Controls, Forms,
-  Dialogs, JvTranslator, StdCtrls, ComCtrls, JvComponent;
+  QWindows, QMessages, SysUtils, {$IFDEF DELPHI6_UP} Variants,{$ENDIF} Classes, QGraphics, QControls, QForms,
+  QDialogs, JvQTranslator, QStdCtrls, QComCtrls, JvQComponent;
 
 type
   TJvTranslatorMainForm = class(TForm)
@@ -59,7 +59,7 @@ implementation
 uses
   JclStrings;
 
-{$R *.dfm}
+{$R *.xfm}
 
 var
  CONST_SomeText: string = 'Wooow, this was good :p';
@@ -80,7 +80,7 @@ var
   transFileName : string;
 begin
 
-  transFileName := '..\examples\JvTranslator\Translations\French.xml';
+  transFileName := '..\..\examples\JvTranslator\Translations\French.xml';
   if not FileExists(transFileName) then
     MessageDlg('File not found: ' + transFileName, mtError, [mbOK], 0)
   else
@@ -92,7 +92,7 @@ var
   transFileName : string;
 begin
 
-  transFileName := '..\examples\JvTranslator\Translations\English.xml';
+  transFileName := '..\..\examples\JvTranslator\Translations\English.xml';
   if not FileExists(transFileName) then
     MessageDlg('File not found: ' + transFileName, mtError, [mbOK], 0)
   else
