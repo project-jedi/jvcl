@@ -368,6 +368,43 @@ begin
     Result := line;
 end;
 
+function EnsurePFlagsCondition(pflags : string) : string;
+var
+  PFlagsList : TStringList;
+  I : Integer;
+  CurPFlag : string;
+  Condition : string;
+  ParensPos : Integer;
+begin
+  // If any of the PFLAGS is followed by a string between parenthesis
+  // then this is considered to be a condition.
+  // If the condition is not in the Defines list, then the
+  // corresponding PFLAG is discarded. This has been done mostly for
+  // packages that have extended functionnality when USEJVCL is
+  // activated and as such require the JCL dcp file.
+  PFlagsList := TStringList.Create;
+  Result := pflags;
+  try
+    StrToStrings(pflags, ' ', PFlagsList, False);
+    for I := 0 to PFlagsList.Count-1 do
+    begin
+      CurPFlag := PFlagsList[I];
+      ParensPos := Pos('(', CurPFlag);
+      if ParensPos <> 0 then
+      begin
+        Condition := Copy(CurPFlag, ParensPos+1, Length(CurPFlag) - ParensPos -1);
+        if DefinesList.IndexOf(Condition) < 0 then
+          PFlagsList[I] := ''
+        else
+          PFlagsList[I] := Copy(CurPFlag, 1, ParensPos-1);
+      end;
+    end;
+    Result := StringsToStr(PFlagsList, ' ', False);
+  finally
+    PFlagsList.Free;
+  end;
+end;
+
 function GetUnitName(FileName : string) : string;
 begin
   Result := PathExtractFileNameNoExt(FileName);
@@ -727,10 +764,14 @@ begin
                    rootNode.Items.ItemNamed['Description'].Value,
                    [rfReplaceAll]);
         StrReplace(curLine, '%C5PFLAGS%',
-                   rootNode.Items.ItemNamed['C5PFlags'].Value,
+                   EnsurePFlagsCondition(
+                     rootNode.Items.ItemNamed['C5PFlags'].Value
+                     ),
                    [rfReplaceAll]);
         StrReplace(curLine, '%C6PFLAGS%',
-                   rootNode.Items.ItemNamed['C6PFlags'].Value,
+                   EnsurePFlagsCondition(
+                     rootNode.Items.ItemNamed['C6PFlags'].Value
+                     ),
                    [rfReplaceAll]);
         StrReplace(curLine, '%TYPE%',
                    Iff(rootNode.Properties.ItemNamed['Design'].BoolValue,
