@@ -282,6 +282,7 @@ resourcestring
   RsGraphScale = 'Graph Scale';
   RsYAxisScales = 'Y Axis Scale: %s';
   RsNoValuesHere = 'No values here!';
+  RsNA = ' n/a ';
 
   RsEDataIndexCannotBeNegative = 'Data: index cannot be negative';
   RsEDataIndexTooLargeProbablyAnInternal = 'Data: index too large. Probably an internal error';

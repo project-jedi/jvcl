@@ -762,7 +762,7 @@ begin
     S := FormatDateTime('hh:nn:ss ', Timestamp[ValueIndex]);
   for I := 0 to IMax do
   begin
-    if IsNan(FData[ValueIndex, I]) then
+    if IsNaN(FData[ValueIndex, I]) then
       S := S + '-'
     else
       S := S + Format('%5.2f', [FData[ValueIndex, I]]);
@@ -1649,7 +1649,7 @@ begin
 
         V := FData.Value[J, I];
 
-        if IsNan(V) then
+        if IsNaN(V) then
           Continue;
         if NYMin > V then
           NYMin := V;
@@ -1977,7 +1977,7 @@ var
       for J := 0 to Options.XValueCount - 1 do
       begin
         V := FData.Value[I, J];
-        if IsNan(V) then
+        if IsNaN(V) then
           Continue;
         //MaxFlag := False;
         //MinFlag := False;
@@ -2036,7 +2036,7 @@ var
       for J := 0 to Options.XValueCount - 1 do
       begin
         V := FData.Value[I, J];
-        if IsNan(V) then
+        if IsNaN(V) then
           Continue;
         // Calculate Marker position:
         X := Round(XOrigin + J * LineXPixelGap);
@@ -2158,7 +2158,7 @@ var
         //Dec(X2,4);
         //Inc(X2, 2*J);
         V := FData.Value[I, J];
-        if IsNan(V) then
+        if IsNaN(V) then
           Continue;
         Y2 := Round(YOrigin - ((V / Options.PenAxis[I].YGap) * Options.PrimaryYAxis.YPixelGap));
         Assert(Y2 < Height);
@@ -2209,7 +2209,7 @@ var
   begin
     V := FData.Value[Pen, Sample];
     PenAxisOpt := Options.PenAxis[Pen];
-    if IsNan(V) then
+    if IsNaN(V) then
     begin
       Result := NaN; // blank placeholder value in chart!
       Exit;
@@ -2251,7 +2251,7 @@ var
       SetLineColor(I);
       J := 0;
       V := GraphConstrainedLineY(I, J);
-      if IsNan(V) then
+      if IsNaN(V) then
         Y := 0 // what else can we do?
       else
         Y := Round(V);
@@ -2259,7 +2259,7 @@ var
       for J := 1 to Options.XValueCount - 1 do
       begin
         V := GraphConstrainedLineY(I, J);
-        if IsNan(V) then
+        if IsNaN(V) then
           NanFlag := True // skip.
         else
         begin
@@ -2279,7 +2279,7 @@ var
               for I2 := 0 to I - 1 do
               begin
                 V := GraphConstrainedLineY(I2, J);
-                if IsNan(V) then
+                if IsNaN(V) then
                   Continue;
                 Y1 := Round(V);
                 if Y1 = Y then
@@ -3326,8 +3326,8 @@ begin
     if Length(Str) = 0 then
       Str := IntToStr(I + 1);
     Str := Str + ' : ';
-    if IsNan(Val) then
-      Str := Str + ' n/a '
+    if IsNaN(Val) then
+      Str := Str + RsNA
     else
     begin
       Str := Str + FloatToStrF(Val, ffFixed, REALPREC, 3);
