@@ -39,7 +39,7 @@ interface
 uses
   SysUtils, Classes, 
   Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QButtons, QMenus, QImgList, 
-  QTypes, QWindows, 
+  QTypes, Qt, QWindows, 
   JvQTypes, JvQConsts, JvQComponent, JvQThemes, JvQExControls, JvQExButtons;
 
 const
@@ -550,7 +550,7 @@ const
   end;
   }
 
-//=== TJvLookOutEdit =========================================================
+//=== { TJvLookOutEdit } =====================================================
 
 type
   TJvLookOutEdit = class(TEdit)
@@ -564,7 +564,7 @@ begin
   // (ahuser) What is with OnExit() ?
 end;
 
-//=== TJvLookOutButtonActionLink =============================================
+//=== { TJvLookOutButtonActionLink } =========================================
 
 type
   TJvLookOutButtonActionLink = class(TControlActionLink)
@@ -593,7 +593,7 @@ begin
     FClient.Down := Value;
 end;
 
-//=== TJvUpArrowBtn ==========================================================
+//=== { TJvUpArrowBtn } ======================================================
 
 constructor TJvUpArrowBtn.Create(AOwner: TComponent);
 var
@@ -740,7 +740,7 @@ begin
   end;
 end;
 
-//=== TJvDwnArrowBtn =========================================================
+//=== { TJvDwnArrowBtn } =====================================================
 
 constructor TJvDwnArrowBtn.Create(AOwner: TComponent);
 var
@@ -849,7 +849,7 @@ begin
   end;
 end;
 
-//=== TJvCustomLookOutButton =================================================
+//=== { TJvCustomLookOutButton } =============================================
 
 constructor TJvCustomLookOutButton.Create(AOwner: TComponent);
 begin
@@ -1231,8 +1231,8 @@ begin
     else
       Canvas.Font := Font;
 
-    //    W := FSpacing  + W;  
-    SetBkMode(Canvas.Handle, QWindows.Transparent); 
+    //    W := FSpacing  + W;
+    SetBkMode(Canvas.Handle, QWindows.Transparent);
     R := GetClientRect;
     if (ImageSize = isLarge) and Assigned(FLargeImages) then
       R.Top := R.Top + FLargeImages.Height + (FSpacing * 2)
@@ -1415,7 +1415,10 @@ begin
       FPopUpMenu.PopupComponent := Self;
       FPopUpMenu.Popup(Tmp.X, Tmp.Y);
       { wait 'til menu is Done }
-      // TODO 
+      // TODO  
+      repeat
+        Application.ProcessMessages;
+      until not QWidget_isVisible(FPopUpMenu.handle); 
     end;
     { release button }
     if not FStayDown then
@@ -1547,7 +1550,7 @@ begin
   end;
 end;
 
-//=== TJvExpressButton =======================================================
+//=== { TJvExpressButton } ===================================================
 
 constructor TJvExpressButton.Create(AOwner: TComponent);
 begin
@@ -1559,7 +1562,7 @@ begin
   Font.Color := clWhite;
 end;
 
-//=== TJvLookOutPage =========================================================
+//=== { TJvLookOutPage } =====================================================
 
 constructor TJvLookOutPage.Create(AOwner: TComponent);
 begin
@@ -2294,7 +2297,10 @@ begin
     { calc where to put menu }
     Tmp := ClientToScreen(Point(X, Y));
     FPopUpMenu.PopupComponent := Self;
-    FPopUpMenu.Popup(Tmp.X, Tmp.Y); 
+    FPopUpMenu.Popup(Tmp.X, Tmp.Y);  
+     repeat
+       Application.ProcessMessages;
+     until not QWidget_isVisible(FPopUpMenu.handle); 
     FDown := False;
   end
   else
@@ -2375,7 +2381,7 @@ begin
   end;
 end;
 
-//=== TJvLookOut =============================================================
+//=== { TJvLookOut } =========================================================
 
 constructor TJvLookOut.Create(AOwner: TComponent);
 begin
@@ -2619,8 +2625,8 @@ var
 begin
   DC := GetWindowDC(Handle);
   try
-    QWindows.GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
+    QWindows.GetClientRect(Handle, RC);
     MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
@@ -2656,7 +2662,7 @@ begin
     UpdateControls;
 end;
 
-//=== TJvExpress =============================================================
+//=== { TJvExpress } =========================================================
 
 constructor TJvExpress.Create(AOwner: TComponent);
 begin
@@ -2828,8 +2834,8 @@ var
 begin
   DC := GetWindowDC(Handle);
   try
-    QWindows.GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
+    QWindows.GetClientRect(Handle, RC);
     MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
