@@ -1708,9 +1708,13 @@ begin
     end;
 end;
 
+
+type
+  TOpenReader = class(TReader); // (ahuser) Delphi 5's TReader.SkipValue is protected  
+
 procedure TJvCustomComboEdit.ReadNumGlyphs(Reader: TReader);
 begin
-  Reader.SkipValue;
+  TOpenReader(Reader).SkipValue;
 end;
 
 procedure TJvCustomComboEdit.RecreateGlyph;
