@@ -190,7 +190,8 @@ procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 {$IFDEF VCL}
 procedure ShowMDIClientEdge(ClientHandle: THandle; ShowEdge: Boolean);
 {$ENDIF VCL}
-procedure Delay(MSecs: Longint);
+function GetTickCount64: Int64;
+procedure Delay(MSecs: Int64);
 procedure CenterControl(Control: TControl);
 
 procedure MergeForm(AControl: TWinControl; AForm: TForm; Align: TAlign;
@@ -2402,16 +2403,42 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure Delay(MSecs: Longint);
+function GetTickCount64: Int64;
 var
-  FirstTickCount, Now: Longint;
+  QFreq, QCount:Int64;
 begin
-  FirstTickCount := GetTickCount;
+   Result := GetTickCount;
+   if QueryPerformanceFrequency(QFreq) then
+   begin
+     QueryPerformanceCounter(QCount);
+     if QFreq <> 0 then
+       Result := (QCount div QFreq) * 1000;
+  end;
+end;
+
+procedure Delay(MSecs: Int64);
+var
+  FirstTickCount, Now: Int64;
+begin
+  FirstTickCount := GetTickCount64;
   repeat
     Application.ProcessMessages;
     { allowing access to other controls, etc. }
-    Now := GetTickCount;
-  until (Now - FirstTickCount >= MSecs) or (Now < FirstTickCount);
+    Now := GetTickCount64;
+  until (Now - FirstTickCount >= MSecs);
+end;
+
+function GetTimeRunning: Int64;
+var
+  QFreq, QCount:Int64;
+begin
+   Result := GetTickCount;
+   if QueryPerformanceFrequency(QFreq) then
+   begin
+     QueryPerformanceCounter(QCount);
+     if QFreq <> 0 then
+       Result := (QCount div QFreq) * 1000;
+  end;
 end;
 
 procedure CenterControl(Control: TControl);
