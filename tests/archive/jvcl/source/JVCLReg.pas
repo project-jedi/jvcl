@@ -76,12 +76,13 @@ uses
   JvGammaPanel, JvSlider, JvSpin,
 
   // Mp3
-  JvBreatheSkin, JvId3v2, JvVisualId3v2, JvWinampApi, JvId3v1, JvVisualId3v1,
+  JvBreatheSkin, JvVisualId3v2, JvWinampApi, JvVisualId3v1,
 
   // Multimedia
   JvSoundControl, JvDeviceChanged, JvImageTransform, JvImageRotate,
   JvWavePlayer, JvStarfield, JvJoystick, JvSpecialImage,
   JvThumbImage, JvThumbnails, JvThumbViews, JvMovableBevel,
+  JvID3v2, JvID3v2Base, JvID3v2Editor, JvID3v1, 
 
   // Labels
   JvWinampLabel, JvLinkLabel,
@@ -252,6 +253,7 @@ begin
   RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
   RegisterComponentEditor(TJvFooter, TJvFooterEditor);
+  RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);
 end;
 
 procedure RegComps;
