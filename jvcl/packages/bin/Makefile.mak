@@ -160,7 +160,8 @@ configfile:
 	@echo -U"$(ROOT)\Lib;$(ROOT)\Lib\Obj">>"$(CFG)"
 	@echo -R"$(ROOT)\Lib">>"$(CFG)"
 	@echo -I"$(ROOT)\Include;$(ROOT)\Include\Vcl">>"$(CFG)"
-	@echo -U"$(DCPDIR);$(LIBDIR);$(BPLDIR)">>"$(CFG)"
+	@echo -U"$(DCPDIR);$(LIBDIR);$(BPLDIR)>>"$(CFG)"
+	#@echo -U"$(MAINDCPDIR);$(MAINLIBDIR);$(MAINBPLDIR)">>"$(CFG)"
 	#
 	@echo -I"$(JCLINCLUDEDIRS)">>"$(CFG)"
 	@echo -U"$(JCLSOURCEDIRS1)">>"$(CFG)"
