@@ -8,7 +8,7 @@ package %NAME%;
 -----------------------------------------------------------------------------
 }
 
-{$R *.RES}
+{$R *.res}
 {$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
