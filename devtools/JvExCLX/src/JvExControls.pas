@@ -58,6 +58,7 @@ type
   JV_WINCONTROL(HintWindow)
 
 function GetCanvas(Instance: TWinControl): TControlCanvas;
+function GetFocusedControl(Instance: TControl): TWinControl;
 function GetHintColor(Instance: TWinControl): TColor;
 function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
@@ -105,6 +106,16 @@ begin
     if PI <> nil then
       Result := TControlCanvas(GetOrdProp(Instance, PI));
   end;
+end;
+
+function GetFocusedControl(Instance: TControl): TWinControl;
+var
+  Form: TCustomForm;
+begin
+  Result := nil;
+  Form := GetParentForm(Instance);
+  if Assigned(Form) then
+    Result := Form.ActiveControl;
 end;
 
 function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;

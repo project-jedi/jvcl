@@ -81,6 +81,7 @@ type
 
 function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
 function GetCanvas(Instance: TWinControl): TCanvas;
+function GetFocusedControl(Instance: TWinControl): TWinControl;
 function GetHintColor(Instance: TWinControl): TColor;
 function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
 function IsDoubleBuffered(Instance: TWinControl): Boolean;
@@ -164,14 +165,24 @@ begin
   end;
 end;
 
-function GetFocusedWnd(Instance: TWidgetControl): QWidgetH;
+function GetFocusedControl(Instance: TWidgetControl): TWidgetControl;
 var
   Form: TCustomForm;
 begin
   Result := nil;
   Form := GetParentForm(Instance);
-  if Assigned(Form) and Assigned(Form.FocusedControl) then
-    Result := Form.FocusedControl.Handle ;
+  if Assigned(Form) then
+    Result := Form.FocusedControl;
+end;
+
+function GetFocusedWnd(Instance: TWidgetControl): QWidgetH;
+var
+  Control: TWinControl;
+begin
+  Result := nil;
+  Control := GetFocusedControl(Instance);
+  if Assigned(Control) then
+    Result := Control.Handle ;
 end;
 
 function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
