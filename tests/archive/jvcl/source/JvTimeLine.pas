@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -214,6 +214,7 @@ type
     FHorsZupport: boolean;
     FShowHiddenItemHints: boolean;
     FOnItemDblClick: TJvTimeItemClickEvent;
+    FCanvas: TControlCanvas;
     procedure SetHelperYears(Value: boolean);
     procedure SetFlat(Value: boolean);
     procedure SetScrollArrows(Value: TJvScrollArrows);
@@ -270,11 +271,11 @@ type
     { Protected declarations }
 
     //PRY 2002.06.04
-    {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: boolean); override;
-    {$ELSE}
+{$ELSE}
     procedure SetAutoSize(Value: boolean);
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     // PRY END
     function ItemMoving(Item: TJvTimeItem): boolean; virtual;
     procedure ItemMoved(Item: TJvTimeItem; NewDate: TDateTime); virtual;
@@ -287,7 +288,8 @@ type
     procedure DblClick; override;
     procedure Click; override;
     procedure Paint; override;
-    procedure DrawDragLine; virtual;
+    procedure DrawDragLine(X: integer); virtual;
+    procedure MoveDragLine(OldX, NewX: integer); virtual;
     procedure VertScroll(ScrollCode: TScrollCode; var ScrollPos: integer); virtual;
     procedure HorzScroll(ScrollCode: TScrollCode; var ScrollPos: integer); virtual;
     procedure ItemClick(Item: TJvTimeItem); virtual;
@@ -373,7 +375,7 @@ type
   public
     property Selected;
   published
-    property AboutJVCL; 
+    property AboutJVCL;
     property Align;
     property Color;
     property Cursor;
@@ -490,6 +492,7 @@ end;
 
 //PRY 2002.06.04
 {$IFNDEF COMPILER6_UP}
+
 function IncYear(const AValue: TDateTime;
   const ANumberOfYears: Integer): TDateTime;
 begin
@@ -879,10 +882,10 @@ var
     end;
   end;
 
-//PRY 2002.06.04
+  //PRY 2002.06.04
 var
   KeyState: TKeyboardState;
-// PRY END
+  // PRY END
 begin
   if TimeLine = nil then
     Exit;
@@ -963,6 +966,12 @@ constructor TJvCustomTimeLine.Create(AOwner: TComponent);
 var bmp: TBitmap;
 begin
   inherited Create(AOwner);
+  FCanvas := TControlCanvas.Create;
+  FCanvas.Control := self;
+  FCanvas.Pen.Color := clBlack;
+  FCanvas.Pen.Mode := pmNotXor;
+  FCanvas.Pen.Style := psDot;
+
   bmp := TBitmap.Create;
   FItemHintImageList := TImageList.CreateSize(14, 6);
   try
@@ -1040,6 +1049,7 @@ end;
 
 destructor TJvCustomTimeLine.Destroy;
 begin
+  FCanvas.Free;
   FYearList.Free;
   FBmp.Free;
   FList.Free;
@@ -1188,10 +1198,17 @@ begin
   if FImages <> Value then
   begin
     if FImages <> nil then
+    begin
+      FImages.RemoveFreeNotification(self);
       FImages.UnRegisterChanges(FImageChangeLink);
+    end;
     FImages := Value;
     if FImages <> nil then
+    begin
+      FImages.FreeNotification(self);
       FImages.RegisterChanges(FImageChangeLink);
+    end;
+    Invalidate;
   end;
 end;
 
@@ -1266,7 +1283,9 @@ end;
 procedure TJvCustomTimeLine.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var i: integer;
 begin
-  OldX := X;
+  inherited MouseDown(Button, Shift, X, Y);
+  if (ssDouble in Shift) then
+    Exit;
   if (Button = mbLeft) then
     FMouseDown := true;
   FSelectedItem := ItemAtPos(X, Y);
@@ -1291,7 +1310,10 @@ begin
     else
       Hint := FOldHint;
     if ItemMoving(FSelectedItem) then
-      FItemMoveLeft := X
+    begin
+      FItemMoveLeft := X;
+      FLineVisible := true;
+    end
     else
       FSelectedItem := nil;
   end;
@@ -1300,15 +1322,19 @@ begin
     SetFocus;
     Invalidate;
   end;
-  inherited MouseDown(Button, Shift, X, Y);
+  if FMouseDown and FLineVisible then
+  begin
+    Repaint; // don't ask me why: it just works (tm)!
+    DrawDragLine(X);
+  end;
+  OldX := X;
 end;
 
 procedure TJvCustomTimeLine.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if FLineVisible then
-    DrawDragLine;
+  if FMouseDown and FLineVisible then
+    DrawDragLine(OldX);
   FLineVisible := false;
-
   if not Dragging then
     FMouseDown := false;
   if (FSelectedItem <> nil) and (X <> FItemMoveLeft) then
@@ -1323,34 +1349,28 @@ begin
 end;
 
 procedure TJvCustomTimeLine.MouseMove(Shift: TShiftState; X, Y: Integer);
-// var aDate: TDateTime;
 begin
-  if FMouseDown then
-  begin
-    if FLineVisible then
-      DrawDragLine;
-    OldX := X;
-    DrawDragLine;
-    (*
-        if FSelectedItem <> nil then
-        begin
-          aDate := FSelectedItem.Date;
-          FSelectedItem.FDate := DateAtPos(X);
-          UpdateItem(FSelectedItem.Index);
-          FSelectedItem.FDate := aDate;
-        end;
-       *)
-  end;
+  if FMouseDown and FLineVisible then
+    MoveDragLine(OldX, X);
+  OldX := X;
   inherited MouseMove(Shift, X, Y);
 end;
 
-procedure TJvCustomTimeLine.DrawDragLine;
+procedure TJvCustomTimeLine.DrawDragLine(X: integer);
 begin
-  Exit;
-  FLineVisible := not FLineVisible;
-  Canvas.Brush.Color := clNavy xor clWhite; // $80FFFF;
-  if {Assigned(FSelectedItem) and }  FDragLine then
-    PatBlt(Canvas.Handle, OldX, 2, 3, FTopOffset - 2, PATINVERT)
+  if not DragLine then
+    Exit;
+  FCanvas.MoveTo(X, 0);
+  FCanvas.LineTo(X, ClientHeight);
+end;
+
+procedure TJvCustomTimeLine.MoveDragLine(OldX, NewX: integer);
+begin
+  if OldX <> NewX then
+  begin
+    DrawDragLine(NewX);
+    DrawDragLine(OldX);
+  end;
 end;
 
 procedure TJvCustomTimeLine.AutoLevels(Complete, ResetLevels: boolean);
@@ -1847,14 +1867,14 @@ begin
     end;
 
     Canvas.Pen.Color := aItem.TextColor;
-    if (Length(aItem.Caption) > 1) then
+    if (Length(aItem.Caption) > 0) then
     begin
       aRect.Bottom := Min(aRect.Top + Canvas.TextHeight(aItem.Caption), aRect.Bottom);
 
       Canvas.Rectangle(aRect);
       aRect.Left := aRect.Left + 2;
       SetBkMode(Canvas.Handle, TRANSPARENT);
-      DrawTextEx(Canvas.Handle, PChar(aItem.Caption), -1, aRect,
+      DrawTextEx(Canvas.Handle, PChar(aItem.Caption), Length(aItem.Caption), aRect,
         DT_LEFT or DT_NOPREFIX or DT_SINGLELINE or DT_END_ELLIPSIS, nil);
     end
     else
@@ -2286,12 +2306,19 @@ begin
 end;
 
 procedure TJvCustomTimeLine.DblClick;
+var tmp: boolean;
 begin
-  inherited;
-  if Assigned(FSelectedItem) then
-  begin
-    ItemDblClick(FSelectedItem);
-    FLineVisible := not FLineVisible;
+  tmp := DragLine;
+  try
+    DragLine := false;
+    inherited;
+    if Assigned(FSelectedItem) then
+    begin
+      FLineVisible := false;
+      ItemDblClick(FSelectedItem);
+    end;
+  finally
+    DragLine := tmp;
   end;
 end;
 
@@ -2301,8 +2328,9 @@ begin
   if Assigned(FSelectedItem) then
   begin
     ItemClick(FSelectedItem);
-    FLineVisible := not FLineVisible;
+    FLineVisible := false;
   end;
+  Invalidate;
 end;
 
 initialization
