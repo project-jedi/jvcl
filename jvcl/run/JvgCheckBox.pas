@@ -26,6 +26,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$I windowsonly.inc} // (ahuser) uses WndProc and Wnd hooks
 
 unit JvgCheckBox;
 
@@ -87,7 +88,6 @@ type
 
     procedure OnGradientChanged(Sender: TObject);
     procedure OnIlluminationChanged(Sender: TObject);
-    procedure WMSize(var Message: TMessage); message WM_SIZE;
     procedure WMLButtonUp(var Message: TMessage); message WM_LBUTTONUP;
     procedure WMLButtonDown(var Message: TMessage); message WM_LBUTTONDOWN;
     procedure SetAlignment(const Value: TLeftRight);
@@ -96,6 +96,7 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
     procedure TextChanged; override;
+    procedure Resize; override;
     procedure Paint; override;
     procedure HookFocusControlWndProc;
     procedure UnhookFocusControlWndProc;
@@ -321,9 +322,9 @@ begin
 end;
 //______________________________________________________________
 
-procedure TJvgCheckBox.WMSize(var Message: TMessage);
+procedure TJvgCheckBox.Resize;
 begin
-  inherited;
+  inherited Resize;
   //  Img.Width := Width; Img.Height := Height;
 end;
 //______________________________________________________________

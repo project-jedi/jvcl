@@ -103,10 +103,10 @@ type
     procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
-    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
-    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
   protected
+    procedure DoKillFocus(FocusedControl: TWinControl); override;
+    procedure DoSetFocus(FocusedControl: TWinControl); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
@@ -1139,16 +1139,16 @@ begin
   end;
 end;
 
-procedure TJvxCustomListBox.WMKillFocus(var Msg: TWMKillFocus);
+procedure TJvxCustomListBox.DoKillFocus(FocusedControl: TWinControl);
 begin
-  inherited;
+  inherited DoKillFocus(FocusedControl);
   if FGraySelection and MultiSelect and (SelCount > 1) then
     Invalidate;
 end;
 
-procedure TJvxCustomListBox.WMSetFocus(var Msg: TWMSetFocus);
+procedure TJvxCustomListBox.DoSetFocus(FocusedControl: TWinControl);
 begin
-  inherited;
+  inherited DoSetFocus(FocusedControl);
   if FGraySelection and MultiSelect and (SelCount > 1) then
     Invalidate;
 end;

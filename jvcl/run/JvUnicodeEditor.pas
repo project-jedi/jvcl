@@ -422,11 +422,9 @@ type
     FUseFixedPopup: boolean;
 
     { internal message processing }
-    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
-    procedure WMKillFocus(var Msg: TWMSetFocus); message WM_KILLFOCUS;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
+    //procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMEditCommand(var Msg: TMessage); message WM_EDITCOMMAND;
     procedure WMCopy(var Msg: TMessage); message WM_COPY;
@@ -495,8 +493,6 @@ type
     procedure Loaded; override;
     {$IFDEF VisualCLX}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-      const MousePos: TPoint): Boolean; override;
     {$ENDIF VisualCLX}
     procedure Paint; override;
     procedure ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var
@@ -514,16 +510,17 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; const MousePos: TPoint); dynamic;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
     procedure DblClick; override;
 
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure DoSetFocus(FocusedControl: TWinControl); override;
+    procedure DoKillFocus(FocusedControl: TWinControl); override;
 
     procedure DoPaste; dynamic;
     procedure DoCopy; dynamic;
     procedure DoCut; dynamic;
-    procedure DoEnter; override;
-    procedure DoExit; override;
     procedure CursorChanged; override;
     procedure FontChanged; override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
@@ -1810,16 +1807,19 @@ begin
     inherited;
 end;
 
-procedure TJvCustomWideEditor.WMSetFocus(var Msg: TWMSetFocus);
+procedure TJvCustomWideEditor.DoSetFocus(FocusedControl: TWinControl);
 begin
-  inherited;
-  DoEnter;
+  inherited DoSetFocus(FocusedControl);
+  CreateCaret(Handle, 0, 2, CellRect.Height - 2);
+  PaintCaret(True);
 end;
 
-procedure TJvCustomWideEditor.WMKillFocus(var Msg: TWMSetFocus);
+procedure TJvCustomWideEditor.DoKillFocus(FocusedControl: TWinControl);;
 begin
-  inherited;
-  DoExit;
+  inherited DoKillFocus(FocusedControl);
+  if FCompletion.FVisible then
+    FCompletion.CloseUp(False);
+  DestroyCaret;
 end;
 
 procedure TJvCustomWideEditor.DoGetDlgCode(var Code: TDlgCodes);
@@ -1837,6 +1837,7 @@ begin
   scbVert.DoScroll(Msg);
 end;
 
+{
 procedure TJvCustomWideEditor.WMMouseWheel(var Msg: TWMMouseWheel);
 var Shift: TShiftState;
 begin
@@ -1846,9 +1847,9 @@ begin
   if Msg.Keys and MK_LBUTTON <> 0 then Include(Shift, ssLeft);
   if Msg.Keys and MK_RBUTTON <> 0 then Include(Shift, ssRight);
   if Msg.Keys and MK_MBUTTON <> 0 then Include(Shift, ssMiddle);
-  MouseWheel(Shift, Msg.WheelDelta, Point(Msg.XPos, Msg.YPos));
+  DoMouseWheel(Shift, Msg.WheelDelta, Point(Msg.XPos, Msg.YPos));
 end;
-
+}
 
 procedure TJvCustomWideEditor.DoCopy;
 begin
@@ -1865,21 +1866,6 @@ procedure TJvCustomWideEditor.DoPaste;
 begin
   if not FReadOnly then
     PostCommand(ecClipboardPaste);
-end;
-
-procedure TJvCustomWideEditor.DoEnter;
-begin
-  inherited DoEnter;
-  CreateCaret(Handle, 0, 2, CellRect.Height - 2);
-  PaintCaret(True);
-end;
-
-procedure TJvCustomWideEditor.DoExit;
-begin
-  inherited DoExit;
-  if FCompletion.FVisible then
-    FCompletion.CloseUp(False);
-  DestroyCaret;
 end;
 
 procedure TJvCustomWideEditor.CursorChanged;
@@ -2232,11 +2218,12 @@ begin
     end;
 end;
 
-procedure TJvCustomWideEditor.MouseWheel(Shift: TShiftState; WheelDelta: Integer;
-  const MousePos: TPoint);
+function TJvCustomWideEditor.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 var
   WheelDirection: Integer;
 begin
+  Result := True;
   if ssShift in Shift then
   begin
    // Shift+Wheel: move caret up and down
@@ -2262,6 +2249,7 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
 function TJvCustomWideEditor.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
 {  case QEvent_type(Event) of
@@ -2270,13 +2258,7 @@ begin
   Result := inherited EventFilter(Sender, Event);
 end;
 
-function TJvCustomWideEditor.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-  const MousePos: TPoint): Boolean;
-begin
-  MouseWheel(Shift, WheelDelta, MousePos);
-  Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
-end;
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure TJvCustomWideEditor.ScrollBarScroll(Sender: TObject; ScrollCode:
   TScrollCode; var ScrollPos: Integer);

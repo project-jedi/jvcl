@@ -104,8 +104,6 @@ type
     procedure WMCommand(var Msg: TWMCommand); message WM_COMMAND;
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
-    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
-    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMRButtonUp(var Msg: TWMMouse); message WM_RBUTTONUP;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
@@ -115,6 +113,8 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+    procedure DoKillFocus(FocusedControl: TWinControl); override;
+    procedure DoSetFocus(FocusedControl: TWinControl); override;
 
     function CanEditAcceptKey(Key: Char): Boolean; override;
     function CanEditShow: Boolean; override;
@@ -332,7 +332,6 @@ begin
   FButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
   //  FEditStyle := esSimple;
   FEditStyle := ieSimple;
-
 end;
 
 procedure TJvInplaceEdit.CreateParams(var Params: TCreateParams);
@@ -1330,16 +1329,16 @@ begin
   inherited;
 end;
 
-procedure TJvDrawGrid.WMKillFocus(var Msg: TWMKillFocus);
+procedure TJvDrawGrid.DoKillFocus(FocusedControl: TWinControl);
 begin
-  inherited;
+  inherited DoKillFocus(FocusedControl);
   if Assigned(FOnChangeFocus) then
     FOnChangeFocus(Self);
 end;
 
-procedure TJvDrawGrid.WMSetFocus(var Msg: TWMSetFocus);
+procedure TJvDrawGrid.DoSetFocus(FocusedControl: TWinControl);
 begin
-  inherited;
+  inherited DoSetFocus(FocusedControl);
   if Assigned(FOnChangeFocus) then
     FOnChangeFocus(Self);
 end;

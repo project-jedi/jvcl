@@ -329,18 +329,14 @@ type
     procedure WMHScroll(var Msg: TWMScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
-    {$IFDEF VCL}
-    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
-    procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
-    {$ENDIF VCL}
+    procedure DoSetFocus(FocusedControl: TWinControl); override;
     {$IFDEF VisualCLX}
-    procedure DoEnter; override;
     procedure Scrolled(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer); dynamic;
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-      const MousePos: TPoint): Boolean; override;
     procedure AdjustClientRect(var Rect: TRect); override;
     {$ENDIF VisualCLX}
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
     procedure ShowScrollBars(Bar: Integer; Visible: Boolean); virtual;
     function YToIdx(const Y: Integer): Integer; virtual;
     property BandSizing: Boolean read FBandSizing write FBandSizing;
@@ -3306,7 +3302,7 @@ begin
     RecreateWnd;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    RecreateWidget;
+    //RecreateWidget; 
     {$ENDIF VisualCLX}
   end;
 end;
@@ -3423,13 +3419,9 @@ begin
     Include(Code, dcWantTab);
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomInspector.WMSetFocus(var Msg: TWMSetFocus);
-{$ELSE}
-procedure TJvCustomInspector.DoEnter;
-{$ENDIF VCL}
+procedure TJvCustomInspector.DoSetFocus(FocusedControl: TWinControl);
 begin
-  inherited;
+  inherited DoSetFocus(FocusedControl);
   if Selected <> nil then
     Selected.SetFocus;
 end;
@@ -11286,21 +11278,9 @@ begin
   EndUpdate;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomInspector.WMMouseWheel(var Msg: TWMMouseWheel);
-var
-  Count: Integer;
-  Index: Integer;
-begin
-  Count := -Msg.WheelDelta div (120 div 5); // 5 items per scroll
-  Index := TopIndex + Count;
-  if Index > -1 then
-    TopIndex := Index;
-end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
 function TJvCustomInspector.DoMouseWheel(Shift: TShiftState;
-  WheelDelta: Integer; const MousePos: TPoint): Boolean;
+  WheelDelta: Integer;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 var
   Count: Integer;
   Index: Integer;
@@ -11311,7 +11291,6 @@ begin
     TopIndex := Index;
   Result := True;
 end;
-{$ENDIF VisualCLX}
 
 procedure TJvCustomInspector.ShowScrollBars(Bar: Integer; Visible: Boolean);
 begin

@@ -26,6 +26,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$I windowsonly.inc} // (ahuser) uses WndProc and Wnd hooks
 
 unit JvgLabel;
 
@@ -39,8 +40,8 @@ uses
 const
   FTextAlign = DT_LEFT or DT_SINGLELINE;
   RadianEscapments: array[TgllabelDir] of Integer = (0, -1800, -900, 900);
-type
 
+type
   TJvgCustomLabel = class(TJvGraphicControl)
   private
     FAutoSize: Boolean;

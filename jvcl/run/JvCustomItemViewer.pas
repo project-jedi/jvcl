@@ -203,7 +203,6 @@ type
     procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
-    procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
     procedure WMNCHitTest(var Message: TMessage); message WM_NCHITTEST;
     procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
     procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
@@ -228,6 +227,7 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure Resize; override;
+    procedure DoSetFocus(APreviousControl: TWinControl); override;
 
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
     procedure DoEndDrag(Sender: TObject; X, Y: Integer); override;
@@ -1682,10 +1682,10 @@ begin
   inherited;
 end;
 
-procedure TJvCustomItemViewer.WMSetFocus(var Message: TWMSetFocus);
+procedure TJvCustomItemViewer.DoSetFocus(APreviousControl: TWinControl);
 begin
-  inherited;
-  if Message.FocusedWnd = Handle then
+  inherited DoSetFocus(APreviousControl);
+  if APreviousControl = Self then
   begin
     if SelectedIndex >= 0 then
       Invalidate;

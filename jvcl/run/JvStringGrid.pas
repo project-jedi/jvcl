@@ -192,12 +192,13 @@ const
 //=== TExInplaceEdit =========================================================
 
 type
-  TExInplaceEdit = class(TInplaceEdit)
+  TExInplaceEdit = class(TJvExInplaceEdit)
   private
     FLastCol: integer;
     FLastRow: integer;
-    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
-    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
+  protected
+    procedure DoKillFocus(FocusedControl: TWinControl); override;
+    procedure DoSetFocus(FocusedControl: TWinControl); override;
   public
     procedure CreateParams(var Params: TCreateParams); override;
   end;
@@ -210,17 +211,17 @@ begin
   Params.Style := Params.Style or Flags[TJvStringGrid(Grid).Alignment];
 end;
 
-procedure TExInplaceEdit.WMKillFocus(var Msg: TMessage);
+procedure TExInplaceEdit.DoKillFocus(FocusedControl: TWinControl);
 begin
   TJvStringGrid(Grid).ExitCell(Text, FLastCol, FLastRow);
-  inherited;
+  inherited DoKillFocus(FocusedControl);
 end;
 
-procedure TExInplaceEdit.WMSetFocus(var Msg: TMessage);
+procedure TExInplaceEdit.DoSetFocus(FocusedControl: TWinControl);
 begin
   FLastCol := TJvStringGrid(Grid).Col;
   FLastRow := TJvStringGrid(Grid).Row;
-  inherited;
+  inherited DoSetFocus(FocusedControl);
 end;
 
 //=== TJvStringGrid ==========================================================
