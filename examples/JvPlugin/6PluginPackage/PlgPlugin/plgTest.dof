@@ -1,0 +1,6 @@
+[Directories]
+OutputDir=..\..\..\..\Bin
+UnitOutputDir=..\..\..\..\Dcu
+PackageDLLOutputDir=..\PlgMainApp
+
+

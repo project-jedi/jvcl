@@ -1,14 +1,18 @@
 Changelog for JVCL 3.0
 ======================
 2003-08-23:
-- Merged TJvTransLED and TJvBLinkingLED into TJv(Custom)LED
-- Moved JvLED to JvHMI package
+- Moved examples from jvcl/examples to dev/JVCL3/examples. Added Jv prefix to folders // peter3
+- Moved jvcl/devtools to dev/JVCL3/devtools // peter3
+- Moved JVCLConvert *.dat files to dev/JVCL3/converter // peter3
+- Moved jvcl/Convert to dev/JVCL3/devtools/JVCLConvert // peter3
+- Merged TJvTransLED and TJvBLinkingLED into TJv(Custom)LED // marcelb
+- Moved JvLED to JvHMI package // marcelb
 2003-08-22:
-- Added new HMI package
-- Added rewritten LEDDisplay donation by Jay Dubal (JvHMI package)
+- Added new HMI package // marcelb
+- Added rewritten LEDDisplay donation by Jay Dubal (JvHMI package) // marcelb
 2003-08-17:
-- Added Images, ImageList and Spacing to TJvCustomLabel
-- Moved code from TJvLabel to TJvCustomLabel
+- Added Images, ImageList and Spacing to TJvCustomLabel // peter3
+- Moved code from TJvLabel to TJvCustomLabel // peter3
 
 2003-08-17:
 - Renamed/Moved duplicate identifiers:
@@ -33,70 +37,72 @@ Changelog for JVCL 3.0
   // peter3
 
 2003-08-01:
-- Added converted UTF components donated by UIB (now called JvTimeFramework)  
+- Added converted UTF components donated by UIB (now called JvTimeFramework) // peter3 
 
 2003-07-29:
 - Renamed properties and events in TJvImageSquare:
     BackColor -> Color
     OnEnter -> OnMouseEnter
     OnExit -> OnMouseLeave
-
+  // peter3
 2003-07-28:
 - Removed JVCL components from (mainly) design-time forms to minimize inter-package dependencies. When writing 
   property editors for components in the future, please try to keep the number of JVCL components used as low
   as is absolutely possible (TODO: put this in the docs as well).
+  // peter3
 
 2003-07-25:
 - TJvThreadTimer
-  * rewritten by Ivo Bauer to enable resetting the thread and handle exceptions better
+  * rewritten by Ivo Bauer to enable resetting the thread and handle exceptions better // ivobauer
   * renamed properties to be name compatible with TTimer: 
       Delay -> Interval 
       Active -> Enabled 
+  //peter3
 
 2003-07-12:
-- Added TJvBlinkingLED (derived from TJvTransLED) from Tomas Hensle
+- Added TJvBlinkingLED (derived from TJvTransLED) from Tomas Hensle // peter3
 
 2003-07-11:
-- Added updated JvPlugin units from Stefaan Lesage
-- Added JvConvert conversion file for KWizard
-- Added new palette images for RouteMaps
-- Added KWizard and associated RouteMap components (renamed to JVCL standard) donation from William Wue, Steven Forbes and Max Evans
-- Renamed TJvImageDlg to TJvImageDialog
-- Changed UIBJVCL to USEJVCL to accomodate KWizard. When defined, JvUIB and JvWizard are installed in "JVCL" mode, i.e using TJvComponent or similar as the base class for the main component thus enabling the JVCL About box 
+- Added updated JvPlugin units from Stefaan Lesage // peter3
+- Added JvConvert conversion file for KWizard // peter3
+- Added new palette images for RouteMaps // peter3
+- Added KWizard and associated RouteMap components (renamed to JVCL standard) donation from William Wue, Steven Forbes and Max Evans // peter3
+- Renamed TJvImageDlg to TJvImageDialog // peter3
+- Changed UIBJVCL to USEJVCL to accomodate KWizard. When defined, JvUIB and JvWizard are installed in "JVCL" mode, i.e using TJvComponent or similar as the base class for the main component thus enabling the JVCL About box // peter3 
 
 2003-06-29:
-- Added TJvAVICapture component from Olivier Sannier
+- Added TJvAVICapture component from Olivier Sannier // peter3
 
 2003-06-26:
-- Removed JvAutoSave and JvRegAutoSave. From now on, use JvFormStorage instead.
+- Removed JvAutoSave and JvRegAutoSave. From now on, use JvFormStorage instead. // peter3
 
 2003-06-23:
-- Readded old TJvGradientCaption as TJvGradientHeaderPanel. Unit renamed from JvGradientCaption.pas to JvGradientHeaderPanel.pas
-- Added JvDBGroupPanel.pas from Steve Paris
-- Removed unnecessary IFDEF's (WIN32, COMPILER3_UP, COMPILER4_UP etc)
-- Removed the JvJCLUtils.ResStr function since it was now a noop (returns input)
+- Readded old TJvGradientCaption as TJvGradientHeaderPanel. Unit renamed from JvGradientCaption.pas to JvGradientHeaderPanel.pas // peter3
+- Added JvDBGroupPanel.pas from Steve Paris // peter3
+- Removed unnecessary IFDEF's (WIN32, COMPILER3_UP, COMPILER4_UP etc) // peter3
+- Removed the JvJCLUtils.ResStr function since it was now a noop (returns input) // peter3
 
 2003-06-22:
-- Renamed TJvxGradienCaption to TJvGradientCaption. Renamed JvGrdcpt.pas to JvGradientCaption.pas
-- Added missing units. 
-- Copied needed images from old jvcl to new jvcl3 images folder
-- Moved obsolete or plain useless stuff to \archive
-- Moved unused, support units to \run\unused. These files could possibly go to JCL. We don't need them
+- Renamed TJvxGradienCaption to TJvGradientCaption. Renamed JvGrdcpt.pas to JvGradientCaption.pas // peter3
+- Added missing units.  // peter3
+- Copied needed images from old jvcl to new jvcl3 images folder // peter3
+- Moved obsolete or plain useless stuff to \archive // peter3
+- Moved unused, support units to \run\unused. These files could possibly go to JCL. We don't need them // peter3
 
 2003-06-21:
-- Renamed all BDE units to JvBDEXXX
-- Renamed all DB units to JvDBXXX
-- Removed DBTables and BDE from uses in JvCsvData 
-- Removed warnings in JvCsvData
+- Renamed all BDE units to JvBDEXXX // peter3
+- Renamed all DB units to JvDBXXX // peter3
+- Removed DBTables and BDE from uses in JvCsvData  // peter3
+- Removed warnings in JvCsvData // peter3
 
 2003-06-20:
-- Merged all run-time util style units (JvAppUtils.pas,JvDateUtil.pas,JvFileUtil.pas,JvFunctions.pas,JvIconClipboardUtils.pas,JvRle.pas,JvStrUtil.pas,JvStrUtils.pas,JvUtils.pas,JvVCLUtils.pas) into JvJVCLUtils and JvJCLUtils (there's one for the interpreter as well, but that is untouched). Basically, anything that goes into JvJCLUtils is stuff that is "JCL compatible", i.e doesn't require Forms.pas or anything from JVCL. Everything else goes into JvJVCLUtils. The JvJCLUtils unit should then be easier to integrate into JCL and eventually be removed.
-- Merged all const type units (JvxDConst.pas, JvConst.pas, JvCtlConst.pas, JvDBConst.pas, JvxRConst.pas) into common\JvConsts and common\JvDBConsts (there's one for the interpreter as well, but that one is untouched).
-- Merged JvDBUtil into JvBDEUtils
-- Moved changelog.txt from \jvcl3\source to \jvcl3 (source will disappear eventually)
+- Merged all run-time util style units (JvAppUtils.pas,JvDateUtil.pas,JvFileUtil.pas,JvFunctions.pas,JvIconClipboardUtils.pas,JvRle.pas,JvStrUtil.pas,JvStrUtils.pas,JvUtils.pas,JvVCLUtils.pas) into JvJVCLUtils and JvJCLUtils (there's one for the interpreter as well, but that is untouched). Basically, anything that goes into JvJCLUtils is stuff that is "JCL compatible", i.e doesn't require Forms.pas or anything from JVCL. Everything else goes into JvJVCLUtils. The JvJCLUtils unit should then be easier to integrate into JCL and eventually be removed. // peter3
+- Merged all const type units (JvxDConst.pas, JvConst.pas, JvCtlConst.pas, JvDBConst.pas, JvxRConst.pas) into common\JvConsts and common\JvDBConsts (there's one for the interpreter as well, but that one is untouched). // peter3
+- Merged JvDBUtil into JvBDEUtils // peter3
+- Moved changelog.txt from \jvcl3\source to \jvcl3 (source will disappear eventually) // peter3
 
 2003-06-19:
-- Updated units with latest changes from official jvcl
+- Updated units with latest changes from official jvcl // peter3
 
 2003-06-18:
 - Renamed units:
@@ -193,7 +199,7 @@ Changelog for JVCL 3.0
   JvDateTimeDlg -> JvDateTimeForm
   JvCsvDataDsgn > JvCsvDataEditor
   JvCsvDataDefStrDsgn -> JvCsvDataForm
-  
+  // peter3  
 
     
 2003-06-17:
@@ -202,9 +208,9 @@ Changelog for JVCL 3.0
   * Sources split into a \design folder and a \run folder. Some items are probably incorrectly located at the moment, but this will change as I build the packages
   * All resources (.res and .dcr) are now located in \resources folder
   * All INC and common files are now located in \common
-
+  // peter3
 2003-06-15:
-- Added a first set of d7 packages
+- Added a first set of d7 packages // peter3
 
 2003-06-12:
-- Created new dev subfolder on SF for the files (jvcl/dev/JVCL3)
+- Created new dev subfolder on SF for the files (jvcl/dev/JVCL3) // peter3

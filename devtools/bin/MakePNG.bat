@@ -1,0 +1,1 @@
+MakePng *.BMP PNG\
