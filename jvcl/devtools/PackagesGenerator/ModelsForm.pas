@@ -30,6 +30,14 @@ type
     stgAliases: TJvStringGrid;
     btnAdd: TButton;
     btnDelete: TButton;
+    lblClx: TLabel;
+    edtClxFormat: TEdit;
+    edtClxPrefix: TEdit;
+    lblNoLibSuffix: TLabel;
+    edtNLSFormat: TEdit;
+    edtNLSPrefix: TEdit;
+    stgClxRepl: TJvStringGrid;
+    Label1: TLabel;
     procedure stgTargetsGetCellAlignment(Sender: TJvStringGrid; AColumn,
       ARow: Integer; State: TGridDrawState; var CellAlignment: TAlignment);
     procedure stgTargetsExitCell(Sender: TJvStringGrid; AColumn,
@@ -95,13 +103,15 @@ begin
     Cells[3, 0] := 'pdir';
     Cells[4, 0] := 'env';
     Cells[5, 0] := 'ver';
+    Cells[6, 0] := 'IsClx';
 
-    ColWidths[0] := 40;
-    ColWidths[1] := 40;
+    ColWidths[0] := 35;
+    ColWidths[1] := 30;
     ColWidths[2] := 40;
-    ColWidths[3] := 40;
-    ColWidths[4] := 30;
-    ColWidths[5] := 30;
+    ColWidths[3] := 35;
+    ColWidths[4] := 25;
+    ColWidths[5] := 25;
+    ColWidths[6] := 30;
   end;
 
   with stgAliases do
@@ -109,8 +119,17 @@ begin
     Cells[0, 0] := 'name';
     Cells[1, 0] := 'value';
 
-    ColWidths[0] := 60;
-    ColWidths[1] := 130;
+    ColWidths[0] := 70;
+    ColWidths[1] := 135;
+  end;
+
+  with stgClxRepl do
+  begin
+    Cells[0, 0] := 'original';
+    Cells[1, 0] := 'replacement';
+
+    ColWidths[0] := 95;
+    ColWidths[1] := 95;
   end;
 
 end;
@@ -160,6 +179,7 @@ var
   model : TJvSimpleXmlElem;
   target : TJvSimpleXmlElem;
   alias : TJvSimpleXmlElem;
+  replacement : TJvSimpleXmlElem;
   row : TStrings;
   i : integer;
 begin
@@ -176,6 +196,20 @@ begin
   edtPrefix.Text := model.Properties.ItemNamed['prefix'].value;
   jdePackages.Text := model.Properties.ItemNamed['packages'].value;
   jfeIncFile.Text := model.Properties.ItemNamed['incfile'].value;
+
+  edtClxFormat.Text := '';
+  edtClxPrefix.Text := '';
+  if Assigned(model.Properties.ItemNamed['clxformat']) then
+    edtClxFormat.Text := model.Properties.ItemNamed['clxformat'].value;
+  if Assigned(model.Properties.ItemNamed['clxprefix']) then
+    edtClxPrefix.Text := model.Properties.ItemNamed['clxprefix'].value;
+
+  edtNLSFormat.Text := '';
+  edtNLSPrefix.Text := '';
+  if Assigned(model.Properties.ItemNamed['nolibsuffixformat']) then
+    edtNLSFormat.Text := model.Properties.ItemNamed['nolibsuffixformat'].value;
+  if Assigned(model.Properties.ItemNamed['nolibsuffixprefix']) then
+    edtNLSPrefix.Text := model.Properties.ItemNamed['nolibsuffixprefix'].value;
 
   // targets
   stgTargets.RowCount := 2;
@@ -195,6 +229,8 @@ begin
       row[4] := target.properties.ItemNamed['env'].value;
     if Assigned(target.properties.ItemNamed['ver']) then
       row[5] := target.properties.ItemNamed['ver'].value;
+    if Assigned(target.properties.ItemNamed['IsClx']) then
+      row[6] := target.properties.ItemNamed['IsClx'].value;
 
     stgTargets.InsertRow(stgTargets.RowCount);
   end;
@@ -211,6 +247,22 @@ begin
 
     stgAliases.InsertRow(stgAliases.RowCount);
   end;
+
+  // Clx Filename replacements, if any
+  stgClxRepl.RowCount := 2;
+  stgClxRepl.Rows[1].Text := '';
+  if Assigned(model.Items.ItemNamed['ClxReplacements']) then
+  begin
+    for i := 0 to model.Items.ItemNamed['ClxReplacements'].Items.count - 1 do
+    begin
+      replacement := model.Items.ItemNamed['ClxReplacements'].Items[i];
+      row := stgClxRepl.Rows[stgClxRepl.RowCount-1];
+      row[0] := replacement.properties.ItemNamed['original'].value;
+      row[1] := replacement.properties.ItemNamed['replacement'].value;
+
+      stgClxRepl.InsertRow(stgClxRepl.RowCount);
+    end;
+  end;
 end;
 
 procedure TfrmModels.SaveModel;
@@ -218,6 +270,7 @@ var
   model : TJvSimpleXmlElem;
   target : TJvSimpleXmlElem;
   alias : TJvSimpleXmlElem;
+  replacement : TJvSimpleXmlElem;
   row : TStrings;
   i : integer;
 begin
@@ -236,6 +289,16 @@ begin
     model.Properties.ItemNamed['prefix'].value := edtPrefix.Text;
     model.Properties.ItemNamed['packages'].value := jdePackages.Text;
     model.Properties.ItemNamed['incfile'].value := jfeIncFile.Text;
+
+    if edtClxFormat.Text <> '' then
+      model.Properties.ItemNamed['clxformat'].value := edtClxFormat.Text;
+    if edtClxPrefix.Text <> '' then
+      model.Properties.ItemNamed['clxprefix'].value := edtClxPrefix.Text;
+
+    if edtNLSFormat.Text <> '' then
+      model.Properties.ItemNamed['nolibsuffixformat'].value := edtNLSFormat.Text;
+    if edtNLSPrefix.Text <> '' then
+      model.Properties.ItemNamed['nolibsuffixprefix'].value := edtNLSPrefix.Text;
 
     // targets
     model.Items.ItemNamed['targets'].Items.Clear;
@@ -256,6 +319,8 @@ begin
         target.properties.Add('env', row[4]);
       if row[5] <> '' then
         target.properties.Add('ver', row[5]);
+      if row[6] <> '' then
+        target.properties.Add('IsClx', row[6]);
     end;
 
     // aliases
@@ -268,6 +333,21 @@ begin
 
       alias.properties.Add('name', row[0]);
       alias.properties.Add('value', row[1]);
+    end;
+
+    // Clx filename replacements, if any
+    if stgClxRepl.Cells[0, 1] <> '' then
+    begin
+      model.Items.ItemNamed['ClxReplacements'].Items.Clear;
+      for i := 1 to stgClxRepl.RowCount-2 do
+      begin
+        replacement := model.Items.ItemNamed['ClxReplacements'].Items.Add('replacement');
+
+        row := stgClxRepl.Rows[i];
+
+        replacement.properties.Add('original', row[0]);
+        replacement.properties.Add('replacement', row[1]);
+      end;
     end;
   end;
 end;
