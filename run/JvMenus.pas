@@ -624,6 +624,7 @@ type
     constructor Create(AOwner: TComponent); overload; override;
     constructor Create(AOwner: TComponent; Lowered: boolean); reintroduce; overload;
   published
+    property Lowered: Boolean read FLowered write FLowered;
     property LeftMargin;
     property OnDrawLeftMargin;
   end;
