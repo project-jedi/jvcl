@@ -37,22 +37,19 @@ interface
 {$ENDIF COMPILER6_UP}
 
 uses
-  Classes, SysUtils, Contnrs,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  {$IFDEF VCL}
-  Graphics, ImgList, Controls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QWindows, QGraphics, QImgList, QControls,
+  Types, QWindows,
   QStdCtrls, // type TOwnerDrawState
   {$ENDIF VisualCLX}
+  Classes, Contnrs, Graphics, Controls, ImgList,
   JclBase,
-  JvConsts, JvComponent, JvDataProviderIntf;
+  JvComponent, JvDataProviderIntf;
 
 type
   // Forwards
@@ -1201,18 +1198,12 @@ uses
   {$IFDEF MSWINDOWS}
   ActiveX,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Consts, 
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
-  TypInfo,
+  SysUtils, Consts, TypInfo,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
   JclStrings,
-  JvTypes, JvResources;
+  JvTypes, JvConsts, JvResources;
 
 const
   vifHasChildren = Integer($80000000);

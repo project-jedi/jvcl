@@ -61,14 +61,10 @@ Known Issues:
 unit JvDatePickerEdit;
 
 interface
-                                                                       
+
 uses
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF COMPILER6_UP}
-  Windows, Classes, Controls, Graphics, Messages, ComCtrls, Buttons,
-  JvTypes, JvCalendar, JvDropDownForm, JvCheckedMaskEdit, JvButton,
-  JvToolEdit, ImgList;
+  Windows, Messages, Classes, Controls, ImgList,
+  JvCalendar, JvDropDownForm, JvCheckedMaskEdit, JvToolEdit;
 
 type
   {Types used to handle and convert between date format strings and EditMasks:}
@@ -311,12 +307,15 @@ type
 implementation
 
 uses
-  Menus, SysUtils,
-  JclStrings, JclGraphUtils,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  SysUtils, Menus,
+  JclStrings,
   {$IFDEF COMPILER5}
   JvJCLUtils, // StrToXxxDef
   {$ENDIF COMPILER5}
-  JvResources;
+  JvTypes, JvResources;
 
 const
   DateMaskSuffix = '!;1;_';

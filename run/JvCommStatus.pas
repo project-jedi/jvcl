@@ -31,8 +31,8 @@ unit JvCommStatus;
 interface
 
 uses
-  Windows, SysUtils, Classes,
-  JvTypes, JvComponent;
+  Windows, Classes,
+  JvComponent;
 
 type
   TJvCommPort = 0..8;
@@ -75,6 +75,9 @@ type
   end;
 
 implementation
+
+uses
+  SysUtils;
 
 //=== { TJvCommStatus } ======================================================
 

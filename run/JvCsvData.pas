@@ -155,11 +155,7 @@ uses
   {$IFDEF VisualCLX}
   QWindows,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF COMPILER6_UP}
-  DB;
+  Classes, DB;
 
 const
   MaxCalcDataOffset = 256; // 128 bytes per record for Calculated Field Data.
@@ -707,10 +703,13 @@ function JvCsvWildcardMatch(Data, Pattern: string): Boolean;
 implementation
 
 uses
-  Forms, Controls,
-  {$IFNDEF COMPILER6_UP}
-  JvJVCLUtils,
+  {$IFDEF COMPILER6_UP}
+  Variants,
   {$ENDIF COMPILER6_UP}
+  SysUtils, Controls, Forms, 
+  {$IFDEF COMPILER5}
+  JvJVCLUtils,
+  {$ENDIF COMPILER5}
   JvJCLUtils, JvCsvParse, JvConsts, JvResources;
 
 const

@@ -38,8 +38,7 @@ uses
   {$IFNDEF COMPILER6_UP}
   Forms,
   {$ENDIF !COMPILER6_UP}
-  ShellAPI, SyncObjs, Contnrs,
-  JclStrings,
+  ShellAPI, SyncObjs,
   JvComponent, JvTypes;
 
 const
@@ -229,7 +228,7 @@ implementation
 
 uses
   Math,
-  JclSysUtils,
+  JclStrings,
   JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
 
 const
@@ -1284,8 +1283,8 @@ begin
   for F := Low(TJvCPSFlag) to High(TJvCPSFlag) do
     if F in FCreationFlags then
       Inc(Flags, CreationFlagsValues[F]);
-  AppName := PCharOrNil(Trim(FApplicationName));
-  CurrDir := PCharOrNil(Trim(FCurrentDirectory));
+  AppName := Pointer(Trim(FApplicationName));
+  CurrDir := Pointer(Trim(FCurrentDirectory));
   if Environment.Count = 0 then
     EnvironmentData := nil
   else

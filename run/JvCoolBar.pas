@@ -24,16 +24,14 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc} // (ahuser) VisualCLX has no CoolBar
+{$I windowsonly.inc}
 
 unit JvCoolBar;
 
 interface
 
-{$IFDEF VCL}
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  Windows, Messages, Classes, Controls,
   JvExComCtrls;
 
 type
@@ -54,11 +52,5 @@ begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
-
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-implementation
-{$ENDIF VisualCLX}
 
 end.

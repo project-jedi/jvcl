@@ -35,12 +35,12 @@ unit JvCustomItemViewer;
 interface
 
 uses
-  Windows, SysUtils, Forms, Messages, Classes, Controls,
-  Graphics, StdCtrls, ComCtrls, ImgList, ExtCtrls,
+  Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ComCtrls,
+  ExtCtrls,
   {$IFNDEF COMPILER6_UP}
   JvConsts,  // for clSkyBlue
   {$ENDIF COMPILER6_UP}
-  JvExControls, JvExForms, JvFinalize;
+  JvExControls, JvExForms;
 
 const
   CM_UNSELECTITEMS = WM_USER + 1;
@@ -340,8 +340,8 @@ function CenterRect(InnerRect, OuterRect: TRect): TRect;
 implementation
 
 uses
-  Math,
-  JvJCLUtils, JvJVCLUtils, JvThemes;
+  SysUtils, Math,
+  JvJCLUtils, JvJVCLUtils, JvThemes, JvFinalize;
 
 const
   sUnitName = 'JvCustomItemViewer';

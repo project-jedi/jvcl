@@ -30,15 +30,13 @@ unit JvCSVBaseControls;
 interface
 
 uses
-  SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
-  Buttons,
+  Windows,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QButtons,
   Types,
   {$ENDIF VisualCLX}
+  Classes, Controls, StdCtrls, Buttons,
   JvComponent;
 
 type
@@ -164,6 +162,7 @@ type
 implementation
 
 uses
+  SysUtils, Forms, Dialogs,
   JvThemes, JvResources;
 
 {$IFDEF MSWINDOWS}

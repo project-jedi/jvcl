@@ -34,8 +34,8 @@ unit JvCursor;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics;
-  
+  Windows, Classes, Graphics;
+
 type
   TJvCursorImage = class(TGraphic)
   private
@@ -62,7 +62,7 @@ type
 implementation
 
 uses
-  JvResources;
+  SysUtils, JvResources;
 
 procedure DestroyAndNilCursor(var Handle: HICON);
 begin

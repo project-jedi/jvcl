@@ -31,7 +31,7 @@ unit JvCpuUsage;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Registry,
+  Windows, Classes, Registry,
   JvComponent;
 
 // (rom) the whole component seems to be badly designed
@@ -43,7 +43,6 @@ type
     FUsage: string;
     FRegistry: TRegistry;
     function GetUsage: string;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -52,6 +51,9 @@ type
   end;
 
 implementation
+
+uses
+  SysUtils;
 
 const
   RC_CpuUsageKey = 'KERNEL\CPUUsage';

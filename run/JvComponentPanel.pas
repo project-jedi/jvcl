@@ -35,14 +35,14 @@ unit JvComponentPanel;
 interface
 
 uses
-  SysUtils, Classes,
   {$IFDEF VCL}
-  Messages, Graphics, Controls, ExtCtrls, Buttons,
+  Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QTypes, QGraphics, QControls, QExtCtrls, QButtons,
+  Types, QTypes,
   {$ENDIF VisualCLX}
-  JvButtons, JvComponent, JvTypes;
+  Classes, Buttons,
+  JvButtons, JvComponent;
 
 type
   TButtonClick = procedure(Sender: TObject; Button: Integer) of object;
@@ -55,8 +55,6 @@ type
     FOnClick: TButtonClick;
     FOnDblClick: TButtonClick;
     FButtonPointer: TSpeedButton;
-//    FButtonLeft: TSpeedButton;
-//    FButtonRight: TSpeedButton;
     FButtonLeft: TJvNoFrameButton;
     FButtonRight: TJvNoFrameButton;
     FFirstVisible: Integer;
@@ -118,6 +116,9 @@ type
 
 implementation
 
+uses
+  Controls;
+
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvComponentPanel.res}
 {$ENDIF MSWINDOWS}
@@ -133,33 +134,27 @@ begin
   FFirstVisible := 0;
   FButtonWidth := 28;
   FButtonHeight := 28;
-//  FButtonLeft    := TSpeedButton.Create(Self);
-//  FButtonRight   := TSpeedButton.Create(Self);
   FButtonLeft := TJvNoFrameButton.Create(Self);
   FButtonRight := TJvNoFrameButton.Create(Self);
   FButtonPointer := TSpeedButton.Create(Self);
   with FButtonLeft do
   begin
-    // Flat := True;
     Parent := Self;
     Tag := 0;
     Width := 12;
     Top := 0;
     Glyph.LoadFromResourceName(HInstance, 'RACPLEFT');
     NumGlyphs := 2;
-    // Layout := blGlyphRight;
     OnClick := MoveClick;
   end;
   with FButtonRight do
   begin
-  //  Flat   := True;
     Parent := Self;
     Tag := 1;
     Width := 12;
     Top := 0;
     Glyph.LoadFromResourceName(HInstance, 'RACPRIGHT');
     NumGlyphs := 2;
-   // Layout := blGlyphLeft;
     OnClick := MoveClick;
   end;
   with FButtonPointer do

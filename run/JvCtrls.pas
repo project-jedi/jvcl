@@ -33,14 +33,14 @@ unit JvCtrls;
 interface
 
 uses
-  SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ImgList, ActnList,
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QStdCtrls, QImgList, QActnList, Types, QWindows,
+  Types, QWindows,
   {$ENDIF VisualCLX}
-  JvButton, JvFinalize;
+  Classes, Graphics, Controls, StdCtrls, ImgList,
+  JvButton;
 
 {$IFDEF VisualCLX}
 const
@@ -210,8 +210,8 @@ type
 implementation
 
 uses
-  Consts,
-  JvThemes, JvJCLUtils;
+  SysUtils, Forms, ActnList, Consts,
+  JvJCLUtils, JvThemes, JvFinalize;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCtrls.res}
