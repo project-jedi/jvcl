@@ -126,7 +126,7 @@ const
   SPI_SETFOCUSBORDERHEIGHT = $2011;
 {$EXTERNALSYM SPI_SETFOCUSBORDERHEIGHT}
 
-{$IFDEF BCB5} // may need to be COMPILER5 (obones)
+{$IFDEF COMPILER5}
   {$EXTERNALSYM SPI_GETMENUSHOWDELAY}
   SPI_GETMENUSHOWDELAY = 106;
   {$EXTERNALSYM SPI_SETMENUSHOWDELAY}
@@ -163,7 +163,7 @@ const
   SPI_GETKEYBOARDCUES = $100A;
   {$EXTERNALSYM SPI_SETKEYBOARDCUES}
   SPI_SETKEYBOARDCUES = $100B;
-{$ENDIF BCB5}
+{$ENDIF COMPILER5}
 
 
 type
@@ -1933,7 +1933,7 @@ end;
 
 function TJvSystemFolders.GetTemp: string;
 begin
-  if not GetEnvironmentVar('TMP', Result) or not GetEnvironmentVar('TEMP', Result) then
+  if not GetEnvironmentVar('TMP', Result, False) or not GetEnvironmentVar('TEMP', Result, False) then
     Result := GetCurrentDir;
   if Result <> '' then
     // the temp folder is usually in 8.3 format, so try to convert
