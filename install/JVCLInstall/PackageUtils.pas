@@ -148,8 +148,13 @@ var
 begin
   inherited Create;
   FTargetConfig := ATargetConfig;
+
   for Kind := pkFirst to pkLast do
   begin
+    { Delphi 5 and the Personal Editions do not have CLX support. }
+    if (Kind = pkClx) and ((TargetConfig.Target.Version < 6) or (TargetConfig.Target.IsPersonal)) then
+      Continue;
+      
     if FileExists(TargetConfig.GetBpgFilename(False, Kind)) then
       FItems[False, Kind] := TProjectGroup.Create(TargetConfig, TargetConfig.GetBpgFilename(False, Kind));
     if FileExists(TargetConfig.GetBpgFilename(True, Kind)) then
