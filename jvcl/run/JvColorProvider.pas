@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-02-04
+Last Modified: 2004-02-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -360,6 +360,7 @@ type
     FCaption: string;
     FShowHeader: Boolean;
   protected
+    procedure SetActive(Value: Boolean); override;
     procedure SetCaption(Value: string); virtual;
     procedure SetShowHeader(Value: Boolean); virtual;
   public
@@ -1041,6 +1042,15 @@ begin
 end;
 
 //===TJvColorProviderColorGroupSettings=============================================================
+
+procedure TJvColorProviderColorGroupSettings.SetActive(Value: Boolean);
+begin
+  if Value <> Active then
+  begin
+    inherited SetActive(Value);
+    ViewChanged;
+  end;
+end;
 
 procedure TJvColorProviderColorGroupSettings.SetCaption(Value: string);
 begin
