@@ -71,6 +71,8 @@ type
   protected
     procedure Update(Item: TCollectionItem); override;
   public
+    // You must call Notification in the Owning controls overridden Notification
+    // or hell will break loose when linked controls are removed!!! 
     procedure Notification(AComponent: TComponent; Operation: TOperation); virtual;
     constructor Create(AControl: TControl);
     function Add: TJvLinkedControl;
@@ -85,6 +87,10 @@ type
 
 implementation
 
+// TODO -cRESOURCESTRING -oJVCL: move to JvResources
+resourcestring
+  RsEOwnerLinkError = 'Cannot link to owner control';
+  
 { TJvLinkedControl }
 
 procedure TJvLinkedControl.Assign(Source: TPersistent);
@@ -130,7 +136,7 @@ begin
     if (FOwnerControl = nil) and (Collection is TJvLinkedControls) then
       FOwnerControl := TJvLinkedControls(Collection).FControl;
     if (Value = FOwnerControl) and (FOwnerControl <> nil) then
-      raise Exception.Create('Cannot link to owner control');
+      raise Exception.Create(RsEOwnerLinkError);
     if Assigned(FControl) then
     begin
       if Assigned(FOwnerControl) then
@@ -203,6 +209,7 @@ end;
 procedure TJvLinkedControls.Notification(AComponent: TComponent; Operation: TOperation);
 var i:Integer;
 begin
+  // make sure the owning controls isn't being destroyed.
   if Assigned(FControl) and (csDestroying in FControl.ComponentState) then
     Exit;
   BeginUpdate;

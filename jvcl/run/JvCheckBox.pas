@@ -408,13 +408,11 @@ end;
 procedure TJvCheckBox.CheckLinkedControls;
 var
   I: Integer;
-  F: TCustomForm;
 begin
-  F := GetParentForm(Self);
-  if (F <> nil) and (LinkedControls <> nil) then
+  if (LinkedControls <> nil) then
     for I := 0 to LinkedControls.Count - 1 do
-      if LinkedControls[I].Control <> nil then
-        with LinkedControls[I] do
+      with LinkedControls[I] do
+        if Control <> nil then
           Control.Enabled :=
             ((Options = [loLinkChecked, loLinkEnabled]) and Self.Checked and Self.Enabled) or
             ((Options = [loLinkChecked]) and Self.Checked) or
