@@ -42,7 +42,11 @@ uses
   {$IFDEF VisualCLX}
   QStdCtrls, QFileCtrls, QExtCtrls, QControls, QButtons,
   {$ENDIF VisualCLX}
-  JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage, JvComponent;
+  JvPicClip, JvFormPlacement, JvAppStorage,
+  {$IFDEF MSWINDOWS}
+  JvAppRegistryStorage,
+  {$ENDIF MSWINDOWS}
+  JvComponent;
 
 type
   TImageForm = class(TJvForm)
@@ -103,24 +107,32 @@ uses
 function SelectImage(var AFileName: string; const Extensions, Filter: string): Boolean;
 var
   ErrMode: Cardinal;
+  Filters: TStrings;
 begin
   with TImageForm.Create(Application) do
   try
     FileListBox.Mask := Extensions;
     FilterCombo.Filter := Filter;
-    if Pos('*.*', Filter) = 0 then
+    Filters := TStringlist.Create;
+    Filters.Delimiter := '|';
+    Filters.DelimitedText := Filter;
+    if Filters.IndexOf(AllFileMask) < 0 then
     begin
-      if Length(Filter) > 0 then
-        FilterCombo.Filter := Filter + '|';
-      FilterCombo.Filter := FilterCombo.Filter + RsAllFilesFilter;
+      Filters.Add(AllFileMask);
     end;
+    FilterCombo.Filter := Filters.DelimitedText;
+    Filters.Free;
+    {$IFDEF MSWINDOWS}
     ErrMode := SetErrorMode(SEM_NOOPENFILEERRORBOX or SEM_FAILCRITICALERRORS);
+    {$ENDIF MSWINDOWS}
     try
       if AFileName <> '' then
         FileName := AFileName;
       Result := ShowModal = mrOk;
     finally
+      {$IFDEF MSWINDOWS}
       SetErrorMode(ErrMode);
+      {$ENDIF MSWINDOWS}
     end;
     if Result then
       AFileName := FileName;
@@ -177,15 +189,27 @@ begin
     finally
       StopWait;
     end;
+    {$IFDEF MSWINDOWS}
     ImageName.Caption := Format('%s (%d x %d)',
       [AnsiLowerCase(ExtractFilename(FileListBox.Filename)),
        Image.Picture.Width, Image.Picture.Height]);
+    {$ENDIF}
+    {$IFDEF LINUX}
+    ImageName.Caption := Format('%s (%d x %d)',
+      [ExtractFilename(FileListBox.Filename),
+       Image.Picture.Width, Image.Picture.Height]);
+    {$ENDIF}
   except
     Image.Picture.Assign(nil);
     ImageName.Caption := '';
   end;
   ZoomImage;
+  {$IFDEF MSWINDOWS}
   FileExt := AnsiLowerCase(FileName);
+  {$ENDIF}
+  {$IFDEF LINUX}
+  FileExt := FileName;
+  {$ENDIF}
   if FileExt <> '' then
     Caption := FFormCaption + ' - ' + MinimizeName(FileExt, PathLabel.Canvas,
       PathLabel.Width)
@@ -269,7 +293,8 @@ end;
 
 procedure TImageForm.PreviewKeyPress(Sender: TObject; var Key: Char);
 begin
-  if Ord(Key) = VK_ESCAPE then
+//  if Ord(Key) = VK_ESCAPE then
+  if Ord(Key) = #27 then   //asn: With VisualCLX VK_ESCAPE <> 27
     TForm(Sender).Close;
 end;
 
@@ -287,7 +312,12 @@ begin
   with PreviewForm do
   try
     Caption := RsPreview;
+    {$IFDEF VCL}
     BorderStyle := bsSizeToolWin;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BorderStyle := fbsSizeToolWin;
+    {$ENDIF VisualCLX}
     Icon := Self.Icon;
     KeyPreview := True;
     Position := poScreenCenter;
