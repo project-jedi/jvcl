@@ -27,6 +27,8 @@ unit JvSIMDModifyForm;
 
 interface
 
+{$I jedi.inc}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, JclSysInfo, JvSIMDUtils, ToolsApi;

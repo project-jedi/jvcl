@@ -99,9 +99,6 @@ type
     property Display:TJvXMMContentType read FDisplay write SetDisplay;
   end;
 
-var
-  JvSIMDViewFrm: TJvSIMDViewFrm;
-
 implementation
 
 uses

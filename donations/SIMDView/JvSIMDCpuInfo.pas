@@ -27,6 +27,8 @@ unit JvSIMDCpuInfo;
 
 interface
 
+{$I jedi.inc}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JclSysInfo;
