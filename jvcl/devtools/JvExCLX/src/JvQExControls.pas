@@ -49,8 +49,7 @@ type
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
   end;
 
-  type
-    TDragKind = (dkDrag, dkDock);   { not implemented yet}
+  TDragKind = (dkDrag, dkDock);   { not implemented yet}
 
   TAlignInfo = record
     AlignList: TList;
@@ -97,9 +96,40 @@ type
   JV_WINCONTROL(FrameControl)
   JV_CUSTOMCONTROL(HintWindow)
 
+function GetHintColor(Instance: TWinControl): TColor;
+function SendAppMessage(Msg: Cardinal; WParam, LParam: Integer): Integer;
 procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
-  
+
+var
+  NewStyleControls: Boolean;
+
 implementation
+
+function SendAppMessage(Msg: Cardinal; WParam, LParam: Integer): Integer;
+begin
+  Result := SendMessage(Application.AppWidget, Msg, WParam, LParam);
+end;
+
+function GetHintColor(Instance: TWinControl): TColor;
+{
+clNone         : Application.HintColor
+clDefaultColor : Parent HintColor
+}
+var
+  PI: PPropInfo;
+begin
+  Result := clDefaultColor;
+  while (Result = clDefaultColor) and (Instance <> nil) do
+  begin
+    PI := GetPropInfo(Instance, 'HintColor');
+    if PI <> nil then
+      Result := TColor(GetOrdProp(Instance, PI));
+    Instance := Instance.Parent;
+  end;
+  case Result of
+  clNone, clDefaultColor: Result := Application.HintColor;
+  end;
+end;
 
 procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
 var
@@ -119,6 +149,88 @@ begin
   end;
 end;
 
+type
+  TJvCLXFilters = class(TComponent)
+  private
+    FHook: QObject_hookH;
+  protected
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+  public
+    constructor Create(AOwner: ; override
+    destructor Destroy; override;
+  end;
+
+constructor TJvCLXFilters.Create(AOwner: TComponent);
+var
+  Method: TMethod;
+begin
+  inherited Create(AOwner);
+  FHook := QObject_hook_create(FHandle);
+  TEventFilterMethod(Method) := EventFilter;
+  Qt_hook_hook_events(FHook, Method);
+end;
+
+destructor TJvCLXFilters.Destroy;
+begin
+  QObject_hook_destroy(FHook);
+  inherited Destroy;
+end;
+
+function TJvCLXFilters.EventFilter(Instance: TWidgetControl; Event: QEventH): Boolean;
+var
+  PixMap: QPixmapH;
+  WinTimer: TWinTimer;
+  Mesg: TMsg;
+  R: TRect;
+begin
+  { implements doublebuffered paint & WM_ERASEBKGND
+    Handles/implements HintColor
+  }
+
+  with Instance do case QEvent_type(Event) of
+
+  QEventType_Paint:
+  begin
+    with Event as QPaintEventH do
+    begin
+      if (csDestroying in ComponentState) or
+        ([csCreating, csRecreating]* Instance.ControlState <> []) then
+      begin
+        Result := True;
+        Exit;
+      end;
+
+      if not (csWidgetPainting in ControlState) then
+        if not (csPaintCopy in ControlState) then
+        begin
+          QRegion_boundingRect(QPaintEvent_region(Event), @R);
+          Pixmap := QPixmap_create ;
+          try
+            ControlState := ControlState + [csPaintCopy];
+            QPixmap_grabWidget(PixMap, Handle, R.Left, R.Top,
+              R.Right - R.Left, R.Bottom - R.Top);
+            Qt.BitBlt(QWidget_to_QPaintDevice(Handle), R.Left, R.Top, PixMap,
+                   0, 0, R.Right - R.Left, R.Bottom - R.Top, RasterOp_CopyROP, False);
+            Result := True;
+          finally
+            ControlState := ControlState - [csPaintCopy];
+            QPixMap_destroy(PixMap);
+          end;
+        end
+      else
+      begin
+        { csWidgetPainting / Paintbackground }
+        Mesg.hwnd := Handle;
+        Mesg.Msg := WM_ERASEBKGND;
+        Mesg.DC := 0;
+        Mesg.LParam := 0;
+        Mesg.Handled := 0;
+        Dispatch(Mesg);
+        Result := Mesg.Handled;
+      end;
+    end;  // with Event as QPaintEventH
+  end;
+end;
 
 JV_CONTROL_IMPL(Control)
 JV_WINCONTROL_IMPL(WinControl)
