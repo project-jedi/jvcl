@@ -12,8 +12,6 @@
 { WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
 { the specific language governing rights and limitations under the License.    }
 {                                                                              }
-{ The Original Code is JvUIBMetaData.pas.                                      }
-{                                                                              }
 { The Initial Developer of the Original Code is documented in the accompanying }
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
@@ -23,17 +21,15 @@
 { Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
-
-{$I jvcl.inc}
-{$I jvuib.inc}
+{ Class needed to read MetaData. }
 
 unit JvUIBMetaData;
 
-interface
+{$I JVCL.INC}
+{$I JvUIB.inc}
 
-uses
-  Classes, SysUtils,
-  JvUIBase, JvUIBLib, JvUIB, JvUIBConst;
+interface
+uses Classes, SysUtils, JvUIBase, JvUIBLib, JvUIB, JvUIBConst;
 
 type
 
@@ -72,143 +68,6 @@ type
         MetaUnique
   );
 
-const
-  BreakLine = #13#10;
-  NewLine = BreakLine + BreakLine;
-
-  TriggerPrefixTypes: array[TTriggerPrefix] of string =
-    ('BEFORE', 'AFTER');
-
-  TriggerSuffixTypes: array[TTriggerSuffix] of string =
-    ('INSERT', 'UPDATE', 'DELETE');
-
-  FieldTypes: array[TUIBFieldType] of string = ('', 'NUMERIC', 'CHAR', 'VARCHAR',
-    'CSTRING', 'SMALLINT', 'INTEGER', 'QUAD', 'FLOAT', 'DOUBLE PRECISION',
-    'TIMESTAMP', 'BLOB', 'BLOBID', 'DATE', 'TIME', 'INT64'
-    {$IFDEF IB7_UP} , 'BOOLEAN' {$ENDIF});
-
-  QRYGenerators =
-    'SELECT RDB$GENERATOR_NAME FROM RDB$GENERATORS GEN WHERE ' +
-    '(NOT GEN.RDB$GENERATOR_NAME STARTING WITH ''RDB$'') AND ' +
-    '(NOT GEN.RDB$GENERATOR_NAME STARTING WITH ''SQL$'') AND ' +
-    '((GEN.RDB$SYSTEM_FLAG IS NULL) OR (GEN.RDB$SYSTEM_FLAG <> 1)) ' +
-    'ORDER BY GEN.RDB$GENERATOR_NAME';
-
-  QRYTables =
-    'SELECT REL.RDB$RELATION_NAME FROM RDB$RELATIONS REL WHERE '+
-    '(REL.RDB$SYSTEM_FLAG <> 1 OR REL.RDB$SYSTEM_FLAG IS NULL) AND '+
-    '(NOT REL.RDB$FLAGS IS NULL) AND '+
-    '(REL.RDB$VIEW_BLR IS NULL) AND '+
-    '(REL.RDB$SECURITY_CLASS STARTING WITH ''SQL$'') '+
-    'ORDER BY REL.RDB$RELATION_NAME';
-
-  QRYTableFields =
-    'SELECT FLD.RDB$FIELD_TYPE, FLD.RDB$FIELD_SCALE, '+
-    'FLD.RDB$FIELD_LENGTH, FLD.RDB$FIELD_PRECISION, '+
-    'FLD.RDB$CHARACTER_SET_ID, FLD.RDB$FIELD_SUB_TYPE, RFR.RDB$FIELD_NAME, '+
-    'FLD.RDB$SEGMENT_LENGTH, RFR.RDB$NULL_FLAG, RFR.RDB$DEFAULT_SOURCE, ' +
-    'RFR.RDB$FIELD_SOURCE '+
-    'FROM RDB$RELATIONS REL, RDB$RELATION_FIELDS RFR, RDB$FIELDS FLD '+
-    'WHERE (RFR.RDB$FIELD_SOURCE = FLD.RDB$FIELD_NAME) AND '+
-    '(RFR.RDB$RELATION_NAME = REL.RDB$RELATION_NAME) AND '+
-    '(REL.RDB$RELATION_NAME = ?) '+
-    'ORDER BY RFR.RDB$FIELD_POSITION, RFR.RDB$FIELD_NAME';
-
-  QRYCharset =
-    'SELECT RDB$CHARACTER_SET_ID, RDB$CHARACTER_SET_NAME, RDB$BYTES_PER_CHARACTER FROM RDB$CHARACTER_SETS';
-
-  QRYUnique =
-    'SELECT RC.RDB$CONSTRAINT_NAME, IDX.RDB$FIELD_NAME '+
-    'FROM RDB$RELATION_CONSTRAINTS RC, RDB$INDEX_SEGMENTS IDX '+
-    'WHERE (IDX.RDB$INDEX_NAME = RC.RDB$INDEX_NAME) AND '+
-    '(RC.RDB$CONSTRAINT_TYPE = ?) '+
-    'AND (RC.RDB$RELATION_NAME = ?) '+
-    'ORDER BY RC.RDB$RELATION_NAME, IDX.RDB$FIELD_POSITION';
-
-  QRYIndex =
-    'SELECT IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_NAME, IDX.RDB$UNIQUE_FLAG, '+
-    'IDX.RDB$INDEX_INACTIVE, IDX.RDB$INDEX_TYPE FROM RDB$INDICES IDX '+
-    'LEFT JOIN RDB$INDEX_SEGMENTS ISG ON ISG.RDB$INDEX_NAME = IDX.RDB$INDEX_NAME '+
-    'LEFT JOIN RDB$RELATION_CONSTRAINTS C ON IDX.RDB$INDEX_NAME = C.RDB$INDEX_NAME '+
-    'WHERE (C.RDB$CONSTRAINT_NAME IS NULL) AND (IDX.RDB$RELATION_NAME = ?) '+
-    'ORDER BY IDX.RDB$RELATION_NAME, IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_POSITION';
-
-  QRYForeign =
-    'SELECT A.RDB$CONSTRAINT_NAME, B.RDB$UPDATE_RULE, B.RDB$DELETE_RULE, '+
-    'C.RDB$RELATION_NAME AS FK_TABLE, D.RDB$FIELD_NAME AS FK_FIELD, '+
-    'E.RDB$FIELD_NAME AS ONFIELD '+
-    'FROM RDB$REF_CONSTRAINTS B, RDB$RELATION_CONSTRAINTS A, RDB$RELATION_CONSTRAINTS C, '+
-    'RDB$INDEX_SEGMENTS D, RDB$INDEX_SEGMENTS E '+
-    'WHERE (A.RDB$CONSTRAINT_TYPE = ''FOREIGN KEY'') AND '+
-    '(A.RDB$CONSTRAINT_NAME = B.RDB$CONSTRAINT_NAME) AND '+
-    '(B.RDB$CONST_NAME_UQ=C.RDB$CONSTRAINT_NAME) AND (C.RDB$INDEX_NAME=D.RDB$INDEX_NAME) AND '+
-    '(A.RDB$INDEX_NAME=E.RDB$INDEX_NAME) AND '+
-    '(D.RDB$FIELD_POSITION = E.RDB$FIELD_POSITION) ' +
-    'AND (A.RDB$RELATION_NAME = ?) '+
-    'ORDER BY A.RDB$CONSTRAINT_NAME, A.RDB$RELATION_NAME, D.RDB$FIELD_POSITION, E.RDB$FIELD_POSITION';
-
-  QRYCheck =
-    'SELECT A.RDB$CONSTRAINT_NAME, C.RDB$TRIGGER_SOURCE '+
-    'FROM RDB$RELATION_CONSTRAINTS A, RDB$CHECK_CONSTRAINTS B, RDB$TRIGGERS C '+
-    'WHERE (A.RDB$CONSTRAINT_TYPE = ''CHECK'') AND '+
-    '(A.RDB$CONSTRAINT_NAME = B.RDB$CONSTRAINT_NAME) AND '+
-    '(B.RDB$TRIGGER_NAME = C.RDB$TRIGGER_NAME) AND '+
-    '(C.RDB$TRIGGER_TYPE = 1) '+
-    'AND (A.RDB$RELATION_NAME = ?)';
-
-  QRYTrigger =
-    'SELECT T.RDB$TRIGGER_NAME, T.RDB$TRIGGER_SOURCE, T.RDB$TRIGGER_SEQUENCE, '+
-    'T.RDB$TRIGGER_TYPE, T.RDB$TRIGGER_INACTIVE, T.RDB$SYSTEM_FLAG '+
-    'from RDB$TRIGGERS T left join RDB$CHECK_CONSTRAINTS C ON C.RDB$TRIGGER_NAME = '+
-    'T.RDB$TRIGGER_NAME where ((T.RDB$SYSTEM_FLAG = 0) or (T.RDB$SYSTEM_FLAG is null)) '+
-    'and (c.rdb$trigger_name is null) and (T.RDB$RELATION_NAME = ?) '+
-    'order by T.RDB$TRIGGER_NAME';
-
-  QRYView =
-    'SELECT REL.RDB$RELATION_NAME, REL.RDB$VIEW_SOURCE FROM RDB$RELATIONS REL WHERE '+
-    '(REL.RDB$SYSTEM_FLAG <> 1 OR REL.RDB$SYSTEM_FLAG IS NULL) AND '+
-    '(NOT REL.RDB$FLAGS IS NULL) AND '+
-    '(NOT REL.RDB$VIEW_BLR IS NULL) AND '+
-    '(REL.RDB$SECURITY_CLASS STARTING WITH ''SQL$'') '+
-    'ORDER BY REL.RDB$RELATION_NAME';
-
-  QRYDomains =
-    'select RDB$FIELD_TYPE, RDB$FIELD_SCALE, RDB$FIELD_LENGTH, '+
-    'RDB$FIELD_PRECISION, RDB$CHARACTER_SET_ID, RDB$FIELD_SUB_TYPE, '+
-    'RDB$FIELD_NAME, RDB$SEGMENT_LENGTH, RDB$NULL_FLAG, RDB$DEFAULT_SOURCE ' +
-    'from RDB$FIELDS where not (RDB$FIELD_NAME starting with ''RDB$'')';
-
-  QRYProcedures =
-    'SELECT RDB$PROCEDURE_NAME, RDB$PROCEDURE_SOURCE FROM  RDB$PROCEDURES ORDER BY RDB$PROCEDURE_NAME';
-
-  QRYProcFields =
-    'SELECT FS.RDB$FIELD_TYPE, FS.RDB$FIELD_SCALE, FS.RDB$FIELD_LENGTH, FS.RDB$FIELD_PRECISION, '+
-    'FS.RDB$CHARACTER_SET_ID, FS.RDB$FIELD_SUB_TYPE, PP.RDB$PARAMETER_NAME, FS.RDB$SEGMENT_LENGTH '+
-    'FROM RDB$PROCEDURES PR LEFT JOIN RDB$PROCEDURE_PARAMETERS PP '+
-    'ON PP.RDB$PROCEDURE_NAME = PR.RDB$PROCEDURE_NAME LEFT JOIN RDB$FIELDS FS ON '+
-    'FS.RDB$FIELD_NAME = PP.RDB$FIELD_SOURCE LEFT JOIN RDB$CHARACTER_SETS CR ON '+
-    'FS.RDB$CHARACTER_SET_ID = CR.RDB$CHARACTER_SET_ID LEFT JOIN RDB$COLLATIONS CO '+
-    'ON ((FS.RDB$COLLATION_ID = CO.RDB$COLLATION_ID) AND (FS.RDB$CHARACTER_SET_ID = '+
-    'CO.RDB$CHARACTER_SET_ID)) WHERE (PR.RDB$PROCEDURE_NAME = ?) AND '+
-    '(PP.RDB$PARAMETER_TYPE = ?) ORDER BY PP.RDB$PARAMETER_TYPE, PP.RDB$PARAMETER_NUMBER';
-
-  QRYExceptions =
-    'SELECT RDB$EXCEPTION_NAME, RDB$MESSAGE, RDB$EXCEPTION_NUMBER FROM RDB$EXCEPTIONS ORDER BY RDB$EXCEPTION_NAME';
-
-  QRYUDF =
-    'SELECT RDB$FUNCTION_NAME, RDB$MODULE_NAME, RDB$ENTRYPOINT, RDB$RETURN_ARGUMENT '+
-    'FROM RDB$FUNCTIONS WHERE (RDB$SYSTEM_FLAG IS NULL) ORDER BY RDB$FUNCTION_NAME';
-
-  QRYUDFFields =
-    'SELECT RDB$FIELD_TYPE, RDB$FIELD_SCALE, RDB$FIELD_LENGTH, RDB$FIELD_PRECISION, '+
-    'RDB$CHARACTER_SET_ID, RDB$FIELD_SUB_TYPE, RDB$ARGUMENT_POSITION, RDB$MECHANISM '+
-    'FROM RDB$FUNCTION_ARGUMENTS WHERE RDB$FUNCTION_NAME = ? '+
-    'ORDER BY RDB$ARGUMENT_POSITION';
-
-  QRYRoles =
-    'SELECT RDB$ROLE_NAME, RDB$OWNER_NAME FROM RDB$ROLES';
-
-type
   // forward declarations
   TMetaNode = class;
   TMetaDomain = class;
@@ -452,7 +311,7 @@ type
     function GetFields(const Index: Integer): TMetaTableField;
     function GetFieldsCount: Integer;
     procedure LoadFromDataBase(QNames, QFields, QCharset, QPrimary,
-      QIndex, QForeign, QCheck, QTrigger: TJvUIBStatement);
+      QIndex, QForeign, QCheck, QTrigger: TJvUIBStatement; OIDs: TOIDTables);
     function FindFieldIndex(const name: String): Integer;
     function GetUniques(const Index: Integer): TMetaUnique;
     function GetUniquesCount: Integer;
@@ -505,7 +364,8 @@ type
     function GetFieldsCount: Integer;
     function GetTriggers(const Index: Integer): TMetaTrigger;
     function GetTriggersCount: Integer;
-    procedure LoadFromDataBase(QName, QFields, QTriggers, QCharset: TJvUIBStatement);
+    procedure LoadFromDataBase(QName, QFields, QTriggers,
+      QCharset: TJvUIBStatement; OIDs: TOIDViews);
     procedure LoadFromStream(Stream: TStream); override;
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
@@ -524,7 +384,7 @@ type
   TMetaProcedure = class(TMetaNode)
   private
     FSource: string;
-    procedure LoadFromQuery(QNames, QFields, QCharset: TJvUIBStatement);
+    procedure LoadFromQuery(QNames, QFields, QCharset: TJvUIBStatement; OIDs: TOIDProcedures);
     function GetInputFields(const Index: Integer): TMetaProcInField;
     function GetInputFieldsCount: Integer;
     function GetOutputFields(const Index: Integer): TMetaProcOutField;
@@ -584,7 +444,7 @@ type
     FEntry: string;
     FReturn: Smallint;
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromQuery(QNames, QFields, QCharset: TJvUIBStatement);
+    procedure LoadFromQuery(QNames, QFields, QCharset: TJvUIBStatement; OIDs: TOIDUDFs);
     function GetFields(const Index: Integer): TMetaUDFField;
     function GetFieldsCount: Integer;
   public
@@ -615,6 +475,12 @@ type
 
   TMetaDataBase = class(TMetaNode)
   private
+    FOIDDatabases: TOIDDatabases;
+    FOIDTables: TOIDTables;
+    FOIDViews: TOIDViews;
+    FOIDProcedures: TOIDProcedures;
+    FOIDUDFs: TOIDUDFs;
+    FSysInfos: boolean;
     function GetGenerators(const Index: Integer): TMetaGenerator;
     function GetGeneratorsCount: Integer;
 
@@ -641,59 +507,219 @@ type
     class function NodeType: TMetaNodeType; override;
     procedure SaveToStream(Stream: TStream); override;
     function FindTableName(const TableName: string): TMetaTable;
+    function FindProcName(const ProcName: string): TMetaProcedure;
     constructor Create(AOwner: TMetaNode; ClassIndex: Integer); override;
     procedure LoadFromDatabase(Transaction: TJvUIBTransaction);
     procedure SaveToDDL(Stream: TStringStream); override;
+
+    property OIDDatabases: TOIDDatabases read FOIDDatabases write FOIDDatabases;
 
     property Generators[const Index: Integer]: TMetaGenerator read GetGenerators;
     property GeneratorsCount: Integer read GetGeneratorsCount;
 
     property Tables[const Index: Integer]: TMetaTable read GetTables;
     property TablesCount: Integer read GetTablesCount;
+    property OIDTables: TOIDTables read FOIDTables write FOIDTables;
 
     property Views[const Index: Integer]: TMetaView read GetViews;
     property ViewsCount: Integer read GetViewsCount;
+    property OIDViews: TOIDViews read FOIDViews write FOIDViews;
 
     property Domains[const Index: Integer]: TMetaDomain read GetDomains;
     property DomainsCount: Integer read GetDomainsCount;
 
     property Procedures[const Index: Integer]: TMetaProcedure read GetProcedures;
     property ProceduresCount: Integer read GetProceduresCount;
+    property OIDProcedures: TOIDProcedures read FOIDProcedures write FOIDProcedures;
 
     property Exceptions[const Index: Integer]: TMetaException read GetExceptions;
     property ExceptionsCount: Integer read GetExceptionsCount;
 
     property UDFS[const Index: Integer]: TMetaUDF read GetUDFS;
     property UDFSCount: Integer read GetUDFSCount;
+    property OIDUDFs: TOIDUDFs read FOIDUDFs write FOIDUDFs;
 
     property Roles[const Index: Integer]: TMetaRole read GetRoles;
     property RolesCount: Integer read GetRolesCount;
+
+    property SysInfos: boolean read FSysInfos write FSysInfos;
   end;
 
 implementation
 
+//   Database Tree
+//------------------------
+//  OIDDomains   = 0;
+//  OIDTable     = 1;
+//    OIDTableFields   = 0;
+//    OIDPrimary       = 1;
+//    OIDForeign       = 2;
+//    OIDTableTrigger  = 3;
+//    OIDUnique        = 4;
+//    OIDIndex         = 5;
+//    OIDCheck         = 6;
+//  OIDView      = 2;
+//    OIDViewFields    = 0;
+//    OIDViewTrigers   = 1;
+//  OIDProcedure = 3;
+//    OIDProcFieldIn   = 0;
+//    OIDProcFieldOut  = 1;
+//  OIDGenerator = 4;
+//  OIDException = 5;
+//  OIDUDF       = 6;
+//    OIDUDFField      = 0;
+//  OIDRole      = 7;
+
+
 const
-  // Database Tree
-  OIDDomains   = 0;
-  OIDTable     = 1;
-    OIDTableFields   = 0;
-    OIDPrimary       = 1;
-    OIDForeign       = 2;
-    OIDTableTrigger  = 3;
-    OIDUnique        = 4;
-    OIDIndex         = 5;
-    OIDCheck         = 6;
-  OIDView      = 2;
-    OIDViewFields    = 0;
-    OIDViewTrigers   = 1;
-  OIDProcedure = 3;
-    OIDProcFieldIn   = 0;
-    OIDProcFieldOut  = 1;
-  OIDGenerator = 4;
-  OIDException = 5;
-  OIDUDF       = 6;
-    OIDUDFField      = 0;
-  OIDRole      = 7; 
+  TriggerPrefixTypes: array[TTriggerPrefix] of string =
+    ('BEFORE', 'AFTER');
+
+  TriggerSuffixTypes: array[TTriggerSuffix] of string =
+    ('INSERT', 'UPDATE', 'DELETE');
+
+  FieldTypes: array[TUIBFieldType] of string = ('', 'NUMERIC', 'CHAR', 'VARCHAR',
+    'CSTRING', 'SMALLINT', 'INTEGER', 'QUAD', 'FLOAT', 'DOUBLE PRECISION',
+    'TIMESTAMP', 'BLOB', 'BLOBID', 'DATE', 'TIME', 'INT64' {$IFDEF IB7_UP}
+    ,'BOOLEAN' {$ENDIF});
+
+  QRYGenerators =
+    'SELECT RDB$GENERATOR_NAME FROM RDB$GENERATORS GEN WHERE ' +
+    '(NOT GEN.RDB$GENERATOR_NAME STARTING WITH ''RDB$'') AND ' +
+    '(NOT GEN.RDB$GENERATOR_NAME STARTING WITH ''SQL$'') AND ' +
+    '((GEN.RDB$SYSTEM_FLAG IS NULL) OR (GEN.RDB$SYSTEM_FLAG <> 1)) ' +
+    'ORDER BY GEN.RDB$GENERATOR_NAME';
+
+  QRYTables =
+    'SELECT REL.RDB$RELATION_NAME FROM RDB$RELATIONS REL WHERE '+
+    '(REL.RDB$SYSTEM_FLAG <> 1 OR REL.RDB$SYSTEM_FLAG IS NULL) AND '+
+    '(NOT REL.RDB$FLAGS IS NULL) AND '+
+    '(REL.RDB$VIEW_BLR IS NULL) AND '+
+    '(REL.RDB$SECURITY_CLASS STARTING WITH ''SQL$'') '+
+    'ORDER BY REL.RDB$RELATION_NAME';
+
+  QRYSysTables =
+    'SELECT REL.RDB$RELATION_NAME FROM RDB$RELATIONS REL '+
+    'WHERE REL.RDB$VIEW_BLR IS NULL ORDER BY REL.RDB$RELATION_NAME';
+
+  QRYTableFields =
+    'SELECT FLD.RDB$FIELD_TYPE, FLD.RDB$FIELD_SCALE, '+
+    'FLD.RDB$FIELD_LENGTH, FLD.RDB$FIELD_PRECISION, '+
+    'FLD.RDB$CHARACTER_SET_ID, FLD.RDB$FIELD_SUB_TYPE, RFR.RDB$FIELD_NAME, '+
+    'FLD.RDB$SEGMENT_LENGTH, RFR.RDB$NULL_FLAG, RFR.RDB$DEFAULT_SOURCE, ' +
+    'RFR.RDB$FIELD_SOURCE '+
+    'FROM RDB$RELATIONS REL, RDB$RELATION_FIELDS RFR, RDB$FIELDS FLD '+
+    'WHERE (RFR.RDB$FIELD_SOURCE = FLD.RDB$FIELD_NAME) AND '+
+    '(RFR.RDB$RELATION_NAME = REL.RDB$RELATION_NAME) AND '+
+    '(REL.RDB$RELATION_NAME = ?) '+
+    'ORDER BY RFR.RDB$FIELD_POSITION, RFR.RDB$FIELD_NAME';
+
+  QRYCharset =
+    'SELECT RDB$CHARACTER_SET_ID, RDB$CHARACTER_SET_NAME, RDB$BYTES_PER_CHARACTER FROM RDB$CHARACTER_SETS';
+
+  QRYUnique =
+    'SELECT RC.RDB$CONSTRAINT_NAME, IDX.RDB$FIELD_NAME '+
+    'FROM RDB$RELATION_CONSTRAINTS RC, RDB$INDEX_SEGMENTS IDX '+
+    'WHERE (IDX.RDB$INDEX_NAME = RC.RDB$INDEX_NAME) AND '+
+    '(RC.RDB$CONSTRAINT_TYPE = ?) '+
+    'AND (RC.RDB$RELATION_NAME = ?) '+
+    'ORDER BY RC.RDB$RELATION_NAME, IDX.RDB$FIELD_POSITION';
+
+  QRYIndex =
+    'SELECT IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_NAME, IDX.RDB$UNIQUE_FLAG, '+
+    'IDX.RDB$INDEX_INACTIVE, IDX.RDB$INDEX_TYPE FROM RDB$INDICES IDX '+
+    'LEFT JOIN RDB$INDEX_SEGMENTS ISG ON ISG.RDB$INDEX_NAME = IDX.RDB$INDEX_NAME '+
+    'LEFT JOIN RDB$RELATION_CONSTRAINTS C ON IDX.RDB$INDEX_NAME = C.RDB$INDEX_NAME '+
+    'WHERE (C.RDB$CONSTRAINT_NAME IS NULL) AND (IDX.RDB$RELATION_NAME = ?) '+
+    'ORDER BY IDX.RDB$RELATION_NAME, IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_POSITION';
+
+  QRYForeign =
+    'SELECT A.RDB$CONSTRAINT_NAME, B.RDB$UPDATE_RULE, B.RDB$DELETE_RULE, '+
+    'C.RDB$RELATION_NAME AS FK_TABLE, D.RDB$FIELD_NAME AS FK_FIELD, '+
+    'E.RDB$FIELD_NAME AS ONFIELD '+
+    'FROM RDB$REF_CONSTRAINTS B, RDB$RELATION_CONSTRAINTS A, RDB$RELATION_CONSTRAINTS C, '+
+    'RDB$INDEX_SEGMENTS D, RDB$INDEX_SEGMENTS E '+
+    'WHERE (A.RDB$CONSTRAINT_TYPE = ''FOREIGN KEY'') AND '+
+    '(A.RDB$CONSTRAINT_NAME = B.RDB$CONSTRAINT_NAME) AND '+
+    '(B.RDB$CONST_NAME_UQ=C.RDB$CONSTRAINT_NAME) AND (C.RDB$INDEX_NAME=D.RDB$INDEX_NAME) AND '+
+    '(A.RDB$INDEX_NAME=E.RDB$INDEX_NAME) AND '+
+    '(D.RDB$FIELD_POSITION = E.RDB$FIELD_POSITION) ' +
+    'AND (A.RDB$RELATION_NAME = ?) '+
+    'ORDER BY A.RDB$CONSTRAINT_NAME, A.RDB$RELATION_NAME, D.RDB$FIELD_POSITION, E.RDB$FIELD_POSITION';
+
+  QRYCheck =
+    'SELECT A.RDB$CONSTRAINT_NAME, C.RDB$TRIGGER_SOURCE '+
+    'FROM RDB$RELATION_CONSTRAINTS A, RDB$CHECK_CONSTRAINTS B, RDB$TRIGGERS C '+
+    'WHERE (A.RDB$CONSTRAINT_TYPE = ''CHECK'') AND '+
+    '(A.RDB$CONSTRAINT_NAME = B.RDB$CONSTRAINT_NAME) AND '+
+    '(B.RDB$TRIGGER_NAME = C.RDB$TRIGGER_NAME) AND '+
+    '(C.RDB$TRIGGER_TYPE = 1) '+
+    'AND (A.RDB$RELATION_NAME = ?)';
+
+  QRYTrigger =
+    'SELECT T.RDB$TRIGGER_NAME, T.RDB$TRIGGER_SOURCE, T.RDB$TRIGGER_SEQUENCE, '+
+    'T.RDB$TRIGGER_TYPE, T.RDB$TRIGGER_INACTIVE, T.RDB$SYSTEM_FLAG '+
+    'from RDB$TRIGGERS T left join RDB$CHECK_CONSTRAINTS C ON C.RDB$TRIGGER_NAME = '+
+    'T.RDB$TRIGGER_NAME where ((T.RDB$SYSTEM_FLAG = 0) or (T.RDB$SYSTEM_FLAG is null)) '+
+    'and (c.rdb$trigger_name is null) and (T.RDB$RELATION_NAME = ?) '+
+    'order by T.RDB$TRIGGER_NAME';
+
+  QRYSysTrigger =
+    'SELECT T.RDB$TRIGGER_NAME, T.RDB$TRIGGER_SOURCE, T.RDB$TRIGGER_SEQUENCE, '+
+    'T.RDB$TRIGGER_TYPE, T.RDB$TRIGGER_INACTIVE, T.RDB$SYSTEM_FLAG '+
+    'FROM RDB$TRIGGERS T LEFT JOIN RDB$CHECK_CONSTRAINTS C ON C.RDB$TRIGGER_NAME = '+
+    'T.RDB$TRIGGER_NAME WHERE (T.RDB$RELATION_NAME = ?) ORDER BY T.RDB$TRIGGER_NAME';
+
+  QRYView =
+    'SELECT REL.RDB$RELATION_NAME, REL.RDB$VIEW_SOURCE FROM RDB$RELATIONS REL WHERE '+
+    '(REL.RDB$SYSTEM_FLAG <> 1 OR REL.RDB$SYSTEM_FLAG IS NULL) AND '+
+    '(NOT REL.RDB$FLAGS IS NULL) AND '+
+    '(NOT REL.RDB$VIEW_BLR IS NULL) AND '+
+    '(REL.RDB$SECURITY_CLASS STARTING WITH ''SQL$'') '+
+    'ORDER BY REL.RDB$RELATION_NAME';
+
+  QRYDomains =
+    'select RDB$FIELD_TYPE, RDB$FIELD_SCALE, RDB$FIELD_LENGTH, '+
+    'RDB$FIELD_PRECISION, RDB$CHARACTER_SET_ID, RDB$FIELD_SUB_TYPE, '+
+    'RDB$FIELD_NAME, RDB$SEGMENT_LENGTH, RDB$NULL_FLAG, RDB$DEFAULT_SOURCE ' +
+    'FROM RDB$FIELDS WHERE NOT (RDB$FIELD_NAME STARTING WITH ''RDB$'')';
+
+  QRYSysDomains =
+    'select RDB$FIELD_TYPE, RDB$FIELD_SCALE, RDB$FIELD_LENGTH, '+
+    'RDB$FIELD_PRECISION, RDB$CHARACTER_SET_ID, RDB$FIELD_SUB_TYPE, '+
+    'RDB$FIELD_NAME, RDB$SEGMENT_LENGTH, RDB$NULL_FLAG, RDB$DEFAULT_SOURCE ' +
+    'from RDB$FIELDS';
+
+  QRYProcedures =
+    'SELECT RDB$PROCEDURE_NAME, RDB$PROCEDURE_SOURCE FROM  RDB$PROCEDURES ORDER BY RDB$PROCEDURE_NAME';
+
+  QRYProcFields =
+    'SELECT FS.RDB$FIELD_TYPE, FS.RDB$FIELD_SCALE, FS.RDB$FIELD_LENGTH, FS.RDB$FIELD_PRECISION, '+
+    'FS.RDB$CHARACTER_SET_ID, FS.RDB$FIELD_SUB_TYPE, PP.RDB$PARAMETER_NAME, FS.RDB$SEGMENT_LENGTH '+
+    'FROM RDB$PROCEDURES PR LEFT JOIN RDB$PROCEDURE_PARAMETERS PP '+
+    'ON PP.RDB$PROCEDURE_NAME = PR.RDB$PROCEDURE_NAME LEFT JOIN RDB$FIELDS FS ON '+
+    'FS.RDB$FIELD_NAME = PP.RDB$FIELD_SOURCE LEFT JOIN RDB$CHARACTER_SETS CR ON '+
+    'FS.RDB$CHARACTER_SET_ID = CR.RDB$CHARACTER_SET_ID LEFT JOIN RDB$COLLATIONS CO '+
+    'ON ((FS.RDB$COLLATION_ID = CO.RDB$COLLATION_ID) AND (FS.RDB$CHARACTER_SET_ID = '+
+    'CO.RDB$CHARACTER_SET_ID)) WHERE (PR.RDB$PROCEDURE_NAME = ?) AND '+
+    '(PP.RDB$PARAMETER_TYPE = ?) ORDER BY PP.RDB$PARAMETER_TYPE, PP.RDB$PARAMETER_NUMBER';
+
+  QRYExceptions =
+    'SELECT RDB$EXCEPTION_NAME, RDB$MESSAGE, RDB$EXCEPTION_NUMBER FROM RDB$EXCEPTIONS ORDER BY RDB$EXCEPTION_NAME';
+
+  QRYUDF =
+    'SELECT RDB$FUNCTION_NAME, RDB$MODULE_NAME, RDB$ENTRYPOINT, RDB$RETURN_ARGUMENT '+
+    'FROM RDB$FUNCTIONS WHERE (RDB$SYSTEM_FLAG IS NULL) ORDER BY RDB$FUNCTION_NAME';
+
+  QRYUDFFields =
+    'SELECT RDB$FIELD_TYPE, RDB$FIELD_SCALE, RDB$FIELD_LENGTH, RDB$FIELD_PRECISION, '+
+    'RDB$CHARACTER_SET_ID, RDB$FIELD_SUB_TYPE, RDB$ARGUMENT_POSITION, RDB$MECHANISM '+
+    'FROM RDB$FUNCTION_ARGUMENTS WHERE RDB$FUNCTION_NAME = ? '+
+    'ORDER BY RDB$ARGUMENT_POSITION';
+
+  QRYRoles =
+    'SELECT RDB$ROLE_NAME, RDB$OWNER_NAME FROM RDB$ROLES';
+
 
 procedure WriteString(Stream: TStream; var Str: String);
 var len: Integer;
@@ -928,126 +954,147 @@ end;
 
 function TMetaTable.GetFields(const Index: Integer): TMetaTableField;
 begin
-  Result := TMetaTableField(GetItems(OIDTableFields, Index))
+  Result := TMetaTableField(GetItems(Ord(OIDTableField), Index))
 end;
 
 function TMetaTable.GetFieldsCount: Integer;
 begin
-  Result := FNodeItems[OIDTableFields].Childs.Count;
+  Result := FNodeItems[Ord(OIDTableField)].Childs.Count;
 end;
 
 function TMetaTable.GetPrimary(const Index: Integer): TMetaPrimary;
 begin
-  Result := TMetaPrimary(GetItems(OIDPrimary, Index))
+  Result := TMetaPrimary(GetItems(ord(OIDPrimary), Index))
 end;
 
 function TMetaTable.GetPrimaryCount: Integer;
 begin
-  Result := FNodeItems[OIDPrimary].Childs.Count;
+  Result := FNodeItems[ord(OIDPrimary)].Childs.Count;
 end;
 
 function TMetaTable.GetUniques(const Index: Integer): TMetaUnique;
 begin
-  Result := TMetaUnique(GetItems(OIDUnique, Index))
+  Result := TMetaUnique(GetItems(ord(OIDUnique), Index))
 end;
 
 function TMetaTable.GetUniquesCount: Integer;
 begin
-  Result := FNodeItems[OIDUnique].Childs.Count;
+  Result := FNodeItems[ord(OIDUnique)].Childs.Count;
 end;
 
 procedure TMetaTable.LoadFromDataBase(QNames, QFields, QCharset, QPrimary,
-  QIndex, QForeign, QCheck, QTrigger: TJvUIBStatement);
+  QIndex, QForeign, QCheck, QTrigger: TJvUIBStatement; OIDs: TOIDTables);
 var
   unk: string;
 begin
   // Fields
   FName := Trim(QNames.Fields.AsString[0]);
-  QFields.Params.AsString[0] := FName;
-  QFields.Open;
-  while not QFields.Eof do
+
+  if (OIDTableField in OIDs) then
   begin
-    with TMetaTableField.Create(Self, OIDTableFields) do
-      LoadFromQuery(QFields, QCharset);
-    QFields.Next;
-  end;
+    QFields.Params.AsString[0] := FName;
+    QFields.Open;
+    while not QFields.Eof do
+    begin
+      with TMetaTableField.Create(Self, ord(OIDTableField)) do
+        LoadFromQuery(QFields, QCharset);
+      QFields.Next;
+    end;
 
-  QPrimary.Params.AsString[1] := FName;
+    // PRIMARY
+    if (OIDPrimary in OIDs) then
+    begin
+      QPrimary.Params.AsString[1] := FName;
+      QPrimary.Params.AsString[0] := 'PRIMARY KEY';
+      QPrimary.Open;
+      if not QPrimary.Eof then
+        TMetaPrimary.Create(Self, ord(OIDPrimary)).LoadFromQuery(QPrimary);
+    end;
 
-  // Primary
-  QPrimary.Params.AsString[0] := 'PRIMARY KEY';
-  QPrimary.Open;
-  if not QPrimary.Eof then
-    TMetaPrimary.Create(Self, OIDPrimary).LoadFromQuery(QPrimary);
-
-  // UNIQUE
-  QPrimary.Params.AsString[0] := 'UNIQUE';
-  QPrimary.Open;
-  while not QPrimary.Eof do
-  begin
-    if unk <> trim(QPrimary.Fields.AsString[0]) then
-      with TMetaUnique.Create(Self, OIDUnique) do
+    // INDICES
+    if (OIDIndex in OIDs) then
+    begin
+      unk := '';
+      QIndex.Params.AsString[0] := FName;
+      QIndex.Open;
+      while not QIndex.Eof do
       begin
-        SetLength(FFields, 1);
-        FName := trim(QPrimary.Fields.AsString[0]);
-        FFields[0] := FindFieldIndex(Trim(QPrimary.Fields.AsString[1]));
-        unk := FName;
-      end else
-      with Uniques[UniquesCount-1] do
-      begin
-        SetLength(FFields, FieldsCount + 1);
-        FFields[FieldsCount - 1] := FindFieldIndex(Trim(QPrimary.Fields.AsString[1]));
-        include(Fields[FieldsCount - 1].FInfos, fUnique);
+        if unk <> trim(QIndex.Fields.AsString[0]) then
+          with TMetaIndex.Create(Self, ord(OIDIndex)) do
+          begin
+            SetLength(FFields, 1);
+            FName := trim(QIndex.Fields.AsString[0]);
+            FFields[0] := FindFieldIndex(Trim(QIndex.Fields.AsString[1]));
+            FUnique := QIndex.Fields.AsSingle[2] = 1;
+            FActive := QIndex.Fields.AsSingle[3] = 0;
+            if QIndex.Fields.AsSingle[4] = 0 then
+              FOrder := IoAscending else
+              FOrder := IoDescending;
+            unk := FName;
+          end else
+          with Indices[IndicesCount-1] do
+          begin
+            SetLength(FFields, FieldsCount + 1);
+            FFields[FieldsCount - 1] := FindFieldIndex(Trim(QIndex.Fields.AsString[1]));
+            include(Fields[FieldsCount - 1].FInfos, fIndice);
+          end;
+        QIndex.Next;
       end;
-    QPrimary.Next;
-  end;
+    end;
 
-  // INDICES
-  unk := '';
-  QIndex.Params.AsString[0] := FName;
-  QIndex.Open;
-  while not QIndex.Eof do
-  begin
-    if unk <> trim(QIndex.Fields.AsString[0]) then
-      with TMetaIndex.Create(Self, OIDIndex) do
+    // UNIQUE
+    if (OIDUnique in OIDs) then
+    begin
+      QPrimary.Params.AsString[0] := 'UNIQUE';
+      if not (OIDPrimary in OIDs) then
+        QPrimary.Params.AsString[1] := FName;
+      QPrimary.Open;
+      while not QPrimary.Eof do
       begin
-        SetLength(FFields, 1);
-        FName := trim(QIndex.Fields.AsString[0]);
-        FFields[0] := FindFieldIndex(Trim(QIndex.Fields.AsString[1]));
-        FUnique := QIndex.Fields.AsSingle[2] = 1;
-        FActive := QIndex.Fields.AsSingle[3] = 0;
-        if QIndex.Fields.AsSingle[4] = 0 then
-          FOrder := IoAscending else
-          FOrder := IoDescending;
-        unk := FName;
-      end else
-      with Indices[IndicesCount-1] do
-      begin
-        SetLength(FFields, FieldsCount + 1);
-        FFields[FieldsCount - 1] := FindFieldIndex(Trim(QIndex.Fields.AsString[1]));
-        include(Fields[FieldsCount - 1].FInfos, fIndice);
+        if unk <> trim(QPrimary.Fields.AsString[0]) then
+          with TMetaUnique.Create(Self, ord(OIDUnique)) do
+          begin
+            SetLength(FFields, 1);
+            FName := trim(QPrimary.Fields.AsString[0]);
+            FFields[0] := FindFieldIndex(Trim(QPrimary.Fields.AsString[1]));
+            unk := FName;
+          end else
+          with Uniques[UniquesCount-1] do
+          begin
+            SetLength(FFields, FieldsCount + 1);
+            FFields[FieldsCount - 1] := FindFieldIndex(Trim(QPrimary.Fields.AsString[1]));
+            include(Fields[FieldsCount - 1].FInfos, fUnique);
+          end;
+        QPrimary.Next;
       end;
-    QIndex.Next;
+    end;
+
   end;
 
   // Check
-  QCheck.Params.AsString[0] := FName;
-  QCheck.Open;
-  while not QCheck.Eof do
-    with TMetaCheck.Create(Self, OIDCheck) do
-    begin
-      FName := Trim(QCheck.Fields.AsString[0]);
-      QCheck.ReadBlob(1, FConstraint);
-      QCheck.Next;
-    end;
+  if (OIDCheck in OIDs) then
+  begin
+    QCheck.Params.AsString[0] := FName;
+    QCheck.Open;
+    while not QCheck.Eof do
+      with TMetaCheck.Create(Self, ord(OIDCheck)) do
+      begin
+        FName := Trim(QCheck.Fields.AsString[0]);
+        QCheck.ReadBlob(1, FConstraint);
+        QCheck.Next;
+      end;
+  end;
 
   // TRIGGER
-  QTrigger.Params.AsString[0] := FName;
-  QTrigger.Open;
-  while not QTrigger.Eof do
+  if (OIDTableTrigger in OIDs) then
   begin
-    TMetaTrigger.Create(Self, OIDTableTrigger).LoadFromQuery(QTrigger);
-    QTrigger.Next;
+    QTrigger.Params.AsString[0] := FName;
+    QTrigger.Open;
+    while not QTrigger.Eof do
+    begin
+      TMetaTrigger.Create(Self, ord(OIDTableTrigger)).LoadFromQuery(QTrigger);
+      QTrigger.Next;
+    end;
   end;
 end;
 
@@ -1065,32 +1112,32 @@ end;
 procedure TMetaTable.SaveToDDL(Stream: TStringStream);
 begin
   inherited;
-  SaveNode(Stream, OIDPrimary);
-  SaveNode(Stream, OIDUnique);
-  SaveNode(Stream, OIDIndex);
-  SaveNode(Stream, OIDForeign);
-  SaveNode(Stream, OIDCheck);
-  SaveNode(Stream, OIDTableTrigger, NewLine);
+  SaveNode(Stream, ord(OIDPrimary));
+  SaveNode(Stream, ord(OIDUnique));
+  SaveNode(Stream, ord(OIDIndex));
+  SaveNode(Stream, ord(OIDForeign));
+  SaveNode(Stream, ord(OIDCheck));
+  SaveNode(Stream, ord(OIDTableTrigger), NewLine);
 end;
 
 function TMetaTable.GetIndices(const Index: Integer): TMetaIndex;
 begin
-  Result := TMetaIndex(GetItems(OIDIndex, Index))
+  Result := TMetaIndex(GetItems(ord(OIDIndex), Index))
 end;
 
 function TMetaTable.GetIndicesCount: Integer;
 begin
-  Result := FNodeItems[OIDIndex].Childs.Count;
+  Result := FNodeItems[ord(OIDIndex)].Childs.Count;
 end;
 
 function TMetaTable.GetForeign(const Index: Integer): TMetaForeign;
 begin
-  Result := TMetaForeign(GetItems(OIDForeign, Index))
+  Result := TMetaForeign(GetItems(ord(OIDForeign), Index))
 end;
 
 function TMetaTable.GetForeignCount: Integer;
 begin
-  Result := FNodeItems[OIDForeign].Childs.Count;
+  Result := FNodeItems[ord(OIDForeign)].Childs.Count;
 end;
 
 function TMetaTable.FindFieldIndex(const name: String): Integer;
@@ -1103,22 +1150,22 @@ end;
 
 function TMetaTable.GetChecks(const Index: Integer): TMetaCheck;
 begin
-  Result := TMetaCheck(GetItems(OIDCheck, Index));
+  Result := TMetaCheck(GetItems(ord(OIDCheck), Index));
 end;
 
 function TMetaTable.GetChecksCount: Integer;
 begin
-  Result := FNodeItems[OIDCheck].Childs.Count;
+  Result := FNodeItems[ord(OIDCheck)].Childs.Count;
 end;
 
 function TMetaTable.GetTriggers(const Index: Integer): TMetaTrigger;
 begin
-  Result := TMetaTrigger(GetItems(OIDTableTrigger, Index));
+  Result := TMetaTrigger(GetItems(ord(OIDTableTrigger), Index));
 end;
 
 function TMetaTable.GetTriggersCount: Integer;
 begin
-  Result := FNodeItems[OIDTableTrigger].Childs.Count;
+  Result := FNodeItems[ord(OIDTableTrigger)].Childs.Count;
 end;
 
 procedure TMetaTable.SaveToDDLNode(Stream: TStringStream);
@@ -1262,9 +1309,9 @@ begin
       blr_sql_date  : FFieldType := uftDate;
       blr_sql_time  : FFieldType := uftTime;
       blr_int64     : FFieldType := uftInt64;
-      {$IFDEF IB7_UP}
+  {$IFDEF IB7_UP}
       blr_boolean_dtype: FFieldType := uftBoolean;
-      {$ENDIF IB7_UP}
+  {$ENDIF}
     end;
   If (FFieldType in [uftChar, uftVarchar, uftCstring]) and
     not QField.Fields.IsNull[4] then
@@ -1329,6 +1376,13 @@ begin
   AddClass(TMetaException);
   AddClass(TMetaUDF);
   AddClass(TMetaRole);
+
+  FOIDDatabases := ALLOBjects;
+  FOIDTables := ALLTables;
+  FOIDViews := ALLViews;
+  FOIDProcedures := ALLProcedures;
+  FOIDUDFs := ALLUDFs;
+  FSysInfos := False;
 end;
 
 procedure TMetaDataBase.LoadFromDatabase(Transaction: TJvUIBTransaction);
@@ -1353,157 +1407,189 @@ begin
 
   FName := Transaction.DataBase.DatabaseName;
 
-
-  Configure(QNames, QRYTables);
+  Configure(QNames, '');
+  if FSysInfos then
+    Configure(QTrigger, QRYSysTrigger) else
+    Configure(QTrigger, QRYTrigger);
   Configure(QCharset, QRYCharset, True);
   Configure(QFields, QRYTableFields);
   Configure(QPrimary, QRYUnique, True);
   Configure(QIndex, QRYIndex);
   Configure(QForeign, QRYForeign);
   Configure(QCheck, QRYCheck);
-  Configure(QTrigger, QRYTrigger);
   try
     // preload Charsets
     QCharset.Open;
     QCharset.FetchAll;
 
     // DOMAINS
-    FNodeItems[OIDDomains].Childs.Clear;
-    QNames.SQL.Text := QRYDomains;
-    QNames.Open;
-    while not QNames.Eof do
+    if (OIDDomain in FOIDDatabases) then
     begin
-      with TMetaDomain.Create(Self, OIDDomains) do
-        LoadFromQuery(QNames, QCharset);
-      QNames.Next;
+      FNodeItems[ord(OIDDomain)].Childs.Clear;
+      if FSysInfos then
+        QNames.SQL.Text := QRYSysDomains else
+        QNames.SQL.Text := QRYDomains;
+      QNames.Open;
+      while not QNames.Eof do
+      begin
+        with TMetaDomain.Create(Self, ord(OIDDomain)) do
+          LoadFromQuery(QNames, QCharset);
+        QNames.Next;
+      end;
     end;
 
     // GENERATORS
-    FNodeItems[OIDGenerator].Childs.Clear;
-    QNames.SQL.Text := QRYGenerators;
-    QNames.Open;
-    while not QNames.Eof do
+    if (OIDGenerator in FOIDDatabases) then
     begin
-      with TMetaGenerator.Create(Self, OIDGenerator) do
-        LoadFromDataBase(Transaction, Trim(QNames.Fields.AsString[0]));
-      QNames.Next;
+      FNodeItems[ord(OIDGenerator)].Childs.Clear;
+      QNames.SQL.Text := QRYGenerators;
+      QNames.Open;
+      while not QNames.Eof do
+      begin
+        with TMetaGenerator.Create(Self, ord(OIDGenerator)) do
+          LoadFromDataBase(Transaction, Trim(QNames.Fields.AsString[0]));
+        QNames.Next;
+      end;
     end;
 
     // TABLES
-    FNodeItems[OIDTable].Childs.Clear;
-    QNames.SQL.Text := QRYTables;
-    QNames.Open;
-    while not QNames.Eof do
+    if (OIDTable in FOIDDatabases) then
     begin
-      with TMetaTable.Create(Self, OIDTable) do
-        LoadFromDataBase(QNames, QFields, QCharset, QPrimary,
-           QIndex, QForeign, QCheck, QTrigger);
-      QNames.Next;
-    end;
-
-    // FOREIGN
-    for i := 0 to TablesCount - 1 do
-    begin
-      QForeign.Params.AsString[0] := Tables[i].Name;
-      QForeign.Open;
-      constr := '';
-      cForField := '';
-      while not QForeign.Eof do
+      FNodeItems[ord(OIDTable)].Childs.Clear;
+      if FSysInfos then
+        QNames.SQL.Text := QRYSysTables else
+        QNames.SQL.Text := QRYTables;
+      QNames.Open;
+      while not QNames.Eof do
       begin
-        if (constr <> Trim(QForeign.Fields.AsString[0])) then // new
+        with TMetaTable.Create(Self, ord(OIDTable)) do
+          LoadFromDataBase(QNames, QFields, QCharset, QPrimary,
+            QIndex, QForeign, QCheck, QTrigger, FOIDTables);
+        QNames.Next;
+      end;
+
+      // FOREIGN
+      if ([OIDForeign, OIDTableField] <= FOIDTables) then
+      begin
+        for i := 0 to TablesCount - 1 do
         begin
-          with TMetaForeign.Create(Tables[i], OIDForeign) do
+          QForeign.Params.AsString[0] := Tables[i].Name;
+          QForeign.Open;
+          constr := '';
+          cForField := '';
+          while not QForeign.Eof do
           begin
-            FName := Trim(QForeign.Fields.AsString[0]);
-            constr := FName;
-            FForTable := FindTableIndex(Trim(QForeign.Fields.AsString[3]));
-            if 'TABLE1' = Trim(QForeign.Fields.AsString[3]) then
-              Beep;
-            SetLength(FFields, 1);
-            FFields[0] := Tables[i].FindFieldIndex(Trim(QForeign.Fields.AsString[5]));
-            include(Tables[i].Fields[FFields[0]].FInfos, fForeign);
-            SetLength(FForFields, 1);
-            FForFields[0] := ForTable.FindFieldIndex(Trim(QForeign.Fields.AsString[4]));
-            cForField := ForFields[0].Name;
+            if (constr <> Trim(QForeign.Fields.AsString[0])) then // new
+            begin
+              with TMetaForeign.Create(Tables[i], ord(OIDForeign)) do
+              begin
+                FName := Trim(QForeign.Fields.AsString[0]);
+                constr := FName;
+                FForTable := FindTableIndex(Trim(QForeign.Fields.AsString[3]));
+                if 'TABLE1' = Trim(QForeign.Fields.AsString[3]) then
+                  beep;
+                SetLength(FFields, 1);
+                FFields[0] := Tables[i].FindFieldIndex(Trim(QForeign.Fields.AsString[5]));
+                include(Tables[i].Fields[FFields[0]].FInfos, fForeign);
+                SetLength(FForFields, 1);
+                FForFields[0] := ForTable.FindFieldIndex(Trim(QForeign.Fields.AsString[4]));
+                cForField := ForFields[0].Name;
 
-            str := Trim(QForeign.Fields.AsString[1]);
-            if str = 'RESTRICT' then FOnUpdate := Restrict else
-            if str = 'CASCADE'  then FOnUpdate := Cascade  else
-            if str = 'SET NULL' then FOnUpdate := SetNull  else
-              FOnUpdate := SetDefault;
+                str := Trim(QForeign.Fields.AsString[1]);
+                if str = 'RESTRICT' then FOnUpdate := Restrict else
+                if str = 'CASCADE'  then FOnUpdate := Cascade  else
+                if str = 'SET NULL' then FOnUpdate := SetNull  else
+                  FOnUpdate := SetDefault;
 
-            str := Trim(QForeign.Fields.AsString[2]);
-            if str = 'RESTRICT' then FOnDelete := Restrict else
-            if str = 'CASCADE'  then FOnDelete := Cascade  else
-            if str = 'SET NULL' then FOnDelete := SetNull  else
-              FOnDelete := SetDefault;
+                str := Trim(QForeign.Fields.AsString[2]);
+                if str = 'RESTRICT' then FOnDelete := Restrict else
+                if str = 'CASCADE'  then FOnDelete := Cascade  else
+                if str = 'SET NULL' then FOnDelete := SetNull  else
+                  FOnDelete := SetDefault;
 
+              end;
+            end else
+            with Tables[i].Foreign[Tables[i].ForeignCount - 1] do
+            begin
+              SetLength(FFields, Length(FFields)+1);
+              FFields[FieldsCount-1] := Tables[i].FindFieldIndex(Trim(QForeign.Fields.AsString[5]));
+              include(Tables[i].Fields[FFields[FieldsCount-1]].FInfos, fForeign);
+              SetLength(FForFields, Length(FForFields)+1);
+              FForFields[ForFieldsCount-1] := ForTable.FindFieldIndex(Trim(QForeign.Fields.AsString[4]));
+            end;
+            QForeign.Next;
           end;
-        end else
-        with Tables[i].Foreign[Tables[i].ForeignCount - 1] do
-        begin
-          SetLength(FFields, Length(FFields)+1);
-          FFields[FieldsCount-1] := Tables[i].FindFieldIndex(Trim(QForeign.Fields.AsString[5]));
-          include(Tables[i].Fields[FFields[FieldsCount-1]].FInfos, fForeign);
-          SetLength(FForFields, Length(FForFields)+1);
-          FForFields[ForFieldsCount-1] := ForTable.FindFieldIndex(Trim(QForeign.Fields.AsString[4]));
         end;
-        QForeign.Next;
       end;
     end;
 
     // VIEWS
-    FNodeItems[OIDView].Childs.Clear;
-    QNames.SQL.Text := QRYView;
-    QNames.Open;
-    while not QNames.Eof do
+    if (OIDView in FOIDDatabases) then
     begin
-      with TMetaView.Create(Self, OIDView) do
-        LoadFromDataBase(QNames, QFields, QTrigger, QCharset);
-      QNames.Next;
+      FNodeItems[ord(OIDView)].Childs.Clear;
+      QNames.SQL.Text := QRYView;
+      QNames.Open;
+      while not QNames.Eof do
+      begin
+        with TMetaView.Create(Self, ord(OIDView)) do
+          LoadFromDataBase(QNames, QFields, QTrigger, QCharset, FOIDViews);
+        QNames.Next;
+      end;
     end;
 
     // PROCEDURE
-    FNodeItems[OIDProcedure].Childs.Clear;
-    QNames.SQL.Text := QRYProcedures;
-    QFields.SQL.Text := QRYProcFields;
-    QNames.Open;
-    while not QNames.Eof do
+    if (OIDProcedure in FOIDDatabases) then
     begin
-      with TMetaProcedure.Create(Self, OIDProcedure) do
-        LoadFromQuery(QNames, QFields, QCharset);
-      QNames.Next;
+      FNodeItems[ord(OIDProcedure)].Childs.Clear;
+      QNames.SQL.Text := QRYProcedures;
+      QFields.SQL.Text := QRYProcFields;
+      QNames.Open;
+      while not QNames.Eof do
+      begin
+        with TMetaProcedure.Create(Self, ord(OIDProcedure)) do
+          LoadFromQuery(QNames, QFields, QCharset, FOIDProcedures);
+        QNames.Next;
+      end;
     end;
 
     // EXCEPTION
-    FNodeItems[OIDException].Childs.Clear;
-    QNames.SQL.Text := QRYExceptions;
-    QNames.Open;
-    while not QNames.Eof do
+    if (OIDException in FOIDDatabases) then
     begin
-      TMetaException.Create(Self, OIDException).LoadFromQuery(QNames);
-      QNames.Next;
+      FNodeItems[ord(OIDException)].Childs.Clear;
+      QNames.SQL.Text := QRYExceptions;
+      QNames.Open;
+      while not QNames.Eof do
+      begin
+        TMetaException.Create(Self, ord(OIDException)).LoadFromQuery(QNames);
+        QNames.Next;
+      end;
     end;
 
     // UDF
-    FNodeItems[OIDUDF].Childs.Clear;
-    QNames.SQL.Text := QRYUDF;
-    QFields.SQL.Text := QRYUDFFields;
-    QNames.Open;
-    while not QNames.Eof do
+    if (OIDUDF in FOIDDatabases) then
     begin
-      TMetaUDF.Create(Self, OIDUDF).LoadFromQuery(QNames, QFields, QCharset);
-      QNames.Next;
+      FNodeItems[ord(OIDUDF)].Childs.Clear;
+      QNames.SQL.Text := QRYUDF;
+      QFields.SQL.Text := QRYUDFFields;
+      QNames.Open;
+      while not QNames.Eof do
+      begin
+        TMetaUDF.Create(Self, ord(OIDUDF)).LoadFromQuery(QNames, QFields, QCharset, FOIDUDFs);
+        QNames.Next;
+      end;
     end;
 
     // ROLES
-    FNodeItems[OIDRole].Childs.Clear;
-    QNames.SQL.Text := QRYRoles;
-    QNames.Open;
-    while not QNames.Eof do
+    if (OIDRole in FOIDDatabases) then
     begin
-      TMetaRole.Create(Self, OIDRole).LoadFromQuery(QNames);
-      QNames.Next;
+      FNodeItems[ord(OIDRole)].Childs.Clear;
+      QNames.SQL.Text := QRYRoles;
+      QNames.Open;
+      while not QNames.Eof do
+      begin
+        TMetaRole.Create(Self, ord(OIDRole)).LoadFromQuery(QNames);
+        QNames.Next;
+      end;
     end;
   finally
     QNames.Free;
@@ -1557,22 +1643,22 @@ var i: Integer;
     end;
   end;
 begin
-  SaveMainNodes('ROLES', OIDRole, NewLine);
-  SaveMainNodes('FUNCTIONS', OIDUDF, NewLine);
-  SaveMainNodes('DOMAINS', OIDDomains, BreakLine);
-  SaveMainNodes('GENERATORS', OIDGenerator);
-  SaveMainNodes('EXEPTIONS', OIDException, BreakLine);
-  SaveMainNodes('PROCEDURES', OIDProcedure);
-  SaveMainNodes('TABLES', OIDTable);
-  SaveMainNodes('VIEWS', OIDView);
+  SaveMainNodes('ROLES', ord(OIDRole), NewLine);
+  SaveMainNodes('FUNCTIONS', ord(OIDUDF), NewLine);
+  SaveMainNodes('DOMAINS', ord(OIDDomain), BreakLine);
+  SaveMainNodes('GENERATORS', ord(OIDGenerator));
+  SaveMainNodes('EXEPTIONS', ord(OIDException), BreakLine);
+  SaveMainNodes('PROCEDURES', ord(OIDProcedure));
+  SaveMainNodes('TABLES', ord(OIDTable));
+  SaveMainNodes('VIEWS', ord(OIDView));
 
-  SaveChildNodes('UNIQUE',  OIDTable, OIDUnique);
-  SaveChildNodes('PRIMARY', OIDTable, OIDPrimary);
-  SaveChildNodes('FOREIGN', OIDTable, OIDForeign);
-  SaveChildNodes('INDICES', OIDTable, OIDIndex);
-  SaveChildNodes('CHECKS',  OIDTable, OIDCheck, NewLine);
-  SaveChildNodes('TRIGGERS', OIDTable, OIDTableTrigger, NewLine);
-  SaveChildNodes('TRIGGERS (Views)', OIDView, OIDViewTrigers, NewLine);
+  SaveChildNodes('UNIQUE',  ord(OIDTable), ord(OIDUnique));
+  SaveChildNodes('PRIMARY', ord(OIDTable), ord(OIDPrimary));
+  SaveChildNodes('FOREIGN', ord(OIDTable), ord(OIDForeign));
+  SaveChildNodes('INDICES', ord(OIDTable), ord(OIDIndex));
+  SaveChildNodes('CHECKS',  ord(OIDTable), ord(OIDCheck), NewLine);
+  SaveChildNodes('TRIGGERS', ord(OIDTable), ord(OIDTableTrigger), NewLine);
+  SaveChildNodes('TRIGGERS (Views)', ord(OIDView), ord(OIDViewTrigers), NewLine);
 
   if ProceduresCount > 0 then
   begin
@@ -1589,22 +1675,22 @@ end;
 
 function TMetaDataBase.GetGenerators(const Index: Integer): TMetaGenerator;
 begin
-  Result := TMetaGenerator(GetItems(OIDGenerator, Index));
+  Result := TMetaGenerator(GetItems(ord(OIDGenerator), Index));
 end;
 
 function TMetaDataBase.GetGeneratorsCount: Integer;
 begin
-  Result := FNodeItems[OIDGenerator].Childs.Count
+  Result := FNodeItems[ord(OIDGenerator)].Childs.Count
 end;
 
 function TMetaDataBase.GetTables(const Index: Integer): TMetaTable;
 begin
-  Result := TMetaTable(GetItems(OIDTable, Index));
+  Result := TMetaTable(GetItems(ord(OIDTable), Index));
 end;
 
 function TMetaDataBase.GetTablesCount: Integer;
 begin
-  Result := FNodeItems[OIDTable].Childs.Count
+  Result := FNodeItems[ord(OIDTable)].Childs.Count
 end;
 
 function TMetaDataBase.FindTableName(const TableName: string): TMetaTable;
@@ -1642,52 +1728,52 @@ end;
 
 function TMetaDataBase.GetViews(const Index: Integer): TMetaView;
 begin
-  Result := TMetaView(GetItems(OIDView, Index));
+  Result := TMetaView(GetItems(ord(OIDView), Index));
 end;
 
 function TMetaDataBase.GetViewsCount: Integer;
 begin
-  Result := FNodeItems[OIDView].Childs.Count
+  Result := FNodeItems[ord(OIDView)].Childs.Count
 end;
 
 function TMetaDataBase.GetDomains(const Index: Integer): TMetaDomain;
 begin
-  Result := TMetaDomain(GetItems(OIDDomains, Index));
+  Result := TMetaDomain(GetItems(ord(OIDDomain), Index));
 end;
 
 function TMetaDataBase.GetDomainsCount: Integer;
 begin
-  Result := FNodeItems[OIDDomains].Childs.Count
+  Result := FNodeItems[ord(OIDDomain)].Childs.Count
 end;
 
 function TMetaDataBase.GetProcedures(const Index: Integer): TMetaProcedure;
 begin
-  Result := TMetaProcedure(GetItems(OIDProcedure, Index));
+  Result := TMetaProcedure(GetItems(ord(OIDProcedure), Index));
 end;
 
 function TMetaDataBase.GetProceduresCount: Integer;
 begin
-  Result := FNodeItems[OIDProcedure].Childs.Count
+  Result := FNodeItems[ord(OIDProcedure)].Childs.Count
 end;
 
 function TMetaDataBase.GetExceptions(const Index: Integer): TMetaException;
 begin
-  Result := TMetaException(GetItems(OIDException, Index));
+  Result := TMetaException(GetItems(ord(OIDException), Index));
 end;
 
 function TMetaDataBase.GetExceptionsCount: Integer;
 begin
-  Result := FNodeItems[OIDException].Childs.Count
+  Result := FNodeItems[ord(OIDException)].Childs.Count
 end;
 
 function TMetaDataBase.GetUDFS(const Index: Integer): TMetaUDF;
 begin
-  Result := TMetaUDF(GetItems(OIDUDF, Index));
+  Result := TMetaUDF(GetItems(ord(OIDUDF), Index));
 end;
 
 function TMetaDataBase.GetUDFSCount: Integer;
 begin
-  Result := FNodeItems[OIDUDF].Childs.Count
+  Result := FNodeItems[ord(OIDUDF)].Childs.Count
 end;
 
 class function TMetaDataBase.NodeClass: string;
@@ -1703,17 +1789,30 @@ end;
 
 function TMetaDataBase.GetRoles(const Index: Integer): TMetaRole;
 begin
-  Result := TMetaRole(GetItems(OIDRole, Index));
+  Result := TMetaRole(GetItems(ord(OIDRole), Index));
 end;
 
 function TMetaDataBase.GetRolesCount: Integer;
 begin
-  Result := FNodeItems[OIDRole].Childs.Count
+  Result := FNodeItems[ord(OIDRole)].Childs.Count
 end;
 
 class function TMetaDataBase.NodeType: TMetaNodeType;
 begin
   Result := MetaDatabase;
+end;
+
+function TMetaDataBase.FindProcName(
+  const ProcName: string): TMetaProcedure;
+var i: Integer;
+begin
+  for i := 0 to ProceduresCount - 1 do
+    if Procedures[i].Name = ProcName then
+    begin
+      Result := Procedures[i];
+      Exit;
+    end;
+  raise Exception.CreateFmt('Procedure %s not found', [ProcName]);
 end;
 
 { TMetaConstraint }
@@ -1765,7 +1864,7 @@ begin
   begin
     WriteString(Stream, FName);
     for i := 0 to i - 1 do
-      Stream.Write(FFields[i], SizeOf(FFields[i]));
+      Stream.Write(FFields[i], sizeof(FFields[i]));
   end;
 end;
 
@@ -1929,7 +2028,7 @@ begin
   Stream.Read(i, SizeOf(i));
   SetLength(FForFields, i);
   for i := 0 to i - 1 do
-    Stream.Read(FForFields[i], SizeOf(FForFields[i]));
+    Stream.Read(FForFields[i], sizeof(FForFields[i]));
 end;
 
 procedure TMetaForeign.SaveToDDLNode(Stream: TStringStream);
@@ -1982,7 +2081,7 @@ begin
   i := ForFieldsCount;
   Stream.Write(i, SizeOf(i));
   for i := 0 to i - 1 do
-    Stream.Write(FForFields[i], SizeOf(FForFields[i]));
+    Stream.Write(FForFields[i], sizeof(FForFields[i]));
 end;
 
 class function TMetaForeign.NodeType: TMetaNodeType;
@@ -2113,12 +2212,12 @@ end;
 
 function TMetaView.GetFields(const Index: Integer): TMetaField;
 begin
-  Result := TMetaField(GetItems(OIDViewFields, Index))
+  Result := TMetaField(GetItems(ord(OIDViewFields), Index))
 end;
 
 function TMetaView.GetFieldsCount: Integer;
 begin
-  Result := FNodeItems[OIDViewFields].Childs.Count;
+  Result := FNodeItems[ord(OIDViewFields)].Childs.Count;
 end;
 
 class function TMetaView.NodeClass: string;
@@ -2128,35 +2227,43 @@ end;
 
 function TMetaView.GetTriggers(const Index: Integer): TMetaTrigger;
 begin
-  Result := TMetaTrigger(GetItems(OIDViewTrigers, Index))
+  Result := TMetaTrigger(GetItems(ord(OIDViewTrigers), Index))
 end;
 
 function TMetaView.GetTriggersCount: Integer;
 begin
-  Result := FNodeItems[OIDViewTrigers].Childs.Count;
+  Result := FNodeItems[ord(OIDViewTrigers)].Childs.Count;
 end;
 
 procedure TMetaView.LoadFromDataBase(QName, QFields, QTriggers,
-  QCharset: TJvUIBStatement);
+  QCharset: TJvUIBStatement; OIDs: TOIDViews);
 begin
   FName := Trim(QName.Fields.AsString[0]);
   QName.ReadBlob(1, FSource);
   FSource := Trim(FSource);
-  QFields.Params.AsString[0] := FName;
-  QFields.Open;
-  while not QFields.Eof do
+
+  // FIELD
+  if (OIDViewFields in OIDs) then
   begin
-    TMetaField.Create(Self, OIDViewFields).LoadFromQuery(QFields, QCharset);
-    QFields.Next;
+    QFields.Params.AsString[0] := FName;
+    QFields.Open;
+    while not QFields.Eof do
+    begin
+      TMetaField.Create(Self, ord(OIDViewFields)).LoadFromQuery(QFields, QCharset);
+      QFields.Next;
+    end;
   end;
 
   // TRIGGER
-  QTriggers.Params.AsString[0] := FName;
-  QTriggers.Open;
-  while not QTriggers.Eof do
+  if (OIDViewTrigers in OIDs) then
   begin
-    TMetaTrigger.Create(Self, OIDViewTrigers).LoadFromQuery(QTriggers);
-    QTriggers.Next;
+    QTriggers.Params.AsString[0] := FName;
+    QTriggers.Open;
+    while not QTriggers.Eof do
+    begin
+      TMetaTrigger.Create(Self, ord(OIDViewTrigers)).LoadFromQuery(QTriggers);
+      QTriggers.Next;
+    end;
   end;
 
 end;
@@ -2170,7 +2277,7 @@ end;
 procedure TMetaView.SaveToDDL(Stream: TStringStream);
 begin
   inherited;
-  SaveNode(Stream, OIDViewTrigers, NewLine);
+  SaveNode(Stream, ord(OIDViewTrigers), NewLine);
 end;
 
 procedure TMetaView.SaveToDDLNode(Stream: TStringStream);
@@ -2235,12 +2342,12 @@ end;
 
 function TMetaProcedure.GetInputFields(const Index: Integer): TMetaProcInField;
 begin
-  Result := TMetaProcInField(GetItems(OIDProcFieldIn, Index))
+  Result := TMetaProcInField(GetItems(ord(OIDProcFieldIn), Index))
 end;
 
 function TMetaProcedure.GetInputFieldsCount: Integer;
 begin
-  Result := FNodeItems[OIDProcFieldIn].Childs.Count;
+  Result := FNodeItems[ord(OIDProcFieldIn)].Childs.Count;
 end;
 
 class function TMetaProcedure.NodeClass: string;
@@ -2250,12 +2357,12 @@ end;
 
 function TMetaProcedure.GetOutputFields(const Index: Integer): TMetaProcOutField;
 begin
-  Result := TMetaProcOutField(GetItems(OIDProcFieldOut, Index))
+  Result := TMetaProcOutField(GetItems(ord(OIDProcFieldOut), Index))
 end;
 
 function TMetaProcedure.GetOutputFieldsCount: Integer;
 begin
-  Result := FNodeItems[OIDProcFieldOut].Childs.Count;
+  Result := FNodeItems[ord(OIDProcFieldOut)].Childs.Count;
 end;
 
 procedure TMetaProcedure.InternalSaveToDDL(Stream: TStringStream;
@@ -2291,26 +2398,32 @@ begin
 end;
 
 procedure TMetaProcedure.LoadFromQuery(QNames, QFields,
-  QCharset: TJvUIBStatement);
+  QCharset: TJvUIBStatement; OIDs: TOIDProcedures);
 begin
   FName := Trim(QNames.Fields.AsString[0]);
   QNames.ReadBlob(1, FSource);
   QFields.Params.AsString[0] := FName;
 
-  QFields.Params.AsSmallint[1] := 0; // in
-  QFields.Open;
-  while not QFields.Eof do
+  if (OIDProcFieldIn in OIDs) then
   begin
-    TMetaProcInField.Create(Self, OIDProcFieldIn).LoadFromQuery(QFields, QCharset);
-    QFields.Next;
+    QFields.Params.AsSmallint[1] := 0; // in
+    QFields.Open;
+    while not QFields.Eof do
+    begin
+      TMetaProcInField.Create(Self, ord(OIDProcFieldIn)).LoadFromQuery(QFields, QCharset);
+      QFields.Next;
+    end;
   end;
 
-  QFields.Params.AsSmallint[1] := 1; // out
-  QFields.Open;
-  while not QFields.Eof do
+  if (OIDProcFieldOut in OIDs) then
   begin
-    TMetaProcOutField.Create(Self, OIDProcFieldOut).LoadFromQuery(QFields, QCharset);
-    QFields.Next;
+    QFields.Params.AsSmallint[1] := 1; // out
+    QFields.Open;
+    while not QFields.Eof do
+    begin
+      TMetaProcOutField.Create(Self, ord(OIDProcFieldOut)).LoadFromQuery(QFields, QCharset);
+      QFields.Next;
+    end;
   end;
 end;
 
@@ -2456,20 +2569,23 @@ begin
   inherited;
 end;
 
-procedure TMetaUDF.LoadFromQuery(QNames, QFields, QCharset: TJvUIBStatement);
+procedure TMetaUDF.LoadFromQuery(QNames, QFields, QCharset: TJvUIBStatement; OIDs: TOIDUDFs);
 begin
   FName := Trim(QNames.Fields.AsString[0]);
   FModule := QNames.Fields.AsString[1];
   FEntry := Trim(QNames.Fields.AsString[2]);
   FReturn := QNames.Fields.AsSmallint[3];
-  QFields.Params.AsString[0] := FName;
-  QFields.Open;
-  while not QFields.Eof do
-  begin
-    TMetaUDFField.Create(Self, OIDUDFField).LoadFromQuery(QFields, QCharset);
-    QFields.Next;
-  end;
 
+  if (OIDUDFField in OIDs) then
+  begin
+    QFields.Params.AsString[0] := FName;
+    QFields.Open;
+    while not QFields.Eof do
+    begin
+      TMetaUDFField.Create(Self, ord(OIDUDFField)).LoadFromQuery(QFields, QCharset);
+      QFields.Next;
+    end;
+  end;
 end;
 
 constructor TMetaUDF.Create(AOwner: TMetaNode; ClassIndex: Integer);
@@ -2480,12 +2596,12 @@ end;
 
 function TMetaUDF.GetFields(const Index: Integer): TMetaUDFField;
 begin
-  Result := TMetaUDFField(GetItems(OIDUDFField, Index))
+  Result := TMetaUDFField(GetItems(ord(OIDUDFField), Index))
 end;
 
 function TMetaUDF.GetFieldsCount: Integer;
 begin
-  Result := FNodeItems[OIDUDFField].Childs.Count;
+  Result := FNodeItems[ord(OIDUDFField)].Childs.Count;
 end;
 
 class function TMetaUDF.NodeType: TMetaNodeType;
@@ -2519,6 +2635,7 @@ begin
 
   FDomain := -1;
   if not (self is TMetaDomain) then
+    if (OIDDomain in TMetaDataBase(FOwner.FOwner).FOIDDatabases) then
     if not (Q.Fields.IsNull[10] or (Copy(Q.Fields.AsString[10],1,4) = 'RDB$')) then
       FDomain :=
         TMetaDataBase(FOwner.FOwner).FindDomainIndex(Trim(Q.Fields.AsString[10]));

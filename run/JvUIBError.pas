@@ -24,16 +24,14 @@
 {                                                                              }
 {******************************************************************************}
 
-{$I jvcl.inc}
-{$I jvuib.inc}
-
 unit JvUIBError;
+{$I JVCL.INC}
+{$I JvUIB.inc}
 
 interface
-
 {$IFDEF USE_IBERROR_H}
 (*$HPPEMIT '#include<iberror.h>' *)
-{$ENDIF USE_IBERROR_H}
+{$ENDIF}
 
 //***********************/
 //*   ISC Error Codes   */

@@ -25,15 +25,15 @@
 {                                                                              }
 {******************************************************************************}
 
-{$I jvcl.inc}
-{$I jvuib.inc}
-
 unit JvUIBDataSet;
+
+{$I JVCL.INC}
+{$I JvUIB.inc}
 
 interface
 
 uses
-  SysUtils, Classes, Db, JvUIB, JvUIBLib, JvUIBase, JvUIBConst;
+  SysUtils, Classes, DB, JvUIB, JvUIBLib, JvUIBase, JvUIBConst;
 
 type
 
@@ -104,7 +104,7 @@ type
 
     {$IFNDEF FPC}
     procedure SetActive(Value: Boolean); override;
-    {$ENDIF FPC}
+    {$ENDIF}
 
     property Transaction: TJvUIBTransaction read GetTransaction write SetTransaction;
     property Database: TJvUIBDataBase read GetDatabase write SetDatabase;
@@ -116,16 +116,16 @@ type
     property Params: TSQLParams read GetParams;
     property RowsAffected: Cardinal read GetRowsAffected;
 
-    {$IFNDEF COMPILER5_UP}
-    function BCDToCurr(BCD: Pointer; var Curr: Currency): Boolean; {$IFNDEF FPC} override; {$ENDIF}
+{$IFNDEF COMPILER5_UP}
+    function BCDToCurr(BCD: Pointer; var Curr: Currency): Boolean; {$IFNDEF FPC}override;{$ENDIF}
     function CurrToBCD(const Curr: Currency; BCD: Pointer; Precision,
-      Decimals: Integer): Boolean; {$IFNDEF FPC} override; {$ENDIF}
-    {$ENDIF COMPILER5_UP}
+      Decimals: Integer): Boolean; {$IFNDEF FPC}override;{$ENDIF}
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetFieldData(Field: TField; Buffer: Pointer): Boolean; overload; override;
-    function GetFieldData(FieldNo: Integer; Buffer: Pointer): Boolean; overload; {$IFNDEF FPC} override; {$ENDIF}
+    function GetFieldData(FieldNo: Integer; Buffer: Pointer): Boolean; overload;{$IFNDEF FPC} override; {$ENDIF}
     function CreateBlobStream(Field: TField; Mode: TBlobStreamMode): TStream; override;
     procedure Execute;
     procedure ExecSQL;
@@ -155,9 +155,9 @@ type
     property BufferChunks;
     property Transaction;
     property Database;
-    {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
     property UniDirectional;
-    {$ENDIF COMPILER6_UP}
+{$ENDIF}
     property OnClose;
     property OnError;
     property SQL;
@@ -173,11 +173,9 @@ type
   end;
 
 implementation
-
 {$IFDEF COMPILER6_UP}
-uses
-  fmtbcd;
-{$ENDIF COMPILER6_UP}
+uses fmtbcd;
+{$ENDIF}
 
 procedure TJvUIBCustomDataSet.InternalOpen;
 begin
@@ -189,8 +187,8 @@ begin
   FStatement.Execute;
   FCurrentRecord := -1;
   FComplete := False;
-  FRecordBufferSize := FRecordSize + SizeOf(TUIBBookMark);
-  BookmarkSize := SizeOf(Integer);
+  FRecordBufferSize := FRecordSize + sizeof (TUIBBookMark);
+  BookmarkSize := sizeOf (Integer);
   FIsOpen := True;
 end;
 
@@ -419,9 +417,9 @@ end;
 
 procedure TJvUIBCustomDataSet.SetUniDirectional(const Value: boolean);
 begin
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   inherited SetUniDirectional(Value);
-  {$ENDIF COMPILER6_UP}
+{$ENDIF}
   FStatement.CachedFetch := not Value;
 end;
 
@@ -451,23 +449,23 @@ var i: Integer;
     DataType : TFieldType;
     Size     : Word;
     Precision: Integer;
-{$ENDIF FPC}
+{$ENDIF}
 begin
   FStatement.Prepare;
   {$IFNDEF FPC}
   FieldDefs.BeginUpdate;
-  {$ENDIF FPC}
+  {$ENDIF}
   FieldDefs.Clear;
   try
     for i := 0 to FStatement.Fields.FieldCount - 1 do
-    with {$IFNDEF FPC} FieldDefs.AddFieldDef, {$ENDIF} FStatement.Fields do
+    with {$IFNDEF FPC}FieldDefs.AddFieldDef,{$ENDIF}FStatement.Fields do
     begin
       {$IFNDEF FPC}
       Name := AliasName[i];
       {$ELSE}
       AName := AliasName[i];
       Precision:=-1;
-      {$ENDIF FPC}
+      {$ENDIF}
       FieldNo := i;
       Required := not IsNullable[i];
       case FieldType[i] of
@@ -491,7 +489,7 @@ begin
                   {$IFDEF COMPILER6_UP}
                   if size > 4 then
                     DataType := ftFMTBcd else
-                  {$ENDIF COMPILER6_UP}
+                  {$ENDIF}
                     DataType := ftBCD;
                 end;
               SQL_INT64,
@@ -505,7 +503,7 @@ begin
                   {$IFDEF COMPILER6_UP}
                   if size > 4 then
                     DataType := ftFMTBcd else
-                  {$ENDIF COMPILER6_UP}
+                  {$ENDIF}
                     DataType := ftBCD;
                 end;
               SQL_DOUBLE:
@@ -536,9 +534,9 @@ begin
         uftDate : DataType := ftDate;
         uftTime : DataType := ftTime;
         uftInt64: DataType := ftLargeint;
-        {$IFDEF IB7_UP}
+      {$IFDEF IB7_UP}
         uftBoolean: DataType := ftBoolean;
-        {$ENDIF IB7_UP}
+      {$ENDIF}
       else
         DataType := ftUnknown;
       end;
@@ -549,12 +547,12 @@ begin
       //If Precision is specified, update the definition
       if Precision<>-1 then
           FieldDefs.Items[FieldNo].Precision:=Precision;
-      {$ENDIF FPC}
+      {$ENDIF}
     end; //With
   finally
     {$IFNDEF FPC}
     FieldDefs.EndUpdate;
-    {$ENDIF FPC}
+    {$ENDIF}
   end;
 end;
 
@@ -588,40 +586,40 @@ begin
             case FStatement.Fields.SQLType[FieldNo] of
               SQL_SHORT:
                 begin
-                  {$IFDEF COMPILER6_UP}
+                {$IFDEF COMPILER6_UP}
                   TBCD(Buffer^) := strToBcd(FloatToStr(PSmallint(sqldata)^ / scaledivisor[sqlscale]));
-                  {$ELSE}
+                {$ELSE}
                   {$IFDEF COMPILER5_UP}
                     CurrToBcd(PSmallint(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
                   {$ELSE}
                      PCurrency(Buffer)^ := PSmallint(sqldata)^/scaledivisor[sqlscale];
-                  {$ENDIF COMPILER5_UP}
-                  {$ENDIF COMPILER6_UP}
+                  {$ENDIF}
+                {$ENDIF}
                 end;
               SQL_LONG:
                 begin
-                  {$IFDEF COMPILER6_UP}
+                {$IFDEF COMPILER6_UP}
                   TBCD(Buffer^) := strToBcd(FloatToStr(PInteger(sqldata)^ / scaledivisor[sqlscale]));
-                  {$ELSE}
+                {$ELSE}
                   {$IFDEF COMPILER5_UP}
                     CurrToBcd(PInteger(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
                   {$ELSE}
                     PCurrency(Buffer)^ := PInteger(sqldata)^/scaledivisor[sqlscale];
-                  {$ENDIF COMPILER5_UP}
-                  {$ENDIF COMPILER6_UP}
+                  {$ENDIF}
+                {$ENDIF}
                 end;
               SQL_INT64,
               SQL_QUAD:
                 begin
-                  {$IFDEF COMPILER6_UP}
+                {$IFDEF COMPILER6_UP}
                   TBCD(Buffer^) := strToBcd(FloatToStr(PInt64(sqldata)^ / scaledivisor[sqlscale]));
-                  {$ELSE}
+                {$ELSE}
                   {$IFDEF COMPILER5_UP}
                     CurrToBcd(PInt64(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
                   {$ELSE}
                     PCurrency(Buffer)^ := PInt64(sqldata)^/scaledivisor[sqlscale];
-                  {$ENDIF COMPILER5_UP}
-                  {$ENDIF COMPILER6_UP}
+                  {$ENDIF}
+                {$ENDIF}
                 end;
               SQL_DOUBLE: PDouble(Buffer)^ := PDouble(sqldata)^;
             else
@@ -659,9 +657,9 @@ begin
         uftDate: PInteger(Buffer)^ := DecodeSQLDate(PInteger(sqldata)^) + 693594;
         uftTime: PInteger(Buffer)^ := PCardinal(sqldata)^ div 10;
         uftInt64: PInt64(Buffer)^ := PInt64(sqldata)^;
-        {$IFDEF IB7_UP}
+      {$IFDEF IB7_UP}
         uftBoolean: WordBool(Buffer^) := PSmallInt(sqldata)^ = ISC_TRUE;
-        {$ENDIF IB7_UP}
+      {$ENDIF}
       else
         raise EUIBError.Create(EUIB_UNEXPECTEDERROR);
       end;
@@ -723,10 +721,9 @@ begin
   if not Value then
     FStatement.Close(FOnClose);
 end;
-{$ENDIF FPC}
+{$ENDIF}
 
 {$IFNDEF COMPILER5_UP}
-
 function TJvUIBCustomDataSet.BCDToCurr(BCD: Pointer;
   var Curr: Currency): Boolean;
 begin
@@ -740,8 +737,7 @@ begin
   PCurrency(BCD)^ := Curr;
   Result := True;
 end;
-
-{$ENDIF COMPILER5_UP}
+{$ENDIF}
 
 procedure TJvUIBCustomDataSet.SetDatabase(const Value: TJvUIBDataBase);
 begin
