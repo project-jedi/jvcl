@@ -364,8 +364,8 @@ function HexBytes(const Buf; Length: Integer): string;
 implementation
 
 uses
-  ActiveX,
-  JvTypes;
+  ActiveX, Consts,
+  JvDataProviderConsts, JvTypes;
 
 function HexBytes(const Buf; Length: Integer): string;
 var
@@ -408,7 +408,7 @@ begin
   if Supports(Item, IJvDataItemText, TextIntf) then
     S := TextIntf.Caption
   else
-    S := '(item doesn''t support IJvDataItemText interface)';
+    S := SDataItemRenderHasNoText;
   ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S);
 end;
 
@@ -420,7 +420,7 @@ begin
   if Supports(Item, IJvDataItemText, TextIntf) then
     S := TextIntf.Caption
   else
-    S := '(item doesn''t support IJvDataItemText interface)';
+    S := SDataItemRenderHasNoText;
   Result := ACanvas.TextExtent(S);
 end;
 
@@ -520,7 +520,7 @@ end;
 procedure TExtensibleInterfacedPersistent.AddIntfImpl(const Obj: TAggregatedPersistentEx);
 begin
   if IndexOfImplClass(TAggregatedPersistentExClass(Obj.ClassType)) >= 0 then
-    raise EJVCLException.Create('Implementation of that class already exists.');
+    raise EJVCLException.Create(SExtensibleIntObjDuplicateClass);
   FAdditionalIntfImpl.Add(Obj);
 end;
 
@@ -591,7 +591,7 @@ begin
   SuspendRefCount;
   try
     if Reader.ReadValue <> vaCollection then
-      raise EReadError.Create('Expected collection.');
+      raise EReadError.Create(SExtensibleIntObjCollectionExpected);
     while not Reader.EndOfList do
       ReadImplementer(Reader);
     Reader.ReadListEnd;
@@ -621,11 +621,11 @@ begin
   Reader.ReadListBegin;
   ClassName := Reader.ReadStr;
   if not AnsiSameText(ClassName, 'ClassName') then
-    raise EReadError.Create('Missing ClassName property');
+    raise EReadError.Create(SExtensibleIntObjClassNameExpected);
   ClassName := Reader.ReadString;
   ClassType := FindClass(ClassName);
   if not ClassType.InheritsFrom(TAggregatedPersistentEx) then
-    raise EReadError.Create('Invalid class type');
+    raise EReadError.Create(SExtensibleIntObjInvalidClass);
   I := IndexOfImplClass(TAggregatedPersistentExClass(ClassType));
   if I >= 0 then
     Impl := TAggregatedPersistentEx(FAdditionalIntfImpl[I])
@@ -766,7 +766,7 @@ end;
 procedure TJvBaseDataItems.ReadItems(Reader: TReader);
 begin
   if Reader.ReadValue <> vaCollection then
-    raise EReadError.Create('Expected collection.');
+    raise EReadError.Create(SExtensibleIntObjCollectionExpected);
   while not Reader.EndOfList do
     ReadItem(Reader);
   Reader.ReadListEnd;
@@ -796,11 +796,11 @@ begin
   Reader.ReadListBegin;
   PropName := Reader.ReadStr;
   if not AnsiSameText(PropName, 'ClassName') then
-    raise EReadError.Create('Missing property ClassName.');
+    raise EReadError.Create(SExtensibleIntObjClassNameExpected);
   ClassName := Reader.ReadString;
   PerstClass := FindClass(ClassName);
   if not PerstClass.InheritsFrom(TJvBaseDataItem) then
-    raise EReadError.Create('Invalid item class.');
+    raise EReadError.Create(SExtensibleIntObjInvalidClass);
   ItemClass := TJvBaseDataItemClass(PerstClass);
   ItemInstance := ItemClass.Create(Self);
   try
@@ -944,7 +944,7 @@ procedure TJvBaseDataItemsRenderer.DrawItemByIndex(ACanvas: TCanvas; var ARect: 
   Index: Integer; State: TOwnerDrawState);
 begin
   if (Index < 0) or (Index >= Items.Count) then
-    raise EJVCLException.CreateFmt('Index out of range (%d)', [Index]);
+    raise EJVCLException.CreateFmt(SListIndexError, [Index]);
   DrawItem(ACanvas, ARect, Items.Items[Index], State);
 end;
 
@@ -955,7 +955,7 @@ begin
   else
   begin
     if (Index < 0) or (Index >= Items.Count) then
-      raise EJVCLException.CreateFmt('Index out of range (%d)', [Index]);
+      raise EJVCLException.CreateFmt(SListIndexError, [Index]);
     Result := MeasureItem(ACanvas, Items.Items[Index]);
   end;
 end;
@@ -1122,15 +1122,15 @@ begin
   SuspendRefCount;
   try
     if Reader.ReadValue <> vaCollection then
-      raise EReadError.Create('Expected collection.');
+      raise EReadError.Create(SExtensibleIntObjCollectionExpected);
     Reader.ReadListBegin;
     PropName := Reader.ReadStr;
     if not AnsiSameText(PropName, 'ClassName') then
-      raise EReadError.Create('Expected ClassName property.');
+      raise EReadError.Create(SExtensibleIntObjClassNameExpected);
     ClassName := Reader.ReadString;
     AClass := FindClass(ClassName);
     if not AClass.InheritsFrom(TJvBaseDataItems) then
-      raise EReadError.Create('Invalid sub items implementer class.');
+      raise EReadError.Create(SExtensibleIntObjInvalidClass);
     I := IndexOfImplClass(TJvBaseDataItemSubItems);
     if I > -1 then
     begin
@@ -1246,7 +1246,7 @@ end;
 procedure TJvCustomDataProvider.ReadRoot(Reader: TReader);
 begin
   if Reader.ReadValue <> vaCollection then
-    raise EReadError.Create('Expected collection.');
+    raise EReadError.Create(SExtensibleIntObjCollectionExpected);
   Reader.ReadListBegin;
   // We don''t really have a root item; just stream in the DataItemsImpl instance.
   while not Reader.EndOfList do
@@ -1305,7 +1305,7 @@ begin
   if ItemsClass <> nil then
     FDataItemsImpl := ItemsClass.CreateProvider(Self)
   else
-    raise EJVCLException.Create('Can''t create a data provider without an IJvDataItems implementation.');
+    raise EJVCLException.Create(SDataProviderNeedsItemsImpl);
   FDataItemsImpl._AddRef;
 end;
 
