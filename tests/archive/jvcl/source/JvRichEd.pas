@@ -326,7 +326,7 @@ type
 {$IFDEF COMPILER3_UP}
     FAllowInPlace: Boolean;
 {$ENDIF}
-    FDefaulTJvConverter: TConversionClass;
+    FDefaultJvConverter: TConversionClass;
     FOnSelChange: TNotifyEvent;
     FOnResizeRequest: TRichEditResizeEvent;
     FOnProtectChange: TRichEditProtectChange;
@@ -493,8 +493,8 @@ type
 {$ENDIF}
     property RedoName: TUndoName read GetRedoName;
     property UndoName: TUndoName read GetUndoName;
-    property DefaulTJvConverter: TConversionClass read FDefaulTJvConverter
-      write FDefaulTJvConverter;
+    property DefaulTJvConverter: TConversionClass read FDefaultJvConverter
+      write FDefaultJvConverter;
     property DefAttributes: TJvTextAttributes read FDefAttributes write SetDefAttributes;
     property SelAttributes: TJvTextAttributes read FSelAttributes write SetSelAttributes;
     property WordAttributes: TJvTextAttributes read FWordAttributes write SetWordAttributes;
