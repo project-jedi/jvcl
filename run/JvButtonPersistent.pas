@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, StdCtrls, Buttons,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QStdCtrls, QButtons,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvSpeedButton, JvButton, JvTypes;
 
 type
@@ -102,7 +102,7 @@ begin
 end;
 
 type
-  TAccessButton = class(TJvCustomButton);
+  TOpenJvCustomButton = class(TJvCustomButton);
 
 procedure TJvButtonPersistent.AssignTo(Sender: TPersistent);
 begin
@@ -115,9 +115,9 @@ begin
     TButton(Sender).ShowHint := ShowHint;
     if Sender is TJvCustomButton then
     begin
-      TAccessButton(Sender).HotTrack := HotTrack;
-      TAccessButton(Sender).HotTrackFont.Assign(FFont);
-      TAccessButton(Sender).HotTrackFontOptions := HotTrackFontOptions; 
+      TOpenJvCustomButton(Sender).HotTrack := HotTrack;
+      TOpenJvCustomButton(Sender).HotTrackFont.Assign(FFont);
+      TOpenJvCustomButton(Sender).HotTrackFontOptions := HotTrackFontOptions;
     end;
   end
   else
@@ -137,7 +137,6 @@ begin
     end;
   end
   else
-    // (rom) inherited added
     inherited AssignTo(Sender);
 end;
 

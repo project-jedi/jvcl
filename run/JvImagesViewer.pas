@@ -30,14 +30,14 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF WINDOWS}
-  Windows, 
-  {$ENDIF}
+  Windows,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Messages, Controls, Graphics, StdCtrls, ComCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QControls, QGraphics, QStdCtrls, QComCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvCustomItemViewer;
 
 type
@@ -52,7 +52,6 @@ type
     function GetPicture: TPicture;
     procedure CreatePicture;
   protected
-
     procedure DoPictureChange(Sender: TObject); virtual;
     procedure DoLoadProgress(Sender: TObject; Stage: TProgressStage; PercentDone: Byte;
       RedrawNow: Boolean; const R: TRect; const Msg: string); virtual;
@@ -109,6 +108,7 @@ type
     const Filename: string; var Handled: boolean) of object;
   TJvImageViewerLoadProgress = procedure(Sender: TObject; Item: TJvImageItem; Stage: TProgressStage;
     PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string) of object;
+
   TJvImagesViewer = class(TJvCustomItemViewer)
   private
     FFileMask: string;
@@ -133,7 +133,6 @@ type
       TRect; const Msg: string);
     procedure DoLoadEnd; virtual;
     procedure DrawItem(Index: Integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect); override;
-
   public
     constructor Create(AOwner: TComponent); override;
     function LoadImages: boolean;
@@ -159,7 +158,7 @@ type
     property DockSite;
     property DragCursor;
     property DragKind;
-    {$ENDIF}
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -183,7 +182,7 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF}
+    {$ENDIF VCL}
     property OnDragOver;
     property OnEndDrag;
     property OnEnter;
@@ -204,7 +203,7 @@ uses
 
 constructor TJvImageViewerOptions.Create(AOwner: TJvCustomItemViewer);
 begin
-  inherited;
+  inherited Create(AOwner);
   FImagePadding := 20;
   FFrameColor := clGray;
   FHotColor := clHighlight;
@@ -282,7 +281,7 @@ end;
 destructor TJvImageItem.Destroy;
 begin
   FreeAndNil(FPicture);
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvImageItem.DoPictureChange(Sender: TObject);
@@ -333,7 +332,7 @@ end;
 
 procedure TJvImageItem.ReduceMemoryUsage;
 begin
-  inherited;
+  inherited ReduceMemoryUsage;
   if Filename <> '' then // release image if we can recreate it from it's filename
     Picture := nil;
 end;
@@ -342,7 +341,7 @@ end;
 
 constructor TJvImagesViewer.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   //  FDirectory := GetCurrentDir;
   FFileMask := Graphics.GraphicFileMask(TGraphic);
   Color := clWindow;

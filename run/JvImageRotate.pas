@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Graphics, Controls, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QGraphics, QControls, QExtCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvImageDrawThread, JVCLVer;
 
 type
