@@ -581,8 +581,12 @@ end;
 procedure TJvErrorIndicator.StopThread;
 begin
   if FBlinkThread <> nil then
+  try
     FBlinkThread.Terminate;
-  FreeAndNil(FBlinkThread);
+    FBlinkThread.WaitFor;
+  finally
+    FreeAndNil(FBlinkThread);
+  end;
 end;
 
 procedure TJvErrorIndicator.DoBlink(Sender: TObject; Erase: Boolean);
