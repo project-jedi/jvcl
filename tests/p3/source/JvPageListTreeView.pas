@@ -787,7 +787,9 @@ end;
 destructor TJvCustomPageListTreeView.Destroy;
 begin
   FLinks.Free;
+  {$IFNDEF COMPILER6_UP}
   FItems.Free;
+  {$ENDIF}
   inherited;
 end;
 

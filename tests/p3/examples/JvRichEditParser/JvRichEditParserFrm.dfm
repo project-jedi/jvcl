@@ -37,7 +37,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 276
     Width = 607
-    Height = 293
+    Height = 274
     Align = alClient
     HideScrollBars = False
     ScrollBars = ssBoth
@@ -46,7 +46,7 @@ object frmMain: TfrmMain
   end
   object Panel1: TPanel
     Left = 0
-    Top = 569
+    Top = 550
     Width = 607
     Height = 41
     Align = alBottom
@@ -88,6 +88,25 @@ object frmMain: TfrmMain
       TabOrder = 3
       OnClick = chkWordwrapClick
     end
+    object chkNoWrite: TCheckBox
+      Left = 402
+      Top = 12
+      Width = 121
+      Height = 17
+      Caption = 'Don'#39't write back'
+      TabOrder = 4
+    end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 591
+    Width = 607
+    Height = 19
+    Panels = <
+      item
+        Width = 50
+      end>
+    SimplePanel = False
   end
   object OpenDialog1: TOpenDialog
     Filter = 'RTF files|*.rtf'

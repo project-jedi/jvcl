@@ -17,6 +17,8 @@ type
     Splitter1: TSplitter;
     btnRecreate: TButton;
     chkWordwrap: TCheckBox;
+    chkNoWrite: TCheckBox;
+    StatusBar1: TStatusBar;
     procedure btnLoadClick(Sender: TObject);
     procedure btnParseClick(Sender: TObject);
     procedure btnRecreateClick(Sender: TObject);
@@ -86,19 +88,25 @@ begin
 end;
 
 procedure TfrmMain.btnParseClick(Sender: TObject);
-var RP:TJvRichEditParser;
+var RP:TJvRichEditParser;tt:Cardinal;l:integer;
 begin
   reParsed.Clear;
   reParsed.DefAttributes.Assign(Font);
   RP := TJvRichEditParser.Create(reOriginal);
   Screen.Cursor := crHourGlass;
   try
-    RP.OnAttributeChange := DoAttributeChange;
+    if not chkNoWrite.Checked then
+      RP.OnAttributeChange := DoAttributeChange;
+    tt := GetTickCount;
     RP.ExtractContent;
   finally
     RP.Free;
     Screen.Cursor := crDefault;
   end;
+  tt := GetTickCount - tt;
+  if tt = 0 then tt := 1;
+  l := Length(reOriginal.Lines.Text);
+  StatusBar1.Panels[0].Text := Format('  Parsed %d bytes in %d ms (%f bytes per ms)',[l,tt,l/tt]);
 end;
 
 procedure TfrmMain.DoRecreateDoc(Sender: TObject;
@@ -112,19 +120,25 @@ begin
 end;
 
 procedure TfrmMain.btnRecreateClick(Sender: TObject);
-var RP:TJvRichEditParser;
+var RP:TJvRichEditParser;tt:Cardinal;l:integer;
 begin
   reParsed.Clear;
   reParsed.DefAttributes.Assign(Font);
   RP := TJvRichEditParser.Create(reOriginal);
   Screen.Cursor := crHourGlass;
   try
-    RP.OnAttributeChange := DoRecreateDoc;
+    if not chkNoWrite.Checked then
+      RP.OnAttributeChange := DoRecreateDoc;
+    tt := GetTickCount;
     RP.ExtractContent;
   finally
     RP.Free;
     Screen.Cursor := crDefault;
   end;
+  tt := GetTickCount - tt;
+  if tt = 0 then tt := 1;
+  l := Length(reOriginal.Lines.Text);
+  StatusBar1.Panels[0].Text := Format('  Parsed %d bytes in %d ms (%f bytes per ms)',[l,tt,l/tt]);
 end;
 
 procedure TfrmMain.chkWordwrapClick(Sender: TObject);

@@ -17,15 +17,16 @@ type
     procedure PageListSetActivePageIndex(AIndex: Integer);
   end;
 
-procedure Register;
+// procedure Register;
 
 implementation
 
-
+{
 procedure Register;
 begin
   RegisterComponents('JVCL',[TJvPageListPageControl]);
 end;
+}
 { TJvPageListPageControl }
 
 function TJvPageListPageControl.getPageCaption(AIndex: Integer): String;

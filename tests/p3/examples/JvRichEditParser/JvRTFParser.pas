@@ -109,7 +109,7 @@ end;
 procedure TJvRichEditParser.ExtractContent;
 var
   FStartPos, FEndPos, FLength: integer;
-  FNumbering: TNumberingStyle;
+//  FNumbering: TNumberingStyle;
   S: string;
 begin
   Assert(FRichEdit <> nil, '');
@@ -124,17 +124,15 @@ begin
     FEndPos := NextChange(FStartPos, FLength);
     while (FEndPos < FLength) do
     begin
-      FNumbering := FRichEdit.Paragraph.Numbering;
+//      FNumbering := FRichEdit.Paragraph.Numbering;
       FRichEdit.SelStart := FStartPos;
-    // have to read text here because SelLength must be shortened later...
+      // have to read text here because SelLength must be shortened later...
       FRichEdit.SelLength := FEndPos - FStartPos;
       S := FRichEdit.SelText;
-      if FRichEdit.SelLength > 0 then
-      begin
-        FRichEdit.SelStart := FEndPos - 1;
+      FRichEdit.SelStart := FEndPos - 1;
       // ...otherwise we get the values after the selection!
-        AttributeChange(FRichEdit.SelAttributes, FRichEdit.Paragraph, S);
-      end;
+      AttributeChange(FRichEdit.SelAttributes, FRichEdit.Paragraph, S);
+
       FRichEdit.SelStart := FEndPos;
       FAttributes.Assign(FRichEdit.SelAttributes);
       FParaAttributes.Assign(FRichEdit.Paragraph);
