@@ -312,8 +312,8 @@ begin
     Page := nil;
     if (Index >= 0) and (Index < FPageList.PageCount) then
       Page := TJvCustomPageAccess(FPageList.Pages[Index]);
-    Designer.SelectComponent(Page);
     PageList.ActivePage := Page;
+    Designer.SelectComponent(Page);
     Designer.Modified;
   end;
 end;
