@@ -35,6 +35,10 @@ Some information about coding:
 
 Changes:
 ========
+Peter Thornqvist:
+  2004-01-279
+    + Moved implementations to TJvCustomXXX classed
+    + Now the registered controls only publish properties and events
 André Snepvangers:
   2004-01-06
       VisualCLX compatible version
@@ -113,7 +117,7 @@ uses
 type
   THyperLinkClick = procedure (Sender: TObject; LinkName: string) of object;
 
-  TJvHTListBox = class(TJvExCustomListBox)
+  TJvCustomHTListBox = class(TJvExCustomListBox)
   private
     FHyperLinkClick: THyperLinkClick;
     FHideSel: Boolean;
@@ -137,7 +141,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property PlainItems[Index: Integer]: string read GetPlainItems;
-  published
+  protected
     property HideSel: Boolean read FHideSel write SetHideSel;
 
    // Kaczkowski - moved from JvMultilineListBox
@@ -145,6 +149,19 @@ type
     property ColorHighlightText: TColor read FSelectedTextColor write FSelectedTextColor;
     property ColorDisabledText: TColor read FDisabledTextColor write FDisabledTextColor;
    // Kaczkowski - end
+    property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
+  end;
+
+  TJvHTListBox = class(TJvCustomHTListBox)
+  published
+    property HideSel;
+
+   // Kaczkowski - moved from JvMultilineListBox
+    property ColorHighlight;
+    property ColorHighlightText;
+    property ColorDisabledText;
+   // Kaczkowski - end
+    property OnHyperLinkClick;
 
     property Align;
     property BorderStyle;
@@ -198,10 +215,10 @@ type
     property OnStartDrag;
     property Anchors;
     property Constraints;
-    property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
   end;
 
-  TJvHTComboBox = class(TJvExCustomComboBox)
+
+  TJvCustomHTComboBox = class(TJvExCustomComboBox)
   private
     FHideSel: Boolean;
     FDropWidth: Integer;
@@ -227,7 +244,7 @@ type
     procedure SetHeight(Value: Integer); // Kaczkowski
     function GetHeight: Integer; // Kaczkowski
     {$ENDIF VCL}
-  published
+  protected
     property HideSel: Boolean read FHideSel write SetHideSel;
     property DropWidth: Integer read FDropWidth write SetDropWidth;
    // Kaczkowski - based on JvMultilineListBox
@@ -235,7 +252,16 @@ type
     property ColorHighlightText: TColor read FSelectedTextColor write FSelectedTextColor;
     property ColorDisabledText: TColor read FDisabledTextColor write FDisabledTextColor;
    // Kaczkowski - end
+  end;
+
+  TJvHTComboBox = class(TJvCustomHTComboBox)
   published
+    property HideSel;
+    property DropWidth;
+   // Kaczkowski - based on JvMultilineListBox
+    property ColorHighlight;
+    property ColorHighlightText;
+    property ColorDisabledText;
     property Color;
 //    property Style;
     {$IFDEF VCL}
@@ -284,7 +310,7 @@ type
     property Constraints;
   end;
 
-  TJvHTLabel = class(TJvExCustomLabel)
+  TJvCustomHTLabel = class(TJvExCustomLabel)
   private
     FHyperLinkClick: THyperLinkClick;
     {$IFDEF VisualCLX}
@@ -304,11 +330,18 @@ type
     procedure Paint; virtual;
     {$ENDIF VCL}
     procedure Loaded; override;
+    {$IFDEF VisualCLX}
+    property Canvas;
+    {$ENDIF VisualCLX}
+    property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
   public
     {$IFDEF VisualCLX}
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     {$ENDIF VisualCLX}
+  end;
+
+  TJvHTLabel = class(TJvCustomHTLabel)
   published
     property Align;
 //    property Alignment;  // Kaczkowski
@@ -324,7 +357,7 @@ type
     property OnStartDock;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    property Canvas: TCanvas read FCanvas;
+    property Canvas;
     {$ENDIF VisualCLX}
     property DragMode;
     property Enabled;
@@ -350,7 +383,7 @@ type
     property OnStartDrag;
     property Layout;
     property Constraints;
-    property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
+    property OnHyperLinkClick;
   end;
 
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
@@ -781,9 +814,9 @@ end;
 
 // Kaczkowski - end
 
-//=== TJvHTListBox ===========================================================
+//=== TJvCustomHTListBox ===========================================================
 
-constructor TJvHTListBox.Create(AOwner: TComponent);
+constructor TJvCustomHTListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 // Kaczkowski
@@ -795,10 +828,10 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvHTListBox.DrawItem(Index: Integer; Rect: TRect;
+procedure TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 {$ELSE}
-function TJvHTListBox.DrawItem(Index: Integer; Rect: TRect;
+function TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
 {$ENDIF VCL}
 begin
@@ -818,31 +851,31 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvHTListBox.MeasureItem(Index: Integer; var Height: Integer);
+procedure TJvCustomHTListBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
   Height := ItemHTHeight(Canvas, Items[Index]);
 end;
 {$ENDIF VCL}
 
-procedure TJvHTListBox.FontChanged;
+procedure TJvCustomHTListBox.FontChanged;
 begin
   inherited FontChanged;
   Canvas.Font := Font;
   ItemHeight := CanvasMaxTextHeight(Canvas);
 end;
 
-procedure TJvHTListBox.SetHideSel(Value: Boolean);
+procedure TJvCustomHTListBox.SetHideSel(Value: Boolean);
 begin
   FHideSel := Value;
   Invalidate;
 end;
 
-function TJvHTListBox.GetPlainItems(Index: Integer): string;
+function TJvCustomHTListBox.GetPlainItems(Index: Integer): string;
 begin
   Result := ItemHTPlain(Items[Index]);
 end;
 
-procedure TJvHTListBox.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TJvCustomHTListBox.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   R: TRect;
   LinkName: string;
@@ -867,7 +900,7 @@ begin
     Cursor := crDefault;
 end;
 
-procedure TJvHTListBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
+procedure TJvCustomHTListBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   R: TRect;
@@ -901,9 +934,9 @@ begin
   end;
 end;
 
-//=== TJvHTComboBox ==========================================================
+//=== TJvCustomHTComboBox ==========================================================
 
-constructor TJvHTComboBox.Create(AOwner: TComponent);
+constructor TJvCustomHTComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 // Kaczkowski
@@ -915,10 +948,10 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvHTComboBox.DrawItem(Index: Integer; Rect: TRect;
+procedure TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 {$ELSE}
-function TJvHTComboBox.DrawItem(Index: Integer; Rect: TRect;
+function TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
 {$ENDIF VCL}
 begin
@@ -941,33 +974,33 @@ end;
 
 {$IFDEF VCL}
 // Kaczkowski - begin
-function TJvHTComboBox.GetHeight: Integer;
+function TJvCustomHTComboBox.GetHeight: Integer;
 begin
   Result := SendMessage(Self.Handle, CB_GETITEMHEIGHT, -1, 0);
 end;
 
-procedure TJvHTComboBox.SetHeight(Value: Integer);
+procedure TJvCustomHTComboBox.SetHeight(Value: Integer);
 begin
   SendMessage(Self.Handle, CB_SETITEMHEIGHT, -1, Value);
 end;
 // Kaczkowski - end
 {$ENDIF VCL}
 
-procedure TJvHTComboBox.SetHideSel(Value: Boolean);
+procedure TJvCustomHTComboBox.SetHideSel(Value: Boolean);
 begin
   FHideSel := Value;
   Invalidate;
 end;
 
-function TJvHTComboBox.GetPlainItems(Index: Integer): string;
+function TJvCustomHTComboBox.GetPlainItems(Index: Integer): string;
 begin
   Result := ItemHTPlain(Items[Index]);
 end;
 
 {$IFDEF VCL}
-procedure TJvHTComboBox.CreateWnd;
+procedure TJvCustomHTComboBox.CreateWnd;
 {$ELSE}
-procedure TJvHTComboBox.CreateWidget;
+procedure TJvCustomHTComboBox.CreateWidget;
 {$ENDIF VCL}
 var
   Tmp: Integer;
@@ -983,7 +1016,7 @@ begin
   end;
 end;
 
-procedure TJvHTComboBox.SetDropWidth(ADropWidth: Integer);
+procedure TJvCustomHTComboBox.SetDropWidth(ADropWidth: Integer);
 begin
   if FDropWidth <> ADropWidth then
   begin
@@ -994,23 +1027,23 @@ begin
   end;
 end;
 
-//=== TJvHTLabel =============================================================
+//=== TJvCustomHTLabel =============================================================
 
 {$IFDEF VisualCLX}
-constructor TJvHTLabel.Create(AOwner: TComponent);
+constructor TJvCustomHTLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
 end;
 
-destructor TJvHTLabel.Destroy;
+destructor TJvCustomHTLabel.Destroy;
 begin
   inherited Destroy;
   FCanvas.Free; // the destructor may handle invalidate events
 end;
 
-procedure TJvHTLabel.Painting(Sender: QObjectH; EventRegion: QRegionH);
+procedure TJvCustomHTLabel.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
 //  TControlCanvas(FCanvas).StartPaint;
   FCanvas.Start;
@@ -1024,19 +1057,19 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-procedure TJvHTLabel.FontChanged;
+procedure TJvCustomHTLabel.FontChanged;
 begin
   inherited FontChanged;
   AdjustBounds;
 end;
 
-procedure TJvHTLabel.Loaded;
+procedure TJvCustomHTLabel.Loaded;
 begin
   inherited Loaded;
   AdjustBounds;
 end;
 
-procedure TJvHTLabel.AdjustBounds;
+procedure TJvCustomHTLabel.AdjustBounds;
 var
   {$IFDEF VCL}
   DC: HDC;
@@ -1075,7 +1108,7 @@ begin
   end;
 end;
 
-procedure TJvHTLabel.SetAutoSize(Value: Boolean);
+procedure TJvCustomHTLabel.SetAutoSize(Value: Boolean);
 begin
   if AutoSize <> Value then
   begin
@@ -1084,7 +1117,7 @@ begin
   end;
 end;
 
-procedure TJvHTLabel.Paint;
+procedure TJvCustomHTLabel.Paint;
 var
   Rect: TRect;
 begin
@@ -1117,7 +1150,7 @@ begin
     ItemHTDraw(Canvas, Rect, [], Caption);
 end;
 
-procedure TJvHTLabel.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TJvCustomHTLabel.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   R: TRect;
   LinkName: string;
@@ -1137,7 +1170,7 @@ begin
     Cursor := crDefault;
 end;
 
-procedure TJvHTLabel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+procedure TJvCustomHTLabel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
   R: TRect;
