@@ -27,8 +27,7 @@ package JvUIBD6R;
 
 requires
   rtl,
-  vcl,
-  vclx,
+  dbrtl,
   JvCoreD6R;
 
 contains
