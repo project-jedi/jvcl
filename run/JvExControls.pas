@@ -35,7 +35,7 @@ uses
   QWindows, QControls, QForms,
   {$ENDIF VisualCLX}
   Classes, SysUtils;
-
+           
 type
   IJvControlEvents = interface
     ['{61FC57FF-D4DA-4840-B871-63DE804E9921}']
@@ -311,11 +311,6 @@ begin
     Result := Result or AltMask;
 end;
 
-function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; 
-asm
-        CALL    System.@FindDynaClass
-end;
-
 function InheritMsg(Self: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
 type
   TMessageHandler = procedure(Self: TObject; var Message: TMessage);
@@ -327,11 +322,8 @@ begin
   Message.WParam := WParam;
   Message.LParam := LParam;
   Message.Result := 0;
-  Proc := GetDynamicMethod(Self.ClassType, Msg);
-  if Assigned(Proc) then
-    Proc(Self, Message)
-  else
-    Self.DefaultHandler(Message);
+  Proc := @TObject.Dispatch;
+  Proc(Self, Message);
   Result := Message.Result;
 end;
 
