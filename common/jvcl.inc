@@ -40,8 +40,8 @@ Known Issues:
   requires node in the affected package(s) }
 {$DEFINE USEJVCL}
 
-{ Enable this define if you want to use the dxgettext (http://dxgettext.sourceforge.net) 
-  translation tool. }
+{ Enable this define if you have the dxgettext (http://dxgettext.sourceforge.net)
+  translation tool installed and want to use it with the JVCL. }
 {.$DEFINE USE_DXGETTEXT}
 
 
