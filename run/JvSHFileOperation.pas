@@ -35,7 +35,10 @@ unit JvSHFileOperation;
 interface
 
 uses
-  Windows, ShellAPI, SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows, ShellAPI,
+  {$ENDIF MSWINDOWS}
+  SysUtils, Classes,
   {$IFDEF VCL}
   Controls,
   {$ENDIF VCL}

@@ -30,12 +30,7 @@ interface
 
 uses
   Windows, SysUtils,
-  {$IFDEF VCL}
   Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics,
-  {$ENDIF VisualCLX}
   Classes;
 
 type

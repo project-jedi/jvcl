@@ -31,17 +31,15 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF VCL}
-  Types, Graphics, Controls, ExtCtrls,
+  Graphics, Controls, ExtCtrls,
   JvComponent;
 
 type
   TJvSlider = class(TJvCustomControl)
   private
     {$IFDEF VisualCLX}
-    FAutoSize: boolean
+    FAutoSize: boolean;
     {$ENDIF VisualCLX}
     FImageRuler: TBitmap;
     FImageThumb: TBitmap;

@@ -31,12 +31,13 @@ unit JvWinHelp;
 interface
 
 uses
-  SysUtils, Classes, Windows,
-  {$IFDEF VCL}
+  SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   Controls, Forms, Menus,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QControls, QForms, QMenus,
+  Qt,
   {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 

@@ -33,7 +33,10 @@ interface
 // (rom) definitely JCL or Archive
 
 uses
-  Windows, SysUtils;
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  SysUtils;
 
 type
   TJvScreenResolution = class(TObject)

@@ -33,9 +33,9 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ToolWin,
   {$IFDEF VisualCLX}
-  Types, QTypes,
+  QTypes,
   {$ENDIF VisualCLX}
-  JvThemes, JvExControls, JvExExtCtrls;
+  JvJCLUtils, JvThemes, JvExControls, JvExExtCtrls;
 
 type
   TJvRadioGroupHintEvent = procedure(Sender: TObject; Index: Integer;
@@ -79,8 +79,7 @@ type
 implementation
 
 uses
-  Math,
-  JvJCLUtils;
+  Math;
 
 constructor TJvRadioGroup.Create(AOwner: TComponent);
 begin

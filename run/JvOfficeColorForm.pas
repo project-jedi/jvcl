@@ -37,7 +37,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms,
   {$IFDEF VisualCLX}
-  Types, QStdCtrls, QExtCtrls,
+  Qt, QStdCtrls, QExtCtrls,
   {$ENDIF VisualCLX}
   JvComponent, JvLabel, JvOfficeColorPanel;
 

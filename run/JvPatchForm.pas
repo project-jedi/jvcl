@@ -31,12 +31,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Controls, Forms, StdCtrls, Mask,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QMask,
-  {$ENDIF VisualCLX}
   JvToolEdit, JvComponent, JvExMask;
 
 type
@@ -67,20 +62,10 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDialogs, 
-  {$ENDIF VisualCLX}
   JvConsts, JvResources;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 procedure TPatchFrm.LoadFromStr(Value: TStringList);
 begin

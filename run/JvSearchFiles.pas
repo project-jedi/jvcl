@@ -35,7 +35,10 @@ unit JvSearchFiles;
 interface
 
 uses
-  Classes, SysUtils, Windows,
+  Classes, SysUtils,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   JvComponent, JvJCLUtils;
 
 const

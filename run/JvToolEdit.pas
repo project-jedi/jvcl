@@ -54,7 +54,7 @@ uses
   RTLConsts, Variants,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VisualCLX}
-  Qt, QComboEdits, QWindows, Types, JvQExComboEdits,
+  Qt, QComboEdits, QWindows, JvQExComboEdits,
   {$ENDIF VisualCLX}
   JvSpeedButton, JvTypes, JvExMask, JvExForms;
 
