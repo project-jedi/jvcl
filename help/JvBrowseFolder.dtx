@@ -341,21 +341,18 @@ Summary
 Description
   Execute opens the file-selection dialog. The selected directory is returned in Directory.
 Return Value
-  Returns True when the user selects a folder and clicks the OK button. If the user clicks Cancel,
-  Execute returns false.
+  \Returns true when the user selects a folder and clicks the OK button, false otherwise.
 See Also
   Directory
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog.Handle
 Summary
-Specifies the window handle of the dialog.
-
+  Specifies the window handle of the dialog.
 Description
-The Handle property, which provides access to the dialog’s window handle after a call to Execute, can
-be used in the event handlers. Handle is reset to 0 after the dialog closes.
-
+  The Handle property, which provides access to the dialog’s window handle after a call to Execute, can
+  be used in the event handlers. Handle is reset to 0 after the dialog closes.
 See Also
-Execute, OnInitialized
+  Execute, OnInitialized
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog.HelpContext
 Summary
@@ -382,7 +379,7 @@ Description
 Parameters
   Sender    - The TJvBrowseForFolderDialog component that has sent this event.
   NewFolder - Specifies the newly selected item.
-  Accept    - Set to True to enable the dialog's OK button, set to False to disable the dialog's OK
+  Accept    - Set to true to enable the dialog's OK button, set to false to disable the dialog's OK
               button.
 See Also
   OnChange, OnValidateFailed, SetOKEnabled
@@ -436,7 +433,7 @@ Note
 Parameters
   Sender - The TJvBrowseForFolderDialog component that has sent this event.
   Item   - Indicates the item that is to be displayed.
-  DoShow - Set to True to have the item displayed, set to False to prevent the item from being displayed.
+  DoShow - Set to true to have the item displayed, set to false to prevent the item from being displayed.
 See Also
   OnGetEnumFlags
 ----------------------------------------------------------------------------------------------------
@@ -447,7 +444,7 @@ Description
   Write an OnValidateFailed event handler to respond when the user types an invalid name
   into the edit box of the Browse dialog box.
 
-  Set the CanCloseDialog parameter to False to prevent the dialog from closing. The OnValidateFailed
+  Set the CanCloseDialog parameter to false to prevent the dialog from closing. The OnValidateFailed
   event handler is responsible for telling the user why the dialog doesn’t close.
 
   Flags odEditBox and odValidate must be included in Options.
@@ -456,10 +453,10 @@ Note
 Parameters
   Sender         - The TJvBrowseForFolderDialog component that has sent this event.
   AEditText      - Specifies the invalid name.
-  CanCloseDialog - Set to True to allow the dialog to be dismissed, set to False to keep the dialog
+  CanCloseDialog - Set to true to allow the dialog to be dismissed, set to false to keep the dialog
                    displayed.
 See Also
-  OnAcceptChange, OnChange, OnValidateFailed, SetOKEnabled
+  OnAcceptChange, OnChange, SetOKEnabled
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog.Options
 Summary
@@ -547,7 +544,7 @@ Description
 
   Calls to SetOKEnabled do have no effect while the dialog is <i>not</i> active.
 Parameters
-  Value - Set to True to enable the OK button. To disable the OK button, set Value to False.
+  Value - Set to true to enable the OK button. To disable the OK button, set Value to false.
 See Also
   OnAcceptChange, OnChange, OnValidateFailed, SetOKText
 ----------------------------------------------------------------------------------------------------

@@ -256,7 +256,7 @@ Parameters
 Return value
   The index in Schedule where SchedName is located or -1 if SchedName is not found.
 See Also
-  SchedName
+  Schedules
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Modified
 Summary
@@ -390,7 +390,7 @@ Summary
 Description
   Note that this property is read-only. You should set the start and end info by using the SetStartEnd method.
 See Also
-  SetStartEnd, , StartDate, StartTime
+  SetStartEnd, StartDate, StartTime
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.StartTime
 Summary
@@ -1078,7 +1078,7 @@ Parameters
   Rect :   Window coordinates of the hint window.
   AHint :  The hint string to display.
 See Also
-  HideHint
+  Application.HideHint
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.ApptHint
 Summary
@@ -1365,7 +1365,7 @@ Description
   Use this property to control the printing model that the Printer uses. See
   <LINK JVCL.Info.TimeFramework.UsingJvTFPrinter, "Using TJvTFPrinter"> for more info.
 See Also
-  Using TJvTFPrinter
+  <LINK JVCL.Info.TimeFramework.UsingJvTFPrinter, "Using TJvTFPrinter">
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.DocDateTime
 Summary
@@ -1440,7 +1440,8 @@ Description
   that causes the margin to fall in the unprintable area of the page. The unprintable area is hardware
   dependent and varies from printer to printer.
 See Also
-  MarginLeft, MarginRight, MarginTop, MarginBottom
+  TJvTFPrinterPageLayout.MarginLeft, TJvTFPrinterPageLayout.MarginRight, 
+  TJvTFPrinterPageLayout.MarginTop, TJvTFPrinterPageLayout.MarginBottom
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.OnPrintProgress
 Summary
@@ -2071,7 +2072,7 @@ Description
   \Read ApptCount to determine the number of appointments managed by the server. Use ApptCount-1 as the
   upper bound when accessing the Appts array.
 See Also
-  Apps
+  Appts
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.Appts
 Summary
@@ -2100,7 +2101,7 @@ Description
 Note
   This method supersedes the ComponentCount method as of version 1.1 of the server.
 See Also
-  ConComponents, ConComponentCount, ConControls, ConControlCount
+  ConComponents, ConControls, ConControlCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ConComponents
 Summary
@@ -2111,7 +2112,7 @@ Description
 Note
   This property supersedes the Connections property as of version 1.1 of the server.
 See Also
-  ConComponents, ConComponentCount, ConControls, ConControlCount
+  ConComponentCount, ConControls, ConControlCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ConControlCount
 Summary
@@ -2122,7 +2123,7 @@ Description
 Note
   This method supersedes ConnectionCount as of version 1.1 of the server.
 See Also
-  ConComponents, ConComponentCount, ConControls, ConControlCount
+  ConComponents, ConComponentCount, ConControls
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ConControls
 Summary
@@ -2133,7 +2134,7 @@ Description
 Note
   This property supersedes the Connections property as of version 1.1 of the server.
 See Also
-  ConComponents, ConComponentCount, ConControls, ConControlCount
+  ConComponents, ConComponentCount, ConControlCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.CustomImages
 Summary
@@ -2730,13 +2731,13 @@ Return value
 See Also
   ReleaseSchedule
 ----------------------------------------------------------------------------------------------------
-@@TJvTFScheduleManager.RequestSchedule@TJvTFComponent@string@TDate@boolean
+@@TJvTFScheduleManager.RequestSchedule@TJvTFComponent@string@TDate@Boolean
 <COMBINE TJvTFScheduleManager.RequestSchedule@TJvTFComponent@string@TDate>
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.RequestSchedule@TJvTFControl@string@TDate
 <COMBINE TJvTFScheduleManager.RequestSchedule@TJvTFComponent@string@TDate>
 ----------------------------------------------------------------------------------------------------
-@@TJvTFScheduleManager.RequestSchedule@TJvTFControl@string@TDate@boolean
+@@TJvTFScheduleManager.RequestSchedule@TJvTFControl@string@TDate@Boolean
 <COMBINE TJvTFScheduleManager.RequestSchedule@TJvTFComponent@string@TDate>
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.SchedLoadMode

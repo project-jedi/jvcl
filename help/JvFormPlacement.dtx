@@ -14,8 +14,7 @@ Summary
   Enables storing and retrieving the placement and size of a form.
 Description
   TJvFormPlacement is a base class for the TJvFormStorage component. These components provide a
-  quick method for storing and retrieving data to a storage - either the system registry or an
-  ini file.
+  quick method for storing and retrieving data to a storage.
 
   The TJvFormPlacement component enables automatically storing and retrieving the placement and
   size of its parent form.
@@ -24,10 +23,8 @@ Description
 
   * Drop an TJvFormPlacement on a form.
   * Use Options to specify what information about the parent form should be stored.
-  * Use UseRegistry to specify whether either the system registry or an ini file should be used as
-    storage.
-  * Use the IniFileName and IniSection properties to specify the location in the storage to save
-    and read the data to.
+  * Use the AppStorage property to link the component to a storage component. 
+  * Use AppStoragePath to specify the location in the storage to save and read the data to.
   * You can then set property Active to true to allow automatically save and restore the specified
     properties, or call the RestoreFormPlacement and SaveFormPlacement methods at run-time to
     retrieve or save the form.
@@ -48,27 +45,35 @@ Description
   If Active is set to true, the component automatically restores the form's placement when the
   form is shown, and saves the form's placement when the form is closed.
 
-  The component writes the form's placement data to the registry - if UseRegistry is set to true -
-  or to an ini file - if UseRegistry is set to false.
-
   Alternatively, you can call the RestoreFormPlacement and SaveFormPlacement methods to
   explicitly restore and save the form's placement.
 See Also
-  RestoreFormPlacement, SaveFormPlacement, UseRegistry
+  RestoreFormPlacement, SaveFormPlacement
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.AppStorage
 Summary
-  Specifies the application storage component to use.
+  Links the component to a storage component. 
 Description
-  Write here a description
+  Set AppStorage to an application storage component that gives access to a specific storage, such as
+  a xml file or the registry. AppStorage allows the TJvFormPlacement component to read from and write to the
+  storage.
+  
+  To allow the placement data of a form to be read or written from a storage, both the AppStorage and 
+  the AppStoragePath properties must be set.
 See Also
   AppStoragePath
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.AppStoragePath
 Summary
-  Write here a summary (1 line)
+  Specifies the location of the stored data in the storage.
 Description
-  Write here a description
+  Use AppStoragePath to specify the location of the stored data in the storage.
+
+  The storage system uses paths and uses the concept of folders and values (much like folders and
+  files on an OS). AppStoragePath is a path relative to the root folder of the storage component.
+
+  To allow the placement data of a form to be read or written from a storage, both the AppStorage and 
+  the AppStoragePath properties must be set.
 See Also
   AppStorage
 ----------------------------------------------------------------------------------------------------
@@ -76,9 +81,7 @@ See Also
 Summary
   Erases all sections used by this component of the storage.
 Description
-  Call EraseSection to remove all sections, all their keys, and their data values from the storage. The
-  storage is either the registry - if UseRegistry is set to true - or an ini file - if UseRegistry is
-  set to false.
+  Call EraseSection to remove all sections, all their keys, and their data values from the storage.
 See Also
   <LINK Version>
 ----------------------------------------------------------------------------------------------------
@@ -114,7 +117,7 @@ Summary
 Description
   Write an OnRestorePlacement event handler to respond after the the form's placement has been
   retrieved and restored. For example you can read other values from the storage that are not managed
-  by the component - using the ReadInteger and ReadString methods.
+  by the component - using the <LINK ReadInteger> and <LINK ReadString> methods.
 
   This event is fired before the control that has focus on the form is retrieved and restored, thus
   you can alter this restoring behaviour in an event handler by modifying property Options.
@@ -157,52 +160,23 @@ Description
 Summary
   Retrieves an integer value from the storage.
 Description
-  Call ReadInteger to retrieve an integer value from the storage. The storage is either the registry -
-  if UseRegistry is set to true - or an ini file - if UseRegistry is set to false.
-
-  If the registry is used, then:
-
-    * RegistryRoot determines the root registry key,
-    * IniFileName determines the main key, IniSection determines the sub key, and
-    * Parameter Ident identifies the name of the data value to return.
-
-  If an ini file is used, then:
-
-    * IniFileName specifies the name of the ini file,
-    * IniSection identifies the section in the file, and
-    * Parameter Ident identifies the name of the key from which to retrieve the value.
-
+  Call ReadInteger to retrieve an integer value from the storage. 
 Parameters
-  Ident   - Identifies the name of the data value or ini key from which to retrieve the value.
-  Default - Specifies an integer value to use if there is no key corresponding to the value specified by
-             IniFileName and IniSection, or no data value corresponding to parameter Ident.
+  Ident   - Identifies the name of the data value from which to retrieve the value.
+  Default - Specifies an integer value to use if the data value is not in the storage.
 See Also
-  IniFileName, IniSection, <LINK ReadString>, UseRegistry, <LINK WriteInteger>
+  AppStorage, AppStoragePath, <LINK ReadString>, <LINK WriteInteger>
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.ReadString
 Summary
   Retrieves a string value from the storage.
 Description
-  Call ReadString to retrieve an integer value from the storage. The storage is either the registry -
-  if UseRegistry is set to true - or an ini file - if UseRegistry is set to false.
-
-  If the registry is used, then:
-
-    * RegistryRoot determines the root registry key,
-    * IniFileName and IniSection determine the key, and
-    * Parameter Ident identifies the name of the data value to return.
-
-  If an ini file is used, then:
-
-    * IniFileName specifies the name of the ini file,
-    * IniSection identifies the section in the file, and
-    * Parameter Ident identifies the name of the key from which to retrieve the value.
+  Call ReadString to retrieve an integer value from the storage. 
 Parameters
   Ident   - Identifies the name of the data value from which to retrieve the value.
-  Default - Specifies an string value to use if there is no key corresponding to the value specified by
-             IniFileName and IniSection, or no data value corresponding to parameter Ident.
+  Default - Specifies a string value to use if the data value is not in the storage.
 See Also
-  IniFileName, IniSection, <LINK ReadInteger>, UseRegistry, <LINK WriteString>
+  AppStorage, AppStoragePath, <LINK ReadInteger>, <LINK WriteString>
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.RestoreFormPlacement
 Summary
@@ -247,45 +221,23 @@ See Also
 Summary
   Writes an integer value to the storage.
 Description
-  Call WriteInteger to store an integer value in the storage. The storage is either the registry -
-  if UseRegistry is set to true - or an ini file - if UseRegistry is set to false.
-
-  If the registry is used, then:
-    * RegistryRoot determines the root registry key,
-    * IniFileName determines the main key, IniSection determines the sub key, and
-    * Parameter Ident identifies the name of the data value into which to write.
-
-  If an ini file is used, then:
-    * IniFileName specifies the name of the ini file,
-    * IniSection identifies the section in the file, and
-    * Parameter Ident identifies the name of the key for which to set a value.
+  Call WriteInteger to store an integer value in the storage. 
 Parameters
-  Ident - Identifies the name of the data value or ini key into which to write.
+  Ident - Identifies the name of the data value into which to write.
   Value - The integer value to write.
 See Also
-  IniFileName, IniSection, ReadInteger, UseRegistry, WriteString
+  AppStorage, AppStoragePath, ReadInteger, WriteString
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.WriteString
 Summary
   Writes a \string value to the storage.
 Description
-  Call WriteInteger to store an integer value in the storage. The storage is either the registry -
-  if UseRegistry is set to true - or an ini file - if UseRegistry is set to false.
-
-  If the registry is used, then:
-    * RegistryRoot determines the root registry key,
-    * IniFileName and IniSection determine the key, and
-    * Parameter Ident identifies the name of the data value into which to write.
-
-  If an ini file is used, then:
-    * IniFileName specifies the name of the ini file,
-    * IniSection identifies the section in the file, and
-    * Parameter Ident identifies the name of the key for which to set a value.
+  Call WriteInteger to store an integer value in the storage. 
 Parameters
-  Ident - Identifies the name of the data value or ini key into which to write.
+  Ident - Identifies the name of the data value into which to write.
   Value - The \string value to write.
 See Also
-  IniFileName, IniSection, ReadString, UseRegistry, WriteInteger
+  AppStorage, AppStoragePath, ReadString, WriteInteger
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage
 <TITLEIMG TJvFormStorage>
@@ -312,10 +264,8 @@ Description
   * Use either the <LINK TJvFormStorage_StoredProps_Editor,StoredProps editor> by double-clicking
     the component, or the component's properties, to specify which properties of what components
     you want to be stored and retrieved.
-  * Use <LINK TJvFormPlacement.UseRegistry,UseRegistry> to specify whether either the system
-    registry or an ini file should be used as storage.
-  * Use the <LINK TJvFormPlacement.IniFileName,IniFileName> and <LINK TJvFormPlacement.IniSection,
-    IniSection> properties to specify the location in the storage to save and read the data to.
+  * Use the AppStorage property to link the component to a storage component. 
+  * Use AppStoragePath to specify the location in the storage to save and read the data to.
   * You can then set property <LINK TJvFormPlacement.Active,Active> to true to allow automatically
     save and restore the specified properties, or call the <LINK TJvFormPlacement.RestoreFormPlacement,
     RestoreFormPlacement> and <LINK TJvFormPlacement.SaveFormPlacement,SaveFormPlacement> methods
@@ -335,10 +285,10 @@ Description
 
   If you use DefaultValue to <i>get</i> the value of a stored value object that is NULL, DefaultValue
   returns the value represented by the Default parameter. If you try to <i>set</i> the value of a
-  stored value object to NULL, then it's actually set to the value represented by the Default parameter.
+  stored value object to NULL, then it is actually set to the value represented by the Default parameter.
 Parameters
-  Name    - Description for this parameter
-  Default - Description for this parameter
+  Name    - Identifies the name of the stored value.
+  Default - Specifies an value to use if the stored value is not in the storage.
 See Also
   StoredValue
 ----------------------------------------------------------------------------------------------------
@@ -490,8 +440,7 @@ Description
   responds to storage events that are send by Storage, by notifying the object that owns the
   TJvIniLink object - by triggering the OnLoad and OnSave envents.
 See Also
-  TJvFormPlacement.Active, TJvFormPlacement.RestoreFormPlacement, TJvFormPlacement.SaveFormPlacement,
-  IniObject
+  TJvFormPlacement.Active, TJvFormPlacement.RestoreFormPlacement, TJvFormPlacement.SaveFormPlacement
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue
 Summary
@@ -579,8 +528,8 @@ Description
   Use Value in generic code that manipulates the values of stored values without needing to know
   the type the stored value represent.
 
-  \Write OnRestore and OnSave event handles to set the value just before it's saved or get it just
-  after it's read from the storage.
+  \Write OnRestore and OnSave event handles to set the value just before it is saved or get it just
+  after it is read from the storage.
 See Also
   Clear, OnRestore, OnSave
 ----------------------------------------------------------------------------------------------------
@@ -590,7 +539,7 @@ Summary
   Type for event handlers that let an application process data after it is retrieved from or before
   it is saved to the storage.
 Description
-  Use TJvStoredValueEvent to edit the value of data before it's written to the storage or after it's
+  Use TJvStoredValueEvent to edit the value of data before it is written to the storage or after it is
   read from the storage.
 Parameters
   Sender - Identifies the storage component that is about to store Value to a storage or has retrieved
