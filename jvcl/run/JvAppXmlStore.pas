@@ -75,7 +75,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Flush;
-    property Xml: TJvSimpleXml read FXml;
+    procedure Reload;
+
+    property Xml : TJvSimpleXml read FXml;
   published
     property FileName: TFileName read GetFileName write SetFileName;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
@@ -339,8 +341,7 @@ end;
 procedure TJvAppXmlStore.SetFileName(const Value: TFileName);
 begin
   FFileName := Value;
-  if FileExists(FFileName) then
-    FXml.LoadFromFile(FFileName);
+  Reload;
 end;
 
 procedure TJvAppXmlStore.EnumFolders(const Path: string;
@@ -432,6 +433,12 @@ end;
 function TJvAppXmlStore.GetRootNodeName: string;
 begin
   Result := FXml.Root.Name;
+end;
+
+procedure TJvAppXmlStore.Reload;
+begin
+  if FileExists(FFileName) then
+    FXml.LoadFromFile(FFileName);
 end;
 
 end.
