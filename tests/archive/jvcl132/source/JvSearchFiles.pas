@@ -25,6 +25,13 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 { Wrapper for a file search engine. }
 unit JvSearchFiles;
@@ -33,11 +40,6 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  //PRY 2002.06.04
-  {$IFNDEF COMPILER6_UP}
-  FileCtrl,
-  {$ENDIF COMPILER6_UP}
-  // PRY END
   JvComponent;
 
 type

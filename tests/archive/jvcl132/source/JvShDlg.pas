@@ -263,7 +263,9 @@ uses
 
 const
   shell32 = 'shell32.dll';
-
+{$IFDEF DELPHI6_UP}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF}
 function SHQueryRecycleBinW(pszRootPath: PWideChar; var ShQueryRBInfo: TSHQueryRBInfo): HRESULT; external shell32 name 'SHQueryRecycleBinW';
 function SHQueryRecycleBin(pszRootPath: PChar; var ShQueryRBInfo: TSHQueryRBInfo): HRESULT; external shell32 name 'SHQueryRecycleBinA';
 function SHEmptyRecycleBin(hwnd: HWND; pszRootPath: PChar; dwFlags: DWORD): HRESULT; external shell32 name 'SHEmptyRecycleBinA';

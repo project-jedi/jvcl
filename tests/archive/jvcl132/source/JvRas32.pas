@@ -161,7 +161,7 @@ begin
   FCallBack := '';
   FDomain := '';
   FConnection := 0;
-  FHandle := AllocateHWnd(WndProc);
+  FHandle := Classes.AllocateHWnd(WndProc);
   RASEvent := RegisterWindowMessage(RASDialEvent);
   if RASEvent = 0 then
     RASEvent := WM_RASDialEvent;
@@ -211,7 +211,7 @@ begin
     end;
     FreeLibrary(FDll);
   end;
-  DeallocateHWnd(FHandle);
+  Classes.DeallocateHWnd(FHandle);
   inherited
 end;
 

@@ -29,6 +29,12 @@ Known Issues:
 unit JvPerfMon95;
 
 {$I JEDI.INC}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 interface
 
@@ -147,7 +153,8 @@ implementation
 
 uses
   Consts,
-  JclSysInfo, JclSysUtils;
+  JclSysInfo, JclSysUtils,
+  JvComponentFunctions;
 
 resourcestring
   sCantOpenPerfKey = 'Performance registry key not found';
@@ -169,7 +176,7 @@ function MultiByteStringToString(const S: string): string;
 var
   W: array[0..MAX_PATH] of WideChar;
 begin
-  Win32Check(MultiByteToWideChar(CP_OEMCP, 0, PChar(S), -1, W, MAX_PATH) <> 0);
+  OSCheck(MultiByteToWideChar(CP_OEMCP, 0, PChar(S), -1, W, MAX_PATH) <> 0);
   Result := W;
 end;
 
@@ -179,7 +186,7 @@ var
   C: array[0..MAX_PATH] of AnsiChar;
 begin
   W := S;
-  Win32Check(WideCharToMultiByte(CP_OEMCP, 0, PWideChar(W), -1, C, MAX_PATH, nil, nil) <> 0);
+  OSCheck(WideCharToMultiByte(CP_OEMCP, 0, PWideChar(W), -1, C, MAX_PATH, nil, nil) <> 0);
   Result := C;
 end;
 

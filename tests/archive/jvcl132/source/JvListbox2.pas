@@ -83,12 +83,12 @@ type
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
-    procedure SelectAll;
+    procedure SelectAll;override;
     procedure UnselectAll;
     procedure InvertSelection;
     procedure MoveSelectedUp; virtual;
     procedure MoveSelectedDown; virtual;
-    procedure DeleteSelected;
+    procedure DeleteSelected;override;
     procedure DeleteAllButSelected;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;

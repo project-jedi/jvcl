@@ -23,6 +23,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 unit JvPageSetup;
 
@@ -142,7 +148,8 @@ implementation
 ///////////////////////////////////////////////////////////////////////////////
 
 uses
-  SysUtils, Controls, Forms, Printers;
+  SysUtils, Controls, Forms, Printers,
+  JvComponentFunctions;
 
 resourcestring
   SInvalidValue = 'Value must be greater then zero';
@@ -688,7 +695,7 @@ begin
       if hDevNames <> 0 then
         GlobalFree(hDevNames);
     end;
-    Win32Check(eErr = 0);
+    OSCheck(eErr = 0);
 
     FMargin.AsRect := rtMargin;
     FPaperSize := ptPaperSize;

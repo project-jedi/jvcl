@@ -64,8 +64,9 @@ type
     procedure Calculate;
     procedure ReCalcule(Sender: TObject);
     procedure SetPosition(Value: Integer);
-    procedure SetAutoSize(const Value: Boolean);
     procedure Loading(Sender: TObject);
+  protected
+    procedure SetAutoSize(Value: Boolean);override;
   public
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -378,7 +379,7 @@ end;
 
 {******************************************************}
 
-procedure TJvSlider.SetAutoSize(const Value: Boolean);
+procedure TJvSlider.SetAutoSize(Value: Boolean);
 begin
   FAutoSize := Value;
   if Value then

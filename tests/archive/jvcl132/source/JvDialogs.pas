@@ -188,12 +188,12 @@ begin
   FActiveStyle := asSmallIcon;
   FShowPlacesBar := True;
   FMakeResizeable := GetWindowsVersion in [wvWin95, wvWin95OSR2, wvWinNT4];
-  FParentWndInstance := MakeObjectInstance(ParentWndProc);
+  FParentWndInstance := Classes.MakeObjectInstance(ParentWndProc);
 end;
 
 destructor TJvOpenDialog.Destroy;
 begin
-  FreeObjectInstance(FParentWndInstance);
+  Classes.FreeObjectInstance(FParentWndInstance);
   inherited;
 end;
 

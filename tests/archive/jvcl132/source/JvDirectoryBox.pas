@@ -29,14 +29,21 @@ Known Issues:
 unit JvDirectoryBox;
 
 {$OBJEXPORTALL On}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, FileCtrl, Controls, Forms,
-  JvEdit, JvTypes, JvCustomBox, JvSelectDirectory;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  JvEdit, JvTypes, JvCustomBox, JvSelectDirectory, FileCtrl;
 
 type
+{ TODO -opeter3 : Rewrite to not depend on FileCtrl? }
   TJvDirectoryOptions = class(TPersistent)
   private
     FTitle: string;

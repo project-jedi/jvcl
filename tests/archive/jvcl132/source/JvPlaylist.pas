@@ -57,7 +57,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure AddItem(FileName: string);
+    procedure AddItem(Item: String; AObject: TObject); override;
     procedure AddItems(Value: TStrings);
     function GetItem(Index: Integer): string;
     procedure DeleteDeadFiles;
@@ -112,9 +112,9 @@ end;
 
 {**************************************************}
 
-procedure TJvPlaylist.AddItem(FileName: string);
+procedure TJvPlaylist.AddItem(Item: String; AObject: TObject); 
 begin
-  Items.Add(FileName);
+  Items.AddObject(Item,AObject);
 end;
 
 {**************************************************}

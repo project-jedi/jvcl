@@ -29,14 +29,20 @@ Known Issues:
 unit JvSelectDirectory;
 
 {$OBJEXPORTALL On}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 interface
 
 uses
-  Windows, Classes, FileCtrl,
-  JvBaseDlg;
+  Windows, Classes, JvBaseDlg, FileCtrl;
 
 type
+  { TODO -opeter3 : Rewrite to not depend on FileCtrl? }
   TJvSelectDirectory = class(TJvCommonDialog)
   private
     FDirectory: string;

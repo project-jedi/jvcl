@@ -142,10 +142,10 @@ type
     FFont: TFont;
 
     procedure SetText(Value: string);
-    procedure SetAutosize(Value: Boolean);
     procedure SetFont(Value: TFont);
     procedure FontChanged(Sender: TObject);
   protected
+    procedure SetAutosize(Value: Boolean);override;
     procedure RefreshText;
     procedure SetParent(AParent: TWinControl); override;
     procedure Paint; override;

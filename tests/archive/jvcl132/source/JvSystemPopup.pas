@@ -293,13 +293,13 @@ begin
         ppForm:
           begin
             FOldWndProc := Pointer(GetWindowLong(FForm.Handle, GWL_WNDPROC));
-            ptr := MakeObjectInstance(NewWndProc);
+            ptr := Classes.MakeObjectInstance(NewWndProc);
             SetWindowLong(FForm.Handle, GWL_WNDPROC, Longint(ptr));
           end;
         ppApplication:
           begin
             FOldWndProc := Pointer(GetWindowLong(Application.Handle, GWL_WNDPROC));
-            ptr := MakeObjectInstance(NewWndProc);
+            ptr := Classes.MakeObjectInstance(NewWndProc);
             SetWindowLong(Application.Handle, GWL_WNDPROC, Longint(ptr));
           end;
       end;

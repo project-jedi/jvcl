@@ -48,7 +48,7 @@ type
     FBackColor, FFrontColor, FGridColor: TColor;
     FMargin: TJvMargin;
     FColCount: TJvPositive;
-    FImageCount: Cardinal;
+    FImageCount: integer;
     FShowFrame, FShowGrid, FGhost, FAutoSize, FOptimal: Boolean;
     FImageChangeLink: TChangeLink;
     procedure DrawFocusFrame(X, Y: integer);
@@ -57,7 +57,7 @@ type
     procedure SetGridColor(Value: TColor);
     procedure SetJvMargin(Value: TJvMargin);
     procedure SetColCount(Value: TJvPositive);
-    procedure SetImageCount(Value: Cardinal);
+    procedure SetImageCount(Value: integer);
     procedure SetShowFrame(Value: Boolean);
     procedure SetShowGrid(Value: boolean);
     procedure SetGhost(Value: boolean);
@@ -92,7 +92,7 @@ type
     property Ghost: boolean read FGhost write SetGhost;
     property Margin: TJvMargin read FMargin write SetJvMargin default 2;
     property ColCount: TJvPositive read FColCount write SetColCount default 4;
-    property ImageCount: Cardinal read FImageCount write SetImageCount default 0;
+    property ImageCount: integer read FImageCount write SetImageCount default 0;
     property ImageList: TImageList read FImageList write SetImageList;
     property ShowFrame: boolean read FShowFrame write SetShowFrame default True;
     property ShowGrid: boolean read FShowGrid write SetShowGrid default True;
@@ -516,7 +516,7 @@ begin
   end;
 end;
 
-procedure TJvImageWindow.SetImageCount(Value: cardinal);
+procedure TJvImageWindow.SetImageCount(Value: integer);
 begin
   if (FImageCount <> Value) then
   begin

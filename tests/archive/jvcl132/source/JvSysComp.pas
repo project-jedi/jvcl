@@ -25,12 +25,18 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+{$I JEDI.INC}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 unit JvSysComp;
 
 interface
-
-{$I JEDI.INC}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
@@ -229,7 +235,7 @@ implementation
 
 uses
   TLHelp32, Psapi,
-  JclSysUtils;
+  JclSysUtils, JvComponentFunctions;
 
 resourcestring
   RsListIndex = 'Process list index error';
@@ -450,7 +456,7 @@ var
   ProcessHandle: THandle;
 begin
   ProcessHandle := OpenProcess(PROCESS_TERMINATE, False, ProcessID);
-  Win32Check(ProcessHandle <> 0);
+  OSCheck(ProcessHandle <> 0);
   Result := TerminateProcess(ProcessHandle, 0);
   CloseHandle(ProcessHandle);
 end;
@@ -493,10 +499,10 @@ begin
   else
   begin
     ProcessHandle := OpenProcess(PROCESS_ALL_ACCESS, False, ProcessID);
-    Win32Check(ProcessHandle <> 0);
+    OSCheck(ProcessHandle <> 0);
     try
       PriorityClass := GetPriorityClass(ProcessHandle);
-      Win32Check(PriorityClass <> 0);
+      OSCheck(PriorityClass <> 0);
       case PriorityClass of
         NORMAL_PRIORITY_CLASS: Result := ppNormal;
         IDLE_PRIORITY_CLASS: Result := ppIdle;
@@ -533,9 +539,9 @@ var
   ProcessHandle: THandle;
 begin
   ProcessHandle := OpenProcess(PROCESS_SET_INFORMATION, False, ProcessID);
-  Win32Check(ProcessHandle <> 0);
+  OSCheck(ProcessHandle <> 0);
   try
-    Win32Check(SetPriorityClass(ProcessHandle, ProcessPriorities[Value]));
+    OSCheck(SetPriorityClass(ProcessHandle, ProcessPriorities[Value]));
   finally
     CloseHandle(ProcessHandle);
   end;
@@ -652,8 +658,8 @@ end;
 
 procedure TJvCreateProcess.CloseProcessHandles;
 begin
-  Win32Check(SafeCloseHandle(FProcessInfo.hProcess));
-  Win32Check(SafeCloseHandle(FProcessInfo.hThread));
+  OSCheck(SafeCloseHandle(FProcessInfo.hProcess));
+  OSCheck(SafeCloseHandle(FProcessInfo.hThread));
 end;
 
 constructor TJvCreateProcess.Create(AOwner: TComponent);
@@ -712,7 +718,7 @@ begin
     EnvironmentData, CurrDir, FStartupInfo.StartupInfo, FProcessInfo) then
   begin
     FreeMultiSz(EnvironmentData);
-    RaiseLastWin32Error;
+    RaiseLastOSError;
   end
   else
     FreeMultiSz(EnvironmentData);
@@ -804,7 +810,7 @@ begin
     WAIT_OBJECT_0 + 1:
       GetExitCodeProcess(FProcessHandle, FExitCode);
   else
-    RaiseLastWin32Error;
+    RaiseLastOSError;
   end;
 end;
 
@@ -870,7 +876,7 @@ var
       if FAbortOnError then
         FAborting := True
       else
-        RaiseLastWin32Error;
+        RaiseLastOSError;
     end;
   end;
 
@@ -955,7 +961,7 @@ begin
   FTotalDirectories := 0;
   FTotalFiles := 0;
   if not IsDirectory(FRootDirectory) then
-    RaiseLastWin32Error;
+    RaiseLastOSError;
   FRunning := True;
   try
     InternalScan(FRootDirectory);

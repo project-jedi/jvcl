@@ -29,6 +29,12 @@ Known Issues:
 unit JvCtrls;
 
 {$I JEDI.INC}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 interface
 
@@ -264,7 +270,7 @@ implementation
 
 uses
   Math, Consts,
-  JclSysUtils;
+  JclSysUtils, JvComponentFunctions;
 
 {$R *.res}
 
@@ -1019,7 +1025,7 @@ begin
     DoubleBuffered := True;
     FCurrentAnimateFrame := 0;
     ShowNextFrame;
-    Win32Check(SetTimer(Handle, 1, FAnimateInterval, nil) <> 0);
+    OSCheck(SetTimer(Handle, 1, FAnimateInterval, nil) <> 0);
     FAnimating := True;
   end;
 end;

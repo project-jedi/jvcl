@@ -173,7 +173,7 @@ begin
   FJoystick2 := joyGetNumDevs > 1;
   FJoy1 := TJoystick.CreateJoy(Self, JOYSTICKID1);
   FJoy2 := TJoystick.CreateJoy(Self, JOYSTICKID2);
-  FHandle := AllocateHWND(WndProc);
+  FHandle := Classes.AllocateHWND(WndProc);
   FCapture1 := False;
   FCapture2 := False;
   FPoll := 50;
@@ -185,7 +185,7 @@ destructor TJvJoystick.Destroy;
 begin
   FJoy1.Free;
   FJoy2.Free;
-  DeallocateHWnd(FHandle);
+  Classes.DeallocateHWnd(FHandle);
   if FCapture1 then
     joyReleaseCapture(JOYSTICKID1);
   if FCapture2 then

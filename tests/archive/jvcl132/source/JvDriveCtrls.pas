@@ -25,6 +25,13 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 { Components to replace the TDriveComboBox from Borland that also adds a TDriveListBox.
     Uses the system Iconlist to display driveicons. }
@@ -170,6 +177,7 @@ type
     procedure BuildList; virtual;
     procedure Change; dynamic;
     property Items stored false;
+    property Offset:integer read FOffset write SetOffset;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;

@@ -35,6 +35,7 @@ interface
 uses
   Windows, Messages, Classes, Forms, Dialogs, SysUtils, ActiveX, Shlobj, Controls,
   Graphics, ShellAPI, JvComponent;
+
 const
 // For finding a folder to start document searching
   BIF_RETURNONLYFSDIRS = $0001;
@@ -156,6 +157,9 @@ type
 function BrowseForFolder(const ACaption: string; var ADirectory: string): boolean;
 
 implementation
+uses
+  JvComponentFunctions;
+  
 
 function BrowseForFolder(const ACaption: string; var ADirectory: string): boolean;
 begin
@@ -225,18 +229,6 @@ begin
   FPosition := Point(-1, -1); // center by default
 end;
 
-function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
-var b: array[0..MAX_PATH] of char; R: TRect;
-begin
-  StrCopy(b, PChar(Filename));
-  R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
-  if DrawText(Canvas.Handle, b, Length(Filename), R,
-    DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or DT_NOPREFIX) > 0 then
-    Result := b
-  else
-    Result := Filename;
-end;
-
 procedure TJvShellBrowser.SetStatusText(const hWnd: THandle; const Text: string);
 const
   cStatusLabel = $3743;
@@ -291,7 +283,7 @@ end;
 
 function TJvShellBrowser.Execute: Boolean;
 const
-  cFlags: array[TJvBrowseFlag] of Integer =
+  cFlags: array[TJvBrowseFlag] of DWORD =
   (BIF_RETURNONLYFSDIRS,
     BIF_DONTGOBELOWDOMAIN,
     BIF_STATUSTEXT,

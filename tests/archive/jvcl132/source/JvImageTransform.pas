@@ -51,13 +51,13 @@ type
     FOnFinished: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
     procedure PictureChanged(Sender: TObject);
-    procedure SetAutoSize(Value: Boolean);
     procedure SetPicture1(Value: TPicture);
     procedure SetPicture2(Value: TPicture);
     procedure SetImageShown(Value: Byte);
     procedure SetInterval(Value: Integer);
     procedure SetType(Value: TTransformationKind);
   protected
+    procedure SetAutoSize(Value: Boolean);override;
     function GetPalette: HPALETTE; override;
     procedure Paint; override;
     procedure TimerTick(Sender: TObject);
