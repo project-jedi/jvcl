@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2003-10-07: 
+- added new control, TJvComboListBox, that displays a combobox on the selected item. // peter3
+2003-10-06:
+- added JvClipbrd (from Olivier Sannier). Enhanced Clipbrd with delayed format rendering // peter3
 2003-10-04:
 - resourcestring extraction of the units under design // andreas
 - resourcestring extraction of the units under run // andreas

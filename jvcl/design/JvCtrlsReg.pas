@@ -22,6 +22,7 @@ uses
   JvTransparentButton, JvxClock, JvSpeedbarSetupForm,
   JvColorForm, JvDsgnIntf, JvImageDrawThread, JvWinampLabel, JvPlaylist, JvComponentPanel,
   JvButtons, JvCaptionPanel, JvScrollMax, JvUninstallControls, JvMovableBevel,
+  JvComboListBox,
   JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor, JvFooterEditor,
   JvSpeedbarForm, JvDsgnEditors;
 
@@ -44,7 +45,7 @@ begin
     TJvBehaviorLabel, TJvInstallLabel, TJvHTLabel, TJvWinampLabel
     ]);
   RegisterComponents(SPaletteListComboTree,[
-    TJvImageComboBox, TJvImageListBox,
+    TJvImageComboBox, TJvImageListBox, TJvComboListBox, 
     TJvHTListBox, TJvHTComboBox,
     TJvUninstallComboBox,TJvUninstallListBox,
     TJvDriveCombo, TJvDriveList, TJvFileListBox, TJvDirectoryListBox,
