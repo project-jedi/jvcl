@@ -333,11 +333,11 @@ type
 procedure ImgStretch(Src, Dst: TBitmap; filter: TFilterProc; fwidth: Single);
 var
   xscale, yscale: Single; // Zoom scale factors
-  i, j, k: integer; // Loop variables
+  i, j, k: Integer; // Loop variables
   center: single; // Filter calculation variables
   width, fscale, weight: single; // Filter calculation variables
-  left, right: integer; // Filter calculation variables
-  n: integer; // Pixel number
+  left, right: Integer; // Filter calculation variables
+  n: Integer; // Pixel number
   Work: TBitmap;
   contrib: PCListList;
   rgb: TRGB;
@@ -347,11 +347,11 @@ var
   SourcePixel,
     DestPixel: PColorRGB;
   Delta,
-    DestDelta: integer;
+    DestDelta: Integer;
   SrcWidth,
     SrcHeight,
     DstWidth,
-    DstHeight: integer;
+    DstHeight: Integer;
 
   function Color2RGB(Color: TColor): TColorRGB;
   begin
@@ -381,11 +381,11 @@ begin
     // xscale := DstWidth / SrcWidth;
     // yscale := DstHeight / SrcHeight;
     // Improvement suggested by David Ullrich:
-    if (SrcWidth = 1) then
+    if SrcWidth = 1 then
       xscale := DstWidth / SrcWidth
     else
       xscale := (DstWidth - 1) / (SrcWidth - 1);
-    if (SrcHeight = 1) then
+    if SrcHeight = 1 then
       yscale := DstHeight / SrcHeight
     else
       yscale := (DstHeight - 1) / (SrcHeight - 1);
@@ -401,7 +401,7 @@ begin
     GetMem(contrib, DstWidth * SizeOf(TCList));
     // Horizontal sub-sampling
     // Scales from bigger to smaller width
-    if (xscale < 1.0) then
+    if xscale < 1.0 then
     begin
       width := fwidth / xscale;
       fscale := 1.0 / xscale;
@@ -418,11 +418,12 @@ begin
         for j := left to right do
         begin
           weight := filter((center - j) / fscale) / fscale;
-          if (weight = 0.0) then
+          if weight = 0.0 then
             continue;
-          if (j < 0) then
+          if j < 0 then
             n := -j
-          else if (j >= SrcWidth) then
+          else
+          if j >= SrcWidth then
             n := SrcWidth - j + SrcWidth - 1
           else
             n := j;
@@ -450,11 +451,12 @@ begin
         for j := left to right do
         begin
           weight := filter(center - j);
-          if (weight = 0.0) then
+          if weight = 0.0 then
             continue;
-          if (j < 0) then
+          if j < 0 then
             n := -j
-          else if (j >= SrcWidth) then
+          else
+          if j >= SrcWidth then
             n := SrcWidth - j + SrcWidth - 1
           else
             n := j;
@@ -482,34 +484,37 @@ begin
         begin
           color := SourceLine^[contrib^[i].p^[j].pixel];
           weight := contrib^[i].p^[j].weight;
-          if (weight = 0.0) then
+          if weight = 0.0 then
             continue;
           rgb.r := rgb.r + color.r * weight;
           rgb.g := rgb.g + color.g * weight;
           rgb.b := rgb.b + color.b * weight;
         end;
-        if (rgb.r > 255.0) then
+        if rgb.r > 255.0 then
           color.r := 255
-        else if (rgb.r < 0.0) then
+        else
+        if rgb.r < 0.0 then
           color.r := 0
         else
           color.r := round(rgb.r);
-        if (rgb.g > 255.0) then
+        if rgb.g > 255.0 then
           color.g := 255
-        else if (rgb.g < 0.0) then
+        else
+        if rgb.g < 0.0 then
           color.g := 0
         else
           color.g := round(rgb.g);
-        if (rgb.b > 255.0) then
+        if rgb.b > 255.0 then
           color.b := 255
-        else if (rgb.b < 0.0) then
+        else
+        if rgb.b < 0.0 then
           color.b := 0
         else
           color.b := round(rgb.b);
         // Set new pixel value
         DestPixel^ := color;
         // Move on to next column
-        inc(DestPixel);
+        Inc(DestPixel);
       end;
     end;
 
@@ -525,7 +530,7 @@ begin
     GetMem(contrib, DstHeight * SizeOf(TCList));
     // Vertical sub-sampling
     // Scales from bigger to smaller height
-    if (yscale < 1.0) then
+    if yscale < 1.0 then
     begin
       width := fwidth / yscale;
       fscale := 1.0 / yscale;
@@ -542,11 +547,12 @@ begin
         for j := left to right do
         begin
           weight := filter((center - j) / fscale) / fscale;
-          if (weight = 0.0) then
+          if weight = 0.0 then
             continue;
-          if (j < 0) then
+          if j < 0 then
             n := -j
-          else if (j >= SrcHeight) then
+          else
+          if j >= SrcHeight then
             n := SrcHeight - j + SrcHeight - 1
           else
             n := j;
@@ -574,11 +580,12 @@ begin
         for j := left to right do
         begin
           weight := filter(center - j);
-          if (weight = 0.0) then
+          if weight = 0.0 then
             continue;
-          if (j < 0) then
+          if j < 0 then
             n := -j
-          else if (j >= SrcHeight) then
+          else
+          if j >= SrcHeight then
             n := SrcHeight - j + SrcHeight - 1
           else
             n := j;
@@ -594,12 +601,12 @@ begin
     // Apply filter to sample vertically from Work to Dst
     // --------------------------------------------------
     SourceLine := Work.ScanLine[0];
-    Delta := integer(Work.ScanLine[1]) - integer(SourceLine);
+    Delta := Integer(Work.ScanLine[1]) - Integer(SourceLine);
     DestLine := Dst.ScanLine[0];
-    DestDelta := integer(Dst.ScanLine[1]) - integer(DestLine);
+    DestDelta := Integer(Dst.ScanLine[1]) - Integer(DestLine);
     for k := 0 to DstWidth - 1 do
     begin
-      DestPixel := pointer(DestLine);
+      DestPixel := Pointer(DestLine);
       for i := 0 to DstHeight - 1 do
       begin
         rgb.r := 0;
@@ -608,34 +615,37 @@ begin
         // weight := 0.0;
         for j := 0 to contrib^[i].n - 1 do
         begin
-          color := PColorRGB(integer(SourceLine) + contrib^[i].p^[j].pixel * Delta)^;
+          color := PColorRGB(Integer(SourceLine) + contrib^[i].p^[j].pixel * Delta)^;
           weight := contrib^[i].p^[j].weight;
-          if (weight = 0.0) then
+          if weight = 0.0 then
             continue;
           rgb.r := rgb.r + color.r * weight;
           rgb.g := rgb.g + color.g * weight;
           rgb.b := rgb.b + color.b * weight;
         end;
-        if (rgb.r > 255.0) then
+        if rgb.r > 255.0 then
           color.r := 255
-        else if (rgb.r < 0.0) then
+        else
+        if rgb.r < 0.0 then
           color.r := 0
         else
           color.r := round(rgb.r);
-        if (rgb.g > 255.0) then
+        if rgb.g > 255.0 then
           color.g := 255
-        else if (rgb.g < 0.0) then
+        else
+        if rgb.g < 0.0 then
           color.g := 0
         else
           color.g := round(rgb.g);
-        if (rgb.b > 255.0) then
+        if rgb.b > 255.0 then
           color.b := 255
-        else if (rgb.b < 0.0) then
+        else
+        if rgb.b < 0.0 then
           color.b := 0
         else
           color.b := round(rgb.b);
         DestPixel^ := color;
-        inc(integer(DestPixel), DestDelta);
+        Inc(Integer(DestPixel), DestDelta);
       end;
       Inc(SourceLine, 1);
       Inc(DestLine, 1);

@@ -1985,7 +1985,8 @@ var
 begin
   if Sender is TJvTFControl then
     ConList := FConControls
-  else if Sender is TJvTFComponent then
+  else
+  if Sender is TJvTFComponent then
     ConList := FConComponents
   else
     ConList := nil;
@@ -2187,7 +2188,8 @@ begin
           StartRange
         else
           EndRange
-      else if FreeTime then
+      else
+      if FreeTime then
         EndRange
       else
         StartRange
@@ -2422,11 +2424,13 @@ begin
     if Trunc(anAppt.StartDate) < Trunc(SchedDate) then
     begin
       Result := anAppt;
-      break; // APPOINTMENT STARTS AT 0:00 (12:00am) SO LEAVE LOOP
+      Break; // APPOINTMENT STARTS AT 0:00 (12:00am) SO LEAVE LOOP
     end
-    else if not Assigned(Result) then
+    else
+    if not Assigned(Result) then
       Result := anAppt
-    else if Frac(anAppt.StartTime) < Frac(Result.StartTime) then
+    else
+    if Frac(anAppt.StartTime) < Frac(Result.StartTime) then
       Result := anAppt;
     Inc(I);
   end;
@@ -2445,11 +2449,13 @@ begin
     if Trunc(anAppt.EndDate) > Trunc(SchedDate) then
     begin
       Result := anAppt;
-      break; // APPOINTMENT ENDS AT 23:59 (11:59pm) SO LEAVE LOOP
+      Break; // APPOINTMENT ENDS AT 23:59 (11:59pm) SO LEAVE LOOP
     end
-    else if not Assigned(Result) then
+    else
+    if not Assigned(Result) then
       Result := anAppt
-    else if Frac(anAppt.EndTime) > Frac(Result.EndTime) then
+    else
+    if Frac(anAppt.EndTime) > Frac(Result.EndTime) then
       Result := anAppt;
     Inc(I);
   end;
@@ -2700,7 +2706,8 @@ begin
       StateImages := nil;
       RefreshConnections(nil);
     end
-    else if AComponent = CustomImages then
+    else
+    if AComponent = CustomImages then
     begin
       CustomImages := nil;
       RefreshConnections(nil);
@@ -3291,17 +3298,20 @@ begin
     for I := 0 to ConComponentCount - 1 do
       RequestRefresh(ConComponents[I], nil);
   end
-  else if Trigger is TJvTFComponent then
+  else
+  if Trigger is TJvTFComponent then
   begin
       // refresh all schedules for given component
     RequestRefresh(TJvTFComponent(Trigger), nil);
   end
-  else if Trigger is TJvTFControl then
+  else
+  if Trigger is TJvTFControl then
   begin
       // refresh all schedules for given control
     RequestRefresh(TJvTFControl(Trigger), nil);
   end
-  else if Trigger is TJvTFSched then
+  else
+  if Trigger is TJvTFSched then
   begin
       // refresh all appt controls connected to schedule
     Sched := TJvTFSched(Trigger);
@@ -3311,7 +3321,8 @@ begin
     for I := 0 to Sched.ConComponentCount - 1 do
       RequestRefresh(Sched.ConComponents[I], Sched);
   end
-  else if Trigger is TJvTFAppt then
+  else
+  if Trigger is TJvTFAppt then
   begin
       // refresh all appt controls for all schedules connected to this appt
     Appt := TJvTFAppt(Trigger);
@@ -3350,7 +3361,8 @@ begin
       end;
       FlushAppts;
     end
-    else if Cache.CacheType = ctTimed then
+    else
+    if Cache.CacheType = ctTimed then
     begin
       I := 0;
       while I < ScheduleCount do
@@ -3374,7 +3386,8 @@ begin
       end;
       FlushAppts;
     end
-    else if Cache.CacheType = ctBuffer then
+    else
+    if Cache.CacheType = ctBuffer then
     begin
       MRUList := TStringlist.Create;
       try
@@ -3603,7 +3616,8 @@ begin
     if not Appt.Refreshed then
       Appt.ClearSchedules;
   end
-  else if Scope is TJvTFSched then
+  else
+  if Scope is TJvTFSched then
   begin
     Sched := TJvTFSched(Scope);
     I := 0;
@@ -3616,7 +3630,8 @@ begin
         Inc(I);
     end;
   end
-  else if Scope is TJvTFScheduleManager then
+  else
+  if Scope is TJvTFScheduleManager then
     for I := 0 to ApptCount - 1 do
       ReconcileRefresh(Appts[I])
   else
@@ -3726,7 +3741,8 @@ begin
   begin
     if HintType = shtAppt then
       Ref := FOldAppt
-    else if HintType = shtObj then
+    else
+    if HintType = shtObj then
       Ref := FOldObj
     else
       Ref := nil;

@@ -40,9 +40,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
-  Menus, ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils, JvFixedEditPopup,
-  JvUnicodeCanvas, JvComponent, JvExControls, JvEditorCommon,
-  JvWStrUtils;
+  Menus, ExtCtrls, StdCtrls, Clipbrd,
+  JvJCLUtils, JvFixedEditPopup, JvUnicodeCanvas, JvComponent,
+  JvExControls, JvEditorCommon, JvWStrUtils;
 
 type
   TJvCustomWideEditor = class;
@@ -1902,7 +1902,8 @@ begin
         P[0] := S[i];
         Inc(P);
       end
-      else if LenSp > 0 then
+      else
+      if LenSp > 0 then
       begin
         MoveWideChar(Sp[1], P[0], LenSp);
         Inc(P, LenSp);

@@ -184,7 +184,8 @@ begin
   begin
     if Result[0] = Ch then
       Exit
-    else if Result[0] = #0 then
+    else
+    if Result[0] = #0 then
     begin
       Result := nil;
       Exit;

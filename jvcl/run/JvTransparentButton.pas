@@ -42,7 +42,8 @@ uses
   JvComponent, JvButton;
 
 type
-  TJvFrameStyle = (fsRegular, fsIndent, fsExplorer, fsNone, fsLight, fsDark, fsMono);
+  TJvFrameStyle =
+    (fsRegular, fsIndent, fsExplorer, fsNone, fsLight, fsDark, fsMono);
   TJvTextAlign = (ttaTopLeft, ttaTop, ttaTopRight, ttaRight, ttaBottomRight,
     ttaBottom, ttaBottomLeft, ttaLeft, ttaCenter);
 
@@ -251,7 +252,6 @@ implementation
 uses
   JvConsts;
 
-
 { create a grayed version of a color bitmap }
 { SLOW! don't use in realtime! }
 
@@ -410,7 +410,8 @@ begin
   begin
     if FClient is TJvTransparentButton then
       TJvTransparentButton(FClient).Down := Value
-    else if FClient is TJvTransparentButton2 then
+    else
+    if FClient is TJvTransparentButton2 then
       TJvTransparentButton2(FClient).Down := Value;
   end;
 end;
@@ -1512,7 +1513,8 @@ begin
     OffsetRect(TmpRect, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
   end
-  else if (bsMouseInside in MouseStates) and HotTrack then
+  else
+  if (bsMouseInside in MouseStates) and HotTrack then
     SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
   else
     SetTextColor(DC, ColorToRGB(Self.Font.Color));

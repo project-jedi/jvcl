@@ -388,11 +388,14 @@ begin
                   lValue := IntToStr(lMax);
                   FLastId := lMax;
                 end
-                else if lValue = 'NOW' then
+                else
+                if lValue = 'NOW' then
                   lValue := DateTimeToStr(Now)
-                else if lValue = 'DATE' then
+                else
+                if lValue = 'DATE' then
                   lValue := DateToStr(Now)
-                else if lValue = 'TIME' then
+                else
+                if lValue = 'TIME' then
                   lValue := TimeToStr(Now);
                 Properties.Add(FParser.Columns[i].Name, lValue);
               end;
@@ -465,13 +468,15 @@ var
 
               if TJvXMLQueryCondition(FConditions[AIndex]).Operator = opConstant then
                 lValue2 := TJvXMLQueryCondition(FConditions[AIndex]).Condition
-              else if TJvXMLQueryCondition(FConditions[AIndex]).Operator = opColumn then
+              else
+              if TJvXMLQueryCondition(FConditions[AIndex]).Operator = opColumn then
               begin
                 lValue2 := TJvXMLQueryCondition(FConditions[AIndex]).Condition;
                 if AXMLElem.Properties.ItemNamed[lValue2]<>nil then
                   lValue2 := AXMLElem.Properties.Value(lValue2);
               end
-              else if (TJvXMLQueryCondition(FConditions[AIndex]).Operator = opNull) and (lComp = opEquals) then
+              else
+              if (TJvXMLQueryCondition(FConditions[AIndex]).Operator = opNull) and (lComp = opEquals) then
               begin
                 result := result and (lValue = '');
                 lComp := opNone;
@@ -565,7 +570,8 @@ begin
       FColumnsStr := Trim(Copy(FColumnsStr, i+1, MAXINT));
       i := pos(',', FColumnsStr);
     end
-    else if FColumnsStr<>'' then
+    else
+    if FColumnsStr<>'' then
     begin
       lColumn := TJvXMLQueryColumn.Create(Trim(FColumnsStr));
       FColumns.Add(lColumn);
@@ -580,11 +586,14 @@ begin
 
   if FInstructionStr = 'SELECT' then
     FInstruction := xiSelect
-  else if FInstructionStr = 'UPDATE' then
+  else
+  if FInstructionStr = 'UPDATE' then
     FInstruction := xiUpdate
-  else if FInstructionStr = 'INSERT' then
+  else
+  if FInstructionStr = 'INSERT' then
     FInstruction := xiInsert
-  else if FInstructionStr = 'DELETE' then
+  else
+  if FInstructionStr = 'DELETE' then
     FInstruction := xiDelete
   else
     raise TJvXMLDatabaseException.CreateResFmt(@RsEUnknownInstruction, [FInstructionStr]);
@@ -609,7 +618,8 @@ begin
       FOrderStr := Trim(Copy(FOrderStr, i+1, MAXINT));
       i := pos(',', FOrderStr);
     end
-    else if FOrderStr<>'' then
+    else
+    if FOrderStr<>'' then
     begin
       lOrder := TJvXMLQueryOrder.Create(Trim(FOrderStr));
       FOrders.Add(lOrder);
@@ -633,7 +643,8 @@ begin
       FSetStr := Trim(Copy(FSetStr, i+1, MAXINT));
       i := pos(',', FSetStr);
     end
-    else if FSetStr<>'' then
+    else
+    if FSetStr<>'' then
     begin
       lSet := TJvXMLQueryAssignement.Create(Trim(FSetStr));
       FUpdates.Add(lSet);
@@ -656,7 +667,8 @@ begin
       FTablesStr := Trim(Copy(FTablesStr, i+1, MAXINT));
       i := pos(',', FTablesStr);
     end
-    else if FTablesStr<>'' then
+    else
+    if FTablesStr<>'' then
     begin
       lTable := TJvXMLQueryTable.Create(Trim(FTablesStr));
       FTables.Add(lTable);
@@ -691,7 +703,8 @@ begin
       FValuesStr := Trim(Copy(FValuesStr, i+1, MAXINT));
       i := pos(',', FValuesStr);
     end
-    else if FValuesStr<>'' then
+    else
+    if FValuesStr<>'' then
     begin
       FValues.Add(ParseValue(Trim(FValuesStr)));
       FValuesStr := '';
@@ -711,15 +724,20 @@ var
 
     if (lToken = 'and') then
       FConditions.Add(TJvXMLQueryCondition.Create(opAnd))
-    else if (lToken = 'or') then
+    else
+    if (lToken = 'or') then
       FConditions.Add(TJvXMLQueryCondition.Create(opOr))
-    else if (lToken = 'like') then
+    else
+    if (lToken = 'like') then
       FConditions.Add(TJvXMLQueryCondition.Create(opLike))
-    else if (lToken = 'xor') then
+    else
+    if (lToken = 'xor') then
       FConditions.Add(TJvXMLQueryCondition.Create(opXor))
-    else if (lToken = 'is') then
+    else
+    if (lToken = 'is') then
       FConditions.Add(TJvXMLQueryCondition.Create(opEquals))
-    else if (lToken = 'null') then
+    else
+    if (lToken = 'null') then
       FConditions.Add(TJvXMLQueryCondition.Create(opNull))
     else
       FConditions.Add(TJvXMLQueryCondition.Create(opColumn,lToken));
@@ -889,7 +907,8 @@ begin
             lFloat2 := StrToFloatDef(lStr2, 0);
             if lFloat1 > lFloat2 then
               result := 1
-            else if lFloat1 < lFloat2 then
+            else
+            if lFloat1 < lFloat2 then
               result := -1;
           end;
       end;
@@ -982,17 +1001,23 @@ begin
 
     if st = 'FROM' then
       st := ReadTables(lStatements)
-    else if st = 'WHERE' then
+    else
+    if st = 'WHERE' then
       st := ReadWhere(lStatements)
-    else if st = 'LIMIT' then
+    else
+    if st = 'LIMIT' then
       st := ReadLimit(lStatements)
-    else if st = 'ORDER' then
+    else
+    if st = 'ORDER' then
       st := ReadOrderBy(lStatements)
-    else if st = 'SET' then
+    else
+    if st = 'SET' then
       st := ReadSet(lStatements)
-    else if st = 'VALUES' then
+    else
+    if st = 'VALUES' then
       st := ReadValues(lStatements)
-    else if st = 'COLUMNS' then
+    else
+    if st = 'COLUMNS' then
       st := ReadColumns(lStatements, false);
   end;
 end;
@@ -1192,9 +1217,11 @@ begin
 
     if st = 'DATE' then
       Convertion := ocDate
-    else if (st = 'INTEGER') or (st = 'INT') then
+    else
+    if (st = 'INTEGER') or (st = 'INT') then
       Convertion := ocInteger
-    else if (st = 'FLOAT') then
+    else
+    if (st = 'FLOAT') then
       Convertion := ocFloat;
   end;
 end;

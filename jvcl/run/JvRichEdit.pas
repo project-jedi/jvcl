@@ -35,7 +35,7 @@ Known Issues:
 
 unit JvRichEdit;
 
-{$R-}
+{$RANGECHECKS OFF}
 
 interface
 
@@ -177,11 +177,11 @@ type
    5    Double line leader
 }
 
-  TJvTabAlignment = (taOrdinary, taCenter, taRight, taDecimal,
-    taVertical); // added by J.G. Boerema
+  TJvTabAlignment =
+    (taOrdinary, taCenter, taRight, taDecimal, taVertical); // added by J.G. Boerema
   // Note: if taVertical then tableader should be disabled according to Word
-  TJvTabLeader = (tlNone, tlDotted, tlDashed, tlUnderlined, tlThick,
-    tlDouble); // added by J.G. Boerema
+  TJvTabLeader =
+    (tlNone, tlDotted, tlDashed, tlUnderlined, tlThick, tlDouble); // added by J.G. Boerema
 
   TJvParaAttributes = class(TPersistent)
   private
@@ -544,7 +544,7 @@ type
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
     FOnConversionProgress: TRichEditProgressEvent;
-    FForceUndo: boolean;
+    FForceUndo: Boolean;
 
     function GetAdvancedTypography: Boolean;
     function GetAutoURLDetect: Boolean;
@@ -677,7 +677,7 @@ type
     // From JvRichEdit.pas by Sébastien Buysse
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
-    property ForceUndo: boolean read FForceUndo write FForceUndo default True;
+    property ForceUndo: Boolean read FForceUndo write FForceUndo default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -692,13 +692,13 @@ type
     // NOTE: this procedure does not reset the attributes after the call, i.e if you change the text color
     // it will remain that color until you change it again.
     procedure InsertFormatText(Index: Integer; const S: string; const AFont: TFont = nil); overload;
-    procedure InsertFormatText(Index: integer; const S: string;
-      FontStyle: TFontStyles; const FontName: string = ''; const FontColor: TColor = clDefault; FontHeight: integer = 0); overload;
+    procedure InsertFormatText(Index: Integer; const S: string;
+      FontStyle: TFontStyles; const FontName: string = ''; const FontColor: TColor = clDefault; FontHeight: Integer = 0); overload;
 
     // AddFormatText works just like InsertFormatText but always moves the insertion
     // point to the end of the available text
     procedure AddFormatText(const S: string; const AFont: TFont = nil); overload;
-    procedure AddFormatText(const S: string; FontStyle: TFontStyles; const FontName: string = ''; const FontColor: TColor = clDefault; FontHeight: integer = 0); overload;
+    procedure AddFormatText(const S: string; FontStyle: TFontStyles; const FontName: string = ''; const FontColor: TColor = clDefault; FontHeight: Integer = 0); overload;
 
     procedure SetSelection(StartPos, EndPos: Longint; ScrollCaret: Boolean);
     function GetSelection: TCharRange;
@@ -990,7 +990,6 @@ type
   private
     FRTFConvIndex: Integer;
     FTextConvIndex: Integer;
-
     function GetItem(Index: Integer): TJvConversion;
   public
     constructor Create; virtual;
@@ -1047,7 +1046,6 @@ type
     procedure DoImport(AConverter: TJvConversion);
     procedure DoExport(AConverter: TJvConversion);
   public
-    destructor Destroy; override;
     procedure Clear; override;
     procedure AddStrings(Strings: TStrings); override;
     procedure Delete(Index: Integer); override;
@@ -2017,7 +2015,6 @@ end;
 constructor TImageDataObject.Create(ABitmap: TBitmap);
 begin
   inherited Create;
-
   FBitmap := ABitmap;
 end;
 
@@ -2173,7 +2170,8 @@ procedure TJvConversion.DoProgress(APercentDone: Integer);
 begin
   if APercentDone < 0 then
     APercentDone := 0
-  else if APercentDone > 100 then
+  else
+  if APercentDone > 100 then
     APercentDone := 100;
   if APercentDone <> FPercentDone then
   begin
@@ -2241,6 +2239,70 @@ begin
 end;
 
 //=== TJvCustomRichEdit ======================================================
+
+constructor TJvCustomRichEdit.Create(AOwner: TComponent);
+var
+  DC: HDC;
+begin
+  inherited Create(AOwner);
+  // ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
+  ControlStyle := ControlStyle - [csSetCaption];
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
+  FSelAttributes := TJvTextAttributes.Create(Self, atSelected);
+  FDefAttributes := TJvTextAttributes.Create(Self, atDefaultText);
+  FWordAttributes := TJvTextAttributes.Create(Self, atWord);
+  FParagraph := TJvParaAttributes.Create(Self);
+  FLines := TJvRichEditStrings.Create;
+  TJvRichEditStrings(FLines).FRichEdit := Self;
+  TabStop := True;
+  Width := 185;
+  Height := 89;
+  AutoSize := False;
+  DoubleBuffered := False;
+  FAllowObjects := True;
+  FAllowInPlace := True;
+  FAutoVerbMenu := True;
+  FHideSelection := True;
+  FHideScrollBars := True;
+  ScrollBars := ssBoth;
+  FSelectionBar := True;
+  FAutoAdvancedTypography := True;
+  FOLEDragDrop := True;
+  FLangOptions := [rlAutoFont];
+  DC := GetDC(0);
+  FScreenLogPixels := GetDeviceCaps(DC, LOGPIXELSY);
+  ReleaseDC(0, DC);
+  DefaultConverter := nil;
+  FOldParaAlignment := TParaAlignment(Alignment);
+  FUndoLimit := 100;
+  FAutoURLDetect := True;
+  FWordSelection := True;
+  with FClickRange do
+  begin
+    cpMin := -1;
+    cpMax := -1;
+  end;
+  FForceUndo := True;
+  FCallback := TRichEditOleCallback.Create(Self);
+  Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
+end;
+
+destructor TJvCustomRichEdit.Destroy;
+begin
+  FLastFind := nil;
+  FSelAttributes.Free;
+  FDefAttributes.Free;
+  FWordAttributes.Free;
+  FParagraph.Free;
+  FLines.Free;
+  FMemStream.Free;
+  FPopupVerbMenu.Free;
+  FFindDialog.Free;
+  FReplaceDialog.Free;
+  inherited Destroy;
+  { be sure that callback object is destroyed after inherited Destroy }
+  TRichEditOleCallback(FCallback).Free;
+end;
 
 procedure TJvCustomRichEdit.AddFormatText(const S: string; const AFont: TFont);
 begin
@@ -2434,53 +2496,6 @@ begin
   SendMessage(Handle, EM_SETBKGNDCOLOR, 0, ColorToRGB(Color))
 end;
 
-constructor TJvCustomRichEdit.Create(AOwner: TComponent);
-var
-  DC: HDC;
-begin
-  inherited Create(AOwner);
-  // ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
-  ControlStyle := ControlStyle - [csSetCaption];
-  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
-  FSelAttributes := TJvTextAttributes.Create(Self, atSelected);
-  FDefAttributes := TJvTextAttributes.Create(Self, atDefaultText);
-  FWordAttributes := TJvTextAttributes.Create(Self, atWord);
-  FParagraph := TJvParaAttributes.Create(Self);
-  FLines := TJvRichEditStrings.Create;
-  TJvRichEditStrings(FLines).FRichEdit := Self;
-  TabStop := True;
-  Width := 185;
-  Height := 89;
-  AutoSize := False;
-  DoubleBuffered := False;
-  FAllowObjects := True;
-  FAllowInPlace := True;
-  FAutoVerbMenu := True;
-  FHideSelection := True;
-  FHideScrollBars := True;
-  ScrollBars := ssBoth;
-  FSelectionBar := True;
-  FAutoAdvancedTypography := True;
-  FOLEDragDrop := True;
-  FLangOptions := [rlAutoFont];
-  DC := GetDC(0);
-  FScreenLogPixels := GetDeviceCaps(DC, LOGPIXELSY);
-  ReleaseDC(0, DC);
-  DefaultConverter := nil;
-  FOldParaAlignment := TParaAlignment(Alignment);
-  FUndoLimit := 100;
-  FAutoURLDetect := True;
-  FWordSelection := True;
-  with FClickRange do
-  begin
-    cpMin := -1;
-    cpMax := -1;
-  end;
-  FForceUndo := True;
-  FCallback := TRichEditOleCallback.Create(Self);
-  Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
-end;
-
 procedure TJvCustomRichEdit.CreateParams(var Params: TCreateParams);
 const
   HideScrollBars: array[Boolean] of DWORD = (ES_DISABLENOSCROLL, 0);
@@ -2581,23 +2596,6 @@ begin
   if RichEditVersion < 2 then
     SendMessage(Handle, WM_SETFONT, 0, 0);
   Modified := FModified;
-end;
-
-destructor TJvCustomRichEdit.Destroy;
-begin
-  FLastFind := nil;
-  FSelAttributes.Free;
-  FDefAttributes.Free;
-  FWordAttributes.Free;
-  FParagraph.Free;
-  FLines.Free;
-  FMemStream.Free;
-  FPopupVerbMenu.Free;
-  FFindDialog.Free;
-  FReplaceDialog.Free;
-  inherited Destroy;
-  { be sure that callback object is destroyed after inherited Destroy }
-  TRichEditOleCallback(FCallback).Free;
 end;
 
 procedure TJvCustomRichEdit.DestroyWnd;
@@ -2718,7 +2716,8 @@ begin
       if AdjustPos then
         AdjustFindDialogPosition(Dialog);
     end
-    else if Events then
+    else
+    if Events then
       TextNotFound(Dialog);
   end;
 end;
@@ -2947,7 +2946,8 @@ begin
             Result.Items.Add(FPopupVerbMenu.Items);
           end;
         end
-        else if FPopupVerbMenu.Items.Count > 0 then
+        else
+        if FPopupVerbMenu.Items.Count > 0 then
         begin
           Item := TMenuItem.Create(FPopupVerbMenu);
           Item.Caption := Format(SPropDlgCaption, [GetFullNameStr(ReObject.poleobj)]);
@@ -3137,7 +3137,8 @@ procedure TJvCustomRichEdit.InsertFormatText(Index: Integer; const S: string; Fo
 var
   AFont: TFont;
 begin
-  if S = '' then Exit;
+  if S = '' then
+    Exit;
   AFont := TFont.Create;
   try
     AFont.Assign(SelAttributes);
@@ -3159,7 +3160,8 @@ procedure TJvCustomRichEdit.InsertFormatText(Index: Integer; const S: string; co
 var
   ASelStart, ASelLength: Integer;
 begin
-  if S = '' then Exit;
+  if S = '' then
+    Exit;
   ASelStart := SelStart;
   ASelLength := SelLength;
   try
@@ -3547,7 +3549,8 @@ begin
   Result := False;
   if Assigned(OnProtectChangeEx) then
     OnProtectChangeEx(Self, Msg, StartPos, EndPos, Result)
-  else if Assigned(OnProtectChange) then
+  else
+  if Assigned(OnProtectChange) then
     OnProtectChange(Self, StartPos, EndPos, Result);
 end;
 
@@ -3637,7 +3640,7 @@ var
   Cnt: Integer;
   SaveSelChange: TNotifyEvent;
 
-  function MatchesText(const FindText, FoundText: string; Options: TFindOptions): boolean;
+  function MatchesText(const FindText, FoundText: string; Options: TFindOptions): Boolean;
   begin
     if frWholeWord in Options then
     begin
@@ -3683,7 +3686,8 @@ begin
         end;
       end;
     end
-    else if frReplace in Options then
+    else
+    if frReplace in Options then
     begin
       if MatchesText(SelText, FindText, Options) then
         SelText := ReplaceText;
@@ -4164,7 +4168,8 @@ begin
     Range.cpMax := SelStart;
     if Range.cpMax = 0 then
       Range.cpMin := 0
-    else if SendMessage(Handle, EM_FINDWORDBREAK, WB_ISDELIMITER, Range.cpMax) <> 0 then
+    else
+    if SendMessage(Handle, EM_FINDWORDBREAK, WB_ISDELIMITER, Range.cpMax) <> 0 then
       Range.cpMin := SendMessage(Handle, EM_FINDWORDBREAK, WB_MOVEWORDLEFT, Range.cpMax)
     else
       Range.cpMin := SendMessage(Handle, EM_FINDWORDBREAK, WB_LEFT, Range.cpMax);
@@ -4176,6 +4181,58 @@ begin
 end;
 
 //=== TJvMSTextConversion ====================================================
+
+constructor TJvMSTextConversion.Create(const AConverterFileName, AExtensions,
+  ADescription: string; const AKind: TJvConversionKind);
+
+  {$IFNDEF COMPILER6_UP}
+  procedure StrTokenize(const S: string; Delimiter: Char; Strings: TStrings);
+  var
+    BufStart, BufEnd: PChar;
+    Store: Char;
+  begin
+    BufStart := PChar(S);
+    BufEnd := BufStart;
+    while (BufEnd <> nil) and (BufEnd^ <> #0) do
+    begin
+      if BufEnd^ = Delimiter then
+      begin
+        Store := BufEnd^;
+        BufEnd^ := #0;
+        Strings.Add(BufStart);
+        BufEnd^ := Store;
+        BufStart := BufEnd;
+        Inc(BufStart);
+      end;
+      Inc(BufEnd);
+    end;
+    if (BufStart <> nil) and (BufStart^ <> #0) then
+      Strings.Add(BufStart);
+  end;
+  {$ENDIF COMPILER6_UP}
+
+begin
+  inherited Create;
+  FExtensions := TStringList.Create;
+  {$IFDEF COMPILER6_UP}
+  FExtensions.Delimiter := ' ';
+  FExtensions.DelimitedText := AExtensions;
+  {$ELSE}
+  StrTokenize(AExtensions, ' ', FExtensions);
+  {$ENDIF COMPILER6_UP}
+  FConverterFileName := AConverterFileName;
+  FDescription := ADescription;
+  FConverterKind := AKind;
+  FThreadDone := True;
+  FCancel := False;
+end;
+
+destructor TJvMSTextConversion.Destroy;
+begin
+  Done;
+  FExtensions.Free;
+  inherited Destroy;
+end;
 
 function TJvMSTextConversion.CanHandle(const AExtension: string;
   const AKind: TJvConversionKind): Boolean;
@@ -4294,58 +4351,6 @@ begin
     { Signal that data is ready to be exported }
     FRichEditReady.SetEvent;
   end;
-end;
-
-constructor TJvMSTextConversion.Create(const AConverterFileName, AExtensions,
-  ADescription: string; const AKind: TJvConversionKind);
-
-  {$IFNDEF COMPILER6_UP}
-  procedure StrTokenize(const S: string; Delimiter: Char; Strings: TStrings);
-  var
-    BufStart, BufEnd: PChar;
-    Store: Char;
-  begin
-    BufStart := PChar(S);
-    BufEnd := BufStart;
-    while (BufEnd <> nil) and (BufEnd^ <> #0) do
-    begin
-      if BufEnd^ = Delimiter then
-      begin
-        Store := BufEnd^;
-        BufEnd^ := #0;
-        Strings.Add(BufStart);
-        BufEnd^ := Store;
-        BufStart := BufEnd;
-        Inc(BufStart);
-      end;
-      Inc(BufEnd);
-    end;
-    if (BufStart <> nil) and (BufStart^ <> #0) then
-      Strings.Add(BufStart);
-  end;
-  {$ENDIF COMPILER6_UP}
-
-begin
-  inherited Create;
-  FExtensions := TStringList.Create;
-  {$IFDEF COMPILER6_UP}
-  FExtensions.Delimiter := ' ';
-  FExtensions.DelimitedText := AExtensions;
-  {$ELSE}
-  StrTokenize(AExtensions, ' ', FExtensions);
-  {$ENDIF COMPILER6_UP}
-  FConverterFileName := AConverterFileName;
-  FDescription := ADescription;
-  FConverterKind := AKind;
-  FThreadDone := True;
-  FCancel := False;
-end;
-
-destructor TJvMSTextConversion.Destroy;
-begin
-  Done;
-  FExtensions.Free;
-  inherited Destroy;
 end;
 
 procedure TJvMSTextConversion.DoConversion;
@@ -4789,6 +4794,13 @@ end;
 
 //=== TJvParaAttributes ======================================================
 
+constructor TJvParaAttributes.Create(AOwner: TJvCustomRichEdit);
+begin
+  inherited Create;
+  FRichEdit := AOwner;
+  // FIndentationStyle := isRichEdit; // = 0 so not needed; added by J.G. Boerema
+end;
+
 procedure TJvParaAttributes.Assign(Source: TPersistent);
 var
   I: Integer;
@@ -4804,7 +4816,8 @@ begin
     for I := 0 to MAX_TAB_STOPS - 1 do
       Tab[I] := TParaAttributes(Source).Tab[I];
   end
-  else if Source is TJvParaAttributes then
+  else
+  if Source is TJvParaAttributes then
   begin
     TJvParaAttributes(Source).GetAttributes(Paragraph);
     SetAttributes(Paragraph);
@@ -4838,13 +4851,6 @@ begin
   end
   else
     inherited AssignTo(Dest);
-end;
-
-constructor TJvParaAttributes.Create(AOwner: TJvCustomRichEdit);
-begin
-  inherited Create;
-  FRichEdit := AOwner;
-  // FIndentationStyle := isRichEdit; // = 0 so not needed; added by J.G. Boerema
 end;
 
 function TJvParaAttributes.GetAlignment: TParaAlignment;
@@ -5059,9 +5065,11 @@ begin
   begin
     if (wReserved and PFE_TABLEROW) <> 0 then
       Result := tsTableRow
-    else if (wReserved and PFE_TABLECELLEND) <> 0 then
+    else
+    if (wReserved and PFE_TABLECELLEND) <> 0 then
       Result := tsTableCellEnd
-    else if (wReserved and PFE_TABLECELL) <> 0 then
+    else
+    if (wReserved and PFE_TABLECELL) <> 0 then
       Result := tsTableCell;
   end;
 end;
@@ -5098,7 +5106,8 @@ begin
     if FRichEdit.UseRightToLeftAlignment then
       if Paragraph.wAlignment = PFA_LEFT then
         Paragraph.wAlignment := PFA_RIGHT
-      else if Paragraph.wAlignment = PFA_RIGHT then
+      else
+      if Paragraph.wAlignment = PFA_RIGHT then
         Paragraph.wAlignment := PFA_LEFT;
     SendMessage(FRichEdit.Handle, EM_SETPARAFORMAT, 0, LParam(@Paragraph));
   end;
@@ -5463,12 +5472,6 @@ begin
   end;
 end;
 
-destructor TJvRichEditStrings.Destroy;
-begin
-  //  FConverter.Free;
-  inherited Destroy;
-end;
-
 procedure TJvRichEditStrings.DoExport(AConverter: TJvConversion);
 var
   EditStream: TEditStream;
@@ -5498,7 +5501,8 @@ begin
     if smPlainRtf in Mode then
       TextType := TextType or SFF_PLAINRTF;
   end
-  else if TextType = SF_TEXT then
+  else
+  if TextType = SF_TEXT then
   begin
     if (smUnicode in Mode) and (RichEditVersion > 1) then
       TextType := TextType or SF_UNICODE;
@@ -5511,7 +5515,8 @@ begin
   begin
     if AConverter.Error then
       raise EOutOfResources.Create(AConverter.ErrorStr)
-    else if EditStream.dwError <> 0 then
+    else
+    if EditStream.dwError <> 0 then
       raise EOutOfResources.CreateRes(@sRichEditSaveFail);
   end;
 end;
@@ -5565,7 +5570,8 @@ begin
 
     if AConverter.Error then
       raise EOutOfResources.Create(AConverter.ErrorStr)
-    else if EditStream.dwError <> 0 then
+    else
+    if EditStream.dwError <> 0 then
       raise EOutOfResources.CreateRes(@sRichEditLoadFail);
   end;
 
@@ -5599,7 +5605,8 @@ begin
   L := SendMessage(FRichEdit.Handle, EM_GETLINE, Index, Longint(@Text));
   if (Text[L - 2] = #13) and (Text[L - 1] = #10) then
     Dec(L, 2)
-  else if (RichEditVersion >= 2) and (Text[L - 1] = #13) then
+  else
+  if (RichEditVersion >= 2) and (Text[L - 1] = #13) then
     Dec(L);
   SetString(Result, Text, L);
 end;
@@ -5689,7 +5696,8 @@ begin
       if FRichEdit.PlainText then
         { When PlainText is set, the control does not accept RTF }
         FFormat := sfPlainText
-      else if FFormat = sfDefault then
+      else
+      if FFormat = sfDefault then
         case Converter.TextKind of
           ctkText, ctkBothPreferText:
             FFormat := sfPlainText;
@@ -5726,7 +5734,8 @@ begin
         if FRichEdit.PlainText then
           { When PlainText is set, the control does not accept RTF }
           FFormat := sfPlainText
-        else if FFormat = sfDefault then
+        else
+        if FFormat = sfDefault then
           case Converter.TextKind of
             ctkText, ctkBothPreferText:
               FFormat := sfPlainText;
@@ -5789,7 +5798,8 @@ begin
       if FRichEdit.PlainText then
         { When PlainText is set, the control does not accept RTF }
         FFormat := sfPlainText
-      else if FFormat = sfDefault then
+      else
+      if FFormat = sfDefault then
         case Converter.TextKind of
           ctkText, ctkBothPreferText:
             FFormat := sfPlainText;
@@ -5826,7 +5836,8 @@ begin
         if FRichEdit.PlainText then
           { When PlainText is set, the control does not accept RTF }
           FFormat := sfPlainText
-        else if FFormat = sfDefault then
+        else
+        if FFormat = sfDefault then
           case Converter.TextKind of
             ctkText, ctkBothPreferText:
               FFormat := sfPlainText;
@@ -5998,13 +6009,22 @@ end;
 
 //=== TJvTextAttributes ======================================================
 
+constructor TJvTextAttributes.Create(AOwner: TJvCustomRichEdit;
+  AttributeType: TJvAttributeType);
+begin
+  inherited Create;
+  FRichEdit := AOwner;
+  FType := AttributeType;
+end;
+
 procedure TJvTextAttributes.Assign(Source: TPersistent);
 var
   Format: TCharFormat2;
 begin
   if Source is TFont then
     AssignFont(TFont(Source))
-  else if Source is TTextAttributes then
+  else
+  if Source is TTextAttributes then
   begin
     Name := TTextAttributes(Source).Name;
     Charset := TTextAttributes(Source).Charset;
@@ -6012,7 +6032,8 @@ begin
     Pitch := TTextAttributes(Source).Pitch;
     Color := TTextAttributes(Source).Color;
   end
-  else if Source is TJvTextAttributes then
+  else
+  if Source is TJvTextAttributes then
   begin
     TJvTextAttributes(Source).GetAttributes(Format);
     SetAttributes(Format);
@@ -6076,7 +6097,8 @@ begin
     TFont(Dest).Size := Size;
     TFont(Dest).Pitch := Pitch;
   end
-  else if Dest is TTextAttributes then
+  else
+  if Dest is TTextAttributes then
   begin
     TTextAttributes(Dest).Color := Color;
     TTextAttributes(Dest).Name := Name;
@@ -6086,14 +6108,6 @@ begin
   end
   else
     inherited AssignTo(Dest);
-end;
-
-constructor TJvTextAttributes.Create(AOwner: TJvCustomRichEdit;
-  AttributeType: TJvAttributeType);
-begin
-  inherited Create;
-  FRichEdit := AOwner;
-  FType := AttributeType;
 end;
 
 procedure TJvTextAttributes.GetAttributes(var Format: TCharFormat2);
@@ -6321,7 +6335,8 @@ begin
   begin
     if (dwEffects and CFE_SUBSCRIPT) <> 0 then
       Result := ssSubscript
-    else if (dwEffects and CFE_SUPERSCRIPT) <> 0 then
+    else
+    if (dwEffects and CFE_SUPERSCRIPT) <> 0 then
       Result := ssSuperscript;
   end;
 end;
@@ -6679,12 +6694,6 @@ end;
 
 //=== TOleUILinkInfo =========================================================
 
-function TOleUILinkInfo.CancelLink(dwLink: Longint): HRESULT;
-begin
-  LinkError(SCannotBreakLink);
-  Result := E_NOTIMPL;
-end;
-
 constructor TOleUILinkInfo.Create(ARichEdit: TJvCustomRichEdit;
   ReObject: TReObject);
 begin
@@ -6692,6 +6701,12 @@ begin
   FReObject := ReObject;
   FRichEdit := ARichEdit;
   OleCheck(FReObject.poleobj.QueryInterface(IOleLink, FOleLink));
+end;
+
+function TOleUILinkInfo.CancelLink(dwLink: Longint): HRESULT;
+begin
+  LinkError(SCannotBreakLink);
+  Result := E_NOTIMPL;
 end;
 
 function TOleUILinkInfo.GetLastUpdate(dwLink: Longint;
@@ -6799,18 +6814,18 @@ end;
 
 //=== TOleUIObjInfo ==========================================================
 
-function TOleUIObjInfo.ConvertObject(dwObject: Longint;
-  const clsidNew: TCLSID): HRESULT;
-begin
-  Result := E_NOTIMPL;
-end;
-
 constructor TOleUIObjInfo.Create(ARichEdit: TJvCustomRichEdit;
   ReObject: TReObject);
 begin
   inherited Create;
   FRichEdit := ARichEdit;
   FReObject := ReObject;
+end;
+
+function TOleUIObjInfo.ConvertObject(dwObject: Longint;
+  const clsidNew: TCLSID): HRESULT;
+begin
+  Result := E_NOTIMPL;
 end;
 
 function TOleUIObjInfo.GetConvertInfo(dwObject: Longint; var ClassID: TCLSID;
@@ -6886,6 +6901,20 @@ end;
 
 //=== TRichEditOleCallback ===================================================
 
+constructor TRichEditOleCallback.Create(ARichEdit: TJvCustomRichEdit);
+begin
+  inherited Create;
+  FRichEdit := ARichEdit;
+end;
+
+destructor TRichEditOleCallback.Destroy;
+begin
+  DestroyAccelTable;
+  FFrameForm := nil;
+  FDocForm := nil;
+  inherited Destroy;
+end;
+
 procedure TRichEditOleCallback.AssignFrame;
 begin
   if (GetParentForm(FRichEdit) <> nil) and not Assigned(FFrameForm) and
@@ -6901,12 +6930,6 @@ end;
 function TRichEditOleCallback.ContextSensitiveHelp(fEnterMode: BOOL): HRESULT;
 begin
   Result := NOERROR;
-end;
-
-constructor TRichEditOleCallback.Create(ARichEdit: TJvCustomRichEdit);
-begin
-  inherited Create;
-  FRichEdit := ARichEdit;
 end;
 
 procedure TRichEditOleCallback.CreateAccelTable;
@@ -6926,14 +6949,6 @@ begin
   if Assigned(oleobj) then
     oleobj.Close(OLECLOSE_NOSAVE);
   Result := NOERROR;
-end;
-
-destructor TRichEditOleCallback.Destroy;
-begin
-  DestroyAccelTable;
-  FFrameForm := nil;
-  FDocForm := nil;
-  inherited Destroy;
 end;
 
 procedure TRichEditOleCallback.DestroyAccelTable;
@@ -7100,7 +7115,8 @@ begin
             if VerQueryValue(VerBuf, '\', Pointer(FI), VerSize) then
             begin
               RichEditVersion := (FI.dwFileVersionMS and $FFFF) div 10;
-              if RichEditVersion = 0 then RichEditVersion := 2;
+              if RichEditVersion = 0 then
+                RichEditVersion := 2;
             end;
         finally
           FreeMem(VerBuf);
