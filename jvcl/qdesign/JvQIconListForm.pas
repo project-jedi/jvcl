@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -19,13 +19,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -34,15 +33,15 @@ unit JvQIconListForm;
 interface
 
 uses
-  Classes, QGraphics,
+  Classes,
   
   
   QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, QExtDlgs,
-  QImgList, QComCtrls, QToolWin, 
-
-
+  QImgList, QComCtrls, QGraphics, QToolWin, ClxEditors,
+  
+  
   RTLConsts, DesignIntf, DesignEditors,
-
+  
   
   JvQIconList, JvQComponent;
 
@@ -99,7 +98,11 @@ type
     procedure ValidateImage;
     procedure CheckEnablePaste;
     procedure LoadAniFile;
-//    procedure WMActivate(var Msg: TWMActivate); message WM_ACTIVATE;
+    
+  protected
+    
+    procedure Activate; override;
+    
   public
     Modified: Boolean;
   end;
@@ -119,8 +122,9 @@ implementation
 uses
   SysUtils,
   
+  
   QClipbrd, QConsts,
-
+  
   Math,
   JvQJVCLUtils, JvQJCLUtils, JvQDsgnConsts, JvQAni;
 
@@ -132,6 +136,45 @@ uses
 const
   sSlot = 'Slot%d';
   sImage = 'Image%d';
+
+
+type
+  TOpenIcon = class(TIcon);
+
+function Bmp2Icon(bmp: TBitmap): TIcon;
+begin
+  Result := TIcon.Create;
+  Result.Assign(bmp);
+end;
+
+function Icon2Bmp(Ico: TIcon): TBitmap;
+begin
+  Result := TBitmap.Create;
+  TOpenIcon(Ico).AssignTo(Result);
+end;
+
+procedure CopyIconToClipboard(Ico: TIcon; TransparentColor: TColor);
+var
+  bmp: TBitmap;
+begin
+  bmp := Icon2Bmp(Ico);
+  Clipboard.Assign(Bmp);
+end;
+
+function CreateIconFromClipboard: TIcon;
+var
+  bmp: TBitmap;
+begin
+  Result := nil;
+  bmp := TBitmap.create;
+  try
+    bmp.Assign(Clipboard);
+    Result := Bmp2Icon(bmp);
+  except
+    bmp.Free;
+  end;
+end;
+
 
 procedure EditIconList(IconList: TJvIconList);
 begin
@@ -223,8 +266,10 @@ end;
 
 procedure TIconListDialog.CheckEnablePaste;
 begin
-//  Paste.Enabled := Clipboard.HasFormat(CF_ICON);
-  Paste.Enabled := false;
+  
+  
+  Paste.Enabled := ClipBoard.Provides('image/delphi.bitmap')
+  
 end;
 
 procedure TIconListDialog.SetSelectedIndex(Index: Integer; Force: Boolean);
@@ -358,9 +403,7 @@ end;
 
 procedure TIconListDialog.CopyClick(Sender: TObject);
 begin
-  (*)
   CopyIconToClipboard(GetSelectedIcon, clBtnFace);
-  (*)
   CheckEnablePaste;
 end;
 
@@ -368,8 +411,10 @@ procedure TIconListDialog.PasteClick(Sender: TObject);
 var
   Ico: TIcon;
 begin
-(*)
-  if Clipboard.HasFormat(CF_ICON) then
+  
+  
+  if Clipboard.Provides('image/delphi.bitmap') then
+  
   begin
     Ico := CreateIconFromClipboard;
     try
@@ -378,16 +423,19 @@ begin
       Ico.Free;
     end;
   end;
-(*)
 end;
-(*)
-procedure TIconListDialog.WMActivate(var Msg: TWMActivate);
+
+
+
+
+procedure TIconListDialog.Activate;
 begin
-  if Msg.Active <> WA_INACTIVE then
+  if Focused then
     CheckEnablePaste;
   inherited;
 end;
-(*)
+
+
 procedure TIconListDialog.ClearClick(Sender: TObject);
 begin
   FIcons.Clear;
