@@ -50,10 +50,11 @@ uses
   {$IFDEF VisualCLX}
   Qt, QControls, QGraphics,
   {$ENDIF VisualCLX}
-  Windows, Messages, ShlObj, 
+  Windows, Messages, ShlObj,
   JclWin32, JclSysInfo,
   JvJCLUtils, JvDataProvider, JvTypes, JvComponent;
 
+{$HPPEMIT '#include <dbt.h>'}
 // these are defined here to avoid including DBT.pas
 const
 {$EXTERNALSYM DBT_DEVICEARRIVAL}
@@ -177,6 +178,7 @@ const
 {$ENDIF COMPILER5}
 
 type
+{$EXTERNALSYM PDevBroadcastHdr}
   PDevBroadcastHdr = ^TDevBroadcastHdr;
 {$EXTERNALSYM DEV_BROADCAST_HDR}
   DEV_BROADCAST_HDR = packed record
@@ -186,6 +188,7 @@ type
   end;
   TDevBroadcastHdr = DEV_BROADCAST_HDR;
 
+{$EXTERNALSYM PDevBroadcastVolume}
   PDevBroadcastVolume = ^TDevBroadcastVolume;
 {$EXTERNALSYM DEV_BROADCAST_VOLUME}
   DEV_BROADCAST_VOLUME = packed record
