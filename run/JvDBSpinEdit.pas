@@ -131,6 +131,8 @@ end;
 procedure TJvDBSpinEdit.DoExit;
 begin
   try
+    if Modified then
+      FFieldDataLink.Modified;
     FFieldDataLink.UpdateRecord; { tell data link to update database }
   except
     SetFocus; { if it failed, don't let focus leave }
