@@ -88,6 +88,8 @@ type
     property Selected: Boolean read FSelected write SetSelected;
     property Caption: TJvTextShape read FCaption write SetCaption;
     property RightClickSelect: Boolean read FRightClickSelect write FRightClickSelect default True;
+    
+    property OnDblClick;
   end;
 
   TJvMoveableShape = class(TJvCustomDiagramShape)
