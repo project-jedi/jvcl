@@ -74,6 +74,7 @@ type
     Testagain1: TMenuItem;
     jipMarginPainter: TJvStandardMenuItemPainter;
     memExplanation: TMemo;
+    N3: TMenuItem;
     procedure Exit1Click(Sender: TObject);
     procedure btnAddItemsClick(Sender: TObject);
     procedure btnChangeCaptionClick(Sender: TObject);
@@ -109,7 +110,8 @@ end;
 
 procedure TfrmMain.btnChangeCaptionClick(Sender: TObject);
 begin
-  Try1.Caption := 'ReFile';
+  // simple test to check tabs are taken into account correctly
+  Try1.Caption := '1'#9'ReFile';
 end;
 
 procedure TfrmMain.Try1Click(Sender: TObject);

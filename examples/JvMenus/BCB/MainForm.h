@@ -66,6 +66,7 @@ __published:	// IDE-managed Components
   TMenuItem *Radio21;
   TMenuItem *Radio31;
   TMenuItem *N2;
+  TMenuItem *N3;
   TMenuItem *SUb1;
   TMenuItem *SubAgain1;
   TImageList *imlImages;

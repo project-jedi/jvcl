@@ -87,15 +87,16 @@ object frmMain: TfrmMain
         'menu will use the Style property to create an internal painter a' +
         'nd use it.'
       
-        'However, you cannot access the properties of the painter at runt' +
-        'ime. To do that, use a '
+        'However, you cannot access the properties of the painter at desi' +
+        'gntime. To do that, '
       
-        'Painter component and associate it with the menu you wish it to ' +
-        'paint. '
+        'use a Painter component and associate it with the menu you wish ' +
+        'it to paint. '
       
         'This also allows you to write your own Item Painter to suit your' +
         ' needs. To see an '
-      'example of this, please see the JvRichEdit demo.')
+      
+        'example of this, please have a look at the TJvRichedit demo')
     ReadOnly = True
     TabOrder = 5
   end
@@ -644,6 +645,9 @@ object frmMain: TfrmMain
     Top = 204
     object Test1: TMenuItem
       Caption = 'Test'
+    end
+    object N3: TMenuItem
+      Caption = '-'
     end
     object Testagain1: TMenuItem
       Caption = 'Test again'
