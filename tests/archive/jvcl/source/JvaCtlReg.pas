@@ -56,7 +56,7 @@ uses
   , VCLEditors
   {$ENDIF}
   {$ELSE}
-  , DsgnIntf
+  DsgnIntf
   {$ENDIF}
   ;
 
