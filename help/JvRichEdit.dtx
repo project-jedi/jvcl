@@ -689,8 +689,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.Paragraph
 Summary
+  Specifies the formatting information for the current paragraphs.
 Description
+  Paragraph is a TJvParaAttributes object, that works the same as the VCL's TParaAttributes object,
+  and introduces some more properties. See TJvParaAttributes for an overview of these new properties.
 See Also
+  OnSelectionChange, TJvParaAttributes
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.PasteSpecialDialog
 Summary
@@ -842,7 +846,17 @@ See Also
 Summary
   Indicates the selection type for the rich edit control.
 Description
-  \Read SelectionType to retrieve the current selection type for the rich edit control
+  Use SelectionType to determine whether one or more COM objects are selected.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRichEdit.SelText
+Summary
+  Denotes the selected portion of the edit control’s text.
+Description
+  \Read SelText to determine the value of the selected text. Set SelText to replace the selected text
+  with a new string. If there is no selection, but the edit control has focus, set SelText to insert
+  a new string into the text at the cursor.
+See Also
+  SelectionType, SetSelection
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.SetSelection
 Summary
@@ -943,23 +957,24 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.UndoLimit
 Summary
-Specifies the maximum number of actions that can stored in the undo queue.
-
+  Specifies the maximum number of actions that can stored in the undo queue.
 Description
-Specifies the maximum number of actions that can be stored in the undo queue. The return value is the
-new maximum number of undo actions for the rich edit control. This value may be less than the value
-specified by UndoLimit if memory is limited.
+  Specifies the maximum number of actions that can be stored in the undo queue. The return value is the
+  new maximum number of undo actions for the rich edit control. This value may be less than the value
+  specified by UndoLimit if memory is limited.
 
-By default, the maximum number of actions in the undo queue is 100. If you increase this number,
-there must be enough available memory to accommodate the new number. For better performance, set the
-limit to the smallest possible value.
+  By default, the maximum number of actions in the undo queue is 100. If you increase this number,
+  there must be enough available memory to accommodate the new number. For better performance, set the
+  limit to the smallest possible value.
 
-Setting the limit to zero disables the Undo feature.
-
+  Setting the limit to zero disables the Undo feature.
 See Also
-<LINK TJvCustomRichEdit.CanRedo, CanRedo>, <LINK TJvCustomRichEdit.RedoName, RedoName>, <LINK TJvCustomRichEdit.UndoName, UndoName>,
-<LINK TJvCustomRichEdit.Redo, Redo>, Undo
-
+  <LINK TJvCustomRichEdit.CanRedo, CanRedo>,
+  <LINK TJvCustomRichEdit.RedoName, RedoName>,
+  <LINK TJvCustomRichEdit.UndoName, UndoName>,
+  <LINK TJvCustomRichEdit.Redo, Redo>,
+  Undo
+----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.UndoName
 Summary
   Indicates the type of the next undo action, if any.
@@ -1197,6 +1212,15 @@ Note
   starting with bullet.
 See Also
   NumberingStyle, NumberingTab
+----------------------------------------------------------------------------------------------------
+@@TJvParaAttributes.NumberingStart
+Summary
+  Specifies the starting number for numbered paragraphs.
+Description
+  Use NumberingStart to speicy the starting number used for numbered paragraphs. Use NumberingStart
+  in conjunction with property Numbering. 
+See Also
+  Numbering
 ----------------------------------------------------------------------------------------------------
 @@TJvParaAttributes.NumberingStyle
 Summary
@@ -1544,11 +1568,24 @@ Description
 See Also
   Height, Offset
 ----------------------------------------------------------------------------------------------------
+@@TJvTextAttributes.UnderlineColor
+Summary
+  Determines in which color the text is underlined.
+Description
+  Use UnderlineColor to specify in which color the text is underlined.
+  Use UnderlineType to specify how and whether the text is underlined.
+Note
+  If you stream out the text as RTF, underlined text with a color other than ucBlack is streamed out as
+  <i>non</i> underlined text.
+See Also
+  UnderlineType
+----------------------------------------------------------------------------------------------------
 @@TJvTextAttributes.UnderlineType
 Summary
   Determines whether and how the text is underlined.
 Description
-  Use UnderlineType to specify how and whether the text is underlined.
+  Use UnderlineType to specify how and whether the text is underlined. Use UnderlineColor to specify
+  in which color the text is underlined.
 See Also
   UnderlineColor
 ----------------------------------------------------------------------------------------------------
@@ -1789,6 +1826,45 @@ See Also
 @@TSubscriptStyle.ssSuperscript
   Superscript style.
 ----------------------------------------------------------------------------------------------------
+@@TUnderlineColor
+<TITLE TUnderlineColor type>
+Summary
+  Enumerates colors for underlines.
+Description
+  Use the TUnderlineColor to specify a specific color used to underline text.
+@@TUnderlineColor.ucBlack
+  Black.
+@@TUnderlineColor.ucBlue
+  Blue.
+@@TUnderlineColor.ucAqua
+  Aqua.
+@@TUnderlineColor.ucLime
+  Lime.
+@@TUnderlineColor.ucFuchsia
+  Fuchsia.
+@@TUnderlineColor.ucRed
+  Red.
+@@TUnderlineColor.ucYellow
+  Yellow.
+@@TUnderlineColor.ucWhite
+  White.
+@@TUnderlineColor.ucNavy
+  Navy.
+@@TUnderlineColor.ucTeal
+  Teal.
+@@TUnderlineColor.ucGreen
+  Green.
+@@TUnderlineColor.ucPurple
+  Purple.
+@@TUnderlineColor.ucMaroon
+  Maroon.
+@@TUnderlineColor.ucOlive
+  Olive.
+@@TUnderlineColor.ucGray
+  Gray.
+@@TUnderlineColor.ucSilver
+  Silver.
+----------------------------------------------------------------------------------------------------
 @@TUnderlineType
 <TITLE TUnderlineType type>
 Summary
@@ -1808,8 +1884,16 @@ See Also
 @@TUnderlineType.utDotted
   Dotted underlined text. For versions earlier than Rich Edit 3.0, text is displayed with a solid
   underline.
+@@TUnderlineType.utDash
+  Dashed underlined text.
+@@TUnderlineType.utDashDot
+  Dash-dot underlined text.
+@@TUnderlineType.utDashDotDot
+  Dash-dot-dot underlined text.
 @@TUnderlineType.utWave
   Waved underlined text.
+@@TUnderlineType.utThick
+  Thick underlined text
 ----------------------------------------------------------------------------------------------------
 @@TUndoName
 <TITLE TUndoName type>
