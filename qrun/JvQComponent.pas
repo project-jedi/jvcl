@@ -37,7 +37,7 @@ interface
 uses
   Classes,
   {$IFDEF USE_DXGETTEXT}
-  gnugettext,
+  JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
   {$IFDEF MSWINDOWS}
   Windows,
