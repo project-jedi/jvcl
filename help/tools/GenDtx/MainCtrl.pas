@@ -1144,9 +1144,9 @@ begin
     Optional.CustomSort(CaseSensitiveSort);
     LDtxHeaders.CustomSort(CaseSensitiveSort);
 
-    Optional.SaveToFile('C:\Temp\Optional.txt');
-    NotOptional.SaveToFile('C:\Temp\NotOptional.txt');
-    LDtxHeaders.SaveToFile('C:\Temp\DtxHeaders.txt');
+    //Optional.SaveToFile('C:\Temp\Optional.txt');
+    //NotOptional.SaveToFile('C:\Temp\NotOptional.txt');
+    //LDtxHeaders.SaveToFile('C:\Temp\DtxHeaders.txt');
 
     DiffLists(LDtxHeaders, NotOptional, nil, LNotInDtx, LNotInPas, True);
 
@@ -1839,8 +1839,8 @@ begin
     AllPasParameters.CustomSort(CaseSensitiveSort);
     AllDtxParameters.CustomSort(CaseSensitiveSort);
 
-    AllPasParameters.SaveToFile('C:\temp\AllPasParameters.txt');
-    AllDtxParameters.SaveToFile('C:\temp\AllDtxParameters.txt');
+    //AllPasParameters.SaveToFile('C:\temp\AllPasParameters.txt');
+    //AllDtxParameters.SaveToFile('C:\temp\AllDtxParameters.txt');
 
     DiffLists(AllPasParameters, AllDtxParameters,
       nil, ParamsNotInPas, ParamsNotInDtx, True);
