@@ -160,8 +160,8 @@ uses
 
   //Editors
   JvDataEmbeddedEditor, JvFormWallpaperEditor, JvPatcherEditor,
-  JvHtmlParserEditor, JvAlarmsEditor, { JvRegisterEditor,} JvBaseDlgEditor,
- { JvBaseDlgEditorP, }JvCommonDialogDEditor,
+  JvHtmlParserEditor, JvAlarmsEditor,
+   JvBaseDlgEditor, JvCommonDialogDEditor,
 
   Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls, Buttons,
 {$IFDEF DELPHI5}DsgnIntf, {$ENDIF}{$IFDEF DELPHI6_UP}DesignEditors, DesignIntf, {$ENDIF}
