@@ -1730,7 +1730,6 @@ type
       UnLock;
     end;
 
-    Stream.Size := BlobInfos[1].CardType; // don't realloc mem too many time
     Stream.Seek(0, soFromBeginning);
     Getmem(Buffer, BlobInfos[0].CardType);
     try
