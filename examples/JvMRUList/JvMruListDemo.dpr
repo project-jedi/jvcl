@@ -1,4 +1,4 @@
-program JvMruList;
+program JvMruListDemo;
 
 uses
   Forms,
