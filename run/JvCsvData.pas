@@ -1373,7 +1373,7 @@ begin
 
       // default case:
   else
-    JvCsvDatabaseError(FTableName, 'GetMode???');
+    JvCsvDatabaseError(FTableName, sGetMode);
   end; {end case}
 
   if Result = grOK then
@@ -1750,7 +1750,7 @@ begin
   CsvColumnData := FCsvColumns.FindByFieldNo(Field.FieldNo);
   if not Assigned(CsvColumnData) then
   begin
-    JvCsvDatabaseError(FTableName, Format(sUndableToLocateCSVFileInfo, [Field.Name]));
+    JvCsvDatabaseError(FTableName, Format(sUnableToLocateCSVFileInfo, [Field.Name]));
     Exit;
   end;
   PhysicalLocation := CsvColumnData^.FPhysical;
@@ -2199,7 +2199,7 @@ end;
 procedure TJvCsvCustomInMemoryDataSet.Flush;
 begin
   if Length(FTableName) = 0 then
-    raise Exception.Create('TJvCsvCustomInMemorYDataSet.FTableName is not set.');
+    raise Exception.Create(sTableNameNotSet);
 
   if FFileDirty and FSavesChanges and (Length(FTableName) > 0) then
   begin
@@ -2463,7 +2463,7 @@ begin
 
   FFileDirty := false;
   if (Length(FTableName) = 0) and FLoadsFromFile then
-    JvCsvDatabaseError('noTableName', 'LoadFromFile=True, so a TableName is required');
+    JvCsvDatabaseError(sNoTableName, sTableNameRequired);
 //  Strings := nil;
 
   InternalInitFieldDefs; // initialize FieldDef objects
@@ -2716,13 +2716,13 @@ begin
   // null check, raise exception
   if (not Assigned(Left)) or (not Assigned(Right)) then
   begin
-    JvCsvDatabaseError(FTableName, 'InternalCompare. Nil value detected.');
+    JvCsvDatabaseError(FTableName, sInternalCompare);
   end;
   // now check each field:
   for t := 0 to SortColumnCount - 1 do
   begin
     if not Assigned(SortColumns[t]) then
-      JvCsvDatabaseError(FTableName, 'InternalCompare. Nil value detected.'); // raise exception
+      JvCsvDatabaseError(FTableName, sInternalCompare); // raise exception
     Result := InternalFieldCompare(SortColumns[t], Left, Right);
     if (Result <> 0) then
     begin

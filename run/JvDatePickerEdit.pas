@@ -253,7 +253,8 @@ implementation
 
 uses
   Windows, Menus, SysUtils,
-  JclStrings, JclGraphUtils;
+  JclStrings, JclGraphUtils,
+  JvResources;
 
 const
   DefaultNoDateShortcut = 'Alt+Del';
@@ -401,7 +402,7 @@ end;
 
 procedure TJvCustomDatePickerEdit.RaiseNoDate;
 begin
-  raise Exception.CreateFmt('%s must have a date!', [Name]);
+  raise Exception.CreateFmt(SMustHaveADate, [Name]);
 end;
 
 procedure TJvCustomDatePickerEdit.SetAllowNoDate(const AValue: Boolean);
