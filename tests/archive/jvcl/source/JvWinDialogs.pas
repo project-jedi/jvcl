@@ -153,6 +153,16 @@ type
     procedure Execute; override;
   end;
 
+  TJvCplInfo = record
+     Icon: TIcon;
+     Name: string;
+     Info: string;
+     lData: Longint;
+  end;
+
+  // the signature of procedures in CPL's that implements Control Panel functionality
+  TCplApplet = function(hwndCPl: HWND; uMsg: DWORD; lParam1, lParam2: Longint): Longint; stdcall;
+  
   // (rom) largely reimplemented
   TJvAppletDialog = class(TJvComponent)
   private
@@ -332,7 +342,6 @@ procedure SetShellLinkInfo(const LinkFile: WideString; const SLI:
   TShellLinkInfo);
 function RecycleFile(FileToRecycle: string): Boolean;
 function CopyFile(FromFile, ToDir: string): Boolean;
-procedure ExecuteApplet(AppletName: string);
 function ShellObjectTypeEnumToConst(ShellObjectType: TShellObjectType): UINT;
 function ShellObjectTypeConstToEnum(ShellObjectType: UINT): TShellObjectType;
 function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar;
@@ -571,6 +580,25 @@ begin
 end;
 
 //=== TJvAppletDialog ========================================================
+
+const
+  CPL_INIT = 1;
+  CPL_GETCOUNT = 2;
+  CPL_INQUIRE = 3;
+  CPL_SELECT = 4;
+  CPL_DBLCLK = 5;
+  CPL_STOP = 6;
+  CPL_EXIT = 7;
+  CPL_NEWINQUIRE = 8;
+
+type
+  PCPLInfo = ^TCPLInfo;
+  TCplInfo = packed record
+     idIcon: Integer;
+     idName: Integer;
+     idInfo: Integer;
+     lData: Longint;
+  end;
 
 constructor TJvAppletDialog.Create(AOwner: TComponent);
 begin
@@ -1226,22 +1254,7 @@ begin
   Result := ShFileOperation(F) = 0;
 end;
 
-type
-  CPLApplet = function(hwndCPL: HWND; uMsg: UINT;
-    lParam1: LPARAM; lParam2: LPARAM): Longint; stdcall;
-
-procedure ExecuteApplet(AppletName: string);
-var
-  APModule: THandle;
-  Applet: CPLApplet;
-begin
-  APModule := LoadLibrary(PChar(AppletName));
-  if APModule <= HINSTANCE_ERROR then
-    Exit;
-  Applet := CPLApplet(GetProcAddress(APModule, 'CPlApplet'));
-  Applet(0, CPL_DBLCLK, 0, 0);
-  FreeLibrary(ApModule);
-end;
+// (rom) ExecuteApplet function removed
 
 //=== TJvOpenWithDialog ======================================================
 

@@ -55,39 +55,7 @@ const
   AF_ICON = $00000001;
   AF_SEQUENCE = $00000002;
 
-  CPL_INIT = 1;
-  {$EXTERNALSYM CPL_INIT}
-  CPL_GETCOUNT = 2;
-  {$EXTERNALSYM CPL_GETCOUNT}
-  CPL_INQUIRE = 3;
-  {$EXTERNALSYM CPL_INQUIRE}
-  CPL_SELECT = 4;
-  {$EXTERNALSYM CPL_SELECT}
-  CPL_DBLCLK = 5;
-  {$EXTERNALSYM CPL_DBLCLK}
-  CPL_STOP = 6;
-  {$EXTERNALSYM CPL_STOP}
-  CPL_EXIT = 7;
-  {$EXTERNALSYM CPL_EXIT}
-  CPL_NEWINQUIRE = 8;
-  {$EXTERNALSYM CPL_NEWINQUIRE}
-
 type
-  PCPLInfo = ^TCPLInfo;
-  TCplInfo = packed record
-     idIcon: Integer;
-     idName: Integer;
-     idInfo: Integer;
-     lData: Longint;
-  end;
-
-  TJvCplInfo = record
-     Icon: TIcon;
-     Name: string;
-     Info: string;
-     lData: Longint;
-  end;
-
   {$IFNDEF COMPILER5_UP}
   TAnchorKind = (akLeft, akTop, akRight, akBottom);
   TAnchors = set of TAnchorKind;
@@ -96,8 +64,6 @@ type
   EJVCLException = class(Exception);
   TOnUrlClick = procedure(Sender: TObject; Url: string) of object;
   TOnLinkClick = procedure(Sender: TObject; Link: string) of object;
-  // the signature of procedures in CPL's that implements Control Panel functionality
-  TCplApplet = function(hwndCPl: HWND; uMsg: DWORD; lParam1, lParam2: Longint): Longint; stdcall;
   // the signature of procedures in DLL's that can be called using rundll32.exe
   TRunDLL32Proc = procedure(Handle: HWnd; hInstance: THandle; CmdLine: PChar; CmdShow: integer); stdcall;
   TOnChangeKey = procedure(Sender: TObject; Rootkey: HKEY; Path: string) of object;
