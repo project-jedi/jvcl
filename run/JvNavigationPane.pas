@@ -425,6 +425,8 @@ type
     FImages: TCustomImageList;
     FImageIndex: TImageIndex;
     FButtonType: TJvNavIconButtonType;
+    FDrawPartialMenuFrame: boolean;
+    FTransparentDown: boolean;
     procedure DoImagesChange(Sender: TObject);
     procedure SetButtonType(const Value: TJvNavIconButtonType);
     procedure SetImageIndex(const Value: TImageIndex);
@@ -435,6 +437,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property TransparentDown:boolean read FTransparentDown write FTransparentDown default False;
+    property DrawPartialMenuFrame:boolean read FDrawPartialMenuFrame write FDrawPartialMenuFrame default False;
     property Images: TCustomImageList read FImages write SetImages;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property ButtonType: TJvNavIconButtonType read FButtonType write SetButtonType;
@@ -562,8 +566,11 @@ type
     procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
     procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure SetParentStyleManager(const Value: Boolean);
+    procedure SetAction(const Value: TBasicAction);
   protected
     procedure UpdatePageList;
+
+    function GetAction: TBasicAction;override;
     procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -577,11 +584,14 @@ type
     property Header: TJvNavPanelHeader read FHeader;
     property Alignment: TAlignment read GetAlignment write SetAlignment;
     property WordWrap: Boolean read GetWordWrap write SetWordWrap;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property AutoHeader: Boolean read GetAutoHeader write SetAutoHeader;
   published
+    property Action:TBasicAction read GetAction write SetAction;
+
     property Color default clWindow;
     property ParentColor default False;
     property Caption: TCaption read GetCaption write SetCaption;
@@ -595,6 +605,7 @@ type
     property OnEndDock;
     {$ENDIF VCL}
     property DragMode;
+
     property Iconic: Boolean read GetIconic write SetIconic default False;
     property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
     property Hint: string read GetHint write SetHint;
@@ -699,6 +710,8 @@ type
     procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
     procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure SetParentStyleManager(const Value: Boolean);
+    function GetDrawPartialMenuFrame: boolean;
+    procedure SetDrawPartialMenuFrame(const Value: boolean);
   protected
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -741,11 +754,11 @@ type
     property Visible;
     property Width default 185;
     property Height default 41;
-
+    property DrawPartialMenuFrame:boolean read GetDrawPartialMenuFrame write SetDrawPartialMenuFrame default False;
     property Buttons: TJvNavPaneToolButtons read FButtons write SetButtons;
     property ButtonColor: TColor read FButtonColor write SetButtonColor default $A6A5A6;
-    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 30;
-    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 21;
+    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 25;
+    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 22;
     property Color default clWindow;
     property CloseButton: Boolean read GetCloseButton write SetCloseButton default True;
     property ColorFrom: TColor read FColorFrom write SetColorFrom default $FFF7CE;
@@ -3683,8 +3696,8 @@ begin
   FColorFrom := $FFF7CE;
   FColorTo := $E7A67B;
   FButtonColor := $A6A5A6;
-  FButtonWidth := 30;
-  FButtonHeight := 21;
+  FButtonWidth := 25;
+  FButtonHeight := 22;
   FHeaderHeight := 29;
   FEdgeRounding := 9;
   FShowGrabber := True;
@@ -3732,16 +3745,12 @@ begin
   begin
     B := TJvNavPanelToolButton.Create(nil);
     B.Visible := False;
-    B.SetBounds(0, 0, ButtonHeight - 1, ButtonHeight - 3);
+    B.SetBounds(0, 0, ButtonWidth - 3, ButtonHeight - 2);
     B.ButtonType := nibImage;
     B.Images := Images;
     B.ImageIndex := Buttons[I].ImageIndex;
     B.Enabled := Buttons[I].Enabled;
     B.Parent := Self;
-//    B.Colors.ButtonSelectedColorFrom := clNone;
-//    B.Colors.ButtonSelectedColorTo := clNone;
-//    B.Colors.ButtonHotColorFrom := clNone;
-//    B.Colors.ButtonHotColorTo := clNone;
     B.Tag := I;
     B.OnClick := InternalButtonClick;
     FRealButtons.Add(B);
@@ -3803,6 +3812,11 @@ function TJvNavPaneToolPanel.GetHitTestInfoAt(X, Y: Integer): TJvToolPanelHitTes
   end;
 
 begin
+  if not Visible then
+  begin
+    Result := [phtNowhere];
+    Exit;
+  end;
   Result := [];
   if X < 0 then
     Include(Result, phtToLeft);
@@ -3908,14 +3922,13 @@ begin
       Canvas.FillRect(Rect(R2.Right - EdgeRounding, R2.Top, R2.Right - 1, R2.Top + EdgeRounding));
       Canvas.FillRect(Rect(R2.Left, R2.Bottom - EdgeRounding, R2.Left + EdgeRounding, R2.Bottom - 1));
       Canvas.Pen.Style := psSolid;
-      Y := R2.Top + 1;
+      Y := R2.Top;
       // adjust the buttons and draw the dividers
       for I := 0 to Buttons.Count - 1 do
       begin
         X := R2.Left + ButtonWidth * I;
         B := TJvNavPanelToolButton(FRealButtons[I]);
-        B.Left := X + (ButtonWidth - B.Width) div 2;
-        B.Top := Y;
+        B.SetBounds(X + 3, Y + 2, ButtonWidth - 6, ButtonHeight - 4);
         B.Visible := True;
         if I > 0 then
         begin
@@ -4228,6 +4241,8 @@ begin
   inherited Create(AOwner);
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
+  DrawPartialMenuFrame := False;
+  TransparentDown := False;
 end;
 
 destructor TJvNavPanelToolButton.Destroy;
@@ -4250,6 +4265,8 @@ begin
 end;
 
 procedure TJvNavPanelToolButton.Paint;
+label
+  DrawButton;
 var
   R: TRect;
   I: Integer;
@@ -4262,16 +4279,29 @@ begin
       Canvas.Brush.Color := $D6BEB5;
     if (bsMouseDown in MouseStates) or Down then
     begin
+      if TransparentDown then
+        Canvas.Brush.Style := bsClear;  // (p3) don't draw background - looks better IMO
       if (ButtonType = nibDropArrow) and (DropDownMenu <> nil) then
       begin
         Canvas.Brush.Color := clWindow;
         Canvas.Pen.Color := cl3DDkShadow;
+        if DrawPartialMenuFrame then
+        begin
+          Canvas.FillRect(ClientRect); // if Brush.Style = bsClear, this does nothing
+          Canvas.MoveTo(0,Height);
+          Canvas.LineTo(0,0);
+          Canvas.LineTo(Width - 1,0);
+          Canvas.LineTo(Width - 1,Height);
+          // (p3) yucky! first goto in JVCL?!!!
+            goto DrawButton;
+        end;
       end
       else
         Canvas.Brush.Color := $B59284;
     end;
     Canvas.Rectangle(ClientRect);
   end;
+  DrawButton:
   case ButtonType of
     nibDropArrow: // dropdown arrow is 7x4, right-aligned
       begin
@@ -4367,6 +4397,56 @@ begin
     Invalidate;
   end;
 end;
+
+function TJvNavPaneToolPanel.GetDrawPartialMenuFrame: boolean;
+begin
+  if FDropDown <> nil then
+    Result := FDropDown.DrawPartialMenuFrame
+  else
+    Result := False;
+end;
+
+procedure TJvNavPaneToolPanel.SetDrawPartialMenuFrame(
+  const Value: boolean);
+begin
+  if FDropDown <> nil then
+    FDropDown.DrawPartialMenuFrame := Value;
+end;
+
+
+function TJvNavPanelPage.GetAction: TBasicAction;
+begin
+  Result := inherited GetAction;
+end;
+
+procedure TJvNavPanelPage.SetAction(const Value: TBasicAction);
+begin
+  inherited Action := Value;
+  FNavPanel.Action := Value;
+  FIconButton.Action := Value;
+end;
+
+procedure TJvNavPanelPage.ActionChange(Sender: TObject;
+  CheckDefaults: Boolean);
+begin
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    begin
+      if not CheckDefaults or (Self.Caption = '') or (Self.Caption = Self.Name) then
+        Self.Caption := Caption;
+      if not CheckDefaults or Self.Enabled then
+        Self.Enabled := Enabled; // NB! This disables resizing if the top-most button is disabled (due to TSplitter.FindControl)
+      if not CheckDefaults or (Self.Hint = '') then
+        Self.Hint := Hint;
+      if not CheckDefaults or (Self.ImageIndex = -1) then
+        Self.ImageIndex := ImageIndex;
+      if not CheckDefaults or Self.Visible then
+        Self.Visible := Visible;
+      if not CheckDefaults or not Assigned(Self.OnClick) then
+        Self.OnClick := OnExecute;
+    end;
+end;
+
 
 initialization
   RegisterClasses([TJvNavPanelPage]);
