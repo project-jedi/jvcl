@@ -42,10 +42,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, db, dbctrls, JVCLVer;
+  ComCtrls, db, dbctrls, JVCLVer, JvDateTimePicker;
 
 type
-  TJvDBDateTimePicker = class(TDateTimePicker)
+  TJvDBDateTimePicker = class(TJvDateTimePicker)
   private
     { Private declarations }
     FDataLink: TFieldDataLink;
@@ -83,6 +83,8 @@ type
   end;
 
 implementation
+uses
+  Variants;
 
 { TJvDBDateTimePicker }
 ///////////////////////////////////////////////////////////////////////////
@@ -119,9 +121,18 @@ end;
 procedure TJvDBDateTimePicker.DataChange(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
-    Date := FDataLink.Field.AsDateTime
+  begin
+    if Kind = dtkDate then
+      Date := trunc(FDataLink.Field.AsDateTime)
+    else
+      Time := frac(FDataLink.Field.AsDateTime);
+  end
   else if csDesigning in ComponentState then
+  begin
     Date := Date;
+    Time := Now;
+  end;
+  CheckNullValue;
 end;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -211,10 +222,20 @@ begin
   //we still parent code
   inherited KeyDown(Key, Shift);
   //Is it Delete key, insert key or shiftstate ...
-  if (Key in [VK_DELETE]) or ((Key in [VK_INSERT]) and (ssShift in Shift)) then
-  begin
-    //datalink should be in edit mode
-    FDataLink.Edit;
+  case Key of
+    VK_DELETE:
+      begin
+        FDataLink.Edit;
+        if Kind = dtkDate then
+          Date := NullDate
+        else
+          Time := frac(NullDate);
+        CheckNullValue;
+        UpdateData(self);
+      end;
+    VK_INSERT:
+      if (ssShift in Shift) then
+        FDataLink.Edit;
   end;
 end;
 ///////////////////////////////////////////////////////////////////////////
@@ -281,9 +302,11 @@ end;
 procedure TJvDBDateTimePicker.Change;
 begin
   //call method modified
-  FDataLink.Modified;
+  FDataLink.Edit;
+//  FDataLink.Modified;
   //we still need parent code
   inherited Change;
+  UpdateData(self);
 end;
 ///////////////////////////////////////////////////////////////////////////
 //procedure TJvDBDateTimePicker.UpdateDate
@@ -298,7 +321,22 @@ end;
 procedure TJvDBDateTimePicker.UpdateData(Sender: TObject);
 begin
   //update value in datalink with date value in control, not from system
-  FDataLink.Field.AsDateTime := Date;
+  if not FDataLink.Editing then
+    Exit;
+  if Kind = dtkDate then
+  begin
+    if trunc(NullDate) = trunc(Date) then
+      FDataLink.Field.Value := NULL
+    else
+      FDataLink.Field.AsDateTime := trunc(Date);
+  end
+  else
+  begin
+    if frac(NullDate) = frac(Time) then
+      FDataLink.Field.Value := NULL
+    else
+      FDataLink.Field.AsDateTime := frac(Time);
+  end;
 end;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -327,3 +365,4 @@ begin
 end;
 
 end.
+
