@@ -1308,8 +1308,9 @@ begin
   Canvas.Pen.Color := Font.Color;
   Canvas.Font := Font;
   //  Canvas.FillRect(Canvas.ClipRect);
-  if (FUpdateCount <> 0) or (Count = 0) or (ClientWidth <= 0)
-    or (ClientHeight <= 0) or (FItemSize.cx <= 0) or (FItemSize.cy <= 0) then
+  if (FUpdateCount <> 0) or (Count = 0) or
+    (ClientWidth <= 0) or (ClientHeight <= 0) or
+    (FItemSize.cx <= 0) or (FItemSize.cy <= 0) then
     Exit;
   ItemRect := Rect(0, 0, ItemSize.cx, ItemSize.cy);
   InflateRect(ItemRect, -Options.HorzSpacing, -Options.VertSpacing);

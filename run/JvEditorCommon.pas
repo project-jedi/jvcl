@@ -4498,10 +4498,10 @@ begin
             Y := FLastVisibleRow;
         end;
       ecBeginLine, ecSelBeginLine, ecBeginDoc, ecSelBeginDoc,
-        ecEndLine, ecSelEndLine, ecEndDoc, ecSelEndDoc:
+      ecEndLine, ecSelEndLine, ecEndDoc, ecSelEndDoc:
         begin
-          if Com([ecSelBeginLine, ecSelBeginDoc, ecSelEndLine, ecSelEndDoc])
-            and IsNewSelection then
+          if Com([ecSelBeginLine, ecSelBeginDoc, ecSelEndLine, ecSelEndDoc]) and
+            IsNewSelection then
             SetSel1(CaretX, Y);
           if Com([ecBeginLine, ecSelBeginLine]) then
             X := 0

@@ -146,8 +146,8 @@ const
   cWordWraps: array [Boolean] of DWORD = (0, ES_AUTOHSCROLL);
 begin
   inherited CreateParams(Params);
-  Params.Style := Params.Style or cMultiLine[FMultiLine] or WS_CLIPCHILDREN
-    or cAlignments[FAlignment] or cScrollBar[FScrollBars] or cWordWraps[FWordWrap];
+  Params.Style := Params.Style or cMultiLine[FMultiLine] or WS_CLIPCHILDREN or
+    cAlignments[FAlignment] or cScrollBar[FScrollBars] or cWordWraps[FWordWrap];
 end;
 
 function TJvgMaskEdit.GetCanvas: TCanvas;

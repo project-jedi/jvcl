@@ -248,8 +248,8 @@ begin
   FNoDropCursor := False;
   FForm := ValidParentForm(Self);
   {$IFDEF VCL}
-  FForm.Canvas.Handle := GetDCEx(FForm.Handle, 0, DCX_CACHE or DCX_CLIPSIBLINGS
-    or DCX_LOCKWINDOWUPDATE);
+  FForm.Canvas.Handle := GetDCEx(FForm.Handle, 0,
+    DCX_CACHE or DCX_CLIPSIBLINGS or DCX_LOCKWINDOWUPDATE);
   {$ENDIF VCL}
   with FForm.Canvas do
   begin

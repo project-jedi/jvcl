@@ -411,8 +411,8 @@ begin
       else
       begin
         Ei := Controls[I];
-        if ((Ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError))
-          or (BlinkStyle = ebsAlwaysBlink) then
+        if ((Ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError)) or
+          (BlinkStyle = ebsAlwaysBlink) then
         begin
           Ei.Error := Value;
           Ei.BlinkCount := cDefBlinkCount;

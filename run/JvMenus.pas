@@ -1205,8 +1205,8 @@ begin
       else
         MenuID := IDItem;
       MenuItem := TMenuItem(FindItem(MenuID, FindKind));
-      if (MenuItem <> nil) and (IsItemPopup(MenuItem) or (MenuItem.Count = 0))
-        and (MenuFlag and MF_HILITE <> 0) then
+      if (MenuItem <> nil) and (IsItemPopup(MenuItem) or (MenuItem.Count = 0)) and
+        (MenuFlag and MF_HILITE <> 0) then
         SetCursor(Screen.Cursors[FCursor])
       else
         SetCursor(Screen.Cursors[crDefault]);

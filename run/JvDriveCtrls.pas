@@ -672,7 +672,7 @@ begin
     FItemIndex := ItemIndex
   else
     FItemIndex := 0;
-  if (FItemIndex >= 0)  and (FItemIndex < FDrives.Count) then
+  if (FItemIndex >= 0) and (FItemIndex < FDrives.Count) then
     Drive := FirstChar(FDrives[FItemIndex]);
   if (ItemIndex > -1) and (ItemIndex < Items.Count) then
     FDisplayName := Items[ItemIndex]
@@ -1175,8 +1175,7 @@ end;
 
 procedure TJvDirectoryListBox.BuildList;
 const
-  CFlagsDir = SHGFI_ICON or SHGFI_SMALLICON or SHGFI_SELECTED or SHGFI_OPENICON
-    or SHGFI_DISPLAYNAME;
+  CFlagsDir = SHGFI_ICON or SHGFI_SMALLICON or SHGFI_SELECTED or SHGFI_OPENICON or SHGFI_DISPLAYNAME;
   CFlagsSubDirs = SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME;
 var
   TempPath: string;

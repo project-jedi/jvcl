@@ -693,8 +693,8 @@ end;
 procedure TJvPanel.Invalidate;
 begin
 {  if Transparent and Visible and Assigned(Parent) and Parent.HandleAllocated and HandleAllocated then
-    RedrawWindow(Parent.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE
-      or RDW_ERASENOW or RDW_UPDATENOW or RDW_ALLCHILDREN); }
+    RedrawWindow(Parent.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or
+      RDW_INVALIDATE or RDW_ERASENOW or RDW_UPDATENOW or RDW_ALLCHILDREN); }
   inherited Invalidate;
 end;
 

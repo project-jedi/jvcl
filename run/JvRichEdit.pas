@@ -1378,8 +1378,8 @@ var
 begin
   OleCheck(CreateILockBytesOnHGlobal(0, True, LockBytes));
   try
-    OleCheck(StgCreateDocfileOnILockBytes(LockBytes, STGM_READWRITE
-      or STGM_SHARE_EXCLUSIVE or STGM_CREATE, 0, Storage));
+    OleCheck(StgCreateDocfileOnILockBytes(LockBytes,
+      STGM_READWRITE or STGM_SHARE_EXCLUSIVE or STGM_CREATE, 0, Storage));
   finally
     ReleaseObject(LockBytes);
   end;
@@ -5330,8 +5330,8 @@ begin
     end;
     // Replace the TAB value with the new one but
     // remember the alignment and leader values
-    rgxTabs[Index] := (rgxTabs[Index] and Longint(TA_ALIGNMENT or TA_LEADER))
-      or (Value * CTwipsPerPoint);
+    rgxTabs[Index] := (rgxTabs[Index] and
+      Longint(TA_ALIGNMENT or TA_LEADER)) or (Value * CTwipsPerPoint);
     dwMask := PFM_TABSTOPS;
     SetAttributes(Paragraph);
   end;

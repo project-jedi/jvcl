@@ -391,16 +391,15 @@ end;
 procedure TJvCustomEdit.CreateParams(var Params: TCreateParams);
 const
   {$IFDEF JVCLThemesEnabled}
-  Passwords: array[Boolean] of DWORD = (0, ES_PASSWORD);
+  Passwords: array [Boolean] of DWORD = (0, ES_PASSWORD);
   {$ENDIF JVCLThemesEnabled}
-  Styles: array[TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  Styles: array [TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
-  Params.Style := Params.Style or Styles[FAlignment]
-    {$IFDEF JVCLThemesEnabled}
-    or Passwords[ThemedPassword]
-    {$ENDIF JVCLThemesEnabled}
-    ;
+  Params.Style := Params.Style or Styles[FAlignment];
+  {$IFDEF JVCLThemesEnabled}
+  Params.Style := Params.Style or Passwords[ThemedPassword];
+  {$ENDIF JVCLThemesEnabled}
   if (FAlignment <> taLeftJustify) and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and
     (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
     Params.Style := Params.Style or ES_MULTILINE; // needed for Win95
@@ -601,11 +600,7 @@ end;
 
 function TJvCustomEdit.IsPasswordCharStored: Boolean;
 begin
-  Result := (PasswordChar <> #0)
-    {$IFDEF JVCLThemesEnabled}
-    and not ThemedPassword
-    {$ENDIF JVCLThemesEnabled}
-    ;
+  Result := (PasswordChar <> #0) {$IFDEF JVCLThemesEnabled} and not ThemedPassword {$ENDIF};
 end;
 
 procedure TJvCustomEdit.KeyDown(var Key: Word; Shift: TShiftState);

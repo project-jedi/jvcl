@@ -2628,8 +2628,8 @@ var
       if (Control.Visible) and (Control <> Self) and not
         (Control.Align in [alNone, alClient]) then
       begin
-        if (Control.Align > PosToAlign[Pos]) or ((Control.Align = PosToAlign[Pos])
-          and not InsertBefore(Control, Self, Control.Align)) then
+        if (Control.Align > PosToAlign[Pos]) or ((Control.Align = PosToAlign[Pos]) and
+          not InsertBefore(Control, Self, Control.Align)) then
           Continue;
         case Control.Align of
           alTop:

@@ -277,105 +277,82 @@ type
     procedure SetDisplayDuration(const Value: Cardinal);
     procedure SetOwnerForm(const Value: TJvFormDesktopAlert);
     function GetActive: Boolean;
-
   protected
     procedure SetEndInterval(const Value: Cardinal); virtual;
     procedure SetEndSteps(const Value: Cardinal); virtual;
     procedure SetStartInterval(const Value: Cardinal); virtual;
     procedure SetStartSteps(const Value: Cardinal); virtual;
-
     // This procedure will be called for each step of the starting animation
     // It will be called StartSteps time, every StartInterval milliseconds
     // The implementation here only ensures that once the number of steps
     // is reached, the timer is stopped
     procedure StartAnimTimer(Sender: TObject); virtual;
-
     // This procedure will be called for each step of the ending animation
     // It will be called EndSteps time, every EndInterval milliseconds
     // The implementation here only ensures that once the number of steps
     // is reached, the timer is stopped and then calls DoDisplay
     procedure EndAnimTimer(Sender: TObject); virtual;
-
     // This procedure will be called once after DisplayDuration
     // (if it is > 0) when the start animation is finished.
     procedure DisplayTimer(Sender: TObject); virtual;
-
     // This procedure is called just before the start animation timer
     // is enabled. Use it to setup initial values required for the
     // animation
-    // As implemented in this base class, the owner form is shown 
+    // As implemented in this base class, the owner form is shown
     procedure PrepareStartAnimation; virtual;
-
     // This procedure is called just after the start animation has finished
     // Use it to set the final values of the animation
     procedure FinalizeStartAnimation; virtual; abstract;
-
     // This procedure is called just before the end animation timer
     // is enabled. Use it to setup initial values required for the
-    // animation 
+    // animation
     procedure PrepareEndAnimation; virtual; abstract;
-
     // This procedure is called just after the end animation has finished
     // Use it to set the final values of the animation
     // As implemented in this base class, this closes the owner form.
     // Note: It is required to close the form or the end animation
     // will keep being repeated
     procedure FinalizeEndAnimation; virtual;
-
     // The timer used for all animations and waits
     property AnimTimer: TTimer read FAnimTimer;
-
   public
     constructor Create(OwnerForm: TJvFormDesktopAlert); virtual;
     destructor Destroy; override;
-
     // Sets up the timer to call StartAnimTimer on the correct interval
     // then show the owner form.
     // If StartSteps is not greater than 0, the animation will not start
     // and the form will not be shown.
     procedure DoStartAnimation; virtual;
-
     // Sets up the timer to call EndAnimTimer on the correct interval
     // If EndSteps is not greater than 0, the animation will not start
     procedure DoEndAnimation; virtual;
-
     // Sets up the timer to call DisplayTimer after the correct delay
     // If DisplayDuration is equal to 0, the timer is not enabled and
     // DisplayTimer will never be called
     procedure DoDisplay; virtual;
-
     // Aborts the current animation, if any. Will call the proper Finalize
     // function as applicable. The middle wait is NOT aborted by a call
     // to this function
     procedure AbortAnimation; virtual;
-
     // The owner form, the form to which the style is associated.
     // This value MUST NOT be nil when any of the DoXXXX function is called
     property OwnerForm: TJvFormDesktopAlert read FOwnerForm write SetOwnerForm;
-
     // The current step in the animation (starts at 0, use Active to know
-    // if an animation or wait is in progress). 
+    // if an animation or wait is in progress).
     property CurrentStep: Cardinal read FCurrentStep;
-
     // Returns AnimTimer.Enabled
     property Active: Boolean read GetActive;
-
     // Returns the status of the handler
     property Status: TJvStyleHandlerStatus read FStatus;
-
   published
     // The duration between each step of the start animation
     property StartInterval: Cardinal read FStartInterval write SetStartInterval;
-
     // The number of steps in the start animation
     property StartSteps: Cardinal read FStartSteps write SetStartSteps;
-
     // The duration between each step of the end animation
     property EndInterval: Cardinal read FEndInterval write SetEndInterval;
-
     // The number of steps in the end animation
     property EndSteps: Cardinal read FEndSteps write SetEndSteps;
-
     // The duration of the middle wait (between the end of the start
     // animation and the beginning of the end animation)
     property DisplayDuration: Cardinal read FDisplayDuration write SetDisplayDuration;
@@ -392,30 +369,22 @@ type
     FMaxAlphaBlendValue: Byte;
     procedure SetMinAlphaBlendValue(const Value: Byte);
     procedure SetMaxAlphaBlendValue(const Value: Byte);
-
   protected
     procedure StartAnimTimer(Sender: TObject); override;
     procedure EndAnimTimer(Sender: TObject); override;
-
     // Applies the current alpha blend value to the owner form
     procedure DoAlphaBlend(Value: Byte);
-
     procedure PrepareStartAnimation; override;
     procedure FinalizeStartAnimation; override;
     procedure PrepareEndAnimation; override;
     procedure FinalizeEndAnimation; override;
-
   public
     constructor Create(OwnerForm: TJvFormDesktopAlert); override;
-
     procedure AbortAnimation; override;
-
   published
     property MinAlphaBlendValue: Byte read FMinAlphaBlendValue write SetMinAlphaBlendValue default 0;
     property MaxAlphaBlendValue: Byte read FMaxAlphaBlendValue write SetMaxAlphaBlendValue default 255;
-
     property CurrentAlphaBlendValue: Byte read FCurrentAlphaBlendValue;
-
     property StartInterval default 25;
     property StartSteps default 10;
     property EndInterval default 50;
@@ -432,37 +401,32 @@ type
   protected
     procedure StartAnimTimer(Sender: TObject); override;
     procedure EndAnimTimer(Sender: TObject); override;
-
     // Applies the current region growth percentage value to the owner form
     procedure DoGrowRegion(Percentage: Double);
-
     procedure PrepareStartAnimation; override;
     procedure FinalizeStartAnimation; override;
     procedure PrepareEndAnimation; override;
     procedure FinalizeEndAnimation; override;
-
   public
     constructor Create(OwnerForm: TJvFormDesktopAlert); override;
-
     procedure AbortAnimation; override;
-
   published
     property StartInterval default 25;
     property StartSteps default 10;
     property EndInterval default 50;
     property EndSteps default 10;
     property DisplayDuration default 1400;
-
     property MinGrowthPercentage: Double read FMinGrowthPercentage write SetMinGrowthPercentage;
     property MaxGrowthPercentage: Double read FMaxGrowthPercentage write SetMaxGrowthPercentage;
   end;
 
-  function CreateHandlerForStyle(Style: TJvAlertStyle; OwnerForm: TJvFormDesktopAlert): TJvCustomDesktopAlertStyleHandler;
+function CreateHandlerForStyle(Style: TJvAlertStyle; OwnerForm: TJvFormDesktopAlert): TJvCustomDesktopAlertStyleHandler;
 
 implementation
 
 uses
-  SysUtils, JvJVCLUtils, JvTypes, JvFinalize;
+  SysUtils,
+  JvJVCLUtils, JvTypes, JvFinalize;
 
 const
   sUnitName = 'JvDesktopAlert';
@@ -473,8 +437,10 @@ var
 function CreateHandlerForStyle(Style: TJvAlertStyle; OwnerForm: TJvFormDesktopAlert): TJvCustomDesktopAlertStyleHandler;
 begin
   case Style of
-    asFade: Result := TJvFadeAlertStyleHandler.Create(OwnerForm);
-    asCenterGrow: Result := TJvCenterGrowAlertStyleHandler.Create(OwnerForm);
+    asFade:
+      Result := TJvFadeAlertStyleHandler.Create(OwnerForm);
+    asCenterGrow:
+      Result := TJvCenterGrowAlertStyleHandler.Create(OwnerForm);
     else
       raise Exception.Create('');
   end;
@@ -1258,15 +1224,6 @@ end;
 
 //=== { TJvCustomDesktopAlertStyle } ================================================
 
-procedure TJvCustomDesktopAlertStyleHandler.AbortAnimation;
-begin
-  AnimTimer.Enabled := False;
-  if Status = hsStartAnim then
-    FinalizeStartAnimation
-  else if Status = hsEndAnim then
-    FinalizeEndAnimation;
-end;
-
 constructor TJvCustomDesktopAlertStyleHandler.Create(OwnerForm: TJvFormDesktopAlert);
 begin
   inherited Create;
@@ -1279,7 +1236,17 @@ end;
 destructor TJvCustomDesktopAlertStyleHandler.Destroy;
 begin
   FAnimTimer.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.AbortAnimation;
+begin
+  AnimTimer.Enabled := False;
+  if Status = hsStartAnim then
+    FinalizeStartAnimation
+  else
+  if Status = hsEndAnim then
+    FinalizeEndAnimation;
 end;
 
 procedure TJvCustomDesktopAlertStyleHandler.DoEndAnimation;
@@ -1403,15 +1370,9 @@ const
   WS_EX_LAYERED = $00080000;
   LWA_ALPHA = $00000002;
 
-procedure TJvFadeAlertStyleHandler.AbortAnimation;
-begin
-  AnimTimer.Enabled := False;
-  DoAlphaBlend(MaxAlphaBlendValue);
-end;
-
 constructor TJvFadeAlertStyleHandler.Create(OwnerForm: TJvFormDesktopAlert);
 begin
-  inherited;
+  inherited Create(OwnerForm);
 
   // Set default values
   StartInterval := 25;
@@ -1421,6 +1382,12 @@ begin
   DisplayDuration := 1400;
   MinAlphaBlendValue := 0;
   MaxAlphaBlendValue := 255;
+end;
+
+procedure TJvFadeAlertStyleHandler.AbortAnimation;
+begin
+  AnimTimer.Enabled := False;
+  DoAlphaBlend(MaxAlphaBlendValue);
 end;
 
 procedure TJvFadeAlertStyleHandler.DoAlphaBlend(Value: Byte);
@@ -1453,14 +1420,14 @@ end;
 
 procedure TJvFadeAlertStyleHandler.EndAnimTimer(Sender: TObject);
 begin
-  inherited;
+  inherited EndAnimTimer(Sender);
   DoAlphaBlend(MaxAlphaBlendValue - ((Cardinal(MaxAlphaBlendValue) - MinAlphaBlendValue) * CurrentStep) div StartSteps);
 end;
 
 procedure TJvFadeAlertStyleHandler.FinalizeEndAnimation;
 begin
   DoAlphaBlend(MinAlphaBlendValue);
-  inherited;  // Do not forget to call inherited, to hide the form
+  inherited FinalizeEndAnimation;  // Do not forget to call inherited, to hide the form
 end;
 
 procedure TJvFadeAlertStyleHandler.FinalizeStartAnimation;
@@ -1476,7 +1443,7 @@ end;
 procedure TJvFadeAlertStyleHandler.PrepareStartAnimation;
 begin
   DoAlphaBlend(MinAlphaBlendValue);
-  inherited;
+  inherited PrepareStartAnimation;
 end;
 
 procedure TJvFadeAlertStyleHandler.SetMaxAlphaBlendValue(const Value: Byte);
@@ -1492,7 +1459,7 @@ end;
 procedure TJvFadeAlertStyleHandler.StartAnimTimer(Sender: TObject);
 begin
   DoAlphaBlend(MinAlphaBlendValue + ((Cardinal(MaxAlphaBlendValue) - MinAlphaBlendValue) * CurrentStep) div StartSteps);
-  inherited;
+  inherited StartAnimTimer(Sender);
 end;
 
 procedure TJvDesktopAlert.SetStyleHandler(
@@ -1503,16 +1470,9 @@ end;
 
 //=== { TJvCenterGrowAlertStyleHandler } ================================================
 
-procedure TJvCenterGrowAlertStyleHandler.AbortAnimation;
+constructor TJvCenterGrowAlertStyleHandler.Create(OwnerForm: TJvFormDesktopAlert);
 begin
-  AnimTimer.Enabled := False;
-  DoGrowRegion(MaxGrowthPercentage);
-end;
-
-constructor TJvCenterGrowAlertStyleHandler.Create(
-  OwnerForm: TJvFormDesktopAlert);
-begin
-  inherited;
+  inherited Create(OwnerForm);
 
   // Set default values
   StartInterval := 25;
@@ -1523,6 +1483,12 @@ begin
 
   MinGrowthPercentage := 0;
   MaxGrowthPercentage := 100;
+end;
+
+procedure TJvCenterGrowAlertStyleHandler.AbortAnimation;
+begin
+  AnimTimer.Enabled := False;
+  DoGrowRegion(MaxGrowthPercentage);
 end;
 
 procedure TJvCenterGrowAlertStyleHandler.DoGrowRegion(Percentage: Double);
@@ -1546,14 +1512,14 @@ end;
 
 procedure TJvCenterGrowAlertStyleHandler.EndAnimTimer(Sender: TObject);
 begin
-  inherited;
+  inherited EndAnimTimer(Sender);
   DoGrowRegion(MaxGrowthPercentage - ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / StartSteps);
 end;
 
 procedure TJvCenterGrowAlertStyleHandler.FinalizeEndAnimation;
 begin
   DoGrowRegion(MinGrowthPercentage);
-  inherited;
+  inherited FinalizeEndAnimation;
 end;
 
 procedure TJvCenterGrowAlertStyleHandler.FinalizeStartAnimation;
@@ -1569,11 +1535,10 @@ end;
 procedure TJvCenterGrowAlertStyleHandler.PrepareStartAnimation;
 begin
   DoGrowRegion(MinGrowthPercentage);
-  inherited;
+  inherited PrepareStartAnimation;
 end;
 
-procedure TJvCenterGrowAlertStyleHandler.SetMaxGrowthPercentage(
-  const Value: Double);
+procedure TJvCenterGrowAlertStyleHandler.SetMaxGrowthPercentage(const Value: Double);
 begin
   FMaxGrowthPercentage := Value;
   if FMaxGrowthPercentage < 0 then
@@ -1582,8 +1547,7 @@ begin
     FMaxGrowthPercentage := 100;
 end;
 
-procedure TJvCenterGrowAlertStyleHandler.SetMinGrowthPercentage(
-  const Value: Double);
+procedure TJvCenterGrowAlertStyleHandler.SetMinGrowthPercentage(const Value: Double);
 begin
   FMinGrowthPercentage := Value;
   if FMinGrowthPercentage < 0 then
@@ -1595,7 +1559,7 @@ end;
 procedure TJvCenterGrowAlertStyleHandler.StartAnimTimer(Sender: TObject);
 begin
   DoGrowRegion(MinGrowthPercentage + ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / StartSteps);
-  inherited;
+  inherited StartAnimTimer(Sender);
 end;
 
 initialization
