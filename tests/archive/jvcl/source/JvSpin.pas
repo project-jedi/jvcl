@@ -166,7 +166,7 @@ type
   $ENDIF}
   TSpinButtonKind = ({$IFDEF WIN32} bkStandard, {$ENDIF} bkDiagonal, bkClassic);
 
-  TJvCheckOption = (coCheckOnChange, coCheckOnExit);
+  TJvCheckOption = (coCheckOnChange, coCheckOnExit, coCropBeyondLimit);
   TJvCheckOptions = set of TJvCheckOption;
 
   //>Polaris
@@ -1712,7 +1712,7 @@ begin
     try
       if not (csDesigning in ComponentState) and (coCheckOnChange in CheckOptions) then
       begin
-        CheckValueRange(Value, True);
+        CheckValueRange(Value, not (coCropBeyondLimit in CheckOptions)); 
         SetValue(CheckValue(Value));
       end;
     except
@@ -2017,7 +2017,7 @@ begin
   try
     if not (csDesigning in ComponentState) and (coCheckOnExit in CheckOptions) then
     begin
-      CheckValueRange(Value, True);
+      CheckValueRange(Value, not (coCropBeyondLimit in CheckOptions));
       SetValue(CheckValue(Value));
     end;
   except
