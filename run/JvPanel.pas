@@ -39,7 +39,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, 
   {$ENDIF VisualCLX}
-  JvThemes, JvComponent, JvExControls;
+  JvThemes, JvComponent, JvExControls, JvJCLUtils;
 
 type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
@@ -111,7 +111,7 @@ type
     FMoving: Boolean;
     FGripBmp: TBitmap;
     procedure CreateSizeGrip;
-    function GetBorderWidth: Integer;
+    function GetFrameWidth: Integer;
     function IsInsideGrip(X, Y: Integer): Boolean;
     {$ENDIF VisualCLX}
     function GetHeight: Integer;
@@ -479,7 +479,7 @@ end;
 
 {$IFDEF VisualCLX}
 
-function TJvPanel.GetBorderWidth: Integer;
+function TJvPanel.GetFrameWidth: Integer;
 begin
   if FFlatBorder then
     Result := 1
@@ -498,7 +498,7 @@ var
   R: TRect;
   I: Integer;
 begin
-  I := GetBorderWidth;
+  I := GetFrameWidth;
   R := Bounds(Width - 12 - I, Height - 12 - I, 12, 12);
   Result := QWindows.PtInRect(R, X, Y);
 end;
@@ -512,7 +512,7 @@ begin
   ACanvas.Brush.Style := bsClear;
   ACanvas.Pen.Color := clDontMask;
   R := Bounds(0, 0, Width, Height);
-  I := GetBorderWidth;
+  I := GetFrameWidth;
   for J := 0 to I do
   begin
     ACanvas.Rectangle(R);
@@ -579,7 +579,7 @@ begin
       with Canvas do
       begin
         {$IFDEF VisualCLX}
-        I := GetBorderWidth;
+        I := GetFrameWidth;
         X := ClientWidth - FGripBmp.Width - I;
         Y := ClientHeight - FGripBmp.Height - I;
         Draw(X, Y, FGripBmp);
@@ -602,6 +602,7 @@ begin
 end;
 
 {$IFDEF VCL}
+// (asn) with VisualCLX Width := Width + 1 will call AdjustSize
 procedure TJvPanel.AdjustSize;
 begin
   inherited AdjustSize;
@@ -675,12 +676,7 @@ begin
       Flags := DT_EXPANDTABS or WordWrap[MultiLine] or Alignments[Alignment];
       Flags := DrawTextBiDiModeFlags(Flags);
       //calculate required rectangle size
-      {$IFDEF VCL}
-      DrawText(ACanvas.Handle, PChar(Caption), -1, ATextRect, Flags or DT_CALCRECT);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      DrawText(ACanvas, Caption, -1, ATextRect, Flags or DT_CALCRECT);
-      {$ENDIF VisualCLX}
+      DrawText(ACanvas.Handle, Caption, -1, ATextRect, Flags or DT_CALCRECT);
       // adjust the rectangle placement
       OffsetRect(ATextRect, 0, -ATextRect.Top + (Height - (ATextRect.Bottom - ATextRect.Top)) div 2);
       case Alignment of
@@ -700,12 +696,7 @@ begin
       //draw text
       if Transparent and not IsThemed then
         SetBkMode(ACanvas.Handle, BkModeTransparent);
-      {$IFDEF VCL}
-      DrawText(ACanvas.Handle, PChar(Caption), -1, ATextRect, Flags);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      DrawText(ACanvas, Caption, -1, ATextRect, Flags);
-      {$ENDIF VisualCLX}
+      DrawText(ACanvas.Handle, Caption, -1, ATextRect, Flags);
     end;
   end;
 end;
@@ -960,9 +951,7 @@ end;
 
 procedure TJvPanel.Resize;
 begin
-  {$IFDEF VisualCLX}
-  if Assigned(FArrangeSettings) then
-  {$ENDIF VisualCLX}
+  if Assigned(FArrangeSettings) then // (asn) 
     if FArrangeSettings.AutoArrange then
       ArrangeControls;
   inherited Resize;
