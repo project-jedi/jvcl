@@ -99,6 +99,11 @@ type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Reset; override;
+
+    {moved and added override keyword, to avoid warnings/hints-WPostma.}
+    procedure SetReadOnly(Value: Boolean); override;
+    function GetReadOnly: Boolean; override;
+    
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
