@@ -17,8 +17,9 @@ All Rights Reserved.
 
 Contributor(s):
   Jens Fudickar
+  Olivier Sannier
 
-Last Modified: 2004-01-13
+Last Modified: 2004-01-18
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -43,14 +44,29 @@ uses
   JvAppStorage;
 
 type
-  TJvAppIniStorage = class(TJvCustomAppStorage)
-  private
-    FDefaultSection : string;
+  // Storage to INI file, all in memory. This is the base class
+  // for INI type storage, descendents will actually implement
+  // the writing to a file or anything else
+  TJvCustomAppIniStorage = class(TJvCustomAppMemoryFileStorage)
   protected
-    function ValueExists(const Section, Key: string): Boolean; virtual; abstract;
-    function ReadValue(const Section, Key: string): string; virtual; abstract;
-    procedure WriteValue(const Section, Key, Value: string); virtual; abstract;
-    procedure RemoveValue(const Section, Key: string); virtual; abstract;
+    FIniFile: TMemIniFile;
+    FDefaultSection : string;
+
+    function GetAsString: string; override;
+    procedure SetAsString(const Value: string); override;
+    
+    procedure EnumFolders(const Path: string; const Strings: TStrings;
+      const ReportListAsValue: Boolean = True); override;
+    procedure EnumValues(const Path: string; const Strings: TStrings;
+      const ReportListAsValue: Boolean = True); override;
+    function PathExistsInt(const Path: string): boolean; override;
+    function ValueExists(const Section, Key: string): Boolean;
+    function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
+    function ReadValue(const Section, Key: string): string;
+    procedure WriteValue(const Section, Key, Value: string);
+    procedure RemoveValue(const Section, Key: string);
+    procedure DeleteSubTreeInt(const Path: string); override;
+
     procedure SplitKeyPath(const Path: string; out Key, ValueName: string); override;
     function ValueStoredInt(const Path: string): Boolean; override;
     procedure DeleteValueInt(const Path: string); override;
@@ -64,79 +80,27 @@ type
     procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
 
     property DefaultSection : string read FDefaultSection write FDefaultSection;
-  end;
 
-  { Storage to INI file. Optionally a buffered version (TMemIniFile) is used. IdleDelay will then
-    determine how long there has to be no key or mouse activities or writes to the storage before
-    it is written to the actual file. The non-buffered version will write directly to the file
-    (TIniFile) is used. }
-  TJvAppIniFileStorage = class(TJvAppIniStorage)
-  private
-    FBuffered: Boolean;
-    FHasWritten: Boolean;
-    FIniFile: TCustomIniFile;
-    FLastUserAct: Longint;
-    FFileName: TJvAppStorageFileName;
-  protected
-    procedure CreateIniFile(Name: string);
-    procedure DestroyIniFile;
-    procedure SetBuffered(Value: Boolean);
-    function GetFileName: TJvAppStorageFileName;
-    procedure SetFileName(Value: TJvAppStorageFileName);
-    procedure FileNameChanged(Sender: TObject);
-    procedure EnumFolders(const Path: string; const Strings: TStrings;
-      const ReportListAsValue: Boolean = True); override;
-    procedure EnumValues(const Path: string; const Strings: TStrings;
-      const ReportListAsValue: Boolean = True); override;
-    function PathExistsInt(const Path: string): boolean; override;
-    function ValueExists(const Section, Key: string): Boolean; override;
-    function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
-    function ReadValue(const Section, Key: string): string; override;
-    procedure WriteValue(const Section, Key, Value: string); override;
-    procedure RemoveValue(const Section, Key: string); override;
-    procedure DeleteSubTreeInt(const Path: string); override;
-
-    property HasWritten: Boolean read FHasWritten;
-    property IniFile: TCustomIniFile read FIniFile;
+    property IniFile: TMemIniFile read FIniFile;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Flush;
+  end;
+
+  // This class handles the flushing into a disk file
+  // and publishes a few properties for them to be
+  // used by the user in the IDE
+  TJvAppIniFileStorage = class (TJvCustomAppIniStorage)
+  public
+    procedure Flush; override;
+    procedure Reload; override;
+
+    property AsString;
   published
-    property Buffered: Boolean read FBuffered write SetBuffered;
+    property FileName;
+    property Location;
     property DefaultSection;
-    property FileName: TJvAppStorageFileName read GetFileName write SetFileName;
     property SubStorages;
-  end;
-
-  { In memory INI file. The contents is not backed by a file at all, but descendants may be written
-    that will read/store the contents to a physical device (file, DB, etc.).
-
-    Disclaimer: this class has not yet been tested!! }
-  TJvCustomAppIniMemoryStorage = class(TJvAppIniStorage)
-  private
-    FIsInternalChange: Boolean;
-    FSections: TStringList;
-    FStrings: TStringList;
-    function GetString(Index: Integer): string;
-    procedure SetString(Index: Integer; const S: string);
-  protected
-    procedure StringsChanged(Sender: TObject);
-    procedure RebuildSections;
-    function LocateSection(const Section: string; var Index: Integer): Boolean;
-    function LocateValue(const Section, Key: string; var Index: Integer): Boolean;
-    function LocateValueInSection(const Key: string; var Index: Integer): Boolean;
-    function ValueExists(const Section, Key: string): Boolean; override;
-    function ReadValue(const Section, Key: string): string; override;
-    procedure WriteValue(const Section, Key, Value: string); override;
-    procedure RemoveValue(const Section, Key: string); override;
-
-    property IsInternalChange: Boolean read FIsInternalChange;
-    // (rom) changed to indexed property
-    property Strings[Index: Integer]: string read GetString write SetString;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   end;
 
 implementation
@@ -198,16 +162,16 @@ begin
   end;
 end;
 
-//=== TJvAppIniStorage =========================================================
+//=== TJvCustomAppIniStorage =========================================================
 
-procedure TJvAppIniStorage.SplitKeyPath(const Path: string; out Key, ValueName: string);
+procedure TJvCustomAppIniStorage.SplitKeyPath(const Path: string; out Key, ValueName: string);
 begin
   inherited SplitKeyPath(Path, Key, ValueName);
   if Key = '' then
     Key := DefaultSection;
 end;
 
-function TJvAppIniStorage.ValueStoredInt(const Path: string): Boolean;
+function TJvCustomAppIniStorage.ValueStoredInt(const Path: string): Boolean;
 var
   Section: string;
   Key: string;
@@ -216,7 +180,7 @@ begin
   Result := ValueExists(Section, Key);
 end;
 
-procedure TJvAppIniStorage.DeleteValueInt(const Path: string);
+procedure TJvCustomAppIniStorage.DeleteValueInt(const Path: string);
 var
   Section: string;
   Key: string;
@@ -225,7 +189,7 @@ begin
   RemoveValue(Section, Key);
 end;
 
-function TJvAppIniStorage.DoReadInteger(const Path: string; Default: Integer): Integer;
+function TJvCustomAppIniStorage.DoReadInteger(const Path: string; Default: Integer): Integer;
 var
   Section: string;
   Key: string;
@@ -243,7 +207,7 @@ begin
     Result := Default;
 end;
 
-procedure TJvAppIniStorage.DoWriteInteger(const Path: string; Value: Integer);
+procedure TJvCustomAppIniStorage.DoWriteInteger(const Path: string; Value: Integer);
 var
   Section: string;
   Key: string;
@@ -252,7 +216,7 @@ begin
   WriteValue(Section, Key, IntToStr(Value));
 end;
 
-function TJvAppIniStorage.DoReadFloat(const Path: string; Default: Extended): Extended;
+function TJvCustomAppIniStorage.DoReadFloat(const Path: string; Default: Extended): Extended;
 var
   Section: string;
   Key: string;
@@ -270,7 +234,7 @@ begin
     Result := Default;
 end;
 
-procedure TJvAppIniStorage.DoWriteFloat(const Path: string; Value: Extended);
+procedure TJvCustomAppIniStorage.DoWriteFloat(const Path: string; Value: Extended);
 var
   Section: string;
   Key: string;
@@ -279,7 +243,7 @@ begin
   WriteValue(Section, Key, FloatToStr(Value));
 end;
 
-function TJvAppIniStorage.DoReadString(const Path: string; Default: string): string;
+function TJvCustomAppIniStorage.DoReadString(const Path: string; Default: string): string;
 var
   Section: string;
   Key: string;
@@ -291,7 +255,7 @@ begin
     Result := Default;
 end;
 
-procedure TJvAppIniStorage.DoWriteString(const Path: string; Value: string);
+procedure TJvCustomAppIniStorage.DoWriteString(const Path: string; Value: string);
 var
   Section: string;
   Key: string;
@@ -300,7 +264,7 @@ begin
   WriteValue(Section, Key, Value);
 end;
 
-function TJvAppIniStorage.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
+function TJvCustomAppIniStorage.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
 var
   Section: string;
   Key: string;
@@ -316,7 +280,7 @@ begin
     Result := 0;
 end;
 
-procedure TJvAppIniStorage.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
+procedure TJvCustomAppIniStorage.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
 var
   Section: string;
   Key: string;
@@ -325,53 +289,7 @@ begin
   WriteValue(Section, Key, BufToBinStr(Buf, BufSize));
 end;
 
-//=== TJvAppIniFileStorage =====================================================
-
-procedure TJvAppIniFileStorage.CreateIniFile(Name: string);
-begin
-  if Buffered then
-    FIniFile := TMemIniFile.Create(Name)
-  else
-    FIniFile := TIniFile.Create(Name);
-end;
-
-procedure TJvAppIniFileStorage.DestroyIniFile;
-begin
-  Flush;
-  FreeAndNil(FIniFile);
-end;
-
-procedure TJvAppIniFileStorage.SetBuffered(Value: Boolean);
-begin
-  if Value <> Buffered then
-  begin
-    if Buffered and (IniFile <> nil) then
-      IniFile.UpdateFile;
-    FBuffered := Value;
-    if IniFile <> nil then
-    begin
-      DestroyIniFile;
-      CreateIniFile(FileName.GetFileName);
-    end;
-  end;
-end;
-
-function TJvAppIniFileStorage.GetFileName: TJvAppStorageFileName;
-begin
-  Result := FFileName;
-end;
-
-procedure TJvAppIniFileStorage.SetFileName(Value: TJvAppStorageFileName);
-begin
-end;
-
-procedure TJvAppIniFileStorage.FileNameChanged(Sender: TObject);
-begin
-  DestroyIniFile;
-  CreateIniFile(FileName.GetFileName);
-end;
-
-procedure TJvAppIniFileStorage.EnumFolders(const Path: string; const Strings: TStrings;
+procedure TJvCustomAppIniStorage.EnumFolders(const Path: string; const Strings: TStrings;
   const ReportListAsValue: Boolean);
 var
   RefPath: string;
@@ -397,7 +315,7 @@ begin
   end;
 end;
 
-procedure TJvAppIniFileStorage.EnumValues(const Path: string; const Strings: TStrings;
+procedure TJvCustomAppIniStorage.EnumValues(const Path: string; const Strings: TStrings;
   const ReportListAsValue: Boolean);
 var
   PathIsList: Boolean;
@@ -420,7 +338,7 @@ begin
 end;
 
 
-function TJvAppIniFileStorage.ValueExists(const Section, Key: string): Boolean;
+function TJvCustomAppIniStorage.ValueExists(const Section, Key: string): Boolean;
 begin
   if IniFile <> nil then
     Result := IniFile.ValueExists(Section, Key)
@@ -428,7 +346,7 @@ begin
     Result := False;
 end;
 
-function TJvAppIniFileStorage.ReadValue(const Section, Key: string): string;
+function TJvCustomAppIniStorage.ReadValue(const Section, Key: string): string;
 begin
   if Section = '' then
     raise EJVCLAppStorageError.Create(RsEReadValueFailed);
@@ -438,19 +356,17 @@ begin
     Result := '';
 end;
 
-procedure TJvAppIniFileStorage.WriteValue(const Section, Key, Value: string);
+procedure TJvCustomAppIniStorage.WriteValue(const Section, Key, Value: string);
 begin
   if IniFile <> nil then
   begin
     if Section = '' then
       raise EJVCLAppStorageError.Create(RsEWriteValueFailed);
     IniFile.WriteString(Section, Key, Value);
-    FLastUserAct := GetTickCount;
-    FHasWritten := True;
   end;
 end;
 
-procedure TJvAppIniFileStorage.DeleteSubTreeInt(const Path: string);
+procedure TJvCustomAppIniStorage.DeleteSubTreeInt(const Path: string);
 var
   TopSection: string;
   Sections: TStringList;
@@ -475,40 +391,32 @@ begin
   end;
 end;
 
-procedure TJvAppIniFileStorage.RemoveValue(const Section, Key: string);
+procedure TJvCustomAppIniStorage.RemoveValue(const Section, Key: string);
 begin
   if IniFile <> nil then
   begin
     if IniFile.ValueExists(Section, Key) then
-    begin
-      IniFile.DeleteKey(Section, Key);
-      FLastUserAct := GetTickCount;
-      FHasWritten := True;
-    end
-    else
-    if IniFile.SectionExists(Section + '\' + Key) then
-    begin
+      IniFile.DeleteKey(Section, Key)
+    else if IniFile.SectionExists(Section + '\' + Key) then
       IniFile.EraseSection(Section + '\' + Key);
-      FLastUserAct := GetTickCount;
-      FHasWritten := True;
-    end;
   end;
 end;
 
-constructor TJvAppIniFileStorage.Create(AOwner: TComponent);
+constructor TJvCustomAppIniStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FFileName := TJvAppStorageFileName.Create('ini');
-  FFileName.OnChange := FileNameChanged;
+  FIniFile := TMemIniFile.Create(Name);
 end;
 
-destructor TJvAppIniFileStorage.Destroy;
+destructor TJvCustomAppIniStorage.Destroy;
 begin
-  Flush;
   inherited Destroy;
+  // Has to be done AFTER inherited, see comment in
+  // TJvCustomAppMemoryFileStorage
+  FIniFile.Free;
 end;
 
-function TJvAppIniFileStorage.PathExistsInt(const Path: string): boolean;
+function TJvCustomAppIniStorage.PathExistsInt(const Path: string): boolean;
 var
   Section: string;
   Key: string;
@@ -517,16 +425,7 @@ begin
   Result := IniFile.SectionExists(Section + '\' + Key);
 end;
 
-procedure TJvAppIniFileStorage.Flush;
-begin
-  if Buffered and (IniFile <> nil) and HasWritten then
-  begin
-    IniFile.UpdateFile;
-    FHasWritten := False;
-  end;
-end;
-
-function TJvAppIniFileStorage.IsFolderInt(Path: string; ListIsValue: Boolean): Boolean;
+function TJvCustomAppIniStorage.IsFolderInt(Path: string; ListIsValue: Boolean): Boolean;
 var
   RefPath: string;
   ValueNames: TStrings;
@@ -554,147 +453,47 @@ begin
   end;
 end;
 
-//=== TJvCustomAppIniMemoryStorage ============================================
-
-constructor TJvCustomAppIniMemoryStorage.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FStrings := TStringList.Create;
-  FStrings.OnChange := StringsChanged;
-  FSections := TStringList.Create;
-end;
-
-destructor TJvCustomAppIniMemoryStorage.Destroy;
-begin
-  FreeAndNil(FStrings);
-  FreeAndNil(FSections);
-  inherited Destroy;
-end;
-
-function TJvCustomAppIniMemoryStorage.GetString(Index: Integer): string;
-begin
-  Result := FStrings[Index];
-end;
-
-procedure TJvCustomAppIniMemoryStorage.SetString(Index: Integer; const S: string);
-begin
-  FStrings[Index] := S;
-end;
-
-procedure TJvCustomAppIniMemoryStorage.StringsChanged(Sender: TObject);
-begin
-  if not IsInternalChange then
-    RebuildSections;
-end;
-
-procedure TJvCustomAppIniMemoryStorage.RebuildSections;
+function TJvCustomAppIniStorage.GetAsString: string;
 var
-  I: Integer;
+  tmpList : TStringList;
 begin
-  FSections.Clear;
-  for I := 0 to FStrings.Count - 1 do
-    if Copy(FStrings[I], 1, 1) = cSectionHeaderStart then
-      FSections.AddObject(Copy(FStrings[I], 2, Length(FStrings[I]) - 2), TObject(I));
-  FSections.Sort;
-end;
-
-function TJvCustomAppIniMemoryStorage.LocateSection(const Section: string; var Index: Integer): Boolean;
-begin
-  Result := FSections.Find(Section, Index);
-  if not Result then
-    Index := FStrings.Count
-  else
-    Index := Integer(FSections.Objects[Index]);
-end;
-
-function TJvCustomAppIniMemoryStorage.LocateValue(const Section, Key: string; var Index: Integer): Boolean;
-begin
-  Result := LocateSection(Section, Index) and LocateValueInSection(Key, Index);
-end;
-
-function TJvCustomAppIniMemoryStorage.LocateValueInSection(const Key: string; var Index: Integer): Boolean;
-begin
-  while (Index < FStrings.Count) and not AnsiSameTextShortest(FStrings[Index], Key + cKeyValueSeparator) do
-    Inc(Index);
-  Result := Index < FStrings.Count;
-end;
-
-function TJvCustomAppIniMemoryStorage.ValueExists(const Section, Key: string): Boolean;
-var
-  Idx: Integer;
-begin
-  Result := LocateValue(Section, Key, Idx);
-end;
-
-function TJvCustomAppIniMemoryStorage.ReadValue(const Section, Key: string): string;
-var
-  Idx: Integer;
-begin
-  if LocateValue(Section, Key, Idx) then
-    Result := Copy(FStrings[Idx], Length(Key) + 1, Length(FStrings[Idx]) - Length(Key) - 1)
-  else
-    Result := '';
-end;
-
-procedure TJvCustomAppIniMemoryStorage.WriteValue(const Section, Key, Value: string);
-var
-  SectIdx: Integer;
-  KeyIdx: Integer;
-begin
-  FIsInternalChange := True;
+  tmpList := TStringList.Create;
   try
-    if not LocateSection(Section, SectIdx) then
-    begin
-      SectIdx := FStrings.Add(cSectionHeaderStart + Section + cSectionHeaderEnd);
-      FSections.AddObject(Section, TObject(SectIdx));
-      FSections.Sort;
-    end;
-    KeyIdx := SectIdx + 1;
-    if not LocateValueInSection(Key, KeyIdx) then
-    begin
-      FStrings.Insert(KeyIdx, Key + cKeyValueSeparator + Value);
-      for SectIdx := 0 to FSections.Count - 1 do
-        if Integer(FSections.Objects[SectIdx]) >= KeyIdx then
-          FSections.Objects[SectIdx] := TObject(Integer(FSections.Objects[SectIdx]) + 1);
-    end
-    else
-      FStrings[KeyIdx] := Key + cKeyValueSeparator + Value;
+    IniFile.GetStrings(tmpList);
+    Result := tmpList.Text;
   finally
-    FIsInternalChange := False;
+    tmpList.Free;
   end;
 end;
 
-procedure TJvCustomAppIniMemoryStorage.RemoveValue(const Section, Key: string);
+procedure TJvCustomAppIniStorage.SetAsString(const Value: string);
 var
-  Idx: Integer;
-  DelCount: Integer;
-  SectIdx: Integer;
+  tmpList : TStringList;
 begin
-  FIsInternalChange := True;
+  tmpList := TStringList.Create;
   try
-    DelCount := 0;
-    if LocateValue(Section, Key, Idx) then
-    begin
-      FStrings.Delete(Idx);
-      DelCount := 1;
-    end
-    else
-    if LocateSection(Section + '\' + Key, Idx) then
-    begin
-      if FSections.Find(Section + '\' + Key, SectIdx) then
-        FSections.Delete(SectIdx);
-      repeat
-        FStrings.Delete(Idx);
-        Inc(DelCount);
-      until (Idx > FStrings.Count) or (Copy(FStrings[Idx], 1, 1) = cSectionHeaderStart);
-    end;
-    if DelCount > 0 then
-      for SectIdx := 0 to FSections.Count - 1 do
-        if Integer(FSections.Objects[SectIdx]) > Idx then
-          FSections.Objects[SectIdx] := TObject(Integer(FSections.Objects[SectIdx]) - DelCount);
+    tmpList.Text := Value;
+    IniFile.SetStrings(tmpList);
   finally
-    FIsInternalChange := False;
+    tmpList.Free;
   end;
+end;
+
+{ TJvAppIniFileStorage }
+
+procedure TJvAppIniFileStorage.Flush;
+begin
+  if FullFileName <> '' then
+  begin
+    IniFile.Rename(FullFileName, False);
+    IniFile.UpdateFile;
+  end;
+end;
+
+procedure TJvAppIniFileStorage.Reload;
+begin
+  if FileExists(FullFileName) then
+    IniFile.Rename(FullFileName, True);
 end;
 
 end.

@@ -17,8 +17,9 @@ All Rights Reserved.
 
 Contributor(s):
   Jens Fudickar
+  Olivier Sannier
 
-Last Modified: 2004-01-13
+Last Modified: 2004-01-18
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -93,7 +94,6 @@ type
   TJvCustomAppStorageOptions = class;
   TJvAppSubStorages = class;
   TJvAppSubStorage = class;
-  TJvAppStorageFileName = class;
 
   EJVCLAppStorageError = class(EJVCLException);
 
@@ -562,22 +562,39 @@ type
     property AppStorage: TJvCustomAppStorage read FAppStorage write SeTJvAppStorage;
   end;
 
-  TJvAppStorageFileName = class(TPersistent)
-  private
-    FLocation: TFileLocation;
+  // Base class for all in memory file storage classes.
+  // All descendents implement a file storage, but all changes
+  // are left in memory until the Flush method is called.
+  // Flush is automatically called by the destructor, but
+  // you can override Flush to write the file on a support
+  // different from a disk, such as database record.
+  // Please note that in the derived class, if you use an object
+  // to represent the file in memory, this object MUST be freed
+  // AFTER the call to inherited in the destructor of your
+  // derived class or Flush would access a deleted object
+  TJvCustomAppMemoryFileStorage = class(TJvCustomAppStorage)
+  protected
     FFileName: TFileName;
-    FOnChange: TNotifyEvent;
-  public
-    procedure SetLocation(Value: TFileLocation);
-    procedure SetFileName(Value: TFileName);
-    procedure DoChange;
-    function GetFileName: TFileName;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-  published
-    constructor Create(ADefaultExtension: string);
+    FLocation: TFileLocation;
+    function GetAsString: string; virtual; abstract;
+    procedure SetAsString(const Value: string); virtual; abstract;
 
+    procedure SetFileName(const Value: TFileName);
+    procedure SetLocation(const Value: TFileLocation);
+
+    function GetFullFileName : TFileName;
+
+    property AsString : string read GetAsString write SetAsString;
+    property FileName : TFileName read FFileName write SetFileName;
     property Location: TFileLocation read FLocation write SetLocation default flExeFile;
-    property FileName: TFileName read FFileName write SetFileName;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure Flush; virtual; abstract;
+    procedure Reload; virtual; abstract;
+
+    property FullFileName : TFileName read GetFullFileName;
   end;
 
 // (marcelb) moved back; the constants are useful to the outside world after a call to GetStoredValues
@@ -2092,7 +2109,7 @@ end;
 
 // === TJvAppStorageFileName ===================================================
 
-procedure TJvAppStorageFileName.SetLocation(Value: TFileLocation);
+{procedure TJvAppStorageFileName.SetLocation(Value: TFileLocation);
 begin
   if Location <> Value then
   begin
@@ -2148,6 +2165,66 @@ begin
   inherited Create;
   FLocation := flExeFile;
   FFileName := ChangeFileExt(ExtractFileName(Application.ExeName), '.' + ADefaultExtension);
+end;  }
+
+{ TJvCustomMemoryFileAppStorage }
+
+constructor TJvCustomAppMemoryFileStorage.Create(AOwner: TComponent);
+begin
+  inherited;
+  FLocation := flExeFile;
+end;
+
+destructor TJvCustomAppMemoryFileStorage.Destroy;
+begin
+  Flush;
+  inherited;
+end;
+
+function TJvCustomAppMemoryFileStorage.GetFullFileName: TFileName;
+var
+  NameOnly: string;
+  RelPathName: string;
+begin
+  if FileName = '' then
+    Result := ''
+  else
+  begin
+    NameOnly := ExtractFileName(FileName);
+    if PathIsAbsolute(FileName) then
+      RelPathName := NameOnly
+    else
+      RelPathName := FileName;
+    case Location of
+      flCustom:
+        Result := FileName;
+      flWindows:
+        Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
+      flExeFile:
+        Result := PathAddSeparator(ExtractFilePath(Application.ExeName)) + NameOnly;
+      flUserFolder:
+        Result := PathAddSeparator(GetAppdataFolder) + RelPathName;
+    end;
+  end;
+end;
+
+procedure TJvCustomAppMemoryFileStorage.SetFileName(const Value: TFileName);
+begin
+  if FFileName <> Value then
+  begin
+    FFileName := Value;
+    Reload;
+  end;
+end;
+
+procedure TJvCustomAppMemoryFileStorage.SetLocation(
+  const Value: TFileLocation);
+begin
+  if FLocation <> Value then
+  begin
+    FLocation := Value;
+    Reload;
+  end;
 end;
 
 end.
