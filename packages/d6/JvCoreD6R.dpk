@@ -48,6 +48,8 @@ contains
   JvActnResForm in '..\..\design\JvActnResForm.pas' {JvStandardActions: TDataModule},
   JvDataProvider in '..\..\run\JvDataProvider.pas',
   JvDataProviderImpl in '..\..\run\JvDataProviderImpl.pas',
-  JvContextProvider in '..\..\run\JvContextProvider.pas';
+  JvContextProvider in '..\..\run\JvContextProvider.pas',
+  JvAppStore in '..\..\run\JvAppStore.pas',
+  JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas';
 
 end.
