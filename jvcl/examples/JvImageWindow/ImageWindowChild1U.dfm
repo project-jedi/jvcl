@@ -21,80 +21,72 @@ object ImageWindowChild1: TImageWindowChild1
   object ImageBox1: TJvImageSquare
     Left = 1
     Top = 2
-    BackColor = clInactiveCaption
-    ImageList = ImageList1
-    Text = 'Blue down arrow'
-    OnEnter = ImageBox1Enter
+    Images = ImageList1
+    Text = 'Cut'
+    OnMouseEnter = ImageBox1MouseEnter
     OnClick = ImageBox1Click
   end
   object ImageBox2: TJvImageSquare
     Left = 37
     Top = 2
-    BackColor = clInactiveCaption
-    ImageList = ImageList1
+    Images = ImageList1
     ImageIndex = 1
-    Text = 'Red down arrow'
-    OnEnter = ImageBox1Enter
+    Text = 'Copy'
+    OnMouseEnter = ImageBox1MouseEnter
     OnClick = ImageBox1Click
   end
   object ImageBox3: TJvImageSquare
     Left = 73
     Top = 2
-    BackColor = clInactiveCaption
-    ImageList = ImageList1
+    Images = ImageList1
     ImageIndex = 2
-    Text = 'Back gold'
-    OnEnter = ImageBox1Enter
+    Text = 'Paste'
+    OnMouseEnter = ImageBox1MouseEnter
     OnClick = ImageBox1Click
   end
   object ImageBox4: TJvImageSquare
     Left = 109
     Top = 2
-    BackColor = clInactiveCaption
-    ImageList = ImageList1
+    Images = ImageList1
     ImageIndex = 3
-    Text = 'Checked doc'
-    OnEnter = ImageBox1Enter
+    Text = 'Undo'
+    OnMouseEnter = ImageBox1MouseEnter
     OnClick = ImageBox1Click
   end
   object ImageBox5: TJvImageSquare
     Left = 1
     Top = 38
-    BackColor = clInactiveCaption
-    ImageList = ImageList1
+    Images = ImageList1
     ImageIndex = 4
-    Text = 'Crossed red'
-    OnEnter = ImageBox1Enter
+    Text = 'Redo'
+    OnMouseEnter = ImageBox1MouseEnter
     OnClick = ImageBox1Click
   end
   object ImageBox6: TJvImageSquare
     Left = 37
     Top = 38
-    BackColor = clInactiveCaption
-    ImageList = ImageList1
+    Images = ImageList1
     ImageIndex = 5
-    Text = 'Update docs'
-    OnEnter = ImageBox1Enter
+    Text = 'Delete'
+    OnMouseEnter = ImageBox1MouseEnter
     OnClick = ImageBox1Click
   end
   object ImageBox7: TJvImageSquare
     Left = 73
     Top = 38
-    BackColor = clInactiveCaption
-    ImageList = ImageList1
+    Images = ImageList1
     ImageIndex = 6
-    Text = 'Forward gold'
-    OnEnter = ImageBox1Enter
+    Text = 'New'
+    OnMouseEnter = ImageBox1MouseEnter
     OnClick = ImageBox1Click
   end
   object ImageBox8: TJvImageSquare
     Left = 109
     Top = 38
-    BackColor = clInactiveCaption
-    ImageList = ImageList1
+    Images = ImageList1
     ImageIndex = 7
-    Text = 'Synchronize'
-    OnEnter = ImageBox1Enter
+    Text = 'Open'
+    OnMouseEnter = ImageBox1MouseEnter
     OnClick = ImageBox1Click
   end
   object Panel1: TPanel
@@ -111,8 +103,8 @@ object ImageWindowChild1: TImageWindowChild1
     Height = 24
     ShareImages = True
     Width = 24
-    Left = 48
-    Top = 80
+    Left = 72
+    Top = 74
     Bitmap = {
       494C01010F001300040018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000060000000780000000100100000000000005A
