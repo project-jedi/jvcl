@@ -84,17 +84,17 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-    function GetReadOnly: Boolean;
     function GetTextMargins: TPoint;
     procedure ResetMaxLength;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetFocused(Value: Boolean);
-    procedure SetReadOnly(Value: Boolean);
     procedure UpdateData(Sender: TObject);
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
+    function GetReadOnly: Boolean; override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure DoClipboardCut; override;

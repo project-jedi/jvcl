@@ -116,7 +116,7 @@ type
     FArrangeSettings: TJvArrangeSettings;
     FParentControl: TWinControl;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
     function GetParentControl : TWinControl;
   public

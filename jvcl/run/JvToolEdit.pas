@@ -206,7 +206,9 @@ type
     procedure SetImages(const Value: TCustomImageList);
     procedure SetNumGlyphs(const Value: TNumGlyphs);
     procedure SetShowButton(const Value: Boolean);
+    {$IFDEF COMPILER6_UP}
     procedure UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
+    {$ENDIF COMPILER6_UP}
     { (rb) renamed from UpdateEdit }
     procedure UpdateGroup; // RDB
 
@@ -2793,6 +2795,7 @@ begin
   TJvPopupWindow(FPopup).Show(Origin);
 end;
 
+{$IFDEF COMPILER6_UP}
 procedure TJvCustomComboEdit.UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
 var
   BtnRect: TRect;
@@ -2843,6 +2846,7 @@ begin
   NewWidth := BtnRect.Right - BtnRect.Left;
   NewHeight := BtnRect.Bottom - BtnRect.Top;
 end;
+{$ENDIF COMPILER6_UP}
 
 procedure TJvCustomComboEdit.UpdateControls;
 begin
