@@ -756,7 +756,7 @@ end;
 
 procedure TJvDynControlCxDBButtonEdit.ControlSetOnButtonClick(Value: TNotifyEvent);
 begin
-  FIntOnButtonClick := Value;;
+  FIntOnButtonClick := Value;
 end;
 
 procedure TJvDynControlCxDBButtonEdit.ControlSetButtonCaption(const Value: string);
@@ -1221,6 +1221,9 @@ end;
 
 procedure TJvDynControlCxDBMemo.ControlSetDefaultProperties;
 begin
+  Properties.ScrollBars := ssBoth;
+  Properties.WantReturns := True;
+  Properties.WantTabs := True;
 end;
 
 procedure TJvDynControlCxDBMemo.ControlSetReadOnly(Value: Boolean);
@@ -2338,11 +2341,21 @@ begin
       (TcxGridColumn(AGridItem).GroupIndex >= 0) or
       ShowInvisibleFields then
     begin
-      if AGridItem.PropertiesClass = TcxMemoProperties then
-        Control := TWinControl(CreateDBControl(jctDBMemo, AControl, AControl, '', ADataSource, GridDataBinding.Field.FieldName))
-      else
-      if AGridItem.PropertiesClass = TcxCheckBoxProperties then
-        Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', ADataSource, GridDataBinding.Field.FieldName))
+      if aGridItem.PropertiesClass = TcxMemoProperties then
+      begin
+        Control := TWinControl(CreateDBControl(jctDBMemo, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName));
+        if Supports(Control, IJvDynControlMemo) and Assigned(TcxGridColumn(aGridItem).Properties) then
+          with Control as IJvDynControlMemo do
+          begin
+            ControlSetScrollbars(TcxMemoProperties(TcxGridColumn(aGridItem).Properties).Scrollbars);
+            ControlSetWantReturns(TcxMemoProperties(TcxGridColumn(aGridItem).Properties).WantReturns);
+            ControlSetWantTabs(TcxMemoProperties(TcxGridColumn(aGridItem).Properties).WantTabs);
+            ControlSetWordwrap(TcxMemoProperties(TcxGridColumn(aGridItem).Properties).WordWrap);
+          end;
+      end
+      else 
+      if aGridItem.PropertiesClass = TcxCheckBoxProperties then
+        Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName))
       else
         Control := CreateDBFieldControl(GridDataBinding.Field, AControl, AControl, '', ADataSource);
       if FieldDefaultWidth > 0 then
@@ -2357,7 +2370,8 @@ begin
         if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
           Control.Width := FieldMinWidth
       end;
-      if Supports(Control, IJvDynControlReadOnly) then
+      if Supports(Control, IJvDynControlReadOnly) and 
+        Assigned(TcxGridColumn(aGridItem).Properties) then
         with Control as IJvDynControlReadOnly do
           ControlSetReadOnly(TcxGridColumn(AGridItem).Properties.ReadOnly);
 
