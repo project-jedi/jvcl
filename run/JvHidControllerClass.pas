@@ -39,7 +39,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.26';
+  cHidControllerClassVersion = '1.0.27';
 
   // strings from the registry for CheckOutByClass
   cHidNoClass = 'HIDClass';
@@ -639,13 +639,13 @@ function TJvHidPnPInfo.GetRegistryPropertyString(PnPHandle: HDEVINFO;
 var
   BytesReturned: DWORD;
   RegDataType: DWORD;
-  Buffer: array [0..256] of Char;
+  Buffer: array [0..1023] of Char;
 begin
   BytesReturned := 0;
   RegDataType := 0;
   Buffer[0] := #0;
-  SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
-    RegDataType, PBYTE(@Buffer[0]), SizeOf(Buffer), BytesReturned);
+  SetupDiGetDeviceRegistryPropertyA(PnPHandle, DevData, Prop,
+    RegDataType, PByte(@Buffer[0]), SizeOf(Buffer), BytesReturned);
   Result := Buffer;
 end;
 
@@ -660,7 +660,7 @@ begin
   BytesReturned := 0;
   RegDataType := 0;
   Buffer[0] := #0;
-  SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
+  SetupDiGetDeviceRegistryPropertyA(PnPHandle, DevData, Prop,
     RegDataType, PBYTE(@Buffer[0]), SizeOf(Buffer), BytesReturned);
   Result := TStringList.Create;
   P := @Buffer[0];
@@ -1653,7 +1653,7 @@ var
     PnPHandle: HDEVINFO;
     DevData: TSPDevInfoData;
     DeviceInterfaceData: TSPDeviceInterfaceData;
-    FunctionClassDeviceData: PSPDeviceInterfaceDetailData;
+    FunctionClassDeviceData: PSPDeviceInterfaceDetailDataA;
     Success: LongBool;
     Devn: Integer;
     BytesReturned: DWORD;
@@ -1676,12 +1676,12 @@ var
       begin
         DevData.cbSize := SizeOf(DevData);
         BytesReturned := 0;
-        SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData, nil, 0, BytesReturned, @DevData);
+        SetupDiGetDeviceInterfaceDetailA(PnPHandle, @DeviceInterfaceData, nil, 0, BytesReturned, @DevData);
         if (BytesReturned <> 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
         begin
           FunctionClassDeviceData := AllocMem(BytesReturned);
-          FunctionClassDeviceData.cbSize := 5;
-          if SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData,
+          FunctionClassDeviceData^.cbSize := SizeOf(TSPDeviceInterfaceDetailDataA);
+          if SetupDiGetDeviceInterfaceDetailA(PnPHandle, @DeviceInterfaceData,
             FunctionClassDeviceData, BytesReturned, BytesReturned, @DevData) then
           begin
             // fill in PnPInfo of device

@@ -79,7 +79,7 @@ begin
   if idNoForeground in Style then
     Sty := Sty or IDF_NOFOREGROUND;
 
-  case SetupRenameError(OwnerWindow, PCharOrNil(Title), PChar(FSourceFile),
+  case SetupRenameErrorA(OwnerWindow, PCharOrNil(Title), PChar(FSourceFile),
     PChar(FDestFile), FWin32ErrorCode, Sty) of
     DPROMPT_SUCCESS:
       Result := dsSuccess;

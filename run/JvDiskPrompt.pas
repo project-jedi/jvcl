@@ -80,7 +80,7 @@ var
   Required: DWORD;
   Res: array [0..255] of Char;
 begin
-  case SetupPromptForDisk(OwnerWindow, Pointer(Title), Pointer(DiskName),
+  case SetupPromptForDiskA(OwnerWindow, Pointer(Title), Pointer(DiskName),
       Pointer(PathToSource), PChar(FileSought), Pointer(TagFile),
       JvDiskStylesToDWORD(Style), Res, SizeOf(Res), Required) of
     DPROMPT_SUCCESS:
