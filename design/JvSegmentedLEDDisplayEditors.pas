@@ -36,6 +36,9 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  {$IFDEF VisualCLX}
+  JvQDsgnEditors,
+  {$ENDIF VisualCLX}
   JvSegmentedLEDDisplay;
 
 type
