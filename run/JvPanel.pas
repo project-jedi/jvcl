@@ -99,7 +99,7 @@ type
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
 {$IFDEF JVCLThemesEnabledD56}
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default False;
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
 {$ENDIF}
   end;
 
@@ -111,6 +111,7 @@ uses
 constructor TJvPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
   FHintColor := clInfoBk;
   FOver := False;
   FTransparent := False;
@@ -122,7 +123,6 @@ end;
 procedure TJvPanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  ControlStyle := ControlStyle + [csOpaque];
   if Transparent then
   begin
     Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
@@ -133,7 +133,6 @@ begin
     Params.ExStyle := Params.ExStyle and not WS_EX_TRANSPARENT;
     ControlStyle := ControlStyle + [csOpaque];
   end;
-  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
