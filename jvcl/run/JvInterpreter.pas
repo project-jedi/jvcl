@@ -1079,8 +1079,6 @@ uses
   {$ENDIF JvInterpreter_OLEAUTO}
   JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources, JvTypes;
 
-{$R ..\Resources\JvInterpreter.res} { error messages }
-
 { internal structures }
 type
   { Adapter classes - translates data from JvInterpreter calls to Delphi functions }

@@ -141,7 +141,7 @@ implementation
 
 uses
   TypInfo,
-  JvInterpreterConst, JvResources, JvTypes, JvJCLUtils;
+  JvResources, JvTypes, JvJCLUtils;
 
 function LoadTextFile(const FileName: TFileName): string;
 begin

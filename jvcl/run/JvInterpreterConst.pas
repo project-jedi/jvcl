@@ -32,6 +32,9 @@ unit JvInterpreterConst;
 
 interface
 
+uses
+  JvResources;
+
 const
   {JvInterpreterParser}
   StIdSymbols = ['_', '0'..'9', 'A'..'Z', 'a'..'z'];
@@ -44,70 +47,69 @@ type
   {JvInterpreter Error Descriptions}
   TJvInterpreterErrorsDescr = record
     ID: Integer;
-    // (rom) changed to PChar to get rid of the hidden initialization section
-    Description: PChar;
+    Description: string;
   end;
 
 // (rom) need to be made resourcestrings
 
 const
   JvInterpreterErrors: array [0..48] of TJvInterpreterErrorsDescr =
-    ((ID: 0; Description: 'Ok'),
-     (ID: 1; Description: 'Unknown error'),
-     (ID: 2; Description: 'Internal interpreter error: %s'),
-     (ID: 3; Description: 'User break'),
-     (ID: 4; Description: 'Re-raising an exception only allowed in exception handler'),
-     (ID: 5; Description: 'Error in unit ''%s'' on line %d : %s'),
-     (ID: 6; Description: 'External error in unit ''%s'' on line %d : %s'),
-     (ID: 7; Description: 'Access denied to ''%s'''),
-     (ID: 8; Description: 'Expression is too complex - overflow'),
-     (ID: 31; Description: 'Record ''%s'' not defined'),
+    ((ID: 0; Description: RsEInterpreter0),
+     (ID: 1; Description: RsEInterpreter1),
+     (ID: 2; Description: RsEInterpreter2),
+     (ID: 3; Description: RsEInterpreter3),
+     (ID: 4; Description: RsEInterpreter4),
+     (ID: 5; Description: RsEInterpreter5),
+     (ID: 6; Description: RsEInterpreter6),
+     (ID: 7; Description: RsEInterpreter7),
+     (ID: 8; Description: RsEInterpreter8),
+     (ID: 31; Description: RsEInterpreter31),
 
-     (ID: 52; Description: 'Stack overflow'),
-     (ID: 53; Description: 'Type mismatch'),
-     (ID: 55; Description: 'Function ''main'' undefined'),
-     (ID: 56; Description: 'Unit ''%s'' not found'),
-     (ID: 57; Description: 'Event ''%s'' not registered'),
-     (ID: 58; Description: 'DFM ''%s'' not found'),
+     (ID: 52; Description: RsEInterpreter52),
+     (ID: 53; Description: RsEInterpreter53),
+     (ID: 55; Description: RsEInterpreter55),
+     (ID: 56; Description: RsEInterpreter56),
+     (ID: 57; Description: RsEInterpreter57),
+     (ID: 58; Description: RsEInterpreter58),
 
-     (ID: 101; Description: 'Error in remark'), // (rom) in comment?
-     (ID: 103; Description: '%s expected but %s found'),
-     (ID: 104; Description: 'Undeclared Identifier ''%s'''),
-     (ID: 105; Description: 'Type of expression must be boolean'),
-     (ID: 106; Description: 'Class type required'),
-     (ID: 107; Description: ' not allowed before else'),
-     (ID: 108; Description: 'Type of expression must be integer'),
-     (ID: 109; Description: 'Record, object or class type required'),
-     (ID: 110; Description: 'Missing operator or semicolon'),
-     (ID: 111; Description: 'Identifier redeclared: ''%s'''),
+     (ID: 101; Description: RsEInterpreter101),
+     (ID: 103; Description: RsEInterpreter103),
+     (ID: 104; Description: RsEInterpreter104),
+     (ID: 105; Description: RsEInterpreter105),
+     (ID: 106; Description: RsEInterpreter106),
+     (ID: 107; Description: RsEInterpreter107),
+     (ID: 108; Description: RsEInterpreter108),
+     (ID: 109; Description: RsEInterpreter109),
+     (ID: 110; Description: RsEInterpreter110),
+     (ID: 111; Description: RsEInterpreter111),
 
-     (ID: 171; Description: 'Array index out of bounds'),
-     (ID: 172; Description: 'Too many array bounds'),
-     (ID: 173; Description: 'Not enough array bounds'),
-     (ID: 174; Description: 'Invalid array dimension'),
-     (ID: 175; Description: 'Invalid array range'),
-     (ID: 176; Description: 'Array type required'),
+     (ID: 171; Description: RsEInterpreter171),
+     (ID: 172; Description: RsEInterpreter172),
+     (ID: 173; Description: RsEInterpreter173),
+     (ID: 174; Description: RsEInterpreter174),
+     (ID: 175; Description: RsEInterpreter175),
+     (ID: 176; Description: RsEInterpreter176),
 
-     (ID: 181; Description: 'Too many actual parameters'),
-     (ID: 182; Description: 'Not enough parameters'),
-     (ID: 183; Description: 'Incompatible types: ''%s'' and ''%s'''),
-     (ID: 184; Description: 'Error loading library ''%s'''),
-     (ID: 185; Description: 'Invalid type of argument in call to function ''%s'''),
-     (ID: 186; Description: 'Invalid type of result in call to function ''%s'''),
-     (ID: 187; Description: 'Can''t get proc address for function ''%s'''),
-     (ID: 188; Description: 'Invalid type of argument in call to function ''%s'''),
-     (ID: 189; Description: 'Invalid type of result in call to function ''%s'''),
-     (ID: 190; Description: 'Invalid calling convention for function ''%s'''),
+     (ID: 181; Description: RsEInterpreter181),
+     (ID: 182; Description: RsEInterpreter182),
+     (ID: 183; Description: RsEInterpreter183),
+     (ID: 184; Description: RsEInterpreter184),
+     (ID: 185; Description: RsEInterpreter185),
+     (ID: 186; Description: RsEInterpreter186),
+     (ID: 187; Description: RsEInterpreter187),
+     (ID: 188; Description: RsEInterpreter188),
+     (ID: 189; Description: RsEInterpreter189),
+     (ID: 190; Description: RsEInterpreter190),
 
-     (ID: 201; Description: 'Calling ''%s'' failed: ''%s'''),
+     (ID: 201; Description: RsEInterpreter201),
 
-     (ID: 301; Description: 'Expression'),
-     (ID: 302; Description: 'Identifier'),
-     (ID: 303; Description: 'Declaration'),
-     (ID: 304; Description: 'End of File'),
-     (ID: 305; Description: 'Class declaration'),
+     (ID: 301; Description: RsEInterpreter301),
+     (ID: 302; Description: RsEInterpreter302),
+     (ID: 303; Description: RsEInterpreter303),
+     (ID: 304; Description: RsEInterpreter304),
+     (ID: 305; Description: RsEInterpreter305),
 
-     (ID: 401; Description: 'Implementation of unit not found'));
+     (ID: 401; Description: RsEInterpreter401));
 
 implementation
 
