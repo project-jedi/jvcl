@@ -3,9 +3,9 @@ unit ModelsForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, JvToolEdit, Mask, Grids, JvStringGrid,
-  JvSimpleXml;
+  JvSimpleXml, JvExGrids, JvExMask;
 
 type
   TfrmModels = class(TForm)

@@ -1,3 +1,4 @@
+{$I jvcl.inc}
 unit MainForm;
 
 interface
@@ -227,6 +228,7 @@ begin
     ColWidths[2] := 170;
     ColWidths[3] := 70;
   end;
+  jtbMenus.AutoSize := true;
 end;
 
 procedure TfrmMain.jsgDependenciesGetCellAlignment(Sender: TJvStringGrid;
@@ -876,7 +878,7 @@ end;
 
 procedure TfrmMain.actOptionsExecute(Sender: TObject);
 begin
-  pnlOptions.Visible := actOptions.Checked;
+  pnlOptions.Visible := not pnlOptions.Visible;
 end;
 
 procedure TfrmMain.actOptionsUpdate(Sender: TObject);

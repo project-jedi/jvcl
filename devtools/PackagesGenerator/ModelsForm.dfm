@@ -14,9 +14,6 @@ object frmModels: TfrmModels
   OldCreateOrder = False
   Position = poMainFormCenter
   OnShow = FormShow
-  DesignSize = (
-    525
-    473)
   PixelsPerInch = 96
   TextHeight = 13
   object lblSelectModel: TLabel
@@ -40,7 +37,7 @@ object frmModels: TfrmModels
     TabOrder = 0
     OnClick = btnOkClick
     Glyph.Data = {
-      42060000424D4206000000000000360400002800000020000000100000000100
+      42060000424D4206000000000000000000002800000020000000100000000100
       0800010000000C020000F00A0000F00A00000001000000010000006F00000F6F
       0F000070000002790200027B0200057E0500077C07000A7E0A000D7F0D001674
       1600137D130017791700197719001A761A00187818001E7A1E001D7F1D00217E
@@ -104,7 +101,7 @@ object frmModels: TfrmModels
     ModalResult = 2
     TabOrder = 1
     Glyph.Data = {
-      1E060000424D1E06000000000000360400002800000020000000100000000100
+      1E060000424D1E06000000000000000000002800000020000000100000000100
       080001000000E8010000F00A0000F00A00000001000000010000434547004747
       470046484900474849004848480048484900494949004A4A4B004B4C4C004B4D
       4F004D4E4E004F4F4F004141500042405D004F5050004E5253004F5254005051
@@ -174,9 +171,6 @@ object frmModels: TfrmModels
     Anchors = [akLeft, akTop, akBottom]
     Caption = ' Properties '
     TabOrder = 3
-    DesignSize = (
-      509
-      383)
     object lblName: TLabel
       Left = 160
       Top = 24
@@ -267,7 +261,6 @@ object frmModels: TfrmModels
       AddQuotes = False
       DialogOptions = []
       ButtonFlat = False
-      NumGlyphs = 1
       TabOrder = 3
     end
     object jdePackages: TJvDirectoryEdit
@@ -276,7 +269,6 @@ object frmModels: TfrmModels
       Width = 150
       Height = 21
       ButtonFlat = False
-      NumGlyphs = 1
       TabOrder = 4
     end
     object stgTargets: TJvStringGrid
