@@ -41,7 +41,7 @@ uses
   {$IFDEF VisualCLX}
   Types, QWindows, QTypes, QGraphics, QControls, QExtCtrls,
   {$ENDIF VisualCLX}
-  JvComponent, JvThemes, JvExControls;
+  JvComponent, JvThemes, JvJCLUtils, JvExControls;
 
 type
   TJvPanelItemClickEvent = procedure(Sender: TObject; ItemIndex: Integer) of object;
@@ -170,7 +170,9 @@ constructor TJvItemsPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csSetCaption];
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
+  {$ENDIF VCL}
   BevelInner := bvNone;
   BevelOuter := bvNone;
   FItemHeight := 16;

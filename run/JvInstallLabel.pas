@@ -35,7 +35,13 @@ unit JvInstallLabel;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, ImgList,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls, ImgList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QImgList, Types, Qt, QWindows,
+  {$ENDIF}
   JvComponent;
 
 type
@@ -84,7 +90,9 @@ type
     property ParentFont;
     property TextOffset: Integer read FTextOffset write SetTextOffset default 24;
     property ImageOffset: Integer read FImageOffset write SetImageOffset default 2;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF VCL}
     property DragMode;
     property PopupMenu;
     property OnClick;
@@ -112,7 +120,9 @@ type
 constructor TJvInstallLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
   FLines := TStringList.Create;
   FStyles := TList.Create;
   FImageChangeLink := TChangeLink.Create;
@@ -250,7 +260,12 @@ procedure TJvInstallLabel.Paint;
 var
   Tmp, H, W, I: Integer;
   aRect: TRect;
+  {$IFDEF VCL}
   aHandle: THandle;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  aHandle: QPainterH;
+  {$ENDIF VisualCLX}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -268,8 +283,12 @@ begin
   UpdateStyles;
   Canvas.Font := Font;
   aHandle := Canvas.Handle;
+  {$IFDEF VCL}
   SetBkMode(aHandle, Windows.Transparent);
-
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SetBkMode(aHandle, QWindows.Transparent);
+  {$ENDIF VisualCLX}
   H := CanvasMaxTextHeight(Canvas);
   for I := 0 to Lines.Count - 1 do
   begin

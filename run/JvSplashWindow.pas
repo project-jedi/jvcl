@@ -30,7 +30,13 @@ unit JvSplashWindow;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows,
+  {$ENDIF VisualCLX}
   JvAnimatedImage;
 
 type
@@ -40,7 +46,9 @@ type
     function GetMessageText: string;
     procedure SetMessageText(const Value: string);
   protected
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
   public
     Image: TImage;
     Animation: TJvAnimatedImage;
@@ -78,7 +86,12 @@ begin
   with Result do
   begin
     BorderIcons := [];
+    {$IFDEF VCL}
     BorderStyle := bsNone;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BorderStyle := fbsNone;
+    {$ENDIF VisualCLX}
     if SplashStayOnTop then
       FormStyle := fsStayOnTop
     else
@@ -86,12 +99,20 @@ begin
     ClientHeight := defSplashHeight;
     ClientWidth := defImageLeft + defTextRight + 32;
     Enabled := False;
+    {$IFDEF MSWINDOWS}
     Font.Height := -11;
     Font.Name := 'MS Sans Serif';
-    Font.Style := [];
-    Font.Color := clWindowText;
     PixelsPerInch := 96;
     Scaled := True;
+    {$ENDIF MSWINDOWS}
+    {$IFDEF VCL}
+    Font.Height := 11;
+    Font.Name := 'Helvetica';
+    PixelsPerInch := 96;
+    Scaled := False;
+    {$ENDIF VCL}
+    Font.Style := [];
+    Font.Color := clWindowText;
 
     Image := TImage.Create(Result);
     Image.Parent := Result;
@@ -118,7 +139,9 @@ begin
     Animation.Width := 32;
     Animation.Height := 32;
     Animation.Active := False;
+    {$IFDEF VCL}
     Animation.AutoSize := False;
+    {$ENDIF VCL}
     Animation.Stretch := True;
     Animation.Visible := False;
   end;
@@ -153,11 +176,13 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvSplashWindow.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or WS_DLGFRAME;
 end;
+{$ENDIF VCL}
 
 function TJvSplashWindow.GetMessageText: string;
 begin

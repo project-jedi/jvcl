@@ -56,8 +56,8 @@ type
     FOnClick: TButtonClick;
     FOnDblClick: TButtonClick;
     FButtonPointer: TSpeedButton;
-  {  FButtonLeft: TSpeedButton;
-    FButtonRight: TSpeedButton; }
+//    FButtonLeft: TSpeedButton;
+//    FButtonRight: TSpeedButton;
     FButtonLeft: TJvNoFrameButton;
     FButtonRight: TJvNoFrameButton;
     FFirstVisible: Integer;
@@ -75,10 +75,10 @@ type
     {$IFDEF VCL}
     procedure WMSetText(var Msg: TWMSetText); message WM_SETTEXT;
     {$ENDIF VCL}
+  protected
     {$IFDEF VisualCLX}
     procedure SetText(const Value: TCaption); override;
     {$ENDIF VisualCLX}
-  protected
     procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -98,9 +98,9 @@ type
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 28;
     property ButtonCount: Integer read GetButtonCount write SetButtonCount default 0;
     property Anchors;
-    property AutoSize;
     property Constraints;
     {$IFDEF VCL}
+    property AutoSize;
     property BiDiMode;
     property UseDockManager default True;
     property DockSite;
@@ -112,8 +112,8 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF VCL}
     property OnCanResize;
+    {$ENDIF VCL}
     property OnConstrainedResize;
   end;
 
@@ -134,8 +134,8 @@ begin
   FFirstVisible := 0;
   FButtonWidth := 28;
   FButtonHeight := 28;
- { FButtonLeft    := TSpeedButton.Create(Self);
-  FButtonRight   := TSpeedButton.Create(Self); }
+//  FButtonLeft    := TSpeedButton.Create(Self);
+//  FButtonRight   := TSpeedButton.Create(Self);
   FButtonLeft := TJvNoFrameButton.Create(Self);
   FButtonRight := TJvNoFrameButton.Create(Self);
   FButtonPointer := TSpeedButton.Create(Self);

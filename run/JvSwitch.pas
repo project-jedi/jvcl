@@ -30,7 +30,13 @@ unit JvSwitch;
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Menus,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Menus,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QMenus, QWindows,
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -68,9 +74,11 @@ type
       const KeyText: WideString): Boolean; override;
     procedure TextChanged; override;
     procedure EnabledChanged; override;
-    procedure CreateParams(var Params: TCreateParams); override;
     procedure DefineProperties(Filer: TFiler); override;
+    {$IFDEF VCL}
+    procedure CreateParams(var Params: TCreateParams); override;
     function GetPalette: HPALETTE; override;
+    {$ENDIF VCL}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -90,8 +98,13 @@ type
     property Caption;
     property Color;
     property Cursor;
-    property DragMode;
+    {$IFDEF VCL}
     property DragCursor;
+    property DragKind;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
+    property DragMode;
     property Enabled;
     property Font;
     property GlyphOff: TBitmap index 0 read GetSwitchGlyph write SetSwitchGlyph stored StoreBitmap;
@@ -109,7 +122,6 @@ type
     property TextPosition: TTextPos read FTextPosition write SetTextPosition default tpNone;
     property Anchors;
     property Constraints;
-    property DragKind;
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -126,8 +138,6 @@ type
     property OnEndDrag;
     property OnStartDrag;
     property OnContextPopup;
-    property OnEndDock;
-    property OnStartDock;
     property OnOn: TNotifyEvent read FOnOn write FOnOn;
     property OnOff: TNotifyEvent read FOnOff write FOnOff;
   end;
@@ -137,12 +147,19 @@ implementation
 uses
   JvJVCLUtils, JvThemes;
 
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSwitch.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvSwitch.res}
+{$ENDIF LINUX}
 
 const
   ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON');
+  {$IFDEF VCL}
   BorderStyles: array [TBorderStyle] of Longint = (0, WS_BORDER);
-
+  {$ENDIF VCL}
+  
 constructor TJvSwitch.Create(AOwner: TComponent);
 var
   I: Boolean;
@@ -181,6 +198,7 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF VCL}
 procedure TJvSwitch.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -190,6 +208,7 @@ begin
     Style := Style or Longword(BorderStyles[FBorderStyle]);
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvSwitch.DefineProperties(Filer: TFiler);
 
@@ -206,6 +225,7 @@ begin
   Filer.DefineBinaryProperty('Data', ReadBinaryData, WriteBinaryData,DoWrite);
 end;
 
+{$IFDEF VCL}
 function TJvSwitch.GetPalette: HPALETTE;
 begin
   if Enabled then
@@ -213,6 +233,7 @@ begin
   else
     Result := 0;
 end;
+{$ENDIF VCL}
 
 procedure TJvSwitch.ReadBinaryData(Stream: TStream);
 begin
@@ -262,7 +283,12 @@ begin
   end
   else
   begin
+    {$IFDEF VCL}
     FBitmaps[Index <> 0].Handle := LoadBitmap(HInstance, ResName[Index <> 0]);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FBitmaps[Index <> 0].LoadFromResourceName(HInstance, ResName[Index <> 0]);
+    {$ENDIF VisualCLX}
     Exclude(FUserBitmaps, Index <> 0);
   end;
 end;
@@ -429,7 +455,12 @@ begin
   if FBorderStyle <> Value then
   begin
     FBorderStyle := Value;
+    {$IFDEF VCL}
     RecreateWnd;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    RecreateWidget;
+    {$ENDIF VisualCLX}
   end;
 end;
 
