@@ -1,9 +1,11 @@
 ##Package: Custom
-##Status: Incomplete (peter3)
+##Status: Complete (peter3), Review
 ##Skip: ViewerDrawText
 ##Skip: TJvViewerItem.Owner
 ##Skip: TJvCustomItemViewerOptions.Owner
 ##Skip: TJvViewerDrawStage
+##Skip: TJvViewerAdvancedDrawEvent
+##Skip: TJvViewerAdvancedItemDrawEvent
 ----------------------------------------------------------------------------------------------------
 @@JvCustomItemViewer.pas
 Summary
@@ -854,39 +856,35 @@ Description
 @@TJvViewerAdvancedDrawEvent
 <TITLE TJvViewerAdvancedDrawEvent type>
 Summary
-  Write here a summary (1 line)
+  Event type for advanced drawing. 
 Description
-  This type is used by (for reference):
-    Nothing in this unit.
+  Not used at the moment.  
 Parameters
-  Sender      - Description for this parameter
-  Stage       - Description for this parameter
-  Canvas      - Description for this parameter
-  R           - Description for this parameter
-  DefaultDraw - Description for this parameter
+  Sender      - The control that triggered the event.
+  Stage       - The current draw stage.
+  Canvas      - The canvas to draw on. You can modify the properties of anvs (like Color and FOnt) to affect the default drawing.
+  R           - The rect area to draw in.
+  DefaultDraw - Set this to true to have th econtrol perform default drawing.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvViewerAdvancedItemDrawEvent
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerAdvancedItemDrawEvent
 <TITLE TJvViewerAdvancedItemDrawEvent type>
 Summary
-  Write here a summary (1 line)
+  Event type for advanced item drawing. 
 Description
-  This type is used by (for reference):
-    Nothing in this unit.
+  Not used at the moment.  
 Parameters
-  Sender      - Description for this parameter
-  Stage       - Description for this parameter
-  Index       - Description for this parameter
-  State       - Description for this parameter
-  Canvas      - Description for this parameter
-  ItemRect    - Description for this parameter
-  TextRect    - Description for this parameter
-  DefaultDraw - Description for this parameter
+  Sender      - The control that triggered the event.
+  Stage       - The current draw stage.
+  Index       - Index of the item to draw.
+  State       - The items state.
+  Canvas      - The canvas to draw on. You can modify the properties of anvs (like Color and FOnt) to affect the default drawing.
+  ItemRect    - The rect area of the item excluding the text area.
+  TextRect    - The text area of the control.
+  DefaultDraw - Set this to true to have th econtrol perform default drawing.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvViewerAdvancedDrawEvent
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItem
 Summary

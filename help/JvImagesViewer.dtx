@@ -1,5 +1,6 @@
 ##Package: Custom
-##Status: Incomplete (peter3)
+##Skip: TJvImageLoadEvent
+##Status: Complete (peter3), Review
 ----------------------------------------------------------------------------------------------------
 @@JvImagesViewer.pas
 Summary
@@ -24,7 +25,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvImageItem.Filename
 Summary
-  Specifies the filename of the file on disk the item is displaying
+  Specifies the filename of the file on disk the item is displaying.
 Description
   Use Filename to set the file on disk the item should be displaying. When changing Filename, the item
   is not updated directly. Instead, Picture is set to nil and the next time the TJvImagesViewer control
@@ -63,16 +64,12 @@ See Also
 @@TJvImageLoadEvent
 <TITLE TJvImageLoadEvent type>
 Summary
-  Write here a summary (1 line)
+  Occurs when an image is loaded,
 Description
-  This type is used by (for reference):
-    Nothing in this unit.
+  Not used.
 Parameters
-  Sender - Description for this parameter
-  Item   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender - The control that triggered the event.
+  Item   - The item that has loaded an image.
 ----------------------------------------------------------------------------------------------------
 @@TJvImagesViewer
 <TITLEIMG TJvImagesViewer>
@@ -122,14 +119,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvImagesViewer.Items
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the items in the control.
 Description
-  Write here a description
+  Use Items to access the items in the control. 
 Parameters
-  Index - Description for this parameter
+  Index - The index of the item. Valid indices is in the range 0 to Count - 1.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Count
 ----------------------------------------------------------------------------------------------------
 @@TJvImagesViewer.LoadImages
 Summary
