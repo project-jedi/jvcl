@@ -56,6 +56,7 @@ type
     FStars: Word;
     FMaxSpeed: Byte;
     FBmp: TBitmap;
+    FOnActiveChanged: TNotifyEvent;
     procedure Refresh(Sender: TObject);
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
@@ -66,16 +67,31 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Resize; override;
+    procedure Clear;
   published
     property Align;
     property Anchors;
     property Constraints;
+    property ParentColor default False;
+    property Color default clBlack;
     property Height default 100;
     property Width default 100;
     property Delay: Cardinal read FDelay write SetDelay default 50;
     property Active: Boolean read FActive write SetActive default False;
     property Stars: Word read FStars write SetStars default 100;
     property MaxSpeed: Byte read FMaxSpeed write FMaxSpeed default 10;
+    property Visible;
+
+    property OnMouseDown;
+    property OnMouseUp;
+    property OnMouseMove;
+    property OnClick;
+    property OnDblClick;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnActiveChanged:TNotifyEvent read FOnActiveChanged write FOnActiveChanged;
+
+
   end;
 
 implementation
@@ -83,7 +99,9 @@ implementation
 constructor TJvStarfield.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
+  ParentColor := False;
+  Color := clBlack;
+  ControlStyle := ControlStyle + [csOpaque];
   FDelay := 50;
   FActive := False;
   FBmp := TBitmap.Create;
@@ -124,7 +142,7 @@ var
 begin
   Randomize;
   FStars := Value;
-  SetLength(FStarfield, Value);
+  SetLength(FStarfield, FStars);
   for I := 0 to FStars - 1 do
   begin
     FStarfield[I].X := Random(Width div 2) + Width;
@@ -137,8 +155,10 @@ end;
 
 procedure TJvStarfield.SetActive(const Value: Boolean);
 begin
+  if (FActive <> Value) and Assigned(FOnActiveChanged) then
+    FOnActiveChanged(Self);
   FActive := Value;
-  if not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState)  then
     if FActive then
       FThread.Resume
     else
@@ -153,8 +173,7 @@ end;
 
 procedure TJvStarfield.Refresh(Sender: TObject);
 begin
-  Invalidate;
-  Update;
+  Paint;
 end;
 
 procedure TJvStarfield.Paint;
@@ -174,13 +193,16 @@ begin
       Resize
     else
     begin
-      FBmp.Canvas.Brush.Color := clBlack;
-      FBmp.Canvas.Brush.Style := bsSolid;
-      FBmp.Canvas.FillRect(Rect(0, 0, Width, Height));
+      FBmp.Canvas.Brush.Color := Color;
+      if Color =  clNone then
+        FBmp.Canvas.Brush.Style := bsClear
+      else
+        FBmp.Canvas.Brush.Style := bsSolid;
+      FBmp.Canvas.FillRect(ClientRect);
       for I := 0 to FStars - 1 do
       begin
         if FStarfield[I].X < Width then
-          FBmp.Canvas.Pixels[FStarfield[I].X, FStarfield[I].Y] := FStarfield[I].Color;
+            FBmp.Canvas.Pixels[FStarfield[I].X, FStarfield[I].Y] := FStarfield[I].Color;
         FStarfield[I].X := FStarfield[I].X - FStarfield[I].Speed;
         if FStarfield[I].X < 0 then
         begin
@@ -193,11 +215,28 @@ begin
       end;
       Canvas.Lock;
       try
+        if Color =  clNone then
+          Canvas.Brush.Style := bsClear
+        else
+          Canvas.Brush.Style := bsSolid;
         Canvas.Draw(0, 0, FBmp);
       finally
         Canvas.Unlock;
       end;
     end;
+  end;
+end;
+
+procedure TJvStarfield.Clear;
+begin
+  if not Active then
+  begin
+    Canvas.Brush.Color := Color;
+    if Color =  clNone then
+      Canvas.Brush.Style := bsClear
+    else
+      Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(ClientRect);
   end;
 end;
 
