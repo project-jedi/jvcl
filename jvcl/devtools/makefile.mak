@@ -55,6 +55,7 @@ MakePNG.exe \
 Res2BMP.exe \
 stripCmtPO.exe \
 dxgettextResstr.exe \
+dpp.exe \
 pg2want.exe
 
 #---------------------------------------------------------------------------------------------------
@@ -240,6 +241,19 @@ pg2want.exe: pg2want\pg2want.dpr
 LastModifyRepl.exe: LastModifyRepl\LastModifyRepl.dpr \
 		LastModifyRepl\LastModifyReplUtil.pas
   cd LastModifyRepl
+  @echo.
+  @echo.
+  $(DCC) $&.dpr
+  cd ..
+
+dpp.exe: dpp32\dpp.dpr \
+		dpp32\dpp_FileInfos.pas \
+		dpp32\dpp_Macros.pas \
+		dpp32\dpp_PascalParser.pas \
+		dpp32\dpp_PreProcess.pas \
+		dpp32\dpp_Utils.pas \
+		dpp32\Main.pas
+  cd dpp32
   @echo.
   @echo.
   $(DCC) $&.dpr
