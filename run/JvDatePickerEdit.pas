@@ -138,6 +138,7 @@ type
     function IsNoDateTextStored: Boolean;
     procedure Change; override;
     procedure Loaded; override;
+    
     procedure DoKillFocus(const ANextControl: TWinControl); override;
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
     procedure GetInternalMargins(var ALeft, ARight: Integer); override;
@@ -165,6 +166,7 @@ type
     property NoDateShortcut: TShortcut read FNoDateShortcut write FNoDateShortcut stored IsNoDateShortcutStored;
     property NoDateText: string read FNoDateText write SetNoDateText stored IsNoDateTextStored;
     property StoreDate: Boolean read FStoreDate write FStoreDate default False;
+    procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -283,9 +285,6 @@ begin
   end;
 
   FCalAppearance := TJvMonthCalAppearance.Create;
-
-  SetDateFormat(ShortDateFormat);
-  EditMask := FMask;
 end;
 
 destructor TJvCustomDatePickerEdit.Destroy;
@@ -889,6 +888,13 @@ begin
     FCal.SetFocus
   else
     inherited SetFocus;
+end;
+
+procedure TJvCustomDatePickerEdit.CreateWnd;
+begin
+  inherited;
+  SetDateFormat(ShortDateFormat);
+  EditMask := FMask;
 end;
 
 end.
