@@ -59,7 +59,7 @@ uses
   JvPerfMon95, JvComputerInfoEx,
   JvChangeNotifyEditor, JvPerfStatEditor, JvTimerList, JvTimerListEditor,
   {$ENDIF USEWINDOWS}
-  JvThread, JvThreadTimer, JvTimer, JvSimpleXml, JvXMLDatabase,
+  JvThread, JvThreadDialog, JvThreadTimer, JvTimer, JvSimpleXml, JvXMLDatabase,
   JvFormPlacement, JvAppXMLStorage, JvFormPlacementSelectList,
   JvMinMaxForm, JvFormPropertiesForm, JvDsgnEditors;
 
@@ -98,13 +98,16 @@ begin
   {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [
     {$IFDEF USEWINDOWS}
-    TJvSearchFiles, TJvMRUList, TJvMRUManager, TJvShellHook,
+    TJvSearchFiles, TJvMRUList, TJvMRUManager, 
     TJvTimerList,
     {$ENDIF USEWINDOWS}
     {$IFDEF VCL}
     TJvWindowHook,
     {$ENDIF VCL}
-    TJvTimer, TJvThread, TJvThreadTimer]);
+    TJvTimer, TJvShellHook]);
+  RegisterComponents(RsPaletteThreading, [
+    TJvThread, TJvThreadSimpleDialog, TJvThreadAnimateDialog, TJvThreadTimer]);
+
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);

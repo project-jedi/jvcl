@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-12-06:
+- TJvThread enhanced, now it's possible to show a dialog while the thread is executed. Two sample dialogs included // jfudickar
 2004-11-28:
 - JvFooter now uses JvImgBtn instead of JvBitBtn (JvBitBtn renders disabled hi-color glyphs badly) // peter3
 - JvMouseGesture changed to comply with JVCL coding rules. A JVCL Converter file has been added to the /converter folder to simplify updating old projects to use the new types and names. Event handlers still needs to be updated manually. // peter3

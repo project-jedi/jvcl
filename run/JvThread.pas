@@ -37,7 +37,7 @@ uses
   {$IFDEF UNIX}
   QWindows,
   {$ENDIF UNIX}
-  JvTypes, JvComponent;
+  JvTypes, JvComponent, JvThreadDialog;
 
 type
   TJvThread = class(TJvComponent)
@@ -51,14 +51,19 @@ type
     FOnFinish: TNotifyEvent;
     FOnFinishAll: TNotifyEvent;
     FFreeOnTerminate: Boolean;
+    FThreadDialog: TJvCustomThreadDialog;
+    fThreadDialogForm: TJvCustomThreadDialogForm;
     procedure DoCreate;
     procedure DoTerminate(Sender: TObject);
     function GetCount: Integer;
     function GetThreads(Index: Integer): TThread;
     function GetTerminated: Boolean;
+    procedure CreateThreadDialogForm;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     property Count: Integer read GetCount;
     property Threads[Index: Integer]: TThread read GetThreads;
@@ -83,6 +88,7 @@ type
     property OnExecute: TJvNotifyParamsEvent read FOnExecute write FOnExecute;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnFinishAll: TNotifyEvent read FOnFinishAll write FOnFinishAll;
+    property ThreadDialog: TJvCustomThreadDialog read FThreadDialog write FThreadDialog;
   end;
 
 // Cannot be synchronized to the MainThread (VCL)
@@ -162,6 +168,16 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvThread.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification (AComponent, Operation);
+  if Operation = opRemove then
+    if AComponent = FThreadDialog then
+      FThreadDialog := nil
+    else if AComponent = FThreadDialogForm then
+      FThreadDialogForm:= nil
+end;
+
 function TJvThread.Execute(P: Pointer): THandle;
 var
   HideThread: TJvHideThread;
@@ -184,7 +200,10 @@ begin
       raise;
     end;
     if FRunOnCreate then
+    begin
       HideThread.Resume;
+      CreateThreadDialogForm;
+    end;
     Result := HideThread.ThreadID;
   end;
 end;
@@ -236,6 +255,7 @@ end;
 procedure TJvThread.Resume(Thread: THandle);
 begin
   ResumeThread(Thread);
+  CreateThreadDialogForm;
 end;
 
 procedure TJvThread.DoCreate;
@@ -324,6 +344,12 @@ begin
   end;
 end;
 
+procedure TJvThread.CreateThreadDialogForm;
+begin
+  if Assigned(ThreadDialog) and
+     Not Assigned(fThreadDialogForm) then
+    fThreadDialogForm := ThreadDialog.CreateThreadDialogForm (self);
+end;
 //=== { TJvHideThread } ======================================================
 
 constructor TJvHideThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;

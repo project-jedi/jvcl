@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvThread, JvComponent;
+  StdCtrls, JvThread, JvComponent, JvThreadDialog, ComCtrls;
 
 type
   TForm1 = class(TForm)
@@ -42,11 +42,17 @@ type
     Label3: TLabel;
     Label4: TLabel;
     Button2: TButton;
+    JvThreadSimpleDialog1: TJvThreadSimpleDialog;
+    JvThreadAnimateDialog1: TJvThreadAnimateDialog;
+    Button3: TButton;
+    Button4: TButton;
     procedure JvThread1Execute(Sender: TObject; params: Pointer);
     procedure Button1Click(Sender: TObject);
     procedure JvThread2Execute(Sender: TObject; params: Pointer);
     procedure Button2Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
   private
   public
     Value: Integer;
@@ -92,7 +98,7 @@ begin
     for j := 0 to 1000000 do
     begin
       Inc(k,5); //This is the only difference with the other thread
-
+      sleep(13);
       //To use global variable/objects, you have to synchronize (to avoid conflicts)
       TForm1(params).Value2 := k;
       Synchronize(TForm1(params).Stats2);
@@ -104,12 +110,14 @@ end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
+  JvThread1.ThreadDialog := Nil;
   JvThread1.Execute(Self);
   (Sender as TButton).Enabled := False;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
+  JvThread2.ThreadDialog := Nil;
   JvThread2.Execute(Self);
   (Sender as TButton).Enabled := False;
 end;
@@ -136,6 +144,20 @@ begin
     Application.ProcessMessages;
   end;
 
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+begin
+  JvThread2.ThreadDialog := JvThreadAnimateDialog1;
+  JvThread2.Execute(Self);
+  (Sender as TButton).Enabled := False;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+  JvThread1.ThreadDialog := JvThreadSimpleDialog1;
+  JvThread1.Execute(Self);
+  (Sender as TButton).Enabled := False;
 end;
 
 end.
