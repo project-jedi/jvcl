@@ -2,7 +2,7 @@ object frmUnitStats: TfrmUnitStats
   Left = 357
   Top = 168
   BorderStyle = bsDialog
-  Caption = 'Statistics for "%s"'
+  Caption = 'Details for "%s"'
   ClientHeight = 293
   ClientWidth = 258
   Color = clBtnFace

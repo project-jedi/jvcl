@@ -7,8 +7,8 @@ uses
 type
   TPrintFormat = (pfText,pfHTML,pfXML);
 const
-  cUnitParsedImageIndex = 4;
-  cUnitUsedImageIndex   = 5;
+  cUnitParsedImageIndex = 0;
+  cUnitUsedImageIndex   = 1;
   cPascalExt = '.pas';
   cIniFileExt = '.ini';
 // icon offsets

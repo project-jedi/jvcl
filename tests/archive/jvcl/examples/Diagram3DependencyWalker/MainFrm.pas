@@ -130,6 +130,15 @@ type
     ViewSource2: TMenuItem;
     acSortIntfImpl: TAction;
     byINterfaceImplementation1: TMenuItem;
+    pnlStats: TPanel;
+    Panel2: TPanel;
+    SpeedButton2: TSpeedButton;
+    horzSplitter: TSplitter;
+    reStatistics: TRichEdit;
+    acViewDetails: TAction;
+    Statistics3: TMenuItem;
+    acNoSort: TAction;
+    none1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure sbMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -167,6 +176,8 @@ type
     procedure acOptionsExecute(Sender: TObject);
     procedure acUnitViewExecute(Sender: TObject);
     procedure sbExit(Sender: TObject);
+    procedure acViewDetailsExecute(Sender: TObject);
+    procedure acNoSortExecute(Sender: TObject);
   private
     { Private declarations }
     FFocusRectAnchor: TPoint;
@@ -174,7 +185,7 @@ type
     FDrawing: boolean;
 
     FPrintFormat: TPrintFormat;
-    FFileShapes, FSearchPaths: TStringlist;
+    FFileShapes, FLoadedFiles, FSearchPaths: TStringlist;
     FInitialDir: string;
     FLeft, FTop: integer;
     FSelected: TJvCustomDiagramShape;
@@ -186,7 +197,7 @@ type
     procedure SaveSettings;
     function FindUnit(const Filename: string; const DefaultExt: string = '.pas'): string;
     procedure GetSearchPaths;
-    procedure Clear;
+    procedure Clear(ClearAll:boolean);
     procedure CreatePrintOut(Strings: TStrings; AFormat: TPrintFormat = pfText);
     function GetFileShape(const Filename: string; var IsNew: boolean): TJvBitmapShape;
     procedure ParseUnits(Files, Errors: TStrings);
@@ -204,14 +215,17 @@ type
     procedure HighlightConnectors(AShape: TJvCustomDiagramShape);
     procedure DoShapeMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure DoBeginFocusRect(Sender: TObject; ARect: TRect; Button:TMouseButton;Shift: TShiftState;var Allow:boolean);
-    procedure DoEndFocusRect(Sender: TObject; ARect: TRect;Button:TMouseButton;Shift: TShiftState);
-    procedure DoFocusingRect(Sender: TObject; ARect: TRect;Shift: TShiftState;var Continue:boolean);
+    procedure DoBeginFocusRect(Sender: TObject; ARect: TRect; Button: TMouseButton; Shift: TShiftState; var Allow: boolean);
+    procedure DoEndFocusRect(Sender: TObject; ARect: TRect; Button: TMouseButton; Shift: TShiftState);
+    procedure DoFocusingRect(Sender: TObject; ARect: TRect; Shift: TShiftState; var Continue: boolean);
+    procedure SetSelected(const Value: TJvCustomDiagramShape);
+    procedure ShowInlineStats(AShape: TJvCustomDiagramShape);
   protected
     procedure Load(Storage: TPersistStorage); override;
     procedure Save(Storage: TPersistStorage); override;
   public
     { Public declarations }
+    property Selected: TJvCustomDiagramShape read FSelected write SetSelected;
   end;
 
 var
@@ -407,13 +421,16 @@ begin
   acInvertSort.Checked := Storage.ReadBool(ClassName, 'InvertSort', false);
   FInitialDir := Storage.ReadString(ClassName, 'InitialDir', '');
   pnlSkipList.Width := Storage.ReadInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
+  pnlStats.Height := Storage.ReadInteger(ClassName, 'horzSplitter', pnlStats.Height);
+  StatusBar1.Top := ClientHeight;
   if not acViewStatusBar.Checked = Storage.ReadBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked) then
     acViewStatusBar.Execute; // toggle to other state
   if not acViewToolbar.Checked = Storage.ReadBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked) then
     acViewToolbar.Execute;
   if not acViewSkipList.Checked = Storage.ReadBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked) then
     acViewSkipList.Execute;
-
+  if not acViewDetails.Checked = Storage.ReadBool(ClassName, acViewDetails.Name, acViewDetails.Checked) then
+    acViewDetails.Execute;
   FOffsetX := Storage.ReadInteger('Options', 'ShapeWidth', 100);
   FOffsetY := Storage.ReadInteger('Options', 'ShapeHeight', 100);
   FIntfLineColor := Storage.ReadInteger('Options', 'IntfColor', clBlack);
@@ -428,9 +445,12 @@ begin
   Storage.WriteBool(ClassName, 'InvertSort', acInvertSort.Checked);
   Storage.WriteString(ClassName, 'InitialDir', FInitialDir);
   Storage.WriteInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
+  Storage.WriteInteger(ClassName, 'horzSplitter', pnlStats.Height);
   Storage.WriteBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked);
   Storage.WriteBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked);
   Storage.WriteBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked);
+  Storage.WriteBool(ClassName, acViewDetails.Name, acViewDetails.Checked);
+
 end;
 
 // main form utility functions
@@ -616,7 +636,10 @@ begin
     if b then
       FS.ImageIndex := cUnitParsedImageIndex; // this is a parsed file
     if IsNew then
+    begin
       Inc(FLeft, FOffsetX);
+      FLoadedFiles.Add(AFilename);
+    end;
     for i := 0 to AUsesIntf.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
@@ -691,16 +714,18 @@ end;
 
 // (p3) removes all shapes and links
 
-procedure TfrmMain.Clear;
+procedure TfrmMain.Clear(ClearAll:boolean);
 // var i: integer;
 begin
   WaitCursor;
   FreeAndNil(FSearchPaths);
   FFileShapes.Clear;
+  if ClearAll then
+    FLoadedFiles.Clear;
   TJvCustomDiagramShape.DeleteAllShapes(sb);
   FLeft := cStartX;
   FTop := cStartY;
-  FSelected := nil;
+  Selected := nil;
   StatusBar1.Panels[0].Text := SStatusReady;
 end;
 
@@ -708,6 +733,7 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   SetStorageHandler(GetPersistStorage);
   FFileShapes := TStringlist.Create;
+  FLoadedFiles := TStringlist.Create;
   FFileShapes.Sorted := true;
   FFileShapes.Duplicates := dupError;
   FLeft := cStartX;
@@ -999,9 +1025,9 @@ end;
 
 procedure TfrmMain.DoShapeMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  FSelected := Sender as TJvCustomDiagramShape;
+  Selected := Sender as TJvCustomDiagramShape;
   if Button = mbLeft then
-    HighLightConnectors(FSelected);
+    HighLightConnectors(Selected);
 end;
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -1009,6 +1035,7 @@ begin
   //  Clear;
   SaveSettings;
   FFileShapes.Free;
+  FLoadedFiles.Free;
   FreeAndNil(FSearchPaths);
 end;
 
@@ -1060,7 +1087,7 @@ begin
   WaitCursor;
   SuspendRedraw(sb, true);
   TJvCustomDiagramShape.UnselectAllShapes(sb);
-  FSelected := nil;
+  Selected := nil;
   AList := TList.Create;
   try
     FLeft := cStartX;
@@ -1070,6 +1097,8 @@ begin
     acSortName.Checked := false;
     acSortLinksTo.Checked := false;
     acSortLinksFrom.Checked := false;
+    acSortIntfImpl.Checked := false;
+
     sb.HorzScrollBar.Position := 0;
     sb.VertScrollBar.Position := 0;
     CopyObjects(FFileShapes, AList);
@@ -1117,7 +1146,7 @@ procedure TfrmMain.acNewExecute(Sender: TObject);
 begin
   if YesNo(SConfirmClear, SClearDiagramPrompt) then
   begin
-    Clear;
+    Clear(true);
     LoadSettings;
   end;
 end;
@@ -1133,7 +1162,7 @@ begin
   acSaveBMP.Enabled := acCopy.Enabled;
   mnuSort.Enabled := sb.ControlCount > 1;
 
-  acDelShape.Enabled := FSelected <> nil;
+  acDelShape.Enabled := Selected <> nil;
   acUnitStats.Enabled := acDelShape.Enabled;
   acAddToSkipList.Enabled := acDelShape.Enabled;
   acParseUnit.Enabled := acDelShape.Enabled;
@@ -1147,7 +1176,7 @@ var
   S: string;
   UsedByStrings, UsesStrings: TStringlist;
 begin
-  AShape := FSelected;
+  AShape := Selected;
   if AShape = nil then
     AShape := TJvCustomDiagramShape(popShape.PopupComponent);
   if AShape = nil then Exit;
@@ -1182,13 +1211,13 @@ var AShape: TJvCustomDiagramShape;
 begin
   // (p3) Can't use TJvCustomDiagramShape.DeleteSelecetdShapes here since
   // we need to remove the item from the FFileShapes list as well:
-  AShape := FSelected;
+  AShape := Selected;
   if (AShape <> nil) and YesNo(SConfirmDelete, Format(SDelSelItemFmt, [AShape.Caption.Text])) then
   begin
     i := FFileShapes.IndexOfObject(AShape);
     if i > -1 then
       FFileShapes.Delete(i);
-    FSelected := nil;
+    Selected := nil;
     AShape.Free;
   end;
 end;
@@ -1249,7 +1278,7 @@ end;
 procedure TfrmMain.acAddToSkipListExecute(Sender: TObject);
 var ASHape: TJvCustomDiagramShape;
 begin
-  AShape := FSelected;
+  AShape := Selected;
   if AShape <> nil then
   begin
     lbSkipList.Items.Add(ChangeFileExt(ExtractFilename(AShape.Caption.Text), ''));
@@ -1276,6 +1305,15 @@ procedure TfrmMain.acViewToolBarExecute(Sender: TObject);
 begin
   acViewToolBar.Checked := not acViewToolBar.Checked;
   cbToolbar.Visible := acViewToolBar.Checked;
+end;
+
+procedure TfrmMain.acViewDetailsExecute(Sender: TObject);
+begin
+  acViewDetails.Checked := not acViewDetails.Checked;
+  pnlStats.Visible := acViewDetails.Checked;
+  horzSplitter.Visible := pnlStats.Visible;
+  if pnlStats.Visible then
+    horzSplitter.Top := pnlStats.Top - 1;
 end;
 
 procedure TfrmMain.acRefreshExecute(Sender: TObject);
@@ -1334,6 +1372,7 @@ begin
     if Execute then
     begin
       FFileShapes.Clear;
+      FLoadedFiles.Clear;
       TJvCustomDiagramShape.LoadFromFile(Filename, sb);
       // TODO: update FFileShapes list with new items
       // NB! loading a saved diagram looses the info about interface/implementation uses!
@@ -1347,19 +1386,20 @@ procedure TfrmMain.sbMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited;
+  SetCaptureControl(sb);
 // (p3) unselect any selected shape
-  if FSelected <> nil then
-    FSelected.Selected := false;
-  FSelected := nil;
+  if Selected <> nil then
+    Selected.Selected := false;
+  Selected := nil;
   if sb.CanFocus then sb.SetFocus;
-  FDrawing := Button = mbLeft;
-  if FDrawing then
+  FDrawing := false;
+  if Button = mbLeft then
   begin
     // initiate a focus rect
     FFocusRectAnchor.X := X;
     FFocusRectAnchor.Y := Y;
     FFocusRect := Rect(FFocusRectAnchor.X, FFocusRectAnchor.Y, 0, 0);
-    DoBeginFocusRect(sb,FFocusRect,Button,Shift,FDrawing);
+    DoBeginFocusRect(sb, FFocusRect, Button, Shift, FDrawing);
   end;
 end;
 
@@ -1392,7 +1432,7 @@ begin
     DrawFocusRect(DC, FFocusRect);
     FFocusRect := NormalizedRect(FFocusRectAnchor.X, FFocusRectAnchor.Y, X, Y);
     // draw new rect
-    DoFocusingRect(sb, FFocusRect,Shift,FDrawing);
+    DoFocusingRect(sb, FFocusRect, Shift, FDrawing);
     if FDrawing then
       DrawFocusRect(DC, FFocusRect);
   finally
@@ -1411,18 +1451,19 @@ begin
     try
       // erase last focus rect
       DrawFocusRect(DC, FFocusRect);
-      DoEndFocusRect(sb, FFocusRect,Button,Shift);
+      DoEndFocusRect(sb, FFocusRect, Button, Shift);
     finally
       ReleaseDC(sb.Handle, DC);
     end;
+    ReleaseCapture;
   end;
   FDrawing := false;
 end;
 
 procedure TfrmMain.DoBeginFocusRect(Sender: TObject; ARect: TRect;
-  Button: TMouseButton; Shift: TShiftState;var Allow:boolean);
+  Button: TMouseButton; Shift: TShiftState; var Allow: boolean);
 begin
-  Allow := sb.ControlCOunt > 0;
+  Allow := sb.ControlCount > 0;
 end;
 
 procedure GetControlsInRect(AParent: TWinControl; ARect: TRect; PartialOK: boolean; AList: TList);
@@ -1439,7 +1480,7 @@ begin
         AList.Add(AParent.Controls[i])
 end;
 
-procedure TfrmMain.DoFocusingRect(Sender: TObject; ARect: TRect;Shift: TShiftState;var Continue:boolean);
+procedure TfrmMain.DoFocusingRect(Sender: TObject; ARect: TRect; Shift: TShiftState; var Continue: boolean);
 var AList: TList; i: integer;
 begin
   AList := TList.Create;
@@ -1450,13 +1491,13 @@ begin
     for i := 0 to AList.Count - 1 do
       if TObject(AList[i]) is TJvBitmapShape then
         TJvBitmapShape(TObject(AList[i])).Selected := true;
-    TJvBitmapShape.SetMultiSelected(sb,AList.Count > 1);
+    TJvBitmapShape.SetMultiSelected(sb, AList.Count > 1);
   finally
     AList.Free;
   end;
 end;
 
-procedure TfrmMain.DoEndFocusRect(Sender: TObject; ARect: TRect;Button:TMouseButton;Shift: TShiftState);
+procedure TfrmMain.DoEndFocusRect(Sender: TObject; ARect: TRect; Button: TMouseButton; Shift: TShiftState);
 var AList: TList; i: integer;
 begin
   AList := TList.Create;
@@ -1467,7 +1508,7 @@ begin
     for i := 0 to AList.Count - 1 do
       if TObject(AList[i]) is TJvBitmapShape then
         TJvBitmapShape(TObject(AList[i])).Selected := true;
-    TJvBitmapShape.SetMultiSelected(sb,AList.Count > 1);
+    TJvBitmapShape.SetMultiSelected(sb, AList.Count > 1);
   finally
     AList.Free;
   end;
@@ -1485,11 +1526,11 @@ procedure TfrmMain.acParseUnitExecute(Sender: TObject);
 var Errors: TStringList; i, aCount: integer;
 begin
   WaitCursor;
-  i := FFileShapes.IndexOfObject(FSelected);
+  i := FFileShapes.IndexOfObject(Selected);
   if i < 0 then
   begin
-    if FSelected <> nil then
-      ShowMessageFmt(SFileNotFoundFmt, [FSelected.Caption.Text])
+    if Selected <> nil then
+      ShowMessageFmt(SFileNotFoundFmt, [Selected.Caption.Text])
     else
       ShowMessage(SUnitNotFound);
     Exit;
@@ -1529,7 +1570,7 @@ end;
 procedure TfrmMain.acUnitViewExecute(Sender: TObject);
 var AFilename: string;
 begin
-  AFilename := FindUnit(FSelected.Caption.Text);
+  AFilename := FindUnit(Selected.Caption.Text);
   if FileExists(AFilename) then
     ShellExecute(Handle, 'open', PChar(AFilename), nil, nil, SW_SHOWNORMAL)
   else
@@ -1543,7 +1584,84 @@ begin
 //  Result := TPersistStorage(TRegistryIniFile.Create('\Software\JEDI\JVCL\Demos\Dependency Walker'));
 end;
 
+procedure SetRESelText(RE: TRichEdit; AColor: TColor; AStyle: TFontStyles; const AText: string);
+begin
+  RE.SelAttributes.Color := AColor;
+  RE.SelAttributes.Style := AStyle;
+  RE.SelText := AText;
+end;
 
+procedure TfrmMain.ShowInlineStats(AShape: TJvCustomDiagramShape);
+var
+  i: integer;
+  S: string;
+  UsedByStrings, UsesStrings: TStringlist;
+begin
+  reStatistics.Lines.Clear;
+  if AShape <> nil then
+  begin
+  // (p3) collect the stats for the file
+  // since we can't guarantee that the file can be found
+  // on the system, only collect what we know explicitly (name, links):
+    UsedByStrings := TStringlist.Create;
+    UsesStrings := TStringlist.Create;
+    try
+      UsesUnits(AShape, UsesStrings);
+      UsedByUnits(AShape, UsedByStrings);
+      if UsedByStrings.Count < 1 then
+        UsedByStrings.Add(SNone);
+      if UsesStrings.Count < 1 then
+        UsesStrings.Add(SNone);
+      i := FFileShapes.IndexOfObject(AShape);
+      if i > -1 then
+        S := FFileShapes[i]
+      else
+        S := ChangeFileExt(AShape.Caption.Text, cPascalExt);
+      SetRESelText(reStatistics, clNavy, [fsBold], S + ':'#13#10#13#10);
+      SetRESelText(reStatistics, clBlack, [fsBold], 'uses:' + #13#10);
+      for i := 0 to UsesStrings.Count - 1 do
+        SetRESelText(reStatistics, clBlack, [], #9 + UsesStrings[i] + #13#10);
+      SetRESelText(reStatistics, clBlack, [fsBold], 'used by:'#13#10);
+      for i := 0 to UsedByStrings.Count - 1 do
+        SetRESelText(reStatistics, clBlack, [], #9 + UsedByStrings[i] + #13#10);
+    finally
+      UsedByStrings.Free;
+      UsesStrings.Free;
+    end;
+  end;
+end;
+
+procedure TfrmMain.SetSelected(const Value: TJvCustomDiagramShape);
+begin
+  if FSelected <> Value then
+  begin
+    FSelected := Value;
+    ShowInlineStats(FSelected);
+  end;
+end;
+
+procedure TfrmMain.acNoSortExecute(Sender: TObject);
+var Errors: TStringlist;
+begin
+  acSortName.Checked := false;
+  acSortLinksTo.Checked := false;
+  acSortLinksFrom.Checked := false;
+  acSortIntfImpl.Checked := false;
+  acNoSort.Checked := true;
+  Clear(false);
+  Errors := TStringlist.Create;
+  try
+    ParseUnits(FLoadedFiles, Errors);
+    if Errors.Count > 0 then
+    begin
+      ShowMessageFmt(SParseErrorsFmt, [Errors.Text]);
+        // copy to clipboard as well
+      Clipboard.SetTextBuf(PChar(Errors.Text));
+    end;
+  finally
+    Errors.Free;
+  end;
+end;
 
 end.
 
