@@ -777,7 +777,8 @@ procedure TJvAppXMLFileStorage.Flush;
 var
   Path: String;
 begin
-  if (FullFileName <> '') and not ReadOnly then
+  if (FullFileName <> '') and not ReadOnly 
+    and not (csDesigning in ComponentState) then
   begin
     Path := ExtractFilePath(FullFileName);
     if Path <> '' then
@@ -788,7 +789,8 @@ end;
 
 procedure TJvAppXMLFileStorage.Reload;
 begin
-  if not IsUpdating then
+  if not IsUpdating
+    and not (csDesigning in ComponentState) then
   begin
     if FileExists(FullFileName) then
       Xml.LoadFromFile(FullFileName)
