@@ -127,7 +127,7 @@ Changelog for JVCL 3.0
 - TJvZlibMultiple is now available for C++ Builder 5 and 6  // obones
 2004-05-19
 - Moved JvComputerInfo.pas, JvDeviceChanged.pas, JvDirectories.pas, JvKeyboardStates.pas, 
-  JvSystemColors.pas to archive. They are replaced by JvComputerInfoEx.pas // ahuser
+  JvSystemColors.pas and JvFileInfo.pas to archive. They are replaced by JvComputerInfoEx.pas // ahuser
 2004-05-16
 - JvgPointEditor.pas moved from \run to \design // peter3
 2004-05-07
@@ -180,7 +180,7 @@ Changelog for JVCL 3.0
 - New build system for the JVCL 3. See jvcl3\packages\bin // ahuser
 2004-03-23
 - Added JvDesktopAlert component + demo // peter3
-- Added TJvComputerInfoEx to JvSystem and also removed TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories since they are incorporated in JvComputerInfoEx // peter3
+- Added TJvComputerInfoEx to JvSystem and also removed TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories, TJvFileInfo since they are incorporated in JvComputerInfoEx // peter3
 - Added JvDBFindEdit to JvDB and JvDotNetDBFindEdit to JvDotNetCtrls donated from yul // peter3
 - Added JvColorTrackBar from Stefano Pessina to JvMM // peter3
 - Updated JvMemoryDataset with new properties and events from Claudio F. Zwitkovits // peter3
