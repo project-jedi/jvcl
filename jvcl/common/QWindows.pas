@@ -4254,7 +4254,10 @@ begin
     R2.Top := R.Top;
     QPainter_boundingRect(Handle, @R, @R, Flags and not $3F{Alignment},
                           PWideString(@Caption), -1, nil);
-    OffsetRect(R, R2.Left, R2.Top);
+    if R.Left <> R2.Left then
+      OffsetRect(R, R2.Left, 0);
+    if R.Top <> R2.Top then
+      OffsetRect(R, 0, R2.Top);
     Result := R.Bottom - R.Top;
   end;
   if WinFlags and DT_INTERNAL <> 0 then
