@@ -101,7 +101,7 @@ type
     procedure Save;
     procedure BitmapNeeded;
     //    Procedure FilterFactory(Filter:TFilterArray;Divider:Byte);
-    procedure invert;
+    procedure Invert;
     procedure Contrast(const Percent: Tpercent);
     procedure Lightness(const Percent: Tpercent); //
     procedure Grayscale;
@@ -113,7 +113,7 @@ type
     property Angle: TAngle read VAngle write SetAngle;
     property Modified: boolean read PChanged;
     //Property OnRelease : TdestroyNotify read EVonrelease write Evonrelease;
-    property CanModify: Boolean read getmodify;
+    property CanModify: Boolean read GetModify;
     property Zoom: Word read VZoom write VZoom;
     property OnRotate: TRotateNotify read P_OnRotate write P_OnRotate;
     property OnLoaded: TNotifyEvent read VOnLoad write VOnLoad;
@@ -404,10 +404,11 @@ constructor TJvThumbImage.create(Aowner: Tcomponent);
 begin
   inherited;
   VAngle := AT0;
-  Pchanged := false;
+//  VClass := Graphics.TBitmap;
+  PChanged := false;
 end;
 
-destructor TJvThumbImage.destroy;
+destructor TJvThumbImage.Destroy;
 begin
   inherited;
 end;
@@ -439,16 +440,25 @@ end;
 
 function TJvThumbImage.getmodify: boolean;
 begin
-  if picture.graphic.empty then
+  if not Assigned(Picture) or not Assigned(Picture.Graphic) then
+  begin
+    Result := false;
+    Exit;
+  end;
+  if Picture.Graphic.Empty then
     result := false
   else
+  begin
     if picture.graphic is graphics.TMetafile then
       result := false
     else
+    begin
       if picture.graphic is graphics.TIcon then
         result := false
       else
         result := true;
+    end;
+  end;
 end;
 
 procedure TJvThumbImage.grayscale;
@@ -492,7 +502,7 @@ end;
 
 
 
-procedure TJvThumbImage.invert;
+procedure TJvThumbImage.Invert;
 var
   r: Tcurvearray;
   i: byte;
@@ -758,7 +768,7 @@ var
   i, j: longint;
   Crsr: TCursor;
 begin
-        Crsr := screen.cursor;
+  Crsr := screen.cursor;
   if assigned(picture.graphic) then
     if canmodify then
     begin
@@ -862,7 +872,7 @@ var
   Crsr: TCursor;
 begin
   //Procedure to rotate an image at 90D clockwise or 270D ccw
-     Crsr := screen.cursor;
+  Crsr := screen.cursor;
   if assigned(picture.graphic) then
     if canmodify then
     begin
