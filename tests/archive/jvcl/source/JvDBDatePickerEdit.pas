@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2002-10-04
+Last Modified: 2002-12-09
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -74,14 +74,14 @@ type
     function IsLinked: Boolean;
 
     procedure Change; override;
-    procedure LoseFocus(const AFocusControl: TWinControl); override;
+    procedure DoKillFocus(const ANextControl: TWinControl); override;
     procedure SetShowCheckbox(const AValue: Boolean); override;
     procedure UpdateDisplay; override;
     function GetEnableValidation: Boolean; override;
 
     property DataField : String read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property EnforceRequired: Boolean read FEnforceRequired write SetEnforceRequired;
+    property EnforceRequired: Boolean read FEnforceRequired write SetEnforceRequired default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -99,27 +99,32 @@ type
     property AutoSelect;
     property AutoSize default False;
     property BorderStyle;
+    property Caret;
     property CharCase;
+    property ClipboardCommands;
     property Color;
     property Constraints;
     property Cursor;
     property Ctl3D;
     property DataField;
     property DataSource;
-    property DateFormat stored IsDateFormatStored;
+    property DateFormat;
+    property DisabledColor;
+    property DisabledTextColor;
     property DragCursor;
     property DragKind;
     property DragMode;
     property Enabled;
-    property EnableValidation default True;
-    property EnforceRequired default True;
+    property EnableValidation;
+    property EnforceRequired;
     property Font;
-    property HintColor default clInfoBk;
-    property HotTrack default False;
+    property GroupIndex;
+    property HintColor;
+    property HotTrack;
 //    property MaxYear default 2900;
 //    property MinYear default 1900;
-    property NoDateShortcut stored IsNoDateShortcutStored;
-    property NoDateText stored IsNoDateTextStored;
+    property NoDateShortcut;
+    property NoDateText;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -143,13 +148,14 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    property OnLoseFocus;
+    property OnKillFocus;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
-    property OnParentColorChanged;
+    property OnParentColorChange;
+    property OnSetFocus;
     property OnStartDrag;
   end;
 
@@ -224,7 +230,7 @@ begin
   result := Assigned(FDataLink) and Assigned(FDataLink.Field);
 end;
 
-procedure TJvCustomDBDatePickerEdit.LoseFocus(const AFocusControl: TWinControl);
+procedure TJvCustomDBDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
   try
     FDataLink.UpdateRecord;

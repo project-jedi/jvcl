@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Peter Thörnqvist.
 
-Last Modified: 2002-11-04
+Last Modified: 2002-12-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -50,17 +50,6 @@ Known Issues:
    functional in the current state. they would still require some work to make up
    for two-digit year entries.
 
- -currently there is quite an ugly hack in place to solve an issue with
-   un/focusing of the calendar control. This would look a whole lot better if it
-   was implemented at the TJvCustomMonthCalendar level.
-
- -there is currently no way to manipulate the appearance of the dropdown
-   calendar. this is due to the fact that I only instantiate the dropdown on
-   demand. To control the calendar's appearance I would have to store the colors
-   and possible other settings in some kind of proxy structure which would get
-   applied to the control upon instantiation. As one of the primary goals was to
-   maintain the system look and feel, customization of the calendar was simply
-   not a requirement.
 }
 
 unit JvDatePickerEdit;
@@ -102,8 +91,7 @@ type
     procedure CalSelChange(Sender: TObject; StartDate, EndDate: TDateTime);
     procedure CalSelect(Sender: TObject; StartDate, EndDate: TDateTime);
     procedure CalKeyPress(Sender: TObject; var Key: Char);
-    procedure CalLoseFocus(const ASender: TObject;
-      const AFocusControl: TWinControl);
+    procedure CalKillFocus(const ASender: TObject; const ANextControl: TWinControl);
   protected
     procedure DoCancel;
     procedure DoChange;
@@ -141,6 +129,7 @@ type
     FMask: String;
     FNoDateShortcut: TShortcut;
     FNoDateText: String;
+    FStoreDate: Boolean;
 
 //    FMinYear: Word;
 //    FMaxYear: Word;
@@ -166,14 +155,13 @@ type
     procedure SetNoDateText(const AValue: String);
 
   protected
-    FStoreDate: Boolean;
     function IsDateFormatStored: Boolean;
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
   protected
     procedure Change; override;
     procedure Loaded; override;
-    procedure LoseFocus(const AFocusControl: TWinControl); override;
+    procedure DoKillFocus(const ANextControl: TWinControl); override;
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
 
     procedure GetInternalMargins(var ALeft, ARight: Integer); override;
@@ -197,20 +185,22 @@ type
     procedure ClearMask;
     procedure RestoreMask;
 
-    property AllowNoDate: Boolean read FAllowNoDate write SetAllowNoDate;
+    property AllowNoDate: Boolean read FAllowNoDate write SetAllowNoDate default True;
     property CalendarAppearance: TJvMonthCalAppearance read FCalAppearance write SetCalAppearance;
-    property Date: TDateTime read GetDate write SetDate;
-    property DateFormat: String read FDateFormat write SetDateFormat;
+    property Date: TDateTime read GetDate write SetDate stored FStoreDate;
+    property DateFormat: String read FDateFormat write SetDateFormat stored IsDateFormatStored;
     property Dropped: Boolean read GetDropped;
-    property EnableValidation: Boolean read GetEnableValidation write FEnableValidation;
+    property EnableValidation: Boolean read GetEnableValidation write FEnableValidation default True;
 //    property MaxYear: Word read FMaxYear write FMaxYear;
 //    property MinYear: Word read FMinYear write FMinYear;
-    property NoDateShortcut: TShortcut read FNoDateShortcut write FNoDateShortcut;
-    property NoDateText: String read FNoDateText write SetNoDateText;
-    property StoreDate: Boolean read FStoreDate write FStoreDate;
+    property NoDateShortcut: TShortcut read FNoDateShortcut write FNoDateShortcut stored IsNoDateShortcutStored;
+    property NoDateText: String read FNoDateText write SetNoDateText stored IsNoDateTextStored;
+    property StoreDate: Boolean read FStoreDate write FStoreDate default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure Clear; override;
 
     function IsEmpty: Boolean; virtual;
   end;
@@ -219,40 +209,46 @@ type
   public
     property Dropped;
   published
-    property AllowNoDate default True;
+    property AllowNoDate;
     property Anchors;
     property AutoSelect;
     property AutoSize default False;
     property BorderStyle;
     property CalendarAppearance;
+    property Caret;
     property CharCase;
     property Checked;
+    property ClipboardCommands;
     property Color;
     property Constraints;
     property Cursor;
     property Ctl3D;
-    property Date stored FStoreDate;
-    property DateFormat stored IsDateFormatStored;
+    property Date;
+    property DateFormat;
+    property DisabledColor;
+    property DisabledTextColor;
     property DragCursor;
     property DragKind;
     property DragMode;
     property Enabled;
-    property EnableValidation default True;
+    property EnableValidation;
     property Font;
-    property HintColor default clInfoBk;
-    property HotTrack default False;
+    property GroupIndex;
+    property HintColor;
+    property HotTrack;
 //    property MaxYear default 2900;
 //    property MinYear default 1900;
-    property NoDateShortcut stored IsNoDateShortcutStored;
-    property NoDateText stored IsNoDateTextStored;
+    property NoDateShortcut;
+    property NoDateText;
     property ParentColor;
+    property ParentCtl3d;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
-    property ShowCheckbox default False;
-    property StoreDate default False;
+    property ShowCheckbox;
+    property StoreDate;
     property TabOrder;
     property Visible;
 
@@ -267,17 +263,17 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnGetFocus;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    property OnLoseFocus;
+    property OnKillFocus;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
-    property OnParentColorChanged;
+    property OnParentColorChange;
+    property OnSetFocus;
     property OnStartDrag;
   end;
 
@@ -294,7 +290,7 @@ const
   DefaultNoDateShortcut = 'Alt+Del';
 
 
-{ TLucaCustomDatePickerEdit }
+{ TJvCustomDatePickerEdit }
 
 procedure TJvCustomDatePickerEdit.ButClick(Sender: TObject);
 begin
@@ -306,12 +302,17 @@ end;
 
 procedure TJvCustomDatePickerEdit.CalChange(Sender: TObject);
 begin
-  Text := DateToText(FDropFo.SelDate);
+   Text := DateToText(FDropFo.SelDate);
 end;
 
 procedure TJvCustomDatePickerEdit.CalSelect(Sender: TObject);
 begin
   Self.Date := FDropFo.SelDate;
+end;
+
+procedure TJvCustomDatePickerEdit.Clear;
+begin
+  Checked := False;
 end;
 
 procedure TJvCustomDatePickerEdit.CloseUp;
@@ -504,20 +505,25 @@ end;
 procedure TJvCustomDatePickerEdit.UpdateDisplay;
 begin
   if(InternalChanging) then Exit;
-
-  inherited SetChecked(not IsEmpty);
-  if(IsEmpty) then
-  begin
-    if not(csDesigning in ComponentState) then
+  
+  BeginInternalChange;
+  try
+    inherited SetChecked(not IsEmpty);
+    if(IsEmpty) then
     begin
-      ClearMask;
-      Text := NoDateText;
+      if not(csDesigning in ComponentState) then
+      begin
+        ClearMask;
+        Text := NoDateText;
+      end;
+    end
+    else
+    begin
+      RestoreMask;
+      Text:= DateToText( Self.Date)
     end;
-  end
-  else
-  begin
-    RestoreMask;
-    Text:= DateToText( Date)
+  finally
+    EndInternalChange;
   end;
 end;
 
@@ -747,13 +753,13 @@ begin
   end;
 end;
 
-procedure TJvCustomDatePickerEdit.LoseFocus(const AFocusControl: TWinControl);
+procedure TJvCustomDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
 var
   lDate: TDateTime;
 begin
-  if (AFocusControl <> NIL)
-  and(AFocusControl <> FDropFo)
-  and(AFocusControl.Owner <> FDropFo) then
+  if (ANextControl <> NIL)
+  and(ANextControl <> FDropFo)
+  and(ANextControl.Owner <> FDropFo) then
     if(not FDateError) then
     begin
       CloseUp;
@@ -806,47 +812,20 @@ begin
 end;
 
 
-{ TUnfocusingMonthCalendar }
-
-type
-  TUnfocusingMonthCalendar = class( TJvCustomMonthCalendar)
-  private
-    FOnLoseFocus: TJvFocusChangeEvent;
-    procedure WMKillFocus(var AMessage: TMessage); message WM_KILLFOCUS;
-  protected
-    procedure LoseFocus(const AFocusControl: TWinControl); dynamic;
-    property OnLoseFocus: TJvFocusChangeEvent read FOnLoseFocus
-      write FOnLoseFocus;
-  end;
-
-procedure TUnfocusingMonthCalendar.LoseFocus(const AFocusControl: TWinControl);
-begin
-  if(Assigned(OnLoseFocus)) then
-    OnLoseFocus(Self, AFocusControl);
-end;
-
-procedure TUnfocusingMonthCalendar.WMKillFocus(var AMessage: TMessage);
-begin
-  inherited;
-  if(not IsChildOf(AMessage.WParam, Self.Handle)) then
-    LoseFocus(FindControl(AMessage.WParam));
-end;
-
-
 { TLucaDropCalendar }
 
 constructor TJvDropCalendar.CreateWithAppearance(AOwner: TComponent;
   const AAppearance: TJvMonthCalAppearance);
 begin
   inherited Create(AOwner);
-  FCal := TUnfocusingMonthCalendar.CreateWithAppearance(Self, AAppearance);
-  with(TUnfocusingMonthCalendar(FCal)) do
+  FCal := TJvMonthCalendar2.CreateWithAppearance(Self, AAppearance);
+  with(TJvMonthCalendar2(FCal)) do
   begin
     Parent := Self;
     ParentFont := True;
     OnSelChange := CalSelChange;
     OnSelect := CalSelect;
-    OnLoseFocus := CalLoseFocus;
+    OnKillFocus := CalKillFocus;
     OnKeyPress := CalKeyPress;
     Visible := True;
     AutoSize := True;
@@ -856,7 +835,7 @@ end;
 destructor TJvDropCalendar.Destroy;
 begin
   if(Assigned(FCal)) then
-    with(TUnfocusingMonthCalendar(FCal)) do
+    with(TJvMonthCalendar2(FCal)) do
     begin
       OnSelChange := NIL;
       OnSelect := NIL;
@@ -919,18 +898,18 @@ end;
 
 function TJvDropCalendar.GetSelDate: TDateTime;
 begin
-  result := TUnfocusingMonthCalendar(FCal).DateFirst;
+  result := TJvMonthCalendar2(FCal).DateFirst;
 end;
 
 procedure TJvDropCalendar.SetSelDate(const AValue: TDateTime);
 begin
-  TUnfocusingMonthCalendar(FCal).DateFirst := AValue;
+  TJvMonthCalendar2(FCal).DateFirst := AValue;
 end;
 
-procedure TJvDropCalendar.CalLoseFocus(const ASender: TObject;
-  const AFocusControl: TWinControl);
+procedure TJvDropCalendar.CalKillFocus(const ASender: TObject;
+  const ANextControl: TWinControl);
 begin
-  Self.LoseFocus( AFocusControl);
+  Self.DoKillFocus(ANextControl);
 end;
 
 procedure TJvDropCalendar.SetFocus;
