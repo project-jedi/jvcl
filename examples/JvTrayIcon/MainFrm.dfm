@@ -138,13 +138,13 @@ object frmMain: TfrmMain
       Height = 25
       Anchors = [akRight, akBottom]
       Caption = '&Update'
-      TabOrder = 12
+      TabOrder = 13
       OnClick = btnUpdateClick
     end
     object chkDropDown: TCheckBox
       Left = 16
       Top = 328
-      Width = 170
+      Width = 134
       Height = 17
       Caption = 'Menu on left click'
       TabOrder = 11
@@ -155,7 +155,7 @@ object frmMain: TfrmMain
       Width = 217
       Height = 193
       Caption = ' Balloon Hint: '
-      TabOrder = 13
+      TabOrder = 14
       object Label2: TLabel
         Left = 8
         Top = 24
@@ -218,6 +218,14 @@ object frmMain: TfrmMain
           'Warning')
       end
     end
+    object chkAutoHideIcon: TCheckBox
+      Left = 152
+      Top = 328
+      Width = 97
+      Height = 17
+      Caption = 'Auto Hide Icon'
+      TabOrder = 12
+    end
   end
   object chkAutoRestore: TCheckBox
     Left = 18
@@ -256,6 +264,7 @@ object frmMain: TfrmMain
       0003800000038000000380000003C0000003E0000003F0000003F8000007}
     IconIndex = -1
     PopupMenu = popTrayIcon
+    Snap = True
     Left = 264
     Top = 32
   end
