@@ -912,7 +912,7 @@ begin
         Result := Ord(gpData);
       ftReference, ftDataSet:
         Result := Ord(gpData);
-      ftOraClob:
+      ftOraClob, ftMemo, ftFmtMemo:
         Result := Ord(gpMemo);
       ftOraBlob:
         Result := Ord(gpBlob);
