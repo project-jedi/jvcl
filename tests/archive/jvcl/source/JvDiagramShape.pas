@@ -42,6 +42,7 @@ type
     FWasCovered: Boolean;
     FAlignment: TAlignment;
     FRightClickSelect: boolean;
+    FMultiSelect: boolean;
     function GetCanProcessMouseMsg: Boolean;
   protected
     procedure SetCaption(Value: TJvTextShape); virtual;
@@ -56,6 +57,7 @@ type
     procedure SetParent(AParent: TWinControl); override;
     procedure SetSelected(Value: Boolean); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    property MultiSelect:boolean read FMultiSelect write FMultiSelect;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -71,6 +73,7 @@ type
     class procedure DeleteAllShapes(ParentControl: TWinControl);
     class procedure DeleteSelectedShapes(ParentControl: TWinControl);
     class procedure UnselectAllShapes(ParentControl: TWinControl);
+    class procedure SetMultiSelected(ParentControl: TWinControl;Value:boolean);
 
     property Selected: Boolean read FSelected write SetSelected;
   published
@@ -862,7 +865,7 @@ begin {MouseDown}
   end;
 
   // If not holding down the shift key then not doing multiple selection
-  if not (ssShift in Shift) then
+  if not (ssShift in Shift) and not MultiSelect then
   begin
     UnselectAllShapes(Parent);
   end;
@@ -2310,6 +2313,21 @@ begin {RegisterStorageClasses}
       TJvSubCaseArrow]);
 end; {RegisterStorageClasses}
 
+
+class procedure TJvCustomDiagramShape.SetMultiSelected(
+  ParentControl: TWinControl; Value: boolean);
+var
+  i: Integer;
+begin {UnselectAllShapes}
+  for i := 0 to ParentControl.ControlCount - 1 do
+  begin
+    if ParentControl.Controls[i] is TJvCustomDiagramShape then
+    begin
+      TJvCustomDiagramShape(ParentControl.Controls[i]).MultiSelect := Value;
+    end;
+  end;
+
+end;
 
 initialization
   RegisterStorageClasses;
