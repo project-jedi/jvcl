@@ -68,7 +68,7 @@ type
     procedure SetHints(const Value: TStringList);
   protected
     {$IFDEF VCL}
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure FontChanged; override;
@@ -78,8 +78,8 @@ type
     {$IFDEF JVCLThemesEnabled}
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     {$IFDEF VCL}
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
@@ -88,11 +88,8 @@ type
     {$ENDIF JVCLThemesEnabled}
   public
     constructor Create(AOwner: TComponent); override;
-    {Creates and initializes an instance of TJvArrayButton. }
     destructor Destroy; override;
-    {Destroys an instance of TJvArrayButton.}
     procedure Paint; override;
-    {Renders the image of the button.}
     procedure DoShowHint(var HintStr: {$IFDEF VCL} string {$ELSE} WideString {$ENDIF};
       var CanShow: Boolean; var HintInfo: THintInfo);
 
@@ -125,7 +122,7 @@ type
     {A List of button hints from the top-left to the bottom-right button}
     property Colors: TStringList read FColors write SetColors;
     {A List of button Colors from the top-left to the bottom-right button
-     values must standard delphi Color names like clred, clblue or hex Color strings like $0000ff for red.
+     values must standard Delphi Color names like clRed, clBlue or hex Color strings like $0000ff for red.
      please note the hex order in Delphi is BGR i.s.o. the RGB order you may know from HTML hex Color triplets}
     property Hint;
     property ShowHint default True;
@@ -226,14 +223,14 @@ end;
 procedure TJvArrayButton.MouseEnter(AControl: TControl);
 begin
   inherited MouseEnter(AControl);
-  Paint;
+  Repaint;
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvArrayButton.CMMouseEnter(var Message: TMessage);
+procedure TJvArrayButton.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
-  Paint;
+  Repaint;
 end;
 {$ENDIF VCL}
 
@@ -241,14 +238,14 @@ end;
 procedure TJvArrayButton.MouseLeave(AControl: TControl);
 begin
   inherited MouseLeave(AControl);
-  Paint;
+  Repaint;
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvArrayButton.CMMouseLeave(var Message: TMessage);
+procedure TJvArrayButton.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
-  Paint;
+  Repaint;
 end;
 {$ENDIF VCL}
 
@@ -396,7 +393,7 @@ end;
 procedure TJvArrayButton.FontChanged;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvArrayButton.CMFontChanged(var Message: TMessage);
+procedure TJvArrayButton.CMFontChanged(var Msg: TMessage);
 {$ENDIF VCL}
 begin
   Canvas.Font.Assign(Font);

@@ -33,9 +33,7 @@ unit JvDice;
 interface
 
 uses
-  SysUtils,
-  Windows,
-  Classes, Graphics, Messages, Controls, Forms, Menus,
+  Windows, SysUtils, Classes, Graphics, Messages, Controls, Forms, Menus,
   JvTimer, JvComponent, JvThemes;
 
 type
@@ -45,7 +43,7 @@ type
   private
     FActive: Boolean;
     FAutoSize: Boolean;
-    FBitmap: TBitmap;
+    FBitmap: array [TJvDiceValue] of TBitmap;
     FInterval: Cardinal;
     FAutoStopInterval: Cardinal;
     FOnChange: TNotifyEvent;
@@ -59,16 +57,16 @@ type
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
-    procedure CreateBitmap;
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
     procedure SetValue(Value: TJvDiceValue);
-    procedure TimerExpired(Sender: TObject);
+    procedure TimerFires(Sender: TObject);
+    procedure NewRandomValue;
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     function GetPalette: HPALETTE; override;
-    procedure AdjustSize;override;
+    procedure AdjustSize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure Paint; override;
@@ -78,11 +76,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure RandomValue;
+    procedure Throw;
   published
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
-  {$ENDIF}  
+    {$ENDIF JVCLThemesEnabled}
     property Align;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property AutoStopInterval: Cardinal read FAutoStopInterval write FAutoStopInterval default 0;
@@ -103,7 +101,7 @@ type
     property DragKind;
     property TabOrder;
     property TabStop;
-    property Value: TJvDiceValue read FValue write SetValue default 1;
+    property Value: TJvDiceValue read FValue write SetValue default Low(TJvDiceValue);
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -134,51 +132,55 @@ uses
 
 {$R ..\resources\JvDice.res}
 
-const
-  ResName: array [TJvDiceValue] of PChar =
-  ('JV_DICE1', 'JV_DICE2', 'JV_DICE3', 'JV_DICE4', 'JV_DICE5', 'JV_DICE6');
-
 constructor TJvDice.Create(AOwner: TComponent);
+var
+  I: TJvDiceValue;
 begin
   inherited Create(AOwner);
   Randomize;
   ControlStyle := [csClickEvents, csSetCaption, csCaptureMouse,
     csOpaque, csDoubleClicks];
   IncludeThemeStyle(Self, [csParentBackground]);
-  FValue := 1;
   FInterval := 60;
-  CreateBitmap;
+  FValue := Low(TJvDiceValue);
+  for I := Low(TJvDiceValue) to High(TJvDiceValue) do
+  begin
+    FBitmap[I] := TBitmap.Create;
+    FBitmap[I].Handle := LoadBitmap(HInstance, PChar(Format('JV_DICE%d', [Ord(I)])));
+  end;
   FAutoSize := True;
-  Width := FBitmap.Width + 2;
-  Height := FBitmap.Height + 2;
+  Width := FBitmap[Value].Width + 2;
+  Height := FBitmap[Value].Height + 2;
 end;
 
 destructor TJvDice.Destroy;
+var
+  I: TJvDiceValue;
 begin
   FOnChange := nil;
-  FBitmap.Free;
+  for I := Low(TJvDiceValue) to High(TJvDiceValue) do
+    FBitmap[I].Free;
   inherited Destroy;
+end;
+
+procedure TJvDice.Throw;
+begin
+  Value := TJvDiceValue(Random(6) + 1);
+end;
+
+procedure TJvDice.NewRandomValue;
+var
+  Val: Byte;
+begin
+  repeat
+    Val := Random(6) + 1;
+  until Val <> Byte(Value);
+  Value := TJvDiceValue(Val);
 end;
 
 function TJvDice.GetPalette: HPALETTE;
 begin
-  if FBitmap <> nil then
-    Result := FBitmap.Palette
-  else
-    Result := 0;
-end;
-
-procedure TJvDice.RandomValue;
-var
-  Val: Byte;
-begin
-  Val := Random(6) + 1;
-  if Val = Byte(FValue) then
-    if Val = 1 then
-      Inc(Val)
-    else
-      Dec(Val);
-  SetValue(TJvDiceValue(Val));
+  Result := FBitmap[Value].Palette;
 end;
 
 procedure TJvDice.DoStart;
@@ -218,22 +220,15 @@ begin
   Msg.Result := 0;
 end;
 
-procedure TJvDice.CreateBitmap;
-begin
-  if FBitmap = nil then
-    FBitmap := TBitmap.Create;
-  FBitmap.Handle := LoadBitmap(HInstance, ResName[FValue]);
-end;
-
 procedure TJvDice.AdjustSize;
 var
   MinSide: Integer;
 begin
   if not (csReading in ComponentState) then
   begin
-    if AutoSize and Assigned(FBitmap) and (FBitmap.Width > 0) and
-      (FBitmap.Height > 0) then
-      SetBounds(Left, Top, FBitmap.Width + 2, FBitmap.Height + 2)
+    if AutoSize and (FBitmap[Value].Width > 0) and
+      (FBitmap[Value].Height > 0) then
+      SetBounds(Left, Top, FBitmap[Value].Width + 2, FBitmap[Value].Height + 2)
     else
     begin
       { Adjust aspect ratio if control size changed }
@@ -264,8 +259,8 @@ var
     IRect: TRect;
     ImgList: TImageList;
   begin
-    IWidth := FBitmap.Width;
-    IHeight := FBitmap.Height;
+    IWidth := FBitmap[Value].Width;
+    IHeight := FBitmap[Value].Height;
     if (IWidth = 0) and (IHeight = 0) then
       Exit;
 
@@ -273,7 +268,7 @@ var
     TmpImage := TBitmap.Create;
     ImgList := TImageList.CreateSize(IWidth, IHeight);
     try
-      ImgList.AddMasked(FBitmap, FBitmap.TransparentColor);
+      ImgList.AddMasked(FBitmap[Value], FBitmap[Value].TransparentColor);
       TmpImage.Width := IWidth;
       TmpImage.Height := IHeight;
       TmpImage.Canvas.CopyRect(ClientRect, Canvas, ClientRect);
@@ -290,28 +285,20 @@ begin
   Canvas.Brush.Color := Parent.Brush.Color;
   DrawThemedBackground(Self, Canvas, ClientRect);
   ARect := ClientRect;
-  if FBitmap <> nil then
-    DrawBitmap;
+  DrawBitmap;
   if Focused and FShowFocus and TabStop and not (csDesigning in ComponentState) then
     Canvas.DrawFocusRect(ARect);
 end;
 
-procedure TJvDice.TimerExpired(Sender: TObject);
+procedure TJvDice.TimerFires(Sender: TObject);
 var
-  ParentForm: TCustomForm;
   Now: Longint;
 begin
-  RandomValue;
+  NewRandomValue;
   if not FRotate then
   begin
     FTimer.Free;
     FTimer := nil;
-    if csDesigning in ComponentState then
-    begin
-      ParentForm := GetParentForm(Self);
-      if ParentForm <> nil then
-        ParentForm.Designer.Modified;
-    end;
     DoStop;
   end
   else
@@ -334,7 +321,6 @@ begin
   if FValue <> Value then
   begin
     FValue := Value;
-    CreateBitmap;
     Invalidate;
     Change;
   end;
@@ -344,7 +330,7 @@ procedure TJvDice.SetAutoSize(Value: Boolean);
 begin
   {$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   FAutoSize := Value;
   AdjustSize;
   Invalidate;
@@ -371,7 +357,7 @@ begin
       try
         with FTimer do
         begin
-          OnTimer := TimerExpired;
+          OnTimer := TimerFires;
           Interval := FInterval;
           Enabled := True;
         end;
