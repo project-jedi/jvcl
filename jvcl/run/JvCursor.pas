@@ -26,9 +26,13 @@ Known Issues:
 Description:
   A TGraphic that can display cursors
 -----------------------------------------------------------------------------}
+
+{$I jvcl.inc}
+
 unit JvCursor;
 
 interface
+
 uses
   Windows, SysUtils, Classes, Graphics;
   
@@ -57,7 +61,8 @@ type
   
 implementation
 
-//=== TJvCursorImage ===========================================================
+uses
+  JvResources;
 
 procedure DestroyAndNilCursor(var Handle: HICON);
 begin
@@ -72,13 +77,15 @@ begin
   inherited Destroy;
 end;
 
+// Cursor are *not* always transparent: it depends on how you draw them ;)
+
 procedure TJvCursorImage.Draw(ACanvas: TCanvas; const Rect: TRect);
-// Cursor are *not* always transparent: it depends on how you draw them ;) 
-const   
-   cTransparent: array [boolean] of Cardinal = (DI_IMAGE, DI_NORMAL);
+const
+   cTransparent: array [Boolean] of DWORD = (DI_IMAGE, DI_NORMAL);
 begin
    with Rect do
-     DrawIconEx(ACanvas.Handle, Left, Top, Handle, Right - Left, Bottom - Top, 0, 0, cTransparent[Transparent]);
+     DrawIconEx(ACanvas.Handle, Left, Top, Handle, Right - Left, Bottom - Top,
+       0, 0, cTransparent[Transparent]);
 end;
 
 function TJvCursorImage.GetEmpty: Boolean;
@@ -99,7 +106,7 @@ end;
 procedure TJvCursorImage.LoadFromClipboardFormat(AFormat: Word; AData: THandle;
   APalette: HPALETTE);
 begin
-  raise Exception.Create('LoadFromClipboardFormat not supported');
+  raise Exception.Create(RsECursorLoadFromClipboardFormat);
 end;
 
 procedure TJvCursorImage.LoadFromFile(const FileName: string);
@@ -109,18 +116,18 @@ end;
 
 procedure TJvCursorImage.LoadFromStream(Stream: TStream);
 begin
-  raise Exception.Create('LoadFromStream not supported!');
+  raise Exception.Create(RsECursorLoadFromStream);
 end;
 
 procedure TJvCursorImage.SaveToClipboardFormat(var AFormat: Word;
   var AData: THandle; var APalette: HPALETTE);
 begin
-  raise Exception.Create('SaveToClipboardFormat not supported');
+  raise Exception.Create(RsECursorSaveToClipboardFormat);
 end;
 
 procedure TJvCursorImage.SaveToStream(Stream: TStream);
 begin
-  raise Exception.Create('SaveToStream not supported!');
+  raise Exception.Create(RsECursorSaveToStream);
 end;
 
 procedure TJvCursorImage.SetHeight(Value: Integer);
@@ -171,7 +178,7 @@ end;
 
 initialization
   RegisterClass(TJvCursorImage);
-  TPicture.RegisterFileFormat('cur', 'Cursor files', TJvCursorImage);
+  TPicture.RegisterFileFormat(RsCurExtension, RsCurDescription, TJvCursorImage);
 
 finalization
   TPicture.UnregisterGraphicClass(TJvCursorImage);

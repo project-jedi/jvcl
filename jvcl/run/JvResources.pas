@@ -392,6 +392,16 @@ resourcestring
 resourcestring
   RsEInvalidHexLiteral = 'HexStrToInt: Invalid hex literal';
 
+//=== JvCursor.pas ===========================================================
+resourcestring
+  RsCurExtension = 'cur';
+  RsCurDescription = 'Cursor files';
+
+  RsECursorLoadFromClipboardFormat = 'LoadFromClipboardFormat not supported';
+  RsECursorLoadFromStream = 'LoadFromStream not supported';
+  RsECursorSaveToClipboardFormat = 'SaveToClipboardFormat not supported';
+  RsECursorSaveToStream = 'SaveToStream not supported';
+
 //=== JvDataProvider.pas =====================================================
 resourcestring
   RsEItemsMayNotBeMovedInTheMainTree = 'Items may not be moved in the main tree';
