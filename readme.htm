@@ -634,7 +634,7 @@ added since JVCL 2.10:</P>
   <li>TJvAVICapture</LI> 
   <li>TJvBlinkingLED</LI></UL>
 <p>&nbsp;</P>
-<h4>Components deprecated, renamed or removed </H4>
+<h4>Components deprecated, renamed, removed or changed </H4>
 <p>The following components have been removed, renamed or are deprecated (i.e they will most likely disappear in the near 
 future) since JVCL 2.10:<br></P>
 <h5>Removed</H5>
@@ -932,6 +932,17 @@ this version:</P>
     <td>JvCsvDataForm</TD></TR></TABLE>
 <h5>Deprecated</H5>
 <p>TJvControlPanelButton<br>TJvStartMenuButton<br>TJvFavoritesButton<br>TJvRecentMenuButton</P>
+<h5>Changed</h5>
+<p>TJvComputerInfo has been changed from TComponent to TObject. This change was
+done to promote safety since there was a risk that the streaming of published
+properties could modify important registry values on the end-users computer. To
+continue using TJvComputerInfo, open the form where it is located and click the
+&quot;Ignore All&quot; button when Delphi/BCB reports that TJvComputerInfo
+cannot be found. Add a private variable of type TJvComputerInfo (with the same
+name as the former TJvComputerInfo component) to the form and create the class
+dynamically. You should now be able to use the class without any adverse
+side-effects. For more details, see the comments at the top of
+JvComputerInfo.pas.</P>
 <h4>Naming convention changed</H4>
 <p>To keep JVCL consistent, we have adopted a new naming 
 standard. The naming&nbsp;standard in JVCL&nbsp;affects both classes, types and 
