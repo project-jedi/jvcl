@@ -176,7 +176,7 @@ end;
 
 constructor TJvWinampLabel.Create(AOwner: TComponent);
 begin
-//  inherited Create(AOwner);
+  inherited Create(AOwner);
   AutoSize := False;
   FScrollInterval := 400;
   FCharWidth := 5;
@@ -197,14 +197,14 @@ begin
     FDelay := FScrollInterval;
     FOnDraw := DoOnTimer;
   end;
-//  Width := 100;
-//  Height := CharHeight * 2;
+  Width := 100;
+  Height := CharHeight * 2;
   FActive := False;
 //  Activate;
   FStretch := True;
   FScrollBy := 2;
   FWait := 1000;
-//  DoubleBuffered := true;
+  DoubleBuffered := true;
   Color := clBlack;
 //  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
 end;
@@ -436,34 +436,32 @@ var
 begin
   try
   if FBitmap = nil then exit;
-    FBitmap.Canvas.Start;
     if not FStretch then
     begin
       Rec := ClientRect;
       Rec.Top := Rec.Top + CharHeight;
       Canvas.FillRect(Rec);
       if FActive then
-        BitBlt(Canvas.Handle, 0, 0, Width, CharHeight, FBitmap.Canvas.Handle, FCurPos, 0, srcCopy)
+        BitBlt(Canvas, 0, 0, Width, CharHeight, FBitmap.Canvas, FCurPos, 0, srcCopy)
       else
       begin
         Rec := ClientRect;
         Rec.Bottom := Rec.Bottom + CharHeight;
         Rec.Left := Rec.Left + (CharWidth * Length(Text));
         Canvas.FillRect(Rec);
-        BitBlt(Canvas.Handle, 0, 0, Width, CharHeight, FBitmap.Canvas.Handle, 0, 0, srcCopy);
+        BitBlt(Canvas, 0, 0, Width, CharHeight, FBitmap.Canvas, 0, 0, srcCopy);
       end;
     end
     else
     begin
       FScale := Height / CharHeight;
       if FActive then
-        StretchBlt(Canvas.Handle, 0, 0, Width, Height, FBitmap.Canvas.Handle, FCurPos, 0, Round(Width / FScale),
+        StretchBlt(Canvas, 0, 0, Width, Height, FBitmap.Canvas, FCurPos, 0, Round(Width / FScale),
           CharHeight, srcCopy)
       else
-        StretchBlt(Canvas.Handle, 0, 0, Width, Height, FBitmap.Canvas.Handle, 0, 0, Round(Width / FScale), CharHeight,
-          srcCopy);
+        StretchBlt(Canvas, 0, 0, Width, Height, FBitmap.Canvas, 0, 0, Round(Width / FScale),
+          CharHeight, srcCopy);
     end;
-    FBitmap.Canvas.stop;
   finally
   end;
 end;
@@ -492,6 +490,7 @@ begin
     Canvas.FillRect(Rec);
     FCurPos := 0;
     FScrollBy := Abs(FScrollBy);
+    inherited;
   end;
 end;
 
