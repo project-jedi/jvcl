@@ -1,0 +1,1 @@
+Doc-O-matic output folder for WinHELP filter
