@@ -269,6 +269,7 @@ object ImageForm: TImageForm
     Top = 6
   end
   object FormStorage: TJvFormStorage
+    AppStorage = AppStore
     AppStoragePath = 'RX.ImagePreview\'
     StoredProps.Strings = (
       'StretchCheck.Checked')
