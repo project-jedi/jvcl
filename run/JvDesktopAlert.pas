@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+  {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -52,6 +52,7 @@ type
   TJvCustomDesktopAlertStyleHandler = class;
 
   TJvDesktopAlertStack = class;
+  TJvDesktopAlert = class;
   TJvDesktopAlertChangePersistent = class(TPersistent)
   private
     FOnChange: TNotifyEvent;
@@ -154,6 +155,7 @@ type
     FOnMouseLeave: TNotifyEvent;
     FData: TObject;
     FAutoFocus: Boolean;
+    FAutoFree: Boolean;
     FAlertStyle: TJvAlertStyle;
     FStyleHandler: TJvCustomDesktopAlertStyleHandler;
     function GetStacker: TJvDesktopAlertStack;
@@ -164,7 +166,7 @@ type
     procedure SetHeaderFont(const Value: TFont);
     procedure SetImage(const Value: TPicture);
     procedure SetImages(const Value: TCustomImageList);
-    procedure SeTPopupMenu(const Value: TPopupMenu);
+    procedure SetPopupMenu(const Value: TPopupMenu);
     procedure InternalOnShow(Sender: TObject);
     procedure InternalOnClose(Sender: TObject; var Action: TCloseAction);
     procedure InternalMouseEnter(Sender: TObject);
@@ -179,7 +181,7 @@ type
     function GetDropDownMenu: TPopupMenu;
     function GetHeaderText: string;
     function GetMessageText: string;
-    function GeTPopupMenu: TPopupMenu;
+    function GetPopupMenu: TPopupMenu;
     procedure SetHeaderText(const Value: string);
     procedure SetLocation(const Value: TJvDesktopAlertLocation);
     procedure SetMessageText(const Value: string);
@@ -194,8 +196,9 @@ type
     function GetCloseButtonClick: TNotifyEvent;
     procedure SetCloseButtonClick(const Value: TNotifyEvent);
     procedure SetAlertStyle(const Value: TJvAlertStyle);
-    procedure SetStyleHandler(
-      const Value: TJvCustomDesktopAlertStyleHandler);
+    procedure SetStyleHandler(const Value: TJvCustomDesktopAlertStyleHandler);
+    function GetBiDiMode: TBidiMode;
+    procedure SetBiDiMode(const Value: TBidiMode);
   protected
     FFormButtons: array of TControl;
     FDesktopForm: TJvFormDesktopAlert;
@@ -206,12 +209,15 @@ type
     function Showing: Boolean;
     procedure Close(Immediate: Boolean);
     procedure Execute; override;
+    property Form:TJvFormDesktopAlert read FDesktopForm;
     property Data: TObject read FData write FData;
     property StyleHandler: TJvCustomDesktopAlertStyleHandler read FStyleHandler write SetStyleHandler;
   published
     property AlertStack: TJvDesktopAlertStack read GetAlertStack write SetAlertStack;
-    property AlertStyle: TJvAlertStyle read FAlertStyle write SetAlertStyle default asFade; 
+    property AlertStyle: TJvAlertStyle read FAlertStyle write SetAlertStyle default asFade;
     property AutoFocus: Boolean read FAutoFocus write FAutoFocus default False;
+    property AutoFree: Boolean read FAutoFree write FAutoFree default False;
+    property BidiMode:TBidiMode read GetBiDiMode write SetBiDiMode;
     property HeaderText: string read GetHeaderText write SetHeaderText;
     property MessageText: string read GetMessageText write SetMessageText;
 
@@ -227,7 +233,7 @@ type
     property Image: TPicture read GetImage write SetImage;
     property Images: TCustomImageList read FImages write SetImages;
     property DropDownMenu: TPopupMenu read GetDropDownMenu write SetDropDownMenu;
-    property PopupMenu: TPopupMenu read GeTPopupMenu write SeTPopupMenu;
+    property PopupMenu: TPopupMenu read GetPopupMenu write SetPopupMenu;
 
     // This property is equivalent to StyleHandler, it is just renamed to look better in the inspector
     property StyleOptions: TJvCustomDesktopAlertStyleHandler read FStyleHandler write SetStyleHandler;
@@ -646,6 +652,7 @@ begin
   inherited Items[Index] := Value;
 end;
 
+
 //=== { TJvDesktopAlert } ====================================================
 
 constructor TJvDesktopAlert.Create(AOwner: TComponent);
@@ -655,23 +662,29 @@ begin
   FButtons := TJvDesktopAlertButtons.Create(Self);
   FLocation := TJvDesktopAlertLocation.Create;
   FLocation.OnChange := DoLocationChange;
-
   FDesktopForm := TJvFormDesktopAlert.Create(Self);
   AlertStyle := asFade;
-
   FOptions := [daoCanClick..daoCanClose];
 end;
 
 destructor TJvDesktopAlert.Destroy;
 begin
-  if (FDesktopForm <> nil) and FDesktopForm.Showing then
-    FDesktopForm.Close;
-  FColors.Free;
-  FButtons.Free;
-  FLocation.Free;
-  GetStacker.Remove(FDesktopForm);
-  FDesktopForm.Release;
-  FStyleHandler.Free;
+  // when AutoFreeing, Delphi doesn't like the component having an owner, so remove the Owner here
+  if FAutoFree and (Owner <> nil) and not (csDesigning in ComponentState) then
+    Owner.RemoveComponent(Self);
+  if (FDesktopForm <> nil) then
+  begin
+    if FDesktopForm.Showing then
+      FDesktopForm.Close;
+    FDesktopForm.OnClose := nil;
+    GetStacker.Remove(FDesktopForm);
+    FDesktopForm.Release;
+    FDesktopForm := nil;
+  end;
+  FreeAndNil(FColors);
+  FreeAndNil(FButtons);
+  FreeAndNil(FLocation);
+  FreeAndNil(FStyleHandler);
   inherited Destroy;
 end;
 
@@ -804,7 +817,8 @@ begin
       Images := Self.Images;
       ImageIndex := Buttons[I].ImageIndex;
       Tag := Buttons[I].Tag;
-      OnClick := Buttons[I].OnClick;
+      InternalClick := Buttons[I].OnClick;
+      OnClick := FDesktopForm.DoButtonClick;
       Parent := FDesktopForm;
       Inc(X, 22);
     end;
@@ -824,10 +838,11 @@ begin
   FDesktopForm.Show;
   if not AutoFocus and (FActiveFocus <> GetFocus) then
   begin
+    if (FActiveFocus <> NullHandle) then
+      SetFocus(FActiveFocus)
+    else
     if (FActiveWindow <> NullHandle) then
       SetActiveWindow(FActiveWindow);
-    if (FActiveFocus <> NullHandle) then
-      SetFocus(FActiveFocus);
   end;
   GetStacker.Add(FDesktopForm);
 end;
@@ -875,7 +890,7 @@ begin
   Result := FDesktopForm.ParentFont;
 end;
 
-function TJvDesktopAlert.GeTPopupMenu: TPopupMenu;
+function TJvDesktopAlert.GetPopupMenu: TPopupMenu;
 begin
   Result := FDesktopForm.PopupMenu;
 end;
@@ -899,9 +914,21 @@ begin
 end;
 
 procedure TJvDesktopAlert.InternalMessageClick(Sender: TObject);
+var
+  FEndInterval:Cardinal;
 begin
   if Assigned(FOnMessageClick) and (daoCanClick in Options) then
-    FOnMessageClick(Self)
+  begin
+    FEndInterval := StyleHandler.EndInterval;
+    try
+      StyleHandler.EndInterval := 0;
+      FOnMessageClick(Self);  // (p3) should this be Sender instead?
+    finally
+      StyleHandler.EndInterval := FEndInterval;
+    end;
+    if not Form.MouseInControl then
+      StyleHandler.DoEndAnimation;
+  end;
 end;
 
 procedure TJvDesktopAlert.InternalMouseEnter(Sender: TObject);
@@ -919,6 +946,8 @@ end;
 procedure TJvDesktopAlert.InternalOnClose(Sender: TObject;
   var Action: TCloseAction);
 begin
+  if (csDestroying in ComponentState) then
+    Exit;
   if Location.Position = dapCustom then
   begin
     Location.Top := FDesktopForm.Top;
@@ -927,6 +956,14 @@ begin
   if Assigned(FOnClose) then
     FOnClose(Self);
   GetStacker.Remove(FDesktopForm);
+  if AutoFree and (FDesktopForm <> nil) and not (csDesigning in ComponentState) then
+  begin
+    FDesktopForm.OnClose := nil;
+    // post a message to the form so we have time to finish off all event handlers and
+    // timers before the form and component are freed
+    PostMessage(FDesktopForm.Handle, JVDESKTOPALERT_AUTOFREE, integer(FDesktopForm), integer(Self));
+    FDesktopForm := nil;
+  end;
 end;
 
 procedure TJvDesktopAlert.InternalOnMove(Sender: TObject);
@@ -950,8 +987,10 @@ procedure TJvDesktopAlert.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
+  begin
     if AComponent = FStacker then
       AlertStack := nil;
+  end;
 end;
 
 procedure TJvDesktopAlert.SetAlertStack(const Value: TJvDesktopAlertStack);
@@ -1033,7 +1072,7 @@ begin
   FDesktopForm.ParentFont := Value;
 end;
 
-procedure TJvDesktopAlert.SeTPopupMenu(const Value: TPopupMenu);
+procedure TJvDesktopAlert.SetPopupMenu(const Value: TPopupMenu);
 begin
   FDesktopForm.PopupMenu := Value;
 end;
@@ -1066,6 +1105,16 @@ end;
 procedure TJvDesktopAlert.SetCloseButtonClick(const Value: TNotifyEvent);
 begin
   FDesktopForm.tbClose.OnClick := Value;
+end;
+
+procedure TJvDesktopAlert.SetAlertStyle(const Value: TJvAlertStyle);
+begin
+  if (FAlertStyle <> Value) or (FStyleHandler = nil) then
+  begin
+    FAlertStyle := Value;
+    FStyleHandler.Free;
+    FStyleHandler := CreateHandlerForStyle(AlertStyle, FDesktopForm);
+  end;
 end;
 
 //=== { TJvDesktopAlertStack } ===============================================
@@ -1221,15 +1270,6 @@ begin
   end;
 end;
 
-procedure TJvDesktopAlert.SetAlertStyle(const Value: TJvAlertStyle);
-begin
-  if (FAlertStyle <> Value) or (FStyleHandler = nil) then
-  begin
-    FAlertStyle := Value;
-    FStyleHandler.Free;
-    FStyleHandler := CreateHandlerForStyle(AlertStyle, FDesktopForm);
-  end;
-end;
 
 //=== { TJvCustomDesktopAlertStyle } =========================================
 
@@ -1243,7 +1283,8 @@ end;
 
 destructor TJvCustomDesktopAlertStyleHandler.Destroy;
 begin
-  FAnimTimer.Free;
+  FAnimTimer.OnTimer := nil;
+  FreeAndNil(FAnimTimer);
   inherited Destroy;
 end;
 
@@ -1323,6 +1364,8 @@ end;
 procedure TJvCustomDesktopAlertStyleHandler.SetEndSteps(const Value: Cardinal);
 begin
   FEndSteps := Value;
+  if FEndSteps < 1 then
+    FEndSteps := 1;
 end;
 
 procedure TJvCustomDesktopAlertStyleHandler.SetDisplayDuration(
@@ -1346,6 +1389,8 @@ end;
 procedure TJvCustomDesktopAlertStyleHandler.SetStartSteps(const Value: Cardinal);
 begin
   FStartSteps := Value;
+  if FStartSteps < 1 then
+    FStartSteps := 1;
 end;
 
 procedure TJvCustomDesktopAlertStyleHandler.StartAnimTimer(Sender: TObject);
@@ -1361,15 +1406,17 @@ end;
 
 procedure TJvCustomDesktopAlertStyleHandler.FinalizeEndAnimation;
 begin
-  OwnerForm.Close;
+  if OwnerForm <> nil then
+    OwnerForm.Close;
 end;
 
 procedure TJvCustomDesktopAlertStyleHandler.PrepareStartAnimation;
 begin
-  OwnerForm.Show;
+  if OwnerForm <> nil then
+    OwnerForm.Show;
 end;
 
-//=== { TJvFadingAlertStyle } ================================================
+//=== { TJvFadeAlertStyleHandler } =============================================
 
 type
   TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
@@ -1416,20 +1463,23 @@ var
       @DynamicSetLayeredWindowAttributes := nil;
   end;
 begin
-  InitProcs;
-  if OwnerForm.HandleAllocated and Assigned(DynamicSetLayeredWindowAttributes) then
+  if OwnerForm <> nil then
   begin
-    CurrentStyle := GetWindowLong(OwnerForm.Handle, GWL_EXSTYLE);
-    if (CurrentStyle and WS_EX_LAYERED) = 0 then
-      SetWindowLong(OwnerForm.Handle, GWL_EXSTYLE, GetWindowLong(OwnerForm.Handle, GWL_EXSTYLE) or WS_EX_LAYERED);
-    DynamicSetLayeredWindowAttributes(OwnerForm.Handle, 0, Value, LWA_ALPHA);
+    InitProcs;
+    if OwnerForm.HandleAllocated and Assigned(DynamicSetLayeredWindowAttributes) then
+    begin
+      CurrentStyle := GetWindowLong(OwnerForm.Handle, GWL_EXSTYLE);
+      if (CurrentStyle and WS_EX_LAYERED) = 0 then
+        SetWindowLong(OwnerForm.Handle, GWL_EXSTYLE, GetWindowLong(OwnerForm.Handle, GWL_EXSTYLE) or WS_EX_LAYERED);
+      DynamicSetLayeredWindowAttributes(OwnerForm.Handle, 0, Value, LWA_ALPHA);
+    end;
   end;
 end;
 
 procedure TJvFadeAlertStyleHandler.EndAnimTimer(Sender: TObject);
 begin
   inherited EndAnimTimer(Sender);
-  DoAlphaBlend(MaxAlphaBlendValue - ((Cardinal(MaxAlphaBlendValue) - MinAlphaBlendValue) * CurrentStep) div StartSteps);
+  DoAlphaBlend(MaxAlphaBlendValue - ((Cardinal(MaxAlphaBlendValue) - MinAlphaBlendValue) * CurrentStep) div EndSteps);
 end;
 
 procedure TJvFadeAlertStyleHandler.FinalizeEndAnimation;
@@ -1506,22 +1556,31 @@ var
   RegionHeight: Integer;
   RegionWidth: Integer;
 begin
-  RegionHeight := Round(Percentage * OwnerForm.Height / 100.0);
-  RegionWidth := Round(Percentage * OwnerForm.Width / 100.0);
+  if OwnerForm <> nil then
+  begin
+    RegionHeight := Round(Percentage * OwnerForm.Height / 100.0);
+    RegionWidth := Round(Percentage * OwnerForm.Width / 100.0);
 
-  RegionRect.Left := (OwnerForm.Width - RegionWidth) div 2;
-  RegionRect.Right := RegionRect.Left + RegionWidth;
-  RegionRect.Top := (OwnerForm.Height - RegionHeight) div 2;
-  RegionRect.Bottom := RegionRect.Top + RegionHeight;
+    RegionRect.Left := (OwnerForm.Width - RegionWidth) div 2;
+    RegionRect.Right := RegionRect.Left + RegionWidth;
+    RegionRect.Top := (OwnerForm.Height - RegionHeight) div 2;
+    RegionRect.Bottom := RegionRect.Top + RegionHeight;
 
-  Region := CreateRectRgnIndirect(RegionRect);
-  SetWindowRgn(OwnerForm.Handle, Region, True);
+    Region := CreateRectRgnIndirect(RegionRect);
+    SetWindowRgn(OwnerForm.Handle, Region, True);
+  end;
+end;
+
+procedure TJvCenterGrowAlertStyleHandler.StartAnimTimer(Sender: TObject);
+begin
+  DoGrowRegion(MinGrowthPercentage + ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / StartSteps);
+  inherited StartAnimTimer(Sender);
 end;
 
 procedure TJvCenterGrowAlertStyleHandler.EndAnimTimer(Sender: TObject);
 begin
   inherited EndAnimTimer(Sender);
-  DoGrowRegion(MaxGrowthPercentage - ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / StartSteps);
+  DoGrowRegion(MaxGrowthPercentage - ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / EndSteps);
 end;
 
 procedure TJvCenterGrowAlertStyleHandler.FinalizeEndAnimation;
@@ -1564,10 +1623,14 @@ begin
     FMinGrowthPercentage := 100;
 end;
 
-procedure TJvCenterGrowAlertStyleHandler.StartAnimTimer(Sender: TObject);
+function TJvDesktopAlert.GetBiDiMode: TBidiMode;
 begin
-  DoGrowRegion(MinGrowthPercentage + ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / StartSteps);
-  inherited StartAnimTimer(Sender);
+  Result := FDesktopForm.BiDiMode;
+end;
+
+procedure TJvDesktopAlert.SetBiDiMode(const Value: TBidiMode);
+begin
+  FDesktopForm.BiDiMode := Value;
 end;
 
 {$IFDEF UNITVERSIONING}

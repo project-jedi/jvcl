@@ -41,6 +41,7 @@ uses
 const
   cDefaultAlertFormWidth = 329;
   cDefaultAlertFormHeight = 76;
+  JVDESKTOPALERT_AUTOFREE = WM_USER + 1001;
 
 type
   TJvDesktopAlertButtonType = (abtArrowLeft, abtArrowRight, abtClose, abtMaximize,
@@ -52,6 +53,7 @@ type
     FImages: TCustomImageList;
     FImageIndex: TImageIndex;
     FToolType: TJvDesktopAlertButtonType;
+    FInternalClick: TNotifyEvent;
     procedure SetImages(const Value: TCustomImageList);
     procedure SetImageIndex(const Value: TImageIndex);
     procedure DoImagesChange(Sender: TObject);
@@ -59,7 +61,10 @@ type
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
   public
+    property InternalClick:TNotifyEvent read FInternalClick write FInternalClick;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
@@ -83,8 +88,9 @@ type
     {$IFDEF VCL}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMActivate(var Message: TWMActivate); message WM_ACTIVATE;
+    procedure WMMove(var Msg: TWMMove); message WM_MOVE;
     {$ENDIF VCL}
-
+    procedure JvDeskTopAlertAutoFree(var Msg:TMessage); message JVDESKTOPALERT_AUTOFREE;
     procedure DoMouseTimer(Sender: TObject);
     procedure FormPaint(Sender: TObject);
   protected
@@ -93,10 +99,6 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
 
-    {$IFDEF VCL}
-    procedure WMMove(var Msg: TWMMove); message WM_MOVE;
-    procedure CreateWindowHandle(const Params: TCreateParams); override;
-    {$ENDIF VCL}
   public
     imIcon: TImage;
     lblText: TJvLabel;
@@ -120,6 +122,7 @@ type
     procedure SetNewTop(const Value: Integer);
     procedure SetNewLeft(const Value: Integer);
     procedure SetNewOrigin(ALeft, ATop: Integer);
+    procedure DoButtonClick(Sender:TObject);
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnUserMove: TNotifyEvent read FOnUserMove write FOnUserMove;
@@ -320,7 +323,7 @@ begin
   inherited MouseLeave(AControl);
   // make sure the mouse actually left the outer boundaries
   GetCursorPos(P);
-  if not PtInRect(BoundsRect, P) then
+  if MouseInControl and not PtInRect(BoundsRect, P) then
   begin
     if Assigned(FOnMouseLeave) then
       FOnMouseLeave(Self);
@@ -402,12 +405,18 @@ end;
 procedure TJvFormDesktopAlert.DoMouseTimer(Sender: TObject);
 var
   P: TPoint;
+  function IsInForm(P:TPoint):boolean;
+  var W:TControl;
+  begin
+    W := ControlAtPos(P, true, true);
+    Result := (W = Self) or (FindVCLWindow(P) = Self) or ((W <> nil) and (GetParentForm(W) = Self));
+  end;
 begin
-  // this is here to ensure that MouseInControl is corectly set even
+  // this is here to ensure that MouseInControl is correctly set even
   // if we never got a CM_MouseLeave (that happens a lot)
   MouseTimer.Enabled := False;
   GetCursorPos(P);
-  MouseInControl := PtInRect(BoundsRect, P) and (FindVCLWindow(P) = Self);
+  MouseInControl := PtInRect(BoundsRect, P); // and IsInForm(P);
   MouseTimer.Enabled := True;
   if not TJvDesktopAlert(Owner).StyleHandler.Active and not MouseInControl and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
     TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
@@ -415,16 +424,9 @@ end;
 
 procedure TJvFormDesktopAlert.DoClose(var Action: TCloseAction);
 begin
-  inherited DoClose(Action);
   MouseTimer.Enabled := False;
+  inherited DoClose(Action);
 end;
-
-{$IFDEF VCL}
-procedure TJvFormDesktopAlert.CreateWindowHandle(const Params: TCreateParams);
-begin
-  inherited CreateWindowHandle(Params);
-end;
-{$ENDIF VCL}
 
 //=== { TJvDesktopAlertButton } ==============================================
 
@@ -445,6 +447,18 @@ end;
 
 procedure TJvDesktopAlertButton.DoImagesChange(Sender: TObject);
 begin
+  Invalidate;
+end;
+
+procedure TJvDesktopAlertButton.MouseEnter(Control: TControl);
+begin
+  inherited;
+  Invalidate;
+end;
+
+procedure TJvDesktopAlertButton.MouseLeave(Control: TControl);
+begin
+  inherited;
   Invalidate;
 end;
 
@@ -625,6 +639,36 @@ begin
   end;
 end;
 
+procedure TJvFormDesktopAlert.JvDeskTopAlertAutoFree(var Msg: TMessage);
+begin
+  // WPAram is us, LParam is the TJvDesktopAlert
+  if Msg.WParam = integer(Self) then
+  begin
+    Release;
+    TObject(Msg.LParam).Free;
+  end;
+end;
+
+procedure TJvFormDesktopAlert.DoButtonClick(Sender: TObject);
+var FEndInterval:Cardinal;
+begin
+  if Sender is TJvDesktopAlertButton then
+  begin
+    FEndInterval := TJvDesktopAlert(Owner).StyleHandler.EndInterval;
+    try
+      // stop the animation while the OnClick handler executes:
+      // we don't want the form to disappear before we return
+      TJvDesktopAlert(Owner).StyleHandler.EndInterval := 0;
+      if Assigned(TJvDesktopAlertButton(Sender).InternalClick) then
+        TJvDesktopAlertButton(Sender).InternalClick(Sender);
+    finally
+      TJvDesktopAlert(Owner).StyleHandler.EndInterval := FEndInterval;
+      if not MouseInControl then
+        TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
+    end;
+  end;
+end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -634,7 +678,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-
 
 initialization
   {$IFDEF UNITVERSIONING}
