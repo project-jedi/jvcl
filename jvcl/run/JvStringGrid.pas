@@ -399,7 +399,10 @@ var
   var
     i, j: integer;
   begin
-    i := FixedRows;
+    if Fixed then
+      i := 0
+    else
+      i := FixedRows;
     j := RowCount - 1;
     while i < j do
     begin
@@ -413,7 +416,10 @@ var
   var
     i, j: integer;
   begin
-    i := FixedRows;
+    if Fixed then
+      i := 0
+    else
+      i := FixedRows;
     Result := i;
     j := RowCount - 1;
     while i <= j do
@@ -426,17 +432,51 @@ var
       Inc(i);
     end;
   end;
+  procedure MoveBlankBottom;
+  var
+    i, j: integer;
+    DoSort: boolean;
+  begin
+    if Fixed then
+      i := 0
+    else
+      i := FixedRows;
+    DoSort := false;
+    // avoid empty columns
+    for j := i to RowCount - 1 do
+      if Cells[Column, j] <> '' then
+      begin
+        DoSort := true;
+        Break;
+      end;
+    if not DoSort then Exit;
+    // this is already sorted, so blank items should be at top
+    while Trim(Cells[Column, i]) = '' do
+    begin
+      InsertRow(RowCount).Assign(Rows[i]);
+      DeleteRow(i);
+      Inc(j);
+      if j >= RowCount then Exit;
+    end;
+  end;
 
 begin
+  // (p3) NB!! sorting might trigger the OnExitCell, OnGetEditText and OnSetEditText events!
+  // make sure you don't do anything in these events
   if (Column >= 0) and (Column < ColCount) and (SortType <> stNone) then
   begin
-    LStart := FixedRows;
+    if Fixed then
+      LStart := 0
+    else
+      LStart := FixedRows;
     lEnd := RowCount - 1;
     if BlankTop then
       LStart := MoveBlankTop;
     if LStart < LEnd then
     begin
       QuickSort(LStart, lEnd);
+      if not BlankTop then
+        MoveBlankBottom;
       if not Ascending then
         InvertGrid;
     end;
@@ -1034,7 +1074,6 @@ begin
   if ColWidths[ACol] < 0 then ColWidths[ACol] := AWidth;
   if RowHeights[ARow] < 0 then RowHeights[ARow] := AHeight;
 end;
-
 
 end.
 
