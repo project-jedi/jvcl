@@ -170,6 +170,17 @@ Parameters
 See Also
   AcceptBalloons, OnBalloonClick, OnBalloonHide, OnBalloonShow
 ----------------------------------------------------------------------------------------------------
+@@TJvTrayIcon.CurrentIcon
+Summary
+  Contains the currently displayed icon.
+Description
+  CurrentIcon is a run-time, read-only property that contains the currently displayed icon in the
+  notification area. Depending on the values of Animated, Icon, Icons and IconIndex, this property
+  might change at run-time. Do not assign an icon to this property. Instead, use Icons, IconIndex or
+  Icon to set the icon to display.
+See Also
+  Active, Animated, Icons
+----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.Delay
 Summary
   Determines the amount of time, in milliseconds, between two refreshes of the tray icon.
@@ -317,16 +328,18 @@ Description
 
   If no icon is specified, TJvTrayIcon uses the application's icon, specified by Application.Icon.
 See Also
-  Active
+  Active, CurrentIcon, Icons, IconIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.IconIndex
 Summary
   Specifies the index of the icon displayed in the Windows taskbar notification area.
 Description
   Use IconIndex to get or set the index of the icon displayed in the Windows taskbar notification
-  area. This index identifies an icon in the control's Icons property.
+  area. The index identifies an icon in the control's Icons property.
+Note
+  Setting IcnIndex = -1, restores the icon selected fror the Icon property.
 See Also
-  Icon, Icons
+  CurrentIcon, Icon, Icons
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.Icons
 Summary
@@ -335,9 +348,10 @@ Description
   Use Icons to supply a list of icons that are used for the animation in the task bar notification
   area. When Active and Animated are set to true, TJvTrayIcon will iterate through the icons in the
   image list specified by Icons and display each icon in that list for Delay milliseconds in the
-  notification area.
+  notification area. If Animated is true, the icon selected by setting IconIndex will be displayed instead.
+  If IconIndex = -1 or Icons is nil, the icon from the Icon property is displayed.
 See Also
-  Active, Animated, Delay
+  Active, Animated, Delay, Icon, IconIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.OnAnimate
 Summary

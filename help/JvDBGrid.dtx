@@ -104,6 +104,18 @@ Description
 See Also
   AutoSizeColumnIndex
 ----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.AutoSort
+Summary
+  Indicates whether the grid tries to change the sort index of the dataset or not.
+Description
+  Use AutoSort when you want the grid to sort automatically when a column is clicked (TitleButtons must be set to true).
+  If AutoSort is true, the grid can sort the columns automatically if all of the following criteria are true:
+    * The dataset has a published property named "\IndexDefs" of type TIndexDefs
+    * The dataset has a published property named "\IndexName" of type string
+    * There is an index in IndexName that contains the name of the filed of the clicked column
+See Also
+  SortedField, SortMarker, TitleButtons, OnTitleClick, OnTitleBtnClick
+----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.BeepOnError
 Summary
   Indicates whether the speaker beeps when there is an error.
@@ -300,6 +312,17 @@ Parameters
   ACol   - The index of the column.
   Field  - The field the column displays.
 ----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnTitleBtnDblClick
+Summary
+  Occurs when a column header button is double-clicked.
+Description
+  Write a handler for this event to be notified when a title button is double-clicked. Note that the
+  OnTitleBtnClick event will also be triggered by a double-click.
+Parameters
+  Sender - The grid that triggered the event.
+  ACol   - The index of the column.
+  Field  - The field the column displays.
+----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnTitleHintEvent
 Summary
   Occurs when a column header wants to display its hint.
@@ -421,7 +444,18 @@ Description
   SortedField, IndexName will be changed automatically to the value of SortedField when a title button
   is clicked.
 See Also
-  OnTitleBtnClick
+  AutoSort, OnTitleBtnClick
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.SortMarker
+Summary
+  Specifies the sort arrow to display for the currently sorted column.
+Description
+  Use SortMarker to indicate the sort arrow to display for the current sort column. The current sort column
+  is determined by the value of the SortedField property. Note that setting SortedField and SortMaker does not
+  guarantee that the column will be sorted. For an explanation of when the grid can sort the columns automatically,
+  see the AutoSort topic.
+See Also
+  AutoSort, SortedField, TitleButtons, OnTitleBtnClick
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.TitleArrow
 Summary
