@@ -262,8 +262,5 @@ begin
   ShowError;
 end;
 
-initialization
-  DbEngineErrorDlg := nil;
-
 end.
 

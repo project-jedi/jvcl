@@ -1141,7 +1141,7 @@ type
     procedure Remove(Popup: TPopupMenu);
   end;
 
-const
+var
   PopupList: TJvPopupList = nil;
 
 procedure TJvPopupList.WndProc(var Message: TMessage);
