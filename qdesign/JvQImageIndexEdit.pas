@@ -143,6 +143,10 @@ begin
     try
       Screen.Cursor := crHourglass;
       try
+        OnApplyClick := ApplyClick;
+        Apply.Enabled := False;
+        Apply.OnClick := OnApplyClick;
+        BorderStyle := fbsSizeable;
         ImageList.Assign(ListItems.ComponentList);
         with ImageListView do
         begin
@@ -165,11 +169,11 @@ begin
         ImageView.MultiSelect := false;
         ImageView.ReadOnly := true;
         UpdateImageView(ListItems);
-        SelectImage(SelectedIndex);
-        FocusImage(ImageView, SelectedIndex, 0);
-        OnApplyClick := ApplyClick;
-        Apply.Enabled := False;
-        Apply.OnClick := OnApplyClick;
+        if (SelectedIndex >= 0) and (SelectedIndex <= AImageList.Count) then
+        begin
+          SelectImage(SelectedIndex);
+          FocusImage(ImageView, SelectedIndex, 0);
+        end;
       finally
         Screen.Cursor := crDefault;
       end;
