@@ -1,19 +1,16 @@
 inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
-  Left = 616
-  Top = 148
+  Left = 336
+  Top = 135
   Width = 566
   Height = 588
   OldCreateOrder = True
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  inherited hwJVCLCompEditor: TJvgWizardHeader
-    Width = 558
-  end
   inherited pnMain: TPanel
     Width = 558
-    Height = 472
-    object splJvgSplitter1: TJvgSplitter [0]
+    Height = 508
+    object splJvgSplitter1: TSplitter [0]
       Left = 1
       Top = 81
       Width = 556
@@ -24,14 +21,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
       Color = clBtnFace
       ParentColor = False
     end
-    inherited pgMain: TJvgPageControl
+    inherited pgMain: TPageControl
       Top = 89
       Width = 556
-      Height = 382
-      ActivePage = tbsTabSheet1
-      TabIndex = 1
+      Height = 418
       inherited tabMain: TTabSheet
-        object JvgGroupBox2: TJvgGroupBox
+        object JvgGroupBox2: TGroupBox
           Left = 6
           Top = 14
           Width = 192
@@ -44,33 +39,11 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          Border.Inner = bvSpace
-          Border.Outer = bvNone
-          Border.Bold = False
-          CaptionBorder.Inner = bvSpace
-          CaptionBorder.Outer = bvNone
-          CaptionBorder.Bold = False
-          CaptionGradient.Active = False
-          CaptionGradient.Orientation = fgdHorizontal
-          CaptionShift.X = 8
-          CaptionShift.Y = 0
-          Colors.Text = clGray
-          Colors.TextActive = clGray
-          Colors.Caption = clBtnShadow
-          Colors.CaptionActive = clBtnHighlight
-          Colors.Client = 15855064
-          Colors.ClientActive = 14803425
-          Gradient.FromColor = clBlack
-          Gradient.ToColor = clGray
-          Gradient.Active = False
-          Gradient.Orientation = fgdHorizontal
-          Options = [fgoCanCollapse, fgoFilledCaption, fgoFluentlyCollapse, fgoFluentlyExpand, fgoHideChildrenWhenCollapsed, fgoSaveChildFocus]
-          FullHeight = 0
-          object JvgLabel20: TJvgLabel
+          object JvgLabel20: TLabel
             Left = 72
             Top = 20
-            Width = 23
-            Height = 16
+            Width = 21
+            Height = 14
             Anchors = []
             Caption = 'Text'
             Font.Charset = DEFAULT_CHARSET
@@ -79,20 +52,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel19: TJvgLabel
+          object JvgLabel19: TLabel
             Left = 39
             Top = 43
-            Width = 57
-            Height = 16
+            Width = 55
+            Height = 14
             Anchors = []
             Caption = 'Text Active'
             Font.Charset = DEFAULT_CHARSET
@@ -101,20 +66,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel18: TJvgLabel
+          object JvgLabel18: TLabel
             Left = 29
             Top = 65
-            Width = 67
-            Height = 16
+            Width = 65
+            Height = 14
             Anchors = []
             Caption = 'Text Disabled'
             Font.Charset = DEFAULT_CHARSET
@@ -123,20 +80,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel17: TJvgLabel
+          object JvgLabel17: TLabel
             Left = 55
             Top = 100
-            Width = 42
-            Height = 16
+            Width = 40
+            Height = 14
             Caption = 'Highlight'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -144,20 +93,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel16: TJvgLabel
+          object JvgLabel16: TLabel
             Left = 57
             Top = 124
-            Width = 43
-            Height = 16
+            Width = 41
+            Height = 14
             Caption = 'Shadow'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -165,20 +106,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel15: TJvgLabel
+          object JvgLabel15: TLabel
             Left = 40
             Top = 154
-            Width = 60
-            Height = 16
+            Width = 58
+            Height = 14
             Caption = 'Background'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -186,20 +119,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel14: TJvgLabel
+          object JvgLabel14: TLabel
             Left = 6
             Top = 178
-            Width = 94
-            Height = 16
+            Width = 92
+            Height = 14
             Caption = 'Background Active'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -207,20 +132,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel13: TJvgLabel
+          object JvgLabel13: TLabel
             Left = 54
             Top = 213
-            Width = 46
-            Height = 16
+            Width = 44
+            Height = 14
             Caption = 'Delineate'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -228,20 +145,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel10: TJvgLabel
+          object JvgLabel10: TLabel
             Left = 23
             Top = 237
-            Width = 77
-            Height = 16
+            Width = 75
+            Height = 14
             Caption = 'DelineateActive'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -249,14 +158,6 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
           object cbtnText: TComboBox
             Tag = 1
@@ -358,7 +259,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             OnChange = cLabelColorsChange
           end
         end
-        object gbxPassiveStyle: TJvgGroupBox
+        object gbxPassiveStyle: TGroupBox
           Left = 329
           Top = 17
           Width = 97
@@ -371,155 +272,67 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Font.Style = []
           ParentFont = False
           TabOrder = 1
-          Border.Inner = bvSpace
-          Border.Outer = bvNone
-          Border.Bold = False
-          CaptionBorder.Inner = bvSpace
-          CaptionBorder.Outer = bvNone
-          CaptionBorder.Bold = False
-          CaptionGradient.Active = False
-          CaptionGradient.Orientation = fgdHorizontal
-          CaptionShift.X = 8
-          CaptionShift.Y = 0
-          Colors.Text = clGray
-          Colors.TextActive = clGray
-          Colors.Caption = clBtnShadow
-          Colors.CaptionActive = clBtnHighlight
-          Colors.Client = 15855064
-          Colors.ClientActive = 14803425
-          Gradient.FromColor = clBlack
-          Gradient.ToColor = clGray
-          Gradient.Active = False
-          Gradient.Orientation = fgdHorizontal
-          Options = [fgoCanCollapse, fgoFilledCaption, fgoFluentlyCollapse, fgoFluentlyExpand, fgoHideChildrenWhenCollapsed, fgoSaveChildFocus]
-          FullHeight = 0
-          object cbxPassiveNormal: TJvgCheckBox
+          object cbxPassiveNormal: TCheckBox
             Left = 10
             Top = 24
             Width = 80
             Height = 17
             Caption = 'Normal'
+            TabOrder = 0
             OnClick = cbxPassiveNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 2
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxPassivePushed: TJvgCheckBox
+          object cbxPassivePushed: TCheckBox
             Tag = 1
             Left = 10
             Top = 43
             Width = 80
             Height = 17
             Caption = 'Pushed'
+            TabOrder = 1
             OnClick = cbxPassiveNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 2
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxPassiveRaised: TJvgCheckBox
+          object cbxPassiveRaised: TCheckBox
             Tag = 2
             Left = 10
             Top = 62
             Width = 80
             Height = 17
             Caption = 'Raised'
+            TabOrder = 2
             OnClick = cbxPassiveNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 2
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxPassiveShadow: TJvgCheckBox
+          object cbxPassiveShadow: TCheckBox
             Tag = 3
             Left = 10
             Top = 82
             Width = 80
             Height = 17
             Caption = 'Shadow'
+            TabOrder = 3
             OnClick = cbxPassiveNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 2
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxPassiveRecessed: TJvgCheckBox
+          object cbxPassiveRecessed: TCheckBox
             Tag = 4
             Left = 10
             Top = 101
             Width = 80
             Height = 17
             Caption = 'Recessed'
+            TabOrder = 4
             OnClick = cbxPassiveNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 2
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxPassiveVolumentric: TJvgCheckBox
+          object cbxPassiveVolumentric: TCheckBox
             Tag = 5
             Left = 10
             Top = 120
             Width = 80
             Height = 17
             Caption = 'Volumetric'
+            TabOrder = 5
             OnClick = cbxPassiveNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 2
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
         end
-        object gbxActiveStyle: TJvgGroupBox
+        object gbxActiveStyle: TGroupBox
           Left = 214
           Top = 17
           Width = 97
@@ -532,156 +345,69 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Font.Style = []
           ParentFont = False
           TabOrder = 2
-          Border.Inner = bvSpace
-          Border.Outer = bvNone
-          Border.Bold = False
-          CaptionBorder.Inner = bvSpace
-          CaptionBorder.Outer = bvNone
-          CaptionBorder.Bold = False
-          CaptionGradient.Active = False
-          CaptionGradient.Orientation = fgdHorizontal
-          CaptionShift.X = 8
-          CaptionShift.Y = 0
-          Colors.Text = clGray
-          Colors.TextActive = clGray
-          Colors.Caption = clBtnShadow
-          Colors.CaptionActive = clBtnHighlight
-          Colors.Client = 15855064
-          Colors.ClientActive = 14803425
-          Gradient.FromColor = clBlack
-          Gradient.ToColor = clGray
-          Gradient.Active = False
-          Gradient.Orientation = fgdHorizontal
-          Options = [fgoCanCollapse, fgoFilledCaption, fgoFluentlyCollapse, fgoFluentlyExpand, fgoHideChildrenWhenCollapsed, fgoSaveChildFocus]
-          FullHeight = 0
-          object cbxActiveNormal: TJvgCheckBox
+          object cbxActiveNormal: TCheckBox
             Left = 10
             Top = 24
             Width = 80
             Height = 17
             Caption = 'Normal'
-            OnClick = cbxActiveNormalClick
-            GlyphKind = fgkCustom
             Checked = True
-            GroupIndex = 1
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
+            State = cbChecked
+            TabOrder = 0
+            OnClick = cbxActiveNormalClick
           end
-          object cbxActivePushed: TJvgCheckBox
+          object cbxActivePushed: TCheckBox
             Tag = 1
             Left = 10
             Top = 43
             Width = 80
             Height = 17
             Caption = 'Pushed'
+            TabOrder = 1
             OnClick = cbxActiveNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 1
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxActiveRaised: TJvgCheckBox
+          object cbxActiveRaised: TCheckBox
             Tag = 2
             Left = 10
             Top = 62
             Width = 80
             Height = 17
             Caption = 'Raised'
+            TabOrder = 2
             OnClick = cbxActiveNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 1
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxActiveShadow: TJvgCheckBox
+          object cbxActiveShadow: TCheckBox
             Tag = 3
             Left = 10
             Top = 82
             Width = 80
             Height = 17
             Caption = 'Shadow'
+            TabOrder = 3
             OnClick = cbxActiveNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 1
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxActiveRecessed: TJvgCheckBox
+          object cbxActiveRecessed: TCheckBox
             Tag = 4
             Left = 10
             Top = 101
             Width = 80
             Height = 17
             Caption = 'Recessed'
+            TabOrder = 4
             OnClick = cbxActiveNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 1
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxActiveVolumetric: TJvgCheckBox
+          object cbxActiveVolumetric: TCheckBox
             Tag = 5
             Left = 10
             Top = 120
             Width = 80
             Height = 17
             Caption = 'Volumetric'
+            TabOrder = 5
             OnClick = cbxActiveNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 1
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
         end
-        object gbxDisabledStyle: TJvgGroupBox
+        object gbxDisabledStyle: TGroupBox
           Left = 440
           Top = 17
           Width = 97
@@ -694,155 +420,67 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Font.Style = []
           ParentFont = False
           TabOrder = 3
-          Border.Inner = bvSpace
-          Border.Outer = bvNone
-          Border.Bold = False
-          CaptionBorder.Inner = bvSpace
-          CaptionBorder.Outer = bvNone
-          CaptionBorder.Bold = False
-          CaptionGradient.Active = False
-          CaptionGradient.Orientation = fgdHorizontal
-          CaptionShift.X = 8
-          CaptionShift.Y = 0
-          Colors.Text = clGray
-          Colors.TextActive = clGray
-          Colors.Caption = clBtnShadow
-          Colors.CaptionActive = clBtnHighlight
-          Colors.Client = 15855064
-          Colors.ClientActive = 14803425
-          Gradient.FromColor = clBlack
-          Gradient.ToColor = clGray
-          Gradient.Active = False
-          Gradient.Orientation = fgdHorizontal
-          Options = [fgoCanCollapse, fgoFilledCaption, fgoFluentlyCollapse, fgoFluentlyExpand, fgoHideChildrenWhenCollapsed, fgoSaveChildFocus]
-          FullHeight = 0
-          object cbxDisabledNormal: TJvgCheckBox
+          object cbxDisabledNormal: TCheckBox
             Left = 10
             Top = 24
             Width = 80
             Height = 17
             Caption = 'Normal'
+            TabOrder = 0
             OnClick = cbxDisabledNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 3
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxDisabledPushed: TJvgCheckBox
+          object cbxDisabledPushed: TCheckBox
             Tag = 1
             Left = 10
             Top = 43
             Width = 80
             Height = 17
             Caption = 'Pushed'
+            TabOrder = 1
             OnClick = cbxDisabledNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 3
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxDisabledRaised: TJvgCheckBox
+          object cbxDisabledRaised: TCheckBox
             Tag = 2
             Left = 10
             Top = 62
             Width = 80
             Height = 17
             Caption = 'Raised'
+            TabOrder = 2
             OnClick = cbxDisabledNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 3
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxDisabledShadow: TJvgCheckBox
+          object cbxDisabledShadow: TCheckBox
             Tag = 3
             Left = 10
             Top = 82
             Width = 80
             Height = 17
             Caption = 'Shadow'
+            TabOrder = 3
             OnClick = cbxDisabledNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 3
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxDisabledRecessed: TJvgCheckBox
+          object cbxDisabledRecessed: TCheckBox
             Tag = 4
             Left = 10
             Top = 101
             Width = 80
             Height = 17
             Caption = 'Recessed'
+            TabOrder = 4
             OnClick = cbxDisabledNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 3
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
-          object cbxDisabledVolumentric: TJvgCheckBox
+          object cbxDisabledVolumentric: TCheckBox
             Tag = 5
             Left = 10
             Top = 120
             Width = 80
             Height = 17
             Caption = 'Volumetric'
+            TabOrder = 5
             OnClick = cbxDisabledNormalClick
-            GlyphKind = fgkCustom
-            GroupIndex = 3
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstPushed
-            TextStyles.Disabled = fstNone
-            Colors.Background = 14803425
-            Colors.BackgroundActive = 14803425
-            Options = [fcoFastDraw]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
         end
-        object JvgGroupBox1: TJvgGroupBox
+        object JvgGroupBox1: TGroupBox
           Left = 333
           Top = 177
           Width = 91
@@ -855,29 +493,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Font.Style = []
           ParentFont = False
           TabOrder = 4
-          Border.Inner = bvSpace
-          Border.Outer = bvNone
-          Border.Bold = False
-          CaptionBorder.Inner = bvSpace
-          CaptionBorder.Outer = bvNone
-          CaptionBorder.Bold = False
-          CaptionGradient.Active = False
-          CaptionGradient.Orientation = fgdHorizontal
-          CaptionShift.X = 8
-          CaptionShift.Y = 0
-          Colors.Text = clGray
-          Colors.TextActive = clGray
-          Colors.Caption = clBtnShadow
-          Colors.CaptionActive = clBtnHighlight
-          Colors.Client = 15855064
-          Colors.ClientActive = 14803425
-          Gradient.FromColor = clBlack
-          Gradient.ToColor = clGray
-          Gradient.Active = False
-          Gradient.Orientation = fgdHorizontal
-          Options = [fgoCanCollapse, fgoFilledCaption, fgoFluentlyCollapse, fgoFluentlyExpand, fgoHideChildrenWhenCollapsed, fgoSaveChildFocus]
-          FullHeight = 0
-          object cbxBold: TJvgCheckBox
+          object cbxBold: TCheckBox
             Tag = 4
             Left = 11
             Top = 24
@@ -885,29 +501,16 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Height = 14
             Cursor = crHandPoint
             Caption = 'Bold'
-            OnClick = cbxBoldClick
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Arial'
             Font.Style = [fsBold]
-            GlyphKind = fgkCustom
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            Colors.TextDisabled = clBtnFace
-            Colors.TextActive = 10485760
-            Options = [fcoFastDraw, fcoUnderlinedActive]
-            Gradient.FromColor = 16756059
-            Gradient.ToColor = clNavy
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Interspace = 4
+            ParentFont = False
+            TabOrder = 0
+            OnClick = cbxBoldClick
           end
-          object cbxItalic: TJvgCheckBox
+          object cbxItalic: TCheckBox
             Tag = 4
             Left = 11
             Top = 44
@@ -915,29 +518,16 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Height = 14
             Cursor = crHandPoint
             Caption = 'Italic'
-            OnClick = cbxItalicClick
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Arial'
             Font.Style = [fsItalic]
-            GlyphKind = fgkCustom
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            Colors.TextDisabled = clBtnFace
-            Colors.TextActive = 10485760
-            Options = [fcoFastDraw, fcoUnderlinedActive]
-            Gradient.FromColor = 16756059
-            Gradient.ToColor = clNavy
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Interspace = 4
+            ParentFont = False
+            TabOrder = 1
+            OnClick = cbxItalicClick
           end
-          object cbxUnderline: TJvgCheckBox
+          object cbxUnderline: TCheckBox
             Tag = 4
             Left = 11
             Top = 64
@@ -945,29 +535,16 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Height = 14
             Cursor = crHandPoint
             Caption = 'Underline'
-            OnClick = cbxUnderlineClick
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Arial'
             Font.Style = []
-            GlyphKind = fgkCustom
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            Colors.TextDisabled = clBtnFace
-            Colors.TextActive = 10485760
-            Options = [fcoFastDraw, fcoUnderlinedActive]
-            Gradient.FromColor = 16756059
-            Gradient.ToColor = clNavy
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Interspace = 4
+            ParentFont = False
+            TabOrder = 2
+            OnClick = cbxUnderlineClick
           end
-          object cbxStrikeOut: TJvgCheckBox
+          object cbxStrikeOut: TCheckBox
             Tag = 4
             Left = 11
             Top = 84
@@ -975,30 +552,17 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Height = 14
             Cursor = crHandPoint
             Caption = 'StrikeOut'
-            OnClick = cbxStrikeOutClick
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Arial'
             Font.Style = [fsStrikeOut]
-            GlyphKind = fgkCustom
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            Colors.TextDisabled = clBtnFace
-            Colors.TextActive = 10485760
-            Options = [fcoFastDraw, fcoUnderlinedActive]
-            Gradient.FromColor = 16756059
-            Gradient.ToColor = clNavy
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Interspace = 4
+            ParentFont = False
+            TabOrder = 3
+            OnClick = cbxStrikeOutClick
           end
         end
-        object gbxLabelDirection: TJvgGroupBox
+        object gbxLabelDirection: TGroupBox
           Left = 214
           Top = 177
           Width = 106
@@ -1011,67 +575,33 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Font.Style = []
           ParentFont = False
           TabOrder = 5
-          Border.Inner = bvSpace
-          Border.Outer = bvNone
-          Border.Bold = False
-          CaptionBorder.Inner = bvSpace
-          CaptionBorder.Outer = bvNone
-          CaptionBorder.Bold = False
-          CaptionGradient.Active = False
-          CaptionGradient.Orientation = fgdHorizontal
-          CaptionShift.X = 8
-          CaptionShift.Y = 0
-          Colors.Text = clGray
-          Colors.TextActive = clGray
-          Colors.Caption = clBtnShadow
-          Colors.CaptionActive = clBtnHighlight
-          Colors.Client = 15855064
-          Colors.ClientActive = 14803425
-          Gradient.FromColor = clBlack
-          Gradient.ToColor = clGray
-          Gradient.Active = False
-          Gradient.Orientation = fgdHorizontal
-          Options = [fgoCanCollapse, fgoFilledCaption, fgoFluentlyCollapse, fgoFluentlyExpand, fgoHideChildrenWhenCollapsed, fgoSaveChildFocus]
-          FullHeight = 0
-          object sbtnLabelDirectionDown: TJvgSpeedButton
+          object sbtnLabelDirectionDown: TSpeedButton
             Tag = 2
             Left = 7
             Top = 48
             Width = 23
             Height = 22
             BiDiMode = bdLeftToRight
-            Enabled = True
             ParentBiDiMode = False
             Spacing = -2
             OnClick = sbtnLabelDirectionRightClick
-            Color = 15134450
-            ActiveColor = 15792380
-            FrameColor = clBlack
-            DefaultStyle = False
-            ModalResult = 0
           end
-          object sbtnLabelDirectionUp: TJvgSpeedButton
+          object sbtnLabelDirectionUp: TSpeedButton
             Tag = 3
             Left = 77
             Top = 48
             Width = 23
             Height = 22
             BiDiMode = bdLeftToRight
-            Enabled = True
             ParentBiDiMode = False
             Spacing = -2
             OnClick = sbtnLabelDirectionRightClick
-            Color = 15134450
-            ActiveColor = 15792380
-            FrameColor = clBlack
-            DefaultStyle = False
-            ModalResult = 0
           end
-          object JvgLabel5: TJvgLabel
+          object JvgLabel5: TLabel
             Left = 32
             Top = 53
-            Width = 44
-            Height = 16
+            Width = 42
+            Height = 14
             Anchors = []
             Caption = 'Direction'
             Font.Charset = DEFAULT_CHARSET
@@ -1080,50 +610,30 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object sbtnLabelDirectionLeft: TJvgSpeedButton
+          object sbtnLabelDirectionLeft: TSpeedButton
             Tag = 1
             Left = 40
             Top = 72
             Width = 23
             Height = 22
             BiDiMode = bdLeftToRight
-            Enabled = True
             ParentBiDiMode = False
             Spacing = -2
             OnClick = sbtnLabelDirectionRightClick
-            Color = 15134450
-            ActiveColor = 15792380
-            FrameColor = clBlack
-            DefaultStyle = False
-            ModalResult = 0
           end
-          object sbtnLabelDirectionRight: TJvgSpeedButton
+          object sbtnLabelDirectionRight: TSpeedButton
             Left = 40
             Top = 24
             Width = 23
             Height = 22
             BiDiMode = bdLeftToRight
-            Enabled = True
             ParentBiDiMode = False
             Spacing = -2
             OnClick = sbtnLabelDirectionRightClick
-            Color = 15134450
-            ActiveColor = 15792380
-            FrameColor = clBlack
-            DefaultStyle = False
-            ModalResult = 0
           end
         end
-        object JvgGroupBox4: TJvgGroupBox
+        object JvgGroupBox4: TGroupBox
           Left = 8
           Top = 284
           Width = 417
@@ -1136,33 +646,11 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Font.Style = []
           ParentFont = False
           TabOrder = 6
-          Border.Inner = bvSpace
-          Border.Outer = bvNone
-          Border.Bold = False
-          CaptionBorder.Inner = bvSpace
-          CaptionBorder.Outer = bvNone
-          CaptionBorder.Bold = False
-          CaptionGradient.Active = False
-          CaptionGradient.Orientation = fgdHorizontal
-          CaptionShift.X = 8
-          CaptionShift.Y = 0
-          Colors.Text = clGray
-          Colors.TextActive = clGray
-          Colors.Caption = clBtnShadow
-          Colors.CaptionActive = clBtnHighlight
-          Colors.Client = 15855064
-          Colors.ClientActive = 14803425
-          Gradient.FromColor = clBlack
-          Gradient.ToColor = clGray
-          Gradient.Active = False
-          Gradient.Orientation = fgdHorizontal
-          Options = [fgoCanCollapse, fgoFilledCaption, fgoFluentlyCollapse, fgoFluentlyExpand, fgoHideChildrenWhenCollapsed, fgoSaveChildFocus]
-          FullHeight = 0
-          object lblFontSize: TJvgLabel
+          object lblFontSize: TLabel
             Left = 377
             Top = 19
-            Width = 8
-            Height = 16
+            Width = 6
+            Height = 14
             Caption = '0'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -1170,20 +658,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstPushed
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object lblShadowDepth: TJvgLabel
+          object lblShadowDepth: TLabel
             Left = 377
             Top = 40
-            Width = 8
-            Height = 16
+            Width = 6
+            Height = 14
             Caption = '0'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -1191,20 +671,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstPushed
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel2: TJvgLabel
+          object JvgLabel2: TLabel
             Left = 20
             Top = 41
-            Width = 74
-            Height = 16
+            Width = 72
+            Height = 14
             Caption = 'Shadow Depth'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -1212,20 +684,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel3: TJvgLabel
+          object JvgLabel3: TLabel
             Left = 47
             Top = 16
-            Width = 47
-            Height = 16
+            Width = 45
+            Height = 14
             Caption = 'Font Size'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -1233,14 +697,6 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
           object sbarShadowDepth: TScrollBar
             Left = 108
@@ -1275,7 +731,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
       object tbsTabSheet1: TTabSheet
         Caption = 'Surface'
         ImageIndex = 1
-        object gbxGradient: TJvgGroupBox
+        object gbxGradient: TGroupBox
           Left = 8
           Top = 27
           Width = 257
@@ -1288,33 +744,11 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          Border.Inner = bvSpace
-          Border.Outer = bvNone
-          Border.Bold = False
-          CaptionBorder.Inner = bvSpace
-          CaptionBorder.Outer = bvNone
-          CaptionBorder.Bold = False
-          CaptionGradient.Active = False
-          CaptionGradient.Orientation = fgdHorizontal
-          CaptionShift.X = 8
-          CaptionShift.Y = 0
-          Colors.Text = clGray
-          Colors.TextActive = clGray
-          Colors.Caption = clBtnShadow
-          Colors.CaptionActive = clBtnHighlight
-          Colors.Client = 15855064
-          Colors.ClientActive = 14803425
-          Gradient.FromColor = clBlack
-          Gradient.ToColor = clGray
-          Gradient.Active = False
-          Gradient.Orientation = fgdHorizontal
-          Options = [fgoCanCollapse, fgoFilledCaption, fgoFluentlyCollapse, fgoFluentlyExpand, fgoHideChildrenWhenCollapsed, fgoSaveChildFocus]
-          FullHeight = 0
-          object JvgLabel11: TJvgLabel
+          object JvgLabel11: TLabel
             Left = 12
             Top = 171
-            Width = 54
-            Height = 16
+            Width = 52
+            Height = 14
             Anchors = []
             Caption = 'Orientation'
             Font.Charset = DEFAULT_CHARSET
@@ -1323,20 +757,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object lblGradientPercentFilling: TJvgLabel
+          object lblGradientPercentFilling: TLabel
             Left = 235
             Top = 223
-            Width = 8
-            Height = 16
+            Width = 6
+            Height = 14
             Caption = '0'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -1344,20 +770,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstPushed
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel12: TJvgLabel
+          object JvgLabel12: TLabel
             Left = 14
             Top = 205
-            Width = 41
-            Height = 16
+            Width = 39
+            Height = 14
             Anchors = []
             Caption = '% Filling'
             Font.Charset = DEFAULT_CHARSET
@@ -1366,20 +784,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel1: TJvgLabel
+          object JvgLabel1: TLabel
             Left = 8
             Top = 79
-            Width = 58
-            Height = 16
+            Width = 56
+            Height = 14
             Anchors = []
             Caption = 'Brush Style'
             Font.Charset = DEFAULT_CHARSET
@@ -1388,20 +798,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstPushed
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel6: TJvgLabel
+          object JvgLabel6: TLabel
             Left = 12
             Top = 107
-            Width = 54
-            Height = 16
+            Width = 52
+            Height = 14
             Anchors = []
             Caption = 'From Color'
             Font.Charset = DEFAULT_CHARSET
@@ -1410,20 +812,12 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object JvgLabel9: TJvgLabel
+          object JvgLabel9: TLabel
             Left = 24
             Top = 129
-            Width = 42
-            Height = 16
+            Width = 40
+            Height = 14
             Anchors = []
             Caption = 'To Color'
             Font.Charset = DEFAULT_CHARSET
@@ -1432,16 +826,8 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Font.Name = 'Arial'
             Font.Style = []
             ParentFont = False
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            FontWeight = fwDONTCARE
-            Options = [floActiveWhileControlFocused]
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
-            Alignment = taLeftJustify
           end
-          object cbxGradientActive: TJvgCheckBox
+          object cbxGradientActive: TCheckBox
             Tag = 4
             Left = 79
             Top = 24
@@ -1449,27 +835,10 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Height = 14
             Cursor = crHandPoint
             Caption = 'Active'
+            TabOrder = 5
             OnClick = cbxGradientActiveClick
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Arial'
-            Font.Style = [fsBold]
-            GlyphKind = fgkCustom
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            Colors.TextDisabled = clBtnFace
-            Options = [fcoFastDraw]
-            Gradient.FromColor = 33023
-            Gradient.Active = True
-            Gradient.Orientation = fgdVertical
-            Interspace = 4
           end
-          object cbxGradientBufferedDraw: TJvgCheckBox
+          object cbxGradientBufferedDraw: TCheckBox
             Tag = 4
             Left = 79
             Top = 48
@@ -1477,25 +846,8 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Height = 14
             Cursor = crHandPoint
             Caption = 'Buffered Draw'
+            TabOrder = 6
             OnClick = cbxGradientBufferedDrawClick
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Arial'
-            Font.Style = [fsBold]
-            GlyphKind = fgkCustom
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            Colors.TextDisabled = clBtnFace
-            Options = [fcoFastDraw]
-            Gradient.FromColor = 33023
-            Gradient.Active = True
-            Gradient.Orientation = fgdVertical
-            Interspace = 4
           end
           object cbxGradientOrientation: TComboBox
             Tag = -1
@@ -1523,7 +875,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Width = 145
             Height = 21
             Style = csDropDownList
-            ItemHeight = 13
+            ItemHeight = 0
             TabOrder = 1
             OnChange = cbtnGradientColorFromChange
           end
@@ -1534,7 +886,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Width = 145
             Height = 21
             Style = csDropDownList
-            ItemHeight = 13
+            ItemHeight = 0
             TabOrder = 2
             OnChange = cbtnGradientColorFromChange
           end
@@ -1567,7 +919,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
               'DiagCross')
           end
         end
-        object JvgGroupBox3: TJvgGroupBox
+        object JvgGroupBox3: TGroupBox
           Left = 312
           Top = 30
           Width = 193
@@ -1580,47 +932,6 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Font.Style = []
           ParentFont = False
           TabOrder = 1
-          Border.Inner = bvSpace
-          Border.Outer = bvNone
-          Border.Bold = False
-          CaptionBorder.Inner = bvSpace
-          CaptionBorder.Outer = bvNone
-          CaptionBorder.Bold = False
-          CaptionGradient.Active = False
-          CaptionGradient.Orientation = fgdHorizontal
-          CaptionShift.X = 8
-          CaptionShift.Y = 0
-          Colors.Text = clGray
-          Colors.TextActive = clGray
-          Colors.Caption = clBtnShadow
-          Colors.CaptionActive = clBtnHighlight
-          Colors.Client = 15855064
-          Colors.ClientActive = 14803425
-          Gradient.FromColor = clBlack
-          Gradient.ToColor = clGray
-          Gradient.Active = False
-          Gradient.Orientation = fgdHorizontal
-          Options = [fgoCanCollapse, fgoFilledCaption, fgoFluentlyCollapse, fgoFluentlyExpand, fgoHideChildrenWhenCollapsed, fgoSaveChildFocus]
-          FullHeight = 0
-          object JvgShadow1: TJvgShadow
-            Left = 106
-            Top = 45
-            Width = 63
-            Height = 32
-            Anchors = [akRight, akBottom]
-            Style.Inner = bvRaised
-            Style.Outer = bvLowered
-            Style.Bold = False
-            Style.BackgroundColor = 16774365
-            Style.ShadowColor = 12615680
-            StyleActive.Inner = bvLowered
-            StyleActive.Outer = bvRaised
-            StyleActive.Bold = False
-            ShadowDepth = 5
-            AutoTransparentColor = ftcLeftBottomPixel
-            MaskedShadow = True
-            TransparentColor = clWhite
-          end
           object sbtnBtnNewBackgroundImage: TSpeedButton
             Left = 107
             Top = 46
@@ -1644,35 +955,18 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Width = 73
             Height = 65
           end
-          object cbxActiveBackground: TJvgCheckBox
+          object cbxActiveBackground: TCheckBox
             Left = 111
             Top = 96
             Width = 66
             Height = 14
             Cursor = crHandPoint
             Caption = 'Active'
+            TabOrder = 0
             OnClick = cbxActiveBackgroundClick
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Arial'
-            Font.Style = [fsBold]
-            GlyphKind = fgkCustom
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            Colors.TextDisabled = clBtnFace
-            Options = [fcoFastDraw]
-            Gradient.FromColor = 33023
-            Gradient.Active = True
-            Gradient.Orientation = fgdVertical
-            Interspace = 4
           end
         end
-        object JvgGroupBox6: TJvgGroupBox
+        object JvgGroupBox6: TGroupBox
           Left = 312
           Top = 163
           Width = 193
@@ -1685,47 +979,6 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Font.Style = []
           ParentFont = False
           TabOrder = 2
-          Border.Inner = bvSpace
-          Border.Outer = bvNone
-          Border.Bold = False
-          CaptionBorder.Inner = bvSpace
-          CaptionBorder.Outer = bvNone
-          CaptionBorder.Bold = False
-          CaptionGradient.Active = False
-          CaptionGradient.Orientation = fgdHorizontal
-          CaptionShift.X = 8
-          CaptionShift.Y = 0
-          Colors.Text = clGray
-          Colors.TextActive = clGray
-          Colors.Caption = clBtnShadow
-          Colors.CaptionActive = clBtnHighlight
-          Colors.Client = 15855064
-          Colors.ClientActive = 14803425
-          Gradient.FromColor = clBlack
-          Gradient.ToColor = clGray
-          Gradient.Active = False
-          Gradient.Orientation = fgdHorizontal
-          Options = [fgoCanCollapse, fgoFilledCaption, fgoFluentlyCollapse, fgoFluentlyExpand, fgoHideChildrenWhenCollapsed, fgoSaveChildFocus]
-          FullHeight = 0
-          object JvgShadow2: TJvgShadow
-            Left = 106
-            Top = 53
-            Width = 63
-            Height = 32
-            Anchors = [akRight, akBottom]
-            Style.Inner = bvRaised
-            Style.Outer = bvLowered
-            Style.Bold = False
-            Style.BackgroundColor = 16774365
-            Style.ShadowColor = 12615680
-            StyleActive.Inner = bvLowered
-            StyleActive.Outer = bvRaised
-            StyleActive.Bold = False
-            ShadowDepth = 5
-            AutoTransparentColor = ftcLeftBottomPixel
-            MaskedShadow = True
-            TransparentColor = clWhite
-          end
           object sbtnBtnNewTextureImage: TSpeedButton
             Tag = 1
             Left = 108
@@ -1751,7 +1004,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Height = 72
             Picture.Data = {07544269746D617000000000}
           end
-          object cbxActiveTexture: TJvgCheckBox
+          object cbxActiveTexture: TCheckBox
             Tag = 1
             Left = 111
             Top = 104
@@ -1759,25 +1012,8 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Height = 14
             Cursor = crHandPoint
             Caption = 'Active'
+            TabOrder = 0
             OnClick = cbxActiveBackgroundClick
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Arial'
-            Font.Style = [fsBold]
-            GlyphKind = fgkCustom
-            GlyphShift.X = 0
-            GlyphShift.Y = 0
-            Transparent = True
-            TextStyles.Passive = fstNone
-            TextStyles.Active = fstNone
-            TextStyles.Disabled = fstNone
-            Colors.TextDisabled = clBtnFace
-            Options = [fcoFastDraw]
-            Gradient.FromColor = 33023
-            Gradient.Active = True
-            Gradient.Orientation = fgdVertical
-            Interspace = 4
           end
         end
       end
@@ -1789,47 +1025,16 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
       Height = 80
       Align = alTop
       TabOrder = 1
-      object JvgLabelTest: TJvgLabel
-        Left = 1
-        Top = 1
-        Width = 554
-        Height = 78
-        Align = alClient
-        Caption = 'JvgLabelTest'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -37
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        AutoSize = False
-        TextStyles.Passive = fstShadow
-        TextStyles.Active = fstVolumetric
-        TextStyles.Disabled = fstRaised
-        FontWeight = fwDONTCARE
-        Options = [floActiveWhileControlFocused]
-        Gradient.Active = False
-        Gradient.Orientation = fgdHorizontal
-        Illumination.Horizontal = fhaRight
-        Illumination.ShadowDepth = 4
-        Alignment = taCenter
-      end
     end
   end
   inherited pnBottom: TPanel
-    Top = 505
+    Top = 508
     Width = 558
-    inherited glShadowOK: TJvgShadow
-      Left = 490
+    inherited btnCancel1: TButton
+      Left = 472
     end
-    inherited glShadowCancel: TJvgShadow
-      Left = 415
-    end
-    inherited btnCancel1: TSpeedButton
-      Left = 416
-    end
-    inherited btnOK1: TSpeedButton
-      Left = 491
+    inherited btnOK1: TButton
+      Left = 387
     end
   end
   object OpenPictureDialog1: TOpenPictureDialog

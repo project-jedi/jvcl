@@ -14,7 +14,6 @@ object JvgLogicsEditor: TJvgLogicsEditor
   Position = poScreenCenter
   Scaled = False
   WindowState = wsMaximized
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
@@ -25,7 +24,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
     Cursor = crVSplit
     Align = alBottom
   end
-  object SB: TJvgScrollBox
+  object SB: TScrollBox
     Left = 0
     Top = 75
     Width = 782
@@ -38,8 +37,6 @@ object JvgLogicsEditor: TJvgLogicsEditor
     VertScrollBar.Tracking = True
     Align = alClient
     TabOrder = 0
-    BufferedDraw = True
-    OnEraseBkgndEvent = SBEraseBkgndEvent
   end
   object Panel1: TPanel
     Left = 0
@@ -414,49 +411,16 @@ object JvgLogicsEditor: TJvgLogicsEditor
           BorderStyle = bsNone
           TabOrder = 0
         end
-        object PC: TJvgPageControl
+        object PC: TPageControl
           Left = 1
           Top = 1
           Width = 187
           Height = 67
           ActivePage = tsLog
           Align = alClient
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'MS Sans Serif'
-          Font.Style = []
           Style = tsButtons
           TabOrder = 1
           TabStop = False
-          TabStyle.Borders = [fsdLeft, fsdTop, fsdRight, fsdBottom]
-          TabStyle.BevelInner = bvNone
-          TabStyle.BevelOuter = bvNone
-          TabStyle.Bold = False
-          TabStyle.BackgrColor = clBtnShadow
-          TabStyle.Font.Charset = DEFAULT_CHARSET
-          TabStyle.Font.Color = clBtnHighlight
-          TabStyle.Font.Height = -11
-          TabStyle.Font.Name = 'Arial'
-          TabStyle.Font.Style = []
-          TabStyle.CaptionHAlign = fhaCenter
-          TabStyle.Gradient.Active = False
-          TabStyle.Gradient.Orientation = fgdHorizontal
-          TabSelectedStyle.Borders = [fsdLeft, fsdTop, fsdRight, fsdBottom]
-          TabSelectedStyle.BevelInner = bvNone
-          TabSelectedStyle.BevelOuter = bvNone
-          TabSelectedStyle.Bold = False
-          TabSelectedStyle.BackgrColor = clBtnFace
-          TabSelectedStyle.Font.Charset = DEFAULT_CHARSET
-          TabSelectedStyle.Font.Color = clBtnText
-          TabSelectedStyle.Font.Height = -11
-          TabSelectedStyle.Font.Name = 'Arial'
-          TabSelectedStyle.Font.Style = []
-          TabSelectedStyle.CaptionHAlign = fhaCenter
-          TabSelectedStyle.Gradient.Active = False
-          TabSelectedStyle.Gradient.Orientation = fgdHorizontal
-          TabsPosition = fsdBottom
-          Options = [ftoAutoFontDirection, ftoExcludeGlyphs]
           object tsLog: TTabSheet
             Caption = 'Log Event'
             TabVisible = False

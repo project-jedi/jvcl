@@ -67,7 +67,7 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
-    Caption = 'Ok'
+    Caption = 'OK'
     Default = True
     TabOrder = 0
     OnClick = Button1Click

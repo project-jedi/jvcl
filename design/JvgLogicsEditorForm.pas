@@ -40,7 +40,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvgPage, JvgLogics, JvgScrollBox, JvComponent, JvgGroupBox;
+  JvgLogics, JvComponent, JvgGroupBox;
 
 type
   TJvgLogicsComponentEditor = class(TComponentEditor)
@@ -71,7 +71,7 @@ type
   end;
 
   TJvgLogicsEditor = class(TJvForm)
-    SB: TJvgScrollBox;
+    SB: TScrollBox;
     Panel1: TPanel;
     iPKey: TImage;
     iFKey: TImage;
@@ -109,7 +109,7 @@ type
     Panel2: TPanel;
     Splitter2: TSplitter;
     reReslt: TRichEdit;
-    PC: TJvgPageControl;
+    PC: TPageControl;
     tsLog: TTabSheet;
     mLog: TMemo;
     tsDictionary: TTabSheet;
@@ -133,7 +133,6 @@ type
     procedure tbNewClick(Sender: TObject);
     procedure cbNextFalseChange(Sender: TObject);
     procedure eStepNameChange(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure ToolButton5Click(Sender: TObject);
     procedure ToolButton7Click(Sender: TObject);
     procedure cbIgnoreSpacesClick(Sender: TObject);
@@ -739,10 +738,6 @@ begin
   end;
 end;
 
-procedure TJvgLogicsEditor.FormShow(Sender: TObject);
-begin
-  SB.BufferedDraw := True;
-end;
 
 procedure TJvgLogicsEditor.ToolButton5Click(Sender: TObject);
 var

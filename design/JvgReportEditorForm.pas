@@ -39,8 +39,8 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvgReport, JvgCaption, JvgBevel, JvgPage, JvgLabel, JvgRuler,
-  JvgListBox, JvgReportParamEditorForm, JvComponent, JvExControls;
+  JvgReport, JvgRuler,
+  JvgReportParamEditorForm, JvComponent, JvExControls;
 
 type
   TJvgRepProperty = class(TPropertyEditor)
@@ -73,12 +73,12 @@ type
     N_Linktofile: TMenuItem;
     N1: TMenuItem;
     N2: TMenuItem;
-    PC: TJvgPageControl;
+    PC: TPageControl;
     Panel1: TPanel;
     Bevel4: TBevel;
     P_Sides: TPanel;
     Panel2: TPanel;
-    glBevel1: TJvgBevel;
+    glBevel1: TBevel;
     Bevel2: TBevel;
     Bevel1: TBevel;
     B_Label: TSpeedButton;
@@ -106,9 +106,7 @@ type
     P_VRuler: TPanel;
     TabSheet3: TTabSheet;
     ImageList1: TImageList;
-    HRuler: TJvgRuler;
-    VRuler: TJvgRuler;
-    glBevel4: TJvgBevel;
+    glBevel4: TBevel;
     sb_FixAllMoving: TSpeedButton;
     sb_FixMoving: TSpeedButton;
     glLabel3: TLabel;
@@ -143,12 +141,12 @@ type
     RxSpeedButton8: TSpeedButton;
     RxSpeedButton9: TSpeedButton;
     sb_BevelBold: TSpeedButton;
-    glBevel2: TJvgBevel;
+    glBevel2: TBevel;
     Panel3: TPanel;
     RxSpinEdit1: TUpDown;
     Panel6: TPanel;
     sbFontColor: TSpeedButton;
-    glBevel3: TJvgBevel;
+    glBevel3: TBevel;
     Panel7: TPanel;
     Edit1: TMemo;
     FE_OLE: TEdit;
@@ -159,7 +157,7 @@ type
     sb_FontBold: TSpeedButton;
     TabSheet4: TTabSheet;
     glLabel1: TLabel;
-    lb_Params: TJvgListBox;
+    lb_Params: TListBox;
     Panel4: TPanel;
     SpeedButton2: TSpeedButton;
     sbBackColor: TSpeedButton;
@@ -171,6 +169,7 @@ type
     edTop: TEdit;
     edWidth: TEdit;
     edHeight: TEdit;
+    Edit2: TEdit;
     procedure OpenClick(Sender: TObject);
     procedure Save1Click(Sender: TObject);
     procedure ScrollBox_MouseDown(Sender: TObject; Button: TMouseButton;
@@ -216,6 +215,7 @@ type
     procedure CheckBox1Click(Sender: TObject);
     procedure se_LeftClick(Sender: TObject; Button: TUDBtnType);
   private
+    VRuler, HRuler:TJvgRuler;
     FReportParamEditor: TJvgReportParamEditor;
     FMouseDown: Boolean;
     FCanUndo: Boolean;
@@ -659,6 +659,30 @@ procedure TJvgReportEditorForm.FormCreate(Sender: TObject);
 var
   R: TRect;
 begin
+
+   VRuler := TJvgRuler.Create(Self);
+   HRuler := TJvgRuler.Create(Self);
+   with HRuler do
+   begin
+     Parent := P_HRuler;
+     Orientation := goHorizontal;
+     Left := 17;
+      Top := 0;
+      Width := 550;
+      Height := 16;
+   end;
+
+   with VRuler do
+   begin
+     Parent := P_VRuler;
+      Left := 1;
+      Top := 0;
+      Width := 15;
+      Height := 231;
+      Orientation := goVertical;
+   end;
+
+
   R := Rect(0, 0, Screen.Width, Screen.Height);
   ClipCursor(@R);
   FScrollBox := TJvgReportScrollBox.Create(Self);
@@ -1303,3 +1327,5 @@ begin
 end;
 
 end.
+
+
