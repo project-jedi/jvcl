@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
 "POT-Creation-Date: 2004-10-14 21:23\n"
-"PO-Revision-Date: 2004-07-16 12:10+0100\n"
+"PO-Revision-Date: 2004-10-15 00:47+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11,7 +11,7 @@ msgstr ""
 
 #  Programmer's name for it: RsPackagesAreUpToDate
 #  Programmer's name for it: RsPackagesAreUpToDate
-#. Programmer's name for it: RsPackagesAreUpToDate
+#  Programmer's name for it: RsPackagesAreUpToDate
 #: Compile.pas:149
 msgid "Packages are up to date"
 msgstr "Packages sind bereits aktuell."
@@ -47,7 +47,7 @@ msgstr "Packagedateien generieren..."
 
 #  Programmer's name for it: RsGeneratingResources
 #  Programmer's name for it: RsGeneratingResources
-#. Programmer's name for it: RsGeneratingResources
+#  Programmer's name for it: RsGeneratingResources
 #: Compile.pas:161
 msgid "Generating resources..."
 msgstr "Resourcedateien generieren..."
@@ -121,13 +121,13 @@ msgstr "Es trat ein Fehler beim Generieren der Templates für den Ordner %s auf.
 #  Programmer's name for it: RsErrorCompilingPackages
 #  this must not be the doubt of the installer
 #  Programmer's name for it: RsErrorCompilingPackages
-#. this must not be the doubt of the installer
-#. Programmer's name for it: RsErrorCompilingPackages
+#  this must not be the doubt of the installer
+#  Programmer's name for it: RsErrorCompilingPackages
 #: Compile.pas:173
 msgid "An error occured while compiling the packages."
 msgstr "Es trat ein Fehler während des Kompiliervorgangs auf."
 
-#. Programmer's name for it: RsCommandNotFound
+#  Programmer's name for it: RsCommandNotFound
 #: Compile.pas:175
 msgid ""
 "Command could not be executed.\n"
@@ -136,6 +136,11 @@ msgid ""
 "Cmdline: %s\n"
 "Start directory: %s"
 msgstr ""
+"Befehl konnte nicht ausgeführt werden.\n"
+"\n"
+"\n"
+"Kommandozeile: %s\n"
+"Arbeitsverzeichnis: %s"
 
 #  Programmer's name for it: RsCommandNotFound
 #  FrameConfigPage..LblBCBGuide....Cursor
@@ -310,7 +315,7 @@ msgstr "Alle Compiler-Direktiven (Conditions) bearbeiten, die in der jvcl.inc Da
 msgid "Edit jvcl.inc"
 msgstr "jvcl.inc ändern"
 
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning....Height
+#  FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning....Height
 #: Frames/FrmConfigPage.dfm:158
 msgid ""
 "Enable this option if you want that every JVCL unit should support\n"
@@ -318,11 +323,15 @@ msgid ""
 "UnitVersioning allows you the obtain the revision, date and filename\n"
 "of each unit at runtime."
 msgstr ""
+"Aktivieren Sie diese Option wenn jede JVCL unit die Unit Versionierung\n"
+"unterstützen soll\n"
+"Die Unit Versionierung erlaubt das Auslesen der Revision, des Datums und\n"
+"des Dateinamens jeder Unit zur Laufzeit."
 
-#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning..Caption
+#  FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning..Caption
 #: Frames/FrmConfigPage.dfm:159
 msgid "Unit Versioning"
-msgstr ""
+msgstr "Unit Versionierung"
 
 #  FrameConfigPage..GroupBoxInstallOptions..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..Caption
@@ -332,11 +341,10 @@ msgid " Installation options "
 msgstr " Installationsoptionen "
 
 #  FrameConfigPage..GroupBoxInstallOptions..LblOptionsFor..Caption
-#. FrameConfigPage..GroupBoxInstallOptions..LblOptionsFor..Caption
+#  FrameConfigPage..GroupBoxInstallOptions..LblOptionsFor..Caption
 #: Frames/FrmConfigPage.dfm:178
-#, fuzzy
 msgid "&Options for:"
-msgstr "Optionen für:"
+msgstr "&Optionen für:"
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Height
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Height
@@ -412,11 +420,10 @@ msgstr ""
 "IDE installieren wollen."
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly..Caption
-#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly..Caption
+#  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly..Caption
 #: Frames/FrmConfigPage.dfm:248
-#, fuzzy
 msgid "No &IDE registration"
-msgstr "Nicht in der IDE registrieren"
+msgstr "Nicht in der &IDE registrieren"
 
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
@@ -533,7 +540,8 @@ msgstr "..."
 #. FrameInstall..LblTarget..Caption
 #. FramePackageSelection..LblTarget..Caption
 #. FrameUninstall..LblTarget..Caption
-#: Frames/FrmInstall.dfm:12 Frames/FrmPackageSelection.dfm:12
+#: Frames/FrmInstall.dfm:12
+#: Frames/FrmPackageSelection.dfm:12
 #: Frames/FrmUninstall.dfm:12
 msgid "LblTarget"
 msgstr "LblTarget"
@@ -758,7 +766,8 @@ msgstr ""
 #  Programmer's name for it: RsInstallerName
 #. FormMain..Caption
 #. Programmer's name for it: RsInstallerName
-#: InstallerConsts.pas:50 Main.dfm:6
+#: InstallerConsts.pas:50
+#: Main.dfm:6
 msgid "JVCL 3  Installation"
 msgstr "JVCL 3  Installation"
 
@@ -872,7 +881,8 @@ msgstr "Es trat ein Fehler auf."
 #  Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:85 JVCLData.pas:284
+#: InstallerConsts.pas:85
+#: JVCLData.pas:284
 msgid "Complete."
 msgstr "Fertig."
 
@@ -1351,3 +1361,4 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 #: Main.dfm:58
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Jedi Visual Component Library Homepage"
+
