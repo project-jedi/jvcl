@@ -90,6 +90,7 @@ procedure HideFormCaption(FormHandle: Windows.HWND; Hide: Boolean);
 {$ENDIF VCL}
 
 {$IFDEF MSWINDOWS}
+
 type
   TJvWallpaperStyle = (wpTile, wpCenter, wpStretch);
 
@@ -635,10 +636,8 @@ uses
   QConsts,
   {$ENDIF VisualCLX}
   Math,
-  JclSysInfo, JvConsts, JvProgressUtils, JvResources;
-
-const
-  sUnitName = 'JvJVCLUtils';
+  JclSysInfo,
+  JvConsts, JvProgressUtils, JvResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvConsts.res}
@@ -647,14 +646,15 @@ const
 {$R ../Resources/JvConsts.res}
 {$ENDIF LINUX}
 
-{$IFDEF MSWINDOWS}
 const
+  sUnitName = 'JvJVCLUtils';
+  {$IFDEF MSWINDOWS}
   RC_ControlRegistry = 'Control Panel\Desktop';
   RC_WallPaperStyle = 'WallpaperStyle';
   RC_WallpaperRegistry = 'Wallpaper';
   RC_TileWallpaper = 'TileWallpaper';
   RC_RunCpl = 'rundll32.exe shell32,Control_RunDLL ';
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 
 function GetAppHandle: HWND;
 begin
@@ -938,6 +938,7 @@ begin
   end;
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, nil, SPIF_SENDWININICHANGE);
 end;
+
 {$ENDIF MSWINDOWS}
 
 procedure GetRBitmap(var Dest: TBitmap; const Source: TBitmap);
@@ -2183,7 +2184,7 @@ end;
 type
   TCustomControlHack = class(TCustomControl);
 
-  {$IFDEF MSWINDOWS}
+{$IFDEF MSWINDOWS}
 
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 var
@@ -2215,6 +2216,7 @@ begin
     Windows.ReleaseDC(0, DC);
   end;
 end;
+
 {$ENDIF MSWINDOWS}
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
@@ -2432,7 +2434,7 @@ function ScreenWorkArea: TRect;
 begin
   {$IFDEF MSWINDOWS}
   if not SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0) then
-    {$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     with Screen do
       Result := Bounds(0, 0, Width, Height);
 end;
@@ -2683,7 +2685,6 @@ end;
 { Cursor routines }
 
 {$IFDEF MSWINDOWS}
-
 function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
 { Unfortunately I don't know how we can load animated cursor from
   executable resource directly. So I write this routine using temporary
@@ -2809,6 +2810,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+
 var
   OLEDragCursorsLoaded: Boolean = False;
 
@@ -2845,6 +2847,7 @@ begin
     end;
   end;
 end;
+
 {$ENDIF MSWINDOWS}
 
 procedure SetDefaultJVCLCursors;
@@ -3153,6 +3156,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+
 { Check if this is the active Windows task }
 { Copied from implementation of FORMS.PAS  }
 type
@@ -3181,9 +3185,10 @@ begin
   Windows.EnumThreadWindows(GetCurrentThreadID, @CheckTaskWindow, Longint(@Info));
   Result := Info.Found;
 end;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 
+{$ENDIF MSWINDOWS}
+
+{$IFDEF LINUX}
 function IsForegroundTask: Boolean;
 begin
   Result := Application.Active;
@@ -3702,6 +3707,7 @@ begin
   Pointer(psl) := nil;
   Pointer(ppf) := nil;
 end;
+
 {$ENDIF MSWINDOWS}
 
 var
@@ -3811,10 +3817,10 @@ begin
     {$IFDEF LINUX}
     Result := GetEnvironmentVariable('HOME') + PathDelim +
       '.' + ExtractFileName(Application.ExeName);
-  {$ENDIF LINUX}
-  {$IFDEF MSWINDOWS}
-  Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
-  {$ENDIF MSWINDOWS}
+    {$ENDIF LINUX}
+    {$IFDEF MSWINDOWS}
+    Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
+    {$ENDIF MSWINDOWS}
 end;
 
 function GetDefaultIniRegKey: string;
@@ -3942,11 +3948,11 @@ const
 function IniReadString(IniFile: TObject; const Section, Ident,
   Default: string): string;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     Result := TRegIniFile(IniFile).ReadString(Section, Ident, Default)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       Result := TCustomIniFile(IniFile).ReadString(Section, Ident, Default)
     else
@@ -3958,11 +3964,11 @@ procedure IniWriteString(IniFile: TObject; const Section, Ident,
 var
   s: string;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).WriteString(Section, Ident, Value)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
   begin
     s := Value;
     if s <> '' then
@@ -3979,11 +3985,11 @@ end;
 function IniReadInteger(IniFile: TObject; const Section, Ident: string;
   Default: Longint): Longint;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     Result := TRegIniFile(IniFile).ReadInteger(Section, Ident, Default)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       Result := TCustomIniFile(IniFile).ReadInteger(Section, Ident, Default)
     else
@@ -3993,11 +3999,11 @@ end;
 procedure IniWriteInteger(IniFile: TObject; const Section, Ident: string;
   Value: Longint);
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).WriteInteger(Section, Ident, Value)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).WriteInteger(Section, Ident, Value);
 end;
@@ -4005,11 +4011,11 @@ end;
 function IniReadBool(IniFile: TObject; const Section, Ident: string;
   Default: Boolean): Boolean;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     Result := TRegIniFile(IniFile).ReadBool(Section, Ident, Default)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       Result := TCustomIniFile(IniFile).ReadBool(Section, Ident, Default)
     else
@@ -4019,33 +4025,33 @@ end;
 procedure IniWriteBool(IniFile: TObject; const Section, Ident: string;
   Value: Boolean);
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).WriteBool(Section, Ident, Value)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).WriteBool(Section, Ident, Value);
 end;
 
 procedure IniEraseSection(IniFile: TObject; const Section: string);
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).EraseSection(Section)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).EraseSection(Section);
 end;
 
 procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).DeleteKey(Section, Ident)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).DeleteKey(Section, Ident);
 end;
@@ -4054,16 +4060,15 @@ procedure IniReadSections(IniFile: TObject; Strings: TStrings);
 begin
   if IniFile is TCustomIniFile then
     TCustomIniFile(IniFile).ReadSections(Strings)
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   else if IniFile is TRegIniFile then
     TRegIniFile(IniFile).ReadSections(Strings);
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 end;
 *)
 
-  {$HINTS OFF}
+{$HINTS OFF}
 type
-
   {*******************************************************}
   { !! ATTENTION Nasty implementation                     }
   {*******************************************************}
@@ -6350,6 +6355,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+
 //=== AllocateHWndEx =========================================================
 
 const
@@ -6439,10 +6445,10 @@ begin
   FreeObjectInstance(ObjectInstance);
   {$ENDIF COMPILER6_UP}
 end;
+
 {$ENDIF MSWINDOWS}
 
 {$IFNDEF COMPILER6_UP}
-
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
 begin
   try

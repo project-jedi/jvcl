@@ -1687,18 +1687,6 @@ begin
 end;
 
 procedure TJvSpeedBar.SetFontDefault;
-{$IFDEF LINUX}
-begin
-  ParentFont := False;
-  with Font do
-  begin
-    Name := 'Helvetica';
-    Height := 11;
-    Style := [];
-    Color := clBtnText;
-  end;
-end;
-{$ENDIF LINUX}
 {$IFDEF MSWINDOWS}
 var
   NCMetrics: TNonClientMetrics;
@@ -1722,6 +1710,18 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS }
+{$IFDEF LINUX}
+begin
+  ParentFont := False;
+  with Font do
+  begin
+    Name := 'Helvetica';
+    Height := 11;
+    Style := [];
+    Color := clBtnText;
+  end;
+end;
+{$ENDIF LINUX}
 
 procedure TJvSpeedBar.VisibleChanged;
 begin

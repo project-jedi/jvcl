@@ -76,21 +76,22 @@ type
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure EnabledChanged;override;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ELSE} virtual; {$ENDIF}
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure SetAutoSize(Value: Boolean); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure AdjustSize; override;
+    procedure SetAutoSize(Value: Boolean); virtual;
     {$ENDIF VisualCLX}
     procedure UpdateProperties;
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
     procedure LinkedControlsChange(Sender:TObject);
-    procedure CheckLinkedControls;virtual;
+    procedure CheckLinkedControls; virtual;
     procedure DefineProperties(Filer: TFiler); override;
     {$IFDEF VCL}
-    procedure BmSetCheck(var Msg:TMessage); message BM_SETCHECK;
+    procedure BmSetCheck(var Msg: TMessage); message BM_SETCHECK;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure StateChanged(State: TToggleState); override;

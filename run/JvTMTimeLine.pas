@@ -468,7 +468,6 @@ begin
   Font.Height := 11;
   {$ENDIF LINUX}
 
-
   FLeftBtn := TSpeedButton.Create(Self);
   with FLeftBtn do
   begin

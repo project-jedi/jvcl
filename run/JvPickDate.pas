@@ -940,13 +940,14 @@ const
   VertOffset = -1;
   HorzOffset = 1;
 var
+  Control, BackPanel: TWinControl;
 {$ELSE}
 var
   BtnSide: Integer;
   VertOffset: Integer;
   HorzOffset: Integer;
-{$ENDIF JVCLThemesEnabled}
   Control, BackPanel: TWinControl;
+{$ENDIF JVCLThemesEnabled}
 begin
   inherited Create(AOwner);
   FFourDigitYear := IsFourDigitYear;

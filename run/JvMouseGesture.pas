@@ -25,7 +25,7 @@ Description:
   and can be used to enhance special components like a grid. In
   this case the programmer is responsible to fill matching
   OnMouseDown, OnMouseUp and OnMouseMove events of component.
-  This works fine with MSWINDOWS and Linux The second component
+  This works fine with MSWINDOWS and LINUX. The second component
   installs a hook for a specific application and fires an event
   after detecting a mouse gesture (Windows only in this version
   \:-( ).
@@ -99,7 +99,7 @@ type
     See Also:
     TOnJvMouseGestureSimple
   }
-  TOnJvMouseGestureCustomInterpretation = procedure(aGesture: string) of object;
+  TOnJvMouseGestureCustomInterpretation = procedure(AGesture: string) of object;
 
   { Description
     This class implements the basic interpreter. It can be used
@@ -183,7 +183,7 @@ type
     { Description
       Adds a detected sub gesture to gesture string
     }
-    procedure AddGestureChar(aChar: Char);
+    procedure AddGestureChar(AChar: Char);
     procedure SetTrailLimit(const Value: Integer);
     procedure SetTrailInterval(const Value: Integer);
     procedure SetDelay(const Value: Integer);
@@ -208,14 +208,11 @@ type
       Standard setter method for Active
     }
     procedure SetActive(const Value: Boolean);
-    { Private-Deklarationen }
-  protected
-    { Protected-Deklarationen }
   public
     { Description
       Standard constructor
     }
-    constructor Create(aOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     { Description
       Standard destructor
     }
@@ -224,18 +221,18 @@ type
       Starts the mouse gesture interpretation
 
       Parameters:
-      aMouseX: X coordinate of mouse cursor
-      aMouseY: Y coordinate of mouse cursor
+      AMouseX: X coordinate of mouse cursor
+      AMouseY: Y coordinate of mouse cursor
     }
-    procedure StartMouseGesture(aMouseX, aMouseY: Integer);
+    procedure StartMouseGesture(AMouseX, AMouseY: Integer);
     { Description
       Continues the mouse gesture interpretation during mouse move
 
       Parameters:
-      aMouseX: X coordinate of mouse cursor
-      aMouseY: Y coordinate of mouse cursor
+      AMouseX: X coordinate of mouse cursor
+      AMouseY: Y coordinate of mouse cursor
     }
-    procedure TrailMouseGesture(aMouseX, aMouseY: Integer);
+    procedure TrailMouseGesture(AMouseX, AMouseY: Integer);
     { Description
       Ends the mouse gesture interpretation and fires an event if a gesture
       was found
@@ -323,6 +320,7 @@ type
   end;
 
 {$IFDEF MSWINDOWS}
+
   { Description
     This class implements a application wide mouse hook for mouse gestures.
     Programmers get only one event for a detected mouse gesture:
@@ -369,7 +367,7 @@ type
     { Description
       Standard setter method for MouseButton
     }
-    procedure SetMousebutton(const Value: TJvMouseGestureButton);
+    procedure SetMouseButton(const Value: TJvMouseGestureButton);
     { Description
       Standard setter method for ActivationMode
     }
@@ -379,12 +377,12 @@ type
       Create the hook. Maybe used in a later version as a new constructor
       to enable system wide hooks ...
     }
-    procedure CreateForThreadOrSystem(aOwner: TComponent; aDwThreadID: Cardinal);
+    procedure CreateForThreadOrSystem(AOwner: TComponent; ADwThreadID: Cardinal);
   public
     { Description
       Standard constructor
     }
-    constructor Create(aOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     { Description
       Standard destructor
     }
@@ -414,7 +412,7 @@ type
       See Also
       TJvMouseGestureButton
     }
-    property MouseButton: TJvMouseGestureButton read FMousebutton write SetMousebutton default JvMButtonRight;
+    property MouseButton: TJvMouseGestureButton read FMouseButton write SetMouseButton default JvMButtonRight;
     { Description
       Set the event to be executed if a gesture will be detected
     }
@@ -469,11 +467,11 @@ var
   JvCurrentHook: HHook = 0; //contains the handle of the currently installed hook
   {$ENDIF MSWINDOWS}
 
-  { TJvMouseGesture }
+//=== TJvMouseGesture ========================================================
 
-constructor TJvMouseGesture.Create(aOwner: TComponent);
+constructor TJvMouseGesture.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FGestureList := TStringList.Create;
   FGestureList.Sorted := True;
 
@@ -486,22 +484,17 @@ begin
   FdTolerance := 75; // tolerance for diagonal movement. see processCoordinates()
   LoadGestureTable;
 
-  if csDesigning in ComponentState then
-    FActive := False
-  else
-    FActive := True;
-
+  FActive := not (csDesigning in ComponentState);
 end;
 
 destructor TJvMouseGesture.Destroy;
 begin
   FTrailActive := False;
   try
-    FreeAndNIL(FGestureList);
+    FreeAndNil(FGestureList);
   except
   end;
-
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvMouseGesture.LoadGestureTable;
@@ -516,7 +509,7 @@ begin
     AddObject('3', TObject(JVMG_RIGHTLOWER));
     AddObject('7', TObject(JVMG_LEFTUPPER));
     AddObject('9', TObject(JVMG_RIGHTUPPER));
-  end; // with
+  end;
 end;
 
 procedure TJvMouseGesture.SetActive(const Value: Boolean);
@@ -607,29 +600,30 @@ begin
   FOnJvMouseGestureRightUpperEdge := Value;
 end;
 
-procedure TJvMouseGesture.AddGestureChar(aChar: Char);
+procedure TJvMouseGesture.AddGestureChar(AChar: Char);
 begin
-  if aChar <> FLastPushed then
+  if AChar <> FLastPushed then
   begin
-    FGesture := FGesture + aChar;
-    FLastPushed := aChar;
+    FGesture := FGesture + AChar;
+    FLastPushed := AChar;
   end;
 end;
 
-procedure TJvMouseGesture.StartMouseGesture(aMouseX, aMouseY: Integer);
+procedure TJvMouseGesture.StartMouseGesture(AMouseX, AMouseY: Integer);
 begin
-  if not FActive then Exit;
+  if not FActive then
+    Exit;
 
   FLastPushed := #0;
   FGesture := '';
   FTrailActive := True;
   FTrailLength := 0;
-  FTrailX := aMouseX;
-  FTrailY := aMouseY;
+  FTrailX := AMouseX;
+  FTrailY := AMouseY;
   FTrailStartTime := now;
 end;
 
-procedure TJvMouseGesture.TrailMouseGesture(aMouseX, aMouseY: Integer);
+procedure TJvMouseGesture.TrailMouseGesture(AMouseX, AMouseY: Integer);
 var
   locX: Integer;
   locY: Integer;
@@ -639,16 +633,14 @@ var
   x_divide_y: Double;
   y_divide_x: Double;
 
-  function InBetween(aValue, aMin, aMax: Double): Boolean;
+  function InBetween(AValue, AMin, AMax: Double): Boolean;
   begin
-    if (aValue >= aMin) and (aValue <= aMax) then
-      Result := True
-    else
-      Result := False;
+    Result := (AValue >= AMin) and (AValue <= AMax);
   end;
 
 begin
-  if not FActive then Exit;
+  if not FActive then
+    Exit;
 
   if (not FTrailActive) or (FTrailLength > FTrailLimit) then
   begin
@@ -657,13 +649,13 @@ begin
   end;
 
   try
-    x_dir := aMouseX - FTrailX;
-    y_dir := aMouseY - FTrailY;
+    x_dir := AMouseX - FTrailX;
+    y_dir := AMouseY - FTrailY;
     locX := abs(x_dir);
     locY := abs(y_dir);
 
     // process each half-grid
-    if ((locX >= FGridHalf) or (locY >= FGridHalf)) then
+    if (locX >= FGridHalf) or (locY >= FGridHalf) then
     begin
       // diagonal movement:
       // dTolerance = 75 means that a movement is recognized as diagonal when
@@ -681,28 +673,22 @@ begin
         (InBetween(x_divide_y, tolerancePercent, 1) or
         InBetween(y_divide_x, tolerancePercent, 1)) then
       begin
-        if ((x_dir < 0) and (y_dir > 0)) then
+        if (x_dir < 0) and (y_dir > 0) then
         begin
           AddGestureChar('1');
         end
         else
         begin
-          if ((x_dir > 0) and (y_dir > 0)) then
-          begin
-            AddGestureChar('3');
-          end
+          if (x_dir > 0) and (y_dir > 0) then
+            AddGestureChar('3')
           else
           begin
-            if ((x_dir < 0) and (y_dir < 0)) then
-            begin
-              AddGestureChar('7');
-            end
+            if (x_dir < 0) and (y_dir < 0) then
+              AddGestureChar('7')
             else
             begin
-              if ((x_dir > 0) and (y_dir < 0)) then
-              begin
+              if (x_dir > 0) and (y_dir < 0) then
                 AddGestureChar('9');
-              end;
             end;
           end;
         end;
@@ -710,55 +696,49 @@ begin
       else
       begin
         // horizontal movement:
-        if (locX > locY) then
+        if locX > locY then
         begin
-          if (x_dir > 0) then
-          begin
+          if x_dir > 0 then
             AddGestureChar('R')
-          end
           else
           begin
-            if (x_dir < 0) then
-            begin
+            if x_dir < 0 then
               AddGestureChar('L');
-            end;
           end;
         end
         else
         begin
           // vertical movement:
-          if (locX < locY) then
+          if locX < locY then
           begin
-            if (y_dir > 0) then
-            begin
-              AddGestureChar('D');
-            end
+            if y_dir > 0 then
+              AddGestureChar('D')
             else
             begin
-              if (y_dir < 0) then
-              begin
+              if y_dir < 0 then
                 AddGestureChar('U');
-              end;
             end;
           end;
         end;
       end;
     end; // of half grid
   finally
-    FTrailX := aMouseX;
-    FTrailY := aMouseY;
+    FTrailX := AMouseX;
+    FTrailY := AMouseY;
   end;
 end;
 
 procedure TJvMouseGesture.EndMouseGesture;
 var
-  index: Integer;
+  Index: Integer;
 begin
-  if not FActive then Exit;
+  if not FActive then
+    Exit;
 
   FTrailActive := False;
 
-  if FGesture = '' then Exit;
+  if FGesture = '' then
+    Exit;
 
   // check for custom interpretation first
   if Assigned(FOnJvMouseGestureCustomInterpretation) then
@@ -772,90 +752,98 @@ begin
   // CASE indexes are stored sequence independent. So we have to find gesture
   // first and get CASE INDEX stored as TObject in Object property. It's a
   // simple trick, but works fine ...
-  index := FGestureList.IndexOf(FGesture);
-  if index > -1 then
-    index := Integer(FGestureList.Objects[index]);
-  case index of //
+  Index := FGestureList.IndexOf(FGesture);
+  if Index > -1 then
+    Index := Integer(FGestureList.Objects[Index]);
+  case Index of
     JVMG_LEFT:
       begin
-        if Assigned(FOnJvMouseGestureLeft) then FOnJvMouseGestureLeft;
+        if Assigned(FOnJvMouseGestureLeft) then
+          FOnJvMouseGestureLeft;
       end;
     JVMG_RIGHT:
       begin
-        if Assigned(FOnJvMouseGestureRight) then FOnJvMouseGestureRight;
+        if Assigned(FOnJvMouseGestureRight) then
+          FOnJvMouseGestureRight;
       end;
     JVMG_UP:
       begin
-        if Assigned(FOnJvMouseGestureUp) then FOnJvMouseGestureUp;
+        if Assigned(FOnJvMouseGestureUp) then
+          FOnJvMouseGestureUp;
       end;
     JVMG_DOWN:
       begin
-        if Assigned(FOnJvMouseGestureDown) then FOnJvMouseGestureDown;
+        if Assigned(FOnJvMouseGestureDown) then
+          FOnJvMouseGestureDown;
       end;
     JVMG_LEFTLOWER:
       begin
-        if Assigned(FOnJvMouseGestureLeftLowerEdge) then FOnJvMouseGestureLeftLowerEdge;
+        if Assigned(FOnJvMouseGestureLeftLowerEdge) then
+          FOnJvMouseGestureLeftLowerEdge;
       end;
     JVMG_RIGHTLOWER:
       begin
-        if Assigned(FOnJvMouseGestureRightLowerEdge) then FOnJvMouseGestureRightLowerEdge;
+        if Assigned(FOnJvMouseGestureRightLowerEdge) then
+          FOnJvMouseGestureRightLowerEdge;
       end;
     JVMG_LEFTUPPER:
       begin
-        if Assigned(FOnJvMouseGestureLeftUpperEdge) then FOnJvMouseGestureLeftUpperEdge;
+        if Assigned(FOnJvMouseGestureLeftUpperEdge) then
+          FOnJvMouseGestureLeftUpperEdge;
       end;
     JVMG_RIGHTUPPER:
       begin
-        if Assigned(FOnJvMouseGestureRightUpperEdge) then FOnJvMouseGestureRightUpperEdge;
+        if Assigned(FOnJvMouseGestureRightUpperEdge) then
+          FOnJvMouseGestureRightUpperEdge;
       end;
-  end; // case
+  end;
 end;
 
-//******************************************************************************
+//=== TJvMouseGestureHook ====================================================
 
-{ TJvMouseGestureHook }
 {$IFDEF MSWINDOWS}
 
-constructor TJvMouseGestureHook.Create(aOwner: TComponent);
+constructor TJvMouseGestureHook.Create(AOwner: TComponent);
 begin
-  inherited;
-  CreateForThreadOrSystem(aOwner, MainThreadID); // hook for complete application
+  inherited Create(AOwner);
+  CreateForThreadOrSystem(AOwner, MainThreadID); // hook for complete application
 end;
 
-procedure TJvMouseGestureHook.CreateForThreadOrSystem(aOwner: TComponent; aDwThreadID: Cardinal);
+destructor TJvMouseGestureHook.Destroy;
+begin
+  FreeAndNil(JvMouseGestureInterpreter);
+
+  if JvMouseGestureHookAlreadyInstalled then
+    JvMouseGestureHookAlreadyInstalled := UnhookWindowsHookEx(JvCurrentHook);
+  inherited Destroy;
+end;
+
+procedure TJvMouseGestureHook.CreateForThreadOrSystem(AOwner: TComponent; ADwThreadID: Cardinal);
 begin
   if JvMouseGestureHookAlreadyInstalled then
   begin
     raise EJVCLException.Create(RsECannotHookTwice);
-    halt;
+    Halt;
   end;
 
   JvMouseGestureInterpreter := TJvMouseGesture.Create(nil);
 
-  FMousebutton := JvMButtonRight;
+  FMouseButton := JvMButtonRight;
 
   if csDesigning in ComponentState then
   begin
     FActive := False;
     Exit;
-  end
-  else
-  begin
-    if FActivationMode = JvOnAppStart then
-      FActive := True
-    else
-      FActive := False;
   end;
 
+  FActive := FActivationMode = JvOnAppStart;
+
   //install hook
-  FCurrentHook := SetWindowsHookEx(WH_MOUSE, @JvMouseGestureHook, 0, aDwThreadID);
+  FCurrentHook := SetWindowsHookEx(WH_MOUSE, @JvMouseGestureHook, 0, ADwThreadID);
 
   //return True if it worked (read only for user). User should never see a
   //global var like MouseGestureHookAlreadyInstalled
-  if FCurrentHook <> 0 then
-    FHookInstalled := True
-  else
-    FHookInstalled := False;
+  FHookInstalled := FCurrentHook <> 0;
 
   // global remember, internal use only
   JvMouseGestureHookAlreadyInstalled := FHookInstalled;
@@ -868,15 +856,6 @@ begin
   else
     JvMouseGestureInterpreter.OnJvMouseGestureCustomInterpretation := nil;
 
-end;
-
-destructor TJvMouseGestureHook.Destroy;
-begin
-  FreeAndNIL(JvMouseGestureInterpreter);
-
-  if JvMouseGestureHookAlreadyInstalled then
-    JvMouseGestureHookAlreadyInstalled := UnhookWindowsHookEx(JvCurrentHook);
-  inherited;
 end;
 
 procedure TJvMouseGestureHook.SetActivationMode(const Value: TJvActivationMode);
@@ -894,10 +873,10 @@ begin
   JvMouseGestureHookActive := FActive;
 end;
 
-procedure TJvMouseGestureHook.SetMousebutton(const Value: TJvMouseGestureButton);
+procedure TJvMouseGestureHook.SetMouseButton(const Value: TJvMouseGestureButton);
 begin
-  FMousebutton := Value;
-  case Value of //
+  FMouseButton := Value;
+  case Value of
     JvMButtonLeft:
       begin
         JvMouseButtonDown := WM_LBUTTONDOWN;
@@ -913,7 +892,7 @@ begin
         JvMouseButtonDown := WM_RBUTTONDOWN;
         JvMouseButtonUp := WM_RBUTTONUP;
       end;
-  end; // case
+  end;
 end;
 
 procedure TJvMouseGestureHook.SetOnJvMouseGestureCustomInterpretation(
@@ -924,7 +903,7 @@ begin
     JvMouseGestureInterpreter.OnJvMouseGestureCustomInterpretation := Value;
 end;
 
-//******************************************************************************
+//============================================================================
 
 function JvMouseGestureHook(Code: Integer; wParam: Word; lParam: Longword): Longword; stdcall;
 var
@@ -939,7 +918,8 @@ begin
 
   Result := Code;
 
-  if not JvMouseGestureHookActive then Exit;
+  if not JvMouseGestureHookActive then
+    Exit;
 
   with PMouseHookStruct(lParam)^ do
   begin
@@ -948,19 +928,12 @@ begin
   end;
 
   if wParam = WM_MOUSEMOVE then
-  begin
     JvMouseGestureInterpreter.TrailMouseGesture(locX, locY);
-  end;
-  if (wParam = JvMouseButtonDown) then
-  begin
-    JvMouseGestureInterpreter.StartMouseGesture(locX, locY);
-    Exit;
-  end;
-  if (wParam = JvMouseButtonUp) then
-  begin
+  if wParam = JvMouseButtonDown then
+    JvMouseGestureInterpreter.StartMouseGesture(locX, locY)
+  else
+  if wParam = JvMouseButtonUp then
     JvMouseGestureInterpreter.EndMouseGesture;
-    Exit;
-  end;
 end;
 
 {$ENDIF MSWINDOWS}
