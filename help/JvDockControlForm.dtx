@@ -1,5 +1,11 @@
 ##Package: Docking
 ##Status: Generated
+##Skip: TJvDockBaseControl.Assign
+##Skip: TJvDockBasicConjoinServerOption.Assign
+##Skip: TJvDockBasicServerOption.Assign
+##Skip: TJvDockBasicTabServerOption.Assign
+##Skip: TJvDockClient.Assign
+##Skip: TJvDockSplitterStyle.Assign
 ----------------------------------------------------------------------------------------------------
 @@JvDockControlForm.pas
 Summary
@@ -27,7 +33,7 @@ See Also
 @@DefaultConjoinPanelClass
 <TITLE DefaultConjoinPanelClass variable>
 Summary
-  Write here a summary (1 line)
+  Provides the default implementation class for the ConjoinPanelClass property of dock style objects.
 Description
   Write here a description
 
@@ -35,7 +41,7 @@ Description
 @@DefaultDockPanelClass
 <TITLE DefaultDockPanelClass variable>
 Summary
-  Write here a summary (1 line)
+  Provides the default implementation class for the DockPanelClass property of dock style objects.
 Description
   Write here a description
 
@@ -43,7 +49,7 @@ Description
 @@DefaultDockSplitterClass
 <TITLE DefaultDockSplitterClass variable>
 Summary
-  Write here a summary (1 line)
+  Provides the default implementation class for the DockSplitterClass property of dock style objects.
 Description
   Write here a description
 
@@ -51,7 +57,7 @@ Description
 @@DefaultDockTreeClass
 <TITLE DefaultDockTreeClass variable>
 Summary
-  Write here a summary (1 line)
+  Provides the default implementation class for the DockPanelTreeClass property of dock style objects.
 Description
   Write here a description
 
@@ -59,7 +65,7 @@ Description
 @@DefaultDockZoneClass
 <TITLE DefaultDockZoneClass variable>
 Summary
-  Write here a summary (1 line)
+  Provides the default implementation class for the DockPanelZoneClass property of dock style objects.
 Description
   Write here a description
 
@@ -67,7 +73,7 @@ Description
 @@DefaultTabDockClass
 <TITLE DefaultTabDockClass variable>
 Summary
-  Write here a summary (1 line)
+  Provides the default implementation class for the TabDockClass property of dock style objects.
 Description
   Write here a description
 
@@ -113,40 +119,37 @@ See Also
 @@FindDockBaseControl
 <TITLE FindDockBaseControl function>
 Summary
-  Write here a summary (1 line)
+  Searches for a TJvDockBaseControl control.
 Description
-  Write here a description
+  Call FindDockBaseControl to search for a TJvDockBaseControl control owned by Client.
 Parameters
   Client - Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FindDockClient, FindDockServer
 
 ----------------------------------------------------------------------------------------------------
 @@FindDockClient
 <TITLE FindDockClient function>
 Summary
-  Write here a summary (1 line)
+  Searches for a TJvDockClient control.
 Description
-  Write here a description
+  Call FindDockClient to search for a TJvDockClient control owned by Client.
 Parameters
   Client - Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FindDockServer
 
 ----------------------------------------------------------------------------------------------------
 @@FindDockServer
 <TITLE FindDockServer function>
 Summary
-  Write here a summary (1 line)
+  Searches for a TJvDockServer control.
 Description
-  Write here a description
+  Call FindDockServer to search for a TJvDockServer control owned by Client.
 Parameters
   Client - Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FindDockClient
 
 ----------------------------------------------------------------------------------------------------
 @@FreeAllDockableForm
@@ -433,7 +436,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockableForm
 Summary
-  Write here a summary (1 line)
+  Base dockable form.
 Description
   Write here a description
 
@@ -450,12 +453,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockableForm.DockClient
 Summary
-  Write here a summary (1 line)
+  Gives access to the dockable form manager.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockableForm.FloatingChild
@@ -485,41 +485,11 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvConjoinPanel.DockDrop
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockAdvPanel
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockAdvPanel.DockDrop
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockAdvStyle
@@ -536,21 +506,6 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvTabPageControl.DockDrop
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl
 Summary
   Write here a summary (1 line)
@@ -558,22 +513,9 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.BottomDock
 Summary
-  Write here a summary (1 line)
+  Specifies whether bottom docking is allowed.
 Description
   Write here a description
 See Also
@@ -593,7 +535,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.EachOtherDock
 Summary
-  Write here a summary (1 line)
+  Specifies whether dockable forms can be docked onto each other.
 Description
   Write here a description
 See Also
@@ -603,7 +545,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.EnableDock
 Summary
-  Write here a summary (1 line)
+  Specifies whether client forms can be docked on the dock site.
 Description
   Write here a description
 See Also
@@ -613,7 +555,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.LeftDock
 Summary
-  Write here a summary (1 line)
+  Specifies whether left docking is allowed.
 Description
   Write here a description
 See Also
@@ -623,7 +565,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.ParentForm
 Summary
-  Write here a summary (1 line)
+  Gives access to the form that is managed by the docking component.
 Description
   Write here a description
 See Also
@@ -633,7 +575,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.RightDock
 Summary
-  Write here a summary (1 line)
+  Specifies whether right docking is allowed.
 Description
   Write here a description
 See Also
@@ -643,7 +585,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.TopDock
 Summary
-  Write here a summary (1 line)
+  Specifies whether top docking is allowed.
 Description
   Write here a description
 See Also
@@ -653,22 +595,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicConjoinServerOption
 Summary
-  Write here a summary (1 line)
+  Provides the basic properties describing a conjoinment docking site.
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicConjoinServerOption.GrabbersSize
@@ -726,27 +655,14 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicServerOption
 Summary
-  Write here a summary (1 line)
+  Provides the basic properties describing a docking site.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockBasicServerOption.DockStyle
 Summary
-  Write here a summary (1 line)
+  Gives access to the dock style object that owns this option object.
 Description
   Write here a description
 See Also
@@ -756,25 +672,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle
 Summary
-  Write here a summary (1 line)
+  Provides the basic properties describing a docking style.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.AfterConstruction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetBottomDocked
 Summary
-  Write here a summary (1 line)
+  Returns whether the BottomDocked property can be set of a docking control.
 Description
   Write here a description
 Parameters
@@ -788,7 +693,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetEachOtherDocked
 Summary
-  Write here a summary (1 line)
+  Returns whether the EachOtherDocked property can be set of a docking control.
 Description
   Write here a description
 Parameters
@@ -802,7 +707,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetEnableDocked
 Summary
-  Write here a summary (1 line)
+  Returns whether the EnableDocked property can be set of a docking control.
 Description
   Write here a description
 Parameters
@@ -816,7 +721,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetLeftDocked
 Summary
-  Write here a summary (1 line)
+  Returns whether the LeftDocked property can be set of a docking control.
 Description
   Write here a description
 Parameters
@@ -830,7 +735,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetRightDocked
 Summary
-  Write here a summary (1 line)
+  Returns whether the RightDocked property can be set of a docking control.
 Description
   Write here a description
 Parameters
@@ -844,7 +749,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetTopDocked
 Summary
-  Write here a summary (1 line)
+  Returns whether the TopDocked property can be set of a docking control.
 Description
   Write here a description
 Parameters
@@ -858,7 +763,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ConjoinPanelClass
 Summary
-  Write here a summary (1 line)
+  Specifies the class for the conjoinment panels.
 Description
   Write here a description
 See Also
@@ -868,7 +773,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ConjoinPanelTreeClass
 Summary
-  Write here a summary (1 line)
+  Specifies the class for the conjoinment panel trees.
 Description
   Write here a description
 See Also
@@ -878,7 +783,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ConjoinPanelZoneClass
 Summary
-  Write here a summary (1 line)
+  Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
 See Also
@@ -888,7 +793,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ConjoinServerOption
 Summary
-  Write here a summary (1 line)
+  Object that provides the properties describing a conjoinment docking site.
 Description
   Write here a description
 See Also
@@ -898,7 +803,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ConjoinServerOptionClass
 Summary
-  Write here a summary (1 line)
+  Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
 See Also
@@ -940,7 +845,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.DockPanelClass
 Summary
-  Write here a summary (1 line)
+  Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
 See Also
@@ -950,7 +855,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.DockPanelTreeClass
 Summary
-  Write here a summary (1 line)
+  Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
 See Also
@@ -960,7 +865,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.DockPanelZoneClass
 Summary
-  Write here a summary (1 line)
+  Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
 See Also
@@ -970,7 +875,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.DockSplitterClass
 Summary
-  Write here a summary (1 line)
+  Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
 See Also
@@ -1020,7 +925,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ParentForm
 Summary
-  Write here a summary (1 line)
+  Gives access to the parent form of the docking style object.
 Description
   Write here a description
 See Also
@@ -1086,7 +991,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.TabDockClass
 Summary
-  Write here a summary (1 line)
+  Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
 See Also
@@ -1096,7 +1001,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.TabServerOption
 Summary
-  Write here a summary (1 line)
+  Object that provides the properties describing a conjoinment docking site.
 Description
   Write here a description
 See Also
@@ -1106,7 +1011,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.TabServerOptionClass
 Summary
-  Write here a summary (1 line)
+  Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
 See Also
@@ -1116,22 +1021,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicTabServerOption
 Summary
-  Write here a summary (1 line)
+  Provides the basic properties describing a docking page control.
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOption.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicTabServerOption.HotTrack
@@ -1170,22 +1062,9 @@ JVCLInfo
   GROUP=JVCL.Docking
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Manages a dockable child form.
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.CanFloat
@@ -1299,9 +1178,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoFormShowHint
 Summary
-  Write here a summary (1 line)
+  Generates an OnFormShowHint event.
 Description
-  Write here a description
+  Do not call OnFormShowHint. It is called automatically.
 Parameters
   HTFlag  - Description for this parameter
   HintStr - Description for this parameter
@@ -1313,9 +1192,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoNCButtonDblClk
 Summary
-  Write here a summary (1 line)
+  Generates an OnNCButtonDblClk event.
 Description
-  Write here a description
+  Do not call OnNCButtonDblClk. It is called automatically.
 Parameters
   Msg          - Description for this parameter
   Button       - Description for this parameter
@@ -1327,9 +1206,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoNCButtonDown
 Summary
-  Write here a summary (1 line)
+  Generates an OnNCButtonDown event.
 Description
-  Write here a description
+  Do not call OnNCButtonDown. It is called automatically.
 Parameters
   Msg          - Description for this parameter
   Button       - Description for this parameter
@@ -1341,9 +1220,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoNCButtonUp
 Summary
-  Write here a summary (1 line)
+  Generates an OnNCButtonUp event.
 Description
-  Write here a description
+  Do not call OnNCButtonUp. It is called automatically.
 Parameters
   Msg          - Description for this parameter
   Button       - Description for this parameter
@@ -1355,9 +1234,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoNCMouseMove
 Summary
-  Write here a summary (1 line)
+  Generates an OnNCMouseMove event.
 Description
-  Write here a description
+  Do not call OnNCMouseMove. It is called automatically.
 Parameters
   Msg          - Description for this parameter
   MouseStation - Description for this parameter
@@ -1368,9 +1247,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoPaintDockGrabber
 Summary
-  Write here a summary (1 line)
+  Generates an OnPaintDockGrabber event.
 Description
-  Write here a description
+  Do not call DoPaintDockGrabber. It is called automatically.
 Parameters
   Canvas  - Description for this parameter
   Control - Description for this parameter
@@ -1382,9 +1261,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoPaintDockSplitter
 Summary
-  Write here a summary (1 line)
+  Generates an OnPaintDockSplitter event.
 Description
-  Write here a description
+  Do not call DoPaintDockSplitter. It is called automatically.
 Parameters
   Canvas  - Description for this parameter
   Control - Description for this parameter
@@ -1613,7 +1492,8 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnNCButtonDblClk
 Summary
-  Write here a summary (1 line)
+  Occurs when the user double-clicks the mouse button while the cursor is within the nonclient area of
+  a window.
 Description
   Write here a description
 See Also
@@ -1623,7 +1503,8 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnNCButtonDown
 Summary
-  Write here a summary (1 line)
+  Occurs when the user presses the mouse button while the cursor is within the nonclient area of a
+  window.
 Description
   Write here a description
 See Also
@@ -1633,7 +1514,8 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnNCButtonUp
 Summary
-  Write here a summary (1 line)
+  Occurs when the user releases the left mouse button while the cursor is within the nonclient area of
+  a window.
 Description
   Write here a description
 See Also
@@ -1643,7 +1525,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnNCMouseMove
 Summary
-  Write here a summary (1 line)
+  Occurs when the cursor is moved within the nonclient area of the window.
 Description
   Write here a description
 Parameters
@@ -1759,14 +1641,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockConjoinHostForm
 Summary
-  Write here a summary (1 line)
+  A conjoinment docking site form
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockConjoinHostForm.Panel
 Summary
-  Write here a summary (1 line)
+  Gives access to the panel of the conjoinment docking site form.
 Description
   Write here a description
 See Also
@@ -1776,39 +1658,21 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockConjoinPanel
 Summary
-  Write here a summary (1 line)
+  The panel for a conjoinment docking site.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockConjoinPanel.DockClient
 Summary
-  Write here a summary (1 line)
+  Gives access to the dockable form manager.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockConjoinPanel.DockDrop
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockConjoinPanel.ParentForm
 Summary
-  Write here a summary (1 line)
+  Gives access to the parent form of the conjoinment panel.
 Description
   Write here a description
 See Also
@@ -1843,10 +1707,11 @@ Description
 @@TJvDockGrabbersSize
 <TITLE TJvDockGrabbersSize type>
 Summary
-  Write here a summary (1 line)
+  The subrange type for certain TJvDockBasicConjoinServerOption properties.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  1..MaxInt; - for reference)
+  TJvDockGrabbersSize is the subrange type for certain TJvDockBasicConjoinServerOption properties.
+See Also
+  TJvDockBasicConjoinServerOption.GrabbersSize
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockMouseStation
@@ -1956,29 +1821,11 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockPanel.DockDrop
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockPanel.DockServer
 Summary
-  Write here a summary (1 line)
+  Gives access to the dock site manager.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockPanel.PanelIndex
@@ -2027,12 +1874,9 @@ Description
 @@TJvDockPosition
 <TITLE TJvDockPosition type>
 Summary
-  Write here a summary (1 line)
+  Enumerates dock positions.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockPosition.dpLeft
@@ -2057,7 +1901,7 @@ JVCLInfo
   GROUP=JVCL.Docking
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Manages a dock site form.
 Description
   Write here a description
 
@@ -2073,45 +1917,25 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.BottomDockPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.DockPanel>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.BottomSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.Splitter>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.BottomSplitterStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.SplitterStyle>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.DockPanel
 Summary
-  Write here a summary (1 line)
+  Gives access to the docking panels of the dock site.
 Description
-  Write here a description
+  Use LeftDockPanel to access the left docking panel of the dock site form managed by the TJvDockServer
+  component.
 Parameters
   Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.DockPanelWithAlign
@@ -2122,8 +1946,7 @@ Description
 Parameters
   Index - Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDockServer.DockPanel
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.DockSplitterWithAlign
@@ -2153,33 +1976,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.LeftDockPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.DockPanel>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.LeftSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.Splitter>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.LeftSplitterStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.SplitterStyle>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.OnFinishSetDockPanelSize
@@ -2208,87 +2013,46 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.RightDockPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.DockPanel>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.RightSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.Splitter>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.RightSplitterStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.SplitterStyle>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.Splitter
 Summary
-  Write here a summary (1 line)
+  Gives access to the docking splitters of the dock site.
 Description
-  Write here a description
+  Use LeftDockPanel to access the left docking panel of the dock site form managed by the TJvDockServer
+  component.
 Parameters
   DockPosition - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.SplitterStyle
 Summary
-  Write here a summary (1 line)
+  Identifies the splitter style objects that gives the splitters their look and feel.
 Description
   Write here a description
 Parameters
   DockPosition - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.TopDockPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.DockPanel>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.TopSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.Splitter>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.TopSplitterStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockServer.SplitterStyle>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSetDockPanelSizeFrom
@@ -2319,17 +2083,14 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitter.DockServer
 Summary
-  Write here a summary (1 line)
+  Gives access to the dock site manager.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitter.SplitterIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the splitter control’s index in the internal list of the dock server.
 Description
   Write here a description
 See Also
@@ -2349,60 +2110,42 @@ Description
 @@TJvDockSplitterSize
 <TITLE TJvDockSplitterSize type>
 Summary
-  Write here a summary (1 line)
+  The subrange type for certain TJvDockSplitterStyle properties.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  0..32767; - for reference)
+  TJvDockSplitterSize is the subrange type for certain TJvDockSplitterStyle properties.
+See Also
+  TJvDockSplitterStyle.Size, TJvDockSplitterStyle.MinSize
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitterStyle
 Summary
-  Write here a summary (1 line)
+  Provides the properties describing a dock splitter.
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterStyle.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitterStyle.Color
 Summary
-  Write here a summary (1 line)
+  Specifies the background color of the splitter control.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDockSplitterStyle.ParentColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitterStyle.Cursor
 Summary
-  Write here a summary (1 line)
+  Specifies the image used to represent the mouse pointer when it passes into the region covered by the
+  splitter control.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitterStyle.MinSize
 Summary
-  Write here a summary (1 line)
+  Specifies the minimum size, in pixels, of the panes on either side of the splitter.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitterStyle.ParentColor
@@ -2411,23 +2154,36 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDockSplitterStyle.Color
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitterStyle.ResizeStyle
 Summary
-  Write here a summary (1 line)
+  Specifies the effect of moving the splitter.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ResizeStyle to determine what happens when the user moves the splitter with the mouse.
+
+  ResizeStyle can have one of the values in the following table:
+
+  <TABLE>
+    Value      Meaning
+    ---------  -------------------------------------------------------------------------------
+    rsNone     Moving the splitter with the mouse has no effect.
+    rsLine     A line is drawn indicating the new position of the splitter that would result
+                 if the user released the mouse at the current position. The splitter does
+                 not actually move and no controls are resized.
+    rsUpdate   The control against which the splitter is aligned is resized based on the
+                 current mouse position, and the splitter is moved to that position.
+    rsPattern  A pattern is drawn indicating the new position of the splitter that would
+                 result if the user released the mouse at the current position. The splitter
+                 does not actually move and no controls are resized. This is the default
+                 value for ResizeStyle.
+  </TABLE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitterStyle.Size
 Summary
-  Write here a summary (1 line)
+  Specifies the height or width of the splitter
 Description
   Write here a description
 See Also
@@ -2437,21 +2193,20 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitterStyle.Splitter
 Summary
-  Write here a summary (1 line)
+  Gives access to the splitter that is described by the style object.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use property Splitter to directly access the splitter that is described by the TJvDockSplitterStyle
+  object. Note that Splitter may be nil.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitterWidth
 <TITLE TJvDockSplitterWidth type>
 Summary
-  Write here a summary (1 line)
+  The subrange type for certain TJvDockBasicConjoinServerOption properties.
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  1..MaxInt; - for reference)
+  TJvDockSplitterWidth is the subrange type for certain TJvDockBasicConjoinServerOption properties.
+See Also
+  TJvDockBasicConjoinServerOption.SplitterWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTabClass
@@ -2465,7 +2220,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTabHostForm
 Summary
-  Write here a summary (1 line)
+  The form for a dockable page control.
 Description
   Write here a description
 
@@ -2484,7 +2239,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTabHostForm.PageControl
 Summary
-  Write here a summary (1 line)
+  Gives access to the page control maintained by the form.
 Description
   Write here a description
 See Also
@@ -2494,34 +2249,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTabPageControl
 Summary
-  Write here a summary (1 line)
+  A docking page control.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTabPageControl.DockClient
 Summary
-  Write here a summary (1 line)
+  Gives access to the dockable form manager.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTabPageControl.DockDrop
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTabPageControl.LoadFromStream
@@ -2538,7 +2275,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTabPageControl.ParentForm
 Summary
-  Write here a summary (1 line)
+  Gives access to the parent form of the dock page control.
 Description
   Write here a description
 See Also

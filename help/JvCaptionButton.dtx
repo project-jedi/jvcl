@@ -29,11 +29,11 @@ Description
   An error occurs (and the function returns FALSE) if the source device context identifies an enhanced
   metafile device context.
 
-  If destination and source bitmaps do not have the same color format, \\AlphaBlend converts the source
+  If destination and source bitmaps do not have the same color format, \AlphaBlend converts the source
   bitmap to match the destination bitmap.
 
-  \\AlphaBlend does not support mirroring. If either the width or height of the source or destination
-  is negative, this call will fail.
+  \AlphaBlend does not support mirroring. If either the width or height of the source or destination is
+  negative, this call will fail.
 
   When rendering to a printer, first call GetDeviceCaps with SHADEBLENDCAPS to determine if the printer
   supports blending with AlphaBlend. Note that, for a display DC, all blending operations are supported

@@ -1090,7 +1090,8 @@ Description
   \Example:
   <AUTOLINK OFF>
   <CODE>
-  procedure TForm1.JvRichEdit1CloseFindDialog(Sender: TObject; Dialog: TFindDialog); begin
+  procedure TForm1.JvRichEdit1CloseFindDialog(Sender: TObject; Dialog: TFindDialog);
+  begin
     with JvRichEdit1 do
       if CanFocus then
         SetFocus;
@@ -1364,7 +1365,7 @@ Description
   \Read RedoName to retrieve the type of the next action, if any, in the control's \redo queue.
 
   The types of actions that can be undone or redone include typing, \delete, drag-drop, cut, and paste
-  operations. This information can be useful fo applications that provide an extended user interface
+  operations. This information can be useful for applications that provide an extended user interface
   for undo and \redo operations, such as a drop-down list box of redoable actions.
 See Also
   TCustomMemo.Undo
@@ -1638,7 +1639,7 @@ Description
   \Read UndoName to retrieve the type of the next undo action, if any.
 
   The types of actions that can be undone or redone include typing, \delete, drag, drop, cut, and paste
-  operations. This information can be useful fo applications that provide an extended user interface
+  operations. This information can be useful for applications that provide an extended user interface
   for undo and \redo operations, such as a drop-down list box of actions that can be undone.
 
   This example changes the Caption and Enabled properties of 2 TMenuItem's in the OnChange event
@@ -2474,12 +2475,12 @@ Description
   <AUTOLINK OFF>
   <CODE>
   const
-    cHyperlink = \'{\rtf1{\field {\*\fldinst {HYPERLINK "%s" }}{\fldrslt {\ul %s }}}}\';
+    cHyperlink = '{\\rtf1{\\field {\\*\\fldinst {HYPERLINK "%s" }}{\\fldrslt {\\ul %s }}}}';
   var
     S: string;
     Stream: TStream;
   begin
-    S := Format(cHyperLink, [\'http://jvcl.sourceforge.net\', \'JVCL\']);
+    S := Format(cHyperLink, ['http://jvcl.sourceforge.net', 'JVCL']);
 
     Stream := TMemoryStream.Create;
     try
@@ -2489,7 +2490,7 @@ Description
       JvRichEdit1.StreamFormat := sfRichText;
       JvRichEdit1.StreamMode := [smSelection, smPlainRtf];
       JvRichEdit1.Lines.LoadFromStream(Stream);
-      { Don\'t forget to clear the smSelection flag: normally we want to save
+      { Don't forget to clear the smSelection flag: normally we want to save
          the whole text, and such a flag is easily forgotten }
       JvRichEdit1.StreamMode := [];
     finally
@@ -2932,8 +2933,8 @@ See Also
 @@TRichStreamMode.smNoObjects
   Streams the text out as RTF with spaces in place of Component Object Model (COM) objects. Useful if
   an application stores COM objects itself, as RTF representation of COM objects is not very compact.
-  The control word, \\objattph, followed by a space denotes the object position. This flag is ignored
-  if the format of the text is not RTF. You can set the format of the text with property <LINK
+  The control word, \objattph, followed by a space denotes the object position. This flag is ignored if
+  the format of the text is not RTF. You can set the format of the text with property <LINK
   TJvCustomRichEdit.StreamFormat, StreamFormat>.
 
 ----------------------------------------------------------------------------------------------------

@@ -37,7 +37,7 @@ Description
   function because PathName may or may end in a backslash, and FileName may or may not begin with a
   backslash.
 Parameters
-  PathName - A path name for the fully qualified filename you are creating (For example, 'C:\')
+  PathName - A path name for the fully qualified filename you are creating (For example, 'C:\\')
   FileName - A filename (For example, 'autoexec.bat')
 
 ----------------------------------------------------------------------------------------------------
@@ -267,7 +267,7 @@ Description
   Modifies a pchar buffer containing a string which may or may not have leading and trailing quotes.
   Result after call is that the buffer contains only the data that was previously inside the quotes,
   all leading and trailing whitespace, and the quote characters themselves, are gone. Escaped quote
-  characters (\") within the string have been replaced with their literal equivalents (").
+  characters (\\") within the string have been replaced with their literal equivalents (").
 Parameters
   S1 - Buffer to strip quotes from.
 

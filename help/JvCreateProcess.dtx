@@ -223,7 +223,7 @@ Summary
   process.
 Description
   Windows NT/2000/XP: Desktop specifies either the name of the desktop, or the name of both the desktop
-  and window station for this process. A backslash in the \string indicates that the \string includes
+  and window station for this process. A backslash in the string indicates that the string includes
   both the desktop and window station names. If Desktop is empty, then the new process inherits the
   desktop and window station of its parent process.
 
@@ -298,7 +298,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSStartupInfo.Title
 Summary
-  Specifies a text \string that is displayed in the title bar if a new console window is created.
+  Specifies a text string that is displayed in the title bar if a new console window is created.
 Description
   For console processes, this is the title displayed in the title bar if a new console window is
   created. If Title is empty, the name of the executable file is used as the window title instead.
@@ -372,8 +372,8 @@ Description
 
   First use the properties of TJvCreateProcess to specify how and which process must be created:
 
-  * Set ApplicationName to a \string to specify the module to execute.
-  * Set CommandLine to a \string to specify the command line to execute.
+  * Set ApplicationName to a string to specify the module to execute.
+  * Set CommandLine to a string to specify the command line to execute.
   * Use WaitForTerminate to specify whether TJvCreateProcess must wait for the process to end. If you
     set WaitForTerminate to True, specify an OnTerminate event handler to execute code after the
     process finishes executing.
@@ -413,20 +413,20 @@ Description
 Summary
   Determines the module to execute.
 Description
-  Set ApplicationName to a \string to specify the module to execute.
+  Set ApplicationName to a string to specify the module to execute.
 
-  The \string can specify the full path and file name of the module to execute or it can specify a
+  The string can specify the full path and file name of the module to execute or it can specify a
   partial name. In the case of a partial name, TJvCreateProcess uses the current drive and current
   directory to complete the specification. TJvCreateProcess will not use the search path. If the file
   name does not contain an extension, .exe is assumed. Therefore, if the file name extension is .com,
   this parameter must include the .com extension.
 
-  The \string specified by ApplicationName can be empty. In that case, the module name must be the
-  first white space-delimited token in the \string specified by CommandLine. If you are using a long
-  file name that contains a space, use quoted strings to indicate where the file name ends and the
-  arguments begin; otherwise, the file name is ambiguous. For example, consider the \string "c:\
-  program files\\sub dir\\program name". This \string can be interpreted in a number of ways. The
-  system tries to interpret the possibilities in the following order:
+  The string specified by ApplicationName can be empty. In that case, the module name must be the first
+  white space-delimited token in the string specified by CommandLine. If you are using a long file name
+  that contains a space, use quoted strings to indicate where the file name ends and the arguments
+  begin; otherwise, the file name is ambiguous. For example, consider the string "c:\\program
+  files\\sub dir\\program name". This string can be interpreted in a number of ways. The system tries
+  to interpret the possibilities in the following order:
 
   * <B>c:\\program.exe</B> files\\sub dir\\program name
   * <B>c:\\program files\\sub.exe</B> dir\\program name
@@ -486,9 +486,9 @@ Description
 Summary
   Determines the command line to execute.
 Description
-  Set CommandLine to a \string to specify the command line to execute.
+  Set CommandLine to a string to specify the command line to execute.
 
-  If the \string is empty then TJvCreateProcess uses the \string specified by ApplicationName as the
+  If the string is empty then TJvCreateProcess uses the string specified by ApplicationName as the
   command line.
 
   If both ApplicationName and CommandLine are not empty, then ApplicationName specifies the module to
@@ -531,7 +531,7 @@ See Also
 Summary
   Returns a list of the found directory names.
 Description
-  ConsoleOutput is a \string list that contains the output of console processes created with the
+  ConsoleOutput is a string list that contains the output of console processes created with the
   TJvCreateProcess component, which standard input and output is redirected.
 
   The console output is pre-processed by TJvCreateProcess: It has the same format as it appears in a
@@ -540,7 +540,7 @@ Description
   coOwnerData must <I>not</I> be included in Options, but coRedirect must be included, otherwise
   ConsoleOutput stays empty.
 
-  Use properties and methods for \string lists to traverse this list of directories and read individual
+  Use properties and methods for string lists to traverse this list of directories and read individual
   items.
 See Also
   TJvCreateProcess.ConsoleOptions, TJvCreateProcess.OnRawRead, TJvCreateProcess.OnRead
@@ -579,7 +579,7 @@ Summary
   Determines the current drive and directory for the new process.
 Description
   Set CurrentDirectory to a drive and directory to specify the current drive and directory for the new
-  process. The \string must be a full path that includes a drive letter. If no value is specified, the
+  process. The string must be a full path that includes a drive letter. If no value is specified, the
   new process will have the same current drive and directory as the calling process.
 See Also
   TJvCreateProcess.Run
@@ -599,7 +599,7 @@ See Also
 Summary
   Lists the environment block for the new process.
 Description
-  Use Environment to access the environment block for the new process. Each \string must be in the
+  Use Environment to access the environment block for the new process. Each string must be in the
   form:
 
   name=value
@@ -914,15 +914,15 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvProcessEntry.PriorityText
 Summary
-  Converts a priority into a \string that describes the priority.
+  Converts a priority into a string that describes the priority.
 Description
   Call PriorityText to obtain a text description of the priority associated with a process. For
   Example, use this function when the application needs to display a description of a priority to the
   user.
 Parameters
-  Priority - The priority that needs to be converted to a \string.
+  Priority - The priority that needs to be converted to a string.
 Return value
-  A \string describing the priority indicated by parameter Priority.
+  A string describing the priority indicated by parameter Priority.
 See Also
   TJvProcessEntry.Priority
 
