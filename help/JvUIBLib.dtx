@@ -52,6 +52,22 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@DecodeSQLDate@Integer@Integer
+<TITLE DecodeSQLDate procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  v    - Description for this parameter
+  Date - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@DecodeSQLDate@Integer@SmallInt@Word@Word
 <TITLE DecodeSQLDate procedure>
 Summary
@@ -133,6 +149,22 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@EncodeSQLDate@Integer@Integer
+<TITLE EncodeSQLDate procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  date - Description for this parameter
+  v    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@EncodeSQLDate@SmallInt@Word@Word@Integer
 <TITLE EncodeSQLDate procedure>
 Summary
@@ -183,12 +215,31 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@EncodeTimeStamp
+@@EncodeTimeStamp@Integer@PISCTimeStamp
 <TITLE EncodeTimeStamp procedure>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Date - Description for this parameter
+  v    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@EncodeTimeStamp@TDateTime@PISCTimeStamp
+<TITLE EncodeTimeStamp procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
   DateTime - Description for this parameter
   v        - Description for this parameter
@@ -238,6 +289,29 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@EUIBException
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@EUIBException.Number
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@EUIBExceptionClass
+<TITLE EUIBExceptionClass type>
+Summary
+  Defines the metaclass for EUIBException.
+Description
+  EUIBExceptionClass is the metaclass for EUIBException. Its value is the class reference for
+  EUIBException or for one of its descendants.
+----------------------------------------------------------------------------------------------------
 @@EUIBGBakError
 Summary
   Write here a summary (1 line)
@@ -284,6 +358,16 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@EUIBParser.Line
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@GetClientLibrary
+<TITLE GetClientLibrary function>
 Summary
   Write here a summary (1 line)
 Description
@@ -436,6 +520,20 @@ See Also
 @@TCharacterSet.csWIN1254
   Description for csWIN1254
 ---------------------------------------------------------------------------------------------------
+@@TDPBInfo
+<TITLE TDPBInfo type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TDPBInfo.Name
+  Description for Name
+@@TDPBInfo.ParamType
+  Description for ParamType
+---------------------------------------------------------------------------------------------------
 @@TDSQLInfoData
 <TITLE TDSQLInfoData type>
 Summary
@@ -567,6 +665,10 @@ See Also
 @@TOnConnectionLost
 <TITLE TOnConnectionLost type>
 <COMBINE TUIBLibrary.OnConnectionLost>
+----------------------------------------------------------------------------------------------------
+@@TOnGetDBExceptionClass
+<TITLE TOnGetDBExceptionClass type>
+<COMBINE TUIBLibrary.OnGetDBExceptionClass>
 ---------------------------------------------------------------------------------------------------
 @@TPageInfo
 <TITLE TPageInfo type>
@@ -581,6 +683,26 @@ See Also
   Description for NextPage
 @@TPageInfo.UsageCounter
   Description for UsageCounter
+----------------------------------------------------------------------------------------------------
+@@TParamType
+<TITLE TParamType type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TParamType.prNone
+  Description for prNone
+@@TParamType.prByte
+  Description for prByte
+@@TParamType.prCard
+  Description for prCard
+@@TParamType.prStrg
+  Description for prStrg
+@@TParamType.prIgno
+  Description for prIgno
 ----------------------------------------------------------------------------------------------------
 @@TScale
 <TITLE TScale type>
@@ -770,6 +892,17 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TSQLParams.AsDate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TSQLParams.AsDateTime
 Summary
   Write here a summary (1 line)
@@ -881,6 +1014,17 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TSQLParams.ByNameAsCurrency
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  name - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TSQLParams.ByNameAsDate
 Summary
   Write here a summary (1 line)
 Description
@@ -1258,6 +1402,17 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TSQLResult.ByNameAsCurrency
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  name - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TSQLResult.ByNameAsDate
 Summary
   Write here a summary (1 line)
 Description
@@ -2240,6 +2395,8 @@ Parameters
   Statement  - Description for this parameter
   Dialect    - Description for this parameter
   Sqlda      - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -2302,7 +2459,27 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TUIBLibrary.OnGetDBExceptionClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Number - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TUIBLibrary.RaiseErrors
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TUIBLibrary.SegMentSize
 Summary
   Write here a summary (1 line)
 Description

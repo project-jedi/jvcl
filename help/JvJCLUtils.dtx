@@ -8,19 +8,6 @@ Summary
 Author
   Andrei Prygounkov
 ----------------------------------------------------------------------------------------------------
-@@ActivatePrevInstance
-<TITLE ActivatePrevInstance function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  MainFormClass - Description for this parameter
-  ATitle        - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@ActivateWindow
 <TITLE ActivateWindow procedure>
 Summary
@@ -198,14 +185,30 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@AssignClipboardIcon
-<TITLE AssignClipboardIcon procedure>
+@@AntiAlias
+<TITLE AntiAlias procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Icon - Description for this parameter
+  Clip - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@AntiAliasRect
+<TITLE AntiAliasRect procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Clip    - Description for this parameter
+  XOrigin - Description for this parameter
+  YOrigin - Description for this parameter
+  XFinal  - Description for this parameter
+  YFinal  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -262,20 +265,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@BrowseForFolder
-<TITLE BrowseForFolder function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Handle - Description for this parameter
-  Title  - Description for this parameter
-  Folder - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@CenterStr
 <TITLE CenterStr function>
 Summary
@@ -297,16 +286,6 @@ Description
   Write here a description
 Parameters
   Wnd - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@CF_ICON
-<TITLE CF_ICON function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -566,19 +545,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@CopyIconToClipboard
-<TITLE CopyIconToClipboard procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Icon      - Description for this parameter
-  BackColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@CountOfChar
 <TITLE CountOfChar function>
 Summary
@@ -614,28 +580,6 @@ Parameters
   FileName    - Description for this parameter
   DisplayName - Description for this parameter
   Folder      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@CreateIconFromClipboard
-<TITLE CreateIconFromClipboard function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@CreateRealSizeIcon
-<TITLE CreateRealSizeIcon function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Icon - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -801,7 +745,7 @@ Summary
 Description
   Write here a description
 Parameters
-  FourDigitYear - Description for this parameter
+  AFourDigitYear - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -813,8 +757,8 @@ Summary
 Description
   Write here a description
 Parameters
-  BlanksChar    - Description for this parameter
-  FourDigitYear - Description for this parameter
+  BlanksChar     - Description for this parameter
+  AFourDigitYear - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1059,21 +1003,6 @@ Description
   Write here a description
 Parameters
   S - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@DrawRealSizeIcon
-<TITLE DrawRealSizeIcon procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  Icon   - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1467,19 +1396,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@FindPrevInstance
-<TITLE FindPrevInstance function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  MainFormClass - Description for this parameter
-  ATitle        - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@FirstDayOfNextMonth
 <TITLE FirstDayOfNextMonth function>
 Summary
@@ -1691,18 +1607,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@GetFileSize
-<TITLE GetFileSize function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FileName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@GetFileVersion
 <TITLE GetFileVersion function>
 Summary
@@ -1711,20 +1615,6 @@ Description
   Write here a description
 Parameters
   AFilename - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@GetIconSize
-<TITLE GetIconSize procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Icon - Description for this parameter
-  W    - Description for this parameter
-  H    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -2449,16 +2339,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IsForegroundTask
-<TITLE IsForegroundTask function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@IsLeapYear
 <TITLE IsLeapYear function>
 Summary
@@ -2776,8 +2656,8 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@MinimizeName
-<TITLE MinimizeName function>
+@@MinimizeFileName
+<TITLE MinimizeFileName function>
 Summary
   Write here a summary (1 line)
 Description
@@ -3994,6 +3874,31 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@StrToFloatUS
+<TITLE StrToFloatUS function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Text - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@StrToFloatUSDef
+<TITLE StrToFloatUSDef function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Text    - Description for this parameter
+  Default - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@StrToOem
 <TITLE StrToOem function>
 Summary
@@ -4265,6 +4170,18 @@ Description
   You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = TDateTime; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@USToLocalFloatStr
+<TITLE USToLocalFloatStr function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Text - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

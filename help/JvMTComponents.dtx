@@ -1,4 +1,4 @@
-##Package: ??
+##Package: ManagedThreads
 ##Status: Generated
 ----------------------------------------------------------------------------------------------------
 @@JvMTComponents.pas
@@ -8,13 +8,13 @@ Summary
 Author
   Erwin Molendijk.
 ----------------------------------------------------------------------------------------------------
-@@TJvMtAsyncBufferBase
+@@TJvMTAsyncBufferBase
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvMtAsyncBufferBase.MaxBufferSize
+@@TJvMTAsyncBufferBase.MaxBufferSize
 Summary
   Write here a summary (1 line)
 Description
@@ -23,7 +23,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtAsyncBufferBase.Read
+@@TJvMTAsyncBufferBase.Read
 Summary
   Write here a summary (1 line)
 Description
@@ -34,7 +34,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtAsyncBufferBase.Write
+@@TJvMTAsyncBufferBase.Write
 Summary
   Write here a summary (1 line)
 Description
@@ -45,28 +45,23 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtComponent
+@@TJvMTComponent
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvMtCountingSection
+@@TJvMTCountingSection
+<TITLEIMG TJvMTCountingSection>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvMtCountingSection.InitCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMtCountingSection.MaxCount
+@@TJvMTCountingSection.InitCount
 Summary
   Write here a summary (1 line)
 Description
@@ -75,13 +70,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtManagedComponent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvMtManagedComponent.Manager
+@@TJvMTCountingSection.MaxCount
 Summary
   Write here a summary (1 line)
 Description
@@ -90,13 +79,32 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtManager
+@@TJvMTManagedComponent
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvMtManager.AcquireNewThread
+@@TJvMTManagedComponent.Manager
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMTManager
+<TITLEIMG TJvMTManager>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvMTManager.AcquireNewThread
 Summary
   Write here a summary (1 line)
 Description
@@ -107,7 +115,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtManager.AcquireThread
+@@TJvMTManager.AcquireThread
 Summary
   Write here a summary (1 line)
 Description
@@ -121,7 +129,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtManager.ActiveThreads
+@@TJvMTManager.ActiveThreads
 Summary
   Write here a summary (1 line)
 Description
@@ -132,7 +140,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtManager.ReleaseThread
+@@TJvMTManager.ReleaseThread
 Summary
   Write here a summary (1 line)
 Description
@@ -143,7 +151,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtManager.TerminateThreads
+@@TJvMTManager.TerminateThreads
 Summary
   Write here a summary (1 line)
 Description
@@ -152,7 +160,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtManager.WaitThreads
+@@TJvMTManager.WaitThreads
 Summary
   Write here a summary (1 line)
 Description
@@ -161,13 +169,28 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtMonitorSection
+@@TJvMTMonitorSection
+<TITLEIMG TJvMTMonitorSection>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvMtMonitorSection.Condition
+@@TJvMTMonitorSection.Condition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ID - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMTMonitorSection.Enter
 Summary
   Write here a summary (1 line)
 Description
@@ -176,7 +199,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtMonitorSection.Enter
+@@TJvMTMonitorSection.Leave
 Summary
   Write here a summary (1 line)
 Description
@@ -185,7 +208,17 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtMonitorSection.Leave
+@@TJvMTSection
+<TITLEIMG TJvMTSection>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvMTSection.AllowRecursion
 Summary
   Write here a summary (1 line)
 Description
@@ -194,13 +227,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtSection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvMtSection.AllowRecursion
+@@TJvMTSection.InitEntered
 Summary
   Write here a summary (1 line)
 Description
@@ -209,7 +236,13 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtSection.InitEntered
+@@TJvMTSectionBase
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvMTSectionBase.Active
 Summary
   Write here a summary (1 line)
 Description
@@ -218,13 +251,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtSectionBase
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvMtSectionBase.Active
+@@TJvMTSectionBase.Enter
 Summary
   Write here a summary (1 line)
 Description
@@ -233,7 +260,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtSectionBase.Enter
+@@TJvMTSectionBase.Leave
 Summary
   Write here a summary (1 line)
 Description
@@ -242,7 +269,23 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtSectionBase.Leave
+@@TJvMTSingleThread
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvMTThread
+<TITLEIMG TJvMTThread>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvMTThread.CheckTerminate
 Summary
   Write here a summary (1 line)
 Description
@@ -251,19 +294,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtSingleThread
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvMtThread
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvMtThread.CheckTerminate
+@@TJvMTThread.OnExecute
 Summary
   Write here a summary (1 line)
 Description
@@ -272,7 +303,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThread.OnExecute
+@@TJvMTThread.OnFinished
 Summary
   Write here a summary (1 line)
 Description
@@ -281,7 +312,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThread.OnFinished
+@@TJvMTThread.OnTerminating
 Summary
   Write here a summary (1 line)
 Description
@@ -290,7 +321,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThread.OnTerminating
+@@TJvMTThread.Run
 Summary
   Write here a summary (1 line)
 Description
@@ -299,7 +330,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThread.Run
+@@TJvMTThread.RunCopy
 Summary
   Write here a summary (1 line)
 Description
@@ -308,7 +339,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThread.RunCopy
+@@TJvMTThread.RunOnCreate
 Summary
   Write here a summary (1 line)
 Description
@@ -317,7 +348,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThread.RunOnCreate
+@@TJvMTThread.Status
 Summary
   Write here a summary (1 line)
 Description
@@ -326,16 +357,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThread.Status
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMtThread.Synchronize
+@@TJvMTThread.Synchronize
 Summary
   Write here a summary (1 line)
 Description
@@ -346,7 +368,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThread.Terminate
+@@TJvMTThread.Terminate
 Summary
   Write here a summary (1 line)
 Description
@@ -355,7 +377,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThread.Ticket
+@@TJvMTThread.Ticket
 Summary
   Write here a summary (1 line)
 Description
@@ -364,7 +386,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThread.Wait
+@@TJvMTThread.Wait
 Summary
   Write here a summary (1 line)
 Description
@@ -373,16 +395,15 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThreadEvent
-<TITLE TJvMtThreadEvent type>
+@@TJvMTThreadEvent
+<TITLE TJvMTThreadEvent type>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   This type is used by (for reference):
-    TJvMtThread.OnExecute
-    TJvMtThread.OnFinished
-    TJvMtThread.OnTerminating
+    TJvMTThread.OnExecute
+    TJvMTThread.OnFinished
+    TJvMTThread.OnTerminating
 Parameters
   Sender   - Description for this parameter
   MTThread - Description for this parameter
@@ -390,13 +411,17 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThreadToThread
+@@TJvMTThreadToThread
+<TITLEIMG TJvMTThreadToThread>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThreadToThread.MaxBufferSize
+@@TJvMTThreadToThread.MaxBufferSize
 Summary
   Write here a summary (1 line)
 Description
@@ -405,7 +430,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThreadToThread.Read
+@@TJvMTThreadToThread.Read
 Summary
   Write here a summary (1 line)
 Description
@@ -416,7 +441,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThreadToThread.Write
+@@TJvMTThreadToThread.Write
 Summary
   Write here a summary (1 line)
 Description
@@ -427,13 +452,17 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThreadToVCL
+@@TJvMTThreadToVCL
+<TITLEIMG TJvMTThreadToVCL>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvMtThreadToVCL.OnCanRead
+@@TJvMTThreadToVCL.OnCanRead
 Summary
   Write here a summary (1 line)
 Description
@@ -442,13 +471,17 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMtVCLToThread
+@@TJvMTVCLToThread
+<TITLEIMG TJvMTVCLToThread>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvMtVCLToThread.OnCanWrite
+@@TJvMTVCLToThread.OnCanWrite
 Summary
   Write here a summary (1 line)
 Description

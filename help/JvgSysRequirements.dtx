@@ -8,10 +8,6 @@ Summary
 Author
   Andrey V. Chudin,
 ----------------------------------------------------------------------------------------------------
-@@OnWarningEvent
-<TITLE OnWarningEvent type>
-<COMBINE TJvgSysRequirements.OnWarning>
-----------------------------------------------------------------------------------------------------
 @@TglMinColorDepth
 <TITLE TglMinColorDepth type>
 Summary
@@ -64,10 +60,6 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TglOS
 <TITLE TglOS type>
-<COMBINE TglOS_>
-----------------------------------------------------------------------------------------------------
-@@TglOS_
-<TITLE TglOS_ type>
 Summary
   Write here a summary (1 line)
 Description
@@ -75,34 +67,38 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-@@TglOS_.fosWindowsNT
+@@TglOS.fosWindowsNT
   Description for fosWindowsNT
-@@TglOS_.fosWindows95
+@@TglOS.fosWindows95
   Description for fosWindows95
+----------------------------------------------------------------------------------------------------
+@@TglOSSet
+<TITLE TglOSSet type>
+<COMBINE TglOS>
+----------------------------------------------------------------------------------------------------
+@@TglRequirement
+<TITLE TglRequirement type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TglRequirement.fsrVideoVRefreshRate
+  Description for fsrVideoVRefreshRate
+@@TglRequirement.fsrGraphicResolution
+  Description for fsrGraphicResolution
+@@TglRequirement.fsrColorDepth
+  Description for fsrColorDepth
+@@TglRequirement.fsrSystemFont
+  Description for fsrSystemFont
+@@TglRequirement.fsrOSPlatform
+  Description for fsrOSPlatform
 ----------------------------------------------------------------------------------------------------
 @@TglRequirements
 <TITLE TglRequirements type>
-<COMBINE TglRequirements_>
-----------------------------------------------------------------------------------------------------
-@@TglRequirements_
-<TITLE TglRequirements_ type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-@@TglRequirements_.fsrVideoVRefreshRate
-  Description for fsrVideoVRefreshRate
-@@TglRequirements_.fsrGraphicResolution
-  Description for fsrGraphicResolution
-@@TglRequirements_.fsrColorDepth
-  Description for fsrColorDepth
-@@TglRequirements_.fsrSystemFont
-  Description for fsrSystemFont
-@@TglRequirements_.fsrOSPlatform
-  Description for fsrOSPlatform
+<COMBINE TglRequirement>
 ----------------------------------------------------------------------------------------------------
 @@TglSysReqBehavior
 <TITLE TglSysReqBehavior type>
@@ -133,6 +129,10 @@ See Also
   Description for fsfSmallFont
 @@TglSystemFont.fsfBigFont
   Description for fsfBigFont
+----------------------------------------------------------------------------------------------------
+@@TglWarningEvent
+<TITLE TglWarningEvent type>
+<COMBINE TJvgSysRequirements.OnWarning>
 ----------------------------------------------------------------------------------------------------
 @@TJvgSysRequirements
 <TITLEIMG TJvgSysRequirements>
@@ -197,8 +197,8 @@ Description
 Parameters
   Sender        - Description for this parameter
   ReportMessage - Description for this parameter
-  doShowWarning - Description for this parameter
-  doHalt        - Description for this parameter
+  DoShowWarning - Description for this parameter
+  DoHalt        - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
