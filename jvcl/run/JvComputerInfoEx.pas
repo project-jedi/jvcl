@@ -48,129 +48,129 @@ uses
 
 // these are defined here to avoid including DBT.pas
 const
-  {$EXTERNALSYM DBT_DEVICEARRIVAL}
+{$EXTERNALSYM DBT_DEVICEARRIVAL}
   DBT_DEVICEARRIVAL = $8000; { system detected a new device }
-  {$EXTERNALSYM DBT_DEVICEREMOVECOMPLETE}
+{$EXTERNALSYM DBT_DEVICEREMOVECOMPLETE}
   DBT_DEVICEREMOVECOMPLETE = $8004; { device is gone }
-  {$EXTERNALSYM DBT_DEVTYP_VOLUME}
+{$EXTERNALSYM DBT_DEVTYP_VOLUME}
   DBT_DEVTYP_VOLUME = $00000002; { logical volume }
-  {$EXTERNALSYM DBTF_MEDIA}
+{$EXTERNALSYM DBTF_MEDIA}
   DBTF_MEDIA = $0001; { media commings and goings }
 
   // new params for SystemParametersInfo not defined in Windows
   SPI_GETDESKWALLPAPER = $0073;
-  {$EXTERNALSYM SPI_GETDESKWALLPAPER}
+{$EXTERNALSYM SPI_GETDESKWALLPAPER}
   SPI_GETMOUSESONAR = $101C;
-  {$EXTERNALSYM SPI_GETMOUSESONAR}
+{$EXTERNALSYM SPI_GETMOUSESONAR}
   SPI_SETMOUSESONAR = $101D;
-  {$EXTERNALSYM SPI_SETMOUSESONAR}
+{$EXTERNALSYM SPI_SETMOUSESONAR}
   SPI_GETMOUSECLICKLOCK = $101E;
-  {$EXTERNALSYM SPI_GETMOUSECLICKLOCK}
+{$EXTERNALSYM SPI_GETMOUSECLICKLOCK}
   SPI_SETMOUSECLICKLOCK = $101F;
-  {$EXTERNALSYM SPI_SETMOUSECLICKLOCK}
+{$EXTERNALSYM SPI_SETMOUSECLICKLOCK}
   SPI_GETMOUSEVANISH = $1020;
-  {$EXTERNALSYM SPI_GETMOUSEVANISH}
+{$EXTERNALSYM SPI_GETMOUSEVANISH}
   SPI_SETMOUSEVANISH = $1021;
-  {$EXTERNALSYM SPI_SETMOUSEVANISH}
+{$EXTERNALSYM SPI_SETMOUSEVANISH}
   SPI_GETFLATMENU = $1022;
-  {$EXTERNALSYM SPI_GETFLATMENU}
+{$EXTERNALSYM SPI_GETFLATMENU}
   SPI_SETFLATMENU = $1023;
-  {$EXTERNALSYM SPI_SETFLATMENU}
+{$EXTERNALSYM SPI_SETFLATMENU}
   SPI_GETDROPSHADOW = $1024;
-  {$EXTERNALSYM SPI_GETDROPSHADOW}
+{$EXTERNALSYM SPI_GETDROPSHADOW}
   SPI_SETDROPSHADOW = $1025;
-  {$EXTERNALSYM SPI_SETDROPSHADOW}
+{$EXTERNALSYM SPI_SETDROPSHADOW}
 
   SPI_GETFOREGROUNDLOCKTIMEOUT = $2000;
-  {$EXTERNALSYM SPI_GETFOREGROUNDLOCKTIMEOUT}
+{$EXTERNALSYM SPI_GETFOREGROUNDLOCKTIMEOUT}
   SPI_SETFOREGROUNDLOCKTIMEOUT = $2001;
-  {$EXTERNALSYM SPI_SETFOREGROUNDLOCKTIMEOUT}
+{$EXTERNALSYM SPI_SETFOREGROUNDLOCKTIMEOUT}
   SPI_GETACTIVEWNDTRKTIMEOUT = $2002;
-  {$EXTERNALSYM SPI_GETACTIVEWNDTRKTIMEOUT}
+{$EXTERNALSYM SPI_GETACTIVEWNDTRKTIMEOUT}
   SPI_SETACTIVEWNDTRKTIMEOUT = $2003;
-  {$EXTERNALSYM SPI_SETACTIVEWNDTRKTIMEOUT}
+{$EXTERNALSYM SPI_SETACTIVEWNDTRKTIMEOUT}
   SPI_GETFOREGROUNDFLASHCOUNT = $2004;
-  {$EXTERNALSYM SPI_GETFOREGROUNDFLASHCOUNT}
+{$EXTERNALSYM SPI_GETFOREGROUNDFLASHCOUNT}
   SPI_SETFOREGROUNDFLASHCOUNT = $2005;
-  {$EXTERNALSYM SPI_SETFOREGROUNDFLASHCOUNT}
+{$EXTERNALSYM SPI_SETFOREGROUNDFLASHCOUNT}
   SPI_GETCARETWIDTH = $2006;
-  {$EXTERNALSYM SPI_GETCARETWIDTH}
+{$EXTERNALSYM SPI_GETCARETWIDTH}
   SPI_SETCARETWIDTH = $2007;
-  {$EXTERNALSYM SPI_SETCARETWIDTH}
+{$EXTERNALSYM SPI_SETCARETWIDTH}
 
   SPI_GETMOUSECLICKLOCKTIME = $2008;
-  {$EXTERNALSYM SPI_GETMOUSECLICKLOCKTIME}
+{$EXTERNALSYM SPI_GETMOUSECLICKLOCKTIME}
   SPI_SETMOUSECLICKLOCKTIME = $2009;
-  {$EXTERNALSYM SPI_SETMOUSECLICKLOCKTIME}
+{$EXTERNALSYM SPI_SETMOUSECLICKLOCKTIME}
   SPI_GETFONTSMOOTHINGTYPE = $200A;
-  {$EXTERNALSYM SPI_GETFONTSMOOTHINGTYPE}
+{$EXTERNALSYM SPI_GETFONTSMOOTHINGTYPE}
   SPI_SETFONTSMOOTHINGTYPE = $200B;
-  {$EXTERNALSYM SPI_SETFONTSMOOTHINGTYPE}
+{$EXTERNALSYM SPI_SETFONTSMOOTHINGTYPE}
 
   { constants for SPI_GETFONTSMOOTHINGTYPE and SPI_SETFONTSMOOTHINGTYPE: }
   FE_FONTSMOOTHINGSTANDARD = $0001;
-  {$EXTERNALSYM FE_FONTSMOOTHINGSTANDARD}
+{$EXTERNALSYM FE_FONTSMOOTHINGSTANDARD}
   FE_FONTSMOOTHINGCLEARTYPE = $0002;
-  {$EXTERNALSYM FE_FONTSMOOTHINGCLEARTYPE}
+{$EXTERNALSYM FE_FONTSMOOTHINGCLEARTYPE}
   FE_FONTSMOOTHINGDOCKING = $8000;
-  {$EXTERNALSYM FE_FONTSMOOTHINGDOCKING}
+{$EXTERNALSYM FE_FONTSMOOTHINGDOCKING}
 
   SPI_GETFONTSMOOTHINGCONTRAST = $200C;
-  {$EXTERNALSYM SPI_GETFONTSMOOTHINGCONTRAST}
+{$EXTERNALSYM SPI_GETFONTSMOOTHINGCONTRAST}
   SPI_SETFONTSMOOTHINGCONTRAST = $200D;
-  {$EXTERNALSYM SPI_SETFONTSMOOTHINGCONTRAST}
+{$EXTERNALSYM SPI_SETFONTSMOOTHINGCONTRAST}
 
   SPI_GETFOCUSBORDERWIDTH = $200E;
-  {$EXTERNALSYM SPI_GETFOCUSBORDERWIDTH}
+{$EXTERNALSYM SPI_GETFOCUSBORDERWIDTH}
   SPI_SETFOCUSBORDERWIDTH = $200F;
-  {$EXTERNALSYM SPI_SETFOCUSBORDERWIDTH}
+{$EXTERNALSYM SPI_SETFOCUSBORDERWIDTH}
   SPI_GETFOCUSBORDERHEIGHT = $2010;
-  {$EXTERNALSYM SPI_GETFOCUSBORDERHEIGHT}
+{$EXTERNALSYM SPI_GETFOCUSBORDERHEIGHT}
   SPI_SETFOCUSBORDERHEIGHT = $2011;
-  {$EXTERNALSYM SPI_SETFOCUSBORDERHEIGHT}
+{$EXTERNALSYM SPI_SETFOCUSBORDERHEIGHT}
 
-  {$IFDEF COMPILER5} // This is because there's no point in redefining symbols already defined
-  {$EXTERNALSYM SPI_GETMENUSHOWDELAY}
+{$IFDEF COMPILER5} // This is because there's no point in redefining symbols already defined
+{$EXTERNALSYM SPI_GETMENUSHOWDELAY}
   SPI_GETMENUSHOWDELAY = 106;
-  {$EXTERNALSYM SPI_SETMENUSHOWDELAY}
+{$EXTERNALSYM SPI_SETMENUSHOWDELAY}
   SPI_SETMENUSHOWDELAY = 107;
-  {$EXTERNALSYM SPI_GETMENUFADE}
+{$EXTERNALSYM SPI_GETMENUFADE}
   SPI_GETMENUFADE = $1012;
-  {$EXTERNALSYM SPI_SETMENUFADE}
+{$EXTERNALSYM SPI_SETMENUFADE}
   SPI_SETMENUFADE = $1013;
-  {$EXTERNALSYM SPI_GETSELECTIONFADE}
+{$EXTERNALSYM SPI_GETSELECTIONFADE}
   SPI_GETSELECTIONFADE = $1014;
-  {$EXTERNALSYM SPI_SETSELECTIONFADE}
+{$EXTERNALSYM SPI_SETSELECTIONFADE}
   SPI_SETSELECTIONFADE = $1015;
-  {$EXTERNALSYM SPI_GETTOOLTIPANIMATION}
+{$EXTERNALSYM SPI_GETTOOLTIPANIMATION}
   SPI_GETTOOLTIPANIMATION = $1016;
-  {$EXTERNALSYM SPI_SETTOOLTIPANIMATION}
+{$EXTERNALSYM SPI_SETTOOLTIPANIMATION}
   SPI_SETTOOLTIPANIMATION = $1017;
-  {$EXTERNALSYM SPI_GETTOOLTIPFADE}
+{$EXTERNALSYM SPI_GETTOOLTIPFADE}
   SPI_GETTOOLTIPFADE = $1018;
-  {$EXTERNALSYM SPI_SETTOOLTIPFADE}
+{$EXTERNALSYM SPI_SETTOOLTIPFADE}
   SPI_SETTOOLTIPFADE = $1019;
-  {$EXTERNALSYM SPI_GETCURSORSHADOW}
+{$EXTERNALSYM SPI_GETCURSORSHADOW}
   SPI_GETCURSORSHADOW = $101A;
-  {$EXTERNALSYM SPI_SETCURSORSHADOW}
+{$EXTERNALSYM SPI_SETCURSORSHADOW}
   SPI_SETCURSORSHADOW = $101B;
-  {$EXTERNALSYM SPI_GETUIEFFECTS}
+{$EXTERNALSYM SPI_GETUIEFFECTS}
   SPI_GETUIEFFECTS = $103E;
-  {$EXTERNALSYM SPI_SETUIEFFECTS}
+{$EXTERNALSYM SPI_SETUIEFFECTS}
   SPI_SETUIEFFECTS = $103F;
-  {$EXTERNALSYM COLOR_MENUHILIGHT}
+{$EXTERNALSYM COLOR_MENUHILIGHT}
   COLOR_MENUHILIGHT = 29;
-  {$EXTERNALSYM COLOR_MENUBAR}
+{$EXTERNALSYM COLOR_MENUBAR}
   COLOR_MENUBAR = 30;
-  {$EXTERNALSYM SPI_GETKEYBOARDCUES}
+{$EXTERNALSYM SPI_GETKEYBOARDCUES}
   SPI_GETKEYBOARDCUES = $100A;
-  {$EXTERNALSYM SPI_SETKEYBOARDCUES}
+{$EXTERNALSYM SPI_SETKEYBOARDCUES}
   SPI_SETKEYBOARDCUES = $100B;
-  {$ENDIF COMPILER5}
+{$ENDIF COMPILER5}
 
 type
   PDevBroadcastHdr = ^TDevBroadcastHdr;
-  {$EXTERNALSYM DEV_BROADCAST_HDR}
+{$EXTERNALSYM DEV_BROADCAST_HDR}
   DEV_BROADCAST_HDR = packed record
     dbch_size: DWORD;
     dbch_devicetype: DWORD;
@@ -179,7 +179,7 @@ type
   TDevBroadcastHdr = DEV_BROADCAST_HDR;
 
   PDevBroadcastVolume = ^TDevBroadcastVolume;
-  {$EXTERNALSYM DEV_BROADCAST_VOLUME}
+{$EXTERNALSYM DEV_BROADCAST_VOLUME}
   DEV_BROADCAST_VOLUME = packed record
     dbcv_size: DWORD;
     dbcv_devicetype: DWORD;
@@ -1179,7 +1179,7 @@ type
     property ActiveWindowTracking: Boolean index SPI_GETACTIVEWINDOWTRACKING read GetBoolInfo write SetBoolInfo stored False;
     property MenuAnimation: Boolean index SPI_GETMENUANIMATION read GetBoolInfo write SetBoolInfo stored False;
     property ComboboxAnimation: Boolean index SPI_GETCOMBOBOXANIMATION read GetBoolInfo write SetBoolInfo stored False;
-    property ListboxSmoothScrolling: Boolean index SPI_GETLISTBOXSMOOTHSCROLLING read GetBoolInfo write SetBoolInfo  stored False;
+    property ListboxSmoothScrolling: Boolean index SPI_GETLISTBOXSMOOTHSCROLLING read GetBoolInfo write SetBoolInfo stored False;
     property GradientCaptions: Boolean index SPI_GETGRADIENTCAPTIONS read GetBoolInfo write SetBoolInfo stored False;
     property MenuUnderLines: Boolean index SPI_GETMENUUNDERLINES read GetBoolInfo write SetBoolInfo stored False;
     property ActiveWindowTrackZOrder: Boolean index SPI_GETACTIVEWNDTRKZORDER read GetBoolInfo write SetBoolInfo stored False;
@@ -1366,7 +1366,7 @@ implementation
 uses
   WinInet, Registry, ShellAPI, ActiveX,
   JclShell, JclRegistry, JclFileUtils,
-  JvJVCLUtils, JvResources;
+  JvJVCLUtils, JvResources, Math;
 
 var
   IsDesigning: Boolean = False;
@@ -1425,41 +1425,41 @@ begin
   if Value and ARW_HIDE = ARW_HIDE then
     Include(Result, waHide)
   else
-  if Value and ARW_BOTTOMLEFT = ARW_BOTTOMLEFT then
-  begin
-    Include(Result, waBottomLeft);
-    if Value and ARW_UP = ARW_UP then
-      Include(Result, waUp)
+    if Value and ARW_BOTTOMLEFT = ARW_BOTTOMLEFT then
+    begin
+      Include(Result, waBottomLeft);
+      if Value and ARW_UP = ARW_UP then
+        Include(Result, waUp)
+      else
+        Include(Result, waRight);
+    end
     else
-      Include(Result, waRight);
-  end
-  else
-  if Value and ARW_BOTTOMRIGHT = ARW_BOTTOMRIGHT then
-  begin
-    Include(Result, waBottomRight);
-    if Value and ARW_UP = ARW_UP then
-      Include(Result, waUp)
-    else
-      Include(Result, waLeft);
-  end
-  else
-  if Value and ARW_TOPLEFT = ARW_TOPLEFT then
-  begin
-    Include(Result, waTopLeft);
-    if Value and ARW_DOWN = ARW_DOWN then
-      Include(Result, waDown)
-    else
-      Include(Result, waRight);
-  end
-  else
-  if Value and ARW_TOPRIGHT = ARW_TOPRIGHT then
-  begin
-    Include(Result, waTopRight);
-    if Value and ARW_DOWN = ARW_DOWN then
-      Include(Result, waDown)
-    else
-      Include(Result, waLeft);
-  end;
+      if Value and ARW_BOTTOMRIGHT = ARW_BOTTOMRIGHT then
+      begin
+        Include(Result, waBottomRight);
+        if Value and ARW_UP = ARW_UP then
+          Include(Result, waUp)
+        else
+          Include(Result, waLeft);
+      end
+      else
+        if Value and ARW_TOPLEFT = ARW_TOPLEFT then
+        begin
+          Include(Result, waTopLeft);
+          if Value and ARW_DOWN = ARW_DOWN then
+            Include(Result, waDown)
+          else
+            Include(Result, waRight);
+        end
+        else
+          if Value and ARW_TOPRIGHT = ARW_TOPRIGHT then
+          begin
+            Include(Result, waTopRight);
+            if Value and ARW_DOWN = ARW_DOWN then
+              Include(Result, waDown)
+            else
+              Include(Result, waLeft);
+          end;
 end;
 
 function WindowsArrangeToArrange(Value: TJvWindowsArrange): DWORD;
@@ -2203,7 +2203,7 @@ type
     wki100_ver_major: DWORD;
     wki100_ver_minor: DWORD;
   end;
-  {$EXTERNALSYM _WKSTA_INFO_100}
+{$EXTERNALSYM _WKSTA_INFO_100}
   TWkstaInfo100 = _WKSTA_INFO_100;
 
 const
@@ -2658,19 +2658,17 @@ end;
 
 function TJvHardwareProfile.GetNativeType: HW_PROFILE_INFO;
 type
-  GetCurrentHwProfileFunc = function (var lpHwProfileInfo: HW_PROFILE_INFO): BOOL; stdcall;
+  GetCurrentHwProfileFunc = function(var lpHwProfileInfo: HW_PROFILE_INFO): BOOL; stdcall;
 var
-  GetCurrentHwProfile:GetCurrentHwProfileFunc;
-  LibHandle:THandle;
+  GetCurrentHwProfile: GetCurrentHwProfileFunc;
+  LibHandle: THandle;
 begin
-  Result.dwDockInfo := 0;
-  Result.szHwProfileGuid := '';
-  Result.szHwProfileName := '';
-  // GetCurrentHWProfile is not available on (all) Win95's
+  FillChar(Result, sizeof(Result), 0);
+  // GetCurrentHwProfile is not available on all Win95's
   LibHandle := LoadLibrary('advapi32.dll');
   if LibHandle <> 0 then
   try
-    @GetCurrentHwProfile := GetProcAddress(LibHandle, 'GetCurrentHWProfileA');
+    @GetCurrentHwProfile := GetProcAddress(LibHandle, 'GetCurrentHwProfileA');
     if Assigned(GetCurrentHwProfile) then
       GetCurrentHwProfile(Result);
   finally
@@ -2728,10 +2726,10 @@ begin
   if Index < 0 then
     Result := FDefaultMode
   else
-  if (Index >= 0) and (Index < Count) then
-    Result := TJvScreenMode(FItems[Index])
-  else
-    Result := nil;
+    if (Index >= 0) and (Index < Count) then
+      Result := TJvScreenMode(FItems[Index])
+    else
+      Result := nil;
 end;
 
 procedure TJvScreenModes.Refresh;
@@ -3779,7 +3777,7 @@ begin
   FMenuFont.Free;
   FMessageFont.Free;
   FStatusFont.Free;
-  inherited Destroy; 
+  inherited Destroy;
 end;
 
 function TJvNonClientMetrics.GetBorderWidth: Integer;
@@ -4511,7 +4509,7 @@ begin
   FMap[58] := Point(SPI_GETMENUSHOWDELAY, SPI_SETMENUSHOWDELAY);
   FMap[59] := Point(SPI_GETSHOWIMEUI, SPI_SETSHOWIMEUI);
   FMap[60] := Point(SPI_GETMOUSESPEED, SPI_SETMOUSESPEED);
-  FMap[61] := Point(SPI_GETSCREENSAVERRUNNING,-1);
+  FMap[61] := Point(SPI_GETSCREENSAVERRUNNING, -1);
   FMap[62] := Point(SPI_GETACTIVEWINDOWTRACKING, SPI_SETACTIVEWINDOWTRACKING);
   FMap[63] := Point(SPI_GETMENUANIMATION, SPI_SETMENUANIMATION);
   FMap[64] := Point(SPI_GETCOMBOBOXANIMATION, SPI_SETCOMBOBOXANIMATION);
@@ -4650,7 +4648,7 @@ end;
 
 function TJvSystemParametersInfo.GetIconSpacing(const Index: Integer): Integer;
 const
-  cIconSpacing: array [0..1] of DWORD = (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
+  cIconSpacing: array[0..1] of DWORD = (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
 begin
   SystemParametersInfo(cIconSpacing[Index], 0, @Result, 0);
 end;
@@ -4674,7 +4672,7 @@ end;
 
 function TJvSystemParametersInfo.GetKeyboardLayoutName: string;
 var
-  Buf: array [0..8] of Char;
+  Buf: array[0..8] of Char;
 begin
   if Windows.GetKeyboardLayoutName(Buf) then
     Result := Buf
@@ -4691,7 +4689,7 @@ end;
 
 function TJvSystemParametersInfo.GetMouseInfo(const Index: Integer): Integer;
 var
-  Mouse: array [0..2] of Integer;
+  Mouse: array[0..2] of Integer;
 begin
   if (Index in [0..2]) and SystemParametersInfo(SPI_GETMOUSE, SizeOf(Mouse), @Mouse, 0) then
     Result := Mouse[Index]
@@ -4820,10 +4818,10 @@ begin
   if not SystemParametersInfo(SPI_GETWORKAREA, 0, @Value, 0) then
     Value := Rect(0, 0, 0, 0);
 
-  FWorkArea.Top    := Value.Top;
-  FWorkArea.Left   := Value.Left;
+  FWorkArea.Top := Value.Top;
+  FWorkArea.Left := Value.Left;
   FWorkArea.Bottom := Value.Bottom;
-  FWorkArea.Right  := Value.Right;
+  FWorkArea.Right := Value.Right;
   Result := FWorkArea;
 end;
 
@@ -4905,8 +4903,8 @@ end;
 
 procedure TJvSystemParametersInfo.SetIconSpacing(const Index, Value: Integer);
 const
-  cIconSpacing: array [0..1] of DWORD =
-    (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
+  cIconSpacing: array[0..1] of DWORD =
+  (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
 begin
   if not IsDesigning and not ReadOnly then
     SystemParametersInfo(cIconSpacing[Index], Value, nil, 0)
@@ -4955,7 +4953,7 @@ end;
 
 procedure TJvSystemParametersInfo.SetMouseInfo(const Index, Value: Integer);
 var
-  Mouse: array [0..2] of Integer;
+  Mouse: array[0..2] of Integer;
 begin
   if not IsDesigning and not ReadOnly then
   begin
@@ -5156,8 +5154,8 @@ begin
       FOnDeviceRemoved(Self, Drive);
   end
   else
-  if Assigned(FOnDeviceAdded) then
-    FOnDeviceAdded(Self, Drive);
+    if Assigned(FOnDeviceAdded) then
+      FOnDeviceAdded(Self, Drive);
 end;
 
 function TJvComputerInfoEx.FirstDrive(AMask: Integer): Char;
