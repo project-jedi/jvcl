@@ -179,7 +179,13 @@ procedure TfrmInspector.AddINIFile;
 var
   InspCat: TJvInspectorCustomCategoryItem;
 begin
-  INI := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'demo.ini');
+  if FileExists(ExtractFilePath(Application.ExeName) + 'JvInspectorDemo.ini') then
+    INI := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'JvInspectorDemo.ini')
+  else if FileExists(ExtractFilePath(Application.ExeName) + '\Data\JvInspectorDemo.ini') then
+    INI := TIniFile.Create(ExtractFilePath(Application.ExeName) + '\Data\JvInspectorDemo.ini')
+  else
+    MessageDlg('Unable to locate the JvInspectorDemo.ini file', mtError, [mbOK], 0);
+
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'INI files (INI-file data layer).';
   TJvInspectorINIFileData.New(InspCat, INI, OnINISection, OnINIKey);
