@@ -51,10 +51,12 @@ type
 
   TJvColorProviderNameMappings = class;
   TJvColorProviderNameMapping = class;
+  TJvColorProviderMapping = type Integer;
 
   IJvColorProvider = interface
     ['{3DF32721-553B-4759-A628-35F5CA62F3D5}']
     function IndexOfMapping(Mapping: TJvColorProviderNameMapping): Integer;
+    function IndexOfMappingName(Name: string): Integer;
     function Get_MappingCount: Integer;
     function Get_Mapping(Index: Integer): TJvColorProviderNameMapping;
     function GetStandardCount: Integer;
@@ -103,6 +105,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function IndexOfMapping(Mapping: TJvColorProviderNameMapping): Integer;
+    function IndexOfMappingName(Name: string): Integer;
     function Get_MappingCount: Integer;
     function Get_Mapping(Index: Integer): TJvColorProviderNameMapping;
     function GetStandardCount: Integer;
@@ -487,6 +490,8 @@ type
     procedure Set_TextSettings(Value: TJvColorProviderTextSettings);
     procedure MappingAdded(Index: Integer; Mapping: TJvColorProviderNameMapping);
     procedure MappingDestroying(Index: Integer; Mapping: TJvColorProviderNameMapping);
+    function GetNameMappingIndex: TJvColorProviderMapping;
+    procedure SetNameMappingIndex(Value: TJvColorProviderMapping);
   public
     constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
     destructor Destroy; override;
@@ -503,6 +508,8 @@ type
       write Set_SystemColorSettings;
     property GroupingSettings: TJvColorProviderGroupingSettings read Get_GroupingSettings
       write Set_GroupingSettings;
+    property Mapping: TJvColorProviderMapping read GetNameMappingIndex write SetNameMappingIndex
+      default -1;
   end;
 
 //===TJvColorProviderNameMapping====================================================================
@@ -1285,6 +1292,15 @@ begin
   Result := Mappings.IndexOf(Mapping);
 end;
 
+function TJvColorProvider.IndexOfMappingName(Name: string): Integer;
+begin
+  Result := 0;
+  while (Result < Get_MappingCount) and not AnsiSameText(Mappings[Result].Name, Name) do
+    Inc(Result);
+  if Result > Get_MappingCount then
+    Result := -1;
+end;
+
 function TJvColorProvider.Get_MappingCount: Integer;
 begin
   Result := Mappings.Count;
@@ -1899,6 +1915,16 @@ begin
     Dec(FMapping);
     Changed(ccrOther);
   end;
+end;
+
+function TJvColorProviderSettings.GetNameMappingIndex: TJvColorProviderMapping;
+begin
+  Result := Get_NameMappingIndex;
+end;
+
+procedure TJvColorProviderSettings.SetNameMappingIndex(Value: TJvColorProviderMapping);
+begin
+  Set_NameMappingIndex(Value);
 end;
 
 constructor TJvColorProviderSettings.Create(AOwner: TExtensibleInterfacedPersistent);
