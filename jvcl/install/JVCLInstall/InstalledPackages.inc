@@ -37,10 +37,9 @@ end;
 function Opt_SMExportComponents(Target: TCompileTarget): Boolean;
 begin
   if Target.Version = 9 then
-    Result := true 
-    //Result := FileExists(Target.RootDir + Target.VersionedDCP('\SMExportd2005.dcp'))
+    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMExportd2005.dcp')
   else
-    Result := FileExists(Target.RootDir + Target.VersionedDCP(Format('\Projects\bpl\SMExport%s%d.dcp',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));
+    Result := FileExists(Target.RootDir + Format('\Projects\bpl\SMExport%s%d.dcp',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version]));
 end;
 
 {------------------------------------------------------------------------------}
@@ -48,10 +47,9 @@ end;
 function Opt_SMImportComponents(Target: TCompileTarget): Boolean;
 begin
   if Target.Version = 9 then
-    Result := true
-    //Result := FileExists(Target.RootDir + Target.VersionedDCP('\bpl\SMImportd2005.dcp'))
+    Result := FileExists(Target.BDSProjectsDir + '\bpl\SMImportd2005.dcp')
   else
-    Result := FileExists(Target.RootDir + Target.VersionedDCP(Format('\Projects\bpl\SMImport%s%d.dcp',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));
+    Result := FileExists(Target.RootDir + Format('\Projects\bpl\SMImport%s%d.dcp',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version]));
 end;
 
 {------------------------------------------------------------------------------}
@@ -68,7 +66,10 @@ begin
   if Target.IsBCB then
     Result := False
   else
-    Result := FileExists(Target.RootDir + Target.VersionedDCP(Format('\Projects\bpl\IcsDel%d%d.dcp',[Target.Version,0])));  
+    if Target.Version = 9 then 
+      Result := FileExists(Target.BDSProjectsDir + Format('\bpl\IcsDel%d%d.dcp', [Target.Version,0]))
+    else
+      Result := FileExists(Target.RootDir + Format('\Projects\bpl\IcsDel%d%d.dcp', [Target.Version,0]));//Target.VersionedDCP('\Projects\bpl\IcsDel.dcp'));  
 end;
 
 {------------------------------------------------------------------------------}
