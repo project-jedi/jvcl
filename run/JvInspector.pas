@@ -825,7 +825,7 @@ type
     procedure Deactivate; dynamic;
     procedure DoAfterItemCreate; virtual;
     function DoCompare(const Item: TJvCustomInspectorItem): Integer; virtual;
-    procedure DoDrawListItemText(ACanvas: TCanvas; Rect: TRect; AText: string); virtual;
+    procedure DoDefaultDrawListItem(ACanvas: TCanvas; Rect: TRect; AText: string); virtual;
     {$IFDEF VCL}
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState); virtual;
@@ -5393,12 +5393,13 @@ begin
     Result := 0;
 end;
 
-procedure TJvCustomInspectorItem.DoDrawListItemText(ACanvas: TCanvas; Rect: TRect; AText: string);
+procedure TJvCustomInspectorItem.DoDefaultDrawListItem(ACanvas: TCanvas; Rect: TRect; AText: string);
 var
   h: Integer;
 begin
   ACanvas.FillRect(Rect);
   h := ACanvas.TextHeight(AText);
+  Rect.Left := Rect.Left + 2;
   Rect.Top := Rect.Top + (Rect.Bottom - Rect.Top - h) div 2;
   ACanvas.TextRect(Rect, Rect.Left, Rect.Top, AText);
 end;
@@ -5412,7 +5413,7 @@ procedure TJvCustomInspectorItem.DoDrawListItem(Control: TObject; Index: Integer
   State: TOwnerDrawState; var Handled: Boolean);
 {$ENDIF VisualCLX}
 begin
-  DoDrawListItemText(TListBox(Control).Canvas, Rect, TListBox(Control).Items[Index]);
+  DoDefaultDrawListItem(TListBox(Control).Canvas, Rect, TListBox(Control).Items[Index]);
 end;
 
 procedure TJvCustomInspectorItem.DoDropDownKeys(var Key: Word; Shift: TShiftState);
@@ -8655,7 +8656,7 @@ begin
       FontName := Items[Index];
       Canvas.Font.Name := FontName;
     end;
-    DoDrawListItemText(TListBox(Control).Canvas, Rect, TListBox(Control).Items[Index]);
+    DoDefaultDrawListItem(TListBox(Control).Canvas, Rect, TListBox(Control).Items[Index]);
   end;
 end;
 
