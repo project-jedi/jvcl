@@ -1,16 +1,40 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvDBFindEdit.pas, released 2004-03-23
+
+The Initial Developer of the Original Code is yul
+Portions created by yul are Copyright (C) 2004 yul.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2004-03-25
+Current Version: 0.50
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
+
 unit JvDBFindEdit;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, DB, DBCtrls,
-  CheckLst,
-  JVCLVer,
-  JvExMask,
-  JvToolEdit,
-  JvMaskEdit;
+  StdCtrls, ExtCtrls, DB, DBCtrls, CheckLst,
+  JVCLVer, JvExMask, JvToolEdit, JvMaskEdit;
 
 type
   TJvEditFindStyle = (fsNavigate, fsFilter);
@@ -43,10 +67,10 @@ type
     procedure Change; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    function DateVal:Boolean ;
-    Function IsDate(s1:String):Boolean;
-    Function GetDateDelimiter:String;
-    Function IsNumeric(s1:String):Boolean;
+    function DateVal: Boolean;
+    function IsDate(s1: string): Boolean;
+    function GetDateDelimiter: string;
+    function IsNumeric(s1: string): Boolean;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -60,7 +84,7 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property FindStyle: TJvEditFindStyle read FFindStyle write SetFindStyle default fsNavigate;
     property FindMode: TJvEditFindMode read FFindMode write SetFindMode default fmFirstPos;
-    property IgnoreCase: Boolean read FIgnoreCase write SetIgnoreCase default true;
+    property IgnoreCase: Boolean read FIgnoreCase write SetIgnoreCase default True;
     property Anchors;
     property AutoSelect;
     property AutoSize;
@@ -106,6 +130,7 @@ type
   end;
 
 implementation
+
 { TJvDBFindEdit }
 
 constructor TJvDBFindEdit.Create(AOwner: TComponent);
@@ -113,13 +138,13 @@ begin
   inherited Create(AOwner);
   FFindStyle := fsNavigate;
   FFindMode := fmFirstPos;
-  FIgnoreCase := true;
+  FIgnoreCase := True;
   FTimer := TTimer.Create(Self);
-  FTimer.Enabled := false;
+  FTimer.Enabled := False;
   FTimer.Interval := 400;
   FTimer.OnTimer := FTimerTimer;
   FSearchText := '';
-  FOldFiltered := false;
+  FOldFiltered := False;
   FOldFilterRecord := nil;
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
@@ -142,104 +167,120 @@ end;
 
 procedure TJvDBFindEdit.Change;
 begin
-  FTimer.Enabled := false;
+  FTimer.Enabled := False;
   if Text = '' then
     FTimer.Interval := 400;
-  FTimer.Enabled := true;
+  FTimer.Enabled := True;
   FSearchText := Text;
-  inherited;
+  inherited Change;
 end;
 
+// (ahuser) Compiler gives hint for unused value. This function prevents it
+function ToDoubleVal(const S: string; var Err: Integer): Double;
+begin
+  Val(S, Result, Err);
+end;
 
-Function TJvDBFindEdit.IsNumeric(s1:String):Boolean;
-Var ier:Integer;
-    r1:Real;
-Begin
-  Result := true;
-  Val(s1,r1,ier);
-  If ier > 0 Then Result := false; 
-End;
+function TJvDBFindEdit.IsNumeric(s1: string): Boolean;
+var
+  ier: Integer;
+begin
+  Result := True;
+  ToDoubleVal(s1, ier);
+  if ier > 0 then
+    Result := False;
+end;
 
-Function TJvDBFindEdit.GetDateDelimiter:String;
-Var s1:String; i:Integer;
-Begin 
-  s1 := DateTimeToStr(Now); 
-  For i := 1 to Length(s1) do Begin 
-    If Not (s1[i] in ['0'..'9']) Then Begin 
-      Result := s1[i]; 
-      Break; 
-    End; 
-  End; 
-End;
+function TJvDBFindEdit.GetDateDelimiter: string;
+var
+  s1: string;
+  i: Integer;
+begin
+  s1 := DateTimeToStr(Now);
+  for i := 1 to Length(s1) do
+  begin
+    if not (s1[i] in ['0'..'9']) then
+    begin
+      Result := s1[i];
+      Break;
+    end;
+  end;
+end;
 
-Function TJvDBFindEdit.IsDate(s1:String):Boolean;
-Var i,k,p1,p2:Integer; sm,sd,sj,ss:String;
-Begin 
-  Result := false;
+function TJvDBFindEdit.IsDate(s1: string): Boolean;
+var
+  i, k, p1, p2 :Integer;
+  sm, sd, sj, ss: string;
+begin
+  Result := False;
   ss := GetDateDelimiter;
-  k := Length(s1); 
-  If k > 0 Then Begin 
-    p1 := 0; 
-    p2 := 0; 
-    For i := 1 to k do Begin
-      If p1 = 0 Then Begin 
-        If s1[i] = ss Then p1 := i; 
-      End Else Begin 
-        If s1[i] = ss Then p2 := i; 
-      End; 
-    End; 
-    If p1 > 0 Then Begin 
-      If p2 > 0 Then Begin 
-        If p2 > p1 Then Begin 
-          sm := Copy(s1,1,p1-1);
-          sd := Copy(s1,p1+1,p2-p1-1); 
-          sj := Copy(s1,p2+1,k-p2); 
-          If IsNumeric(sm) Then Begin 
-            If IsNumeric(sd) Then Begin 
-              If IsNumeric(sj) Then Begin
-                p1 := StrToInt(sd);
-                If (p1 > 0) and (p1 < 32) Then Begin 
-                  p1 := StrToInt(sm); 
-                  If (p1 > 0) and (p1 < 13) Then Begin 
-                    p1 := StrToInt(sj);
-                    If p1 > 1969 Then Result := true; 
-                  End; 
-                End; 
-              End; 
-            End; 
-          End; 
-        End; 
-      End; 
-    End; 
-  End;
-End;
+  k := Length(s1);
+  if k > 0 then
+  begin
+    p1 := 0;
+    p2 := 0;
+    for i := 1 to k do
+    begin
+      if p1 = 0 then
+      begin
+        if s1[i] = ss then
+          p1 := i;
+      end
+      else
+      begin
+        if s1[i] = ss then
+          p2 := i;
+      end;
+    end;
+    if (p1 > 0) and (p2 > 0) and (p2 > p1) then
+    begin
+      sm := Copy(s1, 1, p1 - 1);
+      sd := Copy(s1, p1 + 1, p2 - p1 -1);
+      sj := Copy(s1, p2 + 1, k - p2);
+      if IsNumeric(sm) and IsNumeric(sd) and IsNumeric(sj) then
+      begin
+        p1 := StrToInt(sd);
+        if (p1 > 0) and (p1 < 32) then
+        begin
+          p1 := StrToInt(sm);
+          if (p1 > 0) and (p1 < 13) then
+          begin
+            p1 := StrToInt(sj);
+            if p1 > 1969 then
+              Result := True;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
 
-function TJvDBFindEdit.DateVal:Boolean ;
-Begin
-result:=True;
-if FDataLink.Field is TDateField then
- if not IsDate(FSearchText) then
-  result:=false;
+function TJvDBFindEdit.DateVal: Boolean;
+begin
+  Result := True;
+  if FDataLink.Field is TDateField then
+    if not IsDate(FSearchText) then
+      Result := False;
 
-if IsDate(FSearchText) then
-        //Begin
-        //DateSeparator :='/';
-        //ShortDateFormat := 'mm/dd/yyyy';
-   FSearchText:=(DateToStr(StrToDate(FSearchText)));
-        //end;
+  if IsDate(FSearchText) then
+  //begin
+  //  DateSeparator :='/';
+  //  ShortDateFormat := 'mm/dd/yyyy';
+    FSearchText := (DateToStr(StrToDate(FSearchText)));
+  //end;
 end;
 
 procedure TJvDBFindEdit.ResetFilter;
 begin
- Text:='';
+  Text:='';
 // FSearchText:='';
-FDataLink.DataSet.Filtered := false;
+  FDataLink.DataSet.Filtered := False;
 
 end;
 
 procedure TJvDBFindEdit.FTimerTimer(Sender: TObject);
 begin
-  FTimer.Enabled := false;
+  FTimer.Enabled := False;
   ActiveChange(Self);
   if FSearchText = '' then
     if FFindStyle = fsFilter then
@@ -250,17 +291,16 @@ begin
     else
   else
   begin
-    if not FDataLink.Active or (FDataLink.Field = nil) then Exit;
-    if DateVal then
-    if not(FDataLink.Field is TBlobField) then
-
-    if FFindStyle = fsNavigate then
-      if IgnoreCase then
-        FDataLink.DataSet.Locate(DataField, FSearchText, [loCaseInsensitive, loPartialKey])
+    if not FDataLink.Active or (FDataLink.Field = nil) then
+      Exit;
+    if DateVal and not(FDataLink.Field is TBlobField) then
+      if FFindStyle = fsNavigate then
+        if IgnoreCase then
+          FDataLink.DataSet.Locate(DataField, FSearchText, [loCaseInsensitive, loPartialKey])
+        else
+          FDataLink.DataSet.Locate(DataField, FSearchText, [loPartialKey])
       else
-        FDataLink.DataSet.Locate(DataField, FSearchText, [loPartialKey])
-    else
-      FDataLink.DataSet.Filtered := true;
+        FDataLink.DataSet.Filtered := True;
   end;
   FTimer.Interval := 100;
 end;
@@ -274,10 +314,11 @@ end;
 procedure TJvDBFindEdit.AFilterRecord(DataSet: TDataSet;
   var Accept: Boolean);
 begin
-  Accept := true;
+  Accept := True;
   if FOldFiltered and Assigned(FOldFilterRecord) then
     FOldFilterRecord(DataSet, Accept);
-  if not Accept then Exit;
+  if not Accept then
+    Exit;
   if FFindMode = fmFirstPos then
     if IgnoreCase then
       Accept := Pos(AnsiUpperCase(FSearchText),
@@ -315,7 +356,8 @@ procedure TJvDBFindEdit.SetDataSource(const Value: TDataSource);
 begin
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
     FDataLink.DataSource := Value;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 function TJvDBFindEdit.GetDataField: string;
@@ -340,7 +382,8 @@ end;
 procedure TJvDBFindEdit.SetFindStyle(const Value: TJvEditFindStyle);
 begin
   FFindStyle := Value;
-  if FFindStyle = fsNavigate then FFindMode := fmFirstPos;
+  if FFindStyle = fsNavigate then
+    FFindMode := fmFirstPos;
   ActiveChange(Self);
 end;
 
@@ -356,9 +399,7 @@ begin
   if Operation = opRemove then
   begin
     if (FDataLink <> nil) and (AComponent = DataSource) then
-    begin
       DataSource := nil;
-    end;
   end;
 end;
 
