@@ -33,7 +33,7 @@ unit JvDataProviderEditors;
 interface
 
 uses
-  {$IFNDEF COMPILER6_UP}DsgnIntf,{$ELSE}DesignIntf, DesignEditors,{$ENDIF}
+  {$IFNDEF COMPILER6_UP}DsgnIntf,{$ELSE}DesignIntf, DesignEditors, DesignMenus, {$ENDIF}
   JvDataProvider, JvDataProviderImpl;
 
 type
@@ -111,7 +111,11 @@ type
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
+    {$IFNDEF COMPILER6_UP}
     procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
+    {$ELSE}
+    procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
+    {$ENDIF}
   end;
 
   TOpenSvc = class(TJvDataConsumer);
@@ -458,7 +462,11 @@ begin
   Result := 2;
 end;
 
+{$IFNDEF COMPILER6_UP}
 procedure TJvProviderEditor.PrepareItem(Index: Integer; const AItem: TMenuItem);
+{$ELSE}
+procedure TJvProviderEditor.PrepareItem(Index: Integer; const AItem: IMenuItem);
+{$ENDIF}
 begin
   case Index of
     0:
