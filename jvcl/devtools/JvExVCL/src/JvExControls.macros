@@ -59,32 +59,24 @@
 
 
 (*$DEFINE JV_CONTROL_EVENTS_BEGIN(ClassName)
-  //
-  // --------------------------------------
   JV_CONTROL_EVENTS_CLASS(ClassName)
   {$IFDEF VCL}
   JV_CONTROL_EVENTS_DECL
 *)
 
 (*$DEFINE JV_CONTROL_EVENTS_BEGIN1(ClassName, Intf1)
-  //
-  // --------------------------------------
   JV_CONTROL_EVENTS_CLASS1(ClassName, Intf1)
   {$IFDEF VCL}
   JV_CONTROL_EVENTS_DECL
 *)
 
 (*$DEFINE JV_CONTROL_EVENTS_BEGIN2(ClassName, Intf2, Intf1)
-  //
-  // --------------------------------------
   JV_CONTROL_EVENTS_CLASS2(ClassName, Intf2, Intf1)
   {$IFDEF VCL}
   JV_CONTROL_EVENTS_DECL
 *)
 
 (*$DEFINE JV_CONTROL_EVENTS_BEGIN3(ClassName, Intf3, Intf2, Intf1)
-  //
-  // --------------------------------------
   JV_CONTROL_EVENTS_CLASS3(ClassName, Intf3, Intf2, Intf1)
   {$IFDEF VCL}
   JV_CONTROL_EVENTS_DECL
@@ -107,9 +99,10 @@
 
 (*$DEFINE JV_CONTROL_EVENTS_END
   public
-    procedure Dispatch(var Message); override;
+    procedure Dispatch(var Msg); override;
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -117,14 +110,15 @@
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
   private
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   end;
 *)
 
@@ -139,9 +133,9 @@
 *)
 
 (*$DEFINE JV_CONTROL_EVENTS_IMPLX(ClassName)
-//
-// -----------------------------------------------------------------------------
+
 {$IFDEF VCL}
+
 procedure TJvEx##ClassName.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -234,17 +228,18 @@ end;
 (*$DEFINE JV_CONTROL_EVENTS_IMPL(ClassName)
 JV_CONTROL_EVENTS_IMPLX(ClassName)
 {$IFDEF VCL}
-procedure TJvEx##ClassName.Dispatch(var Message);
+procedure TJvEx##ClassName.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
 {$ENDIF VCL}
 *)
 
-(*$DEFINE JV_WINCONTROL_EVENTS_IMPLX(ClassName)
+(*$DEFINE JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
 JV_CONTROL_EVENTS_IMPLX(ClassName)
 {$IFDEF VCL}
+
 procedure TJvEx##ClassName.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -275,16 +270,20 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-{$ENDIF VCL}
+*)
+
+(*$DEFINE JV_WINCONTROL_EVENTS_IMPLX(ClassName)
+  JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL
+  {$ENDIF VCL}
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPL(ClassName)
-JV_WINCONTROL_EVENTS_IMPLX(ClassName)
-{$IFDEF VCL}
-procedure TJvEx##ClassName.Dispatch(var Message);
+JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
+procedure TJvEx##ClassName.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    inherited Dispatch(Message);
+  if not DispatchMsg(Self, Msg) then
+    inherited Dispatch(Msg);
 end;
+
 {$ENDIF VCL}
 *)

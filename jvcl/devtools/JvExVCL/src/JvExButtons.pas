@@ -45,7 +45,7 @@ type
 
   JV_CONTROL_EVENTS_BEGIN1(SpeedButton, IJvSpeedButtonEvents)
   protected
-   // TJvExSpeedButton
+   // IJvSpeedButtonEvents
     procedure ButtonPressed(Sender: TSpeedButton; GroupIndex: Integer); dynamic;
   JV_CONTROL_EVENTS_END
 
@@ -61,15 +61,15 @@ begin
   InheritMsg(Self, CM_BUTTONPRESSED, GroupIndex, Integer(Sender));
 end;
 
-procedure TJvExSpeedButton.Dispatch(var Message);
+procedure TJvExSpeedButton.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    case TMessage(Message).Msg of
+  if not DispatchMsg(Self, Msg) then
+    case TMessage(Msg).Msg of
       CM_BUTTONPRESSED:
-        with TMessage(Message) do
+        with TMessage(Msg) do
           ButtonPressed(TSpeedButton(LParam), WParam);
     else
-      inherited Dispatch(Message);
+      inherited Dispatch(Msg);
     end;
 end;
 {$ENDIF VCL}
