@@ -75,7 +75,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvJVCLUtils, JvResources;
 
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);
 begin
@@ -103,7 +103,7 @@ end;
 
 function TJvWizardRouteMapSteps.GetActiveStepRect: TRect;
 begin
-  Result := Rect(Left + FIndent,(ClientHeight div 2 - Canvas.TextHeight('Yy')),
+  Result := Rect(Left + FIndent,(ClientHeight div 2 - CanvasMaxTextHeight(Canvas)),
     Width, ClientHeight div 2);
 end;
 
@@ -116,7 +116,7 @@ end;
 function TJvWizardRouteMapSteps.GetNextStepRect: TRect;
 begin
   Result := Rect(Left + FIndent, Height - FIndent - 32, Width,
-    Height - FIndent - 32  +  Canvas.TextHeight('Yy'));
+    Height - FIndent - 32  +  CanvasMaxTextHeight(Canvas));
 end;
 
 function TJvWizardRouteMapSteps.DetectPageCount(var ActivePageIndex: Integer): Integer;
@@ -146,7 +146,7 @@ end;
 function TJvWizardRouteMapSteps.GetPreviousStepRect: TRect;
 begin
   Result := Rect(Left + FIndent, Top + FIndent, Width,
-    Top + FIndent + Canvas.TextHeight('Yy'));
+    Top + FIndent + CanvasMaxTextHeight(Canvas));
 end;
 
 procedure TJvWizardRouteMapSteps.MouseMove(Shift: TShiftState; X, Y: Integer);

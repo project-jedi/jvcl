@@ -46,6 +46,9 @@ uses
   QrPrntr, Quickrpt, QrCtrls,
   JvInterpreterFm, JvResources;
 
+const
+  cQuickRep1 = 'QuickRep1';
+
 procedure JvInterpreterRunReportPreview(const FileName: string);
 var
   Form: TForm;
@@ -54,7 +57,7 @@ var
 begin
   Form := JvInterpreterMakeForm(FileName);
   try
-    QuickRep1 := Form.FindComponent('QuickRep1') as TQuickRep;
+    QuickRep1 := Form.FindComponent(cQuickRep1) as TQuickRep;
     if QuickRep1 = nil then
       for I := 0 to Form.ComponentCount - 1 do
         if Form.Components[I] is TQuickRep then
@@ -78,7 +81,7 @@ var
 begin
   Form := JvInterpreterProgram.MakeForm(FileName);
   try
-    QuickRep1 := Form.FindComponent('QuickRep1') as TQuickRep;
+    QuickRep1 := Form.FindComponent(cQuickRep1) as TQuickRep;
     if QuickRep1 = nil then
       for I := 0 to Form.ComponentCount - 1 do
         if Form.Components[i] is TQuickRep then

@@ -87,7 +87,7 @@ type
 implementation
 
 uses
-  JvgTypes, JvgUtils;
+  JvgTypes, JvgUtils, JvJVCLUtils;
 
 constructor TJvgWizardHeader.Create(AOwner: TComponent);
 begin
@@ -196,7 +196,7 @@ begin
     DrawText(TargetCanvas.Handle, PChar(Caption), Length(Caption), R,
       DT_SINGLELINE);
 
-    Inc(R.Top, TargetCanvas.TextHeight('Hy'));
+    Inc(R.Top, CanvasMaxTextHeight(TargetCanvas));
     Inc(R.Left, 20);
 
     TargetCanvas.Font.Assign(CommentFont);

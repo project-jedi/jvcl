@@ -99,7 +99,7 @@ type
 implementation
 
 uses
-  JvTypes, JvThemes, JvResources;
+  JvTypes, JvThemes, JvJVCLUtils, JvResources;
 
 type
   PStyles = ^TStyles;
@@ -264,7 +264,7 @@ begin
   aHandle := Canvas.Handle;
   SetBkMode(aHandle, Windows.Transparent);
 
-  H := Canvas.TextHeight('Wg');
+  H := CanvasMaxTextHeight(Canvas);
   for I := 0 to FLines.Count - 1 do
   begin
     Canvas.Font.Style := PStyles(FStyles[I])^.Style;

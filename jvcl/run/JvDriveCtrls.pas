@@ -367,7 +367,7 @@ type
 implementation
 
 uses
-  JvJCLUtils;
+  JvJCLUtils, JvJVCLUtils;
 
 const
   cDirPrefix = #32;
@@ -829,7 +829,7 @@ begin
       tmpR := Rect;
       DrawText(Canvas.Handle, PChar(Items[Index]), -1, tmpR,
         DT_SINGLELINE or DT_BOTTOM or DT_CENTER or DT_NOPREFIX or DT_CALCRECT);
-      Rect.Top := tmpR.Bottom - Canvas.TextHeight('Wq');
+      Rect.Top := tmpR.Bottom - CanvasMaxTextHeight(Canvas);
       Rect.Left := (Rect.Right - Rect.Left) div 2 - Canvas.TextWidth(PChar(Items[Index])) div 2;
       Rect.Right := Rect.Left + Canvas.TextWidth(PChar(Items[Index]));
       DrawText(Canvas.Handle, PChar(Items[Index]), -1, Rect,
@@ -845,8 +845,8 @@ begin
       tmpR := Rect;
       DrawText(Canvas.Handle, PChar(Items[Index]), -1, tmpR,
         DT_SINGLELINE or DT_VCENTER or DT_CENTER or DT_NOPREFIX or DT_CALCRECT);
-      Rect.Top := tmpR.Bottom - Canvas.TextHeight('Wq');
-      Rect.Bottom := Rect.Top + Canvas.TextHeight('Wq');
+      Rect.Top := tmpR.Bottom - CanvasMaxTextHeight(Canvas);
+      Rect.Bottom := Rect.Top + CanvasMaxTextHeight(Canvas);
       Rect.Left := FImageWidth + FOffset * 3;
       Rect.Right := Rect.Left + Canvas.TextWidth(PChar(Items[Index]));
       DrawText(Canvas.Handle, PChar(Items[Index]), -1, Rect,

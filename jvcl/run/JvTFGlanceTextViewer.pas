@@ -236,7 +236,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvJVCLUtils, JvResources;
 
 function TJvTFGVTextControl.CalcAbsLineNum(Y : Integer) : Integer;
 begin
@@ -308,7 +308,7 @@ end;
 
 function TJvTFGVTextControl.CalcLineHeight: Integer;
 begin
-  Result := Canvas.TextHeight('Ay') + Viewer.LineSpacing;
+  Result := CanvasMaxTextHeight(Canvas) + Viewer.LineSpacing;
 end;
 
 function TJvTFGVTextControl.LineRect(AbsLineNum: Integer): TRect;

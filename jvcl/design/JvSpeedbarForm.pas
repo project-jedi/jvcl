@@ -824,7 +824,7 @@ begin
   if CheckSpeedBar then
     if (Row < FBar.SectionCount) and (Row >= 0) then
       DrawCellText(Sender as TDrawGrid, Col, Row,
-        FBar.Sections[Row].Caption, Rect, taLeftJustify, vaCenter, TDrawGrid(Sender).IsRightToLeft);
+        FBar.Sections[Row].Caption, Rect, taLeftJustify, vaCenterJustify, TDrawGrid(Sender).IsRightToLeft);
 end;
 
 procedure TJvSpeedbarEditor.SectionListKeyDown(Sender: TObject;

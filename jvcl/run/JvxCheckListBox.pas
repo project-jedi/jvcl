@@ -1076,7 +1076,7 @@ begin
       else
         Dec(Rect.Right, 2);
       DefaultDrawText(Rect.Left, Max(Rect.Top, (Rect.Bottom +
-        Rect.Top - FCanvas.TextHeight('Wy')) div 2), Items[Index]);
+        Rect.Top - CanvasMaxTextHeight(FCanvas)) div 2), Items[Index]);
     end;
   end;
 end;
@@ -1568,7 +1568,7 @@ begin
     not Assigned(FOnDrawItem)) then
   begin
     FCanvas.Font := Font;
-    H := Max(FCanvas.TextHeight('Wg'), FCheckHeight);
+    H := Max(CanvasMaxTextHeight(FCanvas), FCheckHeight);
     if Style = lbOwnerDrawFixed then
       H := Max(H, FItemHeight);
     Perform(LB_SETITEMHEIGHT, 0, H);

@@ -113,7 +113,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvJVCLUtils, JvResources;
 
 procedure TJvTFGantt.DrawMajor(ACanvas: TCanvas);
 var
@@ -137,9 +137,9 @@ function TJvTFGantt.CalcHeaderHeight: integer;
 begin
   result := 0;
   Canvas.Font.Assign(FMajorScale.Font);
-  result := result + Canvas.TextHeight('Yy');
+  result := result + CanvasMaxTextHeight(Canvas);
   Canvas.Font.Assign(FMinorScale.Font);
-  result := result + Canvas.TextHeight('Yy');
+  result := result + CanvasMaxTextHeight(Canvas);
   result := result + 4;
 end;
 

@@ -455,6 +455,10 @@ const
   cDSAStateValueName = 'DSA_State'; // do not localize
   cDSAStateLastResultName = 'LastResult'; // do not localize
 
+  cCaption = 'Caption';
+  cChecked = 'Checked';
+  cCountdown = 'Countdown';
+
 //--------------------------------------------------------------------------------------------------
 //  CheckMarkTexts
 //--------------------------------------------------------------------------------------------------
@@ -524,7 +528,7 @@ begin
       Break;
     end;
   end;
-  FCountdown := TLabel(FindComponent('Countdown'));
+  FCountdown := TLabel(FindComponent(cCountdown));
 end;
 
 procedure TDSAMessageForm.HelpButtonClick(Sender: TObject);
@@ -600,7 +604,7 @@ begin
     if Components[I] is TButton then
       ButtonCaptions := ButtonCaptions + TButton(Components[I]).Caption +
         StringOfChar(' ', 3);
-  ButtonCaptions := StringReplace(ButtonCaptions,'&','', [rfReplaceAll]);
+  ButtonCaptions := StringReplace(ButtonCaptions,'&', '', [rfReplaceAll]);
   I := ComponentCount - 1;
   while (I > -1) and not (Components[I] is TLabel) do
     Dec(I);
@@ -839,7 +843,7 @@ begin
       if ATimeout > 0 then
         with TLabel.Create(Result) do
         begin
-          Name := 'Countdown';
+          Name := cCountdown;
           Parent := Result;
           BiDiMode := Result.BiDiMode;
           Caption := Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]);
@@ -1171,9 +1175,9 @@ end;
 
 procedure TDSARegStorage.CreateKey(const DSAInfo: TDSARegItem);
 begin
-  if not (RegKeyExists(RootKey, Key + '\' + DSAInfo.Name) or (RegCreateKey(RootKey, Key + '\' +
+  if not (RegKeyExists(RootKey, Key + RegPathDelim + DSAInfo.Name) or (RegCreateKey(RootKey, Key + RegPathDelim +
       DSAInfo.Name, '') = ERROR_SUCCESS)) then
-    raise EJvDSADialog.CreateFmt(RsEDSARegKeyCreateError, [Key + '\' + DSAInfo.Name]);
+    raise EJvDSADialog.CreateFmt(RsEDSARegKeyCreateError, [Key + RegPathDelim + DSAInfo.Name]);
 end;
 
 function TDSARegStorage.GetCheckMarkTextSuffix: string;
@@ -1187,65 +1191,65 @@ end;
 
 function TDSARegStorage.ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean;
 begin
-  Result := RegReadBool(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
+  Result := RegReadBool(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
 end;
 
 function TDSARegStorage.ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Boolean): Boolean;
 begin
-  Result := RegReadBoolDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
+  Result := RegReadBoolDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
 end;
 
 function TDSARegStorage.ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended;
 begin
-  RegReadBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(Extended));
+  RegReadBinary(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Result, SizeOf(Extended));
 end;
 
 function TDSARegStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Extended): Extended;
 begin
-  if RegReadBinaryDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(Extended), 0) = 0 then
+  if RegReadBinaryDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Result, SizeOf(Extended), 0) = 0 then
     Result := Default;
 end;
 
 function TDSARegStorage.ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64;
 begin
-  Result := RegReadDWORD(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
+  Result := RegReadDWORD(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
 end;
 
 function TDSARegStorage.ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Int64): Int64;
 begin
-  Result := RegReadDWORDDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
+  Result := RegReadDWORDDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
 end;
 
 function TDSARegStorage.ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer;
 begin
-  Result := RegReadInteger(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
+  Result := RegReadInteger(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
 end;
 
 function TDSARegStorage.ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Integer): Integer;
 begin
-  Result := RegReadIntegerDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
+  Result := RegReadIntegerDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
 end;
 
 function TDSARegStorage.ReadString(const DSAInfo: TDSARegItem; const Key: string): string;
 begin
-  Result := RegReadString(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
+  Result := RegReadString(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
 end;
 
 function TDSARegStorage.ReadStringDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: string): string;
 begin
-  Result := RegReadStringDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
+  Result := RegReadStringDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
 end;
 
 procedure TDSARegStorage.WriteBool(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Boolean);
 begin
   CreateKey(DSAInfo);
-  RegWriteBool(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
+  RegWriteBool(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
 end;
 
 procedure TDSARegStorage.WriteFloat(const DSAInfo: TDSARegItem; const Key: string;
@@ -1255,28 +1259,28 @@ var
 begin
   CreateKey(DSAInfo);
   Temp := Value;
-  RegWriteBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Temp, SizeOf(Extended));
+  RegWriteBinary(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Temp, SizeOf(Extended));
 end;
 
 procedure TDSARegStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Int64);
 begin
   CreateKey(DSAInfo);
-  RegWriteDWORD(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
+  RegWriteDWORD(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
 end;
 
 procedure TDSARegStorage.WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Integer);
 begin
   CreateKey(DSAInfo);
-  RegWriteInteger(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
+  RegWriteInteger(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
 end;
 
 procedure TDSARegStorage.WriteString(const DSAInfo: TDSARegItem; const Key: string;
   const Value: string);
 begin
   CreateKey(DSAInfo);
-  RegWriteString(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
+  RegWriteString(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
 end;
 
 //=== TDSAValues =============================================================
@@ -2084,7 +2088,7 @@ begin
         CheckCaption := CheckCaption + ' ' + Temp + '.'
       else
         CheckCaption := CheckCaption + '.';
-      SetStrProp(JvDSADialog.CheckControl, 'Caption', CheckCaption);
+      SetStrProp(JvDSADialog.CheckControl, cCaption, CheckCaption);
     end;
 
     { Notify the JvDSADialog component that we are about to show the form (may initialize the
@@ -2244,9 +2248,9 @@ begin
   begin
     if Value <> nil then
     begin
-      if GetPropInfo(Value, 'Checked') = nil then
+      if GetPropInfo(Value, cChecked) = nil then
         raise EJvDSADialog.Create(RsECtrlHasNoCheckedProp);
-      if GetPropInfo(Value, 'Caption') = nil then
+      if GetPropInfo(Value, cCaption) = nil then
         raise EJvDSADialog.Create(RsECtrlHasNoCaptionProp);
     end;
     FCheckControl := Value;
@@ -2295,7 +2299,7 @@ end;
 function TJvDSADialog.IsDSAChecked: Boolean;
 begin
   if CheckControl <> nil then
-    Result := GetOrdProp(CheckControl, 'Checked') <> 0
+    Result := GetOrdProp(CheckControl, cChecked) <> 0
   else
     Result := False;
 end;

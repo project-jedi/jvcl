@@ -401,7 +401,7 @@ implementation
 uses
   Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}TypInfo,
   JclBase,
-  JvConsts, JvCtrls, JvResources;
+  JvJVCLUtils, JvConsts, JvCtrls, JvResources;
 
 const
   AlignFlags: array [TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -734,7 +734,7 @@ begin
   inherited;
   Canvas.Font := Font;
   if Style <> lbStandard then
-    ItemHeight := Canvas.TextHeight('Äy') + CShowFocusRect[ShowFocusRect];
+    ItemHeight := CanvasMaxTextHeight(Canvas) + CShowFocusRect[ShowFocusRect];
   RemeasureAll;
 end;
 
@@ -1577,7 +1577,7 @@ begin
   Canvas.Font := Font;
   { Note: doing the TextHeight unconditionally makes sure the font is properly
     selected into the device context. }
-  ASize.cy := Canvas.TextHeight('Wy');
+  ASize.cy := CanvasMaxTextHeight(Canvas);
   ASize.cx := ClientWidth - 4;
   Provider.Enter;
   try
@@ -1869,7 +1869,7 @@ begin
   begin
     FShowFocusRect := Value;
 
-    ItemHeight := Canvas.TextHeight('Äy') + CShowFocusRect[ShowFocusRect];
+    ItemHeight := CanvasMaxTextHeight(Canvas) + CShowFocusRect[ShowFocusRect];
     RemeasureAll;
     if Focused then
       Invalidate;
@@ -1926,7 +1926,7 @@ begin
 
   if (PreviousStyle = lbStandard) and (Style <> lbStandard) then
   begin
-    ItemHeight := Canvas.TextHeight('Äy') + CShowFocusRect[ShowFocusRect];
+    ItemHeight := CanvasMaxTextHeight(Canvas) + CShowFocusRect[ShowFocusRect];
     RemeasureAll;
   end;
 end;

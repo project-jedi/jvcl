@@ -1792,7 +1792,7 @@ begin
   R := Rect;
   R.Right := R.Left;
   S := '';
-  ATop := (R.Bottom + R.Top - Canvas.TextHeight('Xy')) div 2;
+  ATop := (R.Bottom + R.Top - CanvasMaxTextHeight(Canvas)) div 2;
   if FListStyle = lsFixed then
     for J := 0 to LastFieldIndex do
     begin
@@ -2881,7 +2881,7 @@ begin
     Canvas.Pen.Color := clBtnShadow;
   LastIndex := FDisplayValues.Count - 1;
   TxtWidth := Canvas.TextWidth('M');
-  ATop := Max(0, (RectHeight(R) - Canvas.TextHeight('Xy')) div 2);
+  ATop := Max(0, (RectHeight(R) - CanvasMaxTextHeight(Canvas)) div 2);
   ARight := R.Right;
   Inc(R.Left, ALeft);
   for I := 0 to LastIndex do

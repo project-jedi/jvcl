@@ -319,7 +319,7 @@ type
 implementation
 
 uses
-  Consts, JvThemes;
+  Consts, JvJVCLUtils, JvThemes;
 
 {$R ..\resources\JvTMTimeLine.res}
 
@@ -608,9 +608,9 @@ begin
 
     ACanvas.FillRect(ARect);
     R := Rect(ARect.Left + ((ARect.Right - ARect.Left) - Bmp.Width) div 2,
-      ARect.Top + ACanvas.TextHeight('Wq') + 2,
+      ARect.Top + CanvasMaxTextHeight(ACanvas) + 2,
       ARect.Left + ((ARect.Right - ARect.Left) - Bmp.Width) div 2 + Bmp.Width,
-      ARect.Top + Bmp.Height + ACanvas.TextHeight('Wq') + 2);
+      ARect.Top + Bmp.Height +CanvasMaxTextHeight(ACanvas) + 2);
     ACanvas.BrushCopy(R, Bmp, Rect(0, 0, Bmp.Width, Bmp.Height), clFuchsia);
   finally
     ACanvas.Brush.Color := Tmp;
@@ -767,8 +767,8 @@ begin
   if Assigned(Images) and (I > -1) and (I < Images.Count) then
   begin
     X := ARect.Left + (FDayWidth - Images.Width) div 2;
-//    Y := Max((Height  - Images.Height) div 4,ACanvas.TextHeight('Wq') + 2);
-    Y := ACanvas.TextHeight('Wq') + 2;
+//    Y := Max((Height  - Images.Height) div 4, CanvasMaxTextHeight(ACanvas) + 2);
+    Y := CanvasMaxTextHeight(ACanvas) + 2;
     Images.Draw(ACanvas, X, Y, I);
   end;
 end;

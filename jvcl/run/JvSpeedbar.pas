@@ -3177,7 +3177,7 @@ begin
       Item.Spacing, Item.Layout, AFont, ImageList, Item.ImageIndex,
       Item.FButton.DrawTextBiDiModeFlags(Alignments[Image.Alignment]));
     Inc(R.Left, Image.ButtonSize.X + 3);
-    DrawCellText(Grid, 0, 0, Item.Caption, R, taLeftJustify, vaCenter, ARightToLeft);
+    DrawCellText(Grid, 0, 0, Item.Caption, R, taLeftJustify, vaCenterJustify, ARightToLeft);
   end;
 end;
 

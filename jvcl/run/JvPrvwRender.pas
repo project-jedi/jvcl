@@ -229,7 +229,7 @@ implementation
 
 uses
   Forms,
-  JvConsts, JvResources;
+  JvJVCLUtils, JvConsts, JvResources;
 
 type
   TAccessPrvwDoc = class(TJvCustomPreviewControl);
@@ -461,7 +461,7 @@ begin
     ARect := PrintRect;
 
     GetTextMetrics(Canvas.Handle, tm);
-    IncValue := Canvas.TextHeight('Wq') + tm.tmInternalLeading + tm.tmExternalLeading;
+    IncValue := CanvasMaxTextHeight(Canvas) + tm.tmInternalLeading + tm.tmExternalLeading;
     ARect.Bottom := ARect.Top + IncValue;
     for i := FCurrentRow to FStrings.Count - 1 do
     begin

@@ -2525,8 +2525,8 @@ begin
               DrawExpandBtn(TitleRect, TextRect, InBiDiMode, DrawColumn.Expanded);
             with DrawColumn.Title do
               DrawCellText(Self, ACol, ARow, MinimizeText(Caption, Canvas,
-                RectWidth(TextRect) - Indicator), TextRect, Alignment, vaCenter
-                , IsRightToLeft);
+                RectWidth(TextRect) - Indicator), TextRect, Alignment,
+                vaCenterJustify, IsRightToLeft);
           end;
         if DefaultDrawSortMarker then
           begin
@@ -2545,7 +2545,7 @@ begin
           end;
       end
       else
-        DrawCellText(Self, ACol, ARow, '', ARect, taLeftJustify, vaCenter);
+        DrawCellText(Self, ACol, ARow, '', ARect, taLeftJustify, vaCenterJustify);
     finally
       Canvas.Pen.Color := SavePen;
     end;

@@ -456,7 +456,7 @@ begin
       end;
     end;
   end;
-  DrawCellText(ProxyGrid, Col, Row, CellText, Rect, taLeftJustify, vaCenter);
+  DrawCellText(ProxyGrid, Col, Row, CellText, Rect, taLeftJustify, vaCenterJustify);
 end;
 
 procedure TJvProxyEditor.ProxyGridSelectCell(Sender: TObject; Col,

@@ -285,7 +285,7 @@ function ScreenWorkArea: TRect;
 { Grid drawing }
 
 type
-  TVertAlignment = (vaTopJustify, vaCenter, vaBottomJustify);
+  TVertAlignment = (vaTopJustify, vaCenterJustify, vaBottomJustify);
 
 procedure WriteText(ACanvas: TCanvas; ARect: TRect; DX, DY: Integer;
   const Text: string; Alignment: TAlignment; WordWrap: Boolean; ARightToLeft:
@@ -603,6 +603,8 @@ procedure UpdateTrackFont(TrackFont, Font: TFont; TrackOptions: TJvTrackFontOpti
 // used for checkboxes and radiobuttons.
 // Originally from Mike Lischke
 function GetDefaultCheckBoxSize: TSize;
+
+function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 
 implementation
 
@@ -2726,7 +2728,7 @@ begin
   case VertAlign of
     vaTopJustify:
       h := MinOffs;
-    vaCenter:
+    vaCenterJustify:
       with TJvHack(Control) do
         h := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
@@ -2760,7 +2762,7 @@ begin
   case VertAlign of
     vaTopJustify:
       h := MinOffs;
-    vaCenter:
+    vaCenterJustify:
       with TJvHack(Control) do
         h := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
@@ -5816,6 +5818,17 @@ begin
   Result.cx := 12;
   Result.cy := 12;
 {$ENDIF}
+end;
+
+function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
+var
+  I: Integer;
+  S: string;
+begin
+  SetLength(S, 255);
+  for I := 1 to 255 do
+    S[I] := Chr(I);
+  Result := Canvas.TextHeight(S);
 end;
 
 initialization
