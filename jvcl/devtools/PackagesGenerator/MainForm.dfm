@@ -72,7 +72,7 @@ object frmMain: TfrmMain
     object jtbMenus: TJvToolBar
       Left = 11
       Top = 2
-      Width = 186
+      Width = 126
       Height = 22
       Align = alNone
       ButtonHeight = 21
@@ -89,8 +89,10 @@ object frmMain: TfrmMain
       Top = 28
       Width = 174
       Height = 22
-      Caption = 'jtbTools'
+      Caption = 'Main tools'
       DisabledImages = imlDisabled
+      DragKind = dkDock
+      DragMode = dmAutomatic
       EdgeBorders = []
       Flat = True
       Images = imlActive
@@ -153,12 +155,15 @@ object frmMain: TfrmMain
         ShowHint = True
       end
     end
-    object Panel1: TPanel
+    object pnlPackagesLocation: TPanel
       Left = 198
       Top = 28
       Width = 231
       Height = 22
       BevelOuter = bvNone
+      Caption = 'Packages location'
+      DragKind = dkDock
+      DragMode = dmAutomatic
       TabOrder = 2
       object Label1: TLabel
         Left = 4
@@ -272,6 +277,7 @@ object frmMain: TfrmMain
       FixedCols = 0
       RowCount = 2
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
+      PopupMenu = jpmGridPopup
       TabOrder = 4
       OnSetEditText = jsgDependenciesSetEditText
       Alignment = taLeftJustify
@@ -295,6 +301,7 @@ object frmMain: TfrmMain
       FixedCols = 0
       RowCount = 2
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
+      PopupMenu = jpmGridPopup
       TabOrder = 5
       OnSetEditText = jsgFilesSetEditText
       Alignment = taLeftJustify
@@ -370,10 +377,34 @@ object frmMain: TfrmMain
         Action = actNextPackage
       end
     end
+    object mnuView: TMenuItem
+      Caption = '&View'
+      object mnuKnown: TMenuItem
+        Action = actKnown
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object mnuMainToolbar: TMenuItem
+        Action = actMainToolbar
+        AutoCheck = True
+      end
+      object mnuLocationBar: TMenuItem
+        Action = actLocation
+        AutoCheck = True
+      end
+    end
   end
   object aclActions: TActionList
     Images = imlActive
     Left = 732
+    object actLocation: TAction
+      Category = 'View'
+      AutoCheck = True
+      Caption = '&Location bar'
+      OnExecute = actLocationExecute
+      OnUpdate = actLocationUpdate
+    end
     object actExit: TAction
       Category = 'File'
       Caption = '&Exit'
@@ -436,6 +467,18 @@ object frmMain: TfrmMain
       ImageIndex = 7
       ShortCut = 16455
       OnExecute = actGenerateExecute
+    end
+    object actMainToolbar: TAction
+      Category = 'View'
+      AutoCheck = True
+      Caption = '&Main toolbar'
+      OnExecute = actMainToolbarExecute
+      OnUpdate = actMainToolbarUpdate
+    end
+    object actKnown: TAction
+      Category = 'View'
+      Caption = '&Known replacement tags'
+      OnExecute = actKnownExecute
     end
   end
   object imlActive: TImageList
@@ -1281,5 +1324,13 @@ object frmMain: TfrmMain
     ImageSize.Width = 0
     Left = 676
     Top = 28
+    object mnuUp: TMenuItem
+      Caption = '&Up'
+      OnClick = mnuUpClick
+    end
+    object mnuDown: TMenuItem
+      Caption = '&Down'
+      OnClick = mnuDownClick
+    end
   end
 end

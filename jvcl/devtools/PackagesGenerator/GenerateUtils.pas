@@ -133,6 +133,48 @@ begin
   Result := PathExtractFileNameNoExt(FileName);
 end;
 
+procedure ApplyFormName(fileNode : TJvSimpleXmlElem; var Lines : string);
+var
+  formName : string;
+  formType : string;
+  formNameAndType : string;
+  incFileName : string;
+begin
+  formNameAndType := fileNode.Properties.ItemNamed['FormName'].Value;
+  incFileName := fileNode.Properties.ItemNamed['Name'].Value;
+
+  if Pos(':', formNameAndType) = 0 then
+  begin
+    formName := formNameAndType;
+    formType := '';
+  end
+  else
+  begin
+    formName := Copy(formNameAndType, 1, Pos(':', formNameAndType)-1);
+    formType := Copy(formNameAndType, Pos(':', formNameAndType)+2, Length(formNameAndType));
+  end;
+
+  if formName = '' then
+  begin
+    StrReplace(Lines, '{', '', [rfReplaceAll]);
+    StrReplace(Lines, '}', '', [rfReplaceAll]);
+    StrReplace(Lines, '/*', '', [rfReplaceAll]);
+    StrReplace(Lines, '*/', '', [rfReplaceAll]);
+  end
+  else
+  begin
+    StrReplace(Lines, '%FORMNAME%', formName, [rfReplaceAll]);
+    StrReplace(Lines, '%FORMTYPE%', formType, [rfReplaceAll]);
+    StrReplace(Lines, '%FORMNAMEANDTYPE%', formNameAndType, [rfReplaceAll]);
+    StrReplace(Lines, '%FORMPATHNAME%',
+               StrEnsureSuffix('\', ExtractFilePath(incFileName))+formName,
+               [rfReplaceAll]);
+    StrReplace(Lines, '%Unitname%',
+               StrProper(GetUnitName(incFileName)),
+               [rfReplaceAll]);
+  end;
+end;
+
 procedure ApplyTemplateAndSave(path, target, package, extension : string; template : TStrings; xml : TJvSimpleXml; templateDate, xmlDate : TDateTime);
 var
   OutFileName : string;
@@ -140,9 +182,6 @@ var
   NameSuffix : string;
   reqPackName : string;
   incFileName : string;
-  formName : string;
-  formType : string;
-  formNameAndType : string;
   rootNode : TJvSimpleXmlElemClassic;
   requiredNode : TJvSimpleXmlElem;
   packageNode : TJvSimpleXmlElem;
@@ -236,20 +275,7 @@ begin
             incFileName := fileNode.Properties.ItemNamed['Name'].Value;
             StrReplace(tmpStr, '%FILENAME%', incFileName, [rfReplaceAll]);
             StrReplace(tmpStr, '%UNITNAME%', GetUnitName(incFileName), [rfReplaceAll]);
-            formNameAndType := fileNode.Properties.ItemNamed['FormName'].Value;
-            if Pos(':', formNameAndType) = 0 then
-            begin
-              formName := formNameAndType;
-              formType := '';
-            end
-            else
-            begin
-              formName := Copy(formNameAndType, 1, Pos(':', formNameAndType)-1);
-              formType := Copy(formNameAndType, Pos(':', formNameAndType)+2, Length(formNameAndType));
-            end;
-            StrReplace(tmpStr, '%FORMNAME%', formName, [rfReplaceAll]);
-            StrReplace(tmpStr, '%FORMTYPE%', formType, [rfReplaceAll]);
-            StrReplace(tmpStr, '%FORMNAMEANDTYPE%', formNameAndType, [rfReplaceAll]);
+            ApplyFormName(fileNode, tmpStr);
             outFile.Text := outFile.Text +
                             EnsureCondition(tmpStr, fileNode, target);
           end;
@@ -287,16 +313,7 @@ begin
           if fileNode.Properties.ItemNamed[ShortTarget(target)].Value <> '' then
           begin
             tmpStr := repeatLines;
-            formName := fileNode.Properties.ItemNamed['FormName'].Value;
-            incFileName := fileNode.Properties.ItemNamed['Name'].Value;
-            if formName <> '' then
-            begin
-              StrReplace(tmpStr, '%PATHNAME%',
-                          StrEnsureSuffix('\', ExtractFilePath(incFileName)) +
-                          formName,
-                          [rfReplaceAll]);
-              outFile.Text := outFile.Text + tmpStr;
-            end;
+            ApplyFormName(fileNode, tmpStr);
           end;
         end;
       end
@@ -315,10 +332,11 @@ begin
         StrReplace(curLine, '%C6PFLAGS%',
                    rootNode.Items.ItemNamed['C6PFlags'].Value,
                    [rfReplaceAll]);
-        StrReplace(curLine, '%RUNONLY%',
+        StrReplace(curLine, '%TYPE%',
                    Iff(rootNode.Properties.ItemNamed['Design'].BoolValue,
-                      '', '{$RUNONLY}'),
+                      'DESIGN', 'RUN'),
                    [rfReplaceAll]);
+        StrReplace(curLine, '%type%', StrLower(NameSuffix), [rfReplaceAll]);
         outFile.Add(curLine);
       end;
       Inc(i);
