@@ -156,7 +156,7 @@ Summary
 Description
   Write here a description
 Parameters
-  Filename - Description for this parameter
+  FileName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -272,7 +272,115 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@BinStrToBuf
+<TITLE BinStrToBuf function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value   - Description for this parameter
+  Buf     - Description for this parameter
+  BufSize - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@BitBlt@HDC@Integer@Integer@Integer@Integer@HDC@Integer@Integer@Cardinal
+<TITLE BitBlt function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  DestDC - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+  Width  - Description for this parameter
+  Height - Description for this parameter
+  SrcDC  - Description for this parameter
+  XSrc   - Description for this parameter
+  YSrc   - Description for this parameter
+  WinRop - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@BitBlt@HDC@Integer@Integer@Integer@Integer@HDC@Integer@Integer@Cardinal@Boolean
+<TITLE BitBlt function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  DestDC     - Description for this parameter
+  X          - Description for this parameter
+  Y          - Description for this parameter
+  Width      - Description for this parameter
+  Height     - Description for this parameter
+  SrcDC      - Description for this parameter
+  XSrc       - Description for this parameter
+  YSrc       - Description for this parameter
+  WinRop     - Description for this parameter
+  IgnoreMask - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@BitBlt@HDC@Integer@Integer@Integer@Integer@HDC@Integer@Integer@RasterOp@Boolean
+<TITLE BitBlt function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  DestDC     - Description for this parameter
+  X          - Description for this parameter
+  Y          - Description for this parameter
+  Width      - Description for this parameter
+  Height     - Description for this parameter
+  SrcDC      - Description for this parameter
+  XSrc       - Description for this parameter
+  YSrc       - Description for this parameter
+  Rop        - Description for this parameter
+  IgnoreMask - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@BitBlt@TCanvas@Integer@Integer@Integer@Integer@TCanvas@Integer@Integer@Cardinal@Boolean
+<TITLE BitBlt function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  DestCanvas - Description for this parameter
+  X          - Description for this parameter
+  Y          - Description for this parameter
+  Width      - Description for this parameter
+  Height     - Description for this parameter
+  SrcCanvas  - Description for this parameter
+  XSrc       - Description for this parameter
+  YSrc       - Description for this parameter
+  WinRop     - Description for this parameter
+  IgnoreMask - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@BitmapFromBitmap
 <TITLE BitmapFromBitmap function>
@@ -297,14 +405,13 @@ Summary
 Description
   Write here a description
 Parameters
-  Pb - Description for this parameter
+  B - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
-@@BrowseForFolder
-<TITLE BrowseForFolder function>
+@@BrowseForFolderNative
+<TITLE BrowseForFolderNative function>
 Summary
   Write here a summary (1 line)
 Description
@@ -316,7 +423,19 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@BufToBinStr
+<TITLE BufToBinStr function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Buf     - Description for this parameter
+  BufSize - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@CenterStr
 <TITLE CenterStr function>
@@ -540,13 +659,12 @@ Summary
 Description
   Write here a description
 Parameters
-  S         - Description for this parameter
+  S1        - Description for this parameter
   S2        - Description for this parameter
   Separator - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@ConcatSep
 <TITLE ConcatSep function>
@@ -555,7 +673,7 @@ Summary
 Description
   Write here a description
 Parameters
-  S         - Description for this parameter
+  S1        - Description for this parameter
   S2        - Description for this parameter
   Separator - Description for this parameter
 See Also
@@ -1117,20 +1235,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DirectoryExists
-<TITLE DirectoryExists function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Name - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@DiskInDrive
 <TITLE DiskInDrive function>
@@ -1185,7 +1289,220 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@DrawText@HDC@TCaption@Integer@TRect@Integer
+<TITLE DrawText function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  DC       - Description for this parameter
+  Text     - Description for this parameter
+  Len      - Description for this parameter
+  R        - Description for this parameter
+  WinFlags - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DrawText@TCanvas@PAnsiChar@Integer@TRect@Integer
+<TITLE DrawText function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas   - Description for this parameter
+  Text     - Description for this parameter
+  Len      - Description for this parameter
+  R        - Description for this parameter
+  WinFlags - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DrawText@TCanvas@string@Integer@TRect@Integer
+<TITLE DrawText function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas   - Description for this parameter
+  Text     - Description for this parameter
+  Len      - Description for this parameter
+  R        - Description for this parameter
+  WinFlags - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DrawText@TCanvas@WideString@Integer@TRect@Integer
+<TITLE DrawText function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas   - Description for this parameter
+  Text     - Description for this parameter
+  Len      - Description for this parameter
+  R        - Description for this parameter
+  WinFlags - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DrawTextEx@TCanvas@PChar@Integer@TRect@UINT@PDrawTextParams
+<TITLE DrawTextEx function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas     - Description for this parameter
+  lpchText   - Description for this parameter
+  cchText    - Description for this parameter
+  p4         - Description for this parameter
+  dwDTFormat - Description for this parameter
+  DTParams   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DrawTextEx@TCanvas@string@Integer@TRect@UINT@PDrawTextParams
+<TITLE DrawTextEx function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas     - Description for this parameter
+  Text       - Description for this parameter
+  cchText    - Description for this parameter
+  p4         - Description for this parameter
+  dwDTFormat - Description for this parameter
+  DTParams   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DrawTextEx@TCanvas@WideString@Integer@TRect@UINT@PDrawTextParams
+<TITLE DrawTextEx function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas     - Description for this parameter
+  Text       - Description for this parameter
+  cchText    - Description for this parameter
+  p4         - Description for this parameter
+  dwDTFormat - Description for this parameter
+  DTParams   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DrawTextExW@TCanvas@PWideChar@Integer@TRect@UINT@PDrawTextParams
+<TITLE DrawTextExW function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas     - Description for this parameter
+  lpchText   - Description for this parameter
+  cchText    - Description for this parameter
+  p4         - Description for this parameter
+  dwDTFormat - Description for this parameter
+  DTParams   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DrawTextExW@TCanvas@WideString@Integer@TRect@UINT@PDrawTextParams
+<TITLE DrawTextExW function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas     - Description for this parameter
+  Text       - Description for this parameter
+  cchText    - Description for this parameter
+  p4         - Description for this parameter
+  dwDTFormat - Description for this parameter
+  DTParams   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DrawTextW@TCanvas@PWideChar@Integer@TRect@Integer
+<TITLE DrawTextW function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas   - Description for this parameter
+  Text     - Description for this parameter
+  Len      - Description for this parameter
+  R        - Description for this parameter
+  WinFlags - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DrawTextW@TCanvas@WideString@Integer@TRect@Integer
+<TITLE DrawTextW function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas   - Description for this parameter
+  Text     - Description for this parameter
+  Len      - Description for this parameter
+  R        - Description for this parameter
+  WinFlags - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@DropT
 <TITLE DropT function>
@@ -1652,20 +1969,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ForceDirectories
-<TITLE ForceDirectories procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dir - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@FormatLongDate
 <TITLE FormatLongDate function>
@@ -1889,7 +2192,7 @@ Summary
 Description
   Write here a description
 Parameters
-  AFilename - Description for this parameter
+  AFileName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -2422,7 +2725,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@HugeDec
 <TITLE HugeDec procedure>
@@ -2436,7 +2738,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@HugeInc
 <TITLE HugeInc procedure>
@@ -2450,7 +2751,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@HugeMove
 <TITLE HugeMove procedure>
@@ -2466,7 +2766,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@HugeOffset
 <TITLE HugeOffset function>
@@ -2480,7 +2779,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@iif
 <TITLE iif function>
@@ -2495,7 +2793,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@IncDate
 <TITLE IncDate function>
@@ -2511,7 +2808,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@IncDay
 <TITLE IncDay function>
@@ -2525,7 +2821,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@IncHour
 <TITLE IncHour function>
@@ -2539,7 +2834,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@IncMinute
 <TITLE IncMinute function>
@@ -2553,7 +2847,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@IncMonth
 <TITLE IncMonth function>
@@ -2723,7 +3016,16 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@IsFourDigitYear
+<TITLE IsFourDigitYear function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@IsLeapYear
 <TITLE IsLeapYear function>
@@ -2736,7 +3038,30 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@IsTrueType
+<TITLE IsTrueType function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FontName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@IsTTFontSelected
+<TITLE IsTTFontSelected function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DC - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@IsWild
 <TITLE IsWild function>
@@ -3073,7 +3398,7 @@ Summary
 Description
   Write here a description
 Parameters
-  Filename - Description for this parameter
+  FileName - Description for this parameter
   Canvas   - Description for this parameter
   MaxLen   - Description for this parameter
 See Also
@@ -3475,7 +3800,54 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@RasterOp
+<TITLE RasterOp type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@RasterOp.RasterOp_CopyROP
+  Description for RasterOp_CopyROP
+@@RasterOp.RasterOp_OrROP
+  Description for RasterOp_OrROP
+@@RasterOp.RasterOp_XorROP
+  Description for RasterOp_XorROP
+@@RasterOp.RasterOp_NotAndROP
+  Description for RasterOp_NotAndROP
+@@RasterOp.RasterOp_EraseROP
+  Description for RasterOp_EraseROP
+@@RasterOp.RasterOp_NotCopyROP
+  Description for RasterOp_NotCopyROP
+@@RasterOp.RasterOp_NotOrROP
+  Description for RasterOp_NotOrROP
+@@RasterOp.RasterOp_NotXorROP
+  Description for RasterOp_NotXorROP
+@@RasterOp.RasterOp_AndROP
+  Description for RasterOp_AndROP
+@@RasterOp.RasterOp_NotEraseROP
+  Description for RasterOp_NotEraseROP
+@@RasterOp.RasterOp_NotROP
+  Description for RasterOp_NotROP
+@@RasterOp.RasterOp_ClearROP
+  Description for RasterOp_ClearROP
+@@RasterOp.RasterOp_SetROP
+  Description for RasterOp_SetROP
+@@RasterOp.RasterOp_NopROP
+  Description for RasterOp_NopROP
+@@RasterOp.RasterOp_AndNotROP
+  Description for RasterOp_AndNotROP
+@@RasterOp.RasterOp_OrNotROP
+  Description for RasterOp_OrNotROP
+@@RasterOp.RasterOp_NandROP
+  Description for RasterOp_NandROP
+@@RasterOp.RasterOp_NorROP
+  Description for RasterOp_NorROP
+@@RasterOp.RasterOp_LastROP
+  Description for RasterOp_LastROP
 ----------------------------------------------------------------------------------------------------
 @@RATextCalcHeight
 <TITLE RATextCalcHeight function>
@@ -4172,7 +4544,19 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@StringStartsWith
+<TITLE StringStartsWith function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Str    - Description for this parameter
+  SubStr - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@StringToBoolean
 <TITLE StringToBoolean function>
@@ -4539,7 +4923,7 @@ Summary
 Description
   You don't have to document already described items such as sets,
   pointers to records etc.
-  (Value = TDateTime; - for reference)
+  (Value = type TDateTime; - for reference)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -4602,7 +4986,18 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@TextToValText
+<TITLE TextToValText function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AValue - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TextWidth
 <TITLE TextWidth function>
@@ -4692,26 +5087,12 @@ Description
     Nothing in this unit.
 Parameters
   Handle    - Description for this parameter
-  hInstance - Description for this parameter
+  HInstance - Description for this parameter
   CmdLine   - Description for this parameter
   CmdShow   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IsTTFontSelected
-<TITLE IsTTFontSelected function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  DC - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TTime
 <TITLE TTime type>
@@ -4720,11 +5101,22 @@ Summary
 Description
   You don't have to document already described items such as sets,
   pointers to records etc.
-  (Value = TDateTime; - for reference)
+  (Value = type TDateTime; - for reference)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@UnregisterServer
+<TITLE UnregisterServer function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ModuleName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@USToLocalFloatStr
 <TITLE USToLocalFloatStr function>
@@ -4777,7 +5169,18 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@VarIsInt
+<TITLE VarIsInt function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@VarToFloat
 <TITLE VarToFloat function>
@@ -4897,7 +5300,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@XorDecode
 <TITLE XorDecode function>
@@ -4911,7 +5313,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@XorEncode
 <TITLE XorEncode function>
@@ -4925,7 +5326,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@XorString
 <TITLE XorString function>
@@ -4939,4 +5339,3 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-

@@ -30,7 +30,7 @@ Summary
 Description
   Write here a description
 Parameters
-  sExpression - Description for this parameter
+  AExpression - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -48,7 +48,18 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@CanvasMaxTextHeight
+<TITLE CanvasMaxTextHeight function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@CentimetersToPixels
 <TITLE CentimetersToPixels function>
@@ -113,12 +124,12 @@ Description
 Parameters
   DC                - Description for this parameter
   SourceBitmap      - Description for this parameter
-  r                 - Description for this parameter
-  x                 - Description for this parameter
-  y                 - Description for this parameter
+  R                 - Description for this parameter
+  X                 - Description for this parameter
+  Y                 - Description for this parameter
   BitmapOption      - Description for this parameter
   DrawState         - Description for this parameter
-  fTransparent      - Description for this parameter
+  ATransparent      - Description for this parameter
   TransparentColor  - Description for this parameter
   DisabledMaskColor - Description for this parameter
 See Also
@@ -158,8 +169,8 @@ Summary
 Description
   Write here a description
 Parameters
-  lColor  - Description for this parameter
-  bOffset - Description for this parameter
+  AColor  - Description for this parameter
+  AOffset - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -174,12 +185,12 @@ Description
 Parameters
   DC                - Description for this parameter
   SourceBitmap      - Description for this parameter
-  r                 - Description for this parameter
-  x                 - Description for this parameter
-  y                 - Description for this parameter
+  R                 - Description for this parameter
+  X                 - Description for this parameter
+  Y                 - Description for this parameter
   BitmapOption      - Description for this parameter
   DrawState         - Description for this parameter
-  fTransparent      - Description for this parameter
+  ATransparent      - Description for this parameter
   TransparentColor  - Description for this parameter
   DisabledMaskColor - Description for this parameter
 See Also
@@ -195,10 +206,10 @@ Description
   Write here a description
 Parameters
   DC           - Description for this parameter
-  r            - Description for this parameter
+  R            - Description for this parameter
   Style        - Description for this parameter
   BackgrColor  - Description for this parameter
-  fTransparent - Description for this parameter
+  ATransparent - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -212,17 +223,54 @@ Description
   Write here a description
 Parameters
   DC           - Description for this parameter
-  rect         - Description for this parameter
+  ARect        - Description for this parameter
   Borders      - Description for this parameter
   BevelInner   - Description for this parameter
   BevelOuter   - Description for this parameter
   Bold         - Description for this parameter
   BackgrColor  - Description for this parameter
-  fTransparent - Description for this parameter
+  ATransparent - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@DrawText@TCanvas@PAnsiChar@Integer@TRect@Integer
+<TITLE DrawText function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas   - Description for this parameter
+  Text     - Description for this parameter
+  Len      - Description for this parameter
+  R        - Description for this parameter
+  WinFlags - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DrawText@TCanvas@string@Integer@TRect@Integer
+<TITLE DrawText function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Canvas   - Description for this parameter
+  Text     - Description for this parameter
+  Len      - Description for this parameter
+  R        - Description for this parameter
+  WinFlags - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@DrawTextExtAligned
 <TITLE DrawTextExtAligned procedure>
@@ -249,11 +297,11 @@ Description
   Write here a description
 Parameters
   DC    - Description for this parameter
-  r     - Description for this parameter
+  R     - Description for this parameter
   Text  - Description for this parameter
   Style - Description for this parameter
   Fnt   - Description for this parameter
-  FLAGS - Description for this parameter
+  Flags - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -267,13 +315,13 @@ Description
   Write here a description
 Parameters
   DC     - Description for this parameter
-  r      - Description for this parameter
+  R      - Description for this parameter
   Text   - Description for this parameter
   HAlign - Description for this parameter
   VAlign - Description for this parameter
   Style  - Description for this parameter
   Fnt    - Description for this parameter
-  FLAGS  - Description for this parameter
+  Flags  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -300,7 +348,7 @@ Summary
 Description
   Write here a description
 Parameters
-  str   - Description for this parameter
+  Str   - Description for this parameter
   Count - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -314,8 +362,8 @@ Summary
 Description
   Write here a description
 Parameters
-  str - Description for this parameter
-  len - Description for this parameter
+  Str - Description for this parameter
+  Len - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -329,13 +377,13 @@ Description
   Write here a description
 Parameters
   DC             - Description for this parameter
-  x              - Description for this parameter
-  y              - Description for this parameter
-  r              - Description for this parameter
+  X              - Description for this parameter
+  Y              - Description for this parameter
+  R              - Description for this parameter
   Text           - Description for this parameter
   Style          - Description for this parameter
-  fDelineated    - Description for this parameter
-  fSupress3D     - Description for this parameter
+  ADelineated    - Description for this parameter
+  ASupress3D     - Description for this parameter
   FontColor      - Description for this parameter
   DelinColor     - Description for this parameter
   HighlightColor - Description for this parameter
@@ -356,7 +404,7 @@ Description
   Write here a description
 Parameters
   Control  - Description for this parameter
-  pt       - Description for this parameter
+  Pt       - Description for this parameter
   MinClass - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -370,8 +418,8 @@ Summary
 Description
   Write here a description
 Parameters
-  sWndClass - Description for this parameter
-  sWndTitle - Description for this parameter
+  AWndClass - Description for this parameter
+  AWndTitle - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -440,8 +488,8 @@ Description
   Write here a description
 Parameters
   Control           - Description for this parameter
-  fDrawSelf         - Description for this parameter
-  fDrawChildWindows - Description for this parameter
+  ADrawSelf         - Description for this parameter
+  ADrawChildWindows - Description for this parameter
   DC                - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -458,8 +506,8 @@ Parameters
   Control           - Description for this parameter
   X                 - Description for this parameter
   Y                 - Description for this parameter
-  fDrawSelf         - Description for this parameter
-  fDrawChildWindows - Description for this parameter
+  ADrawSelf         - Description for this parameter
+  ADrawChildWindows - Description for this parameter
   DC                - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -474,7 +522,7 @@ Description
   Write here a description
 Parameters
   DC       - Description for this parameter
-  r        - Description for this parameter
+  R        - Description for this parameter
   Gradient - Description for this parameter
   PenStyle - Description for this parameter
   PenWidth - Description for this parameter
@@ -483,17 +531,17 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IIF@boolean@string@string
+@@IIF@Boolean@string@string
 <TITLE IIF function>
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
-  same name.
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
-  fExpression - Description for this parameter
+  AExpression - Description for this parameter
   IfTrue      - Description for this parameter
   IfFalse     - Description for this parameter
 See Also
@@ -501,17 +549,17 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IIF@boolean@variant@variant
+@@IIF@Boolean@Variant@Variant
 <TITLE IIF function>
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
-  same name.
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
-  fExpression - Description for this parameter
+  AExpression - Description for this parameter
   IfTrue      - Description for this parameter
   IfFalse     - Description for this parameter
 See Also
@@ -526,8 +574,8 @@ Summary
 Description
   Write here a description
 Parameters
-  lColor  - Description for this parameter
-  bOffset - Description for this parameter
+  AColor  - Description for this parameter
+  AOffset - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -555,7 +603,7 @@ Summary
 Description
   Write here a description
 Parameters
-  i - Description for this parameter
+  I - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -606,7 +654,7 @@ Summary
 Description
   Write here a description
 Parameters
-  msg - Description for this parameter
+  AMsg - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -619,11 +667,23 @@ Summary
 Description
   Write here a description
 Parameters
-  sResName - Description for this parameter
+  ResName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@PtInRectExclusive
+<TITLE PtInRectExclusive function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  R  - Description for this parameter
+  Pt - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@RectH
 <TITLE RectH function>
@@ -672,7 +732,7 @@ Summary
 Description
   Write here a description
 Parameters
-  count - Description for this parameter
+  Count - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -714,8 +774,8 @@ Summary
 Description
   Write here a description
 Parameters
-  i1 - Description for this parameter
-  i2 - Description for this parameter
+  I1 - Description for this parameter
+  I2 - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
