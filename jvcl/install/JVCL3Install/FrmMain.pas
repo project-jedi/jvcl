@@ -40,7 +40,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, CheckLst, ExtCtrls, ComCtrls, ImgList, CommCtrl, ActnList, Buttons,
-  Menus, ShellAPI, CoreData, BuildHelpers, FileCtrl;
+  Menus, ShellAPI, FileCtrl,
+  CoreData, BuildHelpers;
 
 type
   TFormMain = class(TForm)
