@@ -1604,6 +1604,11 @@ resourcestring
   RsERegisterPluginNotFound = 'Plugin function %s not found in %s';
   RsERegisterPluginFailed = 'Calling %s in %s failed';
 
+//=== JvPoweredBy.pas ========================================================
+resourcestring
+  RsURLPoweredByJCL = 'http://jvcl.sf.net/PoweredByJCL.htm';
+  RsURLPoweredByJVCL = 'http://jvcl.sf.net/PoweredByJVCL.htm';
+
 //=== JvProfilerForm.pas =====================================================
 resourcestring
   RsTotalElapsedTimedms = '%s -  total elapsed time: %d (ms)';

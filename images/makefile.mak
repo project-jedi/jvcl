@@ -56,6 +56,7 @@ JvLED.res \
 JvOutlookBar.res \
 JvPageSetupTitled.res \
 JvPluginWiz.res \
+JvPoweredBy.res \
 JvRegistryTreeView.res \
 JvScrollMax.res \
 JvSegmentedLEDDisplay.res \
@@ -133,6 +134,7 @@ JvLED.res: JvLED.rc
 JvOutlookBar.res: JvOutlookBar.rc
 JvPageSetupTitled.res: JvPageSetupTitled.rc
 JvPluginWiz.res: JvPluginWiz.rc
+JvPoweredBy.res: JvPoweredBy.rc
 JvRegistryTreeView.res: JvRegistryTreeView.rc
 JvScrollMax.res: JvScrollMax.rc
 JvSegmentedLEDDisplay.res: JvSegmentedLEDDisplay.rc

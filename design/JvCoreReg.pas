@@ -49,7 +49,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvTypes, JvDsgnConsts, JvJCLUtils, JVCLVer, JvComponent, JvActions,
-  JvActnResForm, JvJVCLAboutForm, JvIDEZoom, JvBaseDlg,
+  JvActnResForm, JvJVCLAboutForm, JvPoweredBy, JvIDEZoom, JvBaseDlg,
   JvDataProvider, JvDataProviderIntf, JvColorProvider, JvContextProvider,
   JvDsgnEditors, JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor,
   JvPaintBoxEditor, JvColorProviderEditors, JvDataProviderEditors,
@@ -83,6 +83,7 @@ begin
   {$IFDEF VCL}
   RegisterComponents(RsPaletteNonVisual, [TJvBackground]);
   {$ENDIF VCL}
+  RegisterComponents(RsPaletteVisual, [TJvPoweredByJCL, TJvPoweredByJVCL]);
 
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     TJvAppIniFileStorage, TJvAppStorageSelectList]);

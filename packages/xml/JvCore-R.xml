@@ -54,6 +54,7 @@
     <File Name="..\..\qrun\JvQExStdCtrls.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQJVCLAboutForm.pas" Targets="allclx" Formname="JvJVCLAboutForm" Condition=""/>
     <File Name="..\..\qrun\JVCLXVer.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQRegistryIniFile.pas" Targets="linux" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QWindows.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QMessages.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QExtDlgs.pas" Targets="allclx" Formname="" Condition=""/>
@@ -76,6 +77,7 @@
     <File Name="..\..\run\JvJVCLUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMaxPixel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMouseTimer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPoweredBy.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvProgressUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPropertyStore.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPropertyStorage.pas" Targets="all" Formname="" Condition=""/>
@@ -93,6 +95,5 @@
     <File Name="..\..\run\JvClipbrd.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAutoComplete.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBackgrounds.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQRegistryIniFile.pas" Targets="linux" Formname="" Condition=""/>
   </Contains>
 </Package>
