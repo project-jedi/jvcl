@@ -80,19 +80,17 @@ end;
 
 procedure TJvMailTo.Click;
 var
-  Tempstring: array[0..79] of Char;
   mail: string;
 begin
   inherited;
   mail := 'mailto:' + FTo;
+  if FCC <> '' then
+    mail := mail + '?CC=' + FCC;
   if FSubject <> '' then
     mail := mail + '?SUBJECT=' + FSubject;
   if FBcc <> '' then
     mail := mail + '?BCC=' + FBCC;
-  if Fcc <> '' then
-    mail := mail + '?CC=' + FCC;
-  StrPCopy(Tempstring, mail);
-  OpenObject(Tempstring);
+  OpenObject(mail);
 end;
 
 end.
