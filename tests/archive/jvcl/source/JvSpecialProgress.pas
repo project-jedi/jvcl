@@ -14,7 +14,9 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s):
+  Michael Beck [mbeck@bigfoot.com].
+  [eldorado]
 
 Last Modified: 2000-02-28
 
@@ -28,34 +30,34 @@ Known Issues:
 
 unit JvSpecialProgress;
 
-
-
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  ExtCtrls, // for Frame3d
   JVCLVer;
 
 type
+  TJvTextOption = (toCaption, toFormat, toNoText, toPercent);
+
   TJvSpecialProgress = class(TGraphicControl)
   private
-    FTextVisible: Boolean;
-    FTransparent: Boolean;
-    FSolid: Boolean;
-    FCentered: Boolean;
-    FPosition: Integer;
-    FMaximum: Integer;
-    FStep: Integer;
-    FMinimum: Integer;
+    FAboutJVCL: TJVCLAboutInfo;
+    FBorderStyle: TBorderStyle;
     FEndColor: TColor;
-    FColor: TColor;
-    FStartColor: TColor;
-    FFont: TFont;
     FHintColor: TColor;
     FGradientBlocks: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
+    FMaximum: Integer;
+    FMinimum: Integer;
+    FPosition: Integer;
+    FSolid: Boolean;
+    FStartColor: TColor;
+    FStep: Integer;
+    FTextCentered: Boolean;
+    FTextOption: TJvTextOption;
+
     FOnMouseEnter: TNotifyEvent;
-    FOnParentColorChanged: TNotifyEvent;
+    FOnParentColorChange: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
 
     FBuffer: TBitmap;
@@ -81,24 +83,23 @@ type
       progressbar is totally filled, note: *not* +1 for seperator }
     FLastBlockWidth: Integer;
     function GetPercentDone: Longint;
-    procedure SetCentered(const Value: Boolean);
-    procedure SetColor(const Value: TColor);
+    procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetEndColor(const Value: TColor);
-    procedure SetFont(const Value: TFont);
     procedure SetGradientBlocks(const Value: Boolean);
     procedure SetMaximum(const Value: Integer);
     procedure SetMinimum(const Value: Integer);
     procedure SetPosition(const Value: Integer);
     procedure SetSolid(const Value: Boolean);
     procedure SetStartColor(const Value: TColor);
-    procedure SetTextVisible(const Value: Boolean);
-    procedure SetTransparent(const Value: Boolean);
+    procedure SetTextCentered(const Value: Boolean);
+    procedure SetTextOption(const Value: TJvTextOption);
 
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message
-      CM_PARENTCOLORCHANGED;
-    procedure FontChanged(Sender: TObject);
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
 
     procedure PaintRectangle;
     procedure PaintNonSolid;
@@ -108,39 +109,35 @@ type
   protected
     procedure Paint; override;
     procedure Loaded; override;
-
     procedure UpdateBuffer;
     procedure UpdateTaille;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure StepIt;
     property PercentDone: Longint read GetPercentDone;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
-      False;
-    property Maximum: Integer read FMaximum write SetMaximum default 100;
-    property Minimum: Integer read FMinimum write SetMinimum default 0;
-    property Transparent: Boolean read FTransparent write SetTransparent default
-      False;
-    property StartColor: TColor read FStartColor write SetStartColor default
-      clWhite;
-    property EndColor: TColor read FEndColor write SetEndColor default clBlack;
-    property Step: Integer read FStep write FStep default 10;
-    property Position: Integer read FPosition write SetPosition default 0;
-    property Color: TColor read FColor write SetColor default clBtnFace;
-    property Solid: Boolean read FSolid write SetSolid default False;
-    property GradientBlocks: Boolean read FGradientBlocks write SetGradientBlocks
-      default
-      False;
-    property TextVisible: Boolean read FTextVisible write SetTextVisible default
-      False;
-    property TextFont: TFont read FFont write SetFont;
-    property TextCentered: Boolean read FCentered write SetCentered default
-      False;
-    procedure StepIt;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property Anchors;
+    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
+    property Caption;
+    property Color;
+    property EndColor: TColor read FEndColor write SetEndColor default clBlack;
+    property Font;
+    property GradientBlocks: Boolean read FGradientBlocks write SetGradientBlocks default False;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property Maximum: Integer read FMaximum write SetMaximum default 100;
+    property Minimum: Integer read FMinimum write SetMinimum default 0;
+    property ParentColor;
+    property ParentFont;
+    property Position: Integer read FPosition write SetPosition default 0;
     property ShowHint;
+    property Solid: Boolean read FSolid write SetSolid default False;
+    property StartColor: TColor read FStartColor write SetStartColor default clWhite;
+    property Step: Integer read FStep write FStep default 10;
+    property TextCentered: Boolean read FTextCentered write SetTextCentered default False;
+    property TextOption: TJvTextOption read FTextOption write SetTextOption default toNoText;
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -154,56 +151,70 @@ type
     property OnResize;
     property OnStartDock;
     property OnStartDrag;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write
-      FOnParentColorChanged;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChange write FOnParentColorChange;
   end;
 
 implementation
-uses
-  JvTypes;
 
-type
-  TControlAccess = class(TControl);
+{ TJvSpecialProgress }
 
-  { TJvSpecialProgress }
+procedure TJvSpecialProgress.CMColorChanged(var Msg: TMessage);
+begin
+  { No need to call inherited; Repaint is called in UpdateBuffer }
+  FIsChanged := True;
+  UpdateBuffer;
+end;
+
+procedure TJvSpecialProgress.CMFontChanged(var Msg: TMessage);
+begin
+  { No need to call inherited; Repaint is called in UpdateBuffer }
+  FBuffer.Canvas.Font := Font;
+
+  { Only update if text is visible }
+  if TextOption = toNoText then
+    Exit;
+
+  FIsChanged := True;
+  UpdateBuffer;
+end;
 
 procedure TJvSpecialProgress.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
-  if Transparent then
+  if Assigned(FOnParentColorChange) then
+    FOnParentColorChange(Self);
+end;
+
+procedure TJvSpecialProgress.CMTextChanged(var Msg: TMessage);
+begin
+  { No need to call inherited; Repaint is called in UpdateBuffer }
+  if TextOption in [toCaption, toFormat] then
   begin
     FIsChanged := True;
     UpdateBuffer;
   end;
-
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 constructor TJvSpecialProgress.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FBuffer := TBitmap.Create;
-  FFont := TFont.Create;
-  FFont.OnChange := FontChanged;
 
   ControlStyle := ControlStyle + [csOpaque]; // SMM 20020604
+  FBorderStyle := bsNone;
   FHintColor := clInfoBk;
   FMaximum := 100;
   FMinimum := 0;
-  FTransparent := False;
   FStartColor := clWhite;
   FStart := clWhite;
   FEndColor := clBlack;
   FEnd := clBlack;
   FPosition := 0;
-  FColor := clBtnFace;
   FSolid := False;
-  FTextVisible := False;
-  FCentered := False;
+  FTextOption := toNoText;
+  FTextCentered := False;
   FGradientBlocks := False;
   FStep := 10;
 
@@ -215,20 +226,7 @@ end;
 destructor TJvSpecialProgress.Destroy;
 begin
   FBuffer.Free;
-  FFont.Free;
-  inherited;
-end;
-
-procedure TJvSpecialProgress.FontChanged(Sender: TObject);
-begin
-  Canvas.Font.Assign(FFont);
-
-  { Only update if text is visible }
-  if not TextVisible then
-    Exit;
-
-  FIsChanged := True;
-  UpdateBuffer;
+  inherited Destroy;
 end;
 
 function TJvSpecialProgress.GetPercentDone: Longint;
@@ -250,7 +248,8 @@ procedure TJvSpecialProgress.MouseEnter(var Msg: TMessage);
 begin
   FSavedHintColor := Application.HintColor;
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   Application.HintColor := FHintColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
@@ -281,14 +280,9 @@ begin
   if FTaille >= ClientWidth - 2 then
     Exit;
 
-  if Transparent and Assigned(Parent) then
-    FBuffer.Canvas.Brush.Color := TControlAccess(Parent).Color
-  else
-    FBuffer.Canvas.Brush.Color := FColor;
-
-  FBuffer.Canvas.Brush.style := bsSolid;
-  FBuffer.Canvas.FillRect(Rect(FTaille + 1, 1, ClientWidth - 1, ClientHeight -
-    1));
+  FBuffer.Canvas.Brush.Color := Color;
+  FBuffer.Canvas.Brush.Style := bsSolid;
+  FBuffer.Canvas.FillRect(Rect(FTaille + 1, 1, ClientWidth - 1, ClientHeight - 1));
 end;
 
 procedure TJvSpecialProgress.PaintNonSolid;
@@ -296,7 +290,7 @@ var
   RedInc, GreenInc, BlueInc: Real;
   Red, Green, Blue: Real;
   X: Integer;
-  i, j: Integer;
+  I, J: Integer;
   LBlockCount: Integer;
 begin
   if (FTaille = 0) or (FBlockWidth = 0) then
@@ -316,7 +310,7 @@ begin
     { No gradient fill because the start color equals the end color }
     FBuffer.Canvas.Brush.Color := FStart;
     FBuffer.Canvas.Brush.Style := bsSolid;
-    for i := 0 to LBlockCount - 1 do
+    for I := 0 to LBlockCount - 1 do
     begin
       { Width of block is FBlockWidth -1 [-1 for seperator] }
       FBuffer.Canvas.FillRect(Bounds(X, 1, FBlockWidth - 1, ClientHeight - 2));
@@ -338,12 +332,11 @@ begin
 
     FBuffer.Canvas.Brush.Style := bsSolid;
 
-    for i := 0 to LBlockCount - 1 do
+    for I := 0 to LBlockCount - 1 do
     begin
       if not FGradientBlocks then
       begin
-        FBuffer.Canvas.Brush.Color := RGB(Round(Red), Round(Green),
-          Round(Blue));
+        FBuffer.Canvas.Brush.Color := RGB(Round(Red), Round(Green), Round(Blue));
         Red := Red + RedInc * FBlockWidth;
         Blue := Blue + BlueInc * FBlockWidth;
         Green := Green + GreenInc * FBlockWidth;
@@ -353,14 +346,13 @@ begin
       else
       begin
         { Fill the progressbar with slices of 1 width }
-        for j := 0 to FBlockWidth - 2 do
+        for J := 0 to FBlockWidth - 2 do
         begin
-          FBuffer.Canvas.Brush.Color := RGB(Round(Red), Round(Green),
-            Round(Blue));
+          FBuffer.Canvas.Brush.Color := RGB(Round(Red), Round(Green), Round(Blue));
           Red := Red + RedInc;
           Blue := Blue + BlueInc;
           Green := Green + GreenInc;
-          FBuffer.Canvas.FillRect(Bounds(X + j, 1, 1, ClientHeight - 2));
+          FBuffer.Canvas.FillRect(Bounds(X + J, 1, 1, ClientHeight - 2));
         end;
         { Seperator is not filled, but increase the colors }
         Red := Red + RedInc;
@@ -373,32 +365,27 @@ begin
     begin
       if not FGradientBlocks then
       begin
-        FBuffer.Canvas.Brush.Color := RGB(Round(Red), Round(Green),
-          Round(Blue));
+        FBuffer.Canvas.Brush.Color := RGB(Round(Red), Round(Green), Round(Blue));
         { Width of last block is FLastBlockWidth [no seperator] }
         FBuffer.Canvas.FillRect(Bounds(X, 1, FLastBlockWidth, ClientHeight - 2));
       end
       else
         { Width of last block is FLastBlockWidth [no seperator] }
-        for j := 0 to FLastBlockWidth - 1 do
+        for J := 0 to FLastBlockWidth - 1 do
         begin
-          FBuffer.Canvas.Brush.Color := RGB(Round(Red), Round(Green),
-            Round(Blue));
+          FBuffer.Canvas.Brush.Color := RGB(Round(Red), Round(Green), Round(Blue));
           Red := Red + RedInc;
           Blue := Blue + BlueInc;
           Green := Green + GreenInc;
-          FBuffer.Canvas.FillRect(Bounds(X + j, 1, 1, ClientHeight - 2));
+          FBuffer.Canvas.FillRect(Bounds(X + J, 1, 1, ClientHeight - 2));
         end;
     end;
   end;
 
   { Draw the block seperators }
   X := FBlockWidth;
-  if Transparent and Assigned(Parent) then
-    FBuffer.Canvas.Brush.Color := TControlAccess(Parent).Color
-  else
-    FBuffer.Canvas.Brush.Color := FColor;
-  for i := 0 to LBlockCount - 1 do
+  FBuffer.Canvas.Brush.Color := Color;
+  for I := 0 to LBlockCount - 1 do
   begin
     FBuffer.Canvas.FillRect(Bounds(X, 1, 1, ClientHeight - 2));
     Inc(X, FBlockWidth);
@@ -406,18 +393,27 @@ begin
 end;
 
 procedure TJvSpecialProgress.PaintRectangle;
+var
+  Rect: TRect;
 begin
-  if Transparent and Assigned(Parent) then
-    FBuffer.Canvas.Brush.Color := TControlAccess(Parent).Color
+  Rect := ClientRect;
+  if BorderStyle = bsNone then
+  begin
+    FBuffer.Canvas.Brush.Color;
+    FBuffer.Canvas.FrameRect(Rect);
+  end
   else
-    FBuffer.Canvas.Brush.Color := FColor;
-  FBuffer.Canvas.FrameRect(Rect(0, 0, ClientWidth, ClientHeight));
+  begin
+    Frame3d(FBuffer.Canvas, Rect, clBtnFace, clBtnFace, 1);
+    Frame3d(FBuffer.Canvas, Rect, clBtnShadow, clBtnHighlight, 1);
+    Frame3d(FBuffer.Canvas, Rect, cl3DDkShadow, clBtnFace, 1);
+  end;
 end;
 
 procedure TJvSpecialProgress.PaintSolid;
 var
   RedInc, BlueInc, GreenInc: Real;
-  i: Integer;
+  I: Integer;
 begin
   if FTaille = 0 then
     Exit;
@@ -436,13 +432,13 @@ begin
     BlueInc := (GetBValue(FEnd) - GetBValue(FStart)) / FTaille;
     FBuffer.Canvas.Brush.Style := bsSolid;
     { Fill the progressbar with slices of 1 width }
-    for i := 1 to FTaille do
+    for I := 1 to FTaille do
     begin
       FBuffer.Canvas.Brush.Color := RGB(
-        Round(GetRValue(FStart) + ((i - 1) * RedInc)),
-        Round(GetGValue(FStart) + ((i - 1) * GreenInc)),
-        Round(GetBValue(FStart) + ((i - 1) * BlueInc)));
-      FBuffer.Canvas.FillRect(Rect(i, 1, i + 1, ClientHeight - 1));
+        Round(GetRValue(FStart) + ((I - 1) * RedInc)),
+        Round(GetGValue(FStart) + ((I - 1) * GreenInc)),
+        Round(GetBValue(FStart) + ((I - 1) * BlueInc)));
+      FBuffer.Canvas.FillRect(Rect(I, 1, I + 1, ClientHeight - 1));
     end;
   end;
 end;
@@ -453,12 +449,16 @@ var
   X, Y: Integer;
   LTaille: Integer;
 begin
-  if not TextVisible then
+  case TextOption of
+    toPercent:
+      S := Format('%d%%', [PercentDone]);
+    toFormat:
+      S := Format(Caption, [PercentDone]);
+    toCaption:
+      S := Caption;
+  else {toNoText}
     Exit;
-
-  FBuffer.Canvas.Font := TextFont;
-
-  S := Format('%d%%', [PercentDone]);
+  end;
 
   if TextCentered then
     LTaille := ClientWidth
@@ -479,25 +479,11 @@ begin
   FBuffer.Canvas.TextOut(X, Y, S);
 end;
 
-procedure TJvSpecialProgress.SetCentered(const Value: Boolean);
+procedure TJvSpecialProgress.SetBorderStyle(Value: TBorderStyle);
 begin
-  if FCentered <> Value then
+  if FBorderStyle <> Value then
   begin
-    FCentered := Value;
-
-    FIsChanged := True;
-    UpdateBuffer;
-  end;
-end;
-
-procedure TJvSpecialProgress.SetColor(const Value: TColor);
-begin
-  if FColor <> Value then
-  begin
-    FColor := Value;
-
-    if Transparent then
-      Exit;
+    FBorderStyle := Value;
 
     FIsChanged := True;
     UpdateBuffer;
@@ -510,20 +496,10 @@ begin
   begin
     FEndColor := Value;
     FEnd := ColorToRGB(FEndColor);
+
     FIsChanged := True;
     UpdateBuffer;
   end;
-end;
-
-procedure TJvSpecialProgress.SetFont(const Value: TFont);
-begin
-  FFont.Assign(Value);
-
-  if not FTextVisible then
-    Exit;
-
-  FIsChanged := True;
-  UpdateBuffer;
 end;
 
 procedure TJvSpecialProgress.SetGradientBlocks(const Value: Boolean);
@@ -541,11 +517,11 @@ end;
 
 procedure TJvSpecialProgress.SetMaximum(const Value: Integer);
 var
-  FOldPercentageDone: Integer;
+  OldPercentageDone: Integer;
 begin
   if FMaximum <> Value then
   begin
-    FOldPercentageDone := GetPercentDone;
+    OldPercentageDone := GetPercentDone;
 
     FMaximum := Value;
     if FMaximum < FMinimum then
@@ -555,7 +531,7 @@ begin
 
     { If the percentage has changed we must update, otherwise check in
       UpdateTaille if we must update }
-    FIsChanged := TextVisible and (FOldPercentageDone <> GetPercentDone);
+    FIsChanged := (TextOption in [toPercent, toFormat]) and (OldPercentageDone <> GetPercentDone);
     UpdateTaille;
     UpdateBuffer;
   end;
@@ -563,11 +539,11 @@ end;
 
 procedure TJvSpecialProgress.SetMinimum(const Value: Integer);
 var
-  FOldPercentageDone: Integer;
+  OldPercentageDone: Integer;
 begin
   if FMinimum <> Value then
   begin
-    FOldPercentageDone := GetPercentDone;
+    OldPercentageDone := GetPercentDone;
 
     FMinimum := Value;
     if FMinimum > FMaximum then
@@ -577,7 +553,7 @@ begin
 
     { If the percentage has changed we must update, otherwise check in
       UpdateTaille if we must update }
-    FIsChanged := TextVisible and (FOldPercentageDone <> GetPercentDone);
+    FIsChanged := (TextOption in [toPercent, toFormat]) and (OldPercentageDone <> GetPercentDone);
     UpdateTaille;
     UpdateBuffer;
   end;
@@ -585,11 +561,11 @@ end;
 
 procedure TJvSpecialProgress.SetPosition(const Value: Integer);
 var
-  FOldPercentageDone: Integer;
+  OldPercentageDone: Integer;
 begin
   if FPosition <> Value then
   begin
-    FOldPercentageDone := GetPercentDone;
+    OldPercentageDone := GetPercentDone;
 
     FPosition := Value;
     if FPosition > FMaximum then
@@ -599,7 +575,7 @@ begin
 
     { If the percentage has changed we must update, otherwise check in
       UpdateTaille if we must update }
-    FIsChanged := TextVisible and (FOldPercentageDone <> GetPercentDone);
+    FIsChanged := (TextOption in [toPercent, toFormat]) and (OldPercentageDone <> GetPercentDone);
     UpdateTaille;
     UpdateBuffer;
   end;
@@ -623,27 +599,31 @@ begin
   begin
     FStartColor := Value;
     FStart := ColorToRGB(FStartColor);
-    FIsChanged := True;
-    UpdateBuffer;
-  end;
-end;
-
-procedure TJvSpecialProgress.SetTextVisible(const Value: Boolean);
-begin
-  if FTextVisible <> Value then
-  begin
-    FTextVisible := Value;
 
     FIsChanged := True;
     UpdateBuffer;
   end;
 end;
 
-procedure TJvSpecialProgress.SetTransparent(const Value: Boolean);
+procedure TJvSpecialProgress.SetTextCentered(const Value: Boolean);
 begin
-  if FTransparent <> Value then
+  if FTextCentered <> Value then
   begin
-    FTransparent := Value;
+    FTextCentered := Value;
+
+    if TextOption <> toNoText then
+    begin
+      FIsChanged := True;
+      UpdateBuffer;
+    end;
+  end;
+end;
+
+procedure TJvSpecialProgress.SetTextOption(const Value: TJvTextOption);
+begin
+  if FTextOption <> Value then
+  begin
+    FTextOption := Value;
 
     FIsChanged := True;
     UpdateBuffer;
@@ -670,7 +650,6 @@ begin
     Exit;
   FBuffer.Width := ClientWidth;
   FBuffer.Height := ClientHeight;
-  FBuffer.Canvas.Brush.Color := Color;
 
   if FSolid then
     PaintSolid
@@ -680,6 +659,7 @@ begin
   PaintBackground;
   PaintText;
   PaintRectangle;
+
   Repaint;
 end;
 
@@ -696,8 +676,7 @@ begin
 
   { Max width of the progressbar is ClientWidth -2 [-2 for the border],
     NewTaille specifies the new length of the progressbar }
-  NewTaille := (ClientWidth - 2) * (FPosition - FMinimum) div (FMaximum -
-    FMinimum);
+  NewTaille := (ClientWidth - 2) * (FPosition - FMinimum) div (FMaximum - FMinimum);
   if not FSolid then
   begin
     { The taille of a solid bar can have a different size than the taille
