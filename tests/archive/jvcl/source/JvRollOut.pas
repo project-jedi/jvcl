@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-05-26
+Last Modified: 2003-03-23
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -25,7 +25,7 @@ Known Issues:
   Doesn't draw an underline for speed-keys (the '&' character ) if
   Placement = plLeft. Something with DrawText ?
 
-Changes 2003-03-22:
+Changes 2003-03-23:
   * Several properties have changed and been put into nested sub-properties.
     To update current usage do the following:
      - Color: change to Colors.Color
@@ -38,7 +38,7 @@ Changes 2003-03-22:
      - ImageExpanded: change to ImageOptions.IndexExpanded
      - ImageCollapsed: change to ImageOptions.IndexCollapsed
      - ImageList: change to ImageOptions.Images
-     - ImageOffset: change to ImageOptions.Offset
+     - ImageOffset: change to ImageOptions.Offset // peter3
 
 -----------------------------------------------------------------------------}
 
