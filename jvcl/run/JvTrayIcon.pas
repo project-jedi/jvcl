@@ -189,8 +189,6 @@ type
     procedure StartAnimation;
     procedure EndAnimation;
 
-    property ApplicationVisible: Boolean read GetApplicationVisible write SetApplicationVisible;
-    property VisibleInTaskList: Boolean read FTask write SetTask default True;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -202,6 +200,9 @@ type
       TBalloonType = btNone; ADelay: Cardinal = 5000; CancelPrevious: Boolean = False);
     function AcceptBalloons: Boolean;
     procedure HideBalloon;
+
+    property ApplicationVisible: Boolean read GetApplicationVisible write SetApplicationVisible;
+    property VisibleInTaskList: Boolean read FTask write SetTask default True;
   published
     property Active: Boolean read FActive write SetActive default False;
     property Animated: Boolean read FAnimated write SetAnimated default False;
