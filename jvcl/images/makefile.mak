@@ -36,7 +36,8 @@ JvComponentPanel.res \
 JvConsts.res \
 JvCSVBase.res \
 JvCtrls.res \
-JvDBCtrl.res \
+JvDBControls.res \
+JvDBGrid.res \
 JvDice.res \
 JvEnterTab.res \
 JvErrorIndicator.res \
@@ -111,7 +112,8 @@ JvComponentPanel.res: JvComponentPanel.rc
 JvConsts.res: JvConsts.rc
 JvCSVBase.res: JvCSVBase.rc
 JvCtrls.res: JvCtrls.rc
-JvDBCtrl.res: JvDBCtrl.rc
+JvDBControls.res: JvDBControls.rc
+JvDBGrid.res: JvDBGrid.rc
 JvDice.res: JvDice.rc
 JvEnterTab.res: JvEnterTab.rc
 JvErrorIndicator.res: JvErrorIndicator.rc
