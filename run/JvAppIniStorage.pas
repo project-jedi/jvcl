@@ -679,7 +679,7 @@ end;
 
 procedure TJvAppIniFileStorage.Flush;
 begin
-  if FullFileName <> '' then
+  if (FullFileName <> '') and not Readonly then
   begin
     IniFile.Rename(FullFileName, False);
     IniFile.UpdateFile;
