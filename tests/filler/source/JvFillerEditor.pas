@@ -73,14 +73,15 @@ const
   vifHasChildren = Integer($80000000);
   vifCanHaveChildren = Integer($40000000);
   vifExpanded = Integer($20000000);
-  
+  vifHasMan = Integer($10000000);
+  vifHasDsgn = Integer($08000000);
+
 function EditFiller(AFiller: IFiller): Boolean;
 begin
   with TfrmFillerEditor.Create(Screen.ActiveCustomForm) do
   try
     Filler := AFiller;
     Result := ShowModal = mrOk;
-//    Filler := nil;
   finally
     Free;
   end;
@@ -97,12 +98,6 @@ begin
   end
   else
     Result := -1;
-end;
-
-function AddByDesigner(Designer: IFillerItemsDesigner): IFillerItem;
-begin
-  // TODO: Use designer specified item kind to add items.
-  Result := nil;
 end;
 
 function TfrmFillerEditor.GetFillerItem(Index: Integer): IFillerItem;
@@ -151,8 +146,68 @@ begin
 end;
 
 procedure TfrmFillerEditor.UpdateSelectedItem;
+var
+  Item: IFillerItem;
+  Items: IFillerItems;
+  Man: IFillerItemManagment;
+  Dsgn: IFillerItemsDesigner;
+  ParentMan: IFillerItemManagment;
+  I: Integer;
+
+  function MakeMenuItem(const Idx: Integer): TMenuItem;
+  var
+    S: string;
+  begin
+    Dsgn.getKind(Idx, S);
+    Result := TMenuItem.Create(miAddItem);
+    Result.Caption := S;
+    Result.OnClick := aiAddItem.OnExecute;
+    Result.Tag := Idx;
+  end;
+
 begin
+  if lvFiller.SelCount <> 0 then
+  begin
+    Item := GetFillerItem(lvFiller.Selected.Index);
+    if (Item <> nil) and Supports(Item, IFillerItems, Items) then
+    begin
+      if Supports(Items, IFillerItemManagment, Man) then
+        Supports(Items, IFillerItemsDesigner, Dsgn);
+    end;
+    if (Item <> nil) then
+      Item.Items.QueryInterface(IFillerItemManagment, ParentMan);
+  end
+  else
+  begin
+    if Supports(Filler, IFillerItems, Items) then
+    begin
+      if Supports(Items, IFillerItemManagment, Man) then
+        Supports(Items, IFillerItemsDesigner, Dsgn);
+    end;
+  end;
   // Update action states
+  miAddItem.Clear;
+  if (Dsgn = nil) or (Dsgn.getCount = 0) then
+  begin
+    miAddItem.Action := aiAddItem;
+  end
+  else
+  begin
+    miAddItem.Action := nil;
+    miAddItem.OnClick := nil;
+    for I := 0 to Dsgn.getCount - 1 do
+      miAddItem.Add(MakeMenuItem(I));
+    miAddItem.Visible := Man <> nil;
+    miAddItem.Enabled := (Man <> nil) and (Items <> nil);
+  end;
+  aiAddItem.Visible := Man <> nil;
+  aiDeleteItem.Visible := ParentMan <> nil;
+  aiClearSub.Visible := Man <> nil;
+  aiAddItem.Enabled := (Man <> nil) and (Items <> nil);
+  aiDeleteItem.Enabled := (ParentMan <> nil) and (Item <> nil);
+  aiClearSub.Enabled := (Man <> nil) and (Items <> nil) and (Items.Count > 0);
+  aiClear.Enabled := Supports(Filler, IFillerItems, Items) and Supports(Items, IFillerItemManagment, Man) and (Items.Count > 0);
+  aiClear.Visible := Man <> nil;
 end;
 
 procedure TfrmFillerEditor.ToggleItem(Index: Integer);
@@ -182,28 +237,26 @@ end;
 procedure TfrmFillerEditor.SelectItemID(ID: string);
 var
   Idx: Integer;
-  lvi: TLVItem;
 begin
   Idx := LocateID(ID);
   if Idx > -1 then
-  begin
-    lvi.iItem := Idx;
-    lvi.mask := LVIF_STATE;
-    lvi.state := LVIS_SELECTED or LVIS_FOCUSED;
-    lvi.stateMask := LVIS_SELECTED or LVIS_FOCUSED;
-    ListView_SetItem(lvFiller.Handle, lvi);
-    lvFiller.Invalidate;
-  end;
+    ListView_SetItemState(lvFiller.Handle, Idx, LVIS_SELECTED or LVIS_FOCUSED,
+      LVIS_SELECTED or LVIS_FOCUSED);
 end;
 
 procedure TfrmFillerEditor.DeleteItem(Index: Integer);
+var
+  PrevIsParent: Boolean;
 begin
   DeleteSubItems(Index);
+  PrevIsParent := (Index > 0) and ((FViewItems[Index - 1].Flags and $00FFFFFF) = ((FViewItems[Index].Flags and $00FFFFFF) - 1));
   FViewItems[Index].ID := '';
   if Index < High(FViewItems) then
     Move(FViewItems[Index + 1], FViewItems[Index], (Length(FViewItems) - Index) * SizeOf(FViewItems[0]));
   FillChar(FViewItems[High(FViewItems)], SizeOf(FViewItems[0]), 0);
   SetLength(FViewItems, High(FViewItems));
+  if PrevIsParent and (Index <= High(FViewItems)) and ((FViewItems[Index - 1].Flags and $00FFFFFF) <> ((FViewItems[Index].Flags and $00FFFFFF) - 1)) then
+    FViewItems[Index - 1].Flags := FViewItems[Index - 1].Flags and not (vifHasChildren or vifExpanded);
 end;
 
 procedure TfrmFillerEditor.DeleteSubItems(Index: Integer);
@@ -244,6 +297,11 @@ begin
   begin
     Lvl := Succ(FViewItems[Index].Flags and $00FFFFFF);
     Idx := Index + 1;
+    if FViewItems[Index].Flags and (vifHasChildren + vifExpanded) = vifHasChildren then
+    begin
+      ToggleItem(Index);
+      Exit;
+    end;
   end;
   while (Idx < Length(FViewItems)) and ((FViewItems[Idx].Flags and $00FFFFFF) >= Lvl) do
     Inc(Idx);
@@ -276,6 +334,8 @@ var
   I: Integer;
   J: Integer;
   SubItems: IFillerItems;
+  Man: IFillerItemManagment;
+  Dsgn: IFillerItemsDesigner;
 begin
   J := Length(FViewItems);
   SetLength(FViewItems, Length(FViewItems) + Items.Count);
@@ -295,20 +355,17 @@ begin
     with FViewItems[Index] do
     begin
       ID := Items.Items[I].GetID;
+      Flags := J;
       if Supports(Items.Items[I], IFillerItems, SubItems) then
       begin
+        Flags := Flags + vifCanHaveChildren;
+        if Supports(SubItems, IFillerItemManagment, Man) then
+          Flags := Flags + vifHasMan;
+        if Supports(SubItems, IFillerItemsDesigner, Dsgn) then
+          Flags := Flags + vifHasDsgn;
         if SubItems.Count > 0 then
-        begin
-          Flags := J + vifHasChildren + vifCanHaveChildren + vifExpanded;
-          Inc(Index);
-          InsertItems(Index, SubItems);
-          Dec(Index);
-        end
-        else
-          Flags := J + vifCanHaveChildren
-      end
-      else
-        Flags := J;
+          Flags := Flags + vifHasChildren;
+      end;
     end;
     Inc(Index);
   end;
@@ -324,6 +381,7 @@ begin
   if Filler <> nil then
     InsertItems(LstIdx, Filler as IFillerItems);
   UpdateLV;
+  UpdateSelectedItem;
 end;
 
 procedure TfrmFillerEditor.lvFillerData(Sender: TObject; Item: TListItem);
@@ -443,14 +501,13 @@ var
   Items: IFillerItems;
   Dsgn: IFillerItemsDesigner;
   Mangr: IFillerItemManagment;
-  Txt: IFillerItemText;
 begin
   if lvFiller.Selected <> nil then
   begin
     Item := GetFillerItem(lvFiller.Selected.Index);
     if Item <> nil then
       Item.QueryInterface(IFillerItems, Items)
-    else
+    else // should never occur
       raise EJVCLException.Create('Item not found.');
   end
   else
@@ -459,49 +516,50 @@ begin
   if Items <> nil then
   begin
     if Supports(Items, IFillerItemsDesigner, Dsgn) then
-      Item := AddByDesigner(Dsgn)
+      Item := Dsgn.NewByKind(TMenuItem(Sender).Tag)
     else if Supports(Items, IFillerItemManagment, Mangr) then
-    begin
-      Item := Mangr.New;
-      if Item = nil then
-        raise EJVCLException.Create('Failed to add a new item.');
-    end
-    else
+      Item := Mangr.New
+    else // should never occur
       raise EJVCLException.Create('Unable to add new item; neither IFillerItemManagment nor IFillerItemsDesigner are supported.');
     if Item <> nil then
     begin
-      if Supports(Item, IFillerItemText, Txt) then
-        Txt.Caption := 'Test';
       if lvFiller.Selected <> nil then
         AddSubItem(lvFiller.Selected.Index, Item)
       else
         AddSubItem(-1, Item);
       UpdateLV;
       SelectItemID(Item.getID);
-    end;
+    end
+    else
+      raise EJVCLException.Create('Failed to add a new item.');
   end
-  else
+  else // should never occur
     raise EJVCLException.Create('Unable to add new item; item doesn''t support IFillerItems.');
 end;
 
 procedure TfrmFillerEditor.aiDeleteItemExecute(Sender: TObject);
 var
+  I: Integer;
   Item: IFillerItem;
   Items: IFillerItems;
   Mangr: IFillerItemManagment;
 begin
   if lvFiller.Selected <> nil then
   begin
-    Item := GetFillerItem(lvFiller.Selected.Index);
+    I := lvFiller.Selected.Index;
+    Item := GetFillerItem(I);
     if Item <> nil then
       Items := Item.Items
     else
       raise EJVCLException.Create('Item not found.');
     if Supports(Items, IFillerItemManagment, Mangr) then
-      Mangr.Remove(Item)
+    begin
+      Mangr.Remove(Item);
+      Pointer(Item) := nil;
+    end
     else
       raise EJVCLException.Create('Unable to delete item; IFillerItemManagment is not supported.');
-    DeleteItem(lvFiller.Selected.Index);
+    DeleteItem(I);
     UpdateLV;
   end;
 end;
@@ -516,7 +574,10 @@ begin
   begin
     Item := GetFillerItem(lvFiller.Selected.Index);
     if Item <> nil then
-      Items := Item.Items
+    begin
+      if not Supports(Item, IFillerItems, Items) then
+        raise EJVCLException.Create('Item does not support IFillerItems.');
+    end
     else
       raise EJVCLException.Create('Item not found.');
     if Supports(Items, IFillerItemManagment, Mangr) then
@@ -524,6 +585,8 @@ begin
     else
       raise EJVCLException.Create('Unable to delete items; IFillerItemManagment is not supported.');
     DeleteSubItems(lvFiller.Selected.Index);
+    with FViewItems[lvFiller.Selected.Index] do
+      Flags := Flags and not vifHasChildren;
     UpdateLV;
   end;
 end;

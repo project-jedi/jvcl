@@ -137,8 +137,18 @@ type
     allow their list/tree to be edited. }
   IFillerItemsDesigner = interface
     ['{31B2544C-8E4F-40FE-94B8-04243EF40821}']
-    function ItemKinds: string;
-    function NewKind(Kind: Integer): IFillerItem;
+    function getCount: Integer;
+    function getKind(Index: Integer; out Caption: string): Boolean;
+    function NewByKind(Kind: Integer): IFillerItem;
+  end;
+
+  { Support interface for filler editor. May be implemented by IFillerItem implementers who
+    allow their item to be extended with additional interfaces. }
+  IFillerItemDesigner = interface
+    ['{8F1A1283-2D13-4A28-9616-08B3EF73F29A}']
+    function getVerbCount: Integer;
+    function getVerb(Index: Integer; out Caption: string; out Enabled, Checked, Visible, RadioItem: Boolean): Boolean;
+    function ExecVerb(Index: Integer): Boolean;
   end;
 
   { only supported when fsImages is in  IFiller.FillerSupports; supported by IFillerItems implementers. }

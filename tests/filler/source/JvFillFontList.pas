@@ -59,7 +59,7 @@ type
 procedure TJvFontItems.InitImplementers;
 begin
   inherited InitImplementers;
-  AddIntfImpl(TJvCustomFillerItemsTextRenderer.Create(Self));
+  {AddIntfImpl(}TJvCustomFillerItemsTextRenderer.Create(Self){)};
 end;
 
 function TJvFontItems.getCount: Integer;

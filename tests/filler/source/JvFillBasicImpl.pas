@@ -47,7 +47,9 @@ type
     property Owner: TExtensibleInterfacedObject read FOwner;
   public
     constructor Create(AOwner: TExtensibleInterfacedObject);
+    procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
+    function GetInterface(const IID: TGUID; out Obj): Boolean; virtual;
   end;
 
   // Basic implementers
@@ -80,7 +82,10 @@ type
     FParent: Pointer;
     FParentIntf: IFillerItem;
     FFiller: IFiller;
+    FSubAggregate: TAggregatedObjectEx;
   protected
+    function _AddRef: Integer; override; stdcall;
+    function _Release: Integer; override; stdcall;
     { IFillerItems }
     function getCount: Integer; virtual; abstract;
     function getItem(I: Integer): IFillerItem; virtual; abstract;
@@ -88,17 +93,12 @@ type
     function GetFiller: IFiller;
     function GetImplementer: TObject;
     function Attributes: TJvFillerItemsAttributes; virtual;
-    { IFillerItemsRenderer }
-    procedure DrawItemByIndex(ACanvas:TCanvas; var ARect: TRect; Index: Integer; State: TOwnerDrawState; AOptions: TPersistent = nil); virtual; abstract;
-    function MeasureItemByIndex(ACanvas:TCanvas; Index: Integer; AOptions: TPersistent = nil): TSize; virtual; abstract;
-    procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent = nil); virtual; abstract;
-    function MeasureItem(ACanvas:TCanvas; Item: IFillerItem; AOptions: TPersistent = nil): TSize; virtual; abstract;
     { IFillerIDSearch }
     function FindByID(ID: string; const Recursive: Boolean = False): IFillerItem;
   public
     constructor CreateFiller(const Filler: IFiller);
     constructor CreateParent(const Parent: IFillerItem);
-    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
   end;
 
   TJvFillerItemsAggregatedObject = class(TAggregatedObjectEx)
@@ -158,6 +158,18 @@ type
   end;
 
   // Standard implementers
+  TJvBaseFillerSubItems = class(TJvFillerItemAggregatedObject, IFillerItems)
+  private
+    FItems: IFillerItems;
+  protected
+    property Items: IFillerItems read FItems implements IFillerItems;
+  public
+    constructor Create(AOwner: TExtensibleInterfacedObject; AItems: TJvBaseFillerItems);
+    destructor Destroy; override;
+    procedure BeforeDestruction; override;
+    function GetInterface(const IID: TGUID; out Obj): Boolean; override;
+  end;
+  
   TJvCustomFillerItemsTextRenderer = class(TJvBaseFillerItemsRenderer)
   protected
     procedure DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent = nil); override;
@@ -199,10 +211,6 @@ type
     function Attributes: TJvFillerItemsAttributes; override;
     function getCount: Integer; override;
     function getItem(I: Integer): IFillerItem; override;
-    procedure DrawItemByIndex(ACanvas:TCanvas; var ARect: TRect; Index: Integer; State: TOwnerDrawState; AOptions: TPersistent = nil); override;
-    function MeasureItemByIndex(ACanvas:TCanvas; Index: Integer; AOptions: TPersistent = nil): TSize; override;
-    procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent = nil); override;
-    function MeasureItem(ACanvas:TCanvas; Item: IFillerItem; AOptions: TPersistent = nil): TSize; override;
   public
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
@@ -455,7 +463,7 @@ begin
   if not Result then
   begin
     I := FAdditionalIntfImpl.Count - 1;
-    while (I >= 0) and ((FAdditionalIntfImpl[I] = nil) or not TObject(FAdditionalIntfImpl[I]).GetInterface(IID, Obj)) do
+    while (I >= 0) and ((FAdditionalIntfImpl[I] = nil) or not TAggregatedObjectEx(FAdditionalIntfImpl[I]).GetInterface(IID, Obj)) do
       Dec(I);
     Result := I >= 0;
   end;
@@ -476,6 +484,12 @@ begin
   FOwner := AOwner;
 end;
 
+procedure TAggregatedObjectEx.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  FOwner.AddIntfImpl(Self);
+end;
+
 procedure TAggregatedObjectEx.BeforeDestruction;
 var
   I: Integer;
@@ -486,7 +500,32 @@ begin
     FOwner.FAdditionalIntfImpl.Delete(I);
 end;
 
+function TAggregatedObjectEx.GetInterface(const IID: TGUID; out Obj): Boolean;
+begin
+  Result := inherited GetInterface(IID, Obj);
+end;
+
 { TJvBaseFillerItems }
+
+function TJvBaseFillerItems._AddRef: Integer;
+begin
+{  if FParent <> nil then
+    Result := GetParent._AddRef
+  else if FFiller <> nil then
+    Result := FFiller._AddRef
+  else}
+    Result := inherited _AddRef;
+end;
+
+function TJvBaseFillerItems._Release: Integer;
+begin
+{  if FParent <> nil then
+    Result := GetParent._Release
+  else if FFiller <> nil then
+    Result := FFiller._Release
+  else}
+    Result := inherited _Release;
+end;
 
 function TJvBaseFillerItems.GetParent: IFillerItem;
 begin
@@ -550,11 +589,41 @@ begin
   FParent := Pointer(Parent);
   if (Parent <> nil) and (fiaDynamicItems in Parent.Items.Attributes) then
     FParentIntf := Parent;
+  if (Parent <> nil) and (Parent.GetImplementer is TExtensibleInterfacedObject) then
+    FSubAggregate := TJvBaseFillerSubItems.Create(TExtensibleInterfacedObject(Parent.GetImplementer), Self);
 end;
 
-procedure TJvBaseFillerItems.AfterConstruction;
+procedure TJvBaseFillerItems.BeforeDestruction;
 begin
-  inherited AfterConstruction;
+  inherited BeforeDestruction;
+  if FSubAggregate <> nil then
+    FreeAndNil(FSubAggregate);
+end;
+
+{ TJvBaseFillerSubItems }
+
+constructor TJvBaseFillerSubItems.Create(AOwner: TExtensibleInterfacedObject;
+  AItems: TJvBaseFillerItems);
+begin
+  inherited Create(AOwner);
+  FItems := AItems;
+end;
+
+destructor TJvBaseFillerSubItems.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TJvBaseFillerSubItems.BeforeDestruction;
+begin
+  inherited BeforeDestruction;
+  if FItems.GetImplementer is TJvBaseFillerItems then
+    TJvBaseFillerItems(FItems.GetImplementer).FSubAggregate := nil;
+end;
+
+function TJvBaseFillerSubItems.GetInterface(const IID: TGUID; out Obj): Boolean;
+begin
+  Result := inherited GetInterface(IID, Obj) or Succeeded(FItems.QueryInterface(IID, Obj));
 end;
 
 { TJvFillerItemsAggregatedObject }
@@ -627,26 +696,6 @@ begin
   Result := (List[I] as TJvBaseFillerItem) as IFillerItem;
 end;
 
-procedure TJvFillerItemsList.DrawItemByIndex(ACanvas:TCanvas; var ARect: TRect; Index: Integer; State: TOwnerDrawState; AOptions: TPersistent);
-begin
-  DrawItem(ACanvas, ARect, getItem(Index), State, AOptions);
-end;
-
-function TJvFillerItemsList.MeasureItemByIndex(ACanvas:TCanvas; Index: Integer; AOptions: TPersistent): TSize;
-begin
-  Result := MeasureItem(ACanvas, getItem(Index), AOptions);
-end;
-
-procedure TJvFillerItemsList.DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent);
-begin
-  ACanvas.TextRect(ARect, ARect.Left, ARect.Top, (Item as IFillerItemText).Caption);
-end;
-
-function TJvFillerItemsList.MeasureItem(ACanvas:TCanvas; Item: IFillerItem; AOptions: TPersistent): TSize;
-begin
-  Result := ACanvas.TextExtent((Item as IFillerItemText).Caption);
-end;
-
 procedure TJvFillerItemsList.AfterConstruction;
 begin
   inherited AfterConstruction;
@@ -678,8 +727,13 @@ begin
 end;
 
 procedure TJvBaseFillerItemsListManagment.Remove(Item: IFillerItem);
+var
+  Impl: TObject;
 begin
-  TJvFillerItemsList(ItemsImpl).List.Remove(Item.GetImplementer);
+  Impl := Item.GetImplementer;
+  if (Impl is TExtensibleInterfacedObject) and (TExtensibleInterfacedObject(Impl).RefCount = 0) then
+    Pointer(Item) := nil;
+  TJvFillerItemsList(ItemsImpl).List.Remove(Impl);
 end;
 
 { TJvBaseFillerItem }
@@ -749,7 +803,6 @@ constructor TJvFillerTextItem.Create(AItems: IFillerItems; TextImplClass: TJvFil
 begin
   inherited Create(AItems);
   FTextImpl := TextImplClass.Create(Self);
-  AddIntfImpl(FTextImpl);
 end;
 
 { TJvCustomFiller }

@@ -77,7 +77,7 @@ type
 procedure TJvStringsFillerItems.InitImplementers;
 begin
   inherited InitImplementers;
-  AddIntfImpl(TJvCustomFillerItemsTextRenderer.Create(Self));
+  TJvCustomFillerItemsTextRenderer.Create(Self);
 end;
 
 function TJvStringsFillerItems.getCount: Integer;
@@ -169,6 +169,13 @@ type
     procedure BeforeDestruction; override;
   end;
 
+  TJvTreeFillerItemsDesigner = class(TJvFillerItemsAggregatedObject, IFillerItemsDesigner)
+  protected
+    function getCount: Integer;
+    function getKind(Index: Integer; out Caption: string): Boolean;
+    function NewByKind(Kind: Integer): IFillerItem;
+  end;
+
   TJvTreeFillerItemsManagment = class(TJvBaseFillerItemsListManagment)
   protected
     function New: IFillerItem; override;
@@ -183,12 +190,9 @@ type
     procedure setImageList(const Value: TCustomImageList); override;
   end;
 
-  TJvTreeFillerItem = class(TJvBaseFillerItem, IFillerItems)
-  private
-    FSubItems: IFillerItems;
+  TJvTreeFillerItem = class(TJvBaseFillerItem)
   protected
     procedure InitImplementers; override;
-    property SubItems: IFillerItems read FSubItems implements IFillerItems;
   public
     procedure BeforeDestruction; override;
   end;
@@ -198,13 +202,56 @@ type
 procedure TJvTreeFillerItems.InitImplementers;
 begin
   inherited InitImplementers;
-  AddIntfImpl(TJvTreeFillerItemsManagment.Create(Self));
-  AddIntfImpl(TJvTreeFillerImages.Create(Self));
+  TJvTreeFillerItemsManagment.Create(Self);
+  TJvTreeFillerItemsDesigner.Create(Self);
+  TJvTreeFillerImages.Create(Self);
 end;
 
 procedure TJvTreeFillerItems.BeforeDestruction;
 begin
   inherited;
+end;
+
+{ TJvTreeFillerItemsDesigner }
+
+function TJvTreeFillerItemsDesigner.getCount: Integer;
+begin
+  Result := 4;
+end;
+
+function TJvTreeFillerItemsDesigner.getKind(Index: Integer; out Caption: string): Boolean;
+begin
+  Result := True;
+  case Index of
+    0: Caption := 'Text only';
+    1: Caption := 'Text and sub items';
+    2: Caption := 'Text and image';
+    3: Caption := 'Text, image and sub items';
+    else Result := False;
+  end;
+end;
+
+function TJvTreeFillerItemsDesigner.NewByKind(Kind: Integer): IFillerItem;
+var
+  Man: IFillerItemManagment;
+begin
+  if not Supports(Items, IFillerItemManagment, Man) then
+    raise EJVCLException.Create('IFillerItemManagment interface is not supported.');
+  case Kind of
+    0: Result := Man.Add(TJvFillerTextItem.Create(Items, TJvFillerTextItemImpl));
+    1: Result := Man.Add(TJvTreeFillerItem.Create(Items));
+    2:
+      begin
+        Result := Man.Add(TJvFillerTextItem.Create(Items, TJvFillerTextItemImpl));
+        TJvFillerImageItemImpl.Create((Result.Implementer as TJvBaseFillerItem));
+      end;
+    3:
+      begin
+        Result := Man.Add(TJvTreeFillerItem.Create(Items));
+        TJvFillerImageItemImpl.Create((Result.Implementer as TJvBaseFillerItem));
+      end;
+    else raise EJVCLException.Create('Invalid item type requested.');
+  end;
 end;
 
 { TJvTreeFillerItemsManagment }
@@ -218,25 +265,8 @@ end;
 { TJvTreeFillerImages }
 
 function TJvTreeFillerImages.getImageList: TCustomImageList;
-var
-  CurItems: IFillerItems;
-  Img: IFillerItemImages;
 begin
   Result := FImageList;
-  if FImageList = nil then
-  begin
-    CurItems := Items;
-    while (CurItems.Parent <> nil) do
-    begin
-      CurItems := CurItems.Parent.Items;
-      if Supports(CurItems, IFillerItemImages, Img) then
-      begin
-        if (Img.ImageList <> nil) then
-          Result := Img.ImageList;
-        Break; 
-      end;
-    end;
-  end;
 end;
 
 procedure TJvTreeFillerImages.setImageList(const Value: TCustomImageList);
@@ -253,9 +283,9 @@ end;
 procedure TJvTreeFillerItem.InitImplementers;
 begin
   inherited InitImplementers;
-  FSubItems := TJvTreeFillerItems.CreateParent(Self);
-  AddIntfImpl(TJvFillerTextItemImpl.Create(Self));
-  AddIntfImpl(TJvFillerImageItemImpl.Create(Self));
+  TJvTreeFillerItems.CreateParent(Self);
+  TJvFillerTextItemImpl.Create(Self);
+//  TJvFillerImageItemImpl.Create(Self);
 end;
 
 procedure TJvTreeFillerItem.BeforeDestruction;
