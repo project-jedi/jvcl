@@ -3277,15 +3277,29 @@ begin
     begin
       Selection.cpMin := FRichEdit.GetLineIndex(Index - 1);
       if Selection.cpMin < 0 then
-        Exit;
-      L := FRichEdit.GetLineLength(Selection.cpMin);
-      if L = 0 then
-        Exit;
-      Inc(Selection.cpMin, L);
-      if RichEditVersion = 1 then
-        Fmt := CrLf + '%s'
+      begin
+        Selection.cpMin :=
+          SendMessage(FRichEdit.Handle, EM_LINEINDEX, Index - 1, 0);
+        if Selection.cpMin < 0 then Exit;
+        L := SendMessage(FRichEdit.Handle, EM_LINELENGTH, Selection.cpMin, 0);
+        if L = 0 then Exit;
+        Inc(Selection.cpMin, L);
+        if RichEditVersion = 1 then
+          Fmt := CrLf + '%s'
+        else
+          Fmt := Cr + '%s';
+      end
       else
-        Fmt := Cr + '%s';
+      begin
+        L := FRichEdit.GetLineLength(Selection.cpMin);
+        if L = 0 then
+          Exit;
+        Inc(Selection.cpMin, L);
+        if RichEditVersion = 1 then
+          Fmt := '%s' + CrLf
+        else
+          Fmt := '%s' + Cr;
+      end;
     end;
     Selection.cpMax := Selection.cpMin;
     SendMessage(FRichEdit.Handle, EM_EXSETSEL, 0, Longint(@Selection));
