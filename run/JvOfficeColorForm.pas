@@ -157,6 +157,7 @@ var
   ParentControl: TWinControl;
 begin
   inherited CreateNew(AOwner, Dummy);
+  HintColor := Application.HintColor;
   FInited := False;
   FShowDragBar := True;
 
