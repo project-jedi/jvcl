@@ -1768,6 +1768,24 @@ begin
     TextMargin := TJvPopupMenu(Source).TextMargin;
     TextVAlignment := TJvPopupMenu(Source).TextVAlignment;
   end
+  else if Source is TJvMainMenu then
+  begin
+    AutoHotKeys := TJvMainMenu(Source).AutoHotkeys;
+    AutoLineReduction := TJvMainMenu(Source).AutoLineReduction;
+    BiDiMode := TJvMainMenu(Source).BiDiMode;
+    Cursor := TJvMainMenu(Source).Cursor;
+    DisabledImages := TJvMainMenu(Source).DisabledImages;
+    HotImages := TJvMainMenu(Source).HotImages;
+    ImageMargin.Assign(TJvMainMenu(Source).ImageMargin);
+    Images := TJvMainMenu(Source).Images;
+    ImageSize.Assign(TJvMainMenu(Source).ImageSize);
+    ParentBiDiMode := TJvMainMenu(Source).ParentBiDiMode;
+    ShowCheckMarks := TJvMainMenu(Source).ShowCheckMarks;
+    Style := TJvMainMenu(Source).Style;
+    Tag := TJvMainMenu(Source).Tag;
+    TextMargin := TJvMainMenu(Source).TextMargin;
+    TextVAlignment := TJvMainMenu(Source).TextVAlignment;
+  end
   else
     inherited Assign(Source);
 end;
@@ -2017,7 +2035,8 @@ begin
   begin
     if Flags and DT_LEFT = DT_LEFT then
       Flags := Flags and (not DT_LEFT) or DT_RIGHT
-    else if Flags and DT_RIGHT = DT_RIGHT then
+    else
+    if Flags and DT_RIGHT = DT_RIGHT then
       Flags := Flags and (not DT_RIGHT) or DT_LEFT;
     Flags := Flags or DT_RTLREADING;
   end;
@@ -2187,7 +2206,8 @@ begin
     end
       // else, we may have a valid glyph, but we won't use it if
       // the item is a separator
-    else if Assigned(FGlyph) and not FGlyph.Empty and
+    else
+    if Assigned(FGlyph) and not FGlyph.Empty and
       (Item.Caption <> Separator) then
     begin
       // Draw the corresponding back of an item
@@ -2208,9 +2228,11 @@ begin
           I := 0;
           if mdDisabled in State then
             I := 1
-          else if mdChecked in State then
+          else
+          if mdChecked in State then
             I := 3
-          else if mdSelected in State then
+          else
+          if mdSelected in State then
             I := 2;
           if I > FNumGlyphs - 1 then
             I := 0;
@@ -2230,9 +2252,10 @@ begin
         Canvas.Draw(ImageRect.Left, ImageRect.Top, FGlyph);
       end;
     end
-      // at last, if there is no image given by the user, there may
-      // be a check mark to draw instead
-    else if Item.Checked and not ShowCheckMarks then
+    // at last, if there is no image given by the user, there may
+    // be a check mark to draw instead
+    else
+    if Item.Checked and not ShowCheckMarks then
     begin
       DrawCheckedImageBack(ImageAndMarginRect);
       DrawCheckImage(ImageRect);
@@ -2246,7 +2269,7 @@ begin
     else
     begin
       // find the largest text element
-      MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&') + ShortcutSpacing {Tab + Tab});
+      MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&') + ShortcutSpacing{Tab + Tab});
       if (Item.Parent <> nil) and (Item.ShortCut <> scNone) then
       begin
         for I := 0 to Item.Parent.Count - 1 do
@@ -2349,25 +2372,25 @@ begin
         Exit;
       end;
 
-    for I := 0 to Item.Parent.Count - 1 do
-    begin
-      tmpWidth := Canvas.TextWidth(DelChars(Item.Parent.Items[I].Caption, '&'));
-      if tmpWidth > MaxWidth then
-        MaxWidth := tmpWidth;
-
-      // if the item has childs, then add the required
-      // width for an arrow. It is considered to be the width of
-      // two spaces.
-      if Item.Parent.Items[I].Count > 0 then
-        OneItemHasChildren := True;
-
-      if Item.Parent.Items[I].ShortCut <> scNone then
+      for I := 0 to Item.Parent.Count - 1 do
       begin
-        tmpWidth := Canvas.TextWidth(ShortcutToText(Item.Parent.Items[I].ShortCut));
-        if tmpWidth > ShortcutWidth then
-          ShortcutWidth := tmpWidth;
+        tmpWidth := Canvas.TextWidth(DelChars(Item.Parent.Items[I].Caption, '&'));
+        if tmpWidth > MaxWidth then
+          MaxWidth := tmpWidth;
+
+        // if the item has childs, then add the required
+        // width for an arrow. It is considered to be the width of
+        // two spaces.
+        if Item.Parent.Items[I].Count > 0 then
+          OneItemHasChildren := True;
+
+        if Item.Parent.Items[I].ShortCut <> scNone then
+        begin
+          tmpWidth := Canvas.TextWidth(ShortcutToText(Item.Parent.Items[I].ShortCut));
+          if tmpWidth > ShortcutWidth then
+            ShortcutWidth := tmpWidth;
+        end;
       end;
-    end;
     Result := MaxWidth;
 
     // If there was a shortcut in any of the items,
@@ -2377,7 +2400,8 @@ begin
       Inc(Result, ShortcutWidth);
       Inc(Result, Canvas.TextWidth(ShortcutSpacing));
     end
-    else if OneItemHasChildren then
+    else
+    if OneItemHasChildren then
       Inc(Result, Canvas.TextWidth('  '));
   end
   else
@@ -2491,7 +2515,8 @@ function TJvCustomMenuItemPainter.GetImageHeight: Integer;
 begin
   if Assigned(Images) then
     Result := Images.Height
-  else if Assigned(FGlyph) then
+  else
+  if Assigned(FGlyph) then
     Result := FGlyph.Height
   else
     Result := ImageSize.Height;
@@ -2501,7 +2526,8 @@ function TJvCustomMenuItemPainter.GetImageWidth: Integer;
 begin
   if Assigned(Images) then
     Result := Images.Width
-  else if Assigned(FGlyph) then
+  else
+  if Assigned(FGlyph) then
     Result := FGlyph.Width
   else
     Result := ImageSize.Width;
@@ -2621,7 +2647,8 @@ begin
     FMainMenu := TJvMainMenu(Value);
     FPopupMenu := nil;
   end
-  else if Value is TJvPopupMenu then
+  else
+  if Value is TJvPopupMenu then
   begin
     FMainMenu := nil;
     FPopupMenu := TJvPopupMenu(Value);
@@ -2637,7 +2664,8 @@ function TJvCustomMenuItemPainter.GetCanvas: TCanvas;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.Canvas
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     Result := FPopupMenu.Canvas
   else
     Result := nil;
@@ -2913,19 +2941,20 @@ begin
         Pen.Assign(SelectionFramePen);
         Rectangle(ARect);
       end
-      else if UseFlatMenubars then
-      begin
-        Brush.Color := GetSysColor(COLOR_MENUBAR);
-        Brush.Style := bsSolid;
-        FillRect(ARect);
-      end
       else
-      begin
-        Brush.Color := clBtnFace;
-        Brush.Style := bsSolid;
-        Pen.Style := psClear;
-        Rectangle(ARect);
-      end;
+        if UseFlatMenubars then
+        begin
+          Brush.Color := GetSysColor(COLOR_MENUBAR);
+          Brush.Style := bsSolid;
+          FillRect(ARect);
+        end
+        else
+        begin
+          Brush.Color := clBtnFace;
+          Brush.Style := bsSolid;
+          Pen.Style := psClear;
+          Rectangle(ARect);
+        end;
     end;
   end;
 end;
