@@ -628,7 +628,7 @@ begin
   if Action is TCustomAction then
     with TCustomAction(Sender) do
     begin
-      if (not CheckDefaults or Update()) then // mw added to update action
+      if (CheckDefaults or Update()) then // mw added to update action
       begin
         if not CheckDefaults or (Self.Caption = '') then
           Self.Caption := Caption;
@@ -1330,11 +1330,11 @@ begin
     try
       FFont.Color := $00E75100;
       FFont.Name := inherited Font.Name;
-      FFont.Size := 10;
+      FFont.Size := 8;
       FFont.Style := inherited Font.Style;
       FHeaderFont.Color := $00E75100;
       FHeaderFont.Name := Font.Name;
-      FHeaderFont.Size := 10;
+      FHeaderFont.Size := 8;
       FHeaderFont.Style := [fsBold];
     finally
       FFontChanging := False;
