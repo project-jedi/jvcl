@@ -65,15 +65,13 @@ type
     procedure acCheckFirstExecute(Sender: TObject);
     procedure acCheckLastExecute(Sender: TObject);
   private
-    FFilename: string;
+    FFilename,FTempSurveyFilename: string;
     FCompletedSurvey:boolean;
-    procedure DoExclusiveClick(Sender: TObject);
-    procedure DoMultipleClick(Sender: TObject);
-  private
-    { Private declarations }
     FSurvey: IJvSurvey;
     FPageIndex: integer;
     edUserName, edUserEMail: TEdit;
+    procedure DoExclusiveClick(Sender: TObject);
+    procedure DoMultipleClick(Sender: TObject);
 
     procedure CreateEverything;
     procedure LoadSettings;
@@ -210,7 +208,7 @@ procedure TfrmMain.LoadSettings;
 begin
   JediLogo.Anchors := [akRight, akTop];
   JediLogo.Action := acGotoJVCL;
-  // TODO:save additional properties
+  // TODO: load additional properties
 end;
 
 procedure TfrmMain.ReadCommandLine;
@@ -274,13 +272,19 @@ end;
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   if not FCompletedSurvey and (FSurvey.Items.Count > 0) and YesNo(SSaveResponseCaption,SSaveResponsePrompt) then
-    FSurvey.SaveToFile(Filename);
+    FSurvey.SaveToFile(Filename,ffBinary);
+  DeleteFile(FTempSurveyFilename);    
   SaveSettings;
   FreeEverything;
 end;
 
 procedure TfrmMain.ClearScrollBox;
 begin
+  if (edUserName <> nil) and (edUserEMail <> nil) then
+  begin
+    FSurvey.SurveyTaker.UserName := edUserName.Text;
+    FSurvey.SurveyTaker.MailAddress := edUserEMail.Text;
+  end;
   while sbSurvey.ControlCount > 0 do
     sbSurvey.Controls[0].Free;
   edUserName := nil;
@@ -526,7 +530,7 @@ function TfrmMain.GetTempSurveyFileName: string;
 begin
   // create a file name from the input filename, username, current date and time
   // and add a path
-  Result := ExtractFilePath(Application.ExeName) + ChangeFileExt(ExtractFileName(Filename), '') +
+  Result := ChangeFileExt(ExtractFileName(Filename), '') +
     DefaultStr(FSurvey.SurveyTaker.UserName, GetLocalUserName) +
     FormatDateTime('yyyyMMddhhnnss', Now) + cResponseFileExt;
   //  ShowMessage(Result);
@@ -563,7 +567,6 @@ begin
 end;
 
 procedure TfrmMain.DoSendMail(Sender: TObject);
-var S:string;
 begin
   acSendMail.Mail.Recipients := FSurvey.RecipientMail;
   acSendMail.Mail.Subject := FSurvey.Title;
@@ -573,9 +576,10 @@ begin
     FSurvey.SurveyTaker.MailAddress := edUserEMail.Text;
   // create and attach response file
   acSendMail.Mail.Attachments.Clear;
-  S := GetTempSurveyFileName;
-  FSurvey.SaveToFile(S);
-  acSendMail.Mail.Attachments.Add(S);
+  DeleteFile(FTempSurveyFilename);
+  FTempSurveyFilename := GetTempSurveyFileName;
+  FSurvey.SaveToFile(FTempSurveyFilename,ffBinary);
+  acSendMail.Mail.Attachments.Add(FTempSurveyFilename);
 
   acSendMail.Mail.ShowDialogs := true; // not acSendMail.Mail.UserLogged;
   if acSendMail.Mail.Execute then

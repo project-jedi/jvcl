@@ -179,15 +179,17 @@ object frmMain: TfrmMain
     TabOrder = 2
   end
   object OpenSurveyDialog: TJvOpenDialog
-    DefaultExt = 'xml'
+    DefaultExt = 'jsf'
     Filter = 'Survey files|*.jsf|All files|*.*'
     InitialDir = '.'
     Options = [ofEnableSizing]
     Title = 'Select Survey File'
+    ActiveControl = acListView
+    ActiveStyle = asReport
     AutoSize = True
-    Height = 0
+    Height = 344
     UseUserSize = True
-    Width = 0
+    Width = 563
     Left = 324
     Top = 18
   end
@@ -826,12 +828,10 @@ object frmMain: TfrmMain
     end
     object acPrevPage: TAction
       Caption = '&<< Prev'
-      ShortCut = 16421
       OnExecute = acPrevPageExecute
     end
     object acNextPage: TAction
       Caption = 'Next &>>'
-      ShortCut = 16423
       OnExecute = acNextPageExecute
     end
     object acLastPage: TAction

@@ -1262,16 +1262,18 @@ object frmMain: TfrmMain
     end
   end
   object OpenSurveyDialog: TJvOpenDialog
-    Filter = 'Survey files|*.jsf|All files|*.*'
+    Filter = 'Survey files|*.jsf;*.xml|All files|*.*'
     InitialDir = '.'
-    Height = 0
-    Width = 0
+    Height = 347
+    Width = 563
     Left = 30
     Top = 216
   end
   object SaveSurveyDialog: TJvSaveDialog
     DefaultExt = 'jfs'
-    Filter = 'Survey files|*.jsf|All files|*.*'
+    Filter = 
+      'Survey files (binary)|*.jsf|Survey files (xml)|*.jsf;*.xml|All f' +
+      'iles|*.*'
     InitialDir = '.'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
     Height = 0

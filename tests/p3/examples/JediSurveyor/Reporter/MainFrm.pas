@@ -94,7 +94,7 @@ type
     procedure AddResponses(item: IJvSurveyItem; Index: integer);
     procedure LoadFromFile(const Filename: string; ClearResponses: boolean);
     procedure LoadFromResponse(const Filename: string);
-    procedure SaveReport(const Filename: string);
+    procedure SaveReport(const Filename: string;Format:TJvSurveyFileFormat);
     property Filename: string read FFilename write FFilename;
     function GetReportHTMLContent: string;
     function GetReportHTMLSummary: string;
@@ -401,12 +401,14 @@ begin
 end;
 
 procedure TfrmMain.acSaveReportExecute(Sender: TObject);
+const
+  aFormat:array [1..3] of TJvSurveyFileFormat = (ffBinary,ffText,ffText);
 begin
   if SaveReportDialog.Execute then
-    SaveReport(SaveReportDialog.Filename);
+    SaveReport(SaveReportDialog.Filename,aFormat[SaveReportDialog.FilterIndex]);
 end;
 
-procedure TfrmMain.SaveReport(const Filename: string);
+procedure TfrmMain.SaveReport(const Filename: string;Format:TJvSurveyFileFormat);
 //var
 //  i: integer;
 //  X: TJvSimpleXML;
@@ -416,7 +418,7 @@ begin
   FSurvey.SurveyTaker.MailAddress := '';
   // save all loaded respones as  a comma-separated lsit
   FSurvey.SurveyTaker.ID := FResponses.CommaText;
-  FSurvey.SaveToFile(Filename);
+  FSurvey.SaveToFile(Filename,Format);
 end;
 
 procedure TfrmMain.acLoadReportExecute(Sender: TObject);

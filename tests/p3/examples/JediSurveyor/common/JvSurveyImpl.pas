@@ -2,8 +2,7 @@ unit JvSurveyImpl;
 
 interface
 uses
-  SysUtils, Classes,
-  JvSurveyIntf, JvSimpleXML;
+  SysUtils, Classes, JvSurveyIntf, JvSimpleXML;
 
 type
   EJvSurveyError = class(Exception);
@@ -117,13 +116,16 @@ type
     procedure SetResultHREF(const Value: WideString);
     function GetSurveyTaker: IJvSurveyTaker;
     procedure ParseXML(Node: TJvSimpleXmlElem);
+    function IsCompressedStream(Stream: TStream): boolean;
+    procedure DecompressStream(Source, Dest: TStream);
+    procedure CompressStream(Source, Dest: TStream);
   public
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromStream(Stream: TStream);
-    procedure SaveToStream(Stream: TStream);
+    procedure SaveToStream(Stream: TStream; Format: TJvSurveyFileFormat);
     procedure LoadFromFile(const Filename: WideString);
-    procedure SaveToFile(const Filename: WideString);
+    procedure SaveToFile(const Filename: WideString; Format: TJvSurveyFileFormat);
     property ID: integer read GetID write SetID;
     property Title: WideString read GetTitle write SetTitle;
     property Description: WideString read GetDescription write SetDescription;
@@ -140,7 +142,7 @@ type
 
 implementation
 uses
-  JclSysInfo, JvFunctions, JvSurveyUtils;
+  JclSysInfo, JvFunctions, JvSurveyUtils, zlib;
 
 resourcestring
   SErrUnknownFormatFmt = 'Unknown survey format in "%s"!';
@@ -236,11 +238,13 @@ end;
 
 function InvertResponseSort(List: TStringList; Index1, Index2: Integer): Integer;
 begin
-  Result := StrToIntDef(List[Index2],0) - StrToIntDef(List[Index1],0);
+  Result := StrToIntDef(List[Index2], 0) - StrToIntDef(List[Index1], 0);
 end;
 
 procedure TJvSurveyItem.SortResponses;
-var C,C2,R:TStringlist;i,j:integer;tmp:string;
+var
+  C, C2, R: TStringlist;
+  i, j: integer;
 begin
   if SurveyType = stFreeForm then Exit;
   // sort on responses, i.e change '0,0,1,2,0,4' into '4,2,1,0,0,0', choices are sorted accordingly
@@ -249,11 +253,13 @@ begin
   C2 := TStringlist.Create;
   R := TStringlist.Create;
   try
-    C.Text := DecodeChoice(Choices,SurveyType);
+    C.Text := DecodeChoice(Choices, SurveyType);
     C2.Text := C.Text;
-    R.Text := DecodeResponse(Responses,SurveyType);
-    while R.Count < C.Count do R.Add('0');
-    while C.Count < R.Count do R.Delete(R.Count-1);
+    R.Text := DecodeResponse(Responses, SurveyType);
+    while R.Count < C.Count do
+      R.Add('0');
+    while C.Count < R.Count do
+      R.Delete(R.Count - 1);
     for i := 0 to R.Count - 1 do
       R.Objects[i] := TObject(i); // save old index
     R.CustomSort(InvertResponseSort);
@@ -262,8 +268,8 @@ begin
       j := integer(R.Objects[i]);
       C2[i] := C[j]; // move items according to index
     end;
-    Choices := EncodeChoice(C2.Text,Surveytype);
-    Responses := EncodeResponse(R.Text,Surveytype);
+    Choices := EncodeChoice(C2.Text, Surveytype);
+    Responses := EncodeResponse(R.Text, Surveytype);
   finally
     C.Free;
     C2.Free;
@@ -503,7 +509,7 @@ begin
   begin
     SurveyTaker.ID := Node.Properties.Value('id', '');
     SurveyTaker.UserName := Node.Properties.Value('username', SurveyTaker.UserName);
-    SurveyTaker.MailAddress := Node.Properties.Value('mailto',SurveyTaker.MailAddress);
+    SurveyTaker.MailAddress := Node.Properties.Value('mailto', SurveyTaker.MailAddress);
     SurveyTaker.Notes := Node.Value;
   end
   else if AnsiSameText(Node.Name, 'RECIPIENT') then
@@ -536,52 +542,102 @@ begin
   end;
   // set up defaults
   SurveyTaker.UserName := GetLocalUserName;
-  SurveyTaker.MailAddress := Format('%s@%s.com',[GetLocalUserName,GetLocalComputerName]);
+  SurveyTaker.MailAddress := Format('%s@%s.com', [GetLocalUserName, GetLocalComputerName]);
 
   for i := 0 to Node.Items.Count - 1 do
     ParseXML(Node.Items[i]);
 end;
 
+function TJvSurvey.IsCompressedStream(Stream: TStream): boolean;
+var
+  buf: array[0..4] of char;
+  Pos: Cardinal;
+begin
+  Pos := Stream.Read(buf[0], sizeof(buf));
+  if Pos <> sizeof(buf) then
+    raise Exception.Create('Invalid stream');
+  Result := not AnsiSameText('<?xml', buf);
+  Stream.Seek(-Pos, soFromCurrent);
+end;
+
+procedure TJvSurvey.DecompressStream(Source, Dest: TStream);
+var
+  ZStream: TDecompressionStream;
+begin
+  ZStream := TDecompressionStream.Create(Source);
+  try
+    Dest.CopyFrom(ZStream,ZStream.Size); // decompress - doesn't work with Count = 0
+  finally
+    ZStream.Free;
+  end;
+end;
+
+procedure TJvSurvey.CompressStream(Source, Dest: TStream);
+var
+  ZStream: TCompressionStream;
+begin
+  ZStream := TCompressionStream.Create(clMax, Dest);
+  try
+    ZStream.CopyFrom(Source, 0); // compress
+  finally
+    ZStream.Free;
+  end;
+  Dest.Seek(0, soFromBeginning);
+end;
+
 procedure TJvSurvey.LoadFromStream(Stream: TStream);
 var
   X: TJvSimpleXML;
+  AStream: TmemoryStream;
 begin
   DecimalSeparator := '.';
   ShortDateFormat := 'YYYY-MM-DD';
   DateSeparator := '-';
   Items.Clear;
-  X := TJvSimpleXML.Create(nil);
+  AStream := TMemoryStream.Create;
   try
-    X.LoadFromStream(Stream);
-    if not AnsiSameText(X.Root.Name, 'JEDISURVEY') then
-      raise EJvSurveyError.CreateFmt(SErrUnknownFormatFmt, [Filename]);
-    ParseXML(X.Root);
+    if IsCompressedStream(Stream) then
+    begin
+      DecompressStream(Stream, AStream);
+      AStream.Seek(0, soFromBeginning);
+      Stream := AStream;
+    end;
+    X := TJvSimpleXML.Create(nil);
+    try
+      X.LoadFromStream(Stream);
+      if not AnsiSameText(X.Root.Name, 'JEDISURVEY') then
+        raise EJvSurveyError.CreateFmt(SErrUnknownFormatFmt, [Filename]);
+      ParseXML(X.Root);
+    finally
+      X.Free;
+      GetFormatSettings;
+    end;
+    Items.Sort;
   finally
-    X.Free;
-    GetFormatSettings;
+    AStream.Free;
   end;
-  Items.Sort;
 end;
 
-procedure TJvSurvey.SaveToFile(const Filename: WideString);
+procedure TJvSurvey.SaveToFile(const Filename: WideString; Format: TJvSurveyFileFormat);
 var
   F: TFileStream;
 begin
   F := TFileStream.Create(Filename, fmCreate);
   try
-    SaveToStream(F);
+    SaveToStream(F, Format);
     FFilename := Filename;
   finally
     F.Free;
   end;
 end;
 
-procedure TJvSurvey.SaveToStream(Stream: TStream);
+procedure TJvSurvey.SaveToStream(Stream: TStream; Format: TJvSurveyFileFormat);
 var
   X: TJvSimpleXML;
   item, item2: TJvSimpleXmlElem;
   i: integer;
   PrologStream: TStringStream;
+  AStream: TMemoryStream;
 begin
   DecimalSeparator := '.';
   ShortDateFormat := 'YYYY-MM-DD';
@@ -630,6 +686,17 @@ begin
         Value := EncodeResponse(self.Items[i].Responses, self.Items[i].SurveyType);
     end;
     X.SaveToStream(Stream);
+    if Format = ffBinary then
+    begin
+      AStream := TMemoryStream.Create;
+      try
+        CompressStream(Stream, AStream);
+        Stream.Size := 0;
+        Stream.CopyFrom(AStream, 0);
+      finally
+        AStream.Free;
+      end;
+    end;
   finally
     X.Free;
     GetFormatSettings;

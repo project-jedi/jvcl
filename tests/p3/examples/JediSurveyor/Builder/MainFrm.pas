@@ -153,7 +153,7 @@ type
 
     procedure LoadFromFile(const Filename: string);
     function SaveFile: boolean;
-    procedure SaveToFile(const Filename: string);
+    procedure SaveToFile(const Filename: string;Format:TJvSurveyFileFormat);
     procedure UpdateStatus;
     property Filename: string read FFilename write FFilename;
     property Modified: boolean read FModified write SetModified;
@@ -234,7 +234,7 @@ begin
 
 end;
 
-procedure TfrmMain.SaveToFile(const Filename: string);
+procedure TfrmMain.SaveToFile(const Filename: string;Format:TJvSurveyFileFormat);
 var
   N: TTreeNode;
   i: integer;
@@ -256,7 +256,7 @@ begin
     N := N.getNextSibling;
   end;
 
-  FSurvey.SaveToFile(Filename);
+  FSurvey.SaveToFile(Filename,Format);
   self.Filename := Filename;
   Modified := false;
   UpdateStatus;
@@ -289,12 +289,14 @@ begin
 end;
 
 function TfrmMain.SaveFile: boolean;
+const
+  aFormat:array [1..3] of TJvSurveyFileFormat = (ffBinary,ffText,ffText);
 begin
   Result := true;
   if (Filename = '') then
     Result := acSaveAs.Execute
   else
-    SaveToFile(Filename);
+    SaveToFile(Filename,aFormat[SaveSurveyDialog.FilterIndex]);
 end;
 
 procedure TfrmMain.Clear;
@@ -514,10 +516,12 @@ begin
 end;
 
 procedure TfrmMain.acSaveAsExecute(Sender: TObject);
+const
+  aFormat:array [1..3] of TJvSurveyFileFormat = (ffBinary,ffText,ffText);
 begin
   SaveSurveyDialog.FileName := Filename;
   if SaveSurveyDialog.Execute then
-    SaveToFile(SaveSurveyDialog.Filename);
+    SaveToFile(SaveSurveyDialog.Filename,aFormat[SaveSurveyDialog.FilterIndex]);
 end;
 
 procedure TfrmMain.UpdateStatus;

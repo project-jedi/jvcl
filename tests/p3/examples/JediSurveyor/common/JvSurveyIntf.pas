@@ -9,7 +9,7 @@ type
     stExclusive,  // single choice
     stMultiple,   // multiple choice
     stFreeForm);  // type free-form text
-
+  TJvSurveyFileFormat = (ffText,ffBinary);
   // one item in a survey
   IJvSurveyItem = interface
   ['{D94E8215-2B22-44AE-9BE5-2B3784FAC7D9}']
@@ -94,7 +94,7 @@ type
     function GetSurveyTaker:IJvSurveyTaker;
 
     procedure LoadFromFile(const Filename:WideString);
-    procedure SaveToFile(const Filename:WideString);
+    procedure SaveToFile(const Filename:WideString;Format:TJvSurveyFileFormat);
 
     property ID:integer read GetID write SetID;
     property Title:WideString read GetTitle write SetTitle;
