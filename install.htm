@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <link rel="STYLESHEET" href="default.css" type="text/css">
+  <link type="text/css" href="default.css" rel="STYLESHEET">
   <title>Installation Notes for JVCL</title>
 </head>
 <body>
@@ -46,7 +46,7 @@ you have installed</li>
 C++ Builder). Delete all of the files related to JVCL and JCL</li>
   <li>Delete or rename the top folder where JCL and JVCL is installed</li>
   <li>Start regedit (click <b>Start - Run</b>, type "regedit.exe" and
-hit <b> Enter</b>). Open the key <font size="2" face="Courier New">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
+hit <b> Enter</b>). Open the key <font face="Courier New" size="2">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
 and delete all name/value items in the list related to JVCL.
 (&lt;compiler&gt; is either "Delphi" or "C++Builder", &lt;version&gt;
 is the IDE version you have installed)</li>
@@ -84,7 +84,7 @@ what
 you want!). We recommend but do not require that the JCL and JVCL
 folders should be created as siblings, i.e the
 folder structure looks like this:</p>
-<p><font face="Courier New" size="2">JEDI<br>
+<p><font size="2" face="Courier New">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
@@ -165,6 +165,10 @@ you click Cancel the packages will not be removed).</li>
 <hr style="width: 100%; height: 2px;">
 <h2>Manual install for C++ Builder<br>
 </h2>
+<p>Please note that manual installation for C++ Builder is rather
+complicated and we strongly advised you to use the automatic installer
+if possible.<br>
+</p>
 <p>Start by unpacking the JVCL and JCL zip files into a folder of your
 own choice. Make sure your zip extractor is set to maintain folder
 structure or all files will be put into the same folder (<b>not</b>
@@ -174,44 +178,96 @@ you want!). </p>
 the same base folder as JVCL, but we do recommend that the JCL and JVCL
 folders are created as siblings, i.e the folder structure should look
 like this:</p>
-<p><font face="Courier New" size="2">JEDI<br>
+<p><font size="2" face="Courier New">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JVCL subfolders&gt;<br>
 </font></p>
 <p><br>
-Open the JCL package specific to your version of C++&nbsp;Builder. It
-is called CJCLxx.bpk where xx is to be replaced by 50 for
-C++&nbsp;Builder&nbsp;5 and 60 for C++&nbsp;Builder&nbsp;6. Click the
-compile button, wait for about 2 minutes and if the compilation went
-well, close the package (File, Close All). Do NOT save it.<br>
-Because all components are written in pascal, the JVCL requires a dcp
-file from the JCL to correctly build. In order to get such a file, open
-a command window (also called MS-DOS window under Windows 95, 98 and
-Me) and browse to the JVCL\packages then call MakeJCLDcp4BCB. An help
-message will tell you what are the values you need to pass to the batch
-file. A typical call is "MakeJCLDcp4BCB 6" and will generate the dcp
-file for C++ Builder 6, assuming that it is installed in c:\program
-files\cbuilder6, that the JCL is installed in ..\..\jcl and that the
-destination target is Projects\bpl in the directory where C++ Builder
-is installed. Unless you update the JCL, you won't have to regenerate
+Open the JCL package group specific to your version of
+C++&nbsp;Builder. It
+is called JclPackagesCxx.bpk where xx is to be replaced by 50 for
+C++&nbsp;Builder&nbsp;5 and 60 for C++&nbsp;Builder&nbsp;6. Select <b>Project
+- Build All Projects</b> from the C++&nbsp;Builder menu. C++ Builder
+will prompt you for the location of CJcl.bpi. This file doesn't exist
+yet, simply choose Cancel on that dialog. Close the package group
+(File, Close All). Do NOT save it.</p>
+<p>Because all components are written in pascal, the JVCL requires a
+dcp
+file from the JCL to correctly build. This file is not distributed with
+the JCL but will be generated for you by the MakeJCLDcp4BCB.bat batch
+file. To run this batch file, first open
+a Command prompt (also called MS-DOS window under Windows 95, 98 and
+Me) and browse to the JVCL\packages directories. Calling MakeJCLDcp4BCB
+without any argument will bring a help
+message to tell you what are the values you need to pass to the batch
+file:<br>
+</p>
+<div style="margin-left: 120px;"><span style="font-family: monospace;">MakeJCLDcp4BCB.bat
+- Builds the JCL dcp files for BCB</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;"></span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">Usage:&nbsp;&nbsp;&nbsp;
+MakeJCLDcp4BCB Version [BCBDirectory]</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[JCLDirectory] [DCPDirectory]</span><br style="font-family: monospace;">
+<span style="font-family: monospace;"></span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+Version&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The
+version of BCB to build for (5 or 6)</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+BCBDirectory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The place where BCB is
+installed.</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Defaults to "C:\Program Files\CBuilder%%VERSION%%"</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+JCLDirectory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The place where the JCL is
+installed.</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Defaults to ..\..\JCL</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+DCPDirectory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The place where to put the
+DCP file.</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Defaults to $(BCB)\Projects\Bpl</span><span
+ style="font-family: monospace;"></span><span
+ style="font-family: monospace;"></span><br
+ style="font-family: monospace;">
+</div>
+<p><br>
+A typical call is "MakeJCLDcp4BCB 6" and will generate the dcp
+file for C++ Builder 6, using the default values for all other
+parameters (BCBDirectory=c:\program&nbsp;files\cbuilder6,
+JCLDirectory=..\..\jcl and DCPDirectory=Projects\bpl).<br>
+Unless you update the JCL, you won't have to regenerate
 the dcp files when you update the JVCL.<br>
 </p>
 <p> Now, open the package group file (bpg) for your version of
-C++&nbsp;Builder that is located in the jvcl\packages folder. Select <b>Project
-- Build All Projects</b> from the C++&nbsp;Builder menu. Because of an
-annoying bug, C++&nbsp;Builder will complain about a lot of .bpi files.
+C++&nbsp;Builder that is located in the jvcl\packages folder. Please
+not that C++ Builder 6 personal has its own group file.<br>
+Select <b>Project
+- Build All Projects</b> from the C++&nbsp;Builder menu. As with the
+JCL, C++&nbsp;Builder will complain about missing .bpi files. Simply
+click Cancel everytime the dialog shows up.
 This is because the last packages in the list require the first ones to
-be compiled and of course they are not at the beginning. If you know a
-way to turn that off, please let us know, but in the meantime, simply
-Cancel all those dialogs. An alternative solution is to
+be compiled and of course they are not yet compiled at the beginning of
+the process. This behaviour is thought to be a bug in C++ Builder, if
+you know a
+way to turn that off, please let us know. Another approach that doesn't
+trigger all these dialogs is to
 right-click in the <span style="font-weight: bold;">Project Manager</span>
 and select 'Build' for each package in turn. <br>
-A second alternative is to use the provided MakeBCB* batch files. Open
-a command line window, change to the directory where the batch files
+Finally you could also use the provided MakeBCB* batch files instead.
+Open
+a Command prompt window, change to the directory where the batch files
 are and launch the one appropriate for your version of C++ Builder. By
-default, it considers that C++ Builder is installed in c:\program
+default, it assumes that C++ Builder is installed in c:\program
 files\cbuilder?, where ? is the version number (5 or 6). If it is not
 located there, you must indicate the path to it as the first argument to
 the batch file.<br>
@@ -289,7 +345,6 @@ to the Library paths:<br>
   <li>JVCL\run<br>
   </li>
 </ul>
-<p></p>
 <p>Then in the <span style="font-weight: bold;">Environment Variables</span>
 tab, in the <span style="font-weight: bold;">User overrides</span>
 section, click <span style="font-weight: bold;">New...</span> , set
@@ -300,6 +355,24 @@ the variable name to INCLUDEPATH and its value to
 JVCL and JCL. For instance, if you put the JVCL in c:\prog\lib\, then
 'JVCL\common' becomes 'c:\prog\lib\JVCL\common'.<br>
 </p>
+Unfortunately, the concept of Environment variables overrides doesn't
+exists under C++ Builder 5. You will then have to create an environment
+variable called INCLUDEPATH and set it to the same value as mentionned
+before. Under Windows 2000 and XP, this is done
+by opening the 'System properties' applet from the 'Control panel'. You
+can either simultaneously press the Windows key and the Pause key or go
+through <span style="font-weight: bold;">Start - Parameters -
+Control&nbsp;panel - System&nbsp;properties</span>. Once in the applet,
+choose the 'Advanced' tab and click on the 'Environment variables'
+button at the bottom. Depending on wether or not you want the changes
+to
+apply to yourself or all users, create the INCLUDEPATH variable for in
+of the
+two list and click the related 'New' button. Enter INCLUDEPATH as the
+name and use the value mentionned earlier. Click
+on Ok buttons until the 'System properties' applet is closed.
+C++&nbsp;Builder 5 will only take this change into account once
+restarted.
 <p>Finally,
 select the <span style="font-weight: bold;">Directories/Conditionals</span>
 tab in <span style="font-weight: bold;">Project-Options</span> and add
@@ -311,12 +384,12 @@ this path to the Include paths:<br>
 <br>
 Any new project you create will work directly. However, if you want to
 share a project, then all you have to do is ask your users to define
-the INCLUDEPATH Environment variable and set it to the correct values.
+the INCLUDEPATH Environment variable override and set it to the correct
+values.
 They should then be able to use your project. When you receive a
 project using the JVCL, ensure that the Include Paths in its Project
 Options contains $(INCLUDEPATH) and you should be able to compile and
 link the project.<br>
-<p></p>
 <br>
 <p>In both cases, if you want to be able to open the JVCL source files
 in the IDE by
@@ -328,7 +401,6 @@ list in the Library tab of Tools-Environment Options:<br>
   <li>JVCL\run</li>
   <li>JVCL\common</li>
 </ul>
-<p></p>
 <br>
 <p>You will then be able to use the JVCL components. If you do some
 modifications to the JVCL source code to add functionality and/or fix
