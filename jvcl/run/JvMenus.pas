@@ -1664,9 +1664,8 @@ constructor TJvCustomMenuItemPainter.Create(Menu: TMenu);
 begin
   {$IFDEF COMPILER6_UP}
   inherited Create(Menu);
-  Name := 'ItemPainter';
   {$ELSE}
-  inherited Create; 
+  inherited Create;
   {$ENDIF COMPILER6_UP}
 
   // affect default values that are not 0
@@ -1675,15 +1674,28 @@ begin
   FImageMargin := TJvImageMargin.Create;
   FImageSize := TJvMenuImageSize.Create;
 
+  // Only give a name to the ItemPainter if the parent menu
+  // hasn't already got an ItemPainter of its own. This allows
+  // people to create/ ItemPainters outside the JvMenus file.
+  // See the RichEdit demo for an example of such a thing
+
   if Menu is TJvMainMenu then
   begin
     FMainMenu := TJvMainMenu(Menu);
+    {$IFDEF COMPILER6_UP}
+    if FMainMenu.ItemPainter = nil then
+      Name := 'ItemPainter';
+    {$ENDIF COMPILER6_UP}
     FPopupMenu := nil;
   end
   else
   begin
     FMainMenu := nil;
     FPopupMenu := TJvPopupMenu(Menu);
+    {$IFDEF COMPILER6_UP}
+    if FPopupMenu.ItemPainter = nil then
+      Name := 'ItemPainter';
+    {$ENDIF COMPILER6_UP}
   end;
 
   UpdateFieldsFromMenu;
