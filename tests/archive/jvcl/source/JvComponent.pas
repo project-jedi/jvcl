@@ -81,13 +81,6 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
-  TJvCustomMemo = class(TCustomMemo)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  end;
-
   // (p3) obsolete - MultiSelect is already published in JvCheckListBox
   TJvMultiselectCheckListBox = class(TCheckListBox)
   private
