@@ -399,14 +399,19 @@ var
 begin
   if AStrings = nil then
     Exit;
-  AStrings.Clear;
-  SoundexVal := Soundex(Value);
-  Hash := SoundexHash(SoundexVal) mod SoundexTableSize;
-  if FSoundexTable[Hash] <> nil then
-  begin
-    List := TList(FSoundexTable[Hash]);
-    for I := 0 to List.Count - 1 do
-      AStrings.Add(string(List[I]));
+  AStrings.BeginUpdate;
+  try
+    AStrings.Clear;
+    SoundexVal := Soundex(Value);
+    Hash := SoundexHash(SoundexVal) mod SoundexTableSize;
+    if FSoundexTable[Hash] <> nil then
+    begin
+      List := TList(FSoundexTable[Hash]);
+      for I := 0 to List.Count - 1 do
+        AStrings.Add(string(List[I]));
+    end;
+  finally
+    AStrings.EndUpdate;
   end;
 end;
 

@@ -332,12 +332,16 @@ end;
 procedure TJvNTEventLog.ReadEventLogs(AStrings: TStrings);
 begin
   with TRegistry.Create do
-  try
-    RootKey := HKEY_LOCAL_MACHINE;
-    OpenKey('SYSTEM\CurrentControlSet\Services\EventLog', False);
-    GetKeyNames(AStrings);
-  finally
-    Free;
+  begin
+    AStrings.BeginUpdate;
+    try
+      RootKey := HKEY_LOCAL_MACHINE;
+      OpenKey('SYSTEM\CurrentControlSet\Services\EventLog', False);
+      GetKeyNames(AStrings);
+    finally
+      Free;
+      AStrings.EndUpdate;
+    end;
   end;
 end;
 

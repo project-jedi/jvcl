@@ -87,8 +87,13 @@ procedure TJvXORCipher.Decode(Strings: TStrings);
 var
   I: Integer;
 begin
-  for I := 0 to Strings.Count - 1 do
-    Strings[I] := Crypt(Strings[I]);
+  Strings.BeginUpdate;
+  try
+    for I := 0 to Strings.Count - 1 do
+      Strings[I] := Crypt(Strings[I]);
+  finally
+    Strings.EndUpdate;
+  end;
 end;
 
 procedure TJvXORCipher.Encode(Strings: TStrings);

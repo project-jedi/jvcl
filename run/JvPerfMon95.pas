@@ -192,6 +192,7 @@ begin
   Reg := TRegistry.Create;
   List1 := TStringList.Create;
   List2 := TStringList.Create;
+  List.BeginUpdate;
   try
     Reg.RootKey := HKEY_LOCAL_MACHINE;
     if Reg.OpenKeyReadOnly(PerfEnumKey) then
@@ -214,6 +215,7 @@ begin
     Reg.Free;
     List2.Free;
     List1.Free;
+    List.EndUpdate;
   end;
 end;
 

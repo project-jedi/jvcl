@@ -1536,7 +1536,7 @@ end;
 
 procedure TJvSpeedBar.ReadSections(Reader: TReader);
 var
-  TmpList: TStrings;
+  TmpList: TStringList;
   I: Integer;
 begin
   TmpList := TStringList.Create;
@@ -1546,13 +1546,9 @@ begin
       TmpList.AddObject(Reader.ReadString, nil);
     Reader.ReadListEnd;
     if (Reader.Ancestor = nil) or (TmpList.Count > 0) then
-    begin
       for I := 0 to TmpList.Count - 1 do
-      begin
         if SearchSection(TmpList[I]) < 0 then
           AddSection(TmpList[I]);
-      end;
-    end;
   finally
     TmpList.Free;
   end;

@@ -1605,9 +1605,7 @@ end;
 function SelectDate(Sender: TWinControl; var Date: TDateTime; const DlgCaption: TCaption;
   AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
   AWeekendColor: TColor; BtnHints: TStrings;
-  MinDate: TDateTime;
-  MaxDate: TDateTime
-  ): Boolean;
+  MinDate: TDateTime; MaxDate: TDateTime): Boolean;
 var
   D: TJvSelectDateDlg;
   I: Integer;

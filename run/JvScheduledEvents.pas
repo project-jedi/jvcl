@@ -489,7 +489,7 @@ end;
 procedure TJvCustomScheduledEvents.LoadEventStates;
 var
   SubKey: string;
-  EventNames: TStrings;
+  EventNames: TStringList;
   I: Integer;
   EventKey: string;
   Stamp: TTimeStamp;

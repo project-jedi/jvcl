@@ -66,7 +66,7 @@ type
     FOnVerticalScroll: TNotifyEvent;
     FCaret: TJvCaret;
     FHideCaret: Boolean;
-    FOrigLines: TStrings;
+    FOrigLines: TStringList;
     FTransparent: Boolean;
     procedure SetHotTrack(Value: Boolean);
     procedure SetCaret(const Value: TJvCaret);
