@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL3\n"
-"POT-Creation-Date: 2004-05-24 20:38\n"
-"PO-Revision-Date: 2004-05-24 21:02+1000\n"
+"POT-Creation-Date: 2004-08-07 13:01\n"
+"PO-Revision-Date: 2004-08-07 13:28+0100\n"
 "Last-Translator: Olivier Sannier <obones@meloo.com>\n"
 "Language-Team: jvcl team <jvcl@sf.net>\n"
 "MIME-Version: 1.0\n"
@@ -101,8 +101,21 @@ msgid "An error occured while compiling the packages."
 msgstr "Une erreur est survenue lors de la compilation des paquets."
 
 #. Programmer's name for it: RsCommandNotFound
-#. FrameConfigPage..LblBCBGuide....Cursor
 #: Compile.pas:175
+msgid ""
+"Command could not be executed.\n"
+"\n"
+"\n"
+"Cmdline: %s\n"
+"Start directory: %s"
+msgstr ""
+"La commande n'a pas pu s'exécuter.\n"
+"\n"
+"\n"
+"Cmdline: %s\n"
+"Répertoire: %s"
+
+#. FrameConfigPage..LblBCBGuide....Cursor
 #: Frames/FrmConfigPage.dfm:15
 msgid "Open the default web browser to show the C++Builder Installation Guide."
 msgstr "Ouvre le navigateur par défaut pour voir le Guide D'installation de C++Builder"
@@ -547,7 +560,7 @@ msgstr "Configuration JVCL"
 #. FormJvclIncConfig..Label1....AutoSize
 #: Helpers/MainConfig.dfm:36
 msgid "jvcl.inc changes are global to all installed Delphi/BCB versions."
-msgstr "Les changements de jvcl.inc sont global à toutes versions de Delphi/BCB installées."
+msgstr "Les changements de jvcl.inc s'appliquent à toutes les versions de Delphi/BCB installées."
 
 #. FormJvclIncConfig..ScrollBox..LblComment..Caption
 #: Helpers/MainConfig.dfm:69
@@ -555,22 +568,22 @@ msgid "LblComment"
 msgstr "LblComment"
 
 #. FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#: Helpers/MainConfig.dfm:98
+#: Helpers/MainConfig.dfm:95
 msgid "http://projectjedi.sourceforge.net"
 msgstr "http://projectjedi.sourceforge.net"
 
 #. FormJvclIncConfig..TitlePanel..Label4..Caption
-#: Helpers/MainConfig.dfm:107
+#: Helpers/MainConfig.dfm:104
 msgid "Project JEDI   JVCL 3 Installer - jvcl.inc Editor"
 msgstr "Projet JEDI   Installeur JVCL 3 - Editeur pour jvcl.inc"
 
 #. FormJvclIncConfig..BtnCancel..Caption
-#: Helpers/MainConfig.dfm:138
+#: Helpers/MainConfig.dfm:135
 msgid "&Cancel"
 msgstr "&Annuler"
 
 #. FormJvclIncConfig..BtnOk..Caption
-#: Helpers/MainConfig.dfm:147
+#: Helpers/MainConfig.dfm:144
 msgid "&OK"
 msgstr "&Ok"
 
@@ -653,7 +666,7 @@ msgstr "Désinstalle JVCL|Désinstalle tous les paquets JVCL et les désenregist
 #. Programmer's name for it: RsShowMPL
 #: InstallerConsts.pas:61
 msgid "Show MPL 1.1"
-msgstr "&Afficher les paquets:"
+msgstr "Afficher la MPL 1.1"
 
 #. PgUninstall.pas
 #. Programmer's name for it: RsUninstallPageTitle
@@ -1045,12 +1058,12 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #. FormMain..JvWizard..LblHomepage..Hint
-#: Main.dfm:60
+#: Main.dfm:57
 msgid "<c:blue>http://jvcl.sourceforge.net"
 msgstr "<c:blue>http://jvcl.sourceforge.net"
 
 #. FormMain..JvWizard..LblHomepage..Caption
-#: Main.dfm:61
+#: Main.dfm:58
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Site Web Jedi Visual Component Library"
 
