@@ -2841,7 +2841,6 @@ end;
 procedure TJvDynControlEngineDevExpCx.RegisterControls;
 begin
   RegisterControlType(jctLabel, TJvDynControlCxLabel);
-//  RegisterControlType(jctLabel, TJvDynControlVCLLabel);
   RegisterControlType(jctStaticText, TJvDynControlCxStaticText);
   RegisterControlType(jctButton, TJvDynControlCxButton);
   RegisterControlType(jctRadioButton, TJvDynControlCxRadioButton);
