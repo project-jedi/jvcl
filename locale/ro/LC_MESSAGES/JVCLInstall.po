@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2004-12-18 17:36\n"
+"POT-Creation-Date: 2004-12-18 17:51\n"
 "PO-Revision-Date: 2004-12-17 22:12+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -374,32 +374,9 @@ msgstr ""
 msgid "D&o not stop on errors"
 msgstr ""
 
-#. FrameDirEditBrowse..LblCaption..Caption
-#: Frames/FrmDirEditBrowse.dfm:12
-msgid "LblCaption"
-msgstr ""
-
 #. FrameDirEditBrowse..BtnDirBrowse..Hint
 #: Frames/FrmDirEditBrowse.dfm:44
 msgid "Browse..."
-msgstr ""
-
-#. FrameInstall..LblTarget..Caption
-#. FramePackageSelection..LblTarget..Caption
-#. FrameUninstall..LblTarget..Caption
-#: Frames/FrmInstall.dfm:12 Frames/FrmPackageSelection.dfm:12
-#: Frames/FrmUninstall.dfm:12
-msgid "LblTarget"
-msgstr ""
-
-#. FrameInstall..LblInfo..Caption
-#: Frames/FrmInstall.dfm:25
-msgid "LblInfo"
-msgstr ""
-
-#. FrameInstall..LblOpenFile..Caption
-#: Frames/FrmInstall.dfm:34
-msgid "LblOpenFile"
 msgstr ""
 
 #. FrameInstall..BtnDetails..Caption
@@ -473,11 +450,6 @@ msgstr ""
 #. FramePackageSelection..ActionList..ActionResetPackages..Hint
 #: Frames/FrmPackageSelection.dfm:306
 msgid "Reset the package selection to IDE default."
-msgstr ""
-
-#. FrameUninstall..LblFilename..Caption
-#: Frames/FrmUninstall.dfm:25
-msgid "LblFilename"
 msgstr ""
 
 #  FormCompile..Caption
@@ -603,16 +575,6 @@ msgstr ""
 #. FormJvclIncConfig..Label1....AutoSize
 #: Helpers/MainConfig.dfm:36
 msgid "jvcl.inc changes are global to all installed Delphi/BCB versions."
-msgstr ""
-
-#. FormJvclIncConfig..ScrollBox..LblComment..Caption
-#: Helpers/MainConfig.dfm:69
-msgid "LblComment"
-msgstr ""
-
-#. FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#: Helpers/MainConfig.dfm:95
-msgid "http://projectjedi.sourceforge.net"
 msgstr ""
 
 #. FormJvclIncConfig..TitlePanel..Label4..Caption
@@ -1061,11 +1023,6 @@ msgstr ""
 #. Programmer's name for it: RsCancelInstallation
 #: InstallerConsts.pas:196
 msgid "Do you really want to cancel the installation?"
-msgstr ""
-
-#. Programmer's name for it: RsComponentPalettePrefix
-#: JVCLData.pas:289
-msgid "TJv"
 msgstr ""
 
 #. Programmer's name for it: RsNoJVCLFound
