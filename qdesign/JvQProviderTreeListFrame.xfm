@@ -1,0 +1,31 @@
+object fmeJvProviderTreeList: TfmeJvProviderTreeList
+  Left = 0
+  Top = 0
+  Width = 451
+  Height = 304
+  Align = alClient
+  AutoScroll = False
+  TabOrder = 0
+  object lvProvider: TListView
+    Left = 0
+    Top = 0
+    Width = 451
+    Height = 304
+    Align = alClient
+    Columns = <
+      item
+        Caption = 'Text'
+        Tag = 0
+        Width = 332
+      end>
+    OwnerDraw = True
+    RowSelect = True
+    ReadOnly = True
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnDblClick = lvProviderDblClick
+    OnMouseDown = lvProviderMouseDown
+    OnResize = lvProviderResize
+    OnSelectItem = lvProviderSelectItem
+  end
+end
