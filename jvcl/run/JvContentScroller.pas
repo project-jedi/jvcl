@@ -101,7 +101,7 @@ type
     property OnEndDock;
     property OnGetSiteInfo;
     property OnStartDock;
-    property OnUndock;
+    property OnUnDock;
     { redclared properties }
     property Align;
     property BorderStyle;
@@ -117,7 +117,7 @@ type
     property ParentColor;
     property ParentCtl3D;
     property ParentShowHint;
-    property PopUpMenu;
+    property PopupMenu;
     property ShowHint;
     property TabOrder;
     property TabStop;
