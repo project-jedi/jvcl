@@ -11,14 +11,16 @@ unit JvFillBasicImpl;
 interface
 
 uses
-  Windows, Classes, SysUtils, Graphics{$IFNDEF COMPILER6UP}, ComObj{$ENDIF}, ImgList, Contnrs,
+  Windows, Classes, SysUtils, Graphics, ImgList, Contnrs,
   JvComponent, JvFillIntf;
 
 type
   TAggregatedObjectEx = class;
-  TJvBaseFillerItem = class;        
+  TJvBaseFillerItem = class;
 
-  TExtensibleInterfacedObject = class(TObject, IUnknown)
+  TAggregatedObjectExClass = class of TAggregatedObjectEx;
+
+  TExtensibleInterfacedObject = class(TPersistent, IUnknown)
   private
     FAdditionalIntfImpl: TList;
   protected
@@ -29,8 +31,18 @@ type
     function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
     procedure AddIntfImpl(const Obj: TAggregatedObjectEx);
     procedure RemoveIntfImpl(const Obj: TAggregatedObjectEx);
+    function IndexOfImplClass(const AClass: TAggregatedObjectExClass): Integer;
     procedure ClearIntfImpl;
     procedure InitImplementers; virtual;
+    procedure SuspendRefCount;
+    procedure ResumeRefCount;
+
+    function IsStreamableExtension(AnExtension: TAggregatedObjectEx): Boolean; virtual;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure ReadImplementers(Reader: TReader);
+    procedure WriteImplementers(Writer: TWriter);
+    procedure ReadImplementer(Reader: TReader);
+    procedure WriteImplementer(Writer: TWriter; Instance: TAggregatedObjectEx);
   public
     constructor Create;
     procedure AfterConstruction; override;
@@ -40,7 +52,21 @@ type
     property RefCount: Integer read FRefCount;
   end;
 
-  TAggregatedObjectEx = class(TAggregatedObject)
+  TAggregatedPersistent = class(TPersistent)
+  private
+    FController: Pointer;
+    function GetController: IUnknown;
+  protected
+    { IUnknown }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
+  public
+    constructor Create(Controller: IUnknown);
+    property Controller: IUnknown read GetController;
+  end;
+
+  TAggregatedObjectEx = class(TAggregatedPersistent)
   private
     FOwner: TExtensibleInterfacedObject;
   protected
@@ -86,6 +112,13 @@ type
   protected
     function _AddRef: Integer; override; stdcall;
     function _Release: Integer; override; stdcall;
+    procedure InternalAdd(Item: IFillerItem); virtual; abstract;
+    function IsStreamableItem(Item: IFillerItem): Boolean; virtual;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure ReadItems(Reader: TReader);
+    procedure WriteItems(Writer: TWriter);
+    procedure ReadItem(Reader: TReader);
+    procedure WriteItem(Writer: TWriter; Item: IFillerItem);
     { IFillerItems }
     function getCount: Integer; virtual; abstract;
     function getItem(I: Integer): IFillerItem; virtual; abstract;
@@ -110,12 +143,12 @@ type
   TJvBaseFillerItemsRenderer = class(TJvFillerItemsAggregatedObject, IFillerItemsRenderer)
   protected
     procedure DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent = nil); virtual; abstract;
-    function DoMeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent = nil): TSize; virtual; abstract; 
+    function DoMeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent = nil): TSize; virtual; abstract;
     { IFillerItemsRenderer}
     procedure DrawItemByIndex(ACanvas:TCanvas; var ARect: TRect; Index: Integer; State: TOwnerDrawState; AOptions: TPersistent = nil); virtual;
     function MeasureItemByIndex(ACanvas:TCanvas; Index: Integer; AOptions: TPersistent = nil): TSize; virtual;
     procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent = nil); virtual;
-    function MeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent = nil): TSize; virtual; 
+    function MeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent = nil): TSize; virtual;
     function AvgItemSize(ACanvas: TCanvas; AOptions: TPersistent = nil): TSize; virtual; abstract;
   end;
 
@@ -146,6 +179,10 @@ type
     procedure SetID(Value: string);
     function _AddRef: Integer; override; stdcall;
     function _Release: Integer; override; stdcall;
+
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure ReadSubItems(Reader: TReader);
+    procedure WriteSubItems(Writer: TWriter);
     { IFillerItem }
     function GetItems: IFillerItems;
     function GetImplementer: TObject;
@@ -155,6 +192,8 @@ type
   public
     constructor Create(AItems: IFillerItems);
     procedure AfterConstruction; override;
+  published
+    property ID: string read GetID write SetID;
   end;
 
   // Standard implementers
@@ -169,7 +208,7 @@ type
     procedure BeforeDestruction; override;
     function GetInterface(const IID: TGUID; out Obj): Boolean; override;
   end;
-  
+
   TJvCustomFillerItemsTextRenderer = class(TJvBaseFillerItemsRenderer)
   protected
     procedure DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent = nil); override;
@@ -183,7 +222,7 @@ type
   protected
     function getCaption: string; override;
     procedure setCaption(const Value: string); override;
-  public
+  published
     property Caption: string read getCaption write setCaption;
   end;
 
@@ -199,15 +238,21 @@ type
     procedure setImageIndex(Index: integer); override;
     function getSelectedIndex: integer; override;
     procedure setSelectedIndex(Value: integer); override;
+  published
+    property Alignment: TAlignment read getAlignment write SetAlignment default taLeftJustify;
+    property ImageIndex: Integer read GetImageIndex write SetImageIndex default 0;
+    property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex default 0;
   end;
 
   TJvFillerTextItemImplClass = class of TJvBaseFillerTextItemImpl;
+  TJvBaseFillerItemClass = class of TJvBaseFillerItem;
   TJvFillerItemsClass = class of TJvBaseFillerItems;
 
   TJvFillerItemsList = class(TJvBaseFillerItems)
   private
     FList: TObjectList;
   protected
+    procedure InternalAdd(Item: IFillerItem); override;
     function Attributes: TJvFillerItemsAttributes; override;
     function getCount: Integer; override;
     function getItem(I: Integer): IFillerItem; override;
@@ -226,16 +271,6 @@ type
     procedure Remove(Item: IFillerItem); override;
   end;
 
-  TJvFillerTextItem = class(TJvBaseFillerItem)
-  private
-    FTextImpl: TJvBaseFillerTextItemImpl;
-  protected
-  public
-    constructor Create(AItems: IFillerItems; TextImplClass: TJvFillerTextItemImplClass);
-
-    property TextImpl: TJvBaseFillerTextItemImpl read FTextImpl;
-  end;
-
   TJvCustomFiller = class(TJvComponent, {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}
     IFiller, IFillerItems)
   private
@@ -243,8 +278,13 @@ type
     FNotifiers: TInterfaceList;
   protected
     function QueryInterface(const IID: TGUID; out Obj): HResult; override;
-    procedure NotifyConsumers(ChangeReason: TJvFillerChangeReason);
+    procedure Changing(ChangeReason: TJvFillerChangeReason);
+    procedure Changed(ChangeReason: TJvFillerChangeReason);
+    class function PersistentFillerItems: Boolean; virtual;
     class function ItemsClass: TJvFillerItemsClass; virtual;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure ReadRoot(Reader: TReader);
+    procedure WriteRoot(Writer: TWriter);
     {$IFNDEF COMPILER6_UP}
     { IInterfaceComponentReference }
     function GetComponent: TComponent;
@@ -270,7 +310,6 @@ implementation
 
 uses
   ActiveX,
-  JclDateTime,
   JvTypes;
 
 function HexBytes(const Buf; Length: Integer): string;
@@ -287,6 +326,10 @@ begin
   end;
 end;
 
+type
+  TOpenReader = class(TReader);
+  TOpenWriter = class(TWriter);
+  
 { TJvFillerItemAggregatedObject }
 
 function TJvFillerItemAggregatedObject.Item: IFillerItem;
@@ -339,8 +382,12 @@ end;
 
 procedure TJvFillerTextItemImpl.setCaption(const Value: string);
 begin
-  FCaption := Value;
-  Item.Items.Filler.NotifyConsumers(frUpdate);
+  if Caption <> Value then
+  begin
+    Item.Items.Filler.Changing(frUpdate);
+    FCaption := Value;
+    Item.Items.Filler.Changed(frUpdate);
+  end;
 end;
 
 { TJvFillerImageItem }
@@ -352,8 +399,12 @@ end;
 
 procedure TJvFillerImageItemImpl.setAlignment(Value: TAlignment);
 begin
-  FAlignment := Value;
-  Item.Items.Filler.NotifyConsumers(frUpdate);
+  if getAlignment <> Value then
+  begin
+    Item.Items.Filler.Changing(frUpdate);
+    FAlignment := Value;
+    Item.Items.Filler.Changed(frUpdate);
+  end;
 end;
 
 function TJvFillerImageItemImpl.getImageIndex: integer;
@@ -363,8 +414,12 @@ end;
 
 procedure TJvFillerImageItemImpl.setImageIndex(Index: integer);
 begin
-  FImageIndex := Index;
-  Item.Items.Filler.NotifyConsumers(frUpdate);
+  if getImageIndex <> Index then
+  begin
+    Item.Items.Filler.Changing(frUpdate);
+    FImageIndex := Index;
+    Item.Items.Filler.Changed(frUpdate);
+  end;
 end;
 
 function TJvFillerImageItemImpl.getSelectedIndex: integer;
@@ -374,8 +429,12 @@ end;
 
 procedure TJvFillerImageItemImpl.setSelectedIndex(Value: integer);
 begin
-  FSelectedIndex := Value;
-  Item.Items.Filler.NotifyConsumers(frUpdate);
+  if getSelectedIndex <> Value then
+  begin
+    Item.Items.Filler.Changing(frUpdate);
+    FSelectedIndex := Value;
+    Item.Items.Filler.Changed(frUpdate);
+  end;
 end;
 
 { TExtensibleInterfacedObject }
@@ -403,12 +462,10 @@ begin
 end;
 
 procedure TExtensibleInterfacedObject.AddIntfImpl(const Obj: TAggregatedObjectEx);
-var
-  I: Integer;
 begin
-  I := FAdditionalIntfImpl.IndexOf(Obj);
-  if I < 0 then
-    FAdditionalIntfImpl.Add(Obj);
+  if IndexOfImplClass(TAggregatedObjectExClass(Obj.ClassType)) >= 0 then
+    raise EJVCLException.Create('Implementation of that class already exists.');
+  FAdditionalIntfImpl.Add(Obj);
 end;
 
 procedure TExtensibleInterfacedObject.RemoveIntfImpl(const Obj: TAggregatedObjectEx);
@@ -424,6 +481,13 @@ begin
   end;
 end;
 
+function TExtensibleInterfacedObject.IndexOfImplClass(const AClass: TAggregatedObjectExClass): Integer;
+begin
+  Result := FAdditionalIntfImpl.Count - 1;
+  while (Result >= 0) and not (TObject(FAdditionalIntfImpl[Result]) is AClass) do
+    Dec(Result);
+end;
+
 procedure TExtensibleInterfacedObject.ClearIntfImpl;
 var
   I: Integer;
@@ -435,6 +499,94 @@ end;
 
 procedure TExtensibleInterfacedObject.InitImplementers;
 begin
+end;
+
+procedure TExtensibleInterfacedObject.SuspendRefCount;
+begin
+  InterlockedIncrement(FRefCount);
+end;
+
+procedure TExtensibleInterfacedObject.ResumeRefCount;
+begin
+  InterlockedDecrement(FRefCount);
+end;
+
+function TExtensibleInterfacedObject.IsStreamableExtension(AnExtension: TAggregatedObjectEx): Boolean;
+begin
+  Result := GetClass(AnExtension.ClassName) <> nil;
+end;
+
+procedure TExtensibleInterfacedObject.DefineProperties(Filer: TFiler);
+var
+  I: Integer;
+begin
+  inherited DefineProperties(Filer);
+  I := FAdditionalIntfImpl.Count - 1;
+  while (I >= 0) and not IsStreamableExtension(TAggregatedObjectEx(FAdditionalIntfImpl[I])) do
+    Dec(I);
+  Filer.DefineProperty('Implementers', ReadImplementers, WriteImplementers, I >= 0);
+end;
+
+procedure TExtensibleInterfacedObject.ReadImplementers(Reader: TReader);
+begin
+  { When loading implementers, the interface of this object maybe referenced. We don't want the
+    instance destroyed yet, so reference counting will be suspended (by incrementing it) and resumed
+    when we're done (by decrementing it without checking if it became zero) }
+  SuspendRefCount;
+  try
+    if Reader.ReadValue <> vaCollection then
+      raise EReadError.Create('Expected collection.');
+    while not Reader.EndOfList do
+      ReadImplementer(Reader);
+    Reader.ReadListEnd;
+  finally
+    ResumeRefCount;
+  end;
+end;
+
+procedure TExtensibleInterfacedObject.WriteImplementers(Writer: TWriter);
+var
+  I: Integer;
+begin
+  TOpenWriter(Writer).WriteValue(vaCollection);
+  for I := 0 to FAdditionalIntfImpl.Count - 1 do
+    if IsStreamableExtension(TAggregatedObjectEx(FAdditionalIntfImpl[I])) then
+      WriteImplementer(Writer, TAggregatedObjectEx(FAdditionalIntfImpl[I]));
+  Writer.WriteListEnd;
+end;
+
+procedure TExtensibleInterfacedObject.ReadImplementer(Reader: TReader);
+var
+  ClassName: string;
+  ClassType: TPersistentClass;
+  I: Integer;
+  Impl: TAggregatedObjectEx;
+begin
+  Reader.ReadListBegin;
+  ClassName := Reader.ReadStr;
+  if not AnsiSameText(ClassName, 'ClassName') then
+    raise EReadError.Create('Missing ClassName property');
+  ClassName := Reader.ReadString;
+  ClassType := FindClass(ClassName);
+  if not ClassType.InheritsFrom(TAggregatedObjectEx) then
+    raise EReadError.Create('Invalid class type');
+  I := IndexOfImplClass(TAggregatedObjectExClass(ClassType));
+  if I >= 0 then
+    Impl := TAggregatedObjectEx(FAdditionalIntfImpl[I])
+  else
+    Impl := TAggregatedObjectExClass(ClassType).Create(Self);
+  while not Reader.EndOfList do
+    TOpenReader(Reader).ReadProperty(Impl);
+  Reader.ReadListEnd;
+end;
+
+procedure TExtensibleInterfacedObject.WriteImplementer(Writer: TWriter; Instance: TAggregatedObjectEx);
+begin
+  Writer.WriteListBegin;
+  TOpenWriter(Writer).WritePropName('ClassName');
+  Writer.WriteString(Instance.ClassName);
+  TOpenWriter(Writer).WriteProperties(Instance);
+  Writer.WriteListEnd;
 end;
 
 constructor TExtensibleInterfacedObject.Create;
@@ -478,6 +630,34 @@ begin
   Result := inherited NewInstance;
   // set a refcount to avoid destruction due to refcounting during construction
   TExtensibleInterfacedObject(Result).FRefCount := 1;
+end;
+
+{ TAggregatedPersistent }
+
+function TAggregatedPersistent.GetController: IUnknown;
+begin
+  Result := IUnknown(FController);
+end;
+
+function TAggregatedPersistent.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  Result := Controller.QueryInterface(IID, Obj);
+end;
+
+function TAggregatedPersistent._AddRef: Integer;
+begin
+  Result := Controller._AddRef;
+end;
+
+function TAggregatedPersistent._Release: Integer;
+begin
+  Result := Controller._Release;
+end;
+
+constructor TAggregatedPersistent.Create(Controller: IUnknown);
+begin
+  inherited Create;
+  FController := Pointer(Controller);
 end;
 
 { TAggregatedObjectEx }
@@ -529,6 +709,83 @@ begin
     Result := FFiller._Release
   else}
     Result := inherited _Release;
+end;
+
+function TJvBaseFillerItems.IsStreamableItem(Item: IFillerItem): Boolean;
+var
+  AClass: TPersistentClass;
+begin
+  AClass := GetClass(Item.GetImplementer.ClassName);
+  Result := (AClass <> nil) and AClass.InheritsFrom(TJvBaseFillerItem);
+end;
+
+procedure TJvBaseFillerItems.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('Items', ReadItems, WriteItems, True);
+end;
+
+procedure TJvBaseFillerItems.ReadItems(Reader: TReader);
+begin
+  if Reader.ReadValue <> vaCollection then
+    raise EReadError.Create('Expected collection.');
+  while not Reader.EndOfList do
+    ReadItem(Reader);
+  Reader.ReadListEnd;
+end;
+
+procedure TJvBaseFillerItems.WriteItems(Writer: TWriter);
+var
+  I: Integer;
+begin
+  TOpenWriter(Writer).WriteValue(vaCollection);
+  for I := 0 to getCount - 1 do
+  begin
+    if IsStreamableItem(getItem(I)) then
+      WriteItem(Writer, getItem(I));
+  end;
+  Writer.WriteListEnd;
+end;
+
+procedure TJvBaseFillerItems.ReadItem(Reader: TReader);
+var
+  PropName: string;
+  ClassName: string;
+  PerstClass: TPersistentClass;
+  ItemClass: TJvBaseFillerItemClass;
+  ItemInstance: TJvBaseFillerItem;
+begin
+  Reader.ReadListBegin;
+  PropName := Reader.ReadStr;
+  if not AnsiSameText(PropName, 'ClassName') then
+    raise EReadError.Create('Missing property ClassName.');
+  ClassName := Reader.ReadString;
+  PerstClass := FindClass(ClassName);
+  if not PerstClass.InheritsFrom(TJvBaseFillerItem) then
+    raise EReadError.Create('Invalid item class.');
+  ItemClass := TJvBaseFillerItemClass(PerstClass);
+  ItemInstance := ItemClass.Create(Self);
+  try
+    InternalAdd(ItemInstance);
+  except
+    ItemInstance.Free;
+    raise;
+  end;
+  while not Reader.EndOfList do
+    TOpenReader(Reader).ReadProperty(ItemInstance);
+  Reader.ReadListEnd;
+end;
+
+procedure TJvBaseFillerItems.WriteItem(Writer: TWriter; Item: IFillerItem);
+var
+  Inst: TPersistent;
+begin
+  Writer.WriteListBegin;
+  Inst := TPersistent(Item.GetImplementer);
+  Writer.WriteStr('ClassName');
+  Writer.WriteString(Inst.ClassName);
+  TOpenWriter(Writer).WriteProperties(Inst);
+  Writer.WriteListEnd;
 end;
 
 function TJvBaseFillerItems.GetParent: IFillerItem;
@@ -685,6 +942,11 @@ end;
 
 { TJvFillerItemsList }
 
+procedure TJvFillerItemsList.InternalAdd(Item: IFillerItem);
+begin
+  List.Add(Item.GetImplementer);
+end;
+
 function TJvFillerItemsList.Attributes: TJvFillerItemsAttributes;
 begin
   Result := [];
@@ -716,32 +978,36 @@ end;
 
 function TJvBaseFillerItemsListManagment.Add(Item: IFillerItem): IFillerItem;
 begin
+  Items.Filler.Changing(frAdd);
   TJvFillerItemsList(ItemsImpl).List.Add(Item.GetImplementer);
   Result := Item;
-  Items.Filler.NotifyConsumers(frAdd);
+  Items.Filler.Changed(frAdd);
 end;
 
 procedure TJvBaseFillerItemsListManagment.Clear;
 begin
+  Items.Filler.Changing(frUpdate);
   TJvFillerItemsList(ItemsImpl).List.Clear;
-  Items.Filler.NotifyConsumers(frUpdate);
+  Items.Filler.Changed(frUpdate);
 end;
 
 procedure TJvBaseFillerItemsListManagment.Delete(Index: Integer);
 begin
+  Items.Filler.Changing(frDelete);
   TJvFillerItemsList(ItemsImpl).List.Delete(Index);
-  Items.Filler.NotifyConsumers(frDelete);
+  Items.Filler.Changed(frDelete);
 end;
 
 procedure TJvBaseFillerItemsListManagment.Remove(Item: IFillerItem);
 var
   Impl: TObject;
 begin
+  Items.Filler.Changing(frDelete);
   Impl := Item.GetImplementer;
   if (Impl is TExtensibleInterfacedObject) and (TExtensibleInterfacedObject(Impl).RefCount = 0) then
     Pointer(Item) := nil;
   TJvFillerItemsList(ItemsImpl).List.Remove(Impl);
-  Items.Filler.NotifyConsumers(frDelete);
+  Items.Filler.Changed(frDelete);
 end;
 
 { TJvBaseFillerItem }
@@ -775,6 +1041,72 @@ begin
     Result := -1;
 end;
 
+procedure TJvBaseFillerItem.DefineProperties(Filer: TFiler);
+var
+  Tmp: IFillerItems;
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('SubItems', ReadSubItems, WriteSubItems, Supports(Self as IFillerItem, IFillerItems, Tmp));
+end;
+
+procedure TJvBaseFillerItem.ReadSubItems(Reader: TReader);
+var
+  PropName: string;
+  ClassName: string;
+  AClass: TPersistentClass;
+  I: Integer;
+begin
+  { When loading sub items, the interface of this object may be referenced. We don't want the
+    instance destroyed yet, so reference counting will be suspended (by incrementing it) and resumed
+    when we're done (by decrementing it without checking if it became zero) }
+  SuspendRefCount;
+  try
+    if Reader.ReadValue <> vaCollection then
+      raise EReadError.Create('Expected collection.');
+    Reader.ReadListBegin;
+    PropName := Reader.ReadStr;
+    if not AnsiSameText(PropName, 'ClassName') then
+      raise EReadError.Create('Expected ClassName property.');
+    ClassName := Reader.ReadString;
+    AClass := FindClass(ClassName);
+    if not AClass.InheritsFrom(TJvBaseFillerItems) then
+      raise EReadError.Create('Invalid sub items implementer class.');
+    I := IndexOfImplClass(TJvBaseFillerSubItems);
+    if I > -1 then
+    begin
+      if TJvBaseFillerSubItems(FAdditionalIntfImpl[I]).Items.GetImplementer.ClassType <> AClass then
+      begin
+        FAdditionalIntfImpl.Delete(I);
+        I := -1;
+      end;
+    end;
+    if I = -1 then
+    begin
+      TJvFillerItemsClass(AClass).CreateParent(Self);
+      I := IndexOfImplClass(TJvBaseFillerSubItems);
+    end;
+    while not Reader.EndOfList do
+      TOpenReader(Reader).ReadProperty(TJvBaseFillerItems(TJvBaseFillerSubItems(FAdditionalIntfImpl[I]).Items.GetImplementer));
+    Reader.ReadListEnd;
+  finally
+    ResumeRefCount;
+  end;
+end;
+
+procedure TJvBaseFillerItem.WriteSubItems(Writer: TWriter);
+var
+  Items: IFillerItems;
+begin
+  QueryInterface(IFillerItems, Items);
+  TOpenWriter(Writer).WriteValue(vaCollection);
+  Writer.WriteListBegin;
+  Writer.WriteStr('ClassName');
+  Writer.WriteString(Items.GetImplementer.ClassName);
+  TOpenWriter(Writer).WriteProperties(Items.GetImplementer as TPersistent);
+  Writer.WriteListEnd;
+  Writer.WriteListEnd;
+end;
+
 function TJvBaseFillerItem.GetItems: IFillerItems;
 begin
   Result := IFillerItems(FItems);
@@ -805,14 +1137,6 @@ begin
   inherited AfterConstruction;
 end;
 
-{ JvFillerTextItem }
-
-constructor TJvFillerTextItem.Create(AItems: IFillerItems; TextImplClass: TJvFillerTextItemImplClass);
-begin
-  inherited Create(AItems);
-  FTextImpl := TextImplClass.Create(Self);
-end;
-
 { TJvCustomFiller }
 
 function TJvCustomFiller.QueryInterface(const IID: TGUID; out Obj): HResult;
@@ -825,7 +1149,7 @@ begin
     Result := E_NOINTERFACE;
 end;
 
-procedure TJvCustomFiller.NotifyConsumers(ChangeReason: TJvFillerChangeReason);
+procedure TJvCustomFiller.Changing(ChangeReason: TJvFillerChangeReason);
 var
   I: Integer;
 begin
@@ -833,9 +1157,51 @@ begin
     (FNotifiers[I] as IFillerNotify).FillerChanging(Self, ChangeReason);
 end;
 
+procedure TJvCustomFiller.Changed(ChangeReason: TJvFillerChangeReason);
+var
+  I: Integer;
+begin
+  for I := 0 to FNotifiers.Count - 1 do
+    (FNotifiers[I] as IFillerNotify).FillerChanged(Self, ChangeReason);
+end;
+
+class function TJvCustomFiller.PersistentFillerItems: Boolean;
+begin
+  Result := False;
+end;
+
 class function TJvCustomFiller.ItemsClass: TJvFillerItemsClass;
 begin
   Result := TJvFillerItemsList;
+end;
+
+procedure TJvCustomFiller.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  if PersistentFillerItems then
+    Filer.DefineProperty('Root', ReadRoot, WriteRoot, True);
+end;
+
+procedure TJvCustomFiller.ReadRoot(Reader: TReader);
+begin
+  if Reader.ReadValue <> vaCollection then
+    raise EReadError.Create('Expected collection.');
+  Reader.ReadListBegin;
+  // We don''t really have a root item; just stream in the FillerItemsImpl instance.
+  while not Reader.EndOfList do
+    TOpenReader(Reader).ReadProperty(FillerItemsImpl);
+  Reader.ReadListEnd;
+  Reader.ReadListEnd;
+end;
+
+procedure TJvCustomFiller.WriteRoot(Writer: TWriter);
+begin
+  TOpenWriter(Writer).WriteValue(vaCollection);
+  Writer.WriteListBegin;
+  // We don''t really have a root item; just stream out the FillerItemsImpl instance.
+  TOpenWriter(Writer).WriteProperties(FillerItemsImpl);
+  Writer.WriteListEnd;
+  Writer.WriteListEnd;
 end;
 
 {$IFNDEF COMPILER6_UP}
@@ -885,6 +1251,7 @@ end;
 destructor TJvCustomFiller.Destroy;
 begin
   FNotifiers.Clear;
+  FFillerItemsImpl._Release;
   inherited Destroy;
 end;
 
@@ -892,9 +1259,8 @@ procedure TJvCustomFiller.BeforeDestruction;
 begin
   if (FFillerItemsImpl <> nil) and (FFillerItemsImpl.RefCount > 1) then
     RunError(2);
-  FFillerItemsImpl._Release;
   inherited BeforeDestruction;
-  NotifyConsumers(frDestroy);
+  Changing(frDestroy);
 end;
 
 function TJvCustomFiller.GetInterface(const IID: TGUID; out Obj): Boolean;
@@ -902,4 +1268,7 @@ begin
   Result := inherited GetInterface(IID, Obj) or (FFillerItemsImpl.GetInterface(IID, Obj));
 end;
 
+initialization
+  RegisterClasses([TJvBaseFillerItem, TJvCustomFillerItemsTextRenderer, TJvFillerTextItemImpl,
+    TJvFillerImageItemImpl, TJvFillerItemsList, TJvBaseFillerItemsListManagment]);
 end.

@@ -39,19 +39,20 @@ type
     function getItem(I: Integer): IFillerItem; override;
   end;
 
-  TJvFontItem = class(TJvFillerTextItem)
-  protected
-    procedure InitID; override;
-  public
-    constructor Create(AItems: IFillerItems; const Index: Integer);
-  end;
-
   TJvFontItemText = class(TJvBaseFillerTextItemImpl)
   private
     FIndex: Integer;
   protected
     function getCaption: string; override;
     procedure setCaption(const Value: string); override;
+  end;
+
+  TJvFontItem = class(TJvBaseFillerItem)
+  protected
+    Impl: TJvFontItemText;
+    procedure InitID; override;
+  public
+    constructor Create(AItems: IFillerItems; const Index: Integer);
   end;
 
 { TJvFontItems }
@@ -126,13 +127,14 @@ end;
 
 procedure TJvFontItem.InitID;
 begin
-  SetID(IntToHex(TJvFontItemText(TextImpl).FIndex, 4));
+  SetID(IntToHex(Impl.FIndex, 4));
 end;
 
 constructor TJvFontItem.Create(AItems: IFillerItems; const Index: Integer);
 begin
-  inherited Create(AItems, TJvFontItemText);
-  TJvFontItemText(TextImpl).FIndex := Index;
+  inherited Create(AItems);
+  Impl := TJvFontItemText.Create(Self);
+  Impl.FIndex := Index;
 end;
 
 { TJvFontItemText }

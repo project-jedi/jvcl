@@ -41,7 +41,8 @@ type
     function getSupports:TJvFillerSupports;
     function getOptionClass: TJvFillerOptionsClass;
     function getItems: IFillerItems;
-    procedure NotifyConsumers(ChangeReason: TJvFillerChangeReason);
+    procedure Changing(ChangeReason: TJvFillerChangeReason);
+    procedure Changed(ChangeReason: TJvFillerChangeReason);
   end;
 
   { Item list. (0..N items)

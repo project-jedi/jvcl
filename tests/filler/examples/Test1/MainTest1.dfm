@@ -71,7 +71,116 @@ object Form1: TForm1
     Top = 75
   end
   object JvTreeFiller1: TJvTreeFiller
-    Left = 315
-    Top = 155
+    Left = 305
+    Top = 160
+    Root = <
+      item
+        Implementers = <
+          item
+            ClassName = 'TJvTreeFillerItemsManagment'
+          end
+          item
+            ClassName = 'TJvTreeFillerItemsDesigner'
+          end
+          item
+            ClassName = 'TJvTreeFillerImages'
+          end>
+        Items = <
+          item
+            ClassName = 'TJvTreeFillerItem'
+            ID = 'F2F8F259D7E1684996DDDF31DE8F4D'
+            Implementers = <
+              item
+                ClassName = 'TJvFillerTextItemImpl'
+                Caption = 'Text only'
+              end>
+          end
+          item
+            ClassName = 'TJvTreeFillerItem'
+            ID = 'C666F6F7BBC0B74B82C207C5C503B1'
+            Implementers = <
+              item
+                ClassName = 'TJvFillerTextItemImpl'
+                Caption = 'Text and image'
+              end
+              item
+                ClassName = 'TJvFillerImageItemImpl'
+                Alignment = taRightJustify
+                ImageIndex = 1
+                SelectedIndex = 1
+              end>
+          end
+          item
+            ClassName = 'TJvTreeFillerItem'
+            ID = 'F1E5AF81E41905499B93F88ACAFB95'
+            Implementers = <
+              item
+                ClassName = 'TJvFillerTextItemImpl'
+                Caption = 'Text and sub items'
+              end>
+            SubItems = <
+              item
+                ClassName = 'TJvTreeFillerItems'
+                Implementers = <
+                  item
+                    ClassName = 'TJvTreeFillerItemsManagment'
+                  end
+                  item
+                    ClassName = 'TJvTreeFillerItemsDesigner'
+                  end
+                  item
+                    ClassName = 'TJvTreeFillerImages'
+                  end>
+                Items = <
+                  item
+                    ClassName = 'TJvTreeFillerItem'
+                    ID = 'CBF8B7CD0698DA4CAF7D448E14BF13'
+                    Implementers = <
+                      item
+                        ClassName = 'TJvFillerTextItemImpl'
+                        Caption = 'Text, image and sub items'
+                      end
+                      item
+                        ClassName = 'TJvFillerImageItemImpl'
+                        ImageIndex = 2
+                        SelectedIndex = 2
+                      end>
+                    SubItems = <
+                      item
+                        ClassName = 'TJvTreeFillerItems'
+                        Implementers = <
+                          item
+                            ClassName = 'TJvTreeFillerItemsManagment'
+                          end
+                          item
+                            ClassName = 'TJvTreeFillerItemsDesigner'
+                          end
+                          item
+                            ClassName = 'TJvTreeFillerImages'
+                          end>
+                        Items = <
+                          item
+                            ClassName = 'TJvTreeFillerItem'
+                            ID = 'AC3DFCD46B223C478794FE44861F81'
+                            Implementers = <
+                              item
+                                ClassName = 'TJvFillerTextItemImpl'
+                                Caption = 'First'
+                              end>
+                          end
+                          item
+                            ClassName = 'TJvTreeFillerItem'
+                            ID = 'E52653606C9CD749A77DD0BB01737D'
+                            Implementers = <
+                              item
+                                ClassName = 'TJvFillerTextItemImpl'
+                                Caption = 'Second'
+                              end>
+                          end>
+                      end>
+                  end>
+              end>
+          end>
+      end>
   end
 end
