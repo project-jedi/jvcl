@@ -118,6 +118,7 @@ type
     constructor Create(ANotebook: TNotebook);
     destructor Destroy; override;
     procedure Clear; override;
+    procedure Add(Page: TPage); reintroduce;
     procedure Delete(Index: Integer); override;
     procedure Move(CurIndex, NewIndex: Integer); override;
   end;
@@ -128,7 +129,7 @@ constructor TPage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Visible := False;
-  ControlStyle := ControlStyle + [csAcceptsControls, csNoDesignVisible];
+  ControlStyle := ControlStyle + [csAcceptsControls, csNoDesignVisible, csNoFocus];
   Align := alClient;
 end;
 
@@ -149,7 +150,7 @@ begin
     with TPages(TNotebook(Reader.Parent).FPages) do
     begin
       FLoadingAdd := Self;
-      FPageList.Add(Self);
+      Add(Self);
     end;
   end;
   inherited ReadState(Reader);
@@ -166,14 +167,15 @@ end;
 
 destructor TPages.Destroy;
 begin
+  Clear;
   FPageList.Free;
   inherited Destroy;
 end;
 
 procedure TPages.Clear;
 begin
-  inherited Clear;
-  FPageList.Clear;
+  while FPageList.Count > 0 do
+    Delete(0);
 end;
 
 procedure TPages.Delete(Index: Integer);
@@ -207,6 +209,12 @@ procedure TPages.Put(Index: Integer; const S: string);
 begin
   inherited Put(Index, S);
   TPage(FPageList[Index]).Caption := S;
+end;
+
+procedure TPages.Add(Page: TPage);
+begin
+  FLoadingAdd := Page;
+  inherited Add(Page.Caption);
 end;
 
 { TNotebook }
@@ -270,7 +278,7 @@ end;
 
 procedure TNotebook.Paint;
 begin
-  if PageCount = 0 then
+  if (PageCount = 0) and (csDesigning in ComponentState) then
   begin
     Canvas.Brush.Style := bsClear;
     Canvas.Pen.Style := psDot;
