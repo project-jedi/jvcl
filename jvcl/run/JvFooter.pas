@@ -69,14 +69,14 @@ type
   private
     FBevelStyle: TJvBevelStyle;
     FBevelVisible: Boolean;
-    FMargin: integer;
+    FMargin: Integer;
     procedure SetBevelStyle(Value: TJvBevelStyle);
     procedure SetBevelVisible(Value: Boolean);
     procedure UpdatePosition;
     procedure GetBtnsValues(const ABtnIndex: Integer;
       const AAlignment: TAlignment; const ADirection: Integer;
       out BtnCount, BtnTotalSpc: Integer);
-    procedure SetMargin(const Value: integer);
+    procedure SetMargin(const Value: Integer);
   protected
     procedure Paint; override;
     procedure Loaded; override;
@@ -104,7 +104,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
-    property Margin:integer read FMargin write SetMargin default 8;
+    property Margin: Integer read FMargin write SetMargin default 8;
     {$IFDEF JVCLThemesEnabled}
     property ParentBackground;
     {$ENDIF JVCLThemesEnabled}
@@ -439,7 +439,7 @@ begin
     end;
 end;
 
-procedure TJvFooter.SetMargin(const Value: integer);
+procedure TJvFooter.SetMargin(const Value: Integer);
 begin
    if FMargin <> Value then
    begin

@@ -64,7 +64,7 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
   public
-    property InternalClick:TNotifyEvent read FInternalClick write FInternalClick;
+    property InternalClick: TNotifyEvent read FInternalClick write FInternalClick;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
@@ -90,7 +90,7 @@ type
     procedure WMActivate(var Message: TWMActivate); message WM_ACTIVATE;
     procedure WMMove(var Msg: TWMMove); message WM_MOVE;
     {$ENDIF VCL}
-    procedure JvDeskTopAlertAutoFree(var Msg:TMessage); message JVDESKTOPALERT_AUTOFREE;
+    procedure JvDeskTopAlertAutoFree(var Msg: TMessage); message JVDESKTOPALERT_AUTOFREE;
     procedure DoMouseTimer(Sender: TObject);
     procedure FormPaint(Sender: TObject);
   protected
@@ -98,10 +98,8 @@ type
     procedure DoClose(var Action: TCloseAction); override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-    procedure DoDropDownClose(Sender:TObject);
-    procedure DoDropDownMenu(Sender:TObject; MousePos:TPoint; var Handled:Boolean);
-
-
+    procedure DoDropDownClose(Sender: TObject);
+    procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
   public
     imIcon: TImage;
     lblText: TJvLabel;
@@ -119,17 +117,16 @@ type
     CaptionColorFrom: TColor;
     CaptionColorTo: TColor;
     FrameColor: TColor;
-    AllowFocus:boolean;
+    AllowFocus: Boolean;
     constructor Create(AOwner: TComponent); override;
     procedure acCloseExecute(Sender: TObject);
     procedure SetNewTop(const Value: Integer);
     procedure SetNewLeft(const Value: Integer);
     procedure SetNewOrigin(ALeft, ATop: Integer);
-    procedure DoButtonClick(Sender:TObject);
+    procedure DoButtonClick(Sender: TObject);
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnUserMove: TNotifyEvent read FOnUserMove write FOnUserMove;
-
   end;
 
 implementation
@@ -138,12 +135,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Menus,
-  SysUtils,
-  JvJVCLUtils,
-  JvDesktopAlert;
+  Menus, SysUtils,
+  JvJVCLUtils, JvDesktopAlert;
 
-{.$R *.dfm}// not needed
+{.$R *.dfm} // not needed
 
 const
   cAlphaIncrement = 5;
@@ -410,12 +405,15 @@ end;
 procedure TJvFormDesktopAlert.DoMouseTimer(Sender: TObject);
 var
   P: TPoint;
-  function IsInForm(P:TPoint):boolean;
-  var W:TControl;
+
+  function IsInForm(P: TPoint): Boolean;
+  var
+    W: TControl;
   begin
-    W := ControlAtPos(P, true, true);
+    W := ControlAtPos(P, True, True);
     Result := (W = Self) or (FindVCLWindow(P) = Self) or ((W <> nil) and (GetParentForm(W) = Self));
   end;
+
 begin
   // this is here to ensure that MouseInControl is correctly set even
   // if we never got a CM_MouseLeave (that happens a lot)
@@ -647,7 +645,7 @@ end;
 procedure TJvFormDesktopAlert.JvDeskTopAlertAutoFree(var Msg: TMessage);
 begin
   // WPAram is us, LParam is the TJvDesktopAlert
-  if Msg.WParam = integer(Self) then
+  if Msg.WParam = WPARAM(Self) then
   begin
     Release;
     TObject(Msg.LParam).Free;
@@ -655,7 +653,8 @@ begin
 end;
 
 procedure TJvFormDesktopAlert.DoButtonClick(Sender: TObject);
-var FEndInterval:Cardinal;
+var
+  FEndInterval: Cardinal;
 begin
   if Sender is TJvDesktopAlertButton then
   begin
@@ -678,18 +677,18 @@ procedure TJvFormDesktopAlert.DoDropDownClose(Sender: TObject);
 begin
   // restore previous EndInterval value
   if FEndInterval <> 0 then
-    TJvDeskTopAlert(Owner).StyleHandler.EndInterval := FEndInterval;
+    TJvDesktopAlert(Owner).StyleHandler.EndInterval := FEndInterval;
   FEndInterval := 0;
   if not MouseInControl then
-    TJvDeskTopAlert(Owner).StyleHandler.DoEndAnimation;
+    TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
 end;
 
 procedure TJvFormDesktopAlert.DoDropDownMenu(Sender: TObject;
   MousePos: TPoint; var Handled: Boolean);
 begin
   // suspend the form while the menu is visible
-  FEndInterval := TJvDeskTopAlert(Owner).StyleHandler.EndInterval;
-  TJvDeskTopAlert(Owner).StyleHandler.EndInterval := 0;
+  FEndInterval := TJvDesktopAlert(Owner).StyleHandler.EndInterval;
+  TJvDesktopAlert(Owner).StyleHandler.EndInterval := 0;
 end;
 
 {$IFDEF UNITVERSIONING}

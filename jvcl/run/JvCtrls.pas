@@ -90,7 +90,7 @@ type
     FOnButtonDraw: TJvImgBtnDrawEvent;
     FOnGetAnimateIndex: TJvImgBtnAnimIndexEvent;
     FImageVisible: Boolean;
-    FFlat: boolean;
+    FFlat: Boolean;
     procedure ImageListChange(Sender: TObject);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetAnimate(const Value: Boolean);
@@ -104,7 +104,7 @@ type
     procedure SetOwnerDraw(const Value: Boolean);
     procedure SetMargin(const Value: Integer);
     procedure SetSpacing(const Value: Integer);
-    procedure SetFlat(const Value: boolean);
+    procedure SetFlat(const Value: Boolean);
     {$IFDEF VCL}
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
@@ -153,7 +153,7 @@ type
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
     property ImageVisible: Boolean read FImageVisible write SetImageVisible default True;
     property Kind: TJvImgBtnKind read FKind write SetKind default bkCustom;
-    property Flat:boolean read FFlat write SetFlat default false;
+    property Flat: Boolean read FFlat write SetFlat default False;
     property Layout: TJvImgBtnLayout read FLayout write SetLayout default blImageLeft;
     property Margin: Integer read FMargin write SetMargin default -1;
     property OwnerDraw: Boolean read FOwnerDraw write SetOwnerDraw default False;
@@ -259,7 +259,7 @@ end;
 constructor TJvCustomImageButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FFlat := false;
+  FFlat := False;
   FCanvas := TCanvas.Create;
   FAlignment := taCenter;
   FAnimateInterval := 200;
@@ -956,7 +956,7 @@ begin
   end;
 end;
 
-procedure TJvCustomImageButton.SetFlat(const Value: boolean);
+procedure TJvCustomImageButton.SetFlat(const Value: Boolean);
 begin
   if FFlat <> Value then
   begin

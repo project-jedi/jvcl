@@ -1293,13 +1293,13 @@ end;
 
 procedure TJvStringGrid.ClearSelection; // Clears selection rectangle!
 var
- s:TGridRect;
+ S: TGridRect;
 begin
-  s.Left := -1;
-  s.Top := -1;
-  s.Right := -1;
-  s.Bottom := -1;
-  Self.Selection  := s;
+  S.Left := -1;
+  S.Top := -1;
+  S.Right := -1;
+  S.Bottom := -1;
+  Self.Selection  := S;
   Refresh;
 end;
 

@@ -278,7 +278,8 @@ end;
 { procedure Delay(MSec: longword); }
 
 procedure JvInterpreter_Delay(var Value: Variant; Args: TJvInterpreterArgs);
-var I:Integer;
+var
+  I: Integer;
 begin
   I := Args.Values[0];
   Delay(I);

@@ -103,7 +103,7 @@ type
     FNotify: TJvThreadNotifyEvent;
     procedure SynchChange;
   public
-    constructor Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer; AFreeOnTerminate:boolean);
+    constructor Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer; AFreeOnTerminate: Boolean);
     procedure Execute; override;
     property OnChangeNotify: TJvThreadNotifyEvent read FNotify write FNotify;
   end;
@@ -116,7 +116,7 @@ type
     FCollection: TJvChangeItems;
     FNotify: TJvNotifyEvent;
     FNotifyArray: TJvNotifyArray;
-    FFreeOnTerminate: boolean;
+    FFreeOnTerminate: Boolean;
     procedure SetCollection(const Value: TJvChangeItems);
     procedure SetInterval(const Value: Integer);
     procedure SetActive(const Value: Boolean);
@@ -136,7 +136,7 @@ type
     property CheckInterval: Integer read FInterval write SetInterval default 100;
     // Set FreeOnTerminate to True if you want to be able to change the Active property
     // in the OnChangeNotify event. NOTE: FreeOnTerminate should be changed when Active := False
-    property FreeOnTerminate:boolean read FFreeOnTerminate write FFreeOnTerminate default True;
+    property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate default True;
     property OnChangeNotify: TJvNotifyEvent read FNotify write FNotify;
   end;
 

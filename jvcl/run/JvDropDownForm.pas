@@ -190,7 +190,7 @@ begin
       Top := Self.Edit.ClientOrigin.Y - Height;
   end
   else
-  {$ENDIF}
+  {$ENDIF VCL}
   begin
     {$IFDEF VCL}
     if not SystemParametersInfo(SPI_GETWORKAREA, 0, @LScreenRect, 0) then

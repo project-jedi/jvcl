@@ -355,6 +355,7 @@ begin
   FVCLReady.Signal;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -364,11 +365,14 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 initialization
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
 
 finalization
   FreeAndNil(GlobalDataThreadsMan);
@@ -381,8 +385,10 @@ finalization
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
 
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
 
 end.

@@ -293,7 +293,7 @@ type
     FCsvFieldDef: string; // Our own "Csv Field Definition String"
     FCsvKeyDef: string; // CSV Key Definition String. Required if FCsvUniqueKeys is True
     FCsvKeyCount: Integer; // Set by parsing FCsvKeyDef
-    FAscending:Array of Boolean;
+    FAscending: array of Boolean;
 
     FCsvKeyFields: TArrayOfPCsvColumn;
 
@@ -2467,11 +2467,9 @@ begin
     end;
   end;
   // New:Array of Booleans used for ascending order on primary key sorting!
-  SetLength(FAscending,FCsvKeyCount+1);
-  for I := 0 to Length(FAscending)-1 do begin
-      FAscending[I] := true;
-  end;
-
+  SetLength(FAscending, FCsvKeyCount + 1);
+  for I := 0 to Length(FAscending) - 1 do
+    FAscending[I] := True;
 end;
 
 { set our position onto the EOF Crack }
@@ -2553,10 +2551,8 @@ end;
 function TJvCustomCsvDataSet.InternalFindByKey(Row: PCsvRow): Integer;
 var
   I: Integer;
-
 begin
   Result := -1;
-
   for I := 0 to FData.Count - 1 do
     if InternalCompare(FCsvKeyFields, FCsvKeyCount, {Left} Row, {Right} FData.Items[I], FAscending) = 0 then
     begin
@@ -3095,7 +3091,7 @@ var
 //  Index: array of Pointer;
 //  swap: Pointer;
   SortFieldNames: array of string;
-  SortAscending:Array of boolean;
+  SortAscending: array of Boolean;
   SortColumns: TArrayOfPCsvColumn;
   SortColumnCount: Integer;
 //  comparison, I, U, L: Integer;

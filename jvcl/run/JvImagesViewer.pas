@@ -127,10 +127,11 @@ type
     function GetOptionsClass: TJvItemViewerOptionsClass; override;
     function LoadErrorHandled(E: Exception; const FileName: WideString): Boolean;
     procedure DoLoadBegin; virtual;
-    procedure DoLoadProgress(Item: TJvPictureItem; Stage: TProgressStage; PercentDone: Byte; RedrawNow: Boolean; const R:
-      TRect; const Msg: WideString);
+    procedure DoLoadProgress(Item: TJvPictureItem; Stage: TProgressStage; PercentDone: Byte;
+      RedrawNow: Boolean; const R: TRect; const Msg: WideString);
     procedure DoLoadEnd; virtual;
-    procedure DrawItem(Index: Integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect); override;
+    procedure DrawItem(Index: Integer; State: TCustomDrawState; Canvas: TCanvas;
+      ItemRect, TextRect: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
     function LoadImages: Boolean;virtual;
@@ -258,7 +259,7 @@ begin
   end;
 end;
 
-//=== { TJvPictureItem } =======================================================
+//=== { TJvPictureItem } =====================================================
 
 destructor TJvPictureItem.Destroy;
 begin
@@ -314,7 +315,7 @@ end;
 
 procedure TJvPictureItem.SetFileName(const Value: WideString);
 begin
-  if (AnsiCompareFilename(FFileName, Value) <> 0) and Changing then
+  if (AnsiCompareFileName(FFileName, Value) <> 0) and Changing then
   begin
     FFileName := Value;
     // don't load image until .Picture is used

@@ -63,10 +63,12 @@ procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
 
 implementation
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 begin
@@ -415,6 +417,7 @@ begin
   JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AShowAccelChar, Rect, Flags);
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -430,6 +433,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

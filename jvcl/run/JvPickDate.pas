@@ -1113,9 +1113,12 @@ function TJvPopupCalendar.GetDate(Index: Integer): TDateTime;
 begin
   FCalendar.Min
   case Index of
-  0: Result := TJvLocCalendar(FCalendar).FMinDate;
-  1: Result := TJvLocCalendar(FCalendar).FMaxDate;
-  else Result := NullDate;
+    0:
+      Result := TJvLocCalendar(FCalendar).FMinDate;
+    1:
+      Result := TJvLocCalendar(FCalendar).FMaxDate;
+  else
+    Result := NullDate;
   end;
 end;
 }
@@ -1383,8 +1386,8 @@ begin
     Parent := Control;
     SetBounds(0, 0, 111, 25);
     Default := True;
-    ModalResult := mrOK;
-    Caption := 'OK';
+    ModalResult := mrOk;
+    Caption := RsButtonOKCaption;
 //    Kind := bkOk;
   end;
 
@@ -1394,7 +1397,7 @@ begin
     SetBounds(111, 0, 111, 25);
     Cancel := True;
     ModalResult := mrCancel;
-    Caption := 'Cancel';
+    Caption := RsButtonCancelCaption;
 //    Kind := bkCancel;
   end;
 

@@ -835,7 +835,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
         Stream.Write(IsChecked, SizeOf(IsChecked));
         // -hs
         WriteString(Items[I].Caption);
-        for J := 0 to Items[i].SubItems.Count - 1 do
+        for J := 0 to Items[I].SubItems.Count - 1 do
           WriteString(SubItems[J]);
       end;
   end;
@@ -849,78 +849,78 @@ end;
 
 procedure TJvListView.SaveToStrings(Strings: TStrings; Separator: Char);
 var
-  i, j: Integer;
-  tmpStr: string;
+  I, J: Integer;
+  TmpStr: string;
 begin
   if Assigned(FOnSaveProgress) then
     FOnSaveProgress(Self, 0, Items.Count);
-  for i := 0 to Items.Count - 1 do
+  for I := 0 to Items.Count - 1 do
   begin
     if Assigned(FOnSaveProgress) then
-      FOnSaveProgress(Self, i + 1, Items.Count);
-    tmpStr := AnsiQuotedStr(Items[i].Caption, '"');
-    for j := 0 to Items[i].SubItems.Count - 1 do
-      tmpStr := tmpStr + Separator + AnsiQuotedStr(Items[i].SubItems[j], '"');
-    Strings.Add(tmpStr);
+      FOnSaveProgress(Self, I + 1, Items.Count);
+    TmpStr := AnsiQuotedStr(Items[I].Caption, '"');
+    for J := 0 to Items[I].SubItems.Count - 1 do
+      TmpStr := TmpStr + Separator + AnsiQuotedStr(Items[I].SubItems[J], '"');
+    Strings.Add(TmpStr);
   end;
 end;
 
 procedure TJvListView.LoadFromStrings(Strings: TStrings; Separator: Char);
 var
-  i: Integer;
-  Start, _End, tmpStart: PChar;
-  tmpStr: string;
-  li: TlistItem;
+  I: Integer;
+  Start, Stop, TmpStart: PChar;
+  TmpStr: string;
+  Li: TListItem;
 begin
-  for i := 0 to Strings.Count - 1 do
+  for I := 0 to Strings.Count - 1 do
   begin
-    li := nil;
-    Start := PChar(Strings[i]);
-    _End := Start + Length(Strings[i]);
-    if (Start <> _End) and (Start <> nil) and (Start^ <> #0) then
+    Li := nil;
+    Start := PChar(Strings[I]);
+    Stop := Start + Length(Strings[I]);
+    if (Start <> Stop) and (Start <> nil) and (Start^ <> #0) then
     begin
       if Start^ = '"' then
       begin
-        li := Items.Add;
-        tmpStr := AnsiExtractQuotedStr(Start, '"'); // this moves the PChar pointer
-        li.Caption := tmpStr;
+        Li := Items.Add;
+        TmpStr := AnsiExtractQuotedStr(Start, '"'); // this moves the PChar pointer
+        Li.Caption := TmpStr;
       end
       else
       begin
-        tmpStart := Start;
+        TmpStart := Start;
         while Start^ <> Separator do
         begin
-          if Start = _End then
+          if Start = Stop then
             Break;
           Inc(Start);
         end;
-        SetString(tmpStr, Start, Start - tmpStart);
-        li := Items.Add;
-        li.Caption := tmpStr;
+        SetString(TmpStr, Start, Start - TmpStart);
+        Li := Items.Add;
+        Li.Caption := TmpStr;
       end;
     end;
-    if li <> nil then
+    if Li <> nil then
     begin
-      while (Start <> _End) and (Start <> nil) and (Start^ <> #0) do
+      while (Start <> Stop) and (Start <> nil) and (Start^ <> #0) do
       begin
         while Start^ = Separator do
           Inc(Start);
         if Start^ = '"' then
         begin
-          tmpStr := AnsiExtractQuotedStr(Start, '"'); // this moves the PChar pointer
-          li.SubItems.Add(tmpStr);
+          TmpStr := AnsiExtractQuotedStr(Start, '"'); // this moves the PChar pointer
+          Li.SubItems.Add(TmpStr);
         end
         else
         begin
-          tmpStart := Start;
+          TmpStart := Start;
           while Start^ <> Separator do
           begin
-            if Start = _End then
+            if Start = Stop then
               Break;
             Inc(Start);
           end;
-          SetString(tmpStr, Start, Start - tmpStart);
-          li.SubItems.Add(tmpStr);
+          SetString(TmpStr, Start, Start - TmpStart);
+          Li.SubItems.Add(TmpStr);
         end;
       end;
     end;
@@ -935,7 +935,7 @@ begin
   Items.BeginUpdate;
   try
     Items.Clear;
-    S.LoadFromFile(Filename);
+    S.LoadFromFile(FileName);
     LoadFromStrings(S, Separator);
   finally
     Items.EndUpdate;
@@ -951,7 +951,7 @@ begin
   Items.BeginUpdate;
   try
     SaveToStrings(S, Separator);
-    S.SaveToFile(Filename);
+    S.SaveToFile(FileName);
   finally
     Items.EndUpdate;
     S.Free;
@@ -1129,7 +1129,7 @@ procedure TJvListView.UpdateHeaderImages(HeaderHandle: Integer);
 begin
   if (HeaderHandle <> 0) and (ViewStyle = vsReport) and ShowColumnHeaders then
   begin
-//    WP.length := sizeof(WP);
+//    WP.length := SizeOf(WP);
 //    GetWindowPlacement(HeaderHandle, @WP);
     if HeaderImages <> nil then
     begin
@@ -1197,7 +1197,7 @@ begin
   with Msg do
   begin
     lv := TListItem(WParam);
-    if Assigned(lv) and (items.IndexOf(lv) >= 0) and (LParam = 1) then
+    if Assigned(lv) and (Items.IndexOf(lv) >= 0) and (LParam = 1) then
     begin
       lv.Selected := True;
       lv.Focused := True;

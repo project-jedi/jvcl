@@ -255,7 +255,7 @@ begin
     Result.LS := FixedFileInfo^.dwProductVersionLS;
   end
   else
-    FillChar(Result, sizeof(Result), 0);
+    FillChar(Result, SizeOf(Result), 0);
 end;
 
 function TJvVersionInfo.GetFileLongVersion: TLongVersion;
@@ -266,7 +266,7 @@ begin
     Result.LS := FixedFileInfo^.dwFileVersionLS;
   end
   else
-    FillChar(Result, sizeof(Result), 0);
+    FillChar(Result, SizeOf(Result), 0);
 end;
 
 function TJvVersionInfo.GetVersionNum: Longint;

@@ -74,7 +74,7 @@ type
     Defines a complex gesture (two or more letters event)
 
   }
-  TOnMouseGestureCustomInterpretation = procedure(Sender:TObject; const AGesture: string) of object;
+  TOnMouseGestureCustomInterpretation = procedure(Sender: TObject; const AGesture: string) of object;
 
   { Description
     This class implements the basic interpreter. It can be used
@@ -177,16 +177,16 @@ type
     }
     procedure SetActive(const Value: Boolean);
   protected
-    procedure DoMouseGestureRight;virtual;
-    procedure DoMouseGestureLeft;virtual;
-    procedure DoMouseGestureUp;virtual;
-    procedure DoMouseGestureDown;virtual;
-    procedure DoMouseGestureLeftLowerEdge;virtual;
-    procedure DoMouseGestureRightUpperEdge;virtual;
-    procedure DoMouseGestureLeftUpperEdge;virtual;
-    procedure DoMouseGestureRightLowerEdge;virtual;
-    procedure DoMouseGestureCancelled;virtual;
-    function DoMouseGestureCustomInterpretation(const AGesture:string):boolean;virtual;
+    procedure DoMouseGestureRight; virtual;
+    procedure DoMouseGestureLeft; virtual;
+    procedure DoMouseGestureUp; virtual;
+    procedure DoMouseGestureDown; virtual;
+    procedure DoMouseGestureLeftLowerEdge; virtual;
+    procedure DoMouseGestureRightUpperEdge; virtual;
+    procedure DoMouseGestureLeftUpperEdge; virtual;
+    procedure DoMouseGestureRightLowerEdge; virtual;
+    procedure DoMouseGestureCancelled; virtual;
+    function DoMouseGestureCustomInterpretation(const AGesture: string): Boolean; virtual;
   public
     { Description
       Standard constructor
@@ -263,7 +263,7 @@ type
     { Description
       Event for a simple MOUSE UP gesture
     }
-    property OnMouseGestureCancelled:TNotifyEvent read FOnMouseGestureCancelled write FOnMouseGestureCancelled;
+    property OnMouseGestureCancelled: TNotifyEvent read FOnMouseGestureCancelled write FOnMouseGestureCancelled;
     property OnMouseGestureUp: TNotifyEvent read FOnMouseGestureUp write FOnMouseGestureUp;
     { Description
       Event for a simple MOUSE DOWN gesture
@@ -359,7 +359,7 @@ type
       to enable system wide hooks ...
     }
     procedure CreateForThreadOrSystem(AOwner: TComponent; ADwThreadID: Cardinal);
-    function DoMouseGestureCustomInterpretation(const AGesture:string):boolean;virtual;
+    function DoMouseGestureCustomInterpretation(const AGesture: string): Boolean; virtual;
   public
     { Description
       Standard constructor
@@ -379,7 +379,7 @@ type
     }
     property CurrentHook: HHook read FCurrentHook; //contains the handle of the currently installed hook
     {$ENDIF VCL}
-    property MouseGesture:TJvMouseGesture read GetMouseGesture;
+    property MouseGesture: TJvMouseGesture read GetMouseGesture;
   published
     { Description
       TRUE if component is active, otherwise FALSE. Can be changed during runtime
@@ -736,7 +736,7 @@ begin
     FOnMouseGestureCancelled(Self);
 end;
 
-function TJvMouseGesture.DoMouseGestureCustomInterpretation(const AGesture: string):boolean;
+function TJvMouseGesture.DoMouseGestureCustomInterpretation(const AGesture: string): Boolean;
 begin
    Result := Assigned(FOnMouseGestureCustomInterpretation);
    if Result then
@@ -870,7 +870,7 @@ begin
     JvMouseGestureInterpreter.OnMouseGestureCustomInterpretation := nil;
 end;
 
-function TJvMouseGestureHook.DoMouseGestureCustomInterpretation(const AGesture: string): boolean;
+function TJvMouseGestureHook.DoMouseGestureCustomInterpretation(const AGesture: string): Boolean;
 begin
   Result := Assigned(FOnMouseGestureCustomInterpretation);
   if Result then
@@ -1025,9 +1025,6 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
-
-
-
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

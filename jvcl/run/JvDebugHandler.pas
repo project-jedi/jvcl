@@ -1,4 +1,5 @@
-unit JvDebugHandler; {JvDebugHandler.pas version 2.0.0.0 for use with Delphi versions 7 and 9(2005}
+{-----------------------------------------------------------------------------
+  JvDebugHandler.pas version 2.0.0.0 for use with Delphi versions 7 and 9(2005}
 
 { The contents of this file are subject to the Mozilla Public License
   Version 1.1 (the "License"); you may not use this file except in compliance
@@ -24,7 +25,7 @@ unit JvDebugHandler; {JvDebugHandler.pas version 2.0.0.0 for use with Delphi ver
     Phone:  (570) 544-2631
     FAX:    (570) 544-6547
     Cell:   (570) 590-3879
-    E-mail:  rmeek@ptd.net
+    E-mail:  rmeek att ptd dott net
     WWW:  www.TangentalsDesign.com
 
     All code, files, and/or data pertaining to and referenced by the above named
@@ -109,7 +110,12 @@ unit JvDebugHandler; {JvDebugHandler.pas version 2.0.0.0 for use with Delphi ver
 
                    Although it is NOT necessary to check if CodeSite is enabled or not here, I
                    choose do do so because if I disable it and still leave this code in place,
-                   an exception will not occurr.}
+                   an exception will not occur.
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
+unit JvDebugHandler;
 
 {$I jvcl.inc}
 {$I windowsonly.inc}
@@ -121,8 +127,8 @@ uses
   JclDebug, JclHookExcept;
 
 type
-  TJvDebugHandler = Class(TComponent)
-  Private
+  TJvDebugHandler = class(TComponent)
+  private
     FExceptionLogging: Boolean;
     FStackTrackingEnable: Boolean;
     FUnhandledExceptionsOnly: Boolean;
@@ -149,7 +155,7 @@ type
     property UnhandledExceptionsOnly: Boolean read FUnhandledExceptionsOnly write SetUnhandled default False;
     property LogToFile: Boolean read FLogToFile write FLogToFile default True;
     property LogFileName: string read FName write FName;
-    property AppendLogFile: Boolean read FAppendLogfile write FAppendLogFile default True;
+    property AppendLogFile: Boolean read FAppendLogFile write FAppendLogFile default True;
     property OnOtherDestination: TNotifyEvent read FOnOtherDestination write FOnOtherDestination;
   end;
 
@@ -159,6 +165,24 @@ implementation
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+
+constructor TJvDebugHandler.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FExceptionLogging := True;
+  FStackTrackingEnable := True;
+  FLogToFile := True;
+  FAppendLogFile := True;
+  Loaded;
+end;
+
+destructor TJvDebugHandler.Destroy;
+begin
+  JclStopExceptionTracking;
+  JclRemoveExceptNotifier(ExceptionNotifier);
+  JclUnhookExceptions;
+  inherited Destroy;
+end;
 
 procedure TJvDebugHandler.HandleUnKnownException(Sender: TObject; E: Exception);
 begin
@@ -202,24 +226,6 @@ begin
   end;
 end;
 
-constructor TJvDebugHandler.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FExceptionLogging := True;
-  FStackTrackingEnable := True;
-  FLogToFile := True;
-  FAppendLogfile := True;
-  Loaded;
-end;
-
-destructor TJvDebugHandler.Destroy;
-begin
-  JclStopExceptionTracking;
-  JclRemoveExceptNotifier(ExceptionNotifier);
-  JclUnhookExceptions;
-  inherited Destroy;
-end;
-
 procedure TJvDebugHandler.ExceptionNotifier(ExceptObj: TObject; ExceptAddr: Pointer;
   OSException: Boolean);
 var
@@ -239,6 +245,7 @@ begin
   begin
     ExceptionStringList := TStringList.Create;
     try
+      // (rom) literals instead of resourcestrings are acceptable here
       if MapOfAddr(ExceptAddr, FileName, UnitName, ProcedureName, Line) then
         Loc := Format('in %s at %d in file %s', [ProcedureName, Line, FileName])
       else
@@ -263,7 +270,7 @@ begin
       begin
         if FName = '' then
           FName := ExtractFilePath(Application.ExeName) + Application.Title + 'ERRORLOG.txt';
-        if not FAppendLogfile Then
+        if not FAppendLogFile Then
           ExceptionStringList.SaveToFile(FName)
         else
         begin
@@ -277,7 +284,7 @@ begin
               ExceptionStringList.Add('');
               ExceptionStringList.Add('');
               for I := 0 to PreviousExceptionStringList.Count - 1 do
-                ExceptionStringList.Add(PreviousExceptionStringList[i]);
+                ExceptionStringList.Add(PreviousExceptionStringList[I]);
               ExceptionStringList.SaveToFile(FName);
             finally
               PreviousExceptionStringList.Free;

@@ -1749,9 +1749,11 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Consts, Printers,
   {$IFDEF USEJVCL}
   JvConsts, JvResources,
@@ -5243,7 +5245,7 @@ begin
     if FDitheredBackground then
       DrawDither(ACanvas, Rect, CellColor, clWhite)
     else
-      Windows.StretchBlt(aCanvas.Handle, Rect.Left, Rect.Top, RectWidth(Rect),
+      Windows.StretchBlt(ACanvas.Handle, Rect.Left, Rect.Top, RectWidth(Rect),
         RectHeight(Rect), FWeekendFillPic.Canvas.Handle,
         0, 0, FWeekendFillPic.Width,
         FWeekendFillPic.Height, SRCCOPY);
@@ -14656,6 +14658,7 @@ begin
   FVisible := Value;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -14671,6 +14674,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

@@ -86,7 +86,7 @@ begin
   if csDesigning in ComponentState then
   begin
     FBmp := TBitmap.Create;
-    FBmp.LoadFromResourceName(hInstance, 'DESIGNENTERASTAB');
+    FBmp.LoadFromResourceName(HInstance, 'DESIGNENTERASTAB');
   end
   else
     Visible := False;

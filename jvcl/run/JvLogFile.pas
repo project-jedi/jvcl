@@ -55,7 +55,7 @@ type
     FList: TJvLogRecordList;
     FOnClose: TNotifyEvent;
     FOnShow: TNotifyEvent;
-    FFileName: TFilename;
+    FFileName: TFileName;
     FActive: Boolean;
     FAutoSave: Boolean;
     FSizeLimit: Cardinal;
@@ -63,7 +63,7 @@ type
     procedure SetAutoSave(const Value: Boolean);
     procedure DoAutoSave;
     procedure EnsureSize;
-    procedure SetFileName(const Value: TFilename);
+    procedure SetFileName(const Value: TFileName);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -83,7 +83,7 @@ type
     procedure ShowLog(Title: string);
   published
     // (obones) some extra properties to make transparent use a bit easier
-    property FileName: TFilename read FFileName write SetFileName;
+    property FileName: TFileName read FFileName write SetFileName;
     property Active: Boolean read FActive write FActive default True;
     property AutoSave: Boolean read FAutoSave write SetAutoSave default False;
     property SizeLimit: Cardinal read FSizeLimit write FSizeLimit default 0;  // 0 for infinity
@@ -182,7 +182,7 @@ end;
 procedure TJvLogFile.DoAutoSave;
 begin
   if AutoSave then
-    SaveToFile(Filename);
+    SaveToFile(FileName);
 end;
 
 procedure TJvLogFile.EnsureSize;
@@ -332,14 +332,14 @@ end;
 
 procedure TJvLogFile.SetAutoSave(const Value: Boolean);
 begin
-  FAutoSave := Value and (Filename <> '');  // can't autosave if no filename (obones)
+  FAutoSave := Value and (FileName <> '');  // can't autosave if no filename (obones)
 end;
 
-procedure TJvLogFile.SetFilename(const Value: TFilename);
+procedure TJvLogFile.SetFileName(const Value: TFileName);
 begin
-  FFilename := Value;
-  if FileExists(Filename) then
-      LoadFromFile(Filename);
+  FFileName := Value;
+  if FileExists(FileName) then
+    LoadFromFile(FileName);
 end;
 
 procedure TJvLogFile.ShowLog(Title: string);

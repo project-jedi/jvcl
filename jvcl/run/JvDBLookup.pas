@@ -1110,7 +1110,7 @@ begin
               FSearchText := '';
             SearchTickCount := TickCount;
           end;
-          if Key = BackSpace then
+          if Key = Backspace then
             S := Copy(FSearchText, 1, Length(FSearchText) - 1)
           else
           if Length(FSearchText) < 32 then
@@ -3553,7 +3553,7 @@ end;
 procedure TJvDBLookupEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  FIgnoreChange := (SelLength > 0) or (Key = BackSpace);
+  FIgnoreChange := (SelLength > 0) or (Key = Backspace);
 end;
 
 procedure TJvDBLookupEdit.Change;

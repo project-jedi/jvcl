@@ -33,7 +33,7 @@ Known Issues:
  |   Wayne Niddery         <waynen att logicfundamentals dott com>           |
  |   Raymond J. Schappe    <rschappe att isthmus-ts dott com>                |
  |   Theodore              <thpana att otenet dott gr>                       |
- |   Max Evans             <max att codecraft dott com dott au>              |              |
+ |   Max Evans             <max att codecraft dott com dott au>              |
  +---------------------------------------------------------------------------+
  | HISTORY      COMMENTS                                                     |
  +---------------------------------------------------------------------------+
@@ -418,13 +418,13 @@ type
     FAlign: TJvWizardAlign;
     FPages: TList;
     FPageIndex: Integer;
-    FImage:TJvWizardImage;
+    FImage: TJvWizardImage;
     FOnDisplaying: TJvWizardRouteMapDisplayEvent;
     function GetPage(Index: Integer): TJvWizardCustomPage;
     function GetPageCount: Integer;
     procedure SetAlign(Value: TJvWizardAlign);
     procedure SetPageIndex(Value: Integer);
-    procedure SetImage(const Value:TJvWizardImage);
+    procedure SetImage(const Value: TJvWizardImage);
     {$IFDEF VCL}
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     {$ENDIF VCL}
@@ -435,7 +435,7 @@ type
     procedure DoMovePage(const APage: TJvWizardCustomPage; const OldIndex: Integer);
     procedure DoImageChange(Sender: TObject);
   protected
-    function HasPicture:boolean;
+    function HasPicture: Boolean;
     {$IFDEF VCL}
     procedure SetParent(AParent: TWinControl); override;
     {$ENDIF VCL}
@@ -454,7 +454,7 @@ type
     function CanDisplay(const APage: TJvWizardCustomPage): Boolean; virtual;
     property Wizard: TJvWizard read FWizard write FWizard;
     property Align: TJvWizardAlign read FAlign write SetAlign default alLeft;
-    property Image:TJvWizardImage read FImage write SetImage;
+    property Image: TJvWizardImage read FImage write SetImage;
     property OnDisplaying: TJvWizardRouteMapDisplayEvent
       read FOnDisplaying write FOnDisplaying;
   public
@@ -917,10 +917,10 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF USEJVCL}
   JvResources,
   {$ENDIF USEJVCL}
   Consts;
@@ -1396,7 +1396,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvWizardRouteMapControl.DoImageChange(Sender:TObject);
+procedure TJvWizardRouteMapControl.DoImageChange(Sender: TObject);
 begin
   Invalidate;
 end;
@@ -1480,12 +1480,12 @@ begin
   Result := FPages.Count;
 end;
 
-procedure TJvWizardRouteMapControl.SetImage(const Value:TJvWizardImage);
+procedure TJvWizardRouteMapControl.SetImage(const Value: TJvWizardImage);
 begin
   FImage.Assign(Value);
 end;
 
-function TJvWizardRouteMapControl.HasPicture:boolean;
+function TJvWizardRouteMapControl.HasPicture: Boolean;
 begin
   Result := (FImage.Picture.Graphic <> nil) and not FImage.Picture.Graphic.Empty;
 end;
@@ -3291,6 +3291,7 @@ begin
     FOnActivePageChanging(Self, ToPage);
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -3306,6 +3307,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

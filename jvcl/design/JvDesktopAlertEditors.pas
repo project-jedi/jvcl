@@ -38,18 +38,19 @@ uses
   JvDesktopAlert;
 
 type
-  TJvCustomDesktopAlertStyleHandlerEditor = class (TClassProperty)
+  TJvCustomDesktopAlertStyleHandlerEditor = class(TClassProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
   end;
 
 implementation
 
-{ TJvCustomDesktopAlertStyleHandlerEditor }
+//=== { TJvCustomDesktopAlertStyleHandlerEditor } ============================
 
 function TJvCustomDesktopAlertStyleHandlerEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := inherited GetAttributes {$IFDEF COMPILER6_UP} + [paVolatileSubProperties] {$ENDIF COMPILER6_UP};
+  Result := inherited GetAttributes
+    {$IFDEF COMPILER6_UP} + [paVolatileSubProperties] {$ENDIF};
 end;
 
 end.

@@ -206,7 +206,7 @@ begin
   //if (csDesigning in ComponentState)and not (csLoading in ComponentState) then
   begin
     FGlyphClose := TBitmap.Create;
-    FGlyphClose.LoadFromResourceName(hInstance, 'CLOSE');
+    FGlyphClose.LoadFromResourceName(HInstance, 'CLOSE');
   end;
   {$ENDIF GL_CAPT_BUTTONS}
 

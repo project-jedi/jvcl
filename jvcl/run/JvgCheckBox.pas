@@ -870,9 +870,9 @@ begin
       FGlyphOff := TBitmap.Create;
     if not Assigned(FGlyphDisabled) then
       FGlyphDisabled := TBitmap.Create;
-    FGlyphOn.LoadFromResourceName(hInstance, 'ON');
-    FGlyphOff.LoadFromResourceName(hInstance, 'OFF');
-    FGlyphDisabled.LoadFromResourceName(hInstance, 'DISABLED');
+    FGlyphOn.LoadFromResourceName(HInstance, 'ON');
+    FGlyphOff.LoadFromResourceName(HInstance, 'OFF');
+    FGlyphDisabled.LoadFromResourceName(HInstance, 'DISABLED');
 
     FGlyphOn.Transparent := True;
     FGlyphOn.TransparentMode := tmAuto;

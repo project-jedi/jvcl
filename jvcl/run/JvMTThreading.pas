@@ -808,8 +808,10 @@ begin
   SyncWindow := CreateWindowEx(WS_EX_TOOLWINDOW, SyncWindowClass.lpszClassName,
     '', WS_POPUP, 0, 0, 0, 0, 0, 0, HInstance, nil);
 end;
+
 {$ENDIF COMPILER5}
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -819,11 +821,14 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 initialization
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
 
   {$IFDEF COMPILER5}
   InitializeCriticalSection(ThreadSyncLock);
@@ -837,8 +842,10 @@ finalization
   DestroyWindow(SyncWindow);
   {$ENDIF COMPILER5}
 
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
 
 end.

@@ -541,10 +541,12 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  ComStrs, Consts, SysUtils, 
+  {$ENDIF USEJVCL}
+  ComStrs, Consts, SysUtils,
   JvDockGlobals, JvDockControlForm, JvDockSupportProc;
 
 type
@@ -3697,6 +3699,7 @@ begin
   end;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -3712,5 +3715,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.

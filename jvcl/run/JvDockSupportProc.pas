@@ -87,9 +87,11 @@ function JvDockGetControlSize(AControl: TControl): Integer;
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   SysUtils, Math,
   JvDockControlForm, JvDockGlobals;
 
@@ -373,6 +375,7 @@ begin
   end;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -382,17 +385,21 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 initialization
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
+  {$ENDIF USEJVCL}
 
 finalization
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   FreeAndNil(JvDockTitleFont);
 
 end.

@@ -736,7 +736,7 @@ type
     function GetHint: string;
     function GetImageIndex: TImageIndex;
   public
-    procedure Assign(Source:TPersistent);override;
+    procedure Assign(Source: TPersistent); override;
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
     property Button: TJvNavPanelToolButton read FRealButton;

@@ -111,7 +111,7 @@ type
   // This class handles the flushing into a disk file
   // and publishes a few properties for them to be
   // used by the user in the IDE
-  TJvAppXMLFileStorage = class (TJvCustomAppXMLStorage)
+  TJvAppXMLFileStorage = class(TJvCustomAppXMLStorage)
   public
     procedure Flush; override;
     procedure Reload; override;
@@ -728,13 +728,13 @@ end;
 procedure StorePropertyStoreToXmlFile(APropertyStore: TJvCustomPropertyStore;
   const AFileName: string; const AAppStoragePath: string = '');
 var
-  AppStorage: TJvAppXmlFileStorage;
+  AppStorage: TJvAppXMLFileStorage;
   SaveAppStorage: TJvCustomAppStorage;
   SaveAppStoragePath: string;
 begin
   if not Assigned(APropertyStore) then
     Exit;
-  AppStorage := TJvAppXmlFileStorage.Create(nil);
+  AppStorage := TJvAppXMLFileStorage.Create(nil);
   try
     AppStorage.Location := flCustom;
     AppStorage.FileName := AFileName;
@@ -756,13 +756,13 @@ end;
 procedure LoadPropertyStoreFromXmlFile(APropertyStore: TJvCustomPropertyStore;
   const AFileName: string; const AAppStoragePath: string = '');
 var
-  AppStorage: TJvAppXmlFileStorage;
+  AppStorage: TJvAppXMLFileStorage;
   SaveAppStorage: TJvCustomAppStorage;
   SaveAppStoragePath: string;
 begin
   if not Assigned(APropertyStore) then
     Exit;
-  AppStorage := TJvAppXmlFileStorage.Create(nil);
+  AppStorage := TJvAppXMLFileStorage.Create(nil);
   try
     AppStorage.Location := flCustom;
     AppStorage.FileName := AFileName;

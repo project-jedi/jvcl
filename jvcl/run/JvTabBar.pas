@@ -31,14 +31,14 @@ unit JvTabBar;
 interface
 
 uses
- {$IFDEF WINFORMS}
-  System.Windows.Forms, System.Drawing, 
-  Borland.Vcl.Windows, Borland.Vcl.Messages, Borland.VCL.SysUtils,
+  {$IFDEF WINFORMS}
+  System.Windows.Forms, System.Drawing,
+  Borland.Vcl.Windows, Borland.Vcl.Messages, Borland.Vcl.SysUtils,
   Borland.Vcl.Classes, Borland.Vcl.Types,
-  Jedi.WinForms.VCL.Graphics, Jedi.WinForms.VCL.Controls,
-  Jedi.WinForms.VCL.Forms, Jedi.WinForms.VCL.ImgList, Jedi.WinForms.VCL.Menus,
-  Jedi.WinForms.VCL.Buttons;
- {$ELSE}
+  Jedi.WinForms.Vcl.Graphics, Jedi.WinForms.Vcl.Controls,
+  Jedi.WinForms.Vcl.Forms, Jedi.WinForms.Vcl.ImgList, Jedi.WinForms.Vcl.Menus,
+  Jedi.WinForms.Vcl.Buttons;
+  {$ELSE}
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ImgList, Menus, Buttons,
   {$IFDEF CLR}
@@ -49,7 +49,7 @@ uses
   Types, Qt, QTypes, QGraphics, QControls, QForms, QImgList, QMenus, QButtons,
   {$ENDIF VisualCLX}
   SysUtils, Classes;
- {$ENDIF WINFORMS}
+  {$ENDIF WINFORMS}
 
 type
   TJvCustomTabBar = class;
@@ -318,8 +318,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X: Integer; Y: Integer); override;
     {$IFDEF VCL}
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure MouseLeave(AControl: TControl); override;
@@ -417,10 +417,12 @@ uses
 {$ENDIF UNITVERSIONING}
 
 type
-{$IFDEF VCL}
+  {$IFDEF VCL}
   TCanvasX = TCanvas;
-{$ENDIF VCL}
+  {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
+
   TCanvasX = class(TCanvas)
     // LineTo under CLX draws the last point, Windows doesn't. This wrapper
     // restores the last point.
@@ -435,11 +437,12 @@ begin
   inherited LineTo(X, Y);
   Pixels[X, Y] := C;
 end;
+
 {$ENDIF VisualCLX}
 
-{$IFDEF COMPILER5}
-{ TOwnedCollection }
+//=== { TOwnedCollection } ===================================================
 
+{$IFDEF COMPILER5}
 procedure TOwnedCollection.Update(Item: TCollectionItem);
 begin
   Notify(Item, cnAdded);
@@ -448,9 +451,10 @@ end;
 procedure TOwnedCollection.Notify(Item: TCollectionItem; Action: TCollectionNotification);
 begin
 end;
+
 {$ENDIF COMPILER5}
 
-{ TJvCustomTabBar }
+//=== { TJvCustomTabBar } ====================================================
 
 constructor TJvCustomTabBar.Create(AOwner: TComponent);
 begin
@@ -510,7 +514,7 @@ const
   W = 6;
   H = 6;
 var
-  Pts: array[0..2] of TPoint;
+  Pts: array [0..2] of TPoint;
 begin
   if Left then
     Result := FBmpLeftScroll
@@ -743,16 +747,18 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvCustomTabBar.CMMouseLeave(var Message: TMessage);
+
+procedure TJvCustomTabBar.CMMouseLeave(var Msg: TMessage);
 begin
   SetHotTab(nil);
   inherited;
 end;
 
-procedure TJvCustomTabBar.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TJvCustomTabBar.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
@@ -780,23 +786,19 @@ begin
       SelectedTab := Tab;
 
     if Assigned(Tab) and (Tab = SelectedTab) then
-    begin
       if CloseButton and (not SelectBeforeClose or (SelectedTab = LastSelected)) and
-         PtInRect(CurrentPainter.GetCloseRect(Canvas, Tab, Tab.DisplayRect), Point(X, Y)) then
-      begin
+        PtInRect(CurrentPainter.GetCloseRect(Canvas, Tab, Tab.DisplayRect), Point(X, Y)) then
         if TabClosing(Tab) then
         begin
           FMouseDownClosingTab := Tab;
           SetClosingTab(Tab);
         end;
-      end;
-    end;
   end;
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
-procedure TJvCustomTabBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvCustomTabBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 var
   Pt: TPoint;
   Tab: TJvTabBarItem;
@@ -819,7 +821,8 @@ begin
       if Assigned(FClosingTab) and CloseButton then
       begin
         CalcTabsRects;
-        if PtInRect(CurrentPainter.GetCloseRect(Canvas, FClosingTab, FClosingTab.DisplayRect), Point(X, Y)) then
+        if PtInRect(CurrentPainter.GetCloseRect(Canvas, FClosingTab,
+          FClosingTab.DisplayRect), Point(X, Y)) then
           TabClosed(FClosingTab);
       end;
     end;
@@ -842,7 +845,8 @@ begin
 
   if CloseButton and Assigned(FMouseDownClosingTab) and (ssLeft in Shift) then
   begin
-    if PtInRect(CurrentPainter.GetCloseRect(Canvas, FMouseDownClosingTab, FMouseDownClosingTab.DisplayRect), Point(X, Y)) then
+    if PtInRect(CurrentPainter.GetCloseRect(Canvas, FMouseDownClosingTab,
+      FMouseDownClosingTab.DisplayRect), Point(X, Y)) then
       SetClosingTab(FMouseDownClosingTab)
     else
       SetClosingTab(nil)
@@ -867,11 +871,8 @@ end;
 procedure TJvCustomTabBar.SetHotTab(Tab: TJvTabBarItem);
 begin
   if (csDestroying in ComponentState) or not HotTracking then
-  begin
-    FHotTab := nil;
-    Exit;
-  end;
-
+    FHotTab := nil
+  else
   if Tab <> FHotTab then
   begin
     FHotTab := Tab;
@@ -998,9 +999,9 @@ begin
     CalcTabsRects;
     Pt := Point(X, Y);
     for I := 0 to Tabs.Count - 1 do
-      if PtInRect(Tabs[i].DisplayRect, Pt) then
+      if PtInRect(Tabs[I].DisplayRect, Pt) then
       begin
-        Result := Tabs[i];
+        Result := Tabs[I];
         Exit;
       end;
   end;
@@ -1071,7 +1072,8 @@ const
   BtnSize = 12;
 begin
   CalcTabsRects;
-  if (FRequiredWidth < ClientWidth) or ((FLeftIndex = 0) and (FLastTabRight <= ClientWidth)) then
+  if (FRequiredWidth < ClientWidth) or ((FLeftIndex = 0) and
+    (FLastTabRight <= ClientWidth)) then
   begin
     FreeAndNil(FBtnLeftScroll);
     FreeAndNil(FBtnRightScroll);
@@ -1100,8 +1102,10 @@ begin
       FBtnRightScroll.Glyph := GetScrollBarGlyph(False);
     end;
 
-    FBtnLeftScroll.SetBounds(ClientWidth - BtnSize * 2 - 1 - 1, ClientHeight - BtnSize - 2, BtnSize, BtnSize);
-    FBtnRightScroll.SetBounds(ClientWidth - BtnSize - 1 - 1, ClientHeight - BtnSize - 2, BtnSize, BtnSize);
+    FBtnLeftScroll.SetBounds(ClientWidth - BtnSize * 2 - 1 - 1,
+      ClientHeight - BtnSize - 2, BtnSize, BtnSize);
+    FBtnRightScroll.SetBounds(ClientWidth - BtnSize - 1 - 1,
+      ClientHeight - BtnSize - 2, BtnSize, BtnSize);
 
     FBarWidth := FBtnLeftScroll.Left - 2;
 
@@ -1176,7 +1180,7 @@ begin
   end;
 end;
 
-{ TJvTabBarItem }
+//=== { TJvTabBarItem } ======================================================
 
 constructor TJvTabBarItem.Create(Collection: TCollection);
 begin
@@ -1203,6 +1207,7 @@ begin
   begin
     with TJvTabBarItem(Source) do
     begin
+      // (rom) possible bug. Better assign properties not property implementors.
       Self.FImageIndex := FImageIndex;
       Self.FEnabled := FEnabled;
       Self.FVisible := FVisible;
@@ -1224,10 +1229,8 @@ procedure TJvTabBarItem.Notification(Component: TComponent;
   Operation: TOperation);
 begin
   if Operation = opRemove then
-  begin
     if Component = PopupMenu then
       PopupMenu := nil;
-  end;
 end;
 
 procedure TJvTabBarItem.Changed;
@@ -1407,7 +1410,7 @@ begin
   Changed;
 end;
 
-{ TJvTabBarItems }
+//=== { TJvTabBarItems } =====================================================
 
 function TJvTabBarItems.Find(const AName: string): TJvTabBarItem;
 var
@@ -1464,7 +1467,7 @@ begin
   Result := -1;
 end;
 
-{ TJvTabBarPainter }
+//=== { TJvTabBarPainter } ===================================================
 
 procedure TJvTabBarPainter.Changed;
 begin
@@ -1472,7 +1475,7 @@ begin
     FOnChange(Self);
 end;
 
-{ TJvModernTabBarPainter }
+//=== { TJvModernTabBarPainter } =============================================
 
 constructor TJvModernTabBarPainter.Create(AOwner: TComponent);
 begin
@@ -1509,7 +1512,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvModernTabBarPainter.DrawBackground(Canvas: TCanvas; TabBar: TJvCustomTabBar; R: TRect);
+procedure TJvModernTabBarPainter.DrawBackground(Canvas: TCanvas;
+  TabBar: TJvCustomTabBar; R: TRect);
 begin
   with TCanvasX(Canvas) do
   begin
@@ -1547,7 +1551,8 @@ procedure TJvModernTabBarPainter.DrawDivider(Canvas: TCanvas;
 begin
   if not LeftTab.Selected then
   begin
-    if not Assigned(LeftTab.TabBar.SelectedTab) or (LeftTab.GetNextVisible <> LeftTab.TabBar.SelectedTab) then
+    if not Assigned(LeftTab.TabBar.SelectedTab) or
+      (LeftTab.GetNextVisible <> LeftTab.TabBar.SelectedTab) then
     begin
       with TCanvasX(Canvas) do
       begin
@@ -1658,7 +1663,7 @@ begin
     if (Tab.ImageIndex <> -1) and (Tab.GetImages <> nil) then
     begin
       Tab.GetImages.Draw(Canvas, R.Left, R.Top + (R.Bottom - R.Top - Tab.GetImages.Height) div 2,
-        Tab.ImageIndex, {$IFDEF VisualCLX}itImage,{$ENDIF} Tab.Enabled);
+        Tab.ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Tab.Enabled);
       Inc(R.Left, Tab.GetImages.Width + 2);
     end;
 
@@ -1847,16 +1852,12 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
-{$ENDIF UNITVERSIONING}
 
 initialization
-  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
 
 finalization
-  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 end.

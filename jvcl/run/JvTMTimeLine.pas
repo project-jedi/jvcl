@@ -1377,13 +1377,14 @@ begin
 end;
 
 function TJvCustomTMTimeline.DateHasImage(ADate: TDateTime): Boolean;
-var i:Integer;
+var
+  I: Integer;
 begin
   Result := False;
   if Assigned(Images) then
   begin
-    i := ImageIndex[ADate];
-    Result := (i >= 0) and (i < Images.Count);
+    I := ImageIndex[ADate];
+    Result := (I >= 0) and (I < Images.Count);
   end;
 end;
 

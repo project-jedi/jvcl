@@ -92,7 +92,7 @@ begin
   if Value <> Parent then
   begin
     WasActive := Active;
-    Active := false;
+    Active := False;
     if Assigned(Parent) then
       Parent.WindowProc := FSavedWinProc;
     inherited  SetParent(Value);

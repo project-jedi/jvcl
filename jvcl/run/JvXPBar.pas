@@ -575,9 +575,11 @@ procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
   {$IFNDEF COMPILER7_UP}
@@ -2086,7 +2088,12 @@ var
 
       { draw frame... }
       ACanvas.Brush.Color := FColors.FBorderColor;
-      {$IFDEF VCL}ACanvas.{$ENDIF VCL}FrameRect({$IFDEF VisualCLX}ACanvas, {$ENDIF}R);
+      {$IFDEF VCL}
+      ACanvas.FrameRect(R);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FrameRect(ACanvas, R);
+      {$ENDIF VisualCLX}
 
       if FHeaderRounded then
       begin
@@ -2138,9 +2145,9 @@ var
                 Index := 2; // down
             end;
             if FCollapsed then
-              Bitmap.LoadFromResourceName(hInstance, 'XPEXPAND' + IntToStr(Index))
+              Bitmap.LoadFromResourceName(HInstance, 'XPEXPAND' + IntToStr(Index))
             else
-              Bitmap.LoadFromResourceName(hInstance, 'XPCOLLAPSE' + IntToStr(Index));
+              Bitmap.LoadFromResourceName(HInstance, 'XPCOLLAPSE' + IntToStr(Index));
           end;
           Bitmap.Transparent := True;
           ACanvas.Draw(R.Right - 24, R.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
@@ -2473,6 +2480,7 @@ begin
   end;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -2488,6 +2496,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

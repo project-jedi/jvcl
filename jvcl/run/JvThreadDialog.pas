@@ -258,7 +258,7 @@ end;
 
 procedure TJvCustomThreadDialogForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  CanClose := JvThreadComp(fConnectedThread).Terminated;
+  CanClose := JvThreadComp(FConnectedThread).Terminated;
 end;
 
 //=== { TJvCustomThreadDialog } ==============================================
@@ -574,7 +574,7 @@ begin
       Top := 0;
       Left := 0;
       AutoSize := True;
-      CommonAvi := TJvThreadAnimateDialogOptions(DialogOptions).CommonAVI;
+      CommonAVI := TJvThreadAnimateDialogOptions(DialogOptions).CommonAVI;
       FileName := TJvThreadAnimateDialogOptions(DialogOptions).FileName;
       FAnimatePanel.Height := Height + 6;
     end;
@@ -714,7 +714,7 @@ begin
     FInfoText.Caption := DialogOptions.FInfoText;
     ThreadStatusDialog.Caption := DialogOptions.Caption;
     FInfoTextPanel.Visible := DialogOptions.InfoText <> '';
-    FAnimatePanel.Visible := FileExists(FAnimate.Filename) or (FAnimate.CommonAVI <> aviNone);
+    FAnimatePanel.Visible := FileExists(FAnimate.FileName) or (FAnimate.CommonAVI <> aviNone);
     FTimeTextPanel.Visible := DialogOptions.ShowElapsedTime;
     FCancelBtn.Enabled := DialogOptions.EnableCancelButton;
     FCancelButtonPanel.Visible := DialogOptions.ShowCancelButton;

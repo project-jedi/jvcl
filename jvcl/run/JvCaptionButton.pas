@@ -2052,7 +2052,7 @@ var
 begin
   // if we receive a TTN_GETDISPINFO notification
   // and it is from the tooltip
-  Result := (Msg.NMHdr.Code = TTN_NEEDTEXT) and (Msg.NMHdr.hwndFrom = FToolTipHandle);
+  Result := (Msg.NMHdr.code = TTN_NEEDTEXT) and (Msg.NMHdr.hwndFrom = FToolTipHandle);
 
   if Result and (ShowHint or (ParentShowHint and ParentForm.ShowHint)) then
   begin

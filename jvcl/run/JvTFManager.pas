@@ -514,7 +514,7 @@ type
     // implicit post fix
     function QueryPostAppt(Appt: TJvTFAppt): Boolean;
 
-    procedure AddToBatch(aSched: TJvTFSched);
+    procedure AddToBatch(ASched: TJvTFSched);
     procedure LoadBatch(const BatchName: string; BatchStartDate,
       BatchEndDate: TDate); virtual;
 
@@ -753,7 +753,7 @@ type
     property DateFormat: string read FDateFormat write SetDateFormat;
     property TimeFormat: string read FTimeFormat write SetTimeFormat;
     procedure DestroyApptNotification(anAppt: TJvTFAppt); virtual;
-    procedure DestroySchedNotification(aSched: TJvTFSched); virtual;
+    procedure DestroySchedNotification(ASched: TJvTFSched); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -800,7 +800,7 @@ type
     property DateFormat: string read FDateFormat write SetDateFormat;
     property TimeFormat: string read FTimeFormat write SetTimeFormat;
     procedure DestroyApptNotification(anAppt: TJvTFAppt); virtual;
-    procedure DestroySchedNotification(aSched: TJvTFSched); virtual;
+    procedure DestroySchedNotification(ASched: TJvTFSched); virtual;
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -1038,10 +1038,10 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF USEJVCL}
   JvConsts, JvResources,
   {$ENDIF USEJVCL}
   Dialogs, Forms;
@@ -3436,18 +3436,18 @@ begin
   FSchedLoadMode := Value;
 end;
 
-procedure TJvTFScheduleManager.AddToBatch(aSched: TJvTFSched);
+procedure TJvTFScheduleManager.AddToBatch(ASched: TJvTFSched);
 var
   SchedID: string;
 begin
-  SchedID := TJvTFScheduleManager.GetScheduleID(aSched.SchedName, aSched.SchedDate);
-  FSchedBatch.AddObject(SchedID, aSched);
+  SchedID := TJvTFScheduleManager.GetScheduleID(ASched.SchedName, ASched.SchedDate);
+  FSchedBatch.AddObject(SchedID, ASched);
 end;
 
 procedure TJvTFScheduleManager.ProcessBatches;
 var
   I: Integer;
-  aSched: TJvTFSched;
+  ASched: TJvTFSched;
   CompName: string;
   CompDate: TDate;
   BatchName: string;
@@ -3475,27 +3475,27 @@ begin
   FLoadingAppts := True;
   try
     // Prime the process (reminds me of COBOL - yuck!)
-    aSched := TJvTFSched(FSchedBatch.Objects[0]);
-    UpdateCompares(aSched);
-    NewBatch(aSched);
+    ASched := TJvTFSched(FSchedBatch.Objects[0]);
+    UpdateCompares(ASched);
+    NewBatch(ASched);
 
     for I := 1 to FSchedBatch.Count - 1 do
     begin
-      aSched := TJvTFSched(FSchedBatch.Objects[I]);
+      ASched := TJvTFSched(FSchedBatch.Objects[I]);
 
-      if (aSched.SchedName <> CompName) or
-        (Trunc(aSched.SchedDate) - 1 <> Trunc(CompDate)) then
+      if (ASched.SchedName <> CompName) or
+        (Trunc(ASched.SchedDate) - 1 <> Trunc(CompDate)) then
       begin
         // Hit new batch.  Load the current batch and then
         // set batch info to new batch.
         LoadBatch(BatchName, BatchStartDate, BatchEndDate);
-        NewBatch(aSched);
+        NewBatch(ASched);
       end
       else
         // Still in current batch.  Update the batch end date.
-        BatchEndDate := aSched.SchedDate;
+        BatchEndDate := ASched.SchedDate;
 
-      UpdateCompares(aSched);
+      UpdateCompares(ASched);
     end;
 
     // Load the last batch
@@ -4011,7 +4011,7 @@ begin
   // do nothing, leave implementation to successors
 end;
 
-procedure TJvTFControl.DestroySchedNotification(aSched: TJvTFSched);
+procedure TJvTFControl.DestroySchedNotification(ASched: TJvTFSched);
 begin
   // do nothing, leave implementation to successors
 end;
@@ -4168,7 +4168,7 @@ begin
   // do nothing, leave implementation to descendants
 end;
 
-procedure TJvTFComponent.DestroySchedNotification(aSched: TJvTFSched);
+procedure TJvTFComponent.DestroySchedNotification(ASched: TJvTFSched);
 begin
   // do nothing, leave implementation to descendants
 end;
@@ -5368,6 +5368,7 @@ end;
 //    FControls.Delete(I);
 //end;
 
+  {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -5383,6 +5384,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

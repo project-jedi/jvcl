@@ -556,9 +556,11 @@ procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, End
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   {$IFDEF JVCLThemesEnabled}
   JvThemes,
   {$ENDIF JVCLThemesEnabled}
@@ -4540,6 +4542,7 @@ begin
   FTextEllipsis := Value;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -4554,7 +4557,8 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

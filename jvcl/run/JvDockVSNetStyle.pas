@@ -483,9 +483,11 @@ var
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   SysUtils, Math, {AppEvnts,}
   JvDockSupportProc, JvDockGlobals;
 
@@ -831,7 +833,7 @@ begin
       FirstIndex := FVSPaneList.Count;
       for I := 0 to DockableControl.DockClientCount - 1 do
       begin
-        AddPane(PageControl.DockClients[i], PaneWidth);
+        AddPane(PageControl.DockClients[I], PaneWidth);
         TJvDockVSNETTabSheet(PageControl.Pages[I]).OldVisible := PageControl.DockClients[I].Visible;
         if PageControl.Pages[I] <> PageControl.ActivePage then
           PageControl.DockClients[I].Visible := False;
@@ -3589,6 +3591,7 @@ begin
   end;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -3598,22 +3601,26 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 initialization
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
+  {$ENDIF USEJVCL}
 
 finalization
-  {$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
   GlobalPopupPanelAnimate.Free;
   GlobalPopupPanelAnimate := nil;
   { (ahuser) not used:
   GlobalApplicationEvents.Free;
   GlobalApplicationEvents := nil; }
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
 
 end.
 
