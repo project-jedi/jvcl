@@ -50,13 +50,13 @@ interface
 uses
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
   {$IFDEF MSWINDOWS}
-  Windows, Messages,
+  Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Graphics, Controls, StdCtrls, ExtCtrls,
+  Messages, Graphics, Controls, StdCtrls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, Types, QGraphics, QControls, QStdCtrls, QExtCtrls,
+  Qt, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows,
   {$ENDIF VisualCLX}
   JvClxUtils, JvComponent, JvTypes, JvExControls;
 
@@ -615,7 +615,9 @@ type
     FDisplayName: string;
     FDroppedDown: Boolean;
     FEditCtrl: TCustomEdit;
+    {$IFDEF VCL}
     FEditWndPrc: TWndMethod;
+    {$ENDIF}
     FEditing: Boolean;
     FFlags: TInspectorItemFlags;
     FHeight: Integer;
@@ -755,7 +757,9 @@ type
     property Category: TJvInspectorCustomCategoryItem read GetCategory;
     property DroppedDown: Boolean read GetDroppedDown;
     property EditCtrl: TCustomEdit read GetEditCtrl;
+    {$IFDEF VCL}
     property EditWndPrc: TWndMethod read FEditWndPrc;
+    {$ENDIF}
     property IsCompoundColumn: Boolean read GetIsCompoundColumn;
     property LastPaintGeneration: Integer read FLastPaintGen;
     property ListBox: TCustomListBox read GetListBox;
@@ -1654,16 +1658,16 @@ const
 implementation
 
 uses
-  Consts,
+
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
-  Dialogs, Forms, Buttons,
+  Consts, Dialogs, Forms, Buttons,
   JvWndProcHook,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QDialogs, QForms, QButtons,
+  QDialogs, QForms, QButtons, QConsts,
   {$ENDIF VisualCLX}
   JclRTTI, JclLogic,
   JvJCLUtils, JvJVCLUtils, JvThemes, JvResources;
@@ -3348,9 +3352,13 @@ begin
     begin
       Min := 0;
       try
-        Max := Round((IdxToY(Succ(YToIdx(ImageHeight - ClientHeight))) + ClientHeight) / ScFactor);
-        LargeChange := Round(ClHeight / ScFactor);
-        Position := Round(IdxToY(TopIndex) / ScFactor);
+//        Max := Round((IdxToY(Succ(YToIdx(ImageHeight - ClientHeight))) + ClientHeight) / ScFactor);
+//        LargeChange := Round(ClHeight / ScFactor);
+//        Position := Round(IdxToY(TopIndex) / ScFactor);
+        if ImageHeight > ClientHeight then
+          Max := ImageHeight-Clientheight;
+        LargeChange := self.ClientHeight;
+        Position := IdxToY(TopIndex);
       except
         on E: Exception do ShowMessage(E.Message);
       end;
@@ -3547,8 +3555,8 @@ begin
   inherited Create(AOwner);
   {$IFDEF VisualCLX}
   ControlStyle := ControlStyle - [csAcceptsControls, csNoFocus];
-  FHorzScrollBar := TScrollBar.Create(nil);
-  FVertScrollBar := TScrollBar.Create(nil);
+  FHorzScrollBar := TScrollBar.Create(self);
+  FVertScrollBar := TScrollBar.Create(self);
 
   FHorzScrollBar.Parent := Self;
   FHorzScrollBar.Visible := False;
@@ -3607,10 +3615,6 @@ begin
   FBandStartsNoSB.Free;
   FSortNotificationList.Free;
   FVisibleList.Free;
-  {$IFDEF VisualCLX}
-  FHorzScrollBar.Free;
-  FVertScrollBar.Free;
-  {$ENDIF VisualCLX}
 end;
 
 function TJvCustomInspector.BeginUpdate: Integer;
@@ -4917,6 +4921,12 @@ begin
     SetWindowPos(ListBox.Handle, HWND_TOP, P.X, Y, 0, 0,
       SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
     {$ELSE}
+    ListBox.Left := Rects[iprValueArea].Left;
+    if (Rects[iprValueArea].Bottom + ListBox.Height) <= ListBox.parent.Height
+    then
+      ListBox.Top := Rects[iprValueArea].Bottom + 1
+    else
+      ListBox.Top := Rects[iprValueArea].Top - ListBox.Height-1;
     ListBox.Show;
     ListBox.BringToFront;
     {$ENDIF VCL}
@@ -5964,10 +5974,8 @@ const
   LeftOffs = 3;
 var
   R: TRect;
-  {$IFDEF VCL}
   BFlags: Integer;
   W, G, I: Integer;
-  {$ENDIF VCL}
 begin
   // This reduces the flickering when dragging the divider bar
   if EditCtrl <> nil then
@@ -5984,9 +5992,7 @@ begin
   R := Rects[iprEditButton];
   if not IsRectEmpty(R) then
   begin
-    {$IFDEF VCL}
     BFlags := 0;
-    {$ENDIF VCL}
     if iifValueList in Flags then
     begin
       {$IFDEF VCL}
@@ -6017,7 +6023,6 @@ begin
       DrawEdge(ACanvas, R, esRaised, esNone, [ebLeft, ebTop, ebRight, ebBottom]);
       {$ENDIF VCL}
 
-      {$IFDEF VCL}
       W := 2;
       G := (RectWidth(R) - 2 * Ord(Pressed) - (3 * W)) div 4;
       if G < 1 then
@@ -6035,9 +6040,6 @@ begin
       PatBlt(ACanvas.Handle, BFlags, I, W, W, BLACKNESS);
       PatBlt(ACanvas.Handle, BFlags + G + W, I, W, W, BLACKNESS);
       PatBlt(ACanvas.Handle, BFlags + 2 * G + 2 * W, I, W, W, BLACKNESS);
-      {$ELSE}
-      {TODO : implement the above code for CLX}
-      {$ENDIF VCL}
     end;
   end;
 end;
@@ -6201,7 +6203,11 @@ begin
       FListBox := TListBox.Create(Inspector);
       {$ENDIF VCL}
       ListBox.Visible := False;
+      {$IFDEF VCL}
       ListBox.Parent := EditCtrl;
+      {$ELSE}
+      ListBox.Parent := EditCtrl.parent;
+      {$ENDIF}
       TListBox(ListBox).OnMouseUp := ListMouseUp;
       {$IFDEF VCL}
       TListBox(ListBox).IntegralHeight := not (iifOwnerDrawListVariable in
