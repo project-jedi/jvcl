@@ -125,10 +125,10 @@ begin
 end;
 
 procedure TJvFullColorListFrm.ActionDeleteExecute(Sender: TObject);
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 var
   I: Integer;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 begin
   {$IFDEF COMPILER6_UP}
   ListBoxColors.DeleteSelected;
@@ -142,8 +142,8 @@ begin
           Items.Delete(I);
     end
     else
-      if ItemIndex <> -1 then
-        Items.Delete(ItemIndex);
+    if ItemIndex <> -1 then
+      Items.Delete(ItemIndex);
   end;
   {$ENDIF COMPILER6_UP}
 end;
@@ -299,7 +299,7 @@ begin
         with TJvDEFColorSpace(AColorSpace) do
         begin
           AColor := ConvertToColor(AFullColor);
-          AText := Format('%s : Unamed color $%.8x', [Name, AFullColor]);
+          AText := Format(RsUnnamedColorFmt, [Name, AFullColor]);
           for ColorIndex := 0 to ColorCount - 1 do
             if AColor = ColorValue[ColorIndex] then
             begin
@@ -309,7 +309,7 @@ begin
         end
       else
         with AColorSpace do
-          AText := Format('%s : %s = $%.2x; %s = $%.2x; %s = $%.2x',
+          AText := Format('%s: %s = $%.2x; %s = $%.2x; %s = $%.2x',
             [Name,
              AxisName[axIndex0], GetAxisValue(AFullColor, axIndex0),
              AxisName[axIndex1], GetAxisValue(AFullColor, axIndex1),
