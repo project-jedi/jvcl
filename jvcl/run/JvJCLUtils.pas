@@ -287,7 +287,7 @@ function Switch(const Param: string): string;
 { ExePath returns ExtractFilePath(ParamStr(0)) }
 function ExePath: TFileName;
 function CopyDir(const SourceDir, DestDir: TFileName): Boolean;
-function FileTimeToDateTime(const FT: TFileTime): TDateTime;
+//function FileTimeToDateTime(const FT: TFileTime): TDateTime;
 function MakeValidFileName(const FileName: TFileName; ReplaceBadChar: Char): TFileName;
 
 {**** Graphic routines }
@@ -2403,22 +2403,37 @@ begin
   Result := True;
 end;
 
+//////////////////////////////////////////////////////////////////////////////
+{ Note: FileTimeToDateTime has been commented out, it is not used anywhere
+        in the JVCL code. Further, the old version is not to be returned
+        as it does not behave like the JCL version it is supposed to mimick.
+        See Mantis 2452 for details.
+}
+{const  
+  FileTimeBase      = -109205.0;
+  FileTimeStep: Extended = 24.0 * 60.0 * 60.0 * 1000.0 * 1000.0 * 10.0; // 100 nSek per Day
 function FileTimeToDateTime(const FT: TFileTime): TDateTime;
-{$IFDEF MSWINDOWS}
-var
+begin
+  Result := Int64(FileTime) / FileTimeStep;
+  Result := Result + FileTimeBase;
+end;}
+// ---------------------------- old version ---------------------------
+//{$IFDEF MSWINDOWS}
+{var
   LocalFileTime: TFileTime;
   FileDate: Integer;
 begin
   FileTimeToLocalFileTime(FT, LocalFileTime);
   FileTimeToDosDateTime(LocalFileTime, LongRec(FileDate).Hi, LongRec(FileDate).Lo);
   Result := FileDateToDateTime(FileDate);
-end;
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-begin
+end;}
+//{$ENDIF MSWINDOWS}
+//{$IFDEF UNIX}
+{begin
   Result := FileDateToDateTime(FT);
-end;
-{$ENDIF UNIX}
+end;}
+//{$ENDIF UNIX}
+// ------------------------- old version --------------------------------
 
 function MakeValidFileName(const FileName: TFileName;
   ReplaceBadChar: Char): TFileName;
