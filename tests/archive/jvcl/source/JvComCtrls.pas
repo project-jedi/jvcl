@@ -386,6 +386,7 @@ type
     procedure SetChecked(Node: TTreenode; Value: Boolean);
     procedure SetNodePopup(Node: TTreeNode; Value: TPopupMenu);
     function GetNodePopup(Node: TTreeNode): TPopupMenu;
+    property Checked[Node:TTreeNode]:boolean read GetChecked write SetChecked;
   published
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property Checkboxes: Boolean read FCheckBoxes write SetCheckBoxes default False;
