@@ -31,13 +31,14 @@ unit JvTimerListEditor;
 { Property editor for the TJvTimerList component }
 
 interface
+
 uses
   SysUtils,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf;
   {$ELSE}
   DsgnIntf;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
 type
   TJvTimerListDefaultEditor = class(TDefaultEditor)
@@ -47,15 +48,15 @@ type
     procedure EditProperty(const Prop: IProperty; var Cont: Boolean); override;
     {$ELSE}
     procedure EditProperty(PropertyEditor: TPropertyEditor; var Cont, FreeEditor: Boolean); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 
-resourcestring
-  SEditProperty = 'Events...';
-
 implementation
+
+uses
+  JvDsgnConsts;
 
 {$IFDEF COMPILER6_UP}
 procedure TJvTimerListDefaultEditor.EditProperty(const Prop: IProperty; var Cont: Boolean);
@@ -94,7 +95,7 @@ end;
 function TJvTimerListDefaultEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := SEditProperty
+    Result := SEventsEllipsis
   else
     Result := '';
 end;

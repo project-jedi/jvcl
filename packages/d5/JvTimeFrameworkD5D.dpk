@@ -29,6 +29,7 @@ package JvTimeFrameworkD5D;
 requires
   vcl50,
   JvTimeFrameworkD5R,
+  JvCoreD5D,
   dsnide50;
 
 contains

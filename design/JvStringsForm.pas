@@ -38,7 +38,7 @@ uses
   DesignIntf, DesignEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvComponent;
 
 type
@@ -68,17 +68,9 @@ type
 implementation
 
 uses
-  SysUtils, LibHelp;
+  SysUtils, LibHelp, JvDsgnConsts;
 
 {$R *.DFM}
-
-resourcestring
-  STextFilter =
-    'Text files (*.TXT)|*.TXT|Config files (*.SYS;*.INI)|*.SYS;*.INI|Batch files (*.BAT)|*.BAT|All files (*.*)|*.*';
-    //  STextFilter = 'Text files (*.txt)|*.txt|Config files (*.sys;*.ini)|*.sys;*.ini|Batch files (*.bat)|*.bat|All files (*.*)|*.*';
-  // (rom) added for localization
-  SSingleLine = 'Line';
-  SMultipleLines = 'Lines';
 
 procedure TJvStrEditDlg.FileOpen(Sender: TObject);
 begin

@@ -23,17 +23,20 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
+
 unit JvPreviewReg;
 
 interface
+
 uses
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors
+  DesignIntf, DesignEditors;
   {$ELSE}
-  DsgnIntf
-  {$ENDIF};
+  DsgnIntf;
+  {$ENDIF COMPILER6_UP}
 
 type
   TJvPreviewerEditor = class(TComponentEditor)
@@ -45,40 +48,37 @@ type
 
 procedure Register;
 
-
-resourcestring
-  sCreatePreview = 'Create Preview';
-  sClearPreview = 'Clear Preview';
-
 implementation
-uses
-  Classes, JvPrvwDoc, JvPrvwRender;
-{$R ..\resources\JvPreviewReg.dcr}
 
-procedure Register;
-begin
-  RegisterComponents('Jv Print Preview', [TJvPreviewControl,
-    TJvPreviewRenderRichEdit, TJvPreviewRenderStrings,
-      TJvPreviewRenderGraphics, TJvPreviewRenderControl, TJvPreviewPrinter]);
-  RegisterComponentEditor(TJvCustomPreviewRenderer, TJvPreviewerEditor);
-end;
+uses
+  Classes,
+  JvPrvwDoc, JvPrvwRender, JvConsts, JvDsgnConsts;
+
+{$R ..\resources\JvPreviewReg.dcr}
 
 type
   TJvHackCustomPreviewer = class(TJvCustomPreviewRenderer);
 
-  { TJvPreviewerEditor }
+procedure Register;
+begin
+  RegisterComponents(SPalettePrintPreview, [TJvPreviewControl,
+    TJvPreviewRenderRichEdit, TJvPreviewRenderStrings,
+    TJvPreviewRenderGraphics, TJvPreviewRenderControl, TJvPreviewPrinter]);
+  RegisterComponentEditor(TJvCustomPreviewRenderer, TJvPreviewerEditor);
+end;
 
 procedure TJvPreviewerEditor.ExecuteVerb(Index: Integer);
-var pv: TJvCustomPreviewControl;
+var
+  Pv: TJvCustomPreviewControl;
 begin
   case Index of
     0:
-      TJvHackCustomPreviewer(Component).CreatePreview(false);
+      TJvHackCustomPreviewer(Component).CreatePreview(False);
     1:
       begin
-        pv := TJvHackCustomPreviewer(Component).PrintPreview;
-        if pv <> nil then
-          pv.Clear;
+        Pv := TJvHackCustomPreviewer(Component).PrintPreview;
+        if Pv <> nil then
+          Pv.Clear;
       end;
   end;
 end;
@@ -87,9 +87,9 @@ function TJvPreviewerEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := sCreatePreview;
+      Result := SCreatePreview;
     1:
-      Result := sClearPreview;
+      Result := SClearPreview;
   end;
 end;
 

@@ -97,23 +97,17 @@ type
     property GraphicClass: TGraphicClass read FGraphicClass write SetGraphicClass;
   end;
 
-
-
-
-resourcestring
-  sLoadPicture = 'Load picture';
-  sSavePictureAs = 'Save picture as';
-
 implementation
 
 uses
   TypInfo, SysUtils, Clipbrd, Consts, ShellApi, LibHelp,
-  JvJVCLUtils, JvJCLUtils, JvConsts, JvDirectoryListForm, JvTypes;
-
-{$B-}
-{$D-}
+  JvJVCLUtils, JvJCLUtils, JvConsts, JvDsgnConsts, JvDirectoryListForm, JvTypes;
 
 {$R *.DFM}
+
+// (rom) needs explanation
+{$B-}
+{$D-}
 
 procedure CopyPicture(Pict: TPicture; BackColor: TColor);
 begin
@@ -133,8 +127,8 @@ var
 begin
   if Pict <> nil then
   begin
-    if Clipboard.HasFormat(CF_ICON) and ((GraphicClass = TIcon) or
-      (GraphicClass = TGraphic)) then
+    if Clipboard.HasFormat(CF_ICON) and
+      ((GraphicClass = TIcon) or (GraphicClass = TGraphic)) then
     begin
       NewGraphic := CreateIconFromClipboard;
       if NewGraphic <> nil then
@@ -162,9 +156,9 @@ begin
   if Graph = TIcon then
     Result := Clipboard.HasFormat(CF_ICON)
   { check another graphic types here }
-  else
-  if Graph = TGraphic then
-    Result := Clipboard.HasFormat(CF_PICTURE)
+  //else
+  //if Graph = TGraphic then
+  //  Result := Clipboard.HasFormat(CF_PICTURE)
   else
     Result := Clipboard.HasFormat(CF_PICTURE);
 end;
@@ -208,8 +202,8 @@ begin
   Pic := TPicture.Create;
   FileDialog := TOpenPictureDialog.Create(Self);
   SaveDialog := TSavePictureDialog.Create(Self);
-  FileDialog.Title := sLoadPicture;
-  SaveDialog.Title := sSavePictureAs;
+  FileDialog.Title := SLoadPicture;
+  SaveDialog.Title := SSavePictureAs;
   Bevel.Visible := False;
   Font.Style := [];
   AppStore.Root := SDelphiKey;
@@ -409,19 +403,19 @@ begin
 end;
 
 const
-  sBackColorIdent = 'ClipboardBackColor';
-  sFileDir = 'FileDialog.InitialDir';
+  cBackColorIdent = 'ClipboardBackColor';
+  cFileDir = 'FileDialog.InitialDir';
 
 procedure TPictureEditDialog.FormStorageRestorePlacement(Sender: TObject);
 begin
-  IconColor := FormStorage.ReadInteger(sBackColorIdent, clBtnFace);
-  FileDialog.InitialDir := FormStorage.ReadString(sFileDir, FileDialog.InitialDir);
+  IconColor := FormStorage.ReadInteger(cBackColorIdent, clBtnFace);
+  FileDialog.InitialDir := FormStorage.ReadString(cFileDir, FileDialog.InitialDir);
 end;
 
 procedure TPictureEditDialog.FormStorageSavePlacement(Sender: TObject);
 begin
-  FormStorage.WriteInteger(sBackColorIdent, IconColor);
-  FormStorage.WriteString(sFileDir, FileDialog.InitialDir);
+  FormStorage.WriteInteger(cBackColorIdent, IconColor);
+  FormStorage.WriteString(cFileDir, FileDialog.InitialDir);
 end;
 
 procedure TPictureEditDialog.PathsClick(Sender: TObject);

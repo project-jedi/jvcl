@@ -513,9 +513,9 @@ function TJvProviderEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := STreeDesigner;
+      Result := STreeDesignerEllipsis;
     1:
-      Result := SContextManager;
+      Result := SContextManagerEllipsis;
     else
       Result := Format(SInvalidVerbd, [Index]);
   end;

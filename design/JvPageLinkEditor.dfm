@@ -15,11 +15,14 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
   OldCreateOrder = False
   PopupMenu = popTree
   OnResize = FormResize
+  DesignSize = (
+    464
+    237)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
     Left = 0
-    Top = 198
+    Top = 195
     Width = 464
     Height = 42
     Align = alBottom
@@ -29,7 +32,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     Left = 163
     Top = 0
     Width = 3
-    Height = 198
+    Height = 195
     Cursor = crHSplit
     AutoSnap = False
   end
@@ -37,7 +40,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     Left = 268
     Top = 0
     Width = 3
-    Height = 198
+    Height = 195
     Cursor = crHSplit
     AutoSnap = False
   end
@@ -45,7 +48,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     Left = 0
     Top = 0
     Width = 163
-    Height = 198
+    Height = 195
     Align = alLeft
     BevelOuter = bvNone
     BorderWidth = 4
@@ -65,7 +68,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
       Left = 4
       Top = 20
       Width = 155
-      Height = 174
+      Height = 171
       Align = alClient
       ChangeDelay = 60
       HideSelection = False
@@ -103,10 +106,13 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     Left = 166
     Top = 0
     Width = 102
-    Height = 198
+    Height = 195
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
+    DesignSize = (
+      102
+      195)
     object btnLink: TButton
       Left = 5
       Top = 24
@@ -122,7 +128,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     Left = 271
     Top = 0
     Width = 193
-    Height = 198
+    Height = 195
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 4
@@ -143,7 +149,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
       Left = 4
       Top = 21
       Width = 185
-      Height = 173
+      Height = 170
       Align = alClient
       ItemHeight = 13
       TabOrder = 0

@@ -662,7 +662,7 @@ function TJvgLogicsComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SEditComponent;
+      Result := SEditComponentEllipsis;
   end;
 end;
 

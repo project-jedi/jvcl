@@ -27,10 +27,9 @@ package JvPrintPreviewD5D;
 {$IMPLICITBUILD OFF}
 
 requires
-  
-  
   vclx50,
-  JvPrintPreviewD5R;
+  JvPrintPreviewD5R,
+  JvCoreD5D;
 
 contains
   JvPreviewReg in '..\..\design\JvPreviewReg.pas';

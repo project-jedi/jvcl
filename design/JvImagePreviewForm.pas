@@ -276,7 +276,7 @@ begin
   {$ENDIF CBUILDER}
   with PreviewForm do
   try
-    Caption := SPreviewText;
+    Caption := SPreview;
     BorderStyle := bsSizeToolWin;
     Icon := Self.Icon;
     KeyPreview := True;

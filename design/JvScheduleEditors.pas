@@ -29,10 +29,10 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors
+  DesignIntf, DesignEditors,
   {$ELSE}
-  DsgnIntf
-  {$ENDIF},
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvScheduleEditorForm, JvScheduledEvents;
 
 type
@@ -51,14 +51,11 @@ type
   end;
 
 
-resourcestring
-  sEventEditor = 'Event editor...';
-
 implementation
 
 uses
   ColnEdit, Controls,
-  JclSchedule, JvConsts;
+  JclSchedule, JvConsts, JvDsgnConsts;
 
 
 //=== TJvSchedulePropertyEditor ================================================
@@ -95,7 +92,7 @@ end;
 
 function TJvSchedEventComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result := sEventEditor;
+  Result := SEventEditor;
 end;
 
 function TJvSchedEventComponentEditor.GetVerbCount: Integer;

@@ -454,7 +454,7 @@ end;
 function TJvStringsEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := Format(SFmtEditProperty, [GetStringsName])
+    Result := Format(SFmtEditEllipsis, [GetStringsName])
   else
     Result := '';
 end;

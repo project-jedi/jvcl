@@ -14,7 +14,7 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="vcl50.bpi JvPluginC5R.bpi CJCL50.bpi JvCoreC5R.bpi"/>
+    <PACKAGES value="vcl50.bpi JvPluginC5R.bpi CJCL50.bpi JvCoreC5R.bpi JvCoreC5D.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>

@@ -331,7 +331,9 @@ resourcestring
   SPaletteHMINonVisual = 'Jv HMI Non-Visual';
   SPaletteHMIControls = 'Jv HMI Controls';
   SPaletteBDE = 'Jv BDE Components';
-  SPaletteMTThreads   = 'Jv Threading';
+  SPaletteMTThreads = 'Jv Threading';
+  SPalettePrintPreview = 'Jv Print Preview';
+  SPaletteTimeFramework = 'Jv TimeFrameWork';
 
   { for RegisterActions }
   srJVCLActions     = 'JVCL';

@@ -37,7 +37,7 @@ uses
   DesignEditors, DesignIntf;
   {$ELSE}
   DsgnIntf;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
 type
   { a component editor that by default opens the editor for the Items property in TTimeline }
@@ -47,7 +47,7 @@ type
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
     {$ELSE}
     procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure ExecuteVerb(Index: integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -57,10 +57,7 @@ implementation
 
 uses
   SysUtils,
-  JvTimeLine;
-
-resourcestring
-  SEditProperty = 'Items Editor...';
+  JvTimeLine, JvDsgnConsts;
 
 {$IFDEF COMPILER6_UP}
 procedure TJvTimeLineEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
@@ -99,7 +96,7 @@ end;
 function TJvTimeLineEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := SEditProperty
+    Result := SItemsEditorEllipsis
   else
     Result := inherited GetVerb(Index);
 end;

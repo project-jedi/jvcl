@@ -34,7 +34,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ActnList,
-  {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvBaseDsgnForm, JvProviderTreeListFrame, JvComponent,
   JvDataProvider, JvDataProviderImpl, JvContextProvider,
   JvProviderTreeListDsgnFrame, JvColorProvider;
@@ -42,7 +46,7 @@ uses
 type
   {$IFDEF COMPILER6_UP}
   IFormDesigner = IDesigner;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   TfrmJvColorProviderDesigner = class(TJvBaseDesign)
     lblColors: TLabel;
     lblMappings: TLabel;
@@ -73,7 +77,6 @@ type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    { Public declarations }
     destructor Destroy; override;
     procedure BeforeDestruction; override;
     property Provider: IJvDataProvider read GetProvider write SetProvider;
@@ -94,7 +97,7 @@ begin
   Result := Form is TfrmJvColorProviderDesigner;
   if Result then
   begin
-    with (Form as TfrmJvColorProviderDesigner) do
+    with Form as TfrmJvColorProviderDesigner do
       Result := (Pointer(Provider) = Args[0].VInterface) and
         (Pointer(Designer) = Args[1].VInterface);
   end;
@@ -121,7 +124,7 @@ begin
   Form.BringToFront;
 end;
 
-//===TfrmJvColorProviderDesigner====================================================================
+//=== TfrmJvColorProviderDesigner ============================================
 
 function TfrmJvColorProviderDesigner.GetProvider: IJvDataProvider;
 begin
@@ -137,10 +140,8 @@ var
   ColorSettings: IJvColorProviderSettings;
 begin
   if DesignConsumer.ProviderIntf <> nil then
-  begin
     if Supports(DesignConsumer.ProviderIntf, IInterfaceComponentReference, ICR) then
       ICR.GetComponent.RemoveFreeNotification(Self);
-  end;
   (MappingConsumer as IJvDataConsumerServerNotify).RemoveClient(DesignConsumer);
   (CtxConsumer as IJvDataConsumerServerNotify).RemoveClient(DesignConsumer);
   DesignConsumer.SetProviderIntf(Value);
@@ -157,19 +158,19 @@ begin
     with ColorSettings.SystemColorSettings do
     begin
       Active := True;
-      Caption := 'System colors';
+      Caption := SSystemColors;
       ShowHeader := True;
     end;
     with ColorSettings.StandardColorSettings do
     begin
       Active := True;
-      Caption := 'Standard colors';
+      Caption := SStandardColors;
       ShowHeader := True;
     end;
     with ColorSettings.CustomColorSettings do
     begin
       Active := True;
-      Caption := 'Custom colors...';
+      Caption := SCustomColorsEllipsis;
       ShowHeader := True;
       AddColorSettings.Style := aisBorland;
       AddColorSettings.Location := ailUseHeader;
@@ -236,8 +237,7 @@ procedure TfrmJvColorProviderDesigner.BeforeNewContext(Sender: TObject; Kind: In
 begin
   if Kind = -1 then
   begin
-    FNewCtxResult := MessageDlg('Copy standard and system colors from the default context?',
-      mtConfirmation, [mbYes, mbNo, mbCancel], 0);
+    FNewCtxResult := MessageDlg(SColorMsg, mtConfirmation, [mbYes, mbNo, mbCancel], 0);
     Allow := FNewCtxResult in [mrYes, mrNo];
   end;
 end;
@@ -310,7 +310,6 @@ end;
 
 procedure TfrmJvColorProviderDesigner.btnOKClick(Sender: TObject);
 begin
-  inherited;
   Close;
 end;
 

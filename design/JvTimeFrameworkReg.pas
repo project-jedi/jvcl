@@ -26,6 +26,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+
 unit JvTimeFrameworkReg;
 
 // WARNING!!
@@ -38,85 +39,85 @@ interface
 
 {$R ..\Resources\JvTimeFrameworkReg.dcr}
 
-{$IFDEF COMPILER6_UP}
 uses
-  DesignIntf, DesignEditors, ColnEdit;
-{$ELSE}
-uses
-  DsgnIntf, ColnEdit;
-{$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  ColnEdit;
 
-Type
-{$IFDEF COMPILER5}
+type
+  {$IFDEF COMPILER5}
+
   TJvTFGridLayoutCategory = class(TLayoutCategory)
   public
-    class function Name: String; override;
+    class function Name: string; override;
   end;
 
   TJvTFCustomDrawCategory = class(TVisualCategory)
   public
-    class function Name : String; override;
+    class function Name: string; override;
   end;
-{$ENDIF}
+
+  {$ENDIF COMPILER5}
+
   TJvTFGlanceCellsProperty = class(TCollectionProperty)
   public
     function GetColOptions: TColOptions; override;
   end;
 
-
-
 procedure Register;
 
-
-resourcestring
-  sGridLayout = 'Grid Layout';
-  sCustomDraw = 'Custom Draw';
-
 implementation
+
 uses
   Classes,
-  JvTFGlance, JvTFGlanceTextViewer, JvTFMonths, JvTFWeeks, JvTFDays, JvTFAlarm, JvTFManager;
+  JvTFGlance, JvTFGlanceTextViewer, JvTFMonths, JvTFWeeks, JvTFDays,
+  JvTFAlarm, JvTFManager, JvConsts, JvDsgnConsts;
 
+//=== TJvTFGridLayoutCategory ================================================
 
 {$IFDEF COMPILER5}
-{ TJvTFGridLayoutCategory }
-class function TJvTFGridLayoutCategory.Name: String;
-begin
-  Result := sGridLayout;
-end;
-{$ENDIF}
 
-{ TJvTFCustomDrawCategory }
+class function TJvTFGridLayoutCategory.Name: string;
+begin
+  Result := SGridLayout;
+end;
+{$ENDIF COMPILER5}
+
+//=== TJvTFCustomDrawCategory ================================================
+
 {$IFDEF COMPILER5}
-class function TJvTFCustomDrawCategory.Name: String;
-begin
-  Result := sCustomDraw;
-end;
-{$ENDIF}
 
-{ TJvTFGlanceCellsProperty }
+class function TJvTFCustomDrawCategory.Name: string;
+begin
+  Result := SCustomDraw;
+end;
+{$ENDIF COMPILER5}
+
+//=== TJvTFGlanceCellsProperty ===============================================
 
 function TJvTFGlanceCellsProperty.GetColOptions: TColOptions;
 begin
   Result := [];
 end;
-const
-  cTimePalette = 'Jv TimeFrameWork';
+
 procedure Register;
 begin
-  RegisterComponents(cTimePalette, [TJvTFScheduleManager, TJvTFUniversalPrinter]);
+  RegisterComponents(SPaletteTimeFramework, [TJvTFScheduleManager, TJvTFUniversalPrinter]);
 //  RegisterPropertyEditor(TypeInfo(string), TJvTFControl, 'Version', TutfVersionEditor);
 //  RegisterPropertyEditor(TypeInfo(string), TJvTFScheduleManager, 'Version', TutfVersionEditor);
 
-  RegisterComponents(cTimePalette, [TJvTFGlanceTextViewer, TJvTFMonths,
-    TJvTFWeeks,TJvTFAlarm]);
+  RegisterComponents(SPaletteTimeFramework, [TJvTFGlanceTextViewer, TJvTFMonths,
+    TJvTFWeeks, TJvTFAlarm]);
 //  RegisterPropertyEditor(TypeInfo(TJvTFGlanceCells), '', 'Cells',
 //    TJvTFGlanceCellsProperty);
 
   // register a nil property editor for now, so cells cannot be added,
   // deleted, or moved at design time... BAD THINGS HAPPEN
-  RegisterPropertyEditor(TypeInfo(TJvTFGlanceCells), TJvTFMonths, 'Cells', nil);
-  RegisterComponents(cTimePalette, [TJvTFDays, TJvTFDaysPrinter]);
+  RegisterPropertyEditor(typeinfo(TJvTFGlanceCells), TJvTFMonths, 'Cells', nil);
+  RegisterComponents(SPaletteTimeFramework, [TJvTFDays, TJvTFDaysPrinter]);
   {$IFDEF COMPILER5}
   RegisterPropertiesInCategory(TVisualCategory, ['StateImages', 'CustomImages',
     'StateImageMap']);
@@ -155,9 +156,8 @@ begin
   RegisterPropertiesInCategory(TDragNDropCategory, ['OnSizeAppt', 'OnDropAppt']);
   RegisterPropertiesInCategory(TMiscellaneousCategory, ['OnSelectAppt',
     'OnSelectedAppt', 'OnSelectingAppt', 'OnSizeAppt', 'OnUpdateColTitles']);
-  {$ENDIF}
+  {$ENDIF COMPILER5}
 end;
 
-
-
 end.
+
