@@ -148,6 +148,7 @@ type
     FData: Pointer;
     FState: TCustomDrawState;
     FDeleting: Boolean;
+    FHint: string;
     procedure SetData(const Value: Pointer);
     procedure SetState(const Value: TCustomDrawState);
   protected
@@ -162,6 +163,7 @@ type
     property Owner: TJvCustomItemViewer read FOwner;
   public
     property State: TCustomDrawState read FState write SetState;
+    property Hint:string read FHint write FHint;
     property Data: Pointer read FData write SetData;
   end;
 
@@ -179,6 +181,8 @@ type
     Canvas: TCanvas; ItemRect, TextRect: TRect) of object;
   TJvViewerItemChangingEvent = procedure(Sender: TObject; Item: TJvViewerItem; var Allow: Boolean) of object;
   TJvViewerItemChangedEvent = procedure(Sender: TObject; Item: TJvViewerItem) of object;
+  TJvViewerItemHintEvent = procedure (Sender:TObject; Index:integer; var HintInfo:THintInfo; var Handled:boolean) of object;
+
 
   TJvCustomItemViewer = class(TJvExScrollingWinControl)
   private
@@ -199,6 +203,9 @@ type
     FOnItemChanging: TJvViewerItemChangingEvent;
     FScrollTimer: TTimer;
     ScrollEdge: Integer;
+    FOnDeletion: TJvViewerItemChangedEvent;
+    FOnInsertion: TJvViewerItemChangedEvent;
+    FOnItemHint: TJvViewerItemHintEvent;
     procedure DoScrollTimer(Sender: TObject);
 
     procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
@@ -268,8 +275,12 @@ type
     function GetItemClass: TJvViewerItemClass; virtual;
     function GetOptionsClass: TJvItemViewerOptionsClass; virtual;
     function GetItemState(Index: Integer): TCustomDrawState; virtual;
+    procedure Inserted(Item:TJvViewerItem);virtual;
+    procedure Deleted(Item:TJvViewerItem);virtual;
     procedure ItemChanging(Item: TJvViewerItem; var AllowChange: Boolean); virtual;
     procedure ItemChanged(Item: TJvViewerItem); virtual;
+    function HintShow(var HintInfo: THintInfo): Boolean; override;
+    function DoItemHint(Index:integer; var HintInfo: THintInfo):boolean;virtual;
 
     property TopLeftIndex: Integer read FTopLeftIndex;
     property BottomRightIndex: Integer read FBottomRightIndex;
@@ -289,6 +300,9 @@ type
     property OnOptionsChanged: TNotifyEvent read FOnOptionsChanged write FOnOptionsChanged;
     property OnItemChanging: TJvViewerItemChangingEvent read FOnItemChanging write FOnItemChanging;
     property OnItemChanged: TJvViewerItemChangedEvent read FOnItemChanged write FOnItemChanged;
+    property OnInsertion:TJvViewerItemChangedEvent read FOnInsertion write FOnInsertion;
+    property OnDeletion:TJvViewerItemChangedEvent read FOnDeletion write FOnDeletion;
+    property OnItemHint:TJvViewerItemHintEvent read FOnItemHint write FOnItemHint;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -773,8 +787,8 @@ end;
 
 function TJvCustomItemViewer.Add(AItem: TJvViewerItem): Integer;
 begin
-  Assert(AItem is GetItemClass);
-  Result := FItems.Add(AItem);
+  Insert(FItems.Count + 1, AItem);
+  Result := FItems.Count - 1;
 end;
 
 procedure TJvCustomItemViewer.BeginUpdate;
@@ -932,6 +946,7 @@ end;
 
 procedure TJvCustomItemViewer.Delete(Index: Integer);
 begin
+  Deleted(Items[Index]);
   TObject(FItems[Index]).Free;
   FItems.Delete(Index);
   if SelectedIndex >= Count then
@@ -1156,7 +1171,8 @@ end;
 procedure TJvCustomItemViewer.Insert(Index: Integer; AItem: TJvViewerItem);
 begin
   Assert(AItem is GetItemClass);
-  FItems.Insert(Index, AItem);
+  FItems.Insert(Index,AItem);
+  Inserted(AItem);
 end;
 
 procedure TJvCustomItemViewer.InvalidateClipRect(R: TRect);
@@ -1869,6 +1885,41 @@ begin
   else
   {$ENDIF JVCLThemesEnabled}
     inherited;
+end;
+
+function TJvCustomItemViewer.HintShow(var HintInfo: THintInfo): Boolean;
+var i:integer;
+begin
+  with HintInfo.CursorPos do
+    i := ItemAtPos(X,Y, true);
+  if i >= 0 then
+  begin
+    HintInfo.HintStr := Items[i].Hint;
+    HintInfo.CursorRect := ItemRect(i,true);
+    DoItemHint(i, HintInfo);
+  end;
+  if HintInfo.HintStr = '' then
+    HintInfo.HintStr := Hint;
+  Result := false;
+end;
+
+procedure TJvCustomItemViewer.Deleted(Item: TJvViewerItem);
+begin
+  if Assigned(FOnDeletion) then FOnDeletion(Self, Item);
+end;
+
+procedure TJvCustomItemViewer.Inserted(Item: TJvViewerItem);
+begin
+  if Assigned(FOnInsertion) then FOnInsertion(Self, Item);
+end;
+
+
+function TJvCustomItemViewer.DoItemHint(Index: integer;
+  var HintInfo: THintInfo): boolean;
+begin
+  Result := false;
+  if Assigned(FOnItemHint) then
+    FOnItemHint(Self, Index, HintInfo, Result);
 end;
 
 { TViewerDrawImageList }
