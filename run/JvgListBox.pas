@@ -405,7 +405,7 @@ begin
       if (ItemStyle.TextStyle <> fstNone) or (ItemSelStyle.TextStyle <> fstNone)
          then
          inc(Shift, 2);
-      if Assigned(FGlyphs) and (FGlyphs.Height > itemHeight) then
+      if Assigned(FGlyphs) and (FGlyphs.Height > integer(itemHeight)) then
          itemHeight := FGlyphs.Height;
       inc(Message.MeasureItemStruct^.itemHeight, Shift);
       if (FItemHeight > 0)
@@ -478,13 +478,9 @@ var
    end;
 
    procedure DrawWallpaper;             //( DC: HDC; r:TRect );
-   var
-      X, Y                    : integer;
-      R2                      : TRect;
-
       procedure FillTiled(R: TRect; yOffset: integer);
       var
-         X, Y, x_, y_, IWidth, IHeight: integer;
+         Y, x_, y_, IWidth, IHeight: integer;
       begin
          IWidth := min(r.right - r.left + 1, WallpaperBmp.Width);
          IHeight := min(r.bottom - r.top, WallpaperBmp.Height);

@@ -26,7 +26,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
+{$I WINDOWSONLY.INC}
 unit JvgExceptionHandler;
 
 interface
@@ -99,8 +99,8 @@ type
   end;
 
 implementation
-uses JvgUtils,
-  JvgFileUtils,
+uses
+  JvgUtils, JvgFileUtils,
   FileCtrl;
 
 var

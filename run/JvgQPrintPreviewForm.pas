@@ -122,8 +122,6 @@ begin
 end;
 
 procedure TJvgfPrintPreview.tbPriorClick(Sender: TObject);
-var
-  e: extended;
 begin
   QRPreview1.PageNumber := QRPreview1.PageNumber - 1;
   QRPreview1.UpdateZoom;

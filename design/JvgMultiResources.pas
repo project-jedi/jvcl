@@ -56,11 +56,11 @@ type
     FComps: TStringList;
     FResources: TJvgResStringList;
     //    FCompList: TList;
-    function GetName(Component: TComponent): string;
-    procedure ProcessNewComponent(Component: TComponent);
+//    function GetName(Component: TComponent): string;
+//    procedure ProcessNewComponent(Component: TComponent);
     procedure GetComponentData(C: TComponent; SLNames: TStringList);
-    procedure GetPropEditor(Prop: TPropertyEditor);
-    procedure E(const S: string);
+//    procedure GetPropEditor(Prop: TPropertyEditor);
+//    procedure E(const S: string);
   protected
     procedure Notification(Component: TComponent; Operation: TOperation);
       override;
@@ -93,7 +93,7 @@ type
 
 constructor TJvgMultipleResources.Create(AOwner: TComponent);
 var
-  i, j: integer;
+  i: integer;
 begin
   inherited;
   FResources := TJvgResStringList.Create;
@@ -123,8 +123,6 @@ end;
 
 procedure TJvgMultipleResources.Notification(Component: TComponent; Operation:
   TOperation);
-var
-  i, j: integer;
 begin
   inherited;
   //  if (Component <> Self)and(Operation = opInsert) then ProcessNewComponent(Component);
@@ -230,6 +228,7 @@ begin
   end;
 end;
 
+(*
 function TJvgMultipleResources.GetName(Component: TComponent): string;
 var
   i: integer;
@@ -246,16 +245,17 @@ begin
     inc(i);
   Result := BaseName + IntToStr(i);
 end;
+*)
 
+(*
 procedure TJvgMultipleResources.ProcessNewComponent(Component: TComponent);
 var
   SLNames, SLValues: TStringList;
-  FormDesigner: TFormDesigner;
   CompList: TComponentList;
-  i: integer;
 begin
+  // (p3) I don't see how this codse will ever work...
   if not (Component is TControl) then
-    exit;
+    Exit;
   SLNames := TStringList.Create;
   SLValues := TStringList.Create;
   //  CompList := TComponentList.Create;
@@ -287,5 +287,5 @@ procedure TJvgMultipleResources.GetPropEditor(Prop: TPropertyEditor);
 begin
   //  ShowMessage(s);
 end;
-
+*)
 end.

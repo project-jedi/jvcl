@@ -26,7 +26,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
+{$I WINDOWSONLY.INC}
 unit JvgExportComponents;
 
 interface
@@ -363,7 +363,7 @@ var
   XL: variant;
   Sheet: variant;
   AllowExportRecord: boolean;
-  i, j, RecNo, ColNo, OldRecNo: integer;
+  i, RecNo, ColNo, OldRecNo: integer;
   CellFont: TFont;
 
   procedure InsertStrings(Strings: TStrings; Font: TFont; GetLineFontEvent:
@@ -614,13 +614,15 @@ begin
   Table.TableName := SaveToFileName;
   //  if ExtractFileExt(Table.TableName) = '' then Table.TableName := DelFileExt() + aTableTypeExt[TableType];
 
-  FieldType := DataSet.Fields[i].DataType;
-  if FieldType = ftAutoInc then
-    FieldType := ftInteger;
 
   for i := 0 to DataSet.FieldCount - 1 do
+  begin
+    FieldType := DataSet.Fields[i].DataType;
+    if FieldType = ftAutoInc then
+      FieldType := ftInteger;
     Table.FieldDefs.Add(DataSet.Fields[i].Name, FieldType,
       DataSet.Fields[i].Size, DataSet.Fields[i].Required);
+  end;
 
   Table.CreateTable;
   Table.Open;

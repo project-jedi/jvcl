@@ -74,8 +74,6 @@ implementation
 //________________________________________________________ Methods _
 
 constructor TJvgGraph.Create(AOwner: TComponent);
-var
-  i: integer;
 begin
   inherited;
   //..defaults
@@ -94,9 +92,8 @@ end;
 
 procedure TJvgGraph.Paint;
 var
-  r, r_: TRect;
+  r: TRect;
   i: integer;
-  BoxSides: TglSides;
   Points: array[0..MaxPointsCount] of TPoint;
   ShadowPoints: array[0..MaxPointsCount] of TPoint;
 

@@ -389,7 +389,6 @@ end;
 procedure TJvgReportEditorForm.OnMouseDown_(Sender: TObject; Button:
   TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  R: TRect;
   pt: TPoint;
   i: integer;
 begin
@@ -463,8 +462,6 @@ end;
 
 procedure TJvgReportEditorForm.OnMouseUp_(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
-var
-  R: TRect;
 begin
   ScrollBox_MouseUp(Sender, Button, Shift, X, Y);
   fMouseDown := false;
@@ -488,7 +485,6 @@ end;
 procedure TJvgReportEditorForm.OnMouseMove_(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 var
-  DC: HDC;
   i: integer;
 begin
   if fSelection then
@@ -565,7 +561,7 @@ procedure TJvgReportEditorForm.ScrollBox_MouseDown(Sender: TObject; Button:
   TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
-  l, Compon: TJvgReportItem;
+  Compon: TJvgReportItem;
   R: TRect;
   pt: TPoint;
 begin
@@ -1174,8 +1170,6 @@ end;
 
 procedure TJvgReportEditorForm.FormClose(Sender: TObject; var Action:
   TCloseAction);
-var
-  msS, msT: TMemoryStream;
 begin
   if Assigned(AlignForm) then
     AlignForm.Free;

@@ -362,7 +362,6 @@ var
   bmp: tbitmap;
   i, j: integer;
   line: Pbytearray;
-  dest, src: trect;
 begin
   RedBack := QBFuncs[QBRedfn];
   GreenBack := QBFuncs[QBGreenfn];

@@ -71,7 +71,7 @@ type
     property Values: TStringList read FValues write FValues;
     property Expanded: boolean read FExpanded write SetExpanded;
     property Selected: boolean read FSelected write SetSelected;
-    property Changed: boolean read GetChanged write SetChanged; 
+    property HasChanged: boolean read GetChanged write SetChanged; 
   end;
 
   TJvgGridItems = class(TCollection)
@@ -287,7 +287,7 @@ end;
 
 procedure TJvgGridItem.SetValue(ValueIndex: integer; const Value: string);
 var
-  i, Seq: integer;
+  Seq: integer;
 begin
   if (Sequence = 0) and (FValues.Count > 1) then exit;
 
@@ -386,13 +386,13 @@ end;
 
 procedure TJvgInspectorGrid.GetCellStyle(Sender: TObject; var ACol, ARow: Integer; var Style: TglGridCellStyle);
 var
-  i, ItemNo: integer;
+//  ItemNo: integer;
   Item: TJvgGridItem;
 begin
   with Style do
   begin
     //  inherited;
-    ItemNo := 0;
+//    ItemNo := 0;
     BevelInner := bvNone;
     BevelOuter := bvSpace;
     BevelBold := false;
@@ -415,7 +415,7 @@ begin
     Item := RowToItem(ARow);
     if Item = nil then exit;
 
-    if Item.Changed and (Item.IsChanged(Item.Sequence) or (Item.Sequence = 0)) then
+    if Item.HasChanged and (Item.IsChanged(Item.Sequence) or (Item.Sequence = 0)) then
       FontStyle := [fsBold]
     else
       FontStyle := [];
@@ -479,7 +479,6 @@ procedure TJvgInspectorGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; 
 type
   PClass = ^TClass;
 var
-  ClassOld: TClass;
   GridCoord: TGridCoord;
   Item: TJvgGridItem;
 begin
@@ -506,7 +505,7 @@ var
   i, Index: integer;
 begin
   Index := 0;
-  i := 0;
+//  i := 0;
   Result := nil;
   if Items.Count = 0 then exit;
   for i := 0 to ARow - 1 do
@@ -545,11 +544,9 @@ function TJvgInspectorGrid.CanEditModify: Boolean;
 var
   Item: TJvgGridItem;
 begin
+  Result := false;
   if (Col <> 1) or not (goEditing in Options) then
-  begin
     Result := false;
-    exit;
-  end;
   Item := RowToItem(Row);
   if Item = nil then exit;
   Result := not (Items.FShowMultiValues and (Item.Values.Count > 1) and (Item.Row = Row));

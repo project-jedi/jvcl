@@ -96,7 +96,7 @@ type
     procedure lvAllChange(Sender: TObject; Item: TListItem;
       Change: TItemChange);
   private
-    ComponentList: TStringList;
+//    ComponentList: TStringList;
   public
     Component: TJvgPropertyCenter;
   end;
@@ -124,7 +124,6 @@ procedure ShowCompListEditor(Designer: TDesigner; glPropertyCenter:
   TJvgPropertyCenter);
 var
   Dialog: TJvgCompListEditor;
-  I: Integer;
 begin
   Dialog := TJvgCompListEditor.Create(Application);
   Dialog.Component := glPropertyCenter; //TJvgPropertyCenter(GetComponent(0));

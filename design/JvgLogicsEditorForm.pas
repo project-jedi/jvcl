@@ -448,8 +448,7 @@ end;
 
 procedure TJvgLogicsEditor.SetActiveBox(const Value: TJvgGroupBoxPlus);
 var
-  i, Index: integer;
-  Box: TJvgGroupBoxPlus;
+  Index: integer;
 begin
   FActiveBox := Value;
 
@@ -501,7 +500,6 @@ end;
 
 procedure TJvgGroupBoxPlus.Paint;
 var
-  i: integer;
   R: TRect;
   str: string;
 begin
@@ -520,12 +518,11 @@ end;
 
 procedure TJvgLogicsEditor.SBEraseBkgndEvent(Sender: TObject; DC: HDC);
 var
-  Canvas: TCanvas;
   LogicElement: TJvgLogicElement;
   i: integer;
   PenFalse, Pen, PenTrue, OldPen, PenGrid: HPen;
-  Brush, OldBrush: HBrush;
-  NextBox, PrevBox, PrevFalseBox: TJvgGroupBoxPlus;
+  Brush: HBrush;
+  PrevBox, PrevFalseBox: TJvgGroupBoxPlus;
   bmp: TBitmap;
 
   function FindBox(LogicElement: TJvgLogicElement): TJvgGroupBoxPlus;
@@ -580,6 +577,8 @@ var
     end;
   end;
 begin
+  OldPen := 0;
+  PenGrid := 0;
   try
     Brush := CreateSolidBrush(clWhite);
     Pen := CreatePen(PS_SOLID, 1, clBlack);
@@ -588,7 +587,7 @@ begin
     PenTrue := CreatePen(PS_SOLID, 1, $FF9090);
     PenFalse := CreatePen(PS_SOLID, 1, $009090);
     OldPen := SelectObject(DC, PenGrid);
-    OldBrush := SelectObject(DC, Brush);
+//    OldBrush := SelectObject(DC, Brush);
 
     DrawGrid;
 
@@ -709,9 +708,9 @@ procedure TJvgLogicsComponentEditor.ShowEditor(LogicProducer:
   TJvgLogicProducer);
 var
   glLogicsEditor: TJvgLogicsEditor;
-  Logics: TJvgLogics;
+//  Logics: TJvgLogics;
 begin
-  Logics := LogicProducer.Logics;
+//  Logics := LogicProducer.Logics;
   {  with Logics.Add do
     begin
       Left := 10; Top := 10;
@@ -814,7 +813,6 @@ end;
 
 procedure TJvgShapePlus.Paint;
 var
-  i: integer;
   R: TRect;
   str: string;
 begin

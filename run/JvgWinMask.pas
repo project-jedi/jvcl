@@ -109,8 +109,6 @@ END;
 PROCEDURE TJvgWinMask.Paint;
 VAR
    r                          : TRect;
-   CurrStyle                  : TJvgTextBoxStyle;
-   OldPointer                 : Pointer;
    Message                    : TMessage;
 
    PROCEDURE CreateMaskBuff(R: TRect);

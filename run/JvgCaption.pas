@@ -224,7 +224,7 @@ begin
   if (P <> FNewWndProc) then
   begin
     FPrevWndProc := P;
-    FNewWndProc := MakeObjectInstance(ParentWindowHookProc);
+    FNewWndProc := Classes.MakeObjectInstance(ParentWindowHookProc);
     SetWindowLong(TForm(Owner).Handle, GWL_WNDPROC, LongInt(FNewWndProc));
   end;
 end;

@@ -50,14 +50,14 @@ type
    TJvgDBNavigator = class(TDBNavigator)
    private
       FAboutJVCL: TJVCLAboutInfo;
-      FNewWndProc: Pointer;
+//      FNewWndProc: Pointer;
       //    procedure CMMouseMove(var Message: TMessage); message CM_MOUSEMOVE;
       //    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
       procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
 //      procedure PaintControls(DC: HDC; First: TControl);
-      procedure HookFocusControlWndProc;
-      procedure UnhookFocusControlWndProc;
-      procedure FocusControlWndHookProc(var Msg_: TMessage);
+//      procedure HookFocusControlWndProc;
+//      procedure UnhookFocusControlWndProc;
+//      procedure FocusControlWndHookProc(var Msg_: TMessage);
    protected
       //    procedure PaintHandler(var message: TWMPaint);
       //    procedure Paint; override;
@@ -122,39 +122,43 @@ begin
       FNewWndProc := NIL;
 end;
 }
-
+{
 procedure TJvgDBNavigator.HookFocusControlWndProc;
 begin
-   {  P := Pointer(GetWindowLong( FocusControl.Handle, GWL_WNDPROC));
+     P := Pointer(GetWindowLong( FocusControl.Handle, GWL_WNDPROC));
      if (P <> FNewWndProc) then begin
        FPrevWndProc := P;
        FNewWndProc := MakeObjectInstance( FocusControlWndHookProc );
        SetWindowLong( FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));
-     end;}
+     end;
 end;
+}
 //______
-
+{
 procedure TJvgDBNavigator.UnhookFocusControlWndProc;
 begin
    //  if not(csDesigning in ComponentState) then exit;
-   {  if (FNewWndProc<>nil)and(FPrevWndProc<>nil)
+     if (FNewWndProc<>nil)and(FPrevWndProc<>nil)
        and(Pointer(GetWindowLong( FocusControl.Handle, GWL_WNDPROC)) = FNewWndProc) then
      begin
        SetWindowLong( FocusControl.Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
        FNewWndProc:=nil;
-     end;}
+     end;
 end;
 //______
+}
 
+{
 procedure TJvgDBNavigator.FocusControlWndHookProc(var Msg_: TMessage);
 begin
-   {  case Msg_.Msg of
+     case Msg_.Msg of
        WM_PAINT:
        begin Msg_.Result := 1; exit; end;
      end;
-     with Msg_ do Result := CallWindowProc( FPrevWndProc, TForm(Owner).Handle, Msg, WParam, LParam );}
+     with Msg_ do Result := CallWindowProc( FPrevWndProc, TForm(Owner).Handle, Msg, WParam, LParam );
 end;
 //______
+}
 
 end.
 

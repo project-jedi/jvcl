@@ -25,6 +25,7 @@ Known Issues:
   Should be merged with JCL
 -----------------------------------------------------------------------------}
 {$I JEDI.INC}
+{$I WINDOWSONLY.INC}
 unit JvStrings;
 
 interface

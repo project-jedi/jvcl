@@ -142,7 +142,6 @@ procedure TJvgHTTPVersionInfo.OnLoadVersionInfo(Sender: TObject; const pDisp:
   IDispatch; var URL: OleVariant);
 var
   Doc: variant;
-  i: integer;
 begin
   Doc := WebBrowser.Document;
   VersionInfo.Text := Doc.Body.InnerText;

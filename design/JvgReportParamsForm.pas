@@ -125,14 +125,14 @@ begin
 end;
 
 procedure TJvgReportParamsEditor.Edit;
-var
-  Form: TJvgReportParamsForm;
-  Label_: TLabel;
-  Edit_: TCustomEdit;
-  Check_: TCheckBox;
-  Radio_: TRadioGroup;
-  SList: TStringList;
-  y, x, i, j, EditLeft, LastHeight: integer;
+// var
+//  Form: TJvgReportParamsForm;
+//  Label_: TLabel;
+//  Edit_: TCustomEdit;
+//  Check_: TCheckBox;
+//  Radio_: TRadioGroup;
+//  SList: TStringList;
+//  y, x, i, j, EditLeft, LastHeight: integer;
 begin //temporary commented
   {
     if Report = nil then exit;

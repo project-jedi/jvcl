@@ -94,8 +94,6 @@ begin
 end;
 
 procedure TJvgGridHeaderControl.Loaded;
-var
-   i                          : integer;
 begin
    inherited;
    if not Assigned(Grid) then
@@ -103,8 +101,6 @@ begin
 end;
 
 procedure TJvgGridHeaderControl.Resize;
-var
-   i                          : integer;
 begin
    inherited;
    if not Assigned(Grid) then
@@ -123,7 +119,8 @@ end;
 
 procedure TJvgGridHeaderControl.ResizeColumns;
 var
-   i, ItemsCount, Col, Sect, ColsToJoin, ColsToJoinWidth: integer;
+//   ItemsCount, 
+   i, Col, Sect, ColsToJoin, ColsToJoinWidth: integer;
    fIndicator                 : boolean;
    G                          : TJvgPublicGrid;
 begin
@@ -131,7 +128,7 @@ begin
       exit;
 
    G := TJvgPublicGrid(Grid);
-   ItemsCount := min(G.ColCount, Sections.Count);
+//   ItemsCount := min(G.ColCount, Sections.Count);
    for i := 0 to max(FJoinColumns.Count - 1, Sections.Count - 1) do
    try
       if FJoinColumns.Count <= i then

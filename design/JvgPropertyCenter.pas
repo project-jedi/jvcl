@@ -130,7 +130,7 @@ end;
 procedure TJvgPropertyCenter.UpdateProperties(Properties: Tgl_Properties);
 var
   i: integer;
-  ColorPropInfo, FontPropInfo: PPropInfo;
+  ColorPropInfo: PPropInfo;
 begin
   for i := 0 to CompList.Count - 1 do
   begin

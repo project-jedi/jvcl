@@ -94,7 +94,6 @@ end;
 procedure TJvgResourcesProperty.Edit;
 var
   Dialog: TJvgMultipleResourceEdit;
-  I: Integer;
 begin
   TJvgMultipleResources(GetComponent(0)).Update;
   Dialog := glMresEdit.Create(Application);
@@ -115,8 +114,8 @@ end;
 
 procedure TJvgMultipleResourceEdit.FormShow(Sender: TObject);
 var
-  Str, SubStr, ResStr: string;
-  i, uPos1, uPos2, ACol, ARow, SubStrNo: integer;
+  Str, ResStr: string;
+  ACol, ARow, SubStrNo: integer;
 begin
 
   sg.ColCount := 3;
@@ -128,8 +127,8 @@ begin
     for ARow := 1 to Resources.Count do
     begin
       Str := Resources[ARow - 1];
-      uPos1 := 1;
-      uPos2 := uPos1 + 1;
+//      uPos1 := 1;
+//      uPos2 := uPos1 + 1;
       ACol := 0;
       SubStrNo := 1;
       while GetSub(Str, SubStrNo, ResStr) do
@@ -162,14 +161,14 @@ end;
 function TJvgMultipleResourceEdit.GetSub(SrcStr: string; No: integer; var
   ResStr: string): boolean;
 var
-  Str, SubStr: string;
-  Counter, uPos1, uPos2, uPrevPos2, ACol, ARow: integer;
+  Counter, uPos1, uPos2, uPrevPos2: integer;
 begin
   uPos1 := 1;
   uPos2 := 1;
   uPrevPos2 := 1;
   Counter := 0;
   ResStr := '';
+  Result := false;
   if SrcStr = '' then
     exit;
   repeat

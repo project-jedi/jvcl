@@ -88,7 +88,7 @@ type
     procedure OnEnter_(Sender: TObject);
     procedure OnExit_(Sender: TObject);
     procedure SmthChanged(Sender: TObject);
-    procedure SetDigitsOnly(Value: boolean);
+//    procedure SetDigitsOnly(Value: boolean);
   protected
     procedure Loaded; override;
     procedure Paint; override;
@@ -420,6 +420,7 @@ begin
 end;
 }
 
+(*
 procedure TJvgShadow.SetDigitsOnly(Value: boolean);
 //var
 //  i: integer;
@@ -437,6 +438,7 @@ begin //{$O-}
     end;}
    // {$O+}
 end;
+*)
 
 procedure TJvgShadow.SetShadowed(Value: boolean);
 begin

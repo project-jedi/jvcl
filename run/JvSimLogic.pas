@@ -788,7 +788,7 @@ end;
 procedure TJvSIMConnector.MoveConnector(logTL: TPoint);
 var
   nw, nh: integer;
-  d, dd, d2: integer;
+  d, d2: integer;
   nc: Tpoint;
 begin
   d := conSize;
@@ -1045,7 +1045,7 @@ procedure TJvSIMConnector.Connect;
 var
   Pi, Po: TPoint;
   R: Trect;
-  i, g, d, d2, xw, yh: integer;
+  d, d2, xw, yh: integer;
   wc: TWinControl;
   Vi: boolean;
   sBut: TJvSimButton;
@@ -1067,7 +1067,6 @@ var
 
   function getvi: boolean;
   var
-    p: Tpoint;
     ii: integer;
   begin
     result := true;
@@ -1149,7 +1148,6 @@ var
 
   procedure setVo;
   var
-    p: Tpoint;
     ii: integer;
   begin
     for ii := 0 to wc.ControlCount - 1 do
@@ -1250,10 +1248,8 @@ procedure TJvSIMConnector.DisConnect;
 var
   Pi, Po: TPoint;
   R: Trect;
-  i, g, d, d2, xw, yh: integer;
+  d, d2, xw, yh: integer;
   wc: TWinControl;
-  Vi: boolean;
-  sBut: TJvSimButton;
   sLog: TJvLogic;
   sLight: TJvSimLight;
 
@@ -1270,7 +1266,6 @@ var
 
   procedure setVo;
   var
-    p: Tpoint;
     ii: integer;
   begin
     for ii := 0 to wc.ControlCount - 1 do
@@ -1565,8 +1560,6 @@ end;
 procedure TJvLogic.Paint;
 var
   i: integer;
-  p: Tpoint;
-  lit: boolean;
   R: TRect;
   s: string;
 begin
@@ -1999,8 +1992,6 @@ end;
 
 procedure TJvSimLight.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-var
-  R: TRect;
 begin
   mdp := point(x, y);
   doMove := true;
@@ -2048,16 +2039,11 @@ end;
 
 procedure TJvSimLight.Paint;
 var
-  rgn: Hrgn;
   tlpoly, brpoly: array[0..2] of TPoint;
-  clippoly, poly: array[0..7] of TPoint;
-  i: integer;
   cr, xw, yh: integer;
-  R, RCap: Trect;
+  R: Trect;
   hiColor, loColor, surfcol: Tcolor;
-  dx, dy: integer;
   x4: integer;
-  bm: TBitmap;
 
   procedure drawframe;
   begin
@@ -2188,9 +2174,7 @@ end;
 procedure TJvSimLogicBox.cpuOnTimer(sender: TObject);
 var
   wc: TWinControl;
-  i, j: integer;
-  sLight: TJvSimLight;
-  sLogic: TJvLogic;
+  i: integer;
 begin
   wc := parent;
   // reset inputs
@@ -2341,7 +2325,7 @@ end;
 
 procedure TJvSimLogicBox.Paint;
 var
-  R, Rb: TRect;
+  Rb: TRect;
 begin
   with canvas do
   begin
@@ -2474,8 +2458,6 @@ end;
 
 procedure TJvSimReverse.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
-var
-  R: TRect;
 begin
   mdp := point(x, y);
   oldp := point(x, y);
@@ -2531,8 +2513,6 @@ end;
 procedure TJvSimReverse.Paint;
 var
   i: integer;
-  p: Tpoint;
-  lit: boolean;
   R: TRect;
   poly: array[0..2] of TPoint;
 begin
