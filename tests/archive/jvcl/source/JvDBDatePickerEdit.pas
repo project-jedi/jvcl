@@ -1,0 +1,309 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvDBDatePickerEdit, released on 2002-10-04.
+
+The Initial Developer of the Original Code is Oliver Giesen [giesen@lucatec.com]
+Portions created by Oliver Giesen are Copyright (C) 2002 Lucatec GmbH.
+All Rights Reserved.
+
+Contributor(s): ______________________________________.
+
+Last Modified: 2002-10-04
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+{$I JVCL.INC}
+
+{ A data-aware variation of the DatePickerEdit component.
+
+ Notable features:
+
+ - The inherited NoDateText mechansim is enhanced and utilized to support proper
+  handling of NULL values.
+
+ - If EnforceRequired is set to True (default) you should not have to worry
+  about setting ShowCheckbox. If the associated field has the Required flag set
+  ShowCheckbox will automatically be False.
+}
+
+unit JvDBDatePickerEdit;
+
+interface
+
+uses
+  Classes,
+  Controls,
+  Graphics,
+
+  Db,
+  DbCtrls,
+
+  JvDatePickerEdit;
+
+type
+  TJvCustomDBDatePickerEdit = class(TJvCustomDatePickerEdit)
+  private
+    FDataLink: TFieldDataLink;
+    FEnforceRequired: Boolean;
+
+    procedure ValidateShowCheckbox; overload;
+    function ValidateShowCheckbox(const AValue: Boolean): Boolean; overload;
+
+    function GetDataField: String;
+    function GetDataSource: TDataSource;
+    procedure SetDataField(const AValue: String);
+    procedure SetDataSource(const AValue: TDataSource);
+    procedure SetEnforceRequired(const AValue: Boolean);
+
+  protected
+    procedure DataChange(Sender: TObject);
+    procedure UpdateData(Sender: TObject);
+
+    function IsLinked: Boolean;
+
+    procedure Change; override;
+    procedure LoseFocus(const AFocusControl: TWinControl); override;
+    procedure SetShowCheckbox(const AValue: Boolean); override;
+    procedure UpdateDisplay; override;
+    function GetEnableValidation: Boolean; override;
+
+    property DataField : String read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property EnforceRequired: Boolean read FEnforceRequired write SetEnforceRequired;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    function IsEmpty: Boolean; override;
+  end;
+
+  TJvDBDatePickerEdit = class(TJvCustomDBDatePickerEdit)
+  public
+    property Checked;
+    property Date;
+    property Dropped;
+  published
+    property Anchors;
+    property AutoSelect;
+    property AutoSize default False;
+    property BorderStyle;
+    property CharCase;
+    property Color;
+    property Constraints;
+    property Cursor;
+    property Ctl3D;
+    property DataField;
+    property DataSource;
+    property DateFormat stored IsDateFormatStored;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property EnableValidation default True;
+    property EnforceRequired default True;
+    property Font;
+    property HintColor default clInfoBk;
+    property HotTrack default False;
+//    property MaxYear default 2900;
+//    property MinYear default 1900;
+    property NoDateShortcut stored IsNoDateShortcutStored;
+    property NoDateText stored IsNoDateTextStored;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property ShowCheckbox;
+    property TabOrder;
+    property Visible;
+
+    property OnChange;
+    property OnClick;
+    property OnCheckClick;
+    property OnCtl3DChanged;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnLoseFocus;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnParentColorChanged;
+    property OnStartDrag;
+  end;
+
+implementation
+
+uses
+  {$IFDEF COMPILER6_UP}Variants,{$ENDIF}
+  SysUtils;
+
+{ TLucaCustomDBDatePicker }
+
+procedure TJvCustomDBDatePickerEdit.Change;
+begin
+  if(IsLinked) then
+    FDataLink.Modified;
+  inherited;
+end;
+
+constructor TJvCustomDBDatePickerEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csReplicatable];
+  FEnforceRequired := True;
+  FDataLink := TFieldDataLink.Create;
+  with(FDataLink) do
+  begin
+    Control := Self;
+    OnDataChange := DataChange;
+    OnUpdateData := UpdateData;
+  end;
+end;
+
+procedure TJvCustomDBDatePickerEdit.DataChange(Sender: TObject);
+begin
+  if(FDataLink.Field <> nil) then
+    Self.Date := FDataLink.Field.AsDateTime;
+end;
+
+destructor TJvCustomDBDatePickerEdit.Destroy;
+begin
+  FDataLink.OnDataChange := NIL;
+  FDataLink.OnUpdateData := NIL;
+  FreeAndNil(FDataLink);
+  inherited;
+end;
+
+function TJvCustomDBDatePickerEdit.GetDataField: String;
+begin
+  result := FDataLink.FieldName;
+end;
+
+function TJvCustomDBDatePickerEdit.GetDataSource: TDataSource;
+begin
+  result := FDataLink.DataSource;
+end;
+
+function TJvCustomDBDatePickerEdit.IsEmpty: Boolean;
+begin
+  if(IsLinked) then
+  begin
+    if(FDataLink.DataSet.State in [dsEdit, dsInsert]) then
+      result := inherited IsEmpty
+    else
+      result := FDataLink.Field.IsNull;
+  end
+  else
+    result := True;
+end;
+
+function TJvCustomDBDatePickerEdit.IsLinked: Boolean;
+begin
+  result := Assigned(FDataLink) and Assigned(FDataLink.Field);
+end;
+
+procedure TJvCustomDBDatePickerEdit.LoseFocus(const AFocusControl: TWinControl);
+begin
+  try
+    FDataLink.UpdateRecord;
+  except
+    SetFocus;
+    raise;
+  end;
+  inherited;
+end;
+
+procedure TJvCustomDBDatePickerEdit.SetDataField(const AValue: String);
+begin
+  FDataLink.FieldName := AValue;
+  ValidateShowCheckbox;
+end;
+
+procedure TJvCustomDBDatePickerEdit.SetDataSource(const AValue: TDataSource);
+begin
+  FDataLink.DataSource := AValue;
+  ValidateShowCheckbox;
+end;
+
+procedure TJvCustomDBDatePickerEdit.SetEnforceRequired(const AValue: Boolean);
+begin
+  FEnforceRequired := AValue;
+  ValidateShowCheckbox;
+end;
+
+procedure TJvCustomDBDatePickerEdit.SetShowCheckbox(const AValue: Boolean);
+begin
+  inherited SetShowCheckbox(ValidateShowCheckbox(AValue));
+end;
+
+procedure TJvCustomDBDatePickerEdit.UpdateData(Sender: TObject);
+begin
+  if(IsLinked) then
+    if(not(Checked)) then
+      FDataLink.Field.Value := NULL
+    else
+      FDataLink.Field.AsDateTime := Self.Date;
+end;
+
+procedure TJvCustomDBDatePickerEdit.UpdateDisplay;
+begin
+  if(IsLinked) then
+    inherited
+  else
+  begin
+    Checked := False;
+    if not(csDesigning in ComponentState) then
+      Text := EmptyStr;
+  end;
+end;
+
+procedure TJvCustomDBDatePickerEdit.ValidateShowCheckbox;
+begin
+  inherited SetShowCheckbox(ValidateShowCheckbox(ShowCheckbox));
+end;
+
+function TJvCustomDBDatePickerEdit.ValidateShowCheckbox(
+  const AValue: Boolean): Boolean;
+begin
+  result := AValue;
+  if(EnforceRequired) and(IsLinked) then
+  begin
+    if(AValue) and(FDataLink.Field.Required) then
+      result := False;
+
+    AllowNoDate := not FDataLink.Field.Required;
+  end;
+end;
+
+function TJvCustomDBDatePickerEdit.GetEnableValidation: Boolean;
+begin
+  result := inherited GetEnableValidation;
+  {if we enabled validation for an unlinked control, we'd have validation errors
+   pop up just from tabbing over the control, therefore we temporary disable it}
+  if(InternalChanging or Leaving) then
+    result := result and IsLinked;
+end;
+
+end.

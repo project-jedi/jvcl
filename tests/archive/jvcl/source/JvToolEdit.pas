@@ -2519,7 +2519,7 @@ end;
 procedure TJvCustomDateEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (Key in [VK_PRIOR, VK_NEXT, VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN,
-    VK_ADD, VK_SUBTRACT]) and
+    VK_ADD, VK_SUBTRACT, VK_RETURN]) and
     PopupVisible then
   begin
     TJvPopupWindow(FPopup).KeyDown(Key, Shift);
