@@ -93,6 +93,7 @@ type
     property Gradientstyle: TGradStyle read GetGStyle write SetGstyle;
     property LabelAlignment: TAlignment read GetAlignment write Setalignment;
     property Align;
+    property DoubleBuffered;
   end;
 
 implementation
