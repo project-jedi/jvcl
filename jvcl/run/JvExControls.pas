@@ -1592,14 +1592,26 @@ end;
   
 
 {$IFNDEF COMPILER6_UP}
-var
-  AutoSizeOffset: Cardinal;
-  TControl_SetAutoSize: Pointer;
-
 type
   TOpenControl = class(TControl);
   PBoolean = ^Boolean;
   PPointer = ^Pointer;
+
+  TJumpCode = packed record
+    Pop: Byte; // pop xxx
+    Jmp: Byte; // jmp Offset
+    Offset: Integer;
+  end;
+
+  TRelocationRec = packed record
+    Jump: Word;
+    Address: PPointer;
+  end;
+
+var
+  AutoSizeOffset: Cardinal;
+  TControl_SetAutoSize: Pointer;
+  SavedControlCode: TJumpCode;
 
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 begin
@@ -1624,99 +1636,115 @@ begin
     TOpenControl_SetAutoSize(Instance, Value);
 end;
 
+function ReadProtectedMemory(Address: Pointer; var Buffer; Count: Cardinal): Boolean;
+var
+  n: Cardinal;
+begin
+  Result := ReadProcessMemory(GetCurrentProcess, Address, @Buffer, Count, n);
+  Result := Result and (n = Count);
+end;
+
+function WriteProtectedMemory(Address: Pointer; const Buffer; Count: Cardinal): Boolean;
+var
+  n: Cardinal;
+begin
+  Result := WriteProcessMemory(GetCurrentProcess, Address, @Buffer, Count, n);
+  Result := Result and (n = Count);
+end;
+
+{$OPTIMIZATION ON} // be sure to have optimization activated
+function GetCode(Instance: TOpenControl): Boolean;
+begin
+  { generated code:
+      8A40xx       mov al,[eax+Byte(Offset)]
+  }
+  Result := Instance.AutoSize;
+end;
+
+procedure SetCode(Instance: TOpenControl);
+begin
+  { generated code:
+      B201         mov dl,$01
+      E8xxxxxxxx   call TControl.SetAutoSize
+  }
+  Instance.AutoSize := True;
+end;
+
 type
-  TJumpCode = packed record
-    Pop: Byte; // pop xxx
-    Jmp: Byte; // jmp Offset
+  PGetCodeRec = ^TGetCodeRec;
+  TGetCodeRec = packed record
+    Sign: Word; // $408a   bytes swapped
+    Offset: Byte;
+  end;
+
+type
+  PSetCodeRec = ^TSetCodeRec;
+  TSetCodeRec = packed record
+    Sign1: Word; // $01b2  bytes swapped
+    Sign2: Byte; // $e8
     Offset: Integer;
   end;
 
-  TRelocationRec = packed record
-    Jump: Word;
-    Address: PPointer;
-  end;
+const
+  GetCodeSign = $408a;
+  SetCodeSign1 = $01b2;
+  SetCodeSign2 = $e8;
 
-var
-  SavedControlCode: TJumpCode;
-
-{$O-}
 procedure InitHookVars;
-label
-  Field, Proc, Leave;
 var
-  c: TControl;
-  b: Boolean;
-  Data: Byte;
   Relocation: TRelocationRec;
-  n: Cardinal;
+  PGetCode: PGetCodeRec;
+  PSetCode: PSetCodeRec;
+  Data: Byte;
 begin
-  asm
-        MOV     EAX, OFFSET Field
-        ADD     EAX, 3
-        ADD     EAX, 2
-        XOR     EDX, EDX
-        MOV     DL, BYTE PTR [EAX]
-        MOV     [AutoSizeOffset], EDX
+  TControl_SetAutoSize := nil;
+  AutoSizeOffset := 0;
 
-        MOV     EAX, OFFSET Proc
-        ADD     EAX, 2
-        ADD     EAX, 3
-        ADD     EAX, 1
-        MOV     EDX, [EAX]
-        MOV     [TControl_SetAutoSize], EDX
+  PGetCode := @GetCode;
+  PSetCode := @SetCode;
 
-        JMP     Leave
-  end;
-
-  c := nil;
-Field:
-  b := TOpenControl(c).AutoSize;
-  if b then ;
-Proc:
-  TOpenControl(c).AutoSize := True;
-
-Leave:
-  if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(TControl_SetAutoSize)),
-     @Data, SizeOf(Data), n) then
+  if (PGetCode^.Sign = GetCodeSign) and
+     (PSetCode^.Sign1 = SetCodeSign1) and (PSetCode^.Sign2 = SetCodeSign2) then
   begin
-    if Data = $FF then // Proc is in a dll or package
+    AutoSizeOffset := PGetCode^.Offset;
+    TControl_SetAutoSize := Pointer(Integer(@SetCode) + SizeOf(TSetCodeRec) +
+      PSetCode^.Offset);
+
+   // the relocation table meight be protected
+    if ReadProtectedMemory(TControl_SetAutoSize, Data, SizeOf(Data)) then
     begin
-      if not ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(TControl_SetAutoSize)),
-        @Relocation, SizeOf(Relocation), n) then
-      TControl_SetAutoSize := Relocation.Address^;
+      if Data = $FF then // TControl.SetAutoSize is in a dll or package
+        if ReadProtectedMemory(TControl_SetAutoSize, Relocation, SizeOf(Relocation)) then
+          TControl_SetAutoSize := Relocation.Address^;
     end;
   end;
 end;
-{$O+}
 
 procedure InstallSetAutoSizeHook;
 var
   Code: TJumpCode;
-  P: procedure;
-  n: Cardinal;
 begin
   InitHookVars;
-  P := TControl_SetAutoSize;
-  if Assigned(P) then
+  if Assigned(TControl_SetAutoSize) then
   begin
-    if PByte(@P)^ = $53 then // push ebx
+    if PByte(TControl_SetAutoSize)^ = $53 then // push ebx
       Code.Pop := $5B // pop ebx
     else
-    if PByte(@P)^ = $55 then // push ebp
+    if PByte(TControl_SetAutoSize)^ = $55 then // push ebp
       Code.Pop := $5D // pop ebp
     else
       Exit;
     Code.Jmp := $E9;
-    Code.Offset := Integer(@SetAutoSizeHook) - (Integer(@P) + 1) - SizeOf(Code);
+    Code.Offset := Integer(@SetAutoSizeHook) -
+      (Integer(TControl_SetAutoSize) + 1) - SizeOf(Code);
 
-    if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
-         @SavedControlCode, SizeOf(SavedControlCode), n) then
+    if ReadProtectedMemory(Pointer(Cardinal(TControl_SetAutoSize) + 1),
+      SavedControlCode, SizeOf(SavedControlCode)) then
     begin
-     { The strange thing is that WriteProcessMemory does not want @P or something
-       overrides the $e9 with a "PUSH xxx"}
-      if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1), @Code,
-           SizeOf(Code), n) then
-        FlushInstructionCache(GetCurrentProcess, @P, SizeOf(Code));
+     { The strange thing is that something overwrites the $e9 with a "PUSH xxx" }
+      if WriteProtectedMemory(Pointer(Cardinal(TControl_SetAutoSize) + 1), Code,
+           SizeOf(Code)) then
+        FlushInstructionCache(GetCurrentProcess, TControl_SetAutoSize, SizeOf(Code));
     end;
   end;
 end;
