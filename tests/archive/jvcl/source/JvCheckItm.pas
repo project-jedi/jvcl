@@ -35,7 +35,7 @@ uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF} Messages,
   SysUtils, Classes, Controls, Forms, Menus, Graphics, StdCtrls, JvPlacemnt,
   Dialogs, JvxCtrls, ExtCtrls,
  {$IFDEF COMPILER6_UP}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
-  CheckLst;
+  CheckLst, JvComponent;
 
 type
 
