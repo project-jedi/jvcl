@@ -321,7 +321,11 @@ begin
               if Assigned(FOnMouseDown) then
                 FOnMouseDown(Self, mbLeft, ShState, po.x, po.y);
               if FDropDown <> nil then
+              begin
+                SetForegroundWindow(FHandle);
                 FDropDown.Popup(po.x, po.y);
+                PostMessage(FHandle, WM_NULL, 0, 0);
+              end;
             end;
           WM_LBUTTONUP:
             begin
@@ -339,7 +343,11 @@ begin
           WM_RBUTTONUP:
             begin
               if FPopupMenu <> nil then
+              begin
+                SetForegroundWindow(FHandle);
                 FPopupMenu.Popup(po.x, po.y);
+                PostMessage(FHandle, WM_NULL, 0, 0);
+              end;
               if Assigned(FOnMouseUp) then
                 FOnMouseUp(Self, mbRight, ShState, po.x, po.y);
               if Assigned(FOnClick) then
