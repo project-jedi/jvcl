@@ -32,12 +32,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  JVCLVer, JvExControls, JvExForms;
+  JvExControls, JvExForms;
 
 type
   TJvScrollBox = class(TJvExScrollBox)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FHotTrack: Boolean;
@@ -58,7 +57,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter;

@@ -32,14 +32,13 @@ interface
 
 uses
   Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms,
-  JvTypes, JVCLVer;
+  JvTypes, JvExExtCtrls;
 
 type
   TJvBright = 0..200;
 
-  TJvSpecialImage = class(TImage)
+  TJvSpecialImage = class(TJvExImage)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FInverted: Boolean;
     FFlipped: Boolean;
     FBrightness: TJvBright;
@@ -60,7 +59,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Brightness: TJvBright read FBrightness write SetBright default 100;
     property Inverted: Boolean read FInverted write SetInverted default False;
     property Flipped: Boolean read FFlipped write SetFlipped default False;

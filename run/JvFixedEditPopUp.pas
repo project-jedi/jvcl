@@ -85,7 +85,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Menus, TypInfo,
-  JvComponent;
+  JvTypes;
 
 type
   { IFixedPopupIntf is implemented by a component that supports the

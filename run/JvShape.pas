@@ -38,7 +38,7 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QExtCtrls, QForms,
   {$ENDIF VisualCLX}
-  JVCLVer, JvExExtCtrls;
+  JvExExtCtrls;
 
 type
   TJvShape = class(TJvExShape)
@@ -47,7 +47,6 @@ type
     FSaved: TColor;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -55,7 +54,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Anchors;
     property Constraints;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;

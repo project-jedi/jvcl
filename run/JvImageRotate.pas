@@ -36,14 +36,13 @@ uses
   Windows, Graphics, Controls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls, QExtCtrls,
+  QGraphics, QControls, QExtCtrls, QWindows, Types,
   {$ENDIF VisualCLX}
-  JvImageDrawThread, JVCLVer;
+  JvImageDrawThread, JVCLVer, JvExExtCtrls;
 
 type
-  TJvImageRotate = class(TImage)
+  TJvImageRotate = class(TJvExImage)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FRotated: TBitmap;
     FOriginal: TBitmap;
     FTimer: TJvImageDrawThread;
@@ -59,7 +58,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Rotating: Boolean read FRotating write SetRotating default False;
     property StartImage: TBitmap read FOriginal write SetPicture;
     property Interval: Cardinal read FInterval write SetInterval default 20;

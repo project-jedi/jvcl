@@ -38,12 +38,11 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QComCtrls,
   {$ENDIF VisualCLX}
-  JVCLVer, JvExComCtrls;
+  JvExComCtrls;
 
 type
   TJvProgressBar = class(TJvExProgressBar)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -62,12 +61,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     {$IFDEF VCL}
     property FillColor: TColor read FFillColor write SetFillColor default clHighlight;
-    {$ELSE}
-    property FillColor;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    property FillColor;
+    {$ENDIF VisualCLX}
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter;
     property OnMouseLeave;

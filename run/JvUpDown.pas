@@ -40,7 +40,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ComCtrls, CommCtrl,
-  JVCLVer, JvExComCtrls;
+  JvExComCtrls;
 
 type
   TJvAlignButton = (abLeft, abRight, abNone);
@@ -48,7 +48,6 @@ type
 
   TJvCustomUpDown = class(TJvExCustomUpDown)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -101,8 +100,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     function AcceptInteger: Boolean;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCustomDomainUpDown = class(TJvCustomUpDown)

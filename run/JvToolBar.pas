@@ -33,13 +33,13 @@ unit JvToolBar;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, Menus,
-  JvTypes, JVCLVer, JvMenus, JvExComCtrls;
+  Messages, CommCtrl, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  Menus,
+  JvTypes, JvMenus, JvExComCtrls;
 
 type
   TJvToolBar = class(TJvExToolBar)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FChangeLink: TJvMenuChangeLink;
     FHintColor: TColor;
     FSaved: TColor;
@@ -66,7 +66,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Menu: TMainMenu read GetMenu write SetMenu;
     property OnMouseEnter;
@@ -75,9 +74,6 @@ type
   end;
 
 implementation
-
-uses
-  CommCtrl;
 
 constructor TJvToolBar.Create(AOwner: TComponent);
 begin

@@ -40,12 +40,11 @@ uses
   {$ELSE}
   Types, QWindows, Qt, QGraphics, QControls, QForms, QStdCtrls,
   {$ENDIF VCL}
-  JVCLVer, JvTypes, JvExStdCtrls;
+  JvTypes, JvExStdCtrls;
 
 type
   TJvCheckBox = class(TJvExCheckBox)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -96,7 +95,6 @@ type
     procedure Toggle; override;
     property Canvas: TCanvas read GetCanvas;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Associated: TControl read FAssociated write SetAssociated;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;

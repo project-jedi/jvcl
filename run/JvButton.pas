@@ -41,7 +41,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, Types, QWindows,
   {$ENDIF VisualCLX}
-  JvComponent, JVCLVer, JvConsts, JvTypes, JvExStdCtrls;
+  JvComponent, JvConsts, JvTypes, JvExStdCtrls;
 
 type
   TJvButtonMouseState = (bsMouseInside, bsMouseDown);
@@ -118,7 +118,6 @@ type
 
   TJvCustomButton = class(TJvExButton)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FColor: TColor;
     FSaved: TColor;
     FOnParentColorChanged: TNotifyEvent;
@@ -161,8 +160,6 @@ type
       DefaultTrackFontOptions;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored false;
   end;
 
 implementation

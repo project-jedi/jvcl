@@ -34,6 +34,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$I windowsonly.inc} // (ahuser) uses CreateSubClass('STATIC')
 
 unit JvStaticText;
 
@@ -41,7 +42,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
-  JVCLVer, JvTypes, JvComponent;
+  JvTypes, JvComponent;
 
 type
   TJvTextMargins = class(TPersistent)

@@ -32,12 +32,11 @@ interface
 
 uses
   Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  JvSpecialProgress, JvImageDrawThread, JVCLVer;
+  JvSpecialProgress, JvImageDrawThread, JvComponent;
 
 type
-  TJvWaitingProgress = class(TWinControl)
+  TJvWaitingProgress = class(TJvWinControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FActive: Boolean;
     FRefreshInterval: Cardinal;
     FLength: Cardinal;
@@ -53,13 +52,12 @@ type
     //function GetBColor: TColor;
     //procedure SetBColor(const Value: TColor);
   protected
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
+    procedure Resize; override;
+    procedure ColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Length: Cardinal read FLength write SetLength default 30000;
     {(rb) When Active is read from the stream, RefreshInterval is 500 (as set
           in the constructor); Better set Active in Loaded }
@@ -186,16 +184,16 @@ begin
   FWait.Delay := FRefreshInterval;
 end;
 
-procedure TJvWaitingProgress.WMSize(var Msg: TWMSize);
+procedure TJvWaitingProgress.Resize;
 begin
-  inherited;
+  inherited Resize;
   FProgress.Width := Self.Width;
   FProgress.Height := Self.Height;
 end;
 
-procedure TJvWaitingProgress.CMColorChanged(var Msg: TMessage);
+procedure TJvWaitingProgress.ColorChanged;
 begin
-  inherited;
+  inherited ColorChanged;
   FProgress.Color := Color;
 end;
 

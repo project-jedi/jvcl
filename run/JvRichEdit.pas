@@ -552,7 +552,6 @@ type
     FOnTextNotFound: TRichEditFindErrorEvent;
     FOnCloseFindDialog: TRichEditFindCloseEvent;
     // From JvRichEdit.pas by Sébastien Buysse
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor, FSavedHintColor: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -651,7 +650,6 @@ type
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
     property AllowInPlace: Boolean read FAllowInPlace write FAllowInPlace default True;
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property AutoAdvancedTypography: Boolean read FAutoAdvancedTypography write FAutoAdvancedTypography default True;
     property AdvancedTypography: Boolean read GetAdvancedTypography write SetAdvancedTypography stored IsAdvancedTypographyStored;
     property AllowObjects: Boolean read FAllowObjects write SetAllowObjects default True;
@@ -755,7 +753,6 @@ type
 
   TJvRichEdit = class(TJvCustomRichEdit)
   published
-    property AboutJVCL;
     property AdvancedTypography;
     property Align;
     property Alignment;

@@ -253,7 +253,6 @@ type
 
   TJvDirectoryListBox = class(TJvCustomListBox)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FFileList: TJvFileListBox;
     FDriveCombo: TJvDriveCombo;
     FDirLabel: TLabel;
@@ -304,7 +303,6 @@ type
     property PreserveCase: Boolean read FPreserveCase;
     property CaseSensitive: Boolean read FCaseSensitive;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property AutoExpand: Boolean read FAutoExpand write SetAutoExpand default True;
     property BorderStyle;

@@ -41,12 +41,11 @@ uses
   {$IFDEF VisualCLX}
   Types, Qt, QWindows, QGraphics, QControls, QForms, QStdCtrls,
   {$ENDIF VisualCLX}
-  JVCLVer, JvThemes, JvExControls, JvExStdCtrls;
+  JvThemes, JvExControls, JvExStdCtrls;
 
 type
   TJvGroupBox = class(TJvExGroupBox, IJvDenySubClassing)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FOnHotKey: TNotifyEvent;
     FHintColor: TColor;
     FSaved: TColor;
@@ -67,7 +66,6 @@ type
     constructor Create(AOwner: TComponent); override;
     property Canvas;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground default True;

@@ -38,7 +38,6 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-
 {$I jvcl.inc}
 
 unit JvEdit;
@@ -55,26 +54,24 @@ uses
   QTypes, QGraphics, QControls, QStdCtrls, QDialogs, QForms, QMenus, Types,
   QWindows,
   {$ENDIF VisualCLX}
-  JvCaret, JvMaxPixel, JVCLVer, JvComponent, JvExControls, JvExStdCtrls;
+  JvCaret, JvMaxPixel, JvTypes, JvComponent,
+  JvExControls, JvExStdCtrls;
 
 {$IFDEF VisualCLX}
 const
   clGrayText = clDark; // (ahuser) This is wrong in QGraphics.
                        //          Since when is clGrayText = clLight = clWhite?
-{$ENDIF VisualCLX}                       
+{$ENDIF VisualCLX}
 
 type
   TJvCustomEdit = class(TJvExCustomEdit)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FOver: Boolean;
     FColor: TColor;
     FSaved: TColor;
     FFlat: Boolean;
     FOnParentColorChanged: TNotifyEvent;
     FMaxPixel: TJvMaxPixel;
-    FClipboardCommands: TJvClipboardCommands;
-    FOldCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
     FAlignment: TAlignment;
     FCaret: TJvCaret;
@@ -87,31 +84,29 @@ type
     FUseFixedPopup: Boolean;
     {$IFDEF VisualCLX}
     FPasswordChar: Char;
-    FEditRect: TRect; // EM_GETRECT
     {$ENDIF VisualCLX}
     function GetPasswordChar: Char;
-    function GetReadOnly: Boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetCaret(const Value: TJvCaret);
     procedure SetDisabledColor(const Value: TColor); virtual;
     procedure SetDisabledTextColor(const Value: TColor); virtual;
     procedure SetPasswordChar(Value: Char);
     procedure SetHotTrack(const Value: Boolean);
-    procedure SetReadOnly(const Value: Boolean);
     {$IFDEF VCL}
-    function GetText: string;
-    procedure SetText(const Value: string);
+    function GetText: TCaption;
+    procedure SetText(const Value: TCaption);
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
-    procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
-    procedure WMCut(var Msg: TWMCut); message WM_CUT;
-    procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
     {$ENDIF VCL}
     procedure SetGroupIndex(const Value: Integer);
-    procedure UpdateEdit;
-    procedure SetClipboardCommands(const Value: TJvClipboardCommands);
     function GetFlat: Boolean;
   protected
+    function DoClipboardCut: Boolean; override;
+    function DoClipboardPaste: Boolean; override;
+    function DoClearText: Boolean; override;
+    function DoUndo: Boolean; override;
+
+    procedure UpdateEdit;
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
     procedure CaretChanged(Sender: TObject); dynamic;
     procedure Change; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -119,9 +114,8 @@ type
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
     function GetPopupMenu: TPopupMenu; override;
+
     {$IFDEF VisualCLX}
-    procedure EMGetRect(var Msg: TMessage); message EM_GETRECT;
-    procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
     procedure Paint; override;
     {$ENDIF VisualCLX}
     procedure DoSetFocus(FocusedWnd: HWND); override;
@@ -136,12 +130,6 @@ type
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$IFDEF VisualCLX}
-    procedure CopyToClipboard; override;
-    procedure CutToClipboard; override;
-    procedure PasteFromClipboard; override;
-    procedure Undo; override;
-    {$ENDIF VisualCLX}
     {$IFDEF VCL}
     procedure DefaultHandler(var Msg); override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -155,14 +143,10 @@ type
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     {$IFDEF VCL}
-    property Text: string read GetText write SetText;
+    property Text: TCaption read GetText write SetText;
     {$ENDIF VCL}
     property UseFixedPopup: Boolean read FUseFixedPopup write FUseFixedPopup default True;
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property ClipboardCommands: TJvClipboardCommands read FClipboardCommands write SetClipboardCommands default
-      [caCopy..caUndo];
     // set to True to disable read/write of PasswordChar and read of Text
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
@@ -181,7 +165,6 @@ type
     property BevelOuter;
     {$ENDIF COMPILER6_UP}
     property BiDiMode;
-    property Caret;
     property DragCursor;
     property DragKind;
     property ImeMode;
@@ -190,6 +173,7 @@ type
     property ParentBiDiMode;
     property UseFixedPopup; // asn: clx not implemented yet
     {$ENDIF VCL}
+    property Caret;
     property DisabledTextColor;
     property DisabledColor;
     property HotTrack;
@@ -200,7 +184,6 @@ type
     property EchoMode;
     property InputKeys;
     {$ENDIF VisualCLX}
-    property AboutJVCL;
     property Align;
     property Alignment;
     property ClipboardCommands;
@@ -276,7 +259,7 @@ type
   TOpenCustomEdit = class(TCustomEdit);
 
 { PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
-  EM_GETTEXT handler exists, it uses the ClientRect of the edit control. }  
+  EM_GETTEXT handler exists, it uses the ClientRect of the edit control. }
 function PaintEdit(Editor: TCustomEdit; const AText: string;
   AAlignment: TAlignment; PopupVisible: Boolean; {ButtonWidth: Integer;}
   DisabledTextColor: TColor; StandardPaint: Boolean; Flat: Boolean;
@@ -565,15 +548,9 @@ end;
 
 {$IFDEF VCL}
 procedure TJvCustomEdit.WMPaint(var Msg: TWMPaint);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomEdit.Paint;
-{$ENDIF VisualCLX}
 var
-  {$IFDEF VCL}
   Canvas: TControlCanvas;
-  {$ENDIF VCL}
-  S: string;
+  S: TCaption;
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -585,7 +562,6 @@ begin
       S := Text
     else
       S := StrFillChar(PasswordChar, Length(Text));
-    {$IFDEF VCL}
     Canvas := nil;
     try
       if not PaintEdit(Self, S, FAlignment, False, {0,} FDisabledTextColor,
@@ -594,14 +570,30 @@ begin
     finally
       Canvas.Free;
     end;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    if not PaintEdit(Self, S, FAlignment, False, {0,} FDisabledTextColor,
-       Focused, Flat, Canvas) then
-      inherited;
-    {$ENDIF VisualCLX}
   end;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomEdit.Paint;
+var
+  S: TCaption;
+begin
+  if csDestroying in ComponentState then
+    Exit;
+  if Enabled then
+    inherited Paint
+  else
+  begin
+    if PasswordChar = #0 then
+      S := Text
+    else
+      S := StrFillChar(PasswordChar, Length(Text));
+    if not PaintEdit(Self, S, FAlignment, False, {0,} FDisabledTextColor,
+       Focused, Flat, Canvas) then
+      inherited Paint;
+  end;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomEdit.CaretChanged(Sender: TObject);
 begin
@@ -631,69 +623,25 @@ begin
   Invalidate;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomEdit.CopyToClipboard;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-procedure TJvCustomEdit.WMCopy(var Msg: TWMCopy);
-{$ENDIF VCL}
+function TJvCustomEdit.DoClearText: Boolean;
 begin
-  CopyToClipboard;
-  if caCopy in ClipBoardCommands then
-    inherited;
+  Result := not ReadOnly and inherited DoClearText;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomEdit.CutToClipboard;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-procedure TJvCustomEdit.WMCut(var Msg: TWMCut);
-{$ENDIF VCL}
+function TJvCustomEdit.DoUndo: Boolean;
 begin
-  if caCut in ClipBoardCommands then
-    inherited;
+  Result := not ReadOnly and inherited DoUndo;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomEdit.PasteFromClipboard;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-procedure TJvCustomEdit.WMPaste(var Msg: TWMPaste);
-{$ENDIF VCL}
+function TJvCustomEdit.DoClipboardCut: Boolean;
 begin
-  if caPaste in ClipBoardCommands then
-    inherited;
+  Result := not ReadOnly and inherited DoClipboardCut;
+end;
+
+function TJvCustomEdit.DoClipboardPaste: Boolean;
+begin
+  Result := not ReadOnly and inherited DoClipboardPaste;
   UpdateEdit;
-end;
-
-{$IFDEF VisualCLX}
-procedure TJvCustomEdit.Undo;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-procedure TJvCustomEdit.WMUndo(var Msg: TWMUndo);
-{$ENDIF VCL}
-begin
-  if caUndo in ClipBoardCommands then
-    inherited;
-end;
-
-function TJvCustomEdit.GetReadOnly: Boolean;
-begin
-  Result := inherited ReadOnly;
-end;
-
-procedure TJvCustomEdit.SetReadOnly(const Value: Boolean);
-begin
-  inherited ReadOnly := Value;
-  if Value then
-  begin
-    if caCopy in FClipboardCommands then
-      FClipboardCommands := [caCopy]
-    else
-      FClipboardCommands := [];
-  end
-  else
-    FClipboardCommands := FOldCommands;
 end;
 
 procedure TJvCustomEdit.SetGroupIndex(const Value: Integer);
@@ -708,29 +656,21 @@ var
 begin
   for I := 0 to Self.Owner.ComponentCount - 1 do
     if Self.Owner.Components[I] is TJvCustomEdit then
-      if ((Self.Owner.Components[I].Name <> Self.Name) and
+      if ({(Self.Owner.Components[I].Name <> Self.Name)}
+         (Self.Owner.Components[I] <> Self) and // (ahuser) this is better 
         ((Self.Owner.Components[I] as TJvCustomEdit).GroupIndex <> -1) and
         ((Self.Owner.Components[I] as TJvCustomEdit).fGroupIndex = Self.FGroupIndex)) then
         (Self.Owner.Components[I] as TJvCustomEdit).Caption := '';
 end;
 
-procedure TJvCustomEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
-begin
-  if FClipboardCommands <> Value then
-  begin
-    FClipboardCommands := Value;
-    FOldCommands := Value;
-  end;
-end;
-
 {$IFDEF VCL}
 // (ahuser) ProtectPassword has no function under CLX
-procedure TJvCustomEdit.SetText(const Value: string);
+procedure TJvCustomEdit.SetText(const Value: TCaption);
 begin
   inherited Text := Value;
 end;
 
-function TJvCustomEdit.GetText: string;
+function TJvCustomEdit.GetText: TCaption;
 var
   Tmp: Boolean;
 begin
@@ -826,32 +766,6 @@ begin
   {$ENDIF VCL}
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomEdit.EMGetRect(var Msg: TMessage);
-begin
-  if Msg.LParam <> 0 then
-  begin
-    if IsRectEmpty(FEditRect) then
-    begin
-      PRect(Msg.LParam)^ := ClientRect;
-      if Self.BorderStyle = bsSingle then
-        InflateRect(PRect(Msg.LParam)^, -2, -2);
-    end
-    else
-      PRect(Msg.LParam)^ := FEditRect;
-  end;
-end;
-
-procedure TJvCustomEdit.EMSetRect(var Msg: TMessage);
-begin
-  if Msg.LParam <> 0 then
-    FEditRect := PRect(Msg.LParam)^
-  else
-    FEditRect := ClientRect;
-  Invalidate;
-end;
-{$ENDIF VisualCLX}
-
 function TJvCustomEdit.GetFlat: Boolean;
 begin
   {$IFDEF VCL}
@@ -874,6 +788,15 @@ begin
       BorderStyle := bsSingle;
     Invalidate;
     {$ENDIF VCL}
+  end;
+end;
+
+procedure TJvCustomEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
+begin
+  if ClipboardCommands <> Value then
+  begin
+    inherited SetClipboardCommands(Value);
+    ReadOnly := ClipboardCommands <= [caCopy];
   end;
 end;
 

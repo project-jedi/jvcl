@@ -40,10 +40,10 @@ uses
   Windows, Messages, Controls, Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QTypes, QControls, QGraphics, Types, QWindows, 
+  QTypes, QControls, QGraphics, Types, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JvEdit, JVCLVer;
+  JvEdit;
 
 type
   TJvValidateEditDisplayFormat = (dfAlphabetic, dfAlphaNumeric, dfBinary,
@@ -85,7 +85,6 @@ type
   TJvCustomValidateEdit = class(TJvCustomEdit)
   private
     bSelfChange: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     FCheckChars: string;
     FDecimalPlaces: Cardinal;
     FDisplayFormat: TJvValidateEditDisplayFormat;
@@ -190,8 +189,6 @@ type
     property AsInteger: Integer read GetAsInteger write SetAsInteger;
     property AsCurrency: Currency read GetAsCurrency write SetAsCurrency;
     property AsFloat: Double read GetAsFloat write SetAsFloat;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvValidateEdit = class(TJvCustomValidateEdit)

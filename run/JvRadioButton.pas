@@ -33,13 +33,18 @@ unit JvRadioButton;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JVCLVer, JvTypes, JvExStdCtrls;
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QStdCtrls, Types, QWindows,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
+  JvTypes, JvExStdCtrls;
 
 type
   TJvRadioButton = class(TJvExRadioButton)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -78,7 +83,6 @@ type
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Alignment: TAlignment read FAlignment write SetAlignment;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
@@ -134,6 +138,7 @@ begin
   CalcAutoSize;
 end;
 
+{$IFDEF VCL}
 procedure TJvRadioButton.CreateParams(var Params: TCreateParams);
 const
   cAlign: array [TAlignment] of Word = (BS_LEFT, BS_RIGHT, BS_CENTER);
@@ -146,6 +151,7 @@ begin
     Style := Style or cAlign[Alignment] or cLayout[Layout] or
       cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
+{$ENDIF VCL}
 
 procedure TJvRadioButton.MouseEnter(AControl: TControl);
 begin
@@ -161,22 +167,20 @@ begin
       Font.Assign(FHotTrackFont);
     end;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  inherited MouseEnter(AControl);
 end;
 
 procedure TJvRadioButton.MouseLeave(AControl: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
+    inherited MouseLeave(AControl);
   end;
-  inherited MouseLeave(AControl);
 end;
 
 procedure TJvRadioButton.ParentColorChanged;

@@ -38,13 +38,12 @@ uses
   Types, QGraphics, QExtCtrls, QControls, QForms, QMenus,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JVCLVer, JvThemes, JvExControls, JvExExtCtrls;
+  JvThemes, JvExControls, JvExExtCtrls;
 
 type
   TPopupNames = (pnHint, pnName);
   TJvControlBar = class(TJvExControlBar, IJvDenySubClassing)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -70,7 +69,6 @@ type
     function SavePositions: string;
     procedure LoadPositions(const Value: string);
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     {$IFDEF JVCLThemesEnabled}
     property ParentBackground;

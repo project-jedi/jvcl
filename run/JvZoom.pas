@@ -33,12 +33,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  JVCLVer;
+  JvComponent;
 
 type
-  TJvZoom = class(TCustomControl)
+  TJvZoom = class(TJvCustomControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FTimer: TTimer;
     FActive: Boolean;
     FZoomLevel: Integer;
@@ -55,8 +54,8 @@ type
     procedure SetZoomLevel(const Value: Integer);
     procedure SetCacheOnDeactivate(const Value: Boolean);
     procedure PaintMe(Sender: TObject);
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
+    procedure Resize; override;
     procedure Paint; override;
     procedure PaintZoom;
     procedure Loaded; override;
@@ -66,7 +65,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Active: Boolean read FActive write SetActive default True;
     property ZoomLevel: Integer read FZoomLevel write SetZoomLevel default 100;
     property Delay: Cardinal read FDelay write SetDelay default 100;
@@ -289,10 +287,10 @@ begin
   FLastPoint := Point(MaxLongint, MaxLongint);
 end;
 
-procedure TJvZoom.WMSize(var Msg: TWMSize);
+procedure TJvZoom.Resize;
 begin
   //On resize, refresh it
-  inherited;
+  inherited Resize;
   { Forget the old point; thus force repaint }
   FLastPoint := Point(MaxLongint, MaxLongint);
   PaintMe(Self);

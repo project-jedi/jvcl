@@ -55,7 +55,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Controls, Forms,
-  JvItemsSearchs, JVCLVer, JvDataProvider, JvDataProviderIntf,
+  JvItemsSearchs, JvDataProvider, JvDataProviderIntf,
   JvExStdCtrls;
 
 type
@@ -136,7 +136,6 @@ type
 
   TJvCustomListBox = class(TJvExCustomListBox)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FAlignment: TAlignment;
     FHotTrack: Boolean;
     FHintColor: TColor;
@@ -302,8 +301,6 @@ type
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
     property ShowFocusRect: Boolean read FShowFocusRect write SetShowFocusRect default True;
     property Background: TJvListBoxBackground read FBackground write SetBackground;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvListBox = class(TJvCustomListBox)

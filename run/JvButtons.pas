@@ -76,7 +76,7 @@ uses
   Types, QGraphics, QControls, QForms, QExtCtrls, QStdCtrls, QMenus, QButtons,
   QImgList,
   {$ENDIF VisualCLX}
-  JVCLVer, JvComponent, JvExButtons;
+  JvComponent, JvExButtons;
 
 type
   { VCL Buttons unit does not publish TJvButtonGlyph  class,
@@ -221,7 +221,6 @@ type
 
   TJvaColorButton = class(TJvExBitBtn)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FCanvas: TControlCanvas;
     FGlyphDrawer: TJvButtonGlyph;
     FOnPaint: TPaintButtonEvent;
@@ -238,7 +237,6 @@ type
     procedure DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
     property Canvas: TCanvas read GetCanvas;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Color;
     property ParentColor;
     property OnPaint: TPaintButtonEvent read FOnPaint write FOnPaint;
@@ -246,7 +244,6 @@ type
 
   TJvNoFrameButton = class(TJvExSpeedButton)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FGlyphDrawer: TJvButtonGlyph;
     FNoBorder: Boolean;
     FOnPaint: TPaintButtonEvent;
@@ -259,7 +256,6 @@ type
     procedure DefaultDrawing(const IsDown: Boolean; const State: TButtonState);
     property Canvas;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Color;
     property ParentColor;
     property NoBorder: Boolean read FNoBorder write SetNoBorder;

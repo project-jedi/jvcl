@@ -38,12 +38,11 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QExtCtrls, QControls, QForms,
   {$ENDIF VisualCLX}
-  JvThemes, JVCLVer, JvExExtCtrls;
+  JvThemes, JvExExtCtrls;
 
 type
   TJvBevel = class(TJvExBevel)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -55,7 +54,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter;
     property OnMouseLeave;

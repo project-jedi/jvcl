@@ -41,8 +41,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvLinkLabelParser, JvLinkLabelRenderer, JvLinkLabelTree, JVCLVer, JvTypes,
-  JvComponent;
+  JvLinkLabelParser, JvLinkLabelRenderer, JvLinkLabelTree,
+  JvTypes, JvComponent;
 
 type
   ELinkLabelError = class(EJVCLException);
@@ -98,7 +98,6 @@ type
     FNodeTree: TNodeTree;
     procedure TextChanged; override;
     procedure FontChanged; override;
-    procedure MouseLeave(Control: TControl); override;
     procedure Paint; override;
     function CreateParser: IParser; virtual;
     function CreateRenderer: IRenderer; virtual;
@@ -107,6 +106,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure Resize; override;
     procedure DoCaptionChanged; virtual;
     procedure DoLinkClicked(LinkNumber: Integer; LinkText: string); virtual;
@@ -138,9 +138,7 @@ type
   end;
 
   TJvLinkLabel = class(TJvCustomLinkLabel)
-  // (rom) published was missing here
   published
-    property AboutJVCL;
     property Caption;
     property Text;
     property Anchors;

@@ -34,7 +34,7 @@ unit JvCharMap;
 interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids,
-  JVCLVer, JvComponent, JvExControls, JvExGrids;
+  JvComponent, JvExControls, JvExGrids;
 
 type
   TJvCharMapValidateEvent = procedure(Sender: TObject; AChar: WideChar;
@@ -175,7 +175,6 @@ type
   private
     FCharPanel: TCustomControl;
     FShowZoomPanel: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     FMouseIsDown: Boolean;
     FCharRange: TJvCharMapRange;
     FAutoSizeHeight: Boolean;
@@ -269,8 +268,6 @@ type
     {$ENDIF !COMPILER6_UP}
     procedure SetBounds(ALeft: Integer; ATop: Integer;
       AWidth: Integer; AHeight: Integer); override;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCharMap = class(TJvCustomCharMap)

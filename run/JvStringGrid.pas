@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids,
-  JvTypes, JVCLVer, JvJCLUtils, JvExGrids;
+  JvTypes, JvJCLUtils, JvExGrids;
 
 const
   GM_ACTIVATECELL = WM_USER + 123;
@@ -57,7 +57,6 @@ type
 
   TJvStringGrid = class(TJvExStringGrid)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FAlignment: TAlignment;
     FSetCanvasProperties: TDrawCellEvent;
     FGetCellAlignment: TGetCellAlignmentEvent;
@@ -164,7 +163,6 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored false;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Alignment: TAlignment read FAlignment write SetAlignment;
     property FixedFont: TFont read FFixedFont write SetFixedFont;

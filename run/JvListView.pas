@@ -34,8 +34,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  CommCtrl, Menus, ClipBrd,
-  JVCLVer, JvTypes, JvExComCtrls;
+  CommCtrl, Menus, Clipbrd,
+  JvTypes, JvExComCtrls;
 
 type
   EJvListViewError = EJVCLException;
@@ -53,7 +53,6 @@ type
 
   TJvListView = class(TJvExListView)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FAutoClipboardCopy: Boolean;
     FHintColor: TColor;
     FSaved: TColor;
@@ -98,7 +97,6 @@ type
     procedure InvertSelection;
     property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
     property OnMouseEnter;

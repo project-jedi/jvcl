@@ -38,7 +38,7 @@ uses
   {$IFDEF VisualCLX}
   Types, QWindows, QGraphics, QControls,
   {$ENDIF VisualCLX}
-  JvTypes, JVCLVer, JvComponent;
+  JvTypes, JvComponent;
 
 type
   TJvGradient = class(TJvGraphicControl)

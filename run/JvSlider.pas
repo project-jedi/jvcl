@@ -44,7 +44,7 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QExtCtrls,
   {$ENDIF VisualCLX}
-  JVCLVer, JvComponent;
+  JvComponent;
 
 type
   TJvSlider = class(TJvCustomControl)

@@ -35,13 +35,12 @@ interface
 uses
   Windows, SysUtils, Classes, Graphics, Controls, Forms,
   ComCtrls, Registry, ImgList,
-  JVCLVer, JvTypes;
+  JvComponent, JvTypes;
 
 type
 
-  TJvRegistryTreeView = class(TCustomTreeView)
+  TJvRegistryTreeView = class(TJvCustomTreeView)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FRegistryKeys: TJvRegKeys;
     FInternalImages: TImageList;
     FListView: TListView;
@@ -88,7 +87,6 @@ type
     property CurrentKey: HKEY read GetCurrentKey;
     property Items stored False;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property Color;
     property BorderStyle;

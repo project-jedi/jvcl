@@ -32,12 +32,11 @@ interface
 
 uses
   Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JVCLVer, JvExStdCtrls;
+  JvExStdCtrls;
 
 type
   TJvScrollBar = class(TJvExScrollBar)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOnParentColorChanged: TNotifyEvent;
@@ -51,7 +50,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter;
@@ -88,22 +86,20 @@ begin
     if HotTrack then
       Ctl3D := True;
     FOver := True;
+    inherited MouseEnter(Control);
   end;
-  inherited MouseEnter(Control);
 end;
 
 procedure TJvScrollBar.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
     if HotTrack then
       Ctl3D := False;
     FOver := False;
+    inherited MouseLeave(Control);
   end;
-  inherited MouseLeave(Control);
 end;
 
 procedure TJvScrollBar.SetHotTrack(Value: Boolean);

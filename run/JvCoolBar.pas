@@ -33,12 +33,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  JVCLVer, JvExComCtrls;
+  JvExComCtrls;
 
 type
   TJvCoolBar = class(TJvExCoolBar)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -50,7 +49,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter;
     property OnMouseLeave;

@@ -41,7 +41,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   ExtCtrls, StdCtrls, ImgList,
-  JvComponent, JVCLVer, JvComboBox, JvExControls, JvExStdCtrls;
+  JvComponent, JvComboBox, JvExControls, JvExStdCtrls;
 
 type
   TJvButtonColors = (fsLighter, fsLight, fsMedium, fsDark, fsDarker);
@@ -52,6 +52,7 @@ const
 
 type
   TJvImageItems = class;
+
   TJvImageItem = class(TCollectionItem)
   private
     FOwner: TJvImageItems;
@@ -217,7 +218,6 @@ type
 
   TJvImageListBox = class(TJvExCustomListBox)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FImageList: TCustomImageList;
     FItems: TJvImageItems;
     FChangeLink: TChangeLink;
@@ -256,7 +256,6 @@ type
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     {$IFDEF COMPILER6_UP}
     property Anchors;
     {$ENDIF COMPILER6_UP}

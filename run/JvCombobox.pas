@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvDataProvider, JvDataProviderIntf, JvMaxPixel, JvItemsSearchs, JVCLVer,
+  JvDataProvider, JvDataProviderIntf, JvMaxPixel, JvItemsSearchs, 
   JvExStdCtrls;
 
 type
@@ -87,7 +87,6 @@ type
 
   TJvCustomComboBox = class(TJvExCustomComboBox)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -173,8 +172,6 @@ type
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
     function DeleteExactString(Value: string; All: Boolean; CaseSensitive: Boolean = True): Integer;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvComboBox = class(TJvCustomComboBox)
