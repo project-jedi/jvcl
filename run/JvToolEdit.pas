@@ -692,6 +692,7 @@ const
 type
   TExecDateDialog = procedure(Sender: TObject; var ADate: TDateTime;
     var Action: Boolean) of object;
+  TJvInvalidDateEvent = procedure(Sender: TObject; const DateString:string; var NewDate:TDateTime; var Accept:boolean) of object; 
 
   TJvCustomDateEdit = class(TJvCustomComboEdit)
   private
@@ -699,6 +700,7 @@ type
     FMaxDate: TDateTime; // Polaris
     FTitle: string;
     FOnAcceptDate: TExecDateDialog;
+    FOnInvalidDate: TJvInvalidDateEvent;
     FDefaultToday: Boolean;
     //    FHooked: Boolean;
     FPopupColor: TColor;
@@ -746,6 +748,7 @@ type
     // Polaris
     FDateAutoBetween: Boolean;
     procedure SetDate(Value: TDateTime); virtual;
+    function DoInvalidDate(const DateString:string; var ANewDate:TDateTime):boolean;virtual;
     procedure SetDateAutoBetween(Value: Boolean); virtual;
     procedure TestDateBetween(var Value: TDateTime); virtual;
     // Polaris
@@ -784,6 +787,7 @@ type
     property WeekendColor: TColor read FWeekendColor write SetWeekendColor default clRed;
     property YearDigits: TYearDigits read FYearDigits write SetYearDigits default dyDefault;
     property OnAcceptDate: TExecDateDialog read FOnAcceptDate write FOnAcceptDate;
+    property OnInvalidDate: TJvInvalidDateEvent read FOnInvalidDate write FOnInvalidDate;
     property MaxLength stored False;
     property Text stored TextStored;
   public
@@ -870,6 +874,7 @@ type
     property Text;
     property Visible;
     property OnAcceptDate;
+    property OnInvalidDate;
     property OnButtonClick;
     property OnChange;
     property OnClick;
@@ -2976,6 +2981,7 @@ end;
 // Polaris
 
 procedure TJvCustomDateEdit.CheckValidDate;
+var ADate:TDateTime;
 begin
   if TextStored then
   try
@@ -2988,7 +2994,11 @@ begin
   except
     if CanFocus then
       SetFocus;
-    raise;
+    ADate := Self.Date;
+    if DoInvalidDate(Text,ADate) then
+      Self.Date := ADate
+    else
+      raise;
   end;
 end;
 
@@ -3100,6 +3110,14 @@ begin
   if not (csDesigning in ComponentState) and CheckOnExit then
     CheckValidDate;
   inherited DoExit;
+end;
+
+function TJvCustomDateEdit.DoInvalidDate(const DateString: string;
+  var ANewDate: TDateTime): boolean;
+begin
+  Result := False;
+  if Assigned(FOnInvalidDate) then
+    FOnInvalidDate(Self, DateString, ANewDate, Result);
 end;
 
 function TJvCustomDateEdit.FourDigitYear: Boolean;
