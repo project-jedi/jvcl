@@ -1,3 +1,4 @@
+{$I jvcl.inc}
 unit GenerateUtils;
 
 interface
@@ -782,6 +783,20 @@ begin
     end;
   end;
 end;
+
+{$IFNDEF COMPILER6_UP}
+function FileSetDate(const Filename:string; FileAge:Integer):Integer;
+var
+   Handle: Integer;
+begin
+   Handle := FileOpen(Filename, fmOpenReadWrite);
+   try
+     Result := SysUtils.FileSetDate(Handle, FileAge);
+   finally
+     FileClose(Handle);
+   end;
+end;
+{$ENDIF !COMPILER6_UP}
 
 function ApplyTemplateAndSave(path, target, package, extension, prefix, format : string; template : TStrings; xml : TJvSimpleXml; templateName, xmlName : string; mostRecentFileDate : TDateTime) : string;
 var
