@@ -45,7 +45,7 @@ uses
   JvDBProgressBar, JvDBRichEdit, JvDBSpinEdit, JvDBTreeView, JvDBLookup,
   JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBRadioPanel,
   JvDBGridExport, JvDBLookupComboEdit, JvDBHTLabel, JvDBSearchEdit,
-  JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, 
+  JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, JvDBImage,
   {$IFDEF JV_MIDAS}
   JvDBRemoteLogin,
   {$ENDIF JV_MIDAS}
@@ -81,7 +81,7 @@ begin
     TJvDBCombobox, TJvDBTreeView, TJvDBLookupTreeViewCombo, TJvDBLookupTreeView,
     TJvDBGrid, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit, TJvDBMaskEdit,
     TJvDBStatusLabel, TJvDBLookupComboEdit, TJvDBHTLabel, TJvDBSearchEdit,
-    TJvDBSearchComboBox, TJvDBFindEdit]);
+    TJvDBSearchComboBox, TJvDBFindEdit, TJvDBImage]);
   RegisterComponents(RsPalettePersistence, [TJvAppDBStorage]);
 
   RegisterPropertyEditor(TypeInfo(Integer), TJvDBGrid, cRowsHeight, nil);
