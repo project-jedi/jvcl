@@ -1295,8 +1295,11 @@ comparison. The last %DATETIME% marker in the file will be ignored,
 thus allowing a file that is only different by the date time tag to be
 treated
 as unmodified.<br>
-<sup>6.</sup> If no package or no file was found to be included in the
-generated package for the current target, no file will be written.<br>
+<sup>6.</sup> If no file was found to be included in the
+generated package for the current target, no file will be written.
+Please note that if the package only requires other packages but
+doesn't contain any file, it won't be output as a package is only
+meaningful if it contains files.<br>
 <sup>7.</sup> This is determined while processing 'package' and 'file'
 nodes. If a file or package is used by a target and not by its
 associated

@@ -864,7 +864,10 @@ begin
             tmpStr := repeatLines;
             reqPackName := BuildPackageName(packageNode, target, prefix, format);
             StrReplace(tmpStr, '%NAME%', reqPackName, [rfReplaceAll]);
-            containsSomething := True;
+            // We do not say that the package contains something because
+            // a package is only interesting if it contains files for
+            // the given target
+            // containsSomething := True;
             outFile.Text := outFile.Text +
                             EnsureCondition(tmpStr, packageNode, target);
           end;
@@ -1035,18 +1038,14 @@ begin
     end;
 
     // if no repeat section was used, we must check manually
-    // that at least one file or package is to be used by
-    // the given target. This will then force the generation
-    // of the output file (Useful for cfg templates for instance).
+    // that at least one file is to be used by the given target.
+    // This will then force the generation of the output file
+    // (Useful for cfg templates for instance).
+    // We do not check for the use of "required" packages because
+    // a package is only interesting if it contains files for
+    // the given target
     if not repeatSectionUsed then
     begin
-      for j := 0 to requiredNode.Items.Count -1 do
-        if IsIncluded(requiredNode.Items[j], target) then
-        begin
-          containsSomething := True;
-          Break;
-        end;
-
       for j := 0 to containsNode.Items.Count -1 do
         if IsIncluded(containsNode.Items[j], target) then
         begin
