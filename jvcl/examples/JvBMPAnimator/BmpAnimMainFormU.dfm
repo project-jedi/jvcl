@@ -24,7 +24,7 @@ object BmpAnimMainForm: TBmpAnimMainForm
     Centered = False
     Color = clBlack
     Direction = tdForward
-    ImageList = ImageList1
+    Images = ImageList1
     NumFrames = 46
     Speed = 15
     Min = 4
