@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-12-07:
+- Added JvCustomItemViewer, JvImagesViewer, JvImageListViewer and JvOwnerDrawViewer and demos // peter3
 2003-12-06:
 - Moved JvAnalogClock and JvClock to \archive. Renamed JvxClock/TJvxClock to JvClock/TJvClock. // peter3
 2003-12-01:
