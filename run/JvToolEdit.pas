@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2004-02-01
 
 Contributers:
   Rob den Braasem [rbraasem@xs4all.nl]
@@ -29,7 +29,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvToolEdit;
 
@@ -1908,12 +1907,14 @@ begin
   Form := GetParentForm(Self);
 
   //Polaris  if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then
-  if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) or ((Key = #10) and PopupVisible) then
+//  if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) or ((Key = #10) and PopupVisible) then
+  if (Key = #13) or (Key = #27) or ((Key = #10) and PopupVisible) then
   begin
     if PopupVisible then
     begin
       //Polaris      PopupCloseUp(FPopup, Key = Char(VK_RETURN));
-      PopupCloseUp(FPopup, Key <> Char(VK_ESCAPE));
+//      PopupCloseUp(FPopup, Key <> Char(VK_ESCAPE));
+      PopupCloseUp(FPopup, Key <> #27);
       Key := #0;
     end
     else
@@ -1925,7 +1926,8 @@ begin
       {$IFDEF VisualCLX}
       TCustomFormHack(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key));
       {$ENDIF VisualCLX}
-      if Key = Char(VK_RETURN) then
+//      if Key = Char(VK_RETURN) then
+      if Key = #13 then
       begin
         inherited KeyPress(Key);
         Key := #0;
