@@ -79,9 +79,10 @@ type
     property RecipientClass: DWORD read FRecipientClass;
   end;
 
-  TJvMailLogonOptions = set of (loLogonUI, loNewSession);
-  TJvMailReadOptions = set of (roUnreadOnly, roFifo, roPeek, roHeaderOnly,
-    roAttachments);
+  TJvMailLogonOption = (loLogonUI, loNewSession);
+  TJvMailLogonOptions = set of TJvMailLogonOption;
+  TJvMailReadOption = (roUnreadOnly, roFifo, roPeek, roHeaderOnly, roAttachments);
+  TJvMailReadOptions = set of TJvMailReadOption;
 
   TJvMailReadedData = record
     RecipientAddress: string;
