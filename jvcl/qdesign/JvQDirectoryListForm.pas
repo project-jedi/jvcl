@@ -37,7 +37,7 @@ uses
   SysUtils, Classes,
   
   
-  QControls, QForms, QComCtrls, QStdCtrls,
+  QControls, QForms, QComCtrls, QStdCtrls, QDialogs,
   
   JvQComponent;
 
@@ -106,10 +106,11 @@ end;
 
 procedure TJvDirectoryListDialog.AddBtnClick(Sender: TObject);
 var
-  S: string;
+  S: widestring;
 begin
   S := '';
-  if BrowseDirectory(S, '', 0) then
+//  if BrowseDirectory(S, '', 0) then
+  if SelectDirectory('', PathDelim, S) then
   begin
     if DirectoryList.FindCaption(0, S, False, True, True) = nil then
       with DirectoryList.Items.Add do
@@ -125,13 +126,13 @@ end;
 procedure TJvDirectoryListDialog.ModifyBtnClick(Sender: TObject);
 var
   I: Integer;
-  S: string;
+  S: widestring;
 begin
   if DirectoryList.Selected = nil then
     Exit;
   I := DirectoryList.Selected.Index;
   S := DirectoryList.Items[I].Caption;
-  if BrowseDirectory(S, '', 0) then
+  if SelectDirectory('', PathDelim, S) then
     DirectoryList.Items[I].Caption := S;
 end;
 
