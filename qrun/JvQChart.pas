@@ -260,6 +260,7 @@ type
     FLegendFont: TFont;
     FAxisFont: TFont;
     FTitle: string;
+    FNoDataMessage:String;
     FYAxisHeader: string;
     FYAxisDivisionMarkers: Boolean; // Do you want grid-paper look?
     FXAxisDivisionMarkers: Boolean; // Do you want grid-paper look?
@@ -344,6 +345,8 @@ type
     property PenUnit: TStrings read GetPenUnit write SetPenUnit;
     property ChartKind: TJvChartKind read FChartKind write SetChartKind default ckChartLine;
     property Title: string read FTitle write FTitle;
+    property NoDataMessage:String read FNoDataMessage write FNoDataMessage; //NEW! NOV 2004. Optionally display this instead of fixed resource string rsNoData
+
     { X Axis Properties }
     property YAxisHeader: string read FYAxisHeader write FYAxisHeader;
     property YAxisDivisionMarkers: Boolean read FYAxisDivisionMarkers write FYAxisDivisionMarkers default True;
@@ -2452,7 +2455,11 @@ begin { Enough local functions for ya? -WP }
     GraphYAxisDivisionMarkers;
 
     ChartCanvas.Font.Color := clRed;
-    MyLeftTextOut(Round(XOrigin), Round(YOrigin) + 4, RsNoData);
+    if Length(Options.NoDataMessage)=0 then
+      MyLeftTextOut(Round(XOrigin), Round(YOrigin) + 4, RsNoData)
+    else
+      MyLeftTextOut(Round(XOrigin), Round(YOrigin) + 4, Options.NoDataMessage); // NEW! NOV 2004. WP.
+
     Invalidate;
     Exit;
   end;
@@ -3125,54 +3132,50 @@ begin
 
   if Options.MouseEdit then
   begin
-    if X < Options.XStartOffset then begin
+    if X < Options.XStartOffset then
+    begin
       EditYScale;
-      exit;
-    end else
+      Exit;
+    end
+    else
     // New: Don't let end user mess with title, if we
     // provide our own way to set the title or title options,
     // however, if Options.MouseEdit is on, they can still set the
     // scale via mouse clicking.
-    if (Y < Options.YStartOffset) and (not Assigned(FOnTitleClick)) then begin
+    if (Y < Options.YStartOffset) and not Assigned(FOnTitleClick) then
+    begin
       EditHeader;
-      exit;
+      Exit;
     end;
 
-
-    if (Y > Options.YStartOffset + Options.YEnd) and  (not Assigned(FOnXAxisClick)) then begin
+    if (Y > Options.YStartOffset + Options.YEnd) and not Assigned(FOnXAxisClick) then
+    begin
       EditXHeader;
-      exit;
+      Exit;
     end;
-
   end;
 
+  if X < Options.XStartOffset then
   begin
-    if X < Options.XStartOffset then
+    // Just fire the Y axis clicked event, don't popup the editor
+    if Assigned(FOnYAxisClick) then
     begin
-      // Just fire the Y axis clicked event, don't popup the editor
-      if Assigned(FOnYAxisClick) then
-      begin
-        FOnYAxisClick(Self);
-        Exit;
-      end;
-    end
-    else
-    if Y < Options.YStartOffset then
-    begin
-      if Assigned(FOnTitleClick) then
-        FOnTitleClick(Self);
+      FOnYAxisClick(Self);
+      Exit;
     end;
-  end;
+  end
+  else
+  if Y < Options.YStartOffset then
+    if Assigned(FOnTitleClick) then
+      FOnTitleClick(Self);
   // New: Click on bottom area of chart (X Axis) can be defined by
   // user of the component to do something.
   if Assigned(FOnXAxisClick) then
-  begin
     if (Y > Options.YEnd) and (X > Options.XStartOffset) then
     begin
       FOnXAxisClick(Self);
       Exit;
     end;
-  end;
   if Assigned(FOnAltYAxisClick) then
     if (Y < Options.YEnd) and (X > Options.XEnd) then
       FOnAltYAxisClick(Self);

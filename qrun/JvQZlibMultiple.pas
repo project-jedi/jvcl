@@ -71,11 +71,14 @@ type
   TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
   TProgressEvent = procedure(Sender: TObject; Position, Total: Integer) of object;
 
+
   TJvZlibMultiple = class(TJvComponent)
   private
+    FStorePaths : Boolean;
     FOnProgress: TProgressEvent;
     FOnCompressingFile: TFileEvent;
     FOnCompressedFile: TFileEvent;
+    FOnCompletedAction: TNotifyEvent;
     // July 26, 2004: New improved event types for decompression: Allow user to
     // skip writing of files they want skipped on extraction, and if they
     // extract nothing, they can use this "nil extraction" to scan the contents
@@ -86,6 +89,8 @@ type
     procedure AddFile(FileName, Directory, FilePath: string; DestStream: TStream);
     procedure DoProgress(Position, Total: Integer); virtual;
   public
+    constructor Create(AOwner: TComponent); override;
+
     // compresses a list of files (can contain wildcards)
     // NOTE: caller must free returned stream!
     function CompressFiles(Files: TStrings): TStream; overload;
@@ -106,14 +111,14 @@ type
     // If RelativePaths is true, any paths in the stream are stripped from their drive letter
     procedure DecompressStream(Stream: TStream; Directory: string; Overwrite: Boolean; const RelativePaths: Boolean = True);
   published
+    property StorePaths: Boolean read FStorePaths  write FStorePaths default True;
      // NOTE: Changed decompression event parameters. July 26 2004. -WPostma.
     property OnDecompressingFile: TFileBeforeWriteEvent read FOnDecompressingFile write FOnDecompressingFile;
     property OnDecompressedFile: TFileAfterWriteEvent read FOnDecompressedFile write FOnDecompressedFile;
-    
     property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
-
     property OnCompressingFile: TFileEvent read FOnCompressingFile write FOnCompressingFile;
-    property OnCompressedFile: TFileEvent  read FOnCompressedFile write FOnCompressedFile;
+    property OnCompressedFile: TFileEvent read FOnCompressedFile write FOnCompressedFile;
+    property OnCompletedAction: TNotifyEvent read FOnCompletedAction write FOnCompletedAction;
   end;
 
 implementation
@@ -191,7 +196,7 @@ var
   begin
     { (RB) Can be improved }
     for B := 1 to Length(Directory) do
-      Tab[B] := Directory[B];
+         Tab[B] := Directory[B];
     B := Length(Directory);
     DestStream.Write(B, SizeOf(B));
     DestStream.Write(Tab, B);
@@ -229,7 +234,11 @@ begin
     if Assigned(FOnCompressedFile) then
       FOnCompressedFile(Self, FilePath);
 
-    WriteFileRecord(Directory, FileName, FileStream.Size, Stream.Size);
+      if FStorePaths then
+          WriteFileRecord(Directory, FileName, FileStream.Size, Stream.Size)
+      else
+          WriteFileRecord('', FileName, FileStream.Size, Stream.Size);
+
     DestStream.CopyFrom(Stream, 0);
   finally
     FileStream.Free;
@@ -251,6 +260,12 @@ begin
   finally
     TmpStream.Free;
   end;
+end;
+
+constructor TJvZlibMultiple.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FStorePaths := True;
 end;
 
 function TJvZlibMultiple.CompressFiles(Files: TStrings): TStream;
@@ -297,6 +312,8 @@ begin
   finally
     TmpStream.Free;
   end;
+  if Assigned(FOnCompletedAction) then
+     FOnCompletedAction(Self);
 end;
 
 procedure TJvZlibMultiple.DecompressStream(Stream: TStream;
@@ -400,6 +417,8 @@ begin
   finally
     Stream.Free;
   end;
+ if Assigned(FOnCompletedAction) then
+   FOnCompletedAction(Self);
 end;
 
 procedure TJvZlibMultiple.DoProgress(Position, Total: Integer);

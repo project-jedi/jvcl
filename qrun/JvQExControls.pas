@@ -136,8 +136,6 @@ type
   HDC = QWindows.HDC;
   {$EXTERNALSYM TJvMessage}
   TJvMessage = JvQTypes.TJvMessage;
-  {$EXTERNALSYM TMessage}
-  TMessage = QWindows.TMessage;
 
   TAlignInfo = record
     AlignList: TList;
@@ -176,7 +174,7 @@ type
   TCMFocusChanged = packed record
     Msg: Integer;
     Reserved: Integer;
-    Sender: TWinControl;
+    Sender: TWidgetControl;
     Result: Integer;
   end;
 
@@ -308,6 +306,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -449,6 +448,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -522,6 +522,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -603,6 +604,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -625,13 +627,14 @@ type
   
 
 function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
-function GetCanvas(Instance: TWinControl): TCanvas;
-function GetFocusedControl(Instance: TControl): TWinControl;
+function GetCanvas(Instance: TWidgetControl): TCanvas;
+function GetFocusedControl(Instance: TControl): TWidgetControl;
 function GetFocusedWnd(Instance: TControl): QWidgetH;
 function GetHintColor(Instance: TControl): TColor;
 function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
-function IsDoubleBuffered(Instance: TWinControl): Boolean;
-function IsPaintingCopy(Instance: TWinControl): Boolean;
+function IsDoubleBuffered(Instance: TWidgetControl): Boolean;
+function IsPaintingCopy(Instance: TWidgetControl): Boolean;
+function JvEventFilter(Instance: TWidgetControl; Receiver: QObjectH; Event: QEventH): Boolean;
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Integer): Integer;
 procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
 
@@ -645,7 +648,7 @@ begin
   Result := SendMessage(Application.AppWidget, Msg, WParam, LParam);
 end;
 
-function GetCanvas(Instance: TWinControl): TCanvas;
+function GetCanvas(Instance: TWidgetControl): TCanvas;
 var
   PI: PPropInfo;
 begin
@@ -658,7 +661,7 @@ begin
   end;
 end;
 
-function IsDoubleBuffered(Instance: TWinControl): Boolean;
+function IsDoubleBuffered(Instance: TWidgetControl): Boolean;
 var
   PI: PPropInfo;
 begin
@@ -693,7 +696,7 @@ begin
   end;
 end;
 
-function IsPaintingCopy(Instance: TWinControl): Boolean;
+function IsPaintingCopy(Instance: TWidgetControl): Boolean;
 begin
   Result := false ;
   while not Result and Assigned(Instance) do
@@ -768,18 +771,14 @@ begin
     end;
 end;
 
-function AppEventFilter(App: TApplication; Receiver: QObjectH; Event: QEventH): Boolean;
+function JvEventFilter(Instance: TWidgetControl; Receiver: QObjectH; Event: QEventH): Boolean;
 var
   PixMap: QPixmapH;
   Mesg: TMessage;
   R: TRect;
-  Canvas: TCanvas;
-  Instance: TWidgetControl;
 begin
   Result := False;
-  Instance := FindControl(QWidgetH(Receiver));
-  if not Assigned(Instance) then
-    Exit;
+  OutputDebugString(PAnsiChar(Format('%s EventId %d',[Instance.Name, Integer(QEvent_type(Event))])));
   with Instance do
     case QEvent_type(Event) of
 
@@ -789,82 +788,45 @@ begin
     QEventType_Leave                    : Perform(Instance, CM_MOUSELEAVE, 0, 0);
     QEventType_Paint:
     begin
-      with Event as QPaintEventH do
+      if ([csDestroying, csLoading] * ComponentState <> []) or
+         ([csCreating, csRecreating] * Instance.ControlState <> []) then
       begin
-        if (csDestroying in ComponentState) or
-          ([csCreating, csRecreating]* Instance.ControlState <> []) then
-        begin
-          Result := True;
-          Exit;
-        end;
+        Result := True;
+        Exit;
+      end;
 
-        if not (csWidgetPainting in ControlState) then
-          if not IsPaintingCopy(Instance) then
-          begin
-            QRegion_boundingRect(QPaintEvent_region(QPaintEventH(Event)), @R);
-            Pixmap := QPixmap_create ;
-            try
-              ControlState := ControlState + [csPaintCopy];
-              QPixmap_grabWidget(PixMap, Handle, R.Left, R.Top,
-                R.Right - R.Left, R.Bottom - R.Top);
-              Qt.BitBlt(QWidget_to_QPaintDevice(Handle), R.Left, R.Top, PixMap,
-                   0, 0, R.Right - R.Left, R.Bottom - R.Top, RasterOp_CopyROP, False);
-              Result := True;
-            finally
-              ControlState := ControlState - [csPaintCopy];
-              QPixMap_destroy(PixMap);
-            end;
-          end
-        else
+      if not (csWidgetPainting in ControlState) then
+        if not IsPaintingCopy(Instance) then
         begin
-        { csWidgetPainting / Erasebackground }
-          with TJvMessage(Mesg) do
-          begin
-            Msg := WM_ERASEBKGND;
-            Canvas := GetCanvas(Instance);
-            try
-              if Assigned(Canvas) then
-              begin
-                Canvas.Start;
-                DC := Canvas.Handle;
-              end
-              else
-                WParam := 0;
-              LParam := 0;
-              Handled := False;
-              Dispatch(Mesg);
-            finally
-              if Assigned(Canvas) then
-                Canvas.Stop;
-            end;
+          QRegion_boundingRect(QPaintEvent_region(QPaintEventH(Event)), @R);
+          Pixmap := QPixmap_create ;
+          try
+            ControlState := ControlState + [csPaintCopy];
+            QPixmap_grabWidget(PixMap, Handle, R.Left, R.Top,
+              R.Right - R.Left, R.Bottom - R.Top);
+            Qt.BitBlt(QWidget_to_QPaintDevice(Handle), R.Left, R.Top, PixMap,
+                 0, 0, R.Right - R.Left, R.Bottom - R.Top, RasterOp_CopyROP, False);
+            Result := True;
+          finally
+            ControlState := ControlState - [csPaintCopy];
+            QPixMap_destroy(PixMap);
           end;
-          Result := Mesg.Result <> 0 ;
+        end
+      else
+      begin
+        { csWidgetPainting / Erasebackground }
+        with TJvMessage(Mesg) do
+        begin
+          Msg := WM_ERASEBKGND;
+          WParam := 0;
+          LParam := 0;
+          Handled := False;
+          Dispatch(Mesg);
         end;
-      end;  // with Event as QPaintEventH
+        Result := Mesg.Result <> 0 ;
+      end;
     end;
   end;
-end;
-
-type
-  TJvCLXFilters = class(TComponent)
-  private
-    FHook: QObject_hookH;
-  public
-    constructor Create(AOwner: TComponent) ; override;
-    destructor Destroy; override;
-  end;
-
-constructor TJvCLXFilters.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FHook := InstallApplicationEventHook(@AppEventFilter);
-end;
-
-destructor TJvCLXFilters.Destroy;
-begin
-  if Assigned(FHook) then
-    QObject_hook_destroy(FHook);
-  inherited Destroy;
 end;
 
 { QControl Create }
@@ -884,6 +846,7 @@ end;
  
 procedure TJvExControl.WndProc(var Mesg: TMessage);
 begin
+  // OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -904,6 +867,12 @@ begin
       inherited Dispatch(Mesg);
     end;
   end;
+end;
+
+procedure TJvExControl.ColorChanged;
+begin
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited ColorChanged;
 end;
 
 procedure TJvExControl.FontChanged;
@@ -964,12 +933,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExControl.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExControl.EnabledChanged;
@@ -1090,6 +1053,7 @@ end;
  
 procedure TJvExWinControl.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1137,6 +1101,14 @@ begin
   inherited;
 end;
 
+procedure TJvExWinControl.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExWinControl.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -1163,6 +1135,14 @@ procedure TJvExWinControl.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExWinControl.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExWinControl.FocusChanged;
@@ -1274,12 +1254,6 @@ begin
   end;
 end;
 
-procedure TJvExWinControl.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
-end;
-
 procedure TJvExWinControl.EnabledChanged;
 begin
   Perform(CM_ENABLEDCHANGED, 0, 0);
@@ -1366,6 +1340,7 @@ end;
   
 procedure TJvExCustomControl.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1413,6 +1388,14 @@ begin
   inherited;
 end;
 
+procedure TJvExCustomControl.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExCustomControl.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -1439,6 +1422,14 @@ procedure TJvExCustomControl.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExCustomControl.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExCustomControl.FocusChanged;
@@ -1548,12 +1539,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExCustomControl.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExCustomControl.EnabledChanged;
@@ -1675,6 +1660,7 @@ end;
  
 procedure TJvExFrameControl.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1722,6 +1708,14 @@ begin
   inherited;
 end;
 
+procedure TJvExFrameControl.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExFrameControl.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -1748,6 +1742,14 @@ procedure TJvExFrameControl.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExFrameControl.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExFrameControl.FocusChanged;
@@ -1859,12 +1861,6 @@ begin
   end;
 end;
 
-procedure TJvExFrameControl.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
-end;
-
 procedure TJvExFrameControl.EnabledChanged;
 begin
   Perform(CM_ENABLEDCHANGED, 0, 0);
@@ -1951,6 +1947,7 @@ end;
   
 procedure TJvExHintWindow.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1998,6 +1995,14 @@ begin
   inherited;
 end;
 
+procedure TJvExHintWindow.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExHintWindow.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -2024,6 +2029,14 @@ procedure TJvExHintWindow.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExHintWindow.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExHintWindow.FocusChanged;
@@ -2135,12 +2148,6 @@ begin
   end;
 end;
 
-procedure TJvExHintWindow.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
-end;
-
 procedure TJvExHintWindow.EnabledChanged;
 begin
   Perform(CM_ENABLEDCHANGED, 0, 0);
@@ -2223,6 +2230,7 @@ end;
  
 procedure TJvExGraphicControl.WndProc(var Mesg: TMessage);
 begin
+  // OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -2243,6 +2251,12 @@ begin
       inherited Dispatch(Mesg);
     end;
   end;
+end;
+
+procedure TJvExGraphicControl.ColorChanged;
+begin
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited ColorChanged;
 end;
 
 procedure TJvExGraphicControl.FontChanged;
@@ -2303,12 +2317,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExGraphicControl.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExGraphicControl.EnabledChanged;
@@ -2412,11 +2420,10 @@ begin
 end;
 
 Initialization
-  OutputDebugString('JvExCLX Loaded: JvExControls.pas');
-  TJvCLXFilters.Create(Application);
+  OutputDebugString('JvExCLX Loaded: JvQExControls.pas');
 
 Finalization
-  OutputDebugString('JvExCLX Unloaded: JvExControls.pas');
-
+  OutputDebugString('JvExCLX Unloaded: JvQExControls.pas');
+                                        
 end.
 

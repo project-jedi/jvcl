@@ -52,11 +52,13 @@ type
     procedure SetPen(Value: TPen);
     procedure SetStyle(Value: TJvBevelStyle);
     procedure SetShape(Value: TShapeType);
-    procedure DoChange;
+  protected
+    procedure DoChange(Sender: TObject);
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   public
     constructor Create;
     destructor Destroy; override;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    procedure Assign(Source: TPersistent); override;
   published
     property Brush: TBrush read FBrush write SetBrush;
     property Height: Integer read FHeight write SetHeight default 2;
@@ -69,7 +71,7 @@ type
   private
     FAlignment: TAlignment;
     FLayout: TJvLayout;
-    FLabelOptions: TJvGroupHeaderOptions;
+//    FLabelOptions: TJvGroupHeaderOptions;
     FBevelOptions: TJvGroupHeaderOptions;
     FBevelSpace: Integer;
     function GetTransparent: Boolean;
@@ -78,7 +80,7 @@ type
     procedure SetLayout(Value: TJvLayout);
     procedure SetBevelOptions(Value: TJvGroupHeaderOptions);
     procedure SetBevelSpace(Value: Integer);
-    procedure SetLabelOptions(Value: TJvGroupHeaderOptions);
+//    procedure SetLabelOptions(Value: TJvGroupHeaderOptions);
     procedure StyleChanged(Sender: TObject);
     procedure BevelLine(C: TColor; X, Y, Width: Integer);
     procedure DoDrawText(var Rect: TRect; Flags: Longint);
@@ -109,7 +111,8 @@ type
     property Visible;
     property BevelOptions: TJvGroupHeaderOptions read FBevelOptions write SetBevelOptions;
     property BevelSpace: Integer read FBevelSpace write SetBevelSpace default 12;
-    property LabelOptions: TJvGroupHeaderOptions read FLabelOptions write SetLabelOptions;
+    // (p3) is this used anywhere?
+//    property LabelOptions: TJvGroupHeaderOptions read FLabelOptions write SetLabelOptions stored false; 
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Layout: TJvLayout read FLayout write SetLayout default lTop;
     property OnClick;
@@ -138,10 +141,10 @@ constructor TJvGroupHeaderOptions.Create;
 begin
   inherited Create;
   FPen := TPen.Create;
-  FPen.OnChange := FOnChange;
+  FPen.OnChange := DoChange;
 
   FBrush := TBrush.Create;
-  FBrush.OnChange := FOnChange;
+  FBrush.OnChange := DoChange;
 
   FShape := stRectangle;
   FStyle := bsLowered;
@@ -155,6 +158,29 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvGroupHeaderOptions.Assign(Source: TPersistent);
+var
+  FOldChange: TNotifyEvent;
+begin
+  if Source is TJvGroupHeaderOptions then
+  begin
+    FOldChange := FOnChange;
+    try
+      FOnChange := nil;
+      Brush := TJvGroupHeaderOptions(Source).Brush;
+      Height := TJvGroupHeaderOptions(Source).Height;
+      Pen := TJvGroupHeaderOptions(Source).Pen;
+      Shape := TJvGroupHeaderOptions(Source).Shape;
+      Style := TJvGroupHeaderOptions(Source).Style;
+    finally
+      FOnChange := FOldChange;
+    end;
+    DoChange(Self);
+  end
+  else
+    inherited Assign(Source);
+end;
+
 procedure TJvGroupHeaderOptions.SetBrush(Value: TBrush);
 begin
   FBrush.Assign(Value);
@@ -165,7 +191,7 @@ begin
   if Value <> FHeight then
   begin
     FHeight := Value;
-    DoChange;
+    DoChange(Self);
   end;
 end;
 
@@ -179,7 +205,7 @@ begin
   if Value <> FStyle then
   begin
     FStyle := Value;
-    DoChange;
+    DoChange(Self);
   end;
 end;
 
@@ -188,7 +214,7 @@ begin
   if Value <> FShape then
   begin
     FShape := Value;
-    DoChange;
+    DoChange(Self);
   end;
 end;
 
@@ -211,14 +237,14 @@ begin
   FBevelOptions := TJvGroupHeaderOptions.Create;
   FBevelOptions.OnChange := StyleChanged;
   FBevelSpace := 12;
-  FLabelOptions := TJvGroupHeaderOptions.Create;
-  FLabelOptions.OnChange := StyleChanged;
+//  FLabelOptions := TJvGroupHeaderOptions.Create;
+//  FLabelOptions.OnChange := StyleChanged;
 end;
 
 destructor TJvGroupHeader.Destroy;
 begin
   FBevelOptions.Free;
-  FLabelOptions.Free;
+//  FLabelOptions.Free;
   inherited Destroy;
 end;
 
@@ -310,8 +336,8 @@ begin
     taCenter:
       begin
         LX1 := 0;
-        LX2 := (Width div 2) - (lbWidth div 2);
-        LX3 := (Width div 2) + (lbWidth div 2);
+        LX2 := (Width div 2) - (lbWidth div 2) - (FBevelSpace div 2);
+        LX3 := LX2 + lbWidth;
         LX4 := Width;
       end;
     taRightJustify:
@@ -396,14 +422,31 @@ begin
         Inc(Y, (H - S) div 2);
         W := S;
         H := S;
-      end;
+        lbWidth := Width - X * 2 - W;
+      end
+      else
+        lbWidth := Width - X - W;
       case BevelOptions.Shape of
         stRectangle, stSquare:
+        begin
           Rectangle(X, Y, X + W, Y + H);
+          if FAlignment = taCenter then
+            Rectangle(X + lbWidth, Y, X + W + lbWidth, Y + H);
+        end;
+
         stRoundRect, stRoundSquare:
+        begin
           RoundRect(X, Y, X + W, Y + H, S div 4, S div 4);
+          if FAlignment = taCenter then
+            RoundRect(X + lbWidth, Y, X + W + lbWidth, Y + H, S div 4, S div 4);
+        end;
+
         stCircle, stEllipse:
+        begin
           Ellipse(X, Y, X + W, Y + H);
+          if FAlignment = taCenter then 
+            Ellipse(X + lbWidth, Y, X + W + lbWidth, Y + H);
+        end;
       end;
     end;
 end;
@@ -481,13 +524,15 @@ end;
 
 procedure TJvGroupHeader.SetBevelOptions(Value: TJvGroupHeaderOptions);
 begin
-  //
+  FBevelOptions.Assign(Value);
 end;
 
+{
 procedure TJvGroupHeader.SetLabelOptions(Value: TJvGroupHeaderOptions);
 begin
-  //
+  FLabelOptions.Assign(Value);
 end;
+}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -497,6 +542,7 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

@@ -707,7 +707,6 @@ begin
     Action := nil;
   if AComponent = FImageList then
     FImageList := nil;
-  // (rom) no inherited called?
 end;
 
 function TJvXPBarItem.GetDisplayName: string;
@@ -820,7 +819,7 @@ begin
         FillRect(Rect);
     end;
     if HasImages then
-      Draw(Rect.Left, Rect.Top + (LBar.FItemHeight - Bitmap.Height) div 2, Bitmap);
+      Draw(Rect.Left + 1, Rect.Top + (LBar.FItemHeight - Bitmap.Height) div 2, Bitmap);
     ItemCaption := Self.Caption;
     if (ItemCaption = '') and ((csDesigning in LBar.ComponentState) or (LBar.ControlCount = 0)) then
       ItemCaption := Format(RsUntitledFmt, [RsUntitled, Index]);

@@ -39,8 +39,10 @@ uses
   JvQTypes, JvQComponent;
 
 type
-  TJvPrintMeasureItemEvent = procedure (Sender:TObject; ACanvas:TCanvas; AIndex:integer; const AItem:string; var AHeight:Integer) of object;
-  TJvPrintDrawItemEvent = procedure (Sender:TObject; ACanvas:TCanvas; ARect:TRect; AIndex:integer; const AItem:string) of object;
+  TJvPrintMeasureItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
+    AIndex: Integer; const AItem: string; var AHeight:Integer) of object;
+  TJvPrintDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
+    ARect: TRect; AIndex: Integer; const AItem: string) of object;
   TJvPrint = class(TJvComponent)
   private
     FOnBeginPrint: TNotifyEvent;
@@ -51,8 +53,8 @@ type
     FOnMeasureItem: TJvPrintMeasureItemEvent;
     FOnDrawItem: TJvPrintDrawItemEvent;
   protected
-    function MeasureItem(ACanvas:TCanvas; AIndex:integer; AItem:string):Integer;virtual;
-    procedure DrawItem(ACanvas:TCanvas; ARect:TRect; AIndex:integer; const AItem:string);virtual;
+    function MeasureItem(ACanvas: TCanvas; AIndex: Integer; AItem: string): Integer; virtual;
+    procedure DrawItem(ACanvas: TCanvas; ARect: TRect; AIndex: Integer; const AItem: string); virtual;
   public
     function GetScaleX:Integer;
     function GetScaleY: Integer;
@@ -66,8 +68,8 @@ type
     property OnFinishedPrint: TNotifyEvent read FOnFinishedPrint write FOnFinishedPrint;
     property OnProgress: TJvProgressEvent read FOnProgress write FOnProgress;
     property OnNextPage: TJvNextPageEvent read FOnNextPage write FOnNextPage;
-    property OnMeasureItem:TJvPrintMeasureItemEvent read FOnMeasureItem write FOnMeasureItem;
-    property OnDrawItem:TJvPrintDrawItemEvent read FOnDrawItem write FOnDrawItem;
+    property OnMeasureItem: TJvPrintMeasureItemEvent read FOnMeasureItem write FOnMeasureItem;
+    property OnDrawItem: TJvPrintDrawItemEvent read FOnDrawItem write FOnDrawItem;
   end;
 
 implementation
@@ -86,7 +88,7 @@ end;
 procedure TJvPrint.Print(Value: TStringList);
 var
   I, LineTop, LineHeight, PageNum: Integer;
-  ARect:TRect;
+  ARect: TRect;
 begin
   //let's print
   if Assigned(FOnBeginPrint) then
@@ -200,7 +202,7 @@ begin
   Result := GetDeviceCaps(Printer.Handle, LogPixelsY);
 end;
 
-function TJvPrint.MeasureItem(ACanvas: TCanvas; AIndex: integer;
+function TJvPrint.MeasureItem(ACanvas: TCanvas; AIndex: Integer;
   AItem: string): Integer;
 begin
   if OwnerDraw and Assigned(FOnMeasureItem) then
@@ -210,7 +212,7 @@ begin
 end;
 
 procedure TJvPrint.DrawItem(ACanvas: TCanvas; ARect: TRect;
-  AIndex: integer; const AItem: string);
+  AIndex: Integer; const AItem: string);
 begin
   if OwnerDraw and Assigned(FOnDrawItem) then
     FOnDrawItem(Self, ACanvas, ARect, AIndex, AItem)

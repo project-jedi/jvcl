@@ -42,7 +42,7 @@ interface
 
 uses
   QWindows, QMessages, Classes, QControls, QImgList,
-  JvQToolEdit, JvQTypes;
+  JvQToolEdit;
 
 type
   TJvCustomNumEdit = class(TJvCustomComboEdit)
@@ -54,7 +54,7 @@ type
     FMinValue: Extended;
     FMaxValue: Extended;
     FDecimalPlaces: Cardinal;
-    FDecimalPlacesAlwaysShown :Boolean; // WAP Added. True means Use 0 instead of # in FormatFloat picture (ie 0.000 versus 0.####). NEW.
+    FDecimalPlacesAlwaysShown: Boolean; // WAP Added. True means Use 0 instead of # in FormatFloat picture (ie 0.000 versus 0.####). NEW.
     FCheckOnExit: Boolean;
     FZeroEmpty: Boolean;
     FFormatOnEditing: Boolean;
@@ -62,12 +62,8 @@ type
     FDisplayFormat: string;
     // Polaris
     FDecimalPlaceRound: Boolean;
-
-
-    function GetEditFormat:String; // WAP added.
-    
+    function GetEditFormat: string; // WAP added.
     procedure SetDecimalPlaceRound(Value: Boolean);
-
     procedure SetFocused(Value: Boolean);
     procedure SetAlignment(Value: TAlignment);
     procedure SetDisplayFormat(const Value: string);
@@ -117,8 +113,8 @@ type
     property ImageKind default ikDefault;
     property ButtonWidth default 21; //Polaris 20;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces default 2;
-    property DecimalPlacesAlwaysShown :Boolean read FDecimalPlacesAlwaysShown write SetDecimalPlacesAlwaysShown; // WAP Added. True means Use 0 instead of # in FormatFloat picture (ie 0.000 versus 0.####). NEW.
-
+    // WAP Added. True means Use 0 instead of # in FormatFloat picture (ie 0.000 versus 0.####). NEW.
+    property DecimalPlacesAlwaysShown: Boolean read FDecimalPlacesAlwaysShown write SetDecimalPlacesAlwaysShown;
     property DisplayFormat: string read GetDisplayFormat write SetDisplayFormat stored IsFormatStored;
     property MaxValue: Extended read FMaxValue write SetMaxValue;
     property MinValue: Extended read FMinValue write SetMinValue;
@@ -256,6 +252,12 @@ type
     property Value;
     property Visible;
     property ZeroEmpty;
+    (* ++ RDB ++ *)
+    property ClipboardCommands;
+    property DisabledTextColor;
+    property DisabledColor;
+    (* -- RDB -- *)
+    property DecimalPlacesAlwaysShown; {WAP Added.}
     property OnButtonClick;
     property OnChange;
     property OnClick;
@@ -273,12 +275,6 @@ type
     property OnMouseUp;
     property OnContextPopup;
     property OnStartDrag;
-    (* ++ RDB ++ *)
-    property ClipboardCommands;
-    property DisabledTextColor;
-    property DisabledColor;
-    (* -- RDB -- *)
-    property DecimalPlacesAlwaysShown; {WAP Added.}
   end;
 
 implementation
@@ -420,15 +416,17 @@ end;
 function xTextToValText(const AValue: string): string;
 begin
   Result := DelRSpace(AValue);
-  if DecimalSeparator <> ThousandSeparator then begin
+  if DecimalSeparator <> ThousandSeparator then
     Result := DelChars(Result, ThousandSeparator);
-  end;
   if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
     Result := ReplaceStr(Result, '.', DecimalSeparator);
   if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
     Result := ReplaceStr(Result, ',', DecimalSeparator);
-  if Result = '' then Result := '0'
-  else if Result = '-' then Result := '-0';
+  if Result = '' then
+    Result := '0'
+  else
+  if Result = '-' then
+    Result := '-0';
 end;
 
 function TJvCustomNumEdit.IsValidChar(Key: Char): Boolean;
@@ -573,12 +571,9 @@ begin
   if FDecimalPlaces <> Value then
   begin
     FDecimalPlaces := Value;
-
-      // WAP Added. Changes to decimal places formerly did not change
-      // FDisplayFormat, which causes both designtime and runtime problems!
-    SetDisplayFormat( GetEditFormat );
-
-
+    // WAP Added. Changes to decimal places formerly did not change
+    // FDisplayFormat, which causes both designtime and runtime problems!
+    SetDisplayFormat(GetEditFormat);
     SetValue(CheckValue(FValue, False)); // Polaris (?)
     DataChanged;
     Invalidate;
@@ -592,14 +587,12 @@ begin
   if FDecimalPlacesAlwaysShown <> Value then
   begin
     FDecimalPlacesAlwaysShown := Value;
-    SetDisplayFormat( GetEditFormat ); // Redo format picture
+    SetDisplayFormat(GetEditFormat); // Redo format picture
     SetValue(CheckValue(FValue, False)); // Polaris (?)
     DataChanged;
     Invalidate;
   end;
 end;
-
-
 
 function TJvCustomNumEdit.FormatDisplayText(Value: Extended): string;
 begin
@@ -622,13 +615,12 @@ end;
 {WAP added GetEditFormat, this code used to be ininline inside DataChanged.}
 function TJvCustomNumEdit.GetEditFormat:String;
 begin
-  result := '0';
-  if FDecimalPlaces > 0 then begin
+  Result := '0';
+  if FDecimalPlaces > 0 then
     if FDecimalPlacesAlwaysShown then
-       result  := result + '.' + MakeStr('0', FDecimalPlaces)
+       Result  := Result + '.' + MakeStr('0', FDecimalPlaces)
     else
-       result  := result + '.' + MakeStr('#', FDecimalPlaces);
-  end;
+       Result  := Result + '.' + MakeStr('#', FDecimalPlaces);
 end;
 
 procedure TJvCustomNumEdit.DataChanged;
@@ -858,7 +850,7 @@ var
   S: string;
   WasModified: Boolean;
 begin
-  Mesg.Result := 1;
+//  Mesg.Result := 1;
   WasModified := Modified;
   S := EditText;
   try

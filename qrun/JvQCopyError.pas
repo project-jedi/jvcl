@@ -49,7 +49,6 @@ type
     FWin32ErrorCode: Integer;
     FTargetFile: string;
     FSourceFile: string;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     function Execute: TJvDiskRes; override;

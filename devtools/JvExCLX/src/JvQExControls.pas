@@ -34,33 +34,10 @@ interface
 
 uses
   Classes, SysUtils,
-  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QMask, QClipbrd, TypInfo,
+  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QComCtrls,
+  QMask, QClipbrd, TypInfo,
   Qt, QWindows, QMessages,
   JvQTypes, JvQThemes, JVCLXVer;
-
-type
-  {$EXTERNALSYM HWND}
-  HWND = QWindows.HWND;
-  {$EXTERNALSYM HDC}
-  HDC = QWindows.HDC;
-  {$EXTERNALSYM TJvMessage}
-  TJvMessage = JvQTypes.TJvMessage;
-
-  { Add IJvDenySubClassing to the base class list if the control should not
-    be themed by the ThemeManager (www.delphi-gems.de).
-    This only works with JvExVCL derived classes. }
-  IJvDenySubClassing = interface
-    ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
-  end;
-
-  TDragKind = (dkDrag, dkDock);   { not implemented yet}
-
-  TAlignInfo = record
-    AlignList: TList;
-    ControlIndex: Integer;
-    Align: TAlign;
-    Scratch: Integer;
-  end;
 
 const
   CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
@@ -68,8 +45,8 @@ const
 //  VCL control message IDs
 //
   CM_VCLBASE                = CM_BASE + 10;
-//  CM_ACTIVATE               = CM_VCLBASE + 0;
-//  CM_DEACTIVATE             = CM_VCLBASE + 1;
+  CM_ACTIVATE               = CM_VCLBASE + 0; // not connected
+  CM_DEACTIVATE             = CM_VCLBASE + 1; // not connected
 //  CM_GOTFOCUS               = CM_VCLBASE + 2;
 //  CM_LOSTFOCUS              = CM_VCLBASE + 3;
 //  CM_CANCELMODE             = CM_VCLBASE + 4;
@@ -138,6 +115,87 @@ const
   HTNOWHERE = 0;
   HTCLIENT = 1;
 
+type
+  { Add IJvDenySubClassing to the base class list if the control should not
+    be themed by the ThemeManager (www.delphi-gems.de).
+    This only works with JvExCLX derived classes. }
+  IJvDenySubClassing = interface
+    ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
+  end;
+
+  TDragKind = (dkDrag, dkDock);   { not implemented yet}
+
+  {$EXTERNALSYM HWND}
+  HWND = QWindows.HWND;
+  {$EXTERNALSYM HDC}
+  HDC = QWindows.HDC;
+  {$EXTERNALSYM TJvMessage}
+  TJvMessage = JvQTypes.TJvMessage;
+
+  TAlignInfo = record
+    AlignList: TList;
+    ControlIndex: Integer;
+    Align: TAlign;
+    Scratch: Integer;
+  end;
+
+  TCMActivate      = TWMNoParams;
+
+  TCMChanged = packed record
+    Msg: Integer;
+    Reserved: Integer;
+    Child: TControl;
+    Result: Integer;
+  end;
+
+  TCMColorChanged   = TWMNoParams;
+  TCMControlChange  = TCMChanged;
+
+  TCMControlListChange = packed record
+    Msg: Integer;
+    Control: TControl;
+    Inserting: LongBool;
+    Result: Integer;
+  end;
+
+  TCMDeactivate     = TWMNoParams;
+  TCMDesignHitTest = TWMMouse;
+  TCMDialogChar     = TWMChar;
+  TCMDialogKey      = TWMChar;
+  TCMEnabledChanged = TWMNoParams;
+  TCMEnter          = TWMNoParams;
+  TCMExit           = TWMNoParams;
+
+  TCMFocusChanged = packed record
+    Msg: Integer;
+    Reserved: Integer;
+    Sender: TWidgetControl;
+    Result: Integer;
+  end;
+
+  TCMFontChanged    = TWMNoParams;
+  TCMGotFocus       = TWMNoParams;
+
+  TCMHintShow = packed record
+    Msg: Cardinal;
+    Reserved: Integer;
+    HintInfo: PHintInfo;
+    Result: Integer;
+  end;
+
+  TCMHintShowPause = packed record
+    Msg: Cardinal;
+    WasActive: Integer;
+    Pause: PInteger;
+    Result: Integer;
+    pt: TPoint
+  end;
+
+  TCMHitTest        = TWMMouse;
+  TCMLostFocus      = TWMNoParams;
+  TCMMouseEnter     = TWMNoParams;
+  TCMMouseLeave     = TWMNoParams;
+  TCMTextChanged    = TWMNoParams;
 
 type
   JV_CONTROL(Control)
@@ -159,13 +217,14 @@ type
   JV_CUSTOMCONTROL(HintWindow)
 
 function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
-function GetCanvas(Instance: TWinControl): TCanvas;
-function GetFocusedControl(Instance: TControl): TWinControl;
+function GetCanvas(Instance: TWidgetControl): TCanvas;
+function GetFocusedControl(Instance: TControl): TWidgetControl;
 function GetFocusedWnd(Instance: TControl): QWidgetH;
 function GetHintColor(Instance: TControl): TColor;
 function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
-function IsDoubleBuffered(Instance: TWinControl): Boolean;
-function IsPaintingCopy(Instance: TWinControl): Boolean;
+function IsDoubleBuffered(Instance: TWidgetControl): Boolean;
+function IsPaintingCopy(Instance: TWidgetControl): Boolean;
+function JvEventFilter(Instance: TWidgetControl; Receiver: QObjectH; Event: QEventH): Boolean;
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Integer): Integer;
 procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
 
@@ -174,13 +233,12 @@ var
 
 implementation
 
-
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Integer): Integer;
 begin
   Result := SendMessage(Application.AppWidget, Msg, WParam, LParam);
 end;
 
-function GetCanvas(Instance: TWinControl): TCanvas;
+function GetCanvas(Instance: TWidgetControl): TCanvas;
 var
   PI: PPropInfo;
 begin
@@ -193,16 +251,21 @@ begin
   end;
 end;
 
-function IsDoubleBuffered(Instance: TWinControl): Boolean;
+function IsDoubleBuffered(Instance: TWidgetControl): Boolean;
 var
   PI: PPropInfo;
 begin
-  Result := True;
-  if Assigned(Instance) then
+  Result := false;	
+  if Assigned(Instance) and 
+     not (Instance is TCustomViewControl) and
+     not (Instance is TCustomIconView) and
+     not (Instance is TCustomListBox) then
   begin
     PI := GetPropInfo(Instance, 'DoubleBuffered');
     if PI <> nil then
-      Result := GetOrdProp(Instance, PI) <> 0;
+      Result := GetOrdProp(Instance, PI) <> 0
+    else
+      Result := True;  // Change to false
   end;
 end;
 
@@ -223,7 +286,7 @@ begin
   end;
 end;
 
-function IsPaintingCopy(Instance: TWinControl): Boolean;
+function IsPaintingCopy(Instance: TWidgetControl): Boolean;
 begin
   Result := false ;
   while not Result and Assigned(Instance) do
@@ -298,22 +361,14 @@ begin
     end;
 end;
 
-
-{
-  - Handles Qt Events
-}
-function AppEventFilter(App: TApplication; Receiver: QObjectH; Event: QEventH): Boolean;
+function JvEventFilter(Instance: TWidgetControl; Receiver: QObjectH; Event: QEventH): Boolean;
 var
   PixMap: QPixmapH;
   Mesg: TMessage;
   R: TRect;
-  Canvas: TCanvas;
-  Instance: TWidgetControl;
 begin
   Result := False;
-  Instance := FindControl(QWidgetH(Receiver));
-  if not Assigned(Instance) then
-    Exit;
+  OutputDebugString(PAnsiChar(Format('%s EventId %d',[Instance.Name, Integer(QEvent_type(Event))])));
   with Instance do
     case QEvent_type(Event) of
 
@@ -323,89 +378,46 @@ begin
     QEventType_Leave                    : Perform(Instance, CM_MOUSELEAVE, 0, 0);
     QEventType_Paint:
     begin
-      with Event as QPaintEventH do
+      if ([csDestroying, csLoading] * ComponentState <> []) or
+         ([csCreating, csRecreating] * Instance.ControlState <> []) then
       begin
-        if (csDestroying in ComponentState) or
-          ([csCreating, csRecreating]* Instance.ControlState <> []) then
-        begin
-          Result := True;
-          Exit;
-        end;
+        Result := True;
+        Exit;
+      end;
 
-        if not (csWidgetPainting in ControlState) then
-          if not IsPaintingCopy(Instance) then
-          begin
-            QRegion_boundingRect(QPaintEvent_region(QPaintEventH(Event)), @R);
-            Pixmap := QPixmap_create ;
-            try
-              ControlState := ControlState + [csPaintCopy];
-              QPixmap_grabWidget(PixMap, Handle, R.Left, R.Top,
-                R.Right - R.Left, R.Bottom - R.Top);
-              Qt.BitBlt(QWidget_to_QPaintDevice(Handle), R.Left, R.Top, PixMap,
-                   0, 0, R.Right - R.Left, R.Bottom - R.Top, RasterOp_CopyROP, False);
-              Result := True;
-            finally
-              ControlState := ControlState - [csPaintCopy];
-              QPixMap_destroy(PixMap);
-            end;
-          end
-        else
+      if not (csWidgetPainting in ControlState) then
+        if not IsPaintingCopy(Instance) then
         begin
-        { csWidgetPainting / Erasebackground }
-          with TJvMessage(Mesg) do
-          begin
-            Msg := WM_ERASEBKGND;
-            Canvas := GetCanvas(Instance);
-            try
-              if Assigned(Canvas) then
-              begin
-                Canvas.Start;
-                DC := Canvas.Handle;
-              end
-              else
-                WParam := 0;
-              LParam := 0;
-              Handled := False;
-              Dispatch(Mesg);
-            finally
-              if Assigned(Canvas) then
-                Canvas.Stop;
-            end;
+          QRegion_boundingRect(QPaintEvent_region(QPaintEventH(Event)), @R);
+          Pixmap := QPixmap_create ;
+          try
+            ControlState := ControlState + [csPaintCopy];
+            QPixmap_grabWidget(PixMap, Handle, R.Left, R.Top,
+              R.Right - R.Left, R.Bottom - R.Top);
+            Qt.BitBlt(QWidget_to_QPaintDevice(Handle), R.Left, R.Top, PixMap,
+                 0, 0, R.Right - R.Left, R.Bottom - R.Top, RasterOp_CopyROP, False);
+            Result := True;
+          finally
+            ControlState := ControlState - [csPaintCopy];
+            QPixMap_destroy(PixMap);
           end;
-          Result := Mesg.Result <> 0 ;
+        end
+      else
+      begin
+        { csWidgetPainting / Erasebackground }
+        with TJvMessage(Mesg) do
+        begin
+          Msg := WM_ERASEBKGND;
+          WParam := 0;
+          LParam := 0;
+          Handled := False;
+          Dispatch(Mesg);
         end;
-      end;  // with Event as QPaintEventH
+        Result := Mesg.Result <> 0 ;
+      end;
     end;
   end;
 end;
-
-type
-  TJvCLXFilters = class(TComponent)
-  private
-    FHook: QObject_hookH;
-  public
-    constructor Create(AOwner: TComponent) ; override;
-    destructor Destroy; override;
-  end;
-
-constructor TJvCLXFilters.Create(AOwner: TComponent);
-var
-  Method: TMethod;
-begin
-  inherited Create(AOwner);
-  Method.Code := @AppEventFilter;
-  Method.Data := Application;
-  FHook := QObject_hook_create(Application.Handle);
-  Qt_hook_hook_events(FHook, Method);
-end;
-
-destructor TJvCLXFilters.Destroy;
-begin
-  if Assigned(FHook) then
-    QObject_hook_destroy(FHook);
-  inherited Destroy;
-end;
-
 
 JV_CONTROL_IMPL(Control)
 JV_WINCONTROL_IMPL(WinControl)
@@ -450,12 +462,10 @@ begin
 end;
 
 Initialization
-  OutputDebugString('Loading JvExControls.pas');
-  TJvCLXFilters.Create(Application);
+  OutputDebugString('JvExCLX Loaded: JvQExControls.pas');
 
 Finalization
-  OutputDebugString('Unloading JvExControls.pas');
-
-
+  OutputDebugString('JvExCLX Unloaded: JvQExControls.pas');
+                                        
 end.
 
