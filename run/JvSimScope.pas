@@ -343,8 +343,7 @@ end;
 
 procedure TJvSimScope.SetGridSize(Value: Integer);
 begin
-  Value := Value and not 1;
-  if FGridSize <> Value then
+  if (FGridSize <> Value) and (Value > 0) then
   begin
     FGridSize := Value;
     UpdateDisplay(True);
