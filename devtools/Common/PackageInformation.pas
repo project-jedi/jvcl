@@ -75,7 +75,7 @@ type
   end;
 
   /// <summary>
-  /// TContainedFile contains one file name that is contained in the the
+  /// TContainedFile contains one file name that is contained in the
   /// TPackageXmlInfo object and it's inclusion conditions.
   /// </summary>
   TContainedFile = class(TPackageXmlInfoItem)
@@ -328,7 +328,7 @@ begin
  // already in the cache
   if XmlFileCache.Find(Name, Index) then
     Result := TPackageXmlInfo(XmlFileCache.Objects[Index])
-  else                                    
+  else
   begin
    // create a new one and add it to the cache
     Result := TPackageXmlInfo.Create(Name); // do not localize
