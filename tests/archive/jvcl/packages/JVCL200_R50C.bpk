@@ -114,7 +114,7 @@
       ..\lib5\JvSpin.obj ..\lib5\JvRichEd.obj ..\lib5\JvSwitch.obj 
       ..\lib5\JvDice.obj ..\lib5\JvVCLUtils.obj ..\lib5\JvAniFile.obj 
       ..\lib5\JvIcoList.obj ..\lib5\JvObjStr.obj ..\lib5\JvPickDate.obj 
-      ..\lib5\JvMaxMin.obj ..\lib5\JvConst.obj ..\lib5\JvxConst.obj 
+      ..\lib5\JvMaxMin.obj ..\lib5\JvConst.obj ..\lib5\JvxRConst.obj
       ..\lib5\JvAppUtils.obj ..\lib5\JvStrUtils.obj ..\lib5\JvFileUtil.obj 
       ..\lib5\JvTimer.obj ..\lib5\JvHook.obj ..\lib5\JvPlacemnt.obj 
       ..\lib5\JvProps.obj ..\lib5\JvPrgrss.obj ..\lib5\JvHints.obj 

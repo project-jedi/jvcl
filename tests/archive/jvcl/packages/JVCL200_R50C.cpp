@@ -285,7 +285,7 @@ USEUNIT("..\source\JvObjStr.pas");
 USEUNIT("..\source\JvPickDate.pas");
 USEUNIT("..\source\JvMaxMin.pas");
 USEUNIT("..\source\JvConst.pas");
-USEUNIT("..\source\JvxConst.pas");
+USEUNIT("..\source\JvxRConst.pas");
 USEUNIT("..\source\JvAppUtils.pas");
 USEUNIT("..\source\JvStrUtils.pas");
 USEUNIT("..\source\JvFileUtil.pas");

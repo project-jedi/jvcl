@@ -308,7 +308,7 @@ contains
   JvObjStr in '..\source\JvObjStr.pas',
   JvPickDate in '..\source\JvPickDate.pas',
   JvConst in '..\source\JvConst.pas',
-  JvxConst in '..\source\JvxConst.pas',
+  JvxRConst in '..\source\JvxRConst.pas',
   JvAppUtils in '..\source\JvAppUtils.pas',
   JvStrUtils in '..\source\JvStrUtils.pas',
   JvFileUtil in '..\source\JvFileUtil.pas',
