@@ -68,14 +68,11 @@ type
     property OnCanIgnore: TJvSpellCheckIgnoreEvent read GetCanIgnore write SetCanIgnore;
   end;
 
-resourcestring
-  SNoSpellCheckerAvailable = 'No IJvSpellChecker implementation available!';
-
 implementation
 
 uses
   JclStrings, // StrAddRef, StrDecRef
-  JvTypes;
+  JvTypes, JvResources;
 
 // NOTE: hash table and soundex lookup code originally from Julian Bucknall's
 // "Algorithms Alfresco" column in The Delphi Magazine, Issue 52, December 1999

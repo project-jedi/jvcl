@@ -231,19 +231,23 @@ type
     property OnGetCaption;
     property OnExportRecord;
     property OnExportField;
-
   end;
 
+implementation
 
+uses
+  ComObj, FileCtrl,
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
+  JvConsts,
+  JvgUtils, JvgFileUtils;
+
+{$IFNDEF USEJVCL}
 resourcestring
   sDataSetIsUnassigned = 'DataSet is unassigned';
   sSaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
-
-implementation
-uses
-  ComObj, FileCtrl,
-  JvgUtils, JvgFileUtils,
-  JvConsts;
+{$ENDIF USEJVCL}
 
 { TJvgCommonExport }
 

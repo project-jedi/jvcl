@@ -118,14 +118,17 @@ type
 
   end;
 
-
-
-resourcestring
-  sProgressd = 'progress...[%d%%]';
-
 implementation
 
-//________________________________________________________ Methods _
+{$IFDEF USEJVCL}
+uses
+  JvResources;
+{$ENDIF USEJVCL}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  sProgressd = 'progress...[%d%%]';
+{$ENDIF USEJVCL}
 
 constructor TJvgProgress.Create(AOwner: TComponent);
 begin

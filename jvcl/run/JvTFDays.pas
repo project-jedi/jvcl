@@ -1762,36 +1762,11 @@ type
 {$HPPEMIT '#undef TDate'}
 {$HPPEMIT '#undef TTime'}
 
-
-resourcestring
-  sInvalidPrimeTimeStartTime = 'Invalid PrimeTime StartTime';
-  sInvalidPrimeTimeEndTime = 'Invalid PrimeTime EndTime';
-  sColumnIndexOutOfBounds = 'Column index out of bounds';
-  sRowIndexOutOfBounds = 'Row index out of bounds';
-  sMapColNotFoundForAppointment = 'Map col not found for appointment';
-  sCorruptAppointmentMap = 'Corrupt appointment map';
-  sGridGranularityCannotBeGreater = 'Grid granularity cannot be greater ' +
-            'then the time block granularity';
-  sTimeBlockGranularityMustBeEvenly = 'Time block granularity must be evenly ' +
-            'divisible by the grid granularity';
-  sTimeBlocksMustBeginExactlyOn = 'Time blocks must begin exactly on ' +
-            'a grid time division';
-  sGridEndTimeCannotBePriorToGridStart = 'GridEndTime cannot be prior to GridStartTime';
-  sGridStartTimeCannotBeAfterGridEndTi = 'GridStartTime cannot be after GridEndTime';
-  sInvalidRowd = 'Invalid row (%d)';
-  sThereIsNoDataToPrint = 'There is no data to print';
-  sNoPageInfoExists = 'No page info exists.  ' +
-         'Document must be prepared';
-  sATimeBlockNameCannotBeNull = 'A time block name cannot be null';
-  sAnotherTimeBlockWithTheName = 'Another time block with the name ' +
-            '"%s" already exists';
-  sATimeBlockWithTheNamesDoesNotExist = 'A time block with the name "%s" does not exist';
-
 implementation
 
 uses
   Consts, TypInfo, Printers,
-  JvConsts;
+  JvConsts, JvResources;
 
 //Type
   // DEF TIMEBLOCK (not conditionally compiled, just marked for reference)

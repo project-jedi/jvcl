@@ -45,15 +45,19 @@ type
     destructor Destroy; override;
   end;
 
-
-resourcestring
-  sOneInstanceOfThisProgramIsAlreadyRu = 'One instance of this program is already running. A second instance launch is not allowed.';
-  sSecondInstanceLaunchOfs = 'Second instance launch of %s';
-
 implementation
 
 uses
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
   JvConsts;
+
+{$IFNDEF USEJVCL}
+resourcestring
+  sOneInstanceOfThisProgramIsAlreadyRu = 'One instance of this program is already running. A second instance launch is not allowed.';
+  sSecondInstanceLaunchOfs = 'Second instance launch of %s';
+{$ENDIF USEJVCL}
 
 { semaphore
 

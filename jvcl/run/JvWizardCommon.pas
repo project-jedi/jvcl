@@ -73,6 +73,9 @@ procedure JvWizardDrawImage(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect;
 
 implementation
 
+uses
+  JvResources;
+
 const
   { Frame Style Color constant arrays }
   KULFrameColor: array [TJvWizardFrameStyle] of TColor = (clNone, clWindow,
@@ -80,9 +83,6 @@ const
 
   KLRFrameColor: array [TJvWizardFrameStyle] of TColor = (clNone, clBtnFace,
     clWindowFrame, clBtnHighlight, clBtnShadow, clBtnHighlight, clBtnFace);
-
-resourcestring
-  STilingError = 'Tiling only works on images with dimensions > 0';
 
 {-----------------------------------------------------------------------------
   Procedure: JvWizardDrawEdges

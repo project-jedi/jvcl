@@ -36,7 +36,7 @@ uses
   Qt, QGraphics, QTypes;
 
 type
-  TCurInvMode=(invBlack, invWhite, invTransparent);
+  TCurInvMode = (invBlack, invWhite, invTransparent);
 
 type
   TWinCursor = class(TGraphic)
@@ -89,7 +89,6 @@ type
     function ReleaseHandle: QCursorH;
   end;
 
-
 function LoadCursor(Instance: Cardinal; CursorName: string): QCursorH;
 function LoadCursorFromFile(CursorFileName: string): QCursorH;
 
@@ -97,6 +96,7 @@ type
   EWinCursor = class(Exception);
 
 implementation
+
 resourcestring
   RsUnsupported = 'Unsupported or illegal format.';
   RsInvalidOperation = 'Invalid operation.';

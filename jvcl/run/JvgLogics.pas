@@ -33,12 +33,17 @@ unit JvgLogics;
 interface
 
 uses
-  Classes, JvComponent, SysUtils, Graphics;
+  Classes, SysUtils, Graphics,
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
+  JvComponent;
 
 type
   TLogicRule = (lrEqual, lrBeginWith, lrEndWith, lrContains, lrContainsIn,
     ltNotEmpty);
 
+{$IFNDEF USEJVCL}
 resourcestring
   sEqualTo = 'equal to';
   sStartingWith = 'starting with';
@@ -46,9 +51,12 @@ resourcestring
   sContains = 'contains';
   sIsContainedWithin = 'is contained within';
   sNotEmpty = 'not empty';
-  
+  sStep = 'Step ';
+  sComments = 'Comments';
+{$ENDIF USEJVCL}
+
 const
-  LogicRuleLabels: array[TLogicRule] of string = (sEqualTo,
+  LogicRuleLabels: array [TLogicRule] of string = (sEqualTo,
     sStartingWith, sEndsWith, sContains, sIsContainedWithin, sNotEmpty);
 
 type
@@ -245,14 +253,11 @@ type
     SetItem; default;
   end;
 
-
-resourcestring
-  sStep = 'Step ';
-  sComments = 'Comments';
-
 implementation
+
 uses
-  JvConsts, JvgUtils;
+  JvConsts,
+  JvgUtils;
 
 constructor TJvgLogicElement.Create(Collection: TCollection);
 begin

@@ -106,12 +106,18 @@ implementation
 
 uses
   Printers,
-  JvConsts, JvgTypes, JvgExport, JvgQPrintSetupForm;
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
+  JvConsts,
+  JvgTypes, JvgExport, JvgQPrintSetupForm;
 
 {$R *.dfm}
 
+{$IFNDEF USEJVCL}
 resourcestring
   sPagedOfd = 'Page %d of %d';
+{$ENDIF USEJVCL}
 
 procedure TJvgfPrintPreview.FormCreate(Sender: TObject);
 begin

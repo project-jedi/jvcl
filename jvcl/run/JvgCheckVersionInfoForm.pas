@@ -69,12 +69,17 @@ implementation
 
 uses
   ShellApi,
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
   JvConsts, JvgHTTPVersionInfo;
 
 {$R *.dfm}
 
+{$IFNDEF USEJVCL}
 resourcestring
   sNoNewerVersionOfProgramAvailable = 'No newer version of program available';
+{$ENDIF USEJVCL}
 
 procedure TJvgfCheckVersionInfo.Execute(WinControl: TWinControl);
 var

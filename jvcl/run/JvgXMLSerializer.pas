@@ -137,17 +137,6 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, JvComponent, TypInfo;
 
-resourcestring
-(*  {$IFDEF RUSSIAN}
-  ERR_OpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
-  ERR_CloseXMLTagNotFound = 'Закрывающий тег не найден: </%s>';
-  ERR_UnknownProperty = 'Unknown property: %s';
-  {$ELSE}*)
-  ERR_OpenXMLTagNotFound = 'Open tag not found: <%s>';
-  ERR_CloseXMLTagNotFound = 'Close tag not found: </%s>';
-  ERR_UnknownProperty = 'Unknown property: %s';
-(*  {$ENDIF}*)
-
 type
   TOnGetXMLHeader = procedure(Sender: TObject; var Value: string) of object;
   TBeforeParsingEvent = procedure(Sender: TObject; Buffer: PChar) of object;
@@ -232,24 +221,35 @@ type
       read FBeforeParsing write FBeforeParsing;
   end;
 
-procedure Register;
-
 implementation
-uses JvgUtils
+
+uses
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
+  JvgUtils;
   //mb {$IFDEF COMPILER6_UP},
   //mb  DesignIntf{$ELSE}{$IFDEF COMPILER5_UP},
   //mb  dsgnintf{$ENDIF}{$ENDIF}
-  ;
 
 const
   ORDINAL_TYPES = [tkInteger, tkChar, tkEnumeration, tkSet];
+
 var
   TAB: string;
   CR: string;
 
-procedure Register;
-begin
-end;
+{$IFNDEF USEJVCL}
+resourcestring
+(* RUSSIAN
+  ERR_OpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
+  ERR_CloseXMLTagNotFound = 'Закрывающий тег не найден: </%s>';
+  ERR_UnknownProperty = 'Unknown property: %s';
+*)
+  ERR_OpenXMLTagNotFound = 'Open tag not found: <%s>';
+  ERR_CloseXMLTagNotFound = 'Close tag not found: </%s>';
+  ERR_UnknownProperty = 'Unknown property: %s';
+{$ENDIF USEJVCL}
 
 constructor TJvgXMLSerializer.Create(AOwner: TComponent);
 begin

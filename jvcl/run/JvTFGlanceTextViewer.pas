@@ -235,10 +235,8 @@ type
 
 implementation
 
-resourcestring
-  sGlanceControlNotAssigned = 'GlanceControl not assigned';
-
-{ TJvTFGVTextControl }
+uses
+  JvResources;
 
 function TJvTFGVTextControl.CalcAbsLineNum(Y : Integer) : Integer;
 begin

@@ -93,12 +93,9 @@ type
 implementation
 
 uses
-  JvTypes;
+  JvTypes, JvResources;
 
 {$R *.dfm}
-
-resourcestring
-  SNoDictionaryLoaded = 'No dictionary loaded';
 
 const
   Tab = Chr(9);

@@ -901,22 +901,11 @@ type
     property Visible;
   end;
 
-resourcestring
-  rsFirstButtonCaption = 'To &Start Page';
-  rsLastButtonCaption = 'To &Last Page';
-  rsBackButtonCaption = '< &Back';
-  rsNextButtonCaption = '&Next >';
-  rsFinishButtonCaption = '&Finish';
-  rsWelcome = 'Welcome';
-  rsTitle = 'Title';
-  rsSubtitle = 'Subtitle';
-  rsInvalidParentControl = 'The Parent should be TJvWizard or a descendant.';
-  rsInvalidWizardPage = 'The pages belong to another wizard.';
-
 implementation
 
 uses
-  Consts;
+  Consts,
+  JvResources;
 
 const
   ciButtonWidth = 75;

@@ -1041,54 +1041,11 @@ type
 {$HPPEMIT '#undef TTime'}
 
 
-resourcestring
-  sCouldNotCreateCustomImageMap = 'Could not create CustomImageMap.  ' +
-      'Appointment not assigned';
-  sCouldNotCreateAppointmentObject = 'Could not create Appointment object.  ' +
-      'ScheduleManager not assigned';
-  sScheduleManagerNotificationFailedSc = 'ScheduleManager notification failed.  ScheduleManager not assigned';
-  sScheduleNotificationFailed = 'Schedule notification failed.  ' +
-      'Schedule not assigned';
-  sInvalidStartAndEndTimes = 'Invalid start and end times';
-  sInvalidStartAndEndDates = 'Invalid start and end dates';
-  sAppointmentNotificationFailed = 'Appointment notification failed.  ' +
-      'Appointment not assigned';
-  sCouldNotCreateNewAppointment = 'Could not create new appointment. ' +
-      'Appointment with given ID already exists';
-  sInvalidTriggerForRefreshControls = 'Invalid Trigger for RefreshControls';
-  sInvalidScopeInReconcileRefresh = 'Invalid Scope in ReconcileRefresh';
-  sCouldNotRetrieveSchedule = 'Could not retrieve schedule.  ' +
-        'ScheduleManager not assigned';
-  sCouldNotReleaseSchedule = 'Could not release schedule.  ' +
-        'ScheduleManager not assigned';
-  sCouldNotCreateADocumentBecauseA = 'Could not create a document because a ' +
-      'document already exists';
-  sCouldNotFinishDocumentBecauseNo = 'Could not finish document because no ' +
-      'document has been created';
-  sDocumentDoesNotExist = 'Document does not exist';
-  sDocumentPagesCannotBeAccessedIf = 'Document pages cannot be accessed if ' +
-      'printing directly to the printer';
-  sDocumentPagesAreInaccessibleUntil = 'Document pages are inaccessible until ' +
-      'the document has been finished';
-  sCouldNotRetrievePageCount = 'Could not retrieve page count ' +
-        'because document does not exist';
-  sOnlyAFinishedDocumentCanBePrinted = 'Only a finished document can be printed';
-  sThereAreNoPagesToPrint = 'There are no pages to print';
-  sDocumentMustBeFinishedToSaveToFile = 'Document must be Finished to save to file';
-  sThisPropertyCannotBeChangedIfA = 'This property cannot be changed if a ' +
-      'document exists';
-  sCouldNotCreateTJvTFPrinterPageLayou = 'Could not create TJvTFPrinterPageLayout ' +
-      'because aPrinter must be assigned';
-  sInvalidFooterHeightd = 'Invalid Footer Height (%d)';
-  sInvalidHeaderHeightd = 'Invalid Header Height (%d)';
-
 implementation
 
 uses
   Dialogs, Forms,
-  JvConsts;
-
-{ Common }
+  JvConsts, JvResources;
 
 function AdjustEndTime(ATime: TTime): TTime;
 begin

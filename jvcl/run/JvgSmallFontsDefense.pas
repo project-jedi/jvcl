@@ -60,10 +60,16 @@ type
 implementation
 
 uses
-  JvConsts, JvgUtils;
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
+  JvConsts,
+  JvgUtils;
 
+{$IFNDEF USEJVCL}
 resourcestring
   sTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
+{$ENDIF USEJVCL}
 
 constructor TJvgSmallFontsDefense.Create(AOwner: TComponent);
 begin

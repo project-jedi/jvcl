@@ -156,7 +156,16 @@ function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
 function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
 {$ENDIF}
 
+implementation
 
+uses
+  ShlObj,
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
+  JvConsts;
+
+{$IFNDEF USEJVCL}
 resourcestring
   sRightBracketsNotFound = 'Right brackets not found';
   sRightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
@@ -164,11 +173,7 @@ resourcestring
   sDuplicateSignsPos = 'Duplicate signs. Pos:';
   sDuplicateSignsAtPos = 'Duplicate signs at. Pos:';
   sExpressionStringIsEmpty = 'Expression string is empty.';
-
-implementation
-uses
-  ShlObj,
-  JvConsts;
+{$ENDIF USEJVCL}
 
 { debug func }
 {$IFDEF glDEBUG}

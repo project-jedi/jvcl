@@ -35,6 +35,7 @@ uses
   JvComponent;
 
 {$HPPEMIT '#define TDate Controls::TDate'}
+
 type
   TJvTimeLimit = class(TJvComponent)
   private
@@ -48,10 +49,11 @@ type
   end;
 
 {$HPPEMIT '#undef TDate'}
+
 implementation
 
-resourcestring
-  RC_Expired = 'The test period has expired, please register this application';
+uses
+  JvResources;
 
 procedure TJvTimeLimit.Loaded;
 begin

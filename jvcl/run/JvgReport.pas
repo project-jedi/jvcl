@@ -216,20 +216,24 @@ type
       FBeforePrint;
   end;
 
-
-resourcestring
-  sOLELinkedObjectNotFound = 'OLE: Linked object not found.';
-  sError = 'Error';
-  sErrorReadingComponent = 'Error reading component.';
-
 implementation
 
 uses
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
   JvConsts;
 
 const
   S = 2;
   DS = 2 * S + 1;
+
+{$IFNDEF USEJVCL}
+resourcestring
+  sOLELinkedObjectNotFound = 'OLE: Linked object not found.';
+  sError = 'Error';
+  sErrorReadingComponent = 'Error reading component.';
+{$ENDIF USEJVCL}
 
 //=== TJvgReportScrollBox ====================================================
 

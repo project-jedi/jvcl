@@ -209,16 +209,20 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
-
-resourcestring
-  sErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
-
 implementation
 
 uses
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
   JvConsts, JvJCLUtils, JvThemes;
 
 {$R ..\Resources\JvgButton.res}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  sErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
+{$ENDIF USEJVCL}
 
 constructor TJvgBtnGlyphs.Create;
 begin

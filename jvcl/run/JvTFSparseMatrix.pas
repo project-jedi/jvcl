@@ -66,8 +66,8 @@ type
 
 implementation
 
-resourcestring
-  sMatrixMustBeEmpty = 'Matrix must be empty before setting null value';
+uses
+  JvResources;
 
 destructor TJvTFSparseMatrix.Destroy;
 begin

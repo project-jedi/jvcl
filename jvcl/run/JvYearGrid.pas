@@ -127,32 +127,10 @@ type
 
 {$HPPEMIT '#undef TDate'}
 
-resourcestring
-  sYearGrid = 'YearGrid';
-  sEnterYear = 'Enter year (1999-2050):';
-  sInvalidYear = 'invalid year';
-  sYear = '&Year...';
-  sEdit = '&Edit';
-  sColor = '&Color...';
-  sNoColor = '&No Color';
-  sCopy = '&Copy';
-  sCut = 'Cu&t';
-  sPaste = '&Paste';
-  sDeleteItem = '&Delete';
-  sSaveAllInfo = '&Save All Info';
-  sSaveFoundInfo = 'Save Found Info';
-  sBorderColor = '&Border Color...';
-  sBookMarkColor = 'Book&Mark Color...';
-  sFindItem = '&Find...';
-  sClearFind = 'Clear Find';
-  sYearGridFind = 'YearGrid Find';
-  sEnterSeachText = 'Enter seach text:';
-  sFounds = 'Found %s';
-
 implementation
 
 uses
-  JvConsts, JvTypes, JvYearGridEditForm;
+  JvConsts, JvTypes, JvResources, JvYearGridEditForm;
 
 const
   todayfontcolor = clwhite;

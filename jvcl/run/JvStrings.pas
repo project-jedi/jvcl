@@ -219,9 +219,8 @@ function parseDate(s: string): Integer;
 
 implementation
 
-resourcestring
-  sCannotLoadResource = 'Can''t load resource: %s';
-  sIncorrectstringFormat = 'Incorrect string format';
+uses
+  JvResources;
 
 const
   B64Table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';

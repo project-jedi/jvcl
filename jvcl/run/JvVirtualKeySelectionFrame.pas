@@ -64,19 +64,17 @@ type
 
 implementation
 
+uses
+  JvResources;
+
 {$R *.dfm}
-
-resourcestring
-  sNoValidKeyCode = 'This is not a valid key code';
-  sInvalidKeyCode = 'Invalid key code';
-
 
 constructor TJvVirtualKeySelectionFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{$IFDEF USE_DXGETTEXT}
+  {$IFDEF USE_DXGETTEXT}
   TranslateComponent(Self);
-{$ENDIF}
+  {$ENDIF}
 
   EnumKeys;
 end;
