@@ -84,7 +84,7 @@ type
     FOnUserMove: TNotifyEvent;
     acClose: TAction;
     MouseTimer: TTimer;
-
+    FEndInterval:Cardinal;
     {$IFDEF VCL}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMActivate(var Message: TWMActivate); message WM_ACTIVATE;
@@ -98,6 +98,9 @@ type
     procedure DoClose(var Action: TCloseAction); override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
+    procedure DoDropDownClose(Sender:TObject);
+    procedure DoDropDownMenu(Sender:TObject; MousePos:TPoint; var Handled:Boolean);
+
 
   public
     imIcon: TImage;
@@ -269,6 +272,8 @@ begin
   tbDropDown.BoundsRect := tbClose.BoundsRect;
   tbDropDown.Left := tbDropDown.Left - 16;
   tbDropDown.Anchors := [akRight, akTop];
+  tbDropDown.OnDropDownMenu := DoDropDownMenu;
+  tbDropDown.OnDropDownClose := DoDropDownClose;
 end;
 
 procedure TJvFormDesktopAlert.FormPaint(Sender: TObject);
@@ -667,6 +672,24 @@ begin
         TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
     end;
   end;
+end;
+
+procedure TJvFormDesktopAlert.DoDropDownClose(Sender: TObject);
+begin
+  // restore previous EndInterval value
+  if FEndInterval <> 0 then
+    TJvDeskTopAlert(Owner).StyleHandler.EndInterval := FEndInterval;
+  FEndInterval := 0;
+  if not MouseInControl then
+    TJvDeskTopAlert(Owner).StyleHandler.DoEndAnimation;
+end;
+
+procedure TJvFormDesktopAlert.DoDropDownMenu(Sender: TObject;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  // suspend the form while the menu is visible
+  FEndInterval := TJvDeskTopAlert(Owner).StyleHandler.EndInterval;
+  TJvDeskTopAlert(Owner).StyleHandler.EndInterval := 0;
 end;
 
 {$IFDEF UNITVERSIONING}
