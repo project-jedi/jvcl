@@ -30,6 +30,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I crossplatform.inc}
 
 unit JvToolEdit;
 
@@ -327,7 +328,6 @@ type
     property PopupVisible: Boolean read GetPopupVisible;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property ShowButton: Boolean read GetShowButton write SetShowButton default True;
-
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -422,7 +422,7 @@ type
   end;
 
   { TJvFileDirEdit }
-  { The common parent of TJvFilenameEdit and TJvDirectoryEdit          }
+  { The common parent of TJvFilenameEdit and TJvDirectoryEdit      }
   { For internal use only; it's not intended to be used separately }
 
 type
@@ -1057,7 +1057,7 @@ var
   GDateHook: TDateHook = nil;
 
 type
-  TSHAutoComplete = function (hwndEdit: HWnd; dwFlags: DWORD): HResult; stdcall;
+  TSHAutoComplete = function (hwndEdit: HWND; dwFlags: DWORD): HResult; stdcall;
 
 const
   SHACF_DEFAULT                  = $00000000;  // Currently (SHACF_FILESYSTEM | SHACF_URLALL)
@@ -1146,16 +1146,16 @@ procedure DrawSelectedText(Canvas: TCanvas; const R: TRect; X, Y: Integer;
   const Text: WideString; SelStart, SelLength: Integer;
   HighlightColor, HighlightTextColor: TColor);
 var
-  w, h, Width: Integer;
+  W, H, Width: Integer;
   S: WideString;
   SelectionRect: TRect;
   Brush: TBrushRecall;
   PenMode: TPenMode;
   FontColor: TColor;
 begin
-  w := R.Right - R.Left;
-  h := R.Bottom - R.Top;
-  if (w <= 0) or (h <= 0) then
+  W := R.Right - R.Left;
+  H := R.Bottom - R.Top;
+  if (W <= 0) or (H <= 0) then
     Exit;
 
   S := Copy(Text, 1, SelStart);
@@ -1173,7 +1173,7 @@ begin
     PenMode := Canvas.Pen.Mode;
     try
       SelectionRect := Rect(Max(X, R.Left), R.Top,
-                            Min(X + Width, R.Right), R.Bottom);
+        Min(X + Width, R.Right), R.Bottom);
       Canvas.Pen.Mode := pmCopy;
       Canvas.Brush.Color := HighlightColor;
       Canvas.FillRect(SelectionRect);

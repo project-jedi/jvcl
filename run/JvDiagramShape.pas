@@ -634,7 +634,7 @@ var
   Writer: TWriter;
   RealName: string;
 begin
-  FS := TFileStream.Create(Filename, fmCreate or fmShareDenyWrite);
+  FS := TFileStream.Create(FileName, fmCreate or fmShareDenyWrite);
   Writer := TWriter.Create(FS, 1024);
   try
     Writer.Root := ParentControl.Owner;
@@ -656,7 +656,7 @@ var
   RealName: string;
 begin
   DeleteAllShapes(ParentControl);
-  FS := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
+  FS := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   Reader := TReader.Create(FS, 1024);
   try
     // Save the parent's name, in case we are reading into a different

@@ -350,7 +350,7 @@ end;
 
 //=== { TJvCustomDropButton } ================================================
 
-constructor TJvCustomDropButton.Create(AOWner: TComponent);
+constructor TJvCustomDropButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csSetCaption];

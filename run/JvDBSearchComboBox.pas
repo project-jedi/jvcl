@@ -327,7 +327,7 @@ begin
       First;
       while not EOF do
       begin
-        Items.AddObject(FieldByName(FDatalink.FDataFieldName).AsString, GetBookmark);
+        Items.AddObject(FieldByName(FDataLink.FDataFieldName).AsString, GetBookmark);
         if Bookmark = Bmrk then
           CurIndex := N;
         Inc(N);

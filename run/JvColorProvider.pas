@@ -2667,7 +2667,7 @@ var
   CtxIdx: Integer;
   ItemIdx: Integer;
 begin
-  ColIdx := IndexOfColor(value);
+  ColIdx := IndexOfColor(Value);
   if ColIdx > -1 then
   begin
     CtxIdx := SelectedContextIndex;
@@ -2717,7 +2717,7 @@ var
   CtxIdx: Integer;
   ItemIdx: Integer;
 begin
-  ColIdx := IndexOfColor(value);
+  ColIdx := IndexOfColor(Value);
   if ColIdx > -1 then
   begin
     CtxIdx := SelectedContextIndex;
@@ -2767,7 +2767,7 @@ var
   CtxIdx: Integer;
   ItemIdx: Integer;
 begin
-  ColIdx := IndexOfColor(value);
+  ColIdx := IndexOfColor(Value);
   if ColIdx > -1 then
   begin
     CtxIdx := SelectedContextIndex;

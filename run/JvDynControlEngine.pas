@@ -204,7 +204,7 @@ begin
       Valid := Valid and
         Supports(AControlClass, IJvDynControlItems) and
         Supports(AControlClass, IJvDynControlData);
-    jctEdit, jctCalculateEdit, jctSpinEdit, jctFilenameEdit, jctDirectoryEdit,
+    jctEdit, jctCalculateEdit, jctSpinEdit, jctFileNameEdit, jctDirectoryEdit,
       jctCheckBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit:
       Valid := Valid and Supports(AControlClass, IJvDynControlData);
   end;

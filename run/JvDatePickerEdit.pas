@@ -154,7 +154,7 @@ type
     procedure SetEditMask(const AValue: string);
     function GetText: TCaption;
     procedure SetText(const AValue: TCaption);
-    procedure WMPaste(var Message: TMessage); message WM_PASTE;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
   protected
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
@@ -327,7 +327,7 @@ var
   I: Integer;
 begin
   for I := 2 downto 0 do
-    { SelStart is 0-based, FDateFigures[i].Start is 1-based }
+    { SelStart is 0-based, FDateFigures[I].Start is 1-based }
     if SelStart + 1 >= FDateFigures[I].Start then
     begin
       Result := FDateFigures[I];
@@ -835,7 +835,7 @@ end;
 procedure TJvCustomDatePickerEdit.ParseFigures(var AFigures: TJvDateFigures;
   AFormat: string; const AMask: string);
 var
-  i: Integer;
+  I: Integer;
   DummyFigures: TJvDateFigures;
 begin
   {Determine the position of the individual figures in the mask string.}
@@ -1055,7 +1055,7 @@ begin
     Result := True;
 end;
 
-procedure TJvCustomDatePickerEdit.WMPaste(var Message: TMessage);
+procedure TJvCustomDatePickerEdit.WMPaste(var Msg: TMessage);
 var
   OldSep: Char;
 begin

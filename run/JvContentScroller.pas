@@ -60,7 +60,7 @@ type
     FCurLoop: Integer;
     // FScrollStart: Integer;
     procedure SetActive(Value: Boolean);
-    procedure SetJvScrollAmount(Value: TJvScrollAmount);
+    procedure SetScrollAmount(Value: TJvScrollAmount);
     procedure SetScrollIntervall(Value: TJvScrollAmount);
     procedure SetMediaFile(Value: TFileName);
     procedure DoTimer(Sender: TObject);
@@ -87,7 +87,7 @@ type
     procedure ScrollContent(Amount: TJvScrollAmount);
   published
     property Active: Boolean read FActive write SetActive;
-    property ScrollAmount: TJvScrollAmount read FScrollAmount write SeTJvScrollAmount default 10;
+    property ScrollAmount: TJvScrollAmount read FScrollAmount write SetScrollAmount default 10;
     property ScrollIntervall: TJvScrollAmount read FScrollIntervall write SetScrollIntervall default 50;
     property ScrollLength: TJvScrollAmount read FScrollLength write SetScrollLength default 250;
     property ScrollDirection: TJvContentScrollDirection read FScrollDirection write SetScrollDirection default sdUp;
@@ -310,7 +310,7 @@ begin
   end;
 end;
 
-procedure TJvContentScroller.SetJvScrollAmount(Value: TJvScrollAmount);
+procedure TJvContentScroller.SetScrollAmount(Value: TJvScrollAmount);
 begin
   FScrollAmount := Value;
 end;

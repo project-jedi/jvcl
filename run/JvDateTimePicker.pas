@@ -54,7 +54,7 @@ type
     FNullText: string;
     FNullDate: TDateTime;
     FDropDownDate: TDate;
-    FWeekNumbers: boolean;
+    FWeekNumbers: Boolean;
     {$IFDEF COMPILER5}
     FFormat: string;
     procedure SetFormat(const Value: string);
@@ -82,7 +82,7 @@ type
     property NullDate: TDateTime read FNullDate write SetNullDate;
     // The text to display when NullDate = Date/Time
     property NullText: string read FNullText write SetNullText;
-    property WeekNumbers: boolean read FWeekNumbers write FWeekNumbers default False;
+    property WeekNumbers: Boolean read FWeekNumbers write FWeekNumbers default False;
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -123,7 +123,7 @@ begin
  // Warren added NullText length check so that this feature can be disabled if not used!
   if Length(ANullText) = 0 then
   begin
-    Result := false;
+    Result := False;
   end
   else
     Result := ((AKind = dtkDate) and (Trunc(ADateTime) = Trunc(ANullDate)) or

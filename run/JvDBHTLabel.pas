@@ -130,7 +130,7 @@ begin
     else
       Str := '';
     FieldName := ExtractPropertyValue(A, 'FIELD');
-    if Assigned(DataSet) and Dataset.Active then
+    if Assigned(DataSet) and DataSet.Active then
     begin
       F := DataSet.FindField(FieldName);
       if F <> nil then
@@ -170,7 +170,7 @@ end;
 
 procedure TJvDBHTLabel.UpdateCaption;
 begin
-  if Assigned(FDataLink) and Assigned(FDataLink.Dataset) then
+  if Assigned(FDataLink) and Assigned(FDataLink.DataSet) then
     Caption := ReplaceFieldNameTag(FMask, FDataLink.DataSet)
   else
     Caption := ReplaceFieldNameTag(Mask, nil); 

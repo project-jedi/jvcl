@@ -109,7 +109,7 @@ type
     procedure ReadArrowWidth(Reader: TReader);
     procedure ReadEdgeWidth(Reader: TReader);
     procedure ReadOtherCaption(Reader: TReader);
-    procedure DoOnColorChange(Sender: Tobject);
+    procedure DoOnColorChange(Sender: TObject);
     procedure DoFormShowingChanged(Sender: TObject);
     procedure DoFormKillFocus(Sender: TObject);
     procedure DoFormClose(Sender: TObject; var Action: TCloseAction);
@@ -498,10 +498,10 @@ begin
   Result := FColorsForm.ColorPanel.Color;
 end;
 
-procedure TJvCustomOfficeColorButton.DoOnColorChange(Sender: Tobject);
+procedure TJvCustomOfficeColorButton.DoOnColorChange(Sender: TObject);
 begin
   FMainButton.ButtonColor := FColorsForm.ColorPanel.SelectedColor;
-  if FColorsForm.ToolWindowStyle and (FColorsForm.FormStyle<>fsStayOnTop) then
+  if FColorsForm.ToolWindowStyle and (FColorsForm.FormStyle <> fsStayOnTop) then
     FColorsForm.FormStyle := fsStayOnTop;
   if Assigned(FOnColorChange) then
     FOnColorChange(Self);

@@ -500,23 +500,22 @@ begin
   Visible := False;
 end;
 
+{$IFDEF VisualCLX}
+{$DEFINE NeedSetLayer}
+{$ENDIF VisualCLX}
+{$IFNDEF COMPILER6_UP}
+{$DEFINE NeedSetLayer}
+{$ENDIF !COMPILER6_UP}
+
 {$IFDEF VCL}
 procedure TShadowWindow.CreateHandle;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TShadowWindow.InitWidget;
 {$ENDIF VisualCLX}
-
-  {$IFDEF VisualCLX}
-   {$DEFINE NeedSetLayer}
-  {$ENDIF VisuaLCLX}
-  {$IFNDEF COMPILER6_UP}
-   {$DEFINE NeedSetLayer}
-  {$ENDIF !COMPILER6_UP}
-
 var
   {$IFDEF NeedSetLayer}
-  wnd: Windows.HWND;
+  Wnd: Windows.HWND;
   {$ENDIF NeedSetLayer}
   DynamicSetLayeredWindowAttributes: TDynamicSetLayeredWindowAttributes;
 
@@ -534,26 +533,32 @@ var
   end;
 
 begin
-  inherited;
+  {$IFDEF VCL}
+  inherited CreateHandle;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  inherited InitWidget;
+  {$ENDIF VisualCLX}
   {$IFDEF NeedSetLayer}
   InitProcs;
   if HandleAllocated and Assigned(DynamicSetLayeredWindowAttributes) then
   begin
     {$IFDEF VCL}
-    wnd := Handle;
+    Wnd := Handle;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    wnd := QWidget_winId(Handle);
+    Wnd := QWidget_winId(Handle);
     //SetWindowLong(h, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
     //SetWindowLong(h, GWL_STYLE, WS_POPUP);
     {$ENDIF VisualCLX}
-    SetWindowLong(wnd, GWL_EXSTYLE, GetWindowLong(wnd, GWL_EXSTYLE) or WS_EX_LAYERED);
-    DynamicSetLayeredWindowAttributes(wnd, 0, cShadowAlpha, LWA_ALPHA);
+    SetWindowLong(Wnd, GWL_EXSTYLE, GetWindowLong(Wnd, GWL_EXSTYLE) or WS_EX_LAYERED);
+    DynamicSetLayeredWindowAttributes(Wnd, 0, cShadowAlpha, LWA_ALPHA);
   end;
   {$ENDIF NeedSetLayer}
 end;
 
 {$IFDEF VCL}
+
 procedure TShadowWindow.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -568,6 +573,7 @@ procedure TShadowWindow.WMNCHitTest(var Msg: TWMNCHitTest);
 begin
   Msg.Result := HTTRANSPARENT;
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
@@ -579,7 +585,6 @@ begin
     Integer(WidgetFlags_WStyle_Tool);           // WS_EX_TOOLWINDOW
 end;
 {$ENDIF VisualCLX}
-
 
 procedure TShadowWindow.VisibleChanged;
 begin
@@ -610,7 +615,7 @@ begin
 
   Options := [goVertLine, goHorzLine, {goDrawFocusSelected, } goThumbTracking];
   FShowZoomPanel := True;
-  DefaultRowHeight := abs(Font.Height) + 12;
+  DefaultRowHeight := Abs(Font.Height) + 12;
   DefaultColWidth := DefaultRowHeight - 5;
   {$IFDEF VCL}
   FLocale := LOCALE_USER_DEFAULT;
@@ -665,6 +670,7 @@ begin
   RecalcCells;
 end;
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 procedure TJvCustomCharMap.CreateWidget;
 begin
@@ -986,7 +992,7 @@ begin
   //  ColCount := 20;
   ARows := ACells div ColCount + 1;
   RowCount := ARows;
-  DefaultRowHeight := abs(Font.Height) + 12;
+  DefaultRowHeight := Abs(Font.Height) + 12;
   DefaultColWidth := DefaultRowHeight - 5;
   if AutoSizeWidth or AutoSizeHeight then
     AdjustSize;

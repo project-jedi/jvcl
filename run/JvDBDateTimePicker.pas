@@ -52,7 +52,7 @@ type
   private
     FDataLink: TFieldDataLink;
     FBeepOnError: Boolean;
-    FTrimValue: boolean;
+    FTrimValue: Boolean;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     procedure SetDataField(Value: string);
@@ -411,7 +411,9 @@ end;
 function TJvDBDateTimePicker.IsDateAndTimeField: Boolean;
 begin
   with FDataLink do
-    Result := (Field <> nil) and (Field.DataType in [ftDateTime {$IFDEF COMPILER6_UP}, ftTimeStamp {$ENDIF COMPILER6_UP}]) and not TrimValue;
+    Result := (Field <> nil) and
+      (Field.DataType in [ftDateTime {$IFDEF COMPILER6_UP}, ftTimeStamp {$ENDIF}]) and
+      not TrimValue;
 end;
 
 end.

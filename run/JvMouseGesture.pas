@@ -426,7 +426,7 @@ type
     Hook call back function.
     DO NOT USE EXTERN!
   }
-function JvMouseGestureHook(code: Integer; wParam: Word; lParam: Longword): Longword; stdcall;
+function JvMouseGestureHook(Code: Integer; wParam: Word; lParam: Longword): Longword; stdcall;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 function JvMouseGestureHook(App: TObject; Sender: QObjectH; Event: QEventH): Boolean;

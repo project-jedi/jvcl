@@ -17,6 +17,11 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+{$IFDEF COMPILER6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF COMPILER6_UP}
+
 {$IFNDEF VCL}
 {$IFDEF COMPILER6_UP}
 {$MESSAGE FATAL 'This unit is only supported for VCL!'}

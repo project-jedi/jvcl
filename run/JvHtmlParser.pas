@@ -67,14 +67,14 @@ type
   private
     FParser: TStringList;
     FKeys: TStringList;
-    FFile: TFileName;
+    FFileName: TFileName;
     FTagList: TTagInfoList;
     FContent: string;
     FOnKeyFound: TJvKeyFoundEvent;
     FOnKeyFoundEx: TJvKeyFoundExEvent;
     function GetParser: TStrings;
     procedure SetParser(Value: TStrings);
-    procedure SetFile(Value: TFileName);
+    procedure SetFileName(Value: TFileName);
     procedure SetTagList(const Value: TTagInfoList);
     function GetConditionsCount: Integer;
   protected
@@ -95,10 +95,10 @@ type
       var TextSelection: Integer); overload;
     property Content: string read FContent;
   published
+    property FileName: TFileName read FFileName write SetFileName;
+    property Parser: TStrings read GetParser write SetParser;
     property OnKeyFound: TJvKeyFoundEvent read FOnKeyFound write FOnKeyFound;
     property OnKeyFoundEx: TJvKeyFoundExEvent read FOnKeyFoundEx write FOnKeyFoundEx;
-    property FileName: TFileName read Ffile write SetFile;
-    property Parser: TStrings read GetParser write SetParser;
   end;
 
 implementation
@@ -136,11 +136,11 @@ begin
   SetParser(FParser);
 end;
 
-procedure TJvHTMLParser.SetFile(Value: TFileName);
+procedure TJvHTMLParser.SetFileName(Value: TFileName);
 begin
-  if FFile <> Value then
+  if FFileName <> Value then
   begin
-    FFile := Value;
+    FFileName := Value;
     if not (csDesigning in ComponentState) then
       AnalyseFile;
   end;

@@ -941,7 +941,7 @@ var
   I: Integer;
 begin
   LFlag := False;
-  if Cmp(PropName, 'ShowAutoButton') or cmp(PropName, 'ShowOtherButton') then
+  if Cmp(PropName, 'ShowAutoButton') or Cmp(PropName, 'ShowOtherButton') then
     LFlag := True
   else
   if Cmp(PropName, 'AutoCaption') then

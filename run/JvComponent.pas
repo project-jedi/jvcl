@@ -187,8 +187,8 @@ begin
         if Length(FSearchText) < 32 then
           FSearchText := FSearchText + Key;
         {$IFDEF VCL}
-        SendMessage(Handle, LB_SELECTSTRING, WORD(-1),
-          Longint(PChar(FSearchText)));
+        SendMessage(Handle, LB_SELECTSTRING, WPARAM(-1),
+          LPARAM(PChar(FSearchText)));
         {$ENDIF VCL}
         Key := #0;
       end;

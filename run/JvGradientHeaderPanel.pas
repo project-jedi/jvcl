@@ -473,7 +473,7 @@ begin
     ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
     Parent.Dispatch(Message)
   else
-    inherited;
+    inherited Dispatch(Message);
 end;
 
 {$ENDIF VCL}

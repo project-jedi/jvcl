@@ -92,7 +92,7 @@ begin
     inherited LoadFromResourceID(Instance, ResID)
   else
   begin
-    Stream := TResourceStream.CreateFromID(Instance, ResId, ResType);
+    Stream := TResourceStream.CreateFromID(Instance, ResID, ResType);
     try
       LoadFromStream(Stream);
     finally

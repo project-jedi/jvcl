@@ -348,7 +348,7 @@ begin
     if DataPtr <> nil then
     begin
       // if yes, copy from global pointer to user supplied pointer
-      CopyMemory(buffer, DataPtr, Size);
+      CopyMemory(Buffer, DataPtr, Size);
       // and retrieval was a success
       Result := True;
     end
@@ -470,7 +470,7 @@ begin
   begin
     // if allocation was successful
     // then lock global memory to get access to it
-    globalPtr := GlobalLock(hglb);
+    GlobalPtr := GlobalLock(hglb);
 
     // copy user supplied data
     CopyMemory(GlobalPtr, Buffer, Size);
@@ -485,7 +485,7 @@ begin
   // if user asked us to free his buffer
   if MustFree then
     // then we free it
-    FreeMem(buffer);
+    FreeMem(Buffer);
 end;
 
 procedure TJvClipboard.WndProc(var Message: TMessage);

@@ -92,7 +92,7 @@ type
     procedure DoAlphaBlend(Value: Byte);
     {$ENDIF !COMPILER6_UP}
     {$IFDEF VCL}
-    procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
+    procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     {$ENDIF VCL}
 
     procedure FadeInTimer(Sender: TObject);
@@ -111,7 +111,7 @@ type
     procedure MouseLeave(AControl: TControl); override;
 
     {$IFDEF VCL}
-    procedure WMMove(var Message: TWMMove); message WM_MOVE;
+    procedure WMMove(var Msg: TWMMove); message WM_MOVE;
     procedure CreateWindowHandle(const Params: TCreateParams); override;
     {$ENDIF VCL}
   public
@@ -303,17 +303,17 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvFormDesktopAlert.WMNCHitTest(var Message: TWMNCHitTest);
+procedure TJvFormDesktopAlert.WMNCHitTest(var Msg: TWMNCHitTest);
 var
   P: TPoint;
 begin
-  with Message do
+  with Msg do
     P := ScreenToClient(Point(XPos, YPos));
   if ((P.Y <= cCaptionHeight) and Moveable) or (MoveAnywhere and (ControlAtPos(P, False) = nil)) then
   begin
     FadeTimer.Enabled := False;
     AlphaBlendValue := MaxAlphaBlendValue;
-    Message.Result := HTCAPTION;
+    Msg.Result := HTCAPTION;
   end
   else
     inherited;
@@ -435,7 +435,7 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvFormDesktopAlert.WMMove(var Message: TWMMove);
+procedure TJvFormDesktopAlert.WMMove(var Msg: TWMMove);
 begin
   inherited;
   if Showing and Assigned(FOnUserMove) then

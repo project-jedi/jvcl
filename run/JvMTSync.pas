@@ -198,7 +198,7 @@ begin
     HandleArray[1] := CurrentMTThread.TerminateSignal;
   
     // perform the wait
-    case WaitForMultipleObjects(2, @HandleArray[0], False, TimeOut) of
+    case WaitForMultipleObjects(2, @HandleArray[0], False, Timeout) of
       WAIT_FAILED:
         begin
           FLastError := GetLastError;
