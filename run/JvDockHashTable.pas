@@ -22,40 +22,40 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-}
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvDockHashTable;
 
 interface
 
-uses Classes, Controls;
+uses
+  Classes, Controls;
 
-const DefaultHashSize = 20;
+const
+  DefaultHashSize = 20;
 
 type
-  
-  TJvDockClientHashNode = class
+  TJvDockClientHashNode = class(TObject)
   private
     FKeyName: string;                 
     FKeyData: Pointer;                
-    FPrevNode,                        
-    FNextNode: TJvDockClientHashNode; 
+    FPrevNode: TJvDockClientHashNode;
+    FNextNode: TJvDockClientHashNode;
     FListIndex: Integer;              
   public
     property KeyName: string read FKeyName write FKeyName;
     property KeyData: Pointer read FKeyData write FKeyData;
-    property PrevNode: TJvDockClientHashNode
-        read FPrevNode write FPrevNode;
-    property NextNode: TJvDockClientHashNode
-        read FNextNode write FNextNode;
+    property PrevNode: TJvDockClientHashNode read FPrevNode write FPrevNode;
+    property NextNode: TJvDockClientHashNode read FNextNode write FNextNode;
     property ListIndex: Integer read FListIndex write FListIndex;
   end;
 
-  
-  TJvDockControlHashTable = class
+  TJvDockControlHashTable = class(TObject)
   private
-    FCurrentSize,            
-    FTableSize: Integer;     
+    FCurrentSize: Integer;
+    FTableSize: Integer;
     FEntryList: TList;       
     FRiseException: Boolean; 
     procedure SetTableSize(const Value: Integer);     
@@ -81,27 +81,40 @@ type
 
 implementation
 
-uses JvDockGlobals, Sysutils;
+uses
+  JvDockGlobals, SysUtils;
 
+//=== TJvDockControlHashTable ================================================
 
+constructor TJvDockControlHashTable.Create(Size: Integer; RiseExcept: Boolean);
+begin
+  // (rom) added inherited Create
+  inherited Create;
+  CreateDictionary(Size);
+  FRiseException := RiseExcept;
+end;
+
+destructor TJvDockControlHashTable.Destroy;
+begin
+  MakeEmpty;
+  FEntryList.Free;
+  inherited Destroy;
+end;
 
 function TJvDockControlHashTable.CompareKey(Key1, Key2: string): Integer;
 begin
   Result := AnsiStrComp(PChar(Key1), PChar(Key2));
 end;
 
-constructor TJvDockControlHashTable.Create(Size: Integer; RiseExcept: Boolean);
-begin
-  
-  CreateDictionary(Size);
-  FRiseException := RiseExcept;
-end;
-
 procedure TJvDockControlHashTable.CreateDictionary(Size: Integer);
 begin
-  FEntryList := TList.Create;
-  FEntryList.Count := Size;
-  FTableSize := Size;
+  // (rom) secured against calling it several times
+  if not Assigned(FEntryList) then
+  begin
+    FEntryList := TList.Create;
+    FEntryList.Count := Size;
+    FTableSize := Size;
+  end;
 end;
 
 function TJvDockControlHashTable.CreateKeyNode(KeyName: string;
@@ -114,7 +127,8 @@ begin
 end;
 
 procedure TJvDockControlHashTable.DeleteListIndex(Index: Integer);
-var Node, NextNode: TJvDockClientHashNode;
+var
+  Node, NextNode: TJvDockClientHashNode;
 begin
   Node := FEntryList[Index];
   while Node <> nil do
@@ -126,50 +140,47 @@ begin
   FEntryList.Delete(Index);
 end;
 
-destructor TJvDockControlHashTable.Destroy;
-begin
-  MakeEmpty;
-  FEntryList.Free;
-  inherited;
-end;
-
 function TJvDockControlHashTable.Find(Name: string): Pointer;
-var Node: TJvDockClientHashNode;
+var
+  Node: TJvDockClientHashNode;
 begin
   Node := FindNode(Name);
   if Node <> nil then
     Result := Node.KeyData
-  else Result := nil;
+  else
+    Result := nil;
 end;
 
-function TJvDockControlHashTable.FindNode(
-  Name: string): TJvDockClientHashNode;
-var Value: Integer;
+function TJvDockControlHashTable.FindNode(Name: string): TJvDockClientHashNode;
+var
+  Value: Integer;
   ListIndex: Integer;
 begin
   ListIndex := HashProc(Name);
   Assert((ListIndex >= 0) and (ListIndex < FTableSize), RsDockTableIndexError);
   Result := FEntryList[ListIndex];
-  if Result = nil then Exit;
-  repeat
-    Value := CompareKey(Name, Result.FKeyName);
-    if Value = 0 then Exit;
-    Result := Result.FNextNode;
-  until Result = nil;
+  if Result <> nil then
+    repeat
+      Value := CompareKey(Name, Result.FKeyName);
+      if Value = 0 then
+        Break;
+      Result := Result.FNextNode;
+    until Result = nil;
 end;
 
 function TJvDockControlHashTable.HashProc(Name: string): Integer;
-var i: Integer;
+var
+  I: Integer;
 begin
   Result := 0;
-  for i := 1 to Length(Name) do
-    Inc(Result, Ord(Name[i]));
+  for I := 1 to Length(Name) do
+    Inc(Result, Ord(Name[I]));
   Result := Result mod FTableSize;
 end;
 
-function TJvDockControlHashTable.Insert(Name: string;
-  Data: Pointer): Integer;
-var Index: Integer;
+function TJvDockControlHashTable.Insert(Name: string; Data: Pointer): Integer;
+var
+  Index: Integer;
   Value: Integer;
   Node, ParentNode: TJvDockClientHashNode;
 begin
@@ -179,15 +190,16 @@ begin
   
   if FEntryList[Index] = nil then
     FEntryList[Index] := CreateKeyNode(Name, Data, Index)
-  else begin
+  else
+  begin
     Node := FEntryList[Index];
     repeat
-      
       Value := CompareKey(Name, Node.FKeyName);
-      
+
       if FRiseException then
         Assert(Value <> 0, RsDockNodeExistedError)
-      else if Value = 0 then
+      else
+      if Value = 0 then
         Exit;
       ParentNode := Node;
       Node := Node.FNextNode;
@@ -206,21 +218,24 @@ begin
 end;
 
 procedure TJvDockControlHashTable.MakeEmpty;
-var i: Integer;
+var
+  I: Integer;
 begin
-  for i := FEntryList.Count - 1 downto 0 do
-    DeleteListIndex(i);
+  for I := FEntryList.Count - 1 downto 0 do
+    DeleteListIndex(I);
 end;
 
 procedure TJvDockControlHashTable.Remove(Name: string);
-var Node: TJvDockClientHashNode;
+var
+  Node: TJvDockClientHashNode;
 begin
   Node := FindNode(Name);
   if Node <> nil then
   begin
     if Node.FPrevNode <> nil then
       Node.FPrevNode.FNextNode := Node.FNextNode
-    else FEntryList[Node.ListIndex] := Node.FNextNode;
+    else
+      FEntryList[Node.ListIndex] := Node.FNextNode;
     if Node.FNextNode <> nil then
       Node.FNextNode.FPrevNode := Node.FPrevNode;
     Node.Free;

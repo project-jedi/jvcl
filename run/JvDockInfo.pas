@@ -22,15 +22,17 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-}
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvDockInfo;
 
 interface
 
-
-uses Windows, Controls, Inifiles, Registry, Classes, Sysutils, Forms, Messages,
-      JvDockControlForm, JvDockSupportClass, JvDockSupportProc;
+uses
+  Windows, Controls, IniFiles, Registry, Classes, SysUtils, Forms, Messages,
+  JvDockControlForm, JvDockSupportClass, JvDockSupportProc;
 
 type
   TJvDockInfoTree = class;
@@ -39,37 +41,37 @@ type
 
   TJvDockInfoZone = class(TJvDockBaseZone)
   private
-    FDockFormName: string;      
-    FParentName: string;        
-    FDockRect: TRect;           
-    FLastDockSiteName: string;  
-    FUnDockLeft: Integer;       
-    FUnDockTop: Integer;        
-    FLRDockWidth: Integer;      
-    FTBDockHeight: Integer;     
-    FUnDockWidth: Integer;      
-    FUnDockHeight: Integer;     
-    FVSPaneWidth: Integer;      
-    FVisible: Boolean;          
-    FBorderStyle: TBorderStyle; 
-    FFormStyle: TFormStyle;     
-    FWindowState: TWindowState; 
-    FCanDocked: Boolean;        
-    FEachOtherDocked: Boolean;  
-    FLeftDocked: Boolean;       
-    FTopDocked: Boolean;        
-    FRightDocked: Boolean;      
-    FBottomDocked: Boolean;     
+    FDockFormName: string;
+    FParentName: string;
+    FDockRect: TRect;
+    FLastDockSiteName: string;
+    FUnDockLeft: Integer;
+    FUnDockTop: Integer;
+    FLRDockWidth: Integer;
+    FTBDockHeight: Integer;
+    FUnDockWidth: Integer;
+    FUnDockHeight: Integer;
+    FVSPaneWidth: Integer;
+    FVisible: Boolean;
+    FBorderStyle: TBorderStyle;
+    FFormStyle: TFormStyle;
+    FWindowState: TWindowState;
+    FCanDocked: Boolean;
+    FEachOtherDocked: Boolean;
+    FLeftDocked: Boolean;
+    FTopDocked: Boolean;
+    FRightDocked: Boolean;
+    FBottomDocked: Boolean;
     FDockFormStyle: TJvDockFormStyle;
-    FDockClientData: string;    
-    FDockControl: TWinControl;  
-    function GetChildControlCount: Integer; 
+    FDockClientData: string;
+    FDockControl: TWinControl;
+    function GetChildControlCount: Integer;
   public
     procedure SetDockInfoFromControlToNode(Control: TControl); virtual;
     procedure SetDockInfoFromNodeToControl(Control: TControl); virtual;
     procedure SetDockInfoFromDockControlToNode(DockControl: TJvDockBaseControl); virtual;
     procedure SetDockInfoFromNodeToDockControl(DockControl: TJvDockBaseControl); virtual;
-    
+
     property DockFormName: string read FDockFormName write FDockFormName;
     property ParentName: string read FParentName write FParentName;
     property DockRect: TRect read FDockRect write FDockRect;
@@ -97,25 +99,19 @@ type
   end;
 
   TJvDockInfoStyle =
-    ( isNone,         
-      isReadFileInfo, 
-      isWriteFileInfo,
-      isReadRegInfo,  
-      isWriteRegInfo);
+    (isNone, isReadFileInfo, isWriteFileInfo, isReadRegInfo, isWriteRegInfo);
 
-  
   TJvDockInfoTree = class(TJvDockBaseTree)
   private
-    FDockInfoIni: TIniFile;  
-    FDockInfoReg: TRegistry; 
-    FRegName: string;        
+    FDockInfoIni: TIniFile;
+    FDockInfoReg: TRegistry;
+    FRegName: string;
     FJvDockInfoStyle: TJvDockInfoStyle;
-    FDataStream: TMemoryStream; 
+    FDataStream: TMemoryStream;
     function FindDockForm(FormName: string): TCustomForm;
     function CreateHostControl(ATreeZone: TJvDockInfoZone): TWinControl;
-
   protected
-    procedure ScanTreeZone(TreeZone: TJvDockBaseZone); override;    
+    procedure ScanTreeZone(TreeZone: TJvDockBaseZone); override;
     procedure CreateZoneAndAddInfoFromIni; virtual;
     procedure CreateZoneAndAddInfoFromReg; virtual;
     procedure SetDockControlInfo(ATreeZone: TJvDockInfoZone); virtual;
@@ -124,35 +120,36 @@ type
     destructor Destroy; override;
     procedure CreateZoneAndAddInfoFromApp(Control: TControl); virtual;
 
-    procedure ReadInfoFromIni;                    
-    procedure ReadInfoFromReg(RegName: string);   
-    procedure WriteInfoToIni;                     
-    procedure WriteInfoToReg(RegName: string);    
+    procedure ReadInfoFromIni;
+    procedure ReadInfoFromReg(RegName: string);
+    procedure WriteInfoToIni;
+    procedure WriteInfoToReg(RegName: string);
     property DockInfoIni: TIniFile read FDockInfoIni write FDockInfoIni;
     property DockInfoReg: TRegistry read FDockInfoReg write FDockInfoReg;
   end;
 
 implementation
 
-uses JvDockGlobals, JvDockVSNetStyle;
-
+uses
+  JvDockGlobals, JvDockVSNetStyle;
 
 function FindDockForm(FormName: string): TCustomForm;
 begin
-  if Pos(RsDockJvDockInfoSplitter, FormName) > 0 then Result := nil
+  if Pos(RsDockJvDockInfoSplitter, FormName) > 0 then
+    Result := nil
   else
-  begin
     Result := JvDockFindDockFormWithName(FormName);
-  end;
 end;
 
 function FindDockPanel(ControlName: string): TWinControl;
-var Index: Word;
+var
+  Index: Word;
   DockServer: TJvDockServer;
 begin
   Result := nil;
   Index := Pos(RsDockJvDockInfoSplitter, ControlName);
-  if Index = 0 then Exit;
+  if Index = 0 then
+    Exit;
   Result := FindDockForm(Copy(ControlName, 1, Index - 1));
   if Result <> nil then
   begin
@@ -162,18 +159,20 @@ begin
       begin
         if Pos('TopDockPanel', ControlName) > Index then
           Result := TopDockPanel
-        else if Pos('LeftDockPanel', ControlName) > Index then
+        else
+        if Pos('LeftDockPanel', ControlName) > Index then
           Result := LeftDockPanel
-        else if Pos('BottomDockPanel', ControlName) > Index then
+        else
+        if Pos('BottomDockPanel', ControlName) > Index then
           Result := BottomDockPanel
-        else if Pos('RightDockPanel', ControlName) > Index then
+        else
+        if Pos('RightDockPanel', ControlName) > Index then
           Result := RightDockPanel;
         if (Result <> nil) and (Pos('PopupPanel', ControlName) > 20) then
           Result := TJvDockVSNETPanel(Result).VSChannel.VSPopupPanel;
       end;
   end;
 end;
-
 
 function FindDockHost(ControlName: string): TWinControl;
 begin
@@ -182,20 +181,21 @@ begin
     Result := FindDockPanel(ControlName);
 end;
 
-
+//=== TJvDockInfoZone ========================================================
 
 function TJvDockInfoZone.GetChildControlCount: Integer;
-var AZone: TJvDockBaseZone;
+var
+  Zone: TJvDockBaseZone;
 begin
   Result := 0;
   if ChildZone <> nil then
   begin
     Inc(Result);
-    AZone := ChildZone;
-    while AZone.NextSibling <> nil do
+    Zone := ChildZone;
+    while Zone.NextSibling <> nil do
     begin
-      AZone := AZone.NextSibling;
-      if TJvDockInfoZone(AZone).DockControl <> nil then
+      Zone := Zone.NextSibling;
+      if TJvDockInfoZone(Zone).DockControl <> nil then
         Inc(Result);
     end;
   end;
@@ -203,14 +203,14 @@ end;
 
 procedure TJvDockInfoZone.SetDockInfoFromControlToNode(Control: TControl);
 begin
-  DockRect      := Control.BoundsRect;
-  UnDockWidth   := Control.UndockWidth;
-  UnDockHeight  := Control.UndockHeight;
+  DockRect := Control.BoundsRect;
+  UnDockWidth := Control.UndockWidth;
+  UnDockHeight := Control.UndockHeight;
   if Control is TJvDockVSPopupPanel then
     Control.Visible := False
   else
     Visible := Control.Visible;
-    
+
   if Control is TForm then
   begin
     BorderStyle := TForm(Control).BorderStyle;
@@ -221,8 +221,8 @@ begin
   end;
 end;
 
-procedure TJvDockInfoZone.SetDockInfoFromDockControlToNode(
-  DockControl: TJvDockBaseControl);
+procedure TJvDockInfoZone.SetDockInfoFromDockControlToNode(DockControl: TJvDockBaseControl);
+
   function GetLastDockSiteName(AControl: TControl): string;
   begin
     Result := RsDockCannotFindWindow;
@@ -230,34 +230,36 @@ procedure TJvDockInfoZone.SetDockInfoFromDockControlToNode(
     begin
       if AControl.Parent is TJvDockableForm then
         Result := AControl.Parent.Name
-      else if AControl is TJvDockPanel then
+      else
+      if AControl is TJvDockPanel then
         Result := AControl.Parent.Name + RsDockJvDockInfoSplitter + AControl.Name;
     end;
   end;
+
 begin
-  CanDocked       := DockControl.EnableDock;
+  CanDocked := DockControl.EnableDock;
   EachOtherDocked := DockControl.EachOtherDock;
-  LeftDocked      := DockControl.LeftDock;
-  TopDocked       := DockControl.TopDock;
-  RightDocked     := DockControl.RightDock;
-  BottomDocked    := DockControl.BottomDock;
+  LeftDocked := DockControl.LeftDock;
+  TopDocked := DockControl.TopDock;
+  RightDocked := DockControl.RightDock;
+  BottomDocked := DockControl.BottomDock;
   if DockControl is TJvDockClient then
   begin
-    VSPaneWidth   := TJvDockClient(DockControl).VSPaneWidth;
+    VSPaneWidth := TJvDockClient(DockControl).VSPaneWidth;
     UnDockLeft := TJvDockClient(DockControl).UnDockLeft;
     UnDockTop := TJvDockClient(DockControl).UnDockTop;
     LastDockSiteName := GetLastDockSiteName(TJvDockClient(DockControl).LastDockSite);
   end
   else
-    VSPaneWidth   := 0;
+    VSPaneWidth := 0;
 end;
 
 procedure TJvDockInfoZone.SetDockInfoFromNodeToControl(Control: TControl);
-var lbDockServer: TJvDockServer;
+var
+  lbDockServer: TJvDockServer;
 
   procedure SetPopupPanelSize(PopupPanel: TJvDockVSPopupPanel);
   begin
-
   end;
 
   procedure SetDockSiteSize(DockSite: TJvDockPanel);
@@ -268,10 +270,7 @@ var lbDockServer: TJvDockServer;
       DockSite.lbDockManager.DockSiteSize := DockRect.Right - DockRect.Left;
   end;
 
-
-
 begin
-
   if (ParentName = '') or ((Control is TJvDockPanel) and
     (TJvDockPanel(Control).VisibleDockClientCount > 0)) then
   begin
@@ -284,10 +283,11 @@ begin
         if WindowState = wsNormal then
           Control.BoundsRect := DockRect;
         TForm(Control).WindowState := WindowState;
-      end else
+      end
+      else
       begin
         if Control is TJvDockVSPopupPanel then
-          SetPopupPanelSize(Control as  TJvDockVSPopupPanel)
+          SetPopupPanelSize(Control as TJvDockVSPopupPanel)
         else
           SetDockSiteSize(Control as TJvDockPanel);
       end;
@@ -298,7 +298,6 @@ begin
         lbDockServer.GetClientAlignControl(alBottom);
         lbDockServer.GetClientAlignControl(alLeft);
         lbDockServer.GetClientAlignControl(alRight);
-
       end;
     finally
       TWinControl(Control).EnableAlign;
@@ -311,8 +310,8 @@ begin
   Control.UndockWidth := UndockWidth;
 end;
 
-procedure TJvDockInfoZone.SetDockInfoFromNodeToDockControl(
-  DockControl: TJvDockBaseControl);
+procedure TJvDockInfoZone.SetDockInfoFromNodeToDockControl(DockControl: TJvDockBaseControl);
+
   function GetLastDockSite(AName: string): TWinControl;
   begin
     Result := FindDockPanel(AName);
@@ -323,8 +322,9 @@ procedure TJvDockInfoZone.SetDockInfoFromNodeToDockControl(
         Result := TJvDockableForm(Result).DockableControl;
     end;
   end;
+
 begin
-  if (DockControl is TJvDockClient) then
+  if DockControl is TJvDockClient then
   begin
     TJvDockClient(DockControl).UnDockLeft := UnDockLeft;
     TJvDockClient(DockControl).UnDockTop := UnDockTop;
@@ -333,7 +333,9 @@ begin
     begin
       TJvDockClient(DockControl).ParentVisible := False;
       TJvDockClient(DockControl).MakeShowEvent;
-    end else TJvDockClient(DockControl).MakeHideEvent;
+    end
+    else
+      TJvDockClient(DockControl).MakeHideEvent;
     TJvDockClient(DockControl).VSPaneWidth := VSPaneWidth;
   end;
   DockControl.EnableDock := CanDocked;
@@ -343,7 +345,7 @@ begin
   DockControl.RightDock := RightDocked;
 end;
 
-
+//=== TJvDockInfoTree ========================================================
 
 constructor TJvDockInfoTree.Create(TreeZone: TJvDockTreeZoneClass);
 begin
@@ -353,10 +355,17 @@ begin
   FDataStream := TMemoryStream.Create;
 end;
 
+destructor TJvDockInfoTree.Destroy;
+begin
+  FDataStream.Free;
+  inherited Destroy;
+end;
+
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromApp(Control: TControl);
-var i: Integer;
+var
+  I: Integer;
   TreeZone: TJvDockInfoZone;
-  ADockBaseControl: TJvDockBaseControl;
+  DockBaseControl: TJvDockBaseControl;
   TmpDockPanel: TJvDockPanel;
 begin
   TreeZone := TJvDockInfoZone(AddChildZone(CurrTreeZone, nil));
@@ -367,44 +376,46 @@ begin
     if Control is TJvDockPanel then
       DockFormName := TJvDockInfoZone(CurrTreeZone).DockFormName +
         RsDockJvDockInfoSplitter + Control.Name
-    else DockFormName := Control.Name;
+    else
+      DockFormName := Control.Name;
     FDataStream.Clear;
     if Control is TJvDockTabHostForm then
       TJvDockTabHostForm(Control).PageControl.SaveToStream(FDataStream)
-    else if Control is TJvDockConjoinHostForm then
+    else
+    if Control is TJvDockConjoinHostForm then
       TJvDockConjoinHostForm(Control).Panel.DockManager.SaveToStream(FDataStream)
-    else if Control is TJvDockPanel then
+    else
+    if Control is TJvDockPanel then
       TJvDockPanel(Control).DockManager.SaveToStream(FDataStream);
     DockClientData := JvDockStreamDataToString(FDataStream);
-    ADockBaseControl := FindDockBaseControl(Control);
-    if ADockBaseControl <> nil then
+    DockBaseControl := FindDockBaseControl(Control);
+    if DockBaseControl <> nil then
     begin
-      SetDockInfoFromDockControlToNode(ADockBaseControl);
+      SetDockInfoFromDockControlToNode(DockBaseControl);
       if Control is TJvDockTabHostForm then
         DockFormStyle := dsTab
-      else if Control is TJvDockConjoinHostForm then
+      else
+      if Control is TJvDockConjoinHostForm then
         DockFormStyle := dsConjoin
-      else DockFormStyle := dsNormal;
-      if ADockBaseControl is TJvDockClient then
+      else
+        DockFormStyle := dsNormal;
+      if DockBaseControl is TJvDockClient then
       begin
         if Control is TJvDockableForm then
-        begin
           with TJvDockableForm(Control).DockableControl do
-          begin
-            for i := 0 to DockClientCount -1 do
+            for I := 0 to DockClientCount - 1 do
             begin
               CurrTreeZone := TreeZone;
-              CreateZoneAndAddInfoFromApp(DockClients[i]);
+              CreateZoneAndAddInfoFromApp(DockClients[I]);
               CurrTreeZone := TreeZone.GetParentZone;
             end;
-          end;
-        end;
-      end else
+      end
+      else
       begin
-        for i := 0 to 3 do
+        for I := 0 to 3 do
         begin
           CurrTreeZone := TreeZone;
-          TmpDockPanel := TJvDockServer(ADockBaseControl).DockPanel[i];
+          TmpDockPanel := TJvDockServer(DockBaseControl).DockPanel[I];
           CreateZoneAndAddInfoFromApp(TmpDockPanel);
           if TmpDockPanel is TJvDockVSNETPanel then
             CreateZoneAndAddInfoFromApp(TJvDockVSNETPanel(TmpDockPanel).VSChannel.VSPopupPanel);
@@ -419,142 +430,129 @@ begin
       if Control is TJvDockVSPopupPanel then
       begin
         with TJvDockVSPopupPanel(Control) do
-        begin
-          for i := 0 to DockClientCount - 1 do
+          for I := 0 to DockClientCount - 1 do
           begin
             CurrTreeZone := TreeZone;
-            CreateZoneAndAddInfoFromApp(TWinControl(DockClients[i]));
+            CreateZoneAndAddInfoFromApp(TWinControl(DockClients[I]));
             CurrTreeZone := TreeZone.GetParentZone;
           end;
-        end;
-      end else
-      with TJvDockPanel(Control) do
-      begin
-        for i := 0 to DockClientCount - 1 do
-        begin
-          CurrTreeZone := TreeZone;
-          CreateZoneAndAddInfoFromApp(TWinControl(DockClients[i]));
-          CurrTreeZone := TreeZone.GetParentZone;
-        end;
-      end;
+      end
+      else
+        with TJvDockPanel(Control) do
+          for I := 0 to DockClientCount - 1 do
+          begin
+            CurrTreeZone := TreeZone;
+            CreateZoneAndAddInfoFromApp(TWinControl(DockClients[I]));
+            CurrTreeZone := TreeZone.GetParentZone;
+          end;
     end;
   end;
 end;
 
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromIni;
-var Sections: TStringList;
-    TempDockInfoZoneArray: Array of TJvDockInfoZone;             
+var
+  I: Integer;
+  Sections: TStringList;
+  TempDockInfoZoneArray: array of TJvDockInfoZone;
 
-  
   procedure CreateTempDockInfoZoneArray;
-  var i: Integer;
+  var
+    I: Integer;
   begin
     SetLength(TempDockInfoZoneArray, Sizeof(TJvDockInfoZone) * Sections.Count);
-    for i := 0 to Sections.Count - 1 do
+    for I := 0 to Sections.Count - 1 do
     begin
-      TempDockInfoZoneArray[i] := TJvDockInfoZone.Create(nil);
-      with TempDockInfoZoneArray[i], FDockInfoIni do
+      TempDockInfoZoneArray[I] := TJvDockInfoZone.Create(nil);
+      with TempDockInfoZoneArray[I], FDockInfoIni do
       begin
-        
-        DockFormName  := Sections[i];
-        ParentName    := ReadString(DockFormName, 'ParentName', 'ERROR');
-        DockRect      := Rect(ReadInteger(DockFormName, 'DockLeft', 0),
-                         ReadInteger(DockFormName, 'DockTop', 0),
-                         ReadInteger(DockFormName, 'DockRight', 100),
-                         ReadInteger(DockFormName, 'DockBottom', 100));
-        LastDockSiteName:= ReadString(DockFormName, 'LastDockSiteName', 'ERROR');
-        UnDockLeft    := ReadInteger(DockFormName, 'UnDockLeft', 100);
-        UnDockTop     := ReadInteger(DockFormName, 'UnDockTop', 100);
-        LRDockWidth   := ReadInteger(DockFormName, 'LRDockWidth', 100);
-        TBDockHeight  := ReadInteger(DockFormName, 'TBDockHeight', 100);
-        UnDockWidth   := ReadInteger(DockFormName, 'UndockWidth', 100);
-        UnDockHeight  := ReadInteger(DockFormName, 'UndockHeight', 100);
-        VSPaneWidth   := ReadInteger(DockFormName, 'VSPaneWidth', 100);
-        Visible       := ReadBool(DockFormName, 'Visible', True);
-        BorderStyle   := TBorderStyle(ReadInteger(DockFormName, 'BorderStyle', 0));
-        FormStyle     := TFormStyle(ReadInteger(DockFormName, 'FormStyle', 0));
-        WindowState   := TWindowState(ReadInteger(DockFormName, 'WindowState', 0));
+        DockFormName := Sections[I];
+        ParentName := ReadString(DockFormName, 'ParentName', 'ERROR');
+        DockRect := Rect(ReadInteger(DockFormName, 'DockLeft', 0),
+          ReadInteger(DockFormName, 'DockTop', 0),
+          ReadInteger(DockFormName, 'DockRight', 100),
+          ReadInteger(DockFormName, 'DockBottom', 100));
+        LastDockSiteName := ReadString(DockFormName, 'LastDockSiteName', 'ERROR');
+        UnDockLeft := ReadInteger(DockFormName, 'UnDockLeft', 100);
+        UnDockTop := ReadInteger(DockFormName, 'UnDockTop', 100);
+        LRDockWidth := ReadInteger(DockFormName, 'LRDockWidth', 100);
+        TBDockHeight := ReadInteger(DockFormName, 'TBDockHeight', 100);
+        UnDockWidth := ReadInteger(DockFormName, 'UndockWidth', 100);
+        UnDockHeight := ReadInteger(DockFormName, 'UndockHeight', 100);
+        VSPaneWidth := ReadInteger(DockFormName, 'VSPaneWidth', 100);
+        Visible := ReadBool(DockFormName, 'Visible', True);
+        BorderStyle := TBorderStyle(ReadInteger(DockFormName, 'BorderStyle', 0));
+        FormStyle := TFormStyle(ReadInteger(DockFormName, 'FormStyle', 0));
+        WindowState := TWindowState(ReadInteger(DockFormName, 'WindowState', 0));
         DockFormStyle := TJvDockFormStyle(ReadInteger(DockFormName, 'DockFormStyle', 0));
-        CanDocked     := ReadBool(DockFormName, 'CanDocked', True);
+        CanDocked := ReadBool(DockFormName, 'CanDocked', True);
         EachOtherDocked := ReadBool(DockFormName, 'EachOtherDocked', True);
-        LeftDocked    := ReadBool(DockFormName, 'LeftDocked', LeftDocked);
-        TopDocked     := ReadBool(DockFormName, 'TopDocked', True);
-        RightDocked   := ReadBool(DockFormName, 'RightDocked', True);
-        BottomDocked  := ReadBool(DockFormName, 'BottomDocked', True);
-        DockClientData:= ReadString(DockFormName, 'DockClientData', '');
+        LeftDocked := ReadBool(DockFormName, 'LeftDocked', LeftDocked);
+        TopDocked := ReadBool(DockFormName, 'TopDocked', True);
+        RightDocked := ReadBool(DockFormName, 'RightDocked', True);
+        BottomDocked := ReadBool(DockFormName, 'BottomDocked', True);
+        DockClientData := ReadString(DockFormName, 'DockClientData', '');
       end;
     end;
   end;
 
-  
   procedure DestroyTempDockInfoZoneArray;
-  var i: Integer;
+  var
+    I: Integer;
   begin
-    for i := Sections.Count - 1 downto 0 do
-    begin
-      TempDockInfoZoneArray[i].Free;
-    end;
+    for I := Sections.Count - 1 downto 0 do
+      TempDockInfoZoneArray[I].Free;
   end;
 
   procedure CreateZoneAndAddInfo(Index: Integer);
-  var i: Integer;
+  var
+    I: Integer;
     TreeZone: TJvDockInfoZone;
   begin
     TreeZone := TJvDockInfoZone(AddChildZone(CurrTreeZone, nil));
 
-    
-    TreeZone.DockFormName     := TempDockInfoZoneArray[Index].DockFormName;
-    TreeZone.ParentName       := TempDockInfoZoneArray[Index].ParentName;
-    TreeZone.DockRect         := TempDockInfoZoneArray[Index].DockRect;
+    TreeZone.DockFormName := TempDockInfoZoneArray[Index].DockFormName;
+    TreeZone.ParentName := TempDockInfoZoneArray[Index].ParentName;
+    TreeZone.DockRect := TempDockInfoZoneArray[Index].DockRect;
     TreeZone.LastDockSiteName := TempDockInfoZoneArray[Index].LastDockSiteName;
-    TreeZone.UnDockLeft       := TempDockInfoZoneArray[Index].UnDockLeft;
-    TreeZone.UnDockTop        := TempDockInfoZoneArray[Index].UnDockTop;
-    TreeZone.LRDockWidth      := TempDockInfoZoneArray[Index].LRDockWidth;
-    TreeZone.TBDockHeight     := TempDockInfoZoneArray[Index].TBDockHeight;
-    TreeZone.UnDockWidth      := TempDockInfoZoneArray[Index].UnDockWidth;
-    TreeZone.UnDockHeight     := TempDockInfoZoneArray[Index].UnDockHeight;
-    TreeZone.VSPaneWidth      := TempDockInfoZoneArray[Index].VSPaneWidth;
-    TreeZone.Visible          := TempDockInfoZoneArray[Index].Visible;
-    TreeZone.BorderStyle      := TempDockInfoZoneArray[Index].BorderStyle;
-    TreeZone.FormStyle        := TempDockInfoZoneArray[Index].FormStyle;
-    TreeZone.WindowState      := TempDockInfoZoneArray[Index].WindowState;
-    TreeZone.DockFormStyle    := TempDockInfoZoneArray[Index].DockFormStyle;
-    TreeZone.CanDocked        := TempDockInfoZoneArray[Index].CanDocked;
-    TreeZone.EachOtherDocked  := TempDockInfoZoneArray[Index].EachOtherDocked;
-    TreeZone.LeftDocked       := TempDockInfoZoneArray[Index].LeftDocked;
-    TreeZone.TopDocked        := TempDockInfoZoneArray[Index].TopDocked;
-    TreeZone.RightDocked      := TempDockInfoZoneArray[Index].RightDocked;
-    TreeZone.BottomDocked     := TempDockInfoZoneArray[Index].BottomDocked;
-    TreeZone.DockClientData   := TempDockInfoZoneArray[Index].DockClientData;
+    TreeZone.UnDockLeft := TempDockInfoZoneArray[Index].UnDockLeft;
+    TreeZone.UnDockTop := TempDockInfoZoneArray[Index].UnDockTop;
+    TreeZone.LRDockWidth := TempDockInfoZoneArray[Index].LRDockWidth;
+    TreeZone.TBDockHeight := TempDockInfoZoneArray[Index].TBDockHeight;
+    TreeZone.UnDockWidth := TempDockInfoZoneArray[Index].UnDockWidth;
+    TreeZone.UnDockHeight := TempDockInfoZoneArray[Index].UnDockHeight;
+    TreeZone.VSPaneWidth := TempDockInfoZoneArray[Index].VSPaneWidth;
+    TreeZone.Visible := TempDockInfoZoneArray[Index].Visible;
+    TreeZone.BorderStyle := TempDockInfoZoneArray[Index].BorderStyle;
+    TreeZone.FormStyle := TempDockInfoZoneArray[Index].FormStyle;
+    TreeZone.WindowState := TempDockInfoZoneArray[Index].WindowState;
+    TreeZone.DockFormStyle := TempDockInfoZoneArray[Index].DockFormStyle;
+    TreeZone.CanDocked := TempDockInfoZoneArray[Index].CanDocked;
+    TreeZone.EachOtherDocked := TempDockInfoZoneArray[Index].EachOtherDocked;
+    TreeZone.LeftDocked := TempDockInfoZoneArray[Index].LeftDocked;
+    TreeZone.TopDocked := TempDockInfoZoneArray[Index].TopDocked;
+    TreeZone.RightDocked := TempDockInfoZoneArray[Index].RightDocked;
+    TreeZone.BottomDocked := TempDockInfoZoneArray[Index].BottomDocked;
+    TreeZone.DockClientData := TempDockInfoZoneArray[Index].DockClientData;
 
-    for i := Index - 1 downto 0 do
-    begin
-      if TempDockInfoZoneArray[i].ParentName = Sections[Index] then
+    for I := Index - 1 downto 0 do
+      if TempDockInfoZoneArray[I].ParentName = Sections[Index] then
       begin
         CurrTreeZone := TreeZone;
-        CreateZoneAndAddInfo(i);
+        CreateZoneAndAddInfo(I);
         CurrTreeZone := TreeZone.GetParentZone;
       end;
-    end;
   end;
 
-var i: Integer;
 begin
   Sections := TStringList.Create;
   try
     FDockInfoIni.ReadSections(Sections);
-
-    
     CreateTempDockInfoZoneArray;
-
-    
     FJvDockInfoStyle := isReadFileInfo;
 
-    for i := Sections.Count - 1 downto 0 do
-    begin
-      if TempDockInfoZoneArray[i].ParentName = '' then
-        CreateZoneAndAddInfo(i);
-    end;
+    for I := Sections.Count - 1 downto 0 do
+      if TempDockInfoZoneArray[I].ParentName = '' then
+        CreateZoneAndAddInfo(I);
     FJvDockInfoStyle := isNone;
   finally
     DestroyTempDockInfoZoneArray;
@@ -563,9 +561,14 @@ begin
 end;
 
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromReg;
-var FormList: TStringList;
+var
+  FormList: TStringList;
+  cp, cp1: PChar;
+  I: Integer;
+
   procedure CreateZoneAndAddInfo(Index: Integer);
-  var i: Integer;
+  var
+    I: Integer;
     TreeZone: TJvDockInfoZone;
   begin
     FDockInfoReg.OpenKey(FRegName, False);
@@ -575,49 +578,44 @@ var FormList: TStringList;
       TreeZone := TJvDockInfoZone(AddChildZone(CurrTreeZone, nil));
       with TreeZone, FDockInfoReg do
       begin
-        
-        DockFormName  := FormList[Index];
-        ParentName    := ReadString('ParentName');
-        DockRect := Rect(ReadInteger('DockLeft'),
-                         ReadInteger('DockTop'),
-                         ReadInteger('DockRight'),
-                         ReadInteger('DockBottom'));
-        LRDockWidth   := ReadInteger('LRDockWidth');
-        LastDockSiteName:= ReadString('LastDockSiteName');
-        UnDockLeft    := ReadInteger('UnDockLeft');
-        UnDockTop     := ReadInteger('UnDockTop');
-        TBDockHeight  := ReadInteger('TBDockHeight');
-        UnDockWidth   := ReadInteger('UnDockWidth');
-        UnDockHeight  := ReadInteger('UnDockHeight');
-        VSPaneWidth   := ReadInteger('VSPaneWidth');
-        Visible       := ReadBool('Visible');
-        BorderStyle   := TBorderStyle(ReadInteger('BorderStyle'));
-        FormStyle     := TFormStyle(ReadInteger('FormStyle'));
-        WindowState   := TWindowState(ReadInteger('WindowState'));
+        DockFormName := FormList[Index];
+        ParentName := ReadString('ParentName');
+        DockRect := Rect(ReadInteger('DockLeft'), ReadInteger('DockTop'),
+          ReadInteger('DockRight'), ReadInteger('DockBottom'));
+        LRDockWidth := ReadInteger('LRDockWidth');
+        LastDockSiteName := ReadString('LastDockSiteName');
+        UnDockLeft := ReadInteger('UnDockLeft');
+        UnDockTop := ReadInteger('UnDockTop');
+        TBDockHeight := ReadInteger('TBDockHeight');
+        UnDockWidth := ReadInteger('UnDockWidth');
+        UnDockHeight := ReadInteger('UnDockHeight');
+        VSPaneWidth := ReadInteger('VSPaneWidth');
+        Visible := ReadBool('Visible');
+        BorderStyle := TBorderStyle(ReadInteger('BorderStyle'));
+        FormStyle := TFormStyle(ReadInteger('FormStyle'));
+        WindowState := TWindowState(ReadInteger('WindowState'));
         DockFormStyle := TJvDockFormStyle(ReadInteger('DockFormStyle'));
-        CanDocked     := ReadBool('CanDocked');
+        CanDocked := ReadBool('CanDocked');
         EachOtherDocked := ReadBool('EachOtherDocked');
-        LeftDocked    := ReadBool('LeftDocked');
-        TopDocked     := ReadBool('TopDocked');
-        RightDocked   := ReadBool('RightDocked');
-        BottomDocked  := ReadBool('BottomDocked');
-        DockClientData:= ReadString('DockClientData');
+        LeftDocked := ReadBool('LeftDocked');
+        TopDocked := ReadBool('TopDocked');
+        RightDocked := ReadBool('RightDocked');
+        BottomDocked := ReadBool('BottomDocked');
+        DockClientData := ReadString('DockClientData');
       end;
-      for i := Index - 1 downto 0 do
+      for I := Index - 1 downto 0 do
       begin
-        FDockInfoReg.OpenKey(FRegName + '\' + FormList[i], False);
+        FDockInfoReg.OpenKey(FRegName + '\' + FormList[I], False);
         if FDockInfoReg.ReadString('ParentName') = FormList[Index] then
         begin
           CurrTreeZone := TreeZone;
-          CreateZoneAndAddInfo(i);
+          CreateZoneAndAddInfo(I);
           CurrTreeZone := TreeZone.GetParentZone;
         end;
       end;
     end;
   end;
-var
-  cp, cp1: PChar;
-  i: Integer;
+
 begin
   FormList := TStringList.Create;
   try
@@ -633,11 +631,11 @@ begin
         cp1 := StrPos(cp, '\');
       end;
       FJvDockInfoStyle := isReadFileInfo;
-      for i := FormList.Count - 1 downto 0 do
+      for I := FormList.Count - 1 downto 0 do
       begin
-        FDockInfoReg.OpenKey(FRegName + '\' + FormList[i], False);
+        FDockInfoReg.OpenKey(FRegName + '\' + FormList[I], False);
         if FDockInfoReg.ReadString('ParentName') = '' then
-          CreateZoneAndAddInfo(i);
+          CreateZoneAndAddInfo(I);
       end;
       FJvDockInfoStyle := isNone;
     end;
@@ -647,20 +645,15 @@ begin
   end;
 end;
 
-destructor TJvDockInfoTree.Destroy;
-begin
-  FDataStream.Free;
-  inherited Destroy;
-end;
-
 procedure TJvDockInfoTree.ReadInfoFromIni;
 begin
   CreateZoneAndAddInfoFromIni;
-  
+
   DoFloatAllForm;
-  
+
+  // (rom) this is disputable
   Application.ProcessMessages;
-  
+
   FJvDockInfoStyle := isReadFileInfo;
   MiddleScanTree(TopTreeZone);
   FJvDockInfoStyle := isNone;
@@ -670,92 +663,67 @@ procedure TJvDockInfoTree.ReadInfoFromReg(RegName: string);
 begin
   FRegName := RegName;
   CreateZoneAndAddInfoFromReg;
-  
+
   DoFloatAllForm;
-  
+
+  // (rom) this is disputable
   Application.ProcessMessages;
-  
+
   FJvDockInfoStyle := isReadRegInfo;
   MiddleScanTree(TopTreeZone);
   FJvDockInfoStyle := isNone;
 end;
 
 procedure TJvDockInfoTree.ScanTreeZone(TreeZone: TJvDockBaseZone);
-var i: Integer;
+var
+  I: Integer;
 begin
   if (FJvDockInfoStyle = isReadFileInfo) or (FJvDockInfoStyle = isReadRegInfo) then
   begin
-    
-    for i := 0 to TreeZone.GetChildCount - 1 do
+    for I := 0 to TreeZone.GetChildCount - 1 do
     begin
-      with TJvDockInfoZone(TreeZone.GetChildZone(i)) do
+      with TJvDockInfoZone(TreeZone.GetChildZone(I)) do
         DockControl := FindDockForm(DockFormName);
     end;
     SetDockControlInfo(TJvDockInfoZone(TreeZone));
-  end else
+  end
+  else
   if FJvDockInfoStyle = isWriteFileInfo then
   begin
-    
     if TreeZone <> TopTreeZone then
-    begin
       with TJvDockInfoZone(TreeZone), FDockInfoIni do
       begin
-        WriteString(DockFormName,
-          'ParentName', ParentName);
-        WriteInteger(DockFormName,
-          'DockLeft', DockRect.Left);
-        WriteInteger(DockFormName,
-          'DockTop', DockRect.Top);
-        WriteInteger(DockFormName,
-          'DockRight', DockRect.Right);
-        WriteInteger(DockFormName,
-          'DockBottom', DockRect.Bottom);
-        WriteString(DockFormName,
-          'LastDockSiteName', LastDockSiteName);
-        WriteInteger(DockFormName,
-          'UnDockLeft', UnDockLeft);
-        WriteInteger(DockFormName,
-          'UnDockTop', UnDockTop);
-        WriteInteger(DockFormName,
-          'LRDockWidth', LRDockWidth);
-        WriteInteger(DockFormName,
-          'TBDockHeight', TBDockHeight);
-        WriteInteger(DockFormName,
-          'UnDockWidth', UnDockWidth);
-        WriteInteger(DockFormName,
-          'UnDockHeight', UnDockHeight);
-        WriteInteger(DockFormName,
-          'VSPaneWidth', VSPaneWidth);
-        WriteBool(DockFormName,
-          'Visible', Visible);
-        WriteInteger(DockFormName,
-          'BorderStyle', Integer(BorderStyle));
-        WriteInteger(DockFormName,
-          'WindowState', Integer(WindowState));
-        WriteInteger(DockFormName,
-          'FormStyle', Integer(FormStyle));
-        WriteInteger(DockFormName,
-          'DockFormStyle', Integer(DockFormStyle));
-        WriteBool(DockFormName,
-          'CanDocked', CanDocked);
-        WriteBool(DockFormName,
-          'EachOtherDocked', EachOtherDocked);
-        WriteBool(DockFormName,
-          'LeftDocked', LeftDocked);
-        WriteBool(DockFormName,
-          'TopDocked', TopDocked);
-        WriteBool(DockFormName,
-          'RightDocked', RightDocked);
-        WriteBool(DockFormName,
-          'BottomDocked', BottomDocked);
-        WriteString(DockFormName,
-          'DockClientData', DockClientData);
+        WriteString(DockFormName, 'ParentName', ParentName);
+        WriteInteger(DockFormName, 'DockLeft', DockRect.Left);
+        WriteInteger(DockFormName, 'DockTop', DockRect.Top);
+        WriteInteger(DockFormName, 'DockRight', DockRect.Right);
+        WriteInteger(DockFormName, 'DockBottom', DockRect.Bottom);
+        WriteString(DockFormName, 'LastDockSiteName', LastDockSiteName);
+        WriteInteger(DockFormName, 'UnDockLeft', UnDockLeft);
+        WriteInteger(DockFormName, 'UnDockTop', UnDockTop);
+        WriteInteger(DockFormName, 'LRDockWidth', LRDockWidth);
+        WriteInteger(DockFormName, 'TBDockHeight', TBDockHeight);
+        WriteInteger(DockFormName, 'UnDockWidth', UnDockWidth);
+        WriteInteger(DockFormName, 'UnDockHeight', UnDockHeight);
+        WriteInteger(DockFormName, 'VSPaneWidth', VSPaneWidth);
+        WriteBool(DockFormName, 'Visible', Visible);
+        WriteInteger(DockFormName, 'BorderStyle', Integer(BorderStyle));
+        WriteInteger(DockFormName, 'WindowState', Integer(WindowState));
+        WriteInteger(DockFormName, 'FormStyle', Integer(FormStyle));
+        WriteInteger(DockFormName, 'DockFormStyle', Integer(DockFormStyle));
+        WriteBool(DockFormName, 'CanDocked', CanDocked);
+        WriteBool(DockFormName, 'EachOtherDocked', EachOtherDocked);
+        WriteBool(DockFormName, 'LeftDocked', LeftDocked);
+        WriteBool(DockFormName, 'TopDocked', TopDocked);
+        WriteBool(DockFormName, 'RightDocked', RightDocked);
+        WriteBool(DockFormName, 'BottomDocked', BottomDocked);
+        WriteString(DockFormName, 'DockClientData', DockClientData);
       end;
-    end;
-  end else if FJvDockInfoStyle = isWriteRegInfo then
+  end
+  else
+  if FJvDockInfoStyle = isWriteRegInfo then
   begin
     if TreeZone <> TopTreeZone then
-    begin
       with TJvDockInfoZone(TreeZone), FDockInfoReg do
       begin
         OpenKey(FRegName, True);
@@ -788,122 +756,125 @@ begin
         WriteString('DockClientData', DockClientData);
         CloseKey;
       end;
-    end;
   end;
   inherited ScanTreeZone(TreeZone);
 end;
 
-
 function TJvDockInfoTree.FindDockForm(FormName: string): TCustomForm;
 begin
-  if Pos(RsDockJvDockInfoSplitter, FormName) > 0 then Result := nil
+  if Pos(RsDockJvDockInfoSplitter, FormName) > 0 then
+    Result := nil
   else
-  begin
     Result := JvDockFindDockFormWithName(FormName);
-  end;
 end;
 
-
-
-
-
 function TJvDockInfoTree.CreateHostControl(ATreeZone: TJvDockInfoZone): TWinControl;
-var Form: TForm;
+var
+  Form: TForm;
   DockClient: TJvDockClient;
 begin
   Result := nil;
   case ATreeZone.DockFormStyle of
-  dsConjoin:
-    begin
-      Form := TJvDockConjoinHostForm.Create(Application);
-      DockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
-      Result := DockClient.CreateConjoinPanelClass(Form).Parent;
-    end;
-  dsTab:
-    begin
-      Form := TJvDockTabHostForm.Create(Application);
-      DockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
-      Result := DockClient.CreateTabDockClass(Form).Parent;
-    end;
+    dsConjoin:
+      begin
+        Form := TJvDockConjoinHostForm.Create(Application);
+        DockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
+        Result := DockClient.CreateConjoinPanelClass(Form).Parent;
+      end;
+    dsTab:
+      begin
+        Form := TJvDockTabHostForm.Create(Application);
+        DockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
+        Result := DockClient.CreateTabDockClass(Form).Parent;
+      end;
   end;
   if Result <> nil then
-  begin
     Result.Name := ATreeZone.DockFormName;
-  end;
 end;
 
 procedure TJvDockInfoTree.SetDockControlInfo(ATreeZone: TJvDockInfoZone);
 var
-  ADockBaseControl: TJvDockBaseControl;
+  DockBaseControl: TJvDockBaseControl;
   Host: TWinControl;
 begin
   with ATreeZone do
   begin
-    if DockFormName = '' then Exit;
+    if DockFormName = '' then
+      Exit;
     Host := FindDockHost(DockFormName);
-    if (Host = nil) and (ATreeZone.GetChildControlCount > 1)  then
+    if (Host = nil) and (ATreeZone.GetChildControlCount > 1) then
       Host := CreateHostControl(ATreeZone);
     if (Host <> nil) and (DockClientData <> '') then
     begin
-      
       FDataStream.Clear;
-      
+
       JvDockStringToStreamData(FDataStream, DockClientData);
-      
+
       FDataStream.Position := 0;
       if Host is TJvDockTabHostForm then
       begin
-        
         with TJvDockTabHostForm(Host).PageControl do
         begin
           DisableAlign;
-          try LoadFromStream(FDataStream);
-          finally EnableAlign; end;
+          try
+            LoadFromStream(FDataStream);
+          finally
+            EnableAlign;
+          end;
         end;
-      end else if Host is TJvDockConjoinHostForm then
+      end
+      else
+      if Host is TJvDockConjoinHostForm then
       begin
-        
         with TJvDockConjoinHostForm(Host).Panel do
         begin
           DisableAlign;
-          try DockManager.LoadFromStream(FDataStream);
-          finally EnableAlign; end;
+          try
+            DockManager.LoadFromStream(FDataStream);
+          finally
+            EnableAlign;
+          end;
         end;
-      end else if Host is TJvDockPanel then
+      end
+      else
+      if Host is TJvDockPanel then
       begin
-        
         with TJvDockPanel(Host) do
         begin
           DisableAlign;
-          try DockManager.LoadFromStream(FDataStream);
-          finally EnableAlign; end;
+          try
+            DockManager.LoadFromStream(FDataStream);
+          finally
+            EnableAlign;
+          end;
         end;
       end;
     end;
     if Host <> nil then
     begin
       SetDockInfoFromNodeToControl(Host);
-      ADockBaseControl := FindDockBaseControl(Host);
-      if ADockBaseControl <> nil then
-        SetDockInfoFromNodeToDockControl(ADockBaseControl);
+      DockBaseControl := FindDockBaseControl(Host);
+      if DockBaseControl <> nil then
+        SetDockInfoFromNodeToDockControl(DockBaseControl);
     end;
   end;
 end;
 
 procedure TJvDockInfoTree.WriteInfoToIni;
-var Sections: TStringList;
-  i: Integer;
+var
+  Sections: TStringList;
+  I: Integer;
 begin
   Sections := TStringList.Create;
   try
     FDockInfoIni.ReadSections(Sections);
-    
-    for i := 0 to Sections.Count - 1 do
-      FDockInfoIni.EraseSection(Sections[i]);
+
+    for I := 0 to Sections.Count - 1 do
+      FDockInfoIni.EraseSection(Sections[I]);
   finally
     Sections.Free;
   end;
-  
+
   FJvDockInfoStyle := isWriteFileInfo;
   MiddleScanTree(TopTreeZone);
   FJvDockInfoStyle := isNone;
@@ -912,14 +883,13 @@ end;
 procedure TJvDockInfoTree.WriteInfoToReg(RegName: string);
 begin
   try
-    
     if FDockInfoReg.OpenKey(RegName, False) then
       FDockInfoReg.DeleteKey(RegName);
-    
+
     FDockInfoReg.CreateKey(RegName);
     FDockInfoReg.CloseKey;
     FRegName := RegName;
-    
+
     FJvDockInfoStyle := isWriteRegInfo;
     MiddleScanTree(TopTreeZone);
     FJvDockInfoStyle := isNone;

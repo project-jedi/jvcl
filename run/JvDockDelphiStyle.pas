@@ -194,23 +194,21 @@ end;
 procedure TJvDockDelphiTabPageControl.CMDockClient(var Msg: TCMDockClient);
 var
   I: Integer;
-  AControl: TControl;
-  APageCount: Integer;
+  Control: TControl;
+  PageCount: Integer;
 begin
   if Msg.DockSource.Control is TJvDockTabHostForm then
-  begin
     with TJvDockTabHostForm(Msg.DockSource.Control) do
     begin
-      APageCount := Self.PageCount;
+      PageCount := Self.PageCount;
       for I := PageControl.DockClientCount - 1 downto 0 do
       begin
-        AControl := PageControl.DockClients[I];
-        DoFloat(PageControl, AControl);
-        AControl.ManualDock(Self, nil, alClient);
-        Self.ActivePage.PageIndex := APageCount;
+        Control := PageControl.DockClients[I];
+        DoFloat(PageControl, Control);
+        Control.ManualDock(Self, nil, alClient);
+        Self.ActivePage.PageIndex := PageCount;
       end;
-    end;
-  end
+    end
   else
     inherited;
 end;
