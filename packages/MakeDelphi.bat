@@ -9,7 +9,7 @@
 cls
 if %1!==! goto help
 
-if NOT %DELDIR%!==! goto next
+if NOT "%DELDIR%"!==""! goto next
 if %2!==! goto help
 SET DELDIR=%2
 :next
