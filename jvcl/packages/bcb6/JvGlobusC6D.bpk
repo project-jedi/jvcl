@@ -27,7 +27,7 @@
       ..\..\design\JvgReportParamsForm.dfm ..\..\design\JvgRTFPreviewForm.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="rtl.lib"/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJCL60.bpi JvGlobusC6R.bpi vclx.bpi 
       vclsmp.bpi JvStdCtrlsC6R.bpi JvCoreC6D.bpi"/>
     <PATHCPP value=".;"/>

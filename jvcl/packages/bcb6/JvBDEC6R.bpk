@@ -20,7 +20,7 @@
       ..\..\run\JvBDEExceptionForm.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="rtl.lib"/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi vcl.bpi dbrtl.bpi bdertl.bpi CJCL60.bpi JvStdCtrlsC6R.bpi 
       JvDBC6R.bpi vcldb.bpi vclx.bpi JvSystemC6R.bpi JvDlgsC6R.bpi"/>
     <PATHCPP value=".;"/>

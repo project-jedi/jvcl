@@ -14,7 +14,7 @@
     <RESDEPEN value="$(RESFILES) ..\..\run\JvParserForm.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="rtl.lib"/>
+    <SPARELIBS value=""/>
     <PACKAGES value="DesignIde.bpi vcl.bpi CJCL60.bpi JvNetC6R.bpi rtl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design;..\..\run"/>

@@ -30,16 +30,8 @@
       ..\..\design\JvDataProviderDesignerForm.dfm 
       ..\..\design\JvDateTimeForm.dfm ..\..\design\JvStdToolbarDsgnFrame.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib bcbie.lib 
-      nmfast.lib dbexpress.lib inetdbxpress.lib inetdbbde.lib bcbsmp.lib 
-      dsnapcon.lib dsnapcrba.lib visualdbclx.lib teeqr.lib dss.lib tee.lib 
-      teedb.lib teeui.lib qrpt.lib bdecds.lib cds.lib ibxpress.lib vcldbx.lib 
-      bdertl.lib adortl.lib vcldb.lib"/>
-    <SPARELIBS value="vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib cds.lib bdecds.lib 
-      qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib visualdbclx.lib 
-      dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib inetdbxpress.lib 
-      dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib dbxcds.lib 
-      indy.lib bcb2kaxserver.lib rtl.lib"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi designide.bpi vcl.bpi JvCoreC6R.bpi dclstd.bpi vclx.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
@@ -51,8 +43,8 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvCoreC6D.cpp"/>
-    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib;..\..\design;..\..\run;..\..\common"/>
-    <LIBPATH value="$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib;..\..\dcu;..\..\resources"/>
+    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib"/>
+    <LIBPATH value="..\..\dcu;..\..\resources;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>

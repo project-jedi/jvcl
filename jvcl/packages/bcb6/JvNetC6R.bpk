@@ -17,7 +17,7 @@
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value="w32inet.lib"/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="rtl.lib"/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi vcl.bpi CJCL60.bpi bcbsmp.bpi vclx.bpi JvCoreC6R.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\run"/>

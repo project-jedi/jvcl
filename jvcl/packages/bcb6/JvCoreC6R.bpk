@@ -20,21 +20,9 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ..\..\run\JvJVCLAboutForm.dfm ..\..\design\JvActnResForm.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="JvPrintPreviewC6R.lib VclSmp.lib JvJansC6R.lib JvPluginC6R.lib 
-      JvCryptC6R.lib bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib 
-      soaprtl.lib bcbie.lib nmfast.lib dbexpress.lib inetdbxpress.lib 
-      inetdbbde.lib dsnapcon.lib dsnapcrba.lib visualdbclx.lib teeqr.lib dss.lib 
-      tee.lib teedb.lib teeui.lib qrpt.lib bdecds.lib cds.lib ibxpress.lib 
-      vcldbx.lib bdertl.lib adortl.lib vcldb.lib"/>
-    <SPARELIBS value="rtl.lib vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib cds.lib 
-      bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib 
-      visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
-      inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
-      dbxcds.lib indy.lib bcb2kaxserver.lib CJCL60.lib JvBandsC6R.lib 
-      JvCryptC6R.lib JvPluginC6R.lib JvJansC6R.lib VclSmp.lib 
-      JvPrintPreviewC6R.lib"/>
-    <PACKAGES value="vcl.bpi vclx.bpi cjcl60.bpi rtl.bpi JvBandsC6D.bpi designide.bpi 
-      JvBandsC6R.bpi vcljpg.bpi bcbsmp.bpi"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="vcl.bpi vclx.bpi cjcl60.bpi rtl.bpi bcbsmp.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\common;..\..\run;..\..\design"/>
     <PATHRC value=".;"/>
@@ -46,7 +34,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvCoreC6R.cpp"/>
     <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="$(BCB)\Projects\Lib;C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <LIBPATH value="..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -70,9 +58,9 @@
   <FILELIST>
       <FILE FILENAME="JvCoreC6R.res" FORMNAME="" UNITNAME="JvCoreC6R.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6R.cpp" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\cjcl60.bpi" FORMNAME="" UNITNAME="cjcl60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="run\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="run\vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="run\cjcl60.bpi" FORMNAME="" UNITNAME="cjcl60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\common\JvConsts.pas" FORMNAME="" UNITNAME="JvConsts" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JVCLVer.pas" FORMNAME="" UNITNAME="JVCLVer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvComponent.pas" FORMNAME="" UNITNAME="JvComponent" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -93,12 +81,8 @@
       <FILE FILENAME="..\..\run\JvAppIniStore.pas" FORMNAME="" UNITNAME="JvAppIniStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvJVCLAboutForm.pas" FORMNAME="JvJVCLAboutForm" UNITNAME="JvJVCLAboutForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvActnResForm.pas" FORMNAME="JvStandardActions" UNITNAME="JvActnResForm" CONTAINERID="PascalCompiler" DESIGNCLASS="TDataModule" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="run\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvJVCLUtils.pas" FORMNAME="" UNITNAME="JvJVCLUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvBandsC6D.bpi" FORMNAME="" UNITNAME="JvBandsC6D" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvBandsC6R.bpi" FORMNAME="" UNITNAME="JvBandsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>

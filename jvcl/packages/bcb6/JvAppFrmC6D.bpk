@@ -15,7 +15,7 @@
       ..\..\run\JvWallpaperEditForm.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="rtl.lib"/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi designide.bpi CJCL60.bpi JvAppFrmC6R.bpi vcl.bpi vclx.bpi 
       JvStdCtrlsC6R.bpi"/>
     <PATHCPP value=".;"/>
