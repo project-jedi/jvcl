@@ -92,6 +92,7 @@ type
     FSpacing: Integer;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FConsumerSvc: TJvDataConsumer;
+    FNeedsResize:boolean;
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -132,6 +133,7 @@ type
     {$IFDEF VisualCLX}
     procedure SetAutoSize(Value: Boolean); virtual;
     {$ENDIF VisualCLX}
+    
     function GetDefaultFontColor: TColor; virtual;
     function GetLabelCaption: string; virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -180,6 +182,8 @@ type
     destructor Destroy; override;
     property Canvas;
     property MouseOver;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
   end;
 
   TJvLabel = class(TJvCustomLabel)
@@ -653,6 +657,7 @@ procedure TJvCustomLabel.Loaded;
 begin
   inherited Loaded;
   Provider.Loaded;
+  FNeedsResize := true;
   AdjustBounds;
 end;
 
@@ -663,7 +668,7 @@ var
   Rect: TRect;
   AAlignment: TAlignment;
 begin
-  if not (csReading in ComponentState) and AutoSize then
+  if not (csReading in ComponentState) and AutoSize and FNeedsResize then
   begin
     Rect := ClientRect;
     Inc(Rect.Left, FLeftMargin);
@@ -690,13 +695,15 @@ begin
     AAlignment := FAlignment;
     if UseRightToLeftAlignment then
       ChangeBiDiModeAlignment(AAlignment);
-    Rect.Bottom := Max(Rect.Bottom, Rect.Top + GetImageHeight);
+    if ImageIndex > -1 then
+      Rect.Bottom := Max(Rect.Bottom, Rect.Top + GetImageHeight);
     if (AAlignment = taRightJustify) and (Images = nil) then
       Inc(X, Width - Rect.Right);
     if Images <> nil then
       Dec(Rect.Left,GetImageWidth + Spacing);
     SetBounds(X, Top, Rect.Right, Rect.Bottom);
   end;
+  FNeedsResize := false;
 end;
 
 procedure TJvCustomLabel.SetAlignment(Value: TAlignment);
@@ -714,6 +721,7 @@ begin
   inherited SetAutoSize(Value);
   {$ENDIF VCL}
   FAutoSize := Value;
+  FNeedsResize := FAutoSize;
   AdjustBounds;
 end;
 
@@ -731,6 +739,7 @@ begin
   if FLeftMargin <> Value then
   begin
     FLeftMargin := Max(Value, 0);
+    FNeedsResize := true;
     AdjustBounds;
     Invalidate;
   end;
@@ -741,6 +750,7 @@ begin
   if FRightMargin <> Value then
   begin
     FRightMargin := Max(Value, 0);
+    FNeedsResize := true;
     AdjustBounds;
     Invalidate;
   end;
@@ -760,6 +770,7 @@ begin
   if Value <> FShadowSize then
   begin
     FShadowSize := Value;
+    FNeedsResize := true;
     AdjustBounds;
     Invalidate;
   end;
@@ -827,6 +838,7 @@ begin
   if FWordWrap <> Value then
   begin
     FWordWrap := Value;
+    FNeedsResize := true;
     AdjustBounds;
   end;
 end;
@@ -898,12 +910,14 @@ begin
   inherited TextChanged;
   NonProviderChange;
   Invalidate;
+  FNeedsResize := true;
   AdjustBounds;
 end;
 
 procedure TJvCustomLabel.FontChanged;
 begin
   inherited FontChanged;
+  FNeedsResize := true;
   AdjustBounds;
   UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
 end;
@@ -961,9 +975,12 @@ begin
   if FImageIndex <> Value then
   begin
     if Images <> nil then
+    begin
+      FNeedsResize := true;
       NonProviderChange;
+    end;
     FImageIndex := Value;
-    Invalidate;
+    if FNeedsResize then AdjustBounds else Invalidate;
   end;
 end;
 
@@ -983,7 +1000,13 @@ begin
       FImages.FreeNotification(self);
       FImages.RegisterChanges(FChangeLink);
     end;
-    if AutoSize then AdjustBounds else Invalidate;
+    if AutoSize then
+    begin
+      FNeedsResize := true;
+      AdjustBounds;
+    end
+    else
+      Invalidate;
   end;
 end;
 
@@ -1007,7 +1030,10 @@ procedure TJvCustomLabel.ConsumerServiceChanged(Sender: TJvDataConsumer;
   Reason: TJvDataConsumerChangeReason);
 begin
   if ProviderActive or (Reason = ccrProviderSelect) then
+  begin
+    FNeedsResize := true;
     AdjustBounds;
+  end;
 end;
 
 procedure TJvCustomLabel.NonProviderChange;
@@ -1061,8 +1087,8 @@ begin
   begin
     FAngle := Value;
     {$IFDEF VisualCLX}
-    if Autosize then
-      AdjustBounds;
+    FNeedsResize := Autosize;
+    AdjustBounds;
     {$ENDIF VisualCLX}
     Invalidate;
   end;
@@ -1078,7 +1104,12 @@ begin
   if FSpacing <> Value then
   begin
     FSpacing := Value;
-    if AutoSize then AdjustBounds else Invalidate;
+    if AutoSize then
+    begin
+      FNeedsResize := true;
+      AdjustBounds;
+    end
+    else Invalidate;
   end;
 end;
 
@@ -1091,6 +1122,12 @@ begin
   end;
 end;
 
+
+procedure TJvCustomLabel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  FNeedsResize := (ALeft <> Left) or (ATop <> Top) or (AWidth <> Width) or (AHeight <> Height);
+  inherited;
+end;
 
 end.
 
