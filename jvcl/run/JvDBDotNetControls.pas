@@ -26,7 +26,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$I JVCL.INC}
 unit JvDBDotNetControls;
-
+{$IFDEF DelphiPersonalEdition}
+interface
+implementation
+{$ELSE}
 interface
 uses
   Forms, Classes, Windows, Messages, Graphics, Controls, StdCtrls,
@@ -329,5 +332,5 @@ begin
   FOldWindowProc(Message);
   DotNetMessageHandler(Message, Self, Color, FHighlighted);
 end;
-
+{$ENDIF DelphiPersonalEdition}
 end.
