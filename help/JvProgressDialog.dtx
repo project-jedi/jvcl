@@ -1,4 +1,4 @@
-## Needs review (peter3)
+## Completed by Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@JvProgressDialog.pas
 <GROUP JVCL.FileRef>
@@ -11,7 +11,7 @@ Author
 @@TJvProgressDialog
 <TITLEIMG TJvProgressDialog>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Dialogs.Custom
   FLAG=Component
 Summary
   A component that can display a progress dialog either modally or non-modally.
@@ -32,7 +32,7 @@ Description
   <AUTOLINK ON>
   Because of the message loop being taken over by the dialog, the DoLengthyProcess method won't be called until
   the dialog is closed. When displaying the dialog modally, you must perform the processing
-  in the <LINK OnProgress,OnProgress> event instead.
+  in the OnProgress event instead.
 
   When displaying the dialog non-modally, you don't need to have an OnProgress event handler (actually, it isn't even
   called in this case). Instead you can update the components properties directly while performing the process.
@@ -60,7 +60,7 @@ Note
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressDialog.Cancelled
 Summary
-  Specifies if the user cancelled the dialog before the process completed.
+  Determines if the user cancelled the dialog before the process completed.
 Description
   After the dialog is closed, Cancelled is set to true if the user closed the dialog before the process completed.
   A user can only close the dialog if the ShowCancel property is true. When showing the dialog modally, you can
@@ -104,7 +104,7 @@ See Also
 Summary
   Specifies an image on the dialog.
 Description
-  Assign an image to this property to have it displayed in the dialog. TRhe form will automatically
+  Assign an image to this property to have it displayed in the dialog. The form will automatically
   adjust it's size to the image if it is larger than the default size of the dialog.
 
   The Image property can be changed while the dialog is shown, either directly (if the dialog was shown using Show)
@@ -128,10 +128,10 @@ See Also
 Summary
   Specifies the upper limit of the range of possible positions for the progress bar.
 Description
-  Use Max along with the Min property to establish the range of possible positions for the progress bar.
-  Optimally, when the process tracked by the progress bar is complete, the value of Position should equal Max.
+  Use \Max along with the Min property to establish the range of possible positions for the progress bar.
+  Optimally, when the process tracked by the progress bar is complete, the value of Position should equal \Max.
 
-  The Max property can be changed while the dialog is shown, either directly (if the dialog was shown using Show)
+  The \Max property can be changed while the dialog is shown, either directly (if the dialog was shown using Show)
   or in the OnProgress event (if the dialog was shown using ShowModal).
 See Also
   Min, Position, OnProgress, Show, ShowModal
@@ -140,10 +140,10 @@ See Also
 Summary
   Specifies the lower limit of the range of possible positions for the progress bar.
 Description
-  Use Max along with the Min property to establish the range of possible positions for the progress bar.
+  Use Max along with the \Min property to establish the range of possible positions for the progress bar.
   Optimally, when the process tracked by the progress bar is complete, the value of Position should equal Max.
 
-  The Min property can be changed while the dialog is shown, either directly (if the dialog was shown using Show)
+  The \Min property can be changed while the dialog is shown, either directly (if the dialog was shown using Show)
   or in the OnProgress event (if the dialog was shown using ShowModal).
 See Also
   Max, Position, OnProgress, Show, ShowModal
@@ -177,8 +177,8 @@ Description
   The time between calls to the OnProgress event is controlled by the Interval property.
   OnProgress is not triggered if the dialog was displayed using the Show method.
 Parameters
-  Sender    - the object that triggered the event.
-  AContinue - set to false to close the dialog, set to true to keep it open.
+  Sender    - The object that triggered the event.
+  AContinue - Set to false to close the dialog, set to true to keep it open.
 See Also
   ShowModal, Interval, Min, Max, Position, Text, Caption, Image
 ----------------------------------------------------------------------------------------------------
@@ -239,7 +239,7 @@ Description
 
   Use ShowModal when the process is performed in it's own thread or when the process is suitable to be performed
   in short intervals (like attempting to connect to a service). If the process is time-intensive and executed within
-  the main thread, consider using Show instead. 
+  the main thread, consider using Show instead.
 Return value
   Returns false if the user cancelled the dialog, true otherwise. Users can only cancel the dialog if the
   ShowCancel property is true.
