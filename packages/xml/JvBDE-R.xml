@@ -12,8 +12,8 @@
     <Package Name="JvStdCtrls-R" Targets="C5,C5s,C6,C6p,D7,D7p" Condition=""/>
     <Package Name="JvDB-R" Targets="allbutclx" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
-    <Package Name="vcldb50" Targets="C5" Condition=""/>
-    <Package Name="vclbde50" Targets="C5,D5" Condition=""/>
+    <Package Name="vcldb50" Targets="C5,C5s" Condition=""/>
+    <Package Name="vclbde50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
