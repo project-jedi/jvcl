@@ -78,6 +78,7 @@ type
     property FileName;
     property OutputMode;
     property Agent;
+    property Url;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;
@@ -121,6 +122,7 @@ type
     property FileName;
     property OutputMode;
     property Agent;
+    property Url;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;
@@ -180,6 +182,7 @@ type
     property FileName;
     property OutputMode;
     property Agent;
+    property Url;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;
