@@ -1,0 +1,4 @@
+[Directories]
+UnitOutputDir=..\..\..\..\Lib7
+SearchPath=..\..\source;..\..\..\..\visual\source
+
