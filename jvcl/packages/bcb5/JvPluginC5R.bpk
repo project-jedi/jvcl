@@ -26,7 +26,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvPluginC5R.cpp"/>
     <INCLUDEPATH value="..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\run;..\..\dcu;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;$(PATH)"/>
+    <LIBPATH value="..\..\run;..\..\dcu;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>

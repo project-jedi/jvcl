@@ -29,7 +29,7 @@
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value=""/>
+    <SPARELIBS value="Vcl50.lib"/>
     <PACKAGES value="JvCoreC5R.bpi CJCL50.bpi vcl50.bpi vclx50.bpi vcljpg50.bpi bcbsmp50.bpi 
       bcbie50.bpi"/>
     <PATHCPP value=".;"/>
@@ -43,7 +43,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvSystemC5R.cpp"/>
     <INCLUDEPATH value="..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\common;..\..\run;..\..\dcu;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;$(PATH)"/>
+    <LIBPATH value="..\..\..\..\libraries\bcb5\libs;..\..\common;..\..\run;..\..\dcu;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
@@ -55,8 +55,7 @@
       -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL System Runtime Package&quot; -aa 
-      -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL System Runtime Package&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>

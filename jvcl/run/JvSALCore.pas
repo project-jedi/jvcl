@@ -111,7 +111,9 @@ type
 implementation
 
 {$IFDEF BCB}
+{$IFNDEF BCB5}
 uses Variants;
+{$ENDIF}
 {$ENDIF}
 
 resourcestring

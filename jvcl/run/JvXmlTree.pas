@@ -187,7 +187,9 @@ implementation
 
 uses
   {$IFDEF BCB}
+  {$IFNDEF BCB5}
   Variants,
+  {$ENDIF}
   {$ENDIF}
   JvTypes;
 
@@ -1701,3 +1703,6 @@ begin
 end;
 
 end.
+
+
+
