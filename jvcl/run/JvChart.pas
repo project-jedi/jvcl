@@ -1274,6 +1274,9 @@ begin
   // refuse to refresh under these conditions:
   if not (Enabled and Visible) then exit;
 
+   xOrigin := Options.XOrigin;
+   yOrigin := Options.YOrigin;
+
   // safety before we paint.
   Assert(Assigned(Options));
   Assert(Assigned(Data));
