@@ -768,7 +768,7 @@ end;
 procedure TJvSimpleXmlElem.Clear;
 begin
   if FItems<>nil then
-    Items.Clear;
+    FItems.Clear;
   if FProps<>nil then
     Properties.Clear;
 end;
@@ -914,7 +914,7 @@ end;
 function TJvSimpleXmlElems.Add(const Name: string): TJvSimpleXmlElem;
 begin
   result := TJvSimpleXmlElem.Create(Parent);
-  result.FName := Name; //Directly set parent to avoid notification
+  result.FName := Name; //Directly set parent to avoid notification 
   AddChild(result);
 end;
 {*************************************************}
@@ -938,7 +938,7 @@ function TJvSimpleXmlElems.Add(Value: TJvSimpleXmlElem): TJvSimpleXmlElem;
 begin
   if Value<>nil then
     AddChild(Value);
-  result := @Value;
+  result := Value;
 end;
 {*************************************************}
 
@@ -1141,7 +1141,7 @@ begin
     FProperties := THashedStringList.Create;
   Elem := TJvSimpleXmlProp.Create();
   FProperties.AddObject(Name,Elem);
-  Elem.FName := Name; //Avoid notification
+  Elem.FName := Name; //Avoid notification 
   Elem.Value := Value;
   Elem.Parent := self;
 end;
