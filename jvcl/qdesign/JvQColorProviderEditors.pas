@@ -39,7 +39,7 @@ uses
   DesignIntf, DesignEditors, DesignMenus,
   
   
-  {ClxEditors,} QConsts,
+  ClxEditors, QConsts,
   
   
   Classes,
@@ -107,7 +107,7 @@ begin
     begin
       I := IndexOfMappingName(Value);
       if I < 0 then
-        raise EPropertyError.Create(RsEMappingDoesNotExistForThisColorProv);
+        raise EPropertyError.CreateRes(@RsEMappingDoesNotExistForThisColorProv);
       SetOrdValue(I);
     end;
   end;
@@ -154,7 +154,7 @@ begin
     if I > -1 then
       SetOrdValue(I)
     else
-      raise EPropertyError.Create(RsEInvalidPropertyValue);
+      raise EPropertyError.CreateRes(@RsEInvalidPropertyValue);
   end;
 end;
 

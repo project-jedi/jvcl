@@ -44,7 +44,7 @@ uses
   QMenus, QActnList, QComCtrls, QImgList,
   DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows,
   
-  JvQOutlookBar;
+  JvQOutlookBar, QTypes, QExtCtrls;
 
 type
   

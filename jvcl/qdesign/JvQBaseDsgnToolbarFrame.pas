@@ -107,15 +107,18 @@ procedure TfmeJvBaseToolbarDesign.StoreSettings;
 begin
   if RegKey <> '' then
     {$IFDEF LINUX}
-    with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+    with TIniFile.Create(GetEnvironmentVariable('HOME')+ '/.borland/.borlandrc') do
+      try
+        WriteBool(RegKey, cLargeButton, aiTextLabels.Checked);
+          WriteBool(RegKey, cToolbar, aiShowToolbar.Checked);
+      finally
+        Free;
+      end;
     {$ENDIF LINUX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do
-    {$ENDIF MSWINDOWS}
     try
-      {$IFDEF MSWINDOWS}
       LazyWrite := False;
-      {$ENDIF MSWINDOWS}
       if OpenKey(RegKey, True) then
         try
           WriteBool(cLargeButton, aiTextLabels.Checked);
@@ -126,17 +129,24 @@ begin
     finally
       Free;
     end;
+   {$ENDIF MSWINDOWS}
 end;
 
 procedure TfmeJvBaseToolbarDesign.RestoreSettings;
 begin
   if RegKey <> '' then
     {$IFDEF LINUX}
-    with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+    with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + '/.borland/.borlandrc') do
+    try
+      if SectionExists(RegKey) then
+          EnableLargeButtons(not ValueExists(RegKey, cLargeButton) or ReadBool(RegKey, cLargeButton, false));
+          ShowToolbar(not ValueExists(RegKey, cToolbar) or ReadBool(RegKey, cToolbar, false));
+    finally
+      Free;
+    end;
     {$ENDIF LINUX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do
-    {$ENDIF MSWINDOWS}
     try
       if OpenKey(RegKey, False) then
         try
@@ -148,6 +158,7 @@ begin
     finally
       Free;
     end;
+    {$ENDIF MSWINDOWS}
 end;
 
 procedure TfmeJvBaseToolbarDesign.UpdateToolbarSeparators;

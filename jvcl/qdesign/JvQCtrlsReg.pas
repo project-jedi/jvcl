@@ -38,29 +38,31 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-  
-  
-  QControls, QImgList, QActnList, QTypes,
-  
+  Classes, Controls, ImgList, ActnList,
   
   DesignEditors, DesignIntf,
   
+  JvDsgnConsts,
   
-  JvQDsgnConsts,
+  {$IFDEF MSWINDOWS}
+  JvUninstallControls,
+  {$ENDIF MSWINDOWS}
+  JvDsgnIntf,
+  
+  QTypes,
+  
   JvQZoom, JvQBehaviorLabel, JvQArrowButton,
   JvQaScrollText, JvQClock, JvQContentScroller, JvQColorBox,
-  JvQColorButton, JvQDice,  JvQFooter, JvQGroupHeader, JvQHint,
-  JvQHtControls, JvQItemsPanel, 
+  JvQColorButton, JvQDice, JvQFooter, JvQGroupHeader, JvQHint,
+  JvQHtControls, JvQInstallLabel, JvQItemsPanel,
   JvQRollOut, JvQScrollPanel, JvQScrollText, JvQSpacer,
-  JvQSpeedBar, JvQSplitter, JvQSwitch,
-  JvQTransparentButton, JvQSpeedbarSetupForm, JvQColorForm, JvQDsgnIntf,
-  JvQImageDrawThread, JvQWinampLabel, JvQComponentPanel, JvQButtons,
-  JvQCaptionPanel, JvQScrollMax, JvQMovableBevel,
-  JvQOfficeColorButton, JvQOfficeColorPanel,
-  JvQNetscapeSplitter, JvQScrollMaxEditor, JvQBehaviorLabelEditor,
-  JvQGroupHeaderEditor, JvQFooterEditor, JvQSpeedbarForm, JvQDsgnEditors,
-  JvQTransparentButtonEditors, JvQRollOutEditor;
+  JvQSpeedBar, JvQSpeedbarSetupForm, JvQSwitch, {JvQSplit,} JvQSplitter, {JvQSyncSplitter,}
+  JvQTransparentButton, JvQColorForm, JvQImageDrawThread, JvQWinampLabel,
+  JvQComponentPanel, JvQButtons, JvQCaptionPanel, JvQScrollMax, JvQMovableBevel,
+  {JvQComboListBox, JvQCharMap,} JvQOfficeColorButton, JvQOfficeColorPanel,
+  JvQNetscapeSplitter,
+  JvQDsgnEditors, JvQScrollMaxEditor, JvQBehaviorLabelEditor, JvQGroupHeaderEditor,
+  JvQFooterEditor, JvQSpeedbarForm, JvQTransparentButtonEditors, JvQRollOutEditor;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCtrlsReg.dcr}
@@ -71,42 +73,39 @@ uses
 
 procedure Register;
 begin
-  
+
   GroupDescendentsWith(TJvHint, TControl);
-  
+
 
   RegisterComponents(RsPaletteButton, [TJvTransparentButton,
     TJvTransparentButton2, TJvArrowButton,
-    
-    TJvColorButton, TJvOfficeColorButton, TJvOfficeColorPanel,
-    TJvHTButton, TJvSpacer]);
+
+    TJvColorButton,  TJvOfficeColorButton, TJvOfficeColorPanel,
+    TJvHTButton, TJvSpacer, TJvSwitch]);
   RegisterComponents(RsPaletteBarPanel, [TJvSpeedBar, TJvCaptionPanel,
     TJvItemsPanel, TJvMovableBevel, TJvRollOut, TJvFooter, TJvGroupHeader,
     TJvComponentPanel]);
-  RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel,
-    
+  RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
     TJvHTLabel, TJvWinampLabel]);
 
-  RegisterComponents(RsPaletteListComboTree, [
-    
-    TJvHTListBox, TJvHTComboBox
-    
-    ]);
+
+  {$IFDEF MSWINDOWS}
+//  RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
+  {$ENDIF MSWINDOWS}
+
 
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
-    TJvContentScroller, 
-    
+    TJvContentScroller,
+
     TJvScrollingWindow, TJvScrollText]);
-  RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter,
-    
-    TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom
-    ]);
+  RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, {TJvxSplitter,
+    TJvSyncSplitter,} TJvNetscapeSplitter]);
+  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice{, TJvCharMap}]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint {, TJvRegAuto}]);
-  RegisterComponents(RsPaletteHMIComponents, [TJvDice, TJvSwitch]);
+
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TJvLabelBehaviorName), TJvBehaviorLabel, 'Behavior', TJvLabelBehaviorProperty);
-  
+//  RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
   // RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
   // RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
@@ -121,7 +120,7 @@ begin
   RegisterComponentEditor(TJvRollOut, TJvRollOutDefaultEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
   RegisterComponentEditor(TJvFooter, TJvFooterEditor);
-  
+
   RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
   // RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
 

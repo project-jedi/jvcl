@@ -40,7 +40,7 @@ interface
 uses
   
   
-  QWindows, QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
+  QWindows, QForms, QControls, QGraphics, QExtCtrls, QDialogs,
   QExtDlgs, QMenus, QStdCtrls, QImgList, Types,
   
   DsnConst,

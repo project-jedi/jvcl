@@ -51,6 +51,7 @@ begin
   GroupDescendentsWith(TJvForthScript, TControl);
   GroupDescendentsWith(TJvTurtle, TControl);
   GroupDescendentsWith(TJvSimPIDLinker, TControl);
+  GroupDescendentsWith(TJvSpeller, TControl);
   
 
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
