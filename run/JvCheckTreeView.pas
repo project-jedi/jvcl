@@ -74,8 +74,8 @@ type
   TJvCheckTreeView = class(TJvTreeView)
   private
     FCheckBoxOptions: TJvTreeViewCheckBoxOptions;
-    FOnToggled: TTvChangedEvent;
-    FOnToggling: TTvChangingEvent;
+    FOnToggled: TTVChangedEvent;
+    FOnToggling: TTVChangingEvent;
     function GetCheckBox(Node: TTreeNode): boolean;
     function GetChecked(Node: TTreeNode): boolean;
     function GetRadioItem(Node: TTreeNode): boolean;
@@ -105,10 +105,10 @@ type
     property CheckBoxOptions: TJvTreeViewCheckBoxOptions read FCheckBoxOptions write SetCheckBoxOptions;
     // called just before a node is to be toggled
     // NB! If you have activated propagation, this event will be called for *all* nodes affected by the propagation
-    property OnToggling:TTvChangingEvent read FOnToggling write FOnToggling;
+    property OnToggling: TTVChangingEvent read FOnToggling write FOnToggling;
     // called just after a node has been toggled
     // NB! If you have activated propagation, this event will be called for *all* nodes affected by the propagation
-    property OnToggled:TTvChangedEvent read FOnToggled write FOnToggled;
+    property OnToggled: TTVChangedEvent read FOnToggled write FOnToggled;
   end;
 
 implementation
