@@ -382,6 +382,14 @@ implementation
 
 uses Wininet;
 
+{$IFNDEF COMPILER6_UP}
+const
+  winetdll = 'wininet.dll';
+
+function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
+  external winetdll name 'FtpGetFileSize';
+{$ENDIF}
+
 var
   // the global object to contain the list of registered
   // url grabber classes

@@ -38,7 +38,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  JvJVCLUtils;
+  JvTypes, JvJVCLUtils;
 
 // === TJvColorProperty ======================================================
 type
