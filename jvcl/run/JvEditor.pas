@@ -88,6 +88,7 @@ type
     { events }
     FOnGetLineAttr: TJvGetLineAttrEvent;
     FOnCompletionApply: TOnCompletionApply;
+    
     {$IFDEF VCL}
     procedure WMGetText(var Msg: TWMGetText); message WM_GETTEXT;
     {$ENDIF VCL}
@@ -103,7 +104,7 @@ type
 
     function GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; override;
     function GetAnsiWordOnCaret: AnsiString; override;
-    
+
     procedure ReLine; override;
     function GetTabStop(X, Y: Integer; Next: Boolean): Integer; override;
     function GetBackStop(X, Y: Integer): Integer; override;
@@ -593,7 +594,7 @@ begin
 
   // line is too small -> expand it with spaces
   Len := Length(BegLine);
-  if (Len < X) then
+  if Len < X then
   begin
     SetLength(BegLine, X - 1);
     FillChar(BegLine[Len + 1], X - Len - 1, ' ');
@@ -749,11 +750,19 @@ var
   R: TRect;
   S: string;
   LA: TLineAttr;
-  jCStart: Integer;
+  jCStart, Len: Integer;
+  MyDi: TDynIntArray;
 begin
   with EditorClient do
   begin
     S := FLines[Line];
+
+    Len := Max(Length(S), Max_X) + 1;
+    if Len > Length(LineAttrs) then
+      SetLength(LineAttrs, Len)
+    else if Len + 128 < Length(LineAttrs) then
+      SetLength(LineAttrs, Len);
+
     GetLineAttr(S, Line, ColBeg, ColEnd);
 
     {left line}
@@ -765,6 +774,15 @@ begin
     {optimized, paint group of chars with identical attributes}
     SL := Length(S);
     MX := ColEnd;
+
+    if Length(FMyDi) < MX then
+    begin
+      SetLength(MyDi, MX);
+      for iC := 0 to High(MyDi) do
+        MyDi[iC] := CellRect.Width;
+     end
+    else
+      MyDi := FMyDi;
 
     while ColPainted < MX do
     begin
@@ -793,7 +811,7 @@ begin
         {bottom line}
         FillRect(Bounds(R.Left, R.Bottom - 1, CellRect.Width * Length(Ch), 1));
 
-        TJvUnicodeCanvas(Canvas).ExtTextOut(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @FMyDi[0]);
+        TJvUnicodeCanvas(Canvas).ExtTextOut(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @MyDi[0]);
 
         if LA.Border <> clNone then
         begin
@@ -933,7 +951,7 @@ begin
             FLines.Internal[Y] := Copy(FLines[Y], 1, X);
             Inc(Y);
             { auto indent }
-            if (AutoIndent) and
+            if AutoIndent and
               (((Length(FLines[CaretY]) > 0) and
               (FLines[CaretY][1] = ' ')) or
               ((Trim(FLines[CaretY]) = '') and (X > 0))) then
@@ -1037,13 +1055,9 @@ end;
 
 function TJvCustomEditor.DoCommand(ACommand: TEditCommand; var X, Y: Integer;
   var CaretUndo: Boolean): Boolean;
+
 type
   TPr = procedure of object;
-var
-  F: Integer;
-  S, S2: string;
-  B: Boolean;
-  iBeg, iEnd: Integer;
 
   procedure DoAndCorrectXY(Pr: TPr);
   begin
@@ -1065,6 +1079,11 @@ var
     CaretUndo := False;
   end;
 
+var
+  F: Integer;
+  S, S2: string;
+  B: Boolean;
+  iBeg, iEnd: Integer;
 begin
   Result := True;
   X := CaretX;
@@ -1254,7 +1273,7 @@ begin
         finally
           UnlockUpdate;
         end;
-        if (not PersistentBlocks) and (FSelection.IsSelected) then
+        if not PersistentBlocks and FSelection.IsSelected then
           DoAndCorrectXY(RemoveSelectedBlock)
         else
         if X < Length(FLines[Y]) then
@@ -1300,7 +1319,7 @@ begin
         if not ReadOnly then
         begin
           if FSelection.IsSelected then
-            if (ACommand = ecTab) and (InsertMode) then
+            if (ACommand = ecTab) and InsertMode then
               DeleteSelected;
           ReLine;
           if (ACommand = ecTab) and InsertMode then
@@ -1571,7 +1590,7 @@ begin
     S := FLines[CaretY];
 
   W := Trim(GetWordOnPosEx(S, CaretX + 1, iBegSX, iEndSX));
-  if (W <> NewString) then
+  if W <> NewString then
   begin
     PaintCaret(False);
     try
@@ -1725,7 +1744,7 @@ begin
       try
         if IsSelected then
         begin
-          if (BlockOverwrite and not PersistentBlocks) then
+          if BlockOverwrite and not PersistentBlocks then
           begin
             X := SelBegX;
             Y := SelBegY;
@@ -1992,7 +2011,7 @@ var
           FTabPos[Length(S)] := True;
         while I <= Length(S) do
         begin
-          if (S[I] in IdentifierSymbols) then
+          if S[I] in IdentifierSymbols then
           begin
             FTabPos[I - 1] := True;
             while (I <= Length(S)) and (S[I] in IdentifierSymbols) do
@@ -2021,7 +2040,7 @@ begin
         Result := I;
         Exit;
       end;
-    if (Result = X) then
+    if Result = X then
       Result := GetDefTabStop(X, True);
   end
   else
