@@ -73,7 +73,9 @@ type
     procedure SetClickable(const Value: Boolean);
     procedure SetOrientation(const Value: TJvPanelOrientation);
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL}{$IFDEF COMPILER6_UP} override;{$ENDIF}{$ENDIF}
+    {$IFDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL}override;{$ENDIF}
+    {$ENDIF COMPILER6_UP}
     {$IFDEF VisualCLX}
     procedure AdjustSize; override;
     {$ENDIF VisualCLX}
@@ -278,6 +280,7 @@ begin
   end;
 end;
 
+{$IFDEF COMPILER6_UP}
 procedure TJvItemsPanel.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
@@ -293,6 +296,7 @@ begin
     Grow;
   end;
 end;
+{$ENDIF COMPILER6_UP}
 
 procedure TJvItemsPanel.SetItemHeight(const Value: Integer);
 begin
