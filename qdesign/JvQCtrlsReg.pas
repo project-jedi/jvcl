@@ -34,6 +34,11 @@ unit JvQCtrlsReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
+
 procedure Register;
 
 implementation

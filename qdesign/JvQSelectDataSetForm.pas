@@ -36,11 +36,11 @@ interface
 {$IFNDEF DelphiPersonalEdition}
 
 uses
-  Windows, SysUtils, Classes, QControls, QForms, DB, StdCtrls,
+  Windows, SysUtils, Classes, QControls, QForms, DB, QStdCtrls,
 
   RTLConsts, DesignIntf, DesignEditors,
 
-  JvQDsgnTypes, QStdCtrls, QControls;
+  JvQDsgnTypes;
 
 type
   TJvSelectDataSetForm = class(TForm)
@@ -67,7 +67,7 @@ implementation
 
 uses
   TypInfo,
-  DsnDbCst, DSDesign,
+  DsnDbCst, {DSDesign,}
   JvQJVCLUtils, JvQConsts;
 
 

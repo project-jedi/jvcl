@@ -4200,11 +4200,12 @@ begin
   begin
     filenameonly := FileName;
     GetDir(0, BackupFolder);
-    BackupFolder := BackupFolder + '\';
+    BackupFolder := BackupFolder + PathDelim;
   end;
-  BackupFolder := BackupFolder + 'Backup\';
+  BackupFolder := BackupFolder + 'Backup' + PathDelim;
   if not DirectoryExists(BackupFolder) then
-    CreateDirectory(PChar(BackupFolder), nil);
+    ForceDirectories(BackupFolder);
+
 
   found := False;
   for t := 0 to MaxFiles - 1 do
