@@ -14,6 +14,8 @@ type
     FAuthor: string;
     FSeeAlsoAsString: string;
     FParameters: string;
+    FPreText: string;
+    FJVCLInfo: string;
   public
     constructor Create(slist : TStringList; var curLineIndex : Integer);
     destructor Destroy; override;
@@ -27,6 +29,8 @@ type
     property ReturnValue : string read FReturnValue write FReturnValue;
     property SeeAlsoAsString : string read FSeeAlsoAsString write FSeeAlsoAsString;
     property Parameters : string read FParameters write FParameters;
+    property PreText : string read FPreText write FPreText;
+    property JVCLInfo : string read FJVCLInfo write FJVCLInfo; 
   end;
 
   TFileItemList = class(TObjectList)
@@ -48,6 +52,17 @@ constructor TFileItem.Create(slist: TStringList;
 var
   curLine : string;
   curValue : ^string;
+
+  function NeedBreak(str : string) : Boolean;
+  begin
+    Result := (Length(curLine) > 0) and
+              (((trim(curLine)[1] = '<') and (curLine[Length(curLine)] = '>')) or
+               (curLine[Length(curLine)] = '.') or
+               (curLine[Length(curLine)] = ':') or
+               (Length(curLine) < 40) or
+               (trim(curLine) = #13#10) );
+  end;
+  
 begin
   inherited Create;
 
@@ -71,24 +86,39 @@ begin
       curValue := @FSeeAlsoAsString
     else if AnsiCompareText(curLine, 'Parameters') = 0 then
       curValue := @FParameters
+    else if AnsiCompareText(curLine, 'JVCLInfo') = 0 then
+      curValue := @FJVCLInfo
     else if (curValue <> nil) and not StrHasPrefix(curLine, ['----------']) then
     begin
+      if Copy(curLine, 1, 2) = '  ' then
+        curLine := Copy(curLine, 3, Length(curLine))
+      else
+        curLine := curLine;
+
       if curValue^ = '' then
       begin
-        if Copy(curLine, 1, 2) = '  ' then
-          curValue^ := Copy(curLine, 3, Length(curLine))
+        if NeedBreak(curLine) then
+          curValue^ := curLine + #13#10
         else
           curValue^ := curLine;
       end
       else
       begin
-        if Copy(curLine, 1, 2) = '  ' then
-          curValue^ := curValue^ + ' ' + Copy(curLine, 3, Length(curLine))
+        if NeedBreak(curLine) then
+        begin
+          if Copy(curValue^, Length(curValue^)-1, 2) = #13#10 then
+            curValue^ := curValue^ + curLine + #13#10
+          else
+            curValue^ := curValue^ + ' ' + curLine + #13#10;
+        end
         else
-          curValue^ := curValue^ + #13#10 + curLine;
+          curValue^ := curValue^ + ' ' + curLine;
       end;
     end;
 
+    if curValue = nil then
+      curValue := @FPreText;
+      
     Inc(curLineIndex)
   until (curLineIndex >= slist.count) or StrHasPrefix(trim(slist[curLineIndex]), ['@@']);
   // go back one line
@@ -102,40 +132,58 @@ begin
 end;
 
 function TFileItem.GetRawText: string;
+  function FormattedOutput(str : string) : string;
+  begin
+    StrReplace(str, #13#10, #13#10'  ', [rfReplaceAll]);
+//    str := TrimRight(str);
+    Result := '  ' + WrapText(str, #13#10'  ', [' ', #9, '-'], 100) + #13#10;
+  end;
 begin
   Result := '----------------------------------------------------------------------------------------------------'#13#10;
-  Result := '@@' + FName + #13#10;
-  Result := Result + 'Summary'#13#10;
-  Result := Result + '  ' + WrapText(FSummary, #13#10'  ', [' ', #9, '-'], 100) + #13#10;
+  Result := Result + '@@' + FName + #13#10;
+  if FPreText <> '' then
+    Result := Result + FPreText + #13#10;
+    
+  if FJVCLInfo <> '' then
+  begin
+    Result := Result + 'JVCLInfo'#13#10;
+    Result := Result + FormattedOutput(FJVCLInfo);
+  end;
+
+  if FSummary <> '' then
+  begin
+    Result := Result + 'Summary'#13#10;
+    Result := Result + FormattedOutput(FSummary);
+  end;
 
   if FAuthor <> '' then
   begin
     Result := Result + 'Author'#13#10;
-    Result := Result + '  ' + WrapText(FAuthor, #13#10'  ', [' ', #9, '-'], 100) + #13#10;
+    Result := Result + FormattedOutput(FAuthor);
   end;
 
   if FDescription <> '' then
   begin
     Result := Result + 'Description'#13#10;
-    Result := Result + '  ' + WrapText(FDescription, #13#10'  ', [' ', #9, '-'], 100) + #13#10;
+    Result := Result + FormattedOutput(FDescription);
   end;
 
   if FParameters <> '' then
   begin
     Result := Result + 'Parameters'#13#10;
-    Result := Result + '  ' + WrapText(FParameters, #13#10'  ', [' ', #9, '-'], 100) + #13#10;
+    Result := Result + FormattedOutput(FParameters);
   end;
 
   if FReturnValue <> '' then
   begin
     Result := Result + 'Return value'#13#10;
-    Result := Result + '  ' + WrapText(FReturnValue, #13#10'  ', [' ', #9, '-'], 100) + #13#10;
+    Result := Result + FormattedOutput(FReturnValue);
   end;
 
   if FSeeAlsoAsString <> '' then
   begin
     Result := Result + 'See Also'#13#10;
-    Result := Result + '  ' + WrapText(FSeeAlsoAsString, #13#10'  ', [' ', #9, '-'], 100) + #13#10;
+    Result := Result + FormattedOutput(FSeeAlsoAsString);
   end;
 end;
 

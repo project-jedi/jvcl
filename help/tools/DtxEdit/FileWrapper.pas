@@ -10,10 +10,15 @@ type
     FStatus: string;
     FPackage: string;
     FItems: TFileItemList;
+
   protected
+    FFileName : string;
   public
     constructor Create(FileName : string);
     destructor Destroy; override;
+
+    procedure Save;
+    procedure SaveAs(FileName : string);
 
     property Package : string read FPackage write FPackage;
     property Status : string read FStatus write FStatus;
@@ -35,6 +40,8 @@ var
   curLineIndex : Integer;
 begin
   inherited Create;
+
+  FFileName := FileName;
 
   FItems := TFileItemList.Create; 
 
@@ -78,6 +85,38 @@ begin
   FItems.Free;
   
   inherited;
+end;
+
+procedure TFileWrapper.Save;
+var
+  dtx : TFileStream;
+  sstr : TStringStream;
+  content : string;
+  i : Integer;
+begin
+  dtx := TFileStream.Create(FFileName, fmCreate);
+  content := '##Package: ' + FPackage + #13#10;
+  content := content + '##Status: ' + FStatus + #13#10;
+
+  for i := 0 to FItems.Count-1 do
+  begin
+    content := content + FItems[i].GetRawText;
+  end;
+
+  sstr := TStringStream.Create(content);
+  dtx.CopyFrom(sstr, sstr.Size);
+  sstr.Free;
+  dtx.Free;
+end;
+
+procedure TFileWrapper.SaveAs(FileName: string);
+var
+  savedFileName : string;
+begin
+  savedFileName := FFileName;
+  FFileName := FileName;
+  Save;
+  FFileName := savedFileName;
 end;
 
 end.
