@@ -11,12 +11,13 @@
       ..\..\dcu\JvMouseGesture.obj ..\..\dcu\JvPageManager.obj 
       ..\..\dcu\JvPatchFile.obj ..\..\dcu\JvPrint.obj 
       ..\..\dcu\JvProfilerForm.obj ..\..\dcu\JvStringHolder.obj 
-      ..\..\dcu\JvTimeLimit.obj ..\..\dcu\JvTranslator.obj"/>
+      ..\..\dcu\JvTimeLimit.obj ..\..\dcu\JvTranslator.obj ..\..\dcu\JvLogFile.obj
+      ..\..\dcu\JvLogForm.obj"/>
     <RESFILES value="JvCmpC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
-    <RESDEPEN value="$(RESFILES) ..\..\run\JvProfilerForm.dfm"/>
+    <RESDEPEN value="$(RESFILES) ..\..\run\JvProfilerForm.dfm ..\..\run\JvLogForm.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
@@ -66,6 +67,8 @@
       <FILE FILENAME="..\..\run\JvDataEmbedded.pas" FORMNAME="" UNITNAME="JvDataEmbedded" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvEasterEgg.pas" FORMNAME="" UNITNAME="JvEasterEgg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvEnterTab.pas" FORMNAME="" UNITNAME="JvEnterTab" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvLogFile.pas" FORMNAME="" UNITNAME="JvLogFile" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvLogForm.pas" FORMNAME="FoLog" UNITNAME="JvLogForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvMergeManager.pas" FORMNAME="" UNITNAME="JvMergeManager" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvMouseGesture.pas" FORMNAME="" UNITNAME="JvMouseGesture" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvPageManager.pas" FORMNAME="" UNITNAME="JvPageManager" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

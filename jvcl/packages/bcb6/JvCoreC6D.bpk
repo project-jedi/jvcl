@@ -17,7 +17,8 @@
       ..\..\dcu\JvDataConsumerContextSelectForm.obj 
       ..\..\dcu\JvDataConsumerItemSelectForm.obj 
       ..\..\dcu\JvDataProviderDesignerForm.obj ..\..\dcu\JvDateTimeForm.obj 
-      ..\..\dcu\JvStdToolbarDsgnFrame.obj ..\..\dcu\JvColorProviderEditors.obj"/>
+      ..\..\dcu\JvStdToolbarDsgnFrame.obj ..\..\dcu\JvColorProviderEditors.obj
+       ..\..\dcu\JvColorProviderDesignerForm.obj"/>
     <RESFILES value="JvCoreC6D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -95,6 +96,7 @@
       <FILE FILENAME="..\..\design\JvDateTimeForm.pas" FORMNAME="frmSelectDateTimeDlg" UNITNAME="JvDateTimeForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvStdToolbarDsgnFrame.pas" FORMNAME="fmeJvStdToolbarDesign" UNITNAME="JvStdToolbarDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvColorProviderEditors.pas" FORMNAME="" UNITNAME="JvColorProviderEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvColorProviderDesignerForm.pas" FORMNAME="" UNITNAME="JvColorProviderDesignerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
