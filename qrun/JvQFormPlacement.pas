@@ -249,7 +249,7 @@ type
 implementation
 
 uses
-  Consts,
+  QConsts,
   JvQJCLUtils, JvQPropertyStorage;
 
 const
@@ -560,7 +560,7 @@ begin
   begin
     if Options <> [fpActiveControl] then
     begin
-      JvJVCLUtils.InternalSaveFormPlacement(Form, AppStorage, AppStoragePath, Options);
+      JvQJVCLUtils.InternalSaveFormPlacement(Form, AppStorage, AppStoragePath, Options);
       AppStorage.WriteInteger(AppStoragePath + siVisible, Ord(FDestroying));
       if (fpActiveControl in Options) and (Form.ActiveControl <> nil) then
         AppStorage.WriteString(AppStoragePath + siActiveCtrl, Form.ActiveControl.Name);
@@ -573,7 +573,7 @@ procedure TJvFormPlacement.RestorePlacement;
 begin
   if Owner is TCustomForm then
   begin
-    JvJVCLUtils.InternalRestoreFormPlacement(Form, AppStorage, AppStoragePath, Options);
+    JvQJVCLUtils.InternalRestoreFormPlacement(Form, AppStorage, AppStoragePath, Options);
   end;
   NotifyLinks(poRestore);
 end;
