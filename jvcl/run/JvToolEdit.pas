@@ -26,6 +26,7 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  (rb) Move button related functionality from TJvCustomComboEdit to TJvEditButton
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
@@ -103,13 +104,17 @@ type
     FNoAction: Boolean;
     {$IFDEF VCL}
     procedure WMContextMenu(var Msg: TWMContextMenu); message WM_CONTEXTMENU;
+    function GetGlyph: TBitmap;
+    function GetNumGlyphs: TJvNumGlyphs;
+    procedure SetGlyph(const Value: TBitmap);
+    procedure SetNumGlyphs(Value: TJvNumGlyphs);
+    function GetUseGlyph: Boolean;
     {$ENDIF VCL}
   protected
     {$IFDEF JVCLThemesEnabled}
     FDrawThemedDropDownBtn: Boolean;
     {$ENDIF JVCLThemesEnabled}
     FStandard: Boolean; // Polaris
-    FDrawGlyph: Boolean;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
@@ -118,6 +123,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
+
+    property UseGlyph: Boolean read GetUseGlyph;// write FDrawGlyph;
+    property Glyph: TBitmap read GetGlyph write SetGlyph;
+    property NumGlyphs: TJvNumGlyphs read GetNumGlyphs write SetNumGlyphs;
   end;
 
   TGlyphKind = (gkCustom, gkDefault, gkDropDown, gkEllipsis);
@@ -160,8 +169,6 @@ type
     FAlwaysEnable: Boolean;
     FAlignment: TAlignment;
     FPopupAlign: TPopupAlign;
-    { (rb) Only used for backwards compatibility; eventually remove: }
-    FGlyph: TBitmap;
     FGroupIndex: Integer; // RDB
     FDisabledColor: TColor; // RDB
     FDisabledTextColor: TColor; // RDB
@@ -169,6 +176,7 @@ type
     FImages: TCustomImageList;
     FImageIndex: TImageIndex;
     FImageKind: TJvImageKind;
+    FNumGlyphs: Integer;
     FStreamedButtonWidth: Integer;
     function BtnWidthStored: Boolean;
     function GetButtonFlat: Boolean;
@@ -182,21 +190,21 @@ type
     function GetPopupVisible: Boolean;
     function GetTextHeight: Integer;
     function IsImageIndexStored: Boolean;
+    function IsCustomGlyph: Boolean;
     procedure EditButtonClick(Sender: TObject);
     procedure ReadGlyphKind(Reader: TReader);
-    procedure ReadNumGlyphs(Reader: TReader);
     procedure RecreateGlyph;
     procedure SetAlignment(Value: TAlignment);
     procedure SetButtonFlat(const Value: Boolean);
     procedure SetButtonHint(const Value: string);
     procedure SetButtonWidth(Value: Integer);
-    procedure SetEditRect; 
+    procedure SetEditRect;
     procedure SetGlyph(Value: TBitmap);
     procedure SetGlyphKind(Value: TGlyphKind);
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetImageKind(const Value: TJvImageKind);
     procedure SetImages(const Value: TCustomImageList);
-    procedure SetNumGlyphs(Value: TNumGlyphs);
+    procedure SetNumGlyphs(const Value: TNumGlyphs);
     procedure UpdateBtnBounds;
     procedure UpdateEdit; // RDB
 
@@ -283,9 +291,11 @@ type
     property DirectInput: Boolean read GetDirectInput write SetDirectInput default True;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow; // RDB
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText; // RDB
+    property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex stored IsImageIndexStored default -1;
     property ImageKind: TJvImageKind read FImageKind write SetImageKind default ikCustom;
     property Images: TCustomImageList read FImages write SetImages;
+    property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs default 1;
     property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaRight;
@@ -298,9 +308,6 @@ type
     procedure SelectAll;
     { Backwards compatibility; moved to public&published; eventually remove }
     property GlyphKind: TGlyphKind read GetGlyphKind write SetGlyphKind;
-    property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs;
-  published
-    property Glyph: TBitmap read GetGlyph write SetGlyph stored False;
   end;
 
   TJvComboEdit = class(TJvCustomComboEdit)
@@ -341,11 +348,13 @@ type
     property EditMask;
     property Enabled;
     property Font;
+    property Glyph;
     property HideSelection;
     property ImageIndex;
     property ImageKind;
     property Images;
     property MaxLength;
+    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -540,9 +549,11 @@ type
     property EditMask;
     property Enabled;
     property Font;
+    property Glyph;
     property ImageIndex;
     property Images;
     property ImageKind;
+    property NumGlyphs;
     property ButtonWidth;
     property HideSelection;
     property Anchors;
@@ -630,9 +641,11 @@ type
     property EditMask;
     property Enabled;
     property Font;
+    property Glyph;
     property ImageIndex;
     property Images;
     property ImageKind;
+    property NumGlyphs;
     property ButtonWidth;
     property HideSelection;
     property Anchors;
@@ -828,9 +841,11 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property Glyph;
     property ImageIndex;
     property Images;
     property ImageKind;
+    property NumGlyphs;
     property ButtonWidth;
     property HideSelection;
     property Anchors;
@@ -937,19 +952,18 @@ const
 {$R ../Resources/JvToolEdit.res}
 {$ENDIF LINUX}
 
-{$IFDEF VCL}
-
-type
-  TSHAutoComplete = function (hwndEdit: HWnd; dwFlags: DWORD): HResult; stdcall;
-
-{$ENDIF VCL}
-
 type
   TCustomEditHack = class(TCustomEdit);
   TCustomFormHack = class(TCustomForm);
-  TOpenReader = class(TReader);  // (ahuser) Delphi 5's TReader.SkipValue is protected
   TWinControlHack = class(TWinControl);
 
+const
+  sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }
+  sFileBmp = 'JV_FEDITBMP';  { Filename editor button glyph }
+  sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
+
+
+type
   { TDateHook is used to only have 1 hook per application for monitoring
     date changes;
 
@@ -973,14 +987,16 @@ type
     procedure Add;
     procedure Delete;
   end;
+
+var
+  GDateHook: TDateHook = nil;
+
 {$ENDIF VCL}
 
-const
-  sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }
-  sFileBmp = 'JV_FEDITBMP';  { Filename editor button glyph }
-  sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
-
 {$IFDEF VCL}
+
+type
+  TSHAutoComplete = function (hwndEdit: HWnd; dwFlags: DWORD): HResult; stdcall;
 
 const
   SHACF_DEFAULT                  = $00000000;  // Currently (SHACF_FILESYSTEM | SHACF_URLALL)
@@ -1000,11 +1016,13 @@ const
   SHACF_AUTOAPPEND_FORCE_OFF     = $80000000;  // Ignore the registry default and force the feature off. (Also know as AutoComplete)
 
   ShlwapiDLLName  = 'Shlwapi.dll';
-
   SHAutoCompleteName = 'SHAutoComplete';
 
 var
-  GDateHook: TDateHook = nil;
+  GNeedToUninitialize: Boolean = False;
+  GShlwapiHandle: THandle = 0;
+  GTriedLoadShlwapiDll: Boolean = False;
+  SHAutoComplete: TSHAutoComplete = nil;
 
 {$ENDIF VCL}
 
@@ -1013,15 +1031,6 @@ var
   GDefaultComboEditImagesList: TImageList = nil;
   GDirImageIndex: TImageIndex = -1;
   GFileImageIndex: TImageIndex = -1;
-
-{$IFDEF VCL}
-
-var
-  GNeedToUninitialize: Boolean = False;
-  GShlwapiHandle: THandle = 0;
-  GTriedLoadShlwapiDll: Boolean = False;
-  SHAutoComplete: TSHAutoComplete = nil;
-{$ENDIF VCL}
 
 //=== Local procedures =======================================================
 
@@ -1036,7 +1045,6 @@ begin
   Result := GDateHook;
 end;
 {$ENDIF VCL}
-
 
 function ClipFilename(const FileName: string): string;
 var
@@ -1182,8 +1190,34 @@ begin
       IterateControls(Screen.Forms[I]);
 end;
 
-{$IFDEF VCL}
+{$IFDEF VisualCLX}
+function EditorTextMargins(Editor: TCustomEdit): TPoint;
+var
+  I: Integer;
+  ed: TCustomEditHack;
+begin
+  ed := TCustomEditHack(Editor);
+  if ed.BorderStyle = bsNone then
+    I := 0
+  else
+  if Supports(Editor, IComboEditHelper) then
+  begin
+    if (Editor as IComboEditHelper).GetFlat then
+      I := 1
+    else
+      I := 2;
+  end
+  else
+    I := 2;
+  {if GetWindowLong(ed.Handle, GWL_STYLE) and ES_MULTILINE = 0 then
+    Result.X := (SendMessage(ed.Handle, EM_GETMARGINS, 0, 0) and $0000FFFF) + I
+  else}
+    Result.X := I;
+  Result.Y := I;
+end;
+{$ENDIF VisualCLX}
 
+{$IFDEF VCL}
 function EditorTextMargins(Editor: TCustomEdit): TPoint;
 var
   DC: HDC;
@@ -1229,37 +1263,7 @@ begin
     Result.Y := I;
   end;
 end;
-
 {$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-
-function EditorTextMargins(Editor: TCustomEdit): TPoint;
-var
-  I: Integer;
-  ed: TCustomEditHack;
-begin
-  ed := TCustomEditHack(Editor);
-  if ed.BorderStyle = bsNone then
-    I := 0
-  else
-  if Supports(Editor, IComboEditHelper) then
-  begin
-    if (Editor as IComboEditHelper).GetFlat then
-      I := 1
-    else
-      I := 2;
-  end
-  else
-    I := 2;
-  {if GetWindowLong(ed.Handle, GWL_STYLE) and ES_MULTILINE = 0 then
-    Result.X := (SendMessage(ed.Handle, EM_GETMARGINS, 0, 0) and $0000FFFF) + I
-  else}
-    Result.X := I;
-  Result.Y := I;
-end;
-
-{$ENDIF VisualCLX}
 
 function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 var
@@ -1328,111 +1332,6 @@ begin
   end
   else
     Result := True;
-end;
-
-{ PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
-  EM_GETTEXT handler exists, it uses the ClientRect of the edit control. }
-
-function PaintEdit(Editor: TCustomEdit; const AText: WideString;
-  AAlignment: TAlignment; PopupVisible: Boolean; 
-  DisabledTextColor: TColor; StandardPaint: Boolean; Flat: Boolean;
-  ACanvas: TCanvas): Boolean;
-var
-  LTextWidth, X: Integer;
-  EditRect: TRect;
-  S: WideString;
-  ed: TCustomEditHack;
-  SavedFont: TFontRecall;
-  SavedBrush: TBrushRecall;
-  Offset: Integer;
-  R: TRect;
-begin
-  Result := True;
-  if csDestroying in Editor.ComponentState then
-    Exit;
-  ed := TCustomEditHack(Editor);
-  if StandardPaint and not (csPaintCopy in ed.ControlState) then
-  begin
-    Result := False;
-    { return false if we need to use standard paint handler }
-    Exit;
-  end;
-  SavedFont := TFontRecall.Create(ACanvas.Font);
-  SavedBrush := TBrushRecall.Create(ACanvas.Brush);
-  try
-    ACanvas.Font := ed.Font;
-
-   // paint Border
-    R := ed.ClientRect;
-    Offset := 0;
-    if (ed.BorderStyle = bsSingle) then
-    begin
-      ACanvas.Start;
-      QStyle_drawPanel(QWidget_style(Editor.Handle), ACanvas.Handle,
-        R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top, QWidget_colorGroup(Editor.Handle),
-        True, 2, nil);
-      ACanvas.Stop;
-      //QGraphics.DrawEdge(ACanvas, R, esLowered, esLowered, ebRect)
-    end
-    else
-    begin
-      if Flat then
-        QGraphics.DrawEdge(ACanvas, R, esNone, esLowered, ebRect);
-      Offset := 2;
-    end;
-
-    with ACanvas do
-    begin
-      EditRect := Rect(0, 0, 0, 0);
-      SendMsg(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
-      if IsRectEmpty(EditRect) then
-      begin
-        EditRect := ed.ClientRect;
-        if ed.BorderStyle = bsSingle then
-          InflateRect(EditRect, -2, -2);
-      end
-      else
-        InflateRect(EditRect, -Offset, -Offset);
-      if Flat and (ed.BorderStyle = bsSingle) then
-      begin
-        Brush.Color := clWindowFrame;
-        FrameRect(ACanvas, ed.ClientRect);
-      end;
-      S := AText;
-      LTextWidth := TextWidth(S);
-      if PopupVisible then
-        X := EditRect.Left
-      else
-      begin
-        case AAlignment of
-          taLeftJustify:
-            X := EditRect.Left;
-          taRightJustify:
-            X := EditRect.Right - LTextWidth;
-        else
-          X := (EditRect.Right + EditRect.Left - LTextWidth) div 2;
-        end;
-      end;
-      if not ed.Enabled then
-      begin
-        if Supports(ed, IJvWinControlEvents) then
-          (ed as IJvWinControlEvents).DoPaintBackground(ACanvas, 0);
-        ACanvas.Brush.Style := bsClear;
-        ACanvas.Font.Color := DisabledTextColor;
-        ACanvas.TextRect(EditRect, X, EditRect.Top + 1, S);
-      end
-      else
-      begin
-        Brush.Color := ed.Color;
-        DrawSelectedText(ACanvas, EditRect, X, EditRect.Top + 1, S,
-          ed.SelStart, ed.SelLength,
-          clHighlight, clHighlightText);
-      end;
-    end;
-  finally
-    SavedFont.Free;
-    SavedBrush.Free;
-  end;
 end;
 
 {$ENDIF VisualCLX}
@@ -1547,6 +1446,117 @@ begin
   end;
 end;
 
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+
+{ PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
+  EM_GETTEXT handler exists, it uses the ClientRect of the edit control. }
+
+function PaintEdit(Editor: TCustomEdit; const AText: WideString;
+  AAlignment: TAlignment; PopupVisible: Boolean;
+  DisabledTextColor: TColor; StandardPaint: Boolean; Flat: Boolean;
+  ACanvas: TCanvas): Boolean;
+var
+  LTextWidth, X: Integer;
+  EditRect: TRect;
+  S: WideString;
+  ed: TCustomEditHack;
+  SavedFont: TFontRecall;
+  SavedBrush: TBrushRecall;
+  Offset: Integer;
+  R: TRect;
+begin
+  Result := True;
+  if csDestroying in Editor.ComponentState then
+    Exit;
+  ed := TCustomEditHack(Editor);
+  if StandardPaint and not (csPaintCopy in ed.ControlState) then
+  begin
+    Result := False;
+    { return false if we need to use standard paint handler }
+    Exit;
+  end;
+  SavedFont := TFontRecall.Create(ACanvas.Font);
+  SavedBrush := TBrushRecall.Create(ACanvas.Brush);
+  try
+    ACanvas.Font := ed.Font;
+
+   // paint Border
+    R := ed.ClientRect;
+    Offset := 0;
+    if (ed.BorderStyle = bsSingle) then
+    begin
+      ACanvas.Start;
+      QStyle_drawPanel(QWidget_style(Editor.Handle), ACanvas.Handle,
+        R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top, QWidget_colorGroup(Editor.Handle),
+        True, 2, nil);
+      ACanvas.Stop;
+      //QGraphics.DrawEdge(ACanvas, R, esLowered, esLowered, ebRect)
+    end
+    else
+    begin
+      if Flat then
+        QGraphics.DrawEdge(ACanvas, R, esNone, esLowered, ebRect);
+      Offset := 2;
+    end;
+
+    with ACanvas do
+    begin
+      EditRect := Rect(0, 0, 0, 0);
+      SendMsg(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
+      if IsRectEmpty(EditRect) then
+      begin
+        EditRect := ed.ClientRect;
+        if ed.BorderStyle = bsSingle then
+          InflateRect(EditRect, -2, -2);
+      end
+      else
+        InflateRect(EditRect, -Offset, -Offset);
+      if Flat and (ed.BorderStyle = bsSingle) then
+      begin
+        Brush.Color := clWindowFrame;
+        FrameRect(ACanvas, ed.ClientRect);
+      end;
+      S := AText;
+      LTextWidth := TextWidth(S);
+      if PopupVisible then
+        X := EditRect.Left
+      else
+      begin
+        case AAlignment of
+          taLeftJustify:
+            X := EditRect.Left;
+          taRightJustify:
+            X := EditRect.Right - LTextWidth;
+        else
+          X := (EditRect.Right + EditRect.Left - LTextWidth) div 2;
+        end;
+      end;
+      if not ed.Enabled then
+      begin
+        if Supports(ed, IJvWinControlEvents) then
+          (ed as IJvWinControlEvents).DoPaintBackground(ACanvas, 0);
+        ACanvas.Brush.Style := bsClear;
+        ACanvas.Font.Color := DisabledTextColor;
+        ACanvas.TextRect(EditRect, X, EditRect.Top + 1, S);
+      end
+      else
+      begin
+        Brush.Color := ed.Color;
+        DrawSelectedText(ACanvas, EditRect, X, EditRect.Top + 1, S,
+          ed.SelStart, ed.SelLength,
+          clHighlight, clHighlightText);
+      end;
+    end;
+  finally
+    SavedFont.Free;
+    SavedBrush.Free;
+  end;
+end;
+{$ENDIF VisualCLX}
+
+{$IFDEF VCL}
 //=== TDateHook ==============================================================
 
 procedure TDateHook.Add;
@@ -1783,16 +1793,15 @@ begin
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
   FGroupIndex := -1;
-  FGlyph := TBitmap.Create;
   FStreamedButtonWidth := -1;
   FImageKind := ikCustom;
   FImageIndex := -1;
+  FNumGlyphs := 1;
   inherited OnKeyDown := LocalKeyDown;
   (* -- RDB -- *)
 end;
 
 {$IFDEF VCL}
-
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
   Alignments: array [TAlignment] of LongWord = (ES_LEFT, ES_RIGHT, ES_CENTER);
@@ -1801,7 +1810,6 @@ begin
   Params.Style := Params.Style or ES_MULTILINE or WS_CLIPCHILDREN
     or Alignments[FAlignment];
 end;
-
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
@@ -1811,15 +1819,12 @@ begin
   SetEditRect;
 end;
 {$ENDIF VisualCLX}
-
 {$IFDEF VCL}
-
 procedure TJvCustomComboEdit.CreateWnd;
 begin
   inherited CreateWnd;
   SetEditRect;
 end;
-
 {$ENDIF VCL}
 
 class function TJvCustomComboEdit.DefaultImageIndex: TImageIndex;
@@ -1840,14 +1845,12 @@ end;
 procedure TJvCustomComboEdit.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineProperty('NumGlyphs', ReadNumGlyphs, nil, False);
   Filer.DefineProperty('GlyphKind', ReadGlyphKind, nil, False);
 end;
 
 destructor TJvCustomComboEdit.Destroy;
 begin
   FButton.OnClick := nil;
-  FGlyph.Free;
   inherited Destroy;
 end;
 
@@ -1911,13 +1914,11 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
 procedure TJvCustomComboEdit.DoFlatChanged;
 begin
   inherited DoFlatChanged;
   UpdateBtnBounds;
 end;
-
 {$ENDIF VisualCLX}
 
 procedure TJvCustomComboEdit.DoKillFocus(FocusedWnd: HWND);
@@ -2001,7 +2002,7 @@ end;
 
 function TJvCustomComboEdit.GetGlyph: TBitmap;
 begin
-  Result := FGlyph;
+  Result := FButton.Glyph;
 end;
 
 function TJvCustomComboEdit.GetGlyphKind: TGlyphKind;
@@ -2021,7 +2022,10 @@ end;
 
 function TJvCustomComboEdit.GetNumGlyphs: TNumGlyphs;
 begin
-  Result := 1;
+  if ImageKind <> ikCustom then
+    Result := FNumGlyphs
+  else
+    Result := FButton.NumGlyphs;
 end;
 
 function TJvCustomComboEdit.GetPopupValue: Variant;
@@ -2064,6 +2068,11 @@ end;
 procedure TJvCustomComboEdit.HidePopup;
 begin
   TJvPopupWindow(FPopup).Hide;
+end;
+
+function TJvCustomComboEdit.IsCustomGlyph: Boolean;
+begin
+  Result := Assigned(Glyph) and (ImageKind = ikCustom);
 end;
 
 function TJvCustomComboEdit.IsImageIndexStored: Boolean;
@@ -2190,7 +2199,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
 procedure TJvCustomComboEdit.Paint;
 begin
   if Enabled then
@@ -2202,7 +2210,6 @@ begin
       inherited Paint;
   end;
 end;
-
 {$ENDIF VisualCLX}
 
 procedure TJvCustomComboEdit.PopupChange;
@@ -2313,11 +2320,6 @@ begin
     end;
 end;
 
-procedure TJvCustomComboEdit.ReadNumGlyphs(Reader: TReader);
-begin
-  TOpenReader(Reader).SkipValue;
-end;
-
 procedure TJvCustomComboEdit.RecreateGlyph;
 var
   NewGlyph: TBitmap;
@@ -2349,7 +2351,11 @@ var
   end;
 
 begin
-  FButton.FDrawGlyph := FImageKind in [ikDropDown, ikEllipsis];
+  if FImageKind in [ikDropDown, ikEllipsis] then
+  begin
+    FButton.ImageIndex := -1;
+    FButton.NumGlyphs := 1;
+  end;
 
   case FImageKind of
     ikDropDown:
@@ -2560,8 +2566,9 @@ end;
 
 procedure TJvCustomComboEdit.SetGlyph(Value: TBitmap);
 begin
-  {FButton.Glyph := Value;}
   ImageKind := ikCustom;
+  FButton.Glyph := Value;
+  FNumGlyphs := FButton.NumGlyphs;
 end;
 
 procedure TJvCustomComboEdit.SetGlyphKind(Value: TGlyphKind);
@@ -2596,6 +2603,7 @@ begin
         begin
           FButton.Images := FImages;
           FButton.ImageIndex := FImageIndex;
+          FButton.NumGlyphs := FNumGlyphs;
         end;
       ikDefault:
         begin
@@ -2631,9 +2639,17 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.SetNumGlyphs(Value: TNumGlyphs);
+procedure TJvCustomComboEdit.SetNumGlyphs(const Value: TNumGlyphs);
 begin
-  { Nothing }
+  //if FGlyphKind in [gkDropDown, gkEllipsis] then
+  //  FButton.NumGlyphs := 1
+  //else
+  //if FGlyphKind = gkDefault then
+  //  FButton.NumGlyphs := FDefNumGlyphs
+  //else
+  FNumGlyphs := Value;
+  if ImageKind = ikCustom then
+    FButton.NumGlyphs := Value;
 end;
 
 procedure TJvCustomComboEdit.SetPopupValue(const Value: Variant);
@@ -3022,7 +3038,6 @@ begin
     UpdateMask;
 end;
 {$ENDIF VisualCLX}
-
 {$IFDEF VCL}
 procedure TJvCustomDateEdit.CreateWindowHandle(const Params: TCreateParams);
 begin
@@ -3620,6 +3635,21 @@ begin
   ParentShowHint := True;
 end;
 
+function TJvEditButton.GetGlyph: TBitmap;
+begin
+  Result := TJvxButtonGlyph(ButtonGlyph).Glyph;
+end;
+
+function TJvEditButton.GetNumGlyphs: TJvNumGlyphs;
+begin
+  Result := TJvxButtonGlyph(ButtonGlyph).NumGlyphs;
+end;
+
+function TJvEditButton.GetUseGlyph: Boolean;
+begin
+  Result := not Assigned(Images) or (ImageIndex < 0);
+end;
+
 procedure TJvEditButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
@@ -3691,11 +3721,31 @@ end;
 procedure TJvEditButton.PaintImage(Canvas: TCanvas; ARect: TRect;
   const Offset: TPoint; AState: TJvButtonState; DrawMark: Boolean);
 begin
-  if FDrawGlyph then
+  if UseGlyph then
     TJvxButtonGlyph(ButtonGlyph).Draw(Canvas, ARect, Offset, '', Layout,
       Margin, Spacing, False, AState, 0)
   else
     inherited PaintImage(Canvas, ARect, Offset, AState, DrawMark);
+end;
+
+procedure TJvEditButton.SetGlyph(const Value: TBitmap);
+begin
+  TJvxButtonGlyph(ButtonGlyph).Glyph := Value;
+  Invalidate;
+end;
+
+procedure TJvEditButton.SetNumGlyphs(Value: TJvNumGlyphs);
+begin
+  if Value < 0 then
+    Value := 1
+  else
+  if Value > Ord(High(TJvButtonState)) + 1 then
+    Value := Ord(High(TJvButtonState)) + 1;
+  if Value <> TJvxButtonGlyph(ButtonGlyph).NumGlyphs then
+  begin
+    TJvxButtonGlyph(ButtonGlyph).NumGlyphs := Value;
+    Invalidate;
+  end;
 end;
 
 {$IFDEF VCL}
@@ -3735,9 +3785,9 @@ end;
 procedure TJvFileDirEdit.CreateHandle;
 begin
   inherited CreateHandle;
+
   if FAcceptFiles then
     SetDragAccept(True);
-
   if FAutoComplete then
     UpdateAutoComplete;
 end;
