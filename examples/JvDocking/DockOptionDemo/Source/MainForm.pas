@@ -14,13 +14,17 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 unit MainForm;
-
+{$I jvcl.inc}
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, JvDockControlForm, JvDockVIDStyle, StdCtrls, Spin, ComCtrls,
-  ImgList, JvComponent;
+  ImgList
+  {$IFDEF USEJVCL}
+  , JvComponent, JvAppStorage, JvAppIniStorage
+  {$ENDIF}
+  ;
 
 type
   TMain_Form = class(TForm)
@@ -83,6 +87,9 @@ type
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
+    {$IFDEF USEJVCL}
+    JvAppStorage: TJvAppIniFileStorage;
+    {$ENDIF}
     procedure DoReadOption;
     procedure DoReadConjoinOption;
     procedure DoReadTabOption;
@@ -145,7 +152,12 @@ end;
 
 procedure TMain_Form.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-//  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$IFDEF USEJVCL}
+  JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + 'DockInfo.ini';
+  SaveDockTreeToAppStorage(JvAppStorage);
+  {$ELSE}
+  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$ENDIF}
 end;
 
 procedure TMain_Form.ActivePanelFont_ButtonClick(Sender: TObject);
@@ -305,12 +317,19 @@ begin
     { 为每一个窗体设置不同的图标 }
     ImageList1.GetIcon(i, DockForms[i].Icon);
   end;
-//  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$IFDEF USEJVCL}
+  JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + 'DockInfo.ini';
+  {$ELSE}
+  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$ENDIF}
   DoReadOption;
 end;
 
 procedure TMain_Form.FormCreate(Sender: TObject);
 begin
+  {$IFDEF USEJVCL}
+  JvAppStorage := TJvAppIniFileStorage.Create(self);
+  {$ENDIF}
   CreateDockWindow;
 end;
 

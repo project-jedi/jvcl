@@ -12,25 +12,25 @@ object PropertiesForm: TPropertiesForm
   Font.Charset = GB2312_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'ËÎÌו'
+  Font.Name = #203#206#204#229
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   OnResize = FormResize
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 14
   object Panel: TPanel
     Left = 0
     Top = 0
     Width = 249
-    Height = 48
+    Height = 56
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
     OnResize = PanelResize
     object ToolBar1: TToolBar
       Left = 0
-      Top = 24
+      Top = 32
       Width = 249
       Height = 24
       Align = alBottom
@@ -43,7 +43,7 @@ object PropertiesForm: TPropertiesForm
       object ToolButton1: TToolButton
         Left = 0
         Top = 0
-        Action = MainForm.Action_Open
+        ImageIndex = 23
       end
       object ToolButton3: TToolButton
         Left = 23
@@ -56,23 +56,23 @@ object PropertiesForm: TPropertiesForm
       object ToolButton2: TToolButton
         Left = 31
         Top = 0
-        Action = MainForm.Action_Properties_Window
+        ImageIndex = 20
       end
     end
     object ComboBox: TComboBox
       Left = 1
       Top = 2
-      Width = 217
-      Height = 20
-      ItemHeight = 12
+      Width = 253
+      Height = 22
+      ItemHeight = 14
       TabOrder = 1
     end
   end
   object Panel1: TPanel
     Left = 0
-    Top = 48
+    Top = 56
     Width = 249
-    Height = 218
+    Height = 211
     Align = alClient
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -82,7 +82,7 @@ object PropertiesForm: TPropertiesForm
       Left = 2
       Top = 2
       Width = 245
-      Height = 214
+      Height = 207
       Align = alClient
       BorderStyle = bsNone
       ColCount = 2
@@ -102,6 +102,7 @@ object PropertiesForm: TPropertiesForm
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
+    EnableCloseButton = True
     DockStyle = MainForm.JvDockVIDStyle1
     Left = 64
     Top = 88
