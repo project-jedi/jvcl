@@ -49,7 +49,8 @@ unit JvThumbImage;
 interface
 uses
   Windows, Classes, Controls, ExtCtrls, SysUtils, Messages, Graphics, Forms,
-  jpeg, Dialogs, JvTypes, JvBaseThumbnail;
+  jpeg, Dialogs,
+  JvTypes, JvBaseThumbnail;
 
 type
   TAngle = (AT0, AT90, AT180, AT270);
@@ -57,8 +58,6 @@ type
   // (rom) renamed elements
   TMirror = (mtHorizontal, mtVertical, mtBoth);
 
-  TRGB = array [0..32767] of TRGBTriple;
-  PRGB = ^TRGB;
   TCurveArray = array [0..255] of Byte;
   TRotateNotify = procedure(Sender: TObject; Percent: Byte; var Cancel: Boolean) of object;
   TFilterEmpty = function: Byte;
@@ -498,7 +497,7 @@ procedure TJvThumbImage.Grayscale;
  (I don't Recall His name Right now) for the fantastic job he has
  done gathering all this info}
 var
-  Color: PRGB;
+  Line: PJvRGBArray;
   MemBmp: Graphics.TBitmap;
   Row, Col: Word;
   Intens: Byte;
@@ -513,14 +512,14 @@ begin
     MemBmp.HandleType := bmDIB;
     for Row := 0 to MemBmp.Height - 1 do
     begin
-      Color := MemBmp.ScanLine[Row];
+      Line := MemBmp.ScanLine[Row];
       for Col := 0 to MemBmp.Width - 1 do
       begin
-        Intens := (Color[Col].rgbtRed + Color[Col].rgbtGreen + Color[Col].rgbtBlue)
+        Intens := (Line[Col].rgbRed + Line[Col].rgbGreen + Line[Col].rgbBlue)
           div 3;
-        Color[Col].rgbtRed := Intens;
-        Color[Col].rgbtGreen := Intens;
-        Color[Col].rgbtBlue := Intens;
+        Line[Col].rgbRed := Intens;
+        Line[Col].rgbGreen := Intens;
+        Line[Col].rgbBlue := Intens;
       end;
     end;
     if Picture.Graphic is TJpegImage then
@@ -544,7 +543,7 @@ end;
 
 procedure TJvThumbImage.ChangeRGBCurves(R, G, B: TCurveArray);
 var
-  Color: PRGB;
+  Line: PJvRGBArray;
   MemBmp: Graphics.TBitmap;
   Row, Col: Word;
 begin
@@ -565,12 +564,12 @@ begin
     MemBmp.HandleType := bmDIB;
     for Row := 0 to MemBmp.Height - 1 do
     begin
-      Color := MemBmp.ScanLine[Row];
+      Line := MemBmp.ScanLine[Row];
       for Col := 0 to MemBmp.Width - 1 do
       begin
-        Color[Col].rgbtRed := R[Color[Col].rgbtRed];
-        Color[Col].rgbtGreen := G[Color[Col].rgbtGreen];
-        Color[Col].rgbtBlue := B[Color[Col].rgbtBlue];
+        Line[Col].rgbRed := R[Line[Col].rgbRed];
+        Line[Col].rgbGreen := G[Line[Col].rgbGreen];
+        Line[Col].rgbBlue := B[Line[Col].rgbBlue];
       end;
     end;
     if Picture.Graphic is TJpegImage then
@@ -659,7 +658,7 @@ This will happen to all the image by the same value no Color limunocity is
 been preserved or values calculations depenting on the current channel values;
 }
 var
-  PixColor: PRGB;
+  Line: PJvRGBArray;
   InBmp: Graphics.TBitmap;
   Row, Col: Integer;
 begin
@@ -674,12 +673,12 @@ begin
   InBmp.PixelFormat := Pf24bit;
   for Row := 0 to InBmp.Height - 1 do
   begin
-    PixColor := InBmp.ScanLine[Row];
+    Line := InBmp.ScanLine[Row];
     for Col := 0 to InBmp.Width - 1 do
     begin
-      PixColor[Col].rgbtRed := BoundByte(0, 255, PixColor[Col].rgbtRed + R);
-      PixColor[Col].rgbtGreen := BoundByte(0, 255, PixColor[Col].rgbtGreen + G);
-      PixColor[Col].rgbtBlue := BoundByte(0, 255, PixColor[Col].rgbtBlue + B);
+      Line[Col].rgbRed := BoundByte(0, 255, Line[Col].rgbRed + R);
+      Line[Col].rgbGreen := BoundByte(0, 255, Line[Col].rgbGreen + G);
+      Line[Col].rgbBlue := BoundByte(0, 255, Line[Col].rgbBlue + B);
     end;
   end;
   {  if Picture.Graphic is TJpegImage then

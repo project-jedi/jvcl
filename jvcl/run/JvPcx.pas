@@ -263,7 +263,7 @@ var
   Bpp, Planes: Integer;
   Decompressed: TMemoryStream;
   Buf: array [0..128] of Byte;
-  IBuf2: PRGBArray;
+  IBuf2: PJvRGBArray;
   IBuf: array [0..MaxPixelCount - 1] of Byte;
   IBufTmp: PByteArray;
   RPal: TMaxLogPalette;
@@ -447,16 +447,16 @@ begin
       else
       if (Bpp = 8) and (Planes = 3) then
       begin
-        //24 bit. Okey
+        //24 bit. Okay
         for I := 0 to FBitmap.Height - 1 do
         begin
-          IBuf2 := Fbitmap.ScanLine[I];
+          IBuf2 := FBitmap.ScanLine[I];
           Decompressed.Read(IBuf, BytesPerLine);
           for J := 0 to FBitmap.Width - 1 do
           begin
-            IBuf2[J].rgbtRed := IBuf[J];
-            IBuf2[J].rgbtGreen := IBuf[J + M];
-            IBuf2[J].rgbtBlue := IBuf[J + L];
+            IBuf2[J].rgbRed := IBuf[J];
+            IBuf2[J].rgbGreen := IBuf[J + M];
+            IBuf2[J].rgbBlue := IBuf[J + L];
           end;
         end;
         // (rom) why not remove the palette here?
@@ -495,7 +495,7 @@ var
   BytesPerLine: Word;
   MemStream: TMemoryStream;
   B: Byte;
-  IBuf2: PRGBArray;
+  IBuf2: PJvRGBArray;
   IBuf: array [0..MaxPixelCount - 1] of Byte;
   IBufTmp: PByteArray;
   WPal: array [0..255] of PALETTEENTRY;
@@ -671,15 +671,15 @@ begin
           IBuf2 := FBitmap.ScanLine[I];
 
           for J := 0 to FBitmap.Width - 1 do
-            IBuf[J] := IBuf2[J].rgbtRed;
+            IBuf[J] := IBuf2[J].rgbRed;
 
           K := FBitmap.Width;
           for J := 0 to FBitmap.Width - 1 do
-            IBuf[J + K] := IBuf2[J].rgbtGreen;
+            IBuf[J + K] := IBuf2[J].rgbGreen;
 
           K := FBitmap.Width * 2;
           for J := 0 to FBitmap.Width - 1 do
-            IBuf[J + K] := IBuf2[J].rgbtBlue;
+            IBuf[J + K] := IBuf2[J].rgbBlue;
 
           MemStream.Write(IBuf, BytesPerLine);
         end;

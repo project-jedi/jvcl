@@ -140,14 +140,21 @@ type
     rgbtGreen: Byte;
     rgbtRed: Byte;
   end;
+
+  TJvRGBTriple = TRGBQuad;
+  {$ELSE}
+  TJvRGBTriple = packed record
+    rgbBlue: Byte;
+    rgbGreen: Byte;
+    rgbRed: Byte;
+  end;
   {$ENDIF VisualCLX}
 
-  //  TRGBArray = array [0..MaxPixelCount - 1] of TRGBQuad;
-
-  PRGBArray = ^TRGBArray; // JvThumbImage, JvImageSplit, JvRegion
-  TRGBArray = array [0..MaxPixelCount - 1] of TRGBTriple;
+  PJvRGBArray = ^TJvRGBArray;
+  TJvRGBArray = array [0..MaxPixelCount - 1] of TJvRGBTriple;
   PRGBQuadArray = ^TRGBQuadArray;
   TRGBQuadArray = array [0..MaxPixelCount - 1] of TRGBQuad;
+
   TBalance = 0..100;
 
   TJvVolumeRec = record

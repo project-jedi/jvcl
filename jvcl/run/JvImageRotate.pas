@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls,
-  JvTypes, JvImageDrawThread, JVCLVer;
+  JvImageDrawThread, JVCLVer;
 
 type
   TJvImageRotate = class(TImage)
@@ -62,6 +62,9 @@ type
   end;
 
 implementation
+
+uses
+  JvTypes;
 
 constructor TJvImageRotate.Create(AOwner: TComponent);
 begin
@@ -139,8 +142,8 @@ procedure TJvImageRotate.SetAngle(Value: Integer);
 var
   i, j, iRotationAxis, iOriginal, iPrime, iPrimeRotated: Integer;
   jRotationAxis, jOriginal, jPrime, jPrimeRotated: Integer;
-  RowOriginal: PRGBArray;
-  RowRotated: PRGBArray;
+  RowOriginal: PJvRGBArray;
+  RowRotated: PJvRGBArray;
   Theta, sinTheta, cosTheta: Double;
   R, G, B: Byte;
 begin
@@ -174,9 +177,9 @@ begin
       end
       else
       begin
-        RowRotated[i].rgbtBlue := B;
-        RowRotated[i].rgbtGreen := G;
-        RowRotated[i].rgbtRed := R
+        RowRotated[i].rgbBlue := B;
+        RowRotated[i].rgbGreen := G;
+        RowRotated[i].rgbRed := R
       end;
     end;
   end;
