@@ -43,18 +43,23 @@ uses
   QImgList, QTypes,
   
   DesignEditors, DesignIntf,
-  
+
   JvQDsgnConsts, JvQTypes,
   JvQEdit, JvQProgressBar,
   JvQMaskEdit, JvQBaseEdits, JvQCalc, JvQToolEdit,
   JvQBevel, JvQCheckBox, JvQSpeedButton,
   JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQLabel, JvQRadioButton, JvQRadioGroup,
-  JvQScrollBar, JvQShape,
-  JvQTabControl, JvQBitBtn,
+  JvQScrollBar, JvQShape, JvQControlBar,
+  JvQTabControl, JvQBitBtn, JvQPickDate,
   JvQPanel, JvQProgressEditor, JvQDsgnEditors;
 
+{$IFDEF MSWINDOWS}
 {$R ..\resources\JvStdCtrlsReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../resources/JvStdCtrlsReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 const
@@ -69,13 +74,18 @@ begin
   RegisterComponents(RsPaletteEdit, [TJvEdit,
     TJvMaskEdit, TJvCalcEdit, TJvComboEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit]);
+  RegisterComponents(RsPaletteListComboTree, [TJvCalendar]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage]);
-  RegisterComponents(RsPaletteBarPanel, [TJvTabControl,
-    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel {TJvTransparentPanel}]);
+  RegisterComponents(RsPaletteBarPanel, [TJvTabControl, TJvControlBar,
+    TJvGroupBox, TJvHeaderControl, TJvPanel,
+    TJvBevel {TJvTransparentPanel}]);
   RegisterComponents(RsPaletteLabel, [TJvLabel]);
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);
+//  RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'FileName', TJvFilenameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, cText, TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', TJvHintProperty);
 //  RegisterPropertyEditor(TypeInfo(TJvImgBtnKind), TJvImgBtn, 'Kind', TJvNosortEnumProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);
