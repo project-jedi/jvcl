@@ -17,7 +17,7 @@ SET ROOT=%3
 
 : get rid of the quotes around %ROOT%
 cd ..\devtools\NoQuotes
-if NOT EXIST ..\bin\NoQuotes.exe dcc32.exe NoQuotes.dpr
+if NOT EXIST ..\bin\NoQuotes.exe dcc32.exe -e..\bin NoQuotes.dpr
 cd ..\bin
 NoQuotes ROOT %ROOT%
 Call NoQuotesBatch.bat
