@@ -24,8 +24,7 @@ Description:
 This file contains macro's needed to build the JvExCLX classes.
 You need the Pascal PreProcessor (dpp) from Andreas Hausladen [Andreas dott Hausladen att gmx dott de]
 to process these files.
-You can find it here: ......
-A pre-builded Windows version is included with JVCL 3: devtools\JvExVCL\src\dpp.exe
+It is included in JVCL 3: devtools\dpp32
 
 Known Issues:
   UNDER CONSTRUCTION !!
@@ -39,6 +38,18 @@ Known Issues:
  * If you do it despite this warning your changes will be discarded by the next
  * update of this file. Do your changes in the template files.
  ****************************************************************************}
+*)
+
+(*$DEFINE UNITVERSION
+const
+  UnitVersion = '$Id $';
+
+initialization
+  OutputDebugString(PChar('Opened ' + UnitVersion));
+
+finalization
+  OutputDebugString(PChar('Closed ' + UnitVersion));
+EMPTYLINE  
 *)
 
 {$UNDEF CREATE_CUSTOMCODE}

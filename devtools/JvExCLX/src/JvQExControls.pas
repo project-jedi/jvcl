@@ -162,5 +162,7 @@ begin
   Result := QWindows.ColorToRGB(Value, Parent);
 end;
 
+UNITVERSION
+
 end.
 

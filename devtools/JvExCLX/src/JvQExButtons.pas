@@ -47,4 +47,6 @@ implementation
 JV_WINCONTROL_IMPL(BitBtn)
 JV_CONTROL_IMPL(SpeedButton)
 
+UNITVERSION
+
 end.

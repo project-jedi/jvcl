@@ -94,4 +94,7 @@ end;
 JV_EDITCONTROL_IMPL(MaskEdit)
 
 {$UNDEF CREATE_CUSTOMCODE} // undefine at file end
+
+UNITVERSION
+
 end.

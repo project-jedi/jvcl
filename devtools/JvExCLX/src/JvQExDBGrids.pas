@@ -47,4 +47,6 @@ implementation
 JV_WINCONTROL_IMPL(CustomDBGrid)
 JV_WINCONTROL_IMPL(DBGrid)
 
+UNITVERSION
+
 end.
