@@ -7,7 +7,7 @@ interface
 procedure Register;
 
 implementation
-{.$DEFINE JV_MIDAS}
+
 uses
   Classes,
   {$IFDEF COMPILER6_UP}

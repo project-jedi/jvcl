@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JVCL.INC, released on 2002-07-04.
 
-Last Modified: 2002-07-20
+Last Modified: 2003-08-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -20,14 +20,18 @@ Known Issues:
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
 {$I JEDI.INC}
-// Enable this define if you want to register property and component editors in JVCL that
-// are registered for JVCL as well as for non-JVCL components
+// Enable this define if you want to register property and component editors included in
+// JVCL for non-JVCL components as well
 {.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
-// Some new libraries and packages (currently, JvUIB and JvWizard) can be installed either in "stand-alone" mode
-// or in "JVCL" mode. These packages use the USEJVCL define to determine whether
-// they are installed in JVCL mode or not. By default, this define is enabled.
+// Some new libraries and packages (currently JvUIB, JvWizard and JvTimeFrameWork) can be
+// installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
+// USEJVCL define to determine whether they are installed in JVCL mode or not.
+// By default, this define is enabled.
+// NOTE: if you undefine USEJVCL, you can/should remove JvCoreXXX.dcp from the
+// requires node in the affected package(s)
 {$DEFINE USEJVCL}
+
 {$IFDEF BCB}
   {$ObjExportAll ON}
 {$ENDIF}
@@ -44,34 +48,32 @@ Known Issues:
 {$DEFINE JVCLThemesEnabled}
 {$ENDIF}
 
+{ Activates MIDAS components (DBRemoteLogin)}
 {.$DEFINE Jv_MIDAS}
-{ Jv MIDAS components }
 
-{$DEFINE USE_Jv_GIF}
 { This define enables GIF image support. Deactivate this define
-  if you are using another GIF image support library. See README.TXT
-  for the legal aspects }
+  if you are using another GIF image support library. }
+{$DEFINE USE_Jv_GIF}
 
-{$IFDEF WIN32}
-{$DEFINE USE_PROGRESSBAR}
 { Activate this define if you do not want to use TGauge Borland sample
   component in TDBProgress component and FileUtil routines. In this case
   TProgressBar component will be used }
-{$ENDIF}
+{$DEFINE USE_PROGRESSBAR}
 
-{$DEFINE USE_FOUR_DIGIT_YEAR}
 { This define controls whether FourDigitYear variable is used to control
   date format in TDateEdit, TDBDateEdit components. When this define is not
   active the ShortDateFormat variable is used instead }
+{$DEFINE USE_FOUR_DIGIT_YEAR}
 
-{.$DEFINE USE_OLD_DBLISTS}
 { Activate this define to install old BDE lists components for backward
-  compatibility with oldest RX versions }
+  compatibility with oldest RxLib versions }
+{.$DEFINE USE_OLD_DBLISTS}
 
-{$DEFINE DEFAULT_POPUP_CALENDAR}
 { This define controls whether a popup calendar is used as default
   instead of a modal dialog in TDateEdit, TDBDateEdit components }
+{$DEFINE DEFAULT_POPUP_CALENDAR}
 
+// Automatic defines for entry level Delphi's: 
 {$IFDEF D5Standard}
 {$DEFINE DelphiPersonalEdition}
 {$ENDIF}
@@ -84,9 +86,12 @@ Known Issues:
 {$DEFINE DelphiPersonalEdition}
 {$ENDIF}
 
+// Reduces warnings on D7:
 {$IFDEF COMPILER7_UP}
   {$WARN UNSAFE_TYPE OFF}
   {$WARN UNSAFE_CODE OFF}
   {$WARN UNSAFE_CAST OFF}
 {$ENDIF}
 
+// Used by JvTimeFrameWork, see JvTFDays.pas for more info on time blocks:
+{$DEFINE TIMEBLOCKS}

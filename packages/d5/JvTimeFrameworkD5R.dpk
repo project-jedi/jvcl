@@ -1,0 +1,43 @@
+package JvTimeFrameworkD5R;
+
+{$R *.res}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'Runtime support for JvTimeFramework'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl50;
+
+contains
+  JvTFUtils in '..\..\run\JvTFUtils.pas',
+  JvTFManager in '..\..\run\JvTFManager.pas',
+  JvTFWeeks in '..\..\run\JvTFWeeks.pas',
+  JvTFAlarm in '..\..\run\JvTFAlarm.pas',
+  JvTFDays in '..\..\run\JvTFDays.pas',
+  JvTFGlance in '..\..\run\JvTFGlance.pas',
+  JvTFGlTxtVw in '..\..\run\JvTFGlTxtVw.pas',
+  JvTFMonths in '..\..\run\JvTFMonths.pas',
+  JvTFSprsMtrx in '..\..\run\JvTFSprsMtrx.pas';
+
+end.
