@@ -42,7 +42,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, Menus, ShellApi,
-  JvButton, JvDirectories, JvTypes, JvFunctions;
+  JvButton, JvDirectories, JvTypes, JvFunctions, JvWinDialogs;
 
 type
   TJvRecentMenuBtn = class(TJvButton)
@@ -134,38 +134,64 @@ end;
 
 {*******************************************************}
 
+function GetAssociatedIcon(const Filename: string; SmallIcon: boolean): HICON;
+const
+  cSmall:array[boolean] of Cardinal = (SHGFI_LARGEICON,SHGFI_SMALLICON);
+var pfsi: TShFileInfo; hLarge: HICON;dwAttributes:Cardinal;w:word;
+begin
+  FillChar(pfsi, sizeof(pfsi), 0);
+  ShGetFileInfo(PChar(Filename), 0, pfsi, sizeof(pfsi),
+    SHGFI_ICONLOCATION or SHGFI_ATTRIBUTES or SHGFI_ICON or cSmall[SmallIcon] or SHGFI_USEFILEATTRIBUTES);
+  Result := pfsi.hIcon;
+  if Result = 0 then
+    ExtractIconEx(pfsi.szDisplayName, pfsi.iIcon, hLarge, Result, 1);
+  if not SmallIcon then
+    Result := hLarge;
+  if Result = 0 then
+    ExtractAssociatedIcon(GetFocus, PChar(Filename), w);
+end;
+
 procedure TJvRecentMenuBtn.DynBuild(Item: TMenuItem; Directory: string);
 var
   res: Integer;
   SearchRec: TSearchRec;
   it: TMenuItem;
-  w: word;
-  bmp:TBitmap;
+  bmp: TBitmap;
+  function RemoveLnk(const S:String):string;
+  var i:integer;
+  begin
+    Result := trim(StringReplace(S,'.lnk','',[rfReplaceAll,rfIgnoreCase]));
+    // now strip any extras from the end (like " (2)"):
+    for i := Length(Result) downto 1 do
+      if Result[i] = ' ' then
+    begin
+      SetLength(Result,i-1);
+      Exit;
+    end;  
+  end;  
 begin
   DeleteItem(Item, True);
   if (Directory <> '') and (Directory[Length(Directory)] <> '\') then
     Directory := Directory + '\';
   res := FindFirst(Directory + '*.*', faAnyFile, SearchRec);
-  if Item.Count = 1 then
-    Item.Items[0].Visible := True;
+  Item.Items[0].Visible := Item.Count = 1;
   while res = 0 do
   begin
-    if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
-      if (SearchRec.Attr and faDirectory = 0) and
-        (FileDateToDateTime(SearchRec.Time) > (Now - EncodeTime(23, 0, 0, 0))) then
-      begin
-        if Item.Count = 1 then
-          Item.Items[0].Visible := False;
-        it := TMenuItem.Create(Item);
-        it.Caption := ChangeFileExt(SearchRec.Name, '');
-        it.OnClick := UrlClick;
-        it.Hint := Directory + SearchRec.Name;
-        w := 0;
-        bmp := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w),16,clWhite);
-        it.Bitmap.Assign(bmp);
-        bmp.Free;
-        Item.Add(it);
-      end;
+    if (SearchRec.FindData.cFilename[0] <> '.') 
+      // (p3) kludge to get past the '.lnk' extension to discover folders...
+      and (ExtractFileExt(RemoveLnk(SearchRec.FindData.cFilename)) <> '')
+      and (FileDateToDateTime(SearchRec.Time) >= (Now - 2)) then
+    begin
+      Item.Items[0].Visible := (Item.Count = 1);
+      it := TMenuItem.Create(Item);
+      it.Caption := RemoveLnk(SearchRec.Name); 
+      it.OnClick := UrlClick;
+      it.Hint := Directory + it.Caption;
+      bmp := IconToBitmap2(GetAssociatedIcon(Directory + it.Caption, true),16,clMenu);
+      it.Bitmap.Assign(bmp);
+      bmp.Free;
+      Item.Add(it);
+    end;
     res := FindNext(SearchRec);
   end;
   FindClose(SearchRec);
@@ -186,3 +212,4 @@ begin
 end;
 
 end.
+

@@ -40,11 +40,11 @@ unit JvStartMenuBtn;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, Menus, ShellApi, ImgList,
-  JvTypes, JvButton, JvDirectories, JvFunctions;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Menus, ImgList, JvTypes, JvButton, JvDirectories;
 
 type
+  TJvStartMenuOption = (smCurrentUser,smCommon,smAllUsers);
+  TJvStartMenuOptions = set of TJvStartMenuOption;
   TJvStartMenuBtn = class(TJvButton)
   private
     FPopup: TPopupMenu;
@@ -52,6 +52,7 @@ type
     FOnUrl: TOnLinkClick;
     FOnPopup: TNotifyEvent;
     FImages: TImageList;
+    FOptions: TJvStartMenuOptions;
     procedure UrlClick(Sender: TObject);
   protected
     procedure AddIconFrom(Path: string);
@@ -64,12 +65,15 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    property Options:TJvStartMenuOptions read FOptions write FOptions default [smCurrentUser..smAllUsers];
     property OnLinkClick: TOnLinkClick read FOnUrl write FOnUrl;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
   end;
 
 implementation
-
+uses
+  ShellApi, JvFunctions;
+  
 resourcestring
   RC_EmptyItem = '<Empty>';
 
@@ -81,7 +85,7 @@ var
 begin
   inherited;
   FDirs := TJvDirectories.Create(Self);
-
+  FOptions := [smCurrentUser..smAllUsers];
   //Create Popup
   FPopup := TPopupMenu.Create(Self);
   it := TMenuItem.Create(FPopup);
@@ -155,22 +159,15 @@ end;
 procedure TJvStartMenuBtn.AddIconFrom(Path: string);
 var
   FileInfo: SHFILEINFO;
-  bmp2: TBitmap;
+  bmp: TBitmap;
 begin
-{  bmp := TBitmap.Create;
-  bmp.Width := 32;
-  bmp.Height := 32;
-  }
   SHGetFileInfo(PChar(Path), 0, FileInfo, SizeOf(FileInfo), SHGFI_SMALLICON or SHGFI_ICON);
-{  DrawIcon(bmp.Canvas.Handle, 0, 0, FileInfo.hIcon);
-  bmp2 := TBitmap.Create;
-  bmp2.Width := 16;
-  bmp2.Height := 16;
-  bmp2.Canvas.StretchDraw(Rect(0, 0, 16, 16), bmp);}
-  bmp2 := IconToBitmap2(FileInfo.hIcon,16);
-  FImages.AddMasked(bmp2,bmp2.TransparentColor);
-  bmp2.Free;
-//  bmp.Free;
+  bmp := IconToBitmap2(FileInfo.hIcon, 16, clMenu);
+  try
+    FImages.AddMasked(bmp, bmp.TransparentColor);
+  finally
+    bmp.Free;
+  end;
 end;
 
 {*******************************************************}
@@ -184,25 +181,41 @@ end;
 
 procedure TJvStartMenuBtn.PopupCreate(Sender: TObject);
 begin
-  DynBuild(FPopup.Items, FDirs.StartMenu);
+  if smCurrentUser in Options then
+    DynBuild(FPopup.Items, FDirs.StartMenu);
+  if smCommon in Options then
+    DynBuild(FPopup.Items, FDirs.CommonStartMenu);
+  if smAllUsers in Options then
+    DynBuild(FPopup.Items, FDirs.AllUsersStartMenu);
 end;
 
 {*******************************************************}
 
 procedure TJvStartMenuBtn.DynBuild(Item: TMenuItem; Directory: string);
 var
-  res: Integer;
+  res, FolderIndex: Integer;
   SearchRec: TSearchRec;
   it, it2: TMenuItem;
   first: Boolean;
-  bmp:TBitmap;
+  bmp: TBitmap;
   w: Word;
+
+  function GetPathImage(const APath: string): TBitmap;
+  var
+    FileInfo: SHFILEINFO;
+  begin
+    SHGetFileInfo(PChar(APath), 0, FileInfo, SizeOf(FileInfo), SHGFI_ICON or SHGFI_SMALLICON);
+    Result := IconToBitmap2(FileInfo.hIcon, 16, clMenu);
+//  Result := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w),16,clMenu);
+  end;
+
 begin
   DeleteItem(Item, True);
   if (Directory <> '') and (Directory[Length(Directory)] <> '\') then
     Directory := Directory + '\';
   res := FindFirst(Directory + '*.*', faAnyFile, SearchRec);
   first := True;
+  FolderIndex := 1;
   while res = 0 do
   begin
     if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
@@ -216,7 +229,8 @@ begin
         it.Hint := Directory + SearchRec.Name;
         it.OnClick := DirectoryClick;
         it.ImageIndex := 0;
-        Item.Add(it);
+        Item.Insert(FolderIndex, it);
+        Inc(FolderIndex);
         it2 := TMenuItem.Create(it);
         with it2 do
         begin
@@ -233,7 +247,7 @@ begin
         it.OnClick := UrlClick;
         it.Hint := Directory + SearchRec.Name;
         w := 0;
-        bmp := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w),16,clWhite);
+        bmp := GetPathImage(it.Hint);
         it.Bitmap.Assign(bmp);
         bmp.Free;
         Item.Add(it);
@@ -244,4 +258,6 @@ begin
   FindClose(SearchRec);
 end;
 
+
 end.
+

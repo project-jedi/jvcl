@@ -33,7 +33,8 @@ unit JvDirectories;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Registry, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Registry, JvTypes, 
+  JvComponent;
 
 type
   TJvDirectories = class(TJvComponent)
@@ -46,6 +47,8 @@ type
     function GetTempPath: string;
     function GetValueAtIndex(Index: Integer): string;
     function GetProgramFiles: string;
+    function GetCommonIndex(const Index: Integer): string;
+    function GetAllUsersIndex(const Index: Integer): string;
   protected
     function CheckLastChar(Value: string): string;
   public
@@ -70,17 +73,42 @@ type
     property StartMenu: string index 12 read GetValueAtIndex write FBidon stored False;
     property Startup: string index 13 read GetValueAtIndex write FBidon stored False;
     property Templates: string index 14 read GetValueAtIndex write FBidon stored False;
+
+    property CommonAdminTools:string index 0 read GetCommonIndex write FBidon stored false;
+    property CommonAppData:string index 1 read GetCommonIndex write FBidon stored false;
+    property CommonDesktop:string index 2 read GetCommonIndex write FBidon stored false;
+    property CommonDocuments:string index 3 read GetCommonIndex write FBidon stored false;
+    property CommonPrograms:string index 4 read GetCommonIndex write FBidon stored false;
+    property CommonStartMenu:string index 5 read GetCommonIndex write FBidon stored false;
+    property CommonStartup:string index 6 read GetCommonIndex write FBidon stored false;
+    property CommonTemplates:string index 7 read GetCommonIndex write FBidon stored false;
+    property CommonPersonal:string index 8 read GetCommonIndex write FBidon stored false;
+    
+//    property AllUsersAdminTools:string index 0 read GetAllUsersIndex write FBidon stored false;
+    property AllUsersAppData:string index 1 read GetAllUsersIndex write FBidon stored false;
+    property AllUsersDesktop:string index 2 read GetAllUsersIndex write FBidon stored false;
+    property AllUsersDocuments:string index 3 read GetAllUsersIndex write FBidon stored false;
+    property AllUsersPrograms:string index 4 read GetAllUsersIndex write FBidon stored false;
+    property AllUsersStartMenu:string index 5 read GetAllUsersIndex write FBidon stored false;
+    property AllUsersStartup:string index 6 read GetAllUsersIndex write FBidon stored false;
+    property AllUsersTemplates:string index 7 read GetAllUsersIndex write FBidon stored false;
+    property AllUsersFavorites:string index 9 read GetAllUsersIndex write FBidon stored false;
   end;
 
 implementation
 
 resourcestring
   RC_ShellFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\';
+  RC_allFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders\'; 
 
 var
-  DirectoryList: array[0..14] of string = ('AppData', 'Cache', 'Cookies', 'Desktop',
+  DirectoryList: array[0..14] of shortstring = ('AppData', 'Cache', 'Cookies', 'Desktop',
     'Favorites', 'Fonts', 'History', 'NetHood', 'Personal', 'Programs', 'Recent',
-    'SendTo', 'Start Menu', 'Statup', 'Templates');
+    'SendTo', 'Start Menu', 'Startup', 'Templates');
+  CommonDirectoryList:array [0..9] of shortstring = 
+  ('Common Administrative Tools','Common AppData','Common  Desktop',
+   'Common  Documents','Common Programs','Common Start Menu',
+   'Common Startup','Common Templates','Personal','Common Favorites');
 
   {******************************************************}
 
@@ -120,9 +148,10 @@ function TJvDirectories.GetValueAtIndex(Index: Integer): string;
 begin
   try
     with TRegistry.Create do
-    begin
+    try
       OpenKey(RC_ShellFolders, False);
       Result := CheckLastChar(ReadString(DirectoryList[Index]));
+    finally
       Free;
     end;
   except
@@ -146,10 +175,50 @@ function TJvDirectories.GetProgramFiles: string;
 begin
   try
     with TRegistry.Create do
-    begin
+    try
       RootKey := HKEY_LOCAL_MACHINE;
       OpenKey('Software\Microsoft\Windows\CurrentVersion\', False);
       Result := CheckLastChar(ReadString('ProgramFilesDir'));
+    finally
+      Free;
+    end;
+  except
+    Result := '';
+  end;
+end;
+
+function TJvDirectories.GetCommonIndex(const Index: Integer): string;
+begin
+  try
+    with TRegistry.Create do
+    try
+      RootKey := HKEY_LOCAL_MACHINE;
+      OpenKey(RC_ShellFolders, False);
+      Result := CheckLastChar(ReadString(CommonDirectoryList[Index]));
+    finally
+      Free;
+    end;
+  except
+    Result := '';
+  end;
+end;
+
+function ExpandEnvVar(const Value: string): string;
+var aDest: array[0..MAX_PATH] of char;
+begin
+  ExpandEnvironmentStrings(PChar(Value), aDest, MAX_PATH - 1);
+  Result := aDest;
+end;
+
+function TJvDirectories.GetAllUsersIndex(const Index: Integer): string;
+begin
+  try
+    with TRegistry.Create do
+    try
+      RootKey := HKEY_LOCAL_MACHINE;
+      OpenKey(RC_ShellFolders, False);
+      Result := CheckLastChar(ExpandEnvVar(ReadString(CommonDirectoryList[Index])));
+    finally
       Free;
     end;
   except

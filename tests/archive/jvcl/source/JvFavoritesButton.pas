@@ -165,12 +165,14 @@ var
   SearchRec: TSearchRec;
   it, it2: TMenuItem;
   first: Boolean;
+  FolderIndex:integer;
 begin
   DeleteItem(Item, True);
   if (Directory <> '') and (Directory[Length(Directory)] <> '\') then
     Directory := Directory + '\';
   res := FindFirst(Directory + '*.*', faAnyFile, SearchRec);
   first := True;
+  FolderIndex := 1;
   while res = 0 do
   begin
     if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
@@ -184,7 +186,8 @@ begin
         it.Hint := Directory + SearchRec.Name;
         it.OnClick := DirectoryClick;
         it.ImageIndex := 0;
-        Item.Add(it);
+        Item.Insert(FolderIndex,it);
+        Inc(FolderIndex);
         it2 := TMenuItem.Create(it);
         with it2 do
         begin
@@ -228,7 +231,7 @@ var
   FileInfo: SHFILEINFO;
   bmp: TBitmap;
 begin
-  SHGetFileInfo(PChar(Path), 0, FileInfo, SizeOf(FileInfo), SHGFI_ICON);
+  SHGetFileInfo(PChar(Path), 0, FileInfo, SizeOf(FileInfo), SHGFI_ICON or SHGFI_SMALLICON);
   bmp := IconToBitmap2(FileInfo.hIcon,16,clWhite);
   FImages.AddMasked(bmp, bmp.TransparentColor);
   bmp.Free;

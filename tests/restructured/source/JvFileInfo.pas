@@ -242,6 +242,7 @@ function ExpandEnvVar(const Value: string): string;
 var aDest: array[0..MAX_PATH] of char;
 begin
   ExpandEnvironmentStrings(PChar(Value), aDest, MAX_PATH - 1);
+  Result := aDest;
 end;
 
 function GetAdvancedIconLocation(const Filename:string;var iIcon:integer):string;
