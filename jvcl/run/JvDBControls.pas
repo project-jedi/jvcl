@@ -1146,7 +1146,7 @@ begin
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateData;
   inherited SetReadOnly(True);
-  AlwaysEnable := True;
+  AlwaysEnableButton := True;
 end;
 
 destructor TJvDBComboEdit.Destroy;
@@ -1416,7 +1416,7 @@ begin
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateData;
   Self.OnAcceptDate := AfterPopup;
-  AlwaysEnable := True;
+  AlwaysEnableButton := True;
   inherited SetReadOnly(True);
   UpdateMask;
 end;
@@ -1746,7 +1746,7 @@ begin
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateFieldData;
   inherited SetReadOnly(True);
-  AlwaysEnable := True;
+  AlwaysEnableButton := True;
 end;
 
 destructor TJvDBCalcEdit.Destroy;
