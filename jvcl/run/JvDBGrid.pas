@@ -235,6 +235,7 @@ type
     FTitleRowHeight: Integer;
     
     FChangeLinks: TObjectList;
+    FShowMemos: Boolean;
     
     procedure SetAutoSizeRows(Value: Boolean);
     procedure SetRowResize(Value: Boolean);
@@ -278,6 +279,7 @@ type
     procedure SetSortedField(const Value: string);
     procedure SetSortMarker(const Value: TSortMarker);
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+    procedure SetShowMemos(const Value: Boolean);
 
     procedure SetControls(Value: TJvDBGridControls);
     procedure HideCurrentControl;
@@ -455,6 +457,9 @@ type
     property TitleRowHeight: Integer read FTitleRowHeight write SetTitleRowHeight;
     { WordWrap: are memo and string fields displayed on many lines ? }
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
+
+    // If true, Memo fields are shown as memo objects
+    property ShowMemos: Boolean read FShowMemos write SetShowMemos default False;
   end;
 
 implementation
@@ -866,6 +871,7 @@ begin
   FRowResize := False;
   FRowsHeight := DefaultRowHeight;
   FTitleRowHeight := RowHeights[0];
+  FShowMemos := False;
   
   FChangeLinks := TObjectList.Create(False);
 end;
@@ -913,7 +919,8 @@ begin
       ftReference, ftDataSet:
         Result := Ord(gpData);
       ftMemo, ftFmtMemo, ftOraClob:
-        Result := Ord(gpMemo);
+        if ShowMemos then
+          Result := Ord(gpMemo);
       ftOraBlob:
         Result := Ord(gpBlob);
       ftBoolean:
@@ -3657,6 +3664,12 @@ begin
   finally
     Frm.Free;
   end;
+  Invalidate;
+end;
+
+procedure TJvDBGrid.SetShowMemos(const Value: Boolean);
+begin
+  FShowMemos := Value;
   Invalidate;
 end;
 
