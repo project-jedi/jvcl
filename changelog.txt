@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-05-16
+- JvgPointEditor.pas moved from \run to \design // peter3
 2004-05-07
 - Added support for WeekNumbers in JvDateTimePicker // peter3
 - Added AutoHeaders property to NavPane (automatically displays a header in the page(s)) // peter3
