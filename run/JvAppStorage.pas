@@ -839,7 +839,7 @@ const
   cInvalidIdentifier = ' #!@not known@!# ';
   // (rom) should this be PathDelim + '*' as implemented before i changed it
   // (rom) or \* as comments say?
-  cSubStorePath = '\*';
+  cSubStorePath = PathDelim + '*' ;
 
 {$IFDEF COMPILER5}
 function Supports(Instance: TObject; const Intf: TGUID): Boolean;
@@ -1177,7 +1177,7 @@ procedure TJvCustomAppStorage.WriteStringListItem(Sender: TJvCustomAppStorage;
   const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
 begin
   if List is TStrings then
-    Sender.WriteString(ConcatPaths([Path, ItemName + IntToStr(Index)]), TStrings(List)[Index]);
+    Sender.WriteStringInt(ConcatPaths([Path, ItemName + IntToStr(Index)]), TStrings(List)[Index]);
 end;
 
 procedure TJvCustomAppStorage.DeleteStringListItem(Sender: TJvCustomAppStorage;
@@ -1839,15 +1839,11 @@ function TJvCustomAppStorage.ReadList(const Path: string; const List: TObject;
   const ItemName: string = cItem): Integer;
 var
   I: Integer;
-  TargetStore: TJvCustomAppStorage;
-  TargetPath: string;
   ItemCount: Integer;
 begin
-  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
-  Delete(TargetPath, Length(TargetPath) - 1, 2);
-  ItemCount := TargetStore.ReadIntegerInt(ConcatPaths([TargetPath, cCount]), 0);
+  ItemCount := ReadInteger(ConcatPaths([Path, cCount]), 0);
   for I := 0 to ItemCount - 1 do
-    OnReadItem(TargetStore, TargetPath, List, I, ItemName);
+    OnReadItem(Self, Path, List, I, ItemName);
   Result := ItemCount;
 end;
 
@@ -1862,16 +1858,16 @@ var
   PrevListCount: Integer;
   I: Integer;
 begin
-  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
+  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath); // Only Needed for ReadOnly
   if not TargetStore.ReadOnly then
   begin
-    Delete(TargetPath, Length(TargetPath) - 1, 2);
-    PrevListCount := TargetStore.ReadIntegerInt(ConcatPaths([TargetPath, cCount]), 0);
-    TargetStore.WriteIntegerInt(ConcatPaths([TargetPath, cCount]), ItemCount);
+    PrevListCount := ReadInteger(ConcatPaths([Path, cCount]), 0);
+    DeleteSubTree(Path);
+    WriteInteger(ConcatPaths([Path, cCount]), ItemCount);
     for I := 0 to ItemCount - 1 do
-      OnWriteItem(TargetStore, TargetPath, List, I, ItemName);
+      OnWriteItem(Self, Path, List, I, ItemName);
     if (PrevListCount > ItemCount) and Assigned(OnDeleteItems) then
-      OnDeleteItems(TargetStore, TargetPath, List, ItemCount, PrevListCount - 1, ItemName);
+      OnDeleteItems(Self, Path, List, ItemCount, PrevListCount - 1, ItemName);
   end;
 end;
 
@@ -1889,80 +1885,64 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+  if not ListStored(Path) and StorageOptions.DefaultIfValueNotExists then
   begin
     Result := List.Count;
     exit;
   end;
-  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
-  Delete(TargetPath, Length(TargetPath) - 1, 2);
   if ClearFirst then
     List.Clear;
+  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath); // Only needed for assigning the event
   TargetStore.FCurrentInstanceCreateEvent := ItemCreator;
-  Result := TargetStore.ReadList(TargetPath, List, TargetStore.ReadObjectListItem, ItemName);
+  Result := ReadList(Path, List, ReadObjectListItem, ItemName);
   TargetStore.FCurrentInstanceCreateEvent := nil;
 end;
 
 procedure TJvCustomAppStorage.WriteObjectList(const Path: string; List: TList;
   const ItemName: string = cItem);
-var
-  TargetStore: TJvCustomAppStorage;
-  TargetPath: string;
 begin
-  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
-  Delete(TargetPath, Length(TargetPath) - 1, 2);
-  TargetStore.WriteList(TargetPath, List, List.Count,
-    TargetStore.WriteObjectListItem, TargetStore.DeleteObjectListItem, ItemName);
+  WriteList(Path, List, List.Count,
+    WriteObjectListItem, DeleteObjectListItem, ItemName);
 end;
 
 function TJvCustomAppStorage.ReadCollection(const Path: string; List: TCollection;
   const ClearFirst: Boolean = True; const ItemName: string = cItem): Integer;
-var
-  TargetStore: TJvCustomAppStorage;
-  TargetPath: string;
 begin
-  if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+  if not ListStored(Path) and StorageOptions.DefaultIfValueNotExists then
   begin
     Result := List.Count;
     exit;
   end;
-  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
-  Delete(TargetPath, Length(TargetPath) - 1, 2);
-  if ClearFirst then
-    List.Clear;
-  Result := TargetStore.ReadList(TargetPath, List, TargetStore.ReadCollectionItem, ItemName);
+  try
+    List.BeginUpdate;
+    if ClearFirst then
+      List.Clear;
+    Result := ReadList(Path, List, ReadCollectionItem, ItemName);
+  finally
+    List.EndUpdate;
+  end;
 end;
 
 procedure TJvCustomAppStorage.WriteCollection(const Path: string;
   List: TCollection; const ItemName: string = cItem);
-var
-  TargetStore: TJvCustomAppStorage;
-  TargetPath: string;
 begin
-  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
-  Delete(TargetPath, Length(TargetPath) - 1, 2);
-  TargetStore.WriteList(TargetPath, List, List.Count,
-    TargetStore.WriteCollectionItem, TargetStore.DeleteCollectionItem, ItemName);
+  WriteList(Path, List, List.Count,
+    WriteCollectionItem, DeleteCollectionItem, ItemName);
 end;
 
 function TJvCustomAppStorage.ReadStringList(const Path: string; const SL: TStrings;
   const ClearFirst: Boolean = True; const ItemName: string = cItem): Integer;
-var
-  TargetStore: TJvCustomAppStorage;
-  TargetPath: string;
 begin
-  if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+  if not ListStored(Path) and StorageOptions.DefaultIfValueNotExists then
   begin
     Result := SL.Count;
     exit;
   end;
   SL.BeginUpdate;
   try
-    ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
-    Delete(TargetPath, Length(TargetPath) - 1, 2);
     if ClearFirst then
       SL.Clear;
-    Result := TargetStore.ReadList(TargetPath, SL, TargetStore.ReadStringListItem, ItemName);
+    Result := ReadList(Path, SL, ReadStringListItem, ItemName);
   finally
     SL.EndUpdate;
   end;
@@ -1970,14 +1950,9 @@ end;
 
 procedure TJvCustomAppStorage.WriteStringList(const Path: string;
   const SL: TStrings; const ItemName: string = cItem);
-var
-  TargetStore: TJvCustomAppStorage;
-  TargetPath: string;
 begin
-  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
-  Delete(TargetPath, Length(TargetPath) - 1, 2);
-  TargetStore.WriteList(TargetPath, SL, SL.Count,
-    TargetStore.WriteStringListItem, TargetStore.DeleteStringListItem, ItemName);
+  WriteList(Path, SL, SL.Count,
+    WriteStringListItem, DeleteStringListItem, ItemName);
 end;
 
 function TJvCustomAppStorage.ReadStringObjectList(const Path: string; const SL: TStrings;
@@ -1993,7 +1968,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+  if not ListStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
   begin
     Result := SL.Count;
     exit;
