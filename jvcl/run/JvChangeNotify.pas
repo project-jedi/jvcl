@@ -134,7 +134,7 @@ uses
   {$IFNDEF COMPILER6_UP}
   JvJCLUtils, // DirectoryExists
   {$ENDIF COMPILER6_UP}
-  JvTypes, JvResources;
+  JvConsts, JvResources, JvTypes;
 
 function ActionsToString(Actions: TJvChangeActions): string;
 const
@@ -312,7 +312,7 @@ begin
   SetLength(Result, FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
     GetLastError, 0, PChar(Result), Length(Result), nil));
   raise
-    EJVCLException.CreateFmt('%s:'#13#10'%s', [Result, Msg]);
+    EJVCLException.CreateFmt('%s:' + sLineBreak + '%s', [Result, Msg]);
 end;
 
 procedure TJvChangeNotify.DoThreadChangeNotify(Sender: TObject; Index: Integer);

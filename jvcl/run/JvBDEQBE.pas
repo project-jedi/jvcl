@@ -124,16 +124,6 @@ uses
   BDEConst,
   JvDBUtils;
 
-function NameDelimiter(C: Char): Boolean;
-begin
-  Result := C in [' ', ',', ';', ')', '.', #13, #10];
-end;
-
-function IsLiteral(C: Char): Boolean;
-begin
-  Result := C in ['''', '"'];
-end;
-
 constructor TJvQBEQuery.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

@@ -310,14 +310,12 @@ type
 function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
   I: Integer;
-  Buffer: array [0..63] of Char;
 begin
   Result := False;
   for I := 1 to Length(Value) do
     if not (Value[I] in [DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
       Exit;
-  Result := TextToFloat(StrPLCopy(Buffer, Value,
-    SizeOf(Buffer) - 1), RetValue, fvExtended);
+  Result := TextToFloat(PChar(Value), RetValue, fvExtended);
 end;
 
 function FormatFloatStr(const S: string; Thousands: Boolean): string;
@@ -327,7 +325,7 @@ var
 begin
   Result := '';
   MaxSym := Length(S);
-  IsSign := (MaxSym > 0) and (S[1] in ['-', '+']);
+  IsSign := (MaxSym > 0) and (S[1] in SignSymbols);
   if IsSign then
     MinSym := 2
   else
@@ -454,9 +452,10 @@ end;
 
 procedure TJvCustomNumEdit.KeyPress(var Key: Char);
 begin
-  if PopupVisible and (UpCase(Key) in ['0'..'9', DecimalSeparator, '.', ',',
-    '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', #8, #13] -
-      [ThousandSeparator]) then
+  if PopupVisible and (UpCase(Key) in
+    DigitSymbols +
+    [DecimalSeparator, '.', ',', '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', Backspace, Cr] -
+    [ThousandSeparator]) then
   begin
     TJvPopupWindowHack(FPopup).KeyPress(Key);
     Key := #0;

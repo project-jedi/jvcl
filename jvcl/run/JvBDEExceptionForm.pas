@@ -206,8 +206,8 @@ begin
   Caption := SDBExceptCaption;
   BDELabel.Caption := SBDEErrorLabel;
   NativeLabel.Caption := SServerErrorLabel;
-  Next.Caption := SNextButton + ' >';
-  Back.Caption := '< ' + SPrevButton;
+  Next.Caption := RsNextButtonCaption;
+  Back.Caption := RsPrevButtonCaption;
   OKBtn.Caption := SOKButton;
   { Set exception handler }
   FPrevOnException := Application.OnException;

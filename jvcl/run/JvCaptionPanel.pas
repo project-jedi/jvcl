@@ -351,6 +351,7 @@ begin
   inherited Create(AOwner);
   DoubleBuffered := True;
   FCaptionFont := TFont.Create;
+  // (rom) Warning! This seems no standard Windows font
   FCaptionFont.Name := 'MS Shell Dlg 2';
   FCaptionFont.Size := 10;
   FCaptionFont.Style := [fsBold];
