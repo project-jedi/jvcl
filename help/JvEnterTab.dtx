@@ -8,7 +8,6 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvEnterAsTab
 <TITLEIMG TJvEnterAsTab>
@@ -18,20 +17,15 @@ JVCLInfo
 Summary
   A component to redirect all Enter keys to Tab keys.
 Description
-  Use a TJvEnterAsTab component when you need to redirect Enter
-  keys to Tab keys.
+  Use a TJvEnterAsTab component when you need to redirect Enter keys to Tab keys.
 
-  Many DOS programs use Enter to move between the entry fields
-  in the "form". Windows programs use the Tab character instead
-  but many users still prefer using the Enter key. Especially
-  when working with the numeric keypad, using Enter as Tab
-  speeds up data entry manifold.
+  Many DOS programs use Enter to move between the entry fields in the "form". Windows programs use the
+  Tab character instead but many users still prefer using the Enter key. Especially when working with
+  the numeric keypad, using Enter as Tab speeds up data entry manifold.
 Note
-  TJvEnterAsTab is actually a visual component (derived from
-  TGraphicControl) but it behaves as a TComponent both at
-  design as well as runtime. The reason for this is that by
-  inheriting from a visual control, there is no need to create
-  a hidden window to receive the key presses since this
+  TJvEnterAsTab is actually a visual component (derived from TGraphicControl) but it behaves as a
+  TComponent both at design as well as runtime. The reason for this is that by inheriting from a visual
+  control, there is no need to create a hidden window to receive the key presses since this
   functionality is already built into visual controls.
 
 ----------------------------------------------------------------------------------------------------
@@ -39,10 +33,10 @@ Note
 Summary
   Specifies if the component should consider button controls.
 Description
-  Use AllowDefault to specify if button controls should process the Enter key themselves. For
-  example, when this property is true and the currently active control on the form is a button, the
-  button will be clicked when the user presses Enter. If this property is set to false, focus is
-  moved to the next control instead.
+  Use AllowDefault to specify if button controls should process the Enter key themselves. For example,
+  when this property is true and the currently active control on the form is a button, the button will
+  be clicked when the user presses Enter. If this property is set to false, focus is moved to the next
+  control instead.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEnterAsTab.EnterAsTab
@@ -58,7 +52,7 @@ See Also
 Summary
   Sets the size of the control.
 Description
-  TJvEnterAsTab overrides the SetBounds method to restrict the size for the component so it appears
-  to be a non-visual component. Specifically, width and height are never allowed to change from the
+  TJvEnterAsTab overrides the SetBounds method to restrict the size for the component so it appears to
+  be a non-visual component. Specifically, width and height are never allowed to change from the
   default 28 by 28 pixels.
 
