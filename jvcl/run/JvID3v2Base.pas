@@ -1032,7 +1032,7 @@ type
     property FrameLengthInBytes: Integer read FFrameLengthInBytes;
     property HeaderFoundAt: Int64 read FHeaderFoundAt;
     property IsValid: Boolean read GetIsValid;
-    property IsVbr: Boolean read FIsVbr;
+    property IsVBR: Boolean read FIsVBR;
     property Layer: TJvMPEGLayer read FLayer;
     property LengthInSec: Integer read FLengthInSec;
     property ModeExtension: TJvMPEGModeExtension read FModeExtension;
@@ -1293,12 +1293,12 @@ var
     TJvID3TextFrame, { fiContentType }
     TJvID3TextFrame, { fiCopyright }
     TJvID3TextFrame, { fiDate (deprecated as of 2.4) }
-    TJvID3TimeStampFrame, { fiEncodingTime (new in 2.4) }
+    TJvID3TimestampFrame, { fiEncodingTime (new in 2.4) }
     TJvID3NumberFrame, { fiPlaylistDelay }
-    TJvID3TimeStampFrame, { fiOrigReleaseTime (new in 2.4) }
-    TJvID3TimeStampFrame, { fiRecordingTime (new in 2.4) }
-    TJvID3TimeStampFrame, { fiReleaseTime (new in 2.4) }
-    TJvID3TimeStampFrame, { fiTaggingTime (new in 2.4) }
+    TJvID3TimestampFrame, { fiOrigReleaseTime (new in 2.4) }
+    TJvID3TimestampFrame, { fiRecordingTime (new in 2.4) }
+    TJvID3TimestampFrame, { fiReleaseTime (new in 2.4) }
+    TJvID3TimestampFrame, { fiTaggingTime (new in 2.4) }
     TJvID3DoubleListFrame, { fiInvolvedPeople2 (new in 2.4) }
     TJvID3TextFrame, { fiEncodedBy }
     TJvID3SimpleListFrame, { fiLyricist }
@@ -2344,7 +2344,7 @@ begin
       { Read at max CBufferSize bytes from the stream }
       BytesRead := Source.Read(SourceBuf^, Min(MaxBufSize, BytesToRead));
       if BytesRead = 0 then
-        Id3Error(RsECouldNotReadData);
+        ID3Error(RsECouldNotReadData);
 
       Dec(BytesToRead, BytesRead);
 
@@ -2393,7 +2393,7 @@ begin
       { Read at max CBufferSize div 2 bytes from the stream }
       BytesRead := Source.Read(SourceBuf^, Min(MaxBufSize div 2, BytesToRead));
       if BytesRead = 0 then
-        Id3Error(RsECouldNotReadData);
+        ID3Error(RsECouldNotReadData);
 
       Dec(BytesToRead, BytesRead);
 
@@ -3397,7 +3397,7 @@ begin
     if icsUsingTempStream in FState then
     begin
       if not Assigned(FTempStream) then
-        Id3Error(RsENoTempStream, Self);
+        ID3Error(RsENoTempStream, Self);
 
       LTempStreamSize := GetTempStreamSize;
       FTempStream.Seek(0, soFromBeginning);
@@ -3423,7 +3423,7 @@ end;
 procedure TJvID3Controller.BeginReading;
 begin
   if FState <> [] then
-    Id3Error(RsEAlreadyReadingWriting, Self);
+    ID3Error(RsEAlreadyReadingWriting, Self);
 
   Include(FState, icsReading);
   FStream := TJvID3Stream.Create;
@@ -3439,7 +3439,7 @@ end;
 procedure TJvID3Controller.BeginUseTempStream;
 begin
   if icsUsingTempStream in FState then
-    Id3Error(RsEAlreadyUsingTempStream, Self);
+    ID3Error(RsEAlreadyUsingTempStream, Self);
 
   Include(FState, icsUsingTempStream);
   if not Assigned(FTempStream) then
@@ -3456,7 +3456,7 @@ end;
 procedure TJvID3Controller.BeginWriting;
 begin
   if FState <> [] then
-    Id3Error(RsEAlreadyReadingWriting, Self);
+    ID3Error(RsEAlreadyReadingWriting, Self);
 
   Include(FState, icsWriting);
   FStream := TJvID3Stream.Create;
@@ -3711,7 +3711,7 @@ begin
         fiRecordingTime:
           if not YearSet and (DoOverwrite or (Year = '')) then
           begin
-            Year := Format('%.4d', [YearOfDate(TJvID3TimeStampFrame(Frame).Value)]);
+            Year := Format('%.4d', [YearOfDate(TJvID3TimestampFrame(Frame).Value)]);
             YearSet := True;
           end;
         fiComment:
@@ -3774,7 +3774,7 @@ end;
 procedure TJvID3Controller.EndReading;
 begin
   if not (icsReading in FState) then
-    Id3Error(RsENotReading, Self);
+    ID3Error(RsENotReading, Self);
 
   Exclude(FState, icsReading);
   FreeAndNil(FStream);
@@ -3793,7 +3793,7 @@ end;
 procedure TJvID3Controller.EndUseTempStream;
 begin
   if not (icsUsingTempStream in FState) then
-    Id3Error(RsENotUsingTempStream, Self);
+    ID3Error(RsENotUsingTempStream, Self);
 
   Exclude(FState, icsUsingTempStream);
   { Do not free the temp stream }
@@ -3802,7 +3802,7 @@ end;
 procedure TJvID3Controller.EndWriting;
 begin
   if not (icsWriting in FState) then
-    Id3Error(RsENotWriting, Self);
+    ID3Error(RsENotWriting, Self);
 
   Exclude(FState, icsWriting);
   FreeAndNil(FStream);
@@ -3940,7 +3940,7 @@ end;
 function TJvID3Controller.GetTempStreamSize: Cardinal;
 begin
   if not Assigned(FTempStream) then
-    Id3Error(RsENoTempStream, Self);
+    ID3Error(RsENoTempStream, Self);
 
   Result := FTempStream.Position;
 end;
@@ -4083,7 +4083,7 @@ end;
 procedure TJvID3Controller.RemoveUnsynchronisationSchemeToTempStream(const ASize: Integer);
 begin
   if icsUsingTempStream in FState then
-    Id3Error(RsEAlreadyUsingTempStream, Self);
+    ID3Error(RsEAlreadyUsingTempStream, Self);
 
   if not Assigned(FTempStream) then
     FTempStream := TJvID3Stream.Create;
@@ -4350,7 +4350,7 @@ var
   LTempStreamSize: Cardinal;
 begin
   if not Assigned(FTempStream) then
-    Id3Error(RsENoTempStream, Self);
+    ID3Error(RsENoTempStream, Self);
 
   LTempStreamSize := GetTempStreamSize;
   FTempStream.Seek(0, soFromBeginning);
@@ -5041,7 +5041,7 @@ begin
 
     { hefCRCDataPresent is currently not supported }
     if (hefCRCDataPresent in ChangedFlags) and (hefCRCDataPresent in Value) then
-      Id3Error(RsEControllerDoesNotSupportCRC, Controller);
+      ID3Error(RsEControllerDoesNotSupportCRC, Controller);
 
     FFlags := Value;
   end;
@@ -5183,7 +5183,7 @@ begin
     if Version in [mvVersion2, mvVersion25] then
       Tmp := Tmp / 2;
 
-    FBitRate := Round(Tmp);
+    FBitrate := Round(Tmp);
     FLengthInSec := Round((FAudioSize * 8) / (1000 * Tmp));
   end
   else
@@ -5196,7 +5196,7 @@ begin
     Tmp := 0;
     if (FBitrate <> CFreeBitrate) and (FSamplingRateFrequency > 0) then
     begin
-      Tmp := CLayerArray[Layer] * FBitRate / FSamplingRateFrequency + FPaddingLength;
+      Tmp := CLayerArray[Layer] * FBitrate / FSamplingRateFrequency + FPaddingLength;
       if Version in [mvVersion2, mvVersion25] then
         Tmp := Tmp / 2;
     end;
@@ -5386,30 +5386,30 @@ begin
   else
   begin
     if ChannelMode <> mcSingleChannel then
-      Inc(AMPegTag, 17 + 4)
+      Inc(AMPEGTag, 17 + 4)
     else
-      Inc(AMPegTag, 9 + 4);
+      Inc(AMPEGTag, 9 + 4);
   end;
 
   if (PInteger(AMPEGTag)^ <> PInteger(VBRTag_Xing)^) and
     (PInteger(AMPEGTag)^ <> PInteger(VBRTag_Info)^) then
     Exit;
-  Inc(AMPegTag, 4);
+  Inc(AMPEGTag, 4);
 
   { (rb) Now always true?? }
   FIsVBR := True;
 
-  HeadFlags := ReverseBytes(PInteger(AMPegTag)^);
-  Inc(AMPegTag, 4);
+  HeadFlags := ReverseBytes(PInteger(AMPEGTag)^);
+  Inc(AMPEGTag, 4);
 
   if HeadFlags and FRAMES_FLAG > 0 then
   begin
-    FFrameCount := ReverseBytes(PInteger(AMPegTag)^);
-    Inc(AMPegTag, 4);
+    FFrameCount := ReverseBytes(PInteger(AMPEGTag)^);
+    Inc(AMPEGTag, 4);
   end;
 
   if HeadFlags and BYTES_FLAG > 0 then
-    FAudioSize := ReverseBytes(PInteger(AMPegTag)^);
+    FAudioSize := ReverseBytes(PInteger(AMPEGTag)^);
 end;
 
 procedure TJvID3FileInfo.Read(AStream: TStream; const Offset: Int64);
@@ -5572,7 +5572,7 @@ end;
 
 procedure TJvID3Frame.Error(const Msg: string);
 begin
-  Id3ErrorFmt(RsEErrorInFrame, [FrameName, Name, Msg], Controller);
+  ID3ErrorFmt(RsEErrorInFrame, [FrameName, Name, Msg], Controller);
 end;
 
 procedure TJvID3Frame.ErrorFmt(const Msg: string;
@@ -5840,11 +5840,11 @@ begin
 
     { fhfIsCompressed is currently not supported }
     if (fhfIsCompressed in ChangedFlags) and (fhfIsCompressed in Value) then
-      Id3Error(RsEControllerDoesNotSupportCompression, Controller);
+      ID3Error(RsEControllerDoesNotSupportCompression, Controller);
 
     { fhfIsEncrypted is currently not supported }
     if (fhfIsEncrypted in ChangedFlags) and (fhfIsEncrypted in Value) then
-      Id3Error(RsEControllerDoesNotSupportEncryption, Controller);
+      ID3Error(RsEControllerDoesNotSupportEncryption, Controller);
 
     FFlags := Value;
   end;
@@ -5969,7 +5969,7 @@ begin
   case Controller.WriteVersion of
     ive2_2:
       if AFrameSize > $00FFFFFF then // = 16 MB
-        Id3Error(RsEFrameSizeTooBig, Self)
+        ID3Error(RsEFrameSizeTooBig, Self)
       else
         with Stream do
         begin
@@ -6578,7 +6578,7 @@ begin
   with Stream do
   begin
     ReadEncoding;
-    ReadStringA(FMimeType);
+    ReadStringA(FMIMEType);
     ReadStringEnc(FFileName);
     ReadStringEnc(FContentDescription);
     ReadData(BytesTillEndOfFrame);
@@ -6656,7 +6656,7 @@ begin
   with Stream do
   begin
     WriteEncoding;
-    WriteStringA(MimeType);
+    WriteStringA(MIMEType);
     WriteTerminatorA;
     WriteStringEnc(FFileName);
     WriteTerminatorEnc;
@@ -6777,7 +6777,7 @@ begin
 
     { hfFooterPresent is currently not supported }
     if (hfFooterPresent in ChangedFlags) and (hfFooterPresent in Value) then
-      Id3Error(RsEControllerDoesNotSupportFooter, Controller);
+      ID3Error(RsEControllerDoesNotSupportFooter, Controller);
 
     FFlags := Value;
   end;
@@ -6793,7 +6793,7 @@ var
 begin
   { Check max size }
   if Header.Size > $0FFFFFFF then // 28 bits = 256 MB
-    Id3Error(RsETagTooBig, Controller);
+    ID3Error(RsETagTooBig, Controller);
 
   with Stream do
   begin
@@ -7978,7 +7978,7 @@ end;
 procedure TJvID3Stream.BeginReadFrame(const AFrameSize: Integer);
 begin
   if FReadingFrame or FWritingFrame then
-    Id3Error(RsEAlreadyReadingWritingFrame);
+    ID3Error(RsEAlreadyReadingWritingFrame);
 
   FStartPosition := Position;
   FCurrentFrameSize := AFrameSize;
@@ -7988,7 +7988,7 @@ end;
 procedure TJvID3Stream.BeginWriteFrame(const AFrameSize: Integer);
 begin
   if FReadingFrame or FWritingFrame then
-    Id3Error(RsEAlreadyReadingWritingFrame);
+    ID3Error(RsEAlreadyReadingWritingFrame);
 
   //if not Assigned(Memory) then
   //  { $0A = 10, the size of the header }
@@ -8016,7 +8016,7 @@ end;
 procedure TJvID3Stream.EndReadFrame;
 begin
   if not FReadingFrame then
-    Id3Error(RsENotReadingFrame);
+    ID3Error(RsENotReadingFrame);
   MoveToNextFrame;
   FReadingFrame := False;
 end;
@@ -8024,7 +8024,7 @@ end;
 procedure TJvID3Stream.EndWriteFrame;
 begin
   if not FWritingFrame then
-    Id3Error(RsENotWritingFrame);
+    ID3Error(RsENotWritingFrame);
   MoveToNextFrame;
   FWritingFrame := False;
 end;
@@ -8073,7 +8073,7 @@ end;
 procedure TJvID3Stream.MoveToNextFrame;
 begin
   if FWritingFrame and (BytesTillEndOfFrame <> 0) then
-    Id3Error(RsEFrameSizeDiffers);
+    ID3Error(RsEFrameSizeDiffers);
 
   Seek(BytesTillEndOfFrame, soFromCurrent);
 end;
@@ -8191,7 +8191,7 @@ begin
     the frame; a number might be bigger than 4 bytes, but that can't be read
     currently }
   if not FReadingFrame then
-    Id3Error(RsENotReadingFrame);
+    ID3Error(RsENotReadingFrame);
 
   if BytesTillEndOfFrame = 4 then
   begin
@@ -8427,7 +8427,7 @@ begin
       Inc(I);
     if I > High(CEncodingTry) then
       // insanity, should not happen
-      Id3Error(RsECouldNotFindAllowableEncoding);
+      ID3Error(RsECouldNotFindAllowableEncoding);
 
     FDestEncoding := CEncodingTry[I];
   end;
@@ -8470,7 +8470,7 @@ end;
 function TJvID3Stream.WriteLanguage(const Language: string): Longint;
 begin
   if Length(Language) <> 3 then
-    Id3Error(RsELanguageNotOfLength3);
+    ID3Error(RsELanguageNotOfLength3);
 
   Result := WriteStringA(Language);
 end;
