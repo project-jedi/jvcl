@@ -4,9 +4,7 @@
 ##Skip: TJvOutlookBarPage.DownButton
 ##Skip: TJvCustomOutlookBar.TopButton
 ##Skip: TJvOutlookBarPage.DownIndex
-##Skip: TJvOutlookBarButton.Down
 ##Skip: TJvOutlookBarButton.Tag
-##Skip: TJvOutlookBarPage.DownFont
 ----------------------------------------------------------------------------------------------------
 @@JvOutlookBar.pas
 Summary
@@ -304,6 +302,18 @@ Description
   at design time, double-click the outlook bar to open the OutlookBar Editor. To add a button at runtime,
   call the Add method of the Buttons property of the page where the page should be added.
 ----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarButton.AutoToggle
+Summary
+  Specifies whether clicking the button toggles the Down property.
+Description
+  Use AutoToggle to specify whether the Down property of the button is toggled on and off when the
+  user clicks the button.
+Note
+  Even if AutoToggle is false and Down is true, an OnButtonClick event is generated
+  everytime the user clicks the button.
+See Also
+  Down, TJvCustomOutlookBar.OnButtonClick
+----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarButton.Assign
 Summary
   Copies the contents of another button.
@@ -323,6 +333,25 @@ Description
   text on the button. To allow the user to change the Caption at runtime, call the EditCaption function.
 See Also
   EditCaption
+----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarButton.Down
+Summary
+  Specifies whether the button appears pressed or not.
+Description
+  Set Down to true to make the button appear pressed even when the mouse is not clicked on the button.
+  Clicking on a button with it's Down stat set to true, does not automatically set Down to false.
+
+  To automatically change the state of the Down property when the user clicks it, set AutoToggle to true.
+See Also
+  AutoToggle, DownFont, Font
+----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarPage.DownFont
+Summary
+  Specifies the font to use when the button's Dowen poroperty is true.
+Description
+  Use the properties of DownFont to specify the visual appearance of the buttonäs text when the Down property is true.
+See Also
+  AutoToggle, Down, Font
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarButton.EditCaption
 Summary
