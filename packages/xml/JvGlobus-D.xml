@@ -21,7 +21,7 @@
     <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="vclsmp" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcldb50" Targets="D5" Condition=""/>
-    <Package Name="qrpt50" Targets="D5" Condition=""/>
+    <Package Name="qrpt50" Targets="D5" Condition="JVCL_UseQuickReport"/>
     <Package Name="vclie50" Targets="D5" Condition=""/>
     <Package Name="vcldb" Targets="D6,D7, D9" Condition=""/>
     <Package Name="qrpt" Targets="D6,D7" Condition="!QREPORT4 & JVCL_UseQuickReport"/>
