@@ -2118,6 +2118,10 @@ end;}
 
 procedure TJvCsvCustomInMemoryDataSet.InternalClose;
 begin
+  if not FCursorOpen then begin
+      //OutputDebugString('InternalClose called on already closed dataset');
+      exit;
+  end;
   Flush;
   BindFields(false);
   if DefaultFields then DestroyFields;
