@@ -232,7 +232,6 @@ type
       NewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure CustomAlignPosition(Control: TControl; var NewLeft,
       NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect); override;
     {$ENDIF VisualCLX}
@@ -336,6 +335,9 @@ type
     class function DefaultImages: TCustomImageList; virtual;
     procedure DoClick;
     procedure SelectAll;
+    {$IFDEF VisualCLX}
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
+    {$ENDIF VisualCLX}
     { Backwards compatibility; moved to public&published; eventually remove }
     property GlyphKind: TGlyphKind read GetGlyphKind write SetGlyphKind;
     {$IFDEF VCL}
@@ -2511,7 +2513,9 @@ var
     Result := TBitmap.Create;
     with Result do
     try
+      {$IFDEF VCL}
       Monochrome := True;
+      {$ENDIF VCL}
       Width := Max(1, FButton.Width - 6);
       Height := 4;
       W := 2;
@@ -2521,9 +2525,15 @@ var
       if g > 3 then
         g := 3;
       I := (Width - 3 * W - 2 * g) div 2;
+      {$IFDEF VisualCLX}
+      Canvas.Start;
+      {$ENDIF VisualCLX}
       PatBlt(Canvas.Handle, I, 1, W, W, BLACKNESS);
       PatBlt(Canvas.Handle, I + g + W, 1, W, W, BLACKNESS);
       PatBlt(Canvas.Handle, I + 2 * g + 2 * W, 1, W, W, BLACKNESS);
+      {$IFDEF VisualCLX}
+      Canvas.Stop;
+      {$ENDIF VisualCLX}
     except
       Free;
       raise;
