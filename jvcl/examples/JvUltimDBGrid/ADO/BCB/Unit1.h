@@ -17,6 +17,8 @@
 #include <Grids.hpp>
 #include <StdCtrls.hpp>
 #include <DB.hpp>
+#include "JvDBGridFooter.hpp"
+#include <ComCtrls.hpp>
 //---------------------------------------------------------------------------
 class TForm1 : public TForm
 {
@@ -30,11 +32,11 @@ __published:	// Composants gérés par l'EDI
    TADOTable *LookupTable;
    TJvDBComboBox *JvDBComboBox1;
    TDBLookupComboBox *DBLookupComboBox1;
-   TPanel *Panel1;
+   TPanel *PanelButtons;
    TButton *B_Connect;
    TButton *B_TitleIndic;
    TButton *B_WordWrap;
-   TButton *B_RowHeight;
+   TButton *B_ModFooter;
    TButton *B_ShowEdit;
    TAutoIncField *MainTableRefLogiciel;
    TWideStringField *MainTableSoftware;
@@ -45,13 +47,16 @@ __published:	// Composants gérés par l'EDI
    TBCDField *MainTablePrice;
    TMemoField *MainTableComment;
    TButton *B_Search;
-   void __fastcall B_RowHeightClick(TObject *Sender);
+   TPanel *PanelGrid;
+   TJvDBGridFooter *JvDBGridFooter1;
+   TADOQuery *CountQuery;
+   void __fastcall B_ModFooterClick(TObject *Sender);
    void __fastcall B_ConnectClick(TObject *Sender);
    void __fastcall B_TitleIndicClick(TObject *Sender);
    void __fastcall B_WordWrapClick(TObject *Sender);
    void __fastcall B_ShowEditClick(TObject *Sender);
-   void __fastcall MainTableCategoryGetText(TField *Sender,
-          AnsiString &Text, bool DisplayText);
+   void __fastcall MainTableCategoryGetText(TField *Sender, AnsiString &Text,
+          bool DisplayText);
    void __fastcall FormCreate(TObject *Sender);
    void __fastcall FormDestroy(TObject *Sender);
    void __fastcall JvDBComboBox1KeyPress(TObject *Sender, char &Key);
@@ -61,6 +66,8 @@ __published:	// Composants gérés par l'EDI
    void __fastcall JvDBGrid1RestoreGridPosition(TJvDBUltimGrid *Sender,
           Pointer SavedBookmark, int SavedRowPos);
    void __fastcall B_SearchClick(TObject *Sender);
+   void __fastcall JvDBGridFooter1Calculate(TJvDBGridFooter *Sender,
+          const AnsiString FieldName, Variant &CalcValue);
 private:	// Déclarations utilisateur
    int OldRowsHeight, Compteur;
    TStringList* DisplayList;
