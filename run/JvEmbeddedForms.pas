@@ -60,13 +60,16 @@ type
     procedure InitLinkedForm; virtual;
     procedure ClearLinkedForm; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
   public
     procedure DockLinkedForm; virtual;
     procedure UndockLinkedForm(ABorderStyle: TFormBorderStyle; APosition: TPosition); virtual;
     function IsLinkedFormDocked:Boolean;
     property LinkedForm: TForm read FLinkedForm;
+
   published
     property AlwaysVisible: Boolean read FAlwaysVisible write FAlwaysVisible;
+
     property FormLink: TJvEmbeddedFormLink read FLink write SetFormLink;
     property Align;
     property Anchors;
@@ -77,6 +80,50 @@ type
     property ParentShowHint;
     property ShowHint;
     property Visible;
+
+
+
+    property OnClick;
+    property OnDblClick;
+    property OnContextPopup;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnGetSiteInfo;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnUnDock;
+    property BorderWidth;
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind;
+    property BevelOuter;
+    property BevelWidth;
+    property DockManager;
+    property DockSite;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property PopupMenu;
+    property TabOrder;
+    property TabStop;
+    property UseDockManager;
   end;
 
   TJvEmbeddedInstanceFormPanel = class(TJvEmbeddedFormPanel)
@@ -303,6 +350,9 @@ function TJvEmbeddedFormPanel.IsLinkedFormDocked: Boolean;
 begin
   Result := (FLinkedForm <> nil) and (FLinkedForm.Parent = Self);
 end;
+
+
+
 
 end.
 
