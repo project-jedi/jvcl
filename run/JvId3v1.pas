@@ -106,7 +106,7 @@ implementation
 
 uses
   Math,
-  JvID3v2Types, JvResources;
+  JvID3v2Types, JvTypes, JvResources;
 
 const
   CID3v1Tag = 'TAG';  { do not change case }
@@ -219,7 +219,7 @@ end;
 procedure TJvID3v1.CheckActive;
 begin
   if not FActive then
-    raise Exception.Create(SNotActive);
+    raise EJVCLException.Create(RsENotActive);
 end;
 
 procedure TJvID3v1.Close;

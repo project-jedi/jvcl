@@ -232,13 +232,13 @@ begin
   case Value of
     MMSYSERR_NODRIVER:
       if Assigned(FOnError) then
-        FOnError(Self, MMSYSERR_NODRIVER, RC_NoJoystickDriver);
+        FOnError(Self, MMSYSERR_NODRIVER, RsNoJoystickDriver);
     JOYERR_NOCANDO:
       if Assigned(FOnError) then
-        FOnError(Self, JOYERR_NOCANDO, RC_CannotCaptureJoystick);
+        FOnError(Self, JOYERR_NOCANDO, RsCannotCaptureJoystick);
     JOYERR_UNPLUGGED:
       if Assigned(FOnError) then
-        FOnError(Self, JOYERR_NOCANDO, RC_JoystickUnplugged);
+        FOnError(Self, JOYERR_NOCANDO, RsJoystickUnplugged);
   end;
 end;
 
@@ -247,10 +247,10 @@ begin
   case Value of
     MMSYSERR_NODRIVER:
       if Assigned(FOnError) then
-        FOnError(Self, MMSYSERR_NODRIVER, RC_NoJoystickDriver);
+        FOnError(Self, MMSYSERR_NODRIVER, RsNoJoystickDriver);
     JOYERR_PARMS:
       if Assigned(FOnError) then
-        FOnError(Self, JOYERR_PARMS, RC_JoystickErrorParam);
+        FOnError(Self, JOYERR_PARMS, RsJoystickErrorParam);
   end;
 end;
 
@@ -369,7 +369,7 @@ constructor TJoystick.CreateJoy(AOwner: TComponent; Joy: Integer);
 begin
   FJoyNumber := Joy;
   if joyGetDevCaps(Joy, @FJoy, SizeOf(FJoy)) = MMSYSERR_NODRIVER then
-    raise EJVCLException.Create(RC_JoystickError);
+    raise EJVCLException.Create(RsEJoystickError);
   FCap := [];
   if (JOYCAPS_HASZ and FJoy.wCaps) = JOYCAPS_HASZ then
     FCap := FCap + [joHasZCoordinate];

@@ -57,6 +57,7 @@ resourcestring
 
   RsEID3NoController = 'No controller specified.';
   RsEReturnStackOverflow = 'return stack overflow';
+  RsESorryForOneDimensionalArraysOnly = 'Sorry. For one-dimensional arrays only.';
 
 //=== JvAni.pas ==============================================================
 resourcestring
@@ -784,33 +785,34 @@ resourcestring
 
 //=== JvId3v1.pas ============================================================
 resourcestring
-  SNotActive = 'Not active';
+  RsENotActive = 'Not active';
 
 //=== JvID3v2Base.pas ========================================================
 resourcestring
-  SAllowedEncodingsIsEmpty = 'FAllowedEncodings is empty';
-  SAlreadyReadingWriting = 'Already reading or writing';
-  SAlreadyReadingWritingFrame = 'Already reading/writing frame';
-  SAlreadyUsingTempStream = 'Already using temp stream';
-  SCannotCallCanRead = 'Can''t call CanRead while writing';
-  SControllerDoesNotSupportCompression = 'Controller doesn''t support compression';
-  SControllerDoesNotSupportCRC = 'Controller doesn''t support CRC';
-  SControllerDoesNotSupportEncryption = 'Controller doesn''t support encryption';
-  SControllerDoesNotSupportFooter = 'Controller doesn''t support footer';
-  SCouldNotFindAllowableEncoding = 'Could not find allowable encoding';
-  SCouldNotReadData = 'Couldn''t read data from stream';
-  SErrorInFrame = 'Error in frame %s (%s), %s';
-  SFrameSizeDiffers = 'Frame size differs from actually amount of data written';
-  SFrameSizeTooBig = 'Frame size is too big';
-  SLanguageNotOfLength3 = 'Language is not of length 3';
-  SNoTempStream = 'No temp stream';
-  SNotReadingFrame = 'Not reading frame';
-  SNotUsingTempStream = 'Not using temp stream';
-  SNotWriting = 'Not writing';
-  SNotWritingFrame = 'Not writing frame';
-  STagTooBig = 'Tag is too big';
-  SValueTooBig = 'Can''t write value in v2.2; too big';
-  SNotReading = 'Not reading';
+  RsENameMsgFormat = '%s: %s';
+  RsEAllowedEncodingsIsEmpty = 'FAllowedEncodings is empty';
+  RsEAlreadyReadingWriting = 'Already reading or writing';
+  RsEAlreadyReadingWritingFrame = 'Already reading/writing frame';
+  RsEAlreadyUsingTempStream = 'Already using temp stream';
+  RsECannotCallCanRead = 'Can''t call CanRead while writing';
+  RsEControllerDoesNotSupportCompression = 'Controller doesn''t support compression';
+  RsEControllerDoesNotSupportCRC = 'Controller doesn''t support CRC';
+  RsEControllerDoesNotSupportEncryption = 'Controller doesn''t support encryption';
+  RsEControllerDoesNotSupportFooter = 'Controller doesn''t support footer';
+  RsECouldNotFindAllowableEncoding = 'Could not find allowable encoding';
+  RsECouldNotReadData = 'Couldn''t read data from stream';
+  RsEErrorInFrame = 'Error in frame %s (%s), %s';
+  RsEFrameSizeDiffers = 'Frame size differs from actually amount of data written';
+  RsEFrameSizeTooBig = 'Frame size is too big';
+  RsELanguageNotOfLength3 = 'Language is not of length 3';
+  RsENoTempStream = 'No temp stream';
+  RsENotReadingFrame = 'Not reading frame';
+  RsENotUsingTempStream = 'Not using temp stream';
+  RsENotWriting = 'Not writing';
+  RsENotWritingFrame = 'Not writing frame';
+  RsETagTooBig = 'Tag is too big';
+  RsEValueTooBig = 'Can''t write value in v2.2; too big';
+  RsENotReading = 'Not reading';
 
   RsEID3FrameNotFound = 'Frame not found';
   RsEID3UnknownEncoding = 'Unknown encoding';
@@ -833,7 +835,7 @@ resourcestring
 
 //=== JvId3v2Types.pas =======================================================
 resourcestring
-  SFrameIDSizeCanOnlyBe34 = 'Frame ID size can only be 3 or 4';
+  RsEFrameIDSizeCanOnlyBe34 = 'Frame ID size can only be 3 or 4';
 
 //=== JvImageDlg.pas =========================================================
 resourcestring
@@ -907,80 +909,83 @@ resourcestring
 
 //=== JvInstallLabel.pas =====================================================
 resourcestring
-  SListOutOfBounds = 'List index out of bounds (%d)';
+  RsEListOutOfBounds = 'List index out of bounds (%d)';
 
 //=== JvInterpreter.pas ======================================================
 resourcestring
-  sSorryDynamicArraysSupportIsMadeForO = 'Sorry. Dynamic arrays support is made for one-dimensional arrays only.';
-  sSorryForOnedimensionalArraysOnly = 'Sorry. For one-dimensional arrays only.';
-  sUnknownRecordType = 'Unknown RecordType';
-  sRangeCheckError = 'range check error';
+  RsESorryDynamicArraysSupportIsMadeForO = 'Sorry. Dynamic arrays support is made for one-dimensional arrays only.';
+  RsEUnknownRecordType = 'Unknown RecordType';
+  RsERangeCheckError = 'range check error';
 
 //=== JvInterpreter_Quickrpt.pas =============================================
 resourcestring
-  SNoQuickReportFound = 'TQuickRep component not found on the form';
+  RsENoQuickReportFound = 'TQuickRep component not found on the form';
 
 //=== JvInterpreter_System.pas ===============================================
 resourcestring
-  SSizeMustBeEven = 'The size of bounds array must be even!';
-  SForOneDimensionOnly = 'Sorry. For one-dimensional arrays only.';
+  RsESizeMustBeEven = 'The size of bounds array must be even!';
 
 //=== JvInterpreterConst.pas =================================================
 
+//=== JvInterpreterFm.pas ====================================================
+resourcestring
+  RsENoReportProc = 'Procedure "JvInterpreterRunReportPreview" not found';
+  RsENoReportProc2 = 'Procedure "JvInterpreterRunReportPreview2" not found';
+
 //=== JvJanTreeView.pas ======================================================
 resourcestring
-  sInvalidReduction = 'Invalid reduction';
-  sTreeViewFiles = 'TreeView Files';
-  sSaveCurrentTree = 'Save Current Tree';
-  sSearch = 'Search';
-  sSearchFor = 'Search for:';
-  sNoMoresFound = 'No more %s found';
-  sBadTokenState = 'Bad token state';
+  RsEInvalidReduction = 'Invalid reduction';
+  RsEBadTokenState = 'Bad token state';
+  RsTreeViewFiles = 'TreeView Files';
+  RsSaveCurrentTree = 'Save Current Tree';
+  RsSearch = 'Search';
+  RsSearchFor = 'Search for:';
+  RsNoMoresFound = 'No more %s found';
 
 //=== JvJoystick.pas =========================================================
 resourcestring
-  RC_NoJoystickDriver = 'The joystick driver is not present.';
-  RC_CannotCaptureJoystick = 'Can''t capture the joystick';
-  RC_JoystickUnplugged = 'The specified joystick is not connected to the system.';
-  RC_JoystickErrorParam = 'The specified joystick device identifier is invalid.';
-  RC_JoystickError = 'Unable to initialize joystick driver';
+  RsNoJoystickDriver = 'The joystick driver is not present.';
+  RsCannotCaptureJoystick = 'Can''t capture the joystick';
+  RsJoystickUnplugged = 'The specified joystick is not connected to the system.';
+  RsJoystickErrorParam = 'The specified joystick device identifier is invalid.';
+  RsEJoystickError = 'Unable to initialize joystick driver';
 
 //=== JvJVCLUtils.pas ========================================================
 resourcestring
   RsNotForMdi = 'MDI forms are not allowed';
-  SPixelFormatNotImplemented = 'BitmapToMemoryStream: pixel format not implemented';
-  SBitCountNotImplemented = 'BitmapToMemoryStream: bit count not implemented';
+  RsEPixelFormatNotImplemented = 'BitmapToMemoryStream: pixel format not implemented';
+  RsEBitCountNotImplemented = 'BitmapToMemoryStream: bit count not implemented';
   RsECantGetShortCut = 'Target FileName for ShortCut %s not available';
 
 //=== JvLinkLabel.pas ========================================================
 resourcestring
-  sUnableToLocateMode = 'Unable to locate specified node';
-  sTagNotFound = 'TJvCustomLinkLabel.UpdateDynamicTag: Tag not found';
+  RsEUnableToLocateMode = 'Unable to locate specified node';
+  RsETagNotFound = 'TJvCustomLinkLabel.UpdateDynamicTag: Tag not found';
 
 //=== JvLinkLabelParser.pas ==================================================
 resourcestring
-  SNoMoreElementsToReturn = 'TElementEnumerator.GetNextElement: No more elements to return';
-  SUnsupportedState = 'TDefaultParser.ParseNode: Unsupported state';
+  RsENoMoreElementsToReturn = 'TElementEnumerator.GetNextElement: No more elements to return';
+  RsEUnsupportedState = 'TDefaultParser.ParseNode: Unsupported state';
 
 //=== JvLinkLabelTextHandler.pas =============================================
 resourcestring
-  sNoMoreWords = 'TWordEnumerator.GetNext: No more words to return';
-  sUnsupported = 'TTextHandler.EmptyBuffer: Unsupported TParentTextElement descendant encountered';
+  RsENoMoreWords = 'TWordEnumerator.GetNext: No more words to return';
+  RsEUnsupported = 'TTextHandler.EmptyBuffer: Unsupported TParentTextElement descendant encountered';
 
 //=== JvLinkLabelTools.pas ===================================================
 resourcestring
-  SCannotBeInstantiated = 'This class cannot be instantiated';
+  RsECannotBeInstantiated = 'This class cannot be instantiated';
 
 //=== JvLinkLabelTree.pas ====================================================
 resourcestring
-  sTNodeGetNodeTypeUnknownClass = 'TNode.GetNodeType: Unknown class';
-  sNoMoreNodesToReturn = 'No more nodes to return';
-  sNoMoreRecordsToReturn = 'No more records to return';
-  sWordInfoIndexOutOfBounds = 'TStringNode.GetWordInfo: Index out of bounds';
+  RsETNodeGetNodeTypeUnknownClass = 'TNode.GetNodeType: Unknown class';
+  RsENoMoreNodesToReturn = 'No more nodes to return';
+  RsENoMoreRecordsToReturn = 'No more records to return';
+  RsEWordInfoIndexOutOfBounds = 'TStringNode.GetWordInfo: Index out of bounds';
 
 //=== JvListView.pas =========================================================
 resourcestring
-  sTooManyColumns = 'TJvListView.GetColumnsOrder: too many columns';
+  RsETooManyColumns = 'TJvListView.GetColumnsOrder: too many columns';
 
 //=== JvLoginForm.pas ========================================================
 resourcestring

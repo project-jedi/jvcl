@@ -141,7 +141,7 @@ implementation
 
 uses
   TypInfo,
-  JvInterpreterConst, JvJCLUtils;
+  JvInterpreterConst, JvResources, JvJCLUtils;
 
 function LoadTextFile(const FileName: TFileName): string;
 begin
@@ -651,14 +651,14 @@ end;
 procedure JvInterpreterRunReportPreview(const FileName: string);
 begin
   if not Assigned(JvInterpreterRunReportPreviewProc) then
-    raise Exception.Create(SNoReportProc);
+    raise Exception.Create(RsENoReportProc);
   JvInterpreterRunReportPreviewProc(FileName);
 end;
 
 procedure JvInterpreterRunReportPreview2(const FileName: string; JvInterpreterProgram: TJvInterpreterFm);
 begin
   if not Assigned(JvInterpreterRunReportPreview2Proc) then
-    raise Exception.Create(SNoReportProc2);
+    raise Exception.Create(RsENoReportProc2);
   JvInterpreterRunReportPreview2Proc(FileName, JvInterpreterProgram);
 end;
 

@@ -818,19 +818,19 @@ type
     FExceptionPos: Boolean;
     FErrCode: Integer;
     FErrPos: Integer;
-    FErrName: string;
+    FErrName1: string;
     FErrName2: string;
     FErrUnitName: string;
     FErrLine: Integer;
     FErrMessage: string;
   public
     constructor Create(const AErrCode: Integer; const AErrPos: Integer;
-      const AErrName, AErrName2: string);
+      const AErrName1, AErrName2: string);
     procedure Assign(E: Exception);
     procedure Clear;
     property ErrCode: Integer read FErrCode;
     property ErrPos: Integer read FErrPos;
-    property ErrName: string read FErrName;
+    property ErrName1: string read FErrName1;
     property ErrName2: string read FErrName2;
     property ErrUnitName: string read FErrUnitName;
     property ErrLine: Integer read FErrLine;
@@ -1296,15 +1296,15 @@ begin
 end;
 
 constructor EJvInterpreterError.Create(const AErrCode: Integer;
-  const AErrPos: Integer; const AErrName, AErrName2: string);
+  const AErrPos: Integer; const AErrName1, AErrName2: string);
 begin
   inherited Create('');
   FErrCode := AErrCode;
   FErrPos := AErrPos;
-  FErrName := AErrName;
+  FErrName1 := AErrName1;
   FErrName2 := AErrName2;
   { function LoadStr don't work sometimes :-( }
-  Message := Format(LoadStr2(ErrCode), [ErrName, ErrName2]);
+  Message := Format(LoadStr2(ErrCode), [ErrName1, ErrName2]);
   FErrMessage := Message;
 end;
 
@@ -1313,18 +1313,18 @@ begin
   Message := E.Message;
   if E is EJvInterpreterError then
   begin
-    FErrCode := (E as EJvInterpreterError).FErrCode;
-    FErrPos := (E as EJvInterpreterError).FErrPos;
-    FErrName := (E as EJvInterpreterError).FErrName;
-    FErrName2 := (E as EJvInterpreterError).FErrName2;
-    FErrMessage := (E as EJvInterpreterError).FErrMessage;
+    FErrCode := (E as EJvInterpreterError).ErrCode;
+    FErrPos := (E as EJvInterpreterError).ErrPos;
+    FErrName1 := (E as EJvInterpreterError).ErrName1;
+    FErrName2 := (E as EJvInterpreterError).ErrName2;
+    FErrMessage := (E as EJvInterpreterError).ErrMessage;
   end;
 end;
 
 procedure EJvInterpreterError.Clear;
 begin
   FExceptionPos := False;
-  FErrName := '';
+  FErrName1 := '';
   FErrName2 := '';
   FErrPos := -1;
   FErrLine := -1;
@@ -2011,7 +2011,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(sSorryDynamicArraysSupportIsMadeForO);
+    raise Exception.Create(RsESorryDynamicArraysSupportIsMadeForO);
   OldSize := ArrayRec^.Size;
   if OldSize > ASize then
   begin
@@ -2042,7 +2042,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(sSorryForOnedimensionalArraysOnly);
+    raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
   Result := ArrayRec^.Size;
 end;
 
@@ -2052,7 +2052,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(sSorryForOnedimensionalArraysOnly);
+    raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
   Result := ArrayRec^.BeginPos[0];
 end;
 
@@ -2062,7 +2062,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(sSorryForOnedimensionalArraysOnly);
+    raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
   Result := ArrayRec^.EndPos[0];
 end;
 
@@ -2072,7 +2072,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(sSorryForOnedimensionalArraysOnly);
+    raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
   if (AElement < ArrayRec^.BeginPos[0]) or (AElement > ArrayRec^.EndPos[0]) then
     JvInterpreterError(ieArrayIndexOutOfBounds, -1);
   ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] - 1;
@@ -2093,7 +2093,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(sSorryForOnedimensionalArraysOnly);
+    raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
   if (AElement < ArrayRec^.BeginPos[0]) or (AElement > ArrayRec^.EndPos[0]) then
     JvInterpreterError(ieArrayIndexOutOfBounds, -1);
   ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] + 1;
@@ -2122,7 +2122,7 @@ begin
   begin
     ArrayRec := PJvInterpreterArrayRec(TVarData(V).VPointer);
     if ArrayRec^.Dimension > 1 then
-      raise Exception.Create(sSorryForOnedimensionalArraysOnly);
+      raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
     Size := ArrayRec^.Size;
     for I := 0 to Size - 1 do
     begin
@@ -5266,7 +5266,7 @@ begin
       if not (FAdapter.SetRecord(Result) or
         (Assigned(GlobalJvInterpreterAdapter) and (FAdapter <> GlobalJvInterpreterAdapter) and
         GlobalJvInterpreterAdapter.SetRecord(Result))) then
-        JvInterpreterErrorN(ieRecordNotDefined, -1, sUnknownRecordType);
+        JvInterpreterErrorN(ieRecordNotDefined, -1, RsEUnknownRecordType);
     { Args.HasVars may be changed in previous call to GetValue }
     if FCurrArgs.FHasVars then
       UpdateVarParams;
@@ -5331,7 +5331,7 @@ begin
       if Args.Count > 1 then
         JvInterpreterError(ieArrayTooManyParams, -1);
       if Length(Variable) = 0 then
-        raise ERangeError.Create(sRangeCheckError);
+        raise ERangeError.Create(RsERangeCheckError);
       Value := string(Variable)[Integer(Args.Values[0])];
       Result := True;
     end

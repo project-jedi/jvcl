@@ -174,7 +174,7 @@ function TElementEnumerator.GetNextElement(const IncrementPos: Boolean): TElemen
 
 begin
   if IsEndReached then
-    raise EParserError.Create(SNoMoreElementsToReturn);
+    raise EParserError.Create(RsENoMoreElementsToReturn);
 
   if FOldPosInText = FPosInText then // Use cached element
     Result := FCachedElement
@@ -388,7 +388,7 @@ begin
       ekBeginTag:
         NewNode := GetNodeFromTag(Element.Text);
     else
-      raise EParserError.Create(SUnsupportedState);
+      raise EParserError.Create(RsEUnsupportedState);
     end;
 
     if( Node.GetNodeType = ntRootNode ) then

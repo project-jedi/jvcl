@@ -214,7 +214,7 @@ type
 implementation
 
 uses
-  JvConsts, JvResources;
+  JvResources;
 
 constructor TJvJanTreeView.Create(AOwner: Tcomponent);
 begin
@@ -953,7 +953,7 @@ begin
           end; { else }
         end; { case of }
       17: Reduce(9);
-      18: raise Exception.Create(sBadTokenState);
+      18: raise Exception.Create(RsEBadTokenState);
       19:
         begin
           if TokenType = PLUS then
@@ -1094,8 +1094,8 @@ begin
         Pop(Token2);
         CurrToken.Value := -Token1.Value;
       end;
-    11: raise Exception.Create(sInvalidReduction);
-    13: raise Exception.Create(sInvalidReduction);
+    11: raise Exception.Create(RsEInvalidReduction);
+    13: raise Exception.Create(RsEInvalidReduction);
     14:
       begin
         Pop(Token1);
@@ -1306,7 +1306,7 @@ begin
     dlg.DefaultExt := FDefaultExt;
     s := FDefaultExt;
     if s = '' then s := '*';
-    dlg.filter := sTreeViewFiles + '|*.' + s;
+    dlg.filter := RsTreeViewFiles + '|*.' + s;
     if dlg.Execute then
     begin
       LoadFromFile(dlg.filename);
@@ -1328,7 +1328,7 @@ begin
     dlg.DefaultExt := FDefaultExt;
     s := FDefaultExt;
     if s = '' then s := '*';
-    dlg.filter := sTreeViewFiles + '|*.' + s;
+    dlg.filter := RsTreeViewFiles + '|*.' + s;
     if dlg.Execute then
     begin
       SaveToFile(dlg.filename);
@@ -1351,7 +1351,7 @@ end;
 
 procedure TJvJanTreeView.DoCloseTree;
 begin
-  if messagedlg(sSaveCurrentTree, mtconfirmation, [mbyes, mbno], 0) = mryes then
+  if MessageDlg(RsSaveCurrentTree, mtconfirmation, [mbyes, mbno], 0) = mryes then
   begin
     if FFilename <> '' then
       SaveToFile(FFilename)
@@ -1395,7 +1395,7 @@ var
 begin
   n := selected;
   if n = nil then exit;
-  s := inputbox(sSearch, sSearchFor, FSearchText);
+  s := inputbox(RsSearch, RsSearchFor, FSearchText);
   if s = '' then exit;
   FSearchText := s;
   s := Lowercase(s);
@@ -1407,7 +1407,7 @@ begin
         selected := items[i];
         exit;
       end;
-  showmessage(Format(sNoMoresFound, [s]));
+  showmessage(Format(RsNoMoresFound, [s]));
 end;
 
 end.

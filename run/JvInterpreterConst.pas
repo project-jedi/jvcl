@@ -40,10 +40,6 @@ const
   StConstSymbols10 = ['0'..'9'];
   StSeparators = ['(', ')', ',', '.', ';'];
 
-  {JvInterpreterFm}
-  SNoReportProc = 'Procedure "JvInterpreterRunReportPreview" not found';
-  SNoReportProc2 = 'Procedure "JvInterpreterRunReportPreview2" not found';
-
 type
   {JvInterpreter Error Descriptions}
   TJvInterpreterErrorsDescr = record
