@@ -1276,6 +1276,7 @@ begin
     SetLength(Result, 0);
 end;
 
+(* make Delphi 5 compiler happy // andreas
 procedure CopyPaths(Source: TItemPathsArray; var Dest: TItemPathsArray);
 var
   Path: Integer;
@@ -1287,6 +1288,7 @@ begin
     Move(Source[Path][0], Dest[Path][0], Length(Source[Path]) * SizeOf(Source[0][0]));
   end;
 end;
+*)
 
 { TJvDP_ProviderBaseRender }
 
