@@ -137,7 +137,7 @@ begin
   {$IFDEF MSWINDOWS}
   FillChar(VersionInfo, SizeOf(TOSVersionInfoEx), #0);
   VersionInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfoEx);
-  JclWin32.GetVersionEx(@VersionInfo);
+  JclWin32.GetVersionEx(VersionInfo);
   if VersionInfo.wServicePackMajor = 0 then
     lblWindowsVersion.Caption := Format('%s (Build %u)',
       [GetWindowsVersionString, VersionInfo.dwBuildNumber])
