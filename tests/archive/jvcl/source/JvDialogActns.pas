@@ -144,13 +144,13 @@ type
     property Dialog: TJvNetworkConnect read GetDialog;
   end;
 
-  TJvFloppyFormatAction = class(TJvCommonDialogPAction)
+  TJvFloppyFormatAction = class(TJvCommonDialogFAction)
   private
-    function GetDialog: TJvFormatDialog;
+    function GetDialog: TJvFormatDriveDialog;
   protected
-    function GetDialogClass: TJvCommonDialogPClass; override;
+    function GetDialogClass: TJvCommonDialogFClass; override;
   published
-    property Dialog: TJvFormatDialog read GetDialog;
+    property Dialog: TJvFormatDriveDialog read GetDialog;
   end;
 
   TJvOrganizeFavoritesAction = class(TJvCommonDialogAction)
@@ -393,14 +393,14 @@ end;
 
 //=== TJvFloppyFormatAction ==================================================
 
-function TJvFloppyFormatAction.GetDialog: TJvFormatDialog;
+function TJvFloppyFormatAction.GetDialog: TJvFormatDriveDialog;
 begin
-  Result := TJvFormatDialog(FDialog);
+  Result := TJvFormatDriveDialog(FDialog);
 end;
 
-function TJvFloppyFormatAction.GetDialogClass: TJvCommonDialogPClass;
+function TJvFloppyFormatAction.GetDialogClass: TJvCommonDialogFClass;
 begin
-  Result := TJvFormatDialog;
+  Result := TJvFormatDriveDialog;
 end;
 
 //=== TJvOrganizeFavoritesAction =============================================

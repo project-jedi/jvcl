@@ -288,7 +288,6 @@ contains
   JvFileInfo in '..\source\JvFileInfo.pas',
   JvFindFiles in '..\source\JvFindFiles.pas',
   JvAppHotKey in '..\source\JvAppHotKey.pas',
-  JvSHFmt in '..\source\JvSHFmt.pas',
   JvUCB in '..\source\JvUCB.pas',
   JvFindReplace in '..\source\JvFindReplace.pas',
   JvImageWindow in '..\source\JvImageWindow.pas',

@@ -179,7 +179,7 @@ uses
 
   JvChangeNotify, JvEnterTab, JvFindFiles,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
-  JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBEditor, JvSHFmt,
+  JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBEditor,
   JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl,
 
   // Fernando Silva
@@ -315,7 +315,7 @@ begin
     [TJvBrowseForFolderDialog, TJvSelectDirectory, TJvOpenDialog, TJvSaveDialog,
      TJvOpenDialog2000, TJvSaveDialog2000,TJvConnectNetwork,
      TJvDisconnectNetwork, TJvPageSetupDialog, TJvPageSetupTitledDialog,
-     TJvAddPrinterDialog, TJvFindFilesDialog, TJvFormatDrive,
+     TJvAddPrinterDialog, TJvFindFilesDialog, TJvFormatDriveDialog,
      TJvColorDialog, TJvOrganizeFavoritesDialog, TJvComputerNameDialog,
      TJvControlPanelDialog, TJvAppletDialog, TJvChangeIconDialog,
      TJvShellAboutDialog, TJvRunDialog, TJvObjectPropertiesDialog,
