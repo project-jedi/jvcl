@@ -242,10 +242,13 @@ begin
     UpdateControlSize;
 end;
 
+// (rom) has to be cleaned up!!!!
+var
+  FKeepSize: Integer = 0; (* +++ RDB --- *)
+
 procedure TJvgSplitter.UpdateControlSize;
 const
-  FNewSize = 0;
-  fKeepSize: Integer = 0; (* +++ RDB --- *)
+  cNewSize = 0;
 var
   FControl: TControl;
 begin
@@ -253,26 +256,26 @@ begin
   if not Assigned(FControl) then
     Exit;
   begin
-    if (FKeepSize = 0) then
+    if FKeepSize = 0 then
     begin
       case Align of
         alLeft:
           begin
             FKeepSize := FControl.Width;
-            FControl.Width := FNewSize;
+            FControl.Width := cNewSize;
           end;
         alTop:
           begin
-            fKeepSize := FControl.Height;
-            FControl.Height := FNewSize;
+            FKeepSize := FControl.Height;
+            FControl.Height := cNewSize;
           end;
         alRight:
           begin
             FKeepSize := FControl.Width;
             Parent.DisableAlign;
             try
-              FControl.Left := FControl.Left + (FControl.Width - FNewSize);
-              FControl.Width := FNewSize;
+              FControl.Left := FControl.Left + (FControl.Width - cNewSize);
+              FControl.Width := cNewSize;
             finally
               Parent.EnableAlign;
             end;
@@ -282,8 +285,8 @@ begin
             fKeepSize := FControl.Height;
             Parent.DisableAlign;
             try
-              FControl.Top := FControl.Top + (FControl.Height - FNewSize);
-              FControl.Height := FNewSize;
+              FControl.Top := FControl.Top + (FControl.Height - cNewSize);
+              FControl.Height := cNewSize;
             finally
               Parent.EnableAlign;
             end;
