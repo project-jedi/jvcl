@@ -47,7 +47,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   {$IFDEF VCL}
-  JvCaptionButton, JvDriveCtrls, JvListComb, JvRegistryTreeView, JvPlaylist,
+  JvCaptionButton, JvDriveCtrls, JvRegistryTreeView, JvPlaylist,
   JvPageScroller,
   {$ENDIF VCL}
   {$IFDEF USEWINDOWS}
@@ -65,7 +65,7 @@ uses
   JvTransparentButton, JvColorForm, JvImageDrawThread, JvWinampLabel,
   JvComponentPanel, JvButtons, JvCaptionPanel, JvScrollMax, JvMovableBevel,
   JvComboListBox, JvOfficeColorButton, JvOfficeColorPanel,
-  JvNetscapeSplitter,
+  JvNetscapeSplitter, JvListComb,
   JvDsgnEditors, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor,
   JvFooterEditor, JvSpeedbarForm, JvTransparentButtonEditors, JvRollOutEditor;
 
@@ -94,10 +94,8 @@ begin
     TJvComponentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
     TJvHTLabel, TJvWinampLabel]);
-
-
-  RegisterComponents(RsPaletteListComboTree, [{$IFDEF VCL}TJvImageComboBox, TJvImageListBox, TJvComboListBox, {$ENDIF VCL} TJvHTListBox, TJvHTComboBox]);
-
+  RegisterComponents(RsPaletteListComboTree, [TJvImageComboBox, TJvImageListBox,
+    TJvComboListBox, TJvHTListBox, TJvHTComboBox]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
   {$ENDIF USEWINDOWS}
@@ -114,7 +112,11 @@ begin
     TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice, TJvCharMap]);
+  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice
+  {$IFDEF USEWINDOWS}
+  ,TJvCharMap
+  {$ENDIF USEWINDOWS}
+  ]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
@@ -134,10 +136,8 @@ begin
   RegisterComponentEditor(TJvRollOut, TJvRollOutDefaultEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
   RegisterComponentEditor(TJvFooter, TJvFooterEditor);
-  {$IFDEF VCL}
   RegisterComponentEditor(TJvImageListBox, TJvStringsEditor);
   RegisterComponentEditor(TJvImageComboBox, TJvStringsEditor);
-  {$ENDIF VCL}
   RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
 
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);

@@ -114,6 +114,9 @@ begin
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TJvDateTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvColorProperty);
+  {$ENDIF VisualCLX}
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);

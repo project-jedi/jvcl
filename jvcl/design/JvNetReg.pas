@@ -29,6 +29,10 @@ unit JvNetReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
 procedure Register;
 
 implementation
@@ -43,9 +47,9 @@ uses
   {$IFDEF VCL}
   JvRichEditToHTML, JvMail, JvMailEditor,
   {$ENDIF VCL}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   JvHtmlParser, JvHtmlParserEditor,
   JvTypes, JvDsgnConsts,
   JvStringListToHtml, JvFormToHtml, JvRgbToHtml, JvStrToHtml;

@@ -16,9 +16,9 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   {$IFDEF VCL}
-  JvJanTreeView, JvShapedButton, JvSticker,
+  JvShapedButton, JvSticker,
   {$ENDIF VCL}
-  JvMarkupLabel, JvMarkupViewer, JvSAL, JvSALCore, JvSALMath,
+  JvJanTreeView, JvMarkupLabel, JvMarkupViewer, JvSAL, JvSALCore, JvSALMath,
   JvYearGrid, JvTracker, JvAirBrush, JvGridFilter, JvGridPrinter,
   JvArrayButton, JvForth, JvTurtle, JvPaintFX, JvDrawImage,
   JvBitmapButton, JvSimScope, JvSimIndicator, JvSimPID, JvSIMPIDLinker,
@@ -57,7 +57,7 @@ begin
     {$IFDEF VCL} TJvSticker, {$ENDIF}
     TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
     TJvGridFilter, TJvGridPrinter,
-    {$IFDEF VCL} TJvJanTreeview, {$ENDIF}
+    TJvJanTreeview,
     TJvPaintFX, TJvDrawImage,
     TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller
     {$IFDEF VCL}, TJvShapedButton {$ENDIF}]);

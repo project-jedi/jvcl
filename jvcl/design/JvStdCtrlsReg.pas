@@ -39,10 +39,13 @@ implementation
 
 uses
   Classes, Controls,
+  {$IFDEF VCL}
+  FiltEdit,
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QTypes, // type TCaption
   {$ENDIF VisualCLX}
-  FiltEdit, ImgList,
+  ImgList,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -52,15 +55,19 @@ uses
   {$IFDEF VCL}
   JvRichEdit, JvStaticText,
   JvDateTimePicker, JvDatePickerEdit, JvCalendar, JvxSlider, JvTextListBox,
-  JvxCheckListBox, JvCombobox, JvCheckTreeView, JvComCtrls, JvCoolBar,
-  JvListView, JvHotKey, JvMemo, JvMenus, JvSystemPopup, JvToolBar, JvUpDown,
-  JvMonthCalendar, JvListBox, JvColorCombo, JvScrollBox,
+  JvxCheckListBox, JvCoolBar,
+  JvHotKey, JvMemo, JvMenus, JvSystemPopup, JvToolBar, JvUpDown,
+  JvMonthCalendar, JvListBox, JvScrollBox,
   JvControlPanelButton, JvStartMenuButton, JvRecentMenuButton,
-  JvFavoritesButton, 
+  JvFavoritesButton, JvCheckTreeView,  JvListView,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  JvQGauges, JvQStdDsgnEditors, QComCtrlsEx,
+  {$ENDIF VisualCLX}
   {$IFDEF USEWINDOWS}
   JvBrowseFolder,
   {$ENDIF USEWINDOWS}
+  JvCombobox, JvColorCombo, JvComCtrls,
   JvSpin, JvEdit, JvProgressBar, JvMaskEdit, JvBaseEdits, JvCalc,
   JvToolEdit, JvBevel, JvCheckBox, JvSpeedButton, JvSecretPanel,
   JvCheckListBox, JvControlBar, JvCtrls, JvGroupBox, JvHeaderControl,
@@ -98,6 +105,9 @@ begin
     TJvUpDown, TJvDomainUpDown, TJvControlPanelButton, TJvStartMenuButton,
     TJvRecentMenuButton, TJvFavoritesButton,
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    TUpDown,
+    {$ENDIF VisualCLX}
     TJvSpinButton]);
   RegisterComponents(RsPaletteEdit, [TJvEdit,
     {$IFDEF VCL}
@@ -107,16 +117,17 @@ begin
     TJvMaskEdit, TJvCheckedMaskEdit, TJvComboEdit, TJvCalcEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit,
     {$IFDEF VCL}
-    TJvHotKey, 
+    TJvHotKey,
     TJvIPAddress,
     TJvDatePickerEdit,
     {$ENDIF VCL}
     TJvDateEdit]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [
-    {$IFDEF VCL}
     TJvPageControl, TJvTabControl, TJvTabDefaultPainter,
-    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    TJvGauge,
+    {$ENDIF VisualCLX}
     TJvProgressBar, TJvStatusBar,
     {$IFDEF VCL}
     TJvToolBar, TJvCoolBar,
@@ -130,13 +141,17 @@ begin
     {$ENDIF VCL}
     ]);
   RegisterComponents(RsPaletteListComboTree, [
+    TJvComboBox,
     {$IFDEF VCL}
-    TJvComboBox, TJvListBox,
+    TJvListBox,
     {$ENDIF VCL}
     TJvCheckListBox,
     {$IFDEF VCL}
     TJvTreeView, TJvListView, TJvCheckTreeView,
-    TJvColorComboBox, TJvFontComboBox, TJvTextListBox, TJvxCheckListBox,
+    {$ENDIF VCL}
+    TJvColorComboBox,
+    {$IFDEF VCL}
+    TJvFontComboBox, TJvTextListBox, TJvxCheckListBox,
     TJvDateTimePicker,
     TJvMonthCalendar, {TJvMonthCalendar2,}
     {$ENDIF VCL}
@@ -145,8 +160,9 @@ begin
     {$IFDEF VCL}
     , TJvScrollBox
     {$ENDIF VCL}]);
+  RegisterComponents(RsPaletteSliderSplitter, [TJvTrackBar]);
   {$IFDEF VCL}
-  RegisterComponents(RsPaletteSliderSplitter, [TJvTrackBar,TJvxSlider]);
+  RegisterComponents(RsPaletteSliderSplitter, [TJvxSlider]);
   {$ENDIF VCL}
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
@@ -154,7 +170,9 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);
   RegisterPropertyEditor(TypeInfo(string), TJvFileDirEdit, cText, TStringProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomDateEdit, cText, TStringProperty);
+  {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
+  {$ENDIF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'FileName', TJvFilenameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, cText, TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', TJvHintProperty);
