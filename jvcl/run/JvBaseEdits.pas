@@ -35,7 +35,7 @@ interface
 
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Menus,
-  Forms, StdCtrls, Mask, Buttons,
+  Forms, StdCtrls, Mask, Buttons, ImgList,
   JvToolEdit;
 
 type
@@ -89,7 +89,7 @@ type
     procedure AcceptValue(const Value: Variant); override;
     procedure Change; override;
     procedure ReformatEditText; dynamic;
-    function GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap; override;
+    class function DefaultImageIndex: TImageIndex; override;
     procedure DataChanged; virtual;
     function DefaultDisplayFormat: string; virtual;
     procedure KeyPress(var Key: Char); override;
@@ -105,7 +105,7 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment default taRightJustify;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
     property CheckOnExit: Boolean read FCheckOnExit write FCheckOnExit default False;
-    property GlyphKind default gkDefault;
+    property ImageKind default ikDefault;
     property ButtonWidth default 21; //Polaris 20;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces default 2;
     property DisplayFormat: string read GetDisplayFormat write SetDisplayFormat stored IsFormatStored;
@@ -134,33 +134,35 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property Align; //Polaris
-    property DecimalPlaceRound; //Polaris
-
     property Alignment;
+    property Anchors;
     property AutoSelect;
     property AutoSize;
     property BeepOnError;
+    property BiDiMode;
     property BorderStyle;
     property CheckOnExit;
+    property ClipboardCommands; // RDB
     property Color;
+    property Constraints;
+    property DecimalPlaceRound; //Polaris
     property DecimalPlaces;
+    property DisabledColor; // RDB
+    property DisabledTextColor; // RDB
     property DisplayFormat;
     property DragCursor;
+    property DragKind;
     property DragMode;
     property Enabled;
     property Font;
     property FormatOnEditing;
     property HideSelection;
-    property Anchors;
-    property BiDiMode;
-    property Constraints;
-    property DragKind;
-    property ParentBiDiMode;
     property ImeMode;
     property ImeName;
     property MaxLength;
     property MaxValue;
     property MinValue;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -175,9 +177,11 @@ type
     property ZeroEmpty;
     property OnChange;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -187,15 +191,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnContextPopup;
-    property OnStartDrag;
-    property OnEndDock;
     property OnStartDock;
-    (* ++ RDB ++ *)
-    property ClipboardCommands;
-    property DisabledTextColor;
-    property DisabledColor;
-    (* -- RDB -- *)
+    property OnStartDrag;
   end;
 
   TJvCustomCalcEdit = class(TJvCustomNumEdit)
@@ -208,8 +205,10 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
+  { (rb) why no ButtonFlat property? }
   TJvCalcEdit = class(TJvCustomCalcEdit)
   published
+    property Action;
     property Align; //Polaris
     property Alignment;
     property AutoSelect;
@@ -230,8 +229,9 @@ type
     property EnablePopupChange;
     property Font;
     property FormatOnEditing;
-    property GlyphKind;
-    property Glyph;
+    property ImageIndex;
+    property Images;
+    property ImageKind;
     property ButtonWidth;
     property HideSelection;
     property Anchors;
@@ -244,7 +244,6 @@ type
     property MaxLength;
     property MaxValue;
     property MinValue;
-    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -295,9 +294,8 @@ uses
 const
   sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }
 
-// (rom) changed to var
 var
-  CalcBitmap: TBitmap = nil;
+  GCalcImageIndex: TImageIndex = -1;
 
 type
   TJvPopupWindowHack = class(TJvPopupWindow);
@@ -362,12 +360,12 @@ begin
   FZeroEmpty := True;
   inherited Text := '';
   inherited Alignment := taLeftJustify;
-  FDefNumGlyphs := 2;
   { forces update }
   DataChanged;
   ControlState := ControlState + [csCreating];
   try
-    GlyphKind := gkDefault;
+    { TODO : Check }
+    ImageKind := ikDefault;
     //Polaris ButtonWidth := 20;
     ButtonWidth := 21;
   finally
@@ -394,17 +392,6 @@ begin
     SetValue(CheckValue(FValue, False));
     Invalidate;
   end;
-end;
-
-function TJvCustomNumEdit.GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap;
-begin
-  DestroyNeeded := False;
-  if CalcBitmap = nil then
-  begin
-    CalcBitmap := TBitmap.Create;
-    CalcBitmap.LoadFromResourceName(HInstance, sCalcBmp);
-  end;
-  Result := CalcBitmap;
 end;
 
 function TJvCustomNumEdit.DefaultDisplayFormat: string;
@@ -932,10 +919,20 @@ begin
     DoChange;
 end;
 
-initialization
+class function TJvCustomNumEdit.DefaultImageIndex: TImageIndex;
+var
+  Bmp: TBitmap;
+begin
+  if GCalcImageIndex < 0 then
+  begin
+    Bmp := TBitmap.Create;
+    Bmp.Handle := LoadBitmap(HInstance, sCalcBmp);
+    GCalcImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
+    Bmp.Free;
+  end;
 
-finalization
-  FreeAndNil(CalcBitmap);
+  Result := GCalcImageIndex;
+end;
 
 end.
 

@@ -64,7 +64,6 @@ object FoWallpaperChooser: TFoWallpaperChooser
       Height = 21
       OnAfterDialog = DirectoryBox1AfterDialog
       ButtonFlat = False
-      NumGlyphs = 1
       TabOrder = 0
     end
   end
