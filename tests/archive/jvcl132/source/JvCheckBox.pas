@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2002-06-03
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -53,10 +53,12 @@ type
     FAutoSave: TJvAutoSave;
     FAutoSize: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
+    FAssociated: TControl;
     procedure SetHotFont(const Value: TFont);
     function GetCaption: TCaption;
     procedure SetAutoSize(const Value: Boolean);
     procedure SetCaption(const Value: TCaption);
+    procedure SetAssociated(const Value: TControl);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -66,10 +68,13 @@ type
   public
     procedure Loaded; override;
     procedure Toggle; override;
+    procedure Click; override;
+    procedure SetChecked(Value: Boolean); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property Associated:TControl read FAssociated write SetAssociated;
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
@@ -98,6 +103,8 @@ begin
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FAutoSave := TJvAutoSave.Create(Self);
+  if Assigned(FAssociated) then
+    FAssociated.Enabled := Checked;
 end;
 
 {**************************************************}
@@ -106,6 +113,8 @@ procedure TJvCheckBox.Toggle;
 begin
   inherited;
   FAutoSave.SaveValue(Checked);
+  if Assigned(FAssociated) then
+    FAssociated.Enabled := Checked;
 end;
 
 {**************************************************}
@@ -223,6 +232,33 @@ begin
   begin
     // (rom) TODO?
   end;
+end;
+
+{**************************************************}
+
+procedure TJvCheckBox.SetAssociated(const Value: TControl);
+begin
+  FAssociated := Value;
+  if Assigned(FAssociated) then
+    FAssociated.Enabled := Checked;
+end;
+
+{**************************************************}
+
+procedure TJvCheckBox.SetChecked(Value: Boolean);
+begin
+  inherited;
+  if Assigned(FAssociated) then
+    FAssociated.Enabled := Value;
+end;
+
+{**************************************************}
+
+procedure TJvCheckBox.Click;
+begin
+  inherited;
+  if Assigned(FAssociated) then
+    FAssociated.Enabled := Checked;
 end;
 
 end.
