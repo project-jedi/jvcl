@@ -102,6 +102,7 @@ type
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+    property LinkedObject: TObject read FLinkedObject write FLinkedObject;
   published
     // ListPropertiesUsed must come before properties named the same
     // as in the list or the component will not be created
@@ -114,7 +115,6 @@ type
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
     property Indent: Integer read FIndent write SetIndent default 2;
     property Text: string read GetText write SetText;
-    property LinkedObject: TObject read FLinkedObject write FLinkedObject;
   end;
 
   TJvImageItems = class(TOwnedCollection)
