@@ -303,13 +303,6 @@ type
 const
   DefaultDateOrder = doDMY;
 
-{$IFDEF USE_FOUR_DIGIT_YEAR}
-var
-  FourDigitYear: Boolean;
-{$ELSE}
-function FourDigitYear: Boolean;
-{$ENDIF USE_FOUR_DIGIT_YEAR}
-
 const
   CenturyOffset: Byte = 60;
   NullDate: TDateTime = {-693594} 0;

@@ -28,6 +28,7 @@ Known Issues:
 
 unit JvJCLUtils;
 // (p3) note: this unit should only contain JCL compatible routines ( no Forms etc)
+// and no JVCL units!
 
 { history:
 3.0:
@@ -69,7 +70,6 @@ uses
   {$IFDEF COMPLIB_CLX}
   Qt, QGraphics, QClipbrd,
   {$ENDIF}
-  JvTypes,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}
@@ -87,6 +87,14 @@ const
 type
   TFileTime = Integer;
 {$ENDIF LINUX}
+
+// (p3) duplicated from JvTypes since this unit should not rely on JVCL at all
+type
+  TDateOrder = (doMDY, doDMY, doYMD);
+const
+  DefaultDateOrder = doDMY;
+  CenturyOffset: Byte = 60;
+  NullDate: TDateTime = {-693594} 0;
 
 { GetWordOnPos returns Word from string, S, on the cursor position, P}
 function GetWordOnPos(const S: string; const P: Integer): string;
@@ -444,7 +452,6 @@ function IncSecond(ATime: TDateTime; Delta: Integer): TDateTime;
 function IncMSec(ATime: TDateTime; Delta: Integer): TDateTime;
 function CutTime(ADate: TDateTime): TDateTime; { Set time to 00:00:00:00 }
 
-
 { String to date conversions }
 function GetDateOrder(const DateFormat: string): TDateOrder;
 function MonthFromName(const S: string; MaxLen: Byte): Byte;
@@ -478,7 +485,7 @@ function StrToOem(const AnsiStr: string): string;
 function OemToAnsiStr(const OemStr: string): string;
 { OemToAnsiStr translates a string from the OEM character set into the
   Windows character set. }
-function IsEmptyStr(const S: string; const EmptyChars: TCharSet): Boolean;
+function IsEmptyStr(const S: string; const EmptyChars: TSysCharSet): Boolean;
 { EmptyStr returns true if the given string contains only character
   from the EmptyChars. }
 function ReplaceStr(const S, Srch, Replace: string): string;
@@ -534,27 +541,27 @@ function Copy2Space(const S: string): string;
 function Copy2SpaceDel(var S: string): string;
 { Copy2SpaceDel returns a substring of a string S from begining to first
   white space and removes this substring from S. }
-function AnsiProperCase(const S: string; const WordDelims: TCharSet): string;
+function AnsiProperCase(const S: string; const WordDelims: TSysCharSet): string;
 { Returns string, with the first letter of each word in uppercase,
   all other letters in lowercase. Words are delimited by WordDelims. }
-function WordCount(const S: string; const WordDelims: TCharSet): Integer;
+function WordCount(const S: string; const WordDelims: TSysCharSet): Integer;
 { WordCount given a set of word delimiters, returns number of words in S. }
 function WordPosition(const N: Integer; const S: string;
-  const WordDelims: TCharSet): Integer;
+  const WordDelims: TSysCharSet): Integer;
 { Given a set of word delimiters, returns start position of N'th word in S. }
 function ExtractWord(N: Integer; const S: string;
-  const WordDelims: TCharSet): string;
+  const WordDelims: TSysCharSet): string;
 function ExtractWordPos(N: Integer; const S: string;
-  const WordDelims: TCharSet; var Pos: Integer): string;
+  const WordDelims: TSysCharSet; var Pos: Integer): string;
 function ExtractDelimited(N: Integer; const S: string;
-  const Delims: TCharSet): string;
+  const Delims: TSysCharSet): string;
 { ExtractWord, ExtractWordPos and ExtractDelimited given a set of word
   delimiters, return the N'th word in S. }
 function ExtractSubstr(const S: string; var Pos: Integer;
-  const Delims: TCharSet): string;
+  const Delims: TSysCharSet): string;
 { ExtractSubstr given a set of word delimiters, returns the substring from S,
   that started from position Pos. }
-function IsWordPresent(const W, S: string; const WordDelims: TCharSet): Boolean;
+function IsWordPresent(const W, S: string; const WordDelims: TSysCharSet): Boolean;
 { IsWordPresent given a set of word delimiters, returns True if word W is
   present in string S. }
 function QuotedString(const S: string; Quote: Char): string;
@@ -576,7 +583,7 @@ function XorDecode(const Key, Source: string): string;
 
 { ** Command line routines ** }
 
-function GetCmdLineArg(const Switch: string; ASwitchChars: TCharSet): string;
+function GetCmdLineArg(const Switch: string; ASwitchChars: TSysCharSet): string;
 
 { ** Numeric string handling routines ** }
 
@@ -664,11 +671,27 @@ function ExcludeTrailingPathDelimiter(const APath: string): string;
 
 {$ENDIF}
 
+{$IFDEF USE_FOUR_DIGIT_YEAR}
+var
+  FourDigitYear: Boolean;
+{$ELSE}
+function FourDigitYear: Boolean;
+{$ENDIF USE_FOUR_DIGIT_YEAR}
+
 
 implementation
-
 uses
-  Math, Consts, SysConst, JvConsts, ComObj;
+  Math, Consts, SysConst, ComObj;
+
+// (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
+resourcestring
+  SPropertyNotExists    = 'Property "%s" does not exists';
+  SInvalidPropertyType  = 'Property "%s" has invalid type';
+
+const
+  Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
+    ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
+
 
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
 var
@@ -1649,8 +1672,15 @@ begin
 end;
 
 function HasChar(const Ch: Char; const S: string): Boolean; 
+var i:integer;
 begin
-  Result := Pos(Ch, S) > 0;
+//  Result := Pos(Ch, S) > 0;
+  // (p3) this is a lot faster, actually
+  Result := true;
+  for i := 1 to Length(S) do
+     if S[i] = Ch then
+       Exit;
+  Result := false;
 end;
 
 function HasCharW(const Ch: WideChar; const S: WideString): Boolean;
@@ -4357,7 +4387,7 @@ begin
 {$ENDIF}
 end;
 
-function IsEmptyStr(const S: string; const EmptyChars: TCharSet): Boolean;
+function IsEmptyStr(const S: string; const EmptyChars: TSysCharSet): Boolean;
 var
   I, SLen: Integer;
 begin
@@ -4582,7 +4612,7 @@ begin
   Result := Copy2SymbDel(S, ' ');
 end;
 
-function AnsiProperCase(const S: string; const WordDelims: TCharSet): string;
+function AnsiProperCase(const S: string; const WordDelims: TSysCharSet): string;
 var
   SLen, I: Cardinal;
 begin
@@ -4600,7 +4630,7 @@ begin
   end;
 end;
 
-function WordCount(const S: string; const WordDelims: TCharSet): Integer;
+function WordCount(const S: string; const WordDelims: TSysCharSet): Integer;
 var
   SLen, I: Cardinal;
 begin
@@ -4619,7 +4649,7 @@ begin
 end;
 
 function WordPosition(const N: Integer; const S: string;
-  const WordDelims: TCharSet): Integer;
+  const WordDelims: TSysCharSet): Integer;
 var
   Count, I: Integer;
 begin
@@ -4644,7 +4674,7 @@ begin
 end;
 
 function ExtractWord(N: Integer; const S: string;
-  const WordDelims: TCharSet): string;
+  const WordDelims: TSysCharSet): string;
 var
   I: Integer;
   Len: Integer;
@@ -4665,7 +4695,7 @@ begin
 end;
 
 function ExtractWordPos(N: Integer; const S: string;
-  const WordDelims: TCharSet; var Pos: Integer): string;
+  const WordDelims: TSysCharSet; var Pos: Integer): string;
 var
   I, Len: Integer;
 begin
@@ -4686,7 +4716,7 @@ begin
 end;
 
 function ExtractDelimited(N: Integer; const S: string;
-  const Delims: TCharSet): string;
+  const Delims: TSysCharSet): string;
 var
   CurWord: Integer;
   I, Len, SLen: Integer;
@@ -4714,7 +4744,7 @@ begin
 end;
 
 function ExtractSubstr(const S: string; var Pos: Integer;
-  const Delims: TCharSet): string;
+  const Delims: TSysCharSet): string;
 var
   I: Integer;
 begin
@@ -4727,7 +4757,7 @@ begin
   Pos := I;
 end;
 
-function IsWordPresent(const W, S: string; const WordDelims: TCharSet): Boolean;
+function IsWordPresent(const W, S: string; const WordDelims: TSysCharSet): Boolean;
 var
   Count, I: Integer;
 begin
@@ -5206,7 +5236,7 @@ begin
   end;
 end;
 
-function GetCmdLineArg(const Switch: string; ASwitchChars: TCharSet): string;
+function GetCmdLineArg(const Switch: string; ASwitchChars: TSysCharSet): string;
 var
   I: Integer;
   S: string;
