@@ -204,7 +204,8 @@ type
   end;
 
   TJvDynControlJVCLDBCheckBox = class(TDBCheckBox, IUnknown,
-    IJvDynControl, IJvDynControlData, IJvDynControlDatabase)
+    IJvDynControl, IJvDynControlData, IJvDynControlDatabase,
+    IJvDynControlDBCheckbox)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -224,6 +225,10 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+
+    //IJvDynControlDBCheckbox
+    procedure ControlSetValueChecked(Value: Variant);
+    procedure ControlSetValueUnChecked(Value: Variant);
   end;
 
   TJvDynControlJVCLDBMemo = class(TDBMemo, IUnknown,
@@ -1179,6 +1184,17 @@ function TJvDynControlJVCLDBCheckBox.ControlGetDataField: string;
 begin
   Result := DataField;
 end;
+
+procedure TJvDynControlJVCLDBCheckBox.ControlSetValueChecked(Value: Variant);
+begin
+  ValueChecked := Value;
+end;
+
+procedure TJvDynControlJVCLDBCheckBox.ControlSetValueUnChecked(Value: Variant);
+begin
+  ValueUnChecked := Value;
+end;
+
 
 //=== { TJvDynControlJVCLDBMemo } ============================================
 
