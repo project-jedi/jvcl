@@ -87,16 +87,16 @@ type
 
   TJvStringsEditor = class(TDefaultEditor)
   protected
-    
+
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-    
+
     function GetStringsName: string; virtual;
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
-
+  (*)
   TJvDateTimeExProperty = class(TDateTimeProperty)
   public
     procedure Edit; override;
@@ -114,7 +114,7 @@ type
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
   end;
-
+  (*)
   TJvShortCutProperty = class(TIntegerProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
@@ -131,7 +131,7 @@ type
     procedure SetValue(const Value: string); override;
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
-    (*
+    (*)
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
       var AWidth: Integer); override;
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
@@ -141,7 +141,7 @@ type
 
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean); override;
-      (*)
+    (*)
   end;
 
   
@@ -194,7 +194,7 @@ uses
   
   QFileCtrls, QConsts,
   
-  JvQTypes, JvQStringsForm, JvQDateTimeForm, JvQDsgnConsts;
+  JvQTypes, JvQStringsForm, {JvQDateTimeForm,} JvQDsgnConsts;
 
 function ValueName(E: Extended): string;
 begin
@@ -434,7 +434,7 @@ function TJvStringsEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
-
+(*)
 //=== TJvDateTimeExProperty ==================================================
 
 procedure TJvDateTimeExProperty.Edit;
@@ -499,7 +499,7 @@ function TJvTimeExProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := inherited GetAttributes + [paDialog];
 end;
-
+(*)
 function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
 const
   cImageList = 'ImageList';
@@ -547,8 +547,8 @@ begin
       Proc(IntToStr(I));
 end;
 
-(*)
 
+(*)
 procedure TJvDefaultImageIndexProperty.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
 var

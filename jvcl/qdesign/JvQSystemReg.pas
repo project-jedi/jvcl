@@ -49,10 +49,10 @@ uses
   {$ENDIF MSWINDOWS}
   JvQScreenSaver,
   JvQSystemColors,
-  JvQSimpleXml, JvQXMLDatabase, JvQTimer, JvQFormPlacement,
+  JvQSimpleXml, JvQXmlDatabase, JvQTimer, JvQFormPlacement,
   JvQMinMaxForm, JvQThread, JvQThreadTimer,
   JvQFormPropertiesForm, JvQDsgnEditors, JvQFormPlacementSelectList,
-  JvQAppXMLStorage;
+  JvQAppXmlStorage;
 
 {$R ../Resources/JvSystemReg.dcr}
 

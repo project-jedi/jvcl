@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -135,18 +135,15 @@ type
 
 implementation
 
-
-
 uses
+  
+  
   QImgList;
+  
 
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvDice.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvDice.res}
-{$ENDIF LINUX}
+
+{$R ../Resources/JvDice.Res}
 
 
 constructor TJvDice.Create(AOwner: TComponent);
