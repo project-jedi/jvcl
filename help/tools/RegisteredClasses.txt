@@ -23,7 +23,6 @@ TJvBehaviorLabel
 TJvBevel
 TJvBitBtn
 TJvBitmapButton
-TJvBlinkingLED
 TJvBmpAnimator
 TJvBrowseForFolderDialog
 TJvCabFile
@@ -246,6 +245,7 @@ TJvJoystick
 TJvJVCLAboutComponent
 TJvKeyboardStates
 TJvLabel
+TJvLED
 TJvLinkLabel
 TJvListBox
 TJvListView
@@ -393,7 +393,6 @@ TJvTrackBar
 TJvTracker
 TJvTranslator
 TJvTranslatorStrings
-TJvTransLED
 TJvTransparentButton
 TJvTransparentButton2
 TJvTransparentForm
