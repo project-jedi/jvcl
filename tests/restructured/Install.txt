@@ -45,6 +45,11 @@ You will get a couple of warnings about "implicitly included" files, but this is
   b) If you are using Delphi 5, add the folder <JVCL>\lib5 to the path
   <JVCL> is the full drive and path to the folder where you put the JVCL files
 
+7) (If you plan to do all your development using run-time packages you do not need to perform this step)
+  Copy/move all *.res and *.dfm files from \source into either lib5 or lib6 depending on which version of Delphi you are using. If you are developing with both D5 and D6, copy the res and dfm files to both libX folders.
+
+8) If you would like to be able to open the source files in Delphi (hit Ctrl+Enter on a filename), add \source and \common to Delphi's Browsing path
+
 
 If there are installation problems, please contact us via: 
 
