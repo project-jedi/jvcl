@@ -92,12 +92,13 @@ type
     procedure SetButtonVisible(const Value: Boolean);
     function IsButtonVisibleStored: Boolean;
     procedure SetParentButtonVisible(const Value: Boolean);
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure CMParentBeveledChanged(var Msg: TMessage); message CM_PARENTBEVELEDCHANGED;
     procedure CMParentButtonFontChanged(var Msg: TMessage); message CM_PARENTBUTTONFONTCHANGED;
     procedure CMParentButtonVisibleChanged(var Msg: TMessage); message CM_PARENTBUTTONVISIBLECHANGED;
   protected
+    procedure TextChanged; override;
+    procedure Resize; override;
+
     procedure Loaded; override;
     procedure Paint; override;
     procedure SetParent(AParent: TWinControl); override;
@@ -154,8 +155,8 @@ type
   TJvScrollMaxBands = class(TJvCustomControl)
   private
     FScrolling: Boolean;
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
   protected
+    procedure DoFocusChanged(Control: TWinControl); override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure ScrollControls(const DeltaY: Integer);
     procedure Paint; override;
@@ -587,19 +588,20 @@ begin
   Perform(CM_PARENTBUTTONFONTCHANGED, 0, 0);
 end;
 
-procedure TJvScrollMaxBand.WMSize(var Msg: TWMSize);
+procedure TJvScrollMaxBand.Resize;
 begin
   if FExpanded then
     ExpandedHeight := Height;
-  inherited;
+  inherited Resize;
   if Assigned(FOnResize) then
     FOnResize(Self);
   if Parent <> nil then
     ScrollMax.CorrectHeight;
 end;
 
-procedure TJvScrollMaxBand.CMTextChanged(var Msg: TMessage);
+procedure TJvScrollMaxBand.TextChanged;
 begin
+  inherited TextChanged;
   FButton.Caption := Caption;
 end;
 
@@ -1028,13 +1030,13 @@ begin
   end;
 end;
 
-procedure TJvScrollMaxBands.CMFocusChanged(var Msg: TCMFocusChanged);
+procedure TJvScrollMaxBands.DoFocusChanged(Control: TWinControl);
 begin
-  inherited;
-  if (Msg.Sender <> nil) and
-    ContainsControl(Msg.Sender) and
+  inherited DoFocusChanged(Control);
+  if (Control <> nil) and
+    ContainsControl(Control) and
     (Parent <> nil) then
-    (Parent as TJvScrollMax).ScrollInView(Msg.Sender);
+    (Parent as TJvScrollMax).ScrollInView(Control);
 end;
 
 procedure TJvScrollMaxBands.Paint;

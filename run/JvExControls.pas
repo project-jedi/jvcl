@@ -1842,11 +1842,13 @@ var
   AutoSizeOffset: Cardinal;
   TControl_SetAutoSize: Pointer;
 
-procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
+procedure OrgSetAutoSize(Instance: TControl; Value: Boolean);
 asm
   dd    0, 0, 0, 0  // 16 Bytes
 end;
-{begin
+
+procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
+begin
   with TOpenControl(Instance) do
   begin
     if AutoSize <> Value then
@@ -1856,7 +1858,8 @@ end;
         AdjustSize;
     end;
   end;
-end;}
+  // same as OrgSetAutoSize(Instance, Value); but secure
+end;
 
 procedure SetAutoSizeHook(Instance: TControl; Value: Boolean);
 var
@@ -1929,10 +1932,10 @@ end;
 
 initialization
   InitHookVars;
-  InstallProcHook(TControl_SetAutoSize, @SetAutoSizeHook, @TOpenControl_SetAutoSize);
+  InstallProcHook(TControl_SetAutoSize, @SetAutoSizeHook, @OrgSetAutoSize);
 
 finalization
-  UninstallProcHook(@TOpenControl_SetAutoSize);
+  UninstallProcHook(@OrgSetAutoSize);
 
 {$ENDIF !COMPILER6_UP}
 
