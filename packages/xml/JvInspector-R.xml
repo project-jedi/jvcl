@@ -23,7 +23,7 @@
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
-    <Package Name="dataclx" Targets="K3" Condition=""/>
+    <Package Name="dataclx" Targets="K3" Condition="!DelphiPersonalEdition"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvInspector.pas" Targets="all" Formname="" Condition=""/>
