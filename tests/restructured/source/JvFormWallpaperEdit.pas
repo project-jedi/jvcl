@@ -33,18 +33,18 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Buttons, StdCtrls,
-  JvSpeedButton, JvToolEdit, JvSearchFile, JvComponent, Mask;
+  JvSpeedButton, JvToolEdit, JvComponent, Mask, JvSearchFiles;
 
 type
   TfoWallpaperChooser = class(TForm)
     GroupBox1: TGroupBox;
     BUSpeedButton1: TJvSpeedButton;
     BUSpeedButton2: TJvSpeedButton;
-    BUSearchFile1: TJvSearchFile;
     BUDirectoryBox1: TJvDirectoryEdit;
     Label1: TLabel;
     ScrollBox1: TScrollBox;
     BUSpeedButton3: TJvSpeedButton;
+    BUSearchFiles1: TJvSearchFiles;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BUSearchFile1Found(Sender: TObject; Path: string);
@@ -159,7 +159,8 @@ begin
   FList.Clear;
   FLastBtn := nil;
   { TODO : Test if this works }
-  BUSearchFile1.Execute(Name);
+  BUSearchFiles1.RootDirectory := Name;
+  BUSearchFiles1.Search;
 end;
 
 end.

@@ -92,11 +92,17 @@ object foWallpaperChooser: TfoWallpaperChooser
     Height = 141
     TabOrder = 1
   end
-  object BUSearchFile1: TJvSearchFile
-    Mask = '*.bmp'
-    Recursive = False
-    OnFound = BUSearchFile1Found
-    Left = 188
-    Top = 102
+  object BUSearchFiles1: TJvSearchFiles
+    DirOption = doExcludeSubDirs
+    DirParams.LastChangeAfter = 29221
+    DirParams.LastChangeBefore = 29221
+    FileParams.SearchTypes = [stFileMask]
+    FileParams.LastChangeAfter = 29221
+    FileParams.LastChangeBefore = 29221
+    FileParams.FileMasks.Strings = (
+      '*.bmp')
+    OnFindFile = BUSearchFile1Found
+    Left = 112
+    Top = 64
   end
 end
