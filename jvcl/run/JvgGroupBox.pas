@@ -40,7 +40,7 @@ uses
 type
   TCaptionAlignment = (fcaNone, fcaLeft, fcaRight, fcaCenter, fcaWidth);
   TJvgGroupBox = class(TCustomGroupBox)
-  private
+  protected
     FBorder: TJvgBevelOptions;
     FCaptionBorder: TJvgBevelOptions;
     FGradient: TJvgGradient;
@@ -83,12 +83,16 @@ type
 
     procedure Collapse_(fCollapse: boolean);
     procedure SmthChanged(Sender: TObject);
-  protected
+    function GetCaption: string;
+    procedure SetCaption(const Value: string);
     procedure ReadFullHeight(Reader: TReader);
     procedure WriteFullHeight(Writer: TWriter);
     procedure Paint; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure AdjustClientRect(var Rect: TRect); override;
+
+    procedure ComputeCaptionRect;
+
     //    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
 
     procedure WMLButtonDown(var Message: TWMLButtonDown); message
@@ -108,7 +112,7 @@ type
       False;
     property Anchors;
     property Align;
-    property Caption;
+    property Caption : string read GetCaption write SetCaption;
     property Color;
     property DragCursor;
     property DragMode;
@@ -308,7 +312,7 @@ type
     Text, Caption, Background, Client, Delineate: TColor;
   end;
 var
-  H, i, RW, GlyphWidth: Integer;
+  H, GlyphWidth: Integer;
   R, NewR: TRect;
   Glyph: TBitmap;
   DrawState: TglDrawState;
@@ -362,79 +366,20 @@ begin
       if Assigned(FGlyphCollapsed) then
         GlyphWidth := max(FGlyphCollapsed.Width, GlyphWidth);
 
-      R := Rect(FCaptionShift.x, 0, 0, H);
-
       if Collapsed then
         Glyph := FGlyphCollapsed
       else
         Glyph := FGlyphExpanded;
 
-      DrawText(Handle, PChar(Text), Length(Text), R, DT_LEFT or DT_SINGLELINE
-        or DT_CALCRECT);
+      ComputeCaptionRect;
+      R := CaptionRect;
 
-      inc(R.right, Interspace + GlyphWidth);
-      with CaptionBorder do
-      begin
-        i := 0;
-        if Inner <> bvNone then
-        begin
-          inc(i, 2);
-          if Bold then
-            inc(i);
-        end;
-        if Outer <> bvNone then
-        begin
-          inc(i, 2);
-          if Bold then
-            inc(i);
-        end;
-
-        inc(R.Right, i);
-        inc(R.Bottom, i);
-      end;
-
-      RW := R.Right - R.Left;
-      case FCaptionAlignment of
-        fcaLeft:
-          begin
-            R.Right := RW;
-            R.Left := 0;
-          end;
-        fcaRight:
-          begin
-            R.Left := Width - RW - 1;
-            R.Right := R.Left + RW;
-          end;
-        fcaCenter:
-          begin
-            R.Left := (Width - RW) div 2;
-            R.Right := R.Left + RW;
-          end;
-        fcaWidth:
-          begin
-            R.Left := 0;
-            R.Right := width - 1;
-          end;
-      end;
-      if fgoDelineatedText in Options then
-        inc(r.bottom, 2);
-      if CaptionTextStyle = fstShadow then
-      begin
-        if fgoDelineatedText in Options then
-          inc(r.bottom, FIllumination.ShadowDepth - 2)
-        else
-          inc(r.bottom, FIllumination.ShadowDepth)
-      end
-      else if CaptionTextStyle <> fstNone then
-        inc(r.bottom, 2);
-      //Canvas.Brush.Color:=clBtnFace; Canvas.Brush.Style:=bsSolid;
       if not TransparentCaption then
       begin
         Canvas.Brush.Color := Colors.Caption;
         Windows.FillRect(Canvas.Handle, r, Canvas.Brush.Handle);
       end;
       GradientBox(Canvas.Handle, r, FCaptionGradient, PS_SOLID, 1);
-      CaptionRect := R;
 
       NewR := DrawBoxEx(Canvas.Handle, R, CaptionBorder.Sides,
         CaptionBorder.Inner, CaptionBorder.Outer,
@@ -756,6 +701,97 @@ begin
   FGlyphExpanded := TBitmap.Create;
   FGlyphExpanded.Assign(Value);
   Invalidate;
+end;
+
+function TJvgGroupBox.GetCaption: string;
+begin
+  Result := inherited Caption;
+end;
+
+procedure TJvgGroupBox.SetCaption(const Value: string);
+begin
+  inherited Caption := Value;
+  // (obones) force the computation of CaptionRect so that
+  // we don't need to paint to have the correct values.
+  ComputeCaptionRect;
+end;
+
+procedure TJvgGroupBox.ComputeCaptionRect;
+var
+  R : TRect;
+  i, RW, GlyphWidth: Integer;
+  Interspace: integer;
+begin
+  Interspace := 2;
+  R := Rect(FCaptionShift.x, 0, 0, Canvas.TextHeight(Text) - FCaptionShift.y);
+
+  if Assigned(FGlyphExpanded) then
+    GlyphWidth := FGlyphExpanded.Width
+  else
+    GlyphWidth := 0;
+  if Assigned(FGlyphCollapsed) then
+    GlyphWidth := max(FGlyphCollapsed.Width, GlyphWidth);
+
+  DrawText(Canvas.Handle, PChar(Text), Length(Text), R, DT_LEFT or DT_SINGLELINE
+    or DT_CALCRECT);
+
+  inc(R.right, Interspace + GlyphWidth);
+  with CaptionBorder do
+  begin
+    i := 0;
+    if Inner <> bvNone then
+    begin
+      inc(i, 2);
+      if Bold then
+        inc(i);
+    end;
+    if Outer <> bvNone then
+    begin
+      inc(i, 2);
+      if Bold then
+        inc(i);
+    end;
+
+    inc(R.Right, i);
+    inc(R.Bottom, i);
+  end;
+
+  RW := R.Right - R.Left;
+  case FCaptionAlignment of
+    fcaLeft:
+      begin
+        R.Right := RW;
+        R.Left := 0;
+      end;
+    fcaRight:
+      begin
+        R.Left := Width - RW - 1;
+        R.Right := R.Left + RW;
+      end;
+    fcaCenter:
+      begin
+        R.Left := (Width - RW) div 2;
+        R.Right := R.Left + RW;
+      end;
+    fcaWidth:
+      begin
+        R.Left := 0;
+        R.Right := width - 1;
+      end;
+  end;
+  if fgoDelineatedText in Options then
+    inc(r.bottom, 2);
+  if CaptionTextStyle = fstShadow then
+  begin
+    if fgoDelineatedText in Options then
+      inc(r.bottom, FIllumination.ShadowDepth - 2)
+    else
+      inc(r.bottom, FIllumination.ShadowDepth)
+  end
+  else if CaptionTextStyle <> fstNone then
+    inc(r.bottom, 2);
+
+  CaptionRect := R;
 end;
 
 end.
