@@ -103,7 +103,7 @@ type
     FNotify: TJvThreadNotifyEvent;
     procedure SynchChange;
   public
-    constructor Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer);
+    constructor Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer; AFreeOnTerminate:boolean);
     procedure Execute; override;
     property OnChangeNotify: TJvThreadNotifyEvent read FNotify write FNotify;
   end;
@@ -116,13 +116,14 @@ type
     FCollection: TJvChangeItems;
     FNotify: TJvNotifyEvent;
     FNotifyArray: TJvNotifyArray;
+    FFreeOnTerminate: boolean;
     procedure SetCollection(const Value: TJvChangeItems);
     procedure SetInterval(const Value: Integer);
     procedure SetActive(const Value: Boolean);
     procedure CheckActive(const Name: string);
     function NotifyError(const Msg: string): string;
     procedure DoThreadChangeNotify(Sender: TObject; Index: Integer);
-    // { PrY } procedure DoThreadTerminate(Sender: TObject);
+    procedure DoThreadTerminate(Sender: TObject);
   protected
     procedure Change(Item: TJvChangeItem); virtual;
     procedure Loaded; override;
@@ -133,6 +134,9 @@ type
     property Active: Boolean read FActive write SetActive default False;
     property Notifications: TJvChangeItems read FCollection write SetCollection;
     property CheckInterval: Integer read FInterval write SetInterval default 100;
+    // Set FreeOnTerminate to True if you want to be able to change the Active property
+    // in the OnChangeNotify event. NOTE: FreeOnTerminate should be changed when Active := False
+    property FreeOnTerminate:boolean read FFreeOnTerminate write FFreeOnTerminate default True;
     property OnChangeNotify: TJvNotifyEvent read FNotify write FNotify;
   end;
 
@@ -279,6 +283,7 @@ begin
   FCollection := TJvChangeItems.Create(Self);
   FActive := False;
   FInterval := 100;
+  FFreeOnTerminate := True;
 end;
 
 destructor TJvChangeNotify.Destroy;
@@ -332,13 +337,11 @@ begin
   Change(Notifications[Index]);
 end;
 
-(*
- { PrY }
 procedure TJvChangeNotify.DoThreadTerminate(Sender: TObject);
 begin
-  FThread := nil;
+  if FreeOnTerminate then
+    FThread := nil;
 end;
-*)
 
 procedure TJvChangeNotify.SetActive(const Value: Boolean);
 const
@@ -380,22 +383,30 @@ begin
       if FThread <> nil then
       begin
         FThread.Terminate;
-        // {PrY } FThread := nil;
-        FThread.WaitFor;
-        FreeAndNil(FThread);
+        if FreeOnTerminate then
+          FThread := nil
+        else
+        begin
+          FThread.WaitFor;
+          FreeAndNil(FThread);
+        end;
       end;
-      FThread := TJvChangeThread.Create(FNotifyArray, FCollection.Count, FInterval);
+      FThread := TJvChangeThread.Create(FNotifyArray, FCollection.Count, FInterval, FFreeOnTerminate);
       FThread.OnChangeNotify := DoThreadChangeNotify;
-      // { PrY } FThread.OnTerminate := DoThreadTerminate;
+      FThread.OnTerminate := DoThreadTerminate;
       FThread.Resume;
     end
     else
     if FThread <> nil then
     begin
       FThread.Terminate;
-      // { PrY } FThread := nil;
-      FThread.WaitFor;
-      FreeAndNil(FThread);
+      if FreeOnTerminate then
+        FThread := nil
+      else
+      begin
+        FThread.WaitFor;
+        FreeAndNil(FThread);
+      end;
     end;
 
     {
@@ -431,7 +442,7 @@ end;
 
 //=== { TJvChangeThread } ====================================================
 
-constructor TJvChangeThread.Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer);
+constructor TJvChangeThread.Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer; AFreeOnTerminate:Boolean);
 var
   I: Integer;
 begin
@@ -441,7 +452,7 @@ begin
   FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
   for I := 0 to FCount - 1 do
     FNotifyArray[I] := NotifyArray[I];
-  FreeOnTerminate := False; // PrY - was True. I want to control thread destruction
+  FreeOnTerminate := AFreeOnTerminate;
 end;
 
 procedure TJvChangeThread.Execute;
