@@ -48,6 +48,7 @@ uses
 
 type
   {$IFDEF MSWINDOWS}
+
   TJvSendMailOptions = class(TPersistent)
   private
     FMailer: TJclEmail;
@@ -96,6 +97,7 @@ type
   published
     property MailOptions: TJvSendMailOptions read FMailOptions write FMailOptions;
   end;
+
   {$ENDIF WINDOWS}
 
   TJvWebAction = class(TAction)
@@ -240,6 +242,7 @@ procedure TJvSendMailOptions.SetSubject(const Value: string);
 begin
   Mailer.Subject := Value;
 end;
+
 {$ENDIF WINDOWS}
 
 //=== TJvWebAction ===========================================================

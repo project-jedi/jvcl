@@ -35,10 +35,9 @@ type
     procedure StatusBar1Resize(Sender: TObject);
     procedure SaveDialog1TypeChange(Sender: TObject);
   private
-    { Private declarations }
     Data: TJvCsvDataSet;
-    procedure DoExportProgress(Sender: TObject; Min, Max, Position: Cardinal; const AText: string; var AContinue:
-      boolean);
+    procedure DoExportProgress(Sender: TObject; Min, Max, Position: Cardinal; const AText: string;
+      var AContinue: Boolean);
     procedure SetupData;
     procedure SaveDoc(AExportClass: TJvCustomDBGridExportClass;
       const Filename: string);
@@ -49,9 +48,12 @@ var
   frmMain: TfrmMain;
 
 implementation
+
 uses
-  ShellAPI, JvTypes, JvJVCLUtils, JvJCLUtils, ShlObj, CommDlg, Dlgs;
-{$R *.DFM}
+  ShellAPI, ShlObj, CommDlg, Dlgs,
+  JvTypes, JvJVCLUtils, JvJCLUtils;
+
+{$R *.dfm}
 
 procedure TfrmMain.SaveDoc(AExportClass: TJvCustomDBGridExportClass; const Filename: string);
 var
@@ -109,7 +111,7 @@ begin
 end;
 
 procedure TfrmMain.DoExportProgress(Sender: TObject; Min, Max,
-  Position: Cardinal; const AText: string; var AContinue: boolean);
+  Position: Cardinal; const AText: string; var AContinue: Boolean);
 begin
   JvProgressDialog1.Min := Min;
   JvProgressDialog1.Max := Max;
@@ -238,7 +240,7 @@ begin
       5: S := ChangeFileExt(S, '.xml');
     end;
     SendMessage(Windows.GetParent(SaveDialog1.Handle), CDM_SETCONTROLTEXT,
-      edt1, integer(PChar(S)));
+      edt1, Integer(PChar(S)));
   end;
 end;
 

@@ -80,14 +80,8 @@ type
     procedure SetMinValue(AValue: Extended);
     procedure SetZeroEmpty(Value: Boolean);
     procedure SetFormatOnEditing(Value: Boolean);
-    function GetText: string;
-               {$IFDEF VisualCLX}
-                reintroduce;
-                {$ENDIF VisualCLX}
-    procedure SetText(const AValue: string);
-               {$IFDEF VisualCLX}
-                reintroduce;
-                {$ENDIF VisualCLX}
+    function GetText: string; {$IFDEF VisualCLX} reintroduce; {$ENDIF}
+    procedure SetText(const AValue: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     function TextToValText(const AValue: string): string;
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function IsFormatStored: Boolean;
@@ -405,7 +399,7 @@ begin
   end;
   {$IFDEF VisualCLX}
   FCanvas := TControlCanvas.Create;
-  FCanvas.control := self;
+  FCanvas.Control := Self;
   {$ENDIF VisualCLX}
 end;
 
@@ -894,8 +888,8 @@ begin
     S := TJvPopupWindow(FPopup).GetPopupText
   else
     S := GetDisplayText;
-  if not PaintComboEdit(Self, S, FAlignment, FFocused and not PopupVisible,
-    FCanvas, Msg) then
+  if not PaintComboEdit(Self, S, FAlignment,
+    FFocused and not PopupVisible, FCanvas, Msg) then
     inherited;
 end;
 {$ENDIF VCL}
@@ -909,8 +903,8 @@ begin
     S := TJvPopupWindow(FPopup).GetPopupText
   else
     S := GetDisplayText;
-  if not PaintComboEdit(Self, S, FAlignment, true ,FFocused and not PopupVisible,
-    FCanvas) then
+  if not PaintComboEdit(Self, S, FAlignment,
+    True, FFocused and not PopupVisible, FCanvas) then
     inherited;
 end;
 {$ENDIF VisualCLX}

@@ -7,12 +7,17 @@ object frmMain: TfrmMain
   ClientHeight = 391
   ClientWidth = 532
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -72,7 +77,7 @@ object frmMain: TfrmMain
     object JvDomainUpDown1: TJvDomainUpDown
       Left = 409
       Top = 28
-      Width = 15
+      Width = 17
       Height = 21
       Associate = Edit1
       Items.Strings = (
