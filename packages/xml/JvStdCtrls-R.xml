@@ -47,7 +47,7 @@
     <File Name="..\..\run\JvSpeedButton.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpin.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStartMenuButton.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvStaticText.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvStaticText.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvStatusBar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStringGrid.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSystemPopup.pas" Targets="allbutclx" Formname="" Condition=""/>
