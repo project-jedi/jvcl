@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 288
-  Top = 215
+  Left = 230
+  Top = 80
   Width = 689
   Height = 660
   Caption = 'JvDynControlEngine / JvParameterList Sample'
@@ -1951,6 +1951,14 @@ object Form1: TForm1
       OnClick = BitBtn2Click
     end
   end
+  object Button15: TButton
+    Left = 392
+    Top = 504
+    Width = 75
+    Height = 25
+    Caption = 'Button15'
+    TabOrder = 5
+  end
   object JvAppRegistryStorage: TJvAppRegistryStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
@@ -2018,9 +2026,6 @@ object Form1: TForm1
     Top = 10
   end
   object Cipher: TJvVigenereCipher
-    Key = '234234234'
-    Encoded = 'dfhdf'
-    Decoded = '23423'
     Left = 360
     Top = 50
   end
