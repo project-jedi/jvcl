@@ -1501,7 +1501,6 @@ var
   MemFile: TMemIniFile;
 begin
   HideAllPopupPanel(nil);
-  MemFile := nil;
   MemFile := TMemIniFile.Create(Filename);
   try
     JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
@@ -3819,6 +3818,7 @@ begin
 
     Stream.Read(ActiveSheetIndex, SizeOf(ActiveSheetIndex));
     ActivePageIndex := ActiveSheetIndex;
+    Change;
   finally
   end;
 end;
