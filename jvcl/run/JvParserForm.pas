@@ -73,6 +73,8 @@ type
   end;
 
 implementation
+uses
+  JvHTMLParser;
 
 {$IFDEF VCL}
 {$R *.dfm}
