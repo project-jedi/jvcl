@@ -99,12 +99,18 @@ type
 
   EJVCLAppStorageError = class(EJVCLException);
 
+  { TAppStorage does not automatically store published properties of a class that
+    supports the IJvAppStorageHandler interface. Instead it invokes the Read and
+    Write methods. }
   IJvAppStorageHandler = interface
   ['{E3754817-49A3-4612-A228-5D44A088681D}']
-    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
-    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
+    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
+    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
   end;
 
+  { TAppStorage automatically stores published properties of a class that
+    supports the IJvAppStoragePublishedProps interface, even if the class
+    supports the IJvAppStorageHandler interface, too. }
   IJvAppStoragePublishedProps = interface
   ['{0211AEF7-CCE9-4F13-B3CE-287251C89182}']
   end;
@@ -327,17 +333,17 @@ type
     procedure WriteBooleanInt(const Path: string; Value: Boolean); virtual;
     { Retrieves an enumeration. If the value is not found, the Default will be returned (ignores sub
       stores). }
-    procedure ReadEnumerationInt(const Path: string;  TypeInfo: PTypeInfo; const Default;
+    procedure ReadEnumerationInt(const Path: string; TypeInfo: PTypeInfo; const Default;
       out Value); virtual;
     { Stores an enumeration (ignores sub stores). }
-    procedure WriteEnumerationInt(const Path: string;  TypeInfo: PTypeInfo;
+    procedure WriteEnumerationInt(const Path: string; TypeInfo: PTypeInfo;
       const Value); virtual;
     { Retrieves a set. If the value is not found, the Default will be returned (ignores sub
       stores). }
-    procedure ReadSetInt(const Path: string;  ATypeInfo: PTypeInfo; const Default;
+    procedure ReadSetInt(const Path: string; ATypeInfo: PTypeInfo; const Default;
       out Value); virtual;
     { Stores a set (ignores sub stores). }
-    procedure WriteSetInt(const Path: string;  ATypeInfo: PTypeInfo; const Value); virtual;
+    procedure WriteSetInt(const Path: string; ATypeInfo: PTypeInfo; const Value); virtual;
 
     function EncryptPropertyValue(Value: string): string;
     function DecryptPropertyValue(Value: string): string;
@@ -448,10 +454,10 @@ type
       storing. }
     procedure WriteStringList(const Path: string; const SL: TStrings);
     { Retrieves an enumeration. If the value is not found, the Default will be returned. }
-    procedure ReadEnumeration(const Path: string;  TypeInfo: PTypeInfo;
+    procedure ReadEnumeration(const Path: string; TypeInfo: PTypeInfo;
       const Default; out Value);
     { Stores an enumeration }
-    procedure WriteEnumeration(const Path: string;  TypeInfo: PTypeInfo;
+    procedure WriteEnumeration(const Path: string; TypeInfo: PTypeInfo;
       const Value);
     procedure ReadSet(const Path: string;  ATypeInfo: PTypeInfo; const Default; out Value);
     { Stores a set. }
@@ -546,7 +552,7 @@ type
     procedure WriteDateTimeInt(const Path: string; Value: TDateTime); override;
     function ReadBooleanInt(const Path: string; Default: Boolean): Boolean; override;
     procedure WriteBooleanInt(const Path: string; Value: Boolean); override;
-    procedure ReadEnumerationInt(const Path: string;  TypeInfo: PTypeInfo; const Default; out Value); override;
+    procedure ReadEnumerationInt(const Path: string; TypeInfo: PTypeInfo; const Default; out Value); override;
     procedure WriteEnumerationInt(const Path: string; TypeInfo: PTypeInfo; const Value); override;
     procedure ReadSetInt(const Path: string; ATypeInfo: PTypeInfo; const Default; out Value); override;
     procedure WriteSetInt(const Path: string; ATypeInfo: PTypeInfo; const Value); override;
@@ -1748,7 +1754,7 @@ begin
   TargetStore.WriteList(TargetPath, SL, SL.Count, TargetStore.WriteStringListItem, TargetStore.DeleteStringListItem);
 end;
 
-procedure TJvCustomAppStorage.ReadEnumerationInt(const Path: string;  TypeInfo: PTypeInfo;
+procedure TJvCustomAppStorage.ReadEnumerationInt(const Path: string; TypeInfo: PTypeInfo;
   const Default; out Value);
 var
   OrdValue: Integer;
@@ -1810,7 +1816,7 @@ begin
   end;
 end;
 
-procedure TJvCustomAppStorage.WriteEnumerationInt(const Path: string;  TypeInfo: PTypeInfo;
+procedure TJvCustomAppStorage.WriteEnumerationInt(const Path: string; TypeInfo: PTypeInfo;
   const Value);
 var
   Conv: TIntToIdent;
@@ -1848,7 +1854,7 @@ begin
     raise EJVCLAppStorageError.CreateRes(@RsEInvalidType);
 end;
 
-procedure TJvCustomAppStorage.ReadEnumeration(const Path: string;  TypeInfo: PTypeInfo;
+procedure TJvCustomAppStorage.ReadEnumeration(const Path: string; TypeInfo: PTypeInfo;
   const Default; out Value);
 var
   TargetStore: TJvCustomAppStorage;
@@ -1858,7 +1864,7 @@ begin
   TargetStore.ReadEnumerationInt(TargetPath, TypeInfo, Default, Value);
 end;
 
-procedure TJvCustomAppStorage.WriteEnumeration(const Path: string;  TypeInfo: PTypeInfo;
+procedure TJvCustomAppStorage.WriteEnumeration(const Path: string; TypeInfo: PTypeInfo;
   const Value);
 var
   TargetStore: TJvCustomAppStorage;
@@ -2300,12 +2306,12 @@ begin
   raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
-procedure TJvAppStorage.ReadEnumerationInt(const Path: string;  TypeInfo: PTypeInfo; const Default; out Value);
+procedure TJvAppStorage.ReadEnumerationInt(const Path: string; TypeInfo: PTypeInfo; const Default; out Value);
 begin
   raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
-procedure TJvAppStorage.WriteEnumerationInt(const Path: string;  TypeInfo: PTypeInfo; const Value);
+procedure TJvAppStorage.WriteEnumerationInt(const Path: string; TypeInfo: PTypeInfo; const Value);
 begin
   raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;

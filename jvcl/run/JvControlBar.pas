@@ -31,17 +31,21 @@ interface
 
 uses
   Windows, Classes, Graphics, Controls, Menus,
-  JvExControls, JvExExtCtrls;
+  JvExControls, JvExExtCtrls, JvAppStorage;
 
 type
   TPopupNames = (pnHint, pnName);
-  TJvControlBar = class(TJvExControlBar, IJvDenySubClassing)
+
+  TJvControlBar = class(TJvExControlBar, IJvDenySubClassing,
+    IJvAppStorageHandler, IJvAppStoragePublishedProps)
   private
     FPopupControl: Boolean;
     FPopup: TPopupMenu;
     FPopupNames: TPopupNames;
     FList: TList;
   protected
+    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
+    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     {$IFDEF VCL}
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
@@ -52,8 +56,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function SavePositions: string;
     procedure LoadPositions(const Value: string);
+    function SavePositions: string;
   published
     property HintColor;
     {$IFDEF JVCLThemesEnabled}
@@ -267,6 +271,16 @@ begin
     FList.Add(Client);
 end;
 {$ENDIF VCL}
+
+procedure TJvControlBar.ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
+begin
+  LoadPositions(AppStorage.ReadString(BasePath));
+end;
+
+procedure TJvControlBar.WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
+begin
+  AppStorage.WriteString(BasePath, SavePositions);
+end;
 
 end.
 
