@@ -46,7 +46,7 @@ UnitOutputDir=..\..\dcu
 PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=..\..\run;..\..\common
-Packages=
+Packages=vcl;rtl;vclx;VclSmp;vclshlctrls;dbrtl;adortl;vcldb;qrpt;bdertl;vcldbx;dsnap;cds;bdecds;teeui;teedb;tee;teeqr;ibxpress;vclie;xmlrtl;inet;inetdbbde;inetdbxpress;inetdb;nmfast;dbexpress;dbxcds;indy;dclOffice2k;Package1;PBFolder;Slider;CoolTray;BetterADO;ClawButtonPkg;ClawLabelPkg;xxgp;CopyData;visualclx;EzUSBD6;JvAppFrmD6R;JvCoreD6R;JvBandsD6R;JvBDED6R;JvDBD6R;JvStdCtrlsD6R;JvCmpD6R;JvCtrlsD6R;JvCustomD6R;JvDlgsD6R;JvDockingD6R;JvDotNetCtrlsD6R;JvGlobusD6R;JvHMID6R;JvInterpreterD6R;JvJansD6R;JvManagedThreadsD6R;JvMMD6R;JvNetD6R;JvPageCompsD6R;JvPluginD6R;JvPrintPreviewD6R;JvSystemD6R;JvTimeFrameworkD6R;JvUIBD6R;JvValidatorsD6R;JvWizardD6R;JvXPCtrlsD6R;JvCryptD6R
 Conditionals=
 DebugSourceDirs=
 UsePackages=0
@@ -74,3 +74,17 @@ Private=0
 DLL=0
 Locale=1031
 CodePage=1252
+[Excluded Packages]
+d:\programme\borland\delphi6\Bin\dclsoap60.bpl=Borland SOAP Components
+[HistoryLists\hlUnitAliases]
+Count=1
+Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[HistoryLists\hlSearchPath]
+Count=1
+Item0=..\..\run;..\..\common
+[HistoryLists\hlUnitOutputDirectory]
+Count=1
+Item0=..\..\dcu
+[HistoryLists\hlOutputDirectorry]
+Count=1
+Item0=..\..\bin

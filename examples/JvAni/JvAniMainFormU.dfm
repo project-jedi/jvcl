@@ -14,6 +14,7 @@ object JvAniMainForm: TJvAniMainForm
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnActivate = FormActivate
   DesignSize = (
     488
     320)

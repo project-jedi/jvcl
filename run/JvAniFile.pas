@@ -47,16 +47,15 @@ type
   private
     FIcon: TIcon;
     FIsIcon: Boolean;
-    FTag: TJvAniTag;
     FHotSpot: TPoint;
     FJiffRate: Longint;
-    FSeq: Integer;
   public
-    constructor Create(Index: Integer; Jiff: Longint);
+    constructor Create(Jiff: Longint);
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property JiffRate: Longint read FJiffRate;
-    property Seq: Integer read FSeq;
+    property Icon: TIcon read FIcon;
+    property HotSpot: TPoint read FHotSpot;
   end;
 
   TJvAnimatedCursorImage = class(TPersistent)
@@ -67,18 +66,21 @@ type
     FIcons: TList;
     FOriginalColors: Word;
     FIndex: Integer;
+    FRates: array of Longint;
+    FSequence: array of Longint;
+    FFrameCount: Integer;
     procedure NewImage;
     procedure RiffReadError;
     function ReadCreateIcon(Stream: TStream; ASize: Longint;
       var HotSpot: TPoint; var IsIcon: Boolean): TIcon;
     function GetIconCount: Integer;
+    function GetFrameCount: Integer;
     function GetIcon(Index: Integer): TIcon;
     function GetFrame(Index: Integer): TJvIconFrame;
     function GetDefaultRate: Longint;
     procedure SetIndex(Value: Integer);
     procedure ReadAniStream(Stream: TStream);
     procedure WriteAniStream(Stream: TStream);
-  protected
   public
     constructor Create;
     destructor Destroy; override;
@@ -95,6 +97,7 @@ type
     {$ENDIF VCL}
     property DefaultRate: Longint read GetDefaultRate;
     property IconCount: Integer read GetIconCount;
+    property FrameCount: Integer read GetFrameCount;
     property Icons[Index: Integer]: TIcon read GetIcon;
     property Frames[Index: Integer]: TJvIconFrame read GetFrame;
     property Title: string read FTitle write FTitle;
@@ -109,9 +112,6 @@ implementation
 uses
   Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts, JvResources;
-
-{ This implementation based on animated cursor editor source code
-  (ANIEDIT.C, copyright (C) Microsoft Corp., 1993-1996) }
 
 function PadUp(Value: Longint): Longint;
 begin
@@ -212,10 +212,9 @@ type
 
 //=== TJvIconFrame ===========================================================
 
-constructor TJvIconFrame.Create(Index: Integer; Jiff: Longint);
+constructor TJvIconFrame.Create(Jiff: Longint);
 begin
   inherited Create;
-  FSeq := Index;
   FJiffRate := Jiff;
 end;
 
@@ -232,13 +231,10 @@ begin
     begin
       if Self.FIcon = nil then
         Self.FIcon := TIcon.Create;
-      Self.FIcon.Assign(FIcon);
+      Self.FIcon.Assign(Icon);
       Self.FIsIcon := FIsIcon;
-      Move(FTag, Self.FTag, SizeOf(TJvAniTag));
-      Self.FHotSpot.X := FHotSpot.X;
-      Self.FHotSpot.Y := FHotSpot.Y;
+      Self.FHotSpot := HotSpot;
       Self.FJiffRate := JiffRate;
-      Self.FSeq := Seq;
     end
   else
     inherited Assign(Source);
@@ -272,6 +268,9 @@ begin
   for I := 0 to FIcons.Count - 1 do
     TJvIconFrame(FIcons[I]).Free;
   FIcons.Clear;
+  SetLength(FRates, 0);
+  SetLength(FSequence, 0);
+  FFrameCount := 0;
   FTitle := '';
   FCreator := '';
   FillChar(FHeader, SizeOf(FHeader), 0);
@@ -288,14 +287,25 @@ begin
   Result := FIcons.Count;
 end;
 
+function TJvAnimatedCursorImage.GetFrameCount: Integer;
+begin
+  Result := FFrameCount;
+end;
+
 function TJvAnimatedCursorImage.GetIcon(Index: Integer): TIcon;
 begin
-  Result := TJvIconFrame(FIcons[Index]).FIcon;
+  if (Index >= 0) and (Index < IconCount) then
+    Result := TJvIconFrame(FIcons[Index]).FIcon
+  else
+    Result := nil;
 end;
 
 function TJvAnimatedCursorImage.GetFrame(Index: Integer): TJvIconFrame;
 begin
-  Result := TJvIconFrame(FIcons[Index]);
+  if (Index >= 0) and (Index < FrameCount) then
+    Result := TJvIconFrame(FIcons[FSequence[Index]])
+  else
+    Result := nil;
 end;
 
 function TJvAnimatedCursorImage.GetDefaultRate: Longint;
@@ -305,7 +315,7 @@ end;
 
 procedure TJvAnimatedCursorImage.SetIndex(Value: Integer);
 begin
-  if (Value >= 0) and (Value < IconCount) then
+  if (Value >= 0) and (Value < FrameCount) then
     FIndex := Value;
 end;
 
@@ -327,9 +337,14 @@ begin
         Self.FTitle := Title;
         Self.FCreator := Creator;
         Self.FOriginalColors := FOriginalColors;
+        Self.FFrameCount := FrameCount;
+        SetLength(Self.FRates, Length(FRates));
+        Move(FRates[0], Self.FRates[0], Length(FRates)*SizeOf(Longint));
+        SetLength(Self.FSequence, Length(FSequence));
+        Move(FSequence[0], Self.FSequence[0], Length(FSequence)*SizeOf(Longint));
         for I := 0 to FIcons.Count - 1 do
         begin
-          Frame := TJvIconFrame.Create(-1, FHeader.dwJIFRate);
+          Frame := TJvIconFrame.Create(FHeader.dwJIFRate);
           try
             Frame.Assign(TJvIconFrame(FIcons[I]));
             Self.FIcons.Add(Frame);
@@ -375,8 +390,8 @@ begin
     TJvIconList(Dest).BeginUpdate;
     try
       TJvIconList(Dest).Clear;
-      for I := 0 to IconCount - 1 do
-        TJvIconList(Dest).Add(Icons[I]);
+      for I := 0 to FrameCount - 1 do
+        TJvIconList(Dest).Add(Frames[I].Icon);
     finally
       TJvIconList(Dest).EndUpdate;
     end;
@@ -465,18 +480,15 @@ end;
 
 procedure TJvAnimatedCursorImage.ReadAniStream(Stream: TStream);
 var
-  iFrame, iRate, iSeq, I: Integer;
+  I: Integer;
   Tag: TJvAniTag;
   Frame: TJvIconFrame;
-  cbChunk, cbRead, Temp: Longint;
+  cbChunk, cbRead: Longint;
   Icon: TIcon;
-  bFound, IsIcon: Boolean;
+  IsIcon: Boolean;
   HotSpot: TPoint;
   Buffer: array [0..255] of Char;
 begin
-  iFrame := 0;
-  iRate := 0;
-  iSeq := 0;
   { Make sure it's a RIFF ANI file }
   if not ReadTag(Stream, Tag) or (Tag.ckID <> FOURCC_RIFF) then
     RiffReadError;
@@ -494,31 +506,23 @@ begin
       if ((FHeader.dwFlags and AF_ICON) <> AF_ICON) or
         (FHeader.dwFrames = 0) then
         RiffReadError;
-      for I := 0 to FHeader.dwFrames - 1 do
-      begin
-        Frame := TJvIconFrame.Create(I, FHeader.dwJIFRate);
-        FIcons.Add(Frame);
-      end;
     end
     else
     if Tag.ckID = FOURCC_rate then
     begin
       { If we find a rate chunk, read it into its preallocated space }
-      if not ReadChunkN(Stream, Tag, Temp, SizeOf(Longint)) then
+      SetLength(FRates, Tag.ckSize div SizeOf(Longint));
+      if not ReadChunkN(Stream, Tag, FRates[0], Tag.ckSize) then
         Break;
-      if iRate < FIcons.Count then
-        TJvIconFrame(FIcons[iRate]).FJiffRate := Temp;
-      Inc(iRate);
     end
     else
     if Tag.ckID = FOURCC_seq then
     begin
       { If we find a seq chunk, read it into its preallocated space }
-      if not ReadChunkN(Stream, Tag, Temp, SizeOf(Longint)) then
+      FFrameCount := Tag.ckSize div SizeOf(Longint);
+      SetLength(FSequence, FFrameCount);
+      if not ReadChunkN(Stream, Tag, FSequence[0], Tag.ckSize) then
         Break;
-      if iSeq < FIcons.Count then
-        TJvIconFrame(FIcons[iSeq]).FSeq := Temp;
-      Inc(iSeq);
     end
     else
     if Tag.ckID = FOURCC_LIST then
@@ -542,28 +546,11 @@ begin
             Icon := ReadCreateIcon(Stream, Tag.ckSize, HotSpot, IsIcon);
             if Icon = nil then
               Break;
-            bFound := False;
-            for I := 0 to FIcons.Count - 1 do
-            begin
-              if TJvIconFrame(FIcons[I]).FSeq = iFrame then
-              begin
-                TJvIconFrame(FIcons[I]).FIcon := Icon;
-                TJvIconFrame(FIcons[I]).FTag := Tag;
-                TJvIconFrame(FIcons[I]).FHotSpot := HotSpot;
-                TJvIconFrame(FIcons[I]).FIsIcon := IsIcon;
-                bFound := True;
-              end;
-            end;
-            if not bFound then
-            begin
-              Frame := TJvIconFrame.Create(-1, FHeader.dwJIFRate);
-              Frame.FIcon := Icon;
-              Frame.FIsIcon := IsIcon;
-              Frame.FTag := Tag;
-              Frame.FHotSpot := HotSpot;
-              FIcons.Add(Frame);
-            end;
-            Inc(iFrame);
+            Frame := TJvIconFrame.Create(FHeader.dwJIFRate);
+            Frame.FIcon := Icon;
+            Frame.FHotSpot := HotSpot;
+            Frame.FIsIcon := IsIcon;
+            FIcons.Add(Frame);
           end
           else
             { Unknown chunk in fram list, just ignore it }
@@ -631,6 +618,19 @@ begin
     end;
   end;
   FHeader.dwFrames := FIcons.Count;
+  if Length(FSequence) = 0 then
+  begin
+    FFrameCount := FIcons.Count;
+    SetLength(FSequence, FFrameCount);
+    for I := 0 to FFrameCount - 1 do
+      FSequence[I] := I;
+  end;
+  if Length(FRates) = 0 then
+  begin
+    SetLength(FRates, FFrameCount);
+    for I := 0 to FFrameCount - 1 do
+      FRates[I] := FHeader.dwJIFRate;
+  end;
   if FHeader.dwFrames = 0 then
     RiffReadError;
 end;
@@ -786,11 +786,11 @@ end;
 procedure TJvAnimatedCursorImage.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   if FIcons.Count > 0 then
-    if (Icons[Index] <> nil) and not Icons[Index].Empty then
+    if (Frames[Index] <> nil) and not Frames[Index].Icon.Empty then
       {$IFDEF VCL}
-      DrawRealSizeIcon(ACanvas, Icons[Index], ARect.Left, ARect.Top);
+      DrawRealSizeIcon(ACanvas, Frames[Index].Icon, ARect.Left, ARect.Top);
       {$ELSE}
-      ACanvas.Draw(ARect.Left, ARect.Top, Icons[Index]);
+      ACanvas.Draw(ARect.Left, ARect.Top, Frames[Index].Icon);
       {$ENDIF VCL}
 end;
 
@@ -814,20 +814,20 @@ begin
         if Vertical then
         begin
           Width := Icons[0].Width;
-          Height := Icons[0].Height * FIcons.Count;
+          Height := Icons[0].Height * FrameCount;
         end
         else
         begin
-          Width := Icons[0].Width * FIcons.Count;
+          Width := Icons[0].Width * FrameCount;
           Height := Icons[0].Height;
         end;
         Canvas.FillRect(Bounds(0, 0, Width, Height));
         Idx := Index;
-        for I := 0 to FIcons.Count - 1 do
+        for I := 0 to FrameCount - 1 do
         begin
           Index := I;
-          R := Rect(Icons[I].Width * I * Ord(not Vertical),
-            Icons[I].Height * I * Ord(Vertical), 0, 0);
+          R := Rect(Frames[I].Icon.Width * I * Ord(not Vertical),
+            Frames[I].Icon.Height * I * Ord(Vertical), 0, 0);
           Draw(Canvas, R);
         end;
         Index := Idx;

@@ -43,6 +43,9 @@ type
     Save: TButton;
     procedure FileListBox1Click(Sender: TObject);
     procedure SaveClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+  private
+    Activated: Boolean;
   end;
 
 var
@@ -63,7 +66,8 @@ begin
     Memo1.Clear;
     Memo1.Lines.Add('Author: ' + Author);
     Memo1.Lines.Add('Title: ' + Title);
-    Memo1.Lines.Add('Frames: ' + IntToStr(FramesCount));
+    Memo1.Lines.Add('Icons: ' + IntToStr(IconCount));
+    Memo1.Lines.Add('Frames: ' + IntToStr(FrameCount));
   end;
 end;
 
@@ -73,6 +77,18 @@ begin
   if SaveDialog1.Execute then
     with TJvAni(Image1.Picture.Graphic) do
       SaveToFile(SaveDialog1.FileName);
+end;
+
+procedure TJvAniMainForm.FormActivate(Sender: TObject);
+var
+  Buffer: array [0..MAX_PATH] of Char;
+begin
+  if not Activated then
+  begin
+    Activated := True;
+    GetWindowsDirectory(Buffer, SizeOf(Buffer));
+    DirectoryListBox1.Directory := Buffer + '\Cursors';
+  end;
 end;
 
 end.
