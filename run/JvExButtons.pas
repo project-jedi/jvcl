@@ -329,7 +329,7 @@ end;
 function TJvExSpeedButton.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   if FHintColor <> clNone then
-    HintInfo.HintColor := FHintCOlor;
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -501,7 +501,7 @@ end;
 function TJvExBitBtn.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   if FHintColor <> clNone then
-    HintInfo.HintColor := FHintCOlor;
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
