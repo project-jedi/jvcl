@@ -1,3 +1,10 @@
+2000-08-10
+- Moved JvSearchFile.pas, JvSearchFiles.pas and JvSysComp to /archive //Remko Bonte
+- Removed JclFileMaskComparator and TJvFileTreescan out of JvSysComp.pas //Remko Bonte
+- Added modification to JvSearchFiles.pas //Remko Bonte
+- Updated JvFormWallPaperEdit to use TJvSearchFiles instead of TJvSearchFile //Remko Bonte
+- Updated fjvclConverterMain.pas to use new TJvSearchFiles //Remko Bonte
+
 2002-07-26
 - Added updated JvCoupler from Rob den Braseem - set label position
 - Added TAnchorKind declaration to JvTypes for D4 and below

@@ -205,6 +205,12 @@ Merging of TJvStringGrid:
 Merged TJvScrollEvStringGrid,TJvControlStringgrid, TJvExStringgrid into TJvStringGrid
 Moved JvScrollEvStringGrid, JvControlStringgrid, JvExStringgrid to \archive
 
+Merging of TJvSearchFiles:
+--------------------------
+Merged TJvSearchFile,TJvSearchFiles, TJvFileTreeScan into TJvSearchFiles
+Moved JvSearchFile to \archive
+Removed TJvFileTreeScan, TjclFileMaskComparator out of JvSysComp.pas
+
 Others:
 -------
 * Moved JvLineEdit (w. TJvLineEdit and TJvLineCombo) to \archive:
@@ -269,7 +275,6 @@ TODO:
 ----
 * buttons
 * "format" edits (i.e. FloatEdit et al) - NOTE: might be new libs that have these too?
-* file searchers (TJvFileTreeScan, TJvSearchFile,TJvSearchFiles)
 
 Other notes:
 ============
