@@ -139,8 +139,10 @@ type
     procedure IconPropertyChanged; //HEG: New
     procedure ActivePropertyChanged; //HEG: New
     procedure Loaded; override; //HEG: New
+    
     property ApplicationVisible: Boolean read FApplicationVisible write SetApplicationVisible default True;
     property VisibleInTaskList: Boolean read FTask write SetTask default True;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -837,6 +839,20 @@ begin
     end
     else
       NotifyIcon(NIM_DELETE);
+  end;
+end;
+
+procedure TJvTrayIcon.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited;
+  if Operation = opRemove then
+  begin
+    if AComponent = DropDownMenu then
+      DropDownMenu := nil;
+    if AComponent = PopupMenu then
+      PopupMenu := nil;
+    if AComponent = Icons then
+      Icons := nil;
   end;
 end;
 
