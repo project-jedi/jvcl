@@ -1,5 +1,7 @@
 ##Package: MM
 ##Status: Completed
+##Skip: TID3v2FrameRec
+##Skip: TID3v2HeaderRec
 ----------------------------------------------------------------------------------------------------
 @@JvId3v2Types.pas
 Summary
@@ -283,34 +285,22 @@ Summary
 Description
   Use the TJvID3FrameID type to
   TJvID3FrameIDs is a set of TJvID3FrameID values.
-@@TJvID3FrameID.fiAlbum
-  [TALB] The 'Album/Movie/Show title' frame is intended for the title of the
-  recording(/source of sound) which the audio in the file is taken from.
-@@TJvID3FrameID.fiAlbumSortOrder
-  [TSOA] The 'Album sort order' frame defines a string which should be used instead of the album name
-  (TALB) for sorting purposes. E.g. an album named "A Soundtrack" might preferably be sorted as
-  "Soundtrack". Introduced in v2.4.
+@@TJvID3FrameID.fiErrorFrame
+  Special frame used to identify an erroneous frame.
+@@TJvID3FrameID.fiPaddingFrame
+  Special frame used to identify a padding frame.
+@@TJvID3FrameID.fiUnknownFrame
+  Special frame used to identify an unknown frame.
 @@TJvID3FrameID.fiAudioCrypto
   [AENC] The 'Audio encryption' frame indicates if the actual audio stream is encrypted, and by whom.
+@@TJvID3FrameID.fiPicture
+  [APIC] The 'Attached picture' frame contains a picture directly related to the audio file.
 @@TJvID3FrameID.fiAudioSeekPoint
   [ASPI] 'Audio seek point index'. Audio files with variable bit rates are intrinsically difficult to
   deal with in the case of seeking within the file. The ASPI frame
   makes seeking easier by providing a list a seek points within the
   audio file.
   Introduced in v2.4.
-@@TJvID3FrameID.fiBPM
-  [TBPM] The 'BPM' frame contains the number of beats per minute in the mainpart of the audio.
-@@TJvID3FrameID.fiBand
-  [TPE2] The 'Band/Orchestra/Accompaniment' frame is used for additional information about the
-  performers in the recording.
-@@TJvID3FrameID.fiBufferSize
-  [RBUF] 'Recommended buffer size' Sometimes the server from which a audio file is streamed is aware
-  of transmission or coding problems resulting in interruptions in the audio stream. In these cases,
-  the size of the buffer can be recommended by the server using this frame.
-@@TJvID3FrameID.fiCDID
-  [MCDI] The 'Music CD identifier' frame is intended for music that comes from a CD, so that the
-  CD can be identified in databases such as the CDDB. The frame consists of a binary dump of the Table
-  Of Contents, TOC, from the CD,
 @@TJvID3FrameID.fiComment
   [COMM] The Comment frame is indended for any kind of full text information that does not fit in
   any other frame.
@@ -318,38 +308,10 @@ Description
   [COMR] The Commercial frame enables several competing offers in the same tag by bundling all needed
   information.
   Introduced in v2.3.
-@@TJvID3FrameID.fiComposer
-  [TCOM] The 'Composer(s)' frame is intended for the name of the composer(s).
-@@TJvID3FrameID.fiConductor
-  [TPE3] The 'Conductor' frame is used for the name of the conductor.
-@@TJvID3FrameID.fiContentGroup
-  [TIT1] The 'Content group description' frame is used if the sound belongs to a larger
-  category of sounds/music. For example, classical music is often sorted in different musical
-  sections (e.g. "Piano Concerto", "Weather - Hurricane").
-@@TJvID3FrameID.fiContentType
-  [TCON]
-@@TJvID3FrameID.fiCopyright
-  [TCOP] 'Copyright message' frame. Intended for the copyright holder of the original sound,
-  not the audio file itself.
 @@TJvID3FrameID.fiCryptoReg
   [ENCR] To identify with which method a frame has been encrypted the encryption method must
   be registered in the tag with this 'Encryption method registration' frame.
   Introduced in v2.3.
-@@TJvID3FrameID.fiDate
-  [TDAT] 'Date' frame containing the date for the recording.
-  Deprecated as of v2.4, replaced by
-@@TJvID3FrameID.fiEncodedBy
-  [TENC] The 'Encoded by' frame contains the name of the person or organisation that
-  encoded the audio file.
-@@TJvID3FrameID.fiEncoderSettings
-  [TSSE] The 'Software/Hardware and settings used for encoding' frame includes the used audio
-  encoder and its settings when the file was encoded. Hardware refers to hardware encoders, not the
-  computer on which a program was run.
-  Introduced in v2.3.
-@@TJvID3FrameID.fiEncodingTime
-  [TDEN] The 'Encoding time' frame contains a timestamp describing when the
-  audio was encoded.
-  Introduced in v2.4.
 @@TJvID3FrameID.fiEqualization2
   [EQU2]
   Introduced in v2.4.
@@ -357,16 +319,8 @@ Description
   [EQUA] This is another subjective, alignment frame. It allows the user to predefine an
   equalisation curve within the audio file.
   Deprecated as of v2.4, replaced by fiEqualization2.
-@@TJvID3FrameID.fiErrorFrame
-  Special frame used to identify an erroneous frame.
 @@TJvID3FrameID.fiEventTiming
   [ETCO]
-@@TJvID3FrameID.fiFileOwner
-  [TOWN] The 'File owner/licensee' frame contains the name of the owner or licensee of the file
-  and it's contents.
-  Introduced in v2.3.
-@@TJvID3FrameID.fiFileType
-  [TFLT] The 'File type' frame indicates which type of audio this tag defines.
 @@TJvID3FrameID.fiGeneralObject
   [GEOB] In the 'General encapsulated object' frame any type of file can be encapsulated.
 @@TJvID3FrameID.fiGroupingReg
@@ -374,193 +328,38 @@ Description
   frames. This can be used when some frames are to be signed. To identify which frames belongs to a
   set of frames a group identifier must be registered in the tag with this frame.
   Introduced in v2.3.
-@@TJvID3FrameID.fiISRC
-  [TSRC] The 'ISRC' frame should contain the International Standard Recording Code (ISRC)
-  12 characters).
-@@TJvID3FrameID.fiInitialKey
-  [TKEY] The 'Initial key' frame contains the musical key in which the sound starts.
-@@TJvID3FrameID.fiInvolvedPeople2
-  [TIPL] The 'Involved people list' is very similar to the musician credits
-  list, but maps between functions, like producer, and names.
-  Introduced in v2.4.
 @@TJvID3FrameID.fiInvolvedPeople
   [IPLS] 'Involved people list' Since there might be a lot of people contributing to an audio file in various ways, such as musicians and technicians, the 'Text information frames' are often insufficient to list everyone involved in a project. The 'Involved people list' is a frame containing the names of those involved, and how they were involved.
   Deprecated as of v2.4, replaced by fiInvolvedPeople2 and fiMusicianCreditList.
-@@TJvID3FrameID.fiLanguage
-  [TLAN] The 'Language(s)' frame should contain the languages of the text or lyrics spoken
-  or sung in the audio.
-@@TJvID3FrameID.fiLeadArtist
-  [TPE1] The 'Lead artist(s)/Lead performer(s)/Soloist(s)/Performing group' frame is used for the
-  main artist(s).
 @@TJvID3FrameID.fiLinkedInfo
   [LINK]
-@@TJvID3FrameID.fiLyricist
-  [TEXT] The 'Lyricist(s)/Text writer(s)' frame is intended for the writer(s) of the text
-  or lyrics in the recording.
+@@TJvID3FrameID.fiCDID
+  [MCDI] The 'Music CD identifier' frame is intended for music that comes from a CD, so that the
+  CD can be identified in databases such as the CDDB. The frame consists of a binary dump of the Table
+  Of Contents, TOC, from the CD,
 @@TJvID3FrameID.fiMPEGLookup
   [MLLT] 'MPEG location lookup table
-@@TJvID3FrameID.fiMediaType
-  [TMED] The 'Media type' frame describes from which media the sound originated.
-@@TJvID3FrameID.fiMetaCompression
-  [CDM]
-  Only in v2.2.
-@@TJvID3FrameID.fiMetaCrypto
-  [CRM]
-  Only in v2.2.
-@@TJvID3FrameID.fiMixArtist
-  [TPE4] The 'Interpreted, remixed, or otherwise modified by' frame contains more information about
-  the people behind a remix and similar interpretations of another existing piece.
-@@TJvID3FrameID.fiMood
-  [TMOO] The 'Mood' frame is intended to reflect the mood of the audio with a
-  few keywords, e.g. "Romantic" or "Sad".
-  Introduced in v2.4.
-@@TJvID3FrameID.fiMusicianCreditList
-  [TMCL] The 'Musician credits list' is intended as a mapping between
-  instruments and the musician that played it.
-  Introduced in v2.4.
-@@TJvID3FrameID.fiNetRadioOwner
-  [TRSO] The 'Internet radio station owner' frame contains the name of the owner of the internet
-  radio station from which the audio is streamed.
-@@TJvID3FrameID.fiNetRadioStation
-  [TRSN] The 'Internet radio station name' frame contains the name of the internet radio station
-  from which the audio is streamed.
-@@TJvID3FrameID.fiOrigAlbum
-  [TOAL] The 'Original album/movie/show title' frame is intended for the title of the original
-  recording (or source of sound), if for example the music in the file should be a cover of a
-  previously released song.
-@@TJvID3FrameID.fiOrigArtist
-  [TOPE] The 'Original artist(s)/performer(s)' frame is intended for the performer(s) of the
-  original recording, if for example the music in the file should be a cover of a previously
-  released song.
-@@TJvID3FrameID.fiOrigFileName
-  [TOFN] The 'Original filename' frame contains the preferred filename for the file, since some
-  media doesn't allow the desired length of the filename.
-@@TJvID3FrameID.fiOrigLyricist
-  [TOLY] The 'Original lyricist(s)/text writer(s)' frame is intended for the text writer(s) of
-  the original recording, if for example the music in the file should be a cover of a previously
-  released song.
-@@TJvID3FrameID.fiOrigReleaseTime
-  [TDOR] The 'Original release time' frame contains a timestamp describing
-  when the original recording of the audio was released.
-  Introduced in v2.4.
-@@TJvID3FrameID.fiOrigYear
-  [TORY] The 'Original release year' frame is intended for the year when the original recording,
-  if for example the music in the file should be a cover of a previously released song, was released.
-  Deprecated as of v2.4, replaced by
 @@TJvID3FrameID.fiOwnership
   [OWNE] The Ownership frame might be used as a reminder of a made transaction or, if signed, as
   proof. Note that the fiTermsOfUse and fiFileOwner frames are good to use in conjunction with this one.
   Introduced in v2.3.
-@@TJvID3FrameID.fiPaddingFrame
-  Special frame used to identify a padding frame.
-@@TJvID3FrameID.fiPartInSet
-  [TPOS] The 'Part of a set' frame is a numeric string that describes which part of a set the audio
-  came from. This frame is used if the source described in the fiAlbum frame is divided into several
-  mediums, e.g. a double CD. The value may be extended with a "/" character and a numeric string
-  containing the total number of parts in the set. E.g. "1/2".
-@@TJvID3FrameID.fiPerformerSortOrder
-  [TSOP] The 'Performer sort order' frame defines a string which should be
-  used instead of the performer (TPE2) for sorting purposes.
-  Introduced in v2.4.
-@@TJvID3FrameID.fiPicture
-  [APIC] The 'Attached picture' frame contains a picture directly related to the audio file.
+@@TJvID3FrameID.fiPrivate
+  [PRIV] The Private frame is used to contain information from a software producer that its program
+  uses and does not fit into the other frames.
+  Introduced in v2.3.
 @@TJvID3FrameID.fiPlayCounter
   [PCNT] The Playcounter frame is simply a counter of the number of times a file has been played.
   The value is increased by one every time the file begins to play.
-@@TJvID3FrameID.fiPlaylistDelay
-  [TDLY] 'Playlist delay' defines the numbers of milliseconds of silence between every song
-  in a playlist.
 @@TJvID3FrameID.fiPopularimeter
   [POPM] The purpose of this frame is to specify how good an audio file is.
 @@TJvID3FrameID.fiPositionsync
   [POSS] The 'Position synchronisation' frame delivers information to the listener of how far into the
   audio stream he picked up;
   Introduced in v2.3.
-@@TJvID3FrameID.fiPrivate
-  [PRIV] The Private frame is used to contain information from a software producer that its program
-  uses and does not fit into the other frames.
-  Introduced in v2.3.
-@@TJvID3FrameID.fiProducedNotice
-  [TPRO] The 'Produced notice' frame, in which the string must begin with a
-  year and a space character (making five characters), is intended for
-  the production copyright holder of the original sound, not the audio
-  file itself.
-  Introduced in v2.4.
-@@TJvID3FrameID.fiPublisher
-  [TPUB] The 'Publisher' frame simply contains the name of the label or publisher.
-@@TJvID3FrameID.fiRecordingDates
-  [TRDA] The 'Recording dates' frame is a intended to be used as complement to the fiYear, fiDate
-  and fiTime frames. E.g. "4th-7th June, 12th June" in combination with the fiYear frame.
-  Deprecated as of v2.4, replaced by
-@@TJvID3FrameID.fiRecordingTime
-  [TDRC] The 'Recording time' frame contains a timestamp describing when the
-  audio was recorded.
-  Introduced in v2.4.
-@@TJvID3FrameID.fiReleaseTime
-  [TDRL] The 'Release time' frame contains a timestamp describing when the
-  audio was first released.
-  Introduced in v2.4.
-@@TJvID3FrameID.fiReverb
-  [RVRB] The Reverb frame can be used to adjust echoes of different kinds.
-@@TJvID3FrameID.fiSeekFrame
-  [SEEK] This frame indicates where other tags in a file/stream can be found.
-  Introduced in v2.4.
-@@TJvID3FrameID.fiSetSubTitle
-  [TSST] The 'Set subtitle' frame is intended for the subtitle of the part of a set this track
-  belongs to.
-  Introduced in v2.4.
-@@TJvID3FrameID.fiSignature
-  [SIGN] This frame enables a group of frames, grouped with the 'Group
-  identification registration', to be signed.
-  Introduced in v2.4.
-@@TJvID3FrameID.fiSize
-  [TSIZ] The 'Size' frame contains the size of the audiofile in bytes, excluding the ID3v2 tag,
-  Deprecated as of v2.4, replaced by
-@@TJvID3FrameID.fiSongLen
-  [TLEN] The 'Length' frame contains the length of the audiofile in milliseconds
-@@TJvID3FrameID.fiSubTitle
-  [TIT3] The 'Subtitle/Description refinement' frame is used for information directly related
-  to the contents title (e.g. "Op. 16" or "Performed live at Wembley").
-@@TJvID3FrameID.fiSyncedLyrics
-  [SYLT] 'Synchronised lyrics/text' This is another way of incorporating the words, said or sung
-  lyrics, in the audio file as text, this time, however, in sync with the audio. It might also be used
-  to describing events e.g. occurring on a stage or on the screen in sync with the audio.
-@@TJvID3FrameID.fiSyncedTempo
-  [SYTC] 'Synchronised tempo codes'
-@@TJvID3FrameID.fiTaggingTime
-  [TDTG] The 'Tagging time' frame contains a timestamp describing then the
-  audio was tagged.
-  Introduced in v2.4.
-@@TJvID3FrameID.fiTermsOfUse
-  [USER] This frame contains a brief description of the terms of use and ownership of the
-  file. More detailed information concerning the legal terms might be available through the
-  fiWWWCopyright frame.
-  Introduced in v2.3.
-@@TJvID3FrameID.fiTime
-  [TIME] The 'Time' frame containing the time for the recording.
-  Deprecated as of v2.4, replaced by
-@@TJvID3FrameID.fiTitle
-  [TIT2] The 'Title/Songname/Content description' frame is the actual name of the piece
-  e.g. "Adagio", "Hurricane Donna").
-@@TJvID3FrameID.fiTitleSortOrder
-  [TSOT] The 'Title sort order' frame defines a string which should be used
-  instead of the title (TIT2) for sorting purposes.
-  Introduced in v2.4.
-@@TJvID3FrameID.fiTrackNum
-  [TRCK] The 'Track number/Position in set' frame is a numeric string containing the order number
-  of the audio-file on its original recording. This may be extended with a "/" character and a numeric
-  string containing the total numer of tracks/elements on the original recording. E.g. "4/9".
-@@TJvID3FrameID.fiUniqueFileID
-  [UFID] This frame's purpose is to be able to identify the audio file in a database that
-  may contain more information relevant to the content.
-@@TJvID3FrameID.fiUnknownFrame
-  Special frame used to identify an unknown frame.
-@@TJvID3FrameID.fiUnsyncedLyrics
-  [USLT] This frame contains the lyrics of the song or a text transcription of other vocal
-  activities.
-@@TJvID3FrameID.fiUserText
-  [TXXX] The 'User defined text information' frame is intended for one-string text
-  information concerning the audiofile in a similar way to the other "T"-frames.
+@@TJvID3FrameID.fiBufferSize
+  [RBUF] 'Recommended buffer size' Sometimes the server from which a audio file is streamed is aware
+  of transmission or coding problems resulting in interruptions in the audio stream. In these cases,
+  the size of the buffer can be recommended by the server using this frame.
 @@TJvID3FrameID.fiVolumeAdj2
   [RVA2]
   Introduced in v2.4.
@@ -570,242 +369,242 @@ Description
   the file is played. The purpose is to be able to align all files to a reference volume, so that
   you don't have to change the volume constantly. This frame may also be used to balance adjust the audio.
   Deprecated as of v2.4, replaced by fiVolumeAdj2
-@@TJvID3FrameID.fiWWWArtist
-  [WOAR] The 'Official artist/performer webpage' frame is a URL pointing at the artists
-  official webpage.
-@@TJvID3FrameID.fiWWWAudioFile
-  [WOAF] The 'Official audio file webpage' frame is a URL pointing at a file specific webpage.
-@@TJvID3FrameID.fiWWWAudioSource
-  [WOAS] The 'Official audio source webpage' frame is a URL pointing at the official webpage
-  for the source of the audio file, e.g. a movie.
+@@TJvID3FrameID.fiReverb
+  [RVRB] The Reverb frame can be used to adjust echoes of different kinds.
+@@TJvID3FrameID.fiSeekFrame
+  [SEEK] This frame indicates where other tags in a file/stream can be found.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiSignature
+  [SIGN] This frame enables a group of frames, grouped with the 'Group
+  identification registration', to be signed.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiSyncedLyrics
+  [SYLT] 'Synchronised lyrics/text' This is another way of incorporating the words, said or sung
+  lyrics, in the audio file as text, this time, however, in sync with the audio. It might also be used
+  to describing events e.g. occurring on a stage or on the screen in sync with the audio.
+@@TJvID3FrameID.fiSyncedTempo
+  [SYTC] 'Synchronised tempo codes'
+@@TJvID3FrameID.fiAlbum
+  [TALB] The 'Album/Movie/Show title' frame is intended for the title of the
+  recording(/source of sound) which the audio in the file is taken from.
+@@TJvID3FrameID.fiBPM
+  [TBPM] The 'BPM' frame contains the number of beats per minute in the mainpart of the audio.
+@@TJvID3FrameID.fiComposer
+  [TCOM] The 'Composer(s)' frame is intended for the name of the composer(s).
+@@TJvID3FrameID.fiContentType
+  [TCON]
+@@TJvID3FrameID.fiCopyright
+  [TCOP] 'Copyright message' frame. Intended for the copyright holder of the original sound,
+  not the audio file itself.
+@@TJvID3FrameID.fiDate
+  [TDAT] 'Date' frame containing the date for the recording.
+  Deprecated as of v2.4, replaced by
+@@TJvID3FrameID.fiEncodingTime
+  [TDEN] The 'Encoding time' frame contains a timestamp describing when the
+  audio was encoded.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiPlaylistDelay
+  [TDLY] 'Playlist delay' defines the numbers of milliseconds of silence between every song
+  in a playlist.
+@@TJvID3FrameID.fiOrigReleaseTime
+  [TDOR] The 'Original release time' frame contains a timestamp describing
+  when the original recording of the audio was released.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiRecordingTime
+  [TDRC] The 'Recording time' frame contains a timestamp describing when the
+  audio was recorded.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiReleaseTime
+  [TDRL] The 'Release time' frame contains a timestamp describing when the
+  audio was first released.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiTaggingTime
+  [TDTG] The 'Tagging time' frame contains a timestamp describing then the
+  audio was tagged.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiInvolvedPeople2
+  [TIPL] The 'Involved people list' is very similar to the musician credits
+  list, but maps between functions, like producer, and names.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiEncodedBy
+  [TENC] The 'Encoded by' frame contains the name of the person or organisation that
+  encoded the audio file.
+@@TJvID3FrameID.fiLyricist
+  [TEXT] The 'Lyricist(s)/Text writer(s)' frame is intended for the writer(s) of the text
+  or lyrics in the recording.
+@@TJvID3FrameID.fiFileType
+  [TFLT] The 'File type' frame indicates which type of audio this tag defines.
+@@TJvID3FrameID.fiTime
+  [TIME] The 'Time' frame containing the time for the recording.
+  Deprecated as of v2.4, replaced by
+@@TJvID3FrameID.fiContentGroup
+  [TIT1] The 'Content group description' frame is used if the sound belongs to a larger
+  category of sounds/music. For example, classical music is often sorted in different musical
+  sections (e.g. "Piano Concerto", "Weather - Hurricane").
+@@TJvID3FrameID.fiTitle
+  [TIT2] The 'Title/Songname/Content description' frame is the actual name of the piece
+  e.g. "Adagio", "Hurricane Donna").
+@@TJvID3FrameID.fiSubTitle
+  [TIT3] The 'Subtitle/Description refinement' frame is used for information directly related
+  to the contents title (e.g. "Op. 16" or "Performed live at Wembley").
+@@TJvID3FrameID.fiInitialKey
+  [TKEY] The 'Initial key' frame contains the musical key in which the sound starts.
+@@TJvID3FrameID.fiLanguage
+  [TLAN] The 'Language(s)' frame should contain the languages of the text or lyrics spoken
+  or sung in the audio.
+@@TJvID3FrameID.fiSongLen
+  [TLEN] The 'Length' frame contains the length of the audiofile in milliseconds
+@@TJvID3FrameID.fiMusicianCreditList
+  [TMCL] The 'Musician credits list' is intended as a mapping between
+  instruments and the musician that played it.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiMediaType
+  [TMED] The 'Media type' frame describes from which media the sound originated.
+@@TJvID3FrameID.fiMood
+  [TMOO] The 'Mood' frame is intended to reflect the mood of the audio with a
+  few keywords, e.g. "Romantic" or "Sad".
+  Introduced in v2.4.
+@@TJvID3FrameID.fiOrigAlbum
+  [TOAL] The 'Original album/movie/show title' frame is intended for the title of the original
+  recording (or source of sound), if for example the music in the file should be a cover of a
+  previously released song.
+@@TJvID3FrameID.fiOrigFileName
+  [TOFN] The 'Original filename' frame contains the preferred filename for the file, since some
+  media doesn't allow the desired length of the filename.
+@@TJvID3FrameID.fiOrigLyricist
+  [TOLY] The 'Original lyricist(s)/text writer(s)' frame is intended for the text writer(s) of
+  the original recording, if for example the music in the file should be a cover of a previously
+  released song.
+@@TJvID3FrameID.fiOrigArtist
+  [TOPE] The 'Original artist(s)/performer(s)' frame is intended for the performer(s) of the
+  original recording, if for example the music in the file should be a cover of a previously
+  released song.
+@@TJvID3FrameID.fiOrigYear
+  [TORY] The 'Original release year' frame is intended for the year when the original recording,
+  if for example the music in the file should be a cover of a previously released song, was released.
+  Deprecated as of v2.4, replaced by
+@@TJvID3FrameID.fiFileOwner
+  [TOWN] The 'File owner/licensee' frame contains the name of the owner or licensee of the file
+  and it's contents.
+  Introduced in v2.3.
+@@TJvID3FrameID.fiLeadArtist
+  [TPE1] The 'Lead artist(s)/Lead performer(s)/Soloist(s)/Performing group' frame is used for the
+  main artist(s).
+@@TJvID3FrameID.fiBand
+  [TPE2] The 'Band/Orchestra/Accompaniment' frame is used for additional information about the
+  performers in the recording.
+@@TJvID3FrameID.fiConductor
+  [TPE3] The 'Conductor' frame is used for the name of the conductor.
+@@TJvID3FrameID.fiMixArtist
+  [TPE4] The 'Interpreted, remixed, or otherwise modified by' frame contains more information about
+  the people behind a remix and similar interpretations of another existing piece.
+@@TJvID3FrameID.fiPartInSet
+  [TPOS] The 'Part of a set' frame is a numeric string that describes which part of a set the audio
+  came from. This frame is used if the source described in the fiAlbum frame is divided into several
+  mediums, e.g. a double CD. The value may be extended with a "/" character and a numeric string
+  containing the total number of parts in the set. E.g. "1/2".
+@@TJvID3FrameID.fiProducedNotice
+  [TPRO] The 'Produced notice' frame, in which the string must begin with a
+  year and a space character (making five characters), is intended for
+  the production copyright holder of the original sound, not the audio
+  file itself.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiPublisher
+  [TPUB] The 'Publisher' frame simply contains the name of the label or publisher.
+@@TJvID3FrameID.fiTrackNum
+  [TRCK] The 'Track number/Position in set' frame is a numeric string containing the order number
+  of the audio-file on its original recording. This may be extended with a "/" character and a numeric
+  string containing the total numer of tracks/elements on the original recording. E.g. "4/9".
+@@TJvID3FrameID.fiRecordingDates
+  [TRDA] The 'Recording dates' frame is a intended to be used as complement to the fiYear, fiDate
+  and fiTime frames. E.g. "4th-7th June, 12th June" in combination with the fiYear frame.
+  Deprecated as of v2.4, replaced by
+@@TJvID3FrameID.fiNetRadioStation
+  [TRSN] The 'Internet radio station name' frame contains the name of the internet radio station
+  from which the audio is streamed.
+@@TJvID3FrameID.fiNetRadioOwner
+  [TRSO] The 'Internet radio station owner' frame contains the name of the owner of the internet
+  radio station from which the audio is streamed.
+@@TJvID3FrameID.fiSize
+  [TSIZ] The 'Size' frame contains the size of the audiofile in bytes, excluding the ID3v2 tag,
+  Deprecated as of v2.4, replaced by
+@@TJvID3FrameID.fiAlbumSortOrder
+  [TSOA] The 'Album sort order' frame defines a string which should be used instead of the album name
+  (TALB) for sorting purposes. E.g. an album named "A Soundtrack" might preferably be sorted as
+  "Soundtrack". Introduced in v2.4.
+@@TJvID3FrameID.fiPerformerSortOrder
+  [TSOP] The 'Performer sort order' frame defines a string which should be
+  used instead of the performer (TPE2) for sorting purposes.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiTitleSortOrder
+  [TSOT] The 'Title sort order' frame defines a string which should be used
+  instead of the title (TIT2) for sorting purposes.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiISRC
+  [TSRC] The 'ISRC' frame should contain the International Standard Recording Code (ISRC)
+  12 characters).
+@@TJvID3FrameID.fiEncoderSettings
+  [TSSE] The 'Software/Hardware and settings used for encoding' frame includes the used audio
+  encoder and its settings when the file was encoded. Hardware refers to hardware encoders, not the
+  computer on which a program was run.
+  Introduced in v2.3.
+@@TJvID3FrameID.fiSetSubTitle
+  [TSST] The 'Set subtitle' frame is intended for the subtitle of the part of a set this track
+  belongs to.
+  Introduced in v2.4.
+@@TJvID3FrameID.fiUserText
+  [TXXX] The 'User defined text information' frame is intended for one-string text
+  information concerning the audiofile in a similar way to the other "T"-frames.
+@@TJvID3FrameID.fiYear
+  [TYER] The 'Year' frame contains the year of the recording.
+  Deprecated as of v2.4, replaced by
+@@TJvID3FrameID.fiUniqueFileID
+  [UFID] This frame's purpose is to be able to identify the audio file in a database that
+  may contain more information relevant to the content.
+@@TJvID3FrameID.fiTermsOfUse
+  [USER] This frame contains a brief description of the terms of use and ownership of the
+  file. More detailed information concerning the legal terms might be available through the
+  fiWWWCopyright frame.
+  Introduced in v2.3.
+@@TJvID3FrameID.fiUnsyncedLyrics
+  [USLT] This frame contains the lyrics of the song or a text transcription of other vocal
+  activities.
 @@TJvID3FrameID.fiWWWCommercialInfo
   [WCOM] The 'Commercial information' frame is a URL pointing at a webpage with information
   such as where the album can be bought.
 @@TJvID3FrameID.fiWWWCopyright
   [WCOP] The 'Copyright/Legal information' frame is a URL pointing at a webpage where the
   terms of use and ownership of the file is described.
+@@TJvID3FrameID.fiWWWAudioFile
+  [WOAF] The 'Official audio file webpage' frame is a URL pointing at a file specific webpage.
+@@TJvID3FrameID.fiWWWArtist
+  [WOAR] The 'Official artist/performer webpage' frame is a URL pointing at the artists
+  official webpage.
+@@TJvID3FrameID.fiWWWAudioSource
+  [WOAS] The 'Official audio source webpage' frame is a URL pointing at the official webpage
+  for the source of the audio file, e.g. a movie.
+@@TJvID3FrameID.fiWWWRadioPage
+  [WORS] The 'Official internet radio station homepage' contains a URL pointing at the homepage
+  of the internet radio station.
 @@TJvID3FrameID.fiWWWPayment
   [WPAY] The 'Payment' frame is a URL pointing at a webpage that will handle the process of
   paying for this file.
 @@TJvID3FrameID.fiWWWPublisher
   [WPUB] The 'Publishers official webpage' frame is a URL pointing at the official webpage for
   the publisher.
-@@TJvID3FrameID.fiWWWRadioPage
-  [WORS] The 'Official internet radio station homepage' contains a URL pointing at the homepage
-  of the internet radio station.
 @@TJvID3FrameID.fiWWWUser
   [WXXX] The 'User defined URL link' frame is intended for URL links concerning the audiofile
   in a similar way to the other "W"-frames.
-@@TJvID3FrameID.fiYear
-  [TYER] The 'Year' frame contains the year of the recording.
-  Deprecated as of v2.4, replaced by
+@@TJvID3FrameID.fiMetaCrypto
+  [CRM]
+  Only in v2.2.
+@@TJvID3FrameID.fiMetaCompression
+  [CDM]
+  Only in v2.2.
 ----------------------------------------------------------------------------------------------------
 @@TJvID3FrameIDs
 <TITLE TJvID3FrameIDs type>
 <COMBINE TJvID3FrameID>
-----------------------------------------------------------------------------------------------------
-@@TJvID3HeaderExtendedFlag
-<TITLE TJvID3HeaderExtendedFlag type>
-Summary
-  Enumerates extended options for the tag.
-Description
-  Use the TJvID3HeaderExtendedFlag type to specify extended options for the tag.
-
-  TJvID3HeaderExtendedFlags is a set of TJvID3HeaderExtendedFlag values.
-@@TJvID3HeaderExtendedFlag.hefTagIsAnUpdate
-  The present tag is an update of a tag found earlier in the present file or stream.
-@@TJvID3HeaderExtendedFlag.hefCRCDataPresent
-  A CRC-32 data is included in the extended header.
-@@TJvID3HeaderExtendedFlag.hefTagRestrictions
-  The extended header includes tag restrictions. <TODO>
-----------------------------------------------------------------------------------------------------
-@@TJvID3HeaderExtendedFlags
-<TITLE TJvID3HeaderExtendedFlags type>
-<COMBINE TJvID3HeaderExtendedFlag>
-----------------------------------------------------------------------------------------------------
-@@TJvID3HeaderFlag
-<TITLE TJvID3HeaderFlag type>
-Summary
-  Enumerates options for a tag.
-Description
-  Use the TJvID3HeaderFlag to specify options for a tag.
-
-  TJvID3HeaderFlags is a set of TJvID3HeaderFlag values.
-@@TJvID3HeaderFlag.hfUnsynchronisation
-  Applies unsynchronisation on all frames.
-@@TJvID3HeaderFlag.hfExtendedHeader
-  Includes an extended header in the tag.
-@@TJvID3HeaderFlag.hfExperimentalIndicator
-  Indicates that the tag is in experimental state.
-@@TJvID3HeaderFlag.hfFooterPresent
-  Includes a footer in the tag.
-  <TODO : not implemented>
-----------------------------------------------------------------------------------------------------
-@@TJvID3HeaderFlags
-<TITLE TJvID3HeaderFlags type>
-<COMBINE TJvID3HeaderFlag>
-----------------------------------------------------------------------------------------------------
-@@TJvID3ImageEncodingRestriction
-<TITLE TJvID3ImageEncodingRestriction type>
-Summary
-  Enumerates image encoding restrictions.
-Description
-  The TJvID3ImageEncodingRestriction type is used to specify a specific image encoding restriction.
-@@TJvID3ImageEncodingRestriction.ierNoRestrictions
-  No restrictions
-@@TJvID3ImageEncodingRestriction.ierOnlyPNGorJPEG
-  Images are encoded only with PNG or JPEG.
-----------------------------------------------------------------------------------------------------
-@@TJvID3ImageSizeRestriction
-<TITLE TJvID3ImageSizeRestriction type>
-Summary
-  Enumerates image size restrictions.
-Description
-  The TJvID3ImageSizeRestriction type is used to specify a specific image size restriction.
-@@TJvID3ImageSizeRestriction.isrNoRestrictions
-  No restrictions.
-@@TJvID3ImageSizeRestriction.isrMax256x256
-  All images are 256x256 pixels or smaller.
-@@TJvID3ImageSizeRestriction.isrMax64x64
-  All images are 64x64 pixels or smaller.
-@@TJvID3ImageSizeRestriction.isr64x64UnlessRequired
-  All images are exactly 64x64 pixels, unless required otherwise.
-----------------------------------------------------------------------------------------------------
-@@TJvID3PictureType
-<TITLE TJvID3PictureType type>
-Summary
-  Enumerates picture types.
-Description
-  Use the TJvID3PictureType type to specify a specific picture type.
-@@TJvID3PictureType.ptOther
-  Other
-@@TJvID3PictureType.ptFileIcon
-  32x32 pixels 'file icon' (PNG only)
-@@TJvID3PictureType.ptOtherFileIcon
-  Other file icon
-@@TJvID3PictureType.ptCoverFront
-  Cover (front)
-@@TJvID3PictureType.ptCoverBack
-  Cover (back)
-@@TJvID3PictureType.ptLeafletPage
-  Leaflet page
-@@TJvID3PictureType.ptMedia
-  Media (e.g. label side of CD)
-@@TJvID3PictureType.ptLeadArtist
-  Lead artist/lead performer/soloist
-@@TJvID3PictureType.ptArtist
-  Artist/performer
-@@TJvID3PictureType.ptConductor
-  Conductor
-@@TJvID3PictureType.ptBand
-  Band/Orchestra
-@@TJvID3PictureType.ptComposer
-  Composer
-@@TJvID3PictureType.ptLyricist
-  Lyricist/text writer
-@@TJvID3PictureType.ptRecordingLocation
-  Recording Location
-@@TJvID3PictureType.ptDuringRecording
-  During recording
-@@TJvID3PictureType.ptDuringPerformance
-  During performance
-@@TJvID3PictureType.ptMovieVideoScreenCapture
-  Movie/video screen capture
-@@TJvID3PictureType.ptBrightColouredFish
-  A bright coloured fish
-@@TJvID3PictureType.ptIllustration
-  Illustration
-@@TJvID3PictureType.ptBandLogotype
-  Band/artist logotype
-@@TJvID3PictureType.ptPublisherLogotype
-  Publisher/Studio logotype
-----------------------------------------------------------------------------------------------------
-@@TJvID3Restrictions
-Summary
-  Contains tag restrictions.
-Description
-  <TODO> For some applications it might be desired to restrict a tag in more
-  ways than imposed by the ID3 v2 specification. Note that the
-  presence of these restrictions does not affect how the tag is
-  decoded, merely how it was restricted before encoding.
-@@TJvID3Restrictions.RTagSize
-  Tag size restrictions
-@@TJvID3Restrictions.RTextEncoding
-  Text encoding restrictions
-@@TJvID3Restrictions.RTextFieldsSize
-  Text fields size restrictions
-@@TJvID3Restrictions.RImageEncoding
-  Image encoding restrictions
-@@TJvID3Restrictions.RImageSize
-  Image size restrictions
-----------------------------------------------------------------------------------------------------
-@@TJvID3StringPair
-Summary
-  Contains an ANSI and an unicode string.
-Description
-  The TJvID3StringPair type is used to store an ANSI and an unicode string together.
-@@TJvID3StringPair.SA
-  The ANSI string.
-@@TJvID3StringPair.SW
-  The unicode string.
-----------------------------------------------------------------------------------------------------
-@@TJvID3TagSizeRestriction
-<TITLE TJvID3TagSizeRestriction type>
-Summary
-  Enumerates tag size restrictions.
-Description
-  The TJvID3TagSizeRestriction type is used to specify a specific tag size restriction.
-@@TJvID3TagSizeRestriction.tsrMax128Frames_1MB
-  No more than 128 frames and 1 MB total tag size.
-@@TJvID3TagSizeRestriction.tsrMax64Frames_128KB
-  No more than 64 frames and 128 KB total tag size.
-@@TJvID3TagSizeRestriction.tsrMax32Frames_40KB
-  No more than 32 frames and 40 KB total tag size.
-@@TJvID3TagSizeRestriction.tsrMax32Frames_4KB
-  No more than 32 frames and 4 KB total tag size.
-----------------------------------------------------------------------------------------------------
-@@TJvID3TextEncodingRestriction
-<TITLE TJvID3TextEncodingRestriction type>
-Summary
-  Enumerates text encoding restrictions.
-Description
-  The TJvID3TextEncodingRestriction type is used to specify a specific text encoding restriction.
-@@TJvID3TextEncodingRestriction.terNoRestrictions
-  No restrictions.
-@@TJvID3TextEncodingRestriction.terOnlyISO_8859_1orUTF8
-  Strings are only encoded with ISO-8859-1 or UTF-8.
-----------------------------------------------------------------------------------------------------
-@@TJvID3TextFieldsSizeRestriction
-<TITLE TJvID3TextFieldsSizeRestriction type>
-Summary
-  Enumerates Text fields size restrictions.
-Description
-  The TJvID3TextFieldsSizeRestriction type is used to specify a specific text fields size restriction.
-@@TJvID3TextFieldsSizeRestriction.tfszNoRestrictions
-  No restrictions.
-@@TJvID3TextFieldsSizeRestriction.tfszMax1024Char
-  No string is longer than 1024 characters.
-@@TJvID3TextFieldsSizeRestriction.tfszMax128Char
-  No string is longer than 128 characters.
-@@TJvID3TextFieldsSizeRestriction.tfszMax30Char
-  No string is longer than 30 characters.
-----------------------------------------------------------------------------------------------------
-@@TJvID3Version
-<TITLE TJvID3Version type>
-Summary
-  Represent different kinds of ID3 tag versions.
-Description
-  Use the TJvID3Version type to represent an ID3 tag version.
-@@TJvID3Version.iveLowerThan2_2
-  A version older than 2.2. Such a version can't be read by TJvID3Controller.
-@@TJvID3Version.ive2_2
-  Version 2.2
-@@TJvID3Version.ive2_3
-  Version 2.3
-@@TJvID3Version.ive2_4
-  Version 2.4
-@@TJvID3Version.iveHigherThan2_4
-  A version newer than 2.4. Such a version can't be read by TJvID3Controller.
 ----------------------------------------------------------------------------------------------------
 @@TJvID3FrameID_Table
 <TITLE TJvID3FrameID Table>
@@ -1097,3 +896,212 @@ Description
 
   d = deprecated; X = Includes; - = Excludes;
 ----------------------------------------------------------------------------------------------------
+@@TJvID3HeaderExtendedFlag
+<TITLE TJvID3HeaderExtendedFlag type>
+Summary
+  Enumerates extended options for the tag.
+Description
+  Use the TJvID3HeaderExtendedFlag type to specify extended options for the tag.
+
+  TJvID3HeaderExtendedFlags is a set of TJvID3HeaderExtendedFlag values.
+@@TJvID3HeaderExtendedFlag.hefTagIsAnUpdate
+  The present tag is an update of a tag found earlier in the present file or stream.
+@@TJvID3HeaderExtendedFlag.hefCRCDataPresent
+  A CRC-32 data is included in the extended header.
+@@TJvID3HeaderExtendedFlag.hefTagRestrictions
+  The extended header includes tag restrictions. <TODO>
+----------------------------------------------------------------------------------------------------
+@@TJvID3HeaderExtendedFlags
+<TITLE TJvID3HeaderExtendedFlags type>
+<COMBINE TJvID3HeaderExtendedFlag>
+----------------------------------------------------------------------------------------------------
+@@TJvID3HeaderFlag
+<TITLE TJvID3HeaderFlag type>
+Summary
+  Enumerates options for a tag.
+Description
+  Use the TJvID3HeaderFlag to specify options for a tag.
+
+  TJvID3HeaderFlags is a set of TJvID3HeaderFlag values.
+@@TJvID3HeaderFlag.hfUnsynchronisation
+  Applies unsynchronisation on all frames.
+@@TJvID3HeaderFlag.hfExtendedHeader
+  Includes an extended header in the tag.
+@@TJvID3HeaderFlag.hfExperimentalIndicator
+  Indicates that the tag is in experimental state.
+@@TJvID3HeaderFlag.hfFooterPresent
+  Includes a footer in the tag.
+  <TODO : not implemented>
+----------------------------------------------------------------------------------------------------
+@@TJvID3HeaderFlags
+<TITLE TJvID3HeaderFlags type>
+<COMBINE TJvID3HeaderFlag>
+----------------------------------------------------------------------------------------------------
+@@TJvID3ImageEncodingRestriction
+<TITLE TJvID3ImageEncodingRestriction type>
+Summary
+  Enumerates image encoding restrictions.
+Description
+  The TJvID3ImageEncodingRestriction type is used to specify a specific image encoding restriction.
+@@TJvID3ImageEncodingRestriction.ierNoRestrictions
+  No restrictions
+@@TJvID3ImageEncodingRestriction.ierOnlyPNGorJPEG
+  Images are encoded only with PNG or JPEG.
+----------------------------------------------------------------------------------------------------
+@@TJvID3ImageSizeRestriction
+<TITLE TJvID3ImageSizeRestriction type>
+Summary
+  Enumerates image size restrictions.
+Description
+  The TJvID3ImageSizeRestriction type is used to specify a specific image size restriction.
+@@TJvID3ImageSizeRestriction.isrNoRestrictions
+  No restrictions.
+@@TJvID3ImageSizeRestriction.isrMax256x256
+  All images are 256x256 pixels or smaller.
+@@TJvID3ImageSizeRestriction.isrMax64x64
+  All images are 64x64 pixels or smaller.
+@@TJvID3ImageSizeRestriction.isr64x64UnlessRequired
+  All images are exactly 64x64 pixels, unless required otherwise.
+----------------------------------------------------------------------------------------------------
+@@TJvID3PictureType
+<TITLE TJvID3PictureType type>
+Summary
+  Enumerates picture types.
+Description
+  Use the TJvID3PictureType type to specify a specific picture type.
+@@TJvID3PictureType.ptOther
+  Other
+@@TJvID3PictureType.ptFileIcon
+  32x32 pixels 'file icon' (PNG only)
+@@TJvID3PictureType.ptOtherFileIcon
+  Other file icon
+@@TJvID3PictureType.ptCoverFront
+  Cover (front)
+@@TJvID3PictureType.ptCoverBack
+  Cover (back)
+@@TJvID3PictureType.ptLeafletPage
+  Leaflet page
+@@TJvID3PictureType.ptMedia
+  Media (e.g. label side of CD)
+@@TJvID3PictureType.ptLeadArtist
+  Lead artist/lead performer/soloist
+@@TJvID3PictureType.ptArtist
+  Artist/performer
+@@TJvID3PictureType.ptConductor
+  Conductor
+@@TJvID3PictureType.ptBand
+  Band/Orchestra
+@@TJvID3PictureType.ptComposer
+  Composer
+@@TJvID3PictureType.ptLyricist
+  Lyricist/text writer
+@@TJvID3PictureType.ptRecordingLocation
+  Recording Location
+@@TJvID3PictureType.ptDuringRecording
+  During recording
+@@TJvID3PictureType.ptDuringPerformance
+  During performance
+@@TJvID3PictureType.ptMovieVideoScreenCapture
+  Movie/video screen capture
+@@TJvID3PictureType.ptBrightColouredFish
+  A bright coloured fish
+@@TJvID3PictureType.ptIllustration
+  Illustration
+@@TJvID3PictureType.ptBandLogotype
+  Band/artist logotype
+@@TJvID3PictureType.ptPublisherLogotype
+  Publisher/Studio logotype
+----------------------------------------------------------------------------------------------------
+@@TJvID3Restrictions
+Summary
+  Contains tag restrictions.
+Description
+  <TODO> For some applications it might be desired to restrict a tag in more
+  ways than imposed by the ID3 v2 specification. Note that the
+  presence of these restrictions does not affect how the tag is
+  decoded, merely how it was restricted before encoding.
+----------------------------------------------------------------------------------------------------
+@@TJvID3Restrictions.RImageEncoding
+Image encoding restrictions
+----------------------------------------------------------------------------------------------------
+@@TJvID3Restrictions.RImageSize
+Image size restrictions
+----------------------------------------------------------------------------------------------------
+@@TJvID3Restrictions.RTagSize
+Tag size restrictions
+----------------------------------------------------------------------------------------------------
+@@TJvID3Restrictions.RTextEncoding
+Text encoding restrictions
+----------------------------------------------------------------------------------------------------
+@@TJvID3Restrictions.RTextFieldsSize
+Text fields size restrictions
+----------------------------------------------------------------------------------------------------
+@@TJvID3StringPair
+Summary
+  Contains an ANSI and an unicode string.
+Description
+  The TJvID3StringPair type is used to store an ANSI and an unicode string together.
+----------------------------------------------------------------------------------------------------
+@@TJvID3StringPair.SA
+The ANSI string.
+----------------------------------------------------------------------------------------------------
+@@TJvID3StringPair.SW
+The unicode string.
+----------------------------------------------------------------------------------------------------
+@@TJvID3TagSizeRestriction
+<TITLE TJvID3TagSizeRestriction type>
+Summary
+  Enumerates tag size restrictions.
+Description
+  The TJvID3TagSizeRestriction type is used to specify a specific tag size restriction.
+@@TJvID3TagSizeRestriction.tsrMax128Frames_1MB
+  No more than 128 frames and 1 MB total tag size.
+@@TJvID3TagSizeRestriction.tsrMax64Frames_128KB
+  No more than 64 frames and 128 KB total tag size.
+@@TJvID3TagSizeRestriction.tsrMax32Frames_40KB
+  No more than 32 frames and 40 KB total tag size.
+@@TJvID3TagSizeRestriction.tsrMax32Frames_4KB
+  No more than 32 frames and 4 KB total tag size.
+----------------------------------------------------------------------------------------------------
+@@TJvID3TextEncodingRestriction
+<TITLE TJvID3TextEncodingRestriction type>
+Summary
+  Enumerates text encoding restrictions.
+Description
+  The TJvID3TextEncodingRestriction type is used to specify a specific text encoding restriction.
+@@TJvID3TextEncodingRestriction.terNoRestrictions
+  No restrictions.
+@@TJvID3TextEncodingRestriction.terOnlyISO_8859_1orUTF8
+  Strings are only encoded with ISO-8859-1 or UTF-8.
+----------------------------------------------------------------------------------------------------
+@@TJvID3TextFieldsSizeRestriction
+<TITLE TJvID3TextFieldsSizeRestriction type>
+Summary
+  Enumerates Text fields size restrictions.
+Description
+  The TJvID3TextFieldsSizeRestriction type is used to specify a specific text fields size restriction.
+@@TJvID3TextFieldsSizeRestriction.tfszNoRestrictions
+  No restrictions.
+@@TJvID3TextFieldsSizeRestriction.tfszMax1024Char
+  No string is longer than 1024 characters.
+@@TJvID3TextFieldsSizeRestriction.tfszMax128Char
+  No string is longer than 128 characters.
+@@TJvID3TextFieldsSizeRestriction.tfszMax30Char
+  No string is longer than 30 characters.
+----------------------------------------------------------------------------------------------------
+@@TJvID3Version
+<TITLE TJvID3Version type>
+Summary
+  Represent different kinds of ID3 tag versions.
+Description
+  Use the TJvID3Version type to represent an ID3 tag version.
+@@TJvID3Version.iveLowerThan2_2
+  A version older than 2.2. Such a version can't be read by TJvID3Controller.
+@@TJvID3Version.ive2_2
+  Version 2.2
+@@TJvID3Version.ive2_3
+  Version 2.3
+@@TJvID3Version.ive2_4
+  Version 2.4
+@@TJvID3Version.iveHigherThan2_4
+  A version newer than 2.4. Such a version can't be read by TJvID3Controller.

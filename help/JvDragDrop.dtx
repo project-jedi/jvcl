@@ -1,5 +1,11 @@
 ##Package: System
 ##Status: Completed
+##Skip: FileDescriptorFormatEtc
+##Skip: FileDropFormatEtc
+##Skip: Malloc
+##Skip: FileContentFormatEtc
+##Skip: CF_FILECONTENTS
+##Skip: CF_FILEDESCRIPTOR
 ----------------------------------------------------------------------------------------------------
 @@JvDragDrop.pas
 Summary
@@ -7,6 +13,10 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+----------------------------------------------------------------------------------------------------
+@@TJvDragAcceptEvent
+<TITLE TJvDragAcceptEvent type>
+<COMBINE TJvDropTarget.OnDragAccept>
 ----------------------------------------------------------------------------------------------------
 @@TJvDragDrop
 <TITLEIMG TJvDragDrop>
@@ -83,6 +93,193 @@ Description
 See Also
   DropTarget, OnDrop
 ----------------------------------------------------------------------------------------------------
+@@TJvDragDropEvent
+<TITLE TJvDragDropEvent type>
+<COMBINE TJvDropTarget.OnDragDrop>
+----------------------------------------------------------------------------------------------------
+@@TJvDragEvent
+<TITLE TJvDragEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvDropTarget.OnDragEnter
+    TJvDropTarget.OnDragOver
+Parameters
+  Sender - Description for this parameter
+  Effect - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDragLeaveEvent
+<TITLE TJvDragLeaveEvent type>
+<COMBINE TJvDropTarget.OnDragLeave>
+----------------------------------------------------------------------------------------------------
+@@TJvDropEffect
+<TITLE TJvDropEffect type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvDropEffect.deNone
+  Description for deNone
+@@TJvDropEffect.deCopy
+  Description for deCopy
+@@TJvDropEffect.deMove
+  Description for deMove
+@@TJvDropEffect.deLink
+  Description for deLink
+@@TJvDropEffect.deScroll
+  Description for deScroll
+----------------------------------------------------------------------------------------------------
 @@TJvDropEvent
 <TITLE TJvDropEvent type>
 <COMBINE TJvDragDrop.OnDrop>
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget
+<TITLEIMG TJvDropTarget>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.AcceptDrag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.Control
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.DataObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.GetFileContent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index  - Description for this parameter
+  Stream - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.GetFileDescrCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.GetFileDescrNames
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  List - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.GetFilenames
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  List - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.OnDragAccept
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Accept - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.OnDragDrop
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Effect - Description for this parameter
+  Shift  - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.OnDragEnter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.OnDragLeave
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDropTarget.OnDragOver
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references

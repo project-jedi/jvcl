@@ -101,6 +101,15 @@ Description
   Use DroppedWidth to specify the width of the drop-down listbox of the combobox. By default, the width
   is set to the same width as the combobox.
 ----------------------------------------------------------------------------------------------------
+@@TJvImageComboBox.ImageHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvImageComboBox.Images
 Summary
   Specifies the image list from which images are retrieved.
@@ -110,6 +119,15 @@ Description
   <LINK TJvImageItem.ImageIndex, ImageIndex> property.
 See Also
   TJvImageItem.ImageIndex
+----------------------------------------------------------------------------------------------------
+@@TJvImageComboBox.ImageWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvImageComboBox.IndentSelected
 Summary
@@ -133,6 +151,162 @@ Summary
 Description
   Write a handler for the \OnChange event to take specific action when the selected item in the control changes.
 ----------------------------------------------------------------------------------------------------
+@@TJvImageItem
+Summary
+  Class type used for items that can display images and text as well as be assigned an indentation value.
+Description
+  TJvImageItem is the type used for individual items in a TJvImageComboBox and TJvImageListBox. Use the
+  properties of TJvImageItem to set the Indent, Text and ImageIndex of the items displayed.
+----------------------------------------------------------------------------------------------------
+@@TJvImageItem.ColorHighlight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageItem.ColorHighlightText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageItem.Font
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageItem.Glyph
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageItem.ImageIndex
+Summary
+  Determines which image is displayed as the icon for the item.
+Description
+  Set ImageIndex to associate the item with one of the images in the imagelist
+  of the owning control.
+----------------------------------------------------------------------------------------------------
+@@TJvImageItem.Indent
+Summary
+  Specifies the indentation of the item.
+Description
+  Set Indent to specify the indentation of the item. Indentation is used by the owning control
+  (a TJvImageListBox or TJvImageComboBox) to determine where to draw the item on it's canvas.
+----------------------------------------------------------------------------------------------------
+@@TJvImageItem.LinkedObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageItem.ListPropertiesUsed
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageItem.Text
+Summary
+  Contains a text string associated with the item.
+Description
+  Use the Text property to read the Text of the item or specify a new string for the Text value.
+  By default, Text is empty.
+----------------------------------------------------------------------------------------------------
+@@TJvImageItems
+Summary
+  Collection class that maintains a list of TJvImageItem objects.
+Description
+  TJvImageItems is the class type of the Items property of TJvImageListBox and TJvImageComboBox.
+  TJvImageItems maintains a list of items of type TJvImageItem. Use the methods of TJvImageItems to Add, Delete
+  and copy items to and from the list.
+----------------------------------------------------------------------------------------------------
+@@TJvImageItems.Add
+Summary
+  Adds a new item to the list.
+Description
+  Call Add to add a new TJvImageItem item to the list. The item will be added as the last item in the
+  list and will be assigned default values.
+Return value
+  The newly created TJvImageItem.
+See Also
+  <LINK Assign>, Insert, Delete
+----------------------------------------------------------------------------------------------------
+@@TJvImageItems.Add@string
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  text - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageItems.Assign
+Summary
+  Copies the properties and items of a compatible object into this object.
+Description
+  Call Assign to copy the properties and Items of another TJvImageItems or descendant object into this object.
+  If Source is a TStrings object, the Items array is cleared and new items are created where the Text
+  of each item is assigned from the TStrings.
+Parameters
+  Source - The object to copy from. This can be a TJvImageItems or descendant or a TStrings or descendant.
+----------------------------------------------------------------------------------------------------
+@@TJvImageItems.Items
+Summary
+  Provides indexed access to the items in the list.
+Description
+  Use Items to access the items in the list using an index. Since Items is the default property of TJvImageItems, you
+  can access the items without the Items specifier.
+
+  \Example:
+  <AUTOLINK OFF>
+  <CODE>
+    JvImageComboBox.Items.Items[i].Text := 'Hello';
+  </CODE>
+  Equivalent:
+  <CODE>
+    JvImageComboBox.Items[i].Text := 'Hello';
+  </CODE>
+  <AUTOLINK ON>
+----------------------------------------------------------------------------------------------------
+@@TJvImageItems.Objects
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvImageListBox
 <TITLEIMG TJvImageListBox>
 JVCLInfo
@@ -146,7 +320,7 @@ Description
   the ability to display an image from an image list next to each item.
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListBox.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListBox.Alignment
 Summary
@@ -203,6 +377,15 @@ Description
 See Also
   ColorHighlight
 ----------------------------------------------------------------------------------------------------
+@@TJvImageListBox.ImageHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvImageListBox.Images
 Summary
   Specifies the image list from which images are retrieved.
@@ -213,84 +396,29 @@ Description
 See Also
   TJvImageItem.ImageIndex
 ----------------------------------------------------------------------------------------------------
+@@TJvImageListBox.ImageWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvImageListBox.Items
 Summary
   Provides indexed access to the individual items in the list.
 Description
   Use Items to access the individual items in the list using an index.
 ----------------------------------------------------------------------------------------------------
-@@TJvImageItem
+@@TJvListPropertiesUsed
+<TITLE TJvListPropertiesUsed type>
 Summary
-  Class type used for items that can display images and text as well as be assigned an indentation value.
+  Write here a summary (1 line)
 Description
-  TJvImageItem is the type used for individual items in a TJvImageComboBox and TJvImageListBox. Use the
-  properties of TJvImageItem to set the Indent, Text and ImageIndex of the items displayed.
-----------------------------------------------------------------------------------------------------
-@@TJvImageItem.ImageIndex
-Summary
-  Determines which image is displayed as the icon for the item.
-Description
-  Set ImageIndex to associate the item with one of the images in the imagelist
-  of the owning control.
-----------------------------------------------------------------------------------------------------
-@@TJvImageItem.Indent
-Summary
-  Specifies the indentation of the item.
-Description
-  Set Indent to specify the indentation of the item. Indentation is used by the owning control
-  (a TJvImageListBox or TJvImageComboBox) to determine where to draw the item on it's canvas.
-----------------------------------------------------------------------------------------------------
-@@TJvImageItem.Text
-Summary
-  Contains a text string associated with the item.
-Description
-  Use the Text property to read the Text of the item or specify a new string for the Text value.
-  By default, Text is empty.
-----------------------------------------------------------------------------------------------------
-@@TJvImageItems
-Summary
-  Collection class that maintains a list of TJvImageItem objects.
-Description
-  TJvImageItems is the class type of the Items property of TJvImageListBox and TJvImageComboBox.
-  TJvImageItems maintains a list of items of type TJvImageItem. Use the methods of TJvImageItems to Add, Delete
-  and copy items to and from the list.
-----------------------------------------------------------------------------------------------------
-@@TJvImageItems.Add
-Summary
-  Adds a new item to the list.
-Description
-  Call Add to add a new TJvImageItem item to the list. The item will be added as the last item in the
-  list and will be assigned default values.
-Return value
-  The newly created TJvImageItem.
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = set of (puFont, puColorHighlight, puColorHighlightText); - for reference)
 See Also
-  <LINK Assign>, Insert, Delete
-----------------------------------------------------------------------------------------------------
-@@TJvImageItems.Assign
-Summary
-  Copies the properties and items of a compatible object into this object.
-Description
-  Call Assign to copy the properties and Items of another TJvImageItems or descendant object into this object.
-  If Source is a TStrings object, the Items array is cleared and new items are created where the Text
-  of each item is assigned from the TStrings.
-Parameters
-  Source - The object to copy from. This can be a TJvImageItems or descendant or a TStrings or descendant.
-----------------------------------------------------------------------------------------------------
-@@TJvImageItems.Items
-Summary
-  Provides indexed access to the items in the list.
-Description
-  Use Items to access the items in the list using an index. Since Items is the default property of TJvImageItems, you
-  can access the items without the Items specifier.
-
-  \Example:
-  <AUTOLINK OFF>
-  <CODE>
-    JvImageComboBox.Items.Items[i].Text := 'Hello';
-  </CODE>
-  Equivalent:
-  <CODE>
-    JvImageComboBox.Items[i].Text := 'Hello';
-  </CODE>
-  <AUTOLINK ON>
-
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references

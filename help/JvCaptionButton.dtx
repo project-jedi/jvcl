@@ -1,5 +1,8 @@
 ##Package: Ctrls
 ##Status: Completed
+##Skip: TJvCaptionButtonActionLink
+##Skip: TJvRedrawKind
+##Skip: TJvCaptionButtonActionLinkClass
 ----------------------------------------------------------------------------------------------------
 @@JvCaptionButton.pas
 Summary
@@ -219,36 +222,6 @@ Note
 See Also
   Images, ImageIndex, Margin, Spacing
 ----------------------------------------------------------------------------------------------------
-@@TJvCaptionButton.MouseDown
-Summary
-  Called when a mouse button is pressed.
-Description
-  MouseDown is called when a mouse button is pressed. If an OnMouseDown event handler has been
-  assigned, it will be called.
-Parameters
-  Button - The mouse button pressed.
-  Shift  - The shift state when the button was pressed.
-  X      - The X position where the button was pressed, relative to upper left corner of the control.
-  Y      - The Y position where the button was pressed, relative to upper left corner of the control.
-See Also
-  MouseUp, OnMouseDown
-----------------------------------------------------------------------------------------------------
-@@TJvCaptionButton.MouseUp
-Summary
-  Called when a mouse button is released.
-Description
-  MouseUp is called when a mouse button is released. If an OnMouseUp event handler has been
-  assigned, it will be called.
-Parameters
-  Button - The mouse button released.
-  Shift  - The shift state when the button was released.
-  X      - The X position where the button was released, relative to upper left corner of the
-           control.
-  Y      - The Y position where the button was released, relative to upper left corner of the
-           control.
-See Also
-  MouseDown, OnMouseUp
-----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton.Margin
 Summary
   Specifies the number of pixels between the edge of the image (or caption) and the edge of the button.
@@ -265,11 +238,41 @@ Note
 See Also
   Alignment, Layout
 ----------------------------------------------------------------------------------------------------
+@@TJvCaptionButton.MouseDown
+Summary
+  Called when a mouse button is pressed.
+Description
+  MouseDown is called when a mouse button is pressed. If an OnMouseDown event handler has been
+  assigned, it will be called.
+Parameters
+  Button - The mouse button pressed.
+  Shift  - The shift state when the button was pressed.
+  X      - The X position where the button was pressed, relative to upper left corner of the control.
+  Y      - The Y position where the button was pressed, relative to upper left corner of the control.
+See Also
+  MouseUp, OnMouseDown
+----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton.MouseInControl
 Summary
   Indicates whether the mouse is over the caption button.
 Description
   Read MouseInControl to determine whether the mouse is over the caption button.
+----------------------------------------------------------------------------------------------------
+@@TJvCaptionButton.MouseUp
+Summary
+  Called when a mouse button is released.
+Description
+  MouseUp is called when a mouse button is released. If an OnMouseUp event handler has been
+  assigned, it will be called.
+Parameters
+  Button - The mouse button released.
+  Shift  - The shift state when the button was released.
+  X      - The X position where the button was released, relative to upper left corner of the
+           control.
+  Y      - The Y position where the button was released, relative to upper left corner of the
+           control.
+See Also
+  MouseDown, OnMouseUp
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton.OnClick
 Summary

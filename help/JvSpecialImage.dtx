@@ -1,5 +1,6 @@
 ##Package: ??
 ##Status: Needs review
+##Skip: TJvSpecialImage.Picture
 ----------------------------------------------------------------------------------------------------
 @@JvSpecialImage.pas
 Summary
@@ -36,6 +37,20 @@ Description
   
   Call Reset to restore the image to it's original state. 
 ----------------------------------------------------------------------------------------------------
+@@TJvSpecialImage.AboutJVCL
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvSpecialImage.Brightness
+Summary
+  Specifies the brightness of the image.
+Description
+  Use Brightness to find or set the brightness of the image. The value for this property must be a 
+  number from 0 (dimmest) to 200 (brightest).
+  
+  The default value is 100.
+See Also
+  FadeIn, FadeOut, Reset
+----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage.Create
 Summary
   Creates and initializes an instance of TJvSpecialImage.
@@ -67,20 +82,6 @@ Parameters
   None.
 See Also
   Create
-----------------------------------------------------------------------------------------------------
-@@TJvSpecialImage.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
-@@TJvSpecialImage.Brightness
-Summary
-  Specifies the brightness of the image.
-Description
-  Use Brightness to find or set the brightness of the image. The value for this property must be a 
-  number from 0 (dimmest) to 200 (brightest).
-  
-  The default value is 100.
-See Also
-  FadeIn, FadeOut, Reset
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage.FadeIn
 Summary

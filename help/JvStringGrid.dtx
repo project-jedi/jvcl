@@ -1,5 +1,6 @@
 ##Package: StdCtrls
 ##Status: Incomplete
+##Skip: TGMActivateCell
 ----------------------------------------------------------------------------------------------------
 @@JvStringGrid.pas
 Summary
@@ -26,6 +27,8 @@ Summary
   Enumerates comparison methods that can be used to sort a \string grid.
 Description
   Use the TJvSortType to specify a specific comparison method to sort a \string grid.
+@@TJvSortType.stNone
+    Description for stNone
 @@TJvSortType.stAutomatic
   The comparison function automatically determines the type of the strings when comparing two strings.
   If both strings represent a integer, floating-point value or a date, then the two strings are compared
@@ -71,16 +74,6 @@ Description
   respend when the input focus shifts away from a cell.
 
   \Write an OnCaptionClick event handler to respond when the user clicks a fixed cell.
-----------------------------------------------------------------------------------------------------
-@@TJvStringGrid.Create
-Summary
-  Creates and initializes a new TJvStringGrid object.
-Description
-  Use \Create to create and initialize a new TJvStringGrid object.
-
-  \Create calls the inherited \Create method, then sets the initial values for the grid as follows:
-Parameters
-  AOwner - A component, typically the form, that is responsible for freeing the grid.
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -182,6 +175,16 @@ Parameters
         color change.
 See Also
   OnParentColorChange
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.Create
+Summary
+  Creates and initializes a new TJvStringGrid object.
+Description
+  Use \Create to create and initialize a new TJvStringGrid object.
+
+  \Create calls the inherited \Create method, then sets the initial values for the grid as follows:
+Parameters
+  AOwner - A component, typically the form, that is responsible for freeing the grid.
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.CreateEditor
 Summary

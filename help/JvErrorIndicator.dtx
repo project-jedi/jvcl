@@ -1,5 +1,7 @@
 ##Package: Validators
 ##Status: Completed
+##Skip: IJvErrorIndicatorClient
+##Skip: IJvErrorIndicator
 ----------------------------------------------------------------------------------------------------
 @@JvErrorIndicator.pas
 Summary
@@ -104,14 +106,6 @@ Description
 See Also
   Images
 ----------------------------------------------------------------------------------------------------
-@@TJvErrorControl.Images
-Summary
-  Specifies the image list used to display images in the control.
-Description
-  Use Images to specify where the control retrieves it's icons. In combination with ImageIndex
-See Also
-  ImageIndex
-----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.ImagePadding
 Summary
   Specifies the padding around the images.
@@ -120,6 +114,14 @@ Description
   is 0 or less, the image is centered within the control. The ImagePadding value is expressed in pixels.
 See Also
   ImageAlignment
+----------------------------------------------------------------------------------------------------
+@@TJvErrorControl.Images
+Summary
+  Specifies the image list used to display images in the control.
+Description
+  Use Images to specify where the control retrieves it's icons. In combination with ImageIndex
+See Also
+  ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorImageAlignment
 <TITLE TJvErrorImageAlignment type>
@@ -251,6 +253,16 @@ Description
 See Also
   Error, ImageAlignment
 ----------------------------------------------------------------------------------------------------
+@@TJvErrorIndicator.ImagePadding
+Summary
+  Specifies the padding around the images.
+Description
+  Use ImagePadding along with AControl to make minor adjustments to the location of the image within the
+  control. If AControl is nil, ImagePadding affects all controls. If ImagePadding
+  is 0 or less, the image is centered within the control.
+See Also
+  ImageAlignment
+----------------------------------------------------------------------------------------------------
 @@TJvErrorIndicator.Images
 Summary
   Lists the images that can appear on the error icons.
@@ -264,13 +276,3 @@ Description
   that you do not use 256 colors or higher.
 See Also
   ImageIndex, TJvErrorControl.ImageIndex, TJvErrorControl.Images
-----------------------------------------------------------------------------------------------------
-@@TJvErrorIndicator.ImagePadding
-Summary
-  Specifies the padding around the images.
-Description
-  Use ImagePadding along with AControl to make minor adjustments to the location of the image within the
-  control. If AControl is nil, ImagePadding affects all controls. If ImagePadding
-  is 0 or less, the image is centered within the control.
-See Also
-  ImageAlignment

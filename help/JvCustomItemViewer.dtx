@@ -1,5 +1,9 @@
 ##Package: Custom
 ##Status: Completed
+##Skip: ViewerDrawText
+##Skip: TJvViewerItem.Owner
+##Skip: TJvCustomItemViewerOptions.Owner
+##Skip: TJvViewerDrawStage
 ----------------------------------------------------------------------------------------------------
 @@JvCustomItemViewer.pas
 Summary
@@ -17,7 +21,6 @@ Description
 Parameters
   InnerRect - The rect to center.
   OuterRect - The rect to center against.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@ClearBrushPatterns
 <TITLE ClearBrushPatterns procedure>
@@ -319,8 +322,7 @@ Summary
   Returns the class type of the items in the Items list.
 Description
   Override GetItemClass in descendent classes to return the class type of the items in the Items array.
-See Also
-----------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.GetItemState
 Summary
   Returns the current state of the specified item.
@@ -546,6 +548,15 @@ Description
 See Also
   OnOptionsChanged
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.SelectAll
+Summary
+  Selects all items in the control.
+Description
+  Call SelectAll to select all the items in the Items array. SelectAll is functionally equivalent
+  to calling SelectItems with 0 and Count - 1 as parameters.
+See Also
+  SelectItems, UnselectItems
+----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.Selected
 Summary
   Provides access to the selected state of the items in the Items array.
@@ -567,6 +578,19 @@ Description
 See Also
   Selected
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.SelectItems
+Summary
+  Selects a range of items.
+Description
+  Call SelectItems to select a range of items in one go. SelectItems calls BeginUpdate/EndUpdate to
+  speed the selection process.
+Parameters
+  StartIndex - Index of the first item in the range.
+  EndIndex   - Index of the last item in the range.
+  AppendSelection - If true, already selected items are left selected. If false, the current selection is first removed.
+See Also
+  SelectAll, UnselectItems
+----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.ToggleSelection
 Summary
   Toggles the selection state of an item.
@@ -583,28 +607,6 @@ Description
   Read TopLeftIndex to determine the first visible item at the top left corner.
 See Also
   BottomRightIndex
-----------------------------------------------------------------------------------------------------
-@@TJvCustomItemViewer.SelectAll
-Summary
-  Selects all items in the control.
-Description
-  Call SelectAll to select all the items in the Items array. SelectAll is functionally equivalent
-  to calling SelectItems with 0 and Count - 1 as parameters.
-See Also
-  SelectItems, UnselectItems
-----------------------------------------------------------------------------------------------------
-@@TJvCustomItemViewer.SelectItems
-Summary
-  Selects a range of items.
-Description
-  Call SelectItems to select a range of items in one go. SelectItems calls BeginUpdate/EndUpdate to
-  speed the selection process.
-Parameters
-  StartIndex - Index of the first item in the range.
-  EndIndex   - Index of the last item in the range.
-  AppendSelection - If true, already selected items are left selected. If false, the current selection is first removed.
-See Also
-  SelectAll, UnselectItems
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.UnselectItems
 Summary
@@ -781,7 +783,6 @@ Summary
 Description
   Use the ShowCaptions property to specify whether items show their captions or not. This property affects the
   calculation of the ItemRect and TextRect parameters passed to TJvCustomItemViewer.DrawItem.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.Smooth
 Summary
@@ -849,6 +850,43 @@ Description
   The control displays a vertical scrollbar when needed. Items are arranged so that the width of the
   number of columns displayed never exceeds the client width of the control.
 ----------------------------------------------------------------------------------------------------
+@@TJvViewerAdvancedDrawEvent
+<TITLE TJvViewerAdvancedDrawEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    Nothing in this unit.
+Parameters
+  Sender      - Description for this parameter
+  Stage       - Description for this parameter
+  Canvas      - Description for this parameter
+  R           - Description for this parameter
+  DefaultDraw - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvViewerAdvancedItemDrawEvent
+<TITLE TJvViewerAdvancedItemDrawEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    Nothing in this unit.
+Parameters
+  Sender      - Description for this parameter
+  Stage       - Description for this parameter
+  Index       - Description for this parameter
+  State       - Description for this parameter
+  Canvas      - Description for this parameter
+  ItemRect    - Description for this parameter
+  TextRect    - Description for this parameter
+  DefaultDraw - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvViewerItem
 Summary
   Base class for items in a TJvCustomItemViewer or descendant.
@@ -914,4 +952,3 @@ Description
 @@TJvViewerItemDrawEvent
 <TITLE TJvViewerItemDrawEvent type>
 <COMBINE TJvCustomItemViewer.OnDrawItem>
-----------------------------------------------------------------------------------------------------

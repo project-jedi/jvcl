@@ -27,6 +27,15 @@ Description
   
   Property HintColor can be used to set a different color of the Help hint boxes for the status bar.  
 ----------------------------------------------------------------------------------------------------
+@@TJvStatusBar.AboutJVCL
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvStatusBar.AutoHintShown
+Summary
+  Specifies whether the status bar is showing the current hint.
+Description
+  Read AutoHintShown to determine whether the status bar is showing the current hint.
+----------------------------------------------------------------------------------------------------
 @@TJvStatusBar.Create
 Summary
   Creates and initializes a new TJvStatusBar object.
@@ -42,14 +51,15 @@ Parameters
 See Also
   HintColor
 ----------------------------------------------------------------------------------------------------
-@@TJvStatusBar.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
-@@TJvStatusBar.AutoHintShown
+@@TJvStatusBar.CreateParams
 Summary
-  Specifies whether the status bar is showing the current hint.
+  Initializes a window-creation parameter record passed in the Params parameter.
 Description
-  Read AutoHintShown to determine whether the status bar is showing the current hint.
+  CreateParams is called automatically to initialize the window-creation parameters whenever the window 
+  for the status bar needs to be created. TJvStatusBar overrides CreateParams to customize the 
+  parameters to specify a status bar control that reflects the properties of TJvStatusBar.
+Parameters
+  Params - a window-creation parameter record.
 ----------------------------------------------------------------------------------------------------
 @@TJvStatusBar.ExecuteAction
 Summary
@@ -65,16 +75,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvStatusBar.CreateParams
-Summary
-  Initializes a window-creation parameter record passed in the Params parameter.
-Description
-  CreateParams is called automatically to initialize the window-creation parameters whenever the window 
-  for the status bar needs to be created. TJvStatusBar overrides CreateParams to customize the 
-  parameters to specify a status bar control that reflects the properties of TJvStatusBar.
-Parameters
-  Params - a window-creation parameter record.
 ----------------------------------------------------------------------------------------------------
 @@TJvStatusBar.HintColor
 Summary
@@ -129,6 +129,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvStatusPanel.AboutJVCL
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvStatusPanel.Control
 Summary

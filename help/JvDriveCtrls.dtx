@@ -120,6 +120,18 @@ Description
   Write a handler for the \OnChange event to take specific action when the currently selected
   item changes.
 ----------------------------------------------------------------------------------------------------
+@@TJvDirectoryListBox.OnDriveChangeError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender   - Description for this parameter
+  NewDrive - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.OpenCurrent
 Summary
   Opens the selected directory.
@@ -139,6 +151,10 @@ Summary
   Updates the directory listing.
 Description
   Call Update to refresh the directory listing.
+----------------------------------------------------------------------------------------------------
+@@TJvDriveChangeError
+<TITLE TJvDriveChangeError type>
+<COMBINE TJvDirectoryListBox.OnDriveChangeError>
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo
 <TITLEIMG TJvDriveCombo>
@@ -272,7 +288,7 @@ Summary
   Occurs when the selection in the listbox changes.
 Description
   Write a handler for the \OnChange event to take specific action when the selected item in the listbox changes.
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TJvDriveList.Refresh
 Summary
   Updates the list of drives.
@@ -322,4 +338,3 @@ Description
   Use ForceFileExtensions to specify how file extensions are displayed. If ForceFileExtensions is true,
   file extensions are always displayed. If ForceFileExtensions is false, file extensions are displayed
   according to the user's settings in Windows Explorer.
-

@@ -1,5 +1,6 @@
 ##Package: StdCtrls
 ##Status: Completed
+##Skip: TMonthDayStateArray
 ----------------------------------------------------------------------------------------------------
 @@JvCalendar.pas
 Summary
@@ -48,28 +49,6 @@ Description
   TJvCustomMonthCalendar is the base component for MicroSoft® MonthCalendar control wrappers. Never
   use a TJvCustomMonthCalendar control directly but rather one of it's descendants. Currently
   JEDI-VCL provides you with one descendant: TJvMonthCalendar2.
-----------------------------------------------------------------------------------------------------
-@@TJvCustomMonthCalendar.CreateWithAppearance
-Summary
-  \Create and instantiates a month calender with the specified appearance.
-Description
-  CreateWithAppearance will create a month calendar with a given appearance instance. The normal
-  \Create constructor will call this method with a new appearance instance and sets the
-  AOwnsAppearance parameter to True.
-
-  Other controls that use this calendar as drop down or popup call this constructor to specify the
-  appearance.
-Parameters
-  AOwner -          The owner component of the calendar.
-  AAppearance -     The appearance instance. This instance will determine how the calendar will be
-                    shown.
-  AOwnsAppearance - Determines if the passed appearance instance is owned by the calendar control.
-                    If set to True, the passes instance will be owned by the calendar (and
-                    subsequently freed when the calendar is destroyed). If set to False the caller
-                    is responsible of the instance. <B>WARNING:</B> The passed instance should
-                    <B>not</B> be freed before the calendar is disposed.
-See Also
-  TJvMonthCalAppearance
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.Bold
 Summary
@@ -160,6 +139,28 @@ Description
   Colors determine the various colors used by the control.
 See Also
   TJvMonthCalColors
+----------------------------------------------------------------------------------------------------
+@@TJvCustomMonthCalendar.CreateWithAppearance
+Summary
+  \Create and instantiates a month calender with the specified appearance.
+Description
+  CreateWithAppearance will create a month calendar with a given appearance instance. The normal
+  \Create constructor will call this method with a new appearance instance and sets the
+  AOwnsAppearance parameter to True.
+
+  Other controls that use this calendar as drop down or popup call this constructor to specify the
+  appearance.
+Parameters
+  AOwner -          The owner component of the calendar.
+  AAppearance -     The appearance instance. This instance will determine how the calendar will be
+                    shown.
+  AOwnsAppearance - Determines if the passed appearance instance is owned by the calendar control.
+                    If set to True, the passes instance will be owned by the calendar (and
+                    subsequently freed when the calendar is destroyed). If set to False the caller
+                    is responsible of the instance. <B>WARNING:</B> The passed instance should
+                    <B>not</B> be freed before the calendar is disposed.
+See Also
+  TJvMonthCalAppearance
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.DateFirst
 Summary

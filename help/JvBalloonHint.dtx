@@ -1,5 +1,9 @@
 ##Package: Custom
 ##Status: Completed
+##Skip: PHintData
+##Skip: THintData
+##Skip: TJvBalloonHint.Handle
+##Skip: TJvStemSize
 ----------------------------------------------------------------------------------------------------
 @@JvBalloonHint.pas
 Summary
@@ -90,12 +94,6 @@ Description
   Alternatively, use ActivatePos or ActivateRect to display a balloon at a specific position on the 
   desktop or on a specific form.
 ----------------------------------------------------------------------------------------------------
-@@TJvBalloonHint.ActivateHint@TControl@string@TImageIndex@string@Integer
-<COMBINE TJvBalloonHint.ActivateHint@TControl@string@string@Integer>
-----------------------------------------------------------------------------------------------------
-@@TJvBalloonHint.ActivateHint@TControl@string@TJvIconKind@string@Integer
-<COMBINE TJvBalloonHint.ActivateHint@TControl@string@string@Integer>
-----------------------------------------------------------------------------------------------------
 @@TJvBalloonHint.ActivateHint@TControl@string@string@Integer
 Summary
   Displays a balloon window anchored to a control.
@@ -125,6 +123,12 @@ Parameters
   AIconKind   - The icon to be displayed in the balloon.
 See Also
   ActivateHintPos, ActivateHintRect, CancelHint
+----------------------------------------------------------------------------------------------------
+@@TJvBalloonHint.ActivateHint@TControl@string@TImageIndex@string@Integer
+<COMBINE TJvBalloonHint.ActivateHint@TControl@string@string@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvBalloonHint.ActivateHint@TControl@string@TJvIconKind@string@Integer
+<COMBINE TJvBalloonHint.ActivateHint@TControl@string@string@Integer>
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonHint.ActivateHintPos
 Summary
@@ -514,4 +518,3 @@ Description
   The question mark icon.
 @@TJvIconKind.ikWarning
   Icon containing a yellow exclamation point symbol.
-----------------------------------------------------------------------------------------------------
