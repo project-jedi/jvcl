@@ -42,12 +42,18 @@ uses
   {$IFDEF USEJVCL}
   JvDsgnConsts,
   {$ENDIF USEJVCL}
-  JvDotNetControls, JvDBDotNetControls;
-  
+  JvDotNetControls
+  {$IFNDEF DelphiPersonalEdition}
+  , JvDBDotNetControls
+  {$ENDIF !DelphiPersonalEdition}
+  ;
+
 {$IFNDEF USEJVCL}
 resourcestring
   RsPaletteDotNet = 'Jv DotNet';
+  {$IFNDEF DelphiPersonalEdition}
   RsPaletteDotNetDB = 'Jv DotNet DB';
+  {$ENDIF !DelphiPersonalEdition}
 {$ENDIF USEJVCL}
 
 procedure Register;
@@ -57,12 +63,12 @@ begin
     TJvDotNetListView, TJvDotNetMaskEdit, TJvDotNetMemo,
     TJvDotNetRichEdit, TJvDotNetScrollBox, TJvDotNetTreeView]);
   {$IFDEF USEJVCL}
-  RegisterComponents(RsPaletteDotNet, [TJvDotNetFilenameEdit,TJvDotNetDirectoryEdit, TJvDotNetButton]);
+  RegisterComponents(RsPaletteDotNet, [TJvDotNetFilenameEdit, TJvDotNetDirectoryEdit, TJvDotNetButton]);
   {$ENDIF USEJVCL}
   {$IFNDEF DelphiPersonalEdition}
   RegisterComponents(RsPaletteDotNetDB, [TJvDotNetDBEdit, TJvDotNetDBListBox,
     TJvDotNetDBLookupListBox, TJvDotNetDBMemo, TJvDotNetDBRichEdit]);
-  {$ENDIF DelphiPersonalEdition}
+  {$ENDIF !DelphiPersonalEdition}
 end;
 
 end.
