@@ -2761,9 +2761,10 @@ begin
   FTitle := RsDateDlgCaption;
   {$IFDEF VCL}
   FPopupColor := clMenu;
-  {$ELSE}
-  FPopupColor := clWindow;
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FPopupColor := clWindow;
+  {$ENDIF VisualCLX}
   //  FDefNumGlyphs := 2;
   FStartOfWeek := Mon;
   FWeekends := [Sun];

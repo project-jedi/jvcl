@@ -35,7 +35,7 @@ uses
   Windows, SysUtils, Classes,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
-  {$ELSE COMPILER6_UP}
+  {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   TypInfo;

@@ -757,9 +757,10 @@ begin
       OffscreenBmp.Canvas.Brush.Color := clGray;
       {$IFDEF VCL}
       OffscreenBmp.Canvas.FrameRect(BtnRect);
-      {$ELSE}
-      FrameRect(OffscreenBmp.Canvas, BtnRect);
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FrameRect(OffscreenBmp.Canvas, BtnRect);
+      {$ENDIF VisualCLX}
       InflateRect(BtnRect, -1, -1);
 
       OffscreenBmp.Canvas.Pen.Color := clWhite;

@@ -153,9 +153,10 @@ begin
         Brush.Color := clBtnHighlight;
         {$IFDEF VCL}
         FrameRect(R);
-        {$ELSE}
-        QWindows.FrameRect(Canvas, R);
         {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        QWindows.FrameRect(Canvas, R);
+        {$ENDIF VisualCLX}
         OffsetRect(R, -1, -1);
         Brush.Color := clBtnShadow;
       {$IFDEF VCL}
