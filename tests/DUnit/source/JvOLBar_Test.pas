@@ -2,7 +2,7 @@ unit JvOLBar_Test;
 
 interface
 uses
-  Classes, TestFramework, JVOLBar;
+  Classes, TestFramework, JvOutlookBar;
 
 type
   TJvOutlookBarTests = class(TTestCase)
