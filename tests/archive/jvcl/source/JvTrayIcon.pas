@@ -393,7 +393,11 @@ end;
 procedure TJvTrayIcon.SetHint(Value: string);
 begin
   DoCheckCrash;
-  FHint := Value;
+  //Remove sLineBreak on w98/me as they are not supported
+  if not AcceptBalloons then
+    FHint := StringReplace(Value,sLineBreak,' - ',[rfReplaceAll])
+  else
+    FHint := Value;
 end;
 
 {**************************************************}
