@@ -522,7 +522,6 @@ end;
 
 procedure TJvCustomMaskEdit.DoSetFocusEvent(const APreviousControl: TWinControl);
 begin
-  NotifyIfChanged;
   if Assigned(FOnSetFocus) then
     FOnSetFocus(Self, APreviousControl);
 end;
