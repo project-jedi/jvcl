@@ -125,7 +125,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnMouseEnter;
-    property OnMouseExit;
+    property OnMouseLeave;
     property OnParentColorChange;
     property OnStartDrag;
   end;
@@ -228,7 +228,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnMouseEnter;
-    property OnMouseExit;
+    property OnMouseLeave;
     property OnParentColorChange;
     property OnStartDrag;
   end;
