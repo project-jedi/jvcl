@@ -91,8 +91,6 @@ JVCLSOURCEDIRS2=$(JVCLROOT)\design
 JVCLINCLUDEDIRS=$(JVCLROOT)\common
 JVCLRESDIRS=$(JVCLROOT)\Resources
 
-LANGUAGES=de es fr it nl ro ru sv
-
 #-------------------------------------------------------------------------------
 
 default: \
@@ -216,15 +214,9 @@ Clean:
 ################################################################################
 MOs:
 	@echo [Generating MO files]
-	cd $(JVCLROOT)
-	# put the generation in a temporary batch file so that it is not shown to the user
-	# the redirection to NUL doesn't work at the end of the FOR loop
-	echo @echo off > mogen.bat
-	echo IF NOT $(DXGETTEXT)!==! FOR %%l IN ($(LANGUAGES)) DO "$(EXTRAUNITDIRS)\msgfmt" -o locale\%%l\LC_MESSAGES\JVCLInstall.mo locale\%%l\LC_MESSAGES\JVCLInstall.po >> mogen.bat
-	echo IF NOT $(DXGETTEXT)!==! FOR %%l IN ($(LANGUAGES)) DO "$(EXTRAUNITDIRS)\msgfmt" -o locale\%%l\LC_MESSAGES\jvcl.mo locale\%%l\LC_MESSAGES\jvcl.po >> mogen.bat
-	call mogen.bat >NUL
-	-del mogen.bat
-	cd packages\bin
+	cd ..\..\locale
+	IF NOT $(DXGETTEXT)! == ! $(MAKE) $(QUIET) -f ..\packages\bin\mofiles.mak
+	cd ..\packages\bin
 
 ################################################################################
 Installer: MOs
