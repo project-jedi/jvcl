@@ -420,7 +420,7 @@ begin
   Parser := TDelphiParser.Create;
   try
     Parser.AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
-    if Parser.Execute(AFileName) then
+    if Parser.Execute(ChangeFileExt(AFileName, '.pas')) then
     begin
       Inc(FParsedOK);
       WriteDtx(Parser.TypeList);
