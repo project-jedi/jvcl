@@ -2661,12 +2661,24 @@ begin
 end;
 
 function TJvHardwareProfile.GetNativeType: HW_PROFILE_INFO;
+type
+  GetCurrentHwProfileFunc = function (var lpHwProfileInfo: HW_PROFILE_INFO): BOOL; stdcall;
+var
+  GetCurrentHwProfile:GetCurrentHwProfileFunc;
+  LibHandle:THandle;
 begin
-  if not GetCurrentHwProfile(Result) then
-  begin
-    Result.dwDockInfo := 0;
-    Result.szHwProfileGuid := '';
-    Result.szHwProfileName := '';
+  Result.dwDockInfo := 0;
+  Result.szHwProfileGuid := '';
+  Result.szHwProfileName := '';
+  // GetCurrentHWProfile is not available on (all) Win95's
+  LibHandle := LoadLibrary('advapi32.dll');
+  if LibHandle <> 0 then
+  try
+    @GetCurrentHwProfile := GetProcAddress(LibHandle, 'GetCurrentHWProfileA');
+    if Assigned(GetCurrentHwProfile) then
+      GetCurrentHwProfile(Result);
+  finally
+    FreeLibrary(LibHandle);
   end;
 end;
 
