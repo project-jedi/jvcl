@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: FrmMain.pas, released on 2003-12-07.
+The Original Code is: AHCompBrowseFolderDlg.pas, released on 2003-12-07.
 
 The Initial Developer of the Original Code is Andreas Hausladen [Andreas.Hausladen@gmx.de]
 Portions created by Andreas Hausladen are Copyright (C) 2003 Andreas Hausladen.
