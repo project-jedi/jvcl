@@ -837,8 +837,10 @@ end;
 
 procedure TJvDynControlVCLDateTimeEdit.ControlSetFormat(Value: string);
 begin
+  {$IFDEF COMPILER6_UP}
   FDatePicker.Format := Value;
   FTimePicker.Format := Value;
+  {$ENDIF COMPILER6_UP}
 end;
 
 //=== TJvDynControlVCLDateEdit ===========================================
@@ -902,7 +904,9 @@ end;
 
 procedure TJvDynControlVCLDateEdit.ControlSetFormat(Value: string);
 begin
+  {$IFDEF COMPILER6_UP}
   Format := Value;
+  {$ENDIF COMPILER6_UP}
 end;
 
 //=== TJvDynControlVCLTimeEdit ===========================================
@@ -957,7 +961,9 @@ end;
 
 procedure TJvDynControlVCLTimeEdit.ControlSetFormat(Value: string);
 begin
+  {$IFDEF COMPILER6_UP}
   Format := Value;
+  {$ENDIF COMPILER6_UP}
 end;
 
 
@@ -1402,7 +1408,9 @@ end;
 
 procedure TJvDynControlVCLImage.ControlSetProportional(Value: boolean);
 begin
+  {$IFDEF COMPILER6_UP}
   Proportional := Value;
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvDynControlVCLImage.ControlSetStretch(Value: boolean);
