@@ -70,6 +70,7 @@ type
     FIc: TNotifyIconDataXP;
     FHandle: THandle;
     FHint: string;
+    FBalloonCloser : TTimer;
     FPopupMenu: TPopupMenu;
     FOnClick: TMouseEvent;
     FOnDblClick: TMouseEvent;
@@ -89,6 +90,7 @@ type
     FOnBalloonHide: TNotifyEvent;
     FOnBalloonShow: TNotifyEvent;
     FOnBalloonClick: TNotifyEvent;
+    FOnHint : TNotifyEvent;
     FTime: TDateTime;
     FTimeDelay: Integer;
     FOldTray: HWND;
@@ -97,7 +99,10 @@ type
     FOldHint: string;
     FSnap: Boolean;
     FHooked: Boolean;
+
+    function  GetSystemMinimumBalloonDelay : integer;
     procedure OnAnimateTimer(Sender: TObject);
+    procedure OnBalloonCloserTimer(Sender: TObject);
     procedure IconChanged(Sender: TObject);
     procedure SetActive(Value: Boolean);
     procedure SetHint(Value: string);
@@ -127,7 +132,7 @@ type
     procedure HideApplication;
     procedure ShowApplication;
     procedure BalloonHint(Title, Value: string; BalloonType:
-      TBalloonType = btNone; Delay: Integer = 5000);
+      TBalloonType = btNone; Delay: Integer = 5000; CancelPrevious :boolean=false);
     function AcceptBalloons: Boolean;
   published
     { (rb) Active should be set in Loaded; Icon isn't set when Active is now
@@ -153,6 +158,7 @@ type
     property OnBalloonShow: TNotifyEvent read FOnBalloonShow write FOnBalloonShow;
     property OnBalloonHide: TNotifyEvent read FOnBalloonHide write FOnBalloonHide;
     property OnBalloonClick: TNotifyEvent read FOnBalloonClick write FOnBalloonClick;
+    property OnHint : TNotifyEvent read FOnHint write FOnHint;
   end;
 
 implementation
@@ -219,6 +225,10 @@ begin
   FActive := False;
   FTask := True;
 
+  FBalloonCloser := TTimer.Create(self);
+  FBalloonCloser.Enabled := false;
+  FBalloonCloser.OnTimer := OnBalloonCloserTimer;
+
   if not (csDesigning in ComponentState) then
   begin
     FDllHandle := LoadLibrary('KERNEL32.DLL');
@@ -237,6 +247,8 @@ begin
 
   FTimer.Free;
   SetActive(False);
+  FBalloonCloser.Enabled := false;
+  FBalloonCloser.Free;
   FIcon.Free;
   {$IFDEF COMPILER6_UP}
   Classes.DeallocateHWnd(FHandle);
@@ -510,8 +522,28 @@ begin
   FImgList := Value;
 end;
 
+function TJvTrayIcon.GetSystemMinimumBalloonDelay: integer;
+begin
+  // from Microsoft's documentation, a balloon is shown for at
+  // least 10 seconds, but it is a system settings which must
+  // be somewhere in the registry. The only question is : Where ?
+  Result := 10000;
+end;
+
+procedure TjvTrayIcon.OnBalloonCloserTimer(Sender: TObject);
+begin
+  // we stop the timer
+  FBalloonCloser.Enabled := false;
+  // then we call BalloonHint with title and info set to
+  // empty strings which surprisingly will cancel any existing
+  // balloon for the icon. This is clearly not documented by
+  // microsoft and may not work in later releases of Windows
+  // it has been tested on XP Home French
+  BalloonHint('','');
+end;
+
 procedure TJvTrayIcon.BalloonHint(Title, Value: string;
-  BalloonType: TBalloonType; Delay: Integer);
+  BalloonType: TBalloonType; Delay: Integer; CancelPrevious : boolean);
 //http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/reference/functions/shell_notifyicon.asp
 begin
   if AcceptBalloons then
@@ -519,6 +551,18 @@ begin
     FTime := Now;
     FTimeDelay := Delay div 1000;
     FIc.uFlags := NIF_INFO;
+
+    // if we must cancel an existing balloon
+    if CancelPrevious then
+    begin
+      // then we call BalloonHint with title and info set to
+      // empty strings which surprisingly will cancel any existing
+      // balloon for the icon. This is clearly not documented by
+      // microsoft and may not work in later releases of Windows
+      // it has been tested on XP Home French
+      BalloonHint('','');
+    end;
+
     with FIc do
       StrPLCopy(szInfoTitle, Title, SizeOf(szInfoTitle) - 1);
     with FIc do
@@ -536,6 +580,18 @@ begin
         FIc.dwInfoFlags := NIIF_WARNING;
     end;
     Shell_NotifyIcon(NIM_MODIFY, PNotifyIconData(@FIc));
+
+    // if the delay is less than the system's minimum and the balloon
+    // was really shown (title and value are not empty)
+    if (Delay < GetSystemMinimumBalloonDelay) and
+        (Title <> '') and
+        (Value <> '') then
+    begin
+      // then we enable the ballon closer timer which will cancel
+      // the balloon when the delay is elapsed
+      FBalloonCloser.Interval := Delay;
+      FBalloonCloser.Enabled := true;
+    end;
 
     if Assigned(FOnBalloonShow) then
       FOnBalloonShow(self);
@@ -571,6 +627,8 @@ begin
   end;
   if Assigned(FOnMouseMove) then
     FOnMouseMove(Self, Shift, X, Y);
+  if Assigned(FOnHint) then
+    FOnHint(Self);
 end;
 
 procedure TJvTrayIcon.DoMouseDown(Button: TMouseButton; Shift: TShiftState;
