@@ -94,6 +94,8 @@ type
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure RepaintBackground; virtual;
+    procedure TextChanged; override;
+
 
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
@@ -258,6 +260,8 @@ begin
     inherited MouseEnter(Control);
     if Flat then
       RepaintBackground;
+    if HotTrack then
+      Repaint;
   end;
 end;
 
@@ -269,6 +273,8 @@ begin
     inherited MouseLeave(Control);
     if Flat then
       RepaintBackground;
+    if HotTrack then
+      Repaint;
   end;
 end;
 
@@ -759,6 +765,12 @@ begin
   end;
 end;
 
+
+procedure TJvCustomGraphicButton.TextChanged;
+begin
+  inherited;
+  RepaintBackground;
+end;
 
 initialization
 
