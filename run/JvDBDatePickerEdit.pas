@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2002-12-09
+Last Modified: 2003-11-13
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -317,6 +317,7 @@ end;
 function TJvCustomDBDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
 begin
   Result := (not IsLinked) or (FDataLink.DataSet.IsEmpty)
+    or (not FDataLink.Editing)
     or ((not Focused) and (FDataLink.DataSet.State = dsInsert) and FDataLink.Field.IsNull)
     or (inherited ValidateDate(ADate));
 end;
