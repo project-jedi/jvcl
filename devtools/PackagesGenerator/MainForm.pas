@@ -64,6 +64,7 @@ type
     ToolButton1: TToolButton;
     actGenerate: TAction;
     tbtGenerate: TToolButton;
+    jpmGridPopup: TJvPopupMenu;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -121,7 +122,17 @@ end;
 
 procedure TfrmMain.actNewExecute(Sender: TObject);
 begin
-//
+  // empty everything
+  ledName.Text := '';
+  ledDescription.Text := '';
+  rbtDesign.Checked := False;
+  rbtRuntime.Checked := True;
+  ledC5PFlags.Text := '';
+  ledC6PFlags.Text := '';
+  jsgDependencies.RowCount := 2;
+  jsgDependencies.Rows[1].Text := '';
+  jsgFiles.RowCount := 2;
+  jsgFiles.Rows[1].Text := '';
 end;
 
 procedure TfrmMain.aevEventsHint(Sender: TObject);
@@ -197,7 +208,9 @@ procedure TfrmMain.jsgDependenciesGetCellAlignment(Sender: TJvStringGrid;
   AColumn, ARow: Integer; State: TGridDrawState;
   var CellAlignment: TAlignment);
 begin
-  if AColumn = 0 then
+  if (ARow > 0) and
+     ((AColumn = 0) or
+      (AColumn >= 12)) then
     CellAlignment := taLeftJustify
   else
     CellAlignment := taCenter;
@@ -235,9 +248,12 @@ var
   ColIndex : Integer;
   Name : string;
   PackagesDir : string;
+  FormName : string;
+  FormType : string;
   Dir : string;
   row : TStrings;
   dfm : textfile;
+  pas : textfile;
   line : string;
 begin
   if odlAddFiles.Execute then
@@ -263,8 +279,32 @@ begin
         AssignFile(dfm, ChangeFileExt(Name, '.dfm'));
         Reset(dfm);
         ReadLn(dfm, line);
-        row[12] := Copy(line, Pos(' ', line)+1, Pos(':', line)-Pos(' ', line)-1);
         CloseFile(dfm);
+        FormName := Copy(line, Pos(' ', line)+1, Pos(':', line)-Pos(' ', line)-1);
+        FormType := '';
+        // open the pas file and look for the declaration of the
+        // class associated with that form to get its base type
+        AssignFile(pas, Name);
+        Reset(pas);
+        while (FormType = '') and not Eof(pas) do
+        begin
+          ReadLn(pas, line);
+          line := Trim(line);
+          if Copy(line, 2, Length(FormName)+9) = FormName + ' = class(' then
+          begin
+            FormType := Copy(line, Pos('class(', line)+6, Length(line));
+            FormType := Copy(FormType, 1, Length(FormType)-1);
+          end;
+        end;
+        CloseFile(pas);
+
+        // if the form type is TForm or TJvForm then ignore it
+        // else include it in the row
+        if (FormType = 'TForm') or
+           (FormType = 'TJvForm') then
+          row[12] := FormName
+        else
+          row[12] := FormName + ': ' + FormType;
       end;
     end;
     Changed := True;
