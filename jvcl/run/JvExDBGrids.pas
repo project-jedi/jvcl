@@ -1,7 +1,3 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -42,13 +38,27 @@ unit JvExDBGrids;
 interface
 
 uses
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, DBGrids,
+  {$ENDIF VCl}
+  {$IFDEF VisualCLX}
+  Types, Qt, QGraphics, QControls, QForms, QDBGrids, QWindows,
+  {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
+{$IFDEF VCL}
+ {$DEFINE NeedMouseEnterLeave}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+ {$IF not declared(PatchedVCLX)}
+  {$DEFINE NeedMouseEnterLeave}
+ {$IFEND}
+{$ENDIF VisualCLX}
 
 type
   TJvExCustomDBGrid = class(TCustomDBGrid, IJvWinControlEvents, IJvControlEvents, IPerformControl)
+  {$IFDEF VCL}
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -86,16 +96,51 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  // IJvControlEvents
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+    function IsRightToLeft: Boolean;
+  protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
+  private
+    FDoubleBuffered: Boolean;
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
+  protected
+    procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: Integer; override;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
+  published
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
+  {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
@@ -103,9 +148,16 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   private
+  {$IFDEF VCL}
     FAboutJVCL: TJVCLAboutInfo;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+    FAboutJVCLX: TJVCLAboutInfo;
+  published
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  {$ENDIF VisualCLX}
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -119,6 +171,7 @@ type
   end;
 
   TJvExPubCustomDBGrid = class(TJvExCustomDBGrid)
+  {$IFDEF VCL}
   published
     property BiDiMode;
     property DragCursor;
@@ -127,9 +180,11 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExDBGrid = class(TDBGrid, IJvWinControlEvents, IJvControlEvents, IPerformControl)
+  {$IFDEF VCL}
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -167,16 +222,51 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  // IJvControlEvents
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+    function IsRightToLeft: Boolean;
+  protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
+  private
+    FDoubleBuffered: Boolean;
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
+  protected
+    procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: Integer; override;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
+  published
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
+  {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
@@ -184,9 +274,16 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   private
+  {$IFDEF VCL}
     FAboutJVCL: TJVCLAboutInfo;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+    FAboutJVCLX: TJVCLAboutInfo;
+  published
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  {$ENDIF VisualCLX}
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -200,6 +297,7 @@ type
   end;
 
   TJvExPubDBGrid = class(TJvExDBGrid)
+  {$IFDEF VCL}
   published
     property BiDiMode;
     property DragCursor;
@@ -208,11 +306,13 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
+  {$ENDIF VCL}
   end;
   
 
 implementation
 
+{$IFDEF VCL}
 procedure TJvExCustomDBGrid.Dispatch(var Msg);
 asm
         JMP     DispatchMsg
@@ -342,6 +442,127 @@ asm
 end;
 {$ENDIF JVCLThemesEnabledD56}
   
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvExCustomDBGrid.MouseEnter(Control: TControl);
+begin
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  inherited MouseEnter(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+  {$IFEND}
+end;
+
+procedure TJvExCustomDBGrid.MouseLeave(Control: TControl);
+begin
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  inherited MouseLeave(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+  {$IFEND}
+end;
+
+procedure TJvExCustomDBGrid.ParentColorChanged;
+begin
+  inherited ParentColorChanged;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+function TJvExCustomDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomDBGrid.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
+
+function TJvExCustomDBGrid.IsRightToLeft: Boolean;
+begin
+  Result := False;
+end;
+  
+function TJvExCustomDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExCustomDBGrid.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvExCustomDBGrid.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(Self);
+end;
+
+procedure TJvExCustomDBGrid.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  DoBoundsChanged;
+end;
+
+procedure TJvExCustomDBGrid.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomDBGrid.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomDBGrid.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+
+function TJvExCustomDBGrid.WidgetFlags: Integer;
+begin
+  Result := inherited WidgetFlags or
+    Integer(WidgetFlags_WRepaintNoErase) or
+    Integer(WidgetFlags_WMouseNoMask);
+end;
+
+function TJvExCustomDBGrid.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+begin
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
+end;
+
+procedure TJvExCustomDBGrid.PaintWindow(PaintDevice: QPaintDeviceH);
+begin
+  WidgetControl_PaintTo(Self, PaintDevice, 0, 0);
+end;
+
+procedure TJvExCustomDBGrid.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
+begin
+  WidgetControl_PaintTo(Self, PaintDevice, X, Y);
+end;
+  
+{$ENDIF VisualCLX}
 procedure TJvExCustomDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -373,8 +594,12 @@ asm
         JMP     DefaultDoPaintBackground
 end;
   
+{$IFDEF VCL}
 constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := Application.HintColor;
   
@@ -386,6 +611,55 @@ begin
   inherited Destroy;
 end;
  
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
+begin
+  WindowProc := WndProc;
+  inherited Create(AOwner);
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
+  
+  DoubleBuffered := True;
+  FHintColor := Application.HintColor;
+end;
+
+destructor TJvExCustomDBGrid.Destroy;
+begin
+  
+  inherited Destroy;
+end;
+  
+procedure TJvExCustomDBGrid.ColorChanged;
+begin
+  WidgetControl_ColorChanged(Self);
+end;
+
+function TJvExCustomDBGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExCustomDBGrid.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+  end;
+end;
+
+procedure TJvExCustomDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  CustomControl_Painting(Self, Canvas, EventRegion);
+end;
+ 
+  
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvExDBGrid.Dispatch(var Msg);
 asm
         JMP     DispatchMsg
@@ -515,6 +789,127 @@ asm
 end;
 {$ENDIF JVCLThemesEnabledD56}
   
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvExDBGrid.MouseEnter(Control: TControl);
+begin
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  inherited MouseEnter(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+  {$IFEND}
+end;
+
+procedure TJvExDBGrid.MouseLeave(Control: TControl);
+begin
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  inherited MouseLeave(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+  {$IFEND}
+end;
+
+procedure TJvExDBGrid.ParentColorChanged;
+begin
+  inherited ParentColorChanged;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+function TJvExDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExDBGrid.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
+
+function TJvExDBGrid.IsRightToLeft: Boolean;
+begin
+  Result := False;
+end;
+  
+function TJvExDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExDBGrid.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvExDBGrid.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(Self);
+end;
+
+procedure TJvExDBGrid.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  DoBoundsChanged;
+end;
+
+procedure TJvExDBGrid.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExDBGrid.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExDBGrid.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+
+function TJvExDBGrid.WidgetFlags: Integer;
+begin
+  Result := inherited WidgetFlags or
+    Integer(WidgetFlags_WRepaintNoErase) or
+    Integer(WidgetFlags_WMouseNoMask);
+end;
+
+function TJvExDBGrid.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+begin
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
+end;
+
+procedure TJvExDBGrid.PaintWindow(PaintDevice: QPaintDeviceH);
+begin
+  WidgetControl_PaintTo(Self, PaintDevice, 0, 0);
+end;
+
+procedure TJvExDBGrid.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
+begin
+  WidgetControl_PaintTo(Self, PaintDevice, X, Y);
+end;
+  
+{$ENDIF VisualCLX}
 procedure TJvExDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -546,8 +941,12 @@ asm
         JMP     DefaultDoPaintBackground
 end;
   
+{$IFDEF VCL}
 constructor TJvExDBGrid.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := Application.HintColor;
   
@@ -559,5 +958,53 @@ begin
   inherited Destroy;
 end;
  
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvExDBGrid.Create(AOwner: TComponent);
+begin
+  WindowProc := WndProc;
+  inherited Create(AOwner);
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
+  
+  DoubleBuffered := True;
+  FHintColor := Application.HintColor;
+end;
+
+destructor TJvExDBGrid.Destroy;
+begin
+  
+  inherited Destroy;
+end;
+  
+procedure TJvExDBGrid.ColorChanged;
+begin
+  WidgetControl_ColorChanged(Self);
+end;
+
+function TJvExDBGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExDBGrid.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+  end;
+end;
+
+procedure TJvExDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  CustomControl_Painting(Self, Canvas, EventRegion);
+end;
+ 
+  
+{$ENDIF VisualCLX}
 
 end.
