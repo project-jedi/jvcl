@@ -206,6 +206,7 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FDrawTabShadow: boolean;
+    FHandleGlobalTab: boolean;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
     procedure TCMAdjustRect(var Message: TMessage); message TCM_ADJUSTRECT;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -215,6 +216,7 @@ type
     procedure CMDialogKey(var msg: TWMKey); message CM_DIALOGKEY;
     procedure SetDrawTabShadow(const Value: boolean);
     procedure SetHideAllTabs(const Value: Boolean);
+    function FormKeyPreview: boolean;
   protected
     procedure Loaded; override;
     procedure DrawDefaultTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: boolean);
@@ -225,9 +227,9 @@ type
     procedure UpdateTabImages;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default
-      JvDefPageControlBorder;
-    property DrawTabShadow: boolean read FDrawTabShadow write SetDrawTabShadow;
+    property HandleGlobalTab:boolean read FHandleGlobalTab write FHandleGlobalTab default false;
+    property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default JvDefPageControlBorder;
+    property DrawTabShadow: boolean read FDrawTabShadow write SetDrawTabShadow default false;
     property HideAllTabs: Boolean read FHideAllTabs write SetHideAllTabs default False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -739,12 +741,22 @@ end;
 
 { TJvPageControl }
 
+function TJvPageControl.FormKeyPreview:boolean;
+var F:TCustomForm;
+begin
+  F := GetParentForm(self);
+  if F <> nil then
+    Result := F.KeyPreview
+  else
+    Result := false;
+end;
+
 procedure TJvPageControl.CMDialogKey(var msg: TWMKey);
 var
   thistab, tab: TTabSheet;
   forward: Boolean;
 begin
-  if (msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
+  if HandleGlobalTab and not FormKeyPreview and (msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
   begin
     thistab := ActivePage;
     forward := GetKeyState(VK_SHIFT) >= 0;
