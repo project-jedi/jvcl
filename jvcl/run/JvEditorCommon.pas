@@ -1032,8 +1032,8 @@ type
     procedure Assign(Source: TPersistent); override;
   published
     property Style: TFontStyles read FStyle write FStyle default [];
-    property ForeColor: TColor read FForeColor write FForeColor default clWindowText;
-    property BackColor: TColor read FBackColor write FBackColor default clWindow;
+    property ForeColor: TColor read FForeColor write FForeColor {default clWindowText}; // disabled, otherwise the default values are ignored
+    property BackColor: TColor read FBackColor write FBackColor {default clWindow};
   end;
 
   TJvColors = class(TPersistent)
