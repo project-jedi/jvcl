@@ -128,7 +128,12 @@ uses
   Math,
   JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQResources;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvCalc.Res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCalc.Res}
+{$ENDIF LINUX}
 
 type
   TCalcBtnKind =

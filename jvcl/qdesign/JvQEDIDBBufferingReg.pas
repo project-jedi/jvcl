@@ -41,7 +41,12 @@ uses
   JvQEDIDBBuffering{, JvEDITCPServer, JvEDITCPClient};
 
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvEDIDBBufferingReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvEDIDBBufferingReg.dcr}
+{$ENDIF LINUX}
 
 
 procedure Register;

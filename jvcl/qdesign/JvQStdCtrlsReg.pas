@@ -52,7 +52,12 @@ uses
   JvQTabControl, JvQBitBtn, JvQPickDate, JvQStringGrid,
   JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
 
+{$IFDEF VCL}
+{$R ..\Resources\JvStdCtrlsReg.dcr}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvStdCtrlsReg.dcr}
+{$ENDIF VisualCLX}
 
 procedure Register;
 const

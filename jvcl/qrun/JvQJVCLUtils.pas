@@ -474,7 +474,13 @@ uses
 const
   sUnitName = 'JvJVCLUtils';
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvQConsts.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvQConsts.res}
+{$ENDIF LINUX}
+
 
 {$IFDEF MSWINDOWS}
 const

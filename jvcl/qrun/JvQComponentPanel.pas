@@ -105,7 +105,12 @@ type
 
 implementation
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvComponentPanel.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvComponentPanel.res}
+{$ENDIF LINUX}
 
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin

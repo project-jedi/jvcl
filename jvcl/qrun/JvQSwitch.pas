@@ -139,8 +139,13 @@ uses
   JvQJVCLUtils, JvQThemes;
 
 
-
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvSwitch.Res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvSwitch.Res}
+{$ENDIF LINUX}
+
 
 
 const

@@ -55,11 +55,17 @@ uses
   {$ELSE}
   JvQWizardAboutInfoForm,
   {$ENDIF USEJVCL}
-  JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps,
+
+  JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps, JvQWizardRouteMapList,
   JvQWizardEditorForm
   ;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvWizardReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvWizardReg.dcr}
+{$ENDIF LINUX}
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -72,7 +78,7 @@ const
   cPages = 'Pages';
 begin
   RegisterComponents(RsPaletteWizard, [TJvWizard, TJvWizardRouteMapSteps,
-    TJvWizardRouteMapNodes]);
+    TJvWizardRouteMapNodes, TJvWizardRouteMapList]);
   RegisterClasses([TJvWizardCustomPage, TJvWizardWelcomePage,
     TJvWizardInteriorPage]);
   RegisterComponentEditor(TJvWizard, TJvWizardComponentEditor);

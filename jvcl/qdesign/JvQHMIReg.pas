@@ -39,21 +39,27 @@ procedure Register;
 implementation
 
 // (rom) is this needed?
-{$R ../../Resources/JvHMIReg.dcr}
+{$IFDEF MSWINDOWS}
+{$R ..\Resources/JvHMIReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvHMIReg.dcr}
+{$ENDIF LINUX}
+
 
 uses
   Classes,
-  
+
   DesignIntf, DesignEditors,
-  
+
   ToolsAPI,
   JvQDsgnConsts,
   JvQLED, JvQDialButton;
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteHMIIndicator, [TJvLED]);
-  RegisterComponents(RsPaletteHMIControls, [TJvDialButton]);
+  RegisterComponents(RsPaletteHMIComponents, [TJvLED]);
+  RegisterComponents(RsPaletteHMIComponents, [TJvDialButton]);
 end;
 
 end.
