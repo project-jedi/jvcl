@@ -267,7 +267,10 @@ type
     LParam: Longint;
     Result: Integer;
   end;
-
+  TMsgDlgBtn =
+    (mbHelp, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore,
+     mbAll, mbNoToAll, mbYesToAll);
+  TMsgDlgButtons = set of TMsgDlgBtn;
 
 {
   Dummies for ... VCL
@@ -798,6 +801,9 @@ function GetTextExtentPoint32(Handle: QPainterH; pText: PChar; Len: Integer;
   var Size: TSize): LongBool; overload;
 function GetTextExtentPoint32W(Handle: QPainterH; pText: PWideChar; Len: Integer;
   var Size: TSize): LongBool;
+function GetTextExtentPoint32(Canvas: TCanvas; const Text: WideString; Len: Integer;
+  var Size: TSize): LongBool; overload;
+
 
 function FrameRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool; overload;
 procedure FrameRect(Canvas: TCanvas; const R: TRect); overload;
@@ -1065,7 +1071,9 @@ function SetParent(hWndChild, hWndNewParent: QWidgetH): QWidgetH;
 function GetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
 function GetWindowRect(Handle: QWidgetH; var  R: TRect): LongBool;
 function WindowFromDC(Handle: QPainterH): QWidgetH;
-function ChildWindowFromPoint(hWndParent: QWidgetH; Point: TPoint): QWidgetH; // hWndParent is ignored under Linux
+function ChildWindowFromPoint(hWndParent: QWidgetH; Point: TPoint): QWidgetH;
+// hWndParent is ignored under Linux
+
 function WindowFromPoint(Point: TPoint): QWidgetH;
 function FindCLXWindow(const Point: TPoint): TWidgetControl;
 function FindVCLWindow(const Point: TPoint): TWidgetControl;
@@ -1349,8 +1357,19 @@ function ShellExecute(Handle: Integer; Operation, FileName, Parameters,
 
 function GetTickCount: Cardinal;
 
-{$IFDEF LINUX}
+//
+// Taken from QControls
+//
+function InjectCode(Addr: Pointer; Code: Pointer; Size: Integer): Boolean;
+{$IFDEF MSWINDOWS}
+//
+// Taken from QDialogs
+//
+procedure EnableTaskWindows(WindowList: Pointer);
+function DisableTaskWindows(ActiveWindow: Windows.HWnd): Pointer;
+{$ENDIF MSWINDOWS}
 
+{$IFDEF LINUX}
 resourcestring
   SFCreateError = 'Unable to create file %s';
   SFOpenError = 'Unable to open file %s';
@@ -4323,6 +4342,15 @@ var
 begin
   Text := pText;
   Result := GetTextExtentPoint32(Handle, Text, Len, Size);
+end;
+
+function GetTextExtentPoint32(Canvas: TCanvas; const Text: WideString; Len: Integer;
+  var Size: TSize): LongBool;
+begin
+  Canvas.Start;
+  RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+  Result := GetTextExtentPoint32W(Canvas.Handle, PWideChar(Text), Len, Size);
+  Canvas.Stop;
 end;
 
 function GetTextExtentPoint32W(Handle: QPainterH; pText: PWideChar; Len: Integer;
@@ -7771,11 +7799,112 @@ begin
   {$ENDIF LINUX}
 end;
 
+function InjectCode(Addr: Pointer; Code: Pointer; Size: Integer): Boolean;
+var
+  SysPageSize, PageSize, AlignedAddr: Integer;
+{$IFDEF MSWINDOWS}
+  P: Cardinal;
+{$ENDIF}
+begin
+  Result := False;
+{$IFDEF MSWINDOWS}
+  SysPageSize := 4096;
+{$ENDIF}
+{$IFDEF LINUX}
+  SysPageSize := getpagesize;
+{$ENDIF}
+  PageSize := SysPageSize;
+  AlignedAddr := Integer(Addr) and not (PageSize - 1);
+  while Integer(Addr) + Size >= AlignedAddr + PageSize do
+    Inc(PageSize, SysPageSize);
+{$ifdef MSWINDOWS}
+  if VirtualProtect(Pointer(AlignedAddr), PageSize, PAGE_EXECUTE_READWRITE, @P) then
+{$endif}
+{$ifdef LINUX}
+  if mprotect(Pointer(AlignedAddr), PageSize, PROT_READ or PROT_WRITE or PROT_EXEC) = 0 then
+{$endif}
+    try
+      Move(Code^, Addr^, Size);
+      Result := True;
+    except
+    end;
+end;
+
 {$IFDEF MSWINDOWS}
 function GetTickCount: Cardinal;
 begin
   Result := Windows.GetTickCount;
 end;
+//
+// Taken from QDialogs.
+//
+type
+  PTaskWindow = ^TTaskWindow;
+  TTaskWindow = record
+    Next: PTaskWindow;
+    Window: Windows.HWnd;
+  end;
+
+var
+  TaskActiveWindow: Windows.HWnd = 0;
+  TaskFirstWindow: Windows.HWnd = 0;
+  TaskFirstTopMost: Windows.HWnd = 0;
+  TaskWindowList: PTaskWindow = nil;
+
+function DoDisableWindow(Window: Windows.HWnd; Data: Longint): Bool; stdcall;
+var
+  P: PTaskWindow;
+begin
+  if (Window <> TaskActiveWindow) and Windows.IsWindowVisible(Window) and
+    Windows.IsWindowEnabled(Window) then
+  begin
+    New(P);
+    P^.Next := TaskWindowList;
+    P^.Window := Window;
+    TaskWindowList := P;
+    Windows.EnableWindow(Window, False);
+  end;
+  Result := True;
+end;
+
+procedure EnableTaskWindows(WindowList: Pointer);
+var
+  P: PTaskWindow;
+begin
+  while WindowList <> nil do
+  begin
+    P := WindowList;
+    if Windows.IsWindow(P^.Window) then Windows.EnableWindow(P^.Window, True);
+    WindowList := P^.Next;
+    Dispose(P);
+  end;
+end;
+
+function DisableTaskWindows(ActiveWindow: Windows.HWnd): Pointer;
+var
+  SaveActiveWindow: Windows.HWND;
+  SaveWindowList: Pointer;
+begin
+  Result := nil;
+  SaveActiveWindow := TaskActiveWindow;
+  SaveWindowList := TaskWindowList;
+  TaskActiveWindow := ActiveWindow;
+  TaskWindowList := nil;
+  try
+    try
+      EnumThreadWindows(GetCurrentThreadID, @DoDisableWindow, 0);
+      Result := TaskWindowList;
+    except
+      EnableTaskWindows(TaskWindowList);
+      raise;
+    end;
+  finally
+    TaskWindowList := SaveWindowList;
+    TaskActiveWindow := SaveActiveWindow;
+  end;
+end;
+
+
 {$ENDIF MSWINDOWS}
 
 
@@ -8724,4 +8853,5 @@ finalization
   WaitObjectList.Free;
   {$ENDIF LINUX}
 end.
+
 
