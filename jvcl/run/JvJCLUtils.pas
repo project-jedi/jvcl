@@ -955,7 +955,6 @@ function ActivatePrevInstance(const MainFormClass: ShortString;
 function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 {$ENDIF BCB}
-function IsForegroundTask: Boolean;
 { BrowseForFolder displays Browse For Folder dialog }
 function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
 {$ENDIF VCL}
@@ -7856,36 +7855,6 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF MSWINDOWS}
-{ Check if this is the active Windows task }
-{ Copied from implementation of FORMS.PAS  }
-
-type
-  PCheckTaskInfo = ^TCheckTaskInfo;
-  TCheckTaskInfo = record
-    FocusWnd: HWND;
-    Found: Boolean;
-  end;
-
-function CheckTaskWindow(Window: HWND; Data: Longint): WordBool; stdcall;
-begin
-  Result := True;
-  if PCheckTaskInfo(Data)^.FocusWnd = Window then
-  begin
-    Result := False;
-    PCheckTaskInfo(Data)^.Found := True;
-  end;
-end;
-
-function IsForegroundTask: Boolean;
-var
-  Info: TCheckTaskInfo;
-begin
-  Info.FocusWnd := GetActiveWindow;
-  Info.Found := False;
-  EnumThreadWindows(GetCurrentThreadID, @CheckTaskWindow, Longint(@Info));
-  Result := Info.Found;
-end;
-
 function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
 var
   BrowseInfo: TBrowseInfo;

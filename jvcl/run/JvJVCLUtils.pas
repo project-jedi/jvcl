@@ -47,7 +47,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, QTypes, Types, QForms, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus,
-  QDialogs, QComCtrls, QImgList, QGrids, QWinCursors,
+  QDialogs, QComCtrls, QImgList, QGrids, QWinCursors, QWindows,
   {$ENDIF VisualCLX}
   IniFiles,
   JclBase, JclSysUtils, JclStrings, JvJCLUtils,
@@ -80,10 +80,12 @@ procedure GetSaturationBitmap(var Dest: TBitmap; const Source: TBitmap);
 // get value bitmap (V part of HSV)
 procedure GetValueBitmap(var Dest: TBitmap; const Source: TBitmap);
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 // hides / shows the a forms caption area
-procedure HideFormCaption(FormHandle: HWND; Hide: Boolean);
+procedure HideFormCaption(FormHandle: Windows.HWND; Hide: Boolean);
+{$ENDIF VCL}
 
+{$IFDEF MSWINDOWS}
 type
   TJvWallpaperStyle = (wpTile, wpCenter, wpStretch);
 
@@ -106,7 +108,7 @@ procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
 
 { from JvVCLUtils }
 
-{$IFDEF VCL}
+procedure CopyParentImage(Control: TControl; Dest: TCanvas);
 { Windows resources (bitmaps and icons) VCL-oriented routines }
 procedure DrawBitmapTransparent(Dest: TCanvas; DstX, DstY: Integer;
   Bitmap: TBitmap; TransparentColor: TColor);
@@ -117,7 +119,6 @@ procedure StretchBitmapRectTransparent(Dest: TCanvas; DstX, DstY, DstW,
 function MakeBitmap(ResID: PChar): TBitmap;
 function MakeBitmapID(ResID: Word): TBitmap;
 function MakeModuleBitmap(Module: THandle; ResID: PChar): TBitmap;
-procedure CopyParentImage(Control: TControl; Dest: TCanvas);
 function CreateTwoColorsBrushPattern(Color1, Color2: TColor): TBitmap;
 function CreateDisabledBitmap_NewStyle(FOriginal: TBitmap; BackColor: TColor):
   TBitmap;
@@ -125,13 +126,14 @@ function CreateDisabledBitmapEx(FOriginal: TBitmap; OutlineColor, BackColor,
   HighLightColor, ShadowColor: TColor; DrawHighlight: Boolean): TBitmap;
 function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor):
   TBitmap;
-function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
 procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
   Index: Integer);
-procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
-  X, Y, Index: Integer; HighLightColor, GrayColor: TColor; DrawHighlight:
-    Boolean);
+{$IFDEF VCL}
+function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
 {$ENDIF VCL}
+procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
+  X, Y, Index: Integer; HighLightColor, GrayColor: TColor;
+  DrawHighlight: Boolean);
 
 function MakeIcon(ResID: PChar): TIcon;
 function MakeIconID(ResID: Word): TIcon;
@@ -273,7 +275,8 @@ function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
 { Windows API level routines }
 
 procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
-  SrcDC: HDC; SrcX, SrcY, SrcW, Srch: Integer; Palette: HPALETTE;
+  SrcDC: HDC; SrcX, SrcY, SrcW, Srch: Integer;
+  {$IFDEF VCL}Palette: HPALETTE;{$ELSE}Dummy: Integer;{$ENDIF}
   TransparentColor: TColorRef);
 procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
   DstX, DstY: Integer; TransparentColor: TColorRef);
@@ -341,6 +344,7 @@ function FindFormByClass(FormClass: TFormClass): TForm;
 function FindFormByClassName(FormClassName: string): TForm;
 { AppMinimized returns True, if Application is minimized }
 function AppMinimized: Boolean;
+function IsForegroundTask: Boolean;
 {$IFDEF VCL}
 { MessageBox is Application.MessageBox with string (not PChar) parameters.
   if Caption parameter = '', it replaced with Application.Title }
@@ -382,7 +386,7 @@ procedure ShowMenu(Form: TForm; MenuAni: TMenuAnimation);
 { TargetFileName - if FileName is ShortCut returns filename ShortCut linked to }
 function TargetFileName(const FileName: TFileName): TFileName;
 { return filename ShortCut linked to }
-function ResolveLink(const HWND: HWND; const LinkFile: TFileName;
+function ResolveLink(const HWND: Windows.HWND; const LinkFile: TFileName;
   var FileName: TFileName): HRESULT;
 
 type
@@ -608,9 +612,9 @@ function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 
 {$IFDEF MSWINDOWS}
 // AllocateHWndEx works like Classes.AllocateHWnd but does not use any virtual memory pages
-function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): HWND;
+function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): Windows.HWND;
 // DeallocateHWndEx works like Classes.DeallocateHWnd but does not use any virtual memory pages
-procedure DeallocateHWndEx(Wnd: HWND);
+procedure DeallocateHWndEx(Wnd: Windows.HWND);
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
@@ -1031,7 +1035,7 @@ begin
   Dest.PixelFormat := Source.PixelFormat;
 end;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 { (rb) Duplicate of JvAppUtils.AppTaskbarIcons }
 
 procedure HideFormCaption(FormHandle: HWND; Hide: Boolean);
@@ -1043,7 +1047,7 @@ begin
     SetWindowLong(FormHandle, GWL_STYLE, GetWindowLong(FormHandle, GWL_STYLE) or
       WS_CAPTION);
 end;
-{$ENDIF MSWINDOWS}
+{$ENDIF VCL}
 
 // (rom) a thread to wait would be more elegant, also JCL function available
 
@@ -1342,7 +1346,131 @@ end;
 
 { Bitmaps }
 
+{$IFDEF VisualCLX}
+
+type
+  TPrivateControl = class(TComponent)
+  protected
+    FVisible: Boolean;
+  end;
+
+procedure CopyParentImage(Control: TControl; Dest: TCanvas);
+var
+  Pixmap: QPixmapH;
+  DestDev: QPaintDeviceH;
+  pdm: QPaintDeviceMetricsH;
+  OldVisible: Boolean;
+begin
+  if (Control = nil) or (Control.Parent = nil) then
+    Exit;
+  Dest.Start;
+  try
+    DestDev := QPainter_device(Dest.Handle);
+    with Control.Parent do
+      ControlState := ControlState + [csPaintCopy];
+    try
+      pdm := QPaintDeviceMetrics_create(DestDev);
+      try
+        Pixmap := QPixmap_create(Control.Width, Control.Height,
+          QPaintDeviceMetrics_depth(pdm), QPixmapOptimization_DefaultOptim);
+      finally
+        QPaintDeviceMetrics_destroy(pdm);
+      end;
+      OldVisible := TPrivateControl(Control).FVisible;
+      TPrivateControl(Control).FVisible := False; // do not draw the Control itself
+      try
+        QPixmap_grabWidget(Pixmap, Control.Parent.Handle, Control.Left,
+          Control.Top, Control.Width, Control.Height);
+        Qt.bitBlt(DestDev, 0, 0, Pixmap, 0, 0, Control.Width,
+          Control.Height, RasterOp_CopyROP, True);
+      finally
+        TPrivateControl(Control).FVisible := OldVisible;
+        QPixmap_destroy(Pixmap);
+      end;
+    finally
+      with Control.Parent do
+        ControlState := ControlState - [csPaintCopy];
+    end;
+  finally
+    Dest.Stop;
+  end;
+end;
+{$ENDIF VisualCLX}
+
 {$IFDEF VCL}
+
+type
+  TJvParentControl = class(TWinControl);
+
+procedure CopyParentImage(Control: TControl; Dest: TCanvas);
+var
+  i, Count, X, Y, SaveIndex: Integer;
+  DC: HDC;
+  r, SelfR, CtlR: TRect;
+begin
+  if (Control = nil) or (Control.Parent = nil) then
+    Exit;
+  Count := Control.Parent.ControlCount;
+  DC := Dest.Handle;
+  with Control.Parent do
+    ControlState := ControlState + [csPaintCopy];
+  try
+    with Control do
+    begin
+      SelfR := Bounds(Left, Top, Width, Height);
+      X := -Left;
+      Y := -Top;
+    end;
+    { Copy parent control image }
+    SaveIndex := SaveDC(DC);
+    try
+      SetViewPortOrgEx(DC, X, Y, nil);
+      IntersectClipRect(DC, 0, 0, Control.Parent.ClientWidth,
+        Control.Parent.ClientHeight);
+      with TJvParentControl(Control.Parent) do
+      begin
+        Perform(WM_ERASEBKGND, DC, 0);
+        PaintWindow(DC);
+      end;
+    finally
+      RestoreDC(DC, SaveIndex);
+    end;
+    { Copy images of graphic controls }
+    for i := 0 to Count - 1 do
+    begin
+      if Control.Parent.Controls[i] = Control then
+        Break
+      else
+        if (Control.Parent.Controls[i] <> nil) and
+        (Control.Parent.Controls[i] is TGraphicControl) then
+        begin
+          with TGraphicControl(Control.Parent.Controls[i]) do
+          begin
+            CtlR := Bounds(Left, Top, Width, Height);
+            if IntersectRect(r, SelfR, CtlR) and Visible then
+            begin
+              ControlState := ControlState + [csPaintCopy];
+              SaveIndex := SaveDC(DC);
+              try
+                SaveIndex := SaveDC(DC);
+                SetViewPortOrgEx(DC, Left + X, Top + Y, nil);
+                IntersectClipRect(DC, 0, 0, Width, Height);
+                Perform(WM_PAINT, DC, 0);
+              finally
+                RestoreDC(DC, SaveIndex);
+                ControlState := ControlState - [csPaintCopy];
+              end;
+            end;
+          end;
+        end;
+    end;
+  finally
+    with Control.Parent do
+      ControlState := ControlState - [csPaintCopy];
+  end;
+end;
+
+{$ENDIF VCL}
 
 function MakeModuleBitmap(Module: THandle; ResID: PChar): TBitmap;
 begin
@@ -1357,8 +1485,10 @@ begin
     end
     else
     begin
+      {$IFDEF VCL}
       Result.Handle := LoadBitmap(Module, ResID);
       if Result.Handle = 0 then
+      {$ENDIF VCL}
         ResourceNotFound(ResID);
     end;
   except
@@ -1415,79 +1545,9 @@ begin
   end;
 end;
 
-type
-  TJvParentControl = class(TWinControl);
-
-procedure CopyParentImage(Control: TControl; Dest: TCanvas);
-var
-  i, Count, X, Y, SaveIndex: Integer;
-  DC: HDC;
-  r, SelfR, CtlR: TRect;
-begin
-  if (Control = nil) or (Control.Parent = nil) then
-    Exit;
-  Count := Control.Parent.ControlCount;
-  DC := Dest.Handle;
-  with Control.Parent do
-    ControlState := ControlState + [csPaintCopy];
-  try
-    with Control do
-    begin
-      SelfR := Bounds(Left, Top, Width, Height);
-      X := -Left;
-      Y := -Top;
-    end;
-    { Copy parent control image }
-    SaveIndex := SaveDC(DC);
-    try
-      SetViewPortOrgEx(DC, X, Y, nil);
-      IntersectClipRect(DC, 0, 0, Control.Parent.ClientWidth,
-        Control.Parent.ClientHeight);
-      with TJvParentControl(Control.Parent) do
-      begin
-        Perform(WM_ERASEBKGND, DC, 0);
-        PaintWindow(DC);
-      end;
-    finally
-      RestoreDC(DC, SaveIndex);
-    end;
-    { Copy images of graphic controls }
-    for i := 0 to Count - 1 do
-    begin
-      if Control.Parent.Controls[i] = Control then
-        break
-      else
-        if (Control.Parent.Controls[i] <> nil) and
-        (Control.Parent.Controls[i] is TGraphicControl) then
-        begin
-          with TGraphicControl(Control.Parent.Controls[i]) do
-          begin
-            CtlR := Bounds(Left, Top, Width, Height);
-            if IntersectRect(r, SelfR, CtlR) and Visible then
-            begin
-              ControlState := ControlState + [csPaintCopy];
-              SaveIndex := SaveDC(DC);
-              try
-                SaveIndex := SaveDC(DC);
-                SetViewPortOrgEx(DC, Left + X, Top + Y, nil);
-                IntersectClipRect(DC, 0, 0, Width, Height);
-                Perform(WM_PAINT, DC, 0);
-              finally
-                RestoreDC(DC, SaveIndex);
-                ControlState := ControlState - [csPaintCopy];
-              end;
-            end;
-          end;
-        end;
-    end;
-  finally
-    with Control.Parent do
-      ControlState := ControlState - [csPaintCopy];
-  end;
-end;
-
 { Transparent bitmap }
 
+{$IFDEF VCL}
 procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
   SrcDC: HDC; SrcX, SrcY, SrcW, Srch: Integer; Palette: HPALETTE;
   TransparentColor: TColorRef);
@@ -1573,6 +1633,66 @@ begin
   DeleteDC(ObjectDC);
   DeleteDC(SaveDC);
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
+  SrcDC: HDC; SrcX, SrcY, SrcW, Srch: Integer; Dummy: Integer;
+  TransparentColor: TColorRef);
+var
+  Color: TColorRef;
+  bmAndBack, bmAndObject, bmAndMem, bmSave: QPixmapH;
+  bmBackOld, bmObjectOld, bmMemOld, bmSaveOld: QPixmapH;
+  MemDC, BackDC, ObjectDC, SaveDC: QPainterH;
+begin
+  { Create some DCs to hold temporary data }
+  BackDC := CreateCompatibleDC(DstDC);
+  ObjectDC := CreateCompatibleDC(DstDC);
+  MemDC := CreateCompatibleDC(DstDC);
+  SaveDC := CreateCompatibleDC(DstDC);
+  { Create a bitmap for each DC }
+  bmAndObject := CreateBitmap(SrcW, Srch, 1, 1, nil);
+  bmAndBack := CreateBitmap(SrcW, Srch, 1, 1, nil);
+  bmAndMem := CreateCompatibleBitmap(DstDC, DstW, DstH);
+  bmSave := CreateCompatibleBitmap(DstDC, SrcW, Srch);
+  { Each DC must select a bitmap object to store pixel data }
+  bmBackOld := SelectObject(BackDC, bmAndBack);
+  bmObjectOld := SelectObject(ObjectDC, bmAndObject);
+  bmMemOld := SelectObject(MemDC, bmAndMem);
+  bmSaveOld := SelectObject(SaveDC, bmSave);
+  { Save the bitmap sent here }
+  BitBlt(SaveDC, 0, 0, SrcW, Srch, SrcDC, SrcX, SrcY, SRCCOPY);
+  { Set the background color of the source DC to the color,         }
+  { contained in the parts of the bitmap that should be transparent }
+  Color := SetBkColor(SaveDC, PaletteColor(TransparentColor));
+  { Create the object mask for the bitmap by performing a BitBlt()  }
+  { from the source bitmap to a monochrome bitmap                   }
+  BitBlt(ObjectDC, 0, 0, SrcW, Srch, SaveDC, 0, 0, SRCCOPY);
+  { Set the background color of the source DC back to the original  }
+  SetBkColor(SaveDC, Color);
+  { Create the inverse of the object mask }
+  BitBlt(BackDC, 0, 0, SrcW, Srch, ObjectDC, 0, 0, NOTSRCCOPY);
+  { Copy the background of the main DC to the destination }
+  BitBlt(MemDC, 0, 0, DstW, DstH, DstDC, DstX, DstY, SRCCOPY);
+  { Mask out the places where the bitmap will be placed }
+  StretchBlt(MemDC, 0, 0, DstW, DstH, ObjectDC, 0, 0, SrcW, Srch, SRCAND);
+  { Mask out the transparent colored pixels on the bitmap }
+  BitBlt(SaveDC, 0, 0, SrcW, Srch, BackDC, 0, 0, SRCAND);
+  { XOR the bitmap with the background on the destination DC }
+  StretchBlt(MemDC, 0, 0, DstW, DstH, SaveDC, 0, 0, SrcW, Srch, SRCPAINT);
+  { Copy the destination to the screen }
+  BitBlt(DstDC, DstX, DstY, DstW, DstH, MemDC, 0, 0, SRCCOPY);
+  { Delete the memory bitmaps }
+  DeleteObject(SelectObject(BackDC, bmBackOld));
+  DeleteObject(SelectObject(ObjectDC, bmObjectOld));
+  DeleteObject(SelectObject(MemDC, bmMemOld));
+  DeleteObject(SelectObject(SaveDC, bmSaveOld));
+  { Delete the memory DCs }
+  DeleteDC(MemDC);
+  DeleteDC(BackDC);
+  DeleteDC(ObjectDC);
+  DeleteDC(SaveDC);
+end;
+{$ENDIF VisualCLX}
 
 procedure DrawTransparentBitmapRect(DC: HDC; Bitmap: HBITMAP; DstX, DstY,
   DstW, DstH: Integer; SrcRect: TRect; TransparentColor: TColorRef);
@@ -1593,7 +1713,7 @@ end;
 procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
   DstX, DstY: Integer; TransparentColor: TColorRef);
 var
-  BM: Windows.TBitmap;
+  BM: tagBitmap;
 begin
   GetObject(Bitmap, SizeOf(BM), @BM);
   DrawTransparentBitmapRect(DC, Bitmap, DstX, DstY, BM.bmWidth, BM.bmHeight,
@@ -1617,16 +1737,22 @@ begin
     SrcW := Bitmap.Width;
     Srch := Bitmap.Height;
   end;
+  {$IFDEF VisualCLX}
+  Dest.Start;
+  {$ENDIF VisualCLX}
   if not Bitmap.Monochrome then
     SetStretchBltMode(Dest.Handle, STRETCH_DELETESCANS);
   CanvasChanging := Bitmap.Canvas.OnChanging;
   Bitmap.Canvas.Lock;
   try
     Bitmap.Canvas.OnChanging := nil;
+    {$IFDEF VisualCLX}
+    Bitmap.Canvas.Start;
+    {$ENDIF VisualCLX}
     if TransparentColor = clNone then
     begin
       StretchBlt(Dest.Handle, DstX, DstY, DstW, DstH, Bitmap.Canvas.Handle,
-        SrcX, SrcY, SrcW, Srch, Dest.CopyMode);
+        SrcX, SrcY, SrcW, Srch, Cardinal(Dest.CopyMode));
     end
     else
     begin
@@ -1637,12 +1763,23 @@ begin
       else
         TransparentColor := ColorToRGB(TransparentColor);
       StretchBltTransparent(Dest.Handle, DstX, DstY, DstW, DstH,
-        Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, Srch, Bitmap.Palette,
+        Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, Srch,
+        {$IFDEF VCL}
+        Bitmap.Palette,
+        {$ELSE}
+        0,
+        {$ENDIF}
         TransparentColor);
     end;
+    {$IFDEF VisualCLX}
+    Bitmap.Canvas.Stop;
+    {$ENDIF VisualCLX}
   finally
     Bitmap.Canvas.OnChanging := CanvasChanging;
     Bitmap.Canvas.Unlock;
+    {$IFDEF VisualCLX}
+    Dest.Stop;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -1669,30 +1806,6 @@ procedure DrawBitmapTransparent(Dest: TCanvas; DstX, DstY: Integer;
 begin
   StretchBitmapTransparent(Dest, Bitmap, TransparentColor, DstX, DstY,
     Bitmap.Width, Bitmap.Height, 0, 0, Bitmap.Width, Bitmap.Height);
-end;
-
-{ ChangeBitmapColor. This function create new TBitmap object.
-  You must destroy it outside by calling TBitmap.Free method. }
-
-function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
-var
-  r: TRect;
-begin
-  Result := TBitmap.Create;
-  try
-    with Result do
-    begin
-      Height := Bitmap.Height;
-      Width := Bitmap.Width;
-      r := Bounds(0, 0, Width, Height);
-      Canvas.Brush.Color := NewColor;
-      Canvas.FillRect(r);
-      Canvas.BrushCopy(r, Bitmap, r, Color);
-    end;
-  except
-    Result.Free;
-    raise;
-  end;
 end;
 
 { CreateDisabledBitmap. Creating TBitmap object with disable button glyph
@@ -1726,15 +1839,15 @@ begin
       { Convert Black to clBtnHighlight }
       Result.Canvas.Brush.Color := clBtnHighlight;
       DestDC := Result.Canvas.Handle;
-      Windows.SetTextColor(DestDC, clWhite);
-      Windows.SetBkColor(DestDC, clBlack);
+      SetTextColor(DestDC, clWhite);
+      SetBkColor(DestDC, clBlack);
       BitBlt(DestDC, 1, 1, FOriginal.Width, FOriginal.Height, SrcDC, 0, 0,
         ROP_DSPDxax);
       { Convert Black to clBtnShadow }
       Result.Canvas.Brush.Color := clBtnShadow;
       DestDC := Result.Canvas.Handle;
-      Windows.SetTextColor(DestDC, clWhite);
-      Windows.SetBkColor(DestDC, clBlack);
+      SetTextColor(DestDC, clWhite);
+      SetBkColor(DestDC, clBlack);
       BitBlt(DestDC, 0, 0, FOriginal.Width, FOriginal.Height, SrcDC, 0, 0,
         ROP_DSPDxax);
     finally
@@ -1764,7 +1877,9 @@ begin
         Width := FOriginal.Width;
         Height := FOriginal.Height;
         Canvas.CopyRect(IRect, FOriginal.Canvas, IRect);
+        {$IFDEF VCL}
         HandleType := bmDDB;
+        {$ENDIF VCL}
         Canvas.Brush.Color := OutlineColor;
         if Monochrome then
         begin
@@ -1808,9 +1923,37 @@ begin
     clBtnFace, clBtnHighlight, clBtnShadow, True);
 end;
 
+
+
+{$IFDEF VCL}
+{ ChangeBitmapColor. This function create new TBitmap object.
+  You must destroy it outside by calling TBitmap.Free method. }
+
+function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
+var
+  r: TRect;
+begin
+  Result := TBitmap.Create;
+  try
+    with Result do
+    begin
+      Height := Bitmap.Height;
+      Width := Bitmap.Width;
+      r := Bounds(0, 0, Width, Height);
+      Canvas.Brush.Color := NewColor;
+      Canvas.FillRect(r);
+      Canvas.BrushCopy(r, Bitmap, r, Color);
+    end;
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+{$ENDIF VCL}
+
 procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
-  X, Y, Index: Integer; HighLightColor, GrayColor: TColor; DrawHighlight:
-    Boolean);
+  X, Y, Index: Integer; HighLightColor, GrayColor: TColor;
+  DrawHighlight: Boolean);
 var
   Bmp: TBitmap;
   SaveColor: TColor;
@@ -1824,7 +1967,11 @@ begin
     begin
       Brush.Color := clWhite;
       FillRect(Rect(0, 0, Images.Width, Images.Height));
+      {$IFDEF VCL}
       ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_MASK);
+      {$ELSE}
+      Images.Draw(Bmp.Canvas, 0, 0, Index, itMask);
+      {$ENDIF}
     end;
     Bmp.Monochrome := True;
     if DrawHighlight then
@@ -1845,7 +1992,6 @@ begin
     Canvas.Brush.Color := SaveColor;
   end;
 end;
-{$ENDIF VCL}
 
 { Brush Pattern }
 
@@ -2001,8 +2147,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-{$IFDEF MSWINDOWS}
-
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
   Boolean;
 type
@@ -2063,13 +2207,12 @@ begin
   end;
   Result := CreateFontIndirect(LogFont);
 end;
-{$ENDIF VCL}
 
 function PaletteEntries(Palette: HPALETTE): Integer;
 begin
   GetObject(Palette, SizeOf(Integer), @Result);
 end;
-{$ENDIF MSWINDOWS}
+{$ENDIF VCL}
 
 procedure Delay(MSecs: Longint);
 var
@@ -2185,6 +2328,7 @@ begin
 end;
 {$ENDIF}
 
+{$IFDEF VCL}
 { Shade rectangle }
 
 procedure ShadeRect(DC: HDC; const Rect: TRect);
@@ -2209,6 +2353,7 @@ begin
     DeleteObject(Bitmap);
   end;
 end;
+{$ENDIF VCL}
 
 function ScreenWorkArea: TRect;
 begin
@@ -2930,6 +3075,44 @@ begin
 {$ENDIF}
 end;
 
+{$IFDEF MSWINDOWS}
+{ Check if this is the active Windows task }
+{ Copied from implementation of FORMS.PAS  }
+
+type
+  PCheckTaskInfo = ^TCheckTaskInfo;
+  TCheckTaskInfo = record
+    FocusWnd: Windows.HWND;
+    Found: Boolean;
+  end;
+
+function CheckTaskWindow(Window: Windows.HWND; Data: Longint): WordBool; stdcall;
+begin
+  Result := True;
+  if PCheckTaskInfo(Data)^.FocusWnd = Window then
+  begin
+    Result := False;
+    PCheckTaskInfo(Data)^.Found := True;
+  end;
+end;
+
+function IsForegroundTask: Boolean;
+var
+  Info: TCheckTaskInfo;
+begin
+  Info.FocusWnd := Windows.GetActiveWindow;
+  Info.Found := False;
+  EnumThreadWindows(GetCurrentThreadID, @CheckTaskWindow, Longint(@Info));
+  Result := Info.Found;
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+function IsForegroundTask: Boolean;
+begin
+  Result := Application.Active;
+end;
+{$ENDIF LINUX}
+
 {$IFDEF VCL}
 
 function MessageBox(const Msg: string; Caption: string; const Flags: Integer):
@@ -3162,13 +3345,12 @@ begin
     if ResolveLink(Application.Handle, FileName, Result) <> 0 then
 {$ENDIF}
 {$IFDEF VisualCLX}
-      if ResolveLink(QWidget_winId(Application.AppWidget), FileName, Result) <> 0
-        then
+      if ResolveLink(QWidget_winId(Application.AppWidget), FileName, Result) <> 0 then
 {$ENDIF}
         raise EJVCLException.CreateFmt(RsECantGetShortCut, [FileName]);
 end;
 
-function ResolveLink(const HWND: HWND; const LinkFile: TFileName;
+function ResolveLink(const HWND: Windows.HWND; const LinkFile: TFileName;
   var FileName: TFileName): HRESULT;
 var
   psl: IShellLink;
@@ -3236,7 +3418,7 @@ begin
   FProcObj := AProcObj;
 end;
 
-procedure TmrProc(HWND: HWND; uMsg: Integer; idEvent: Integer; dwTime: Integer);
+procedure TmrProc(HWND: Windows.HWND; uMsg: Integer; idEvent: Integer; dwTime: Integer);
   stdcall;
 var
   Pr: TProcObj;
@@ -5861,7 +6043,7 @@ const
     lpszMenuName: nil;
     lpszClassName: 'TPUtilWindowEx');
 
-function StdWndProc(Window: HWND; Message, WParam: WPARAM;
+function StdWndProc(Window: Windows.HWND; Message, WParam: WPARAM;
   LParam: LPARAM): LRESULT; stdcall;
 var
   Msg: Messages.TMessage;
@@ -5882,7 +6064,7 @@ begin
     Result := DefWindowProc(Window, Message, WParam, LParam);
 end;
 
-function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): HWND;
+function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): Windows.HWND;
 var
   TempClass: TWndClass;
   UtilWindowExClass: TWndClass;
@@ -5913,9 +6095,9 @@ begin
   end;
 end;
 
-procedure DeallocateHWndEx(Wnd: HWND);
+procedure DeallocateHWndEx(Wnd: Windows.HWND);
 begin
-  DestroyWindow(Wnd);
+  Windows.DestroyWindow(Wnd);
 end;
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
