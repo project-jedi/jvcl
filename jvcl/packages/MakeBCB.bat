@@ -55,7 +55,7 @@ cd ..\..\packages
 
 ..\devtools\bin\Bpg2Make.exe %PACKAGE%.bpg
 
-%MAKE% -f %PACKAGE%.mak %6 %7 %8 %9 %PACKAGELIST%
+%MAKE% -f %PACKAGE%.mak %6 %7 %8 %9 %TARGETS%
 
 IF ERRORLEVEL 1 GOTO error
 echo.
@@ -99,9 +99,9 @@ echo     BPLDirectory      The place where to put the BPL and TDS files.
 echo                       Defaults to $(BCB)\Projects\Bpl
 echo.
 echo Any additional argument (up to the 9th) will be passed to make
-echo The PACKAGELIST environment variable should contain the name of the 
+echo The TARGETS environment variable should contain the name of the 
 echo packages to be built separated by spaces:
-echo SET PACKAGELIST=JvCoreC6R.bpl JvCoreC6D.bpl
+echo SET TARGETS=JvCoreC6R.bpl JvCoreC6D.bpl
 echo If not specified, all packages will be built.
 echo.
 echo BCB MUST be closed before running this batch file
