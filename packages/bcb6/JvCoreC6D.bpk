@@ -126,7 +126,7 @@ Known Issues:
       <FILE FILENAME="..\..\design\JvStdToolbarDsgnFrame.pas" FORMNAME="fmeJvStdToolbarDesign" UNITNAME="JvStdToolbarDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvColorProviderEditors.pas" FORMNAME="" UNITNAME="JvColorProviderEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvColorProviderDesignerForm.pas" FORMNAME="" UNITNAME="JvColorProviderDesignerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvProviderTreeListDsgnFrame.pas" FORMNAME="fmeJvProviderTreeListDsgn" UNITNAME="JvProviderTreeListDsgnFrame.pas" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvProviderTreeListDsgnFrame.pas" FORMNAME="fmeJvProviderTreeListDsgn" UNITNAME="JvProviderTreeListDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
       <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
