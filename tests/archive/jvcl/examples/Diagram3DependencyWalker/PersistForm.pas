@@ -40,6 +40,7 @@ begin
     Width := Storage.ReadInteger(ClassName, 'Width', Width);
     Height := Storage.ReadInteger(ClassName, 'Height', Height);
   end;
+  WindowState := TWindowState(Storage.ReadInteger(ClassName, 'WindowState',Ord(WindowState)));
 end;
 
 procedure TfrmPersistable.Save(Storage: TPersistStorage);
@@ -57,6 +58,7 @@ begin
       Storage.WriteInteger(ClassName, 'Height', Height);
     end;
   end;
+  Storage.WriteInteger(ClassName, 'WindowState',Ord(WindowState));
 end;
 
 end.
