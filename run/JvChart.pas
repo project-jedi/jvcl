@@ -403,7 +403,7 @@ type
     { TImage stuff}
     FPicture: TPicture; // An image drawn via GDI primitives, saveable as
                         // bitmap or WMF, or displayable to screen
-    { NEW:Data }
+    { NEW: Data }
     FData: TJvChartData;
     FAverageData: TJvChartData;
     FBitmap: TBitmap;
@@ -426,7 +426,7 @@ type
     FYOrigin: Double; {was in TJvChart.PlotGraph}
     //FYTempOrigin: Integer; {was in TJvChart.PlotGraph}
     FXAxisPosition: Integer; // how far down (in Y dimension) is the X axis?
-    FOnOptionsChangeEvent: TJvChartEvent; {NEW:Component fires this event for when options change.}
+    FOnOptionsChangeEvent: TJvChartEvent; {NEW: Component fires this event for when options change.}
     FCursorPosition: Integer; // NEW: -1 means no visible cursor, 0..n means make
                               // particular value highlighted.  The highlight is painted
                               // over top of the TImage, so that we can just restore the TImage
@@ -775,7 +775,7 @@ end;
 
 procedure TJvChartYAxisOptions.Normalize;
 var
-// CheckYDivisions:Integer;
+  // CheckYDivisions: Integer;
   VC: Integer;
 begin
   if (FYMax - FYMin) < 0.00001 then // make sure that there is some difference here!
@@ -1519,7 +1519,7 @@ var
   V, NYMax, NYMin: Double;
 //  NPen: Longint;
   I, J: Integer;
-//   calcYGap  :Double; // not used (ahuser)
+//   calcYGap: Double; // not used (ahuser)
   ATextWidth, SkipBy, MaxFit: Integer;
 begin
   //   nMaxXValue       := 0;
@@ -1753,7 +1753,7 @@ procedure TJvChart.GraphXAxisDivisionMarkers; // new.
 var
   I, X: Integer;
   Lines: Integer;
-//    YTempOrigin:Integer;
+  // YTempOrigin: Integer;
 begin
   if not Options.XAxisDivisionMarkers then
     Exit;
@@ -2909,23 +2909,21 @@ begin
 end;
 
 (*
- Left,Width,TextWidth:Integer;
+  Left, Width, TextWidth: Integer;
 begin
   MyAxisFont;
 
   if Options.FXLegendHoriz <  then
   begin
-      Options.FXLegendHoriz := Options.XStartOffset;
-      Width := Options.XEnd;
+    Options.FXLegendHoriz := Options.XStartOffset;
+    Width := Options.XEnd;
   end
   else
-  begin
-      Width := Options.XEnd-(Options.FXLegendHoriz-Options.XStartOffset);
-  end;
+    Width := Options.XEnd-(Options.FXLegendHoriz-Options.XStartOffset);
 
   X := Options.FXLegendHoriz + (Width div 2);
   if (X< Options.FXLegendHoriz) then
-      X := Options.FXLegendHoriz; // NEW: move over X axis legend if it collides.
+    X := Options.FXLegendHoriz; // NEW: move over X axis legend if it collides.
 
   Y := Options.YStartOffset + Options.YEnd + (2*MyTextHeight(StrText) -4 );
   TextWidth := ChartCanvas.TextWidth(StrText);
@@ -2979,7 +2977,7 @@ end;
 { MOUSE FUNCTIONS AND PROCEDURES                                            }
 {***************************************************************************}
 {
-function  TJvChart.GetXValue(X,Y:Integer): Double;
+function  TJvChart.GetXValue(X, Y: Integer): Double;
 var
    XOrigin    : Longint;
    XPixelGap: Longint;
@@ -2999,7 +2997,7 @@ begin
      GetXValue := 0;
 end;
 
-function  TJvChart.GetYValue(X,Y:Integer): Double;
+function  TJvChart.GetYValue(X, Y: Integer): Double;
 var
    YOrigin    : Longint;
    YPixelGap: Longint;

@@ -2290,8 +2290,8 @@ end;
 
 procedure TJvNavPanelButton.Paint;
 //const
-//  cAlignment:array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
-//  cWordWrap: array[Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
+//  cAlignment: array [TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
+//  cWordWrap: array [Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 var
   R: TRect;
   X, Y: Integer;

@@ -99,7 +99,7 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-procedure TJvToolBar.BuildButtons(AMenu:TMainMenu);
+procedure TJvToolBar.BuildButtons(AMenu: TMainMenu);
 var
   I: Integer;
 begin
@@ -117,7 +117,8 @@ begin
     FMenu.RemoveFreeNotification(Self);
   end;
   FMenu := AMenu;
-  if not Assigned(FMenu) then Exit;
+  if not Assigned(FMenu) then
+    Exit;
   FMenu.FreeNotification(Self);
 
   for I := ButtonCount to FMenu.Items.Count - 1 do

@@ -962,7 +962,8 @@ begin
 end;
 
 procedure TJvCustomDBTreeView.Change(Node: TTreeNode);
-var OldState:TDataSetState;
+var
+  OldState: TDataSetState;
 begin
   if ValidDataSet and Assigned(Node) and not InDataScrolled and
     (FUpdateLock = 0) and

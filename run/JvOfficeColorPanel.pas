@@ -91,7 +91,7 @@ type
     FButtonColor: TColor;
     procedure SetButtonColor(const Value: TColor);
   public
-    property ButtonColor:TColor read FButtonColor write SetButtonColor;
+    property ButtonColor: TColor read FButtonColor write SetButtonColor;
   end;
 
   TJvSubColorButton = class(TJvColorSpeedButton)

@@ -740,7 +740,7 @@ end;
 procedure TJvTransparentButton.DrawTheText(ARect: TRect; Canvas: TCanvas);
 var
   Flags, MidX, MidY: Integer;
-  DC: HDC; { Col:TColor; }
+  DC: HDC; { Col: TColor; }
   TmpRect: TRect;
 begin
   if (bsMouseInside in MouseStates) and HotTrack then
@@ -1434,7 +1434,7 @@ end;
 procedure TJvTransparentButton2.DrawTheText(ARect: TRect; Canvas: TCanvas);
 var
   Flags, MidX, MidY: Integer;
-  DC: HDC; { Col:TColor; }
+  DC: HDC; { Col: TColor; }
   TmpRect: TRect;
 begin
   if (bsMouseInside in MouseStates) and HotTrack then

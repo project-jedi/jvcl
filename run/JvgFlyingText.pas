@@ -637,11 +637,10 @@ begin
 end;
 
 procedure TJvgFlyingText.Repaint_;
-//var R:TRect;
+//var R: TRect;
 begin
-  if not fLoaded then
-    exit;
-  Repaint;
+  if FLoaded then
+    Repaint;
   //  R:=Rect(0,0,Width,Height);
   //  InvalidateRect(Handle,@R,False);
 end;

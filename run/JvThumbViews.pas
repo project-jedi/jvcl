@@ -117,12 +117,12 @@ type
     function GetMaxHeight: Longint;
     function GetMaxWidth: Longint;
     procedure DoInvalidImage(Sender: TObject; const FileName: string);
-    //    Procedure WMLoadWhenReady(var Msg:TMessage); message WM_LoadWhenReady;
+    //    procedure WMLoadWhenReady(var Msg: TMessage); message WM_LOADWHENREADY;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
-    procedure SetScrollMode(AMode: TscrollMode);
+    procedure SetScrollMode(AMode: TScrollMode);
     procedure SetSelected(Number: Longint);
-    //    Procedure SetBufferFile(NewName:String);
+    //    procedure SetBufferFile(NewName: string);
     procedure Resize; override;
     procedure SetMaxWidth(W: Longint);
     procedure SetDirectory(Value: string);
@@ -136,7 +136,7 @@ type
     function GetSelectedFile: string;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    //    Function GetBufferFile:string;
+    //    function GetBufferFile: string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -438,9 +438,9 @@ begin
 end;
 *)
 
-//Procedure TJvThumbView.SetBufferFile(NewName:String);
+//Procedure TJvThumbView.SetBufferFile(NewName: string);
 //var
-//  tst : string;
+//  tst: string;
 //begin
 //  If NewName <> FBufferFile then
 //    tst := GetBufferName(NewName);

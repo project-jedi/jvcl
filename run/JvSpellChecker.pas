@@ -122,7 +122,7 @@ type
   protected
     procedure BuildTables; virtual;
     procedure ClearTables; virtual;
-    function GetCurrentWord:string;virtual;
+    function GetCurrentWord: string; virtual;
     procedure GetWordSuggestions(const Value: string; AStrings: TStrings); virtual;
     procedure AddSoundex(ASoundex: TSoundex; Value: string); virtual;
     procedure AddWord(Value: string); virtual;

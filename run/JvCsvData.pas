@@ -251,27 +251,19 @@ type
     FUserData: array of Pointer;
     FUserTag: array of Integer;
     FUserLength: Integer;
-
     function GetUserTag(Index: Integer): Integer;
     procedure SetUserTag(Index, Value: Integer);
-
     function GetUserData(Index: Integer): Pointer;
     procedure SetUserData(Index: Integer; Value: Pointer);
-
     // Get internal value, return as Variant.
-
-
-
-
-
   public
-    procedure AddRow( Item: PCsvRow);
+    procedure AddRow(Item: PCsvRow);
     procedure InsertRow(const position: Integer;  Item: PCsvRow);
 
-    procedure AddRowStr(const Item: string;Separator:Char); // convert String->TJvCsvRow
+    procedure AddRowStr(const Item: string; Separator: Char); // convert String->TJvCsvRow
     function GetRowPtr(const RowIndex: Integer): PCsvRow;
     function GetRowStr(const RowIndex: Integer): string;
-    procedure SetRowStr(const RowIndex: Integer; Value: string;Separator:Char);
+    procedure SetRowStr(const RowIndex: Integer; Value: string; Separator: Char);
     procedure DeleteRow(const RowIndex: Integer);
     procedure SetARowItem(const RowIndex, ColumnIndex: Integer; Value: string);
     function GetARowItem(const RowIndex, ColumnIndex: Integer): string;
@@ -284,7 +276,7 @@ type
   TArrayOfPCsvColumn = array of PCsvColumn;
 
   { TJvCustomCsvDataSetFilterFunction: Defines callback function to be passed to CustomFilter routine }
-  TJvCustomCsvDataSetFilterFunction = function(recno:Integer):Boolean of Object;
+  TJvCustomCsvDataSetFilterFunction = function(recno: Integer): Boolean of object;
 
   // Easily Customizeable Dataset descendant our CSV handler and
   // any other variants we create:
@@ -295,8 +287,9 @@ type
     FValidateHeaderRow: Boolean;
     FExtendedHeaderInfo: Boolean;
     procedure SetSeparator(const Value: Char);
-    procedure InternalQuickSort(SortList: PPointerList; L, R: Integer; SortColumns:TArrayOfPCsvColumn; ACount:integer;Ascending: Boolean);
-    procedure QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn; ACount: integer; Ascending:Boolean);
+    procedure InternalQuickSort(SortList: PPointerList; L, R: Integer;
+      SortColumns: TArrayOfPCsvColumn; ACount: Integer; Ascending: Boolean);
+    procedure QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn; ACount: Integer; Ascending: Boolean);
   protected
     FTempBuffer: PChar;
     FInitialWorkingDirectory: string; // Current working dir may change in a delphi app, causing us trouble.
@@ -319,7 +312,7 @@ type
 
     FEmptyRowStr: string; // A string of just separators (used to add a new empty row)
     FHeaderRow: string; // first row of CSV file.
-    FPendingCsvHeaderParse:Boolean; // NEW FEB 2004 WP.
+    FPendingCsvHeaderParse: Boolean; // NEW FEB 2004 WP.
     FTableName: string; // CSV File Name
     FAppendedFieldCount: Integer; // Number of fields not in the file on disk, appended to file as NULLs during import.
     FRecordPos: Integer;
@@ -355,8 +348,7 @@ type
     procedure CsvRowInit(RowPtr: PCsvRow);
 
     //NEW and very handy dandy!
-    function GetFieldValueAsVariant(CsvColumnData: PCsvColumn; Field:TField; recordIndex:Integer) : Variant;
-
+    function GetFieldValueAsVariant(CsvColumnData: PCsvColumn; Field: TField; recordIndex: Integer): Variant;
 
     // New filtering on cursor (GetRecord advances the cursor past
     // any hidden rows using InternalSkipForward).
@@ -366,13 +358,14 @@ type
     function InternalLoadFileStrings: Boolean;
     // Internal methods used by sorting:
     function InternalFieldCompare(Column: PCsvColumn; Left, Right: PCsvRow): Integer;
-    function InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: Integer; Left, Right: PCsvRow;Ascending:Boolean): Integer;
+    function InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: Integer;
+      Left, Right: PCsvRow; Ascending: Boolean): Integer;
 
     // key uniqueness needs this:
     function InternalFindByKey(row: PCsvRow): Integer;
 
     // Each ROW Record has an internal Data pointer (similar to the
-    // user-accessible 'Data:Pointer' stored in treeviews, etc)
+    // user-accessible 'Data: Pointer' stored in treeviews, etc)
     function GetRowUserData: Pointer;
     procedure SetRowUserData(UserData: Pointer);
 
@@ -482,7 +475,7 @@ type
 
     //------------
 
-    /// procedure FilteredDeletion(Inverted:Boolean); /// XXX TODO?
+    /// procedure FilteredDeletion(Inverted: Boolean); /// XXX TODO?
     /// procedure DeleteRowsMatchingFilter; /// XXX TODO?
     /// procedure DeleteRowsNotMatchingFilter; /// XXX TODO?
 
@@ -581,8 +574,8 @@ type
     property CsvKeyDef: string read FCsvKeyDef write FCsvKeyDef; // Primary key definition.
     property CsvUniqueKeys: Boolean read FCsvUniqueKeys write FCsvUniqueKeys; // Rows must be unique on the primary key.
     // if HasHeaderRow is True, calidate that it conforms to CvsFieldDef
-    property ValidateHeaderRow:Boolean read FValidateHeaderRow write FValidateHeaderRow default True;
-    property ExtendedHeaderInfo:Boolean read FExtendedHeaderInfo write FExtendedHeaderInfo;
+    property ValidateHeaderRow: Boolean read FValidateHeaderRow write FValidateHeaderRow default True;
+    property ExtendedHeaderInfo: Boolean read FExtendedHeaderInfo write FExtendedHeaderInfo;
 
     property CaseInsensitive: Boolean read FCsvCaseInsensitiveComparison write FCsvCaseInsensitiveComparison;
 
@@ -683,7 +676,8 @@ type
 procedure CsvRowToString(RowItem: PCsvRow; var RowString: string);
 
 { modified! }
-procedure StringToCsvRow(const RowString: string; Separator:Char; RowItem: PCsvRow; permitEscapeSequences, EnquoteBackslash: Boolean);
+procedure StringToCsvRow(const RowString: string; Separator: Char;
+  RowItem: PCsvRow; permitEscapeSequences, EnquoteBackslash: Boolean);
 
 function CsvRowItemCopy(Source, Dest: PCsvRow; FieldIndex, FieldSize: Integer): Boolean;
 procedure SetCsvRowItem(pItem: PCsvRow; ColumnIndex: Integer; const newValue: string);
@@ -811,7 +805,7 @@ begin
 end;
 
 // Each ROW Record has an internal Data pointer (similar to the
-// user-accessible 'Data:Pointer' stored in treeviews, etc)
+// user-accessible 'Data: Pointer' stored in treeviews, etc)
 
 function TJvCustomCsvDataSet.GetRowUserData: Pointer;
 var
@@ -1113,7 +1107,7 @@ var
   FieldIndex: Integer;
   fieldValue: string;
   //stillVisible : Integer;
-  //m:TBookmark;
+  //m: TBookmark;
 begin
 //  m := GetBookmark;
   fieldRec := FCsvColumns.FindByName(FieldName);
@@ -1251,7 +1245,7 @@ end;
 
 procedure TJvCustomCsvDataSet.FreeRecordBuffer(var Buffer: PChar);
 //var
-//  RowPtr:PCsvRow;
+//  RowPtr: PCsvRow;
 begin
   //Trace( 'FreeRecordBuffer '+IntToHex(Integer(Buffer),8) );
 // try
@@ -1317,13 +1311,13 @@ begin
 end;
 
 
-function TJvCustomCsvDataSet.GetFieldValueAsVariant(CsvColumnData: PCsvColumn; Field:TField; recordIndex:Integer) : Variant;
+function TJvCustomCsvDataSet.GetFieldValueAsVariant(CsvColumnData: PCsvColumn;
+  Field: TField; recordIndex: Integer): Variant;
 var
   RowPtr: PCsvRow;
-  {ActiveRowPtr:PCsvRow;}
+  {ActiveRowPtr: PCsvRow;}
   TempString: string;
   PhysicalLocation: Integer;
-
   l: Integer;
 begin
   Assert(Assigned(FCsvColumns));
@@ -1366,9 +1360,12 @@ begin
 
   try
     case Field.DataType of
-      ftString:     Result := TempString;
-      ftInteger:    Result  := StrToInt(TempString);
-      ftFloat:      Result  := StrToFloatUS(TempString);
+      ftString:
+        Result := TempString;
+      ftInteger:
+        Result := StrToInt(TempString);
+      ftFloat:
+        Result := StrToFloatUS(TempString);
       ftBoolean:
         begin
           if StrToIntDef(TempString, 0) <> 0 then
@@ -1378,16 +1375,16 @@ begin
         end;
       ftDateTime:
            { one of three different datetime formats}
-           if Length(TempString)>0 then 
+           if Length(TempString) > 0 then
            case CsvColumnData^.FFlag of
              jcsvAsciiDateTime:
-                  Result := TimeTAsciiToDateTime(TempString);
+               Result := TimeTAsciiToDateTime(TempString);
              jcsvGMTDateTime:
-                  Result := TimeTHexToDateTime(TempString,0);
+               Result := TimeTHexToDateTime(TempString,0);
              jcsvTZDateTime:
-                  Result := TimeTHexToDateTime(TempString, FTimeZoneCorrection);
-           end; {end case of jcsv various datetime encodings}
-  end; {case}
+               Result := TimeTHexToDateTime(TempString, FTimeZoneCorrection);
+           end;
+    end;
   except
     Result := Unassigned; // No value.
   end;
@@ -1442,10 +1439,10 @@ function TJvCustomCsvDataSet.Locate(const KeyFields: string; const KeyValues: Va
   //              or [loPartialKey,loCaseInsensitive]
   //              or [] {none}
 var
-  KeyFieldArray: array[0..20] of string;
-  FieldLookup: array[0..20] of TField;
-  CsvColumnData :array[0..20] of PCsvColumn;
-  FieldIndex: array[0..20] of Integer;
+  KeyFieldArray: array [0..20] of string;
+  FieldLookup: array [0..20] of TField;
+  CsvColumnData: array [0..20] of PCsvColumn;
+  FieldIndex: array [0..20] of Integer;
 
   recindex, t, lo, hi, Count, VarCount: Integer;
   Value: Variant;
@@ -1681,14 +1678,10 @@ begin
       GetCalcFields(Buffer);
 
     except
-      on E:EJvCsvDataSetError do
-      begin
+      on E: EJvCsvDataSetError do
         raise; // pass our error through.
-      end;
-      on E:Exception do
-      begin
+      on E: Exception do
         JvCsvDatabaseError(FTableName, Format(RsEProblemReadingRow, [FRecordPos]) +' ' + E.Message);
-      end;
     end;
   end
   else
@@ -1995,7 +1988,7 @@ end;
 function TJvCustomCsvDataSet.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
 var
   RowPtr: PCsvRow;
-  {ActiveRowPtr:PCsvRow;}
+  {ActiveRowPtr: PCsvRow;}
   pSource: PChar;
   UserString, TempString: string;
   PhysicalLocation: Integer;
@@ -2354,7 +2347,7 @@ var
   FieldType: TJvCsvColumnFlag;
   aCsvFieldDef: string;
   CsvKeys: array of string;
-//  FDef:TFieldDef;
+//  FDef: TFieldDef;
 begin
 //  FFieldsInitialized := True;
   FieldType := jcsvString;
@@ -3006,7 +2999,7 @@ end;
 
 (*function TJvCustomCsvDataSet.GetDataFileSize: Integer;
 //var
-//  File1:TextFile;
+//  File1: TextFile;
 begin
 //  AssignFile(File1,FTableName);
 //  Result := FileSize(File1);
@@ -3079,7 +3072,7 @@ end;
 // Returns 0 if Left=Right, 1 if Left>Right, -1 if Left<Right
 
 function TJvCustomCsvDataSet.InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: Integer; Left,
-  Right: PCsvRow;Ascending:Boolean): Integer;
+  Right: PCsvRow;Ascending: Boolean): Integer;
 var
   t: Integer;
 begin
@@ -3106,7 +3099,7 @@ begin
 end;
 
 procedure TJvCustomCsvDataSet.InternalQuickSort(SortList: PPointerList;
-  L, R: Integer; SortColumns:TArrayOfPCsvColumn; ACount:integer;Ascending: Boolean);
+  L, R: Integer; SortColumns: TArrayOfPCsvColumn; ACount: Integer; Ascending: Boolean);
 var
   I, J: Integer;
   P, T: Pointer;
@@ -3136,7 +3129,8 @@ begin
   until I >= R;
 end;
 
-procedure TJvCustomCsvDataSet.QuickSort(AList:TList; SortColumns:TArrayOfPCsvColumn; ACount:integer; Ascending:Boolean);
+procedure TJvCustomCsvDataSet.QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn;
+  ACount: Integer; Ascending: Boolean);
 begin
   if (AList <> nil) and (AList.Count > 1) then
     InternalQuickSort(AList.List, 0, AList.Count - 1, SortColumns, ACount, Ascending);
@@ -3150,7 +3144,7 @@ var
   SortColumns: TArrayOfPCsvColumn;
   SortColumnCount: Integer;
 //  comparison, t, u, l: Integer;
-  t:integer;
+  t: Integer;
 begin
   // Create an indexed list which can be sorted more easily than
   // doing an item swap:
@@ -3330,7 +3324,7 @@ begin
   FUserData[Index] := Value;
 end;
 
-procedure TJvCsvRows.AddRow( Item: PCsvRow);
+procedure TJvCsvRows.AddRow(Item: PCsvRow);
 begin
   Add(Pointer(Item));
 end;
@@ -3340,7 +3334,7 @@ begin
   Insert(position, Pointer(Item));
 end;
 
-procedure TJvCsvRows.AddRowStr(const Item: string;Separator:Char); // convert String->TJvCsvRow
+procedure TJvCsvRows.AddRowStr(const Item: string; Separator: Char); // convert String->TJvCsvRow
 var
   pNewItem: PCsvRow;
 begin
@@ -3365,7 +3359,7 @@ begin
   Result := ResultStr;
 end;
 
-procedure TJvCsvRows.SetRowStr(const RowIndex: Integer; Value: string;Separator:Char);
+procedure TJvCsvRows.SetRowStr(const RowIndex: Integer; Value: string; Separator: Char);
 begin
   StringToCsvRow(Value, Separator, GetRowPtr(RowIndex), True, FEnquoteBackslash);
 end;
@@ -3414,7 +3408,7 @@ end;
 
 procedure TJvCustomCsvDataSet.AppendWith(Strings: TStrings);
 //var
-//x:Integer;
+//  x: Integer;
 begin
   //Active := False;
   if FHasHeaderRow then
@@ -3757,7 +3751,8 @@ end;
 
 // convert String into a CSV Row buffer
 
-procedure StringToCsvRow(const RowString: string; Separator:Char; RowItem: PCsvRow; permitEscapeSequences, EnquoteBackslash: Boolean);
+procedure StringToCsvRow(const RowString: string; Separator: Char;
+  RowItem: PCsvRow; permitEscapeSequences, EnquoteBackslash: Boolean);
 var
   t, l, Col: Integer;
   quoteFlag: Boolean;
@@ -3775,15 +3770,15 @@ begin
     Inc(charsInColumn);
     if quoteFlag then
     begin
-          // backslash permitted only if specifically enabled by FEnquoteBackslash:
+      // backslash permitted only if specifically enabled by FEnquoteBackslash:
       if permitEscapeSequences and (not skipFlag) and (EnquoteBackslash) and (RowString[t] = '\') then
       begin
         skipFlag := True;
         continue;
       end;
           // doubled quotes handling:
-      if permitEscapeSequences and (not skipFlag) and (RowString[t] = '"') and (t < l) and (RowString[t + 1] = '"')
-        then
+      if permitEscapeSequences and (not skipFlag) and (RowString[t] = '"') and
+        (t < l) and (RowString[t + 1] = '"') then
       begin
         skipFlag := True;
         continue;
@@ -3810,7 +3805,6 @@ begin
           OutputDebugString('CsvDataSource.pas: StringToCsvRow - unescaped quote character in middle of string!');
           {$ENDIF DEBUGINFO_ON}
         end;
-
       end
       else
       begin
@@ -3869,7 +3863,7 @@ end;
 
 procedure SetCsvRowItem(pItem: PCsvRow; ColumnIndex: Integer; const newValue: string);
 var
-  TempBuf: array[0..MAXLINELENGTH] of Char;
+  TempBuf: array [0..MAXLINELENGTH] of Char;
   Copy1, Copy2: Integer;
   Dif, t, Old: Integer;
 begin
@@ -4100,9 +4094,9 @@ begin
       begin
         // (rom) no OutputDebugString in production code
         {$IFDEF DEBUGINFO_ON}
-        OutputDebugString(PChar('JvCsvData:illegal character in datetime string: ' + ch));
+        OutputDebugString(PChar('JvCsvData: illegal character in datetime string: ' + ch));
         {$ENDIF DEBUGINFO_ON}
-        Exit; // failed:invalid character.
+        Exit; // failed: invalid character.
       end;
       Values[t] := (Values[t] * 10) + (Ord(ch) - Ord('0'));
       Inc(Index);
@@ -4119,7 +4113,7 @@ begin
       begin
         // (rom) no OutputDebugString in production code
         {$IFDEF DEBUGINFO_ON}
-        OutputDebugString('TimeTAsciiToDateTime:illegal separator Char');
+        OutputDebugString('TimeTAsciiToDateTime: illegal separator Char');
         {$ENDIF DEBUGINFO_ON}
         Exit;
       end;

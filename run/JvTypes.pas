@@ -335,7 +335,7 @@ type
 type
   // from JvListView.pas
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
-  TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod:TJvSortMethod) of object;
+  TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod: TJvSortMethod) of object;
 
   // from JvColorProvider.pas
   TColorType = (ctStandard, ctSystem, ctCustom);

@@ -154,7 +154,7 @@ type
     property AutoHint: Boolean read FAutoHint write SetAutoHint default False;
     property Caret: TJvCaret read FCaret write SetCaret;
     property EmptyValue: string read FEmptyValue write SetEmptyValue;
-    property EmptyFontColor:TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
+    property EmptyFontColor: TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
     // set to True to disable read/write of PasswordChar and read of Text

@@ -15,25 +15,24 @@ Portions created by Marc Hoffman are Copyright (C) 2002 APRIORI business solutio
 Portions created by APRIORI business solutions AG are Copyright (C) 2002 APRIORI business solutions AG
 All Rights Reserved.
 
-Contributor(s):dejoy
+Contributor(s): dejoy
   //dejoy 2004-4-20
   --add GroupIndex,AutoCheck,Checked property in TJvXPBarItem.
   --add GetItemClass in TJvXPBarItems.
   --add GetBarItemsClass in TJvXPCustomWinXPBar.
 
-Contributor(s):dierk schmid
+Contributor(s): dierk schmid
   //dierk 2004-4-23
   --add property RoundedItemFrame in TJvXPCustomWinXPBar (Integer>0 is the edge radius)
   --add property ItemFrameColor in TJvXPBarColors
   //dejoy 2004-4-25
   -- splitt ItemFrameColor to CheckedFrameColor , FocusedFrameColor  in TJvXPBarColors.
 
-Contributors(s):matej golob
+Contributors(s): matej golob
   //matej 2004-5-3
   --add property BorderColor in TJvXPBarColors.
   --add property HeaderRounded
   --add property TopSpace
-
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

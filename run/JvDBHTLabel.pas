@@ -106,7 +106,7 @@ function ReplaceFieldNameTag(Str: string; DataSet: TDataSet): string;
 var
   A, FieldName, Text: string;
   I, J: Integer;
-  F:TField;
+  F: TField;
 const
   FieldStr: string = '<FIELD='; // non-standard html
   function ExtractPropertyValue(Tag, PropName: string): string;

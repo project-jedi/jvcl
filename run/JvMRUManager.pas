@@ -99,9 +99,9 @@ type
     FOnItemInfo: TGetItemInfoEvent;
     FDuplicates: TDuplicates;
     FMenuLocation: TMenuLocation;
-    FMaxLength: integer;
-    FCanvas:TCanvas;
-    FStartEllipsis: boolean;
+    FMaxLength: Integer;
+    FCanvas: TCanvas;
+    FStartEllipsis: Boolean;
     procedure ListChanged(Sender: TObject);
     procedure ClearRecentMenu;
     procedure SetRecentMenu(Value: TMenuItem);
@@ -126,11 +126,11 @@ type
     procedure DoDuplicateFixUp;
     function GetStrings: TStrings;
     procedure SetMenuLocation(const Value: TMenuLocation);
-    procedure SetMaxLength(const Value: integer);
-    procedure SetStartEllipsis(const Value: boolean);
+    procedure SetMaxLength(const Value: Integer);
+    procedure SetStartEllipsis(const Value: Boolean);
   protected
-    function GetCanvas:TCanvas;
-    function DoMinimizeName(const S:string):string;
+    function GetCanvas: TCanvas;
+    function DoMinimizeName(const S: string): string;
     procedure Change; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoReadItem(AppStorage: TJvCustomAppStorage; const Path: string; Index: Integer;
@@ -155,7 +155,7 @@ type
     procedure SaveToAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
     procedure Load;
     procedure Save;
-    function IsMenuEnabled:boolean;
+    function IsMenuEnabled: Boolean;
     property Strings: TStrings read GetStrings;
   published
     // Duplicates works just as for TStrings, but the list doesn't need to be sorted
@@ -163,8 +163,8 @@ type
     property AccelDelimiter: TAccelDelimiter read FAccelDelimiter write SetAccelDelimiter default adTab;
     property AutoEnable: Boolean read FAutoEnable write SetAutoEnable default True;
     property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate default True;
-    property MaxLength:integer read FMaxLength write SetMaxLength default 0;
-    property StartEllipsis:boolean read FStartEllipsis write SetStartEllipsis default False;
+    property MaxLength: Integer read FMaxLength write SetMaxLength default 0;
+    property StartEllipsis: Boolean read FStartEllipsis write SetStartEllipsis default False;
     property Capacity: Integer read GetCapacity write SetCapacity default 10;
     property MenuLocation: TMenuLocation read FMenuLocation write SetMenuLocation default mruChild;
     property Mode: TRecentMode read GetMode write SetMode default rmInsert;
@@ -765,13 +765,13 @@ begin
   end;
 end;
 
-function TJvMRUManager.IsMenuEnabled: boolean;
+function TJvMRUManager.IsMenuEnabled: Boolean;
 begin
   Result := ((MenuLocation = mruChild) and (FRecentMenu.Count > 0)) or
     ((MenuLocation = mruSibling) and (Strings.Count > 0));
 end;
 
-procedure TJvMRUManager.SetMaxLength(const Value: integer);
+procedure TJvMRUManager.SetMaxLength(const Value: Integer);
 begin
   if FMaxLength <> Value then
   begin
@@ -813,8 +813,7 @@ begin
     Result := S;
 end;
 
-
-procedure TJvMRUManager.SetStartEllipsis(const Value: boolean);
+procedure TJvMRUManager.SetStartEllipsis(const Value: Boolean);
 begin
   if FStartEllipsis <> Value then
   begin

@@ -247,7 +247,7 @@ begin
 end;
 
 procedure TJvgImageGroup.SetAutoTrColor(Value: TglAutoTransparentColor);
-//var x,y :Integer;
+//var x, y : Integer;
 begin {
   FAutoTrColor := Value;
   if (FAutoTrColor=ftcUser)or((FBitmap.Width or FBitmap.Height)=0)then

@@ -183,8 +183,8 @@ type
     foPreviewFont, foMRU);
   // foDisableVerify: if True, allows you to insert a font name that doesn't exist (by assigning to FontName)
   TJvFontComboOptions = set of TJvFontComboOption;
-  TJvDrawPreviewEvent = procedure (Sender:TObject;const AFontName: string; var APreviewText: string;
-      ATextWidth: Integer; var DrawPreview:Boolean) of object;
+  TJvDrawPreviewEvent = procedure(Sender: TObject; const AFontName: string;
+    var APreviewText: string; ATextWidth: Integer; var DrawPreview: Boolean) of object;
 
   TJvFontComboBox = class(TJvCustomComboBox)
   private
@@ -290,7 +290,7 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnStartDrag;
-    property OnDrawPreviewEvent:TJvDrawPreviewEvent read FOnDrawPreviewEvent write FOnDrawPreviewEvent;
+    property OnDrawPreviewEvent: TJvDrawPreviewEvent read FOnDrawPreviewEvent write FOnDrawPreviewEvent;
   end;
 
 implementation
@@ -953,7 +953,8 @@ begin
   end;
 end;
 
-function TJvFontComboBox.DoDrawPreview(const AFontName:string; var APreviewText:string; ATextWidth:Integer):Boolean;
+function TJvFontComboBox.DoDrawPreview(const AFontName: string;
+  var APreviewText: string; ATextWidth: Integer): Boolean;
 begin
   Result := ATextWidth < ClientWidth;
   if Assigned(FOnDrawPreviewEvent) then

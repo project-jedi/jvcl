@@ -158,7 +158,7 @@ type
     procedure WMDestroy(var Msg: TWMNCDestroy); message WM_DESTROY;
     procedure WMParentNotify(var Msg: TWMParentNotify); message WM_PARENTNOTIFY;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
-    procedure WMSetText(var Message: TWMSetText); message WM_SETTEXT;
+    procedure WMSetText(var Msg: TWMSetText); message WM_SETTEXT;
     procedure WMCtlColorEdit(var Msg: TWMCtlColorEdit); message WM_CTLCOLOREDIT;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
@@ -267,8 +267,8 @@ type
     FInactiveGradientDirection: TFillDirection;
     FDisabledGradientDirection: TFillDirection;
     FGlyphLayout: TButtonLayout;
-    FDivider: boolean;
-    FShowFocus: boolean;
+    FDivider: Boolean;
+    FShowFocus: Boolean;
     procedure SetActiveFont(const Value: TFont);
     procedure SetDisabledFont(const Value: TFont);
     procedure SetInactiveFont(const Value: TFont);
@@ -282,11 +282,11 @@ type
     procedure SetInactiveColorTo(const Value: TColor);
     procedure SetInactiveGradientDirection(const Value: TFillDirection);
     function IsActiveFontStored: Boolean;
-    function IsInactiveFontStored: boolean;
-    function IsDisabledFontStored: boolean;
+    function IsInactiveFontStored: Boolean;
+    function IsDisabledFontStored: Boolean;
     procedure SetGlyphLayout(const Value: TButtonLayout);
-    procedure SetDivider(const Value: boolean);
-    procedure SetShowFocus(const Value: boolean);
+    procedure SetDivider(const Value: Boolean);
+    procedure SetShowFocus(const Value: Boolean);
   protected
     procedure DrawTab(AControl: TCustomTabControl; Canvas: TCanvas;
       Images: TCustomImageList; ImageIndex: Integer; const Caption: string;
@@ -309,17 +309,17 @@ type
     property DisabledColorTo: TColor read FDisabledColorTo write SetDisabledColorTo default clBtnFace;
     property DisabledGradientDirection: TFillDirection read FDisabledGradientDirection write SetDisabledGradientDirection default fdTopToBottom;
     property GlyphLayout: TButtonLayout read FGlyphLayout write SetGlyphLayout default blGlyphLeft;
-    property Divider: boolean read FDivider write SetDivider default False;
-    property ShowFocus: boolean read FShowFocus write SetShowFocus default False;
+    property Divider: Boolean read FDivider write SetDivider default False;
+    property ShowFocus: Boolean read FShowFocus write SetShowFocus default False;
   end;
 
   TJvTabControl = class(TJvExTabControl)
   private
     FTabPainter: TJvTabControlPainter;
-    FRightClickSelect: boolean;
+    FRightClickSelect: Boolean;
 {$IFDEF VCL}
     procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
-    procedure WMRButtonDown(var Message: TWMRButtonDown); message WM_RBUTTONDOWN;
+    procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
 {$ENDIF VCL}
     procedure SetTabPainter(const Value: TJvTabControlPainter); // not WantKeys
   protected
@@ -332,7 +332,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property RightClickSelect:boolean read FRightClickSelect write FRightClickSelect default False;
+    property RightClickSelect: Boolean read FRightClickSelect write FRightClickSelect default False;
     property TabPainter: TJvTabControlPainter read FTabPainter write SetTabPainter;
     property HintColor;
     property OnMouseEnter;
@@ -349,7 +349,7 @@ type
     FHintSource: TJvHintSource;
     FReduceMemoryUse: Boolean;
     FTabPainter: TJvTabControlPainter;
-    FRightClickSelect: boolean;
+    FRightClickSelect: Boolean;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
     procedure TCMAdjustRect(var Msg: TMessage); message TCM_ADJUSTRECT;
     procedure SetHideAllTabs(const Value: Boolean);
@@ -372,7 +372,7 @@ type
     {$ENDIF VisualCLX}
     {$IFDEF VCL}
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure WMRButtonDown(var Message: TWMRButtonDown); message WM_RBUTTONDOWN;
+    procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
     {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
@@ -383,7 +383,7 @@ type
     property HandleGlobalTab: Boolean read FHandleGlobalTab write FHandleGlobalTab default False;
     property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default JvDefPageControlBorder;
     property ParentColor;
-    property RightClickSelect:boolean read FRightClickSelect write FRightClickSelect default False;
+    property RightClickSelect: Boolean read FRightClickSelect write FRightClickSelect default False;
     property ReduceMemoryUse: Boolean read FReduceMemoryUse write SetReduceMemoryUse default False;
     property HideAllTabs: Boolean read FHideAllTabs write SetHideAllTabs default False;
     property HintColor;
@@ -473,7 +473,7 @@ type
     FOnComparePage: TJvTreeViewComparePageEvent;
     FMenu: TMenu;
     FOldMenuChange: TMenuChangeEvent;
-    FMenuDblClick: boolean;
+    FMenuDblClick: Boolean;
     procedure InternalCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     function GetSelectedCount: Integer;
@@ -504,7 +504,7 @@ type
     procedure SetItemIndex(const Value: Integer);
   protected
     procedure RebuildFromMenu; virtual;
-    function IsMenuItemClick(Node:TTreeNode):boolean;
+    function IsMenuItemClick(Node: TTreeNode): Boolean;
     function DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean; virtual;
     function CreateNode: TTreeNode; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -554,7 +554,7 @@ type
     property LineColor: TColor read GetLineColor write SetLineColor default clDefault;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight default 16;
     property Menu: TMenu read FMenu write SetMenu;
-    property MenuDblClick: boolean read FMenuDblClick write FMenuDblClick default False;
+    property MenuDblClick: Boolean read FMenuDblClick write FMenuDblClick default False;
 
     property HintColor;
 
@@ -706,13 +706,10 @@ begin
     WM_ENABLE:
       if csDesigning in FIPAddress.ComponentState then
         Exit;
-
     WM_DESTROY:
       Handle := 0;
-
     WM_KEYFIRST..WM_KEYLAST:
       FIPAddress.Dispatch(Msg);
-
     // mouse messages are sent through TJvIPAddress.WMParentNotify
   end;
   Dispatch(Msg);
@@ -1012,19 +1009,19 @@ begin
   Exclude(Code, dcNative); // prevent inherited call
 end;
 
-procedure TJvIPAddress.WMSetText(var Message: TWMSetText);
+procedure TJvIPAddress.WMSetText(var Msg: TWMSetText);
 var
   S: string;
 begin
   // really long values for the text crashes the program (try: 127.0.0.8787787878787878), so we limit it here before it is set
-  S := Message.Text;
+  S := Msg.Text;
   with AddressValues do
   begin
     Value1 := StrToIntDef(StrToken(S, '.'), 0);
     Value2 := StrToIntDef(StrToken(S, '.'), 0);
     Value3 := StrToIntDef(StrToken(S, '.'), 0);
     Value4 := StrToIntDef(S, 0);
-    Message.Text := PChar(Format('%d.%d.%d.%d', [Value1, Value2, Value3, Value4]));
+    Msg.Text := PChar(Format('%d.%d.%d.%d', [Value1, Value2, Value3, Value4]));
   end;
   inherited;
 end;
@@ -1361,17 +1358,17 @@ end;
 
 function TJvTabDefaultPainter.IsActiveFontStored: Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
-function TJvTabDefaultPainter.IsDisabledFontStored: boolean;
+function TJvTabDefaultPainter.IsDisabledFontStored: Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
-function TJvTabDefaultPainter.IsInactiveFontStored: boolean;
+function TJvTabDefaultPainter.IsInactiveFontStored: Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
 //=== TJvTabControl ==========================================================
@@ -1405,15 +1402,15 @@ begin
     inherited;
 end;
 
-procedure TJvTabControl.WMRButtonDown(var Message: TWMRButtonDown);
+procedure TJvTabControl.WMRButtonDown(var Msg: TWMRButtonDown);
 var
-  I:Integer;
-  R:TRect;
-  P:TPoint;
+  I: Integer;
+  R: TRect;
+  P: TPoint;
 begin
   if RightClickSelect then
   begin
-    with Message do
+    with Msg do
     P := SmallPointToPoint(SmallPoint(XPos,YPos));
     for I := 0 to Tabs.Count -1 do
     begin
@@ -1457,9 +1454,9 @@ end;
 procedure TJvTabControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  I:Integer;
-  R:TRect;
-  P:TPoint;
+  I: Integer;
+  R: TRect;
+  P: TPoint;
 begin
   if RightClickSelect and (Button = mbRight) then
   begin
@@ -1671,16 +1668,16 @@ begin
   inherited;
 end;
 
-procedure TJvPageControl.WMRButtonDown(var Message: TWMRButtonDown);
+procedure TJvPageControl.WMRButtonDown(var Msg: TWMRButtonDown);
 var
-  I:Integer;
-  R:TRect;
-  P:TPoint;
+  I: Integer;
+  R: TRect;
+  P: TPoint;
 begin
   if RightClickSelect then
   begin
-    with Message do
-      P := SmallPointToPoint(SmallPoint(XPos,YPos));
+    with Msg do
+      P := SmallPointToPoint(SmallPoint(XPos, YPos));
     for I := 0 to PageCount -1 do
     begin
       R := TabRect(I);
@@ -1781,9 +1778,9 @@ end;
 procedure TJvPageControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
-  I:Integer;
-  R:TRect;
-  P:TPoint;
+  I: Integer;
+  R: TRect;
+  P: TPoint;
 begin
   if RightClickSelect and (Button = mbRight) then
   begin
@@ -2641,7 +2638,7 @@ begin
     TMenuItem(Selected.Data).OnClick(TMenuItem(Selected.Data));
 end;
 
-function TJvTreeView.IsMenuItemClick(Node: TTreeNode): boolean;
+function TJvTreeView.IsMenuItemClick(Node: TTreeNode): Boolean;
 begin
  Result := Assigned(Menu) and Assigned(Node) and Assigned(Node.Data) and
     (TObject(Node.Data) is TMenuItem) and Assigned(TMenuItem(Node.Data).OnClick);
@@ -2733,7 +2730,7 @@ begin
   end;
 end;
 
-procedure TJvTabDefaultPainter.SetDivider(const Value: boolean);
+procedure TJvTabDefaultPainter.SetDivider(const Value: Boolean);
 begin
   if FDivider <> Value then
   begin
@@ -2742,7 +2739,7 @@ begin
   end;
 end;
 
-procedure TJvTabDefaultPainter.SetShowFocus(const Value: boolean);
+procedure TJvTabDefaultPainter.SetShowFocus(const Value: Boolean);
 begin
   if FShowFocus <> Value then
   begin

@@ -48,7 +48,7 @@ uses
 type
   TJvReplaceProgressEvent = procedure(Sender: TObject; Position: Integer;
     var Terminate: Boolean) of object;
-  TJvReplaceAllEvent = procedure (Sender:TObject; ReplaceCount: Integer) of object;
+  TJvReplaceAllEvent = procedure(Sender: TObject; ReplaceCount: Integer) of object;
  
   TJvFindReplace = class(TJvComponent)
   private

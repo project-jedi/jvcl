@@ -307,8 +307,8 @@ type
   TOnJvInspectorMouseDown = procedure(Sender: TJvCustomInspector; Item: TJvCustomInspectorItem;
     Button: TMouseButton; Shift: TShiftState; X, Y: Integer) of object;
 
-  TOnJvInspectorItemEdit = procedure(Sender:TJvCustomINspector; Item: TJvCustomInspectorItem;
-     var DisplayStr: string) of object;
+  TOnJvInspectorItemEdit = procedure(Sender: TJvCustomInspector;
+    Item: TJvCustomInspectorItem; var DisplayStr: string) of object;
 
   {$IFDEF VCL}
   TJvCustomInspector = class(TJvCustomControl)
@@ -967,7 +967,7 @@ type
     property IsCompoundColumn: Boolean read GetIsCompoundColumn;
     property LastPaintGeneration: Integer read FLastPaintGen;
     property ListBox: TCustomListBox read GetListBox;
-    //promoted:property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
+    //promoted: property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
     property Pressed: Boolean read FPressed write FPressed;
     property Tracking: Boolean read FTracking write FTracking;
   public
@@ -5934,7 +5934,7 @@ procedure TJvCustomInspectorItem.Edit_WndProc(var Msg: TMessage);
 var
   ExecInherited: Boolean;
   PostToInsp: Boolean;
-  // Key:Word;
+  // Key: Word;
 
   function LeftRightCanNavigate: Boolean;
   begin
@@ -7088,9 +7088,9 @@ end;
 
 {.$IFDEF VCL}
 { marcelb: removed:
-procedure TJvCustomInspectorItem.OnInternalEditControlExiting(Sender:TObject);
+procedure TJvCustomInspectorItem.OnInternalEditControlExiting(Sender: TObject);
 var
- Edit:TCustomEdit;
+ Edit: TCustomEdit;
  Msg: TMessage;
 begin
  Edit := GetEditCtrl;
@@ -7348,7 +7348,7 @@ begin
     Exit; // bugfix attempt. WAP.Self
 
   {$IFDEF MSWINDOWS}
-  //  OutputDebugString(PChar('ScrollIntoView:FDisplayName'));
+  //  OutputDebugString(PChar('ScrollIntoView: FDisplayName'));
   {$ENDIF MSWINDOWS}
   ViewIdx := Inspector.VisibleIndex(Self);
   if ViewIdx < 0 then

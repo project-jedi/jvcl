@@ -61,7 +61,7 @@ type
   TJvCustomPage = class(TJvCustomControl)
   private
     FPageList: TJvCustomPageList;
-    FPageIndex:Integer;
+    FPageIndex: Integer;
     FOnBeforePaint: TJvPageCanPaintEvent;
     FOnPaint: TJvPagePaintEvent;
     FOnAfterPaint: TJvPagePaintEvent;
@@ -122,7 +122,7 @@ type
     FOnChange: TNotifyEvent;
     FOnChanging: TJvPageChangingEvent;
     FShowDesignCaption: TJvShowDesignCaption;
-    FHiddenPages:TList;
+    FHiddenPages: TList;
     {$IFDEF VCL}
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     {$ENDIF VCL}
@@ -151,7 +151,7 @@ type
     procedure InsertPage(APage: TJvCustomPage);virtual;
     procedure RemovePage(APage: TJvCustomPage);virtual;
     property PageList: TList read FPages;
-    property HiddenPageList:TList read FHiddenPages;
+    property HiddenPageList: TList read FHiddenPages;
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable;
     property ShowDesignCaption: TJvShowDesignCaption read FShowDesignCaption write SetShowDesignCaption default sdcCenter;
 
@@ -163,7 +163,7 @@ type
     function FindNextPage(CurPage: TJvCustomPage; GoForward: Boolean; IncludeDisabled: Boolean): TJvCustomPage;
     procedure PrevPage;
     procedure NextPage;
-    function HidePage(Page:TJvCustomPage):TJvCustomPage; virtual;
+    function HidePage(Page: TJvCustomPage): TJvCustomPage; virtual;
     function ShowPage(Page: TJvCustomPage; PageIndex: Integer = -1): TJvCustomPage; virtual;
     function GetPageClass: TJvCustomPageClass;
     property Height default 200;
@@ -171,7 +171,7 @@ type
 
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex;
     property ActivePage: TJvCustomPage read FActivePage write SetActivePage;
-    property Pages[Index:Integer]:TJvCustomPage read GetPage;default;
+    property Pages[Index: Integer]: TJvCustomPage read GetPage; default;
     property PageCount: Integer read GetPageCount;
   end;
 
@@ -690,7 +690,8 @@ begin
 end;
 
 function TJvCustomPageList.HidePage(Page: TJvCustomPage): TJvCustomPage;
-var I:Integer;
+var
+  I: Integer;
 begin
   if (Page <> nil) and (Page.PageList = Self) then
   begin

@@ -82,7 +82,7 @@ type
 
   TJvCustomPageListTreeView = class(TJvExCustomTreeView)
   private
-    FItems:TJvPageIndexNodes;
+    FItems: TJvPageIndexNodes;
     FPageList: IPageList;
     FPageDefault: Integer;
     FLinks: TJvPageLinks;
@@ -119,7 +119,7 @@ type
     property ShowLines default False;
     {$ENDIF VCL}
     property ReadOnly default True;
-    property Items:TJvPageIndexNodes read GetItems write SetItems;
+    property Items: TJvPageIndexNodes read GetItems write SetItems;
   end;
 
   { TJvSettingsTreeImages is a property class that describes the images used in a
@@ -414,7 +414,8 @@ type
 
 (* (ahuser) make Delphi 5 compiler happy
 procedure ResetAllNonParentNodes(Items: TTreeNodes; ImageIndex, SelectedIndex: Integer);
-var N: TTreeNode;
+var
+  N: TTreeNode;
 begin
   N := Items.GetFirstNode;
   while Assigned(N) do
@@ -429,7 +430,8 @@ begin
 end;
 
 procedure ResetSiblings(Node: TTreeNode; ImageIndex, SelectedIndex: Integer; Recurse: Boolean = False);
-var N: TTreeNode;
+var
+  N: TTreeNode;
 begin
   N := Node.getPrevSibling;
   while Assigned(N) do
@@ -461,7 +463,8 @@ end;
 *)
 
 procedure ResetSiblingFolders(Node: TTreeNode; ImageIndex, SelectedIndex: Integer; Recurse: Boolean = False);
-var N: TTreeNode;
+var
+  N: TTreeNode;
 begin
   N := Node.getPrevSibling;
   while Assigned(N) do

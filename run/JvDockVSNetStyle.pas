@@ -3088,7 +3088,7 @@ var
   CurrControl: TWinControl;
   DockServer: TJvDockServer;
   VSChannel: TJvDockVSChannel;
-  I:Integer;
+  I: Integer;
   J: TAlign;
 
   function CanHide: Boolean;

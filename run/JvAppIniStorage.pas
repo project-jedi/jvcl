@@ -366,7 +366,8 @@ end;
 
 
 function TJvCustomAppIniStorage.ValueExists(const Section, Key: string): Boolean;
-var ASection:string;
+var
+  ASection: string;
 begin
   if IniFile <> nil then
   begin

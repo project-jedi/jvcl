@@ -88,7 +88,7 @@ type
 
   TJvCaptionPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
-    FButtonArray: array[TJvCapBtnStyle] of TJvCapBtn;
+    FButtonArray: array [TJvCapBtnStyle] of TJvCapBtn;
     FButtonClick: TJvCapBtnEvent;
     FDrawPosition: TJvDrawPosition;
     FCaptionWidth: Integer;
@@ -125,7 +125,7 @@ type
     procedure WMNCLButtonUp(var Msg: TWMNCLButtonUp); message WM_NCLBUTTONUP;
     {$ENDIF VCL}
     procedure SetOutlookLook(const Value: Boolean);
-    procedure DoCaptionFontChange(Semder:TObject);
+    procedure DoCaptionFontChange(Sender: TObject);
   protected
     procedure Paint; override;
     procedure Resize; override;
@@ -941,7 +941,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvCaptionPanel.DoCaptionFontChange(Semder: TObject);
+procedure TJvCaptionPanel.DoCaptionFontChange(Sender: TObject);
 begin
   Invalidate;
 end;

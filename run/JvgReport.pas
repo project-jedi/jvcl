@@ -327,7 +327,8 @@ begin
 end;
 
 {procedure TJvgReportItem.RepaintBorder;
-var R: TRect;
+var
+  R: TRect;
 begin
   R := ClientRect;
   OffsetRect( R, Left, Top );

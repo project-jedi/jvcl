@@ -348,7 +348,8 @@ type
 
 {
 function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
-var hDLL, hr: THandle;
+var
+  hDLL, hr: THandle;
   pDllGetVersion: function(var dvi: TDLLVersionInfo): Integer; stdcall;
   dvi: TDLLVersionInfo;
 begin

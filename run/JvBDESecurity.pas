@@ -33,9 +33,7 @@ uses
   JvLoginForm, JvBDELoginDialog, JvBDECheckPasswordForm;
 
 type
-  TCheckUserEvent = function(UsersTable: TTable;
-    const Password: string): Boolean of object;
-
+  TCheckUserEvent = function(UsersTable: TTable; const Password: string): Boolean of object;
 
   TJvDBSecurity = class(TJvCustomLogin)
   private
@@ -79,7 +77,7 @@ type
     property OnUnlock;
     property OnUnlockApp;
     property OnIconDblClick;
-    property OnLoginFailure:TJvDBLoginEvent read FOnLoginFailure write FOnLoginFailure;
+    property OnLoginFailure: TJvDBLoginEvent read FOnLoginFailure write FOnLoginFailure;
   end;
 
 implementation

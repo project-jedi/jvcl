@@ -330,7 +330,8 @@ function TJvLocateObject.Locate(const KeyField, KeyValue: string;
   Exact, CaseSensitive: Boolean): Boolean;
 var
   LookupKey: TField;
-  function IsStringType(FieldType:TFieldType):boolean;
+
+  function IsStringType(FieldType: TFieldType): Boolean;
   const
     cStringTypes = [ftString, ftWideString];
   begin

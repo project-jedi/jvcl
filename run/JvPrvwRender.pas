@@ -125,7 +125,7 @@ type
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
-    function DestRect(RefRect: TRect;DestDC:HDC): TRect;
+    function DestRect(RefRect: TRect; DestDC: HDC): TRect;
     procedure UpdateGraphic;
   published
     property Picture: TPicture read FPicture write SetPicture;
@@ -150,8 +150,8 @@ type
     FImages: TJvPreviewGraphicItems;
     procedure SetImages(const Value: TJvPreviewGraphicItems);
   protected
-    function GetPPX(ADC:HDC):Integer;
-    function GetPPY(ADC:HDC):Integer;
+    function GetPPX(ADC: HDC): Integer;
+    function GetPPY(ADC: HDC): Integer;
     procedure DoAddPage(Sender: TObject; PageIndex: Integer; Canvas: TCanvas;
       PageRect, PrintRect: TRect; var NeedMorePages: Boolean); override;
   public
@@ -189,7 +189,7 @@ type
     property Stretch: Boolean read FStretch write FStretch default True;
   end;
 
-  TJvNewPageEvent = procedure(Sender:TObject;PageIndex:Integer) of object;
+  TJvNewPageEvent = procedure(Sender: TObject; PageIndex: Integer) of object;
 
   // a class that implements the IJvPrinter interface
   TJvPreviewPrinter = class(TJvComponent, IUnknown, IJvPrinter)
@@ -200,7 +200,7 @@ type
     FToPage: Integer;
     FFromPage: Integer;
     FCopies: Integer;
-    FPageIndex:Integer;
+    FPageIndex: Integer;
     FOptions: TPrintDialogOptions;
     FPrintRange: TPrintRange;
     FOnEndDoc: TNotifyEvent;
@@ -229,7 +229,7 @@ type
   public
     procedure Print;
     procedure Assign(Source: TPersistent);override;
-    property Title:string read GetTitle write SetTitle;
+    property Title: string read GetTitle write SetTitle;
     property Printer: TPrinter read FPrinter write SetPrinter;
   published
     property Collate: Boolean read FCollate write FCollate default False;
@@ -240,10 +240,10 @@ type
     property ToPage: Integer read FToPage write FToPage default 0;
 
     property PrintPreview: TJvCustomPreviewControl read FPrintPreview write SetPrintPreview;
-    property OnBeginDoc:TNotifyEvent read FOnBeginDoc write FOnBeginDoc;
-    property OnNewPage:TJvNewPageEvent read FOnNewPage write FOnNewPage;
-    property OnEndDoc:TNotifyEvent read FOnEndDoc write FOnEndDoc;
-    property OnAbort:TNotifyEvent read FOnAbort write FOnAbort;
+    property OnBeginDoc: TNotifyEvent read FOnBeginDoc write FOnBeginDoc;
+    property OnNewPage: TJvNewPageEvent read FOnNewPage write FOnNewPage;
+    property OnEndDoc: TNotifyEvent read FOnEndDoc write FOnEndDoc;
+    property OnAbort: TNotifyEvent read FOnAbort write FOnAbort;
   end;
 
 implementation
@@ -580,7 +580,8 @@ end;
 procedure TJvPreviewRenderStrings.DoAddPage(Sender: TObject;
   PageIndex: Integer; Canvas: TCanvas; PageRect, PrintRect: TRect;
   var NeedMorePages: Boolean);
-var i, IncValue: Integer;
+var
+  i, IncValue: Integer;
   ARect: TRect;
   tm: TTextMetric;
   S: string;
@@ -773,8 +774,8 @@ begin
   FStretch := True;
 end;
 
-function TJvPreviewGraphicItem.DestRect(RefRect: TRect;DestDC:HDC): TRect;
-// var Points:TPoint;
+function TJvPreviewGraphicItem.DestRect(RefRect: TRect; DestDC: HDC): TRect;
+// var Points: TPoint;
 begin
   UpdateGraphic;
   Result := CalcDestRect(Picture.Width,Picture.Height, RefRect, Stretch, Proportional, Center);
@@ -792,7 +793,8 @@ begin
 end;
 
 procedure TJvPreviewGraphicItem.UpdateGraphic;
-var G: TGraphic;
+var
+  G: TGraphic;
 begin
   if (Picture.Width > 0) and (Picture.Height > 0) then
   begin

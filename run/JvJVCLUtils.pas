@@ -2559,7 +2559,7 @@ var
   ColorBand: TRect; { Color band rectangular coordinates }
   I, Delta: Integer;
   Brush: HBRUSH;
-  TmpColor:TCOlor;
+  TmpColor: TColor;
 begin
   {$IFDEF VisualCLX}
   Canvas.Start;

@@ -521,8 +521,10 @@ const
 
   { this creates a correctly masked bitmap - for use with D2 TImageList }
   {
-  procedure CreateMaskedImageList(ImageList:TImageList);
-  var Bmp:TBitmap;I:Integer;
+  procedure CreateMaskedImageList(ImageList: TImageList);
+  var
+    Bmp: TBitmap;
+    I: Integer;
   begin
     Bmp := TBitmap.Create;
     Bmp.Width := ImageList.Width;
@@ -541,8 +543,10 @@ const
 
   { returns number of visible children }
   {
-  function NoOfVisibles(Control:TWinControl):Integer;
-  var R:TRect;I:Integer;
+  function NoOfVisibles(Control: TWinControl): Integer;
+  var
+    R: TRect;
+    I: Integer;
   begin
     R := Control.ClientRect;
     Result := 0;
@@ -556,14 +560,14 @@ const
   }
 
   {
-  function IMax(Val1,Val2:Integer):Integer;
+  function IMax(Val1, Val2: Integer): Integer;
   begin
     Result := Val1;
     if Val2 > Val1 then
       Result := Val2;
   end;
 
-  function IMin(Val1,Val2:Integer):Integer;
+  function IMin(Val1, Val2: Integer): Integer;
   begin
     Result := Val1;
     if Val2 < Val1 then
@@ -573,7 +577,7 @@ const
 
   { returns Atleast if Value < AtLeast, Val1 otherwise }
   {
-  function IAtLeast(Value,AtLeast:Integer):Integer;
+  function IAtLeast(Value, AtLeast: Integer): Integer;
   begin
     Result := Value;
     if Value < AtLeast then
@@ -1916,7 +1920,7 @@ end;
 procedure TJvLookOutPage.ScrollChildren(Start: Word);
 var
   R: TRect;
-  I, x, ACount: Integer; {AList:TList;}
+  I, x, ACount: Integer; {AList: TList;}
   AControl: TControl;
 begin
   if FScrolling <> 0 then

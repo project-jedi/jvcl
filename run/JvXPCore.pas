@@ -212,8 +212,8 @@ type
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
     procedure Loaded; override;
     {$ENDIF VisualCLX}
-    procedure MouseDown(Button:TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Click; override;
     property ModalResult: TModalResult read FModalResult write FModalResult default 0;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;

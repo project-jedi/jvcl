@@ -1748,7 +1748,7 @@ begin
   end;
 end;
 
-procedure TJvPopupMenu.Assign(Source:TPersistent);
+procedure TJvPopupMenu.Assign(Source: TPersistent);
 begin
   if Source is TJvPopupMenu then
   begin

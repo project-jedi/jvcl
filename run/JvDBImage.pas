@@ -623,7 +623,7 @@ begin
   end;
 end;
 
-function ControlCursorPos(Control:TControl):TPoint;
+function ControlCursorPos(Control: TControl): TPoint;
 begin
   GetCursorPos(Result);
   Result := Control.ScreenToClient(Result);

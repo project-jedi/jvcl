@@ -78,8 +78,8 @@ type
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
     {$ENDIF VisualCLX}
-    procedure MouseEnter(Control :TControl); override;
-    procedure MouseLeave(Control :TControl); override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetCaret(const Value: TJvCaret);
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;

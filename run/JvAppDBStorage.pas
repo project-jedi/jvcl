@@ -44,9 +44,9 @@ uses
 
 // DB table must contain 3 fields for the storage
 // performance is probably improved if there is an index on the section and key fields (this can be unique)
-// "section":string   - must support locate!
-// "key":string      - must support locate!
-// "value":string or memo
+// "section": string   - must support locate!
+// "key": string      - must support locate!
+// "value": string or memo
 
 type
   TJvDBStorageWriteEvent = procedure(Sender: TObject; const Section, Key, Value: string) of object;

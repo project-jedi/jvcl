@@ -51,11 +51,13 @@ type
     FEndSection: string;
     FEndPara: string;
     FTitle: string;
-    FFooter: TStrings;
-    FHeader: TStrings;
+    FFooter: TStringList;
+    FHeader: TStringList;
     function AttToHtml(Value: TFont): string;
     function ParaToHtml(Value: TJvParaAttributesRec): string;overload;
     function ParaToHtml(Value: TJvRichEditParaAttributesRec): string;overload;
+    function GetFooter: TStrings;
+    function GetHeader: TStrings;
     procedure SetFooter(const Value: TStrings);
     procedure SetHeader(const Value: TStrings);
   public
@@ -67,8 +69,8 @@ type
     procedure ConvertToHtmlStrings(Value: TJvRichEdit; Strings: TStrings);overload;
   published
     property Title: string read FTitle write FTitle;
-    property Header:TStrings read FHeader write SetHeader;
-    property Footer:TStrings read FFooter write SetFooter;
+    property Header: TStrings read GetHeader write SetHeader;
+    property Footer: TStrings read GetFooter write SetFooter;
   end;
 
 implementation
@@ -112,14 +114,14 @@ begin
   inherited Create(AOwner);
   FCToH := TJvRgbToHtml.Create(Self);
   FCharToH := TJvStrToHtml.Create(Self);
-  FHeader := TStringlist.Create;
+  FHeader := TStringList.Create;
   FHeader.Add('<HTML>');
   FHeader.Add('  <HEAD>');
   FHeader.Add('    <TITLE><#TITLE></TITLE>');
   FHeader.Add('  </HEAD>');
   FHeader.Add('  <BODY>');
 
-  FFooter := TStringlist.Create;
+  FFooter := TStringList.Create;
   FFooter.Add('  </BODY>');
   FFooter.Add('</HTML>');
 end;
@@ -405,6 +407,16 @@ begin
     Result := cHTMLListBegin + Result;
     FEndPara := FEndPara + cHTMLListEnd;
   end;
+end;
+
+function TJvRichEditToHtml.GetFooter: TStrings;
+begin
+  Result := FFooter;
+end;
+
+function TJvRichEditToHtml.GetHeader: TStrings;
+begin
+  Result := FHeader;
 end;
 
 procedure TJvRichEditToHtml.SetFooter(const Value: TStrings);
