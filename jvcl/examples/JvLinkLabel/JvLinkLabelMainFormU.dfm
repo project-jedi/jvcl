@@ -19,6 +19,9 @@ object JvLinkLabelMainForm: TJvLinkLabelMainForm
   Scaled = False
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
+  DesignSize = (
+    531
+    434)
   PixelsPerInch = 96
   TextHeight = 14
   object imgLogo: TImage
@@ -967,16 +970,10 @@ object JvLinkLabelMainForm: TJvLinkLabelMainForm
     Height = 288
     Text.Strings = (
       '')
-    Transparent = False
-    Layout = tlTop
     LinkColor = clNavy
-    LinkColorClicked = clRed
     LinkColorHot = clBlue
-    LinkStyle = [fsUnderline]
     HotLinks = True
     AutoHeight = False
-    MarginWidth = 0
-    MarginHeight = 0
     OnLinkClick = LinkLabelLinkClick
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
