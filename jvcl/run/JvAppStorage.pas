@@ -627,7 +627,7 @@ type
     procedure SetDefaultIfValueNotExists(Value: Boolean); virtual;
     function IsValueListString(const AValue, AList: string): Boolean; virtual;
   public
-    constructor Create;
+    constructor Create; virtual;
     function DefaultTrueString: string;
     function DefaultFalseString: string;
     function IsValueTrueString(Value: string): Boolean;
