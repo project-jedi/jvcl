@@ -4,5 +4,4 @@ UnsafeCode=0
 UnsafeCast=0
 [Directories]
 UnitOutputDir=..\..\lib\d7
-SearchPath=..\..\qrun;..\..\qcommon;..\..\Resources
-Conditionals=VisualCLX
+SearchPath=..\..\run;..\..\common;..\..\Resources
