@@ -279,6 +279,13 @@ const
   CenturyOffset: Byte = 60;
   NullDate: TDateTime = 0; {-693594}
 
+  {$IFDEF VCL}
+  NullHandle = 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  NullHandle = nil;
+  {$ENDIF VisualCLX}
+  
 type
   // JvDriveCtrls / JvLookOut
   TJvImageSize = (isSmall, isLarge);
