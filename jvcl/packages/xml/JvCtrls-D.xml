@@ -22,6 +22,7 @@
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
+    <Package Name="JvStdCtrls-D" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvHTHintForm.pas" Targets="all" Formname="JvHintEditor" Condition=""/>

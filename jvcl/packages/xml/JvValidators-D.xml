@@ -19,6 +19,7 @@
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="JvStdCtrls-D" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvValidatorsReg.pas" Targets="all" Formname="" Condition=""/>

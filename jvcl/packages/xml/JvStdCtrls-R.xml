@@ -94,5 +94,7 @@
     <File Name="..\..\run\JvLinkedControls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQTimeEdit.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQGauges.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQComboBox.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQColorCombo.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>

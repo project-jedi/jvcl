@@ -60,7 +60,7 @@
     <File Name="..\..\run\JvGridFilter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvGridPreviewForm.pas" Targets="all" Formname="jvGridPreviewF" Condition=""/>
     <File Name="..\..\run\JvGridPrinter.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvJanTreeView.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvJanTreeView.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSimIndicator.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
