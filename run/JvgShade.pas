@@ -33,10 +33,17 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, ExtCtrls,
-  JvgTypes, JvgUtils, JvComponent, JvgCommClasses;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgUtils, JvgCommClasses;
 
 type
+  {$IFDEF USEJVCL}
   TJvgShade = class(TJvCustomPanel)
+  {$ELSE}
+  TJvgShade = class(TCustomPanel)
+  {$ENDIF USEJVCL}
   private
     FImage: TBitmap;
     FLoaded: Boolean;
@@ -121,8 +128,7 @@ begin
     FNeedRebuildImage := False;
   end;
 
-  BitBlt(Canvas.Handle, 0, 0, Width, Height, Image.Canvas.Handle, 0, 0,
-    SRCCOPY);
+  BitBlt(Canvas.Handle, 0, 0, Width, Height, Image.Canvas.Handle, 0, 0, SRCCOPY);
 
   if csDesigning in ComponentState then
     with Canvas do

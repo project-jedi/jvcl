@@ -36,11 +36,17 @@ uses
   Dialogs, ExtCtrls,
   QuickRpt, QRCtrls, QRPrntr,
   ComCtrls, ToolWin, ImgList, ShellAPI, StdCtrls,
-  JvgQRLabel, 
-  JvComponent, JvExControls;
+  {$IFDEF USEJVCL}
+  JvComponent, JvExControls,
+  {$ENDIF USEJVCL}
+  JvgQRLabel;
 
 type
+  {$IFDEF USEJVCL}
   TJvgfPrintPreview = class(TJvForm)
+  {$ELSE}
+  TJvgfPrintPreview = class(TForm)
+  {$ENDIF USEJVCL}
     Panel2: TPanel;
     ToolBar1: TToolBar;
     tbPrior: TToolButton;
@@ -104,9 +110,8 @@ implementation
 uses
   Printers,
   {$IFDEF USEJVCL}
-  JvResources,
+  JvResources, JvConsts,
   {$ENDIF USEJVCL}
-  JvConsts,
   JvgTypes, JvgExport, JvgQPrintSetupForm;
 
 {$R *.dfm}
