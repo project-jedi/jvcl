@@ -198,47 +198,48 @@ begin
   //testing the stream load capabilities;
   // (rom) deactivated because LoadFromStream is not defined that way
   //AStream.Seek(0, soFromBeginning); //most of the stream error are generated because this is not at the proper position
-  Bmp := nil;
-  Jpg := nil;
-  Wmf := nil;
-  Ico := nil;
-  try
-    case AType of
-      grBMP:
-        begin
-          Bmp := Graphics.TBitmap.Create;
+  case AType of
+    grBMP:
+      begin
+        Bmp := Graphics.TBitmap.Create;
+        try
           Bmp.LoadFromStream(AStream);
           Bmp.PixelFormat := pf24bit;
           Picture.Assign(Bmp);
+        finally
+          FreeAndNil(Bmp);
         end;
-      grJPG:
-        begin
-          Jpg := TJpegImage.Create;
+      end;
+    grJPG:
+      begin
+        Jpg := TJpegImage.Create;
+        try
           Jpg.LoadFromStream(AStream);
           Picture.Assign(Jpg);
+        finally
+          FreeAndNil(Jpg);
         end;
-      grWMF, grEMF:
-        begin
-          Wmf := Graphics.TMetafile.Create;
+      end;
+    grWMF, grEMF:
+      begin
+        Wmf := Graphics.TMetafile.Create;
+        try
           Wmf.LoadFromStream(AStream);
           Picture.Assign(Wmf);
+        finally
+          FreeAndNil(Wmf);
         end;
-      grICO:
-        begin
-          Ico := Graphics.TIcon.Create;
+      end;
+    grICO:
+      begin
+        Ico := Graphics.TIcon.Create;
+        try
           Ico.LoadFromStream(AStream);
           Picture.Assign(Ico);
+        finally
+          FreeAndNil(Ico);
         end;
-    end;
-  finally
-    if Assigned(Bmp) then
-      FreeAndNil(Bmp);
-    if Assigned(Jpg) then
-      FreeAndNil(Jpg);
-    if Assigned(Wmf) then
-      FreeAndNil(Wmf);
-    if Assigned(Ico) then
-      FreeAndNil(Ico);
+      end;
   end;
 end;
 
@@ -308,7 +309,7 @@ begin
     begin
       JpegImage := TJpegImage.Create;
 
-      if Parent is TJVThumbnail then
+      if Parent is TJvThumbnail then
       begin
         Fl := TFileStream.Create(AFile, fmOpenRead or fmShareDenyWrite);
         // (rom) this is idiotic
@@ -330,15 +331,15 @@ begin
       else
         JpegImage.Scale := jsFullSize;
       JPegImage.LoadFromFile(AFile);
-      Picture.Bitmap := Graphics.TBitmap.Create;
+      // Picture.Bitmap := Graphics.TBitmap.Create;
       with Picture.Bitmap do
       begin
         Width := JpegImage.Width;
         Height := JpegImage.Height;
         Picture.Bitmap.Canvas.Draw(0, 0, JpegImage);
         Self.FClass := TJpegImage;
-        FreeAndNil(JpegImage);
       end;
+      FreeAndNil(JpegImage);
     end
     else
     begin
@@ -372,42 +373,52 @@ end;
 procedure TJvThumbImage.SaveToFile(AFile: string);
 var
   Ext: string;
-  Gr: TGraphic;
+  Jpg: TJpegImage;
+  Bmp: TBitmap;
+  Wmf: TMetafile;
 begin
   // (rom) enforcing a file extension is bad style
   Ext := UpperCase(ExtractFileExt(AFile));
   if (Ext = '.JPG') or (Ext = '.JPEG') then
-  begin
-    Gr := TJpegImage.Create;
-    TJpegImage(Gr).Assign(Picture.Graphic);
-    TJpegImage(Gr).CompressionQuality := 75;
-    TJpegImage(Gr).Compress;
-    Gr.SaveToFile(AFile);
-  end
+    try
+      Jpg := TJpegImage.Create;
+      Jpg.Assign(Picture.Graphic);
+      Jpg.CompressionQuality := 75;
+      Jpg.Compress;
+      Jpg.SaveToFile(AFile);
+    finally
+      FreeAndNil(Jpg);
+    end
   else
   if Ext = '.BMP' then
-  begin
-    Gr := Graphics.TBitmap.Create;
-    Gr.Assign(Picture.Graphic);
-    Graphics.TBitmap(Gr).Canvas.Draw(0, 0, Picture.Graphic);
-    Gr.SaveToFile(AFile);
+    try
+      Bmp := Graphics.TBitmap.Create;
+      Bmp.Assign(Picture.Graphic);
+      Bmp.Canvas.Draw(0, 0, Picture.Graphic);
+      Bmp.SaveToFile(AFile);
+    finally
+      FreeAndNil(Bmp);
   end
   else
   if Ext = '.WMF' then
-  begin
-    Gr := TMetafile.Create;
-    Gr.Assign(Picture.Graphic);
-    TMetafile(Gr).Enhanced := False;
-    Gr.SaveToFile(AFile);
-  end
+    try
+      Wmf := TMetafile.Create;
+      Wmf.Assign(Picture.Graphic);
+      Wmf.Enhanced := False;
+      Wmf.SaveToFile(AFile);
+    finally
+      FreeAndNil(Wmf);
+    end
   else
   if Ext = '.EMF' then
-  begin
-    Gr := Graphics.TMetafile.Create;
-    Gr.Assign(Picture.Graphic);
-    TMetafile(Gr).Enhanced := True;
-    Gr.SaveToFile(AFile);
-  end
+    try
+      Wmf := Graphics.TMetafile.Create;
+      Wmf.Assign(Picture.Graphic);
+      Wmf.Enhanced := True;
+      Wmf.SaveToFile(AFile);
+    finally
+      FreeAndNil(Wmf);
+    end
   else
     raise EJVCLException.CreateFmt(RsEUnknownFileExtension, [Ext]);
 end;
@@ -459,15 +470,18 @@ begin
   if ((Picture.Width div NewSize.X) > 16) or ((Picture.Height div NewSize.Y) > 16) then
     ScaleDown(2 * MaxW, 2 * MaxH);
   Bmp := Graphics.TBitmap.Create;
-  Bmp.Width := NewSize.X;
-  Bmp.Height := NewSize.Y;
-  Bmp.HandleType := bmDIB;
-  Bmp.PixelFormat := pf24bit;
-  Bmp.Canvas.StretchDraw(Rect(0, 0, Bmp.Width, Bmp.Height), Picture.Graphic);
-  Picture.Assign(Bmp);
-  Picture.Bitmap.Dormant;
-  Picture.Bitmap.FreeImage;
-  FreeAndNil(Bmp);
+  try
+    Bmp.Width := NewSize.X;
+    Bmp.Height := NewSize.Y;
+    Bmp.HandleType := bmDIB;
+    Bmp.PixelFormat := pf24bit;
+    Bmp.Canvas.StretchDraw(Rect(0, 0, Bmp.Width, Bmp.Height), Picture.Graphic);
+    Picture.Assign(Bmp);
+    Picture.Bitmap.Dormant;
+    Picture.Bitmap.FreeImage;
+  finally
+    FreeAndNil(Bmp);
+  end;
   FModified := True;
 end;
 
@@ -498,28 +512,31 @@ begin
   if CanModify then
   begin
     MemBmp := Graphics.TBitmap.Create;
-    MemBmp.Width := Picture.Width;
-    MemBmp.Height := Picture.Height;
-    MemBmp.Assign(Picture.Graphic);
-    MemBmp.PixelFormat := pf24bit;
-    MemBmp.HandleType := bmDIB;
-    for Row := 0 to MemBmp.Height - 1 do
-    begin
-      Line := MemBmp.ScanLine[Row];
-      for Col := 0 to MemBmp.Width - 1 do
+    try
+      MemBmp.Width := Picture.Width;
+      MemBmp.Height := Picture.Height;
+      MemBmp.Assign(Picture.Graphic);
+      MemBmp.PixelFormat := pf24bit;
+      MemBmp.HandleType := bmDIB;
+      for Row := 0 to MemBmp.Height - 1 do
       begin
-        Intens := (Line[Col].rgbRed + Line[Col].rgbGreen + Line[Col].rgbBlue)
-          div 3;
-        Line[Col].rgbRed := Intens;
-        Line[Col].rgbGreen := Intens;
-        Line[Col].rgbBlue := Intens;
+        Line := MemBmp.ScanLine[Row];
+        for Col := 0 to MemBmp.Width - 1 do
+        begin
+          Intens := (Line[Col].rgbRed + Line[Col].rgbGreen + Line[Col].rgbBlue)
+            div 3;
+          Line[Col].rgbRed := Intens;
+          Line[Col].rgbGreen := Intens;
+          Line[Col].rgbBlue := Intens;
+        end;
       end;
+      if Picture.Graphic is TJpegImage then
+        TJpegImage(Picture.Graphic).Assign(MemBmp);
+      if Picture.Graphic is Graphics.TBitmap then
+        Picture.Bitmap.Assign(MemBmp);
+    finally
+      MemBmp.Free;
     end;
-    if Picture.Graphic is TJpegImage then
-      TJpegImage(Picture.Graphic).Assign(MemBmp);
-    if Picture.Graphic is Graphics.TBitmap then
-      Picture.Bitmap.Assign(MemBmp);
-    MemBmp.Free;
   end;
   Invalidate;
 end;
@@ -543,33 +560,36 @@ begin
   {
   This procedure substitutes the values of R,G,B acordinally to the arrays the
   user passes in it. This is the simplest way to change the curve of a Color
-  depending on an algorith created by the user.
+  depending on an algorithm created by the user.
   The substitute value of a red 0 is the value which lies in the R[0] position.
   for a simple example have a look at the invert procedure above
   }
   if CanModify then
   begin
     MemBmp := Graphics.TBitmap.Create;
-    MemBmp.Width := Picture.Width;
-    MemBmp.Height := Picture.Height;
-    MemBmp.Assign(Picture.Graphic);
-    MemBmp.PixelFormat := pf24bit;
-    MemBmp.HandleType := bmDIB;
-    for Row := 0 to MemBmp.Height - 1 do
-    begin
-      Line := MemBmp.ScanLine[Row];
-      for Col := 0 to MemBmp.Width - 1 do
+    try
+      MemBmp.Width := Picture.Width;
+      MemBmp.Height := Picture.Height;
+      MemBmp.Assign(Picture.Graphic);
+      MemBmp.PixelFormat := pf24bit;
+      MemBmp.HandleType := bmDIB;
+      for Row := 0 to MemBmp.Height - 1 do
       begin
-        Line[Col].rgbRed := R[Line[Col].rgbRed];
-        Line[Col].rgbGreen := G[Line[Col].rgbGreen];
-        Line[Col].rgbBlue := B[Line[Col].rgbBlue];
+        Line := MemBmp.ScanLine[Row];
+        for Col := 0 to MemBmp.Width - 1 do
+        begin
+          Line[Col].rgbRed := R[Line[Col].rgbRed];
+          Line[Col].rgbGreen := G[Line[Col].rgbGreen];
+          Line[Col].rgbBlue := B[Line[Col].rgbBlue];
+        end;
       end;
+      if Picture.Graphic is TJpegImage then
+        TJpegImage(Picture.Graphic).Assign(MemBmp);
+      if Picture.Graphic is Graphics.TBitmap then
+        Picture.Bitmap.Assign(MemBmp);
+    finally
+      FreeAndNil(MemBmp);
     end;
-    if Picture.Graphic is TJpegImage then
-      TJpegImage(Picture.Graphic).Assign(MemBmp);
-    if Picture.Graphic is Graphics.TBitmap then
-      Picture.Bitmap.Assign(MemBmp);
-    FreeAndNil(MemBmp);
   end;
   Invalidate;
 end;
@@ -579,27 +599,23 @@ var
   MemBmp: Graphics.TBitmap;
   //  RotateBmp: Graphics.TBitmap;
   Dest: TRect;
-  Crsr: TCursor;
 begin
-  Crsr := Screen.Cursor;
   if Assigned(Picture.Graphic) then
     if CanModify then
     begin
-      if not Assigned(FOnRotate) then
-        Screen.Cursor := crHourGlass;
       MemBmp := Graphics.TBitmap.Create;
-      MemBmp.PixelFormat := pf24bit;
-      MemBmp.HandleType := bmDIB;
-      MemBmp.Width := Self.Picture.Graphic.Width;
-      MemBmp.Height := Self.Picture.Height;
-      MemBmp.Canvas.Draw(0, 0, Picture.Graphic);
       try
+        MemBmp.PixelFormat := pf24bit;
+        MemBmp.HandleType := bmDIB;
+        MemBmp.Width := Self.Picture.Graphic.Width;
+        MemBmp.Height := Self.Picture.Height;
+        MemBmp.Canvas.Draw(0, 0, Picture.Graphic);
         //MemBmp.Assign(Picture.Graphic);
         case MirrorType of
           mtHorizontal:
             begin
               //SpiegelnVertikal(MemBmp);
-//                          SpiegelnHorizontal(MemBmp);
+              //SpiegelnHorizontal(MemBmp);
               Dest.Left := MemBmp.Width;
               Dest.Top := 0;
               Dest.Right := -MemBmp.Width;
@@ -627,7 +643,7 @@ begin
         {procedure Rotate180Grad(Bitmap:Graphics.TBitmap);Forward;
         procedure Rotate90Grad(Bitmap:Graphics.TBitmap);Forward;
         procedure Rotate270Grad(Bitmap:Graphics.TBitmap);Forward;{}
-        stretchblt(MemBmp.Canvas.Handle, Dest.Left, Dest.Top, Dest.Right, Dest.Bottom,
+        StretchBlt(MemBmp.Canvas.Handle, Dest.Left, Dest.Top, Dest.Right, Dest.Bottom,
           MemBmp.Canvas.Handle, 0, 0, MemBmp.Width, MemBmp.Height, SRCCOPY);
         Picture.Graphic.Assign(MemBmp);
         Invalidate;
@@ -635,8 +651,6 @@ begin
       finally
         FreeAndNil(MemBmp);
       end;
-      if not Assigned(FOnRotate) then
-        Screen.Cursor := Crsr;
     end;
 end;
 
@@ -657,31 +671,32 @@ var
 begin
   if not CanModify then
     Exit;
-  Screen.Cursor := crHourGlass;
   InBmp := Graphics.TBitmap.Create;
-  InBmp.Width := Picture.Width;
-  InBmp.Height := Picture.Height;
-  InBmp.Assign(Picture.Graphic);
-  InBmp.HandleType := bmDIB;
-  InBmp.PixelFormat := Pf24bit;
-  for Row := 0 to InBmp.Height - 1 do
-  begin
-    Line := InBmp.ScanLine[Row];
-    for Col := 0 to InBmp.Width - 1 do
+  try
+    InBmp.Width := Picture.Width;
+    InBmp.Height := Picture.Height;
+    InBmp.Assign(Picture.Graphic);
+    InBmp.HandleType := bmDIB;
+    InBmp.PixelFormat := Pf24bit;
+    for Row := 0 to InBmp.Height - 1 do
     begin
-      Line[Col].rgbRed := BoundByte(0, 255, Line[Col].rgbRed + R);
-      Line[Col].rgbGreen := BoundByte(0, 255, Line[Col].rgbGreen + G);
-      Line[Col].rgbBlue := BoundByte(0, 255, Line[Col].rgbBlue + B);
+      Line := InBmp.ScanLine[Row];
+      for Col := 0 to InBmp.Width - 1 do
+      begin
+        Line[Col].rgbRed := BoundByte(0, 255, Line[Col].rgbRed + R);
+        Line[Col].rgbGreen := BoundByte(0, 255, Line[Col].rgbGreen + G);
+        Line[Col].rgbBlue := BoundByte(0, 255, Line[Col].rgbBlue + B);
+      end;
     end;
+    {  if Picture.Graphic is TJpegImage then
+         TJpegImage(Picture.Graphic).Assign(InBmp){}
+    //  else
+    Picture.Graphic.Assign(InBmp);
+    Invalidate;
+    FModified := True;
+  finally
+    InBmp.Free;
   end;
-  {  if Picture.Graphic is TJpegImage then
-       TJpegImage(Picture.Graphic).Assign(InBmp){}
-  //  else
-  Picture.Graphic.Assign(InBmp);
-  Invalidate;
-  InBmp.Free;
-  FModified := True;
-  Screen.Cursor := crArrow;
 end;
 
 procedure TJvThumbImage.SetAngle(AAngle: TAngle);
@@ -785,24 +800,21 @@ var
   //  Stp: Byte;
   RotateBmp: Graphics.TBitmap;
   I, J: Longint;
-  Crsr: TCursor;
 begin
-  Crsr := Screen.Cursor;
   if Assigned(Picture.Graphic) then
     if CanModify then
     begin
-      if not Assigned(FOnRotate) then
-        Screen.Cursor := crHourGlass;
+      RotateBmp := nil;
       MemBmp := Graphics.TBitmap.Create;
-      MemBmp.Assign(Picture.Graphic);
-      MemBmp.HandleType := bmDIB;
-      MemBmp.PixelFormat := PF24Bit;
       RotateBmp := Graphics.TBitmap.Create;
-      RotateBmp.PixelFormat := MemBmp.PixelFormat;
-      RotateBmp.HandleType := MemBmp.HandleType;
-      RotateBmp.Width := MemBmp.Height;
-      RotateBmp.Height := MemBmp.Width; {}
       try
+        MemBmp.Assign(Picture.Graphic);
+        MemBmp.HandleType := bmDIB;
+        MemBmp.PixelFormat := PF24Bit;
+        RotateBmp.PixelFormat := MemBmp.PixelFormat;
+        RotateBmp.HandleType := MemBmp.HandleType;
+        RotateBmp.Width := MemBmp.Height;
+        RotateBmp.Height := MemBmp.Width; {}
         I := 0; //RotateBmp.Height-1;
         while I < RotateBmp.Height {-1} do
         begin
@@ -822,8 +834,6 @@ begin
         FreeAndNil(RotateBmp);
         FreeAndNil(MemBmp);
       end;
-      if not Assigned(FOnRotate) then
-        Screen.Cursor := Crsr;
     end;
 end;
 
@@ -891,41 +901,38 @@ var
   //  Stp: Byte;
   RotateBmp: Graphics.TBitmap;
   I, J {, C}: Longint;
-  Crsr: TCursor;
 begin
   //Procedure to rotate an image at 90D clockwise or 270D ccw
-  Crsr := Screen.Cursor;
   if Assigned(Picture.Graphic) then
     if CanModify then
     begin
-      if not Assigned(FOnRotate) then
-        Screen.Cursor := crHourGlass;
+      RotateBmp := nil;
       MemBmp := Graphics.TBitmap.Create;
-      MemBmp.Assign(Picture.Graphic);
-      MemBmp.HandleType := bmDIB;
-      //MemBmp.PixelFormat := pf24bit;
-    {  Case MemBmp.PixelFormat of
-        pf4bit,pf1bit   : begin MemBmp.PixelFormat := pf8bit; Stp := 1; end;
-        pf8bit          : Stp := 1;
-        pf16bit,PF15Bit : Stp := 2;
-        pf24bit         : Stp := 3;
-        pf32bit         : Stp := 4;
-        pfDevice,
-        pfCustom        : begin
-                            MemBmp.PixelFormat := PF24bit;
-                            Stp:=3;
-                          end;
-      else Exit;
-      end;{}
-      MemBmp.PixelFormat := PF24bit;
-      //      Stp := 3;
       RotateBmp := Graphics.TBitmap.Create;
-      RotateBmp.FreeImage;
-      RotateBmp.PixelFormat := MemBmp.PixelFormat;
-      RotateBmp.HandleType := MemBmp.HandleType;
-      RotateBmp.Width := MemBmp.Height;
-      RotateBmp.Height := MemBmp.Width;
       try
+        MemBmp.Assign(Picture.Graphic);
+        MemBmp.HandleType := bmDIB;
+        //MemBmp.PixelFormat := pf24bit;
+      {  Case MemBmp.PixelFormat of
+          pf4bit,pf1bit   : begin MemBmp.PixelFormat := pf8bit; Stp := 1; end;
+          pf8bit          : Stp := 1;
+          pf16bit,PF15Bit : Stp := 2;
+          pf24bit         : Stp := 3;
+          pf32bit         : Stp := 4;
+          pfDevice,
+          pfCustom        : begin
+                              MemBmp.PixelFormat := PF24bit;
+                              Stp:=3;
+                            end;
+        else Exit;
+        end;{}
+        MemBmp.PixelFormat := PF24bit;
+        //      Stp := 3;
+        RotateBmp.FreeImage;
+        RotateBmp.PixelFormat := MemBmp.PixelFormat;
+        RotateBmp.HandleType := MemBmp.HandleType;
+        RotateBmp.Width := MemBmp.Height;
+        RotateBmp.Height := MemBmp.Width;
         I := RotateBmp.Height - 1;
         while I  >= 0 do
         begin
@@ -944,8 +951,6 @@ begin
         FreeAndNil(RotateBmp);
         FreeAndNil(MemBmp);
       end;
-      if not Assigned(FOnRotate) then
-        Screen.Cursor := Crsr;
     end;
 end;
 
