@@ -37,10 +37,10 @@ uses
  {$IFDEF COMPILER7_UP}Themes,{$ELSE}ThemeSrv,{$ENDIF}
 {$ENDIF}
 {$IFDEF COMPLIB_VCL}
-  Controls, StdCtrls, Graphics,
+  Controls, StdCtrls, Graphics, Buttons,
 {$ENDIF}
 {$IFDEF COMPLIB_CLX}
-  QControls, QGraphics,
+  QControls, QGraphics, QButtons,
 {$ENDIF}
   Contnrs;
 
@@ -57,7 +57,7 @@ type
 
 {$IFDEF JVCLThemesEnabled}
 
-{$I WINDOWSONLY.INC} 
+{$I WINDOWSONLY.INC}
 
 // type name redirection
 type
@@ -710,11 +710,11 @@ type
   public
     procedure ApplyThemeChange;
   end;
-{$ENDIF}  
+{$ENDIF}
 
 function ThemeServices: TThemeServicesEx;
 
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 
 type
 {$IFDEF COMPILER7_UP}
@@ -741,10 +741,22 @@ function GetThemeStyle(Control: TControl): TThemeStyle;
   csParentBackground and the color is that of it's parent the Rect is not filled
   because the it is done by the JvThemes/VCL7. }
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas; const R: TRect); overload;
+{$IFDEF MSWINDOWS}
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect; Brush: HBRUSH);  overload;
+
+function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect; uType, uState: UINT): BOOL;
 
 { PerformEraseBackground sends a WM_ERASEBKGND message to the Control's parent. }
 procedure PerformEraseBackground(Control: TControl; DC: HDC);
+
+procedure PaintControlBorder(Control: TControl);
+{$ENDIF MSWINDOWS}
+
+function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
+  BevelWidth: Integer; Style: TButtonStyle; IsRounded, IsDown,
+  IsFocused, IsHot: Boolean): TRect;
+
+function IsMouseOver(Control: TControl): Boolean;
 
 implementation
 
@@ -756,10 +768,14 @@ begin
      (Canvas.Brush.Color = TWinControlThemeInfo(Control.Parent).Color) and
      (ThemeServices.ThemesEnabled) and
      (csParentBackground in GetThemeStyle(Control)) then
-    Exit;
+
+    ThemeServices.DrawParentBackground(Control.Parent.Handle, Canvas.Handle, nil, False, @R)
+  else
 {$ENDIF}
   Canvas.FillRect(R);
 end;
+
+{$IFDEF MSWINDOWS}
 
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect; Brush: HBRUSH);
 {$IFDEF JVCLThemesEnabled}
@@ -774,9 +790,59 @@ begin
      (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
      (ThemeServices.ThemesEnabled) and
      (csParentBackground in GetThemeStyle(Control)) then
-    Exit;
+
+    ThemeServices.DrawParentBackground(Control.Parent.Handle, DC, nil, False, @R)
+  else
 {$ENDIF}
   FillRect(DC, R, Brush);
+end;
+
+function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect; uType, uState: UINT): BOOL;
+{$IFDEF JVCLThemesEnabled}
+const
+  Mask = DFCS_BUTTON3STATE or DFCS_BUTTONCHECK or DFCS_BUTTONPUSH or
+         DFCS_BUTTONRADIO or DFCS_BUTTONRADIOIMAGE or DFCS_BUTTONRADIOMASK;
+var
+  Btn: TThemedButton;
+  R: TRect;
+  Details: TThemedElementDetails;
+{$ENDIF}
+begin
+{$IFDEF JVCLThemesEnabled}
+  if (uType = DFC_BUTTON) and
+     (not (csDesigning in Control.ComponentState)) and
+     (ThemeServices.ThemesEnabled) then
+  begin
+    R := Rect;
+{    if uState and DFCS_ADJUSTRECT <> 0 then
+      InflateRect(R, 1, 1);}
+
+    case (uState and Mask) of
+      DFCS_BUTTONPUSH:
+        begin
+          if uState and (DFCS_TRANSPARENT or DFCS_FLAT) <> 0 then
+          begin
+            Result := DrawFrameControl(DC, Rect, uType, uState);
+            Exit;
+          end;
+
+          if uState and DFCS_INACTIVE <> 0 then Btn := tbPushButtonDisabled
+          else if uState and DFCS_PUSHED <> 0 then Btn := tbPushButtonPressed
+          else if uState and DFCS_HOT <> 0 then Btn := tbPushButtonHot
+          else if uState and DFCS_MONO <> 0 then Btn := tbPushButtonDefaulted
+          else Btn := tbPushButtonNormal;
+
+          Details := ThemeServices.GetElementDetails(Btn);
+          ThemeServices.DrawElement(DC, Details, R);
+          Result := True;
+        end;
+    else
+      Result := DrawFrameControl(DC, Rect, uType, uState);
+    end;
+  end
+  else
+{$ENDIF}
+  Result := DrawFrameControl(DC, Rect, uType, uState);
 end;
 
 procedure PerformEraseBackground(Control: TControl; DC: HDC);
@@ -791,6 +857,74 @@ begin
     Control.Parent.Perform(WM_ERASEBKGND, DC, 0);
     SetWindowOrgEx(DC, WindowOrg.X, WindowOrg.Y, nil);
   end;
+end;
+
+procedure PaintControlBorder(Control: TControl);
+var
+  DrawRect: TRect;
+  DC: HDC;
+  Details: TThemedElementDetails;
+begin
+  if Control is TWinControl then
+    ThemeServices.PaintBorder(TWinControl(Control), False)
+  else
+  begin
+    if Control.Parent = nil then Exit;
+    DrawRect := Control.BoundsRect;
+    DC := GetDC(Control.Parent.Handle);
+    try
+      with DrawRect do
+        ExcludeClipRect(DC, Left + 2, Top + 2, Right - 2, Bottom - 2);
+      Details := ThemeServices.GetElementDetails(teEditTextNormal);
+      ThemeServices.DrawElement(DC, Details, DrawRect);
+    finally
+      ReleaseDC(Control.Parent.Handle, DC);
+    end;
+  end;
+end;
+
+{$ENDIF MSWINDOWS}
+
+function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
+  BevelWidth: Integer; Style: TButtonStyle; IsRounded, IsDown,
+  IsFocused, IsHot: Boolean): TRect;
+{$IFDEF JVCLThemesEnabled}
+var
+  Btn: TThemedButton;
+  Details: TThemedElementDetails;
+{$ENDIF}
+begin
+{$IFDEF JVCLThemesEnabled}
+  if (Style <> bsWin31) and
+     (not (csDesigning in Control.ComponentState)) and
+     (ThemeServices.ThemesEnabled) then
+  begin
+    Result := Client;
+
+    if IsDown then Btn := tbPushButtonPressed
+    else if IsFocused then Btn := tbPushButtonDefaulted
+    else if IsHot then Btn := tbPushButtonHot
+    else Btn := tbPushButtonNormal;
+
+    Details := ThemeServices.GetElementDetails(Btn);
+    ThemeServices.DrawElement(Canvas.Handle, Details, Result);
+    Result :=  ThemeServices.ContentRect(Canvas.Handle, Details, Client);
+
+    if IsFocused then
+      DrawFocusRect(Canvas.Handle, Result);
+
+    InflateRect(Result, -BevelWidth, -BevelWidth);
+  end
+  else
+{$ENDIF}
+  Result := DrawButtonFace(Canvas, Client, BevelWidth, Style, IsRounded, IsDown, IsFocused);
+end;
+
+function IsMouseOver(Control: TControl): Boolean;
+var pt: TPoint;
+begin
+  pt := Control.ScreenToClient(Mouse.CursorPos);
+  Result := PtInRect(Control.ClientRect, pt);
 end;
 
 {$IFDEF JVCLThemesEnabled}
