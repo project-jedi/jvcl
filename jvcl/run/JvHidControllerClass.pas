@@ -28,7 +28,7 @@ Known Issues:
 {$I JVCL.INC}
 
 // (rom) switch to make this component independent of JVCL
-{.DEFINE STANDALONE}
+{.$DEFINE STANDALONE}
 
 unit JvHidControllerClass;
 
@@ -45,7 +45,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.10';
+  cHidControllerClassVersion = '1.0.16';
 
   // strings from the registry for CheckOutByClass
   cHidKeyboardClass = 'Keyboard';
@@ -61,6 +61,10 @@ type
   TJvHidEnumerateEvent  = function (const HidDev: TJvHidDevice;
                                     const Idx: Integer): Boolean of object;
   TJvHidUnplugEvent     = procedure(const HidDev: TJvHidDevice) of object;
+  TJvHidDataEvent       = procedure(const HidDev: TJvHidDevice; ReportID: Byte;
+                                    const Data: Pointer; Size: Word) of object;
+  TJvHidDataErrorEvent  = procedure(const HidDev: TJvHidDevice; Error: DWORD) of object;
+
 
   // open overlapped read or write file handle
   TJvHidOpenExMode = (omhRead, omhWrite);
@@ -135,6 +139,22 @@ type
     destructor Destroy; override;
   end;
 
+  // a thread helper class to implement TJvHidDevice.OnData
+
+  TJvHidDeviceReadThread = class(TThread)
+  private
+    FErr: DWORD;
+    procedure DoData;
+    procedure DoDataError;
+    constructor CtlCreate(const Dev: TJvHidDevice);
+  public
+    Device: TJvHidDevice;
+    NumBytesRead: Cardinal;
+    Report: array of Byte;
+    procedure Execute; override;
+    constructor Create(CreateSuspended: Boolean);
+  end;
+
   // the representation of a HID device
 
   TJvHidDevice = class(TObject)
@@ -160,6 +180,7 @@ type
     FLanguageStrings:      TStringList;
     FNumInputBuffers:      Integer;
     FNumOverlappedBuffers: Integer;
+    FThreadSleepTime:      Integer;
     FLinkCollection:       array of THIDPLinkCollectionNode;
     FMaxDataListLength:    ULONG;
     FMaxUsageListLength:   ULONG;
@@ -168,8 +189,12 @@ type
     FUsagePageParam:       TUsage;
     FLinkCollectionParam:  WORD;
     FUsageParam:           TUsage;
+    FData:                 TJvHidDataEvent;
+    FDataError:            TJvHidDataErrorEvent;
     FUnplug:               TJvHidUnplugEvent;
     FHasReadWriteAccess:   Boolean;
+    FDataThread:           TJvHidDeviceReadThread;
+    FTag:                  Integer;
 
     // tells if access to device is allowed
     function  IsAccessible: Boolean;
@@ -190,10 +215,14 @@ type
     function  GetOverlappedReadResult:  DWORD;
     function  GetOverlappedWriteResult: DWORD;
     procedure SetConfiguration       (const Config: THIDDConfiguration);
+    procedure SetDataEvent           (const DataEvent: TJvHidDataEvent);
     procedure SetNumInputBuffers     (const Num: Integer);
     procedure SetNumOverlappedBuffers(const Num: Integer);
     procedure SetReportTypeParam     (const ReportType: THIDPReportType);
+    procedure SetThreadSleepTime     (const SleepTime: Integer);
     procedure SetUsagePageParam      (const UsagePage: TUsage);
+    procedure StartThread;
+    procedure StopThread;
 
     // Constructor is hidden! Only a TJvHidDeviceController can create a TJvHidDevice object.
     constructor CtlCreate(const APnPInfo: TJvHidPnPInfo;
@@ -202,7 +231,6 @@ type
   protected
     // internal event implementors
     procedure DoUnplug;
-    procedure SetUnplug(const Event: TJvHidUnplugEvent);
 
   public
     // dummy constructor
@@ -236,14 +264,18 @@ type
     property NumInputBuffers:      Integer            read FNumInputBuffers      write SetNumInputBuffers;
     property NumOverlappedBuffers: Integer            read FNumOverlappedBuffers write SetNumOverlappedBuffers;
     property ReportTypeParam:      THIDPReportType    read FReportTypeParam      write SetReportTypeParam;
+    property Tag:                  Integer            read FTag                  write FTag;
+    property ThreadSleepTime:      Integer            read FThreadSleepTime      write SetThreadSleepTime;
     property UsagePageParam:       TUsage             read FUsagePageParam       write SetUsagePageParam;
     property UsageParam:           TUsage             read FUsageParam           write FUsageParam;
     // indexed properties
     property DeviceStrings       [Idx: Byte]: string                  read GetDeviceStringAnsi;
     property DeviceStringsUnicode[Idx: Byte]: WideString              read GetDeviceStringUnicode;
     property LinkCollectionNodes [Idx: WORD]: THIDPLinkCollectionNode read GetLinkCollectionNode;
-    // the only event property
-    property OnUnplug:             TJvHidUnplugEvent read FUnplug write SetUnplug;
+    // event properties
+    property OnData:               TJvHidDataEvent      read FData      write SetDataEvent;
+    property OnDataError:          TJvHidDataErrorEvent read FDataError write FDataError;
+    property OnUnplug:             TJvHidUnplugEvent    read FUnplug    write FUnplug;
 
     // methods
     function  CancelIO             (const Mode: TJvHidOpenExMode): Boolean;
@@ -313,8 +345,13 @@ type
     FHidGuid:              TGUID;
     FDeviceChangeEvent:    TNotifyEvent;
     FEnumerateEvent:       TJvHidEnumerateEvent;
+    FDevDataEvent:         TJvHidDataEvent;
+    FDevDataErrorEvent:    TJvHidDataErrorEvent;
     FDevUnplugEvent:       TJvHidUnplugEvent;
     FDeviceChangeFired:    Boolean;
+    FDevThreadSleepTime:   Integer;
+    FVersion:              string;
+    FDummy:                string;
     // internal list of all HID device objects
     FList:                 TList;
     // counters for the list
@@ -329,10 +366,13 @@ type
   protected
     procedure DoDeviceChange;
     // internal event implementors
-    function  DoEnumerate         (HidDev: TJvHidDevice; Idx: Integer): Boolean;
-    procedure SetDeviceChangeEvent(const Notifier:   TNotifyEvent);
-    procedure SetEnumerate        (const Enumerator: TJvHidEnumerateEvent);
-    procedure SetDevUnplug        (const Unplugger:  TJvHidUnplugEvent);
+    function  DoEnumerate          (HidDev: TJvHidDevice; Idx: Integer): Boolean;
+    procedure SetDeviceChangeEvent (const Notifier:       TNotifyEvent);
+    procedure SetEnumerate         (const Enumerator:     TJvHidEnumerateEvent);
+    procedure SetDevThreadSleepTime(const DevTime:        Integer);
+    procedure SetDevData           (const DataEvent:      TJvHidDataEvent);
+    procedure SetDevDataError      (const DataErrorEvent: TJvHidDataErrorEvent);
+    procedure SetDevUnplug         (const Unplugger:      TJvHidUnplugEvent);
 
   public
     // just to be complete the GUID
@@ -364,12 +404,16 @@ type
     property NumUnpluggedDevices:  Integer read FNumUnpluggedDevices;
 
   published
+    property DevThreadSleepTime: Integer              read FDevThreadSleepTime write SetDevThreadSleepTime default 100;
+    property Version:            string               read FVersion            write FDummy stored False;
     // the iterator event
-    property  OnEnumerate:    TJvHidEnumerateEvent read FEnumerateEvent    write SetEnumerate;
+    property  OnEnumerate:       TJvHidEnumerateEvent read FEnumerateEvent     write SetEnumerate;
     // the central event for HID device changes
-    property  OnDeviceChange: TNotifyEvent         read FDeviceChangeEvent write SetDeviceChangeEvent;
-    // this event is copied to TJvHidDeviceOnUnplug on creation
-    property  OnDeviceUnplug: TJvHidUnplugEvent    read FDevUnplugEvent    write SetDevUnplug;
+    property  OnDeviceChange:    TNotifyEvent         read FDeviceChangeEvent  write SetDeviceChangeEvent;
+    // these events are copied to TJvHidDevices on creation
+    property  OnDeviceData:      TJvHidDataEvent      read FDevDataEvent       write SetDevData;
+    property  OnDeviceDataError: TJvHidDataErrorEvent read FDevDataErrorEvent  write SetDevDataError;
+    property  OnDeviceUnplug:    TJvHidUnplugEvent    read FDevUnplugEvent     write SetDevUnplug;
     // to be callable at design time
     procedure DeviceChange;
   end;
@@ -387,33 +431,6 @@ procedure Register;
 
 {$ENDIF}
 
-
-resourcestring
-  sDeviceCannotBeIdentified = 'device cannot be identified';
-  sDeviceCannotBeOpened = 'device cannot be opened';
-  sOnlyOneTJvHidDeviceControllerAllowe = 'Only one TJvHidDeviceController allowed per program';
-  sHIDErrorABooleanFunctionFailed = 'HID Error: a boolean function failed';
-  sDeviceNotPluggedIn = 'device not plugged in';
-  sInvalidPreparsedData = 'invalid preparsed data';
-  sInvalidReportType = 'invalid report type';
-  sInvalidReportLength = 'invalid report length';
-  sUsageNotFound = 'usage not found';
-  sValueOutOfRange = 'value out of range';
-  sBadLogicalOrPhysicalValues = 'bad logical or physical values';
-  sBufferTooSmall = 'buffer too small';
-  sInternalError = 'internal error';
-  sKeyTranslationImpossible = '8042 key translation impossible';
-  sIncompatibleReportID = 'incompatible report ID';
-  sNotAValueArray = 'not a value array';
-  sIsAValueArray = 'is a value array';
-  sDataIndexNotFound = 'data index not found';
-  sDataIndexOutOfRange = 'data index out of range';
-  sButtonNotPressed = 'button not pressed';
-  sReportDoesNotExist = 'report does not exist';
-  sNotImplemented = 'not implemented';
-  sUnknownHIDErrorx = 'unknown HID error %x';
-  sHIDError = 'HID Error: ';
-
 implementation
 
 {$IFDEF STANDALONE}
@@ -422,15 +439,10 @@ type
   EControllerError = class(Exception);
   EHidClientError  = class(Exception);
 
-function _(const Text: string): string;
-begin
-  Result := Text;
-end;
-
 {$ELSE}
 
 uses
-  JvConsts, JvTypes;
+  JvTypes;
 
 type
   EControllerError = class(EJVCLException);
@@ -450,6 +462,81 @@ function ReadFileEx(hFile: THandle; var Buffer; nNumberOfBytesToRead: DWORD;
 function WriteFileEx(hFile: THandle; var Buffer; nNumberOfBytesToWrite: DWORD;
   var Overlapped: TOverlapped; lpCompletionRoutine: TPROverlappedCompletionRoutine): BOOL; stdcall;
  external 'kernel32.dll' name 'WriteFileEx';
+
+//== TJvHidDeviceReadThread ====================================================
+
+constructor TJvHidDeviceReadThread.CtlCreate(const Dev: TJvHidDevice);
+begin
+  inherited Create(True);
+  Device := Dev;
+  NumBytesRead := 0;
+  SetLength(Report, Dev.Caps.InputReportByteLength);
+end;
+
+//------------------------------------------------------------------------------
+
+constructor TJvHidDeviceReadThread.Create(CreateSuspended: Boolean);
+begin
+  raise EControllerError.Create('Direct creation of a TJvDeviceReadThread object is not allowed');
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJvHidDeviceReadThread.DoData;
+begin
+  Device.OnData(Device, Report[0], @Report[1], NumBytesRead-1);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJvHidDeviceReadThread.DoDataError;
+begin
+  if Assigned(Device.FDataError) then
+    Device.FDataError(Device, FErr);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJvHidDeviceReadThread.Execute;
+var
+  SleepRet: DWORD;
+
+  procedure Dummy(ErrorCode: DWORD; Count: DWORD; Ovl: POverlapped); stdcall;
+  begin
+  end;
+
+begin
+  SleepRet := WAIT_IO_COMPLETION;
+  while not Terminated do
+  begin
+    // read data
+    SleepRet := WAIT_IO_COMPLETION;
+    FillChar(Report[0], Device.Caps.InputReportByteLength, #0);
+    if Device.ReadFileEx(Report[0], Device.Caps.InputReportByteLength, @Dummy) then
+    begin
+      // wait for read to complete
+      repeat
+        SleepRet := SleepEx(Device.ThreadSleepTime, True);
+      until Terminated or (SleepRet = WAIT_IO_COMPLETION);
+      // show data read
+      if not Terminated then
+      begin
+        NumBytesRead := Device.HidOverlappedReadResult;
+        if NumBytesRead > 0 then
+          Synchronize(DoData);
+      end;
+    end
+    else
+    begin
+      FErr := GetLastError;
+      Synchronize(DoDataError);
+    end;
+  end;
+  // cancel ReadFileEx call or the callback will
+  // crash your program
+  if SleepRet <> WAIT_IO_COMPLETION then
+    Device.CancelIO(omhRead);
+end;
 
 //== TJvHidPnPInfo =============================================================
 
@@ -597,10 +684,13 @@ begin
   FMaxUsageListLength   := 0;
   FMaxButtonListLength  := 0;
   FReportTypeParam      := HIDP_Input;
+  FThreadSleepTime      := 100;
   FUsagePageParam       := 0;
   FLinkCollectionParam  := 0;
   FUsageParam           := 0;
-  FUnplug               := Controller.FDevUnplugEvent;
+  FDataThread           := nil;
+  OnData                := Controller.OnDeviceData;
+  OnUnplug              := Controller.OnDeviceUnplug;
 
   FHidFileHandle := CreateFile(PChar(PnPInfo.DevicePath), GENERIC_READ or GENERIC_WRITE,
     FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
@@ -613,10 +703,10 @@ begin
   begin
     FAttributes.Size := SizeOf(THIDDAttributes);
     if not HidD_GetAttributes(HidFileHandle, FAttributes) then
-      raise EControllerError.Create(sDeviceCannotBeIdentified);
+      raise EControllerError.Create('device cannot be identified');
   end
   else
-    raise EControllerError.Create(sDeviceCannotBeOpened);
+    raise EControllerError.Create('device cannot be opened');
   // the file is closed to stop using up resources
   CloseFile;
 end;
@@ -630,13 +720,21 @@ end;
 destructor TJvHidDevice.Destroy;
 var
   I: Integer;
+  TmpOnData: TJvHidDataEvent;
+  TmpOnUnplug: TJvHidUnplugEvent;
+  Dev: TJvHidDevice;
 begin
+  // if we need to clone the object
+  TmpOnData   := OnData;
+  TmpOnUnplug := OnUnplug;
   // to prevent strange problems
+  OnData   := nil;
   OnUnplug := nil;
   // free the data which needs special handling
   CloseFile;
   CloseFileEx(omhRead);
   CloseFileEx(omhWrite);
+
   if FPreparsedData <> nil then
     HidD_FreePreparsedData(FPreparsedData);
   FLanguageStrings.Free;
@@ -652,7 +750,13 @@ begin
           // if device is plugged in create a checked in copy
           if IsPluggedIn then
           begin
-            FList.Items[I] := TJvHidDevice.CtlCreate(FPnPInfo, FMyController);
+            Dev := TJvHidDevice.CtlCreate(FPnPInfo, FMyController);
+            // make it a complete clone
+            Dev.OnData          := TmpOnData;
+            Dev.OnUnplug        := TmpOnUnplug;
+            Dev.ThreadSleepTime := ThreadSleepTime;
+            FList.Items[I] := Dev;
+            // the FPnPInfo has been handed over to the new object
             FPnPInfo := nil;
             if IsCheckedOut then
             begin
@@ -761,16 +865,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-// assign the OnUnplug event
-
-procedure TJvHidDevice.SetUnplug(const Event: TJvHidUnplugEvent);
-begin
-  if @Event <> @FUnplug then
-    FUnplug := Event;
-end;
-
-//------------------------------------------------------------------------------
-
 // implementing indexed properties read
 
 function TJvHidDevice.GetDeviceStringAnsi(Idx: Byte): string;
@@ -804,8 +898,8 @@ begin
     HidP_GetLinkCollectionNodes(@FLinkCollection[0], Siz, PreparsedData);
   end;
   FillChar(Result, SizeOf(THIDPLinkCollectionNode), #0);
-  if (Idx > 0) and (Idx <= Length(FLinkCollection)) then
-    Result := FLinkCollection[Idx-1];
+  if Idx < Length(FLinkCollection) then
+    Result := FLinkCollection[Idx];
 end;
 
 //------------------------------------------------------------------------------
@@ -852,6 +946,15 @@ procedure TJvHidDevice.SetReportTypeParam(const ReportType: THIDPReportType);
 begin
   FReportTypeParam := ReportType;
   GetMax;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJvHidDevice.SetThreadSleepTime(const SleepTime: Integer);
+begin
+  // limit to 10 msec .. 10 sec
+  if (SleepTime >= 10) and (SleepTime <= 10000) then
+    FThreadSleepTime := SleepTime;
 end;
 
 //------------------------------------------------------------------------------
@@ -1060,6 +1163,43 @@ procedure TJvHidDevice.SetConfiguration(const Config: THIDDConfiguration);
 begin
   if OpenFile then
     HidD_SetConfiguration(HidFileHandle, Config, SizeOf(THIDDConfiguration));
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJvHidDevice.SetDataEvent(const DataEvent: TJvHidDataEvent);
+begin
+  // this assignment is a bit tricky because a thread may running
+  // kill the thread with the old event still in effect
+  if not Assigned(DataEvent) then
+    StopThread;
+  // assign the new event and start the thread if needed
+  FData := DataEvent;
+  StartThread;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJvHidDevice.StartThread;
+begin
+  if Assigned(FData) and IsPluggedIn and IsCheckedOut and not Assigned(FDataThread) then
+  begin
+    FDataThread := TJvHidDeviceReadThread.CtlCreate(Self);
+    FDataThread.FreeOnTerminate := False;
+    FDataThread.Resume;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJvHidDevice.StopThread;
+begin
+  if Assigned(FDataThread) then
+  begin
+    FDataThread.Terminate;
+    FDataThread.WaitFor;
+    FreeAndNil(FDataThread);
+  end;
 end;
 
 //-- TJvHidDevice methods ------------------------------------------------------
@@ -1491,6 +1631,8 @@ begin
   FNumCheckedInDevices  := 0;
   FNumCheckedOutDevices := 0;
   FNumUnpluggedDevices  := 0;
+  FDevThreadSleepTime   := 100;
+  FVersion              := cHidControllerClassVersion;
   if LoadSetupApi then
     LoadHid;
   if IsHidLoaded then
@@ -1501,7 +1643,7 @@ begin
   // this is just to remind you that one controller is sufficient
   Inc(GlobalInstanceCount);
   if GlobalInstanceCount > 1 then
-    raise EControllerError.Create(sOnlyOneTJvHidDeviceControllerAllowe);
+    raise EControllerError.Create('Only one TJvHidDeviceController allowed per program');
 
   FillInList(FList);
   FNumCheckedInDevices := FList.Count;
@@ -1714,12 +1856,78 @@ end;
 
 //------------------------------------------------------------------------------
 
+// assign DevThreadSleepTime
+
+procedure TJvHidDeviceController.SetDevThreadSleepTime(const DevTime: Integer);
+var
+  I:   Integer;
+  Dev: TJvHidDevice;
+begin
+  if DevTime <> FDevThreadSleepTime then
+  begin
+    // change all DevThreadSleepTime with the same old value
+    for I := 0 to FList.Count - 1 do
+    begin
+      Dev := FList.Items[I];
+      if Dev.ThreadSleepTime = FDevThreadSleepTime then
+        Dev.ThreadSleepTime := DevTime;
+    end;
+    FDevThreadSleepTime := DevTime;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+// assign OnDevData event
+
+procedure TJvHidDeviceController.SetDevData(const DataEvent: TJvHidDataEvent);
+var
+  I:   Integer;
+  Dev: TJvHidDevice;
+begin
+  if @DataEvent <> @FDevDataEvent then
+  begin
+    // change all OnData events with the same old value
+    for I := 0 to FList.Count - 1 do
+    begin
+      Dev := FList.Items[I];
+      if @Dev.OnData = @FDevDataEvent then
+        Dev.OnData := DataEvent;
+    end;
+    FDevDataEvent := DataEvent;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+// assign OnDevDataError event
+
+procedure TJvHidDeviceController.SetDevDataError(const DataErrorEvent: TJvHidDataErrorEvent);
+var
+  I:   Integer;
+  Dev: TJvHidDevice;
+begin
+  if @DataErrorEvent <> @FDevDataErrorEvent then
+  begin
+    // change all OnDataError events with the same old value
+    for I := 0 to FList.Count - 1 do
+    begin
+      Dev := FList.Items[I];
+      if @Dev.OnDataError = @FDevDataErrorEvent then
+        Dev.OnDataError := DataErrorEvent;
+    end;
+    FDevDataErrorEvent := DataErrorEvent;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 // assign OnDevUnplug event
 
 procedure TJvHidDeviceController.SetDevUnplug(const Unplugger: TJvHidUnplugEvent);
 var
-   I:   Integer;
-   Dev: TJvHidDevice;
+  I:   Integer;
+  Dev: TJvHidDevice;
 begin
   if @Unplugger <> @FDevUnplugEvent then
   begin
@@ -1727,7 +1935,7 @@ begin
     for I := 0 to FList.Count - 1 do
     begin
       Dev := FList.Items[I];
-      if @Dev.FUnplug = @FDevUnplugEvent then
+      if @Dev.OnUnplug = @FDevUnplugEvent then
         Dev.OnUnplug := Unplugger;
     end;
     FDevUnplugEvent := Unplugger;
@@ -1766,6 +1974,7 @@ begin
     HidDev.FIsCheckedOut := True;
     Inc(FNumCheckedOutDevices);
     Dec(FNumCheckedInDevices);
+    HidDev.StartThread;
   end;
 end;
 
@@ -1886,6 +2095,7 @@ procedure TJvHidDeviceController.CheckIn(var HidDev: TJvHidDevice);
 begin
   if HidDev <> nil then
   begin
+    HidDev.StopThread;
     HidDev.CloseFile;
     HidDev.CloseFileEx(omhRead);
     HidDev.CloseFileEx(omhWrite);
@@ -1970,7 +2180,7 @@ end;
 function HidCheck(const RetVal: LongBool): LongBool;
 begin
   if not RetVal then
-    raise EHidClientError.Create(sHIDErrorABooleanFunctionFailed);
+    raise EHidClientError.Create('HID Error: a boolean function failed');
   Result := RetVal;
 end;
 
@@ -1997,28 +2207,28 @@ begin
      ((RetVal and NTSTATUS($C0000000)) <> 0) then
   begin
     case RetVal of
-      HIDP_STATUS_NULL:                    Result := sDeviceNotPluggedIn;
-      HIDP_STATUS_INVALID_PREPARSED_DATA:  Result := sInvalidPreparsedData;
-      HIDP_STATUS_INVALID_REPORT_TYPE:     Result := sInvalidReportType;
-      HIDP_STATUS_INVALID_REPORT_LENGTH:   Result := sInvalidReportLength;
-      HIDP_STATUS_USAGE_NOT_FOUND:         Result := sUsageNotFound;
-      HIDP_STATUS_VALUE_OUT_OF_RANGE:      Result := sValueOutOfRange;
-      HIDP_STATUS_BAD_LOG_PHY_VALUES:      Result := sBadLogicalOrPhysicalValues;
-      HIDP_STATUS_BUFFER_TOO_SMALL:        Result := sBufferTooSmall;
-      HIDP_STATUS_INTERNAL_ERROR:          Result := sInternalError;
-      HIDP_STATUS_I8042_TRANS_UNKNOWN:     Result := sKeyTranslationImpossible;
-      HIDP_STATUS_INCOMPATIBLE_REPORT_ID:  Result := sIncompatibleReportID;
-      HIDP_STATUS_NOT_VALUE_ARRAY:         Result := sNotAValueArray;
-      HIDP_STATUS_IS_VALUE_ARRAY:          Result := sIsAValueArray;
-      HIDP_STATUS_DATA_INDEX_NOT_FOUND:    Result := sDataIndexNotFound;
-      HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE: Result := sDataIndexOutOfRange;
-      HIDP_STATUS_BUTTON_NOT_PRESSED:      Result := sButtonNotPressed;
-      HIDP_STATUS_REPORT_DOES_NOT_EXIST:   Result := sReportDoesNotExist;
-      HIDP_STATUS_NOT_IMPLEMENTED:         Result := sNotImplemented;
+      HIDP_STATUS_NULL:                    Result := 'device not plugged in';
+      HIDP_STATUS_INVALID_PREPARSED_DATA:  Result := 'invalid preparsed data';
+      HIDP_STATUS_INVALID_REPORT_TYPE:     Result := 'invalid report type';
+      HIDP_STATUS_INVALID_REPORT_LENGTH:   Result := 'invalid report length';
+      HIDP_STATUS_USAGE_NOT_FOUND:         Result := 'usage not found';
+      HIDP_STATUS_VALUE_OUT_OF_RANGE:      Result := 'value out of range';
+      HIDP_STATUS_BAD_LOG_PHY_VALUES:      Result := 'bad logical or physical values';
+      HIDP_STATUS_BUFFER_TOO_SMALL:        Result := 'buffer too small';
+      HIDP_STATUS_INTERNAL_ERROR:          Result := 'internal error';
+      HIDP_STATUS_I8042_TRANS_UNKNOWN:     Result := '8042 key translation impossible';
+      HIDP_STATUS_INCOMPATIBLE_REPORT_ID:  Result := 'incompatible report ID';
+      HIDP_STATUS_NOT_VALUE_ARRAY:         Result := 'not a value array';
+      HIDP_STATUS_IS_VALUE_ARRAY:          Result := 'is a value array';
+      HIDP_STATUS_DATA_INDEX_NOT_FOUND:    Result := 'data index not found';
+      HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE: Result := 'data index out of range';
+      HIDP_STATUS_BUTTON_NOT_PRESSED:      Result := 'button not pressed';
+      HIDP_STATUS_REPORT_DOES_NOT_EXIST:   Result := 'report does not exist';
+      HIDP_STATUS_NOT_IMPLEMENTED:         Result := 'not implemented';
     else
-      Result := Format(sUnknownHIDErrorx, [RetVal]);
+      Result := Format('unknown HID error %x', [RetVal]);
     end;
-    Result := sHIDError + Result;
+    Result := 'HID Error: ' + Result;
   end;
 end;
 
