@@ -748,6 +748,8 @@ type
     function GetEditing: Boolean; override;
     function GetSelectedColumn: TJvInspectorCompoundColumn; virtual;
     function GetSelectedColumnIndex: Integer; virtual;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
     procedure RecalcColumnWidths(const SetColumn: TJvInspectorCompoundColumn = nil); virtual;
     procedure SetEditing(const Value: Boolean); override;
     procedure SetFlags(const Value: TInspectorItemFlags); override;
@@ -5378,6 +5380,22 @@ end;
 function TJvInspectorCompoundItem.GetSelectedColumnIndex: Integer;
 begin
   Result := FSelectedColumnIdx;
+end;
+
+procedure TJvInspectorCompoundItem.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  I: Integer;
+begin
+  for I := ColumnCount - 1 downto 0 do
+  begin
+    if PtInRect(Columns[I].Item.Rects[iprName], Point(X, Y)) or
+      PtInRect(Columns[I].Item.Rects[iprValue], Point(X, Y)) then
+    begin
+      SelectedColumnIndex := I;
+      Columns[I].Item.MouseDown(Button, Shift, X, Y);
+      Break;
+    end;
+  end;
 end;
 
 procedure TJvInspectorCompoundItem.RecalcColumnWidths(const SetColumn: TJvInspectorCompoundColumn = nil);
