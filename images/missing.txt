@@ -1,3 +1,0 @@
-;no images for these components at present:
-
-TJVDATEPICKEREDIT.BMP
