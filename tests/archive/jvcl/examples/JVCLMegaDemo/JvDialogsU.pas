@@ -440,22 +440,26 @@ end;
 
 procedure TJvDialogs.JvBitBtn40Click(Sender: TObject);
 begin
+  JvDiskPrompt1.OwnerWindow := HWND_DESKTOP;
   JvDiskPrompt1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn42Click(Sender: TObject);
 begin
+  JvCopyError1.OwnerWindow := HWND_DESKTOP;
   JvCopyError1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn45Click(Sender: TObject);
 begin
-  jvDeleteError1.Execute;
+  JvDeleteError1.OwnerWindow := HWND_DESKTOP;
+  JvDeleteError1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn38Click(Sender: TObject);
 begin
-  jvRenameError1.Execute;
+  JvRenameError1.OwnerWindow := HWND_DESKTOP;
+  JvRenameError1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn41Click(Sender: TObject);

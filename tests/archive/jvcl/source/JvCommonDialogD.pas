@@ -45,7 +45,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Execute: TDiskRes; virtual; abstract;
-    property OwnerWindow: HWND read FOwnerWindow;
+    property OwnerWindow: HWND read FOwnerWindow write FOwnerWindow stored False;
   published
     property Title: string read FTitle write FTitle;
   end;
