@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls, Buttons, Menus, ImgList,
-  JvComponent;
+  JvTypes, JvComponent;
 
 const
   CM_IMAGESIZECHANGED = CM_BASE + 100;
@@ -43,7 +43,6 @@ const
   CM_LOOKOUTBUTTONPRESSED = CM_BASE + 102;
 
 type
-  TJvImageSize = (isSmall, isLarge);
   TJvButtonBorder = (bbDark, bbLight, bbMono);
 
   TJvUpArrowBtn = class(TSpeedButton)

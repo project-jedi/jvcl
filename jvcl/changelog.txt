@@ -18,6 +18,12 @@ Changelog for JVCL 3.0
   * JvScrollMax.TJvScrollBar -> JvScrollMax.TJvPanelScrollBar
   * JvLookout.TJvSpacer -> removed (not used)
   * TJvTFVisibleScrollBars  -> moved to JvTFUtilspas
+  * JvDriveCtrls.TJvImageSize -> moved to JvTypes
+  * JvLookOut.TJvImageSize -> moved to JvTypes
+  * JvMenus.TJvImageSize -> renamed to JvMenus.TJvMenuImageSize
+  * JvRichEditToHtml.TJvParaAttributes -> renamed to TJvParaAttributesRec
+  * JvContentSCroller.TJvScrollDirection -> renamed to TJvContentScrollDirection
+  * JvMovableBevel.TJvScrollTextDirection -> renamed to TJvBevelScrollTextDirection
   // peter3
   
 2003-07-29:

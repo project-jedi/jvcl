@@ -57,7 +57,7 @@ type
   { Generic types }
 
   // size of an image
-  TJvImageSize = class(TPersistent)
+  TJvMenuImageSize = class(TPersistent)
   private
     FHeight: Integer;
     FWidth: Integer;
@@ -170,7 +170,7 @@ type
     FHotImages      : TImageList;
     FImageMargin    : TJvImageMargin;
     FImages         : TImageList;
-    FImageSize      : TJvImageSize;
+    FImageSize      : TJvMenuImageSize;
     FMinTextOffset  : Cardinal;
     FShowCheckMarks : Boolean;
     FStyle          : TJvMenuStyle;
@@ -249,7 +249,7 @@ type
     property HotImages      : TImageList               read FHotImages          write SetHotImages;
     property Images         : TImageList               read FImages             write SetImages;
     property ImageMargin    : TJvImageMargin           read FImageMargin        write FImageMargin;
-    property ImageSize      : TJvImageSize             read FImageSize          write FImageSize;
+    property ImageSize      : TJvMenuImageSize             read FImageSize          write FImageSize;
     property ItemPainter    : TJvCustomMenuItemPainter read FJvMenuItemPainter;
     property MinTextOffset  : Cardinal                 read FMinTextOffset      write FMinTextOffset     default 0;
     property OwnerDraw stored False;
@@ -278,7 +278,7 @@ type
     FHotImages      : TImageList;
     FImageMargin    : TJvImageMargin;
     FImages         : TImageList;
-    FImageSize      : TJvImageSize;
+    FImageSize      : TJvMenuImageSize;
     FLeftMargin     : Cardinal;
     FMinTextOffset  : Cardinal;
     FShowCheckMarks : Boolean;
@@ -352,7 +352,7 @@ type
     property HotImages      : TImageList               read FHotImages          write SetHotImages;
     property ImageMargin    : TJvImageMargin           read FImageMargin        write FImageMargin;
     property Images         : TImageList               read FImages             write SetImages;
-    property ImageSize      : TJvImageSize             read FImageSize          write FImageSize;
+    property ImageSize      : TJvMenuImageSize             read FImageSize          write FImageSize;
     property ItemPainter    : TJvCustomMenuItemPainter read FJvMenuItemPainter;
     property LeftMargin     : Cardinal                 read FLeftMargin         write FLeftMargin        default 0;
     property MinTextOffset  : Cardinal                 read FMinTextOffset      write FMinTextOffset     default 0;
@@ -388,7 +388,7 @@ type
     FPopupMenu   : TJvPopupMenu;
     FOnDrawItem  : TDrawMenuItemEvent;
     FImageMargin : TJvImageMargin;
-    FImageSize   : TJvImageSize;
+    FImageSize   : TJvMenuImageSize;
 
     FItem : TMenuItem;
     FState: TMenuOwnerDrawState;
@@ -514,7 +514,7 @@ type
     property Images          : TImageList read GetImages;
     property ImageHeight     : Integer read GetImageHeight;
     property ImageMargin     : TJvImageMargin read FImageMargin;
-    property ImageSize       : TJvImageSize read FImageSize;
+    property ImageSize       : TJvMenuImageSize read FImageSize;
     property ImageWidth      : Integer read GetImageWidth;
     property IsPopup         : Boolean read GetIsPopup;
     property IsRightToLeft   : Boolean read GetIsRightToLeft;
@@ -777,7 +777,7 @@ begin
   RegisterWndProcHook(FindForm, NewWndProc, hoAfterMsg);
   FChangeLinks := TObjectList.Create(false);
   FImageMargin := TJvImageMargin.Create;
-  FImageSize := TJvImageSize.Create;
+  FImageSize := TJvMenuImageSize.Create;
   FJvMenuItemPainter := CreateMenuItemPainterFromStyle(FStyle, self);
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
@@ -1249,7 +1249,7 @@ begin
   FCanvas := TControlCanvas.Create;
   FCursor := crDefault;
   FImageMargin := TJvImageMargin.Create;
-  FImageSize := TJvImageSize.Create;
+  FImageSize := TJvMenuImageSize.Create;
   PopupList.Add(Self);
   FJvMenuItemPainter := CreateMenuItemPainterFromStyle(FStyle, self);
   FImageChangeLink := TChangeLink.Create;
@@ -1641,7 +1641,7 @@ begin
   FImageBackgroundColor := DefaultImageBackgroundColor;
 
   FImageMargin := TJvImageMargin.Create;
-  FImageSize := TJvImageSize.Create;
+  FImageSize := TJvMenuImageSize.Create;
 
   if Menu is TJvMainMenu then
   begin
@@ -2922,12 +2922,12 @@ begin
   Bottom := TJvImageMargin(Source).Bottom;
 end;
 
-{ TJvImageSize }
+{ TJvMenuImageSize }
 
-procedure TJvImageSize.Assign(Source: TPersistent);
+procedure TJvMenuImageSize.Assign(Source: TPersistent);
 begin
-  Height := TJvImageSize(Source).Height;
-  Width  := TJvImageSize(Source).Width;
+  Height := TJvMenuImageSize(Source).Height;
+  Width  := TJvMenuImageSize(Source).Width;
 end;
 
 initialization

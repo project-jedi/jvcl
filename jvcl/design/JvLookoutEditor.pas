@@ -39,7 +39,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  JvLookOut, JvDsgnEditors;
+  JvTypes, JvLookOut, JvDsgnEditors;
 
 type
   TJvLookOutPageEditor = class(TComponentEditor)

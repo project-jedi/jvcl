@@ -255,7 +255,14 @@ const
   Brackets = ['(', ')', '[', ']', '{', '}'];
   StdWordDelims = [#0..' ', ',', '.', ';', '/', '\', ':', '''', '"', '`'] + Brackets;
   {$ENDIF}
-  
+type
+  // JvDriveCtrls / JvLookOut
+  TJvImageSize = (isSmall, isLarge);
+  TJvImageAlign = (iaLeft, iaCentered);
+
+  TJvDriveType = (dtUnknown, dtRemovable, dtFixed, dtRemote, dtCDROM, dtRamDisk);
+  TJvDriveTypes = set of TJvDriveType;
+
 implementation
 
 end.

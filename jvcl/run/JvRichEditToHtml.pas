@@ -35,7 +35,7 @@ uses
   JvRgbToHtml, JvStrToHtml, JvComponent;
 
 type
-  TJvParaAttributes = record
+  TJvParaAttributesRec = record
     Alignment: TAlignment;
     Numbering: TNumberingStyle;
   end;
@@ -48,7 +48,7 @@ type
     FEndPara: string;
     FTitle: string;
     function AttToHtml(Value: TFont): string;
-    function ParaToHtml(Value: TJvParaAttributes): string;
+    function ParaToHtml(Value: TJvParaAttributesRec): string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -151,7 +151,7 @@ begin
   end;
 end;
 
-function TJvRichEditToHtml.ParaToHtml(Value: TJvParaAttributes): string;
+function TJvRichEditToHtml.ParaToHtml(Value: TJvParaAttributesRec): string;
 begin
   FEndPara := RC_EndPar;
   case Value.Alignment of
@@ -175,7 +175,7 @@ begin
     (One.Name <> Two.Name) or (One.Size <> Two.Size);
 end;
 
-function DiffPara(One, Two: TJvParaAttributes): Boolean;
+function DiffPara(One, Two: TJvParaAttributesRec): Boolean;
 begin
   Result := (One.Alignment <> Two.Alignment) or (One.Numbering <> Two.Numbering);
 end;
@@ -184,7 +184,7 @@ procedure TJvRichEditToHtml.ConvertToHtmlStringList(Value: TRichEdit; Strings: T
 var
   I, J, K: Integer;
   Datt, Att, CurrAt: TFont;
-  DPara, Para, CurrPara: TJvParaAttributes;
+  DPara, Para, CurrPara: TJvParaAttributesRec;
   St: string;
   FEnd: string;
 begin

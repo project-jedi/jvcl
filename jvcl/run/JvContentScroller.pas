@@ -39,7 +39,7 @@ uses
 
 type
   TMediaFilename = string;
-  TJvScrollDirection = (sdUp, sdDown);
+  TJvContentScrollDirection = (sdUp, sdDown);
   TJvScrollAmount = 1..MaxWord;
 
   TJvContentScroller = class(TJvCustomPanel)
@@ -54,7 +54,7 @@ type
     FOnAfterScroll: TNotifyEvent;
     FLoopMedia: Boolean;
     FScrollLength: TJvScrollAmount;
-    FScrollDirection: TJvScrollDirection;
+    FScrollDirection: TJvContentScrollDirection;
     FLoopCount: Integer;
     FCurLoop: Integer;
 //    FScrollStart: Integer;
@@ -67,7 +67,7 @@ type
     procedure FreeTimer;
     procedure SetLoopMedia(Value: Boolean);
     procedure SetScrollLength(Value: TJvScrollAmount);
-    procedure SeTJvScrollDirection(Value: TJvScrollDirection);
+    procedure SeTJvScrollDirection(Value: TJvContentScrollDirection);
     procedure SetLoopCount(Value: Integer);
 //    procedure SetScrollStart(const Value: Integer);
     { Private declarations }
@@ -144,7 +144,7 @@ type
     property ScrollAmount: TJvScrollAmount read FScrollAmount write SeTJvScrollAmount default 10;
     property ScrollIntervall: TJvScrollAmount read FScrollIntervall write SetScrollIntervall default 50;
     property ScrollLength: TJvScrollAmount read FScrollLength write SetScrollLength default 250;
-    property ScrollDirection: TJvScrollDirection read FScrollDirection write SeTJvScrollDirection default sdUp;
+    property ScrollDirection: TJvContentScrollDirection read FScrollDirection write SeTJvScrollDirection default sdUp;
 //    property ScrollStart:Integer read FScrollStart write SetScrollStart;
     property MediaFile: TMediaFilename read FMediaFile write SetMediaFile;
     property LoopMedia: Boolean read FLoopMedia write SetLoopMedia default True;
@@ -335,7 +335,7 @@ begin
     FScrollLength := Value;
 end;
 
-procedure TJvContentScroller.SeTJvScrollDirection(Value: TJvScrollDirection);
+procedure TJvContentScroller.SeTJvScrollDirection(Value: TJvContentScrollDirection);
 begin
   if (FScrollDirection <> Value) and not FActive then
     FScrollDirection := Value;
