@@ -1493,7 +1493,7 @@ object frmMain: TfrmMain
       Action = actDelete
     end
   end
-  object jaxStore: TJvAppXMLStorage
+  object jaxStore: TJvAppXMLFileStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     RootNodeName = 'Configuration'
