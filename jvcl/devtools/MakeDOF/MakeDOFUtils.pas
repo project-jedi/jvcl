@@ -34,10 +34,12 @@ begin
   Result := '';
   if Dir <> '' then
   begin
-    Result := '..';
+    Result := '';
     for i := 1 to Length(Dir) do
       if Dir[i] = PathDelim then
-        Result := Result + '\..';
+        Result := Result + '..\';
+    while (Length(Result) > 0) and (Result[Length(Result)] = PathDelim) do
+      SetLength(Result, Length(Result) - 1);
   end;
 end;
 
