@@ -37,8 +37,7 @@ uses
   {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QForms, QExtCtrls, QButtons,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
-  JvClxUtils, JvComponent;
+  SysUtils, Classes, JvComponent;
 
 type
   TArrayButtonClicked = procedure(ACol, ARow: Integer) of object;
@@ -256,7 +255,7 @@ var
       Frame3D(Self.Canvas, R, clBtnHighlight, clBlack, 1);
     end;
     if Cap <> '' then
-      ClxDrawText(Canvas, Cap, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      DrawText(Canvas.Handle, PChar(Cap), -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 
   procedure DrawDown;
@@ -277,7 +276,7 @@ var
       Frame3D(Self.Canvas, R, clblack, clBtnHighlight, 1);
     end;
     if Cap <> '' then
-      ClxDrawText(Canvas, Cap, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      DrawText(Canvas.Handle, PChar(Cap), -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 
 begin
