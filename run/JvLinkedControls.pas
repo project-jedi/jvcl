@@ -39,7 +39,7 @@ uses
   Classes;
 
 type
-  TJvLinkedControlsOption = (loLinkChecked, loLinkEnabled);
+  TJvLinkedControlsOption = (loLinkChecked, loLinkEnabled, loInvertChecked, loInvertEnabled);
   TJvLinkedControlsOptions = set of TJvLinkedControlsOption;
 
   TJvLinkedControl = class(TCollectionItem)
@@ -84,10 +84,18 @@ type
     property RestoreEnabled: Boolean read FRestoreEnabled write FRestoreEnabled default True;
   end;
 
+function CheckLinkControlEnabled(Enabled, Checked:Boolean; Options:TJvLinkedControlsOptions):boolean;
+
 implementation
 
 uses
   JvResources;
+
+function CheckLinkControlEnabled(Enabled, Checked:Boolean; Options:TJvLinkedControlsOptions):boolean;
+begin
+  Result := ((loLinkChecked in Options) and (Checked or (loInvertChecked in Options))) or
+            ((loLinkEnabled in Options) and (Enabled or (loInvertEnabled in Options)));
+end;
 
 //=== TJvLinkedControl =======================================================
 
