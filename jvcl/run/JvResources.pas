@@ -1291,20 +1291,18 @@ resourcestring
 //=== JvMemoryDataset.pas ====================================================
 resourcestring
   RsEMemNoRecords = 'No data found';
-  // Added by CFZ 2004/03/03
-  // 'Los registros aplicados, difieren de los cambiados.';
-  //SNoExactApply = 'The applied records differs from the changed records.';
-  // 'Record already exists.Registro ya existente.';
-  SRecordDuplicate = 'Record already exists.';
+  //----------------- Added by CFZ ------------------
+  // 'Registro ya existente.';
+  RsERecordDuplicate = 'Record already exists.';
   // 'Registro no encontrado.';
-  SRecordInexistent = 'Record not found.';
+  RsERecordInexistent = 'Record not found.';
   // 'No se pudo agregar el registro.';
-  SInsertError = 'Impossible append the record.';
+  RsEInsertError = 'Unable to append the record.';
   // 'No se pudo modificar el registro.';
-  SUpdateError = 'Impossible modify the record.';
+  RsEUpdateError = 'Unable to modify the record.';
   // 'No se pudo eliminar el registro.';
-  SDeleteError = 'Impossible erase the record.';
-  //--------------------------------------------------------------------
+  RsEDeleteError = 'Unable to erase the record.';
+  //-------------------------------------------------
 
 //=== JvMouseGesture.pas =====================================================
 resourcestring
