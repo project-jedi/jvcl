@@ -537,7 +537,8 @@ begin
         InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
         FErrorText := Buffer;
         FreeMem(Buffer);
-        Error;
+        Buffer := nil;
+        Synchronize(Error);
         Exit;
       end;
 
@@ -584,7 +585,7 @@ begin
             Inc(dwTotalBytes, dwBytesRead);
             Grabber.FBytesRead := dwTotalBytes;
             Grabber.FStream.Write(Buf, dwBytesRead);
-            DoProgress;
+            Synchronize(Progress);
           end;
         end;
         if FContinue and not Terminated then
