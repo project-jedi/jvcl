@@ -71,10 +71,10 @@ const
   ALLProcedures = [OIDProcFieldIn, OIDProcFieldOut];
   ALLUDFs = [OIDUDFField];
   {$IFDEF LINUX}
-    BreakLine = #10;
+  BreakLine = #10;
   {$ELSE}
-    BreakLine = #13;
-  {$ENDIF}
+  BreakLine = #13;
+  {$ENDIF LINUX}
   NewLine = BreakLine + BreakLine;
 
 resourcestring
@@ -109,6 +109,10 @@ resourcestring
   EUIB_TABLESTRNOTFOUND    = 'Table "%s" not found.';
   EUIB_DOMAINSTRNOTFOUND   = 'Domain %s not found.';
   EUIB_PROCSTRNOTFOUND     = 'Procedure %s not found.';
+  EUIB_CACHEDFETCHNOTSET   = 'CachedFetch property not set to True.';
+  EUIB_PARSESQLDIALECT     = 'Parse error: SET SQL DIALECT';
+  EUIB_PARSESETNAMES       = 'Parse error: SET NAMES';
+  EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Can''t connect to server.';
@@ -147,6 +151,10 @@ resourcestring
   EUIB_TABLESTRNOTFOUND    = 'Table "%s" not found.';
   EUIB_DOMAINSTRNOTFOUND   = 'Domain %s not found.';
   EUIB_PROCSTRNOTFOUND     = 'Procedure %s not found.';
+  EUIB_CACHEDFETCHNOTSET   = 'CachedFetch property not set to True.';
+  EUIB_PARSESQLDIALECT     = 'Parse error: SET SQL DIALECT';
+  EUIB_PARSESETNAMES       = 'Parse error: SET NAMES';
+  EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Impossible de se connecter au serveur.';
@@ -185,6 +193,10 @@ resourcestring
   EUIB_TABLESTRNOTFOUND    = 'Table "%s" not found.';
   EUIB_DOMAINSTRNOTFOUND   = 'Domain %s not found.';
   EUIB_PROCSTRNOTFOUND     = 'Procedure %s not found.';
+  EUIB_CACHEDFETCHNOTSET   = 'CachedFetch property not set to True.';
+  EUIB_PARSESQLDIALECT     = 'Parse error: SET SQL DIALECT';
+  EUIB_PARSESETNAMES       = 'Parse error: SET NAMES';
+  EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Nelze pшipojit server.';
@@ -223,6 +235,10 @@ resourcestring
   EUIB_TABLESTRNOTFOUND    = 'Tabelle "%s" nicht gefunden.';
   EUIB_DOMAINSTRNOTFOUND   = 'Domдne %s nicht gefunden.';
   EUIB_PROCSTRNOTFOUND     = 'Prozedur %s nicht gefunden.';
+  EUIB_CACHEDFETCHNOTSET   = 'CachedFetch property ist nicht auf True gesetzt.';
+  EUIB_PARSESQLDIALECT     = 'Parse-Fehler: SET SQL DIALECT';
+  EUIB_PARSESETNAMES       = 'Parse-Fehler: SET NAMES';
+  EUIB_BADAUTODLL          = '"SET AUTODDL" Parameter muss "ON" oder "OFF" lauten.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Verbindung zum Server kann nicht aufgebaut werden.';
@@ -261,6 +277,10 @@ resourcestring
   EUIB_TABLESTRNOTFOUND    = 'Table "%s" not found.';
   EUIB_DOMAINSTRNOTFOUND   = 'Domain %s not found.';
   EUIB_PROCSTRNOTFOUND     = 'Procedure %s not found.';
+  EUIB_CACHEDFETCHNOTSET   = 'CachedFetch property not set to True.';
+  EUIB_PARSESQLDIALECT     = 'Parse error: SET SQL DIALECT';
+  EUIB_PARSESETNAMES       = 'Parse error: SET NAMES';
+  EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Не могу установить соединение с сервером.';
@@ -299,6 +319,10 @@ resourcestring
   EUIB_TABLESTRNOTFOUND    = 'Table "%s" not found.';
   EUIB_DOMAINSTRNOTFOUND   = 'Domain %s not found.';
   EUIB_PROCSTRNOTFOUND     = 'Procedure %s not found.';
+  EUIB_CACHEDFETCHNOTSET   = 'CachedFetch property not set to True.';
+  EUIB_PARSESQLDIALECT     = 'Parse error: SET SQL DIALECT';
+  EUIB_PARSESETNAMES       = 'Parse error: SET NAMES';
+  EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Imposible conectar con el servidor.';
