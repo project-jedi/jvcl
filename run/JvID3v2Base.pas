@@ -1192,7 +1192,7 @@ uses
   {$IFNDEF COMPILER6_UP}
   Forms,
   {$ENDIF}
-  JclFileUtils, JclLogic, JclDateTime,
+  JclBase, JclFileUtils, JclLogic, JclDateTime,
   JvConsts;
 
 var
