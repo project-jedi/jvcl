@@ -3,6 +3,7 @@
 #include <basepch.h>
 #pragma hdrstop
 USEFORMNS("..\..\run\JvProfilerForm.pas", Jvprofilerform, ProfReport);
+USEFORMNS("..\..\run\JvLogForm.pas", Jvlogform, FoLog);
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
