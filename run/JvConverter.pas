@@ -29,8 +29,8 @@ unit JvConverter;
 interface
 
 uses
-  SysUtils, Classes,
-  JvTypes, JvComponent;
+  Classes, SysUtils,
+  JvComponent, JvTypes;
 
 type
 
@@ -89,8 +89,8 @@ type
     FRaiseOnError: Boolean;
     FOnChange: TNotifyEvent;
     procedure SetDataType(Value: TDataType);
-    procedure SeTJvDateTimeFormat(Value: TJvDateTimeFormat);
-    function GeTJvDateTimeFormat: TJvDateTimeFormat;
+    procedure SetDateTimeFormat(Value: TJvDateTimeFormat);
+    function GetDateTimeFormat: TJvDateTimeFormat;
     function GetString: string;
     procedure SetString(const Value: string);
     function GetDateTime: TDateTime;
@@ -130,7 +130,7 @@ type
     property AsString: string read GetAsString write SetAsString;
   published
     property DataType: TDataType read FDataType write SetDataType default dtString;
-    property DateTimeFormat: TJvDateTimeFormat read GeTJvDateTimeFormat write SeTJvDateTimeFormat;
+    property DateTimeFormat: TJvDateTimeFormat read GetDateTimeFormat write SetDateTimeFormat;
     property Digits: Integer read FDigits write FDigits default 2;
     property DisplayFalse: string index 0 read GetBoolValues write SetBoolValues;
     property DisplayTrue: string index 1 read GetBoolValues write SetBoolValues;
@@ -331,12 +331,12 @@ begin
   FData := Value;
 end;
 
-function TJvConverter.GeTJvDateTimeFormat: TJvDateTimeFormat;
+function TJvConverter.GetDateTimeFormat: TJvDateTimeFormat;
 begin
   Result := FDateTimeFormat;
 end;
 
-procedure TJvConverter.SeTJvDateTimeFormat(Value: TJvDateTimeFormat);
+procedure TJvConverter.SetDateTimeFormat(Value: TJvDateTimeFormat);
 begin
   FDateTimeFormat.Assign(Value);
 end;

@@ -62,7 +62,8 @@ type
 implementation
 
 uses
-  SysUtils, JvResources;
+  SysUtils,
+  JvResources;
 
 procedure DestroyAndNilCursor(var Handle: HICON);
 begin
