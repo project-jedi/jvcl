@@ -53,6 +53,8 @@ type
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
 
+    function DefaultExtension : string; override;
+
     function GetRootNodeName: string;
     procedure SetRootNodeName(const Value: string);
     // Returns the last node in path, if it exists.
@@ -105,6 +107,7 @@ type
     property FileName;
     property Location;
     property RootNodeName;
+    property SubStorages;
     property OnGetFileName;
   end;
 
@@ -633,6 +636,11 @@ end;
 procedure TJvCustomAppXMLStorage.SetAsString(const Value: string);
 begin
   Xml.LoadFromString(Value);
+end;
+
+function TJvCustomAppXMLStorage.DefaultExtension : string;
+begin
+  Result := 'xml';
 end;
 
 //=== { TJvAppXMLFileStorage } ===============================================
