@@ -35,11 +35,8 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvTFManager, JvTFGlance, JvTFUtils{$IFDEF UseJVCL}, JvTypes{$ENDIF};
 
+{$HPPEMIT '#define TDate Controls::TDate'}
 type
-{$IFDEF BCB}
-  TDate = TDateTime;
-{$ENDIF}
-
   TJvTFDispOrder = (doLeftRight, doTopBottom);
 
   TJvTFWeeks = class(TJvTFCustomGlance)
@@ -106,6 +103,8 @@ type
 //    property Navigator;
 //    property OnNavigate;
   end;
+
+{$HPPEMIT '#undef TDate'}
 
 implementation
 

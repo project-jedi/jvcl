@@ -33,11 +33,8 @@ uses
   Windows, ShellApi, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, Menus, Clipbrd;
 
+{$HPPEMIT '#define TDate Controls::TDate'}
 type
-{$IFDEF BCB}
-  TDate = TDateTime;
-{$ENDIF}
-
   TYearData = record
     DisPlaytext: string;
     InfoText: string;
@@ -128,6 +125,7 @@ type
     property onInfoChanging: TOnInfoChanging read FonInfoChanging write SeTOnInfoChanging;
   end;
 
+{$HPPEMIT '#undef TDate'}
 
 resourcestring
   sYearGrid = 'YearGrid';
