@@ -290,12 +290,8 @@ implementation
 
 uses
   CommCtrl, Buttons, SysUtils,
+  JvThemes,
   {$IFDEF JVCLThemesEnabled}
-  {$IFDEF COMPILER7_UP}
-  Themes,
-  {$ELSE}
-  ThemeSrv,
-  {$ENDIF COMPILER7_UP}
   UxTheme, JvJVCLUtils,
   {$ENDIF JVCLThemesEnabled}
   JvDsgnIntf;

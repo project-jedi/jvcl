@@ -493,9 +493,7 @@ type
 implementation
 
 uses
-  {$IFDEF JVCLThemesEnabled}
-  Themes,
-  {$ENDIF}
+  JvThemes,
   {$IFDEF COMPILER6_UP}
   DateUtils,
   {$ENDIF COMPILER6_UP}

@@ -1738,7 +1738,7 @@ begin
               if aDateTime <= 1.0 then
               begin
                 if Length(TempString)>0 then
-                  aDateTime := TimeTAsciiToDateTime(TempString);
+                  {aDateTime := }TimeTAsciiToDateTime(TempString);
                 Result := false; { field is NULL, no date/time value }
                 Exit;
               end;

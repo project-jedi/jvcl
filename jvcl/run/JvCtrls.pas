@@ -272,10 +272,7 @@ implementation
 
 uses
   Consts,
-  {$IFDEF JVCLThemesEnabled}
-  Themes,
-  {$ENDIF}
-  JvJVCLUtils;
+  JvThemes, JvJVCLUtils;
 
 {$R ..\resources\JvCtrls.res}
 

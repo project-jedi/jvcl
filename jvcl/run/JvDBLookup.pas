@@ -630,10 +630,7 @@ implementation
 
 uses
   DBConsts, Dialogs, Math,
-  {$IFDEF JVCLThemesEnabled}
-  Themes,
-  {$ENDIF}
-  JvJVCLUtils, JvJCLUtils;
+  JvThemes, JvJVCLUtils, JvJCLUtils;
 
 procedure CheckLookupFormat(const AFormat: string);
 var
@@ -732,17 +729,15 @@ var
 
 constructor TJvLookupControl.Create(AOwner: TComponent);
 const
-  {$IFDEF JVCLThemesEnabled}
-  LookupStyle = [csOpaque, csNeedsBorderPaint];
-  {$ELSE}
   LookupStyle = [csOpaque];
-  {$ENDIF}
 begin
   inherited Create(AOwner);
   if NewStyleControls then
     ControlStyle := LookupStyle
   else
     ControlStyle := LookupStyle + [csFramed];
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
+
   ParentColor := False;
   TabStop := True;
   FFieldsDelimiter := DefFieldsDelimiter;

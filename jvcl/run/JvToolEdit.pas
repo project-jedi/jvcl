@@ -41,7 +41,7 @@ uses
 {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
 {$ENDIF}
-  JvComponent, JvxCtrls, JvJCLutils, JvTypes;
+  JvComponent, JvxCtrls, JvJCLUtils, JvTypes;
 
 const
   scAltDown = scAlt + VK_DOWN;
@@ -794,11 +794,7 @@ implementation
 
 uses
   ShellAPI, Consts, Math,
-{$IFDEF JVCLThemesEnabled}
-  Themes,
-{$ENDIF}
-  ExtDlgs,
-  JvConsts, JvJVCLUtils, JvPickDate, JvBrowseFolder;
+  JvThemes, ExtDlgs, JvConsts, JvJVCLUtils, JvPickDate, JvBrowseFolder;
 
 {$R ..\resources\JvToolEdit.res}
 

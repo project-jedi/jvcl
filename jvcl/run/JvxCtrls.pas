@@ -958,13 +958,8 @@ implementation
 {$R ..\resources\JvxCtrls.res}
 
 uses
-  SysUtils, Consts, Math,
-  ActnList,
-  {$IFDEF JVCLThemesEnabled}
-  Themes,
-  {$ENDIF}
-  CommCtrl,
-  JvJVCLUtils;
+  SysUtils, Consts, Math, ActnList, CommCtrl,
+  JvThemes, JvJVCLUtils;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);

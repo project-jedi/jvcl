@@ -597,7 +597,7 @@ implementation
 uses
   OleCtnrs,
   Printers, ComStrs, OleConst, OleDlg, Math,
-  JvTypes;
+  JvThemes, JvTypes;
 
 const
   RTFConversionFormat: TRichConversionFormat =
@@ -3284,11 +3284,8 @@ var
   DC: HDC;
 begin
   inherited Create(AOwner);
-{$IFDEF JVCLThemesEnabled}
-  ControlStyle := ControlStyle + [csAcceptsControls, csNeedsBorderPaint] - [csSetCaption];
-{$ELSE}
   ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
-{$ENDIF}
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
   FHintColor := clInfoBk;
   FSelAttributes := TJvTextAttributes.Create(Self, atSelected);
   FDefAttributes := TJvTextAttributes.Create(Self, atDefaultText);
