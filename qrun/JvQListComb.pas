@@ -46,8 +46,8 @@ interface
 uses 
   Qt, 
   QWindows, QMessages,
-  SysUtils, Classes, QGraphics, QControls, QExtCtrls, QStdCtrls, QImgList, 
-  JvQComponent, JvQExControls, JvQExStdCtrls;
+  SysUtils, Classes, QGraphics, QControls, QExtCtrls, QStdCtrls, QImgList,
+  JvQJCLUtils, JvQComboBox, JvQComponent, JvQExControls, JvQExStdCtrls;
 
 type
   TJvButtonColors = (fsLighter, fsLight, fsMedium, fsDark, fsDarker);
@@ -102,6 +102,7 @@ type
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+    property LinkedObject: TObject read FLinkedObject write FLinkedObject;
   published
     // ListPropertiesUsed must come before properties named the same
     // as in the list or the component will not be created
@@ -114,7 +115,6 @@ type
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
     property Indent: Integer read FIndent write SetIndent default 2;
     property Text: string read GetText write SetText;
-    property LinkedObject: TObject read FLinkedObject write FLinkedObject;
   end;
 
   TJvImageItems = class(TOwnedCollection)
@@ -134,14 +134,13 @@ type
     property Items[Index: Integer]: TJvImageItem read GetItems write SetItems; default;
     property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
   end;
-  
-  TJvImageComboBox = class(TCustomComboBox, IUnknown, IJvResetItemHeight) 
+
+  TJvImageComboBox = class(TJvCustomComboBox, IUnknown, IJvResetItemHeight)
   private
     FItems: TJvImageItems;
     FImageList: TCustomImageList;
     FDefaultIndent: Integer;
     FChangeLink: TChangeLink;
-    MouseInControl: Boolean;
     FImageWidth: Integer;
     FImageHeight: Integer;
     FColorHighlight: TColor;
@@ -164,13 +163,11 @@ type
     { IJvResetItemHeight }
     procedure ResetItemHeight;
   protected
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
     procedure FontChanged; override;
     procedure EnabledChanged; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;  
-    procedure RecreateWidget;
-    procedure CreateWidget; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure RecreateWnd;
+    procedure CreateWnd; override;  
     function DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): Boolean; override;
     procedure MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
                           var Height, Width: Integer); override;
@@ -264,8 +261,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override; 
-  published 
-    property Anchors; 
+  published
+    property Anchors;
     property Align;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property BorderStyle;
@@ -620,29 +617,23 @@ begin
     begin
       FWidth := 0;
       FHeight := 0;
-    end; }  
-    RecreateWidget; 
+    end; }
+    ResetItemHeight;
+    //RecreateWnd;
   end;
 end;
 
-
-
-
-procedure TJvImageComboBox.CreateWidget;
+procedure TJvImageComboBox.CreateWnd;
 begin
-  inherited CreateWidget;
+  inherited CreateWnd;
   SetDroppedWidth(FDroppedWidth);
 end;
 
-procedure TJvImageComboBox.RecreateWidget;
+procedure TJvImageComboBox.RecreateWnd;
 begin
-  inherited RecreateWidget;
+  inherited RecreateWnd;
   SetDroppedWidth(FDroppedWidth);
 end;
-
-
-
-
 
 procedure TJvImageComboBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
@@ -753,9 +744,6 @@ procedure TJvImageComboBox.MeasureItem(Control: TWinControl; Item: QClxListBoxIt
                           var Height, Width: Integer);
 begin
   Height := Max(GetItemHeight(Font) + 4, FImageList.Height + (Ord(ButtonFrame) * 4));
-//  Height := GetItemHeight(Font) + 4 ;
-//  if Assigned(FImageList) then
-//    Height := Max(Height, FImageList.Height + (Ord(ButtonFrame) * 4));
 end;
 
 procedure TJvImageComboBox.SetParent(const AParent: TWidgetControl);
@@ -802,9 +790,8 @@ end;
 
 procedure TJvImageComboBox.FontChanged;
 begin
-  inherited FontChanged;
-  ResetItemHeight;  
-  RecreateWidget; 
+  inherited FontChanged;  
+  ResetItemHeight;
 end;
 
 procedure TJvImageComboBox.ResetItemHeight;
@@ -812,6 +799,8 @@ var
   MaxImageHeight: Integer;
   I: Integer;
 begin
+  if (csRecreating in ControlState) then
+    Exit;
   MaxImageHeight := GetImageHeight(-1);
   for I := 0 to FItems.Count-1 do
   begin
@@ -835,18 +824,6 @@ const
 begin
   inherited EnabledChanged;
   Color := EnableColors[Enabled];
-end;
-
-procedure TJvImageComboBox.MouseEnter(AControl: TControl);
-begin
-  inherited MouseEnter(AControl);
-  MouseInControl := True;
-end;
-
-procedure TJvImageComboBox.MouseLeave(AControl: TControl);
-begin
-  inherited MouseLeave(AControl);
-  MouseInControl := False;
 end;
 
 procedure TJvImageComboBox.SetDefaultIndent(const Value: Integer);
@@ -952,8 +929,7 @@ begin
       FWidth := 0;
       FHeight := 0;
     end;}
-    ResetItemHeight;  
-    RecreateWidget; 
+    ResetItemHeight;
   end;
 end;
 
@@ -965,8 +941,6 @@ begin
     ResetItemHeight;
   end;
 end;
-
-
 
 procedure TJvImageListBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
@@ -993,10 +967,7 @@ begin
   end;
 end;
 
-
-
 function TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean;
-
 var
   SavedColor: TColor;
 begin 
@@ -1221,10 +1192,6 @@ begin
   end;
 end;
 
-
-
-
-
 procedure TJvImageListBox.MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
                           var Height, Width: Integer);
 begin
@@ -1238,13 +1205,10 @@ begin
 end;
 
 
-
-
 procedure TJvImageListBox.FontChanged;
 begin
-  inherited FontChanged;
-  ResetItemHeight;  
-  RecreateWidget; 
+  inherited FontChanged;  
+  ResetItemHeight;
 end;
 
 procedure TJvImageListBox.ResetItemHeight;
@@ -1252,6 +1216,8 @@ var
   MaxImageHeight: Integer;
   I: Integer;
 begin
+  if csRecreating in ControlState then
+    Exit;
   MaxImageHeight := GetImageHeight(-1);
   for I := 0 to FItems.Count-1 do
   begin
