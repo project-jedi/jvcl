@@ -149,7 +149,6 @@ type
     procedure actDeleteExecute(Sender: TObject);
     procedure actOptionsExecute(Sender: TObject);
     procedure actOptionsUpdate(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
     procedure btnEditModelClick(Sender: TObject);
     procedure cmbModelClick(Sender: TObject);
   private
@@ -884,17 +883,14 @@ begin
   actOptions.Checked := pnlOptions.Visible;
 end;
 
-procedure TfrmMain.Button1Click(Sender: TObject);
-begin
-  frmModels.ShowModal;
-  jaxStore.Reload;
-end;
-
 procedure TfrmMain.btnEditModelClick(Sender: TObject);
 begin
   frmModels.EditIndex := cmbModel.ItemIndex;
   if frmModels.ShowModal = mrOk then
+  begin
     cmbModel.ItemIndex := frmModels.cmbModels.ItemIndex;
+    jaxStore.Reload;
+  end;
 end;
 
 procedure TfrmMain.cmbModelClick(Sender: TObject);
