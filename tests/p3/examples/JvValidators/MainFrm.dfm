@@ -14,9 +14,6 @@ object frmMain: TfrmMain
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    622
-    243)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

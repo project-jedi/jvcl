@@ -15,9 +15,6 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   ShowHint = True
   OnCreate = FormCreate
-  DesignSize = (
-    607
-    600)
   PixelsPerInch = 96
   TextHeight = 13
   object JvLabel1: TLabel
@@ -132,9 +129,6 @@ object frmMain: TfrmMain
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Options: '
     TabOrder = 6
-    DesignSize = (
-      356
-      257)
     object Label1: TLabel
       Left = 16
       Top = 200

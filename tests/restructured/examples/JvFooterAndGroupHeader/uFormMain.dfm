@@ -49,9 +49,6 @@ object Form1: TForm1
     Width = 494
     Height = 37
     Align = alBottom
-    DesignSize = (
-      494
-      37)
     object JvFooterBtn1: TJvFooterBtn
       Left = 5
       Top = 9
@@ -95,9 +92,6 @@ object Form1: TForm1
     Width = 494
     Height = 37
     Align = alBottom
-    DesignSize = (
-      494
-      37)
     object JvFooterBtn4: TJvFooterBtn
       Left = 260
       Top = 9
@@ -139,9 +133,6 @@ object Form1: TForm1
     Width = 494
     Height = 37
     Align = alBottom
-    DesignSize = (
-      494
-      37)
     object JvFooterBtn7: TJvFooterBtn
       Left = 210
       Top = 9

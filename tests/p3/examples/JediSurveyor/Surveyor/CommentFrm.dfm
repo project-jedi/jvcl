@@ -10,9 +10,6 @@ object frmComment: TfrmComment
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poMainFormCenter
-  DesignSize = (
-    373
-    294)
   PixelsPerInch = 96
   TextHeight = 13
   object btnOK: TButton

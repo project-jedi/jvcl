@@ -26,9 +26,6 @@ object frmJvCharEditDlg: TfrmJvCharEditDlg
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      523
-      41)
     object btnOK: TButton
       Left = 350
       Top = 9

@@ -67,8 +67,9 @@ object Form1: TForm1
       Items.Strings = (
         'http://jvcl.sf.net'
         'http://jcl.sf.net'
-        'http://www.bdn.com'
+        'http://delphi-jedi.org'
         'http://www.borland.com'
+        'http://bdn.borland.com'
         'http://msdn.microsoft.com'
         'http://www.microsoft.com'
         'www.google.com'

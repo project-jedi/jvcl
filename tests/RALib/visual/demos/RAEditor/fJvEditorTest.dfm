@@ -23,7 +23,6 @@ object frmEditor: TfrmEditor
     Height = 349
     ActivePage = TabSheet12
     Align = alClient
-    TabIndex = 9
     TabOrder = 0
     TabStop = False
     OnChange = PageControl1Change

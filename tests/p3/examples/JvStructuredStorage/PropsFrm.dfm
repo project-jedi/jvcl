@@ -18,9 +18,6 @@ object frmProps: TfrmProps
   OldCreateOrder = False
   Position = poMainFormCenter
   ShowHint = True
-  DesignSize = (
-    331
-    358)
   PixelsPerInch = 96
   TextHeight = 13
   object TabControl1: TTabControl
@@ -33,9 +30,6 @@ object frmProps: TfrmProps
     Tabs.Strings = (
       'General')
     TabIndex = 0
-    DesignSize = (
-      321
-      309)
     object Label1: TLabel
       Left = 12
       Top = 32

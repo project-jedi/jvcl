@@ -8,9 +8,9 @@ object Form1: TForm1
   ClientWidth = 451
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
+  Font.Color = clWhite
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
   OnShow = FormShow
@@ -10389,15 +10389,15 @@ object Form1: TForm1
   object Label2: TLabel
     Left = 210
     Top = 210
-    Width = 175
+    Width = 180
     Height = 13
     Caption = 'This label won'#39't be visible at run-time!'
     ShowAccelChar = False
     Transparent = True
   end
   object Label3: TLabel
-    Left = 356
-    Top = 24
+    Left = 362
+    Top = 168
     Width = 31
     Height = 16
     Cursor = crHandPoint
@@ -10410,5 +10410,25 @@ object Form1: TForm1
     ParentFont = False
     Transparent = True
     OnClick = Label3Click
+  end
+  object Label4: TLabel
+    Left = 324
+    Top = 168
+    Width = 26
+    Height = 16
+    Cursor = crHandPoint
+    Caption = 'Print'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -13
+    Font.Name = 'MS Shell Dlg 2'
+    Font.Style = [fsUnderline]
+    ParentFont = False
+    Transparent = True
+    OnClick = Label4Click
+  end
+  object PrintDialog1: TPrintDialog
+    Left = 252
+    Top = 120
   end
 end
