@@ -708,7 +708,15 @@ begin
     GetEnvironmentVariable('PATH', PChar(Path), Length(Path));
     if not StartsText(Root + ';' + BplDir + ';' + LibDir + ';', Path) then
     begin
-      Path := Root + ';' + BplDir + ';' + LibDir + ';' + Path;
+      if LibDir <> BplDir then
+        Path := Root + ';' + BplDir + ';' + LibDir + ';' + Path
+      else
+        Path := Root + ';' + BplDir + ';' + Path;
+     // Some systems have problems with really large paths. So we limit the path
+     // environment variable.
+      if Length(Path) > 440 then
+        SetLength(Path, 440); // 5 1/2 console lines
+
       SetEnvironmentVariable('PATH', PChar(Path));
     end;
     SetEnvironmentVariable('BPLDIR', Pointer(BplDir));
