@@ -90,6 +90,8 @@ type
     
     // Called whenever the list of Urls has changed
     procedure URLsChange(Sender : TObject);
+
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -153,7 +155,7 @@ type
   // in the property editor for each object is the same, DefaultProperties
   // Hence, the need for an editor for TJvUrlGrabberDefPropEdTrick that
   // displays a meaningful name instead
-  TJvUrlGrabberDefPropEdTrick = class(TJvPersistent)
+  TJvUrlGrabberDefPropEdTrick = class(TPersistent)
   private
     FDefaultProperties: TJvCustomUrlGrabberDefaultProperties;
   public
@@ -188,6 +190,9 @@ type
     constructor Create(AOwner: TJvUrlGrabberDefaultPropertiesList); reintroduce; virtual;
     destructor Destroy; override;
 
+    // for some odd reason, Assign needs to be overriden
+    procedure Assign(Source: TPersistent); override;
+
     property EditorTrick: TJvUrlGrabberDefPropEdTrick read FEditorTrick;
     property SupportedURLName: string read GetSupportedURLName;
   published
@@ -199,7 +204,7 @@ type
 
   TJvCustomUrlGrabberDefaultPropertiesClass = class of TJvCustomUrlGrabberDefaultProperties;
 
-  TJvUrlGrabberDefaultPropertiesList = class(TJvPersistent)
+  TJvUrlGrabberDefaultPropertiesList = class(TPersistent)
   private
     function GetItemsNamed(Name: string): TJvCustomUrlGrabberDefaultProperties;
   protected
@@ -210,6 +215,10 @@ type
   public
     constructor Create(AOwner: TJvUrlListGrabber); reintroduce; virtual;
     destructor Destroy; override;
+
+    procedure Read(Reader: TReader);
+    procedure Write(Writer: TWriter);
+
     procedure Clear;
     procedure Add(Item: TJvCustomUrlGrabberDefaultProperties);
     property Count: Integer read GetCount;
@@ -281,6 +290,7 @@ type
     
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; virtual; abstract;
   public
+    constructor Create(AOwner: TComponent); overload; override;
     constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); reintroduce; overload; virtual;
     destructor Destroy; override;
 
@@ -405,7 +415,7 @@ function JvUrlGrabberClassList: TJvUrlGrabberClassList;
 implementation
 
 uses
-  JvResources, JvFinalize;
+  JvConsts, JvResources, JvFinalize;
 
 const
   sUnitName = 'JvUrlListGrabber';
@@ -529,6 +539,12 @@ begin
   end;
 end;
 
+procedure TJvUrlListGrabber.DefineProperties(Filer: TFiler);
+begin
+  inherited;
+  Filer.DefineProperty('DefaultGrabbersPropertiesList', DefaultGrabbersProperties.Read, DefaultGrabbersProperties.Write, True);
+end;
+
 //=== TJvCustomUrlGrabber ==========================================================
 
 constructor TJvCustomUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
@@ -543,6 +559,18 @@ begin
   Password := DefaultProperties.Password;
   FileName := DefaultProperties.FileName;
   OutputMode := DefaultProperties.OutputMode;
+end;
+
+constructor TJvCustomUrlGrabber.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  // Set default properties
+  Agent := JediAgent;
+  UserName := '';
+  Password := '';
+  FileName := DefaultOutputFileName;
+  OutputMode := omFile;
 end;
 
 destructor TJvCustomUrlGrabber.Destroy;
@@ -733,16 +761,11 @@ begin
     Host := Value;
 end;
 
-//=== TJvUrlGrabberDefaultPropertiesCollection ===============================
+//=== TJvUrlGrabberDefaultPropertiesList ===============================
 
 constructor TJvUrlGrabberDefaultPropertiesList.Create(AOwner: TJvUrlListGrabber);
 begin
-  {$IFDEF COMPILER6_UP}
-  inherited Create(AOwner);
-  Name := 'DefaultProperties';
-  {$ELSE}
   inherited Create;
-  {$ENDIF COMPILER6_UP}
   FItems := TObjectList.Create(True);
   JvUrlGrabberClassList.Populate(Self);
 end;
@@ -797,29 +820,166 @@ end;
 
 constructor TJvUrlGrabberDefPropEdTrick.Create(GrabberDefaults: TJvCustomUrlGrabberDefaultProperties);
 begin
-  FDefaultProperties := GrabberDefaults;
+  if Assigned(GrabberDefaults) then
+    FDefaultProperties := GrabberDefaults;
 end;
 
 //=== TJvCustomUrlGrabberDefaultProperties =========================================
 
+procedure TJvCustomUrlGrabberDefaultProperties.Assign(Source: TPersistent);
+begin
+  if Source is TJvCustomUrlGrabberDefaultProperties then
+  begin
+    with Source as TJvCustomUrlGrabberDefaultProperties do
+    begin
+      Self.Agent := Agent;
+      Self.Password := Password;
+      Self.UserName := UserName;
+      Self.FileName := FileName;
+      Self.OutputMode := OutputMode;
+    end;
+  end
+  else
+    inherited;
+end;
+
 constructor TJvCustomUrlGrabberDefaultProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
 begin
-  {$IFDEF COMPILER6_UP_}
-  inherited Create(AOwner);
-  Name := GetSupportedUrlName;
-  {$ELSE}
   inherited Create;
-  {$ENDIF COMPILER6_UP}
   FEditorTrick := TJvUrlGrabberDefPropEdTrick.Create(Self);
-  // (rom) needs to be a resourcestring (and a better name)
-  FFileName := 'output.txt';
-  FAgent := 'JEDI-VCL';
+
+  FFileName := DefaultOutputFileName;
+  FAgent := JediAgent;
+  FUserName := '';
+  FPassword := '';
+  FFileName := DefaultOutputFileName;
+  FOutputMode := omFile;
 end;
 
 destructor TJvCustomUrlGrabberDefaultProperties.Destroy;
 begin
   FEditorTrick.Free;
   inherited Destroy;
+end;
+
+type
+  // In order to store the Default Properties for every possible
+  // grabber class, we have to deal with it ourselves. This is not
+  // an easy task because the types of the default property holders
+  // are not known while writing this class. Moreover, the streaming
+  // system used by Delphi is not really well documented and the
+  // only (not so) elegant way I found to stream the list of default
+  // properties holder is to use WriteCollection and ReadCollection.
+  // To do this, we need a collection but having TJvUrlGrabberDefaultPropertiesList
+  // as a TCollection is too problematic because its members are
+  // always descendents of TJvCustomUrlGrabberDefaultProperties.
+  // So what I do here is to have a TCollection/TCollectionItem couple
+  // that will be used to read and write the list from the DFM.
+  // It works quite well and shouldn't need much improvement. 
+  TDFMPropertiesCollectionItem = class(TCollectionItem)
+  private
+    FOwnValue: boolean;
+
+    FValue: TJvCustomUrlGrabberDefaultProperties;
+    FUrlType: string;
+    procedure SetValue(const Value: TJvCustomUrlGrabberDefaultProperties);
+    procedure SetUrlType(const Value: string);
+  public
+    destructor Destroy; override;
+  published
+    property UrlType: string read FUrlType write SetUrlType;
+    property Value: TJvCustomUrlGrabberDefaultProperties read FValue write SetValue;
+  end;
+
+  TDFMPropertiesCollection = class(TCollection)
+  public
+    constructor Create; reintroduce; overload;
+    constructor Create(List: TJvUrlGrabberDefaultPropertiesList); reintroduce; overload;
+  end;
+
+constructor TDFMPropertiesCollection.Create;
+begin
+  inherited Create(TDFMPropertiesCollectionItem);
+end;
+
+constructor TDFMPropertiesCollection.Create(List: TJvUrlGrabberDefaultPropertiesList);
+var
+  I: Integer;
+begin
+  inherited Create(TDFMPropertiesCollectionItem);
+  for I := 0 to List.Count -1 do
+  begin
+    Add;
+    TDFMPropertiesCollectionItem(Items[Count-1]).Value := List.Items[I];
+  end;
+end;
+
+destructor TDFMPropertiesCollectionItem.Destroy;
+begin
+  if FOwnValue then
+    FValue.Free;
+
+  inherited;
+end;
+
+procedure TDFMPropertiesCollectionItem.SetValue(
+  const Value: TJvCustomUrlGrabberDefaultProperties);
+begin
+  FValue := Value;
+  FOwnValue := False;
+  FUrlType := FValue.GetSupportedURLName;
+end;
+
+procedure TDFMPropertiesCollectionItem.SetUrlType(const Value: string);
+var
+  I: Integer;
+begin
+  FUrlType := Value;
+  if not Assigned(FValue) then
+  begin
+    for I := 0 to JvUrlGrabberClassList.Count - 1 do
+      if JvUrlGrabberClassList[I].GetSupportedURLName = Value then
+      begin
+        FOwnValue := True;
+        FValue := JvUrlGrabberClassList[I].GetDefaultPropertiesClass.Create(nil);
+      end;
+  end;
+end;
+
+procedure TJvUrlGrabberDefaultPropertiesList.Read(Reader: TReader);
+var
+  I, J : Integer;
+  TmpColl : TDFMPropertiesCollection;
+begin
+  // WARNING: The call to ReadValue is essential for the collection to
+  // be read correctly. Somehow, WriteCollection writes something that
+  // ReadCollection won't read on its own.
+  Reader.ReadValue;
+
+  TmpColl := TDFMPropertiesCollection.Create;
+  try
+    Reader.ReadCollection(TmpColl);
+    for I := 0 to TmpColl.Count - 1 do
+    begin
+      for J := 0 to Count - 1 do
+        if TDFMPropertiesCollectionItem(TmpColl.Items[I]).Value.GetSupportedURLName = Items[I].GetSupportedURLName then
+          Items[I].Assign(TDFMPropertiesCollectionItem(TmpColl.Items[I]).Value);
+    end;
+  finally
+    TmpColl.Free;
+  end;
+end;
+
+procedure TJvUrlGrabberDefaultPropertiesList.Write(Writer: TWriter);
+var
+  TmpColl : TDFMPropertiesCollection;
+begin
+  TmpColl := TDFMPropertiesCollection.Create(Self);
+  try
+    Writer.WriteCollection(TmpColl);
+  finally
+    TmpColl.Free;
+  end;
 end;
 
 initialization
