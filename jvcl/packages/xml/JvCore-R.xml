@@ -53,5 +53,14 @@
     <File Name="..\..\run\JvClxUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvActnResForm.pas" Targets="all" Formname="JvStandardActions: TDataModule" Condition=""/>
     <File Name="..\..\run\JvResources.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExControls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExStdCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExExtCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExComCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExForms.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExCheckLst.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExMask.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExGrids.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExButtons.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

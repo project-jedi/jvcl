@@ -43,15 +43,24 @@ Description:
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvColorBox;
 
 interface
 
 uses
-  Windows, Messages, Forms, SysUtils, Classes, Graphics, Controls,
-  Dialogs, ExtCtrls, StdCtrls, Buttons, Menus,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Forms, Graphics, Controls, Dialogs, ExtCtrls, StdCtrls, Buttons, Menus,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, QButtons,
+  QMenus,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JvComponent;
 
 type
@@ -67,11 +76,11 @@ type
     FOnChange: TNotifyEvent;
     FColorClick: TJvColorClickEvent;
     procedure SetBorderStyle(Value: TBorderStyle);
-    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    procedure ColorChanged; override;
     procedure Paint; override;
     procedure DrawFocusFrame;
   public
@@ -125,14 +134,19 @@ type
     FArrowWidth: Integer;
     procedure SetArrowWidth(Value: Integer);
     procedure SetDropDown(Value: TPopupMenu);
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$ENDIF VCL}
   protected
+    {$IFDEF VisualCLX}
+    procedure Resize; override;
+    {$ENDIF VisualCLX}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    procedure EnabledChanged; override;
     procedure Paint; override;
     property DropDown: TPopupMenu read FDropDown write SetDropDown;
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 13;
@@ -236,14 +250,14 @@ end;
 
 procedure TJvColorSquare.MouseEnter(Control: TControl);
 begin
-  inherited;
+  inherited MouseEnter(Control);
   FInside := True;
   Invalidate;
 end;
 
 procedure TJvColorSquare.MouseLeave(Control: TControl);
 begin
-  inherited;
+  inherited MouseLeave(Control);
   FInside := False;
   Invalidate;
 end;
@@ -391,7 +405,7 @@ end;
 
 procedure TJvCustomDropButton.MouseEnter(Control: TControl);
 begin
-  inherited;
+  inherited MouseEnter(Control);
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Enabled then
     Invalidate;
@@ -400,7 +414,7 @@ end;
 
 procedure TJvCustomDropButton.MouseLeave(Control: TControl);
 begin
-  inherited;
+  inherited MouseLeave(Control);
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Enabled then
     Invalidate;
@@ -443,27 +457,33 @@ begin
   end;
 end;
 
-procedure TJvCustomDropButton.CMEnabledChanged(var Msg: TMessage);
+procedure TJvCustomDropButton.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   Invalidate;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomDropButton.CMSysColorChange(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
+{$ENDIF}
 
+{$IFDEF VCL}
 procedure TJvCustomDropButton.WMSize(var Msg: TWMSize);
+{$ELSE}
+procedure TJvCustomDropButton.Resize;
+{$ENDIF}
 begin
   inherited;
   Invalidate;
 end;
 
-procedure TJvColorSquare.CMColorChanged(var Msg: TMessage);
+procedure TJvColorSquare.ColorChanged;
 begin
-  inherited;
+  inherited ColorChanged;
   if Assigned(FOnChange) then
     FOnChange(Self);
   Invalidate;

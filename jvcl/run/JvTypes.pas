@@ -76,11 +76,11 @@ type
   TJvHTTPProgressEvent = procedure(Sender: TObject; UserData, Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean) of object;
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
-  // used in JvSpeedButton
-  TCMJvButtonPressed = packed record
+  // used in JvSpeedButton, JvArrowButton, JvButton
+  TJvCMButtonPressed = packed record
     Msg: Cardinal;
-    Control: TControl;
     Index: Integer;
+    Control: TControl;
     Result: Longint;
   end;
 

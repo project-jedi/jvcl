@@ -119,15 +119,9 @@ type
     procedure TimerExpired(Sender: TObject);
     procedure UpdateExclusive;
 
-    procedure CMButtonPressed(var Msg: TCMJvButtonPressed); message CM_JVBUTTONPRESSED;
+    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
     {$IFDEF VCL}
-    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR; // CLX: WantKey
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
-    procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
@@ -135,7 +129,6 @@ type
     {$ENDIF VCL}
   protected
     FState: TJvButtonState;
-    {$IFDEF VisualCLX}
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure EnabledChanged; override;
@@ -143,7 +136,7 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure VisibleChanged; override;
-
+    {$IFDEF VisualCLX}
     procedure DblClick; override;
     {$ENDIF VisualCLX}
     function GetDropDownMenuPos: TPoint;
@@ -500,8 +493,8 @@ type
 
 {$IFDEF VisualCLX}
 const
-  NewStyleControls = True; // Lo(GetVersion) > 4 { Windows }
-{$ENDIF VisualCLX}  
+  NewStyleControls = True; // Lo(GetVersion) > 4 (Windows)
+{$ENDIF VisualCLX}
 
 { DrawButtonFrame - returns the remaining usable area inside the Client rect }
 
@@ -786,7 +779,7 @@ begin
   inherited Click;
 end;
 
-procedure TJvCustomSpeedButton.CMButtonPressed(var Msg: TCMJvButtonPressed);
+procedure TJvCustomSpeedButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
 var
   Sender: TControl;
 begin
@@ -807,23 +800,8 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomSpeedButton.CMDialogChar(var Msg: TCMDialogChar);
-begin
-  with Msg do
-    if IsAccel(CharCode, Caption) and Enabled then
-    begin
-      Click;
-      Result := 1;
-    end
-    else
-      inherited;
-end;
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
 function TJvCustomSpeedButton.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean; 
+  const KeyText: WideString): Boolean;
 begin
   Result := IsAccel(Key, Caption) and Enabled and (ssAlt in Shift);
   if Result then
@@ -831,13 +809,8 @@ begin
   else
     inherited WantKey(Key, Shift, KeyText);
 end;
-{$ENDIF VisualCLX}
 
-{$IFDEF VCL}
-procedure TJvCustomSpeedButton.CMEnabledChanged(var Msg: TMessage);
-{$ELSE}
 procedure TJvCustomSpeedButton.EnabledChanged;
-{$ENDIF}
 var
   State: TJvButtonState;
 begin
@@ -857,11 +830,7 @@ begin
   Repaint;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomSpeedButton.CMFontChanged(var Msg: TMessage);
-{$ELSE}
 procedure TJvCustomSpeedButton.FontChanged;
-{$ENDIF}
 begin
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
   Invalidate;
@@ -871,6 +840,8 @@ procedure TJvCustomSpeedButton.MouseEnter(Control: TControl);
 var
   NeedRepaint: Boolean;
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not MouseInControl and Enabled then
   begin
     { Don't draw a border if DragMode <> dmAutomatic since this button is meant to
@@ -899,6 +870,8 @@ procedure TJvCustomSpeedButton.MouseLeave(Control: TControl);
 var
   NeedRepaint: Boolean;
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if MouseInControl and Enabled then
   begin
     NeedRepaint :=
@@ -920,11 +893,7 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomSpeedButton.CMParentColorChanged(var Msg: TMessage);
-{$ELSE}
 procedure TJvCustomSpeedButton.ParentColorChanged;
-{$ENDIF}
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
@@ -939,20 +908,12 @@ begin
 end;
 {$ENDIF VCL}
 
-{$IFDEF VCL}
-procedure TJvCustomSpeedButton.CMTextChanged(var Msg: TMessage);
-{$ELSE}
 procedure TJvCustomSpeedButton.TextChanged;
-{$ENDIF}
 begin
   Invalidate;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomSpeedButton.CMVisibleChanged(var Msg: TMessage);
-{$ELSE}
 procedure TJvCustomSpeedButton.VisibleChanged;
-{$ENDIF}
 begin
   inherited;
   if Visible then
@@ -1561,7 +1522,7 @@ end;
 
 procedure TJvCustomSpeedButton.UpdateExclusive;
 var
-  Msg: TCMJvButtonPressed;
+  Msg: TJvCMButtonPressed;
 begin
   if (FGroupIndex <> 0) and (Parent <> nil) then
   begin

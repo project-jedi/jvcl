@@ -38,41 +38,27 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QExtCtrls, QControls, QForms,
   {$ENDIF VisualCLX}
-  JvThemes, JVCLVer;
+  JvThemes, JVCLVer, JvExExtCtrls;
 
 type
-  TJvBevel = class(TBevel)
+  TJvBevel = class(TJvExBevel)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    {$IFDEF VCL}
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    {$ENDIF VCL}
   protected
-    {$IFDEF VCL}
-    procedure MouseEnter(AControl: TControl); dynamic;
-    procedure MouseLeave(AControl: TControl); dynamic;
-    procedure ParentColorChanged; dynamic;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnClick;
     property OnDblClick;
@@ -100,20 +86,8 @@ begin
   IncludeThemeStyle(Self, [csParentBackground]);
 end;
 
-{$IFDEF VCL}
-procedure TJvBevel.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(Self);
-end;
-{$ENDIF VCL}
-
 procedure TJvBevel.MouseEnter(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseEnter(AControl);
-  {$ENDIF VisualCLX}
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
@@ -122,24 +96,11 @@ begin
     Application.HintColor := FHintColor;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(AControl);
 end;
-
-{$IFDEF VCL}
-procedure TJvBevel.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(Self);
-end;
-{$ENDIF VCL}
 
 procedure TJvBevel.MouseLeave(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseLeave(AControl);
-  {$ENDIF VisualCLX}
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if FOver then
@@ -147,23 +108,12 @@ begin
     FOver := False;
     Application.HintColor := FSaved;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(AControl);
 end;
-
-{$IFDEF VCL}
-procedure TJvBevel.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  ParentColorChanged;
-end;
-{$ENDIF VCL}
 
 procedure TJvBevel.ParentColorChanged;
 begin
-  {$IFDEF VisualCLX}
   inherited ParentColorChanged;
-  {$ENDIF VisualCLX}
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

@@ -37,7 +37,8 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
+
 unit JvBehaviorLabel;
 
 interface
@@ -48,7 +49,7 @@ uses
 {$IFDEF VisualCLX}
   QControls, QGraphics, QStdCtrls, QExtCtrls, QForms,
 {$ENDIF}
-  SysUtils, Classes, JVCLVer;
+  SysUtils, Classes, JVCLVer, JvExStdCtrls;
 
 type
   TJvCustomBehaviorLabel = class; // forward
@@ -288,13 +289,11 @@ type
 
   TJvLabelBehaviorOptionsClass = class of TJvLabelBehavior;
 
-  TJvCustomBehaviorLabel = class(TCustomLabel)
+  TJvCustomBehaviorLabel = class(TJvExCustomLabel)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FBehavior: TJvLabelBehaviorName;
     FOptions: TJvLabelBehavior;
-    FOnMouseLeave: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
@@ -303,17 +302,8 @@ type
     procedure UpdateDesigner;
     procedure SetBehavior(const Value: TJvLabelBehaviorName);
     procedure SetOptions(const Value: TJvLabelBehavior);
-    {$IFDEF VCL}
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    {$ENDIF}
   protected
-    {$IFDEF VisualCLX}
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
-    {$ENDIF}
     procedure Resize; override;
     procedure DoStart; dynamic;
     procedure DoStop; dynamic;
@@ -324,8 +314,6 @@ type
     property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior stored BehaviorStored;
     property Caption;
     property BehaviorOptions: TJvLabelBehavior read GetOptions write SetOptions;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnStart:TNotifyEvent read FOnStart write FOnStart;
     property OnStop:TNotifyEvent read FOnStop write FOnStop;
@@ -382,7 +370,6 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-
   end;
 
   // register a new behaviour
@@ -510,14 +497,9 @@ end;
 
 { TJvCustomBehaviorLabel }
 
-{$IFDEF VCL}
-procedure TJvCustomBehaviorLabel.CMParentColorChanged(var Msg: TMessage);
-{$ENDIF}
-{$IFDEF VisualCLX}
 procedure TJvCustomBehaviorLabel.ParentColorChanged;
-{$ENDIF}
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -560,30 +542,6 @@ begin
     UpdateDesigner;
   end;
   Result := FOptions;
-end;
-
-{$IFDEF VisualCLX}
-procedure TJvCustomBehaviorLabel.MouseEnter(AControl: TControl);
-{$ENDIF}
-{$IFDEF VCL}
-procedure TJvCustomBehaviorLabel.CMMouseEnter(var Msg: TMessage);
-{$ENDIF}
-begin
-  inherited;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-{$IFDEF VisualCLX}
-procedure TJvCustomBehaviorLabel.MouseLeave(AControl: TControl);
-{$ENDIF}
-{$IFDEF VCL}
-procedure TJvCustomBehaviorLabel.CMMouseLeave(var Msg: TMessage);
-{$ENDIF}
-begin
-  inherited;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
 end;
 
 procedure TJvCustomBehaviorLabel.Resize;

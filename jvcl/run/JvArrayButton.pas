@@ -67,12 +67,7 @@ type
     function CellRect(ACol, ARow: Integer): TRect;
     procedure SetHints(const Value: TStringList);
   protected
-    {$IFDEF VCL}
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     procedure FontChanged; override;
-    {$ENDIF VisualCLX}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     {$IFDEF JVCLThemesEnabled}
@@ -365,13 +360,9 @@ begin
   Invalidate;
 end;
 
-{$IFDEF VisualCLX}
 procedure TJvArrayButton.FontChanged;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-procedure TJvArrayButton.CMFontChanged(var Msg: TMessage);
-{$ENDIF VCL}
 begin
+  inherited FontChanged;
   Canvas.Font.Assign(Font);
   Invalidate;
 end;
