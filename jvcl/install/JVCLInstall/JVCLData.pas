@@ -70,11 +70,13 @@ type
     FFrameworks: TJVCLFrameworks;
     FDcpDir: string;
     FBplDir: string;
+    FGenerateMapFiles: Boolean;
 
     procedure SetInstallMode(const Value: TInstallMode);
     function GetFrameworkCount: Integer;
     function GetDxgettextDir: string;
     function GetDeveloperInstall: Boolean;
+    function GetGenerateMapFiles: Boolean;
   private
     { ITargetConfig }
     function GetInstance: TObject;
@@ -176,6 +178,9 @@ type
       // if DebugUnits is True the units will be compiled in debug mode, too.
       // (Delphi only) [NOT USED IN THE JVCL DUE TO jvcl.inc SETTINGS]
 
+    property GenerateMapFiles: Boolean read GetGenerateMapFiles write FGenerateMapFiles;
+      // if GenerateMapFiles is True the compiler generates .map files for each package
+
     property Build: Boolean read GetBuild write FBuild;
       // if Build is True the packages are built instead of make.
 
@@ -227,6 +232,8 @@ type
     function GetCompileOnly: Integer;
     procedure SetCompileOnly(const Value: Integer);
     function GetOptionState(Index: Integer): Integer;
+    function GetGenerateMapFiles: Integer;
+    procedure SetGenerateMapFiles(const Value: Integer);
   protected
     function JvclIncFilename: string;
     procedure Init; virtual;
@@ -250,6 +257,7 @@ type
     property CleanPalettes: Integer read GetCleanPalettes write SetCleanPalettes;
     property Build: Integer read GetBuild write SetBuild;
     property CompileOnly: Integer read GetCompileOnly write SetCompileOnly;
+    property GenerateMapFiles: Integer read GetGenerateMapFiles write SetGenerateMapFiles;
 
     property DeleteFilesOnUninstall: Boolean read FDeleteFilesOnUninstall write FDeleteFilesOnUninstall default True;
     property CompileJclDcp: Boolean read FCompileJclDcp write FCompileJclDcp default True;
@@ -363,6 +371,7 @@ begin
         1: b := TargetConfig[i].CleanPalettes;
         2: b := TargetConfig[i].CompileOnly;
         3: b := TargetConfig[i].DeveloperInstall;
+        4: b := TargetConfig[i].GenerateMapFiles;
       else
         b := False;
       end;
@@ -408,6 +417,11 @@ end;
 function TJVCLData.GetDeveloperInstall: Integer;
 begin
   Result := GetOptionState(3);
+end;
+
+function TJVCLData.GetGenerateMapFiles: Integer;
+begin
+  Result := GetOptionState(4);
 end;
 
 function TJVCLData.GetJVCLDir: string;
@@ -524,6 +538,14 @@ var
 begin
   for i := 0 to Targets.Count - 1 do
     TargetConfig[i].DeveloperInstall := Value <> 0;
+end;
+
+procedure TJVCLData.SetGenerateMapFiles(const Value: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to Targets.Count - 1 do
+    TargetConfig[i].GenerateMapFiles := Value <> 0;
 end;
 
 { TTargetConfig }
@@ -702,15 +724,15 @@ begin
   if Personal then
   begin
     if Target.Version <= 5 then
-      Pers := 'Std'
+      Pers := 'Std'  // do not localize
     else
-      Pers := 'Per';
+      Pers := 'Per'; // do not localize
   end;
 
   if Kind = pkClx then
     Clx := 'Clx';
 
-  Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bpg',
+  Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bpg', // do not localize
     [TargetTypes[Target.IsBCB], Target.Version, Pers, Clx]);
 end;
 
@@ -806,7 +828,7 @@ function TTargetConfig.GetUnitOutDir: string;
 const
   TargetTypes: array[Boolean] of string = ('D', 'C');
 begin
-  Result := GetJVCLDir + Format('\lib\%s%d', [TargetTypes[Target.IsBCB], Target.Version]);
+  Result := GetJVCLDir + Format('\lib\%s%d', [TargetTypes[Target.IsBCB], Target.Version]); // do not localize
 end;
 
 procedure TTargetConfig.SetInstallMode(const Value: TInstallMode);
@@ -875,6 +897,11 @@ begin
   Result := FCompileOnly;
 end;
 
+function TTargetConfig.GetGenerateMapFiles: Boolean;
+begin
+  Result := FGenerateMapFiles;
+end;
+
 function TTargetConfig.GetBplDir: string;
 begin
   Result := FBplDir;
@@ -907,7 +934,7 @@ begin
   Result := Owner.DxgettextDir;
   if Result <> '' then
     if Target.Version = 5 then
-      Result := Result + '\delphi5';
+      Result := Result + '\delphi5'; // do not localize
 end;
 
 procedure TTargetConfig.Save;
@@ -935,6 +962,7 @@ begin
     for Kind := pkFirst to pkLast do
       Ini.WriteBool(Target.DisplayName, 'InstallMode_' + IntToStr(Integer(Kind)), Kind in InstallMode); // do not localize
     Ini.WriteBool(Target.DisplayName, 'AutoDependencies', AutoDependencies); // do not localize
+    Ini.WriteBool(Target.DisplayName, 'GenerateMapFiles', GenerateMapFiles); // do not localize
 
     Ini.UpdateFile;
   finally
@@ -965,6 +993,7 @@ begin
     DcpDir := Ini.ReadString(Target.DisplayName, 'DCPDir', DcpDir);   // do not localize
     DeveloperInstall := Ini.ReadBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall); // do not localize
     CleanPalettes := Ini.ReadBool(Target.DisplayName, 'CleanPalettes', CleanPalettes); // do not localize
+    GenerateMapFiles := Ini.ReadBool(Target.DisplayName, 'GenerateMapFiles', GenerateMapFiles); // do not localize
     Mode := [];
     for Kind := pkFirst to pkLast do
       if Ini.ReadBool(Target.DisplayName, 'InstallMode_' + IntToStr(Integer(Kind)), Kind in InstallMode) then // do not localize
@@ -1159,7 +1188,7 @@ var
 begin
   MaxSteps := 4;
   if not Assigned(DeleteFiles) then
-    Dec(MaxSteps); 
+    Dec(MaxSteps);
 
 {**}DoProgress(RsCleaningPalette, 0, MaxSteps);
   CleanJVCLPalette(True);

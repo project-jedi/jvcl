@@ -507,13 +507,48 @@ var
   i: Integer;
   Count: Integer;
   TargetConfigs: array of TTargetConfig;
+  SysInfo: string;
 begin
   Result := True;
   if Data.Verbose then
     FQuiet := ''
   else
     FQuiet := ' -s';
-    
+
+  SysInfo := '';
+  case Win32Platform of
+    VER_PLATFORM_WIN32_WINDOWS:
+      begin
+        case Win32MinorVersion of
+          0..9: SysInfo := 'Windows 95';
+          10..89: SysInfo := 'Windows 98';
+          90: SysInfo := 'Windows ME';
+        end;
+      end;
+    VER_PLATFORM_WIN32_NT:
+      begin
+        case Win32MajorVersion of
+          4: SysInfo := 'Windows NT4';
+          5:
+            begin
+              case Win32MinorVersion of
+                0: SysInfo := 'Windows 2000';
+                1: SysInfo := 'Windows XP';
+              end;
+            end;
+        end;
+      end;
+  end;
+
+  if SysInfo <> '' then
+  begin
+    SysInfo := #1 + SysInfo + Format(' %s (%d.%d.%d)',
+      [Win32CSDVersion, Win32MajorVersion, Win32MinorVersion, Win32BuildNumber]);
+
+    CaptureLine(SysInfo, FAborted);
+    CaptureLine('', FAborted);
+  end;
+
   AbortReason := '';
   if Data.CompileJclDcp then
     Result := PrepareJCL(Force);
@@ -723,6 +758,7 @@ var
   Edition, PkgDir, JVCLPackagesDir: string;
   AutoDepend: Boolean;
   TargetConfig: ITargetConfig;
+  DccOpt: string;
 
   function GetProjectIndex: Integer;
   begin
@@ -756,19 +792,17 @@ begin
         PkgDir := Copy(PkgDir, 1, 2) + 'per';
     end;
 
+    DccOpt := '';
    // setup environment variables
     if TargetConfig.Build then
-    begin
-      SetEnvironmentVariable('DCCOPT', '-Q -M -B');
-     // especially for BCB generated make file
-      SetEnvironmentVariable('DCC', PChar('"' + TargetConfig.Target.RootDir + '\bin\dcc32.exe" -Q -M -B'));
-    end
-    else
-    begin
-      SetEnvironmentVariable('DCCOPT', '-Q -M');
-     // especially for BCB generated make file
-      SetEnvironmentVariable('DCC', PChar('"' + TargetConfig.Target.RootDir + '\bin\dcc32.exe" -Q -M'));
-    end;
+      DccOpt := '-Q -M -B';
+    if TargetConfig.GenerateMapFiles then
+      DccOpt := DccOpt + ' -GD';
+
+    SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
+    // especially for BCB generated make file
+    SetEnvironmentVariable('DCC', PChar('"' + TargetConfig.Target.RootDir + '\bin\dcc32.exe" ' + DccOpt));
+
     SetEnvironmentVariable('QUIET', Pointer(Copy(FQuiet, 2, MaxInt))); // make command line option " -s"
 
     SetEnvironmentVariable('TARGETS', nil); // we create our own makefile so do not allow a user defined TARGETS envvar
@@ -787,7 +821,6 @@ begin
     SetEnvironmentVariable('LIBDIR', Pointer(TargetConfig.DcpDir));  // for BCB
     SetEnvironmentVariable('HPPDIR', Pointer(TargetConfig.HppDir)); // for BCB
     SetEnvironmentVariable('BPILIBDIR', Pointer(TargetConfig.DcpDir)); // for BCB
-
 
    // add dxgettext unit directory
     if Data.JVCLConfig.Enabled['USE_DXGETTEXT'] then
@@ -918,7 +951,7 @@ var
   Pkg: TPackageTarget;
   Dependencies, S, PasFile, ObjFile, FilenameOnly: string;
   DeleteFiles: Boolean;
-  BplFilename: string;
+  BplFilename, MapFilename: string;
   PasFileSearchDirs: string;
 begin
   BplFilename := ProjectGroup.TargetConfig.BplDir + '\' + ProjectGroup.BpgName;
@@ -987,8 +1020,19 @@ begin
       for depI := 0 to Pkg.JvDependencies.Count - 1 do
       begin
         if IsPackageUsed(ProjectGroup, Pkg.JvDependenciesReqPkg[depI]) then
+        begin
+          if not ProjectGroup.TargetConfig.GenerateMapFiles then
+          begin
+            // delete the old .map file
+            MapFilename := ProjectGroup.TargetConfig.BplDir + PathDelim +
+              ChangeFileExt(ExtractFileName(Pkg.TargetName), '.map');
+            if FileExists(MapFilename) then
+              DeleteFile(MapFilename);
+          end;
+
           Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
              ProjectGroup.FindPackageByXmlName(Pkg.JvDependencies[depI]).TargetName;
+        end;
       end;
 
      // add JCL dependencies

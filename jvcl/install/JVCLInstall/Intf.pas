@@ -58,6 +58,7 @@ type
     function GetBuild: Boolean;
     function GetCompileOnly: Boolean;
     function GetDeveloperInstall: Boolean;
+    function GetGenerateMapFiles: Boolean;
 
     function GetTarget: TCompileTarget;
     function GetJVCLPackagesXmlDir: string;
@@ -78,6 +79,7 @@ type
     property Build: Boolean read GetBuild;
     property CompileOnly: Boolean read GetCompileOnly;
     property DeveloperInstall: Boolean read GetDeveloperInstall;
+    property GenerateMapFiles: Boolean read GetGenerateMapFiles;
 
     property UnitOutDir: string read GetUnitOutDir;
     property JCLDir: string read GetJCLDir;
