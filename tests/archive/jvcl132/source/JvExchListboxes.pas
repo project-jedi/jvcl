@@ -28,81 +28,71 @@ Known Issues:
 
 unit JvExchListboxes;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvFormLists, JvBaseDlg, JvTypes ;
+  JvFormLists, JvBaseDlg, JvTypes;
 
 type
   TJvExchListboxes = class(TJvCommonDialog)
   private
-    FButton1: string;
     FCaption2: string;
     FCaption: string;
-    FButton2: string;
     FListbox2: TstringList;
     FListbox: TstringList;
     FTitle: string;
+    procedure SetListbox(const Value: TstringList);
+    procedure SetListbox2(const Value: TstringList);
   protected
   public
-    constructor Create(AOwner: TComponent);override;
+    constructor Create(AOwner: TComponent); override;
   published
-    property FirstListbox:TstringList read FListbox write FListbox;
-    property SecondListbox:TstringList read FListbox2 write FListbox2;
-    property FirstCaption:string read FCaption write FCaption;
-    property SecondCaption:string read FCaption2 write FCaption2;
-    property Button1Caption:string read FButton1 write FButton1;
-    property Button2Caption:string read FButton2 write FButton2;
-    property Title:string read FTitle write FTitle;
-    function Execute:boolean;override;
+    property FirstListbox: TstringList read FListbox write SetListbox;
+    property SecondListbox: TstringList read FListbox2 write SetListbox2;
+    property FirstCaption: string read FCaption write FCaption;
+    property SecondCaption: string read FCaption2 write FCaption2;
+    property Title: string read FTitle write FTitle;
+    function Execute: boolean; override;
   end;
 
 implementation
 
 resourcestring
-   RC_Button1Caption       =     '&Add';
-   RC_Button2Caption       =     '&Remove';
-   RC_Column1Caption       =     'First Column';
-   RC_Column2Caption       =     'Second Column';
-   RC_FormCaption          =     'Listbox Editor';
+  RC_Column1Caption = 'First Column';
+  RC_Column2Caption = 'Second Column';
+  RC_FormCaption = 'Listbox Editor';
 
-{**************************************************}
+  {**************************************************}
+
 constructor TJvExchListboxes.Create(AOwner: TComponent);
 begin
-   inherited;
-   FListbox:=TstringList.Create;
-   FListbox2:=TstringList.Create;
-   FButton1:=RC_Button1Caption;
-   FButton2:=RC_Button2Caption;
-   FCaption:=RC_Column1Caption;
-   FCaption2:=RC_Column2Caption;
-   FTitle:=RC_FormCaption;
+  inherited;
+  FListbox := TStringList.Create;
+  FListbox2 := TStringList.Create;
+  FCaption := RC_Column1Caption;
+  FCaption2 := RC_Column2Caption;
+  FTitle := RC_FormCaption;
 end;
 {**************************************************}
+
 function TJvExchListboxes.Execute: boolean;
 begin
-   with TFormListb.Create(Application) do
-   begin
-      buBitBtn1.Caption:=FButton1;
-      buBitBtn2.Caption:=FButton2;
-      buLabel1.caption:=FCaption;
-      buLabel2.caption:=FCaption2;
-      Listbox1.items:=FListbox;
-      Listbox2.items:=FListbox2;
-      Caption:=FTitle;
-      showmodal;
-      if tag=1 then
-      begin
-         result:=true;
-         FListbox.Assign(TstringList(ListBox1.Items));
-         FListbox2.Assign(TstringList(Listbox2.items));
-      end
-      else result:=false;
-      free;
-   end;
+  Result := TFormListb.Execute(FTitle,FCaption,FCaption2,FListBox,FListBox2);
 end;
 {**************************************************}
+
+procedure TJvExchListboxes.SetListbox(const Value: TstringList);
+begin
+  FListbox.Assign(Value);
+end;
+
+procedure TJvExchListboxes.SetListbox2(const Value: TstringList);
+begin
+  FListbox2.Assign(Value);
+end;
+
 end.
+
