@@ -62,7 +62,7 @@ uses
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
   TJvLabelRotateAngle = 0..360;
-  TJvTextEllipsis = (teNone, tePathEllipsis, teEndEllipsis);
+  TJvTextEllipsis = (teNone, teWordEllipsis, tePathEllipsis, teEndEllipsis);
 
   TJvCustomLabel = class(TJvGraphicControl)
   private
@@ -126,8 +126,8 @@ type
     procedure EnabledChanged; override;
     procedure VisibleChanged; override;
 
-    procedure DoDrawCaption(var Rect: TRect; Flags: Word); virtual;
-    procedure DoDrawText(var Rect: TRect; Flags: Word); virtual;
+    procedure DoDrawCaption(var Rect: TRect; Flags: Integer); virtual;
+    procedure DoDrawText(var Rect: TRect; Flags: Integer); virtual;
     procedure AdjustBounds;
     {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean); override;
@@ -361,10 +361,10 @@ begin
   Result := Font.Color;
 end;
 
-procedure TJvCustomLabel.DoDrawCaption(var Rect: TRect; Flags: Word);
+procedure TJvCustomLabel.DoDrawCaption(var Rect: TRect; Flags: Integer);
 const
-  EllipsisFlags: array[TJvTextEllipsis] of Word = (
-    0, DT_PATH_ELLIPSIS, DT_END_ELLIPSIS
+  EllipsisFlags: array[TJvTextEllipsis] of Integer = (
+    0, DT_WORD_ELLIPSIS, DT_PATH_ELLIPSIS, DT_END_ELLIPSIS
   );
 var
   Text: string;
@@ -426,7 +426,7 @@ begin
     {$ENDIF VisualCLX}
 end;
 
-procedure TJvCustomLabel.DoDrawText(var Rect: TRect; Flags: Word);
+procedure TJvCustomLabel.DoDrawText(var Rect: TRect; Flags: Integer);
 var
   Tmp: TSize;
   TmpItem: IJvDataItem;
