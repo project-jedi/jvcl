@@ -46,7 +46,12 @@ contains
   JvDataProviderEditors in '..\..\design\JvDataProviderEditors.pas',
   JvDataProviderItemDesign in '..\..\design\JvDataProviderItemDesign.pas',
   JvBaseDsgnForm in '..\..\design\JvBaseDsgnForm.pas' {JvBaseDesign},
-  JvBaseDsgnToolbarForm in '..\..\design\JvBaseDsgnToolbarForm.pas' {JvBaseDesignToolbar},
+  JvBaseDsgnFrame in '..\..\design\JvBaseDsgnFrame.pas' {fmeJvBaseDesign: TFrame},
+  JvBaseDsgnToolbarFrame in '..\..\design\JvBaseDsgnToolbarFrame.pas' {fmeJvBaseToolbarDesign: TFrame},
+  JvStdToolbarDsgnFrame in '..\..\design\JvStdToolbarDsgnFrame.pas',
+  JvProviderTreeListFrame in '..\..\design\JvProviderTreeListFrame.pas' {fmeJvProviderTreeList: TFrame},
+  JvProviderToolbarFrame in '..\..\design\JvProviderToolbarFrame.pas',
+  JvDataConsumerItemSelectForm in '..\..\design\JvDataConsumerItemSelectForm.pas' {frmJvDataConsumerItemSelect},
   JvDataProviderDesignerForm in '..\..\design\JvDataProviderDesignerForm.pas' {frmDataProviderDesigner};
 
 end.
