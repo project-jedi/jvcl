@@ -923,9 +923,9 @@ procedure TJvTransparentButton.ActionChange(Sender: TObject;
     begin
       Width := ImageList.Width;
       Height := ImageList.Height;
-      Canvas.Brush.Color := clFuchsia;//! for lack of a better color
-      Canvas.FillRect(Rect(0,0, Width, Height));
-      ImageList.Draw(Canvas, 0, 0, Index);
+      Self.Canvas.Brush.Color := clFuchsia;//! for lack of a better color
+      Self.Canvas.FillRect(Rect(0,0, Width, Height));
+      ImageList.Draw(Self.Canvas, 0, 0, Index);
     end;
     GlyphChanged(Glyph);
   end;
@@ -935,7 +935,7 @@ begin
     with TCustomAction(Sender) do
     begin
       if not CheckDefaults then
-        Down := Checked;
+        Self.Down := Checked;
       { Copy image from action's imagelist }
       if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
         (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
@@ -1000,7 +1000,6 @@ begin
   try
     { destroy old list }
     FImList.Clear;
-//    Repaint;
     { create the imagelist }
     if Assigned(FActiveList) and (FActiveIndex > -1) then
     begin
@@ -1090,8 +1089,8 @@ begin
     end;
   finally
     Bmp.Free;
+    Repaint;
   end;
-  Repaint;
 end;
 
 procedure TJvTransparentButton2.SetAutoGray(Value: Boolean);
@@ -1597,9 +1596,9 @@ begin
     with TCustomAction(Sender) do
     begin
       if not CheckDefaults then
-        Down := Checked;
+        Self.Down := Checked;
       if not CheckDefaults or (ActiveIndex = -1) then
-        ActiveIndex := ImageIndex;
+        Self.ActiveIndex := ImageIndex;
     end;
 end;
 
