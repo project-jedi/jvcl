@@ -71,15 +71,10 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-procedure Register;
 
 implementation
 uses JvgUtils, JvgTypes;
 
-procedure Register;
-begin
-  RegisterComponents('Proba', [TJvg3DColors]);
-end;
 
 constructor TJvg3DColors.Create(AOwner: TComponent);
 begin

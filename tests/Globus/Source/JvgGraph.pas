@@ -68,7 +68,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgGraph]);
+//  RegisterComponents('Proba', [TJvgGraph]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _

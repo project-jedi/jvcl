@@ -116,7 +116,7 @@ const
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgHoleShape]);
+//  RegisterComponents('Proba', [TJvgHoleShape]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _

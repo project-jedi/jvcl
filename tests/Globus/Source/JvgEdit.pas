@@ -105,18 +105,9 @@ type
     property AfterPaint: TNotifyEvent read FAfterPaint write FAfterPaint;
   end;
 
-procedure Register;
-
 implementation
 //{$R JvgShadow.res}
 
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-
-procedure Register;
-begin
-  RegisterComponents('Proba', [TJvgMaskEdit]);
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
 
 constructor TJvgMaskEdit.Create(AOwner: TComponent);
 begin

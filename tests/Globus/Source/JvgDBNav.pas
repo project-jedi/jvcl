@@ -61,16 +61,7 @@ type
   published
   end;
 
-procedure Register;
-
 implementation
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-
-procedure Register;
-begin
-  RegisterComponents('Proba', [TJvgDBNAvigator]);
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _
 
 constructor TJvgDBNAvigator.Create(AOwner: TComponent);

@@ -134,7 +134,7 @@ const
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgPageControl]);
+//  RegisterComponents('Proba', [TJvgPageControl]);
 end;
 //*****************************************_____________LowLevel METHODS
 

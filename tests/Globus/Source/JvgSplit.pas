@@ -67,7 +67,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgSplitter]);
+//  RegisterComponents('Proba', [TJvgSplitter]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _

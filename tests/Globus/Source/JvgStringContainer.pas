@@ -64,7 +64,7 @@ uses JvgUtils, JvgTypes;
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgStringContainer]);
+//  RegisterComponents('Proba', [TJvgStringContainer]);
 end;
 
 constructor TJvgStringContainer.Create(AOwner: TComponent);

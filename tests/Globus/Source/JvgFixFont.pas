@@ -51,14 +51,8 @@ type
     { Published declarations }
   end;
 
-procedure Register;
-
 implementation
 
-procedure Register;
-begin
-  RegisterComponents('Proba', [TJvgFixFont]);
-end;
 //____________________________
 
 constructor TJvgFixFont.Create(AOwner: TComponent);

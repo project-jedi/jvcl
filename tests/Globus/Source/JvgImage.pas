@@ -151,7 +151,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgBitmapImage]);
+//  RegisterComponents('Proba', [TJvgBitmapImage]);
 end;
 
 //*****************************************_____________LowLevel METHODS

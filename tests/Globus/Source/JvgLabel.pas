@@ -292,7 +292,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgLabel]);
+//  RegisterComponents('Proba', [TJvgLabel]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ TJvgCustomLabel _

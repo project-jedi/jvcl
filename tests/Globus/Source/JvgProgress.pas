@@ -123,7 +123,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgProgress]);
+//  RegisterComponents('Proba', [TJvgProgress]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _

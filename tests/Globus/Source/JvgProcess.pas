@@ -58,7 +58,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgProcess]);
+//  RegisterComponents('Proba', [TJvgProcess]);
 end;
 
 destructor TJvgProcess.Destroy;

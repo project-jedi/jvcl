@@ -65,7 +65,7 @@ uses JvgUtils;
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgWinMask]);
+//  RegisterComponents('Proba', [TJvgWinMask]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //___________________________________________________ TJvgWinMask Methods _

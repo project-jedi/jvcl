@@ -113,7 +113,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgStaticText]);
+//  RegisterComponents('Proba', [TJvgStaticText]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _

@@ -126,7 +126,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgShadow]);
+//  RegisterComponents('Proba', [TJvgShadow]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //___________________________________________________ TJvgShadow Methods _

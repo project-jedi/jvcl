@@ -117,7 +117,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgImageGroup]);
+//  RegisterComponents('Proba', [TJvgImageGroup]);
 end;
 
 //*****************************************_____________LowLevel METHODS

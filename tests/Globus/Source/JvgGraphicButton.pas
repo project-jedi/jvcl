@@ -90,7 +90,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgGraphicButton]);
+//  RegisterComponents('Proba', [TJvgGraphicButton]);
 end;
 
 //*****************************************_____________LowLevel METHODS

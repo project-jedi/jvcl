@@ -90,7 +90,7 @@ USES Classes,
    JvgJump,
    JvgSmallFontsDefense,
    JvgSysInf,
-//   JvgStepLabel,
+   //   JvgStepLabel,
    JvgLogicItemEditor,
    JvgLogics,
    JvgStringContainer,
@@ -101,7 +101,7 @@ USES Classes,
    JvgSysRequirements,
    JvgProcess,
    JvgProcessUtils,
-//   JvgTagParser,
+   //   JvgTagParser,
    JvgPropertyCenter,
    JvgQPrintPreview,
    JvgQPrintSetup,
@@ -139,7 +139,7 @@ USES Classes,
    JvgMultiResourceEditor,
    JvgMultiResources,
    JvgPage,
-//   JvgPointEditor,
+   //   JvgPointEditor,
    JvgProgress,
    JvgReport;
 
@@ -170,8 +170,8 @@ BEGIN
          ]);
 
    RegisterComponents('Jv Additional Output', [
-//      TJvgBevel,
-         TJvgBitBtn,
+      //      TJvgBevel,
+      TJvgBitBtn,
          TJvgGraphicButton,
          TJvgGraph,
          TJvgTreeView,
@@ -179,7 +179,7 @@ BEGIN
          TJvgSplitter
          ]);
 
-   RegisterComponents('Jv Standaard', [
+   RegisterComponents('Jv Standard', [
       TJvgCheckBox
          ]);
 
@@ -232,6 +232,13 @@ BEGIN
 
    RegisterComponents('Gl Controls', [
       TJvgShadow,
+         TJvgShade,
+         TJvgButton,
+         TJvgFixFont,
+         TJvgImageGroup,
+         TJvgProgress,
+         TJvgTranspMemo,
+         TJvgWinMask,
          TJvgGroupBox,
          TJvgBitmapImage,
          TJvgListBox,

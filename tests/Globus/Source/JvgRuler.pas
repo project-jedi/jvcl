@@ -65,7 +65,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgRuler]);
+//  RegisterComponents('Proba', [TJvgRuler]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 

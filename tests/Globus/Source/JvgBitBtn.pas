@@ -51,16 +51,8 @@ type
   published
   end;
 
-procedure Register;
-
 implementation
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-procedure Register;
-begin
-  RegisterComponents('Proba', [TJvgBitBtn]);
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _
 
 constructor TJvgBitBtn.Create(AOwner: TComponent);

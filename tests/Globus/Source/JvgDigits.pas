@@ -150,14 +150,9 @@ const
     [_deDOT_] //...','
     );
 
-procedure Register;
 
 implementation
 
-procedure Register;
-begin
-  RegisterComponents('Proba', [TJvgDigits]);
-end;
 //*****************************************_____________LowLevel METHODS
 
 constructor TJvgDigits.Create(AOwner: TComponent);

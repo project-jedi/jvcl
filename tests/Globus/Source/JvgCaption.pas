@@ -118,17 +118,12 @@ type
       default clBlack;
   end;
 
-procedure Register;
 {$DEFINE GL_CAPT_BUTTONS}
 implementation
 {$IFDEF GL_CAPT_BUTTONS}
 {$R JvgCaption.res}
 {$ENDIF}
 
-procedure Register;
-begin
-  RegisterComponents('Proba', [TJvgCaption]);
-end;
 //==============================================================
 
 constructor TJvgCaption.Create(AOwner: TComponent);

@@ -165,17 +165,9 @@ type
 
   end;
 
-procedure Register;
 
 implementation
 {$R JvgCheckBox.res}
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-
-procedure Register;
-begin
-  RegisterComponents('Proba', [TJvgCheckBox]);
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
 
 //________________________________________________________ Methods _
 

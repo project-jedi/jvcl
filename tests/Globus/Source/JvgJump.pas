@@ -75,7 +75,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgJumpingComponent]);
+//  RegisterComponents('Proba', [TJvgJumpingComponent]);
 end;
 //---------------------
 

@@ -220,15 +220,10 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
-procedure Register;
 
 implementation
 {$R JvgButton.res}
 
-procedure Register;
-begin
-  RegisterComponents('Proba', [TJvgButton]);
-end;
 
 constructor TJvgBtnGlyphs.Create;
 begin

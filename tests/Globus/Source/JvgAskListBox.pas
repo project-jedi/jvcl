@@ -178,15 +178,9 @@ type
     property Options: TglAskLBOptions read FOptions write SetOptions;
   end;
 
-procedure Register;
-
 implementation
 uses JvgUtils;
 
-procedure Register;
-begin
-  RegisterComponents('Proba', [TJvgAskListBox]);
-end;
 
 //*****************************************_____________LowLevel METHODS
 

@@ -86,7 +86,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgSpeedButton]);
+//  RegisterComponents('Proba', [TJvgSpeedButton]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _

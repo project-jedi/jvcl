@@ -211,7 +211,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgListBox]);
+//  RegisterComponents('Proba', [TJvgListBox]);
 end;
 //*****************************************_____________LowLevel METHODS
 

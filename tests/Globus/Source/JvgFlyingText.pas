@@ -170,14 +170,8 @@ type
     property StepShift: TJvgPointClass read FStepShift write FStepShift;
   end;
 
-procedure Register;
-
 implementation
 
-procedure Register;
-begin
-  RegisterComponents('Proba', [TJvgFlyingText]);
-end;
 //*****************************************_____________LowLevel METHODS
 //________________________________________________________
 

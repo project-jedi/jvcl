@@ -54,7 +54,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TJvgTranspMemo]);
+//  RegisterComponents('Proba', [TJvgTranspMemo]);
 end;
 
 constructor TJvgTranspMemo.Create(AOwner: TComponent);
