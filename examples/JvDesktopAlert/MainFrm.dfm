@@ -11,9 +11,6 @@ object frmMain: TfrmMain
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    359
-    425)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -39,42 +36,42 @@ object frmMain: TfrmMain
   end
   object Label4: TLabel
     Left = 8
-    Top = 216
+    Top = 184
     Width = 140
     Height = 13
     Caption = 'Number of "custom" buttons :'
   end
   object Label5: TLabel
     Left = 8
-    Top = 360
+    Top = 344
     Width = 148
     Height = 13
     Caption = 'Number of windows to preview:'
   end
   object Label6: TLabel
     Left = 184
-    Top = 208
+    Top = 184
     Width = 87
     Height = 13
     Caption = 'Fade In Time (ms):'
   end
   object Label7: TLabel
     Left = 184
-    Top = 248
+    Top = 224
     Width = 85
     Height = 13
     Caption = 'Display Time (ms):'
   end
   object Label8: TLabel
     Left = 184
-    Top = 288
+    Top = 264
     Width = 95
     Height = 13
     Caption = 'Fade Out Time (ms):'
   end
   object Label9: TLabel
     Left = 184
-    Top = 128
+    Top = 304
     Width = 44
     Height = 13
     Caption = 'Location:'
@@ -108,8 +105,8 @@ object frmMain: TfrmMain
     Text = 'Put the text of the message here'
   end
   object btnBrowse: TButton
-    Left = 96
-    Top = 160
+    Left = 64
+    Top = 144
     Width = 75
     Height = 25
     Caption = 'Browse...'
@@ -119,16 +116,16 @@ object frmMain: TfrmMain
   object Panel1: TPanel
     Left = 8
     Top = 120
-    Width = 65
-    Height = 65
+    Width = 45
+    Height = 45
     BevelOuter = bvNone
     BorderStyle = bsSingle
     TabOrder = 4
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 61
-      Height = 61
+      Width = 41
+      Height = 41
       Align = alClient
       AutoSize = True
       Center = True
@@ -926,7 +923,7 @@ object frmMain: TfrmMain
   end
   object Edit1: TEdit
     Left = 8
-    Top = 232
+    Top = 200
     Width = 121
     Height = 21
     TabOrder = 5
@@ -934,7 +931,7 @@ object frmMain: TfrmMain
   end
   object udButtons: TUpDown
     Left = 129
-    Top = 232
+    Top = 200
     Width = 15
     Height = 21
     Associate = Edit1
@@ -946,7 +943,7 @@ object frmMain: TfrmMain
   end
   object chkClickable: TCheckBox
     Left = 16
-    Top = 272
+    Top = 240
     Width = 150
     Height = 17
     Caption = 'Message can be clicked'
@@ -956,7 +953,7 @@ object frmMain: TfrmMain
   end
   object chkMovable: TCheckBox
     Left = 16
-    Top = 290
+    Top = 258
     Width = 150
     Height = 17
     Caption = 'Form can be moved'
@@ -966,7 +963,7 @@ object frmMain: TfrmMain
   end
   object chkClose: TCheckBox
     Left = 16
-    Top = 309
+    Top = 277
     Width = 150
     Height = 17
     Caption = 'Allow manual close'
@@ -976,7 +973,7 @@ object frmMain: TfrmMain
   end
   object Edit2: TEdit
     Left = 8
-    Top = 376
+    Top = 360
     Width = 121
     Height = 21
     TabOrder = 11
@@ -984,7 +981,7 @@ object frmMain: TfrmMain
   end
   object udWindowCount: TUpDown
     Left = 129
-    Top = 376
+    Top = 360
     Width = 15
     Height = 21
     Associate = Edit2
@@ -996,7 +993,7 @@ object frmMain: TfrmMain
   end
   object chkShowDropDown: TCheckBox
     Left = 16
-    Top = 328
+    Top = 296
     Width = 150
     Height = 17
     Caption = 'Show dropdown menu'
@@ -1006,7 +1003,7 @@ object frmMain: TfrmMain
   end
   object Edit3: TEdit
     Left = 184
-    Top = 224
+    Top = 200
     Width = 121
     Height = 21
     TabOrder = 13
@@ -1014,7 +1011,7 @@ object frmMain: TfrmMain
   end
   object udFadeIn: TUpDown
     Left = 305
-    Top = 224
+    Top = 200
     Width = 15
     Height = 21
     Associate = Edit3
@@ -1026,7 +1023,7 @@ object frmMain: TfrmMain
   end
   object Edit4: TEdit
     Left = 184
-    Top = 264
+    Top = 240
     Width = 121
     Height = 21
     TabOrder = 15
@@ -1034,7 +1031,7 @@ object frmMain: TfrmMain
   end
   object udWait: TUpDown
     Left = 305
-    Top = 264
+    Top = 240
     Width = 15
     Height = 21
     Associate = Edit4
@@ -1046,7 +1043,7 @@ object frmMain: TfrmMain
   end
   object Edit5: TEdit
     Left = 184
-    Top = 304
+    Top = 280
     Width = 121
     Height = 21
     TabOrder = 17
@@ -1054,7 +1051,7 @@ object frmMain: TfrmMain
   end
   object udFadeOut: TUpDown
     Left = 305
-    Top = 304
+    Top = 280
     Width = 15
     Height = 21
     Associate = Edit5
@@ -1066,7 +1063,7 @@ object frmMain: TfrmMain
   end
   object cbLocation: TComboBox
     Left = 184
-    Top = 144
+    Top = 320
     Width = 145
     Height = 21
     Style = csDropDownList
@@ -1818,5 +1815,27 @@ object frmMain: TfrmMain
     SubStorages = <>
     Left = 152
     Top = 120
+  end
+  object JvDesktopAlert1: TJvDesktopAlert
+    HeaderFont.Charset = ANSI_CHARSET
+    HeaderFont.Color = clWindowText
+    HeaderFont.Height = -11
+    HeaderFont.Name = 'Tahoma'
+    HeaderFont.Style = [fsBold]
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Buttons = <>
+    Location.Top = 0
+    Location.Left = 0
+    WaitTime = 0
+    Left = 216
+    Top = 112
+  end
+  object JvDesktopAlertStack1: TJvDesktopAlertStack
+    Left = 248
+    Top = 112
   end
 end
