@@ -2041,6 +2041,7 @@ object MSDN2002: TMSDN2002
     end
     object AutoHide_Item: TMenuItem
       Caption = '&Auto Hide'
+      OnClick = AutoHide_ItemClick
     end
   end
   object JvDockVSNetStyle1: TJvDockVSNetStyle
