@@ -32,11 +32,19 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
+  {$IFDEF USEJVCL}
   Controls, Forms, Dialogs, SHDocVw,
   JvComponent;
+  {$ELSE}
+  Controls, Forms, Dialogs, SHDocVw;
+  {$ENDIF USEJVCL}
 
 type
+  {$IFDEF USEJVCL}
   TJvgHTTPVersionInfo = class(TJvComponent)
+  {$ELSE}
+  TJvgHTTPVersionInfo = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FVersionInfo: TStringList;
     FWebBrowser: TWebBrowser;
@@ -64,11 +72,10 @@ type
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
-  {$IFDEF USEJVCL}
-  JvResources,
-  {$ENDIF USEJVCL}
-  JvConsts;
+  JvResources, JvConsts;
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring

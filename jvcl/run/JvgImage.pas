@@ -33,10 +33,17 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls,
-  JvComponent, JvgTypes, JvgUtils, JvgCommClasses;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgUtils, JvgCommClasses;
 
 type
+  {$IFDEF USEJVCL}
   TJvgBitmapImage = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgBitmapImage = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FAutoSize: Boolean;
     FImageAlign: TJvg2DAlign;
@@ -176,8 +183,7 @@ begin
   SetAutoTransparentColor(FAutoTransparentColor);
 end;
 
-procedure TJvgBitmapImage.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvgBitmapImage.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = Image) and (Operation = opRemove) then

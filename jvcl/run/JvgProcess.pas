@@ -33,11 +33,19 @@ interface
 //...simple process managment
 
 uses
+  {$IFDEF USEJVCL}
   Windows, SysUtils, Messages, Classes, Forms,
   JvComponent;
+  {$ELSE}
+  Windows, SysUtils, Messages, Classes, Forms;
+  {$ENDIF USEJVCL}
 
 type
+  {$IFDEF USEJVCL}
   TJvgProcess = class(TJvComponent)
+  {$ELSE}
+  TJvgProcess = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FInfo: TProcessInformation;
     FRunning: Boolean;

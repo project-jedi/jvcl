@@ -40,7 +40,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, CommCtrl, ExtCtrls, ImgList,
-  JvgTypes, JVCLVer, JvgCommClasses, Jvg3DColors;
+  {$IFDEF USEJVCL}
+  JVCLVer,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, Jvg3DColors;
 
 const
   WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
@@ -55,6 +58,9 @@ type
 
   TJvgListBox = class(TCustomListBox)
   private
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FAutoTransparentColor: TglAutoTransparentColor;
     FWallpaper: TBitmap;
     FWallpaperImage: TImage;
@@ -84,7 +90,6 @@ type
     FOldSelItemIndex: Integer;
     FSelItemIndex: Integer;
     FUseWallpaper: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetAutoTransparentColor(Value: TglAutoTransparentColor);
     procedure SetWallpaper(Value: TBitmap);
     function GetWallpaper: TBitmap;
@@ -124,7 +129,9 @@ type
     property SelectedObject: Pointer read GetSelectedObject;
     property SelCount: Integer read GetSelCount;
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
     property Anchors;
     property Align;
     property BorderStyle;

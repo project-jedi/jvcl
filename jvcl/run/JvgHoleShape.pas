@@ -33,14 +33,21 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls,
-  JvgTypes, JvComponent, JvgCommClasses;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses;
 
 type
   TRGNCombineMode = (cmAND, cmCOPY, cmDIFF, cmOR, cmXOR);
   THoleShapeType = (stRectangle, stSquare, stRoundRect, stRoundSquare,
     stEllipse, stCircle);
 
+  {$IFDEF USEJVCL}
   TJvgHoleShape = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgHoleShape = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FCombineMode: TRGNCombineMode;
     FEnabledAllInDesignTime: Boolean;

@@ -32,11 +32,19 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  {$IFDEF USEJVCL}
   Forms, ExtCtrls, ComCtrls,
   JvComponent;
+  {$ELSE}
+  Forms, ExtCtrls, ComCtrls;
+  {$ENDIF USEJVCL}
 
 type
+  {$IFDEF USEJVCL}
   TJvgHelpPanel = class(TJvCustomPanel)
+  {$ELSE}
+  TJvgHelpPanel = class(TCustomPanel)
+  {$ENDIF USEJVCL}
   private
     FRich: TRichEdit;
     FStrings: TStringList;
@@ -121,11 +129,10 @@ type
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
-  {$IFDEF USEJVCL}
-  JvResources,
-  {$ENDIF USEJVCL}
-  JvConsts;
+  JvResources, JvConsts;
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -252,10 +259,10 @@ begin
   if csDesigning in ComponentState then
   begin
     R := ClientRect;
-    inc(R.Top, 20);
+    Inc(R.Top, 20);
     SetBkMode(Canvas.Handle, TRANSPARENT);
-    DrawText(Canvas.Handle, PChar(Warning), Length(Warning), R, DT_SINGLELINE or
-      DT_CENTER or DT_VCENTER);
+    DrawText(Canvas.Handle, PChar(Warning), Length(Warning), R,
+      DT_SINGLELINE or DT_CENTER or DT_VCENTER);
   end;
 end;
 

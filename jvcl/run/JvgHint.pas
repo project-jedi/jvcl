@@ -33,10 +33,17 @@ interface
 
 uses
   Windows, Messages, SysUtils, Graphics, Controls, Classes, Forms,
-  JvComponent, JvgCommClasses;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgCommClasses;
 
 type
+  {$IFDEF USEJVCL}
   TJvgHint = class(TJvComponent)
+  {$ELSE}
+  TJvgHint = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FOnShowHint: TShowHintEvent;
     FOnHint: TNotifyEvent;
@@ -79,9 +86,8 @@ implementation
 uses
   Math, ExtCtrls,
   {$IFDEF USEJVCL}
-  JvResources,
+  JvResources, JvConsts,
   {$ENDIF USEJVCL}
-  JvConsts,
   JvgTypes, JvgUtils;
 
 {$IFDEF MSWINDOWS}

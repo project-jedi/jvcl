@@ -34,11 +34,19 @@ unit JvgJump;
 interface
 
 uses
+  {$IFDEF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
   JvComponent;
+  {$ELSE}
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls;
+  {$ENDIF USEJVCL}
 
 type
+  {$IFDEF USEJVCL}
   TJvgJumpingComponent = class(TJvComponent)
+  {$ELSE}
+  TJvgJumpingComponent = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FLeft: Integer;
     FTop: Integer;
