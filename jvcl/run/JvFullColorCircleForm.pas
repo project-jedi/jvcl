@@ -31,8 +31,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, StdCtrls, Spin,
-  JvFullColorDialogs, JvFullColorCtrls, JvFullColorSpaces, JvFullColorRotate;
+  ExtCtrls, StdCtrls, 
+  JvFullColorDialogs, JvFullColorCtrls, JvFullColorSpaces, JvFullColorRotate,
+  Mask, JvExMask, JvSpin;
 
 type
   TJvFullColorCircleFrm = class(TJvBaseColorCircleForm)
@@ -47,18 +48,18 @@ type
     JvFullColorTrackBarBlue: TJvFullColorTrackBar;
     JvFullColorTrackBarGreen: TJvFullColorTrackBar;
     JvFullColorTrackBarRed: TJvFullColorTrackBar;
-    SpinEditComAxis0: TSpinEdit;
-    SpinEditRedAxis0: TSpinEdit;
-    SpinEditGreenAxis0: TSpinEdit;
-    SpinEditBlueAxis0: TSpinEdit;
-    SpinEditComAxis1: TSpinEdit;
-    SpinEditComAxis2: TSpinEdit;
-    SpinEditRedAxis1: TSpinEdit;
-    SpinEditRedAxis2: TSpinEdit;
-    SpinEditGreenAxis1: TSpinEdit;
-    SpinEditGreenAxis2: TSpinEdit;
-    SpinEditBlueAxis1: TSpinEdit;
-    SpinEditBlueAxis2: TSpinEdit;
+    SpinEditComAxis0: TJvSpinEdit;
+    SpinEditRedAxis0: TJvSpinEdit;
+    SpinEditGreenAxis0: TJvSpinEdit;
+    SpinEditBlueAxis0: TJvSpinEdit;
+    SpinEditComAxis1: TJvSpinEdit;
+    SpinEditComAxis2: TJvSpinEdit;
+    SpinEditRedAxis1: TJvSpinEdit;
+    SpinEditRedAxis2: TJvSpinEdit;
+    SpinEditGreenAxis1: TJvSpinEdit;
+    SpinEditGreenAxis2: TJvSpinEdit;
+    SpinEditBlueAxis1: TJvSpinEdit;
+    SpinEditBlueAxis2: TJvSpinEdit;
     LabelOld: TLabel;
     LabelNew: TLabel;
     LabelColorSpace: TLabel;
@@ -117,10 +118,10 @@ type
     FComAxis: array [TJvAxisIndex] of Byte;
     FAxisMin: array [TJvAxisIndex] of Byte;
     FAxisMax: array [TJvAxisIndex] of Byte;
-    FSpinEditComAxes: array [TJvAxisIndex] of TSpinEdit;
-    FSpinEditRedAxes: array [TJvAxisIndex] of TSpinEdit;
-    FSpinEditGreenAxes: array [TJvAxisIndex] of TSpinEdit;
-    FSpinEditBlueAxes: array [TJvAxisIndex] of TSpinEdit;
+    FSpinEditComAxes: array [TJvAxisIndex] of TJvSpinEdit;
+    FSpinEditRedAxes: array [TJvAxisIndex] of TJvSpinEdit;
+    FSpinEditGreenAxes: array [TJvAxisIndex] of TJvSpinEdit;
+    FSpinEditBlueAxes: array [TJvAxisIndex] of TJvSpinEdit;
     FLabelComAxes: array [TJvAxisIndex] of TLabel;
     FLabelAxes: array [TJvAxisIndex] of TLabel;
     FCheckBoxCom: array [TJvAxisIndex] of TCheckBox;
@@ -846,7 +847,7 @@ begin
   if FUpdating then
     Exit;
 
-  with Sender as TSpinEdit do
+  with Sender as TJvSpinEdit do
   begin
     if not TryStrToInt(Text,IntValue) then
       Exit;
