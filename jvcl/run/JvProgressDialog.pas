@@ -169,7 +169,12 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
   Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls,
+  {$ENDIF VisualCLX}
   JvProgressForm;
 
 constructor TJvProgressDialog.Create(AOwner: TComponent);

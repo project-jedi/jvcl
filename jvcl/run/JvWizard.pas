@@ -440,7 +440,7 @@ type
     procedure SetParent(AParent: TWinControl); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure SetParent(const AParent: TWidgetControl); override;
+    procedure SetParent(const ParentA: TWidgetControl); override;
     {$ENDIF VisualCLX}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -1490,7 +1490,7 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvWizardRouteMapControl.SetParent(const AParent: TWidgetControl);
+procedure TJvWizardRouteMapControl.SetParent(const ParentA: TWidgetControl);
 var
   i: Integer;
   AParent: TWidgetControl;

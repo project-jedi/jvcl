@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
                 André Snepvangers [asn@xs4all.nl] (VisualCLX compatible version)
 
-Last Modified: 2004-01-03
+Last Modified: 2004-02-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -115,11 +115,11 @@ type
     Property ActiveButtonText: TColor index 36 read GetColor write SetColor stored False;
     Property ActiveBase: TColor index 37 read GetColor write SetColor stored False;
     Property ActiveBackground: TColor index 38 read GetColor write SetColor stored False;
-    Property ActiveShadow: TColor index 49 read GetColor write SetColor stored False;
+    Property ActiveShadow: TColor index 39 read GetColor write SetColor stored False;
     Property ActiveHighlight: TColor index 40 read GetColor write SetColor stored False;
     Property ActiveHighlightedText: TColor index 41 read GetColor write SetColor stored False;
-    Property HintColor: TColor index 42 read GetColor write SetColor stored False;
-    Property DeskTopBackgroundColor:  TColor index 43 read GetColor write SetColor stored False;
+//    Property HintColor: TColor index 42 read GetColor write SetColor stored False;
+//    Property DeskTopBackgroundColor:  TColor index 43 read GetColor write SetColor stored False;
     {$ENDIF VisualCLX}
   end;
 
@@ -137,7 +137,7 @@ const
     COLOR_WINDOW, COLOR_WINDOWFRAME, COLOR_WINDOWTEXT); //23
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  ColorArray: array[0..43] of TColor = (
+  ColorArray: array[0..41] of TColor = (
     clNormalForeground, clNormalButton, clNormalLight, clNormalMidlight, clNormalDark, clNormalMid,
     clNormalText, clNormalBrightText, clNormalButtonText, clNormalBase, clNormalBackground,
     clNormalShadow, clNormalHighlight, clNormalHighlightedText,
@@ -148,8 +148,8 @@ const
 
     clActiveForeground, clActiveButton, clActiveLight, clActiveMidlight, clActiveDark, clActiveMid,
     clActiveText, clActiveBrightText, clActiveButtonText, clActiveBase, clActiveBackground,
-    clActiveShadow, clActiveHighlight, clActiveHighlightedText,
-    clInfoBk, clDesktop );
+    clActiveShadow, clActiveHighlight, clActiveHighlightedText
+    {, clInfoBk, clDesktop} );
   {$ENDIF VisualCLX}
 
 procedure TJvSystemColors.SetColor(Index: Integer; Value: TColor);
