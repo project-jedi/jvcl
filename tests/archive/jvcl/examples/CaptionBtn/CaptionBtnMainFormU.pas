@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvCaptionButton, ExtCtrls, JvComponent, ComCtrls;
+  StdCtrls, JvCaptionButton, ExtCtrls, JvComponent, ComCtrls, ImgList;
 
 type
   TCaptionBtnMainForm = class(TForm)
@@ -38,6 +38,8 @@ type
     Bevel1: TBevel;
     btnAdd: TButton;
     btnDelete: TButton;
+    ImageList1: TImageList;
+    chkShowImage: TCheckBox;
     procedure JvCaptionButton1Click(Sender: TObject);
     procedure JvCaptionButton1MouseDown(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -63,6 +65,7 @@ type
     procedure tbBtnWidthChange(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
+    procedure chkShowImageClick(Sender: TObject);
   end;
 
 var
@@ -103,6 +106,10 @@ begin
     meEvents.Lines.Add(Format('Click at %d, %d', [P.X, P.Y]));
   end;
   chkDown.Checked := JvCaptionButton1.Down;
+  // show "copyright" when showing special image
+  if (JvCaptionButton1.Standard = tsbNone) and (chkShowImage.Checked) then
+    MessageBox(Handle,PChar('JvCaptionButton Demo. Copyright (c) 2003 by JEDI VCL; all rights reserved.'),
+      PChar('About this demo...'),MB_OK or MB_ICONINFORMATION);
 end;
 
 procedure TCaptionBtnMainForm.chkVisibleClick(Sender: TObject);
@@ -120,6 +127,7 @@ end;
 procedure TCaptionBtnMainForm.cbStandardChange(Sender: TObject);
 begin
   JvCaptionButton1.Standard := TJvStandardButton(cbStandard.ItemIndex);
+  chkShowImage.Enabled := JvCaptionButton1.Standard = tsbNone;
 end;
 
 procedure TCaptionBtnMainForm.FormCreate(Sender: TObject);
@@ -127,6 +135,7 @@ begin
   udPosition.Position := JvCaptionButton1.Position;
   udPositionClick(Sender, btNext);
   cbStandard.ItemIndex := integer(JvCaptionButton1.Standard);
+  cbStandardChange(Sender);
   chkToggle.Checked := JvCaptionButton1.Toggle;
   chkVisible.Checked := JvCaptionButton1.Visible;
   edCaption.Text := JvCaptionButton1.Caption;
@@ -137,6 +146,7 @@ begin
   chkHelp.Checked := biHelp in BorderIcons;
   chkEnabled.Checked := JvCaptionButton1.Enabled;
   cbBorderStyle.ItemIndex := integer(BorderStyle);
+  cbBorderStyleChange(Sender);
   chkShowHints.Checked := ShowHint;
   tbBtnWidth.Min := JvCaptionButton1.ButtonWidth;
 end;
@@ -199,6 +209,7 @@ end;
 procedure TCaptionBtnMainForm.chkShowHintsClick(Sender: TObject);
 begin
   ShowHint := chkShowHints.Checked;
+  Application.ShowHint := ShowHint;
 end;
 
 procedure TCaptionBtnMainForm.edHintChange(Sender: TObject);
@@ -248,6 +259,20 @@ begin
       Components[i].Free;
       Exit;
     end;
+end;
+
+procedure TCaptionBtnMainForm.chkShowImageClick(Sender: TObject);
+begin
+  if chkShowImage.Checked then
+  begin
+    JvCaptionButton1.Caption := '';
+    JvCaptionButton1.ImageIndex := 3;
+  end
+  else
+  begin
+    JvCaptionButton1.Caption := edCaption.Text;
+    JvCaptionButton1.ImageIndex := -1;
+  end;
 end;
 
 end.
