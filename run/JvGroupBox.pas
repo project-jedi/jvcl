@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JVCLVer;
+  JVCLVer, JvThemes;
 
 type
   TJvGroupBox = class(TGroupBox)
@@ -54,6 +54,11 @@ type
     procedure CMMouseLeave(var Msg: TMsg); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMsg); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMsg); message CM_PARENTCOLORCHANGED;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
+{$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    procedure SetParentBackground(const Value: Boolean);
+{$ENDIF}
   protected
     procedure DoHotKey; dynamic;
     procedure Paint; override;
@@ -69,9 +74,29 @@ type
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChange write FOnParentColorChange;
     property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
+{$IFDEF JVCLThemesEnabledD56}
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
+{$ENDIF}
   end;
 
 implementation
+
+uses
+  Math;
+
+{$IFDEF JVCLThemesEnabledD56}
+
+function TJvGroupBox.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvGroupBox.SetParentBackground(const Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+
+{$ENDIF}
 
 procedure TJvGroupBox.CMCtl3DChanged(var Msg: TMsg);
 begin
@@ -131,6 +156,11 @@ begin
     FOnParentColorChange(Self);
 end;
 
+procedure TJvGroupBox.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
+end;
+
 constructor TJvGroupBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -138,6 +168,7 @@ begin
   FOver := False;
   FPropagateEnable := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  IncludeThemeStyle(Self, [csParentBackground]);
 end;
 
 procedure TJvGroupBox.DoHotKey;
@@ -151,7 +182,34 @@ var
   H: Integer;
   R: TRect;
   Flags: Longint;
+{$IFDEF JVCLThemesEnabledD56}
+  Details: TThemedElementDetails;
+  CaptionRect: TRect;
+{$ENDIF}
 begin
+{$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+  begin
+  {$IFDEF COMPILER7_UP}
+    inherited;
+  {$ELSE}
+    if Enabled then
+      Details := ThemeServices.GetElementDetails(tbGroupBoxNormal)
+    else
+      Details := ThemeServices.GetElementDetails(tbGroupBoxDisabled);
+    R := ClientRect;
+    Inc(R.Top, Canvas.TextHeight('0') div 2);
+    ThemeServices.DrawElement(Canvas.Handle, Details, R);
+
+    CaptionRect := Rect(8, 0, Min(Canvas.TextWidth(Caption) + 8, ClientWidth - 8), Canvas.TextHeight(Caption));
+
+    Canvas.Brush.Color := Self.Color;
+    DrawThemedBackground(Self, Canvas, CaptionRect);
+    ThemeServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, DT_LEFT, 0);
+  {$ENDIF}
+    Exit;
+  end;
+{$ENDIF}
   with Canvas do
   begin
     Font := Self.Font;

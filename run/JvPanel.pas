@@ -35,12 +35,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  JVCLVer;
+  JVCLVer, JvThemes;
 
 type
   TJvPanel = class(TPanel)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
@@ -65,6 +64,10 @@ type
     procedure SetMultiLine(const Value: Boolean);
     procedure SetHotColor(const Value: TColor);
     procedure SetSizeable(const Value: boolean);
+{$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    procedure SetParentBackground(const Value: Boolean);
+{$ENDIF}
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -77,13 +80,13 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Invalidate; override;
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Sizeable: boolean read FSizeable write SetSizeable default false;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotColor: TColor read FHotColor write SetHotColor default clBtnFace;
@@ -95,11 +98,15 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+{$IFDEF JVCLThemesEnabledD56}
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default False;
+{$ENDIF}
   end;
 
 implementation
 uses
-  JvThemes, JvMouseTimer;
+  JvMouseTimer;
+
 
 constructor TJvPanel.Create(AOwner: TComponent);
 begin
@@ -129,13 +136,32 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 
+{$IFDEF JVCLThemesEnabledD56}
+
+function TJvPanel.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvPanel.SetParentBackground(const Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+
+{$ENDIF}
+
 procedure TJvPanel.Paint;
 var
   X, Y: integer;
 begin
   Canvas.Brush.Color := Color;
   if not Transparent then
-    Canvas.FillRect(ClientRect)
+  begin
+  {$IFDEF JVCLThemesEnabled}
+    if not ParentBackground then
+  {$ENDIF}
+      DrawThemedBackground(Self, Canvas, ClientRect)
+  end
   else
     Canvas.Brush.Style := bsClear;
 
@@ -156,7 +182,7 @@ begin
       Font.Size := 12;
       Canvas.Font.Style := [];
       Canvas.Font.Color := clBtnShadow;
-//      Brush.Style := bsClear;
+      Brush.Style := bsClear;
       X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
       Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
       if Transparent then
@@ -210,6 +236,7 @@ begin
   begin
     if Caption <> '' then
     begin
+      SetBkMode(Handle, Windows.TRANSPARENT);
       Font := Self.Font;
       ATextRect := GetClientRect;
       InflateRect(ATextRect, -BorderWidth, -BorderWidth);
@@ -328,6 +355,11 @@ begin
     Msg.Result := 1
   else
     inherited;
+end;
+
+procedure TJvPanel.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1; 
 end;
 
 procedure TJvPanel.SetMultiLine(const Value: Boolean);
