@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = TestApp.exe JvCoreD5R.bpl JvCoreD5D.bpl JvSystemD5R.bpl \
+PROJECTS = DJCL50.bpl JvCoreD5R.bpl JvCoreD5D.bpl JvSystemD5R.bpl \
   JvSystemD5D.bpl JvStdCtrlsD5R.bpl JvStdCtrlsD5D.bpl JvCtrlsD5R.bpl \
   JvCtrlsD5D.bpl JvCmpD5R.bpl JvCmpD5D.bpl JvCustomD5R.bpl JvCustomD5D.bpl \
   JvDlgsD5R.bpl JvDlgsD5D.bpl JvCryptD5R.bpl JvCryptD5D.bpl JvMMD5R.bpl \
@@ -107,9 +107,6 @@ JvBDED5D.bpl: D5\JvBDED5D.dpk
 JvCmpD5D.bpl: D5\JvCmpD5D.dpk
   $(DCC)
 
-TestApp.exe: ..\TestApp.dpr
-  $(DCC)
-
 JvBandsD5D.bpl: D5\JvBandsD5D.dpk
   $(DCC)
 
@@ -150,6 +147,9 @@ JvValidatorsD5D.bpl: D5\JvValidatorsD5D.dpk
   $(DCC)
 
 JvValidatorsD5R.bpl: D5\JvValidatorsD5R.dpk
+  $(DCC)
+
+DJCL50.bpl: ..\..\..\JCL\packages\DJCL50.dpk
   $(DCC)
 
 

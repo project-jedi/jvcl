@@ -1,3 +1,4 @@
+{$I JVCL.INC}
 {
   Known limitations:
     -You have to place the columns you test in the where clause in the select clause too
@@ -11,7 +12,8 @@ unit JvXmlDatabase;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, Dialogs, DateUtils, Math,
+  SysUtils, Classes, Contnrs, Dialogs, Math,
+  {$IFDEF COMPILER6_UP}DateUtils, {$ENDIF}
   JvTypes, JvComponent, JvSimpleXml;
 
 type
@@ -171,7 +173,52 @@ type
     property TablesPath:string read FTablesPath write FTablesPath;
   end;
 
+
 implementation
+
+{$IFNDEF COMPILER6_UP}
+{ TODO -oJVCL -cTODO : Implement these better for D5! }
+function StrToDateTimeDef(const S:string;Default:TDateTime):TDateTime;
+begin
+  // stupid and slow but at least simple
+  try
+    Result := StrToDateTime(S);
+  except
+    Result := Default;
+  end;
+end;
+
+function DaysBetween(const Date1, Date2:TdateTime):integer;
+begin
+  if Date1 < Date2 then
+    Result := trunc(Date2 - Date1)
+  else
+    Result := trunc(Date1 - Date2);
+end;
+
+const
+  OneMillisecond = 1/24/60/60/1000;
+
+function CompareDateTime(const A, B:TDateTime):integer;
+begin
+  if Abs(A - B) < OneMillisecond then
+    Result := 0
+  else if A < B then
+    Result := -1
+  else
+    Result := 1;
+end;
+
+function StrToFloatDef(const S:String;Default:Extended):Extended;
+begin
+  // stupid and slow but at least simple
+  try
+    Result := StrToFloat(S);
+  except
+    Result := Default;
+  end;
+end;
+{$ENDIF}
 
 var
   RS_UNKNOWNINST: string    = 'Unknown Instruction %s';

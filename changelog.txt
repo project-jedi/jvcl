@@ -1,6 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2003-06-23:
+- Readded old TJvGradientCaption as TJvGradientHeaderPanel. Unit renamed from JvGradientCaption.pas to JvGradientHeaderPanel.pas
 2003-06-22:
+- Renamed TJvxGradienCaption to TJvGradienCaption. Renamed JvGrdcpt.pas to JvGradientCpaton
 - Added missing units. 
 - Copied needed images from old jvcl to new jvcl3 images folder
 - Moved obsolete or plain useless stuff to \archive

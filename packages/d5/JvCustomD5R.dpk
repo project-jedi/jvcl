@@ -28,7 +28,7 @@ package JvCustomD5R;
 
 requires
   JvCoreD5R,
-  DJCL70,
+  DJCL50,
   JvSystemD5R,
   JvCtrlsD5R;
 

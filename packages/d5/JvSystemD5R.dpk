@@ -1,7 +1,6 @@
 package JvSystemD5R;
 
 {$R *.res}
-{$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -28,9 +27,8 @@ package JvSystemD5R;
 
 requires
   JvCoreD5R,
-  DJCL70,
-  vcl,
-  rtl;
+  DJCL50,
+  vcl50;
 
 contains
   JvClipboardMonitor in '..\..\run\JvClipboardMonitor.pas',

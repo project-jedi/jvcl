@@ -28,7 +28,7 @@ package JvDlgsD6R;
 
 requires
   JvCoreD6R,
-  DJCL70,
+  DJCL60,
   JvStdCtrlsD6R;
 
 contains

@@ -29,7 +29,7 @@ package JvMMD5D;
 requires
   JvMMD5R,
   designide,
-  DJCL70,
+  DJCL50,
   JvCmpD5R;
 
 contains

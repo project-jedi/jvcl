@@ -28,7 +28,7 @@ package JvCustomD6R;
 
 requires
   JvCoreD6R,
-  DJCL70,
+  DJCL60,
   JvSystemD6R,
   JvCtrlsD6R;
 

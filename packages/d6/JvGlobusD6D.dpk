@@ -41,9 +41,8 @@ requires
   JvMMD6R,
   JvDlgsD6R,
   rtl,
-  vclactnband,
   JvCoreD6R,
-  DJCL70;
+  DJCL60;
 
 contains
   JvgRegLibDelphi in '..\..\design\JvgRegLibDelphi.pas',

@@ -9,147 +9,144 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = TestApp.exe JvCoreD6R.bpl JvCoreD6D.bpl JvSystemD6R.bpl \
-  JvSystemD6D.bpl JvStdCtrlsD6R.bpl JvStdCtrlsD6D.bpl JvCtrlsD6R.bpl \
-  JvCtrlsD6D.bpl JvCmpD6R.bpl JvCmpD6D.bpl JvCustomD6R.bpl JvCustomD6D.bpl \
-  JvDlgsD6R.bpl JvDlgsD6D.bpl JvCryptD6R.bpl JvCryptD6D.bpl JvMMD6R.bpl \
-  JvMMD6D.bpl JvNetD6R.bpl JvNetD6D.bpl JvAppFrmD6R.bpl JvAppFrmD6D.bpl \
-  JvDBD6R.bpl JvDBD6D.bpl JvBDED6R.bpl JvBDED6D.bpl JvInterpreterD6R.bpl \
-  JvInterpreterD6D.bpl JvBandsD6R.bpl JvBandsD6D.bpl JvPluginD6R.bpl \
-  JvPluginD6D.bpl JvJansD6R.bpl JvJansD6D.bpl JvGlobusD6R.bpl JvGlobusD6D.bpl \
-  JvPrintPreviewD6R.bpl JvPrintPreviewD6D.bpl JvPageCompsD6R.bpl \
-  JvPageCompsD6D.bpl JvValidatorsD6R.bpl JvValidatorsD6D.bpl
+PROJECTS = JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl \
+  JvSystemD7D.bpl JvStdCtrlsD7R.bpl JvStdCtrlsD7D.bpl JvCtrlsD7R.bpl \
+  JvCtrlsD7D.bpl JvCmpD7R.bpl JvCmpD7D.bpl JvCustomD7R.bpl JvCustomD7D.bpl \
+  JvDlgsD7R.bpl JvDlgsD7D.bpl JvCryptD7R.bpl JvCryptD7D.bpl JvMMD7R.bpl \
+  JvMMD7D.bpl JvNetD7R.bpl JvNetD7D.bpl JvAppFrmD7R.bpl JvAppFrmD7D.bpl \
+  JvDBD7R.bpl JvDBD7D.bpl JvBDED7R.bpl JvBDED7D.bpl JvInterpreterD7R.bpl \
+  JvInterpreterD7D.bpl JvBandsD7R.bpl JvBandsD7D.bpl JvPluginD7R.bpl \
+  JvPluginD7D.bpl JvJansD7R.bpl JvJansD7D.bpl JvGlobusD7R.bpl JvGlobusD7D.bpl \
+  JvPrintPreviewD7R.bpl JvPrintPreviewD7D.bpl JvPageCompsD7R.bpl \
+  JvPageCompsD7D.bpl JvValidatorsD7R.bpl JvValidatorsD7D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-JvCoreD6D.bpl: D6\JvCoreD6D.dpk
+JvCoreD7D.bpl: D7\JvCoreD7D.dpk
   $(DCC)
 
-JvCoreD6R.bpl: D6\JvCoreD6R.dpk
+JvCoreD7R.bpl: D7\JvCoreD7R.dpk
   $(DCC)
 
-JvAppFrmD6R.bpl: D6\JvAppFrmD6R.dpk
+JvAppFrmD7R.bpl: D7\JvAppFrmD7R.dpk
   $(DCC)
 
-JvBDED6R.bpl: D6\JvBDED6R.dpk
+JvBDED7R.bpl: D7\JvBDED7R.dpk
   $(DCC)
 
-JvCmpD6R.bpl: D6\JvCmpD6R.dpk
+JvCmpD7R.bpl: D7\JvCmpD7R.dpk
   $(DCC)
 
-JvCryptD6R.bpl: D6\JvCryptD6R.dpk
+JvCryptD7R.bpl: D7\JvCryptD7R.dpk
   $(DCC)
 
-JvCtrlsD6R.bpl: D6\JvCtrlsD6R.dpk
+JvCtrlsD7R.bpl: D7\JvCtrlsD7R.dpk
   $(DCC)
 
-JvCustomD6R.bpl: D6\JvCustomD6R.dpk
+JvCustomD7R.bpl: D7\JvCustomD7R.dpk
   $(DCC)
 
-JvDBD6R.bpl: D6\JvDBD6R.dpk
+JvDBD7R.bpl: D7\JvDBD7R.dpk
   $(DCC)
 
-JvDlgsD6R.bpl: D6\JvDlgsD6R.dpk
+JvDlgsD7R.bpl: D7\JvDlgsD7R.dpk
   $(DCC)
 
-JvInterpreterD6R.bpl: D6\JvInterpreterD6R.dpk
+JvInterpreterD7R.bpl: D7\JvInterpreterD7R.dpk
   $(DCC)
 
-JvMMD6R.bpl: D6\JvMMD6R.dpk
+JvMMD7R.bpl: D7\JvMMD7R.dpk
   $(DCC)
 
-JvNetD6R.bpl: D6\JvNetD6R.dpk
+JvNetD7R.bpl: D7\JvNetD7R.dpk
   $(DCC)
 
-JvStdCtrlsD6R.bpl: D6\JvStdCtrlsD6R.dpk
+JvStdCtrlsD7R.bpl: D7\JvStdCtrlsD7R.dpk
   $(DCC)
 
-JvSystemD6R.bpl: D6\JvSystemD6R.dpk
+JvSystemD7R.bpl: D7\JvSystemD7R.dpk
   $(DCC)
 
-JvSystemD6D.bpl: D6\JvSystemD6D.dpk
+JvSystemD7D.bpl: D7\JvSystemD7D.dpk
   $(DCC)
 
-JvAppFrmD6D.bpl: D6\JvAppFrmD6D.dpk
+JvAppFrmD7D.bpl: D7\JvAppFrmD7D.dpk
   $(DCC)
 
-JvStdCtrlsD6D.bpl: D6\JvStdCtrlsD6D.dpk
+JvStdCtrlsD7D.bpl: D7\JvStdCtrlsD7D.dpk
   $(DCC)
 
-JvNetD6D.bpl: D6\JvNetD6D.dpk
+JvNetD7D.bpl: D7\JvNetD7D.dpk
   $(DCC)
 
-JvMMD6D.bpl: D6\JvMMD6D.dpk
+JvMMD7D.bpl: D7\JvMMD7D.dpk
   $(DCC)
 
-JvInterpreterD6D.bpl: D6\JvInterpreterD6D.dpk
+JvInterpreterD7D.bpl: D7\JvInterpreterD7D.dpk
   $(DCC)
 
-JvDlgsD6D.bpl: D6\JvDlgsD6D.dpk
+JvDlgsD7D.bpl: D7\JvDlgsD7D.dpk
   $(DCC)
 
-JvDBD6D.bpl: D6\JvDBD6D.dpk
+JvDBD7D.bpl: D7\JvDBD7D.dpk
   $(DCC)
 
-JvCustomD6D.bpl: D6\JvCustomD6D.dpk
+JvCustomD7D.bpl: D7\JvCustomD7D.dpk
   $(DCC)
 
-JvCtrlsD6D.bpl: D6\JvCtrlsD6D.dpk
+JvCtrlsD7D.bpl: D7\JvCtrlsD7D.dpk
   $(DCC)
 
-JvCryptD6D.bpl: D6\JvCryptD6D.dpk
+JvCryptD7D.bpl: D7\JvCryptD7D.dpk
   $(DCC)
 
-JvBDED6D.bpl: D6\JvBDED6D.dpk
+JvBDED7D.bpl: D7\JvBDED7D.dpk
   $(DCC)
 
-JvCmpD6D.bpl: D6\JvCmpD6D.dpk
+JvCmpD7D.bpl: D7\JvCmpD7D.dpk
   $(DCC)
 
-TestApp.exe: ..\TestApp.dpr
+JvBandsD7D.bpl: D7\JvBandsD7D.dpk
   $(DCC)
 
-JvBandsD6D.bpl: D6\JvBandsD6D.dpk
+JvPluginD7D.bpl: D7\JvPluginD7D.dpk
   $(DCC)
 
-JvPluginD6D.bpl: D6\JvPluginD6D.dpk
+JvPluginD7R.bpl: D7\JvPluginD7R.dpk
   $(DCC)
 
-JvPluginD6R.bpl: D6\JvPluginD6R.dpk
+JvBandsD7R.bpl: D7\JvBandsD7R.dpk
   $(DCC)
 
-JvBandsD6R.bpl: D6\JvBandsD6R.dpk
+JvJansD7D.bpl: D7\JvJansD7D.dpk
   $(DCC)
 
-JvJansD6D.bpl: D6\JvJansD6D.dpk
+JvJansD7R.bpl: D7\JvJansD7R.dpk
   $(DCC)
 
-JvJansD6R.bpl: D6\JvJansD6R.dpk
+JvGlobusD7D.bpl: D7\JvGlobusD7D.dpk
   $(DCC)
 
-JvGlobusD6D.bpl: D6\JvGlobusD6D.dpk
+JvGlobusD7R.bpl: D7\JvGlobusD7R.dpk
   $(DCC)
 
-JvGlobusD6R.bpl: D6\JvGlobusD6R.dpk
+JvPrintPreviewD7D.bpl: D7\JvPrintPreviewD7D.dpk
   $(DCC)
 
-JvPrintPreviewD6D.bpl: D6\JvPrintPreviewD6D.dpk
+JvPageCompsD7R.bpl: D7\JvPageCompsD7R.dpk
   $(DCC)
 
-JvPageCompsD6R.bpl: D6\JvPageCompsD6R.dpk
+JvPageCompsD7D.bpl: D7\JvPageCompsD7D.dpk
   $(DCC)
 
-JvPageCompsD6D.bpl: D6\JvPageCompsD6D.dpk
+JvPrintPreviewD7R.bpl: D7\JvPrintPreviewD7R.dpk
   $(DCC)
 
-JvPrintPreviewD6R.bpl: D6\JvPrintPreviewD6R.dpk
+JvValidatorsD7D.bpl: D7\JvValidatorsD7D.dpk
   $(DCC)
 
-JvValidatorsD6D.bpl: D6\JvValidatorsD6D.dpk
-  $(DCC)
-
-JvValidatorsD6R.bpl: D6\JvValidatorsD6R.dpk
+JvValidatorsD7R.bpl: D7\JvValidatorsD7R.dpk
   $(DCC)
 
 
