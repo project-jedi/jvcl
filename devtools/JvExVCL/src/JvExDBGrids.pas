@@ -29,13 +29,15 @@ Known Issues:
 WARNINGHEADER
 
 unit JvExDBGrids;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, DBGrids,
   {$ENDIF VCl}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QDBGrids, Types, QWindows,
+  Types, Qt, QGraphics, QControls, QForms, QDBGrids, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;

@@ -42,7 +42,8 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QImgList,
   {$ENDIF VisualCLX}
-  SysUtils, Classes, JvFinalize;
+  SysUtils, Classes,
+  JvFinalize;
 
 type
   TJvImageListMode = (imClassic, imPicture, imResourceIds, imItemList);
@@ -844,7 +845,7 @@ begin
     Exit;
 
   if (FFileName <> '') and FileExists(FFileName)
-    {$IFDEF LINUX} and not DirectoryExists(FFileName){$ENDIF} then
+    {$IFDEF LINUX} and not DirectoryExists(FFileName) {$ENDIF} then
   try
     FPicture.LoadFromFile(FFileName);
   except

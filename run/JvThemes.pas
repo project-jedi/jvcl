@@ -948,7 +948,8 @@ begin
                 else
                   Btn := tbCheckBoxCheckedNormal;
               end
-              else if uState and DFCS_MONO <> 0 then
+              else
+              if uState and DFCS_MONO <> 0 then
               begin
                 if uState and DFCS_INACTIVE <> 0 then
                   Btn := tbCheckBoxMixedDisabled

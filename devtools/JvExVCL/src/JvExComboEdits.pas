@@ -33,7 +33,9 @@ Sorry this file is for VCLX only
 {$ENDIF VCL}
 
 unit JvExComboEdits;
+
 interface
+
 uses
   Qt, QGraphics, QControls, QForms, Types, QComboEdits, QWindows,
   Classes, SysUtils,

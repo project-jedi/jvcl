@@ -15,6 +15,9 @@ object PatchFrm: TPatchFrm
   Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  DesignSize = (
+    401
+    144)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -24,6 +27,9 @@ object PatchFrm: TPatchFrm
     Height = 97
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
+    DesignSize = (
+      392
+      97)
     object Label1: TLabel
       Left = 9
       Top = 18

@@ -444,7 +444,8 @@ begin
       N.ImageIndex := ImageIndex;
       N.SelectedIndex := SelectedIndex;
     end
-    else if Recurse then
+    else
+    if Recurse then
       ResetSiblings(N.getFirstChild, ImageIndex, SelectedIndex, Recurse);
     N := N.getPrevSibling;
   end;
@@ -456,7 +457,8 @@ begin
       N.ImageIndex := ImageIndex;
       N.SelectedIndex := SelectedIndex;
     end
-    else if Recurse then
+    else
+    if Recurse then
       ResetSiblings(N.getFirstChild, ImageIndex, SelectedIndex, Recurse);
     N := N.getNextSibling;
   end;
@@ -510,7 +512,8 @@ begin
     i := TJvPageIndexNode(Node).PageIndex;
     if (i >= 0) and (i < FPageList.GetPageCount) then
       FPageList.SetActivePageIndex(i)
-    else if (PageDefault >= 0) and (PageDefault < FPageList.GetPageCount) then
+    else
+    if (PageDefault >= 0) and (PageDefault < FPageList.GetPageCount) then
       FPageList.SetActivePageIndex(PageDefault)
     else
       FPageList.SetActivePageIndex(-1);
@@ -838,8 +841,10 @@ begin
     else
       Node.ImageIndex := FNodeImages.CollapsedIndex;
   end
-  else if Node.Selected
-    or ((Node.Parent <> nil) and Node.Parent.Selected and (Node.Parent.getFirstChild = Node)) then
+  else
+  if Node.Selected or
+    ((Node.Parent <> nil) and Node.Parent.Selected and
+    (Node.Parent.getFirstChild = Node)) then
   begin
     ResetPreviousNode(Node);
     Node.ImageIndex := FNodeImages.SelectedIndex;

@@ -29,7 +29,9 @@ Known Issues:
 WARNINGHEADER
 
 unit JvExMask;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Mask,

@@ -1493,7 +1493,8 @@ begin
         GetDeviceCaps(DC, LOGPIXELSY), DeviceInfo.LogPixelsY));
     if (AHeight > 0) and (AWidth > 0) then
       Result := Min(AWidth, AHeight)
-    else if AHeight > 0 then
+    else
+    if AHeight > 0 then
       Result := AHeight
     else
       Result := AWidth;
@@ -1767,7 +1768,8 @@ begin
         ACanvas.FillRect(tmpRect);
       end
       // draw two smaller rects (does this *really* reduce flicker?)
-      else if Options.Shadow.Offset < 0 then
+      else
+      if Options.Shadow.Offset < 0 then
       begin
         // left side
         tmpRect := APageRect;

@@ -394,7 +394,8 @@ begin
           end;
         end;
       end
-      else if (Header.Bpp = 1) and (Header.Planes = 4) then // 4bit
+      else
+      if (Header.Bpp = 1) and (Header.Planes = 4) then // 4bit
       begin
         Buffer2 := @Buffer[Header.BytesPerLine];
         Buffer3 := @Buffer[Header.BytesPerLine * 2];

@@ -1114,7 +1114,8 @@ begin
     //try
     //    GotoBookmark(m);
     //except
-    //    on  E:EDatabaseError do begin
+    //    on E: EDatabaseError do
+    //    begin
     //        First;
     //        Exit;
     //    end;
@@ -1385,25 +1386,22 @@ begin
 
   CsvColumnData := FCsvColumns.FindByFieldNo(FieldLookup.FieldNo);
   max := -1;
-  for recindex := 0 to Self.FData.Count-1 do begin
-   try
+  for recindex := 0 to Self.FData.Count-1 do
+    try
       // skip filtered rows:
        RowPtr := FData[recindex];
        Assert(Assigned(RowPtr)); // FData should never contain nils!
        if (RowPtr^.filtered) then
             continue; // skip filtered row!
 
-
       value := GetFieldValueAsVariant(CsvColumnData,FieldLookup,recindex);
-      if value>max then
+      if value > max then
           max := value; // keep maximum.
-   except
-      on E:EVariantError do begin
-          exit; // failed.
-      end;
-   end;
-  end;
-  if (max<0) then
+    except
+      on E: EVariantError do
+        exit; // failed.
+    end;
+  if max < 0 then
       result := 0 // autoincrement starts at zero
   else
       result := max+1; // count upwards.
@@ -1418,7 +1416,6 @@ function TJvCustomCsvDataSet.Locate(const KeyFields: string; const KeyValues: Va
   //              or [loPartialKey,loCaseInsensitive]
   //              or [] {none}
 var
-
   KeyFieldArray: array[0..20] of string;
   FieldLookup: array[0..20] of TField;
   CsvColumnData :array[0..20] of PCsvColumn;

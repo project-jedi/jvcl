@@ -178,7 +178,8 @@ begin
       //telling it's the end ...
       FPatch.Add('end%' + IntToStr(iCount));
     end
-    else if res2 > res1 then
+    else
+    if res2 > res1 then
     begin
       //g>f patched>original
 

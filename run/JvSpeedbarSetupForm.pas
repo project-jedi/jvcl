@@ -285,20 +285,19 @@ begin
   CanSelect := True;
 end;
 
-procedure TJvSpeedbarSetupWindow.SectionListDrawCell(Sender: TObject; Col,
-  Row: Longint; Rect: TRect; State: TGridDrawState);
+procedure TJvSpeedbarSetupWindow.SectionListDrawCell(Sender: TObject;
+  Col, Row: Longint; Rect: TRect; State: TGridDrawState);
 begin
   if CheckSpeedBar then
     if Row < FSpeedbar.SectionCount then
       DrawCellText(Sender as TDrawGrid, Col, Row,
         FSpeedbar.Sections[Row].Caption, Rect, taLeftJustify, vaCenterJustify,
           {$IFDEF VCL}
-          TDrawGrid(Sender).IsRightToLeft
-          {$ENDIF}
+          TDrawGrid(Sender).IsRightToLeft);
+          {$ENDIF VCL}
           {$IFDEF VisualCLX}
-          False
+          False);
           {$ENDIF VisualCLX}
-        );
 end;
 
 procedure TJvSpeedbarSetupWindow.ButtonsListMouseDown(Sender: TObject;
@@ -403,8 +402,8 @@ begin
   FImage.Free;
 end;
 
-procedure TJvSpeedbarSetupWindow.ButtonsListDrawCell(Sender: TObject; Col,
-  Row: Longint; Rect: TRect; State: TGridDrawState);
+procedure TJvSpeedbarSetupWindow.ButtonsListDrawCell(Sender: TObject;
+  Col, Row: Longint; Rect: TRect; State: TGridDrawState);
 var
   I: Integer;
 begin
@@ -412,12 +411,11 @@ begin
   if (I >= 0) and (Row < FSpeedbar.ItemsCount(I)) then
     DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage,
       {$IFDEF VCL}
-      TDrawGrid(Sender).IsRightToLeft
-      {$ENDIF}
+      TDrawGrid(Sender).IsRightToLeft);
+      {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      False
+      False);
       {$ENDIF VisualCLX}
-    );
 end;
 
 procedure TJvSpeedbarSetupWindow.CloseBtnClick(Sender: TObject);

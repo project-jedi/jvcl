@@ -479,7 +479,8 @@ begin
   inherited Notification(AComponent, Operation);
   if (AComponent = BackgroundImage) and (Operation = opRemove) then
     BackgroundImage := nil
-  else if (AComponent = TextureImage) and (Operation = opRemove) then
+  else
+  if (AComponent = TextureImage) and (Operation = opRemove) then
     TextureImage := nil;
 end;
 //______
@@ -511,9 +512,11 @@ begin
       else
         InvalidateLabel(True);
     end
-    else if (floDelineatedText in Options) and (DelineateActive <> Delineate) then
+    else
+    if (floDelineatedText in Options) and (DelineateActive <> Delineate) then
       Repaint
-    else if TextActive <> Text then
+    else
+    if TextActive <> Text then
     begin
       FNeedUpdateOnlyMainText := True;
       Repaint;
@@ -540,9 +543,11 @@ begin
       else
         InvalidateLabel(True);
     end
-    else if (floDelineatedText in Options) and (DelineateActive <> Delineate) then
+    else
+    if (floDelineatedText in Options) and (DelineateActive <> Delineate) then
       Repaint
-    else if TextActive <> Text then
+    else
+    if TextActive <> Text then
     begin
       FNeedUpdateOnlyMainText := True;
       Repaint;
@@ -556,13 +561,15 @@ begin
   inherited;
   if FTexture <> nil then
     TextureBmp := FTexture
-  else if Assigned(FTextureImage) then
+  else
+  if Assigned(FTextureImage) then
     TextureBmp := FTextureImage.Picture.Bitmap
   else
     TextureBmp := nil;
-  if FBackground <> nil then
+  if Assigned(FBackground) then
     BackgroundBmp := FBackground
-  else if (FBackgroundImage <> nil) then
+  else
+  if Assigned(FBackgroundImage) then
     BackgroundBmp := FBackgroundImage.Picture.Bitmap
   else
     BackgroundBmp := nil;
@@ -590,12 +597,13 @@ begin
       ComponentState);
   if fBufferedDraw then
     TargetCanvas := Img.Canvas
-  else if Assigned(ExternalCanvas) then
+  else
+  if Assigned(ExternalCanvas) then
     TargetCanvas := ExternalCanvas
   else
     TargetCanvas := Canvas;
-  FNeedUpdateOnlyMainText := FNeedUpdateOnlyMainText and not (fBufferedDraw)
-    and (not IsItAFilledBitmap(BackgroundBmp));
+  FNeedUpdateOnlyMainText := FNeedUpdateOnlyMainText and not (fBufferedDraw) and
+    (not IsItAFilledBitmap(BackgroundBmp));
   if not fRunOnce then
   begin
     FNeedUpdateOnlyMainText := False;
@@ -612,7 +620,8 @@ begin
       CurrDelinColor := DelineateActive;
       FontColor := TextActive;
     end
-    else if Enabled then
+    else
+    if Enabled then
     begin
       CurrTextStyle := Passive;
       CurrDelinColor := Delineate;
@@ -755,7 +764,8 @@ begin
       Ty := 0;
     end;
   end
-  else if fBufferedDraw then
+  else
+  if fBufferedDraw then
     with TargetCanvas do
     begin
       if Transparent or (floTransparentFont in Options) then
@@ -833,7 +843,8 @@ begin
       if floTransparentFont in Options then
         BitBlt(Canvas.Handle, Tx, Ty, Width, Height, TargetCanvas.Handle, 0,
           0, SRCAND)
-      else if fUseTextureBmp then //...fill mask with texture
+      else
+      if fUseTextureBmp then //...fill mask with texture
         while Tx < Width do
         begin
           while Ty < Height do
@@ -955,7 +966,8 @@ begin
     FTexture.Assign(Value);
     TextureBmp := FTexture;
   end
-  else if Assigned(FTextureImage) then
+  else
+  if Assigned(FTextureImage) then
     TextureBmp := FTextureImage.Picture.Bitmap
   else
     TextureBmp := nil;
@@ -974,7 +986,8 @@ begin
     FBackground.Assign(Value);
     BackgroundBmp := FBackground;
   end
-  else if (FBackgroundImage <> nil) then
+  else
+  if FBackgroundImage <> nil then
     BackgroundBmp := FBackgroundImage.Picture.Bitmap
   else
     BackgroundBmp := nil;
@@ -1003,7 +1016,8 @@ begin
   begin
     TextureBmp := FTextureImage.Picture.Bitmap;
   end
-  else if FTexture <> nil then
+  else
+  if FTexture <> nil then
     TextureBmp := FTexture
   else
     TextureBmp := nil;
@@ -1019,7 +1033,8 @@ begin
     BackgroundBmp := FBackgroundImage.Picture.Bitmap;
     InvalidateLabel(True);
   end
-  else if FBackground <> nil then
+  else
+  if FBackground <> nil then
     BackgroundBmp := FBackground
   else
     BackgroundBmp := nil;

@@ -31,7 +31,7 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Controls,
   Graphics, StdCtrls, ComCtrls, ImgList,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QGraphics, QStdCtrls, QComCtrls, QImgList,
   {$ENDIF VisualCLX}
