@@ -1,3 +1,5 @@
+## Completed by ???
+----------------------------------------------------------------------------------------------------
 @@JvBitBtn.pas
 Summary
   Contains all code for TJvBitBtn.
@@ -46,6 +48,17 @@ Description
 See Also
   HotTrack
 ----------------------------------------------------------------------------------------------------
+@@TJvBitBtn.HotGlyph
+Summary
+  Specifies the bitmap that appears on the button when the mouse points to it.
+Description
+  Set HotGlyph to a bitmap object that contains the image that should appear on the face of the
+  button when the mouse passes over it at runtime. If HotGlyph is unassigned, a TJvBitBtn
+  button retains it's regular image (specified by the Glyph property) when the mouse passes
+  over the button.
+See Also
+  HotTrack, HotTrackFont
+----------------------------------------------------------------------------------------------------
 @@TJvBitBtn.HotTrack
 Summary
   Specifies whether the button is highlighted when the mouse passes over it.
@@ -53,7 +66,7 @@ Description
   Set HotTrack to True to provide visual feedback when the button is under the mouse. When HotTrack
   is False, there is no visual feedback when the mouse passes over the button.
 See Also
-  HotTrackFont, HotGlyph
+  HotGlyph, HotTrackFont, OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvBitBtn.HotTrackFont
 Summary
@@ -64,16 +77,31 @@ Description
 	To change the font, change the value of the Charset, Color, Height, Name, Pitch, Size,
   and/or Style of the HotrackFont property.
 See Also
-  HotTrack
+  HotGlyph, HotTrack
 ----------------------------------------------------------------------------------------------------
-@@TJvBitBtn.HotGlyph
+@@TJvBitBtn.OnMouseEnter
 Summary
-  Specifies the bitmap that appears on the button when the mouse points to it.
+  Occurs when the mouse pointer moves over the button.
 Description
-  Set HotGlyph to a bitmap object that contains the image that should appear on the face of the
-  button when the mouse passes over it at runtime. If HotGlyph is unassigned, a TJvBitBtn
-  button retains it's regular image (specified by the Glyph property) when the mouse passes
-  over the button.
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  button.
 See Also
-	HotTrack
+  HotTrack, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
+@@TJvBitBtn.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the button.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  button. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
+See Also
+  HotTrack, OnMouseEnter
+----------------------------------------------------------------------------------------------------
+@@TJvBitBtn.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the label changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+See Also 
+  OnCtl3DChanged

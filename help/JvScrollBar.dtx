@@ -15,28 +15,28 @@ Summary
 Description
   TJvScrollBar is a scroll bar that supports extended features such as hot tracking. It adds
   four events to TScrollBar: OnCtl3DChanged, OnParentColorChange, OnMouseEnter and OnMouseLeave.
-  
+
   Use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user moves the
   mouse pointer over the control.
-  
+
   Alternatively, you could use property HotTrack to highlight the scroll bar automatically when the
   mouse passes over it.
-  
+
   Property HintColor can be used to set a different color of the Help hint boxes for the scroll bar.
-  
+
   A TJvScrollBar scroll bar can contain objects, such as TButton and TLabel objects.
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBar.Create
 Summary
   Creates and initializes an instance of TJvScrollBar.
 Description
-  Call \Create to create an instance of TJvScrollBar at runtime. A TJvScrollBar component placed on a 
+  Call \Create to create an instance of TJvScrollBar at runtime. A TJvScrollBar component placed on a
   form at design time is created automatically.
 
   Pass a single Component as a parameter to provide the scroll bar with an Owner that is responsible
   for freeing it.
 
-  \Create calls the inherited \Create method, then sets the initial values for the scroll bar as follows: 
+  \Create calls the inherited \Create method, then sets the initial values for the scroll bar as follows:
 
   * HintColor is set to clInfoBk.
   * HotTrack is set to False.
@@ -63,9 +63,9 @@ See Also
 Summary
   Specifies whether the scroll bar is highlighted when the mouse passes over it.
 Description
-  Set HotTrack to True to provide visual feedback when the mouse passes over the scroll bar. When 
+  Set HotTrack to True to provide visual feedback when the mouse passes over the scroll bar. When
   HotTrack is False, there is no visual feedback when the mouse passes over the scroll bar.
-See Also 
+See Also
   OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBar.OnCtl3DChanged
@@ -83,7 +83,7 @@ Description
   \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   scroll bar.
 See Also
-  HotTrack, OnMouseLeave 
+  HotTrack, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBar.OnMouseLeave
 Summary
