@@ -73,7 +73,7 @@ end;
 
 implementation
 
-uses  Windows, // OutputDebugString
+uses  QWindows, // OutputDebugString
       SysUtils, // FloatToStr
       Math;  //  VCL's statistics routines. StdDev, etc.
 

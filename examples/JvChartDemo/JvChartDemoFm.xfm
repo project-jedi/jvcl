@@ -1,0 +1,466 @@
+object JvChartDemoForm: TJvChartDemoForm
+  Left = 237
+  Top = 184
+  Width = 729
+  Height = 489
+  VertScrollBar.Range = 35
+  HorzScrollBar.Range = 124
+  Caption = 'Jedi JvChart Demo'
+  Color = clBase
+  Font.Color = clText
+  Font.Height = 13
+  Font.Name = 'System'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  Menu = MainMenu1
+  ParentFont = False
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnResize = FormResize
+  PixelsPerInch = 96
+  TextHeight = 16
+  TextWidth = 8
+  object Chart: TJvChart
+    Left = 124
+    Top = 35
+    Width = 605
+    Height = 431
+    Align = alClient
+    Options.XAxisValuesPerDivision = 10
+    Options.XAxisDateTimeMode = False
+    Options.XAxisLegendSkipBy = 2
+    Options.PenCount = 3
+    Options.XOrigin = 0
+    Options.YOrigin = 0
+    Options.YStartOffset = 42
+    Options.PrimaryYAxis.YMax = 20.000000000000000000
+    Options.PrimaryYAxis.YLegendDecimalPlaces = 1
+    Options.SecondaryYAxis.YMax = 140.000000000000000000
+    Options.SecondaryYAxis.YLegendDecimalPlaces = 0
+    Options.SecondaryYAxis.DefaultYLegends = 60
+    Options.Legend = clChartLegendBelow
+    Options.LegendRowCount = 1
+    Options.PenLineWidth = 2
+    Options.AxisLineWidth = 3
+    Options.XValueCount = 20
+    Options.HeaderFont.Color = clText
+    Options.HeaderFont.Height = 11
+    Options.HeaderFont.Name = 'MS Sans Serif'
+    Options.HeaderFont.Pitch = fpVariable
+    Options.HeaderFont.Style = []
+    Options.HeaderFont.Weight = 40
+    Options.LegendFont.Color = clText
+    Options.LegendFont.Height = 11
+    Options.LegendFont.Name = 'MS Sans Serif'
+    Options.LegendFont.Pitch = fpVariable
+    Options.LegendFont.Style = []
+    Options.LegendFont.Weight = 40
+    Options.AxisFont.Color = clText
+    Options.AxisFont.Height = 11
+    Options.AxisFont.Name = 'MS Sans Serif'
+    Options.AxisFont.Pitch = fpVariable
+    Options.AxisFont.Style = []
+    Options.AxisFont.Weight = 40
+    Options.PaperColor = clWhite
+    Options.AxisLineColor = clBlack
+    Options.CursorColor = clBlack
+    Options.CursorStyle = psDot
+  end
+  object Splitter1: TSplitter
+    Left = 121
+    Top = 35
+    Height = 431
+  end
+  object PanelTop: TPanel
+    Left = 0
+    Top = 0
+    Width = 729
+    Height = 35
+    Align = alTop
+    Font.CharSet = fcsLatin1
+    Font.Color = clText
+    Font.Height = 13
+    Font.Name = 'Verdana'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    ParentFont = False
+    TabOrder = 0
+    object ButtonBarChart: TSpeedButton
+      Left = 5
+      Top = 5
+      Width = 25
+      Height = 25
+      Hint = 'Bar Chart'
+      GroupIndex = 1
+      Flat = True
+      Glyph.Data = {
+        7A010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333300030003
+        0003333377737773777333333333333333333FFFFFFFFFFFFFFF770000000000
+        0000777777777777777733039993BBB3CCC3337F737F737F737F37039993BBB3
+        CCC3377F737F737F737F33039993BBB3CCC33F7F737F737F737F77079997BBB7
+        CCC77777737773777377330399930003CCC3337F737F7773737F370399933333
+        CCC3377F737F3333737F330399933333CCC33F7F737FFFFF737F770700077777
+        CCC77777777777777377330333333333CCC3337F33333333737F370333333333
+        0003377F33333333777333033333333333333F7FFFFFFFFFFFFF770777777777
+        7777777777777777777733333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ButtonBarChartClick
+    end
+    object ButtonLine: TSpeedButton
+      Left = 58
+      Top = 5
+      Width = 25
+      Height = 25
+      Hint = 'Line Chart'
+      GroupIndex = 1
+      Down = True
+      Flat = True
+      Glyph.Data = {
+        7A010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00337333733373
+        3373337F3F7F3F7F3F7F33737373737373733F7F7F7F7F7F7F7F770000000000
+        000077777777777777773303333333333333337FF333333F33333709333333C3
+        333337773F3FF373F333330393993C3C33333F7F7F77F7F7FFFF77079797977C
+        77777777777777777777330339339333C333337FF73373F37F33370C333C3933
+        933337773F3737F37FF33303C3C33939C9333F7F7F7FF7F777FF7707C7C77797
+        7C97777777777777777733033C3333333C33337F37F33333373F37033C333333
+        33C3377F37333333337333033333333333333F7FFFFFFFFFFFFF770777777777
+        7777777777777777777733333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ButtonLineClick
+    end
+    object ButtonStackedBarAve: TSpeedButton
+      Left = 345
+      Top = 7
+      Width = 25
+      Height = 25
+      Hint = 'Stacked Bars with Average'
+      GroupIndex = 1
+      Enabled = False
+      Flat = True
+      Glyph.Data = {
+        7A010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000000000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333300030003
+        0003333388838883888333333333333333333FFFFFFFFFFFFFFF880000000000
+        000088888888888888883303999399939993338F838F838F838F38039993BBB3
+        9993388F838F838F838F3303BBB3BBB399933F8F838F838F838F8808BBB8AAA8
+        999888888388838883883303AAA300039993338F838F8883838F3803AAA30003
+        BBB3388F838F3333838F3303AAA30003BBB33F8F838FFFFF838F880800080008
+        BBB88888888888888388330300030003AAA3338F33333333838F380300030003
+        0003388F33333333888333030003000300033F8FFFFFFFFFFFFF880888888888
+        8888888888888888888833333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ButtonStackedBarAveClick
+    end
+    object ButtonStackedBar: TSpeedButton
+      Left = 111
+      Top = 5
+      Width = 26
+      Height = 25
+      Hint = 'Stacked Bars'
+      GroupIndex = 1
+      Flat = True
+      Glyph.Data = {
+        7A010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000000000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333300030003
+        0003333388838883888333333333333333333FFFFFFFFFFFFFFF880000000000
+        000088888888888888883303999399939993338F838F838F838F38039993BBB3
+        BBB3388F838F838F838F3303BBB3BBB3BBB33F8F838F838F838F8808BBB8AAA8
+        BBB888888388838883883303AAA30003BBB3338F838F8883838F3803AAA33333
+        BBB3388F838F3333838F3303AAA33333BBB33F8F838FFFFF838F880800088888
+        BBB88888888888888388330333333333AAA3338F33333333838F380333333333
+        0003388F33333333888333033333333333333F8FFFFFFFFFFFFF880888888888
+        8888888888888888888833333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ButtonStackedBarClick
+    end
+    object ButtonBarAve: TSpeedButton
+      Left = 31
+      Top = 5
+      Width = 25
+      Height = 25
+      Hint = 'Bar Chart with Average Line'
+      GroupIndex = 1
+      Flat = True
+      Glyph.Data = {
+        7A010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000000000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333300030003
+        0003333388838883888333333333333333333FFFFFFFFFFFFFFF880000000000
+        0000888888888888888833039BA39BA39BA3338F838F838F838F38039BA39BA3
+        9BA3388F838F838F838F33039BA39BA39BA33F8F838F838F838F88089BA89BA8
+        9BA8888883888388838833039BA390A39BA3338F838F8883838F38039BA30B03
+        9BA3388F838F3333838F33039BA03B309BA33F8F838FFFFF838F88089B088B88
+        0BA8888888888888838833039033333390A3338F33333333838F380393333333
+        9BA3388F3333333388833303333333333B333F8FFFFFFFFFFFFF880888888888
+        8B88888888888888888833333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ButtonBarAveClick
+    end
+    object ButtonPie: TSpeedButton
+      Left = 371
+      Top = 7
+      Width = 25
+      Height = 25
+      Hint = 'Show Pie Chart (one series only)'
+      GroupIndex = 1
+      Enabled = False
+      Flat = True
+      Glyph.Data = {
+        7A010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        3333333333FFFFF3333333333700073333333FFF3777773F3FFF00030990BB03
+        000077737337F373777733309990BBB0333333373337F3373F3333099990BBBB
+        033333733337F33373F337999990BBBBB73337F33337F33337F330999990BBBB
+        B03337F33337FFFFF7F3309999900000003337F33337777777F33099990A0CCC
+        C03337F3337373F337F3379990AAA0CCC733373F3733373F373333090AAAAA0C
+        033333737333337373333330AAAAAAA033333FF73F33333733FF00330AAAAA03
+        3000773373FFFF73377733333700073333333333377777333333333333333333
+        3333333333333333333333333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ButtonPieClick
+    end
+    object ButtonMarkers: TSpeedButton
+      Left = 291
+      Top = 7
+      Width = 25
+      Height = 25
+      Hint = 'Show Markers'
+      GroupIndex = 1
+      Enabled = False
+      Flat = True
+      Glyph.Data = {
+        7A010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000000000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00338333833383
+        3383338F3F8F3F8F3F8F33838383838383833F8F8F8F8F8F8F8F880000000000
+        000088888888888888883303333333333333338F33333333333338033393A333
+        333A388833333333333333033C333C3333333F8FFFFFFFFFFFFF88088888988C
+        888A88888888888888883303333333333333338F333333333333380A33A33333
+        3333388833333333333333033333333A33333F8FFFFFFFFFFFFF880888888898
+        889888888888888888883303933C33333333338F333333333333380333333333
+        3A33388F3333333333333303C333333333333F8FFFFFFFFFFFFF880888888888
+        8888888888888888888833333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ButtonMarkersClick
+    end
+    object ButtonDeltaAverage: TSpeedButton
+      Left = 319
+      Top = 7
+      Width = 25
+      Height = 25
+      Hint = 'Delta Average'
+      GroupIndex = 1
+      Enabled = False
+      Flat = True
+      Glyph.Data = {
+        7A010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000000000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333300030003
+        0003333388838883888333333333333333333FFFFFFFFFFFFFFF888000000000
+        0000888888888888888833333333033333333333333F33333333333333330333
+        33333333333F3333333333CCCCCC033333333333333F3333333388CCCCCC0333
+        33333333333F3333333333333333033333333333333F33333333333333330AAA
+        A3333333333F33333333333333330AAAA3333333333F33333333833333330333
+        33333333333F3333333333333333099999993333333F33333333333333330999
+        99993333333F3333333333333333033333333FFFFFFFFFFFFFFF888000000000
+        0000888888888888888833333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ButtonDeltaAverageClick
+    end
+    object ButtonLineMarker: TSpeedButton
+      Left = 84
+      Top = 5
+      Width = 25
+      Height = 25
+      Hint = 'Line with Markers'
+      GroupIndex = 1
+      Flat = True
+      Glyph.Data = {
+        7A010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00337333733373
+        3373337F3F7F3F7F3F7F33737373737373733F7F7F7F7F7F7F7F770000000000
+        000077777777777777773303333333333333337FF333333F33333709333333C3
+        333337773F3FF373F333330393993C3C33333F7F7F77F7F7FFFF77079797977C
+        77777777777777777777330339339333C333337FF73373F37F33370C333C3933
+        933337773F3737F37FF33303C3C33939C9333F7F7F7FF7F777FF7707C7C79797
+        7C97777777777777777733033C3393933C33337F37F33333373F37033C333933
+        33C3377F3733333333733303CCC3393333C33F7FFFFFFFFFFFFF77077C777777
+        7CCC777777777777777733333333333333C33333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ButtonLineMarkerClick
+    end
+    object Label1: TLabel
+      Left = 398
+      Top = 10
+      Width = 210
+      Height = 16
+      Caption = '(TODO: Fix broken chart types)'
+      Enabled = False
+    end
+  end
+  object ListBox1: TListBox
+    Left = 0
+    Top = 35
+    Width = 121
+    Height = 431
+    Align = alLeft
+    Color = clButton
+    Font.CharSet = fcsLatin1
+    Font.Color = clText
+    Font.Height = 8
+    Font.Name = 'Terminal'
+    Font.Pitch = fpVariable
+    Font.Style = [fsBold]
+    ItemHeight = 8
+    Items.Strings = (
+      '<Pen Values>')
+    ParentFont = False
+    TabOrder = 1
+    Visible = False
+    OnClick = ListBox1Click
+    OnDblClick = ListBox1DblClick
+  end
+  object ColorDialog1: TColorDialog
+    Left = 625
+    Top = 4
+  end
+  object FontDialog1: TFontDialog
+    Font.Color = clText
+    Font.Height = 13
+    Font.Name = 'System'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    Left = 656
+    Top = 5
+  end
+  object MainMenu1: TMainMenu
+    Left = 204
+    Top = 8
+    object Demo1: TMenuItem
+      Caption = '&Demo'
+      object SetHeaderFont1: TMenuItem
+        Caption = 'Set Header Font'
+        ShortCut = 16454
+        OnClick = SetHeaderFont1Click
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object Scrolling1: TMenuItem
+        Caption = 'Scrolling'
+        ShortCut = 16467
+        OnClick = Scrolling1Click
+      end
+      object CopyToClipboard1: TMenuItem
+        Caption = 'Copy To Clipboard'
+        ShortCut = 16451
+        OnClick = CopyToClipboard1Click
+      end
+      object Print1: TMenuItem
+        Caption = 'Print Chart to Printer'
+        ShortCut = 16464
+        OnClick = Print1Click
+      end
+      object PrintOptions1: TMenuItem
+        Caption = '&Print Options'
+        OnClick = PrintOptions1Click
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object Generatenewrandomvalues1: TMenuItem
+        Caption = '&Generate new random values'
+        ShortCut = 16466
+        OnClick = Generatenewrandomvalues1Click
+      end
+      object ShowgapinLineChart1: TMenuItem
+        Caption = '&Show gap in Line Chart'
+        ShortCut = 16455
+        OnClick = ShowgapinLineChart1Click
+      end
+      object DateTimeAxisMode: TMenuItem
+        Caption = 'Date/Time Axis Mode'
+        OnClick = DateTimeAxisModeClick
+      end
+      object MenuSecondaryAxisMode: TMenuItem
+        Caption = '&Plot Markers+Values using Alternate Scale (0-120%)'
+        OnClick = MenuSecondaryAxisModeClick
+      end
+      object N4: TMenuItem
+        Caption = '-'
+      end
+      object ShowDataInListbox1: TMenuItem
+        Caption = '&Show Data in listbox'
+        ShortCut = 16452
+        OnClick = ShowDataInListbox1Click
+      end
+      object LargeDataset576samples1: TMenuItem
+        Caption = '&Large Dataset (576 samples)'
+        ShortCut = 16460
+        OnClick = LargeDataset576samples1Click
+      end
+    end
+    object Help1: TMenuItem
+      Caption = '&Help'
+      object About1: TMenuItem
+        Caption = '&About JvChart Component'
+        ShortCut = 16449
+        OnClick = About1Click
+      end
+      object AboutJVCL301: TMenuItem
+        Caption = '&About JVCL 3.0'
+        OnClick = AboutJVCL301Click
+      end
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = Timer1Timer
+    Left = 170
+    Top = 6
+  end
+  object PrinterSetupDialog1: TPrinterSetupDialog
+    Left = 168
+    Top = 42
+  end
+end
