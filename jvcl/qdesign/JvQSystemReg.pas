@@ -39,8 +39,8 @@ procedure Register;
 implementation
 
 uses
-  Classes, Controls,
-  
+  Classes, QControls,
+
   DesignEditors, DesignIntf,
 
   JvQDsgnConsts,
@@ -50,9 +50,9 @@ uses
   {$ENDIF MSWINDOWS}
   JvQSystemColors,
   JvQSimpleXml, JvQXmlDatabase, JvQTimer, JvQFormPlacement,
-  JvQMinMaxForm, JvQThread, JvQThreadTimer,
+  JvQMinMaxForm, JvQThread, JvQThreadTimer, JvQTimerList,
   JvQFormPropertiesForm, JvQDsgnEditors, JvQFormPlacementSelectList,
-  JvQAppXMLStorage;
+  JvQAppXMLStorage, JvQTimerListEditor;
 
 {$R ../Resources/JvSystemReg.dcr}
 
@@ -64,7 +64,7 @@ begin
       {$ENDIF MSWINDOWS}
       TJvSystemColors]);
   RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase]);
-  RegisterComponents(RsPaletteNonVisual, [TJvTimer, TJvThread , TJvThreadTimer]);
+  RegisterComponents(RsPaletteNonVisual, [TJvTimer, TJvThread , TJvThreadTimer, TJvTimerList]);
   RegisterComponents(RsPalettePersistence, [TJvFormStorage, TJvFormStorageSelectList,
       TJvAppXMLFileStorage]);
 
@@ -76,7 +76,9 @@ begin
     'MinMaxInfo', TMinMaxProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage,
     'StoredProps', TJvStoredPropsProperty);
+
   RegisterComponentEditor(TJvFormStorage, TJvFormStorageEditor);
+  RegisterComponentEditor(TJvTimerList, TJvTimerListDefaultEditor);
   {$IFDEF MSWINDOWS}
   RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
   {$ENDIF MSWINDOWS}
