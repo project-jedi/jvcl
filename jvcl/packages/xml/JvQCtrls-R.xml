@@ -48,7 +48,7 @@
     <File Name="..\..\qrun\JvQTransparentButton.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQUninstallControls.pas" Targets="" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQWinampLabel.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQZoom.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQZoom.pas" Targets="" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQArrowButton.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQaScrollText.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQBehaviorLabel.pas" Targets="allclx" Formname="" Condition=""/>
