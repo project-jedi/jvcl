@@ -119,8 +119,8 @@ ErrLook.exe: ErrLook\src\ErrLook.dpr
   $(DCCH) $&.dpr
   cd ..\..
   
-pgEdit.exe: PackageGenerator\pgEdit.dpr
-  cd PackageGenerator
+pgEdit.exe: PackagesGenerator\pgEdit.dpr
+  cd PackagesGenerator
   $(DCC) $&.dpr
   cd..
   
