@@ -9,7 +9,7 @@ Copyright=Copyright (c) 2002 project JEDI. All rights reserved.
 Type=1
 
 [Source Files]
-Count=9
+Count=11
 File0=..\..\jvcl\source\JvAlarms.pas
 File1=..\..\jvcl\source\JvAlignedEdit.pas
 File2=..\..\jvcl\source\JvAlignListbox.pas
@@ -18,13 +18,15 @@ File4=..\..\jvcl\source\JvAnimate.pas
 File5=..\..\jvcl\source\JvAnimTitle.pas
 File6=..\..\jvcl\source\JvAppAnimatedIcon.pas
 File7=..\..\jvcl\source\JvAppearingLabel.pas
-File8=..\..\jvcl\source\JvSafeMode.pas
+File8=..\..\jvcl\source\JvAppHotKey.pas
+File9=..\..\jvcl\source\JvAutoSizeCompo.pas
+File10=..\..\jvcl\source\JvSafeMode.pas
 
 [Source Include Directories]
 Count=0
 
 [Description Files]
-Count=22
+Count=24
 File0=JvAlarms.dtx
 File1=JvAlignedEdit.dtx
 File2=JvAlignListbox.dtx
@@ -33,20 +35,22 @@ File4=JvAnimate.dtx
 File5=JvAnimTitle.dtx
 File6=JvAppAnimatedIcon.dtx
 File7=JvAppearingLabel.dtx
-File8=JVCL.Acknowledge.dtx
-File9=JVCL.FileRef.dtx
-File10=JVCL.FuncRef.dtx
-File11=JVCL.Grp.AlarmsAndTimers.Alarms.dtx
-File12=JVCL.Grp.AlarmsAndTimers.dtx
-File13=JVCL.Grp.AlarmsAndTimers.Timers.dtx
-File14=JVCL.Grp.Edits.dtx
-File15=JVCL.Grp.Graphics.Animation.dtx
-File16=JVCL.Grp.Graphics.dtx
-File17=JVCL.Grp.Labels.dtx
-File18=JVCL.Grp.Lists.dtx
-File19=JVCL.Grp.Miscel.dtx
-File20=JVCL.Main.dtx
-File21=JvSafeMode.dtx
+File8=JvAppHotKey.dtx
+File9=JvAutoSizeCompo.dtx
+File10=JVCL.Acknowledge.dtx
+File11=JVCL.FileRef.dtx
+File12=JVCL.FuncRef.dtx
+File13=JVCL.Grp.AlarmsAndTimers.Alarms.dtx
+File14=JVCL.Grp.AlarmsAndTimers.dtx
+File15=JVCL.Grp.AlarmsAndTimers.Timers.dtx
+File16=JVCL.Grp.Edits.dtx
+File17=JVCL.Grp.Graphics.Animation.dtx
+File18=JVCL.Grp.Graphics.dtx
+File19=JVCL.Grp.Labels.dtx
+File20=JVCL.Grp.Lists.dtx
+File21=JVCL.Grp.Miscel.dtx
+File22=JVCL.Main.dtx
+File23=JvSafeMode.dtx
 
 [Description Include Directories]
 Count=2
@@ -132,7 +136,7 @@ Count=1
 ID0=$JVCL.Labels
 
 [Disabled Topics]
-Count=80
+Count=84
 ID0=TJvAlarms.Create@TComponent
 ID1=TJvAlarms.Destroy
 ID2=TJvAlignedEdit.CreateParams@TCreateParams
@@ -213,6 +217,10 @@ ID76=TJvAppearingLabel.Create@TComponent
 ID77=TJvAppearingLabel.Destroy
 ID78=TJvAppearThread.FDelay
 ID79=TJvAppearThread.FOnDraw
+ID80=TJvApplicationHotKey.Create@TComponent
+ID81=TJvApplicationHotKey.Destroy
+ID82=TJvAutoSizeCompo.Create@TComponent
+ID83=TJvAutoSizeCompo.Destroy
 
 [Manually created Topics]
 Count=0
