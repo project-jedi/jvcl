@@ -107,6 +107,7 @@ echo.
 echo !!!!! ERROR WHILE BUILDING THE JCL DCP FOR THE JVCL !!!!
 echo Please refer to last output for details
 echo.
+echo ERROR >..\error.dat
 goto restoredir
 
 :restoredir
