@@ -93,7 +93,7 @@ begin
   try
     P.Assign(Image);
     if chkInsert.Checked then
-      LB.InsertImage(0,P)
+      LB.InsertImage(0, P)
     else
       LB.AddImage(P);
   finally
@@ -107,7 +107,7 @@ end;
 procedure TForm1.JvClipboardViewer1Text(Sender: TObject; Text: string);
 begin
   if chkInsert.Checked then
-    LB.InsertText(0,StringReplace(Text, #13#10, ' ', [rfReplaceAll]))
+    LB.InsertText(0, StringReplace(Text, #13#10, ' ', [rfReplaceAll]))
   else
     LB.AddText(StringReplace(Text, #13#10, ' ', [rfReplaceAll]));
   Caption := Format('Clipboard count: %d', [LB.Items.Count]);
@@ -124,8 +124,20 @@ procedure TForm1.btnCopyImageClick(Sender: TObject);
 var
   AFormat: Word;
   AData: Cardinal;
-  APalette: HPalette;
+  APalette: HPALETTE;
+  il: TImageList;
 begin
+  if Image1.Picture.Graphic is TIcon then
+  begin
+    // convert ico to bmp
+    il := TImageList.CreateSize(Image1.Picture.Width, Image1.Picture.Height);
+    try
+      il.AddIcon(Image1.Picture.Icon);
+      il.GetBitmap(0, Image1.Picture.Bitmap);
+    finally
+      il.Free;
+    end;
+  end;
   Image1.Picture.SaveToClipboardFormat(AFormat, AData, APalette);
   Clipboard.SetAsHandle(AFormat, AData);
 end;
@@ -133,7 +145,7 @@ end;
 procedure TForm1.btnLoadImageClick(Sender: TObject);
 begin
   if OpenPictureDialog1.Execute then
-    Image1.Picture.LoadFromFile(OpenPictureDialog1.Filename);
+    Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
 end;
 
 procedure TForm1.udItemHeightClick(Sender: TObject; Button: TUDBtnType);
@@ -146,7 +158,7 @@ begin
   LB := TJvComboListBox.Create(Self);
   LB.Align := alClient;
   LB.Width := 200;
-  LB.Parent := self;
+  LB.Parent := Self;
   LB.DropDownMenu := PopupMenu1;
 //  LB.ScrollBars := ssBoth;
 //  LB.HotTrack := true;
@@ -204,7 +216,7 @@ end;
 procedure TForm1.btnLoadTextClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
-    Memo1.Lines.LoadFromFile(OpenDialog1.Filename);
+    Memo1.Lines.LoadFromFile(OpenDialog1.FileName);
 end;
 
 procedure TForm1.chkHotTrackComboClick(Sender: TObject);

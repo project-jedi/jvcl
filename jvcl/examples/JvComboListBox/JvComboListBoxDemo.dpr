@@ -2,8 +2,7 @@ program JvComboListBoxDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1},
-  JvComboListBox in '..\..\run\JvComboListBox.pas';
+  MainFrm in 'MainFrm.pas' {Form1};
 
 {$R *.res}
 
