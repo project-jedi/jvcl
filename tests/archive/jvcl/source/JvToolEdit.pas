@@ -379,7 +379,7 @@ type
     property ShortName: string read GetShortName;
     {$ENDIF}
   published
-    property AcceptFiles: Boolean read FAcceptFiles write SetAcceptFiles default False;
+    property AcceptFiles: Boolean read FAcceptFiles write SetAcceptFiles default True;
     property OnBeforeDialog: TExecOpenDialogEvent read FOnBeforeDialog
       write FOnBeforeDialog;
     property OnAfterDialog: TExecOpenDialogEvent read FOnAfterDialog
@@ -2176,6 +2176,7 @@ constructor TJvFileDirEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   OEMConvert := True;
+  FAcceptFiles := True;
   {$IFNDEF WIN32}
   MaxLength := MaxFileLength;
   {$ENDIF}
