@@ -46,7 +46,7 @@ type
     function CryptByte(Ch, N: Byte): Byte;
   published
     property N: Byte read Fn write Fn;
-    property Encoded: string read Fencoded write SetEncoded;
+    property Encoded: string read FEncoded write SetEncoded;
     property Decoded: string read FDecoded write SetDecoded;
     procedure Decode(It: TStrings);
     procedure Encode(It: TStrings);
