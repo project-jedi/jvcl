@@ -21,24 +21,24 @@ Last Modified: 2002-05-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A TCustomPanel descendant that can scroll its content.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{ @abstract(A TCustomPanel descendant that can scroll it's content.) }
 
 unit JvContentScroller;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, ExtCtrls,
   JvComponent;
 
 type
-  TMediaFilename = string;
   TJvContentScrollDirection = (sdUp, sdDown);
   TJvScrollAmount = 1..MaxWord;
 
@@ -49,7 +49,7 @@ type
     FPosition: Integer;
     FScrollAmount: TJvScrollAmount;
     FScrollIntervall: TJvScrollAmount;
-    FMediaFile: TMediaFilename;
+    FMediaFile: TFileName;
     FOnBeforeScroll: TNotifyEvent;
     FOnAfterScroll: TNotifyEvent;
     FLoopMedia: Boolean;
@@ -57,33 +57,38 @@ type
     FScrollDirection: TJvContentScrollDirection;
     FLoopCount: Integer;
     FCurLoop: Integer;
-//    FScrollStart: Integer;
+    // FScrollStart: Integer;
     procedure SetActive(Value: Boolean);
     procedure SeTJvScrollAmount(Value: TJvScrollAmount);
     procedure SetScrollIntervall(Value: TJvScrollAmount);
-    procedure SetMediaFile(Value: TMediaFilename);
+    procedure SetMediaFile(Value: TFileName);
     procedure DoTimer(Sender: TObject);
     procedure CreateTimer;
     procedure FreeTimer;
     procedure SetLoopMedia(Value: Boolean);
     procedure SetScrollLength(Value: TJvScrollAmount);
-    procedure SeTJvScrollDirection(Value: TJvContentScrollDirection);
+    procedure SetScrollDirection(Value: TJvContentScrollDirection);
     procedure SetLoopCount(Value: Integer);
-//    procedure SetScrollStart(const Value: Integer);
-    { Private declarations }
+    // procedure SetScrollStart(const Value: Integer);
   protected
-    { Protected declarations }
     procedure Paint; override;
-    procedure DoBeforeScroll; virtual;
-    procedure DoAfterScroll; virtual;
+    procedure DoBeforeScroll; dynamic;
+    procedure DoAfterScroll; dynamic;
     procedure CreateWnd; override;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ScrollContent(Amount: TJvScrollAmount);
   published
-    { Published declarations }
+    property Active: Boolean read FActive write SetActive;
+    property ScrollAmount: TJvScrollAmount read FScrollAmount write SeTJvScrollAmount default 10;
+    property ScrollIntervall: TJvScrollAmount read FScrollIntervall write SetScrollIntervall default 50;
+    property ScrollLength: TJvScrollAmount read FScrollLength write SetScrollLength default 250;
+    property ScrollDirection: TJvContentScrollDirection read FScrollDirection write SetScrollDirection default sdUp;
+    // property ScrollStart: Integer read FScrollStart write SetScrollStart;
+    property MediaFile: TFileName read FMediaFile write SetMediaFile;
+    property LoopMedia: Boolean read FLoopMedia write SetLoopMedia default True;
+    property LoopCount: Integer read FLoopCount write SetLoopCount default -1;
     property Action;
     property Anchors;
     property BiDiMode;
@@ -93,16 +98,6 @@ type
     property FullRepaint;
     property ParentBiDiMode;
     property UseDockManager;
-    {*****************}
-    property OnCanResize;
-    property OnConstrainedResize;
-    property OnDockDrop;
-    property OnDockOver;
-    property OnEndDock;
-    property OnGetSiteInfo;
-    property OnStartDock;
-    property OnUnDock;
-    { redclared properties }
     property Align;
     property BorderStyle;
     property BorderWidth;
@@ -123,7 +118,16 @@ type
     property TabStop;
     property Tag;
     property Visible;
-    {*****************}
+    property OnAfterScroll: TNotifyEvent read FOnAfterScroll write FOnAfterScroll;
+    property OnBeforeScroll: TNotifyEvent read FOnBeforeScroll write FOnBeforeScroll;
+    property OnCanResize;
+    property OnConstrainedResize;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnEndDock;
+    property OnGetSiteInfo;
+    property OnStartDock;
+    property OnUnDock;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -139,19 +143,6 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
-    { new properties }
-    property Active: Boolean read FActive write SetActive;
-    property ScrollAmount: TJvScrollAmount read FScrollAmount write SeTJvScrollAmount default 10;
-    property ScrollIntervall: TJvScrollAmount read FScrollIntervall write SetScrollIntervall default 50;
-    property ScrollLength: TJvScrollAmount read FScrollLength write SetScrollLength default 250;
-    property ScrollDirection: TJvContentScrollDirection read FScrollDirection write SeTJvScrollDirection default sdUp;
-//    property ScrollStart:Integer read FScrollStart write SetScrollStart;
-    property MediaFile: TMediaFilename read FMediaFile write SetMediaFile;
-    property LoopMedia: Boolean read FLoopMedia write SetLoopMedia default True;
-    property LoopCount: Integer read FLoopCount write SetLoopCount default -1;
-    {*****************}
-    property OnAfterScroll: TNotifyEvent read FOnAfterScroll write FOnAfterScroll;
-    property OnBeforeScroll: TNotifyEvent read FOnBeforeScroll write FOnBeforeScroll;
   end;
 
 implementation
@@ -185,8 +176,8 @@ var
 begin
   if not Assigned(FTimer) then
     FTimer := TTimer.Create(nil);
-//  FPosition := -Abs(FScrollStart);
-//  ScrollBy(0,FScrollStart);
+  // FPosition := -Abs(FScrollStart);
+  // ScrollBy(0,FScrollStart);
   FTimer.Enabled := False;
   FTimer.OnTimer := DoTimer;
   FTimer.Interval := ScrollIntervall;
@@ -307,35 +298,30 @@ end;
 
 procedure TJvContentScroller.SeTJvScrollAmount(Value: TJvScrollAmount);
 begin
-  if FScrollAmount <> Value then
-    FScrollAmount := Value;
+  FScrollAmount := Value;
 end;
 
 procedure TJvContentScroller.SetScrollIntervall(Value: TJvScrollAmount);
 begin
-  if FScrollIntervall <> Value then
-    FScrollIntervall := Value;
+  FScrollIntervall := Value;
 end;
 
-procedure TJvContentScroller.SetMediaFile(Value: TMediaFilename);
+procedure TJvContentScroller.SetMediaFile(Value: TFileName);
 begin
-  if FMediaFile <> Value then
-    FMediaFile := Value;
+  FMediaFile := Value;
 end;
 
 procedure TJvContentScroller.SetLoopMedia(Value: Boolean);
 begin
-  if FLoopMedia <> Value then
-    FLoopMedia := Value;
+  FLoopMedia := Value;
 end;
 
 procedure TJvContentScroller.SetScrollLength(Value: TJvScrollAmount);
 begin
-  if FScrollLength <> Value then
-    FScrollLength := Value;
+  FScrollLength := Value;
 end;
 
-procedure TJvContentScroller.SeTJvScrollDirection(Value: TJvContentScrollDirection);
+procedure TJvContentScroller.SetScrollDirection(Value: TJvContentScrollDirection);
 begin
   if (FScrollDirection <> Value) and not FActive then
     FScrollDirection := Value;

@@ -30,34 +30,37 @@ Known Issues:
 unit JvgSplit;
 
 interface
+
 uses
-  Windows, Messages, Classes, Controls, Graphics, JvComponent, JvgTypes, JVCLVer,
-  JvgCommClasses, JvgUtils, ExtCtrls;
+  Windows, Messages, Classes, Controls, Graphics, ExtCtrls,
+  JvComponent, JVCLVer;
 
 type
   TJvgSplitter = class(TSplitter)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FHotTrack: boolean;
-    FTrackCount: integer;
-    FActive: boolean;
-    FDisplace: boolean;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure WMMouseDblClick(var Message: TMessage); message WM_LBUTTONDBLCLK;
-    procedure SetTrackCount(const Value: integer);
+    FHotTrack: Boolean;
+    FTrackCount: Integer;
+    FActive: Boolean;
+    FDisplace: Boolean;
+    FKeepSize: Integer; (* +++ RDB --- *)
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure WMMouseDblClick(var Msg: TMessage); message WM_LBUTTONDBLCLK;
+    procedure SetTrackCount(const Value: Integer);
     procedure UpdateControlSize;
     function FindControl: TControl;
-    procedure PrepareMarcs(Align: TAlign; var pt1, pt2, pt3, pt4, pt5, pt6: TPoint);
+    procedure PrepareMarcs(Align: TAlign; var Pt1, Pt2, Pt3, Pt4, Pt5, Pt6: TPoint);
     procedure SetDisplace(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HotTrack: boolean read FHotTrack write FHotTrack default True;
-    property TrackCount: integer read FTrackCount write SetTrackCount default 20;
-    property Displace: boolean read FDisplace write SetDisplace default True;
+    property Displace: Boolean read FDisplace write SetDisplace default True;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default True;
+    property TrackCount: Integer read FTrackCount write SetTrackCount default 20;
+    property Width default 6;
   end;
 
 implementation
@@ -65,13 +68,23 @@ implementation
 uses
   JvThemes;
 
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
+constructor TJvgSplitter.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csParentBackground]);
+  FKeepSize := 0;
+  //..defaults
+  Width := 6;
+  FHotTrack := True;
+  FDisplace := True;
+  FTrackCount := 20;
+end;
 
 procedure TJvgSplitter.Paint;
 var
-  i: integer;
-  sColor: TColor;
-  pt1, pt2, pt3, pt4, pt5, pt6: TPoint;
+  I: Integer;
+  SColor: TColor;
+  Pt1, Pt2, Pt3, Pt4, Pt5, Pt6: TPoint;
   R, R1, R2: TRect;
 begin
   with Canvas do
@@ -91,22 +104,22 @@ begin
       R2 := Classes.Bounds(3, (Height - FTrackCount * 4) div 2, 3, 3);
     end;
 
-    for i := 0 to FTrackCount - 1 do
+    for I := 0 to FTrackCount - 1 do
     begin
-{$IFDEF JVCLThemesEnabled}
+      {$IFDEF JVCLThemesEnabled}
       if FActive and HotTrack and ThemeServices.ThemesEnabled then
-        sColor := RGB(100, 100, 100)
+        SColor := RGB(100, 100, 100)
       else
-{$ENDIF}
+      {$ENDIF JVCLThemesEnabled}
       if FActive and HotTrack then
-        sColor := clBlack
+        SColor := clBlack
       else
-        sColor := clBtnShadow;
+        SColor := clBtnShadow;
 
       R := R1;
-      Frame3D(Canvas, R, clBtnHighlight, sColor, 1);
+      Frame3D(Canvas, R, clBtnHighlight, SColor, 1);
       R := R2;
-      Frame3D(Canvas, R, clBtnHighlight, sColor, 1);
+      Frame3D(Canvas, R, clBtnHighlight, SColor, 1);
 
       if (Align = alBottom) or (Align = alTop) then
       begin
@@ -122,129 +135,114 @@ begin
     end;
     if FDisplace then
     begin
-      PrepareMarcs(Align, pt1, pt2, pt3, pt4, pt5, pt6);
+      PrepareMarcs(Align, Pt1, Pt2, Pt3, Pt4, Pt5, Pt6);
       if FActive then
         Canvas.Brush.Color := clGray
       else
         Canvas.Brush.Color := clWhite;
-      Canvas.Polygon([pt1, pt2, pt3]);
-      Canvas.Polygon([pt4, pt5, pt6]);
+      Canvas.Polygon([Pt1, Pt2, Pt3]);
+      Canvas.Polygon([Pt4, Pt5, Pt6]);
     end;
   end;
 end;
 
-procedure TJvgSplitter.PrepareMarcs(Align: TAlign; var pt1, pt2, pt3, pt4, pt5, pt6: TPoint);
+procedure TJvgSplitter.PrepareMarcs(Align: TAlign; var Pt1, Pt2, Pt3, Pt4, Pt5, Pt6: TPoint);
 begin
   case Align of
     alRight:
       begin
-        pt1.x := 1;
-        pt1.y := (Height - FTrackCount * 4) div 2 - 30;
-        pt2.x := 1;
-        pt2.y := pt1.y + 6;
-        pt3.x := 4;
-        pt3.y := pt1.y + 3;
+        Pt1.X := 1;
+        Pt1.Y := (Height - FTrackCount * 4) div 2 - 30;
+        Pt2.X := 1;
+        Pt2.Y := Pt1.Y + 6;
+        Pt3.X := 4;
+        Pt3.Y := Pt1.Y + 3;
 
-        pt4.x := 1;
-        pt4.y := (Height - FTrackCount * 4) div 2 + FTrackCount * 4 + 30 -
+        Pt4.X := 1;
+        Pt4.Y := (Height - FTrackCount * 4) div 2 + FTrackCount * 4 + 30 -
           7;
-        pt5.x := 1;
-        pt5.y := pt4.y + 6;
-        pt6.x := 4;
-        pt6.y := pt4.y + 3;
+        Pt5.X := 1;
+        Pt5.Y := Pt4.Y + 6;
+        Pt6.X := 4;
+        Pt6.Y := Pt4.Y + 3;
       end;
     alLeft:
       begin
-        pt1.x := 3;
-        pt1.y := (Height - FTrackCount * 4) div 2 - 30;
-        pt2.x := 3;
-        pt2.y := pt1.y + 6;
-        pt3.x := 0;
-        pt3.y := pt1.y + 3;
+        Pt1.X := 3;
+        Pt1.Y := (Height - FTrackCount * 4) div 2 - 30;
+        Pt2.X := 3;
+        Pt2.Y := Pt1.Y + 6;
+        Pt3.X := 0;
+        Pt3.Y := Pt1.Y + 3;
 
-        pt4.x := 3;
-        pt4.y := (Height - FTrackCount * 4) div 2 + FTrackCount * 4 + 30 -
+        Pt4.X := 3;
+        Pt4.Y := (Height - FTrackCount * 4) div 2 + FTrackCount * 4 + 30 -
           7;
-        pt5.x := 3;
-        pt5.y := pt4.y + 6;
-        pt6.x := 0;
-        pt6.y := pt4.y + 3;
+        Pt5.X := 3;
+        Pt5.Y := Pt4.Y + 6;
+        Pt6.X := 0;
+        Pt6.Y := Pt4.Y + 3;
       end;
     alTop:
       begin
-        pt1.x := (Width - FTrackCount * 4) div 2 - 30;
-        pt1.y := 4;
-        pt2.x := pt1.x + 6;
-        pt2.y := 4;
-        pt3.x := pt1.x + 3;
-        pt3.y := 1;
+        Pt1.X := (Width - FTrackCount * 4) div 2 - 30;
+        Pt1.Y := 4;
+        Pt2.X := Pt1.X + 6;
+        Pt2.Y := 4;
+        Pt3.X := Pt1.X + 3;
+        Pt3.Y := 1;
 
-        pt4.x := (Width - FTrackCount * 4) div 2 + FTrackCount * 4 + 30 - 7;
-        pt4.y := 4;
-        pt5.x := pt4.x + 6;
-        pt5.y := 4;
-        pt6.x := pt4.x + 3;
-        pt6.y := 1;
+        Pt4.X := (Width - FTrackCount * 4) div 2 + FTrackCount * 4 + 30 - 7;
+        Pt4.Y := 4;
+        Pt5.X := Pt4.X + 6;
+        Pt5.Y := 4;
+        Pt6.X := Pt4.X + 3;
+        Pt6.Y := 1;
       end;
     alBottom:
       begin
-        pt1.x := (Width - FTrackCount * 4) div 2 - 30;
-        pt1.y := 1;
-        pt2.x := pt1.x + 6;
-        pt2.y := 1;
-        pt3.x := pt1.x + 3;
-        pt3.y := 4;
+        Pt1.X := (Width - FTrackCount * 4) div 2 - 30;
+        Pt1.Y := 1;
+        Pt2.X := Pt1.X + 6;
+        Pt2.Y := 1;
+        Pt3.X := Pt1.X + 3;
+        Pt3.Y := 4;
 
-        pt4.x := (Width - FTrackCount * 4) div 2 + FTrackCount * 4 + 30 - 7;
-        pt4.y := 1;
-        pt5.x := pt4.x + 6;
-        pt5.y := 1;
-        pt6.x := pt4.x + 3;
-        pt6.y := 4;
+        Pt4.X := (Width - FTrackCount * 4) div 2 + FTrackCount * 4 + 30 - 7;
+        Pt4.Y := 1;
+        Pt5.X := Pt4.X + 6;
+        Pt5.Y := 1;
+        Pt6.X := Pt4.X + 3;
+        Pt6.Y := 4;
       end;
   end;
 end;
 
-procedure TJvgSplitter.CMMouseEnter(var Message: TMessage);
+procedure TJvgSplitter.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
-  FActive := true;
+  FActive := True;
   Invalidate;
 end;
 
-procedure TJvgSplitter.CMMouseLeave(var Message: TMessage);
+procedure TJvgSplitter.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
-  FActive := false;
+  FActive := False;
   Invalidate;
 end;
 
-constructor TJvgSplitter.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  IncludeThemeStyle(Self, [csParentBackground]);
-  //..defaults
-  Width := 6;
-  FHotTrack := true;
-  FTrackCount := 20;
-  FDisplace := true;
-end;
-
-procedure TJvgSplitter.SetTrackCount(const Value: integer);
+procedure TJvgSplitter.SetTrackCount(const Value: Integer);
 begin
   FTrackCount := Value;
   Invalidate;
 end;
 
-procedure TJvgSplitter.WMMouseDblClick(var Message: TMessage);
+procedure TJvgSplitter.WMMouseDblClick(var Msg: TMessage);
 begin
   if FDisplace then
     UpdateControlSize;
 end;
-
-// (rom) has to be cleaned up!!!!
-var
-  FKeepSize: Integer = 0; (* +++ RDB --- *)
 
 procedure TJvgSplitter.UpdateControlSize;
 const
@@ -255,82 +253,76 @@ begin
   FControl := FindControl;
   if not Assigned(FControl) then
     Exit;
+  if FKeepSize = 0 then
   begin
-    if FKeepSize = 0 then
-    begin
-      case Align of
-        alLeft:
-          begin
-            FKeepSize := FControl.Width;
+    case Align of
+      alLeft:
+        begin
+          FKeepSize := FControl.Width;
+          FControl.Width := cNewSize;
+        end;
+      alTop:
+        begin
+          FKeepSize := FControl.Height;
+          FControl.Height := cNewSize;
+        end;
+      alRight:
+        begin
+          FKeepSize := FControl.Width;
+          Parent.DisableAlign;
+          try
+            FControl.Left := FControl.Left + (FControl.Width - cNewSize);
             FControl.Width := cNewSize;
+          finally
+            Parent.EnableAlign;
           end;
-        alTop:
-          begin
-            FKeepSize := FControl.Height;
+        end;
+      alBottom:
+        begin
+          fKeepSize := FControl.Height;
+          Parent.DisableAlign;
+          try
+            FControl.Top := FControl.Top + (FControl.Height - cNewSize);
             FControl.Height := cNewSize;
+          finally
+            Parent.EnableAlign;
           end;
-        alRight:
-          begin
-            FKeepSize := FControl.Width;
-            Parent.DisableAlign;
-            try
-              FControl.Left := FControl.Left + (FControl.Width - cNewSize);
-              FControl.Width := cNewSize;
-            finally
-              Parent.EnableAlign;
-            end;
-          end;
-        alBottom:
-          begin
-            fKeepSize := FControl.Height;
-            Parent.DisableAlign;
-            try
-              FControl.Top := FControl.Top + (FControl.Height - cNewSize);
-              FControl.Height := cNewSize;
-            finally
-              Parent.EnableAlign;
-            end;
-          end;
-      end;
-    end
-    else (* ++++ RDB +++ *)
-    begin
-      case Align of
-        alLeft:
-          begin
-            FControl.Width := FKeepSize;
-          end;
-        alTop:
-          begin
-            FControl.Height := FKeepSize;
-          end;
-        alRight:
-          begin
-            Parent.DisableAlign;
-            try
-              FControl.Left := FControl.Left + (FControl.Width - FKeepSize);
-              FControl.Width := FKeepSize;
-            finally
-              Parent.EnableAlign;
-            end;
-          end;
-        alBottom:
-          begin
-            Parent.DisableAlign;
-            try
-              FControl.Top := FControl.Top + (FControl.Height - FKeepSize);
-              FControl.Height := FKeepSize;
-            finally
-              Parent.EnableAlign;
-            end;
-          end;
-      end;
-      FKeepSize := 0; (* --- RDB --- *)
+        end;
     end;
-    Update;
-    if Assigned(OnMoved) then
-      OnMoved(Self);
+  end
+  else (* ++++ RDB +++ *)
+  begin
+    case Align of
+      alLeft:
+        FControl.Width := FKeepSize;
+      alTop:
+        FControl.Height := FKeepSize;
+      alRight:
+        begin
+          Parent.DisableAlign;
+          try
+            FControl.Left := FControl.Left + (FControl.Width - FKeepSize);
+            FControl.Width := FKeepSize;
+          finally
+            Parent.EnableAlign;
+          end;
+        end;
+      alBottom:
+        begin
+          Parent.DisableAlign;
+          try
+            FControl.Top := FControl.Top + (FControl.Height - FKeepSize);
+            FControl.Height := FKeepSize;
+          finally
+            Parent.EnableAlign;
+          end;
+        end;
+    end;
+    FKeepSize := 0; (* --- RDB --- *)
   end;
+  Update;
+  if Assigned(OnMoved) then
+    OnMoved(Self);
 end;
 
 function TJvgSplitter.FindControl: TControl;
@@ -342,10 +334,14 @@ begin
   Result := nil;
   P := Point(Left, Top);
   case Align of
-    alLeft: Dec(P.X);
-    alRight: Inc(P.X, Width);
-    alTop: Dec(P.Y);
-    alBottom: Inc(P.Y, Height);
+    alLeft:
+      Dec(P.X);
+    alRight:
+      Inc(P.X, Width);
+    alTop:
+      Dec(P.Y);
+    alBottom:
+      Inc(P.Y, Height);
   else
     Exit;
   end;

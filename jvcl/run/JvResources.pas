@@ -310,10 +310,6 @@ resourcestring
   RsEInvalidColor = 'Invalid color (%d)';
   RsEItemNotForList = 'Item does not belong to this list';
 
-//=== JvComponentPanel.pas ===================================================
-resourcestring
-  RsEInvalidButtonCount = 'Invalid ButtonCount';
-
 //=== JvContextProvider.pas ==================================================
 resourcestring
   RsContextItemEmptyCaption = '(no context assigned to this item)';

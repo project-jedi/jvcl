@@ -14,8 +14,9 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
-                Olivier Sannier [obones@meloo.com].
+Contributor(s):
+  Michael Beck [mbeck@bigfoot.com].
+  Olivier Sannier [obones@meloo.com].
 
 Last Modified: 2003-07-20
 
@@ -32,16 +33,14 @@ unit JvToolBar;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  JvTypes, JVCLVer, Menus, JvMenus;
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, Menus,
+  JvTypes, JVCLVer, JvMenus;
 
 type
-  TJvToolBar = class;
-
   TJvToolBar = class(TToolBar)
-  protected
+  private
     FAboutJVCL: TJVCLAboutInfo;
-    FChangeLink : TJvMenuChangeLink;
+    FChangeLink: TJvMenuChangeLink;
     FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
@@ -50,21 +49,22 @@ type
     FOnCtl3DChanged: TNotifyEvent;
     FOver: Boolean;
     {$IFNDEF COMPILER6_UP}
-    FMenu:TMainMenu;
-    {$ENDIF}
-    FTempMenu : TJvPopupMenu;
-    FButtonMenu : TMenuItem;
-    FMenuShowingCount : Integer;
+    FMenu: TMainMenu;
+    {$ENDIF COMPILER6_UP}
+    FTempMenu: TJvPopupMenu;
+    FButtonMenu: TMenuItem;
+    FMenuShowingCount: Integer;
     procedure ClearTempMenu;
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure OnMenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
     function GetMenu: TMainMenu;
     procedure SetMenu(const Value: TMainMenu);
-    procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
-    procedure CNDropDownClosed(var Message: TMessage); message CN_DROPDOWNCLOSED;
+    procedure MenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
+    procedure CNDropDownClosed(var Msg: TMessage); message CN_DROPDOWNCLOSED;
+  protected
     procedure AdjustSize; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -72,18 +72,17 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property Menu: TMainMenu read GetMenu write SetMenu;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
-    property Menu : TMainMenu read GetMenu write SetMenu;
   end;
 
 implementation
 
-uses CommCtrl;
-
-{ TJvToolBar }
+uses
+  CommCtrl;
 
 constructor TJvToolBar.Create(AOwner: TComponent);
 begin
@@ -91,12 +90,22 @@ begin
   FHintColor := clInfoBk;
   FOver := False;
   FChangeLink := TJvMenuChangeLink.Create;
-  FChangeLink.OnChange := OnMenuChange;
+  FChangeLink.OnChange := MenuChange;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FMenuShowingCount := 0;
 end;
 
-procedure TJvToolBar.MouseEnter(var Msg: TMessage);
+destructor TJvToolBar.Destroy;
+begin
+  if (Menu <> nil) and (Menu is TJvMainMenu) then
+  begin
+    TJvMainMenu(Menu).UnregisterChanges(FChangeLink);
+  end;
+  FChangeLink.Free;
+  inherited Destroy;
+end;
+
+procedure TJvToolBar.CMMouseEnter(var Msg: TMessage);
 begin
   FOver := True;
   FSaved := Application.HintColor;
@@ -108,7 +117,7 @@ begin
     FOnMouseEnter(Self);
 end;
 
-procedure TJvToolBar.MouseLeave(var Msg: TMessage);
+procedure TJvToolBar.CMMouseLeave(var Msg: TMessage);
 begin
   Application.HintColor := FSaved;
   FOver := False;
@@ -136,13 +145,14 @@ begin
   Result := inherited Menu;
   {$ELSE}
   Result := FMenu;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvToolBar.SetMenu(const Value: TMainMenu);
 begin
   // if trying to set the same menu, do nothing
-  if Menu = Value then Exit;
+  if Menu = Value then
+    Exit;
 
   if Assigned(Menu) and (Menu is TJvMainMenu) then
   begin
@@ -165,10 +175,10 @@ begin
   inherited Menu := Value;
   {$ELSE}
   FMenu := Value;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
-procedure TJvToolBar.OnMenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
+procedure TJvToolBar.MenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
 begin
   if Sender = Menu then
   begin
@@ -189,19 +199,10 @@ begin
   end;
 end;
 
-destructor TJvToolBar.Destroy;
-begin
-  if (Menu <> nil) and (Menu is TJvMainMenu) then
-  begin
-    TJvMainMenu(Menu).UnregisterChanges(FChangeLink);
-  end;
-  FChangeLink.Free;
-  inherited;
-end;
-
 procedure TJvToolBar.AdjustSize;
-var i : integer;
-    totWidth : integer;
+var
+  I: Integer;
+  TotWidth: Integer;
 begin
   inherited;
 
@@ -209,12 +210,10 @@ begin
   // update width according to sum of button widths
   if (Menu <> nil) and not Wrapable then
   begin
-    totWidth := 0;
-    for i := 0 to ButtonCount- 1 do
-    begin
-      totWidth := totWidth + Buttons[i].Width;
-    end;
-    Width := totWidth;
+    TotWidth := 0;
+    for I := 0 to ButtonCount - 1 do
+      TotWidth := TotWidth + Buttons[I].Width;
+    Width := TotWidth;
   end;
 end;
 
@@ -237,12 +236,13 @@ begin
   end;
 end;
 
-procedure TJvToolBar.CNNotify(var Message: TWMNotify);
-var Button : TToolButton;
-    JvParentMenu: TJvMainMenu;
-    Menu : TMenu;
-    I : integer;
-    Item: TMenuItem;
+procedure TJvToolBar.CNNotify(var Msg: TWMNotify);
+var
+  Button: TToolButton;
+  JvParentMenu: TJvMainMenu;
+  Menu: TMenu;
+  I: Integer;
+  Item: TMenuItem;
 begin
   // we process the WM_NOTIFY message ourselves to be able to
   // display a dropdown JvMenu instead of a regular one.
@@ -254,7 +254,7 @@ begin
   // instead of a TPopupMenu.
   if Self.Menu is TJvMainMenu then
   begin
-    with Message do
+    with Msg do
     begin
       case NMHdr^.code of
         TBN_DROPDOWN:
@@ -295,10 +295,10 @@ begin
                 Inc(FMenuShowingCount);
                 // show the temporary popup menu
                 Button.CheckMenuDropdown;
-
               end;
             end;
-        else inherited;
+      else
+        inherited;
       end;
     end;
   end
@@ -306,7 +306,7 @@ begin
     inherited;
 end;
 
-procedure TJvToolBar.CNDropDownClosed(var Message: TMessage);
+procedure TJvToolBar.CNDropDownClosed(var Msg: TMessage);
 begin
   if FMenuShowingCount = 1 then
     ClearTempMenu;
