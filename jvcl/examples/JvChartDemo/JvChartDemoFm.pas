@@ -16,8 +16,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-07
-  Modified 2003 Warren Postma
+Last Modified: 2005-01-14
+  Modified 2003-2005 by Warren Postma
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -78,6 +78,7 @@ type
     PrintDialog1: TPrintDialog;
     MenuSecondaryAxisMode: TMenuItem;
     MenuNegValueTest: TMenuItem;
+    SpeedButtonTestMouseOver: TSpeedButton;
     procedure FormResize(Sender: TObject);
     procedure ButtonLineClick(Sender: TObject);
     procedure ButtonBarChartClick(Sender: TObject);
@@ -112,6 +113,12 @@ type
     procedure ListBox1DblClick(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
     procedure MenuNegValueTestClick(Sender: TObject);
+    procedure SpeedButtonTestMouseOverClick(Sender: TObject);
+    procedure ChartEndFloatingMarkerDrag(Sender: TJvChart;
+      FloatingMarker: TJvChartFloatingMarker);
+    procedure ChartBeginFloatingMarkerDrag(Sender: TJvChart;
+      FloatingMarker: TJvChartFloatingMarker);
+    procedure ChartChartPaint(Sender: TJvChart; aCanvas: TCanvas);
   private
 
       // Our waveform generator uses the following as state-variables:
@@ -242,8 +249,15 @@ var
   I: Integer;
   nValueCount: Integer;
 begin
+//Chart.Options.Title := 'Click on the Chart Title to change it!';
+
+  Chart.ClearFloatingMarkers; // remove any previous markers.
+
+
   ListBox1.Clear;
   Chart.Data.Clear;
+
+  Chart.Options.PrimaryYAxis.YMax := 20;
 
   Randomize;
 
@@ -518,6 +532,8 @@ end;
 
 procedure TJvChartDemoForm.Generatenewrandomvalues1Click(Sender: TObject);
 begin
+  if SpeedButtonTestMouseOver.Down then exit;
+
   NewValues;
 end;
 
@@ -552,12 +568,16 @@ end;
 
 procedure TJvChartDemoForm.Scrolling1Click(Sender: TObject);
 begin
+  if SpeedButtonTestMouseOver.Down then exit;
+
   Scrolling1.Checked := not Scrolling1.Checked;
   Timer1.Enabled := Scrolling1.Checked;
 end;
 
 procedure TJvChartDemoForm.Timer1Timer(Sender: TObject);
 begin
+  if SpeedButtonTestMouseOver.Down then exit;
+
   Chart.Data.Scroll;
   _Generate;
   _StoreValue(Chart.Data.ValueCount - 1);
@@ -577,6 +597,8 @@ end;
 
 procedure TJvChartDemoForm.LargeDataset576samples1Click(Sender: TObject);
 begin
+  if SpeedButtonTestMouseOver.Down then exit;
+
   LargeDataset576samples1.Checked := not LargeDataset576samples1.Checked;
   NewValues;
 end;
@@ -584,7 +606,10 @@ end;
 procedure TJvChartDemoForm.DateTimeAxisModeClick(Sender: TObject);
 begin
   DateTimeAxisMode.Checked := not DateTimeAxisMode.Checked;
-  NewValues;
+  if SpeedButtonTestMouseOver.Down then begin
+      Chart.Options.XLegends.Clear;
+  end else
+    NewValues;
 end;
 
 procedure TJvChartDemoForm.FormDestroy(Sender: TObject);
@@ -625,6 +650,116 @@ procedure TJvChartDemoForm.MenuNegValueTestClick(Sender: TObject);
 begin
   FNegValueFlag := MenuNegValueTest.Checked;
   NewValues;
+end;
+
+{ Simple Chart Tests for finding bug }
+procedure TJvChartDemoForm.SpeedButtonTestMouseOverClick(Sender: TObject);
+var
+  i:Integer;
+  n:Double;
+  marker1,marker2,draggableCursor:TJvChartFloatingMarker;
+begin
+  ListBox1.Clear;
+  Scrolling1.Checked := false;
+
+  Chart.Options.Title := 'Click on the Red Diamonds or the vertical gray line and Drag them!';
+  Chart.Options.ChartKind := ckChartLine;
+  Chart.Options.XLegends.Clear;
+  Chart.Options.XAxisHeader := '';
+
+  Chart.Options.MouseDragObjects := true; // NEW: MOUSE DRAG FLOATING OBJECTS!
+
+  for i := 0 to Chart.Options.PenCount - 1 do
+  begin
+    Chart.Options.PenMarkerKind[I] := pmkNone;
+  end;
+  Chart.Data.Clear;
+  Chart.Options.XValueCount := 80;
+  Chart.Data.ValueCount := 6;
+  Chart.Options.PenCount := 1;
+  for i := 0 to Chart.Options.XValueCount-1  do begin
+    n := 30-(25*((1-((i-25)/15))*(1-((i-25)/15))));
+    if n<5 then
+        n := 5 -(Sqrt((Abs(n))/15));
+    ListBox1.Items.Add( FloatToStrF(n,ffFixed,6,4));
+    Chart.Data.Value[0,i] := n;
+  end;
+  Chart.Options.PrimaryYAxis.YMax := 50;
+
+  Chart.Options.PenStyle[0] := psSolid;
+
+  // NEW: Add a floating marker:
+  marker1 := Chart.AddFloatingMarker;
+  marker1.XPosition := 13;
+  marker1.YPosition := Chart.Data.Value[0,marker1.XPosition]; // Snap to Pen 1
+  marker1.XDraggable := true; // make it mouse-moveable.
+  marker1.YDraggable := true;
+  marker1.Caption :='Start';
+  marker1.Visible := true;
+
+
+  marker2 := Chart.AddFloatingMarker;
+  marker2.XPosition := 66;
+  marker2.YPosition := Chart.Data.Value[0,marker2.XPosition]; // Snap to Pen 1
+  marker2.LineToMarker := marker1.index; // Connect with a line to marker1
+  marker2.XDraggable := true; // make it mouse-moveable.
+  marker2.YDraggable := true;
+  marker2.Caption := 'End';
+  marker2.Visible := true;
+
+  // NOTE: Do not Free marker1 or marker2.
+  // Marker objects are freed automatically
+  // by the Chart.
+
+  // a draggable cursor object:
+  draggableCursor := Chart.AddFloatingMarker;
+  draggableCursor.LineVertical := true; // Make a vertical Line
+  draggableCursor.Marker := pmkNone; // No marker. So it is a line only.
+  draggableCursor.XDraggable := true; // make it draggable.
+  draggableCursor.XPosition := 40;
+  draggableCursor.LineColor := clDkGray;
+  draggableCursor.LineStyle := psSolid;
+  draggableCursor.LineWidth := 2;
+  draggableCursor.Caption := FloatToStrF( Chart.Data.Value[0,draggableCursor.XPosition], ffFixed, 6,4 );
+  draggableCursor.Visible := true;
+
+
+
+
+
+
+  Chart.PlotGraph;
+
+
+end;
+
+procedure TJvChartDemoForm.ChartEndFloatingMarkerDrag(Sender: TJvChart;
+  FloatingMarker: TJvChartFloatingMarker);
+begin
+  // Snap to line:
+  if (FloatingMarker.Index<2) then // One of the first two markers?
+    FloatingMarker.YPosition :=  Chart.Data.Value[0, FloatingMarker.XPosition]
+  else // update caption
+    FloatingMarker.Caption := FloatToStrF( Chart.Data.Value[0,FloatingMarker.XPosition],ffFixed,6,4 );
+
+
+end;
+
+procedure TJvChartDemoForm.ChartBeginFloatingMarkerDrag(Sender: TJvChart;
+  FloatingMarker: TJvChartFloatingMarker);
+begin
+    if FloatingMarker.Index=2 then
+        FloatingMarker.Caption := '?';
+
+end;
+
+procedure TJvChartDemoForm.ChartChartPaint(Sender: TJvChart;
+  aCanvas: TCanvas);
+begin
+  aCanvas.Pen.Color := clRed;
+  aCanvas.Pen.Style := psSolid;
+  aCanvas.MoveTo(0,0);
+  aCanvas.LineTo(100,100);
 end;
 
 end.
