@@ -132,6 +132,9 @@ type
     CrLf = #13#10;
     Cr = #13;
     Lf = #10;
+{$IFNDEF COMPILER6_UP}
+    sLineBreak = #10#13;
+{$ENDIF}    
 
 type
   TJvGradStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
