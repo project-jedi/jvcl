@@ -68,7 +68,7 @@ procedure Register;
 implementation
 uses
   Classes,
-  JvTFGlance, JvTFGlTxtVw, JvTFMonths, JvTFWeeks, JvTFDays, JvTFAlarm, JvTFManager;
+  JvTFGlance, JvTFGlanceTextViewer, JvTFMonths, JvTFWeeks, JvTFDays, JvTFAlarm, JvTFManager;
 
 
 {$IFDEF COMPILER5}
