@@ -50,7 +50,7 @@ uses
   {$IFDEF JV_MIDAS}
   JvDBRemoteLogin,
   {$ENDIF JV_MIDAS}
-  JvDBEditors, JvDBMemDatasetEditor;
+  JvDBEditors, JvDBMemDatasetEditor, JvDBGridExportEditors;
 
 {$R ..\resources\JvDBReg.dcr}
 
@@ -94,6 +94,7 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cMasterField, TJvListFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cDetailField, TJvListFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cIconField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(TWordGridFormat), TJvDBGridWordExport, '', TDBGridExportWordFormatProperty);
 
   RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
 end;

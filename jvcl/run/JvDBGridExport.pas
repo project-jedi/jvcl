@@ -41,19 +41,20 @@ type
 
 type
   EJvExportDBGridException = class(EJVCLException);
+  TWordGridFormat = $10..$17;
 
 { avoid Office TLB imports }
 const
   wdDoNotSaveChanges = 0;
 
-  wdTableFormatGrid1 = $10;
-  wdTableFormatGrid2 = $11;
-  wdTableFormatGrid3 = $12;
-  wdTableFormatGrid4 = $13;
-  wdTableFormatGrid5 = $14;
-  wdTableFormatGrid6 = $15;
-  wdTableFormatGrid7 = $16;
-  wdTableFormatGrid8 = $17;
+  wdTableFormatGrid1 = TWordGridFormat($10);
+  wdTableFormatGrid2 = TWordGridFormat($11);
+  wdTableFormatGrid3 = TWordGridFormat($12);
+  wdTableFormatGrid4 = TWordGridFormat($13);
+  wdTableFormatGrid5 = TWordGridFormat($14);
+  wdTableFormatGrid6 = TWordGridFormat($15);
+  wdTableFormatGrid7 = TWordGridFormat($16);
+  wdTableFormatGrid8 = TWordGridFormat($17);
 
   xlPortrait = $01;
   xlLandscape = $02;
@@ -68,6 +69,7 @@ type
     FOnProgress: TJvExportProgressEvent;
     FLastExceptionMessage: string;
     FSilent: boolean;
+    FOnException: TNotifyEvent;
   protected
     procedure HandleException;
     function ExportField(aField: TField): boolean;
@@ -86,6 +88,7 @@ type
     property Grid: TDBGrid read FGrid write FGrid;
     property Silent: boolean read FSilent write FSilent default true;
     property OnProgress: TJvExportProgressEvent read FOnProgress write FOnProgress;
+    property OnException:TNotifyEvent read FOnException write FOnException;
   end;
 
   TJvCustomDBGridExportClass = class of TJvCustomDBGridExport;
@@ -95,8 +98,9 @@ type
     FWord: OleVariant;
     FVisible: boolean;
     FOrientation: TWordOrientation;
-    FWordFormat: integer;
+    FWordFormat: TWordGridFormat;
     FClose: boolean;
+    FRunningInstance:boolean;
   protected
     procedure DoSave; override;
     function DoExport: boolean; override;
@@ -111,7 +115,7 @@ type
     property OnProgress;
 
     property Close: boolean read FClose write FClose default true;
-    property WordFormat: integer read FWordFormat write FWordFormat default wdTableFormatGrid3;
+    property WordFormat: TWordGridFormat read FWordFormat write FWordFormat default wdTableFormatGrid3;
     property Visible: boolean read FVisible write FVisible default false;
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
   end;
@@ -122,6 +126,7 @@ type
     FVisible: boolean;
     FOrientation: TWordOrientation;
     FClose: boolean;
+    FRunningInstance:boolean;
     function IndexFieldToExcel(index: integer): string;
   protected
     procedure DoSave; override;
@@ -194,6 +199,10 @@ type
     property Destination: TExportDestination read FDestination write SetDestination default edFile;
     property ExportSeparator: TExportSeparator read FExportSeparator write SetExportSeparator default esTab;
   end;
+
+function WordGridFormatIdentToInt(const Ident: string; var Value: Longint): Boolean;
+function IntToWordGridFormatIdent(Value: Longint; var Ident: string): Boolean;
+procedure GetWordGridFormatValues(Proc: TGetStrProc);
 
 implementation
 
@@ -268,7 +277,9 @@ begin
     if ExceptObject is Exception then
       FLastExceptionMessage := Exception(ExceptObject).Message;
     if not Silent then
-      raise ExceptObject at ExceptAddr;
+      raise ExceptObject at ExceptAddr
+    else if Assigned(FOnException) then
+      FOnException(self);
   end;
 end;
 
@@ -297,13 +308,7 @@ end;
 
 destructor TJvDBGridWordExport.Destroy;
 begin
-  if not VarIsEmpty(FWord) and Close then
-  try
-    FWord.Quit;
-    FWord := Unassigned;
-  except
-    HandleException;
-  end;
+  DoClose;
   inherited;
 end;
 
@@ -317,10 +322,12 @@ var
   lBookmark: TBookmark;
 begin
   Result := true;
+  FRunningInstance := true;
   try
     // get running instance
     FWord := GetActiveOleObject('Word.Application');
   except
+    FRunningInstance := false;
     try
       // create new
       FWord := CreateOLEObject('Word.Application');
@@ -424,12 +431,11 @@ end;
 
 procedure TJvDBGridWordExport.DoClose;
 begin
-  if VarIsEmpty(FWord) then Exit;
-
-  if FClose then
+  if not VarIsEmpty(FWord) and FClose then
   try
     FWord.ActiveDocument.Close(wdDoNotSaveChanges, EmptyParam, EmptyParam);
-    FWord.Quit;
+    if not FRunningInstance then
+      FWord.Quit; // only quit if we created the instance ourselves
     FWord := Unassigned;
   except
     HandleException;
@@ -452,13 +458,7 @@ end;
 
 destructor TJvDBGridExcelExport.Destroy;
 begin
-  if not VarIsEmpty(FExcel) and Close then
-  try
-    FExcel.Quit;
-    FExcel := Unassigned;
-  except
-    HandleException;
-  end;
+  DoClose;
   inherited;
 end;
 
@@ -479,10 +479,12 @@ var
   lBookmark: TBookmark;
 begin
   Result := true;
+  FRunningInstance := true;
   try
     // get running instance
     FExcel := GetActiveOleObject('Excel.Application');
   except
+    FRunningInstance := false;
     try
       // create new instance
       FExcel := CreateOLEObject('Excel.Application');
@@ -566,7 +568,7 @@ var
   lName: OleVariant;
 begin
   inherited;
-  if VarIsEmpty(FExcel) then Exit;
+  if not VarIsEmpty(FExcel) then 
   try
     lName := OleVariant(FileName);
     FExcel.ActiveWorkbook.SaveAs(lName);
@@ -577,12 +579,12 @@ end;
 
 procedure TJvDBGridExcelExport.DoClose;
 begin
-  if VarIsEmpty(FExcel) then Exit;
-  if FClose then
+  if not VarIsEmpty(FExcel) and FClose then
   try
     FExcel.ActiveWorkbook.Saved := true; // Avoid Excel's save prompt
     FExcel.ActiveWorkbook.Close;
-    FExcel.Quit;
+    if not FRunningInstance then
+      FExcel.Quit; // only quit if we created the instance ourselves
     FExcel := Unassigned;
   except
     HandleException;
@@ -799,8 +801,10 @@ end;
 procedure TJvDBGridCSVExport.SetDestination(const Value: TExportDestination);
 begin
   FDestination := Value;
-  if FDestination = edFile then Caption := RsExportFile
-  else Caption := RsExportClipboard;
+  if FDestination = edFile then
+    Caption := RsExportFile
+  else
+    Caption := RsExportClipboard;
 end;
 
 function TJvDBGridCSVExport.DoExport: boolean;
@@ -894,6 +898,60 @@ procedure TJvDBGridHTMLExport.SetHeader(const Value: TStrings);
 begin
   FHeader.Assign(Value);
 end;
+
+type
+  TGridValue = packed record
+    Value:integer;
+    Name:PChar;
+  end;
+
+const
+  GridFormats: array[$10..$17] of TGridValue =
+    ((Value:$10;Name:'wdTableFormatGrid1'),
+    (Value:$11;Name:'wdTableFormatGrid2'),
+    (Value:$12;Name:'wdTableFormatGrid3'),
+    (Value:$13;Name:'wdTableFormatGrid4'),
+    (Value:$14;Name:'wdTableFormatGrid5'),
+    (Value:$15;Name:'wdTableFormatGrid6'),
+    (Value:$16;Name:'wdTableFormatGrid7'),
+    (Value:$17;Name:'wdTableFormatGrid8'));
+
+function WordGridFormatIdentToInt(const Ident: string; var Value: Longint): Boolean;
+var i:integer;
+begin
+  for i := Low(GridFormats) to High(GridFormats) do
+    if SameText(GridFormats[i].Name, Ident) then
+    begin
+      Result := true;
+      Value := GridFormats[i].Value;
+      Exit;
+    end;
+  Result := false;
+end;
+
+function IntToWordGridFormatIdent(Value: Longint; var Ident: string): Boolean;
+var i:integer;
+begin
+  for i := Low(GridFormats) to High(GridFormats) do
+    if GridFormats[i].Value = Value then
+    begin
+      Result := true;
+      Ident := GridFormats[i].Name;
+      Exit;
+    end;
+  Result := false;
+end;
+
+procedure GetWordGridFormatValues(Proc: TGetStrProc);
+var
+  I: Integer;
+begin
+  for I := Low(GridFormats) to High(GridFormats) do Proc(GridFormats[I].Name);
+end;
+
+
+initialization
+  RegisterIntegerConsts(TypeInfo(TWordGridFormat),WordGridFormatIdentToInt, IntToWordGridFormatIdent);
 
 end.
 
