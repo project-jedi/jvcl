@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-06-11
+- Added Embedded Forms donation from "rossen" (in JvEmbeddedForms.pas and the JvAppFrm package) // peter3
 2004-06-02
 - VisualCLX support: use installer to install! // asn
 - Updated/fixed Kylix 3(PE) packages. // asn
