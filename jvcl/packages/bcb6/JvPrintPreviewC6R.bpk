@@ -26,8 +26,8 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvPrintPreviewC6R.cpp"/>
-    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\..\run;..\..\common"/>
-    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\run;$(BCB)\lib\obj;$(BCB)\lib;..\..\dcu"/>
+    <INCLUDEPATH value="..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\run;..\..\dcu;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
