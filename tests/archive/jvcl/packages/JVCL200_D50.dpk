@@ -96,6 +96,7 @@ contains
   JvActions in '..\source\JvActions.pas',
   JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
   JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
-  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor};
+  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
+  JvTransLedReg in '..\source\JvTransLEDReg.pas';
 
 end.

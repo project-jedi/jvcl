@@ -481,6 +481,7 @@ contains
   JvScheduledEvents in '..\source\JvScheduledEvents.pas',
   JvSchedEvtStore in '..\source\JvSchedEvtStore.pas',
   JvWndProcHook in '..\source\JvWndProcHook.pas',
-  JvxConst in '..\source\JvxConst.pas';
+  JvxConst in '..\source\JvxConst.pas',
+  JvTransLED in '..\source\JvTransLED.pas';
 
 end.

@@ -108,6 +108,10 @@ contains
   JvPluginWizard in '..\source\JvPluginWizard.pas',
   JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams},
   JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
-  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor};
+  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
+  JvActions in '..\source\JvActions.pas',
+  JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
+  JvDialogActns in '..\source\JvDialogActns.pas',
+  JvTransLedReg in '..\source\JvTransLEDReg.pas';
 
 end.

@@ -119,6 +119,7 @@ contains
   JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
   JvDatePickerReg in '..\source\JvDatePickerReg.pas',
   JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
-  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor};
+  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
+  JvTransLedReg in '..\source\JvTransLEDReg.pas';
 
 end.

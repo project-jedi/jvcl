@@ -83,6 +83,11 @@ contains
   jvBandObjectDLLWizard in '..\source\JvBandObjectDLLWizard.pas',
   jvBandObjectDLLWizardForm in '..\source\JvBandObjectDLLWizardForm.pas' {zWizardForm},
   JvPluginWizard in '..\source\JvPluginWizard.pas',
-  JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams};
+  JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams},
+  JvActions in '..\source\JvActions.pas',
+  JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
+  JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
+  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
+  JvTransLedReg in '..\source\JvTransLEDReg.pas';
 
 end.

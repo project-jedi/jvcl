@@ -127,6 +127,7 @@ contains
   ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
   JvActions in '..\source\JvActions.pas',
   JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
-  JvDialogActns in '..\source\JvDialogActns.pas';
+  JvDialogActns in '..\source\JvDialogActns.pas',
+  JvTransLedReg in '..\source\JvTransLEDReg.pas';
 
 end.

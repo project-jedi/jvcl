@@ -453,6 +453,7 @@ contains
   JvPlugCommon in '..\source\JvPlugCommon.pas',
   JvScheduledEvents in '..\source\JvScheduledEvents.pas',
   JvSchedEvtStore in '..\source\JvSchedEvtStore.pas',
-  JvWndProcHook in '..\source\JvWndProcHook.pas';
+  JvWndProcHook in '..\source\JvWndProcHook.pas',
+  JvTransLED in '..\source\JvTransLED.pas';
 
 end.
