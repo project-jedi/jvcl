@@ -1066,6 +1066,7 @@ type
   { threads }
 type
   TThreadPriority = Integer;
+
 const
   tpIdle: TThreadPriority = 0;
   THREAD_PRIORITY_ERROR_RETURN = 255;
@@ -4273,23 +4274,15 @@ begin
       else
         FColorGroup := QPaletteColorGroup_InActive ;
     end;
-  clActiveColorTo..clActiveForeground:
-    begin
-      FColorGroup := QPaletteColorGroup_Active;
-    end;
-  clNormalColorTo..clNormalForeground:
-    begin
-      FColorGroup := QPaletteColorGroup_InActive;
-    end;
+  clActiveColorTo..clActiveForeground,
+  clNormalColorTo..clNormalForeground,
   clDisabledColorTo..clDisabledForeground:
-    begin
-      FColorGroup := QPaletteColorGroup_Disabled;
-    end;
+      FColorGroup := ColorGroup(Color);
   else
     Result := Color;
     Exit;
   end;
-  FColorRole := QColorGroupColorRole( $000000f and (-Integer(Color) )); {1..15}
+  FColorRole := ColorRole(Color); {1..15}
   FPalette := GetPaletteHandle(Instance);
   FColor := QPalette_color(FPalette, FColorGroup, FColorRole);
   Result := QColorColor(FColor);
