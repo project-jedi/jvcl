@@ -1,6 +1,16 @@
-@@$TJvAnalogClock
-<TITLE JvAnalogClock: overview>
+@@JvAnalogClock.pas
+<GROUP $JVCL.FileRef>
+Summary
+  Contains all the Code for TJvAnalogClock
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Frenk Vrtariè
+----------------------------------------------------------------------------------------------------
+@@TJvAnalogClock
 <GROUP JVCL.System.AlarmsAndTimers>
+<TITLEIMG TJvAnalogClock>
+Summary
+  Analog clock control.
 Description
   TJvAnalogClock is a visual analog clock which can be used for various purposes.
 
@@ -9,21 +19,6 @@ Description
   * Place the component on your form
   * Adjust properties to your liking
   * Set ClockEnabled to True if you want the clock to run continuously
-----------------------------------------------------------------------------------------------------
-@@JvAnalogClock.pas
-Summary
-  Contains all the Code for TJvAnalogClock
-<INCLUDE JVCL.UnitText.dtx>
-Author
-  Frenk Vrtariè
-----------------------------------------------------------------------------------------------------
-@@TJvAnalogClock
-<GROUP TJvAnalogClock>
-<TITLEIMG TJvAnalogClock>
-Summary
-  Analog clock control.
-Description
-  TJvAnalogClock is a visual analog clock which can be used for various purposes.
 ----------------------------------------------------------------------------------------------------
 @@TJvAnalogClock.Color
 Summary
@@ -51,45 +46,45 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvAnalogClock.ColorHr
 Summary
-  Determines if the color of the hour line of the analog clock if HrStyle is hsLine. If HrStyle is
-  hsCircle or hsNumInCir the color of the border of the circle is determined.
+  Determines if the color of the hour line of the analog clock if HourStyle is hsLine. If HourStyle is
+  hsCircle or hsNumberInCircle the color of the border of the circle is determined.
 Description
-  Use ColorHandHr to read or change the color of the hour line of the analog clock if HrStyle is
-  hsLine. If HrStyle is hsCircle or hsNumInCir the color of the border of the circle can be read or
+  Use ColorHandHr to read or change the color of the hour line of the analog clock if HourStyle is
+  hsLine. If HourStyle is hsCircle or hsNumberInCircle the color of the border of the circle can be read or
   changed.
 See also
-  HrStyle
+  HourStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvAnalogClock.ColorHrIn
 Summary
-  Determines if the color of the of the background of the hour circle if HrStyle is hsCircle or
-  hsNumInCir.
+  Determines if the color of the of the background of the hour circle if HourStyle is hsCircle or
+  hsNumberInCircle.
 Description
-  Use ColorHandHr to read or change the color of the background of the hour circle if HrStyle is
-  hsCircle or hsNumInCir.
+  Use ColorHandHr to read or change the color of the background of the hour circle if HourStyle is
+  hsCircle or hsNumberInCircle.
 See also
-  HrStyle
+  HourStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvAnalogClock.ColorMin
 Summary
-  Determines if the color of the minute line of the analog clock if MinStyle is hsLine. If MinStyle
-  is hsCircle or hsNumInCir the color of the border of the circle is determined.
+  Determines if the color of the minute line of the analog clock if MinuteStyle is hsLine. If MinuteStyle
+  is hsCircle or hsNumberInCircle the color of the border of the circle is determined.
 Description
-  Use ColorHandHr to read or change the color of the minute line of the analog clock if MinStyle is
-  hsLine. If MinStyle is hsCircle or hsNumInCir the color of the border of the circle can be read or
+  Use ColorHandHr to read or change the color of the minute line of the analog clock if MinuteStyle is
+  hsLine. If MinuteStyle is hsCircle or hsNumberInCircle the color of the border of the circle can be read or
   changed.
 See also
-  MinStyle
+  MinuteStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvAnalogClock.ColorMinIn
 Summary
-  Determines if the color of the of the background of the minute circle if MinStyle is hsCircle or
-  hsNumInCir.
+  Determines if the color of the of the background of the minute circle if MinuteStyle is hsCircle or
+  hsNumberInCircle.
 Description
-  Use ColorHandHr to read or change the color of the background of the hour circle if MinStyle is
-  hsCircle or hsNumInCir.
+  Use ColorHandHr to read or change the color of the background of the hour circle if MinuteStyle is
+  hsCircle or hsNumberInCircle.
 See also
-  MinStyle
+  MinuteStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvAnalogClock.Date
 Summary
@@ -101,26 +96,26 @@ Description
 
   Set Date to True to display the date inside the clock.
 ----------------------------------------------------------------------------------------------------
-@@TJvAnalogClock.HrMarks
+@@TJvAnalogClock.HourMarks
 Summary
   Determines how the hourmarks are displayed.
 Description
   Hourmarks can be displayed every hour, every three hours or not at all. The style, color and size
-  of the hourmarks is determined by HrStyle, HrSize, ColorHr, ColorHrIn and ColorHandHr.
+  of the hourmarks is determined by HourStyle, HourSize, ColorHr, ColorHrIn and ColorHandHr.
 See Also
-  HrStyle, HrSize, ColorHr, ColorHrIn, ColorHandHr
+  HourStyle, HourSize, ColorHr, ColorHrIn, ColorHandHr
 ----------------------------------------------------------------------------------------------------
-@@TJvAnalogClock.HrSize
+@@TJvAnalogClock.HourSize
 Summary
-  Determines the length of the hour line of the analog clock if HrStyle is hsLine. If HrStyle is
-  hsCircle or hsNumInCir the diameter of the circle is determined.
+  Determines the length of the hour line of the analog clock if HourStyle is hsLine. If HourStyle is
+  hsCircle or hsNumberInCircle the diameter of the circle is determined.
 Description
-  Use HrSize to read or change the length of the hour line of the analog clock if HrStyle is
-  hsLine. If HrStyle is hsCircle or hsNumInCir the diameter of the circle can be read or changed.
+  Use HourSize to read or change the length of the hour line of the analog clock if HourStyle is
+  hsLine. If HourStyle is hsCircle or hsNumberInCircle the diameter of the circle can be read or changed.
 See Also
-  HrStyle, ColorHr
+  HourStyle, ColorHr
 ----------------------------------------------------------------------------------------------------
-@@TJvAnalogClock.HrStyle
+@@TJvAnalogClock.HourStyle
 Summary
   Determines the style of the displayed hourmarks.
 Description
@@ -135,24 +130,24 @@ Summary
   Determines how the minute marks are displayed.
 Description
   Minute marks can be displayed every minute or not at all. The style, color and size of the
-  minute marks is determined by MinStyle, MinSize, ColorMin, ColorMinIn and ColorHandMin.
+  minute marks is determined by MinuteStyle, MinuteSize, ColorMin, ColorMinIn and ColorHandMin.
 Parameters
   True  - All minute marks are displayed (Default)
   False - Minute marks are not displayed
 See Also
-  MinStyle, MinSize, ColorMin, ColorMinIn, ColorHandMin
+  MinuteStyle, MinuteSize, ColorMin, ColorMinIn, ColorHandMin
 ----------------------------------------------------------------------------------------------------
-@@TJvAnalogClock.MinSize
+@@TJvAnalogClock.MinuteSize
 Summary
-  Determines the length of the minute line of the analog clock if MinStyle is hsLine. If MinStyle is
-  hsCircle or hsNumInCir the diameter of the circle is determined.
+  Determines the length of the minute line of the analog clock if MinuteStyle is hsLine. If MinuteStyle is
+  hsCircle or hsNumberInCircle the diameter of the circle is determined.
 Description
-  Use HrSize to read or change the length of the minute line of the analog clock if MinStyle is
-  hsLine. If MinStyle is hsCircle or hsNumInCir the diameter of the circle can be read or changed.
+  Use HourSize to read or change the length of the minute line of the analog clock if MinuteStyle is
+  hsLine. If MinuteStyle is hsCircle or hsNumberInCircle the diameter of the circle can be read or changed.
 See Also
-  MinStyle, ColorMin
+  MinuteStyle, ColorMin
 ----------------------------------------------------------------------------------------------------
-@@TJvAnalogClock.MinStyle
+@@TJvAnalogClock.MinuteStyle
 Summary
   Determines the style of the displayed minutemarks.
 Description
@@ -184,7 +179,7 @@ Parameters
   True  - Second hand is displayed (Default)
   False - Second hand is hidden
 See Also
-  ColorHandSec, WidthHandSec, SecJump
+  ColorHandSec, SecJump
 ----------------------------------------------------------------------------------------------------
 @@TJvAnalogClock.SpiderClock
 Summary
@@ -194,10 +189,10 @@ Description
   of the clock, while the ones at 3 and 9 will be drawn so that hourmarks and minute makrs form a
   circle. If SpiderClock is True the hourmarks at 3 and 9 will also touch the border. In that case
   the clocks inside will form a circle while the outside will be elliptical looking like a spider.
-  If HrStyle is hsCircle or hsNumInCir the the circle will be along the inside of the clock but the
+  If HourStyle is hsCircle or hsNumberInCircle the the circle will be along the inside of the clock but the
   minutemarks behave like they hourmarks were in hsLine mode.
 See Also
-  HrStyle, MinStyle
+  HourStyle, MinuteStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvHourMarks
 Summary
@@ -211,7 +206,7 @@ Description
 @@TJvHourMarks.hmNone
   Hourmarks are not displayed
 See Also
-  TJvAnalogClock.HrMarks
+  TJvAnalogClock.HourMarks
 ----------------------------------------------------------------------------------------------------
 @@TJvHourStyle
 Summary
@@ -225,9 +220,8 @@ Description
   All hourmarks / minutemarks are displayed as solid circles
 @@TJvHourStyle.hsNumber
   All hourmarks / minutemarks are displayed as numbers
-@@TJvHourStyle.hsNumInCir
+@@TJvHourStyle.hsNumberInCircle
   All hourmarks / minutemarks are displayed as numbers in solid circles
 See Also
-  TJvAnalogClock.HrStyle, TJvAnalogClock.MinStyle 
+  TJvAnalogClock.HourStyle, TJvAnalogClock.MinuteStyle 
 ----------------------------------------------------------------------------------------------------
-

@@ -27,16 +27,16 @@ Summary
   Holds the file attributes as an integer value.
 Description
   Attributes holds the file attributes as an integer value. The value returned is the same as the one
-  returned by GetFileAttributes(PChar(Filename)).
+  returned by GetFileAttributes(PChar(FileName)).
 See Also
   AttrString
 -----------------------------------------------------------------------------------------------------
-@@TJvFileInfo.Filename
+@@TJvFileInfo.FileName
 Summary
   The file you want information on.
 Description
-  Filename is the full path and filename.  It has to point to a file that exists, there is no 
-  error message if the Filename is entered erroneously or does not exists.
+  FileName is the full path and FileName.  It has to point to a file that exists, there is no 
+  error message if the FileName is entered erroneously or does not exists.
 See Also
   DisplayName
 ----------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ Summary
 Description
   Call GetCustomInformation to retrieve information about a file.
 Parameters
-  Value - Specifies the filename of the file.
+  Value - Specifies the FileName of the file.
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.Modifier
 Summary
@@ -67,7 +67,7 @@ Summary
 Description
   This Read-Only property returns case-sensitive name that is displayed.  
 See Also
-  Filename
+  FileName
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.ExeType
 Summary
@@ -114,7 +114,7 @@ Description
   TypeString returns a string composed of the extension which has ' file' at the end.  
   For example for an executable file, the TypeString is 'EXE file'
 See Also
-  Filename
+  FileName
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.Icon
 Summary

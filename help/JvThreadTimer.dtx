@@ -14,7 +14,7 @@ Summary
   TTimer replacement that utilizes a thread and has a higher accuracy. 
 Description
   This component is a replacement for the TTimer component, with a better accuracy (1 millisecond). 
-  TJvThreadTimer uses a TJvThreadTimerclass thread instead of the Windows API timer functions, and 
+  TJvThreadTimer uses a TJvThreadTimerClass thread instead of the Windows API timer functions, and 
   can have an accuracy of a millisecond, but it will consume more CPU than a TTimer.
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer.Create
@@ -23,7 +23,7 @@ Summary
 Description
   Use \Create to create and initialize a new TJvThreadTimer object.
   
-  \Create calls the inherited \Create method, creates a TJvThreadTimerclass and then sets the initial 
+  \Create calls the inherited \Create method, creates a TJvThreadTimerClass and then sets the initial 
   values for the timer as follows: 
   
   * Delay is set to 100.
@@ -72,15 +72,15 @@ Description
   The Delay property of a timer determines how frequently the OnTimer event occurs. Each time the
   specified interval passes, the OnTimer event occurs.
 ----------------------------------------------------------------------------------------------------
-@@TJvThreadTimerclass
+@@TJvThreadTimerClass
 Summary
   Background thread for the TJvThreadTimer control.
 Description
-  TJvThreadTimerclass is the background thread that handles the timing. The Execute
+  TJvThreadTimerClass is the background thread that handles the timing. The Execute
   method will call the Call method for each Delay, which in turn will trigger an event to notify
   the TJvThreadTimer.
 ----------------------------------------------------------------------------------------------------
-@@TJvThreadTimerclass.Call
+@@TJvThreadTimerClass.Call
 Summary
   Synchronize method.
 Description
@@ -88,7 +88,7 @@ Description
 See Also
   Execute
 ----------------------------------------------------------------------------------------------------
-@@TJvThreadTimerclass.Execute
+@@TJvThreadTimerClass.Execute
 Summary
   Thread's main code loop.
 Description

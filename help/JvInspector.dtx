@@ -475,15 +475,15 @@ Description
   previously selected item is no longer visible, in which case the Selected
   property will be set to <B>nil</B>.
 --------------------------------------------------------------------------------
-@@TJvCustomInspector.Readonly
+@@TJvCustomInspector.ReadOnly
 Summary
   Indicates wether the inspector is in read-only mode.
 Description
-  Readonly indicates the read-only state of the inspector. When Readonly is
-  True, the inspector is locked and items can not be edited. When Readonly is
-  False, items can be edited (provided their Readonly property is True).
+  ReadOnly indicates the read-only state of the inspector. When ReadOnly is
+  True, the inspector is locked and items can not be edited. When ReadOnly is
+  False, items can be edited (provided their ReadOnly property is True).
 See Also
-  TJvCustomInspectorItem.Readonly
+  TJvCustomInspectorItem.ReadOnly
 --------------------------------------------------------------------------------
 @@TJvCustomInspector.RemoveNotifySort
 Summary
@@ -1770,8 +1770,8 @@ Description
   CanEdit determines if the item can be edited and returns True if that's the
   case. An item can be edited if all of the following conditions apply:
 
-  * It's not a read-only item (Readonly = False)
-  * The inspector is not read-only (<LINK TJvCustomInspector.Readonly,
+  * It's not a read-only item (ReadOnly = False)
+  * The inspector is not read-only (<LINK TJvCustomInspector.ReadOnly,
       Inspector.ReadOnly> = False)
   * The data instance has been initialized (
       <LINK TJvCustomInspectorData.IsInitialized, Data.IsInitialized> returns
@@ -2555,16 +2555,16 @@ Description
 Notes:
   QualifiedNames maps onto the iifQualifiedNames flag in the Flags property.
 --------------------------------------------------------------------------------
-@@TJvCustomInspectorItem.Readonly
+@@TJvCustomInspectorItem.ReadOnly
 Summary
   Indicates if item is read only.
 Description
-  Readonly indicates if the item is read only. When an item is read only, it
+  ReadOnly indicates if the item is read only. When an item is read only, it
   cannot be put in edit mode and therfor not be changed from the inspector.
 
-  Read Readonly to determine if the item is hidden or set Readonly to a new state.
+  Read ReadOnly to determine if the item is read-only or set ReadOnly to a new state.
 Notes:
-  Readonly maps onto the iifReadonly flag in the Flags property.
+  ReadOnly maps onto the iifReadonly flag in the Flags property.
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Rects
 Summary
@@ -3754,7 +3754,7 @@ Description
 Parameters
   I - 0-based index in the list added instances.
 See Also
-  InstanceCount, InstanceNames, AddInstance, DeleteInstance, ClearInstances, SortInstances.
+  InstanceCount, InstanceNames, AddInstance, DeleteInstance, ClearInstances, SortInstances
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.InstanceNames
 Summary
@@ -3768,7 +3768,7 @@ Description
 Parameters
   I - 0-based index in the list added instances.
 See Also
-  InstanceCount, Instances, AddInstance, DeleteInstance, ClearInstances, SortInstances.
+  InstanceCount, Instances, AddInstance, DeleteInstance, ClearInstances, SortInstances
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.ItemTMethodFlags
 Summary
@@ -3816,7 +3816,7 @@ Parameters
   Instance -  TObject instance for which to retrieve a method name.
   I     -     0-based index of the handler for which to retrieve the name.
 See Also
-  Instances, MethodCount, MethodNames, AddMethod, DeleteMethod, ClearMethods, SortMethods.
+  Instances, MethodCount, MethodNames, AddMethod, DeleteMethod, ClearMethods, SortMethods
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.MethodNames
 Summary
@@ -3832,7 +3832,7 @@ Parameters
   Instance -  TObject instance for which to retrieve a method name.
   I     -     0-based index of the handler for which to retrieve the name.
 See Also
-  Instances, MethodCount, Methods, AddMethod, DeleteMethod, ClearMethods, SortMethods.
+  Instances, MethodCount, Methods, AddMethod, DeleteMethod, ClearMethods, SortMethods
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.NoShowFirstInstanceName
 Summary
@@ -3850,7 +3850,7 @@ Description
 See Also
   ItemTMethodFlags, ShowInstanceNames
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorComponentItem.ShowInstanceNames
+@@TJvInspectorTMethodItem.ShowInstanceNames
 Summary
   Indicates wether the instance names are to be shown in the drop down list.
 Description
@@ -3864,7 +3864,7 @@ Description
 See Also
   ItemTMethodFlags, NoShowFirstInstanceName
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorComponentItem.SortMethods
+@@TJvInspectorTMethodItem.SortMethods
 Summary
   Indicates wether event handlers are sorted alphabetically.
 Description
@@ -4862,9 +4862,6 @@ Description
   referred to by the given parameters already exists, the item will be attached to that data
   instance, instead of creating a new data instance.
   
-  NewByNames works much like the <LINK TJvInspectorPropData.New, New> method but specifically
-  generates instances based on a list of property names to include/exclude.
-
   It is possible that with some parameter values no items are generated, which will result in
   an empty dynamic array.
 Parameters
