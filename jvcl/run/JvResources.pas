@@ -344,6 +344,13 @@ resourcestring
 //=== JvComputerInfoEx.pas ===================================================
 resourcestring
   RsEReadOnlyProperty = 'This value is read-only and cannot be changed.';
+  RsFileTypeString = '%s file';
+  RsAttrArchiveShortString = 'A';
+  RsAttrCompressedShortString = 'C';
+  RsAttrDirectoryShortString = 'D';
+  RsAttrReadOnlyShortString = 'R';
+  RsAttrHiddenShortString = 'H';
+  RsAttrSystemShortString = 'S';
 
 //=== JvContextProvider.pas ==================================================
 resourcestring

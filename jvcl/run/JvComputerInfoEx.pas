@@ -5440,17 +5440,17 @@ begin
   if (I and FILE_ATTRIBUTE_NORMAL) <> 0 then
     Exit; { no attributes }
   if (I and FILE_ATTRIBUTE_ARCHIVE) <> 0 then
-    Result := Result + 'A';
+    Result := Result + RsAttrArchiveShortString;
   if (I and FILE_ATTRIBUTE_COMPRESSED) <> 0 then
-    Result := Result + 'C';
+    Result := Result + RsAttrCompressedShortString;
   if (I and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
-    Result := Result + 'D';
+    Result := Result + RsAttrDirectoryShortString;
   if (I and FILE_ATTRIBUTE_HIDDEN) <> 0 then
-    Result := Result + 'H';
+    Result := Result + RsAttrHiddenShortString;
   if (I and FILE_ATTRIBUTE_READONLY) <> 0 then
-    Result := Result + 'R';
+    Result := Result + RsAttrReadOnlyShortString;
   if (I and FILE_ATTRIBUTE_SYSTEM) <> 0 then
-    Result := Result + 'S';
+    Result := Result + RsAttrSystemShortString;
 end;
 
 function StrTrimAll(const S: string; const Chars: TSysCharSet): string;
@@ -5553,7 +5553,7 @@ begin
   GetFileInfo(FFileName, 0, sfi, SHGFI_TYPENAME);
   Result := sfi.szTypeName;
   if Result = '' then
-    Result := AnsiUpperCase(Copy(ExtractFileExt(FFileName), 2, MaxInt)) + ' file';
+    Result := Format(RsFileTypeString,[AnsiUpperCase(Copy(ExtractFileExt(FFileName), 2, MaxInt))]);
 end;
 
 function TJvFileInfo.GetIconHandle: THandle;
