@@ -87,7 +87,7 @@ uses
 constructor TJvDateTimePicker.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FNullText := RsNoneCaption;
+//   FNullText := RsNoneCaption;  XXX Don't do this unless you also set the 'default' specifier in the property declaration above! Causes problems. -WP 
   FDropDownDate := SysUtils.Date;
 end;
 
