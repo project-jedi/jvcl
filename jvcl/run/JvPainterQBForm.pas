@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2004-02-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -37,8 +37,8 @@ uses
   Forms, Dialogs, StdCtrls, ExtCtrls, Menus, ComCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QTypes, QGraphics, QControls,
-  QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QComCtrls,
+  QTypes, QGraphics, QControls, Types,
+  QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QComCtrls, QWindows,
   {$ENDIF VisualCLX}
   JvDrawImage, JvComponent;
 
