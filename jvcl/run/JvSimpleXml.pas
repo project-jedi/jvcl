@@ -409,7 +409,7 @@ function VarXml: TVarType;
 // any character <= #127 is preserved
 // all other characters are converted to hex notation except
 // for some special characters that are converted to XML entities
-function SimpleXmlEncode(const S: string): string;
+function SimpleXMLEncode(const S: string): string;
 // Decodes a string encoded with SimpleXmlEncode:
 // any character <= #127 is preserved
 // all other characters and substrings are converted from
@@ -671,7 +671,7 @@ end;
 
 {$ENDIF !COMPILER6_UP}
 
-function SimpleXmlEncode(const S: string): string;
+function SimpleXMLEncode(const S: string): string;
 const
   NoConversion = [#0..#127] - ['"', '&', #39, '<', '>'];
 var
