@@ -1,14 +1,22 @@
 @echo off
 
+rem NB! Change this path to reflect the location of make.exe:
+SET MAKE=C:\Program Files\Delphi6\bin\make.exe
+
+
+
+
 SET PACKAGE=D6 Packages
 SET DIR=D6
 
 REM ------- Generic --------
 
+if NOT EXIST "%MAKE%" SET MAKE=make
+
 cd ..\devtools
-if NOT EXIST bin\MakeDOF.exe  make MakeDOF.exe
-if NOT EXIST bin\MakeCFG.exe  make MakeCFG.exe
-if NOT EXIST bin\Bpg2Make.exe  make Bpg2Make.exe
+if NOT EXIST bin\MakeDOF.exe  %MAKE% MakeDOF.exe
+if NOT EXIST bin\MakeCFG.exe  %MAKE% MakeCFG.exe
+if NOT EXIST bin\Bpg2Make.exe %MAKE% Bpg2Make.exe
 cd bin
 
 REM echo.
@@ -24,7 +32,7 @@ cd ..\..\packages
 
 ..\devtools\bin\Bpg2Make.exe "%PACKAGE%.bpg"
 
-make -f "%PACKAGE%.mak"
+%MAKE% -f "%PACKAGE%.mak"
 
 echo.
 echo Cleaning
