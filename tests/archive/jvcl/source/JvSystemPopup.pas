@@ -16,12 +16,21 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2002-11-22
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  - the associated TPopupMenu would also be changed during the process :(
+
+Modifications:
+  2002.11.22. by Hofi@fw.hu
+    - REMOVED the original TMenuItemPrivateAccess hack, overwriting Handle of FPopup
+      changes the original popup menu itself, not so nice ;)
+    - ADDED WM_INITMENU handler and a new hack to synchronize the system menu
+      with the popup menu (because GetSystemMenu( hWnd, True) does not work correctly
+      inside a WM_INITMENU handler.
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -47,28 +56,24 @@ type
 
     procedure Hook;
     procedure UnHook;
-    procedure ResetSystemMenu;
+    procedure ResetSystemMenu(SystemReset: Boolean = True);
     function HandleWndProc(var Message: TMessage): Boolean;
     procedure SetPopup(const Value: TPopupMenu);
-    procedure MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
     procedure PopulateMenu;
     procedure SetPosition(const Value: TPopupPosition);
     procedure SetPositionInMenu(const Value: TPositionInMenu);
     function GetMenu: HMenu;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
-    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    procedure Refresh;
+    procedure Refresh(SystemReset: Boolean = True);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property Popup: TPopupMenu read FPopup write SetPopup;
     property PositionInMenu: TPositionInMenu read FPositionInMenu write
       SetPositionInMenu default pmTop;
-    property Position: TPopupPosition read FPosition write SetPosition default
-      ppNone;
+    property Position: TPopupPosition read FPosition write SetPosition default ppNone;
   end;
 
 implementation
@@ -78,14 +83,6 @@ uses
 
 type
   TMenuItemProtectedAccess = class(TMenuItem);
-
-  TMenuItemPrivateAccess = class(TComponent)
-  private
-    // FCaption *must* be included here: it's a hack to get the same offset for FHandle as in
-    // TMenuItem
-    FCaption: string;
-    FHandle: HMENU;
-  end;
 
   {**************************************************}
 
@@ -154,16 +151,25 @@ var
 begin
   Result := False;
   case Message.Msg of
+    WM_INITMENU:
+      begin
+        // Hack, the original GetSystemMenu( , True) version called by Refresh
+        // does not have affect immediately in a WM_INITMENU state/handler
+        // (at least on Win Xp surely not)
+        Refresh(True);
+      end;
+
     WM_SYSCOMMAND:
       { Catch commands }
       if Assigned(FPopup) then
         Result := Iterate(FPopup.Items);
+
     WM_DRAWITEM:
       { Copied from Forms.pas }
       with PDrawItemStruct(Message.LParam)^ do
-        if (CtlType = ODT_MENU) and Assigned(Popup) then
+        if (CtlType = ODT_MENU) and Assigned(FPopup) then
         begin
-          MenuItem := Popup.FindItem(itemID, fkCommand);
+          MenuItem := FPopup.FindItem(itemID, fkCommand);
           Result := MenuItem <> nil;
           if Result then
           begin
@@ -185,12 +191,13 @@ begin
             end;
           end;
         end;
+
     WM_MEASUREITEM:
       { Copied from Forms.pas }
       with PMeasureItemStruct(Message.LParam)^ do
-        if (CtlType = ODT_MENU) and Assigned(Popup) then
+        if (CtlType = ODT_MENU) and Assigned(FPopup) then
         begin
-          MenuItem := Popup.FindItem(itemID, fkCommand);
+          MenuItem := FPopup.FindItem(itemID, fkCommand);
           Result := MenuItem <> nil;
           if Result then
           begin
@@ -242,23 +249,6 @@ begin
         FIsHooked := True;
       end;
   end;
-end;
-
-{**************************************************}
-
-procedure TJvSystemPopup.Loaded;
-begin
-  inherited;
-  Refresh;
-end;
-
-{**************************************************}
-
-procedure TJvSystemPopup.MenuChanged(Sender: TObject; Source: TMenuItem;
-  Rebuild: Boolean);
-begin
-  { Called if menu is loaded; menuitems are added/removed }
-  Refresh;
 end;
 
 {**************************************************}
@@ -355,14 +345,6 @@ var
   I: Integer;
   SubMenu: HMenu;
 begin
-  { We need a dirty hack to ensure that a menu item is changed when
-    the properties of a TMenuItem are changed.
-    TMenuItem uses it's handle to identify the menu item it's associated
-    with. There is no clean way to set a TMenuItem's handle, so we use
-    this trick to set a private var }
-
-  TMenuItemPrivateAccess(AMenuItem).FHandle := AMenu;
-
   with AMenuItem do
     for I := 0 to Count - 1 do
     begin
@@ -395,8 +377,8 @@ var
   InsertAt: Integer;
 begin
   { Add all MenuItems to the systemmenu }
-  if (ComponentState * [csDesigning, csLoading] <> []) or (FPosition = ppNone)
-    or (FPopup = nil) then
+  if (ComponentState * [csDesigning, csLoading] <> [])
+    or (FPosition = ppNone) or (FPopup = nil) then
     Exit;
 
   MenuRightToLeft := FPopup.IsRightToLeft;
@@ -418,25 +400,60 @@ begin
     MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or MIIM_ID or MIIM_STATE
       or MIIM_SUBMENU or MIIM_TYPE;
     MenuItemInfo.fType := MFT_SEPARATOR;
+    { Give the seperator menu id $EFFF so we can seperate these from the
+      normal seperators (with id=0), that we don't want to remove in procedure
+      RemoveNonDefaultItems }
+    MenuItemInfo.wID := $EFFF;
     InsertMenuItem(Menu, DWORD(InsertAt), True, MenuItemInfo);
   end;
-
-  TMenuItemPrivateAccess(FPopup.Items).FHandle := Menu;
 
   IterateMenu(Menu, FPopup.Items, MenuRightToLeft, InsertAt);
 end;
 
 {**************************************************}
 
-procedure TJvSystemPopup.Refresh;
+procedure TJvSystemPopup.Refresh(SystemReset: Boolean = True);
 begin
-  ResetSystemMenu;
+  ResetSystemMenu(SystemReset);
   PopulateMenu;
 end;
 
 {**************************************************}
 
-procedure TJvSystemPopup.ResetSystemMenu;
+procedure TJvSystemPopup.ResetSystemMenu(SystemReset: Boolean);
+
+// Hack, the original GetSystemMenu( , True) version called by Refresh
+// does not have affect immediately in WM_INITMENU state
+// (at least on Win Xp surely not)
+  procedure RemoveNonDefaultItems(Menu: HMenu);
+  var
+    Id: LongWord;
+    C: Integer;
+  begin
+    if GetMenuItemCount(Menu) > 0 then
+    begin
+      for C := GetMenuItemCount(Menu) - 1 downto 0 do
+      begin
+        Id := GetMenuItemID(Menu, C);
+        { MSDN : All predefined window menu items have identifier numbers
+          greater than $F000. If an application adds commands to the window
+          menu, it should use identifier numbers less than $F000.
+
+          NOTE : SC_SIZE = $F000, seperators seem to have id = 0, although
+          SC_SEPARATOR is defined as $F00F.
+        }
+
+        // non default system command or an item with submenuitems
+        if ((Id > 0) and (Id < $F000)) or (Id = $FFFFFFFF) then
+        begin
+          if GetMenuItemCount(GetSubMenu(Menu, C)) > 0 then
+            RemoveNonDefaultItems(GetSubMenu(Menu, C));
+          DeleteMenu(Menu, C, MF_BYPOSITION);
+        end;
+      end;
+    end;
+  end;
+
 begin
   { Reset the window menu back to the default state. The previous window
     menu, if any, is destroyed. }
@@ -448,11 +465,16 @@ begin
     ppNone:
       ;
     ppForm:
-      if Assigned(FOwnerForm) and
-        not (csDestroying in FOwnerForm.ComponentState) then
-        GetSystemMenu(FOwnerForm.Handle, True);
+      if Assigned(FOwnerForm) and not (csDestroying in FOwnerForm.ComponentState) then
+        if SystemReset then
+          RemoveNonDefaultItems(GetMenu)
+        else
+          GetSystemMenu(FOwnerForm.Handle, True);
     ppApplication:
-      GetSystemMenu(Application.Handle, True);
+      if SystemReset then
+        RemoveNonDefaultItems(GetMenu)
+      else
+        GetSystemMenu(Application.Handle, True);
   end;
 end;
 
@@ -467,12 +489,12 @@ begin
 
   if Assigned(FPopup) then
   begin
-    FPopup.OnChange := MenuChanged;
+    //FPopup.OnChange := MenuChanged;
     FPopup.FreeNotification(Self);
   end;
 
-  if not (csLoading in ComponentState) then
-    Refresh;
+  //if not (csLoading in ComponentState) then
+  //  Refresh;
 end;
 
 {**************************************************}
@@ -495,7 +517,7 @@ begin
   FPosition := Value;
 
   Hook;
-  PopulateMenu;
+  //PopulateMenu;
 end;
 
 {**************************************************}
@@ -503,8 +525,8 @@ end;
 procedure TJvSystemPopup.SetPositionInMenu(const Value: TPositionInMenu);
 begin
   FPositionInMenu := Value;
-  if ComponentState * [csLoading, csDesigning] = [] then
-    Refresh;
+  //if ComponentState * [csLoading, csDesigning] = [] then
+  //  Refresh;
 end;
 
 {**************************************************}
