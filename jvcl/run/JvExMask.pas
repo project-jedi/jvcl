@@ -135,15 +135,19 @@ type
     procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
     {$ENDIF VisualCLX}
   protected
-    function DoUndo: Boolean; dynamic;
-    function DoClearText: Boolean; dynamic;
-    function DoClipboardPaste: Boolean; dynamic;
-    function DoClipboardCopy: Boolean; dynamic;
-    function DoClipboardCut: Boolean; dynamic;
+    procedure DoUndo; dynamic;
+    procedure DoClearText; dynamic;
+    procedure DoClipboardPaste; dynamic;
+    procedure DoClipboardCopy; dynamic;
+    procedure DoClipboardCut; dynamic;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
+  {$IFDEF VisualCLX}
+  public
+    procedure Clear; override;
+  {$ENDIF VisualCLX}
   private
     FBeepOnError: Boolean;
   protected
@@ -242,15 +246,19 @@ type
     procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
     {$ENDIF VisualCLX}
   protected
-    function DoUndo: Boolean; dynamic;
-    function DoClearText: Boolean; dynamic;
-    function DoClipboardPaste: Boolean; dynamic;
-    function DoClipboardCopy: Boolean; dynamic;
-    function DoClipboardCut: Boolean; dynamic;
+    procedure DoUndo; dynamic;
+    procedure DoClearText; dynamic;
+    procedure DoClipboardPaste; dynamic;
+    procedure DoClipboardCopy; dynamic;
+    procedure DoClipboardCut; dynamic;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
+  {$IFDEF VisualCLX}
+  public
+    procedure Clear; override;
+  {$ENDIF VisualCLX}
   private
     FBeepOnError: Boolean;
   protected
@@ -489,30 +497,40 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-function TJvExCustomMaskEdit.DoClearText: Boolean;
+procedure TJvExCustomMaskEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    {$IFDEF VCL}
+    InheritMsg(Self, WM_CLEAR, 0, 0);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    inherited Clear;
+    {$ENDIF VisualCLX}
 end;
 
-function TJvExCustomMaskEdit.DoUndo: Boolean;
+procedure TJvExCustomMaskEdit.DoUndo;
 begin
-  Result := caUndo in ClipboardCommands;
+  if caUndo in ClipboardCommands then
+    TCustomEdit_Undo(Self);
 end;
 
-function TJvExCustomMaskEdit.DoClipboardPaste: Boolean;
+procedure TJvExCustomMaskEdit.DoClipboardPaste;
 begin
-  Result := caPaste in ClipboardCommands;
+  if caPaste in ClipboardCommands then
+    TCustomEdit_Paste(Self);
 end;
 
-function TJvExCustomMaskEdit.DoClipboardCopy: Boolean;
+procedure TJvExCustomMaskEdit.DoClipboardCopy;
 begin
-  Result := caCopy in ClipboardCommands;
+  if caCopy in ClipboardCommands then
+    TCustomEdit_Copy(Self);
 end;
 
-function TJvExCustomMaskEdit.DoClipboardCut: Boolean;
+procedure TJvExCustomMaskEdit.DoClipboardCut;
 begin
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    TCustomEdit_Cut(Self);
 end;
 
 procedure TJvExCustomMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
@@ -521,6 +539,11 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
+procedure TJvExCustomMaskEdit.Clear;
+begin
+  DoClearText;
+end;
 
 procedure TJvExCustomMaskEdit.EMGetRect(var Msg: TMessage);
 begin
@@ -782,30 +805,40 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-function TJvExMaskEdit.DoClearText: Boolean;
+procedure TJvExMaskEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    {$IFDEF VCL}
+    InheritMsg(Self, WM_CLEAR, 0, 0);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    inherited Clear;
+    {$ENDIF VisualCLX}
 end;
 
-function TJvExMaskEdit.DoUndo: Boolean;
+procedure TJvExMaskEdit.DoUndo;
 begin
-  Result := caUndo in ClipboardCommands;
+  if caUndo in ClipboardCommands then
+    TCustomEdit_Undo(Self);
 end;
 
-function TJvExMaskEdit.DoClipboardPaste: Boolean;
+procedure TJvExMaskEdit.DoClipboardPaste;
 begin
-  Result := caPaste in ClipboardCommands;
+  if caPaste in ClipboardCommands then
+    TCustomEdit_Paste(Self);
 end;
 
-function TJvExMaskEdit.DoClipboardCopy: Boolean;
+procedure TJvExMaskEdit.DoClipboardCopy;
 begin
-  Result := caCopy in ClipboardCommands;
+  if caCopy in ClipboardCommands then
+    TCustomEdit_Copy(Self);
 end;
 
-function TJvExMaskEdit.DoClipboardCut: Boolean;
+procedure TJvExMaskEdit.DoClipboardCut;
 begin
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    TCustomEdit_Cut(Self);
 end;
 
 procedure TJvExMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
@@ -814,6 +847,11 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
+procedure TJvExMaskEdit.Clear;
+begin
+  DoClearText;
+end;
 
 procedure TJvExMaskEdit.EMGetRect(var Msg: TMessage);
 begin

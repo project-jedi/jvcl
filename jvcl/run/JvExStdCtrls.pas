@@ -586,15 +586,19 @@ type
     procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
     {$ENDIF VisualCLX}
   protected
-    function DoUndo: Boolean; dynamic;
-    function DoClearText: Boolean; dynamic;
-    function DoClipboardPaste: Boolean; dynamic;
-    function DoClipboardCopy: Boolean; dynamic;
-    function DoClipboardCut: Boolean; dynamic;
+    procedure DoUndo; dynamic;
+    procedure DoClearText; dynamic;
+    procedure DoClipboardPaste; dynamic;
+    procedure DoClipboardCopy; dynamic;
+    procedure DoClipboardCut; dynamic;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
+  {$IFDEF VisualCLX}
+  public
+    procedure Clear; override;
+  {$ENDIF VisualCLX}
   end;
   
   TJvExEdit = class(TEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
@@ -686,15 +690,19 @@ type
     procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
     {$ENDIF VisualCLX}
   protected
-    function DoUndo: Boolean; dynamic;
-    function DoClearText: Boolean; dynamic;
-    function DoClipboardPaste: Boolean; dynamic;
-    function DoClipboardCopy: Boolean; dynamic;
-    function DoClipboardCut: Boolean; dynamic;
+    procedure DoUndo; dynamic;
+    procedure DoClearText; dynamic;
+    procedure DoClipboardPaste; dynamic;
+    procedure DoClipboardCopy; dynamic;
+    procedure DoClipboardCut; dynamic;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
+  {$IFDEF VisualCLX}
+  public
+    procedure Clear; override;
+  {$ENDIF VisualCLX}
   end;
   
   TJvExCustomMemo = class(TCustomMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
@@ -786,15 +794,19 @@ type
     procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
     {$ENDIF VisualCLX}
   protected
-    function DoUndo: Boolean; dynamic;
-    function DoClearText: Boolean; dynamic;
-    function DoClipboardPaste: Boolean; dynamic;
-    function DoClipboardCopy: Boolean; dynamic;
-    function DoClipboardCut: Boolean; dynamic;
+    procedure DoUndo; dynamic;
+    procedure DoClearText; dynamic;
+    procedure DoClipboardPaste; dynamic;
+    procedure DoClipboardCopy; dynamic;
+    procedure DoClipboardCut; dynamic;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
+  {$IFDEF VisualCLX}
+  public
+    procedure Clear; override;
+  {$ENDIF VisualCLX}
   end;
   
   TJvExMemo = class(TMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
@@ -886,15 +898,19 @@ type
     procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
     {$ENDIF VisualCLX}
   protected
-    function DoUndo: Boolean; dynamic;
-    function DoClearText: Boolean; dynamic;
-    function DoClipboardPaste: Boolean; dynamic;
-    function DoClipboardCopy: Boolean; dynamic;
-    function DoClipboardCut: Boolean; dynamic;
+    procedure DoUndo; dynamic;
+    procedure DoClearText; dynamic;
+    procedure DoClipboardPaste; dynamic;
+    procedure DoClipboardCopy; dynamic;
+    procedure DoClipboardCut; dynamic;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
+  {$IFDEF VisualCLX}
+  public
+    procedure Clear; override;
+  {$ENDIF VisualCLX}
   end;
   
 {$IFDEF VCL}
@@ -3346,30 +3362,40 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-function TJvExCustomEdit.DoClearText: Boolean;
+procedure TJvExCustomEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    {$IFDEF VCL}
+    InheritMsg(Self, WM_CLEAR, 0, 0);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    inherited Clear;
+    {$ENDIF VisualCLX}
 end;
 
-function TJvExCustomEdit.DoUndo: Boolean;
+procedure TJvExCustomEdit.DoUndo;
 begin
-  Result := caUndo in ClipboardCommands;
+  if caUndo in ClipboardCommands then
+    TCustomEdit_Undo(Self);
 end;
 
-function TJvExCustomEdit.DoClipboardPaste: Boolean;
+procedure TJvExCustomEdit.DoClipboardPaste;
 begin
-  Result := caPaste in ClipboardCommands;
+  if caPaste in ClipboardCommands then
+    TCustomEdit_Paste(Self);
 end;
 
-function TJvExCustomEdit.DoClipboardCopy: Boolean;
+procedure TJvExCustomEdit.DoClipboardCopy;
 begin
-  Result := caCopy in ClipboardCommands;
+  if caCopy in ClipboardCommands then
+    TCustomEdit_Copy(Self);
 end;
 
-function TJvExCustomEdit.DoClipboardCut: Boolean;
+procedure TJvExCustomEdit.DoClipboardCut;
 begin
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    TCustomEdit_Cut(Self);
 end;
 
 procedure TJvExCustomEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
@@ -3378,6 +3404,11 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
+procedure TJvExCustomEdit.Clear;
+begin
+  DoClearText;
+end;
 
 procedure TJvExCustomEdit.EMGetRect(var Msg: TMessage);
 begin
@@ -3625,30 +3656,40 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-function TJvExEdit.DoClearText: Boolean;
+procedure TJvExEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    {$IFDEF VCL}
+    InheritMsg(Self, WM_CLEAR, 0, 0);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    inherited Clear;
+    {$ENDIF VisualCLX}
 end;
 
-function TJvExEdit.DoUndo: Boolean;
+procedure TJvExEdit.DoUndo;
 begin
-  Result := caUndo in ClipboardCommands;
+  if caUndo in ClipboardCommands then
+    TCustomEdit_Undo(Self);
 end;
 
-function TJvExEdit.DoClipboardPaste: Boolean;
+procedure TJvExEdit.DoClipboardPaste;
 begin
-  Result := caPaste in ClipboardCommands;
+  if caPaste in ClipboardCommands then
+    TCustomEdit_Paste(Self);
 end;
 
-function TJvExEdit.DoClipboardCopy: Boolean;
+procedure TJvExEdit.DoClipboardCopy;
 begin
-  Result := caCopy in ClipboardCommands;
+  if caCopy in ClipboardCommands then
+    TCustomEdit_Copy(Self);
 end;
 
-function TJvExEdit.DoClipboardCut: Boolean;
+procedure TJvExEdit.DoClipboardCut;
 begin
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    TCustomEdit_Cut(Self);
 end;
 
 procedure TJvExEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
@@ -3657,6 +3698,11 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
+procedure TJvExEdit.Clear;
+begin
+  DoClearText;
+end;
 
 procedure TJvExEdit.EMGetRect(var Msg: TMessage);
 begin
@@ -3907,30 +3953,40 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-function TJvExCustomMemo.DoClearText: Boolean;
+procedure TJvExCustomMemo.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    {$IFDEF VCL}
+    InheritMsg(Self, WM_CLEAR, 0, 0);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    inherited Clear;
+    {$ENDIF VisualCLX}
 end;
 
-function TJvExCustomMemo.DoUndo: Boolean;
+procedure TJvExCustomMemo.DoUndo;
 begin
-  Result := caUndo in ClipboardCommands;
+  if caUndo in ClipboardCommands then
+    TCustomEdit_Undo(Self);
 end;
 
-function TJvExCustomMemo.DoClipboardPaste: Boolean;
+procedure TJvExCustomMemo.DoClipboardPaste;
 begin
-  Result := caPaste in ClipboardCommands;
+  if caPaste in ClipboardCommands then
+    TCustomEdit_Paste(Self);
 end;
 
-function TJvExCustomMemo.DoClipboardCopy: Boolean;
+procedure TJvExCustomMemo.DoClipboardCopy;
 begin
-  Result := caCopy in ClipboardCommands;
+  if caCopy in ClipboardCommands then
+    TCustomEdit_Copy(Self);
 end;
 
-function TJvExCustomMemo.DoClipboardCut: Boolean;
+procedure TJvExCustomMemo.DoClipboardCut;
 begin
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    TCustomEdit_Cut(Self);
 end;
 
 procedure TJvExCustomMemo.SetClipboardCommands(const Value: TJvClipboardCommands);
@@ -3939,6 +3995,11 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
+procedure TJvExCustomMemo.Clear;
+begin
+  DoClearText;
+end;
 
 procedure TJvExCustomMemo.EMGetRect(var Msg: TMessage);
 begin
@@ -4186,30 +4247,40 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-function TJvExMemo.DoClearText: Boolean;
+procedure TJvExMemo.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    {$IFDEF VCL}
+    InheritMsg(Self, WM_CLEAR, 0, 0);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    inherited Clear;
+    {$ENDIF VisualCLX}
 end;
 
-function TJvExMemo.DoUndo: Boolean;
+procedure TJvExMemo.DoUndo;
 begin
-  Result := caUndo in ClipboardCommands;
+  if caUndo in ClipboardCommands then
+    TCustomEdit_Undo(Self);
 end;
 
-function TJvExMemo.DoClipboardPaste: Boolean;
+procedure TJvExMemo.DoClipboardPaste;
 begin
-  Result := caPaste in ClipboardCommands;
+  if caPaste in ClipboardCommands then
+    TCustomEdit_Paste(Self);
 end;
 
-function TJvExMemo.DoClipboardCopy: Boolean;
+procedure TJvExMemo.DoClipboardCopy;
 begin
-  Result := caCopy in ClipboardCommands;
+  if caCopy in ClipboardCommands then
+    TCustomEdit_Copy(Self);
 end;
 
-function TJvExMemo.DoClipboardCut: Boolean;
+procedure TJvExMemo.DoClipboardCut;
 begin
-  Result := caCut in ClipboardCommands;
+  if caCut in ClipboardCommands then
+    TCustomEdit_Cut(Self);
 end;
 
 procedure TJvExMemo.SetClipboardCommands(const Value: TJvClipboardCommands);
@@ -4218,6 +4289,11 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
+procedure TJvExMemo.Clear;
+begin
+  DoClearText;
+end;
 
 procedure TJvExMemo.EMGetRect(var Msg: TMessage);
 begin

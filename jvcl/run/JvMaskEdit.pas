@@ -81,7 +81,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
     procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
-    function DoClipboardPaste: Boolean; override;
+    procedure DoClipboardPaste; override;
     {$IFDEF VisualCLX}
     procedure SetText(const Value: TCaption); override;
     {$ENDIF VisualCLX}
@@ -339,11 +339,10 @@ begin
   end;
 end;
 
-function TJvCustomMaskEdit.DoClipboardPaste: Boolean;
+procedure TJvCustomMaskEdit.DoClipboardPaste;
 begin
-  Result := inherited DoClipboardPaste;
-  if Result then
-    UpdateEdit;
+  inherited DoClipboardPaste;
+  UpdateEdit;
 end;
 
 {$IFDEF VCL}
