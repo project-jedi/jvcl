@@ -803,7 +803,7 @@ var
   end;
 
 begin
-  ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
+  // ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
 
   SetEnvironmentVariable('MAKEOPTIONS', nil);
   Result := False;
@@ -850,11 +850,16 @@ begin
     end;
 
     Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
-    Path := Path + ';' + TargetConfig.Target.BplDir; // add original BPL directory for "common" BPLs
+    Path := Path + ';' + ExtractShortPathName(TargetConfig.Target.BplDir); // add original BPL directory for "common" BPLs
     if TargetConfig.DcpDir <> TargetConfig.BplDir then
-      Path := TargetConfig.Target.RootDir + ';' + TargetConfig.BplDir + ';' + TargetConfig.DcpDir + ';' + Path
+      Path := ExtractShortPathName(TargetConfig.Target.RootDir) + ';' +
+              ExtractShortPathName(TargetConfig.BplDir) + ';' +
+              ExtractShortPathName(TargetConfig.DcpDir) + ';' +
+              Path
     else
-      Path := TargetConfig.Target.RootDir + ';' + TargetConfig.BplDir + ';' + Path;
+      Path := ExtractShortPathName(TargetConfig.Target.RootDir) + ';' +
+              ExtractShortPathName(TargetConfig.BplDir) + ';' +
+              Path;
 
     SetEnvironmentVariable('PATH', PChar(Path));
     SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
@@ -874,9 +879,9 @@ begin
       SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir + '\debug'))
     else
       SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir));
-    //SetEnvironmentVariable('MAINBPLDIR', Pointer(TargetConfig.Target.BplDir));
-    //SetEnvironmentVariable('MAINDCPDIR', Pointer(TargetConfig.Target.DcpDir));
-    //SetEnvironmentVariable('MAINLIBDIR', Pointer(TargetConfig.Target.DcpDir)); // for BCB
+    SetEnvironmentVariable('MAINBPLDIR', Pointer(TargetConfig.Target.BplDir));
+    SetEnvironmentVariable('MAINDCPDIR', Pointer(TargetConfig.Target.DcpDir));
+    SetEnvironmentVariable('MAINLIBDIR', Pointer(TargetConfig.Target.DcpDir)); // for BCB
     SetEnvironmentVariable('BPLDIR', Pointer(TargetConfig.BplDir));
     SetEnvironmentVariable('DCPDIR', Pointer(TargetConfig.DcpDir));
     SetEnvironmentVariable('LIBDIR', Pointer(TargetConfig.DcpDir));  // for BCB

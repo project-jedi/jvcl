@@ -762,6 +762,13 @@ begin
         FMissingJCL := False;
     end;}
   end;
+  
+  if not Target.IsBCB then
+  begin
+    // Delphi requires .bpl files
+    if not FileExists(Format('%s\DJcl%d0.bpl', [BplDir, Target.Version])) then
+      FMissingJCL := True;
+  end;
 
   FDefaultJCLDir := JCLDir;
 end;
