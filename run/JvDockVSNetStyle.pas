@@ -194,7 +194,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetPaneWithControl(AControl: TControl): TJvDockVSPane;
-    procedure CreateVSPopupPanel(DockStyle:TComponent);
+    procedure CreateVSPopupPanel(DockStyle: TComponent);
     procedure DestroyVSPopupPanel;
     procedure ResetPosition;
     procedure AddDockControl(Control: TWinControl);
@@ -288,7 +288,7 @@ type
     procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure CreateVSChannel(DockStyle:TComponent);
+    procedure CreateVSChannel(DockStyle: TComponent);
     procedure DestroyVSChannel;
     procedure DoAutoHideControl(Control: TWinControl);
     procedure DoHideControl(Control: TWinControl);
@@ -298,9 +298,8 @@ type
 
   TJvDockVSPopupPanel = class(TJvDockVSNETPanel)
   private
-    FDockStyle:TComponent; {Actually of type TJvDockBasicStyle }
+    FDockStyle: TComponent; {Actually of type TJvDockBasicStyle }
     FVSNETDockPanel: TJvDockVSNETPanel;
-
     {procedure SetVSNETDockPanel(const Value: TJvDockVSNETPanel);}
     function GetVSChannel: TJvDockVSChannel;
   protected
@@ -317,10 +316,8 @@ type
     property VSChannel: TJvDockVSChannel read GetVSChannel;
     { Owner }
     property VSNETDockPanel: TJvDockVSNETPanel read FVSNETDockPanel {write SetVSNETDockPanel};
-
     { Dock Style }
-    property DockStyle:TComponent read FDockStyle write FDockStyle; {Actually of type TJvDockBasicStyle }
-
+    property DockStyle: TComponent read FDockStyle write FDockStyle; {Actually of type TJvDockBasicStyle }
   end;
 
   TJvDockVSNETConjoinPanel = class(TJvDockVIDConjoinPanel);
@@ -384,9 +381,8 @@ type
     property AutoHideZone: TJvDockVSNETZone read FAutoHideZone
       write FAutoHideZone;
   public
-    constructor Create(DockSite: TWinControl;
-      DockZoneClass: TJvDockZoneClass;ADockStyle:TComponent{TJvDockBasicStyle}); override;
-
+    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;
+      ADockStyle: TComponent {TJvDockBasicStyle}); override;
   end;
 
   TJvDockVSNETTabSheet = class(TJvDockVIDTabSheet)
@@ -1046,11 +1042,10 @@ begin
   inherited;
 end;
 
-procedure TJvDockVSChannel.CreateVSPopupPanel(DockStyle:TComponent);
+procedure TJvDockVSChannel.CreateVSPopupPanel(DockStyle: TComponent);
 begin
   Assert(Assigned(DockStyle));
   FVSPopupPanel := TJvDockVSPopupPanel.Create(FVSNETDockPanel);
-
 
   { Channel is maintainer/Creator }
   FVSPopupPanel.FreeNotification(Self);
@@ -1909,14 +1904,14 @@ end;
 procedure TJvDockVSNETPanel.AddDockServer(ADockServer: TJvDockServer);
 begin
   { Dirty; resolve with new class? }
-  if not (Self is TJvDockVSPopupPanel) and Assigned(ADockServer) then begin
+  if not (Self is TJvDockVSPopupPanel) and Assigned(ADockServer) then
+  begin
     Assert(Assigned(ADockServer.DockStyle));
-    CreateVSChannel( ADockServer.DockStyle );
+    CreateVSChannel(ADockServer.DockStyle);
   end;
 end;
 
-
-procedure TJvDockVSNETPanel.CreateVSChannel(DockStyle:TComponent);
+procedure TJvDockVSNETPanel.CreateVSChannel(DockStyle: TComponent);
 begin
   if (FVSChannelClass <> nil) and
     { (rb) ??? }
@@ -2484,24 +2479,17 @@ end;
 
 //=== { TJvDockVSNETTree } ===================================================
 
-
-
-
 constructor TJvDockVSNETTree.Create(DockSite: TWinControl;
-  DockZoneClass: TJvDockZoneClass; ADockStyle:TComponent {TJvDockBasicStyle});
+  DockZoneClass: TJvDockZoneClass; ADockStyle: TComponent);
 begin
   inherited Create(DockSite, DockZoneClass, ADockStyle);
 
   // This happens in the base class TJvDockTree:
   //GrabberSize := 0;
-  //if Assigned(ADockStyle) then begin
-  //    GrabberSize := TJvDockBasicStyle(ADockStyle).GrabberSize
-  //end;
-  
+  //if Assigned(ADockStyle) then
+  //  GrabberSize := TJvDockBasicStyle(ADockStyle).GrabberSize:
   if GrabberSize <= 0 then
-      GrabberSize := DefaultVSNETGrabberSize;
-
-
+    GrabberSize := DefaultVSNETGrabberSize;
   ButtonHeight := 12;
   ButtonWidth := 16;
   LeftOffset := 2;
@@ -3027,11 +3015,10 @@ end;
 constructor TJvDockVSPopupPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  if AOwner is TJvDockVSNETPanel then begin {new! WPOSTMA added.}
-      FDockStyle := TJvDockVSNETPanel(AOwner).DockServer.DockStyle; // Must be set before CreateDockManager is called!
-  end else begin
-      FDockStyle := nil;
-  end;
+  if AOwner is TJvDockVSNETPanel then {new! WPOSTMA added.}
+    FDockStyle := TJvDockVSNETPanel(AOwner).DockServer.DockStyle // Must be set before CreateDockManager is called!
+  else
+    FDockStyle := nil;
 
   DockSite := True;  {calls CreateDockManager when you do this!}
   if AOwner is TJvDockVSNETPanel then
@@ -3046,10 +3033,12 @@ end;
 
 function TJvDockVSPopupPanel.CreateDockManager: IDockManager;
 begin
-  if (DockManager = nil) and DockSite and UseDockManager then begin
-    Assert(Assigned(FDockStyle));// Should have been set in constructor!
-    Result := TJvDockVSNETTree.Create(Self, TJvDockVSNETZone, FDockStyle ) as IJvDockManager
-  end else
+  if (DockManager = nil) and DockSite and UseDockManager then
+  begin
+    Assert(Assigned(FDockStyle)); // Should have been set in constructor!
+    Result := TJvDockVSNETTree.Create(Self, TJvDockVSNETZone, FDockStyle) as IJvDockManager
+  end
+  else
     Result := DockManager;
 end;
 
