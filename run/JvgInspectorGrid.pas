@@ -33,7 +33,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Grids, JvgStringGrid, JvgTypes, ExtCtrls, JvgCommClasses, StdCtrls;
+  Grids, StdCtrls, ExtCtrls,
+  JvgStringGrid, JvgTypes, JvgCommClasses;
 
 type
 
@@ -43,47 +44,46 @@ type
     FEditMask: string;
     FOriginalValues: TStringList;
     FValues: TStringList;
-    FExpanded: boolean;
-    FSelected: boolean;
+    FExpanded: Boolean;
+    FSelected: Boolean;
+    FSequence: Integer;
+    FRow: Integer;
     procedure SetCaption(Value: string);
-    procedure SetExpanded(Value: boolean);
-    procedure SetSelected(Value: boolean);
-    procedure SetChanged(Value: boolean);
-    function GetChanged: boolean;
+    procedure SetExpanded(Value: Boolean);
+    procedure SetSelected(Value: Boolean);
+    procedure SetChanged(Value: Boolean);
+    function GetChanged: Boolean;
     procedure OnValuesChange(Sender: TObject);
-
-    procedure Undo(Index: integer);
+    procedure Undo(Index: Integer);
     procedure UndoAll;
   public
-    Sequence: integer;
-    Row: integer;
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
-
     function GetValue: string;
-    procedure SetValue(ValueIndex: integer; const Value: string);
-    function IsChanged(ValueIndex: integer): boolean;
-
+    procedure SetValue(ValueIndex: Integer; const Value: string);
+    function IsChanged(ValueIndex: Integer): Boolean;
     property OriginalValues: TStringList read FOriginalValues write FOriginalValues;
     property EditMask: string read FEditMask write FEditMask;
+    property Sequence: Integer read FSequence write FSequence;
+    property Row: Integer read FRow write FRow;
   published
     property Caption: string read FCaption write SetCaption;
     property Values: TStringList read FValues write FValues;
-    property Expanded: boolean read FExpanded write SetExpanded;
-    property Selected: boolean read FSelected write SetSelected;
-    property HasChanged: boolean read GetChanged write SetChanged;
+    property Expanded: Boolean read FExpanded write SetExpanded;
+    property Selected: Boolean read FSelected write SetSelected;
+    property HasChanged: Boolean read GetChanged write SetChanged;
   end;
 
   TJvgGridItems = class(TCollection)
   private
     FOnUpdate: TNotifyEvent;
-    FShowMultiValues: boolean;
+    FShowMultiValues: Boolean;
     function GetItem(Index: Integer): TJvgGridItem;
     procedure SetItem(Index: Integer; Value: TJvgGridItem);
-    procedure SetShowMultiValues(Value: boolean);
+    procedure SetShowMultiValues(Value: Boolean);
   protected
     procedure Update(Item: TCollectionItem); override;
-    property ShowMultiValues: boolean read FShowMultiValues write SetShowMultiValues;
+    property ShowMultiValues: Boolean read FShowMultiValues write SetShowMultiValues;
   public
     constructor Create(ItemClass: TCollectionItemClass);
     destructor Destroy; override;
@@ -107,7 +107,7 @@ type
     function SelectCell(ACol, ARow: Longint): Boolean; override;
     function GetEditMask(ACol, ARow: Longint): string; override;
 
-    procedure DrawButton(ARow: longint; fExpanded: boolean);
+    procedure DrawButton(ARow: longint; Expanded: Boolean);
 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure KeyPress(var Key: Char); override;
@@ -124,32 +124,31 @@ type
     procedure UndoAll;
 
     property Items: TJvgGridItems read FItems write FItems;
-    function RowToItem(ARow: integer): TJvgGridItem;
-    function ItemToRow(Item: TJvgGridItem): integer;
-  published
-    { Published declarations }
+    function RowToItem(ARow: Integer): TJvgGridItem;
+    function ItemToRow(Item: TJvgGridItem): Integer;
   end;
 
 implementation
+
 uses
   JvgUtils;
 
-{ TJvgGridItems }
-
-function TJvgGridItems.Add: TJvgGridItem;
-begin
-  Result := TJvgGridItem(inherited Add);
-end;
+//=== TJvgGridItems ==========================================================
 
 constructor TJvgGridItems.Create(ItemClass: TCollectionItemClass);
 begin
   inherited Create(ItemClass);
-  FShowMultiValues := true;
+  FShowMultiValues := True;
 end;
 
 destructor TJvgGridItems.Destroy;
 begin
-  inherited;
+  inherited Destroy;
+end;
+
+function TJvgGridItems.Add: TJvgGridItem;
+begin
+  Result := TJvgGridItem(inherited Add);
 end;
 
 function TJvgGridItems.GetItem(Index: Integer): TJvgGridItem;
@@ -167,96 +166,99 @@ begin
   Items[Index].Assign(Value);
 end;
 
-procedure TJvgGridItems.SetShowMultiValues(Value: boolean);
+procedure TJvgGridItems.SetShowMultiValues(Value: Boolean);
 begin
-  if FShowMultiValues = Value then exit;
-  FShowMultiValues := Value;
-  if Assigned(FOnUpdate) then FOnUpdate(self);
+  if FShowMultiValues <> Value then
+  begin
+    FShowMultiValues := Value;
+    if Assigned(FOnUpdate) then
+      FOnUpdate(Self);
+  end;
 end;
 
 procedure TJvgGridItems.Update(Item: TCollectionItem);
 begin
-  inherited;
-  if Assigned(FOnUpdate) then FOnUpdate(self);
+  inherited Update(Item);
+  if Assigned(FOnUpdate) then
+    FOnUpdate(Self);
 end;
 
-{ TJvgGridItem }
+//=== TJvgGridItem ===========================================================
 
 constructor TJvgGridItem.Create(Collection: TCollection);
 begin
+  // (rom) moved inherited up
+  inherited Create(Collection);
   FValues := TStringList.Create;
   FOriginalValues := TStringList.Create;
   FValues.OnChange := OnValuesChange;
-  inherited;
 end;
 
 destructor TJvgGridItem.Destroy;
 begin
   FValues.Free;
   FOriginalValues.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-//==================================================================================================
-
-function TJvgGridItem.GetChanged: boolean;
+function TJvgGridItem.GetChanged: Boolean;
 var
-  i: integer;
+  I: Integer;
 begin
-  Result := false;
-  for i := 0 to FValues.Count - 1 do
-    Result := Result or bool(FValues.Objects[i]);
+  Result := False;
+  for I := 0 to FValues.Count - 1 do
+    Result := Result or bool(FValues.Objects[I]);
 end;
 
 function TJvgGridItem.GetValue: string;
 var
-  i: integer;
+  I: Integer;
 begin
   Result := '';
   if Values.Count = 0 then
     Result := ''
-  else if (Values.Count = 1) or (not (Collection as TJvgGridItems).ShowMultiValues) then
+  else
+  if (Values.Count = 1) or (not (Collection as TJvgGridItems).ShowMultiValues) then
     Result := Values[0]
   else
-    for i := 0 to Values.Count - 1 do
-    begin
-      Result := Result + IIF(i = 0, '[', '') + IIF(i > 0, ',', '') + Values[i] + IIF(i = Values.Count - 1, ']', '');
-    end;
-
+    for I := 0 to Values.Count - 1 do
+      Result := Result + IIF(I = 0, '[', '') + IIF(I > 0, ',', '') + Values[I] + IIF(I = Values.Count - 1, ']', '');
 end;
 
-function TJvgGridItem.IsChanged(ValueIndex: integer): boolean;
+function TJvgGridItem.IsChanged(ValueIndex: Integer): Boolean;
 begin
-  if ValueIndex > 0 then dec(ValueIndex);
-  Result := bool(Values.Objects[ValueIndex]);
+  if ValueIndex > 0 then
+    Dec(ValueIndex);
+  Result := Values.Objects[ValueIndex] <> nil;
 end;
 
 procedure TJvgGridItem.OnValuesChange(Sender: TObject);
 var
-  i: integer;
+  I: Integer;
 begin
   while FOriginalValues.Count > FValues.Count do
     FOriginalValues.Delete(FOriginalValues.Count - 1);
 
-  for i := 0 to FValues.Count - 1 do
-  begin
-    if i = FOriginalValues.Count then
-      FOriginalValues.Add(FValues[i])
-    else if FOriginalValues.Objects[i] = nil then
-      FOriginalValues.Objects[i] := Pointer(1);
-  end;
+  for I := 0 to FValues.Count - 1 do
+    if I = FOriginalValues.Count then
+      FOriginalValues.Add(FValues[I])
+    else
+    if FOriginalValues.Objects[I] = nil then
+      FOriginalValues.Objects[I] := Pointer(1);
 
-  (Collection as TJvgGridItems).Update(self);
+  (Collection as TJvgGridItems).Update(Self);
 end;
 
 procedure TJvgGridItem.SetCaption(Value: string);
 begin
-  if FCaption = Value then exit;
-  FCaption := Value;
-  (Collection as TJvgGridItems).Update(self);
+  if FCaption <> Value then
+  begin
+    FCaption := Value;
+    (Collection as TJvgGridItems).Update(Self);
+  end;
 end;
 
-procedure TJvgGridItem.SetChanged(Value: boolean);
+procedure TJvgGridItem.SetChanged(Value: Boolean);
 begin
   Values.OnChange := nil;
   if Sequence > 0 then
@@ -266,64 +268,70 @@ begin
   Values.OnChange := OnValuesChange;
 end;
 
-procedure TJvgGridItem.SetExpanded(Value: boolean);
+procedure TJvgGridItem.SetExpanded(Value: Boolean);
 begin
-  if FExpanded = Value then exit;
-  FExpanded := Value and (Values.Count > 1);
-  (Collection as TJvgGridItems).Update(self);
+  if FExpanded <> Value then
+  begin
+    FExpanded := Value and (Values.Count > 1);
+    (Collection as TJvgGridItems).Update(Self);
+  end;
 end;
 
-procedure TJvgGridItem.SetSelected(Value: boolean);
+procedure TJvgGridItem.SetSelected(Value: Boolean);
 begin
-  if FSelected = Value then exit;
-  FSelected := Value;
-  //  (Collection as TJvgGridItems).Update(self);
+  if FSelected <> Value then
+  begin
+    FSelected := Value;
+    // (Collection as TJvgGridItems).Update(Self);
+  end;
 end;
 
-procedure TJvgGridItem.SetValue(ValueIndex: integer; const Value: string);
+procedure TJvgGridItem.SetValue(ValueIndex: Integer; const Value: string);
 var
-  Seq: integer;
+  Seq: Integer;
 begin
-  if (Sequence = 0) and (FValues.Count > 1) then exit;
+  if (Sequence = 0) and (FValues.Count > 1) then
+    Exit;
 
   if Sequence > 0 then
     Seq := Sequence - 1
   else
     Seq := Sequence;
-  if Values[Seq] = Value then exit;
 
-  FValues.OnChange := nil;
-  FValues[Seq] := Value;
-  FValues.Objects[Seq] := Pointer(integer(Value <> FOriginalValues[Seq]));
-  FValues.OnChange := OnValuesChange;
-
-  //  FChanged := false;
+  if Values[Seq] <> Value then
+  begin
+    FValues.OnChange := nil;
+    FValues[Seq] := Value;
+    FValues.Objects[Seq] := Pointer(Integer(Value <> FOriginalValues[Seq]));
+    FValues.OnChange := OnValuesChange;
+    //  FChanged := False;
+  end;
 end;
 
-procedure TJvgGridItem.Undo(Index: integer);
+procedure TJvgGridItem.Undo(Index: Integer);
 begin
   FValues[Index] := FOriginalValues[Index];
-  FValues.Objects[Index] := Pointer(integer(FValues[Index] <> FOriginalValues[Index]));
+  FValues.Objects[Index] := Pointer(Integer(FValues[Index] <> FOriginalValues[Index]));
 end;
 
 procedure TJvgGridItem.UndoAll;
 var
-  i: integer;
+  I: Integer;
 begin
   FValues.OnChange := nil;
-  for i := 0 to FValues.Count - 1 do
-    Undo(i);
+  for I := 0 to FValues.Count - 1 do
+    Undo(I);
   FValues.OnChange := OnValuesChange;
-  OnValuesChange(self);
+  OnValuesChange(Self);
 end;
 
-{ TJvgInspectorGrid }
+//=== TJvgInspectorGrid ======================================================
 
 constructor TJvgInspectorGrid.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FItems := TJvgGridItems.Create(TJvgGridItem);
-  DefaultDrawing := false;
+  DefaultDrawing := False;
   DefaultRowHeight := 16; //Canvas.TextHeight('Th');
   ColCount := 2;
   FItems.OnUpdate := ItemsUpdate;
@@ -334,10 +342,10 @@ end;
 destructor TJvgInspectorGrid.Destroy;
 begin
   FItems.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-procedure TJvgInspectorGrid.DrawButton(ARow: Integer; fExpanded: boolean);
+procedure TJvgInspectorGrid.DrawButton(ARow: Integer; Expanded: Boolean);
 var
   R: TRect;
 begin
@@ -348,7 +356,7 @@ begin
     Pen.Color := clBlack;
     MoveTo(R.Left + 1, R.Top + 3);
     LineTo(R.Right - 1, R.Top + 3);
-    if not fExpanded then
+    if not Expanded then
     begin
       MoveTo(R.Left + 3, R.Top + 1);
       LineTo(R.Left + 3, R.Bottom - 1);
@@ -360,40 +368,38 @@ procedure TJvgInspectorGrid.DrawCell(ACol, ARow: Integer; ARect: TRect; AState: 
 var
   Item: TJvgGridItem;
 begin
-  inherited;
-  //  if Items.Count <= ARow then exit;
-  if ACol = 1 then InvalidateCol(0);
+  inherited DrawCell(ACol, ARow, ARect, AState);
+  //  if Items.Count <= ARow then Exit;
+  if ACol = 1 then
+    InvalidateCol(0);
 
   Item := RowToItem(ARow);
-  if Item = nil then exit;
-
-  if (Item.Values.Count > 1) and (Item.Sequence = 0) then
+  if Assigned(Item) and (Item.Values.Count > 1) and (Item.Sequence = 0) then
     DrawButton(ARow, Item.Expanded);
-
 end;
 
 procedure TJvgInspectorGrid.GetCellGradientParams(Sender: TObject; ACol,
   ARow: Integer; var CellRect: TRect; var Gradient: TJvgGradient);
 begin
-  inherited;
-
+  inherited GetCellGradientParams(Sender, ACol, ARow, CellRect, Gradient);
 end;
 
 procedure TJvgInspectorGrid.GetCellStyle(Sender: TObject; var ACol, ARow: Integer; var Style: TglGridCellStyle);
 var
-  //  ItemNo: integer;
+  //  ItemNo: Integer;
   Item: TJvgGridItem;
 begin
   with Style do
   begin
-    //  inherited;
-//    ItemNo := 0;
+    // inherited;
+    // ItemNo := 0;
     BevelInner := bvNone;
     BevelOuter := bvSpace;
-    BevelBold := false;
+    BevelBold := False;
 
     Item := RowToItem(Row);
-    if Item = nil then exit;
+    if Item = nil then
+      Exit;
 
     if ACol = 0 then
       BackgrColor := IIF(ARow = Row, clBtnShadow, DecColor(ColorToRGB(clBtnShadow), 20))
@@ -403,61 +409,61 @@ begin
     if not Hottracking then
     begin
       FontColor := IIF(ACol = 0, clWhite, clBlack);
-      if (ACol = 0) and (ARow = Item.Row) then FontColor := clYellow;
+      if (ACol = 0) and (ARow = Item.Row) then
+        FontColor := clYellow;
     end;
     Interspace := IIF(ACol = 0, 13, 3);
 
     Item := RowToItem(ARow);
-    if Item = nil then exit;
-
-    if Item.HasChanged and (Item.IsChanged(Item.Sequence) or (Item.Sequence = 0)) then
-      FontStyle := [fsBold]
-    else
-      FontStyle := [];
+    if Item <> nil then
+      if Item.HasChanged and (Item.IsChanged(Item.Sequence) or (Item.Sequence = 0)) then
+        FontStyle := [fsBold]
+      else
+        FontStyle := [];
   end;
 
 end;
 
 {function TJvgInspectorGrid.GetEditText(ACol, ARow: Longint): string;
-var i: integer;
+var I: Integer;
 begin
   inherited GetEditText(ACol, ARow);
-  for i := 0 to Items.Count-1 do
-    Items[i].Selected := false;
-  Items[ARow].Selected := true;
+  for I := 0 to Items.Count-1 do
+    Items[I].Selected := False;
+  Items[ARow].Selected := True;
 end;}
 
 procedure TJvgInspectorGrid.ItemsUpdate(Sender: TObject);
 var
-  i, j: integer;
+  I, J: Integer;
 begin
   SendMessage(handle, WM_SETREDRAW, 0, 0);
 
   RowCount := 1;
-  for i := 0 to Items.Count - 1 do
+  for I := 0 to Items.Count - 1 do
   begin
-    Items[i].Row := RowCount - 1;
-    Cells[0, RowCount - 1] := Items[i].Caption;
-    if Items[i].Values.Count = 1 then
+    Items[I].Row := RowCount - 1;
+    Cells[0, RowCount - 1] := Items[I].Caption;
+    if Items[I].Values.Count = 1 then
     begin
-      Cells[1, RowCount - 1] := Items[i].Values[0];
+      Cells[1, RowCount - 1] := Items[I].Values[0];
       if ColCount > 2 then
-        Cells[2, RowCount - 1] := Items[i].OriginalValues[0];
+        Cells[2, RowCount - 1] := Items[I].OriginalValues[0];
     end
-    else if Items[i].Values.Count > 1 then
+    else
+    if Items[I].Values.Count > 1 then
     begin
       if ColCount > 2 then
         Cells[2, RowCount - 1] := '';
-      Cells[1, RowCount - 1] := Items[i].GetValue;
-      if Items[i].Expanded then
-        for j := 0 to Items[i].Values.Count - 1 do
+      Cells[1, RowCount - 1] := Items[I].GetValue;
+      if Items[I].Expanded then
+        for J := 0 to Items[I].Values.Count - 1 do
         begin
-
           RowCount := RowCount + 1;
           Cells[0, RowCount - 1] := '';
-          Cells[1, RowCount - 1] := Items[i].Values[j];
+          Cells[1, RowCount - 1] := Items[I].Values[J];
           if ColCount > 2 then
-            Cells[2, RowCount - 1] := Items[i].OriginalValues[j];
+            Cells[2, RowCount - 1] := Items[I].OriginalValues[J];
         end;
     end
     else
@@ -467,10 +473,11 @@ begin
   RowCount := RowCount - 1;
 
   SendMessage(handle, WM_SETREDRAW, 1, 0);
-  Invalidate; //Rect(Handle, nil, false);
+  Invalidate; //Rect(Handle, nil, False);
 end;
 
-procedure TJvgInspectorGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TJvgInspectorGrid.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 type
   PClass = ^TClass;
 var
@@ -478,73 +485,79 @@ var
   Item: TJvgGridItem;
 begin
   //...inherit grandfather
-{  ClassOld := PClass(self)^;
-  PClass(self)^ := self.ClassParent.ClassParent;
-  self.MouseDown(Button, Shift, X, Y);
-  PClass(self)^ := ClassOld;}
-  inherited;
+{  ClassOld := PClass(Self)^;
+  PClass(Self)^ := Self.ClassParent.ClassParent;
+  Self.MouseDown(Button, Shift, X, Y);
+  PClass(Self)^ := ClassOld;}
+  inherited MouseDown(Button, Shift, X, Y);
 
   GridCoord := MouseCoord(X, Y);
   if GridCoord.X = 0 then
   begin
     Item := RowToItem(GridCoord.Y);
-    if Item = nil then exit;
+    if Item = nil then
+      Exit;
     if Item.Sequence = 0 then
       Item.Expanded := not Item.Expanded;
     Row := GridCoord.Y;
   end;
 end;
 
-function TJvgInspectorGrid.RowToItem(ARow: integer): TJvgGridItem;
+function TJvgInspectorGrid.RowToItem(ARow: Integer): TJvgGridItem;
 var
-  i, Index: integer;
+  I, Index: Integer;
 begin
   Index := 0;
-  //  i := 0;
+  //  I := 0;
   Result := nil;
-  if Items.Count = 0 then exit;
-  for i := 0 to ARow - 1 do
+  if Items.Count = 0 then
+    Exit;
+  for I := 0 to ARow - 1 do
   begin
-    if Items[i].Expanded then inc(Index, Items[i].Values.Count);
+    if Items[I].Expanded then
+      inc(Index, Items[I].Values.Count);
     inc(Index);
-    if Index > ARow then break;
+    if Index > ARow then
+      Break;
   end;
 
-  Result := Items[i];
+  Result := Items[I];
   Result.Sequence := ARow - ItemToRow(Result);
-
 end;
 
-function TJvgInspectorGrid.ItemToRow(Item: TJvgGridItem): integer;
+function TJvgInspectorGrid.ItemToRow(Item: TJvgGridItem): Integer;
 var
-  i: integer;
+  I: Integer;
 begin
   Result := 0;
-  for i := 0 to Item.Index - 1 do
+  for I := 0 to Item.Index - 1 do
   begin
-    if Items[i].Expanded then inc(Result, Items[i].Values.Count);
-    inc(Result);
+    if Items[I].Expanded then
+      inc(Result, Items[I].Values.Count);
+    Inc(Result);
   end;
 end;
 
 function TJvgInspectorGrid.SelectCell(ACol, ARow: Longint): Boolean;
 begin
   Result := True;
-  if Assigned(OnSelectCell) then OnSelectCell(Self, ACol, ARow, Result);
+  if Assigned(OnSelectCell) then
+    OnSelectCell(Self, ACol, ARow, Result);
   // if Items.FShowMultiValues and (Items[ARow].Values.Count > 1) then
- //   Result := false;
+ //   Result := False;
 end;
 
 function TJvgInspectorGrid.CanEditModify: Boolean;
 var
   Item: TJvgGridItem;
 begin
-  Result := false;
-  if (Col <> 1) or not (goEditing in Options) then
-    Result := false;
+  Result := False;
+  // (rom) deactivated  Result is already false
+  //if (Col <> 1) or not (goEditing in Options) then
+  //  Result := False;
   Item := RowToItem(Row);
-  if Item = nil then exit;
-  Result := not (Items.FShowMultiValues and (Item.Values.Count > 1) and (Item.Row = Row));
+  if Item <> nil then
+    Result := not (Items.FShowMultiValues and (Item.Values.Count > 1) and (Item.Row = Row));
 end;
 
 procedure TJvgInspectorGrid.SetEditText(ACol, ARow: Integer; const Value: string);
@@ -552,10 +565,12 @@ var
   Item: TJvgGridItem;
 begin
   inherited SetEditText(ACol, ARow, Value);
-  if Assigned(OnSetEditText) then OnSetEditText(Self, ACol, ARow, Value);
+  if Assigned(OnSetEditText) then
+    OnSetEditText(Self, ACol, ARow, Value);
   Item := RowToItem(ARow);
-  if Item = nil then exit;
-  //  if Value <> Item.Values[Item.Sequence] then Item.Changed := true;// Values.Data :=
+  if Item = nil then
+    Exit;
+  //  if Value <> Item.Values[Item.Sequence] then Item.Changed := True;// Values.Data :=
   Item.SetValue(Item.Sequence, Value);
 
   if Item.Sequence > 0 then
@@ -567,27 +582,33 @@ end;
 procedure TJvgInspectorGrid.KeyPress(var Key: Char);
 var
   Item: TJvgGridItem;
-  i, OldRow: integer;
+  I, OldRow: Integer;
 begin
   inherited;
   Item := RowToItem(Row);
-  if Item = nil then exit;
+  if Item = nil then
+    Exit;
   OldRow := Row;
   case Key of
-    '+': if (Item.Values.Count > 0) and not Item.Expanded then Item.Expanded := true;
-    '-': if (Item.Values.Count > 0) and Item.Expanded and (Row = ItemToRow(Item)) then Item.Expanded := false;
-    '*': for i := 0 to Items.Count - 1 do
-        Items[i].Expanded := true;
+    '+':
+      if (Item.Values.Count > 0) and not Item.Expanded then
+        Item.Expanded := True;
+    '-':
+      if (Item.Values.Count > 0) and Item.Expanded and (Row = ItemToRow(Item)) then
+        Item.Expanded := False;
+    '*':
+      for I := 0 to Items.Count - 1 do
+        Items[I].Expanded := True;
   end;
   Row := OldRow;
 end;
 
 procedure TJvgInspectorGrid.UndoAll;
 var
-  i: integer;
+  I: Integer;
 begin
-  for i := 0 to Items.Count - 1 do
-    Items[i].UndoAll;
+  for I := 0 to Items.Count - 1 do
+    Items[I].UndoAll;
 end;
 
 procedure TJvgInspectorGrid.UndoCurent;
@@ -597,12 +618,13 @@ end;
 
 procedure TJvgInspectorGrid.WMSize(var Msg: TWMSize);
 var
-  i, FreeClientWidth: integer;
+  I, FreeClientWidth: Integer;
 begin
   inherited;
   FreeClientWidth := Width;
-  i := GetScrollPos(handle, SB_VERT);
-  if i <> 0 then dec(FreeClientWidth, GetSystemMetrics(SM_CXHSCROLL) + 2);
+  I := GetScrollPos(handle, SB_VERT);
+  if I <> 0 then
+    Dec(FreeClientWidth, GetSystemMetrics(SM_CXHSCROLL) + 2);
   ColWidths[1] := FreeClientWidth - ColWidths[0];
 end;
 
@@ -611,12 +633,14 @@ var
   Item: TJvgGridItem;
 begin
   Item := RowToItem(ARow);
-  if Item = nil then exit;
+  if Item = nil then
+    Exit;
   if CanEditModify then
     Result := Item.EditMask
   else
     Result := '';
-  if Assigned(OnGetEditMask) then OnGetEditMask(Self, ACol, ARow, Result);
+  if Assigned(OnGetEditMask) then
+    OnGetEditMask(Self, ACol, ARow, Result);
 end;
 
 end.

@@ -170,7 +170,7 @@ type
     UserData: Integer;
   end;
 
-  //=== TJvMultiHTTPGrabber ====================================================
+//=== TJvMultiHTTPGrabber ====================================================
 
 constructor TJvMultiHTTPGrabber.Create(AOwner: TComponent);
 begin
@@ -258,10 +258,10 @@ end;
 
 procedure TJvMultiHTTPGrabber.RaiseError(Value: Pointer);
 var
-  Msg: array[0..256] of Char;
+  Msg: array [0..256] of Char;
 begin
   if Assigned(FOnError) then
-    with (PRequestInfos(Value))^ do
+    with PRequestInfos(Value)^ do
     begin
       FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil, GetLastError, 0, Msg,
         SizeOf(Msg), nil);
@@ -272,7 +272,7 @@ end;
 procedure TJvMultiHTTPGrabber.RaiseWebError(Infos: Pointer);
 var
   dwIndex, dwBufLen: DWORD;
-  Buf: array[0..1024] of Char;
+  Buf: array [0..1024] of Char;
 begin
   if Assigned(FOnError) then
   begin
@@ -288,7 +288,7 @@ function TJvMultiHTTPGrabber.StartConnection(UserData: Integer; IgnoreMessages: 
 var
   Infos: PRequestInfos;
   HostName, FilePath: string;
-  HostPort: word;
+  HostPort: Word;
 
   procedure ParseUrl(Value: string);
   begin
@@ -420,7 +420,7 @@ end;
 destructor TJvMultiHttpThread.Destroy;
 begin
   FreeAndNil(FStream);
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvMultiHttpThread.Error;
@@ -435,7 +435,7 @@ end;
 procedure TJvMultiHttpThread.Execute;
 var
   Infos: PRequestInfos;
-  Buffer: array[0..512] of Byte;
+  Buffer: array [0..512] of Byte;
   BytesRead: DWORD;
   dLength, dReserved, dSize: DWORD;
 begin
@@ -451,7 +451,7 @@ begin
       Exit;
     end;
 
-    //Get the Size
+    // Get the Size
     dLength := SizeOf(dSize);
     dReserved := 0;
     if HttpQueryInfo(Infos^.hRequest, HTTP_QUERY_CONTENT_LENGTH or HTTP_QUERY_FLAG_NUMBER,
@@ -462,7 +462,7 @@ begin
     else
       Infos^.FileSize := -1;
 
-    //Download the stuff
+    // Download the stuff
     Synchronize(Progress);
     if not FContinue then
       Exit;
