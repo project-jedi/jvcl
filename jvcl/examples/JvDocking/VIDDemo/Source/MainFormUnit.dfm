@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 185
-  Top = 127
+  Left = 428
+  Top = 119
   Width = 764
   Height = 540
   Caption = 'Miscellaneous Files - Microsoft Development Environment [design]'
@@ -64,7 +64,7 @@ object MainForm: TMainForm
         Top = 0
         Width = 76
         Height = 21
-        ImeName = '中文 (简体) - 智能 ABC'
+        ImeName = #214#208#206#196' ('#188#242#204#229') - '#214#199#196#220' ABC'
         ItemHeight = 13
         TabOrder = 0
       end
@@ -190,7 +190,7 @@ object MainForm: TMainForm
         Top = 0
         Width = 125
         Height = 21
-        ImeName = '中文 (简体) - 智能 ABC'
+        ImeName = #214#208#206#196' ('#188#242#204#229') - '#214#199#196#220' ABC'
         ItemHeight = 13
         TabOrder = 0
       end
@@ -239,7 +239,7 @@ object MainForm: TMainForm
         Width = 98
         Height = 21
         Style = csDropDownList
-        ImeName = '中文 (简体) - 智能 ABC'
+        ImeName = #214#208#206#196' ('#188#242#204#229') - '#214#199#196#220' ABC'
         ItemHeight = 13
         TabOrder = 1
         OnChange = Load_Save_WindowUI_ComboBoxChange
@@ -2779,7 +2779,7 @@ object MainForm: TMainForm
     object Action_About: TAction
       Category = 'Menu_Help'
       Caption = '&About...'
-      OnExecute = Action_New_ProjectExecute
+      OnExecute = Action_AboutExecute
     end
     object Action_Build_Project: TAction
       Category = 'Menu_Builder'
@@ -3471,7 +3471,7 @@ object MainForm: TMainForm
     ConjoinServerOption.InactiveFont.Style = [fsBold]
     ConjoinServerOption.TextAlignment = taLeftJustify
     ConjoinServerOption.ActiveTitleStartColor = 6956042
-    ConjoinServerOption.ActiveTitleEndColor = 15780518
+    ConjoinServerOption.ActiveTitleEndColor = clSkyBlue
     ConjoinServerOption.InactiveTitleStartColor = clGray
     ConjoinServerOption.InactiveTitleEndColor = clSilver
     ConjoinServerOption.TextEllipsis = True

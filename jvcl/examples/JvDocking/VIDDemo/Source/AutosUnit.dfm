@@ -1,6 +1,6 @@
 object AutosForm: TAutosForm
-  Left = 255
-  Top = 171
+  Left = 563
+  Top = 86
   Width = 380
   Height = 290
   BorderStyle = bsSizeToolWin

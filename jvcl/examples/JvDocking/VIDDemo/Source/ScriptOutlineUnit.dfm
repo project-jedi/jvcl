@@ -1,6 +1,6 @@
 object ScriptOutlineForm: TScriptOutlineForm
-  Left = 235
-  Top = 161
+  Left = 580
+  Top = 233
   Width = 223
   Height = 148
   BorderStyle = bsSizeToolWin

@@ -1,6 +1,6 @@
 object WatchForm: TWatchForm
-  Left = 256
-  Top = 183
+  Left = 628
+  Top = 204
   Width = 220
   Height = 270
   BorderStyle = bsSizeToolWin
@@ -12,17 +12,17 @@ object WatchForm: TWatchForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'ËÎÌו'
+  Font.Name = #203#206#204#229
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 15
   object Panel: TPanel
     Left = 0
-    Top = 16
+    Top = 20
     Width = 212
-    Height = 226
+    Height = 223
     Align = alClient
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -33,10 +33,10 @@ object WatchForm: TWatchForm
       Left = 2
       Top = 2
       Width = 208
-      Height = 222
+      Height = 219
       Align = alClient
       BorderStyle = bsNone
-      ItemHeight = 12
+      ItemHeight = 15
       TabOrder = 0
     end
   end
@@ -44,7 +44,7 @@ object WatchForm: TWatchForm
     Left = 0
     Top = 0
     Width = 212
-    Height = 16
+    Height = 20
     Align = alTop
     BorderStyle = bsNone
     Sections.Sections = (
@@ -58,6 +58,7 @@ object WatchForm: TWatchForm
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
+    EnableCloseButton = True
     DockStyle = MainForm.JvDockVIDStyle1
     Left = 64
     Top = 88

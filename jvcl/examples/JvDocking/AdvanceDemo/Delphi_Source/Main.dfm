@@ -235,7 +235,7 @@ object MainForm: TMainForm
     BottomSplitterStyle.Cursor = crVSplit
     BottomSplitterStyle.ParentColor = False
     BottomSplitterStyle.Size = 4
-    DockStyle = JvDockVSNetStyle1
+    DockStyle = JvDockDelphiStyle1
     Left = 32
     Top = 48
   end
@@ -266,7 +266,7 @@ object MainForm: TMainForm
     ConjoinServerOption.InactiveFont.Style = [fsBold]
     ConjoinServerOption.TextAlignment = taLeftJustify
     ConjoinServerOption.ActiveTitleStartColor = 6956042
-    ConjoinServerOption.ActiveTitleEndColor = 15780518
+    ConjoinServerOption.ActiveTitleEndColor = clSkyBlue
     ConjoinServerOption.InactiveTitleStartColor = clGray
     ConjoinServerOption.InactiveTitleEndColor = clSilver
     ConjoinServerOption.TextEllipsis = True

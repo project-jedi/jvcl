@@ -14,50 +14,50 @@ object ToolboxForm: TToolboxForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'ËÎÌו'
+  Font.Name = #203#206#204#229
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   OnResize = FormResize
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 15
   object HTML_Panel: TPanel
     Left = 0
     Top = 1
-    Width = 193
-    Height = 16
+    Width = 241
+    Height = 20
     Caption = 'HTML'
     TabOrder = 0
   end
   object Server_Objects_Panel: TPanel
     Left = 0
-    Top = 19
-    Width = 193
-    Height = 16
+    Top = 24
+    Width = 241
+    Height = 20
     Caption = 'Server Objects'
     TabOrder = 1
   end
   object Design_Time_Controls_Panel: TPanel
     Left = 0
-    Top = 37
-    Width = 193
-    Height = 16
+    Top = 46
+    Width = 241
+    Height = 20
     Caption = 'Design Time Controls'
     TabOrder = 2
   end
   object ActiveX_Controls_Panel: TPanel
     Left = 0
-    Top = 55
-    Width = 193
-    Height = 16
+    Top = 69
+    Width = 241
+    Height = 20
     Caption = 'ActiveX Controls'
     TabOrder = 3
   end
   object General_Panel1: TPanel
     Left = 0
-    Top = 73
-    Width = 193
-    Height = 16
+    Top = 91
+    Width = 241
+    Height = 20
     Caption = 'General Panel1'
     TabOrder = 4
   end
@@ -66,6 +66,7 @@ object ToolboxForm: TToolboxForm
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
+    EnableCloseButton = True
     DockStyle = MainForm.JvDockVIDStyle1
     Left = 72
     Top = 96

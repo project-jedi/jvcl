@@ -1,6 +1,6 @@
 object ProjectExplorerForm: TProjectExplorerForm
-  Left = 256
-  Top = 183
+  Left = 461
+  Top = 195
   Width = 220
   Height = 270
   BorderStyle = bsSizeToolWin

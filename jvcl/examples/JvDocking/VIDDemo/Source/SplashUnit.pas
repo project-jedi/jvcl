@@ -45,11 +45,13 @@ implementation
 procedure TSplashForm.Image1Click(Sender: TObject);
 begin
   SplashClosed := True;
+  if fsModal in FormState then Close;
 end;
 
 procedure TSplashForm.Timer1Timer(Sender: TObject);
 begin
   SplashClosed := True;
+  if fsModal in FormState then Close;
 end;
 
 procedure TSplashForm.FormCreate(Sender: TObject);

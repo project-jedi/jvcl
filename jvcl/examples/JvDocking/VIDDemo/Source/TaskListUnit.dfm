@@ -12,18 +12,18 @@ object TaskListForm: TTaskListForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'ËÎÌו'
+  Font.Name = #203#206#204#229
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   OnCreate = FormCreate
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 15
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 478
-    Height = 242
+    Height = 243
     Align = alClient
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -33,7 +33,7 @@ object TaskListForm: TTaskListForm
       Left = 2
       Top = 2
       Width = 474
-      Height = 238
+      Height = 239
       Align = alClient
       BorderStyle = bsNone
       ColCount = 6
@@ -56,6 +56,7 @@ object TaskListForm: TTaskListForm
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
+    EnableCloseButton = True
     DockStyle = MainForm.JvDockVIDStyle1
     Left = 64
     Top = 88

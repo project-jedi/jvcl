@@ -1,6 +1,6 @@
 object DocumentOutlineForm: TDocumentOutlineForm
-  Left = 235
-  Top = 161
+  Left = 618
+  Top = 241
   Width = 223
   Height = 148
   BorderStyle = bsSizeToolWin

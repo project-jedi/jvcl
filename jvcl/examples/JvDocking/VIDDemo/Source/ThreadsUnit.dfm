@@ -12,17 +12,17 @@ object ThreadsForm: TThreadsForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'ËÎÌו'
+  Font.Name = #203#206#204#229
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 15
   object Panel: TPanel
     Left = 0
-    Top = 40
+    Top = 50
     Width = 212
-    Height = 202
+    Height = 193
     Align = alClient
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -33,18 +33,18 @@ object ThreadsForm: TThreadsForm
       Left = 2
       Top = 2
       Width = 208
-      Height = 198
+      Height = 189
       Align = alClient
       BorderStyle = bsNone
-      ItemHeight = 12
+      ItemHeight = 15
       TabOrder = 0
     end
   end
   object Header: THeader
     Left = 0
-    Top = 24
+    Top = 30
     Width = 212
-    Height = 16
+    Height = 20
     Align = alTop
     BorderStyle = bsNone
     Sections.Sections = (
@@ -59,16 +59,16 @@ object ThreadsForm: TThreadsForm
     Left = 0
     Top = 0
     Width = 212
-    Height = 24
+    Height = 30
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 2
     object ComboBox: TComboBox
       Left = 0
       Top = 1
-      Width = 177
-      Height = 20
-      ItemHeight = 12
+      Width = 221
+      Height = 23
+      ItemHeight = 15
       TabOrder = 0
     end
   end
@@ -77,6 +77,7 @@ object ThreadsForm: TThreadsForm
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
+    EnableCloseButton = True
     DockStyle = MainForm.JvDockVIDStyle1
     Left = 64
     Top = 88
