@@ -206,7 +206,7 @@ type
     FStyle : TJvTFFrameStyle;
     FColor : TColor;
     FWidth : Integer;
-    FutfControl : TJvTFControl;
+    FControl : TJvTFControl;
     FOnChange : TNotifyEvent;
     procedure SetStyle(Value: TJvTFFrameStyle);
     procedure SetColor(Value: TColor);
@@ -216,7 +216,7 @@ type
   public
     constructor Create(AOwner: TJvTFControl);
     procedure Assign(Source: TPersistent); override;
-    property utfControl: TJvTFControl read FutfControl;
+    property Control: TJvTFControl read FControl;
     property OnChange : TNotifyEvent read FOnChange write FOnChange;
   published
     property Style: TJvTFFrameStyle read FStyle write SetStyle default fsFlat;
@@ -468,7 +468,7 @@ type
     FOnDropAppt : TJvTFGlanceDropApptEvent;
     FOnUpdateCellTitleText : TJvTFUpdateCellTitleTextEvent;
 
-    FutfHintProps : TJvTFHintProps;
+    FHintProps : TJvTFHintProps;
 
     FSchedNames : TStrings;
 
@@ -502,7 +502,7 @@ type
     FSelAnchor : TJvTFGlanceCell;
     FMouseCell : TJvTFGlanceCell;
     FImageChangeLink : TChangeLink;
-    FutfHint : TJvTFHint;
+    FHint : TJvTFHint;
 
     procedure SetColCount(Value: Integer); virtual;
     procedure SetStartOfWeek(Value: TDayOfWeek); virtual;
@@ -658,7 +658,7 @@ type
 
     property Viewer : TJvTFGlanceViewer read FViewer write SetViewer;
 
-    property utfHintProps : TJvTFHintProps read FutfHintProps
+    property HintProps : TJvTFHintProps read FHintProps
       write SeTJvTFHintProps;
 
     property SchedNames: TStrings read FSchedNames write SetSchedNames;
@@ -1460,10 +1460,10 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
 
-  FutfHintProps := TJvTFHintProps.Create(Self);
-  //FutfHint := TJvTFHint.Create(Self);
-  FutfHint := GeTJvTFHintClass.Create(Self);
-  FutfHint.RefProps := FutfHintProps;
+  FHintProps := TJvTFHintProps.Create(Self);
+  //FHint := TJvTFHint.Create(Self);
+  FHint := GeTJvTFHintClass.Create(Self);
+  FHint.RefProps := FHintProps;
 
   FCreatingControl := False;
 
@@ -1509,8 +1509,8 @@ begin
   FPaintBuffer.Free;
   FImageChangeLink.Free;
 
-  FutfHint.Free;
-  FutfHintProps.Free;
+  FHint.Free;
+  FHintProps.Free;
 
   TStringList(FSchedNames).OnChange := nil;
   FSchedNames.Free;
@@ -1839,12 +1839,12 @@ begin
   Else
     Hints := nil;
 
-  FutfHint.MultiLineObjHint(Info.CellTitlePic, X, Y, Hints);
+  FHint.MultiLineObjHint(Info.CellTitlePic, X, Y, Hints);
   {
   If Assigned(Info.CellTitlePic) Then
-    FutfHint.MultiLineObjHint(Info.CellTitlePic, X, Y, Info.CellTitlePic.Hints)
+    FHint.MultiLineObjHint(Info.CellTitlePic, X, Y, Info.CellTitlePic.Hints)
   Else
-    FutfHint.ReleaseHandle;
+    FHint.ReleaseHandle;
   }
 
   If (Info.Col > -1) and (Info.Row > -1) and not Info.InCellTitle Then
@@ -2777,7 +2777,7 @@ end;
 
 procedure TJvTFCustomGlance.SeTJvTFHintProps(Value: TJvTFHintProps);
 begin
-  FutfHintProps.Assign(Value);
+  FHintProps.Assign(Value);
 end;
 
 procedure TJvTFCustomGlance.DoDrawCell(aCanvas: TCanvas; aCellRect, aTitleRect,
@@ -2891,7 +2891,7 @@ end;
 
 procedure TJvTFCustomGlance.CheckApptHint(Info : TJvTFGlanceCoord);
 begin
-  FutfHint.ApptHint(Info.Appt, Info.AbsX + 8, Info.AbsY + 8, True, True, False);
+  FHint.ApptHint(Info.Appt, Info.AbsX + 8, Info.AbsY + 8, True, True, False);
 end;
 
 procedure TJvTFCustomGlance.CheckViewerApptHint(X, Y: Integer);
@@ -2978,7 +2978,7 @@ var
   PtInfo : TJvTFGlanceCoord;
   Confirm : Boolean;
 begin
-  FutfHint.ReleaseHandle;
+  FHint.ReleaseHandle;
   Appt := DragInfo.Appt;
 
   // calc new info
@@ -3240,14 +3240,14 @@ begin
   If Assigned(FOnChange) Then
     FOnChange(Self);
     
-  If Assigned(utfControl) Then
-    utfControl.Invalidate;
+  If Assigned(Control) Then
+    Control.Invalidate;
 end;
 
 constructor TJvTFFrameAttr.Create(AOwner: TJvTFControl);
 begin
   Inherited Create;
-  FutfControl := AOwner;
+  FControl := AOwner;
 
   FStyle := fsFlat;
   FColor := clBlack;
