@@ -603,11 +603,9 @@ end;
 procedure TJvxSplitter.ControlKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
-    StopSizing(0, 0, False)
-  else
   if Assigned(FOldKeyDown) then
     FOldKeyDown(Sender, Key, Shift);
+  StopSizing(0, 0, False);
 end;
 
 procedure TJvxSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState;
