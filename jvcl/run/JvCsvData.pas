@@ -2303,7 +2303,7 @@ begin
 
   if Length(aCsvFieldDef) > 0 then
   begin
-    StringToCsvRow(aCsvFieldDef, ',', @CsvFieldRec, False, False);
+    StringToCsvRow(aCsvFieldDef, Separator, @CsvFieldRec, False, False);
 
     ColNum := 0;
     while CsvRowGetColumnMarker(@CsvFieldRec, ColNum) <> COLUMN_ENDMARKER do
