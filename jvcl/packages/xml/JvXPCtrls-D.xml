@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvXPCtrls" Design="-1">
   <Description>JVCL XP Controls</Description>
-  <C5PFlags/>
-  <C6PFlags/>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50</C5PFlags>
+  <C6PFlags>-LUDesignIde</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
     <Package Name="JvXPCtrls-R" Targets="all" Condition=""/>
-    <Package Name="rtl" Targets="C6,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vcl" Targets="C6,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="designide" Targets="C6,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
   </Requires>
   <Contains>

@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvDocking" Design="-1">
   <Description>JVCL Docking Components</Description>
-  <C5PFlags/>
-  <C6PFlags/>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50</C5PFlags>
+  <C6PFlags>-LUDesignIde</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="all" Condition=""/>
-    <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7p" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition="USEJVCL"/>
+    <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
     <Package Name="JvDocking-R" Targets="all" Condition=""/>
+    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="vclx50" Targets="C5,D5,D5s" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvDockingReg.pas" Targets="all" Formname="" Condition=""/>
