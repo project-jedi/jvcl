@@ -39,13 +39,7 @@ unit JvLinkLabelTree;
 interface
 
 uses
-  Classes, SysUtils,
-  {$IFDEF VCL}
-  Windows, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, Types,
-  {$ENDIF VisualCLX}
+  Classes, SysUtils, Windows, Graphics,
   JvLinkLabelTools, JvTypes;
 
 type

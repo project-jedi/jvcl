@@ -30,13 +30,7 @@ unit JvLinkedControls;
 interface
 
 uses
-  SysUtils,
-  {$IFDEF VCL}
-  Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls,
-  {$ENDIF VisualCLX}
+  SysUtils, Controls,
   Classes;
 
 type

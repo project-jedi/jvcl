@@ -36,11 +36,9 @@ interface
 
 uses
   TypInfo, SysUtils,
-  {$IFDEF VCL}
   ComCtrls, Graphics,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QComCtrls, QGraphics, Types,
+  Types,
   {$ENDIF VisualCLX}
   JvLinkLabelTree, JvLinkLabelTools, JvLinkLabel;
 

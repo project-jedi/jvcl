@@ -30,12 +30,7 @@ unit JvLogForm;
 interface
 
 uses
-  {$IFDEF VCL}
   Controls, Forms, Dialogs, ComCtrls, ActnList, ImgList, ToolWin,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QDialogs, QComCtrls, QActnList, QImgList,
-  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 type
@@ -58,19 +53,9 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   Printers;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QPrinters;
-  {$ENDIF VisualCLX}
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 procedure TFoLog.SaveExecute(Sender: TObject);
 var

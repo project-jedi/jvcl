@@ -56,12 +56,7 @@ interface
 
 uses
   Classes, SysUtils,
-  {$IFDEF VCL}
   Graphics, Windows,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, Types,
-  {$ENDIF VisualCLX}
   JvLinkLabelTree, JvLinkLabelTools, JvTypes;
 
 type
