@@ -823,14 +823,11 @@ begin
         begin
           Brush.Color := lBar.Colors.FocusedColor;
           if lBar.RoundedItemFrame>0 then
-//            RoundedFrame(ACanvas, Rect, clHighlight, lBar.RoundedItemFrame)
             RoundedFrame(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.RoundedItemFrame)
           else
           begin
             FillRect(Rect);
-//            Frame3D(ACanvas, Rect, clHighlight, clHighlight, 1)
-            Frame3D(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.Colors.ItemFrameColor, 1)
-
+            JvXPFrame3D(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.Colors.ItemFrameColor);
           end;
         end;
       end
@@ -844,7 +841,7 @@ begin
           else
           begin
             FillRect(Rect);
-            Frame3D(ACanvas, Rect, clHotLight, clHotLight, 1)
+            JvXPFrame3D(ACanvas, Rect, clHotLight, clHotLight);
           end;
         end;
       end
