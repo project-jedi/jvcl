@@ -31,8 +31,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 { history (JVCL Library versions):
   1.10:
    - first release;
@@ -78,7 +76,7 @@ Known Issues:
   1.41.1:
    - another fix for bug with incorrect error line and unit name
      if erorr occurred in used unit;
-   - fixed bug with "break" statement;
+   - fixed bug with "Break" statement;
    - "exit" statement;
    - "repeat" loop;
   1.50:
@@ -212,7 +210,6 @@ type
   PNameArray = ^TNameArray;
   TNameArray = array [0..cJvInterpreterMaxArgs] of string;
 
-
   {$IFNDEF COMPILER6_UP}
   TVarType = Word;
   {$ENDIF COMPILER6_UP}
@@ -289,7 +286,7 @@ type
     FParamTypeNames: TNameArray; //dejoy added
     FParamNames: TNameArray;
     FResTyp: Word;
-    FResTypName: String;
+    FResTypName: string;
     FResDataType: IJvInterpreterDataType;
     FPosBeg: Integer; { position in source }
     FPosEnd: Integer;
@@ -358,7 +355,7 @@ type
   TJvInterpreterVarList = class(TList)
   public
     destructor Destroy; override;
-    procedure Clear;override;
+    procedure Clear; override;
     procedure AddVar(const UnitName, Identifier, Typ: string; VTyp: Word;
       const Value: Variant; DataType: IJvInterpreterDataType);
     function FindVar(const UnitName, Identifier: string): TJvInterpreterVar;
@@ -582,7 +579,7 @@ type
     FISetList: TJvInterpreterIdentifierList; // write indexed properties
     FIDGetList: TJvInterpreterIdentifierList; // read default indexed properties
     FIDSetList: TJvInterpreterIdentifierList; // write default indexed properties
-    FIntfGetList: TJvInterpreterIdentifierList;  // interface methods
+    FIntfGetList: TJvInterpreterIdentifierList; // interface methods
     FDirectGetList: TJvInterpreterIdentifierList; // direct get list
     FClassList: TJvInterpreterIdentifierList; // delphi classes
     FConstList: TJvInterpreterIdentifierList; // delphi consts
@@ -598,7 +595,7 @@ type
     FEventList: TJvInterpreterIdentifierList;
     FSrcVarList: TJvInterpreterVarList; // variables, constants in JvInterpreter-source
     FSrcClassList: TJvInterpreterIdentifierList; // JvInterpreter-source classes
-    FDisableExternalFunctions: Boolean;      
+    FDisableExternalFunctions: Boolean;
     FSorted: Boolean;
     procedure CheckArgs(var Args: TJvInterpreterArgs; ParamCount: Integer;
       var ParamTypes: TTypeArray);
@@ -760,30 +757,30 @@ type
   public
     property DisableExternalFunctions: Boolean read FDisableExternalFunctions write FDisableExternalFunctions;
   //dejoy added begin
-    property SrcUnitList: TJvInterpreterIdentifierList Read FSrcUnitList;
-    property ExtUnitList: TJvInterpreterIdentifierList Read FExtUnitList;
-    property GetList: TJvInterpreterIdentifierList Read FGetList;
-    property SetList: TJvInterpreterIdentifierList Read FSetList;
-    property IGetList: TJvInterpreterIdentifierList Read FIGetList;
-    property ISetList: TJvInterpreterIdentifierList Read FISetList;
-    property IDGetList: TJvInterpreterIdentifierList Read FIDGetList;
-    property IDSetList: TJvInterpreterIdentifierList Read FIDSetList;
-    property IntfGetList: TJvInterpreterIdentifierList Read FIntfGetList;
-    property DirectGetList: TJvInterpreterIdentifierList Read FDirectGetList;
-    property ClassList: TJvInterpreterIdentifierList Read FClassList;
-    property ConstList: TJvInterpreterIdentifierList Read FConstList;
-    property FunctionList: TJvInterpreterIdentifierList Read FFunctionList;
-    property RecordList: TJvInterpreterIdentifierList Read FRecordList;
-    property RecordGetList: TJvInterpreterIdentifierList Read FRecordGetList;
-    property RecordSetList: TJvInterpreterIdentifierList Read FRecordSetList;
-    property OnGetList: TJvInterpreterIdentifierList Read FOnGetList;
-    property OnSetList: TJvInterpreterIdentifierList Read FOnSetList;
-    property SrcFunctionList: TJvInterpreterIdentifierList Read FSrcFunctionList;
-    property ExtFunctionList: TJvInterpreterIdentifierList Read FExtFunctionList;
-    property EventHandlerList: TJvInterpreterIdentifierList Read FEventHandlerList;
-    property EventList: TJvInterpreterIdentifierList Read FEventList;
-    property SrcVarList: TJvInterpreterVarList Read FSrcVarList;
-    property SrcClassList: TJvInterpreterIdentifierList Read FSrcClassList;
+    property SrcUnitList: TJvInterpreterIdentifierList read FSrcUnitList;
+    property ExtUnitList: TJvInterpreterIdentifierList read FExtUnitList;
+    property GetList: TJvInterpreterIdentifierList read FGetList;
+    property SetList: TJvInterpreterIdentifierList read FSetList;
+    property IGetList: TJvInterpreterIdentifierList read FIGetList;
+    property ISetList: TJvInterpreterIdentifierList read FISetList;
+    property IDGetList: TJvInterpreterIdentifierList read FIDGetList;
+    property IDSetList: TJvInterpreterIdentifierList read FIDSetList;
+    property IntfGetList: TJvInterpreterIdentifierList read FIntfGetList;
+    property DirectGetList: TJvInterpreterIdentifierList read FDirectGetList;
+    property ClassList: TJvInterpreterIdentifierList read FClassList;
+    property ConstList: TJvInterpreterIdentifierList read FConstList;
+    property FunctionList: TJvInterpreterIdentifierList read FFunctionList;
+    property RecordList: TJvInterpreterIdentifierList read FRecordList;
+    property RecordGetList: TJvInterpreterIdentifierList read FRecordGetList;
+    property RecordSetList: TJvInterpreterIdentifierList read FRecordSetList;
+    property OnGetList: TJvInterpreterIdentifierList read FOnGetList;
+    property OnSetList: TJvInterpreterIdentifierList read FOnSetList;
+    property SrcFunctionList: TJvInterpreterIdentifierList read FSrcFunctionList;
+    property ExtFunctionList: TJvInterpreterIdentifierList read FExtFunctionList;
+    property EventHandlerList: TJvInterpreterIdentifierList read FEventHandlerList;
+    property EventList: TJvInterpreterIdentifierList read FEventList;
+    property SrcVarList: TJvInterpreterVarList read FSrcVarList;
+    property SrcClassList: TJvInterpreterIdentifierList read FSrcClassList;
   //dejoy added end
   end;
 
@@ -933,8 +930,8 @@ type
     function ParseDataType: IJvInterpreterDataType;
     function NewEvent(const UnitName, FunctionName, EventType: string;
       Instance: TObject; const APropName: string): TSimpleEvent;
-    function FindEvent(const UnitName: string;Instance: TObject;
-      const PropName: string ): TJvInterpreterEvent;
+    function FindEvent(const UnitName: string; Instance: TObject;
+      const PropName: string): TJvInterpreterEvent;
     procedure InternalSetValue(const Identifier: string);
     function GetValue(const Identifier: string; var Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; override;
@@ -980,7 +977,7 @@ type
     procedure ExecFunction(Fun: TJvInterpreterFunctionDesc);
     procedure SourceChanged; override;
     procedure InterpretRecord(const Identifier: string);
-    property  EventHandlerList: TList read FEventHandlerList;
+    property EventHandlerList: TList read FEventHandlerList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1021,6 +1018,7 @@ type
   end;
 
   {$IFDEF COMPILER6_UP}
+
   TJvSimpleVariantType = class(TCustomVariantType)
   public
     procedure Clear(var V: TVarData); override;
@@ -1034,6 +1032,7 @@ type
   TJvPointerVariantType = class(TJvSimpleVariantType);
   TJvSetVariantType = class(TJvSimpleVariantType);
   TJvArrayVariantType = class(TJvSimpleVariantType);
+
   {$ENDIF COMPILER6_UP}
 
   EJvInterpreterError = class(Exception)
@@ -1166,7 +1165,7 @@ const
   noInstance = HINST(0);
   RFDNull: TJvInterpreterRecField = (Identifier: ''; Offset: 0; Typ: 0);
 
-  varByConst    = $8000;
+  varByConst = $8000;
 
   {JvInterpreter error codes}
   ieOk = 0; { Okay - no errors }
@@ -1270,7 +1269,7 @@ begin
   end;
   Result := FieldGlobalJvInterpreterAdapter;
 end;
-  
+
 { internal structures }
 
 {$IFDEF VisualCLX}
@@ -1468,49 +1467,49 @@ end;
 
 function V2O(const V: Variant): TObject;
 begin
-  Result := TVarData(V).vPointer;
+  Result := TVarData(V).VPointer;
 end;
 
 function O2V(O: TObject): Variant;
 begin
   TVarData(Result).VType := varObject;
-  TVarData(Result).vPointer := O;
+  TVarData(Result).VPointer := O;
 end;
 
 function V2C(const V: Variant): TClass;
 begin
-  Result := TVarData(V).vPointer;
+  Result := TVarData(V).VPointer;
 end;
 
 function C2V(C: TClass): Variant;
 begin
   TVarData(Result).VType := varClass;
-  TVarData(Result).vPointer := C;
+  TVarData(Result).VPointer := C;
 end;
 
 function V2P(const V: Variant): Pointer;
 begin
-  Result := TVarData(V).vPointer;
+  Result := TVarData(V).VPointer;
 end;
 
 function P2V(P: Pointer): Variant;
 begin
   TVarData(Result).VType := varPointer;
-  TVarData(Result).vPointer := P;
+  TVarData(Result).VPointer := P;
 end;
 
 function R2V(const ARecordType: string; ARec: Pointer): Variant;
 begin
-  TVarData(Result).vPointer := TJvInterpreterRecHolder.Create(ARecordType, ARec);
+  TVarData(Result).VPointer := TJvInterpreterRecHolder.Create(ARecordType, ARec);
   TVarData(Result).VType := varRecord;
 end;
 
 function V2R(const V: Variant): Pointer;
 begin
   if (TVarData(V).VType <> varRecord) or
-    not (TObject(TVarData(V).vPointer) is TJvInterpreterRecHolder) then
+    not (TObject(TVarData(V).VPointer) is TJvInterpreterRecHolder) then
     JvInterpreterError(ieROCRequired, -1);
-  Result := TJvInterpreterRecHolder(TVarData(V).vPointer).Rec;
+  Result := TJvInterpreterRecHolder(TVarData(V).VPointer).Rec;
 end;
 
 function P2R(const P: Pointer): Pointer;
@@ -1568,15 +1567,15 @@ begin
       Result := SizeOf(Double);
     varByte:
       Result := SizeOf(Byte);
-    varSmallInt:
-      Result := SizeOf(varSmallInt);
+    varSmallint:
+      Result := SizeOf(varSmallint);
     varDate:
       Result := SizeOf(Double);
     varEmpty:
       Result := SizeOf(TVarData);
   else
-  if ATyp = varObject then
-    Result := SizeOf(Integer);
+    if ATyp = varObject then
+      Result := SizeOf(Integer);
   end;
 end;
 
@@ -1621,7 +1620,7 @@ begin
         Result := varString
       else
       if Cmp(TypeName, 'smallint') then
-        Result := varSmallInt;
+        Result := varSmallint;
     'T', 't':
       if Cmp(TypeName, 'TObject') then
         Result := varObject
@@ -1630,7 +1629,7 @@ begin
         Result := varDate;
     'W', 'w':
       if Cmp(TypeName, 'word') then
-        Result := varSmallInt
+        Result := varSmallint
       else
       if Cmp(TypeName, 'wordbool') then
         Result := varBoolean;
@@ -1851,7 +1850,7 @@ begin
                   push AInt
                 end;
               end;
-            varSmallInt:
+            varSmallint:
               begin
                 AWord := Word(Args.Values[I]);
                 asm
@@ -1872,12 +1871,12 @@ begin
           case ParamDesc[I] and not varByRef of
             varInteger, { ttByte,} varBoolean:
               begin
-                APointer := @TVarData(Args.Values[I]).vInteger;
+                APointer := @TVarData(Args.Values[I]).VInteger;
                 asm
                   push APointer
                 end;
               end;
-            varSmallInt:
+            varSmallint:
               begin
                 APointer := @TVarData(Args.Values[I]).vSmallInt;
                 asm
@@ -1890,7 +1889,7 @@ begin
       end;
 
       case ResTyp of
-        varSmallInt:
+        varSmallint:
           Result := wFunc;
         varInteger:
           Result := iFunc;
@@ -1988,7 +1987,7 @@ end;
 
 function JvInterpreterArrayInit(const Dimension: Integer;
   const BeginPos, EndPos: TJvInterpreterArrayValues;
-  const ItemType: Integer; DataType : IJvInterpreterDataType): PJvInterpreterArrayRec;
+  const ItemType: Integer; DataType: IJvInterpreterDataType): PJvInterpreterArrayRec;
 var
   PP: PJvInterpreterArrayRec;
   SS: TStringList;
@@ -2002,7 +2001,7 @@ begin
   begin
     // For dynamic arrays BeginPos[AA] <= EndPos[AA]
     if (not (BeginPos[AA] <= EndPos[AA])) and
-      (Dimension <> 1) and (BeginPos[AA] <> 0) and (EndPos[AA] <> - 1)then
+      (Dimension <> 1) and (BeginPos[AA] <> 0) and (EndPos[AA] <> -1) then
       JvInterpreterError(ieArrayBadRange, -1);
   end;
 
@@ -2053,7 +2052,8 @@ begin
   begin
     if JvInterpreterArrayRec^.ItemType = varEmpty then
       for I := 0 to ArraySize - 1 do
-        JvInterpreterVarFree(Variant(PVarData(PChar(JvInterpreterArrayRec^.Memory) + I * JvInterpreterArrayRec^.ElementSize)^));
+        JvInterpreterVarFree(Variant(PVarData(PChar(JvInterpreterArrayRec^.Memory) + I *
+          JvInterpreterArrayRec^.ElementSize)^));
     FreeMem(JvInterpreterArrayRec^.Memory, (JvInterpreterArrayRec^.Size) *
       JvInterpreterArrayRec^.ElementSize);
     Dispose(JvInterpreterArrayRec);
@@ -2088,7 +2088,7 @@ begin
     varByte:
       PByte(Pointer(Integer(JvInterpreterArrayRec^.Memory) +
         (Offset * JvInterpreterArrayRec^.ElementSize)))^ := Value;
-    varSmallInt:
+    varSmallint:
       PSmallInt(Pointer(Integer(JvInterpreterArrayRec^.Memory) +
         (Offset * JvInterpreterArrayRec^.ElementSize)))^ := Value;
     varDate:
@@ -2098,7 +2098,7 @@ begin
       begin
         Value := VarAsType(Value, varString);
         TStringList(JvInterpreterArrayRec^.Memory).Strings[Offset] := Value;
-      end ;
+      end;
     varEmpty:
       JvInterpreterVarAssignment(Variant(PVarData(PChar(JvInterpreterArrayRec^.Memory) +
         Offset * JvInterpreterArrayRec^.ElementSize)^), Value)
@@ -2131,7 +2131,7 @@ begin
     varByte:
       Result := Byte(Pointer(Integer(JvInterpreterArrayRec^.Memory) + ((Offset) *
         JvInterpreterArrayRec^.ElementSize))^);
-    varSmallInt:
+    varSmallint:
       Result := SmallInt(Pointer(Integer(JvInterpreterArrayRec^.Memory) + ((Offset) *
         JvInterpreterArrayRec^.ElementSize))^);
     varDate:
@@ -2178,11 +2178,11 @@ begin
   begin
     ReallocMem(ArrayRec^.Memory, ASize * ArrayRec^.ElementSize);
     FillChar((PChar(ArrayRec^.Memory) + OldSize * ArrayRec^.ElementSize)^,
-     (ASize - OldSize) * ArrayRec^.ElementSize, 0);
+      (ASize - OldSize) * ArrayRec^.ElementSize, 0);
     for I := OldSize to ASize - 1 do
       if ArrayRec^.ItemType = varEmpty then
         ArrayRec^.DT.Init(Variant(Pointer(PChar(ArrayRec^.Memory) + I * ArrayRec^.ElementSize)^));
-    ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] + (ASize - OldSize );
+    ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] + (ASize - OldSize);
     ArrayRec^.Size := GetArraySize(ArrayRec^.Dimension, ArrayRec^.BeginPos, ArrayRec^.EndPos);
   end;
 end;
@@ -2231,9 +2231,9 @@ begin
   if ArrayRec^.ItemType = varEmpty then
     JvInterpreterVarFree(Variant(PVarData(PChar(ArrayRec^.Memory) +
       (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^));
-  Move((PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0] + 1) *ArrayRec^.ElementSize)^,
-    (PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0]) *ArrayRec^.ElementSize)^,
-    (ArrayRec^.EndPos[0]-AElement + 1) * ArrayRec^.ElementSize);
+  Move((PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0] + 1) * ArrayRec^.ElementSize)^,
+    (PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^,
+    (ArrayRec^.EndPos[0] - AElement + 1) * ArrayRec^.ElementSize);
   ReallocMem(ArrayRec^.Memory, ArrayRec^.Size * ArrayRec^.ElementSize);
 
 end;
@@ -2280,10 +2280,10 @@ begin
       Element[0] := I;
       ElementVariant := JvInterpreterArrayGetElement(Element, ArrayRec);
       case TVarData(ElementVariant).VType of
-        varInteger, varSmallInt:
+        varInteger, varSmallint:
           begin
             OAValues[I] := ElementVariant;
-            OA[I].vInteger := ElementVariant;
+            OA[I].VInteger := ElementVariant;
             OA[I].VType := vtInteger;
           end;
         varString, varOleStr:
@@ -2291,7 +2291,7 @@ begin
             // OA[I].vPChar := PChar(string(V[I]));
             // OA[I].VType := vtPChar;
             OAValues[I] := ElementVariant;
-            OA[I].vVariant := @OAValues[I];
+            OA[I].VVariant := @OAValues[I];
             OA[I].VType := vtVariant;
           end;
         varBoolean:
@@ -2303,15 +2303,13 @@ begin
         varDouble, varCurrency:
           begin
             OAValues[I] := ElementVariant;
-            OA[I].vExtended := TVarData(ElementVariant).vPointer;
+            OA[I].VExtended := TVarData(ElementVariant).VPointer;
             OA[I].VType := vtExtended;
           end;
-        else
-          begin
-            OAValues[I] := ElementVariant;
-            OA[I].vVariant := @OAValues[I];
-            OA[I].VType := vtVariant;
-          end;
+      else
+        OAValues[I] := ElementVariant;
+        OA[I].VVariant := @OAValues[I];
+        OA[I].VType := vtVariant;
       end;
     end;
   end
@@ -2321,7 +2319,7 @@ begin
     for I := VarArrayLowBound(V, 1) to VarArrayHighBound(V, 1) do
     begin
       case TVarData(V[I]).VType of
-        varInteger, varSmallInt:
+        varInteger, varSmallint:
           begin
             OAValues[I] := V[I];
             OA[I].VInteger := V[I];
@@ -2332,7 +2330,7 @@ begin
             // OA[I].vPChar := PChar(string(V[I]));
             // OA[I].VType := vtPChar;
             OAValues[I] := V[I];
-            OA[I].vVariant := @OAValues[I];
+            OA[I].VVariant := @OAValues[I];
             OA[I].VType := vtVariant;
           end;
         varBoolean:
@@ -2347,12 +2345,10 @@ begin
             OA[I].VExtended := TVarData(V[I]).VPointer;
             OA[I].VType := vtExtended;
           end;
-        else
-          begin
-            OAValues[I] := V[I];
-            OA[I].VVariant := @OAValues[I];
-            OA[I].VType := vtVariant;
-          end;
+      else
+        OAValues[I] := V[I];
+        OA[I].VVariant := @OAValues[I];
+        OA[I].VType := vtVariant;
       end;
     end;
   end;
@@ -2393,10 +2389,10 @@ begin
     end
     else
     if TVarData(V).VType = varArray then
-      begin
-        TVarData(Result) := TVarData(V);
-        TVarData(Result).VType := VarType;
-      end
+    begin
+      TVarData(Result) := TVarData(V);
+      TVarData(Result).VType := VarType;
+    end
     else
       Result := VarAsType(V, VarType);
   end;
@@ -2442,17 +2438,17 @@ end;
 
 procedure JvInterpreterVarFree(var V: Variant);
 var
-  TempType : TVarType;
+  TempType: TVarType;
 begin
   TempType := TVarData(V).VType;
   if TempType = varArray then
-    JvInterpreterArrayFree(PJvInterpreterArrayRec(TVarData(V).vPointer))
+    JvInterpreterArrayFree(PJvInterpreterArrayRec(TVarData(V).VPointer))
   else
   if TempType = varRecord then
     TJvInterpreterRecHolder(TVarData(V).VPointer).Free;
   {case TVarData(V).VType of
     varArray:
-      JvInterpreterArrayFree(PJvInterpreterArrayRec(TVarData(V).vPointer));
+      JvInterpreterArrayFree(PJvInterpreterArrayRec(TVarData(V).VPointer));
     varRecord:
       TJvInterpreterRecHolder(TVarData(V).VPointer).Free;
   end;}
@@ -2615,10 +2611,10 @@ begin
       (TVarData(Value).VType <> V.VTyp) then
     begin
       { Is it a passed-by-reference variable? }
-      if V.VTyp and VarByRef > 0 then
+      if V.VTyp and varByRef > 0 then
       begin
-        JvInterpreterVarAssignment(V.Value, JvInterpreterVarAsType(Value, V.VTyp and not VarByRef));
-        V.VTyp := V.VTyp or VarByRef;
+        JvInterpreterVarAssignment(V.Value, JvInterpreterVarAsType(Value, V.VTyp and not varByRef));
+        V.VTyp := V.VTyp or varByRef;
       end
       else
         JvInterpreterVarAssignment(V.Value, JvInterpreterVarAsType(Value, V.VTyp))
@@ -2635,24 +2631,25 @@ begin
 end;
 
 //dejoy added begin
+
 function TJvInterpreterFunctionDesc.GetParamTypeNames(Index: Integer): string;
 begin
-   Result := FParamTypeNames[Index];
+  Result := FParamTypeNames[Index];
 end;
 
 function TJvInterpreterFunctionDesc.GetDefine: string;
 var
-  Fun,s,t: string;
-  Param,Ret: string;
-  i: Integer;
+  Fun, S, t: string;
+  Param, Ret: string;
+  I: Integer;
 begin
-  Result:='';
-  if FIdentifier='' then
+  Result := '';
+  if FIdentifier = '' then
     Exit;
 
-  t:='%s %s(%s)%s;';
+  t := '%s %s(%s)%s;';
 
-  if FResTyp=varEmpty then
+  if FResTyp = varEmpty then
   begin
     Fun := 'procedure';
     Ret := '';
@@ -2660,24 +2657,24 @@ begin
   else
   begin
     Fun := 'function';
-    Ret := ': '+ResTypName;
+    Ret := ': ' + ResTypName;
   end;
 
-  for i := 0 to ParamCount-1 do
+  for I := 0 to ParamCount - 1 do
   begin
-    if (ParamTypes[i] and  varByRef) = varByRef then
-       s := 'Var '+ ParamNames[i]
+    if (ParamTypes[I] and varByRef) = varByRef then
+      S := 'Var ' + ParamNames[I]
     else
-    if (ParamTypes[i] and  varByConst) = varByConst then
-       s := 'Const '+ ParamNames[i]
+    if (ParamTypes[I] and varByConst) = varByConst then
+      S := 'Const ' + ParamNames[I]
     else
-       s := ParamNames[i];
+      S := ParamNames[I];
 
-    Param:=Param+s+': '+ParamTypeNames[i];
-    if i<> ParamCount-1 then
-      Param := Param+'; ';
+    Param := Param + S + ': ' + ParamTypeNames[I];
+    if I <> ParamCount - 1 then
+      Param := Param + '; ';
   end;
-  Result :=  Format(t,[Fun,FIdentifier,Param,Ret]);
+  Result := Format(t, [Fun, FIdentifier, Param, Ret]);
 end;
 //dejoy added end
 
@@ -2710,7 +2707,7 @@ begin
       JvInterpreterRecord.DestroyFunc(Rec)
     else
     begin
-      for I := 0 to JvInterpreterRecord.FieldCount-1 do
+      for I := 0 to JvInterpreterRecord.FieldCount - 1 do
       begin
         if JvInterpreterRecord.Fields[I].Typ = varEmpty then
           JvInterpreterVarFree(Variant(PVarData(PChar(Rec) + JvInterpreterRecord.Fields[I].Offset)^));
@@ -3000,7 +2997,7 @@ begin
       AddIDSetEx(FClassType, Func, ParamCount, ParamTypes, Data);
   for I := 0 to Source.FIntfGetList.Count - 1 do
     with TJvInterpreterIntfMethod(Source.FIntfGetList[I]) do
-       AddIntfGetEx(IID, Identifier, Func, ParamCount, ParamTypes, ResTyp, Data);
+      AddIntfGetEx(IID, Identifier, Func, ParamCount, ParamTypes, ResTyp, Data);
   for I := 0 to Source.FDirectGetList.Count - 1 do
     with TJvInterpreterDMethod(Source.FDirectGetList[I]) do
       AddDGetEx(FClassType, Identifier, Func, ParamCount, ParamTypes, ResTyp,
@@ -3221,7 +3218,7 @@ begin
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
   FIntfGetList.Add(JvInterpreterMethod);
-  FSorted := False;  // Ivan_ra
+  FSorted := False; // Ivan_ra
 end;
 
 procedure TJvInterpreterAdapter.AddDGet(AClassType: TClass; const Identifier: string;
@@ -3483,7 +3480,7 @@ procedure TJvInterpreterAdapter.AddSrcFun(const UnitName, Identifier: string;
 begin
   AddSrcFunEx(UnitName, Identifier, PosBeg, PosEnd, ParamCount, ParamTypes,
     ParamTypeNames, //dejoy added
-    ParamNames,ResTyp,AResTypName, AResDataType, nil);
+    ParamNames, ResTyp, AResTypName, AResDataType, nil);
 end;
 
 procedure TJvInterpreterAdapter.AddSrcFunEx(const AUnitName, AIdentifier: string;
@@ -3510,7 +3507,7 @@ begin
     Data := AData;
     ConvertParamTypes(AParamTypes, FunctionDesc.FParamTypes);
     ConvertParamNames(AParamNames, FunctionDesc.FParamNames);
-    ConvertParamNames(AParamTypeNames, FunctionDesc.FParamTypeNames);//dejoy added  for ParamTypeNames
+    ConvertParamNames(AParamTypeNames, FunctionDesc.FParamTypeNames); //dejoy added  for ParamTypeNames
     FunctionDesc.FResTyp := AResTyp;
   end;
   FSrcFunctionList.Add(JvInterpreterSrcFun);
@@ -3790,7 +3787,7 @@ var
             if (JvInterpreterMethod.ParamTypes[J] = varInteger) or
               (JvInterpreterMethod.ParamTypes[J] = varObject) or
               (JvInterpreterMethod.ParamTypes[J] = varPointer) or
-              (JvInterpreterMethod.ParamTypes[J] = varBoolean){?} then
+              (JvInterpreterMethod.ParamTypes[J] = varBoolean) {?} then
             begin
               AInt := Args.Values[J];
               asm
@@ -3798,7 +3795,7 @@ var
               end;
             end
             else
-            if JvInterpreterMethod.ParamTypes[J] = varSmallInt then
+            if JvInterpreterMethod.ParamTypes[J] = varSmallint then
             begin
               AWord := Word(Args.Values[J]);
               asm
@@ -3813,10 +3810,10 @@ var
             if (JvInterpreterMethod.ParamTypes[0] = varInteger) or
               (JvInterpreterMethod.ParamTypes[0] = varObject) or
               (JvInterpreterMethod.ParamTypes[0] = varPointer) or
-              (JvInterpreterMethod.ParamTypes[0] =  varBoolean) or
-              (JvInterpreterMethod.ParamTypes[0] = varSmallInt) or
+              (JvInterpreterMethod.ParamTypes[0] = varBoolean) or
+              (JvInterpreterMethod.ParamTypes[0] = varSmallint) or
               (JvInterpreterMethod.ParamTypes[0] = varString) then
-              REDX := TVarData(Args.Values[0]).vInteger
+              REDX := TVarData(Args.Values[0]).VInteger
             else
               JvInterpreterErrorN(ieDirectInvalidArgument, -1, Identifier);
 
@@ -3825,13 +3822,13 @@ var
               (JvInterpreterMethod.ParamTypes[1] = varObject) or
               (JvInterpreterMethod.ParamTypes[1] = varPointer) or
               (JvInterpreterMethod.ParamTypes[1] = varBoolean) or
-              (JvInterpreterMethod.ParamTypes[1] = varSmallInt) or
+              (JvInterpreterMethod.ParamTypes[1] = varSmallint) or
               (JvInterpreterMethod.ParamTypes[1] = varString) then
-              RECX := TVarData(Args.Values[1]).vInteger
+              RECX := TVarData(Args.Values[1]).VInteger
             else
               JvInterpreterErrorN(ieDirectInvalidArgument, -1, Identifier);
 
-          if (JvInterpreterMethod.ResTyp = varSmallInt) or
+          if (JvInterpreterMethod.ResTyp = varSmallint) or
             (JvInterpreterMethod.ResTyp = varInteger) or
             (JvInterpreterMethod.ResTyp = varBoolean) or
             (JvInterpreterMethod.ResTyp = varEmpty) or
@@ -3849,10 +3846,10 @@ var
 
           { clear result }
           if (JvInterpreterMethod.ResTyp = varInteger) or
-          (JvInterpreterMethod.ResTyp = varObject) then
+            (JvInterpreterMethod.ResTyp = varObject) then
             Value := iRes
           else
-          if JvInterpreterMethod.ResTyp = varSmallInt then
+          if JvInterpreterMethod.ResTyp = varSmallint then
             Value := iRes and $0000FFFF
           else
           if JvInterpreterMethod.ResTyp = varBoolean then
@@ -3889,7 +3886,7 @@ var
           case Typ of
             varInteger:
               Value := PInteger(Rec + Offset)^;
-            varSmallInt:
+            varSmallint:
               Value := SmallInt(PWord(Rec + Offset)^);
             varBoolean:
               Value := PBool(Rec + Offset)^;
@@ -4266,7 +4263,7 @@ var
           case Typ of
             varInteger:
               PInteger(Rec + Offset)^ := Value;
-            varSmallInt:
+            varSmallint:
               PWord(Rec + Offset)^ := Word(Value);
             varBoolean:
               PBool(Rec + Offset)^ := Value;
@@ -4436,7 +4433,7 @@ var
 begin
   if TVarData(Value).VType = varRecord then
   begin
-    RecHolder := TJvInterpreterRecHolder(TVarData(Value).vPointer);
+    RecHolder := TJvInterpreterRecHolder(TVarData(Value).VPointer);
     RecHolder.JvInterpreterRecord := TJvInterpreterRecord(GetRec(RecHolder.RecordType));
     Result := Assigned(RecHolder.JvInterpreterRecord);
   end
@@ -5448,7 +5445,7 @@ var
     FCurrArgs.Count := 0;
     for I := 0 to C - 1 do
       if (FCurrArgs.FVarNames[I] <> '') and ((FCurrArgs.Types[I] and varByRef) <> 0) then
-      { if not } SetValue(FCurrArgs.FVarNames[I], FCurrArgs.Values[I], FCurrArgs); { then
+      { if not }SetValue(FCurrArgs.FVarNames[I], FCurrArgs.Values[I], FCurrArgs); { then
           JvInterpreterErrorN(ieUnknownIdentifier, PosBeg, FCurrArgs.VarNames[I])};
     FCurrArgs.FHasVars := False;
   end;
@@ -5523,7 +5520,7 @@ begin
       JvInterpreterError(ieROCRequired, PosBeg);
 
     V := Null;
-    InternalGetValue(TVarData(Result).vPointer, TVarData(Result).VType, V);
+    InternalGetValue(TVarData(Result).VPointer, TVarData(Result).VType, V);
     JvInterpreterVarCopy(Result, V);
 
     NextToken;
@@ -5602,9 +5599,9 @@ begin
       for II2 := 0 to Args.Count - 1 do
       begin
         Bound := Args.Values[II2];
-        if Bound > VarArrayHighBound(Variable, II2 +1) then
+        if Bound > VarArrayHighBound(Variable, II2 + 1) then
           JvInterpreterError(ieArrayIndexOutOfBounds, -1);
-        if Bound < VarArrayLowBound(Variable, II2 +1) then
+        if Bound < VarArrayLowBound(Variable, II2 + 1) then
           JvInterpreterError(ieArrayIndexOutOfBounds, -1);
         AI[II2] := Bound;
       end;
@@ -5686,9 +5683,9 @@ begin
       for II2 := 0 to Args.Count - 1 do
       begin
         Bound := Args.Values[II2];
-        if Bound > VarArrayHighBound(Variable, II2 +1) then
+        if Bound > VarArrayHighBound(Variable, II2 + 1) then
           JvInterpreterError(ieArrayIndexOutOfBounds, -1);
-        if Bound < VarArrayLowBound(Variable, II2 +1) then
+        if Bound < VarArrayLowBound(Variable, II2 + 1) then
           JvInterpreterError(ieArrayIndexOutOfBounds, -1);
         AI[II2] := Bound;
       end;
@@ -5699,7 +5696,6 @@ begin
     else
       { problem }
       JvInterpreterError(ieArrayRequired, CurPos);
-
   end;
 end;
 
@@ -5828,7 +5824,7 @@ var
   FunArgs: TJvInterpreterArgs;
   VarNames: PNameArray;
 
-  procedure EnterFunction;{ TJvInterpreterFunction.InFunction local: initialization/entry of function scope }
+  procedure EnterFunction; { TJvInterpreterFunction.InFunction local: initialization/entry of function scope }
   var
     FC: PFunctionContext;
     I: Integer;
@@ -6235,7 +6231,7 @@ function TJvInterpreterFunction.NewEvent(const UnitName: string; const FunctionN
 begin
   Result := FAdapter.NewEvent(UnitName, FunctionName, EventType, Self, Instance, APropName);
   if not Assigned(Result) then
-    Result := GlobalJvInterpreterAdapter.NewEvent(UnitName, FunctionName, EventType, Self, Instance,APropName);
+    Result := GlobalJvInterpreterAdapter.NewEvent(UnitName, FunctionName, EventType, Self, Instance, APropName);
   if not Assigned(Result) then
     JvInterpreterErrorN(ieEventNotRegistered, -1, EventType);
 end;
@@ -6243,24 +6239,24 @@ end;
 function TJvInterpreterFunction.FindEvent(const UnitName: string;
   Instance: TObject; const PropName: string): TJvInterpreterEvent;
 var
-  i: Integer;
-  Event,Event1: TJvInterpreterEvent;
+  I: Integer;
+  Event, Event1: TJvInterpreterEvent;
   Method: TMethod;
 begin
-  Result:=nil;
-  Method := GetPropMethod(Instance,PropName);
+  Result := nil;
+  Method := GetPropMethod(Instance, PropName);
   Event1 := TJvInterpreterEvent(Method.Data);
-  for i :=0  to FEventList.Count-1 do
+  for I := 0 to FEventList.Count - 1 do
   begin
-    Event := TJvInterpreterEvent(FEventList[i]);
-    if (Event1=Event) or
-      (cmp(Event.FUnitName,UnitName) and
-      (Event.FInstance=Instance) and
-      cmp(Event.FPropName,PropName)) then
+    Event := TJvInterpreterEvent(FEventList[I]);
+    if (Event1 = Event) or
+      (Cmp(Event.FUnitName, UnitName) and
+      (Event.FInstance = Instance) and
+      Cmp(Event.FPropName, PropName)) then
     begin
-      Result:= Event;
+      Result := Event;
       Exit;
-    end;  
+    end;
   end;
 
 end;
@@ -6281,7 +6277,7 @@ begin
   if (FCurrArgs.Obj <> nil) and (FCurrArgs.ObjTyp = varObject) then
   begin
     FunctionDesc := FAdapter.FindFunDesc(FCurUnitName, Token);
-    if (FunctionDesc <> nil) or ((FunctionDesc = nil) and cmp(Token,kwNIL)) then
+    if (FunctionDesc <> nil) or ((FunctionDesc = nil) and Cmp(Token, kwNIL)) then
     begin
       PushState;
       PopSt := True;
@@ -6293,33 +6289,33 @@ begin
           PropInf := GetPropInfo(FCurrArgs.Obj.ClassInfo, Identifier);
           if Assigned(PropInf) and (PropInf.PropType^.Kind = tkMethod) then
           begin
-           { method assignment }
-            if  not cmp(Token,kwNIL) then
+            { method assignment }
+            if not Cmp(Token, kwNIL) then
             begin
-              Event:=FindEvent(FCurUnitName,FCurrArgs.Obj,PropInf^.Name);
-              if Event<>nil then
+              Event := FindEvent(FCurUnitName, FCurrArgs.Obj, PropInf^.Name);
+              if Event <> nil then
               begin
                 FEventList.Remove(Event);
                 Event.Free;
               end;
               Method := TMethod(NewEvent(FCurUnitName, FunctionName,
-                PropInf^.PropType^.Name,FCurrArgs.Obj {FCurInstance},PropInf^.Name));
+                PropInf^.PropType^.Name, FCurrArgs.Obj {FCurInstance}, PropInf^.Name));
               SetMethodProp(FCurrArgs.Obj, PropInf, Method);
               FEventList.Add(Method.Data);
             end
             else
-            begin   //Fixed Assign nil to Method property bugs - dejoy-2004-3-13
-              Method:=GetMethodProp(FCurrArgs.Obj, PropInf);
-              if Method.Data<>nil then
+            begin //Fixed Assign nil to Method property bugs - dejoy-2004-3-13
+              Method := GetMethodProp(FCurrArgs.Obj, PropInf);
+              if Method.Data <> nil then
               begin
                 FEventList.Remove(Method.Data);
-                t:=Method.Data ;
+                t := Method.Data;
                 if t is TJvInterpreterEvent then
                   t.Free;
               end;
 
-              Method.Code:=nil;
-              Method.Data:=nil;
+              Method.Code := nil;
+              Method.Data := nil;
               SetMethodProp(FCurrArgs.Obj, PropInf, Method);
             end;
 
@@ -6665,11 +6661,11 @@ var
   begin
     Result := False;
     for I := 0 to Length(ExpressionArray) - 1 do
-     if (CaseSel >= ExpressionArray[I][0]) and (CaseSel <= ExpressionArray[I][1]) then
-     begin
-       Result := True;
-       Exit;
-     end;
+      if (CaseSel >= ExpressionArray[I][0]) and (CaseSel <= ExpressionArray[I][1]) then
+      begin
+        Result := True;
+        Exit;
+      end;
   end;
 
 begin
@@ -6705,7 +6701,7 @@ begin
             begin
               if I = 0 then
                 ExpressionArray[Length(ExpressionArray) - 1][1] := Expression;
-              break;
+              Break;
             end;
             NextToken;
           end;
@@ -7081,10 +7077,10 @@ begin
     { This code is not very clear }
     // Typ := varArray;
     NextToken;
-    if (TTyp <> ttLs) and (TTyp <> ttOf) then
-      ErrorExpected('''[' +  RsEXOrX + kwOF + '''');
+    if (TTyp <> ttLS) and (TTyp <> ttOf) then
+      ErrorExpected('''[' + RsEXOrX + kwOF + '''');
     { Parse Array Range }
-    if TTyp = ttLs then
+    if TTyp = ttLS then
     begin
       Dimension := 0;
       repeat
@@ -7105,7 +7101,7 @@ begin
         end;
 
         NextToken;
-        if  TTyp <> ttDoublePoint then
+        if TTyp <> ttDoublePoint then
           ErrorExpected('''..''');
 
         NextToken;
@@ -7133,7 +7129,7 @@ begin
         Inc(Dimension);
       until TTyp <> ttCol; { , }
 
-      if TTyp <> ttRs then
+      if TTyp <> ttRS then
         ErrorExpected(''']''');
       NextToken;
       if TTyp <> ttOf then
@@ -7146,8 +7142,8 @@ begin
       ArrayBegin[0] := 0;
       ArrayEnd[0] := -1;
     end;
-      NextToken;
-      ArrayType := TypeName2VarTyp(Token);
+    NextToken;
+    ArrayType := TypeName2VarTyp(Token);
     // recursion for arrays
     ArrayDT := ParseDataType;
 
@@ -7192,7 +7188,7 @@ var
 
   procedure ReadParams;
   var
-    VarParam,VarConst: Boolean;
+    VarParam, VarConst: Boolean;
     ParamType: string;
     iBeg: Integer;
   begin
@@ -7209,7 +7205,7 @@ var
         VarParam := True;
         NextToken;
       end;
-       if TTyp = ttConst then
+      if TTyp = ttConst then
       begin
         VarConst := True;
 //        NextToken;
@@ -7236,11 +7232,11 @@ var
                   Break;
                 NextToken;
               end;
-              FunctionDesc.FParamTypeNames[FunctionDesc.FParamCount]:=ParamType; //dejoy added for ParamTypeNames
+              FunctionDesc.FParamTypeNames[FunctionDesc.FParamCount] := ParamType; //dejoy added for ParamTypeNames
               Inc(FunctionDesc.FParamCount);
               while iBeg < FunctionDesc.FParamCount do
               begin
-                FunctionDesc.FParamTypeNames[iBeg]:=ParamType; //dejoy added  for ParamTypeNames
+                FunctionDesc.FParamTypeNames[iBeg] := ParamType; //dejoy added  for ParamTypeNames
                 FunctionDesc.FParamTypes[iBeg] := TypeName2VarTyp(ParamType);
                 if VarParam then
                   FunctionDesc.FParamTypes[iBeg] := FunctionDesc.FParamTypes[iBeg] or
@@ -7295,7 +7291,7 @@ begin
       FunctionDesc.FResDataType := ParseDataType;
       FunctionDesc.FResTyp := FunctionDesc.FResDataType.GetTyp;
       FunctionDesc.FResTypName := TypName;
-      
+
       if FunctionDesc.FResTyp = 0 then
         FunctionDesc.FResTyp := varVariant;
       NextToken;
@@ -7331,7 +7327,7 @@ begin
         FCurrArgs.Clear;
         if not GetValue(Token, FVResult, FCurrArgs) then
           JvInterpreterErrorN(ieUnknownIdentifier, PosBeg, Token);
-        DllName := vResult;
+        DllName := VResult;
       end
       else
         ErrorExpected(LoadStr2(irStringConstant)); {DEBUG!!!}
@@ -7378,7 +7374,8 @@ begin
       SkipToEnd;
       with FunctionDesc do
         FAdapter.AddSrcFun(FCurUnitName {??!!}, FIdentifier, FPosBeg, CurPos,
-          FParamCount, FParamTypes,FParamTypeNames{dejoy added}, FParamNames, FResTyp,FResTypName, FResDataType, nil);
+          FParamCount, FParamTypes, FParamTypeNames {dejoy added}, FParamNames, FResTyp, FResTypName, FResDataType,
+            nil);
     end;
   finally
     FunctionDesc.Free;
@@ -7924,7 +7921,6 @@ begin
   Result := FFunctionStack;
 end;
 
-
 //=== { TJvInterpreterMethodList } ===========================================
 
 procedure TJvInterpreterMethodList.Sort(Compare: TListSortCompare);
@@ -7993,7 +7989,7 @@ begin
     end;
   end;
   JvInterpreterVarCopy(Value, R2V(Identifier, Rec));
-  RecHolder := TJvInterpreterRecHolder(TVarData(Value).vPointer);
+  RecHolder := TJvInterpreterRecHolder(TVarData(Value).VPointer);
   RecHolder.JvInterpreterRecord := Self;
 end;
 
@@ -8093,3 +8089,4 @@ finalization
   {$ENDIF JvInterpreter_DEBUG}
 
 end.
+

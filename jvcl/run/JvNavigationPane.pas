@@ -196,7 +196,7 @@ type
     FStyleLink: TJvNavStyleLink;
     FParentStyleManager: Boolean;
     {$IFDEF VCL}
-    FDragZone: integer;
+    FDragZone: Integer;
     FOldCursor: TCursor;
     {$ENDIF VCL}
     procedure SetColorFrom(const Value: TColor);
@@ -208,15 +208,15 @@ type
     {$IFDEF VCL}
     procedure SetCursor(const Value: TCursor);
     function GetDragZoneRect: TRect;
-    function MouseInDragZone(X, Y: Integer): boolean;
+    function MouseInDragZone(X, Y: Integer): Boolean;
     {$ENDIF VCL}
   protected
     procedure Paint; override;
     procedure EnabledChanged; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     {$IFDEF VCL}
-    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure WMMouseMove(var Message: TWMMouseMove); message WM_MOUSEMOVE;
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
     {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
@@ -225,13 +225,13 @@ type
     // NB! Color is published but not used
     property Align default alBottom;
     property AutoSnap default False;
-    property Cursor {$IFDEF VCL} write SetCursor {$ENDIF VCL} default crSizeNS;
+    property Cursor {$IFDEF VCL} write SetCursor {$ENDIF} default crSizeNS;
     {$IFDEF VCL}
     // DragZone is the number of pixels in the center of the control that constitutes the draggable area.
     // For example, with a left/right aligned splitter and a DragZone of 100, 50 pixels above and 50 pixels below
     // the vertical midpoint can be clicked to start the sizing. Any clicks outside this area will not start a sizing operation
     // If DragZone <= 0, the entire control is a drag zone
-    property DragZone: integer read FDragZone write FDragZone default 0;
+    property DragZone: Integer read FDragZone write FDragZone default 0;
     {$ENDIF VCL}
     property ResizeStyle default rsUpdate;
     property ColorFrom: TColor read FColorFrom write SetColorFrom default TColor($B78676);
@@ -601,7 +601,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function HasImage: boolean;
+    function HasImage: Boolean;
   published
     property Picture: TPicture read FPicture write SetPicture;
     property Stretch: Boolean read FStretch write SetStretch;
@@ -1019,7 +1019,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function HidePage(Page: TJvCustomPage): TJvCustomPage; override;
-    function ShowPage(Page: TJvCustomPage; PageIndex: integer = -1): TJvCustomPage; override;
+    function ShowPage(Page: TJvCustomPage; PageIndex: Integer = -1): TJvCustomPage; override;
     procedure UpdatePositions;
   protected
     {$IFDEF VCL}
@@ -1186,7 +1186,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure RegisterChanges(Value: TJvNavStyleLink);
-    procedure UnRegisterChanges(Value: TJvNavStyleLink);
+    procedure UnregisterChanges(Value: TJvNavStyleLink);
   published
     property Colors: TJvNavPanelColors read FColors write SetColors stored IsColorsStored;
     property Fonts: TJvNavPanelFonts read FFonts write SetFonts stored IsFontsStored;
@@ -1283,8 +1283,8 @@ begin
   FColors.OnChange := DoColorsChange;
   FParentStyleManager := True;
   {$IFDEF VisualCLX}
-  ParentFont := false;
-  ParentColor := false;
+  ParentFont := False;
+  ParentColor := False;
   {$ENDIF VisualCLX}
 end;
 
@@ -1353,7 +1353,7 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-      FStyleManager.UnRegisterChanges(FStyleLink);
+      FStyleManager.UnregisterChanges(FStyleLink);
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -1422,9 +1422,10 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 procedure TJvIconPanel.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  inherited;
+  inherited ControlsListChanged(Control, Inserting);
   InternalStyleManagerChanged(Self, StyleManager);
 end;
 
@@ -1432,11 +1433,12 @@ function TJvIconPanel.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
 end;
+
 {$ENDIF VisualCLX}
 
 procedure TJvIconPanel.ParentStyleManagerChange(var Msg: TMessage);
 begin
-  InternalStylemanagerChanged(Self, StyleManager);
+  InternalStyleManagerChanged(Self, StyleManager);
 end;
 
 //=== { TJvCustomNavigationPane } ============================================
@@ -1547,7 +1549,7 @@ begin
     UpdatePositions;
 end;
 
-function TJvCustomNavigationPane.ShowPage(Page: TJvCustomPage; PageIndex: integer): TJvCustomPage;
+function TJvCustomNavigationPane.ShowPage(Page: TJvCustomPage; PageIndex: Integer): TJvCustomPage;
 begin
   Result := inherited ShowPage(Page, PageIndex);
   if Result <> nil then
@@ -1781,7 +1783,7 @@ begin
   {$ENDIF VisualCLX}
   with FNavPanelFont do
     Result := ((StyleManager = nil) or (StyleManager.Theme = nptCustom)) and ((Name <> F.Name) or (Size <> F.Size) or (Style <> [fsBold]) or
-      (Color <> F.Color) or (Pitch <> F.Pitch) or (Charset <> F.CharSet));
+      (Color <> F.Color) or (Pitch <> F.Pitch) or (Charset <> F.Charset));
 end;
 
 function TJvCustomNavigationPane.IsNavPanelFontHotTrackStored: Boolean;
@@ -1842,7 +1844,7 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-      FStyleManager.UnRegisterChanges(FStyleLink);
+      FStyleManager.UnregisterChanges(FStyleLink);
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -2329,7 +2331,7 @@ begin
   if FImages <> Value then
   begin
     if FImages <> nil then
-      FImages.UnRegisterChanges(FChangeLink);
+      FImages.UnregisterChanges(FChangeLink);
     FImages := Value;
     if FImages <> nil then
     begin
@@ -2355,7 +2357,7 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-      FStyleManager.UnRegisterChanges(FStyleLink);
+      FStyleManager.UnregisterChanges(FStyleLink);
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -2562,7 +2564,7 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-      FStyleManager.UnRegisterChanges(FStyleLink);
+      FStyleManager.UnregisterChanges(FStyleLink);
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -3108,7 +3110,7 @@ begin
   if NavPanel <> nil then
     NavPanel.Caption := Value;
   if AutoHeader then
-    Header.Caption := StripHotKey(Value);
+    Header.Caption := StripHotkey(Value);
 end;
 
 procedure TJvNavPanelPage.SetColors(const Value: TJvNavPanelColors);
@@ -3128,7 +3130,7 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-      FStyleManager.UnRegisterChanges(FStyleLink);
+      FStyleManager.UnregisterChanges(FStyleLink);
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -3500,7 +3502,7 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-      FStyleManager.UnRegisterChanges(FStyleLink);
+      FStyleManager.UnregisterChanges(FStyleLink);
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -3572,21 +3574,21 @@ begin
   end;
 end;
 
-function TJvOutlookSplitter.MouseInDragZone(X, Y: Integer): boolean;
+function TJvOutlookSplitter.MouseInDragZone(X, Y: Integer): Boolean;
 begin
   Result := (DragZone <= 0) or PtInRect(GetDragZoneRect, Point(X, Y));
 end;
 
-procedure TJvOutlookSplitter.WMLButtonDown(var Message: TWMLButtonDown);
+procedure TJvOutlookSplitter.WMLButtonDown(var Msg: TWMLButtonDown);
 begin
-  if MouseInDragZone(Message.XPos, Message.YPos) then
+  if MouseInDragZone(Msg.XPos, Msg.YPos) then
     inherited;
 end;
 
-procedure TJvOutlookSplitter.WMMouseMove(var Message: TWMMouseMove);
+procedure TJvOutlookSplitter.WMMouseMove(var Msg: TWMMouseMove);
 begin
   inherited;
-  if MouseInDragZone(Message.XPos, Message.YPos) then
+  if MouseInDragZone(Msg.XPos, Msg.YPos) then
   begin
     if Cursor <> FOldCursor then
       inherited Cursor := FOldCursor;
@@ -3739,7 +3741,7 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-      FStyleManager.UnRegisterChanges(FStyleLink);
+      FStyleManager.UnregisterChanges(FStyleLink);
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -3776,7 +3778,7 @@ begin
   if FImages <> Value then
   begin
     if FImages <> nil then
-      FImages.UnRegisterChanges(FChangeLink);
+      FImages.UnregisterChanges(FChangeLink);
     FImages := Value;
     if FImages <> nil then
     begin
@@ -3976,7 +3978,7 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-      FStyleManager.UnRegisterChanges(FStyleLink);
+      FStyleManager.UnregisterChanges(FStyleLink);
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -4056,7 +4058,7 @@ end;
 destructor TJvNavPaneStyleManager.Destroy;
 begin
   while FClients.Count > 0 do
-    UnRegisterChanges(TJvNavStyleLink(FClients.Last));
+    UnregisterChanges(TJvNavStyleLink(FClients.Last));
   FClients.Free;
   FClients := nil;
   FColors.Free;
@@ -4309,7 +4311,7 @@ begin
   end;
 end;
 
-procedure TJvNavPaneStyleManager.UnRegisterChanges(Value: TJvNavStyleLink);
+procedure TJvNavPaneStyleManager.UnregisterChanges(Value: TJvNavStyleLink);
 var
   I: Integer;
 begin
@@ -4338,7 +4340,7 @@ end;
 destructor TJvNavStyleLink.Destroy;
 begin
   if Sender is TJvNavPaneStyleManager then
-    TJvNavPaneStyleManager(Sender).UnRegisterChanges(Self);
+    TJvNavPaneStyleManager(Sender).UnregisterChanges(Self);
   inherited Destroy;
 end;
 
@@ -4800,7 +4802,7 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-      FStyleManager.UnRegisterChanges(FStyleLink);
+      FStyleManager.UnregisterChanges(FStyleLink);
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -5184,7 +5186,7 @@ begin
   if FImages <> Value then
   begin
     if FImages <> nil then
-      FImages.UnRegisterChanges(FChangeLink);
+      FImages.UnregisterChanges(FChangeLink);
     FImages := Value;
     if FImages <> nil then
     begin
@@ -5212,43 +5214,43 @@ end;
 
 function TJvNavPaneBackgroundImage.CalcRect(ADestRect: TRect): TRect;
 var
-  w, h, cw, ch: Integer;
+  W, H, CW, CH: Integer;
   XYAspect: Double;
 begin
-  w := Picture.Width;
-  h := Picture.Height;
-  cw := ADestRect.Right - ADestRect.Left;
-  ch := ADestRect.Bottom - ADestRect.Top;
-  if Stretch or (Proportional and ((w > cw) or (h > ch))) then
+  W := Picture.Width;
+  H := Picture.Height;
+  CW := ADestRect.Right - ADestRect.Left;
+  CH := ADestRect.Bottom - ADestRect.Top;
+  if Stretch or (Proportional and ((W > CW) or (H > CH))) then
   begin
-    if Proportional and (w > 0) and (h > 0) then
+    if Proportional and (W > 0) and (H > 0) then
     begin
-      XYAspect := w / h;
-      if w > h then
+      XYAspect := W / H;
+      if W > H then
       begin
-        w := cw;
-        h := Trunc(cw / XYAspect);
-        if h > ch then // woops, too big
+        W := CW;
+        H := Trunc(CW / XYAspect);
+        if H > CH then // woops, too big
         begin
-          h := ch;
-          w := Trunc(ch * XYAspect);
+          H := CH;
+          W := Trunc(CH * XYAspect);
         end;
       end
       else
       begin
-        h := ch;
-        w := Trunc(ch * XYAspect);
-        if w > cw then // woops, too big
+        H := CH;
+        W := Trunc(CH * XYAspect);
+        if W > CW then // woops, too big
         begin
-          w := cw;
-          h := Trunc(cw / XYAspect);
+          W := CW;
+          H := Trunc(CW / XYAspect);
         end;
       end;
     end
     else
     begin
-      w := cw;
-      h := ch;
+      W := CW;
+      H := CH;
     end;
   end;
 
@@ -5256,12 +5258,12 @@ begin
   begin
     Left := ADestRect.Left;
     Top := ADestRect.Top;
-    Right := ADestRect.Left + w;
-    Bottom := ADestRect.Top + h;
+    Right := ADestRect.Left + W;
+    Bottom := ADestRect.Top + H;
   end;
 
   if Center then
-    OffsetRect(Result, (cw - w) div 2, (ch - h) div 2);
+    OffsetRect(Result, (CW - W) div 2, (CH - H) div 2);
 end;
 
 procedure TJvNavPaneBackgroundImage.Change;
@@ -5276,7 +5278,7 @@ procedure TJvNavPaneBackgroundImage.DrawImage(Canvas: TCanvas; ARect: TRect);
 
   procedure TileImage;
   var
-    X, Y: integer;
+    X, Y: Integer;
     G: TGraphic;
   begin
     G := Picture.Graphic;
@@ -5304,7 +5306,7 @@ begin
       StretchDraw(CalcRect(ARect), Picture.Graphic);
 end;
 
-function TJvNavPaneBackgroundImage.HasImage: boolean;
+function TJvNavPaneBackgroundImage.HasImage: Boolean;
 begin
   with Picture do
     Result := (Graphic <> nil) and (Width <> 0) and (Height <> 0);

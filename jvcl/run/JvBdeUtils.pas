@@ -156,7 +156,7 @@ procedure InitRSRUN(Database: TDatabase; const ConName: string;
 { begin JvDBUtil }
 { ExecuteSQLScript executes SQL script }
 
-procedure ExecuteSQLScript(Base: TDataBase; const Script: string; const Commit: TCommit; OnProgress: TJvDBProgressEvent; const UserData: Integer);
+procedure ExecuteSQLScript(Base: TDatabase; const Script: string; const Commit: TCommit; OnProgress: TJvDBProgressEvent; const UserData: Integer);
 
 { GetQueryResult executes SQL Query and returns Result as Variant }
 
@@ -278,7 +278,7 @@ var
   Value: Longint;
 begin
   Value := 0;
-  Check(DbiGetProp(HDBIObj(Handle), PropName, @Value, SizeOf(Value), Length));
+  Check(DbiGetProp(hDBIObj(Handle), PropName, @Value, SizeOf(Value), Length));
   Result := Value;
 end;
 
@@ -291,7 +291,7 @@ begin
   if Database.IsSQLBased then
   begin
     Q := #0;
-    DbiGetProp(HDBIObj(Database.Handle), dbQUOTECHAR, @Q, SizeOf(Q), Len);
+    DbiGetProp(hDBIObj(Database.Handle), dbQUOTECHAR, @Q, SizeOf(Q), Len);
     if Q <> #0 then
       Result := Q;
   end
@@ -837,10 +837,10 @@ begin
     with Clone do
     try
       ReadOnly := True;
-      InitFromDataset(TDBDataSet(DataSet), True);
+      InitFromDataSet(TDBDataSet(DataSet), True);
       OnFilterRecord := RecordFilter;
       Filtered := True;
-      if not (BOF and EOF) then
+      if not (Bof and Eof) then
       begin
         First;
         Result := True;
@@ -988,7 +988,7 @@ begin
   try
     Table.SetRange(FieldValues, FieldValues);
     try
-      while not Table.EOF do
+      while not Table.Eof do
         Table.Delete;
     finally
       Table.CancelRange;
@@ -1033,20 +1033,20 @@ procedure PackTable(Table: TTable);
 { This routine copied and modified from demo unit TableEnh.pas
   from Borland Int. }
 var
-  { FCurProp holds information about the structure of the table }
-  FCurProp: CurProps;
+  { CurProp holds information about the structure of the table }
+  CurProp: CURProps;
   { Specific information about the table structure, indexes, etc. }
   TblDesc: CRTblDesc;
   { Uses as a handle to the database }
-  hDb: hDbiDB;
+  hDb: hDbiDb;
   { Path to the currently opened table }
   TablePath: array [0..dbiMaxPathLen] of Char;
   Exclusive: Boolean;
 begin
   if not Table.Active then
     _DBError(SDataSetClosed);
-  Check(DbiGetCursorProps(Table.Handle, FCurProp));
-  if StrComp(FCurProp.szTableType, szParadox) = 0 then
+  Check(DbiGetCursorProps(Table.Handle, CurProp));
+  if StrComp(CurProp.szTableType, szPARADOX) = 0 then
   begin
     { Call DbiDoRestructure procedure if PARADOX table }
     hDb := nil;
@@ -1057,9 +1057,9 @@ begin
       { Place the table name in descriptor }
       StrPCopy(szTblName, Table.TableName);
       { Place the table type in descriptor }
-      StrCopy(szTblType, FCurProp.szTableType);
+      StrCopy(szTblType, CurProp.szTableType);
       bPack := True;
-      bProtected := FCurProp.bProtected;
+      bProtected := CurProp.bProtected;
     end;
     { Get the current table's directory. This is why the table MUST be
       opened until now }
@@ -1084,7 +1084,7 @@ begin
     end;
   end
   else
-    if StrComp(FCurProp.szTableType, szDBase) = 0 then
+    if StrComp(CurProp.szTableType, szDBASE) = 0 then
   begin
     { Call DbiPackTable procedure if dBase table }
     Exclusive := Table.Exclusive;
@@ -1109,11 +1109,11 @@ end;
 procedure FetchAllRecords(DataSet: TBDEDataSet);
 begin
   with DataSet do
-    if not EOF then
+    if not Eof then
     begin
       CheckBrowseMode;
       Check(DbiSetToEnd(Handle));
-      Check(DbiGetPriorRecord(Handle, dbiNoLock, nil, nil));
+      Check(DbiGetPriorRecord(Handle, dbiNOLOCK, nil, nil));
       CursorPosChanged;
       UpdateCursorPos;
     end;
@@ -1168,7 +1168,7 @@ end;
 
 function DataSetRecNo(DataSet: TDataSet): Longint;
 var
-  FCurProp: CURProps;
+  CurProp: CURProps;
   FRecProp: RECProps;
 begin
   Result := -1;
@@ -1180,17 +1180,17 @@ begin
       Result := DataSet.RecNo;
       Exit;
     end;
-    if DbiGetCursorProps(TBDEDataSet(DataSet).Handle, FCurProp) <> DBIERR_NONE then
+    if DbiGetCursorProps(TBDEDataSet(DataSet).Handle, CurProp) <> DBIERR_NONE then
       Exit;
-    if (StrComp(FCurProp.szTableType, szParadox) = 0) or
-      (FCurProp.iSeqNums = 1) then
+    if (StrComp(CurProp.szTableType, szPARADOX) = 0) or
+      (CurProp.iSeqNums = 1) then
     begin
       DataSet.GetCurrentRecord(nil);
       if DbiGetSeqNo(TBDEDataSet(DataSet).Handle, Result) <> DBIERR_NONE then
         Result := -1;
     end
     else
-      if StrComp(FCurProp.szTableType, szDBase) = 0 then
+      if StrComp(CurProp.szTableType, szDBASE) = 0 then
     begin
       DataSet.GetCurrentRecord(nil);
       if DbiGetRecord(TBDEDataSet(DataSet).Handle, dbiNOLOCK, nil, @FRecProp) = DBIERR_NONE
@@ -1420,7 +1420,7 @@ begin
   begin
     if Database.IsSQLBased then
     begin
-      Check(DbiGetProp(HDBIOBJ(Database.Handle), dbNATIVEHNDL,
+      Check(DbiGetProp(hDBIObj(Database.Handle), dbNATIVEHNDL,
         Buffer, BufSize, Len));
       Result := Buffer;
     end
@@ -1558,7 +1558,7 @@ begin
 end;
 { begin JvDBUtil }
 
-procedure ExecuteSQLScript(Base: TDataBase; const Script: string; const Commit: TCommit; OnProgress: TJvDBProgressEvent; const UserData: Integer);
+procedure ExecuteSQLScript(Base: TDatabase; const Script: string; const Commit: TCommit; OnProgress: TJvDBProgressEvent; const UserData: Integer);
 var
   N: Integer;
   Term: Char;
@@ -1961,7 +1961,7 @@ begin
     OpType := crADD;
     TblDesc.pecrRintOp := @OpType;
     StrPCopy(TblDesc.szTblName, Tbl.TableName);
-    StrCopy(TblDesc.szTblType, szParadox);
+    StrCopy(TblDesc.szTblType, szPARADOX);
     Check(DbiDoRestructure(hDb, 1, @TblDesc, nil, nil, nil, False));
   finally
     Check(DbiCloseDatabase(hDb));

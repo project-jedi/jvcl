@@ -49,10 +49,10 @@ type
     FCaptionAlignment: TCaptionAlignment;
     FColors: TJvgGroupBoxColors;
     FIllumination: TJvgIllumination;
-    FTransparent: boolean;
-    FTransparentCaption: boolean;
+    FTransparent: Boolean;
+    FTransparentCaption: Boolean;
     FOptions: TglGroupBoxOptions;
-    FCollapsed: boolean;
+    FCollapsed: Boolean;
     FAfterPaint: TNotifyEvent;
     FOnCollapsed: TNotifyEvent;
     FOnExpanded: TNotifyEvent;
@@ -65,22 +65,22 @@ type
     FullHeight: Integer;
     CaptionRect: TRect;
     ptScroll: TPoint;
-    fScrolling: boolean;
+    fScrolling: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
 
     procedure SetCaptionAlignment(Value: TCaptionAlignment);
     procedure SetCaptionTextStyle(Value: TglTextStyle);
-    procedure SetCollapsed(Value: boolean);
+    procedure SetCollapsed(Value: Boolean);
     procedure SetOptions(Value: TglGroupBoxOptions);
-    procedure SetTransparent(Value: boolean);
-    procedure SetTransparentCaption(Value: boolean);
+    procedure SetTransparent(Value: Boolean);
+    procedure SetTransparentCaption(Value: Boolean);
     procedure SetGroupIndex(Value: Integer);
     function GetGlyphCollapsed: TBitmap;
     procedure SetGlyphCollapsed(Value: TBitmap);
     function GetGlyphExpanded: TBitmap;
     procedure SetGlyphExpanded(Value: TBitmap);
 
-    procedure Collapse_(fCollapse: boolean);
+    procedure Collapse_(fCollapse: Boolean);
     procedure SmthChanged(Sender: TObject);
     function GetCaption: string;
     procedure SetCaption(const Value: string);
@@ -92,17 +92,14 @@ type
 
     procedure ComputeCaptionRect;
 
-    //    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+    //    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
 
-    procedure WMLButtonDown(var Message: TWMLButtonDown); message
-      WM_LBUTTONDOWN;
-    procedure WMMouseMove(var Message: TWMMouseMove); message WM_MOUSEMOVE;
-    procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
-    procedure CMEnabledChanged(var Message: TMessage);
-      message CM_ENABLEDCHANGED;
-
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
+    procedure WMLButtonUp(var Msg: TWMLButtonUp); message WM_LBUTTONUP;
+    procedure CMEnabledChanged(var Msg: TMessage);  message CM_ENABLEDCHANGED;
   public
-    procedure Collapse(fCollapse: boolean);
+    procedure Collapse(fCollapse: Boolean);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -147,17 +144,16 @@ type
       FCaptionShift;
     property CaptionTextStyle: TglTextStyle
       read FCaptionTextStyle write SetCaptionTextStyle default fstNone;
-    property Collapsed: boolean read FCollapsed write SetCollapsed default
-      false;
+    property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
     property Colors: TJvgGroupBoxColors read FColors write FColors;
     property Gradient: TJvgGradient read FGradient write FGradient;
     property Illumination: TJvgIllumination read FIllumination write
-      FIllumination stored false;
+      FIllumination stored False;
     property Options: TglGroupBoxOptions read FOptions write SetOptions;
-    property Transparent: boolean
-      read FTransparent write SetTransparent default false;
-    property TransparentCaption: boolean
-      read FTransparentCaption write SetTransparentCaption default false;
+    property Transparent: Boolean
+      read FTransparent write SetTransparent default False;
+    property TransparentCaption: Boolean
+      read FTransparentCaption write SetTransparentCaption default False;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default
       0;
     property GlyphCollapsed: TBitmap read GetGlyphCollapsed write
@@ -201,8 +197,8 @@ begin
   FCaptionBorder.Inner := bvSpace;
   FGradient.FromColor := clBlack;
   FGradient.ToColor := clGray;
-  FCaptionShift.x := 8;
-  FCaptionShift.y := 0;
+  FCaptionShift.X := 8;
+  FCaptionShift.Y := 0;
   FCaptionTextStyle := fstNone;
   FCaptionAlignment := fcaNone;
   FOptions := [fgoCanCollapse, fgoFilledCaption, fgoFluentlyCollapse,
@@ -254,49 +250,49 @@ begin
   Inc(Rect.Top, 1);
 end;
 
-procedure TJvgGroupBox.WMLButtonDown(var Message: TWMLButtonDown);
+procedure TJvgGroupBox.WMLButtonDown(var Msg: TWMLButtonDown);
 var
   pt: TPoint;
 begin
   inherited;
   if fgoIgnoreMouse in Options then
     Exit;
-  pt.x := Message.Pos.x;
-  pt.y := Message.Pos.y;
+  pt.X := Msg.Pos.X;
+  pt.Y := Msg.Pos.Y;
   if (fgoCanCollapse in Options) and PtInRect(CaptionRect, pt) then
     Collapse(not Collapsed)
   else
   begin
     Screen.Cursor := crHandPoint;
-    {ptScroll.x := pt.x;} ptScroll.y := pt.y;
-    fScrolling := true;
+    {ptScroll.X := pt.X;} ptScroll.Y := pt.Y;
+    fScrolling := True;
   end;
 
 end;
 
-procedure TJvgGroupBox.WMMouseMove(var Message: TWMMouseMove);
+procedure TJvgGroupBox.WMMouseMove(var Msg: TWMMouseMove);
 begin
   if fScrolling and (Parent is TScrollBox) then
     (Parent as TScrollBox).VertScrollBar.Position := (Parent as
-      TScrollBox).VertScrollBar.Position + ptScroll.y - Message.Pos.y;
+      TScrollBox).VertScrollBar.Position + ptScroll.Y - Msg.Pos.Y;
   inherited;
 end;
 
-procedure TJvgGroupBox.WMLButtonUp(var Message: TWMLButtonUp);
+procedure TJvgGroupBox.WMLButtonUp(var Msg: TWMLButtonUp);
 begin
   inherited;
   if fgoIgnoreMouse in Options then
     Exit;
-  fScrolling := false;
+  fScrolling := False;
   Screen.Cursor := crDefault;
 end;
 
-procedure TJvgGroupBox.CMEnabledChanged(var Message: TMessage);
+procedure TJvgGroupBox.CMEnabledChanged(var Msg: TMessage);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to ControlCount - 1 do
-    Controls[i].Enabled := Enabled;
+  for I := 0 to ControlCount - 1 do
+    Controls[I].Enabled := Enabled;
 end;
 
 procedure TJvgGroupBox.ReadFullHeight(Reader: TReader);
@@ -345,17 +341,17 @@ begin
   with Canvas do
   begin
     Canvas.Font.Assign(Self.Font);
-    r := GetClientRect;
+    R := GetClientRect;
     //Font := Self.Font;
-//    if CaptionHeight = 0 then H := TextHeight('0') - FCaptionShift.y
-//                         else H := CaptionHeight - FCaptionShift.y
-    H := TextHeight(Text) - FCaptionShift.y;
+//    if CaptionHeight = 0 then H := TextHeight('0') - FCaptionShift.Y
+//                         else H := CaptionHeight - FCaptionShift.Y
+    H := TextHeight(Text) - FCaptionShift.Y;
     R := Rect(0, H div 2 { - 1}, Width, Height);
     if FGradient.Active then
-      GradientBox(Handle, r, FGradient, PS_SOLID, 1);
+      GradientBox(Handle, R, FGradient, PS_SOLID, 1);
 
-    dec(r.right);
-    dec(r.bottom);
+    Dec(R.Right);
+    Dec(R.Bottom);
     DrawBoxEx(Canvas.Handle, R,
       Border.Sides, Border.Inner, Border.Outer,
       Border.Bold, Color.Client, FGradient.Active or Transparent);
@@ -380,9 +376,9 @@ begin
       if not TransparentCaption then
       begin
         Canvas.Brush.Color := Colors.Caption;
-        Windows.FillRect(Canvas.Handle, r, Canvas.Brush.Handle);
+        Windows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
       end;
-      GradientBox(Canvas.Handle, r, FCaptionGradient, PS_SOLID, 1);
+      GradientBox(Canvas.Handle, R, FCaptionGradient, PS_SOLID, 1);
 
       NewR := DrawBoxEx(Canvas.Handle, R, CaptionBorder.Sides,
         CaptionBorder.Inner, CaptionBorder.Outer,
@@ -398,9 +394,9 @@ begin
           DrawState := fdsDefault
         else
           DrawState := fdsDisabled;
-        CreateBitmapExt(Handle, Glyph, NewR, 0, max(0, (NewR.bottom -
-          NewR.top - Glyph.Height) div 2),
-          fwoNone, DrawState, true,
+        CreateBitmapExt(Handle, Glyph, NewR, 0, max(0, (NewR.Bottom -
+          NewR.Top - Glyph.Height) div 2),
+          fwoNone, DrawState, True,
           GetPixel(Glyph.Canvas.Handle, 0, Glyph.Height - 1)
           {TransparentColor},
           {DisabledMaskColor} 0);
@@ -410,22 +406,22 @@ begin
         (NewR.Top), NewR, Caption,
         IIF(Enabled, FCaptionTextStyle, fstPushed), fgoDelineatedText in
         Options,
-        {fNeedUpdateOnlyMainText} false, Color.Text, Color.Delineate,
+        {fNeedUpdateOnlyMainText} False, Color.Text, Color.Delineate,
         Colors.Highlight, Colors.Shadow,
         FIllumination, nil {Gradient}, Font);
 
     end;
   end;
-  //  if Transparent then for i:=0 to ComponentCount-1 do
-  //    TControl(Components[i]).Repaint;
+  //  if Transparent then for I:=0 to ComponentCount-1 do
+  //    TControl(Components[I]).Repaint;
   if Assigned(AfterPaint) then
     AfterPaint(Self);
 end;
 
-procedure TJvgGroupBox.Collapse(fCollapse: boolean);
+procedure TJvgGroupBox.Collapse(fCollapse: Boolean);
 var
-  i: Integer;
-  fAnotherExpandedWasFound: boolean;
+  I: Integer;
+  fAnotherExpandedWasFound: Boolean;
 begin
   if csLoading in ComponentState then
     Exit;
@@ -436,16 +432,16 @@ begin
       Exit;
     if (FGroupIndex <> 0) and (fgoOneAlwaysExpanded in Options) then
     begin //...One Stay Always Expanded in group
-      fAnotherExpandedWasfound := false;
-      for i := 0 to Owner.ComponentCount - 1 do
+      FAnotherExpandedWasFound := False;
+      for I := 0 to Owner.ComponentCount - 1 do
         with TControl(Owner) do
-          if (Components[i] is TJvgGroupBox) and
-            (TJvgGroupBox(Components[i]).GroupIndex = FGroupIndex) then
+          if (Components[I] is TJvgGroupBox) and
+            (TJvgGroupBox(Components[I]).GroupIndex = FGroupIndex) then
             if
-              (not TJvgGroupBox(Components[i]).Collapsed) and
-              (Components[i] <> Self) then
+              (not TJvgGroupBox(Components[I]).Collapsed) and
+              (Components[I] <> Self) then
             begin
-              fAnotherExpandedWasFound := true;
+              fAnotherExpandedWasFound := True;
               break;
             end; //...are another expanded controls in group
       if not fAnotherExpandedWasFound then
@@ -454,12 +450,12 @@ begin
   end
   else
   if (FGroupIndex <> 0) and (fgoCollapseOther in Options) then
-    for i := 0 to Owner.ComponentCount - 1 do
+    for I := 0 to Owner.ComponentCount - 1 do
       with TControl(Owner) do
-        if (Components[i] is TJvgGroupBox) and
-          (TJvgGroupBox(Components[i]).GroupIndex = FGroupIndex) and
-          (Components[i] <> Self) then
-          TJvgGroupBox(Components[i]).Collapsed := true;
+        if (Components[I] is TJvgGroupBox) and
+          (TJvgGroupBox(Components[I]).GroupIndex = FGroupIndex) and
+          (Components[I] <> Self) then
+          TJvgGroupBox(Components[I]).Collapsed := True;
 
   Collapse_(fCollapse);
   if fCollapse and Assigned(FOnCollapsed) then
@@ -469,15 +465,15 @@ begin
 
 end;
 
-procedure TJvgGroupBox.Collapse_(fCollapse: boolean);
+procedure TJvgGroupBox.Collapse_(fCollapse: Boolean);
 var
-  i {, Step}: Integer;
+  I {, Step}: Integer;
   {  DC: HDC;
     pt: TPoint;
     R, CR: TRect;
     Scroll: HRGN;
     SpaceBrush: HBRUSH;
-    fFirst: boolean;
+    fFirst: Boolean;
     LastTickCount: Integer;}
 begin
   if Align = alClient then
@@ -494,17 +490,16 @@ begin
     //...set all Children invisible
     if (fgoHideChildrenWhenCollapsed in Options) or (fgoSaveChildFocus in
       Options) then
-      for i := 0 to Owner.ComponentCount - 1 do
+      for I := 0 to Owner.ComponentCount - 1 do
         with TControl(Owner) do
-          if (Components[i] is TControl) and
-            (TControl(Components[i]).Parent = Self) then
+          if (Components[I] is TControl) and
+            (TControl(Components[I]).Parent = Self) then
           begin
-            if (fgoSaveChildFocus in Options) and (Components[i] is
-              TWinControl)
-              and TWinControl(Components[i]).Focused then
-              ChildFocusedControl := TWinControl(Components[i]);
+            if (fgoSaveChildFocus in Options) and (Components[I] is TWinControl) and
+              TWinControl(Components[I]).Focused then
+              ChildFocusedControl := TWinControl(Components[I]);
             if fgoHideChildrenWhenCollapsed in Options then //...hide
-              TControl(Components[i]).Visible := false;
+              TControl(Components[I]).Visible := False;
           end;
 
   end
@@ -516,11 +511,11 @@ begin
 
     //...set all Children visible
     if fgoHideChildrenWhenCollapsed in Options then
-      for i := 0 to Owner.ComponentCount - 1 do
+      for I := 0 to Owner.ComponentCount - 1 do
         with TControl(Owner) do
-          if (Components[i] is TControl) and
-            (TControl(Components[i]).Parent = Self) then
-            TControl(Components[i]).Visible := true;
+          if (Components[I] is TControl) and
+            (TControl(Components[I]).Parent = Self) then
+            TControl(Components[I]).Visible := True;
 
     if ChildFocusedControl <> nil then
     try
@@ -540,33 +535,33 @@ begin
     if FImage=nil then FImage := TBitmap.Create;
     FImage.Height := Height;
     FImage.Width := Width;
-    GetWindowImage( Self, true{fDrawSelf}, true{fDrawChildWindows}, FImage.Canvas.Handle );
+    GetWindowImage( Self, True{fDrawSelf}, True{fDrawChildWindows}, FImage.Canvas.Handle );
 
     DC := GetDC(0);
-    CR := ClientRect; dec(CR.Bottom,CaptionRect.Bottom);
-    pt.x := 0; pt.y := CaptionRect.Bottom+1;//16;
+    CR := ClientRect; Dec(CR.Bottom,CaptionRect.Bottom);
+    pt.X := 0; pt.Y := CaptionRect.Bottom+1;//16;
     pt := ClientToScreen(pt);
-    offsetRect( CR, pt.x, pt.y );
+    offsetRect( CR, pt.X, pt.Y );
     R := CR;
-    Scroll := CreateRectRgn( R.Left, R.top, R.Right-R.Left, R.Bottom-R.Top );
-    inc( R.top );
-    i := Height-Canvas.TextHeight('0y');
+    Scroll := CreateRectRgn( R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top );
+    Inc( R.Top );
+    I := Height-Canvas.TextHeight('0y');
     // Step := 1;//max( Height div 100, 1 );
 
     SpaceBrush := CreateSolidBrush( ColorToRGB(TGroupBox(Parent).Color) );
-    // fFirst := true; LastTickCount := GetTickCount;
+    // fFirst := True; LastTickCount := GetTickCount;
     FullHeight := Height;
     if fgoFluentlyCollapse in Options then
-    while Height > CaptionRect.bottom+1 do
+    while Height > CaptionRect.Bottom+1 do
     begin
       Application.ProcessMessages;
 //      ScrollDC( DC, 0, -Step, R, CR,  Scroll, nil);
       //if fFirst then
 //      begin
-//        FillRect( DC, Rect( R.Left, R.Bottom-Step, R.right, R.Bottom ), SpaceBrush );
-//        fFirst := false;
+//        FillRect( DC, Rect( R.Left, R.Bottom-Step, R.Right, R.Bottom ), SpaceBrush );
+//        fFirst := False;
 //      end;
-      Height := max(CaptionRect.bottom, Height - Height * 30 div 100);
+      Height := max(CaptionRect.Bottom, Height - Height * 30 div 100);
       ValidateRect(Handle, @CaptionRect);
 //      while GetTickCount - LastTickCount <= 0 do;
 //      Step := GetTickCount - LastTickCount; if Step > 20 then Step := 20;
@@ -574,7 +569,7 @@ begin
     end;
     DeleteObject(SpaceBrush);
 //    FullHeight := Height;
-    Height := CaptionRect.bottom+1;//max( Canvas.TextHeight(Caption), 16 );
+    Height := CaptionRect.Bottom+1;//max( Canvas.TextHeight(Caption), 16 );
     DeleteObject( Scroll );
     ReleaseDC( 0, DC );
 
@@ -591,7 +586,7 @@ begin
     end;
     Height := FullHeight;
   end;
-  InValidateRect(Handle, @CaptionRect, false);
+  InValidateRect(Handle, @CaptionRect, False);
   FCollapsed := fCollapse;
   *)
 end;
@@ -618,7 +613,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvgGroupBox.SetCollapsed(Value: boolean);
+procedure TJvgGroupBox.SetCollapsed(Value: Boolean);
 begin
   if FCollapsed = Value then
     Exit;
@@ -635,14 +630,14 @@ begin
   if FOptions = Value then
     Exit;
   FOptions := Value;
-  //  if not(fgoCanCollapse in Options) then Collapsed := false;
+  //  if not(fgoCanCollapse in Options) then Collapsed := False;
   if Assigned(Parent) then
     CalcShadowAndHighlightColors((Parent as TWinControl).Brush.Color,
       TJvgLabelColors(Colors));
   Invalidate;
 end;
 
-procedure TJvgGroupBox.SetTransparent(Value: boolean);
+procedure TJvgGroupBox.SetTransparent(Value: Boolean);
 begin
   if FTransparent = Value then
     Exit;
@@ -650,7 +645,7 @@ begin
   RecreateWnd;
 end;
 
-procedure TJvgGroupBox.SetTransparentCaption(Value: boolean);
+procedure TJvgGroupBox.SetTransparentCaption(Value: Boolean);
 begin
   if FTransparentCaption = Value then
     Exit;
@@ -660,7 +655,7 @@ end;
 
 procedure TJvgGroupBox.SetGroupIndex(Value: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
   if FGroupIndex = Value then
     Exit;
@@ -668,12 +663,12 @@ begin
   if csLoading in ComponentState then
     Exit;
   if (not Collapsed) and (FGroupIndex <> 0) then
-    for i := 0 to Owner.ComponentCount - 1 do
+    for I := 0 to Owner.ComponentCount - 1 do
       with TControl(Owner) do
-        if (Components[i] is TJvgGroupBox) and
-          (TJvgGroupBox(Components[i]).GroupIndex = FGroupIndex) and
-          (Components[i] <> Self) then
-          TJvgGroupBox(Components[i]).Collapsed := true;
+        if (Components[I] is TJvgGroupBox) and
+          (TJvgGroupBox(Components[I]).GroupIndex = FGroupIndex) and
+          (Components[I] <> Self) then
+          TJvgGroupBox(Components[I]).Collapsed := True;
 end;
 
 function TJvgGroupBox.GetGlyphCollapsed: TBitmap;
@@ -724,13 +719,13 @@ end;
 procedure TJvgGroupBox.ComputeCaptionRect;
 var
   R : TRect;
-  i, RW, GlyphWidth: Integer;
+  I, RW, GlyphWidth: Integer;
   Interspace: Integer;
 begin
   Canvas.Font.Assign(Self.Font);
   
   Interspace := 2;
-  R := Rect(FCaptionShift.x, 0, 0, Canvas.TextHeight(Text) - FCaptionShift.y);
+  R := Rect(FCaptionShift.X, 0, 0, Canvas.TextHeight(Text) - FCaptionShift.Y);
 
   if Assigned(FGlyphExpanded) then
     GlyphWidth := FGlyphExpanded.Width
@@ -739,28 +734,27 @@ begin
   if Assigned(FGlyphCollapsed) then
     GlyphWidth := max(FGlyphCollapsed.Width, GlyphWidth);
 
-  DrawText(Canvas.Handle, PChar(Text), Length(Text), R, DT_LEFT or DT_SINGLELINE
-    or DT_CALCRECT);
+  DrawText(Canvas.Handle, PChar(Text), Length(Text), R, DT_LEFT or DT_SINGLELINE or DT_CALCRECT);
 
-  inc(R.right, Interspace + GlyphWidth);
+  Inc(R.Right, Interspace + GlyphWidth);
   with CaptionBorder do
   begin
-    i := 0;
+    I := 0;
     if Inner <> bvNone then
     begin
-      inc(i, 2);
+      Inc(I, 2);
       if Bold then
-        inc(i);
+        Inc(I);
     end;
     if Outer <> bvNone then
     begin
-      inc(i, 2);
+      Inc(I, 2);
       if Bold then
-        inc(i);
+        Inc(I);
     end;
 
-    inc(R.Right, i);
-    inc(R.Bottom, i);
+    Inc(R.Right, I);
+    Inc(R.Bottom, I);
   end;
 
   RW := R.Right - R.Left;
@@ -783,21 +777,21 @@ begin
     fcaWidth:
       begin
         R.Left := 0;
-        R.Right := width - 1;
+        R.Right := Width - 1;
       end;
   end;
   if fgoDelineatedText in Options then
-    inc(r.bottom, 2);
+    Inc(R.Bottom, 2);
   if CaptionTextStyle = fstShadow then
   begin
     if fgoDelineatedText in Options then
-      inc(r.bottom, FIllumination.ShadowDepth - 2)
+      Inc(R.Bottom, FIllumination.ShadowDepth - 2)
     else
-      inc(r.bottom, FIllumination.ShadowDepth)
+      Inc(R.Bottom, FIllumination.ShadowDepth)
   end
   else
   if CaptionTextStyle <> fstNone then
-    inc(r.bottom, 2);
+    Inc(R.Bottom, 2);
 
   CaptionRect := R;
 end;

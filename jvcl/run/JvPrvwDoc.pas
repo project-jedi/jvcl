@@ -247,13 +247,13 @@ type
     procedure DrawPreview(PageIndex: Integer; APageRect, APrintRect: TRect);
 
     procedure SetBorderStyle(const Value: TBorderStyle);
-    function GetPage(Index: Integer): TMetaFile;
+    function GetPage(Index: Integer): TMetafile;
     function GetPageCount: Integer;
     procedure SetDeviceInfo(const Value: TJvDeviceInfo);
     procedure SetOptions(const Value: TJvPreviewPageOptions);
     procedure SetSelectedPage(const Value: Integer);
     procedure SetTopRow(Value: Integer);
-    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure CalcScrollRange;
@@ -281,7 +281,7 @@ type
     procedure Paint; override;
     procedure DoDrawPreviewPage(PageIndex: Integer; Canvas: TCanvas;
       PageRect, PrintRect: TRect); dynamic;
-    function DoAddPage(AMetaFile: TMetaFile; PageIndex: Integer): Boolean; dynamic;
+    function DoAddPage(AMetaFile: TMetafile; PageIndex: Integer): Boolean; dynamic;
 
     property TopRow: Integer read GetTopRow write SetTopRow;
     property SelectedPage: Integer read FSelectedPage write SetSelectedPage;
@@ -314,7 +314,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function IsUpdating: Boolean;
-    function Add: TMetaFile;
+    function Add: TMetafile;
     procedure Delete(Index: Integer);
     procedure Clear;
     procedure PrintRange(const APrinter: IJvPrinter; StartPage, EndPage,
@@ -326,7 +326,7 @@ type
     property TotalCols: Integer read FTotalCols;
     property TotalRows: Integer read FTotalRows;
     property VisibleRows: Integer read FVisibleRows;
-    property Pages[Index: Integer]: TMetaFile read GetPage;
+    property Pages[Index: Integer]: TMetafile read GetPage;
     property PageCount: Integer read GetPageCount;
   end;
 
@@ -427,7 +427,7 @@ end;
 type
   TDeactiveHintThread = class(TThread)
   private
-    FHintWindow: ThintWindow;
+    FHintWindow: THintWindow;
     FDelay: Integer;
   protected
     procedure Execute; override;
@@ -518,7 +518,7 @@ end;
 
 function TJvPreviewPageOptions.GetHorzSpacing: Cardinal;
 begin
-  Result := Max(FHorzSpacing, abs(Shadow.Offset));
+  Result := Max(FHorzSpacing, Abs(Shadow.Offset));
 end;
 
 function TJvPreviewPageOptions.GetRows: Cardinal;
@@ -528,7 +528,7 @@ end;
 
 function TJvPreviewPageOptions.GetVertSpacing: Cardinal;
 begin
-  Result := Max(FVertSpacing, abs(Shadow.Offset));
+  Result := Max(FVertSpacing, Abs(Shadow.Offset));
 end;
 
 procedure TJvPreviewPageOptions.SetColor(const Value: TColor);
@@ -859,7 +859,7 @@ end;
 
 //=== { TJvCustomPreviewControl } ============================================
 
-function TJvCustomPreviewControl.Add: TMetaFile;
+function TJvCustomPreviewControl.Add: TMetafile;
 begin
   repeat
     Result := TMetafile.Create;
@@ -925,16 +925,16 @@ end;
 
 procedure TJvCustomPreviewControl.Clear;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to FPages.Count - 1 do
-    TMetaFile(FPages[i]).Free;
+  for I := 0 to FPages.Count - 1 do
+    TMetafile(FPages[I]).Free;
   FPages.Count := 0;
   if not (csDestroying in ComponentState) then
     Change;
 end;
 
-procedure TJvCustomPreviewControl.CMCtl3DChanged(var Message: TMessage);
+procedure TJvCustomPreviewControl.CMCtl3DChanged(var Msg: TMessage);
 begin
   if NewStyleControls and (FBorderStyle = bsSingle) then
     RecreateWnd;
@@ -985,7 +985,7 @@ end;
 
 procedure TJvCustomPreviewControl.Delete(Index: Integer);
 begin
-  TMetaFile(FPages[Index]).Free;
+  TMetafile(FPages[Index]).Free;
   FPages.Delete(Index);
   Change;
 end;
@@ -999,12 +999,12 @@ begin
   inherited Destroy;
 end;
 
-function TJvCustomPreviewControl.DoAddPage(AMetaFile: TMetaFile;
+function TJvCustomPreviewControl.DoAddPage(AMetaFile: TMetafile;
   PageIndex: Integer): Boolean;
 var
   ACanvas: TMetaFileCanvas;
   APageRect, APrintRect: TRect;
-  i: Integer;
+  I: Integer;
 begin
   Result := False;
   ACanvas := TMetaFileCanvas.Create(AMetaFile, DeviceInfo.ReferenceHandle);
@@ -1016,9 +1016,9 @@ begin
     SetViewportExtEx(ACanvas.Handle, PhysicalWidth, PhysicalHeight, nil);
   end;
   // NB! Font.Size is changed when PPI is changed, so store and reset
-  i := ACanvas.Font.Size;
+  I := ACanvas.Font.Size;
   ACanvas.Font.PixelsPerInch := DeviceInfo.LogPixelsY;
-  ACanvas.Font.Size := i;
+  ACanvas.Font.Size := I;
 
   if Assigned(FOnAddPage) then
     with DeviceInfo do
@@ -1065,7 +1065,7 @@ end;
 
 procedure TJvCustomPreviewControl.DrawPages(ACanvas: TCanvas; Offset: TPoint);
 var
-  i, j, k, m, AOffsetX, AOffsetY, APageIndex: Integer;
+  I, J, K, M, AOffsetX, AOffsetY, APageIndex: Integer;
   APageRect, APrintRect: TRect;
 //  si: TScrollInfo;
   tmp: Boolean;
@@ -1094,7 +1094,7 @@ begin
       FOptions.VertSpacing)
   else
     AOffsetY := -Offset.Y + Integer(Options.VertSpacing);
-  k := 0;
+  K := 0;
   with ACanvas do
   begin
     Brush.Color := Color;
@@ -1113,17 +1113,17 @@ begin
     // $ENDIF DEBUG
     }
     Pen.Style := psSolid;
-    APageIndex := k * TotalCols;
-    m := Max(0, PageCount - 1);
-//    if not IsPageMode and (k > 0) then
-//      Dec(k);
-    for i := k to m do
+    APageIndex := K * TotalCols;
+    M := Max(0, PageCount - 1);
+//    if not IsPageMode and (K > 0) then
+//      Dec(K);
+    for I := K to M do
     begin
       APrintRect := FPrintRect;
       APageRect := FPreviewRect;
-      OffsetRect(APrintRect, AOffsetX, AOffsetY + (FPageHeight + Integer(Options.VertSpacing)) * i);
-      OffsetRect(APageRect, AOffsetX, AOffsetY + (FPageHeight + Integer(Options.VertSpacing)) * i);
-      for j := 0 to TotalCols - 1 do
+      OffsetRect(APrintRect, AOffsetX, AOffsetY + (FPageHeight + Integer(Options.VertSpacing)) * I);
+      OffsetRect(APageRect, AOffsetX, AOffsetY + (FPageHeight + Integer(Options.VertSpacing)) * I);
+      for J := 0 to TotalCols - 1 do
       begin
         // avoid drawing partial pages when previewrect < clientrect
         tmp := CanDrawPage(APageIndex, APageRect);
@@ -1174,9 +1174,9 @@ begin
   DoDrawPreviewPage(PageIndex, FBuffer.Canvas, APageRect, APrintRect);
 end;
 
-function TJvCustomPreviewControl.GetPage(Index: Integer): TMetaFile;
+function TJvCustomPreviewControl.GetPage(Index: Integer): TMetafile;
 begin
-  Result := TMetaFile(FPages[Index]);
+  Result := TMetafile(FPages[Index]);
 end;
 
 function TJvCustomPreviewControl.GetPageCount: Integer;
@@ -1346,7 +1346,7 @@ end;
 procedure TJvCustomPreviewControl.PrintRange(const APrinter: IJvPrinter;
   StartPage, EndPage, Copies: Integer; Collate: Boolean);
 var
-  i, j: Integer;
+  I, J: Integer;
 begin
   if (APrinter = nil) or APrinter.GetPrinting then
     Exit;
@@ -1367,8 +1367,8 @@ begin
     if StartPage > EndPage then
     begin
       // print backwards
-      for i := 0 to Copies - 1 do
-        for j := StartPage downto EndPage do
+      for I := 0 to Copies - 1 do
+        for J := StartPage downto EndPage do
         begin
           if APrinter.GetAborted then
           begin
@@ -1376,17 +1376,17 @@ begin
               APrinter.EndDoc;
             Exit;
           end;
-          if (j = StartPage) and (i = 0) then
+          if (J = StartPage) and (I = 0) then
             APrinter.BeginDoc
           else
             APrinter.NewPage;
-          APrinter.GetCanvas.Draw(0, 0, Pages[j]);
+          APrinter.GetCanvas.Draw(0, 0, Pages[J]);
         end;
     end
     else
     begin
-      for i := 0 to Copies - 1 do
-        for j := StartPage to EndPage do
+      for I := 0 to Copies - 1 do
+        for J := StartPage to EndPage do
         begin
           if APrinter.GetAborted then
           begin
@@ -1394,11 +1394,11 @@ begin
               APrinter.EndDoc;
             Exit;
           end;
-          if (j = StartPage) and (i = 0) then
+          if (J = StartPage) and (I = 0) then
             APrinter.BeginDoc
           else
             APrinter.NewPage;
-          APrinter.GetCanvas.Draw(0, 0, Pages[j]);
+          APrinter.GetCanvas.Draw(0, 0, Pages[J]);
         end;
     end;
   end
@@ -1407,8 +1407,8 @@ begin
     if StartPage > EndPage then
     begin
       // print backwards
-      for j := StartPage downto EndPage do
-        for i := 0 to Copies - 1 do
+      for J := StartPage downto EndPage do
+        for I := 0 to Copies - 1 do
         begin
           if APrinter.GetAborted then
           begin
@@ -1416,17 +1416,17 @@ begin
               APrinter.EndDoc;
             Exit;
           end;
-          if (j = StartPage) and (i = 0) then
+          if (J = StartPage) and (I = 0) then
             APrinter.BeginDoc
           else
             APrinter.NewPage;
-          APrinter.GetCanvas.Draw(0, 0, Pages[j]);
+          APrinter.GetCanvas.Draw(0, 0, Pages[J]);
         end;
     end
     else
     begin
-      for j := StartPage to EndPage do
-        for i := 0 to Copies - 1 do
+      for J := StartPage to EndPage do
+        for I := 0 to Copies - 1 do
         begin
           if APrinter.GetAborted then
           begin
@@ -1434,11 +1434,11 @@ begin
               APrinter.EndDoc;
             Exit;
           end;
-          if (j = StartPage) and (i = 0) then
+          if (J = StartPage) and (I = 0) then
             APrinter.BeginDoc
           else
             APrinter.NewPage;
-          APrinter.GetCanvas.Draw(0, 0, Pages[j]);
+          APrinter.GetCanvas.Draw(0, 0, Pages[J]);
         end;
     end;
   end;
@@ -1751,8 +1751,8 @@ begin
       pt := ScreenToClient(pt);
       pt.X := ClientWidth - HW.Canvas.TextWidth(S) - 12;
       pt := ClientToScreen(pt);
-      OffsetRect(rc, pt.x, pt.y - 4);
-      HW.ActivateHint(rc, s);
+      OffsetRect(rc, pt.X, pt.Y - 4);
+      HW.ActivateHint(rc, S);
       HW.Invalidate;
       HW.Update;
     end;
@@ -1771,8 +1771,8 @@ begin
     if (Options.Shadow.Offset <> 0) then
     begin
       // draw full background shadow if necessary
-      if (Abs(Options.Shadow.Offset) >= (APageRect.Left - ApAgeRect.Right))
-        or (Abs(Options.Shadow.Offset) >= (APageRect.Bottom - ApAgeRect.Top)) then
+      if (Abs(Options.Shadow.Offset) >= (APageRect.Left - APageRect.Right))
+        or (Abs(Options.Shadow.Offset) >= (APageRect.Bottom - APageRect.Top)) then
       begin
         tmpRect := APageRect;
         OffsetRect(tmpRect, Options.Shadow.Offset, Options.Shadow.Offset);
