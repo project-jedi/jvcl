@@ -43,9 +43,6 @@ uses
   {$IFDEF VCL}
   Windows,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types,
-  {$ENDIF VisualCLX}
   Classes, Graphics, Controls, ImgList,
   JvComponent;
 
@@ -243,7 +240,7 @@ type
 constructor TJvErrorIndicator.Create(AComponent: TComponent);
 {$IFDEF VisualCLX}
 var
-  Ico: TIcon;
+  Bmp: TBitmap;
 {$ENDIF VisualCLX}
 begin
   inherited Create(AComponent);
@@ -253,10 +250,10 @@ begin
     LoadImage(hInstance, PChar('TJVERRORINDICATORICON'), IMAGE_ICON, 16, 16, 0));
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Ico := TIcon.Create;
-  Ico.LoadFromResourceName(hInstance, 'TJVERRORINDICATORICON');
-  FDefaultImage.Assign(Ico);
-  Ico.Free;
+  Bmp := TBitmap.Create;
+  Bmp.LoadFromResourceName(hInstance, 'TJVERRORINDICATOR');
+  FDefaultImage.AddMasked(Bmp, clBlack);
+  Bmp.Free;
   {$ENDIF VisualCLX}
   FBlinkStyle := ebsBlinkIfDifferentError;
   FBlinkRate := 250;

@@ -54,14 +54,10 @@ unit JvXPBar;
 interface
 
 uses
-  Windows,
-  {$IFDEF VCL}
-  Messages,
-  {$ENDIF VCL}
-  Classes, SysUtils, Graphics, Controls, Forms, ExtCtrls, ImgList, ActnList,
+  Windows, Classes, SysUtils, 
+  Graphics, Controls, Forms, ExtCtrls, ImgList, ActnList, Messages,
   {$IFDEF VisualCLX}
-  Qt, QTypes,
-  JvQTypes,
+  Qt, QTypes, JvQTypes,
   {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
   JvConsts,

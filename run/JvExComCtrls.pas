@@ -2069,6 +2069,117 @@ type
   end;
   
   {$ENDIF VisualCLX}
+  TJvExTrackBar = class(TTrackBar, IJvStdControlEvents, IJvControlEvents, IPerformControl)
+  {$IFDEF VCL}
+  protected
+   // IJvControlEvents
+    procedure VisibleChanged; dynamic;
+    procedure EnabledChanged; dynamic;
+    procedure TextChanged; dynamic;
+    procedure FontChanged; dynamic;
+    procedure ColorChanged; dynamic;
+    procedure ParentFontChanged; dynamic;
+    procedure ParentColorChanged; dynamic;
+    procedure ParentShowHintChanged; dynamic;
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; virtual;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
+    function HitTest(X, Y: Integer): Boolean; dynamic;
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
+    {$IFNDEF HASAUTOSIZE}
+     {$IFNDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); virtual;
+     {$ENDIF !COMPILER6_UP}
+    {$ENDIF !HASAUTOSIZE}
+  public
+    procedure Dispatch(var Msg); override;
+  protected
+   // IJvStdControlEvents
+    procedure CursorChanged; dynamic;
+    procedure ShowingChanged; dynamic;
+    procedure ShowHintChanged; dynamic;
+    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
+  {$IFDEF JVCLThemesEnabledD56}
+  private
+    function GetParentBackground: Boolean;
+  protected
+    procedure SetParentBackground(Value: Boolean); virtual;
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
+  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+    function IsRightToLeft: Boolean;
+  protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
+  protected
+    procedure BoundsChanged; override;
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
+  {$ENDIF VisualCLX}
+  private
+    FHintColor: TColor;
+    FSavedHintColor: TColor;
+    FMouseOver: Boolean;
+    FOnParentColorChanged: TNotifyEvent;
+  {$IFDEF NeedMouseEnterLeave}
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+  protected
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$ENDIF NeedMouseEnterLeave}
+  protected
+    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
+    procedure DoFocusChanged(Control: TWinControl); dynamic;
+    property MouseOver: Boolean read FMouseOver write FMouseOver;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+  private
+  {$IFDEF VCL}
+    FAboutJVCL: TJVCLAboutInfo;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+    FAboutJVCLX: TJVCLAboutInfo;
+  published
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  {$ENDIF VisualCLX}
+  protected
+    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
+    procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+  TJvExPubTrackBar = class(TJvExTrackBar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
+  
   {$IFDEF COMPILER6_UP}
   TJvExCustomHeaderControl = class(TCustomHeaderControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
@@ -4282,132 +4393,6 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExTrackBar = class(TTrackBar, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  {$IFDEF VCL}
-  protected
-   // IJvControlEvents
-    procedure VisibleChanged; dynamic;
-    procedure EnabledChanged; dynamic;
-    procedure TextChanged; dynamic;
-    procedure FontChanged; dynamic;
-    procedure ColorChanged; dynamic;
-    procedure ParentFontChanged; dynamic;
-    procedure ParentColorChanged; dynamic;
-    procedure ParentShowHintChanged; dynamic;
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
-    function HitTest(X, Y: Integer): Boolean; dynamic;
-    procedure MouseEnter(Control: TControl); dynamic;
-    procedure MouseLeave(Control: TControl); dynamic;
-    {$IFNDEF HASAUTOSIZE}
-     {$IFNDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: Boolean); virtual;
-     {$ENDIF !COMPILER6_UP}
-    {$ENDIF !HASAUTOSIZE}
-  public
-    procedure Dispatch(var Msg); override;
-  protected
-   // IJvStdControlEvents
-    procedure CursorChanged; dynamic;
-    procedure ShowingChanged; dynamic;
-    procedure ShowHintChanged; dynamic;
-    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
-    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
-  {$IFDEF JVCLThemesEnabledD56}
-  private
-    function GetParentBackground: Boolean;
-  protected
-    procedure SetParentBackground(Value: Boolean); virtual;
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  public
-    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-    function IsRightToLeft: Boolean;
-  protected
-    WindowProc: TClxWindowProc;
-    procedure WndProc(var Msg: TMessage); virtual;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
-  protected
-    procedure BoundsChanged; override;
-    function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
-    procedure RecreateWnd;
-    procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;	
-  private
-    FDoubleBuffered: Boolean;
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
-  protected
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure ColorChanged; override;
-  published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  {$ENDIF VisualCLX}
-  private
-    FHintColor: TColor;
-    FSavedHintColor: TColor;
-    FMouseOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
-  {$IFDEF NeedMouseEnterLeave}
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-  protected
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF NeedMouseEnterLeave}
-  protected
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); dynamic;
-    property MouseOver: Boolean read FMouseOver write FMouseOver;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  {$IFDEF VCL}
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-    FAboutJVCLX: TJVCLAboutInfo;
-  published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  {$ENDIF VisualCLX}
-  protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
-    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF VisualCLX}
-  private
-    FCanvas: TCanvas;
-  protected
-    procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  {$ENDIF VisualCLX}
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  end;
-  TJvExPubTrackBar = class(TJvExTrackBar)
-  {$IFDEF VCL}
-  published
-    property BiDiMode;
-    property DragCursor;
-    property DragKind;
-    property DragMode;
-    property ParentBiDiMode;
-    property OnEndDock;
-    property OnStartDock;
-  {$ENDIF VCL}
-  end;
-  
   {$IFDEF COMPILER6_UP}
   TJvExCustomComboBoxEx = class(TCustomComboBoxEx, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
@@ -4663,6 +4648,7 @@ type
   
   {$ENDIF COMPILER6_UP}
   {$ENDIF VCL}
+
 
 implementation
 
@@ -9609,6 +9595,261 @@ begin
 end;
 {$ENDIF VisualCLX}
 {$ENDIF VisualCLX}
+{$IFDEF VCL}
+procedure TJvExTrackBar.Dispatch(var Msg);
+asm
+    JMP   DispatchMsg
+end;
+
+procedure TJvExTrackBar.VisibleChanged;
+asm
+    MOV  EDX, CM_VISIBLECHANGED
+    JMP  InheritMsg
+end;
+
+procedure TJvExTrackBar.EnabledChanged;
+asm
+    MOV  EDX, CM_ENABLEDCHANGED
+    JMP  InheritMsg
+end;
+
+procedure TJvExTrackBar.TextChanged;
+asm
+    MOV  EDX, CM_TEXTCHANGED
+    JMP  InheritMsg
+end;
+
+procedure TJvExTrackBar.FontChanged;
+asm
+    MOV  EDX, CM_FONTCHANGED
+    JMP  InheritMsg
+end;
+
+procedure TJvExTrackBar.ColorChanged;
+asm
+    MOV  EDX, CM_COLORCHANGED
+    JMP  InheritMsg
+end;
+
+procedure TJvExTrackBar.ParentFontChanged;
+asm
+    MOV  EDX, CM_PARENTFONTCHANGED
+    JMP  InheritMsg
+end;
+
+procedure TJvExTrackBar.ParentShowHintChanged;
+asm
+    MOV  EDX, CM_PARENTSHOWHINTCHANGED
+    JMP  InheritMsg
+end;
+
+function TJvExTrackBar.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := InheritMsgEx(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+end;
+
+function TJvExTrackBar.HintShow(var HintInfo: THintInfo): Boolean;
+begin
+  Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+end;
+
+function TJvExTrackBar.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := InheritMsgEx(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+end;
+
+procedure TJvExTrackBar.MouseEnter(Control: TControl);
+begin
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
+    FOnMouseEnter);
+end;
+
+procedure TJvExTrackBar.MouseLeave(Control: TControl);
+begin
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+end;
+
+procedure TJvExTrackBar.ParentColorChanged;
+begin
+  InheritMsg(Self, CM_PARENTCOLORCHANGED);
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+{$IFNDEF HASAUTOSIZE}
+ {$IFNDEF COMPILER6_UP}
+procedure TJvExTrackBar.SetAutoSize(Value: Boolean);
+begin
+  TOpenControl_SetAutoSize(Self, Value);
+end;
+ {$ENDIF !COMPILER6_UP}
+{$ENDIF !HASAUTOSIZE}
+procedure TJvExTrackBar.CursorChanged;
+asm
+    MOV  EDX, CM_CURSORCHANGED
+    JMP  InheritMsg
+end;
+
+procedure TJvExTrackBar.ShowHintChanged;
+asm
+    MOV  EDX, CM_SHOWHINTCHANGED
+    JMP  InheritMsg
+end;
+
+procedure TJvExTrackBar.ShowingChanged;
+asm
+    MOV  EDX, CM_SHOWINGCHANGED
+    JMP  InheritMsg
+end;
+
+procedure TJvExTrackBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
+asm
+    JMP   Control_ControlsListChanging
+end;
+
+procedure TJvExTrackBar.ControlsListChanged(Control: TControl; Inserting: Boolean);
+asm
+    JMP   Control_ControlsListChanged
+end;
+
+{$IFDEF JVCLThemesEnabledD56}
+function TJvExTrackBar.GetParentBackground: Boolean;
+asm
+    JMP   JvThemes.GetParentBackground
+end;
+
+procedure TJvExTrackBar.SetParentBackground(Value: Boolean);
+asm
+    JMP   JvThemes.SetParentBackground
+end;
+{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvExTrackBar.MouseEnter(Control: TControl);
+begin
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  inherited MouseEnter(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+  {$IFEND}
+end;
+
+procedure TJvExTrackBar.MouseLeave(Control: TControl);
+begin
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  inherited MouseLeave(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+  {$IFEND}
+end;
+
+procedure TJvExTrackBar.ParentColorChanged;
+begin
+  inherited ParentColorChanged;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+function TJvExTrackBar.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExTrackBar.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
+
+function TJvExTrackBar.IsRightToLeft: Boolean;
+begin
+  Result := False;
+end;
+function TJvExTrackBar.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExTrackBar.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  DoBoundsChanged;
+end;
+
+procedure TJvExTrackBar.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExTrackBar.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExTrackBar.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+{$ENDIF VisualCLX}
+procedure TJvExTrackBar.CMFocusChanged(var Msg: TCMFocusChanged);
+begin
+  inherited;
+  DoFocusChanged(Msg.Sender);
+end;
+
+procedure TJvExTrackBar.DoFocusChanged(Control: TWinControl);
+begin
+end;
+procedure TJvExTrackBar.DoBoundsChanged;
+begin
+end;
+
+procedure TJvExTrackBar.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
+procedure TJvExTrackBar.DoSetFocus(FocusedWnd: HWND);
+begin
+end;
+
+procedure TJvExTrackBar.DoKillFocus(FocusedWnd: HWND);
+begin
+end;
+
+function TJvExTrackBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+asm
+  JMP   DefaultDoPaintBackground
+end;
+constructor TJvExTrackBar.Create(AOwner: TComponent);
+begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
+end;
+
+destructor TJvExTrackBar.Destroy;
+begin
+  inherited Destroy;
+end;
 {$IFDEF COMPILER6_UP}
 {$IFDEF VCL}
 procedure TJvExCustomHeaderControl.Dispatch(var Msg);
@@ -15023,320 +15264,6 @@ begin
 end;
 
 procedure TJvExPageScroller.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-procedure TJvExTrackBar.Dispatch(var Msg);
-asm
-    JMP   DispatchMsg
-end;
-
-procedure TJvExTrackBar.VisibleChanged;
-asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
-end;
-
-procedure TJvExTrackBar.EnabledChanged;
-asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
-end;
-
-procedure TJvExTrackBar.TextChanged;
-asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
-end;
-
-procedure TJvExTrackBar.FontChanged;
-asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
-end;
-
-procedure TJvExTrackBar.ColorChanged;
-asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
-end;
-
-procedure TJvExTrackBar.ParentFontChanged;
-asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
-end;
-
-procedure TJvExTrackBar.ParentShowHintChanged;
-asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
-end;
-
-function TJvExTrackBar.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-begin
-  Result := InheritMsgEx(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
-end;
-
-function TJvExTrackBar.HintShow(var HintInfo: THintInfo): Boolean;
-begin
-  Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
-end;
-
-function TJvExTrackBar.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := InheritMsgEx(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
-end;
-
-procedure TJvExTrackBar.MouseEnter(Control: TControl);
-begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
-end;
-
-procedure TJvExTrackBar.MouseLeave(Control: TControl);
-begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
-end;
-
-procedure TJvExTrackBar.ParentColorChanged;
-begin
-  InheritMsg(Self, CM_PARENTCOLORCHANGED);
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-{$IFNDEF HASAUTOSIZE}
- {$IFNDEF COMPILER6_UP}
-procedure TJvExTrackBar.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
- {$ENDIF !COMPILER6_UP}
-{$ENDIF !HASAUTOSIZE}
-procedure TJvExTrackBar.CursorChanged;
-asm
-    MOV  EDX, CM_CURSORCHANGED
-    JMP  InheritMsg
-end;
-
-procedure TJvExTrackBar.ShowHintChanged;
-asm
-    MOV  EDX, CM_SHOWHINTCHANGED
-    JMP  InheritMsg
-end;
-
-procedure TJvExTrackBar.ShowingChanged;
-asm
-    MOV  EDX, CM_SHOWINGCHANGED
-    JMP  InheritMsg
-end;
-
-procedure TJvExTrackBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
-asm
-    JMP   Control_ControlsListChanging
-end;
-
-procedure TJvExTrackBar.ControlsListChanged(Control: TControl; Inserting: Boolean);
-asm
-    JMP   Control_ControlsListChanged
-end;
-
-{$IFDEF JVCLThemesEnabledD56}
-function TJvExTrackBar.GetParentBackground: Boolean;
-asm
-    JMP   JvThemes.GetParentBackground
-end;
-
-procedure TJvExTrackBar.SetParentBackground(Value: Boolean);
-asm
-    JMP   JvThemes.SetParentBackground
-end;
-{$ENDIF JVCLThemesEnabledD56}
-
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvExTrackBar.MouseEnter(Control: TControl);
-begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
-  inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
-end;
-
-procedure TJvExTrackBar.MouseLeave(Control: TControl);
-begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
-  inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
-end;
-
-procedure TJvExTrackBar.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-function TJvExTrackBar.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  Mesg: TMessage;
-begin
-  Mesg.Result := 0;
-  if Self <> nil then
-  begin
-    Mesg.Msg := Msg;
-    Mesg.WParam := WParam;
-    Mesg.LParam := LParam;
-    WindowProc(Mesg);
-  end;
-  Result := Mesg.Result;
-end;
-
-procedure TJvExTrackBar.WndProc(var Msg: TMessage);
-begin
-  Dispatch(Msg);
-end;
-
-function TJvExTrackBar.IsRightToLeft: Boolean;
-begin
-  Result := False;
-end;
-function TJvExTrackBar.NeedKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
-    inherited NeedKey(Key, Shift, KeyText));
-end;
-
-procedure TJvExTrackBar.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  DoBoundsChanged;
-end;
-
-procedure TJvExTrackBar.RecreateWnd;
-begin
-  RecreateWidget;
-end;
-
-procedure TJvExTrackBar.CreateWidget;
-begin
-  CreateWnd;
-end;
-
-procedure TJvExTrackBar.CreateWnd;
-begin
-  inherited CreateWidget;
-end;
-procedure TJvExTrackBar.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
-end;
-
-procedure TJvExTrackBar.ColorChanged;
-begin
-  TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExTrackBar.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
-end;
-
-procedure TJvExTrackBar.SetDoubleBuffered(Value: Boolean);
-begin
-  if Value <> FDoubleBuffered then
-  begin
-    if Value then
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
-    else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
-    FDoubleBuffered := Value;
-    if not (csCreating in ControlState) then
-      Invalidate;
-  end;
-end;
-{$ENDIF VisualCLX}
-procedure TJvExTrackBar.CMFocusChanged(var Msg: TCMFocusChanged);
-begin
-  inherited;
-  DoFocusChanged(Msg.Sender);
-end;
-
-procedure TJvExTrackBar.DoFocusChanged(Control: TWinControl);
-begin
-end;
-procedure TJvExTrackBar.DoBoundsChanged;
-begin
-end;
-
-procedure TJvExTrackBar.DoGetDlgCode(var Code: TDlgCodes);
-begin
-end;
-
-procedure TJvExTrackBar.DoSetFocus(FocusedWnd: HWND);
-begin
-end;
-
-procedure TJvExTrackBar.DoKillFocus(FocusedWnd: HWND);
-begin
-end;
-
-function TJvExTrackBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-asm
-  JMP   DefaultDoPaintBackground
-end;
-{$IFDEF VCL}
-constructor TJvExTrackBar.Create(AOwner: TComponent);
-begin
-  {$IFDEF VisualCLX}
-  WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
-  {$ENDIF VisualCLX}
-  inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  
-end;
-
-destructor TJvExTrackBar.Destroy;
-begin
-  
-  inherited Destroy;
-end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-constructor TJvExTrackBar.Create(AOwner: TComponent);
-begin
-  WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
-  inherited Create(AOwner);
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-  
-end;
-
-destructor TJvExTrackBar.Destroy;
-begin
-  
-  FCanvas.Free;
-  inherited Destroy;
-end;
-
-procedure TJvExTrackBar.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;

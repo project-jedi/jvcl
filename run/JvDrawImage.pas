@@ -35,7 +35,7 @@ uses
   Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types,
+  QForms,
   {$ENDIF VisualCLX}
   Classes, Graphics, Controls, ExtCtrls,
   JvAirBrush, JvPaintFX;
