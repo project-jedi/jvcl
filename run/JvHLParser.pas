@@ -45,7 +45,13 @@ interface
 
 uses
   SysUtils, Classes, JvTypes, JvJCLUtils,
-  WStrUtils, Dialogs;
+  {$IFDEF VCL}
+  Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QDialogs,
+  {$ENDIF VisualCLX}
+  JvWStrUtils;
 
 const
   ieBadRemark = 1;
