@@ -488,15 +488,19 @@ var
   SkipList: TStringlist;
 begin
   ShowHeader;
-  ACount := 0;
-  FilesFound := 0;
-  if ParamCount = 0 then ShowHelp;
+  if (ParamCount = 0) or GetCmdSwitchValue('h', ['-', '/'], CmdSwitch, true) or GetCmdSwitchValue('?', ['-', '/'], CmdSwitch, true) then
+  begin
+    ShowHelp;
+    Exit;
+  end;
   try
+    ACount := 0;
+    FilesFound := 0;
     Recurse := GetCmdSwitchValue('s', ['-', '/'], CmdSwitch, true);
     ReplaceInline := GetCmdSwitchValue('i', ['-', '/'], CmdSwitch, true);
     if not GetCmdSwitchValue('f', ['-', '/'], CmdSwitch, true) or not FileExists(ExpandUNCFileName(CmdSwitch)) then
       raise Exception.Create('Config file not found!');
-  // todo: add handling of skiplist and subfolders
+    // done: add handling of skiplist and subfolders
     SkipList := TStringlist.Create;
     try
       SkipList.LoadFromFile(ExpandUNCFileName(CmdSwitch));
