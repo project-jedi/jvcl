@@ -41,7 +41,7 @@ unit QWindows;
 interface
 
 uses
-  Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs,
+  Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs, QDialogs,
   QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons;
 
 const
@@ -181,7 +181,7 @@ type
   UINT = Cardinal;
   BOOL = LongBool;
   COLORREF = TColorRef;
-
+  TWinControlActionLink = TWidgetControlActionLink;
   TControlClass = class of TControl;
   TColorRef = Integer;    // real colors
   TPointL = record
@@ -267,12 +267,15 @@ const
   COLOR_3DHILIGHT = COLOR_BTNHIGHLIGHT;
   COLOR_BTNHILIGHT = COLOR_BTNHIGHLIGHT;
 
-  clHintColor = TColor($20210500);
-  clDesktop = TColor($20210501);
   clNoRole = TColor(-15);
   clNormalNoRole = TColor(clNoRole - cloNormal);
+  clInfoBk = clNormalNoRole;
   clDisabledNoRole = TColor(clNoRole - cloDisabled);
+  clDesktop = clDisabledNoRole;
   clActiveNoRole = TColor(clNoRole - cloActive);
+  clColor0 = clMask;
+  clColor1 = clDontMask;
+
 
 
   // Windows symbolic colors to mapping VisualCLX symbolic colors
@@ -285,7 +288,7 @@ const
   clNormalButton, clNormalDark, clDisabledText,                    // 15
   clNormalButtonText, clDisabledHighlightedText, clActiveLight,    // 18
   clNormalMid, clNormalMidLight, clNormalText,                     // 21
-  clHintColor, clBlack ,clNormalHighlight,                         // 24
+  clInfoBk, clBlack ,clNormalHighlight,                         // 24
   clActiveHighLight, clDisabledHighlight);                         // 27
 
 function SetRect(var R: TRect; Left, Top, Right, Bottom: Integer): LongBool;
@@ -293,8 +296,7 @@ function IsRectEmpty(R: TRect): LongBool;
 function EqualRect(R1, R2: TRect): LongBool;
 function UnionRect(var Dst: TRect; R1, R2: TRect): LongBool;
 function CopyRect(var Dst: TRect; const Src: TRect): LongBool;
-// asn: TODO:
-// function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
+function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
 
 type
   TRGBQuad = packed record
@@ -1050,7 +1052,9 @@ function SetRectRgn(Rgn: QRegionH; X1, Y1, X2, Y2: Integer): LongBool;
 function SetWindowRgn(Handle: QWidgetH; Region: QRegionH; Redraw: LongBool): Integer;
   { SetWindowRgn limitation: The region must have negative top coordinate in
     order to contain the window's caption bar. }
-//function GetWindowRgn(Handle: QWidgetH; Region: QRegionH): Integer;
+  { asn: Qt operates on the client rectangle of the form: windows/x11 titlebar
+         and windows/x11 borders are not included. }
+function GetWindowRgn(Handle: QWidgetH; Region: QRegionH): Integer;
 
 const
   // constants for CreatePolygon
@@ -1127,7 +1131,20 @@ const
   EM_GETRECT          = $00B2;
   EM_SETRECT          = $00B3;
 
+  {$IFDEF LINUX}
+  HINSTANCE_ERROR = $20;
+  HINSTANCE_OK    = HINSTANCE_ERROR + 1;
+  {$ENDIF}
+
+function ShellExecute(Handle: QWidgetH; Operation, FileName, Parameters,
+  Directory: PChar; ShowCmd: Integer): THandle; overload;
+
+function ShellExecute(Handle: QWidgetH; Operation, FileName, Parameters,
+  Directory: string; ShowCmd: Integer): THandle; overload;
+
 {$IFDEF LINUX}
+function ShellExecute(Handle: integer; Operation, FileName, Parameters,
+  Directory: PChar; ShowCmd: Integer): THandle; overload;
 
 resourcestring
   SFCreateError = 'Unable to create file %s';
@@ -1146,7 +1163,7 @@ function CopyFile(const source: string; const destination: string;
 
 function FileGetSize(const FileName: string): Cardinal;
 function FileGetAttr(const FileName: string): Integer;
-//function GetUserName(lpBuffer: PChar; var nSize: DWORD): LongBool;
+function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
 function MakeIntResource(Value: Integer): PChar;
 function GetTickCount: Cardinal;
@@ -1158,6 +1175,7 @@ procedure OutputDebugString(lpOutputString: PChar);
 
 function GetCurrentProcess: THandle;
 
+{$IFDEF DEBUG}
 const
   PAGE_NOACCESS = 0;
   PAGE_READONLY = PROT_READ;
@@ -1177,17 +1195,19 @@ function ReadProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesRead: Longword): LongBool;
 function WriteProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesWritten: Longword): LongBool;
-
+{$ENDIF DEBUG}
 
 { Limitations:
     - GetKeyState calls GetAsyncKeyState
     - GetAsyncKeyState only supports VK_SHIFT, VK_CONTROL and VK_MENU }
-function GetKeyState(nVirtKey: Integer): Smallint;
-function GetAsyncKeyState(vKey: Integer): Smallint;
+function GetKeyState(nVirtKey: Integer): Word;
+function GetAsyncKeyState(vKey: Integer): Word;
 
 
 const
   MAX_COMPUTERNAME_LENGTH = 15;
+
+{$IFDEF DEBUG}
 
 type
   PSecurityAttributes = Pointer;
@@ -1228,7 +1248,7 @@ const
 
 // all Handles are TObject derived classes
 function CloseHandle(hObject: THandle): LongBool;
-
+{$ENDIF DEBUG}
 
 
 
@@ -1273,12 +1293,16 @@ type
 
 function QColorEx(Color: TColor): IQColorGuard;
 
+{$IFDEF LINUX}
+var
+  Shell: string = 'kfmclient exec';
+{$ENDIF}
 
 implementation
 
 {$IFDEF MSWINDOWS}
 uses
-  Windows;
+  Windows, ShellAPI;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 uses
@@ -1566,7 +1590,7 @@ begin
   if (SysColor >= 0) and (SysColor <= COLOR_ENDCOLORS) then
     SysColor := GetSysColor( Win2TColor[SysColor] );
   case SysColor of
-  clHintColor:
+  clInfoBk:
     Result := TColorRef(Application.HintColor);
   clDeskTop:
     Result := TColorRef(QColorColor(QWidget_BackgroundColor(QApplication_desktop)));
@@ -1590,19 +1614,23 @@ begin
     begin
       Result := true;
       case RefColor of
-      clNormalNoRole..clNormalForeground:
+      clNormalHighlightedText..clNormalForeground:
         SetColor(cgInactive, ColorRoles[-(RefColor+cloNormal)], TrueColor);
-      clDisabledNoRole..clDisabledForeground:
+      clDisabledHighlightedText..clDisabledForeground:
         SetColor(cgDisabled, ColorRoles[-(RefColor+cloDisabled)], TrueColor);
       clActiveNoRole..clActiveForeground:
         SetColor(cgActive, ColorRoles[-(RefColor+cloActive)], TrueColor);
-      clHintColor:
-        Application.HintColor := TrueColor;
+      clInfoBk:
+        begin
+          Application.HintColor := TrueColor;
+          SetColor(cgInactive, ColorRoles[-(RefColor+cloNormal)], TrueColor);
+        end;
       clDeskTop:
         begin
           QC := QColor(TrueColor);
           QWidget_setBackGroundColor(QApplication_desktop, QC);
           QColor_destroy(QC);
+          SetColor(cgDisabled, ColorRoles[-(RefColor+cloDisabled)], TrueColor);
         end;
       else   // case
         Result := False
@@ -1741,8 +1769,10 @@ const
   GuiFont: array[Boolean] of WideString = ('MS Sans Serife', 'Tahoma');
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  SystemFont: WideString = 'Fixed';
+  SystemFont: WideString = 'Fixed';   // asn: is not always true
   GuiFont: array[Boolean] of WideString = ('Verdana', 'Verdana');
+//asn:  in JVCL units Helvetica is used. Why introduce another?
+//  GuiFont: array[Boolean] of WideString = ('Helvetica', 'Helvetica');
   {$ENDIF LINUX}
 type
   Int = Integer;
@@ -2439,6 +2469,7 @@ begin
   Result := BitBlt(Handle, X, Y, Width, Height, Handle, X, Y, WinRop);
 end;
 
+
 function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
   SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal): LongBool;
 var
@@ -2447,6 +2478,7 @@ var
   d_sx, d_sy, d_sw, d_sh: Integer;
   d_dx, d_dy, d_dw, d_dh: Integer;
 begin
+  // supports incompatible destination and source
   Result := False;
   if (DestDC = nil) and (QPainter_isActive(DestDC)) then
     Exit;
@@ -2465,9 +2497,6 @@ begin
   begin
     if not QPainter_isActive(SrcDC) then
       Exit;
-    // written by André Snepvangers
-    // - supports same winrop as bitblt(..., winrop)
-    // - destination and source don't have to be compatible with one and another
     try
       Bmp1 := nil;
       Bmp2 := nil;
@@ -3331,18 +3360,20 @@ end;
 
 function GetWindowRgn(Handle: QWidgetH; Region: QRegionH): Integer;
 begin
-  Result := ERROR;
-{  if (Region <> nil) and (Handle <> nil) then
+  if (Region <> nil) and (Handle <> nil) then
   begin
     try
       // there is no QWidget_mask() function
+      // asn: note region without windows/X11 decoration
+      QWidget_childrenRegion(Handle, Region);
       Result := GetRegionType(Region);
     except
       Result := ERROR;
     end;
-  end;}
+  end
+  else
+    Result := ERROR;
 end;
-
 
 function LPtoDP(Handle: QPainterH; var Points; Count: Integer): LongBool;
 var
@@ -3734,6 +3765,45 @@ begin
             (R1.Top = R2.Top) and (R1.Bottom = R2.Bottom)
 end;
 
+function EqualPoints(const P1: TPoint; const P2: TPoint): Boolean;
+begin
+  Result := (P1.X = P2.X) and (P1.Y = P2.Y);
+end;
+
+function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
+var
+  R3: TRect;
+begin
+  try
+    dR := R1;
+    if IntersectRect(R3, R1, R2) then
+    begin
+      if EqualPoints(R3.BottomRight, R1.BottomRight) then
+      begin
+        if R3.Top = R1.Top
+        then
+          dR.Right := R3.Left
+        else if R3.Left = R1.Left
+        then
+          dR.Bottom := R3.Top
+      end
+      else
+      if EqualPoints(R3.TopLeft, R1.TopLeft) then
+      begin
+        if R3.Bottom = R1.Bottom
+        then
+          dR.Left := R3.Right
+        else if R3.Right = R1.Right
+        then
+          dR.Bottom := R3.Top;
+      end;
+    end;
+    Result := true; // asn: return value ?
+  except
+    Result := false;
+  end;
+end;
+
 procedure TextOutAngle(Handle: QPainterH; Angle, Left, Top: Integer; Text: WideString);
 begin
   try
@@ -3885,7 +3955,7 @@ begin
         if ShortedText[I] = ' ' then
           Break;
       until I <= 1;
-      Result := ShortedText + '...';
+      Result := ShortedText + Ellipses;
       QPainter_boundingRect(Handle, @R1, @R2, Flags, PWideString(@Result), -1, nil);
     end;
   end;
@@ -5536,7 +5606,7 @@ begin
   {$IFDEF LINUX}
 // (ahuser) What about other languages than English ?
 //  Result := Ch in ['A'..'Z', 'a'..'z'];
-  Result := IsAlpha(ch) <> 0 ;
+  Result := IsAlpha(cardinal(ch)) <> 0 ;
   {$ENDIF}
 end;
 
@@ -5681,6 +5751,21 @@ begin
   end;
 end;
 
+function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
+var
+  S: string;
+begin
+  try
+    S := GetEnvironmentVariable('USER');
+    Size := Length(S) + 1;
+    Result := S <> '';
+    if Result then
+      StrLCopy(Buffer, PChar(S), Size - 1);
+  except
+    Result := False;
+  end;
+end;
+
 function MakeIntResource(Value: Integer): PChar;
 begin
   Result := PChar(Value and $0000ffff);
@@ -5701,6 +5786,7 @@ begin
   Result := THandle(0);
 end;
 
+{$IFDEF DEBUG}
 function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: Cardinal;
   lpflOldProtect: Pointer): LongBool; overload;
 var
@@ -5779,23 +5865,24 @@ begin
     end;
   end;
 end;
+{$ENDIF DEBUG}
 
 procedure FlushInstructionCache;
 asm
         JMP     @@Exit
 // 64 Bytes:
-        DD      0, 0, 0, 0, 0, 0, 0, 0,
-        DD      0, 0, 0, 0, 0, 0, 0, 0,
+        DD      0, 0, 0, 0, 0, 0, 0, 0
+        DD      0, 0, 0, 0, 0, 0, 0, 0
 @@Exit:
 end;
 
 
-function GetKeyState(nVirtKey: Integer): Smallint;
+function GetKeyState(nVirtKey: Integer): Word;
 begin
   Result := GetAsyncKeyState(nVirtKey);
 end;
 
-function GetAsyncKeyState(vKey: Integer): Smallint;
+function GetAsyncKeyState(vKey: Integer): Word;
 var
   Root: Window;
   Child: Window;
@@ -5819,6 +5906,9 @@ begin
   end;
 end;
 
+
+{$IFDEF DEBUG}
+// implementation not finished
 {---------------------------------------}
 
 type
@@ -5864,7 +5954,7 @@ type
     constructor Create(Count: Integer; const AName: string);
     destructor Destroy; override;
     function WaitFor(Timeout: Longword): Cardinal; override;
-    function ReleaseSemaphore(ReleaseCount: Integer: PreviousCount: PInteger): Boolean;
+    function ReleaseSemaphore(ReleaseCount: Integer; PreviousCount: PInteger): Boolean;
   end;
 
   TEventWaitObject = class(TWaitObject)
@@ -5897,7 +5987,7 @@ type
   private
     FHandle: TRTLCriticalSection;
   public
-    constructor Create(InitialOwner: Boolan; const AName: string);
+    constructor Create(InitialOwner: Boolean; const AName: string);
     destructor Destroy; override;
     function WaitFor(Timeout: Longword): Cardinal; override;
     function ReleaseMutex: Boolean;
@@ -6029,7 +6119,7 @@ begin
   end;
 end;
 
-function TSemaphoreBaseWaitObject.ReleaseSemaphore(ReleaseCount: Integer: PreviousCount: PInteger): Boolean;
+function TSemaphoreWaitObject.ReleaseSemaphore(ReleaseCount: Integer; PreviousCount: PInteger): Boolean;
 begin
   Result := False;
   if PreviousCount <> nil then
@@ -6079,7 +6169,7 @@ begin
   FManualReset := ManualReset;
   FEvent := TEvent.Create(EventAttributes,
     False {ManualReset: handled by this class},
-    InitialState, Name);
+    InitialState, AName);
   FSignaled := False;
 end;
 
@@ -6183,7 +6273,7 @@ begin
         THandleObject(Result).AddRef
       else
         Result := 0;
-    end;
+    end
     else
       Result := THandle(TEventWaitObject.Create(ManualReset, InitialState, Name));
   finally
@@ -6256,7 +6346,7 @@ begin
         THandleObject(Result).AddRef
       else
         Result := 0;
-    end;
+    end
     else
       Result := THandle(TMutexWaitObject.Create(InitialOwner, Name));
   finally
@@ -6307,7 +6397,7 @@ begin
         THandleObject(Result).AddRef
       else
         Result := 0;
-    end;
+    end
     else
       Result := THandle(TSemaphoreWaitObject.Create(InitialCount, Name));
   finally
@@ -6381,6 +6471,8 @@ begin
     WaitObjectList.Leave;
   end;
 end;
+
+{$ENDIF DEBUG}
 
 function GlobalAllocPtr(Flags: Integer; Bytes: Longint): Pointer;
 begin
@@ -6537,7 +6629,70 @@ begin
   gettimeofday(StartTimeVal, nil);
 end;
 
+
+// for ShellExecute(0, ..
+function ShellExecute(Handle: integer; Operation, FileName, Parameters,
+  Directory: PChar; ShowCmd: Integer): THandle;
+begin
+  Result := ShellExecute(QWidgetH(Handle), Operation, FileName,
+                         Parameters, Directory, ShowCmd);
+end;
 {$ENDIF LINUX}
+
+function ShellExecute(Handle: QWidgetH; Operation, FileName, Parameters,
+  Directory: PChar; ShowCmd: Integer): THandle;
+var
+  Name: string;
+  Dir: string;
+  Par: string;
+begin
+  if Directory <> nil
+  then
+    Dir := Directory;
+  if Parameters <> nil
+  then
+    Par := Parameters;
+  if Filename <> nil
+  then
+    Name := FileName;
+  Result := ShellExecute(Handle, Operation, Name, Par, Dir, ShowCmd);
+end;
+
+
+function ShellExecute(Handle: QWidgetH; Operation, FileName, Parameters,
+  Directory: string; ShowCmd: Integer): THandle;
+{$IFDEF LINUX}
+var
+  line: string;
+{$ENDIF LINUX}  
+begin
+  {$IFDEF MSWINDOWS}
+  Result := ShellAPI.ShellExecute( QWidget_winID(Handle), PChar(Operation),
+                         PChar(FileName), PChar(Parameters),
+                         PChar(Directory), ShowCmd);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  if Operation = 'open'
+  then
+    line := Format('%s "%s" %s&',[Shell, Filename, Parameters]);
+  else if Operation = 'browse' then
+    line := Format('%s "%s" %s&',
+      [GetEnvironmentVariable('BROWSER'), Filename, Parameters]);
+  else
+  begin
+    Result := THandle(-1);
+    exit;
+  end;
+  if directory <> ''
+  then
+    line := Format('cd "%s";', [Directory]) + line;
+  if  Libc.system( PChar(line) ) = 0
+  then
+    Result := THandle(HINSTANCE_OK)
+  else
+    Result := THandle(HINSTANCE_ERROR)
+  {$ENDIF LINUX}
+end;
 
 type
   TQtObject = class(TObject)
@@ -7214,7 +7369,9 @@ end;
 initialization
   {$IFDEF LINUX}
   InitGetTickCount;
+  {$IFDEF DEBUG}
   WaitObjectList := THandleObjectList.Create;
+  {$ENDIF DEBUG}
   {$ENDIF LINUX}
   GlobalCaret := TEmulatedCaret.Create;
   InitializeCriticalSection(SockObjectListCritSect);
@@ -7228,7 +7385,9 @@ finalization
   FreePainterInfos;
   DeleteCriticalSection(SockObjectListCritSect);
   {$IFDEF LINUX}
+  {$IFDEF DEBUG}
   WaitObjectList.Free;
+  {$ENDIF DEBUG}
   {$ENDIF LINUX}
 
 end.
