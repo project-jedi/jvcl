@@ -1461,10 +1461,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Strona domowa Jedi Visual Component Library"
 
-#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Caption
-#~ msgid "dxgettext &support (not required)"
-#~ msgstr "&Obsługa dxgettext (nie wymagane)"
-
 #  FrameConfigPage..GroupBoxJvclInc..Caption
 #~ msgid " Global options for all IDEs "
 #~ msgstr " Globalne opcje dla IDE"
@@ -1519,10 +1515,14 @@ msgstr "Strona domowa Jedi Visual Component Library"
 #~ "pakietu JvCore-R. Oznacza to, że nie możesz dodać go\n"
 #~ "do innego pakietu."
 
-#  Programmer's name for it: RsComponentPalettePrefix
-#~ msgid "TJv"
-#~ msgstr "TJv"
+#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Caption
+#~ msgid "dxgettext &support (not required)"
+#~ msgstr "&Obsługa dxgettext (nie wymagane)"
 
 #  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
 #~ msgid "http://projectjedi.sourceforge.net"
 #~ msgstr "http://projectjedi.sourceforge.net"
+
+#  Programmer's name for it: RsComponentPalettePrefix
+#~ msgid "TJv"
+#~ msgstr "TJv"
