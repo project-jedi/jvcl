@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-01-28
+Last Modified: 2004-02-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -65,7 +65,6 @@ type
     procedure btnOKClick(Sender: TObject);
   private
     FDesigner: IJvFormDesigner;
-    FDesignConsumer: TJvDataConsumer;
     FMappingConsumer: TJvDataConsumer;
     FCtxConsumer: TJvDataConsumer;
     FNewCtxResult: Integer;
@@ -78,6 +77,8 @@ type
     function CtxConsumer: TJvDataConsumer;
     procedure BeforeNewContext(Sender: TObject; Kind: Integer; var Allow: Boolean);
     procedure AfterNewContext(Sender: TObject; Item: IJvDataItem);
+    procedure ColorProviderChanging(ADataProvider: IJvDataProvider;
+      AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
@@ -145,10 +146,8 @@ procedure TfrmJvColorProviderDesigner.SetProvider(Value: IJvDataProvider);
 var
   ICR: IInterfaceComponentReference;
   ColorSettings: IJvColorProviderSettings;
+  VL: IJvDataConsumerViewList;
 begin
-  if DesignConsumer.ProviderIntf <> nil then
-    if Supports(DesignConsumer.ProviderIntf, IInterfaceComponentReference, ICR) then
-      ICR.GetComponent.RemoveFreeNotification(Self);
   (MappingConsumer as IJvDataConsumerServerNotify).RemoveClient(DesignConsumer);
   (CtxConsumer as IJvDataConsumerServerNotify).RemoveClient(DesignConsumer);
   DesignConsumer.SetProviderIntf(Value);
@@ -171,7 +170,7 @@ begin
     with ColorSettings.StandardColorSettings do
     begin
       Active := True;
-      Caption := RsStandardColors;                             
+      Caption := RsStandardColors;
       ShowHeader := True;
     end;
     with ColorSettings.CustomColorSettings do
@@ -179,7 +178,6 @@ begin
       Active := True;
       Caption := RsCustomColorsEllipsis;
       ShowHeader := True;
-//      AddColorSettings.Style := aisBorland;
       AddColorSettings.Location := ailUseHeader;
     end;
     with ColorSettings.GroupingSettings do
@@ -200,6 +198,8 @@ begin
     if (dpContexts as IJvDataProvider).GetItems.GetCount > 0 then
       fmeContexts.SelectItemID((dpContexts as IJvDataProvider).GetItems.GetItem(0).GetID);
   end;
+  if Supports(DesignConsumer as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+    VL.ExpandOnNewItem := True;
   if Supports(Provider, IInterfaceComponentReference, ICR) then
     Caption := Format(RsDesigning, [ICR.GetComponent.Name])
   else
@@ -219,9 +219,10 @@ end;
 
 function TfrmJvColorProviderDesigner.DesignConsumer: TJvDataConsumer;
 begin
-  if FDesignConsumer = nil then
-    FDesignConsumer := TJvDataConsumer.Create(Self, [DPA_ConsumerDisplaysList]);
-  Result := FDesignConsumer;
+  if fmeColors <> nil then
+    Result := fmeColors.Provider
+  else
+    Result := nil;
 end;
 
 function TfrmJvColorProviderDesigner.MappingConsumer: TJvDataConsumer;
@@ -270,6 +271,13 @@ begin
   end;
 end;
 
+procedure TfrmJvColorProviderDesigner.ColorProviderChanging(ADataProvider: IJvDataProvider;
+  AReason: TDataProviderChangeReason; Source: IUnknown);
+begin
+  if AReason = pcrDestroy then
+    Close;
+end;
+
 procedure TfrmJvColorProviderDesigner.Loaded;
 begin
   inherited Loaded;
@@ -277,7 +285,7 @@ begin
     with fmeColors do
     begin
       UseVirtualRoot := False;
-      Provider.Slave := DesignConsumer;
+      Provider.OnProviderChanging := ColorProviderChanging;
     end;
   if fmeMappings <> nil then
     with fmeMappings do
@@ -296,25 +304,14 @@ begin
 end;
 
 procedure TfrmJvColorProviderDesigner.Notification(AComponent: TComponent; Operation: TOperation);
-var
-  ICR: IInterfaceComponentReference;
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (Provider <> nil) and
-      Supports(Provider, IInterfaceComponentReference, ICR) and (ICR.GetComponent = AComponent) then
-  begin
-    Provider := nil;
-    SendMessage(btnOK.Handle, WM_LBUTTONDOWN, 0, $1010);
-    SendMessage(btnOK.Handle, WM_LBUTTONUP, 0, $1010);
-//    Close;
-  end;
 end;
 
 destructor TfrmJvColorProviderDesigner.Destroy;
 begin
   FreeAndNil(FCtxConsumer);
   FreeAndNil(FMappingConsumer);
-  FreeAndNil(FDesignConsumer);
   inherited Destroy;
 end;
 
