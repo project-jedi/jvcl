@@ -8,7 +8,7 @@
  Version 1.0
  Description: Qt based wrappers for common MS Windows API's
  Purpose: Reduce coding effort for porting VCL based components to VisualCLX
-          compatible components
+          compatible components. Simplify VCL code sharing.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy of
  this software and associated documentation files(the "Software"), to deal in
@@ -190,10 +190,16 @@ const
   clMedGray = TColor($A4A0A0);
   clWindowFrame = cl3DDkShadow;
 
+  crColorTo = crNoRole;
+  clColorTo = TColor(-15);
+  clNormalColorTo = TColor(clColorTo - cloNormal);
+  clActiveColorTo = TColor(clColorTo - cloActive);
+  clDisabledColorTo = TColor(clColorTo - cloDisabled);
+
   INFINITE = Longword($FFFFFFFF); // Infinite timeout
   INVALID_HANDLE_VALUE = DWORD(-1);
   MaxWord = High(Cardinal);
-  
+
   RT_RCDATA = Types.RT_RCDATA;
   RT_BITMAP = PChar(2);
 
@@ -274,7 +280,7 @@ type
     time: Cardinal;
     pt: TPoint;
   end;
-
+(*
   TWMScroll = packed record
     Msg: Cardinal;
     Pos: Integer;
@@ -295,6 +301,7 @@ type
     LParam: Longint;
     Result: Integer;
   end;
+*)
 
 procedure WakeUpGuiThread;
 {
@@ -315,6 +322,18 @@ function SetSysColor(RefColor: TColor; TrueColor: TColorRef): Boolean;
 function SetSysColors(Elements: Integer; const lpaElements;
   const lpaRgbValues): LongBool;
 
+{
+ QGraphics.ColorToRGB supports only
+ TMappedColor = clActiveHighlightedText..clNormalForeground
+ Returns clBlack for any other color !
+
+  This implementation uses Instance.Palette and supports all colors
+  if Instance = nil then it will use Application.MainForm, in that
+  case clHighlightedText..clForeground is mapped to clNormalHighlightedText..clNormalForeground
+  if the Color is not in [clActiveHighlightedText..clForeground] it will
+  return the Color itself.
+}
+function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
 
 function RGB(Red, Green, Blue: Integer): TColorRef;
 function GetBValue(Col: TColorRef): Byte;
@@ -370,7 +389,6 @@ const
 
   clNoRole = TColor(-15);
   clNormalNoRole = TColor(clNoRole - cloNormal);
-//  clInfoBk = clHintBk; //clNormalNoRole;
   clDisabledNoRole = TColor(clNoRole - cloDisabled);
   clDesktop = clDisabledNoRole;
   clActiveNoRole = TColor(clNoRole - cloActive);
@@ -526,6 +544,27 @@ type
   end;
   TBitmapFileHeader = tagBITMAPFILEHEADER;
   BITMAPFILEHEADER = tagBITMAPFILEHEADER;
+
+  tagDRAWITEMSTRUCT = packed record
+    CtlType: Cardinal;
+    CtlID: Cardinal;
+    itemID: Cardinal;
+    itemAction: Cardinal;
+    itemState: Cardinal;
+    hwndItem: QWidgetH;
+    hDC: QPainterH;
+    rcItem: TRect;
+    itemData: Cardinal;
+  end;
+  TDrawItemStruct = tagDRAWITEMSTRUCT;
+  DRAWITEMSTRUCT = tagDRAWITEMSTRUCT;
+
+{ TDrawItemStruct itemstate }
+const
+  ODS_DISABLED = 1;
+  ODS_SELECTED = 2;
+  ODS_FOCUS    = 4;
+
 
 { brushes }
 function CreateSolidBrush(Color: TColor): QBrushH;
@@ -1386,6 +1425,8 @@ function ShellExecute(Handle: Integer; Operation, FileName, Parameters,
   Directory: PChar; ShowCmd: Integer): THandle; overload;
 
 function GetTickCount: Cardinal;
+function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
+function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
 
 //
 // Taken from QControls
@@ -1432,8 +1473,6 @@ function CopyFile(const Source, Destination: string;
 
 function FileGetSize(const FileName: string): Cardinal;
 function FileGetAttr(const FileName: string): Integer;
-function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
-function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
 function MakeIntResource(Value: Integer): PChar;
 function MakeWord(A, B: Byte): Word;
 function MakeLong(A, B: Word): Longint;
@@ -1929,7 +1968,7 @@ begin
     begin
       Result := True;
       case RefColor of
-        clNormalHighlightedText..clNormalForeground:
+        clNormalNoRole..clNormalForeground:
           SetColor(cgInactive, ColorRoles[-(RefColor+cloNormal)], TrueColor);
         clDisabledHighlightedText..clDisabledForeground:
           SetColor(cgDisabled, ColorRoles[-(RefColor+cloDisabled)], TrueColor);
@@ -4016,11 +4055,6 @@ function SetDoubleClickTime(Interval: Cardinal): LongBool;
 begin
   try
     QApplication_setDoubleClickInterval(Interval);
-    {$IFDEF MSWINDOWS}
-    if not Windows.SetDoubleClickTime(Interval) then
-      Result := False
-    else
-    {$ENDIF MSWINDOWS}
     Result := True;
   except
     Result := False;
@@ -4219,6 +4253,60 @@ begin
   end;
   Result := 0;
 end;
+
+type
+  THackedWidgetControl = class(TWidgetControl);
+
+function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+var
+  FColor: QColorH;
+  FColorGroup: QPaletteColorGroup;
+
+  FColorRole: QColorGroupColorRole;
+  FPalette: QPaletteH;
+begin
+  if not Assigned(Instance) or
+       ([csCreating, csDestroyingHandle] * Instance.ControlState <> []) then
+    Instance := Application.MainForm; // try using MainForm
+  case Color of
+  clColorTo..clForeground:
+    begin
+      if assigned(Instance) and Instance.HasParent then
+        if not Instance.Enabled then
+          FColorGroup := QPaletteColorGroup_InActive
+        else
+          if Instance.Focused then
+            FColorGroup := QPaletteColorGroup_Active
+          else
+            FColorGroup := QPaletteColorGroup_InActive
+      else
+        FColorGroup := QPaletteColorGroup_InActive ;
+    end;
+  clActiveColorTo..clActiveForeground:
+    begin
+      FColorGroup := QPaletteColorGroup_Active;
+    end;
+  clNormalColorTo..clNormalForeground:
+    begin
+      FColorGroup := QPaletteColorGroup_InActive;
+    end;
+  clDisabledColorTo..clDisabledForeground:
+    begin
+      FColorGroup := QPaletteColorGroup_Disabled;
+    end;
+  else
+    Result := Color;
+    Exit;
+  end;
+  FColorRole := QColorGroupColorRole( $000000f and (-Integer(Color) )); {1..15}
+  FPalette := THackedWidgetControl(Instance).Palette.Handle;
+  if not assigned(FPalette) then
+    FPalette := Application.Palette.Handle;
+  FColor := QPalette_color(FPalette, FColorGroup, FColorRole);
+  Result := QColorColor(FColor);
+//  QColor_destroy(FColor);
+end;
+
 
 function RGB(Red, Green, Blue: Integer): TColorRef;
 begin
@@ -5221,13 +5309,14 @@ var
   MaskPainter, Painter: QPainterH;
   MaskBitmap: QBitmapH;
   Pixmap: QPixmapH;
+//  FInstance: TControl;
+//  FObject: TObject;
 begin
   Result := False;
   if (Handle = nil) or (not QPainter_isActive(Handle)) then
     Exit;
 
   QPainter_save(Handle);
-//  oBkMode := TRANSPARENT; // asn: satisfy compiler
   try
     if uState and DFCS_TRANSPARENT <> 0 then
     begin
@@ -5578,13 +5667,13 @@ begin
               end;
           else
               // not implemented
-            raise Exception.Create('not implemented');
+            raise Exception.Create('DrawFrameControl: not implemented');
           end;
 
         DFC_POPUPMENU:
           begin
             // not implemented
-            raise Exception.Create('not implemented');
+            raise Exception.Create('DrawFrameControl: DFC_POPUPMENU not implemented');
           end;
       end;
     finally
@@ -5694,10 +5783,8 @@ begin
     ClientRect := Rect;
     QPainter_save(Handle);
     try
-      ColorDark := clDark;
-//      ColorLight := clWhite;
-      ColorLight := clActiveLight;
-
+      ColorDark := ColorToRGB(clDark);
+      ColorLight := ColorToRGB(clLight);
       if Flags and BF_FLAT <> 0 then
         ColorLight := clSilver;
       if Flags and BF_MONO <> 0 then
@@ -7902,6 +7989,16 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
+begin
+  Result := Windows.GetUserName(Buffer,Size);
+end;
+
+function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
+begin
+  Result := Windows.GetComputerName(Buffer,Size);
+end;
+
 function GetTickCount: Cardinal;
 begin
   Result := Windows.GetTickCount;
@@ -8659,20 +8756,13 @@ end;
 
 function GetCaretBlinkTime: Cardinal;
 begin
-  {$IFDEF MSWINDOWS}
-  Result := Windows.GetCaretBlinkTime;
-  {$ELSE}
   Result := QApplication_cursorFlashTime;
-  {$ENDIF MSWINDOWS}
 end;
 
 function SetCaretBlinkTime(uMSeconds: Cardinal): LongBool;
 begin
   Result := True;
   try
-    {$IFDEF MSWINDOWS}
-    Windows.SetCaretBlinkTime(uMSeconds);
-    {$ENDIF MSWINDOWS}
     QApplication_setCursorFlashTime(uMSeconds);
     GlobalCaret.Lock;
     try
