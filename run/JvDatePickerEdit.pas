@@ -111,8 +111,8 @@ type
   TJvCustomDatePickerEdit = class(TJvCustomCheckedMaskEdit)
   private
     FAllowNoDate: Boolean;
-    FDropButton: TJvDropDownButton;
-    FButtonHolder: TWinControl;
+    //FDropButton: TJvDropDownButton;
+    //FButtonHolder: TWinControl;
     FCalAppearance: TJvMonthCalAppearance;
     FDate: TDateTime;
     FDateError: Boolean;
@@ -284,7 +284,7 @@ implementation
 uses
   Windows, Menus, SysUtils,
   JclStrings, JclGraphUtils,
-  JvResources;
+  JvResources, JvToolEdit;
 
 //=== TJvCustomDatePickerEdit ================================================
 
@@ -310,32 +310,41 @@ begin
   FStoreDate := False;
   FStoreDateFormat := False;
 
-  FButtonHolder := TWinControl.Create(Self);
-  with FButtonHolder do
-  begin
-    Parent := Self;
-    Align := alRight;
-    Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
-  end;
-  FDropButton := TJvDropDownButton.Create(Self);
-  with FDropButton do
-  begin
-    Align := alClient;
-    Parent := FButtonHolder;
-    Cursor := crArrow;
-    Flat := True;
+//  FButtonHolder := TWinControl.Create(Self);
+//  with FButtonHolder do
+//  begin
+//    Parent := Self;
+//    Align := alRight;
 //    Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
-    OnClick := DropButtonClick;
-    Visible := True;
-  end;
+//  end;
+//  FDropButton := TJvDropDownButton.Create(Self);
+//  with FDropButton do
+//  begin
+//    Align := alClient;
+//    Parent := FButtonHolder;
+//    Cursor := crArrow;
+//    Flat := True;
+////    Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
+//    OnClick := DropButtonClick;
+//    Visible := True;
+//  end;
+  Button.OnClick := DropButtonClick;
 
   FCalAppearance := TJvMonthCalAppearance.Create;
+
+  ControlState := ControlState + [csCreating];
+  try
+    ImageKind := ikDropDown; { force update }
+  finally
+    ControlState := ControlState - [csCreating];
+  end;
 end;
 
 destructor TJvCustomDatePickerEdit.Destroy;
 begin
   CloseUp;
-  FDropButton.OnClick := nil;
+  //FDropButton.OnClick := nil;
+  Button.OnClick := nil;
   FreeAndNil(FCalAppearance);
   inherited Destroy;
 end;
@@ -384,7 +393,7 @@ begin
    DropButtonClick method would simply reopen it again as it would find the
    calendar closed.}
   GetCursorPos(P);
-  CanClose := not PtInRect(FButtonHolder.BoundsRect, ScreenToClient(P));
+  CanClose := not PtInRect(Button.BoundsRect, Button.ScreenToClient(P));
 end;
 
 procedure TJvCustomDatePickerEdit.CalDestroy(Sender: TObject);
@@ -466,7 +475,7 @@ end;
 procedure TJvCustomDatePickerEdit.GetInternalMargins(var ALeft, ARight: Integer);
 begin
   inherited GetInternalMargins(ALeft, ARight);
-  ARight := ARight + FButtonHolder.Width;
+  ARight := ARight + Button.Width;
 end;
 
 function TJvCustomDatePickerEdit.IsEmpty: Boolean;
@@ -917,7 +926,8 @@ end;
 procedure TJvCustomDatePickerEdit.DoCtl3DChanged;
 begin
   inherited DoCtl3DChanged;
-  FDropButton.Flat := not Self.Ctl3D;
+  //FDropButton.Flat := not Self.Ctl3D;
+  Button.Flat := not Self.Ctl3D;
 end;
 
 procedure TJvCustomDatePickerEdit.EnabledChanged;
@@ -925,7 +935,8 @@ begin
   inherited EnabledChanged;
   if not (Self.Enabled) and Dropped then
     CloseUp;
-  FDropButton.Enabled := Self.Enabled;
+  //FDropButton.Enabled := Self.Enabled;
+  Button.Enabled := Self.Enabled;
 end;
 
 procedure TJvCustomDatePickerEdit.CreateWnd;
