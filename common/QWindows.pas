@@ -41,6 +41,9 @@ unit QWindows;
 interface
 
 uses
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF LINUX}
   Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs, QDialogs,
   QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons;
 
@@ -1215,7 +1218,6 @@ procedure OutputDebugString(lpOutputString: PChar);
 
 function GetCurrentProcess: THandle;
 
-{$IFDEF DEBUG}
 const
   PAGE_NOACCESS = 0;
   PAGE_READONLY = PROT_READ;
@@ -1235,7 +1237,6 @@ function ReadProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesRead: Longword): LongBool;
 function WriteProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesWritten: Longword): LongBool;
-{$ENDIF DEBUG}
 
 { Limitations:
     - GetKeyState calls GetAsyncKeyState
@@ -1346,7 +1347,7 @@ uses
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 uses
-  Libc, Xlib;
+  Xlib;
 {$ENDIF LINUX}
 
 {---------------------------------------}
@@ -5827,10 +5828,6 @@ begin
   end;
 end;
 
-
-function getpwuid(uid: __uid_t)
-
-
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 var
   S: string;
@@ -5838,7 +5835,7 @@ var
 begin
   Result := false;
   try
-    pwd :=  getpwuid(getuid);
+    pwd :=  getpwuid(getuid); // static no need to free
     if pwd <> nil then
     begin
       S := pwd.pw_gecos; //  user's real name
@@ -5872,7 +5869,6 @@ begin
   Result := THandle(0);
 end;
 
-{$IFDEF DEBUG}
 function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: Cardinal;
   lpflOldProtect: Pointer): LongBool; overload;
 var
@@ -5951,7 +5947,6 @@ begin
     end;
   end;
 end;
-{$ENDIF DEBUG}
 
 procedure FlushInstructionCache;
 asm
@@ -6774,7 +6769,7 @@ begin
   end;
   if Directory <> '' then
     Line := Format('cd "%s";', [Directory]) + Line;
-  if Libc.system(PChar(Line)) = 0 then
+  if Libc.system(PChar(Line)) <> -1 then
     Result := THandle(HINSTANCE_OK)
   else
     Result := THandle(HINSTANCE_ERROR)
@@ -7067,10 +7062,10 @@ begin
       if Control <> nil then
         Perform(Control, WM_TIMER, Id, Longint(@TimerProc))
       else
-        Free; // Control no more exists
+        Release; // Free; // Control no more exists
     end
     else
-      Free; // Timer is not used ( should not happen )
+      Release; // Free; // Timer is not used ( should not happen )
     Result := True;
     Exit;
   end;
