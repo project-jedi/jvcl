@@ -317,9 +317,10 @@ end;
 procedure TJvCustomValidateEdit.Loaded;
 begin
   inherited Loaded;
-  if DisplayFormat = dfCurrency then
+  // (obones) Why is this necessary? It overrides DecimalPlaces set to 0 by the user
+{  if DisplayFormat = dfCurrency then
     if FDecimalPlaces = 0 then
-      FDecimalPlaces := CurrencyDecimals;
+      FDecimalPlaces := CurrencyDecimals;}
   EditText := FEditText;
 end;
 
