@@ -6,7 +6,6 @@
 ##Skip: TJvDBGrid.EnableScroll
 ##Skip: TJvDBGrid.MouseToCell
 ##Skip: TJvDBGrid.MultiSelect
-##Skip: TJvDBGrid.OnKeyPress
 ##Skip: TJvDBGrid.OnTopLeftChanged
 ##Skip: TJvDBGrid.Options
 ##Skip: TJvDBGrid.RowsHeight
@@ -25,6 +24,18 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+----------------------------------------------------------------------------------------------------
+@@TCharList
+<TITLE TCharList type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = set of Char; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TCheckTitleBtnEvent
 <TITLE TCheckTitleBtnEvent type>
@@ -142,6 +153,15 @@ Description
   Use BeepOnError to specify whether errors in input triggers a speaker beep. The standard DBGrid always
   beeps on errors. Set BeepOnError to false to suppress this behavior.
 ----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.CharList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ClearSelection
 Summary
   Clears the selection in the grid when the user moves to a new cell in MultiSelect mode.
@@ -151,6 +171,15 @@ Description
   If ClearSelection is false, multi selected rows remains selected when the user navigates the grid.
 See Also
   MultiSelect
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.CloseControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.EditControls
 Summary
@@ -193,6 +222,20 @@ Description
   of all the used fields.
 See Also
   Load, LoadFromAppStore, Save, SaveToAppStore
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.InitializeColumnsWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  MinWidth          - Description for this parameter
+  MaxWidth          - Description for this parameter
+  DisplayWholeTitle - Description for this parameter
+  FixedWidths       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.Load
 Summary
@@ -251,7 +294,8 @@ Parameters
   Sender                - The grid that triggered the event.
   ACanvas               - The canvas to draw on.
   ARect                 - The rect area to draw in.
-  Field                 - The field of the cell.
+  AColumn               - Description for this parameter
+##  Field                 - The field of the cell.
 ##  AFont                 - The cell's font.
 ##  Background            - The cell's background color.
   ASortMarker           - The sort marker to display.
@@ -540,6 +584,15 @@ Description
 See Also
   PopupMenu
 ----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.TitleRowHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ToggleRowSelection
 Summary
   Toggles the currently selected row on and off.
@@ -646,6 +699,15 @@ Summary
 @@TJvSelectDialogColumnStrings.OK
 Summary
   The caption to use on the OK button on the select columns dialog.
+----------------------------------------------------------------------------------------------------
+@@TJvSelectDialogColumnStrings.RealNamesOption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTitleHintEvent
 <TITLE TJvTitleHintEvent type>

@@ -107,7 +107,7 @@ See Also
 @@TFileLocation.flWindows
   Description for flWindows
 @@TFileLocation.flTemp
-    Description for flTemp
+  Description for flTemp
 @@TFileLocation.flExeFile
   Description for flExeFile
 @@TFileLocation.flUserFolder
@@ -149,33 +149,16 @@ Description
   in the storage backend.
 See Also
   TJvCustomAppStorage.GetStoredValues
-
-
-----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOption.aeoFolders
-Enumerate folders (containers for values).
-
-
-----------------------------------------------------------------------------------------------------
+  Enumerate folders (containers for values).
 @@TJvAppStorageEnumOption.aeoValues
-Enumerate values.
-
-
-----------------------------------------------------------------------------------------------------
+  Enumerate values.
 @@TJvAppStorageEnumOption.aeoReportListAsValue
-Report lists as a single value. A list is generally a folder containing a 'Count' value and a number of items. If this option is specified such folders are reported as a single value.
-
-
-----------------------------------------------------------------------------------------------------
+  Report lists as a single value. A list is generally a folder containing a 'Count' value and a number of items. If this option is specified such folders are reported as a single value.
 @@TJvAppStorageEnumOption.aeoReportRelative
-Report all folders and values relative to the specified search path. If this option is not specified all reported folders and values are fully qualified (and start with a backslash).
-
-
-----------------------------------------------------------------------------------------------------
+  Report all folders and values relative to the specified search path. If this option is not specified all reported folders and values are fully qualified (and start with a backslash).
 @@TJvAppStorageEnumOption.aeoRecursive
-Search sub folders.
-
-
+  Search sub folders.
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOptions
 <TITLE TJvAppStorageEnumOptions type>
@@ -197,6 +180,7 @@ Parameters
   List   - Description for this parameter
   First  - First item to remove.
   Last   - Last item to remove.
+  ItemName - Description for this parameter
 See Also
   TJvCustomAppStorage.WriteList
 
@@ -213,6 +197,7 @@ Parameters
   Path   - Path of the list.
   List   - Description for this parameter
   Index  - Index of the item to read or write.
+  ItemName - Description for this parameter
 See Also
   TJvCustomAppStorage.ReadList, TJvCustomAppStorage.WriteList
 ----------------------------------------------------------------------------------------------------
@@ -952,6 +937,7 @@ Parameters
   Path       - Description for this parameter
   List       - Description for this parameter
   ClearFirst - Description for this parameter
+  ItemName   - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -1048,10 +1034,11 @@ Parameters
   Path       - Path (relative to the current path) of the value to read.
   List       - Description for this parameter
   OnReadItem - Method that will read each item from the storage.
+  ItemName   - Description for this parameter
 See Also
   WriteList, ReadBinary, ReadDateTime, ReadFloat, ReadInteger, ReadString, ReadStringList
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomAppStorage.ReadObjectList@string@TList@Boolean
+@@TJvCustomAppStorage.ReadObjectList@string@TList@Boolean@string
 Summary
   Write here a summary (1 line)
 Description
@@ -1063,13 +1050,14 @@ Parameters
   Path       - Description for this parameter
   List       - Description for this parameter
   ClearFirst - Description for this parameter
+  ItemName   - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomAppStorage.ReadObjectList@string@TList@TJvAppStorageObjectListItemCreateEvent@Boolean
+@@TJvCustomAppStorage.ReadObjectList@string@TList@TJvAppStorageObjectListItemCreateEvent@Boolean@string
 Summary
   Write here a summary (1 line)
 Description
@@ -1082,6 +1070,7 @@ Parameters
   List        - Description for this parameter
   ItemCreator - Description for this parameter
   ClearFirst  - Description for this parameter
+  ItemName    - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -1178,8 +1167,48 @@ Parameters
   Path       - Path (relative to the current path) of the value to read.
   SL         - \String list in which to store the strings from the storage.
   ClearFirst - Flag to indicate if the string list should be cleared before reading commences.
+  ItemName   - Description for this parameter
 See Also
   WriteStringList, ReadBinary, ReadDateTime, ReadFloat, ReadInteger, ReadList, ReadString
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.ReadStringObjectList@string@TStrings@Boolean@string
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Path       - Description for this parameter
+  SL         - Description for this parameter
+  ClearFirst - Description for this parameter
+  ItemName   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.ReadStringObjectList@string@TStrings@TJvAppStorageObjectListItemCreateEvent@Boolean@string
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Path        - Description for this parameter
+  SL          - Description for this parameter
+  ItemCreator - Description for this parameter
+  ClearFirst  - Description for this parameter
+  ItemName    - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.Reload
 Summary
@@ -1333,6 +1362,7 @@ Description
 Parameters
   Path - Description for this parameter
   List - Description for this parameter
+  ItemName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1427,6 +1457,7 @@ Parameters
   ItemCount     - Number of items to store.
   OnWriteItem   - Method that will write each item to the storage.
   OnDeleteItems - Method that will remove remaining items from a previous list.
+  ItemName      - Description for this parameter
 See Also
   ReadList, WriteBinary, WriteDateTime, WriteFloat, WriteInteger, WriteString, WriteStringList
 ----------------------------------------------------------------------------------------------------
@@ -1436,8 +1467,9 @@ Summary
 Description
   Write here a description
 Parameters
-  Path - Description for this parameter
-  List - Description for this parameter
+  Path     - Description for this parameter
+  List     - Description for this parameter
+  ItemName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1524,10 +1556,22 @@ Description
 Parameters
   Path - Path (relative to the current path) where the strings are to be stored.
   SL   - \String list to store.
+  ItemName - Description for this parameter
 See Also
   ReadStringList, WriteBinary, WriteDateTime, WriteFloat, WriteInteger, WriteList, WriteString
-
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.WriteStringObjectList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path     - Description for this parameter
+  SL       - Description for this parameter
+  ItemName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions
 Summary

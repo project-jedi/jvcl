@@ -41,6 +41,53 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@Control_MouseEnter
+<TITLE Control_MouseEnter procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Instance        - Description for this parameter
+  Control         - Description for this parameter
+  FMouseOver      - Description for this parameter
+  FSavedHintColor - Description for this parameter
+  FHintColor      - Description for this parameter
+  Event           - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@Control_MouseLeave
+<TITLE Control_MouseLeave procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Instance        - Description for this parameter
+  Control         - Description for this parameter
+  FMouseOver      - Description for this parameter
+  FSavedHintColor - Description for this parameter
+  Event           - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@DefaultDoPaintBackground
+<TITLE DefaultDoPaintBackground function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Instance - Description for this parameter
+  Canvas   - Description for this parameter
+  Param    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@DispatchMsg
 <TITLE DispatchMsg procedure>
 Summary
@@ -281,13 +328,13 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents
+@@IJvStdControlEvents
 Summary
-  Interface to the events of TWinControl descendants.
+  Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.ControlsListChanged
+@@IJvStdControlEvents.ControlsListChanged
 Summary
   Write here a summary (1 line)
 Description
@@ -299,7 +346,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.ControlsListChanging
+@@IJvStdControlEvents.ControlsListChanging
 Summary
   Write here a summary (1 line)
 Description
@@ -311,25 +358,25 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.CursorChanged
+@@IJvStdControlEvents.CursorChanged
 Summary
-  Responds to changes in the Cursor property.
+  Write here a summary (1 line)
 Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoBoundsChanged
+@@IJvStdControlEvents.DoBoundsChanged
 Summary
-  Responds to changes in the control's size.
+  Write here a summary (1 line)
 Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoGetDlgCode
+@@IJvStdControlEvents.DoGetDlgCode
 Summary
   Write here a summary (1 line)
 Description
@@ -340,9 +387,9 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoKillFocus
+@@IJvStdControlEvents.DoKillFocus
 Summary
-  Responds when the control loses the keyboard focus.
+  Write here a summary (1 line)
 Description
   Write here a description
 Parameters
@@ -351,7 +398,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoPaintBackground
+@@IJvStdControlEvents.DoPaintBackground
 Summary
   Write here a summary (1 line)
 Description
@@ -365,9 +412,9 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoSetFocus
+@@IJvStdControlEvents.DoSetFocus
 Summary
-  Responds when the control receives the keyboard focus.
+  Write here a summary (1 line)
 Description
   Write here a description
 Parameters
@@ -376,20 +423,42 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.ShowHintChanged
+@@IJvStdControlEvents.ShowHintChanged
 Summary
-  Responds to changes of the ShowHint property.
+  Write here a summary (1 line)
 Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.ShowingChanged
+@@IJvStdControlEvents.ShowingChanged
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@IJvWinControlEvents
+Summary
+  Interface to the events of TWinControl descendants.
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@InheritMessage@TControl@TMessage
+<TITLE InheritMessage procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Instance - Description for this parameter
+  Msg      - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -412,8 +481,44 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@InheritMsg@TControl@Integer@Integer@Integer
-<COMBINE InheritMsg@TControl@Integer>
+@@InheritMsgEx@TControl@Integer@Integer@Integer
+<TITLE InheritMsgEx function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Instance - Description for this parameter
+  Msg      - Description for this parameter
+  WParam   - Description for this parameter
+  LParam   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@IPerformControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@IPerformControl.Perform
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Msg    - Description for this parameter
+  WParam - Description for this parameter
+  LParam - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@ShiftStateToKeyData
 <TITLE ShiftStateToKeyData function>
@@ -511,7 +616,25 @@ Description
   own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExControl.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvExControl.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+See Also
+  HotTrack
+----------------------------------------------------------------------------------------------------
+@@TJvExControl.MouseOver
+Summary
+  Indicates whether the mouse pointer is over the <xxx>.
+Description
+  Read MouseOver to determine whether the mouse pointer is over the <xxx>.
+See Also
+  OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvExControl.OnMouseEnter
 Summary
@@ -532,6 +655,12 @@ Description
 See Also
   OnMouseEnter
 ----------------------------------------------------------------------------------------------------
+@@TJvExControl.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+----------------------------------------------------------------------------------------------------
 @@TJvExCustomControl
 Summary
   Base class for extended controls.
@@ -542,7 +671,25 @@ Description
   own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomControl.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+See Also
+  HotTrack
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.MouseOver
+Summary
+  Indicates whether the mouse pointer is over the <xxx>.
+Description
+  Read MouseOver to determine whether the mouse pointer is over the <xxx>.
+See Also
+  OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomControl.OnMouseEnter
 Summary
@@ -563,6 +710,12 @@ Description
 See Also
   OnMouseEnter
 ----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+----------------------------------------------------------------------------------------------------
 @@TJvExGraphicControl
 Summary
   Base class for extended controls.
@@ -573,7 +726,25 @@ Description
   own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExGraphicControl.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvExGraphicControl.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+See Also
+  HotTrack
+----------------------------------------------------------------------------------------------------
+@@TJvExGraphicControl.MouseOver
+Summary
+  Indicates whether the mouse pointer is over the <xxx>.
+Description
+  Read MouseOver to determine whether the mouse pointer is over the <xxx>.
+See Also
+  OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvExGraphicControl.OnMouseEnter
 Summary
@@ -594,6 +765,12 @@ Description
 See Also
   OnMouseEnter
 ----------------------------------------------------------------------------------------------------
+@@TJvExGraphicControl.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+----------------------------------------------------------------------------------------------------
 @@TJvExHintWindow
 Summary
   Base class for extended hint windows.
@@ -604,7 +781,25 @@ Description
   own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExHintWindow.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+See Also
+  HotTrack
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.MouseOver
+Summary
+  Indicates whether the mouse pointer is over the <xxx>.
+Description
+  Read MouseOver to determine whether the mouse pointer is over the <xxx>.
+See Also
+  OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvExHintWindow.OnMouseEnter
 Summary
@@ -625,6 +820,12 @@ Description
 See Also
   OnMouseEnter
 ----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+----------------------------------------------------------------------------------------------------
 @@TJvExWinControl
 Summary
   Base class for extended controls.
@@ -635,7 +836,25 @@ Description
   own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExWinControl.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+See Also
+  HotTrack
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl.MouseOver
+Summary
+  Indicates whether the mouse pointer is over the <xxx>.
+Description
+  Read MouseOver to determine whether the mouse pointer is over the <xxx>.
+See Also
+  OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvExWinControl.OnMouseEnter
 Summary
@@ -655,3 +874,9 @@ Description
   event handler.
 See Also
   OnMouseEnter
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
