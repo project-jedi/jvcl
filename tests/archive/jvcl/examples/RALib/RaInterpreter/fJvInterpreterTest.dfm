@@ -57,7 +57,7 @@ object Test: TTest
     Left = 0
     Top = 57
     Width = 360
-    Height = 343
+    Height = 336
     Cursor = crIBeam
     GutterWidth = 0
     RightMarginVisible = False
@@ -86,43 +86,21 @@ object Test: TTest
     UseDockManager = False
     Colors.Comment.Style = [fsItalic]
     Colors.Comment.ForeColor = clOlive
-    Colors.Comment.BackColor = clWindow
-    Colors.Number.Style = []
     Colors.Number.ForeColor = clNavy
-    Colors.Number.BackColor = clWindow
-    Colors.Strings.Style = []
     Colors.Strings.ForeColor = clPurple
-    Colors.Strings.BackColor = clWindow
-    Colors.Symbol.Style = []
     Colors.Symbol.ForeColor = clBlue
-    Colors.Symbol.BackColor = clWindow
     Colors.Reserved.Style = [fsBold]
     Colors.Reserved.ForeColor = clBlack
-    Colors.Reserved.BackColor = clWindow
-    Colors.Identifier.Style = []
     Colors.Identifier.ForeColor = clBlack
-    Colors.Identifier.BackColor = clWindow
-    Colors.Preproc.Style = []
     Colors.Preproc.ForeColor = clGreen
-    Colors.Preproc.BackColor = clWindow
-    Colors.FunctionCall.Style = []
-    Colors.FunctionCall.ForeColor = clWindowText
-    Colors.FunctionCall.BackColor = clWindow
-    Colors.Declaration.Style = []
-    Colors.Declaration.ForeColor = clWindowText
-    Colors.Declaration.BackColor = clWindow
     Colors.Statement.Style = [fsBold]
-    Colors.Statement.ForeColor = clWindowText
-    Colors.Statement.BackColor = clWindow
-    Colors.PlainText.Style = []
-    Colors.PlainText.ForeColor = clWindowText
-    Colors.PlainText.BackColor = clWindow
+    DelphiColors = False
   end
   object Panel2: TPanel
     Left = 360
     Top = 57
     Width = 208
-    Height = 343
+    Height = 336
     Align = alRight
     BevelOuter = bvNone
     BorderWidth = 3
@@ -130,7 +108,7 @@ object Test: TTest
     TabOrder = 2
     object Notebook1: TNotebook
       Left = 3
-      Top = 240
+      Top = 233
       Width = 202
       Height = 100
       Align = alBottom
@@ -244,7 +222,7 @@ object Test: TTest
       Left = 3
       Top = 3
       Width = 202
-      Height = 237
+      Height = 230
       Align = alClient
       Lines.Strings = (
         'Memo2')
@@ -254,7 +232,7 @@ object Test: TTest
   end
   object Panel3: TPanel
     Left = 0
-    Top = 400
+    Top = 393
     Width = 568
     Height = 20
     Align = alBottom
