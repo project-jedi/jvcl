@@ -10,9 +10,9 @@ ROOT = $(MAKEDIR)
 #---------------------------------------------------------------------------------------------------
 SRC = ..\..\Source
 ARCH = ..\..\Archive
-COM = ..\..\Common
-BIN = ..\..\Bin
-DCU = ..\..\Dcu
+COM = ..\Common
+BIN = ..\Bin
+DCU = ..\Dcu
 JCL = ..\..\..\JCL\source
 DRC = $&.drc
 SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU)
