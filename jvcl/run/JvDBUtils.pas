@@ -167,12 +167,7 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   DBConsts, Math,
-  {$IFDEF VCL}
   Forms, Controls, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QControls, QDialogs,
-  {$ENDIF VisualCLX}
   JvConsts, JvResources, JvTypes, JvJVCLUtils, JvJCLUtils;
 
 { Utility routines }
