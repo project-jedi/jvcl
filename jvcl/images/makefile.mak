@@ -16,12 +16,12 @@ BRC = "$(ROOT)\bin\brc32.exe" -r
 
 .rc.res:
   @echo [Compiling: $&.res]
-  attrib -r $(RSRC)\$&.res
+  @attrib -r $(RSRC)\$&.res
   @$(BRC) -fo$(RSRC)\$&.res $&.rc
 
 .rc.dcr:
   @echo [Compiling: $&.dcr]
-  attrib -r $(RSRC)\$&.dcr
+  @attrib -r $(RSRC)\$&.dcr
   @$(BRC) -fo$(RSRC)\$&.dcr $&.rc
 
 .path.res = $(RSRC)
