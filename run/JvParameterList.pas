@@ -932,7 +932,7 @@ begin
   else
     Result := not VarIsNull(AData);
   if not Result then
-    JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
+    DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
 end;
 
 function TJvBaseParameter.GetParameterNameExt: string;
@@ -1173,9 +1173,14 @@ begin
   with TForm(ParameterDialog) do
   begin
     BorderIcons := [];
+    {$IFDEF VCL}
     DefaultMonitor := dmActiveForm;
-    FormStyle := fsNormal;
     BorderStyle := bsDialog;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BorderStyle := fbsDialog;
+    {$ENDIF VisualCLX}
+    FormStyle := fsNormal;
     Position := poScreenCenter;
     OnShow := DialogShow;
   end;
