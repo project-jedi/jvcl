@@ -1437,8 +1437,10 @@ begin
   try
     JvAppStorage.Location := flCustom;
     JvAppStorage.FileName := FileName;
+    JvAppStorage.Reload;
     SaveDockTreeToAppStorage(JvAppStorage);
   finally
+    JvAppStorage.Flush;
     JvAppStorage.Free;
   end;
 end;
@@ -1451,6 +1453,7 @@ begin
   try
     JvAppStorage.Location := flCustom;
     JvAppStorage.FileName := FileName;
+    JvAppStorage.Reload;
     LoadDockTreeFromAppStorage(JvAppStorage);
   finally
     JvAppStorage.Free;
@@ -1508,7 +1511,7 @@ begin
       JvDockInfoTree.WriteInfoToIni;
       TMemIniFile(JvDockInfoTree.DockInfoIni).UpdateFile;
     finally
-
+      JvDockInfoTree.DockInfoIni.Flush;
       JvDockInfoTree.DockInfoIni.Free;
     end;
   finally
