@@ -44,7 +44,8 @@ unit JvHLParser;
 interface
 
 uses
-  SysUtils, Classes, JvTypes, JvJCLUtils;
+  SysUtils, Classes, JvTypes, JvJCLUtils,
+  WStrUtils, Dialogs;
 
 const
   ieBadRemark = 1;
@@ -88,46 +89,6 @@ type
     property Style: TIParserStyle read FStyle write FStyle;
     property ReturnComments: Boolean read FReturnComments write FReturnComments;
   end;
-
- // do not replace by JclUnicode.TWideStringList (speed and size issue)
-  PWStringItem = ^TWStringItem;
-  TWStringItem = record
-    FString: WideString;
-    FObject: TObject;
-  end;
-
-  TWStrings = class(TPersistent)
-  private
-    FList: TList;
-    function GetCount: Integer;
-    function GetStrings(Index: Integer): WideString;
-    function GetObjects(Index: Integer): TObject;
-    procedure SetObjects(Index: Integer; const Value: TObject);
-    function GetItem(Index: Integer): PWStringItem;
-    function GetPStrings(Index: Integer): PWideString;
-    procedure SetStrings(Index: Integer; const Value: WideString);
-  public
-    constructor Create;
-    destructor Destroy; override;
-
-    procedure Clear; virtual;
-
-    function Add(const Value: WideString): Integer;
-    function AddObject(const Value: WideString; Data: TObject): Integer;
-    procedure Insert(Index: Integer; const Value: WideString);
-    procedure InsertObject(Index: Integer;const Value: WideString; Data: TObject);
-    procedure Delete(Index: Integer);
-
-    function IndexOf(const Value: WideString): Integer;
-
-    property Count: Integer read GetCount;
-    property PStrings[Index: Integer]: PWideString read GetPStrings;
-    property Strings[Index: Integer]: WideString read GetStrings write SetStrings; default;
-    property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
-  end;
-
-  TWStringList = class(TWStrings);
-
 
   TJvIParserW = class
   protected
@@ -187,29 +148,10 @@ function IsIdentifierW(const ID: WideString): Boolean;
 function GetStringValueW(const St: WideString): WideString;
 procedure ParseStringW(const S: WideString; Ss: TWStrings);
 
-function StrScanW(P: PWideChar; Ch: WideChar): PWideChar;
-function StrEndW(P: PWideChar): PWideChar;
-
 implementation
 
 uses
   JvConsts;
-
-function StrScanW(P: PWideChar; Ch: WideChar): PWideChar;
-begin
-  Result := P;
-  if Result <> nil then
-    while (Result[0] <> #0) and (Result[0] <> Ch) do
-      Inc(Result);
-end;
-
-function StrEndW(P: PWideChar): PWideChar;
-begin
-  Result := P;
-  if Result <> nil then
-    while Result[0] <> #0 do
-      Inc(Result);
-end;
 
 //=== EJvIParserError ========================================================
 
@@ -261,6 +203,8 @@ var
       '(':
         if (FStyle in [psPascal, psCocoR]) and (P[1] = '*') then
         begin
+          if P[2] = #0 then
+            Exit; // line end
           F := P + 2;
           while True do
           begin
@@ -298,6 +242,8 @@ var
         else
         if (FStyle in [psCpp, psCocoR, psPhp]) and (P[1] = '*') then
         begin
+          if P[2] = #0 then
+            Exit; // line end
           F := P + 2;
           while True do
           begin
@@ -619,6 +565,8 @@ var
       '(':
         if (FStyle in [psPascal, psCocoR]) and (P[1] = '*') then
         begin
+          if P[2] = #0 then
+            Exit; // line end
           F := P + 2;
           while True do
           begin
@@ -656,6 +604,8 @@ var
         else
         if (FStyle in [psCpp, psCocoR, psPhp]) and (P[1] = '*') then
         begin
+          if P[2] = #0 then
+            Exit; // line end
           F := P + 2;
           while True do
           begin
@@ -1155,110 +1105,6 @@ begin
     Result := Copy(St, 2, Length(St) - 2)
   else
     Result := St;
-end;
-
-{ TWStrings }
-
-constructor TWStrings.Create;
-begin
-  inherited Create;
-  FList := TList.Create;
-end;
-
-destructor TWStrings.Destroy;
-begin
-  Clear;
-  FList.Free;
-  inherited Destroy;
-end;
-
-procedure TWStrings.Clear;
-var
-  i: Integer;
-begin
-  for i := 0 to Count - 1 do
-    Dispose(GetItem(i));
-  FList.Clear;
-end;
-
-procedure TWStrings.Delete(Index: Integer);
-var
-  P: PWStringItem;
-begin
-  P := GetItem(Index);
-  FList.Delete(Index); // may raise EListError
-  Dispose(P);
-end;
-
-function TWStrings.GetCount: Integer;
-begin
-  Result := FList.Count;
-end;
-
-function TWStrings.GetItem(Index: Integer): PWStringItem;
-begin
-  Result := FList[Index];
-end;
-
-function TWStrings.GetObjects(Index: Integer): TObject;
-begin
-  Result := GetItem(Index).FObject;
-end;
-
-function TWStrings.GetStrings(Index: Integer): WideString;
-begin
-  Result := GetItem(Index).FString;
-end;
-
-procedure TWStrings.SetObjects(Index: Integer; const Value: TObject);
-begin
-  GetItem(Index).FObject := Value;
-end;
-
-function TWStrings.Add(const Value: WideString): Integer;
-begin
-  Result := Count;
-  InsertObject(Result, Value, nil);
-end;
-
-function TWStrings.AddObject(const Value: WideString; Data: TObject): Integer;
-begin
-  Result := Count;
-  InsertObject(Result, Value, Data);
-end;
-
-procedure TWStrings.Insert(Index: Integer; const Value: WideString);
-begin
-  InsertObject(Index, Value, nil);
-end;
-
-procedure TWStrings.InsertObject(Index: Integer; const Value: WideString;
-  Data: TObject);
-var
-  P: PWStringItem;
-begin
-  New(P);
-  P.FString := Value;
-  P.FObject := Data;
-  FList.Insert(Index, P);
-end;
-
-function TWStrings.IndexOf(const Value: WideString): Integer;
-begin
-  for Result := 0 to Count - 1 do
-    if WideCompareText(Value, GetItem(Result).FString) = 0 then
-      Exit;
-  Result := -1;
-end;
-
-function TWStrings.GetPStrings(Index: Integer): PWideString;
-begin
-  Result := @GetItem(Index).FString;
-end;
-
-procedure TWStrings.SetStrings(Index: Integer; const Value: WideString);
-begin
-  GetItem(Index).FString := Value;
 end;
 
 end.

@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, ComCtrls, Controls,
   Forms, StdCtrls, ExtCtrls,
-  JvFormPlacement, JvEditor, JvHLEditor, JvComponent;
+  JvFormPlacement, JvEditorCommon, JvComponent, JvHLEditor;
 
 type
   TJvHLEdPropDlg = class;
@@ -102,7 +102,7 @@ type
       Shift: TShiftState; X, Y: integer);
   private
     JvHLEditorPreview: TJvHLEditor;
-    FHighLighter: THighLighter;
+    FHighlighter: TJvHighlighter;
     SC: TJvSymbolColor;
     InChanging: boolean;
     Params: TJvHLEdPropDlg;
@@ -138,7 +138,7 @@ type
 
   TJvHLEdPropDlg = class(TComponent)
   private
-    FJvHLEditor: TJvHLEditor;
+    FJvHLEditor: TJvCustomEditorBase;
     FStorage: TJvFormStorage;
     FColorSamples: TStrings;
     FHighlighterCombo: boolean;
@@ -151,6 +151,7 @@ type
     function GetColorSamples: TStrings;
     procedure SetColorSamples(Value: TStrings);
     function IsPagesStored: boolean;
+    procedure SetJvHLEditor(const Value: TJvCustomEditorBase);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
@@ -158,13 +159,13 @@ type
     destructor Destroy; override;
     procedure Save;
     procedure Restore;
-    procedure LoadHighlighterColors(AJvHLEditor: TJvHLEditor; AHighLighter: THighLighter);
-    procedure SaveHighlighterColors(AJvHLEditor: TJvHLEditor; AHighLighter: THighLighter);
-    function Execute: boolean;
+    procedure LoadHighlighterColors(AJvHLEditor: TJvCustomEditorBase; AHighlighter: TJvHighlighter);
+    procedure SaveHighlighterColors(AJvHLEditor: TJvCustomEditorBase; AHighlighter: TJvHighlighter);
+    function Execute: Boolean;
     procedure LoadCurrentHighlighterColors;
     procedure SaveCurrentHighlighterColors;
   published
-    property JvHLEditor: TJvHLEditor read FJvHLEditor write FJvHLEditor;
+    property JvHLEditor: TJvCustomEditorBase read FJvHLEditor write SetJvHLEditor;
     property Storage: TJvFormStorage read FStorage write FStorage;
     property ColorSamples: TStrings read GetColorSamples write SetColorSamples;
     property HighlighterCombo: boolean read FHighlighterCombo write FHighlighterCombo default true;
@@ -177,7 +178,7 @@ type
   end;
 
 const
-  HighLighters: array[THighLighter] of string =
+  Highlighters: array[TJvHighlighter] of string =
   ('None', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
     'Perl', 'Ini', 'CocoR', 'Php', 'NQC', 'User Defined');
 
@@ -251,7 +252,7 @@ begin
   else
   begin
     TmpEd.Lines := Lines;
-    TmpEd.HighLighter := HighLighter;
+    TmpEd.Highlighter := Highlighter;
     { color values corresponds to lbElements ListBox }
     TmpEd.Font.Color := 0;
     with TmpEd.Colors do
@@ -270,7 +271,7 @@ begin
     end;
     TmpEd.SelForeColor := 12;
     Str := TmpEd.Lines[YY];
-    TJvSampleViewer(TmpEd).GetLineAttr(Str, YY, 0, JvEditor.Max_X - 1);
+    TJvSampleViewer(TmpEd).GetLineAttr(Str, YY, 0, Max_X - 1);
     F := TJvSampleViewer(TmpEd).LineAttrs[XX].FC;
   end;
   (Owner as TJvHLEditorParamsForm).lbElements.ItemIndex := F;
@@ -299,10 +300,12 @@ const
   cParams = 'Params';
 var
   S: string;
+  HLed: IJvHLEditor;
 begin
   if Storage <> nil then
   begin
 //    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
+    FJvHLEditor.GetInterface(IJvHLEditor, HLed);
     S := AddSlash2(FStorageSection) + cParams;
     with Storage do
     begin
@@ -314,7 +317,7 @@ begin
       StoredValue['BackspaceUnindents'] := FJvHLEditor.BackSpaceUnindents;
       StoredValue['GroupUndo'] := FJvHLEditor.GroupUndo;
       StoredValue['CursorBeyondEOF'] := FJvHLEditor.CursorBeyondEOF;
-      StoredValue['SyntaxHighlighting'] := FJvHLEditor.SyntaxHighlighting;
+      StoredValue['SyntaxHighlighting'] := HLed.SyntaxHighlighting;
       StoredValue['TabStops'] := FJvHLEditor.TabStops;
       StoredValue['RightMargin'] := FJvHLEditor.RightMargin;
     end;
@@ -326,11 +329,13 @@ const
   cParams = 'Params';
 var
   S: string;
+  HLed: IJvHLEditor;
 begin
   if Storage <> nil then
   begin
 //    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
     S := AddSlash2(StorageSection) + cParams;
+    FJvHLEditor.GetInterface(IJvHLEditor, HLed);
     with Storage do
     begin
       FJvHLEditor.DoubleClickLine := DefaultValue['DoubleClickLine', FJvHLEditor.DoubleClickLine];
@@ -341,48 +346,59 @@ begin
       FJvHLEditor.BackSpaceUnindents := DefaultValue['BackspaceUnindents', FJvHLEditor.BackSpaceUnindents];
       FJvHLEditor.GroupUndo := DefaultValue['GroupUndo', FJvHLEditor.GroupUndo];
       FJvHLEditor.CursorBeyondEOF := DefaultValue['CursorBeyondEOF', FJvHLEditor.CursorBeyondEOF];
-      FJvHLEditor.SyntaxHighlighting := DefaultValue['SyntaxHighlighting', FJvHLEditor.SyntaxHighlighting];
+      HLed.SyntaxHighlighting := DefaultValue['SyntaxHighlighting', HLed.SyntaxHighlighting];
       FJvHLEditor.TabStops := DefaultValue['TabStops', FJvHLEditor.TabStops];
       FJvHLEditor.RightMargin := DefaultValue['RightMargin', FJvHLEditor.RightMargin];
     end;
   end;
 end;
 
-procedure TJvHLEdPropDlg.SaveHighlighterColors(AJvHLEditor: TJvHLEditor; AHighLighter: THighLighter);
+type
+  TOpenCustomEditorBase = class(TJvCustomEditorBase);
+
+procedure TJvHLEdPropDlg.SaveHighlighterColors(AJvHLEditor: TJvCustomEditorBase;
+  AHighlighter: TJvHighlighter);
 var
   Section: string;
 
   procedure SaveColor(AColor: TJvSymbolColor; const Prefix: string);
   begin
-    Storage.StoredValue[Section + Prefix] := ColorToString(AColor.ForeColor) + ', ' + ColorToString(AColor.BackColor) +
+    Storage.StoredValue[Section + Prefix] :=
+      ColorToString(AColor.ForeColor) + ', ' + ColorToString(AColor.BackColor) +
       ', ' + IntToStr(byte(AColor.Style));
   end;
 
+var
+  ed: TOpenCustomEditorBase;
+  HLed: IJvHLEditor;
 begin
   if Storage <> nil then
   begin
 //    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
-    Section := AddSlash2(StorageSection) + HighLighters[AHighLighter];
-    Storage.StoredValue[Section + 'BackColor'] := ColorToString(AJvHLEditor.Color);
-    Storage.StoredValue[Section + 'FontName'] := AJvHLEditor.Font.Name;
-    Storage.StoredValue[Section + 'Charset'] := IntToStr(AJvHLEditor.Font.CharSet);
-    Storage.StoredValue[Section + 'FontSize'] := AJvHLEditor.Font.Size;
-    Storage.StoredValue[Section + 'RightMarginColor'] := ColorToString(AJvHLEditor.RightMarginColor);
-    SaveColor(AJvHLEditor.Colors.Number, 'Number');
-    SaveColor(AJvHLEditor.Colors.Strings, 'Strings');
-    SaveColor(AJvHLEditor.Colors.Symbol, 'Symbol');
-    SaveColor(AJvHLEditor.Colors.Comment, 'Comment');
-    SaveColor(AJvHLEditor.Colors.Reserved, 'Reserved');
-    SaveColor(AJvHLEditor.Colors.Identifier, 'Identifier');
-    SaveColor(AJvHLEditor.Colors.Preproc, 'Preproc');
-    SaveColor(AJvHLEditor.Colors.FunctionCall, 'FunctionCall');
-    SaveColor(AJvHLEditor.Colors.Declaration, 'Declaration');
-    SaveColor(AJvHLEditor.Colors.Statement, 'Statement');
-    SaveColor(AJvHLEditor.Colors.PlainText, 'PlainText');
+    ed := TOpenCustomEditorBase(AJvHLEditor);
+    FJvHLEditor.GetInterface(IJvHLEditor, HLed);
+    Section := AddSlash2(StorageSection) + Highlighters[AHighlighter];
+    Storage.StoredValue[Section + 'BackColor'] := ColorToString(ed.Color);
+    Storage.StoredValue[Section + 'FontName'] := ed.Font.Name;
+    Storage.StoredValue[Section + 'Charset'] := IntToStr(ed.Font.CharSet);
+    Storage.StoredValue[Section + 'FontSize'] := ed.Font.Size;
+    Storage.StoredValue[Section + 'RightMarginColor'] := ColorToString(ed.RightMarginColor);
+    SaveColor(HLed.Colors.Number, 'Number');
+    SaveColor(HLed.Colors.Strings, 'Strings');
+    SaveColor(HLed.Colors.Symbol, 'Symbol');
+    SaveColor(HLed.Colors.Comment, 'Comment');
+    SaveColor(HLed.Colors.Reserved, 'Reserved');
+    SaveColor(HLed.Colors.Identifier, 'Identifier');
+    SaveColor(HLed.Colors.Preproc, 'Preproc');
+    SaveColor(HLed.Colors.FunctionCall, 'FunctionCall');
+    SaveColor(HLed.Colors.Declaration, 'Declaration');
+    SaveColor(HLed.Colors.Statement, 'Statement');
+    SaveColor(HLed.Colors.PlainText, 'PlainText');
   end;
 end;
 
-procedure TJvHLEdPropDlg.LoadHighlighterColors(AJvHLEditor: TJvHLEditor; AHighLighter: THighLighter);
+procedure TJvHLEdPropDlg.LoadHighlighterColors(AJvHLEditor: TJvCustomEditorBase;
+  AHighlighter: TJvHighlighter);
 var
   Section: string;
 
@@ -410,33 +426,38 @@ var
       AColor.Style := DefaultStyle;
   end;
 
+var
+  ed: TOpenCustomEditorBase;
+  HLed: IJvHLEditor;
 begin
   if Storage <> nil then
   begin
 //    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
-    Section := AddSlash2(StorageSection) + HighLighters[AHighLighter];
-    LoadColor(AJvHLEditor.Colors.Number, clNavy, clWindow, [], 'Number');
-    LoadColor(AJvHLEditor.Colors.Strings, clMaroon, clWindow, [], 'Strings');
-    LoadColor(AJvHLEditor.Colors.Symbol, clBlue, clWindow, [], 'Symbol');
-    LoadColor(AJvHLEditor.Colors.Comment, clOlive, clWindow, [fsItalic], 'Comment');
-    LoadColor(AJvHLEditor.Colors.Reserved, clWindowText, clWindow, [fsBold], 'Reserved');
-    LoadColor(AJvHLEditor.Colors.Identifier, clWindowText, clWindow, [], 'Identifier');
-    LoadColor(AJvHLEditor.Colors.Preproc, clGreen, clWindow, [], 'Preproc');
-    LoadColor(AJvHLEditor.Colors.FunctionCall, clWindowText, clWindow, [], 'FunctionCall');
-    LoadColor(AJvHLEditor.Colors.Declaration, clWindowText, clWindow, [], 'Declaration');
-    LoadColor(AJvHLEditor.Colors.Statement, clWindowText, clWindow, [], 'Statement');
-    LoadColor(AJvHLEditor.Colors.PlainText, clWindowText, clWindow, [], 'PlainText');
+    ed := TOpenCustomEditorBase(AJvHLEditor);
+    FJvHLEditor.GetInterface(IJvHLEditor, HLed);
+    Section := AddSlash2(StorageSection) + Highlighters[AHighlighter];
+    LoadColor(HLed.Colors.Number, clNavy, clWindow, [], 'Number');
+    LoadColor(HLed.Colors.Strings, clMaroon, clWindow, [], 'Strings');
+    LoadColor(HLed.Colors.Symbol, clBlue, clWindow, [], 'Symbol');
+    LoadColor(HLed.Colors.Comment, clOlive, clWindow, [fsItalic], 'Comment');
+    LoadColor(HLed.Colors.Reserved, clWindowText, clWindow, [fsBold], 'Reserved');
+    LoadColor(HLed.Colors.Identifier, clWindowText, clWindow, [], 'Identifier');
+    LoadColor(HLed.Colors.Preproc, clGreen, clWindow, [], 'Preproc');
+    LoadColor(HLed.Colors.FunctionCall, clWindowText, clWindow, [], 'FunctionCall');
+    LoadColor(HLed.Colors.Declaration, clWindowText, clWindow, [], 'Declaration');
+    LoadColor(HLed.Colors.Statement, clWindowText, clWindow, [], 'Statement');
+    LoadColor(HLed.Colors.PlainText, clWindowText, clWindow, [], 'PlainText');
     try
       AJvHLEditor.Color := StringToColor(Storage.ReadString(Section + 'BackColor', 'clWindow'));
     except
       on E: EConvertError do
         AJvHLEditor.RightMarginColor := clWindow;
     end;
-    AJvHLEditor.Font.Name := Storage.ReadString(Section + 'FontName', 'Courier New');
-    AJvHLEditor.Font.CharSet := Storage.ReadInteger(Section + 'Charset', DEFAULT_CHARSET);
-    AJvHLEditor.Font.Size := Storage.ReadInteger(Section + 'FontSize', 10);
+    ed.Font.Name := Storage.ReadString(Section + 'FontName', 'Courier New');
+    ed.Font.CharSet := Storage.ReadInteger(Section + 'Charset', DEFAULT_CHARSET);
+    ed.Font.Size := Storage.ReadInteger(Section + 'FontSize', 10);
     try
-      AJvHLEditor.RightMarginColor := StringToColor(Storage.ReadString(Section + 'RightMarginColor', 'clSilver'));
+      ed.RightMarginColor := StringToColor(Storage.ReadString(Section + 'RightMarginColor', 'clSilver'));
     except
       on E: EConvertError do
         AJvHLEditor.RightMarginColor := clSilver;
@@ -444,10 +465,11 @@ begin
   end;
 end;
 
-function TJvHLEdPropDlg.Execute: boolean;
+function TJvHLEdPropDlg.Execute: Boolean;
 var
-  F: integer;
+  F: Integer;
   Form: TJvHLEditorParamsForm;
+  HLed: IJvHLEditor;
 begin
   if FJvHLEditor = nil then
     raise EJVCLException.Create(RsEHLEdPropDlg_RAHLEditorNotAssigned);
@@ -455,7 +477,8 @@ begin
   Form.ColorSamples.Assign(ColorSamples);
   with Form do
   try
-    FHighLighter := FJvHLEditor.HighLighter;
+    FJvHLEditor.GetInterface(IJvHLEditor, HLed);
+    FHighlighter := HLed.Highlighter;
     Params := Self;
     ParamsToControls;
     if FReadFrom = rfHLEditor then
@@ -496,13 +519,19 @@ begin
 end;
 
 procedure TJvHLEdPropDlg.LoadCurrentHighlighterColors;
+var
+  HLed: IJvHLEditor;
 begin
-  LoadHighlighterColors(FJvHLEditor, FJvHLEditor.HighLighter);
+  if FJvHLEditor.GetInterface(IJvHLEditor, HLed) then
+    LoadHighlighterColors(FJvHLEditor, HLed.Highlighter);
 end;
 
 procedure TJvHLEdPropDlg.SaveCurrentHighlighterColors;
+var
+  HLed: IJvHLEditor;
 begin
-  SaveHighlighterColors(FJvHLEditor, FJvHLEditor.HighLighter);
+  if FJvHLEditor.GetInterface(IJvHLEditor, HLed) then
+    SaveHighlighterColors(FJvHLEditor, HLed.Highlighter);
 end;
 
 function TJvHLEdPropDlg.GetColorSamples: TStrings;
@@ -547,7 +576,10 @@ end;
 procedure TJvHLEditorParamsForm.ParamsToControls;
 var
   I: integer;
+  HLed: IJvHLEditor;
 begin
+  Params.FJvHLEditor.GetInterface(IJvHLEditor, HLed);
+
   cbDoubleClickLine.Checked := Params.FJvHLEditor.DoubleClickLine;
   cbUndoAfterSave.Checked := Params.FJvHLEditor.UndoAfterSave;
   cbKeepTrailingBlanks.Checked := Params.FJvHLEditor.KeepTrailingBlanks;
@@ -556,9 +588,9 @@ begin
   cbBackspaceUnindents.Checked := Params.FJvHLEditor.BackSpaceUnindents;
   cbGroupUndo.Checked := Params.FJvHLEditor.GroupUndo;
   cbCursorBeyondEOF.Checked := Params.FJvHLEditor.CursorBeyondEOF;
-  cbSytaxHighlighting.Checked := Params.FJvHLEditor.SyntaxHighlighting;
+  cbSytaxHighlighting.Checked := HLed.SyntaxHighlighting;
   eTabStops.Text := Params.FJvHLEditor.TabStops;
-  cbColorSettings.ItemIndex := integer(FHighLighter);
+  cbColorSettings.ItemIndex := Integer(FHighlighter);
   cbColorSettingsChange(nil);
   JvHLEditorPreview.RightMargin := Params.FJvHLEditor.RightMargin;
   cbColorSettings.Visible := Params.FHighlighterCombo;
@@ -572,7 +604,11 @@ begin
 end;
 
 procedure TJvHLEditorParamsForm.ControlsToParams;
+var
+  HLed: IJvHLEditor;
 begin
+  Params.FJvHLEditor.GetInterface(IJvHLEditor, HLed);
+
   Params.FJvHLEditor.DoubleClickLine := cbDoubleClickLine.Checked;
   Params.FJvHLEditor.UndoAfterSave := cbUndoAfterSave.Checked;
   Params.FJvHLEditor.KeepTrailingBlanks := cbKeepTrailingBlanks.Checked;
@@ -581,10 +617,10 @@ begin
   Params.FJvHLEditor.BackSpaceUnindents := cbBackspaceUnindents.Checked;
   Params.FJvHLEditor.GroupUndo := cbGroupUndo.Checked;
   Params.FJvHLEditor.CursorBeyondEOF := cbCursorBeyondEOF.Checked;
-  Params.FJvHLEditor.SyntaxHighlighting := cbSytaxHighlighting.Checked;
+  HLed.SyntaxHighlighting := cbSytaxHighlighting.Checked;
   Params.FJvHLEditor.TabStops := eTabStops.Text;
   if Params.Storage <> nil then
-    Params.SaveHighlighterColors(JvHLEditorPreview, JvHLEditorPreview.HighLighter);
+    Params.SaveHighlighterColors(JvHLEditorPreview, JvHLEditorPreview.Highlighter);
 end;
 
 procedure TJvHLEditorParamsForm.FormCreate(Sender: TObject);
@@ -873,7 +909,7 @@ end;
 
 procedure ReadColorSampleSection(Ini: TStrings; const Section: string; Lines: TStrings);
 var
-  I: integer;
+  I: Integer;
   S: string;
   InSection: boolean;
 begin
@@ -897,19 +933,19 @@ end;
 
 procedure TJvHLEditorParamsForm.cbColorSettingsChange(Sender: TObject);
 var
-  I: integer;
+  I: Integer;
 begin
   if (Sender <> nil) and (Params.Storage <> nil) then
-    Params.SaveHighlighterColors(JvHLEditorPreview, JvHLEditorPreview.HighLighter);
+    Params.SaveHighlighterColors(JvHLEditorPreview, JvHLEditorPreview.Highlighter);
 
   ReadColorSampleSection(ColorSamples, cbColorSettings.Text, JvHLEditorPreview.Lines);
 
-  JvHLEditorPreview.HighLighter := THighLighter(cbColorSettings.ItemIndex);
-  if JvHLEditorPreview.HighLighter = hlIni then
+  JvHLEditorPreview.Highlighter := TJvHighlighter(cbColorSettings.ItemIndex);
+  if JvHLEditorPreview.Highlighter = hlIni then
     for I := 0 to JvHLEditorPreview.Lines.Count - 1 do
       JvHLEditorPreview.Lines[I] := Copy(JvHLEditorPreview.Lines[I], 2, 10000);
   if Params.Storage <> nil then
-    Params.LoadHighlighterColors(JvHLEditorPreview, JvHLEditorPreview.HighLighter);
+    Params.LoadHighlighterColors(JvHLEditorPreview, JvHLEditorPreview.Highlighter);
   lbElementsClick(nil);
 end;
 
@@ -954,6 +990,7 @@ begin
     ''#10 +
     '[Pascal]'#10 +
     '{ Syntax highlighting }'#10 +
+    '{$DEFINE DELPHI}'#10 +
     'procedure TMain.JvHLEditorPreviewChangeStatus(Sender: TObject);'#10 +
     'const'#10 +
     '  Modi: array[boolean] of string[10] = ('#39#39', '#39'Modified'#39');'#10 +
@@ -1321,9 +1358,25 @@ begin
   if Operation = opRemove then
   begin
     if AComponent = JvHLEditor then
-      JvHLEditor := nil
+      FJvHLEditor := nil // do not call SetJvHLEditor
     else if AComponent = Storage then
-      Storage := nil;
+      FStorage := nil;
+  end;
+end;
+
+procedure TJvHLEdPropDlg.SetJvHLEditor(const Value: TJvCustomEditorBase);
+var
+  HLed: IJvHLEditor;
+begin
+  if Value <> FJvHLEditor then
+  begin
+    if Value <> nil then
+    begin
+      if Value.GetInterface(IJvHLEditor, HLed) then
+        FJvHLEditor := Value;
+    end
+    else
+      FJvHLEditor := nil;
   end;
 end;
 

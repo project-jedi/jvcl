@@ -61,5 +61,6 @@
     <File Name="..\..\run\JvExMask.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvExGrids.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvExButtons.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\common\WStrUtils.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

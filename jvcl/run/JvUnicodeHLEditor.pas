@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvHLEditor.PAS, released on 2002-07-04.
+The Original Code is: JvUnicodeHLEditor.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
 Copyright (c) 1999, 2002 Andrei Prygounkov
@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-09-20
+Last Modified: 2004-01-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -25,10 +25,6 @@ component   : TJvWideHLEditor
 description : JvEditor with built-in highlighting for:
               pascal, cbuilder, sql, python, jscript,
               vbscript, perl, ini, html, not quite c
-
-Known Issues:
-  (rom) source cleaning incomplete
-  (rom) GetAttr should be broken up further
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
@@ -42,88 +38,34 @@ uses
   Windows,
   {$ENDIF COMPILER6_UP}
   SysUtils, Classes, Graphics,
-  JvUnicodeEditor, JvHLParser, JclUnicode;
-
-const
-  { Max_Line - maximum line numbers, scanned by editor for comments }
-  Max_Line = 64 * 1024;
+  JvEditorCommon, JvUnicodeEditor, JvHLParser, WStrUtils;
 
 type
-  THighlighter = (hlNone, hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlVB,
-    hlHtml, hlPerl, hlIni, hlCocoR, hlPhp, hlNQC, hlSyntaxHighlighter);
-  TLongTokenType = 0..255;
-
   TJvWideHLEditor = class;
-
-  TJvSymbolColor = class(TPersistent)
-  private
-    FStyle: TFontStyles;
-    FForeColor: TColor;
-    FBackColor: TColor;
-  public
-    constructor Create;
-    procedure SetColor(const ForeColor, BackColor: TColor; const Style: TFontStyles);
-    procedure Assign(Source: TPersistent); override;
-  published
-    // (rom) defaults and constructor added
-    property Style: TFontStyles read FStyle write FStyle default [];
-    property ForeColor: TColor read FForeColor write FForeColor default clWindowText;
-    property BackColor: TColor read FBackColor write FBackColor default clWindow;
-  end;
-
-  TJvColors = class(TPersistent)
-  private
-    FComment: TJvSymbolColor;
-    FNumber: TJvSymbolColor;
-    FString: TJvSymbolColor;
-    FSymbol: TJvSymbolColor;
-    FReserved: TJvSymbolColor;
-    FIdentifier: TJvSymbolColor;
-    FPreproc: TJvSymbolColor;
-    FFunctionCall: TJvSymbolColor;
-    FDeclaration: TJvSymbolColor;
-    FStatement: TJvSymbolColor;
-    FPlainText: TJvSymbolColor;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Assign(Source: TPersistent); override;
-  published
-    property Comment: TJvSymbolColor read FComment write FComment;
-    property Number: TJvSymbolColor read FNumber write FNumber;
-    property Strings: TJvSymbolColor read FString write FString;
-    property Symbol: TJvSymbolColor read FSymbol write FSymbol;
-    property Reserved: TJvSymbolColor read FReserved write FReserved;
-    property Identifier: TJvSymbolColor read FIdentifier write FIdentifier;
-    property Preproc: TJvSymbolColor read FPreproc write FPreproc;
-    property FunctionCall: TJvSymbolColor read FFunctionCall write FFunctionCall;
-    property Declaration: TJvSymbolColor read FDeclaration write FDeclaration;
-    property Statement: TJvSymbolColor read FStatement write FStatement;
-    property PlainText: TJvSymbolColor read FPlainText write FPlainText;
-  end;
 
   TOnReservedWord = procedure(Sender: TObject; Token: WideString;
     var Reserved: Boolean) of object;
 
   TJvWideEditorHighlighter = class(TComponent)
   protected
-    procedure GetAttr(Editor: TJvWideHLEditor; Lines: TWideStrings; Line, ColBeg, ColEnd: Integer;
+    procedure GetAttr(Editor: TJvWideHLEditor; Lines: TWStrings; Line, ColBeg, ColEnd: Integer;
       LongToken: TLongTokenType; var LineAttrs: TLineAttrs); virtual; abstract;
-    procedure ScanLongTokens(Editor: TJvWideHLEditor; Lines: TWideStrings; Line: Integer;
+    procedure ScanLongTokens(Editor: TJvWideHLEditor; Lines: TWStrings; Line: Integer;
       var FLong: TLongTokenType); virtual; abstract;
-    function GetRescanLongKeys(Editor: TJvWideHLEditor): string; virtual; abstract;
+    function GetRescanLongKeys(Editor: TJvWideHLEditor; Action: TModifiedAction;
+      ACaretX, ACaretY: Integer; const Text: WideString): Boolean; virtual; abstract;
   end;
 
-  TJvWideHLEditor = class(TJvWideEditor)
+  TJvWideHLEditor = class(TJvWideEditor, IJvHLEditor)
   private
     Parser: TJvIParserW;
-    FHighlighter: THighlighter;
+    FHighlighter: TJvHighlighter;
     FColors: TJvColors;
     FLine: WideString;
     FLineNum: Integer;
     FLong: TLongTokenType;
     FLongTokens: Boolean;
-    FLongDesc: array [0..Max_Line] of TLongTokenType;
+    FLongDesc: array[0..Max_Line] of TLongTokenType;
     FSyntaxHighlighting: Boolean;
     FSyntaxHighlighter: TJvWideEditorHighlighter;
     FOnReservedWord: TOnReservedWord;
@@ -133,9 +75,14 @@ type
     function RescanLong(iLine: Integer): Boolean;
     procedure CheckInLong;
     function FindLongEnd: Integer;
-    procedure SetHighlighter(Value: THighlighter);
+    procedure SetHighlighter(const Value: TJvHighlighter);
     function GetDelphiColors: Boolean;
     procedure SetDelphiColors(Value: Boolean);
+    function GetColors: TJvColors;
+    procedure SetColors(const Value: TJvColors);
+    function GetSyntaxHighlighting: Boolean;
+    procedure SetSyntaxHighlighting(Value: Boolean);
+    function GetHighlighter: TJvHighlighter;
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -145,17 +92,18 @@ type
     function GetReservedWord(const Token: WideString; var Reserved: Boolean): Boolean; virtual;
     function UserReservedWords: Boolean; virtual;
     procedure SetSyntaxHighlighter(const Value: TJvWideEditorHighlighter);
+    procedure AssignTo(Source: TPersistent); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
-    property Highlighter: THighlighter read FHighlighter write SetHighlighter default hlPascal;
-    property Colors: TJvColors read FColors write FColors;
+    property Highlighter: TJvHighlighter read GetHighlighter write SetHighlighter default hlPascal;
+    property Colors: TJvColors read GetColors write SetColors;
     property DelphiColors: Boolean read GetDelphiColors write SetDelphiColors stored False;
     property LongTokens: Boolean read FLongTokens write FLongTokens default True;
     property OnReservedWord: TOnReservedWord read FOnReservedWord write FOnReservedWord;
-    property SyntaxHighlighting: Boolean read FSyntaxHighlighting write FSyntaxHighlighting stored False;
+    property SyntaxHighlighting: Boolean read GetSyntaxHighlighting write SetSyntaxHighlighting stored False;
     property SyntaxHighlighter: TJvWideEditorHighlighter read FSyntaxHighlighter write SetSyntaxHighlighter;
   end;
 
@@ -163,19 +111,12 @@ implementation
 
 uses
   Math,
+  JvHLEditor, // for Assign
   JvJCLUtils;
 
-const
-  lgNone            = TLongTokenType(0);
-  lgComment1        = TLongTokenType(1);
-  lgComment2        = TLongTokenType(2);
-  lgString          = TLongTokenType(4);
-  lgTag             = TLongTokenType(5);
-  lgPreproc         = TLongTokenType(6);
-  lgUndefined       = High(TLongTokenType);
-
 function LastNonSpaceChar(const S: WideString): WideChar;
-var i: integer;
+var
+  i: Integer;
 begin
   Result := #0;
   i := Length(S);
@@ -184,7 +125,8 @@ begin
 end;
 
 function GetTrimChar(const S: WideString; Index: Integer): WideChar;
-var LS, l: Integer;
+var
+  LS, l: Integer;
 begin
   LS := Length(S);
   if LS <> 0 then
@@ -200,7 +142,7 @@ begin
     Result := #0;
 end;
 
-function HasStringOpenEnd(Lines: TWideStrings; iLine: Integer): Boolean;
+function HasStringOpenEnd(Lines: TWStrings; iLine: Integer): Boolean;
 { find C/C++ "line breaker" '\' }
 var
   i: integer;
@@ -228,7 +170,7 @@ begin
        // count the backslashes
         i := 1;
         while (P-1-i > F) and (P[-1-i] = '\') do inc(i);
-        if i and $01 = 0 then IsOpen := not IsOpen; { faster than: if i mod 2 = 0 then IsOpen := not IsOpen; }
+        if i mod 2 = 0 then IsOpen := not IsOpen;
       end;
       inc(P);
     end;
@@ -236,100 +178,21 @@ begin
   Result := IsOpen;
 end;
 
-//=== TJvSymbolColor =========================================================
-
-constructor TJvSymbolColor.Create;
+function StrScanW(P: PWideChar; Ch: WideChar): PWideChar;
 begin
-  inherited Create;
-  FStyle :=  [];
-  FForeColor := clWindowText;
-  FBackColor := clWindow;
-end;
-
-procedure TJvSymbolColor.SetColor(const ForeColor, BackColor: TColor; const Style: TFontStyles);
-begin
-  FForeColor := ForeColor;
-  FBackColor := BackColor;
-  FStyle := Style;
-end;
-
-procedure TJvSymbolColor.Assign(Source: TPersistent);
-begin
-  if Source is TJvSymbolColor then
+  Result := P;
+  while True do
   begin
-    FForeColor := TJvSymbolColor(Source).FForeColor;
-    FBackColor := TJvSymbolColor(Source).FBackColor;
-    FStyle := TJvSymbolColor(Source).FStyle;
-  end
-  else
-    inherited Assign(Source);
+    if Result[0] = Ch then
+      Exit
+    else if Result[0] = #0 then
+    begin
+      Result := nil;
+      Exit;
+    end;
+    Inc(Result);
+  end;
 end;
-
-//=== TJvColors ==============================================================
-
-constructor TJvColors.Create;
-begin
-  inherited Create;
-  FComment := TJvSymbolColor.Create;
-  FNumber := TJvSymbolColor.Create;
-  FString := TJvSymbolColor.Create;
-  FSymbol := TJvSymbolColor.Create;
-  FReserved := TJvSymbolColor.Create;
-  FStatement := TJvSymbolColor.Create;
-  FIdentifier := TJvSymbolColor.Create;
-  FPreproc := TJvSymbolColor.Create;
-  FFunctionCall := TJvSymbolColor.Create;
-  FDeclaration := TJvSymbolColor.Create;
-  FPlainText := TJvSymbolColor.Create;
-  FComment.SetColor(clOlive, clWindow, [fsItalic]);
-  FNumber.SetColor(clNavy, clWindow, []);
-  FString.SetColor(clPurple, clWindow, []);
-  FSymbol.SetColor(clBlue, clWindow, []);
-  FReserved.SetColor(clWindowText, clWindow, [fsBold]);
-  FStatement.SetColor(clWindowText, clWindow, [fsBold]);
-  FIdentifier.SetColor(clWindowText, clWindow, []);
-  FPreproc.SetColor(clGreen, clWindow, []);
-  FFunctionCall.SetColor(clWindowText, clWindow, []);
-  FDeclaration.SetColor(clWindowText, clWindow, []);
-  FPlainText.SetColor(clWindowText, clWindow, []);
-end;
-
-destructor TJvColors.Destroy;
-begin
-  FComment.Free;
-  FNumber.Free;
-  FString.Free;
-  FSymbol.Free;
-  FReserved.Free;
-  FStatement.Free;
-  FIdentifier.Free;
-  FPreproc.Free;
-  FFunctionCall.Free;
-  FDeclaration.Free;
-  FPlainText.Free;
-  inherited Destroy;
-end;
-
-procedure TJvColors.Assign(Source: TPersistent);
-begin
-  if Source is TJvColors then
-  begin
-    FComment.Assign(TJvColors(Source).FComment);
-    FNumber.Assign(TJvColors(Source).FNumber);
-    FString.Assign(TJvColors(Source).FString);
-    FSymbol.Assign(TJvColors(Source).FSymbol);
-    FReserved.Assign(TJvColors(Source).FReserved);
-    FStatement.Assign(TJvColors(Source).FStatement);
-    FIdentifier.Assign(TJvColors(Source).FIdentifier);
-    FPreproc.Assign(TJvColors(Source).FPreproc);
-    FFunctionCall.Assign(TJvColors(Source).FFunctionCall);
-    FDeclaration.Assign(TJvColors(Source).FDeclaration);
-    FPlainText.Assign(TJvColors(Source).FPlainText);
-  end
-  else
-    inherited Assign(Source);
-end;
-
 
 //=== TJvWideHLEditor ============================================================
 
@@ -365,7 +228,7 @@ begin
   RescanLong(0);
 end;
 
-procedure TJvWideHLEditor.SetHighlighter(Value: THighlighter);
+procedure TJvWideHLEditor.SetHighlighter(const Value: TJvHighlighter);
 begin
   if FHighlighter <> Value then
   begin
@@ -396,13 +259,11 @@ begin
 end;
 
 procedure TJvWideHLEditor.GetAttr(Line, ColBeg, ColEnd: Integer);
-var
-  Token: WideString;
-  i: Integer;
 const
   Symbols = [',', ':', ';', '.', '[', ']', '(', ')', '=', '+',
     '-', '/', '<', '>', '%', '*', '~', '''', '\', '^', '@', '{', '}',
     '#', '|', '&'];
+
 const
   DelphiKeyWords =
     ' constructor destructor string record procedure with of' +
@@ -430,13 +291,13 @@ const
     ' try typedef typename typeid union using unsigned virtual void volatile' +
     ' wchar_t while ';
 
-  NQCKeyWords: WideString = {Not Quite C - a C similar language for programming LEGO MindStorm(R) robots }
+  NQCKeyWords = {Not Quite C - a C similar language for programming LEGO MindStorm(R) robots }
     ' __event_src __type acquire break __sensor abs asm case catch const' +
     ' continue default do else false for if inline' +
     ' int monitor repeat return signed start stop sub switch task true' +
     ' until void while ';
 
-  SQLKeyWords: WideString =
+  SQLKeyWords =
     ' active as add asc after ascending all at alter auto' +
     ' and autoddl any avg based between basename blob' +
     ' base_name blobedit before buffer begin by cache  compiletime' +
@@ -597,85 +458,71 @@ const
 
   function IsDelphiKeyWord(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + WideLowerCase(St) + ' ', DelphiKeyWords) <> 0;
     Result := PosI(St, DelphiKeyWords);
   end;
 
   function IsBuilderKeyWord(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + St + ' ', BuilderKeyWords) <> 0;
     Result := PosNI(St, BuilderKeyWords);
   end;
 
   function IsNQCKeyWord(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + St + ' ', NQCKeyWords) <> 0;
     Result := PosNI(St, NQCKeyWords);
   end;
 
   function IsJavaKeyWord(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + St + ' ', JavaKeyWords) <> 0;
     Result := PosNI(St, JavaKeyWords);
   end;
 
   function IsVBKeyWord(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + WideLowerCase(St) + ' ', VBKeyWords) <> 0;
     Result := PosI(St, VBKeyWords);
   end;
 
   function IsVBStatement(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + WideLowerCase(St) + ' ', VBStatements) <> 0;
     Result := PosI(St, VBStatements);
   end;
 
   function IsSQLKeyWord(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + WideLowerCase(St) + ' ', SQLKeyWords) <> 0;
     Result := PosI(St, SQLKeyWords);
   end;
 
   function IsPythonKeyWord(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + St + ' ', PythonKeyWords) <> 0;
     Result := PosNI(St, PythonKeyWords);
   end;
 
   function IsHtmlTag(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + WideLowerCase(St) + ' ', HtmlTags) <> 0;
     Result := PosI(St, HtmlTags);
   end;
 
   function IsHtmlSpecChar(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + WideLowerCase(St) + ' ', HtmlSpecChars) <> 0;
     Result := PosI(St, HtmlSpecChars);
   end;
 
   function IsPerlKeyWord(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + St + ' ', PerlKeyWords) <> 0;
     Result := PosNI(St, PerlKeyWords);
   end;
 
   function IsPerlStatement(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + St + ' ', PerlStatements) <> 0;
     Result := PosNI(St, PerlStatements);
   end;
 
   function IsCocoKeyWord(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + WideLowerCase(St) + ' ', CocoKeyWords) <> 0;
     Result := PosI(St, CocoKeyWords);
   end;
 
   function IsPhpKeyWord(const St: WideString): Boolean;
   begin
-//    Result := Pos(' ' + St + ' ', PerlKeyWords) <> 0;
     Result := PosNI(St, PerlKeyWords);
   end;
 
@@ -703,6 +550,25 @@ const
           ((St[1] = '(') and (St[2] = '*')) or
           ((St[1] = '/') and (St[2] = '*'))
           );
+    else
+      Result := False;
+    end;
+  end;
+
+  function IsPreproc(const St: WideString): Boolean;
+  var
+    LS: Integer;
+  begin
+    LS := Length(St);
+    case Highlighter of
+      hlPascal:
+        Result := ((LS > 0) and ((St[1] = '{') and (St[2] = '$'))) or
+          ((LS > 1) and (((St[1] = '(') and (St[2] = '*') and (St[3] = '$'))));
+      {hlCBuilder, hlSQL, hlJava, hlPhp, hlNQC:
+      hlVB:
+      hlPython, hlPerl:
+      hlIni:
+      hlCocoR:}
     else
       Result := False;
     end;
@@ -754,7 +620,7 @@ const
     Result := Parser.PCPos[I];
   end;
 
-  procedure TestHtmlSpecChars;
+  procedure TestHtmlSpecChars(const Token: WideString);
   var
     i, j, iBeg, iEnd: Integer;
     S1: WideString;
@@ -795,37 +661,35 @@ const
     end;
   end;
 
-var
-  S: WideString;
-  LS: Integer;
-
-  procedure SetIniColors;
+  procedure SetIniColors(const S: WideString);
   var
     EquPos: Integer;
+    LS: Integer;
   begin
+    LS := Length(S);
     if (LS > 0) and (S[1] = '[') and (S[LS] = ']') then
-      SetBlockColor(0, LS, FColors.FDeclaration)
+      SetBlockColor(0, LS, Colors.Declaration)
     else
     begin
       EquPos := Pos('=', S);
       if EquPos > 0 then
       begin
-        SetBlockColor(0, EquPos, FColors.FIdentifier);
-        SetBlockColor(EquPos, EquPos, FColors.FSymbol);
-        SetBlockColor(EquPos + 1, LS, FColors.FString);
+        SetBlockColor(0, EquPos, Colors.Identifier);
+        SetBlockColor(EquPos, EquPos, Colors.Symbol);
+        SetBlockColor(EquPos + 1, LS, Colors.Strings);
       end;
     end;
   end;
 
   // for Coco/R
 
-  procedure HighlightGrammarName;
+  procedure HighlightGrammarName(S: WideString);
   var
     P: Integer;
   begin
     P := Pos('-->Grammar<--', S);
     if P > 0 then
-      SetBlockColor(P, P + Length('-->Grammar<--') - 1, FColors.FPreproc);
+      SetBlockColor(P, P + Length('-->Grammar<--') - 1, Colors.Preproc);
   end;
 
 // (rom) const, var, local function sequence not cleaned up yet
@@ -839,6 +703,13 @@ var
   Ch: WideChar;
   InTag: Boolean;
   N: Integer;
+
+var
+  S: WideString;
+  LS: Integer;
+  Token: WideString;
+  i: Integer;
+
 begin
   if not FSyntaxHighlighting then Exit;
   S := Lines[Line];
@@ -861,30 +732,40 @@ begin
     Parser.pcPos := Parser.pcProgram;
 
     LS := Length(S);
-    if (FHighlighter in [hlCBuilder, hlNQC]) and (LS > 0) and
-      (((GetTrimChar(S, 1) = '#') and (FLong = 0)) or (FLong = lgPreproc)) then
-      C := FColors.FPreproc
+    Ch := GetTrimChar(S, 1);
+    if (Highlighter in [hlCBuilder, hlNQC]) and (LS > 0) and
+      (((Ch = '#') and (FLong = 0)) or (FLong = lgPreproc)) then
+      C := Colors.Preproc
     else
     if ((FHighlighter in [hlPython, hlPerl]) and (LS > 0) and
-      (S[1] = '#') and (FLong = 0)) or
-      ((FHighlighter = hlIni) and (LS > 0) and ((S[1] = '#') or (S[1] = ';'))) then
-      C := FColors.FComment
+      (Ch = '#') and (FLong = 0)) or
+      ((Highlighter = hlIni) and (LS > 0) and ((Ch = '#') or (Ch = ';'))) then
+      C := Colors.Comment
     else
-      C := FColors.FPlainText;
+      C := Colors.PlainText;
     if (FLong <> 0) and (FHighlighter <> hlHtml) then
     begin
       Parser.pcPos := Parser.pcProgram + FindLongEnd + 1;
-      if (FHighlighter in [hlCBuilder, hlPython, hlPerl, hlNQC]) then
-        case FLong of
-          lgString:
-            C := FColors.FString;
-          lgComment1, lgComment2:
-            C := FColors.FComment;
-          lgPreproc:
-            C := FColors.Preproc;
-        end
+      case Highlighter of
+        hlCBuilder, hlPython, hlPerl, hlNQC:
+          case FLong of
+            lgString:
+              C := Colors.Strings;
+            lgComment1, lgComment2:
+              C := Colors.Comment;
+            lgPreproc:
+              C := Colors.Preproc;
+          end;
+        hlPascal:
+          case FLong of
+            lgComment1, lgComment2:
+              C := Colors.Comment;
+            lgPreproc1, lgPreproc2:
+              C := Colors.Preproc;
+          end;
       else
-        C := FColors.FComment;
+        C := Colors.Comment;
+      end;
     end;
   end;
 
@@ -914,7 +795,7 @@ begin
   end;
 
   if FHighlighter = hlIni then
-    SetIniColors
+    SetIniColors(S)
   else
   try
     InTag := FLong = lgTag;
@@ -927,7 +808,7 @@ begin
       if GetReservedWord(Token, Reserved) then
       begin
         if Reserved then
-          SetColor(FColors.FReserved)
+          SetColor(Colors.Reserved)
         else
           F := False;
       end
@@ -935,56 +816,56 @@ begin
         case FHighlighter of
           hlPascal:
             if IsDelphiKeyWord(Token) then
-              SetColor(FColors.FReserved)
+              SetColor(Colors.Reserved)
             else
               F := False;
           hlCBuilder:
             if IsBuilderKeyWord(Token) then
-              SetColor(FColors.FReserved)
+              SetColor(Colors.Reserved)
             else
               F := False;
           hlNQC:
             if IsNQCKeyWord(Token) then
-              SetColor(FColors.FReserved)
+              SetColor(Colors.Reserved)
             else
               F := False;
           hlSql:
             if IsSQLKeyWord(Token) then
-              SetColor(FColors.FReserved)
+              SetColor(Colors.Reserved)
             else
               F := False;
           hlPython:
             if IsPythonKeyWord(Token) then
-              SetColor(FColors.FReserved)
+              SetColor(Colors.Reserved)
             else
             if Token = 'None' then
-              SetColor(FColors.FNumber)
+              SetColor(Colors.Number)
             else
             if (PrevToken = 'def') or (PrevToken = 'class') then
-              SetColor(FColors.FDeclaration)
+              SetColor(Colors.Declaration)
             else
             if (NextSymbol = '(') and IsIdentifierW(Token) then
-              SetColor(FColors.FFunctionCall)
+              SetColor(Colors.FunctionCall)
             else
               F := False;
           hlJava:
             if IsJavaKeyWord(Token) then
-              SetColor(FColors.FReserved)
+              SetColor(Colors.Reserved)
             else
             if PrevToken = 'function' then
-              SetColor(FColors.FDeclaration)
+              SetColor(Colors.Declaration)
             else
               F := False;
           hlVB:
             if IsVBKeyWord(Token) then
-              SetColor(FColors.FReserved)
+              SetColor(Colors.Reserved)
             else
             if IsVBStatement(Token) then
-              SetColor(FColors.FStatement)
+              SetColor(Colors.Statement)
             else
             if Cmp(PrevToken, 'function') or Cmp(PrevToken, 'sub') or
               Cmp(PrevToken, 'class') then
-              SetColor(FColors.FDeclaration)
+              SetColor(Colors.Declaration)
             else
               F := False;
           hlHtml:
@@ -993,7 +874,7 @@ begin
               if Token = '<' then
               begin
                 InTag := True;
-                SetColor(FColors.FReserved)
+                SetColor(Colors.Reserved)
               end;
               F := True;
             end
@@ -1002,53 +883,53 @@ begin
               if Token = '>' then
               begin
                 InTag := False;
-                SetColor(FColors.FReserved)
+                SetColor(Colors.Reserved)
               end
               else
               if (Token = '/') and (PrevToken = '<') then
-                SetColor(FColors.FReserved)
+                SetColor(Colors.Reserved)
               else
               if (NextSymbol = '=') and IsIdentifierW(Token) then
-                SetColor(FColors.FIdentifier)
+                SetColor(Colors.Identifier)
               else
               if PrevToken = '=' then
-                SetColor(FColors.FString)
+                SetColor(Colors.Strings)
               else
               if IsHtmlTag(Token) then
-                SetColor(FColors.FReserved)
+                SetColor(Colors.Reserved)
               else
               if (PrevToken = '<') or ((PrevToken = '/') and (PrevToken2 = '<')) then
-                SetColor(FColors.FStatement)
+                SetColor(Colors.Statement)
               else
                 F := False;
             end;
           hlPerl:
             if IsPerlKeyWord(Token) then
-              SetColor(FColors.FReserved)
+              SetColor(Colors.Reserved)
             else
             if IsPerlStatement(Token) then
-              SetColor(FColors.FStatement)
+              SetColor(Colors.Statement)
             else
             if CharInSetW(Token[1], ['$', '@', '%', '&']) then
-              SetColor(FColors.FFunctionCall)
+              SetColor(Colors.FunctionCall)
             else
               F := False;
           hlCocoR:
             if IsCocoKeyWord(Token) then
-              SetColor(FColors.FReserved)
+              SetColor(Colors.Reserved)
             else
             if (Parser.PosBeg[0] = 0) and (Line > ProductionsLine) and
               IsIdentifierW(Token) then
             begin
               NextToken := Parser.Token;
               Parser.RollBack(1);
-              SetColor(FColors.FDeclaration)
+              SetColor(Colors.Declaration)
             end
             else
               F := False;
           hlPhp:
             if IsPhpKeyWord(Token) then
-              SetColor(FColors.FReserved)
+              SetColor(Colors.Reserved)
             else
               F := False;
         else
@@ -1057,36 +938,39 @@ begin
       if F then
         {Ok}
       else
+      if IsPreproc(Token) then
+        SetColor(Colors.Preproc)
+      else
       if IsComment(Token) then
-        SetColor(FColors.FComment)
+        SetColor(Colors.Comment)
       else
       if IsStringConstant(Token) then
-        SetColor(FColors.FString)
+        SetColor(Colors.Strings)
       else
       if (Length(Token) = 1) and CharInSetW(Token[1], Symbols) then
-        SetColor(FColors.FSymbol)
+        SetColor(Colors.Symbol)
       else
       if IsIntConstantW(Token) or IsRealConstantW(Token) then
-        SetColor(FColors.FNumber)
+        SetColor(Colors.Number)
       else
       if (FHighlighter in [hlCBuilder, hlJava, hlPython, hlPhp, hlNQC]) and
         (PrevToken = '0') and ((Token[1] = 'x') or (Token[1] = 'X')) then
-        SetColor(FColors.FNumber)
+        SetColor(Colors.Number)
       else
       if FHighlighter = hlHtml then
-        SetColor(FColors.FPlainText)
+        SetColor(Colors.PlainText)
       else
-        SetColor(FColors.FIdentifier);
+        SetColor(Colors.Identifier);
       if FHighlighter = hlHtml then
         { found special chars starting with '&' and ending with ';' }
-        TestHtmlSpecChars;
+        TestHtmlSpecChars(Token);
       PrevToken2 := PrevToken;
       PrevToken := Token;
       Token := Parser.Token;
     end;
 
     if Highlighter = hlCocoR then
-      HighlightGrammarName;
+      HighlightGrammarName(S);
   except
   end;
 end;
@@ -1174,7 +1058,20 @@ begin
       P := Pointer(S);
       F := P;
       L1 := Length(S);
-      if (L1 = 0) and (FLong in [lgPreproc, lgString]) then FLong := lgNone;
+      if (L1 = 0) then
+      begin
+        case Highlighter of
+          hlPascal:
+            if FLong in [lgString] then
+              FLong := lgNone;
+          hlCBuilder, hlPython, hlPerl, hlNQC:
+            if FLong in [lgPreproc] then
+              FLong := lgNone;
+        else
+          if FLong in [lgPreproc1, lgPreproc2, lgString] then
+            FLong := lgNone;
+        end;
+      end;
       i := 1;
       while i <= L1 do
       begin
@@ -1188,7 +1085,10 @@ begin
                       P := StrScanW(F + i, WideChar('}'));
                       if P = nil then
                       begin
-                        FLong := lgComment1;
+                        if S[i + 1] = '$' then
+                          FLong := lgPreproc1
+                        else
+                          FLong := lgComment1;
                         Break;
                       end
                       else
@@ -1197,7 +1097,10 @@ begin
                   '(':
                     if {S[i + 1]} F[i] = '*' then
                     begin
-                      FLong := lgComment2;
+                      if {S[i + 2]} F[i + 1] = '$' then
+                        FLong := lgPreproc2
+                      else
+                        FLong := lgComment2;
                       P := StrScanW(F + i + 2, WideChar(')'));
                       if P = nil then
                         Break
@@ -1223,7 +1126,7 @@ begin
                         i := L1 + 1;
                     end;
                 end;
-              lgComment1:
+              lgPreproc1, lgComment1:
                 begin //  {
                   P := StrScanW(F + i - 1, WideChar('}'));
                   if P <> nil then
@@ -1234,7 +1137,7 @@ begin
                   else
                     i := L1 + 1;
                 end;
-              lgComment2:
+              lgPreproc2, lgComment2:
                 begin //  (*
                   P := StrScanW(F + i, WideChar(')'));
                   if P = nil then
@@ -1499,13 +1402,13 @@ begin
   case FHighlighter of
     hlPascal:
       case FLong of
-        lgComment1:
+        lgPreproc1, lgComment1:
           begin
             P := StrScanW(P, WideChar('}'));
             if P <> nil then
               Result := P - PWideChar(FLine);
           end;
-        lgComment2:
+        lgPreproc2, lgComment2:
           begin
             F := P;
             while True do
@@ -1614,19 +1517,43 @@ begin
       S := #13'*()/';
     hlSyntaxHighlighter:
       if FSyntaxHighlighter <> nil then
-        S := FSyntaxHighlighter.GetRescanLongKeys(Self)
+      begin
+        if FSyntaxHighlighter.GetRescanLongKeys(Self, Action, ACaretX, ACaretY, Text) then
+        begin
+          if RescanLong(ACaretY) then
+            Invalidate;
+        end;
+        Exit;
+      end
       else
         S := #13;
   else
     S := #13; { unknown Highlighter ? }
   end;
+
+  if Action = maAll then
+    ACaretY := -1;  // rescan all lines
+
   if (Action in [maAll, maReplace]) or HasAnyChar(S, Text) then
   begin
-    if Action = maAll then
-      ACaretY := -1;  // rescan all lines
-
     if RescanLong(ACaretY) then
       Invalidate;
+  end
+  else
+  begin
+    if (Highlighter = hlPascal) and (Cardinal(ACaretY) < Max_Line) then
+    begin
+     // comment <-> preproc
+      S := Lines[ACaretY];
+      if ((ACaretX > 1) and (S[ACaretX - 1] = '{')) or
+         ((ACaretX > 2) and (S[ACaretX - 2] = '(') and (S[ACaretX - 1] = '*')) or
+         ((ACaretX > 1) and (S[ACaretX] = '{')) or
+         ((ACaretX > 2) and (S[ACaretX - 1] = '(') and (S[ACaretX] = '*')) then
+      begin
+        if RescanLong(ACaretY) then
+          Invalidate;
+      end;
+    end;
   end;
  {
   if (FHighlighter = hlCocoR) and (HasAnyChar('productions'#13, Text)) then
@@ -1667,35 +1594,41 @@ end;
 
 procedure TJvWideHLEditor.Assign(Source: TPersistent);
 begin
+  inherited Assign(Source);
   if Source is TJvWideHLEditor then
   begin
-    Colors.Assign((Source as TJvWideHLEditor).Colors);
-    SelForeColor := (Source as TJvWideHLEditor).SelForeColor;
-    SelBackColor := (Source as TJvWideHLEditor).SelBackColor;
-    Color := (Source as TJvWideHLEditor).Color;
-    FSyntaxHighlighter := (Source as TJvWideHLEditor).SyntaxHighlighter;
-    RightMarginColor := (Source as TJvWideHLEditor).RightMarginColor;
+    FHighlighter := TJvWideHLEditor(Source).Highlighter;
+    Colors.Assign(TJvWideHLEditor(Source).Colors);
+    //FSyntaxHighlighting := TJvWideHLEditor(Source).SyntaxHighlighting;
     Invalidate;
   end
   else
-    inherited Assign(Source);
+  if Source is TJvHLEditor then
+  begin
+    FHighlighter := TJvHLEditor(Source).Highlighter;
+    Colors.Assign(TJvHLEditor(Source).Colors);
+    //FSyntaxHighlighting := TJvHLEditor(Source).SyntaxHighlighting;
+    Invalidate;
+  end;
 end;
 
+procedure TJvWideHLEditor.AssignTo(Source: TPersistent);
+begin
+  if Source is TJvHLEditor then
+  begin
+    TJvHLEditor(Source).BeginUpdate;
+    try
+      TJvHLEditor(Source).Assign(TJvCustomEditorBase(Self));
 
-type
-  TDelphiColor = record
-    ForeColor, BackColor: TColor;
-    Style: TFontStyles;
+      TJvHLEditor(Source).Highlighter := Highlighter;
+      TJvHLEditor(Source).Colors.Assign(Colors);
+      TJvHLEditor(Source).SyntaxHighlighting := SyntaxHighlighting;
+    finally
+      TJvHLEditor(Source).EndUpdate;
+    end;
   end;
+end;
 
-const
-  DelphiColor_Comment: TDelphiColor = (ForeColor: clNavy; BackColor: clWindow; Style: [fsItalic]);
-  DelphiColor_Number: TDelphiColor = (ForeColor: clNavy; BackColor: clWindow; Style: []);
-  DelphiColor_Strings: TDelphiColor = (ForeColor: clBlue; BackColor: clWindow; Style: []);
-  DelphiColor_Symbol: TDelphiColor = (ForeColor: clBlack; BackColor: clWindow; Style: []);
-  DelphiColor_Reserved: TDelphiColor = (ForeColor: clBlack; BackColor: clWindow; Style: [fsBold]);
-  DelphiColor_Identifier: TDelphiColor = (ForeColor: clBlack; BackColor: clWindow; Style: []);
-  DelphiColor_PlainText: TDelphiColor = (ForeColor: clWindowText; BackColor: clWindow; Style: []);
 
 function TJvWideHLEditor.GetDelphiColors: Boolean;
   function CompareColor(Symbol: TJvSymbolColor; const DelphiColor: TDelphiColor): Boolean;
@@ -1706,13 +1639,14 @@ function TJvWideHLEditor.GetDelphiColors: Boolean;
   end;
 begin
   Result := False;
-  if not CompareColor(FColors.Comment, DelphiColor_Comment) then Exit;
-  if not CompareColor(FColors.Number, DelphiColor_Number) then Exit;
-  if not CompareColor(FColors.Strings, DelphiColor_Strings) then Exit;
-  if not CompareColor(FColors.Symbol, DelphiColor_Symbol) then Exit;
-  if not CompareColor(FColors.Reserved, DelphiColor_Reserved) then Exit;
-  if not CompareColor(FColors.Identifier, DelphiColor_Identifier) then Exit;
-  if not CompareColor(FColors.PlainText, DelphiColor_PlainText) then Exit;
+  if not CompareColor(Colors.Comment, DelphiColor_Comment) then Exit;
+  if not CompareColor(Colors.Preproc, DelphiColor_Preproc) then Exit;
+  if not CompareColor(Colors.Number, DelphiColor_Number) then Exit;
+  if not CompareColor(Colors.Strings, DelphiColor_Strings) then Exit;
+  if not CompareColor(Colors.Symbol, DelphiColor_Symbol) then Exit;
+  if not CompareColor(Colors.Reserved, DelphiColor_Reserved) then Exit;
+  if not CompareColor(Colors.Identifier, DelphiColor_Identifier) then Exit;
+  if not CompareColor(Colors.PlainText, DelphiColor_PlainText) then Exit;
   Result := True;
 end;
 
@@ -1725,13 +1659,14 @@ procedure TJvWideHLEditor.SetDelphiColors(Value: Boolean);
 begin
   if Value then
   begin
-    SetColor(FColors.FComment, DelphiColor_Comment);
-    SetColor(FColors.FNumber, DelphiColor_Number);
-    SetColor(FColors.Strings, DelphiColor_Strings);
-    SetColor(FColors.Symbol, DelphiColor_Symbol);
-    SetColor(FColors.Reserved, DelphiColor_Reserved);
-    SetColor(FColors.Identifier, DelphiColor_Identifier);
-    SetColor(FColors.PlainText, DelphiColor_PlainText);
+    SetColor(Colors.Comment, DelphiColor_Comment);
+    SetColor(Colors.Preproc, DelphiColor_Preproc);
+    SetColor(Colors.Number, DelphiColor_Number);
+    SetColor(Colors.Strings, DelphiColor_Strings);
+    SetColor(Colors.Symbol, DelphiColor_Symbol);
+    SetColor(Colors.Reserved, DelphiColor_Reserved);
+    SetColor(Colors.Identifier, DelphiColor_Identifier);
+    SetColor(Colors.PlainText, DelphiColor_PlainText);
   end;
 end;
 
@@ -1749,6 +1684,32 @@ begin
     RescanLong(0);
     Invalidate;
   end;
+end;
+
+function TJvWideHLEditor.GetColors: TJvColors;
+begin
+  Result := FColors;
+end;
+
+procedure TJvWideHLEditor.SetColors(const Value: TJvColors);
+begin
+  FColors.Assign(Value);
+end;
+
+function TJvWideHLEditor.GetSyntaxHighlighting: Boolean;
+begin
+  Result := FSyntaxHighlighting;
+end;
+
+procedure TJvWideHLEditor.SetSyntaxHighlighting(Value: Boolean);
+begin
+  FSyntaxHighlighting := Value;
+  Invalidate;
+end;
+
+function TJvWideHLEditor.GetHighlighter: TJvHighlighter;
+begin
+  Result := FHighlighter;
 end;
 
 end.

@@ -52,6 +52,7 @@ uses
   JvLookOut, JvOutlookBar, JvScheduledEvents, JvThumbImage,
   JvThumbnails, JvThumbviews, JvTimeLine, JvTMTimeLine, JvBalloonHint,
   JvValidateEdit, JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser,
+  JvEditorCommon, JvUnicodeEditor, JvUnicodeHLEditor,
   JvImagesViewer, JvImageListViewer, JvOwnerDrawViewer,
   JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors,
   JvOutlookBarEditors, JvLookoutEditor, JvChart;
@@ -68,7 +69,7 @@ const
 begin
   RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
   RegisterComponents(RsPaletteEdit, [TJvValidateEdit, TJvEditor, TJvHLEditor,
-    TJvHLEdPropDlg]);
+    TJvWideEditor, TJvWideHLEditor, TJvHLEdPropDlg]);
   RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,
     TJvLookout, {TJvLookOutPage, } TJvExpress]);
   RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
@@ -89,6 +90,8 @@ begin
   RegisterPropertyEditor(TypeInfo(Integer), TJvOutlookBarButton,
     cImageIndex, TJvOutlookBarButtonImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TJvColors), TJvHLEditor,
+    cColors, TJvHLEditorColorProperty);
+  RegisterPropertyEditor(TypeInfo(TJvColors), TJvWideHLEditor,
     cColors, TJvHLEditorColorProperty);
   RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem,
     cSchedule, TJvSchedulePropertyEditor);
