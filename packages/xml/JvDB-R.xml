@@ -51,7 +51,7 @@
     <File Name="..\..\run\JvExDBGrids.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBHTLabel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBSearchEdit.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBSearchComoBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBSearchComboBox.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppDBStorage.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
