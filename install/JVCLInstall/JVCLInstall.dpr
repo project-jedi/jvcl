@@ -10,14 +10,15 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JVCLInstall.dpr, released on 2004-03-29.
 
-The Initial Developer of the Original Code is Andreas Hausladen [Andreas.Hausladen@gmx.de]
+The Initial Developer of the Original Code is Andreas Hausladen
+[Andreas dott Hausladen att gmx dott de]
 Portions created by Andreas Hausladen are Copyright (C) 2004 Andreas Hausladen.
 All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -58,12 +59,16 @@ uses
   Compiler5MissingPropertyFix in 'Compiler5MissingPropertyFix.pas',
   FrmInstall in 'Frames\FrmInstall.pas' {FrameInstall: TFrame},
   PgInstall in 'Pages\PgInstall.pas',
-  PgUninstall in 'Pages\PgUninstall.pas';
+  PgUninstall in 'Pages\PgUninstall.pas',
+  MainConfig in 'Helpers\MainConfig.pas' {FormJvclIncConfig},
+  CmdLineUtils in 'CmdLineUtils.pas',
+  InstallerConsts in 'InstallerConsts.pas';
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.CreateForm(TFormMain, FormMain);
+  Application.CreateForm(TFormJvclIncConfig, FormJvclIncConfig);
   Application.Run;
 end.

@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -48,6 +48,9 @@ function HasText(Text: string; const Values: array of string): Boolean; // case 
 procedure AddPaths(List: TStrings; Add: Boolean; const Dir: string;
   const Paths: array of string);
 function OpenAtAnchor(const FileName, Anchor: string): Boolean;
+
+procedure FindFiles(const Dir, Mask: string; SubDirs: Boolean; List: TStrings;
+  const FileExtensions: array of string);
 
 {$IFDEF COMPILER5}
 type
@@ -198,15 +201,18 @@ begin
  // remove old paths
   for j := 0 to High(Paths) do
     for i := List.Count - 1 downto 0 do
-      if EndsWith(List[i], Paths[j], True) then
-        List.Delete(i);
+      if Paths[j] <> '' then
+        if EndsWith(List[i], Paths[j], True) then
+          List.Delete(i);
+
   if Add then
    // add new paths
     for j := 0 to High(Paths) do
-      if Pos(':', Paths[j]) = 0 then
-        List.Add(Dir + '\' + Paths[j])
-      else
-        List.Add(Paths[j])
+      if Paths[j] <> '' then
+        if (Pos(':', Paths[j]) = 0) and (Paths[j][1] <> '$') then
+          List.Add(Dir + '\' + Paths[j])
+        else
+          List.Add(Paths[j])
 end;
 
 function OpenAtAnchor(const FileName, Anchor: string): Boolean;
@@ -229,5 +235,38 @@ begin
   Result := Supports(Intf, IID, TempIntf);
 end;
 {$ENDIF COMPILER5}
+
+function IsInArray(const Value: string; const Args: array of string): Integer;
+begin
+  for Result := 0 to High(Args) do
+    if CompareText(Value, Args[Result]) = 0 then
+      Exit;
+  Result := -1;
+end;
+
+procedure FindFiles(const Dir, Mask: string; SubDirs: Boolean; List: TStrings;
+  const FileExtensions: array of string);
+var
+  sr: TSearchRec;
+begin
+  if FindFirst(Dir + '\' + Mask, faAnyFile or faDirectory, sr) = 0 then
+  try
+    repeat
+      if sr.Attr and faDirectory <> 0 then
+      begin
+        if (sr.Name <> '.') and (sr.Name <> '..') then
+          if SubDirs then
+            FindFiles(Dir + '\' + sr.Name, Mask, SubDirs, List, FileExtensions);
+      end
+      else
+      begin
+        if IsInArray(ExtractFileExt(sr.Name), FileExtensions) <> -1 then
+          List.Add(Dir + '\' + sr.Name);
+      end;
+    until FindNext(sr) <> 0;
+  finally
+    FindClose(sr);
+  end;
+end;
 
 end.

@@ -58,12 +58,15 @@ type
     FPositionTarget: Integer;
     FPositionProject: Integer;
     FFinished: Boolean;
+    FAborted: Boolean;
     procedure EvProgress(Sender: TObject; const Text: string;
       Position, Max: Integer; Kind: TProgressKind);
     procedure EvCaptureLine(const Text: string; var Aborted: Boolean);
   public
     class function Build(Installer: TInstaller; Client: TWinControl): TFrameInstall;
     procedure Execute;
+
+    property Aborted: Boolean read FAborted write FAborted;
   end;
 
 implementation
@@ -74,13 +77,7 @@ implementation
 {$ENDIF COMPILER6_UP}
 
 uses
-  FileCtrl;
-
-resourcestring
-  RsCompileError = 'An error occured while compiling the packages.';
-  RsComplete = 'Complete.';
-  RsError = '%s - Error';
-  RsCompiling = 'Compiling: %s';
+  InstallerConsts, FileCtrl;
 
 {$R *.dfm}
 
@@ -138,6 +135,7 @@ procedure TFrameInstall.EvCaptureLine(const Text: string;
 var
   LText: string;
 begin
+  Aborted := FAborted;
   RichEditLog.Lines.Add(Text);
   if Text <> '' then
   begin
@@ -267,6 +265,8 @@ var
   Success: Boolean;
   i: Integer;
 begin
+  Aborted := False;
+
   Installer.Data.SaveTargetConfigs;
   FPositionTarget := 0;
   FPositionProject := 0;
@@ -290,7 +290,7 @@ begin
         begin
           if SelTargets[i].CleanPalettes then
             SelTargets[i].CleanJVCLPalette(False);
-          Success := Data.RegisterToIDE(SelTargets[i]);
+          Success := SelTargets[i].RegisterToIDE;
           if not Success then
             Break;
         end;
@@ -318,8 +318,8 @@ end;
 
 procedure TFrameInstall.LblOpenFileClick(Sender: TObject);
 begin
-  if ShellExecute(Handle, 'open', PChar(LblOpenFile.Hint), nil, nil, SW_SHOW) < 32 then
-    MessageDlg('Error opening the file.', mtError, [mbOk], 0);
+  if ShellExecute(Handle, 'open', PChar(LblOpenFile.Hint), nil, nil, SW_SHOW) < 32 then // do not localize
+    MessageDlg(RsErrorOpeningFile, mtError, [mbOk], 0);
 end;
 
 end.

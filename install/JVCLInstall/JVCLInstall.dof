@@ -100,7 +100,7 @@ Conditionals=NO_JCL
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=--ignore-ide
+RunParams=--ignore-ide --ignore-delphi2 --autoupdat2e
 HostApplication=
 Launcher=
 UseLauncher=0

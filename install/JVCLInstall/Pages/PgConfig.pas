@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -47,7 +47,7 @@ type
 implementation
 
 uses
-  FrmConfigPage, PgPackageSelection, PgSummary;
+  InstallerConsts, FrmConfigPage, PgPackageSelection, PgSummary;
 
 { TConfigPage }
 
@@ -68,8 +68,8 @@ end;
 
 procedure TConfigPage.Title(var Title, SubTitle: WideString);
 begin
-  Title := 'Configuration';
-  SubTitle := 'Choose the compilation options and global options for all targets';
+  Title := RsConfigPageTitle;
+  SubTitle := RsConfigPageSubTitle;
 end;
 
 end.

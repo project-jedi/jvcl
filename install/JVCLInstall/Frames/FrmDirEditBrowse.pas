@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -59,7 +59,7 @@ type
 implementation
 
 uses
-  AHCompBrowseFolderDlg;
+  InstallerConsts, AHCompBrowseFolderDlg;
 
 {$R *.dfm}
 
@@ -85,7 +85,7 @@ var
   Dir: string;
 begin
   Dir := EditDirectory.Text;
-  if BrowseDirectory(Dir, 'Select the directory where the JCL source is.', 0) then
+  if BrowseDirectory(Dir, RsSelectJCLDir, 0) then
   begin
     if Assigned(FOnChange) then
       FOnChange(Self, FUserData, Dir);

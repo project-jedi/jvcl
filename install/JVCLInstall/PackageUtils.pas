@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -343,7 +343,7 @@ end;
 function TProjectGroup.Add(const TargetName, SourceName: string): TPackageTarget;
 begin
   Result := nil;
-  if FileExists(TargetConfig.JVCLPackagesXmlDir + '\' + BplNameToGenericName(TargetName) + '.xml') then
+  if FileExists(TargetConfig.JVCLPackagesXmlDir + '\' + BplNameToGenericName(TargetName) + '.xml') then // do not localize
   begin
     try
       Result := TPackageTarget.Create(Self, TargetName, SourceName)
@@ -448,7 +448,7 @@ begin
    // find "default:" target
     while i < Lines.Count do
     begin
-      if StartsWith(Lines[I], 'default:', True) then
+      if StartsWith(Lines[I], 'default:', True) then // do not localize
         Break;
       Inc(i);
     end;
@@ -521,7 +521,7 @@ end;
 /// </summary>
 function TPackageTarget.FindRuntimePackage: TPackageTarget;
 begin
-  Result := Owner.FindPackagebyXmlName(Copy(Info.Name, 1, Length(Info.Name) - 1) + 'R');
+  Result := Owner.FindPackagebyXmlName(Copy(Info.Name, 1, Length(Info.Name) - 1) + 'R'); // do not localize
 end;
 
 function TPackageTarget.GetContainCount: Integer;
@@ -545,7 +545,7 @@ begin
   begin
     if StartsWith(Info.Requires[i].Name, 'Jv', True) then
     begin
-      if FileExists(Info.FXmlDir + '\' + Info.Requires[i].Name + '.xml') and
+      if FileExists(Info.FXmlDir + '\' + Info.Requires[i].Name + '.xml') and // do not localize
          (Owner.FindPackagebyXmlName(Info.Requires[i].Name) <> nil) and
          Info.Requires[i].IsRequiredByTarget(Owner.TargetConfig) then
       begin
@@ -795,7 +795,7 @@ begin
   FName := ChangeFileExt(ExtractFileName(Filename), '');
   FRequires := TObjectList.Create;
   FContains := TObjectList.Create;
-  FIsDesign := EndsWith(Name, '-D', True);
+  FIsDesign := EndsWith(Name, '-D', True); // do not localize
   LoadFromFile(Filename);
 end;
 
@@ -826,12 +826,12 @@ begin
   try
     xml.LoadFromFile(Filename);
     RootNode := xml.Root;
-    RequiredNode := RootNode.Items.ItemNamed['Requires'];
-    ContainsNode := RootNode.Items.ItemNamed['Contains'];
+    RequiredNode := RootNode.Items.ItemNamed['Requires'];               // do not localize
+    ContainsNode := RootNode.Items.ItemNamed['Contains'];               // do not localize
 
-    FDisplayName := RootNode.Properties.ItemNamed['Name'].Value;
-    if RootNode.Items.ItemNamed['Description'] <> nil then
-      FDescription := RootNode.Items.ItemNamed['Description'].Value
+    FDisplayName := RootNode.Properties.ItemNamed['Name'].Value;        // do not localize
+    if RootNode.Items.ItemNamed['Description'] <> nil then              // do not localize
+      FDescription := RootNode.Items.ItemNamed['Description'].Value     // do not localize
     else
       FDescription := '';
 
@@ -839,16 +839,16 @@ begin
     for i := 0 to RequiredNode.Items.Count -1 do
     begin
       PackageNode := RequiredNode.Items[i];
-      RequirePkgName := PackageNode.Properties.ItemNamed['Name'].Value;
-      if Pos('dcldb', AnsiLowerCase(RequirePkgName)) > 0 then
+      RequirePkgName := PackageNode.Properties.ItemNamed['Name'].Value; // do not localize
+      if Pos('dcldb', AnsiLowerCase(RequirePkgName)) > 0 then           // do not localize
         FRequiresDB := True;
 
      // require only designtime packages
-      RequireTarget := PackageNode.Properties.ItemNamed['Targets'].Value;
+      RequireTarget := PackageNode.Properties.ItemNamed['Targets'].Value; // do not localize
       if RequireTarget = '' then
-        RequireTarget := 'all';
+        RequireTarget := 'all';                                           // do not localize
 
-      Condition := PackageNode.Properties.ItemNamed['Condition'].Value;
+      Condition := PackageNode.Properties.ItemNamed['Condition'].Value;   // do not localize
 
      // add new require item
       FRequires.Add(TRequiredPackage.Create(RequirePkgName, RequireTarget, Condition));
@@ -858,14 +858,14 @@ begin
     for i := 0 to ContainsNode.Items.Count -1 do
     begin
       FileNode := ContainsNode.Items[i];
-      ContainsFileName := FileNode.Properties.ItemNamed['Name'].Value;
+      ContainsFileName := FileNode.Properties.ItemNamed['Name'].Value;    // do not localize
 
-      RequireTarget := FileNode.Properties.ItemNamed['Targets'].Value;
+      RequireTarget := FileNode.Properties.ItemNamed['Targets'].Value;    // do not localize
       if RequireTarget = '' then
-        RequireTarget := 'all';
+        RequireTarget := 'all';                                           // do not localize
 
-      FormName := FileNode.Properties.ItemNamed['Formname'].Value;
-      Condition := FileNode.Properties.ItemNamed['Condition'].Value;
+      FormName := FileNode.Properties.ItemNamed['Formname'].Value;        // do not localize
+      Condition := FileNode.Properties.ItemNamed['Condition'].Value;      // do not localize
 
      // add new require item
       FContains.Add(TContainedFile.Create(ContainsFileName, RequireTarget, FormName, Condition));

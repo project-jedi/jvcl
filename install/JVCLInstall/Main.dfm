@@ -1,11 +1,11 @@
 object FormMain: TFormMain
-  Left = 201
-  Top = 129
+  Left = 214
+  Top = 150
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'JVCL 3  Installation'
   ClientHeight = 444
-  ClientWidth = 667
+  ClientWidth = 683
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,12 +18,13 @@ object FormMain: TFormMain
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13
   object JvWizard: TJvWizard
     Left = 0
     Top = 0
-    Width = 667
+    Width = 683
     Height = 444
     ButtonBarHeight = 42
     ButtonStart.Caption = 'To &Start Page'
@@ -67,14 +68,59 @@ object FormMain: TFormMain
     OnActivePageChanged = JvWizardActivePageChanged
     OnActivePageChanging = JvWizardActivePageChanging
     DesignSize = (
-      667
+      683
       444)
+    object LblHomepage: TLabel
+      Left = 8
+      Top = 424
+      Width = 200
+      Height = 14
+      Cursor = crHandPoint
+      Hint = '<c:blue>http://jvcl.sourceforge.net'
+      Caption = 'Jedi Visual Component Library Homepage'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -11
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = LblHomepageClick
+    end
+    object JvWizardRouteMapList: TJvWizardRouteMapList
+      Left = 0
+      Top = 0
+      Width = 161
+      Height = 402
+      ActiveFont.Charset = DEFAULT_CHARSET
+      ActiveFont.Color = clWindow
+      ActiveFont.Height = -11
+      ActiveFont.Name = 'MS Sans Serif'
+      ActiveFont.Style = [fsBold]
+      Alignment = taLeftJustify
+      Clickable = False
+      Color = clBackground
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindow
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindow
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = [fsUnderline]
+      TextOnly = True
+      BorderColor = clNone
+    end
     object PanelLogo: TPanel
-      Left = 544
-      Top = 8
+      Left = 565
+      Top = 2
       Width = 116
       Height = 31
       BevelOuter = bvNone
+      Color = clWhite
       TabOrder = 7
       object ImageLogo: TImage
         Left = 0
@@ -178,26 +224,6 @@ object FormMain: TFormMain
           B33112AB16C724F5AF06AE0A8D39368B5AA3FFD9}
         OnClick = ImageLogoClick
       end
-    end
-    object JvWizardRouteMapList: TJvWizardRouteMapList
-      Left = 0
-      Top = 0
-      Width = 145
-      Height = 402
-      ActiveFont.Charset = DEFAULT_CHARSET
-      ActiveFont.Color = clWindowText
-      ActiveFont.Height = -11
-      ActiveFont.Name = 'MS Sans Serif'
-      ActiveFont.Style = [fsBold]
-      Clickable = False
-      Color = clBackground
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clNavy
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Sans Serif'
-      HotTrackFont.Style = [fsUnderline]
-      BorderColor = clNone
-      OnDrawItem = JvWizardRouteMapListDrawItem
     end
   end
   object ImageList: TImageList

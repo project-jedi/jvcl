@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -53,6 +53,9 @@ type
 
 implementation
 
+uses
+  InstallerConsts;
+
 { TUninstallPage }
 
 function TUninstallPage.NextPage: IInstallerPage;
@@ -74,8 +77,8 @@ end;
 
 procedure TUninstallPage.Title(var Title, SubTitle: WideString);
 begin
-  Title := 'Uninstalling JVCL 3';
-  SubTitle := 'Uninstalling the JVCL 3 from the selected Delphi and BCB versions.';
+  Title := RsUninstallPageTitle;
+  SubTitle := RsUninstallPageSubTitle;
 end;
 
 procedure TUninstallPage.Action;

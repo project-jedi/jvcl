@@ -8,7 +8,7 @@ object FrameConfigPage: TFrameConfigPage
     Left = 272
     Top = 8
     Width = 241
-    Height = 137
+    Height = 161
     Caption = ' Global options for all IDEs '
     TabOrder = 1
     object LblDxgettextHomepage: TLabel
@@ -17,7 +17,11 @@ object FrameConfigPage: TFrameConfigPage
       Width = 176
       Height = 13
       Cursor = crHandPoint
-      Hint = 'http://dxgettext.sourceforge.net'
+      Hint = 
+        'http://dxgettext.sourceforge.net|Download from <c:blue>http://dx' +
+        'gettext.sourceforge.net<c:black>'#13#10'<c:red>The gnugettext.pas unit' +
+        ' will be added to the contains list'#13#10'of the JvCore-R package. Th' +
+        'at means that you cannot add'#13#10'it to another package.'
       Caption = 'LblDxgettextHomepage (not required)'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
@@ -26,6 +30,7 @@ object FrameConfigPage: TFrameConfigPage
       Font.Style = [fsUnderline]
       ParentFont = False
       Visible = False
+      OnClick = LblDxgettextHomepageClick
     end
     object CheckBoxXPTheming: TCheckBox
       Left = 8
@@ -67,7 +72,10 @@ object FrameConfigPage: TFrameConfigPage
       Height = 17
       Hint = 
         'Enable this if you want to use the dxgettext'#13#10'(<c:blue>http://dx' +
-        'gettext.sourceforge.net<c:black>) translation tool.'
+        'gettext.sourceforge.net<c:black>) translation tool.'#13#10#13#10'<c:red>Th' +
+        'e gnugettext.pas unit will be added to the contains list'#13#10'of the' +
+        ' JvCore-R package. That means that you cannot add'#13#10'it to another' +
+        ' package.'
       Caption = 'dxgettext support'
       ParentShowHint = False
       ShowHint = True
@@ -102,6 +110,15 @@ object FrameConfigPage: TFrameConfigPage
       TabOrder = 4
       OnClick = CheckBoxXPThemingClick
     end
+    object BtnEditJvclInc: TButton
+      Left = 160
+      Top = 128
+      Width = 75
+      Height = 25
+      Caption = 'Edit jvcl.inc'
+      TabOrder = 5
+      OnClick = BtnEditJvclIncClick
+    end
   end
   object GroupBoxInstallOptions: TGroupBox
     Left = 8
@@ -118,9 +135,9 @@ object FrameConfigPage: TFrameConfigPage
       Caption = 'Options for:'
     end
     object CheckBoxDeveloperInstall: TCheckBox
-      Left = 8
-      Top = 56
-      Width = 233
+      Left = 16
+      Top = 120
+      Width = 225
       Height = 17
       Hint = 
         'Activate this option if you are a JVCL developer.'#13#10'This adds the' +
@@ -129,24 +146,22 @@ object FrameConfigPage: TFrameConfigPage
       Caption = 'JVCL Developer installation'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 0
+      TabOrder = 4
       OnClick = CheckBoxDeveloperInstallClick
     end
     object CheckBoxCleanPalettes: TCheckBox
-      Left = 8
-      Top = 80
-      Width = 233
+      Left = 16
+      Top = 96
+      Width = 225
       Height = 17
       Hint = 
         'Remove all JVCL components from the component palettes in'#13#10'order' +
         ' to reinstall in a proper order.'
       AllowGrayed = True
       Caption = 'Clean JVCL component palettes'
-      Checked = True
       ParentShowHint = False
       ShowHint = True
-      State = cbChecked
-      TabOrder = 1
+      TabOrder = 3
       OnClick = CheckBoxDeveloperInstallClick
     end
     object ComboBoxTargetIDE: TComboBox
@@ -156,28 +171,29 @@ object FrameConfigPage: TFrameConfigPage
       Height = 22
       Style = csOwnerDrawFixed
       ItemHeight = 16
-      TabOrder = 2
+      TabOrder = 0
       OnChange = ComboBoxTargetIDEChange
       OnDrawItem = ComboBoxTargetIDEDrawItem
     end
     object CheckBoxBuild: TCheckBox
       Left = 8
-      Top = 104
+      Top = 48
       Width = 233
       Height = 17
       Hint = 
         'Check this option if you want to build the packages instead'#13#10'of ' +
-        'compiling the modified files.'
+        'compiling the modified files.'#13#10#13#10'<c:red><b>WARNING for BCB users' +
+        ':</b>'#13#10'This could take up to 10 minutes.'
       AllowGrayed = True
       Caption = 'Build packages'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 3
+      TabOrder = 1
       OnClick = CheckBoxDeveloperInstallClick
     end
     object CheckBoxCompileOnly: TCheckBox
       Left = 8
-      Top = 128
+      Top = 72
       Width = 233
       Height = 17
       Hint = 
@@ -187,7 +203,7 @@ object FrameConfigPage: TFrameConfigPage
       Caption = 'Compile only'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 4
+      TabOrder = 2
       OnClick = CheckBoxDeveloperInstallClick
     end
     inline FrameDirEditBrowseBPL: TFrameDirEditBrowse

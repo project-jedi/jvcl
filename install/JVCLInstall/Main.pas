@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,8 +28,7 @@ Known Issues:
 
 {
   command line arguments:
-    --ignore-ide        Do not test for running IDEs
-    --jcl-path=X        Set X as default JCL path
+    --help              Shows the help screen with all options
 }
 
 unit Main;
@@ -50,6 +49,7 @@ type
     PanelLogo: TPanel;
     ImageLogo: TImage;
     JvWizardRouteMapList: TJvWizardRouteMapList;
+    LblHomepage: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure JvWizardActivePageChanging(Sender: TObject;
@@ -61,9 +61,8 @@ type
     procedure ImageLogoClick(Sender: TObject);
     procedure JvWizardRouteMapNodes1Displaying(Sender: TObject;
       const Page: TJvWizardCustomPage; var AllowDisplay: Boolean);
-    procedure JvWizardRouteMapListDrawItem(Sender: TObject;
-      ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer;
-      var DefaultDraw: Boolean);
+    procedure LblHomepageClick(Sender: TObject);
+    procedure FormPaint(Sender: TObject);
   private
     FAppStartFailed: Boolean;
     FFinished: Boolean;
@@ -86,11 +85,18 @@ var
 implementation
 
 uses
-  PageBuilder, JvResources, Utils;
+  InstallerConsts, PageBuilder, JvResources, Utils;
 
+(* // Main.pas  - see InstallerConsts.pas
 resourcestring
   RsBtnInstall = '&Install';
   RsBtnUninstall = '&Uninstall';
+  RsNoPackageInstaller = 'Application error. No PackageInstaller created.';
+  RsCancelInstallation = 'Do you really want to cancel the installation?';
+
+  RsJediHomepage = 'http://projectjedi.sourceforge.net';
+  RsJVCLHomepage = 'http://jvcl.sourceforge.net';
+*)
 
 {$R *.dfm}
 {$R WinXP.res}
@@ -197,7 +203,7 @@ begin
 
   if PackageInstaller = nil then
   begin
-    MessageDlg('Application error. No PackageInstaller created.', mtError, [mbOk], 0);
+    MessageDlg(RsNoPackageInstaller, mtError, [mbOk], 0);
     AppStartFailed := True;
     Application.ShowMainForm := False;
     Application.Terminate;
@@ -276,10 +282,20 @@ begin
 end;
 
 procedure TFormMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  InstallPage: IInstallPage;
 begin
   if not Finished then
-    CanClose := MessageDlg('Do you really want to cancel the installation?',
+  begin
+    CanClose := MessageDlg(RsCancelInstallation,
       mtConfirmation, [mbYes, mbNo], 0) = mrYes;
+    if CanClose and Supports(PackageInstaller.Page, IInstallPage, InstallPage) and
+       (JvWizard.ActivePage.EnabledButtons = []) then
+    begin
+      CanClose := False;
+      InstallPage.Abort;
+    end;
+  end;
 end;
 
 procedure TFormMain.JvWizardActivePageChanged(Sender: TObject);
@@ -301,7 +317,8 @@ end;
 
 procedure TFormMain.ImageLogoClick(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open', 'http://projectjedi.sf.net', nil, nil, SW_SHOWNORMAL);
+  ShellExecute(Handle, 'open', PChar(RsJediHomepage), // do not localize
+    nil, nil, SW_SHOWNORMAL);
 end;
 
 procedure TFormMain.JvWizardRouteMapNodes1Displaying(Sender: TObject;
@@ -310,14 +327,37 @@ begin
   AllowDisplay := Page.PageIndex < Page.Wizard.PageCount - 1;
 end;
 
-procedure TFormMain.JvWizardRouteMapListDrawItem(Sender: TObject;
-  ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer;
-  var DefaultDraw: Boolean);
+procedure TFormMain.LblHomepageClick(Sender: TObject);
 begin
-  DefaultDraw := False;
-  ACanvas.Brush.Style := bsClear;
-  ACanvas.Font.Color := clWindow;
-  ACanvas.TextRect(ARect, ARect.Left, ARect.Top, JvWizard.Pages[PageIndex].Caption);
+  ShellExecute(Handle, 'open', PChar(RsJVCLHomepage), // do not localize
+    nil, nil, SW_SHOWNORMAL);
+end;
+
+procedure TFormMain.FormPaint(Sender: TObject);
+var
+  Page: IInstallerPage;
+begin
+  if Tag <> 0 then
+    Exit;
+  Tag := 1;
+
+ // auto installation 
+  if PackageInstaller.Installer.AutoInstall then
+  begin
+    while True do
+    begin
+      Page := PackageInstaller.Page.NextPage;
+      if (Page = nil) then
+        Break;
+      if Supports(Page, IInstallPage) or Supports(Page, IUninstallPage) then
+      begin
+        JvWizard.SelectNextPage;
+        Break;
+      end;
+      Page := nil;
+      JvWizard.SelectNextPage;
+    end;
+  end;
 end;
 
 end.

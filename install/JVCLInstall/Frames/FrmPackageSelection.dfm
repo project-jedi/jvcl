@@ -4,7 +4,6 @@ object FramePackageSelection: TFramePackageSelection
   Width = 518
   Height = 335
   TabOrder = 0
-  OnClick = FrameClick
   object LblTarget: TLabel
     Left = 8
     Top = 104

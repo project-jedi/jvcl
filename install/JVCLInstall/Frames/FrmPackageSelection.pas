@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -72,7 +72,6 @@ type
     procedure CheckListBoxPackagesMouseMove(Sender: TObject;
       Shift: TShiftState; X, Y: Integer);
     procedure TimerHintTimer(Sender: TObject);
-    procedure FrameClick(Sender: TObject);
   private
     function GetSelProjectGroup: TProjectGroup;
     function GetSelTargetConfig: TTargetConfig;
@@ -105,12 +104,9 @@ type
 implementation
 
 uses
-  Core, Intf;
+  InstallerConsts, Core, Intf;
 
 {$R *.dfm}
-
-resourcestring
-  RsSelectTargetIDE = 'Select an IDE';
 
 { TFramePackageSelection }
 
@@ -396,7 +392,7 @@ begin
     end;
 
   end;
-  
+
   UpdatePackageState;
 end;
 
@@ -547,7 +543,7 @@ begin
 
       if Pkg.RequireCount > 0 then
       begin
-        Lines.Add('<b>Requires:</b>');
+        Lines.Add('<b>' + RsPkgInfoRequires + '</b>');
         S := '';
         for i := 0 to Pkg.RequireCount - 1 do
           S := S + Pkg.Requires[i].GetBplName(SelProjectGroup) + ', ';
@@ -558,7 +554,7 @@ begin
 
       if Pkg.ContainCount > 0 then
       begin
-        Lines.Add('<b>Contains:</b>');
+        Lines.Add('<b>' + RsPkgInfoContains + '</b>');
         S := '';
         for i := 0 to Pkg.ContainCount - 1 do
           S := S + ExtractFileName(Pkg.Contains[i].Name) + ', ';
@@ -618,11 +614,6 @@ begin
   FOrgWndProc := CheckListBoxPackages.WindowProc;
   CheckListBoxPackages.WindowProc := HookWndProc;
   ComboBoxDisplayMode.ItemIndex := 0;
-end;
-
-procedure TFramePackageSelection.FrameClick(Sender: TObject);
-begin
-  ShowMessage(ActionList.Owner.Name);
 end;
 
 end.

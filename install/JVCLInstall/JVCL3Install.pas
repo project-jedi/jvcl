@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -38,15 +38,6 @@ uses
 type
   TInstallType = (itFreshInstall, itUpdate, itUninstall);
 
-  TInstallerOptions = class(TObject)
-  private
-    FIgnoreIDE: Boolean;
-  public
-    constructor Create;
-
-    property IgnoreIDE: Boolean read FIgnoreIDE;
-  end;
-
   TInstaller = class(TInterfacedObject, IInstaller)
   private
     FWelcomePage: IWelcomePage;
@@ -55,7 +46,6 @@ type
     FInstallType: TInstallType;
     FData: TJVCLData;
     FSelTargets: TList;
-    FInstallerOptions: TInstallerOptions;
 
     function GetJclDir: string;
     procedure SetJCLDir(const Value: string);
@@ -69,6 +59,7 @@ type
     procedure Init(APackageInstaller: IPackageInstaller);
     function InstallerName: WideString;
     function FirstPage: IInstallerPage;
+    function AutoInstall: Boolean;
 
     function CanInstall: Boolean;
     procedure Finish;
@@ -85,7 +76,6 @@ type
     property SelTargets[Index: Integer]: TTargetConfig read GetSelTargets;
 
     property Data: TJVCLData read FData;
-    property InstallerOptions: TInstallerOptions read FInstallerOptions;
   public
     procedure DoHomepageClick(Sender: TObject);
   end;
@@ -126,33 +116,16 @@ type
 implementation
 
 uses
-  PgIDESelection;
-
-resourcestring
-  SWelcomeText =
-    'The JEDI Visual Component Library (JVCL) consists of a large collection (currently ca. 500)'#10 +
-    'visual and non-visual components which can be instantly reused in your Delphi, Kylix and'#10 +
-    'C++ Builder projects.'#10 +
-    ''#10 +
-    'The library is built upon code donated from the JEDI community. It is reformatted to achieve'#10 +
-    'a common look-and-feel, tested, documented and merged into the library. The library is grouped'#10 +
-    'into several categories such as Enhanced Standard, Visual, Non-Visual, Data Aware and many,'#10 +
-    'many more. The library is released to the public under the terms of the Mozilla Public License'#10 +
-    '(MPL) and as such can be freely used in both freeware, shareware, open source and commercial'#10 +
-    'projects.'#10 +
-    ''#10 +
-    'Source code files included in the JVCL have a header which explicitly states the license (as'#10 +
-    'is required). However, unless noted otherwise, all files, including those without an MPL'#10 +
-    'header, are subject to the MPL license.';
+  PgIDESelection, CmdLineUtils, InstallerConsts;
 
 var
   WelcomeText: string;
-  
+
 { TInstaller }
 
 function TInstaller.InstallerName: WideString;
 begin
-  Result := 'JVCL 3  Installation';
+  Result := RsInstallerName;
 end;
 
 function TInstaller.FirstPage: IInstallerPage;
@@ -168,7 +141,9 @@ begin
 
   InstallType := itFreshInstall;
   if Data.IsJVCLInstalledAnywhere(3) then
-    InstallType := itUpdate;
+    InstallType := itUpdate
+  else
+    CmdOptions.AutoUpdate := False; // auto update not possible
 end;
 
 constructor TInstaller.Create;
@@ -176,13 +151,11 @@ begin
   inherited Create;
   FData := TJVCLData.Create;
   FSelTargets := TList.Create;
-  FInstallerOptions := TInstallerOptions.Create;
 end;
 
 destructor TInstaller.Destroy;
 begin
   FSelTargets.Free;
-  FInstallerOptions.Free;
   FData.Free;
   inherited Destroy;
 end;
@@ -203,11 +176,11 @@ begin
       Result := Data.TargetConfig[i].JCLDir;
       Exit;
     end;
-  Result := ExtractFilePath(JVCLDir) + 'Jcl\Source\Common';
+  Result := Format(sJclRootDirFromJVCLDir, [ExtractFileDir(JVCLDir)]);
   if not DirectoryExists(Result) then
     Result := ''
   else
-    Result := ExtractFilePath(JVCLDir) + 'Jcl';
+    Result := Format(sJclRootDirName, [ExtractFileDir(JVCLDir)]);
 end;
 
 procedure TInstaller.SetJCLDir(const Value: string);
@@ -227,9 +200,9 @@ function TInstaller.CanInstall: Boolean;
 begin
   Result := False;
   if Data.Targets.Count = 0 then
-    MessageDlg('No Delphi or BCB is installed. The installer terminates.', mtInformation, [mbOk], 0)
-  else if (FindWindow('TAppBuilder', nil) <> 0) and (not InstallerOptions.IgnoreIDE) then
-    MessageDlg('Delphi or BCB is running. Terminate the IDE and restart the installer.', mtInformation, [mbOk], 0)
+    MessageDlg(RsNoDelphiBcbInstalled, mtInformation, [mbOk], 0)
+  else if (FindWindow('TAppBuilder', nil) <> 0) and (not CmdOptions.IgnoreIDE) then // do not localize
+    MessageDlg(RsDelphiBcbRunning, mtInformation, [mbOk], 0)
   else
     Result := True;
 end;
@@ -243,7 +216,7 @@ begin
   ps := Pos('|', S);
   if ps <> 0 then
     Delete(S, 1, ps);
-  ShellExecute(Application.Handle, 'open', PChar(S), nil, nil, SW_SHOWNORMAL);
+  ShellExecute(Application.Handle, 'open', PChar(S), nil, nil, SW_SHOWNORMAL); // do not localize
 end;
 
 function TInstaller.GetSelTargetCount: Integer;
@@ -264,6 +237,11 @@ end;
 procedure TInstaller.SelTargetsClear;
 begin
   FSelTargets.Clear;
+end;
+
+function TInstaller.AutoInstall: Boolean;
+begin
+  Result := CmdOptions.AutoUpdate;
 end;
 
 { TInstallerPage }
@@ -287,7 +265,7 @@ end;
 
 procedure TInstallerPage.Title(var Title, SubTitle: WideString);
 begin
-  Title := 'JVCL 3 Installation';
+  Title := RsInstallerTitle;
   SubTitle := '';
 end;
 
@@ -317,18 +295,18 @@ end;
 
 procedure TWelcomePage.Options(Options: TStrings; var HorzOrientation: THorzOrientation);
 begin
-  Options.Add('New installation / Upgrade from an older version|');
+  Options.Add(RsInstallMode);
 
   if Installer.Data.IsJVCLInstalledAnywhere(3) then
-    Options.Add('Compile already installed packages / Update IDE|')
+    Options.Add(RsUpdateMode)
   else
     Options.Add('');
 
-  Options.Add('');
 
-{  if Installer.Data.IsJVCLInstalledAnywhere(1) then
-    Options.Add('Uninstall JVCL 3')
-  else}
+  Options.Add('');
+  if Installer.Data.IsJVCLInstalledAnywhere(1) then
+    Options.Add(RsUninstallMode)
+  else
     Options.Add('');
 end;
 
@@ -349,48 +327,32 @@ end;
 function TWelcomePage.Text: WideString;
 var
   Lines: TStrings;
+  Filename: string;
 begin
   if WelcomeText = '' then
   begin
     Lines := TStringList.Create;
     try
-      if FileExists(Installer.JVCLDir + '\Install\JVCLInstall\welcome.txt') then
+      Filename := Format(sWelcomeFilename, [Installer.JVCLDir]);
+      if FileExists(Filename) then
       begin
-        Lines.LoadFromFile(Installer.JVCLDir + '\Install\JVCLInstall\welcome.txt');
-        WelcomeText := Lines.Text;
+        Lines.LoadFromFile(Filename);
+        WelcomeText := Trim(Lines.Text);
         Delete(WelcomeText, Length(WelcomeText) - 1, 2);
-      end
-      else
+      end;
+      if WelcomeText = '' then
         WelcomeText := SWelcomeText;
     finally
       Lines.Free;
     end;
   end;
-  Result := SWelcomeText;
+  Result := WelcomeText;
 end;
 
 procedure TWelcomePage.Title(var Title, SubTitle: WideString);
 begin
   inherited Title(Title, SubTitle);
-  SubTitle := 'Welcome to the JVCL 3 installation program.';
-end;
-
-{ TInstallerOptions }
-
-constructor TInstallerOptions.Create;
-var
-  i: Integer;
-  S: string;
-begin
-  for i := 1 to ParamCount do
-  begin
-    S := ParamStr(I);
-    if S[1] = '-' then
-    begin
-      if StartsWith('--ignore-ide', S, True) then
-        FIgnoreIDE := True;
-    end;
-  end;
+  SubTitle := RsWelcomePageSubTitle;
 end;
 
 initialization

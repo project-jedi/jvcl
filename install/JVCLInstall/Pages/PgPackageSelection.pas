@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -51,7 +51,7 @@ type
 implementation
 
 uses
-  FrmPackageSelection, PgSummary;
+  InstallerConsts, FrmPackageSelection, PgSummary;
 
 { TPackageSelectionPage }
 
@@ -72,8 +72,8 @@ end;
 
 procedure TPackageSelectionPage.Title(var Title, SubTitle: WideString);
 begin
-  Title := 'Select packages';
-  SubTitle := 'Select all packages for the target IDEs which should be installed.'
+  Title := RsPackageSelectionPageTitle;
+  SubTitle := RsPackageSelectionPageSubTitle;
 end;
 
 end.

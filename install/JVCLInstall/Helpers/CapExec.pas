@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,13 +28,17 @@ Known Issues:
 {$I windowsonly.inc}
 
 unit CapExec;
+
 interface
+
 uses
-  Windows, SysUtils, Classes;
+  Windows, SysUtils, Classes, Dialogs;
+
 type
   TCaptureLine = procedure(const Line: string; var Aborted: Boolean) of object;
 
-function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine): Integer;
+function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine;
+  CtrlCAbort: Boolean = False): Integer;
 
 
 implementation
@@ -45,14 +49,19 @@ begin
   OemToCharBuff(PChar(Result), PChar(Result), Length(Result));
 end;
 
-function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine): Integer;
+function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine;
+  CtrlCAbort: Boolean = False): Integer;
+const
+  CtrlCBuffer: array[0..7] of Char = #3#3#3#3#3#3#3#3;
 var
   ProcessInfo: TProcessInformation;
   StartupInfo: TStartupInfo;
   SecAttrib: TSecurityAttributes;
   hRead, hWrite: THandle;
+  hAbortRead, hAbortWrite: THandle;
   Line: string;
   Aborted: Boolean;
+  Num: Cardinal;
 
   procedure ProcessInput;
   var
@@ -111,31 +120,54 @@ begin
   if not CreatePipe(hRead, hWrite, @SecAttrib, 0) then
     Exit;
   try
-    StartupInfo.wShowWindow := SW_HIDE;
-    StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);;
-    StartupInfo.hStdOutput := hWrite;
-    StartupInfo.hStdError := StartupInfo.hStdOutput; // redirect
-    StartupInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
+    if CtrlCAbort then
+      if not CreatePipe(hAbortRead, hAbortWrite, @SecAttrib, 0) then
+        Exit;
+    try
+      StartupInfo.wShowWindow := SW_HIDE;
+      if CtrlCAbort then
+        StartupInfo.hStdInput := hAbortRead
+      else
+        StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
+      StartupInfo.hStdOutput := hWrite;
+      StartupInfo.hStdError := StartupInfo.hStdOutput; // redirect
+      StartupInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
 
-    if CreateProcess(nil, PChar(App + ' ' + Args), @SecAttrib, nil, True, 0, nil,
-      PChar(Dir), StartupInfo, ProcessInfo) then
-    begin
-      CloseHandle(ProcessInfo.hThread);
-      try
-        while (WaitForSingleObject(ProcessInfo.hProcess, 30) = WAIT_TIMEOUT) and (not Aborted) do
+      if CreateProcess(nil, PChar(App + ' ' + Args), @SecAttrib, nil, True, 0, nil,
+        PChar(Dir), StartupInfo, ProcessInfo) then
+      begin
+        CloseHandle(ProcessInfo.hThread);
+        try
+          while (WaitForSingleObject(ProcessInfo.hProcess, 30) = WAIT_TIMEOUT) and (not Aborted) do
+            ProcessInput;
           ProcessInput;
-        ProcessInput;
-        if Line <> '' then
-          CaptureLine(Line, Aborted);
-        if Aborted then
-          TerminateProcess(ProcessInfo.hProcess, Cardinal(-3));
-        GetExitCodeProcess(ProcessInfo.hProcess, Cardinal(Result));
-      finally
-        CloseHandle(ProcessInfo.hProcess);
+          if Line <> '' then
+            CaptureLine(Line, Aborted);
+          if Aborted then
+          begin
+            if CtrlCAbort then
+            begin
+              WriteFile(hAbortWrite, CtrlCBuffer, SizeOf(CtrlCBuffer), Num, nil);
+              if WaitForSingleObject(ProcessInfo.hProcess, 500) = WAIT_TIMEOUT then
+                TerminateProcess(ProcessInfo.hProcess, Cardinal(-3));
+            end
+            else
+              TerminateProcess(ProcessInfo.hProcess, Cardinal(-3));
+          end;
+          GetExitCodeProcess(ProcessInfo.hProcess, Cardinal(Result));
+        finally
+          CloseHandle(ProcessInfo.hProcess);
+        end;
+      end
+      else
+        Result := -1;
+    finally
+      if CtrlCAbort then
+      begin
+        CloseHandle(hAbortRead);
+        CloseHandle(hAbortWrite);
       end;
-    end
-    else
-      Result := -1;
+    end;
   finally
     CloseHandle(hRead);
     CloseHandle(hWrite);

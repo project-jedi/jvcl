@@ -243,15 +243,15 @@ var
 begin
   S := Trim(RemoveCommentBrackets(Token.Value));
 
-  if IsDirective(S, '$IFDEF') or IsDirective(S, '$IF') or
-    IsDirective(S, '$IFNDEF') then
+  if IsDirective(S, '$IFDEF') or IsDirective(S, '$IF') or       // do not localize
+    IsDirective(S, '$IFNDEF') then                              // do not localize
     Inc(InAutoConfig)
   else
-  if IsDirective(S, '$ENDIF') or IsDirective(S, '$IFEND') then
+  if IsDirective(S, '$ENDIF') or IsDirective(S, '$IFEND') then  // do not localize
     Dec(InAutoConfig);
 
   if InAutoConfig = 0 then
-    if IsDirective(S, '$DEFINE') or IsDirective(S, '.$DEFINE') then
+    if IsDirective(S, '$DEFINE') or IsDirective(S, '.$DEFINE') then // do not localize
     begin
       Item := TJVCLConfigItem.Create(Self, LastCommentToken, S, Token.StartLine - 1);
       FItems.Add(Item);
