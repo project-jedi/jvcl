@@ -209,7 +209,7 @@ type
     procedure UpdateAllSizes;
     procedure AdjustBounds;
     procedure Loaded; override;
-    procedure SetParent(AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl); override;
 
     // Those three methods are used to provide support for reading
     // the GridYear property from DFM files that were using
@@ -1422,7 +1422,7 @@ begin
   AdjustBounds;
 end;
 
-procedure TJvYearGrid.SetParent(AParent: TWinControl);
+procedure TJvYearGrid.SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if Parent <> nil then

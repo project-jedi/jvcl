@@ -35,13 +35,8 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows, Qt, QGraphics, QControls, QForms, QStdCtrls,
-  {$ENDIF VisualCLX}
-  JvTypes, JvExStdCtrls, JvLinkedControls;
+  JvJCLUtils, JvTypes, JvExStdCtrls, JvLinkedControls;
 
 type
   TJvCheckBox = class(TJvExCheckBox)
@@ -267,14 +262,8 @@ begin
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
   begin
-    {$IFDEF VCL}
-    DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
-      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     DrawText(FCanvas, Caption, -1, R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
-    {$ENDIF VisualCLX}
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end

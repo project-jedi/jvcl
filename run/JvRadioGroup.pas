@@ -151,7 +151,10 @@ begin
   begin
     Font := Self.Font;
     H := TextHeight('0');
-    R := Rect(0, H div 2 - 1, Width, Height);  
+    R := Rect(0, H div 2 - 1, Width, Height);
+    {$IFDEF VisualCLX}
+    QWindows.
+    {$ENDIF VisualCLX}
     DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
       Byte(FEdgeBorders) {$IFDEF VCL} or Ctl3DStyles[Ctl3D] {$ENDIF} or BF_ADJUST);
     if (Text <> '') and CaptionVisible then

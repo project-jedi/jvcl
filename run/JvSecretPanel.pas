@@ -37,8 +37,13 @@ unit JvSecretPanel;
 interface
 
 uses
-  Windows,
-  Messages, Classes, Controls, Graphics, ExtCtrls, Forms,
+  Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Graphics, ExtCtrls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QWindows, QMessages, QControls, QGraphics, QExtCtrls, QForms,
+  {$ENDIF VisualCLX}
   JvTimer, JvComponent, JvTypes;
 
 type
