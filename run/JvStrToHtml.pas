@@ -43,11 +43,11 @@ type
     procedure SetValue(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
+    function TextToHtml(Text: string): string;
+    function HtmlToText(Text: string): string;
   published
     property Text: string read FValue write SetValue;
     property Html: string read FHtml write SetHtml;
-    function TextToHtml(Text: string): string;
-    function HtmlToText(Text: string): string;
   end;
 
 function StringToHtml(Value: string): string;
