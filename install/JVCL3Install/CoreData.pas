@@ -65,6 +65,7 @@ type
     FJCLNeedsDcp: Boolean;
     FCompileOnly: Boolean;
     FHppFilesDir: string;
+    FMoveHppFiles: Boolean;
 
     function GetSymbol: string;
     function GetMajorVersion: Integer;
@@ -145,6 +146,7 @@ type
     property InstallJcl: Boolean read FInstallJcl write FInstallJcl;
     property CompileOnly: Boolean read FCompileOnly write FCompileOnly;
     property HppFilesDir: string read FHppFilesDir write FHppFilesDir;
+    property MoveHppFiles: Boolean read FMoveHppFiles write FMoveHppFiles;
 
     property Packages: TPackageList read FPackages;
     property TargetList: TTargetList read FTargetList;
@@ -1126,6 +1128,7 @@ begin
   FCompileFor := FCompileFor and not ((not FIsJCLInstalled) and (not JCLPairInstallation));
 
   FHppFilesDir := FRootDir + '\Include\Vcl';
+  FMoveHppFiles := True;
 end;
 
 function TTargetInfo.GetDisplayName: string;

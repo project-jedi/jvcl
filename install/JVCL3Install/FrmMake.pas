@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-12-05
+Last Modified: 2003-12-07
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -318,7 +318,8 @@ begin
       if FTarget.IsBCB then
       begin
         MoveBCBFiles(LibOutDir, FTarget); // move .lib, .bpi to DcpDir, .bpl to BplDir and deletes .tds
-        MoveHPPFiles(SourcePaths, StartDir + '\xyz', FTarget);
+        if FTarget.MoveHppFiles then
+          MoveHPPFiles(SourcePaths, StartDir + '\xyz', FTarget);
       end;
     finally
       SetEnvironmentVariable('DCCOPT', nil);
