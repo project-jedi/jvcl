@@ -1018,11 +1018,15 @@ function TJvSimpleXmlElems.BoolValue(const Name: string;
 var
   elem: TJvSimpleXmlElem;
 begin
-  elem := GetItemNamed(Name);
-  if elem = nil then
-    result := Default
-  else
-    result := elem.BoolValue;
+  try
+    elem := GetItemNamed(Name);
+    if (elem = nil) or (elem.Value='') then
+      result := Default
+    else
+      result := elem.BoolValue;
+  except
+    result := Default;
+  end;
 end;
 {*************************************************}
 
@@ -1251,11 +1255,15 @@ function TJvSimpleXmlProps.BoolValue(const Name: string;
 var
   prop: TJvSimpleXmlProp;
 begin
-  prop := GetItemNamed(Name);
-  if prop = nil then
-    result := Default
-  else
-    result := prop.BoolValue;
+  try
+    prop := GetItemNamed(Name);
+    if (prop = nil) or (prop.Value = '') then
+      result := Default
+    else
+      result := prop.BoolValue;
+  except
+    result := Default;
+  end;
 end;
 {*************************************************}
 
