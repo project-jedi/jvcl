@@ -4151,6 +4151,7 @@ var
   Buf2: array [0..60000] of Byte;
   B: Byte;
 begin
+  InStream.Position := 0;
   Count := 1024;
   while Count = 1024 do
   begin
@@ -4203,6 +4204,7 @@ var
   Buf2: array [0..60000] of Byte;
   B: Byte;
 begin
+  InStream.Position := 0;
   Count := 1024;
   while Count = 1024 do
   begin
@@ -4239,7 +4241,6 @@ procedure RleCompress(Stream: TStream);
 var
   Tmp: TMemoryStream;
 begin
-  Stream.Position := 0;
   Tmp := TMemoryStream.Create;
   try
     RleCompressTo(Stream, Tmp);
@@ -4255,7 +4256,6 @@ procedure RleDecompress(Stream: TStream);
 var
   Tmp: TMemoryStream;
 begin
-  Stream.Position := 0;
   Tmp := TMemoryStream.Create;
   try
     RleDecompressTo(Stream, Tmp);
