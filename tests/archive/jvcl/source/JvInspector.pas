@@ -10517,7 +10517,7 @@ const
     (Value: irsNoReSize; Name: 'irsNoReSize'),
     (Value: irsNameHeight; Name: 'irsNameHeight'),
     (Value: irsValueHeight; Name: 'irsValueHeight'),
-    (Value: irsItemHeight; Name: 'irsItemHeight'),
+    (Value: irsItemHeight; Name: 'irsItemHeight')
   );
 
 function irsToInt(const Ident: string; var Int: Longint): Boolean;
