@@ -19,6 +19,8 @@ Michael Beck [mbeck@bigfoot.com]
 
 Peter Thörnqvist [peter3@peter3.com]:
 * Added NullDate, NullText and DropDownDate properties
+  * Bug: When TDateTImePicker is used for TIMES, it is impossible to turn
+     off the NullDate feature. It should be optional! -W.Postma.
 
 Last Modified: 2002-06-11
 
@@ -130,8 +132,13 @@ end;
 
 function TJvDateTimePicker.CheckNullValue: Boolean;
 begin
-  Result := ((Kind = dtkDate) and (Trunc(DateTime) = Trunc(NullDate)) or
+ // Warren added NullText length check so that this feature can be disabled if not used!
+   if Length(NullText)=0 then begin
+        result := false;
+   end else
+       Result := ((Kind = dtkDate) and (Trunc(DateTime) = Trunc(NullDate)) or
     ((Kind = dtkTime) and WithinDelta(DateTime, NullDate)));
+   
   if Result then
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(FNullText)))
   {$IFDEF COMPILER6_UP}
