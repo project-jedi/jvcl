@@ -2106,16 +2106,19 @@ begin
     Max := 0;
     if FRecordCount = (FRowCount - Ord(EmptyRowVisible)) then
     begin
-      Max := 4;
-      if not FLookupLink.DataSet.Bof then
+      Max := FRecordCount + Ord(EmptyRowVisible);
+      Pos := FRecordIndex;
+{      if not FLookupLink.DataSet.Bof then
+      begin
         if not FLookupLink.DataSet.Eof then
           Pos := 2
         else
           Pos := 4;
+      end;}
     end;
     GetScrollRange(Handle, SB_VERT, CurPos, MaxPos);
     if MaxPos = 0 then
-      MaxPos := FRecordCount;
+      MaxPos := FRecordCount + Ord(EmptyRowVisible);
     CurPos := GetScrollPos(Handle, SB_VERT);
     if Max <> MaxPos then
       SetScrollRange(Handle, SB_VERT, 0, Max, False);
