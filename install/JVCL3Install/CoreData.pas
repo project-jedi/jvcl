@@ -47,7 +47,7 @@ type
     FVersion: string;
     FRootDir: string;
     FVersionType: string;
-    FLastUpdate: Integer; // 0: no Update, 1: Update #1, 2: Update #2, ...
+    FLastUpdate: Integer;
     FDcpDir: string;
     FBplDir: string;
     FSearchPaths: string;
@@ -109,33 +109,33 @@ type
 
     function ExpandDirMacros(const Path: string): string;
     function InsertDirMacros(const Dir: string): string;
-    function IsTargetFor(const Targets: string): Boolean;
+    function IsTargetFor(const Targets: string): Boolean; // Target is a comma separated list of Symbols
 
     procedure SetJCLDir(const NewDir: string);
 
-    property Executable: string read FExecutable;
+    property Executable: string read FExecutable; // full qualified file name of Delphi32.exe
     property RegKey: string read FRegKey;
     property ProductName: string read FProductName;
     property Version: string read FVersion;
     property MajorVersion: Integer read GetMajorVersion;
-    property RootDir: string read FRootDir;
+    property RootDir: string read FRootDir; // Registry value of "RootDir"
     property IsPersonal: Boolean read GetIsPersonal;
-    property VersionType: string read FVersionType;
-    property LastUpdate: Integer read FLastUpdate;
+    property VersionType: string read FVersionType; // Registry value of "Version" = PER, PRO, CSS
+    property LastUpdate: Integer read FLastUpdate; // 0: no Update, 1: Update #1, 2: Update #2, ...
     property DisplayName: string read GetDisplayName;
     property IsBCB: Boolean read GetIsBCB;
     property IsDelphi: Boolean read GetIsDelphi;
-    property Symbol: string read GetSymbol;
-    property BpgName: string read GetBpgName;
-    property JclDirName: string read GetJclDirName; // c5, c6, d5, d6, d7(, k3)
-    property JVCLDirName: string read GetJVCLDirName; // directory in Packages\
-    property LibDir: string read GetLibDir; // relative to $(JVCL)
+    property Symbol: string read GetSymbol; // [D|C][5-7][""|s|p]
+    property BpgName: string read GetBpgName; // PackageGroup file name for this target
+    property JclDirName: string read GetJclDirName; // c5, c6, d5, d6, d7(, k3) relative to $(JCL)\lib
+    property JVCLDirName: string read GetJVCLDirName; // sub directory in $(JVCL)\Packages for this target
+    property LibDir: string read GetLibDir; // lib output directory relative to $(JVCL)
     property PackageGeneratorTarget: string read GetPackageGeneratorTarget; // c5, c6, d5, d5s, d6, d6p, d7, d7p
 
     property JCLDir: string read GetJCLDir; // directory where JCL is installed or the global JCLDir
     property JCLPackageDir: string read GetJCLPackageDir;
     property JCLPackageXmlDir: string read GetJCLPackageXmlDir;
-    property JCLNeedsDcp: Boolean read FJCLNeedsDcp;
+    property JCLNeedsDcp: Boolean read FJCLNeedsDcp; // True if the JCL is missing .dcp files
     property SearchPaths: string read FSearchPaths;
     property BplDir: string read FBplDir;
     property DcpDir: string read FDcpDir;
@@ -321,7 +321,7 @@ const
   );
 
   cJCLDirList: array[0..0] of PChar = (
-    '$(JCL)\lib\xx\obj' // xx is replaced by the code
+    '$(JCL)\lib\xx\obj' // is replaced by the code
   );
   cJCLDirBrowseList: array[0..3] of PChar = (
     '$(JCL)\source\common', '$(JCL)\source\vcl', '$(JCL)\source\visclx',
@@ -1695,7 +1695,6 @@ begin
      // add new require item
       FContains.Add(TContainsFile.Create(ContainsFileName, RequireTarget, FormName, Condition));
     end;
-
   finally
     xml.Free;
   end;
@@ -1862,6 +1861,7 @@ function IsDelphiRunning: Boolean;
 begin
   Result := FindWindow('TAppBuilder', nil) <> 0;
 end;
+
 
 initialization
   JVCLDir := ExtractFileDir(ParamStr(0)); // = $(JVCL) or $(JVCL)\packages
