@@ -70,6 +70,8 @@ type
       procedure SetColor(const Value: TColor);
       procedure SetFrameColor(const Value: TColor);
    protected
+      { (rb) Better respond to CM_ENABLEDCHANGED, but don't know if that works
+             on D5,D6 }
       procedure SetEnabled(Value: boolean);override;
       function GetEnabled: boolean;override;
       procedure Paint; override;
@@ -251,14 +253,14 @@ end;
 
 procedure TJvgSpeedButton.SetEnabled(Value: boolean);
 begin
-   inherited Enabled := Value;
+   inherited SetEnabled(Value);
    if Assigned(FControl) then
       FControl.Enabled := Value
 end;
 
 function TJvgSpeedButton.GetEnabled: boolean;
 begin
-   Result := inherited Enabled;
+   Result := inherited GetEnabled;
 end;
 
 procedure TJvgSpeedButton.SetColor(const Value: TColor);
