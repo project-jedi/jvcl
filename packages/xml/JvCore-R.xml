@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvCore" Design="0">
+  <Description>hello</Description>
+  <C5PFlags/>
+  <C6PFlags/>
+  <Requires>
+    <Package Name="JvConditionned" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Design="y" Condition="THEMES"/>
+    <Package Name="CJCL60" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="" C6="y" C6p="y" K2="" K3="" Design="" Condition=""/>
+    <Package Name="CJCL50" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="y" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
+    <Package Name="JvTruc" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Design="" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvAnimate.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAnalogClock.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAni.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBaseThumbnail.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+  </Contains>
+</Package>
