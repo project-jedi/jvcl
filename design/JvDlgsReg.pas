@@ -8,7 +8,13 @@ procedure Register;
 
 implementation
 uses
-  Classes, DesignIntf, ActnList, JvBaseDlg, JvFindReplace, 
+  Classes,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  ActnList, JvBaseDlg, JvFindReplace,
   JvDSADialogs, JvTipOfDay, JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvCommonExecDlg,
   JvDialogActns, JvActnRes, JvDialogs, JvProgressForm, JvPageSetupTitled, JvPageSetup, JvConnectNetwork,
   JvSelectDirectory, JvCopyError, JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles,

@@ -7,11 +7,7 @@ procedure Register;
 implementation
 uses
   Classes, ImgList,
-  {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP} DesignEditors, DesignIntf, {$ELSE} DsgnIntf, {$ENDIF COMPILER6_UP}
   ExptIntf, ToolsApi,
   JclSchedule,
 

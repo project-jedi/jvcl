@@ -2,7 +2,12 @@ unit JvValidateEditReg;
 
 interface
 uses
-  Classes, JvValidateEdit, DesignEditors, DesignIntf;
+  Classes, JvValidateEdit,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf
+  {$ELSE}
+  DsgnIntf
+  {$ENDIF COMPILER6_UP};
 
 type
   TJvCharStringProperty = class(TStringProperty)

@@ -3,7 +3,12 @@ unit JvBehaviorLabelEditor;
 
 interface
 uses
-  Classes, SysUtils, {$IFNDEF COMPILER6_UP}DsgnIntf{$ELSE}DesignIntf, DesignEditors{$ENDIF};
+  Classes, SysUtils,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf
+  {$ELSE}
+  DsgnIntf
+  {$ENDIF COMPILER6_UP};
 
 type
   TJvLabelBehaviorProperty = class(TStringProperty)
