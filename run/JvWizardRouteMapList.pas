@@ -50,10 +50,10 @@ uses
   JvWizard;
 
 {$IFNDEF USEJVCL}
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 const
   clCream = TColor($F0FBFF);
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 {$ENDIF !USEJVCL}
 
 type

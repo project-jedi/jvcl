@@ -193,12 +193,12 @@ type
     FItems: TList;
     FValidationSummary: IJvValidationSummary;
     FErrorIndicator: IJvErrorIndicator;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     FValidationSummaryComponent: TComponent;
     FErrorIndicatorComponent: TComponent;
     procedure SetValidationSummaryComponent(Value: TComponent);
     procedure SetErrorIndicatorComponent(Value: TComponent);
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
     procedure SetValidationSummary(const Value: IJvValidationSummary);
     procedure SetErrorIndicator(const Value: IJvErrorIndicator);
     function GetCount: Integer;
@@ -316,7 +316,7 @@ begin
     Result := Comp.ClassName;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 // these types and functions were introduced in D6
 type
@@ -355,7 +355,7 @@ begin
     Result := vrGreaterThan;
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 //=== { TJvBaseValidator } ===================================================
 
@@ -776,7 +776,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 procedure TJvValidators.SetValidationSummaryComponent(Value: TComponent);
 var
@@ -826,7 +826,7 @@ begin
   end;
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 procedure TJvValidators.Insert(AValidator: TJvBaseValidator);
 begin

@@ -4259,7 +4259,7 @@ end;
 constructor TJvMSTextConversion.Create(const AConverterFileName, AExtensions,
   ADescription: string; const AKind: TJvConversionKind);
 
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   procedure StrTokenize(const S: string; Delimiter: Char; Strings: TStrings);
   var
     BufStart, BufEnd: PChar;
@@ -4283,17 +4283,17 @@ constructor TJvMSTextConversion.Create(const AConverterFileName, AExtensions,
     if (BufStart <> nil) and (BufStart^ <> #0) then
       Strings.Add(BufStart);
   end;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 
 begin
   inherited Create;
   FExtensions := TStringList.Create;
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
+  StrTokenize(AExtensions, ' ', FExtensions);
+  {$ELSE}
   FExtensions.Delimiter := ' ';
   FExtensions.DelimitedText := AExtensions;
-  {$ELSE}
-  StrTokenize(AExtensions, ' ', FExtensions);
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
   FConverterFileName := AConverterFileName;
   FDescription := ADescription;
   FConverterKind := AKind;

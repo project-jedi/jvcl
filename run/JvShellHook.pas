@@ -263,9 +263,9 @@ const
 implementation
 
 uses
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   Forms,
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   JvJVCLUtils;
 
 const

@@ -54,9 +54,9 @@ implementation
 uses
   SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
   Dialogs, Menus, Math,
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   FileCtrl,
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   JvJVCLUtils, JvJCLUtils, JvInterpreter_Windows;
 
 { function ReplaceAllStrings(S: string; Words, Frases: TStrings): string; }

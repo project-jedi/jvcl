@@ -341,9 +341,9 @@ uses
   {$ENDIF USEJVCL}
   SysUtils, Classes,
   Windows, Messages, Controls, Forms, Graphics, Buttons, ImgList,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF USEJVCL}
   JvComponent, JvThemes,
   {$ENDIF USEJVCL}
@@ -1049,7 +1049,7 @@ begin
   if csDesigning in ComponentState then
   begin
     {$IFDEF COMPILER6_UP}
-      { !!! YW - Add csClickEvents in order to fired the Click method
+      { !!! YW - Add csClickEvents in order to fire the Click method
          at design time. It does NOT need at run time, otherwise it cause
         the OnClick event to be called twice. }
     ControlStyle := ControlStyle + [csClickEvents];

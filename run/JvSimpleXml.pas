@@ -3055,7 +3055,7 @@ begin
     end;
   end
   else
-    inherited;
+    inherited CastTo(Dest, Source, AVarType);
 end;
 
 procedure TXMLVariant.Clear(var V: TVarData);
@@ -3297,9 +3297,6 @@ begin
     Result := nil;
   end;
 end;
-
-
-
 
 initialization
   {$IFDEF UNITVERSIONING}

@@ -62,6 +62,7 @@ type
   TJvGetEnabledEvent = procedure(Sender: TJvTabBarItem; var Enabled: Boolean) of object;
 
   {$IFDEF COMPILER5}
+
   TCollectionNotification = (cnAdded, cnExtracting, cnDeleting);
 
   TOwnedCollection = class(Classes.TOwnedCollection)
@@ -69,6 +70,7 @@ type
     procedure Update(Item: TCollectionItem); override;
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); virtual;
   end;
+
   {$ENDIF COMPILER5}
 
   TJvTabBarItem = class(TCollectionItem)
@@ -453,6 +455,7 @@ end;
 //=== { TOwnedCollection } ===================================================
 
 {$IFDEF COMPILER5}
+
 procedure TOwnedCollection.Update(Item: TCollectionItem);
 begin
   Notify(Item, cnAdded);

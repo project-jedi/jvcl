@@ -111,10 +111,10 @@ type
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
     procedure WMAutoSelect(var Msg: TMessage); message WM_AUTOSELECT;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     function GetItemIndex: Integer;
     procedure SetItemIndex(const Value: Integer);
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
   protected
     function CreateListItem: TListItem; override;
     function CreateListItems: TListItems; {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -147,10 +147,10 @@ type
     procedure SaveToCSV(FileName: string; Separator: Char = ';');
     procedure LoadFromCSV(FileName: string; Separator: Char = ';');
     procedure SetSmallImages(const Value: TCustomImageList);
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     procedure SelectAll;
     procedure DeleteSelected;
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
     procedure UnselectAll;
     procedure InvertSelection;
     function MoveUp(Index: Integer; Focus: Boolean = True): Integer;
@@ -162,9 +162,9 @@ type
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
     procedure SetFocus; override;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     property ItemIndex: Integer read GetItemIndex write SetItemIndex;
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
   published
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
@@ -978,7 +978,7 @@ begin
   Items.EndUpdate;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 procedure TJvListView.SelectAll;
 var
   I: Integer;
@@ -988,7 +988,7 @@ begin
     Items[I].Selected := True;
   Items.EndUpdate;
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 procedure TJvListView.UnselectAll;
 var
@@ -1025,7 +1025,7 @@ begin
     end;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 procedure TJvListView.DeleteSelected;
 var
   I: Integer;
@@ -1046,7 +1046,7 @@ begin
         Items[I].Delete;
   Items.EndUpdate;
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function TJvListView.GetColumnsOrder: string;
 var
@@ -1400,7 +1400,7 @@ begin
   Invalidate;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 function TJvListView.GetItemIndex: Integer;
 begin
@@ -1416,7 +1416,7 @@ begin
     Items[Value].Selected := True;
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 {$IFDEF UNITVERSIONING}
 initialization

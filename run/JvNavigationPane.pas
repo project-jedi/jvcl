@@ -1270,7 +1270,6 @@ begin
 end;
 {$ENDIF COMPILER5}
 
-
 //=== { TJvIconPanel } =======================================================
 
 constructor TJvIconPanel.Create(AOwner: TComponent);

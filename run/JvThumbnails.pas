@@ -179,8 +179,6 @@ uses
   jpeg,
   JvThumbViews, JvResources;
 
-//uses {$IFNDEF COMPILER6_UP}Gifimage,{$ENDIF} Pcx_unit, Targa, PngImage, jpeg;
-
 constructor TJvThumbnail.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

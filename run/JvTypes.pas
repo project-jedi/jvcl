@@ -117,14 +117,14 @@ const
 {$ENDIF VisualCLX}
 
 type
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   EOSError = class(EWin32Error);
   IInterface = IUnknown;
   {$M+}
   IInvokable = interface(IInterface)
   end;
   {$M-}
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 
   // Base class for persistent properties that can show events.
   // By default, Delphi and BCB don't show the events of a class
@@ -208,10 +208,10 @@ type
   //  TOnOpened = procedure(Sender: TObject; Value: string) of object; // archive
   //  TOnOpenCanceled = procedure(Sender: TObject) of object; // archive
 
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   { TStream seek origins }
   TSeekOrigin = (soBeginning, soCurrent, soEnd);
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 
   TJvGradientStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
   //  TOnDelete = procedure(Sender: TObject; Path: string) of object;
@@ -628,9 +628,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
-
-//=== { TJvPersistent } ======================================================
 
 {$IFDEF COMPILER6_UP}
 constructor TJvPersistent.Create(AOwner: TComponent);

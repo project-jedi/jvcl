@@ -141,9 +141,9 @@ implementation
 
 uses
   Registry,
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   JvJCLUtils,
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   JvResources;
 
 const

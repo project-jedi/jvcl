@@ -269,9 +269,9 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_TYPES}
   JvMouseTimer;
 
 const

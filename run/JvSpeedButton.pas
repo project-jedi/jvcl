@@ -219,10 +219,10 @@ type
     procedure AssignClient(AClient: TObject); override;
     function IsCheckedLinked: Boolean; override;
     {$IFDEF COMPILER6_UP}
-     {$IFDEF VCL}
+    {$IFDEF VCL}
     function IsGroupIndexLinked: Boolean; override;
     procedure SetGroupIndex(Value: Integer); override;
-     {$ENDIF VCL}
+    {$ENDIF VCL}
     {$ENDIF COMPILER6_UP}
     function IsImageIndexLinked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
@@ -235,10 +235,10 @@ type
     procedure AssignClient(AClient: TObject); override;
     function IsCheckedLinked: Boolean; override;
     {$IFDEF COMPILER6_UP}
-     {$IFDEF VCL}
+    {$IFDEF VCL}
     function IsGroupIndexLinked: Boolean; override;
     procedure SetGroupIndex(Value: Integer); override;
-     {$ENDIF VCL}
+    {$ENDIF VCL}
     {$ENDIF COMPILER6_UP}
     procedure SetChecked(Value: Boolean); override;
   end;
@@ -1943,7 +1943,8 @@ begin
 end;
 
 {$IFDEF COMPILER6_UP}
- {$IFDEF VCL}
+{$IFDEF VCL}
+
 function TJvImageSpeedButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   { (rb) This will fail in D7 due to a bug in TCustomAction.SetGroupIndex }
@@ -1956,7 +1957,8 @@ begin
   if IsGroupIndexLinked then
     FClient.GroupIndex := Value;
 end;
- {$ENDIF VCL}
+
+{$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
 
 function TJvImageSpeedButtonActionLink.IsImageIndexLinked: Boolean;

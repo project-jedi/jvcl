@@ -44,9 +44,9 @@ type
   TJvToolBar = class(TJvExToolBar)
   private
     FChangeLink: TJvMenuChangeLink;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     FMenu: TMainMenu;
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
     FTempMenu: TJvPopupMenu;
     FButtonMenu: TMenuItem;
     FMenuShowingCount: Integer;
@@ -56,9 +56,9 @@ type
     procedure MenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure CNDropDownClosed(var Msg: TMessage); message CN_DROPDOWNCLOSED;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     procedure BuildButtons(AMenu: TMainMenu);
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
   protected
     procedure AdjustSize; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
@@ -107,14 +107,14 @@ end;
 
 function TJvToolBar.GetMenu: TMainMenu;
 begin
-  {$IFDEF COMPILER6_UP}
-  Result := inherited Menu;
-  {$ELSE}
+  {$IFDEF COMPILER5}
   Result := FMenu;
-  {$ENDIF COMPILER6_UP}
+  {$ELSE}
+  Result := inherited Menu;
+  {$ENDIF COMPILER5}
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 procedure TJvToolBar.BuildButtons(AMenu: TMainMenu);
 var
   I: Integer;
@@ -153,7 +153,7 @@ begin
   for I := 0 to FMenu.Items.Count - 1 do
     Buttons[I].MenuItem := FMenu.Items[I];
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 procedure TJvToolBar.SetMenu(const Value: TMainMenu);
 begin
@@ -178,11 +178,11 @@ begin
   // and we set the inherited value, so that the inherited
   // methods can deal with the menu too, the most obvious
   // one being the creation of the required TToolButton
-  {$IFDEF COMPILER6_UP}
-  inherited Menu := Value;
-  {$ELSE}
+  {$IFDEF COMPILER5}
   BuildButtons(Value);
-  {$ENDIF COMPILER6_UP}
+  {$ELSE}
+  inherited Menu := Value;
+  {$ENDIF COMPILER5}
 end;
 
 procedure TJvToolBar.MenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);

@@ -364,12 +364,12 @@ var
        be to also delay OnMouseUp.
 }
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 function SecondsBetween(const Now: TDateTime; const FTime: TDateTime): Integer;
 begin
   Result := Trunc(86400 * (FTime - Now));
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function IsApplicationMinimized: Boolean;
 begin

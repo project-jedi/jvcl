@@ -47,9 +47,9 @@ uses
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
   Windows, Controls, Graphics,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_TYPES}
   Classes, SysUtils;
 
 const

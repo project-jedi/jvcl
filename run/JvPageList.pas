@@ -294,10 +294,12 @@ const
 implementation
 
 uses
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
+  Forms,
   JvResources,
-  {$ENDIF !COMPILER6_UP}
+  {$ELSE}
   Forms;
+  {$ENDIF COMPILER5}
 
 //=== { TJvCustomPage } ======================================================
 

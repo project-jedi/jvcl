@@ -716,9 +716,9 @@ implementation
 
 uses
   CommCtrl, Consts, Math,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_TYPES}
   JvConsts, JvJCLUtils, JvJVCLUtils;
 
 const
