@@ -336,7 +336,6 @@ procedure MsgAbout(Handle:integer;const Msg, Caption, IcoName:string;Flags:DWORD
   into two image lists ALarge and ASmall}
 procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList;
   const NameRes: string);
-{$ENDIF VCL}
 
 { Works like InputQuery but displays 2 edits. If PasswordChar <> #0, the second edit's PasswordChar is set }
 function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
@@ -344,6 +343,7 @@ function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
 
 { Works like InputQuery but set the edit's PasswordChar to PasswordChar. If PasswordChar = #0, works exactly like InputQuery }
 function InputQueryPassword(const ACaption, APrompt: string; PasswordChar:char; var Value: string): Boolean;
+{$ENDIF VCL}
 
 { returns the sum of pc.Left, pc.Width and piSpace}
 function ToRightOf(const pc: TControl; piSpace: Integer = 0): Integer;
@@ -416,10 +416,12 @@ function IniStrToStr(const Str: string): string;
 // Ini Utilitie Functions
 // Added by RDB
 
-function StringToFontStyles(const Styles: string): TFontStyles;
 function FontStylesToString(Styles: TFontStyles): string;
+{$IFDEF VCL}
+function StringToFontStyles(const Styles: string): TFontStyles;
 function FontToString(Font: TFont): string;
 function StringToFont(const Str: string) : TFont;
+{$ENDIF VCL}
 function RectToStr(Rect: TRect): string;
 function StrToRect(const Str: string; const Def: TRect): TRect;
 function PointToStr(P: TPoint): string;
@@ -3398,7 +3400,6 @@ begin
   end;
   Ico.Free;
 end;
-{$ENDIF VCL}
 
 function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
   var AValue1, AValue2:string; PasswordChar:char=#0):boolean;
@@ -3507,6 +3508,7 @@ begin
     AForm.Free;
   end;
 end;
+{$ENDIF VCL}
 
 procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of
   TControl);
@@ -6463,13 +6465,13 @@ begin
     Include(Result, fsStrikeOut);
 end;
 
+{$IFDEF VCL}
 function FontToString(Font: TFont): string;
 begin
   with Font do
     Result := Format('%s,%d,%s,%d,%s,%d', [Name, Size,
       FontStylesToString(Style), Ord(Pitch), ColorToString(Color),Charset]);
 end;
-
 
 Function StringToFont(const Str: string): TFont;
 const
@@ -6507,6 +6509,8 @@ begin
   finally
   end;
 end;
+{$ENDIF VCL}
+
 
 function RectToStr(Rect: TRect): string;
 begin
