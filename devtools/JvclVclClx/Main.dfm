@@ -69,7 +69,8 @@ object FormMain: TFormMain
     Top = 144
     Width = 401
     Height = 21
-    ButtonFlat = False
+    ClipboardCommands = []
+    DialogKind = dkWin32
     TabOrder = 2
   end
   object EditSingleFile: TJvFilenameEdit
@@ -77,7 +78,8 @@ object FormMain: TFormMain
     Top = 40
     Width = 401
     Height = 21
-    ButtonFlat = False
+    OnButtonClick = EditSingleFileButtonClick
+    ClipboardCommands = []
     TabOrder = 1
   end
   object RBtnSingleFile: TRadioButton
@@ -110,8 +112,9 @@ object FormMain: TFormMain
     Top = 215
     Width = 401
     Height = 21
+    OnButtonClick = EditJVCLDirButtonClick
+    ClipboardCommands = []
     DialogKind = dkWin32
-    ButtonFlat = False
     TabOrder = 4
   end
   object CheckBoxReduceConditions: TCheckBox
@@ -173,7 +176,9 @@ object FormMain: TFormMain
     Top = 96
     Width = 401
     Height = 21
-    ButtonFlat = False
+    OnButtonClick = EditDirectoryButtonClick
+    ClipboardCommands = []
+    DialogKind = dkWin32
     TabOrder = 14
   end
 end

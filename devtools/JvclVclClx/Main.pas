@@ -56,6 +56,9 @@ type
     procedure BtnExecuteClick(Sender: TObject);
     procedure BtnQuitClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure EditSingleFileButtonClick(Sender: TObject);
+    procedure EditDirectoryButtonClick(Sender: TObject);
+    procedure EditJVCLDirButtonClick(Sender: TObject);
   private
     { Private-Deklarationen }
     function GetQName(const Filename: string): string;
@@ -200,6 +203,11 @@ begin
   if Dir = '' then
     Dir := ExtractFileDir(ParamStr(0));
   EditJVCLDir.Text := Dir;
+
+{  // testing:
+  RBtnSingleFile.Checked := True;
+  EditSingleFile.Text := 'z:\jedi\jvcl3\run\JvOutlookBar.pas';
+  EditOutDir.Text := 'z:\jedi\jvcl3\qrun';}
 end;
 
 function TFormMain.GetQName(const Filename: string): string;
@@ -215,5 +223,20 @@ begin
   Result := Result + Fn;
 end;
 
+
+procedure TFormMain.EditSingleFileButtonClick(Sender: TObject);
+begin
+  RBtnSingleFile.Checked := True;
+end;
+
+procedure TFormMain.EditDirectoryButtonClick(Sender: TObject);
+begin
+  RBtnDir.Checked := True;
+end;
+
+procedure TFormMain.EditJVCLDirButtonClick(Sender: TObject);
+begin
+  RBtnAll.Checked := True;
+end;
 
 end.

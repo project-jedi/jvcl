@@ -425,7 +425,8 @@ begin
   Result := False;
   with Context do
   begin
-    if (Context.LastToken.Kind = tkSymbol) and (Context.LastToken.Value <> '.') and
+    if (((Context.LastToken.Kind = tkSymbol) and (Context.LastToken.Value <> '.')) or
+        (Context.LastToken.Kind <> tkSymbol)) and
        not IsProtectedByConditions and IsUsesUnit(Token.Value) then
     begin
       // "UnitName.xxx" but not ".Unitname.xxx"
@@ -487,6 +488,7 @@ begin
 
     with Context do
     begin
+      FillChar(Context, SizeOf(Context), 0);
       InImplementation := False;
       InInterfaceSection := False;
       while GetNextToken(Parser, Token, Context) do
