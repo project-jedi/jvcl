@@ -38,8 +38,12 @@ type
   private
     FFieldDataLink: TFieldDataLink;
     FOnChange: TNotifyEvent;
-    procedure DataChange(Sender: TObject); { Triggered when data changes in DataSource. }
-    procedure UpdateData(Sender: TObject); { Triggered when data in control changes (via FFieldDataLink.UpdateRecord). }
+    FIsNull: boolean;
+    FAllowNull: boolean;
+    procedure DataChange(Sender: TObject);
+    procedure UpdateData(Sender: TObject);
+    procedure EditingChange(Sender: TObject);
+    procedure ActiveChange(Sender: TObject);
     function GetDataField: string; { Returns data field name. }
     function GetDataSource: TDataSource; { Returns linked data source. }
     procedure SetDataField(const NewFieldName: string); { Assigns new field. }
@@ -47,15 +51,23 @@ type
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     function GetReadOnlyField: Boolean;
     procedure SetReadOnlyField(Value: Boolean);
+
   protected
+    function IsValidChar(Key: Char): Boolean; override;
     procedure Change; override;
     procedure DoExit; override; { called to update data }
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    function GetValue: Extended; override;
+    procedure SetValue(NewValue: Extended); override;
+    procedure TextChanged; override;
+    procedure UpClick(Sender: TObject); override;
+    procedure DownClick(Sender: TObject); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property IsNull:boolean read FIsNull;
   published
+    property AllowNull:boolean read FAllowNull write FAllowNull default True;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property ReadOnlyField: Boolean read GetReadOnlyField write SetReadOnlyField;
@@ -63,14 +75,21 @@ type
   end;
 
 implementation
+{$IFDEF COMPILER6_UP}
+uses
+  Variants;
+{$ENDIF COMPILER6_UP}
 
 constructor TJvDBSpinEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FAllowNull := True;
   FFieldDataLink := TFieldDataLink.Create;
   FFieldDataLink.Control := Self;
-  FFieldDataLink.OnDataChange := DataChange; { So we can respond to changes in data. }
-  FFieldDataLink.OnUpdateData := UpdateData; { So data in linked table is updated when user edits control. }
+  FFieldDataLink.OnDataChange := DataChange;
+  FFieldDataLink.OnEditingChange := EditingChange;
+  FFieldDataLink.OnUpdateData := UpdateData;
+  FFieldDataLink.OnActiveChange := ActiveChange;
 end;
 
 destructor TJvDBSpinEdit.Destroy;
@@ -79,38 +98,6 @@ begin
   inherited Destroy;
 end;
 
-{ Only process the keyboard input if it is cursor motion or if the data
-  link can edit the data. Otherwise, call the OnKeyDown event handler
-  (if it's assigned). }
-
-procedure TJvDBSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
-var
-  KeyDownEventHandler: TKeyEvent;
-begin
-  if ((not ReadOnlyField) and FFieldDataLink.Edit) or
-    (Key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_END, VK_HOME, VK_PRIOR, VK_NEXT]) then
-    inherited KeyDown(Key, Shift)
-  else
-  begin { Our responsibility to call OnKeyDown if it's assigned, as we're skipping inherited method. }
-    KeyDownEventHandler := OnKeyDown;
-    if Assigned(KeyDownEventHandler) then
-      KeyDownEventHandler(Self, Key, Shift);
-  end;
-end;
-
-{ Only process mouse messages if the data link can edit the data. Otherwise,
-  call the OnMouseDown event handler (if it's assigned). }
-
-procedure TJvDBSpinEdit.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if (not ReadOnlyField) and FFieldDataLink.Edit then { OK to edit. }
-    inherited MouseDown(Button, Shift, X, Y)
-  else
-  begin { Our responsibility to call OnMouseDown if it's assigned, as we're skipping inherited method. }
-    if Assigned(OnMouseDown) then
-      OnMouseDown(Self, Button, Shift, X, Y);
-  end;
-end;
 
 procedure TJvDBSpinEdit.DoExit;
 begin
@@ -120,6 +107,7 @@ begin
     FFieldDataLink.UpdateRecord; { tell data link to update database }
   except
     SetFocus; { if it failed, don't let focus leave }
+    SelectAll;
     raise;
   end;
   inherited DoExit;
@@ -130,17 +118,30 @@ end;
 
 procedure TJvDBSpinEdit.UpdateData(Sender: TObject);
 begin
-  if not ReadOnlyField then
-    FFieldDataLink.Field.AsString := Self.Text;
+  if FFieldDataLink.Editing then
+    FFieldDataLink.Field.Text := Text;
 end;
 
 procedure TJvDBSpinEdit.DataChange(Sender: TObject); { Triggered when data changes in DataSource. }
 begin
-  if FFieldDataLink.Field = nil then
-    Self.Text := ' '
-  else
-  if not FFieldDataLink.Editing then
-    Self.Text := FFieldDataLink.Field.AsString;
+  if FFieldDataLink.Field <> nil then
+  begin
+    if Focused and FFieldDataLink.CanModify then
+      Text := FFieldDataLink.Field.Text
+    else
+    begin
+      FIsNull := (FFieldDataLink.Field.DisplayText = '');
+      Text := FFieldDataLink.Field.DisplayText;
+      if FFieldDataLink.Editing or (FFieldDataLink.Field.DataSet.State = dsInsert) then
+        Modified := True;
+    end;
+  end else
+  begin
+    FIsNull := False; 
+    if csDesigning in ComponentState then
+      Text := Name else
+      Text := '';
+  end;
 end;
 
 function TJvDBSpinEdit.GetDataField: string; { Returns data field name. }
@@ -189,10 +190,83 @@ end;
 
 procedure TJvDBSpinEdit.Change;
 begin
-  if (FFieldDataLink <> nil) and (FFieldDataLink.Field <> nil) and
-    not AnsiSameText(FFieldDataLink.Field.AsString, Self.Text) and FFieldDataLink.Edit then
-    FFieldDataLink.Modified; { Data has changed. }
+  if (FFieldDataLink <> nil) and (FFieldDataLink.Field <> nil) then
+    FFieldDataLink.Modified;
   inherited Change;
+end;
+
+function TJvDBSpinEdit.GetValue: Extended;
+begin
+  Result := inherited GetValue;
+  FIsNull := (Text = '') and (Result = 0.0);
+end;
+
+procedure TJvDBSpinEdit.SetValue(NewValue: Extended);
+begin
+  FIsNull := (Text = '') and (NewValue = 0.0);
+  inherited SetValue(NewValue);
+end;
+
+procedure TJvDBSpinEdit.TextChanged;
+begin
+  if FIsNull and AllowNull then
+    inherited Text := ''
+  else
+    inherited TextChanged;
+end;
+
+procedure TJvDBSpinEdit.DownClick(Sender: TObject);
+begin
+  FFieldDataLink.Edit;
+  if IsNull then
+  begin
+    FIsNull := False;
+    Value := 1;
+    FIsNull := False;
+    Text := '1';
+  end;
+  inherited;
+end;
+
+procedure TJvDBSpinEdit.UpClick(Sender: TObject);
+begin
+  FFieldDataLink.Edit;
+  if IsNull then
+  begin
+    FIsNull := False;
+    Value := 1;
+    FIsNull := False;
+    Text := '1';
+  end
+  else
+    inherited;
+end;
+
+procedure TJvDBSpinEdit.ActiveChange(Sender: TObject);
+begin
+  if not (csDesigning in ComponentState) then
+    Enabled := FFieldDataLink.Active;
+end;
+
+procedure TJvDBSpinEdit.EditingChange(Sender: TObject);
+begin
+  inherited ReadOnly := not FFieldDataLink.Editing;
+end;
+
+procedure TJvDBSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if (Key = VK_DELETE) or (Key = VK_BACK) or ((Key = VK_INSERT) and (ssShift in Shift))
+    or IsValidChar(Char(Key)) then
+    FFieldDataLink.Edit;
+end;
+
+function TJvDBSpinEdit.IsValidChar(Key: Char): Boolean;
+begin
+  Result := inherited IsValidChar(Key);
+  if not Result and AllowNull and
+    (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE)) then
+      Result := True;
 end;
 
 end.
