@@ -346,17 +346,17 @@ begin
   begin
     if (not AllowDrag) or ((Y >= FLastKnownButtonRect.Top) and
       (Y <= FLastKnownButtonRect.Bottom)) then
-      Cursor := FButtonCursor
+      Windows.SetCursor(Screen.Cursors[ButtonCursor])
     else
-      Cursor := crHSplit;
+      Windows.SetCursor(Screen.Cursors[Cursor]);
   end
   else
   begin
     if (not AllowDrag) or ((X >= FLastKnownButtonRect.Left) and
       (X <= FLastKnownButtonRect.Right)) then
-      Cursor := FButtonCursor
+      Windows.SetCursor(Screen.Cursors[ButtonCursor])
     else
-      Cursor := crVSplit;
+      Windows.SetCursor(Screen.Cursors[Cursor]);
   end;
 end;
 
@@ -860,18 +860,20 @@ end;
 
 procedure TJvCustomNetscapeSplitter.SetAlign(Value: TAlign);
 begin
-  inherited Align := Value;
-
-  Invalidate; // Direction changing, redraw arrows.
-  {$IFNDEF COMPILER4_UP}
+  if Align <> Value then
+  begin
+    inherited Align := Value;
+    Invalidate; // Direction changing, redraw arrows.
+    {$IFNDEF COMPILER4_UP}
   // D4 does this already
-  if (Cursor <> crVSplit) and (Cursor <> crHSplit) then
-    Exit;
-  if Align in [alBottom, alTop] then
-    Cursor := crVSplit
-  else
-    Cursor := crHSplit;
-  {$ENDIF COMPILER4_UP}
+    if (Cursor <> crVSplit) and (Cursor <> crHSplit) then
+      Exit;
+    if Align in [alBottom, alTop] then
+      Cursor := crVSplit
+    else
+      Cursor := crHSplit;
+    {$ENDIF COMPILER4_UP}
+  end;
 end;
 
 procedure TJvCustomNetscapeSplitter.SetAllowDrag(const Value: Boolean);
