@@ -2013,7 +2013,7 @@ begin
     if Assigned(WizardPage) then
     begin
       { YW - Show Header Divider }
-      if (csDesigning in WizardPage.ComponentState) or FShowDivider then
+      if {(csDesigning in WizardPage.ComponentState) or} FShowDivider then
       begin
         JvWizardDrawBorderEdges(ACanvas, R, fsGroove, [beBottom]);
       end;
@@ -2501,7 +2501,8 @@ begin
   FWaterMark := TJvWizardWaterMark.Create;
   FWaterMark.WizardPage := Self;
   FHeader.FTitle.FText := RsWelcome;
-  FHeader.FShowDivider := False;
+  // welcome pages don't have dividers by default
+//  FHeader.ShowDivider := False;
   Color := clWindow;
 end;
 
