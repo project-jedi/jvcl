@@ -222,8 +222,6 @@ type
     procedure DrawArrowButtons(Index: Integer);
     procedure DrawButtonFrame(PageIndex, ButtonIndex, PressedIndex: Integer);
     function DrawBitmap(R: TRect; Bmp: TBitmap): Boolean;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure DoDwnClick(Sender: TObject);
     procedure DoUpClick(Sender: TObject);
@@ -235,7 +233,6 @@ type
     procedure DoPageEdit(NewText: string; P: TJvOutlookBarPage);
     function GetActivePage: TJvOutlookBarPage;
     function GetActivePageIndex: Integer;
-    procedure CMColorChanged(var Message: TMessage);message CM_COLORCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
@@ -251,6 +248,9 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ColorChanged; override;
     function DoPageChanging(Index: Integer): Boolean; virtual;
     procedure DoPageChange(Index: Integer); virtual;
     procedure DoButtonClick(Index: Integer); virtual;
@@ -2009,13 +2009,13 @@ begin
   end;
 end;
 
-procedure TJvCustomOutlookBar.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomOutlookBar.MouseEnter(Control: TControl);
 begin
   RedrawRect(FButtonRect);
   inherited;
 end;
 
-procedure TJvCustomOutlookBar.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomOutlookBar.MouseLeave(Control: TControl);
 {$IFDEF JVCLThemesEnabled}
 var
   R: TRect;
@@ -2192,7 +2192,7 @@ begin
 end;
 {$ENDIF}
 
-procedure TJvCustomOutlookBar.CMColorChanged(var Message: TMessage);
+procedure TJvCustomOutlookBar.ColorChanged;
 var
   I: Integer;
 begin
