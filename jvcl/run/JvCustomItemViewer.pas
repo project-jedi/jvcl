@@ -1779,10 +1779,14 @@ end;
 procedure TJvCustomItemViewer.DoScrollTimer(Sender: TObject);
 var
   DoInvalidate: Boolean;
+  P:TPoint;
 begin
   FScrollTimer.Enabled := False;
   FScrollTimer.Interval := cScrollIntervall;
   DoInvalidate := False;
+  GetCursorPos(P);
+  if FDragImages <> nil then
+    FDragImages.HideDragImage;
   case TScrollEdge(ScrollEdge) of
     seLeft:
       if (Options.ScrollBar = tvHorizontal) and HorzScrollBar.Visible and (HorzScrollBar.Position > 0) then
@@ -1799,6 +1803,8 @@ begin
         then
         DoInvalidate := PostMessage(Handle, WM_VSCROLL, SB_LINERIGHT, 0);
   end;
+  if FDragImages <> nil then
+    FDragImages.ShowDragImage;
   if (ScrollEdge <> Ord(seNone)) and DoInvalidate then
     Invalidate;
   //  UpdateWindow(Handle);
