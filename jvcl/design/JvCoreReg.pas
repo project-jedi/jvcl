@@ -32,6 +32,7 @@ interface
 procedure Register;
 
 implementation
+
 uses
   Classes,
   {$IFDEF VCL}
@@ -60,25 +61,25 @@ uses
   {$ENDIF VCL}
   JvAppStorage, JvAppStorageSelectList;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCoreReg.dcr}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCoreReg.dcr}
-{$ENDIF  VisualCLX}
+{$ENDIF LINUX}
 
 procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
-  RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent
-    {$IFDEF MSWINDOWS}
-    , TJvContextProvider, TJvColorProvider, TJvColorMappingProvider, TJvBackground
-    {$ENDIF MSWINDOWS}
-    ]);
+  RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent]);
+  {$IFDEF MSWINDOWS}
+  RegisterComponents(RsPaletteNonVisual, [TJvContextProvider,
+    TJvColorProvider, TJvColorMappingProvider, TJvBackground]);
+  RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
+  {$ENDIF MSWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
-     {$IFDEF MSWINDOWS}TJvAppRegistryStorage,{$ENDIF}
-     TJvAppIniFileStorage, TJvAppStorageSelectList]);
+    TJvAppIniFileStorage, TJvAppStorageSelectList]);
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
 
@@ -147,7 +148,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvBackgroundClients), TJvBackground,
     'Clients', TJvClientsProperty);
 
-  RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS}TJvSendMailAction,{$ENDIF}TJvWebAction], TJvStandardActions);
+  RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS} TJvSendMailAction, {$ENDIF} TJvWebAction], TJvStandardActions);
   RegisterZoom;
 end;
 

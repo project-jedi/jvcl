@@ -192,7 +192,7 @@ begin
   if (List = nil) or (List.Count = 0) then
     Result := srNone
   else
-    FmtStr(Result, '(%s)', [GetPropType^.Name]);
+    Result := Format('(%s)', [GetPropType^.Name]);
 end;
 
 procedure TJvProxyListProperty.Edit;

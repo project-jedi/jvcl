@@ -1903,7 +1903,7 @@ end;
 function UnlitColorToString(const Color: TUnlitColor): string;
 begin
   if not ColorToIdent(Color, Result) then
-    FmtStr(Result, '%s%.8x', [HexDisplayPrefix, Color]);
+    Result := Format('%s%.8x', [HexDisplayPrefix, Color]);
 end;
 
 initialization

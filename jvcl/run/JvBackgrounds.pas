@@ -22,11 +22,13 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
+
 {$I jedi.inc}
 
 unit JvBackgrounds;
 
 interface
+
 {***************** Conditional Compiler Symbols ************************
 
  JVCL           JEDI VCL installed (http://sourceforge.net/projects/jvcl/)
@@ -43,10 +45,6 @@ interface
                 manipulating the TrrBackgrounds.Client's window
                 procedure.
  *********************************************************************** }
-
-{$IFNDEF COMPILER5_UP}
-Error: Unsupported Compiler version!
-{$ENDIF !COMPILER5_UP}
 
 {.$DEFINE JVCL}
 {.$DEFINE USE_AM_GIF}
@@ -66,12 +64,13 @@ Error: Unsupported Compiler version!
 
 uses
   SysUtils, Windows, Messages, Contnrs, Graphics, jpeg, Controls, Forms, Classes,
-  JclGraphUtils;
+  JclGraphUtils,
+  JvTypes;
 
 type
-  TJvBackgroundMode = (bmTile, bmCenter, bmTopLeft, bmTop, bmTopRight, bmLeft, bmBottomLeft,
-    bmRight, bmBottom, bmBottomRight, bmStretch);
-  EJvBackgroundError = class(Exception);
+  TJvBackgroundMode = (bmTile, bmCenter, bmTopLeft, bmTop, bmTopRight, bmLeft,
+    bmBottomLeft, bmRight, bmBottom, bmBottomRight, bmStretch);
+  EJvBackgroundError = class(EJVCLException);
   TJvBackgroundShiftMode = (smRows, smColumns);
 
   TJvBackgroundImage = class(TPersistent)
@@ -91,7 +90,7 @@ type
     FTileHeight: Integer;
     FShift: Integer;
     FShiftMode: TJvBackgroundShiftMode;
-    FZigzag: Boolean;
+    FZigZag: Boolean;
     FAutoSizeTile: Boolean;
     FFitPictureSize: Boolean;
     FEnabled: Boolean;
@@ -99,7 +98,7 @@ type
     FGrayMapped: Boolean;
     procedure SetGrayMapped(Value: Boolean);
     procedure SysColorChange;
-    class function MainWindowHook(var Message: TMessage): Boolean;
+    class function MainWindowHook(var Msg: TMessage): Boolean;
     procedure HookMainWindow;
     procedure UnhookMainWindow;
     procedure Changed;
@@ -125,21 +124,20 @@ type
   protected
     function HandleWMEraseBkgnd(AClient: TWinControl; var Msg: TMessage): Boolean;
     function HandleWMPaint(AClient: TWinControl; var Msg: TMessage): Boolean;
-    procedure PaintGraphic(AClient: TControl; DC: hDC; Graphic: TGraphic);
+    procedure PaintGraphic(AClient: TControl; DC: HDC; Graphic: TGraphic);
     property Canvas: TCanvas read FCanvas;
     property WorkingBmp: TBitmap read FWorkingBmp;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    function PaintBackground(AClient: TWinControl; DC: hDC): Boolean;
+    function PaintBackground(AClient: TWinControl; DC: HDC): Boolean;
   published
     property AutoSizeTile: Boolean read FAutoSizeTile write SetAutoSizeTile
       default True;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
     property FitPictureSize: Boolean
-      read FFitPictureSize write SetFitPictureSize
-      default False;
+      read FFitPictureSize write SetFitPictureSize default False;
     property GrayMapped: Boolean read FGrayMapped write SetGrayMapped default False;
     property Mode: TJvBackgroundMode read FMode write SetMode default bmTile;
     property Picture: TPicture read FPicture write SetPicture;
@@ -152,7 +150,7 @@ type
       write SetTransparentMode default tmAuto;
     property Shift: Integer read FShift write SetShift default 0;
     property ShiftMode: TJvBackgroundShiftMode read FShiftMode write SetShiftMode default smRows;
-    property Zigzag: Boolean read FZigzag write SetZigzag default False;
+    property ZigZag: Boolean read FZigZag write SetZigZag default False;
   end;
 
   TJvControlBackground = class(TJvBackgroundImage)
@@ -174,19 +172,19 @@ type
     FPrevWndProc: TFarProc;
     FClientIsMDIForm: Boolean;
     procedure ClientInvalidate;
-    procedure MainWndProc(var Message: TMessage);
+    procedure MainWndProc(var Msg: TMessage);
     procedure ClientWndProc(var Message: TMessage);
     procedure ForceClient(Value: TWinControl; Force: Boolean = True);
     procedure HookClient;
     procedure UnhookClient;
     function GetClientColor: TColor;
-    function GetClientHandle: hWnd;
+    function GetClientHandle: HWND;
     procedure SetClient(Value: TWinControl);
   protected
     procedure Release;
     property Background: TJvBackground read FBackground;
     property ClientColor: TColor read GetClientColor;
-    property ClientHandle: hWnd read GetClientHandle;
+    property ClientHandle: HWND read GetClientHandle;
     property Client: TWinControl read FClient write SetClient;
     property ClientIsMDIForm: Boolean read FClientIsMDIForm;
   public
@@ -216,18 +214,17 @@ type
     procedure Add(Control: TWinControl);
     procedure Remove(Control: TWinControl);
     function IndexOf(Control: TWinControl): Integer;
-    property Clients[Index: Integer]: TWinControl read GetClient;
-    default;
+    property Clients[Index: Integer]: TWinControl read GetClient; default;
   end;
 
   TJvBackground = class(TComponent)
   private
     FClients: TJvBackgroundClients;
-    FHandle: hWnd;
+    FHandle: HWND;
     FImage: TJvBackgroundImage;
     procedure SetClients(Value: TJvBackgroundClients);
     procedure WallpaperChanged(Sender: TObject);
-    procedure WndProc(var Message: TMessage);
+    procedure WndProc(var Msg: TMessage);
     procedure SetImage(const Value: TJvBackgroundImage);
   protected
     procedure Loaded; override;
@@ -246,25 +243,24 @@ procedure GetMappedGrays(var Shades: array of TColor; StartIntensity: Byte);
 implementation
 
 uses
-{$IFDEF USE_AM_GIF}
+  {$IFDEF USE_AM_GIF}
   GIFImage,
-{$DEFINE RECOGNIZE_GIF}
-{$ENDIF USE_AM_GIF}
-{$IFDEF USE_JvGIF}
+  {$DEFINE RECOGNIZE_GIF}
+  {$ENDIF USE_AM_GIF}
+  {$IFDEF USE_JvGIF}
   JvGIF,
-{$DEFINE RECOGNIZE_GIF}
-{$ENDIF USE_JvGIF}
-  StdCtrls,
-  CommCtrl,
-  Comctrls,
-  Dialogs;
+  {$DEFINE RECOGNIZE_GIF}
+  {$ENDIF USE_JvGIF}
+  StdCtrls, CommCtrl, ComCtrls, Dialogs;
 
 type
   TWinControlAccess = class(TWinControl);
-{$IFDEF USE_JvGIF}
+
+  {$IFDEF USE_JvGIF}
   // make TJvGIFImage's Bitmap property visible
   TGIFImage = class(TJvGIFImage);
-{$ENDIF USE_JvGIF}
+  {$ENDIF USE_JvGIF}
+
 resourcestring
   SChainError = 'Message from %s.%s:'#13#10#13#10'Oops... Messing up %s''s window procedure chain.%s';
   SWorkaround = #13#10#13#10'To avoid this, $DEFINE the NO_DESIGNHOOK '
@@ -276,21 +272,21 @@ const
 
   CM_RECREATEWINDOW = CM_BASE + 82;
   CM_RELEASECLIENTLINK = CM_BASE + 83;
-var
-  Backgrounds: TList;
 
 type
-  TColorGradation = array[Byte] of TColor;
+  TColorGradation = array [Byte] of TColor;
   PColorGradation = ^TColorGradation;
+
 var
   SysColorGradation: PColorGradation;
   Hooked: TList;
+  Backgrounds: TList;
 
 procedure UpdateSysColorGradation;
 var
   SysHLS: THLSVector;
   FaceLum, MaxLum: THLSValue;
-  i: Integer;
+  I: Integer;
 begin
   if SysColorGradation = nil then
     New(SysColorGradation);
@@ -300,15 +296,15 @@ begin
   FaceLum := SysHLS.Luminance;
   with SysHLS do
   begin
-    for i := 0 to 192 do
+    for I := 0 to 192 do
     begin
-      Luminance := i * FaceLum div 192;
-      SysColorGradation[i] := HLStoRGB(Hue, Luminance, Saturation);
+      Luminance := I * FaceLum div 192;
+      SysColorGradation[I] := HLStoRGB(Hue, Luminance, Saturation);
     end;
-    for i := 193 to 255 do
+    for I := 193 to 255 do
     begin
-      Luminance := FaceLum + (MaxLum - FaceLum) * (i - 192) div (255 - 192);
-      SysColorGradation[i] := HLStoRGB(Hue, Luminance, Saturation);
+      Luminance := FaceLum + (MaxLum - FaceLum) * (I - 192) div (255 - 192);
+      SysColorGradation[I] := HLStoRGB(Hue, Luminance, Saturation);
     end;
   end;
 end;
@@ -336,19 +332,19 @@ end;
 procedure MapGrays(Dest: TBitmap; Source: TGraphic);
 var
   Grays: PColorGradation;
-  i: Integer;
+  I: Integer;
   SrcWasTransparent: Boolean;
 begin
   if Source = nil then
     Exit;
   New(Grays);
   try
-    for i := Low(Grays^) to High(Grays^) do
-      Grays[i] := RGB(i, i, i);
+    for I := Low(Grays^) to High(Grays^) do
+      Grays[I] := RGB(I, I, I);
     with Dest do
     begin
       if ((Source is TBitmap) and (TBitmap(Source).PixelFormat in [pf1bit..pf8bit]))
-{$IFDEF RECOGNIZE_GIF} or (Source is TGIFImage){$ENDIF RECOGNIZE_GIF} then
+        {$IFDEF RECOGNIZE_GIF} or (Source is TGIFImage) {$ENDIF} then
         Assign(Source)
       else
       begin
@@ -376,12 +372,13 @@ begin
   if TileDim <> 0 then
     if Offset > 0 then
       Offset := (Offset mod TileDim) - TileDim
-    else if Offset < 0 then
+    else
+    if Offset < 0 then
       Dec(Offset, (Offset div TileDim) * TileDim);
   Result := Offset;
 end;
 
-function GetClientHandle(AClient: TWinControl): hWnd;
+function GetClientHandle(AClient: TWinControl): HWND;
 begin
   Result := 0;
   if AClient is TCustomForm then
@@ -418,7 +415,7 @@ begin
   if AClient is TWinControl then
   begin
     ClientHandle := TWinControl(AClient).Handle;
-    ZeroMemory(@ScrollInfo, SizeOf(ScrollInfo));
+    FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL;
     GetScrollInfo(ClientHandle, SB_HORZ, ScrollInfo);
@@ -438,7 +435,8 @@ begin
           ScrollInfo.nPos := ScrollInfo.nPos * ItemHeight;
           ScrollInfo.nMax := ScrollInfo.nMax * ItemHeight;
         end
-      else if (AClient is TCustomTreeView) then
+      else
+      if AClient is TCustomTreeView then
       begin
         TVTopItem := TCustomTreeView(AClient).TopItem;
         if Assigned(TVTopItem) and TreeView_GetItemRect(ClientHandle, TVTopItem.ItemID, R, False) then
@@ -471,10 +469,12 @@ begin
       Result := TForm(Control).FormStyle = fsMDIForm;
 end;
 
-{ TJvBackgroundImage }
+//=== TJvBackgroundImage =====================================================
 
 constructor TJvBackgroundImage.Create;
 begin
+  // (rom) added inherited Create;
+  inherited Create;
   FCanvas := TCanvas.Create;
   FAutoSizeTile := True;
   FEnabled := True;
@@ -490,7 +490,7 @@ begin
   FPicture.Free;
   FWorkingBmp.Free;
   FCanvas.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvBackgroundImage.Assign(Source: TPersistent);
@@ -513,7 +513,7 @@ begin
     TransparentMode := Src.TransparentMode;
     Shift := Src.Shift;
     ShiftMode := Src.ShiftMode;
-    Zigzag := Src.ZigZag;
+    ZigZag := Src.ZigZag;
   end
   else
     inherited Assign(Source);
@@ -576,7 +576,7 @@ end;
 
 procedure TJvBackgroundImage.TileGraphic(AClient: TControl; Graphic: TGraphic);
 var
-  i, j: Integer;
+  I, J: Integer;
   iMin: Integer;
   FirstVisibleRow, S, OddShift: Integer;
   Left, Top, Width, Height: Integer;
@@ -632,14 +632,14 @@ begin
       if S < 0 then
         Inc(S, FTileWidth);
     end;
-    for j := 0 to (Height - 1) div FTileHeight do
+    for J := 0 to (Height - 1) div FTileHeight do
     begin
       if S = 0 then
         iMin := 0
       else
         iMin := -1;
-      for i := iMin to (Width - 1) div FTileWidth do
-        Canvas.Draw(Left + i * FTileWidth + S, Top + j * FTileHeight, Graphic);
+      for I := iMin to (Width - 1) div FTileWidth do
+        Canvas.Draw(Left + I * FTileWidth + S, Top + J * FTileHeight, Graphic);
       if FZigZag then
         S := S xor OddShift
       else
@@ -665,14 +665,14 @@ begin
       if S < 0 then
         Inc(S, FTileHeight);
     end;
-    for i := 0 to (Width - 1) div FTileWidth do
+    for I := 0 to (Width - 1) div FTileWidth do
     begin
       if S = 0 then
         iMin := 0
       else
         iMin := -1;
-      for j := iMin to (Height - 1) div FTileHeight do
-        Canvas.Draw(Left + i * FTileWidth, Top + j * FTileHeight + S, Graphic);
+      for J := iMin to (Height - 1) div FTileHeight do
+        Canvas.Draw(Left + I * FTileWidth, Top + J * FTileHeight + S, Graphic);
       if FZigZag then
         S := S xor OddShift
       else
@@ -684,7 +684,7 @@ begin
   end;
 end;
 
-procedure TJvBackgroundImage.PaintGraphic(AClient: TControl; DC: hDC; Graphic: TGraphic);
+procedure TJvBackgroundImage.PaintGraphic(AClient: TControl; DC: HDC; Graphic: TGraphic);
 var
   R, Rg: TRect;
   X, Y, W, H: Integer;
@@ -808,7 +808,7 @@ begin
   RestoreDC(DC, SaveIndex);
 end;
 
-function TJvBackgroundImage.PaintBackground(AClient: TWinControl; DC: hDC): Boolean;
+function TJvBackgroundImage.PaintBackground(AClient: TWinControl; DC: HDC): Boolean;
 var
   Graphic: TGraphic;
   Bmp: TBitmap;
@@ -821,7 +821,8 @@ begin
       Graphic := FWorkingBmp;
       if Graphic = nil then
         Graphic := FPicture.Graphic
-      else if Transparent then
+      else
+      if Transparent then
       begin
         Bmp := TBitmap.Create;
         Bmp.Assign(Graphic);
@@ -844,11 +845,13 @@ var
 begin
   Bmp := nil;
   if FTransparentColor = clDefault then
+    {$IFDEF RECOGNIZE_GIF}
+    if FPicture.Graphic is TGIFImage then
+      Bmp := TGIFImage(FPicture.Graphic).Bitmap
+    else
+    {$ENDIF RECOGNIZE_GIF}
     if FPicture.Graphic is TBitmap then
-      Bmp := TBitmap(FPicture.Graphic)
-{$IFDEF RECOGNIZE_GIF}
-    else if FPicture.Graphic is TGIFImage then
-      Bmp := TGIFImage(FPicture.Graphic).Bitmap{$ENDIF RECOGNIZE_GIF};
+      Bmp := TBitmap(FPicture.Graphic);
   if Assigned(Bmp) then
   begin
     if Bmp.Monochrome then
@@ -1024,6 +1027,7 @@ function TJvBackgroundImage.TransparentColorStored: Boolean;
 begin
   Result := FTransparentMode = tmFixed;
 end;
+
 {
   TJvBackgroundImage.UpdateWorkingBmp
   Transparency: all except TJPEGImage
@@ -1034,6 +1038,18 @@ procedure TJvBackgroundImage.UpdateWorkingBmp;
 var
   X, Y: Integer;
   IsBitmap: Boolean;
+  Bmp: TBitmap;
+  MaskBmp: TBitmap;
+  {$IFNDEF NO_JPEG}
+  GrayscaleState: Boolean;
+  {$ENDIF !NO_JPEG}
+  {$IFNDEF NO_JPEG}
+  IsJPEG: Boolean;
+  {$ENDIF !NO_JPEG}
+  IsTransparent: Boolean;
+  IsTranspGraphic: Boolean;
+  IsIcon: Boolean;
+  SizeTailored: Boolean;
 
   procedure DrawGraphic(Graphic: TGraphic);
   begin
@@ -1066,19 +1082,7 @@ var
       end;
     end;
   end;
-var
-  Bmp: TBitmap;
-  MaskBmp: TBitmap;
-{$IFNDEF NO_JPEG}
-  GrayscaleState: Boolean;
-{$ENDIF !NO_JPEG}
-{$IFNDEF NO_JPEG}
-  IsJPEG: Boolean;
-{$ENDIF !NO_JPEG}
-  IsTransparent: Boolean;
-  IsTranspGraphic: Boolean;
-  IsIcon: Boolean;
-  SizeTailored: Boolean;
+
 begin
   if FInUpdWorkingBmp then
     Exit;
@@ -1097,18 +1101,18 @@ begin
         X := X div 2;
         Y := Y div 2;
       end;
-      IsBitmap := (Graphic is TBitmap){$IFDEF RECOGNIZE_GIF} or (Graphic is TGIFImage)
-          // GIF goes as bitmap here
-{$ENDIF RECOGNIZE_GIF};
+      IsBitmap := (Graphic is TBitmap)
+        // GIF goes as bitmap here
+        {$IFDEF RECOGNIZE_GIF} or (Graphic is TGIFImage) {$ENDIF};
       IsIcon := Graphic is TIcon;
       IsTranspGraphic := IsIcon or (Graphic is TMetafile);
-        // if Graphic is transparent
-{$IFDEF NO_JPEG}
+      // if Graphic is transparent
+      {$IFDEF NO_JPEG}
       IsTransparent := Transparent or IsTranspGraphic;
-{$ELSE}
+      {$ELSE}
       IsJPEG := Graphic is TJPEGImage;
       IsTransparent := (Transparent and not IsJPEG) or IsTranspGraphic;
-{$ENDIF NO_JPEG}
+      {$ENDIF NO_JPEG}
       if IsTransparent or FGrayMapped or SizeTailored then
       begin
         WorkingBmpNeeded;
@@ -1119,7 +1123,8 @@ begin
             FillRect(Rect(0, 0, FTileWidth, FTileHeight));
             Draw(X, Y, Graphic);
           end
-        else if IsTransparent then // and not IsTranspGraphic
+        else
+        if IsTransparent then // and not IsTranspGraphic
         begin
           Bmp := CreateTransparentBmp(Graphic);
           try
@@ -1155,11 +1160,12 @@ begin
             Bmp.Free;
           end
         end
-        else if GrayMapped then // and not Transparent
+        else
+        if GrayMapped then // and not Transparent
         begin
           Bmp := TBitmap.Create;
           try
-{$IFNDEF NO_JPEG}
+            {$IFNDEF NO_JPEG}
             if IsJPEG then
               with TJPEGImage(Graphic) do
               begin
@@ -1171,7 +1177,7 @@ begin
                   Grayscale := GrayscaleState;
                 end;
               end;
-{$ENDIF !NO_JPEG}
+            {$ENDIF !NO_JPEG}
             MapGrays(Bmp, FPicture.Graphic);
             DrawGraphic(Bmp);
           finally
@@ -1213,16 +1219,16 @@ begin
   FWorkingBmp.Height := H;
 end;
 
-class function TJvBackgroundImage.MainWindowHook(var Message: TMessage): Boolean;
+class function TJvBackgroundImage.MainWindowHook(var Msg: TMessage): Boolean;
 var
   I: Integer;
 begin
   Result := False;
-  if Message.Msg = WM_SYSCOLORCHANGE then
+  if Msg.Msg = WM_SYSCOLORCHANGE then
   begin
     UpdateSysColorGradation;
     for I := 0 to Hooked.Count - 1 do
-      TJvBackgroundImage(Hooked[i]).SysColorChange;
+      TJvBackgroundImage(Hooked[I]).SysColorChange;
   end;
 end;
 
@@ -1265,7 +1271,7 @@ begin
   end;
 end;
 
-{ TJvControlBackground }
+//=== TJvControlBackground ===================================================
 
 constructor TJvControlBackground.Create(AClient: TWinControl);
 begin
@@ -1301,9 +1307,10 @@ begin
     end;
 end;
 
-{ TJvBackgroundClientLink }
+//=== TJvBackgroundClientLink ================================================
 
-constructor TJvBackgroundClientLink.Create(ABackground: TJvBackground; AClient: TWinControl);
+constructor TJvBackgroundClientLink.Create(ABackground: TJvBackground;
+  AClient: TWinControl);
 begin
   inherited Create;
   FBackground := ABackground;
@@ -1317,7 +1324,7 @@ begin
   UnhookClient;
   if Assigned(FNewWndProc) then
     FreeObjectInstance(FNewWndProc);
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvBackgroundClientLink.ClientInvalidate;
@@ -1326,7 +1333,8 @@ begin
     InvalidateRect(ClientHandle, nil, True);
 end;
 
-function GetMDIClientScrollDelta(ClientHandle: hWnd; ScrollBar: Integer; Message: TWMScroll): Integer;
+function GetMDIClientScrollDelta(ClientHandle: HWND; ScrollBar: Integer;
+  const Msg: TWMScroll): Integer;
 var
   ScrollInfo: TScrollInfo;
   Delta, MaxChange: Integer;
@@ -1335,7 +1343,7 @@ begin
   ScrollInfo.fMask := SIF_ALL;
   GetScrollInfo(ClientHandle, ScrollBar, ScrollInfo);
   Delta := 0;
-  case Message.ScrollCode of
+  case Msg.ScrollCode of
     SB_LINELEFT:
       begin
         Delta := ScrollInfo.nPos - ScrollInfo.nMin;
@@ -1373,7 +1381,7 @@ begin
         Delta := -Delta;
       end;
     SB_THUMBPOSITION:
-      Delta := -Message.Pos;
+      Delta := -Msg.Pos;
   end;
   Result := Delta * ScrollUnit;
 end;
@@ -1384,6 +1392,7 @@ procedure TJvBackgroundClientLink.ClientWndProc(var Message: TMessage);
   begin
     InvalidateRect(ClientHandle, nil, True);
   end;
+
 begin
   if ClientHandle <> 0 then
     with FBackground.FImage, Message do
@@ -1444,11 +1453,11 @@ begin
     end;
 end;
 
-procedure TJvBackgroundClientLink.MainWndProc(var Message: TMessage);
+procedure TJvBackgroundClientLink.MainWndProc(var Msg: TMessage);
 begin
   try
     try
-      ClientWndProc(Message);
+      ClientWndProc(Msg);
     finally
       //FreeDeviceContexts;
       FreeMemoryContexts;
@@ -1478,10 +1487,10 @@ begin
           Exit;
     end;
     UnhookClient;
-{$IFDEF COMPILER5_UP}
+    {$IFDEF COMPILER5_UP}
     if Assigned(FClient) then
       FBackground.RemoveFreeNotification(FClient);
-{$ENDIF COMPILER5_UP}
+    {$ENDIF COMPILER5_UP}
     FClient := Value;
     if Assigned(Value) then
     begin
@@ -1495,10 +1504,10 @@ end;
 
 procedure TJvBackgroundClientLink.HookClient;
 begin
-{$IFDEF NO_DESIGNHOOK}
+  {$IFDEF NO_DESIGNHOOK}
   if csDesigning in ComponentState then
     Exit;
-{$ENDIF NO_DESIGNHOOK}
+  {$ENDIF NO_DESIGNHOOK}
   if Assigned(FClient) and not Assigned(FPrevWndProc) then
     if not ((csLoading in FClient.ComponentState) or ((FClient is TCustomForm) and (csDesigning in FClient.ComponentState))) then
     begin
@@ -1510,7 +1519,7 @@ end;
 
 procedure TJvBackgroundClientLink.UnhookClient;
 const
-  WorkaroundStr: array[Boolean] of string = ('', SWorkAround);
+  WorkaroundStr: array [Boolean] of string = ('', SWorkaround);
 begin
   if Assigned(FPrevWndProc) then
     if Assigned(FClient) then
@@ -1535,7 +1544,7 @@ begin
   Result := TWinControlAccess(FClient).Color;
 end;
 
-function TJvBackgroundClientLink.GetClientHandle: hWnd;
+function TJvBackgroundClientLink.GetClientHandle: HWND;
 begin
   Result := JvBackgrounds.GetClientHandle(FClient);
   {
@@ -1559,7 +1568,7 @@ begin
   PostMessage(FBackground.FHandle, CM_RELEASECLIENTLINK, 0, Longint(Self));
 end;
 
-{ TJvBackgroundClients }
+//=== TJvBackgroundClients ===================================================
 
 constructor TJvBackgroundClients.Create(ABackground: TJvBackground);
 begin
@@ -1573,7 +1582,7 @@ destructor TJvBackgroundClients.Destroy;
 begin
   FLinks.Clear;
   FLinks.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvBackgroundClients.Clear;
@@ -1628,6 +1637,7 @@ var
   I: Integer;
   Client: TWinControl;
 begin
+  // (rom) no inherited call?
   if Operation = opRemove then
     for I := 0 to FLinks.Count - 1 do
     begin
@@ -1647,7 +1657,8 @@ procedure TJvBackgroundClients.DefineProperties(Filer: TFiler);
     AncestorClients := TJvBackgroundClients(Filer.Ancestor);
     if AncestorClients = nil then
       Result := True // FLinks.Count > 0
-    else if AncestorClients.FLinks.Count <> FLinks.Count then
+    else
+    if AncestorClients.FLinks.Count <> FLinks.Count then
       Result := True
     else
     begin
@@ -1660,6 +1671,7 @@ procedure TJvBackgroundClients.DefineProperties(Filer: TFiler);
       end
     end;
   end;
+
 begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('Clients', ReadData, WriteData, WriteClients);
@@ -1669,6 +1681,7 @@ procedure TJvBackgroundClients.ReadData(Reader: TReader);
 begin
   FLinks.Free;
   FLinks := nil;
+  // (rom) typecasting an lvalue is really bad style
   TStringList(FLinks) := TStringList.Create;
   Reader.ReadListBegin;
   while not Reader.EndOfList do
@@ -1727,12 +1740,10 @@ var
   I: Integer;
 begin
   for I := 0 to FLinks.Count - 1 do
-  begin
     Links[I].ClientInvalidate;
-  end;
 end;
 
-{ TJvBackground }
+//=== TJvBackground ==========================================================
 
 var
   Registered: Boolean = False;
@@ -1764,7 +1775,7 @@ begin
   FClients.Free;
   Backgrounds.Remove(Self);
   FImage.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvBackground.Loaded;
@@ -1777,7 +1788,7 @@ procedure TJvBackground.Notification(AComponent: TComponent; Operation: TOperati
 begin
   if not (csDestroying in ComponentState) and Assigned(FClients) then
     FClients.Notification(AComponent, Operation);
-  inherited;
+  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvBackground.SetClients(Value: TJvBackgroundClients);
@@ -1790,18 +1801,17 @@ begin
   Clients.Invalidate;
 end;
 
-procedure TJvBackground.WndProc(var Message: TMessage);
+procedure TJvBackground.WndProc(var Msg: TMessage);
 begin
   try
-    with Message do
-      case Msg of
-        CM_RECREATEWINDOW:
-          TJvBackgroundClientLink(Message.lParam).HookClient;
-        CM_RELEASECLIENTLINK:
-          TJvBackgroundClientLink(Message.lParam).Free;
-      else
-        Result := DefWindowProc(FHandle, Msg, wParam, lParam);
-      end;
+    case Msg.Msg of
+      CM_RECREATEWINDOW:
+        TJvBackgroundClientLink(Msg.lParam).HookClient;
+      CM_RELEASECLIENTLINK:
+        TJvBackgroundClientLink(Msg.lParam).Free;
+    else
+      Msg.Result := DefWindowProc(FHandle, Msg.Msg, Msg.wParam, Msg.lParam);
+    end;
   except
     Application.HandleException(Self);
   end;
@@ -1823,7 +1833,11 @@ initialization
 finalization
   if Assigned(SysColorGradation) then
     Dispose(SysColorGradation);
+  SysColorGradation := nil;
   Hooked.Free;
+  Hooked := nil;
   Backgrounds.Free;
+  Backgrounds := nil;
+
 end.
 
