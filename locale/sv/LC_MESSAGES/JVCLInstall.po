@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2004-08-07 13:01\n"
+"POT-Creation-Date: 2004-10-14 21:23\n"
 "PO-Revision-Date: 2004-05-12 10:49+0100\n"
 "Last-Translator: Peter Thornqvist <peter3@peter3.com>\n"
 "Language-Team: JVCL Localization\n"
@@ -309,24 +309,39 @@ msgstr "Redigera alla inställningar i jvcl.inc"
 msgid "Edit jvcl.inc"
 msgstr "Redigera jvcl.inc"
 
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning....Height
+#: Frames/FrmConfigPage.dfm:158
+msgid ""
+"Enable this option if you want that every JVCL unit should support\n"
+"UnitVersioning.\n"
+"UnitVersioning allows you the obtain the revision, date and filename\n"
+"of each unit at runtime."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning..Caption
+#: Frames/FrmConfigPage.dfm:159
+msgid "Unit Versioning"
+msgstr ""
+
 #  FrameConfigPage..GroupBoxInstallOptions..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..Caption
-#: Frames/FrmConfigPage.dfm:156
+#: Frames/FrmConfigPage.dfm:171
 msgid " Installation options "
 msgstr " Installationsalternativ"
 
 #  FrameConfigPage..GroupBoxInstallOptions..LblOptionsFor..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..LblOptionsFor..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..LblOptionsFor..Caption
-#: Frames/FrmConfigPage.dfm:163
-msgid "Options for:"
+#: Frames/FrmConfigPage.dfm:178
+#, fuzzy
+msgid "&Options for:"
 msgstr "Alternativ för:"
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Height
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Height
-#: Frames/FrmConfigPage.dfm:173
+#: Frames/FrmConfigPage.dfm:189
 msgid ""
 "Activate this option if you are a JVCL developer.\n"
 "This adds the \\run, \\common, \\design, \\qrun,\n"
@@ -339,14 +354,14 @@ msgstr ""
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall..Caption
-#: Frames/FrmConfigPage.dfm:175
+#: Frames/FrmConfigPage.dfm:191
 msgid "&JVCL Developer installation"
 msgstr "&JVCL utvecklarinstallation"
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes....Height
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes....Height
-#: Frames/FrmConfigPage.dfm:188
+#: Frames/FrmConfigPage.dfm:204
 msgid ""
 "Remove all JVCL components from the component palettes in\n"
 "order to reinstall in a proper order."
@@ -357,14 +372,14 @@ msgstr ""
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes..Caption
-#: Frames/FrmConfigPage.dfm:190
+#: Frames/FrmConfigPage.dfm:206
 msgid "Clean JVCL component &palettes"
 msgstr "Återställ JVCL:s komponentpalett"
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild....Height
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild....Height
-#: Frames/FrmConfigPage.dfm:215
+#: Frames/FrmConfigPage.dfm:231
 msgid ""
 "Check this option if you want to build the packages instead\n"
 "of compiling the modified files.\n"
@@ -381,14 +396,14 @@ msgstr ""
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild..Caption
-#: Frames/FrmConfigPage.dfm:217
+#: Frames/FrmConfigPage.dfm:233
 msgid "B&uild packages"
 msgstr "Re&generera paket"
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly....Height
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly....Height
-#: Frames/FrmConfigPage.dfm:230
+#: Frames/FrmConfigPage.dfm:246
 msgid ""
 "Check this option if you do not want to register\n"
 "the designtime package into the IDE."
@@ -396,35 +411,36 @@ msgstr "Aktivera om du inte vill installera paketen i IDE:n."
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly..Caption
-#: Frames/FrmConfigPage.dfm:232
-msgid "No IDE registration"
+#: Frames/FrmConfigPage.dfm:248
+#, fuzzy
+msgid "No &IDE registration"
 msgstr "Registrera inte i IDE:n"
 
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
-#: Frames/FrmConfigPage.dfm:248
+#: Frames/FrmConfigPage.dfm:264
 msgid "BP&L Directory:"
 msgstr "BP&L-mapp:"
 
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
-#: Frames/FrmConfigPage.dfm:272
+#: Frames/FrmConfigPage.dfm:288
 msgid "&DCP Directory:"
 msgstr "&DCP-mapp:"
 
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..LblCaption..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..LblCaption..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..LblCaption..Caption
-#: Frames/FrmConfigPage.dfm:296
+#: Frames/FrmConfigPage.dfm:312
 msgid "&HPP Directory:"
 msgstr "&HPP-mapp:"
 
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Width
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Width
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Width
-#: Frames/FrmConfigPage.dfm:309
+#: Frames/FrmConfigPage.dfm:325
 msgid ""
 "The HPP directory specifies where the generated .hpp files\n"
 "should go. If this field is empty the generated .hpp files are\n"
@@ -436,7 +452,7 @@ msgstr ""
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Height
-#: Frames/FrmConfigPage.dfm:327
+#: Frames/FrmConfigPage.dfm:343
 msgid ""
 "Activate this option if the installer should generate\n"
 "detailed map-files for each package.The .map files\n"
@@ -454,13 +470,13 @@ msgstr ""
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles..Caption
-#: Frames/FrmConfigPage.dfm:329
+#: Frames/FrmConfigPage.dfm:345
 msgid "Genera&te Map files"
 msgstr "S&kapa Map-filer"
 
 #  FrameConfigPage..CheckBoxCompileJclDcp....Height
 #. FrameConfigPage..CheckBoxCompileJclDcp....Height
-#: Frames/FrmConfigPage.dfm:344
+#: Frames/FrmConfigPage.dfm:360
 msgid ""
 "Deactivate this option if you do not want the installer to\n"
 "compile/update the JCL .dcp files that are required for\n"
@@ -473,13 +489,13 @@ msgstr ""
 #  FrameConfigPage..CheckBoxCompileJclDcp..Caption
 #  FrameConfigPage..CheckBoxCompileJclDcp..Caption
 #. FrameConfigPage..CheckBoxCompileJclDcp..Caption
-#: Frames/FrmConfigPage.dfm:345
+#: Frames/FrmConfigPage.dfm:361
 msgid "Co&mpile JCL .dcp files for C++Builder"
 msgstr "Ko&mpilera JCL .dcp om nödvändigt"
 
 #  FrameConfigPage..CheckBoxVerbose....Height
 #. FrameConfigPage..CheckBoxVerbose....Height
-#: Frames/FrmConfigPage.dfm:358
+#: Frames/FrmConfigPage.dfm:374
 msgid ""
 "Activate this option if you want to see a more detailed compiler log on\n"
 "the installation progress page."
@@ -488,7 +504,7 @@ msgstr "Aktivera om du vill se en mer detaljerad installationslogg."
 #  FrameConfigPage..CheckBoxVerbose..Caption
 #  FrameConfigPage..CheckBoxVerbose..Caption
 #. FrameConfigPage..CheckBoxVerbose..Caption
-#: Frames/FrmConfigPage.dfm:359
+#: Frames/FrmConfigPage.dfm:375
 msgid "&Verbose compiler output"
 msgstr "&Visa utförlig kompileringsinformation"
 
