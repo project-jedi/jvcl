@@ -101,11 +101,11 @@ type
 
   TJvCustomPropertyListStore = class(TJvCustomPropertyStore)
   private
-    FItems: TStringList;
+    FItems: tStringList;
     FFreeObjects: Boolean;
     FCreateListEntries: Boolean;
     FItemName: string;
-    function GetItems: TStrings;
+    function GetItems: tStringList;
   protected
     function GetString(Index: Integer): string;
     function GetObject(Index: Integer): TObject;
@@ -116,6 +116,7 @@ type
     procedure WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
     procedure DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;
       const First, Last: Integer; const ItemName: string);
+    function CreateItemList : tStringList; virtual;
     function CreateObject: TObject; virtual;
     function GetSorted: Boolean;
     procedure SetSorted (Value: Boolean);
@@ -129,7 +130,7 @@ type
     procedure Clear; override;
     property Strings [Index: Integer]: string read GetString write SetString;
     property Objects[Index: Integer]: TObject read GetObject write SetObject;
-    property Items: TStrings read GetItems;
+    property Items: tStringList read GetItems;
     property Count: Integer read GetCount;
   published
     { Defines if the Items.Objects- Objects will be freed inside the clear procedure }
@@ -579,7 +580,7 @@ end;
 constructor TJvCustomPropertyListStore.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FItems := TStringList.Create;
+  FItems := CreateItemList;
   CreateListEntries := True;
   FreeObjects := True;
   FItemName := cItem;
@@ -595,7 +596,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvCustomPropertyListStore.GetItems: TStrings;
+function TJvCustomPropertyListStore.GetItems: tStringList;
 begin
   Result := FItems;
 end;
@@ -623,6 +624,11 @@ begin
   if Assigned(Items) then
     Items.Clear;
   inherited Clear;
+end;
+
+function TJvCustomPropertyListStore.CreateItemList : tStringList;
+begin
+  Result := tStringList.Create;
 end;
 
 function TJvCustomPropertyListStore.CreateObject: TObject;
