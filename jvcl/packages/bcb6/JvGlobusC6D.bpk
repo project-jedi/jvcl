@@ -12,7 +12,7 @@
       ..\..\dcu\JvgMultiResources.obj ..\..\dcu\JvgPropertyCenter.obj 
       ..\..\dcu\JvgReportEditorForm.obj ..\..\dcu\JvgReportParamEditorForm.obj 
       ..\..\dcu\JvgReportParamsForm.obj ..\..\dcu\JvgRTFPreviewForm.obj 
-      ..\..\dcu\JvgRegLibDelphi.obj"/>
+      ..\..\dcu\JvGlobusReg.obj"/>
     <RESFILES value="JvGlobusC6D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -81,7 +81,7 @@
       <FILE FILENAME="..\..\design\JvgReportParamEditorForm.pas" FORMNAME="JvgReportParamEditor" UNITNAME="JvgReportParamEditorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvgReportParamsForm.pas" FORMNAME="JvgReportParamsForm" UNITNAME="JvgReportParamsForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvgRTFPreviewForm.pas" FORMNAME="JvgRTFPreview" UNITNAME="JvgRTFPreviewForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvgRegLibDelphi.pas" FORMNAME="" UNITNAME="JvgRegLibDelphi" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvGlobusReg.pas" FORMNAME="" UNITNAME="JvGlobusReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>

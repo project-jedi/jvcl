@@ -39,7 +39,7 @@ requires
   JvGlobusD7R;
 
 contains
-  JvgRegLibDelphi in '..\..\design\JvgRegLibDelphi.pas',
+  JvGlobusReg in '..\..\design\JvGlobusReg.pas',
   JvCompEditorTemplateForm in '..\..\design\JvCompEditorTemplateForm.pas' {JvgCompEditorTemplate},
   JvgLabelEditorForm in '..\..\design\JvgLabelEditorForm.pas' {JvgLabelEditorFormDlg},
   JvgReportEditorForm in '..\..\design\JvgReportEditorForm.pas' {JvgReportParamsForm},
