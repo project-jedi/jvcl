@@ -14,10 +14,6 @@ JCLROOT = ..\..\..\jcl
 DCPDIR = $(ROOT)\Projects\bpl
 !endif
 
-!ifndef LIBDIR
-LIBDIR = $(ROOT)\Projects\lib
-!endif
-
 !ifndef VERSION
 !error You must specify a VERSION: make -DVERSION=6
 !endif
@@ -64,13 +60,13 @@ Templates:
 	@echo [Copying: Templates]
 	if NOT EXIST "$(PACKAGEDIR)\template.dpk"  copy /D /Y jcldcpdpk$(VERSION).tpl "$(PACKAGEDIR)\template.dpk"
 	# create template.cfg
-	@echo -I"..\..\source;..\..\source\common" > $(PACKAGEDIR)\template.cfg
-	@echo -U"..\..\source\common;..\..\source\windows" >> $(PACKAGEDIR)\template.cfg
-	@echo -U"..\..\source\vcl;..\..\source\visclx" >> $(PACKAGEDIR)\template.cfg
-	@echo -U"$(ROOT)\Lib\Obj;$(DCPDIR)" >> $(PACKAGEDIR)\template.cfg
-	@echo -LN"$(DCPDIR)" >> $(PACKAGEDIR)\template.cfg
-	@echo -N"$(JCLROOT)\lib\c$(VERSION)" >> $(PACKAGEDIR)\template.cfg
-	@echo -O"$(JCLROOT)\lib\c$(VERSION)\obj" >> $(PACKAGEDIR)\template.cfg
+	@echo -I"..\..\source;..\..\source\common" > "$(PACKAGEDIR)\template.cfg"
+	@echo -U"..\..\source\common;..\..\source\windows" >> "$(PACKAGEDIR)\template.cfg"
+	@echo -U"..\..\source\vcl;..\..\source\visclx" >> "$(PACKAGEDIR)\template.cfg"
+	@echo -U"$(ROOT)\Lib\Obj;$(DCPDIR)" >> "$(PACKAGEDIR)\template.cfg"
+	@echo -LN"$(DCPDIR)" >> "$(PACKAGEDIR)\template.cfg"
+	@echo -N"$(JCLROOT)\lib\c$(VERSION)" >> "$(PACKAGEDIR)\template.cfg"
+	@echo -O"$(JCLROOT)\lib\c$(VERSION)\obj" >> "$(PACKAGEDIR)\template.cfg"
 
 ChangeDirPackageDir:
 	@cd $(PACKAGEDIR)
@@ -78,6 +74,7 @@ ChangeDirPackageDir:
 Compile: ChangeDirPackageDir
 	@echo [Compiling: Packages]
 	for %f in ("C*.dpk") do $(DCC) "%f"
+# -U"..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx;$(ROOT)\lib\obj" -I"..\..\source;..\..\source\common"
 
 Clean:
 	@echo [Cleaning...]
