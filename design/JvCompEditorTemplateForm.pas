@@ -39,9 +39,9 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvBaseDlg, JvJVCLAboutForm, JvComponent,
   JvgCheckBox, JvgLanguageLoader, JvgLabel, JvgGroupBox, JvgTab, JvgPage,
-  JvgShadow, JvgWizardHeader, JvgBitBtn, JvgSpeedButton, JvgSplit;
+  JvgShadow, JvgWizardHeader, JvgBitBtn, JvgSpeedButton, JvgSplit,
+  JvComponent;
 
 type
   TJvgCompEditorTemplate = class(TForm)

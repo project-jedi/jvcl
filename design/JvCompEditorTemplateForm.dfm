@@ -64,6 +64,7 @@ object JvgCompEditorTemplate: TJvgCompEditorTemplate
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
+      TabIndex = 0
       TabOrder = 0
       TabStop = False
       TabStyle.Borders = [fsdLeft, fsdTop, fsdRight, fsdBottom]

@@ -27,13 +27,16 @@ package JvGlobusD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  designide,
-  JvGlobusD7R,
+  vcl,
+  Vclx,
+  Vcldb,
   VclSmp,
-  JvCtrlsD7R,
-  JvCustomD7R,
-  JvDlgsD7R,
-  JvMMD7R;
+  Qrpt,
+  vcljpg,
+  vclie,
+  designide,
+  rtl,
+  JvGlobusD7R;
 
 contains
   JvgRegLibDelphi in '..\..\design\JvgRegLibDelphi.pas',
