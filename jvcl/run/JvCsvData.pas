@@ -527,11 +527,9 @@ type
     procedure SaveToFile(const Filename:string);
     procedure LoadFromFile(const Filename:string);
   protected
-    property FieldDefs stored FieldDefsStored;
     property InternalData: TJvCsvRows read FData write FData;
     property AppendedFieldCount: Integer read FAppendedFieldCount;
       // Number of fields not in the file on disk, appended to file as NULLs during import.
-    property TableName: string read FTableName; // Another name, albeit read only, for the FileName property!
       // Per-Record user-data fields:
       //    Each record can have a pointer (for associating each row with an object)
     property UserData: Pointer read GetRowUserData write SetRowUserData;
@@ -548,16 +546,14 @@ type
     property CsvFieldDef: string read FCsvFieldDef write SetCsvFieldDef; // Our own "Csv Field Definition String"
     property CsvKeyDef: string read FCsvKeyDef write FCsvKeyDef; // Primary key definition.
     property CsvUniqueKeys: Boolean read FCsvUniqueKeys write FCsvUniqueKeys; // Rows must be unique on the primary key.
-    property HasHeaderRow: Boolean read FHasHeaderRow write FHasHeaderRow default True;
     // if HasHeaderRow is true, calidate that it conforms to CvsFieldDef
     property ValidateHeaderRow:Boolean read FValidateHeaderRow write FValidateHeaderRow default True;
-    property ExtendedHeaderInfo:boolean read FExtendedHeaderInfo write FExtendedHeaderInfo; 
+    property ExtendedHeaderInfo:boolean read FExtendedHeaderInfo write FExtendedHeaderInfo;
 
     property CaseInsensitive: Boolean read FCsvCaseInsensitiveComparison write FCsvCaseInsensitiveComparison;
 
      // Properties for Automatically Loading/Saving CSV file when Active property is set True/False:
     property LoadsFromFile: Boolean read FLoadsFromFile write FLoadsFromFile default True;
-    property SavesChanges: Boolean read FSavesChanges write FSavesChanges default True;
     property AutoBackupCount: Integer read FAutoBackupCount write FAutoBackupCount;
       // >0 means Keep Last N Copies the Old Csv File, updated before each save?
 
@@ -576,12 +572,22 @@ type
        Not recommended behaviour, except when absolutely necessary! }
     property EnquoteBackslash: Boolean read FEnquoteBackslash write FEnquoteBackslash default False;
 
-    property HeaderRow:String read FHeaderRow; // first row of CSV file.
 
      { Additional Events }
     property OnSpecialData: TJvCsvOnSpecialData read FOnSpecialData write FOnSpecialData;
     property OnGetFieldData: TJvCsvOnGetFieldData read FOnGetFieldData write FOnGetFieldData;
     property OnSetFieldData: TJvCsvOnSetFieldData read FOnSetFieldData write FOnSetFieldData;
+
+   public
+
+    { these MUST be available at runtime even when the object is of the Custom base class type
+      This enables interoperability at design time between non-visual helper components
+      and user-derived CsvDataSet descendants }
+    property FieldDefs stored FieldDefsStored;
+    property TableName: string read FTableName; // Another name, albeit read only, for the FileName property!
+    property HasHeaderRow: Boolean read FHasHeaderRow write FHasHeaderRow default True;
+    property HeaderRow:String read FHeaderRow; // first row of CSV file.
+    property SavesChanges: Boolean read FSavesChanges write FSavesChanges default True;
 
   end;
 
@@ -1257,7 +1263,11 @@ var
 
 begin
   Result := False;
-  Count := StrSplit(KeyFields, ';', Chr(0), KeyFieldArray, 20);
+  if Pos(',',KeyFields)>0 then
+    Count := StrSplit(KeyFields, ',', Chr(0), KeyFieldArray, 20)
+  else
+    Count := StrSplit(KeyFields, ';', Chr(0), KeyFieldArray, 20);
+    
   if not ((VarType(KeyValues) and varArray) > 0) then
     Exit;
   lo := VarArrayLowBound(KeyValues, 1);
@@ -3721,6 +3731,11 @@ begin
   begin
     Result := RsErrorRowItem;
     Exit;
+  end;
+  if (ColumnIndex >= pItem^.columns) then begin
+      result := '';  // BUGFIX! Non existant field offsets (csv data that is not in the file but is in the dataset field defs)
+                    // were causing bogus data to be returned!! -WP.
+      exit;
   end;
 
   Copy1 := CsvRowGetColumnMarker(pItem, ColumnIndex);
