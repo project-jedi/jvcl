@@ -1,5 +1,10 @@
 Changelog for JVCL 3.0
 ======================
+2004-09-02
+- TJvCustomAppXMLStorage: Introduced the WhiteSpaceReplacement property that is used when a node
+  name contains a white space. Its default value is an empty string, thus forcing people to
+  set its value when they receive the exception telling them that an XML node name cannot
+  contain white space // obones
 2004-08-18
 - TJvAnimatedImage: Opaque renamed to Transparent and logic reversed // peter3
 2004-08-09
