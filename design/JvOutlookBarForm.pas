@@ -208,7 +208,7 @@ end;
 
 procedure TFrmOLBEditor.FormClosed(AForm: TCustomForm);
 begin
-  Assert(Designer <> nil, SDesignerIsNilInFormClosed);
+  Assert(Designer <> nil, RsDesignerIsNilInFormClosed);
   if AForm = Designer.Form then
   begin
     Designer := nil;
@@ -602,7 +602,7 @@ begin
   Result := Designer.GetBaseRegKey + cRegKey;
   {$ELSE}
   // (rom) simplified and bugfixed
-  Result := SDelphiKey + SPropertyEditors + cRegKey;
+  Result := SDelphiKey + RsPropertyEditors + cRegKey;
   {$ENDIF COMPILER6_UP}
 end;
 
