@@ -34,7 +34,7 @@ team.</p>
 
 <h3>Encountered errors and possible solutions</h3>
 
-<h4>Null not defined</h4>
+<h5>Null not defined</h5>
 
 <p>You must add 'uses Variant' in the <br>
 implementation section even if it was already in the interface section. <br>
@@ -42,18 +42,18 @@ Doing so would break Delphi compilation, so you must enclose it with <br>
 conditional compilation directives, {$IFDEF BCB6}uses Variant;{$ENDIF}<br>
 &nbsp;</p>
 
-<h4>Cannot find FiltEdit.dcu</h4>
+<h5>Cannot find FiltEdit.dcu</h5>
 
 <p>Open the bpk file with a text editor. Add '-LUdclstd' to the PFLAGS node, and 
 add dclstd.bpi to the requires node.</p>
 
-<h4>Cannot find DesignIntf.dcu</h4>
+<h5>Cannot find DesignIntf.dcu</h5>
 
 <p>Open the bpk file with a text editor. Add '-LUDesignIde' to the PFLAGS node, 
 and add DesignIde.bpi to the requires node.<br>
 &nbsp;</p>
 
-<h4>Incompatible types: Set of char and String</h4>
+<h5>Incompatible types: Set of char and String</h5>
 
 <p>An old remnant of BCB4 and under support because BCB4 didn't support sets. 
 BCB5 and newer and as JVCL doesn't support anything below BCB5, all conditional 
@@ -61,37 +61,37 @@ compilation directives defining Delphi sets as string must be removed to only
 leave Delphi style sets definitions.<br>
 &nbsp;</p>
 
-<h4>[Linker Error] Fatal: Access violation. Link Terminated.</h4>
+<h5>[Linker Error] Fatal: Access violation. Link Terminated.</h5>
 
 <p>See &quot;Do not use WEAKPACKAGEUNIT&quot; above.</p>
 
-<h4>Cannot find CJCL60.bpl</h4>
+<h5>Cannot find CJCL60.bpl</h5>
 
 <p>You must add CJCL60.bpi to the requires list of your package. The directory 
 to that file MUST be in the PATH environment variable.<br>
 &nbsp;</p>
 
-<h4>Incompatible types</h4>
+<h5>Incompatible types</h5>
 
 <p>Usually an error that has to do with record/case being used to perform 
 automatic casting. This a construct to avoid as it is not supported by BCB.<br>
 &nbsp;</p>
 
-<h4>Constructor already defined</h4>
+<h5>Constructor already defined</h5>
 
 <p>This comes because of a constructor not being called Create in the source pas 
 file. As a rule, all constructors MUST be named create and you must fix your 
 pascal code to cope with that.<br>
 &nbsp;</p>
 
-<h4>E2303 Type name expected (on a __property line)</h4>
+<h5>E2303 Type name expected (on a __property line)</h5>
 
 <p>This is because of bad casing. Usual example is having PopUpMenu where it 
 should be PopupMenu. BCB is case sensitive so you must respect casing in your 
 pas files, at least in the interface section.<br>
 &nbsp;</p>
 
-<h4>Cannot initialize constant</h4>
+<h5>Cannot initialize constant</h5>
 
 <p>(or something similar, usually provokes 3 errors on the same line, the second 
 being the interesting one). This is because the parameter name you chose for 
@@ -99,7 +99,7 @@ your function is a constant under BCB. The only solution is to change the name
 of the incriminated parameter.<br>
 &nbsp;</p>
 
-<h4>Ambiguity between SOMETYPE and SomeDomain::SOMETYPE</h4>
+<h5>Ambiguity between SOMETYPE and SomeDomain::SOMETYPE</h5>
 
 <p>This is because the type SOMETYPE is a global type (in windows.h, generally) 
 and is also defined in the SomeDomain file. To lift this ambiguity, you must add 
