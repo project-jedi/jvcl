@@ -538,6 +538,7 @@ type
     property Caption;
     property Constraints;
     property Down;
+    property DropDownMenu;
     {$IFDEF VCL}
     property DragCursor;
     property DragKind;
@@ -817,6 +818,8 @@ type
     procedure SetHeaderVisible(const Value: Boolean);
     function IsColorsStored: Boolean;
   protected
+
+
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure TextChanged; override;
@@ -831,6 +834,7 @@ type
     function WidgetFlags: Integer; override;
     {$ENDIF VisualCLX}
     property EdgeRounding: Integer read FEdgeRounding write SetEdgeRounding default 9;
+    procedure AdjustClientRect(var Rect: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -4677,7 +4681,7 @@ begin
   if FHeaderVisible <> Value then
   begin
     FHeaderVisible := Value;
-    FCloseButton.Visible := CloseButton; //  and Value;
+    FCloseButton.Visible := CloseButton;
     FDropDown.Visible := (FDropDown.DropDownMenu <> nil); //  and Value;
     ButtonsChanged;
   end;
@@ -4687,6 +4691,7 @@ function TJvNavPaneToolPanel.IsColorsStored: Boolean;
 begin
   Result := (StyleManager = nil) or (StyleManager.Theme = nptCustom);
 end;
+
 
 //=== TJvNavPaneToolButton ===================================================
 
@@ -5131,6 +5136,18 @@ begin
 end;
 
 
+
+procedure TJvNavPaneToolPanel.AdjustClientRect(var Rect: TRect);
+begin
+  if HeaderVisible then
+  begin
+    Rect.Top := Rect.Top + HeaderHeight + EdgeRounding;
+    if Buttons.Count > 0 then
+      Rect.Top := Rect.Top + ButtonHeight - EdgeRounding;
+  end;
+  InflateRect(Rect, -2, -2);
+  inherited AdjustClientRect(Rect);
+end;
 
 initialization
   RegisterClasses([TJvNavPanelPage]);
