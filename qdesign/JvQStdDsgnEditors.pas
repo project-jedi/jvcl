@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils,
-  QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
+  QForms, QControls, QGraphics, QExtCtrls, {Tabs,} QDialogs,
   QExtDlgs, QMenus, QStdCtrls, QImgList,
   DsnConst,
   RTLConsts, DesignIntf, DesignEditors, DesignMenus,

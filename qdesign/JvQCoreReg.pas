@@ -52,10 +52,10 @@ uses
   JvQJVCLAboutEditor, JvQBaseDlgEditor, {JvQColorEditor,} JvQPaintBoxEditor,
   JvQAppIniStorage,
   {$IFDEF MSWINDOWS}
-  JvQAppRegistryStorage, JvQContextProvider,
-  JvQColorProviderEditors, JvQDataProviderEditors, JvQDataProvider,
-  JvQDataProviderIntf, JvQColorProvider,
+  JvQAppRegistryStorage,
   {$ENDIF MSWINDOWS}
+  JvQColorProviderEditors, JvQDataProviderEditors, JvQDataProvider,
+  JvQDataProviderIntf, JvQColorProvider,  JvQContextProvider,
 
   JvQAppStorage, JvQAppStorageSelectList;
 
@@ -69,9 +69,7 @@ const
   BaseClass: TClass = TComponent;
 begin
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent
-    {$IFDEF MSWINDOWS}
     , TJvContextProvider, TJvColorProvider, TJvColorMappingProvider
-    {$ENDIF MSWINDOWS}
     ]);
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
      {$IFDEF MSWINDOWS}TJvAppRegistryStorage,{$ENDIF}
@@ -120,7 +118,6 @@ begin
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
-  {$IFDEF MSWINDOWS}
   // DataProvider related editors
   RegisterPropertyEditor(TypeInfo(TJvColorProviderMapping), TPersistent, '', TJvColorProviderMappingProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataConsumer), TPersistent, '', TJvDataConsumerProperty);
@@ -131,7 +128,6 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
-  {$ENDIF MSWINDOWS}
   RegisterActions(RsJVCLActionsCategory, [
   {$IFDEF MSWINDOWS}TJvSendMailAction,{$ENDIF}TJvWebAction], TJvStandardActions);
   RegisterZoom;
