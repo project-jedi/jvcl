@@ -85,16 +85,86 @@ begin
   end;
 end;
 
+function GetNameCplW2k(const APath, AName: string; Strings: TStrings): Boolean;
+var
+  hLib: HMODULE; // Library Handle to *.cpl file
+  hIco: HICON;
+  CplCall: TCPLApplet; // Pointer to CPlApplet() function
+  i: LongInt;
+  tmpCount, Count: LongInt;
+  CPLInfo: TCPLInfo;
+  InfoW: TNewCPLInfoW;
+  InfoA: TNewCPLInfoA;
+  S: WideString;
+begin
+  Result := False;
+  hLib := SafeLoadLibrary(APath + AName);
+  if hLib = 0 then
+    Exit;
+  tmpCount := Strings.Count;
+  try
+    @CplCall := GetProcAddress(hLib, PChar(RC_CplAddress));
+    if @CplCall = nil then
+      Exit;
+
+    CplCall(GetFocus, CPL_INIT, 0, 0); // Init the *.cpl file
+    try
+      Count := CplCall(GetFocus, CPL_GETCOUNT, 0, 0);
+      for i := 0 to Count - 1 do
+      begin
+        FillChar(InfoW, sizeof(InfoW), 0);
+        FillChar(InfoA, sizeof(InfoA), 0);
+        FillChar(CPLInfo, sizeof(CPLInfo), 0);
+        hIco := 0;
+        S := '';
+        CplCall(GetFocus, CPL_NEWINQUIRE, i, LongInt(@InfoW));
+        if InfoW.dwSize = sizeof(InfoW) then
+        begin
+          if i > 0 then
+            hIco := InfoW.hIcon;
+          S := WideString(InfoW.szName);
+        end
+        else
+        begin
+          if InfoW.dwSize = sizeof(InfoA) then
+          begin
+            Move(InfoW, InfoA, sizeof(InfoA));
+            if i > 0 then
+              hIco := InfoA.hIcon;
+            S := string(InfoA.szName);
+          end
+          else
+          begin
+            CplCall(GetFocus, CPL_INQUIRE, i, LongInt(@CPLInfo));
+            LoadStringA(hLib, CPLInfo.idName, InfoA.szName, 32);
+            if i > 0 then
+              hIco := LoadIcon(hLib, MakeIntResource(@CPLInfo.idIcon));
+            S := string(InfoA.szName);
+          end;
+        end;
+        if S <> '' then
+          Strings.AddObject(S + '%' + AName, TObject(hIco));
+      end;
+      Result := tmpCount < Strings.Count;
+    finally
+      CplCall(GetFocus, CPL_EXIT, 0, 0);
+    end;
+  finally
+    FreeLibrary(hLib);
+  end;
+end;
+
 {*******************************************************}
+
 
 procedure TJvControlPanel.AddToPopup(Item: TMenuItem; Path: string);
 var
   t: TSearchRec;
-  res, i: Integer;
+  res: Integer;
   it: TMenuItem;
   ts: TStringList;
-  st: string;
   w: Word;
+  b: TBitmap;
 begin
   ts := TStringList.Create;
   res := FindFirst(Path + '*.cpl', faAnyFile, t);
@@ -102,16 +172,8 @@ begin
   begin
     if (t.Name <> '.') and (t.Name <> '..') then
     begin
-      st := GetNameCpl(Path + t.Name);
-      if st = '' then
-      begin
-        st := t.Name;
-        i := Length(st);
-        while (i > 0) and (st[i] <> '.') do
-          Dec(i);
-        st := Copy(st, 1, i - 1);
-      end;
-      ts.Add(st + '%' + t.Name);
+      if not GetNameCplW2k(Path, t.Name, ts) then
+        ts.Add(ChangeFileExt(t.Name, '') + '%' + t.Name);
     end;
     res := FindNext(t);
   end;
@@ -124,10 +186,13 @@ begin
     it.Caption := Copy(ts[res], 1, Pos('%', ts[res]) - 1);
     it.OnClick := UrlClick;
     it.Hint := Path + Copy(ts[res], Pos('%', ts[res]) + 1, Length(ts[res]));
-    ;
     w := 0;
-    it.Bitmap.Assign(IconToBitmap(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w)));
-    it.Bitmap.TransparentMode := tmAuto;
+    if ts.Objects[res] <> nil then
+      b := IconToBitmap2(integer(ts.Objects[res]), 16, clWhite)
+    else
+      b := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w), 16, clWhite);
+    it.Bitmap.Assign(b);
+    b.Free;
     item.Add(it);
     Application.ProcessMessages;
   end;
