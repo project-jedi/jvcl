@@ -25,8 +25,6 @@
  page, located at http://www.delphi-jedi.org
 -----------------------------------------------------------------------------}
 
-// (rom) these compiler options were set but missing in JVCL.INC}
-{$D+,L+,Y+}
 {$I JVCL.INC}
 
 unit JvInspector;
@@ -1778,7 +1776,8 @@ begin
   if Msg.Msg = CM_DEACTIVATE then
     // Post the CM_DEACTIVATE message to all registered inspectors
     for I := High(FInspectors) downto 0 do
-      PostMessage(FInspectors[I].Handle, CM_DEACTIVATE, 0, 0);
+      if FInspectors[I].HandleAllocated then
+        PostMessage(FInspectors[I].Handle, CM_DEACTIVATE, 0, 0);
 end;
 
 function TInspReg.IndexOf(const Inspector: TJvCustomInspector): Integer;
