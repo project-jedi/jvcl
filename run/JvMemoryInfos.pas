@@ -54,7 +54,7 @@ type
   published
     procedure Refresh(Sender: TObject);
     property AutoRefresh: Boolean read FAutoRefresh write SetAuto default False;
-    property RefreshDelay: Integer read FRefreshDelay write SetRefreshDelay;
+    property RefreshDelay: Integer read FRefreshDelay write SetRefreshDelay default 500;
     // (rom) i am not sure if these properties should be string
     // (rom) it limits the component to display purposes
     property TotalMemory: string read FTotalMemory write FDummy stored False;
@@ -71,8 +71,9 @@ implementation
 constructor TJvMemoryInfos.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FRefreshDelay := 500;
   FTimer := TTimer.Create(Self);
-  FTimer.Interval := 500;
+  FTimer.Interval := FRefreshDelay;
   FTimer.OnTimer := Refresh;
   FTimer.Enabled := AutoRefresh;
   Refresh(Self);

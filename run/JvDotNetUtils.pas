@@ -39,9 +39,10 @@ procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boo
 procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor:TColor);
 
 implementation
+
 var
-  InternalFocusedColor:TColor = $00733800;
-  InternalUnfocusedColor:TColor = clGray;
+  InternalFocusedColor: TColor = $00733800;
+  InternalUnfocusedColor: TColor = clGray;
 
 procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor:TColor);
 begin

@@ -276,7 +276,7 @@ begin
       fmeToolbar.cbContexts.Sorted := True;
       fmeToolbar.cbContexts.Sorted := False;
     end;
-    // (rom) is <Default> language dependent? Also needs explanation.
+    // (rom) TObject(-99) needs explanation.
     fmeToolbar.cbContexts.Items.InsertObject(0, RsDefault, TObject(-99));
   finally
     fmeToolbar.cbContexts.Items.EndUpdate;
