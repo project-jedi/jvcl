@@ -261,7 +261,7 @@ type
     JvAppStorage:TJvAppIniFileStorage;
     {$ENDIF}
     FAdapter: TDockFormAdapter;
-    procedure CreateXPMenu;          //
+    //procedure CreateXPMenu;          //
     procedure CreateToolForm;        // create everything
     procedure DefaultDockLayout;
     procedure LoadDockInfo;
@@ -291,13 +291,15 @@ const
 type
   TAccessWinControl = class(TWinControl);
 
-{$R *.DFM}
+{$R *.dfm}
 
+{
 procedure TMSDN2002.CreateXPMenu;
 begin
   with TJvMainMenu.Create(Self) do
     ;//Active := True;
 end;
+}
 
 procedure TMSDN2002.AutoHide_ItemClick(Sender: TObject);
 begin

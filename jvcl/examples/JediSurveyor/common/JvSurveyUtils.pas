@@ -28,7 +28,7 @@ unit JvSurveyUtils;
 
 interface
 uses
-  JvSurveyIntf, JvComputerInfo;
+  JvSurveyIntf, JvComputerInfoEx;
 
 function DecodeChoice(const S: WideString; ASurveyType: TJvSurveyType): string;
 function EncodeChoice(const S: WideString; ASurveyType: TJvSurveyType): string;

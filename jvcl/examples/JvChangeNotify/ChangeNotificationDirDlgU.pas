@@ -24,6 +24,9 @@
 
 unit ChangeNotificationDirDlgU;
 
+{$I jvcl.inc}
+{$I windowsonly.inc}
+
 interface
 
 uses

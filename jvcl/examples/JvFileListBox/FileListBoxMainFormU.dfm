@@ -123,7 +123,6 @@ object FileListBoxMainForm: TFileListBoxMainForm
       Align = alTop
       DriveTypes = [dtFixed, dtRemote, dtCDROM]
       Offset = 4
-      ImageSize = isSmall
       ItemHeight = 16
       TabOrder = 1
     end

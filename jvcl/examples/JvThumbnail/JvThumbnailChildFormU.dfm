@@ -18,14 +18,14 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
     Left = 238
     Top = 0
     Width = 3
-    Height = 472
+    Height = 475
     Cursor = crHSplit
   end
   object Panel6: TPanel
     Left = 0
     Top = 0
     Width = 238
-    Height = 472
+    Height = 475
     Align = alLeft
     TabOrder = 0
     OnResize = Panel6Resize
@@ -51,7 +51,7 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
       Left = 1
       Top = 164
       Width = 236
-      Height = 94
+      Height = 97
       Align = alClient
       ItemHeight = 13
       Mask = '*.ICO;*.BMP;*.EMF;*.WMF;*.JPG;*.JPEG;'
@@ -60,7 +60,7 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
     end
     object Panel8: TPanel
       Left = 1
-      Top = 258
+      Top = 261
       Width = 236
       Height = 213
       Align = alBottom
@@ -295,7 +295,7 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
     Left = 241
     Top = 0
     Width = 521
-    Height = 472
+    Height = 475
     Align = alClient
     TabOrder = 1
     object ThumbImage1: TJvThumbImage

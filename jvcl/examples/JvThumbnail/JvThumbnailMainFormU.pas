@@ -26,6 +26,9 @@
 
 unit JvThumbnailMainFormU;
 
+{$I jvcl.inc}
+{$I windowsonly.inc}
+
 interface
 
 uses

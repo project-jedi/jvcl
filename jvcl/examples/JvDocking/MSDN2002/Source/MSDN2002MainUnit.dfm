@@ -1972,6 +1972,7 @@ object MSDN2002: TMSDN2002
     end
   end
   object JvDockVSNetStyle1: TJvDockVSNetStyle
+    AlwaysShowGrabber = False
     ConjoinServerOption.GrabbersSize = 18
     ConjoinServerOption.SplitterWidth = 4
     ConjoinServerOption.ActiveFont.Charset = DEFAULT_CHARSET
@@ -2006,6 +2007,7 @@ object MSDN2002: TMSDN2002
     TabServerOption.InactiveFont.Style = []
     TabServerOption.HotTrackColor = clBlue
     TabServerOption.ShowTabImages = True
+    TabServerOption.ShowCloseButtonOnTabs = False
     ChannelOption.ActivePaneSize = 100
     ChannelOption.ShowImage = True
     ChannelOption.MouseleaveHide = False

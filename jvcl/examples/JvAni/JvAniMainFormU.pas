@@ -24,6 +24,9 @@
 
 unit JvAniMainFormU;
 
+{$I jvcl.inc}
+{$I windowsonly.inc}
+
 interface
 
 uses

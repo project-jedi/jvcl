@@ -26,6 +26,9 @@
 
 unit FileListBoxMainFormU;
 
+{$I jvcl.inc}
+{$I windowsonly.inc}
+
 interface
 
 uses 

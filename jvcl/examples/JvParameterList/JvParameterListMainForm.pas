@@ -28,11 +28,11 @@ unit JvParameterListMainForm;
 
 interface
 
-{$DEFINE INCLUDE_DEVEXP_CX}
+{.DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   JclUnitVersioning,
-  Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, {Variants, } Classes, Graphics, Controls, Forms,
   Dialogs, JvDsaDialogs, JvParameterList, StdCtrls, JvParameterListParameter, Mask,
   JvToolEdit, JvPanel,
   {$IFDEF INCLUDE_DEVEXP_CX}
@@ -41,7 +41,7 @@ uses
   cxTextEdit, cxMaskEdit, cxControls, cxContainer, cxEdit, cxLabel,
   cxImage, cxCheckListBox,
   cxGroupBox, cxButtonEdit,
-  {$ENDIF}
+  {$ENDIF INCLUDE_DEVEXP_CX}
   ExtCtrls, JvFormPlacement, JvComponent, JvAppStorage,
   JvAppRegistryStorage, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
@@ -49,7 +49,7 @@ uses
   JvExExtCtrls, JvAppXMLStorage, JvCipher;
 
 type
-  TJvParameterListDemoMainFrm = class (TForm)
+  TJvParameterListDemoMainFrm = class(TForm)
     GroupBox1: TGroupBox;
     AutoWidthCheckBox: TCheckBox;
     AutoHeightCheckBox: TCheckBox;
@@ -141,8 +141,8 @@ type
     procedure Button12Click(Sender: TObject);
     procedure JvPanelAllControlsResize(Sender: TObject);
     procedure Button13Click(Sender: TObject);
-    procedure JvAppRegistryStorageDecryptPropertyValue(var Value: String);
-    procedure JvAppRegistryStorageEncryptPropertyValue(var Value: String);
+    procedure JvAppRegistryStorageDecryptPropertyValue(var Value: string);
+    procedure JvAppRegistryStorageEncryptPropertyValue(var Value: string);
     procedure Button14Click(Sender: TObject);
     procedure Button15Click(Sender: TObject);
     procedure AssignWidthHeightCheckBoxClick(Sender: TObject);
@@ -151,22 +151,22 @@ type
     procedure Button18Click(Sender: TObject);
   private
     { Private-Deklarationen }
-    UnitVersionForm : TCustomForm;
+    UnitVersionForm: TCustomForm;
     RCSFilePanel,
-    RevisionPanel,
-    DatePanel,
-    ExtraPanel,
-    PathPanel,
-    LabelControl,
-    RCSFileEdit,
-    RevisionEdit,
-    DateEdit,
-    ExtraEdit,
-    PathEdit : TWinControl;
+      RevisionPanel,
+      DatePanel,
+      ExtraPanel,
+      PathPanel,
+      LabelControl,
+      RCSFileEdit,
+      RevisionEdit,
+      DateEdit,
+      ExtraEdit,
+      PathEdit: TWinControl;
     procedure ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
-    function DefaultStorage : TJvCustomAppStorage;
+    function DefaultStorage: TJvCustomAppStorage;
     procedure TreeViewOnChange(Sender: TObject; Node: TTreeNode);
-    procedure CloseButtonOnClick(Sender : TObject);
+    procedure CloseButtonOnClick(Sender: TObject);
   public
     { Public-Deklarationen }
     procedure ShowTest1(const aDynControlEngine: tJvDynControlEngine);
@@ -185,8 +185,7 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\examples\JvParameterList'
-  );
-
+    );
 
 implementation
 
@@ -196,12 +195,12 @@ uses JvDynControlEngineVCL,
   JvDynControlEngineJVCL,
   JclBase, JclFileUtils,
   JvFormPlacementSelectList,
-  JvDynControlEngineVCLRed
+  JvDynControlEngineVCLRed,
   {$IFDEF INCLUDE_DEVEXP_CX}
-  , JvDynControlEngineDevExpCx
-  , cxLookAndFeels
-  {$ENDIF}
-  , JvDynControlEngineIntf, JclStrings;
+  JvDynControlEngineDevExpCx,
+  cxLookAndFeels,
+  {$ENDIF INCLUDE_DEVEXP_CX}
+  JvDynControlEngineIntf, JclStrings;
 
 procedure TJvParameterListDemoMainFrm.Button1Click(Sender: TObject);
 begin
@@ -222,13 +221,13 @@ procedure TJvParameterListDemoMainFrm.Button4Click(Sender: TObject);
 begin
   {$IFDEF INCLUDE_DEVEXP_CX}
   ShowTest1(DynControlEngineDevExpCx);
-  {$ENDIF}
+  {$ENDIF INCLUDE_DEVEXP_CX}
 end;
 
 procedure TJvParameterListDemoMainFrm.ShowTest1(const aDynControlEngine: tJvDynControlEngine);
 var
   ParameterList: TJvParameterList;
-  Parameter:     TJvBaseParameter;
+  Parameter: TJvBaseParameter;
 begin
   ParameterList := TJvParameterList.Create(self);
   try
@@ -239,10 +238,12 @@ begin
       with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
       begin
         case DevExpCxLookAndFeelRadioGroup.ItemIndex of
-          1: cxProperties.LookAndFeel.Kind := lfFlat;
-          2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
-          else
-            cxProperties.LookAndFeel.Kind := lfStandard;
+          1:
+            cxProperties.LookAndFeel.Kind := lfFlat;
+          2:
+            cxProperties.LookAndFeel.Kind := lfUltraFlat;
+        else
+          cxProperties.LookAndFeel.Kind := lfStandard;
         end;
         if Assigned(CxProperties.StyleController) then
         begin
@@ -253,33 +254,33 @@ begin
             CxProperties.StyleController.Style.BorderStyle := ebsNone;
         end;
       end;
-    {$ENDIF}
+    {$ENDIF INCLUDE_DEVEXP_CX}
     Parameter := tjvTimeParameter.Create(ParameterList);
     with tjvTimeParameter(Parameter) do
     begin
       SearchName := 'TimeTest';
-      Caption    := 'TimeTest';
-      Format     := 'HH:mm:ss';
+      Caption := 'TimeTest';
+      Format := 'HH:mm:ss';
 //      Width      := 100;
-      AsDate     := Now;
+      AsDate := Now;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvDateParameter.Create(ParameterList);
     with tjvDateParameter(Parameter) do
     begin
       SearchName := 'DateTest';
-      Caption    := 'DateTest';
+      Caption := 'DateTest';
 //      Width      := 80;
-      AsDate     := Now-10;
+      AsDate := Now - 10;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvDateTimeParameter.Create(ParameterList);
     with tjvDateTimeParameter(Parameter) do
     begin
       SearchName := 'DateTimeTest';
-      Caption    := 'DateTimeTest';
-      AsDate     := Now;
-      Width      := 365;
+      Caption := 'DateTimeTest';
+      AsDate := Now;
+      Width := 365;
       RightSpace := 100;
 //      Width      := 200;
 //      Height     := 50;
@@ -289,16 +290,16 @@ begin
     with tjvEditParameter(Parameter) do
     begin
       SearchName := 'EditTest';
-      Caption    := 'EditTest';
+      Caption := 'EditTest';
 //      AsString   := Edit1.Text;
-      EditMask   := '09999';
+      EditMask := '09999';
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvEditParameter.Create(ParameterList);
     with tjvEditParameter(Parameter) do
     begin
       SearchName := 'PasswordTest';
-      Caption    := 'PasswordTest';
+      Caption := 'PasswordTest';
 //      AsString   := Edit1.Text;
       PasswordChar := '*';
     end;
@@ -307,21 +308,21 @@ begin
     with Parameter do
     begin
       SearchName := 'CheckboxTest';
-      Caption    := '&Checkbox';
+      Caption := '&Checkbox';
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvIntegerEditParameter.Create(ParameterList);
     with Parameter do
     begin
       SearchName := 'IntegerTest';
-      Caption    := 'IntegerTest';
+      Caption := 'IntegerTest';
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvIntegerEditParameter.Create(ParameterList);
     with tjvIntegerEditParameter(Parameter) do
     begin
       SearchName := 'IntegerTestCalc';
-      Caption    := 'IntegerTest Calc';
+      Caption := 'IntegerTest Calc';
       EditorType := netCalculate;
     end;
     ParameterList.AddParameter(Parameter);
@@ -329,7 +330,7 @@ begin
     with tjvIntegerEditParameter(Parameter) do
     begin
       SearchName := 'IntegerTestSpin';
-      Caption    := 'IntegerTest Spin';
+      Caption := 'IntegerTest Spin';
       EditorType := netSpin;
     end;
     ParameterList.AddParameter(Parameter);
@@ -337,7 +338,7 @@ begin
     with tjvButtonEditParameter(Parameter) do
     begin
       SearchName := 'ButtonEditTest';
-      Caption    := 'ButtonEditTest';
+      Caption := 'ButtonEditTest';
       OnClick := Button5Click;
     end;
     ParameterList.AddParameter(Parameter);
@@ -345,7 +346,7 @@ begin
     with TJvFileNameParameter(Parameter) do
     begin
       SearchName := 'FileNameTest';
-      Caption    := 'FileNameTest';
+      Caption := 'FileNameTest';
       labelArrangeMode := lamAbove;
     end;
     ParameterList.AddParameter(Parameter);
@@ -353,7 +354,7 @@ begin
     with TJvDirectoryParameter(Parameter) do
     begin
       SearchName := 'DirectoryTest';
-      Caption    := 'DirectoryTest';
+      Caption := 'DirectoryTest';
       labelArrangeMode := lamAbove;
     end;
     ParameterList.AddParameter(Parameter);
@@ -361,7 +362,7 @@ begin
     with tjvMemoParameter(Parameter) do
     begin
       SearchName := 'MemoTest';
-      Caption    := 'MemoTest';
+      Caption := 'MemoTest';
       //Height     := 60;
       Scrollbars := ssBoth;
     end;
@@ -370,7 +371,7 @@ begin
     with tjvRichEditParameter(Parameter) do
     begin
       SearchName := 'RichEditTest';
-      Caption    := 'RichEditTest';
+      Caption := 'RichEditTest';
       //Height     := 60;
       Scrollbars := ssBoth;
     end;
@@ -379,52 +380,52 @@ begin
     with tjvRadioGroupParameter(Parameter) do
     begin
       SearchName := 'RadioGroupTest';
-      Caption    := '&RadioGroupTest';
+      Caption := '&RadioGroupTest';
       ItemList.Add('Test&1');
       ItemList.Add('Test&2');
       ItemList.Add('Test&3');
       ItemList.Add('Test&4');
       ItemList.Add('Test&5');
-      ReadOnly  := true;
+      ReadOnly := True;
       ItemIndex := 2;
-      Columns   := 2;
+      Columns := 2;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvListBoxParameter.Create(ParameterList);
     with tjvListBoxParameter(Parameter) do
     begin
       SearchName := 'ListBoxTest';
-      Caption    := '&ListBoxTest';
+      Caption := '&ListBoxTest';
       ItemList.Add('Listbox Test&1');
       ItemList.Add('Listbox Test&2');
       ItemList.Add('Listbox Test&3');
       Height := 80;
-      Width  := 80;
+      Width := 80;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvCheckListBoxParameter.Create(ParameterList);
     with tjvCheckListBoxParameter(Parameter) do
     begin
       SearchName := 'CheckListBoxTest';
-      Caption    := '&CheckListBoxTest';
+      Caption := '&CheckListBoxTest';
       ItemList.Add('CheckListBox Test&1');
       ItemList.Add('CheckListBox Test&2');
       ItemList.Add('CheckListBox Test&3');
       AddCheckListBoxItem('CheckListBox Header&1', cbUnchecked, False, True);
       AddCheckListBoxItem('CheckListBox Test&4', cbUnchecked);
       Height := 80;
-      Width  := 180;
+      Width := 180;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvImageParameter.Create(ParameterList);
     with tjvImageParameter(Parameter) do
     begin
-      Picture    := Image1.Picture;
+      Picture := Image1.Picture;
       SearchName := 'PictureTest';
-      Caption    := 'PictureTest';
+      Caption := 'PictureTest';
 //      AutoSize := True;
-      Height     := 280;
-      Width      := 340;
+      Height := 280;
+      Width := 340;
     end;
     ParameterList.AddParameter(Parameter);
     if AutoHeightCheckBox.Checked then
@@ -432,25 +433,26 @@ begin
         ParameterList.ArrangeSettings.AutoSize := asBoth
       else
         ParameterList.ArrangeSettings.AutoSize := asHeight
-    else if AutoWidthCheckBox.Checked then
+    else
+    if AutoWidthCheckBox.Checked then
       ParameterList.ArrangeSettings.AutoSize := asWidth
     else
       ParameterList.ArrangeSettings.AutoSize := asNone;
 
-    ParameterList.DefaultParameterWidth  := 180;
+    ParameterList.DefaultParameterWidth := 180;
     ParameterList.DefaultParameterLabelWidth := 80;
     ParameterList.MaxHeight := StrToInt(MaxHeightEdit.Text);
-    ParameterList.MaxWidth  := StrToInt(MaxWidthEdit.Text);
+    ParameterList.MaxWidth := StrToInt(MaxWidthEdit.Text);
     if AssignWidthHeightCheckBox.Checked then
     begin
-      ParameterList.Height    := StrToInt(HeightEdit.Text);
-      ParameterList.Width     := StrToInt(WidthEdit.Text);
+      ParameterList.Height := StrToInt(HeightEdit.Text);
+      ParameterList.Width := StrToInt(WidthEdit.Text);
     end;
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
-    ParameterList.DefaultParameterWidth  := StrToInt(DefaultParameterWidthEdit.Text);
-    ParameterList.DefaultParameterLabelWidth  := StrToInt(DefaultParameterLabelWidthEdit.Text);
-    ParameterList.AppStorage  := DefaultStorage;
-    ParameterList.AppStoragePath      := 'Dialog 1';
+    ParameterList.DefaultParameterWidth := StrToInt(DefaultParameterWidthEdit.Text);
+    ParameterList.DefaultParameterLabelWidth := StrToInt(DefaultParameterLabelWidthEdit.Text);
+    ParameterList.AppStorage := DefaultStorage;
+    ParameterList.AppStoragePath := 'Dialog 1';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
     if ParameterList.ShowParameterDialog then
@@ -465,7 +467,7 @@ end;
 procedure TJvParameterListDemoMainFrm.ShowTest2(const aDynControlEngine: tJvDynControlEngine);
 var
   ParameterList: TJvParameterList;
-  Parameter:     TJvBaseParameter;
+  Parameter: TJvBaseParameter;
 begin
   ParameterList := TJvParameterList.Create(self);
   try
@@ -476,10 +478,12 @@ begin
       with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
       begin
         case DevExpCxLookAndFeelRadioGroup.ItemIndex of
-          1: cxProperties.LookAndFeel.Kind := lfFlat;
-          2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
-          else
-            cxProperties.LookAndFeel.Kind := lfStandard;
+          1:
+            cxProperties.LookAndFeel.Kind := lfFlat;
+          2:
+            cxProperties.LookAndFeel.Kind := lfUltraFlat;
+        else
+          cxProperties.LookAndFeel.Kind := lfStandard;
         end;
         CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
         if ThickLinesCheckBox.Checked then
@@ -487,34 +491,34 @@ begin
         else
           CxProperties.StyleController.Style.BorderStyle := ebsNone;
       end;
-    {$ENDIF}
+    {$ENDIF INCLUDE_DEVEXP_CX}
     Parameter := tjvRadioGroupParameter.Create(ParameterList);
     with tjvRadioGroupParameter(Parameter) do
     begin
       SearchName := 'RadioGroup';
-      Caption    := '&Enabled';
+      Caption := '&Enabled';
       ItemList.Add('1 Enabled');
       ItemList.Add('2 Enabled');
       ItemList.Add('Both Enabled');
       ItemList.Add('Both Disabled');
       ItemIndex := 2;
-      Columns   := 2;
+      Columns := 2;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvCheckboxParameter.Create(ParameterList);
     with Parameter do
     begin
       SearchName := 'Checkbox';
-      Caption    := '2 Enabled';
+      Caption := '2 Enabled';
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvEditParameter.Create(ParameterList);
     with Parameter do
     begin
       SearchName := 'Edit1';
-      Caption    := 'Edit Test 1';
+      Caption := 'Edit Test 1';
 //      Width      := 80;
-      AsDate     := Now;
+      AsDate := Now;
       DisableReasons.AddReason('RadioGroup', '2 Enabled');
       DisableReasons.AddReason('RadioGroup', 'Both Disabled');
     end;
@@ -523,12 +527,12 @@ begin
     with Parameter do
     begin
       SearchName := 'Edit2';
-      Caption    := 'Edit Test 2';
+      Caption := 'Edit Test 2';
 //      Width      := 80;
-      AsDate     := Now;
+      AsDate := Now;
       DisableReasons.AddReason('RadioGroup', '1 Enabled');
       DisableReasons.AddReason('RadioGroup', 'Both Disabled');
-      DisableReasons.AddReason('Checkbox', false);
+      DisableReasons.AddReason('Checkbox', False);
     end;
     ParameterList.AddParameter(Parameter);
     if AutoHeightCheckBox.Checked then
@@ -536,23 +540,24 @@ begin
         ParameterList.ArrangeSettings.AutoSize := asBoth
       else
         ParameterList.ArrangeSettings.AutoSize := asHeight
-    else if AutoWidthCheckBox.Checked then
+    else
+    if AutoWidthCheckBox.Checked then
       ParameterList.ArrangeSettings.AutoSize := asWidth
     else
       ParameterList.ArrangeSettings.AutoSize := asNone;
-    ParameterList.OkButtonDisableReasons.AddReason('CheckBox', true);
+    ParameterList.OkButtonDisableReasons.AddReason('CheckBox', True);
     ParameterList.MaxHeight := StrToInt(MaxHeightEdit.Text);
-    ParameterList.MaxWidth  := StrToInt(MaxWidthEdit.Text);
+    ParameterList.MaxWidth := StrToInt(MaxWidthEdit.Text);
     if AssignWidthHeightCheckBox.Checked then
     begin
-      ParameterList.Height    := StrToInt(HeightEdit.Text);
-      ParameterList.Width     := StrToInt(WidthEdit.Text);
+      ParameterList.Height := StrToInt(HeightEdit.Text);
+      ParameterList.Width := StrToInt(WidthEdit.Text);
     end;
-    ParameterList.DefaultParameterWidth  := StrToInt(DefaultParameterWidthEdit.Text);
-    ParameterList.DefaultParameterLabelWidth  := StrToInt(DefaultParameterLabelWidthEdit.Text);
+    ParameterList.DefaultParameterWidth := StrToInt(DefaultParameterWidthEdit.Text);
+    ParameterList.DefaultParameterLabelWidth := StrToInt(DefaultParameterLabelWidthEdit.Text);
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
-    ParameterList.AppStorage  := DefaultStorage;
-    ParameterList.AppStoragePath      := 'Dialog 2';
+    ParameterList.AppStorage := DefaultStorage;
+    ParameterList.AppStoragePath := 'Dialog 2';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
     if ParameterList.ShowParameterDialog then
@@ -564,28 +569,32 @@ begin
   end;
 end;
 
-procedure TJvParameterListDemoMainFrm.ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
+procedure TJvParameterListDemoMainFrm.ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter:
+  TJvBaseParameter);
 begin
   if Assigned(Parameter) then
     if Parameter.SearchName = 'ButtonA' then
       Button5Click(nil)
-    else if Parameter.SearchName = 'ButtonB' then
+    else
+    if Parameter.SearchName = 'ButtonB' then
       Button6Click(nil)
-    else if Parameter.SearchName = 'ButtonC' then
+    else
+    if Parameter.SearchName = 'ButtonC' then
       Button7Click(nil)
-    else if Parameter.SearchName = 'ButtonD' then
+    else
+    if Parameter.SearchName = 'ButtonD' then
       Button8Click(nil)
-    else if Parameter.SearchName = 'ButtonE' then
+    else
+    if Parameter.SearchName = 'ButtonE' then
       if Assigned(ParameterList) then
         // (p3) type cast variant to string (for D5)
-        MessageDlg('Edit 1 : ' , string(ParameterList.ParameterByName('Edit1').WinControlData), mtWarning, [mbOK], 0);
-  ;
+        MessageDlg('Edit 1 : ', string(ParameterList.ParameterByName('Edit1').WinControlData), mtWarning, [mbOK], 0);
 end;
 
 procedure TJvParameterListDemoMainFrm.ShowTest3(const aDynControlEngine: tJvDynControlEngine);
 var
   ParameterList: TJvParameterList;
-  Parameter:     TJvBaseParameter;
+  Parameter: TJvBaseParameter;
 begin
   ParameterList := TJvParameterList.Create(self);
   try
@@ -598,8 +607,8 @@ begin
         case DevExpCxLookAndFeelRadioGroup.ItemIndex of
           1: cxProperties.LookAndFeel.Kind := lfFlat;
           2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
-          else
-            cxProperties.LookAndFeel.Kind := lfStandard;
+        else
+          cxProperties.LookAndFeel.Kind := lfStandard;
         end;
         CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
         if ThickLinesCheckBox.Checked then
@@ -607,58 +616,58 @@ begin
         else
           CxProperties.StyleController.Style.BorderStyle := ebsNone;
       end;
-    {$ENDIF}
+    {$ENDIF INCLUDE_DEVEXP_CX}
     Parameter := tjvButtonParameter.Create(ParameterList);
     with tjvButtonParameter(Parameter) do
     begin
       SearchName := 'ButtonA';
-      Caption    := 'Message Dlg &A';
+      Caption := 'Message Dlg &A';
       OnClick := ShowTest3ButttonClick;
-      Width      := 90;
+      Width := 90;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvButtonParameter.Create(ParameterList);
     with tjvButtonParameter(Parameter) do
     begin
       SearchName := 'ButtonB';
-      Caption    := 'Message Dlg &B';
+      Caption := 'Message Dlg &B';
       OnClick := ShowTest3ButttonClick;
-      Width      := 90;
+      Width := 90;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvButtonParameter.Create(ParameterList);
     with tjvButtonParameter(Parameter) do
     begin
       SearchName := 'ButtonC';
-      Caption    := 'Message Dlg &C';
+      Caption := 'Message Dlg &C';
       OnClick := ShowTest3ButttonClick;
-      Width      := 90;
+      Width := 90;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvButtonParameter.Create(ParameterList);
     with tjvButtonParameter(Parameter) do
     begin
       SearchName := 'ButtonD';
-      Caption    := 'Message Dlg &D';
+      Caption := 'Message Dlg &D';
       OnClick := ShowTest3ButttonClick;
-      Width      := 90;
+      Width := 90;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvEditParameter.Create(ParameterList);
     with Parameter do
     begin
       SearchName := 'Edit1';
-      Caption    := 'Edit Test 1';
-      Width      := 150;
+      Caption := 'Edit Test 1';
+      Width := 150;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvButtonParameter.Create(ParameterList);
     with tjvButtonParameter(Parameter) do
     begin
       SearchName := 'ButtonE';
-      Caption    := 'Message Dlg &E';
+      Caption := 'Message Dlg &E';
       OnClick := ShowTest3ButttonClick;
-      Width      := 90;
+      Width := 90;
       DisableReasons.AddReasonIsEmpty('Edit1');
     end;
     ParameterList.AddParameter(Parameter);
@@ -666,10 +675,10 @@ begin
  //  ParameterList.MaxHeight := StrToInt(MaxHeightEdit.Text);
  //  ParameterList.MaxWidth  := StrToInt(MaxWidthEdit.Text);
  //  ParameterList.Height    := StrToInt(HeightEdit.Text);
-    ParameterList.MaxWidth    := 300;
+    ParameterList.MaxWidth := 300;
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
     ParameterList.AppStorage := DefaultStorage;
-    ParameterList.AppStoragePath     := 'Dialog 3';
+    ParameterList.AppStoragePath := 'Dialog 3';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
     if ParameterList.ShowParameterDialog then
@@ -681,11 +690,10 @@ begin
   end;
 end;
 
-
 procedure TJvParameterListDemoMainFrm.ShowTestCrypt(const aDynControlEngine: tJvDynControlEngine);
 var
   ParameterList: TJvParameterList;
-  Parameter:     TJvBaseParameter;
+  Parameter: TJvBaseParameter;
 begin
   ParameterList := TJvParameterList.Create(self);
   try
@@ -698,8 +706,8 @@ begin
         case DevExpCxLookAndFeelRadioGroup.ItemIndex of
           1: cxProperties.LookAndFeel.Kind := lfFlat;
           2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
-          else
-            cxProperties.LookAndFeel.Kind := lfStandard;
+        else
+          cxProperties.LookAndFeel.Kind := lfStandard;
         end;
         CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
         if ThickLinesCheckBox.Checked then
@@ -707,12 +715,12 @@ begin
         else
           CxProperties.StyleController.Style.BorderStyle := ebsNone;
       end;
-    {$ENDIF}
+    {$ENDIF INCLUDE_DEVEXP_CX}
     Parameter := tjvEditParameter.Create(ParameterList);
     with tjvEditParameter(Parameter) do
     begin
       SearchName := 'EditTest';
-      Caption    := 'EditTest';
+      Caption := 'EditTest';
 //      AsString   := Edit1.Text;
 
     end;
@@ -721,38 +729,36 @@ begin
     with tjvEditParameter(Parameter) do
     begin
       SearchName := 'PasswordTest';
-      Caption    := 'PasswordTest';
+      Caption := 'PasswordTest';
 //      AsString   := Edit1.Text;
 //      PasswordChar := '*';
       StoreValueCrypted := True;
     end;
     ParameterList.AddParameter(Parameter);
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
-    ParameterList.AppStorage  := DefaultStorage;
-    ParameterList.AppStoragePath      := 'Dialog Crypt';
+    ParameterList.AppStorage := DefaultStorage;
+    ParameterList.AppStoragePath := 'Dialog Crypt';
     ParameterList.LoadData;
     if ParameterList.ShowParameterDialog then
-        ParameterList.storeData;
+      ParameterList.storeData;
 //    Edit1.text := ParameterList.parameterByName('RadioGroupTest').AsString;
   finally
     ParameterList.Free;
   end;
 end;
 
-
-
 procedure TJvParameterListDemoMainFrm.FormShow(Sender: TObject);
 begin
   {$IFNDEF INCLUDE_DEVEXP_CX}
-  Button4.Enabled := false;
-  DevExpCxLookAndFeelRadioGroup.Enabled := false;
-  DevExpCxStyleGroupBox.Enabled := false;
-  ShadowCheckBox.Enabled := false;
-  ThickLinesCheckBox.Enabled := false;
-  CxRadioButton.Enabled := false;
+  Button4.Enabled := False;
+  DevExpCxLookAndFeelRadioGroup.Enabled := False;
+  DevExpCxStyleGroupBox.Enabled := False;
+  ShadowCheckBox.Enabled := False;
+  ThickLinesCheckBox.Enabled := False;
+  CxRadioButton.Enabled := False;
   if CxRadioButton.Checked then
-    VCLRadioButton.Checked := true;
-  {$ENDIF}
+    VCLRadioButton.Checked := True;
+  {$ENDIF INCLUDE_DEVEXP_CX}
   VCLRadioButtonClick(nil);
   DevExpCxLookAndFeelRadioGroupClick(nil);
   AssignWidthHeightCheckBoxClick(nil);
@@ -766,7 +772,7 @@ begin
   FormStorageSelectList := tJvFormStorageSelectList.Create(Self);
   try
     FormStorageSelectList.FormStorage := JvFormStorage2;
-    FormStorageSelectList.SelectPath  := 'SelectTest';
+    FormStorageSelectList.SelectPath := 'SelectTest';
 //    MessageDlg(FormStorageSelectList.GetSelectPath(sloLoad), mtWarning, [mbOK], 0);
     FormStorageSelectList.RestoreFormStorage;
   finally
@@ -781,14 +787,13 @@ begin
   FormStorageSelectList := tJvFormStorageSelectList.Create(Self);
   try
     FormStorageSelectList.FormStorage := JvFormStorage2;
-    FormStorageSelectList.SelectPath  := 'SelectTest';
+    FormStorageSelectList.SelectPath := 'SelectTest';
 //    MessageDlg(FormStorageSelectList.GetSelectPath(sloStore), mtWarning, [mbOK], 0);
     FormStorageSelectList.SaveFormStorage;
   finally
     FormStorageSelectList.Free;
   end;
 end;
-
 
 procedure TJvParameterListDemoMainFrm.DevExpCxLookAndFeelRadioGroupClick(Sender: TObject);
 begin
@@ -798,8 +803,8 @@ begin
     case DevExpCxLookAndFeelRadioGroup.ItemIndex of
       1: cxProperties.LookAndFeel.Kind := lfFlat;
       2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
-      else
-        cxProperties.LookAndFeel.Kind := lfStandard;
+    else
+      cxProperties.LookAndFeel.Kind := lfStandard;
     end;
     if Assigned(CxProperties.StyleController) then
     begin
@@ -810,7 +815,7 @@ begin
         CxProperties.StyleController.Style.BorderStyle := ebsSingle;
     end;
   end;
-  {$ENDIF}
+  {$ENDIF INCLUDE_DEVEXP_CX}
 end;
 
 procedure TJvParameterListDemoMainFrm.VCLRadioButtonClick(Sender: TObject);
@@ -818,10 +823,12 @@ begin
   {$IFDEF INCLUDE_DEVEXP_CX}
   if CxRadioButton.Checked then
     SetDefaultDynControlEngine(DynControlEngineDevExpCx)
-  else  {$ENDIF}
+  else
+  {$ENDIF INCLUDE_DEVEXP_CX}
   if JVCLRadioButton.Checked then
     SetDefaultDynControlEngine(DynControlEngineJVCL)
-  else if VCLRedRadioButton.Checked then
+  else
+  if VCLRedRadioButton.Checked then
     SetDefaultDynControlEngine(DynControlEngineVCLRed)
   else
     SetDefaultDynControlEngine(DynControlEngineVCL);
@@ -829,25 +836,19 @@ end;
 
 procedure TJvParameterListDemoMainFrm.Button5Click(Sender: TObject);
 begin
-  MessageDlg(
-    'Simple warning box, standard title, VCL buttons and image.',
-    mtWarning,
-    [mbOK],
-    0);
+  MessageDlg('Simple warning box, standard title, VCL buttons and image.',
+    mtWarning, [mbOK], 0);
 end;
 
 procedure TJvParameterListDemoMainFrm.Button6Click(Sender: TObject);
 begin
-  MessageDlg(
-    'Simple confirmation box, standard title, VCL buttons and image.',
-    mtConfirmation,
-    [mbYes, mbNo],
-    0);
+  MessageDlg('Simple confirmation box, standard title, VCL buttons and image.',
+    mtConfirmation, [mbYes, mbNo], 0);
 end;
 
 procedure TJvParameterListDemoMainFrm.Button7Click(Sender: TObject);
 var
-  Pic:    TPicture;
+  Pic: TPicture;
   BtnCap: TDynStringArray;
 begin
   Pic := TPicture.Create;
@@ -894,13 +895,13 @@ begin
   ShowTest3(nil);
 end;
 
-function TJvParameterListDemoMainFrm.DefaultStorage : TJvCustomAppStorage;
+function TJvParameterListDemoMainFrm.DefaultStorage: TJvCustomAppStorage;
 begin
   Result := JvAppRegistryStorage;
 end;
 
 procedure TJvParameterListDemoMainFrm.JvAppRegistryStorageDecryptPropertyValue(
-  var Value: String);
+  var Value: string);
 begin
 //  Cipher.Encoded := Value;
 //  Value := Cipher.Decoded;
@@ -908,7 +909,7 @@ begin
 end;
 
 procedure TJvParameterListDemoMainFrm.JvAppRegistryStorageEncryptPropertyValue(
-  var Value: String);
+  var Value: string);
 begin
 //  Cipher.Decoded := Value;
 //  Value := Cipher.Encoded;
@@ -921,20 +922,20 @@ begin
 end;
 
 procedure TJvParameterListDemoMainFrm.Button15Click(Sender: TObject);
-VAR
-  ParameterList     : TJvParameterList;
+var
+  ParameterList: TJvParameterList;
   Gparameter,
-    Parameter       : TJvBaseParameter;
-BEGIN
+    Parameter: TJvBaseParameter;
+begin
   ParameterList := TJvParameterList.Create(Self);
-  TRY
+  try
     ParameterList.AppStoragePath := 'Analyze Table';
     ParameterList.AppStorage := DefaultStorage;
     ParameterList.MaxWidth := 400;
     ParameterList.ArrangeSettings.AutoSize := asBoth;
     Parameter := TJvRadioGroupParameter.Create(ParameterList);
-    WITH TJvRadioGroupParameter(Parameter) DO
-    BEGIN
+    with TJvRadioGroupParameter(Parameter) do
+    begin
       SearchName := 'AnalyzeType';
       Caption := '&Analyze Type';
       ItemList.Add('COMPUTE STATISTICS');
@@ -944,94 +945,94 @@ BEGIN
       Width := 160;
       Height := 80;
       VariantAsItemIndex := True;
-    END;                                {*** WITH BaseParameter DO ***}
+    end; {*** WITH BaseParameter DO ***}
     ParameterList.AddParameter(Parameter);
     Gparameter := TJvGroupBoxParameter.Create(ParameterList);
-    WITH TJvGroupBoxParameter(Gparameter) DO
-    BEGIN
+    with TJvGroupBoxParameter(Gparameter) do
+    begin
       SearchName := 'AnalyzeAddType';
       Caption := 'Additional &Parameter';
       Width := 160;
       Height := 30;
       ArrangeSettings.AutoSize := asHeight;
       //BorderLeft := 5;
-    END;                              {*** WITH BaseParameter DO ***}
+    end; {*** WITH BaseParameter DO ***}
     ParameterList.AddParameter(Gparameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
-    WITH TJvCheckBoxParameter(Parameter) DO
-    BEGIN
+    with TJvCheckBoxParameter(Parameter) do
+    begin
       ParentParameterName := 'AnalyzeAddType';
       Width := 150;
       AsBoolean := True;
       SearchName := 'AnalyzeAddTypeTable';
       Caption := 'TABLE';
-    END;                          {*** WITH BaseParameter DO ***}
+    end; {*** WITH BaseParameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
-    WITH TJvCheckBoxParameter(Parameter) DO
-    BEGIN
+    with TJvCheckBoxParameter(Parameter) do
+    begin
       ParentParameterName := 'AnalyzeAddType';
       Width := 150;
       AsBoolean := True;
       SearchName := 'AnalyzeAddTypeALLCOLUMNS';
       Caption := 'ALL COLUMNS';
-    END;                          {*** WITH BaseParameter DO ***}
+    end; {*** WITH BaseParameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
-    WITH TJvCheckBoxParameter(Parameter) DO
-    BEGIN
+    with TJvCheckBoxParameter(Parameter) do
+    begin
       ParentParameterName := 'AnalyzeAddType';
       Width := 150;
       AsBoolean := True;
       SearchName := 'AnalyzeAddTypeALLINDEXEDCOLUMNS';
       Caption := 'ALL INDEXED COLUMNS';
-    END;                          {*** WITH BaseParameter DO ***}
+    end; {*** WITH BaseParameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
-    WITH TJvCheckBoxParameter(Parameter) DO
-    BEGIN
+    with TJvCheckBoxParameter(Parameter) do
+    begin
       ParentParameterName := 'AnalyzeAddType';
       Width := 150;
       AsBoolean := True;
       SearchName := 'AnalyzeAddTypeAllIndexes';
       Caption := 'ALL INDEXES';
-    END;                          {*** WITH BaseParameter DO ***}
+    end; {*** WITH BaseParameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvIntegerEditParameter.Create(ParameterList));
-    WITH TJvIntegerEditParameter(Parameter) DO
-    BEGIN
+    with TJvIntegerEditParameter(Parameter) do
+    begin
       EnableReasons.AddReason('AnalyzeType', 1);
       SearchName := 'EstimatePercent';
       Caption := '&Estimate Percent';
-      IF AsInteger > 100 THEN
+      if AsInteger > 100 then
         AsInteger := 100;
       MInValue := 0;
       MaxValue := 100;
       LabelArrangeMode := lamBefore;
       Width := 280;
       EditWidth := 40;
-    END;                                  {*** WITH BaseParameter DO ***}
+    end; {*** WITH BaseParameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
-    WITH Parameter DO
-    BEGIN
+    with Parameter do
+    begin
       SearchName := 'UseDBMSStats';
       Caption := '&Use DBMS_STATS';
       Width := 160;
-    END;                                  {*** WITH BaseParameter DO ***}
+    end; {*** WITH BaseParameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
-    WITH TJvCheckBoxParameter(Parameter) DO
-    BEGIN
+    with TJvCheckBoxParameter(Parameter) do
+    begin
       Width := 160;
       AsBoolean := False;
       SearchName := 'ExecuteAsJob';
       Caption := 'Execute as DBMS-Job';
-    END;                                {*** WITH BaseParameter DO ***}
+    end; {*** WITH BaseParameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvGroupBoxParameter.Create(ParameterList));
-    WITH TJvGroupBoxParameter(Parameter) DO
-    BEGIN
+    with TJvGroupBoxParameter(Parameter) do
+    begin
       Caption := 'DBMS_JOB Parameter';
       SearchName := 'DBMS_JOB_Parameter';
       Width := 325;
@@ -1039,11 +1040,11 @@ BEGIN
       //BorderLeft := 5;
       DisableReasons.AddReason('ExecuteAsJob', False);
 //      ArrangeSettings.AutoSize := asHeight;
-    END;                                  {*** WITH BaseParameter DO ***}
+    end; {*** WITH BaseParameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(tJvDateTimeParameter.Create(ParameterList));
-    WITH tJvDateTimeParameter(Parameter) DO
-    BEGIN
+    with tJvDateTimeParameter(Parameter) do
+    begin
       ParentParameterName := 'DBMS_JOB_Parameter';
       LabelArrangeMode := lamBefore;
       Caption := 'First &Date';
@@ -1053,11 +1054,11 @@ BEGIN
       Width := 220;
       LabelWidth := 50;
       DisableReasons.AddReason('ExecuteAsJob', False);
-    END; {*** WITH tJvEditParameter(Parameter) DO ***}
+    end; {*** WITH tJvEditParameter(Parameter) DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(tJvEditParameter.Create(ParameterList));
-    WITH tJvEditParameter(Parameter) DO
-    BEGIN
+    with tJvEditParameter(Parameter) do
+    begin
       ParentParameterName := 'DBMS_JOB_Parameter';
       Caption := '&Interval';
       SearchName := 'Interval';
@@ -1065,15 +1066,15 @@ BEGIN
       Width := 310;
       LabelWidth := 50;
       DisableReasons.AddReason('ExecuteAsJob', False);
-    END; {*** WITH tJvEditParameter(Parameter) DO ***}
+    end; {*** WITH tJvEditParameter(Parameter) DO ***}
     ParameterList.AddParameter(Parameter);
     ParameterList.Messages.Caption := 'Select Type of Analyze';
     ParameterList.LoadData;
     ParameterList.ShowParameterDialog;
     ParameterList.StoreData;
-  FINALLY
+  finally
     ParameterList.Free;
-  END;
+  end;
 end;
 
 procedure TJvParameterListDemoMainFrm.AssignWidthHeightCheckBoxClick(Sender: TObject);
@@ -1083,15 +1084,15 @@ begin
 end;
 
 procedure TJvParameterListDemoMainFrm.Button16Click(Sender: TObject);
-VAR
-  ParameterList     : TJvParameterList;
-  BaseParameter     : TJvBaseParameter;
+var
+  ParameterList: TJvParameterList;
+  BaseParameter: TJvBaseParameter;
 begin
   ParameterList := TJvParameterList.Create(self);
   try
-    BaseParameter:= TJvBaseParameter(tJvMemoParameter.Create(ParameterList));
-    WITH tJvMemoParameter(BaseParameter) DO
-    BEGIN
+    BaseParameter := TJvBaseParameter(tJvMemoParameter.Create(ParameterList));
+    with tJvMemoParameter(BaseParameter) do
+    begin
       SearchName := 'Memo';
       Caption := 'Simple Memo';
       AsString := 'Memo Contents';
@@ -1102,12 +1103,12 @@ begin
       WantReturns := False;
       Scrollbars := ssBoth;
       ReadOnly := TRUE;
-    END;   {*** WITH BaseParameter DO ***}
+    end; {*** WITH BaseParameter DO ***}
     ParameterList.AddParameter(BaseParameter);
     ParameterList.Messages.OkButton := 'C&opy';
     ParameterList.Messages.CancelButton := '&Cancel';
-    IF ParameterList.ShowParameterDialog THEN
-      MessageDlg (ParameterList.ParameterByName('Memo').ASString, mtInformation, [mbok],0);
+    if ParameterList.ShowParameterDialog then
+      MessageDlg(ParameterList.ParameterByName('Memo').ASString, mtInformation, [mbok], 0);
   finally
     ParameterList.Free;
   end;
@@ -1115,24 +1116,21 @@ end;
 
 procedure TJvParameterListDemoMainFrm.ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
 var
-  DynEngine : TJvDynControlEngine;
-  MainPanel,
-  ButtonPanel : TWinControl;
-  TopBox,
-  BottomBox : TWinControl;
-  Button : TButton;
-  TreeView : TWinControl;
+  DynEngine: TJvDynControlEngine;
+  MainPanel, ButtonPanel: TWinControl;
+  TopBox, BottomBox: TWinControl;
+  Button: TButton;
+  TreeView: TWinControl;
   IJvReadOnly: IJvDynControlReadOnly;
   IJvTreeView: IJvDynControlTreeView;
-  i: Integer;
-  MainNode,
-  Node: TTreeNode;
+  I: Integer;
+  MainNode: TTreeNode;
   Nodes: TTreeNodes;
 
-  function FindMasterNode (iNodes : TTreeNodes; iNode : TTreeNode; const iPath : String) : tTreeNode;
+  function FindMasterNode(iNodes: TTreeNodes; iNode: TTreeNode; const iPath: string): tTreeNode;
   var
-    Part1, Part2 : String;
-    I : Integer;
+    Part1, Part2: string;
+    I: Integer;
   begin
     Result := nil;
     Part2 := iPath;
@@ -1144,18 +1142,18 @@ var
     end;
     if Part1 <> '' then
     begin
-      for i := 0 to iNode.Count-1 do
+      for I := 0 to iNode.Count - 1 do
       begin
-        if iNode.Item[i].Text = Part1 then
+        if iNode.Item[I].Text = Part1 then
         begin
-          Result := FindMasterNode (iNodes, iNode.Item[i], Part2);
+          Result := FindMasterNode(iNodes, iNode.Item[I], Part2);
           break;
         end;
       end;
       if Result = nil then
       begin
         Result := iNodes.AddChild(iNode, Part1);
-        Result := FindMasterNode (iNodes, Result, Part2);
+        Result := FindMasterNode(iNodes, Result, Part2);
       end;
     end
     else
@@ -1167,7 +1165,7 @@ begin
     DynEngine := aDynControlEngine
   else
     DynEngine := DefaultDynControlEngine;
-  UnitVersionForm := DynEngine.CreateForm ('Unit Versioning', '');
+  UnitVersionForm := DynEngine.CreateForm('Unit Versioning', '');
   try
     if UnitVersionForm is TForm then
       TForm(UnitVersionForm).Position := poDesktopCenter;
@@ -1177,9 +1175,10 @@ begin
     MainPanel := DynEngine.CreatePanelControl(UnitVersionForm, UnitVersionForm, 'MainPanel', '', alClient);
     if MainPanel is TPanel then
       TPanel(MainPanel).borderWidth := 3;
-    Button:= DynEngine.CreateButton(UnitVersionForm, ButtonPanel,'CloseBtn', 'Close', '', CloseButtonOnClick, True, True);
-    Button.Left := Round((UnitVersionForm.Width-Button.Width)/2);
-    Button.Top := Round((ButtonPanel.Height-Button.Height)/2);
+    Button := DynEngine.CreateButton(UnitVersionForm, ButtonPanel, 'CloseBtn', 'Close', '', CloseButtonOnClick, True,
+      True);
+    Button.Left := Round((UnitVersionForm.Width - Button.Width) / 2);
+    Button.Top := Round((ButtonPanel.Height - Button.Height) / 2);
     BottomBox := DynEngine.CreateGroupBoxControl(UnitVersionForm, MainPanel, 'BottomBox', 'Details');
     BottomBox.Align := alBottom;
     TopBox := DynEngine.CreateGroupBoxControl(UnitVersionForm, MainPanel, 'TopBox', 'Unit Versions');
@@ -1192,43 +1191,48 @@ begin
     RCSFileEdit.Width := 340;
     if Supports(RCSFileEdit, IJvDynControlReadOnly, IJvReadOnly) then
       IJvReadOnly.ControlSetReadOnly(True);
-    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, RCSFilePanel,'RCSFileLabel', 'RCS File', RCSFileEdit, False, 80);
-    RCSFilePanel.Height := RCSFileEdit.Height+1;
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, RCSFilePanel, 'RCSFileLabel', 'RCS File',
+      RCSFileEdit, False, 80);
+    RCSFilePanel.Height := RCSFileEdit.Height + 1;
     RevisionPanel := DynEngine.CreatePanelControl(UnitVersionForm, BottomBox, 'RevisionPanel', '', alTop);
     RevisionPanel.Align := alTop;
     RevisionEdit := DynEngine.CreateEditControl(UnitVersionForm, RevisionPanel, 'RevisionEdit');
     RevisionEdit.Width := 340;
-    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, RevisionPanel,'RevisionLabel', 'Revision', RevisionEdit, False, 80);
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, RevisionPanel, 'RevisionLabel', 'Revision',
+      RevisionEdit, False, 80);
     if Supports(RevisionEdit, IJvDynControlReadOnly, IJvReadOnly) then
       IJvReadOnly.ControlSetReadOnly(True);
-    RevisionPanel.Height := RevisionEdit.Height+1;
+    RevisionPanel.Height := RevisionEdit.Height + 1;
     DatePanel := DynEngine.CreatePanelControl(UnitVersionForm, BottomBox, 'DatePanel', '', alTop);
     DatePanel.Align := alTop;
     DateEdit := DynEngine.CreateEditControl(UnitVersionForm, DatePanel, 'DateEdit');
     DateEdit.Width := 340;
-    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, DatePanel,'DateLabel', 'Date', DateEdit, False, 80);
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, DatePanel, 'DateLabel', 'Date', DateEdit, False,
+      80);
     if Supports(DateEdit, IJvDynControlReadOnly, IJvReadOnly) then
       IJvReadOnly.ControlSetReadOnly(True);
-    DatePanel.Height := DateEdit.Height+1;
+    DatePanel.Height := DateEdit.Height + 1;
     PathPanel := DynEngine.CreatePanelControl(UnitVersionForm, BottomBox, 'PathPanel', '', alTop);
     PathPanel.Align := alTop;
     PathEdit := DynEngine.CreateEditControl(UnitVersionForm, PathPanel, 'PathEdit');
     PathEdit.Width := 340;
-    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, PathPanel,'PathLabel', 'Path', PathEdit, False, 80);
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, PathPanel, 'PathLabel', 'Path', PathEdit, False,
+      80);
     if Supports(PathEdit, IJvDynControlReadOnly, IJvReadOnly) then
       IJvReadOnly.ControlSetReadOnly(True);
-    PathPanel.Height := PathEdit.Height+1;
+    PathPanel.Height := PathEdit.Height + 1;
     ExtraPanel := DynEngine.CreatePanelControl(UnitVersionForm, BottomBox, 'ExtraPanel', '', alTop);
     ExtraPanel.Align := alTop;
     ExtraEdit := DynEngine.CreateMemoControl(UnitVersionForm, ExtraPanel, 'ExtraEdit');
 //    if Supports(ExtraEdit, IJvDynControlReadOnly, IJvReadOnly) then
 //      IJvReadOnly.ControlSetReadOnly(True);
     ExtraEdit.Width := 400;
-    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, ExtraPanel,'ExtraLabel', 'Extra', ExtraEdit, True, 80);
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, ExtraPanel, 'ExtraLabel', 'Extra', ExtraEdit,
+      True, 80);
     LabelControl.Width := 80 + PathEdit.Width;
     ExtraPanel.Height := LabelControl.Height;
 
-    BottomBox.Height := DatePanel.Height*4+10+ExtraPanel.Height;
+    BottomBox.Height := DatePanel.Height * 4 + 10 + ExtraPanel.Height;
 
     if Supports(TreeView, IJvDynControlReadOnly, IJvReadOnly) then
       IJvReadOnly.ControlSetReadOnly(True);
@@ -1238,11 +1242,12 @@ begin
       Nodes := IJvTreeView.ControlGetItems;
       Nodes.Clear;
       IJvTreeView.ControlSetOnChange(TreeViewOnChange);
-      MainNode := Nodes.AddChild(nil,extractfilename(ParamStr(0))+' '+VersionFixedFileInfoString( ParamStr(0)));
+      MainNode := Nodes.AddChild(nil, ExtractFileName(ParamStr(0)) + ' ' + VersionFixedFileInfoString(ParamStr(0)));
       with GetUnitVersioning do
-        for i := 0 to count-1 do
-          node := Nodes.AddChildObject(FindMasterNode (Nodes, MainNode, Items[i].LogPath), Items[i].RCSfile+' - '+Items[i].Revision, Items[i]);
-      IJvTreeView.ControlSetSortType (stText);
+        for I := 0 to Count - 1 do
+          Nodes.AddChildObject(FindMasterNode(Nodes, MainNode, Items[I].LogPath),
+            Items[I].RCSfile + ' - ' + Items[I].Revision, Items[I]);
+      IJvTreeView.ControlSetSortType(stText);
       if TreeView is TTreeView then
         TTreeView(TreeView).FullExpand;
       MainNode.Selected := True;
@@ -1254,7 +1259,7 @@ begin
   end;
 end;
 
-procedure TJvParameterListDemoMainFrm.CloseButtonOnClick(Sender : TObject);
+procedure TJvParameterListDemoMainFrm.CloseButtonOnClick(Sender: TObject);
 begin
   if Assigned(UnitVersionForm) then
     UnitVersionForm.ModalResult := mrOk;
@@ -1262,7 +1267,7 @@ end;
 
 procedure TJvParameterListDemoMainFrm.TreeViewOnChange(Sender: TObject; Node: TTreeNode);
 var
-  IJvData : IJvDynControlData;
+  IJvData: IJvDynControlData;
 begin
   if Assigned(Node) and Assigned(Node.Data) and
     (TObject(Node.Data) is TUnitVersion) then
@@ -1317,28 +1322,28 @@ end;
 procedure TJvParameterListDemoMainFrm.Button17Click(Sender: TObject);
 begin
   ShowUnitVersioning(nil);
-end; 
+end;
 
 procedure TJvParameterListDemoMainFrm.Button18Click(Sender: TObject);
-VAR
-  ParameterList         : TJvParameterList;
-  Parameter         : TJvBaseParameter;
+var
+  ParameterList: TJvParameterList;
+  Parameter: TJvBaseParameter;
 begin
   ParameterList := TJvParameterList.Create(Self);
-  TRY
+  try
     Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
-    WITH TJvEditParameter(Parameter) DO
-    BEGIN
+    with TJvEditParameter(Parameter) do
+    begin
       Caption := '&Job';
       SearchName := 'Job';
       AsString := '999';
       ReadOnly := True;
       Width := 250;
-    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvMemoParameter.Create(ParameterList));
-    WITH TJvMemoParameter(Parameter) DO
-    BEGIN
+    with TJvMemoParameter(Parameter) do
+    begin
       Caption := '&What';
       SearchName := 'What';
       AsString := 'Do Anything';
@@ -1350,52 +1355,52 @@ begin
       WantReturns := True;
       WordWrap := False;
       FontName := 'Courier New';
-    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(tJvDateParameter.Create(ParameterList));
-    WITH tJvDateParameter(Parameter) DO
-    BEGIN
+    with tJvDateParameter(Parameter) do
+    begin
       Caption := '&Date';
       SearchName := 'Date';
       asDate := Trunc(now);
       Width := 120;
-    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(tJvTimeParameter.Create(ParameterList));
-    WITH tJvTimeParameter(Parameter) DO
-    BEGIN
+    with tJvTimeParameter(Parameter) do
+    begin
       Caption := '&Time';
       SearchName := 'Time';
       asDate := now;
       Width := 120;
-    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
-    WITH TJvEditParameter(Parameter) DO
-    BEGIN
+    with TJvEditParameter(Parameter) do
+    begin
       Caption := '&Interval';
       SearchName := 'Interval';
       AsString := 'trunc(sysdate)+1';
       Width := 450;
-    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
-    WITH Parameter DO
-    BEGIN
+    with Parameter do
+    begin
       Caption := '&Broken Job';
       SearchName := 'Broken';
       AsBoolean := FALSE;
       Width := 350;
-    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
     ParameterList.AddParameter(Parameter);
     ParameterList.Messages.Caption := 'Change Job';
     ParameterList.Messages.OkButton := '&Ok';
     ParameterList.Messages.CancelButton := '&Cancel';
     ParameterList.Width := 510;
     ParameterList.ShowParameterDialog;
-  FINALLY
+  finally
     FreeAndNil(ParameterList);
-  END;
+  end;
 end;
 
 initialization
@@ -1405,3 +1410,4 @@ finalization
   UnregisterUnitVersion(HInstance);
 
 end.
+

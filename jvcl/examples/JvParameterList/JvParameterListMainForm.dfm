@@ -1,6 +1,6 @@
 object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
-  Left = 500
-  Top = 271
+  Left = 215
+  Top = 128
   Width = 689
   Height = 660
   Caption = 'JvDynControlEngine / JvParameterList Sample'
