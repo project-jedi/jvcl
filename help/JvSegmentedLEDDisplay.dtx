@@ -25,6 +25,13 @@ See Also
   UnregisterModuleSegmentedLEDDigitClasses, TJvCustomSegmentedLEDDisplay.DigitClass,
   TJvCustomSegmentedLEDDisplay.DigitClassName
 ----------------------------------------------------------------------------------------------------
+@@EJVCLSegmentedLEDException
+Summary
+  Segmented LED displays exception class.
+Description
+  EJVCLSegmentedLEDException is the exception class raised to indicate errors in the using of a
+  segmented LED display control or related classes or routines.
+----------------------------------------------------------------------------------------------------
 @@IdentToUnlitColor
 <TITLE IdentToUnlitColor function>
 Summary
@@ -79,6 +86,19 @@ See Also
   UnregisterModuleSegmentedLEDDigitClasses, TJvCustomSegmentedLEDDisplay.DigitClass,
   TJvCustomSegmentedLEDDisplay.DigitClassName
 ----------------------------------------------------------------------------------------------------
+@@StringToUnlitColor
+<TITLE StringToUnlitColor function>
+Summary
+  Translates a string to a \TUnlitColor value.
+Description
+  StringToUnlitColor translates a string into it's TUnLitColor representation. The string may
+  consist of a color constant (as defined for TColor or TUnlitColor) or a color's ordinal (RGB)
+  value (in decimal or hexadecimal representation; see StrToInt).
+Parameters
+  S - String representing a color that is to be translated.
+See Also
+  UnlitColorToString, IdentToUnlitColor
+----------------------------------------------------------------------------------------------------
 @@T7SegColonUsage
 <TITLE T7SegColonUsage type>
 Summary
@@ -95,6 +115,16 @@ Description
 @@T7SegColonUsage.scuColonOnly
   Renders the entire colon but hides the other segments. Can be used to render a colon digit in a
   clock for example. 
+----------------------------------------------------------------------------------------------------
+@@TCharSet
+<TITLE TCharSet type>
+Summary
+  Represents a set of characters.
+Description
+  TCharSet represents a set of characters. It's used with the segmented LED display character
+  mapping streaming system.
+See Also
+  TSegCharMapHeader
 ----------------------------------------------------------------------------------------------------
 @@TJv7SegmentedLEDCharacterMapper
 <TITLEIMG TJv7SegmentedLEDCharacterMapper>
@@ -170,13 +200,57 @@ Description
   classes may share the same mapper, for example when two digit classes have other style segments
   but segment layout remains the same).
 
-  The class provides in methods to map a text to it's segment representation.
+  The class provides in methods to map a text to it's segment representation, stream mappings in or
+  out and changing mappings.
+----------------------------------------------------------------------------------------------------
+@@TJvBaseSegmentedLEDCharacterMapper.Clear
+Summary
+  Clears the mappings table.
+Description
+  Clear empties the character mapping table. After a call to clear, no character will map to any
+  segment (i.e. all characters map effectively to a space).
+See Also
+  LoadFromStream, SaveToStream
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDCharacterMapper.CurDigit
 Summary
   Current digit for which we are mapping.
 Description
   CurDigit is a reference to the digit we are currently mapping text for.
+----------------------------------------------------------------------------------------------------
+@@TJvBaseSegmentedLEDCharacterMapper.LoadFromFile
+Summary
+  Loads a character mapping from a file.
+Description
+  LoadFromFile will read a character mapping from the specified file and applies that to the mapping
+  table.
+
+  LoadFromFile internally creates a TFileStream and calls LoadFromStream on that stream.
+Parameters
+  FileName - File name of the mapping to load.
+See Also
+  LoadFromStream, SaveToFile
+----------------------------------------------------------------------------------------------------
+@@TJvBaseSegmentedLEDCharacterMapper.LoadFromStream
+Summary
+  Reads a character mapping from a stream.
+Description
+  LoadFromStream will read a character mapping from the specified stream and applies it to the
+  mapping table.
+
+  If the current position of the stream does not refer to a valid mapping for this mapper class, an
+  exception is raised (the stream position will not have changed nor will the mapping table be
+  changed).
+
+  Before reading of the actual mapping, the table is first cleared with a call to Clear. Next the
+  data from the stream is read for each mapped character and applies to the mapping table.
+Parameters
+  Stream - Stream from which to read the mapping table. Reading starts at the current position of
+            the stream. If the stream points to an invalid mapping, the position will not have
+            changed. After reading the stream's position is updated to point to the first byte
+            following the mapping.
+See Also
+  SaveToStream, LoadFromFile
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDCharacterMapper.MapText
 Summary
@@ -228,6 +302,32 @@ Parameters
             the actual mapping applied.
 See Also
   PrimMapText, CUrDigit
+----------------------------------------------------------------------------------------------------
+@@TJvBaseSegmentedLEDCharacterMapper.SaveToFile
+Summary
+  Saves the mapping table to a file.
+Description
+  SaveToFile will save the mapping table to the specified file.
+
+  SaveToFile internally creates a TFileStream and calls SaveToStream on that stream.
+Parameters
+  FileName - File name of the file in which the mapping table is to be stored.
+See Also
+  SaveToStream, LoadFromFile
+----------------------------------------------------------------------------------------------------
+@@TJvBaseSegmentedLEDCharacterMapper.SaveToStream
+Summary
+  Writes the mapping table to a stream.
+Description
+  SaveToStream will write the mapping table to the specified stream.
+
+  The mapping table will be stored at the current position of the stream and will only contain data
+  for the actual mapped characters.
+Parameters
+  Stream - Stream to which to write the mapping table. After writing the stream's position is
+  updated to point to the first byte following the mapping.
+See Also
+  LoadFromStream, SaveToFile
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDCharacterMapper.SegMapRemoves
 Summary
@@ -831,6 +931,23 @@ Description
   TPointArray represents a dynamic array of TPoint items. It's used by the TSegmentRenderInfo
   record.
 ---------------------------------------------------------------------------------------------------
+@@TSegCharMapHeader
+<TITLE TSegCharMapHeader type>
+Summary
+  Header type used for streaming of a character mapping.
+Description
+  The TSegCharMapHeader type represents the header stored in the stream before the mapping table
+  of a segmented LED display mapper.
+@@TSegCharMapHeader.ID
+  Identification string of the header. Each mapper class will define it's own ID string.
+@@TSegCharMapHeader.MappedChars
+  Bit array of characters actually mapped. Characters that are not present in this set are not
+  stored at all.
+@@TSegCharMapHeader.Flags
+  Flags. Bits 0 through 15 represent the size in bytes stored for each character. If bit 16 is set
+  to 1 the '.' and ',' should be remapped to the actual DecimalSeparator and ThousandSeparator
+  respectively upon reading.
+---------------------------------------------------------------------------------------------------
 @@TSegmentRenderInfo
 <TITLE TSegmentRenderInfo type>
 Summary
@@ -930,6 +1047,19 @@ Parameters
 See Also
   IdentToUnlitColor, ColorToIdent, TUnlitColor
 ----------------------------------------------------------------------------------------------------
+@@UnlitColorToString
+<TITLE UnlitColorToString function>
+Summary
+  Translates a \TUnlitColor value into it's string representation.
+Description
+  UnlitColorToString translates a TUnLitColor value into it's string representation.
+  UnlitColorToString behaves exactly the same as ColorToString but will also recognise and translate
+  the additional color values defined for TUnlitColor.
+Parameters
+  Color - Color value to be translated into a string.
+See Also
+  StringToUnlitColor, UnlitColorToIdent
+----------------------------------------------------------------------------------------------------
 @@UnregisterModuleSegmentedLEDDigitClasses
 <TITLE UnregisterModuleSegmentedLEDDigitClasses procedure>
 Summary
@@ -942,8 +1072,9 @@ Description
 Parameters
   Module - Handle of the module from which all segmented LED digit classes are to be unregistered.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RegisterSegmentedLEDDigitClass, RegisterSegmentedLEDDigitClasses,
+  UnregisterSegmentedLEDDigitClass, UnregisterSegmentedLEDDigitClasses,
+  TJvCustomSegmentedLEDDisplay.DigitClass, TJvCustomSegmentedLEDDisplay.DigitClassName
 ----------------------------------------------------------------------------------------------------
 @@UnregisterSegmentedLEDDigitClass
 <TITLE UnregisterSegmentedLEDDigitClass procedure>
