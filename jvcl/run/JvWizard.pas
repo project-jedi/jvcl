@@ -546,6 +546,7 @@ type
     property WizardPageHeader: TJvWizardPageHeader
       read FWizardPageHeader write SetWizardPageHeader;
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create; override;
     destructor Destroy; override;
     procedure PaintTo(ACanvas: TCanvas; var ARect: TRect); override;
@@ -586,6 +587,8 @@ type
     procedure SetParentFont(Value: Boolean);
     procedure SetShowDivider(Value: Boolean);
     procedure AdjustTitleFont;
+    procedure SetSubtitle(const Value: TJvWizardPageTitle);
+    procedure SetTitle(const Value: TJvWizardPageTitle);
   protected
     procedure VisibleChanged; override;
     procedure Initialize; override;
@@ -603,8 +606,8 @@ type
     property ImageAlignment: TJvWizardImageLeftRight read FImageAlignment write SetImageAlignment default iaRight;
     property Height: Integer read FHeight write SetHeight default 70;
     property ParentFont: Boolean read FParentFont write SetParentFont default True;
-    property Title: TJvWizardPageTitle read FTitle write FTitle;
-    property Subtitle: TJvWizardPageTitle read FSubtitle write FSubtitle;
+    property Title: TJvWizardPageTitle read FTitle write SetTitle;
+    property Subtitle: TJvWizardPageTitle read FSubtitle write SetSubtitle;
     property ShowDivider: Boolean read FShowDivider write SetShowDivider default True;
     property Color default clWindow;
     property Visible;
@@ -1926,6 +1929,25 @@ begin
   end;
 end;
 
+procedure TJvWizardPageTitle.Assign(Source: TPersistent);
+begin
+  if Source is TJvWizardPageTitle then
+  begin
+    if Source <> Self then
+    begin
+      FText := TJvWizardPageTitle(Source).Text;
+      FAnchors := TJvWizardPageTitle(Source).Anchors;
+      FAnchorPlacement := TJvWizardPageTitle(Source).AnchorPlacement;
+      FIndent := TJvWizardPageTitle(Source).Indent;
+      FAlignment := TJvWizardPageTitle(Source).Alignment;
+      Font := TJvWizardPageTitle(Source).Font;
+      DoChange
+    end
+  end
+  else
+    inherited Assign(Source);
+end;
+
 procedure TJvWizardPageTitle.OnChange(Sender: TObject);
 begin
   DoChange;
@@ -2056,6 +2078,16 @@ begin
     if Result.Left < ARect.Right then
       ARect.Right := Result.Left;
   end;
+end;
+
+procedure TJvWizardPageHeader.SetSubtitle(const Value: TJvWizardPageTitle);
+begin
+  FSubtitle.Assign(Value);
+end;
+
+procedure TJvWizardPageHeader.SetTitle(const Value: TJvWizardPageTitle);
+begin
+  FTitle.Assign(Value);
 end;
 
 procedure TJvWizardPageHeader.PaintTo(ACanvas: TCanvas; var ARect: TRect);
