@@ -332,7 +332,7 @@ end;
 function TJvComputerInfo.GetLoggedOnUser: string;
 var
   buf:array[0..255] of char;  // too large really, but who knows if it'll change?
-  nSize:{$IFDEF COMPILER6_UP}Cardinal{$ELSE}integer{$ENDIF};
+  nSize:{$IFDEF COMPILER5_UP}Cardinal{$ELSE}integer{$ENDIF};
 begin
   nSize := sizeof(buf);
   if Windows.GetUserName(buf,nSize) then
@@ -344,7 +344,7 @@ end;
 function TJvComputerInfo.GetRealComputerName: string;
 var
   buf:array[0..255] of char;  // too large really, but who knows if it'll change?
-  nSize:{$IFDEF COMPILER6_UP}Cardinal{$ELSE}integer{$ENDIF};
+  nSize:{$IFDEF COMPILER5_UP}Cardinal{$ELSE}integer{$ENDIF};
 begin
   nSize := sizeof(buf);
   if Windows.GetComputerName(buf,nSize) then

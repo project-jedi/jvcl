@@ -30,7 +30,7 @@ unit JvNTEventLog;
 interface
 
 uses
-  Windows, Classes, SysUtils, DateUtils, JvComponent;
+  Windows, Classes, SysUtils, JvComponent;
 
 type
   TNotifyChangeEventLog = class;
@@ -128,7 +128,7 @@ type
 implementation
 
 uses
-  Registry;
+  Registry{$IFNDEF COMPILER6_UP} ,JvFunctions{$ENDIF};
 
 const
   EVENTLOG_SEQUENTIAL_READ = $0001;
@@ -559,7 +559,8 @@ const
 
 begin
   // Result := IncSecond(lStartPoint, PEventLogRecord(fCurrentRecord)^.TimeGenerated);
-  Result := IncSecond(lStartPoint, PEventLogRecord(fCurrentRecord)^.TimeWritten);
+//  Result := IncSecond(lStartPoint, PEventLogRecord(fCurrentRecord)^.TimeWritten);
+  Result := ((lStartPoint * 86400) + PEventLogRecord(fCurrentRecord)^.TimeWritten) / 86400;
 end;
 
 
