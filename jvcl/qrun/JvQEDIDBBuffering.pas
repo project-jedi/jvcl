@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,8 +36,7 @@ unit JvQEDIDBBuffering;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, DB,
-  
+  SysUtils, Classes, Contnrs, DB, 
   JclEDI, JclEDI_ANSIX12, JclEDISEF,
   JvQComponent;
 
@@ -214,10 +214,8 @@ type
 
 implementation
 
-uses
-  
-  Variants,
-  
+uses 
+  Variants, 
   JvQResources, JvQTypes;
 
 const
@@ -355,7 +353,7 @@ var
   ElementList: TStrings;
 begin
   if (FElementProfiles = nil) or (FSegmentProfiles = nil) or (FLoopProfiles = nil) then
-    raise EJVCLException.Create(RsENoProfileDatasets);
+    raise EJVCLException.CreateRes(@RsENoProfileDatasets);
   FElementProfiles.Filtered := False;
   FSegmentProfiles.Filtered := False;
   FLoopProfiles.Filtered := False;
@@ -414,7 +412,7 @@ var
   ElementList: TObjectList;
 begin
   if (FElementProfiles = nil) or (FSegmentProfiles = nil) or (FLoopProfiles = nil) then
-    raise EJVCLException.Create(RsENoProfileDatasets);
+    raise EJVCLException.CreateRes(@RsENoProfileDatasets);
   FElementProfiles.Filtered := False;
   FSegmentProfiles.Filtered := False;
   FLoopProfiles.Filtered := False;

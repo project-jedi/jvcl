@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -39,11 +40,8 @@ unit JvQComponentPanel;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QTypes, QGraphics, QControls, QExtCtrls, QButtons,
-  
+  SysUtils, Classes,  
+  Types, QTypes, QGraphics, QControls, QExtCtrls, QButtons, 
   JvQButtons, JvQComponent, JvQTypes;
 
 type
@@ -72,12 +70,9 @@ type
     procedure SetFirstVisible(AButton: Integer);
     procedure BtnClick(Sender: TObject);
     procedure BtnDblClick(Sender: TObject);
-    procedure MoveClick(Sender: TObject);
-    
-  protected
-    
-    procedure SetText(const Value: TCaption); override;
-    
+    procedure MoveClick(Sender: TObject); 
+  protected 
+    procedure SetText(const Value: TCaption); override; 
     procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -97,8 +92,7 @@ type
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 28;
     property ButtonCount: Integer read GetButtonCount write SetButtonCount default 0;
     property Anchors;
-    property Constraints;
-    
+    property Constraints; 
     property OnConstrainedResize;
   end;
 

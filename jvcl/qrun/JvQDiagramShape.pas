@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,11 +34,8 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  
-  
-  QTypes, Types, QGraphics, QControls, QExtCtrls, QImgList, QWindows,
-  
+  {$ENDIF MSWINDOWS}  
+  QTypes, Types, QGraphics, QControls, QExtCtrls, QImgList, QWindows, 
   SysUtils, Classes,
   JvQComponent, JvQTypes;
 
@@ -62,11 +60,8 @@ type
       X, Y: Integer); override;
     function GetCustomShapeAtPos(X, Y: Integer): TJvCustomDiagramShape;
     property CanProcessMouseMsg: Boolean read FCanProcessMouseMsg
-      write FCanProcessMouseMsg;
-    
-    
-    procedure SetParent(const AParent: TWidgetControl); override;
-    
+      write FCanProcessMouseMsg;  
+    procedure SetParent(const AParent: TWidgetControl); override; 
     procedure SetSelected(Value: Boolean); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property MultiSelect: Boolean read FMultiSelect write FMultiSelect;
@@ -153,19 +148,15 @@ type
   private
     FText: TCaption;
     FAutoSize: Boolean;
-    FFont: TFont;
-    
+    FFont: TFont; 
     procedure SetFont(Value: TFont);
     procedure FontChange(Sender: TObject);
   protected
     procedure SetAutoSize(Value: Boolean); 
-    procedure RefreshText;
-    
-    
+    procedure RefreshText;  
     procedure SetParent(const AParent: TWidgetControl); override;
     procedure SetText(const Value: TCaption); override;
-    function GetText: TCaption; override;
-    
+    function GetText: TCaption; override; 
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1201,12 +1192,9 @@ begin
   if not Assigned(Parent) then
     Exit;
   Canvas.Font := Font;
-  TempRect := ClientRect; // So can pass as a var parameter
-  
-  
+  TempRect := ClientRect; // So can pass as a var parameter  
   DrawText(Canvas, FText, Length(FText), TempRect,
-    DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
-  
+    DT_CENTER or DT_NOPREFIX or DT_WORDBREAK); 
   inherited Paint;
 end;
 
@@ -1285,8 +1273,7 @@ begin
       Point(Width - 1, Height - 1), Point(0, Height - 1), Point(0, 0)]);
   Canvas.Pen := OldPen;
 
-  // Draw the bitmap
-  
+  // Draw the bitmap 
   FImages.Draw(Canvas, 0, 0, FImageIndex);
 end;
 
@@ -2068,10 +2055,8 @@ end;
 // ------------------ Initialisation and cleanup routines --------------------
 
 procedure RegisterStorageClasses;
-begin
-  
-  GroupDescendentsWith(TJvConnection, TControl);
-  
+begin 
+  GroupDescendentsWith(TJvConnection, TControl); 
   RegisterClasses([TJvCustomDiagramShape, TJvMoveableShape,
     TJvSizeableShape, TJvConnection, TJvConnector, TJvSingleHeadArrow,
       TJvBluntSingleHeadArrow, TJvDoubleHeadArrow, TJvBitmapShape,

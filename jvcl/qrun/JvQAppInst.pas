@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQAppInst;
 interface
 
 uses
-  Windows, Messages, SysUtils,
-  
-  
-  QForms,
-  
+  Windows, Messages, SysUtils,  
+  QForms, 
   Classes,
   { Classes must be after Forms for Delphi 5 compatibility. }
   JclAppInst;
@@ -120,8 +118,7 @@ const
   AI_SETACTIVE = $0005;
 
 type
-  TOpenJclAppInstances = class(TJclAppInstances);
-  
+  TOpenJclAppInstances = class(TJclAppInstances); 
   TPrivateComponent = class(TPersistent, IInterface, IInterfaceComponentReference)
   protected
     FOwner: TComponent;
@@ -133,8 +130,7 @@ type
     function _Release: Integer; virtual; stdcall; abstract;
     function GetComponent: TComponent; virtual; abstract;
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall; abstract;
-  end;
-  
+  end; 
 
 var
   FirstJvAppInstance: Boolean = True;
@@ -181,11 +177,8 @@ begin
             AppInstances.SendCmdLineParams(sAppInstancesWindowClassName, Handle);
 
          // terminate this process (Form.OnCreate is not executed yet)
-
-          
-          
-          FreeAndNil(TPrivateComponent(Application).FComponents);
-          
+  
+          FreeAndNil(TPrivateComponent(Application).FComponents); 
           AppInstances.KillInstance;
         end;
       end;

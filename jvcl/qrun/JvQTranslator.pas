@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQTranslator;
 interface
 
 uses
-  SysUtils, Classes, IniFiles,
-  
-  
-  QForms, QComCtrls, QMenus, QDialogs,
-  
+  SysUtils, Classes, IniFiles,  
+  QForms, QComCtrls, QMenus, QDialogs, 
   JvQSimpleXml, JvQComponent;
 
 type
@@ -155,17 +153,13 @@ type
   end;
 
 function InternalGetWideStrProp(Instance: TObject; const PropName: string): WideString; overload;
-begin
-  
-  Result := GetWideStrProp(Instance, PropName);
-  
+begin 
+  Result := GetWideStrProp(Instance, PropName); 
 end;
 
 function InternalGetPropList(AObject: TObject; out PropList: PPropList): Integer;
-begin
-  
-  Result := GetPropList(AObject, PropList);
-  
+begin 
+  Result := GetPropList(AObject, PropList); 
 end;
 
 //=== TJvTranslator ==========================================================

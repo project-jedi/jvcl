@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQSpacer;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QForms, QExtCtrls,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QControls, QForms, QExtCtrls, 
   JvQComponent;
 
 type
@@ -55,8 +53,7 @@ type
     property BevelInner default bvNone;
     property BevelOuter default bvNone;
     property BorderStyle default bsNone;
-    property Color;
-    
+    property Color; 
     property DragMode;
     property ParentColor;
     property Visible;

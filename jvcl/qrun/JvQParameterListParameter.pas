@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,18 +39,11 @@ unit JvQParameterListParameter;
 interface
 
 uses
-  Classes, SysUtils,
-  
-  
+  Classes, SysUtils,  
   QStdCtrls, QExtCtrls, Types, QGraphics, QForms,
-  QControls, QFileCtrls, QDialogs, QComCtrls, QButtons,
-  
-  
-  Variants,
-  
-  
-  JvQTypes,
-  
+  QControls, QFileCtrls, QDialogs, QComCtrls, QButtons,  
+  Variants,  
+  JvQTypes, 
   JvQPanel, JvQPropertyStore, JvQParameterList, JvQDynControlEngine, JvQDSADialogs,
   JvQDynControlEngineIntf;
 
@@ -315,8 +309,7 @@ type
   TJvDirectoryParameter = class(TJvBasePanelEditParameter)
   private
     FInitialDir: string;
-    FDialogTitle: string;
-    
+    FDialogTitle: string; 
   protected
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
@@ -327,8 +320,7 @@ type
   published
     property Directory: string read GetAsString write SetAsString;
     property InitialDir: string read FInitialDir write FInitialDir;
-    property DialogTitle: string read FDialogTitle write FDialogTitle;
-    
+    property DialogTitle: string read FDialogTitle write FDialogTitle; 
   end;
 
   TJvListParameter = class(TJvBasePanelEditParameter)
@@ -496,11 +488,8 @@ function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; con
   const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult;
 begin
-  Result :=
-    
-  
-  JvQDSADialogs.
-    
+  Result :=  
+  JvQDSADialogs. 
   MessageDlg(Msg, DlgType, Buttons, HelpCtx, Center, Timeout, DefaultButton,
     CancelButton, HelpButton, ADynControlEngine);
 end;
@@ -1030,8 +1019,7 @@ end;
 procedure TJvListParameter.SetAsVariant(Value: Variant);
 begin
   if VariantAsItemIndex then
-    if VarType(Value) in [varSmallInt, varInteger, varByte
-      , varShortInt, varWord, varLongWord] then
+    if VarType(Value) in [varSmallInt, varInteger, varByte , varShortInt, varWord, varLongWord] then
       ItemIndex := Value
     else
       inherited SetAsString(Value)
@@ -1710,8 +1698,7 @@ begin
   inherited Assign(Source);
   if Source is TJvDirectoryParameter then
   begin
-    InitialDir := TJvDirectoryParameter(Source).InitialDir;
-    
+    InitialDir := TJvDirectoryParameter(Source).InitialDir; 
     DialogTitle := TJvDirectoryParameter(Source).DialogTitle;
   end;
 end;
@@ -1734,8 +1721,7 @@ begin
   if Supports(WinControl, IJvDynControlDirectory, ITmpControlDirectory) then
     with ITmpControlDirectory do
     begin
-      ControlSetDialogTitle(DialogTitle);
-      
+      ControlSetDialogTitle(DialogTitle); 
       ControlSetInitialDir(InitialDir);
     end;
 end;
@@ -1751,8 +1737,7 @@ begin
     begin
       DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       Exit;
-    end;
-  
+    end; 
   Result := True;
 end;
 

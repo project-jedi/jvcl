@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,11 +38,8 @@ unit JvQScrollPanel;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QToolWin, QExtCtrls, Types, QWindows,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QToolWin, QExtCtrls, Types, QWindows, 
   JvQComponent, JvQExForms;
 
 type
@@ -166,8 +164,7 @@ type
     property ShowHint;
     property Hint;
     property ParentShowHint;
-    property PopupMenu;
-    
+    property PopupMenu; 
     property Color;
     property ParentColor;
     property OnEnter;
@@ -486,8 +483,7 @@ begin
   // when dropping it in design-time. Never seen the need before
   if AOwner is TWinControl then
     Parent := TWinControl(AOwner);
-  ControlStyle := ControlStyle + [csAcceptsControls];
-  
+  ControlStyle := ControlStyle + [csAcceptsControls]; 
   FScrollDirection := sdHorizontal;
   FScrollAmount := 16;
   Align := alTop;

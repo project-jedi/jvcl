@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQSyncSplitter;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Qt, QControls, QExtCtrls, Types, QWindows,
-  
+  SysUtils, Classes,  
+  Qt, QControls, QExtCtrls, Types, QWindows, 
   JvQSplitter;
 
 type
@@ -51,17 +49,14 @@ type
     function GetResizeStyle: TResizeStyle;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetResizeStyle(Value: TResizeStyle);
-    procedure VerifyPartner;
-    
-    
+    procedure VerifyPartner;  
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    
+    procedure MouseLeave(AControl: TControl); override; 
   published
     property Partner: TJvSyncSplitter read FPartner write SetPartner;
     property ResizeStyle: TResizeStyle read GetResizeStyle write SetResizeStyle;

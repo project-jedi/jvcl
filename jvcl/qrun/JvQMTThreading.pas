@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -48,10 +49,8 @@ type
   TMTThread = class;
 
   TMTEvent = procedure(Thread: TMTThread) of object;
-
-  
-  TIntThread = TThread;
-  
+ 
+  TIntThread = TThread; 
 
   TMTInternalThread = class(TIntThread)
   private
@@ -135,12 +134,19 @@ function CurrentMTThread: TMTThread;
 
 implementation
 
-
+{$IFDEF USEJVCL}
 uses
   JvQResources;
+{$ENDIF USEJVCL}
 
-
-
+{$IFNDEF USEJVCL}
+resourcestring
+  RsECurThreadIsPartOfManager = 'Current MTThread is part of the MTManager';
+  RsECheckTerminateCalledByWrongThread = 'CheckTerminate can only be called by the same thread';
+  RsEThreadNotInitializedOrWaiting = 'Cannot run: thread is not Initializing or Waiting';
+  RsECannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread';
+  RsEReleaseOfUnusedTicket = 'Release of unused ticket';
+{$ENDIF USEJVCL}
 
 threadvar
   _CurrentMTThread: TMTThread;
@@ -167,19 +173,16 @@ procedure TMTInternalThread.RaiseName;
 var
   ThreadNameInfo: TThreadNameInfo;
 
-begin
-  
+begin 
   ThreadNameInfo.FType := $1000;
   ThreadNameInfo.FName := PChar(FName);
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
   try
-    
-//    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
-//      @ThreadNameInfo);
+    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
+      @ThreadNameInfo);
   except
-  end;
-  
+  end; 
 end;
 
 //=== TMTThread ==============================================================
@@ -204,7 +207,7 @@ end;
 procedure TMTThread.CheckTerminate;
 begin
   if CurrentMTThread <> Self then
-    raise EMTThreadError.Create(RsECheckTerminateCalledByWrongThread);
+    raise EMTThreadError.CreateRes(@RsECheckTerminateCalledByWrongThread);
 
   if Status = tsTerminating then
     raise EMTTerminateError.Create('');
@@ -334,7 +337,7 @@ begin
     if Status = tsWaiting then
       FIntThread.Resume
     else
-      raise EMTThreadError.Create(RsEThreadNotInitializedOrWaiting);
+      raise EMTThreadError.CreateRes(@RsEThreadNotInitializedOrWaiting);
   finally
     FStatusChange.Release;
   end;
@@ -349,7 +352,7 @@ begin
     else
     begin
       if CurrentMTThread <> Self then
-        raise EMTThreadError.Create(RsECannotChangeNameOfOtherActiveThread);
+        raise EMTThreadError.CreateRes(@RsECannotChangeNameOfOtherActiveThread);
   
       FName := Value;
       if FIntThread <> nil then
@@ -569,7 +572,7 @@ begin
     if FindThread(Ticket, Thread) then
       Thread.DecRef
     else
-      raise EMTThreadError.Create(RsEReleaseOfUnusedTicket);
+      raise EMTThreadError.CreateRes(@RsEReleaseOfUnusedTicket);
 
     // if this was the last reference then the thread must be removed
     TryRemoveThread(Thread);
@@ -627,7 +630,7 @@ begin
         1:
           { Nothing };
        -1:
-         raise EMTThreadError.Create(RsECurThreadIsPartOfManager);
+         raise EMTThreadError.CreateRes(@RsECurThreadIsPartOfManager);
       end;
       Sleep(0);
     end;

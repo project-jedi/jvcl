@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -39,11 +40,8 @@ uses
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-  
-  Types, QWindows, QControls, QExtCtrls, QForms, QGraphics,
-  
+  {$ENDIF MSWINDOWS}  
+  Types, QWindows, QControls, QExtCtrls, QForms, QGraphics, 
   JvQComponent;
 
 type
@@ -104,8 +102,7 @@ const
 
 constructor TJvaScrollText.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
   FForeImage := TImage.Create(nil);
   FBackImage := TImage.Create(nil);
   FFontMaskImage := TImage.Create(nil);

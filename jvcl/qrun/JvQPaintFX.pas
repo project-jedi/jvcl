@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,11 +34,8 @@ unit JvQPaintFX;
 
 interface
 
-uses
-  
-  
-  Types, QWindows, QGraphics, QControls, QForms,
-  
+uses  
+  Types, QWindows, QGraphics, QControls, QForms, 
   SysUtils, Classes;
 
 type
@@ -170,13 +168,10 @@ uses
   JvQJCLUtils, JvQTypes;
 
 resourcestring
-  RsSourceBitmapTooSmall = 'Source bitmap too small';
+  RsESourceBitmapTooSmall = 'Source bitmap too small';
 
-const
-  
-  
-  bpp = 4;
-  
+const  
+  bpp = 4; 
 
 function TrimInt(N, Min, Max: Integer): Integer;
 begin
@@ -389,20 +384,14 @@ begin
 end;
 
 class procedure TJvPaintFX.AntiAlias(const Dst: TBitmap);
-begin
-  
-  
-  JvQJCLUtils.AntiAlias(Dst);
-  
+begin  
+  JvQJCLUtils.AntiAlias(Dst); 
 end;
 
 class procedure TJvPaintFX.AntiAliasRect(const Dst: TBitmap; XOrigin, YOrigin,
   XFinal, YFinal: Integer);
-begin
-  
-  
-  JvQJCLUtils.AntiAliasRect(Dst, XOrigin, YOrigin, XFinal, YFinal);
-  
+begin  
+  JvQJCLUtils.AntiAliasRect(Dst, XOrigin, YOrigin, XFinal, YFinal); 
 end;
 
 class procedure TJvPaintFX.Contrast(const Dst: TBitmap; Amount: Integer);
@@ -1718,7 +1707,7 @@ begin
   SrcWidth := Src.Width;
   SrcHeight := Src.Height;
   if (SrcWidth < 1) or (SrcHeight < 1) then
-    raise Exception.Create(RsSourceBitmapTooSmall);
+    raise Exception.CreateRes(@RsESourceBitmapTooSmall);
 
   // Create intermediate image to hold horizontal zoom
   Work := TBitmap.Create;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,12 +37,9 @@ unit JvQLookOut;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QButtons,
-  QMenus, QImgList, QTypes, QWindows,
-  
+  QMenus, QImgList, QTypes, QWindows, 
   JvQTypes, JvQConsts, JvQComponent, JvQThemes, JvQExControls, JvQExButtons;
 
 const
@@ -57,8 +55,7 @@ type
     FAutoRepeat: Boolean;
     FDown: Boolean;
     FFlat: Boolean;
-    procedure SetFlat(Value: Boolean);
-    
+    procedure SetFlat(Value: Boolean); 
   protected
     procedure OnTime(Sender: TObject); virtual;
     procedure Paint; override;
@@ -192,8 +189,7 @@ type
     property ButtonBorder;
     property Caption;
     property Constraints;
-    property Down;
-    
+    property Down; 
     property DragMode;
     property Enabled;
     property Font;
@@ -238,8 +234,7 @@ type
     property ButtonBorder default bbLight;
     property Caption;
     property Constraints;
-    property Down;
-    
+    property Down; 
     property DragMode;
     property Enabled;
     property FillColor default clBtnFace;
@@ -331,11 +326,8 @@ type
     procedure CalcArrows; virtual;
     procedure ScrollChildren(Start: Word); virtual;
     procedure AlignControls(Control: TControl; var Rect: TRect); override;
-    procedure SetParent( const  AParent: TWinControl); override;
-    
-    
-    procedure CreateWidget; override;
-    
+    procedure SetParent( const  AParent: TWinControl); override;  
+    procedure CreateWidget; override; 
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -368,8 +360,7 @@ type
     property ParentImageSize: Boolean read FParentImageSize write SetParentImageSize default True;
     property ShowPressed: Boolean read FShowPressed write FShowPressed default False;
     property Caption: TCaption read FCaption write SetCaption;
-    property Color;
-    
+    property Color; 
     property DragMode;
     property ShowHint;
     property Visible;
@@ -417,8 +408,7 @@ type
     function GetPageCount: Integer;
     function GetPage(Index: Integer): TJvLookOutPage;
     procedure SetPage(Index: Integer; Value: TJvLookOutPage);
-    procedure SetFlatButtons(Value: Boolean);
-    
+    procedure SetFlatButtons(Value: Boolean); 
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
   protected
     procedure SetAutoSize(Value: Boolean); 
@@ -439,8 +429,7 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Color default clBtnShadow;
-    property FlatButtons: Boolean read FFlatButtons write SetFlatButtons default False;
-    
+    property FlatButtons: Boolean read FFlatButtons write SetFlatButtons default False; 
     property DragMode;
     property ImageSize: TJvImageSize read FImageSize write SetImageSize default isLarge;
     property ShowHint;
@@ -469,12 +458,9 @@ type
     procedure CalcArrows; override;
     procedure ScrollChildren(Start: Word); override;
     procedure DrawTopButton; override;
-    procedure Paint; override;
-    
-    procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
-    
-    procedure CreateWidget; override;
-    
+    procedure Paint; override; 
+    procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT; 
+    procedure CreateWidget; override; 
   public
     constructor Create(AOwner: TComponent); override;
     function AddButton: TJvExpressButton;
@@ -487,11 +473,8 @@ type
 
 implementation
 
-uses
-  
-  
-  QActnList;
-  
+uses  
+  QActnList; 
 
 const
   cSpeed = 20;
@@ -1244,11 +1227,8 @@ begin
     else
       Canvas.Font := Font;
 
-    //    W := FSpacing  + W;
-    
-    
-    SetBkMode(Canvas.Handle, QWindows.Transparent);
-    
+    //    W := FSpacing  + W;  
+    SetBkMode(Canvas.Handle, QWindows.Transparent); 
     R := GetClientRect;
     if (ImageSize = isLarge) and Assigned(FLargeImages) then
       R.Top := R.Top + FLargeImages.Height + (FSpacing * 2)
@@ -1259,11 +1239,8 @@ begin
       Flags := DT_END_ELLIPSIS or DT_WORDBREAK or DT_CENTER or DT_VCENTER ;
     if FDown then
       OffsetRect(R, FOffset, FOffset);
-    FTextRect := R;
-    
-    
-    H := DrawText(Canvas, Caption, -1, FTextRect, Flags or DT_CALCRECT);
-    
+    FTextRect := R;  
+    H := DrawText(Canvas, Caption, -1, FTextRect, Flags or DT_CALCRECT); 
     if ImageSize = isLarge then
     begin
       FTextRect.Top := R.Top;
@@ -1275,11 +1252,8 @@ begin
       FTextRect.Top := (Height - Canvas.TextHeight(Caption)) div 2;
       FTextRect.Bottom := FTextRect.Top + Canvas.TextHeight(Caption);
       FTextRect.Right := R.Left + Canvas.TextWidth(Caption);
-    end;
-    
-    
-    DrawText(Canvas, Caption, -1, R, Flags);
-    
+    end;  
+    DrawText(Canvas, Caption, -1, R, Flags); 
   end;
 end;
 
@@ -1310,11 +1284,8 @@ begin
 
   if csDesigning in ComponentState then
   begin
-    Canvas.Brush.Color := clBlack;
-    
-    
-    FrameRect(Canvas, R);
-    
+    Canvas.Brush.Color := clBlack;  
+    FrameRect(Canvas, R); 
     Canvas.Brush.Color := Color;
   end;
 
@@ -1324,11 +1295,8 @@ begin
   begin
     if (csDesigning in ComponentState) and not Visible then
     begin
-      Canvas.Brush.Style := bsBDiagonal;
-      
-      
-      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
-      
+      Canvas.Brush.Style := bsBDiagonal;  
+      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle); 
       Canvas.Brush.Style := bsSolid;
     end
     else
@@ -1339,11 +1307,8 @@ begin
     end
     else
     begin { fill it up! }
-      Canvas.Brush.Color := FFillColor;
-      
-      
-      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
-      
+      Canvas.Brush.Color := FFillColor;  
+      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle); 
     end;
 
     if FDown then
@@ -1431,8 +1396,7 @@ end;
 
 procedure TJvCustomLookOutButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  Tmp: TPoint;
-  
+  Tmp: TPoint; 
 begin
   if Parent is TJvLookOutPage then
     TJvLookOutPage(Parent).ActiveButton := Self;
@@ -1447,8 +1411,7 @@ begin
       FPopUpMenu.PopupComponent := Self;
       FPopUpMenu.Popup(Tmp.X, Tmp.Y);
       { wait 'til menu is Done }
-      // TODO
-      
+      // TODO 
     end;
     { release button }
     if not FStayDown then
@@ -1934,11 +1897,8 @@ procedure TJvLookOutPage.CreateWidget;
 
 var
   R: TRect;
-begin
-  
-  
-  inherited CreateWidget;
-  
+begin  
+  inherited CreateWidget; 
   R := GetClientRect;
   if not Assigned(FUpArrow) then
   begin
@@ -2257,33 +2217,24 @@ begin
 
   { draw top caption }
   R := GetClientRect;
-  R.Bottom := cHeight;
-  
-  
-  SetBkMode(DC, QWindows.Transparent);
-  
+  R.Bottom := cHeight;  
+  SetBkMode(DC, QWindows.Transparent); 
   if FCaption <> '' then
   begin
     if not Enabled then
     begin
       { draw disabled text }
       SetTextColor(DC, ColorToRGB(clBtnHighLight));
-      OffsetRect(R, 1, 1);
-      
-      
-      DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-      
+      OffsetRect(R, 1, 1);  
+      DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE); 
       OffsetRect(R, -1, -1);
       SetTextColor(DC, ColorToRGB(clBtnShadow));
     end
     else
       SetTextColor(DC, ColorToRGB(Canvas.Font.Color));
     if FShowPressed and FDown then
-      OffsetRect(R, 1, 1);
-    
-    
-    DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-    
+      OffsetRect(R, 1, 1);  
+    DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE); 
   end;
 end;
 
@@ -2326,8 +2277,7 @@ end;
 procedure TJvLookOutPage.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   R: TRect;
-  Tmp: TPoint;
-  
+  Tmp: TPoint; 
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if Assigned(FPopUpMenu) and (Button = mbRight) then
@@ -2335,8 +2285,7 @@ begin
     { calc where to put menu }
     Tmp := ClientToScreen(Point(X, Y));
     FPopUpMenu.PopupComponent := Self;
-    FPopUpMenu.Popup(Tmp.X, Tmp.Y);
-    
+    FPopUpMenu.Popup(Tmp.X, Tmp.Y); 
     FDown := False;
   end
   else
@@ -2412,11 +2361,8 @@ begin
   begin
     FFlatButtons := Value;
     //    for I := 0 to PageCount - 1 do
-    //      Pages[I].DrawTopButton;
-    
-    
-    RecreateWidget;
-    
+    //      Pages[I].DrawTopButton;  
+    RecreateWidget; 
   end;
 end;
 
@@ -2523,11 +2469,8 @@ procedure TJvLookOut.SetBorderStyle(Value: TBorderStyle);
 begin
   if FBorderStyle <> Value then
   begin
-    FBorderStyle := Value;
-    
-    
-    RecreateWidget;
-    
+    FBorderStyle := Value;  
+    RecreateWidget; 
   end;
 end;
 
@@ -2666,11 +2609,8 @@ var
   RC, RW: TRect;
 begin
   DC := GetWindowDC(Handle);
-  try
-    
-    
-    QWindows.
-    
+  try  
+    QWindows. 
     GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
     MapWindowPoints(NullHandle, Handle, RW, 2);
@@ -2678,23 +2618,16 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
-    begin
-      
+    begin 
       DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
     end
     else
     begin
-      Canvas.Brush.Color := Color;
-      
-      
-      QWindows.
-      
+      Canvas.Brush.Color := Color;  
+      QWindows. 
       FrameRect(DC, RW, Canvas.Brush.Handle);
-      InflateRect(RW, -1, -1);
-      
-      
-      QWindows.
-      
+      InflateRect(RW, -1, -1);  
+      QWindows. 
       FrameRect(DC, RW, Canvas.Brush.Handle);
       InflateRect(RW, 1, 1);
     end;
@@ -2708,10 +2641,8 @@ end;
 procedure TJvLookOut.Paint;
 begin
   if not (Visible or (csDesigning in ComponentState)) then
-    Exit;
-  
-  Perform(WM_NCPAINT, 1, 0);
-  
+    Exit; 
+  Perform(WM_NCPAINT, 1, 0); 
   Canvas.Brush.Color := Color;
   Canvas.FillRect(GetClientRect);
   { make TJvLookOuts adjust to Managers size }
@@ -2732,10 +2663,8 @@ begin
 end;
 
 procedure TJvExpress.Paint;
-begin
-  
-  Perform(WM_NCPAINT, 0, 0);
-  
+begin 
+  Perform(WM_NCPAINT, 0, 0); 
   if not FBitmap.Empty then
   begin
     ControlStyle := ControlStyle + [csOpaque];
@@ -2892,11 +2821,8 @@ var
   RC, RW: TRect;
 begin
   DC := GetWindowDC(Handle);
-  try
-    
-    
-    QWindows.
-    
+  try  
+    QWindows. 
     GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
     MapWindowPoints(NullHandle, Handle, RW, 2);
@@ -2904,8 +2830,7 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
-    begin
-      
+    begin 
       DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT);
     end
     else

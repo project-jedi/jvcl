@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {******************************************************************************}
 {                        UNIFIED INTERBASE (UIB)                               }
@@ -32,7 +33,7 @@
 {******************************************************************************}
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}
@@ -58,12 +59,7 @@ uses
   SysUtils, SyncObjs;
 
 (* Basic data types *)
-type
-  
-  {$IFDEF BCB}
-  PPointer = ^Pointer;
-  {$ENDIF BCB}
-  
+type   
 
   UCHAR = {$IFDEF TYPE_IDENTITY} type {$ENDIF} Char;
   {$IFNDEF FPC}{$NODEFINE UCHAR}{$ENDIF}
@@ -276,7 +272,7 @@ type
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM ISC_UINT64}{$ENDIF}
   ISCUInt64 = ISC_UINT64;
 
-  
+  {$DEFINE ISC_INT64_DEFINED}
 
 //#else /* Not Windows*/
 //#   define  ISC_EXPORT_VARARG
@@ -286,9 +282,14 @@ type
  * 64 bit Integers                                                 *
  *******************************************************************)
 
-  
-  
-  
+  {$IFDEF ISC_INT64_DEFINED}
+  {$UNDEF ISC_INT64_DEFINED}
+  {$ELSE}
+  ISC_INT64 = {$IFDEF TYPE_IDENTITY} type {$ENDIF} Int64;
+  {$IFDEF USE_IBASE_H}{$EXTERNALSYM ISC_INT64}{$ENDIF}
+  ISC_UINT64 = {$IFDEF TYPE_IDENTITY} type {$ENDIF} Int64;
+  {$IFDEF USE_IBASE_H}{$EXTERNALSYM ISC_UINT64}{$ENDIF}
+  {$ENDIF ISC_INT64_DEFINED}
 
 (*******************************************************************
  * Time & Date Support                                             *
@@ -311,7 +312,7 @@ type
   end;
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM ISC_TIMESTAMP}{$ENDIF}
   TISCTimeStamp = ISC_TIMESTAMP;
-  
+  {$DEFINE ISC_TIMESTAMP_DEFINED}
 
 const
   ISC_TIME_SECONDS_PRECISION = 10000;

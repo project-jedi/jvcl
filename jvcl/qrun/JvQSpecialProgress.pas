@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,11 +37,8 @@ unit JvQSpecialProgress;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, QExtCtrls, QWindows, Types,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, QExtCtrls, QWindows, Types, 
   JvQComponent;
 
 type
@@ -133,8 +131,7 @@ type
     property OnClick;
     property OnDblClick;
     property OnDragOver;
-    property OnDragDrop;
-    
+    property OnDragDrop; 
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -235,11 +232,8 @@ begin
     UpdateBuffer;
   end;
   if (ClientWidth > 2) and (ClientHeight > 2) then
-  begin
-      
-    
-    Canvas.Draw(0,0, FBuffer);
-    
+  begin    
+    Canvas.Draw(0,0, FBuffer); 
   end;
 end;
 
@@ -367,11 +361,8 @@ begin
   Rect := ClientRect;
   if BorderStyle = bsNone then
   begin
-    FBuffer.Canvas.Brush.Color := Color;
-    
-    
-    FrameRect(FBuffer.Canvas, Rect);
-    
+    FBuffer.Canvas.Brush.Color := Color;  
+    FrameRect(FBuffer.Canvas, Rect); 
   end
   else
   begin
@@ -443,11 +434,8 @@ begin
   Y := (ClientHeight - FBuffer.Canvas.TextHeight(S)) div 2;
   if Y < 0 then
     Y := 0;
-
   
-  
-  SetBkMode(FBuffer.Canvas.Handle, TRANSPARENT);
-  
+  SetBkMode(FBuffer.Canvas.Handle, TRANSPARENT); 
   //    FBuffer.Canvas.Brush.Color := clNone;
   //    FBuffer.Canvas.Brush.Style := bsClear;
   FBuffer.Canvas.TextOut(X, Y, S);

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,10 +35,8 @@ unit JvQXmlTree;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF DELPHI6_UP}
-  Variants,
-  {$ENDIF DELPHI6_UP}
+  SysUtils, Classes, 
+  Variants, 
   JvQStrings;
 
 type
@@ -186,12 +185,7 @@ procedure PreProcessXML(aList: TStringList);
 
 implementation
 
-uses
-  {$IFDEF BCB}
-  {$IFNDEF BCB5}
-  Variants,
-  {$ENDIF BCB5}
-  {$ENDIF BCB}
+uses 
   JvQConsts;
 
 procedure PreProcessXML(aList: TStringList);

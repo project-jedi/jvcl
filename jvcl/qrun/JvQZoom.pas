@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQZoom;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, QExtCtrls, Types, QWindows,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, QExtCtrls, Types, QWindows, 
   JvQComponent;
 
 type
@@ -172,11 +170,8 @@ begin
   { Reading Canvas.Handle will implicitly set the canvas handle to the
     control's device context
     Calling PaintWindow will lock the canvas and call Paint
-  }
-  
-  
-  Repaint;
-  
+  }  
+  Repaint; 
 end;
 
 procedure TJvZoom.PaintZoom;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -104,16 +105,13 @@ Maciej Kaczkowski:
 
 {$I jvcl.inc}
 
-unit JvQHtControls;
+unit JvQHTControls;
 
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, Qt, QGraphics, QControls, QStdCtrls, QWindows,
-  
+  SysUtils, Classes,  
+  Types, Qt, QGraphics, QControls, QStdCtrls, QWindows, 
   JvQExStdCtrls;
 
 type
@@ -132,12 +130,9 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure FontChanged; override;
-    
-    
+    procedure FontChanged; override;  
     procedure Loaded; override;
-    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
-    
+    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override; 
   public
     constructor Create(AOwner: TComponent); override;
     property PlainItems[Index: Integer]: string read GetPlainItems;
@@ -165,8 +160,7 @@ type
     property ColorHighlightText;
     property ColorDisabledText;
     // Kaczkowski - end
-    property Columns;
-    
+    property Columns; 
     property DragMode;
     property Enabled;
     property ExtendedSelect;
@@ -215,16 +209,12 @@ type
     procedure SetHideSel(Value: Boolean);
     function GetPlainItems(Index: Integer): string;
     procedure SetDropWidth(ADropWidth: Integer);
-  protected
-    
-    
+  protected  
     function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
-    procedure CreateWidget; override;
-    
+    procedure CreateWidget; override; 
   public
     constructor Create(AOwner: TComponent); override;
-    property PlainItems[Index: Integer]: string read GetPlainItems;
-    
+    property PlainItems[Index: Integer]: string read GetPlainItems; 
   protected
     property HideSel: Boolean read FHideSel write SetHideSel;
     property DropWidth: Integer read FDropWidth write SetDropWidth;
@@ -244,8 +234,7 @@ type
     property ColorHighlightText;
     property ColorDisabledText;
     property Color;
-    // property Style;
-    
+    // property Style; 
     property DragMode;
     property DropDownCount;
     property Enabled;
@@ -283,10 +272,8 @@ type
 
   TJvCustomHTLabel = class(TJvExCustomLabel)
   private
-    FHyperLinkClick: THyperLinkClick;
-    
-    FCanvas: TCanvas;
-    
+    FHyperLinkClick: THyperLinkClick; 
+    FCanvas: TCanvas; 
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -295,31 +282,24 @@ type
     procedure AdjustBounds; 
     procedure SetAutoSize(Value: Boolean); override;
     procedure Paint; override;
-    procedure Loaded; override;
-    
+    procedure Loaded; override; 
     procedure TextChanged; override;  // handles autosize
-    property Canvas;
-    
+    property Canvas; 
     property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
-  public
-    
+  public 
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    
+    destructor Destroy; override; 
   end;
 
-  TJvHTLabel = class(TJvCustomHTLabel)
-  
+  TJvHTLabel = class(TJvCustomHTLabel) 
   public
-    property Canvas;
-  
+    property Canvas; 
   published
     property Align;
     // property Alignment;  // Kaczkowski
     property AutoSize;
     property Caption;
-    property Color;
-    
+    property Color; 
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -530,12 +510,9 @@ var
           LinkName := TempLink;
         end;
       if not CalcWidth then
-      begin
-        
-        
+      begin  
         if not Trans then
-          Canvas.FillRect(R);  // for opaque ( transparent = False )
-        
+          Canvas.FillRect(R);  // for opaque ( transparent = False ) 
         Canvas.TextOut(R.Left, R.Top, M);
       end;
       CurLeft := CurLeft + Width;
@@ -804,8 +781,7 @@ end;
 constructor TJvCustomHTListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  // Kaczkowski
-  
+  // Kaczkowski 
   ColorHighlight := clHighlight;
   ColorHighlightText := clHighlightText;
   ColorDisabledText := clGrayText;
@@ -835,10 +811,8 @@ begin
     Canvas.Font.Color := FDisabledTextColor;
 
   Canvas.FillRect(Rect);
-  ItemHTDraw(Canvas, Rect, State, Items[Index]);
-  
-  Result := True;
-  
+  ItemHTDraw(Canvas, Rect, State, Items[Index]); 
+  Result := True; 
 end;
 
 
@@ -950,11 +924,8 @@ begin
 
   Canvas.FillRect(Rect);
   Inc(Rect.Left, 2);
-  ItemHTDraw(Canvas, Rect, State, Items[Index]);
-  
-  
-  Result := True;
-  
+  ItemHTDraw(Canvas, Rect, State, Items[Index]);  
+  Result := True; 
 end;
 
 
@@ -992,8 +963,7 @@ procedure TJvCustomHTComboBox.SetDropWidth(ADropWidth: Integer);
 begin
   if FDropWidth <> ADropWidth then
   begin
-    FDropWidth := ADropWidth;
-    
+    FDropWidth := ADropWidth; 
   end;
 end;
 
@@ -1054,24 +1024,18 @@ begin
 end;
 
 procedure TJvCustomHTLabel.AdjustBounds;
-var
-  
+var 
   X: Integer;
   Rect: TRect;
   MaxWidth: Integer;
 begin
   if not (csReading in ComponentState) and AutoSize then
-  begin
-    
-    AdjustSize;
-    
-    Rect := ClientRect;
-    
-    
+  begin 
+    AdjustSize; 
+    Rect := ClientRect;  
     Canvas.Font.Assign(Font);
     Rect.Bottom := ItemHTHeight(Canvas, Caption);
-    MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption) + 2;
-    
+    MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption) + 2; 
     Rect.Right := Rect.Left + MaxWidth;
     X := Left;
     if Alignment = taRightJustify then

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -41,12 +42,9 @@ unit JvQArrowButton;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QTypes, QControls, QForms, QGraphics, QButtons, QImgList, QMenus, Types,
-  QWindows,
-  
+  QWindows, 
   JvQComponent, JvQTypes;
 
 type
@@ -83,11 +81,9 @@ type
     procedure SetArrowWidth(Value: Integer);
     procedure SetFillFont(Value: TFont);
     procedure UpdateTracking;
-    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_BUTTONPRESSED;
-    
+    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_BUTTONPRESSED; 
   protected
-    FState: TButtonState;
-    
+    FState: TButtonState; 
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -140,11 +136,8 @@ type
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   JvQConsts, JvQThemes, JvQJCLUtils;
 
 type
@@ -156,8 +149,7 @@ type
   public
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
-    function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
-       override; 
+    function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;  override; 
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
@@ -454,8 +446,7 @@ begin
     TmpImage.Width := IWidth;
     TmpImage.Height := IHeight;
     IRect := Rect(0, 0, IWidth, IHeight);
-    TmpImage.Canvas.Brush.Color := clBtnFace;
-    
+    TmpImage.Canvas.Brush.Color := clBtnFace; 
     I := State;
     if Ord(I) >= NumGlyphs then
       I := bsUp;
@@ -476,8 +467,7 @@ begin
           try
             MonoBmp := TBitmap.Create;
             DDB := TBitmap.Create;
-            DDB.Assign(FOriginal);
-            
+            DDB.Assign(FOriginal); 
             if NumGlyphs > 1 then
               with TmpImage.Canvas do
               begin { Change white & gray to clBtnHighlight and clBtnShadow }
@@ -522,8 +512,7 @@ begin
               with MonoBmp do
               begin
                 Assign(FOriginal);
-                GrayBitmap(MonoBmp);
-                
+                GrayBitmap(MonoBmp); 
                 Canvas.Brush.Color := clBlack;
                 Width := IWidth;
                 if Monochrome then
@@ -573,17 +562,14 @@ begin
   if (FOriginal = nil) or (FOriginal.Width = 0) or (FOriginal.Height = 0) then
     Exit;
   Index := CreateButtonGlyph(State);
-  with GlyphPos do
-    
-    
+  with GlyphPos do  
     // (ahuser) transparent not really supported under CLX
     if Transparent or (State = bsExclusive) then
     begin
       FGlyphList.Draw(Canvas, X, Y, Index, itImage, True);
     end
     else
-      FGlyphList.Draw(Canvas, X, Y, Index, itImage, True);
-    
+      FGlyphList.Draw(Canvas, X, Y, Index, itImage, True); 
 end;
 
 procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
@@ -745,8 +731,7 @@ constructor TJvArrowButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   SetBounds(0, 0, 42, 25);
-  ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
-  
+  ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks]; 
   FGlyph := TButtonGlyph.Create;
   TButtonGlyph(FGlyph).OnChange := GlyphChanged;
   FFillFont := TFont.Create;
@@ -845,8 +830,7 @@ begin
     FSpacing, FState, FFlat);
 
   { calculate were to put arrow part }
-  PaintRect := Rect(Width - FArrowWidth, 0, Width, Height);
-  
+  PaintRect := Rect(Width - FArrowWidth, 0, Width, Height); 
   Push := FArrowClick or (FPressBoth and (FState in [bsDown, bsExclusive]));
   if Push then
   begin
@@ -910,14 +894,11 @@ begin
     if Enabled then
     begin
       GetCursorPos(P);
-      FMouseInControl := not (FindDragTarget(P, True) = Self);
-      
-      
+      FMouseInControl := not (FindDragTarget(P, True) = Self);  
       if FMouseInControl then
         MouseLeave(Self)
       else
-        MouseEnter(Self);
-      
+        MouseEnter(Self); 
     end;
 end;
 
@@ -936,8 +917,7 @@ end;
 procedure TJvArrowButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  Pnt: TPoint;
-  
+  Pnt: TPoint; 
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if not Enabled then
@@ -956,13 +936,10 @@ begin
   if Assigned(FPopup) and FArrowClick then
   begin
     Pnt := ClientToScreen(Point(0, Height));
-    FPopup.Popup(Pnt.X, Pnt.Y);
-    
-    
+    FPopup.Popup(Pnt.X, Pnt.Y);  
     repeat
       Application.ProcessMessages;
-    until IsWindowVisible(FPopup.Handle) = False;
-    
+    until IsWindowVisible(FPopup.Handle) = False; 
   end;
 
   if FArrowClick then
@@ -1229,8 +1206,7 @@ begin
   begin
     FMouseInControl := True;
     Repaint;
-  end;
-  
+  end; 
 end;
 
 procedure TJvArrowButton.MouseLeave(Control: TControl);
@@ -1240,8 +1216,7 @@ begin
   begin
     FMouseInControl := False;
     Invalidate;
-  end;
-  
+  end; 
 end;
 
 end.

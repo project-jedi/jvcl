@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,11 +38,8 @@ unit JvQItemsPanel;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QWindows, QTypes, QGraphics, QControls, QExtCtrls,
-  
+  SysUtils, Classes,  
+  Types, QWindows, QTypes, QGraphics, QControls, QExtCtrls, 
   JvQComponent, JvQThemes, JvQJCLUtils, JvQExControls;
 
 type
@@ -69,13 +67,10 @@ type
     procedure SetHotTrack(const Value: Boolean);
     procedure SetHotTrackColor(const Value: TColor);
     procedure SetClickable(const Value: Boolean);
-    procedure SetOrientation(const Value: TJvPanelOrientation);
-    
+    procedure SetOrientation(const Value: TJvPanelOrientation); 
   protected
-    procedure SetAutoSize(Value: Boolean); 
-    
-    procedure AdjustSize; override;
-    
+    procedure SetAutoSize(Value: Boolean);  
+    procedure AdjustSize; override; 
     procedure Grow;
     procedure PaintDown;
     procedure PaintUp;
@@ -110,8 +105,7 @@ type
     property OnItemClick: TJvPanelItemClickEvent read FOnItemClick write FOnItemClick;
     property Align;
     property Alignment;
-    property Anchors;
-    
+    property Anchors; 
     property BorderWidth;
     property Color;
     property Constraints;
@@ -130,8 +124,7 @@ type
     property Visible;
     property OnClick;
     property OnConstrainedResize;
-    property OnContextPopup;
-    
+    property OnContextPopup; 
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -142,8 +135,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
-    property OnStartDrag;
-    
+    property OnStartDrag; 
   end;
 
 implementation
@@ -151,8 +143,7 @@ implementation
 constructor TJvItemsPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle - [csSetCaption];
-  
+  ControlStyle := ControlStyle - [csSetCaption]; 
   BevelInner := bvNone;
   BevelOuter := bvNone;
   FItemHeight := 16;
@@ -235,8 +226,7 @@ begin
   R.Right := R.Right - Canvas.TextWidth('  ');
   Canvas.Font := Font;
   if FHotTrack and HighLight then
-    Canvas.Font.Color := FHotTrackColor;
-  
+    Canvas.Font.Color := FHotTrackColor; 
   DrawText(Canvas, Items[Index], -1, R, Flags);
 end;
 

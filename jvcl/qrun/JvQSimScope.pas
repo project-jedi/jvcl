@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -50,11 +51,8 @@ unit JvQSimScope;
 
 interface
 
-uses
-  
-  
-  Types, QGraphics, QControls, QForms, QExtCtrls,
-  
+uses  
+  Types, QGraphics, QControls, QForms, QExtCtrls, 
   SysUtils, Classes;
 
 type
@@ -451,11 +449,8 @@ begin
   Rect.Top := 0;
   Rect.Left := 0;
   Rect.Right := Width;
-  Rect.Bottom := Height;
-  
-  
-  Canvas.CopyRect(Bounds(Left, Top, Width, Height), FDrawBuffer.Canvas, Rect);
-  
+  Rect.Bottom := Height;  
+  Canvas.CopyRect(Bounds(Left, Top, Width, Height), FDrawBuffer.Canvas, Rect); 
   FAllowed := True;
 end;
 

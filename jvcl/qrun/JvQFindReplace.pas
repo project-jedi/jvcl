@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -40,11 +41,8 @@ unit JvQFindReplace;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QControls, QDialogs, QStdCtrls, QWindows, Types,
-  
+  SysUtils, Classes,  
+  QControls, QDialogs, QStdCtrls, Types, QWindows, 
   JvQComponent;
 
 type
@@ -108,7 +106,6 @@ type
     procedure DoProgress(Position: Integer; var Terminate: Boolean); virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Find; virtual;
     procedure FindAgain; virtual;
     procedure Replace; virtual;
@@ -149,7 +146,7 @@ type
 
 procedure Error;
 begin
-  EJVCLException.Create(RsENoEditAssigned);
+  EJVCLException.CreateRes(@RsENoEditAssigned);
 end;
 
 { utility }
@@ -296,11 +293,6 @@ begin
   FPosition := Point(-1, -1);
 end;
 
-destructor TJvFindReplace.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvFindReplace.Find;
 begin
   if not Assigned(FEditControl) then
@@ -440,16 +432,14 @@ procedure TJvFindReplace.UpdateDialogs;
 begin
   NeedDialogs;
 
-  FFindDialog.Position := GetPosition;
-  FFindDialog.Form.Top := GetTop;
-  FFindDialog.Form.Left := GetLeft;
+  FFindDialog.Position := GetPosition;  
+  FFindDialog.Position := Point(GetTop, GetLeft); 
   FFindDialog.Options := FOptions;
   FFindDialog.HelpContext := GetHelpContext;
   FFindDialog.FindText := GetFindText;
   FReplaceDialog.Position := GetPosition;
-
-  FReplaceDialog.Form.Top := GetTop;
-  FReplaceDialog.Form.Left := GetLeft;
+  
+  FReplaceDialog.Position := Point(GetTop, GetLeft); 
   FReplaceDialog.Options := FOptions;
   FReplaceDialog.HelpContext := GetHelpContext;
   FReplaceDialog.FindText := GetFindText;
@@ -493,8 +483,7 @@ begin
     begin
       FEditControl.SetFocus;
       FEditControl.SelStart := FoundPos.StartAt;
-      FEditControl.SelLength := FoundPos.EndAt;
-//      SendMessage(FEditControl.Handle, EM_SCROLLCARET, 0, 0);
+      FEditControl.SelLength := FoundPos.EndAt; 
       if Assigned(FOnFind) then
         FOnFind(Self);
     end
@@ -561,7 +550,9 @@ begin
   else
     FCaption := RsFindCaption;
 
-  MessageBox(nil, {TFindDialog(Sender).Handle,} PChar(Format(RsNotFound, [TFindDialog(Sender).FindText])),
+  MessageBox(  
+    TFindDialog(Sender).Form.Handle, 
+    PChar(Format(RsNotFound, [TFindDialog(Sender).FindText])),
     PChar(FCaption), MB_OK or MB_ICONINFORMATION);
 end;
 
@@ -575,7 +566,9 @@ procedure TJvFindReplace.DoReplacedAll(Sender: TObject);
 begin
   if FShowDialogs then
   begin
-    MessageBox(nil, {TFindDialog(Sender).Handle,} PChar(Format(RsXOccurencesReplaced, [FNumberReplaced, TFindDialog(Sender).FindText])),
+    MessageBox(  
+      TFindDialog(Sender).Form.Handle, 
+      PChar(Format(RsXOccurencesReplaced, [FNumberReplaced, TFindDialog(Sender).FindText])),
       PChar(RsReplaceCaption), MB_OK or MB_ICONINFORMATION);
   end;
 
@@ -636,9 +629,9 @@ begin
     FShowDialogs := Value;
   if not Value then
   begin
-    NeedDialogs;
-    FFindDialog.Form.Close; //Dialog;
-    FReplaceDialog.Form.Close; //Dialog;
+    NeedDialogs;  
+    FFindDialog.Form.Close;
+    FReplaceDialog.Form.Close; 
   end;
 end;
 
@@ -667,17 +660,16 @@ function TJvFindReplace.GetTop: Integer;
 begin
   if (csDesigning in ComponentState) or not Assigned(FFindDialog) then
     Result := FPosition.Y
-  else
-    Result := FFindDialog.Form.Top;
+  else  
+    Result := FFindDialog.Position.Y; 
 end;
 
 function TJvFindReplace.GetLeft: Integer;
 begin
   if (csDesigning in ComponentState) or not Assigned(FFindDialog) then
     Result := FPosition.X
-  else
-    Result := FFindDialog.Form.Left;
-
+  else  
+    Result := FFindDialog.Position.X; 
 end;
 
 function TJvFindReplace.GetOptions: TFindOptions;

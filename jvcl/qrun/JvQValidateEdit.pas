@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,11 +39,8 @@ unit JvQValidateEdit;
 
 interface
 
-uses
-  
-  
-  QTypes, QControls, QGraphics, Types, QWindows,
-  
+uses  
+  QTypes, QControls, QGraphics, Types, QWindows, 
   SysUtils, Classes,
   JvQEdit;
 
@@ -137,8 +135,7 @@ type
     procedure SetFontColor;
     procedure FontChange(Sender: TObject);
     procedure EnforceMaxValue;
-    procedure EnforceMinValue;
-    
+    procedure EnforceMinValue; 
   protected
     function IsValidChar(const S: string; Key: Char; Posn: Integer): boolean; virtual;
     function MakeValid(ParseString: string): string;virtual;
@@ -187,8 +184,7 @@ type
     property AutoAlignment default True;
 
     property AutoSelect;
-    property AutoSize;
-    
+    property AutoSize; 
     property BorderStyle;
     property Caret;
     property CheckChars;

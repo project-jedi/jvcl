@@ -39,14 +39,8 @@ uses
 
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-
-
-
-  
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, Types, QWindows,
-  
+  {$ENDIF MSWINDOWS}  
+  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, Types, QWindows, 
   JvQLabel, JvQComponent, JvQExControls;
 
 type
@@ -80,11 +74,7 @@ type
     FDetailsHeight: Integer;
     FExceptObj: Exception;
     FPrevOnException: TExceptionEvent;
-    FOnErrorMsg: TJvErrorEvent;
-    
-
-
-
+    FOnErrorMsg: TJvErrorEvent; 
     procedure GetErrorMsg(var Msg: string);
     procedure ShowError;
     procedure SetShowDetails(Value: Boolean);
@@ -100,8 +90,6 @@ implementation
 uses
   QConsts,
   JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQResources, JvQTypes;
-
-
 
 
 
@@ -205,24 +193,7 @@ begin
     S := ReplaceStr(S, Lf, CrLf);
   if FExceptObj is EInOutError then
     S := Format(RsCodeError, [S, EInOutError(FExceptObj).ErrorCode])
-  else
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  else 
   if FExceptObj is EOSError then
     S := Format(RsCodeError,
      [S, EOSError(FExceptObj).ErrorCode])
@@ -271,27 +242,10 @@ end;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 procedure TJvErrorDialog.FormCreate(Sender: TObject);
 begin
   BorderIcons := [biSystemMenu, biHelp];
-  FDetailsHeight := DetailsPanel.Height;
-  
-
-
+  FDetailsHeight := DetailsPanel.Height; 
   IconImage.Picture.Icon := Icon;
   { Load string resources }
   Caption := SMsgDlgError;
@@ -308,27 +262,12 @@ end;
 
 procedure TJvErrorDialog.FormShow(Sender: TObject);
 var
-  S: string;
-  
-
-
+  S: string; 
 begin
   if FExceptObj.HelpContext <> 0 then
     HelpContext := FExceptObj.HelpContext
   else
-    HelpContext := THelpContext(0);
-  
-
-
-
-
-
-
-
-
-
-
-
+    HelpContext := THelpContext(0); 
   S := Trim(FExceptObj.Message) + '.';
   GetErrorMsg(S);
   ErrorText.Caption := S;
@@ -344,24 +283,7 @@ end;
 procedure TJvErrorDialog.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 
-
-
-
 begin
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 end;
 

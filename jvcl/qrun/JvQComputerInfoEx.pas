@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -47,11 +48,8 @@ unit JvQComputerInfoEx;
 interface
 
 uses
-  Classes, SysUtils,
-  
-  
-  Qt, QControls, QGraphics,
-  
+  Classes, SysUtils,  
+  Qt, QControls, QGraphics, 
   Windows, Messages, ShlObj,
   JclWin32, JclSysInfo,
   JvQJCLUtils, JvQDataProvider, JvQTypes, JvQComponent;
@@ -1375,11 +1373,8 @@ end;
 procedure UpdateToLogFont(AFont: TFont; var LogFont: TLogFont);
 
 
-begin
-  
-  
-  GetObject(QFont_handle(AFont.Handle), SizeOf(LogFont), @LogFont);
-  
+begin  
+  GetObject(QFont_handle(AFont.Handle), SizeOf(LogFont), @LogFont); 
 end;
 
 procedure RaiseReadOnly(AlwaysRaise: Boolean = False);

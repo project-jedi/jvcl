@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -40,11 +41,8 @@ unit JvQOfficeColorButton;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QWindows, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QWindows, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls, 
   JvQComponent, JvQSpeedButton, JvQOfficeColorForm, JvQOfficeColorPanel;
 
 const
@@ -103,8 +101,7 @@ type
     function GetGlyph: TBitmap;
     procedure SetGlyph(const Value: TBitmap);
     function GetProperties: TJvOfficeColorButtonProperties;
-    procedure SetProperties(const Value: TJvOfficeColorButtonProperties);
-    
+    procedure SetProperties(const Value: TJvOfficeColorButtonProperties); 
     procedure ReadArrowWidth(Reader: TReader);
     procedure ReadEdgeWidth(Reader: TReader);
     procedure ReadOtherCaption(Reader: TReader);
@@ -120,11 +117,8 @@ type
     procedure DoClick(Sender: TObject);
   protected
     procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen position
-    procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen position
-    
-    
-    procedure Loaded; override;
-    
+    procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen position  
+    procedure Loaded; override; 
     procedure SetEnabled( const  Value: Boolean); override;
     procedure FontChanged; override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -138,8 +132,7 @@ type
     property Color: TColor read GetColor write SetColor default clBlack;
     property SelectedColor: TColor read GetColor write SetColor default clBlack;
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
-    property Properties: TJvOfficeColorButtonProperties read GetProperties write SetProperties;
-    
+    property Properties: TJvOfficeColorButtonProperties read GetProperties write SetProperties; 
     property Glyph: TBitmap read GetGlyph write SetGlyph;
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
@@ -148,8 +141,7 @@ type
   end;
 
   TJvOfficeColorButton = class(TJvCustomOfficeColorButton)
-  published
-    
+  published 
     property Align;
     property Anchors;
     property Constraints;
@@ -165,8 +157,7 @@ type
     property Visible;
     property Flat;
     property Color;
-    property CustomColors;
-    
+    property CustomColors; 
     property Glyph;
     property Properties;
     property OnConstrainedResize;
@@ -229,8 +220,7 @@ begin
   inherited Paint;
 
   { calculate were to put arrow part }
-  PaintRect := Rect(0, 0, Width, Height);
-  
+  PaintRect := Rect(0, 0, Width, Height); 
 
   Push := Down or (FState in [rbsDown, rbsExclusive]);
   if Push then
@@ -291,8 +281,7 @@ begin
   FInited := False;
 
   ControlStyle := ControlStyle - [csAcceptsControls, csSetCaption] + [csOpaque];
-  BevelOuter := bvNone;
-  
+  BevelOuter := bvNone; 
   Width := MinButtonWidth + MinArrowWidth;
   Height := MinButtonHeight;
 
@@ -338,11 +327,9 @@ begin
   FColorsForm.ColorPanel.Properties.OnPropertiesChanged := nil;
 
 //  Font.Name := 'MS Shell Dlg 2';
-  Flat := True;
-  
+  Flat := True; 
   // in CLX and a bug not fix when drag the colors form
-  Properties.ShowDragBar := False;
-  
+  Properties.ShowDragBar := False; 
   FMainButton.OnMouseEnter := DoButtonMouseEnter;
   FArrowButton.OnMouseEnter := DoButtonMouseEnter;
   FMainButton.OnMouseLeave := DoButtonMouseLeave;

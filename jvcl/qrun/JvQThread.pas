@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,13 +35,13 @@ unit JvQThread;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Types, QWindows,
   {$ENDIF LINUX}
-  SysUtils, Classes,
   JvQTypes, JvQComponent;
 
 type
@@ -71,6 +72,10 @@ type
     function OneThreadIsRunning: Boolean;
     function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
+    {$IFDEF LINUX}
+    function GetPolicy(Thread: THandle): integer;
+    procedure SetPolicy(Thread: THandle; Policy: integer);
+    {$ENDIF LINUX}
     procedure QuitThread(Thread: THandle);
     procedure Suspend(Thread: THandle); // should not be used
     procedure Resume(Thread: THandle);
@@ -146,12 +151,10 @@ begin
   Terminate;
   while OneThreadIsRunning do
   begin
-    Sleep(1);
-    
+    Sleep(1); 
      // Delphi 5 uses SendMessage -> no need for this code
      // Delphi 6+ uses an event and CheckSynchronize
-    CheckSynchronize; // TThread.OnTerminate is synchronized
-    
+    CheckSynchronize; // TThread.OnTerminate is synchronized 
   end;
   FThreads.Free;
   inherited Destroy;
@@ -186,7 +189,12 @@ end;
 
 function TJvThread.GetPriority(Thread: THandle): TThreadPriority;
 begin
+  {$IFDEF MSWINDOWS}
   Result := tpIdle;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Result := 0;
+  {$ENDIF LINUX}
   if Thread <> 0 then
     Result := TThreadPriority(GetThreadPriority(Thread));
 end;
@@ -195,6 +203,23 @@ procedure TJvThread.SetPriority(Thread: THandle; Priority: TThreadPriority);
 begin
   SetThreadPriority(Thread, Integer(Priority));
 end;
+
+{$IFDEF LINUX}
+
+function TJvThread.GetPolicy(Thread: THandle): integer;
+begin
+  Result := 0;
+  if Thread <> 0 then
+    Result := GetThreadPolicy(Handle);
+end;
+
+procedure TJvThread.SetPolicy(Thread: THandle; Policy: integer);
+begin
+  if Thread <> 0 then
+    SetThreadPriority(Thread, Policy);
+end;
+
+{$ENDIF LINUX}
 
 procedure TJvThread.QuitThread(Thread: THandle);
 begin
@@ -239,15 +264,15 @@ end;
 procedure TJvThread.Terminate;
 var
   List: TList;
-  i: Integer;
+  I: Integer;
 begin
   List := FThreads.LockList;
   try
-    for i := 0 to List.Count - 1 do
+    for I := 0 to List.Count - 1 do
     begin
-      TJvHideThread(List[i]).Terminate;
-      if TJvHideThread(List[i]).Suspended then
-        TJvHideThread(List[i]).Resume;
+      TJvHideThread(List[I]).Terminate;
+      if TJvHideThread(List[I]).Suspended then
+        TJvHideThread(List[I]).Resume;
     end;
   finally
     FThreads.UnlockList;
@@ -280,15 +305,15 @@ end;
 
 function TJvThread.GetTerminated: Boolean;
 var
-  i: Integer;
+  I: Integer;
   List: TList;
 begin
   Result := True;
   List := FThreads.LockList;
   try
-    for i := 0 to List.Count - 1 do
+    for I := 0 to List.Count - 1 do
     begin
-      Result := Result and TJvHideThread(List[i]).Terminated;
+      Result := Result and TJvHideThread(List[I]).Terminated;
       if not Result then
         Break;
     end;
@@ -299,7 +324,8 @@ end;
 
 //=== TJvHideThread ==========================================================
 
-constructor TJvHideThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer);
+constructor TJvHideThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;
+  Params: Pointer);
 begin
   inherited Create(True);
   FSender := Sender;
@@ -325,7 +351,6 @@ begin
     end;
   end;
 end;
-
 
 initialization
   SyncMtx := CreateMutex(nil, False, 'VCLJvThreadMutex');

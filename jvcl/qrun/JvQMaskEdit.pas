@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -40,11 +41,8 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QMask, QForms, QWindows, QTypes,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QControls, QMask, QForms, QWindows, QTypes, 
   JvQComponent, JvQTypes, JvQCaret, JvQToolEdit, JvQExMask;
 
 type
@@ -59,8 +57,7 @@ type
     FLastNotifiedText: String;
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
-    procedure SetHotTrack(Value: Boolean);
-    
+    procedure SetHotTrack(Value: Boolean); 
   protected
     procedure UpdateEdit;
     procedure CaretChanged(Sender: TObject); dynamic;
@@ -69,11 +66,9 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
     procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
-    procedure DoClipboardPaste; override;
-    
+    procedure DoClipboardPaste; override; 
     function GetText: TCaption; override;
-    procedure SetText(const Value: TCaption); override;
-    
+    procedure SetText(const Value: TCaption); override; 
     procedure MouseEnter(Control :TControl); override;
     procedure MouseLeave(Control :TControl); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -82,16 +77,14 @@ type
     procedure SetGroupIndex(const Value: Integer);
     procedure NotifyIfChanged;
     procedure Change; override;
-  public
-    
+  public 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     property Entering: Boolean read FEntering;
     property Leaving: Boolean read FLeaving;
   protected
-    property Text: TCaption read GetText write SetText;
-    
+    property Text: TCaption read GetText write SetText; 
     // set to True to disable read/write of PasswordChar and read of Text
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
@@ -127,13 +120,11 @@ type
     property DragMode;
     property Enabled;
     property EditMask;
-    property Font;
-    
+    property Font; 
     property MaxLength;
     property ParentColor;
     property ParentFont;
-    property ParentShowHint;
-    
+    property ParentShowHint; 
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
@@ -155,8 +146,7 @@ type
     property OnKeyUp;
     property OnMouseDown;
     property OnMouseMove;
-    property OnMouseUp;
-    
+    property OnMouseUp; 
     property OnStartDrag;
   end;
 
@@ -186,11 +176,8 @@ begin
     Exit;
   if not MouseOver then
   begin
-    if HotTrack then
-      
-      
-      BorderStyle := bsSingle;
-      
+    if HotTrack then  
+      BorderStyle := bsSingle; 
     inherited MouseEnter(Control);
   end;
 end;
@@ -199,11 +186,8 @@ procedure TJvCustomMaskEdit.MouseLeave(Control: TControl);
 begin
   if MouseOver then
   begin
-    if FHotTrack then
-      
-      
-      BorderStyle := bsSingle; // maybe bsNone
-      
+    if FHotTrack then  
+      BorderStyle := bsSingle; // maybe bsNone 
     inherited MouseLeave(Control);
   end;
 end;
@@ -212,18 +196,12 @@ procedure TJvCustomMaskEdit.SetHotTrack(Value: Boolean);
 begin
   FHotTrack := Value;
   if Value then
-  begin
-    
-    
-    BorderStyle := bsSingle; // maybe bsNone
-    
+  begin  
+    BorderStyle := bsSingle; // maybe bsNone 
   end
   else
-  begin
-    
-    
-    BorderStyle := bsSingle;
-    
+  begin  
+    BorderStyle := bsSingle; 
   end;
 end;
 
@@ -303,11 +281,8 @@ var
 begin
   Tmp := ProtectPassword;
   try
-    ProtectPassword := False;
-    
-    
-    Result := inherited GetText;
-    
+    ProtectPassword := False;  
+    Result := inherited GetText; 
   finally
     ProtectPassword := Tmp;
   end;
@@ -315,11 +290,8 @@ end;
 
 
 procedure TJvCustomMaskEdit.SetText(const Value: TCaption);
-begin
-  
-  
-  inherited SetText(Value);
-  
+begin  
+  inherited SetText(Value); 
 end;
 
 

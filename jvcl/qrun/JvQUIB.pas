@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {******************************************************************************}
 {                        UNIFIED INTERBASE (UIB)                               }
@@ -31,7 +32,7 @@
 unit JvQUIB;
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 (*------------------------------------------------------------------------------
   This is a cascading programming style.
@@ -929,7 +930,7 @@ begin
     FTransactions.Remove(Transaction);
     if FTransactions.Count = 0 then
     begin
-      FTransactions.free;
+      FTransactions.Free;
       FTransactions := nil;
     end;
   end;
@@ -1407,7 +1408,7 @@ begin
       if FUseCursor then
         DSQLSetCursorName(FStHandle, FCursorName);
     except
-      FSQLResult.free;
+      FSQLResult.Free;
       FSQLResult := nil;
       EndStatement(FOnError, False);
       raise;
@@ -1420,7 +1421,7 @@ end;
 
 procedure TJvUIBStatement.EndPrepare(const ETM: TEndTransMode; Auto: boolean);
 begin
-  FSQLResult.free;
+  FSQLResult.Free;
   FSQLResult := nil;
   FCurrentState := qsStatement;
   EndStatement(ETM, Auto);
@@ -1609,7 +1610,7 @@ end;
 destructor TJvUIBStatement.Destroy;
 begin
   FSQL.Free;
-  FParameter.free;
+  FParameter.Free;
   FParameter := nil;
   SetTransaction(nil);
   inherited;
@@ -2304,7 +2305,7 @@ begin
     FSQLComponent.Remove(Component);
     if (FSQLComponent.Count = 0) then
     begin
-      FSQLComponent.free;
+      FSQLComponent.Free;
       FSQLComponent := nil;
     end;
   end;

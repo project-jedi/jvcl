@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQColorProvider;
 interface
 
 uses
-  Classes, Contnrs,
-  
-  
-  Types, QWindows, QGraphics, QDialogs, 
-  
+  Classes, Contnrs,  
+  Types, QWindows, QGraphics, QDialogs,  
   JclBase,
   JvQDataProvider, JvQDataProviderIntf, JvQTypes;
 
@@ -445,17 +443,14 @@ type
     procedure IJvColorMappingProvider.Set_ClientProvider = SetColorProviderIntf;
   private
     function GetColorProviderIntf: IJvColorProvider;
-    procedure SetColorProviderIntf(Value: IJvColorProvider);
-    
+    procedure SetColorProviderIntf(Value: IJvColorProvider); 
   protected
     class function ItemsClass: TJvDataItemsClass; override;
     function ConsumerClasses: TClassArray; override;
   public
     property ProviderIntf: IJvColorProvider read GetColorProviderIntf write SetColorProviderIntf;
-  published
-    
-    property Provider: IJvColorProvider read GetColorProviderIntf write SetColorProviderIntf;
-    
+  published 
+    property Provider: IJvColorProvider read GetColorProviderIntf write SetColorProviderIntf; 
   end;
 
   TJvColorProviderServerNotify = class(TJvDataConsumerServerNotify)
@@ -505,14 +500,9 @@ function ColorProviderColorAdderRegister: TJvColorProviderColorAdderRegister;
 implementation
 
 uses
-  SysUtils,
-  
-  RTLConsts,
-  
-  
-  
-  QControls,
-  
+  SysUtils, 
+  RTLConsts,   
+  QControls, 
   JclRTTI, JclStrings,
   JvQJVCLUtils, JvQConsts, JvQResources;
 
@@ -1254,7 +1244,7 @@ begin
     Result := FList.AddObject(Name, TObject(@Callback))
   else
   if @Callbacks(Result) <> @Callback then
-    raise EJVCLException.CreateFmt(RsEAlreadyRegistered, [Name]);
+    raise EJVCLException.CreateResFmt(@RsEAlreadyRegistered, [Name]);
 end;
 
 procedure TJvColorProviderColorAdderRegister.Delete(Callback: TJvColorProviderColorAdder);
@@ -2398,7 +2388,7 @@ end;
 procedure TJvColorProvider.ReadMappings(Reader: TReader);
 begin
   if Reader.ReadValue <> vaCollection then
-    raise EReadError.Create(RsEMappingCollectionExpected);
+    raise EReadError.CreateRes(@RsEMappingCollectionExpected);
   Mappings.Clear;
   while not Reader.EndOfList do
     ReadMapping(Reader);
@@ -2424,20 +2414,20 @@ var
 begin
   Reader.ReadListBegin;
   if not AnsiSameStr(Reader.ReadStr, 'Name') then
-    raise EReadError.Create(RsEExpectedMappingName);
+    raise EReadError.CreateRes(@RsEExpectedMappingName);
   Index := AddMapping(Reader.ReadString);
   if not AnsiSameStr(Reader.ReadStr, 'Names') then
-    raise EReadError.Create(RsEExpectedNameMappings);
+    raise EReadError.CreateRes(@RsEExpectedNameMappings);
   Reader.ReadListBegin;
   while not Reader.EndOfList do
   begin
     S := Reader.ReadString;
     IEqualPos := Pos('=', S);
     if IEqualPos < 1 then
-      raise EReadError.Create(RsEInvalidNameMappingSpecification);
+      raise EReadError.CreateRes(@RsEInvalidNameMappingSpecification);
     I := IndexOfColor(StrToInt(Trim(Copy(S, 1, IEqualPos - 1))));
     if I < 0 then
-      raise EReadError.CreateFmt(RsEUnknownColor, [Trim(Copy(S, 1, IEqualPos - 1))]);
+      raise EReadError.CreateResFmt(@RsEUnknownColor, [Trim(Copy(S, 1, IEqualPos - 1))]);
     FColorList[I].Names[Index] := Trim(Copy(S, IEqualPos + 1, Length(S) - IEqualPos));
   end;
   Reader.ReadListEnd;
@@ -2936,22 +2926,15 @@ begin
   if CurrentSettings.TextSettings.Active or (CurrentColorValue >= clNone) then
   begin
     S := GetRenderText;
-    R := CurrentRect;
-    
-    CurrentCanvas.Start;
-    
+    R := CurrentRect; 
+    CurrentCanvas.Start; 
     OldBkMode := SetBkMode(CurrentCanvas.Handle, TRANSPARENT);
-    try
-      
-      
+    try  
       DrawText(CurrentCanvas, S, Length(S), R, DT_SINGLELINE or DT_END_ELLIPSIS or
-        DT_VCENTER or DT_NOPREFIX);
-      
+        DT_VCENTER or DT_NOPREFIX); 
     finally
-      SetBkMode(CurrentCanvas.Handle, OldBkMode);
-      
-      CurrentCanvas.Stop;
-      
+      SetBkMode(CurrentCanvas.Handle, OldBkMode); 
+      CurrentCanvas.Stop; 
     end;
   end;
 end;
@@ -2967,10 +2950,8 @@ var
   OldBkMode: Integer;
 begin
   S := GetRenderText;
-  OldFont := TFont.Create;
-  
-  CurrentCanvas.Start;
-  
+  OldFont := TFont.Create; 
+  CurrentCanvas.Start; 
   try
     OldFont.Assign(CurrentCanvas.Font);
     try
@@ -3056,10 +3037,8 @@ begin
     finally
       CurrentCanvas.Font.Assign(OldFont);
     end;
-  finally
-    
-    CurrentCanvas.Stop;
-    
+  finally 
+    CurrentCanvas.Stop; 
     OldFont.Free;
   end;
 end;
@@ -3102,15 +3081,11 @@ begin
     if XAdd > 0 then
       Inc(XAdd, CurrentSettings.ColorBoxSettings.Spacing);
     S := GetRenderText;
-    R := Rect(0, 0, 0, 0);
-    
-    CurrentCanvas.Start;
-    
+    R := Rect(0, 0, 0, 0); 
+    CurrentCanvas.Start; 
     DrawText(CurrentCanvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_NOPREFIX or
-      DT_CALCRECT);
-    
-    CurrentCanvas.Stop;
-    
+      DT_CALCRECT); 
+    CurrentCanvas.Stop; 
     Inc(R.Right, XAdd);
     if R.Right > Size.cx then
       Size.cx := R.Right;
@@ -3193,14 +3168,10 @@ begin
     begin
       ChHeight := CanvasMaxTextHeight(ACanvas);
       if ChHeight > Result.cy then
-        Result.cy := ChHeight;
-      
-      ACanvas.Start;
-      
-      GetTextMetrics(ACanvas.Handle, Metrics);
-      
-      ACanvas.Stop;
-      
+        Result.cy := ChHeight; 
+      ACanvas.Start; 
+      GetTextMetrics(ACanvas.Handle, Metrics); 
+      ACanvas.Stop; 
       ChWdth := Metrics.tmAveCharWidth;
       if CurrentSettings.ColorBoxSettings.Active then
         Result.cx := Result.cx + CurrentSettings.ColorBoxSettings.Spacing + (10 * ChWdth)
@@ -3323,7 +3294,7 @@ begin
     Set_NameMappingIndex(Idx);
   end
   else
-    raise EJVCLDataConsumer.Create(RsESpecifiedMappingError);
+    raise EJVCLDataConsumer.CreateRes(@RsESpecifiedMappingError);
 end;
 
 procedure TJvColorProviderSettings.Set_NameMappingIndex(Value: Integer);
@@ -3482,7 +3453,7 @@ begin
     Color := Reader.ReadInteger;
     ColIdx := CPImpl.IndexOfColor(Color);
     if ColIdx < 0 then
-      raise EReadError.CreateFmt(RsEInvalidColor, [Color]);
+      raise EReadError.CreateResFmt(@RsEInvalidColor, [Color]);
     if CPImpl.IndexOfColIdx(List, ColIdx) < 0 then
     begin
       SetLength(List, Length(List) + 1);
@@ -3747,13 +3718,13 @@ begin
         Delete(MapIdx);
       end
       else
-        raise EJVCLDataItems.Create(RsEItemNotForList);
+        raise EJVCLDataItems.CreateRes(@RsEItemNotForList);
     end
     else
-      raise EJVCLDataItems.Create(RsEItemNotForList);
+      raise EJVCLDataItems.CreateRes(@RsEItemNotForList);
   end
   else
-    raise EJVCLDataItems.Create(RsEItemNotForList);
+    raise EJVCLDataItems.CreateRes(@RsEItemNotForList);
 end;
 
 //=== TJvColorConsumer =======================================================

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -32,11 +33,8 @@ unit JvQSplit;
 
 interface
 
-uses
-  
-  
-  QControls, QExtCtrls, QForms, QGraphics, Types, QWindows,
-  
+uses  
+  QControls, QExtCtrls, QForms, QGraphics, Types, QWindows, 
   SysUtils, Classes,
   JvQComponent;
 
@@ -106,8 +104,7 @@ type
     property BevelWidth;
     property BorderStyle;
     property Enabled;
-    property Color;
-    
+    property Color; 
     property Cursor read GetCursor stored False;
     property TopLeftLimit: Integer read FTopLeftLimit write FTopLeftLimit default 20;
     property BottomRightLimit: Integer read FBottomRightLimit write FBottomRightLimit default 20;
@@ -152,8 +149,7 @@ begin
   FTopLeftLimit := 20;
   FBottomRightLimit := 20;
   FControlFirst := nil;
-  FControlSecond := nil;
-  
+  FControlSecond := nil; 
 end;
 
 procedure TJvxSplitter.Loaded;
@@ -242,8 +238,7 @@ begin
   FLimitRect.BottomRight := CToC(Self, Parent, Point(R.Right - R.Left -
     FBottomRightLimit, R.Bottom - R.Top - FBottomRightLimit));
   FNoDropCursor := False;
-  FForm := ValidParentForm(Self);
-  
+  FForm := ValidParentForm(Self); 
   with FForm.Canvas do
   begin
     Pen.Color := clWhite;
@@ -267,14 +262,12 @@ const
 var
   NewSize: Integer;
   Rect: TRect;
-  W, H: Integer;
-  
+  W, H: Integer; 
   P: TPoint;
 begin
   if FForm <> nil then
   begin
-    ShowInverseRect(0, 0, imClear);
-    
+    ShowInverseRect(0, 0, imClear); 
     FForm := nil;
   end;
   FNoDropCursor := False;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,11 +34,8 @@ unit JvQBitmapButton;
 
 interface
 
-uses
-  
-  
-  Types, QWindows, QGraphics, QControls, QForms, QDialogs,
-  
+uses  
+  Types, QWindows, QGraphics, QControls, QForms, QDialogs, 
   SysUtils, Classes,
   JvQComponent, JvQTypes;
 

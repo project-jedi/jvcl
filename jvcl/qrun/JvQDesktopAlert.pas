@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQDesktopAlert;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QControls, QGraphics, QForms, QMenus, QImgList, Types, QWindows,
-  
+  SysUtils, Classes,  
+  QControls, QGraphics, QForms, QMenus, QImgList, Types, QWindows, 
   JvQComponent, JvQBaseDlg, JvQDesktopAlertForm, JvQTypes;
 
 type
@@ -294,14 +292,17 @@ end;
 
 procedure TJvDesktopAlertColors.Assign(Source: TPersistent);
 begin
-  if (Source is TJvDesktopAlertColors) and (Source <> Self) then
+  if Source is TJvDesktopAlertColors then
   begin
-    FFrame := TJvDesktopAlertColors(Source).Frame;
-    FWindowFrom := TJvDesktopAlertColors(Source).WindowFrom;
-    FWindowTo := TJvDesktopAlertColors(Source).WindowTo;
-    FCaptionFrom := TJvDesktopAlertColors(Source).CaptionFrom;
-    FCaptionTo := TJvDesktopAlertColors(Source).CaptionTo;
-    Change;
+    if Source <> Self then
+    begin
+      FFrame := TJvDesktopAlertColors(Source).Frame;
+      FWindowFrom := TJvDesktopAlertColors(Source).WindowFrom;
+      FWindowTo := TJvDesktopAlertColors(Source).WindowTo;
+      FCaptionFrom := TJvDesktopAlertColors(Source).CaptionFrom;
+      FCaptionTo := TJvDesktopAlertColors(Source).CaptionTo;
+      Change;
+    end;
   end
   else
     inherited Assign(Source);
@@ -410,11 +411,14 @@ end;
 
 procedure TJvDesktopAlertButtonItem.Assign(Source: TPersistent);
 begin
-  if (Source is TJvDesktopAlertButtonItem) and (Source <> Self) then
+  if Source is TJvDesktopAlertButtonItem then
   begin
-    ImageIndex := TJvDesktopAlertButtonItem(Source).ImageIndex;
-    OnClick := TJvDesktopAlertButtonItem(Source).OnClick;
-    Tag := TJvDesktopAlertButtonItem(Source).Tag;
+    if Source <> Self then
+    begin
+      ImageIndex := TJvDesktopAlertButtonItem(Source).ImageIndex;
+      OnClick := TJvDesktopAlertButtonItem(Source).OnClick;
+      Tag := TJvDesktopAlertButtonItem(Source).Tag;
+    end;
   end
   else
     inherited Assign(Source);
@@ -436,11 +440,14 @@ procedure TJvDesktopAlertButtons.Assign(Source: TPersistent);
 var
   I: Integer;
 begin
-  if (Source is TJvDesktopAlertButtons) and (Source <> Self) then
+  if Source is TJvDesktopAlertButtons then
   begin
-    Clear;
-    for I := 0 to TJvDesktopAlertButtons(Source).Count - 1 do
-      Add.Assign(TJvDesktopAlertButtons(Source)[I]);
+    if Source <> Self then
+    begin
+      Clear;
+      for I := 0 to TJvDesktopAlertButtons(Source).Count - 1 do
+        Add.Assign(TJvDesktopAlertButtons(Source)[I]);
+    end;
   end
   else
     inherited Assign(Source);

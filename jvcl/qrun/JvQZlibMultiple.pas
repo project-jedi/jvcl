@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,12 +35,9 @@ unit JvQZlibMultiple;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QDialogs, Types,
-  
-  ZLib, JvQComponent;
+  SysUtils, Classes,  
+  QGraphics, QControls, QDialogs, Types, 
+  JclZLib, JvQComponent;
 
 type
   TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
@@ -85,8 +83,7 @@ type
 
 implementation
 
-uses
-  
+uses 
   JvQJCLUtils;
 
 {*******************************************************}
@@ -119,7 +116,8 @@ function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean
         begin
           if (SearchRec.Attr and faDirectory) = 0 then
             AddFile(SearchRec.Name, SDirectory, Directory + SDirectory + SearchRec.Name, Result)
-          else if Recursive then
+          else
+          if Recursive then
             SearchDirectory(SDirectory + SearchRec.Name + PathDelim);
         end;
         Res := FindNext(SearchRec);
@@ -143,7 +141,7 @@ procedure TJvZlibMultiple.AddFile(FileName, Directory, FilePath: string;
 var
   Stream: TStream;
   FileStream: TFileStream;
-  ZStream: TCompressionStream;
+  ZStream: TJclZLibWriter;
   Buffer: array[0..1023] of Byte;
   Count: Integer;
 
@@ -175,7 +173,7 @@ begin
   Stream := TMemoryStream.Create;
   FileStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyWrite);
   try
-    ZStream := TCompressionStream.Create(clDefault, Stream);
+    ZStream := TJclZLibWriter.Create(Stream);
     try
       if Assigned(FOnCompressingFile) then
         FOnCompressingFile(Self, FilePath);
@@ -267,7 +265,7 @@ procedure TJvZlibMultiple.DecompressStream(Stream: TStream;
   Directory: string; Overwrite: Boolean; const RelativePaths: Boolean);
 var
   FileStream: TFileStream;
-  ZStream: TDecompressionStream;
+  ZStream: TJclZLibReader;
   CStream: TMemoryStream;
   B, LastPos: Byte;
   S: string;
@@ -314,7 +312,7 @@ begin
       begin
         //This fails if Directory isn't empty
         FileStream := TFileStream.Create(S, fmCreate or fmShareExclusive);
-        ZStream := TDecompressionStream.Create(CStream);
+        ZStream := TJclZLibReader.Create(CStream);
         try
           if Assigned(FOnDecompressingFile) then
             FOnDecompressingFile(Self, S);

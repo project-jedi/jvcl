@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,12 +35,9 @@ unit JvQCSVBaseControls;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QButtons,
-  Types,
-  
+  Types, 
   JvQComponent;
 
 type
@@ -154,8 +152,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoBoundsChanged; override;
   public
-    constructor Create(AOwner: TComponent); override;
-    
+    constructor Create(AOwner: TComponent); override; 
   published
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
   end;
@@ -643,14 +640,11 @@ end;
 
 constructor TJvCSVNavigator.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
   Height := 24;
   Width := 217;
-  CreateButtons;
-  
-  ControlStyle := ControlStyle - [csSetCaption];
-  
+  CreateButtons; 
+  ControlStyle := ControlStyle - [csSetCaption]; 
 end;
 
 procedure TJvCSVNavigator.btnAddClick(Sender: TObject);

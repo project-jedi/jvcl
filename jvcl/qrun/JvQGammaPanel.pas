@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,11 +39,8 @@ unit JvQGammaPanel;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, Types, QWindows,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, Types, QWindows, 
   JvQTypes, JvQComponent;
 
 type
@@ -77,8 +75,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property Align;
-    
+    property Align; 
     property Height default 250;
     property Width default 65;
     property ForegroundColor: TColor read FForegroundColor write SetForegroundColor default clBlack;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -43,8 +44,7 @@ type
     property Constraints;
     property HintColor;
     property OnMouseEnter;
-    property OnMouseLeave;
-    
+    property OnMouseLeave; 
     property OnParentColorChange;
 
     property OnClick;
@@ -56,12 +56,10 @@ type
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
-    property OnMouseUp;
-    
+    property OnMouseUp; 
     property OnMouseWheel;
     property OnMouseWheelDown;
-    property OnMouseWheelUp;
-    
+    property OnMouseWheelUp; 
     property OnResize;
     property OnStartDrag;
   end;

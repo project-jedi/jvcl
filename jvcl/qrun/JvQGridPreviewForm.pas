@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove att slcdug dott org].
 
-Last Modified: 2000-06-15
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,12 +35,9 @@ unit JvQGridPreviewForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QWindows, QGraphics, QControls, QForms, QDialogs, Types,
-  QExtCtrls, QGrids, QStdCtrls, QComCtrls, QButtons, QPrinters, QExtDlgs,
-  
+  QExtCtrls, QGrids, QStdCtrls, QComCtrls, QButtons, QPrinters, QExtDlgs, 
   JvQGridPrinter, JvQComponent;
 
 type
@@ -152,20 +149,14 @@ begin
     Exit;
   end;
   if Margins.ItemIndex > 5 then
-  begin
-    
-    
+  begin  
     Margin.Min := 6;
-    Margin.Max := 72;
-    
+    Margin.Max := 72; 
   end
   else
-  begin
-    
-    
+  begin  
     Margin.Min := 0;
-    Margin.Max := 400;
-    
+    Margin.Max := 400; 
   end;
 end;
 
@@ -228,12 +219,9 @@ begin
   PreviewImage.Picture.Bitmap.Assign(FPrintImage);
   Header.Text := GridPrinter.PrintOptions.PageTitle;
   Margin.Value := GridPrinter.PrintOptions.MarginTop;
-  Margins.ItemIndex := 0;
-  
-  
+  Margins.ItemIndex := 0;  
   PreviewPage.Max := PageCount;
-  lblpages.Caption := Format(RsOfd, [PreviewPage.Max]);
-  
+  lblpages.Caption := Format(RsOfd, [PreviewPage.Max]); 
   GridPrinter.PrintOptions.PreviewPage := 1;
   PreviewPage.Value := 1;
   ckBorders.Checked := (GridPrinter.PrintOptions.BorderStyle = bsSingle);
@@ -253,14 +241,11 @@ begin
 end;
 
 procedure TJvGridPreviewForm.PreviewPageChange(Sender: TObject);
-begin
-  
-  
+begin  
   if PreviewPage.Value < PreviewPage.Min then
     PreviewPage.Value := PreviewPage.Min;
   if PreviewPage.Value > PreviewPage.Max then
-    PreviewPage.Value := PreviewPage.Max;
-  
+    PreviewPage.Value := PreviewPage.Max; 
   GridPrinter.PrintOptions.PreviewPage := PreviewPage.Value;
   if cklive.Checked then
     btnshow.Click;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -23,8 +24,6 @@ Contributor(s):
   Polaris Software
   Andreas Hausladen
 
-Last Modified: 2004-02-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -33,6 +32,7 @@ Known Issues:
        example DecimalPlaces/Decimal, CheckMinValue (name indicates action?
        maybe better: TJvValidateEdit's HasMinValue) etc.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -41,11 +41,8 @@ unit JvQBaseEdits;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QTypes, QGraphics, QControls, QImgList, QWindows, Types,
-  
+  SysUtils, Classes,  
+  QTypes, QGraphics, QControls, QImgList, QWindows, Types, 
   JvQToolEdit;
 
 type
@@ -82,14 +79,11 @@ type
     procedure SetFormatOnEditing(Value: Boolean);
     function GetText: string;  reintroduce; 
     procedure SetText(const AValue: string);  reintroduce; 
-    function TextToValText(const AValue: string): string;
+//    function TextToValText(const AValue: string): string;
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
-    function IsFormatStored: Boolean;
-    
-  protected
-    
-    procedure Paint; override;
-    
+    function IsFormatStored: Boolean; 
+  protected 
+    procedure Paint; override; 
     procedure DoClipboardPaste; override;
     procedure SetBeepOnError(Value: Boolean); override;
 
@@ -143,8 +137,7 @@ type
     function DefaultDisplayFormat: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-  published
-    
+  published 
     property Align; //Polaris
     property Alignment;
     property Anchors;
@@ -211,8 +204,7 @@ type
 
   { (rb) why no ButtonFlat property? }
   TJvCalcEdit = class(TJvCustomCalcEdit)
-  published
-    
+  published 
     property Action;
     property Align; //Polaris
     property Alignment;
@@ -282,20 +274,16 @@ type
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   Math, JvQJCLUtils, JvQCalc, JvQConsts, JvQResources;
 
 {$IFDEF MSWINDOWS}
-{$R ..\Resources\JvBaseEdits.Res}
+{$R ..\Resources\JvBaseEdits.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvBaseEdits.Res}
+{$R ../Resources/JvBaseEdits.res}
 {$ENDIF LINUX}
-
 
 const
   sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }
@@ -375,11 +363,9 @@ begin
     ButtonWidth := 21;
   finally
     ControlState := ControlState - [csCreating];
-  end;
-  
+  end; 
   FCanvas := TControlCanvas.Create;
-  FCanvas.Control := Self;
-  
+  FCanvas.Control := Self; 
 end;
 
 destructor TJvCustomNumEdit.Destroy;
@@ -643,7 +629,7 @@ begin
       end;
     end;
     if RaiseOnError and (Result <> NewValue) then
-      raise ERangeError.CreateFmt(RsEOutOfRangeXFloat,
+      raise ERangeError.CreateResFmt(@RsEOutOfRangeXFloat,
         [DecimalPlaces, FMinValue, DecimalPlaces, FMaxValue]);
   end;
 end;
@@ -717,6 +703,7 @@ begin
   Result := inherited Text;
 end;
 
+(*
 function TJvCustomNumEdit.TextToValText(const AValue: string): string;
 var
   I: Integer;
@@ -750,7 +737,7 @@ begin
   if Result = '-' then
     Result := '-0';
 end;
-
+*)
 
 procedure TJvCustomNumEdit.SetText(const AValue: string);
 begin
@@ -929,6 +916,7 @@ end;
 constructor TJvCustomCalcEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csAcceptsControls];
   ControlState := ControlState + [csCreating];
   try
     FPopup := TJvPopupWindow(CreatePopupCalculator(Self ));

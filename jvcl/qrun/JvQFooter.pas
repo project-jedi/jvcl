@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-09-01
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,11 +35,8 @@ unit JvQFooter;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QStdCtrls, QExtCtrls,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QStdCtrls, QExtCtrls, 
   JvQComponent, JvQBitBtn, JvQTypes;
 
 type
@@ -53,14 +50,10 @@ type
     function GetButtonIndex: Integer;
     procedure SetButtonIndex(const Value: Integer);
     procedure SetAlignment(const Value: TAlignment);
-    procedure SetSpaceInterval(const Value: Integer);
-    
-  protected
-    
-    
+    procedure SetSpaceInterval(const Value: Integer); 
+  protected  
     procedure SetParent(const ParentA: TWidgetControl); override;
-    procedure AdjustSize; override;
-    
+    procedure AdjustSize; override; 
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -87,8 +80,7 @@ type
     //    property DockManager;
   published
     property Align;
-    property Anchors;
-    
+    property Anchors; 
     property BevelStyle: TJvBevelStyle read FBevelStyle write SetBevelStyle default bsLowered;
     property BevelVisible: Boolean read FBevelVisible write SetBevelVisible default False;
     property Color;
@@ -96,8 +88,7 @@ type
     //property DockSite;
     property DragMode;
     property Enabled;
-    property Font;
-    
+    property Font; 
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -212,14 +203,12 @@ var
   AParent: TWidgetControl;
 
 
-begin
-  
-  AParent := ParentA;
-  
+begin 
+  AParent := ParentA; 
   if AParent is TJvFooterBtn then // (p3) D6 messing up ?
     AParent := TJvFooterBtn(AParent).Parent;
   if not ((AParent is TJvFooter) or (AParent = nil)) then
-    raise EJvFooterError.Create(RsETJvFooterBtnCanOnlyBePlacedOnATJvFo);
+    raise EJvFooterError.CreateRes(@RsETJvFooterBtnCanOnlyBePlacedOnATJvFo);
   inherited SetParent(AParent);
 end;
 

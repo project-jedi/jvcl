@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -54,11 +55,8 @@ unit JvQRollOut;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QImgList, QControls, QExtCtrls,  QActnList, Types, QWindows,
-  
+  SysUtils, Classes,  
+  QGraphics, QImgList, QControls, QExtCtrls,  QActnList, Types, QWindows, 
   JvQComponent, JvQThemes;
 
 const
@@ -193,11 +191,8 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-    procedure ParentColorChanged; override;
-    
-    
-    procedure CreateWidget; override;
-    
+    procedure ParentColorChanged; override;  
+    procedure CreateWidget; override; 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -261,14 +256,12 @@ type
     property ChildOffset;
     property Placement;
     property Collapsed;
-    property Colors;
-    
+    property Colors; 
     property DragMode;
     property Enabled;
     property Font;
     property GroupIndex;
-    property ImageOptions;
-    
+    property ImageOptions; 
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -606,17 +599,13 @@ end;
 procedure TJvCustomRollOut.RedrawControl(DrawAll: Boolean);
 begin
   if DrawAll then
-  begin
-    
-    Canvas.Brush.Style := bsSolid;
-    
+  begin 
+    Canvas.Brush.Style := bsSolid; 
     Invalidate;
   end
   else
-  begin
-    
-    Canvas.Brush.Style := bsClear;
-    
+  begin 
+    Canvas.Brush.Style := bsClear; 
     DrawButtonFrame;
   end;
 end;
@@ -866,10 +855,8 @@ procedure TJvCustomRollOut.DrawButtonFrame;
 var
   R: TRect;
   TopC, BottomC: TColor;
-  FIndex: Integer;
-  
-  WS: WideString;
-  
+  FIndex: Integer; 
+  WS: WideString; 
 begin
   if FPlacement = plTop then
     FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
@@ -943,16 +930,13 @@ begin
   begin
     SetBkMode(Canvas.Handle, Transparent);
     if FMouseDown and FInsideButton then
-      OffsetRect(R, 1, 1);
-    
-    
+      OffsetRect(R, 1, 1);  
     WS := Caption;
     SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
       DrawText(Canvas.Handle, WS, -1, FButtonHeight , BevelWidth + 2, Canvas.TextWidth(WS), FButtonHeight, DT_VCENTER, 270)
     else
-      DrawText(Canvas.Handle, WS, -1, BevelWidth + 2, 0, Canvas.TextWidth(WS), FButtonHeight, DT_VCENTER, 0)
-    
+      DrawText(Canvas.Handle, WS, -1, BevelWidth + 2, 0, Canvas.TextWidth(WS), FButtonHeight, DT_VCENTER, 0) 
   end;
   if ShowFocus and Focused then
   begin
@@ -1170,8 +1154,7 @@ function TJvRollOutAction.Execute: Boolean;
 begin
   Result := inherited Execute;
   if Result then
-  begin
-    
+  begin 
     if ActionComponent is TJvCustomRollOut then
     begin
       if LinkCheckedToCollapsed then
@@ -1179,8 +1162,7 @@ begin
       else
         TJvCustomRollOut(ActionComponent).Collapsed := not TJvCustomRollOut(ActionComponent).Collapsed;
     end
-    else
-    
+    else 
     if RollOut <> nil then
     begin
       if LinkCheckedToCollapsed then
@@ -1234,11 +1216,9 @@ begin
     begin
       if RollOut <> nil then
         RollOut.Collapsed := not Checked
-      else
-      
+      else 
       if ActionComponent is TJvCustomRollOut then
-        TJvCustomRollOut(ActionComponent).Collapsed := not Checked;
-      
+        TJvCustomRollOut(ActionComponent).Collapsed := not Checked; 
     end;
   end;
 end;

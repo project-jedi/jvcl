@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQMarkupLabel;
 
 interface
 
-uses
-  
-  
-  Types, QGraphics, QControls, QWindows,
-  
+uses  
+  Types, QGraphics, QControls, QWindows, 
   SysUtils, Classes,
   JvQComponent, JvQMarkupCommon;
 
@@ -65,8 +63,7 @@ type
     procedure SetAlignment(const Value: TAlignment);
     procedure DoReadBackColor(Reader: TReader);
   protected
-    procedure FontChanged; override;
-    
+    procedure FontChanged; override; 
     procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -79,8 +76,7 @@ type
     property MarginRight: Integer read FMarginRight write SetMarginRight default 5;
     property MarginTop: Integer read FMarginTop write SetMarginTop default 5;
     property Text: string read FText write SetText;
-    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify; 
     property Align;
     property Font;
 
@@ -115,8 +111,7 @@ uses
 
 constructor TJvMarkupLabel.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
   FElementStack := TJvHTMLElementStack.Create;
   FTagStack := TJvHTMLElementStack.Create;
   FAlignment := taLeftJustify;
@@ -417,8 +412,7 @@ var
   R: TRect;
   I, C, X, Y: Integer;
   ATotalWidth, AClientWidth, ATextWidth, BaseLine: Integer;
-  iSol, iEol, PendingCount, MaxHeight, MaxAscent: Integer;
-  
+  iSol, iEol, PendingCount, MaxHeight, MaxAscent: Integer; 
   El: TJvHTMLElement;
   Eol: Boolean;
   PendingBreak: Boolean;
@@ -459,16 +453,14 @@ begin
   C := FElementStack.Count;
   if C = 0 then
     Exit;
-  HTMLClearBreaks;
-  
+  HTMLClearBreaks; 
     AClientWidth := ClientWidth - MarginLeft - MarginRight;
 
   Canvas.Brush.Style := bsClear;
   Y := MarginTop;
   iSol := 0;
   PendingBreak := False;
-  PendingCount := -1;
-  
+  PendingCount := -1; 
   repeat
     I := iSol;
     ATotalWidth := AClientWidth;
@@ -533,8 +525,7 @@ begin
 
     // render line
     BaseLine := MaxAscent;
-
-    
+ 
       case Alignment of
         taLeftJustify:
           X := MarginLeft;
@@ -552,8 +543,7 @@ begin
 
     Y := Y + MaxHeight;
     iSol := iEol;
-  until (iEol >= C - 1) and (El.EolText = '');
-  
+  until (iEol >= C - 1) and (El.EolText = ''); 
 end;
 
 procedure TJvMarkupLabel.SetAlignment(const Value: TAlignment);

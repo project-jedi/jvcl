@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,11 +39,8 @@ unit JvQProgressComponent;
 
 interface
 
-uses
-  
-  
-  Types, QWindows, QTypes, QControls, QForms, QStdCtrls, QComCtrls,
-  
+uses  
+  Types, QWindows, QTypes, QControls, QForms, QStdCtrls, QComCtrls, 
   SysUtils, Classes,
   JvQComponent;
 
@@ -136,11 +134,8 @@ begin
     with FForm do
     begin
       ClientWidth := 307;
-      ClientHeight := 98;
-      
-      
-      BorderStyle := fbsDialog;
-      
+      ClientHeight := 98;  
+      BorderStyle := fbsDialog; 
       Position := poMainFormCenter;
       FormStyle := fsStayOnTop;
       Scaled := false;
@@ -200,10 +195,7 @@ end;
 
 procedure TJvProgressComponent.FormOnShow(Sender: TObject);
 begin
-  
-  
   PostMessage(FForm.Handle, CM_SHOWEVENT, 0, Integer(Self));
-  
 end;
 
 procedure TJvProgressComponent.FormOnCancel(Sender: TObject);

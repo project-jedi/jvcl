@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,11 +37,8 @@ unit JvQNetscapeSplitter;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QWindows, Qt, QGraphics, QForms, QExtCtrls, QControls, Types,
-  
+  SysUtils, Classes,  
+  QWindows, Qt, QGraphics, QForms, QExtCtrls, QControls, Types, 
   JvQExExtCtrls;
 
 const
@@ -54,8 +52,7 @@ type
   TJvWindowsButtons = set of TJvWindowsButton;
 
   TJvCustomNetscapeSplitter = class(TJvExSplitter)
-  private
-    
+  private 
     FShowButton: Boolean;
     FButtonWidthKind: TJvButtonWidthKind;
     FButtonWidth: Integer;
@@ -105,14 +102,11 @@ type
     // Internal use for moving splitter position with FindControl and
     // UpdateControlSize
     FControl: TControl;
-    FDownPos: TPoint;
-    
+    FDownPos: TPoint; 
     procedure LoadOtherProperties(Reader: TReader); dynamic;
     procedure StoreOtherProperties(Writer: TWriter); dynamic;
-    procedure DefineProperties(Filer: TFiler); override;
-    {$IFDEF COMPILER4_UP}
-    function DoCanResize(var NewSize: Integer): Boolean; override;
-    {$ENDIF COMPILER4_UP}
+    procedure DefineProperties(Filer: TFiler); override; 
+    function DoCanResize(var NewSize: Integer): Boolean; override; 
     procedure Loaded; override;
     procedure PaintButton(Highlight: Boolean); dynamic;
     function DrawArrow(ACanvas: TCanvas; AvailableRect: TRect; Offset: Integer;
@@ -269,7 +263,7 @@ begin
     Minimized or Maximized);
 end;
 
-{$IFDEF COMPILER4_UP}
+
 function TJvCustomNetscapeSplitter.DoCanResize(var NewSize: Integer): Boolean;
 begin
   Result := inherited DoCanResize(NewSize);
@@ -278,7 +272,7 @@ begin
   if Result and (NewSize < MinSize) then
     NewSize := MinSize;
 end;
-{$ENDIF COMPILER4_UP}
+
 
 procedure TJvCustomNetscapeSplitter.DoClose;
 begin
@@ -657,11 +651,8 @@ begin
     else
     begin
       // Draw basic button
-      OffscreenBmp.Canvas.Brush.Color := clGray;
-      
-      
-      FrameRect(OffscreenBmp.Canvas, BtnRect);
-      
+      OffscreenBmp.Canvas.Brush.Color := clGray;  
+      FrameRect(OffscreenBmp.Canvas, BtnRect); 
       InflateRect(BtnRect, -1, -1);
 
       OffscreenBmp.Canvas.Pen.Color := clWhite;
@@ -762,16 +753,7 @@ procedure TJvCustomNetscapeSplitter.SetAlign(Value: TAlign);
 begin
   inherited Align := Value;
 
-  Invalidate; // Direction changing, redraw arrows.
-  {$IFNDEF COMPILER4_UP}
-  // D4 does this already
-  if (Cursor <> crVSplit) and (Cursor <> crHSplit) then
-    Exit;
-  if Align in [alBottom, alTop] then
-    Cursor := crVSplit
-  else
-    Cursor := crHSplit;
-  {$ENDIF COMPILER4_UP}
+  Invalidate; // Direction changing, redraw arrows. 
 end;
 
 procedure TJvCustomNetscapeSplitter.SetAllowDrag(const Value: Boolean);

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-31
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,12 +35,9 @@ unit JvQUnicodeCanvas;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QWindows
-
-  ;
+  SysUtils, Classes,  
+  Qt, Types, QGraphics, QWindows, 
+  JvQJCLUtils;
 
 type
   TJvExtTextOutOptionsKind = (etoClipped, etoOpaque);
@@ -60,12 +57,10 @@ type
 
     function ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions;
       Rect: PRect; const Text: string; lpDx: Pointer): Boolean;
-
-    
+ 
     procedure TextOutVCL(X, Y: Integer; const Text: WideString);
     procedure TextRectVCL(Rect: TRect; X, Y: Integer;
-      const Text: WideString; TextFlags: Integer = 0);
-    
+      const Text: WideString; TextFlags: Integer = 0); 
   end;
 
 implementation
@@ -136,26 +131,20 @@ end;
 
 function TJvUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions;
   Rect: PRect; const Text: string; lpDx: Pointer): Boolean;
-begin
-  
-  
+begin  
   Start;
   Result := QWindows.ExtTextOut(Handle, X, Y, ExtTextOutOptionsToInt(Options),
     Rect, PChar(Text), Length(Text), lpDx);
-  Stop;
-  
+  Stop; 
 end;
 
 function TJvUnicodeCanvas.ExtTextOutW(X, Y: Integer; Options: TJvExtTextOutOptions;
   Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
-begin
-  
-  
+begin  
   Start;
   Result := QWindows.ExtTextOutW(Handle, X, Y, ExtTextOutOptionsToInt(Options),
     Rect, PWideChar(Text), Length(Text), lpDx);
-  Stop;
-  
+  Stop; 
 end;
 
 end.

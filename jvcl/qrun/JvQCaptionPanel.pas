@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -40,18 +41,15 @@ interface
 // the dragging "manually" within the control. Defining this means that you actually get the Mouse events
 // and the OnEndAutoDrag event. Additionally, the form displays scrollbars as expected when the component is dragged
 // The downside is that the control "flashes" more when it's dragged
+{$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
 
 
-
- 
+ {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
 
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, Qt, QWindows, QGraphics, QControls, QForms, QDialogs, QExtCtrls,
-  
+  SysUtils, Classes,  
+  Types, Qt, QWindows, QGraphics, QControls, QForms, QDialogs, QExtCtrls, 
   JvQComponent, JvQThemes, JvQExControls;
 
 type
@@ -111,9 +109,9 @@ type
     FCaptionOffsetSmall: Integer;
     FCaptionOffsetLarge: Integer;
     FIcon: TIcon;
-    
+    {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     FAnchorPos: TPoint;
-    
+    {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
     procedure SetIcon(Value: TIcon);
     procedure SetCaptionFont(Value: TFont);
     procedure SetCaptionColor(Value: TColor);
@@ -122,16 +120,14 @@ type
     procedure SetCaption(Value: string);
     procedure SetJvDrawPosition(Value: TJvDrawPosition);
     procedure DrawRotatedText(Rotation: Integer);
-    procedure DrawButtons;
-    
+    procedure DrawButtons; 
     procedure SetOutlookLook(const Value: Boolean);
     procedure DoCaptionFontChange(Semder:TObject);
   protected
     procedure Paint; override;
     procedure Resize; override;
 
-    procedure AlignControls(AControl: TControl; var Rect: TRect); override;
-    
+    procedure AlignControls(AControl: TControl; var Rect: TRect); override; 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -151,8 +147,7 @@ type
     property CaptionPosition: TJvDrawPosition read FDrawPosition write SeTJvDrawPosition default dpLeft;
     property CaptionFont: TFont read FCaptionFont write SetCaptionFont;
     property Color;
-    property Cursor;
-    
+    property Cursor; 
     property DragMode;
     property Enabled;
     property FlatButtons: Boolean read FFlat write SetFlat default False;
@@ -350,11 +345,9 @@ begin
   if FFlat then
     Flags := Flags or DFCS_FLAT;
 
-  Canvas.Brush.Color := Color;
-  
+  Canvas.Brush.Color := Color; 
   Canvas.Start;
-  try
-  
+  try 
     SetBkMode(Canvas.Handle, TRANSPARENT);
     DrawFrameControl(Canvas.Handle, ClientRect, DFC_CAPTION, Flags);
     if FFlat then
@@ -367,12 +360,10 @@ begin
         Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1)
       else
         Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
-    end;
-  
+    end; 
   finally
     Canvas.Stop;
-  end;
-  
+  end; 
 end;
 
 //=== TJvCaptionPanel ========================================================
@@ -381,8 +372,7 @@ constructor TJvCaptionPanel.Create(AOwner: TComponent);
 var
   I: TJvCapBtnStyle;
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
   FCaptionFont := TFont.Create;
   FIcon := TIcon.Create;
   {$IFDEF MSWINDOWS}
@@ -399,12 +389,9 @@ begin
   FCaptionFont.OnChange := DoCaptionFontChange;
   FDrawPosition := dpLeft;
   FCaptionWidth := GetSystemMetrics(SM_CYCAPTION);
-  FAutoDrag := True;
-  
-  
+  FAutoDrag := True;  
   FOffset := 3;
-  FCaptionColor := clActiveHighlight;
-  
+  FCaptionColor := clActiveHighlight; 
   FFlat := False;
   for I := Low(FButtonArray) to High(FButtonArray) do //Iterate
   begin
@@ -478,11 +465,8 @@ procedure TJvCaptionPanel.SetJvDrawPosition(Value: TJvDrawPosition);
 begin
   if FDrawPosition <> Value then
   begin
-    FDrawPosition := Value;
-    
-    
-    RecreateWidget;
-    
+    FDrawPosition := Value;  
+    RecreateWidget; 
   end;
 end;
 
@@ -516,14 +500,12 @@ var
   R: TRect;
   FlatOffset: Integer;
 begin
-  R := ClientRect;
-  
+  R := ClientRect; 
   if BorderStyle = bsSingle then
   begin
     DrawShadePanel(Canvas, R, false, 1, nil);
     InflateRect(R, -2, -2);
-  end;
-  
+  end; 
   with Canvas do
   begin
     Brush.Color := Color;
@@ -583,86 +565,62 @@ end;
 
 procedure TJvCaptionPanel.DrawRotatedText(Rotation: Integer);
 var
-  tH: Integer;
-  
-  
-  X, Y: Integer;
-  
+  tH: Integer;  
+  X, Y: Integer; 
   R: TRect;
 begin
   if FCaption = '' then
-    Exit;
-  
+    Exit; 
   Canvas.Start;
   try
     QPainter_save(Canvas.Handle);
-    Canvas.Font.Assign(CaptionFont);
-  
+    Canvas.Font.Assign(CaptionFont); 
     SetBkMode(Canvas.Handle, TRANSPARENT);
     with Canvas do
-    begin
-      
+    begin 
       R := FCaptionRect;
-      tH := ((R.Bottom - R.Top) - Canvas.TextHeight(FCaption)) div 2;
-      
-      
+      tH := ((R.Bottom - R.Top) - Canvas.TextHeight(FCaption)) div 2;  
       X := FCaptionRect.Left;
-      Y := FCaptionRect.Top;
-      
+      Y := FCaptionRect.Top; 
       if FOutlookLook then
       begin
-        Dec(th);
-        
+        Dec(th); 
       end;
       case FDrawPosition of
         dpLeft:
-          begin
-            
-            
+          begin  
             X := R.Left + (FCaptionWidth + Canvas.TextHeight(Caption)) div 2 - FOffset;
             Y := R.Bottom - 1;
             if not FIcon.Empty then
               Dec(Y, FIcon.Height + 3)
             else
-              Dec(Y);
-            
+              Dec(Y); 
           end;
         dpTop, dpBottom:
-          begin
-            
+          begin 
             X := R.Left;
             Y := R.Top + th + Canvas.TextHeight(Caption) - FOffset;
             if not FIcon.Empty then
               Inc(X, FIcon.Width + 3)
             else
-              Inc(X);
-            
-            
+              Inc(X);  
           end;
         dpRight:
-          begin
-            
+          begin 
             X := R.Left + (FCaptionWidth - Canvas.TextHeight(Caption)) div 2 + FOffset;
             Y := R.Top;
             if not FIcon.Empty then
               Inc(Y, FIcon.Height + 3)
             else
-              Inc(Y);
-            
-            
+              Inc(Y);  
           end;
-      end;
-      
-      
-      TextOutAngle(Canvas, Rotation, X, Y, Caption);
-      
-    end;
-  
+      end;  
+      TextOutAngle(Canvas, Rotation, X, Y, Caption); 
+    end; 
   finally
     QPainter_restore(Canvas.Handle);
     Canvas.Stop;
-  end;
-  
+  end; 
 end;
 
 procedure TJvCaptionPanel.DrawButtons;
@@ -803,13 +761,13 @@ end;
 procedure TJvCaptionPanel.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
-  
+  {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
   if FDragging then
   begin
     Left := Left + X - FAnchorPos.X;
     Top := Top + Y - FAnchorPos.Y;
   end;
-  
+  {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
 end;
 
 procedure TJvCaptionPanel.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -825,10 +783,12 @@ begin
     SetZOrder(True);
     FDragging := True;
     ReleaseCapture;
-    
+    {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     SetCapture(Handle);
     FAnchorPos := Point(X, Y);
-    
+    {$ELSE}
+    Perform(WM_SYSCOMMAND, SC_DRAGMOVE, 0);
+    {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
   end;
 end;
 

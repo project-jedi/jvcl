@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -58,11 +59,8 @@ unit JvQLabel;
 
 interface
 
-uses
-  
-  
-  Qt, QGraphics, QControls, QForms, QStdCtrls, QImgList, Types, QWindows,
-  
+uses  
+  Qt, QGraphics, QControls, QForms, QStdCtrls, QImgList, Types, QWindows, 
   SysUtils, Classes,
   JvQTypes, JvQComponent, JvQConsts, JvQExControls, JvQDataProvider, JvQDataProviderIntf;
 
@@ -138,11 +136,8 @@ type
 
     procedure DoDrawCaption(var Rect: TRect; Flags: Integer); virtual;
     procedure DoDrawText(var Rect: TRect; Flags: Integer); virtual;
-    procedure AdjustBounds;
-    
-    
-    procedure SetAutoSize(Value: Boolean); virtual;
-    
+    procedure AdjustBounds;  
+    procedure SetAutoSize(Value: Boolean); virtual; 
 
     function GetDefaultFontColor: TColor; virtual;
     function GetLabelCaption: string; virtual;
@@ -206,8 +201,7 @@ type
     property Alignment;
     property AutoSize;
     property Caption;
-    property Color;
-    
+    property Color; 
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -320,8 +314,7 @@ begin
   FConsumerSvc.OnChanged := ConsumerServiceChanged;
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
-  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-  
+  ControlStyle := ControlStyle + [csOpaque, csReplicatable]; 
   FHotTrack := False;
   // (rom) needs better font handling
   FHotTrackFont := TFont.Create;
@@ -406,22 +399,18 @@ begin
     ColorShadow := clBtnHighlight;
   end;
   if IsValidImage then
-    Inc(Rect.Left, GetImageWidth + Spacing);
-  
+    Inc(Rect.Left, GetImageWidth + Spacing); 
   Canvas.Start;
   RequiredState(Canvas, [csHandleValid, csFontValid]);
-  try
-  
+  try 
     if Angle <> 0 then
       DrawAngleText(Rect, Flags, IsValidImage, SizeShadow, ColorToRGB(ColorShadow), PosShadow)
     else
       DrawShadowText(Canvas, PChar(Text), Length(Text), Rect, Flags,
-        SizeShadow, ColorToRGB(ColorShadow), PosShadow);
-  
+        SizeShadow, ColorToRGB(ColorShadow), PosShadow); 
   finally
     Canvas.Stop;
-  end;
-  
+  end; 
   // (p3) draw image here since it can potentionally change background and font color
   if IsValidImage and (Flags and DT_CALCRECT = 0) then
   begin
@@ -435,11 +424,8 @@ begin
         Y := (Height - Images.Height) div 2;
     end;
     if Y < Margin then
-      Y := Margin;
-    
-    
-    Images.Draw(Canvas, X, Y, ImageIndex, itImage, Enabled);
-    
+      Y := Margin;  
+    Images.Draw(Canvas, X, Y, ImageIndex, itImage, Enabled); 
   end;
 end;
 
@@ -617,8 +603,7 @@ begin
       else
       begin
         Brush.Color := Color;
-        FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
-        
+        FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame); 
       end;
     end;
     Rect := ClientRect;
@@ -678,11 +663,9 @@ begin
     Rect := ClientRect;
 //    InflateRect(Rect, -1, 0);
 //    DC := GetDC(NullHandle);
-//    Canvas.Handle := DC;
-    
+//    Canvas.Handle := DC; 
     Canvas.Start(False);
-    try
-    
+    try 
       if Angle = 0 then
       begin
         InflateRect(Rect, -Margin, -Margin);
@@ -691,12 +674,10 @@ begin
         Inc(Rect.Bottom, Margin);
       end
       else
-        DrawAngleText(Rect, DT_CALCRECT or DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment], IsValidImage, 0, 0, spLeftTop);
-    
+        DrawAngleText(Rect, DT_CALCRECT or DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment], IsValidImage, 0, 0, spLeftTop); 
     finally
       Canvas.Stop;
-    end;
-    
+    end; 
 //    Canvas.Handle := NullHandle;
 //    ReleaseDC(NullHandle, DC);
 //    InflateRect(Rect, 1, 0);
@@ -726,8 +707,7 @@ begin
 end;
 
 procedure TJvCustomLabel.SetAutoSize(Value: Boolean);
-begin
-  
+begin 
   FAutoSize := Value;
   FNeedsResize := FAutoSize;
   AdjustBounds;
@@ -808,8 +788,7 @@ end;
 procedure TJvCustomLabel.SetTransparent(Value: Boolean);
 begin
   if Transparent <> Value then
-  begin
-    
+  begin 
     if Value then
       ControlStyle := ControlStyle - [csOpaque]
     else

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,9 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls,
-  QExtCtrls, QMenus, QForms, QImgList, QActnList, QButtons, QWindows,
-  
+  QWindows, QMessages, QGraphics, QControls,
+  QExtCtrls, QMenus, QForms, QImgList, QActnList, QButtons,
+  Types, 
   JvQComponent, JvQButton;
 
 type
@@ -53,8 +52,7 @@ type
   protected
     FClient: TJvCustomGraphicButton;
     procedure AssignClient(AClient: TObject); override;
-    function IsCheckedLinked: Boolean; override;
-    
+    function IsCheckedLinked: Boolean; override; 
     procedure SetChecked(Value: Boolean); override;
   end;
 
@@ -701,17 +699,11 @@ var
   OldCol: Integer;
 begin
   OldCol := SetTextColor(DC, ColorToRGB(clBtnHighlight));
-  OffsetRect(lpRect, 1, 1);
-  
-  
-  DrawTextW(DC, lpString, nCount, lpRect, uFormat);
-  
+  OffsetRect(lpRect, 1, 1);  
+  DrawTextW(DC, lpString, nCount, lpRect, uFormat); 
   OffsetRect(lpRect, -1, -1);
-  SetTextColor(DC, ColorToRGB(clBtnShadow));
-  
-  
-  Result := DrawTextW(DC, lpString, nCount, lpRect, uFormat);
-  
+  SetTextColor(DC, ColorToRGB(clBtnShadow));  
+  Result := DrawTextW(DC, lpString, nCount, lpRect, uFormat); 
   SetTextColor(DC, OldCol);
 end;
 
@@ -736,17 +728,14 @@ begin
 
   TmpRect := Rect(0, 0, Width, Height);
 
-  { calculate width and height of text: }
-  
-  
+  { calculate width and height of text: }  
   DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
 {
   if FWordWrap then
     Canvas.TextExtent(Caption, TmpRect, WordBreak)
   else
     Canvas.TextExtent(Caption, TmpRect, 0);
-}
-  
+} 
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
   Flags := DT_CENTER;
@@ -778,8 +767,6 @@ begin
 
   if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
     OffsetRect(TmpRect, FOffset, FOffset);
-
-  
   
   if not Enabled then
     DrawDisabledText(DC, PWideChar(Caption), -1, TmpRect, Flags)
@@ -790,8 +777,7 @@ begin
     else
       SetTextColor(DC, ColorToRGB(Self.Font.Color));
     DrawText(Canvas, Caption, -1, TmpRect, Flags);
-  end;
-  
+  end; 
 
 end;
 
@@ -844,11 +830,8 @@ begin
       InflateRect(HelpRect, -BorderWidth - 1, -BorderWidth - 1);
       Canvas.Brush.Bitmap := Pattern;
       Self.Canvas.FillRect(HelpRect);
-    end;
-    
-    
-    FImList.Draw(Canvas, ARect.Left, ARect.Top, Index);
-    
+    end;  
+    FImList.Draw(Canvas, ARect.Left, ARect.Top, Index); 
   end;
 end;
 
@@ -947,8 +930,7 @@ end;
 
 procedure TJvTransparentButton2.AddGlyphs;
 var
-  Bmp: TBitmap;
-  
+  Bmp: TBitmap; 
 begin
   Bmp := TBitmap.Create;
   try
@@ -961,23 +943,17 @@ begin
       FImList.Height := FActiveList.Height;
       FImList.Width := FActiveList.Width;
       Bmp.Height := FImList.Height;
-      Bmp.Width := FImList.Width;
-      
-      
+      Bmp.Width := FImList.Width;  
       FActiveList.GetBitmap(FActiveIndex, Bmp);
-      FImList.AddMasked(Bmp, Bmp.TransparentColor);
-      
+      FImList.AddMasked(Bmp, Bmp.TransparentColor); 
     end
     else
       Exit;
 
     if Assigned(FDisabledList) and (FDisabledIndex > -1) then
-    begin
-      
-      
+    begin  
       FDisabledList.GetBitmap(FDisabledIndex, Bmp);
-      FImList.AddMasked(Bmp, Bmp.TransparentColor);
-      
+      FImList.AddMasked(Bmp, Bmp.TransparentColor); 
     end
     else
     begin
@@ -987,37 +963,25 @@ begin
     end;
 
     if Assigned(FDownList) and (FDownIndex > -1) then
-    begin
-      
-      
+    begin  
       FDownList.GetBitmap(FDownIndex, Bmp);
-      FImList.AddMasked(Bmp, Bmp.TransparentColor);
-      
+      FImList.AddMasked(Bmp, Bmp.TransparentColor); 
     end
     else
-    begin
-      
-      
+    begin  
       FActiveList.GetBitmap(FActiveIndex, Bmp);
-      FImList.AddMasked(Bmp, Bmp.TransparentColor);
-      
+      FImList.AddMasked(Bmp, Bmp.TransparentColor); 
     end;
 
     if Assigned(FGrayList) and (FGrayIndex > -1) then
-    begin
-      
-      
+    begin  
       FGrayList.GetBitmap(FGrayIndex, Bmp);
-      FImList.AddMasked(Bmp, Bmp.TransparentColor);
-      
+      FImList.AddMasked(Bmp, Bmp.TransparentColor); 
     end
     else
-    begin
-      
-      
+    begin  
       FActiveList.GetBitmap(FActiveIndex, Bmp);
-      FImList.AddMasked(Bmp, Bmp.TransparentColor);
-      
+      FImList.AddMasked(Bmp, Bmp.TransparentColor); 
     end;
   finally
     Bmp.Free;
@@ -1388,11 +1352,8 @@ begin
 
   TmpRect := Rect(0, 0, Width, Height);
 
-  { calculate width and height of text: }
-  
-  
-  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
-  
+  { calculate width and height of text: }  
+  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT); 
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
   Flags := DT_CENTER;
@@ -1425,20 +1386,14 @@ begin
   if ((bsMouseDown in MouseStates)) and FShowPressed then
     OffsetRect(TmpRect, 1, 1);
 
-
   
-  
-  SetBkMode(DC, QWindows.TRANSPARENT);
-  
+  SetBkMode(DC, QWindows.TRANSPARENT); 
   if not Enabled then
   begin
     SetTextColor(DC, ColorToRGB(clBtnHighlight));
     OffsetRect(TmpRect, 1, 1);
-
-    
-    
-    DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags);
-    
+  
+    DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags); 
     OffsetRect(TmpRect, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
   end
@@ -1447,11 +1402,8 @@ begin
     SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
   else
     SetTextColor(DC, ColorToRGB(Self.Font.Color));
-
   
-  
-  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags);
-  
+  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags); 
 end;
 
 procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);

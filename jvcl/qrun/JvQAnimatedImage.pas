@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -19,13 +20,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,14 +36,8 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  Libc,
-  {$ENDIF LINUX}
-  
-  
-  Qt, Types, QGraphics, QControls, QForms,
-  
+  {$ENDIF MSWINDOWS}  
+  Qt, Types, QGraphics, QControls, QForms, QWindows, 
   SysUtils, Classes,
   JvQTimer, JvQComponent;
 
@@ -54,8 +48,7 @@ type
     FPaintBuffered: Boolean;
     FLock: TRTLCriticalSection;
   protected
-    FGraphic: TGraphic;
-    
+    FGraphic: TGraphic; 
     procedure Paint; override;
     procedure BufferedPaint; virtual;
     procedure DoPaintImage; virtual; abstract;
@@ -108,14 +101,12 @@ type
     procedure SetInactiveGlyph(Value: Integer);
     procedure SetNumGlyphs(Value: Integer);
     procedure SetStretch(Value: Boolean);
-    procedure SetTransparentColor(Value: TColor);
-    
+    procedure SetTransparentColor(Value: TColor); 
     procedure ImageChanged(Sender: TObject);
     procedure UpdateInactive;
     procedure TimerExpired(Sender: TObject);
     function TransparentStored: Boolean;
-  protected
-    
+  protected 
     procedure AdjustSize; override;
     procedure Loaded; override;
     procedure BufferedPaint; override;
@@ -129,8 +120,7 @@ type
   published
     property Align;
     property Anchors;
-    property Constraints;
-    
+    property Constraints; 
     property AsyncDrawing: Boolean read FAsyncDrawing write SetAsyncDrawing default False;
     property Active: Boolean read FActive write SetActive default False;
     property Center: Boolean read FCenter write SetCenter default False;
@@ -142,11 +132,9 @@ type
     property NumGlyphs: Integer read FNumGlyphs write SetNumGlyphs default 1;
     property InactiveGlyph: Integer read FInactiveGlyph write SetInactiveGlyph default -1;
     property TransparentColor: TColor read FTransparentColor write SetTransparentColor
-      stored TransparentStored;
-    
+      stored TransparentStored; 
     property Color;
-    property Cursor;
-    
+    property Cursor; 
     property DragMode;
     property ParentColor default True;
     property ParentShowHint;
@@ -162,8 +150,7 @@ type
     property OnDragOver;
     property OnDragDrop;
     property OnEndDrag;
-    property OnStartDrag;
-    
+    property OnStartDrag; 
     property OnContextPopup;
     property OnFrameChanged: TNotifyEvent read FOnFrameChanged write FOnFrameChanged;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
@@ -273,11 +260,8 @@ end;
 
 procedure TJvImageControl.Paint;
 var
-  Bmp: TBitmap;
-  
-  
-  DC: QPainterH;
-  
+  Bmp: TBitmap;  
+  DC: QPainterH; 
 begin
   Bmp := TJvLockedBitmap.Create;
   try
@@ -322,20 +306,15 @@ type
 
 
 procedure TJvImageControl.DoPaintControl;
-var
-  
-  
+var  
   DC: QPainterH;
-  OrgDC: QPainterH;
-  
+  OrgDC: QPainterH; 
 begin
   if GetCurrentThreadID = MainThreadID then
   begin
     Repaint;
     Exit;
-  end;
-  
-  
+  end;  
   DC := QPainter_create;
   try
     QPainter_begin(DC, TWidgetControlAccess(Parent).GetPaintDevice);
@@ -355,8 +334,7 @@ begin
     end;
   finally
     QPainter_destroy(DC);
-  end;
-  
+  end; 
 end;
 
 
@@ -378,14 +356,11 @@ end;
 
 constructor TJvAnimatedImage.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
-  FOpaque := True;
-  
+  inherited Create(AOwner); 
+  FOpaque := True; 
   FTimer := TJvTimer.Create(Self);
   FTimer.Enabled := False;
-  FTimer.Interval := 100;
-  
+  FTimer.Interval := 100; 
   FGlyph := TJvLockedBitmap.Create;
   FGraphic := FGlyph;
   FGlyph.OnChange := ImageChanged;
@@ -627,18 +602,15 @@ end;
 procedure TJvAnimatedImage.DoPaintImage;
 var
   BmpIndex: Integer;
-  SrcRect, DstRect: TRect;
-  
-  Bmp: TBitmap;
-  
+  SrcRect, DstRect: TRect; 
+  Bmp: TBitmap; 
 begin
   if (not Active) and (FInactiveGlyph >= 0) and
     (FInactiveGlyph < FNumGlyphs) then
     BmpIndex := FInactiveGlyph
   else
     BmpIndex := FGlyphNum;
-  { copy image from parent and back-level controls }
-  
+  { copy image from parent and back-level controls } 
   if (FImageWidth > 0) and (FImageHeight > 0) then
   begin
     if Orientation = goHorizontal then
@@ -653,9 +625,7 @@ begin
       DstRect := Bounds((ClientWidth - FImageWidth) div 2,
         (ClientHeight - FImageHeight) div 2, FImageWidth, FImageHeight)
     else
-      DstRect := Rect(0, 0, FImageWidth, FImageHeight);
-    
-    
+      DstRect := Rect(0, 0, FImageWidth, FImageHeight);  
     Bmp := TBitmap.Create;
     try
       Bmp.Width := SrcRect.Right - SrcRect.Left;
@@ -665,8 +635,7 @@ begin
       Canvas.StretchDraw(DstRect, Bmp);
     finally
       Bmp.Free;
-    end;
-    
+    end; 
   end;
 end;
 

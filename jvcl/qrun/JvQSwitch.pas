@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,11 +34,8 @@ unit JvQSwitch;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Qt, Types, QGraphics, QControls, QForms, QMenus, QWindows,
-  
+  SysUtils, Classes,  
+  Qt, Types, QGraphics, QControls, QForms, QMenus, QWindows, 
   JvQComponent;
 
 type
@@ -75,8 +73,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure TextChanged; override;
     procedure EnabledChanged; override;
-    procedure DefineProperties(Filer: TFiler); override;
-    
+    procedure DefineProperties(Filer: TFiler); override; 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -87,14 +84,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ToggleSwitch;
-  published
-    
+  published 
     property Align;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
     property Caption;
     property Color;
-    property Cursor;
-    
+    property Cursor; 
     property DragMode;
     property Enabled;
     property Font;
@@ -146,8 +141,7 @@ uses
 {$ENDIF LINUX}
 
 const
-  ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON');
-  
+  ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON'); 
   
 constructor TJvSwitch.Create(AOwner: TComponent);
 var
@@ -253,11 +247,8 @@ begin
     Include(FUserBitmaps, Index <> 0);
   end
   else
-  begin
-    
-    
-    FBitmaps[Index <> 0].LoadFromResourceName(HInstance, ResName[Index <> 0]);
-    
+  begin  
+    FBitmaps[Index <> 0].LoadFromResourceName(HInstance, ResName[Index <> 0]); 
     Exclude(FUserBitmaps, Index <> 0);
   end;
 end;
@@ -377,11 +368,9 @@ var
   end;
 
 begin
-  ARect := GetClientRect;
-  
+  ARect := GetClientRect; 
   Canvas.Start;
-  try
-  
+  try 
     with Canvas do
     begin
       Font := Self.Font;
@@ -399,15 +388,11 @@ begin
           Top := ((Bottom + Top) - FontHeight) shr 1;
           Bottom := Top + FontHeight;
         end;
-        Text := Caption;
-        
-        
+        Text := Caption;  
         DrawText(Canvas, Text, Length(Caption), ARect,
-          DT_EXPANDTABS or DT_VCENTER or DT_CENTER);
-        
+          DT_EXPANDTABS or DT_VCENTER or DT_CENTER); 
       end;
-    end;
-  
+    end; 
     if BorderStyle = bsSingle then
     begin
       Canvas.Pen.Color := clBlack;
@@ -417,8 +402,7 @@ begin
     end;
   finally
     Canvas.Stop;
-  end;
-  
+  end; 
 end;
 
 procedure TJvSwitch.DoOn;
@@ -442,11 +426,8 @@ procedure TJvSwitch.SetBorderStyle(Value: TBorderStyle);
 begin
   if FBorderStyle <> Value then
   begin
-    FBorderStyle := Value;
-    
-    
-    RecreateWidget;
-    
+    FBorderStyle := Value;  
+    RecreateWidget; 
   end;
 end;
 

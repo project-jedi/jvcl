@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -69,11 +70,8 @@ unit JvQButtons;
 
 interface
 
-uses
-  
-  
-  Types, QGraphics, QControls, QForms, QButtons, QImgList, QWindows,
-  
+uses  
+  Types, QGraphics, QControls, QForms, QButtons, QImgList, QWindows, 
   SysUtils, Classes,
   JvQComponent, JvQExButtons;
 
@@ -87,8 +85,7 @@ type
     FTransparentColor: TColor;
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
-    FColor: TColor;
-    
+    FColor: TColor; 
     procedure GlyphChanged(Sender: TObject);
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
@@ -118,8 +115,7 @@ type
       this increases performance }
     function DrawExternal(AGlyph: TBitmap; ANumGlyphs: TNumGlyphs; AColor: TColor; IgnoreOld: Boolean;
       Canvas: TCanvas; const Client: TRect; const Offset: TPoint; const Caption: string;
-      Layout: TButtonLayout; Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect;
-    
+      Layout: TButtonLayout; Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect; 
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property Color: TColor read FColor write SetColor;
@@ -134,25 +130,18 @@ type
     procedure CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
       Caption: string); override;
   end;
-
-  
+ 
 
   TPaintButtonEvent = procedure(Sender: TObject; IsDown, IsDefault: Boolean; State: TButtonState) of object;
 
   TJvaColorButton = class(TJvExBitBtn)
-  private
-    
-    FCanvas: TCanvas;
-    
+  private 
+    FCanvas: TCanvas; 
     FGlyphDrawer: TJvButtonGlyph;
-    FOnPaint: TPaintButtonEvent;
-    
+    FOnPaint: TPaintButtonEvent; 
   protected
-    IsFocused: Boolean;
-    
-    
-    procedure Paint; override;
-    
+    IsFocused: Boolean;  
+    procedure Paint; override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -205,8 +194,7 @@ type
   public
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
-    function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
-       reintroduce; 
+    function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;  reintroduce; 
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
@@ -454,8 +442,7 @@ begin
     TmpImage.Width := IWidth;
     TmpImage.Height := IHeight;
     IRect := Rect(0, 0, IWidth, IHeight);
-    TmpImage.Canvas.Brush.Color := Color {clBtnFace};
-    
+    TmpImage.Canvas.Brush.Color := Color {clBtnFace}; 
     I := State;
     if Ord(I) >= NumGlyphs then
       I := bsUp;
@@ -477,16 +464,12 @@ begin
           try
             MonoBmp := TBitmap.Create;
             DDB := TBitmap.Create;
-            DDB.Assign(FOriginal);
-            
+            DDB.Assign(FOriginal); 
             if NumGlyphs > 1 then
               with TmpImage.Canvas do
-              begin { Change white & gray to clBtnHighlight and clBtnShadow }
-                
-                Start;
-                
-                CopyRect(IRect, DDB.Canvas, ORect);
-                
+              begin { Change white & gray to clBtnHighlight and clBtnShadow } 
+                Start; 
+                CopyRect(IRect, DDB.Canvas, ORect); 
                 MonoBmp.Width := IWidth;
                 MonoBmp.Height := IHeight;
 
@@ -518,18 +501,15 @@ begin
                 SetTextColor(DestDC, clBlack);
                 SetBkColor(DestDC, clWhite);
                 BitBlt(DestDC, 0, 0, IWidth, IHeight,
-                  MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-                
-                Stop;
-                
+                  MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax); 
+                Stop; 
               end
             else
             begin
               { Create a disabled version }
               with MonoBmp do
               begin
-                Assign(FOriginal);
-                
+                Assign(FOriginal); 
                 Canvas.Brush.Color := clBlack;
                 Width := IWidth;
                 if Monochrome then
@@ -541,10 +521,8 @@ begin
                 Monochrome := True;
               end;
               with TmpImage.Canvas do
-              begin
-                
-                Start;
-                
+              begin 
+                Start; 
                 Brush.Color := Color {clBtnFace};
                 FillRect(IRect);
                 Brush.Color := clBtnHighlight;
@@ -556,10 +534,8 @@ begin
                 SetTextColor(Handle, clBlack);
                 SetBkColor(Handle, clWhite);
                 BitBlt(Handle, 0, 0, IWidth, IHeight,
-                  MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-                
-                Stop;
-                
+                  MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax); 
+                Stop; 
               end;
             end;
           finally
@@ -585,9 +561,7 @@ begin
     Exit;
   if (FOriginal.Width = 0) or (FOriginal.Height = 0) then
     Exit;
-  Index := CreateButtonGlyph(State);
-  
-  
+  Index := CreateButtonGlyph(State);  
   with GlyphPos do
     if Transparent or (State = bsExclusive) then
     begin
@@ -600,8 +574,7 @@ begin
       FGlyphList.Masked := False;
       FGlyphList.BkColor := Color;
       FGlyphList.Draw(Canvas, X, Y, Index, itImage);
-    end;
-  
+    end; 
 end;
 
 procedure TJvButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
@@ -609,29 +582,22 @@ procedure TJvButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
 var
   Flags: Longint;
 begin
-  Flags := 0;
-  
+  Flags := 0; 
   with Canvas do
   begin
     Brush.Style := bsClear;
     if State = bsDisabled then
     begin
       OffsetRect(TextBounds, 1, 1);
-      Font.Color := clBtnHighlight;
-      
-      
+      Font.Color := clBtnHighlight;  
       DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
-      
+      DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags); 
     end
-    else
-      
-      
+    else  
       DrawText(Canvas, Caption, Length(Caption), TextBounds,
-        DT_CENTER or DT_VCENTER or DT_SINGLELINE or Flags);
-      
+        DT_CENTER or DT_VCENTER or DT_SINGLELINE or Flags); 
   end;
 end;
 
@@ -792,11 +758,8 @@ end;
 procedure TJvButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
   Caption: string);
 begin
-  TextRect := Rect(0, 0, TextRect.Right - TextRect.Left, 0);
-  
-  
-  DrawText(Canvas, Caption, Length(Caption), TextRect, DT_CALCRECT);
-  
+  TextRect := Rect(0, 0, TextRect.Right - TextRect.Left, 0);  
+  DrawText(Canvas, Caption, Length(Caption), TextRect, DT_CALCRECT); 
 end;
 
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
@@ -838,18 +801,14 @@ end;
 constructor TJvaColorButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FGlyphDrawer := TJvButtonGlyph.Create;
-  
-  
-  FCanvas := Canvas;
-  
+  FGlyphDrawer := TJvButtonGlyph.Create;  
+  FCanvas := Canvas; 
 end;
 
 destructor TJvaColorButton.Destroy;
 begin
   FreeAndNil(FGlyphDrawer);
-  inherited Destroy;
-  
+  inherited Destroy; 
 end;
 
 
@@ -882,20 +841,16 @@ procedure TJvaColorButton.DefaultDrawing(const IsDown, IsDefault: Boolean; const
 var
   R: TRect;
   Flags: Longint;
-begin
-  
-  
+begin  
   if (csDestroying in ComponentState) or (FCanvas.Handle = nil) then
-    Exit;
-  
+    Exit; 
   R := ClientRect;
   Flags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
   if IsDown then
     Flags := Flags or DFCS_PUSHED;
   if State = bsDisabled then
     Flags := Flags or DFCS_INACTIVE;
-
-  
+ 
   begin
     { DrawFrameControl doesn't allow for drawing a button as the
         default button, so it must be done here. }
@@ -942,8 +897,7 @@ begin
 
   FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, True, FCanvas, R, Point(0, 0), Caption, Layout, Margin,
     Spacing, State, False {True});
-
-  
+ 
     if IsFocused and IsDefault then
     begin
       R := ClientRect;
@@ -1033,8 +987,7 @@ begin
       Offset.X := 0;
       Offset.Y := 0;
     end;
-    {O}
-    
+    {O} 
     FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, True, Canvas, PaintRect, Offset, Caption, Layout, Margin,
       Spacing, FState, False {True});
   end;

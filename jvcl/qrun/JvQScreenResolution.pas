@@ -56,12 +56,8 @@ type
 
 implementation
 
-uses
-  
-  RTLConsts,
-  
-
-
+uses 
+  RTLConsts, 
   JvQTypes;
 
 function TJvScreenResolution.GetCount: Integer;

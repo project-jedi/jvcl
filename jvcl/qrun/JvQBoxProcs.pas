@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -32,11 +33,8 @@ unit JvQBoxProcs;
 
 interface
 
-uses
-  
-  
-  QGraphics, QControls, QStdCtrls, Types, QWindows,
-  
+uses  
+  QGraphics, QControls, QStdCtrls, Types, QWindows, 
   Classes;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
@@ -63,8 +61,7 @@ const
 function BoxItems(List: TWinControl): TStrings;
 begin
   if List is TCustomListBox then
-    Result := TCustomListBox(List).Items
-  
+    Result := TCustomListBox(List).Items 
   else
     Result := nil;
 end;
@@ -72,8 +69,7 @@ end;
 function BoxGetSelected(List: TWinControl; Index: Integer): Boolean;
 begin
   if List is TCustomListBox then
-    Result := TCustomListBox(List).Selected[Index]
-  
+    Result := TCustomListBox(List).Selected[Index] 
   else
     Result := False;
 end;
@@ -81,15 +77,13 @@ end;
 procedure BoxSetSelected(List: TWinControl; Index: Integer; Value: Boolean);
 begin
   if List is TCustomListBox then
-    TCustomListBox(List).Selected[Index] := Value
-  
+    TCustomListBox(List).Selected[Index] := Value 
 end;
 
 function BoxGetItemIndex(List: TWinControl): Integer;
 begin
   if List is TCustomListBox then
-    Result := TCustomListBox(List).ItemIndex
-  
+    Result := TCustomListBox(List).ItemIndex 
   else
     Result := LB_ERR;
 end;
@@ -97,15 +91,13 @@ end;
 procedure BoxSetItemIndex(List: TWinControl; Index: Integer);
 begin
   if List is TCustomListBox then
-    TCustomListBox(List).ItemIndex := Index
-  
+    TCustomListBox(List).ItemIndex := Index 
 end;
 
 function BoxMultiSelect(List: TWinControl): Boolean;
 begin
   if List is TCustomListBox then
-    Result := TListBox(List).MultiSelect
-  
+    Result := TListBox(List).MultiSelect 
   else
     Result := False;
 end;
@@ -113,8 +105,7 @@ end;
 function BoxSelCount(List: TWinControl): Integer;
 begin
   if List is TCustomListBox then
-    Result := TCustomListBox(List).SelCount
-  
+    Result := TCustomListBox(List).SelCount 
   else
     Result := 0;
 end;
@@ -123,8 +114,7 @@ function BoxItemAtPos(List: TWinControl; Pos: TPoint;
   Existing: Boolean): Integer;
 begin
   if List is TCustomListBox then
-    Result := TCustomListBox(List).ItemAtPos(Pos, Existing)
-  
+    Result := TCustomListBox(List).ItemAtPos(Pos, Existing) 
   else
     Result := LB_ERR;
 end;
@@ -132,8 +122,7 @@ end;
 function BoxItemRect(List: TWinControl; Index: Integer): TRect;
 begin
   if List is TCustomListBox then
-    Result := TCustomListBox(List).ItemRect(Index)
-  
+    Result := TCustomListBox(List).ItemRect(Index) 
   else
     FillChar(Result, SizeOf(Result), 0);
 end;
@@ -201,8 +190,7 @@ end;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
 var
-  Index, I: Integer;
-  
+  Index, I: Integer; 
 begin
   Index := BoxGetFirstSelection(SrcList);
   if Index <> LB_ERR then
@@ -213,12 +201,9 @@ begin
       I := 0;
       while I < BoxItems(SrcList).Count do
         if BoxGetSelected(SrcList, I) then
-        begin
-          
-          
+        begin  
           BoxItems(DstList).AddObject(BoxItems(SrcList).Strings[I],
-            BoxItems(SrcList).Objects[I]);
-          
+            BoxItems(SrcList).Objects[I]); 
           BoxItems(SrcList).Delete(I);
         end
         else
@@ -233,16 +218,12 @@ end;
 
 procedure BoxMoveAllItems(SrcList, DstList: TWinControl);
 var
-  I: Integer;
-  
+  I: Integer; 
 begin
   for I := 0 to BoxItems(SrcList).Count - 1 do
-  begin
-    
-    
+  begin  
     BoxItems(DstList).AddObject(BoxItems(SrcList)[I],
-      BoxItems(SrcList).Objects[I]);
-    
+      BoxItems(SrcList).Objects[I]); 
   end;
   BoxItems(SrcList).Clear;
   BoxSetItem(SrcList, 0);
@@ -287,8 +268,7 @@ var
 
 begin
   if Source <> List then
-    Accept := (Source is TWinControl)
-      
+    Accept := (Source is TWinControl) 
   else
   begin
     if Sorted then

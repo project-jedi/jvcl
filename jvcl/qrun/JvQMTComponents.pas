@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,20 +35,19 @@ unit JvQMTComponents;
 interface
 
 uses
-  SysUtils, Classes, SyncObjs,
-  
-  
-  QConsts,
-  
-  
+  SysUtils, Classes, SyncObjs,  
+  QConsts, 
+  {$IFDEF USEJVCL}
   JvQComponent,
-  
+  {$ENDIF USEJVCL}
   JvQMTThreading, JvQMTConsts, JvQMTData, JvQMTSync, JvQMTSyncMon;
 
 type
-  
+  {$IFDEF USEJVCL}
   TJvMTComponent = class(TJvComponent);
-  
+  {$ELSE}
+  TJvMTComponent = class(TComponent);
+  {$ENDIF USEJVCL}
   TJvMTSingleThread = class(TMTThread);
   TJvMTThread = class;
 
@@ -247,12 +247,18 @@ type
 
 implementation
 
-
+{$IFDEF USEJVCL}
 uses
   JvQResources;
+{$ENDIF USEJVCL}
 
-
-
+{$IFNDEF USEJVCL}
+resourcestring
+  RsENoThreadManager = 'No ThreadManager specified';
+  RsEOperatorNotAvailable = 'Operation not available while thread is active';
+  RsECannotChangePropertySection = 'Cannot change property of active section';
+  RsECannotChangePropertyBuffer = 'Cannot change property of active buffer';
+{$ENDIF USEJVCL}
 
 constructor TJvMTManager.Create(AOwner: TComponent);
 begin
@@ -379,7 +385,7 @@ begin
   if FThread = nil then
   begin
     if FManager = nil then
-      raise EThread.Create(RsENoThreadManager);
+      raise EThread.CreateRes(@RsENoThreadManager);
   
     // get the new thread
     FThread := FManager.AcquireNewThread;
@@ -492,7 +498,7 @@ begin
       FThread := nil;
     end
     else
-      raise EThread.Create(RsEOperatorNotAvailable);
+      raise EThread.CreateRes(@RsEOperatorNotAvailable);
   end;
 end;
 
@@ -541,7 +547,7 @@ end;
 procedure TJvMTSectionBase.CheckInactiveProperty;
 begin
   if Active then
-    raise EThread.Create(RsECannotChangePropertySection);
+    raise EThread.CreateRes(@RsECannotChangePropertySection);
 end;
 
 procedure TJvMTSectionBase.Enter;
@@ -615,7 +621,7 @@ procedure TJvMTCountingSection.SetInitAndMax(Init,Max: Integer);
 begin
   CheckInactiveProperty;
   if (Max < 1) or (Init < 0) or (Init > Max) then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
+    raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [ClassName]);
   
   FInitCount := Init;
   FMaxCount := Max;
@@ -675,7 +681,7 @@ end;
 procedure TJvMTAsyncBufferBase.SetMaxBufferSize(Value: Integer);
 begin
   if FBuffer <> nil then
-    raise EThread.Create(RsECannotChangePropertyBuffer);
+    raise EThread.CreateRes(@RsECannotChangePropertyBuffer);
   FMaxBufferSize := Value;
 end;
 
@@ -766,9 +772,9 @@ end;
 procedure TJvMTThreadToThread.SetMaxBufferSize(Value: Integer);
 begin
   if FQueue <> nil then
-    raise EThread.Create(RsECannotChangePropertyBuffer);
+    raise EThread.CreateRes(@RsECannotChangePropertyBuffer);
   if Value < 1 then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
+    raise EInvalidOperation.CreateREsFmt(@SPropertyOutOfRange, [ClassName]);
   FMaxBufferSize := Value;
 end;
 
@@ -777,7 +783,6 @@ begin
   HookQueue;
   FQueue.Push(AObject);
 end;
-
 
 //=== TJvMTMonitorSection ====================================================
 

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,11 +35,8 @@ unit JvQFormAnimation;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QWindows, QControls, QForms,
-  
+  SysUtils, Classes,  
+  QWindows, QControls, QForms, 
   JvQComponent;
 
 type
@@ -94,11 +91,8 @@ begin
     FForm.Repaint;
     Sleep(10);
   end;
-  FForm.Visible := False;
-  
-  
-  SetWindowRgn(FForm.Handle, nil, True);
-  
+  FForm.Visible := False;  
+  SetWindowRgn(FForm.Handle, nil, True); 
   DeleteRegions;
 end;
 
@@ -116,11 +110,8 @@ begin
     SetWindowRgn(FForm.Handle, FRegions[I], True);
     FForm.Repaint;
     Sleep(10);
-  end;
-  
-  
-  SetWindowRgn(FForm.Handle, nil, True);
-  
+  end;  
+  SetWindowRgn(FForm.Handle, nil, True); 
   DeleteObject(Rgn);
   DeleteRegions;
 end;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -24,38 +25,29 @@ Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-// $Id$
+Purpose:
+  All common functions and procedures which used by all components
 
-{*****************************************************************************
-  Purpose:   All common functions and procedures which used by all components
-
-  History:
-  ---------------------------------------------------------------------------
-  Date(mm/dd/yy)   Comments
-  ---------------------------------------------------------------------------
+History:
   12/23/2001       First Create, introduce TKSide, TKSides, TJvWizardFrameStyle,
                      beAllSides, TKDeleteItemEvent
                    function KDrawSides, KDrawBevel, KDrawFrame
   12/25/2001       introduced TKMessageLevel
   01/04/2001       Add function KDrawBorderSides
-******************************************************************************}
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
+{$I jvcl.inc}
 
 unit JvQWizardCommon;
 
 interface
 
-{$I jvcl.inc}
-
-uses
-  
-  
-  QControls, QGraphics, QWindows,
-  
-  
-  Types,
-  
+uses  
+  QControls, QGraphics, QWindows,  
+  Types, 
   Classes, SysUtils;
 
 const
@@ -80,12 +72,15 @@ procedure JvWizardDrawImage(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect;
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   JvQResources;
+{$ENDIF USEJVCL}
 
-
-
-
+{$IFNDEF USEJVCL}
+resourcestring
+  RsETilingError = 'Tiling only works on images with dimensions > 0';
+{$ENDIF USEJVCL}
 
 const
   { Frame Style Color constant arrays }
@@ -202,12 +197,12 @@ end;
 
 procedure JvWizardDrawTiled(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect);
 var
-  AWidth, AHeight: Integer;
-  Bmp: QGraphics.TBitmap;
+  AWidth, AHeight: Integer;  
+  Bmp: QGraphics.TBitmap; 
 begin
 
   if not Assigned(AGraphic) or (AGraphic.Width = 0) or (AGraphic.Height = 0) then
-    raise EJvWizardError.Create(RsETilingError);
+    raise EJvWizardError.CreateRes(@RsETilingError);
   // Create a temporary bitmap to draw into. This is both to speed things up a bit
   // and also to clip the image to the ARect param (using Draw doesn't clip the image,
   // but it does support auto-detecting transparency)
@@ -227,8 +222,8 @@ begin
         Inc(AHeight, AGraphic.Height);
       end;
       Inc(AWidth, AGraphic.Width);
-    end;
-    BitBlt(ACanvas, ARect.Left, ARect.Top, Bmp.Width, Bmp.Height, Bmp.Canvas, 0, 0, SRCCOPY);
+    end;  
+    BitBlt(ACanvas, ARect.Left, ARect.Top, Bmp.Width, Bmp.Height, Bmp.Canvas, 0, 0, SRCCOPY); 
   finally
     Bmp.Free;
   end;

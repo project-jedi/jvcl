@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,11 +34,8 @@ unit JvQArrayButton;
 
 interface
 
-uses
-  
-  
-  Types, QGraphics, QControls, QForms, QExtCtrls, QButtons, QWindows,
-  
+uses  
+  Types, QGraphics, QControls, QForms, QExtCtrls, QButtons, QWindows, 
   SysUtils, Classes,
   JvQComponent, JvQTypes;
 
@@ -54,8 +52,7 @@ type
     FOnArrayButtonClicked: TArrayButtonClicked;
     FCaptions: TStringList;
     FColors: TStringList;
-    FHints: THintStringList;
-    
+    FHints: THintStringList; 
     procedure SetCols(const Value: Integer);
     procedure SetRows(const Value: Integer);
     procedure SetCaptions(const Value: TStringList);
@@ -66,8 +63,7 @@ type
   protected
     procedure FontChanged; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -107,8 +103,7 @@ type
      values must standard Delphi Color names like clRed, clBlue or hex Color strings like $0000ff for red.
      please note the hex order in Delphi is BGR i.s.o. the RGB order you may know from HTML hex Color triplets}
     property Hint;
-    property ShowHint default True;
-    
+    property ShowHint default True; 
     property Width default 35;
     property OnArrayButtonClicked: TArrayButtonClicked read FOnArrayButtonClicked write FOnArrayButtonClicked;
     {provides you with the Column and Row of the clicked button
@@ -132,8 +127,7 @@ begin
   ShowHint := True;
   FCaptions := TStringList.Create;
   FHints := THintStringList.Create;
-  FColors := TStringList.Create;
-  
+  FColors := TStringList.Create; 
 end;
 
 destructor TJvArrayButton.Destroy;
@@ -199,8 +193,7 @@ var
   end;
 
   procedure DrawUp;
-  begin
-    
+  begin 
     begin
       DrawBackground(BackColor);
       Frame3D(Self.Canvas, R, clBtnHighlight, clBlack, 1);
@@ -210,8 +203,7 @@ var
   end;
 
   procedure DrawDown;
-  begin
-    
+  begin 
     begin
       DrawBackground(BackColor);
       Frame3D(Self.Canvas, R, clblack, clBtnHighlight, 1);

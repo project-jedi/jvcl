@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -39,11 +40,8 @@ unit JvQMouseTimer;
 
 interface
 
-uses
-  
-  
-  Types, QWindows, QControls, QExtCtrls,
-  
+uses  
+  Types, QWindows, QControls, QExtCtrls, 
   SysUtils;
 
 type
@@ -105,11 +103,8 @@ procedure TJvMouseTimer.Attach(AControl: TControl);
 begin
   FTimer.Enabled := False;
   if FCurrentControl <> nil then
-  try
-    
-    
-    FCurrentControl.MouseLeave(FCurrentControl);
-    
+  try  
+    FCurrentControl.MouseLeave(FCurrentControl); 
   except
     { Ignore exception in case control has been destroyed already }
   end;
@@ -143,11 +138,8 @@ begin
       R := FCurrentControl.BoundsRect;
       if Assigned(FCurrentControl.Parent) then
         MapWindowPoints(FCurrentControl.Parent.Handle, HWND_DESKTOP, R, 2);
-      if not PtInRect(R, Pt) then
-        
-        
-        FCurrentControl.MouseLeave(FCurrentControl);
-        
+      if not PtInRect(R, Pt) then  
+        FCurrentControl.MouseLeave(FCurrentControl); 
     end;
   except
     Detach(FCurrentControl);

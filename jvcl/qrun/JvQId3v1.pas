@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,17 +21,16 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
-unit JvQId3v1;
+unit JvQID3v1;
 
 interface
 
@@ -105,7 +105,7 @@ implementation
 
 uses
   Math,
-  JvQId3v2Types, JvQTypes, JvQResources;
+  JvQID3v2Types, JvQTypes, JvQResources;
 
 const
   CID3v1Tag = 'TAG';  { do not change case }
@@ -227,7 +227,7 @@ end;
 procedure TJvID3v1.CheckActive;
 begin
   if not FActive then
-    raise EJVCLException.Create(RsENotActive);
+    raise EJVCLException.CreateRes(@RsENotActive);
 end;
 
 procedure TJvID3v1.Close;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,12 +38,9 @@ unit JvQDesktopAlertForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QGraphics, QControls, QForms, QDialogs, QImgList, QExtCtrls, QActnList,
-  QMenus, QStdCtrls, Types, QWindows,
-  
+  QMenus, QStdCtrls, Types, QWindows, 
   JvQButton, JvQComponent, JvQLabel;
 
 const
@@ -86,9 +84,7 @@ type
     FOnUserMove: TNotifyEvent;
     acClose: TAction;
     FadeTimer: TTimer;
-    MouseTimer: TTimer;
-    
-    
+    MouseTimer: TTimer;  
 
     procedure FadeInTimer(Sender: TObject);
     procedure FadeOutTimer(Sender: TObject);
@@ -104,8 +100,7 @@ type
     procedure DoClose(var Action: TCloseAction); override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-
-    
+ 
   public
     imIcon: TImage;
     lblText: TJvLabel;
@@ -121,8 +116,7 @@ type
     MaxAlphaBlendValue: Byte;
     FadeInTime, FadeOutTime, WaitTime: Integer;
     WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, FrameColor: TColor;
-    procedure FadeClose;
-    
+    procedure FadeClose; 
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     procedure acCloseExecute(Sender: TObject);
     procedure SetNewTop(const Value: Integer);
@@ -189,32 +183,23 @@ begin
   GradientFillRect(Canvas, WindowRect, WindowColorFrom, WindowColorTo, fdTopToBottom, AColors);
   WindowRect.Top := ATop;
   Inc(WindowRect.Bottom);
-  Canvas.Brush.Color := clGray;
-  
-  
-  FrameRect(Canvas, WindowRect);
-  
+  Canvas.Brush.Color := clGray;  
+  FrameRect(Canvas, WindowRect); 
 end;
 
 //=== TJvFormDesktopAlert ====================================================
 
 constructor TJvFormDesktopAlert.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
-  inherited CreateNew(AOwner, Dummy);
-  
-  
-  Font.Assign(Application.Font);
-  
+  inherited CreateNew(AOwner, Dummy);  
+  Font.Assign(Application.Font); 
   MouseTimer := TTimer.Create(Self);
   MouseTimer.Enabled := False;
   MouseTimer.Interval := 200;
   MouseTimer.OnTimer := DoMouseTimer;
   MouseTimer.Enabled := True;
-
   
-  
-  BorderStyle := fbsNone;
-  
+  BorderStyle := fbsNone; 
   BorderIcons := [];
   FormStyle := fsStayOnTop;
   Scaled := False;
@@ -282,8 +267,7 @@ begin
   inherited MouseEnter(AControl);
   MouseInControl := True;
   //  SetFocus;
-  FadeTimer.Enabled := False;
-  
+  FadeTimer.Enabled := False; 
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -326,8 +310,7 @@ end;
 
 procedure TJvFormDesktopAlert.DoShow;
 begin
-  inherited DoShow;
-  
+  inherited DoShow; 
   FadeTimer.Enabled := False;
   lblText.HotTrackFont.Style := [fsUnderLine];
   lblText.HotTrackFont.Color := clNavy;
@@ -402,8 +385,7 @@ begin
 end;
 
 procedure TJvFormDesktopAlert.FadeIn;
-begin
-  
+begin 
   Update;
   FadeTimer.Enabled := False;
   FadeTimer.Interval := FadeInTime;
@@ -414,8 +396,7 @@ begin
 end;
 
 procedure TJvFormDesktopAlert.FadeOut;
-begin
-  
+begin 
   Update;
   FadeTimer.Enabled := False;
   FadeTimer.Interval := FadeOutTime;
@@ -427,8 +408,7 @@ begin
 end;
 
 procedure TJvFormDesktopAlert.Wait;
-begin
-  
+begin 
   Update;
   FadeTimer.Enabled := False;
   FadeTimer.Interval := WaitTime;
@@ -606,11 +586,8 @@ begin
           Images.Draw(Canvas,
             (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
             (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
-            ImageIndex,
-            
-             
-            itImage,
-            
+            ImageIndex,  
+            itImage, 
             Enabled);
         end;
     end;

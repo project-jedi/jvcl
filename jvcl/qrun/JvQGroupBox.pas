@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,11 +38,8 @@ uses
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-  
-  Types, Qt, QWindows, QGraphics, QControls, QForms, QStdCtrls,
-  
+  {$ENDIF MSWINDOWS}  
+  Types, Qt, QWindows, QGraphics, QControls, QForms, QStdCtrls, 
   JvQThemes, JvQExControls, JvQExStdCtrls;
 
 type
@@ -60,10 +58,7 @@ type
     constructor Create(AOwner: TComponent); override;
     property Canvas;
   published
-    property HintColor;
-    {$IFDEF JVCLThemesEnabledD56}
-    property ParentBackground default True;
-    {$ENDIF JVCLThemesEnabledD56}
+    property HintColor; 
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable default False;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -80,47 +75,30 @@ constructor TJvGroupBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPropagateEnable := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
-  {$IFDEF JVCLThemesEnabledD56}
-  IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF JVCLThemesEnabledD56}
+  ControlStyle := ControlStyle + [csAcceptsControls]; 
 end;
 
 procedure TJvGroupBox.Paint;
 var
   H: Integer;
   R: TRect;
-  Flags: Longint;
-  {$IFDEF JVCLThemesEnabledD56}
-  Details: TThemedElementDetails;
-  CaptionRect: TRect;
-  {$ENDIF JVCLThemesEnabledD56}
-  LastBkMode: Integer;
-  
-begin
-  
+  Flags: Longint; 
+  LastBkMode: Integer; 
+begin 
   with Canvas do
-  begin
-    
+  begin 
     LastBkMode := GetBkMode(Handle);
     try
       Font := Self.Font;
       H := TextHeight('0');
-      R := Rect(0, H div 2 - 1, Width, Height);
-      
+      R := Rect(0, H div 2 - 1, Width, Height); 
         Inc(R.Left);
         Inc(R.Top);
-        Brush.Color := clBtnHighlight;
-        
-        
-        QWindows.FrameRect(Canvas, R);
-        
+        Brush.Color := clBtnHighlight;  
+        QWindows.FrameRect(Canvas, R); 
         OffsetRect(R, -1, -1);
-        Brush.Color := clBtnShadow;
-      
-      
-      QWindows.FrameRect(Canvas, R);
-      
+        Brush.Color := clBtnShadow;  
+      QWindows.FrameRect(Canvas, R); 
       if Text <> '' then
       begin
         if not UseRightToLeftAlignment then
@@ -129,39 +107,25 @@ begin
           R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
         Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
         // calculate text rect
-        SetBkMode(Handle, OPAQUE);
-        
-        
-        DrawText(Canvas, Text, Length(Text), R, Flags or DT_CALCRECT);
-        
+        SetBkMode(Handle, OPAQUE);  
+        DrawText(Canvas, Text, Length(Text), R, Flags or DT_CALCRECT); 
         Brush.Color := Color;
         if not Enabled then
         begin
           OffsetRect(R, 1, 1);
-          Font.Color := clBtnHighlight;
-          
-          
-          DrawText(Canvas, Text, Length(Text), R, Flags);
-          
+          Font.Color := clBtnHighlight;  
+          DrawText(Canvas, Text, Length(Text), R, Flags); 
           OffsetRect(R, -1, -1);
           Font.Color := clBtnShadow;
-          SetBkMode(Handle, TRANSPARENT);
-          
-          
-          DrawText(Canvas, Text, Length(Text), R, Flags);
-          
+          SetBkMode(Handle, TRANSPARENT);  
+          DrawText(Canvas, Text, Length(Text), R, Flags); 
         end
-        else
-          
-          
-          DrawText(Canvas, Text, Length(Text), R, Flags);
-          
+        else  
+          DrawText(Canvas, Text, Length(Text), R, Flags); 
       end;
     finally
-      SetBkMode(Handle, LastBkMode);
-      
-      Stop;
-      
+      SetBkMode(Handle, LastBkMode); 
+      Stop; 
     end;
   end;
 end;

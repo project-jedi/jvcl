@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -108,15 +109,18 @@ type
 
 implementation
 
-
+{$IFDEF USEJVCL}
 uses
   JvQResources;
-
+{$ENDIF USEJVCL}
 
 const
   sUnitName = 'JvMTData';
 
-
+{$IFNDEF USEJVCL}
+resourcestring
+  RsEMethodOnlyForMainThread = '%s method can only be used by the main VCL thread';
+{$ENDIF USEJVCL}
 
 var
   GlobalDataThreadsMan: TMTManager = nil;
@@ -276,7 +280,7 @@ end;
 function TMTBufferToVCL.Read: TObject;
 begin
   if CurrentMTThread <> nil then
-    raise EThread.CreateFmt(RsEMethodOnlyForMainThread, [cRead]);
+    raise EThread.CreateResFmt(@RsEMethodOnlyForMainThread, [cRead]);
 
   // Check if data ready
   FDataReady.Wait;
@@ -292,7 +296,7 @@ procedure TMTBufferToVCL.Write(AObject: TObject; FreeOnFail: Boolean = True);
 begin
   try
     if CurrentMTThread = nil then
-      raise EThread.CreateFmt(RsEMethodOnlyForMainThread, [cWrite]);
+      raise EThread.CreateResFmt(@RsEMethodOnlyForMainThread, [cWrite]);
 
     // Perform blocking write to buffer
     FBuffer.Push(AObject);
@@ -332,7 +336,7 @@ end;
 function TMTVCLToBuffer.Read: TObject;
 begin
   if CurrentMTThread = nil then
-    raise EThread.CreateFmt(RsEMethodOnlyForMainThread, [cRead]);
+    raise EThread.CreateResFmt(@RsEMethodOnlyForMainThread, [cRead]);
 
   Result := FBuffer.Pop;
 end;
@@ -341,7 +345,7 @@ procedure TMTVCLToBuffer.Write(AObject: TObject; FreeOnFail: Boolean = True);
 begin
   try
     if CurrentMTThread <> nil then
-      raise EThread.CreateFmt(RsEMethodOnlyForMainThread, [cWrite]);
+      raise EThread.CreateResFmt(@RsEMethodOnlyForMainThread, [cWrite]);
 
     // Check if data ready
     FDataReady.Wait;

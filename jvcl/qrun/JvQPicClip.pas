@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,14 +34,9 @@ unit JvQPicClip;
 interface
 
 uses
-  Classes,
-  
-  
-  QWindows, QGraphics, QControls, Types, QImgList,
-  
-  
-  RTLConsts,
-  
+  Classes,  
+  QWindows, QGraphics, QControls, Types, QImgList,  
+  RTLConsts, 
   JvQComponent;
 
 type
@@ -98,11 +94,8 @@ type
 implementation
 
 uses
-  SysUtils,
-  
-  
-  QConsts,
-  
+  SysUtils,  
+  QConsts, 
   JvQJVCLUtils, JvQConsts;
 
 constructor TJvPicClip.Create(AOwner: TComponent);
@@ -246,7 +239,7 @@ end;
 procedure TJvPicClip.CheckIndex(Index: Integer);
 begin
   if (Index >= Cols * Rows) or (Index < 0) then
-    raise EListError.CreateFmt(SListIndexError, [Index]);
+    raise EListError.CreateResFmt(@SListIndexError, [Index]);
 end;
 
 function TJvPicClip.GetIndex(Col, Row: Cardinal): Integer;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,11 +37,8 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  Classes,
-  
-  
-  Qt, QTypes, QControls, QGraphics, QStdCtrls, QForms, QGrids, Types, QWindows,
-  
+  Classes,  
+  Qt, QTypes, QControls, QGraphics, QStdCtrls, QForms, QGrids, Types, QWindows, 
   JvQConsts, JvQAppStorage, JvQFormPlacement, JvQComponent, JvQExGrids;
 
 type
@@ -87,8 +85,7 @@ type
     FOnCancelEdit: TNotifyEvent;
     FOnFixedCellClick: TFixedCellClickEvent;
     FOnCheckButton: TFixedCellCheckEvent;
-    FOnChangeFocus: TNotifyEvent;
-    
+    FOnChangeFocus: TNotifyEvent; 
     FOnGetEditAlign: TEditAlignEvent;
     FOnEditButtonClick: TNotifyEvent;
     FOnGetPicklist: TPicklistEvent;
@@ -101,8 +98,7 @@ type
     procedure IniLoad(Sender: TObject);
     procedure SetFixedButtons(Value: Boolean);
     procedure StopTracking;
-    procedure TrackButton(X, Y: Integer);
-    
+    procedure TrackButton(X, Y: Integer); 
     procedure SetDrawButtons(const Value: Boolean);
   protected
     function SelectCell(ACol, ARow: Longint): Boolean; override;
@@ -126,11 +122,8 @@ type
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    
-    
-    procedure SetEditText(ACol, ARow: Longint; const Value: WideString); override;
-    
+      X, Y: Integer); override;  
+    procedure SetEditText(ACol, ARow: Longint; const Value: WideString); override; 
     function CreateEditor: TInplaceEdit; override;
     procedure Paint; override;
     procedure EditChanged(Sender: TObject); dynamic;
@@ -186,8 +179,7 @@ type
 
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange;
-    
+    property OnParentColorChange; 
   end;
 
 implementation
@@ -210,8 +202,7 @@ type
   TJvGridPopupListBox = class;
 
   TJvInplaceEdit = class(TJvExInplaceEdit)
-  private
-    
+  private 
     FButtonWidth: Integer;
     FPickList: TJvGridPopupListBox;
     FActiveList: TWinControl;
@@ -223,11 +214,9 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure SetEditStyle(Value: TInplaceEditStyle);
     procedure StopTracking;
-    procedure TrackButton(X, Y: Integer);
-    
+    procedure TrackButton(X, Y: Integer); 
   protected
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    
+    procedure DoKillFocus(FocusedWnd: HWND); override; 
     procedure BoundsChanged; override;
     procedure CloseUp(Accept: Boolean);
     procedure DoDropDownKeys(var Key: Word; Shift: TShiftState);
@@ -237,18 +226,13 @@ type
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    
-    
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    
-    procedure UpdateContents; override;
-    
+      X, Y: Integer); override;  
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override; 
+    procedure UpdateContents; override; 
     property ActiveList: TWinControl read FActiveList write FActiveList;
     property PickList: TJvGridPopupListBox read FPickList;
   public
-    constructor Create(Owner: TComponent); override;
-    
+    constructor Create(Owner: TComponent); override; 
     property EditStyle: TInplaceEditStyle read FEditStyle write SetEditStyle;
   end;
 
@@ -283,8 +267,7 @@ var
 begin
   SetRect(R, 2, 2, Width - 2, Height);
   if FEditStyle <> ieSimple then
-    Dec(R.Right, FButtonWidth);
-  
+    Dec(R.Right, FButtonWidth); 
 end;
 
 procedure TJvInplaceEdit.CloseUp(Accept: Boolean);
@@ -292,8 +275,7 @@ var
   ListValue: string;
 begin
   if FListVisible then
-  begin
-    
+  begin 
     if FPickList.ItemIndex > -1 then
       ListValue := FPickList.Items[FPicklist.ItemIndex];
     SetWindowPos(FActiveList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
@@ -361,11 +343,8 @@ begin
     SetWindowPos(FActiveList.Handle, HWND_TOP, P.X, Y, 0, 0,
       SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
     FListVisible := True;
-    Invalidate;
-    
-    
-    QWindows.SetFocus(Handle);
-    
+    Invalidate;  
+    QWindows.SetFocus(Handle); 
   end;
 end;
 
@@ -376,11 +355,8 @@ procedure TJvInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (EditStyle = ieEllipsis) and (Key = VK_RETURN) and (Shift = [ssCtrl]) then
   begin
-    TJvDrawGrid(Grid).EditButtonClick;
-    
-    
-    Key := 0;
-    
+    TJvDrawGrid(Grid).EditButtonClick;  
+    Key := 0; 
   end
   else
     inherited KeyDown(Key, Shift);
@@ -432,11 +408,8 @@ begin
       if PtInRect(FActiveList.ClientRect, ListPos) then
       begin
         StopTracking;
-        MousePos := PointToSmallPoint(ListPos);
-        
-        
-        TOpenWidgetControl(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y);
-        
+        MousePos := PointToSmallPoint(ListPos);  
+        TOpenWidgetControl(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y); 
         Exit;
       end;
     end;
@@ -465,17 +438,13 @@ const
 var
   R: TRect;
   Flags: Integer;
-  W, G, I: Integer;
-  
-  DC: QPainterH;
-  
-begin
-  
+  W, G, I: Integer; 
+  DC: QPainterH; 
+begin 
   DC := QPainter_create(QWidget_to_QPaintDevice(Handle), Handle);
   try
     QPainter_setClipRegion(DC, EventRegion);
-    QPainter_setClipping(DC, not QRegion_isEmpty(EventRegion));
-  
+    QPainter_setClipping(DC, not QRegion_isEmpty(EventRegion)); 
 
   if FEditStyle <> ieSimple then
   begin
@@ -508,12 +477,10 @@ begin
       PatBlt(DC, Flags + 2 * G + 2 * W, I, W, W, BLACKNESS);
     end;
     ExcludeClipRect(DC, R.Left, R.Top, R.Right, R.Bottom);
-  end;
-  
+  end; 
   finally
     QPainter_destroy(DC);
-  end;
-  
+  end; 
   inherited {PaintWindow(DC);}
 end;
 
@@ -532,8 +499,7 @@ begin
           FPickList := TJvGridPopupListBox.Create(Self);
           FPickList.Visible := False;
           FPickList.Parent := Self;
-          FPickList.OnMouseUp := ListMouseUp;
-          
+          FPickList.OnMouseUp := ListMouseUp; 
           FPickList.ItemHeight := 11;
         end;
         FActiveList := FPickList;
@@ -563,11 +529,8 @@ begin
   NewState := PtInRect(R, Point(X, Y));
   if FPressed <> NewState then
   begin
-    FPressed := NewState;
-    
-    
-    InvalidateRect(R, False);
-    
+    FPressed := NewState;  
+    InvalidateRect(R, False); 
   end;
 end;
 
@@ -596,10 +559,8 @@ begin
   if not SysLocale.FarEast then
     inherited DoKillFocus(FocusedWnd)
   else
-  begin
-    
-    inherited DoKillFocus(FocusedWnd);
-    
+  begin 
+    inherited DoKillFocus(FocusedWnd); 
   end;
   CloseUp(False);
 end;
@@ -1113,8 +1074,7 @@ begin
       end;
       FillRect(ARect);
     end;
-  Down := FFixedCellsButtons and (gdFixed in AState) and
-    
+  Down := FFixedCellsButtons and (gdFixed in AState) and 
     not (csLoading in ComponentState) and FPressed and FDefaultDrawing and
     (FPressedCell.X = ACol) and (FPressedCell.Y = ARow);
   inherited DefaultDrawing := FDefaultDrawing;
@@ -1133,8 +1093,7 @@ begin
       Dec(ARect.Top, GridLineWidth);
     end;
   end;
-  if FDefaultDrawing and
-     
+  if FDefaultDrawing and 
      (gdFixed in AState) then
   begin
     FrameFlags1 := 0;

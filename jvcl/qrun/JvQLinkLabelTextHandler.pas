@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -59,11 +60,8 @@ unit JvQLinkLabelTextHandler;
 interface
 
 uses
-  Classes, SysUtils,
-  
-  
-  QGraphics, Types,
-  
+  Classes, SysUtils,  
+  QGraphics, Types, 
   JvQLinkLabelTree, JvQLinkLabelTools, JvQTypes;
 
 type
@@ -243,7 +241,7 @@ var
   EndPos: Integer;
 begin
   if not HasNext then
-    raise ETextHandlerError.Create(RsENoMoreWords);
+    raise ETextHandlerError.CreateRes(@RsENoMoreWords);
 
   StartPos := FPos;
   EndPos := FPos;
@@ -642,7 +640,7 @@ begin
         Inc(FPosX, TextWidth(Buffer));
       end
     else
-      raise ETextHandlerError.Create(RsEUnsupported);
+      raise ETextHandlerError.CreateRes(@RsEUnsupported);
 
   FList.Clear;
 end;

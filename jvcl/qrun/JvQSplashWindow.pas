@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,11 +34,8 @@ unit JvQSplashWindow;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Qt, Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows,
-  
+  SysUtils, Classes,  
+  Qt, Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows, 
   JvQAnimatedImage;
 
 type
@@ -46,11 +44,8 @@ type
     FTextMessage: TLabel;
     function GetMessageText: string;
     procedure SetMessageText(const Value: string);
-  protected
-    
-    
-    function WidgetFlags: Integer; override;
-    
+  protected  
+    function WidgetFlags: Integer; override; 
   public
     Image: TImage;
     Animation: TJvAnimatedImage;
@@ -83,12 +78,9 @@ begin
   Result := TJvSplashWindow.CreateNew(Application, 0);
   with Result do
   begin
-    BorderIcons := [];
-    
-    
+    BorderIcons := [];  
     BorderStyle := fbsNone;
-    AutoScroll := False;
-    
+    AutoScroll := False; 
     if SplashStayOnTop then
       FormStyle := fsStayOnTop
     else
@@ -135,8 +127,7 @@ begin
     Animation.Top := defImageTop;
     Animation.Width := 32;
     Animation.Height := 32;
-    Animation.Active := False;
-    
+    Animation.Active := False; 
     Animation.Stretch := True;
     Animation.Visible := False;
   end;
@@ -192,18 +183,14 @@ var
   VertOff: Integer;
 begin
   TextRect := Rect(FTextMessage.Left, 0, Max(Screen.Width div 2 - 64,
-    defTextWidth), 0);             
-  
+    defTextWidth), 0);              
   Canvas.Start;
-  try
-  
+  try 
     DrawText(Canvas.Handle,
-      PChar(Value), - 1, TextRect, DT_CALCRECT or DT_WORDBREAK);
-  
+      PChar(Value), - 1, TextRect, DT_CALCRECT or DT_WORDBREAK); 
   finally
     Canvas.Stop;
-  end;
-  
+  end; 
   VertOff := (ClientHeight div 2) - ((TextRect.Bottom - TextRect.Top) div 2);
   if VertOff < 0 then
     VertOff := 10;

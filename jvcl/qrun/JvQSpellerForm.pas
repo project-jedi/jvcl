@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,12 +35,9 @@ unit JvQSpellerForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QWindows, QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QExtCtrls,
-  
+  QStdCtrls, QExtCtrls, 
   JvQComponent;
 
 type
@@ -338,7 +336,7 @@ var
   StartPos, Index: Integer;
 begin
   if FDict = '' then
-    raise EJVCLException.Create(RsENoDictionaryLoaded);
+    raise EJVCLException.CreateRes(@RsENoDictionaryLoaded);
 
   FSourceText := SourceText;
   FWordEnd := 1;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -21,8 +22,6 @@ All Rights Reserved.
 Contributor(s):
   marcelb - renaming TJvDialButton, adding on/off state and on/off color for pointer.
 
-Last Modified: 2002-07-16
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -31,6 +30,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -41,11 +41,8 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-  
-  QGraphics, QControls, QForms, QExtCtrls, QComCtrls, Types, QWindows,
-  
+  {$ENDIF MSWINDOWS}  
+  QGraphics, QControls, QForms, QExtCtrls, QComCtrls, Types, QWindows, 
   SysUtils, Classes,
   JvQComponent;
 
@@ -126,8 +123,7 @@ type
     procedure BitmapNeeded; dynamic;
     procedure Change; dynamic;
     procedure ClearTicks;
-    procedure Click; override;
-    
+    procedure Click; override; 
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure ColorChanged; override;
@@ -197,8 +193,7 @@ type
     property ButtonEdge;
     property Color;
     property Cursor;
-    property DefaultPos;
-    
+    property DefaultPos; 
     property DragMode;
     property Enabled;
     property Frequency;
@@ -277,8 +272,7 @@ end;
 constructor TJvCustomDialButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csClickEvents, csCaptureMouse];
-  
+  ControlStyle := ControlStyle + [csClickEvents, csCaptureMouse]; 
   FTicks := TList.Create;
   FBorderStyle := bsNone;
   FButtonEdge := 5;
@@ -299,12 +293,12 @@ begin
   FTickStyle := tsAuto;
   FBitmapInvalid := True;
   FPointerRect.Left := -1; // Only on start up
+  Width := 51;
+  Height := 51;
   FRepeatDelay := 400;
   FRepeatRate := 100;
   SetTicks(FTickStyle);
   Position := 0;
-  Width := 51;
-  Height := 51;
 end;
 
 destructor TJvCustomDialButton.Destroy;
@@ -381,8 +375,7 @@ begin
   begin
     FBorderStyle := Value;
     if HandleAllocated then
-    begin
-      
+    begin 
       DrawBorder;
     end;
   end;
@@ -400,7 +393,7 @@ begin
 
   // Ensure minimum and maximum in right order.
   if AMax < AMin then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
+    raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [ClassName]);
 
   // Limit Position to Min and Max.
   if APosition < AMin then
@@ -454,7 +447,7 @@ var
 begin
   // Error if AMax < AMin
   if AMax < AMin then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
+    raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [ClassName]);
 
   // Confine AnAngle to limits.
   if AnAngle < AMin then
@@ -660,7 +653,7 @@ var
   I: Integer;
 begin
   if (Value < FMin) or (Value > FMax) then
-    raise EInvalidOperation.CreateFmt(SOutOfRange, [FMin, FMax]);
+    raise EInvalidOperation.CreateResFmt(@SOutOfRange, [FMin, FMax]);
   for I := 0 to FTicks.Count - 1 do
   begin
     P := FTicks.Items[I];
@@ -681,7 +674,6 @@ begin
   P^.Changed := True;
   P^.Color := clBtnText;
   FTicks.Add(P);
-  if not (csCreating in ControlState) then
   if HandleAllocated then
   begin
     DrawTick(FBitmap.Canvas, P^);
@@ -847,10 +839,8 @@ begin
   begin
     FBitmap := TBitmap.Create;
     FBitmapInvalid := True;
-  end;
-  
-  if FBitmapInvalid then
-  
+  end; 
+  if FBitmapInvalid then 
   begin
     if FBitmap.Width <> FSize + 1 then
     begin
@@ -858,8 +848,7 @@ begin
       FBitmap.Height := FSize + 1;
       FBitmapRect := Bounds(0, 0, FSize + 1, FSize + 1);
     end;
-
-    
+ 
 
     // Draw on bitmap.
     DrawButton;
@@ -895,14 +884,11 @@ var
 begin
   Size := 2 * FRadius + 1;
   ButtonRect := Bounds(0, 0, Size, Size);
-  Canvas := FBitmap.Canvas;
-  
+  Canvas := FBitmap.Canvas; 
   Canvas.Start;
-  try
-  
+  try 
     Canvas.Brush.Color := Parent.Brush.Color;
-    Canvas.Brush.Style := bsSolid;
-    
+    Canvas.Brush.Style := bsSolid; 
       Canvas.FillRect(FBitmapRect);
     SetViewPortOrgEx(Canvas.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
       @OldOrg);
@@ -942,12 +928,10 @@ begin
     finally
       // Reset viewport origin.
       SetViewportOrgEx(Canvas.Handle, OldOrg.X, OldOrg.Y, nil);
-    end;
-  
+    end; 
   finally
     Canvas.Stop;
-  end;
-  
+  end; 
   FBitmapInvalid := False;
 end;
 
@@ -966,8 +950,7 @@ var
 begin
   ARect := ClientRect;
   InflateRect(ARect, -1, -1);
-  Canvas.Brush.Style := bsClear;
-  
+  Canvas.Brush.Style := bsClear; 
   Canvas.Pen.Color := Parent.Brush.Color;
   Canvas.Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
   Canvas.Brush.Style := bsSolid;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -39,11 +40,8 @@ uses
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-  
-  QGraphics, QControls, QForms, QMenus, Types, QWindows,
-  
+  {$ENDIF MSWINDOWS}  
+  QGraphics, QControls, QForms, QMenus, Types, QWindows, 
   JvQTimer, JvQComponent, JvQThemes, JvQExControls;
 
 type
@@ -62,10 +60,8 @@ type
     FTickCount: Longint;
     FValue: TJvDiceValue;
     FOnStart: TNotifyEvent;
-    FOnStop: TNotifyEvent;
-    
-    FAutoSize: Boolean;
-    
+    FOnStop: TNotifyEvent; 
+    FAutoSize: Boolean; 
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
@@ -75,8 +71,7 @@ type
   protected
     procedure DoFocusChanged(Control: TWinControl); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    procedure SetAutoSize(Value: Boolean); 
-    
+    procedure SetAutoSize(Value: Boolean);  
     procedure AdjustSize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
@@ -87,13 +82,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Throw;
-  published
-    
-    property Align;
-    
-    
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-    
+  published 
+    property Align;  
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default True; 
     property AutoStopInterval: Cardinal read FAutoStopInterval write FAutoStopInterval default 0;
     property Color;
     property Cursor;
@@ -134,11 +125,8 @@ type
 
 implementation
 
-uses
-  
-  
-  QImgList;
-  
+uses  
+  QImgList; 
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDice.Res}
@@ -154,19 +142,14 @@ begin
   inherited Create(AOwner);
   Randomize;
   ControlStyle := [csClickEvents, csSetCaption, csCaptureMouse,
-    csOpaque, csDoubleClicks];
-  
+    csOpaque, csDoubleClicks]; 
   FInterval := 60;
   FValue := Low(TJvDiceValue);
   for I := Low(TJvDiceValue) to High(TJvDiceValue) do
   begin
-    FBitmap[I] := TBitmap.Create;
-    
-    
-    FBitmap[I].LoadFromResourceName(HInstance, Format('JV_DICE%d', [Ord(I)]));
-    
-  end;
-  
+    FBitmap[I] := TBitmap.Create;  
+    FBitmap[I].LoadFromResourceName(HInstance, Format('JV_DICE%d', [Ord(I)])); 
+  end; 
   Width := FBitmap[Value].Width + 2;
   Height := FBitmap[Value].Height + 2;
 end;
@@ -336,8 +319,7 @@ begin
 end;
 
 procedure TJvDice.SetAutoSize(Value: Boolean);
-begin
-  
+begin 
   AdjustSize;
   Invalidate;
 end;

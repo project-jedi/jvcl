@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -32,25 +33,22 @@ unit JvQJVCLUtils;
 
 interface
 
-uses
-  
-  RTLConsts, Variants,
-  
+uses 
+  RTLConsts, Variants, 
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShellAPI, Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   Qt, QTypes, Types, QForms, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus,
-  QDialogs, QComCtrls, QImgList, QGrids, QWinCursors, QWindows,
-  
+  QDialogs, QComCtrls, QImgList, QGrids, QWinCursors, QWindows, 
   IniFiles,
-  JclBase, JclSysUtils, JclStrings, JvQJCLUtils,
-  JvQAppStorage, JvQTypes, JvQFinalize;
+  {$IFNDEF NO_JCL}
+  JclBase,
+  {$ENDIF !NO_JCL}
+  JvQJCLUtils, JvQAppStorage, JvQTypes, JvQFinalize;
 
 
 
@@ -487,14 +485,11 @@ procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direc
 
 implementation
 uses
-  SysConst,
-  
+  SysConst, 
   {$IFDEF MSWINDOWS}
   CommCtrl, MMSystem, ShlObj, ActiveX,
-  {$ENDIF MSWINDOWS}
-  
-  QConsts,
-  
+  {$ENDIF MSWINDOWS} 
+  QConsts, 
   Math,
   JclSysInfo,
   JvQConsts, JvQProgressUtils, JvQResources;
@@ -517,11 +512,8 @@ const
   {$ENDIF MSWINDOWS}
 
 function GetAppHandle: HWND;
-begin
-  
-  
-  Result := Application.AppWidget;
-  
+begin  
+  Result := Application.AppWidget; 
 end;
 
 type
@@ -903,8 +895,7 @@ end;
 
 function ConvertStates(const State: Integer): TItemStates;
 begin
-  Result := [];
-  
+  Result := []; 
 end;
 
 function ChangeHasSelect(const peOld, peNew: TItemStates): Boolean;
@@ -1016,8 +1007,7 @@ begin
         Result.LoadFromResourceName(Module, StrPas(ResID));
     end
     else
-    begin
-      
+    begin 
         ResourceNotFound(ResID);
     end;
   except
@@ -1180,19 +1170,15 @@ begin
     SrcY := 0;
     SrcW := Bitmap.Width;
     Srch := Bitmap.Height;
-  end;
-  
-  Dest.Start;
-  
+  end; 
+  Dest.Start; 
   if not Bitmap.Monochrome then
     SetStretchBltMode(Dest.Handle, STRETCH_DELETESCANS);
   CanvasChanging := Bitmap.Canvas.OnChanging;
   Bitmap.Canvas.Lock;
   try
-    Bitmap.Canvas.OnChanging := nil;
-    
-    Bitmap.Canvas.Start;
-    
+    Bitmap.Canvas.OnChanging := nil; 
+    Bitmap.Canvas.Start; 
     if TransparentColor = clNone then
     begin
       StretchBlt(Dest.Handle, DstX, DstY, DstW, DstH, Bitmap.Canvas.Handle,
@@ -1205,23 +1191,16 @@ begin
       if Bitmap.Monochrome then
         TransparentColor := clWhite
       else
-        TransparentColor := ColorToRGB(TransparentColor);
-      
-      
+        TransparentColor := ColorToRGB(TransparentColor);  
       StretchBltTransparent(Dest.Handle, DstX, DstY, DstW, DstH,
         Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, Srch,
-        0, TransparentColor);
-      
-    end;
-    
-    Bitmap.Canvas.Stop;
-    
+        0, TransparentColor); 
+    end; 
+    Bitmap.Canvas.Stop; 
   finally
     Bitmap.Canvas.OnChanging := CanvasChanging;
-    Bitmap.Canvas.Unlock;
-    
-    Dest.Stop;
-    
+    Bitmap.Canvas.Unlock; 
+    Dest.Stop; 
   end;
 end;
 
@@ -1318,8 +1297,7 @@ begin
       begin
         Width := FOriginal.Width;
         Height := FOriginal.Height;
-        Canvas.CopyRect(IRect, FOriginal.Canvas, IRect);
-        
+        Canvas.CopyRect(IRect, FOriginal.Canvas, IRect); 
         Canvas.Brush.Color := OutlineColor;
         if Monochrome then
         begin
@@ -1332,12 +1310,10 @@ begin
       with Result.Canvas do
       begin
         Brush.Color := BackColor;
-        FillRect(IRect);
-        
+        FillRect(IRect); 
         MonoBmp.Canvas.Start;
         Start;
-        try
-          
+        try 
           if DrawHighlight then
           begin
             Brush.Color := HighLightColor;
@@ -1350,13 +1326,11 @@ begin
           SetTextColor(Handle, clBlack);
           SetBkColor(Handle, clWhite);
           BitBlt(Handle, 0, 0, RectWidth(IRect), RectHeight(IRect),
-            MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-          
+            MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax); 
         finally
           Stop;
           MonoBmp.Canvas.Stop;
-        end;
-        
+        end; 
       end;
     finally
       MonoBmp.Free;
@@ -1391,11 +1365,8 @@ begin
     with Bmp.Canvas do
     begin
       Brush.Color := clWhite;
-      FillRect(Rect(0, 0, Images.Width, Images.Height));
-      
-      
-      Images.Draw(Bmp.Canvas, 0, 0, Index, itMask);
-      
+      FillRect(Rect(0, 0, Images.Width, Images.Height));  
+      Images.Draw(Bmp.Canvas, 0, 0, Index, itMask); 
     end;
     Bmp.Monochrome := True;
     if DrawHighlight then
@@ -1452,16 +1423,13 @@ end;
 
 function MakeModuleIcon(Module: THandle; ResID: PChar): TIcon;
 begin
-  Result := TIcon.Create;
-  
-  
+  Result := TIcon.Create;  
   try
     Result.LoadFromResourceName(HInstance, ResID);
   except
     Result.Free;
     Result := nil;
-  end;
-  
+  end; 
 end;
 
 { Create TBitmap object from TIcon }
@@ -1493,27 +1461,22 @@ end;
 function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
 
 var
-  Bmp: TBitmap;
-  
+  Bmp: TBitmap; 
 begin
   with TImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
   try
     if TransparentColor = clDefault then
-      TransparentColor := Bitmap.TransparentColor;
-    
+      TransparentColor := Bitmap.TransparentColor; 
     AddMasked(Bitmap, TransparentColor);
     Result := TIcon.Create;
-    try
-      
-      
+    try  
       Bmp := TBitmap.Create;
       try
         GetBitmap(0, Bmp);
         Result.Assign(Bmp);
       finally
         Bmp.Free;
-      end;
-      
+      end; 
     except
       Result.Free;
       raise;
@@ -1647,11 +1610,8 @@ begin
   AForm.Hide;
   TCustomControlHack(AForm).DestroyHandle;
   with AForm do
-  begin
-    
-    
-    BorderStyle := fbsNone;
-    
+  begin  
+    BorderStyle := fbsNone; 
     BorderIcons := [];
     Parent := AControl;
   end;
@@ -1789,11 +1749,8 @@ var
   I, Delta: Integer;
   Brush: HBRUSH;
   TmpColor:TCOlor;
-begin
-  
-  Canvas.Start;
-  
-    
+begin 
+  Canvas.Start;  
   try
     if (StartColor = clNone) and (EndColor = clNone) then
       Exit;
@@ -1893,11 +1850,8 @@ begin
         DeleteObject(Brush);
       end;
     end; //  if Not (IsRectEmpty(ARect) and ...
-  finally
-    
-    Canvas.Stop;
-    
-    
+  finally 
+    Canvas.Stop;  
   end;
 end;
 
@@ -1909,14 +1863,10 @@ begin
   for I := 0 to 25 do
     Buffer[I] := Chr(I + Ord('A'));
   for I := 0 to 25 do
-    Buffer[I + 26] := Chr(I + Ord('a'));
-  
-  Canvas.Start;
-  
-  GetTextExtentPoint32(Canvas.Handle, Buffer, 52, TSize(Result));
-  
-  Canvas.Stop;
-  
+    Buffer[I + 26] := Chr(I + Ord('a')); 
+  Canvas.Start; 
+  GetTextExtentPoint32(Canvas.Handle, Buffer, 52, TSize(Result)); 
+  Canvas.Stop; 
   Result.X := Result.X div 52;
 end;
 
@@ -1992,15 +1942,13 @@ function DefineCursor(Instance: THandle; ResID: PChar): TCursor;
 var
   Handle: HCURSOR;
 begin
-  Handle := LoadCursor(Instance, ResID);
-  
+  Handle := LoadCursor(Instance, ResID); 
   if Integer(Handle) = 0 then
     ResourceNotFound(ResID);
   try
     Result := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[Result] := Handle;
-  except
-    
+  except 
     raise;
   end;
 end;
@@ -2129,8 +2077,7 @@ const
   (DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
     DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
     DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
-  WrapFlags: array[Boolean] of Integer = (0, DT_WORDBREAK);
-  
+  WrapFlags: array[Boolean] of Integer = (0, DT_WORDBREAK); 
 
 begin
   ACanvas.TextRect(ARect, ARect.Left + DX, ARect.Top + DY,
@@ -2490,11 +2437,8 @@ var
   wfd: TWin32FindData;
   ppf: IPersistFile;
   wnd: Windows.HWND;
-begin
-  
-  
-  wnd := QWidget_winId(HWND);
-  
+begin  
+  wnd := QWidget_winId(HWND); 
   Pointer(psl) := nil;
   Pointer(ppf) := nil;
   Result := CoInitialize(nil);
@@ -3022,8 +2966,7 @@ begin
   with Placement, TForm(Form) do
   begin
     if (Form = Application.MainForm) and AppMinimized then
-      ShowCmd := SW_SHOWMINIMIZED;
-    
+      ShowCmd := SW_SHOWMINIMIZED; 
     if (fpState in Options) then
       AppStorage.WriteInteger(StorePath + '\' + siShowCmd, ShowCmd);
     if ([fpSize, fpLocation] * Options <> []) then
@@ -3094,11 +3037,8 @@ begin
       DataFound := DataFound and (Screen.PixelsPerInch = AppStorage.ReadInteger(
         StorePath + '\' + siPixels, Screen.PixelsPerInch));
       if DataFound then
-      begin
-        
-          
-          if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then
-            
+      begin  
+          if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then 
             rcNormalPosition := Rect(rcNormalPosition.Left,
               rcNormalPosition.Top,
               rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
@@ -3134,8 +3074,7 @@ begin
           WinState := wsMinimized;
         SW_MAXIMIZE:
           WinState := wsMaximized;
-      end;
-      
+      end; 
         WindowState := WinState;
     end;
     Update;
@@ -3216,8 +3155,7 @@ function PixelFormatToColors(PixelFormat: TPixelFormat): Integer;
 begin
   case PixelFormat of
     pf1bit:
-      Result := 2;
-    
+      Result := 2; 
     pf8bit:
       Result := 256;
   else
@@ -4382,20 +4320,21 @@ var
   Button: TToolButton;
 begin
   if AForm.FormStyle = fsMDIForm then
+    {$IFNDEF NO_JCL}
     raise EJclError.CreateResRec(@RsNotForMdi);
+    {$ELSE}
+    raise Exception.CreateRes(@RsNotForMdi);
+    {$ENDIF !NO_JCL}
   if AMenu = nil then
     AMenu := AForm.Menu;
   if AMenu = nil then
     Exit;
   with AToolBar do
   begin
-    TotalWidth := BorderWidth;
-    
-    
+    TotalWidth := BorderWidth;  
     for I := ControlCount - 1 downto 0 do
       if Controls[I] is TToolButton then
-        Controls[I].Free;
-    
+        Controls[I].Free; 
     ShowCaptions := True;
   end;
   with AMenu do
@@ -4405,9 +4344,7 @@ begin
       Button.Parent := AToolBar;
       Button.AutoSize := True;
       Button.Caption := Items[I].Caption;
-      Button.Grouped := True;
-      
-      
+      Button.Grouped := True;  
       if Items[I].Action <> nil then
         Button.Action := Items[I].Action
       else
@@ -4416,8 +4353,7 @@ begin
         Button.Enabled := Items[I].Enabled;
         Button.ImageIndex := Items[I].ImageIndex;
         Button.OnClick := Items[I].OnClick;
-      end;
-      
+      end; 
       Inc(TotalWidth, Button.Width + AToolBar.BorderWidth);
     end;
   AToolBar.Width := TotalWidth;
@@ -4520,19 +4456,16 @@ end;
 procedure JvListViewSortClick(Column: TListColumn; AscendingSortImage: Integer;
   DescendingSortImage: Integer);
 var
-  ListView: TListView;
-  
+  ListView: TListView; 
 begin
   ListView := TListColumns(Column.Collection).Owner as TListView;
   ListView.Columns.BeginUpdate;
   try
-    with ListView.Columns do
-      
+    with ListView.Columns do 
     if ListView.Tag and $FF = Column.Index then
       ListView.Tag := ListView.Tag xor $100
     else
-      ListView.Tag := Column.Index;
-    
+      ListView.Tag := Column.Index; 
   finally
     ListView.Columns.EndUpdate;
   end;
@@ -4583,8 +4516,7 @@ end;
 
 procedure JvListViewSelectAll(ListView: TListView; Deselect: Boolean);
 var
-  I: Integer;
-  
+  I: Integer; 
   SaveOnSelectItem: TLVSelectItemEvent;
 begin
   with ListView do
@@ -4593,12 +4525,9 @@ begin
       Items.BeginUpdate;
       SaveOnSelectItem := OnSelectItem;
       WaitCursor;
-      try
-        
-        
+      try  
         for I := 0 to Items.Count - 1 do
-          Items[I].Selected := not Deselect;
-        
+          Items[I].Selected := not Deselect; 
       finally
         OnSelectItem := SaveOnSelectItem;
         Items.EndUpdate;
@@ -4655,11 +4584,8 @@ begin
       TempItem.Focused := True;
       TempItem.Selected := True;
     end;
-    if MakeVisible and (TempItem <> nil) then
-      
-      
-      TempItem.MakeVisible;
-      
+    if MakeVisible and (TempItem <> nil) then  
+      TempItem.MakeVisible; 
   end;
 end;
 
@@ -4702,27 +4628,20 @@ end;
 { end JvCtrlUtils }
 
 function GetDefaultCheckBoxSize: TSize;
-begin
-  
-  
+begin  
   Result.cx := 12;
-  Result.cy := 12;
-  
+  Result.cy := 12; 
 end;
 
 function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 var
   tt: TTextMetric;
 begin
-  // (ahuser) Qt returns different values for TextHeight('Ay') and TextHeigth(#1..#255)
-  
+  // (ahuser) Qt returns different values for TextHeight('Ay') and TextHeigth(#1..#255) 
   Canvas.Start;  // if it is called outside a paint event
-  RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
-  
-  GetTextMetrics(Canvas.Handle, tt);
-  
-  Canvas.Stop;
-  
+  RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]); 
+  GetTextMetrics(Canvas.Handle, tt); 
+  Canvas.Stop; 
   Result := tt.tmHeight;
 end;
 
@@ -4801,18 +4720,14 @@ begin
 end;
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
-begin
-  
-  Result := Classes.MakeObjectInstance(Method);
-  
+begin 
+  Result := Classes.MakeObjectInstance(Method); 
 end;
 
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 begin
-  if ObjectInstance <> nil then
-  
-  Classes.FreeObjectInstance(ObjectInstance);
-  
+  if ObjectInstance <> nil then 
+  Classes.FreeObjectInstance(ObjectInstance); 
 end;
 
 {$ENDIF MSWINDOWS}
@@ -4829,8 +4744,7 @@ begin
       Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
       Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
       }
-      { end RxLib }
-      
+      { end RxLib } 
     end;
   except
   end;

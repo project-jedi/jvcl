@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -45,10 +46,8 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
-  QWindows, Types, QGraphics, QForms, QExtCtrls, QControls, QButtons,
-  
+  QWindows, QMessages, QGraphics, QForms, QExtCtrls, QControls, QButtons,
+  Types, 
   JvQButtons, JvQComponent;
 
 const
@@ -149,8 +148,7 @@ type
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
-    property OnStartDrag;
-    
+    property OnStartDrag; 
   end;
 
   TJvScrollMaxBands = class(TJvCustomControl)
@@ -176,11 +174,8 @@ type
     FOnScroll: TNotifyEvent;
     procedure SetParam(Index, Value: Integer);
     procedure SetInclusive(Value: Boolean);
-  protected
-    
-    
-    procedure CreateWidget; override;
-    
+  protected  
+    procedure CreateWidget; override; 
     procedure SetTrackBar;
     procedure Loaded; override;
     procedure Resize; override;
@@ -235,12 +230,10 @@ type
     function GetScrollBarVisible: Boolean;
     procedure SetScrollBarVisible(const Value: Boolean);
     procedure SetOneExpanded(const Value: Boolean);
-  protected
-    
+  protected 
     procedure Loaded; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    function GetChildParent: TComponent; override;
-    
+    function GetChildParent: TComponent; override; 
     procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -287,13 +280,11 @@ type
     property OnDragOver;
     property OnEndDrag;
     property OnStartDrag;
-  public
-    
+  public 
   published
     property Anchors;
     //property AutoSize;
-    property Constraints;
-    
+    property Constraints; 
   end;
 
   EJvScrollMaxError = class(Exception);
@@ -334,14 +325,14 @@ var
 begin
   Handle := LoadCursor(HInstance, Identifier);
   if Handle = 0 then
-    raise EOutOfResources.Create(RsECannotLoadCursorResource);
+    raise EOutOfResources.CreateRes(@RsECannotLoadCursorResource);
   for Result := 1 to High(TCursor) do
     if Screen.Cursors[Result] = Screen.Cursors[crDefault] then
     begin
       Screen.Cursors[Result] := Handle;
       Exit;
     end;
-  raise EOutOfResources.Create(RsETooManyUserdefinedCursors);
+  raise EOutOfResources.CreateRes(@RsETooManyUserdefinedCursors);
 end;
 }
 
@@ -350,8 +341,7 @@ end;
 type
   TJvScroller = class(TPanel)
   private
-    FY: Integer;
-    
+    FY: Integer; 
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -509,8 +499,7 @@ end;
 
 type
   TJvBandBtn = class(TJvNoFrameButton)
-  private
-    
+  private 
   protected
     procedure FontChanged; override;
   end;
@@ -558,8 +547,7 @@ begin
     Spacing := -1;
     NoBorder := False;
     ParentColor := True;
-    {o}
-    
+    {o} 
   end;
   Expanded := True;
 end;
@@ -784,7 +772,7 @@ end;
 procedure TJvScrollMaxBand.SetParent( const  AParent: TWinControl);
 begin
   if not ((AParent is TJvScrollMaxBands) or (AParent = nil)) then
-    raise EJvScrollMaxError.Create(RsETJvScrollMaxBandCanBePutOnlyIntoTJv);
+    raise EJvScrollMaxError.CreateRes(@RsETJvScrollMaxBandCanBePutOnlyIntoTJv);
   inherited SetParent(AParent);
   if not (csLoading in ComponentState) then
   begin
@@ -860,11 +848,8 @@ const
   Ex: array [Boolean] of Integer = (BF_TOP, BF_RECT);
 var
   R: TRect;
-begin
-  
-  
-  if Canvas.Handle <> nil then
-  
+begin  
+  if Canvas.Handle <> nil then 
   begin
     if csDesigning in ComponentState then
       DrawDesignFrame(Canvas, ClientRect);
@@ -877,7 +862,7 @@ begin
         R.Top := 1;
       R.Right := Width - R.Left;
       R.Bottom := Height - 1;
-       QWindows.DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
+      QWindows.DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
       if ButtonVisible then
       begin
         Canvas.Brush.Color := Color;
@@ -980,7 +965,7 @@ begin
     ScrollMax.FOneExpanded then
     for I := 0 to ControlCount - 1 do
       if not (Controls[I] is TJvScrollMaxBand) then
-        raise EJvScrollMaxError.Create(RsETJvScrollMaxCanContainOnlyTJvScroll)
+        raise EJvScrollMaxError.CreateRes(@RsETJvScrollMaxCanContainOnlyTJvScroll)
       else
       if Controls[I] <> AControl then
         (Controls[I] as TJvScrollMaxBand).Expanded := False;
@@ -990,7 +975,7 @@ begin
     for I := 0 to ControlCount - 1 do
     begin
       if not (Controls[I] is TJvScrollMaxBand) then
-        raise EJvScrollMaxError.Create(RsETJvScrollMaxCanContainOnlyTJvScroll);
+        raise EJvScrollMaxError.CreateRes(@RsETJvScrollMaxCanContainOnlyTJvScroll);
       if I > 0 then
         T := Controls[I - 1].BoundsRect.Bottom
       else
@@ -1035,20 +1020,14 @@ var
   S1: string;
 begin
   if (csDesigning in ComponentState) and
-    (ControlCount = 0) and
-    
-    
-    (Canvas.Handle <> nil) then
-    
+    (ControlCount = 0) and  
+    (Canvas.Handle <> nil) then 
   begin
     R := ClientRect;
     Canvas.Font.Color := clAppWorkSpace;
-    S1 := RsRightClickAndChooseAddBand;
-    
-    
+    S1 := RsRightClickAndChooseAddBand;  
     DrawText(Canvas, S1,
-      -1, R, DT_WORDBREAK {or DT_CENTER or DT_VCENTER});
-    
+      -1, R, DT_WORDBREAK {or DT_CENTER or DT_VCENTER}); 
   end;
 end;
 
@@ -1091,8 +1070,7 @@ begin
     ParentColor := True;
     Visible := True;
     DesignInteractive := True;
-  end;
-  
+  end; 
 end;
 
 destructor TJvScrollMax.Destroy;
@@ -1309,7 +1287,7 @@ begin
       Break;
     end;
   if Band = nil then
-    raise EJvScrollMaxError.CreateFmt(RsEControlsNotAChildOfs, [AControl.Name, Parent.Name]);
+    raise EJvScrollMaxError.CreateResFmt(@RsEControlsNotAChildOfs, [AControl.Name, Parent.Name]);
   Band.Expanded := True;
   Rect := AControl.ClientRect;
   Dec(Rect.Top, BevelWidth + BorderWidth + 4);

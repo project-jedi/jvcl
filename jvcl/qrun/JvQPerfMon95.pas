@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,11 +37,8 @@ unit JvQPerfMon95;
 interface
 
 uses
-  Windows, SysUtils, Registry, Classes, Contnrs,
-  
-  
-  QForms,
-  
+  Windows, SysUtils, Registry, Classes, Contnrs,  
+  QForms, 
   JclBase, JvQComponent;
 
 type
@@ -151,11 +149,8 @@ function JvGetPerfStatItems(List: TStrings): Boolean;
 
 implementation
 
-uses
-  
-  
-  RTLConsts,
-  
+uses  
+  RTLConsts, 
   JclSysInfo,
   JvQJCLUtils, JvQJVCLUtils, JvQResources;
 
@@ -227,11 +222,8 @@ procedure ShowWrongOSWarning;
 begin
   if WrongOSWarningShown or (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
     Exit;
-  with Application do
-    
-    
-    MessageBox(RsWrongOS, Title, [smbOK], smsWarning);
-    
+  with Application do  
+    MessageBox(RsWrongOS, Title, [smbOK], smsWarning); 
   WrongOSWarningShown := True;
 end;
 

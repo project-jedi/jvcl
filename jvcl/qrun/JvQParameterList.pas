@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -32,14 +33,9 @@ unit JvQParameterList;
 interface
 
 uses
-  Classes, SysUtils,
-  
-  
-  QStdCtrls, QExtCtrls, Types, QGraphics, QForms, QControls, QDialogs, QComCtrls,
-  
-  
-  Variants,
-  
+  Classes, SysUtils,  
+  QStdCtrls, QExtCtrls, Types, QGraphics, QForms, QControls, QDialogs, QComCtrls,  
+  Variants, 
   JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, JvQDsaDialogs,
   JvQComponent, JvQPanel, JvQPropertyStore, JvQAppStorage, JvQAppStorageSelectList;
 
@@ -534,10 +530,9 @@ begin
     IsEmpty := TJvParameterListEnableDisableReason(Source).IsEmpty;
     IsNotEmpty := TJvParameterListEnableDisableReason(Source).IsNotEmpty;
     RemoteParameterName := TJvParameterListEnableDisableReason(Source).RemoteParameterName;
-    Exit;
-  end;
-  inherited Assign(Source);
-
+  end
+  else
+    inherited Assign(Source);
 end;
 
 //=== TJvParameterListEnableDisableReasonList ================================
@@ -930,9 +925,9 @@ begin
     Enabled := TJvBaseParameter(Source).Enabled;
     FEnableReasons.Assign(TJvBaseParameter(Source).FEnableReasons);
     FDisableReasons.Assign(TJvBaseParameter(Source).FDisableReasons);
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 function TJvBaseParameter.Validate(var AData: Variant): Boolean;
@@ -1053,9 +1048,9 @@ begin
     FIntParameterList.Assign(TJvParameterList(Source).FIntParameterList);
     HistoryEnabled := TJvParameterList(Source).HistoryEnabled;
     AppStoragePath := TJvParameterList(Source).AppStoragePath;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvParameterList.SetAppStoragePath(Value: string);
@@ -1186,11 +1181,8 @@ begin
 
   with TForm(ParameterDialog) do
   begin
-    BorderIcons := [];
-    
-    
-    BorderStyle := fbsDialog;
-    
+    BorderIcons := [];  
+    BorderStyle := fbsDialog; 
     FormStyle := fsNormal;
     Position := poScreenCenter;
     OnShow := DialogShow;

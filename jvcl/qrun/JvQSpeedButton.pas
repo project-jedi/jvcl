@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -40,16 +41,10 @@ unit JvQSpeedButton;
 
 interface
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  
-  SysUtils, Classes,
-  
-  Types, Qt, QTypes, QWindows,
-  QControls, QGraphics, QForms, QExtCtrls, QButtons, QMenus, QImgList,
-  QActnList,
-  
+  SysUtils, Classes,  
+  Types, Qt, QTypes, 
+  QWindows, QMessages,
+  QControls, QGraphics, QForms, QExtCtrls, QButtons, QMenus, QImgList, QActnList,
   JvQExControls, JvQComponent, JvQConsts, JvQTypes, JvQJCLUtils, JvQJVCLUtils,
   JvQThemes;
 
@@ -57,10 +52,8 @@ type
   TJvNumGlyphs = 1..5;
   TJvDropDownMenuPos = (dmpBottom, dmpRight);
   TJvButtonState = (rbsUp, rbsDisabled, rbsDown, rbsExclusive, rbsInactive);
-
-  
-  TButtonStyle = JvQThemes.TButtonStyle;
-  
+ 
+  TButtonStyle = JvQThemes.TButtonStyle; 
 
   TJvCustomSpeedButton = class(TJvGraphicControl)
   private
@@ -117,8 +110,7 @@ type
     procedure TimerExpired(Sender: TObject);
     procedure UpdateExclusive;
 
-    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
-    
+    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED; 
   protected
     FState: TJvButtonState;
     function WantKey(Key: Integer; Shift: TShiftState;
@@ -126,10 +118,8 @@ type
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure TextChanged; override;
-    procedure VisibleChanged; override;
-    
-    procedure DblClick; override;
-    
+    procedure VisibleChanged; override; 
+    procedure DblClick; override; 
     function GetDropDownMenuPos: TPoint;
     procedure Loaded; override;
     procedure Paint; override;
@@ -192,10 +182,7 @@ type
   protected
     FClient: TJvImageSpeedButton;
     procedure AssignClient(AClient: TObject); override;
-    function IsCheckedLinked: Boolean; override;
-    
-     
-    
+    function IsCheckedLinked: Boolean; override;   
     function IsImageIndexLinked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
     procedure SetImageIndex(Value: Integer); override;
@@ -205,10 +192,7 @@ type
   protected
     FClient: TJvSpeedButton;
     procedure AssignClient(AClient: TObject); override;
-    function IsCheckedLinked: Boolean; override;
-    
-     
-    
+    function IsCheckedLinked: Boolean; override;   
     procedure SetChecked(Value: Boolean); override;
   end;
 
@@ -238,8 +222,7 @@ type
     property Alignment;
     property AllowAllUp;
     property AllowTimer;
-    property Anchors;
-    
+    property Anchors; 
     property Caption;
     property Constraints;
     { Ensure group index is declared before Down }
@@ -279,8 +262,7 @@ type
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
-    property OnDragOver;
-    
+    property OnDragOver; 
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseEnter;
@@ -305,8 +287,7 @@ type
   protected
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
 
-    function GetActionLinkClass: TControlActionLinkClass; override;
-    
+    function GetActionLinkClass: TControlActionLinkClass; override; 
     procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
       AState: TJvButtonState; DrawMark: Boolean); override;
     procedure SyncHotGlyph;
@@ -318,8 +299,7 @@ type
     property Alignment;
     property AllowAllUp;
     property AllowTimer;
-    property Anchors;
-    
+    property Anchors; 
     property Caption;
     property Constraints;
     { Ensure group index is declared before Down }
@@ -367,8 +347,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDrag;
-    
+    property OnStartDrag; 
   end;
 
   TJvButtonImage = class(TObject)
@@ -712,8 +691,7 @@ begin
   if csDesigning in ComponentState then
     Exit;
   if Assigned(FDropDownMenu) and (DropDownMenu.AutoPopup or Manual) then
-  begin
-    
+  begin 
     DropDownMenu.PopupComponent := Self;
     with ClientToScreen(SmallPointToPoint(Pos)) do
       DropDownMenu.Popup(X, Y);
@@ -798,8 +776,7 @@ begin
   begin
     { Don't draw a border if DragMode <> dmAutomatic since this button is meant to
       be used as a dock client. }
-    NeedRepaint :=
-      
+    NeedRepaint := 
       FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = NullHandle));
 
     inherited MouseEnter(Control); // set MouseOver
@@ -816,8 +793,7 @@ var
 begin
   if MouseOver and Enabled then
   begin
-    NeedRepaint :=
-      
+    NeedRepaint := 
       HotTrack or (FFlat and Enabled and not FDragging);
 
     inherited MouseLeave(Control); // set MouseOver
@@ -894,11 +870,8 @@ begin
       FState := rbsUp;
       { Calling Click might open a new window or something which will remove
         the focus; if the new window is modal then UpdateTracking won't be
-        called until the window is closed, thus: }
-      
-      
-      MouseLeave(Self);
-      
+        called until the window is closed, thus: }  
+      MouseLeave(Self); 
       { Even if the mouse is not in the control (DoClick=False) we must redraw
         the image, because it must change from hot -> normal }
       //if not DoClick then
@@ -993,8 +966,7 @@ end;
 procedure TJvCustomSpeedButton.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
-  P: TPoint;
-  
+  P: TPoint; 
 begin
   try
     if FMenuTracking then
@@ -1017,8 +989,7 @@ begin
       try
         P := GetDropDownMenuPos;
         if CheckMenuDropdown(PointToSmallPoint(P), False) then
-          DoMouseUp(Button, Shift, X, Y);
-        
+          DoMouseUp(Button, Shift, X, Y); 
       finally
         FMenuTracking := False;
       end;
@@ -1031,13 +1002,11 @@ begin
         FRepeatTimer.Enabled := True;
       end;
     end;
-  finally
-    
+  finally 
      // (ahuser) Maybe we should remove the WM_RBUTTONDOWN code and make this
      // code available for VCL and VisualCLX.
     if Button = mbRight then
-      UpdateTracking;
-    
+      UpdateTracking; 
   end;
 end;
 
@@ -1092,8 +1061,7 @@ procedure TJvCustomSpeedButton.Paint;
 var
   PaintRect: TRect;
   LState: TJvButtonState;
-  Offset: TPoint;
-  
+  Offset: TPoint; 
 begin
   if not Enabled {and not (csDesigning in ComponentState)} then
   begin
@@ -1117,8 +1085,7 @@ begin
     LState := FState;
 
   PaintRect := Rect(0, 0, Width, Height);
-
-  
+ 
   begin
     with Canvas do
     begin
@@ -1375,14 +1342,11 @@ var
 begin
   GetCursorPos(P);
   NewValue := Enabled and (FindDragTarget(P, True) = Self) and IsForegroundTask;
-  if MouseOver <> NewValue then
-    
-    
+  if MouseOver <> NewValue then  
     if NewValue then
       MouseEnter(Self)
     else
-      MouseLeave(Self);
-    
+      MouseLeave(Self); 
 end;
 
 
@@ -1608,7 +1572,6 @@ begin
   Result := inherited IsCheckedLinked and (FClient.GroupIndex <> 0) and
     FClient.AllowAllUp and (FClient.Down = (Action as TCustomAction).Checked);
 end;
-
 
  
 
@@ -1936,8 +1899,7 @@ begin
     Inc(Y, Client.Top + Offset.Y);
   end;
 
-  { Themed text is not shifted, but gets a different color. }
-  
+  { Themed text is not shifted, but gets a different color. } 
     OffsetRect(TextBounds, TextPos.X + Client.Left + Offset.X, TextPos.Y + Client.Top + Offset.Y);
 end;
 
@@ -2078,11 +2040,8 @@ begin
         begin
           with TmpImage.Canvas do
           begin
-            FillRect(Rect(0, 0, iWidth, iHeight));
-            
-            
-            Images.Draw(TmpImage.Canvas, 0, 0, Index, itImage);
-            
+            FillRect(Rect(0, 0, iWidth, iHeight));  
+            Images.Draw(TmpImage.Canvas, 0, 0, Index, itImage); 
           end;
           Mask := TBitmap.Create;
           try
@@ -2094,11 +2053,8 @@ begin
             end;
             with Mask.Canvas do
             begin
-              FillRect(Rect(0, 0, iWidth, iHeight));
-              
-              
-              Images.Draw(TmpImage.Canvas, 0, 0, Index, itMask);
-              
+              FillRect(Rect(0, 0, iWidth, iHeight));  
+              Images.Draw(TmpImage.Canvas, 0, 0, Index, itMask); 
             end;
             FIndexs[State] := TJvGlyphList(FGlyphList).Add(TmpImage, Mask);
           finally
@@ -2117,11 +2073,8 @@ begin
       rbsInactive:
         begin
           TmpImage.Canvas.Brush.Color := clBtnFace;
-          TmpImage.Canvas.FillRect(Rect(0, 0, iWidth, iHeight));
-          
-          
-          Images.Draw(TmpImage.Canvas, 0, 0, Index, itImage);
-          
+          TmpImage.Canvas.FillRect(Rect(0, 0, iWidth, iHeight));  
+          Images.Draw(TmpImage.Canvas, 0, 0, Index, itImage); 
           with TmpImage do
           begin
             for X := 0 to Width - 1 do
@@ -2170,11 +2123,8 @@ begin
     Exit;
   Index := CreateButtonGlyph(State);
   if Index >= 0 then
-  begin
-    
-    
-    FGlyphList.Draw(Canvas, X, Y, Index, itImage);
-    
+  begin  
+    FGlyphList.Draw(Canvas, X, Y, Index, itImage); 
     Result := Point(FGlyphList.Width, FGlyphList.Height);
   end;
 end;
@@ -2189,11 +2139,8 @@ begin
     Exit;
   if State = rbsDisabled then
   begin
-    if GrayNewStyle then
-      
-      
-      Images.Draw(Canvas, X, Y, ImageIndex, itImage, False)
-      
+    if GrayNewStyle then  
+      Images.Draw(Canvas, X, Y, ImageIndex, itImage, False) 
     else
       ImageListDrawDisabled(Images, Canvas, X, Y, ImageIndex, clBtnHighlight,
         clBtnShadow, True);
@@ -2202,17 +2149,11 @@ begin
   if State = rbsInactive then
   begin
     Index := CreateImageGlyph(State, Images, ImageIndex);
-    if Index >= 0 then
-      
-      
-      FGlyphList.Draw(Canvas, X, Y, Index, itImage);
-      
+    if Index >= 0 then  
+      FGlyphList.Draw(Canvas, X, Y, Index, itImage); 
   end
-  else
-    
-    
-    Images.Draw(Canvas, X, Y, ImageIndex, itImage);
-    
+  else  
+    Images.Draw(Canvas, X, Y, ImageIndex, itImage); 
   Result := Point(Images.Width, Images.Height);
 end;
 
@@ -2252,11 +2193,9 @@ var
   GlyphPos, PopupPos: TPoint;
   TextBounds: TRect;
   LCaption: string;
-begin
-  
+begin 
   Canvas.Start;
-  try
-  
+  try 
     { MinimizeCaption might change the caption }
     LCaption := Caption;
     CalcButtonLayout(Canvas, Client, Offset, LCaption, Layout, Margin, Spacing,
@@ -2289,12 +2228,10 @@ begin
         PopupPos.Y := TextBounds.Top + RectHeight(TextBounds) div 2;
         DrawPopupMark(Canvas, PopupPos.X, PopupPos.Y, State);
       end;
-    Result := TextBounds;
-  
+    Result := TextBounds; 
   finally
     Canvas.Stop;
-  end;
-  
+  end; 
 end;
 
 procedure TJvxButtonGlyph.DrawPopupMark(Canvas: TCanvas; X, Y: Integer;

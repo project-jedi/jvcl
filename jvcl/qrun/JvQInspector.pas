@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 
@@ -166,12 +167,9 @@ unit JvQInspector;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, TypInfo, IniFiles,
-  
-  
+  SysUtils, Classes, Contnrs, TypInfo, IniFiles,  
   Qt, QTypes, Types, QGraphics, QControls, QStdCtrls, QExtCtrls,
-  QWindows, QMessages, JvQExExtCtrls,
-  
+  QWindows, QMessages, JvExExtCtrls, 
   JvQComponent, JvQTypes, JvQExControls, JvQFinalize;
 
 const
@@ -311,11 +309,8 @@ type
 
   TOnJvInspectorItemEdit = procedure(Sender:TJvCustomINspector; Item: TJvCustomInspectorItem;
      var DisplayStr: string) of object;
-
   
-  
-  TJvCustomInspector = class(TJvExCustomPanel)
-  
+  TJvCustomInspector = class(TJvExCustomPanel) 
   private
     FAfterDataCreate: TInspectorDataEvent;
     FAfterItemCreate: TInspectorItemEvent;
@@ -352,11 +347,9 @@ type
     FTopIndex: Integer;
     FUseBands: Boolean;
     FVisibleList: TStringList;
-    FWantTabs: Boolean;
-    
+    FWantTabs: Boolean; 
     FHorzScrollBar: TScrollBar;
-    FVertScrollBar: TScrollBar;
-    
+    FVertScrollBar: TScrollBar; 
     FOnEditorContextPopup: TContextPopupEvent;
     FOnEditorKeyDown: TKeyEvent;
     FOnEditorKeyPress: TKeyPressEvent;
@@ -367,13 +360,11 @@ type
 
     FInspectObject: TObject;
     procedure SetInspectObject(const Value: TObject);
-    //    FOnMouseDown: TInspectorMouseDownEvent;
-    
+    //    FOnMouseDown: TInspectorMouseDownEvent; 
     // ClientWidth and ClientHeight replaces the inherited properties by
     // methods that adjusts the client width and height by AdjustClientRect
     function ClientWidth: Integer;
-    function ClientHeight: Integer;
-    
+    function ClientHeight: Integer; 
   protected
     function CalcImageHeight: Integer; virtual;
     function CalcItemIndex(X, Y: Integer; var Rect: TRect): Integer; virtual;
@@ -464,14 +455,11 @@ type
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure DoSetFocus(Focused: HWND); override;
-    procedure DoKillFocus(Focused: HWND); override;
-    
+    procedure DoKillFocus(Focused: HWND); override; 
     procedure Scrolled(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer); dynamic;
-    procedure AdjustClientRect(var Rect: TRect); override;
-    
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-       const  MousePos: TPoint): Boolean; override;
+    procedure AdjustClientRect(var Rect: TRect); override; 
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  const  MousePos: TPoint): Boolean; override;
     procedure ShowScrollBars(Bar: Integer; Visible: Boolean); virtual;
     function YToIdx(const Y: Integer): Integer; virtual;
     property BandSizing: Boolean read FBandSizing write FBandSizing;
@@ -498,8 +486,7 @@ type
     property AfterItemCreate: TInspectorItemEvent read GetAfterItemCreate
       write SetAfterItemCreate;
     property BeforeItemCreate: TInspectorItemBeforeCreateEvent
-      read GetBeforeItemCreate write SetBeforeItemCreate;
-    
+      read GetBeforeItemCreate write SetBeforeItemCreate; 
     property BeforeSelection: TInspectorItemBeforeSelectEvent read GetBeforeSelection write SetBeforeSelection;
     property Painter: TJvInspectorPainter read GetPainter write SetPainter;
     property PaintGeneration: Integer read FPaintGen;
@@ -553,8 +540,7 @@ type
   published
     property Align;
     property Anchors;
-    property BandWidth;
-    
+    property BandWidth; 
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
@@ -781,11 +767,8 @@ type
     FDisplayIndex: Integer;
     FDisplayName: string;
     FDroppedDown: Boolean;
-    FEditCtrlDestroying: Boolean;
-    
-    
-    FEditCtrl: TOpenEdit;
-    
+    FEditCtrlDestroying: Boolean;  
+    FEditCtrl: TOpenEdit; 
     FEditing: Boolean;
     FFlags: TInspectorItemFlags;
     FHeight: Integer;
@@ -817,12 +800,9 @@ type
     procedure Deactivate; dynamic;
     procedure DoAfterItemCreate; virtual;
     function DoCompare(const Item: TJvCustomInspectorItem): Integer; virtual;
-    procedure DoDefaultDrawListItem(ACanvas: TCanvas; Rect: TRect; AText: string); virtual;
-    
-    
+    procedure DoDefaultDrawListItem(ACanvas: TCanvas; Rect: TRect; AText: string); virtual;  
     procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean); virtual;
-    
+      State: TOwnerDrawState; var Handled: Boolean); virtual; 
     procedure DoDropDownKeys(var Key: Word; Shift: TShiftState); virtual;
     procedure DoGetValueList(const Strings: TStrings); virtual;
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer;
@@ -842,8 +822,7 @@ type
     procedure EditMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
       virtual;
     procedure EditMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer); virtual;
-    
+      Shift: TShiftState; X, Y: Integer); virtual; 
     function GetAutoUpdate: Boolean; virtual;
     function GetBaseCategory: TJvCustomInspectorItem; virtual;
     function GetCategory: TJvCustomInspectorItem; virtual;
@@ -854,11 +833,8 @@ type
     function GetFullName: string; // NOTE THIS USES THE INTERNAL NAME properties to build its result.
     function GetDisplayParent: TJvCustomInspectorItem; virtual;
     function GetDisplayValue: string; virtual;
-    function GetDroppedDown: Boolean; virtual;
-    
-    
-    function GetEditCtrl: TOpenEdit; virtual;
-    
+    function GetDroppedDown: Boolean; virtual;  
+    function GetEditCtrl: TOpenEdit; virtual; 
     function GetEditCtrlDestroying: Boolean; virtual;
     function GetEditing: Boolean; virtual;
     function GetExpanded: Boolean; virtual;
@@ -902,11 +878,8 @@ type
     procedure SetDisplayIndex(const Value: Integer); virtual;
     procedure SetDisplayIndexValue(const Value: Integer); virtual;
     procedure SetDisplayName(Value: string); virtual;
-    procedure SetDisplayValue(const Value: string); virtual;
-    
-    
-    procedure SetEditCtrl(const Value: TOpenEdit); virtual;
-    
+    procedure SetDisplayValue(const Value: string); virtual;  
+    procedure SetEditCtrl(const Value: TOpenEdit); virtual; 
     procedure SetEditing(const Value: Boolean); virtual;
     procedure SetExpanded(Value: Boolean); virtual;
     procedure SetFlags(const Value: TInspectorItemFlags); virtual;
@@ -932,11 +905,8 @@ type
     property BaseCategory: TJvCustomInspectorItem read GetBaseCategory;
     property Category: TJvCustomInspectorItem read GetCategory;
     property DroppedDown: Boolean read GetDroppedDown;
-    property EditCtrlDestroying: Boolean read GetEditCtrlDestroying;
-    
-    
-    property EditCtrl: TOpenEdit read GetEditCtrl;
-    
+    property EditCtrlDestroying: Boolean read GetEditCtrlDestroying;  
+    property EditCtrl: TOpenEdit read GetEditCtrl; 
     property IsCompoundColumn: Boolean read GetIsCompoundColumn;
     property LastPaintGeneration: Integer read FLastPaintGen;
     property ListBox: TCustomListBox read GetListBox;
@@ -1045,11 +1015,8 @@ type
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState); override;
     function GetColumnCount: Integer; virtual;
     function GetColumns(I: Integer): TJvInspectorCompoundColumn; virtual;
-    function GetDisplayName: string; override;
-    
-    
-    function GetEditCtrl: TOpenEdit; override;
-    
+    function GetDisplayName: string; override;  
+    function GetEditCtrl: TOpenEdit; override; 
     function GetEditCtrlDestroying: Boolean; override;
     function GetEditing: Boolean; override;
     function GetSelectedColumn: TJvInspectorCompoundColumn; virtual;
@@ -1269,12 +1236,9 @@ type
     FUseFont: Boolean;
   protected
     function GetUseFont: Boolean;
-    procedure SetUseFont(Value: Boolean);
-    
-    
+    procedure SetUseFont(Value: Boolean);  
     procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean); override;
-    
+      State: TOwnerDrawState; var Handled: Boolean); override; 
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer;
       var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer;
@@ -2016,16 +1980,11 @@ procedure RegisterTypeInfoHelper(AClass: TJvTypeInfoHelperClass);
 
 implementation
 
-uses
-  
-  RTLConsts,
-  
-  
-  
-  QDialogs, QForms, QButtons, QConsts,
-  
+uses 
+  RTLConsts,   
+  QDialogs, QForms, QButtons, QConsts, 
   JclRTTI, JclLogic, JclStrings,
-  JvQJCLUtils, JvQJVCLUtils, JvQThemes, JvQResources;
+  JvJCLUtils, JvJVCLUtils, JvThemes, JvResources;
 
 const
   sUnitName = 'JvInspector';
@@ -2171,8 +2130,7 @@ end;
 type
   PMethod = ^TMethod;
   PComp = ^Comp;
-  PPointer = ^Pointer;
-  
+  PPointer = ^Pointer; 
 var
   GlobalGenItemReg: TJvInspectorRegister = nil;
   GlobalVarItemReg: TJvInspectorRegister = nil;
@@ -2404,8 +2362,7 @@ begin
   if IndexOf(Inspector) = -1 then
   begin
     SetLength(FInspectors, Length(FInspectors) + 1);
-    FInspectors[High(FInspectors)] := Inspector;
-    
+    FInspectors[High(FInspectors)] := Inspector; 
   end;
 end;
 
@@ -2418,8 +2375,7 @@ begin
   begin
     if I < High(FInspectors) then
       Move(FInspectors[I + 1], FInspectors[I], (High(FInspectors) - I) * SizeOf(TJvCustomInspector));
-    SetLength(FInspectors, High(FInspectors));
-    
+    SetLength(FInspectors, High(FInspectors)); 
   end;
 end;
 
@@ -2570,8 +2526,7 @@ end;
 
 constructor TJvCustomInspector.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
   ControlStyle := ControlStyle - [csAcceptsControls, csNoFocus];
   FHorzScrollBar := TScrollBar.Create(Self);
   FVertScrollBar := TScrollBar.Create(Self);
@@ -2592,20 +2547,17 @@ begin
     overrides AdjustClientRect the Align property will force the scroll bars to
     fit into the adjusted client rect. To prevent this the AdjustClientRect only
     adjusts the client rect if ScrollBar.Align <> alBottom/alRight. This is
-    the case after the first Paint event. }
-  
+    the case after the first Paint event. } 
 
   FBandStartsNoSB := TList.Create;
   FBandStartsSB := TList.Create;
   FSortNotificationList := TList.Create;
-  FItemHeight := 16;
-  
+  FItemHeight := 16; 
   FVisibleList := TStringList.Create;
   FRoot := TJvCustomInspectorItem.Create(nil, nil);
   Root.SetInspector(Self);
   Root.Flags := [iifHidden, iifExpanded, iifReadonly, iifVisible];
-  FSelectedIndex := -1;
-  
+  FSelectedIndex := -1; 
   BevelInner := bvNone;
   BevelOuter := bvLowered;
   TabStop := True;
@@ -2645,8 +2597,7 @@ var
   BandHeightNoSB: Integer;
   BandHeightSB: Integer;
   ClHeightNoSB: Integer;
-  ClHeightSB: Integer;
-  
+  ClHeightSB: Integer; 
   I: Integer;
 begin
   BandHeightNoSB := 0;
@@ -2656,9 +2607,7 @@ begin
   FBandStartsNoSB.Add(Pointer(0));
   FBandStartsSB.Clear;
   FBandStartsSB.Add(Pointer(0));
-  ClHeightNoSB := ClientHeight;
-  
-  
+  ClHeightNoSB := ClientHeight;  
   if FHorzScrollBar.Visible then
   begin
     ClHeightSB := ClHeightNoSB;
@@ -2668,8 +2617,7 @@ begin
   begin
     ClHeightSB := ClHeightNoSB;
     Dec(ClHeightSB, FHorzScrollBar.Width);
-  end;
-  
+  end; 
   for I := 0 to Pred(VisibleCount) do
   begin
     Inc(FImageHeight, VisibleItems[I].Height);
@@ -3446,8 +3394,7 @@ procedure TJvCustomInspector.Paint;
 var
   PaintRect: TRect;
 begin
-  PaintRect := ClientRect;
-  
+  PaintRect := ClientRect; 
 
   if FHorzScrollBar.Align <> alNone then
   begin
@@ -3461,8 +3408,7 @@ begin
   end;
 
   AdjustClientRect(PaintRect);
-  inherited Paint;
-  
+  inherited Paint; 
   if Painter <> nil then
   begin
     if NeedRebuild then
@@ -3477,10 +3423,8 @@ begin
     Canvas.FillRect(PaintRect);
     if csDesigning in Self.ComponentState then
       Canvas.TextOut(10, 10, Name + ':' + ClassName);
-  end;
-  
-  FVertScrollBar.Align := alRight;
-  
+  end; 
+  FVertScrollBar.Align := alRight; 
 end;
 
 function ListCompare(List: TStringList; Index1, Index2: Integer): Integer;
@@ -3857,11 +3801,8 @@ procedure TJvCustomInspector.SetWantTabs(Value: Boolean);
 begin
   if Value <> WantTabs then
   begin
-    FWantTabs := Value;
-    
-    
-    //RecreateWidget; 
-    
+    FWantTabs := Value;  
+    //RecreateWidget;  
   end;
 end;
 
@@ -3869,8 +3810,7 @@ procedure TJvCustomInspector.UpdateScrollBars;
 var
   DrawHeight: Integer;
   ClHeight: Integer;
-  ScFactor: Extended;
-  
+  ScFactor: Extended; 
   BCount: Integer;
   BPerPage: Integer;
   ShowVertSB: Boolean;
@@ -3878,8 +3818,7 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-
-  
+ 
 
   if not UseBands then
   begin
@@ -3892,9 +3831,7 @@ begin
       of an enumerated item's combobox }
     ShowVertSB := Round((DrawHeight) / ScFactor) >= Round(ClHeight / ScFactor);
     if ShowVertSB then
-    begin
-      
-      
+    begin  
       with FVertScrollBar do
       begin
         Min := 0;
@@ -3907,8 +3844,7 @@ begin
           on E: Exception do
             ShowMessage(E.Message);
         end;
-      end;
-      
+      end; 
     end;
     ShowScrollBars(SB_VERT, ShowVertSB);
   end
@@ -3921,17 +3857,14 @@ begin
     BPerPage := ClientWidth div BandWidth;
     ShowHorzSB := BCount > BPerPage;
     if ShowHorzSB then
-    begin
-      
-      
+    begin  
       with FHorzScrollBar do
       begin
         Min := 0;
         Max := BCount - 1;
         LargeChange := BPerPage;
         Position := GetBandFor(TopIndex);
-      end;
-      
+      end; 
     end;
     ShowScrollBars(SB_HORZ, ShowHorzSB);
   end;
@@ -3945,10 +3878,8 @@ end;
 
 function TJvCustomInspector.ViewRect: TRect;
 begin
-  Result := ClientRect;
-  
-  AdjustClientRect(Result);
-  
+  Result := ClientRect; 
+  AdjustClientRect(Result); 
 end;
 
 function TJvCustomInspector.ViewWidth: Integer;
@@ -4438,10 +4369,8 @@ begin
         Inc(ItemIdx);
       end;
       MaxBandItemIdx := Rect.Right + 4;
-      Rect := Inspector.ClientRect;
-      
-      Inspector.AdjustClientRect(Rect);
-      
+      Rect := Inspector.ClientRect; 
+      Inspector.AdjustClientRect(Rect); 
       Rect.Left := MaxBandItemIdx;
       Rect.Right := Rect.Left + Inspector.BandWidth - 4;
       Canvas.Pen.Color := clBtnShadow;
@@ -5298,8 +5227,7 @@ begin
   if Editing and (EditCtrl <> nil) then
   begin
     EditCtrl.SelectAll;
-    EditCtrl.Modified := False;
-    
+    EditCtrl.Modified := False; 
   end;
 end;
 
@@ -5315,8 +5243,7 @@ procedure TJvCustomInspectorItem.BuildDisplayableList(const ItemList: TList);
 var
   TempList: TList;
   I: Integer;
-  Item: TJvCustomInspectorItem;
-  
+  Item: TJvCustomInspectorItem; 
 begin
   TempList := TList.Create;
   try
@@ -5330,10 +5257,8 @@ begin
         ItemList.Add(Item)
       else
       begin
-        Item.BuildDisplayableList(TempList);
-        
-        ItemList.Assign(TempList, laOr);
-        
+        Item.BuildDisplayableList(TempList); 
+        ItemList.Assign(TempList, laOr); 
         TempList.Clear;
       end;
       Inc(I);
@@ -5361,17 +5286,11 @@ begin
   if DroppedDown then
   begin
     if Inspector.HandleAllocated then
-      Inspector.ShowScrollBars(SB_BOTH, False);
-    
-    
-    Mouse.Capture := nil;
-    
+      Inspector.ShowScrollBars(SB_BOTH, False);  
+    Mouse.Capture := nil; 
     if ListBox.ItemIndex > -1 then
-      ListValue := ListBox.Items[ListBox.ItemIndex];
-    
-    
-    ListBox.Hide;
-    
+      ListValue := ListBox.Items[ListBox.ItemIndex];  
+    ListBox.Hide; 
     FDroppedDown := False;
     InvalidateItem;
     if Accept then
@@ -5557,23 +5476,17 @@ begin
     if Y + ListBox.Height > Screen.Height then
       Y := P.Y - TListBox(ListBox).Height;
     if P.X + Listbox.Width > Screen.Width then
-      P.X := Screen.Width - Listbox.Width;
-    
-    
+      P.X := Screen.Width - Listbox.Width;  
     ListBox.Left := Rects[iprValueArea].Left;
     if (Rects[iprValueArea].Bottom + ListBox.Height) <= ListBox.parent.Height then
       ListBox.Top := Rects[iprValueArea].Bottom + 1
     else
       ListBox.Top := Rects[iprValueArea].Top - ListBox.Height-1;
     ListBox.Show;
-    ListBox.BringToFront;
-    
+    ListBox.BringToFront; 
     FDroppedDown := True;
-    InvalidateItem;
-    
-    
-    EditCtrl.SetFocus;
-    
+    InvalidateItem;  
+    EditCtrl.SetFocus; 
   end;
 end;
 
@@ -5589,8 +5502,7 @@ begin
   //
   if Assigned(FInspector) then
     if Assigned(FInspector.FOnItemEdit) then
-    begin
-      
+    begin 
       DisplayStr := FData.AsString;
       FInspector.FOnItemEdit(FInspector, Self, DisplayStr);
       if DisplayStr <> Self.FData.AsString then
@@ -6040,11 +5952,8 @@ end;
 
 procedure TJvCustomInspectorItem.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  ListPos: TPoint;
-  
-  
-  Event: QMouseEventH;
-  
+  ListPos: TPoint;  
+  Event: QMouseEventH; 
 begin
   if Tracking then
   begin
@@ -6054,17 +5963,14 @@ begin
       ListPos := ListBox.ScreenToClient(Inspector.ClientToScreen(Point(X, Y)));
       if PtInRect(ListBox.ClientRect, ListPos) then
       begin
-        StopTracking;
-        
-        
+        StopTracking;  
         Event := QMouseEvent_create(QEventType_MouseButtonPress,
           @ListPos, Integer(ButtonState_LeftButton), Integer(ButtonState_LeftButton));
         try
           QApplication_sendEvent(ListBox.Handle, Event);
         finally
           QMouseEvent_destroy(Event);
-        end;
-        
+        end; 
         Exit;
       end;
     end;
@@ -6176,9 +6082,8 @@ begin
     begin
       FEditCtrlDestroying := True;
       try
-        if Inspector.CanFocus then
-          Inspector.SetFocus;
-        
+        if Inspector.CanFocus and EditCtrl.Focused then
+          Inspector.SetFocus; 
         EditCtrl.Free;
       finally
         FEditCtrlDestroying := False;
@@ -6188,8 +6093,7 @@ begin
 
     if EditCtrl <> nil then
       with TOpenEdit(EditCtrl) do
-      begin
-        
+      begin 
         BorderStyle := bsNone;
         Parent := TWinControl(Owner);
       end;
@@ -6411,11 +6315,8 @@ begin
   NewState := PtInRect(R, Point(X, Y));
   if Pressed <> NewState then
   begin
-    Pressed := NewState;
-    
-    
-    Inspector.InvalidateRect(R, False);
-    
+    Pressed := NewState;  
+    Inspector.InvalidateRect(R, False); 
   end;
 end;
 
@@ -6551,13 +6452,10 @@ var
   BFlags: Integer;
   W, G, I: Integer;
 begin
-  // This reduces the flickering when dragging the divider bar
-  
-  ACanvas.Start;
-  
+  // This reduces the flickering when dragging the divider bar 
+  ACanvas.Start; 
   if EditCtrl <> nil then
-  begin
-    
+  begin 
   end;
   R := Rects[iprEditButton];
   if not IsRectEmpty(R) then
@@ -6569,18 +6467,14 @@ begin
         BFlags := DFCS_INACTIVE
       else
       if Pressed then
-        BFlags := DFCS_FLAT or DFCS_PUSHED;
-      
-      
-      DrawFrameControl(ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLDOWN);
-      
+        BFlags := DFCS_FLAT or DFCS_PUSHED;  
+      DrawFrameControl(ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLDOWN); 
     end
     else
     if iifEditButton in Flags then
     begin
       if Pressed then
-        BFlags := BF_FLAT;
-      
+        BFlags := BF_FLAT; 
         DrawEdge(ACanvas.Handle, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or BFlags);
       W := 2;
       G := (RectWidth(R) - 2 * Ord(Pressed) - (3 * W)) div 4;
@@ -6600,10 +6494,8 @@ begin
       PatBlt(ACanvas.Handle, BFlags + G + W, I, W, W, BLACKNESS);
       PatBlt(ACanvas.Handle, BFlags + 2 * G + 2 * W, I, W, W, BLACKNESS);
     end;
-  end;
-  
-  ACanvas.Stop;
-  
+  end; 
+  ACanvas.Stop; 
 end;
 
 procedure TJvCustomInspectorItem.DrawName(const ACanvas: TCanvas);
@@ -6649,12 +6541,10 @@ begin
         ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S)
       else
       // (rom) fix added begin end
-      begin
-        
-
-        DrawText(ACanvas, S, Length(S), ARect, DT_EDITCONTROL or DT_WORDBREAK);
-
-        
+      begin 
+        ACanvas.Start; 
+        DrawTextEx(ACanvas, S, Length(S), ARect, DT_EDITCONTROL or DT_WORDBREAK, nil); 
+        ACanvas.Stop; 
       end;
     end
     else
@@ -6753,11 +6643,8 @@ begin
       //NEW: prevent lost data entry if focus shifts away, and that change of focus causes a refresh of the inspector!
       Memo.OnExit := OnInternalEditControlExiting; // NEW. VCL only.
       FEditChanged := False; }
-      {.$ENDIF VCL}
-      
-      
-      SetEditCtrl(TOpenEdit(Memo));
-      
+      {.$ENDIF VCL}  
+      SetEditCtrl(TOpenEdit(Memo)); 
     end
     else
     begin
@@ -6774,12 +6661,9 @@ begin
       // VCL only, requires PostMessage
       Edit.OnExit := OnInternalEditControlExiting;
       FEditChanged := False;}
-      {.$ENDIF VCL}
-      
-      
+      {.$ENDIF VCL}  
       Edit.AutoSize := false;
-      SetEditCtrl(TOpenEdit(Edit));
-      
+      SetEditCtrl(TOpenEdit(Edit)); 
     end;
     if iifEditFixed in Flags then
     begin
@@ -6790,16 +6674,12 @@ begin
     else
     begin
       TOpenEdit(EditCtrl).Color := clWindow;
-    end;
-    
+    end; 
     if iifValueList in Flags then
-    begin
-      
-      
+    begin  
       FListBox := TListBox.Create(Inspector);
       ListBox.Visible := False;
-      ListBox.Parent := EditCtrl.Parent;
-      
+      ListBox.Parent := EditCtrl.Parent; 
       TListBox(ListBox).OnMouseUp := ListMouseUp;
 
       TListBox(ListBox).ItemHeight := 11;
@@ -6844,8 +6724,7 @@ begin
     end;
     FreeAndNil(FListBox);
 
-    SetEditCtrl(nil);
-    
+    SetEditCtrl(nil); 
   end;
   FEditing := False;
 end;
@@ -8449,8 +8328,7 @@ procedure TJvInspectorFontItem.Edit;
 begin
   with TFontDialog.Create(GetParentForm(Inspector)) do
     try
-      Font.Assign(TFont(Data.AsOrdinal));
-      
+      Font.Assign(TFont(Data.AsOrdinal)); 
       if Execute then
       begin
         TFont(Data.AsOrdinal).Assign(Font);
@@ -8502,10 +8380,8 @@ begin
       Canvas.Font.Name := FontName;
     end;
     DoDefaultDrawListItem(TListBox(Control).Canvas, Rect, TListBox(Control).Items[Index]);
-  end;
-  
-  Handled := True;
-  
+  end; 
+  Handled := True; 
 end;
 
 procedure TJvInspectorFontNameItem.DoMeasureListItem(Control: TWinControl;
@@ -8621,11 +8497,8 @@ end;
 procedure TJvInspectorBooleanItem.DrawValue(const ACanvas: TCanvas);
 var
   Bool: Boolean;
-  ARect: TRect;
-  
-  
-  Rgn, SaveRgn: QRegionH;
-  
+  ARect: TRect;  
+  Rgn, SaveRgn: QRegionH; 
   HasRgn: Boolean;
   ClipRect: TRect;
 begin
@@ -8644,17 +8517,14 @@ begin
     ARect := Rects[iprValue];
     OffsetRect(ARect, 2, 0);
     ARect.Right := ARect.Left + 13;
-    ARect.Bottom := ARect.Top + 13;
-    
-    
+    ARect.Bottom := ARect.Top + 13;  
     SaveRgn := QPainter_clipRegion(ACanvas.Handle);
     HasRgn := QPainter_hasClipping(ACanvas.Handle);
     IntersectRect(ClipRect, ARect, Rects[iprValue]);
     FCheckRect := ClipRect;
     Rgn := QRegion_create(@ClipRect, QRegionRegionType_Rectangle);
     QPainter_setClipRegion(ACanvas.Handle, Rgn);
-    QPainter_setClipping(ACanvas.Handle, True);
-    
+    QPainter_setClipping(ACanvas.Handle, True); 
     try
       { Paint the 3d checkbox: Frame }
 {      Frame3D(ACanvas, ARect, clBlack, clWhite, 1);
@@ -8683,13 +8553,10 @@ begin
           LineTo(ARect.Left + 8, ARect.Top + 2);
         end;
     finally
-      { restore previous clipping region }
-      
-      
+      { restore previous clipping region }  
       QPainter_setClipRegion(ACanvas.Handle, SaveRgn);
       QPainter_setClipping(ACanvas.Handle, HasRgn);
-      QRegion_destroy(Rgn);
-      
+      QRegion_destroy(Rgn); 
     end;
   end;
 end;
@@ -12070,8 +11937,7 @@ begin
 end;
 
 function TJvCustomInspector.DoMouseWheel(Shift: TShiftState;
-  WheelDelta: Integer;
-   const  MousePos: TPoint): Boolean;
+  WheelDelta: Integer;  const  MousePos: TPoint): Boolean;
 var
   Count: Integer;
   Index: Integer;
@@ -12079,11 +11945,8 @@ var
 begin
   if (Selected <> nil) and Selected.DroppedDown then
   begin
-    lbPos := Selected.ListBox.ScreenToClient(ClientToScreen(MousePos));
-    
-    
-    Selected.ListBox.ScrollBy(0, Wheeldelta);
-    
+    lbPos := Selected.ListBox.ScreenToClient(ClientToScreen(MousePos));  
+    Selected.ListBox.ScrollBy(0, Wheeldelta); 
   end
   else
   begin
@@ -12097,14 +11960,11 @@ begin
 end;
 
 procedure TJvCustomInspector.ShowScrollBars(Bar: Integer; Visible: Boolean);
-begin
-  
-  
+begin  
   if Bar and SB_HORZ <> 0 then
     FHorzScrollBar.Visible := Visible;
   if Bar and SB_VERT <> 0 then
-    FVertScrollBar.Visible := Visible;
-  
+    FVertScrollBar.Visible := Visible; 
 end;
 
 

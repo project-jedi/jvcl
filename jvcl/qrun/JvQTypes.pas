@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,11 +39,8 @@ unit JvQTypes;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Qt, QTypes, Types, QControls, QForms, QGraphics, QWindows, JvQWStrUtils,
-  
+  SysUtils, Classes,  
+  Qt, QTypes, Types, QControls, QForms, QGraphics, QWindows, JvWStrUtils, 
   JvQConsts, JvQResources;
 
 const
@@ -61,8 +59,7 @@ type
 
 {$HPPEMIT '#endif'}
 
-type
-  
+type 
 
   // Base class for persistent properties that can show events.
   // By default, Delhpi and BCB don't show the events of a class
@@ -71,13 +68,11 @@ type
   // a Component as a Sub Component of another one, thus preventing
   // from having events for a sub property.
   // The design time editor associated with TJvPersistent will display
-  // the events, thus mimicking a Sub Component.
-  
+  // the events, thus mimicking a Sub Component. 
   TJvPersistent = class(TComponent)
   public
     constructor Create(AOwner: TComponent); override;
-  end;
-  
+  end; 
 
   TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers,
     hkPerformanceData, hkCurrentConfig, hkDynData);
@@ -116,11 +111,8 @@ type
     NewSize: TSmallPoint;
     Result: Longint;
   end;
-
   
-  
-  TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
-  
+  TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit 
 
   PJvRGBArray = ^TJvRGBArray;
   TJvRGBArray = array [0..MaxPixelCount - 1] of TJvRGBTriple;
@@ -166,8 +158,7 @@ type
     MustBe: Integer;
     TakeText: Integer;
   end;
-
-  
+ 
 
   TJvGradientStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
   //  TOnDelete = procedure(Sender: TObject; Path: string) of object;
@@ -200,8 +191,7 @@ type
 
   //  TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
   TJvNotifyParamsEvent = procedure(Sender: TObject; Params: Pointer) of object;
-
-  
+ 
 
   TJvAnimation = (anLeftRight, anRightLeft, anRightAndLeft, anLeftVumeter, anRightVumeter);
   TJvAnimations = set of TJvAnimation;
@@ -264,11 +254,8 @@ const
 
   CenturyOffset: Byte = 60;
   NullDate: TDateTime = 0; {-693594}
-
   
-  
-  NullHandle = nil;
-  
+  NullHandle = nil; 
   
 type
   // JvDriveCtrls / JvLookOut
@@ -292,12 +279,9 @@ type
 const
   DefaultTrackFontOptions = [hoFollowFont, hoPreserveColor, hoPreserveStyle];
 
-type
-  
-  
+type  
   THintString = WideString;
-  THintStringList = TWideStringList;
-  
+  THintStringList = TWideStringList; 
 
 type
   // from JvListView.pas
@@ -314,11 +298,8 @@ type
   end;
 
 const
-  ColCount = 20;
-  
-  
-  SysColCount = 58;
-  
+  ColCount = 20;  
+  SysColCount = 58; 
   ColorValues: array [0 .. ColCount - 1] of TDefColorItem = (
     (Value: clBlack;      Constant: 'clBlack';      Description: RsClBlack),
     (Value: clMaroon;     Constant: 'clMaroon';     Description: RsClMaroon),
@@ -342,9 +323,7 @@ const
     (Value: clMedGray;    Constant: 'clMedGray';    Description: RsClMedGray)
   );
 
-  SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (
-    
-    
+  SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (  
     (Value: clForeground;              Constant: 'clForeground';              Description: RsClForeground),
     (Value: clButton;                  Constant: 'clButton';                  Description: RsClButton),
     (Value: clLight;                   Constant: 'clLight';                   Description: RsClLight),
@@ -406,8 +385,7 @@ const
     (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText),
 
     (Value: clDesktop;                 Constant: 'clDesktop';                 Description: RsClDesktop),
-    (Value: clInfoBk;                  Constant: 'clInfoBk';                  Description: RsClInfoBk)
-    
+    (Value: clInfoBk;                  Constant: 'clInfoBk';                  Description: RsClInfoBk) 
   );
 
 

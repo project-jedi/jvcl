@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQScrollBar;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, QStdCtrls, Types,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, QStdCtrls, Types, 
   JvQExStdCtrls;
 
 type
@@ -73,8 +71,7 @@ begin
   if csDesigning in ComponentState then
     Exit;
   if not MouseOver then
-  begin
-    
+  begin 
     inherited MouseEnter(Control);
   end;
 end;
@@ -82,16 +79,14 @@ end;
 procedure TJvScrollBar.MouseLeave(Control: TControl);
 begin
   if MouseOver then
-  begin
-    
+  begin 
     inherited MouseLeave(Control);
   end;
 end;
 
 procedure TJvScrollBar.SetHotTrack(Value: Boolean);
 begin
-  FHotTrack := Value;
-    
+  FHotTrack := Value;   
 end;
 
 end.

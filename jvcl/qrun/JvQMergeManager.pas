@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,11 +34,8 @@ unit JvQMergeManager;
 interface
 
 uses
-  Classes,
-  
-  
-  QControls, QForms,
-  
+  Classes,  
+  QControls, QForms, 
   JvQJVCLUtils, JvQComponent;
 
 type
@@ -125,8 +123,10 @@ end;
 
 destructor TJvMergeManager.Destroy;
 begin
-  FFormHistory.Free;
   inherited Destroy;
+  // (ahuser) FFormHistory must be freed after inherited Destroy to avoid AVs
+  //          in design mode.
+  FFormHistory.Free;
 end;
 
 function TJvMergeManager.MergeFrameStored: Boolean;
@@ -248,7 +248,6 @@ begin
   MergeForm(MergeFrame, TForm(AForm), alClient, Show);
   GotoForm(AForm);
 end;
-
 
 function TJvMergeManager.GotoForm(AForm: TCustomForm): Boolean;
 var

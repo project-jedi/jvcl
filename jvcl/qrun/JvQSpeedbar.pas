@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,15 +37,10 @@ uses
   SysUtils, Classes, IniFiles,
   {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  
-  
+  {$ENDIF MSWINDOWS}  
   QMenus, QButtons, QControls, QWindows, QGraphics, Types,
-  QForms, QImgList, QActnList, QExtCtrls, QGrids, QTypes,
-  
-  
-  RTLConsts,
-  
+  QForms, QImgList, QActnList, QExtCtrls, QGrids, QTypes,  
+  RTLConsts, 
   JvQSpeedButton, JvQAppStorage, JvQConsts, JvQTypes, JvQFormPlacement,
   JvQComponent, JvQThemes, JvQExControls;
 
@@ -161,11 +157,8 @@ type
     procedure EnabledChanged; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function AppendSection(Value: TJvSpeedBarSection): Integer; virtual;
-    procedure AlignItemsToGrid;
-    
-    
-    procedure ChangeScale(M, D, MH, DH: Integer); override;
-    
+    procedure AlignItemsToGrid;  
+    procedure ChangeScale(M, D, MH, DH: Integer); override; 
     procedure Loaded; override;
     procedure Paint; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -233,8 +226,7 @@ type
     property IniStorage: TJvFormPlacement read GetStorage write SetStorage;
     property Version: Integer read FVersion write FVersion default 0;
     property Wallpaper: TPicture read FWallpaper write SetWallpaper;
-    property Images: TImageList read FImages write SetImages;
-    
+    property Images: TImageList read FImages write SetImages; 
     property Constraints;
     property BevelInner;
     property BevelOuter;
@@ -267,8 +259,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnContextPopup;
-    property OnResize;
-  
+    property OnResize; 
   end;
 
   TJvSpeedItem = class(TComponent)
@@ -465,8 +456,7 @@ type
     procedure SetNumGlyphs(Value: TJvNumGlyphs);
     procedure SetGlyph(Value: TBitmap);
     procedure SetWordWrap(Value: Boolean);
-  protected
-    
+  protected 
     procedure Paint; override;
     procedure DoBoundsChanged; override;
   public
@@ -500,11 +490,8 @@ function NewSpeedItem(AOwner: TComponent; ASpeedbar: TJvSpeedBar; Section: Integ
 implementation
 
 uses
-  Math,
-  
-  
-  QConsts,
-  
+  Math,  
+  QConsts, 
   JvQJVCLUtils, JvQJCLUtils, JvQSpeedbarSetupForm, JvQResources;
 
 const
@@ -676,8 +663,7 @@ type
     FBtn: TJvBtnControl;
     procedure InvalidateGlyph;
   protected
-    procedure VisibleChanged; override;
-    
+    procedure VisibleChanged; override; 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -743,14 +729,10 @@ begin
     (FItem.SpeedBar <> nil) then
   begin
     P := ClientToScreen(Point(FItem.SpeedBar.BtnWidth {div 2},
-      FItem.SpeedBar.BtnHeight {div 2}));
-    
+      FItem.SpeedBar.BtnHeight {div 2})); 
     if FBtn = nil then
-    begin
-      
-      
-      Mouse.CursorPos := P;
-      
+    begin  
+      Mouse.CursorPos := P; 
       FBtn := TJvBtnControl.Create(Self);
       FBtn.AssignSpeedItem(FItem);
     end;
@@ -846,11 +828,8 @@ begin
   begin
     TJvxButtonGlyph(ButtonGlyph).DrawEx(Canvas, ARect, Offset, Caption, Layout,
       Margin, Spacing, DrawMark, FItem.SpeedBar.Images, FItem.FImageIndex,
-      AState,
-      
-      
-      Alignments[Alignment]
-      
+      AState,  
+      Alignments[Alignment] 
       );
   end
   else
@@ -1473,11 +1452,9 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
   if not Registered then
-  begin
-    
+  begin 
     GroupDescendentsWith(TJvSpeedItem, TControl);
-    GroupDescendentsWith(TJvSpeedBarSection, TControl);
-    
+    GroupDescendentsWith(TJvSpeedBarSection, TControl); 
     RegisterClasses([TJvSpeedItem, TJvSpeedBarSection, TJvSpeedBarButton]);
     Registered := True;
   end;
@@ -1651,8 +1628,7 @@ procedure TJvSpeedBar.SetFontDefault;
 begin
   ParentFont := False;
   with Font do
-  begin
-    
+  begin 
     begin
       Name := 'MS Sans Serif';
       Size := 8;
@@ -2023,8 +1999,7 @@ begin
     if BevelInner <> bvNone then
       Inc(BevelSize, BevelWidth);
     InflateRect(Rect, -BevelSize, -BevelSize);
-    inherited Paint;
-        
+    inherited Paint;     
     if (FWallpaper.Graphic <> nil) and (FWallpaper.Width > 0) and
       (FWallpaper.Height > 0) then
     begin
@@ -2171,14 +2146,11 @@ begin
     if csLoading in ComponentState then
       Flags := ScaleFlags
     else
-      Flags := [sfOffsetX, sfOffsetY, sfBtnSizeX, sfBtnSizeY];
-    
-    
+      Flags := [sfOffsetX, sfOffsetY, sfBtnSizeX, sfBtnSizeY];  
     if (sfBtnSizeX in Flags) and not (csFixedWidth in ControlStyle) then
       FButtonSize.X := MulDiv(FButtonSize.X, MH, DH);
     if sfOffsetX in Flags then
-      FOffset.X := MulDiv(FOffset.X, MH, DH);
-    
+      FOffset.X := MulDiv(FOffset.X, MH, DH); 
     if (sfBtnSizeY in Flags) and not (csFixedHeight in ControlStyle) then
       FButtonSize.Y := MulDiv(FButtonSize.Y, M, D);
     if sfOffsetY in Flags then
@@ -3020,8 +2992,7 @@ begin
     Images := Item.SpeedBar.Images
   else
     Images := nil;
-  Font := Item.Font;
-  
+  Font := Item.Font; 
   SetBounds(0, 0, Item.SpeedBar.BtnWidth, Item.SpeedBar.BtnHeight);
 end;
 
@@ -3084,11 +3055,8 @@ end;
 procedure TJvBtnControl.Paint;
 begin
   FImage.DrawEx(Canvas, 0, 0, Margin, Spacing, Layout, Font, Images,
-    ImageIndex,
-    
-    
-    Alignments[Alignment]
-    
+    ImageIndex,  
+    Alignments[Alignment] 
     );
 end;
 
@@ -3172,11 +3140,8 @@ begin
         ButtonSize := Point(FBar.BtnWidth, FBar.BtnHeight);
     end;
     Image.DrawEx(Grid.Canvas, R.Left + 1, R.Top + 1, Item.Margin,
-      Item.Spacing, Item.Layout, AFont, ImageList, Item.ImageIndex,
-      
-      
-      Alignments[Image.Alignment]
-      
+      Item.Spacing, Item.Layout, AFont, ImageList, Item.ImageIndex,  
+      Alignments[Image.Alignment] 
       );
     Inc(R.Left, Image.ButtonSize.X + 3);
     DrawCellText(Grid, 0, 0, Item.Caption, R, taLeftJustify, vaCenterJustify, ARightToLeft);

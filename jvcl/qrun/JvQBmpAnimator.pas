@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,11 +39,8 @@ unit JvQBmpAnimator;
 interface
 
 uses
-  SysUtils,  Classes,
-  
-  
-  QWindows, QGraphics, QControls,  QExtCtrls, QImgList,
-  
+  SysUtils,  Classes,  
+  QWindows, QGraphics, QControls,  QExtCtrls, QImgList, 
   JvQComponent;
 
 type
@@ -400,11 +398,8 @@ begin
   if csDesigning in ComponentState then
     with Canvas do
     begin
-      Brush.Color := clBlack;
-      
-      
-      FrameRect(Canvas, GetClientRect);
-      
+      Brush.Color := clBlack;  
+      FrameRect(Canvas, GetClientRect); 
     end;
 end;
 

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -22,13 +23,12 @@ All Rights Reserved.
 Contributor(s):
   Jens Fudickar
 
-Last Modified: 2003-11-19
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}
@@ -133,7 +133,7 @@ begin
     if Windows.RegCreateKey(FRegHKEY, PChar(Key), ResKey) = ERROR_SUCCESS then
       RegCloseKey(ResKey)
     else
-      raise EJVCLException.CreateFmt(RsEUnableToCreateKey, [Key]);
+      raise EJVCLException.CreateResFmt(@RsEUnableToCreateKey, [Key]);
 end;
 
 procedure TJvAppRegistryStorage.EnumFolders(const Path: string; const Strings: TStrings;
@@ -160,7 +160,7 @@ begin
           Inc(I);
         until EnumRes <> ERROR_SUCCESS;
         if EnumRes <> ERROR_NO_MORE_ITEMS then
-          raise EJclRegistryError.Create(RsEEnumeratingRegistry);
+          raise EJclRegistryError.CreateRes(@RsEEnumeratingRegistry);
       finally
         RegCloseKey(TmpHKEY);
         Strings.EndUpdate;
@@ -198,7 +198,7 @@ begin
           Inc(I);
         until EnumRes <> ERROR_SUCCESS;
         if EnumRes <> ERROR_NO_MORE_ITEMS then
-          raise EJclRegistryError.Create(RsEEnumeratingRegistry);
+          raise EJclRegistryError.CreateRes(@RsEEnumeratingRegistry);
       finally
         RegCloseKey(TmpHKEY);
         Strings.EndUpdate;
@@ -232,7 +232,7 @@ begin
           Inc(I);
         until (EnumRes <> ERROR_SUCCESS) or Result;
         if EnumRes <> ERROR_NO_MORE_ITEMS then
-          raise EJclRegistryError.Create(RsEEnumeratingRegistry);
+          raise EJclRegistryError.CreateRes(@RsEEnumeratingRegistry);
       end;
     finally
       RegCloseKey(PathHKEY);

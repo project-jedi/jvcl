@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,8 +38,7 @@ uses
   SysUtils, Classes,
   JvQTypes, JvQComponent;
 
-type
-  
+type 
   TJvTestMember = function(Sender: TObject; Index: Integer; Member: PByte): Byte of object;
 
   TJvGenetic = class(TJvComponent)
@@ -208,7 +208,7 @@ begin
         Inc(P);
       end;
       if not Assigned(FOnTestMember) then
-        raise EJVCLException.Create(RsENoTest);
+        raise EJVCLException.CreateRes(@RsENoTest);
       Member.Points := FOnTestMember(Self, I, Member.Data);
       FMembers.AddObject('', TObject(Member));
     end;
@@ -262,7 +262,7 @@ begin
       if Assigned(FOnTestMember) then
         Member.Points := FOnTestMember(Self, I, Member.Data)
       else
-        raise EJVCLException.Create(RsENoTest);
+        raise EJVCLException.CreateRes(@RsENoTest);
 
       //Add new element to FGenerat
       FGenerat.AddObject('', TObject(Member));

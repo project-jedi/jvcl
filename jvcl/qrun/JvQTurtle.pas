@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQTurtle;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, Types, QWindows,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, Types, QWindows, 
   Math;
 
 
@@ -144,8 +142,7 @@ type
     function txArea: string;
     function txCopy: string;
     function txPenMode: string;
-    function txCopyMode: string;
-    
+    function txCopyMode: string; 
     function txDo: string;
     function txLoop: string;
     function txGoLeft: string;
@@ -487,8 +484,7 @@ begin
     51:
       Result := txEllipse;
     52:
-      Result := txFilter;
-      
+      Result := txFilter;   
     54:
       Result := txGo;
     55:
@@ -953,11 +949,8 @@ procedure TJvTurtle.TextRotate(X, Y, Angle: Integer; AText: string;
 
 begin
   if AText = '' then
-    Exit;
-  
-  TextOutAngle(Canvas, Angle, X, Y, AText);
-  
-  
+    Exit; 
+  TextOutAngle(Canvas, Angle, X, Y, AText);  
 end;
 
 function TJvTurtle.txAngle: string;

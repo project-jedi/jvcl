@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -63,8 +64,7 @@ type
   TAllTimersEvent = procedure(Sender: TObject; Handle: Longint) of object;
 
   TJvTimerEvent = class;
-  TJvTimerList = class;
-  
+  TJvTimerList = class; 
 
   // (rom) used THandle where needed
   TJvTimerEvents = class(TOwnedCollection)
@@ -80,9 +80,7 @@ type
     procedure CalculateInterval(StartTicks: Longint);
     procedure UpdateEvents(StartTicks: Longint);
     function ProcessEvents: Boolean;
-    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification);
-       override; 
-    
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification);  override;  
   public
     constructor Create(AOwner: TPersistent);
     procedure Activate;
@@ -169,10 +167,7 @@ type
 implementation
 
 uses
-  
-  
-  QConsts,
-  
+  QConsts, QForms, // for Application.HandleException
   Math,
   JvQJVCLUtils, JvQResources, JvQTypes;
 
@@ -340,11 +335,8 @@ begin
         end
         else
           UpdateTimer;
-      except
-        
-        
-        ApplicationHandleException(Self);
-        
+      except  
+        ApplicationHandleException(Self); 
       end
       else
         Result := DefWindowProc(FWndHandle, Msg, WParam, LParam);
@@ -451,8 +443,7 @@ end;
 
 function TJvTimerEvents.Add: TJvTimerEvent;
 begin
-  Result := TJvTimerEvent(inherited Add);
-  
+  Result := TJvTimerEvent(inherited Add); 
 end;
 
 procedure TJvTimerEvents.Assign(Source: TPersistent);
@@ -577,10 +568,8 @@ end;
 
 procedure TJvTimerEvents.Notify(Item: TCollectionItem;
   Action: TCollectionNotification);
-begin
-  
-  inherited Notify(Item, Action);
-  
+begin 
+  inherited Notify(Item, Action); 
   if Action = cnAdded then
     with TJvTimerEvent(Item) do
     begin

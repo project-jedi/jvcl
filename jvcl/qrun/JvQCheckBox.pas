@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,11 +39,8 @@ unit JvQCheckBox;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QWindows, Qt, QGraphics, QControls, QForms, QStdCtrls,
-  
+  SysUtils, Classes,  
+  Types, QWindows, Qt, QGraphics, QControls, QForms, QStdCtrls, 
   JvQTypes, JvQExStdCtrls, JvQLinkedControls;
 
 type
@@ -77,22 +75,16 @@ type
     procedure MouseLeave(AControl: TControl); override;
     procedure TextChanged; override;
     procedure FontChanged; override;
-    procedure EnabledChanged;override;
-    procedure SetAutoSize(Value: Boolean);  virtual; 
-    
-    
+    procedure EnabledChanged;override;  
     procedure AdjustSize; override;
-    
+    procedure SetAutoSize(Value: Boolean); virtual; 
     procedure UpdateProperties;
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
     procedure LinkedControlsChange(Sender:TObject);
-    procedure CheckLinkedControls;virtual;
-    procedure DefineProperties(Filer: TFiler); override;
-    
-    
-    procedure StateChanged(State: TToggleState); override;
-    
+    procedure CheckLinkedControls; virtual;
+    procedure DefineProperties(Filer: TFiler); override;  
+    procedure StateChanged(State: TToggleState); override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -160,11 +152,8 @@ end;
 
 
 procedure TJvCheckBox.UpdateProperties;
-begin
-  
-  
-  RecreateWidget;
-  
+begin  
+  RecreateWidget; 
 end;
 
 
@@ -248,12 +237,9 @@ begin
   R := Rect(0, 0, ClientWidth, ClientHeight);
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
-  begin
-    
-    
+  begin  
     DrawText(FCanvas, Caption, -1, R,
-      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
-    
+      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT); 
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end
@@ -278,8 +264,7 @@ end;
 procedure TJvCheckBox.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
-  begin
-    
+  begin 
     FAutoSize := Value;
     if Value then
       WordWrap := False;

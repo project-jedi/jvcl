@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -49,12 +50,9 @@ unit JvQEdit;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   Qt, QTypes, QGraphics, QControls, QStdCtrls, QDialogs, QForms, QMenus, Types,
-  QWindows,
-  
+  QWindows, 
   JvQCaret, JvQMaxPixel, JvQTypes, JvQToolEdit, JvQExStdCtrls;
 
 
@@ -79,11 +77,9 @@ type
     FStreamedSelStart: Integer;
     FUseFixedPopup: Boolean;
     FAutoHint: Boolean;
-    FOldHint: TCaption;
-    
+    FOldHint: TCaption; 
     FPasswordChar: Char;
-    FNullPixmap: QPixmapH;
-    
+    FNullPixmap: QPixmapH; 
     FEmptyValue: string;
     FIsEmptyValue: boolean;
     FEmptyFontColor, FOldFontColor: TColor;
@@ -93,8 +89,7 @@ type
     procedure SetDisabledColor(const Value: TColor); virtual;
     procedure SetDisabledTextColor(const Value: TColor); virtual;
     procedure SetPasswordChar(Value: Char);
-    procedure SetHotTrack(const Value: Boolean);
-    
+    procedure SetHotTrack(const Value: Boolean); 
     procedure SetEmptyValue(const Value: string);
     procedure SetGroupIndex(Value: Integer);
     function GetFlat: Boolean;
@@ -114,18 +109,15 @@ type
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
     function GetPopupMenu: TPopupMenu; override;
-
-    
+ 
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure DoEmptyValueEnter; virtual;
-    procedure DoEmptyValueExit; virtual;
-    
+    procedure DoEmptyValueExit; virtual; 
     procedure InitWidget; override;
     procedure Paint; override;
     procedure TextChanged; override;
-    procedure KeyPress(var Key: Char); override;
-    
+    procedure KeyPress(var Key: Char); override; 
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
@@ -139,8 +131,7 @@ type
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    
+ 
     procedure Loaded; override;
   protected
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -153,8 +144,7 @@ type
     // set to True to disable read/write of PasswordChar and read of Text
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
-    property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
-    
+    property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow; 
     property UseFixedPopup: Boolean read FUseFixedPopup write FUseFixedPopup default True;
     property HintColor;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
@@ -164,19 +154,16 @@ type
   end;
 
   TJvEdit = class(TJvCustomEdit)
-  published
-    
+  published 
     property Caret;
     property DisabledTextColor;
     property DisabledColor;
     property HotTrack;
     property PasswordChar;
     property PopupMenu;
-    property ProtectPassword;
-    
+    property ProtectPassword; 
     property EchoMode;
-    property InputKeys;
-    
+    property InputKeys; 
     property Align;
     property Alignment;
     property ClipboardCommands;
@@ -218,8 +205,7 @@ type
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
-    property OnDragOver;
-    
+    property OnDragOver; 
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -234,16 +220,13 @@ type
 
 implementation
 
-uses
-  
+uses 
   Math;
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
-  FNullPixmap := QPixmap_create(1, 1, 1, QPixmapOptimization_DefaultOptim);
-  
+  inherited Create(AOwner); 
+  FNullPixmap := QPixmap_create(1, 1, 1, QPixmapOptimization_DefaultOptim); 
   FAlignment := taLeftJustify;
   // ControlStyle := ControlStyle + [csAcceptsControls];
   ClipboardCommands := [caCopy..caUndo];
@@ -264,10 +247,8 @@ end;
 destructor TJvCustomEdit.Destroy;
 begin
   FMaxPixel.Free;
-  FCaret.Free;
-  
-  QPixmap_destroy(FNullPixmap);
-  
+  FCaret.Free; 
+  QPixmap_destroy(FNullPixmap); 
   inherited Destroy;
 end;
 
@@ -351,12 +332,9 @@ procedure TJvCustomEdit.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then
   begin
-    FAlignment := Value;
-    
-    
+    FAlignment := Value;  
     inherited Alignment := FAlignment;
-    Invalidate;
-    
+    Invalidate; 
   end;
 end;
 
@@ -412,12 +390,10 @@ begin
     Canvas.Brush.Style := bsSolid;
     R := ClientRect;
     Canvas.FillRect(R);
-    Result := True;
-    
+    Result := True; 
    // paint Border
     if (BorderStyle = bsSingle) then
-      QGraphics.DrawEdge(Canvas, R, esLowered, esLowered, ebRect);
-    
+      QGraphics.DrawEdge(Canvas, R, esLowered, esLowered, ebRect); 
   end;
 end;
 
@@ -539,12 +515,9 @@ var
 begin
   Tmp := ProtectPassword;
   try
-    ProtectPassword := False;
-    
-    
+    ProtectPassword := False;  
     FPasswordChar := Value;
-    Invalidate;
-    
+    Invalidate; 
   finally
     ProtectPassword := Tmp;
   end;
@@ -553,11 +526,8 @@ end;
 
 
 function TJvCustomEdit.GetPasswordChar: Char;
-begin
-  
-  
-  Result := FPasswordChar;
-  
+begin  
+  Result := FPasswordChar; 
 end;
 
 procedure TJvCustomEdit.KeyDown(var Key: Word; Shift: TShiftState);
@@ -584,13 +554,11 @@ end;
 
 function TJvCustomEdit.GetPopupMenu: TPopupMenu;
 begin
-  Result := inherited GetPopupMenu;
-  
+  Result := inherited GetPopupMenu; 
 end;
 
 function TJvCustomEdit.GetFlat: Boolean;
-begin
-  
+begin 
   Result := FFlat;
 end;
 
@@ -598,15 +566,12 @@ procedure TJvCustomEdit.SetFlat(Value: Boolean);
 begin
   if Value <> FFlat then
   begin
-    FFlat := Value;
-    
-    
+    FFlat := Value;  
     if FFlat then
       BorderStyle := bsNone
     else
       BorderStyle := bsSingle;
-    Invalidate;
-    
+    Invalidate; 
   end;
 end;
 
@@ -634,11 +599,8 @@ begin
     end;
     C := TControlCanvas.Create;
     try
-      C.Control := Self;
-      
-        
-        if GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) then
-          
+      C.Control := Self;  
+        if GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) then 
         begin
           if (ClientWidth <= Size.cx) then
             Hint := Text

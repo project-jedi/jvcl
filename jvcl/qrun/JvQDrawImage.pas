@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQDrawImage;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QWindows,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QWindows, 
   JvQAirBrush, JvQPaintFX, JvQResample;
 
 type
@@ -238,11 +236,8 @@ type
 
 implementation
 
-uses
-  
-  
-  QClipbrd,
-  
+uses  
+  QClipbrd, 
   Math,
   JvQTypes, JvQPainterEffectsForm, JvQQuickPreviewForm, JvQPainterQBForm,
   JvQResources;
@@ -3275,13 +3270,10 @@ begin
     clipcm := cmSrcCopy;
     SetClip(clwhite);
     CopyClip;
-    myrect := rect(X, Y, X + Clip.Width - 1, Y + Clip.Height - 1);
-    
-    
+    myrect := rect(X, Y, X + Clip.Width - 1, Y + Clip.Height - 1);  
     Clip.Transparent := true;
     Clip.TransparentColor := RangeTransColor;
-    Canvas.Draw(X,Y, Clip);
-    
+    Canvas.Draw(X,Y, Clip); 
     myDraw := False;
   end;
   if Shape = 'cube1' then
@@ -3834,8 +3826,7 @@ begin
   if Shape = 'bezier' then
     Shape := 'bezier1';
   if Shape = 'bezier3' then
-    Shape := 'bezier';
-  
+    Shape := 'bezier'; 
   if Shape = 'snapshot' then
   begin
     with Canvas do
@@ -4050,8 +4041,8 @@ end;
 
 procedure TJvDrawImage.ColorPicked(AColor: TColor);
 begin
-  if assigned(OnColorPicked) then
-    OnColorPicked(Self, AColor);
+  if Assigned(FOnColorPicked) then
+    FOnColorPicked(Self, AColor);
 end;
 
 procedure TJvDrawImage.SetOnColorPicked(const Value: TColorPicked);
@@ -4915,12 +4906,9 @@ begin
   Clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   w := Clip.Width;
-  h := Clip.Height;
-  
-  
+  h := Clip.Height;  
   if not clipboard.Provides('image/delphi.bitmap') then
-    exit;
-  
+    exit; 
   src2 := TBitmap.Create;
   src2.Assign(clipboard);
   src2.PixelFormat := pf24bit;

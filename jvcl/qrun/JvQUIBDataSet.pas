@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {******************************************************************************}
 {                        UNIFIED INTERBASE (UIB)                               }
@@ -27,7 +28,7 @@
 unit JvQUIBDataSet;
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 interface
 
@@ -117,11 +118,7 @@ type
     property Params: TSQLParams read GetParams;
     property RowsAffected: Cardinal read GetRowsAffected;
 
-{$IFNDEF COMPILER5_UP}
-    function BCDToCurr(BCD: Pointer; var Curr: Currency): Boolean; {$IFNDEF FPC}override;{$ENDIF}
-    function CurrToBCD(const Curr: Currency; BCD: Pointer; Precision,
-      Decimals: Integer): Boolean; {$IFNDEF FPC}override;{$ENDIF}
-{$ENDIF}
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -490,11 +487,9 @@ begin
                   Size := -Data.sqlvar[i].SqlScale;
                   if Size = 9 then
                     Precision := 10 else
-                    Precision := 9;
-                  
+                    Precision := 9; 
                   if size > 4 then
-                    DataType := ftFMTBcd else
-                  
+                    DataType := ftFMTBcd else 
                     DataType := ftBCD;
                 end;
               SQL_INT64,
@@ -504,11 +499,9 @@ begin
                   Size := -Data.sqlvar[i].SqlScale;
                   if Size = 18 then
                     Precision := 19 else
-                    Precision := 18;
-                  
+                    Precision := 18; 
                   if size > 4 then
-                    DataType := ftFMTBcd else
-                  
+                    DataType := ftFMTBcd else 
                     DataType := ftBCD;
                 end;
               SQL_DOUBLE:
@@ -590,23 +583,17 @@ begin
           begin
             case FStatement.Fields.SQLType[FieldNo] of
               SQL_SHORT:
-                begin
-                
-                  TBCD(Buffer^) := strToBcd(FloatToStr(PSmallint(sqldata)^ / scaledivisor[sqlscale]));
-                
+                begin 
+                  TBCD(Buffer^) := strToBcd(FloatToStr(PSmallint(sqldata)^ / scaledivisor[sqlscale])); 
                 end;
               SQL_LONG:
-                begin
-                
-                  TBCD(Buffer^) := strToBcd(FloatToStr(PInteger(sqldata)^ / scaledivisor[sqlscale]));
-                
+                begin 
+                  TBCD(Buffer^) := strToBcd(FloatToStr(PInteger(sqldata)^ / scaledivisor[sqlscale])); 
                 end;
               SQL_INT64,
               SQL_QUAD:
-                begin
-                
-                  TBCD(Buffer^) := strToBcd(FloatToStr(PInt64(sqldata)^ / scaledivisor[sqlscale]));
-                
+                begin 
+                  TBCD(Buffer^) := strToBcd(FloatToStr(PInt64(sqldata)^ / scaledivisor[sqlscale])); 
                 end;
               SQL_DOUBLE: PDouble(Buffer)^ := PDouble(sqldata)^;
             else
@@ -710,21 +697,7 @@ begin
 end;
 {$ENDIF}
 
-{$IFNDEF COMPILER5_UP}
-function TJvUIBCustomDataSet.BCDToCurr(BCD: Pointer;
-  var Curr: Currency): Boolean;
-begin
-  Curr := PCurrency(BCD)^;
-  result := True;
-end;
 
-function TJvUIBCustomDataSet.CurrToBCD(const Curr: Currency; BCD: Pointer;
-  Precision, Decimals: Integer): Boolean;
-begin
-  PCurrency(BCD)^ := Curr;
-  Result := True;
-end;
-{$ENDIF}
 
 procedure TJvUIBCustomDataSet.SetDatabase(const Value: TJvUIBDataBase);
 begin

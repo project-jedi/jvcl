@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 
@@ -39,11 +40,8 @@ uses
   SysUtils, Classes, Contnrs, SyncObjs,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-  
-  Qt, QForms, Types, QWindows,
-  
+  {$ENDIF MSWINDOWS}  
+  Qt, QForms, Types, QWindows, 
   JclSchedule,
   JvQAppStorage, JvQFinalize;
 
@@ -82,8 +80,7 @@ type
       const Path: string; const List: TObject; const Index: Integer);
     procedure DeleteSingleEvent(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const First, Last: Integer);
-    procedure SetEvents(Value: TJvEventCollection);
-    
+    procedure SetEvents(Value: TJvEventCollection); 
     procedure CMExecEvent(var Msg: TMessage); message CM_EXECEVENT;
     property AutoSave: Boolean read FAutoSave write FAutoSave;
     property OnStartEvent: TNotifyEvent read FOnStartEvent write FOnStartEvent;
@@ -438,12 +435,9 @@ begin
   begin
     ScheduleThread.RemoveEventComponent(Self);
     if AutoSave then
-      SaveEventStates;
-    
-    
+      SaveEventStates;  
     if FWnd <> nil then
-      DeallocateMessageObject(FWnd);
-    
+      DeallocateMessageObject(FWnd); 
   end;
   FEvents.Free;
   inherited Destroy;
@@ -488,11 +482,8 @@ end;
 procedure TJvCustomScheduledEvents.Loaded;
 begin
   if not (csDesigning in ComponentState) then
-  begin
-    
-    
-    FWnd := QWidgetH(AllocateMessageObject(Self));
-    
+  begin  
+    FWnd := QWidgetH(AllocateMessageObject(Self)); 
     if AutoSave then
       LoadEventStates;
     InitEvents;
@@ -632,11 +623,9 @@ begin
       TJvEventCollectionItem(WParam).Execute;
       DoEndEvent(TJvEventCollectionItem(WParam));
       Result := 1;
-    except
-      
+    except 
       if Assigned(ApplicationHandleException) then
-        ApplicationHandleException(Self);
-      
+        ApplicationHandleException(Self); 
     end
 end;
 

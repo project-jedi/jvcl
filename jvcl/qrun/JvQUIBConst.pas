@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {******************************************************************************}
 {                        UNIFIED INTERBASE (UIB)                               }
@@ -27,19 +28,13 @@
 {******************************************************************************}
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 unit JvQUIBConst;
 
 interface
 
-{$IFNDEF DELPHI6_UP}
-{$IFNDEF BCB}
-const
-  S_OK    = $00000000;
-  S_FALSE = $00000001;
-{$ENDIF BCB}
-{$ENDIF DELPHI6_UP}
+
 
 
 type
@@ -104,7 +99,7 @@ resourcestring
   EUIB_MUSTBEOPEN          = 'The query must be opened first.';
   EUIB_EXPLICITTRANS       = 'Transaction must be started explicitly.';
   EUIB_EXCEPTIONNOTFOUND   = 'Exception name %s, not found.';
-  EUIB_EXPTIONREGISTERED   = 'Exception: %d allready registered';
+  EUIB_EXPTIONREGISTERED   = 'Exception: %d already registered';
   EUIB_NOAUTOSTOP          = 'Transaction must be closed explicitly.';
   EUIB_NOGENERATOR         = 'Generator %s not found.';
   EUIB_NOFIELD             = 'Field not found.';
