@@ -74,13 +74,13 @@ ChangeDirPackageDir:
 
 Compile: ChangeDirPackageDir
 	@echo [Compiling: Packages]
-	for %f in ("C*.dpk") do $(DCC) "%f"
+	for %f in ("C*.dpk") do $(DCC) -B "%f"
 # -U"..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx;$(ROOT)\lib\obj" -I"..\..\source;..\..\source\common"
 
 Clean:
 	@echo [Cleaning...]
-	-del /q C*.dcp >NUL
-	-del /q C*.bpl >NUL
+	#-del /q C*.dcp >NUL
+	#-del /q C*.bpl >NUL
 	-del /q *.lsp >NUL
 	-del /q *.dpk >NUL
 	-del /q *.dcu >NUL
