@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-09-29
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -60,6 +60,7 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure PopupMenuClick(Sender: TObject);
@@ -78,7 +79,7 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
 {$IFDEF JVCLThemesEnabledD56}
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default False;
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
 {$ENDIF}
   end;
 
@@ -127,6 +128,15 @@ end;
 
 procedure TJvControlBar.CMDenySubClassing(var Msg: TMessage);
 begin
+  Msg.Result := 1;
+end;
+
+procedure TJvControlBar.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+begin
+  if Picture.Graphic <> nil then
+    inherited
+  else
+    DrawThemedBackground(Self, Msg.DC, ClientRect, Parent.Brush.Handle);
   Msg.Result := 1;
 end;
 
