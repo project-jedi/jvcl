@@ -1,3 +1,4 @@
+## Locked by Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@JvCheckTreeView.pas
 <GROUP JVCL.FileRef>
@@ -5,30 +6,29 @@ Summary
   Contains the TJvCheckTreeView component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  
+  Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView
-<TITLEIMG TJvCheckTreeView>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A treeView that can display different types of checkboxes and radiobuttons.
 Description
-  Write here a description
+  Use TJvCheckTreeView when you need to display checkboxes and/or radiobuttons in a treeview. TJvCheckTreeView 
+  can display and handle the logic for both radiobuttons and checkboxes. In addition, not all 
+  nodes in the treeview need to have checkboxes or radiobuttons. You can freely mix and match checkboxes, 
+  radiobuttons and "empty" items. You can also assign your own checkbox/radiobutton images by assigning 
+  an imagelist to the StateImages property that contains the images you want to use. 
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView.CheckBox
 Summary
-  Write here a summary (1 line)
+  Specifies whether a node is a checkbox or not.
 Description
-  Write here a description
+  Use the CheckBox pseudo-array with a valid Node parameter to determine if a node is a checkbox or not.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Checked, RadioItem
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView.CheckBoxOptions
 Summary
-  Write here a summary (1 line)
+  Use CheckBoxOptions to get and set the checkbox options for the treeview
 Description
   Write here a description
 See Also
@@ -37,39 +37,35 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView.Checked
 Summary
-  Write here a summary (1 line)
+  Use the Checked pseudo-array with a valid Node parameter to determine if a node is checked. 
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CheckBox, RadioItem
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView.OnToggled
 Summary
-  Write here a summary (1 line)
+  Event that is called just after a node has been toggled on or off.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnToggling
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView.OnToggling
 Summary
-  Write here a summary (1 line)
+  Event that is called just before a node is being toggled.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnToggled
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView.RadioItem
 Summary
-  Write here a summary (1 line)
+  Use the RadioItem pseudo-array with a valid Node parameter to determine if a node is a radiobutton or not.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CheckBox, Checked
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions
 Summary
@@ -79,25 +75,23 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.CascadeLevels
 Summary
-  Write here a summary (1 line)
+  Use CascadeLevels to specify the number of sub-levels a toggling of a checkbox propagates. 
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CascadeOptions
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.CascadeOptions
 Summary
-  Write here a summary (1 line)
+  Use CascadeOptions to specify how and when checking/unchecking a node is propagated.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CascadeLevels 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.CheckBoxCheckedIndex
 Summary
-  Write here a summary (1 line)
+  CheckBoxCheckedIndex is the 1-based image index into the StateImages image list for a checked checkbox.
 Description
   Write here a description
 See Also
@@ -106,59 +100,52 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.CheckBoxUnCheckedIndex
 Summary
-  Write here a summary (1 line)
+  CheckBoxUnCheckedIndex is the 1-based image index into the StateImages image list for an umchecked checkbox.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CheckBoxCheckedIndex, RadioCheckedIndex, RadioUncheckedIndex, StateImages, CheckBoxOptions
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.RadioCheckedIndex
 Summary
-  Write here a summary (1 line)
+  RadioCheckedIndex is the 1-based image index into the StateImages image list for a checked checkbox.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CheckBoxCheckedIndex, RadioCheckedIndex, RadioUncheckedIndex, StateImages, CheckBoxOptions
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.RadioUncheckedIndex
 Summary
-  Write here a summary (1 line)
+  RadioUncheckedIndex is the 1-based image index into the StateImages image list for a checked checkbox.
 Description
-  Write here a description
+  
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CheckBoxCheckedIndex, RadioCheckedIndex, RadioUncheckedIndex, StateImages, CheckBoxOptions
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.Style
 Summary
-  Write here a summary (1 line)
+  Use Style to specify if checkboxes are to be displayed and what implementation to use.
 Description
-  Write here a description
+  Style is of type TJvTVCheckBoxStyle.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTVCheckBoxStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.TreeView
 Summary
-  Write here a summary (1 line)
+  TreeView is a reference to the Treeview the options are acting upon.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Developers should normally not alter this property. 
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCascadeOption
 <TITLE TJvTVCascadeOption type>
 Summary
-  Write here a summary (1 line)
+  TJvTVCascadeOption is an enumeration used to determine how checks are propagated when toggling a checkbox node on or off.
 Description
-  Write here a description
+  TJvTVCascadeOption 
 @@TJvTVCascadeOption.poOnCheck
-  Description for poOnCheck
+  Cascade to child nodes only when the node is checked.
 @@TJvTVCascadeOption.poOnUnCheck
-  Description for poOnUnCheck
+  Cascade to child nodes only when the node is unchecked.
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCascadeOptions
 <TITLE TJvTVCascadeOptions type>
@@ -167,12 +154,12 @@ Description
 @@TJvTVCheckBoxStyle
 <TITLE TJvTVCheckBoxStyle type>
 Summary
-  Write here a summary (1 line)
+  TJvTVCheckBoxStyle is the type for the TJvTreeViewCheckBoxOptions.Style property.
 Description
-  Write here a description
+  TJvTVCheckBoxStyle can have any of the following values:
 @@TJvTVCheckBoxStyle.cbsNone
-  Description for cbsNone
+  no checkboxes or radiobuttons are displayed. Works like a normal treeview.
 @@TJvTVCheckBoxStyle.cbsNative
-  Description for cbsNative
+  use MS implementation of checkboxes. With this option you can only display checkboxes and not radioitems. You can't set up your own images using the StateImages/StateIndex properties of the treeview since this is overriden by the MS implementation
 @@TJvTVCheckBoxStyle.cbsJVCL
-  Description for cbsJVCL
+  use the custom JVCL style. With this option you can display any type of images by setting up your own StateImages ImageList and change the index properties  in \CheckBoxCheckedIndex, \CheckBoxUnCheckedIndex, \RadioButtonCheckedIndex and \RadioButtonUnCheckedIndex.
