@@ -222,6 +222,8 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF LINUX}
+const
+  TYPE_E_ELEMENTNOTFOUND = $8002802B;
 
 // load the .so file FileName
 // the rules for FileName are those of dlopen()
@@ -400,7 +402,7 @@ const
     (DONT_RESOLVE_DLL_REFERENCES, LOAD_LIBRARY_AS_DATAFILE, LOAD_WITH_ALTERED_SEARCH_PATH);
     {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
-    RTLD_LAZY, RTLD_LAZY, RTLD_LAZY // there is not really a equivalent under Linux
+    (RTLD_LAZY, RTLD_LAZY, RTLD_LAZY); // there is not really a equivalent under Linux
     {$ENDIF LINUX}
 var
   Flags: DWORD;
