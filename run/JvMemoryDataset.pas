@@ -208,8 +208,7 @@ type
   protected
     procedure SetIndex(Value: Integer); virtual;
   public
-    constructor Create(MemoryData: TJvMemoryData); virtual;
-    constructor CreateEx(MemoryData: TJvMemoryData; UpdateParent: Boolean); virtual;
+    constructor Create(MemoryData: TJvMemoryData; UpdateParent: Boolean = true); virtual;
     destructor Destroy; override;
     property MemoryData: TJvMemoryData read FMemoryData;
     property ID: Integer read FID write FID;
@@ -328,13 +327,7 @@ type
 
 //=== TJvMemoryRecord ========================================================
 
-constructor TJvMemoryRecord.Create(MemoryData: TJvMemoryData);
-begin
-  CreateEx(MemoryData, True);
-end;
-
-constructor TJvMemoryRecord.CreateEx(MemoryData: TJvMemoryData;
-  UpdateParent: Boolean);
+constructor TJvMemoryRecord.Create(MemoryData: TJvMemoryData; UpdateParent: Boolean);
 begin
   inherited Create;
   SetMemoryData(MemoryData, UpdateParent);
