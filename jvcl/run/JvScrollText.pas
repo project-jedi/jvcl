@@ -39,7 +39,7 @@ uses
   {$IFDEF VisualCLX}
   Types, QWindows,
   {$ENDIF VisualCLX}
-  JvTypes, JvImageDrawThread, JVCLVer, JvComponent;
+  JvStaticText, JvTypes, JvImageDrawThread, JVCLVer, JvComponent;
 
 type
   TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel
@@ -49,7 +49,7 @@ type
 
   TJvScrollText = class(TJvCustomControl)
   private
-    FText: TStaticText;
+    FText: TJvStaticText;
     FTimerTag: Integer;
     FActive: Boolean;
     FDelay: Cardinal;
@@ -130,9 +130,8 @@ begin
   FScrollDirection := drFromBottom;
   FItems := TStringList.Create;
 
-  FText := TStaticText.Create(Self);
+  FText := TJvStaticText.Create(Self);
   FText.Parent := Self;
-  FText.Transparent := False; // we have a background
   // FText.SetBounds(2, 2, Width-4, Height-4);
   FText.Width := Width;
   FText.Height := Height;
