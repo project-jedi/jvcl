@@ -29,7 +29,7 @@ echo                    PATH environment variable
 echo     BPLDirectory   The place where to put the BPL and TDS files.
 echo                    Defaults to $(BCB)\Projects\Bpl
 echo.
-echo Any additional argument will be ignored
+echo Any additional argument will be ignored, BCB MUST be closed
 echo.
 :end
 
