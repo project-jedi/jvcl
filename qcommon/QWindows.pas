@@ -243,8 +243,6 @@ type
     pt: TPoint;
   end;
 
-
-
   TWMScroll = packed record
     Msg: Integer;
     Pos: Integer;
@@ -349,7 +347,7 @@ const
     clNormalButton, clNormalDark, clDisabledText,                    // 15
     clNormalButtonText, clDisabledHighlightedText, clActiveLight,    // 18
     clNormalMid, clNormalMidLight, clNormalText,                     // 21
-    clInfoBk, clBlack ,clActiveHighlight,                            // 24
+    clInfoBk, clBlack, clActiveHighlight,                            // 24
     clActiveHighLight, clDisabledHighlight                           // 27
   );
 
@@ -1853,7 +1851,7 @@ type
 
 var
   StockObjectList: TStockObjectList = nil;
-  SockObjectListCritSect: TRTLCriticalSection;
+  StockObjectListCritSect: TRTLCriticalSection;
 
 constructor TStockObjectResource.Create(AHandle: Pointer; AStockObject: Integer);
 begin
@@ -1909,7 +1907,7 @@ class function TStockObjectList.ReleaseStockObject(AHandle: Pointer): Boolean;
 var
   i: Integer;
 begin
-  EnterCriticalSection(SockObjectListCritSect);
+  EnterCriticalSection(StockObjectListCritSect);
   try
     if Assigned(StockObjectList) then
     begin
@@ -1923,7 +1921,7 @@ begin
     end;
     Result := False;
   finally
-    LeaveCriticalSection(SockObjectListCritSect);
+    LeaveCriticalSection(StockObjectListCritSect);
   end;
 end;
 
@@ -1952,7 +1950,7 @@ begin
   {$ELSE}
   GuiFontSelector := True;
   {$ENDIF MSWINDOWS}
-  EnterCriticalSection(SockObjectListCritSect);
+  EnterCriticalSection(StockObjectListCritSect);
   try
     if not Assigned(StockObjectList) then
       StockObjectList := TStockObjectList.Create;
@@ -1989,7 +1987,7 @@ begin
         StockObjectList.Add(TStockObjectResource.Create(Result, fnObject));
     end;
   finally
-    LeaveCriticalSection(SockObjectListCritSect);
+    LeaveCriticalSection(StockObjectListCritSect);
   end;
 end;
 
@@ -2669,7 +2667,7 @@ begin
   SrcCanvas.Start;
   d := PainterOffset(DestCanvas);
   s := PainterOffset(SrcCanvas);
-  Result := BitBlt(DestCanvas.Handle, X + d.x , Y + d.y , Width, Height, SrcCanvas.Handle,
+  Result := BitBlt(DestCanvas.Handle, X + d.x, Y + d.y, Width, Height, SrcCanvas.Handle,
     XSrc + s.x, YSrc + s.y, WinRop, IgnoreMask);
   SrcCanvas.Stop;
   DestCanvas.Stop;
@@ -2831,7 +2829,6 @@ begin
     Result := STRETCH_DELETESCANS;
   end;
 end;
-
 
 
 function ScrollDC(Handle: QPainterH; dx, dy: Integer; var Scroll, Clip: TRect;
@@ -5177,8 +5174,8 @@ begin
                     if (uState and DFCS_PUSHED) <> 0 then
                       OffsetRect(R, 1, 1);
                     QPainter_drawRect(Handle, @R);
-                    QPainter_moveTo(Handle, R.Left , R.Top + 1);
-                    QPainter_lineTo(Handle, R.Right-1 , R.Top + 1);
+                    QPainter_moveTo(Handle, R.Left, R.Top + 1);
+                    QPainter_lineTo(Handle, R.Right - 1, R.Top + 1);
                   end;
                 DFCS_CAPTIONRESTORE:
                   begin
@@ -5189,7 +5186,7 @@ begin
                     if (uState and DFCS_PUSHED) <> 0 then
                       OffsetRect(R, 1, 1);
                     OffsetRect(R, -2, 1);
-                    ExcludeClipRect(Handle, R.Left , R.Top, R.Right, R.Bottom);
+                    ExcludeClipRect(Handle, R.Left, R.Top, R.Right, R.Bottom);
                     OffsetRect(R, 2, -3);
                     QPainter_drawRect(Handle, @R);
                     QPainter_moveTo(Handle, R.Left + 1, R.Top + 1);
@@ -5421,7 +5418,7 @@ begin
                     {QStyle_drawPanel(Application.Style.Handle, Handle,
                         R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
                         GetColorGroup(uState),
-                        uState and DFCS_PUSHED <> 0 ,
+                        uState and DFCS_PUSHED <> 0,
                         1,
                         Brush);}
                     InflateRect(R, -1, -1);
@@ -8353,7 +8350,7 @@ initialization
   WaitObjectList := THandleObjectList.Create;
   {$ENDIF LINUX}
   GlobalCaret := TEmulatedCaret.Create;
-  InitializeCriticalSection(SockObjectListCritSect);
+  InitializeCriticalSection(StockObjectListCritSect);
   InitializeCriticalSection(TimerCritSect);
 
 finalization
@@ -8363,7 +8360,7 @@ finalization
   if Assigned(AppEventFilterHook) then
     QObject_hook_destroy(AppEventFilterHook);
   FreePainterInfos;
-  DeleteCriticalSection(SockObjectListCritSect);
+  DeleteCriticalSection(StockObjectListCritSect);
   DeleteCriticalSection(TimerCritSect);
   {$IFDEF LINUX}
   WaitObjectList.Free;
