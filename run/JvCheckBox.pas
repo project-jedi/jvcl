@@ -54,28 +54,34 @@ type
     FFontSave: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FAutoSize: Boolean;
-    FAssociated: TControl;
+//    FAssociated: TControl;
     FCanvas: TControlCanvas;
     FWordWrap: Boolean;
     FAlignment: TAlignment;
     FLayout: TTextLayout;
     FLeftText: Boolean;
+    FLinkedControls:TStringlist;
+    FLinkOptions: TJvLinkedControlsOptions;
     function GetCanvas: TCanvas;
     function GetReadOnly: Boolean;
     procedure SetHotTrackFont(const Value: TFont);
-    procedure SetAssociated(const Value: TControl);
+//    procedure SetAssociated(const Value: TControl);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetWordWrap(const Value: Boolean);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetLayout(const Value: TTextLayout);
     procedure SetReadOnly(const Value: Boolean);
     procedure SetLeftText(const Value: Boolean);
+    function GetLinkedControls: TStrings;
+    procedure SetLinkedControls(const Value: TStrings);
+    procedure ReadAssociated(Reader: TReader);
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
+    procedure EnabledChanged;override;
     procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ELSE} virtual; {$ENDIF}
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
@@ -84,19 +90,21 @@ type
     procedure AdjustSize; override;
     {$ENDIF VisualCLX}
     procedure UpdateProperties;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
-    procedure Click; override;
-    procedure SetChecked(Value: Boolean); override;
+    procedure LinkedControlsChange(Sender:TObject);
+    procedure CheckLinkedControls;virtual;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure BmSetCheck(var Msg:TMessage); message BM_SETCHECK;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Toggle; override;
     property Canvas: TCanvas read GetCanvas;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property Associated: TControl read FAssociated write SetAssociated;
+//    property Associated: TControl read FAssociated write SetAssociated;
+    property LinkedControls:TStrings read GetLinkedControls write SetLinkedControls;
+    property LinkOptions:TJvLinkedControlsOptions read FLinkOptions write FLinkOptions default [lcLinkChecked, lcLinkEnabled];
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
@@ -134,12 +142,16 @@ begin
   FAlignment := taLeftJustify;
   FLeftText := False;
   FLayout := tlCenter;
+  FLinkedControls := TStringlist.Create;
+  FLinkedControls.OnChange := LinkedControlsChange;
+  FLinkOptions := [lcLinkChecked, lcLinkEnabled];
 end;
 
 destructor TJvCheckBox.Destroy;
 begin
   FHotTrackFont.Free;
   FFontSave.Free;
+  FLinkedControls.Free;
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
@@ -148,19 +160,8 @@ end;
 procedure TJvCheckBox.Loaded;
 begin
   inherited Loaded;
-  if Assigned(FAssociated) then
-    Associated.Enabled := Checked;
+  CheckLinkedControls;
   CalcAutoSize;
-end;
-
-procedure TJvCheckBox.Toggle;
-begin
-  if not ReadOnly then
-  begin
-    inherited Toggle;
-    if Assigned(FAssociated) then
-      FAssociated.Enabled := Checked;
-  end;
 end;
 
 {$IFDEF VCL}
@@ -324,37 +325,6 @@ begin
   end;
 end;
 
-procedure TJvCheckBox.SetAssociated(const Value: TControl);
-begin
-  if FAssociated <> Self then
-  begin
-    FAssociated := Value;
-    if Assigned(FAssociated) then
-      FAssociated.Enabled := Checked;
-  end;
-end;
-
-procedure TJvCheckBox.SetChecked(Value: Boolean);
-begin
-  inherited SetChecked(Value);
-  if Assigned(FAssociated) then
-    FAssociated.Enabled := Value;
-end;
-
-procedure TJvCheckBox.Click;
-begin
-  inherited Click;
-  if Assigned(FAssociated) then
-    FAssociated.Enabled := Checked;
-end;
-
-procedure TJvCheckBox.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = Associated) then
-    Associated := nil;
-end;
-
 function TJvCheckBox.GetCanvas: TCanvas;
 begin
   Result := FCanvas;
@@ -415,6 +385,64 @@ end;
 function TJvCheckBox.GetReadOnly: Boolean;
 begin
   Result := ClicksDisabled;
+end;
+
+function TJvCheckBox.GetLinkedControls: TStrings;
+begin
+  Result := TStrings(FLinkedControls);
+end;
+
+procedure TJvCheckBox.SetLinkedControls(const Value: TStrings);
+begin
+  FLinkedControls.Assign(Value);
+end;
+
+procedure TJvCheckBox.CheckLinkedControls;
+var
+  i:integer;
+  F:TCustomForm;
+  C:TComponent;
+begin
+  if LinkOptions = [] then Exit;
+  F := GetParentForm(self);
+  if F = nil then Exit;
+  for i := 0 to FLinkedControls.Count - 1 do
+  begin
+    C := F.FindComponent(FLinkedControls[i]);
+    if (C is TControl) and (C <> self) then
+      TControl(C).Enabled :=
+          ((LinkOptions = [lcLinkChecked, lcLinkEnabled]) and Checked and Enabled)
+          or ((LinkOptions = [lcLinkChecked]) and Checked)
+          or ((LinkOptions = [lcLinkEnabled]) and Enabled);
+  end;
+end;
+
+procedure TJvCheckBox.LinkedControlsChange(Sender: TObject);
+begin
+  CheckLinkedControls;
+end;
+
+procedure TJvCheckBox.ReadAssociated(Reader:TReader);
+begin
+  FLinkedControls.Text := Reader.ReadIdent;
+end;
+
+procedure TJvCheckBox.DefineProperties(Filer: TFiler);
+begin
+  inherited;
+  Filer.DefineProperty('Associated',ReadAssociated, nil, false);
+end;
+
+procedure TJvCheckBox.BmSetCheck(var Msg: TMessage);
+begin
+  inherited;
+  CheckLinkedControls;
+end;
+
+procedure TJvCheckBox.EnabledChanged;
+begin
+  inherited;
+  CheckLinkedControls;
 end;
 
 end.

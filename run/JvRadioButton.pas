@@ -59,6 +59,8 @@ type
     FAlignment: TAlignment;
     FLayout: TTextLayout;
     FLeftText: Boolean;
+    FLinkedControls:TStringlist;
+    FLinkOptions: TJvLinkedControlsOptions;
     function GetCanvas: TCanvas;
     function GetReadOnly: Boolean;
     procedure SetHotTrackFont(const Value: TFont);
@@ -68,16 +70,23 @@ type
     procedure SetLayout(const Value: TTextLayout);
     procedure SetReadOnly(const Value: Boolean);
     procedure SetLeftText(const Value: Boolean);
+    function GetLinkedControls: TStrings;
+    procedure SetLinkedControls(const Value: TStrings);
+    procedure BmSetCheck(var Msg:TMessage); message BM_SETCHECK;
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
+    procedure EnabledChanged;override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
+
+    procedure LinkedControlsChange(Sender:TObject);
+    procedure CheckLinkedControls;virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -93,6 +102,8 @@ type
     property Layout: TTextLayout read FLayout write SetLayout default tlCenter;
     // show text to the left of the radio bullet
     property LeftText: Boolean read FLeftText write SetLeftText default False;
+    property LinkedControls:TStrings read GetLinkedControls write SetLinkedControls;
+    property LinkOptions:TJvLinkedControlsOptions read FLinkOptions write FLinkOptions default [loLinkChecked, loLinkEnabled];
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnMouseEnter;
@@ -121,12 +132,16 @@ begin
   FAlignment := taLeftJustify;
   FLeftText := False;
   FLayout := tlCenter;
+  FLinkedControls := TStringlist.Create;
+  FLinkedControls.OnChange := LinkedControlsChange;
+  FLinkOptions := [loLinkChecked, loLinkEnabled];
 end;
 
 destructor TJvRadioButton.Destroy;
 begin
   FHotTrackFont.Free;
   FFontSave.Free;
+  FLinkedControls.Free;
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
@@ -135,6 +150,7 @@ end;
 procedure TJvRadioButton.Loaded;
 begin
   inherited Loaded;
+  CheckLinkedControls;
   CalcAutoSize;
 end;
 
@@ -317,6 +333,53 @@ end;
 function TJvRadioButton.GetReadOnly: Boolean;
 begin
   Result := ClicksDisabled;
+end;
+
+procedure TJvRadioButton.CheckLinkedControls;
+var
+  i:integer;
+  F:TCustomForm;
+  C:TComponent;
+begin
+  if LinkOptions = [] then Exit;
+  F := GetParentForm(self);
+  if F = nil then Exit;
+  for i := 0 to FLinkedControls.Count - 1 do
+  begin
+    C := F.FindComponent(FLinkedControls[i]);
+    if (C is TControl) and (C <> self) then
+      TControl(C).Enabled :=
+          ((LinkOptions = [loLinkChecked, loLinkEnabled]) and Checked and Enabled)
+          or ((LinkOptions = [loLinkChecked]) and Checked)
+          or ((LinkOptions = [loLinkEnabled]) and Enabled);
+  end;
+end;
+
+function TJvRadioButton.GetLinkedControls: TStrings;
+begin
+  Result := FLinkedControls;
+end;
+
+procedure TJvRadioButton.LinkedControlsChange(Sender: TObject);
+begin
+  CheckLinkedControls;
+end;
+
+procedure TJvRadioButton.SetLinkedControls(const Value: TStrings);
+begin
+  FLinkedControls.Assign(Value);
+end;
+
+procedure TJvRadioButton.BmSetCheck(var Msg: TMessage);
+begin
+  inherited;
+  CheckLinkedControls;
+end;
+
+procedure TJvRadioButton.EnabledChanged;
+begin
+  inherited;
+  CheckLinkedControls;
 end;
 
 end.
