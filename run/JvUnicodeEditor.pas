@@ -4057,7 +4057,7 @@ begin
         CLen := Length(S) - SelBegX;
         if CLen > 0 then
         begin
-          MoveWideChar(S[SelBegX], P^, CLen);
+          MoveWideChar(S[SelBegX + 1], P^, CLen);
           Inc(P, CLen);
         end;
 
