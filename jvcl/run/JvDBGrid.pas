@@ -248,6 +248,8 @@ type
     // Lionel
     procedure UpdateTabStops(aLimit: integer = -1);
     // End Lionel
+    procedure ShowColumnsDialog;
+
     property SelectedRows;
     property SelCount: Longint read GetSelCount;
     property Canvas;
@@ -2334,10 +2336,8 @@ begin
 end;
 
 procedure TJvDBGrid.ReadAlternRowColor(Reader:TReader);
-var b:boolean;
 begin
-  b := Reader.ReadBoolean;
-  if b then
+  if Reader.ReadBoolean then
     AlternateRowColor := $00DDDDDD // this was the previous default row color
   else
     AlternateRowColor := clNone;
@@ -2718,6 +2718,11 @@ begin
   for Result := Columns.Count - 1 downto 0 do
     if Columns[Result].Visible then Exit;
   Result := -1;
+end;
+
+procedure TJvDBGrid.ShowColumnsDialog;
+begin
+  ShowSelectColumnClick;
 end;
 
 initialization

@@ -36,6 +36,7 @@ uses
 resourcestring
   RES_JvDBGridSelectTitle = 'Select columns';
   RES_JvDBGridSelectWarning = 'At least one column must be visible!';
+  RES_JvDBGridSelectOK      = '&OK';
 
 type
   TfrmSelectColumn = class(TForm)
@@ -72,6 +73,7 @@ begin
   FColumnUpdate := true;
   FCanHide := true;
   Caption := RES_JvDBGridSelectTitle;
+  ButtonOK.Caption := RES_JvDBGridSelectOK;
 end;
 
 procedure TfrmSelectColumn.FormClose(Sender: TObject;
