@@ -950,9 +950,9 @@ var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
   NameBuffer: array[0..MAX_PATH] of Char;
-  {$IFDEF VCL}
+  {$IFDEF MSWINDOWS}
   WindowList: Pointer;
-  {$ENDIF VCL}
+  {$ENDIF MSWINDOWS}
 begin
   Result := False;
 
@@ -966,15 +966,15 @@ begin
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
   BrowseInfo.ulFlags := BIF_BROWSEFORCOMPUTER;
-  {$IFDEF VCL}
+  {$IFDEF MSWINDOWS}
   WindowList := DisableTaskWindows(0);
-  {$ENDIF VCL}
+  {$ENDIF MSWINDOWS}
   try
     Result := SHBrowseForFolder(BrowseInfo) <> nil;
   finally
-    {$IFDEF VCL}
+    {$IFDEF MSWINDOWS}
     EnableTaskWindows(WindowList);
-    {$ENDIF VCL}
+    {$ENDIF MSWINDOWS}
     FreePidl(BrowseInfo.pidlRoot);
   end;
   if Result then
@@ -995,9 +995,9 @@ var
   ItemIDList: PItemIDList;
   ItemSelected: PItemIDList;
   NameBuffer: array[0..MAX_PATH] of Char;
-  {$IFDEF VCL}
+  {$IFDEF MSWINDOWS}
   WindowList: Pointer;
-  {$ENDIF VCL}
+  {$ENDIF MSWINDOWS}
 begin
   ItemIDList := nil;
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
@@ -1006,16 +1006,16 @@ begin
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
   BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS;
-  {$IFDEF VCL}
+  {$IFDEF WINDOWS}
   WindowList := DisableTaskWindows(0);
-  {$ENDIF VCL}
+  {$ENDIF WINDOWS}
   try
     ItemSelected := SHBrowseForFolder(BrowseInfo);
     Result := ItemSelected <> nil;
   finally
-    {$IFDEF VCL}
+    {$IFDEF MSWINDOWS}
     EnableTaskWindows(WindowList);
-    {$ENDIF VCL}
+    {$ENDIF MSWINDOWS}
   end;
 
   if Result then

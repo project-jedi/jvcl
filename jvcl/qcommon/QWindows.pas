@@ -267,11 +267,6 @@ type
     LParam: Longint;
     Result: Integer;
   end;
-  TMsgDlgBtn =
-    (mbHelp, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore,
-     mbAll, mbNoToAll, mbYesToAll);
-  TMsgDlgButtons = set of TMsgDlgBtn;
-
 {
   Dummies for ... VCL
  asn: AFAIK use of RightToLeft or LeftToRight is automatic
@@ -8853,5 +8848,7 @@ finalization
   WaitObjectList.Free;
   {$ENDIF LINUX}
 end.
+
+
 
 
