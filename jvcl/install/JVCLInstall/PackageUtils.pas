@@ -76,8 +76,10 @@ type
     FTargetName: string;
     FSourceName: string;
     FInfo: TPackageInfo;
-    FJvDependencies: TStringList; // Strings[]: "JvXxxx-"[D|R] | "JvQXxxx-"[D|R]
-                                  // Objects[]: TRequiredPackage
+    FJvDependencies: TStringList;  // Strings[]: "JvXxxx-"[D|R] | "JvQXxxx-"[D|R]
+                                   // Objects[]: TRequiredPackage
+    FJclDependencies: TStringList; // Strings[]: "JvXxxx-"[D|R] | "JvQXxxx-"[D|R]
+                                   // Objects[]: TRequiredPackage
     FCompile: Boolean;
     FInstall: Boolean;
 
@@ -109,6 +111,7 @@ type
 
     property Info: TPackageInfo read FInfo;
     property JvDependencies: TStringList read FJvDependencies;
+    property JclDependencies: TStringList read FJclDependencies;
 
     // In contrast to Info.Xxx these properties only returns the
     // required/contained for this target.
@@ -498,6 +501,8 @@ begin
   FInfo := TPackageInfo.Create(Self, AOwner.TargetConfig.JVCLPackagesXmlDir);
   FJvDependencies := TStringList.Create;
   FJvDependencies.Sorted := True;
+  FJclDependencies := TStringList.Create;
+  FJclDependencies.Sorted := True;
   FCompile := True;
 
   FRequireList := TList.Create;
@@ -509,16 +514,11 @@ begin
   FRequireList.Free;
   FContaineList.Free;
   FJvDependencies.Free;
+  FJclDependencies.Free;
   // FInfo is buffered and is destroyed by XmlFileCache
   inherited Destroy;
 end;
 
-/// <summary>
-/// GetDependencies obtains the JVCL (JvXxx) dependencies from the PackageInfo
-/// data. Only the JvXxx packages that are for this target are added to the
-/// JvDependencies list. All items in JvDependencies are physical files and
-/// are a valid JVCL target.
-/// </summary>
 function TPackageTarget.FindRuntimePackage: TPackageTarget;
 begin
   Result := Owner.FindPackagebyXmlName(Copy(Info.Name, 1, Length(Info.Name) - 1) + 'R'); // do not localize
@@ -536,6 +536,14 @@ begin
   Result := TContainedFile(FContaineList[Index]);
 end;
 
+/// <summary>
+/// GetDependencies obtains the JVCL (JvXxx) and JCL ([D|C]JCLxx) dependencies
+/// from the PackageInfo data. Only the JvXxx packages that are for this target
+/// are added to the JvDependencies list. And only the [D|C]JCLxxx packages are
+/// added to the JclDependencies list that are for this target. All items in
+/// JvDependencies are physical files and are a valid JVCL target. All items in
+/// JclDependencies must not be physical files.
+/// </summary>
 procedure TPackageTarget.GetDependencies;
 var
   i: Integer;
@@ -543,7 +551,8 @@ begin
   FJvDependencies.Clear;
   for i := 0 to Info.RequireCount - 1 do
   begin
-    if StartsWith(Info.Requires[i].Name, 'Jv', True) then
+    // JVCL dependencies
+    if StartsWith(Info.Requires[i].Name, 'Jv', True) then // do not localize
     begin
       if FileExists(Info.FXmlDir + '\' + Info.Requires[i].Name + '.xml') and // do not localize
          (Owner.FindPackagebyXmlName(Info.Requires[i].Name) <> nil) and
@@ -551,6 +560,14 @@ begin
       begin
         FJvDependencies.AddObject(Info.Requires[i].Name, Info.Requires[i]);
       end;
+    end
+    else
+    // is it a JCL dependency
+    if StartsWith(Info.Requires[i].Name, 'DJcl', True) or // do not localize
+       StartsWith(Info.Requires[i].Name, 'CJcl', True) then // do not localize
+    begin
+      if Info.Requires[i].IsRequiredByTarget(Owner.TargetConfig) then
+        FJclDependencies.AddObject(Info.Requires[i].Name, Info.Requires[i]);
     end;
   end;
 end;

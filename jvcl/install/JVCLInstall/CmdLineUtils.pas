@@ -78,7 +78,7 @@ begin
   AddBool('--ignore-delphi', 'Do not display and compile Delphi versions.', FIgnoreDelphi);
   AddSpace;
   AddDir('--jcl-path=', 'Set the JCL root directory to X.', FJclPath);
-  AddBool('--keep-files', 'Do not display BCB versions.', FKeepFiles);
+  AddBool('--keep-files', 'Do not call "clean".', FKeepFiles);
   AddBool('--autoupdate', 'Updates all IDEs where JVCL 3 is installed.', FAutoUpdate); 
   AddSpace;
   AddBool('--help', 'Show this screen.', FHelp);
