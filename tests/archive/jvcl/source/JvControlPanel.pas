@@ -14,9 +14,12 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s):
+Michael Beck [mbeck@bigfoot.com].
+Peter Thörnqvist[peter3@peter4.com]
+Remko Bonte [remkobonte@myrealbox.com]
 
-Last Modified: 2000-02-28
+Last Modified: 2002-07-06
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,8 +37,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, Menus, Cpl, ShellApi,
-  JvTypes, JvButton, JvDirectories, JvFunctions;
+  StdCtrls, Menus, JvTypes, JvButton, JvDirectories, JvFunctions;
 
 type
   TJvControlPanel = class(TJvButton)
@@ -43,171 +45,61 @@ type
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
     FOnUrl: TOnLinkClick;
+    FIMages: TImageList;
     procedure AddToPopup(Item: TMenuItem; Path: string);
     procedure UrlClick(Sender: TObject);
+    procedure SetImages(const Value: TImageList);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Click; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Refresh;
   published
+    property Images: TImageList read FImages write SetImages;
     property OnLinkClick: TOnLinkClick read FOnUrl write FOnUrl;
   end;
 
+
 implementation
 
-resourcestring
-  RC_CplAddress = 'CPlApplet';
-
-  {*******************************************************}
-
-function GetNameCpl(Path: string): string;
-var
-  h: THandle;
-  CplApplet: TCplApplet;
-  NewCplInfo: TNewCplInfo;
-begin
-  // (rom) simplified/fixed
-  Result := '';
-  h := LoadLibrary(PChar(Path));
-  if h <> 0 then
-  begin
-    @CplApplet := GetProcAddress(h, PChar(RC_CplAddress));
-    if @CplApplet <> nil then
-    begin
-      NewCplInfo.szName[0] := #0;
-      CplApplet(0, CPL_NEWINQUIRE, 0, Longint(@NewCplInfo));
-      Result := NewCplInfo.szName;
-    end;
-    FreeLibrary(h);
-  end;
-end;
-
-function GetNameCplW2k(const APath, AName: string; Strings: TStrings): Boolean;
-var
-  hLib: HMODULE; // Library Handle to *.cpl file
-  hicoTmp,hIco: HICON;
-  CplCall: TCPLApplet; // Pointer to CPlApplet() function
-  i: LongInt;
-  tmpCount, Count: LongInt;
-  CPLInfo: TCPLInfo;
-  InfoW: TNewCPLInfoW;
-  InfoA: TNewCPLInfoA;
-  S: WideString;
-begin
-  Result := False;
-  hLib := SafeLoadLibrary(APath + AName);
-  if hLib = 0 then
-    Exit;
-  tmpCount := Strings.Count;
-  try
-    @CplCall := GetProcAddress(hLib, PChar(RC_CplAddress));
-    if @CplCall = nil then
-      Exit;
-
-    CplCall(GetFocus, CPL_INIT, 0, 0); // Init the *.cpl file
-    try
-      Count := CplCall(GetFocus, CPL_GETCOUNT, 0, 0);
-      for i := 0 to Count - 1 do
-      begin
-        FillChar(InfoW, sizeof(InfoW), 0);
-        FillChar(InfoA, sizeof(InfoA), 0);
-        FillChar(CPLInfo, sizeof(CPLInfo), 0);
-        hIco := 0;
-        S := '';
-        CplCall(GetFocus, CPL_NEWINQUIRE, i, LongInt(@InfoW));
-        if InfoW.dwSize = sizeof(InfoW) then
-        begin
-          if i > 0 then
-            hIco := InfoW.hIcon;
-          S := WideString(InfoW.szName);
-        end
-        else
-        begin
-          if InfoW.dwSize = sizeof(InfoA) then
-          begin
-            Move(InfoW, InfoA, sizeof(InfoA));
-            if i > 0 then
-              hIco := InfoA.hIcon
-            else
-              // special case: extract the 32x32 icon and use isto the 16x16
-              ExtractIconEx(PChar(APath + AName), 0, hIco, hIcoTmp, 1);
-            S := string(InfoA.szName);
-          end
-          else
-          begin
-            CplCall(GetFocus, CPL_INQUIRE, i, LongInt(@CPLInfo));
-            LoadStringA(hLib, CPLInfo.idName, InfoA.szName, sizeof(InfoA.szName));
-            if i > 0 then
-            begin
-              hIco := LoadImage(hLib, PChar(CPLInfo.idIcon), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
-              if hIco = 0 then
-                hIco := LoadIcon(hLib, PChar(CPLInfo.idIcon));
-            end;
-            S := string(InfoA.szName);
-          end;
-        end;
-        if S <> '' then
-        begin
-          if hIco = 0 then
-            ExtractIconEx(PChar(APath + AName), 0, hIcoTmp, hIco, 1);
-          Strings.AddObject(S + '%' + AName, TObject(hIco));
-        end;
-      end;
-      Result := tmpCount < Strings.Count;
-    finally
-      CplCall(GetFocus, CPL_EXIT, 0, 0);
-    end;
-  finally
-    FreeLibrary(hLib);
-  end;
-end;
 
 {*******************************************************}
 
 procedure TJvControlPanel.AddToPopup(Item: TMenuItem; Path: string);
 var
-  t: TSearchRec;
-  res: Integer;
+  i: Integer;
   it: TMenuItem;
-  ts: TStringList;
+  S: TStringList;
   b: TBitmap;
 begin
-  ts := TStringList.Create;
-  res := FindFirst(Path + '*.cpl', faAnyFile, t);
-  while res = 0 do
-  begin
-    if (t.Name <> '.') and (t.Name <> '..') then
+  S := TStringList.Create;
+  try
+    GetControlPanelApplets(Path, '*.cpl', S, Images);
+    S.Sort;
+    for i := 0 to S.Count - 1 do
     begin
-      if not GetNameCplW2k(Path, t.Name, ts) then
-        ts.Add(ChangeFileExt(t.Name, '') + '%' + t.Name);
+      it := TMenuItem.Create(Self);
+      it.Caption := S.Names[i];
+      it.OnClick := UrlClick;
+      it.Hint := S.Values[S.Names[i]];
+      if Images <> nil then
+        it.ImageIndex := integer(S.Objects[i])
+      else
+      begin
+        b := TBitmap(S.Objects[i]);
+        it.Bitmap.Assign(b);
+        b.Free;
+      end;
+      item.Add(it);
+      Application.ProcessMessages;
     end;
-    res := FindNext(t);
+  finally
+    S.Free;
   end;
-  FindClose(t);
-  ts.Sort;
-
-  for res := 0 to ts.Count - 1 do
-  begin
-    it := TMenuItem.Create(Self);
-    it.Caption := Copy(ts[res], 1, Pos('%', ts[res]) - 1);
-    it.OnClick := UrlClick;
-    it.Hint := Path + Copy(ts[res], Pos('%', ts[res]) + 1, Length(ts[res]));
-    b := IconToBitmap2(integer(ts.Objects[res]), 16, clMenu);
-    {
-      w := 0;
-      if ts.Objects[res] <> nil then
-          b := IconToBitmap2(integer(ts.Objects[res]), 16, clMenu)
-        else
-        begin
-          b := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w), 16, clMenu);
-        }
-    it.Bitmap.Assign(b);
-    item.Add(it);
-    b.Free;
-    Application.ProcessMessages;
-  end;
-  ts.Free;
 end;
 
 {*******************************************************}
@@ -216,7 +108,7 @@ procedure TJvControlPanel.Click;
 var P: TPoint;
 begin
   inherited;
-  if PArent <> nil then
+  if Parent <> nil then
   begin
     P := Parent.ClientToScreen(Point(Left, Top + Height));
     FPopup.Popup(P.x, P.y);
@@ -235,20 +127,10 @@ end;
 {*******************************************************}
 
 procedure TJvControlPanel.CreateParams(var Params: TCreateParams);
-var
-  st: string;
 begin
   inherited;
   if not (csDesigning in ComponentState) then
-  begin
-    while FPopup.Items.Count > 0 do
-      FPopup.Items.Delete(0);
-    st := FDirs.SystemDirectory;
-    if st[Length(st)] <> '\' then
-      st := st + '\';
-    AddToPopup(TMenuItem(FPopup.Items), st);
-    PopupMenu := FPopup;
-  end;
+    Refresh;
 end;
 
 {*******************************************************}
@@ -258,13 +140,45 @@ var
   i: Integer;
 begin
   FDirs.Free;
-  for i := 0 to FPopup.Items.Count - 1 do
-    Fpopup.Items[i].Bitmap.FreeImage;
+  if Images = nil then
+    for i := 0 to FPopup.Items.Count - 1 do
+      FPopup.Items[i].Bitmap.FreeImage;
   FPopup.Free;
   inherited;
 end;
 
 {*******************************************************}
+
+procedure TJvControlPanel.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited;
+  if (Operation = opRemove) and (AComponent = FImages) then
+    Images := nil; // (p3) calls Refresh
+end;
+
+procedure TJvControlPanel.Refresh;
+var
+  st: string;
+begin
+  while FPopup.Items.Count > 0 do
+    FPopup.Items.Delete(0);
+  st := FDirs.SystemDirectory;
+  if st[Length(st)] <> '\' then
+    st := st + '\';
+  FPopup.Images := Images;
+  AddToPopup(TMenuItem(FPopup.Items), st);
+  PopupMenu := FPopup;
+end;
+
+procedure TJvControlPanel.SetImages(const Value: TImageList);
+begin
+  if FImages <> Value then
+  begin
+    FImages := Value;
+    Refresh;
+  end;
+end;
 
 procedure TJvControlPanel.UrlClick(Sender: TObject);
 begin
