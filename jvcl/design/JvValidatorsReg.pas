@@ -57,7 +57,7 @@ begin
   RegisterNoIcon([TJvRequiredFieldValidator, TJvCompareValidator,
     TJvRangeValidator, TJvRegularExpressionValidator, TJvCustomValidator, TJvControlsCompareValidator]);
 
-  RegisterComponentEditor(TJvValidators, TJvValidatorComponent);
+  RegisterComponentEditor(TJvValidators, TJvValidatorEditor);
   RegisterPropertyEditor(TypeInfo(Integer), TJvErrorIndicator,
     'ImageIndex', TJvDefaultImageIndexProperty);
 //  RegisterPropertyEditor(TypeInfo(string), TJvCustomFormatEdit, 'Characters', TJvCharStringProperty);

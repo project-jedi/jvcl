@@ -39,7 +39,7 @@ uses
   QWindows, QMessages, QGraphics, QControls, QForms,
   QDialogs, QComCtrls, QToolWin, QStdCtrls, QMenus, QActnList, QImgList, 
   DesignEditors, DesignIntf, QDesignWindows, 
-  JvQValidators;
+  JvQValidators, QTypes, QExtCtrls;
 
 type
   TfrmValidatorsEditor = class(TDesignWindow)
@@ -91,7 +91,7 @@ type
     property Validator: TJvValidators read FValidator write SetValidator;
   end;
 
-  TJvValidatorComponent = class(TComponentEditor)
+  TJvValidatorEditor = class(TComponentEditor)
   public
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -155,9 +155,9 @@ begin
   end;
 end;
 
-//=== { TJvValidatorComponent } ==============================================
+//=== { TJvValidatorEditor } =================================================
 
-procedure TJvValidatorComponent.ExecuteVerb(Index: Integer);
+procedure TJvValidatorEditor.ExecuteVerb(Index: Integer);
 begin
   if (Index = 0) and (Component is TJvValidators) then
     ShowEditor(Designer, TJvValidators(Component))
@@ -165,12 +165,12 @@ begin
     inherited ExecuteVerb(Index);
 end;
 
-function TJvValidatorComponent.GetVerb(Index: Integer): string;
+function TJvValidatorEditor.GetVerb(Index: Integer): string;
 begin
   Result := RsJvValidatorsItemsEditorEllipsis;
 end;
 
-function TJvValidatorComponent.GetVerbCount: Integer;
+function TJvValidatorEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;

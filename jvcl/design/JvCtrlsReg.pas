@@ -138,7 +138,7 @@ begin
   RegisterComponentEditor(TJvFooter, TJvFooterEditor);
   RegisterComponentEditor(TJvImageListBox, TJvItemsEditor);
   RegisterComponentEditor(TJvImageComboBox, TJvItemsEditor);
-  RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
+  RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarEditor);
 
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
   RegisterClass(TJvScrollMaxBand);
