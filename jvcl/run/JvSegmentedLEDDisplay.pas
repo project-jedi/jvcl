@@ -1075,6 +1075,7 @@ begin
   begin
     FUseDP := Value;
     UpdateDPWidth;
+    InvalidateRefPoints;
   end;
 end;
 
