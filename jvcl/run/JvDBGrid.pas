@@ -83,7 +83,7 @@ type
   TJvDBGrid = class;
 
   // Consts for TJvDBGridLayoutChangeLink
-  TJvDBGridLayoutChangeKind = (lcSizeChanged, lcTopLeftChanged);
+  TJvDBGridLayoutChangeKind = (lcLayoutChanged, lcSizeChanged, lcTopLeftChanged);
 
   TSelectColumn = (scDataBase, scGrid);
   TTitleClickEvent = procedure(Sender: TObject; ACol: Longint;
@@ -1044,6 +1044,8 @@ begin
   DoMinColWidth;
   DoMaxColWidth;
   DoAutoSizeColumns;
+
+  NotifyLayoutChange(lcLayoutChanged);
 end;
 
 procedure TJvDBGrid.NotifyLayoutChange(const Kind: TJvDBGridLayoutChangeKind);
