@@ -44,7 +44,7 @@ interface
 uses
   Windows, Messages, Classes, SysUtils, Controls, Graphics, ShlObj,
   JclWin32, JclSysInfo,
-  JvJCLUtils, JvDataProvider, JvTypes;
+  JvJCLUtils, JvDataProvider, JvTypes, JvComponent;
 
 // these are defined here to avoid including DBT.pas
 const
@@ -1247,7 +1247,7 @@ type
   TJvSpoolerChangeEvent = procedure(Sender: TObject; JobStatus, JobsLeft: Integer) of object;
   TJvPaletteChangeEvent = procedure(Sender: TObject; Wnd: HWND) of object;
 
-  TJvComputerInfoEx = class(TComponent)
+  TJvComputerInfoEx = class(TJvComponent)
   private
     FAPMInfo: TJvAPMInfo;
     FBIOSInfo: TJvBIOSInfo;
