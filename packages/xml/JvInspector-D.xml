@@ -10,7 +10,7 @@
     <Package Name="JvInspector-R" Targets="all" Condition=""/>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="rtl" Targets="c6,c6p" Condition=""/>
-    <Package Name="vcl50" Targets="c5,c5p" Condition=""/>
+    <Package Name="vcl50" Targets="c5,c5s" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvInspectorReg.pas" Targets="all" Formname="" Condition=""/>

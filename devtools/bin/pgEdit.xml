@@ -64,7 +64,7 @@
   <models>
     <model name="JVCL" prefix="Jv" format="%p%n%e%v%t" clxPrefix="JvQ" packages="..\..\packages" incfile="..\..\common\jvcl.inc">
       <targets>
-        <target name="c5"/>
+        <target name="c5" pname="c5s" pdir="c5std"/>
         <target name="c6" pname="c6p" pdir="c6per"/>
         <target name="d5" pname="d5s" pdir="d5std"/>
         <target name="d6" pname="d6p" pdir="d6per"/>
@@ -75,12 +75,12 @@
       <aliases>
         <alias name="Delphi" value="d5,d5s,d6,d6p,d7,d7p,d7clx"/>
         <alias name="DelphiNoClx" value="d5,d5s,d6,d6p,d7,d7p"/>
-        <alias name="Bcb" value="c5,c6,c6p"/>
+        <alias name="Bcb" value="c5,c5s,c6,c6p"/>
         <alias name="Kylix" value="k3,k3p"/>
-        <alias name="Windows" value="c5,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d7clx"/>
+        <alias name="Windows" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d7clx"/>
         <alias name="Linux" value="k3,k3p"/>
         <alias name="allclx" value="d7clx,k3,k3p"/>
-        <alias name="allbutclx" value="c5,c6,c6p,d5,d5s,d6,d6p,d7,d7p"/>
+        <alias name="allbutclx" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p"/>
         <alias name="allbutperso" value="c5,c6,d5,d6,d7,d7clx,k3"/>
       </aliases>
       <ClxReplacements>
@@ -99,8 +99,8 @@
         <target name="d6.dev"/>
         <target name="d7"/>
         <target name="d7.dev"/>
-        <target name="k3" pathsep="/"/>
-        <target name="k3.dev" pathsep="/"/>
+        <target name="k3" PathSep="/"/>
+        <target name="k3.dev" PathSep="/"/>
       </targets>
       <aliases>
         <alias name="Delphi" value="d5,d6,d7"/>

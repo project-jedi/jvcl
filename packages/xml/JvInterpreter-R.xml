@@ -9,13 +9,13 @@
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvCustom-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvCtrls-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvSystem-R" Targets="C5,C6,C6p" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p" Condition=""/>
-    <Package Name="vcl50" Targets="C5,D5" Condition=""/>
-    <Package Name="vclx50" Targets="C5,D5" Condition=""/>
+    <Package Name="JvSystem-R" Targets="C5,C5s,C6,C6p" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="C5,C5s,C6,C6p" Condition=""/>
+    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
+    <Package Name="vclx50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="vclbde50" Targets="C5,D5" Condition=""/>
     <Package Name="qrpt50" Targets="C5,D5" Condition=""/>
-    <Package Name="CJCL50" Targets="C5" Condition=""/>
+    <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="inet50" Targets="C5,D5" Condition=""/>
     <Package Name="vcldb50" Targets="C5,D5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D7,D7p" Condition=""/>

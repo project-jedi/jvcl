@@ -10,10 +10,10 @@
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="rtl" Targets="C6,D6,D7" Condition=""/>
     <Package Name="vcl" Targets="D6,D7" Condition=""/>
-    <Package Name="CJCL50" Targets="C5" Condition=""/>
+    <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="CJCL" Targets="C6" Condition=""/>
     <Package Name="vcldb50" Targets="C5,D5" Condition=""/>
-    <Package Name="vcl50" Targets="C5,D5" Condition=""/>
+    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="dbrtl" Targets="C6,D6,D7,D7clx" Condition=""/>
     <Package Name="dataclx" Targets="K3" Condition=""/>
   </Requires>

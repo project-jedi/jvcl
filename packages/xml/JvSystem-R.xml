@@ -8,13 +8,13 @@
   <C6Libs>wininet.lib</C6Libs>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="CJCL50" Targets="C5" Condition=""/>
+    <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
-    <Package Name="vclx50" Targets="C5" Condition=""/>
-    <Package Name="vcljpg50" Targets="C5" Condition=""/>
-    <Package Name="bcbsmp50" Targets="C5" Condition=""/>
-    <Package Name="bcbie50" Targets="C5" Condition=""/>
+    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
+    <Package Name="vclx50" Targets="C5,C5s" Condition=""/>
+    <Package Name="vcljpg50" Targets="C5,C5s" Condition=""/>
+    <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
+    <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p,D7,D7p" Condition=""/>

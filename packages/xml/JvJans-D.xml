@@ -9,8 +9,8 @@
   <Requires>
     <Package Name="JvJans-R" Targets="all" Condition=""/>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
-    <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
-    <Package Name="vclsmp50" Targets="C5" Condition=""/>
+    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
+    <Package Name="vclsmp50" Targets="C5,C5s" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="clxdesigner" Targets="D7clx" Condition=""/>

@@ -10,8 +10,8 @@
     <Package Name="JvNet-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-D" Targets="D5,D5s,D6,D6p" Condition=""/>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
-    <Package Name="CJCL50" Targets="C5" Condition=""/>
-    <Package Name="vcl50" Targets="C5" Condition=""/>
+    <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
+    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
