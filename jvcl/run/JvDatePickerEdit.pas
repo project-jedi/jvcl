@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDatePickerEdit, released on 2002-10-04.
 
-The Initial Developer of the Original Code is Oliver Giesen [giesen@lucatec.de]
+The Initial Developer of the Original Code is Oliver Giesen [giesen att lucatec dott de]
 Portions created by Oliver Giesen are Copyright (C) 2002 Lucatec GmbH.
 All Rights Reserved.
 
@@ -108,6 +108,7 @@ type
     FDate: TDateTime;
     FDateError: Boolean;
     FDeleting: Boolean;
+    FCalLostFocus: Boolean;
     FDateFigures: TJvDateFigures;
     FInternalDateFormat,
     FDateFormat: string;
@@ -128,6 +129,7 @@ type
     procedure CalDestroy(Sender: TObject);
     procedure CalSelect(Sender: TObject);
     procedure CalCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure CalKillFocus(const ASender: TObject; const ANextControl: TWinControl);
     function AttemptTextToDate(const AText: string; var ADate: TDateTime;
       const AForce: Boolean = False; const ARaise: Boolean = False): Boolean;
     function DateFormatToEditMask(var ADateFormat: string): string;
@@ -289,6 +291,7 @@ begin
   FDate := SysUtils.Date;
   FDateError := False;
   FDeleting := False;
+  FCalLostFocus := False;
   FDropFo := nil;
   FEnableValidation := True;
   //  FMaxYear := 2900;
@@ -353,6 +356,17 @@ begin
   NotifyIfChanged;
 end;
 
+procedure TJvCustomDatePickerEdit.CalKillFocus(const ASender: TObject;
+  const ANextControl: TWinControl);
+begin
+  {We've got to catch the case where the user moves the focus somewhere else
+   while the calendar is visible. Otherwise the control might erroneously try
+   to refocus itself in method CloseUp where this could not be tested as the
+   calendar will no longer be "leaving" by that time already.}
+  if (ANextControl = nil) or ((ANextControl <> Self) and (ANextControl.Owner <> Self)) then
+    FCalLostFocus := True;
+end;
+
 procedure TJvCustomDatePickerEdit.CalCloseQuery(Sender: TObject; var CanClose: Boolean);
 var
   P: TPoint;
@@ -362,6 +376,13 @@ begin
    calendar closed.}
   GetCursorPos(P);
   CanClose := not PtInRect(FButtonHolder.BoundsRect, ScreenToClient(P));
+end;
+
+procedure TJvCustomDatePickerEdit.CalDestroy(Sender: TObject);
+begin
+  CloseUp;
+  FDropFo := nil;
+  FCalLostFocus := False;
 end;
 
 procedure TJvCustomDatePickerEdit.Clear;
@@ -376,7 +397,7 @@ begin
     Date := FDropFo.SelDate;
     FreeAndNil(FDropFo);
   end;
-  if not (Leaving or (csDestroying in ComponentState)) then
+  if not (Leaving or (csDestroying in ComponentState) or FCalLostFocus) then
     SetFocus;
 //  FDropButton.Repaint;
 end;
@@ -402,6 +423,7 @@ begin
       OnSelect := Self.CalSelect;
       OnDestroy := Self.CalDestroy;
       OnCloseQuery := Self.CalCloseQuery;
+      OnKillFocus := Self.CalKillFocus;
       Show;
       SetFocus;
     end;
@@ -656,12 +678,6 @@ end;
 function TJvCustomDatePickerEdit.IsNoDateShortcutStored: Boolean;
 begin
   Result := (NoDateShortcut <> TextToShortCut(RsDefaultNoDateShortcut));
-end;
-
-procedure TJvCustomDatePickerEdit.CalDestroy(Sender: TObject);
-begin
-  CloseUp;
-  FDropFo := nil;
 end;
 
 procedure TJvCustomDatePickerEdit.ClearMask;
