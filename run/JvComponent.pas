@@ -15,9 +15,9 @@ Portions created by Joe Doe are Copyright (C) 1999 Joe Doe.
 Portions created by XXXX Corp. are Copyright (C) 1998, 1999 XXXX Corp.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s): Andreas Hausladen <Andreas.Hausladen@gmx.de> (XP Theming)
 
-Last Modified: 2003-10-10
+Last Modified: 2003-12-11
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -120,7 +120,6 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
-  // (rom) this has to be removed if gettext is GPL
   {$IFDEF USE_DXGETTEXT}
   public
     constructor Create(AOwner: TComponent); override;
@@ -184,6 +183,6 @@ begin
   inherited Create(AOwner);
   TranslateComponent(Self);
 end;
-{$ENDIF}
+{$ENDIF USE_DXGETTEXT}
 
 end.
