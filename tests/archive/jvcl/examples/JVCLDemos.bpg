@@ -34,6 +34,7 @@ PROJECTS = AppDdeCmdExample.exe ArrowButtonDemo.exe BmpAnimDemo.exe \
   RunDLL32Demo.exe DBEXPL32.exe Rxdemo.exe RxGIFAnm.exe ScrollWinDemo.exe \
   TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDemo.exe \
   JvLogFileDemo.exe JvTrayIconDemo.exe JvZLibMultipleDemo.exe JvID3v1Demo.exe \
+  JvFormatEditDemo.exe \
  
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
@@ -323,5 +324,8 @@ JvZLibMultipleDemo.exe: JvZLibMultiple\JvZLibMultipleDemo.dpr
   $(DCC)
 
 JvID3v1Demo.exe: JvID3v1\JvID3v1Demo.dpr
+  $(DCC)
+
+JvFormatEditDemo.exe: JvValidateEdit\JvFormatEditDemo.dpr
   $(DCC)
 

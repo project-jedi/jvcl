@@ -121,6 +121,8 @@ TransparentButtonDemo.exe \
 JvLogFileDemo.exe \
 JvTrayIconDemo.exe \
 JvZLibMultipleDemo.exe \
+JvFormatEditDemo.exe \
+
 
 #---------------------------------------------------------------------------------------------------
 
@@ -608,3 +610,7 @@ JvZLibMultipleDemo.exe: JvZLibMultiple\JvZLibMultipleDemo.dpr
   $(DCC) $&.dpr
   cd ..
 
+JvFormatEditDemo.exe: JvValidateEdit\JvFormatEditDemo.dpr
+  cd JvValidateEdit
+  $(DCC) $&.dpr
+  cd ..
