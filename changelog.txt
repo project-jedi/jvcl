@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2004-01-20
+- changed makefile.mak in Images and created JvDBControls.rc and JvDBGrid.rc // (rom)
+- Internal reimplementations in JvBehaviorLabel.pas. Added TJvLabelNone behavior // (rom)
 2004-01-18
 - Ensured all files using TJvDBGrid use the JvDBGrid.pas file // obones
 - Renamed TJvAppXMLStorage to TJvAppXMLFileStorage for consistency // obones

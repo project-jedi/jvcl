@@ -295,7 +295,7 @@ uses
   JvDBUtils, JvJVCLUtils, JvConsts, JvResources, JvTypes,
   JvDBGridSelectColumnForm;
 
-{$R ..\resources\JvDBGrid.res}
+{$R ..\Resources\JvDBGrid.res}
 
 
 type

@@ -668,7 +668,7 @@ uses
   SysUtils, Dialogs, DbConsts, Math,
   JvDBUtils, JvJVCLUtils, JvCalc, JvConsts, JvResources, JvTypes;
 
-{$R ..\resources\JvDBControls.res}
+{$R ..\Resources\JvDBControls.res}
 
 //=== NEW IN JVCL 3.0 ==
 //=== TJvDBMaskEdit ==============================================================
