@@ -40,6 +40,24 @@ Parameters
 
 
 ----------------------------------------------------------------------------------------------------
+@@TJvUrlGrabberProgressEvent
+<TITLE TJvUrlGrabberProgressEvent type>
+Summary
+  This is the type of the events triggered when a grabber has made some progress while it is grabbing
+  an object indicated by the URL
+Description
+  This type is used by (for reference):
+    TJvCustomUrlGrabber.OnProgress
+Parameters
+  Sender    - The grabber object that has made some progress
+  Position  - The position in the object where the grabbing process is at the moment
+  TotalSize - The total size of the object being grabbed. It may be 0 if the protocol could not give
+              the size of the object
+  Url       - The URL of the object being grabbed
+  Continue  - If you set this value to False, the grabbing will be canceled
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvUrlGrabberIndex
 <TITLE TJvUrlGrabberIndex type>
 Summary
@@ -352,6 +370,14 @@ Description
 
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabber.BytesRead
+Summary
+  The number of bytes that have been read so far by the grabbing process.
+See Also
+  Size, OnProgress
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.CanGrab
 Summary
   Returns true if the given Url is supported by the grabber
@@ -550,6 +576,15 @@ Description
   indicate the password
 See Also
   UserName
+
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabber.Size
+Summary
+  The size of the object being grabbed. If the protocol cannot provide the size of the object this
+  value is 0.
+See Also
+  BytesRead
 
 
 ----------------------------------------------------------------------------------------------------
