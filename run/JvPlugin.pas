@@ -17,8 +17,9 @@ All Rights Reserved.
 Contributor(s):
 Ralf Steinhaeusser [ralfiii@gmx.net].
 Gustavo Bianconi
+Steefan Lesage - converted to use new OTA
 
-Last Modified: 2003-05-01
+Last Modified: 2003-07-14
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
