@@ -302,6 +302,12 @@ begin
   else
     SetEnvironmentVariable('DCC32', PChar('dcc32 -Q -M ' + Options));
 
+  if (IsJCL) and (FTarget.IsBCB) and (FTarget.InstallJcl) and (FTarget.Build) then
+  begin
+    DeleteDcuFiles(OutDir, StartDir + '\xyz');
+    DeleteDcuFiles(OutDir + '\obj', StartDir + '\xyz');
+  end;
+
   if (not IsJCL) or (FTarget.InstallJcl and FTarget.IsBCB) then
   begin
    // create make file
@@ -367,11 +373,12 @@ begin
         Result := CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
           '-B -f"' + JclMakeFilename + '"', StartDir, // hard coded "-B"
           CaptureLine) = 0;
+{       (ahuser) Do not delete the DCUs after the compilation. Delete them before a build.
         if Result then
         begin
           DeleteDcuFiles(OutDir, StartDir + '\xyz');
           DeleteDcuFiles(OutDir + '\obj', StartDir + '\xyz');
-        end;
+        end;}
       finally
         SetEnvironmentVariable('DCCOPT', nil);
         PrepareBpgData.Cleaning := Result;
