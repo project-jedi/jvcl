@@ -34,11 +34,11 @@ type
     FDrawingStyle: TDrawingStyle;
     FSelectedStyle: TDrawingStyle;
     FFillCaption: boolean;
-    FFrameWidth: word;
+    FFrameSize: word;
     procedure SetDrawingStyle(const Value: TDrawingStyle);
     procedure SetSelectedStyle(const Value: TDrawingStyle);
     procedure SetFillCaption(const Value: boolean);
-    procedure SetFrameWidth(const Value: word);
+    procedure SetFrameSize(const Value: word);
   public
     constructor Create(AOwner: TJvCustomItemViewer); override;
   published
@@ -48,7 +48,7 @@ type
     property DrawingStyle: TDrawingStyle read FDrawingStyle write SetDrawingStyle default dsTransparent;
     property FillCaption: boolean read FFillCaption write SetFillCaption default true;
     property SelectedStyle: TDrawingStyle read FSelectedStyle write SetSelectedStyle default dsSelected;
-    property FrameSize:word read FFrameWidth write SetFrameWidth default 1;
+    property FrameSize:word read FFrameSize write SetFrameSize default 1;
     property Height;
     property Layout;
     property RightClickSelect;
@@ -135,7 +135,7 @@ begin
   FDrawingStyle := dsTransparent;
   FSelectedStyle := dsSelected;
   FFillCaption := true;
-  FFrameWidth := 1;
+  FFrameSize := 1;
 end;
 
 procedure TJvImageListViewerOptions.SetDrawingStyle(
@@ -157,11 +157,11 @@ begin
   end;
 end;
 
-procedure TJvImageListViewerOptions.SetFrameWidth(const Value: word);
+procedure TJvImageListViewerOptions.SetFrameSize(const Value: word);
 begin
-  if FFrameWidth <> Value then
+  if FFrameSize <> Value then
   begin
-    FFrameWidth := Value;
+    FFrameSize := Value;
     Change;
   end;
 end;
