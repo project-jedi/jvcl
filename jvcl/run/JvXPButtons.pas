@@ -422,11 +422,13 @@ begin
   begin
     FDefault := Value;
     {$IFDEF VCL}
-    with GetParentForm(Self) do
-      Perform(CM_FOCUSCHANGED, 0, Longint(ActiveControl));
+    if GetParentForm(Self) <> nil then
+      with GetParentForm(Self) do
+        Perform(CM_FOCUSCHANGED, 0, Longint(ActiveControl));
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    QWindows.Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl));
+    if GetParentForm(Self) <> nil then
+      QWindows.Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl));
     {$ENDIF VisualCLX}
   end;
 end;
