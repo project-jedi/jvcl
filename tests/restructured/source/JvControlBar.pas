@@ -30,8 +30,6 @@ unit JvControlBar;
 
 interface
 
-
-
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Extctrls, Controls, Forms,
   Menus, JVCLVer;
@@ -181,9 +179,8 @@ procedure TJvControlBar.LoadPositions(const Value: string);
 var
   st,st2: string;
   i,j: Integer;
+  lLeft, lTop: Integer;
 begin
-  for i:=0 to ControlCount-1 do
-    Controls[i].Visible := false;
   st := Value;
   j := 0;
   while (Length(st)>1) and (j<ControlCount) do
@@ -208,8 +205,18 @@ begin
       i := pos(',',st2);
       if i<>0 then
       begin
-        Controls[j].Top := StrToIntDef( Copy(st2,i+1,Length(st2)), Controls[j].Top);
-        Controls[j].Left := StrToIntDef( Copy(st2,1,i-1), Controls[j].Left);
+        lLeft := StrToIntDef( Copy(st2,1,i-1), Controls[j].Left);
+        lTop := StrToIntDef( Copy(st2,i+1,Length(st2)), Controls[j].Top);
+        if ControlAtPos(Point(lLeft,Controls[j].Top),true)<>nil then
+        begin
+          Controls[j].Left := lLeft;
+          Controls[j].Top := lTop;
+        end
+        else
+        begin
+          Controls[j].Top := lTop;
+          Controls[j].Left := lLeft;
+        end;
       end;
     end;
     inc(j);
