@@ -55,7 +55,7 @@ uses
 {$ENDIF VisualCLX}
 
 type
-  TJvExCustomGroupBox = class(TCustomGroupBox, IJvWinControlEvents, IJvControlEvents)
+  TJvExCustomGroupBox = class(TCustomGroupBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -96,7 +96,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -165,7 +169,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExGroupBox = class(TGroupBox, IJvWinControlEvents, IJvControlEvents)
+  TJvExGroupBox = class(TGroupBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -206,7 +210,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -277,7 +285,7 @@ type
   
 {$DEFINE HASAUTOSIZE}
   {$IFDEF VCL}
-  TJvExCustomLabel = class(TCustomLabel, IJvControlEvents)
+  TJvExCustomLabel = class(TCustomLabel, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -304,7 +312,11 @@ type
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -356,7 +368,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExLabel = class(TLabel, IJvControlEvents)
+  TJvExLabel = class(TLabel, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -383,7 +395,11 @@ type
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -437,7 +453,7 @@ type
   
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  TJvExCustomLabel = class(TCustomLabel, IJvWinControlEvents, IJvControlEvents)
+  TJvExCustomLabel = class(TCustomLabel, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -478,7 +494,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -547,7 +567,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExLabel = class(TLabel, IJvWinControlEvents, IJvControlEvents)
+  TJvExLabel = class(TLabel, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -588,7 +608,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -659,7 +683,7 @@ type
   
   {$ENDIF VisualCLX}
 {$UNDEF HASAUTOSIZE}
-  TJvExCustomEdit = class(TCustomEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
+  TJvExCustomEdit = class(TCustomEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -700,7 +724,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -789,7 +817,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExEdit = class(TEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
+  TJvExEdit = class(TEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -830,7 +858,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -919,7 +951,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExCustomMemo = class(TCustomMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
+  TJvExCustomMemo = class(TCustomMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -960,7 +992,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -1049,7 +1085,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExMemo = class(TMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
+  TJvExMemo = class(TMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -1090,7 +1126,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -1181,7 +1221,7 @@ type
   
 {$IFDEF VCL}
  {$IFDEF COMPILER6_UP}
-  TJvExCustomCombo = class(TCustomCombo, IJvWinControlEvents, IJvControlEvents)
+  TJvExCustomCombo = class(TCustomCombo, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -1222,7 +1262,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -1293,7 +1337,7 @@ type
   
  {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
-  TJvExCustomComboBox = class(TCustomComboBox, IJvWinControlEvents, IJvControlEvents)
+  TJvExCustomComboBox = class(TCustomComboBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -1334,7 +1378,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -1403,7 +1451,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExComboBox = class(TComboBox, IJvWinControlEvents, IJvControlEvents)
+  TJvExComboBox = class(TComboBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -1444,7 +1492,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -1513,7 +1565,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExButtonControl = class(TButtonControl, IJvWinControlEvents, IJvControlEvents)
+  TJvExButtonControl = class(TButtonControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -1554,7 +1606,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -1623,7 +1679,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExButton = class(TButton, IJvWinControlEvents, IJvControlEvents)
+  TJvExButton = class(TButton, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -1664,7 +1720,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -1733,7 +1793,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExCustomCheckBox = class(TCustomCheckBox, IJvWinControlEvents, IJvControlEvents)
+  TJvExCustomCheckBox = class(TCustomCheckBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -1774,7 +1834,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -1843,7 +1907,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExCheckBox = class(TCheckBox, IJvWinControlEvents, IJvControlEvents)
+  TJvExCheckBox = class(TCheckBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -1884,7 +1948,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -1953,7 +2021,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExRadioButton = class(TRadioButton, IJvWinControlEvents, IJvControlEvents)
+  TJvExRadioButton = class(TRadioButton, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -1994,7 +2062,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -2063,7 +2135,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExCustomListBox = class(TCustomListBox, IJvWinControlEvents, IJvControlEvents)
+  TJvExCustomListBox = class(TCustomListBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -2104,7 +2176,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -2173,7 +2249,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExListBox = class(TListBox, IJvWinControlEvents, IJvControlEvents)
+  TJvExListBox = class(TListBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -2214,7 +2290,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -2283,7 +2363,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExScrollBar = class(TScrollBar, IJvWinControlEvents, IJvControlEvents)
+  TJvExScrollBar = class(TScrollBar, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -2324,7 +2404,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -2394,7 +2478,7 @@ type
   end;
   
 {$IFDEF VCL}
-  TJvExCustomStaticText = class(TCustomStaticText, IJvWinControlEvents, IJvControlEvents)
+  TJvExCustomStaticText = class(TCustomStaticText, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -2435,7 +2519,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -2504,7 +2592,7 @@ type
   {$ENDIF VCL}
   end;
   
-  TJvExStaticText = class(TStaticText, IJvWinControlEvents, IJvControlEvents)
+  TJvExStaticText = class(TStaticText, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -2545,7 +2633,11 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -2800,6 +2892,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExCustomGroupBox.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomGroupBox.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExCustomGroupBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -2854,6 +2966,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExCustomGroupBox.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -2868,6 +2986,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExCustomGroupBox.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -3068,6 +3190,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExGroupBox.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExGroupBox.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExGroupBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -3122,6 +3264,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExGroupBox.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -3136,6 +3284,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExGroupBox.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -3299,6 +3451,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExCustomLabel.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomLabel.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomLabel.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -3312,6 +3484,12 @@ end;
 
 constructor TJvExCustomLabel.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -3465,6 +3643,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExLabel.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExLabel.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExLabel.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -3478,6 +3676,12 @@ end;
 
 constructor TJvExLabel.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -3672,6 +3876,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExCustomLabel.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomLabel.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExCustomLabel.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -3726,6 +3950,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExCustomLabel.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -3740,6 +3970,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExCustomLabel.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -3940,6 +4174,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExLabel.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExLabel.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExLabel.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -3994,6 +4248,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExLabel.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -4008,6 +4268,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExLabel.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -4215,6 +4479,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExCustomEdit.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomEdit.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExCustomEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -4269,6 +4553,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExCustomEdit.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   FClipboardCommands := [caCopy..caUndo];
@@ -4283,6 +4573,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExCustomEdit.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -4560,6 +4854,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExEdit.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExEdit.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -4614,6 +4928,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExEdit.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   FClipboardCommands := [caCopy..caUndo];
@@ -4628,6 +4948,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExEdit.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -4905,6 +5229,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExCustomMemo.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomMemo.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExCustomMemo.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -4959,6 +5303,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExCustomMemo.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   FClipboardCommands := [caCopy..caUndo];
@@ -4973,6 +5323,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExCustomMemo.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -5250,6 +5604,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExMemo.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExMemo.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExMemo.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -5304,6 +5678,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExMemo.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   FClipboardCommands := [caCopy..caUndo];
@@ -5318,6 +5698,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExMemo.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -5600,6 +5984,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExCustomCombo.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomCombo.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExCustomCombo.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -5654,6 +6058,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExCustomCombo.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -5668,6 +6078,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExCustomCombo.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -5870,6 +6284,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExCustomComboBox.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomComboBox.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExCustomComboBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -5924,6 +6358,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExCustomComboBox.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -5938,6 +6378,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExCustomComboBox.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -6138,6 +6582,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExComboBox.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExComboBox.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExComboBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -6192,6 +6656,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExComboBox.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -6206,6 +6676,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExComboBox.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -6406,6 +6880,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExButtonControl.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExButtonControl.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExButtonControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -6460,6 +6954,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExButtonControl.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -6474,6 +6974,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExButtonControl.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -6674,6 +7178,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExButton.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExButton.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExButton.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -6728,6 +7252,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExButton.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -6742,6 +7272,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExButton.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -6942,6 +7476,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExCustomCheckBox.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomCheckBox.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExCustomCheckBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -6996,6 +7550,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExCustomCheckBox.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -7010,6 +7570,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExCustomCheckBox.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -7210,6 +7774,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExCheckBox.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCheckBox.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExCheckBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -7264,6 +7848,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExCheckBox.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -7278,6 +7868,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExCheckBox.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -7478,6 +8072,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExRadioButton.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExRadioButton.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExRadioButton.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -7532,6 +8146,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExRadioButton.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -7546,6 +8166,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExRadioButton.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -7746,6 +8370,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExCustomListBox.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomListBox.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExCustomListBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -7800,6 +8444,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExCustomListBox.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -7814,6 +8464,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExCustomListBox.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -8014,6 +8668,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExListBox.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExListBox.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExListBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -8068,6 +8742,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExListBox.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -8082,6 +8762,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExListBox.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -8282,6 +8966,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExScrollBar.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExScrollBar.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExScrollBar.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -8336,6 +9040,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExScrollBar.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -8350,6 +9060,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExScrollBar.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -8551,6 +9265,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExCustomStaticText.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomStaticText.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExCustomStaticText.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -8605,6 +9339,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExCustomStaticText.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -8619,6 +9359,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExCustomStaticText.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -8819,6 +9563,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvExStaticText.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExStaticText.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 procedure TJvExStaticText.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
@@ -8873,6 +9637,12 @@ end;
 {$IFDEF VCL}
 constructor TJvExStaticText.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   
@@ -8887,6 +9657,10 @@ end;
 {$IFDEF VisualCLX}
 constructor TJvExStaticText.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
