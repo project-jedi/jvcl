@@ -6,6 +6,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvGlobus-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="vclx50" Targets="C5,D5,D5s" Condition=""/>
@@ -25,7 +26,6 @@
     <Package Name="qrpt" Targets="D6,D7" Condition=""/>
     <Package Name="vcljpg" Targets="D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vclie" Targets="D6,D7" Condition=""/>
-    <Package Name="JvGlobus-D" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvgCompDescription.pas" Targets="all" Formname="" Condition=""/>
