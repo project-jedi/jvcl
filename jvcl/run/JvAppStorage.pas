@@ -2058,7 +2058,10 @@ begin
     else
     begin
       try
-        if TypeInfo.Kind in [tkInteger, tkChar] then
+        if TypeInfo.Kind = tkChar then
+          OrdValue := ReadIntegerInt(Path, OrdValue)
+        else
+        if TypeInfo.Kind = tkInteger then
         begin
           { Could be stored as a normal int or as an identifier.
             Try identifier first as that will not raise an exception }
