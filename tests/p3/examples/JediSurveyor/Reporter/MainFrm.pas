@@ -108,8 +108,8 @@ uses
 {$R *.DFM}
 resourcestring
   SFmtInvalidResponseFile =
-    'The file (%s) is not compatible with the currently loaded survey: please select another response file.';
-  SFmtResponseAlreadyLoaded = 'Responses from this file (%s) or user (%s) has already been added to the report.';
+    'The file "%s" is not compatible with the currently loaded survey: please select another response file.';
+  SFmtResponseAlreadyLoaded = 'Responses from the file "%s" or user "%s" has already been added to the report.';
   SFmtUnmatchedSurveyType = 'SurveyTypes does not match (index %d)';
   SFmtResponse = '%0:s\nResponse from %1:s:\n%0:s\n\n%2:s\n\n';
   SFmtComment = '%0:s\nComments from %1:s:\n%0:s\n\n%2:s\n\n';
@@ -126,15 +126,19 @@ resourcestring
   SHTMLNoItemsToDisplay =
     '<h4>There are no items in this survey: nothing to display</h4>';
   SFmtHTMLTableSurveyItemHeader =
-    '<h4>Question %d</h4><table class="TableSurveyItemHeader"><tr class="TRSurveyItemHeader">' +
-    '<th class="THSurveyItemHeader">Title</th><th class="THSurveyItemHeader">Description</th>' +
+    '<h4>Item #%d</h4><table class="TableSurveyItemHeader"><tr class="TRSurveyItemHeader">' +
+    '<th class="THSurveyItemHeader">Title</th>' +
+    '<th class="THSurveyItemHeader">Description</th>' +
     '<th class="THSurveyItemHeader">Type</th></tr>' +
-    '<tr class="TRSurveyItemHeader"><td class="TDSurveyItemHeader">%s&nbsp;</td>' +
-    '<td class="TDSurveyItemHeader">%s&nbsp;</td><td class="TDSurveyItemHeader">%s&nbsp;</td></tr></table>';
+    '<tr class="TRSurveyItemHeader">' +
+    '<td class="TDSurveyItemHeader">%s&nbsp;</td>' +
+    '<td class="TDSurveyItemHeader">%s&nbsp;</td>' +
+    '<td class="TDSurveyItemHeader">%s&nbsp;</td></tr><tr><td colspan="3">';
   SFmtHTMLTableSurveyItemDetail =
     '<table class="TableSurveyItemDetail">' +
     '<tr class="TRSurveyItemDetail"><th  class="THSurveyItemDetail">Responses</th></tr>' +
     '<tr class="TRSurveyItemDetail"><td class="TDSurveyItemDetail">%s&nbsp;</td></tr></table>';
+  SFmtHTMLTableSurveyItemFooter = '</tr></td></table>';
   STableSurveyItemDetail =
     '<table class="TableSurveyItemDetail"><tr class="TRSurveyItemDetail">' +
     '<th class="THSurveyItemDetail">Choices</th><th class="THSurveyItemDetail">Responses</th></tr>';
@@ -332,10 +336,13 @@ begin
     raise
       Exception.CreateFmt(SFmtInvalidResponseFile, [Filename]);
   if FResponses.IndexOf(ASurvey.SurveyTaker.ID) > -1 then
-    raise Exception.CreateFmt(SFmtResponseAlreadyLoaded, [Filename, ASurvey.SurveyTaker.ID]);
-  FResponses.Add(ASurvey.SurveyTaker.ID);
-  for i := 0 to ASurvey.Items.Count - 1 do
-    AddResponses(ASurvey.Items[i], i, ASurvey.SurveyTaker);
+    ShowMessageFmt(SFmtResponseAlreadyLoaded, [Filename, ASurvey.SurveyTaker.ID])
+  else
+  begin
+    FResponses.Add(ASurvey.SurveyTaker.ID);
+    for i := 0 to ASurvey.Items.Count - 1 do
+      AddResponses(ASurvey.Items[i], i, ASurvey.SurveyTaker);
+  end;
 end;
 
 procedure TfrmMain.AddResponses(item: IJvSurveyItem; Index: integer; const SurveyTaker: IJvSurveyTaker);
@@ -479,8 +486,9 @@ var
   C, R: TStringlist;
   function ConvertCRLFToBR(const S: string): string;
   begin
+//    Result := StringReplace(Result,MakeString(cDelimChar, cDelimLength),'<hr>',[rfReplaceAll]);
     Result := StringReplace(S, '\n', '<br>', [rfReplaceAll]);
-    Result := StringReplace(Result,MakeString(cDelimChar, cDelimLength),'<hr>',[rfReplaceAll]);
+    Result := StringReplace(Result, #13#10, '<br>', [rfReplaceAll]);
   end;
 begin
   if FSurvey.Items.Count = 0 then
@@ -511,6 +519,7 @@ begin
           Result := Result + Format(SFmtHTMLTRSurveyItemDetail, [C[j], R[j]]);
         Result := Result + SHTMLTableEnd;
       end;
+      Result := Result + SFmtHTMLTableSurveyItemFooter;
     end;
   finally
     R.Free;

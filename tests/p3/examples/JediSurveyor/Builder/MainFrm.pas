@@ -4,10 +4,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, JvPageScroller, JvComCtrls, JvStatusBar, ExtCtrls,
-  JvDateTimePicker, StdCtrls, JvCombobox, JvLinkLabel, Menus,
-  StdActns, ActnList, ImgList, JvEdit, JvSurveyIntf, JvDialogs,
-  JvImage, JvCheckBox, JvRichEd, JvValidateEdit;
+  ComCtrls, ExtCtrls, StdCtrls, Menus, StdActns, ActnList, ImgList,
+  JvPageScroller, JvComCtrls, JvStatusBar, JvDateTimePicker, JvCombobox, JvLinkLabel,
+  JvEdit, JvSurveyIntf, JvDialogs, JvImage, JvCheckBox, JvValidateEdit;
 
 type
   TfrmMain = class(TForm)
@@ -35,8 +34,8 @@ type
     Label10: TLabel;
     Label11: TLabel;
     cbItemType: TJvComboBox;
-    reItemChoices: TJvRichEdit;
-    reItemDescription: TJvRichEdit;
+    reItemChoices: TRichEdit;
+    reItemDescription: TRichEdit;
     mmMain: TMainMenu;
     File1: TMenuItem;
     Edit7: TMenuItem;

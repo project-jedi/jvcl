@@ -15,6 +15,7 @@ object frmMain: TfrmMain
   Position = poScreenCenter
   Scaled = False
   OnCloseQuery = FormCloseQuery
+  OnContextPopup = FormContextPopup
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -28,6 +29,9 @@ object frmMain: TfrmMain
     BevelOuter = bvLowered
     Color = clWindow
     TabOrder = 0
+    DesignSize = (
+      604
+      87)
     object lblTitle: TLabel
       Left = 12
       Top = 7
@@ -88,6 +92,9 @@ object frmMain: TfrmMain
     Width = 604
     Height = 46
     Align = alBottom
+    DesignSize = (
+      604
+      46)
     object JvBevel1: TJvBevel
       Left = 0
       Top = 0
@@ -109,7 +116,7 @@ object frmMain: TfrmMain
       Width = 80
       Height = 25
       Action = acLoadSurvey
-      TabOrder = 3
+      TabOrder = 1
     end
     object btnComment: TButton
       Left = 14
@@ -117,7 +124,7 @@ object frmMain: TfrmMain
       Width = 80
       Height = 25
       Action = acComment
-      TabOrder = 4
+      TabOrder = 0
     end
     object btnPrev: TJvFooterBtn
       Left = 352
@@ -127,7 +134,7 @@ object frmMain: TfrmMain
       Action = acPrevPage
       Anchors = [akRight, akBottom]
       Caption = '<< &Prev'
-      TabOrder = 0
+      TabOrder = 2
       HotTrackFont.Charset = DEFAULT_CHARSET
       HotTrackFont.Color = clWindowText
       HotTrackFont.Height = -11
@@ -145,7 +152,7 @@ object frmMain: TfrmMain
       Anchors = [akRight, akBottom]
       Caption = '&Next >>'
       Default = True
-      TabOrder = 1
+      TabOrder = 3
       HotTrackFont.Charset = DEFAULT_CHARSET
       HotTrackFont.Color = clWindowText
       HotTrackFont.Height = -11
@@ -162,7 +169,7 @@ object frmMain: TfrmMain
       Action = acExit
       Anchors = [akRight, akBottom]
       Caption = 'Close'
-      TabOrder = 2
+      TabOrder = 4
       HotTrackFont.Charset = DEFAULT_CHARSET
       HotTrackFont.Color = clWindowText
       HotTrackFont.Height = -11
@@ -180,6 +187,7 @@ object frmMain: TfrmMain
     Align = alClient
     BorderStyle = bsNone
     TabOrder = 2
+    OnContextPopup = sbSurveyContextPopup
   end
   object OpenSurveyDialog: TJvOpenDialog
     DefaultExt = 'jsf'
@@ -865,26 +873,31 @@ object frmMain: TfrmMain
     object acCheckAll: TAction
       Category = 'Multiple'
       Caption = 'Check All'
+      ShortCut = 16449
       OnExecute = acCheckAllExecute
     end
     object acUncheckAll: TAction
       Category = 'Multiple'
       Caption = 'Uncheck All'
+      ShortCut = 16469
       OnExecute = acUncheckAllExecute
     end
     object acInvert: TAction
       Category = 'Multiple'
       Caption = 'Invert'
+      ShortCut = 16457
       OnExecute = acInvertExecute
     end
     object acCheckFirst: TAction
       Category = 'Exclusive'
       Caption = 'Check First'
+      ShortCut = 16454
       OnExecute = acCheckFirstExecute
     end
     object acCheckLast: TAction
       Category = 'Exclusive'
       Caption = 'Check Last'
+      ShortCut = 16460
       OnExecute = acCheckLastExecute
     end
     object acComment: TAction
@@ -895,27 +908,9 @@ object frmMain: TfrmMain
   object popMultiple: TPopupMenu
     Left = 300
     Top = 96
-    object CheckAll1: TMenuItem
-      Action = acCheckAll
-    end
-    object UncheckAll1: TMenuItem
-      Action = acUncheckAll
-    end
-    object N1: TMenuItem
-      Caption = '-'
-    end
-    object InvertSelection1: TMenuItem
-      Action = acInvert
-    end
   end
   object popExclusive: TPopupMenu
     Left = 390
     Top = 102
-    object Checkfirst1: TMenuItem
-      Action = acCheckFirst
-    end
-    object CheckLast1: TMenuItem
-      Action = acCheckLast
-    end
   end
 end

@@ -118,9 +118,9 @@ end;
 function DecodeChoice(const S: WideString; ASurveyType: TJvSurveyType): string;
 begin
   if ASurveyType = stFreeForm then
-    Result := StringReplace(S, '\n', #13#10, [rfReplaceAll])
+    Result := trim(StringReplace(S, '\n', #13#10, [rfReplaceAll]))
   else
-    Result := StringReplace(S, cRecordSeparator, #13#10, [rfReplaceAll])
+    Result := trim(StringReplace(S, cRecordSeparator, #13#10, [rfReplaceAll]));
 end;
 
 function EncodeChoice(const S: WideString; ASurveyType: TJvSurveyType): string;
@@ -132,9 +132,9 @@ begin
   try
     T.Text := S;
     if ASurveyType = stFreeForm then
-      Result := StringReplace(S,#13#10,'\n',[rfReplaceAll])
+      Result := StringReplace(trim(S),#13#10,'\n',[rfReplaceAll])
     else
-      Result := StringReplace(S,#13#10,cRecordSeparator,[rfReplaceAll]);
+      Result := StringReplace(trim(S),#13#10,cRecordSeparator,[rfReplaceAll]);
     if (MyAnsiLastChar(Result) = cRecordSeparator) then
       SetLength(Result, Length(Result) - 1);
   finally

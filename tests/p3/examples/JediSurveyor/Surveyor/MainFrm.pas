@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, JvScrollBox, ComCtrls, JvProgressBar,
   JvBevel, Buttons, JvBitBtn, JvFooter, JvComponent, JvSurveyIntf,
-  JvDialogs, ImgList, JvImageWindow, ActnList, JvActions, JvLinkLabel,
+  JvDialogs, JvRichEd, ImgList, JvImageWindow, ActnList, JvActions, JvLinkLabel,
   JvRadioButton, JvCheckBox, Menus;
 
 type
@@ -39,15 +39,9 @@ type
     acCheckAll: TAction;
     acUncheckAll: TAction;
     acInvert: TAction;
-    CheckAll1: TMenuItem;
-    UncheckAll1: TMenuItem;
-    N1: TMenuItem;
-    InvertSelection1: TMenuItem;
     acCheckFirst: TAction;
     acCheckLast: TAction;
     popExclusive: TPopupMenu;
-    Checkfirst1: TMenuItem;
-    CheckLast1: TMenuItem;
     btnComment: TButton;
     acComment: TAction;
     procedure FormCreate(Sender: TObject);
@@ -67,6 +61,10 @@ type
     procedure acCheckFirstExecute(Sender: TObject);
     procedure acCheckLastExecute(Sender: TObject);
     procedure acCommentExecute(Sender: TObject);
+    procedure sbSurveyContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
+    procedure FormContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
   private
     FFilename,FTempSurveyFilename: string;
     FCompletedSurvey:boolean;
@@ -122,8 +120,10 @@ resourcestring
   SEmail = '&E-mail address:';
   SSend = '&Send';
   SSaveResponseCaption = 'Save responses';
-  SSaveResponsePrompt = 'You haven''t completed the survey. Do you want to save your responses this far?';
+  SSaveResponsePrompt = 'You haven''t completed the survey. Do you want to save your responses this far (responses are saved in the original survey file)?';
   SPageOfPageFmt = 'Page %d of %d';
+  SDeleteResponseCaption = 'Delete response file';
+  SFmtDeleteResponsePrompt = 'Do you want to delete the response file (%s)?';
 
 const
   cStartOffset = 24;
@@ -275,8 +275,9 @@ end;
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   if not FCompletedSurvey and (FSurvey.Items.Count > 0) and YesNo(SSaveResponseCaption,SSaveResponsePrompt) then
-    FSurvey.SaveToFile(Filename,ffBinary);
-  DeleteFile(FTempSurveyFilename);    
+    FSurvey.SaveToFile(Filename,ffBinary)
+  else if FileExists(FTempSurveyFilename) and YesNo(SDeleteResponseCaption,Format(SFmtDeleteResponsePrompt,[FTempSurveyFilename])) then
+    DeleteFile(FTempSurveyFilename);
   SaveSettings;
   FreeEverything;
 end;
@@ -447,6 +448,8 @@ begin
         Inc(X, AWidth + cStartOffset);
       end;
       RB.Parent := sbSurvey;
+      if i = 0 then
+        ActiveControl := RB;
       Inc(j);
     end;
   finally
@@ -457,9 +460,11 @@ begin
 end;
 
 procedure TfrmMain.CreateFreeFormPage(Index:integer);
+var RE:TJvRichEdit;
 begin
   ClearScrollBox;
-  with TRichEdit.Create(self) do
+  RE := TJvRichEdit.Create(self);
+  with RE do
   begin
     Parent := sbSurvey;
     SetBounds(cStartOffset, cStartOffset,
@@ -471,6 +476,7 @@ begin
       Lines.Text := DecodeChoice(FSurvey.Items[Index].Choices,stFreeForm)
     else
       Lines.Text := DecodeResponse(FSurvey.Items[Index].Responses,stFreeForm);
+    ActiveControl := RE;
   end;
 end;
 
@@ -506,6 +512,8 @@ begin
         Inc(X, AWidth + cStartOffset);
       end;
       CB.Parent := sbSurvey;
+      if i = 0 then
+        ActiveControl := CB;
       Inc(j);
     end;
   finally
@@ -669,8 +677,21 @@ begin
       m.Tag     := integer(R);
       m.OnClick := DoExclusiveClick;
       popExclusive.Items.Add(m);
-      m.ShortCut := ShortCut(Ord('A') + popExclusive.Items.Count - 1,[ssCtrl])
+      if popExclusive.Items.Count < 10 then
+        m.ShortCut := ShortCut(Ord('0') + popExclusive.Items.Count,[ssCtrl])
     end;
+  // add standard items:
+  m := TMenuItem.Create(popExclusive);
+  m.Caption := '-';
+  popExclusive.Items.Add(m);
+
+  m := TMenuItem.Create(popExclusive);
+  m.Action := acCheckFirst;
+  popExclusive.Items.Add(m);
+
+  m := TMenuItem.Create(popExclusive);
+  m.Action := acCheckLast;
+  popExclusive.Items.Add(m);
 end;
 
 procedure TfrmMain.DoMultipleClick(Sender:TObject);
@@ -698,8 +719,29 @@ begin
       m.Tag     := integer(C);
       m.OnClick := DoMultipleClick;
       popMultiple.Items.Add(m);
-      m.ShortCut := ShortCut(Ord('A') + popMultiple.Items.Count - 1,[ssCtrl])
+      if popMultiple.Items.Count < 10 then
+        m.ShortCut := ShortCut(Ord('0') + popMultiple.Items.Count,[ssCtrl])
     end;
+  // add standard items:
+  m := TMenuItem.Create(popMultiple);
+  m.Caption := '-';
+  popMultiple.Items.Add(m);
+
+  m := TMenuItem.Create(popMultiple);
+  m.Action := acCheckAll;
+  popMultiple.Items.Add(m);
+
+  m := TMenuItem.Create(popMultiple);
+  m.Action := acUnCheckAll;
+  popMultiple.Items.Add(m);
+
+  m := TMenuItem.Create(popMultiple);
+  m.Caption := '-';
+  popMultiple.Items.Add(m);
+
+  m := TMenuItem.Create(popMultiple);
+  m.Action := acInvert;
+  popMultiple.Items.Add(m);
 end;
 
 procedure TfrmMain.acCommentExecute(Sender: TObject);
@@ -708,6 +750,27 @@ begin
   S := FSurvey.Items[FPageIndex].Comments;
   if TfrmComment.Comment(FSurvey.Items[FPageIndex].Title,S) then
       FSurvey.Items[FPageIndex].Comments := S;
+end;
+
+procedure TfrmMain.sbSurveyContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  //
+end;
+
+procedure TfrmMain.FormContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  if (PopupMenu <> nil) then
+  begin
+    if (MousePos.X < 0) or (MousePos.Y < 0) then
+      GetCursorPos(MousePos);
+    if (MousePos.X < Left) or (MousePos.X > Left + Width) or
+      (MousePos.Y < Top) or (MousePos.Y > Top + Height) then
+        MousePos := Point(Left + Width div 2, Top + Height div 2);
+    PopupMenu.Popup(MousePos.X,MousePos.Y);
+    Handled := true;
+  end;
 end;
 
 end.
