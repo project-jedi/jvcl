@@ -575,6 +575,7 @@ var
   R: TRect;
   C: TCanvas;
   LP: PLogPalette;
+  tmpPalette:HPalette;
   Size: Integer;
   img: TImage; // (p3) change to bmp?
 begin
@@ -593,7 +594,9 @@ begin
         LP^.palVersion := $300;
         LP^.palNumEntries := NumColors;
         GetSystemPaletteEntries(C.Handle, 0, NumColors, LP^.palPalEntry);
-        Img.Picture.Bitmap.Palette := CreatePalette(LP^);
+        tmpPalette := CreatePalette(LP^);
+        Img.Picture.Bitmap.Palette := tmpPalette;
+        DeleteObject(tmpPalette);
       finally
         FreeMem(LP, Size);
       end
