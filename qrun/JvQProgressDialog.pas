@@ -171,7 +171,7 @@ type
 implementation
 
 uses
-  Controls,
+  QControls,
   JvQProgressForm;
 
 constructor TJvProgressDialog.Create(AOwner: TComponent);

@@ -37,7 +37,7 @@ uses
   SysUtils, Classes,
   
   
-  QTypes, QQGraphics, QQControls, QQForms, QQStdCtrls, QQExtCtrls, QQWindows,
+  QTypes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows,
   
   JvQComponent, JvQExStdCtrls;
 
