@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, ImgList, JvImageWindow;
+  ExtCtrls, ImgList, JvImageWindow, JvComponent;
 
 type
   TForm2 = class(TForm)

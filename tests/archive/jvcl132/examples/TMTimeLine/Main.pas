@@ -214,7 +214,7 @@ end;
 // this even works with modem-connections
 procedure TfrmMain.lblWebPageClick(Sender: TObject);
 begin
-  ShellExecute(Handle,PChar('open'),PChar('http://www.peter3.com'),nil,nil,SW_SHOWNORMAL);
+  ShellExecute(Handle,PChar('open'),PChar('http://jvcl.sourceforge.net'),nil,nil,SW_SHOWNORMAL);
 end;
 
 procedure TfrmMain.btnLoadClick(Sender: TObject);
