@@ -1820,36 +1820,6 @@ const
     LogPath: 'JVCL\run'
   );
 
-function TJvImageItems.GetObjects(Index: Integer): TObject;
-begin
-
-end;
-
-procedure TJvImageItems.Move(CurIndex, NewIndex: Integer);
-begin
-
-end;
-
-procedure TJvImageItems.SetObjects(Index: Integer; const Value: TObject);
-begin
-
-end;
-
-function TJvImageItems.GetObjects(Index: Integer): TObject;
-begin
-
-end;
-
-procedure TJvImageItems.Move(CurIndex, NewIndex: Integer);
-begin
-
-end;
-
-procedure TJvImageItems.SetObjects(Index: Integer; const Value: TObject);
-begin
-
-end;
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
