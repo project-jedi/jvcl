@@ -146,7 +146,7 @@ object frmProgressDialogDemo: TfrmProgressDialogDemo
   end
   object chkShowEvents: TCheckBox
     Left = 24
-    Top = 162
+    Top = 156
     Width = 97
     Height = 17
     Hint = 'Show dialogs when events occur (in this demo only)'
@@ -169,6 +169,16 @@ object frmProgressDialogDemo: TfrmProgressDialogDemo
     Height = 17
     Caption = 'T&ransparent'
     TabOrder = 7
+  end
+  object chkShowModal: TCheckBox
+    Left = 24
+    Top = 180
+    Width = 97
+    Height = 17
+    Caption = 'Show Modal'
+    Checked = True
+    State = cbChecked
+    TabOrder = 8
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Left = 204

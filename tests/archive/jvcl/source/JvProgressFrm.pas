@@ -38,8 +38,7 @@ uses
   Classes;
 
 type
-  TJvPrivateProgressUpdate = procedure (Sender:TObject;
-    var AMin, AMax, APosition, AInterval:integer;
+  TJvPrivateProgressUpdate = procedure (Sender:TObject; var AMin, AMax, APosition, AInterval:integer;
     var ACaption,ALabel:string; AnImage:TPicture; var AContinue:boolean) of object;
   TfrmProgress = class(TForm)
     pbProgress: TProgressBar;
@@ -60,9 +59,10 @@ type
 
     procedure AdjustComponents;
     procedure RemoveCaption;
+    procedure AddCaption;
   public
     { Public declarations }
-    class function Execute(const ACaption,ALabel:string;
+    class function Execute(frm:TfrmProgress;const ACaption,ALabel:string;
       AImage:TPicture=nil;ATransparent:boolean=false;AMin:integer=0;AMax:integer=100;APosition:integer=0;AInterval:integer=200;ShowCancel:boolean=false;AOnProgress:TJvPrivateProgressUpdate=nil;AOnCancel:TNotifyEvent=nil):boolean;
     function ShowModal: Integer; override;
   end;
@@ -75,11 +75,17 @@ uses
 
 { TfrmProgress }
 
-class function TfrmProgress.Execute(const ACaption, ALabel: string;
+class function TfrmProgress.Execute(frm:TfrmProgress;const ACaption, ALabel: string;
   AImage: TPicture; ATransparent:boolean;AMin, AMax, APosition, AInterval: integer;ShowCancel:boolean;AOnProgress:TJvPrivateProgressUpdate;AOnCancel:TNotifyEvent): boolean;
-var frm:TfrmProgress;
+var DoModal:boolean;
 begin
-  frm := self.Create(Application);
+  if frm = nil then
+  begin
+    frm := self.Create(Application);
+    DoModal := true;
+  end
+  else
+    DoModal := false;
   try
     frm.Caption := ACaption;
     frm.Label1.Caption := ALabel;
@@ -94,12 +100,17 @@ begin
     frm.btnCancel.Visible := ShowCancel;
     frm.btnCancel.Caption := SCancelButton;
     frm.FOnCancel := AOnCancel;
-    if ACaption = '' then
-      frm.RemoveCaption;
     frm.AdjustComponents;
-    Result := frm.ShowModal <> mrCancel;
+    if DoModal then
+      Result := frm.ShowModal <> mrCancel
+    else
+    begin
+      Result := false;
+      frm.Show;
+    end;
   finally
-    frm.Free;
+    if DoModal then
+      FreeAndNil(frm);
   end;
 end;
 
@@ -126,28 +137,51 @@ begin
     tmProgress.Enabled := AInterval > 0;
     Caption := ACaption;
     Label1.Caption := ALabel;
+    AdjustComponents;
     Update;
   end;
   if not tmProgress.Enabled or not Result then
+  begin
     ModalResult := mrCancel;
+    Close;
+  end;
+end;
+procedure TfrmProgress.AddCaption;
+var WindowLong:Cardinal;
+begin
+  WindowLong := GetWindowLong(Handle, GWL_STYLE);
+  if WindowLong and WS_CAPTION = 0 then
+  begin
+    SetWindowLong(Handle, GWL_STYLE, WindowLong or WS_CAPTION);
+    BorderStyle := bsToolWindow;
+    Height := Height + GetSystemMetrics(SM_CYCAPTION);
+    Top := Top + GetSystemMetrics(SM_CYCAPTION);
+    Update;
+  end;
 end;
 
 procedure TfrmProgress.RemoveCaption;
+var WindowLong:Cardinal;
 begin
-  BorderStyle := bsDialog;
-  SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) and not WS_CAPTION);
-  Height := Height - GetSystemMetrics(SM_CYCAPTION);
-  Top := Top - GetSystemMetrics(SM_CYCAPTION);
+  WindowLong := GetWindowLong(Handle, GWL_STYLE);
+  if WindowLong and WS_CAPTION = WS_CAPTION then
+  begin
+    BorderStyle := bsDialog;
+    SetWindowLong(Handle, GWL_STYLE, WindowLong and not WS_CAPTION);
+    Height := Height - GetSystemMetrics(SM_CYCAPTION);
+    Top := Top - GetSystemMetrics(SM_CYCAPTION);
+    Update;
+  end;
 end;
 
 function TfrmProgress.ShowModal: Integer;
 begin
-  if not tmProgress.Enabled then
-    DoProgress; // call at least once
   // (p3) put topmost but only if not debugging
   {$IFOPT D-}
     SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
   {$ENDIF}
+  if not tmProgress.Enabled then
+    DoProgress; // call at least once
   Result := inherited ShowModal;
 end;
 
@@ -155,7 +189,10 @@ procedure TfrmProgress.tmProgressTimer(Sender: TObject);
 begin
   if FCancelled then Exit;
   if not DoProgress or not tmProgress.Enabled then
+  begin
     ModalResult := mrOk;
+    Close;
+  end;
 end;
 
 procedure TfrmProgress.btnCancelClick(Sender: TObject);
@@ -167,6 +204,7 @@ end;
 procedure TfrmProgress.AdjustComponents;
 var Offset:integer;
 begin
+  if Caption = '' then RemoveCaption else AddCaption; 
   if (imProgress.Picture = nil) or (imProgress.Picture.Graphic = nil)
     or imProgress.Picture.Graphic.Empty then
       Offset := 12
@@ -192,6 +230,7 @@ procedure TfrmProgress.DoCancel;
 begin
   if Assigned(FOnCancel) then FOnCancel(self);
   ModalResult := mrCancel;
+  Close;
 end;
 
 procedure TfrmProgress.FormPaint(Sender: TObject);
@@ -199,5 +238,6 @@ begin
   if (imProgress.Picture.Graphic <> nil) and not imProgress.Picture.Graphic.Empty then
     Canvas.Draw(imProgress.Left,imProgress.Top,imProgress.Picture.Graphic);
 end;
+
 
 end.
