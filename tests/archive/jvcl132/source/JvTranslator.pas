@@ -111,6 +111,7 @@ var
  prop: PPropInfo;
  obj: TObject;
  ok: Boolean;
+ lElem: TJvSimpleXmlElem;
 
  function AnalyseCRLF(Value: string):string;
  begin
@@ -254,13 +255,13 @@ begin
           if prop<>nil then
           begin
             obj := GetObjectProp(Component,Elem.Items[i].Name);
-            if obj is TStrings then
+            if (obj is TStrings) or (obj.ClassName='TStrings') then
               TransStrings(obj,Elem.Items[i])
-            else if obj is TTreeNodes then
+            else if (obj is TTreeNodes) or (obj.ClassName='TTreeNodes') then
               TransTreeNodes(obj,Elem.Items[i])
-            else if obj is TListColumns then
+            else if (obj is TListColumns) or (obj.ClassName='TListColumns') then
               TransColumns(obj,Elem.Items[i])
-            else if obj is TListItems then
+            else if (obj is TListItems) or (obj.ClassName='TListItems') then
               TransListItems(obj,Elem.Items[i]);
           end;
         end;
@@ -273,18 +274,16 @@ procedure TJvTranslator.Translate(const Form: TForm);
 var
  i,j: Integer;
  st: string;
+ lElem: TJvSimpleXmlElem;
 begin
   j := pos('_',Form.Name);
   if j=0 then
     st := Form.Name
   else
     st := Copy(Form.Name,1,j-1);
-  for i:=0 to FXml.Root.Items.Count-1 do
-    if FXml.Root.Items[i].Name=st then
-    begin
-      TranslateComponent(Form,FXml.Root.Items[i]);
-      Break;
-    end;
+  lElem := FXml.Root.Items.ItemNamed[st];
+  if lElem<>nil then
+    TranslateComponent(Form,lElem);
 end;
 {*******************************************************************}
 
