@@ -29,10 +29,10 @@ unit JvExDBCtrls;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, Buttons, DBCtrls,
+  Windows, Messages, Graphics, Controls, Forms, Buttons, DBCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QButtons, QDBCtrls,
+  Qt, QGraphics, QControls, QForms, QButtons, QDBCtrls,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvExControls, JvExButtons;
@@ -45,20 +45,16 @@ type
   JV_WINCONTROL_EVENTS(DBListBox)
   JV_WINCONTROL_EVENTS(DBRadioGroup)
   JV_WINCONTROL_EVENTS(DBMemo)
-  JV_WINCONTROL_EVENTS(DBImage)
-  JV_WINCONTROL_EVENTS(DBNavigator)
-  JV_WINCONTROL_EVENTS(DBLookupControl)
-  JV_WINCONTROL_EVENTS(DBLookupListBox)
-  JV_WINCONTROL_EVENTS(PopupDataList)
-  JV_WINCONTROL_EVENTS(DBLookupComboBox)
+  JV_CUSTOMCONTROL_EVENTS(DBImage)
+  JV_CUSTOMCONTROL_EVENTS(DBNavigator)
+  JV_CUSTOMCONTROL_EVENTS(DBLookupControl)
+  JV_CUSTOMCONTROL_EVENTS(DBLookupListBox)
+  JV_CUSTOMCONTROL_EVENTS(PopupDataList)
+  JV_CUSTOMCONTROL_EVENTS(DBLookupComboBox)
 {$IFDEF VCL}
   JV_WINCONTROL_EVENTS(DBRichEdit)
 {$ENDIF VCL}
-  JV_CONTROL_EVENTS_BEGIN1(NavButton, IJvSpeedButtonEvents)
-  protected
-   // TJvExSpeedButton
-    procedure ButtonPressed(Sender: TSpeedButton; GroupIndex: Integer); dynamic;
-  JV_CONTROL_EVENTS_END
+  JV_CONTROL_EVENTS_BEGIN(NavButton)
 
 implementation
 
@@ -69,36 +65,15 @@ JV_WINCONTROL_EVENTS_IMPL(DBComboBox)
 JV_WINCONTROL_EVENTS_IMPL(DBListBox)
 JV_WINCONTROL_EVENTS_IMPL(DBRadioGroup)
 JV_WINCONTROL_EVENTS_IMPL(DBMemo)
-JV_WINCONTROL_EVENTS_IMPL(DBImage)
-JV_WINCONTROL_EVENTS_IMPL(DBNavigator)
-JV_WINCONTROL_EVENTS_IMPL(DBLookupControl)
-JV_WINCONTROL_EVENTS_IMPL(DBLookupListBox)
-JV_WINCONTROL_EVENTS_IMPL(PopupDataList)
-JV_WINCONTROL_EVENTS_IMPL(DBLookupComboBox)
-JV_WINCONTROL_EVENTS_IMPL(DBRichEdit)
-
-JV_CONTROL_EVENTS_IMPLX(NavButton)
-
+JV_CUSTOMCONTROL_EVENTS_IMPL(DBImage)
+JV_CUSTOMCONTROL_EVENTS_IMPL(DBNavigator)
+JV_CUSTOMCONTROL_EVENTS_IMPL(DBLookupControl)
+JV_CUSTOMCONTROL_EVENTS_IMPL(DBLookupListBox)
+JV_CUSTOMCONTROL_EVENTS_IMPL(PopupDataList)
+JV_CUSTOMCONTROL_EVENTS_IMPL(DBLookupComboBox)
 {$IFDEF VCL}
-
-procedure TJvExNavButton.ButtonPressed(Sender: TSpeedButton;
-  GroupIndex: Integer);
-begin
-  InheritMsg(Self, CM_BUTTONPRESSED, GroupIndex, Integer(Sender));
-end;
-
-procedure TJvExNavButton.Dispatch(var Msg);
-begin
-  if not DispatchMsg(Self, Msg) then
-    case TMessage(Msg).Msg of
-      CM_BUTTONPRESSED:
-        with TMessage(Msg) do
-          ButtonPressed(TSpeedButton(LParam), WParam);
-    else
-      inherited Dispatch(Msg);
-    end;
-end;
-
+JV_WINCONTROL_EVENTS_IMPL(DBRichEdit)
 {$ENDIF VCL}
+JV_CONTROL_EVENTS_IMPL(NavButton)
 
 end.

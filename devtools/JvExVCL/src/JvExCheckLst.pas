@@ -29,10 +29,10 @@ unit JvExCheckLst;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, CheckLst,
+  Windows, Messages, Graphics, Controls, Forms, CheckLst,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QCheckLst,
+  Qt, QGraphics, QControls, QForms, QCheckLst,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvExControls;

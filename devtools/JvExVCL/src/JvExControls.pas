@@ -29,10 +29,10 @@ unit JvExControls;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, JclSysUtils,
+  Windows, Messages, Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QControls, QForms,
+  Qt, QGraphics, QControls, QWindows, QForms,  // order: QControls, QWindows
   {$ENDIF VisualCLX}
   Classes, SysUtils;
 
@@ -53,6 +53,9 @@ type
     function HitTest(X, Y: Integer): Boolean;
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
+    {$IFDEF VCL}
+    procedure SetAutoSize(Value: Boolean);
+    {$ENDIF VCL}
   end;
 
   IJvWinControlEvents = interface(IJvControlEvents)
@@ -69,8 +72,8 @@ type
   JV_WINCONTROL_EVENTS(WinControl)
 
   JV_CONTROL_EVENTS(GraphicControl)
-  JV_WINCONTROL_EVENTS(CustomControl)
-  JV_WINCONTROL_EVENTS(HintWindow)
+  JV_CUSTOMCONTROL_EVENTS(CustomControl)
+  JV_CUSTOMCONTROL_EVENTS(HintWindow)
 
 {$IFDEF VCL}
 
@@ -78,8 +81,11 @@ function ShiftStateToKeyData(Shift: TShiftState): Longint;
 
 function InheritMsg(ASelf: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
 function InheritMsg(ASelf: TControl; Msg: Integer): Integer; overload;
-function DispatchMsg(ASelf: TControl; var Msg): Boolean;
+procedure DispatchMsg(ASelf: TControl; var Msg);
 
+{$IFNDEF COMPILER6_UP}
+procedure TOpenControl_SetAutoSize(ASelf: TControl; Value: Boolean);
+{$ENDIF !COMPILER6_UP}
 {$ENDIF VCL}
 
 implementation
@@ -95,11 +101,12 @@ begin
     Result := Result or AltMask;
 end;
 
-function InheritMsg(ASelf: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
 type
-  TMessageHandler = procedure(Self: TObject; var Msg: TMessage);
+  TDisptachMethod = procedure(Self: TObject; var Msg: TMessage);
+
+function InheritMsg(ASelf: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
 var
-  Proc: TMessageHandler;
+  Proc: TDisptachMethod;
   Mesg: TMessage;
 begin
   Mesg.Msg := Msg;
@@ -116,18 +123,20 @@ begin
   Result := InheritMsg(ASelf, Msg, 0, 0);
 end;
 
-function DispatchMsg(ASelf: TControl; var Msg): Boolean;
+procedure DispatchMsg(ASelf: TControl; var Msg);
 var
   IntfControl: IJvControlEvents;
   IntfWinControl: IJvWinControlEvents;
   PMsg: PMessage;
+  CallInherited: Boolean;
 begin
+  CallInherited := True;
   PMsg := @Msg;
   { GetInterface is no problem because ASelf is a TComponent derived class that
     is not released by an interface "Release". }
   if ASelf.GetInterface(IJvControlEvents, IntfControl) then
   begin
-    Result := True;
+    CallInherited := False;
     with IntfControl do
       case PMsg^.Msg of
         CM_VISIBLECHANGED:
@@ -159,17 +168,15 @@ begin
           with TCMDialogChar(PMsg^) do
             Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
       else
-        Result := False;
+        CallInherited := True;
       end;
-  end
-  else
-    Result := False;
+  end;
 
-  if not Result then
+  if CallInherited then
   begin
     if ASelf.GetInterface(IJvWinControlEvents, IntfWinControl) then
     begin
-      Result := True;
+      CallInherited := False;
       with IntfWinControl do
         case PMsg^.Msg of
           CM_CURSORCHANGED:
@@ -189,12 +196,13 @@ begin
             else
               ControlsListChanged(TControl(PMsg^.WParam), True);
         else
-          Result := False;
+          CallInherited := True;
         end;
-    end
-    else
-      Result := False;
+    end;
   end;
+
+  if CallInherited then
+    PMsg^.Result := InheritMsg(ASelf, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
 end;
 
 {$ENDIF VCL}
@@ -205,7 +213,159 @@ JV_CONTROL_EVENTS_IMPL(Control)
 JV_WINCONTROL_EVENTS_IMPL(WinControl)
 
 JV_CONTROL_EVENTS_IMPL(GraphicControl)
-JV_WINCONTROL_EVENTS_IMPL(CustomControl)
-JV_WINCONTROL_EVENTS_IMPL(HintWindow)
+JV_CUSTOMCONTROL_EVENTS_IMPL(CustomControl)
+JV_CUSTOMCONTROL_EVENTS_IMPL(HintWindow)
 
+{$IFNDEF COMPILER6_UP}
+var
+  AutoSizeOffset: Cardinal;
+  TControl_SetAutoSize: Pointer;
+
+type
+  TOpenControl = class(TControl);
+  PBoolean = ^Boolean;
+  PPointer = ^Pointer;
+
+procedure TOpenControl_SetAutoSize(ASelf: TControl; Value: Boolean);
+begin
+  with TOpenControl(ASelf) do
+  begin
+    if AutoSize <> Value then
+    begin
+      PBoolean(Cardinal(ASelf) + AutoSizeOffset)^ := Value;
+      if Value then
+        AdjustSize;
+    end;
+  end;
+end;
+
+procedure SetAutoSizeHook(ASelf: TControl; Value: Boolean);
+var
+  IntfControl: IJvControlEvents;
+begin
+  if ASelf.GetInterface(IJvControlEvents, IntfControl) then
+    IntfControl.SetAutoSize(Value)
+  else
+    TOpenControl_SetAutoSize(ASelf, Value);
+end;
+
+type
+  TJumpCode = packed record
+    Pop: Byte; // pop xxx
+    Jmp: Byte; // jmp Offset
+    Offset: Integer;
+  end;
+
+  TRelocationRec = packed record
+    Jump: Word;
+    Address: PPointer;
+  end;
+
+var
+  SavedControlCode: TJumpCode;
+
+{$O-}
+procedure InitHookVars;
+label
+  Field, Proc, Leave;
+var
+  c: TControl;
+  b: Boolean;
+  Data: Byte;
+  Relocation: TRelocationRec;
+  n: Cardinal;
+begin
+  asm
+        MOV     EAX, OFFSET Field
+        ADD     EAX, 3
+        ADD     EAX, 2
+        XOR     EDX, EDX
+        MOV     DL, BYTE PTR [EAX]
+        MOV     [AutoSizeOffset], EDX
+
+        MOV     EAX, OFFSET Proc
+        ADD     EAX, 2
+        ADD     EAX, 3
+        ADD     EAX, 1
+        MOV     EDX, [EAX]
+        MOV     [TControl_SetAutoSize], EDX
+
+        JMP     Leave
+  end;
+
+  c := nil;
+Field:
+  b := TOpenControl(c).AutoSize;
+  if b then ;
+Proc:
+  TOpenControl(c).AutoSize := True;
+
+Leave:
+  if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(TControl_SetAutoSize)),
+     @Data, SizeOf(Data), n) then
+  begin
+    if Data = $FF then // Proc is in a dll or package
+    begin
+      if not ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(TControl_SetAutoSize)),
+        @Relocation, SizeOf(Relocation), n) then
+      TControl_SetAutoSize := Relocation.Address^;
+    end;
+  end;
+end;
+{$O+}
+
+
+procedure InstallSetAutoSizeHook;
+var
+  Code: TJumpCode;
+  P: procedure;
+  n: Cardinal;
+begin
+  InitHookVars;
+  P := TControl_SetAutoSize;
+  if Assigned(P) then
+  begin
+    if PByte(@P)^ = $53 then // push ebx
+      Code.Pop := $5B // pop ebx
+    else
+    if PByte(@P)^ = $55 then // push ebp
+      Code.Pop := $5D // pop ebp
+    else
+      Exit;
+    Code.Jmp := $E9;
+    Code.Offset := Integer(@SetAutoSizeHook) - (Integer(@P) + 1) - SizeOf(Code);
+
+    if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
+         @SavedControlCode, SizeOf(SavedControlCode), n) then
+    begin
+     { The strange thing is that WriteProcessMemory does not want @P or something
+       overrides the $e9 with a "PUSH xxx"}
+      if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1), @Code,
+           SizeOf(Code), n) then
+        FlushInstructionCache(GetCurrentProcess, @P, SizeOf(Code));
+    end;
+  end;
+end;
+
+procedure UninstallSetAutoSizeHook;
+var
+  P: procedure;
+  n: Cardinal;
+begin
+  P := TControl_SetAutoSize;
+  if Assigned(P) then
+  begin
+    if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
+         @SavedControlCode, SizeOf(SavedControlCode), n) then
+      FlushInstructionCache(GetCurrentProcess, @P, SizeOf(SavedControlCode));
+  end;
+end;
+
+initialization
+  InstallSetAutoSizeHook;
+
+finalization
+  UninstallSetAutoSizeHook;
+
+{$ENDIF !COMPILER6_UP}
 end.

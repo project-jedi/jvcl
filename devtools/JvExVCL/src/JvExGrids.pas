@@ -29,37 +29,37 @@ unit JvExGrids;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, Grids,
+  Windows, Messages, Graphics, Controls, Forms, Grids,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QGrids,
+  Qt, QGraphics, QControls, QForms, QGrids,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvExControls;
 
 type
   JV_WINCONTROL_EVENTS(InplaceEdit)
-  JV_WINCONTROL_EVENTS(CustomGrid)
+  JV_CUSTOMCONTROL_EVENTS(CustomGrid)
 {$IFDEF COMPILER6_UP}
  {$IFDEF VCL}
-  JV_WINCONTROL_EVENTS(CustomDrawGrid)
+  JV_CUSTOMCONTROL_EVENTS(CustomDrawGrid)
   JV_WINCONTROL_EVENTS(InplaceEditList)
  {$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
-  JV_WINCONTROL_EVENTS(DrawGrid)
-  JV_WINCONTROL_EVENTS(StringGrid)
+  JV_CUSTOMCONTROL_EVENTS(DrawGrid)
+  JV_CUSTOMCONTROL_EVENTS(StringGrid)
 
 implementation
 
 JV_WINCONTROL_EVENTS_IMPL(InplaceEdit)
-JV_WINCONTROL_EVENTS_IMPL(CustomGrid)
+JV_CUSTOMCONTROL_EVENTS_IMPL(CustomGrid)
 {$IFDEF COMPILER6_UP}
  {$IFDEF VCL}
-JV_WINCONTROL_EVENTS_IMPL(CustomDrawGrid)
+JV_CUSTOMCONTROL_EVENTS_IMPL(CustomDrawGrid)
 JV_WINCONTROL_EVENTS_IMPL(InplaceEditList)
  {$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
-JV_WINCONTROL_EVENTS_IMPL(DrawGrid)
-JV_WINCONTROL_EVENTS_IMPL(StringGrid)
+JV_CUSTOMCONTROL_EVENTS_IMPL(DrawGrid)
+JV_CUSTOMCONTROL_EVENTS_IMPL(StringGrid)
 
 end.

@@ -29,10 +29,10 @@ unit JvExStdCtrls;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, StdCtrls,
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls,
+  Qt, QGraphics, QControls, QForms, QStdCtrls,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvExControls;
@@ -40,8 +40,10 @@ uses
 type
   JV_WINCONTROL_EVENTS(CustomGroupBox)
   JV_WINCONTROL_EVENTS(GroupBox)
+  {$DEFINE HASAUTOSIZE}
   JV_CONTROL_EVENTS(CustomLabel)
   JV_CONTROL_EVENTS(Label)
+  {$UNDEF HASAUTOSIZE}
   JV_WINCONTROL_EVENTS(CustomEdit)
   JV_WINCONTROL_EVENTS(Edit)
   JV_WINCONTROL_EVENTS(CustomMemo)
@@ -70,8 +72,10 @@ implementation
 
 JV_WINCONTROL_EVENTS_IMPL(CustomGroupBox)
 JV_WINCONTROL_EVENTS_IMPL(GroupBox)
+{$DEFINE HASAUTOSIZE}
 JV_CONTROL_EVENTS_IMPL(CustomLabel)
 JV_CONTROL_EVENTS_IMPL(Label)
+{$UNDEF HASAUTOSIZE}
 JV_WINCONTROL_EVENTS_IMPL(CustomEdit)
 JV_WINCONTROL_EVENTS_IMPL(Edit)
 JV_WINCONTROL_EVENTS_IMPL(CustomMemo)

@@ -29,10 +29,10 @@ unit JvExForms;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms,
+  Windows, Messages, Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms,
+  Qt, QGraphics, QControls, QForms,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvExControls;
@@ -42,8 +42,8 @@ type
   JV_WINCONTROL_EVENTS(ScrollBox)
   JV_WINCONTROL_EVENTS(CustomFrame)
   JV_WINCONTROL_EVENTS(Frame)
-  JV_WINCONTROL_EVENTS(CustomForm)
-  JV_WINCONTROL_EVENTS(Form)
+  JV_CUSTOMCONTROL_EVENTS(CustomForm) // do not implement Painting()
+  JV_CUSTOMCONTROL_EVENTS(Form) // do not implement Painting()
 
 implementation
 
@@ -51,7 +51,7 @@ JV_WINCONTROL_EVENTS_IMPL(ScrollingWinControl)
 JV_WINCONTROL_EVENTS_IMPL(ScrollBox)
 JV_WINCONTROL_EVENTS_IMPL(CustomFrame)
 JV_WINCONTROL_EVENTS_IMPL(Frame)
-JV_WINCONTROL_EVENTS_IMPL(CustomForm)
-JV_WINCONTROL_EVENTS_IMPL(Form)
+JV_CUSTOMCONTROL_EVENTS_IMPL(CustomForm)
+JV_CUSTOMCONTROL_EVENTS_IMPL(Form)
 
 end.
