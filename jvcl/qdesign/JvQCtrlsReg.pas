@@ -43,18 +43,18 @@ uses
   
   QControls, QImgList, QActnList,
   
-  
-  DesignEditors, DesignIntf,
-  
-  JvQDsgnConsts,
 
-  {$IFDEF MSWINDOWS}
-  JvQUninstallControls,
-  {$ENDIF MSWINDOWS}
-  JvQDsgnIntf,
+  DesignEditors, DesignIntf,
+
 
   QTypes,
 
+  JvQDsgnConsts,
+
+  {$IFDEF MSWINDOWS}
+  JvQUninstallControls, JvQCharMap,
+  {$ENDIF MSWINDOWS}
+  JvQDsgnIntf,
   JvQZoom, JvQBehaviorLabel, JvQArrowButton, JvQaScrollText, JvQClock,
   JvQContentScroller, JvQColorBox, JvQColorButton, JvQDice, JvQFooter,
   JvQGroupHeader, JvQHint, JvQHtControls, JvQInstallLabel, JvQItemsPanel,
@@ -62,7 +62,7 @@ uses
   JvQSpeedbarSetupForm, JvQSwitch, JvQSplit, JvQSplitter, JvQSyncSplitter,
   JvQTransparentButton, JvQColorForm, JvQImageDrawThread, JvQWinampLabel,
   JvQComponentPanel, JvQButtons, JvQCaptionPanel, JvQScrollMax, JvQMovableBevel,
-  JvQComboListBox, JvQCharMap, JvQOfficeColorButton, JvQOfficeColorPanel,
+  JvQComboListBox, JvQOfficeColorButton, JvQOfficeColorPanel,
   JvQNetscapeSplitter,
   JvQDsgnEditors, JvQScrollMaxEditor, JvQBehaviorLabelEditor, JvQGroupHeaderEditor,
   JvQFooterEditor, JvQSpeedbarForm, JvQTransparentButtonEditors, JvQRollOutEditor;
@@ -90,20 +90,19 @@ begin
     TJvComponentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
     TJvHTLabel, TJvWinampLabel]);
-    
-  
   {$IFDEF MSWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
   {$ENDIF MSWINDOWS}
-  
-
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
     TJvContentScroller,
-    
     TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice, TJvCharMap]);
+  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice
+  {$IFDEF MSWINDOWS}
+  , TJvCharMap
+  {$ENDIF MSWINDOWS}
+  ]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);

@@ -38,11 +38,13 @@ Known Issues:
  ****************************************************************************}
 
 unit JvQExDBGrids;
+
 interface
+
 uses
   
   
-  Qt, QGraphics, QControls, QForms, QDBGrids, Types, QWindows,
+  Types, Qt, QGraphics, QControls, QForms, QDBGrids, QWindows,
   
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVQCLVer, JvQExControls;

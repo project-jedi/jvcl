@@ -44,7 +44,7 @@ uses
   
   
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
-  QImgList, Types, QWindows,
+  QImgList, Types, QWindows, 
   
   {$IFDEF BCB}
   JvQTypes, // TDate / TTime macros
@@ -1922,7 +1922,8 @@ end;
 
 procedure TJvCustomTimeLine.Paint;
 begin
-  if (FUpdate <> 0) or (csDestroying in ComponentState) then
+  if (FUpdate <> 0) or (csDestroying in ComponentState) or (csCreating in ControlState)
+  then
     Exit;
   DrawTimeLine(Canvas);
   if Focused then

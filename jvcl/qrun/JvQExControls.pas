@@ -37,7 +37,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvQExControls;
+
 interface
+
 uses
   {$IFDEF MSWINDOWS}
   Windows,
@@ -69,10 +71,10 @@ type
   );
   TDlgCodes = set of TDlgCode;
 
-
+  
   HWND = QWindows.HWND;
   TClxWindowProc = procedure(var Msg: TMessage) of object;
-
+  
 
 const
   dcWantMessage = dcWantAllKeys;
@@ -515,7 +517,6 @@ procedure TCustomEdit_Copy(Instance: TWinControl);
 procedure TCustomEdit_Paste(Instance: TWinControl);
 procedure TCustomEdit_Cut(Instance: TWinControl);
 
-
 implementation
 
 
@@ -644,7 +645,8 @@ begin
 
       if Instance is TCustomForm then
         // TCustomForm calls Paint in it's EventFilter
-      else if Instance is TCustomControl then
+      else
+      if Instance is TCustomControl then
         TOpenCustomControl(Instance).Paint
       else
         Intf.Paint;
@@ -712,8 +714,7 @@ function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
 
   function IsArrowKey: Boolean;
   begin
-    Result := (Key = Key_Left) or (Key = Key_Right) or
-              (Key = Key_Down) or (Key = Key_Up);
+    Result := (Key = Key_Left) or (Key = Key_Right) or (Key = Key_Down) or (Key = Key_Up);
   end;
 
 var
@@ -746,8 +747,8 @@ begin
       Result := IsArrowKey;
     if (not Result) and (dcWantChars in DlgCodes) then
       Result := ((Shift * [ssCtrl, ssAlt] = []) and
-                ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0))) and
-                not (IsTabKey or IsArrowKey);
+        ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0))) and
+        not (IsTabKey or IsArrowKey);
   end;
 end;
 
@@ -771,7 +772,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6}
+{$IFDEF _COMPILER6}
 
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}
@@ -1822,17 +1823,17 @@ var
 initialization
   InstallAppEventFilterHook;
   InstallProcHook(@TCustomForm.SetFocusedControl, @SetFocusedControlHook,
-                  @CallSetFocusedControl);
+    @CallSetFocusedControl);
 
   InstallProcHook(@TCustomEdit.CutToClipboard, @CutToClipboardHook,
-                  @CallCutToClipboard);
+    @CallCutToClipboard);
   InstallProcHook(@TCustomEdit.CopyToClipboard, @CopyToClipboardHook,
-                  @CallCopyToClipboard);
+    @CallCopyToClipboard);
   InstallProcHook(@TCustomEdit.PasteFromClipboard, @PasteFromClipboardHook,
-                  @CallPasteFromClipboard);
+    @CallPasteFromClipboard);
   
   InstallProcHook(@TCustomEdit.Undo, @UndoHook,
-                  @CallUndo);
+    @CallUndo);
   
 
 finalization

@@ -927,6 +927,7 @@ begin
     Name := TJvStoredValue(Source).Name;
     KeyString := TJvStoredValue(Source).KeyString;
   end;
+  // (rom) else inherited Assign(Source) missing?
 end;
 
 function TJvStoredValue.GetDisplayName: string;

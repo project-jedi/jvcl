@@ -421,7 +421,6 @@ end;
 
 
 
-
 procedure TPainterQBForm.qbpresetsDrawItem(Sender: TObject; Index: Integer;
   Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
 
@@ -477,7 +476,6 @@ begin
     qbpresets.Items.Delete(qbpresets.ItemIndex);
     qbpresets.Items.SaveToFile(QBFile);
   end;
-
 end;
 
 procedure TPainterQBForm.FormCreate(Sender: TObject);

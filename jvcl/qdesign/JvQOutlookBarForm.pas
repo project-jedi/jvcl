@@ -548,10 +548,11 @@ begin
 end;
 
 procedure TFrmOLBEditor.StoreSettings;
+
 var
   R: TRegIniFile;
 begin
-  R := TRegIniFile.Create;
+(*)  R := TRegIniFile.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
     R.OpenKey(GetRegPath, True);
@@ -563,12 +564,14 @@ begin
   finally
     R.Free;
   end;
+(*)
 end;
 
 procedure TFrmOLBEditor.LoadSettings;
 var
   R: TRegIniFile;
 begin
+(*)
   R := TRegIniFile.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
@@ -583,16 +586,17 @@ begin
   finally
     R.Free;
   end;
+(*)
 end;
 
-{$IFDEF MSWINDOWS}
 function TFrmOLBEditor.GetRegPath: string;
+{$IFDEF MSWINDOWS}
 const
   cRegKey = '\JVCL\OutlookBar Editor';
 begin
-  
+
   Result := Designer.GetBaseRegKey + cRegKey;
-  
+
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}

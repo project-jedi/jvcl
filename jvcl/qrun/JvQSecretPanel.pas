@@ -39,9 +39,10 @@ Known Issues:
 unit JvQSecretPanel;
 
 interface
+
 uses
-  QWindows,
-  QMessages, Classes, QControls, Types, QGraphics, QExtCtrls, QForms,
+  Windows,
+  Messages, Classes, Controls, Graphics, ExtCtrls, Forms,
   JvQTimer, JvQComponent, JvQTypes;
 
 type
@@ -51,14 +52,14 @@ type
 
   TJvSecretPanel = class(TJvCustomPanel)
   private
-    FActive: boolean;
+    FActive: Boolean;
     FAlignment: TAlignment;
     FLines: TStringList;
-    FCycled: boolean;
-    FScrollCnt: integer;
-    FMaxScroll: integer;
-    FTxtDivider: byte;
-    FFirstLine: integer;
+    FCycled: Boolean;
+    FScrollCnt: Integer;
+    FMaxScroll: Integer;
+    FTxtDivider: Byte;
+    FFirstLine: Integer;
     FTimer: TJvTimer;
     FTxtRect: TRect;
     FPaintRect: TRect;
@@ -72,15 +73,15 @@ type
     FOnPaintClient: TPanelDrawEvent;
     FOnStartPlay: TNotifyEvent;
     FOnStopPlay: TNotifyEvent;
-    FAsyncDrawing: boolean;
-    procedure SetAsyncDrawing(Value: boolean);
-    function GetInflateWidth: integer;
+    FAsyncDrawing: Boolean;
+    procedure SetAsyncDrawing(Value: Boolean);
+    function GetInflateWidth: Integer;
     function GetInterval: Cardinal;
     function GetLines: TStrings;
     procedure SetInterval(Value: Cardinal);
     procedure SetGlyph(Value: TBitmap);
     procedure SetLines(Value: TStrings);
-    procedure SetActive(Value: boolean);
+    procedure SetActive(Value: Boolean);
     procedure SetAlignment(Value: TAlignment);
     procedure SetGlyphLayout(Value: TGlyphLayout);
     procedure SetTextStyle(Value: TPanelBevel);
@@ -108,10 +109,10 @@ type
     procedure Stop;
     property Canvas;
   published
-    property AsyncDrawing: boolean read FAsyncDrawing write SetAsyncDrawing default true;
-    property Active: boolean read FActive write SetActive default false;
+    property AsyncDrawing: Boolean read FAsyncDrawing write SetAsyncDrawing default True;
+    property Active: Boolean read FActive write SetActive default False;
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
-    property Cycled: boolean read FCycled write FCycled default false;
+    property Cycled: Boolean read FCycled write FCycled default False;
     property Glyph: TBitmap read FGlyph write SetGlyph;
     property GlyphLayout: TGlyphLayout read FGlyphLayout write SetGlyphLayout
       default glGlyphLeft;
@@ -121,17 +122,17 @@ type
       default sdVertical;
     property TextStyle: TPanelBevel read FTextStyle write SetTextStyle default bvNone;
     property Anchors;
-//    property BiDiMode;
+    property BiDiMode;
     property Constraints;
-//    property DragKind;
-//    property ParentBiDiMode;
+    property DragKind;
+    property ParentBiDiMode;
     property Align;
     property BevelInner;
     property BevelOuter default bvLowered;
     property BevelWidth;
     property BorderWidth;
     property BorderStyle;
-//    property DragCursor;
+    property DragCursor;
     property DragMode;
     property Color;
     property Font;
@@ -158,19 +159,20 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnContextPopup;
-//    property OnEndDock;
-//    property OnStartDock;
+    property OnEndDock;
+    property OnStartDock;
     property OnResize;
   end;
 
 implementation
+
 uses
-  SysUtils, QConsts, Math, QActnList,
+  SysUtils, QConsts, Math, ActnList, {CommCtrl,}
   JvQConsts, JvQThemes, JvQJCLUtils, JvQJVCLUtils;
 
 const
-  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
-//  WordWraps: array[boolean] of Word = (0, DT_WORDBREAK); make Delphi 5 compiler happy // andreas
+  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+//  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK); make Delphi 5 compiler happy // andreas
 
 //=== TJvSecretPanel =========================================================
 
@@ -179,7 +181,7 @@ begin
   inherited Create(AOwner);
   FScrollCnt := 0;
   FAlignment := taCenter;
-  FActive := false;
+  FActive := False;
   FTxtDivider := 1;
   FGlyphLayout := glGlyphLeft;
   ControlStyle := ControlStyle - [csSetCaption];
@@ -193,17 +195,17 @@ begin
   FTimer := TJvTimer.Create(Self);
   with FTimer do
   begin
-    Enabled := false;
+    Enabled := False;
     OnTimer := TimerExpired;
     Interval := 30;
-    SyncEvent := false;
-    FAsyncDrawing := true;
+    SyncEvent := False;
+    FAsyncDrawing := True;
   end;
 end;
 
 destructor TJvSecretPanel.Destroy;
 begin
-  SetActive(false);
+  SetActive(False);
   FGlyph.OnChange := nil;
   FGlyph.Free;
   FLines.OnChange := nil;
@@ -255,7 +257,7 @@ begin
   end;
 end;
 
-procedure TJvSecretPanel.SetAsyncDrawing(Value: boolean);
+procedure TJvSecretPanel.SetAsyncDrawing(Value: Boolean);
 begin
   if FAsyncDrawing <> Value then
   begin
@@ -271,7 +273,7 @@ begin
     UpdateMemoryImage;
 end;
 
-function TJvSecretPanel.GetInflateWidth: integer;
+function TJvSecretPanel.GetInflateWidth: Integer;
 begin
   Result := BorderWidth;
   if BevelOuter <> bvNone then
@@ -284,8 +286,8 @@ procedure TJvSecretPanel.RecalcDrawRect;
 const
   MinOffset = 3;
 var
-  InflateWidth: integer;
-  LastLine: integer;
+  InflateWidth: Integer;
+  LastLine: Integer;
 begin
   FTxtRect := GetClientRect;
   FPaintRect := FTxtRect;
@@ -377,9 +379,9 @@ end;
 
 procedure TJvSecretPanel.PaintText;
 var
-  STmp: array[0..255] of char;
+  STmp: array [0..255] of Char;
   R: TRect;
-  I: integer;
+  I: Integer;
   Flags: Longint;
 begin
   if (Lines.Count = 0) or IsRectEmpty(FTxtRect) or not HandleAllocated then
@@ -390,8 +392,8 @@ begin
     begin
       I := SaveDC(Handle);
       try
-//        with FTxtRect do   // TODO TODO TODO
-//          MoveWindowOrg(Handle, -Left, -Top);
+        with FTxtRect do
+          MoveWindowOrg(Handle, -Left, -Top);
         Brush.Color := Self.Color;
         PaintClient(FMemoryImage.Canvas, FPaintRect);
       finally
@@ -428,8 +430,9 @@ begin
       else
         StrPLCopy(STmp, Lines[I], SizeOf(STmp) - 1);
       if R.Top >= RectHeight(FTxtRect) then
-        break
-      else if R.Bottom > 0 then
+        Break
+      else
+      if R.Bottom > 0 then
       begin
         if FTextStyle <> bvNone then
         begin
@@ -459,7 +462,7 @@ begin
     try
       BitBlt(Canvas.Handle, FTxtRect.Left, FTxtRect.Top, FMemoryImage.Width,
         FMemoryImage.Height, FMemoryImage.Canvas.Handle, 0, 0, SRCCOPY);
-//      ValidateRect(Handle, @FTxtRect);
+      ValidateRect(Handle, @FTxtRect);
     finally
       Canvas.Unlock;
     end;
@@ -480,7 +483,7 @@ procedure TJvSecretPanel.Paint;
 var
   Rect: TRect;
   TopColor, BottomColor: TColor;
-  SaveIndex: integer;
+  SaveIndex: Integer;
 
   procedure AdjustColors(Bevel: TPanelBevel);
   begin
@@ -541,7 +544,8 @@ begin
     if Assigned(FMemoryImage) then
       PaintText;
   end
-  else if Cycled then
+  else
+  if Cycled then
   begin
     FScrollCnt := 0;
     if Assigned(FMemoryImage) then
@@ -556,7 +560,7 @@ end;
 procedure TJvSecretPanel.UpdateMemoryImage;
 var
   Metrics: TTextMetric;
-  I: integer;
+  I: Integer;
 begin
   if FMemoryImage = nil then
     FMemoryImage := TBitmap.Create;
@@ -608,17 +612,17 @@ end;
 
 procedure TJvSecretPanel.Play;
 begin
-  SetActive(true);
+  SetActive(True);
 end;
 
 procedure TJvSecretPanel.Stop;
 begin
-  SetActive(false);
+  SetActive(False);
 end;
 
-procedure TJvSecretPanel.SetActive(Value: boolean);
+procedure TJvSecretPanel.SetActive(Value: Boolean);
 var
-  I: integer;
+  I: Integer;
 begin
   if Value <> FActive then
   begin
@@ -628,11 +632,11 @@ begin
       FScrollCnt := 0;
       UpdateMemoryImage;
       try
-        FTimer.Enabled := true;
+        FTimer.Enabled := True;
         StartPlay;
       except
-        FActive := false;
-        FTimer.Enabled := false;
+        FActive := False;
+        FTimer.Enabled := False;
         raise;
       end;
     end
@@ -640,14 +644,14 @@ begin
     begin
       FMemoryImage.Canvas.Lock;
       { ensure that canvas is locked before timer is disabled }
-      FTimer.Enabled := false;
+      FTimer.Enabled := False;
       FScrollCnt := 0;
       FMemoryImage.Free;
       FMemoryImage := nil;
       StopPlay;
       if (csDesigning in ComponentState) and
         not (csDestroying in ComponentState) then
-        ValidParentForm(Self).DesignerHook.Modified;
+        ValidParentForm(Self).Designer.Modified;
     end;
     if not (csDestroying in ComponentState) then
       for I := 0 to Pred(ControlCount) do
@@ -657,11 +661,12 @@ begin
           if Controls[I].Visible then
             FHiddenList.Add(Controls[I]);
           if not (csDesigning in ComponentState) then
-            Controls[I].Visible := false
+            Controls[I].Visible := False;
         end
-        else if FHiddenList.IndexOf(Controls[I]) >= 0 then
+        else
+        if FHiddenList.IndexOf(Controls[I]) >= 0 then
         begin
-          Controls[I].Visible := true;
+          Controls[I].Visible := True;
           Controls[I].Invalidate;
           if csDesigning in ComponentState then
             Controls[I].Update;

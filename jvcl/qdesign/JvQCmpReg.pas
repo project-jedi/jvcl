@@ -48,10 +48,10 @@ uses
   
   JvQDsgnConsts,
   {$IFDEF MSWINDOWS}
-  JvQCreateProcess,
+  JvQCreateProcess, JvQWinHelp,
   {$ENDIF MSWINDOWS}
   JvQAlarms, JvQConverter, JvQDataEmbedded, JvQEnterTab, JvQMergeManager,
-  JvQPageManager, JvQPatchFile, JvQStringHolder, JvQTimeLimit, JvQWinHelp,
+  JvQPageManager, JvQPatchFile, JvQStringHolder, JvQTimeLimit,
   JvQTranslator, JvQPrint, JvQEasterEgg, JvQMouseGesture, JvQLogFile,
   JvQDataEmbeddedEditor, JvQPatcherEditor, JvQProfilerForm, JvQPageManagerForm,
   JvQDsgnEditors;
@@ -70,14 +70,15 @@ begin
   GroupDescendentsWith(TJvStrHolder, TControl);
   
 
-  RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter,
+  RegisterComponents(RsPaletteNonVisual, [TJvAlarms, TJvConverter,
     TJvDataEmbedded,
-    {$IFDEF MSWINDOWS}
-    TJvCreateProcess,
-    {$ENDIF MSWINDOWS}
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
-    TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvTranslatorStrings,
+    TJvStrHolder, TJvTimeLimit, TJvTranslator, TJvTranslatorStrings,
     TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
+  {$IFDEF MSWINDOWS}
+  RegisterComponents(RsPaletteNonVisual, [TJvCreateProcess, TJvWinHelp]);
+  {$ENDIF MSWINDOWS}
+
 
   {$IFDEF MSWINDOS}
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,

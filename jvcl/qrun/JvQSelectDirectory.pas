@@ -12,7 +12,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvCommonDialogDEditor.PAS, released on 2001-02-28.
+The Original Code is: JvSelectDirectory.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -28,52 +28,65 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
+{$I crossplatform.inc}
 
-unit JvQCommonDialogDEditor;
+unit JvQSelectDirectory;
 
 interface
 
 uses
-  SysUtils,
+  Classes,
   
-  DesignEditors, DesignIntf,
   
-  JvQCommonDialogD;
+  QDialogs,
+  
+  JvQBaseDlg;
 
 type
-  TJvCommonDialogDEditor = class(TDefaultEditor)
+  { TODO -opeter3 : Rewrite to not depend on FileCtrl? }
+  TJvSelectDirectory = class(TJvCommonDialog)
+  private
+    FDirectory: string;
+    FHelpContext: Longint;
+    FInitialDir: string;
+    
+    FTitle: string;
   public
-    function GetVerbCount: Integer; override;
-    function GetVerb(Index: Integer): string; override;
-    procedure ExecuteVerb(Index: Integer); override;
+    constructor Create(AOwner: TComponent); override;
+    function Execute: Boolean; override;
+  published
+    property Directory: string read FDirectory;
+    property HelpContext: Longint read FHelpContext write FHelpContext default 0;
+    property InitialDir: string read FInitialDir write FInitialDir;
+    
+    property Title: string read FTitle write FTitle;
   end;
 
 implementation
 
-uses
-  JvQDsgnConsts;
-
-procedure TJvCommonDialogDEditor.ExecuteVerb(Index: Integer);
+constructor TJvSelectDirectory.Create(AOwner: TComponent);
 begin
-  with Component as TJvCommonDialogD do
-    case Index of
-      0:
-        Execute;
-    end;
+  inherited Create(AOwner);
+  FDirectory := '';
+  FInitialDir := '';
+  FHelpContext := 0;
+  
+  FTitle := '';
 end;
 
-function TJvCommonDialogDEditor.GetVerb(Index: Integer): string;
-begin
-  case Index of
-    0:
-      Result := RsPreviewEllipsis;
-  end;
-end;
+function TJvSelectDirectory.Execute: Boolean;
 
-function TJvCommonDialogDEditor.GetVerbCount: Integer;
+var
+  dir: WideString;
+
 begin
-  Result := 1;
+  FDirectory := InitialDir;
+  
+  
+  dir := FDirectory;
+  Result := SelectDirectory(Title, InitialDir, dir);
+  FDirectory := dir;
+  
 end;
 
 end.

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -39,19 +38,21 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-
-
-  QDialogs, QActnList, QExtDlgs,
-
+  Classes, QDialogs, QActnList, QExtDlgs,
 
   DesignEditors, DesignIntf,
 
   JvQDsgnConsts,
-  JvQBaseDlg, JvQFindReplace, JvQCommonExecDlg, JvQTipOfDay,
-  JvQActnResForm, JvQProgressComponent,
-  JvQImageDlg, JvQDualList, {JvQDSADialogs,}
-  JvQProgressDialog, JvQBaseDlgEditor, JvQTipOfDayEditor;
+
+  {$IFDEF MSWINDOWS}
+  {JvQWinDialogs, JvQAddPrinter,} JvQCommonDialogD, JvQConnectNetwork, {JvQCopyError,
+  JvQDeleteError, JvQRenameError, JvQDiskPrompt, JvQFindFiles,
+  JvQObjectPickerDialog,} JvQCommonDialogDEditor, JvQDSADialogs,
+  {$ENDIF MSWINDOWS}
+  JvQBaseDlg, JvQFindReplace, JvQTipOfDay, JvQCommonExecDlg,
+  JvQDesktopAlert, JvQProgressComponent, JvQSelectDirectory, JvQImageDlg,
+  {JvQLoginForm,} JvQDualList, JvQProgressDialog, JvQBaseDlgEditor,
+  JvQTipOfDayEditor;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDlgsReg.dcr}
@@ -61,23 +62,46 @@ uses
 {$ENDIF LINUX}
 
 procedure Register;
+const
+  cAppletName = 'AppletName';
+  cAppletIndex = 'AppletIndex';
 begin
-  RegisterComponents(RsPaletteDialog, [
-    TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog,
-    TJvDualListDialog, TJvImageDialog, TJvFindReplace, {TJvDSADialog,}
-    TJvProgressDialog, TJvProgressComponent, TJvTipOfDay]);
-  RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
+  RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog,
+    TPrinterSetupDialog]);
+  RegisterComponents(RsPaletteDialog, [TJvSelectDirectory,  TJvTipOfDay,
+    TJvFindReplace]);
+
+
+  {$IFDEF MSWINDOWS}
+  RegisterComponents(RsPaletteDialog, [TJvDSADialog, TJvConnectNetwork,
+    TJvDisconnectNetwork {, TJvAddPrinterDialog, TJvFindFilesDialog,
+    TJvFormatDriveDialog, TJvOrganizeFavoritesDialog,
+    TJvComputerNameDialog, TJvChangeIconDialog,
+    TJvShellAboutDialog, TJvRunDialog, TJvObjectPropertiesDialog,
+    TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog,
+    TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,
+    TJvObjectPickerDialog} ]);
+  {$ENDIF MSWINDOWS}
+    RegisterComponents(RsPaletteDialog, [TJvDualListDialog, TJvImageDialog, {TJvLoginDialog,}
+    TJvProgressDialog, TJvProgressComponent,
+    TJvDesktopAlert, TJvDesktopAlertStack]);
+
+
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
-//  RegisterComponentEditor(TJvOpenDialog, TJvBaseDlgEditor);
-//  RegisterComponentEditor(TJvSaveDialog, TJvBaseDlgEditor);
+
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
+  {$IFDEF _MSWINDOWS}
+  RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
+  {$ENDIF MSWINDOWS}
+  RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
+  {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
 
-
+  {$ENDIF BCB5}
 end;
 
 end.

@@ -6001,20 +6001,20 @@ begin
   end;
 end;
 
-{$IFDEF LINUX}
+{$IFDEF MSWINDOWS}
 // for Exec function
-function GetForegroundWindow: QWidgetH;
+function GetForegroundWindow: Windows.HWND;
 begin
-  Result := nil; // QWindows ShellExececute ignores handle under linux
+  Result := 0; // QWindows ShellExececute ignores handle under linux
 end;
-{$ENDIF LINUX}
+{$ENDIF MSWINDOWS}
 
 procedure Exec(FileName, Parameters, Directory: string);
 var
   Operation: string;
 begin
   Operation := 'open';
-  ShellExecute(0 {GetForegroundWindow}, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
+  ShellExecute(GetForegroundWindow, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
     SW_SHOWNORMAL);
 end;
 {$IFDEF LINUX}

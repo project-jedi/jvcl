@@ -38,7 +38,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvQExComCtrls;
+
 interface
+
 uses
   
   
@@ -62,8 +64,8 @@ uses
 
 
 type
-
-
+  
+  
   TJvExProgressBar = class(TProgressBar, IJvControlEvents, IPerformControl)
   
   
@@ -661,8 +663,8 @@ type
   
   end;
   
-
-
+  
+  
   TJvExCustomHeaderControl = class(TCustomHeaderControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   
   
@@ -737,8 +739,8 @@ type
   
   end;
   
- 
-
+  
+  
   TJvExHeaderControl = class(THeaderControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   
   
@@ -1109,7 +1111,7 @@ type
   
   end;
   
-{$IFDEF ANIMATE}
+  {$IFDEF ANIMATE}
   
   
   TJvExAnimate = class(TAnimate,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
@@ -1181,8 +1183,8 @@ type
   end;
   
   
-{$ENDIF ANIMATE}
-
+  {$ENDIF ANIMATE}
+  
 
 implementation
 
@@ -2699,7 +2701,7 @@ begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
 
- 
+
 
 
 
@@ -3522,8 +3524,8 @@ begin
 end;
 
 {$IFDEF ANIMATE}
-  
-  
+
+
 
 
 procedure TJvExAnimate.MouseEnter(Control: TControl);
@@ -3681,7 +3683,7 @@ begin
   inherited Destroy;
 end;
 
-  
+
 {$ENDIF ANIMATE}
 
 

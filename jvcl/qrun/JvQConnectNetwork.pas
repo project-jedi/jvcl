@@ -12,7 +12,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvCommonDialogDEditor.PAS, released on 2001-02-28.
+The Original Code is: JvConnectNetwork.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -30,50 +30,51 @@ Known Issues:
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
-unit JvQCommonDialogDEditor;
+unit JvQConnectNetwork;
 
 interface
 
 uses
-  SysUtils,
-  
-  DesignEditors, DesignIntf,
-  
-  JvQCommonDialogD;
+  Windows,
+  JvQBaseDlg;
 
 type
-  TJvCommonDialogDEditor = class(TDefaultEditor)
-  public
-    function GetVerbCount: Integer; override;
-    function GetVerb(Index: Integer): string; override;
-    procedure ExecuteVerb(Index: Integer); override;
+  TJvConnectNetwork = class(TJvCommonDialog)
+  published
+    function Execute: Boolean; override;
+  end;
+
+  TJvDisconnectNetwork = class(TJvCommonDialog)
+  published
+    function Execute: Boolean; override;
+  end;
+
+  TJvNetworkConnect = class(TJvCommonDialog)
+  private
+    FConnect: Boolean;
+  published
+    property Connect: Boolean read FConnect write FConnect;
+    function Execute: Boolean; override;
   end;
 
 implementation
 
-uses
-  JvQDsgnConsts;
-
-procedure TJvCommonDialogDEditor.ExecuteVerb(Index: Integer);
+function TJvConnectNetwork.Execute: Boolean;
 begin
-  with Component as TJvCommonDialogD do
-    case Index of
-      0:
-        Execute;
-    end;
+  Result := WNetConnectionDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR;
 end;
 
-function TJvCommonDialogDEditor.GetVerb(Index: Integer): string;
+function TJvDisconnectNetwork.Execute: Boolean;
 begin
-  case Index of
-    0:
-      Result := RsPreviewEllipsis;
-  end;
+  Result := WNetDisconnectDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR;
 end;
 
-function TJvCommonDialogDEditor.GetVerbCount: Integer;
+function TJvNetworkConnect.Execute: Boolean;
 begin
-  Result := 1;
+  if FConnect then
+    Result := WNetConnectionDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR
+  else
+    Result := WNetDisconnectDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR;
 end;
 
 end.

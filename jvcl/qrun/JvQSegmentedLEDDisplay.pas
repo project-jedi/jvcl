@@ -38,7 +38,11 @@ unit JvQSegmentedLEDDisplay;
 interface
 
 uses
-  Classes, Types, QGraphics, Windows,
+  Classes, Types,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  QGraphics, QWindows,
   JclBase,
   JvQComponent, JvQTypes;
 
@@ -439,6 +443,7 @@ begin
 end;
 
 procedure UnregisterModuleSegmentedLEDDigitClasses(Module: HMODULE);
+{$IFDEF MSWINDOWS}
 var
   I: Integer;
   M: TMemoryBasicInformation;
@@ -455,7 +460,12 @@ begin
     DigitClassList.UnlockList;
   end;
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+begin
 
+end;
+{$ENDIF LINUX}
 //=== Helper routine: AngleAdjustPoint =======================================
 
 function AngleAdjustPoint(X, Y, Angle: Integer): TPoint;
@@ -1164,7 +1174,7 @@ begin
         begin
           Rgn := CreatePolygonRgn(SegPts[0], Length(SegPts), WINDING);
           try
-            if Rgn <> 0 then
+            if Rgn <> nil then
               Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;
@@ -1178,7 +1188,7 @@ begin
         begin
           Rgn := CreateEllipticRgn(SegPts[0].X, SegPts[0].Y, SegPts[1].X, SegPts[1].Y);
           try
-            if Rgn <> 0 then
+            if Rgn <> nil then
               Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;

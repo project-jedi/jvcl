@@ -33,7 +33,6 @@ interface
 
 uses
   Classes, SysUtils,
-
   
   
   QStdCtrls, QExtCtrls, Types, QGraphics, QForms, QControls, QDialogs, QComCtrls,
@@ -1191,19 +1190,19 @@ begin
 
   BottomPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'BottomPanel', '', alBottom);
   if not Supports(BottomPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvRaised, 1, bsNone, 0);
 
   MainPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'MainPanel', '', alClient);
   if not Supports(MainPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvRaised, 1, bsNone, 3);
 
   ButtonPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'BottonPanel', '', alRight);
   if not Supports(ButtonPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
 
@@ -1239,7 +1238,7 @@ begin
   begin
     HistoryPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'HistoryPanel', '', alLeft);
     if not Supports(HistoryPanel, IJvDynControlPanel, ITmpPanel) then
-      raise EIntfCastError.Create(RsEIntfCastError);
+      raise EIntfCastError.CreateRes(@RsEIntfCastError);
     with ITmpPanel do
       ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
     with HistoryPanel do
@@ -1310,7 +1309,7 @@ end;
 function TJvParameterList.ShowParameterDialog: Boolean;
 begin
   if Count = 0 then
-    EJVCLException.Create(RsENoParametersDefined);
+    EJVCLException.CreateRes(@RsENoParametersDefined);
   CreateParameterDialog;
   try
     SetDataToWinControls;
@@ -1619,11 +1618,11 @@ end;
 function TJvParameterList.AddObject(const S: string; AObject: TObject): Integer;
 begin
   if not (AObject is TJvBaseParameter) then
-    raise EJVCLException.Create(RsEAddObjectWrongObjectType);
+    raise EJVCLException.CreateRes(@RsEAddObjectWrongObjectType);
   if TJvBaseParameter(AOBject).SearchName = '' then
-    raise EJVCLException.Create(RsEAddObjectSearchNameNotDefined);
+    raise EJVCLException.CreateRes(@RsEAddObjectSearchNameNotDefined);
   if IntParameterList.IndexOf(S) >= 0 then
-    raise Exception.Create(Format(RsEAddObjectDuplicateSearchNamesNotAllowed, [S]));
+    raise Exception.CreateResFmt(@RsEAddObjectDuplicateSearchNamesNotAllowed, [S]);
   TJvBaseParameter(AObject).ParameterList := Self;
   Result := FIntParameterList.AddObject(S, AObject);
 end;

@@ -38,7 +38,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvQExStdCtrls;
+
 interface
+
 uses
   
   
@@ -732,7 +734,7 @@ type
   
   end;
   
-
+  
   TJvExCustomComboBox = class(TCustomComboBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   
   
@@ -1473,7 +1475,7 @@ type
   
   end;
   
-
+  
 
 implementation
 

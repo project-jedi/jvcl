@@ -40,7 +40,9 @@ Known Issues:
 
 
 unit JvQExComboEdits;
+
 interface
+
 uses
   Qt, QGraphics, QControls, QForms, Types, QComboEdits, QWindows,
   Classes, SysUtils,

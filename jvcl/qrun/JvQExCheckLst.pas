@@ -38,11 +38,13 @@ Known Issues:
  ****************************************************************************}
 
 unit JvQExCheckLst;
+
 interface
+
 uses
   
   
-  Qt, QGraphics, QControls, QForms, QCheckLst, Types, QWindows,
+  Types, Qt, QGraphics, QControls, QForms, QCheckLst, QWindows,
   
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVQCLVer, JvQExControls;
