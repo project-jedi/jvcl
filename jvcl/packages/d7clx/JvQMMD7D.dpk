@@ -41,6 +41,7 @@ requires
 contains
   JvQMMReg in '..\..\qdesign\JvQMMReg.pas',
   JvQQtKeyEditorForm in '..\..\qdesign\JvQQtKeyEditorForm.pas' {frmJvQtKeyEditor},
-  JvQIconListForm in '..\..\qdesign\JvQIconListForm.pas';
+  JvQIconListForm in '..\..\qdesign\JvQIconListForm.pas',
+  JvQAnimatedEditor in '..\..\qdesign\JvQAnimatedEditor.pas';
 
 end.

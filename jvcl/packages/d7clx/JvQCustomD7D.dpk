@@ -29,8 +29,7 @@ package JvQCustomD7D;
 requires
   JvQCoreD7D,
   JvQCustomD7R,
-  designide,
-  dclclxstd;
+  designide;
 
 contains
   JvQCustomReg in '..\..\qdesign\JvQCustomReg.pas';

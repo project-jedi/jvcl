@@ -32,7 +32,12 @@ requires
   JvQCtrlsD7R,
   JvQSystemD7R,
   JvQCmpD7R,
-  JvQStdCtrlsD7R;
+  JvQStdCtrlsD7R,
+  rtl,
+  designide,
+  visualclx,
+  JvQCoreD7D,
+  DJcl;
 
 contains
   JvQBmpAnimator in '..\..\qrun\JvQBmpAnimator.pas',
@@ -58,6 +63,7 @@ contains
   JvQWavePlayer in '..\..\qrun\JvQWavePlayer.pas',
   JvQAni in '..\..\qrun\JvQAni.pas',
   JvQAnimate in '..\..\qrun\JvQAnimate.pas',
-  JvQAnimatedImage in '..\..\qrun\JvQAnimatedImage.pas';
+  JvQAnimatedImage in '..\..\qrun\JvQAnimatedImage.pas',
+  JvQColorTrackBar in '..\..\qrun\JvQColorTrackbar.pas';
 
 end.
