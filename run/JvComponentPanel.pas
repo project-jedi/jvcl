@@ -36,8 +36,13 @@ unit JvComponentPanel;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls,
-  ExtCtrls, Buttons,
+  {$IFDEF VCL}
+  Messages, Graphics, Controls, ExtCtrls, Buttons,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QTypes, QGraphics, QControls, QExtCtrls, QButtons,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JvButtons, JvComponent, JvTypes;
 
 type
@@ -67,8 +72,13 @@ type
     procedure BtnClick(Sender: TObject);
     procedure BtnDblClick(Sender: TObject);
     procedure MoveClick(Sender: TObject);
+    {$IFDEF VCL}
     procedure WMSetText(var Msg: TWMSetText); message WM_SETTEXT;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure SetText(const Value: TCaption); override;
+    {$ENDIF VisualCLX}
   protected
     procedure Resize; override;
   public
@@ -92,8 +102,10 @@ type
     property AutoSize;
     property BiDiMode;
     property Constraints;
+    {$IFDEF VCL}
     property UseDockManager default True;
     property DockSite;
+    {$ENDIF VCl}
     property DragKind;
     property ParentBiDiMode;
     property OnCanResize;
@@ -291,17 +303,23 @@ begin
     FOnDblClick(Sender, FButtons.IndexOf(Sender));
 end;
 
+{$IFDEF VCL}
 procedure TJvComponentPanel.WMSetText(var Msg: TWMSetText);
+{$ELSE}
+procedure TJvComponentPanel.SetText(const Value: TCaption);
+{$ENDIF VCL}
 begin
   inherited;
   Caption := '';
 end;
 
+{$IFDEF VCL}
 procedure TJvComponentPanel.WMSize(var Msg: TWMSize);
 begin
   inherited;
   Resize;
 end;
+{$ENDIF VCL}
 
 procedure TJvComponentPanel.Resize;
 var
