@@ -88,14 +88,18 @@ begin
     TJvComboListBox, TJvHTListBox, TJvHTComboBox]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
-  {$ENDIF USEWINDOWS} 
+  {$ENDIF USEWINDOWS}
 
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
-    TJvContentScroller, 
+    TJvContentScroller,
     TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice, TJvCharMap]);
+  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice
+  {$IFDEF USEWINDOWS}
+  ,TJvCharMap
+  {$ENDIF USEWINDOWS}
+  ]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
