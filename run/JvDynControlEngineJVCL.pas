@@ -620,6 +620,9 @@ type
     function ControlGetItems: TTreeNodes;
     procedure ControlSetImages(Value: TCustomImageList);
     procedure ControlSetStateImages(Value: TCustomImageList);
+    function ControlGetSelected: TTreeNode;
+    procedure ControlSetOnChange(Value: TTVChangedEvent);
+    procedure ControlSetSortType(Value: TSortType);
   end;
 
 function DynControlEngineJVCL: TJvDynControlEngine;
@@ -2482,6 +2485,22 @@ procedure TJvDynControlJVCLTreeView.ControlSetStateImages(Value: TCustomImageLis
 begin
   StateImages.Assign(Value);
 end;
+
+function TJvDynControlJVCLTreeView.ControlGetSelected: TTreeNode;
+begin
+  Result := Selected;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetOnChange(Value: TTVChangedEvent);
+begin
+  OnChange := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetSortType(Value: TSortType);
+begin
+  SortType := Value;
+end;
+
 
 //=== { TJvDynControlEngineJVCL } ============================================
 

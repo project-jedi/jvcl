@@ -379,30 +379,6 @@ type
     property VariantAsItemIndex: Boolean read FVariantAsItemIndex write FVariantAsItemIndex default False;
   end;
 
-  TJvTreeViewParameter = class(TJvBasePanelEditParameter)
-  private
-    FItems: TTreeNodes;
-    FIntTreeView: TTreeView;
-  protected
-    function GetItems: TTreeNodes; virtual;
-    procedure SetItems(Value: TTreeNodes); virtual;
-    procedure SetAsString(const Value: string); override;
-    function GetAsString: string; override;
-    procedure SetAsInteger(Value: Integer); override;
-    function GetAsInteger: Integer; override;
-    procedure SetAsVariant(Value: Variant); override;
-    function GetAsVariant: Variant; override;
-    function GetWinControlData: Variant; override;
-    procedure SetWinControlData(Value: Variant); override;
-    procedure CreateWinControl(AParameterParent: TWinControl); override;
-  public
-    constructor Create(AParameterList: TJvParameterList); override;
-    destructor Destroy; override;
-    procedure Assign(Source: TPersistent); override;
-  published
-    property Items: TTreeNodes read GetItems write SetItems;
-  end;
-
   TJvRadioGroupParameter = class(TJvListParameter)
   private
     FColumns: Integer;
@@ -1411,89 +1387,6 @@ begin
   //  IF Assigned (
   //  IF Assigned (WinControl) THEN
   //    ItemList.IndexOf (AsString) := ItemIndex;
-end;
-
-//=== { TJvTreeViewParameter } ===================================================
-
-constructor TJvTreeViewParameter.Create(AParameterList: TJvParameterList);
-begin
-  inherited Create(AParameterList);
-  FIntTreeView:= TTreeView.Create(nil);
-  FItems := TTreeNodes.Create(FIntTreeView);
-end;
-
-destructor TJvTreeViewParameter.Destroy;
-begin
-  FItems.Free;
-  FIntTreeView.Free;
-  inherited Destroy;
-end;
-
-procedure TJvTreeViewParameter.SetAsString(const Value: string);
-begin
-end;
-
-function TJvTreeViewParameter.GetAsString: string;
-begin
-  Result := '';
-end;
-
-procedure TJvTreeViewParameter.SetAsInteger(Value: Integer);
-begin
-end;
-
-function TJvTreeViewParameter.GetAsInteger: Integer;
-begin
-  Result := -1;
-end;
-
-procedure TJvTreeViewParameter.SetAsVariant(Value: Variant);
-begin
-end;
-
-function TJvTreeViewParameter.GetAsVariant: Variant;
-begin
-   Result := Null;
-end;
-
-function TJvTreeViewParameter.GetItems: TTreeNodes;
-begin
-  Result := FItems;
-end;
-
-procedure TJvTreeViewParameter.SetItems(Value: TTreeNodes);
-begin
-  FItems.Assign(Value);
-end;
-
-function TJvTreeViewParameter.GetWinControlData: Variant;
-var
-  ITmpTreeView: IJvDynControlTreeView;
-begin
-  if Supports(WinControl, IJvDynControlTreeView, ITmpTreeView) then
-//    Items := ITmpTreeView.ControlGetItems;
-end;
-
-procedure TJvTreeViewParameter.SetWinControlData(Value: Variant);
-var
-  ITmpTreeView: IJvDynControlTreeView;
-begin
-  if Supports(WinControl, IJvDynControlTreeView, ITmpTreeView) then
-//    ITmpTreeView.ControlSetItems(Items);
-end;
-
-procedure TJvTreeViewParameter.Assign(Source: TPersistent);
-begin
-  inherited Assign(Source);
-  if Source is TJvTreeViewParameter then
-  begin
-    Items.Assign(TJvTreeViewParameter(Source).Items);
-  end;
-end;
-
-procedure TJvTreeViewParameter.CreateWinControl(AParameterParent: TWinControl);
-begin
-  WinControl := DynControlEngine.CreateTreeViewControl(Self, AParameterParent, GetParameterName);
 end;
 
 
