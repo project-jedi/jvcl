@@ -49,6 +49,7 @@ description : TJvCsvDataSet in-memory-dataset component usable by any
 			more information.
 
 Known Issues and Updates:
+  Sept 26, 2003 - Obones made C++Builder fixes.
   Sept 24, 2003 - 
 	MERGE ALERT: This version is merged with Peter's version, minus 
 	his case changes, since I think they make the code less readable, 
@@ -1739,8 +1740,6 @@ begin
               aDateTime := TimeTAsciiToDateTime(TempString);
               if aDateTime <= 1.0 then
               begin
-                if Length(TempString)>0 then
-                  {aDateTime := }TimeTAsciiToDateTime(TempString);
                 Result := false; { field is NULL, no date/time value }
                 Exit;
               end;
