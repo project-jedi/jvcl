@@ -109,26 +109,10 @@ implementation
 
 uses
   Consts, Math,
-  JvJVCLUtils, JvJCLUtils, JvIconList, JvResources;
+  JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts, JvResources;
 
 { This implementation based on animated cursor editor source code
   (ANIEDIT.C, copyright (C) Microsoft Corp., 1993-1996) }
-
-const
-  FOURCC_ACON = 'ACON';
-  FOURCC_RIFF = 'RIFF';
-  FOURCC_INFO = 'INFO';
-  FOURCC_INAM = 'INAM';
-  FOURCC_IART = 'IART';
-  FOURCC_LIST = 'LIST';
-  FOURCC_anih = 'anih';
-  FOURCC_rate = 'rate';
-  FOURCC_seq  = 'seq ';
-  FOURCC_fram = 'fram';
-  FOURCC_icon = 'icon';
-
-  AF_ICON     = $00000001;
-  AF_SEQUENCE = $00000002;
 
 function PadUp(Value: Longint): Longint;
 begin

@@ -210,6 +210,22 @@ const
 const
   ROP_DSPDxax = $00E20746;
 
+const
+  FOURCC_ACON = 'ACON';
+  FOURCC_IART = 'IART';
+  FOURCC_INAM = 'INAM';
+  FOURCC_INFO = 'INFO';
+  FOURCC_LIST = 'LIST';
+  FOURCC_RIFF = 'RIFF';
+  FOURCC_anih = 'anih';
+  FOURCC_fram = 'fram';
+  FOURCC_icon = 'icon';
+  FOURCC_rate = 'rate';
+  FOURCC_seq  = 'seq ';
+
+  AF_ICON     = $00000001;
+  AF_SEQUENCE = $00000002;
+
 implementation
 
 end.

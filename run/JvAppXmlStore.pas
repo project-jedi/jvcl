@@ -92,6 +92,7 @@ uses
 const
   cNullDigit = '0';
   cCount = 'Count';
+  cEmptyPath = 'EmptyPath';
 
 function BinStrToBuf(Value: string; var Buf; BufSize: Integer): Integer;
 var
@@ -355,7 +356,7 @@ var
 begin
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
-    RefPath := 'EmptyPath';
+    RefPath := cEmptyPath;
 
   Strings.Clear;
   for I := 0 to FXml.Root.Items.Count - 1 do
@@ -389,7 +390,7 @@ begin
   PathIsList := ReportListAsValue and ListStored(Path);
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
-    RefPath := 'EmptyPath';
+    RefPath := cEmptyPath;
 
   Strings.Clear;
   for I := 0 to FXml.Root.Items.ItemNamed[RefPath].Items.Count - 1 do
@@ -415,7 +416,7 @@ var
 begin
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
-    RefPath := 'EmptyPath';
+    RefPath := cEmptyPath;
   Result := Assigned(FXml.Root.Items.ItemNamed[RefPath]);
   if Result and ListIsValue and ValueExists(RefPath, cCount) then
   begin

@@ -91,7 +91,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvConsts, JvResources;
 
 constructor TJvAni.Create;
 begin
@@ -206,20 +206,9 @@ end;
 {$ENDIF VCL}
 
 procedure TJvAni.LoadFromStream(Stream: TStream);
-const
-  an_RIFF = $46464952;  // 'RIFF'
-  an_ACON = $4E4F4341;  // 'ACON'
-  an_LIST = $5453494C;  // 'LIST'
-  an_INFO = $4F464E49;  // 'INFO'
-  an_INAM = $4D414E49;  // 'INAM'
-  an_IART = $54524149;  // 'IART'
-  an_anih = $68696E61;  // 'anih'
-  an_rate = $65746172;  // 'rate'
-  an_fram = $00617266;  // 'fram'
-  an_icon = $6E6F6369;  // 'icon'
-  an_seq = $20716573;   // 'seq '
 var
-  dw, dw2: Integer;
+  dw: Integer;
+  FourCC: TJvFourCC;
 
   procedure Error;
   begin
@@ -238,6 +227,13 @@ var
     Dec(dw, SizeOf(DWORD));
     if FImage.Read(Result, SizeOf(Result)) < SizeOf(DWORD) then
       Result := 0;
+  end;
+
+  function ReadFourCC: TJvFourCC;
+  begin
+    Dec(dw, SizeOf(TJvFourCC));
+    if FImage.Read(Result, SizeOf(Result)) < SizeOf(TJvFourCC) then
+      FillChar(Result, 0, SizeOf(TJvFourCC));
   end;
 
   function ReadString: string;
@@ -280,7 +276,7 @@ var
     i, j, k: Integer;
   begin
     for i := 0 to FHeader.dwFrames - 1 do
-      if ReadDWord <> an_icon then
+      if ReadFourCC <> FOURCC_icon then
         Error
       else
       begin
@@ -302,40 +298,46 @@ begin
   Clear;
   FImage.CopyFrom(Stream, Stream.Size - Stream.Position);
   FImage.Position := 0;
-  if ReadDWord <> an_RIFF then
+  if ReadFourCC <> FOURCC_RIFF then
     Error;
   FImage.Size := ReadDWord;
-  if ReadDWord <> an_ACON then
+  if ReadFourCC <> FOURCC_ACON then
     Error;
 
   while FImage.Position < FImage.Size do
-    case ReadDWord of
-      an_LIST:
-        begin
-          dw := ReadDWord;
-          while dw > 0 do
+  begin
+    FourCC := ReadFourCC;
+    if FourCC = FOURCC_LIST then
+    begin
+      dw := ReadDWord;
+      while dw > 0 do
+      begin
+        FourCC := ReadFourCC;
+        if FourCC = FOURCC_INAM then
+          FTitle := ReadString
+        else
+        if FourCC = FOURCC_IART then
+          FAuthor := ReadString
+        else
           begin
-            dw2 := ReadDWord;
-            case dw2 of
-              an_INAM:
-                FTitle := ReadString;
-              an_IART:
-                FAuthor := ReadString;
-            else
-              if (dw2 and $00FFFFFF) = an_fram then
-                ReadFrames;
-            end;
+            FourCC[3] := 'm';
+            if FourCC = FOURCC_fram then
+              ReadFrames;
           end;
-        end;
-      an_anih:
-        FImage.Read(FHeader, ReadDWord);
-      an_rate:
-        ReadList(FRate);
-      an_seq:
-        ReadList(FSequence);
+      end;
+    end
+    else
+    if FourCC = FOURCC_anih then
+      FImage.Read(FHeader, ReadDWord)
+    else
+    if FourCC = FOURCC_rate then
+      ReadList(FRate)
+    else
+    if FourCC = FOURCC_seq then
+      ReadList(FSequence)
     else
       FImage.Position := FImage.Position + Integer(ReadDWord);
-    end;
+  end;
 
   FNumberFrames := FHeader.dwFrames;
   FIndex := -1;
