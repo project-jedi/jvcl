@@ -1,6 +1,8 @@
 Changelog for JVCL 3.0
 ======================
 2003-10-10:
+- moved types from JvConsts to JvTypes. JvConsts does no longer depend on VCL // andreas
+- merged JvComponent and JvTypes with the JVCLX ones. // andreas
 - added JvManagedThreads donation from Erwin Molendjik // peter3
 2003-10-09:
 - added TJvImageList component ("Images and Animations" palette) // andreas
