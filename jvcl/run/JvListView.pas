@@ -154,8 +154,7 @@ var
   Point: TPoint;
 begin
   inherited;
-
-  Point := Mouse.CursorPos;
+  if (Msg.NMHdr^.hwndFrom <> Handle) or not GetCursorPos(Point) then Exit;
   Point := ScreenToClient(Point);
   with Msg, Point do
   begin
