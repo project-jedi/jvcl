@@ -13,9 +13,6 @@ object CsvDataSourceForm: TCsvDataSourceForm
   OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
-  DesignSize = (
-    802
-    611)
   PixelsPerInch = 96
   TextHeight = 13
   object Label2: TLabel
