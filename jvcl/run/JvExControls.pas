@@ -977,6 +977,7 @@ type
 procedure QClxLineEdit_copy(handle: QLineEditH); cdecl; external QtIntf name QtNamePrefix + 'QLineEdit_copy';
 procedure QClxLineEdit_cut(handle: QLineEditH); cdecl; external QtIntf name QtNamePrefix + 'QLineEdit_cut';
 procedure QClxLineEdit_insert(handle: QLineEditH; p1: PWideString); cdecl; external QtIntf name QtNamePrefix + 'QLineEdit_insert';
+{$IFEND}
 
 procedure QClxLineEdit_undo(handle: QLineEditH);
 var
@@ -992,8 +993,6 @@ begin
     QKeyEvent_destroy(Event);
   end;
 end;
-{$IFEND}
-
 {$ENDIF COMPILER6}
 
 {$ENDIF VisualCLX}
