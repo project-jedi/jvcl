@@ -62,6 +62,7 @@ const
   jctFileNameEdit = TJvDynControlType('FileNameEdit');
   jctButton = TJvDynControlType('Button');
   jctButtonEdit = TJvDynControlType('ButtonEdit');
+  jctTreeView = TJvDynControlType('TreeView');
   jctForm = TJvDynControlType('Form');
 
 type
@@ -166,6 +167,8 @@ type
     function CreateDirectoryControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string): TWinControl; virtual;
     function CreateFileNameControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
+    function CreateTreeViewControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string): TWinControl; virtual;
     function CreateButton(AOwner: TComponent; AParentControl: TWinControl;
       const AButtonName, ACaption, AHint: string;
@@ -744,6 +747,12 @@ function TJvDynControlEngine.CreateFileNameControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctFileNameEdit, AOwner, AParentControl, AControlName));
+end;
+
+function TJvDynControlEngine.CreateTreeViewControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string): TWinControl; 
+begin
+  Result := TWinControl(CreateControl(jctTreeView, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateButton(AOwner: TComponent;

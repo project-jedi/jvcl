@@ -1570,7 +1570,7 @@ begin
       if (not VarIsEmpty(Data)) and Reason.IsNotEmpty and (IEnable <> -1) then
         IEnable := 1;
       try
-        if (Reason.AsVariant = Data) and (IEnable <> -1) then
+        if (VarToStr(Reason.AsVariant) = VarToStr(Data)) and (IEnable <> -1) then
           IEnable := 1;
       except
       end;
@@ -1598,7 +1598,7 @@ begin
       if (not (VarIsEmpty(Data) or (VarToStr(Data) = ''))) and Reason.IsNotEmpty then
         IEnable := -1;
       try
-        if Reason.AsVariant = Data then
+        if VarToStr(Reason.AsVariant) = VarToStr(Data) then
           IEnable := -1;
       except
       end;
