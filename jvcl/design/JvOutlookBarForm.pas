@@ -31,8 +31,11 @@ interface
 
 uses
   SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Windows, Controls, Forms, ToolWin,
+  Controls, Forms, ToolWin,
   Menus, ActnList, ComCtrls, ImgList,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,

@@ -13,6 +13,7 @@
     <Package Name="vclsmp50" Targets="C5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="clxdesigner" Targets="allclx" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p" Condition=""/>
     <Package Name="vclsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="D6,D6p" Condition=""/>

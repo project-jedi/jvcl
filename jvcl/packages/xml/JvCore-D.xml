@@ -56,5 +56,6 @@
     <File Name="..\..\design\JvActnResForm.pas" Targets="all" Formname="JvStandardActions: TDataModule" Condition=""/>
     <File Name="..\..\design\JvBackgroundEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvBackgroundEditForm.pas" Targets="allbutclx" Formname="JvBackgroundClientsEditor" Condition=""/>
+    <File Name="..\..\qcommon\QDesignWindows.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -35,7 +35,11 @@ interface
 
 uses
   SysUtils, Classes,
-  
+
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+
   
   QControls, QForms, QToolWin,
   QMenus, QActnList, QComCtrls, QImgList,
@@ -548,7 +552,6 @@ procedure TFrmOLBEditor.StoreSettings;
 var
   R: TRegIniFile;
 begin
-(*)
   R := TRegIniFile.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
@@ -561,14 +564,12 @@ begin
   finally
     R.Free;
   end;
-(*)
 end;
 
 procedure TFrmOLBEditor.LoadSettings;
 var
   R: TRegIniFile;
 begin
-  (*)
   R := TRegIniFile.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
@@ -583,7 +584,6 @@ begin
   finally
     R.Free;
   end;
-  (*)
 end;
 
 {$IFDEF MSWINDOWS}
