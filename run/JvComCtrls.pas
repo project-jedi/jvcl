@@ -21,8 +21,7 @@ Peter Thörnqvist [peter3@peter3.com] added TJvIPAddress.AddressValues and TJvPag
 Alfi [alioscia_alessi@onde.net] alternate TJvPageControl.OwnerDraw routine
 Rudy Velthuis - ShowRange in TJvTrackBar
 
-Last Modified: 2002-06-27
-Current Version: 0.50
+Last Modified: 2004-02-27
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -44,7 +43,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Dialogs, 
-  Classes, // (ahuser) "Classes" after "Forms" due to D5 warnings
+  Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
   Menus, ComCtrls, CommCtrl, StdActns,
   JclBase,
   JvComponent, JvExControls, JvExComCtrls;
@@ -86,7 +85,7 @@ type
   TJvIPAddressRange = class(TPersistent)
   private
     FControl: TWinControl;
-    FRange: array [0..3] of TJvIPAddressMinMax;
+    FRange: array[0..3] of TJvIPAddressMinMax;
     function GetMaxRange(Index: Integer): Byte;
     function GetMinRange(Index: Integer): Byte;
     procedure SetMaxRange(const Index: Integer; const Value: Byte);
@@ -113,7 +112,7 @@ type
 
   TJvIPAddressValues = class(TPersistent)
   private
-    FValues: array [0..3] of Byte;
+    FValues: array[0..3] of Byte;
     FOnChange: TNotifyEvent;
     FOnChanging: TJvIPAddressChanging;
     function GetValue: Cardinal;
@@ -580,6 +579,10 @@ end;
 procedure TJvIPEditControlHelper.WndProc(var Msg: TMessage);
 begin
   case Msg.Msg of
+    WM_ENABLE:
+      if csDesigning in FIPAddress.ComponentState then
+        Exit;
+
     WM_DESTROY:
       Handle := 0;
 
@@ -640,6 +643,9 @@ begin
 end;
 
 procedure TJvIPAddress.CreateWnd;
+var
+  EditHandle: HWND;
+  Msg: TWMParentNotify;
 begin
   ClearEditControls;
   FChanging := True;
@@ -652,6 +658,24 @@ begin
     begin
       Perform(IPM_SETADDRESS, 0, FAddress);
       FAddressValues.Address := FAddress;
+    end;
+    if (FEditControlCount = 0) and (csDesigning in ComponentState) then
+    begin
+      // WM_PARENTNOTIFY messages are captured by the IDE starting when
+      // CreateWnd is called the second time. So we must find the edit controls
+      // ourself and simulate a WM_PARENTNOTIFY by a direct function call.
+      EditHandle := 0;
+      repeat
+        EditHandle := FindWindowEx(Handle, EditHandle, 'EDIT', nil);
+        if EditHandle <> 0 then
+        begin
+          Msg.Msg := WM_PARENTNOTIFY;
+          Msg.Event := WM_CREATE;
+          Msg.ChildID := GetDlgCtrlID(EditHandle);
+          Msg.ChildWnd := EditHandle;
+          WMParentNotify(Msg); // IDE captures WM_PARENTNOTIFY
+        end;
+      until EditHandle = 0;
     end;
   finally
     FChanging := False;
@@ -740,10 +764,9 @@ var
   I: Integer;
 begin
   inherited EnabledChanged;
-  for i := 0 to High(FEditControls) do
+ for i := 0 to High(FEditControls) do
     if (FEditControls[I] <> nil) and (FEditControls[I].Handle <> 0) then
-      EnableWindow(FEditControls[I].Handle,
-        Enabled and not (csDesigning in ComponentState));
+      EnableWindow(FEditControls[I].Handle, Enabled);
 end;
 
 procedure TJvIPAddress.CNCommand(var Msg: TWMCommand);
@@ -843,9 +866,9 @@ begin
 end;
 
 procedure TJvIPAddress.TextChanged;
-var S:string;
+var S: string;
 begin
-  inherited;
+  inherited TextChanged;
   S := Text;
   with AddressValues do
   begin
@@ -866,12 +889,13 @@ begin
              (FEditControls[FEditControlCount] <> nil) then
           begin
             FEditControls[FEditControlCount].Handle := ChildWnd;
-            EnableWindow(ChildWnd, Enabled and not (csDesigning in ComponentState));
+            EnableWindow(ChildWnd, Enabled);
             Inc(FEditControlCount);
           end;
         end;
       WM_DESTROY:
         ClearEditControls;
+
       WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN:
         Perform(Event, Value, Integer(SmallPoint(XPos, YPos)));
     end;
@@ -879,7 +903,7 @@ begin
 end;
 
 procedure TJvIPAddress.WMSetFont(var Msg: TWMSetFont);
-var                   
+var
   LF: TLogFont;
 begin
   FillChar(LF, SizeOf(TLogFont), #0);
@@ -2039,7 +2063,6 @@ procedure TJvPageControl.SetReduceMemoryUse(const Value: Boolean);
 begin
   FReduceMemoryUse := Value;
 end;
-
 
 end.
 
