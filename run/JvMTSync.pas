@@ -324,22 +324,12 @@ end;
 
 procedure TMTSimpleEvent.ResetEvent;
 begin
-  {$IFDEF MSWINDOWS}
   Windows.ResetEvent(FHandle);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QWindows.ResetEvent(FHandle);
-  {$ENDIF UNIX}
 end;
 
 procedure TMTSimpleEvent.SetEvent;
 begin
-  {$IFDEF MSWINDOWS}
   Windows.SetEvent(FHandle);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QWindows.SetEvent(FHandle);
-  {$ENDIF UNIX}
 end;
 
 {$IFDEF UNITVERSIONING}

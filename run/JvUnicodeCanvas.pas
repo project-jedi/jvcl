@@ -195,14 +195,12 @@ end;
 function TJvUnicodeCanvas.ExtTextOutW(X, Y: Integer; Options: TJvExtTextOutOptions;
   Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
 begin
-  {$IFDEF VCL}
-  Result := Windows.ExtTextOutW(Handle, X, Y, ExtTextOutOptionsToInt(Options),
-    Rect, PWideChar(Text), Length(Text), lpDx);
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Start;
-  Result := QWindows.ExtTextOutW(Handle, X, Y, ExtTextOutOptionsToInt(Options),
+  {$ENDIF VisualCLX}
+  Result := Windows.ExtTextOutW(Handle, X, Y, ExtTextOutOptionsToInt(Options),
     Rect, PWideChar(Text), Length(Text), lpDx);
+  {$IFDEF VisualCLX}
   Stop;
   {$ENDIF VisualCLX}
 end;
