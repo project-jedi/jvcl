@@ -58,8 +58,7 @@ unit JvAppStore;
 interface
 
 uses
-  Classes,
-  TypInfo,
+  Classes, TypInfo,
   JvComponent;
 
 type
@@ -95,7 +94,7 @@ type
     procedure SetFloatAsStr(Value: Boolean); virtual;
     procedure SetDefaultIfReadConvertError(Value: Boolean); virtual;
     procedure SetDefaultIfValueNotExists(Value: Boolean); virtual;
-    function IsValueListString(Value, List: string): Boolean; virtual;
+    function IsValueListString(AValue, AList: string): Boolean; virtual;
   public
     constructor Create;
     function DefaultTrueString: string;
@@ -356,16 +355,27 @@ type
       write FOnTranslatePropertyName;
   end;
 
-const
-  aptFolder = 1;
-  aptValue  = 2;
-
 implementation
 
 uses
   SysUtils,
   JclStrings, JclRTTI,
   JvPropertyStore, JvTypes;
+
+// (rom) moved to implementation
+const
+  aptFolder = 1;
+  aptValue  = 2;
+
+const
+  // (rom) this name is shared in several units and should be made global
+  cCount = 'Count';
+  cInvalidIdentifier = ' #!@not known@!# ';
+
+resourcestring
+  SInvalidBoolean = 'Invalid Boolean: ';
+  SInvalidType = 'Invalid type';
+  SUnknownBaseType = 'Unknown base type for given set';
 
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
 var
@@ -424,14 +434,11 @@ end;
 procedure CopyEnumValue(const Source; var Target; const Kind: TOrdType);
 begin
   case Kind of
-    otSByte,
-    otUByte:
+    otSByte, otUByte:
       Byte(Target) := Byte(Source);
-    otSWord,
-    otUWord:
+    otSWord, otUWord:
       Word(Target) := Word(Source);
-    otSLong,
-    otULong:
+    otSLong, otULong:
       Longword(Target) := Longword(Source);
   end;
 end;
@@ -447,15 +454,14 @@ begin
       Result := SmallInt(Value);
     otUWord:
       Result := Word(Value);
-    otSLong,
-    otULong:
+    otSLong, otULong:
       Result := LongInt(Value);
     else
       Result := -1;
   end;
 end;
 
-//===TJvCustomAppStoreOptions=======================================================================
+//=== TJvCustomAppStoreOptions ===============================================
 
 constructor TJvCustomAppStoreOptions.Create;
 begin
@@ -471,17 +477,15 @@ begin
   DefaultIfValueNotExists := True;
 end;
 
-function TJvCustomAppStoreOptions.IsValueListString(Value, List: string): Boolean;
-var
-  SL: TStringList;
+function TJvCustomAppStoreOptions.IsValueListString(AValue, AList: string): Boolean;
 begin
-  SL := TStringList.Create;
-  try
-    SL.CommaText := Uppercase(List);
-    Result := SL.IndexOf(Uppercase(Value)) >= 0;
-  finally
-    SL.Free;
-  end;
+  with TStringList.Create do
+    try
+      CommaText := Uppercase(AList);
+      Result := IndexOf(UpperCase(AValue)) >= 0;
+    finally
+      Free;
+    end;
 end;
 
 function TJvCustomAppStoreOptions.DefaultTrueString: string;
@@ -566,7 +570,7 @@ begin
   FDefaultIfValueNotExists := Value;
 end;
 
-//===TJvCustomAppStore==============================================================================
+//=== TJvCustomAppStore ======================================================
 
 constructor TJvCustomAppStore.Create(AOwner: TComponent);
 begin
@@ -587,13 +591,13 @@ end;
 
 procedure TJvCustomAppStore.SplitKeyPath(const Path: string; out Key, ValueName: string);
 var
-  AbsPath:    string;
-  IValueName: integer;
+  AbsPath: string;
+  ValueNamePos: Integer;
 begin
   AbsPath := GetAbsPath(Path);
-  IValueName := LastDelimiter('\', AbsPath);
-  Key := StrLeft(AbsPath, IValueName - 1);
-  ValueName := StrRestOf(AbsPath, IValueName + 1);
+  ValueNamePos := LastDelimiter('\', AbsPath);
+  Key := StrLeft(AbsPath, ValueNamePos - 1);
+  ValueName := StrRestOf(AbsPath, ValueNamePos + 1);
 end;
 
 function TJvCustomAppStore.GetRoot: string;
@@ -633,7 +637,7 @@ end;
 procedure TJvCustomAppStore.DeleteSLItems(Sender: TJvCustomAppStore;
   const Path: string; const First, Last: Integer);
 var
-  I: integer;
+  I: Integer;
 begin
   for I := First to Last do
     Sender.DeleteValue(Path + '\Item' + IntToStr(I));
@@ -649,7 +653,7 @@ var
 begin
   TempList := TStringList.Create;
   try
-    if (aeoValues in Options) then
+    if aeoValues in Options then
     begin
       EnumValues(SearchPath, TempList, aeoReportListAsValue in Options);
       for I := 0 to TempList.Count - 1 do
@@ -685,7 +689,7 @@ begin
           else
             Strings.AddObject(PrefixPath + TempList[I], TObject(aptFolder));
         end;
-        if (aeoRecursive in Options) then
+        if aeoRecursive in Options then
           InternalGetStoredValues(PrefixPath + TempList[I] + '\',
             SearchPath + '\' + TempList[I],
             Strings, Options);
@@ -736,25 +740,23 @@ end;
 
 function TJvCustomAppStore.ListStored(const Path: string): Boolean;
 begin
-  Result := ValueStored(Path + '\' + 'Count');
+  Result := ValueStored(Path + '\' + cCount);
 end;
 
 function TJvCustomAppStore.ReadInteger(const Path: string; Default: Integer): Integer;
 begin
   if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
-  begin
-    Result := Default;
-    Exit;
-  end;
-  try
-    Result := ReadIntegerInt(Path, Default);
-  except
-    on e: EConvertError do
-      if StoreOptions.DefaultIfReadConvertError then
-        Result := Default
-      else
-        raise;
-  end;
+    Result := Default
+  else
+    try
+      Result := ReadIntegerInt(Path, Default);
+    except
+      on E: EConvertError do
+        if StoreOptions.DefaultIfReadConvertError then
+          Result := Default
+        else
+          raise;
+    end;
 end;
 
 procedure TJvCustomAppStore.WriteInteger(const Path: string; Value: Integer);
@@ -765,32 +767,30 @@ end;
 function TJvCustomAppStore.ReadFloat(const Path: string; Default: Extended): Extended;
 begin
   if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
-  begin
-    Result := Default;
-    Exit;
-  end;
-  try
-    if StoreOptions.FloatAsString then
-      try
-        Result := StrToFloat(ReadString(Path));
-      except
-        on e: EConvertError do
-          Result := ReadFloatInt(Path, Default);
-      end
-    else
-      try
-        Result := ReadFloatInt(Path, Default);
-      except
-        on e: EConvertError do
+    Result := Default
+  else
+    try
+      if StoreOptions.FloatAsString then
+        try
           Result := StrToFloat(ReadString(Path));
-      end
-  except
-    on e: EConvertError do
-      if StoreOptions.DefaultIfReadConvertError then
-        Result := Default
+        except
+          on E: EConvertError do
+            Result := ReadFloatInt(Path, Default);
+        end
       else
-        raise;
-  end;
+        try
+          Result := ReadFloatInt(Path, Default);
+        except
+          on E: EConvertError do
+            Result := StrToFloat(ReadString(Path));
+        end
+    except
+      on E: EConvertError do
+        if StoreOptions.DefaultIfReadConvertError then
+          Result := Default
+        else
+          raise;
+    end;
 end;
 
 procedure TJvCustomAppStore.WriteFloat(const Path: string; Value: Extended);
@@ -804,19 +804,17 @@ end;
 function TJvCustomAppStore.ReadString(const Path: string; Default: string): string;
 begin
   if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
-  begin
-    Result := Default;
-    Exit;
-  end;
-  try
-    Result := ReadStringInt(Path, Default);
-  except
-    on e: EConvertError do
-      if StoreOptions.DefaultIfReadConvertError then
-        Result := Default
-      else
-        raise;
-  end;
+    Result := Default
+  else
+    try
+      Result := ReadStringInt(Path, Default);
+    except
+      on E: EConvertError do
+        if StoreOptions.DefaultIfReadConvertError then
+          Result := Default
+        else
+          raise;
+    end;
 end;
 
 procedure TJvCustomAppStore.WriteString(const Path: string; Value: string);
@@ -847,32 +845,30 @@ end;
 function TJvCustomAppStore.ReadDateTime(const Path: string; Default: TDateTime): TDateTime;
 begin
   if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
-  begin
-    Result := Default;
-    Exit;
-  end;
-  try
-    if StoreOptions.DateTimeAsString then
-      try
-        Result := StrToDateTime(ReadString(Path, DateTimeToStr(Default)));
-      except
-        on e: EConvertError do
-          Result := ReadDateTimeInt(Path, Default);
-      end
-    else
-      try
-        Result := ReadDateTimeInt(Path, Default);
-      except
-        on e: EConvertError do
+    Result := Default
+  else
+    try
+      if StoreOptions.DateTimeAsString then
+        try
           Result := StrToDateTime(ReadString(Path, DateTimeToStr(Default)));
-      end
-  except
-    on e: EConvertError do
-      if StoreOptions.DefaultIfReadConvertError then
-        Result := Default
+        except
+          on E: EConvertError do
+            Result := ReadDateTimeInt(Path, Default);
+        end
       else
-        raise;
-  end;
+        try
+          Result := ReadDateTimeInt(Path, Default);
+        except
+          on E: EConvertError do
+            Result := StrToDateTime(ReadString(Path, DateTimeToStr(Default)));
+        end
+    except
+      on E: EConvertError do
+        if StoreOptions.DefaultIfReadConvertError then
+          Result := Default
+        else
+          raise;
+    end;
 end;
 
 procedure TJvCustomAppStore.WriteDateTime(const Path: string; Value: TDateTime);
@@ -891,10 +887,11 @@ begin
   Value := ReadInteger(Path, Ord(Default));
   if Value = Ord(True) then
     Result := True
-  else if Value = Ord(False) then
+  else
+  if Value = Ord(False) then
     Result := False
   else
-    EConvertError.Create('Invalid Boolean : ' + IntToStr(Value));
+    EConvertError.Create(SInvalidBoolean + IntToStr(Value));
 end;
 
 procedure TJvCustomAppStore.WriteBooleanInt(const Path: string; Value: Boolean);
@@ -907,30 +904,29 @@ var
   Value: string;
 begin
   if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
-  begin
-    Result := Default;
-    Exit;
-  end;
-  try
-    if StoreOptions.BooleanAsString then
-    begin
-      Value := ReadString(Path);
-      if StoreOptions.IsValueTrueString(Value) then
-        Result := true
-      else if StoreOptions.IsValueFalseString(Value) then
-        Result := false
+    Result := Default
+  else
+    try
+      if StoreOptions.BooleanAsString then
+      begin
+        Value := ReadString(Path);
+        if StoreOptions.IsValueTrueString(Value) then
+          Result := True
+        else
+        if StoreOptions.IsValueFalseString(Value) then
+          Result := False
+        else
+          Result := ReadBooleanInt(Path, Default);
+      end
       else
         Result := ReadBooleanInt(Path, Default);
-    end
-    else
-      Result := ReadBooleanInt(Path, Default);
-  except
-    on e: EConvertError do
-      if StoreOptions.DefaultIfReadConvertError then
-        Result := Default
-      else
-        raise;
-  end;
+    except
+      on E: EConvertError do
+        if StoreOptions.DefaultIfReadConvertError then
+          Result := Default
+        else
+          raise;
+    end;
 end;
 
 procedure TJvCustomAppStore.WriteBoolean(const Path: string; Value: Boolean);
@@ -949,7 +945,7 @@ function TJvCustomAppStore.ReadList(const Path: string;
 var
   I: Integer;
 begin
-  Result := ReadInteger(Path + '\Count');
+  Result := ReadInteger(Path + '\' + cCount);
   for I := 0 to Result - 1 do
     OnReadItem(Self, Path, I);
 end;
@@ -960,8 +956,8 @@ var
   PrevListCount: Integer;
   I: Integer;
 begin
-  PrevListCount := ReadInteger(Path + '\Count');
-  WriteInteger(Path + '\Count', ItemCount);
+  PrevListCount := ReadInteger(Path + '\' + cCount);
+  WriteInteger(Path + '\' + cCount, ItemCount);
   for I := 0 to ItemCount - 1 do
     OnWriteItem(Self, Path, I);
   if (PrevListCount > ItemCount) and Assigned(OnDeleteItems) then
@@ -974,7 +970,7 @@ begin
   if ClearFirst then
     SL.Clear;
   FStoreSL := SL;
-  Result   := ReadList(Path, ReadSLItem);
+  Result := ReadList(Path, ReadSLItem);
 end;
 
 procedure TJvCustomAppStore.WriteStringList(const Path: string; const SL: TStrings);
@@ -994,7 +990,7 @@ begin
   OrdValue := 0;
   CopyEnumValue(Default, OrdValue, GetTypeData(TypeInfo).OrdType);
   if (TypeInfo = System.TypeInfo(Boolean)) or ((TypeInfo.Kind = tkEnumeration) and
-      (GetTypeData(GetTypeData(TypeInfo).BaseType^).MinValue < 0)) then
+    (GetTypeData(GetTypeData(TypeInfo).BaseType^).MinValue < 0)) then
     OrdValue := Ord(ReadBoolean(Path, OrdValue <> 0))
   else
   begin
@@ -1009,7 +1005,7 @@ begin
         { Could be stored as a normal int or as an identifier. Try identifier first as that will
           not raise an exception }
         Conv := FindIdentToInt(TypeInfo);
-        if @Conv <> nil then
+        if Assigned(Conv) then
         begin
           TmpDefReadError := StoreOptions.DefaultIfReadConvertError;
           StoreOptions.DefaultIfReadConvertError := True;
@@ -1018,21 +1014,22 @@ begin
           finally
             StoreOptions.DefaultIfReadConvertError := TmpDefReadError;
           end;
-          if (S = '') or not (Conv(S, OrdValue)) then
+          if (S = '') or not Conv(S, OrdValue) then
             OrdValue := ReadInteger(Path, OrdValue);
         end
         else
           OrdValue := ReadInteger(Path, OrdValue);
       end
-      else if TypeInfo.Kind = tkEnumeration then
+      else
+      if TypeInfo.Kind = tkEnumeration then
       begin
         // Usage of an invalid identifier to signal the value does not exist
-        OrdValue := GetEnumValue(TypeInfo, ReadString(Path, ' #!@not known@!# '));
+        OrdValue := GetEnumValue(TypeInfo, ReadString(Path, cInvalidIdentifier));
         if OrdValue = -1 then
           OrdValue := ReadInteger(Path, OrdValue);
       end
       else
-        raise EJVCLException.Create('Invalid type.');
+        raise EJVCLException.Create(SInvalidType);
     except
       on E: EConvertError do
         if StoreOptions.DefaultIfReadConvertError then
@@ -1062,7 +1059,7 @@ begin
     if StoreOptions.TypedIntegerAsString then
     begin
       Conv := FindIntToIdent(TypeInfo);
-      if (@Conv <> nil) and Conv(OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType), S) then
+      if Assigned(Conv) and Conv(OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType), S) then
         WriteString(Path, S)
       else
         WriteInteger(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
@@ -1079,7 +1076,7 @@ begin
       WriteInteger(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
   end
   else
-    raise EJVCLException.Create('Invalid type.');
+    raise EJVCLException.Create(SInvalidType);
 end;
 
 procedure TJvCustomAppStore.ReadSet(const Path: string; const ATypeInfo: PTypeInfo; const Default;
@@ -1118,8 +1115,8 @@ begin
                   Lst.Add(IntToStr(I));
               (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
             end;
-          else
-            raise EJVCLException.Create('Unknown base type for given set.');
+        else
+          raise EJVCLException.Create(SUnknownBaseType);
         end;
       end;
     finally
@@ -1154,10 +1151,8 @@ begin
                     Lst.IndexOf(GetNames(I)) > - 1);
             end;
           tkChar:
-            begin
-              for I := GetMinValue to GetMaxValue do
-                WriteBoolean(ConcatPaths([Path, GetCharName(Chr(I))]), I in TIntegerSet(Value));
-            end;
+            for I := GetMinValue to GetMaxValue do
+              WriteBoolean(ConcatPaths([Path, GetCharName(Chr(I))]), I in TIntegerSet(Value));
           tkInteger:
             begin
               (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).GetAsList(Value, False, Lst);
@@ -1165,8 +1160,8 @@ begin
                 WriteBoolean(ConcatPaths([Path, GetIntName(I)]),
                   Lst.IndexOf(IntToStr(I)) > - 1);
             end;
-          else
-            raise EJVCLException.Create('Unknown base type for given set.');
+        else
+          raise EJVCLException.Create(SUnknownBaseType);
         end;
       end;
     finally
@@ -1219,9 +1214,7 @@ begin
     KeyName := TranslatePropertyName(PersObj, PropName, True);
     PropPath := ConcatPaths([Path, KeyName]);
     case PropType(PersObj, PropName) of
-      tkLString,
-      tkWString,
-      tkString:
+      tkLString, tkWString, tkString:
         SetStrProp(PersObj, PropName, ReadString(PropPath, GetStrProp(PersObj, PropName)));
       tkEnumeration:
         begin
@@ -1235,8 +1228,7 @@ begin
           ReadSet(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
           SetOrdProp(PersObj, PropName, TmpValue);
         end;
-      tkChar,
-      tkInteger:
+      tkChar, tkInteger:
         begin
           TmpValue := GetOrdProp(PersObj, PropName);
           ReadEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
@@ -1254,12 +1246,10 @@ begin
             ReadStringList(PropPath, TStrings(SubObj), ClearFirst)
           else
           if (SubObj is TPersistent) and Recursive then
-          begin
             if SubObj is TJvCustomPropertyStore then
               TJvCustomPropertyStore(SubObj).LoadProperties
             else
               ReadPersistent(PropPath, TPersistent(SubObj), True, ClearFirst);
-          end;
         end;
     end;
   end;
@@ -1284,9 +1274,7 @@ begin
     PropPath := ConcatPaths([Path, KeyName]);
     if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
       case PropType(PersObj, PropName) of
-        tkLString,
-        tkWString,
-        tkString:
+        tkLString, tkWString, tkString:
           WriteString(PropPath, GetStrProp(PersObj, PropName));
         tkEnumeration:
           begin
@@ -1298,8 +1286,7 @@ begin
             TmpValue := GetOrdProp(PersObj, PropName);
             WriteSet(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
           end;
-        tkChar,
-        tkInteger:
+        tkChar, tkInteger:
           begin
             if StoreOptions.TypedIntegerAsString then
             begin
@@ -1314,19 +1301,17 @@ begin
         tkFloat:
           WriteFloat(PropPath, GetFloatProp(PersObj, PropName));
         tkClass:
-        begin
-          SubObj := GetObjectProp(PersObj, PropName);
-          if SubObj is TStrings then
-            WriteStringList(PropPath, TStrings(SubObj))
-          else
-          if (SubObj is TPersistent) and Recursive then
           begin
-            if SubObj is TJvCustomPropertyStore then
-              TJvCustomPropertyStore(SubObj).StoreProperties
+            SubObj := GetObjectProp(PersObj, PropName);
+            if SubObj is TStrings then
+              WriteStringList(PropPath, TStrings(SubObj))
             else
-              WritePersistent(PropPath, TPersistent(SubObj), True, IgnoreProperties);
+            if (SubObj is TPersistent) and Recursive then
+              if SubObj is TJvCustomPropertyStore then
+                TJvCustomPropertyStore(SubObj).StoreProperties
+              else
+                WritePersistent(PropPath, TPersistent(SubObj), True, IgnoreProperties);
           end;
-        end;
       end;
   end;
 end;
@@ -1365,8 +1350,7 @@ begin
       InternalGetStoredValues('', SearchPath, Strings, Options)
     else
       InternalGetStoredValues(OptimizePaths([Self.Path, SearchPath]) +
-        '\', SearchPath, Strings,
-        Options);
+        '\', SearchPath, Strings, Options);
     I := Strings.IndexOf(OptimizePaths([Self.Path, SearchPath]));
     if I > -1 then
       Strings.Delete(I);
