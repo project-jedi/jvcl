@@ -91,6 +91,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Loaded; override;
     procedure GetColors; virtual;
     procedure GetCustomColors(AList: TList);
     // Returns the current name for AColor. Note that this implicitly might call the
@@ -1083,6 +1084,15 @@ end;
 procedure TJvColorComboBox.DoNameMapChange(Sender: TObject);
 begin
   Invalidate;
+end;
+
+procedure TJvColorComboBox.Loaded;
+begin
+  inherited;
+  inherited;
+  HandleNeeded;
+  if HandleAllocated then
+    GetColors;
 end;
 
 end.
