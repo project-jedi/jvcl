@@ -21,7 +21,7 @@
       ..\..\dcu\JvRegistryTreeview.obj ..\..\dcu\JvRollOut.obj 
       ..\..\dcu\JvScrollMax.obj ..\..\dcu\JvScrollPanel.obj 
       ..\..\dcu\JvScrollText.obj ..\..\dcu\JvSpacer.obj ..\..\dcu\JvSpeedbar.obj 
-      ..\..\dcu\JvSpeedbarSetupForm.obj ..\..\dcu\JvSplit.obj 
+      ..\..\dcu\JvSpeedbarSetupForm.obj ..\..\dcu\JvSplit.obj
       ..\..\dcu\JvSplitter.obj ..\..\dcu\JvSwitch.obj 
       ..\..\dcu\JvSyncSplitter.obj ..\..\dcu\JvTransparentButton.obj 
       ..\..\dcu\JvUninstallControls.obj ..\..\dcu\JvWinampLabel.obj 
@@ -30,7 +30,7 @@
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
-    <RESDEPEN value="$(RESFILES) ..\..\run\JvColorForm.dfm ..\..\run\JvSpeedbarSetupForm.dfm"/>
+    <RESDEPEN value="$(RESFILES) ..\..\run\JvSpeedbarSetupForm.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
@@ -47,7 +47,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvCtrlsC6R.cpp"/>
     <INCLUDEPATH value="..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\dcu;..\..\resources;..\..\run;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;$(PATH)"/>
+    <LIBPATH value="..\..\dcu;..\..\resources;..\..\run;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -56,7 +56,7 @@
       -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M -U&quot;$(PATH)&quot;"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-I..\..\dcu -D&quot;JVCL Controls Runtime Package&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi 
@@ -84,7 +84,7 @@
       <FILE FILENAME="..\..\run\JvClock.pas" FORMNAME="" UNITNAME="JvClock" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvColorBox.pas" FORMNAME="" UNITNAME="JvColorBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvColorButton.pas" FORMNAME="" UNITNAME="JvColorButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvColorForm.pas" FORMNAME="JvClrFrm" UNITNAME="JvColorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvColorForm.pas" FORMNAME="" UNITNAME="JvColorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvComboListBox.pas" FORMNAME="" UNITNAME="JvComboListBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvComponentPanel.pas" FORMNAME="" UNITNAME="JvComponentPanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvContentScroller.pas" FORMNAME="" UNITNAME="JvContentScroller" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
