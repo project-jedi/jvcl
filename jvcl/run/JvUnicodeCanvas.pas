@@ -31,18 +31,18 @@ unit JvUnicodeCanvas;
 interface
 
 uses
-  SysUtils,
+  SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, Types, QGraphics,
   {$ENDIF VisualCLX}
-  Classes, JvClxUtils, JvJCLUtils;
+  JvClxUtils, JvJCLUtils;
 
 type
-  TJvExtTextOutOptionsType = (etoClipped, etoOpaque);
-  TJvExtTextOutOptions = Set of TJvExtTextOutOptionsType;
+  TJvExtTextOutOptionsKind = (etoClipped, etoOpaque);
+  TJvExtTextOutOptions = set of TJvExtTextOutOptionsKind;
 
   { This Canvas has no new fields and can be type-casted form every TCanvas
     derived class. }
@@ -57,7 +57,7 @@ type
       const Text: WideString; lpDx: Pointer): Boolean;
 
     function ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions; Rect: PRect;
-      const Text: String; lpDx: Pointer): Boolean;
+      const Text: string; lpDx: Pointer): Boolean;
 
     {$IFDEF VisualCLX}
     procedure TextOutVCL(X, Y: Integer; const Text: WideString);
@@ -81,13 +81,14 @@ end;
 
 function TJvUnicodeCanvas.TextExtentW(const Text: WideString): TSize;
 begin
-  Result.cX := 0;
-  Result.cY := 0;
+  Result.cx := 0;
+  Result.cy := 0;
   Windows.GetTextExtentPoint32W(Handle, PWideChar(Text), Length(Text), Result);
 end;
 
 procedure TJvUnicodeCanvas.TextOutW(X, Y: Integer; const Text: WideString);
-var W: Integer;
+var
+  W: Integer;
 begin
   Changing;
   W := TextWidth(Text);
@@ -139,7 +140,7 @@ end;
 
 procedure TJvUnicodeCanvas.TextOutW(X, Y: Integer; const Text: WideString);
 begin
-  TextOutVCL( X, Y, Text);
+  TextOutVCL(X, Y, Text);
 end;
 
 procedure TJvUnicodeCanvas.TextRectW(Rect: TRect; X, Y: Integer;
@@ -178,7 +179,7 @@ end;
 {$ENDIF VisualCLX}
 
 function TJvUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions; Rect: PRect;
-  const Text: String; lpDx: Pointer): Boolean;
+  const Text: string; lpDx: Pointer): Boolean;
 begin
   Result := ClxExtTextOut(Self, X, Y, ExtTextOutOptionsToInt(Options), Rect, Text, lpDx);
 end;

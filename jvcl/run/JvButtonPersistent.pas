@@ -66,15 +66,15 @@ type
     // (rom) added because FFont has to be freed
     destructor Destroy; override;
   published
-    property Enabled: Boolean read FEnabled write SetEnabled default True;
-    property Visible: Boolean read FVisible write SetVisible default True;
     property Caption: string read FCaption write SetCaption;
+    property Enabled: Boolean read FEnabled write SetEnabled default True;
     property Flat: Boolean read FFlat write SetFlat default True;
+    property Hint: string read FHint write SetHint;
     property HotTrack: Boolean read FFontEffect write SetFontEffect default True;
     property HotTrackFont: TFont read FFont write SetFont;
-    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions;
-    property Hint: string read FHint write SetHint;
+    property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions;
     property ShowHint: Boolean read FShowHint write SetShowHint;
+    property Visible: Boolean read FVisible write SetVisible default True;
   end;
 
 implementation
@@ -94,6 +94,7 @@ begin
   FFont.Free;
   inherited Destroy;
 end;
+
 type
   TAccessButton = class(TJvCustomButton);
 
@@ -212,8 +213,7 @@ begin
   end;
 end;
 
-procedure TJvButtonPersistent.SetHotTrackFontOptions(
-  const Value: TJvTrackFontOptions);
+procedure TJvButtonPersistent.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
 begin
   if FHotTrackFontOptions <> Value then
   begin
