@@ -137,7 +137,7 @@
       - do not show own class for TControl selection in property.
         make sure that you set ComponentIndex to DisplayIndex
 
-    Feb 8, 2004, Olivier Sannier obones att meloo dott com
+    Feb 8, 2004, Olivier Sannier obones att altern dott org
       - Introduced the TJvTypeInfoHelper class to help C++ Builder
         users to get Type Information
       - Corrected heaps of C++ Builder compatibility problems, especially

@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
   Michael Beck [mbeck att bigfoot dott com].
-  Olivier Sannier [obones att meloo dott com].
+  Olivier Sannier [obones att altern dott org].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

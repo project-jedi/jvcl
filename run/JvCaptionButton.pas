@@ -21,7 +21,7 @@ All Rights Reserved.
 Contributor(s):
   Andrei Prygounkov <a dot prygounkov at gmx dot de>, author of TJvaCaptionButton.
   Remko Bonte [remkobonte at myrealbox dot com], theme support, actions
-  Olivier Sannier [obones at meloo dot com], caption hints.
+  Olivier Sannier [obones att altern dott org], caption hints.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
