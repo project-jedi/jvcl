@@ -1574,13 +1574,20 @@ end;
 procedure TJvCustomSpinEdit.DataChanged;
 var
   EditFormat: string;
+  WasModified: Boolean;
 begin
   if (ValueType = vtFloat) and FFocused and (FDisplayFormat <> EmptyStr) then
   begin
     EditFormat := '0';
     if FDecimal > 0 then
       EditFormat := EditFormat + '.' + MakeStr('#', FDecimal);
-    EditText := FormatFloat(EditFormat, Value);
+    { Changing EditText sets Modified to false }
+    WasModified := Modified;
+    try
+      EditText := FormatFloat(EditFormat, Value);
+    finally
+      Modified := WasModified;
+    end;
   end;
 end;
 
@@ -2255,26 +2262,34 @@ end;
 procedure TJvSpinEdit.SetValue(NewValue: Extended);
 var
   FloatFormat: TFloatFormat;
+  WasModified: Boolean;
 begin
   if Thousands then
     FloatFormat := ffNumber
   else
     FloatFormat := ffFixed;
 
-  case ValueType of
-    vtFloat:
-      if FDisplayFormat <> EmptyStr then
-        Text := FormatFloat(FDisplayFormat, CheckValue(NewValue))
-      else
-        Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, FDecimal);
-    vtHex:
-      if ValueType = vtHex then
-        Text := IntToHex(Round(CheckValue(NewValue)), 1);
-  else {vtInteger}
-    //Text := IntToStr(Round(CheckValue(NewValue)));
-    Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, 0);
+  { Changing EditText sets Modified to false }
+  WasModified := Modified;
+  try
+    case ValueType of
+      vtFloat:
+        { (rb) EmptyStr is for backwards compatibility, remove }
+        if FDisplayFormat <> EmptyStr then
+          Text := FormatFloat(FDisplayFormat, CheckValue(NewValue))
+        else
+          Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, FDecimal);
+      vtHex:
+        if ValueType = vtHex then
+          Text := IntToHex(Round(CheckValue(NewValue)), 1);
+    else {vtInteger}
+      //Text := IntToStr(Round(CheckValue(NewValue)));
+      Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, 0);
+    end;
+    DataChanged;
+  finally
+    Modified := WasModified;
   end;
-  DataChanged;
 end;
 
 end.
