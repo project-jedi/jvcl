@@ -149,6 +149,9 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
+{$IFDEF JVCLThemesEnabled}
+    property ParentBackground;
+{$ENDIF}
   end;
 
 implementation
@@ -162,6 +165,7 @@ constructor TJvItemsPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csSetCaption];
+  IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
   BevelInner := bvNone;
   BevelOuter := bvNone;
   FItemHeight := 16;
@@ -189,8 +193,9 @@ var
   I, Rest: Integer;
   R: TRect;
 begin
-  inherited Paint;
-  Canvas.FillRect(ClientRect);
+//  inherited Paint;
+  Canvas.Brush.Color := Self.Color;
+  DrawThemedBackground(Self, Canvas, ClientRect);
   if FItems.Count = 0 then
     Exit;
   Rest := 0;
