@@ -37,7 +37,7 @@ uses
 
 type
   TJvClipBoardCommand = (caCopy, caCut, caPaste, caUndo);
-  TJvClipBoardCommands = set of TJvClipBoardCommand;
+  TJvClipboardCommands = set of TJvClipBoardCommand;
 
   TJvComponent = class(TComponent)
   private

@@ -72,7 +72,7 @@ type
     FCaret: TJvCaret;
     FHideCaret: Boolean;
     FOrigLines: TStrings;
-    FClipboardCommands: TJvClipBoardCommands;
+    FClipboardCommands: TJvClipboardCommands;
     procedure SetHotTrack(const Value: Boolean);
     procedure CaretChanged(Sender: TObject); dynamic;
     procedure SetCaret(const Value: TJvCaret);
@@ -94,7 +94,7 @@ type
     procedure SetHideCaret(const Value: Boolean);
     function GetReadOnly: Boolean;
     procedure SetReadOnly(const Value: Boolean);
-    procedure SetClipboardCommands(const Value: TJvClipBoardCommands);
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands);
   protected
     procedure WndProc(var Msg: TMessage); override;
     procedure KeyPress(var Key: Char); override;
@@ -110,7 +110,7 @@ type
     property CurrentLine: Integer read GetCurrentLine write SetCurrentLine;
   protected
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property ClipboardCommands: TJvClipBoardCommands read FClipboardCommands write SetClipboardCommands default
+    property ClipboardCommands: TJvClipboardCommands read FClipboardCommands write SetClipboardCommands default
       [caCopy..caUndo];
     property Caret: TJvCaret read FCaret write SetCaret;
     property HideCaret: Boolean read FHideCaret write SetHideCaret;
@@ -551,16 +551,16 @@ procedure TJvCustomMemo.SetReadOnly(const Value: Boolean);
 begin
   inherited ReadOnly := Value;
   if Value then
-    FClipBoardCommands := [caCopy];
+    FClipboardCommands := [caCopy];
 end;
 
 procedure TJvCustomMemo.SetClipboardCommands(
-  const Value: TJvClipBoardCommands);
+  const Value: TJvClipboardCommands);
 begin
-  if FClipBoardCommands <> Value then
+  if FClipboardCommands <> Value then
   begin
-    FClipBoardCommands := Value;
-    ReadOnly := FClipBoardCommands <= [caCopy];
+    FClipboardCommands := Value;
+    ReadOnly := FClipboardCommands <= [caCopy];
   end;
 end;
 

@@ -420,7 +420,7 @@ type
     {$ENDIF}
     {$ENDIF}
     (* ++ RDB ++ *)
-    property ClipBoardCommands;
+    property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
     (* -- RDB -- *)

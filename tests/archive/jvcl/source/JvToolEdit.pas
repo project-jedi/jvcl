@@ -116,7 +116,7 @@ type
     FPopupAlign: TPopupAlign;
     FGlyphKind: TGlyphKind;
     (* ++ RDB ++ *)
-    FClipBoardCommands: TJvClipboardCommands;
+    FClipboardCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
     FDisabledColor: TColor;
     FDisabledTextColor: TColor;
@@ -213,7 +213,7 @@ type
     procedure LocalKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure SetDisabledColor(const Value: TColor); virtual;
     procedure SetDisabledTextColor(const Value: TColor); virtual;
-    procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands);
     procedure SetGroupIndex(const Value: Integer);
     (* -- RDB -- *)
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -232,8 +232,8 @@ type
     property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
     property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat;
     (* ++ RDB ++ *)
-    property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands
-      write SetClipBoardCommands default [caCopy..caUndo];
+    property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
+      write SetClipboardCommands default [caCopy..caUndo];
     property DisabledTextColor: TColor read FDisabledTextColor write
       SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor
@@ -326,7 +326,7 @@ type
     property OnStartDock;
     {$ENDIF}
     (* ++ RDB ++ *)
-    property ClipBoardCommands;
+    property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
     (*      property GroupIndex; *)
@@ -389,7 +389,7 @@ type
     property OnDropFiles: TNotifyEvent read FOnDropFiles write FOnDropFiles;
     property OnButtonClick;
     (* ++ RDB ++ *)
-    property ClipBoardCommands;
+    property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
     (*      property GroupIndex; *)
@@ -848,7 +848,7 @@ type
     property OnStartDock;
     {$ENDIF}
     (* ++ RDB ++ *)
-    property ClipBoardCommands;
+    property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
     (*      property GroupIndex; *)
@@ -1268,7 +1268,7 @@ begin
   (* ++ RDB ++ *)
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
-  FClipBoardCommands := [caCopy..caUndo];
+  FClipboardCommands := [caCopy..caUndo];
   FGroupIndex := -1;
   inherited OnKeyDown := LocalKeyDown;
   (* -- RDB -- *)
@@ -1316,13 +1316,13 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.SetClipBoardCommands(
+procedure TJvCustomComboEdit.SetClipboardCommands(
   const Value: TJvClipboardCommands);
 begin
-  if FClipBoardCommands <> Value then
+  if FClipboardCommands <> Value then
   begin
-    FClipBoardCommands := Value;
-    ReadOnly := FClipBoardCommands <= [caCopy];
+    FClipboardCommands := Value;
+    ReadOnly := FClipboardCommands <= [caCopy];
   end;
 end;
 
@@ -1366,13 +1366,13 @@ end;
 
 procedure TJvCustomComboEdit.WMCopy(var Msg: TWMCopy);
 begin
-  if caCopy in ClipBoardCommands then
+  if caCopy in ClipboardCommands then
     inherited;
 end;
 
 procedure TJvCustomComboEdit.WMUndo(var Msg: TWMUndo);
 begin
-  if caUndo in ClipBoardCommands then
+  if caUndo in ClipboardCommands then
     inherited;
 end;
 

@@ -56,7 +56,7 @@ type
     FEntering: Boolean;
     FLeaving: Boolean;
     (* ++ RDB ++ *)
-    FClipBoardCommands: TJvClipboardCommands;
+    FClipboardCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
     FDisabledColor: TColor;
     FDisabledTextColor: TColor;
@@ -99,7 +99,7 @@ type
     (* ++ RDB ++ *)
     procedure SetDisabledColor(const Value: TColor); virtual;
     procedure SetDisabledTextColor(const Value: TColor); virtual;
-    procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands);
     procedure SetGroupIndex(const Value: Integer);
     (* -- RDB -- *)
   public
@@ -117,8 +117,8 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Caret: TJvCaret read FCaret write SetCaret;
     (* ++ RDB ++ *)
-    property ClipboardCommands: TJvClipboardCommands read FClipBoardCommands
-      write SetClipBoardCommands default [caCopy..caUndo];
+    property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
+      write SetClipboardCommands default [caCopy..caUndo];
     property DisabledTextColor: TColor read FDisabledTextColor write
       SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor
@@ -245,7 +245,7 @@ begin
   (* ++ RDB ++ *)
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
-  FClipBoardCommands := [caCopy..caUndo];
+  FClipboardCommands := [caCopy..caUndo];
   FGroupIndex := -1;
   (* -- RDB -- *)
   FEntering := False;
@@ -331,12 +331,12 @@ begin
   FCaret.Assign(Value);
 end;
 
-procedure TJvCustomMaskEdit.SetClipBoardCommands(const Value: TJvClipboardCommands);
+procedure TJvCustomMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
 begin
-  if FClipBoardCommands <> Value then
+  if FClipboardCommands <> Value then
   begin
-    FClipBoardCommands := Value;
-    ReadOnly := FClipBoardCommands <= [caCopy];
+    FClipboardCommands := Value;
+    ReadOnly := FClipboardCommands <= [caCopy];
   end;
 end;
 
@@ -384,26 +384,26 @@ end;
 
 procedure TJvCustomMaskEdit.WMCopy(var Msg: TWMCopy);
 begin
-  if caCopy in ClipBoardCommands then
+  if caCopy in ClipboardCommands then
     inherited;
 end;
 
 procedure TJvCustomMaskEdit.WMCut(var Msg: TWMCut);
 begin
-  if caCut in ClipBoardCommands then
+  if caCut in ClipboardCommands then
     inherited;
 end;
 
 procedure TJvCustomMaskEdit.WMPaste(var Msg: TWMPaste);
 begin
-  if caPaste in ClipBoardCommands then
+  if caPaste in ClipboardCommands then
     inherited;
   UpdateEdit;
 end;
 
 procedure TJvCustomMaskEdit.WMUndo(var Msg: TWMUndo);
 begin
-  if caUndo in ClipBoardCommands then
+  if caUndo in ClipboardCommands then
     inherited;
 end;
 

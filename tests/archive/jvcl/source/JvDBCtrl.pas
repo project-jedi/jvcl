@@ -431,7 +431,7 @@ type
     property OnStartDock;
     {$ENDIF}
     (* ++ RDB ++ *)
-    property ClipBoardCommands;
+    property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
     (* -- RDB -- *)
@@ -578,7 +578,7 @@ type
     property OnStartDock;
     {$ENDIF}
     (* ++ RDB ++ *)
-    property ClipBoardCommands;
+    property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
     (* -- RDB -- *)
@@ -737,7 +737,7 @@ type
     property OnStartDock;
     {$ENDIF}
     (* ++ RDB ++ *)
-    property ClipBoardCommands;
+    property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
     (* -- RDB -- *)

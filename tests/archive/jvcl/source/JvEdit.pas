@@ -68,7 +68,7 @@ type
     FAutoSave: TJvAutoSave;
     FMaxPixel: TJvMaxPixel;
     FCaret: TJvCaret;
-    FClipBoardCommands: TJvClipboardCommands;
+    FClipboardCommands: TJvClipboardCommands;
     FOldCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
     FProtectPassword: Boolean;
@@ -98,7 +98,7 @@ type
     procedure SetGroupIndex(const Value: Integer);
     procedure UpdateEdit;
 
-    procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands);
     function GetText: string;
     procedure SetText(const Value: string);
     procedure SetPasswordChar(Value: Char);
@@ -121,7 +121,7 @@ type
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Caret: TJvCaret read FCaret write SetCaret;
-    property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands write SetClipBoardCommands default
+    property ClipboardCommands: TJvClipboardCommands read FClipboardCommands write SetClipboardCommands default
       [caCopy..caUndo];
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
@@ -155,7 +155,7 @@ type
     property BevelOuter;
     {$ENDIF}
     property Caret;
-    property ClipBoardCommands;
+    property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
     property ProtectPassword;
@@ -241,7 +241,7 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
-  ClipBoardCommands := [caCopy..caUndo];
+  ClipboardCommands := [caCopy..caUndo];
   FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
   FAutoSave := TJvAutoSave.Create(Self);
@@ -524,26 +524,26 @@ end;
 
 procedure TJvCustomEdit.WMCopy(var Msg: TWMCopy);
 begin
-  if caCopy in ClipBoardCommands then
+  if caCopy in ClipboardCommands then
     inherited;
 end;
 
 procedure TJvCustomEdit.WMCut(var Msg: TWMCut);
 begin
-  if caCut in ClipBoardCommands then
+  if caCut in ClipboardCommands then
     inherited;
 end;
 
 procedure TJvCustomEdit.WMPaste(var Msg: TWMPaste);
 begin
-  if caPaste in ClipBoardCommands then
+  if caPaste in ClipboardCommands then
     inherited;
   UpdateEdit;
 end;
 
 procedure TJvCustomEdit.WMUndo(var Msg: TWMUndo);
 begin
-  if caUndo in ClipBoardCommands then
+  if caUndo in ClipboardCommands then
     inherited;
 end;
 
@@ -557,13 +557,13 @@ begin
   inherited ReadOnly := Value;
   if Value then
   begin
-    if caCopy in FClipBoardCommands then
-      FClipBoardCommands := [caCopy]
+    if caCopy in FClipboardCommands then
+      FClipboardCommands := [caCopy]
     else
-      FClipBoardCommands := [];
+      FClipboardCommands := [];
   end
   else
-    FClipBoardCommands := FOldCommands;
+    FClipboardCommands := FOldCommands;
 end;
 
 procedure TJvCustomEdit.SetGroupIndex(const Value: Integer);
@@ -584,11 +584,11 @@ begin
         (Self.Owner.Components[I] as TJvCustomEdit).Caption := '';
 end;
 
-procedure TJvCustomEdit.SetClipBoardCommands(const Value: TJvClipboardCommands);
+procedure TJvCustomEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
 begin
   if FClipboardCommands <> Value then
   begin
-    FClipBoardCommands := Value;
+    FClipboardCommands := Value;
     FOldCommands := Value;
   end;
 end;
