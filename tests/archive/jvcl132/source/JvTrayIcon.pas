@@ -34,7 +34,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  Menus, ShellApi, JvTypes, JvComponent, DateUtils;
+  Menus, ShellApi, JvTypes, JvComponent
+ {$IFDEF Delphi6_UP}
+  , DateUtils
+{$ENDIF}
+
+  ;
 
 // (rom) Heavily modified this one. Mouse and Click events completely redesigned.
 
@@ -132,6 +137,8 @@ type
 
 implementation
 
+
+
 const
   WM_CALLBACKMESSAGE            = WM_USER + 1;
   NOTIFYICON_VERSION            = 3;
@@ -166,6 +173,16 @@ const
 
 {**************************************************}
 
+{$IFNDEF COMPILER6_UP}
+function SecondsBetween(const Now: TDateTime; const FTime: TDateTime): Integer;
+begin
+  Result := Trunc(86400 * (FTime-Now));
+end;
+{$ENDIF COMPILER6_UP}
+
+
+
+
 function TJvTrayIcon.AcceptBalloons: Boolean;
 var
  Info: Pointer;
@@ -175,7 +192,7 @@ var
  Tmp: DWORD;
  Major: Integer;
 begin
-  //Balloons are only accepted with shell32.dll 5.0+ 
+  //Balloons are only accepted with shell32.dll 5.0+
   result := false;
   try
     InfoSize := GetFileVersionInfoSize('shell32.dll', Tmp);
@@ -204,7 +221,12 @@ begin
     FIcon.Assign(Application.Icon);
   FIcon.OnChange := IconChanged;
   FVisible := True;
+ {$IFDEF Delphi6_UP}
   FHandle := Classes.AllocateHWnd(WndProc);
+{$ELSE}
+  FHandle := AllocateHWnd(WndProc);
+{$ENDIF}
+
   FAnimated := False;
   FDelay := 100;
   FNumber := 0;
@@ -250,7 +272,12 @@ begin
   FTimer.Free;
   SetActive(False);
   FIcon.Free;
+ {$IFDEF Delphi6_UP}
   Classes.DeallocateHWnd(FHandle);
+{$ELSE}
+  DeallocateHWnd(FHandle);
+{$ENDIF}
+
   if not (csDesigning in ComponentState) then
     if FDllHandle <> 0 then
       FreeLibrary(FDllHandle);

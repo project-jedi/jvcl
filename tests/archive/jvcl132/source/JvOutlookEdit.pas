@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -32,13 +32,17 @@ unit JvOutlookEdit;
 
 interface
 uses
-  Forms, {$IFDEF Delphi6_Up}DesignIntf, designeditors,{$ELSE}Dsgnintf,{$ENDIF}Windows, Classes, Dialogs, Graphics, SysUtils;
+  Forms, {$IFDEF Delphi6_Up}DesignIntf, designeditors, {$ELSE}Dsgnintf, {$ENDIF}Windows, Classes, Dialogs, Graphics, SysUtils;
 
 type
   TLookOutPageEditor = class(TComponentEditor)
   public
+{$IFDEF Delphi6_UP}
     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
-    procedure AddButton;virtual;
+{$ELSE}
+    constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
+{$ENDIF}
+    procedure AddButton; virtual;
     procedure SetActive; virtual;
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -50,8 +54,14 @@ type
 
   TLookOutEditor = class(TComponentEditor)
   public
+{$IFDEF Delphi6_UP}
     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
-    procedure AddPage;virtual;
+{$ELSE}
+    constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
+{$ENDIF}
+
+
+    procedure AddPage; virtual;
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -62,8 +72,14 @@ type
 
   TExpressEditor = class(TComponentEditor)
   public
-    constructor Create(AComponent: TComponent; ADesigner: IDesigner);override;
-    procedure AddButton;virtual;
+
+{$IFDEF Delphi6_UP}
+     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
+{$ELSE}
+    constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
+{$ENDIF}
+
+    procedure AddButton; virtual;
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -73,9 +89,9 @@ type
   end;
 
   TLookOutImageIndexProperty = class(TIntegerProperty)
-    function GetAttributes: TPropertyAttributes;override;
-    procedure GetValues(Proc:TGetStrProc);override;
-    {$IFNDEF Delphi6_Up }
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+{$IFNDEF Delphi6_Up }
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
       var AWidth: Integer); override;
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
@@ -84,7 +100,7 @@ type
       const ARect: TRect; ASelected: Boolean); override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean); override;
-    {$ENDIF}
+{$ENDIF}
   end;
 
 
@@ -95,10 +111,20 @@ uses JvLookOut;
 
 { TLookOutPageEditor }
 
+{$IFDEF Delphi6_UP}
+
 constructor TLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
 begin
-  inherited Create(AComponent,ADesigner);
+  inherited Create(AComponent, ADesigner);
 end;
+{$ELSE}
+
+constructor TLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
+begin
+  inherited Create(AComponent, ADesigner);
+end;
+
+{$ENDIF}
 
 procedure TLookOutPageEditor.Edit;
 begin
@@ -119,7 +145,7 @@ begin
 end;
 
 procedure TLookOutPageEditor.SetActive;
-var C:TJvLookOutPage;P:TJvLookOut;
+var C: TJvLookOutPage; P: TJvLookOut;
 begin
   if Component = nil then Exit;
   C := TJvLookOutPage(Component);
@@ -131,7 +157,7 @@ begin
 end;
 
 procedure TLookOutPageEditor.AddButton;
-var Btn:TJvLookOutButton;
+var Btn: TJvLookOutButton;
 begin
   if Component = nil then Exit;
   Btn := TJvLookOutPage(Component).AddButton;
@@ -159,11 +185,19 @@ begin
 end;
 
 { TLookOutEditor }
-constructor TLookOutEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
-begin
-  inherited Create(AComponent,ADesigner);
-end;
 
+
+ {$IFDEF Delphi6_UP}
+ constructor TLookOutEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
+begin
+  inherited Create(AComponent, ADesigner);
+end;
+{$ELSE}
+constructor TLookOutEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
+begin
+  inherited Create(AComponent, ADesigner);
+end;
+{$ENDIF}
 
 procedure TLookOutEditor.Edit;
 begin
@@ -172,44 +206,44 @@ begin
 end;
 
 procedure TLookOutEditor.ExecuteVerb(Index: Integer);
-var i:integer;
+var i: integer;
 begin
   if Component = nil then Exit;
   case Index of
     0: AddPage;
     1: { next }
-    begin
-    with (Component as TJvLookOut) do
-      for i := 0 to ControlCount - 1 do
-        if (Controls[i] = (Component as TJvLookOut).ActivePage)
-           and (i+1 < ControlCount)
-           and (Controls[i+1] <> nil)
-           and (Controls[i+1] is TJvLookOut) then
-           begin
-             (Component as TJvLookOut).ActivePage := TJvLookOutPage(Controls[i+1]);
-             Break;
-           end;
-    end;
+      begin
+        with (Component as TJvLookOut) do
+          for i := 0 to ControlCount - 1 do
+            if (Controls[i] = (Component as TJvLookOut).ActivePage)
+              and (i + 1 < ControlCount)
+              and (Controls[i + 1] <> nil)
+              and (Controls[i + 1] is TJvLookOut) then
+            begin
+              (Component as TJvLookOut).ActivePage := TJvLookOutPage(Controls[i + 1]);
+              Break;
+            end;
+      end;
 
     2: { previous }
-    begin
-    with Component as TJvLookOut do
-      for i := ControlCount-1 downto 0 do
-        if (Controls[i] = (Component as TJvLookOut).ActivePage)
-           and (i > 0)
-           and (Controls[i-1] <> nil)
-           and (Controls[i-1] is TJvLookOut) then
-           begin
-             (Component as TJvLookOut).ActivePage := TJvLookOutPage(Controls[i-1]);
-             Break;
-           end;
-    end;
+      begin
+        with Component as TJvLookOut do
+          for i := ControlCount - 1 downto 0 do
+            if (Controls[i] = (Component as TJvLookOut).ActivePage)
+              and (i > 0)
+              and (Controls[i - 1] <> nil)
+              and (Controls[i - 1] is TJvLookOut) then
+            begin
+              (Component as TJvLookOut).ActivePage := TJvLookOutPage(Controls[i - 1]);
+              Break;
+            end;
+      end;
     3: ShowMessage('Lookout components'#13'Copyright © 1997 by Peter Thornqvist; all rights reserved');
   end;
 end;
 
 procedure TLookOutEditor.AddPage;
-var Page:TJvLookOutPage;
+var Page: TJvLookOutPage;
 begin
   if Component = nil then Exit;
   Page := TJvLookOut(Component).AddPage;
@@ -235,13 +269,22 @@ end;
 { TExpressEditor }
 
 
+
+ {$IFDEF Delphi6_UP}
 constructor TExpressEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
 begin
-  inherited Create(Acomponent,ADesigner);
+  inherited Create(Acomponent, ADesigner);
 end;
+{$ELSE}
+constructor TExpressEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
+begin
+  inherited Create(Acomponent, ADesigner);
+end;
+{$ENDIF}
+
 
 procedure TExpressEditor.AddButton;
-var Exp:TJvExpress;Btn:TJvExpressButton;
+var Exp: TJvExpress; Btn: TJvExpressButton;
 begin
   if Component = nil then Exit;
   Exp := TJvExpress(Component);
@@ -249,7 +292,7 @@ begin
   Btn.Name := Designer.UniqueName('ExpressButton');
   Btn.Caption := Btn.Name;
 
-  with Exp.Controls[Exp.ControlCount-1] do
+  with Exp.Controls[Exp.ControlCount - 1] do
   begin
     Width := Exp.Width - 4;
     Left := 0;
@@ -265,16 +308,16 @@ end;
 procedure TExpressEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-  0: AddButton;
-  1: ShowMessage('Lookout components'#13'Copyright © 1997 by Peter Thornqvist; all rights reserved');
+    0: AddButton;
+    1: ShowMessage('Lookout components'#13'Copyright © 1997 by Peter Thornqvist; all rights reserved');
   end;
 end;
 
 function TExpressEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-  0: Result := 'Add Button';
-  1: Result := 'About...';
+    0: Result := 'Add Button';
+    1: Result := 'About...';
   end;
 end;
 
@@ -287,11 +330,11 @@ end;
 
 function TLookOutImageIndexProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList,paSortList,paMultiselect];
+  Result := [paValueList, paSortList, paMultiselect];
 end;
 
 procedure TLookOutImageIndexProperty.GetValues(Proc: TGetStrProc);
-var btn:TJvLookOutButton;i:integer;
+var btn: TJvLookOutButton; i: integer;
 begin
   if GetComponent(0) is TJvCustomLookOutButton then
   begin
@@ -306,11 +349,12 @@ begin
 end;
 
 {$IFNDEF Delphi6_Up }
+
 procedure TLookOutImageIndexProperty.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
-var btn:TJvLookOutButton;R:TRect;
+var btn: TJvLookOutButton; R: TRect;
 begin
-  inherited ListDrawValue(Value,ACanvas,ARect,ASelected);
+  inherited ListDrawValue(Value, ACanvas, ARect, ASelected);
   if (GetComponent(0) is TJvCustomLookOutButton) then
   begin
     R := ARect;
@@ -318,47 +362,47 @@ begin
     if (btn.ImageSize = isLarge) and Assigned(btn.LargeImages) then
     begin
       ACanvas.FillRect(ARect);
-      btn.LargeImages.Draw(ACanvas,ARect.Left,ARect.Top,StrToInt(Value));
-      OffsetRect(R,btn.LargeImages.Width + 2,0);
-      DrawText(ACanvas.Handle,PChar(Value),-1,R,0);
+      btn.LargeImages.Draw(ACanvas, ARect.Left, ARect.Top, StrToInt(Value));
+      OffsetRect(R, btn.LargeImages.Width + 2, 0);
+      DrawText(ACanvas.Handle, PChar(Value), -1, R, 0);
     end
     else if Assigned(btn.SmallImages) then
     begin
       ACanvas.FillRect(ARect);
-      btn.SmallImages.Draw(ACanvas,ARect.Left,ARect.Top,StrToInt(Value));
-      OffsetRect(R,btn.SmallImages.Width + 2,1);
-      DrawText(ACanvas.Handle,PChar(Value),-1,R,0);
+      btn.SmallImages.Draw(ACanvas, ARect.Left, ARect.Top, StrToInt(Value));
+      OffsetRect(R, btn.SmallImages.Width + 2, 1);
+      DrawText(ACanvas.Handle, PChar(Value), -1, R, 0);
     end;
   end;
 end;
 
 procedure TLookOutImageIndexProperty.ListMeasureHeight(const Value: string;
   ACanvas: TCanvas; var AHeight: Integer);
-var btn:TJvLookOutButton;
+var btn: TJvLookOutButton;
 begin
   AHeight := ACanvas.TextHeight(Value) + 2;
   if (GetComponent(0) is TJvCustomLookOutButton) then
   begin
     btn := TJvLookOutButton(GetComponent(0));
     if (btn.ImageSize = isLarge) and Assigned(btn.LargeImages) then
-        AHeight := btn.LargeImages.Height + 2
+      AHeight := btn.LargeImages.Height + 2
     else if (btn.ImageSize = isSmall) and Assigned(btn.SmallImages) then
-        AHeight := btn.SmallImages.Height + 2;
+      AHeight := btn.SmallImages.Height + 2;
   end;
 end;
 
 procedure TLookOutImageIndexProperty.ListMeasureWidth(const Value: string;
   ACanvas: TCanvas; var AWidth: Integer);
-var btn:TJvLookOutButton;
+var btn: TJvLookOutButton;
 begin
   AWidth := ACanvas.TextWidth(Value) + 4;
   if (GetComponent(0) is TJvCustomLookOutButton) then
   begin
     btn := TJvLookOutButton(GetComponent(0));
     if (btn.ImageSize = isLarge) and Assigned(btn.LargeImages) then
-        AWidth := btn.LargeImages.Width + AWidth
+      AWidth := btn.LargeImages.Width + AWidth
     else if (btn.ImageSize = isSmall) and Assigned(btn.SmallImages) then
-        AWidth := btn.SmallImages.Width  + AWidth;
+      AWidth := btn.SmallImages.Width + AWidth;
   end;
 end;
 
@@ -368,7 +412,7 @@ begin
 //  if GetVisualValue <> '' then
 //    ListDrawValue(GetVisualValue, ACanvas, ARect, True)
 //  else
-    inherited PropDrawValue(ACanvas, ARect, ASelected);
+  inherited PropDrawValue(ACanvas, ARect, ASelected);
 end;
 
 {$ENDIF }

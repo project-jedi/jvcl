@@ -2,7 +2,7 @@ object FormListb: TFormListb
   Left = 379
   Top = 317
   BorderStyle = bsDialog
-  Caption = 'BU - Listboxes'
+  Caption = 'JEDI - Listboxes'
   ClientHeight = 352
   ClientWidth = 483
   Color = clBtnFace

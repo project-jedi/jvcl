@@ -55,7 +55,12 @@ uses
 
 procedure TJvTipPropertyEditor.Edit;
 begin
+ {$IFDEF Delphi6_UP}
   (GetComponent as TJvTipWindow).Execute;
+{$ELSE}
+if Component is TJvTipWindow then
+TJvTipWindow(Component).Execute;
+{$ENDIF}
 end;
 
 procedure TJvTipPropertyEditor.ExecuteVerb(Index: integer);

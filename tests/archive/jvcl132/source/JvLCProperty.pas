@@ -39,7 +39,13 @@ type
   TJvListCombProperty = class(TDefaultEditor)
   protected
     procedure ExecuteVerb(Index:integer);override;
+
+ {$IFDEF Delphi6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
+{$ELSE}
+ procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
+{$ENDIF}
+
   public
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -54,8 +60,8 @@ uses
 
 { TJvListCombProperty }
 
-procedure TJvListCombProperty.EditProperty(const Prop: IProperty;
-  var Continue: Boolean);
+ {$IFDEF Delphi6_UP}
+procedure TJvListCombProperty.EditProperty(const Prop: IProperty;  var Continue: Boolean);
 var PropName:string;
 begin
   PropName := Prop.GetName;
@@ -65,6 +71,19 @@ begin
     Continue := false;
   end;
 end;
+{$ELSE}
+procedure TJvListCombProperty.EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean);
+var PropName:string;
+begin
+  PropName := PropertyEditor.GetName;
+  if SameText(PropName,'Items') then
+  begin
+    PropertyEditor.Edit;
+    Continue := false;
+  end;
+end;
+{$ENDIF}
+
 
 procedure TJvListCombProperty.ExecuteVerb(Index: integer);
 begin

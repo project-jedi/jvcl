@@ -269,7 +269,13 @@ type
   protected
     { Protected declarations }
 
+    //PRY 2002.06.04
+    {$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: boolean); override;
+    {$ELSE}
+    procedure SetAutoSize(Value: boolean);
+    {$ENDIF COMPILER6_UP}
+    // PRY END
     function ItemMoving(Item: TJvTimeItem): boolean; virtual;
     procedure ItemMoved(Item: TJvTimeItem; NewDate: TDateTime); virtual;
 
@@ -434,8 +440,13 @@ type
   end;
 
 implementation
+
+//PRY 2002.06.04
+{$IFDEF COMPILER6_UP}
 uses
   DateUtils;
+{$ENDIF COMPILER6_UP}
+// PRY END
 
 {$R JvTIMELINEBITMAPS.RES}
 
@@ -494,6 +505,16 @@ var aRect: TRect;
 begin
   Result := InterSectRect(aRect, Rect1, Rect2);
 end;
+
+//PRY 2002.06.04
+{$IFNDEF COMPILER6_UP}
+function IncYear(const AValue: TDateTime;
+  const ANumberOfYears: Integer): TDateTime;
+begin
+  Result := IncMonth(AValue, ANumberOfYears * 12);
+end;
+{$ENDIF COMPILER6_UP}
+// PRY END
 
 { TJvTimeItem }
 
@@ -876,10 +897,20 @@ var
     end;
   end;
 
+//PRY 2002.06.04
+var
+  KeyState: TKeyboardState;
+// PRY END
 begin
   if TimeLine = nil then
     Exit;
-  ShiftState := KeyboardStateToShiftState;
+
+  //PRY 2002.06.04
+  //ShiftState := KeyboardStateToShiftState;
+  GetKeyboardState(KeyState);
+  ShiftState := KeyboardStateToShiftState(KeyState);
+  // PRY END
+
   ScrollCode := GetScrollCode(ssCtrl in ShiftState);
   TimeLine.FLastScrollCode := ScrollCode;
   case Direction of
@@ -2233,12 +2264,16 @@ end;
 
 procedure TJvCustomTimeLine.NextMonth;
 begin
-  SetFirstDate(IncMonth(FFirstDate));
+  //PRY 2002.06.04
+  //SetFirstDate(IncMonth(FFirstDate));
+  SetFirstDate(IncMonth(FFirstDate, 1));
 end;
 
 procedure TJvCustomTimeLine.NextYear;
 begin
-  SetFirstDate(IncYear(FFirstDate));
+  //PRY 2002.06.04
+  //SetFirstDate(IncYear(FFirstDate));
+  SetFirstDate(IncYear(FFirstDate, 1));
 end;
 
 procedure TJvCustomTimeLine.PrevMonth;
@@ -2248,6 +2283,8 @@ end;
 
 procedure TJvCustomTimeLine.PrevYear;
 begin
+  //PRY 2002.06.04
+  //SetFirstDate(IncYear(FFirstDate, -1));
   SetFirstDate(IncYear(FFirstDate, -1));
 end;
 

@@ -32,7 +32,7 @@ unit JvOLBarEditor;
 interface
 
 uses
-  JvOLBar, Classes, {$IFDEF Delphi6_UP}DesignEditors, DesignIntf, DesignMenus{$ELSE}Dsgnintf{$ENDIF};
+  JvOLBar, Classes, {$IFDEF Delphi6_UP}DesignEditors, DesignIntf, DesignMenus{$ELSE}Dsgnintf, Menus{$ENDIF};
 
 type
   TOLBarActivePageEditor = class(TIntegerProperty)
@@ -57,7 +57,15 @@ type
     procedure PrevPage(OLBar: TJvCustomOutlookBar);
   public
     procedure Edit;override;
+
+
+ {$IFDEF Delphi6_UP}
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
+{$ELSE}
+     procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
+{$ENDIF}
+
+
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -197,8 +205,10 @@ begin
 //  Result := 10; / show all actions (pages and buttons)
 end;
 
-procedure TOLBarComponentEditor.PrepareItem(Index: Integer;
-  const AItem: IMenuItem);
+
+
+ {$IFDEF Delphi6_UP}
+ procedure TOLBarComponentEditor.PrepareItem(Index: Integer; const AItem: IMenuItem);
 begin
   case Index of
     3: // next page
@@ -211,6 +221,24 @@ begin
     inherited PrepareItem(Index,AItem);
   end;
 end;
+{$ELSE}
+     procedure TOLBarComponentEditor.PrepareItem(Index: Integer; const AItem: TMenuItem);
+begin
+  case Index of
+    3: // next page
+      AItem.Enabled := (THackOL(Component).ActivePage <> nil) and (THackOL(Component).ActivePageIndex < THackOL(Component).Pages.Count -1);
+    4: // prev page
+      AItem.Enabled := (THackOL(Component).ActivePage <> nil) and (THackOL(Component).ActivePageIndex > 0);
+    5:  // delete page
+      AItem.Enabled := (THackOL(Component).Pages.Count > 0 );
+  else
+    inherited PrepareItem(Index,AItem);
+  end;
+end;
+{$ENDIF}
+
+
+
 
 { TOLBarActivePageEditor }
 

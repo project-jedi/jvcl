@@ -34,18 +34,18 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, ComCtrls, Forms,
-  JvTypes, JVCLVer, StdActns;
+  JvTypes, StdActns, CommCtrl, JVCLVer;
 
 type
   TJvStatusBar = class(TStatusBar)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
     FAutoHintShown: Boolean;
     FHiddenControls: array of TControl;
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;

@@ -1,3 +1,14 @@
+2002-06-04 (Release 1.31)
+
+- Added following components from Sebastien Buysse:
+  - JvSpinEdit 
+  - JvTranslator
+  - JvSimpleXml
+  - JvHotkeyEx 
+- Added JvTranslator demo
+- Added D5 compatibility (thanks to Andrey Prygounkov)
+- several bug fixes thanks to Peter Thörnqvist
+
 2002-06-03
 
 - TJvTrayIcon: Added Balloon help support //Sebastien Buysse

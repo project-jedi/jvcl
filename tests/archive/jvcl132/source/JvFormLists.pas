@@ -58,19 +58,53 @@ implementation
 
 {$R *.DFM}
 
+{$IFNDEF Delphi6_UP}
+
+procedure CopySelected(De,Vers:TListbox);
+var
+   i:Integer;
+begin
+   i:=0;
+   while i<de.Items.count do
+   begin
+      if de.Selected[i] then
+      begin
+         vers.Items.AddObject(de.items[i],de.items.objects[i]);
+         de.Items.delete(i);
+      end
+      else inc(i);
+   end;
+end;
+
+
+
+{$ENDIF}
+
 
 procedure TFormListb.btnLeftClick(Sender: TObject);
 begin
-  ListBox2.CopySelection(ListBox1);
+{$IFDEF Delphi6_UP}
+listbox2.CopySelection(ListBox1);
   while ListBox2.SelCount > 0 do
     ListBox2.DeleteSelected;
+
+{$ELSE}
+   CopySelected(self.listbox2,self.listbox1);
+ {$ENDIF}
+
+
 end;
 
 procedure TFormListb.btnRightClick(Sender: TObject);
 begin
+{$IFDEF Delphi6_UP}
   ListBox1.CopySelection(ListBox2);
   while ListBox1.SelCount > 0 do
     ListBox1.DeleteSelected;
+{$ELSE}
+   CopySelected(self.listbox1,self.listbox2);
+ {$ENDIF}
+
 end;
 
 class function TFormListb.Execute(const ACaption,AColCaption1, AColCaption2: string;

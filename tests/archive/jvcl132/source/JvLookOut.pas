@@ -387,7 +387,13 @@ type
     procedure WMNCCalcSize(var Message: TWMNCCalcSize); message WM_NCCALCSIZE;
     procedure WMNCPaint(var Message: TMessage); message WM_NCPAINT;
   protected
+    //PRY 2002.06.04
+    {$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: boolean); override;
+    {$ELSE}
+    procedure SetAutoSize(Value: boolean);
+    {$ENDIF COMPILER6_UP}
+    // PRY END
     procedure SmoothScroll(aControl: TControl; NewTop, Intervall: integer; Smooth: boolean); virtual;
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;

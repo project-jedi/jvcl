@@ -174,20 +174,6 @@ type
     property HideAllTabs: Boolean read FHideAllTabs write FHideAllTabs default False;
   end;
 
-  TJvStatusBar = class(TStatusBar)
-  private
-    FAutoHintShown: Boolean;
-    FHiddenControls: array of TControl;
-    FAboutJVCL: TJVCLAboutInfo;
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
-  public
-    constructor Create(AOwner: TComponent); override;
-    function ExecuteAction(Action: TBasicAction): Boolean; override;
-    property AutoHintShown: Boolean read FAutoHintShown;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  end;
-
   TJvTrackToolTipSide = (tsLeft, tsTop, tsRight, tsBottom);
   TJvTrackToolTipEvent = procedure(Sender: TObject; var ToolTipText: string) of object;
 
@@ -630,85 +616,6 @@ begin
   inherited UpdateTabImages;
 end;
 
-{ TJvStatusBar }
-
-constructor TJvStatusBar.Create(AOwner: TComponent);
-begin
-  inherited;
-  ControlStyle := ControlStyle + [csAcceptsControls];
-end;
-
-function TJvStatusBar.ExecuteAction(Action: TBasicAction): Boolean;
-var
-  HintText: string;
-  PanelEdges: Integer;
-  Flags: DWORD;
-
-  procedure CancelAutoHintShown;
-  var
-    I: Integer;
-  begin
-    if FAutoHintShown then
-    begin
-      Panels.EndUpdate;
-      for I := 0 to Length(FHiddenControls) - 1 do
-        FHiddenControls[I].Visible := True;
-      FHiddenControls := nil;
-      FAutoHintShown := False;
-    end;
-  end;
-
-  procedure SetAutoHintShown;
-  var
-    I: Integer;
-  begin
-    if not FAutoHintShown then
-    begin
-      Panels.BeginUpdate;
-      FHiddenControls := nil;
-      for I := 0 to ControlCount - 1 do
-        if Controls[I].Visible then
-        begin
-          SetLength(FHiddenControls, Length(FHiddenControls) + 1);
-          FHiddenControls[Length(FHiddenControls) - 1] := Controls[I];
-          FHiddenControls[I].Visible := False;
-        end;
-      FAutoHintShown := True;
-    end;
-  end;
-
-begin
-  if AutoHint and (Action is THintAction) and not DoHint then
-  begin
-    HintText := Trim(THintAction(Action).Hint);
-    if Length(HintText) = 0 then
-      CancelAutoHintShown
-    else
-    begin
-      SetAutoHintShown;
-      PanelEdges := -1;
-      Flags := SBT_NOBORDERS;
-      if UseRightToLeftReading then
-        Flags := Flags or SBT_RTLREADING;
-      SendMessage(Handle, SB_SETPARTS, 1, Integer(@PanelEdges));
-      SendMessage(Handle, SB_SETTEXT, Flags, LPARAM(PChar(HintText)));
-    end;
-    Result := True;
-  end
-  else
-  begin
-    CancelAutoHintShown;
-    Result := inherited ExecuteAction(Action);
-  end;
-end;
-
-procedure TJvStatusBar.WMPaint(var Message: TWMPaint);
-begin
-  if FAutoHintShown then
-    DefaultHandler(Message)
-  else
-    inherited;
-end;
 
 { TJvTrackBar }
 

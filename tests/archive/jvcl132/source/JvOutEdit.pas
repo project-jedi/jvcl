@@ -37,7 +37,12 @@ uses
 type
   TLookOutPageEditor = class(TComponentEditor)
   public
+
+ {$IFDEF Delphi6_UP}
     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
+{$ELSE}
+constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
+{$ENDIF}
     procedure AddButton;virtual;
     procedure SetActive; virtual;
     procedure Edit; override;
@@ -50,7 +55,12 @@ type
 
   TLookOutEditor = class(TComponentEditor)
   public
-    constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
+
+{$IFDEF Delphi6_UP}
+     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
+{$ELSE}
+    constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
+{$ENDIF}
     procedure AddPage;virtual;
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -62,7 +72,13 @@ type
 
   TExpressEditor = class(TComponentEditor)
   public
-    constructor Create(AComponent: TComponent; ADesigner: IDesigner);override;
+
+{$IFDEF Delphi6_UP}
+     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
+{$ELSE}
+    constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
+{$ENDIF}
+
     procedure AddButton;virtual;
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -96,10 +112,19 @@ uses JvLookOut;
 { TLookOutPageEditor }
 
 
+
+ {$IFDEF Delphi6_UP}
 constructor TLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
 begin
-  inherited Create(AComponent,ADesigner);
+  inherited Create(Acomponent, ADesigner);
 end;
+{$ELSE}
+constructor TLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
+begin
+  inherited Create(Acomponent, ADesigner);
+end;
+{$ENDIF}
+
 
 procedure TLookOutPageEditor.Edit;
 begin
@@ -160,10 +185,19 @@ begin
 end;
 
 { TLookOutEditor }
+
+
+ {$IFDEF Delphi6_UP}
 constructor TLookOutEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
 begin
-  inherited Create(AComponent,ADesigner);
+  inherited Create(Acomponent, ADesigner);
 end;
+{$ELSE}
+constructor TLookOutEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
+begin
+  inherited Create(Acomponent, ADesigner);
+end;
+{$ENDIF}
 
 
 procedure TLookOutEditor.Edit;
@@ -235,10 +269,17 @@ end;
 
 { TExpressEditor }
 
+ {$IFDEF Delphi6_UP}
 constructor TExpressEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
 begin
-  inherited Create(Acomponent,ADesigner);
+  inherited Create(Acomponent, ADesigner);
 end;
+{$ELSE}
+constructor TExpressEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
+begin
+  inherited Create(Acomponent, ADesigner);
+end;
+{$ENDIF}
 
 procedure TExpressEditor.AddButton;
 var Exp:TJvExpress;Btn:TJvExpressButton;

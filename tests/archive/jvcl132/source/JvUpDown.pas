@@ -41,6 +41,7 @@ type
   
   TJvUpDown = class(TUpDown)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FColor,FSaved:TColor;
     FOnMouseEnter : TNotifyEvent;
     FOnMouseLeave : TNotifyEvent;

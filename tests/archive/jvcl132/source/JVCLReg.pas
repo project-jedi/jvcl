@@ -91,7 +91,9 @@ uses
 
   //Internet
   JvHttpGrabber, JvFtpGrabber, JvHtmlParser, JvSurfTo, JvImageMailto,
-  JvImageSurfTo, JvMultiHttpGrabber, JvXml,
+  JvImageSurfTo, JvMultiHttpGrabber,
+
+  JvSimpleXml,
 
   //Utils
   JvChrono, JvComplex, JvCplLauncher, JvCreateShortcut,
@@ -125,10 +127,12 @@ uses
 
 
   //Win32
-  JvStatusBar, JvTabControl, JvPageControl2, JvRichEdit, JvTrackBar2,
+   JvStatusBar,
+  JvTabControl, JvPageControl2, JvRichEdit, JvTrackBar2,
   JvProgressBar, JvUpDown, JvHotKey, JvAnimate, JvDateTimePicker,
   JvMonthCalendar, JvTreeView2, JvListView, JvHeaderControl, JvToolBar,
-  JvCoolBar, JvPageScroller, JvHotKeyEx,
+  JvCoolBar, JvPageScroller,
+  JvHotKeyEx,
 
   //Image types
   JvPcx, JvAni,
@@ -221,7 +225,8 @@ begin
 
   //Registering Utils2 components - 7
   RegisterComponents('Jv Utils 3', [TJvRegion, TJvCaesarCipher, TJvVigenereCipher,
-    TJvXorCipher, TJvGenetic, TJvTranslator, TJvVarClass]);
+    TJvXorCipher, TJvGenetic,
+    TJvTranslator, TJvTranslatorStrings]);
 
   //Registering Dialogs components - 20
   RegisterComponents('Jv Dialogs', [TJvFindFiles,TJvInputBox,  TJvPasswordForm, TJvMessageBox,

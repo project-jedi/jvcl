@@ -54,7 +54,14 @@ uses
 
 procedure TJvShellBrowserEditor.Edit;
 begin
+ {$IFDEF Delphi6_UP}
   (GetComponent as TJvShellBrowser).Execute;
+{$ELSE}
+if Component is TJvShellBrowser then
+TJvShellBrowser(Component).Execute;
+{$ENDIF}
+
+
 end;
 
 procedure TJvShellBrowserEditor.ExecuteVerb(Index: Integer);

@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -412,7 +412,9 @@ destructor TJvListItem.Destroy;
 var S: TStrings;
 begin
   S := GetOwnerStrings;
-  if (S <> nil) and not (csDestroying in TComponent(FOwner.Owner).ComponentState) then
+  // PRY 2002.06.04
+  //if (S <> nil) and not (csDestroying in TComponent(FOwner.GetOwner).ComponentState) then
+  if (S <> nil) and not (csDestroying in TComponent(TJvListItems(FOwner).GetOwner).ComponentState) then
     S.Delete(Index);
   inherited;
 end;
@@ -465,8 +467,12 @@ end;
 procedure TJvListItems.Update(Item: TCollectionItem);
 begin
   inherited;
-  if (Item = nil) and (Owner <> nil) and (Owner is TWinControl) then
-    TWinControl(Owner).Invalidate;
+  // PRY 2002.06.04
+  //if (Item = nil) and (Owner <> nil) and (Owner is TWinControl) then
+  //  TWinControl(Owner).Invalidate;
+  if (Item = nil) and (GetOwner <> nil) and (GetOwner is TWinControl) then
+    TWinControl(GetOwner).Invalidate;
+  // PRY END
   {  if (FStrings <> nil) and (FStrings.Count <> Count) then
     begin
       while FStrings.Count > Count do
@@ -611,7 +617,14 @@ begin
       tmp := Items[Index].ImageIndex;
       //      R.Left := R.Left + Items[Index].Indent;
       Offset := ((R.Bottom - R.Top) - FWidth) div 2;
+      // PRY 2002.06.04
+      //FImages.Draw(Canvas, R.Left + 2, R.Top + Offset, tmp, dsTransparent, itImage);
+      {$IFDEF COMPILER6_UP}
       FImages.Draw(Canvas, R.Left + 2, R.Top + Offset, tmp, dsTransparent, itImage);
+      {$ELSE}
+      FImages.Draw(Canvas, R.Left + 2, R.Top + Offset, tmp);
+      {$ENDIF COMPILER6_UP}
+      // PRY END
       if (FButtonFrame) then
       begin
         tmpR := Rect(R.Left, R.Top, R.Left + FImages.Width + 4, R.Top + FImages.Height + 4);
@@ -905,7 +918,14 @@ begin
     begin
       tmp := ((R.Right - R.Left) - FWidth) div 2;
       tmp2 := Items[Index].ImageIndex;
+      // PRY 2002.06.04
+      //FImages.Draw(Canvas, R.Left + tmp, R.Top + 2, tmp2, dsTransparent, itImage);
+      {$IFDEF COMPILER6_UP}
       FImages.Draw(Canvas, R.Left + tmp, R.Top + 2, tmp2, dsTransparent, itImage);
+      {$ELSE}
+      FImages.Draw(Canvas, R.Left + tmp, R.Top + 2, tmp2);
+      {$ENDIF COMPILER6_UP}
+      // PRY END
       if (FButtonFrame) then
       begin
         tmpR := Rect(R.Left + tmp - 2, R.Top, R.Left + tmp + FImages.Width + 2, R.Top + FImages.Height + 2);
@@ -948,7 +968,14 @@ begin
     begin
       Offset := ((R.Bottom - R.Top) - FWidth) div 2;
       tmp := Items[Index].ImageIndex;
+      // PRY 2002.06.04
+      //FImages.Draw(Canvas, R.Left + 2, R.Top + Offset, tmp, dsTransparent, itImage);
+      {$IFDEF COMPILER6_UP}
       FImages.Draw(Canvas, R.Left + 2, R.Top + Offset, tmp, dsTransparent, itImage);
+      {$ELSE}
+      FImages.Draw(Canvas, R.Left + 2, R.Top + Offset, tmp);
+      {$ENDIF COMPILER6_UP}
+      // PRY END
       if (FButtonFrame) then
       begin
         tmpR := Rect(R.Left, R.Top, R.Left + FImages.Width + 4, R.Top + FImages.Height + 4);
@@ -995,7 +1022,14 @@ begin
       tmp := Items[Index].ImageIndex;
 
       Offset := ((R.Bottom - R.Top) - FWidth) div 2;
+      // PRY 2002.06.04
+      //FImages.Draw(Canvas, R.Right - (FWidth + 2), R.Top + Offset, tmp, dsTransparent, itImage);
+      {$IFDEF COMPILER6_UP}
       FImages.Draw(Canvas, R.Right - (FWidth + 2), R.Top + Offset, tmp, dsTransparent, itImage);
+      {$ELSE}
+      FImages.Draw(Canvas, R.Right - (FWidth + 2), R.Top + Offset, tmp);
+      {$ENDIF COMPILER6_UP}
+      // PRY END
       if (FButtonFrame) then
       begin
         tmpR := Rect(R.Right - (FImages.Width + 2) - 2, R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImages.Height + 2);

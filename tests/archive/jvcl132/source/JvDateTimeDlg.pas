@@ -32,7 +32,7 @@ unit JvDateTimeDlg;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, {$IFDEF Delphi6_UP} Variants, {$ENDIF} Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls;
 
 type

@@ -145,7 +145,7 @@ end;
 
 procedure TJvJVCLAboutForm.FormShow(Sender: TObject);
 begin
-  lblVersion.Caption := JVCL_VERSIONSTRING;
+  lblVersion.Caption := 'Version: '+JVCL_VERSIONSTRING;
   lblCopyRight.Caption := 'Copyright© Project JEDI, 1999 - ' + FormatDateTime('yyyy', Now);
 end;
 

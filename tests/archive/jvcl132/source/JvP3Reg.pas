@@ -50,7 +50,9 @@ uses
   JvChangeNotify, Controls,JvEnterTab, JvFindFiles2,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvShBrowse, JvCmdEdit,
   JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvShBrProperty, JvOLBar, JvOLBarEditor,JvSHFmt
-{$IFDEF Delphi6_UP}, DesignEditors, DesignIntf{$ENDIF};
+{$IFDEF DELPHI5},DsgnIntf {$ENDIF}{$IFDEF DELPHI6_UP},DesignEditors, DesignIntf {$ENDIF}
+
+;
 
 const
   cPage = 'JVCL P3';

@@ -287,8 +287,12 @@ type
     property Font;
     property Height;
     property HelpContext;
+    //PRY 2002.06.04
+    {$IFDEF COMPILER6_UP}
     property HelpKeyword;
     property HelpType;
+    {$ENDIF COMPILER6_UP}
+    // PRY END
     property Hint;
     property ParentFont;
     property ParentShowHint;
@@ -361,10 +365,16 @@ end;
 
 procedure TJvOutlookbarButton.Change;
 begin
-  if (Collection <> nil) and (Collection.Owner <> nil) and
-    (TCollectionItem(Collection.Owner).Collection <> nil)
-     and (TCustomControl(TCollectionItem(Collection.Owner).Collection.Owner) <> nil) then
-       TCustomControl(TCollectionItem(Collection.Owner).Collection.Owner).Invalidate;
+// PRY 2002.06.04
+  //if (Collection <> nil) and (Collection.Owner <> nil) and
+  //  (TCollectionItem(Collection.Owner).Collection <> nil)
+  //   and (TCustomControl(TCollectionItem(Collection.Owner).Collection.Owner) <> nil) then
+  //     TCustomControl(TCollectionItem(Collection.Owner).Collection.Owner).Invalidate;
+  if (Collection <> nil) and (TJvOutlookbarButtons(Collection).GetOwner <> nil) and
+    (TCollectionItem(TJvOutlookbarButtons(Collection).GetOwner).Collection <> nil)
+     and (TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookbarButtons(Collection).GetOwner).Collection).GetOwner) <> nil) then
+       TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookbarButtons(Collection).GetOwner).Collection).GetOwner).Invalidate;
+// PRY END
 end;
 
 constructor TJvOutlookbarButton.Create(Collection: TCollection);
@@ -374,7 +384,9 @@ end;
 
 procedure TJvOutlookbarButton.EditCaption;
 begin
-  SendMessage(TCustomControl(TCollectionItem(Collection.Owner).Collection.Owner).Handle,
+  // PRY 2002.06.04
+  //SendMessage(TCustomControl(TCollectionItem(Collection.Owner).Collection.Owner).Handle,
+  SendMessage(TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookbarButtons(Collection).GetOwner).Collection).GetOwner).Handle,
      CM_CAPTION_EDITING,integer(self),0);
 end;
 
@@ -458,8 +470,8 @@ end;
 procedure TJvOutlookBarButtons.Update(Item: TCollectionItem);
 begin
   inherited;
-  if (Owner <> nil) then
-    TJvOutlookBarPage(Owner).Changed(false);
+  if (GetOwner <> nil) then
+    TJvOutlookBarPage(GetOwner).Changed(false);
 end;
 
 { TJvOutlookBarPage }
@@ -496,11 +508,19 @@ begin
   FImage := TBitmap.Create;
   FAlignment := taCenter;
   FImageIndex := -1;
-  if (Collection <> nil) and (Collection.Owner <> nil) then
+  //PRY 2002.06.04
+  //if (Collection <> nil) and (Collection.Owner <> nil) then
+  if (Collection <> nil) and (TJvOutlookBarPages(Collection).GetOwner <> nil) then
   begin
-    FButtonSize := TJvCustomOutlookBar(Collection.Owner).ButtonSize;
-    FColor      := TJvCustomOutlookBar(Collection.Owner).Color;
-    Font        := TJvCustomOutlookBar(Collection.Owner).Font;
+    //PRY 2002.06.04
+    //FButtonSize := TJvCustomOutlookBar(Collection.Owner).ButtonSize;
+    FButtonSize := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).GetOwner).ButtonSize;
+    //PRY 2002.06.04
+    //FColor      := TJvCustomOutlookBar(Collection.Owner).Color;
+    FColor      := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).GetOwner).Color;
+    //PRY 2002.06.04
+    //Font        := TJvCustomOutlookBar(Collection.Owner).Font;
+    Font        := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).GetOwner).Font;
   end
   else
   begin
@@ -548,7 +568,9 @@ begin
   if FButtonSize <> Value then
   begin
     FButtonSize := Value;
-    if not (csReading in TComponent(Collection.Owner).ComponentState) then
+    //PRY 2002.06.04
+    //if not (csReading in TComponent(Collection.Owner).ComponentState) then
+    if not (csReading in TComponent(TJvOutlookBarPages(Collection).GetOwner).ComponentState) then
       FParentButtonSize := false;
     Change;
   end;
@@ -584,7 +606,9 @@ begin
     FParentButtonSize := Value;
     if Value then
     begin
-      FButtonSize := (Collection.Owner as TJvCustomOutlookBar).ButtonSize;
+      //PRY 2002.06.04
+      //FButtonSize := (Collection.Owner as TJvCustomOutlookBar).ButtonSize;
+      FButtonSize := (TJvOutlookBarPages(Collection).GetOwner as TJvCustomOutlookBar).ButtonSize;
       Change;
     end;
   end;
@@ -597,7 +621,9 @@ begin
     FParentColor := Value;
     if Value then
     begin
-      FColor := (Collection.Owner as TJvCustomOutlookBar).Color;
+      //PRY 2002.06.04
+      //FColor := (Collection.Owner as TJvCustomOutlookBar).Color;
+      FColor := (TJvOutlookBarPages(Collection).GetOwner as TJvCustomOutlookBar).Color;
       Change;
     end;
   end;
@@ -610,7 +636,9 @@ begin
     FParentFont := Value;
     if Value then
     begin
-      FFont.Assign((Collection.Owner as TJvCustomOutlookBar).Font);
+      //PRY 2002.06.04
+      //FFont.Assign((Collection.Owner as TJvCustomOutlookBar).Font);
+      FFont.Assign((TJvOutlookBarPages(Collection).GetOwner as TJvCustomOutlookBar).Font);
       Change;
     end;
   end;
@@ -618,7 +646,9 @@ end;
 
 procedure TJvOutlookBarPage.EditCaption;
 begin
-  SendMessage(TCustomControl(Collection.Owner).Handle, CM_CAPTION_EDITING,integer(self),1);
+  //PRY 2002.06.04
+  //SendMessage(TCustomControl(Collection.Owner).Handle, CM_CAPTION_EDITING,integer(self),1);
+  SendMessage(TCustomControl(TJvOutlookBarPages(Collection).GetOwner).Handle, CM_CAPTION_EDITING,integer(self),1);
 end;
 
 function TJvOutlookBarPage.GetDisplayName: String;
@@ -696,9 +726,14 @@ end;
 procedure TJvOutlookBarPages.Update(Item: TCollectionItem);
 begin
   inherited;
-  if (Owner <> nil) then
+  //PRY 2002.06.04
+  //if (Owner <> nil) then
+  if (GetOwner <> nil) then
+  //PRY END
 //    TJvCustomOutlookBar(Owner).RedrawPage(TJvOutlookBarPage(Item));
-    TJvCustomOutlookBar(Owner).Repaint;
+  //PRY 2002.06.04
+    //TJvCustomOutlookBar(Owner).Repaint;
+    TJvCustomOutlookBar(GetOwner).Repaint;
 end;
 
 { TJvCustomOutlookBar }

@@ -32,7 +32,13 @@ unit JvSearchFiles;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  //PRY 2002.06.04
+  {$IFNDEF COMPILER6_UP}
+  FileCtrl,
+  {$ENDIF COMPILER6_UP}
+  // PRY END
+  JvComponent;
 
 type
   TJvSearchOption = (soReadOnly, soHidden, soSysFile, soVolumeID, soDirectory, soArchive, soAnyFile);
@@ -136,7 +142,7 @@ begin
     if Mask[i] = '.' then
       HasStar := false;
     //    if Mask[i] in [',',';'] then Exit;
-    Result := Result + Mask[i];
+      Result := Result + Mask[i];
   end;
 end;
 

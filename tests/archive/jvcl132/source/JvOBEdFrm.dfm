@@ -1,6 +1,6 @@
 object frmOLBarEditFrm: TfrmOLBarEditFrm
-  Left = 341
-  Top = 238
+  Left = 291
+  Top = 284
   BorderStyle = bsDialog
   Caption = 'OutlookBar Page and Button Editor'
   ClientHeight = 306
@@ -37,6 +37,13 @@ object frmOLBarEditFrm: TfrmOLBarEditFrm
       Caption = '&ImageIndex:'
       FocusControl = cbImages
     end
+    object Label2: TLabel
+      Left = 174
+      Top = 16
+      Width = 39
+      Height = 13
+      Caption = '&Caption:'
+    end
     object tvOLBar: TTreeView
       Left = 14
       Top = 19
@@ -63,7 +70,7 @@ object frmOLBarEditFrm: TfrmOLBarEditFrm
       Height = 25
       Action = acNewPage
       Anchors = [akRight, akBottom]
-      TabOrder = 3
+      TabOrder = 2
     end
     object btnNewButton: TButton
       Left = 174
@@ -72,7 +79,7 @@ object frmOLBarEditFrm: TfrmOLBarEditFrm
       Height = 25
       Action = acNewButton
       Anchors = [akRight, akBottom]
-      TabOrder = 4
+      TabOrder = 3
     end
     object btnDelete: TButton
       Left = 174
@@ -81,22 +88,7 @@ object frmOLBarEditFrm: TfrmOLBarEditFrm
       Height = 25
       Action = acDelete
       Anchors = [akRight, akBottom]
-      TabOrder = 5
-    end
-    object edCaption: TLabeledEdit
-      Left = 174
-      Top = 29
-      Width = 149
-      Height = 21
-      Anchors = [akTop, akRight]
-      EditLabel.Width = 39
-      EditLabel.Height = 13
-      EditLabel.Caption = '&Caption:'
-      LabelPosition = lpAbove
-      LabelSpacing = 3
-      TabOrder = 1
-      OnChange = edCaptionChange
-      OnKeyPress = edCaptionKeyPress
+      TabOrder = 4
     end
     object cbImages: TComboBox
       Left = 174
@@ -107,11 +99,20 @@ object frmOLBarEditFrm: TfrmOLBarEditFrm
       Anchors = [akTop, akRight]
       DropDownCount = 10
       ItemHeight = 16
-      TabOrder = 2
+      TabOrder = 1
       OnChange = cbImagesChange
       OnDrawItem = cbImagesDrawItem
       OnKeyPress = edCaptionKeyPress
       OnMeasureItem = cbImagesMeasureItem
+    end
+    object edCaption: TEdit
+      Left = 174
+      Top = 32
+      Width = 145
+      Height = 21
+      TabOrder = 5
+      OnChange = edCaptionChange
+      OnKeyPress = edCaptionKeyPress
     end
   end
   object btnOK: TButton

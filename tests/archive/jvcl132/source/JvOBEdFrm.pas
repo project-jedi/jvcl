@@ -33,7 +33,7 @@ unit JvOBEdFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, {$IFDEF Delphi6_UP} Variants, {$ENDIF} Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ComCtrls, JvOLBar, ActnList, Menus;
 
 type
@@ -53,7 +53,6 @@ type
     acMoveUp: TAction;
     acMoveDown: TAction;
     acApply: TAction;
-    edCaption: TLabeledEdit;
     cbImages: TComboBox;
     Label1: TLabel;
     popPages: TPopupMenu;
@@ -63,6 +62,8 @@ type
     N1: TMenuItem;
     MoveUp1: TMenuItem;
     MoveDown1: TMenuItem;
+    edCaption: TEdit;
+    Label2: TLabel;
     procedure tvOLBarChanging(Sender: TObject; Node: TTreeNode;
       var AllowChange: Boolean);
     procedure tvOLBarChange(Sender: TObject; Node: TTreeNode);

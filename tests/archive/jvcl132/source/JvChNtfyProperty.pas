@@ -39,7 +39,13 @@ type
   TJvChangeNotifyEditor = class(TDefaultEditor)
   public
     procedure ExecuteVerb(Index:integer);override;
+
+ {$IFDEF Delphi6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
+{$ELSE}
+ procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
+{$ENDIF}
+
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
@@ -51,8 +57,8 @@ implementation
 
 { TJvChangeNotifyEditor }
 
-procedure TJvChangeNotifyEditor.EditProperty(const Prop: IProperty;
-  var Continue: Boolean);
+ {$IFDEF Delphi6_UP}
+procedure TJvChangeNotifyEditor.EditProperty(const Prop: IProperty;  var Continue: Boolean);
 var PropName:string;
 begin
   PropName := Prop.GetName;
@@ -62,6 +68,20 @@ begin
     Continue := false;
   end;
 end;
+{$ELSE}
+procedure TJvChangeNotifyEditor.EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean);
+var PropName:string;
+begin
+  PropName := PropertyEditor.GetName;
+  if SameText(PropName,'Notifications') then
+  begin
+    PropertyEditor.Edit;
+    Continue := false;
+  end;
+end;
+{$ENDIF}
+
+
 
 procedure TJvChangeNotifyEditor.ExecuteVerb(Index: integer);
 begin
