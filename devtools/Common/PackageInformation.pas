@@ -103,6 +103,10 @@ type
     FContains: TObjectList;
     FRequiresDB: Boolean;
     FIsDesign: Boolean;
+    FC5PFlags: string;
+    FC6PFlags: string;
+    FC5Libs: string;
+    FC6Libs: string;
 
     procedure LoadFromFile(const Filename: string);
   public
@@ -118,6 +122,11 @@ type
     property Contains[Index: Integer]: TContainedFile read GetContains;
     property RequiresDB: Boolean read FRequiresDB;
     property IsDesign: Boolean read FIsDesign;
+
+    property C5PFlags: string read FC5PFlags;
+    property C6PFlags: string read FC6PFlags;
+    property C5Libs: string read FC5Libs;
+    property C6Libs: string read FC6Libs;
   end;
 
   { Package Group }
@@ -284,7 +293,7 @@ begin
     Result := ChangeFileExt(BplName, '');
     Delete(Result, Length(Result) - 2, 2);
     if Length(Result) > 2 then
-      Insert('-', Result, Length(Result) - 1); // do not localize
+      Insert('-', Result, Length(Result)); // do not localize
   end;
 end;
 
@@ -519,29 +528,33 @@ begin
   try
     xml.LoadFromFile(Filename);
     RootNode := xml.Root;
+
+    FC5PFlags := RootNode.Items.Value('C5PFlags');
+    FC6PFlags := RootNode.Items.Value('C6PFlags');
+    FC5Libs := RootNode.Items.Value('C5Libs');
+    FC6Libs := RootNode.Items.Value('C6Libs');
+
     RequiredNode := RootNode.Items.ItemNamed['Requires'];               // do not localize
     ContainsNode := RootNode.Items.ItemNamed['Contains'];               // do not localize
 
-    FDisplayName := RootNode.Properties.ItemNamed['Name'].Value;        // do not localize
-    if RootNode.Items.ItemNamed['Description'] <> nil then              // do not localize
-      FDescription := RootNode.Items.ItemNamed['Description'].Value     // do not localize
-    else
-      FDescription := '';
+    FDisplayName := RootNode.Properties.Value('Name');                  // do not localize
+    FIsDesign := RootNode.Properties.BoolValue('Design', IsDesign);     // do not localize
+    FDescription := RootNode.Items.Value('Description');                // do not localize
 
    // requires
     for i := 0 to RequiredNode.Items.Count -1 do
     begin
       PackageNode := RequiredNode.Items[i];
-      RequirePkgName := PackageNode.Properties.ItemNamed['Name'].Value; // do not localize
+      RequirePkgName := PackageNode.Properties.Value('Name');           // do not localize
       if Pos('dcldb', AnsiLowerCase(RequirePkgName)) > 0 then           // do not localize
         FRequiresDB := True;
 
      // require only designtime packages
-      RequireTarget := PackageNode.Properties.ItemNamed['Targets'].Value; // do not localize
+      RequireTarget := PackageNode.Properties.Value('Targets');         // do not localize
       if RequireTarget = '' then
-        RequireTarget := 'all';                                           // do not localize
+        RequireTarget := 'all';                                         // do not localize
 
-      Condition := PackageNode.Properties.ItemNamed['Condition'].Value;   // do not localize
+      Condition := PackageNode.Properties.Value('Condition');           // do not localize
 
      // add new require item
       FRequires.Add(TRequiredPackage.Create(RequirePkgName, RequireTarget, Condition));
@@ -551,14 +564,14 @@ begin
     for i := 0 to ContainsNode.Items.Count -1 do
     begin
       FileNode := ContainsNode.Items[i];
-      ContainsFileName := FileNode.Properties.ItemNamed['Name'].Value;    // do not localize
+      ContainsFileName := FileNode.Properties.ItemNamed['Name'].Value;  // do not localize
 
-      RequireTarget := FileNode.Properties.ItemNamed['Targets'].Value;    // do not localize
+      RequireTarget := FileNode.Properties.Value('Targets');            // do not localize
       if RequireTarget = '' then
-        RequireTarget := 'all';                                           // do not localize
+        RequireTarget := 'all';                                         // do not localize
 
-      FormName := FileNode.Properties.ItemNamed['Formname'].Value;        // do not localize
-      Condition := FileNode.Properties.ItemNamed['Condition'].Value;      // do not localize
+      FormName := FileNode.Properties.Value('Formname');                // do not localize
+      Condition := FileNode.Properties.Value('Condition');              // do not localize
 
      // add new require item
       FContains.Add(TContainedFile.Create(ContainsFileName, RequireTarget, FormName, Condition));
