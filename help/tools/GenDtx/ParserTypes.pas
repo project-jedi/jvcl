@@ -9,6 +9,9 @@ const
   CParamDescription = 'Description for this parameter';
   CItemDescription = '  Description for %s'#13#10;
 type
+  TClassVisibility = (inPrivate, inProtected, inPublic, inPublished);
+  TClassVisibilities = set of TClassVisibility;
+
   TDelphiType = (dtClass, dtConst, dtDispInterface, dtFunction, dtFunctionType,
     dtInterface, dtMethodFunc, dtMethodProc, dtProcedure, dtProcedureType,
     dtProperty, dtRecord, dtResourceString, dtEnum, dtType, dtVar);
@@ -132,6 +135,8 @@ type
     constructor Create(const AName: string); override;
     destructor Destroy; override;
 
+    { For compare }
+    procedure AddToList(AStrings: TStrings);
     property Items: TStringList read FItems;
   end;
 
@@ -157,10 +162,12 @@ type
   TClassMethod = class(TAbstractItem)
   private
     FOwnerClass: TClassItem;
+    FPosition: TClassVisibility;
     function GetReferenceName: string; override;
     function GetClassString: string; override;
   public
     property OwnerClass: TClassItem read FOwnerClass write FOwnerClass;
+    property Position: TClassVisibility read FPosition write FPosition;
   end;
 
   TParamClassMethod = class(TClassMethod)
@@ -489,6 +496,14 @@ begin
 end;
 
 { TListItem }
+
+procedure TListItem.AddToList(AStrings: TStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to FItems.Count - 1 do
+    AStrings.Add('@@' + ReferenceName + '.' + FItems[I]);
+end;
 
 constructor TListItem.Create(const AName: string);
 begin

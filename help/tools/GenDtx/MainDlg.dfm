@@ -17,9 +17,9 @@ object Form1: TForm1
   TextHeight = 13
   object lsbMessages: TListBox
     Left = 0
-    Top = 406
+    Top = 392
     Width = 503
-    Height = 118
+    Height = 91
     Align = alBottom
     ItemHeight = 13
     TabOrder = 0
@@ -28,16 +28,16 @@ object Form1: TForm1
     Left = 0
     Top = 145
     Width = 503
-    Height = 261
+    Height = 247
     Align = alClient
     BevelInner = bvLowered
     BevelOuter = bvNone
     TabOrder = 1
     object lsbSource: TListBox
       Left = 8
-      Top = 64
+      Top = 40
       Width = 233
-      Height = 137
+      Height = 161
       ItemHeight = 13
       MultiSelect = True
       Sorted = True
@@ -77,9 +77,9 @@ object Form1: TForm1
     end
     object lsbDest: TListBox
       Left = 271
-      Top = 64
+      Top = 40
       Width = 217
-      Height = 137
+      Height = 161
       ItemHeight = 13
       MultiSelect = True
       Sorted = True
@@ -152,7 +152,7 @@ object Form1: TForm1
     Width = 503
     Height = 29
     ButtonHeight = 21
-    ButtonWidth = 56
+    ButtonWidth = 91
     Caption = 'ToolBar1'
     ShowCaptions = True
     TabOrder = 2
@@ -162,14 +162,19 @@ object Form1: TForm1
       Action = actSettings
     end
     object ToolButton2: TToolButton
-      Left = 56
+      Left = 91
       Top = 2
       Action = actUnitStatus
     end
     object ToolButton3: TToolButton
-      Left = 112
+      Left = 182
       Top = 2
-      Action = actProcess
+      Action = actGenerateDtxFiles
+    end
+    object ToolButton10: TToolButton
+      Left = 273
+      Top = 2
+      Action = actCheckDtxFiles
     end
   end
   object Panel2: TPanel
@@ -241,6 +246,38 @@ object Form1: TForm1
       Height = 13
       Caption = 'lblOutDir'
     end
+    object Button1: TButton
+      Left = 336
+      Top = 43
+      Width = 153
+      Height = 25
+      Action = actClearGeneratedDtxDir
+      TabOrder = 0
+    end
+  end
+  object Panel3: TPanel
+    Left = 0
+    Top = 483
+    Width = 503
+    Height = 41
+    Align = alBottom
+    TabOrder = 4
+    object Button4: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Action = actClearMessages
+      TabOrder = 0
+    end
+    object Button5: TButton
+      Left = 104
+      Top = 8
+      Width = 75
+      Height = 25
+      Action = actSaveMessages
+      TabOrder = 1
+    end
   end
   object ActionList1: TActionList
     Left = 312
@@ -270,11 +307,11 @@ object Form1: TForm1
       Caption = 'Settings'
       OnExecute = actSettingsExecute
     end
-    object actProcess: TAction
+    object actGenerateDtxFiles: TAction
       Category = 'TopToolbar'
-      Caption = 'Process'
-      OnExecute = actProcessExecute
-      OnUpdate = actProcessUpdate
+      Caption = 'Generate Dtx files'
+      OnExecute = actGenerateDtxFilesExecute
+      OnUpdate = ProcessFilesAvailable
     end
     object actSave: TAction
       Caption = 'Save'
@@ -290,7 +327,7 @@ object Form1: TForm1
     end
     object actUnitStatus: TAction
       Category = 'TopToolbar'
-      Caption = 'UnitStatus'
+      Caption = 'Unit Status'
       OnExecute = actUnitStatusExecute
     end
     object actShowCompleted: TAction
@@ -322,6 +359,26 @@ object Form1: TForm1
       Caption = 'Show Generated'
       OnExecute = actShowGeneratedExecute
       OnUpdate = actShowGeneratedUpdate
+    end
+    object actCheckDtxFiles: TAction
+      Category = 'TopToolbar'
+      Caption = 'Check Dtx files'
+      OnExecute = actCheckDtxFilesExecute
+      OnUpdate = ProcessFilesAvailable
+    end
+    object actClearGeneratedDtxDir: TAction
+      Caption = 'Clear Generated *.dtx Dir'
+      OnExecute = actClearGeneratedDtxDirExecute
+    end
+    object actClearMessages: TAction
+      Category = 'Messages'
+      Caption = 'Clear'
+      OnExecute = actClearMessagesExecute
+    end
+    object actSaveMessages: TAction
+      Category = 'Messages'
+      Caption = 'Save'
+      OnExecute = actSaveMessagesExecute
     end
   end
   object OpenDialog1: TOpenDialog

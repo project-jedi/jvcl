@@ -14,10 +14,6 @@ const
   toCompilerDirective = Char(7);
 
 type
-  TClassVisibility = (inPrivate, inProtected, inPublic, inPublished);
-  TClassVisibilities = set of TClassVisibility;
-
-type
   TBasicParser = class(TObject)
   private
     FStream: TStream;
@@ -100,11 +96,11 @@ type
 
     procedure ReadClass(const TypeName: string);
     procedure ReadClassMethods(AClassItem: TClassItem);
-    procedure ReadClass_Property(AClassItem: TClassItem; DoAdd: Boolean);
-    procedure ReadClass_Function(AClassItem: TClassItem; DoAdd: Boolean);
-    procedure ReadClass_Procedure(AClassItem: TClassItem; DoAdd: Boolean);
-    procedure ReadClass_ClassMethod(AClassItem: TClassItem; DoAdd: Boolean);
-    procedure ReadClass_Var(AClassItem: TClassItem; DoAdd: Boolean);
+    procedure ReadClass_Property(AClassItem: TClassItem; Position: TClassVisibility; DoAdd: Boolean);
+    procedure ReadClass_Function(AClassItem: TClassItem; Position: TClassVisibility; DoAdd: Boolean);
+    procedure ReadClass_Procedure(AClassItem: TClassItem; Position: TClassVisibility; DoAdd: Boolean);
+    procedure ReadClass_ClassMethod(AClassItem: TClassItem; Position: TClassVisibility; DoAdd: Boolean);
+    procedure ReadClass_Var(AClassItem: TClassItem; Position: TClassVisibility; DoAdd: Boolean);
     procedure ReadCommentBlock;
     procedure ReadConst;
     procedure ReadDirectives(var Directives: TDirectives);
@@ -1303,7 +1299,7 @@ begin
           else
             if TokenSymbolIs('property') then
           begin
-            ReadClass_Property(AClassItem,
+            ReadClass_Property(AClassItem, Position,
               Position in [inProtected, inPublic, inPublished]);
             { Token is eerste token na ; }
             Continue;
@@ -1311,27 +1307,27 @@ begin
           else
             if TokenSymbolIn(['procedure', 'constructor', 'destructor']) >= 0 then
           begin
-            ReadClass_Procedure(AClassItem, Position in AcceptVisibilities);
+            ReadClass_Procedure(AClassItem, Position, Position in AcceptVisibilities);
             { Token is eerste token na ; }
             Continue;
           end
           else
             if TokenSymbolIs('function') then
           begin
-            ReadClass_Function(AClassItem, Position in AcceptVisibilities);
+            ReadClass_Function(AClassItem, Position, Position in AcceptVisibilities);
             { Token is eerste token na ; }
             Continue;
           end
           else
             if TokenSymbolIs('class') then
           begin
-            ReadClass_ClassMethod(AClassItem, Position in AcceptVisibilities);
+            ReadClass_ClassMethod(AClassItem, Position, Position in AcceptVisibilities);
             { Token is eerste token na ; }
             Continue;
           end
           else
           begin
-            ReadClass_Var(AClassItem, False);
+            ReadClass_Var(AClassItem, Position, False);
             { Token is eerste token na ; }
             Continue;
           end;
@@ -1344,7 +1340,7 @@ begin
 end;
 
 procedure TDelphiParser.ReadClass_ClassMethod(AClassItem: TClassItem;
-  DoAdd: Boolean);
+  Position: TClassVisibility; DoAdd: Boolean);
 begin
   NextToken;
   SkipUntilToken(toSymbol);
@@ -1352,13 +1348,13 @@ begin
     Exit;
 
   if TokenSymbolIs('function') then
-    ReadClass_Function(AClassItem, DoAdd)
+    ReadClass_Function(AClassItem, Position, DoAdd)
   else
-    ReadClass_Procedure(AClassItem, DoAdd);
+    ReadClass_Procedure(AClassItem, Position, DoAdd);
 end;
 
 procedure TDelphiParser.ReadClass_Function(AClassItem: TClassItem;
-  DoAdd: Boolean);
+  Position: TClassVisibility; DoAdd: Boolean);
 var
   MethodFunc: TMethodFunc;
   Directives: TDirectives;
@@ -1373,6 +1369,8 @@ begin
   begin
     MethodFunc := TMethodFunc.Create(TokenString);
     MethodFunc.OwnerClass := AClassItem;
+    MethodFunc.Position := Position;
+
     FTypeList.Add(MethodFunc);
 
     NextToken;
@@ -1391,7 +1389,7 @@ begin
 end;
 
 procedure TDelphiParser.ReadClass_Procedure(AClassItem: TClassItem;
-  DoAdd: Boolean);
+  Position: TClassVisibility; DoAdd: Boolean);
 var
   MethodProc: TMethodProc;
   MethodType: TMethodType;
@@ -1424,6 +1422,8 @@ begin
     MethodProc := TMethodProc.Create(TokenString);
     MethodProc.OwnerClass := AClassItem;
     MethodProc.MethodType := MethodType;
+    MethodProc.Position := Position;
+
     FTypeList.Add(MethodProc);
     NextToken;
     ReadParamList(MethodProc.Params, MethodProc.ParamTypes);
@@ -1441,7 +1441,7 @@ begin
   end;
 end;
 
-procedure TDelphiParser.ReadClass_Property(AClassItem: TClassItem;
+procedure TDelphiParser.ReadClass_Property(AClassItem: TClassItem; Position: TClassVisibility;
   DoAdd: Boolean);
 var
   MethodProp: TMethodProp;
@@ -1465,6 +1465,8 @@ begin
   begin
     MethodProp := TMethodProp.Create(TokenString);
     MethodProp.OwnerClass := AClassItem;
+    MethodProp.Position := Position;
+
     FTypeList.Add(MethodProp);
     NextToken;
     if (Token = ';') or ((Token = toSymbol) and TokenSymbolIs('default')) then
@@ -1498,7 +1500,7 @@ begin
 end;
 
 procedure TDelphiParser.ReadClass_Var(AClassItem: TClassItem;
-  DoAdd: Boolean);
+  Position: TClassVisibility; DoAdd: Boolean);
 begin
   { TODO: Nooit toevoegen? }
   SkipUntilToken(toSemiColon); //SkipUntilSemiColon;
@@ -2000,6 +2002,7 @@ constructor TCompareParser.Create;
 begin
   inherited;
   FList := TStringList.Create;
+  TStringList(FList).Sorted := True;
 end;
 
 destructor TCompareParser.Destroy;

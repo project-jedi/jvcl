@@ -18,7 +18,7 @@ type
     actInclude: TAction;
     actExclude: TAction;
     actSettings: TAction;
-    actProcess: TAction;
+    actGenerateDtxFiles: TAction;
     actSave: TAction;
     actAddToIgnoreList: TAction;
     OpenDialog1: TOpenDialog;
@@ -56,6 +56,15 @@ type
     lblRealDtxDir: TLabel;
     ToolButton9: TToolButton;
     actShowGenerated: TAction;
+    ToolButton10: TToolButton;
+    actCheckDtxFiles: TAction;
+    Button1: TButton;
+    actClearGeneratedDtxDir: TAction;
+    Panel3: TPanel;
+    Button4: TButton;
+    Button5: TButton;
+    actClearMessages: TAction;
+    actSaveMessages: TAction;
     { Form }
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -69,9 +78,8 @@ type
     procedure actIncludeUpdate(Sender: TObject);
     procedure actExcludeUpdate(Sender: TObject);
     procedure actSettingsExecute(Sender: TObject);
-    procedure actProcessExecute(Sender: TObject);
-    procedure actProcessUpdate(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure actGenerateDtxFilesExecute(Sender: TObject);
+    procedure ProcessFilesAvailable(Sender: TObject);
     procedure actSaveExecute(Sender: TObject);
     procedure actAddToIgnoreListExecute(Sender: TObject);
     procedure actAddToCompletedListExecute(Sender: TObject);
@@ -85,6 +93,10 @@ type
     procedure actRefreshExecute(Sender: TObject);
     procedure actShowGeneratedExecute(Sender: TObject);
     procedure actShowGeneratedUpdate(Sender: TObject);
+    procedure actCheckDtxFilesExecute(Sender: TObject);
+    procedure actClearGeneratedDtxDirExecute(Sender: TObject);
+    procedure actClearMessagesExecute(Sender: TObject);
+    procedure actSaveMessagesExecute(Sender: TObject);
   private
     FMainCtrl: TMainCtrl;
   protected
@@ -120,6 +132,49 @@ uses
 { DONE: Record fields met , ook herkennen }
 { DONE: Param fields met , ook herkennen }
 { TODO: Set -> Enumeration; Set zelf toevoegen }
+
+function DelTreeEx(const Path: string): Boolean;
+var
+  Files: TStringList;
+  LPath: string; // writable copy of Path
+  FileName: string;
+  I: Integer;
+  PartialResult: Boolean;
+  Attr: DWORD;
+begin
+  Result := True;
+  Files := TStringList.Create;
+  try
+    LPath := PathRemoveSeparator(Path);
+    BuildFileList(LPath + '\*.dtx', faAnyFile, Files);
+    for I := 0 to Files.Count - 1 do
+    begin
+      FileName := LPath + '\' + Files[I];
+      PartialResult := True;
+      // If the current file is itself a directory then recursively delete it
+      Attr := GetFileAttributes(PChar(FileName));
+      if (Attr <> DWORD(-1)) and ((Attr and FILE_ATTRIBUTE_DIRECTORY) <> 0) then
+        {PartialResult := DelTreeEx(FileName)}
+      else
+      begin
+        if PartialResult then
+        begin
+          // Set attributes to normal in case it's a readonly file
+          PartialResult := SetFileAttributes(PChar(FileName), FILE_ATTRIBUTE_NORMAL);
+          if PartialResult then
+            PartialResult := DeleteFile(FileName);
+        end;
+      end;
+      if not PartialResult then
+      begin
+        Result := False;
+        Break;
+      end;
+    end;
+  finally
+    FreeAndNil(Files);
+  end;
+end;
 
 procedure TForm1.actIncludeExecute(Sender: TObject);
 var
@@ -252,14 +307,15 @@ begin
   TfrmSettings.Execute;
 end;
 
-procedure TForm1.actProcessExecute(Sender: TObject);
+procedure TForm1.actGenerateDtxFilesExecute(Sender: TObject);
 begin
-  FMainCtrl.Process;
+  FMainCtrl.GenerateDtxFiles;
 end;
 
-procedure TForm1.actProcessUpdate(Sender: TObject);
+procedure TForm1.ProcessFilesAvailable(Sender: TObject);
 begin
-  actProcess.Enabled := lsbDest.Items.Count > 0;
+  if Sender is TAction then
+    TAction(Sender).Enabled := lsbDest.Items.Count > 0;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -279,23 +335,6 @@ begin
   case ChangeType of
     ctPasDirectory, ctGeneratedDtxDirectory, ctRealDtxDirectory:
       UpdateLabels;
-  end;
-end;
-
-procedure TForm1.Button1Click(Sender: TObject);
-var
-  I: Integer;
-  S: string;
-begin
-  with TFileStream.Create('C:\Temp\allfilestemp.txt', fmCreate) do
-  try
-    for I := 0 to lsbDest.Items.Count - 1 do
-    begin
-      S := lsbDest.Items[I] + #13#10;
-      Write(PChar(S)^, Length(S));
-    end;
-  finally
-    Free;
   end;
 end;
 
@@ -432,6 +471,44 @@ procedure TForm1.actShowGeneratedUpdate(Sender: TObject);
 begin
   if Sender is TAction then
     TAction(Sender).Checked := FMainCtrl.ShowGeneratedFiles;
+end;
+
+procedure TForm1.actCheckDtxFilesExecute(Sender: TObject);
+begin
+  FMainCtrl.CheckDtxFiles;
+end;
+
+procedure TForm1.actClearGeneratedDtxDirExecute(Sender: TObject);
+var
+  Cursor: TCursor;
+begin
+  Cursor := Screen.Cursor;
+  Screen.Cursor := crHourGlass;
+  try
+    if not DelTreeEx(TSettings.Instance.GeneratedDtxDir) then
+      RaiseLastOSError;
+  finally
+    Screen.Cursor := Cursor;
+  end;
+end;
+
+procedure TForm1.actClearMessagesExecute(Sender: TObject);
+begin
+  lsbMessages.Clear;
+end;
+
+procedure TForm1.actSaveMessagesExecute(Sender: TObject);
+begin
+  with TSaveDialog.Create(Application) do
+  try
+    DefaultExt := 'txt';
+    Filter := 'Text files (*.txt)|*.txt|All files (*.*)|*.*';
+
+    if Execute then
+      lsbMessages.Items.SaveToFile(FileName);
+  finally
+    Free;
+  end;
 end;
 
 end.
