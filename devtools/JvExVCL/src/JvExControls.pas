@@ -619,17 +619,22 @@ procedure Control_MouseEnter(Instance: TControl; var FMouseOver: Boolean;
   var FSavedHintColor: TColor; FHintColor: TColor);
 {$ENDIF VisualCLX}
 begin
-  if (not FMouseOver) and not (csDesigning in Instance.ComponentState) then
+  // (HEG) Control is nil iff Instance is the control that the mouse has left.
+  // Otherwise this is just a notification that the mouse entered
+  // one of it's child controls
+  if (Control = nil) and not FMouseOver and not (csDesigning in Instance.ComponentState) then
   begin
     FMouseOver := True;
     FSavedHintColor := Application.HintColor;
     if FHintColor <> clNone then
       Application.HintColor := FHintColor;
+    {$IFDEF VCL}
+    if Assigned(Event) then
+      Event(Instance);
+    {$ENDIF VCL}
   end;
   {$IFDEF VCL}
   InheritMsgEx(Instance, CM_MOUSEENTER, 0, Integer(Control));
-  if Assigned(Event) then
-    Event(Instance);
   {$ENDIF VCL}
 end;
 
@@ -641,15 +646,20 @@ procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolea
 procedure Control_MouseLeave(var FMouseOver: Boolean; FSavedHintColor: TColor);
 {$ENDIF VisualCLX}
 begin
-  if FMouseOver then
+  // (HEG) Control is nil iff Instance is the control that the mouse has left.
+  // Otherwise this is just a notification that the mouse left
+  // one of it's child controls
+  if (Control = nil) and FMouseOver and not (csDesigning in Instance.ComponentState) then
   begin
     FMouseOver := False;
     Application.HintColor := FSavedHintColor;
+    {$IFDEF VCL}
+    if Assigned(Event) then
+      Event(Instance);
+    {$ENDIF VCL}
   end;
   {$IFDEF VCL}
   InheritMsgEx(Instance, CM_MOUSELEAVE, 0, Integer(Control));
-  if Assigned(Event) then
-    Event(Instance);
   {$ENDIF VCL}
 end;
 

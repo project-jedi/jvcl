@@ -610,7 +610,7 @@ procedure TJvPanel.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not MouseOver then
+  if not MouseOver and (Control = nil) then
   begin
     FOldColor := Color;
     if not Transparent or IsThemed then
@@ -618,21 +618,23 @@ begin
       Color := HotColor;
       MouseTimer.Attach(Self);
     end;
-    inherited MouseEnter(Control);
   end;
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvPanel.MouseLeave(Control: TControl);
 begin
-  if MouseOver then
+  if csDesigning in ComponentState then
+    Exit;
+  if MouseOver and (Control = nil) then
   begin
     if not Transparent or IsThemed then
     begin
       Color := FOldColor;
       MouseTimer.Detach(Self);
     end;
-    inherited MouseLeave(Control);
   end;
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvPanel.SetTransparent(const Value: Boolean);
