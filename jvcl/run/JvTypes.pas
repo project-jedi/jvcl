@@ -55,6 +55,12 @@ const
   DEFAULT_SYSCOLOR_MASK = $80000000;
   {$ENDIF}
 
+{ Standard Windows colors that are not defined by Delphi }
+  clMoneyGreen = TColor($C0DCC0);
+  clSkyBlue = TColor($F0CAA6);
+  clCream = TColor($F0FBFF);
+  clMedGray = TColor($A4A0A0);
+
 type
 {$IFNDEF COMPILER6_UP}
   EOSError = class(EWin32Error);
