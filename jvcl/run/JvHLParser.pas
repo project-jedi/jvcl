@@ -133,10 +133,13 @@ type
   end;
 
   EJvIParserError = class(Exception)
+  private
+    FErrCode: Integer;
+    FPosition: Cardinal;
   public
-    ErrCode: Integer;
-    Pos: Cardinal;
-    constructor Create(AErrCode: Integer; APos: Cardinal);
+    constructor Create(AErrCode: Integer; APosition: Cardinal; dummy: Integer = 0);
+    property ErrCode: Integer read FErrCode;
+    property Position: Cardinal read FPosition;
   end;
 
 function IsStringConstant(const St: string): Boolean;
@@ -160,10 +163,11 @@ uses
 
 //=== EJvIParserError ========================================================
 
-constructor EJvIParserError.Create(AErrCode: Integer; APos: Cardinal);
+constructor EJvIParserError.Create(AErrCode: Integer; APosition: Cardinal; dummy: Integer = 0);
 begin
-  ErrCode := AErrCode;
-  Pos := APos;
+  inherited Create('');
+  FErrCode := AErrCode;
+  FPosition := APosition;
 end;
 
 //=== TJvIParser =============================================================
