@@ -45,41 +45,41 @@ uses
 
   JvQDsgnConsts,
   {$IFDEF MSWINDOWS}
-  JvQJoystick, JvQSoundControl,
+  JvQJoystick, JvQSoundControl, JvQChangeNotifyEditor, JvQChangeNotify,
   {$ENDIF MSWINDOWS}
   JvQScreenSaver,
-  JvQSystemColors, JvQThread, JvQThreadTimer, JvQChangeNotify,
+  JvQSystemColors, {$IFDEF MSWINDOWS}JvQThread, JvQThreadTimer, {$ENDIF}
   JvQSimpleXml, JvQXMLDatabase, JvQTimer, JvQFormPlacement,
-  JvQChangeNotifyEditor, JvQMinMaxForm,
+  JvQMinMaxForm,
   JvQFormPropertiesForm, JvQDsgnEditors, JvQFormPlacementSelectList,
   JvQAppXMLStorage;
 
-{$IFDEF MSWINDOWS}
-{$R ..\resources\JvSystemReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvSystemReg.dcr}
-{$ENDIF LINUX}
 
 procedure Register;
 begin
   RegisterComponents(RsPaletteSystem, [TJvScreenSaver,
       {$IFDEF MSWINDOWS}
-      TJvJoystick, TJvSoundControl,
+      TJvJoystick, TJvSoundControl, TJvChangeNotify,
       {$ENDIF MSWINDOWS}
-      TJvChangeNotify, TJvSystemColors]);
+      TJvSystemColors]);
   RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase]);
-  RegisterComponents(RsPaletteNonVisual, [TJvTimer, TJvThread, TJvThreadTimer]);
+  RegisterComponents(RsPaletteNonVisual, [TJvTimer {$IFDEF MSWINDOWS}, TJvThread, TJvThreadTimer {$ENDIF}]);
   RegisterComponents(RsPalettePersistence, [TJvFormStorage, {TJvFormStorageSelectList,}
       TJvAppXMLFileStorage]);
+
+  {$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(string), TJvChangeItem,
     'Directory', TJvDirectoryProperty);
+  {$ENDIF}
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage,
     'StoredProps', TJvStoredPropsProperty);
   RegisterComponentEditor(TJvFormStorage, TJvFormStorageEditor);
+  {$IFDEF MSWINDOWS}
   RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
+  {$ENDIF MSWINDOWS}
 end;
 
 end.

@@ -32,7 +32,7 @@ object JvStrEditDlg: TJvStrEditDlg
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
-  PixelsPerInch = 75
+  PixelsPerInch = 113
   object BevelBorder: TBevel
     Left = 8
     Top = 8

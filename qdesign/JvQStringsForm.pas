@@ -42,7 +42,7 @@ uses
   
   QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, QWindows,
   
-  
+
   DesignIntf, DesignEditors,
   
   JvQComponent;

@@ -1,7 +1,3 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -20,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
+Last Modified: 2004-03-16
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -55,38 +51,22 @@ uses
   JvQJVCLAboutEditor,
 
   JvQPaintBoxEditor,
-  {$IFDEF MSWINDOWS}
   JvQBaseDlgEditor, JvQBaseDlg,
+  {$IFDEF MSWINDOWS}
   JvQAppRegistryStorage,  JvQContextProvider,
-  JvQColorProvider,JvQColorProviderEditors, JvQDataProviderEditors,
+  JvQColorProvider, JvQColorProviderEditors, JvQDataProviderEditors,
   {$ENDIF MSWINDOWS}
   JvQAppIniStorage,
   JvQAppStorage;
 
-{$IFDEF MSWINDOWS}
-{$R ..\resources\JvCoreReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvCoreReg.dcr}
-{$ENDIF LINUX}
+
 {$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
 procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
-(*)
-  RegisterComponents('Extended Standard', [TJvExLabel, TJvExPanel, TJvExBevel,
-    TJvExControlBar, TJvExPubRadioGroup, TJvExEdit, TJvExButton, TJvExCheckBox,
-    TJvExComboBox, TJvExGroupBox, TJvExListBox, TJvExMemo, TJvExRadioButton,
-    TJvExScrollBar]);
-  RegisterComponents('Extended Additional', [TJvExBitBtn, TJvExSpeedButton,
-    TJvExCheckListBox, TJvExImage, TJvExPaintBox, TJvExShape, TJvExSplitter,
-    TJvExStringGrid, TJvExDrawGrid, TJvExMaskEdit]);
-  RegisterComponents('Extended Common', [TJvExTabControl, TJvExPageControl,
-    TJvExPubProgressBar, TJvExPubTreeView, TJvExPubListView, TJvExHeaderControl,
-    TJvExAnimate, TJvExStatusBar, TJvExToolBar]);
-(*)
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent
    {$IFDEF MSWINDOWS},
  TJvContextProvider, TJvColorProvider, TJvColorMappingProvider
@@ -96,7 +76,6 @@ begin
     TJvAppRegistryStorage,
     {$ENDIF MSWINDOWS}
     TJvAppIniFileStorage]);
-  RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog]);
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}

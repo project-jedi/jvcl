@@ -39,7 +39,7 @@ interface
 uses
   
   
-  QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
+  QForms, QControls, QGraphics, QExtCtrls, {Tabs,} QDialogs,
   QExtDlgs, QMenus, QStdCtrls, QImgList, QWindows, Types,
   
   DsnConst,
@@ -162,9 +162,9 @@ type
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
   end;
-                  
+
 type
-(*)
+{$IFDEF _LINUX}
   TJvImageListEditor = class(TComponentEditor)
   private
     procedure SaveAsBitmap(ImageList: TImageList);
@@ -173,7 +173,7 @@ type
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
-(*)
+{$ENDIF LINUX}
 
   TJvWeekDayProperty = class(TEnumProperty)
     function GetAttributes: TPropertyAttributes; override;
@@ -682,7 +682,7 @@ end;
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
   // (rom) Where does chx1 come from?
-  
+
 end;
 
 //=== TJvExeNameProperty =====================================================
@@ -733,7 +733,8 @@ begin
   else
     SetFloatValue(StrToFloat(Value));
 end;
-(*)
+
+{$IFDEF _LINUX}
 procedure TJvImageListEditor.SaveAsBitmap(ImageList: TImageList);
 var
   Bitmap: TBitmap;
@@ -811,7 +812,7 @@ function TJvImageListEditor.GetVerbCount: Integer;
 begin
   Result := 2;
 end;
-(*)
+{$ENDIF LINUX}
 
 
 //=== TJvWeekDayProperty =====================================================
