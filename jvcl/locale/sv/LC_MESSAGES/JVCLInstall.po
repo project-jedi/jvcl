@@ -1521,11 +1521,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Hemsida för Jedi Visual Component Library"
 
-#  FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport..Caption
-#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Caption
-#~ msgid "dxgettext &support (not required)"
-#~ msgstr "&Stöd för dxgettext (valfritt)"
-
 #  FrameConfigPage..GroupBoxJvclInc..Caption
 #  FrameConfigPage..GroupBoxJvclInc..Caption
 #~ msgid " Global options for all IDEs "
@@ -1548,3 +1543,8 @@ msgstr "Hemsida för Jedi Visual Component Library"
 #~ "<c:red>gnugettext.pas kommer att läggas till i\n"
 #~ "paketet JvCore-R. Detta betyder att du inte kan ha det i ett annat\n"
 #~ "paket också."
+
+#  FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport..Caption
+#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Caption
+#~ msgid "dxgettext &support (not required)"
+#~ msgstr "&Stöd för dxgettext (valfritt)"

@@ -1700,10 +1700,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Jedi Visual Component Library Homepage"
 
-#  FormJvclIncConfig..TitlePanel..Label4..Font.Name
-#~ msgid "Verdana"
-#~ msgstr "Verdana"
-
 #  FormMain..JvWizard..LblHomepage..Hint
 #  FormMain..JvWizard..LblHomepage..Hint
 #  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
@@ -1768,11 +1764,15 @@ msgstr "Jedi Visual Component Library Homepage"
 #~ msgid "LblTarget"
 #~ msgstr "LblTarget"
 
-#  FormMain..JvWizard..LblHomepage..Font.Name
-#  FrameInstall..RichEditLog..Font.Name
-#~ msgid "Arial"
-#~ msgstr "Arial"
+#  FormJvclIncConfig..TitlePanel..Label4..Font.Name
+#~ msgid "Verdana"
+#~ msgstr "Verdana"
 
 #  FrameDirEditBrowse..BtnDirBrowse..Caption
 #~ msgid "..."
 #~ msgstr "..."
+
+#  FormMain..JvWizard..LblHomepage..Font.Name
+#  FrameInstall..RichEditLog..Font.Name
+#~ msgid "Arial"
+#~ msgstr "Arial"

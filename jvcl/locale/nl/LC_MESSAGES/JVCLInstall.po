@@ -1275,9 +1275,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Jedi Visual Component Library Homepage"
 
-#~ msgid "dxgettext &support (not required)"
-#~ msgstr "dxgettext &ondersteuning (niet vereist)"
-
 #~ msgid " Global options for all IDEs "
 #~ msgstr " Voor alle IDEs geldende opties "
 
@@ -1319,8 +1316,11 @@ msgstr "Jedi Visual Component Library Homepage"
 #~ "van de JvCore-R package. Dit betekent dat je het niet kunt\n"
 #~ "toevoegen aan een andere package."
 
-#~ msgid "TJv"
-#~ msgstr "TJv"
+#~ msgid "dxgettext &support (not required)"
+#~ msgstr "dxgettext &ondersteuning (niet vereist)"
 
 #~ msgid "http://projectjedi.sourceforge.net"
 #~ msgstr "http://projectjedi.sourceforge.net"
+
+#~ msgid "TJv"
+#~ msgstr "TJv"

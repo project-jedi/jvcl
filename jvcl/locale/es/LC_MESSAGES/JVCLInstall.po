@@ -1279,9 +1279,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Sitio web oficial de Libreria de Componentes Visual JEDI"
 
-#~ msgid "dxgettext &support (not required)"
-#~ msgstr "&soporte dxgettext (no requerido)"
-
 #~ msgid " Global options for all IDEs "
 #~ msgstr " Opciones globales para todos los IDE"
 
@@ -1323,8 +1320,11 @@ msgstr "Sitio web oficial de Libreria de Componentes Visual JEDI"
 #~ "de el paquete JvCore-R. Eso significa que no puede agregarlo\n"
 #~ "en otro paquete."
 
-#~ msgid "TJv"
-#~ msgstr "TJv"
+#~ msgid "dxgettext &support (not required)"
+#~ msgstr "&soporte dxgettext (no requerido)"
 
 #~ msgid "http://projectjedi.sourceforge.net"
 #~ msgstr "http://projectjedi.sourceforge.net"
+
+#~ msgid "TJv"
+#~ msgstr "TJv"
