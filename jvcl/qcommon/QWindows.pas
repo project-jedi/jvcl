@@ -8073,7 +8073,8 @@ begin
     for i := AppHookList.Count - 1 downto 0 do
     begin
       Item := AppHookList[i];
-      if @Item.Proc = @Hook then
+      if (TMethod(Item.Proc).Code = TMethod(Hook).Code) and
+         (TMethod(Item.Proc).Data = TMethod(Hook).Data) then
       begin
         Dispose(Item);
         AppHookList.Delete(i);

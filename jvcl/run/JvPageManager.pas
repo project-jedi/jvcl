@@ -33,7 +33,7 @@ uses
   Controls, Forms, StdCtrls, ExtCtrls, ActnList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QExtCtrls, QActnList,
+  QControls, QForms, QStdCtrls, QExtCtrls, QActnList, QNotebook,
   {$ENDIF VisualCLX}
   SysUtils, Classes;
 
@@ -189,7 +189,6 @@ const
 
 implementation
 
-// (rom) changed to var
 var
   Registered: Boolean = False;
 
@@ -205,7 +204,6 @@ destructor TJvPageProxy.Destroy;
 begin
   if FPageManager <> nil then
     FPageManager.RemoveProxy(Self);
-  //if (FPageName <> nil) and (FPageName^ <> '') then Dispose(FPageName);
   inherited Destroy;
 end;
 
