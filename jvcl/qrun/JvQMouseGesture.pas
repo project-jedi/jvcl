@@ -329,7 +329,8 @@ type
     { Description
       True if a hook is installed
     }
-    FHookInstalled: Boolean; 
+    FHookInstalled: Boolean;
+    FHook: QObject_hookH;
     FOnJvMouseGestureCustomInterpretation: TOnJvMouseGestureCustomInterpretation;
     { Description
       Field for active state of component
@@ -359,6 +360,7 @@ type
       Standard setter method for ActivationMode
     }
     procedure SetActivationMode(const Value: TJvActivationMode);
+    function JvMouseGestureHook(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   protected
     { Description
       Create the hook. Maybe used in a later version as a new constructor
@@ -401,10 +403,6 @@ type
     property OnJvMouseGestureCustomInterpretation: TOnJvMouseGestureCustomInterpretation read
       FOnJvMouseGestureCustomInterpretation write SetOnJvMouseGestureCustomInterpretation;
   end;
-
-
-
-function JvMouseGestureHook(App: TObject; Sender: QObjectH; Event: QEventH): Boolean;
 
 
 implementation
@@ -779,27 +777,18 @@ begin
 end;
 
 destructor TJvMouseGestureHook.Destroy;
-
-var
-  Method: TMethod;
-
 begin
   FreeAndNil(JvMouseGestureInterpreter);
 
-  if JvMouseGestureHookAlreadyInstalled then  
+  if JvMouseGestureHookAlreadyInstalled then
   begin
-//    Method.Code := @JvMouseGestureHook;
-//    Method.Data := nil;
-//    UninstallApplicationHook(TApplicationHook(Method));
+    QObject_hook_destroy(FHook);
     JvMouseGestureHookAlreadyInstalled := False;
-  end; 
+  end;
   inherited Destroy;
 end;
 
 procedure TJvMouseGestureHook.CreateForThreadOrSystem(AOwner: TComponent; ADwThreadID: Cardinal);
-
-var
-  Method: TMethod;
 
 begin
   if JvMouseGestureHookAlreadyInstalled then
@@ -815,9 +804,7 @@ begin
 
   FActive := FActivationMode = JvOnAppStart;
   
-  Method.Code := @JvMouseGestureHook;
-  Method.Data := Self;
-//  InstallApplicationHook(TApplicationHook(Method));
+  FHook := InstallApplicationEventHook(JvMouseGestureHook);
 
   JvMouseGestureHookAlreadyInstalled := True;
   FHookInstalled := True; 
@@ -847,7 +834,7 @@ end;
 
 procedure TJvMouseGestureHook.SetMouseButton(const Value: TJvMouseGestureButton);
 begin
-  FMouseButton := Value;  
+  FMouseButton := Value;
   case Value of
     JvMButtonLeft:
       begin
@@ -877,10 +864,7 @@ end;
 
 //============================================================================
 
-
-
-
-function JvMouseGestureHook(App: TObject; Sender: QObjectH; Event: QEventH): Boolean;
+function TJvMouseGestureHook.JvMouseGestureHook(Sender: QObjectH; Event: QEventH): Boolean;
 var
   locY: Integer;
   locX: Integer;
