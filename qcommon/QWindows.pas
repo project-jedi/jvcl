@@ -1270,6 +1270,14 @@ function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): L
 function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 
+
+type
+  TApplicationHook = function(Sender: QObjectH; Event: QEventH): Boolean of object;
+
+procedure InstallApplicationHook(Hook: TApplicationHook); // not threadsafe
+procedure UninstallApplicationHook(Hook: TApplicationHook); // not threadsafe
+
+
 function SetTimer(Wnd: QWidgetH; IDEvent, Elapse: Cardinal;
   TimerFunc: Pointer): Cardinal; overload;
 function SetTimer(Wnd: Cardinal; IDEvent, Elapse: Cardinal;
@@ -1483,6 +1491,22 @@ type
   end;
 
 function QColorEx(Color: TColor): IQColorGuard;
+
+type
+  { TQtObject creates a new QObjectH and installs a eventfilter hook. }
+  TQtObject = class(TObject)
+  private
+    FHandle: QObjectH;
+    FHooks: QObject_hookH;
+  protected
+    function MainEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; virtual;
+  public
+    constructor Create(const AName: string = '');
+    destructor Destroy; override;
+    property Handle: QObjectH read FHandle;
+    property Hooks: QObject_hookH read FHooks;
+  end;
 
 {$IFDEF LINUX}
 var
@@ -7651,21 +7675,6 @@ begin
   {$ENDIF LINUX}
 end;
 
-type
-  TQtObject = class(TObject)
-  private
-    FHandle: QObjectH;
-    FHooks: QObject_hookH;
-  protected
-    function MainEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; virtual;
-  public
-    constructor Create(const AName: string = '');
-    destructor Destroy; override;
-    property Handle: QObjectH read FHandle;
-    property Hooks: QObject_hookH read FHooks;
-  end;
-
 constructor TQtObject.Create(const AName: string = '');
 var
   Method: TMethod;
@@ -7714,9 +7723,19 @@ type
     Msg: TMessage;
   end;
 
+  PApplicationHookItem = ^TApplicationHookItem;
+  TApplicationHookItem = record
+    Proc: TApplicationHook;
+  end;
+
+var
+  AppHookList: TList = nil;
+  AppEventFilterHook: QObject_hookH = nil;
+
 function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: PMessageData;
+  i: Integer;
 begin
   try
     Result := False;
@@ -7749,6 +7768,15 @@ begin
           end;
       end;
     end;
+
+    if Assigned(AppHookList) then
+    begin
+      Result := True;
+      for i := AppHookList.Count - 1 downto 0 do
+        if PApplicationHookItem(AppHookList[i]).Proc(Sender, Event) then
+          Exit;
+      Result := False;
+    end;
   except
     on E: Exception do
     begin
@@ -7757,9 +7785,6 @@ begin
     end;
   end;
 end;
-
-var
-  AppEventFilterHook: QObject_hookH = nil;
 
 procedure InstallAppEventFilter;
 var
@@ -7870,6 +7895,58 @@ begin
     end;
   except
   end;
+end;
+
+procedure InstallApplicationHook(Hook: TApplicationHook);
+var
+  Item: PApplicationHookItem;
+begin
+  if Assigned(Hook) then
+  begin
+    UninstallApplicationHook(Hook);
+    New(Item);
+    Item.Proc := Hook;
+
+    if not Assigned(AppHookList) then
+      AppHookList := TList.Create;
+    AppHookList.Add(Item); // the last item is the first that is handled.
+
+    InstallAppEventFilter;
+  end;
+end;
+
+procedure UninstallApplicationHook(Hook: TApplicationHook);
+var
+  i: Integer;
+  Item: PApplicationHookItem;
+begin
+  if AppHookList <> nil then
+  begin
+    for i := AppHookList.Count - 1 downto 0 do
+    begin
+      Item := AppHookList[i];
+      if @Item.Proc = @Hook then
+      begin
+        Dispose(Item);
+        AppHookList.Delete(i);
+      end;
+    end;
+    if AppHookList.Count = 0 then
+      FreeAndNil(AppHookList);
+  end;
+end;
+
+procedure FinalizeAppHookList;
+var
+  i: Integer;
+  Item: PApplicationHookItem;
+begin
+  for i := 0 to AppHookList.Count - 1 do
+  begin
+    Item := AppHookList[i];
+    Dispose(Item);
+  end;
+  FreeAndNil(AppHookList);
 end;
 
 { ---- Timer ---- }
@@ -8357,8 +8434,12 @@ finalization
   GlobalCaret.Free;
   StockObjectList.Free;
   TimerList.Free;
+  
   if Assigned(AppEventFilterHook) then
     QObject_hook_destroy(AppEventFilterHook);
+  if Assigned(AppHookList) then
+    FinalizeAppHookList;
+
   FreePainterInfos;
   DeleteCriticalSection(StockObjectListCritSect);
   DeleteCriticalSection(TimerCritSect);
@@ -8366,11 +8447,4 @@ finalization
   WaitObjectList.Free;
   {$ENDIF LINUX}
 end.
-
-
-
-
-
-
-
 
