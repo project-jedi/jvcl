@@ -260,6 +260,7 @@ function RGB(Red, Green, Blue: Integer): TColorRef;
 function GetBValue(Col: TColorRef): Byte;
 function GetGValue(Col: TColorRef): Byte;
 function GetRValue(Col: TColorRef): Byte;
+function pfDevice: TPixelFormat;
 
 const
   { windows symbolic colors }         { mapping VisualCLX Symbolic colors}
@@ -1175,6 +1176,10 @@ function DestroyCaret: Boolean;
 
 function GetDoubleClickTime: Cardinal;
 function SetDoubleClickTime(Interval: Cardinal): LongBool;
+function ReleaseCapture: LongBool;
+function SetCapture(Widget: QWidgetH): QWidgetH;
+function GetCapture: QWidgetH;
+
 
 function Win2QtAlign(Flags: Integer): Integer;
 function QtStdAlign(Flags: Integer): Word;
@@ -3628,6 +3633,34 @@ begin
   end;
 end;
 
+function ReleaseCapture: LongBool;
+var
+  Handle: QWidgetH;
+begin
+  Handle := QWidget_mouseGrabber;
+  if Handle <> nil then
+  begin
+    QWidget_releaseMouse(Handle);
+    Result := True;
+  end
+  else
+    Result := false;
+end;
+
+function SetCapture(Widget: QWidgetH): QWidgetH;
+begin
+  Result := QWidget_mouseGrabber;
+  ReleaseCapture;
+  if Widget <> nil then
+    QWidget_grabMouse(Widget);
+end;
+
+function GetCapture: QWidgetH;
+begin
+  Result := QWidget_mouseGrabber;
+end;
+
+
 // limited implementation of
 function GetSystemMetrics(PropItem: TSysMetrics): Integer;
 var
@@ -3710,6 +3743,25 @@ begin
     finally
       QPaintDeviceMetrics_destroy(pdm);
     end;
+  end;
+end;
+
+function pfDevice: TPixelFormat;
+var
+  DC: QPaintDeviceH;
+begin
+  DC := QWidget_to_QPaintDevice(QApplication_desktop);
+  case GetDeviceCaps(DC, BITSPIXEL) of
+  1:
+    Result := pf1bit;
+  8:
+    Result := pf8bit;
+  16:
+    Result := pf16bit;
+  32:
+    Result := pf32bit;
+  else
+    result := pfCustom;
   end;
 end;
 
@@ -4652,6 +4704,7 @@ var
   Font: QFontH;
   Size: TSize;
   QC: QColorH;
+  oBkMode: integer;
   MaskPainter, Painter: QPainterH;
   MaskBitmap: QBitmapH;
   Pixmap: QPixmapH;
@@ -4662,16 +4715,24 @@ begin
   QPainter_save(Handle);
   try
     if uState and DFCS_TRANSPARENT <> 0 then
-      Brush := nil
+    begin
+      Brush := nil;
+      oBkMode := SetBkMode(Handle, TRANSPARENT);
+    end
     else
     begin
+      oBkMode := SetBkMode(Handle, OPAQUE);
       Brush := QPainter_brush(Handle);
+
       if uState and DFCS_INACTIVE <> 0 then
-        SetDCBrushColor(Handle, clDisabledButton)
+        QC := QColor(clDisabledButton)
       else if uState and DFCS_HOT <> 0 then
-        SetDCBrushColor(Handle, clActiveButton)
+        QC := QColor(clActiveButton)
       else
-        SetDCBrushColor(Handle, clNormalButton);
+        QC := QColor(clNormalButton);
+      QPainter_setBackgroundColor(Handle, QC);
+      QColor_destroy(QC);
+      QPainter_eraseRect(Handle, @Rect);
     end;
     R := Rect;
     case uType of
@@ -4686,6 +4747,7 @@ begin
             Pen := CreatePen(PS_SOLID, 1, clBlack);
             QPainter_setPen(Handle, Pen);
             QPen_destroy(Pen);
+            SetBkMode(Handle, TRANSPARENT);
             case uState and $07 of
               DFCS_CAPTIONCLOSE:
                 begin
@@ -5009,6 +5071,7 @@ begin
         end;
     end;
   finally
+    SetBkMode(Handle, oBkMode);
     QPainter_restore(Handle);
   end;
 end;
