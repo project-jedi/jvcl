@@ -350,7 +350,7 @@ begin
     ExpandTargetsNoPerso(TargetList);
     EnumeratePackages(PackagesPath, List);
     if not Generate(List, TargetList, WriteMsg, Data.JVCLDir + '\' + PackageGeneratorFile,
-                    Group, ErrMsg, False, PackagesPath, '', '', Data.JVCLConfig.Filename) then
+                    Group, ErrMsg, PackagesPath, '', '', Data.JVCLConfig.Filename) then
     begin
       CaptureLine(ErrMsg, FAborted);
       AbortReason := Format(RsErrorGeneratingPackages, [TargetList.CommaText]);
