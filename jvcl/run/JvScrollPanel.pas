@@ -34,8 +34,13 @@ unit JvScrollPanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  ToolWin, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, ToolWin, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QToolWin, QExtCtrls, Types,
+  {$ENDIF VisualCLX}
   JvComponent, JvExForms;
 
 type
@@ -477,7 +482,9 @@ begin
   if AOwner is TWinControl then
     Parent := TWinControl(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls];
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
   FScrollDirection := sdHorizontal;
   BevelInner := bvRaised;
   BevelOuter := bvNone;

@@ -42,12 +42,12 @@ uses
   Graphics, Controls, Mask, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QMask, QForms, QWindows,
+  Types, QGraphics, QControls, QMask, QForms, QWindows, QTypes,
   {$ENDIF VisualCLX}
   JvComponent, JvTypes, JvCaret, JvToolEdit, JvExMask;
 
 type
-  TJvCustomMaskEdit = class(TJvExCustomMaskEdit)
+  TJvCustomMaskEdit = class(TJvExPubCustomMaskEdit)
   private
     FOnEnabledChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
@@ -66,10 +66,10 @@ type
     FProtectPassword: Boolean;
     FLastNotifiedText: String;
     procedure SetHotTrack(Value: Boolean);
-    function GetPasswordChar: Char;
     function GetText: TCaption;
-    procedure SetPasswordChar(const Value: Char);
     {$IFDEF VCL}
+    procedure SetPasswordChar(const Value: Char);
+    function GetPasswordChar: Char;
     procedure SetText(const Value: TCaption);
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     {$ENDIF VCL}
@@ -84,6 +84,7 @@ type
     procedure DoClipboardPaste; override;
     {$IFDEF VisualCLX}
     procedure SetText(const Value: TCaption); override;
+    procedure Paint; override;
     {$ENDIF VisualCLX}
     procedure EnabledChanged; override;
     procedure MouseEnter(Control :TControl); override;
@@ -108,7 +109,9 @@ type
     property Leaving: Boolean read FLeaving;
   protected
     property Text: TCaption read GetText write SetText;
+    {$IFDEF VCL}
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar default #0;
+    {$ENDIF VCL}
     // set to True to disable read/write of PasswordChar and read of Text
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
@@ -144,25 +147,25 @@ type
     property Anchors;
     property AutoSelect;
     property AutoSize;
-    property BiDiMode;
     property BorderStyle;
     property CharCase;
     property Color;
     property Constraints;
-    property DragCursor;
-    property DragKind;
     property DragMode;
     property Enabled;
     property EditMask;
     property Font;
+    {$IFDEF VCL}
     property ImeMode;
     property ImeName;
+    {$ENDIF VCL}
     property MaxLength;
-    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    {$IFDEF VCL}
     property PasswordChar;
+    {$ENDIF VCL}
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
@@ -188,8 +191,6 @@ type
     {$IFDEF VCL}
     property OnSetFocus;
     property OnKillFocus;
-    property OnStartDock;
-    property OnEndDock;
     {$ENDIF VCL}
     property OnStartDrag;
   end;
@@ -245,7 +246,7 @@ begin
       {$IFDEF VCL}
       Ctl3D := True;
       {$ELSE}
-      BorderStyle := bsSunken3d;
+      BorderStyle := bsSingle;
       {$ENDIF VCL}
     FOver := True;
   end;
@@ -403,11 +404,9 @@ begin
       inherited Paint
     else
     begin
-      ACanvas := nil;
       if not PaintEdit(Self, Text, taLeftJustify, False, {0,}
-         FDisabledTextColor, Focused, ACanvas) then
+         FDisabledTextColor, Focused, false, Canvas) then
         inherited Paint;
-      ACanvas.Free;
     end;
   end;
 end;
@@ -440,10 +439,12 @@ begin
   inherited KeyDown(Key, Shift);
 end;
 
+{$IFDEF VCL}
 function TJvCustomMaskEdit.GetPasswordChar: Char;
 begin
   Result := inherited PasswordChar;
 end;
+{$ENDIF VCL}
 
 function TJvCustomMaskEdit.GetText: TCaption;
 var
@@ -458,6 +459,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomMaskEdit.SetPasswordChar(const Value: Char);
 var
   Tmp: Boolean;
@@ -470,7 +472,7 @@ begin
     ProtectPassword := Tmp;
   end;
 end;
-
+{$ENDIF VCL}
 procedure TJvCustomMaskEdit.SetText(const Value: TCaption);
 begin
   {$IFDEF VCL}
