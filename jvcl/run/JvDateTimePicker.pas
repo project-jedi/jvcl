@@ -109,7 +109,7 @@ begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-  FNullText := RsNullText;
+  FNullText := RsNoneCaption;
   FDropDownDate := SysUtils.Date;
 end;
 

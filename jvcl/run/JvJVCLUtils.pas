@@ -5838,8 +5838,10 @@ initialization
   if Screen <> nil then
   begin
     { begin RxLib }
+    { (rom) deactivated  can cause problems
     Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
     Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
+    }
     { end RxLib }
     Screen.Cursors[crMultiDragLink] := Screen.Cursors[crMultiDrag];
     Screen.Cursors[crDragAlt] := Screen.Cursors[crDrag];
