@@ -298,6 +298,10 @@ type
   TInspectorValueErrorEvent = procedure(Sender: TObject; Item: TJvCustomInspectorItem;
     ExceptObject: Exception) of object;
 
+    // new event types (sept 2004) -wp
+ TInspectorBeforeEditEvent = procedure (Sender :TObject; Item:TJvCustomInspectorItem; Edit:TCustomEdit ) of object;  // BeforeEdit
+
+
   EJvInspector = class(EJVCLException);
   EJvInspectorItem = class(EJvInspector);
   EJvInspectorData = class(EJvInspector);
@@ -365,9 +369,28 @@ type
     FOnEditorKeyPress: TKeyPressEvent;
     FOnEditorKeyUp: TKeyEvent;
     FOnEditorMouseDown: TOnJvInspectorMouseDown;
-    FOnItemEdit: TOnJvInspectorItemEdit;
+    FOnItemEdit: TOnJvInspectorItemEdit; // User clicks Ellipsis button.
     FOnItemValueError: TInspectorValueErrorEvent;
     FInspectObject: TObject;
+
+    // BeforeEdit NOTE: - WAP
+    //
+    // This event fired is when creating TEdit or TMemo objects, and
+    // allows end users to customize the properties of the editor
+    // objects, or hook event handlers, which were
+    // otherwise invisible. This could be used to ill effect, so beware.
+    // We already expose some critical events in a nicer way,
+    // so only use BeforeEdit as a last-resort. Instead consider using:
+    // BeforeSelection if you want to prevent the editing from ocurring,
+    // or if you need to handle mouse and keyboard events in the editor
+    // use one of these:
+    //   OnEditorKeyDown, OnEditorKeyUp,
+    //   OnEditorKeyPress, OnEditorMouseDown,
+    //   OnEditorContextPopup.etc.
+    // Also, If you want the event that occurs when the user clicks the ellipsis
+    // button, you want OnItemEdit, not BeforeEdit.
+    FBeforeEdit :TInspectorBeforeEditEvent;
+
     procedure SetInspectObject(const Value: TObject);
     //    FOnMouseDown: TInspectorMouseDownEvent;
     {$IFDEF VisualCLX}
@@ -527,8 +550,11 @@ type
     property OnEditorKeyPress: TKeyPressEvent read FOnEditorKeyPress write FOnEditorKeyPress;
     property OnEditorKeyUp: TKeyEvent read FOnEditorKeyUp write FOnEditorKeyUp;
     property OnEditorMouseDown: TOnJvInspectorMouseDown read FOnEditorMouseDown write FOnEditorMouseDown;
-    property OnItemEdit: TOnJvInspectorItemEdit read FOnItemEdit write FOnItemEdit;
+    property OnItemEdit: TOnJvInspectorItemEdit read FOnItemEdit write FOnItemEdit; // User clicks Ellipsis button.
     property OnItemValueError: TInspectorValueErrorEvent read FOnItemValueError write FOnItemValueError;
+
+    property BeforeEdit :TInspectorBeforeEditEvent read FBeforeEdit write FBeforeEdit; // {TJvInspector as TObject}Inspector, {TJvCustomInspectorItem}Item, {TMemor or TEdit as TCustomEdit}Edit);
+
   public
     constructor Create(AOwner: TComponent); override;
     procedure BeforeDestruction; override;
@@ -585,7 +611,8 @@ type
     property OnItemSelected;
     property OnItemValueChanged;
     property OnItemValueError;
-    property OnItemEdit;
+    property OnItemEdit; // User clicks Ellipsis button.
+    property BeforeEdit; // Low level hook for customizing TEdit/TMemo after objects are created, just before editing.
 
     // Standard control events
     property OnEnter;
@@ -7239,6 +7266,12 @@ begin
       {$IFDEF VisualCLX}
       SetEditCtrl(TOpenEdit(Memo));
       {$ENDIF VisualCLX}
+
+     if Assigned(Inspector.BeforeEdit) then begin
+          Inspector.BeforeEdit({TObject}Inspector as TObject, {TJvCustomInspectorItem}Self, {TMemo downcast}Memo as TCustomEdit);
+      end;
+
+
     end
     else
     begin
@@ -7265,6 +7298,14 @@ begin
       Edit.AutoSize := False;
       SetEditCtrl(TOpenEdit(Edit));
       {$ENDIF VisualCLX}
+
+
+      if Assigned(Inspector.BeforeEdit) then begin
+          Inspector.BeforeEdit({TObject}Inspector as TObject, {TJvCustomInspectorItem}Self, {TEdit}Edit as TCustomEdit);
+      end;
+
+
+
     end;
     if iifEditFixed in Flags then
     begin
