@@ -8,6 +8,7 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvCanShowEvent
 <TITLE TJvCanShowEvent type>
+<COMBINE TJvTipOfDay.OnCanShow>
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay
 <TITLEIMG TJvTipOfDay>
@@ -121,7 +122,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.IsAutoExecute
 Summary
-  Specifies whether the user called Execute to display the dialog or the dialog is automatically
+  Indicates whether the user called Execute to display the dialog or the dialog is automatically
   displayed.
 Description
   \Read IsAutoExecute in an OnAfterExecute or OnCanShow event handler to determine whether the user
@@ -134,11 +135,11 @@ Summary
   Fills the tip list with the lines of text in a specified file.
 Description
   Call LoadFromFile to fill the list Tips from the file specified by FileName. Each line in the file,
-  as indicated by carriage return or linefeed characters, is appended as a \string in the list.
+  as indicated by carriage return or linefeed characters, is appended as a string in the list.
 Parameters
   AFileName - Name of the file where to read the tips from..
 See Also
-  SaveToFile, Tips
+  <LINK SaveToFile>, Tips
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.OnAfterExecute
 Summary
@@ -160,7 +161,6 @@ See Also
   Execute, OnCanShow, Options
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.OnCanShow
-<COMBINEWITH TJvCanShowEvent>
 Summary
   Occurs before the dialog is shown.
 Description
@@ -177,13 +177,13 @@ See Also
   Execute, OnAfterExecute
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.Options
-<AUTOLINK OFF>
 Summary
   Specifies options for the dialog.
 Description
-<AUTOLINK ON>
-  Use the Options property to customize the functionality of the dialog.
-<AUTOLINK OFF>
+  Use the Options property to customize the functionality of the dialog. Use these flags to specify:
+  
+  * Whether the dialog should be shown on start-up.
+  * Whether the dialog should use the registry to store the value of the "Show \Tips on StartUp" checkbox.
 See Also
   Execute
 ----------------------------------------------------------------------------------------------------
@@ -191,21 +191,18 @@ See Also
 Summary
   Saves the tips list to the specified file.
 Description
-  Call SaveToFile to save the tips in the list Tips to the file specified by FileName. Each \string in
+  Call SaveToFile to save the tips in the list Tips to the file specified by FileName. Each string in
   the list is written to a separate line in the file.
 Parameters
   AFileName - Name of the file where to write the tips to.
 See Also
-  LoadFromFile, Tips
+  <LINK LoadFromFile>, Tips
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.Style
-<AUTOLINK OFF>
 Summary
   Specifies the Tip of the Day dialog's style.
 Description
-<AUTOLINK ON>
   Use Style to determine the appearance of the dialog.
-<AUTOLINK OFF>
 See Also
   DefaultFonts
 ----------------------------------------------------------------------------------------------------
@@ -245,8 +242,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDayOption
 <TITLE TJvTipOfDayOption type>
-<AUTOLINK OFF>
-<COMBINE TJvTipOfDay.Options>
+Summary
+  Defines values that determine the behavior of a Tip of the Day dialog.
+Description
+  The TJvTipOfDayOption type defines values that determine the appearance and behavior of a Tip of
+  the Day dialog.
+
+  \TJvTipOfDayOption is a set of TJvTipOfDayOptions values.
 @@TJvTipOfDayOption.toShowOnStartUp
   Specifies whether the checkbox on the dialog is checked or unchecked. Also, if no
   <LINK TJvTipOfDay.OnCanShow,OnCanShow> event handler is used, it determines whether the dialog is 
@@ -264,13 +266,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDayOptions
 <TITLE TJvTipOfDayOptions type>
-<AUTOLINK OFF>
-<COMBINE TJvTipOfDay.Options>
+<COMBINE TJvTipOfDayOption>
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDayStyle
 <TITLE TJvTipOfDayStyle type>
-<AUTOLINK OFF>
-<COMBINE TJvTipOfDay.Style>
+Summary
+  Specifies the way a Tip of the Day dialog is drawn.
+Description
+  Use the TJvTipOfDayStyle type to specify the way a Tip of the Day dialog is drawn.
 @@TJvTipOfDayStyle.tsVC
   A "VC++ 4.0 look" Tip of the Day dialog.
 @@TJvTipOfDayStyle.tsStandard

@@ -34,6 +34,20 @@ See Also
 <TITLE RegisterWndProcHook function>
 <COMBINE RegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
 ----------------------------------------------------------------------------------------------------
+@@ReleaseObj
+<TITLE ReleaseObj procedure>
+Summary
+  Destroys the object and frees its associated memory.
+Description
+  Call ReleaseObj to destroy an object and free its associated memory.
+
+  ReleaseObj does not destroy the object until all messages in the message queue are processed.
+Note
+  ReleaseObj returns immediately to the caller. It does not wait for the object to be freed before
+  returning.
+Parameters
+  AObject - Object that should be destroyed.
+----------------------------------------------------------------------------------------------------
 @@TJvControlHook
 <TITLE TJvControlHook type>
 Summary
@@ -52,6 +66,21 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvHookMessageEvent
 <TITLE TJvHookMessageEvent type>
+Summary
+  Type for event handlers that let an application process messages before or after the hooked control 
+  has handled it.
+Description
+  Use TJvHookMessageEvent to respond to messages send to the hooked control. 
+
+  Use parameter Handled to specify
+  whether the message is handled; setting Handled to True will prevent other hooks or the hooked control
+  - if it has not received the message yet - to respond to this message.
+Parameters
+  Sender  - The hook component that has send this message.
+  Msg     - Represents the Windows message that is about to be send to or just has been send to the 
+             hooked control.
+  Handled - Set Handled to True to specify that the message is handled, and that no other hooks, or
+             the hooked control itself, may respond to this message.
 ----------------------------------------------------------------------------------------------------
 @@TJvHookOrder
 <TITLE TJvHookOrder type>
@@ -101,7 +130,6 @@ See Also
   Control, HookControl, UnHookControl
 ----------------------------------------------------------------------------------------------------
 @@TJvWindowHook.AfterMessage
-<COMBINEWITH TJvHookMessageEvent>
 Summary
   Occurs after the hooked control has handled a received message.
 Description
@@ -122,7 +150,6 @@ See Also
   Active, BeforeMessage, Control
 ----------------------------------------------------------------------------------------------------
 @@TJvWindowHook.BeforeMessage
-<COMBINEWITH TJvHookMessageEvent>
 Summary
   Occurs before the hooked control handles a received message.
 Description
@@ -192,16 +219,3 @@ See Also
 <TITLE UnRegisterWndProcHook function>
 <COMBINE UnRegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
 ----------------------------------------------------------------------------------------------------
-@@ReleaseObj
-<TITLE ReleaseObj procedure>
-Summary
-  Destroys the object and frees its associated memory.
-Description
-  Use ReleaseObj to destroy an object and free its associated memory.
-
-  ReleaseObj does not destroy the object until all messages in the message queue are processed.
-Note
-  ReleaseObj returns immediately to the caller. It does not wait for the object to be freed before
-  returning.
-Parameters
-  AObject - Object that should be destroyed.

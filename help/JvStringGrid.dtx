@@ -7,12 +7,15 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TCaptionClickEvent
 <TITLE TCaptionClickEvent type>
+<COMBINE TJvStringGrid.OnCaptionClick>
 ----------------------------------------------------------------------------------------------------
 @@TExitCellEvent
 <TITLE TExitCellEvent type>
+<COMBINE TJvStringGrid.OnExitCell>
 ----------------------------------------------------------------------------------------------------
 @@TGetCellAlignmentEvent
 <TITLE TGetCellAlignmentEvent type>
+<COMBINE TJvStringGrid.OnGetCellAlignment>
 ----------------------------------------------------------------------------------------------------
 @@TGMActivateCell
 <TITLE TGMActivateCell type>
@@ -20,7 +23,7 @@ Summary
   TGMActivateCell is a message used to activate a cell message.
 Description
 @@TGMActivateCell.Msg
-  The message code. 
+  The message code.
 @@TGMActivateCell.Column
   Indicates the column index of the cell that should get focus.
 @@TGMActivateCell.Row
@@ -34,7 +37,7 @@ Summary
   Specifies the comparison function used to sort a \string grid.
 Description
   The following are possible values of TJvSortType:
-  
+
 @@TJvSortType.stAutomatic
   The comparison function automatically determines the type of the strings when comparing two strings.
   If both strings represent a integer, floating-point value or a date, then the two strings are compared
@@ -50,8 +53,8 @@ Description
   A date sort is used. Every \string in the sort column, that is included in the sort, must specify a
   date.
 @@TJvSortType.stCurrency
-  A currency sort is used. Every \string in the sort column, that is included in the sort must represent 
-  a currency value. 
+  A currency sort is used. Every \string in the sort column, that is included in the sort must represent
+  a currency value.
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid
 <TITLEIMG TJvStringGrid>
@@ -62,20 +65,20 @@ Summary
   Supports extended features such as alternative cell alignment, sorting, loading and saving a grid.
 Description
   Call method SortGrid to sort the grid. Call method SaveToCSV, SaveToFile or SaveToStream to save the
-  grid to a stream or file. Call method LoadFromCSV, LoadFromFile or LoadFromStream to load the grid 
-  from a file or stream. 
-  
-  You can use OnMouseEnter and OnMouseLeave to alter the grids look or behavoir, when the user 
+  grid to a stream or file. Call method LoadFromCSV, LoadFromFile or LoadFromStream to load the grid
+  from a file or stream.
+
+  You can use OnMouseEnter and OnMouseLeave to alter the grids look or behavoir, when the user
   moves the mouse pointer over the control.
-  
+
   Property HintColor can be used to set a different color of the Help hint boxes for the grid.
-  
+
   Use Alignment to set the default alignment for the grid. \Write an OnGetCellAlignment event handler
-  to provide the grid with an alignment for a specific cell. 
-  
+  to provide the grid with an alignment for a specific cell.
+
   Call InvalidateCell, InvalidateCol or InvalidateRow to repaint a cell, column or row, respectively.
-  
-  Call ActivateCell to set the input focus to a specific cell. \Write an OnExitCell event handler to 
+
+  Call ActivateCell to set the input focus to a specific cell. \Write an OnExitCell event handler to
   respend when the input focus shifts away from a cell.
 
   \Write an OnCaptionClick event handler to respond when the user clicks a fixed cell.
@@ -85,8 +88,8 @@ Summary
   Creates and initializes a new TJvStringGrid object.
 Description
   Use \Create to create and initialize a new TJvStringGrid object.
-  
-  \Create calls the inherited \Create method, then sets the initial values for the grid as follows: 
+
+  \Create calls the inherited \Create method, then sets the initial values for the grid as follows:
 Parameters
   AOwner - A component, typically the form, that is responsible for freeing the grid.
 See Also
@@ -100,26 +103,26 @@ Summary
 Description
   Call ActivateCell to shift the input focus to a particular cell.
 Parameters
-  aCol  - Indicates the column index of the cell that should get focus.
-  aRow  - Indicates the row index of the cell that that should get focus.
+  AColumn - Indicates the column index of the cell that should get focus.
+  ARow    - Indicates the row index of the cell that that should get focus.
 See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.Alignment
 Summary
   Specifies how text is default aligned within a cell.
 Description
-  Use Alignment to specify whether values should be left-justified, right-justified, or centered in 
+  Use Alignment to specify whether values should be left-justified, right-justified, or centered in
   the cells of a grid. Alignment is the default value for all cells in the grid, but you can write an
-  OnGetCellAlignment event handler to specify the alignment of a single cell. The value returned by 
+  OnGetCellAlignment event handler to specify the alignment of a single cell. The value returned by
   OnGetCellAlignment then overrides the value specified by Alignment.
 See Also
-  OnGetCellAlignment  
+  OnGetCellAlignment
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.CaptionClick
 Summary
   Responds when the user clicks a fixed cell.
 Description
-  CaptionClick is called automatically when the user clicks a fixed cell. It triggers the 
+  CaptionClick is called automatically when the user clicks a fixed cell. It triggers the
   OnCaptionClick event.
 Parameters
   aCol  - Indicates the column index of the cell that is clicked.
@@ -131,10 +134,10 @@ See Also
 Summary
   Responds when the Ctrl3D property changes.
 Description
-  CMCtl3DChanged is called automatically when the Ctl3D property changes. It triggers the 
+  CMCtl3DChanged is called automatically when the Ctl3D property changes. It triggers the
   OnCtl3DChanged event.
 Parameters
-  Msg - Represents the parameters of the Windows message that informs the grid of the Ctl3D 
+  Msg - Represents the parameters of the Windows message that informs the grid of the Ctl3D
         change.
 See Also
   OnCtl3DChanged
@@ -144,7 +147,7 @@ Summary
   Responds when the mouse pointer moves over the grid.
 Description
   CMMouseEnter is called automatically when the mouse pointer moves over the grid. It sets the
-  hint color for the application to the property specified by HintColor, and triggers the OnMouseEnter 
+  hint color for the application to the property specified by HintColor, and triggers the OnMouseEnter
   event.
 Parameters
   Msg - Represents the parameters of the Windows message that informs the grid of the event.
@@ -185,15 +188,15 @@ Description
 Summary
   Draws the text in a column cell.
 Description
-  Call DefaultDrawCell from an OnDrawCell event handler to draw the text in a column cell. If the 
+  Call DefaultDrawCell from an OnDrawCell event handler to draw the text in a column cell. If the
   OnGetCellAlignment event handler is assigned, DefaultDrawCell fires the OnGetCellAlignment event
   to get the alignment for the text; otherwise it uses the Alignment property to align the cell text.
 Parameters
-  ACol  - Indicates the column index of the cell that should be drawn.
-  ARow  - Indicates the row index of the cell that should be drawn.
-  Rect  - Indicates the location of the cell on the canvas.
-  State - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
-           is a fixed (nonscrolling) cell.
+  AColumn - Indicates the column index of the cell that should be drawn.
+  ARow    - Indicates the row index of the cell that should be drawn.
+  Rect    - Indicates the location of the cell on the canvas.
+  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
+             is a fixed (nonscrolling) cell.
 See Also
   OnGetCellAlignment
 ----------------------------------------------------------------------------------------------------
@@ -201,28 +204,28 @@ See Also
 Summary
   Draws the cell specified by the ACol and ARow parameters.
 Description
-  DrawCell is called automatically whenever a cell in the grid is drawn. It overrides the inherited 
+  DrawCell is called automatically whenever a cell in the grid is drawn. It overrides the inherited
   method to notify the user of events and use the Alignment property when drawing cells in the grid.
 
-  DrawCell checks if the OnDrawCell event handler is assigned, if so an OnDrawCell event is fired and 
+  DrawCell checks if the OnDrawCell event handler is assigned, if so an OnDrawCell event is fired and
   the user is responsible for drawing the cell.
-  
-  If the OnDrawCell event handler is not assigned, then TJvStringGrid fires the OnSetCanvasProperties 
+
+  If the OnDrawCell event handler is not assigned, then TJvStringGrid fires the OnSetCanvasProperties
   event and finally calls DefaultDrawCell.
 Parameters
-  ACol  - Indicate the column index of the cell that should be drawn.
-  ARow  - Indicate the row index of the cell that should be drawn.
-  Rect  - Indicates the location of the cell on the canvas.
-  State - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
+  ACol    - Indicate the column index of the cell that should be drawn.
+  ARow    - Indicate the row index of the cell that should be drawn.
+  Rect    - Indicates the location of the cell on the canvas.
+  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
            is a fixed (nonscrolling) cell.
 See Also
   DefaultDrawCell, OnSetCanvasProperties
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.ExitCell
 Summary
-  Responds when a cell loses the input focus. 
+  Responds when a cell loses the input focus.
 Description
-  ExitCell is called automatically when the input focus shifts away from a cell. It triggers the 
+  ExitCell is called automatically when the input focus shifts away from a cell. It triggers the
   OnExitCell event.
 Parameters
   edittext - The text of the cell that loses the input focus.
@@ -235,13 +238,13 @@ See Also
 Summary
   Returns the alignment of a cell in the grid.
 Description
-  Use GetCellAlignment to get the alignment of a cell in the grid. If the OnGetCellAlignment event 
-  handler is assigned, GetCellAlignment fires the OnGetCellAlignment event to get the alignment for 
+  Use GetCellAlignment to get the alignment of a cell in the grid. If the OnGetCellAlignment event
+  handler is assigned, GetCellAlignment fires the OnGetCellAlignment event to get the alignment for
   the cell; otherwise it returns the value of the Alignment property.
 Parameters
-  Acol  - The column index of the cell.
-  aRow  - The row index of the cell that should be drawn.
-  State - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
+  AColumn - The column index of the cell.
+  ARow    - The row index of the cell that should be drawn.
+  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
            is a fixed (nonscrolling) cell.
 See Also
   OnGetCellAlignment
@@ -259,10 +262,10 @@ Summary
   Invalidates the region occupied by a cell so that it will be repainted with the next Windows paint
   message.
 Description
-  Call InvalidateCell when the contents of a cell changes so that the cell will need to be repainted. 
+  Call InvalidateCell when the contents of a cell changes so that the cell will need to be repainted.
 Parameters
-  aCol - Column index of the cell.
-  aRow - Row index of the cell.
+  AColumn - Column index of the cell.
+  ARow    - Row index of the cell.
 See Also
   InvalidateCol, InvalidateRow
 ----------------------------------------------------------------------------------------------------
@@ -271,20 +274,20 @@ Summary
   Invalidates the region occupied by a column so that it will be repainted with the next Windows paint
   message.
 Description
-  Call InvalidateCol when a column changes so that the area it occupies will need to be repainted. 
+  Call InvalidateCol when a column changes so that the area it occupies will need to be repainted.
 Parameters
-  aCol - Index of the column.
+  AColumn - Index of the column.
 See Also
   InvalidateCell, InvalidateRow
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.InvalidateRow
 Summary
-  Invalidates the region occupied by a row so that it will be repainted with the next Windows paint 
+  Invalidates the region occupied by a row so that it will be repainted with the next Windows paint
   message.
 Description
   Call InvalidateRow when a row changes so that the area it occupies will need to be repainted.
 Parameters
-  aRow - Index of the row.
+  ARow - Index of the row.
 See Also
   InvalidateCell, InvalidateCol
 ----------------------------------------------------------------------------------------------------
@@ -293,25 +296,25 @@ Summary
   Reads the comma seperated file specified in FileName and loads the data into the \string grid.
 Description
   Use the LoadFromCSV method to retrieve a \string grid from a comma seperated file. LoadFromCSV can
-  read files that list the cell strings - seperated with the character specified by Seperator - one row 
+  read files that list the cell strings - seperated with the character specified by Seperator - one row
   per line.
 
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data 
+  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
 Parameters
-  FileName  - Name of a CSV file from which to read the \string grid. 
+  FileName  - Name of a CSV file from which to read the \string grid.
   Separator - Character used in the CSV file to seperate cell strings.
 See Also
   LoadFromFile, LoadFromStream, OnLoadProgress, SaveToCSV
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.LoadFromFile
 Summary
-  Reads the file specified in FileName and changes the grid into the grid specified by the data. 
+  Reads the file specified in FileName and changes the grid into the grid specified by the data.
 Description
-  Use the LoadFromFile method to change the grid into the grid specified by the data. FileName should 
-  reference a file that was saved using the SaveToFile method. 
+  Use the LoadFromFile method to change the grid into the grid specified by the data. FileName should
+  reference a file that was saved using the SaveToFile method.
 
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data 
+  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
 Parameters
   FileName - Name of a file that was saved using the SaveToFile method
@@ -322,13 +325,13 @@ See Also
 Summary
   Reads \string grid data from a stream and stores the contents in the \string grid.
 Description
-  Use LoadFromStream to read the cell strings of the grid from the specified stream. LoadFromStream 
+  Use LoadFromStream to read the cell strings of the grid from the specified stream. LoadFromStream
   changes the grid into the grid specified by the stream.
 
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data 
+  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
 Parameters
-  Stream - Specifies the stream from which to read the \string grid. 
+  Stream - Specifies the stream from which to read the \string grid.
 See Also
   LoadFromCSV, LoadFromFile, OnLoadProgress, SaveToStream
 ----------------------------------------------------------------------------------------------------
@@ -340,7 +343,7 @@ Description
   mouse. As implemented in TJvStringGrid, MouseDown saves the position where the user clicked, so
   TJvStringGrid can fire an OnCaptionClick event, when the mouse is released.
 Parameters
-  Button - Determines which mouse button the user pressed. 
+  Button - Determines which mouse button the user pressed.
   Shift  - Indicates which keys (Shift, Ctrl, and Alt) were down when the user pressed the mouse button.
   X      - Indicates the new x-coordinate of the mouse pointer.
   Y      - Indicates the new y-coordinate of the mouse pointer.
@@ -351,11 +354,11 @@ See Also
 Summary
   Responds when the user releases the mouse.
 Description
-  Do not call MouseUp. It is called automatically when the user releases the mouse. As implemented in 
-  TJvStringGrid, MouseUp checks whether the user clicked a fixed cell, and if so, it will fire an 
+  Do not call MouseUp. It is called automatically when the user releases the mouse. As implemented in
+  TJvStringGrid, MouseUp checks whether the user clicked a fixed cell, and if so, it will fire an
   OnCaptionClick event.
 Parameters
-  Button - Determines which mouse button the user pressed. 
+  Button - Determines which mouse button the user pressed.
   Shift  - Indicates which keys (Shift, Ctrl, and Alt) were down when the user released the mouse button.
   X      - Indicates the new x-coordinate of the mouse pointer.
   Y      - Indicates the new y-coordinate of the mouse pointer.
@@ -363,16 +366,15 @@ See Also
   MouseDown, OnCaptionClick
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnCaptionClick
-<COMBINEWITH TCaptionClickEvent>
 Summary
   Occurs when the user clicks a fixed cell.
 Description
   \Write an OnCaptionClick event handler to take specific action when the user clicks a fixed cell.
   Fixed cells are specified by the FixedCols and FixedRows properties.
 Parameters
-  sender - The grid that has fired this event.
-  aCol   - Indicates the column index of the fixed cell that is clicked.
-  aRow   - Indicates the row index of the fixed cell that is clicked.
+  Sender  - The grid that has fired this event.
+  AColumn - Indicates the column index of the fixed cell that is clicked.
+  ARow    - Indicates the row index of the fixed cell that is clicked.
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnCtl3DChanged
 Summary
@@ -381,36 +383,34 @@ Description
   \Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnExitCell
-<COMBINEWITH TExitCellEvent>
 Summary
-  Occurs when a cell loses the input focus. 
+  Occurs when a cell loses the input focus.
 Description
-  \Write an OnExitCell event handler to take specific action when the input focus shifts away from 
+  \Write an OnExitCell event handler to take specific action when the input focus shifts away from
   a cell.
 Parameters
   Sender   - The grid that has fired this event.
-  aCol     - Indicate the column index of the cell that loses the input focus.
-  aRow     - Indicate the row index of the cell that loses the input focus.
-  edittext - The text of the cell that loses the input focus.
+  AColumn  - Indicate the column index of the cell that loses the input focus.
+  ARow     - Indicate the row index of the cell that loses the input focus.
+  EditText - The text of the cell that loses the input focus.
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnGetCellAlignment
-<COMBINEWITH TGetCellAlignmentEvent>
 Summary
   Occurs when the grid request the alignment of a cell.
 Description
-  \Write an OnGetCellAlignment event handler to provide the grid with an alignment for a specific cell. 
-  Set the cellAlignment parameter to the alignment for the cell specified by the ACol and ARow parameters. 
+  \Write an OnGetCellAlignment event handler to provide the grid with an alignment for a specific cell.
+  Set the cellAlignment parameter to the alignment for the cell specified by the ACol and ARow parameters.
   cellAlignment is set to the value of property Alignment, so if you don't alter cellAlignment, the cell
   is aligned as specified by Alignment.
-  
+
   OnGetCellAlignment is fired just before the cell is drawn, or if the user calls GetCellAlignment.
 Parameters
   Sender        - The grid that has fired this event.
-  aCol          - Indicates the column index of the cell that loses the input focus.
-  aRow          - Indicates the row index of the cell that loses the input focus.
-  State         - Indicates whether the cell has input focus, whether the cell is selected, and whether 
+  AColumn       - Indicates the column index of the cell that loses the input focus.
+  ARow          - Indicates the row index of the cell that loses the input focus.
+  State         - Indicates whether the cell has input focus, whether the cell is selected, and whether
                    the cell is a fixed (nonscrolling) cell.
-  cellAlignment - Specifies the alignment for the cell sepcified by the ACol and ARow parameters. If you
+  CellAlignment - Specifies the alignment for the cell sepcified by the ACol and ARow parameters. If you
                    don't alter cellAlignment the cell is aligned as specified by Alignment.
 See Also
   Alignment, GetCellAlignment
@@ -421,23 +421,17 @@ Summary
 Description
   \Write an OnHorizontalScroll event handler to take specific action when the user scrolls the
   horizontal scroll bar.
-See Also 
+See Also
   OnVerticalScroll
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnLoadProgress
-<COMBINEWITH TProgress>
 Summary
   Occurs periodically during load operations.
 Description
   \Write an OnProgress event handler to provide the user with feedback during load operations.
-  
-  To calculate the percentage of progress to show in a progress indicator, multiply the value of 
+
+  To calculate the percentage of progress to show in a progress indicator, multiply the value of
   Progression by 100 and divide by the value of Total.
-Parameters
-  Sender      - The grid that is in the process of loading a grid.
-  Progression - Indicates how much of the load operation has already been completed, on a scale of 0
-                to Total.
-  Total       - Specifies a value that must be reached by Progression to complete the load operation.
 See Also
   LoadFromCSV, LoadFromStream, LoadFromFile
 ----------------------------------------------------------------------------------------------------
@@ -445,7 +439,7 @@ See Also
 Summary
   Occurs when the mouse pointer moves over the grid.
 Description
-  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   grid.
 See Also
   OnMouseLeave
@@ -467,19 +461,13 @@ Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnSaveProgress
-<COMBINEWITH TProgress>
 Summary
   Occurs periodically during save operations.
 Description
   \Write an OnProgress event handler to provide the user with feedback during save operations.
-  
-  To calculate the percentage of progress to show in a progress indicator, multiply the value of 
+
+  To calculate the percentage of progress to show in a progress indicator, multiply the value of
   Progression by 100 and divide by the value of Total.
-Parameters
-  Sender      - The grid that is in the process of saving a grid.
-  Progression - Indicates how much of the save operation has already been completed, on a scale of 0
-                to Total.
-  Total       - Specifies a value that must be reached by Progression to complete the save operation.
 See Also
   SaveToCSV, SaveToFile, SaveToStream
 ----------------------------------------------------------------------------------------------------
@@ -499,17 +487,17 @@ Description
   \Write an OnVerticalScroll event handler to take specific action when the user scrolls the
   vertical scroll bar.
 See Also
-  OnHorizontalScroll 
+  OnHorizontalScroll
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.SaveToCSV
 Summary
   Saves the \string grid to the file specified in FileName.
 Description
-  Use the SaveToFile method to store \string grid cells to a text file. The cells can later be reloaded 
-  from the file into a new \string grid object using the LoadFromCSV method. SaveToCSV writes the cell 
+  Use the SaveToFile method to store \string grid cells to a text file. The cells can later be reloaded
+  from the file into a new \string grid object using the LoadFromCSV method. SaveToCSV writes the cell
   strings to the file, seperated with the character specified by Seperator, and one row per line.
 
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data 
+  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
 Parameters
   FileName  - Name of the CSV file where to write the \string grid to.
@@ -521,10 +509,10 @@ See Also
 Summary
   Saves the \string grid to the file specified in FileName.
 Description
-  Use the SaveToFile method to store \string grid cells to a file. The cells can later be reloaded 
+  Use the SaveToFile method to store \string grid cells to a file. The cells can later be reloaded
   from the file into a new \string grid object using the LoadFromFile method.
 
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data 
+  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
 Parameters
   FileName - Name of the file where to write the \string grid to.
@@ -535,10 +523,10 @@ See Also
 Summary
   Writes the data in the \string grid to the stream passed as the Stream parameter.
 Description
-  Use the SaveToStream method to stream out the strings in a grid. It can be streamed back in to 
+  Use the SaveToStream method to stream out the strings in a grid. It can be streamed back in to
   another \string grid object using the LoadFromStream method.
 
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data 
+  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
 Parameters
   Stream - The stream object to use for writing the information.
@@ -549,7 +537,7 @@ See Also
 Summary
   Responds when a cell in the grid needs to be drawn.
 Description
-  Do not call SetCanvasProperties. It is called automatically just before TJvStringGrid calls 
+  Do not call SetCanvasProperties. It is called automatically just before TJvStringGrid calls
   DefaultDrawCell. SetCanvasProperties fires the OnSetCanvasProperties event.
 Parameters
   ACol  - Indicate the column index of the cell that is about to be drawn.
@@ -564,18 +552,18 @@ See Also
 Summary
   Sorts the rows in the grid.
 Description
-  Call SortGrid to sort the rows in the grid on the value of the \string in the column specified by Column. 
-  
+  Call SortGrid to sort the rows in the grid on the value of the \string in the column specified by Column.
+
   Set Ascending to True for an ascending sort, set Ascending to False for an descending sort.
-  
+
   Set Fixed to True to include the fixed rows in the sort. Set Fixed to False to exclude the fixed rows
   in the sort.
-  
+
   Set BlankTop to True to move the rows with blank cells at the column with index Column before the sort,
-  and exclude them from the sort. If Ascending is True, the rows will be moved to the top of the grid. 
-  If Ascending is False, the rows will be moved to the bottom of the grid. Set BlankTop to False to 
+  and exclude them from the sort. If Ascending is True, the rows will be moved to the top of the grid.
+  If Ascending is False, the rows will be moved to the bottom of the grid. Set BlankTop to False to
   include the rows with blank cells at the column with index Column in the sort.
-  
+
   SortGrid uses the comparison function specified by SortType. SortType can have any of the following values:
   <TABLE>
   Value              Meaning
@@ -588,14 +576,14 @@ Description
   stCaseSensitive    The strings in the sort column are sorted with case-sensitivity.
   stNumeric          A numeric sort is used. Every \string in the sort column, that is included in the sort,
                       must represent a floating-point value.
-  stDate             A date sort is used. Every \string in the sort column, that is included in the sort, 
+  stDate             A date sort is used. Every \string in the sort column, that is included in the sort,
                       must specify a date.
   stCurrency         A currency sort is used. Every \string in the sort column, that is included in the
-                      sort must represent a currency value. 
+                      sort must represent a currency value.
   </TABLE>
 Parameters
   Column    - Specifies the index of the column to use for the sort.
-  Ascending - Indicates the sort order. 
+  Ascending - Indicates the sort order.
   Fixed     - Indicates whether to include the fixed rows in the sort.
   SortType  - Specifies the comparison function.
   BlankTop  - Indicates whether to move blank cells before the sort.
@@ -604,7 +592,7 @@ Parameters
 Summary
   Responds when the user scrolls the horizontal scroll bar with the mouse or keyboard.
 Description
-  WMHScroll is called automatically when the user scrolls the horizontal bar. It triggers the 
+  WMHScroll is called automatically when the user scrolls the horizontal bar. It triggers the
   OnHorizontalScroll event.
 Parameters
   Msg - Represents the parameters of the Windows message that informs the grid of the
@@ -616,7 +604,7 @@ See Also
 Summary
   Responds when the user scrolls the vertical scroll bar with the mouse or keyboard.
 Description
-  WMVScroll is called automatically when the user scrolls the vertiacl bar. It triggers the 
+  WMVScroll is called automatically when the user scrolls the vertiacl bar. It triggers the
   OnVerticalScroll event.
 Parameters
   Msg - Represents the parameters of the Windows message that informs the grid of the
@@ -626,3 +614,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TProgress
 <TITLE TProgress type>
+Summary
+  Type for event handlers that provide feedback during load or save operations.
+Description
+  Use TProgress to provide the user with feedback during load or save operations.
+Parameters
+  Sender      - The grid that is in the process of loading or saving a grid.
+  Progression - Indicates how much of the load or save operation has already been completed, 
+                 on a scale of 0 to Total.
+  Total       - Specifies a value that must be reached by Progression to complete the operation.
