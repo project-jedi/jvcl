@@ -435,7 +435,7 @@ end;
 
 type
   TColorArray = array [0..2] of TColor; 
-  TCustomFormAccessProtected = class(TCustomForm); 
+  THackedCustomForm = class(TCustomForm); 
 
   TJvUpDown = class(TCustomUpDown)
   private
@@ -1013,7 +1013,7 @@ begin
     if (Key = Cr) or (Key = Esc) then
     begin
       { must catch and remove this, since is actually multi-line }  
-      TCustomFormAccessProtected(GetParentForm(Self)).WantKey(Integer(Key), [], Key); 
+      THackedCustomForm(GetParentForm(Self)).WantKey(Integer(Key), [], Key); 
       if Key = Cr then
         Key := #0;
     end;
@@ -1872,8 +1872,8 @@ var
         LColors[2] := clBtnShadow;
         BottomFlags := EDGE_SUNKEN;
       end;
-      QWindows.DrawEdge(Handle, R, TopFlags, BF_TOPLEFT or BF_SOFT);
-      QWindows.DrawEdge(Handle, R, BottomFlags, BF_BOTTOMRIGHT or BF_SOFT);
+      DrawEdge(Handle, R, TopFlags, BF_TOPLEFT or BF_SOFT);
+      DrawEdge(Handle, R, BottomFlags, BF_BOTTOMRIGHT or BF_SOFT);
       InflateRect(R, -1, -1);
 
       Pen.Color := LColors[0];
@@ -1926,10 +1926,10 @@ var
       if ADownState = sbBottomDown then
         BottomFlags := EDGE_SUNKEN;
       RSrc := R;
-      QWindows.DrawEdge(Handle, R, TopFlags, BF_RECT or BF_SOFT or BF_ADJUST);
+      DrawEdge(Handle, R, TopFlags, BF_RECT or BF_SOFT or BF_ADJUST);
       R1 := Bounds(0, H, Width, Height);
       R1.Bottom := Height;
-      QWindows.DrawEdge(Handle, R1, BottomFlags, BF_RECT or BF_SOFT or BF_ADJUST);
+      DrawEdge(Handle, R1, BottomFlags, BF_RECT or BF_SOFT or BF_ADJUST);
       if not CustomGlyphs then
       begin
         UpArrow.LoadFromResourceName(HInstance, sSpinUpBtnPole);
@@ -2006,13 +2006,13 @@ begin
       AUpArrow.Height);
     Source := Bounds(0, 0, AUpArrow.Width, AUpArrow.Height);
 
-    if Enabled then  
-      BrushCopy(ACanvas, Dest, AUpArrow, Source, AUpArrow.TransparentColor) 
+    if Enabled then
+      BrushCopy(ACanvas, Dest, AUpArrow, Source, AUpArrow.TransparentColor)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
-      try  
-        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor); 
+      try
+        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
         DisabledBitmap.Free;
       end;
@@ -2024,13 +2024,13 @@ begin
       ADownArrow.Width, ADownArrow.Height);
     Source := Bounds(0, 0, ADownArrow.Width, ADownArrow.Height);
 
-    if Enabled then  
-      BrushCopy(ACanvas, Dest, ADownArrow, Source, ADownArrow.TransparentColor) 
+    if Enabled then
+      BrushCopy(ACanvas,Dest, ADownArrow, Source, ADownArrow.TransparentColor)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
-      try  
-        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor); 
+      try
+        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
         DisabledBitmap.Free;
       end;

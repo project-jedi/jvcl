@@ -58,14 +58,14 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF UNIX}
-  Xlib, QStdCtrls, StrUtils,
+  Xlib,
   {$ENDIF UNIX}
-  SysUtils, Classes, QGraphics, QClipbrd, QControls, 
-  Qt, QWindows, 
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  TypInfo;
+  SysUtils, Classes, QGraphics, QClipbrd, QControls, 
+  Qt, QWindows, QStdCtrls,  
+  StrUtils, TypInfo;
 
 const
   {$IFDEF MSWINDOWS}
@@ -919,10 +919,7 @@ uses
   {$IFDEF MSWINDOWS}
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_STRUTILS}
-  StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}  
-  QConsts, 
+  QConsts,
   {$IFNDEF NO_JCL}
   JclStrings, JclSysInfo,
   {$ENDIF !NO_JCL}

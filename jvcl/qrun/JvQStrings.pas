@@ -999,7 +999,9 @@ procedure RecurseDirProgs(const ADir: string; var AFileList: TStringList);
 var
   SR: TSearchRec;
   FileAttrs: Integer;
+  {$IFDEF MSWINDOWS}
   E: string;
+  {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   ST: TStatBuf;
   {$ENDIF UNIX}

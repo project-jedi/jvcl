@@ -402,6 +402,8 @@ procedure TJvCustomAppIniStorage.WriteValue(const Section, Key, Value: string);
 begin
   if IniFile <> nil then
   begin
+    if AutoReload and not IsUpdating then
+      Reload;
     IniFile.WriteString(CalcDefaultSection(Section), Key, Value);
     if AutoFlush and not IsUpdating then
       Flush;

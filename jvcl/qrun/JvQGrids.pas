@@ -458,7 +458,7 @@ begin
     begin { esEllipsis }
       if FPressed then
         Flags := BF_FLAT;
-      QWindows.DrawEdge(DC, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or Flags);
+      DrawEdge(DC, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or Flags);
       W := 2;
       G := (FButtonWidth - LeftOffs * 2 - 3 * W) div 2;
       if G <= 0 then
@@ -1115,8 +1115,8 @@ begin
         (goFixedVertLine in Options) then
         Inc(TempRect.Bottom, GridLineWidth); 
       RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]); 
-      QWindows.DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
-      QWindows.DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
+      DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
+      DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
     end;
   end;
   if FDefaultDrawing and not (csDesigning in ComponentState) and

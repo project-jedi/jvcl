@@ -2632,8 +2632,7 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
-    begin  
-      QWindows. 
+    begin 
       DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
     end
     else
@@ -2839,8 +2838,7 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
-    begin  
-      QWindows. 
+    begin 
       DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT);
     end
     else

@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls,
-  JvQThemes, JvQExControls, JvQExStdCtrls;
+  JvQThemes, JvQExControls, JvQExStdCtrls, JvQJCLUtils, JvQComponent;
 
 type
   TJvGroupBox = class(TJvExGroupBox, IJvDenySubClassing)
@@ -82,10 +82,10 @@ var
   H: Integer;
   R: TRect;
   Flags: Longint; 
-  LastBkMode: Integer; 
+  LastBkMode: Integer;
 begin 
   with Canvas do
-  begin 
+  begin
     LastBkMode := GetBkMode(Handle);
     try
       Font := Self.Font;
@@ -93,11 +93,11 @@ begin
       R := Rect(0, H div 2 - 1, Width, Height); 
         Inc(R.Left);
         Inc(R.Top);
-        Brush.Color := clBtnHighlight;  
-        QWindows.FrameRect(Canvas, R); 
+        Brush.Color := clBtnHighlight;
+        QWindows.FrameRect(Canvas, R);
         OffsetRect(R, -1, -1);
-        Brush.Color := clBtnShadow;  
-      QWindows.FrameRect(Canvas, R); 
+        Brush.Color := clBtnShadow;
+      QWindows.FrameRect(Canvas, R);
       if Text <> '' then
       begin
         if not UseRightToLeftAlignment then
@@ -106,21 +106,21 @@ begin
           R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
         Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
         // calculate text rect
-        SetBkMode(Handle, OPAQUE);  
-        DrawText(Canvas, Text, Length(Text), R, Flags or DT_CALCRECT); 
+        SetBkMode(Handle, OPAQUE);
+        DrawText(Handle, Text, Length(Text), R, Flags or DT_CALCRECT);
         Brush.Color := Color;
         if not Enabled then
         begin
           OffsetRect(R, 1, 1);
-          Font.Color := clBtnHighlight;  
-          DrawText(Canvas, Text, Length(Text), R, Flags); 
+          Font.Color := clBtnHighlight;
+          DrawText(Canvas, Text, Length(Text), R, Flags);
           OffsetRect(R, -1, -1);
           Font.Color := clBtnShadow;
-          SetBkMode(Handle, TRANSPARENT);  
-          DrawText(Canvas, Text, Length(Text), R, Flags); 
+          SetBkMode(Handle, TRANSPARENT);
+          DrawText(Canvas, Text, Length(Text), R, Flags);
         end
-        else  
-          DrawText(Canvas, Text, Length(Text), R, Flags); 
+        else
+          DrawText(Canvas, Text, Length(Text), R, Flags);
       end;
     finally
       SetBkMode(Handle, LastBkMode); 

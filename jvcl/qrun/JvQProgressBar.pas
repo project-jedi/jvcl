@@ -37,7 +37,7 @@ interface
 uses
   QWindows, QMessages, 
   SysUtils, Classes, QGraphics, QControls, QForms, QComCtrls,
-  JvQExComCtrls;
+  JvQExComCtrls, JvQComponent;
 
 type
   TJvBaseProgressBar = class(TGraphicControl)
@@ -267,7 +267,7 @@ begin
   R := ClientRect;
   ACanvas.Brush.Color := Color;
   ACanvas.FillRect(R);
-  QWindows.DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
+  DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
   if BarSize = 0 then
     Exit;
   ACanvas.Brush.Color := BarColor;
@@ -434,7 +434,7 @@ begin
   R := ClientRect;
   ACanvas.Brush.Color := Color;
   ACanvas.FillRect(R);
-  QWindows.DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
+  DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
   InflateRect(R, -1, -1);
   if Orientation = pbHorizontal then
   begin

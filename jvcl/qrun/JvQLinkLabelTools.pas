@@ -43,8 +43,7 @@ unit JvQLinkLabelTools;
 interface
 
 uses
-  SysUtils, Classes,
-  QWindows,
+  SysUtils, Classes, QWindows, 
   JvQTypes;
 
 type
@@ -101,10 +100,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  ShellAPI,
+//  ShellAPI,
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
-  Libc,
+//  Libc,
   {$ENDIF HAS_UNIT_LIBC}
   JvQConsts, JvQResources;
 
