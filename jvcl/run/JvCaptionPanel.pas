@@ -34,7 +34,7 @@ unit JvCaptionPanel;
 interface
 
 // Define JVCAPTIONPANEL_STD_BEHAVE to not use the previous undocumented WM_SYSCOMMAND with SC_DRAGMOVE but instead handle
-// the dargging "manually" within the control. Defining this means that you actually get the Mouse events
+// the dragging "manually" within the control. Defining this means that you actually get the Mouse events
 // and the OnEndAutoDrag event. Additionally, the form displays scrollbars as expected when the component is dragged
 // The downside is that the control "flashes" more when it's dragged
 {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
@@ -51,7 +51,7 @@ type
   TJvAutoDragStartEvent = procedure(Sender: TObject; var AllowDrag: Boolean) of object;
   { internal class }
 
-  TJvCapBtn = class(TGraphicControl)
+  TJvCapBtn = class(TJvGraphicControl)
   private
     FOwner: TComponent;
     FStyle: TJvCapBtnStyle;
@@ -68,8 +68,8 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     property Style: TJvCapBtnStyle read FStyle write SetStyle default capClose;
@@ -270,7 +270,7 @@ begin
   end;
 end;
 
-procedure TJvCapBtn.CMMouseEnter(var Msg: TMessage);
+procedure TJvCapBtn.MouseEnter(Control: TControl);
 var
   R: TRect;
 begin
@@ -286,7 +286,7 @@ begin
   end;
 end;
 
-procedure TJvCapBtn.CMMouseLeave(var Msg: TMessage);
+procedure TJvCapBtn.MouseLeave(Control: TControl);
 var
   R: TRect;
 begin

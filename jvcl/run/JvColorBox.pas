@@ -67,11 +67,11 @@ type
     FOnChange: TNotifyEvent;
     FColorClick: TJvColorClickEvent;
     procedure SetBorderStyle(Value: TBorderStyle);
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure Paint; override;
     procedure DrawFocusFrame;
   public
@@ -128,11 +128,11 @@ type
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure Paint; override;
     property DropDown: TPopupMenu read FDropDown write SetDropDown;
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 13;
@@ -234,22 +234,16 @@ begin
   end;
 end;
 
-procedure TJvColorSquare.CMMouseEnter(var Msg: TMessage);
+procedure TJvColorSquare.MouseEnter(Control: TControl);
 begin
   inherited;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   FInside := True;
   Invalidate;
 end;
 
-procedure TJvColorSquare.CMMouseLeave(var Msg: TMessage);
+procedure TJvColorSquare.MouseLeave(Control: TControl);
 begin
   inherited;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   FInside := False;
   Invalidate;
 end;
@@ -395,7 +389,7 @@ begin
   FDropDown := Value;
 end;
 
-procedure TJvCustomDropButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomDropButton.MouseEnter(Control: TControl);
 begin
   inherited;
   {$IFDEF JVCLThemesEnabled}
@@ -404,7 +398,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TJvCustomDropButton.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomDropButton.MouseLeave(Control: TControl);
 begin
   inherited;
   {$IFDEF JVCLThemesEnabled}
