@@ -46,6 +46,7 @@
 |   |- Application=Application=JVCL provides a number of components and controls that enhance or controls the application.
 |   |   |- HotKeys=Hot keys=JVCL provides a number of components to set application wide hot keys.
 |   |   |- Tray=Tray icons=JVCL provides a number of components to set an icon for the application in the system tray, including support for animations and pop-up menus.
+|   |   |- Plugins=Plugins=JVCL provides a number of components to write plugins and/or make an application plugin aware.
 |   |- Forms=Forms=JVCL provides a number of of components and controls that enhance or control forms.
 |   |   |- DecoratingAndEffects=Decorating and effects=JVCL provides a number of components and controls that add effects or decoration to a form.
 |   |   |- Shaping=Shaping=JVCL provides a number of components that can change the shape of a form.
