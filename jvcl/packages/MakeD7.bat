@@ -1,41 +1,28 @@
 @echo off
+: ---------------------------------------------------------------------
+:    WARNING   WARNING    WARNING    WARNING    WARNING    WARNING
+:
+: Please read the help before using this batch file as there are
+: some special parameters
+:
+: ---------------------------------------------------------------------
+SET %DELDIR%=%1
+if %DELDIR%!==! SET DELDIR=C:\Program Files\Delphi7
 
-rem NB! Change this path to reflect the location of make.exe:
-SET MAKE=C:\Program Files\Delphi7\bin\make.exe
+MakeDelphi "D7 Packages" d7 %DELDIR%
 
+goto end
 
-
-
-SET PACKAGE=D7 Packages
-SET DIR=D7
-
-REM ------- Generic --------
-
-if NOT EXIST "%MAKE%" SET MAKE=make
-
-cd ..\devtools
-if NOT EXIST bin\MakeDOF.exe  %MAKE% MakeDOF.exe
-if NOT EXIST bin\MakeCFG.exe  %MAKE% MakeCFG.exe
-if NOT EXIST bin\Bpg2Make.exe %MAKE% Bpg2Make.exe
-cd bin
-
-REM echo.
-REM echo Creating .dof files
-REM call makedofs.bat
-
+:help
+echo MakeD7.bat - Builds the JVCL for Delphi 7
 echo.
-echo Creating .cfg files
-MakeCFG "..\..\packages\%DIR%\*.dpk" %DIR%packscfg.tmpl
-
-
+echo Usage:    MakeD7 [DelphiDirectory]
 echo.
-cd ..\..\packages
-
-..\devtools\bin\Bpg2Make.exe "%PACKAGE%.bpg"
-
-%MAKE% -f "%PACKAGE%.mak" %1 %2 %3 %4 %5 %6 %7 %8 %9
-
+echo     DelphiDirectory   The place where Delphi is installed.
+echo                       Defaults to "C:\Program Files\Delphi7"
 echo.
-echo Cleaning
-del "%PACKAGE%.mak"
-del %DIR%\*.cfg
+echo Any additional argument will be ignored
+echo.
+:end
+
+
