@@ -66,7 +66,7 @@ type
   private
     FAlignment: TAlignment;
     FLayout: TJvLayout;
-    FLabelOptions: TJvGroupHeaderOptions;
+//    FLabelOptions: TJvGroupHeaderOptions;
     FBevelOptions: TJvGroupHeaderOptions;
     FBevelSpace: Integer;
     function GetTransparent: Boolean;
@@ -75,7 +75,7 @@ type
     procedure SetLayout(Value: TJvLayout);
     procedure SetBevelOptions(Value: TJvGroupHeaderOptions);
     procedure SetBevelSpace(Value: Integer);
-    procedure SetLabelOptions(Value: TJvGroupHeaderOptions);deprecated;
+//    procedure SetLabelOptions(Value: TJvGroupHeaderOptions);
     procedure StyleChanged(Sender: TObject);
     procedure BevelLine(C: TColor; X, Y, Width: Integer);
     procedure DoDrawText(var Rect: TRect; Flags: Longint);
@@ -115,7 +115,7 @@ type
     property BevelOptions: TJvGroupHeaderOptions read FBevelOptions write SetBevelOptions;
     property BevelSpace: Integer read FBevelSpace write SetBevelSpace default 12;
     // (p3) is this used anywhere?
-    property LabelOptions: TJvGroupHeaderOptions read FLabelOptions write SetLabelOptions stored false; 
+//    property LabelOptions: TJvGroupHeaderOptions read FLabelOptions write SetLabelOptions stored false; 
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Layout: TJvLayout read FLayout write SetLayout default lTop;
     property OnClick;
@@ -247,14 +247,14 @@ begin
   FBevelOptions := TJvGroupHeaderOptions.Create;
   FBevelOptions.OnChange := StyleChanged;
   FBevelSpace := 12;
-  FLabelOptions := TJvGroupHeaderOptions.Create;
-  FLabelOptions.OnChange := StyleChanged;
+//  FLabelOptions := TJvGroupHeaderOptions.Create;
+//  FLabelOptions.OnChange := StyleChanged;
 end;
 
 destructor TJvGroupHeader.Destroy;
 begin
   FBevelOptions.Free;
-  FLabelOptions.Free;
+//  FLabelOptions.Free;
   inherited Destroy;
 end;
 
@@ -537,10 +537,12 @@ begin
   FBevelOptions.Assign(Value);
 end;
 
+{
 procedure TJvGroupHeader.SetLabelOptions(Value: TJvGroupHeaderOptions);
 begin
   FLabelOptions.Assign(Value);
 end;
+}
 
 {$IFDEF UNITVERSIONING}
 const
