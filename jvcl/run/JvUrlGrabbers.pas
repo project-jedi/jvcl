@@ -406,6 +406,7 @@ begin
         InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
         FErrorText := StrPas(Buffer);
         FreeMem(Buffer);
+        Buffer := nil;
 
         Synchronize(Error);
         Exit;
