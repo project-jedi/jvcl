@@ -37,7 +37,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, CheckLst, ExtCtrls, ComCtrls, ImgList, CommCtrl, ActnList, Buttons,
-  Menus, ShellAPI, CoreData, BuildHelpers;
+  Menus, ShellAPI, CoreData, BuildHelpers, FileCtrl;
 
 type
   TFormMain = class(TForm)
@@ -76,6 +76,7 @@ type
     Bevel4: TBevel;
     CheckBoxInstallJcl: TCheckBox;
     Bevel5: TBevel;
+    CheckBoxShowRuntimePackages: TCheckBox;
     procedure BtnQuitClick(Sender: TObject);
     procedure BtnAdvancedOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -99,6 +100,7 @@ type
     procedure LblPackagesClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure CheckBoxShowRuntimePackagesClick(Sender: TObject);
   private
     { Private-Deklarationen }
     FXPThemeSupportFirstClick: Boolean;
@@ -231,12 +233,17 @@ begin
       Packages := SelTarget.Packages;
       for i := 0 to Packages.Count - 1 do
       begin
+        if not CheckBoxShowRuntimePackages.Checked and
+           not Packages[i].IsDesign then
+          Continue;
         ListItem := ListViewPackages.Items.Add;
         ListItem.Data := Packages[i];
         ListItem.Checked := Packages[i].Install;
         ListItem.Caption := Packages[i].DisplayName;
         ListItem.SubItems.Add(Packages[i].Description);
-        if Packages[i].RequiresDB then
+        if not Packages[i].IsDesign then
+          ListItem.ImageIndex := 2 // Runtime package
+        else if Packages[i].RequiresDB then
           ListItem.ImageIndex := 1
         else
           ListItem.ImageIndex := 0;
@@ -464,6 +471,7 @@ procedure TFormMain.ListViewTargetsChange(Sender: TObject;
   Item: TListItem; Change: TItemChange);
 var
   Target: TTargetInfo;
+  Dir: string;
 begin
   if Change = ctState then
   begin
@@ -477,14 +485,30 @@ begin
         if not CheckTargetUpdates(Target) then
         begin
           Item.Checked := False;
-          Exit;
-        end;
-        if (not Target.IsJCLInstalled) and (Target.JCLDir = '') then
+        end
+        else if (not Target.IsJCLInstalled) and (Target.JCLDir = '') then
         begin
-          if not FInFillingList then
-            MessageDlg('JCL is not installed for this target and no JCL directory available.'#10 +
-                       'Please install the newest JCL or download it to $(JVCL)\..\JCL', mtWarning, [mbOk], 0);
           Item.Checked := False;
+          if not FInFillingList then
+          begin
+           // ask user for JCL root directory
+            Dir := Target.RootDir;
+            if SelectDirectory('Select JCL root directory', '', Dir) then
+            begin
+              if DirectoryExists(Dir + '\source\common') then
+              begin
+                Target.SetJCLDir(Dir);
+                Item.Checked := True;
+              end
+              else
+                Dir := '';
+            end
+            else
+              Dir := '';
+            if Dir = '' then
+              MessageDlg('JCL is not installed for this target and no JCL directory available.'#10 +
+                         'Please install the newest JCL or download it to $(JVCL)\..\JCL', mtWarning, [mbOk], 0);
+          end;
         end;
       end;
       Target.CompileFor := Item.Checked;
@@ -655,6 +679,11 @@ end;
 procedure TFormMain.Button2Click(Sender: TObject);
 begin
   SelTarget.RegistryUnInstall;
+end;
+
+procedure TFormMain.CheckBoxShowRuntimePackagesClick(Sender: TObject);
+begin
+  UpdatePackageList;
 end;
 
 end.

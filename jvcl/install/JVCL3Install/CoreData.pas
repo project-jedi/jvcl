@@ -102,6 +102,8 @@ type
     function ExpandDirMacros(const Path: string): string;
     function IsTargetFor(const Targets: string): Boolean;
 
+    procedure SetJCLDir(const NewDir: string);
+
     property Executable: string read FExecutable;
     property RegKey: string read FRegKey;
     property ProductName: string read FProductName;
@@ -198,6 +200,7 @@ type
     FContains: TObjectList;
     FRequiresDB: Boolean;
     FIsInstalled: Boolean;
+    FIsDesign: Boolean;
 
     FInstall: Boolean;
 
@@ -215,6 +218,7 @@ type
     destructor Destroy; override;
 
     function DependsOn(PackageInfo: TPackageInfo): Boolean;
+    procedure UpdateRuntimePackages;
 
     property Name: string read FName;
     property DisplayName: string read FDisplayName;
@@ -226,6 +230,7 @@ type
     property ContaionCount: Integer read GetContainCount;
     property Contains[Index: Integer]: TContainsFile read GetContains;
     property IsInstalled: Boolean read FIsInstalled;
+    property IsDesign: Boolean read FIsDesign;
 
     property Install: Boolean read FInstall write SetInstall;
 
@@ -327,12 +332,14 @@ begin
   Result := GetPackageGroupDir(Target) + ' Packages.bpg';
 end;
 
-function GetBplNameFrom(const PkgName: string; Target: TTargetInfo): string;
+function GetBplNameFrom(const PkgName: string; Target: TTargetInfo; DesignPackage: Boolean): string;
+const
+  Design: array[Boolean] of Char = ('R', 'D');
 begin
   if Target.IsDelphi then
-    Result := PkgName + 'D' + IntToStr(Target.MajorVersion) + 'D.bpl'
+    Result := PkgName + 'D' + IntToStr(Target.MajorVersion) + Design[DesignPackage] + '.bpl'
   else
-    Result := PkgName + 'C' + IntToStr(Target.MajorVersion) + 'D.bpl';
+    Result := PkgName + 'C' + IntToStr(Target.MajorVersion) + Design[DesignPackage] + '.bpl';
 end;
 
 // -----------------------------------------------------------------------------
@@ -679,12 +686,15 @@ begin
       end;
 
       for i := 0 to Packages.Count - 1 do
+      begin
+        if not Packages[i].IsDesign then Continue;
         if (not Packages[i].IsInstalled) and (Packages[i].Install) then
         {$ifndef DoNotTouchRegistry}
           reg.WriteString(FBplDir + '\' + Packages[i].BplName, Packages[i].Description);
         {$else}
           OutputDebugString(PChar('reg.WriteString(''' + FBplDir + '\' + Packages[i].BplName + ''', ''' + Packages[i].Description + ''')'));
         {$endif}
+      end;
     end;
   finally
     reg.Free;
@@ -1079,7 +1089,7 @@ begin
 
  // Jcl is not installed and we have a JCL directory
   FInstallJcl := ((not IsJCLInstalled) or (IsOldJVCLInstalled <> 0))
-                 and (JCLPairInstallation);
+                 {and (JCLPairInstallation)};
 
   FCompileFor := FCompileFor and not ((not FIsJCLInstalled) and (not JCLPairInstallation));
 end;
@@ -1252,6 +1262,11 @@ begin
   Result := JCLPackageDir + '\xml';
 end;
 
+procedure TTargetInfo.SetJCLDir(const NewDir: string);
+begin
+  FJCLDir := NewDir;
+end;
+
 { TTargetList }
 
 constructor TTargetList.Create;
@@ -1391,6 +1406,7 @@ begin
   FContains := TObjectList.Create;
   FInstall := False;
   FXmlDir := AXmlDir;
+  FIsDesign := EndsWith(AName, '-d', True);
 
   ReadXmlPackage; // fills FDisplayName, FDescription, FRequires
 end;
@@ -1418,7 +1434,7 @@ end;
 
 function TPackageInfo.GetBplName: string;
 begin
-  Result := GetBplNameFrom(FDisplayName, Target);
+  Result := GetBplNameFrom(FDisplayName, Target, IsDesign);
 end;
 
 function TPackageInfo.GetContainCount: Integer;
@@ -1480,16 +1496,13 @@ begin
         FRequiresDB := True;
 
      // require only designtime packages
-{      if StartsWith(RequirePkgName, 'Jv') and (Pos('-D', RequirePkgName) > 0) then
-      begin}
-        RequireTarget := PackageNode.Properties.ItemNamed['Targets'].Value;
-        if RequireTarget = '' then
-          RequireTarget := 'all';
-        Condition := PackageNode.Properties.ItemNamed['Condition'].Value;
+      RequireTarget := PackageNode.Properties.ItemNamed['Targets'].Value;
+      if RequireTarget = '' then
+        RequireTarget := 'all';
+      Condition := PackageNode.Properties.ItemNamed['Condition'].Value;
 
-       // add new require item
-        FRequires.Add(TRequirePkg.Create(RequirePkgName, RequireTarget, Condition));
-{      end;}
+     // add new require item
+      FRequires.Add(TRequirePkg.Create(RequirePkgName, RequireTarget, Condition));
     end;
 
    // contains
@@ -1530,7 +1543,6 @@ end;
 procedure TPackageInfo.SetInstall(const Value: Boolean);
 var
   i: Integer;
-  Pkg: TPackageInfo;
 begin
   if Value <> FInstall then
   begin
@@ -1538,12 +1550,7 @@ begin
     if FInstall then
     begin
       // activate all required packages
-      for i := 0 to FRequires.Count - 1 do
-      begin
-        Pkg := PackageList.FindPackage(Requires[i].Name);
-        if Pkg <> nil then
-          Pkg.Install := True;
-      end;
+      UpdateRuntimePackages;
     end
     else
     begin
@@ -1552,6 +1559,20 @@ begin
         if PackageList[i].DependsOn(Self) then
           PackageList[i].Install := False;
     end;
+  end;
+end;
+
+procedure TPackageInfo.UpdateRuntimePackages;
+var
+  i: Integer;
+  Pkg: TPackageInfo;
+begin
+  // activate all required packages
+  for i := 0 to FRequires.Count - 1 do
+  begin
+    Pkg := PackageList.FindPackage(Requires[i].Name);
+    if Pkg <> nil then
+      Pkg.Install := True;
   end;
 end;
 
@@ -1573,11 +1594,13 @@ end;
 function TPackageList.FindPackage(const Name: string): TPackageInfo;
 var
   i: Integer;
+  NameBpl: string;
 begin
+  NameBpl := Name + '.bpl';
   for i := 0 to Count - 1 do
   begin
     Result := Items[i];
-    if CompareText(Result.Name, Name) = 0 then
+    if (CompareText(Result.Name, Name) = 0) or (CompareText(Result.BplName, NameBpl) = 0) then
       Exit;
   end;
   Result := nil;
@@ -1596,15 +1619,17 @@ end;
 procedure TPackageList.ReadPackages;
 var
   BpgText: AnsiString;
-  sr: TSearchRec;
-  Item: TPackageInfo;
-  ps: Integer;
 
-  function PackageUsedBy(PkgName: string): Boolean;
+  function PackageUsedBy(const PkgName: string; DesignPackage: Boolean): Boolean;
   begin
-    Result := Pos(AnsiLowerCase(GetBplNameFrom(PkgName, Target)) + ':', BpgText) > 0;
+    Result := Pos(AnsiLowerCase(GetBplNameFrom(PkgName, Target, DesignPackage)) + ':', BpgText) > 0;
   end;
 
+var
+  sr: TSearchRec;
+  Item: TPackageInfo;
+  ps, i: Integer;
+  DesignPackage: Boolean;
 begin
   BpgText := AnsiLowerCase(ReadStringFromFile(JVCLPackageDir + '\' + Target.BpgName));
 
@@ -1612,8 +1637,14 @@ begin
     faAnyFile and not faDirectory, sr) = 0 then
   try
     repeat
-      ps := Pos('-D.xml', sr.Name);
-      if (ps > 0) and (PackageUsedBy(Copy(sr.Name, 1, ps - 1))) then
+      DesignPackage := True;
+      ps := Pos('-d.xml', AnsiLowerCase(sr.Name));
+      if ps = 0 then
+      begin
+        ps := Pos('-r.xml', AnsiLowerCase(sr.Name)); // allow runtime packages
+        if ps > 0 then DesignPackage := False;
+      end;
+      if (ps > 0) and (PackageUsedBy(Copy(sr.Name, 1, ps - 1), DesignPackage)) then
       begin
         Item := nil;
         try
@@ -1628,6 +1659,11 @@ begin
   finally
     FindClose(sr);
   end;
+
+ // update package "install" dependencies.
+  for i := 0 to Count - 1 do
+    if Items[i].IsInstalled then
+      Items[i].UpdateRuntimePackages;
 end;
 
 function IsDelphiRunning: Boolean;

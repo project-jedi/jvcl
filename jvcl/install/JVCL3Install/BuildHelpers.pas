@@ -28,7 +28,7 @@ Known Issues:
 unit BuildHelpers;
 interface
 uses
-  SysUtils, Classes, Contnrs, CoreData;
+  Windows, SysUtils, Classes, Contnrs, CoreData;
 
 type
   TMakeTarget = class(TObject)
@@ -365,6 +365,8 @@ end;
 function PrepareBpg(const Filename: string; Target: TTargetInfo): TPrepareBpgData;
 var
   Make: TMakeFile;
+  i: Integer;
+  Pkg: TPackageInfo;
 begin
   Result := TPrepareBpgData.Create;
   try
@@ -372,6 +374,15 @@ begin
     try
       Result.FMake := Make;
       Result.FCleaning := True;
+      for i := Make.Projects.Count - 1 downto 0 do
+      begin
+        Pkg := Target.Packages.FindPackage(ChangeFileExt(ExtractFileName(Make.Projects[i]), ''));
+        if (Pkg <> nil) and (not Pkg.Install) then
+        begin
+          OutputDebugString(PChar('Removed: ' + Make.Projects[i]));
+          Make.Projects.Delete(i);
+        end;
+      end;
 
       CreateMakeFile(Make, ExtractFilePath(FileName), ChangeFileExt(FileName, '.mak'),
         Target.SearchPaths, Target.LibDir, Target.BplDir, Target.DcpDir,

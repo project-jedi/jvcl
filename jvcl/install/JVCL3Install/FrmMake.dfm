@@ -53,7 +53,6 @@ object FormMake: TFormMake
     Width = 497
     Height = 116
     ActivePage = TabSheetProgress
-    TabIndex = 0
     TabOrder = 1
     object TabSheetProgress: TTabSheet
       Caption = 'Progress'
