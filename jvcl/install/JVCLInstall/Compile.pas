@@ -671,7 +671,7 @@ begin
 
  // get number of resources to compile
   FCount := 0;
-  if Make(TargetConfig, '-n', CaptureLineGetCompileCount, TargetConfig.JVCLDir + '\images') <> 0 then
+  if Make(TargetConfig, '-f makefile.mak -n', CaptureLineGetCompileCount, TargetConfig.JVCLDir + '\images') <> 0 then
   begin
     AbortReason := RsErrorCompilingResources;
     Exit;
@@ -684,7 +684,7 @@ begin
   begin
     DoResourceProgress('', 0, FResCount);
    // generate .res and .dcr files
-    if Make(TargetConfig, '', CaptureLineResourceCompilation, TargetConfig.JVCLDir + '\images') <> 0 then
+    if Make(TargetConfig, '-f makefile.mak', CaptureLineResourceCompilation, TargetConfig.JVCLDir + '\images') <> 0 then
     begin
       AbortReason := RsErrorCompilingResources;
       Exit;
@@ -1216,6 +1216,7 @@ begin
       Lines.Add('');
     end;
 
+    FileSetReadOnly(ChangeFileExt(ProjectGroup.Filename, '.mak'), False);
     Lines.SaveToFile(ChangeFileExt(ProjectGroup.Filename, '.mak'));
   finally
     Lines.Free;
