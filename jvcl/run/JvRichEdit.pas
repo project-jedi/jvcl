@@ -880,7 +880,7 @@ uses
   {$ENDIF UNITVERSIONING}
   OleCtnrs,
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
-  JvThemes, JvConsts, JvResources, JvTypes, JvFixedEditPopUp;
+  JvThemes, JvConsts, JvResources, JvFixedEditPopUp;
 
 type
   PENLink = ^TENLink;
@@ -2252,8 +2252,6 @@ var
   DC: HDC;
 begin
   inherited Create(AOwner);
-  // this is a temporary fix until thisproperty is correctly set in the ancestor
-  inherited ClipboardCommands := [caCopy..caUndo];
   // ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
   ControlStyle := ControlStyle - [csSetCaption];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
