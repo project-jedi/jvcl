@@ -18,6 +18,7 @@ type
     { Split the specified path into an absolute path and a value name (the last item in the path
       string). Just a helper for all the storage methods. }
     procedure SplitKeyPath(const Path: string; out Key, ValueName: string);
+    procedure CreateKey(Key: string);
   public
     constructor Create(AOwner: TComponent); override;
     function ValueStored(const Path: string): Boolean; override;
@@ -99,9 +100,22 @@ var
   IValueName: Integer;
 begin
   AbsPath := GetAbsPath(Path);
-  IValueName := LastDelimiter('/', AbsPath);
+  IValueName := LastDelimiter('\', AbsPath);
   Key := StrLeft(AbsPath, IValueName - 1);
   ValueName := StrRestOf(AbsPath, IValueName + 1);
+end;
+
+procedure TJvAppRegistryStore.CreateKey(Key: string);
+var
+  ResKey: HKEY;
+begin
+  if not RegKeyExists(FRegHKEY, Key) then
+  begin
+    if Windows.RegCreateKey(FRegHKEY, PChar(Key), ResKey) = ERROR_SUCCESS then
+      RegCloseKey(ResKey)
+    else
+      raise Exception.CreateFmt('Unable to create key ''%s''', [Key]);
+  end;
 end;
 
 function TJvAppRegistryStore.ValueStored(const Path: string): Boolean;
@@ -122,6 +136,23 @@ begin
     end
     else
       raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [SubKey]);
+    if not Result then
+    begin
+      SubKey := SubKey + '\' + ValueName;
+      ValueName := 'Count';
+      Result := RegKeyExists(FRegHKEY, SubKey);
+      if Result then
+      begin
+        if RegOpenKey(FRegHKEY, PChar(SubKey), TmpKey) = ERROR_SUCCESS then
+        try
+          Result := RegQueryValueEx(TmpKey, PChar(ValueName), nil, nil, nil, nil) = ERROR_SUCCESS;
+        finally
+          RegCloseKey(TmpKey);
+        end
+        else
+          raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [SubKey]);
+      end;
+    end;
   end;
 end;
 
@@ -149,6 +180,7 @@ var
   ValueName: string;
 begin
   SplitKeyPath(Path, SubKey, ValueName);
+  CreateKey(SubKey);
   RegWriteInteger(FRegHKEY, SubKey, ValueName, Value);
 end;
 
@@ -168,6 +200,7 @@ var
   ValueName: string;
 begin
   SplitKeyPath(Path, SubKey, ValueName);
+  CreateKey(SubKey);
   RegWriteBinary(FRegHKEY, SubKey, ValueName, Value, SizeOf(Value));
 end;
 
@@ -186,6 +219,7 @@ var
   ValueName: string;
 begin
   SplitKeyPath(Path, SubKey, ValueName);
+  CreateKey(SubKey);
   RegWriteString(FRegHKEY, SubKey, ValueName, Value);
 end;
 
@@ -206,6 +240,7 @@ var
 begin
   TmpBuf := Byte(Buf);
   SplitKeyPath(Path, SubKey, ValueName);
+  CreateKey(SubKey);
   RegWriteBinary(FRegHKEY, SubKey, ValueName, TmpBuf, BufSize);
 end;
 
