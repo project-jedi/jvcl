@@ -1,3 +1,6 @@
+2002-07-07
+- Added changes and bug fixes to JvTrayIcon, JvStatusBar, JvTranslator and JvListView from Sebastien Buysse
+
 2002-07-05
 - Added JvInspector and support units (JvInspDB and JvINspXVCL) from Marcel Bestebroer
 

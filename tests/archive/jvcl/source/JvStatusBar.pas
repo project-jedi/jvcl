@@ -115,6 +115,7 @@ procedure TJvStatusBar.WMSize(var Msg: TMessage);
 begin
   inherited;
   Realign;
+  Invalidate; //Force full redraw, cause it's a lot buggy on XP without that!!!
 end;
 
 {**************************************************}

@@ -33,7 +33,8 @@ unit JvListView;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, CommCtrl, Menus, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  CommCtrl, Menus, JVCLVer, ClipBrd;
 
 type
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
@@ -69,6 +70,7 @@ type
     FOnHScroll: TNotifyEvent;
     FOnVScroll: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
+    FAutoClipboard: Boolean;
   protected
     function CreateListItem: TListItem; override;
     procedure ColClick(Column: TListColumn); override;
@@ -79,6 +81,7 @@ type
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -97,6 +100,7 @@ type
     procedure LoadFromStream(stream: TStream);
     procedure SaveToCSV(FileName: string; Separator: Char = ';');
     procedure LoadFromCSV(FileName: string; Separator: Char = ';');
+    property AutoClipboardCopy:Boolean read FAutoClipboard write FAutoClipboard default true;
     property OnLoadProgress: TProgress read FOnLoad write FOnLoad;
     property OnSaveProgress: TProgress read FOnSave write FOnSave;
     property OnAutoSort: TOnSortMethod read FOnSort write FOnSort;
@@ -142,6 +146,7 @@ begin
   FOver := False;
   FSort := True;
   FLast := -1;
+  FAutoClipboard := true;
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
@@ -902,6 +907,33 @@ begin
   for i := 0 to Items.Count - 1 do
     Items[i].Selected := False;
   Items.EndUpdate;
+end;
+
+{**************************************************}
+
+procedure TJvListView.KeyUp(var Key: Word; Shift: TShiftState);
+var
+ st: string;
+ i,j: Integer;
+begin
+  inherited;
+  if AutoClipboardCopy then
+    if (Key in [Ord('c'), Ord('C')]) and (ssCtrl in Shift) then
+    begin
+      for i:=0 to Columns.Count-1 do
+        st := st + Columns[i].Caption+#9;
+      if st<>'' then
+        st := st + #13#10;
+      for i:=0 to Items.Count-1 do
+        if (SelCount = 0) or (Items[i].Selected) then
+        begin
+          st := st + Items[i].Caption;
+          for j:=0 to Items[i].SubItems.Count-1 do
+            st := st + #9 + Items[i].SubItems[j];
+          st := st + #13#10;
+        end;
+      Clipboard.SetTextBuf(PChar(st));
+    end;
 end;
 
 {**************************************************}

@@ -31,7 +31,8 @@ unit JvTranslator;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Forms, TypInfo, ComCtrls, JvSimpleXml, JvComponent;
+  Windows, Messages, SysUtils, Classes, Forms, TypInfo, ComCtrls, JvSimpleXml,
+  JvComponent, IniFiles;
 
 {.$DEFINE GX_OUTLOOK}
 
@@ -53,7 +54,7 @@ type
 
   TJvTranslatorStrings = class(TJvComponent)
   private
-    FList: TStringList;
+    FList: THashedStringList;
     function GetString(const Index: Integer): string;
     procedure SetString(const Index: Integer; const Value: string);
   public
@@ -157,7 +158,7 @@ var
  var
   i,j: Integer;
  begin
-   with Component as TJvTranslatorStrings do
+   with TJvTranslatorStrings(Component) do
      for i:=0 to Elem.Items.Count-1 do
      begin
        j := TJvTranslatorStrings(Component).IndexOf(Elem.Items[i].Properties.Value('Name'));
@@ -194,7 +195,7 @@ var
  var
   i,j: Integer;
  begin
-   with Component as TFEGXOutlookBar do
+   with TFEGXOutlookBar(Component) do
      for i:=0 to Elem.Items.Count-1 do
      begin
        j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
@@ -205,13 +206,13 @@ var
  {$ENDIF}
 
 begin
-  if Component is TJvTranslatorStrings then
+  if (Component is TJvTranslatorStrings) or (Component.ClassName='TJvTranslatorStrings') then
   begin
     TransVars;
     Exit;
   end;
   {$IFDEF GX_OUTLOOK}
-  if Component is TFEGXOutlookBar then
+  if (Component is TFEGXOutlookBar) or (Component.ClassName='TFEGXOutlookBar') then
   begin
     TransOutlook;
     Exit;
@@ -254,13 +255,13 @@ begin
           if prop<>nil then
           begin
             obj := GetObjectProp(Component,Elem.Items[i].Name);
-            if obj is TStrings then
+            if (obj is TStrings) or (obj.ClassName='TStrings') then
               TransStrings(obj,Elem.Items[i])
-            else if obj is TTreeNodes then
+            else if (obj is TTreeNodes) or (obj.ClassName='TTreeNodes') then
               TransTreeNodes(obj,Elem.Items[i])
-            else if obj is TListColumns then
+            else if (obj is TListColumns) or (obj.ClassName='TListColumns') then
               TransColumns(obj,Elem.Items[i])
-            else if obj is TListItems then
+            else if (obj is TListItems) or (obj.ClassName='TListItems') then
               TransListItems(obj,Elem.Items[i]);
           end;
         end;
@@ -271,20 +272,18 @@ end;
 {*******************************************************************}
 procedure TJvTranslator.Translate(const Form: TForm);
 var
- i,j: Integer;
+ j: Integer;
  st: string;
+ lElem: TJvSimpleXmlElem;
 begin
   j := pos('_',Form.Name);
   if j=0 then
     st := Form.Name
   else
     st := Copy(Form.Name,1,j-1);
-  for i:=0 to FXml.Root.Items.Count-1 do
-    if FXml.Root.Items[i].Name=st then
-    begin
-      TranslateComponent(Form,FXml.Root.Items[i]);
-      Break;
-    end;
+  lElem := FXml.Root.Items.ItemNamed[st];
+  if lElem<>nil then
+    TranslateComponent(Form,lElem);
 end;
 {*******************************************************************}
 
@@ -299,7 +298,7 @@ end;
 constructor TJvTranslatorStrings.Create(AOwner: TComponent);
 begin
   inherited;
-  FList := TStringList.Create;
+  FList := THashedStringList.Create;
 end;
 {*******************************************************************}
 destructor TJvTranslatorStrings.Destroy;
