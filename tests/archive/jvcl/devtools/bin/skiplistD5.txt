@@ -1,0 +1,2 @@
+*.DesignSize
+TPageControl.TabIndex
