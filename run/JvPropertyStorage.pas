@@ -36,7 +36,7 @@ uses
   {$IFDEF VisualCLX}
   QForms,
   {$ENDIF VisualCLX}
-  TypInfo;
+  JvAppStorage, TypInfo;
 
 type
   TJvPropInfoList = class(TObject)
@@ -56,19 +56,14 @@ type
     property Items[Index: Integer]: PPropInfo read Get; default;
   end;
 
-  TReadStrEvent = function(const APath, Default: string): string of object;
-  TWriteStrEvent = procedure(const APath, Value: string) of object;
-  TEraseSectEvent = procedure(const APath: string) of object;
 
   TJvPropertyStorage = class(TObject)
   private
     FObject: TObject;
     FOwner: TComponent;
     FPrefix: string;
-    FSection: string;
-    FOnReadString: TReadStrEvent;
-    FOnWriteString: TWriteStrEvent;
-    FOnEraseSection: TEraseSectEvent;
+    FAppStorage: TJvCustomAppStorage;
+    FAppStoragePath: string;
     function StoreIntegerProperty(PropInfo: PPropInfo): string;
     function StoreCharProperty(PropInfo: PPropInfo): string;
     function StoreEnumProperty(PropInfo: PPropInfo): string;
@@ -98,9 +93,9 @@ type
     function CreateInfoList(AComponent: TComponent; StoredList: TStrings): TStrings;
     procedure FreeInfoLists(Info: TStrings);
   protected
-    function ReadString(const ASection, Item, Default: string): string; virtual;
-    procedure WriteString(const ASection, Item, Value: string); virtual;
-    procedure EraseSection(const ASection: string); virtual;
+    function ReadString(const APath, Item, Default: string): string; virtual;
+    procedure WriteString(const APath, Item, Value: string); virtual;
+    procedure EraseSection(const APath: string); virtual;
     function GetItemName(const APropName: string): string; virtual;
     function CreateStorage: TJvPropertyStorage; virtual;
   public
@@ -112,10 +107,8 @@ type
     procedure StoreObjectsProps(AComponent: TComponent; StoredList: TStrings);
     property AObject: TObject read FObject write FObject;
     property Prefix: string read FPrefix write FPrefix;
-    property Section: string read FSection write FSection;
-    property OnReadString: TReadStrEvent read FOnReadString write FOnReadString;
-    property OnWriteString: TWriteStrEvent read FOnWriteString write FOnWriteString;
-    property OnEraseSection: TEraseSectEvent read FOnEraseSection write FOnEraseSection;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write FAppStorage;
+    property AppStoragePath: string read FAppStoragePath write fAppStoragePath;
   end;
 
 { Utility routines }
@@ -130,7 +123,7 @@ const
 implementation
 
 uses
-  JvAppStorage, JvJCLUtils;
+  JvJCLUtils;
 
 const
   sCount = 'Count';
@@ -330,7 +323,7 @@ begin
       end;
       if (Def <> '') or (PropInfo^.PropType^.Kind in [tkString, tkClass]) or
         (PropInfo^.PropType^.Kind in [tkLString, tkWChar]) then
-        S := Trim(ReadString(Section, GetItemName(PropInfo^.Name), Def))
+        S := Trim(ReadString(AppStoragePath, GetItemName(PropInfo^.Name), Def))
       else
         S := '';
       case PropInfo^.PropType^.Kind of
@@ -396,7 +389,7 @@ begin
       Exit;
     end;
     if (S <> '') or (PropInfo^.PropType^.Kind in [tkString, tkLString, tkWChar]) then
-      WriteString(Section, GetItemName(PropInfo^.Name), Trim(S));
+      WriteString(AppStoragePath, GetItemName(PropInfo^.Name), Trim(S));
   end;
 end;
 
@@ -475,14 +468,17 @@ var
   SectName: string;
 begin
   Result := '';
-  List := TObject(GetOrdProp(Self.FObject, PropInfo));
-  SectName := Format('%s.%s', [Section, GetItemName(PropInfo^.Name)]);
-  EraseSection(SectName);
-  if (List is TStrings) and (TStrings(List).Count > 0) then
+  IF Assigned(AppStorage) then
   begin
-    WriteString(SectName, sCount, IntToStr(TStrings(List).Count));
-    for I := 0 to TStrings(List).Count - 1 do
-      WriteString(SectName, Format(sItem, [I]), TStrings(List)[I]);
+    List := TObject(GetOrdProp(Self.FObject, PropInfo));
+    SectName := AppStorage.ConcatPaths ([AppStoragePath, GetItemName(PropInfo^.Name)]);
+    EraseSection(SectName);
+    if (List is TStrings) and (TStrings(List).Count > 0) then
+    begin
+      WriteString(SectName, sCount, IntToStr(TStrings(List).Count));
+      for I := 0 to TStrings(List).Count - 1 do
+        WriteString(SectName, Format(sItem, [I]), TStrings(List)[I]);
+    end;
   end;
 end;
 
@@ -517,7 +513,7 @@ var
   I: Integer;
   Obj: TObject;
 
-  procedure StoreObjectProps(Obj: TObject; const APrefix, ASection: string);
+  procedure StoreObjectProps(Obj: TObject; const APrefix, APath: string);
   var
     I: Integer;
     Props: TJvPropInfoList;
@@ -526,9 +522,7 @@ var
     begin
       AObject := Obj;
       Prefix := APrefix;
-      Section := ASection;
-      FOnWriteString := Self.FOnWriteString;
-      FOnEraseSection := Self.FOnEraseSection;
+      AppStoragePath := APath;
       Props := TJvPropInfoList.Create(AObject, tkProperties);
       try
         for I := 0 to Props.Count - 1 do
@@ -541,6 +535,8 @@ var
 
 begin
   Result := '';
+  if not Assigned(AppStorage) then
+    Exit;
   Obj := TObject(GetOrdProp(Self.FObject, PropInfo));
   if Obj <> nil then
   begin
@@ -549,16 +545,16 @@ begin
     else
     if Obj is TCollection then
     begin
-      EraseSection(Format('%s.%s', [Section, Prefix + PropInfo^.Name]));
+      EraseSection(AppStorage.ConcatPaths([AppStoragePath, Prefix + PropInfo^.Name]));
       Saver := CreateStorage;
       try
-        WriteString(Section, Format('%s.%s', [Prefix + PropInfo^.Name, sCount]),
+        WriteString(AppStoragePath, Format('%s.%s', [Prefix + PropInfo^.Name, sCount]),
           IntToStr(TCollection(Obj).Count));
         for I := 0 to TCollection(Obj).Count - 1 do
         begin
           StoreObjectProps(TCollection(Obj).Items[I],
             Format(sItem, [I]) + sPropNameDelimiter,
-            Format('%s.%s', [Section, Prefix + PropInfo^.Name]));
+            AppStorage.ConcatPaths([AppStoragePath, Prefix + PropInfo^.Name]));
         end;
       finally
         Saver.Free;
@@ -575,7 +571,7 @@ begin
   try
     with Saver do
     begin
-      StoreObjectProps(Obj, Self.Prefix + PropInfo^.Name, Self.Section);
+      StoreObjectProps(Obj, Self.Prefix + PropInfo^.Name, Self.AppStoragePath);
     end;
   finally
     Saver.Free;
@@ -673,7 +669,7 @@ begin
   List := TObject(GetOrdProp(Self.FObject, PropInfo));
   if List is TStrings then
   begin
-    SectName := Format('%s.%s', [Section, GetItemName(PropInfo^.Name)]);
+    SectName := AppStorage.ConcatPaths([AppStoragePath, Prefix + PropInfo^.Name]);
     Cnt := StrToIntDef(Trim(ReadString(SectName, sCount, '0')), 0);
     if Cnt > 0 then
     begin
@@ -729,7 +725,7 @@ var
   Recreate: Boolean;
   Obj: TObject;
 
-  procedure LoadObjectProps(Obj: TObject; const APrefix, ASection: string);
+  procedure LoadObjectProps(Obj: TObject; const APrefix, APath: string);
   var
     I: Integer;
     Props: TJvPropInfoList;
@@ -738,8 +734,7 @@ var
     begin
       AObject := Obj;
       Prefix := APrefix;
-      Section := ASection;
-      FOnReadString := Self.FOnReadString;
+      AppStoragePath := APath;
       Props := TJvPropInfoList.Create(AObject, tkProperties);
       try
         for I := 0 to Props.Count - 1 do
@@ -762,7 +757,7 @@ begin
       Loader := CreateStorage;
       try
         Cnt := TCollection(Obj).Count;
-        Cnt := StrToIntDef(ReadString(Section, Format('%s.%s',
+        Cnt := StrToIntDef(ReadString(AppStoragePath, Format('%s.%s',
           [Prefix + PropInfo^.Name, sCount]), IntToStr(Cnt)), Cnt);
         Recreate := TCollection(Obj).Count <> Cnt;
         TCollection(Obj).BeginUpdate;
@@ -775,7 +770,7 @@ begin
               TCollection(Obj).Add;
             LoadObjectProps(TCollection(Obj).Items[I],
               Format(sItem, [I]) + sPropNameDelimiter,
-              Format('%s.%s', [Section, Prefix + PropInfo^.Name]));
+              AppStorage.ConcatPaths([AppStoragePath, Prefix + PropInfo^.Name]));
           end;
         finally
           TCollection(Obj).EndUpdate;
@@ -793,7 +788,7 @@ begin
   end;
   Loader := CreateStorage;
   try
-    LoadObjectProps(Obj, Self.Prefix + PropInfo^.Name, Self.Section);
+    LoadObjectProps(Obj, Self.Prefix + PropInfo^.Name, Self.AppStoragePath);
   finally
     Loader.Free;
   end;
@@ -935,26 +930,27 @@ end;
 function TJvPropertyStorage.CreateStorage: TJvPropertyStorage;
 begin
   Result := TJvPropertyStorage.Create;
+  Result.AppStorage := AppStorage;
 end;
 
-function TJvPropertyStorage.ReadString(const ASection, Item, Default: string): string;
+function TJvPropertyStorage.ReadString(const APath, Item, Default: string): string;
 begin
-  if Assigned(FOnReadString) then
-    Result := FOnReadString(TJvCustomAppStorage.ConcatPaths([ASection, Item]), Default)
+  if Assigned(AppStorage) then
+    Result := AppStorage.ReadString(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(Nil, Item, False)]), Default)
   else
-    Result := '';
+    Result := Default;
 end;
 
-procedure TJvPropertyStorage.WriteString(const ASection, Item, Value: string);
+procedure TJvPropertyStorage.WriteString(const APath, Item, Value: string);
 begin
-  if Assigned(FOnWriteString) then
-    FOnWriteString(TJvCustomAppStorage.ConcatPaths([ASection, Item]), Value);
+  if Assigned(AppStorage) then
+    AppStorage.WriteString(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(Nil, Item, False)]), Value);
 end;
 
-procedure TJvPropertyStorage.EraseSection(const ASection: string);
+procedure TJvPropertyStorage.EraseSection(const APath: string);
 begin
-  if Assigned(FOnEraseSection) then
-    FOnEraseSection(ASection);
+  if Assigned(AppStorage) then
+    AppStorage.DeleteSubTree(APath);
 end;
 
 end.
