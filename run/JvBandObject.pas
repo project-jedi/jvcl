@@ -35,7 +35,7 @@ interface
 
 uses
   Windows, Messages, ComObj, ShlObj, ActiveX, Registry, SysUtils, Classes,
-  Forms, Menus, 
+  Controls, Forms, Menus, 
   JvBandForms;
 
 const
