@@ -49,7 +49,7 @@ function ToggleVisible(objId) {
 
 <img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible('FAQ0');">What is the JVCL?</a><br>
 <div id="FAQ0" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
-<img src="images/a.gif" border=0>&nbsp;The JVCL is a library of more than 500 visual and non-visual components for Delphi, C++Builder and Kylix. The components have been donated by developers from all around the world and can be used in commercial as well as shareware and freeware and open source projects without cost.<br><br></div>
+<img src="images/a.gif" border=0>&nbsp;The JVCL is a library of more than 500 visual and non-visual components for Delphi, C++Builder and Kylix. The components have been donated by developers from all around the world and can be used in commercial as well as shareware and freeware and open source projects without cost.<br></div>
 
 
 <img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible('FAQ1');">Where can I get it?</a><br>
@@ -105,6 +105,11 @@ function ToggleVisible(objId) {
 <img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible('FAQ11');">Cannot load JvMM. It contains VFW.pas which is also contained in GLSCENE.</a><br>
 <div id="FAQ11" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
 <img src="images/a.gif" border=0>&nbsp;Resolve it by either adding the GLSCENE package to the requires of JVMM <br>or add JvMM to the requires of GLSCENE. Rebuild the packages.<br><br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible('FAQ12');">"Unit zlib/zlibconst implicitly imported into JvCrypt"</a><br>
+<div id="FAQ12" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;This message is nothing to worry about unless you have other packages also including zlib. In that case, you <br>might get an error saying something like: "Unable to load JvCrypt. It contains unit zlib which is also included in package XXXX". <br><br>The error message is not entirely correct but nevertheless you cannot install two packages that includes (explicitly or implicitly) the same units. <br>To resolve, you have to add the other package's dcp file to the requires node of JvCrypt and rebuild JvCrypt.<br><br>In some cases, this doesn't help either because the other package is using a non-standard zlib unit (JvCrypt requires the standard zlib/zlibconst.pas <br>available on the Delphi CD). To resolve this issue, you can copy the Borland zlib and zlibconst unis from the Delphi CD to your computer and rename them <br>(you will also need the obj files in the same folder). Open JvZLibMultiple.pas and change the uses clause to reflect the name of the renamed Borland zlib unit). <br><br>If all else fails, remove JvZLibMultiple.pas from the JvCrypt runtime package and the JvZLibMultiple registration and uses from jvcl\design\JvCryptReg.pas <br>and rebuild the packages (runtime as well as design-time).<br><br><br></div>
 
 
 </body>
