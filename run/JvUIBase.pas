@@ -61,9 +61,13 @@ type
   PDouble = ^Double;
   PSingle = ^Single;
   PInt64 = ^Int64;
+{$ENDIF}
+{$ELSE}
+  {$IFDEF BCB}
+    PPointer = ^Pointer;
+  {$ENDIF}
+{$ENDIF}
 
-{$ENDIF}
-{$ENDIF}
 
   UCHAR  = {$IFDEF TYPE_IDENTITY}type {$ENDIF}char;
   {$IFNDEF FPC}{$NODEFINE UCHAR}{$ENDIF}
@@ -484,10 +488,6 @@ type
   );
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM lseek_mode} {$ENDIF}
   TLSeekMode = lseek_mode;
-{$ENDIF}
-
-{$IFDEF BCB}
-  PPointer = ^Pointer;
 {$ENDIF}
 
   TBlobGetSegmentFn = function(hnd: Pointer; buffer: PChar; buf_size: ISCUShort;

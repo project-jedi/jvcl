@@ -729,7 +729,10 @@ begin
   begin
     FTransactions.Remove(Transaction);
     if FTransactions.Count = 0 then
-      FreeAndNil(FTransactions);
+    begin
+      FTransactions.free;
+      FTransactions := nil;
+    end;
   end;
 end;
 
@@ -1061,7 +1064,8 @@ begin
       FCursorName := 'C'+inttostr(Integer(FStatement));
       DSQLSetCursorName(FStatement, FCursorName);
     except
-      FreeAndNil(FSQLResult);
+      FSQLResult.free;
+      FSQLResult := nil;
       EndStatement(FOnError);
       raise;
     end;
@@ -1073,7 +1077,8 @@ end;
 
 procedure TJvUIBStatement.EndPrepare(const ETM: TEndTransMode);
 begin
-  FreeAndNil(FSQLResult);
+  FSQLResult.free;
+  FSQLResult := nil;
   FCurrentState := qsStatement;
   EndStatement(ETM);
 end;
@@ -1255,7 +1260,8 @@ end;
 destructor TJvUIBStatement.Destroy;
 begin
   FSQL.Free;
-  FreeAndNil(FParameter);
+  FParameter.free;
+  FParameter := nil;
   SetTransaction(nil);
   inherited;
 end;
@@ -1454,10 +1460,10 @@ procedure TJvUIBStatement.InternalReadBlob(sqlda: TSQLDA; const Index: Word;
 var
   BlobHandle: IscBlobHandle;
 begin
-  if (not sqlda.IsBlob[Index]) then
-    raise EUIBConvertError.Create(EUIB_CASTERROR);
-  if sqlda.IsNull[Index] then
-     str := '' else
+//  if (not sqlda.IsBlob[Index]) then
+//    raise EUIBConvertError.Create(EUIB_CASTERROR);
+//  if sqlda.IsNull[Index] then
+//     str := '' else
   begin
     Lock;
     with FTransaction.FDataBase.FLibrary do
@@ -1754,7 +1760,10 @@ begin
   begin
     FSQLComponent.Remove(Component);
     if (FSQLComponent.Count = 0) then
-      FreeAndNil(FSQLComponent);
+    begin
+      FSQLComponent.free;
+      FSQLComponent := nil;
+    end;
   end;
 end;
 

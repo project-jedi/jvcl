@@ -2615,7 +2615,7 @@ const
     Move(FDataBuffer^, FRecords.New^, FDataBufferLength);
     FCurrentRecord := FRecords.Count - 1;
   end;
-
+                 
   procedure TSQLResult.ClearRecords;
   var
     i: Integer;
@@ -2626,7 +2626,8 @@ const
       if FFetchBlobs then
         for i := 0 to FRecords.Count - 1 do
           FreeBlobs(FRecords.Items[i]);
-      FreeAndNil(FRecords);
+      FRecords.Free;
+      FRecords := nil;
     end;
   end;
 

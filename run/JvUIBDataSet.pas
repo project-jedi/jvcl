@@ -105,6 +105,12 @@ type
     property SQL: TStrings read GetSQL write SetSQL;
     property FetchBlobs: boolean read GetFetchBlobs write SetFetchBlobs default False;
     property Params: TSQLParams read GetParams;
+
+{$IFNDEF COMPILER5_UP}
+    function BCDToCurr(BCD: Pointer; var Curr: Currency): Boolean; override;
+    function CurrToBCD(const Curr: Currency; BCD: Pointer; Precision,
+      Decimals: Integer): Boolean; override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -139,7 +145,7 @@ type
 
 implementation
 {$IFDEF COMPILER6_UP}
-uses FMTBCD;
+uses fmtbcd;
 {$ENDIF}
 
 procedure TJvUIBCustomDataSet.InternalOpen;
@@ -522,7 +528,11 @@ begin
                 {$IFDEF COMPILER6_UP}
                   TBCD(Buffer^) := strToBcd(FloatToStr(PSmallint(sqldata)^ / scaledivisor[sqlscale]));
                 {$ELSE}
-                  CurrToBcd(PSmallint(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
+                  {$IFDEF COMPILER5_UP}
+                    CurrToBcd(PSmallint(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
+                  {$ELSE}
+                     PCurrency(Buffer)^ := PSmallint(sqldata)^/scaledivisor[sqlscale];
+                  {$ENDIF}
                 {$ENDIF}
                 end;
               SQL_LONG:
@@ -530,7 +540,11 @@ begin
                 {$IFDEF COMPILER6_UP}
                   TBCD(Buffer^) := strToBcd(FloatToStr(PInteger(sqldata)^ / scaledivisor[sqlscale]));
                 {$ELSE}
-                  CurrToBcd(PInteger(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
+                  {$IFDEF COMPILER5_UP}
+                    CurrToBcd(PInteger(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
+                  {$ELSE}
+                    PCurrency(Buffer)^ := PInteger(sqldata)^/scaledivisor[sqlscale];
+                  {$ENDIF}
                 {$ENDIF}
                 end;
               SQL_INT64,
@@ -539,7 +553,11 @@ begin
                 {$IFDEF COMPILER6_UP}
                   TBCD(Buffer^) := strToBcd(FloatToStr(PInt64(sqldata)^ / scaledivisor[sqlscale]));
                 {$ELSE}
-                  CurrToBcd(PInt64(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
+                  {$IFDEF COMPILER5_UP}
+                    CurrToBcd(PInt64(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
+                  {$ELSE}
+                    PCurrency(Buffer)^ := PInt64(sqldata)^/scaledivisor[sqlscale];
+                  {$ENDIF}
                 {$ENDIF}
                 end;
               SQL_DOUBLE: PDouble(Buffer)^ := PDouble(sqldata)^;
@@ -647,5 +665,20 @@ begin
     FStatement.Close(FOnClose);
 end;
 
+{$IFNDEF COMPILER5_UP}
+function TJvUIBCustomDataSet.BCDToCurr(BCD: Pointer;
+  var Curr: Currency): Boolean;
+begin
+  Curr := PCurrency(BCD)^;
+  result := True;
+end;
+
+function TJvUIBCustomDataSet.CurrToBCD(const Curr: Currency; BCD: Pointer;
+  Precision, Decimals: Integer): Boolean;
+begin
+  PCurrency(BCD)^ := Curr;
+  Result := True;
+end;
+{$ENDIF}
 
 end.
