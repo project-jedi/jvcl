@@ -859,7 +859,7 @@ end;
 procedure TJvDropCalendar.CalKeyPress(Sender: TObject; var Key: Char);
 begin
   if WithBeep then
-    MessageBeep(0);
+    SysUtils.Beep;
   case Word(Key) of
     VK_RETURN:
       DoSelect;

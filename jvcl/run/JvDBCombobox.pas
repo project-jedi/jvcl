@@ -32,7 +32,8 @@ unit JvDBCombobox;
 
 interface
 
-uses Windows, DbCtrls,
+uses
+  Windows, DbCtrls,
   {$IFDEF COMPILER6_UP}
   VDBConsts,
   {$ENDIF COMPILER6_UP}
@@ -172,6 +173,7 @@ type
 implementation
 
 uses
+  SysUtils,
   JvDBUtils;
 
 //=== TJvCustomDBComboBox ====================================================
@@ -360,7 +362,7 @@ begin
     not FDataLink.Field.IsValidChar(Key) then
   begin
     if BeepOnError then
-      MessageBeep(0);
+      SysUtils.Beep;
     Key := #0;
   end;
   case Key of

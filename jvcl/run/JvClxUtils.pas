@@ -87,8 +87,6 @@ function GetBValue(Col: TColorRef): Integer;
 function GetGValue(Col: TColorRef): Integer;
 function GetRValue(Col: TColorRef): Integer;
 
-procedure MessageBeep(Value: Integer);
-
 {$IFDEF LINUX}
 function GetTickCount: Cardinal;
 function MakeIntResource(Value: Integer): PChar;
@@ -340,11 +338,6 @@ end;
 function GetRValue(Col: TColorRef): Integer;
 begin
   Result := Col and $FF;
-end;
-
-procedure MessageBeep(Value: Integer);
-begin
-  Beep;
 end;
 
 {$IFDEF LINUX}

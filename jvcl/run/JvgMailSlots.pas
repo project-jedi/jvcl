@@ -161,7 +161,8 @@ begin
     raise Exception.Create(RsETJvgMailSlotServerErrorGatheringInf);
   if MsgNext <> MAILSLOT_NO_MESSAGE then
   begin
-    Beep;
+    // (rom) deactivated  annoying
+    // Beep;
     // чтение сообщения из канала и добавление в текст протокола
     { Reading message from channel and adding it to text of log }
     if ReadFile(FHandle, Buffer, SizeOf(Buffer), Read, nil) then

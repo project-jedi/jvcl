@@ -399,6 +399,7 @@ type
     FReadOnly: Boolean;
     FModified: Boolean;
     FRecording: Boolean;
+    FBeepOnError: Boolean;
 
     { Events }
     FOnGetLineAttr: TOnGetLineAttr;
@@ -652,6 +653,7 @@ type
     property UseFixedPopup:boolean read FUseFixedPopup write FUseFixedPopup;
 
   public { published in descendants }
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Lines: TWideStrings read GetLines write SetLines;
     property LinesAnsi: TStrings read GetLinesAnsi write SetLinesAnsi stored False; // this is only a redirected list
@@ -706,6 +708,7 @@ type
 
   TJvWideEditor = class(TJvCustomWideEditor)
   published
+    property BeepOnError;
     property BorderStyle;
     property Lines;
     property LinesAnsi;
@@ -1086,11 +1089,6 @@ type
 
 var
   BlockTypeFormat: Integer;
-
-procedure Err;
-begin
-  MessageBeep(0);
-end;
 
 function KeyPressed(VK: Integer): Boolean;
 begin
@@ -1675,6 +1673,7 @@ begin
   FCursorBeyondEOF := False;
   FBlockOverwrite := True;
   FPersistentBlocks := False;
+  FBeepOnError := True;
 
   FScrollBars := ssBoth;
   scbHorz := TJvControlScrollBar95.Create;
@@ -4420,7 +4419,8 @@ var
   X, Y, EndX, EndY: Integer;
 begin
   if (FCaretY > FLines.Count - 1) and (FLines.Count > 0) then
-    Err;
+    if BeepOnError then
+      Beep;
   H := Clipboard.GetAsHandle(CF_TEXT);
   Len := GlobalSize(H);
   if Len = 0 then
@@ -4987,7 +4987,8 @@ begin
     if (SelBegY < 0) or (SelBegY > FLines.Count - 1) or (SelEndY < 0) or
       (SelEndY > FLines.Count - 1) then
     begin
-      Err;
+      if BeepOnError then
+        Beep;
       Exit;
     end;
 

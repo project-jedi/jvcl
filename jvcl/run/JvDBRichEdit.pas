@@ -44,6 +44,7 @@ type
     FAutoDisplay: Boolean;
     FFocused: Boolean;
     FDataSave: string;
+    FBeepOnError: Boolean;
     function GetField: TField;
     function GetDataField: string;
     function GetDataSource: TDataSource;
@@ -84,6 +85,7 @@ type
     property Lines;
   published
     property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Align;
@@ -167,6 +169,7 @@ begin
   inherited Create(AOwner);
   inherited ReadOnly := True;
   FAutoDisplay := True;
+  FBeepOnError := True;
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
@@ -240,7 +243,8 @@ begin
     if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
       not FDataLink.Field.IsValidChar(Key) then
     begin
-      MessageBeep(0);
+      if BeepOnError then
+        Beep;
       Key := #0;
     end;
     case Key of

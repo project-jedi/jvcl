@@ -645,7 +645,7 @@ end;
 procedure TJvCustomNumEdit.DoBeepOnError;
 begin
   if BeepOnError then
-    MessageBeep(0);
+    SysUtils.Beep;
 end;
 
 function TJvCustomNumEdit.GetValue: Extended;

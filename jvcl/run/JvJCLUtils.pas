@@ -894,7 +894,6 @@ procedure ResourceNotFound(ResID: PChar);
 function RectWidth(R: TRect): Integer;
 function RectHeight(R: TRect): Integer;
 
-procedure Beep;
 {$IFDEF MSWINDOWS}
 procedure FreeUnusedOle;
 function GetWindowsVersion: string;
@@ -7437,11 +7436,6 @@ begin
   FreeLibrary(GetModuleHandle('OleAut32'));
 end;
 {$ENDIF MSWINDOWS}
-
-procedure Beep;
-begin
-  MessageBeep(0);
-end;
 
 {$IFDEF MSWINDOWS}
 function GetEnvVar(const VarName: string): string;

@@ -499,7 +499,7 @@ begin
   FStatus := csError;
   SetText(RsError);
   if FBeepOnError then
-    MessageBeep(0);
+    Beep;
   if Assigned(FOnError) then
     FOnError(Self);
 end;
@@ -611,7 +611,7 @@ begin
             SetText(Text + Key)
           else
           if FBeepOnError then
-            MessageBeep(0);
+            Beep;
         end;
       end;
     Backspace:
@@ -773,7 +773,7 @@ begin
         end
         else
         if FBeepOnError then
-          MessageBeep(0);
+          Beep;
       end;
     cbCancel:
       if Assigned(FOnCancel) then
@@ -928,7 +928,7 @@ begin
     else
     begin
       if FCalcPanel.FBeepOnError then
-        MessageBeep(0);
+        Beep;
       Result := 0;
     end;
   end;
