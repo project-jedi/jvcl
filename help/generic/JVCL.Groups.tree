@@ -6,6 +6,7 @@
 |   |- Check=Check boxes=JVCL provides a number of enhanced check box controls.
 |   |- Push=Push buttons=JVCL provides a number of enhanced push buttons and speed buttons.
 |   |- Radio=Radio buttons=JVCL provides a number of enhanced radio buttons.
+|- Inspector=Data Inspector=JVCL provides a Object Inspector like control. The control has the ability to inspect various types of data sources (such as published properties, variables, INI-files, dataset fields and more).
 |- DBAware=Data aware components=JVCL provides a number of database aware components and controls (both visual as well as non visual).
 |   |- Providers=Datasets and DataSources=JVCL provides a number of data source and dataset derivatives.
 |   |   |- Datasets=Datasets=JVCL provides a number of dataset derivatives to retrieve data from other sources than databases.
@@ -69,7 +70,6 @@
 |   |- Bevels=Bevels=JVCL provides a number of bevel like controls.
 |   |- Groups=Group boxes=JVCL provides a number of group box like controls.
 |   |- Panels=Panels=JVCL provides a number of panel like controls.
-|- Inspector=Data Inspector=JVCL provides a Object Inspector like control. The control has the ability to inspect various types of data sources (such as published properties, variables, INI-files, dataset fields and more).
 |- System=System=JVCL provides a number of system component and controls, such as alarms and timers and  library, process and thread managment.
     |- AlarmsAndTimers=Alarms and timers=JVCL provides a number of components and controls to schedule and/or time events.
     |   |- Alarms=Alarms=JVCL provides a number of components to schedule events.
