@@ -335,8 +335,9 @@ package is required.<br>
             </td>
             <td style="vertical-align: top;">The condition under which
 the package is required. If empty, no condition is necessary to
-require the package in the current one. When the condition has a leeding 
-exclamation mark the package is only required when the condition is not true.<br>
+require the package in the current one. When the condition has a
+leeding exclamation mark the package is only required when the
+condition is not true.<br>
             </td>
           </tr>
         </tbody>
@@ -385,8 +386,9 @@ colon, a space and TFrame or TDataModule (as in 'myFrame: TFrame').<br>
             </td>
             <td style="vertical-align: top;">The condition under which
 the file is to be included. If empty, no
-condition is necessary to include the file. When the condition has a leeding 
-exclamation mark the package is only required when the condition is not true.</td>
+condition is necessary to include the file. When the condition has a
+leeding exclamation mark the package is only required when the
+condition is not true.</td>
           </tr>
         </tbody>
       </table>
@@ -500,7 +502,8 @@ those nodes being the actual configuration described in this file.<br>
       <td style="vertical-align: top;">models<br>
       </td>
       <td style="vertical-align: top;">Each model node defines a
-generation model that can be used by the package generator. The five
+generation model that can be used by the package generator. The first
+five
 attributes are compulsory and serve the following purpose:<br>
       <table style="width: 100%; text-align: left;" border="0"
  cellspacing="0" cellpadding="2">
@@ -571,15 +574,7 @@ See below for more details<br>
                 </tr>
               </tbody>
             </table>
-            <b>Note:</b><br>
-Delphi and C++ Builder prior to version 6 do not support the LibSuffix
-concept. If you want to emulate it with your packages, you may find
-this useful:<br>
-If there is a comma in the format string, then it is considered a
-separator. Anything before the comma is used for all versions from 6
-and up,
-and anything after it is used for all versions prior to 6.<br>
-            </td>
+            <b></b> </td>
           </tr>
           <tr>
             <td style="vertical-align: top;">packages<br>
@@ -588,14 +583,51 @@ and anything after it is used for all versions prior to 6.<br>
 packages. This is considered as a root, meaning that the Package XML
 source files will be searched in the xml subdirectory. The
 directories used to output the files for each target will have to
-exist in this pseudo root directory.<br>
+exist in this pseudo root directory.</td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">incfile</td>
+            <td style="vertical-align: top;">The name of the include
+file to parse. This only has an impact for C++ Builder targets.</td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">NoLibSuffixFormat<br>
+            </td>
+            <td style="vertical-align: top;">Delphi and C++ Builder
+prior to version 6 do not support the LibSuffix
+concept. If you want to emulate it with your packages, you may want to
+use this attribute. If it is defined, its value will be used for all
+versions prior to 6. The same replacement rules applies to it. If it is
+not defined, it defaults to the value of the format attribute.<br>
             </td>
           </tr>
           <tr>
-            <td style="vertical-align: top;">incfile<br>
+            <td style="vertical-align: top;">NoLibSuffixPrefix<br>
             </td>
-            <td style="vertical-align: top;">The name of the include
-file to parse. This only has an impact for C++ Builder targets.<br>
+            <td style="vertical-align: top;">As with format and
+NoLibSuffixFormat, If this attribute is defined it will be used with
+versions prior to 6. If it is not defined, the value of Prefix is used.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">ClxFormat<br>
+            </td>
+            <td style="vertical-align: top;">In some instances, it may
+be interesting to have a different format string for the names of
+packages that are used when creating CLX applications. Define this
+attribute to use a different format when a CLX target is being used.
+Please see below for the definition of a CLX target. If this attribute
+is not defined, the value of Format will be used<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">ClxPrefix<br>
+            </td>
+            <td style="vertical-align: top;">As with Format and
+ClxFormat, you may want to have a different prefix for CLX targets (For
+instance, the JVCL uses 'JvQ' instead of 'Jv'). Define this attribute
+if you want to use that feature, its value being the one of Prefix if
+it is not defined.<br>
             </td>
           </tr>
         </tbody>
@@ -742,6 +774,15 @@ information on the handling of the include file.<br>
 is to be used as a path separator for the target. If not specified,
 this value defaults to "\". You are most likely to setup this value for
 Linux targets, where it should be set tot "/"<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">IsCLX<br>
+            </td>
+            <td style="vertical-align: top;">If set to 1 (True), this
+indicates that the target is a CLX target and the ClxPrefix and
+ClxFormat values will be used when generating the packages. See above
+for more details.<br>
             </td>
           </tr>
         </tbody>
@@ -1200,7 +1241,8 @@ applying the format read in the model and using the extension of the
 template file<sup>3.</sup>.<br>
 </div>
 <div style="margin-left: 40px;"><span style="font-weight: bold;">If</span>
-the template is binary and is different<sup>4.</sup> from the exisiting
+the template is binary<sup>4.</sup> and is different<sup>5.</sup> from
+the exisiting
 output file <span style="font-weight: bold;">then</span><br>
 <div style="margin-left: 40px;">Copy the binary file to the output file<br>
 </div>
@@ -1268,20 +1310,20 @@ Copy the modified line in the memory output file<br>
 </div>
 </div>
 <span style="font-weight: bold;">If</span> the memory output file is
-different<sup>5.</sup> from the existing output file <span
+different<sup>6.</sup> from the existing output file <span
  style="font-weight: bold;">then</span><br>
 <div style="margin-left: 40px;">Write the memory output file into the
-output file on disk<sup>6.</sup><br>
+output file on disk<sup>7.</sup><br>
 </div>
 <span style="font-weight: bold;">If</span> a difference was detected
-between the current target and the associated perso target<sup>7.</sup>
+between the current target and the associated perso target<sup>8.</sup>
 <span style="font-weight: bold;">then</span><br>
 <div style="margin-left: 40px;"><span style="font-weight: bold;">If</span>
 the perso directory contains a template named the same as the current
 template <span style="font-weight: bold;">then</span><br>
 <div style="margin-left: 40px;">Use that template<br>
 </div>
-Generate the output file for the perso target<sup>8.</sup><br>
+Generate the output file for the perso target<sup>9.</sup><br>
 </div>
 <div style="margin-left: 40px;">
 <div style="margin-left: 40px;"><br>
@@ -1299,24 +1341,28 @@ means '..\..\packages\c6\template.*'<br>
 <sup>3.</sup> If 'template.bpk' was used with the example configuration
 file, a target called 'c6' and the file JvCore-R.xml, this would expand
 to JvCoreC6R.bpk<br>
-<sup>4.</sup> The difference is determined by performing a byte per
+<sup>4.</sup> A file is said to be binary if more than 10% of its 50
+first bytes are not in this ensemble (Delphi notation): [#9, #13, #10,
+#32..#127]. The results of that test are cached to increase the speed
+of the generation process.<br>
+<sup>5.</sup> The difference is determined by performing a byte per
 byte comparison.<br>
-<sup>5.</sup> The difference is determined by doing a line by line
+<sup>6.</sup> The difference is determined by doing a line by line
 comparison. The last %DATETIME% marker in the file will be ignored,
 thus allowing a file that is only different by the date time tag to be
 treated
 as unmodified.<br>
-<sup>6.</sup> If no file was found to be included in the
+<sup>7.</sup> If no file was found to be included in the
 generated package for the current target, no file will be written.
 Please note that if the package only requires other packages but
 doesn't contain any file, it won't be output as a package is only
 meaningful if it contains files.<br>
-<sup>7.</sup> This is determined while processing 'package' and 'file'
+<sup>8.</sup> This is determined while processing 'package' and 'file'
 nodes. If a file or package is used by a target and not by its
 associated
 personal target (or vice-versa), then the two 'flavors' of the package
 being generated are different.<br>
-<sup>8.</sup> The output file will be placed in the directory set for
+<sup>9.</sup> The output file will be placed in the directory set for
 the personal target. This is done by repeating all steps from the line
 where note 4 is. As the target name is a personal target, it has no
 associated personal target and the test for a difference between
