@@ -41,9 +41,7 @@ unit JvComboListBox;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}
   Classes, Graphics, Controls, Forms, StdCtrls, Buttons,
   {$IFDEF VCL}
   JvListBox,
