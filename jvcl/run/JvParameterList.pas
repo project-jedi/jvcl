@@ -29,7 +29,6 @@ interface
 
 uses
   Classes, SysUtils,
-
   {$IFDEF VCL}
   StdCtrls, ExtCtrls, Graphics, Forms, Controls, Dialogs, ComCtrls,
   {$ENDIF VCL}

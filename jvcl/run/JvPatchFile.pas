@@ -38,22 +38,24 @@ type
   private
     FEndFile: TFileName;
     FStartFile: TFileName;
-    FDifferences: TStrings;
+    FDifferences: TStringList;
     FChangeInFile: Boolean;
     FPos: Integer;
     FPass: string;
     function Decrypt(Value: Byte): Byte;
+    function GetDifferences: TStrings;
+    procedure SetDifferences(Value: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property StartFile: TFileName read FStartFile write FStartFile;
-    property EndFile: TFileName read FEndFile write FEndFile;
-    property ChangeInFile: Boolean read FChangeInFile write FChangeInFile default True;
-    property Differences: TStrings read FDifferences write FDifferences;
     function Patch(Password: string = ''): Boolean;
     function IsPatched(FileName: string): Boolean;
     function IsPatchable(FileName: string): Boolean;
+    property StartFile: TFileName read FStartFile write FStartFile;
+    property EndFile: TFileName read FEndFile write FEndFile;
+    property ChangeInFile: Boolean read FChangeInFile write FChangeInFile default True;
+    property Differences: TStrings read GetDifferences write SetDifferences;
   end;
 
 implementation
@@ -61,7 +63,7 @@ implementation
 constructor TJvPatchFile.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDifferences := TStringlist.Create;
+  FDifferences := TStringList.Create;
   FChangeInFile := True;
 end;
 
@@ -80,6 +82,16 @@ begin
     FPos := (FPos + 1) mod Length(FPass);
     Result := Value xor Byte(FPass[FPos + 1]);
   end;
+end;
+
+function TJvPatchFile.GetDifferences: TStrings;
+begin
+  Result := FDifferences;
+end;
+
+procedure TJvPatchFile.SetDifferences(Value: TStrings);
+begin
+  FDifferences.Assign(Value);
 end;
 
 function TJvPatchFile.IsPatchable(FileName: string): Boolean;

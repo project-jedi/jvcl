@@ -300,9 +300,7 @@ var
     with ARect, Canvas do
     begin
       if (ARow > 0) and ((FMinDate <> NulLDate) or (FMaxDate <> NulLDate)) then
-      begin
         if not CellInRange(ACol, ARow) then
-        begin
           if TheText <> EmptyStr then
           begin
             Font.Color := clBtnFace;
@@ -314,8 +312,6 @@ var
               Font.Color := clBtnShadow;
             end;
           end;
-        end;
-      end;
       DefaultDraw;
     end;
   end;
@@ -843,7 +839,7 @@ type
     FCalendar: TJvCalendar;
     FTitleLabel: TLabel;
     FFourDigitYear: Boolean;
-    FBtns: array[0..3] of TJvSpeedButton;
+    FBtns: array [0..3] of TJvSpeedButton;
     procedure CalendarMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure PrevMonthBtnClick(Sender: TObject);
@@ -1254,7 +1250,7 @@ type
     procedure TopPanelDblClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
-    FBtns: array[0..3] of TJvSpeedButton;
+    FBtns: array [0..3] of TJvSpeedButton;
     procedure SetDate(Date: TDateTime);
     procedure CheckButton; // Polaris
     function GetDate: TDateTime;
@@ -1564,9 +1560,7 @@ end;
 { SelectDate routines }
 
 function CreateDateDialog(const DlgCaption: TCaption;
-  MinDate: TDateTime;
-  MaxDate: TDateTime
-  ): TJvSelectDateDlg;
+  MinDate: TDateTime; MaxDate: TDateTime): TJvSelectDateDlg;
 begin
   Result := TJvSelectDateDlg.Create(Application);
   try
@@ -1591,9 +1585,7 @@ begin
 end;
 
 function PopupDate(var Date: TDateTime; Edit: TWinControl;
-  MinDate: TDateTime;
-  MaxDate: TDateTime
-  ): Boolean;
+  MinDate: TDateTime; MaxDate: TDateTime): Boolean;
 var
   D: TJvSelectDateDlg;
   P: TPoint;
@@ -1685,9 +1677,7 @@ end;
 function SelectDateStr(Sender: TWinControl; var StrDate: string; const DlgCaption: TCaption;
   AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
   AWeekendColor: TColor; BtnHints: TStrings;
-  MinDate: TDateTime;
-  MaxDate: TDateTime
-  ): Boolean;
+  MinDate: TDateTime; MaxDate: TDateTime): Boolean;
 var
   DateValue: TDateTime;
 begin
