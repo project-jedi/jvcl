@@ -33,7 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ComCtrls, CommCtrl, Menus, ImgList, Clipbrd,
-  JvTypes, JvExComCtrls;
+  JvTypes, JvExComCtrls, JvAppStorage;
 
 const
   WM_AUTOSELECT = WM_USER + 1;
@@ -42,6 +42,31 @@ type
   EJvListViewError = EJVCLException;
   //  TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
   TJvOnProgress = procedure(Sender: TObject; Progression, Total: Integer) of object;
+
+  TJvListItems = class(TListItems, IJvAppStorageHandler, IJvAppStoragePublishedProps)
+  private
+    FOwnerInterface: IInterface;
+  protected
+    { IInterface }
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
+    { IJvAppStorageHandler }
+    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
+    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); 
+
+    { List item reader used in the call to ReadList. }
+    procedure ReadListItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const Index: Integer; const ItemName: string);
+    { List item writer used in the call to WriteList. }
+    procedure WriteListItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const Index: Integer; const ItemName: string);
+    { List item deleter usedin the call to WriteList. }
+    procedure DeleteListItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const First, Last: Integer; const ItemName: string);
+  public
+    function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
+    procedure AfterConstruction; override;
+  end;
 
   TJvListItem = class(TListItem)
   private
@@ -52,6 +77,12 @@ type
   public
     constructor CreateEnh(AOwner: TListItems; const Popup: TPopupMenu);
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
+  published
+    // Published now for the usage of AppStorage.Read/WritePersistent
+    property Caption;
+    property Checked;
+    property Selected;
+    property SubItems;
   end;
   // (rom) Why that? C++ Builder should need this class.
   {$EXTERNALSYM TJvListItem}
@@ -79,6 +110,7 @@ type
     {$ENDIF !COMPILER6_UP}
   protected
     function CreateListItem: TListItem; override;
+    function CreateListItems: TListItems; override;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
@@ -167,6 +199,84 @@ procedure TJvListItem.SetPopupMenu(const Value: TPopupMenu);
 begin
   FPopupMenu := Value;
 end;
+
+//=== { TJvListItems } ========================================================
+
+procedure TJvListItems.AfterConstruction;
+begin
+  inherited;
+  if GetOwner <> nil then
+    GetOwner.GetInterface(IInterface, FOwnerInterface);
+end;
+
+function TJvListItems._AddRef: Integer;
+begin
+  if FOwnerInterface <> nil then
+    Result := FOwnerInterface._AddRef else
+    Result := -1;
+end;
+
+function TJvListItems._Release: Integer;
+begin
+  if FOwnerInterface <> nil then
+    Result := FOwnerInterface._Release else
+    Result := -1;
+end;
+
+function TJvListItems.QueryInterface(const IID: TGUID;
+  out Obj): HResult;
+const
+  E_NOINTERFACE = HResult($80004002);
+begin
+  if GetInterface(IID, Obj) then Result := 0 else Result := E_NOINTERFACE;
+end;
+
+procedure TJvListItems.ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
+begin
+  Clear;
+  AppStorage.ReadList(BasePath, Self, ReadListItem, cItem);
+end;
+
+procedure TJvListItems.WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
+begin
+  AppStorage.WriteList(BasePath, Self, Count, WriteListItem, DeleteListItem, cItem);
+end;
+
+procedure TJvListItems.ReadListItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
+var
+  NewItem: TPersistent;
+  NewPath: string;
+begin
+  if List is TJvListItems then
+  begin
+    try
+      NewPath := Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]);
+      NewItem := TJvListItems(List).Add;
+      Sender.ReadPersistent(NewPath, NewItem);
+    except
+    end;
+  end;
+end;
+
+procedure TJvListItems.WriteListItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
+begin
+  if List is TJvListItems then
+    if Assigned(TJvListItems(List)[Index]) then
+      Sender.WritePersistent(Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]), TPersistent(TJvListItems(List)[Index]));
+end;
+
+procedure TJvListItems.DeleteListItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const First, Last: Integer; const ItemName: string);
+var
+  I: Integer;
+begin
+  if List is TJvListItems then
+    for I := First to Last do
+      Sender.DeleteValue(Sender.ConcatPaths([Path, ItemName + IntToStr(I)]));
+end;
+
 
 //=== { TJvListView } ========================================================
 
@@ -430,6 +540,11 @@ end;
 function TJvListView.CreateListItem: TListItem;
 begin
   Result := TJvListItem.CreateEnh(Items, Self.PopupMenu);
+end;
+
+function TJvListView.CreateListItems: TListItems;
+begin
+  Result := TJvListItems.Create (Self);
 end;
 
 function TJvListView.GetItemPopup(Node: TListItem): TPopupMenu;
