@@ -1,5 +1,5 @@
 ##Package: Custom
-##Status: Completed (II) (peter3)
+##Status: Completed,Checked (peter3)
 ##Skip: TJvCustomOutlookBar.BtmButton
 ##Skip: TJvOutlookBarPage.DownButton
 ##Skip: TJvCustomOutlookBar.TopButton
@@ -32,7 +32,7 @@ Description
 @@TJvCustomOutlookBar
 Summary
   TJvCustomOutlookBar is the base class for a control that displays pages and buttons in the style of the
-  button bar in Microsoft(R) Outlook (R).
+  button bar in Microsoft(R) Outlook(R).
 Description
   Use TJvCustomOutlookBar as a base class when defining a control that should contain a series of pages which
   in turn has buttons in a list in the style of Microsoft Outlook.
@@ -118,7 +118,7 @@ Description
   Call GetButtonAtPos to retrieve the button located at the coordinates given by P. If no button encloses the P.X and P.Y
   coordinates, nil is returned. This function can only return a button in the visible part of the active page.
 Parameters
-  P - a point in the control in window coordinates that should be enclosed by a button rectangle.
+  P - A point in the control in window coordinates that should be enclosed by a button rectangle.
 Return value
   The button at P or nil if no button is located at P.
 See Also
@@ -132,9 +132,9 @@ Description
   Call GetPageButtonAtPos to retrieve the page button located at the coordinates given by P. If no page button encloses
   the P.X and P.Y coordinates, nil is returned.
 Parameters
-  P - a point in the control in window coordinates that should be enclosed by a page button rectangle
+  P - A point in the control in window coordinates that should be enclosed by a page button rectangle.
 Return value
-  The page button at P or nil if no page button is located at P
+  The page button at P or nil if no page button is located at P.
 See Also
   <LINK GetButtonAtPos>
 ----------------------------------------------------------------------------------------------------
@@ -155,8 +155,8 @@ Description
   Write a handler for the OnButtonClick event to take specific action when the user clicks a button. The clicked
   button is always located on the active page.
 Parameters
-  Sender - the object that triggered the event
-  Index  - the index of the button that was clicked. The button is always located on the currently active page.
+  Sender - The object that triggered the event
+  Index  - The index of the button that was clicked. The button is always located on the currently active page.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomOutlookBar.OnEditButton
 Summary
@@ -165,7 +165,7 @@ Description
   Write a handler for the OnEditButton event to take specific action when the user has changed the
   caption of a button.
 See Also
-  EditCaption, OnEditPage
+  TJvOutlookBarButton.EditCaption, OnEditPage
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomOutlookBar.OnEditPage
 Summary
@@ -174,7 +174,7 @@ Description
   Write a handler for the OnEditPage event to take specific action when the user has changed the
   caption of a page button.
 See Also
-  OnEditButton
+  TJvOutlookBarPage.Caption, OnEditButton
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomOutlookBar.OnPageChange
 Summary
@@ -182,8 +182,8 @@ Summary
 Description
   Write a handler for the OnPageChange event to take specific actions when the user has changed to a new active page.
 Parameters
-  Sender - the object that triggered the event
-  Index  - the index of the new active page
+  Sender - The object that triggered the event.
+  Index  - The index of the new active page.
 See Also
   OnPageChanging
 ----------------------------------------------------------------------------------------------------
@@ -194,9 +194,9 @@ Description
   Write a handler for the OnPageChanging event to take specific actions before the currently active page is changed.
   For example, you can use this event to prevent the user from changing to another page.
 Parameters
-  Sender      - the object that triggered the event
-  Index       - the page index of the page that is to be made active
-  AllowChange - set this parameter to false to disallow changing to the new page.
+  Sender      - The object that triggered the event.
+  Index       - The page index of the page that is to be made active.
+  AllowChange - Set this parameter to false to disallow changing to the new page.
 See Also
   OnPageChange
 ----------------------------------------------------------------------------------------------------
@@ -221,7 +221,7 @@ Summary
   Indicates the component that last displayed the popup menu in response to a right mouse click.
 Description
   Read PopUpObject to determine which control is currently
-  using the popup menu. Since the pages and button in the outlook bar isn't real components, reading
+  using the popup menu. Since the pages and button in the outlook bar are no real components, reading
   PopupMenu.PopupComponent always returns the outlook bar control. To access the real object that activated the
   popup menu, use PopupObject instead.
 
@@ -264,7 +264,7 @@ JVCLInfo
 Summary
   A control that can display pages and buttons in the style of the button bar used by Microsoft(R) Outlook(R).
 Description
-  TJvOutlookBar is derived from TJvCustomOutlookBar and publishes it's properties but does not
+  TJvOutlookBar is derived from TJvCustomOutlookBar and publishes its properties but does not
   introduce any new functionality.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarButton
@@ -282,7 +282,7 @@ Description
   Call Assign to copy the content of another button to this button. If Source is not a TJvOutlookBarButton or descendant,
   inherited Assign is called.
 Parameters
-  Source - The object to copy from
+  Source - The object to copy from.
 See Also
   AssignTo
 ----------------------------------------------------------------------------------------------------
@@ -300,8 +300,8 @@ Summary
   Activates runtime editing of the buttons text.
 Description
   Call EditCaption if you want to allow the user to change the buttons text at runtime. EditCaption
-  activates an inplace editor that the user can type into. When the user presses ENTER, the text on the
-  button is updated with the new value. If the user presses Escape or clicks outside the button,
+  activates an inplace editor that the user can type into. When the user presses the Enter key, the
+  text on the button is updated with the new value. If the user presses Escape or clicks outside the button,
   the text is not changed.
 
   To be notified when the user has finished editing the caption, assign an event handler to the
@@ -417,12 +417,13 @@ Summary
   Activates runtime editing of the page button's text.
 Description
   Call EditCaption if you want to allow the user to change the page button's text at runtime. EditCaption
-  activates an inplace editor that the user can type into. When the user presses ENTER, the text on the page
+  activates an inplace editor that the user can type into. When the user presses Enter, the text on the page
   button is updated with the new value. If the user presses Escape or clicks outside the page button, the text is not changed.
 
   To be notified when the user has finished editing the caption, assign an event handler to the OnEditPage event.
 See Also
-  OnEditPage, TJvOutlookBar.EditCaption
+  TJvCustomOutlookBar.OnEditPage
+##, TJvOutlookBar.EditCaption
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.Font
 Summary

@@ -1,5 +1,5 @@
 ##Package: MM
-##Status: Completed (II)
+##Status: Completed,Checked
 ----------------------------------------------------------------------------------------------------
 @@JvId3v1.pas
 Summary
@@ -14,7 +14,7 @@ Summary
   Indicates whether a file has an ID3v1 tag.
 Description
   Call HasID3v1Tag to determine whether the file specified by parameter AFileName has an ID3v1 tag.
-  HasID3v1Tag returns True if the file has an ID3v1 tag, otherwise returns False.
+  HasID3v1Tag returns true if the file has an ID3v1 tag, otherwise returns false.
 Parameters
   AFileName - Specifies the name of the file.
 See Also
@@ -26,11 +26,11 @@ Summary
   Reads an ID3v1 tag from a file.
 Description
   Call ReadID3v1Tag to retrieve an ID3v1 tag from a file specified by parameter AFileName. ReadID3v1Tag
-  \returns true when the tag data has been succesful read from the file, and returns false 
+  \returns true when the tag data has been successful read from the file, and returns false
   if the file has <I>no</I> tag or an error occured.
 Parameters
   AFileName - Specifies the name of the file.
-  ATag      - Contains the tag data after a succesful call.
+  ATag      - Contains the tag data after a successful call.
 See Also
   <LINK HasID3v1Tag>, <LINK RemoveID3v1Tag>, TJvID3v1.Open, <LINK WriteID3v1Tag>
 ----------------------------------------------------------------------------------------------------
@@ -165,23 +165,23 @@ Summary
 Description
   Use the TJvID3v1 component to read, alter or remove the ID3v1 tag of a file.
 
-  * To read a tag, set FileName to a name of a file, then set Active to True. \Now the
+  * To read a tag, set FileName to a name of a file, then set Active to true. \Now the
     properties - such as Album, Artist - of the component give access to the fields of the ID3v1
     tag of the file.
-  * If the file does not have an ID3v1 tag, then HasTag returns False.
+  * If the file does not have an ID3v1 tag, then HasTag returns false.
   * After reading and setting these properties, you can call Commit to write the altered tag data to
     the file. If the file did not have a tag, one is created.
   * Alternatively, to remove a file's ID3v1 tag, set FileName to a name of file and call Erase. You
-    don't have to set Active to True.
+    don't have to set Active to true.
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v1.Active
 Summary
   Specifies whether or not the ID3v1 component is \open.
 Description
   Use Active to determine or set whether the component is populated with data from the ID3v1 tag. When
-  Active is False, the component cannot read or write data from or to the tag.
+  Active is false, the component cannot read or write data from or to the tag.
 
-  When Active is set to True, the component reads the tag from the file specified by FileName.
+  When Active is set to true, the component reads the tag from the file specified by FileName.
 See Also
   Close, FileName, Open, <LINK ReadID3v1Tag>, Refresh
 ----------------------------------------------------------------------------------------------------
@@ -189,9 +189,9 @@ See Also
 Summary
   Specifies the album where the MP3 comes from.
 Description
-  Use Album to specify the album where the MP3 comes from. Maximal length of \string is 30.
+  Use Album to specify the album where the MP3 comes from. Maximal length of the \string is 30.
 
-  Before reading or setting Album, you must set Active to True.
+  Before reading or setting Album, you must set Active to true.
 See Also
   AlbumTrack, Artist, Comment, Genre, SongName, Year
 ----------------------------------------------------------------------------------------------------
@@ -207,7 +207,7 @@ Description
 
   If you specify a \string for Comment of length 29 or 30, AlbumTrack is ignored.
 
-  Before reading or setting AlbumTrack, you must set Active to True.
+  Before reading or setting AlbumTrack, you must set Active to true.
 See Also
   Album, Artist, Comment, Genre, SongName, Year
 ----------------------------------------------------------------------------------------------------
@@ -215,9 +215,9 @@ See Also
 Summary
   Specifies the artist of the MP3
 Description
-  Use Artist to specify the artist of the MP3. Maximal length of \string is 30.
+  Use Artist to specify the artist of the MP3. Maximal length of the \string is 30.
 
-  Before reading or setting Artist, you must set Active to True.
+  Before reading or setting Artist, you must set Active to true.
 See Also
   Album, AlbumTrack, Comment, Genre, SongName, Year
 ----------------------------------------------------------------------------------------------------
@@ -225,7 +225,7 @@ See Also
 Summary
   Deactivates the component.
 Description
-  Call Close to set the Active property of the component to False. When Active is False, you can not
+  Call Close to set the Active property of the component to false. When Active is false, you can not
   change the tag of the file and all properties that specify fields of the ID3v1 tag are reset.
 See Also
   Active, FileName, Open
@@ -234,7 +234,7 @@ See Also
 Summary
   Specifies a comment for the MP3.
 Description
-  Use Comment to specify a comment for the MP3. Maximal length of \string is 30.
+  Use Comment to specify a comment for the MP3. Maximal length of the \string is 30.
 
   In ID3v1.1, Michael Mutschler revised the specification of the comment field in order to implement
   the track number. The new length of the comment field is 28 character, thus making room to store a
@@ -242,7 +242,7 @@ Description
 
   If you specify a \string for Comment of length 29 or 30, AlbumTrack is ignored.
 
-  Before reading or setting Comment, you must set Active to True.
+  Before reading or setting Comment, you must set Active to true.
 See Also
   Album, AlbumTrack, Artist, Genre, SongName, Year
 ----------------------------------------------------------------------------------------------------
@@ -253,9 +253,9 @@ Description
   Writes the data specified by the properties - such as Album, Artist - to the tag of the file
   specified by FileName. If the file does not have an ID3v1 tag, a tag is created.
 
-  Active must have been set to True before calling Commit.
+  Active must have been set to true before calling Commit.
 Return value
-  Returns True if the commit was succesful, otherwise returns False.
+  Returns true if the commit was successful, otherwise returns false.
 See Also
   Active, Erase, HasTag, <LINK WriteID3v1Tag>
 ----------------------------------------------------------------------------------------------------
@@ -264,7 +264,7 @@ Summary
   Removes the ID3v1 tag.
 Description
   Call Erase to remove the ID3v1 tag from the file specified by FileName. You don't have to set
-  Active to True before you call Erase.
+  Active to true before you call Erase.
 See Also
   Active, Commit, HasTag, <LINK RemoveID3v1Tag>
 ----------------------------------------------------------------------------------------------------
@@ -274,7 +274,7 @@ Summary
 Description
   FileName specifies the file:
 
-  * From which the tag must be read when Active is set to True.
+  * From which the tag must be read when Active is set to true.
   * From which the tag will be altered if you call Commit.
   * From which the tag will be removed if you call Erase.
 See Also
@@ -287,7 +287,7 @@ Description
   Use Genre to specify the offset of a genre. You can call <LINK ID3_Genres> to retrieve all valid
   genre strings.
 
-  Before reading or setting Genre, you must set Active to True.
+  Before reading or setting Genre, you must set Active to true.
 See Also
   Album, AlbumTrack, Artist, Comment, GenreAsString, <LINK ID3_Genres>, SongName, Year
 ----------------------------------------------------------------------------------------------------
@@ -298,7 +298,7 @@ Description
   Use GenreAsString to specify a genre as \string for the MP3. The \string must be from the <LINK TJvID3Genre_Table, predefined list>.
   You can call <LINK ID3_Genres> to retrieve all valid genre strings.
 
-  Before reading or setting GenreAsString, you must set Active to True.
+  Before reading or setting GenreAsString, you must set Active to true.
 See Also
   Genre, <LINK ID3_Genres>
 ----------------------------------------------------------------------------------------------------
@@ -308,17 +308,17 @@ Summary
 Description
   \Read HasTag to determine whether the MP3 file specified by FileName has an ID3v1 tag.
 See Also
-  Active, Commit, Erase, HasID3v1Tag, Open
+  Active, Commit, Erase, <LINK HasID3v1Tag>, Open
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v1.Open
 Summary
   Activates the component.
 Description
-  Call Open to set the Active property for the component to True. When Active is True, you can change
+  Call Open to set the Active property for the component to true. When Active is true, you can change
   the tag by changing the values of the properties of the component that represent fields of the tag
   such as Album, Artist - and then call Commit.
 
-  When Active is set to True, the component reads the tag from the file specified by FileName.
+  When Active is set to true, the component reads the tag from the file specified by FileName.
 See Also
   Active, Close, FileName, HasTag
 ----------------------------------------------------------------------------------------------------
@@ -327,7 +327,7 @@ Summary
   Rereads the ID3v1 tag.
 Description
   Call Refresh to reread the tag from the file specified by FileName. Active must have been set to
-  True before calling Refresh.
+  true before calling Refresh.
 See Also
   Active, HasTag, Open
 ----------------------------------------------------------------------------------------------------
@@ -335,9 +335,9 @@ See Also
 Summary
   Specifies the title of the MP3.
 Description
-  Use SongName to specify the title of the MP3. Maximal length of \string is 30.
+  Use SongName to specify the title of the MP3. Maximal length of the \string is 30.
 
-  Before reading or setting SongName, you must set Active to True.
+  Before reading or setting SongName, you must set Active to true.
 See Also
   Album, AlbumTrack, Artist, Comment, Genre, Year
 ----------------------------------------------------------------------------------------------------
@@ -346,9 +346,9 @@ Summary
   Specifies the year when this song has originally been released.
 Description
   Use Year to specify the year when this song has originally been released.
-  Maximal length of \string is 4.
+  Maximal length of the \string is 4.
 
-  Before reading or setting Year, you must set Active to True.
+  Before reading or setting Year, you must set Active to true.
 See Also
   Album, AlbumTrack, Artist, Comment, Genre, SongName
 ----------------------------------------------------------------------------------------------------
@@ -358,7 +358,7 @@ Summary
   Writes an ID3v1 tag to a file.
 Description
   Call WriteID3v1Tag to write an ID3v1 tag to a file specified by parameter AFileName. WriteID3v1Tag
-  \returns true when the tag data has been succesful written to the file, and returns false 
+  \returns true when the tag data has been successful written to the file, and returns false
   if an error occured.
 Parameters
   AFileName - Specifies the name of the file.

@@ -1,5 +1,5 @@
 ##Package: MM
-##Status: Completed (III)
+##Status: Completed,Checked
 ##Skip: EInvalidDriverIndexError
 ##Skip: TJvScrollPos
 ----------------------------------------------------------------------------------------------------
@@ -50,8 +50,8 @@ Summary
 Description
   This value must be calculated according to the provider of the audio format you want to use and
   that you indicated by setting the value of FormatTag.
-  Please not that if FormatTag is equal to WAVE_FORMAT_PCM, the value of AvgBytesPerSec will be
-  ignored and will be computed according to the recommandation for this format:
+  Please note that if FormatTag is equal to WAVE_FORMAT_PCM, the value of AvgBytesPerSec will be
+  ignored and will be computed according to the recommendation for this format:
 
   <AUTOLINK OFF>
   <CODE>
@@ -116,11 +116,11 @@ Summary
 Description
   The WAVEFORMATEX structure will be filled with the required informations from the
   properties of the TJvAudioFormat object. If the FormatTag is WAVE_FORMAT_PCM, the values
-  will be set to comply with the recommandations for this format.
+  will be set to comply with the recommendations for this format.
   If set to another value, the properties will be copied straight into the structure without
   any check.
 Parameters
-  wfex - The WAVEFORMATEX structure to be filled
+  wfex - The WAVEFORMATEX structure to be filled.
 See Also
   FormatTag
 ----------------------------------------------------------------------------------------------------
@@ -156,9 +156,9 @@ JVCLInfo
   GROUP=JVCL.Multimedia.Video
   FLAG=Component
 Summary
-  TJvAVICapture is an encapsulation of the AVICap API allowing to capture live video.
+  An encapsulation of the AVICap API allowing to capture live video.
 Description
-  This component can be dropped on any form or frame and will display the video stream
+  The TJvAVICapture component can be dropped on any form or frame and will display the video stream
   captured by a video device installed under Windows. You can perform live previews,
   record movies (and save them to avi files) or even capture single frames. A direct
   access is provided to the frames so that you can process them if you want.
@@ -201,7 +201,7 @@ See Also
 Summary
   Captures a frame in a frame by frame capture session.
 Description
-  Call this function to capture a frame after having started a frame by frame session
+  Call this function to capture a frame after having started a frame by frame session.
 Return value
   True if frame was captured successfully, false otherwise.
 See Also
@@ -210,8 +210,8 @@ See Also
 @@TJvAVICapture.CaptureSettings
 Summary
   The settings of the capture.
-Description.
-  This property contains the property of the capture.
+Description
+  This property contains the settings of the capture.
 See Also
   TJvCaptureSettings
 ----------------------------------------------------------------------------------------------------
@@ -237,7 +237,7 @@ Summary
 Description
   Generally, there is only one driver on a given system. You then choose a different
   source depending on what you want to capture.
-  If the given driver index is invalid, a EInvalidDriverIndexError exception is triggered.
+  If the given driver index is invalid, an EInvalidDriverIndexError exception is triggered.
 Parameters
   Driver - The index of the driver to connect to.
 Return value
@@ -255,7 +255,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.CopyToClipboard
 Summary
-  Copy the latest frame in the clipboard.
+  Copies the latest frame in the clipboard.
 Description
   The latest fully captured frame is copied into the clipboard, in the format of the
   video stream.
@@ -295,8 +295,8 @@ See Also
 Summary
   The name of the driver the component is connected to.
 Description
-  If the component is not connected to any driver, this returns the value of
-  NOT_CONNECTED (which is 'Not Connected' unless localized).
+  If the component is not connected to any driver, DriverName returns the value of
+  NOT_CONNECTED (which is 'Not \Connected' unless localized).
 See Also
   Connected
 ----------------------------------------------------------------------------------------------------
@@ -435,34 +435,34 @@ Description
   changes to the frame in this event, they will be written to disk.
   This event will only be triggered if ueVideoStream is in UsedEvents.
 Parameters
-  Sender   - the TJvAVICapture component triggering the event.
+  Sender   - The TJvAVICapture component triggering the event.
   videoHdr - A PJvVideoHdr structure containing informations about the frame.
 See Also
   UsedEvents
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.OnWaveStream
 Summary
-  the event trigerred when an audio buffer is ready, during streaming capture.
+  The event triggered when an audio buffer is ready, during streaming capture.
 Description
   This event is triggered just before the buffer is written do disk, leaving you the
   opportunity to modify it if needed.
   This event will only be triggered if ueAudioStream is in UsedEvents.
 Parameters
-  Sender  - the TJvAVICapture component triggering the event.
-  waveHdr - the audio header describing the buffer.
+  Sender  - The TJvAVICapture component triggering the event.
+  waveHdr - The audio header describing the buffer.
 See Also
   UsedEvents
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.OnYield
 Summary
-  The event triggerred when the driver is yielding.
+  The event triggered when the driver is yielding.
 Description
   This a good place to put a call to Application.ProcessMessages even if you must ensure
   that this call doesn't take too long as the capture is suspended until the end of this
   event.
   This event will only be triggered if ueYield is in UsedEvents.
 Parameters
-  Sender - the TJvAVICapture component triggering the event.
+  Sender - The TJvAVICapture component triggering the event.
 See Also
   UsedEvents
 ----------------------------------------------------------------------------------------------------
@@ -534,7 +534,7 @@ Return value
 Summary
   The scrolling position of the video stream in the window.
 Description
-  You can set the position of the video in the AVICap window this property.
+  You can set the position of the video in the AVICap window with this property.
   This only affects preview or overlay rendering.
 See Also
   VideoLeft, VideoTop
@@ -555,7 +555,7 @@ Summary
 Description
   Asks the system to show the given dialog for the currently selected driver.
 Parameters
-  Dialog - the dialog to show.
+  Dialog - The dialog to show.
 Return value
   True if dialog was shown successfully and user pressed OK, false otherwise.
 See Also
@@ -605,7 +605,7 @@ Summary
   Starts live preview.
 Description
   Starts previewing the video stream using GDI calls. This is higly CPU intensive but is
-  sure to work on any system. You should first start to use Overlaying and if that doesn't
+  sure to work on any system. You should first try to use Overlaying and if that doesn't
   work, fallback to this method.
 Return value
   True if live preview started successfully.
@@ -707,8 +707,8 @@ See Also
 Summary
   The capture settings for the capture session.
 Description
-  This contains all the properties you can set to modify the behaviour of the TJvAVICapture
-  object to which the TJvCaptureSettings is linked to.
+  The TJvCaptureSettings class contains all the properties you can set to modify the behaviour of
+  the TJvAVICapture object to which the TJvCaptureSettings is linked to.
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.AbortLeftMouse
 Summary
@@ -791,7 +791,7 @@ Summary
   The virtual key that will abort the capture session if pressed.
 Description
   Set this value to a virtual key that will cancel the capture session if pressed. This defaults
-  to the Esc key. You should use the JvVirtualKey selection frame (in JvVirtualKeySelectionFrame.pas)
+  to the Esc key. You should use the TJvVirtualKeySelectionFrame selection frame (in JvVirtualKeySelectionFrame.pas)
   to allow your user to choose a virtual key, while being sure the value returned is correct.
 See Also
   AbortLeftMouse, AbortRightMouse, LimitEnabled, TimeLimit
@@ -976,7 +976,7 @@ Summary
 Description
   Tries to load the palette from the given file.
 Parameters
-  FileName - the name of the file containing the palette to load.
+  FileName - The name of the file containing the palette to load.
 Return value
   True if the palette was loaded successfully, false otherwise.
 See Also
@@ -1049,13 +1049,13 @@ Description
   <TABLE>
   Value              Meaning
   -----              -------
-  ueCapControl       the OnCapControl event will be triggered
-  ueError            the OnError event will be triggered
-  ueFrame            the OnFrame event will be triggered
-  ueStatus           the OnStatus event will be triggered
-  ueVideoStream      the OnVideoStream event will be triggered
-  ueWaveStream       the OnWaveStream event will be triggered
-  ueYield            the OnYield event will be triggered
+  ueCapControl       the <LINK TJvAVICapture.OnCapControl,OnCapControl> event will be triggered
+  ueError            the <LINK TJvAVICapture.OnError,OnError> event will be triggered
+  ueFrame            the <LINK TJvAVICapture.OnFrame,OnFrame> event will be triggered
+  ueStatus           the <LINK TJvAVICapture.OnStatus,OnStatus> event will be triggered
+  ueVideoStream      the <LINK TJvAVICapture.OnVideoStream,OnVideoStream> event will be triggered
+  ueWaveStream       the <LINK TJvAVICapture.OnWaveStream,OnWaveStream> event will be triggered
+  ueYield            the <LINK TJvAVICapture.OnYield,OnYield> event will be triggered
   </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoDialog
@@ -1068,20 +1068,20 @@ Description
 See Also
   TJvDriverCaps
 @@TJvVideoDialog.vdSource
-  The video source dialog
+  The video source dialog.
 @@TJvVideoDialog.vdFormat
-  The video format dialog
+  The video format dialog.
 @@TJvVideoDialog.vdDisplay
-  The video display dialog
+  The video display dialog.
 @@TJvVideoDialog.vdCompression
-  The video compression dialog
+  The video compression dialog.
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoFormat
 Summary
-  This contains the description of the Video format used by the device.
+  Contains the description of the Video format used by the device.
 Description
   The TJvAVICapture component to which the video format is related to must be connected
-  for the values of this object to make sense. Use theses values to gather information
+  for the values of this object to make sense. Use these values to gather information
   about the video stream you are capturing.
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoFormat.BitDepth

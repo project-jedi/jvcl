@@ -1,5 +1,17 @@
 ##Package: DB
-##Status: Completed (peter3), Review
+##Status: Completed,Checked (peter3)
+##Skip: TJvDBGrid.DefaultDataCellDraw
+##Skip: TJvDBGrid.DefaultDrawing
+##Skip: TJvDBGrid.DisableScroll
+##Skip: TJvDBGrid.EnableScroll
+##Skip: TJvDBGrid.MouseToCell
+##Skip: TJvDBGrid.MultiSelect
+##Skip: TJvDBGrid.OnKeyPress
+##Skip: TJvDBGrid.OnTopLeftChanged
+##Skip: TJvDBGrid.Options
+##Skip: TJvDBGrid.RowsHeight
+##Skip: TJvDBGrid.ScrollDisabled
+##Skip: TJvDBGrid.UpdateTabStops
 ----------------------------------------------------------------------------------------------------
 @@JvDBGrid.pas
 Summary
@@ -41,7 +53,7 @@ Summary
   Descendant of the standard TDBGrid with additional methods, properties and events.
 Description
   Use TJvDBGrid as a replacement for TDBGrid when you need additional control over how the grid component 
-  works. TJvDBGrid introduces new methods, properties an devents to control the appearance and functionality
+  works. TJvDBGrid introduces new methods, properties and events to control the appearance and functionality
   of the grid.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.AlternateRowColor
@@ -68,11 +80,15 @@ Description
   Use AutoSizeColumnIndex to specify the column or columns that are auto sized. AutoSizeColumnIndex can be 
   set to any of the following values:
   
-  -2    Indicates that the right-most visible column should be auto sized. If the number of visible columns changes
-        so might the column that is sized. 
-  -1    Auto size all visible columns proportionally.
-  0..n  Auto size the column with the specified index. If n >= Columns.Count, autosizing is disabled.
-
+  <TABLE>
+  Value   Meaning
+  -----   -------
+  -2      Indicates that the right-most visible column should be auto sized. If the number of visible columns changes
+           so might the column that is sized. 
+  -1      Auto size all visible columns proportionally.
+  0..n    Auto size the column with the specified index. If n >= Columns.Count, autosizing is disabled.
+  </TABLE>
+  
   Auto sizing is only active when AutoSizeColumns is true and all visible columns in the grid
   can be shown without a horizontal scrollbar. The values of MinColumnWidth and MaxColumnWidth are
   also taken into consideration when auto sizing.
@@ -92,7 +108,7 @@ See Also
 Summary
   Indicates whether the speaker beeps when there is an error.
 Description
-  Use BeepOnError to specify whether errors in input trigers a speaker beep. The standard DBGrid always
+  Use BeepOnError to specify whether errors in input triggers a speaker beep. The standard DBGrid always
   beeps on errors. Set BeepOnError to false to suppress this behavior.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ClearSelection
@@ -101,7 +117,7 @@ Summary
 Description
   Set ClearSelection to true to remove any additional selected rows when the user moves to a new
   cell in the grid and MultiSelect is true.
-  If ClearSelection is false, mutli selected rows remians selected when the user navigates the grid.
+  If ClearSelection is false, multi selected rows remains selected when the user navigates the grid.
 See Also
   MultiSelect
 ----------------------------------------------------------------------------------------------------
@@ -121,7 +137,7 @@ Description
   Use GotoSelection to move the focus in a multi selected grid to a new row. When MultiSelect is false or
   no rows are selected, this procedure does nothing.
 Parameters
-  Index - INdex of the selected row, i.e if there are two selected rows, index 0 moves to the first
+  Index - Index of the selected row. For example: if there are two selected rows, then index 0 moves to the first
   selected row and index 1 to the second.
 See Also
   ClearSelection, MultiSelect
@@ -149,7 +165,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.LoadFromAppStore
 Summary
-  Load settings from a specific application storage component.
+  \Load settings from a specific application storage component.
 Description
   Use LoadFromAppStore to load settings from a specific TJvAppStorage component instead of using IniStorage.
 Parameters
@@ -179,7 +195,7 @@ Summary
   Occurs when a title button is clicked.
 Description
   Write a handler for this event to conditionally enable and disable title button clicks. Set Enabled to
-  tru (the default) to enable clicking the title button, set Enabled to false to disable clicking.
+  true (the default) to enable clicking the title button, set Enabled to false to disable clicking.
 Parameters
   Sender  - The grid that triggered the event.
   ACol    - The index of the column.
@@ -196,13 +212,13 @@ Parameters
   ACanvas               - The canvas to draw on.
   ARect                 - The rect area to draw in.
   Field                 - The field of the cell.
-  AFont                 - The cell's font.
-  Background            - The cell's background color.
+##  AFont                 - The cell's font.
+##  Background            - The cell's background color.
   ASortMarker           - The sort marker to display.
   IsDown                - Indicates whether the button is down or not.
   Offset                - The default offset of the text
-  DefaultDrawText      - Indicates if the default method draws the text.
-  DefaultDrawSortMarker - Indicates if the default method draws the sort marker.
+  DefaultDrawText       - Specifies whether the default method should draw the text.
+  DefaultDrawSortMarker - Specifies whether the default method should draw the sort marker.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnEditChange
 Summary
@@ -212,7 +228,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnGetBtnParams
 Summary
-  Occurs when the grid need additional information for the current header button.
+  Occurs when the grid needs additional information for the current header button.
 Description
   Write a handler for this event to modify the appearance of the title buttons.
 Parameters
@@ -227,7 +243,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnGetCellParams
 Summary
-  Occurs when the grid need additional information about the current cell.
+  Occurs when the grid needs additional information about the current cell.
 Description
   Write a handler for this event to provide additional information about the current cell. This event differs
   from OnGetCellProps only in the Highlight parameter.
@@ -301,7 +317,7 @@ Summary
   Specifies whether pressing the Enter key posts the changes to the dataset.
 Description
   Use PostOnEnter to specify whether pressing the Enter key automatically posts data to the underlying dataset.
-  If PostOnEnter is false, the user must move to antoher cell before the mdofied data is committed.
+  If PostOnEnter is false, the user must move to another cell before the modified data is committed.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.Save
 Summary
@@ -313,7 +329,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.SaveToAppStore
 Summary
-  Save settings to a specific application storage component.
+  \Save settings to a specific application storage component.
 Description
   Use SaveToAppStore to save settings to a specific TJvAppStorage component instead of using IniStorage.
 Parameters
@@ -374,12 +390,13 @@ Description
   Set ShowGlyphs to true to replace the field content of blob and memo fields with an image. If ShowGlyphs
   is false, the grid displays the default text strings, like "(Memo)" and "(Blob)" instead.
 
-  The grid will display custm images for the following field types:
-  ftBytes, ftVarBytes, ftBlob, ftTypedBinary, ftOraBlob
-  ftMemo, ftOraClob
-  ftGraphic
-  ftParadoxOle, ftDBaseOle
-  ftCursor, ftReference, ftDataSet
+  The grid will display custom images for the following field types:
+
+  ftBytes, ftVarBytes, ftBlob, ftTypedBinary, ftOraBlob<P>
+  ftMemo, ftOraClob<P>
+  ftGraphic <P>
+  ftParadoxOle, ftDBaseOle<P>
+  ftCursor, ftReference, ftDataSet<P>
   ftBoolean
 Note
   If the OnGetText and OnSetText events are assigned, ShowGlyphs does nothing.
@@ -390,7 +407,7 @@ See Also
 Summary
   Indicates whether hints are displayed for column headers.
 Description
-  Use ShowTitleHint to indicate whether title buttons should display their own custom hints. To actuall
+  Use ShowTitleHint to indicate whether title buttons should display their own custom hints. To actually
   display a hint text, assign a handler to the OnTitleHintEvent property.
 See Also
   OnTitleHintEvent
@@ -410,7 +427,7 @@ See Also
 Summary
   Specifies whether a down pointing arrow is displayed in the indicator column.
 Description
-  Use Title Arrow to indicate whether the indicator column displays a down pointing arrow or not.
+  Use TitleArrow to indicate whether the indicator column displays a down pointing arrow or not.
   When TitleArrow is true, clicking the arrow displays the select column dialog.
 See Also
   ShowColumnsDialog
@@ -458,7 +475,7 @@ Summary
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDialogColumnStrings.Caption
 Summary
-  The text to display in the select columns dialogscaption.
+  The text to display in the select columns dialogs caption.
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDialogColumnStrings.NoSelectionWarning
 Summary
@@ -486,7 +503,7 @@ Summary
 Description
   TSortMarker is used to specify what kind of sort arrow to display in a TJvDBGrid column.
 @@TSortMarker.smNone
-  Donät display a sort marker.
+  Do not display a sort marker.
 @@TSortMarker.smDown
   Arrow pointing down.
 @@TSortMarker.smUp
