@@ -103,22 +103,14 @@ const
     ([], [fsBold], [fsItalic], [fsBold, fsItalic]);
 
 constructor TJvaScrollText.Create(AOwner: TComponent);
-var
-  bmp: TBitmap;
 begin
   inherited Create(AOwner);
-  bmp := TBitmap.Create;
+  
   FForeImage := TImage.Create(nil);
-  FForeImage.Picture.Assign(bmp);
   FBackImage := TImage.Create(nil);
-  FBackImage.Picture.Assign(bmp);
   FFontMaskImage := TImage.Create(nil);
-  FFontMaskImage.Picture.Assign(bmp);
   FFontImage := TImage.Create(nil);
-  FFontImage.Picture.Assign(bmp);
   FScrollImage := TImage.Create(nil);
-  FScrollImage.Picture.Assign(bmp);
-
   FStrings := TStringList.Create;
   FScrollBottom := -1;
   FScrollTop := -1;
@@ -181,7 +173,7 @@ begin
     DrawDesignFrame(Canvas, ClientRect);
     Canvas.Draw(0, 0, FForeImage.Picture.Graphic);
   end
-  else if NOT (csDestroying in ComponentState) then
+  else
     Canvas.Draw(0, 0, FScrollImage.Picture.Graphic);
 end;
 
@@ -272,9 +264,6 @@ var
     Source.Left := 0;
     Source.Right := FScrollImage.Picture.Width - 1;
     Dest := Source;
-
-    if FForeImage.Picture <> nil then begin
-
     FFontImage.Canvas.Brush.Color := clBlack;
     Source.Bottom := FFontImage.Picture.Height - 1;
     FFontImage.Canvas.FillRect(Source);
@@ -282,13 +271,11 @@ var
     FFontMaskImage.Canvas.Brush.Color := clWhite;
     FFontMaskImage.Canvas.FillRect(SourceFon);
 
+    FStop := False;
    // ChangeFont('$Font:Times New Roman;12;0');
     FFontImage.Canvas.Font := Font;
     FFontImage.Canvas.Font.Color := clWhite;
     FontHeight := FFontImage.Canvas.TextHeight('W') + 3;
-    end;
-
-    FStop := False;
 
     if FScrollTop < 0 then
       FScrollTop := 2;
@@ -405,12 +392,8 @@ begin
       Continue;
     H := LastLine - Popr;
     LastLine := LastLine + FontHeight;
-
-
     {H := Line * FontHeight - Popr;}
     FFontImage.Canvas.TextOut(FLeftMargin, H, FStrings[Line]);
-
-
     { To scroll line [translated] }
     for J := 1 to FontHeight do
     begin

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -19,13 +19,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -65,7 +64,6 @@ type
     function GetMask: string; virtual;
   public
     constructor Create;
-    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure ResetDefault; virtual;
     property DateMask: string read GetDateMask;
@@ -158,11 +156,6 @@ constructor TJvDateTimeFormat.Create;
 begin
   inherited Create;
   ResetDefault;
-end;
-
-destructor TJvDateTimeFormat.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvDateTimeFormat.ResetDefault;

@@ -436,10 +436,8 @@ uses
   
   
   QConsts,
-  {$IFDEF MSWINDOWS}
-  JclRegistry,
-  {$ENDIF}
-  JclSysUtils,
+  
+  JclRegistry, JclSysUtils,
   JvQResources, JvQDynControlEngineIntf;
 
 const
@@ -452,9 +450,7 @@ const
 type
   PBoolean = ^Boolean;
 
-//----------------------------------------------------------------------------
-//  CheckMarkTexts
-//----------------------------------------------------------------------------
+//=== CheckMarkTexts =========================================================
 
 var
   GlobalCheckMarkTexts: TStringList = nil;
@@ -479,6 +475,8 @@ begin
   else
     Result := '';
 end;
+
+//=== TDSAMessageForm ========================================================
 
 constructor TDSAMessageForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 

@@ -53,12 +53,10 @@ unit JvQColorBox;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   
   
-  QGraphics, QControls, QExtCtrls, QMenus, Types,
+  QForms, QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, QButtons,
+  QMenus, Types,
   
   SysUtils, Classes,
   JvQComponent;
