@@ -51,6 +51,7 @@ type
   TJvSimpleXMLElemClassic = class;
   TJvSimpleXmlElemCData = class;
   TJvSimpleXMLElemText = class;
+  TJvSimpleXMLElemHeader = class;
   TJvOnSimpleXmlParsed = procedure(Sender: TObject; Name: string) of object;
   TJvOnValueParsed = procedure(Sender: TObject; Name, Value: string) of object;
   TJvOnSimpleProgress = procedure(Sender: TObject; const Position, Total: integer) of object;
@@ -144,6 +145,20 @@ type
     FElems: THashedStringList;
     function GetCount: integer;
     function GetItem(const Index: integer): TJvSimpleXMLElem;
+    function GetEncoding: string;
+    function GetStandAlone: boolean;
+    function GetVersion: string;
+    procedure SetEncoding(const Value: string);
+    procedure SetStandAlone(const Value: boolean);
+    procedure SetVersion(const Value: string);
+    { TODO -oJVCL -cPOST_JVCL3 : Make protected }
+    function FindHeader:TJvSimpleXMLElem;
+    { TODO -oJVCL -cPOST_JVCL3 : Make public }
+    property Encoding:string read GetEncoding write SetEncoding;
+    { TODO -oJVCL -cPOST_JVCL3 : Make public }
+    property StandAlone:boolean read GetStandAlone write SetStandAlone;
+    { TODO -oJVCL -cPOST_JVCL3 : Make public }
+    property Version:string read GetVersion write SetVersion;
   protected
     procedure Error(const S: string);
     procedure FmtError(const S: string; const Args: array of const);
@@ -2697,8 +2712,7 @@ procedure TJvSimpleXMLElemsProlog.SaveToStream(const Stream: TStream; Parent: TJ
 var
   i: integer;
 begin
-  if Count = 0 then
-    FElems.AddObject('', TJvSimpleXMLElemHeader.Create(nil));
+  FindHeader;
   for i := 0 to Count - 1 do
     Item[i].SaveToStream(Stream, '', Parent);
 end;
@@ -2941,6 +2955,80 @@ begin
     FRoot.FSimpleXml := nil;
     FRoot := Value;
     FRoot.FSimpleXml := Self;
+  end;
+end;
+
+function TJvSimpleXMLElemsProlog.GetEncoding: string;
+var elem:TJvSimpleXMLElemHeader;
+begin
+  elem := TJvSimpleXMLElemHeader(FindHeader);
+  if elem <> nil then
+    Result := elem.Encoding
+  else
+    Result := 'UTF-8';
+end;
+
+function TJvSimpleXMLElemsProlog.GetStandAlone: boolean;
+var elem:TJvSimpleXMLElemHeader;
+begin
+  elem := TJvSimpleXMLElemHeader(FindHeader);
+  if elem <> nil then
+    Result := elem.StandAlone
+  else
+    Result := false;
+end;
+
+function TJvSimpleXMLElemsProlog.GetVersion: string;
+var elem:TJvSimpleXMLElemHeader;
+begin
+  elem := TJvSimpleXMLElemHeader(FindHeader);
+  if elem <> nil then
+    Result := elem.Version
+  else
+    Result := '1.0';
+end;
+
+procedure TJvSimpleXMLElemsProlog.SetEncoding(const Value: string);
+var elem:TJvSimpleXMLElemHeader;
+begin
+  elem := TJvSimpleXMLElemHeader(FindHeader);
+  if elem <> nil then
+    elem.Encoding := Value;
+end;
+
+procedure TJvSimpleXMLElemsProlog.SetStandAlone(const Value: boolean);
+var elem:TJvSimpleXMLElemHeader;
+begin
+  elem := TJvSimpleXMLElemHeader(FindHeader);
+  if elem <> nil then
+    elem.StandAlone := Value;
+end;
+
+procedure TJvSimpleXMLElemsProlog.SetVersion(const Value: string);
+var elem:TJvSimpleXMLElemHeader;
+begin
+  elem := TJvSimpleXMLElemHeader(FindHeader);
+  if elem <> nil then
+    elem.Version := Value;
+end;
+
+function TJvSimpleXMLElemsProlog.FindHeader: TJvSimpleXMLElem;
+var i:integer;
+begin
+  if Count = 0 then
+  begin
+    Result := TJvSimpleXMLElemHeader.Create(nil);
+    FElems.AddObject('',Result);
+  end
+  else
+  begin
+    for i := 0 to Count - 1 do
+      if Item[i] is TJvSimpleXMLElemHeader then
+      begin
+        Result := Item[i];
+        Exit;
+      end;
+    Result := nil;
   end;
 end;
 
