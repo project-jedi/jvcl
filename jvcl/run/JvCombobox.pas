@@ -102,7 +102,8 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FReadOnly: Boolean; // ain
     FConsumerSvc: TJvDataConsumer;
-    FProviderWasActive: Boolean;
+    FProviderIsActive: Boolean;
+    FProviderToggle: Boolean;
     FIsFixedHeight: Boolean;
     procedure MaxPixelChanged(Sender: TObject);
     procedure SetReadOnly(const Value: Boolean); // ain
@@ -132,7 +133,7 @@ type
     function GetItemCount: Integer; override;
     {$ENDIF}
     procedure SetConsumerService(Value: TJvDataConsumer);
-    procedure ConsumerServiceChanged(Sender: TObject);
+    procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer;
       SubSvc: TJvDataConsumerAggregatedObject);
     function IsProviderSelected: Boolean;
@@ -384,6 +385,8 @@ procedure TJvComboBoxStrings.Clear;
 var
   S: string;
 begin
+  if (FDestroyCnt <> 0) and UseInternal then
+    Exit;
   if (csLoading in ComboBox.ComponentState) and UseInternal then
     FInternalList.Clear
   else
@@ -682,28 +685,30 @@ begin
   begin
     tmpSize.cy := Height;
     if IsProviderSelected then
-    try
+    begin
       Provider.Enter;
-      if ((Index = -1) or IsFixedHeight) and
-          Supports(Provider.ProviderIntf, IJvDataItemsRenderer, ItemsRenderer) then
-        tmpSize := ItemsRenderer.AvgItemSize(Canvas)
-      else
-      if (Index <> -1) and not IsFixedHeight then
-      begin
-        if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+      try
+        if ((Index = -1) or IsFixedHeight or not HandleAllocated) and
+            Supports(Provider.ProviderIntf, IJvDataItemsRenderer, ItemsRenderer) then
+          tmpSize := ItemsRenderer.AvgItemSize(Canvas)
+        else
+        if (Index <> -1) and not IsFixedHeight and HandleAllocated then
         begin
-          Item := VL.Item(Index);
-          if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
-            tmpSize := ItemRenderer.Measure(Canvas)
-          else
-          if DP_FindItemsRenderer(Item, ItemsRenderer) then
-            tmpSize := ItemsRenderer.MeasureItem(Canvas, Item);
+          if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+          begin
+            Item := VL.Item(Index);
+            if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
+              tmpSize := ItemRenderer.Measure(Canvas)
+            else
+            if DP_FindItemsRenderer(Item, ItemsRenderer) then
+              tmpSize := ItemsRenderer.MeasureItem(Canvas, Item);
+          end;
         end;
+        if tmpSize.cy > Height then
+          Height := tmpSize.cy;
+      finally
+        Provider.Leave;
       end;
-      if tmpSize.cy > Height then
-        Height := tmpSize.cy;
-    finally
-      Provider.Leave;
     end;
   end;
 end;
@@ -846,10 +851,15 @@ var
 begin
   if IsProviderSelected then
   begin
-    if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
-      Result := VL.Count
-    else
-      Result := 0;
+    Provider.Enter;
+    try
+      if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+        Result := VL.Count
+      else
+        Result := 0;
+    finally
+      Provider.Leave;
+    end;
   end
   else
     Result := inherited GetItemCount;
@@ -860,22 +870,31 @@ procedure TJvCustomComboBox.SetConsumerService(Value: TJvDataConsumer);
 begin
 end;
 
-procedure TJvCustomComboBox.ConsumerServiceChanged(Sender: TObject);
+procedure TJvCustomComboBox.ConsumerServiceChanged(Sender: TJvDataConsumer;
+  Reason: TJvDataConsumerChangeReason);
 begin
-  if IsProviderSelected and not FProviderWasActive then
+  if (Reason = ccrProviderSelected) and not IsProviderSelected and not FProviderToggle then
   begin
     TJvComboBoxStrings(Items).MakeListInternal;
+    FProviderIsActive := True;
+    FProviderToggle := True;
     RecreateWnd;
   end
   else
-  if not IsProviderSelected and FProviderWasActive then
+  if (Reason = ccrProviderSelected) and IsProviderSelected and not FProviderToggle then
   begin
     TJvComboBoxStrings(Items).ActivateInternal; // apply internal string list to combo box
+    FProviderIsActive := False;
+    FProviderToggle := True;
     RecreateWnd;
   end;
-  FProviderWasActive := IsProviderSelected;
-  UpdateItemCount;
-  Refresh;
+  if not FProviderToggle or (Reason = ccrProviderSelected) then
+  begin
+    UpdateItemCount;
+    Refresh;
+  end;
+  if FProviderToggle and (Reason = ccrProviderSelected) then
+    FProviderToggle := False;
 end;
 
 procedure TJvCustomComboBox.ConsumerSubServiceCreated(Sender: TJvDataConsumer;
@@ -892,7 +911,7 @@ end;
 
 function TJvCustomComboBox.IsProviderSelected: Boolean;
 begin
-  Result := (Provider <> nil) and (Provider.ProviderIntf <> nil);
+  Result := FProviderIsActive;
 end;
 
 procedure TJvCustomComboBox.DeselectProvider;
@@ -905,7 +924,7 @@ var
   VL: IJvDataConsumerViewList;
   Cnt: Integer;
 begin
-  if IsProviderSelected and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+  if HandleAllocated and IsProviderSelected and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
   begin
     Cnt := VL.Count - SendMessage(Handle, CB_GETCOUNT, 0, 0);
     while Cnt > 0 do
@@ -931,33 +950,38 @@ var
 begin
   if IsProviderSelected and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
   begin
-    HasLooped := False;;
-    Result := StartIndex + 1;
-    while True do
-    begin
-      Item := VL.Item(Result);
-      if Supports(Item, IJvDataItemText, ItemText) then
+    Provider.Enter;
+    try
+      HasLooped := False;;
+      Result := StartIndex + 1;
+      while True do
       begin
-        if ExactMatch then
+        Item := VL.Item(Result);
+        if Supports(Item, IJvDataItemText, ItemText) then
         begin
-          if AnsiSameText(Value, ItemText.Caption) then
-            Break;
-        end
-        else
-          if AnsiStrLIComp(PChar(Value), PChar(ItemText.Caption), Length(Value)) = 0 then
-            Break;
+          if ExactMatch then
+          begin
+            if AnsiSameText(Value, ItemText.Caption) then
+              Break;
+          end
+          else
+            if AnsiStrLIComp(PChar(Value), PChar(ItemText.Caption), Length(Value)) = 0 then
+              Break;
+        end;
+        Inc(Result);
+        if Result >= VL.Count then
+        begin
+          Result := 0;
+          HasLooped := True;
+        end;
+        if (Result > StartIndex) and HasLooped then
+        begin
+          Result := -1;
+          Exit;
+        end;
       end;
-      Inc(Result);
-      if Result >= VL.Count then
-      begin
-        Result := 0;
-        HasLooped := True;
-      end;
-      if (Result > StartIndex) and HasLooped then
-      begin
-        Result := -1;
-        Exit;
-      end;
+    finally
+      Provider.Leave;
     end;
   end
   else
@@ -974,19 +998,25 @@ begin
   begin
     if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
     begin
-      if (Index >= 0) and (Index < VL.Count) then
-      begin
-        Item := VL.Item(Index);
-        if Supports(Item, IJvDataItemText, ItemText) then
-          Result := ItemText.Caption
+      Provider.Enter;
+      try
+        if (Index >= 0) and (Index < VL.Count) then
+        begin
+          Item := VL.Item(Index);
+          if Supports(Item, IJvDataItemText, ItemText) then
+            Result := ItemText.Caption
+          else
+            Result := SDataItemRenderHasNoText;
+        end
         else
-          Result := SDataItemRenderHasNoText;
-      end
-      else
-        TJvComboBoxStrings(Items).Error(SListIndexError, Index);
+          TJvComboBoxStrings(Items).Error(SListIndexError, Index);
+      finally
+        Provider.Leave;
+      end;
     end
     else
-      TJvComboBoxStrings(Items).Error(SListIndexError, Index);
+      Result := '';
+//      TJvComboBoxStrings(Items).Error(SListIndexError, Index);
   end
   else
     Result := Items[Index];
@@ -1071,22 +1101,27 @@ begin
   {$ENDIF COMPILER6_UP}
     if (Message.NotifyCode = CBN_SELCHANGE) and IsProviderSelected then
     begin
-      if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
-      begin
-        Item := VL.Item(ItemIndex);
-        if Supports(Item, IJvDataItemText, ItemText) then
-          Text := ItemText.Caption
+      Provider.Enter;
+      try
+        if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+        begin
+          Item := VL.Item(ItemIndex);
+          if Supports(Item, IJvDataItemText, ItemText) then
+            Text := ItemText.Caption
+          else
+            Text := '';
+        end
         else
           Text := '';
-      end
-      else
-        Text := '';
-      Click;
-      {$IFNDEF COMPILER6_UP}
-      Change;
-      {$ELSE}
-      Select;
-      {$ENDIF COMPILER6_UP}
+        Click;
+        {$IFNDEF COMPILER6_UP}
+        Change;
+        {$ELSE}
+        Select;
+        {$ENDIF COMPILER6_UP}
+      finally
+        Provider.Leave;
+      end;
     end
     else
       inherited;
@@ -1102,7 +1137,8 @@ procedure TJvCustomComboBox.CNMeasureItem(var Message: TWMMeasureItem);
 begin
   with Message.MeasureItemStruct^ do
   begin
-    itemHeight := Self.ItemHeight;
+    if Style in [csOwnerDrawVariable, csOwnerDrawFixed] then
+      itemHeight := Self.ItemHeight;
     if (Self.Style = csOwnerDrawVariable) or IsProviderSelected then
       MeasureItem(itemID, Integer(itemHeight));
   end;
@@ -1125,8 +1161,8 @@ begin
     Params.Style := Params.Style and not (CBS_SORT or CBS_HASSTRINGS);
     if Params.Style and (CBS_OWNERDRAWVARIABLE or CBS_OWNERDRAWFIXED) = 0 then
       Params.Style := Params.Style or CBS_OWNERDRAWFIXED;
-    FIsFixedHeight := (Params.Style and CBS_OWNERDRAWVARIABLE) = 0;
   end;
+  FIsFixedHeight := (Params.Style and CBS_OWNERDRAWVARIABLE) = 0;
 end;
 
 procedure TJvCustomComboBox.CreateWnd;
@@ -1138,11 +1174,13 @@ end;
 
 procedure TJvCustomComboBox.DestroyWnd;
 begin
-  TJvComboBoxStrings(Items).SetWndDestroying(IsProviderSelected or not FProviderWasActive);
+  if IsProviderSelected then
+    TJvComboBoxStrings(Items).SetWndDestroying(True);
   try
     inherited DestroyWnd;
   finally
-    TJvComboBoxStrings(Items).SetWndDestroying(False);
+    if IsProviderSelected then
+      TJvComboBoxStrings(Items).SetWndDestroying(False);
   end;
 end;
 
