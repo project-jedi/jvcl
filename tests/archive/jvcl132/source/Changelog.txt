@@ -1,4 +1,9 @@
 2002-07-11
+- TJvTrayIcon: Added OnAnimate event //Sebastien Buysse
+- TJvTrayIcon: Added IconIndex property to get and set the current image in the list //Sebastien Buysse
+- TJvTrayIcon: Added support for enter/space on icon //Sebastien Buysse
+- TJvTrayIcon: Improved application hide/show //Sebastien Buysse
+- TJvTrayIcon: Added support for default item in menu on double click //Sebastien Buysse
 - TJvTranslator: Added a method to retrieve a string value directly from the translation file //Sebastien Buysse
 
 2002-07-10
