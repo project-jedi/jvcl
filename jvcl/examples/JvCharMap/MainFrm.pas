@@ -1,18 +1,21 @@
 unit MainFrm;
 
 interface
-
+// enable this define (remove the dot) if you have Troy Wolbrink's Tnt Controls installed
+// (http://home.ccci.org/wolbrink/tnt/delphi_unicode_controls.htm)
+{.$DEFINE USETNT}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvCharMap, StdCtrls, ExtCtrls, ComCtrls, JvColorCombo,
-  JvCombobox, Menus;
+  JvCombobox, Menus
+  {$IFDEF USETNT}, TntStdCtrls{$ENDIF};
 
 type
   TForm1 = class(TForm)
     FontDialog1: TFontDialog;
     Panel1: TPanel;
-    Button2: TButton;
-    CheckBox1: TCheckBox;
+    btnFont: TButton;
+    chkZoomPanel: TCheckBox;
     Label1: TLabel;
     Edit1: TEdit;
     udStart: TUpDown;
@@ -22,27 +25,35 @@ type
     Label3: TLabel;
     Edit3: TEdit;
     udColumns: TUpDown;
-    JvColorComboBox1: TJvColorComboBox;
-    JvFontComboBox1: TJvFontComboBox;
-    CheckBox2: TCheckBox;
-    RichEdit1: TRichEdit;
+    cbColor: TJvColorComboBox;
+    cbFont: TJvFontComboBox;
+    chkUnicode: TCheckBox;
+    reInfo: TRichEdit;
     PopupMenu1: TPopupMenu;
     Copy1: TMenuItem;
+    btnSelect: TButton;
     procedure FormCreate(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure CheckBox1Click(Sender: TObject);
+    procedure btnFontClick(Sender: TObject);
+    procedure chkZoomPanelClick(Sender: TObject);
     procedure udStartClick(Sender: TObject; Button: TUDBtnType);
     procedure udEndClick(Sender: TObject; Button: TUDBtnType);
     procedure udColumnsClick(Sender: TObject; Button: TUDBtnType);
-    procedure JvFontComboBox1Change(Sender: TObject);
-    procedure JvColorComboBox1Change(Sender: TObject);
-    procedure CheckBox2Click(Sender: TObject);
+    procedure chkUnicodeClick(Sender: TObject);
     procedure Copy1Click(Sender: TObject);
+    procedure btnSelectClick(Sender: TObject);
+    procedure cbColorChange(Sender: TObject);
+    procedure cbFontChange(Sender: TObject);
   private
     { Private declarations }
+    {$IFDEF USETNT}
+    edCharacter:TTntEdit;
+    {$ELSE}
+    edCharacter:TEdit;
+    {$ENDIF}
     procedure DoJMKeyUp(Sender:TObject; var Key:word;Shift:TShiftState);
     procedure DoJMMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: integer);
+    procedure DoJMMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure DisplayInfo;
   public
     { Public declarations }
@@ -56,7 +67,11 @@ var
 
 implementation
 uses
-  Clipbrd;
+  {$IFDEF USETNT}
+  TntClipbrd;
+  {$ELSE}
+  ClipBrd;
+  {$ENDIF}
 
 {$R *.dfm}
 
@@ -68,7 +83,8 @@ begin
   JM.EndChar := 512;
   JM.OnKeyUp := DoJMKeyUp;
   JM.OnMouseUp := DoJMMouseUp;
-  
+  JM.OnMouseWheel := DoJMMouseWheel;
+
   JM.ClientWidth := JM.CellSize.cx * JM.Columns + JM.Columns;
   JM.Left := (ClientWidth - JM.Width) div 2;
   JM.Top := 8;
@@ -76,27 +92,39 @@ begin
   JM.Anchors := [akTop, akBottom];
 //  JM.AutoSizeColumns := true;
   JM.PopupMenu := PopupMenu1;
-  CheckBox1.Checked := JM.ShowZoomPanel;
+  chkZoomPanel.Checked := JM.ShowZoomPanel;
   udStart.Position := JM.StartChar;
   udEnd.Position := JM.EndChar;
   udColumns.Position := JM.Columns;
-  JvColorComboBox1.ColorValue := JM.Color;
-  JvFontComboBox1.Fontname := JM.Font.Name;
+  cbColor.ColorValue := JM.Color;
+  cbFont.Fontname := JM.Font.Name;
+  {$IFDEF USETNT}
+  edCharacter := TTntEdit.Create(self);
+  {$ELSE}
+  edCharacter := TEdit.Create(self);
+  {$ENDIF}
+  edCharacter.Parent := Panel1;
+  edCharacter.Left := 312;
+  edCharacter.Top := 16;
+  edCharacter.Width := 121;
+  edCharacter.Height := 22;
+  edCharacter.TabOrder := 11;
+  ActiveControl := JM;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TForm1.btnFontClick(Sender: TObject);
 begin
   FontDialog1.Font := JM.Font;
   if FontDialog1.Execute then
   begin
     JM.Font := FontDialog1.Font;
-    JvFontComboBox1.Fontname := JM.Font.Name;
+    cbFont.Fontname := JM.Font.Name;
   end;
 end;
 
-procedure TForm1.CheckBox1Click(Sender: TObject);
+procedure TForm1.chkZoomPanelClick(Sender: TObject);
 begin
-  JM.ShowZoomPanel := CheckBox1.Checked;
+  JM.ShowZoomPanel := chkZoomPanel.Checked;
 end;
 
 procedure TForm1.DoJMMouseUp(Sender: TObject; Button:TMouseButton; Shift:TShiftState; X, Y:integer);
@@ -117,7 +145,8 @@ end;
 
 procedure TForm1.udEndClick(Sender: TObject; Button: TUDBtnType);
 begin
-  JM.EndChar := udEnd.Position;
+  if not chkUnicode.Checked then
+    JM.EndChar := udEnd.Position;
 end;
 
 procedure TForm1.udColumnsClick(Sender: TObject; Button: TUDBtnType);
@@ -222,37 +251,26 @@ end;
 
 procedure TForm1.DisplayInfo;
 begin
-  RichEdit1.Clear;
-  RichEdit1.Lines.Add('Character Type: ' + GetTypeString1(JM.Character));
-  RichEdit1.Lines.Add('Bidirectional Layout: ' + GetTypeString2(JM.Character));
-  RichEdit1.Lines.Add('Text Processing:' + GetTypeString3(JM.Character));
-  RichEdit1.Lines.Add(Format('Keyboard Code: U+%.4x',[Ord(JM.Character)]));
-end;
-
-procedure TForm1.JvFontComboBox1Change(Sender: TObject);
-begin
-  if JM <> nil then
-    JM.Font.Name := JvFontComboBox1.FontName;
-end;
-
-procedure TForm1.JvColorComboBox1Change(Sender: TObject);
-begin
-  if JM <> nil then
-    JM.Color := JvColorComboBox1.ColorValue;
+  reInfo.Clear;
+  reInfo.Lines.Add('Character Type: ' + GetTypeString1(JM.Character));
+  reInfo.Lines.Add('Bidirectional Layout: ' + GetTypeString2(JM.Character));
+  reInfo.Lines.Add('Text Processing:' + GetTypeString3(JM.Character));
+  reInfo.Lines.Add(Format('Keyboard Code: U+%.4x',[Ord(JM.Character)]));
+  reInfo.Hint := trim(reInfo.Lines.Text);
 end;
 
 procedure TForm1.AfterConstruction;
 begin
   inherited;
-  JvFontComboBox1.FontName := JM.Font.Name;
-  JvColorComboBox1.ColorValue := JM.Color;
-  JvColorComboBox1.OnChange := JvColorComboBox1Change;
-  JvFontComboBox1.OnChange := JvFontComboBox1Change;
+  cbFont.FontName := JM.Font.Name;
+  cbColor.ColorValue := JM.Color;
+  cbColor.OnChange := cbColorChange;
+  cbFont.OnChange := cbFontChange;
 end;
 
-procedure TForm1.CheckBox2Click(Sender: TObject);
+procedure TForm1.chkUnicodeClick(Sender: TObject);
 begin
-  if CheckBox2.Checked then
+  if chkUnicode.Checked then
     JM.EndChar := $FEFF
   else
     JM.EndChar := udEnd.Position;
@@ -260,7 +278,34 @@ end;
 
 procedure TForm1.Copy1Click(Sender: TObject);
 begin
+  {$IFDEF USETNT}
+  TntClipboard.AsWideText := JM.Character;
+  {$ELSE}
   Clipboard.AsText := WideString(JM.Character);
+  {$ENDIF}
+end;
+
+procedure TForm1.DoJMMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+  DisplayInfo;
+end;
+
+procedure TForm1.btnSelectClick(Sender: TObject);
+begin
+  edCharacter.Text := edCharacter.Text + JM.Character;
+end;
+
+procedure TForm1.cbColorChange(Sender: TObject);
+begin
+ if JM <> nil then
+   JM.Color := cbColor.ColorValue;
+end;
+
+procedure TForm1.cbFontChange(Sender: TObject);
+begin
+ if JM <> nil then
+   JM.Font.Name := cbFont.FontName;
 end;
 
 end.
