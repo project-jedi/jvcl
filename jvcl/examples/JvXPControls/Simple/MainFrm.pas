@@ -31,7 +31,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ActnList, ImgList, JvXPCore, JvXPCheckCtrls, JvXPButtons, ExtCtrls,
-  StdCtrls, JvXPContainer;
+  StdCtrls, JvXPContainer, JvComponent, JvExControls;
 
 type
 { TfrmMain }
@@ -198,11 +198,11 @@ end;
 procedure TfrmMain.cntNetPanelPaint(Sender: TObject; Rect: TRect;
   ACanvas: TCanvas; AFont: TFont);
 var
-  Control: TJvXPContainer;
+  Control: TControl;
   EdgeColor: TColor;
 begin
-  Control := TJvXPContainer(Sender);
-  EdgeColor := TJvXPWinControl(Control.Parent).Color;
+  Control := TControl(Sender);
+  EdgeColor := TForm(Control.Parent).Color;
   ACanvas.Pixels[0, 0] := EdgeColor;
   ACanvas.Pixels[Control.Width - 1, 0] := EdgeColor;
 end;
