@@ -66,7 +66,8 @@ uses
   PgUninstall in 'Pages\PgUninstall.pas',
   MainConfig in 'Helpers\MainConfig.pas' {FormJvclIncConfig},
   CmdLineUtils in 'CmdLineUtils.pas',
-  InstallerConsts in 'InstallerConsts.pas';
+  InstallerConsts in 'InstallerConsts.pas',
+  FrmCompile in 'FrmCompile.pas' {FormCompile};
 
 {$R *.res}
 

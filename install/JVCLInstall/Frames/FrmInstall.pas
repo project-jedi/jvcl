@@ -78,7 +78,7 @@ implementation
 {$ENDIF COMPILER6_UP}
 
 uses
-  InstallerConsts, FileCtrl;
+  InstallerConsts, FileCtrl, FrmCompile;
 
 {$R *.dfm}
 
@@ -107,6 +107,7 @@ begin
         LblTarget.Hint := Text;
         ProgressBarTarget.Max := Max * ProjectMax;
         ProgressBarTarget.Position := {FPositionProject +} (FPositionTarget * ProjectMax);
+        FormCompile.Init('JVCL - ' + Text);
       end;
 
     pkProject:
@@ -121,7 +122,10 @@ begin
     pkPackage:
       begin
         if Text <> '' then
-          LblInfo.Caption := Format(RsCompiling, [Text])
+        begin
+          LblInfo.Caption := Format(RsCompiling, [Text]);
+          FormCompile.Init(Text, False);
+        end
         else
           LblInfo.Caption := '';
         ProgressBarCompile.Max := Max;
@@ -141,7 +145,6 @@ end;
 
 procedure TFrameInstall.EvCaptureLine(const Text: string;
   var Aborted: Boolean);
-
 var
   Line: string;
 
@@ -155,6 +158,41 @@ var
     RichEditLog.SelLength := 0;
   end;
 
+  function PosLast(Ch: Char; const S: string): Integer;
+  begin
+    for Result := Length(S) downto 1 do
+      if S[Result] = Ch then
+        Exit;
+    Result := 0;
+  end;
+
+  function IsCompileFileLine(const Line: string): Boolean;
+  var
+    ps, psEnd, LineNum, Err: Integer;
+    Filename: string;
+  begin
+    Result := False;
+    ps := PosLast('(', Line);
+    if (ps > 0) and (Pos(': ', Line) = 0) and (Pos('.', Line) > 0) then
+    begin
+      psEnd := PosLast(')', Line);
+      if psEnd < ps then
+        Exit;
+
+      Filename := Copy(Line, 1, ps - 1);
+      if (Filename <> '') and (Filename[Length(Filename)] > #32) then
+      begin
+        Val(Copy(Line, ps + 1, psEnd - ps - 1), LineNum, Err);
+        if Err = 0 then
+        begin
+          FormCompile.Compiling(Filename);
+          FormCompile.CurrentLine := LineNum;
+          Result := True;
+        end;
+      end;
+    end;
+  end;
+
 var
   LText: string;
 begin
@@ -162,35 +200,51 @@ begin
   Line := Text;
   if (Text <> '') and (Text[1] = #1) then
     Delete(Line, 1, 1);
-  RichEditLog.Lines.Add(Line);
-  if Text <> '' then
+
+  if not IsCompileFileLine(Line) then
   begin
-    if Text[1] = #1 then
-      SetFont([fsBold], clGray)
-    else
-    if (Text[1] = #9) and not StartsWith(Text, #9'Loaded ') then
-      SetFont([], clGray)
-    else if Text[1] = '[' then
-      SetFont([fsBold])
-    else if Text = RsPackagesAreUpToDate then
-      SetFont([], clTeal)
-    else if HasText(Text, ['hint: ', 'hinweis: ', 'suggestion: ']) then // do not localize
-      SetFont([], clGreen)
-    else if HasText(Text, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
-      SetFont([], clMaroon)
-    else if HasText(Text, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
-      SetFont([], clRed)
-    else if HasText(Text, ['fatal: ']) then // do not localize
-      SetFont([fsBold], clRed)
-    else
+    RichEditLog.Lines.Add(Line);
+    if Text <> '' then
     begin
-      LText := TrimLeft(Text);
-      if StartsWith(LText, 'MAKE version', True) or // do not localize
-         StartsWith(LText, 'Borland ', True) or // do not localize
-         StartsWith(LText, 'Copyright ', True) then // do not localize
+      if Text[1] = #1 then
+        SetFont([fsBold], clGray)
+      else
+      if (Text[1] = #9) and not StartsWith(Text, #9'Loaded ') then
+        SetFont([], clGray)
+      else if Text[1] = '[' then
+        SetFont([fsBold])
+      else if Text = RsPackagesAreUpToDate then
+        SetFont([], clTeal)
+      else if HasText(Text, ['hint: ', 'hinweis: ', 'suggestion: ']) then // do not localize
       begin
-        SetFont([fsItalic], clGray);
+        SetFont([], clGreen);
+        FormCompile.IncHint;
       end
+      else if HasText(Text, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
+      begin
+        SetFont([], clMaroon);
+        FormCompile.IncWarning;
+      end
+      else if HasText(Text, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
+      begin
+        SetFont([], clRed);
+        FormCompile.IncError;
+      end
+      else if HasText(Text, ['fatal: ']) then // do not localize
+      begin
+        SetFont([fsBold], clRed);
+        FormCompile.IncError;
+      end
+      else
+      begin
+        LText := TrimLeft(Text);
+        if StartsWith(LText, 'MAKE version', True) or // do not localize
+           StartsWith(LText, 'Borland ', True) or // do not localize
+           StartsWith(LText, 'Copyright ', True) then // do not localize
+        begin
+          SetFont([fsItalic], clGray);
+        end
+      end;
     end;
   end;
 end;
@@ -274,6 +328,7 @@ var
   Success: Boolean;
   i: Integer;
   AbortReason: string;
+  Pt: TPoint;
 begin
   Aborted := False;
 
@@ -283,20 +338,49 @@ begin
 
   FFinished := False;
 
-  Compiler := TJVCLCompiler.Create(Installer.Data);
+  FormCompile := TFormCompile.Create(Self);
   try
-    Compiler.OnProgress := EvProgress;
-    Compiler.OnCaptureLine := EvCaptureLine;
-    Compiler.OnIdle := EvIdle;
-    Success := Compiler.Compile;
-    AbortReason := Compiler.AbortReason;
+    FormCompile.Position := poDesigned;
+    Pt := RichEditLog.ClientToScreen(Point(RichEditLog.Width div 2, 0));
+    FormCompile.Top := Pt.Y - 10;
+    FormCompile.Left := Pt.X - FormCompile.Width div 2;
+    
+    Compiler := TJVCLCompiler.Create(Installer.Data);
+    try
+      Compiler.OnProgress := EvProgress;
+      Compiler.OnCaptureLine := EvCaptureLine;
+      Compiler.OnIdle := EvIdle;
+      Success := Compiler.Compile;
+      AbortReason := Compiler.AbortReason;
+    finally
+      Compiler.Free;
+    end;
+
+    if not Success then
+    begin
+      LblTarget.Caption := Format(RsError, [LblTarget.Hint]);
+      BtnDetails.Visible := False;
+      RichEditLog.Visible := True;
+      FormCompile.Done(AbortReason);
+      {if AbortReason <> '' then
+        AbortReason := RsInstallError + #10#10 + AbortReason
+      else
+        AbortReason := RsInstallError;
+      MessageDlg(AbortReason, mtError, [mbOk], 0);}
+    end
+    else
+    begin
+      FormCompile.Done;
+      Application.ProcessMessages;
+      LblTarget.Caption := RsComplete;
+    end;
   finally
-    Compiler.Free;
+    FormCompile.Free;
   end;
 
   if Success then
   begin
-    // register packages
+    // register packages into IDE
     with Installer do
       for i := 0 to SelTargetCount - 1 do
         if SelTargets[i].InstallJVCL and (not SelTargets[i].CompileOnly) then
@@ -308,20 +392,6 @@ begin
             Break;
         end;
   end;
-
-  if not Success then
-  begin
-    LblTarget.Caption := Format(RsError, [LblTarget.Hint]);
-    BtnDetails.Visible := False;
-    RichEditLog.Visible := True;
-    if AbortReason <> '' then
-      AbortReason := RsInstallError + #10#10 + AbortReason
-    else
-      AbortReason := RsInstallError;
-    MessageDlg(AbortReason, mtError, [mbOk], 0);
-  end
-  else
-    LblTarget.Caption := RsComplete;
 
   FFinished := True;
   if Success then

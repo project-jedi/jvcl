@@ -827,10 +827,10 @@ begin
       end;
     end;
 
-    DccOpt := '';
+    DccOpt := '-Q- -M';
    // setup environment variables
     if TargetConfig.Build then
-      DccOpt := '-Q -M -B';
+      DccOpt := '-Q- -M -B';
     if TargetConfig.GenerateMapFiles then
       DccOpt := DccOpt + ' -GD';
 
@@ -1036,11 +1036,11 @@ begin
     Lines.Add('ROOT = $(MAKEDIR)\..');
     Lines.Add('!endif');
     Lines.Add('!ifndef DCCOPT');
-    Lines.Add('DCCOPT = -Q -M');
+    Lines.Add('DCCOPT = -Q- -M');
     Lines.Add('!endif');
     Lines.Add('');
     Lines.Add('BPR2MAK = "$(ROOT)\bin\bpr2mak" -t..\BCB.bmk');
-    Lines.Add('MAKE = "$(ROOT)\bin\make" -l+'{-$(MAKEFLAGS)'});
+    Lines.Add('MAKE = "$(ROOT)\bin\make"'{-$(MAKEFLAGS)'});
     Lines.Add('DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT)');
     Lines.Add('');
 
