@@ -11,18 +11,25 @@ type
 
   TForm1 = class(TForm)
     JvClipboardViewer1: TJvClipboardViewer;
+    Splitter1: TSplitter;
+    Panel1: TPanel;
     Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
     Memo1: TMemo;
     pnlImage: TPanel;
     Image1: TImage;
     btnLoadImage: TButton;
     btnCopyImage: TButton;
     btnCopyText: TButton;
-    OpenPictureDialog1: TOpenPictureDialog;
-    Label2: TLabel;
     edItemHeight: TEdit;
     udItemHeight: TUpDown;
     cbDrawStyle: TComboBox;
+    edButtonWidth: TEdit;
+    udButtonWidth: TUpDown;
+    btnLoadText: TButton;
+    OpenPictureDialog1: TOpenPictureDialog;
     PopupMenu1: TPopupMenu;
     Paste1: TMenuItem;
     Delete1: TMenuItem;
@@ -30,13 +37,12 @@ type
     Original1: TMenuItem;
     Stretch1: TMenuItem;
     Proportional1: TMenuItem;
-    Label3: TLabel;
-    Label4: TLabel;
-    edButtonWidth: TEdit;
-    udButtonWidth: TUpDown;
     OpenDialog1: TOpenDialog;
-    btnLoadText: TButton;
-    Splitter1: TSplitter;
+    chkHotTrackCombo: TCheckBox;
+    edColumns: TEdit;
+    Label5: TLabel;
+    udColumns: TUpDown;
+    chkInsert: TCheckBox;
     procedure JvClipboardViewer1Image(Sender: TObject; Image: TBitmap);
     procedure JvClipboardViewer1Text(Sender: TObject; Text: string);
     procedure btnCopyTextClick(Sender: TObject);
@@ -51,6 +57,8 @@ type
     procedure PopupMenu1Popup(Sender: TObject);
     procedure udButtonWidthClick(Sender: TObject; Button: TUDBtnType);
     procedure btnLoadTextClick(Sender: TObject);
+    procedure chkHotTrackComboClick(Sender: TObject);
+    procedure udColumnsClick(Sender: TObject; Button: TUDBtnType);
   private
     { Private declarations }
     LB: TJvComboListBox;
@@ -84,7 +92,10 @@ begin
   P := TPicture.Create;
   try
     P.Assign(Image);
-    LB.InsertImage(0,P);
+    if chkInsert.Checked then
+      LB.InsertImage(0,P)
+    else
+      LB.AddImage(P);
   finally
     P.Free; // AddImage creates a copy, so we can free this instance
   end;
@@ -95,7 +106,10 @@ end;
 
 procedure TForm1.JvClipboardViewer1Text(Sender: TObject; Text: string);
 begin
-  LB.InsertText(0,StringReplace(Text, #13#10, ' ', [rfReplaceAll]));
+  if chkInsert.Checked then
+    LB.InsertText(0,StringReplace(Text, #13#10, ' ', [rfReplaceAll]))
+  else
+    LB.AddText(StringReplace(Text, #13#10, ' ', [rfReplaceAll]));
   Caption := Format('Clipboard count: %d', [LB.Items.Count]);
 end;
 
@@ -130,14 +144,17 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   LB := TJvComboListBox.Create(Self);
-  LB.Align := alRight;
+  LB.Align := alClient;
   LB.Width := 200;
   LB.Parent := self;
   LB.DropDownMenu := PopupMenu1;
+//  LB.ScrollBars := ssBoth;
+//  LB.HotTrack := true;
   Splitter1.Left := LB.Left - 10;
   cbDrawStyle.ItemIndex := Ord(LB.DrawStyle);
   LB.ItemHeight := udItemHeight.Position;
   udButtonWidth.Position := LB.ButtonWidth;
+  udColumns.Position := LB.Columns;
 end;
 
 procedure TForm1.Paste1Click(Sender: TObject);
@@ -188,6 +205,20 @@ procedure TForm1.btnLoadTextClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
     Memo1.Lines.LoadFromFile(OpenDialog1.Filename);
+end;
+
+procedure TForm1.chkHotTrackComboClick(Sender: TObject);
+begin
+  LB.HotTrackCombo := chkHotTrackCombo.Checked;
+end;
+
+procedure TForm1.udColumnsClick(Sender: TObject; Button: TUDBtnType);
+begin
+  LB.Columns := udColumns.Position;
+  if LB.Columns > 0 then
+    LB.ScrollBars := ssHorizontal
+  else
+    LB.ScrollBars := ssVertical;
 end;
 
 end.
