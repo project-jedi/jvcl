@@ -32,6 +32,7 @@ Contributors(s):matej golob
   //matej 2004-5-3
   --add property BorderColor in TJvXPBarColors.
   --add property HeaderRounded
+  --add property TopSpace
 
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -369,6 +370,7 @@ type
     FStoredHint: string;
     FShowItemFrame: Boolean;
     FRoundedItemFrame: Integer;  // DS
+    FTopSpace: Integer;
     function IsFontStored: Boolean;
     procedure FontChange(Sender: TObject);
     procedure SetCollapsed(Value: Boolean);
@@ -391,6 +393,7 @@ type
     function GetRollHeight: Integer;
     function GetRollWidth: Integer;
     procedure SetHeaderRounded(const Value: Boolean);
+    procedure SetTopSpace(const Value: Integer);
   protected
     {$IFDEF VCL}
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
@@ -440,6 +443,7 @@ type
     property ShowRollButton: Boolean read FShowRollButton write SetShowRollButton default True;
     property ShowItemFrame: Boolean read FShowItemFrame write FShowItemFrame;
     property RoundedItemFrame: Integer read FRoundedItemFrame write FRoundedItemFrame default 1; //DS
+    property TopSpace: Integer read FTopSpace write SetTopSpace default 5;
 
     property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange write
       FAfterCollapsedChange;
@@ -492,6 +496,7 @@ type
     property ShowRollButton;
     property ShowItemFrame;
     property RoundedItemFrame;
+    property TopSpace;
 
     property AfterCollapsedChange;
     property BeforeCollapsedChange;
@@ -1498,6 +1503,7 @@ begin
   FImageChangeLink.OnChange := DoColorsChange;
   FRollChangeLink := TChangeLink.Create;
   FRollChangeLink.OnChange := DoColorsChange;
+  FTopSpace := 5;
 
   FFont := TFont.Create;
   FFont.Color := $00840000;
@@ -1591,7 +1597,7 @@ begin
     (FVisibleItems.Count = 0)) then
     Dec(NewHeight, FC_ITEM_MARGIN);
 //  if Height <> NewHeight then
-  Height := NewHeight;
+  Height := NewHeight - 5 + FTopSpace;
 end;
 
 function TJvXPCustomWinXPBar.GetHitTestAt(X, Y: Integer): TJvXPBarHitTest;
@@ -1608,9 +1614,9 @@ begin
   Result.Left := 3;
   Result.Right := Width - 3;
   if FRollMode = rmShrink then
-    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FRollOffset + 1
+    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FRollOffset - 4 + FTopSpace
   else
-    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FItemHeight + 1;
+    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FItemHeight - 4 + FTopSpace;
   Result.Bottom := Result.Top + FItemHeight;
 end;
 
@@ -2022,9 +2028,9 @@ begin
     {$IFDEF VisualCLX}
     Brush.Color := TJvXPWinControl(parent).Color;
     with Rect do
-      FillRect(Bounds(Left, Top, Right - Left, 5));
+      FillRect(Bounds(Left, Top, Right - Left, FTopSpace));
     {$ENDIF VisualCLX}
-    Inc(Rect.Top, 5 + FHeaderHeight);
+    Inc(Rect.Top, FTopSpace + FHeaderHeight);
     Brush.Color := FColors.BodyColor; //$00F7DFD6;
     FillRect(Rect);
     Dec(Rect.Top, FHeaderHeight);
@@ -2393,6 +2399,19 @@ begin
     InternalRedraw;
   end;
 end;
+
+procedure TJvXPCustomWinXPBar.SetTopSpace(const Value: Integer);
+begin
+  if Value <> FTopSpace then
+  begin
+    FTopSpace := Value;
+    if FTopSpace < 0 then
+      FTopSpace := 0;
+    ResizeToMaxHeight;
+    InternalRedraw;
+  end;
+end;
+
 
 end.
 
