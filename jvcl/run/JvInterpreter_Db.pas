@@ -49,13 +49,11 @@ uses
 
 { constructor Create(Owner: TFieldDefs; Name: string; DataType: TFieldType; Size: Word; Required: Boolean; FieldNo: Integer) }
 
-{$IFNDEF BCB3}
 procedure TFieldDef_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TFieldDef.Create(V2O(Args.Values[0]) as TFieldDefs, string(Args.Values[1]), Args.Values[2],
     Args.Values[3], Args.Values[4], Args.Values[5]));
 end;
-{$ENDIF BCB3}
 
 { function CreateField(Owner: TComponent): TField; }
 
@@ -1455,13 +1453,11 @@ end;
 
 { constructor Create(Owner: TIndexDefs; Name: string; Fields: string; Options: TIndexOptions) }
 
-{$IFNDEF BCB3}
 procedure TIndexDef_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TIndexDef.Create(V2O(Args.Values[0]) as TIndexDefs, string(Args.Values[1]), string(Args.Values[2]),
     TIndexOptions(Byte(V2S(Args.Values[3])))));
 end;
-{$ENDIF BCB3}
 
 { property Read Expression: string }
 
@@ -2557,10 +2553,8 @@ begin
     AddConst(cDb, 'ftCursor', ftCursor);
     { TFieldDef }
     AddClass(cDb, TFieldDef, 'TFieldDef');
-    {$IFNDEF BCB3}
     AddGet(TFieldDef, 'Create', TFieldDef_Create, 6, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty],
       varEmpty);
-    {$ENDIF BCB3}
     AddGet(TFieldDef, 'CreateField', TFieldDef_CreateField, 1, [varEmpty], varEmpty);
     AddGet(TFieldDef, 'InternalCalcField', TFieldDef_Read_InternalCalcField, 0, [0], varEmpty);
     AddSet(TFieldDef, 'InternalCalcField', TFieldDef_Write_InternalCalcField, 0, [0]);
@@ -2809,9 +2803,7 @@ begin
     AddConst(cDb, 'ixExpression', ixExpression);
     { TIndexDef }
     AddClass(cDb, TIndexDef, 'TIndexDef');
-    {$IFNDEF BCB3}
     AddGet(TIndexDef, 'Create', TIndexDef_Create, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    {$ENDIF BCB3}
     AddGet(TIndexDef, 'Expression', TIndexDef_Read_Expression, 0, [0], varEmpty);
     AddGet(TIndexDef, 'Fields', TIndexDef_Read_Fields, 0, [0], varEmpty);
     AddGet(TIndexDef, 'Name', TIndexDef_Read_Name, 0, [0], varEmpty);

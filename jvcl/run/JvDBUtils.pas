@@ -142,7 +142,6 @@ const
 const
   ServerDateFmt: string[50] = sdfStandard16;
 
-  {$IFDEF BCB3_UP} { C++ Builder 3 or higher }
   {.$NODEFINE ftNonTextTypes}
   (*$HPPEMIT 'namespace JvDBUtils'*)
   (*$HPPEMIT '{'*)
@@ -150,13 +149,10 @@ const
   (*$HPPEMIT '        << ftBytes << ftVarBytes << ftBlob << ftMemo << ftGraphic \'*)
   (*$HPPEMIT '        << ftFmtMemo << ftParadoxOle << ftDBaseOle << ftTypedBinary << ftCursor )'*)
   (*$HPPEMIT '}'*)
-  {$ENDIF}
 
 type
   Largeint = Longint;
-  {$IFDEF BCB3_UP}
   {$NODEFINE Largeint}
-  {$ENDIF}
 
 procedure _DBError(const Msg: string);
 

@@ -25,6 +25,14 @@ Known Issues:
   Should be merged with JCL
 -----------------------------------------------------------------------------}
 {$I JVCL.INC}
+
+{$IFDEF COMPILER6_UP}
+ {$IFDEF MSWINDOWS}
+  {$WARN UNIT_PLATFORM OFF}
+  {$WARN SYMBOL_PLATFORM OFF}
+ {$ENDIF}
+{$ENDIF}
+
 unit JvStrings;
 
 interface

@@ -47,22 +47,6 @@ interface
 // will be cleaned up after the time block code has been fully integrated
 // and tested.
 
-{$IFDEF COMPILER3}
-uses
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   StdCtrls,
-   JvTFManager,
-   JvTFSparseMatrix,
-   {$IFDEF UseJVCL}JvTypes, {$ENDIF}
-   JvTFUtils;
-{$ELSE}
 uses
    Windows,
    Messages,
@@ -78,7 +62,6 @@ uses
    ImgList,
    {$IFDEF UseJVCL}JvTypes, {$ENDIF}
    JvTFUtils;
-{$ENDIF}
 
 const
    AbsMinColWidth = 5;
@@ -126,11 +109,7 @@ type
    end;
 
    TJvTFDrawPicInfo = class(TObject)
-{$IFDEF COMPILER3}
-      ImageList : TImageList;
-{$ELSE}
       ImageList : TCustomImageList;
-{$ENDIF}
       ImageIndex : Integer;
       PicLeft : Integer;
       PicTop : Integer;
@@ -787,10 +766,8 @@ type
    TJvTFGetDaysApptDrawInfoEvent = procedure(Sender : TObject; Appt : TJvTFAppt;
       DrawInfo : TJvTFDaysApptDrawInfo) of object;
 
-{$IFNDEF COMPILER3}
    TDynPointArray = array of TPoint;
    TDynIntArray = array of Integer;
-{$ENDIF}
 
    TJvTFDaysGrouping = (grNone, grDate, grResource, grCustom);
 
@@ -1090,12 +1067,7 @@ type
 {$ENDIF}
 
     // message handlers
-{$IFDEF COMPILER3}
-      procedure Resize;
-      procedure WMSize(var Message : TMessage); message WM_SIZE;
-{$ELSE}
       procedure Resize; override;
-{$ENDIF}
 
       procedure WMEraseBkgnd(var Message : TMessage); message WM_ERASEBKGND;
       procedure CMFontChanged(var Message : TMessage); message CM_FONTCHANGED;
@@ -1160,10 +1132,8 @@ type
       procedure DoDeleteSchedule; dynamic;
 //      procedure DoNavigate; virtual;
 
-{$IFNDEF COMPILER3}
       function DoMouseWheelDown(Shift : TShiftState; MousePos : TPoint) : Boolean; override;
       function DoMouseWheelUp(Shift : TShiftState; MousePos : TPoint) : Boolean; override;
-{$ENDIF}
       procedure DestroyApptNotification(anAppt : TJvTFAppt); override;
       procedure CMMouseLeave(var Message : TMessage); message CM_MOUSELEAVE;
       procedure Navigate(aControl : TJvTFControl; SchedNames : TStringList;
@@ -1310,11 +1280,9 @@ type
       function BlockHdrIsSelected(aRow : Integer) : Boolean;
 {$ENDIF}
 
-{$IFNDEF COMPILER3}
       function EnumSelCells : TDynPointArray;
       function EnumSelCols : TDynIntArray;
       function EnumSelRows : TDynIntArray;
-{$ENDIF}
 
       function GetApptDispColor(Appt : TJvTFAppt; Selected : Boolean) : TColor;
    published
@@ -1485,11 +1453,9 @@ type
       property ParentFont;
       property TabStop;
       property TabOrder;
-{$IFNDEF COMPILER3}
       property Anchors;
       property Constraints;
       property DragKind;
-{$ENDIF}
       property DragCursor;
       property DragMode;
       property Enabled;
@@ -1511,12 +1477,10 @@ type
       property OnMouseDown;
       property OnMouseMove;
       property OnMouseUp;
-{$IFNDEF COMPILER3}
       property OnMouseWheelDown;
       property OnMouseWheelUp;
       property OnEndDock;
       property OnStartDock;
-{$ENDIF}
       property OnStartDrag;
    end;
 
@@ -4257,9 +4221,7 @@ begin
    begin
       Kind := sbVertical;
       TabStop := False;
-{$IFNDEF COMPILER3}
       Anchors := [];
-{$ENDIF}
       Parent := Self;
       Visible := False;
       OnScroll := ScrollBarScroll;
@@ -4270,9 +4232,7 @@ begin
    begin
       Kind := sbHorizontal;
       TabStop := False;
-{$IFNDEF COMPILER3}
       Anchors := [];
-{$ENDIF}
       Parent := Self;
       Visible := False;
       OnScroll := ScrollBarScroll;
@@ -5910,11 +5870,7 @@ var
       NextPicLeft,
       CustomPicLeft,
       ImageIndex : Integer;
-{$IFDEF COMPILER3}
-   ImageList : TImageList;
-{$ELSE}
    ImageList : TCustomImageList;
-{$ENDIF}
    ImageMap : TJvTFStateImageMap;
    CustomImageMap : TJvTFCustomImageMap;
 begin
@@ -5988,31 +5944,13 @@ var
    I,
       NextPicLeft,
       ImageIndex : Integer;
-{$IFDEF COMPILER3}
-   ImageList : TImageList;
-{$ELSE}
    ImageList : TCustomImageList;
-{$ENDIF}
    ImageMap : TJvTFStateImageMap;
    CustomImageMap : TJvTFCustomImageMap;
 
         ///////////////////////////////////////////////////////
         //               SUBORDINATE ROUTINE
         ///////////////////////////////////////////////////////
-{$IFDEF COMPILER3}
-   procedure AddToList(_ImageList : TImageList; _ImageIndex : Integer;
-      _PicLeft, _PicTop : Integer);
-   var
-      DrawInfo : TJvTFDrawPicInfo;
-   begin
-      DrawInfo := TJvTFDrawPicInfo.Create;
-      DrawInfo.ImageList := _ImageList;
-      DrawInfo.ImageIndex := _ImageIndex;
-      DrawInfo.PicLeft := _PicLeft;
-      DrawInfo.PicTop := _PicTop;
-      DrawList.Add(DrawInfo);
-   end;
-{$ELSE}
    procedure AddToList(_ImageList : TCustomImageList; _ImageIndex : Integer;
       _PicLeft, _PicTop : Integer);
    var
@@ -6025,7 +5963,6 @@ var
       DrawInfo.PicTop := _PicTop;
       DrawList.Add(DrawInfo);
    end;
-{$ENDIF}
 
 ///////////////////////
 //  MAIN ROUTINE
@@ -7011,14 +6948,6 @@ begin
 
    inherited;
 end;
-
-{$IFDEF COMPILER3}
-
-procedure TJvTFDays.WMSize(var Message : TMessage);
-begin
-   Resize;
-end;
-{$ENDIF}
 
 procedure TJvTFDays.WMEraseBkgnd(var Message : TMessage);
 begin
@@ -8421,8 +8350,6 @@ begin
       FOnDeleteSchedule(Self);
 end;
 
-{$IFNDEF COMPILER3}
-
 function TJvTFDays.DoMouseWheelDown(Shift : TShiftState;
    MousePos : TPoint) : Boolean;
 begin
@@ -8434,9 +8361,6 @@ begin
       Result := True;
    end;
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFDays.DoMouseWheelUp(Shift : TShiftState;
    MousePos : TPoint) : Boolean;
@@ -8449,7 +8373,6 @@ begin
       Result := True;
    end;
 end;
-{$ENDIF}
 
 procedure TJvTFDays.DestroyApptNotification(anAppt : TJvTFAppt);
 begin
@@ -10248,8 +10171,6 @@ begin
       (SelEnd.X > gcHdr) and (SelEnd.Y > gcHdr);
 end;
 
-{$IFNDEF COMPILER3}
-
 function TJvTFDays.EnumSelCells : TDynPointArray;
 var
    SelSameName,
@@ -10351,9 +10272,6 @@ begin
       end;
    end;
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFDays.EnumSelCols : TDynIntArray;
 var
@@ -10428,9 +10346,6 @@ begin
       end;
    end;
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFDays.EnumSelRows : TDynIntArray;
 var
@@ -10473,7 +10388,6 @@ begin
                AddToArray(I);
    end;
 end;
-{$ENDIF}
 
 function TJvTFDays.GetApptDispColor(Appt : TJvTFAppt;
    Selected : Boolean) : TColor;
@@ -12418,31 +12332,13 @@ var
       NextPicLeft,
       ImageIndex,
       PicWidth : Integer;
-{$IFDEF COMPILER3}
-   ImageList : TImageList;
-{$ELSE}
    ImageList : TCustomImageList;
-{$ENDIF}
    ImageMap : TJvTFStateImageMap;
    CustomImageMap : TJvTFCustomImageMap;
 
         ///////////////////////////////////////////////////////
         //               SUBORDINATE ROUTINE
         ///////////////////////////////////////////////////////
-{$IFDEF COMPILER3}
-   procedure AddToList(_ImageList : TImageList; _ImageIndex : Integer;
-      _PicLeft, _PicTop : Integer);
-   var
-      DrawInfo : TJvTFDrawPicInfo;
-   begin
-      DrawInfo := TJvTFDrawPicInfo.Create;
-      DrawInfo.ImageList := _ImageList;
-      DrawInfo.ImageIndex := _ImageIndex;
-      DrawInfo.PicLeft := _PicLeft;
-      DrawInfo.PicTop := _PicTop;
-      DrawList.Add(DrawInfo);
-   end;
-{$ELSE}
    procedure AddToList(_ImageList : TCustomImageList; _ImageIndex : Integer;
       _PicLeft, _PicTop : Integer);
    var
@@ -12455,7 +12351,6 @@ var
       DrawInfo.PicTop := _PicTop;
       DrawList.Add(DrawInfo);
    end;
-{$ENDIF}
 
 ///////////////////////
 //  MAIN ROUTINE
@@ -12569,13 +12464,8 @@ var
    BitmapHeader : pBitmapInfo;
    BitmapImage : POINTER;
 
-{$IFDEF COMPILER3}
-   HeaderSize : INTEGER;
-   ImageSize : INTEGER;
-{$ELSE}
    HeaderSize : LongWord;
    ImageSize : LongWord;
-{$ENDIF}
 
 begin
    GetDIBSizes(aBitmap.Handle, HeaderSize, ImageSize);
