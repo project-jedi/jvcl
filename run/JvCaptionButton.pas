@@ -443,7 +443,6 @@ function TranslateBitmapFileName(const S: string): string;
 var
   I: Integer;
 begin
-  // (rom) simplified
   Result := S;
   for I := 1 to Length(S) do
     case S[I] of

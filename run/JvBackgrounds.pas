@@ -476,7 +476,6 @@ end;
 
 constructor TJvBackgroundImage.Create;
 begin
-  // (rom) added inherited Create;
   inherited Create;
   FCanvas := TCanvas.Create;
   FAutoSizeTile := True;
@@ -1685,7 +1684,7 @@ procedure TJvBackgroundClients.ReadData(Reader: TReader);
 begin
   FLinks.Free;
   FLinks := nil;
-  // (rom) typecasting an lvalue is really bad style
+  // (rom) TObjectList and TStringList are incompatible. This is probably a BUG!
   TStringList(FLinks) := TStringList.Create;
   Reader.ReadListBegin;
   while not Reader.EndOfList do

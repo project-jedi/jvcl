@@ -302,7 +302,7 @@ begin
   FormStyle := fsNormal;
   Position := poDesigned;
   Visible := False;
-  // (rom) "ParentFont := False;" missing?
+  ParentFont := False;
 end;
 
 constructor TJvBandForm.CreateBandForm(const ParentWindow: HWND; const BandObject: TComObject);

@@ -427,7 +427,6 @@ const
   bmMultiDot = 'JV_DBG_MSDOT';
   bmMultiArrow = 'JV_DBG_MSARROW';
 
-// (rom) changed to var
 var
   GridBitmaps: array [TGridPicture] of TBitmap =
     (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);

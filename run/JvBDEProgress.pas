@@ -192,7 +192,6 @@ begin
     Result := pfDBICallBack(FOldCBFunc)(CallType, FOldCBData, CBInfo);
 end;
 
-// (rom) changed to var
 var
   ProgressList: TList = nil;
 

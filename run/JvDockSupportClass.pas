@@ -206,7 +206,6 @@ implementation
 
 constructor TJvDockBaseZone.Create(BaseTree: TJvDockBaseTree);
 begin
-  // (rom) added inherited Create
   inherited Create;
   FBaseTree := BaseTree;
   FChildZone := nil;
@@ -301,7 +300,6 @@ end;
 
 constructor TJvDockBaseTree.Create(TreeZone: TJvDockTreeZoneClass);
 begin
-  // (rom) added inherited Create
   inherited Create;
   FTreeZoneClass := TreeZone;
   FTopTreeZone := FTreeZoneClass.Create(Self);

@@ -1031,7 +1031,6 @@ type
     function IsCategory: Boolean; override;
     procedure SetFlags(const Value: TInspectorItemFlags); override;
   public
-    // (rom) a write only property?
     property Name write FName;
   end;
 
@@ -2325,7 +2324,6 @@ begin
   FFont.Free;
   FPen.Free;
   FBrush.Free;
-  // (rom) added inherited Destroy
   inherited Destroy;
 end;
 
@@ -7033,7 +7031,6 @@ begin
       if not (iifMultiLine in Flags) then
         ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S)
       else
-      // (rom) fix added begin end
       begin
         {$IFDEF VCL}
         DrawTextEx(ACanvas, PChar(S), Length(S), ARect, DT_EDITCONTROL or DT_WORDBREAK, nil);
