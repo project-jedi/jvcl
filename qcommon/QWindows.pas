@@ -29,12 +29,12 @@
  THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-Last Modified: 2004-03-21
-
 Known Issues:
   - Covers only a small part of the Windows APIs
   - Not all functionality is supported
 {-----------------------------------------------------------------------------}
+// $Id$
+
 unit QWindows;
 
 interface
@@ -901,6 +901,8 @@ function DrawTextW(Handle: QPainterH; Text: PWideChar; Len: Integer;
 // - sets painterfont
 //
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
+  var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawText(Canvas :TCanvas; const Text: TCaption; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
@@ -4591,6 +4593,21 @@ begin
     Start;
     RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
     Result := DrawText(Handle, Text, Len, R, WinFlags);
+    Stop;
+  end;
+end;
+
+function DrawText(Canvas :TCanvas;const Text: TCaption; Len: Integer;
+  var R: TRect; WinFlags: Integer): Integer;
+var
+  ws: WideString;
+begin
+  ws := Text;
+  with Canvas do
+  begin
+    Start;
+    RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
+    Result := DrawTextW(Handle, PWideChar(Text), Len, R, WinFlags);
     Stop;
   end;
 end;
@@ -8305,6 +8322,9 @@ finalization
   WaitObjectList.Free;
   {$ENDIF LINUX}
 end.
+
+
+
 
 
 
