@@ -256,10 +256,8 @@ procedure TJvCustomMemo.Change;
 begin
   { only process if maxlines is set - truncate }
   if MaxLines > 0 then
-  begin
     while Lines.Count > MaxLines do
       Lines.Delete(Lines.Count - 1);
-  end;
   inherited Change;
 end;
 

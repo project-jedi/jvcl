@@ -216,7 +216,7 @@ begin
       Flags := SBT_NOBORDERS;
       if UseRightToLeftReading then
         Flags := Flags or SBT_RTLREADING;
-      SendMessage(Handle, SB_SETPARTS, 1, Integer(@PanelEdges));
+      SendMessage(Handle, SB_SETPARTS, 1, LPARAM(@PanelEdges));
       SendMessage(Handle, SB_SETTEXT, Flags, LPARAM(PChar(HintText)));
       {$ENDIF VCL}
       // (rom) may need VisualCLX part here

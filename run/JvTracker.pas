@@ -227,20 +227,20 @@ end;
 
 procedure TJvTracker.SetTrackRect;
 var
-  dy, dx: Integer;
+  DX, DY: Integer;
 begin
   case Orientation of
     jtbHorizontal:
       begin
-        dy := (Height - FTrackHeight) div 2;
-        FTrackRect := Rect(FThumbMin, dy, FThumbMax, Height - dy);
+        DY := (Height - FTrackHeight) div 2;
+        FTrackRect := Rect(FThumbMin, DY, FThumbMax, Height - DY);
         FHitRect := FTrackRect;
         InflateRect(FHitRect, 0, (FThumbHeight - FTrackHeight) div 2);
       end;
     jtbVertical:
       begin
-        dx := (Width - FTrackHeight) div 2;
-        FTrackRect := Rect(dx, FThumbMin, Width - dx, FThumbMax);
+        DX := (Width - FTrackHeight) div 2;
+        FTrackRect := Rect(DX, FThumbMin, Width - DX, FThumbMax);
         FHitRect := FTrackRect;
         InflateRect(FHitRect, (FThumbWidth - FTrackHeight) div 2, 0);
       end;
@@ -249,59 +249,54 @@ end;
 
 procedure TJvTracker.SetThumbRect;
 var
-  dx, dy: Integer;
+  DX, DY: Integer;
 begin
   case Orientation of
     jtbHorizontal:
       begin
-        dx := FThumbWidth div 2;
-        dy := (Height - FThumbHeight) div 2;
-        FThumbRect := Rect(FThumbPosition - dx, dy, FThumbPosition + dx, Height - dy);
+        DX := FThumbWidth div 2;
+        DY := (Height - FThumbHeight) div 2;
+        FThumbRect := Rect(FThumbPosition - DX, DY, FThumbPosition + DX, Height - DY);
       end;
     jtbVertical:
       begin
-        dy := FThumbHeight div 2;
-        dx := (Width - FThumbWidth) div 2;
-        FThumbRect := Rect(dx, FThumbPosition - dy, Width - dx, FThumbPosition + dy);
+        DY := FThumbHeight div 2;
+        DX := (Width - FThumbWidth) div 2;
+        FThumbRect := Rect(DX, FThumbPosition - DY, Width - DX, FThumbPosition + DY);
       end;
   end;
 end;
 
 procedure TJvTracker.Paint;
 var
-  s: string;
+  S: string;
   {Added By Steve Childs 18/04/00 - Double Buffer Bitmap}
   Buffer: TBitmap;
-  col: TColor;
-  r, g, b: Byte;
-  fact: Double;
+  LColor: TColor;
+  R, G, B: Byte;
+  Factor: Double;
 
   procedure DrawBackBitmap;
   var
-    ix, iy: Integer;
+    IX, IY: Integer;
     BmpWidth, BmpHeight: Integer;
     hCanvas, BmpCanvas: HDC;
-    bm: TBitmap;
   begin
-    bm := FBackBitmap;
-    begin
-      BmpWidth := bm.Width;
-      BmpHeight := bm.Height;
-      BmpCanvas := bm.Canvas.Handle;
-      { Changed By Steve Childs 18/04/00 - Now Points To Buffer.Canvas Bitmap}
-      hCanvas := HDC(Buffer.Canvas.Handle);
-      for iy := 0 to ClientHeight div BmpHeight do
-        for ix := 0 to ClientWidth div BmpWidth do
-          BitBlt(hCanvas, ix * BmpWidth, iy * BmpHeight,
-            BmpWidth, BmpHeight, BmpCanvas,
-            0, 0, SRCCOPY);
-    end;
+    BmpWidth := FBackBitmap.Width;
+    BmpHeight := FBackBitmap.Height;
+    BmpCanvas := FBackBitmap.Canvas.Handle;
+    { Changed By Steve Childs 18/04/00 - Now Points To Buffer.Canvas Bitmap}
+    hCanvas := Buffer.Canvas.Handle;
+    for IY := 0 to ClientHeight div BmpHeight do
+      for IX := 0 to ClientWidth div BmpWidth do
+        BitBlt(hCanvas, IX * BmpWidth, IY * BmpHeight,
+          BmpWidth, BmpHeight, BmpCanvas, 0, 0, SRCCOPY);
 
     { Old Code!!}
  {      hCanvas := THandle(Canvas.handle);
-       for iy := 0 to ClientHeight div BmpHeight do
-         for ix := 0 to ClientWidth div BmpWidth do
-           BitBlt(hCanvas, ix * BmpWidth, iy * BmpHeight,
+       for IY := 0 to ClientHeight div BmpHeight do
+         for IX := 0 to ClientWidth div BmpWidth do
+           BitBlt(hCanvas, IX * BmpWidth, IY * BmpHeight,
              BmpWidth, BmpHeight, BmpCanvas,
              0, 0, SRCCOPY);
      end;}
@@ -323,12 +318,12 @@ var
     { Changed By Steve Childs 18/04/00 - Now Refers To Buffer Bitmap}
     if FTrackPositionColored then
     begin // 2-jul-2000 Jan Verhoeven
-      fact := Value / (Maximum - Minimum);
-      r := GetRValue(FTrackColor);
-      g := GetGValue(FTrackColor);
-      b := GetBValue(FTrackColor);
-      col := RGB(Trunc(fact * r), Trunc(fact * g), Trunc(fact * b));
-      Buffer.Canvas.Brush.Color := col;
+      Factor := Value / (Maximum - Minimum);
+      R := GetRValue(FTrackColor);
+      G := GetGValue(FTrackColor);
+      B := GetBValue(FTrackColor);
+      LColor := RGB(Trunc(Factor * R), Trunc(Factor * G), Trunc(Factor * B));
+      Buffer.Canvas.Brush.Color := LColor;
     end
     else
       Buffer.Canvas.Brush.Color := FTrackColor;
@@ -341,14 +336,14 @@ var
   procedure DrawCaption;
   begin
     { Changed By Steve Childs 18/04/00 - Now Refers To Buffer Bitmap}
-    s := IntToStr(FValue);
+    S := IntToStr(FValue);
     Buffer.Canvas.Brush.Style := bsClear;
     if CaptionBold then
       Buffer.Canvas.Font.Style := Canvas.Font.Style + [fsBold]
     else
       Buffer.Canvas.Font.Style := Canvas.Font.Style - [fsBold];
     Buffer.Canvas.Font.Color := CaptionColor;
-    DrawText(Buffer.Canvas.Handle, PChar(s), -1, FThumbRect,
+    DrawText(Buffer.Canvas.Handle, PChar(S), -1, FThumbRect,
       DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_END_ELLIPSIS);
   end;
 
@@ -421,10 +416,10 @@ end;
 
 procedure TJvTracker.UpdatePosition;
 var
-  fac: Extended;
+  Factor: Extended;
 begin
-  fac := (FValue - FMinimum) / (FMaximum - FMinimum);
-  FThumbPosition := FThumbMin + Round((FThumbMax - FThumbMin) * fac);
+  Factor := (FValue - FMinimum) / (FMaximum - FMinimum);
+  FThumbPosition := FThumbMin + Round((FThumbMax - FThumbMin) * Factor);
   Invalidate;
 end;
 

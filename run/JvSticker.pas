@@ -125,9 +125,8 @@ var
   I: Integer;
 begin
   Canvas.Brush.Color := clBlack;
-  for I := 1 to 8 do
-    Canvas.Rectangle(FRectList[I].Left, FRectList[I].Top,
-      FRectList[I].Right, FRectList[I].Bottom);
+  for I := Low(FRectList) to High(FRectList) do
+    Canvas.Rectangle(FRectList[I]);
 end;
 
 procedure TJvStickSizer.WMNCHitTest(var Msg: TWMNCHitTest);
@@ -256,7 +255,7 @@ procedure TJvSticker.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   H3: Integer;
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   H3 := Height div 3;
   if (Button = mbLeft) and (PtInRect(Rect(0, 0, 20, H3), Point(X, Y))) then
     with TJvStickSizer.CreateEx(Self.Parent, TControl(Self)) do
@@ -284,7 +283,7 @@ var
   H3: Integer;
   I: Integer;
 begin
-  inherited;
+  inherited Paint;
   H3 := Height div 3;
   Canvas.Brush.Color := StickColor;
   Canvas.FillRect(Rect(15, 0, Width, Height));

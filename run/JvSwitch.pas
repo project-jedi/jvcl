@@ -154,12 +154,6 @@ uses
 {$R ../Resources/JvSwitch.Res}
 {$ENDIF UNIX}
 
-const
-  ResName: array [Boolean] of PChar = ('JvSwitchOFF', 'JvSwitchON');
-  {$IFDEF VCL}
-  BorderStyles: array [TBorderStyle] of Longint = (0, WS_BORDER);
-  {$ENDIF VCL}
-  
 constructor TJvSwitch.Create(AOwner: TComponent);
 var
   I: Boolean;
@@ -200,6 +194,8 @@ end;
 
 {$IFDEF VCL}
 procedure TJvSwitch.CreateParams(var Params: TCreateParams);
+const
+  BorderStyles: array [TBorderStyle] of Longint = (0, WS_BORDER);
 begin
   inherited CreateParams(Params);
   with Params do
@@ -275,6 +271,8 @@ begin
 end;
 
 procedure TJvSwitch.SetSwitchGlyph(Index: Integer; Value: TBitmap);
+const
+  ResName: array [Boolean] of PChar = ('JvSwitchOFF', 'JvSwitchON');
 begin
   if Value <> nil then
   begin
@@ -327,8 +325,8 @@ begin
   Result := True; // the component paints the background in Paint
 end;
 
-procedure TJvSwitch.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TJvSwitch.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
   if Button = mbLeft then
   begin

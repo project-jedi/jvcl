@@ -353,10 +353,9 @@ end;
 function TJvListBoxStrings.Get(Index: Integer): string;
 var
   Len: Integer;
-  Text: array[0..4095] of Char;
+  Text: array [0..4095] of Char;
 begin
-  Len := SendMessage(ListBox.Handle, LB_GETTEXT, Index,
-    Longint(@Text));
+  Len := SendMessage(ListBox.Handle, LB_GETTEXT, Index, LPARAM(@Text));
   if Len < 0 then
     Error(SListIndexError, Index);
   SetString(Result, Text, Len);
@@ -376,15 +375,14 @@ end;
 
 function TJvListBoxStrings.Add(const S: string): Integer;
 begin
-  Result := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(PChar(S)));
+  Result := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, LPARAM(PChar(S)));
   if Result < 0 then
     raise EOutOfResources.CreateRes(@SInsertLineError);
 end;
 
 procedure TJvListBoxStrings.Insert(Index: Integer; const S: string);
 begin
-  if SendMessage(ListBox.Handle, LB_INSERTSTRING, Index,
-    Longint(PChar(S))) < 0 then
+  if SendMessage(ListBox.Handle, LB_INSERTSTRING, Index, LPARAM(PChar(S))) < 0 then
     raise EOutOfResources.CreateRes(@SInsertLineError);
 end;
 
@@ -411,10 +409,11 @@ end;
 
 procedure ListIndexError(Index: Integer);
 
-function ReturnAddr: Pointer;
+  function ReturnAddr: Pointer;
   asm
           MOV     EAX,[EBP+4]
   end;
+
 begin
   raise EStringListError.CreateResFmt(@SListIndexError, [Index]) at ReturnAddr;
 end;
@@ -500,8 +499,8 @@ begin
         for I := 1 to Length(S) do
           if S[I] = FTabChar then S[I] := #9;}
       ATabWidth := Round((TabWidth * FCanvas.TextWidth('0')) * 0.25);
-      Result := LoWord(GetTabbedTextExtent(FCanvas.Handle, @S[1], Length(S),
-        1, ATabWidth));
+      Result :=
+        LoWord(GetTabbedTextExtent(FCanvas.Handle, @S[1], Length(S), 1, ATabWidth));
     end
     else
       Result := FCanvas.TextWidth(S);
@@ -628,12 +627,10 @@ begin
     FAutoScroll := Value;
     Perform(WM_HSCROLL, SB_TOP, 0);
     if HandleAllocated then
-    begin
       if AutoScroll then
         ResetHorizontalExtent
       else
         SendMessage(Handle, LB_SETHORIZONTALEXTENT, 0, 0);
-    end;
   end;
 end;
 
@@ -805,10 +802,10 @@ end;
 procedure TJvxCustomListBox.CreateParams(var Params: TCreateParams);
 type
   PSelects = ^TSelects;
-  TSelects = array[Boolean] of Longword;
+  TSelects = array [Boolean] of Longword;
 const
-  BorderStyles: array[TBorderStyle] of Longword = (0, WS_BORDER);
-  Styles: array[TListBoxStyle] of Longword =
+  BorderStyles: array [TBorderStyle] of Longword = (0, WS_BORDER);
+  Styles: array [TListBoxStyle] of Longword =
     (0, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWVARIABLE
     {$IFDEF COMPILER6_UP}, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWFIXED {$ENDIF});
   Sorteds: TSelects = (0, LBS_SORT);
@@ -827,11 +824,10 @@ begin
     Selects := @MultiSelects;
     if FExtendedSelect then
       Selects := @ExtendSelects;
-    Style := Style or (WS_HSCROLL or WS_VSCROLL or LBS_HASSTRINGS or
-      LBS_NOTIFY) or Styles[FStyle] or Sorteds[FSorted] or
-      Selects^[FMultiSelect] or IntegralHeights[FIntegralHeight] or
-      MultiColumns[FColumns <> 0] or BorderStyles[FBorderStyle] or
-      TabStops[FTabWidth <> 0];
+    Style := Style or (WS_HSCROLL or WS_VSCROLL or LBS_HASSTRINGS or LBS_NOTIFY) or
+      Styles[FStyle] or Sorteds[FSorted] or Selects^[FMultiSelect] or
+      IntegralHeights[FIntegralHeight] or MultiColumns[FColumns <> 0] or
+      BorderStyles[FBorderStyle] or TabStops[FTabWidth <> 0];
     if NewStyleControls and Ctl3D and (FBorderStyle = bsSingle) then
     begin
       Style := Style and not WS_BORDER;
@@ -850,7 +846,7 @@ begin
   inherited CreateWnd;
   SetWindowPos(Handle, 0, Left, Top, W, H, SWP_NOZORDER or SWP_NOACTIVATE);
   if FTabWidth <> 0 then
-    SendMessage(Handle, LB_SETTABSTOPS, 1, Longint(@FTabWidth));
+    SendMessage(Handle, LB_SETTABSTOPS, 1, LPARAM(@FTabWidth));
   SetColumnWidth;
   if FSaveItems <> nil then
   begin
@@ -945,7 +941,7 @@ begin
     if not (ssShift in ShiftState) or (ssCtrl in ShiftState) then
     begin
       ItemNo := ItemAtPos(SmallPointToPoint(Msg.Pos), True);
-      if (ItemNo >= 0) and (Selected[ItemNo]) then
+      if (ItemNo >= 0) and Selected[ItemNo] then
       begin
         BeginDrag(False);
         Exit;
@@ -974,7 +970,8 @@ begin
         inherited Changed;
         Click;
       end;
-    LBN_DBLCLK: DblClick;
+    LBN_DBLCLK:
+      DblClick;
   end;
 end;
 
@@ -1094,8 +1091,9 @@ begin
         Inc(Rect.Left, 2)
       else
         Dec(Rect.Right, 2);
-      DefaultDrawText(Rect.Left, Max(Rect.Top, (Rect.Bottom +
-        Rect.Top - CanvasMaxTextHeight(FCanvas)) div 2), Items[Index]);
+      DefaultDrawText(Rect.Left,
+        Max(Rect.Top, (Rect.Bottom + Rect.Top - CanvasMaxTextHeight(FCanvas)) div 2),
+        Items[Index]);
     end;
   end;
 end;
@@ -1103,7 +1101,7 @@ end;
 procedure TJvxCustomListBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
   if Assigned(FOnMeasureItem) then
-    FOnMeasureItem(Self, Index, Height)
+    FOnMeasureItem(Self, Index, Height);
 end;
 
 procedure TJvxCustomListBox.CNDrawItem(var Msg: TWMDrawItem);
@@ -1178,7 +1176,7 @@ end;
 //=== { TJvCheckListBoxItem } ================================================
 
 type
-  TJvCheckListBoxItem = class
+  TJvCheckListBoxItem = class(TObject)
   private
     FData: Longint;
     FState: TCheckBoxState;
@@ -1357,13 +1355,13 @@ end;
 
 procedure TJvxCheckListBox.IniSave(Sender: TObject);
 begin
-  if (Name <> '') and (Assigned(IniStorage)) then
+  if (Name <> '') and Assigned(IniStorage) then
     InternalSave(GetDefaultSection(Self));
 end;
 
 procedure TJvxCheckListBox.IniLoad(Sender: TObject);
 begin
-  if (Name <> '') and (Assigned(IniStorage)) then
+  if (Name <> '') and Assigned(IniStorage) then
     InternalLoad(GetDefaultSection(Self));
 end;
 
@@ -1643,8 +1641,8 @@ end;
 procedure TJvxCheckListBox.DrawCheck(R: TRect; AState: TCheckBoxState;
   Enabled: Boolean);
 const
-  CheckImages: array[TCheckBoxState, TCheckKind, Boolean] of Integer =
-  (((3, 0), (9, 6), (15, 12)), { unchecked }
+  CheckImages: array [TCheckBoxState, TCheckKind, Boolean] of Integer =
+   (((3, 0), (9, 6), (15, 12)), { unchecked }
     ((4, 1), (10, 7), (16, 13)), { checked   }
     ((5, 2), (11, 8), (17, 14))); { grayed    }
 var
@@ -1695,8 +1693,7 @@ begin
   end;
 end;
 
-procedure TJvxCheckListBox.ApplyState(AState: TCheckBoxState;
-  EnabledOnly: Boolean);
+procedure TJvxCheckListBox.ApplyState(AState: TCheckBoxState; EnabledOnly: Boolean);
 var
   I: Integer;
 begin
@@ -1716,7 +1713,7 @@ begin
       if State[I] = cbChecked then
       begin
         Result := I;
-        Exit;
+        Break;
       end;
 end;
 
@@ -1751,7 +1748,7 @@ end;
 
 procedure TJvxCheckListBox.SetChecked(Index: Integer; AChecked: Boolean);
 const
-  CheckStates: array[Boolean] of TCheckBoxState = (cbUnchecked, cbChecked);
+  CheckStates: array [Boolean] of TCheckBoxState = (cbUnchecked, cbChecked);
 begin
   SetState(Index, CheckStates[AChecked]);
 end;
@@ -2022,7 +2019,6 @@ initialization
 
 finalization
   FreeAndNil(GCheckBitmap);
-  
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

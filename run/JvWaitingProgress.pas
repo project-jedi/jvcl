@@ -44,6 +44,7 @@ type
     FWait: TJvImageDrawThread;
     FProgress: TJvSpecialProgress;
     function GetProgressColor: TColor;
+    procedure InternalActivate;
     procedure SetActive(const Value: Boolean);
     procedure SetLength(const Value: Cardinal);
     procedure SetRefreshInterval(const Value: Cardinal);
@@ -54,16 +55,14 @@ type
   protected
     procedure BoundsChanged; override;
     procedure ColorChanged; override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Length: Cardinal read FLength write SetLength default 30000;
-    {(rb) When Active is read from the stream, RefreshInterval is 500 (as set
-          in the constructor); Better set Active in Loaded }
     property Active: Boolean read FActive write SetActive default False;
+    property Length: Cardinal read FLength write SetLength default 30000;
     property RefreshInterval: Cardinal read FRefreshInterval write SetRefreshInterval default 500;
-    property OnEnded: TNotifyEvent read FOnEnded write FOnEnded;
     property ProgressColor: TColor read GetProgressColor write SetProgressColor default clBlack;
     {(rb) no need to override Color property }
     //property Color: TColor read GetBColor write SetBColor;
@@ -71,6 +70,7 @@ type
     property ParentColor;
     property Height default 10;
     property Width default 100;
+    property OnEnded: TNotifyEvent read FOnEnded write FOnEnded;
   end;
 
 implementation
@@ -84,8 +84,11 @@ constructor TJvWaitingProgress.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FActive := False;
-  FRefreshInterval := 500;
   FLength := 30000;
+  FRefreshInterval := 500;
+  // (rom) always set default values also
+  Height := 10;
+  Width := 100;
 
   FWait := TJvImageDrawThread.Create(True);
   FWait.FreeOnTerminate := False;
@@ -106,9 +109,6 @@ begin
   FProgress.Height := Height;
 
   //inherited Color := FProgress.Color;
-  // (rom) always set default values also
-  Height := 10;
-  Width := 100;
 end;
 
 destructor TJvWaitingProgress.Destroy;
@@ -119,6 +119,13 @@ begin
   FreeAndNil(FWait);
   FProgress.Free;
   inherited Destroy;
+end;
+
+procedure TJvWaitingProgress.Loaded;
+begin
+  inherited Loaded;
+  if FActive then
+    InternalActivate;
 end;
 
 {function TJvWaitingProgress.GetBColor: TColor;
@@ -146,18 +153,24 @@ begin
   Application.ProcessMessages;
 end;
 
+procedure TJvWaitingProgress.InternalActivate;
+begin
+  if FActive then
+  begin
+    FProgress.Position := 0;
+    FWait.Resume;
+  end
+  else
+    FWait.Suspend;
+end;
+
 procedure TJvWaitingProgress.SetActive(const Value: Boolean);
 begin
   if FActive <> Value then
   begin
     FActive := Value;
-    if FActive then
-    begin
-      FProgress.Position := 0;
-      FWait.Resume;
-    end
-    else
-      FWait.Suspend;
+    if not (csLoading in ComponentState) then
+      InternalActivate;
   end;
 end;
 
