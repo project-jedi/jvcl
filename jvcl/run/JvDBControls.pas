@@ -603,7 +603,6 @@ type
     procedure UpdateStatus; virtual;
     property Caption;
     property DatasetState: TDataSetState read GetDatasetState;
-    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
     property DataSetName: string read GetDataSetName write SetDataSetName;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -2586,12 +2585,6 @@ begin
     if not (csLoading in ComponentState) then
       UpdateData;
   end;
-end;
-
-procedure TJvDBStatusLabel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
-begin
-  //inherited SetBounds(ALeft, ATop, AWidth + FLeftMargin + FRightMargin, AHeight);
-  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
 end.
