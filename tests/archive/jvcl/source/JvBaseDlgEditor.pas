@@ -67,7 +67,9 @@ begin
   else if Component is TJvCommonDialogP then
   begin
     TJvCommonDialogP(Component).Execute;
-  end;
+  end
+  else if Component is TCommonDialog then
+    TCommonDialog(Component).Execute;
 end;
 
 {*************************************************}
