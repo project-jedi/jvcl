@@ -93,7 +93,7 @@ type
 implementation
 
 uses
-  SysUtils;
+  SysUtils, JvConsts;
 
 resourcestring
   SLoadSettings = 'Load Settings';
