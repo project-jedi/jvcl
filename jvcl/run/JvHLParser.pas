@@ -43,14 +43,14 @@ unit JvHLParser;
 interface
 
 uses
-  SysUtils, Classes, JvTypes, JvJCLUtils,
+  SysUtils, Classes,
   {$IFDEF VCL}
   Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QDialogs,
   {$ENDIF VisualCLX}
-  JvWStrUtils;
+  JvTypes, JvJCLUtils, JvWStrUtils;
 
 const
   ieBadRemark = 1;
