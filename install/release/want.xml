@@ -76,9 +76,7 @@
         <include name="./jvcl/examples/**" />
         <include name="./jvcl/help/**" />
         <include name="./jvcl/install/JVCL3Install/**" />
-        <include name="./jvcl/lib/d5/**" />
-        <include name="./jvcl/lib/d6/**" />
-        <include name="./jvcl/lib/d7/**" />
+        <include name="./jvcl/lib/**" />
         <include name="./jvcl/packages/**" />
         <include name="./jvcl/Resources/**" />
         <include name="./jvcl/run/**" />
@@ -92,9 +90,7 @@
         <include name="./jvcl/design/**" />
         <include name="./jvcl/install/JVCL3Install/**" />
         <include name="./jvcl/help/**" />
-        <include name="./jvcl/lib/d5/**" />
-        <include name="./jvcl/lib/d6/**" />
-        <include name="./jvcl/lib/d7/**" />
+        <include name="./jvcl/lib/**" />
         <exclude name="./jvcl/packages/xml/**" />
         <include name="./jvcl/packages/**" />
         <include name="./jvcl/Resources/**" />
