@@ -275,9 +275,7 @@ type
   private
     FCapSelAll: string;
     FCapDeselAll: string;
-    FMouseOverButton: Boolean;
     FItems: TStrings;
-    FPrivForm: TForm;
     FListBox: TJvCheckListBox;
     FPopupMenu: TPopupMenu;
     FSelectAll: TMenuItem;
@@ -292,8 +290,6 @@ type
     procedure SetItems(AItems: TStrings);
     procedure ToggleOnOff(Sender: TObject);
     procedure KeyListBox(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure ShowCheckList;
-    procedure CloseCheckList(Sender: TObject);
     procedure ItemsChange(Sender: TObject);
     procedure SetSorted(Value: Boolean);
     procedure AdjustHeight;
@@ -312,8 +308,10 @@ type
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
-    procedure ButtonClick; override;
     procedure AdjustSize; override;
+    procedure CreatePopup; override;
+    procedure HidePopup; override;
+    procedure ShowPopup(Origin: TPoint); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1116,7 +1114,7 @@ begin
   begin
     Provider.Enter;
     try
-      HasLooped := False;;
+      HasLooped := False;
       Result := StartIndex + 1;
       while True do
       begin
@@ -1547,11 +1545,11 @@ begin
   Text := '';
 
   // Create a form with its contents
-  FPrivForm := TJvPrivForm.Create(Self);
+  FPopup := TJvPrivForm.Create(Self);
 
   // Create CheckListBox
-  FListBox := TJvCheckListBox.Create(FPrivForm);
-  FListBox.Parent := FPrivForm;
+  FListBox := TJvCheckListBox.Create(FPopup);
+  FListBox.Parent := FPopup;
   FListBox.BorderStyle := bsNone;
   FListBox.Ctl3D := False;
   FListBox.Columns := FColumns;
@@ -1578,21 +1576,14 @@ begin
   FPopupMenu.Free;
   FListBox.Free;
   FItems.Free;
-  FPrivForm.Free;
+  FPopup.Free;
+  FPopup := nil;
   inherited Destroy;
 end;
 
-procedure TJvCheckedComboBox.ShowCheckList;
-var  
-  ScreenPoint: TPoint;
+procedure TJvCheckedComboBox.CreatePopup;
 begin
-  if FMouseOverButton then  // Jan Verhoeven
-  begin
-    FMouseOverButton := False;
-    Exit;
-  end;
-
-  Click;
+  //Click;
   if FColumns > 1 then
     FDropDownLines := FListBox.Items.Count div FColumns + 1;
   if FDropDownLines < MINDROPLINES then
@@ -1600,36 +1591,30 @@ begin
   if FDropDownLines > MAXDROPLINES then
     FDropDownLines := MAXDROPLINES;
 
-  // Assign Form coordinate and show
-  ScreenPoint := Parent.ClientToScreen(Point(Self.Left, Self.Top + Self.Height));
   FSelectAll.Caption := FCapSelAll;
   FDeselectAll.Caption := FCapDeselAll;
-  with TJvPrivForm(FPrivForm) do
+  with TJvPrivForm(FPopup) do
   begin
     Font := Self.Font;
-    Left := ScreenPoint.X;
-    Top := ScreenPoint.Y;
     Width := Self.Width;
-    Height := (FDropDownLines * FListBox.ItemHeight + 4{ FEdit.Height });
+    Height := (FDropDownLines * FListBox.itemHeight + 4 { FEdit.Height });
     BorderStyle := bsNone;
-    OnDeactivate := CloseCheckList;
   end;
-  if FPrivForm.Height + ScreenPoint.Y > Screen.Height - 20 then
-    FPrivForm.Top := ScreenPoint.Y - FPrivForm.Height - Self.Height;
-  FPrivForm.Show;
 end;
 
-procedure TJvCheckedComboBox.CloseCheckList(Sender: TObject);
-var
-  Pt: TPoint;
+procedure TJvCheckedComboBox.ShowPopup(Origin: TPoint);
 begin
-  // code added by Jan Verhoeven
-  // check if the mouse is over the combobox button
-  GetCursorPos(Pt);
-  Pt := Button.ScreenToClient(Pt);
-  with Button do
-    FMouseOverButton := (Pt.X > 0) and (Pt.X < Width) and (Pt.Y > 0) and (Pt.Y < Height);
-  FPrivForm.Close;
+  with TJvPrivForm(FPopup) do
+  begin
+    Left := Origin.X;
+    Top := Origin.Y;
+    Show;
+  end;
+end;
+
+procedure TJvCheckedComboBox.HidePopup;
+begin
+  TJvPrivForm(FPopup).Close;
 end;
 
 // exanines if string (part) exist in string (source)
@@ -1742,8 +1727,7 @@ procedure TJvCheckedComboBox.KeyListBox(Sender: TObject; var Key: Word;
 begin
   if (Key = VK_ESCAPE) and (Shift * KeyboardShiftStates = []) then
   begin
-    FPrivForm.Close;
-    FMouseOverButton := False;
+    PopupCloseUp(Self, False);
   end;
 end;
 
@@ -1971,11 +1955,6 @@ procedure TJvCheckedComboBox.SetState(Index: Integer;
   const Value: TCheckBoxState);
 begin
   FListBox.State[Index] := Value;
-end;
-
-procedure TJvCheckedComboBox.ButtonClick;
-begin
-  ShowCheckList;
 end;
 
 procedure TJvCheckedComboBox.AdjustSize;
