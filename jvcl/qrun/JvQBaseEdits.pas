@@ -248,6 +248,7 @@ type
     property PopupAlign;
     property PopupMenu;
     property ReadOnly;
+    property ShowButton;
     property ShowHint;
     property TabOrder;
     property TabStop;

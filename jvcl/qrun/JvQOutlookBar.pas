@@ -2135,7 +2135,8 @@ begin
 end;
 
 procedure TJvCustomOutlookBar.RedrawRect(R: TRect; Erase: Boolean = False);
-begin  QWindows.InvalidateRect(Handle, @R, Erase);
+begin
+  QWindows.InvalidateRect(Handle, @R, Erase);
 end;
 
 procedure TJvCustomOutlookBar.CMCaptionEditing(var Msg: TMessage);

@@ -200,8 +200,8 @@ begin
   if CaretCreated and 
     not (csDesigning in FCaretOwner.ComponentState) and
     not IsDefaultCaret then
-  begin  
-    if QWindows.DestroyCaret then 
+  begin
+    if QWindows.DestroyCaret then
       FCaretCreated := False;
   end;
 end;

@@ -245,18 +245,18 @@ begin
   if Align in [alLeft, alRight] then
   begin
     if (not AllowDrag) or ((Y >= FLastKnownButtonRect.Top) and
-      (Y <= FLastKnownButtonRect.Bottom)) then  
+      (Y <= FLastKnownButtonRect.Bottom)) then
       QWindows.SetCursor(Screen.Cursors[ButtonCursor])
     else
-      QWindows.SetCursor(Screen.Cursors[Cursor]); 
+      QWindows.SetCursor(Screen.Cursors[Cursor]);
   end
   else
   begin
     if (not AllowDrag) or ((X >= FLastKnownButtonRect.Left) and
-      (X <= FLastKnownButtonRect.Right)) then  
+      (X <= FLastKnownButtonRect.Right)) then
       QWindows.SetCursor(Screen.Cursors[ButtonCursor])
     else
-      QWindows.SetCursor(Screen.Cursors[Cursor]); 
+      QWindows.SetCursor(Screen.Cursors[Cursor]);
   end;
 end;
 
