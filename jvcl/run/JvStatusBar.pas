@@ -342,14 +342,14 @@ end;
 procedure TJvStatusBar.MovePanelControls;
 var
   I, ALeft: Integer;
-  tmpJvPanel: TJvStatusPanel;
+  TmpPanel: TJvStatusPanel;
 begin
   ALeft := 0;
   for I := 0 to Panels.Count - 1 do
   begin
-    tmpJvPanel := TJvStatusPanel(Panels[I]);
-    if tmpJvPanel.Control <> nil then
-      with tmpJvPanel do
+    TmpPanel := TJvStatusPanel(Panels[I]);
+    if TmpPanel.Control <> nil then
+      with TmpPanel do
         Control.SetBounds(ALeft + MarginLeft, MarginTop, Control.Width, Control.Height);
     Inc(ALeft, TJvStatusPanel(Panels[I]).Width);
   end;

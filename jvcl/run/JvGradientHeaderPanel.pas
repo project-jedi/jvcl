@@ -32,16 +32,15 @@ interface
 
 uses
   Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
-  JvGradient, JvTypes, JVCLVer;
+  JvGradient, JvTypes, JvComponent;
 
 type
-  TJvGradientHeaderPanel = class(TWinControl)
+  TJvGradientHeaderPanel = class(TJvWinControl)
   private
     FGradient: TJvGradient;
     FLabel: TLabel;
     FLabelLeft: Integer;
     FHint: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     FOldLabelFontChange: TNotifyEvent;
     function GetGradientCursor: TCursor;
     procedure SetGradientCursor(Value: TCursor);
@@ -65,29 +64,28 @@ type
     procedure SetLabelCaption(Value: string);
     function GetLabelColor: TColor;
     procedure SetLabelColor(Value: TColor);
-    procedure SetHints(const Value: Boolean);
-    function GetFont: TFont;
-    procedure SetFont(const Value: TFont);
-    function GetGStyle: TJvGradStyle;
-    procedure SetGstyle(const Value: TJvGradStyle);
-    function GetAlignment: TAlignment;
-    procedure Setalignment(const Value: TAlignment);
+    procedure SetShowHint(const Value: Boolean);
+    function GetLabelFont: TFont;
+    procedure SetLabelFont(const Value: TFont);
+    function GetGradientStyle: TJvGradStyle;
+    procedure SetGradientStyle(const Value: TJvGradStyle);
+    function GetLabelAlignment: TAlignment;
+    procedure SetLabelAlignment(const Value: TAlignment);
     procedure AdjustLabelWidth;
-  protected
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+  protected
     procedure DoLabelFontChange(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property GradientCursor: TCursor read GetGradientCursor write SetGradientCursor default crDefault;
     property GradientHint: string read GetGradientHint write SetGradientHint;
     property GradientStartColor: TColor read GetGradientStartColor write SetGradientStartColor default clBlack;
     property GradientEndColor: TColor read GetGradientEndColor write SetGradientEndColor default clWhite;
     property GradientSteps: Integer read GetGradientSteps write SetGradientSteps default 100;
-    property GradientStyle: TJvGradStyle read GetGStyle write SetGstyle;
+    property GradientStyle: TJvGradStyle read GetGradientStyle write SetGradientStyle;
     property LabelLeft: Integer read GetLabelLeft write SetLabelLeft default 10;
     property LabelTop: Integer read GetLabelTop write SetLabelTop default 8;
     property LabelCursor: TCursor read GetLabelCursor write SetLabelCursor default crDefault;
@@ -96,9 +94,9 @@ type
     // LabelColor sets the background Color of the label (used for text in the control).
     // To get a transparent text background, set LabelColor to clNone
     property LabelColor: TColor read GetLabelColor write SetLabelColor default clNone;
-    property LabelFont: TFont read GetFont write SetFont;
-    property ShowHint: Boolean read FHint write SetHints default False;
-    property LabelAlignment: TAlignment read GetAlignment write SetAlignment;
+    property LabelFont: TFont read GetLabelFont write SetLabelFont;
+    property ShowHint: Boolean read FHint write SetShowHint default False;
+    property LabelAlignment: TAlignment read GetLabelAlignment write SetLabelAlignment;
     property Align;
     property Anchors;
     property AutoSize;
@@ -312,40 +310,40 @@ begin
   FLabel.Transparent := (Value = clNone);
 end;
 
-procedure TJvGradientHeaderPanel.SetHints(const Value: Boolean);
+procedure TJvGradientHeaderPanel.SetShowHint(const Value: Boolean);
 begin
   FHint := Value;
   FLabel.ShowHint := Value;
   FGradient.ShowHint := Value;
 end;
 
-function TJvGradientHeaderPanel.GetFont: TFont;
+function TJvGradientHeaderPanel.GetLabelFont: TFont;
 begin
   Result := FLabel.Font;
 end;
 
-procedure TJvGradientHeaderPanel.SetFont(const Value: TFont);
+procedure TJvGradientHeaderPanel.SetLabelFont(const Value: TFont);
 begin
   FLabel.Font := Value;
   AdjustLabelWidth;
 end;
 
-function TJvGradientHeaderPanel.GetGStyle: TJvGradStyle;
+function TJvGradientHeaderPanel.GetGradientStyle: TJvGradStyle;
 begin
   Result := FGradient.Style;
 end;
 
-procedure TJvGradientHeaderPanel.SetGStyle(const Value: TJvGradStyle);
+procedure TJvGradientHeaderPanel.SetGradientStyle(const Value: TJvGradStyle);
 begin
   FGradient.Style := Value;
 end;
 
-function TJvGradientHeaderPanel.GetAlignment: TAlignment;
+function TJvGradientHeaderPanel.GetLabelAlignment: TAlignment;
 begin
   Result := FLabel.Alignment;
 end;
 
-procedure TJvGradientHeaderPanel.Setalignment(const Value: TAlignment);
+procedure TJvGradientHeaderPanel.SetLabelAlignment(const Value: TAlignment);
 begin
   FLabel.Alignment := Value;
   AdjustLabelWidth;
@@ -374,7 +372,7 @@ begin
     FLabel.Left := FLabelLeft;
   end
   else
-    if W < FLabel.Width then // otherwise, just center
+  if W < FLabel.Width then // otherwise, just center
   begin
     FLabel.Left := (Width - FLabel.Width) div 2;
     //    if (FLabelLeft > FLabel.Left) and  then

@@ -77,7 +77,7 @@ type
   TJvProfiler = class(TJvComponent)
   private
     FProfileInfo: TJvProfileInfo;
-    FNames: TStrings;
+    FNames: TStringList;
     FStack: TProcStack;
     FStartTime: Longint;
     FEndTime: Longint;
@@ -88,6 +88,7 @@ type
     FSorted: Boolean;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
+    function GetNames: TStrings;
     procedure SetNames(Value: TStrings);
     procedure SetEnabled(Value: Boolean);
     procedure SetSorted(Value: Boolean);
@@ -107,7 +108,7 @@ type
     procedure ShowReport;
   published
     property Enabled: Boolean read FEnabled write SetEnabled default False;
-    property Names: TStrings read FNames write SetNames;
+    property Names: TStrings read GetNames write SetNames;
     property Sorted: Boolean read FSorted write SetSorted default False;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
@@ -119,12 +120,12 @@ uses
   SysUtils, CommCtrl,
   JvConsts, JvTypes, JvResources;
 
+{$R *.dfm}
+
 const
   EmptyLine = '0.00';
   DefHeader2 =
     'Profiler 32 - (C) 1996 Certified Software Corp, portions Copyright (C) 1997 by Peter Thörnqvist; all rights reserved.';
-
-{$R *.dfm}
 
 type
   PProfType = ^TProfType;
@@ -192,8 +193,7 @@ begin
     if Length(Trim(FNames[I])) < 1 then
       Continue;                         { skip empty ID's }
     if FLastProc > MaxProfEntries then
-      raise EJVCLException.CreateFmt(RsEMaxNumberOfIDsExceededd,
-        [MaxProfEntries - 1]);
+      raise EJVCLException.CreateFmt(RsEMaxNumberOfIDsExceededd, [MaxProfEntries - 1]);
     Inc(FLastProc);
     with FProfileInfo[FLastProc] do
     begin
@@ -212,8 +212,7 @@ begin
   begin
     Snap := GetTickCount;
     if FStackSize > MaxStackSize then
-      raise EJVCLException.CreateFmt(RsEMaxStackSizeExceededd,
-        [MaxStackSize]);
+      raise EJVCLException.CreateFmt(RsEMaxStackSizeExceededd, [MaxStackSize]);
     Inc(FStackSize);
 
     with FStack[FStackSize] do
@@ -232,12 +231,12 @@ end;
 
 procedure TJvProfiler.EnterName(const Name: string);
 begin
-  EnterID(TStringLIst(FNames).IndexOf(Name));
+  EnterID(FNames.IndexOf(Name));
 end;
 
 procedure TJvProfiler.ExitName(const Name: string);
 begin
-  ExitID(TStringList(FNames).IndexOf(Name));
+  ExitID(FNames.IndexOf(Name));
 end;
 
 procedure TJvProfiler.ExitID(ID: Integer);
@@ -263,13 +262,13 @@ end;
 procedure TJvProfiler.DoStart;
 begin
   if Assigned(FOnStart) then
-    FOnStart(self);
+    FOnStart(Self);
 end;
 
 procedure TJvProfiler.DoStop;
 begin
   if Assigned(FOnStop) then
-    FOnStop(self);
+    FOnStop(Self);
 end;
 
 procedure TJvProfiler.Start;
@@ -293,6 +292,11 @@ begin
   end;
 end;
 
+function TJvProfiler.GetNames: TStrings;
+begin
+  Result := FNames;
+end;
+
 procedure TJvProfiler.SetNames(Value: TStrings);
 begin
   FNames.Assign(Value);
@@ -310,7 +314,7 @@ begin
   if FSorted <> Value then
   begin
     FSorted := Value;
-    TStringList(FNames).Sorted := FSorted;
+    FNames.Sorted := FSorted;
     Initialize;
   end;
 end;
@@ -390,14 +394,14 @@ begin
   else
   begin
     if not IsFloat(lParam1.SubItems[lParamSort - 1]) then
-      l1 := -1
+      l1 := -1.0
     else
       l1 := StrToFloat(lParam1.SubItems[lParamSort - 1]);
     if not IsFloat(lParam2.SubItems[lParamSort - 1]) then
-      l2 := -1
+      l2 := -1.0
     else
       l2 := StrToFloat(lParam2.SubItems[lParamSort - 1]);
-    Result := round((l1 * 1000) - (l2 * 1000));
+    Result := Round((l1 * 1000) - (l2 * 1000));
   end;
   if OddClick then
     Result := -Result;
@@ -415,7 +419,7 @@ procedure TProfReport.SaveBtnClick(Sender: TObject);
 var
   OutList: TStringList;
   S: string;
-  I, j: Integer;
+  I, J: Integer;
 begin
   with TSaveDialog.Create(nil) do
   begin
@@ -428,7 +432,7 @@ begin
       OutList.Add(DefHeader2);
       S := '';
       for I := 0 to lvReport.Columns.Count - 1 do
-        S := S + lvReport.Columns[I].Caption + #9;
+        S := S + lvReport.Columns[I].Caption + Tab;
       OutList.Add(S);
       S := '';
       with lvReport do
@@ -436,9 +440,9 @@ begin
         begin
           with Items[I] do
           begin
-            S := S + Caption + #9;
-            for j := 0 to SubItems.Count - 1 do
-              S := S + SubItems[j] + #9;
+            S := S + Caption + Tab;
+            for J := 0 to SubItems.Count - 1 do
+              S := S + SubItems[J] + Tab;
             OutList.Add(S);
           end;
           S := '';

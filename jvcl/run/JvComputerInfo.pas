@@ -45,8 +45,6 @@ Known Issues:
     Made all properties read-only.
     Changed UserName to RegisteredOwner
     Changed Company to RegisteredOrganization
-
-
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -121,8 +119,8 @@ const
   RC_CurrentKey = 'Software\Microsoft\Windows\CurrentVersion';
   RC_CurrentKeyNT = 'Software\Microsoft\Windows NT\CurrentVersion';
 
-  cOSCurrentKey: array [Boolean] of string =
-  (RC_CurrentKey, RC_CurrentKeyNT);
+  cOSCurrentKey: array [Boolean] of PChar =
+    (RC_CurrentKey, RC_CurrentKeyNT);
 
   cComment = 'Comment';
   cRegisteredOrganization = 'RegisteredOrganization';
@@ -358,7 +356,7 @@ begin
   Size := SizeOf(Buf);
   Buf[0] := #0;
   Windows.GetComputerName(Buf, Size);
-  Result := buf;
+  Result := Buf;
 end;
 
 end.
