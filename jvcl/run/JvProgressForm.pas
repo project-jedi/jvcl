@@ -73,7 +73,7 @@ type
     class function Execute(Frm: TfrmProgress; const ACaption, ALabel: string;
       AImage: TPicture = nil; ATransparent: Boolean = False;
       AMin: Integer = 0; AMax: Integer = 100; APosition: Integer = 0;
-      AInterval: Integer = 200; ShowCancel: Boolean = False;
+      AInterval: Integer = 200; ShowCancel: Boolean = False; Smooth: Boolean = False;
       AOnProgress: TJvPrivateProgressUpdate = nil;
       AOnCancel: TNotifyEvent = nil): Boolean;
     function ShowModal: Integer; override;
@@ -98,7 +98,7 @@ uses
 
 class function TfrmProgress.Execute(Frm: TfrmProgress; const ACaption, ALabel: string;
   AImage: TPicture; ATransparent: Boolean; AMin, AMax, APosition, AInterval: Integer;
-  ShowCancel: Boolean; AOnProgress: TJvPrivateProgressUpdate; AOnCancel: TNotifyEvent): Boolean;
+  ShowCancel, Smooth: Boolean; AOnProgress: TJvPrivateProgressUpdate; AOnCancel: TNotifyEvent): Boolean;
 var
   DoModal: Boolean;
 begin
@@ -117,6 +117,7 @@ begin
       pbProgress.Min := AMin;
       pbProgress.Max := AMax;
       pbProgress.Position := APosition;
+      pbProgress.Smooth := Smooth;
       FOnProgress := AOnProgress;
       imProgress.Picture := AImage;
       imProgress.Transparent := ATransparent;

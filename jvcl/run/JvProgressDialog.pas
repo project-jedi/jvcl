@@ -123,6 +123,7 @@ type
     FOnClose: TNotifyEvent;
     FOnShow: TNotifyEvent;
     FCancelled: Boolean;
+    FSmooth: boolean;
     procedure SetPicture(const Value: TPicture);
     procedure SetCaption(const Value: string);
     procedure SetInterval(const Value: Integer);
@@ -158,6 +159,7 @@ type
     property Max: Integer read FMax write SetMax default 100;
     property Position: Integer read FPosition write SetPosition default 0;
     property ShowCancel: Boolean read FShowCancel write SetShowCancel default True;
+    property Smooth:boolean read FSmooth write FSmooth default False; 
     property Text: string read FText write SetText;
     property Transparent: Boolean read FTransparent write FTransparent default False;
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
@@ -186,6 +188,7 @@ begin
   FPosition := 0;
   FInterval := 200;
   FTransparent := False;
+  FShowCancel := True;
 end;
 
 destructor TJvProgressDialog.Destroy;
@@ -263,7 +266,7 @@ begin
   StoreValues;
   try
     if TfrmProgress.Execute(TfrmProgress(FForm), Caption, Text, Image, Transparent, Min, Max, Position, Interval,
-      ShowCancel or (csDesigning in ComponentState), InternalDoProgress, InternalDoCancel) then
+      ShowCancel or (csDesigning in ComponentState), Smooth, InternalDoProgress, InternalDoCancel) then
       Result := mrOK;
   finally
     RestoreValues;
@@ -292,8 +295,8 @@ begin
   FCancelled := False;
   DoShow;
   StoreValues;
-  TfrmProgress.Execute(TfrmProgress(FForm), Caption, Text, Image, Transparent, Min, Max, Position, Interval, ShowCancel,
-    InternalDoProgress, InternalDoCancel);
+  TfrmProgress.Execute(TfrmProgress(FForm), Caption, Text, Image, Transparent, Min, Max, Position,
+    Interval, ShowCancel, Smooth, InternalDoProgress, InternalDoCancel);
 end;
 
 procedure TJvProgressDialog.InternalDoClose(Sender: TObject;
