@@ -1248,17 +1248,19 @@ begin
       Canvas.Font := Self.HotTrackFont
     else
       Canvas.Font := Self.Font;
-    { (rb) Hack: Force font&brush refresh,
-      - themes seem to delete the font, thus font.handle etc is not valid anymore.
-      - if nothing changed since the last paint cycle, then Canvas.Font
-        equals Self.Font/Self.HotTrackFont, ie Canvas doesn't refresh the
-        font handles due to the assign.
-      - Thus we have to force the font to drop the old handle, don't know other
-        way than calling Changed.
-      (see also remark at TCustomActionControl.Paint)
-    }
-    TFontAccess(Canvas.Font).Changed;
-    TFontAccess(Canvas.Brush).Changed;
+
+    { (rb) No longer necessary because of the WM_PRINTCLIENT fix }
+//    { (rb) Hack: Force font&brush refresh,
+//      - themes seem to delete the font, thus font.handle etc is not valid anymore.
+//      - if nothing changed since the last paint cycle, then Canvas.Font
+//        equals Self.Font/Self.HotTrackFont, ie Canvas doesn't refresh the
+//        font handles due to the assign.
+//      - Thus we have to force the font to drop the old handle, don't know other
+//        way than calling Changed.
+//      (see also remark at TCustomActionControl.Paint)
+//    }
+//    TFontAccess(Canvas.Font).Changed;
+//    TFontAccess(Canvas.Brush).Changed;
 
     if not Enabled then
       Button := tbPushButtonDisabled
