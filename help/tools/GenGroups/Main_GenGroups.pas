@@ -93,12 +93,16 @@ type
   TGroupInfos = class;
   TGroupInfo = class;
 
+  TComponentInfoFlag = (cifHasGroup, cifHasComp, cifNotComponent);
+  TComponentInfoFlags = set of TComponentInfoFlag;
+
   TComponentInfos = class(TObject)
   private
     FList: TStrings;
   protected
     function GetCount: Integer;
     function GetItems(I: Integer): TComponentInfo;
+    function GetItemByName(Name: string): TComponentInfo;
   public
     constructor Create;
     destructor Destroy; override;
@@ -108,6 +112,7 @@ type
 
     property Count: Integer read GetCount;
     property Items[I: Integer]: TComponentInfo read GetItems; default;
+    property ItemByName[Name: string]: TComponentInfo read GetItemByName;
   end;
 
   TComponentInfo = class(TObject)
@@ -115,7 +120,7 @@ type
     FName: string;
     FImage: string;
     FSummary: string;
-    FHasGroup: Boolean;
+    FFlags: TComponentInfoFlags;
   protected
     function GetValid: Boolean;
   public
@@ -124,7 +129,7 @@ type
     property Name: string read FName;
     property Image: string read FImage write FImage;
     property Summary: string read FSummary write FSummary;
-    property HasGroup: Boolean read FHasGroup write FHasGroup;
+    property Flags: TComponentInfoFlags read FFlags write FFlags;
     property Valid: Boolean read GetValid;
   end;
 
@@ -160,11 +165,14 @@ type
     FParent: TGroupInfo;
     FSubGroups: TGroupInfos;
   protected
+    function CountComp: Integer;
+    function CountNonComp: Integer;
   public
     constructor Create(const AParent: TGroupInfo; const AInfoString: string);
     destructor Destroy; override;
 
     procedure AddComponentList;
+    procedure AddNonComponentList;
     procedure AddDescription;
     procedure AppendToFile(const TopicOrder: Integer);
     function ParentGroupID(const WantFuncRef: Boolean = False): string;
@@ -190,6 +198,9 @@ var
   CurList: TStack;
   GroupInfo: TGroupInfos;         // Group tree, complete with group info
   ComponentList: TComponentInfos; // List of components
+  Hints: Integer;                 // Number of hints
+  Warnings: Integer;              // Number of warnings
+  InvComps: string;               // List of eliminated components
 
 //--------------------------------------------------------------------------------------------------
 // TComponentInfos
@@ -205,6 +216,19 @@ end;
 function TComponentInfos.GetItems(I: Integer): TComponentInfo;
 begin
   Result := TComponentInfo(FList.Objects[I]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TComponentInfos.GetItemByName(Name: string): TComponentInfo;
+var
+  I: Integer;
+begin
+  I := IndexOf(Name);
+  if I > -1 then
+    Result := Items[I]
+  else
+    Result := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -246,12 +270,19 @@ end;
 procedure TComponentInfos.RemoveInvalid;
 var
   I: Integer;
+  Prefix: string;
 begin
   I := Count - 1;
+  Prefix := '';
+  InvComps := '';
   while (I >= 0) do
   begin
     if not Items[I].Valid then
+    begin
+      InvComps := InvComps + Prefix + Items[I].Name;
+      Prefix := ', ';
       FList.Delete(I);
+    end;
     Dec(I);
   end;
 end;
@@ -262,7 +293,10 @@ end;
 
 function TComponentInfo.GetValid: Boolean;
 begin
-  Result := HasGroup and (Trim(FImage) <> '') and (Trim(FSummary) <> '');
+  Result :=
+    (cifHasGroup in Flags) and (cifHasComp in Flags) and (
+      (cifNotComponent in Flags) or (Trim(FImage) <> '')
+    ) and (Trim(FSummary) <> '');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -389,6 +423,30 @@ end;
 // TGroupInfo
 //--------------------------------------------------------------------------------------------------
 
+function TGroupInfo.CountComp: Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Components.Count - 1 downto 0 do
+    if not (cifNotComponent in ComponentList.ItemByName[Components[I]].Flags) then
+      Inc(Result);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TGroupInfo.CountNonComp: Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Components.Count - 1 downto 0 do
+    if cifNotComponent in ComponentList.ItemByName[Components[I]].Flags then
+      Inc(Result);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 constructor TGroupInfo.Create(const AParent: TGroupInfo; const AInfoString: string);
 begin
   inherited Create;
@@ -416,14 +474,15 @@ var
   Comp: TComponentInfo;
   S: string;
 begin
-  if Components.Count = 0 then
+  if CountComp = 0 then
     Exit;
   FileSL.Add('  <TABLE>');
   Col1Length := 9;
   for I := Components.Count - 1 downto 0 do
   begin
     Comp := ComponentList[ComponentList.IndexOf(Components[I])];
-    if (Length(Comp.Name) + Length(Comp.Image) + 8) > Col1Length then
+    if not (cifNotComponent in Comp.Flags) and
+        ((Length(Comp.Name) + Length(Comp.Image) + 8) > Col1Length) then
       Col1Length := Length(Comp.Name) + Length(Comp.Image) + 8
   end;
   FileSL.Add('    ' + Pad('Component', Col1Length + 2, ' ') + 'Description');
@@ -431,11 +490,55 @@ begin
   for I := 0 to Components.Count - 1 do
   begin
     Comp := ComponentList[ComponentList.IndexOf(Components[I])];
-    S := Comp.Summary;
-    Wrap(S, 100, 6 + Col1Length, 2);
-    S := '    ' + Pad('<IMAGE ' + Comp.Image + '>' + Comp.Name, Col1Length + 2, ' ') +
-      Copy(S, Col1Length + 7, Length(S));
-    FileSL.Add(S);
+    if not (cifNotComponent in Comp.Flags) then
+    begin
+      S := Comp.Summary;
+      Wrap(S, 100, 6 + Col1Length, 2);
+      S := '    ' + Pad('<IMAGE ' + Comp.Image + '>' + Comp.Name, Col1Length + 2, ' ') +
+        Copy(S, Col1Length + 7, Length(S));
+      FileSL.Add(S);
+    end;
+  end;
+  FileSL.Add('  </TABLE>');
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TGroupInfo.AddNonComponentList;
+var
+  S: string;
+  Col1Length: Integer;
+  I: Integer;
+  Comp: TComponentInfo;
+begin
+  if CountNonComp = 0 then
+    Exit;
+  if CountComp > 0 then
+    S := #13#10#13#10 + 'In addition to these components, the following classes belong to this group:' + #13#10
+  else
+    S := 'This group contains the following classes:';
+  Wrap(S, 100, 2, 0);
+  FileSL.Add(S);
+  FileSL.Add('  <TABLE>');
+  Col1Length := 5;
+  for I := Components.Count - 1 downto 0 do
+  begin
+    Comp := ComponentList[ComponentList.IndexOf(Components[I])];
+    if (cifNotComponent in Comp.Flags) and (Length(Comp.Name) > Col1Length) then
+      Col1Length := Length(Comp.Name);
+  end;
+  FileSL.Add('    ' + Pad('Class', Col1Length + 2, ' ') + 'Description');
+  FileSL.Add('    ' + StringOfChar('-', Col1Length) + '  ' + StringOfChar('-', 94 - Col1Length));
+  for I := 0 to Components.Count - 1 do
+  begin
+    Comp := ComponentList[ComponentList.IndexOf(Components[I])];
+    if (cifNotComponent in Comp.Flags) then
+    begin
+      S := Comp.Summary;
+      Wrap(S, 100, 6 + Col1Length, 2);
+      S := '    ' + Pad(Comp.Name, Col1Length + 2, ' ') + Copy(S, Col1Length + 7, Length(S));
+      FileSL.Add(S);
+    end;
   end;
   FileSL.Add('  </TABLE>');
 end;
@@ -449,7 +552,10 @@ begin
   FileSL.Add('Description');
   S := GroupText + #13#10#13#10;
   if Components.Count > 0 then
-    S := S + 'This group contains the following components and controls:' + #13#10
+  begin
+    if CountComp > 0 then
+      S := S + 'This group contains the following components and controls:' + #13#10;
+  end
   else
     S := S + 'This group is currently empty.';
   Wrap(S, 100, 2, 0);
@@ -465,7 +571,8 @@ begin
   FileSL.Add('<TOPICORDER ' + IntToStr(TopicOrder) + '>');
   FileSL.Add('<TITLE ' + GroupTitle + '>');
   AddDescription;
-  AddComponentList;    
+  AddComponentList;
+  AddNonComponentList;
   FileSL.Add(StringOfChar('-', 100));
   SubGroups.AppendGroupsToFile;
 end;
@@ -502,6 +609,13 @@ end;
 //--------------------------------------------------------------------------------------------------
 // Internal procedures
 //--------------------------------------------------------------------------------------------------
+
+function IndexOfText(Str: string; Strings: array of string): Integer;
+begin
+  Result := High(Strings);
+  while (Result >= 0) and AnsiSameText(Str, Strings[Result]) do
+    Dec(Result);
+end;
 
 procedure HideCursor;
 var
@@ -756,12 +870,48 @@ begin
       if Grp.Components.IndexOf(Comp.Name) < 0 then
         Grp.Components.Add(Comp.Name)
       else
+      begin
         WriteLn('    ## hint: @@$', Comp.Name, ' already added to group', #13#10, '      "',
-          ThisName, '"')
+          ThisName, '"');
+        Inc(Hints);
+      end
     end
     else
-      WriteLn('    ## warn: group "', ThisName, '" not found' + #13#10 +'      (@@$', Comp.Name,
-        ')');
+    begin
+      if AnsiSameText(Copy(ThisName, 1, 5), 'JVCL.') and not AnsiSameText(Copy(ThisName, 1, 10),
+        'JVCL.Info.') then
+      begin
+        WriteLn('    ## warn: group "', ThisName, '" not found' + #13#10 +'      (@@$', Comp.Name,
+          ')');
+        Inc(Warnings);
+      end;
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure ParseCompSettings(AComp: TComponentInfo; SettingsStr: string);
+var
+  I: Integer;
+begin
+  while SettingsStr <> '' do
+  begin
+    I := 1;
+    while (I <= Length(SettingsStr)) and not (SettingsStr[I] in [',', ';']) do
+      Inc(I);
+    case IndexOfText(Trim(Copy(SettingsStr, 1, I - 1)), ['NoComponent']) of
+      0:
+        AComp.Flags := AComp.Flags + [cifNotComponent];
+    else
+      begin
+        WriteLn('    ## warn: Unknown setting "', Trim(Copy(SettingsStr, 1, I - 1)), '" found.' +
+          #13#10 +'      (@@$', AComp.Name, ')');
+        Inc(Warnings);
+      end;
+    end;
+    Delete(SettingsStr, 1, I);
+    SettingsStr := Trim(SettingsStr);
   end;
 end;
 
@@ -769,10 +919,14 @@ end;
 
 procedure AddComponentGroup(const Index: Integer);
 var
+  CompName: string;
   MaxI: Integer;
   I: Integer;
   Comp: TComponentInfo;
 begin
+  CompName := Trim(Copy(Trim(FileSL[Index]), 4, Length(Trim(FileSL[Index])) - 3));
+  if (CompName = '') or (Pos('.', CompName) > 0) then
+    Exit;
   MaxI := Index + 1;
   while (MaxI < FileSL.Count) and (Copy(Trim(FileSL[MaxI]), 1, 2) <> '@@') do
     Inc(MaxI);
@@ -785,10 +939,8 @@ begin
     if I < MaxI then
     begin
       if Comp = nil then
-      begin
-        Comp := ComponentList.Add(Copy(Trim(FileSL[Index]), 4, Length(Trim(FileSL[Index])) - 3));
-        Comp.HasGroup := True;
-      end;
+        Comp := ComponentList.Add(CompName);
+      Comp.Flags := Comp.Flags + [cifHasGroup];
       ParseGroupString(Comp, Copy(Trim(FileSL[I]), 8, Length(Trim(FileSL[I])) - 7));
       Inc(I);
     end;
@@ -820,7 +972,9 @@ var
   end;
 
 begin
-  CompName := Copy(Trim(FileSL[Index]), 3, Length(Trim(FileSL[Index])) - 2);
+  CompName := Trim(Copy(Trim(FileSL[Index]), 3, Length(Trim(FileSL[Index])) - 2));
+  if (CompName = '') or (Pos('.', CompName) > 0) then
+    Exit;
   MaxI := Index + 1;
   while (MaxI < FileSL.Count) and (Copy(Trim(FileSL[MaxI]), 1, 2) <> '@@') do
     Inc(MaxI);
@@ -833,6 +987,7 @@ begin
   begin
     if Comp = nil then
       Comp := ComponentList.Add(CompName);
+    Comp.Flags := Comp.Flags + [cifHasComp];
     Comp.Summary := '(no summary)';
     comp.Image := 'NO_ICON';
     I := Index + 1;
@@ -841,7 +996,9 @@ begin
       if AnsiSameText(Trim(FileSL[I]), 'Summary') then
         RetrieveSummary
       else if AnsiSameText(Copy(Trim(FileSL[I]), 1, 10), '<TITLEIMG ') then
-        Comp.Image := Trim(Copy(Trim(FileSL[I]), 11, Length(Trim(FileSL[I])) - 11));
+        Comp.Image := Trim(Copy(Trim(FileSL[I]), 11, Length(Trim(FileSL[I])) - 11))
+      else if AnsiSameText(Copy(Trim(FileSL[I]), 1, 7), '##JVCL:') then
+        ParseCompSettings(Comp, Trim(Copy(Trim(FileSL[I]), 8, Length(Trim(FileSL[I])) - 8)));
       Inc(I);
     end;
   end;
@@ -895,7 +1052,8 @@ var
     while I > 0 do
     begin
       S := ValueOf(Res);
-      if not AnsiSameText(Copy(ExtractFileName(S), 1, 5), 'JVCL.') then
+      if not AnsiSameText(Copy(ExtractFileName(S), 1, 5), 'JVCL.') and
+          AnsiSameText(Copy(ExtractFileName(S), 1, 2), 'Jv') then
         FList.Add(HelpPath + S);
       Dec(I);
       Inc(Res);
@@ -951,6 +1109,8 @@ begin
   ComponentList.RemoveInvalid;
   GroupInfo.RemoveUnknownComponents;
   WriteLn(Format('  done. Kept %d of %d components.', [ComponentList.Count, OrgCount]));
+  if ComponentList.Count <> OrgCount then
+    WriteLn('Removed components: ', InvComps);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -984,7 +1144,7 @@ begin
   FileSL.Add(StringOfChar('-', 100));
   GroupInfo.AppendGroupsToFile;
   FileSL.SaveToFile(HelpPath + 'generated includes\JVCL.FuncRef.dtx');
-  WriteLn('  done.');
+  WriteLn(Format('  done. %d hint(s), %d warning(s)', [Hints, Warnings]));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1003,6 +1163,8 @@ procedure GenerateGroupFiles;
 begin
   Initialize;
   try
+    Hints := 0;
+    warnings := 0;
     ReadTreeDef;
     ParseAsTree;
     IterateFiles;
