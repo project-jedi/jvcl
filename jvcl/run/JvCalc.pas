@@ -948,6 +948,8 @@ function CreatePopupCalculator(AOwner: TComponent
 begin
   Result := TJvPopupCalculator.Create(AOwner);
   {$IFDEF VCL}
+  // ahuser: reported as a bug (Mantis #2048)
+  (*
   if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
     (Screen.PixelsPerInch <> 96) then
   begin { scale to screen res }
@@ -956,8 +958,9 @@ begin
       font back to the original info. }
     TJvPopupCalculator(Result).FCalcPanel.ParentFont := True;
     SetDefaultFont(TJvPopupCalculator(Result).Font, clPopup);
-    Result.BiDiMode := ABiDiMode;
   end;
+  *)
+  Result.BiDiMode := ABiDiMode;
   {$ENDIF VCL}
 end;
 

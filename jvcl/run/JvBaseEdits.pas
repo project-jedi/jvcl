@@ -219,11 +219,8 @@ type
   protected
     procedure PopupChange; override;
     property EnablePopupChange: Boolean read FEnablePopupChange write FEnablePopupChange default False;
-
-
   public
     constructor Create(AOwner: TComponent); override;
-
   end;
 
   { (rb) why no ButtonFlat property? }
