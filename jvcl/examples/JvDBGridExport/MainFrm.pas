@@ -176,7 +176,7 @@ begin
   Data.DisableControls;
   try
     S := GetCurrentDir;
-    if BrowseForFolder(Handle, 'Select folder to read data from', S) then
+    if BrowseForFolderNative(Handle, 'Select folder to read data from', S) then
     begin
       Screen.Cursor := crHourGlass;
       try

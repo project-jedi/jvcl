@@ -14,6 +14,9 @@ object frmOptions: TfrmOptions
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  DesignSize = (
+    322
+    367)
   PixelsPerInch = 96
   TextHeight = 13
   object btnOK: TButton
@@ -45,9 +48,13 @@ object frmOptions: TfrmOptions
     Height = 315
     ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
+    TabIndex = 0
     TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'
+      DesignSize = (
+        310
+        287)
       object gbShapes: TGroupBox
         Left = 8
         Top = 0
@@ -216,9 +223,9 @@ object frmOptions: TfrmOptions
             'clNone=None'
             'clDefault=Default')
           ColorDialogText = 'Custom...'
+          DroppedDownWidth = 130
           NewColorText = 'Custom'
           Options = [coText, coSysColors]
-          DroppedDownWidth = 130
           TabOrder = 0
         end
         object cbIntfSelColor: TJvColorComboBox
@@ -283,9 +290,9 @@ object frmOptions: TfrmOptions
             'clDefault=Default')
           ColorValue = clRed
           ColorDialogText = 'Custom...'
+          DroppedDownWidth = 130
           NewColorText = 'Custom'
           Options = [coText, coSysColors]
-          DroppedDownWidth = 130
           TabOrder = 1
         end
         object cbImplColor: TJvColorComboBox
@@ -350,9 +357,9 @@ object frmOptions: TfrmOptions
             'clDefault=Default')
           ColorValue = clBtnShadow
           ColorDialogText = 'Custom...'
+          DroppedDownWidth = 130
           NewColorText = 'Custom'
           Options = [coText, coSysColors]
-          DroppedDownWidth = 130
           TabOrder = 2
         end
         object cbImplSelColor: TJvColorComboBox
@@ -417,9 +424,9 @@ object frmOptions: TfrmOptions
             'clDefault=Default')
           ColorValue = clBlue
           ColorDialogText = 'Custom...'
+          DroppedDownWidth = 130
           NewColorText = 'Custom'
           Options = [coText, coSysColors]
-          DroppedDownWidth = 130
           TabOrder = 3
         end
       end
@@ -428,6 +435,9 @@ object frmOptions: TfrmOptions
       Caption = 'Paths'
       ImageIndex = 1
       OnShow = tabPathsShow
+      DesignSize = (
+        310
+        287)
       object Label9: TLabel
         Left = 8
         Top = 16
