@@ -1,6 +1,7 @@
 Changelog for JVCL 3.0
 ======================
 2003-09-26:
+- unicode UJvEditor moved to JvUnicodeEditor/JvUnicodeHLEditor, restored the ANSI JvEditor without MBCS support // andreas
 - Moved TJvgReportParamsEditor from /design/JvgReportParamsForm to /run/JvgReportParamsEditor //peter3
 2003-09-25:
 - fixed bug with Scrollbars in JvThemes // andreas
