@@ -1201,7 +1201,7 @@ begin
 
     FillInList(FList);
     FNumCheckedInDevices := FList.Count;
-    if IsHidLoaded then
+    if IsHidLoaded and not (csDesigning in ComponentState) then
       // only hook messages if there is a HID DLL
       Application.HookMainWindow(EventPipe);
   end;
@@ -1234,7 +1234,7 @@ begin
   // unhook event pipe
   if not (csDesigning in ComponentState) then
   begin
-    if IsHidLoaded then
+    if IsHidLoaded and not (csDesigning in ComponentState) then
       Application.UnhookMainWindow(EventPipe);
 
     if Assigned(FList) then
@@ -1380,7 +1380,8 @@ begin
   if @FDeviceChangeEvent <> @Notifier then
   begin
     FDeviceChangeEvent := Notifier;
-    DeviceChange;
+    if not (csDesigning in ComponentState) then
+      DeviceChange;
     FDeviceChangeFired := True;
   end;
 end;
