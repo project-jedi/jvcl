@@ -25,13 +25,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-
-{$IFDEF COMPILER6_UP}
-{$IFDEF MSWINDOWS}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF MSWINDOWS}
-{$ENDIF COMPILER6_UP}
+{$I crossplatform.inc}
 
 unit JvStrings;
 
@@ -50,35 +44,35 @@ uses
 {regular expressions}
 
 {template functions}
-function ReplaceFirst(sourceStr, findStr, replaceStr: string): string;
-function ReplaceLast(sourceStr, findStr, replaceStr: string): string;
+function ReplaceFirst(const sourceStr, findStr, replaceStr: string): string;
+function ReplaceLast(const sourceStr, findStr, replaceStr: string): string;
 function InsertLastBlock(var sourceStr: string; blockStr: string): Boolean;
-function removeMasterBlocks(sourceStr: string): string;
-function removeFields(sourceStr: string): string;
+function removeMasterBlocks(const sourceStr: string): string;
+function removeFields(const sourceStr: string): string;
 
 {http functions}
-function URLEncode(Value: string): string; // Converts string To A URLEncoded string
-function URLDecode(Value: string): string; // Converts string From A URLEncoded string
+function URLEncode(const Value: string): string; // Converts string To A URLEncoded string
+function URLDecode(const Value: string): string; // Converts string From A URLEncoded string
 
 {set functions}
 procedure SplitSet(AText: string; AList: TStringList);
 function JoinSet(AList: TStringList): string;
-function FirstOfSet(AText: string): string;
-function LastOfSet(AText: string): string;
-function CountOfSet(AText: string): Integer;
-function SetRotateRight(AText: string): string;
-function SetRotateLeft(AText: string): string;
-function SetPick(AText: string; aIndex: Integer): string;
-function SetSort(AText: string): string;
-function SetUnion(set1, set2: string): string;
-function SetIntersect(set1, set2: string): string;
-function SetExclude(set1, set2: string): string;
+function FirstOfSet(const AText: string): string;
+function LastOfSet(const AText: string): string;
+function CountOfSet(const AText: string): Integer;
+function SetRotateRight(const AText: string): string;
+function SetRotateLeft(const AText: string): string;
+function SetPick(const AText: string; aIndex: Integer): string;
+function SetSort(const AText: string): string;
+function SetUnion(const set1, set2: string): string;
+function SetIntersect(const set1, set2: string): string;
+function SetExclude(const set1, set2: string): string;
 
 {replace any <,> etc by &lt; &gt;}
-function XMLSafe(AText: string): string;
+function XMLSafe(const AText: string): string;
 
 {simple hash, Result can be used in Encrypt}
-function Hash(AText: string): Integer;
+function Hash(const AText: string): Integer;
 
 { Base64 encode and decode a string }
 function B64Encode(const S: string): string;
@@ -99,13 +93,13 @@ procedure tags2csv(src, dst: TStringList);
 // converts a tagged string list to a csv list
 // only fieldnames from the first record are scanned ib the other records
 
-procedure ListSelect(src, dst: TStringList; AKey, AValue: string);
+procedure ListSelect(src, dst: TStringList; const AKey, AValue: string);
 {selects akey=avalue from src and returns recordset in dst}
 
-procedure ListFilter(src: TStringList; AKey, AValue: string);
+procedure ListFilter(src: TStringList; const AKey, AValue: string);
 {filters src for akey=avalue}
 
-procedure ListOrderBy(src: TStringList; AKey: string; Numeric: Boolean);
+procedure ListOrderBy(src: TStringList; const AKey: string; Numeric: Boolean);
 {orders a tagged src list by akey}
 
 function PosStr(const Findstring, Sourcestring: string;
@@ -136,80 +130,86 @@ function PosText(const Findstring, Sourcestring: string;
 function PosTextLast(const Findstring, Sourcestring: string): Integer;
 {finds the last occurance}
 
-function NameValuesToXML(AText: string): string;
+function NameValuesToXML(const AText: string): string;
 {$IFDEF MSWINDOWS}
 procedure LoadResourceFile(AFile: string; ms: TMemoryStream);
 {$ENDIF MSWINDOWS}
-procedure DirFiles(ADir, AMask: string; AFileList: TStringList);
-procedure RecurseDirFiles(myDir: string; var AFileList: TStringList);
-procedure RecurseDirProgs(myDir: string; var AFileList: TStringList);
-procedure Savestring(AFile, AText: string);
-function Loadstring(AFile: string): string;
-function HexToColor(AText: string): TColor;
-function UppercaseHTMLTags(AText: string): string;
-function LowercaseHTMLTags(AText: string): string;
-procedure GetHTMLAnchors(AFile: string; AList: TStringList);
-function relativepath(aSrc, aDst: string): string;
-function GetToken(var start: Integer; SourceText: string): string;
-function PosNonSpace(Start: Integer; SourceText: string): Integer;
-function PosEscaped(Start: Integer; SourceText, FindText: string; escapeChar: Char): Integer;
-function DeleteEscaped(SourceText: string; escapeChar: Char): string;
-function BeginOfAttribute(Start: Integer; SourceText: string): Integer;
+procedure DirFiles(const ADir, AMask: string; AFileList: TStringList);
+procedure RecurseDirFiles(const myDir: string; var AFileList: TStringList);
+procedure RecurseDirProgs(const myDir: string; var AFileList: TStringList);
+procedure Savestring(const AFile, AText: string);
+function LoadString(const AFile: string): string;
+function HexToColor(const AText: string): TColor;
+function UppercaseHTMLTags(const AText: string): string;
+function LowercaseHTMLTags(const AText: string): string;
+procedure GetHTMLAnchors(const AFile: string; AList: TStringList);
+function relativepath(const aSrc, aDst: string): string;
+function GetToken(var start: Integer; const SourceText: string): string;
+function PosNonSpace(Start: Integer; const SourceText: string): Integer;
+function PosEscaped(Start: Integer; const SourceText, FindText: string; escapeChar: Char): Integer;
+function DeleteEscaped(const SourceText: string; EscapeChar: Char): string;
+function BeginOfAttribute(Start: Integer; const SourceText: string): Integer;
 // parses the beginning of an attribute: space + alpha character
-function ParseAttribute(var Start: Integer; SourceText: string; var aName: string; var AValue: string): Boolean;
+function ParseAttribute(var Start: Integer; const SourceText: string; var aName, AValue: string): Boolean;
 // parses a name="value" attribute from Start; returns 0 when not found or else the position behind the attribute
-procedure ParseAttributes(SourceText: string; var Attributes: TStringList);
+procedure ParseAttributes(const SourceText: string; var Attributes: TStringList);
 // parses all name=value attributes to the attributes TStringList
-function HasStrValue(AText, aName: string; var AValue: string): Boolean;
+function HasStrValue(const AText, aName: string; var AValue: string): Boolean;
 // checks if a name="value" pair exists and returns any value
-function GetStrValue(AText, aName, aDefault: string): string;
+function GetStrValue(const AText, aName, aDefault: string): string;
 // retrieves string value from a line like:
 //  name="jan verhoeven" email="jan1 dott verhoeven att wxs dott nl"
 // returns aDefault when not found
-function GetHTMLColorValue(AText, aName: string; aDefault: TColor): TColor;
+function GetHTMLColorValue(const AText, aName: string; aDefault: TColor): TColor;
 // same for a color
-function GetIntValue(AText, aName: string; aDefault: Integer): Integer;
+function GetIntValue(const AText, aName: string; aDefault: Integer): Integer;
 // same for an Integer
-function GetFloatValue(AText, aName: string; aDefault: extended): extended;
+function GetFloatValue(const AText, aName: string; aDefault: extended): extended;
 // same for a float
-function GetBoolValue(AText, aName: string): Boolean;
+function GetBoolValue(const AText, aName: string): Boolean;
 // same for Boolean but without default
-function GetValue(AText, aName: string): string;
+function GetValue(const AText, aName: string): string;
 // retrieves string value from a line like:
 //  name="jan verhoeven" email="jan1 dott verhoeven att wxs dott nl"
-procedure SetValue(var AText: string; aName, AValue: string);
+procedure SetValue(var AText: string; const aName, AValue: string);
 // sets a string value in a line
-procedure DeleteValue(var AText: string; aName: string);
+procedure DeleteValue(var AText: string; const aName: string);
 // deletes a aName="value" pair from AText
 
 procedure GetNames(AText: string; AList: TStringList);
 // get a list of names from a string with name="value" pairs
 function GetHTMLColor(aColor: TColor): string;
 // converts a color value to the HTML hex value
-function BackPosStr(start: Integer; Findstring, Sourcestring: string): Integer;
+function BackPosStr(start: Integer; const FindString, SourceString: string): Integer;
 // finds a string backward case sensitive
-function BackPosText(start: Integer; Findstring, Sourcestring: string): Integer;
+function BackPosText(start: Integer; const Findstring, Sourcestring: string): Integer;
 // finds a string backward case insensitive
-function PosRangeStr(Start: Integer; Headstring, Tailstring, Sourcestring: string; var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
+function PosRangeStr(Start: Integer; const Headstring, Tailstring, Sourcestring: string;
+  var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
 // finds a text range, e.g. <TD>....</TD> case sensitive
-function PosRangeText(Start: Integer; Headstring, Tailstring, Sourcestring: string; var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
+function PosRangeText(Start: Integer; const Headstring, Tailstring, Sourcestring: string;
+  var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
 // finds a text range, e.g. <TD>....</td> case insensitive
-function BackPosRangeStr(Start: Integer; Headstring, Tailstring, Sourcestring: string; var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
+function BackPosRangeStr(Start: Integer; const Headstring, Tailstring, Sourcestring: string;
+  var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
 // finds a text range backward, e.g. <TD>....</TD> case sensitive
-function BackPosRangeText(Start: Integer; Headstring, Tailstring, Sourcestring: string; var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
+function BackPosRangeText(Start: Integer; const Headstring, Tailstring, Sourcestring: string;
+  var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
 // finds a text range backward, e.g. <TD>....</td> case insensitive
-function PosTag(Start: Integer; Sourcestring: string; var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
+function PosTag(Start: Integer; Sourcestring: string; var RangeBegin: Integer;
+  var RangeEnd: Integer): Boolean;
 // finds a HTML or XML tag:  <....>
-function Innertag(Start: Integer; Headstring, Tailstring, Sourcestring: string; var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
+function Innertag(Start: Integer; const Headstring, Tailstring, Sourcestring: string;
+  var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
 // finds the innertext between opening and closing tags
 function Easter(nYear: Integer): TDateTime;
 // returns the easter date of a year.
-function getWeekNumber(today: Tdatetime): string;
+function getWeekNumber(today: TDateTime): string;
 //gets a datecode. Returns year and weeknumber in format: YYWW
 
-function parseNumber(s: string): Integer;
+function ParseNumber(const s: string): Integer;
 // parse number returns the last position, starting from 1
-function ParseDate(s: string): Integer;
+function ParseDate(const s: string): Integer;
 // parse a SQL style data string from positions 1,
 // starts and ends with #
 
@@ -260,7 +260,7 @@ const
     #$F0, #$F1, #$F2, #$F3, #$F4, #$F5, #$F6, #$F7, #$F8, #$F9, #$FA, #$FB, #$FC, #$FD, #$FE, #$FF);
 *)
 
-procedure Savestring(AFile, AText: string);
+procedure Savestring(const AFile, AText: string);
 begin
   with TFileStream.Create(AFile, fmCreate) do
   try
@@ -270,7 +270,7 @@ begin
   end;
 end;
 
-function Loadstring(AFile: string): string;
+function Loadstring(const AFile: string): string;
 var
   s: string;
 begin
@@ -284,7 +284,7 @@ begin
   Result := s;
 end;
 
-procedure DeleteValue(var AText: string; aName: string);
+procedure DeleteValue(var AText: string; const aName: string);
 var
   p, p2, L: Integer;
 begin
@@ -300,7 +300,7 @@ begin
   Delete(AText, p, p2 - p + 1);
 end;
 
-function GetValue(AText, aName: string): string;
+function GetValue(const AText, aName: string): string;
 var
   p, p2, L: Integer;
 begin
@@ -316,7 +316,7 @@ begin
   Result := StringReplace(Result, '~~', Cr, [rfReplaceAll]);
 end;
 
-function HasStrValue(AText, aName: string; var AValue: string): Boolean;
+function HasStrValue(const AText, aName: string; var AValue: string): Boolean;
 var
   p, p2, L: Integer;
   s: string;
@@ -333,7 +333,7 @@ begin
   AValue := StringReplace(s, '~~', cr, [rfReplaceAll]);
 end;
 
-function GetStrValue(AText, aName, aDefault: string): string;
+function GetStrValue(const AText, aName, aDefault: string): string;
 var
   s: string;
 begin
@@ -344,7 +344,7 @@ begin
     Result := aDefault;
 end;
 
-function GetIntValue(AText, aName: string; aDefault: Integer): Integer;
+function GetIntValue(const AText, aName: string; aDefault: Integer): Integer;
 var
   s: string;
 begin
@@ -356,7 +356,7 @@ begin
   end;
 end;
 
-function GetFloatValue(AText, aName: string; aDefault: extended): extended;
+function GetFloatValue(const AText, aName: string; aDefault: extended): extended;
 var
   s: string;
 begin
@@ -371,7 +371,7 @@ begin
     Result := aDefault;
 end;
 
-function GetHTMLColorValue(AText, aName: string; aDefault: TColor): TColor;
+function GetHTMLColorValue(const AText, aName: string; aDefault: TColor): TColor;
 var
   s: string;
 begin
@@ -394,7 +394,7 @@ begin
     Result := aDefault;
 end;
 
-procedure SetValue(var AText: string; aName, AValue: string);
+procedure SetValue(var AText: string; const aName, AValue: string);
 var
   p, p2, L: Integer;
 begin
@@ -427,19 +427,19 @@ begin
   Result := '="#' + Copy(Result, 5, 2) + Copy(Result, 3, 2) + Copy(Result, 1, 2) + '"';
 end;
 
-function BackPosStr(start: Integer; Findstring, Sourcestring: string): Integer;
+function BackPosStr(start: Integer; const FindString, SourceString: string): Integer;
 var
   p, L: Integer;
 begin
   Result := 0;
-  L := Length(Findstring);
-  if (L = 0) or (Sourcestring = '') or (start < 2) then
+  L := Length(FindString);
+  if (L = 0) or (SourceString = '') or (start < 2) then
     Exit;
   Start := Start - L;
   if Start < 1 then
     Exit;
   repeat
-    p := PosStr(Findstring, Sourcestring, Start);
+    p := PosStr(FindString, SourceString, Start);
     if p < Start then
     begin
       Result := p;
@@ -449,7 +449,7 @@ begin
   until Start < 1;
 end;
 
-function BackPosText(start: Integer; Findstring, Sourcestring: string): Integer;
+function BackPosText(start: Integer; const Findstring, Sourcestring: string): Integer;
 var
   p, L, from: Integer;
 begin
@@ -471,7 +471,8 @@ begin
   until from < 1;
 end;
 
-function PosRangeStr(Start: Integer; Headstring, Tailstring, Sourcestring: string; var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
+function PosRangeStr(Start: Integer; const Headstring, Tailstring, Sourcestring: string;
+  var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
 begin
   Result := False;
   RangeBegin := PosStr(Headstring, Sourcestring, Start);
@@ -484,7 +485,8 @@ begin
   Result := True;
 end;
 
-function PosRangeText(Start: Integer; Headstring, Tailstring, Sourcestring: string; var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
+function PosRangeText(Start: Integer; const Headstring, Tailstring, Sourcestring: string;
+  var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
 begin
   Result := False;
   RangeBegin := PosText(Headstring, Sourcestring, Start);
@@ -497,7 +499,8 @@ begin
   Result := True;
 end;
 
-function Innertag(Start: Integer; Headstring, Tailstring, Sourcestring: string; var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
+function Innertag(Start: Integer; const Headstring, Tailstring, Sourcestring: string;
+  var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
 begin
   Result := False;
   RangeBegin := PosText(Headstring, Sourcestring, Start);
@@ -516,7 +519,8 @@ begin
   Result := PosRangeStr(Start, '<', '>', Sourcestring, RangeBegin, RangeEnd);
 end;
 
-function BackPosRangeStr(Start: Integer; Headstring, Tailstring, Sourcestring: string; var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
+function BackPosRangeStr(Start: Integer; const Headstring, Tailstring, Sourcestring: string;
+  var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
 var
   L: Integer;
 begin
@@ -540,7 +544,8 @@ begin
   until Start < 1;
 end;
 
-function BackPosRangeText(Start: Integer; Headstring, Tailstring, Sourcestring: string; var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
+function BackPosRangeText(Start: Integer; const Headstring, Tailstring, Sourcestring: string;
+  var RangeBegin: Integer; var RangeEnd: Integer): Boolean;
 var
   L: Integer;
 begin
@@ -564,7 +569,7 @@ begin
   until Start < 1;
 end;
 
-function PosNonSpace(Start: Integer; SourceText: string): Integer;
+function PosNonSpace(Start: Integer; const SourceText: string): Integer;
 var
   p, L: Integer;
 begin
@@ -579,7 +584,7 @@ begin
     Result := p;
 end;
 
-function BeginOfAttribute(Start: Integer; SourceText: string): Integer;
+function BeginOfAttribute(Start: Integer; const SourceText: string): Integer;
 var
   p, L: Integer;
 begin
@@ -598,7 +603,8 @@ begin
     Result := p;
 end;
 
-function ParseAttribute(var Start: Integer; SourceText: string; var aName: string; var AValue: string): Boolean;
+function ParseAttribute(var Start: Integer; const SourceText: string;
+  var aName, AValue: string): Boolean;
 var
   pn, pv, p: Integer;
 begin
@@ -620,7 +626,7 @@ begin
   Result := True;
 end;
 
-procedure ParseAttributes(SourceText: string; var Attributes: TStringList);
+procedure ParseAttributes(const SourceText: string; var Attributes: TStringList);
 var
   aName, AValue: string;
   start: Integer;
@@ -631,7 +637,7 @@ begin
     Attributes.Append(aName + '=' + AValue);
 end;
 
-function GetToken(var start: Integer; SourceText: string): string;
+function GetToken(var start: Integer; const SourceText: string): string;
 var
   p1, p2: Integer;
 begin
@@ -715,7 +721,7 @@ end;
 
 //gets a datecode. Returns year and weeknumber in format: YYWW
 
-function getWeekNumber(today: Tdatetime): string;
+function getWeekNumber(today: TDateTime): string;
 
 {dayOfWeek function returns Integer 1..7 equivalent to Sunday..Saturday.
 ISO 8601 weeks start with Monday and the first week of a year is the one which
@@ -770,7 +776,7 @@ begin
 
 end;
 
-function relativepath(aSrc, aDst: string): string;
+function relativepath(const aSrc, aDst: string): string;
 var
   doc, sdoc, pardoc, img, simg, parimg, rel: string;
   pdoc, pimg: Integer;
@@ -815,7 +821,7 @@ begin
   Result := rel;
 end;
 
-procedure GetHTMLAnchors(AFile: string; AList: TStringList);
+procedure GetHTMLAnchors(const AFile: string; AList: TStringList);
 var
   s, sa: string;
   p1, p2: Integer;
@@ -839,7 +845,7 @@ begin
   until p1 = 0;
 end;
 
-function UppercaseHTMLTags(AText: string): string;
+function UppercaseHTMLTags(const AText: string): string;
 var
   p, p2: Integer;
 
@@ -882,7 +888,7 @@ begin
   until p = 0;
 end;
 
-function LowercaseHTMLTags(AText: string): string;
+function LowercaseHTMLTags(const AText: string): string;
 var
   p, p2: Integer;
 
@@ -926,23 +932,21 @@ begin
   until p = 0;
 end;
 
-function HexToColor(AText: string): TColor;
+function HexToColor(const AText: string): TColor;
 begin
   Result := clblack;
   if Length(AText) <> 7 then
     Exit;
   if AText[1] <> '#' then
     Exit;
-  AText := '$' + Copy(AText, 6, 2) + Copy(AText, 4, 2) + Copy(AText, 2, 2);
   try
-    Result := stringtocolor(AText);
+    Result := StringToColor('$' + Copy(AText, 6, 2) + Copy(AText, 4, 2) + Copy(AText, 2, 2));
   except
     Result := clblack;
   end;
-
 end;
 
-function PosEscaped(Start: Integer; SourceText, FindText: string; escapeChar: Char): Integer;
+function PosEscaped(Start: Integer; const SourceText, FindText: string; escapeChar: Char): Integer;
 begin
   Result := PosText(FindText, SourceText, Start);
   if Result = 0 then
@@ -958,20 +962,23 @@ begin
   until SourceText[Result - 1] <> escapeChar;
 end;
 
-function DeleteEscaped(SourceText: string; escapeChar: Char): string;
+function DeleteEscaped(const SourceText: string; EscapeChar: Char): string;
 var
   i: Integer;
+  RealLen: Integer;
 begin
-  i := 1;
-  repeat
-    if SourceText[i] = escapeChar then
-      Delete(SourceText, i, 1);
-    i := i + 1;
-  until i > Length(SourceText);
-  Result := SourceText;
+  RealLen := 0;
+  SetLength(Result, Length(SourceText));
+  for i := 1 to Length(SourceText) do
+    if SourceText[i] <> EscapeChar then
+    begin
+      Inc(RealLen);
+      Result[RealLen] := SourceText[i];
+    end;
+  SetLength(Result, RealLen);
 end;
 
-procedure RecurseDirFiles(myDir: string; var AFileList: TStringList);
+procedure RecurseDirFiles(const myDir: string; var AFileList: TStringList);
 var
   sr: TSearchRec;
   FileAttrs: Integer;
@@ -991,7 +998,7 @@ begin
   FindClose(sr);
 end;
 
-procedure RecurseDirProgs(myDir: string; var AFileList: TStringList);
+procedure RecurseDirProgs(const myDir: string; var AFileList: TStringList);
 var
   sr: TSearchRec;
   FileAttrs: Integer;
@@ -1043,7 +1050,7 @@ begin
   if ext = 'HTM' then
     ext := 'HTML';
   Goodtype := PChar(ext);
-  AFile := changefileext(afile, '');
+  AFile := ChangeFileExt(afile, '');
   HResInfo := FindResource(HInstance, PChar(AFile), GoodType);
   HGlobal := LoadResource(HInstance, HResInfo);
   if HGlobal = 0 then
@@ -1077,7 +1084,7 @@ begin
   until p = 0;
 end;
 
-function NameValuesToXML(AText: string): string;
+function NameValuesToXML(const AText: string): string;
 var
   AList: TStringList;
   i, c: Integer;
@@ -1233,12 +1240,12 @@ asm
         POP     ESI
 end;
 
-function GetBoolValue(AText, aName: string): Boolean;
+function GetBoolValue(const AText, aName: string): Boolean;
 begin
   Result := LowerCase(GetValue(AText, aName)) = 'yes';
 end;
 
-procedure ListSelect(src, dst: TStringList; AKey, AValue: string);
+procedure ListSelect(src, dst: TStringList; const AKey, AValue: string);
 var
   i, c: Integer;
 begin
@@ -1253,7 +1260,7 @@ begin
   end;
 end;
 
-procedure ListFilter(src: TStringList; AKey, AValue: string);
+procedure ListFilter(src: TStringList; const AKey, AValue: string);
 var
   i, c: Integer;
   dst: TStringList;
@@ -1271,7 +1278,7 @@ begin
   dst.Free;
 end;
 
-procedure ListOrderBy(src: TStringList; AKey: string; Numeric: Boolean);
+procedure ListOrderBy(src: TStringList; const AKey: string; Numeric: Boolean);
 var
   i, c, index: Integer;
   lit, dst: TStringList;
@@ -1662,7 +1669,7 @@ begin
   Result := Decrypt(B64Decode(Instring), StartKey, MultKey, AddKey);
 end;
 
-function Hash(AText: string): Integer;
+function Hash(const AText: string): Integer;
 var
   i: Integer;
 begin
@@ -1676,7 +1683,7 @@ end;
 
 {replace any <,> etc by &lt; &gt;}
 
-function XMLSafe(AText: string): string;
+function XMLSafe(const AText: string): string;
 var
   i, c: Integer;
 begin
@@ -1708,7 +1715,7 @@ begin
   end;
 end;
 
-function FirstOfSet(AText: string): string;
+function FirstOfSet(const AText: string): string;
 var
   p: Integer;
 begin
@@ -1727,7 +1734,7 @@ begin
   end;
 end;
 
-function LastOfSet(AText: string): string;
+function LastOfSet(const AText: string): string;
 var
   c: Integer;
 begin
@@ -1749,17 +1756,17 @@ begin
   end;
 end;
 
-function CountOfSet(AText: string): Integer;
+function CountOfSet(const AText: string): Integer;
 var
   lit: TStringList;
 begin
   lit := TStringList.Create;
-  splitset(AText, lit);
+  SplitSet(AText, lit);
   Result := lit.Count;
   lit.Free;
 end;
 
-function SetRotateRight(AText: string): string;
+function SetRotateRight(const AText: string): string;
 var
   lit: TStringList;
   c: Integer;
@@ -1777,7 +1784,7 @@ begin
   lit.Free;
 end;
 
-function SetRotateLeft(AText: string): string;
+function SetRotateLeft(const AText: string): string;
 var
   lit: TStringList;
   c: Integer;
@@ -1802,7 +1809,7 @@ begin
   AList.Clear;
   if AText = '' then
     Exit;
-  AText := trim(AText);
+  AText := Trim(AText);
   while AText <> '' do
   begin
     if AText[1] = '"' then
@@ -1847,7 +1854,7 @@ begin
   Delete(Result, Length(Result), 1);
 end;
 
-function SetPick(AText: string; aIndex: Integer): string;
+function SetPick(const AText: string; aIndex: Integer): string;
 var
   lit: TStringList;
   c: Integer;
@@ -1862,7 +1869,7 @@ begin
   lit.Free;
 end;
 
-function SetSort(AText: string): string;
+function SetSort(const AText: string): string;
 var
   lit: TStringList;
   c: Integer;
@@ -1880,7 +1887,7 @@ begin
   lit.Free;
 end;
 
-function SetUnion(set1, set2: string): string;
+function SetUnion(const set1, set2: string): string;
 var
   lit1, lit2, lit3: TStringList;
   i, c: Integer;
@@ -1908,7 +1915,7 @@ begin
   lit3.Free;
 end;
 
-function SetIntersect(set1, set2: string): string;
+function SetIntersect(const set1, set2: string): string;
 var
   lit1, lit2, lit3: TStringList;
   i, c: Integer;
@@ -1935,7 +1942,7 @@ begin
   lit3.Free;
 end;
 
-function SetExclude(set1, set2: string): string;
+function SetExclude(const set1, set2: string): string;
 var
   lit1, lit2: TStringList;
   i, c, index: Integer;
@@ -1965,7 +1972,7 @@ end;
 
 // This function converts a string into a RFC 1630 compliant URL
 
-function URLEncode(Value: string): string;
+function URLEncode(const Value: string): string;
 var
   I: Integer;
 begin
@@ -1987,16 +1994,18 @@ begin
   end;
 end;
 
-function URLDecode(Value: string): string;
+function URLDecode(const Value: string): string;
 const
   HexChars = '0123456789ABCDEF';
 var
   I: Integer;
   Ch, H1, H2: Char;
+  Len: Integer;
 begin
   Result := '';
+  Len := Length(Value);
   I := 1;
-  while I <= Length(Value) do
+  while I <= Len do
   begin
     Ch := Value[I];
     case Ch of
@@ -2020,7 +2029,7 @@ end;
 
 {template functions}
 
-function ReplaceFirst(sourceStr, findStr, replaceStr: string): string;
+function ReplaceFirst(const sourceStr, findStr, replaceStr: string): string;
 var
   p: Integer;
 begin
@@ -2031,7 +2040,7 @@ begin
   Result := Copy(sourcestr, 1, p - 1) + replacestr + Copy(sourceStr, p + Length(findStr), Length(sourceStr));
 end;
 
-function ReplaceLast(sourceStr, findStr, replaceStr: string): string;
+function ReplaceLast(const sourceStr, findStr, replaceStr: string): string;
 var
   p: Integer;
 begin
@@ -2081,7 +2090,7 @@ end;
 
 // removes all  {begin:somefield} to {end:somefield} from aSource
 
-function removeMasterBlocks(sourceStr: string): string;
+function removeMasterBlocks(const sourceStr: string): string;
 var
   s, src: string;
   pb: Integer;
@@ -2111,7 +2120,7 @@ end;
 
 // removes all {field} entries in a template
 
-function removeFields(sourceStr: string): string;
+function removeFields(const sourceStr: string): string;
 var
   src, s: string;
   pb: Integer;
@@ -2180,7 +2189,7 @@ begin
   end;
 end;
 
-procedure DirFiles(ADir, AMask: string; AFileList: TStringList);
+procedure DirFiles(const ADir, AMask: string; AFileList: TStringList);
 var
   sr: TSearchRec;
   FileAttrs: Integer;
@@ -2195,7 +2204,7 @@ end;
 
 // parse number returns the last position, starting from 1
 
-function parseNumber(s: string): Integer;
+function ParseNumber(const s: string): Integer;
 var
   i, e, e2, c: Integer;
 begin
@@ -2224,7 +2233,7 @@ end;
 // parse a SQL style data string from positions 1,
 // starts and ends with #
 
-function ParseDate(s: string): Integer;
+function ParseDate(const s: string): Integer;
 var
   p: Integer;
 begin
@@ -2235,7 +2244,7 @@ begin
   if p = 0 then
     Exit;
   try
-    strtodate(Copy(s, 2, p - 2));
+    StrToDate(Copy(s, 2, p - 2));
     Result := p;
   except
     Result := 0;

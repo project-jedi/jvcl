@@ -59,7 +59,7 @@ type
     procedure CustomShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure TimerEvent(Sender: TObject);
-    procedure WriteToClipboard(Text: string);
+    procedure WriteToClipboard(const Text: string);
     function GetFormText: string;
     function TimeoutUnit(Secs: Integer): string;
     procedure CancelAutoClose;
@@ -108,7 +108,7 @@ type
     procedure EndWrite(const DSAInfo: TDSARegItem); virtual;
     function IsKeyNameAllowed(const Key: string): Boolean;
     function GetCheckMarkTextSuffix: string; virtual; abstract;
-    procedure SetCheckMarkTextSuffix(Value: string); virtual; abstract;
+    procedure SetCheckMarkTextSuffix(const Value: string); virtual; abstract;
   public
     constructor Create;
     destructor Destroy; override;
@@ -147,7 +147,7 @@ type
   protected
     procedure CreateKey(const DSAInfo: TDSARegItem); virtual;
     function GetCheckMarkTextSuffix: string; override;
-    procedure SetCheckMarkTextSuffix(Value: string); override;
+    procedure SetCheckMarkTextSuffix(const Value: string); override;
   public
     constructor Create(const ARootKey: HKEY; const AKey: string);
     function ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean; override;
@@ -181,7 +181,7 @@ type
     function GetCheckMarkTextSuffix: string; override;
     function GetDSAValue(const DSAInfo: TDSARegItem; const Key: string; const Kind: Integer): string;
     function HasDSAKey(const DSAInfo: TDSARegItem; const Key: string): Boolean;
-    procedure SetCheckMarkTextSuffix(Value: string); override;
+    procedure SetCheckMarkTextSuffix(const Value: string); override;
     procedure SetDSAValue(const DSAInfo: TDSARegItem; const Key: string; const Kind: Integer; const Value: string);
   public
     constructor Create;
@@ -572,7 +572,7 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TDSAMessageForm.WriteToClipboard(Text: string);
+procedure TDSAMessageForm.WriteToClipboard(const Text: string);
 var
   Data: THandle;
   DataPtr: Pointer;
@@ -604,7 +604,7 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-procedure TDSAMessageForm.WriteToClipboard(Text: string);
+procedure TDSAMessageForm.WriteToClipboard(const Text: string);
 begin
   Clipboard.AsText := Text;
 end;
@@ -1255,7 +1255,7 @@ begin
   Result := '';
 end;
 
-procedure TDSARegStorage.SetCheckMarkTextSuffix(Value: string);
+procedure TDSARegStorage.SetCheckMarkTextSuffix(const Value: string);
 begin
 end;
 
@@ -1449,7 +1449,7 @@ begin
   end;
 end;
 
-procedure TDSAQueueStorage.SetCheckMarkTextSuffix(Value: string);
+procedure TDSAQueueStorage.SetCheckMarkTextSuffix(const Value: string);
 begin
   if Value <> CheckMarkTextSuffix then
     FCheckMarkSuffix := Value;

@@ -93,7 +93,7 @@ type
     {$ENDIF VisualCLX}
     FOnSavePlacement: TNotifyEvent;
     FOnRestorePlacement: TNotifyEvent;
-    procedure SetAppStoragePath(Value: string);
+    procedure SetAppStoragePath(const Value: string);
     procedure SetEvents;
     procedure RestoreEvents;
     {$IFDEF VCL}
@@ -353,11 +353,11 @@ begin
     Result := nil;
 end;
 
-procedure TJvFormPlacement.SetAppStoragePath(Value: string);
+procedure TJvFormPlacement.SetAppStoragePath(const Value: string);
 begin
   if (Value <> '') and (AnsiLastChar(Value) <> '\') then
-    Value := Value + '\';
-  if Value <> AppStoragePath then
+    FAppStoragePath := Value + '\'
+  else
     FAppStoragePath := Value;
 end;
 
@@ -1062,7 +1062,7 @@ begin
     (Collection is TJvStoredValues) and (TJvStoredValues(Collection).IndexOf(Value) >= 0) then
     raise EJVCLException.CreateRes(@SDuplicateString);
   FName := Value;
-  inherited;
+  inherited SetDisplayName(Value);
 end;
 
 function TJvStoredValue.GetStoredValues: TJvStoredValues;

@@ -62,7 +62,7 @@ type
   TJvChangeActions = set of TJvChangeAction;
   TJvNotifyEvent = procedure(Sender: TObject; Dir: string; Actions: TJvChangeActions) of object;
   TJvThreadNotifyEvent = procedure(Sender: TObject; Index: Integer) of object;
-  TJvNotifyError = procedure(Sender: TObject; const MSg: string) of object;
+  TJvNotifyError = procedure(Sender: TObject; const Msg: string) of object;
 
   TJvChangeItems = class;
   TJvChangeNotify = class;
@@ -353,8 +353,7 @@ var
   I: Integer;
   S: string;
 begin
-
-  If (FActive <> Value) then
+  if (FActive <> Value) then
   begin
     FActive := Value;
     if (csDesigning in ComponentState) then Exit;   //active is now published

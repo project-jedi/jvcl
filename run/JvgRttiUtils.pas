@@ -34,7 +34,7 @@ unit JvgRttiUtils;
 
 interface
 
-function GetValueFromPropertyName(Component: TObject; PropertyName: string): string;
+function GetValueFromPropertyName(Component: TObject; const PropertyName: string): string;
 procedure SetValueByPropertyName(Component: TObject; const PropertyName, PropertyValue: string);
 procedure Assign(Source, Target: TObject; Recursive: Boolean);
 
@@ -43,7 +43,7 @@ implementation
 uses
   Classes, SysUtils, TypInfo;
 
-function GetValueFromPropertyName(Component: TObject; PropertyName: string): string;
+function GetValueFromPropertyName(Component: TObject; const PropertyName: string): string;
 var
   PropInfo: PPropInfo;
   TypeInf, PropTypeInf: PTypeInfo;

@@ -49,28 +49,22 @@ type
     FName: string;
     FOperator: TJvXMLFilterOperator;
     FAttributeFilter: Boolean;
-    procedure SetName(const Value: string);
-    procedure SetOperator(const Value: TJvXMLFilterOperator);
-    procedure SetValue(const Value: string);
-    procedure SetAttributeFilter(const Value: Boolean);
   public
-    property Name: string read FName write SetName;
-    property Operator: TJvXMLFilterOperator read FOperator write SetOperator;
-    property Value: string read FValue write SetValue;
-    property AttributeFilter: Boolean read FAttributeFilter write SetAttributeFilter;
+    property Name: string read FName write FName;
+    property Operator: TJvXMLFilterOperator read FOperator write FOperator;
+    property Value: string read FValue write FValue;
+    property AttributeFilter: Boolean read FAttributeFilter write FAttributeFilter;
   end;
 
   TJvXMLFilter = class(TObject)
   private
     FName: string;
     FFilters: TList;
-    procedure SetName(const Value: string);
-    procedure SetFilters(const Value: TList);
   public
     constructor Create(FilterStr: string);
     destructor Destroy; override;
-    property Name: string read FName write SetName;
-    property Filters: TList read FFilters write SetFilters;
+    property Name: string read FName write FName;
+    property Filters: TList read FFilters write FFilters;
   end;
 
   TJvXMLNode = class;
@@ -80,15 +74,12 @@ type
     FName: string;
     FValue: Variant;
     FParent: TJvXMLNode;
-    procedure SetName(const Value: string);
-    procedure SetValue(const Value: Variant);
-    procedure SetParent(const Value: TJvXMLNode);
   public
-    constructor Create(AParent: TJvXMLNode; AName: string; AValue: Variant);
+    constructor Create(AParent: TJvXMLNode; const AName: string; AValue: Variant);
     function Document: string;
-    property Name: string read FName write SetName;
-    property Value: Variant read FValue write SetValue;
-    property Parent: TJvXMLNode read FParent write SetParent;
+    property Name: string read FName write FName;
+    property Value: Variant read FValue write FValue;
+    property Parent: TJvXMLNode read FParent write FParent;
   end;
 
   TJvXMLNode = class(TObject)
@@ -99,44 +90,38 @@ type
     FAttributes: TList;
     FParentNode: TJvXMLNode;
     FValueType: TJvXMLValueType;
-    procedure SetName(const Value: string);
-    procedure SetValue(const Value: Variant);
-    procedure SetNodes(const Value: TList);
-    procedure SetAttributes(const Value: TList);
-    procedure SetParentNode(const Value: TJvXMLNode);
-    procedure SetValueType(const Value: TJvXMLValueType);
   public
-    constructor Create(AName: string; AValue: Variant; AParent: TJvXMLNode);
+    constructor Create(const AName: string; AValue: Variant; AParent: TJvXMLNode);
     destructor Destroy; override;
     // added 29-July-2000
-    function GetNamePathNode(APath: string): TJvXMLNode;
-    procedure DeleteNamePathNode(APath: string);
-    function ForceNamePathNode(APath: string): TJvXMLNode;
-    function GetNamePathNodeAttribute(APath, AName: string): TJvXMLAttribute;
-    procedure DeleteNamePathNodeAttribute(APath, AName: string);
-    function ForceNamePathNodeAttribute(APath, AName: string; AValue: Variant): TJvXMLAttribute;
-    function AddNode(AName: string; AValue: Variant): TJvXMLNode;
-    function AddNodeEx(AName: string; AValue: Variant): TJvXMLNode;
+    function GetNamePathNode(const APath: string): TJvXMLNode;
+    procedure DeleteNamePathNode(const APath: string);
+    function ForceNamePathNode(const APath: string): TJvXMLNode;
+    function GetNamePathNodeAttribute(const APath, AName: string): TJvXMLAttribute;
+    procedure DeleteNamePathNodeAttribute(const APath, AName: string);
+    function ForceNamePathNodeAttribute(const APath, AName: string; AValue: Variant): TJvXMLAttribute;
+    function AddNode(const AName: string; AValue: Variant): TJvXMLNode;
+    function AddNodeEx(const AName: string; AValue: Variant): TJvXMLNode;
     procedure DeleteNode(Index: Integer);
     procedure ClearNodes;
-    function AddAttribute(AName: string; AValue: Variant): TJvXMLAttribute;
-    function GetAttributeValue(AName: string): Variant;
+    function AddAttribute(const AName: string; AValue: Variant): TJvXMLAttribute;
+    function GetAttributeValue(const AName: string): Variant;
     procedure DeleteAttribute(Index: Integer);
     procedure ClearAttributes;
     function Document(aLevel: Integer): string;
     function getNodePath: string;
-    function getNamedNode(AName: string): TJvXMLNode;
-    function SelectSingleNode(pattern: string): TJvXMLNode;
+    function getNamedNode(const AName: string): TJvXMLNode;
+    function SelectSingleNode(const pattern: string): TJvXMLNode;
     procedure selectNodes(pattern: string; aList: TList);
     function transformNode(stylesheet: TJvXMLNode): string;
     function process(aLevel: Integer; node: TJvXMLNode): string;
-    function findNamedNode(AName: string): TJvXMLNode;
-    procedure findNamedNodes(AName: string; aList: TList);
+    function findNamedNode(const AName: string): TJvXMLNode;
+    procedure findNamedNodes(const AName: string; aList: TList);
     procedure getAllNodes(aList: TList);
-    function getNamedAttribute(AName: string): TJvXMLAttribute;
-    procedure findNamedAttributes(AName: string; aList: TList);
+    function getNamedAttribute(const AName: string): TJvXMLAttribute;
+    procedure findNamedAttributes(const AName: string; aList: TList);
     function matchFilter(objFilter: TJvXMLFilter): Boolean;
-    procedure matchPattern(aPattern: string; aList: TList);
+    procedure matchPattern(const aPattern: string; aList: TList);
     procedure getNodeNames(aList: TStringList);
     procedure getAttributeNames(aList: TStringList);
     function getNameSpace: string;
@@ -149,34 +134,33 @@ type
     function moveAddNode(Dest: TJvXMLNode): TJvXMLNode;
     function moveInsertNode(Dest: TJvXMLNode): TJvXMLNode;
     function removeChildNode(aNode: TJvXMLNode): TJvXMLNode;
-    property Name: string read FName write SetName;
-    property Value: Variant read FValue write SetValue;
-    property ValueType: TJvXMLValueType read FValueType write SetValueType;
-    property Nodes: TList read FNodes write SetNodes;
-    property parentNode: TJvXMLNode read FParentNode write SetParentNode;
-    property Attributes: TList read FAttributes write SetAttributes;
+    property Name: string read FName write FName;
+    property Value: Variant read FValue write FValue;
+    property ValueType: TJvXMLValueType read FValueType write FValueType;
+    property Nodes: TList read FNodes write FNodes;
+    property parentNode: TJvXMLNode read FParentNode write FParentNode;
+    property Attributes: TList read FAttributes write FAttributes;
   end;
 
   TJvXMLTree = class(TJvXMLNode)
   private
-    FLines: TStringList;
+    FLines: TStrings;
     FNodeCount: Integer;
-    function GetLines: TStrings;
     procedure SetLines(const Value: TStrings);
-    function getText: string;
-    procedure setText(const Value: string);
+    function GetText: string;
+    procedure SetText(const Value: string);
   public
-    constructor Create(AName: string; AValue: Variant; AParent: TJvXMLNode);
+    constructor Create(const AName: string; AValue: Variant; AParent: TJvXMLNode);
     destructor Destroy; override;
     procedure ParseXML;
-    procedure LoadFromFile(fn: string);
+    procedure LoadFromFile(const fn: string);
     procedure LoadFromStream(Stream: TStream);
-    procedure SaveToFile(aFile: string);
+    procedure SaveToFile(const aFile: string);
     procedure SaveToStream(Stream: TStream);
-    function asText: string;
-    property Lines: TStrings read GetLines write SetLines;
+    function AsText: string;
+    property Lines: TStrings read FLines write SetLines;
     property NodeCount: Integer read FNodeCount;
-    property Text: string read getText write setText;
+    property Text: string read GetText write SetText;
   end;
 
 procedure PreProcessXML(aList: TStrings);
@@ -198,17 +182,17 @@ var
   p1, p2, c: Integer;
   aLevel: Integer;
 
-  function clean(aText: string): string;
+  function clean(const aText: string): string;
   begin
-    Result := stringreplace(aText, sLineBreak, ' ', [rfreplaceall]);
-    Result := stringreplace(Result, tab, ' ', [rfreplaceall]);
+    Result := StringReplace(aText, sLineBreak, ' ', [rfreplaceall]);
+    Result := StringReplace(Result, tab, ' ', [rfreplaceall]);
     Result := Trim(Result);
   end;
 
-  function cleanCDATA(aText: string): string;
+  function cleanCDATA(const aText: string): string;
   begin
-    Result := stringreplace(aText, sLineBreak, '\n ', [rfreplaceall]);
-    Result := stringreplace(Result, tab, '\t ', [rfreplaceall]);
+    Result := StringReplace(aText, sLineBreak, '\n ', [rfreplaceall]);
+    Result := StringReplace(Result, tab, '\t ', [rfreplaceall]);
   end;
 
   function spc: string;
@@ -221,75 +205,77 @@ var
 
 begin
   oList := TStringList.Create;
-  s := aList.text;
-  xText := '';
-  xTag := '';
-  p1 := 1;
-  c := Length(s);
-  aLevel := 0;
-  repeat
-    p2 := PosStr('<', s, p1);
-    if p2 > 0 then
-    begin
-      xText := Trim(Copy(s, p1, p2 - p1));
-      if xText <> '' then
+  try
+    s := aList.text;
+    xText := '';
+    xTag := '';
+    p1 := 1;
+    c := Length(s);
+    aLevel := 0;
+    repeat
+      p2 := PosStr('<', s, p1);
+      if p2 > 0 then
       begin
-        oList.Append('TX:' + clean(xText));
-      end;
-      p1 := p2;
-      // check for CDATA
-      if uppercase(Copy(s, p1, 9)) = '<![CDATA[' then
-      begin
-        p2 := posstr(']]>', s, p1);
-        xData := Copy(s, p1 + 9, p2 - p1 - 9);
-        oList.Append('CD:' + cleanCDATA(xData));
-        p1 := p2 + 2;
-      end
-      else
-      begin
-        p2 := posstr('>', s, p1);
-        if p2 > 0 then
+        xText := Trim(Copy(s, p1, p2 - p1));
+        if xText <> '' then
         begin
-          xTag := Copy(s, p1 + 1, p2 - p1 - 1);
-          p1 := p2;
-          if xTag[1] = '/' then
+          oList.Append('TX:' + clean(xText));
+        end;
+        p1 := p2;
+        // check for CDATA
+        if uppercase(Copy(s, p1, 9)) = '<![CDATA[' then
+        begin
+          p2 := PosStr(']]>', s, p1);
+          xData := Copy(s, p1 + 9, p2 - p1 - 9);
+          oList.Append('CD:' + cleanCDATA(xData));
+          p1 := p2 + 2;
+        end
+        else
+        begin
+          p2 := PosStr('>', s, p1);
+          if p2 > 0 then
           begin
-            delete(xTag, 1, 1);
-            oList.Append('CT:' + clean(xTag));
-            dec(aLevel);
-          end
-          else
-          if xtag[Length(xTag)] = '/' then
-          begin
-            oList.Append('ET:' + clean(xTag));
-          end
-          else
-          begin
-            inc(aLevel);
-            oList.Append('OT:' + clean(xTag));
+            xTag := Copy(s, p1 + 1, p2 - p1 - 1);
+            p1 := p2;
+            if xTag[1] = '/' then
+            begin
+              Delete(xTag, 1, 1);
+              oList.Append('CT:' + clean(xTag));
+              dec(aLevel);
+            end
+            else
+            if xtag[Length(xTag)] = '/' then
+            begin
+              oList.Append('ET:' + clean(xTag));
+            end
+            else
+            begin
+              inc(aLevel);
+              oList.Append('OT:' + clean(xTag));
+            end
           end
         end
       end
-    end
-    else
-    begin
-      xText := Trim(Copy(s, p1, Length(s)));
-      if xText <> '' then
+      else
       begin
-        oList.Append('TX:' + clean(xText));
+        xText := Trim(Copy(s, p1, Length(s)));
+        if xText <> '' then
+        begin
+          oList.Append('TX:' + clean(xText));
+        end;
+        p1 := c;
       end;
-      p1 := c;
-    end;
-    inc(p1);
-  until p1 > c;
-  alist.Assign(oList);
-  oList.Free;
+      inc(p1);
+    until p1 > c;
+    alist.Assign(oList);
+  finally
+    oList.Free;
+  end;
 end;
 
 { TJvXMLNode }
 
-function TJvXMLNode.AddAttribute(AName: string;
-  AValue: Variant): TJvXMLAttribute;
+function TJvXMLNode.AddAttribute(const AName: string; AValue: Variant): TJvXMLAttribute;
 var
   n: TJvXMLAttribute;
 begin
@@ -298,7 +284,7 @@ begin
   Result := n;
 end;
 
-function TJvXMLNode.AddNode(AName: string; AValue: Variant): TJvXMLNode;
+function TJvXMLNode.AddNode(const AName: string; AValue: Variant): TJvXMLNode;
 var
   n: TJvXMLNode;
 begin
@@ -309,7 +295,7 @@ end;
 
 // adds node and parses any attributes;
 
-function TJvXMLNode.AddNodeEx(AName: string; AValue: Variant): TJvXMLNode;
+function TJvXMLNode.AddNodeEx(const AName: string; AValue: Variant): TJvXMLNode;
 var
   n: TJvXMLNode;
   s, sn, sv: string;
@@ -319,21 +305,21 @@ begin
   Self.Nodes.Add(n);
   Result := n;
   c := Length(AName);
-  //first parse name
-  p1 := posstr(' ', AName, 1);
+  //first parse Name
+  p1 := PosStr(' ', AName, 1);
   if p1 = 0 then Exit;
   s := Copy(AName, 1, p1 - 1);
   n.Name := s;
   repeat
     // find '='
-    p2 := posStr('=', AName, p1);
+    p2 := PosStr('=', AName, p1);
     if p2 = 0 then Exit;
     sn := Trim(Copy(AName, p1, p2 - p1));
     p1 := p2;
     // find begin of value
-    p1 := posStr('"', AName, p1);
+    p1 := PosStr('"', AName, p1);
     if p1 = 0 then Exit;
-    p2 := posStr('"', AName, p1 + 1);
+    p2 := PosStr('"', AName, p1 + 1);
     if p2 = 0 then Exit;
     sv := Copy(AName, p1 + 1, p2 - p1 - 1);
     n.AddAttribute(sn, sv);
@@ -341,7 +327,7 @@ begin
   until p1 > c;
 end;
 
-function TJvXMLNode.getNamedAttribute(AName: string): TJvXMLAttribute;
+function TJvXMLNode.getNamedAttribute(const AName: string): TJvXMLAttribute;
 var
   i: Integer;
   n: TJvXMLAttribute;
@@ -351,7 +337,7 @@ begin
   for i := 0 to Attributes.count - 1 do
   begin
     n := TJvXMLAttribute(Attributes[i]);
-    if n.name = AName then
+    if n.Name = AName then
     begin
       Result := n;
       Exit;
@@ -384,8 +370,9 @@ begin
   end;
 end;
 
-constructor TJvXMLNode.Create(AName: string; AValue: Variant; AParent: TJvXMLNode);
+constructor TJvXMLNode.Create(const AName: string; AValue: Variant; AParent: TJvXMLNode);
 begin
+  inherited Create;
   FNodes := TList.Create;
   FName := AName;
   FValue := AValue;
@@ -426,11 +413,12 @@ var
   i: Integer;
   spc: string;
 
-  function ExpandCDATA(AValue: string): string;
+  function ExpandCDATA(const AValue: string): string;
   begin
-    Result := stringreplace(AValue, '\n ', sLineBreak, [rfreplaceall]);
-    Result := stringreplace(Result, '\t ', tab, [rfreplaceall]);
+    Result := StringReplace(AValue, '\n ', sLineBreak, [rfreplaceall]);
+    Result := StringReplace(Result, '\t ', tab, [rfreplaceall]);
   end;
+  
 begin
   if aLevel > 0 then
     spc := StringOfChar(' ', aLevel * 2)
@@ -470,14 +458,14 @@ var
   i: Integer;
   n: TJvXMLNode;
 begin
-  Result := TJvXMLNode.Create(name, value, nil);
-  Result.name := name;
+  Result := TJvXMLNode.Create(Name, value, nil);
+  Result.Name := Name;
   Result.value := value;
   if Attributes.count > 0 then
   begin
     for i := 0 to Attributes.count - 1 do
     begin
-      Result.AddAttribute(TJvXMLAttribute(Attributes[i]).name, TJvXMLAttribute(Attributes[i]).value);
+      Result.AddAttribute(TJvXMLAttribute(Attributes[i]).Name, TJvXMLAttribute(Attributes[i]).value);
     end;
   end;
   if nodes.count > 0 then
@@ -490,7 +478,7 @@ begin
   end;
 end;
 
-function TJvXMLNode.getNamedNode(AName: string): TJvXMLNode;
+function TJvXMLNode.getNamedNode(const AName: string): TJvXMLNode;
 var
   i: Integer;
   n: TJvXMLNode;
@@ -500,37 +488,12 @@ begin
   for i := 0 to Nodes.count - 1 do
   begin
     n := TJvXMLNode(nodes[i]);
-    if n.name = AName then
+    if n.Name = AName then
     begin
       Result := n;
       Exit;
     end;
   end;
-end;
-
-procedure TJvXMLNode.SetAttributes(const Value: TList);
-begin
-  FAttributes := Value;
-end;
-
-procedure TJvXMLNode.SetName(const Value: string);
-begin
-  FName := Value;
-end;
-
-procedure TJvXMLNode.SetNodes(const Value: TList);
-begin
-  FNodes := Value;
-end;
-
-procedure TJvXMLNode.SetParentNode(const Value: TJvXMLNode);
-begin
-  FParentNode := Value;
-end;
-
-procedure TJvXMLNode.SetValue(const Value: Variant);
-begin
-  FValue := Value;
 end;
 
 function TJvXMLNode.firstChild: TJvXMLNode;
@@ -632,7 +595,7 @@ begin
   c := Attributes.count;
   if c = 0 then Exit;
   for i := 0 to c - 1 do
-    aList.append(TJvXMLAttribute(Attributes[i]).name);
+    aList.append(TJvXMLAttribute(Attributes[i]).Name);
 end;
 
 procedure TJvXMLNode.getNodeNames(aList: TStringList);
@@ -643,7 +606,7 @@ begin
   c := Nodes.count;
   if c = 0 then Exit;
   for i := 0 to c - 1 do
-    aList.append(TJvXMLNode(Nodes[i]).name);
+    aList.append(TJvXMLNode(Nodes[i]).Name);
 end;
 
 function TJvXMLNode.getNodePath: string;
@@ -651,17 +614,17 @@ var
   n: TJvXMLNode;
 begin
   n := Self;
-  Result := name;
+  Result := Name;
   while n.parentNode <> nil do
   begin
     n := n.parentNode;
-    Result := n.name + '/' + Result;
+    Result := n.Name + '/' + Result;
   end;
 end;
 
 // search recursively for a named node
 
-function TJvXMLNode.findNamedNode(AName: string): TJvXMLNode;
+function TJvXMLNode.findNamedNode(const AName: string): TJvXMLNode;
 var
   i: Integer;
   n: TJvXMLNode;
@@ -671,13 +634,13 @@ begin
   for i := 0 to Nodes.count - 1 do
   begin
     n := TJvXMLNode(nodes[i]);
-    if n.name = AName then
+    if n.Name = AName then
     begin
       Result := n;
       Exit;
     end
     else
-    begin // recurse
+    begin // Recurse
       Result := n.findNamedNode(AName);
       if Result <> nil then Exit;
     end;
@@ -686,7 +649,7 @@ end;
 
 // add all found named nodes to aList
 
-procedure TJvXMLNode.findNamedNodes(AName: string; aList: TList);
+procedure TJvXMLNode.findNamedNodes(const AName: string; aList: TList);
 var
   i: Integer;
   n: TJvXMLNode;
@@ -695,9 +658,9 @@ begin
   for i := 0 to Nodes.count - 1 do
   begin
     n := TJvXMLNode(nodes[i]);
-    if n.name = AName then
+    if n.Name = AName then
       alist.Add(n);
-    // recurse
+    // Recurse
     n.findNamedNodes(AName, aList);
   end;
 end;
@@ -716,7 +679,7 @@ begin
   begin
     n := TJvXMLNode(nodes[i]);
     alist.Add(n);
-    // recurse
+    // Recurse
     n.getAllNodes(aList);
   end;
 end;
@@ -725,7 +688,7 @@ end;
 // the list only contains pointers to the nodes
 // typecast to use, e.g. n:=TJvXMLNode(aList[0]);
 
-procedure TJvXMLNode.findNamedAttributes(AName: string; aList: TList);
+procedure TJvXMLNode.findNamedAttributes(const AName: string; aList: TList);
 var
   i, c: Integer;
   n: TJvXMLNode;
@@ -734,7 +697,7 @@ begin
   if c > 0 then
     for i := 0 to c - 1 do
     begin
-      if TJvXMLAttribute(Attributes[i]).name = AName then
+      if TJvXMLAttribute(Attributes[i]).Name = AName then
       begin
         aList.Add(Self);
         break;
@@ -765,7 +728,7 @@ some examples
  //*  all element nodes below the root node
  book//author  <author> elements that are descendants of <book> elements
  .//author  <author elements that are descendants of the current element
- *  non-root elements, irrespective of the element name
+ *  non-root elements, irrespective of the element Name
  book/*  elements that are children of <book> elements
  book//* elements that are descendants of <book> elements
  book/*/author  <author> elements that are grandchildren of <book> elements
@@ -778,14 +741,9 @@ Index can be used to specify a particular node within a matching set
  /booklist/book[end()] Last <book> node in root <booklist> element
 }
 
-procedure TJvXMLNode.matchPattern(aPattern: string; aList: TList);
+procedure TJvXMLNode.matchPattern(const aPattern: string; aList: TList);
 begin
   // to be implemented
-end;
-
-procedure TJvXMLNode.SetValueType(const Value: TJvXMLValueType);
-begin
-  FValueType := Value;
 end;
 
 {select a node based on path info
@@ -793,7 +751,7 @@ end;
  <category> that is a child of <book> that is a child of <booklist>
  }
 
-function TJvXMLNode.SelectSingleNode(pattern: string): TJvXMLNode;
+function TJvXMLNode.SelectSingleNode(const pattern: string): TJvXMLNode;
 var
   npattern, aFilter: string;
   p, i, c: Integer;
@@ -842,7 +800,7 @@ begin
   end;
 end;
 
-// filter contains name + any filters between []
+// filter contains Name + any filters between []
 
 function TJvXMLNode.matchFilter(objFilter: TJvXMLFilter): Boolean;
 var
@@ -850,59 +808,59 @@ var
   a: TJvXMLAttribute;
   n: TJvXMLNode;
   attName: string;
-  atom: TJvXMLFilterAtom;
+  Atom: TJvXMLFilterAtom;
   attResult: Boolean;
 
-  function evalAtom(AValue: string): Boolean;
+  function evalAtom(const AValue: string): Boolean;
   begin
-    Result := false;
-    case atom.Operator of
-      xfoNOP: Result := true;
-      xfoEQ: Result := AValue = atom.Value;
-      xfoIEQ: Result := comparetext(AValue, atom.value) = 0;
-      xfoNE: Result := avalue <> atom.value;
-      xfoINE: Result := comparetext(AValue, atom.value) <> 0;
+    Result := False;
+    case Atom.Operator of
+      xfoNOP: Result := True;
+      xfoEQ: Result := AValue = Atom.Value;
+      xfoIEQ: Result := comparetext(AValue, Atom.value) = 0;
+      xfoNE: Result := avalue <> Atom.value;
+      xfoINE: Result := comparetext(AValue, Atom.value) <> 0;
       xfoGT:
         try
-          Result := Strtofloat(avalue) > strtofloat(atom.value);
+          Result := Strtofloat(avalue) > strtofloat(Atom.value);
         except
         end;
-      xfoIGT: Result := comparetext(AValue, atom.value) > 0;
+      xfoIGT: Result := comparetext(AValue, Atom.value) > 0;
       xfoLT:
         try
-          Result := Strtofloat(avalue) < strtofloat(atom.value);
+          Result := Strtofloat(avalue) < strtofloat(Atom.value);
         except
         end;
-      xfoILT: Result := comparetext(AValue, atom.value) < 0;
+      xfoILT: Result := comparetext(AValue, Atom.value) < 0;
       xfoGE:
         try
-          Result := Strtofloat(avalue) >= strtofloat(atom.value);
+          Result := Strtofloat(avalue) >= strtofloat(Atom.value);
         except
         end;
-      xfoIGE: Result := comparetext(AValue, atom.value) >= 0;
+      xfoIGE: Result := comparetext(AValue, Atom.value) >= 0;
       xfoLE:
         try
-          Result := Strtofloat(avalue) <= strtofloat(atom.value);
+          Result := Strtofloat(avalue) <= strtofloat(Atom.value);
         except
         end;
-      xfoILE: Result := comparetext(AValue, atom.value) <= 0;
+      xfoILE: Result := comparetext(AValue, Atom.value) <= 0;
     end;
 
   end;
 begin
-  Result := false;
-  AttResult := false;
+  Result := False;
+  AttResult := False;
   if objFilter.Filters.Count = 0 then
-  begin // just filter on name
-    Result := objFilter.Name = name;
+  begin // just filter on Name
+    Result := objFilter.Name = Name;
     Exit;
   end;
   for i := 0 to objFilter.Filters.count - 1 do
   begin
-    atom := TJvXMLFilterAtom(objFilter.Filters[i]);
-    if atom.AttributeFilter then
+    Atom := TJvXMLFilterAtom(objFilter.Filters[i]);
+    if Atom.AttributeFilter then
     begin
-      attName := atom.Name;
+      attName := Atom.Name;
       if attName = '*' then
       begin // match any attribute
         if Attributes.Count = 0 then Exit;
@@ -923,13 +881,13 @@ begin
     end
     else
     begin
-      attName := atom.Name;
+      attName := Atom.Name;
       n := GetNamedNode(attName);
       if n = nil then Exit;
       if not evalAtom(n.value) then Exit;
     end;
   end;
-  Result := true;
+  Result := True;
 end;
 
 procedure TJvXMLNode.SelectNodes(pattern: string; aList: TList);
@@ -939,17 +897,17 @@ var
   n: TJvXMLNode;
   aFilter: string;
   objFilter: TJvXMLFilter;
-  recurse: Boolean;
+  Recurse: Boolean;
 begin
   c := nodes.count;
   if c = 0 then Exit;
   if Copy(pattern, 1, 2) = '//' then
   begin //recursive
-    delete(pattern, 1, 2);
-    recurse := true;
+    Delete(pattern, 1, 2);
+    Recurse := True;
   end
   else
-    recurse := false;
+    Recurse := False;
   p := pos('/', pattern);
   if p = 0 then
   begin
@@ -962,7 +920,7 @@ begin
         aList.Add(n)
       else
       begin
-        if recurse then
+        if Recurse then
           n.SelectNodes('//' + pattern, aList);
       end;
     end;
@@ -983,7 +941,7 @@ begin
         n.SelectNodes(npattern, aList)
       else
       begin
-        if recurse then
+        if Recurse then
           n.selectNodes('//' + pattern, aList);
       end;
     end;
@@ -1008,10 +966,10 @@ var
   i: Integer;
   spc: string;
 
-  function ExpandCDATA(AValue: string): string;
+  function ExpandCDATA(const AValue: string): string;
   begin
-    Result := stringreplace(AValue, '\n ', sLineBreak, [rfreplaceall]);
-    Result := stringreplace(Result, '\t ', tab, [rfreplaceall]);
+    Result := StringReplace(AValue, '\n ', sLineBreak, [rfreplaceall]);
+    Result := StringReplace(Result, '\t ', tab, [rfreplaceall]);
   end;
 begin
   if parentNode = nil then
@@ -1065,7 +1023,7 @@ end;
 
 // find the node with a path like customers/regional/jansoft
 
-function TJvXMLNode.GetNamePathNode(APath: string): TJvXMLNode;
+function TJvXMLNode.GetNamePathNode(const APath: string): TJvXMLNode;
 var
   AName, newpath, sindex: string;
   c, i, p, Index, indexc: Integer;
@@ -1079,7 +1037,7 @@ begin
     Result := Self;
     Exit;
   end;
-  p := posstr('/', APath, 1);
+  p := PosStr('/', APath, 1);
   if p = 0 then
   begin
     AName := APath;
@@ -1091,7 +1049,7 @@ begin
     newPath := Copy(APath, p + 1, Length(APath));
   end;
   // now check for any Index []
-  p := posstr('[', aname, 1);
+  p := PosStr('[', aname, 1);
   Index := 0; // search first by default
   indexc := 0;
   if p > 0 then
@@ -1151,7 +1109,7 @@ begin
     end;
 end;
 
-function TJvXMLNode.ForceNamePathNode(APath: string): TJvXMLNode;
+function TJvXMLNode.ForceNamePathNode(const APath: string): TJvXMLNode;
 var
   AName, newpath: string;
   c, i, p: Integer;
@@ -1159,7 +1117,7 @@ var
   doappend: Boolean;
 begin
   //  Result:=nil;
-  p := posstr('/', APath, 1);
+  p := PosStr('/', APath, 1);
   if p = 0 then
   begin
     AName := APath;
@@ -1170,8 +1128,8 @@ begin
     AName := Copy(APath, 1, p - 1);
     newPath := Copy(APath, p + 1, Length(APath));
   end;
-  p := posstr('+', AName, 1);
-  if p > 0 then delete(AName, p, 1);
+  p := PosStr('+', AName, 1);
+  if p > 0 then Delete(AName, p, 1);
   doappend := p > 0;
   c := nodes.Count;
   if (not doappend) and (c > 0) then
@@ -1203,7 +1161,7 @@ begin
     Result := n.ForceNamePathNode(newpath);
 end;
 
-function TJvXMLNode.ForceNamePathNodeAttribute(APath, AName: string;
+function TJvXMLNode.ForceNamePathNodeAttribute(const APath, AName: string;
   AValue: Variant): TJvXMLAttribute;
 var
   n: TJvXMLNode;
@@ -1224,7 +1182,7 @@ begin
   end;
 end;
 
-function TJvXMLNode.GetNamePathNodeAttribute(APath, AName: string): TJvXMLAttribute;
+function TJvXMLNode.GetNamePathNodeAttribute(const APath, AName: string): TJvXMLAttribute;
 var
   n: TJvXMLNode;
 begin
@@ -1234,7 +1192,7 @@ begin
   Result := n.GetNamedAttribute(AName);
 end;
 
-procedure TJvXMLNode.DeleteNamePathNode(APath: string);
+procedure TJvXMLNode.DeleteNamePathNode(const APath: string);
 var
   n, pn: TJvXMLNode;
   i: Integer;
@@ -1253,7 +1211,7 @@ begin
   end;
 end;
 
-procedure TJvXMLNode.DeleteNamePathNodeAttribute(APath, AName: string);
+procedure TJvXMLNode.DeleteNamePathNodeAttribute(const APath, AName: string);
 var
   a: TJvXMLAttribute;
   pn: TJvXMLNode;
@@ -1272,7 +1230,7 @@ begin
   end;
 end;
 
-function TJvXMLNode.GetAttributeValue(AName: string): Variant;
+function TJvXMLNode.GetAttributeValue(const AName: string): Variant;
 var
   i, c: Integer;
   a: TJvXMLAttribute;
@@ -1293,7 +1251,7 @@ end;
 
 { TJvXMLTree }
 
-constructor TJvXMLTree.Create(AName: string; AValue: Variant; AParent: TJvXMLNode);
+constructor TJvXMLTree.Create(const AName: string; AValue: Variant; AParent: TJvXMLNode);
 begin
   inherited Create(AName, AValue, AParent);
   FLines := TStringList.Create;
@@ -1305,7 +1263,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvXMLTree.asText: string;
+function TJvXMLTree.AsText: string;
 var
   i, c: Integer;
 begin
@@ -1321,15 +1279,10 @@ begin
   Result := Result + '</' + Name + '>' + sLineBreak;
 end;
 
-procedure TJvXMLTree.SaveToFile(aFile: string);
+procedure TJvXMLTree.SaveToFile(const aFile: string);
 begin
   Lines.Text := Text;
   Lines.SaveToFile(aFile);
-end;
-
-function TJvXMLTree.GetLines: TStrings;
-begin
-  Result := FLines;
 end;
 
 procedure TJvXMLTree.SetLines(const Value: TStrings);
@@ -1352,12 +1305,13 @@ begin
   Lines.SaveToStream(Stream);
 end;
 
-function TJvXMLTree.getText: string;
+function TJvXMLTree.GetText: string;
 var
   i, c: Integer;
 begin
   c := Nodes.Count;
-  if c = 0 then Exit;
+  if c = 0 then
+    Exit;
   //  Result:='<'+Name;
   //  if Attributes.Count>0 then
   //  for i:=0 to Attributes.count-1 do
@@ -1369,7 +1323,7 @@ begin
   //  Result:=Result+'</'+Name+'>'+sLineBreak;
 end;
 
-procedure TJvXMLTree.setText(const Value: string);
+procedure TJvXMLTree.SetText(const Value: string);
 begin
   ClearNodes;
   ClearAttributes;
@@ -1380,8 +1334,9 @@ end;
 
 { TJvXMLAttribute }
 
-constructor TJvXMLAttribute.Create(AParent: TJvXMLNode; AName: string; AValue: Variant);
+constructor TJvXMLAttribute.Create(AParent: TJvXMLNode; const AName: string; AValue: Variant);
 begin
+  inherited Create;
   FName := AName;
   FValue := AValue;
   FParent := AParent;
@@ -1393,21 +1348,6 @@ var
 begin
   s := Value;
   Result := ' ' + Name + '="' + s + '"';
-end;
-
-procedure TJvXMLAttribute.SetName(const Value: string);
-begin
-  FName := Value;
-end;
-
-procedure TJvXMLAttribute.SetParent(const Value: TJvXMLNode);
-begin
-  FParent := Value;
-end;
-
-procedure TJvXMLAttribute.SetValue(const Value: Variant);
-begin
-  FValue := Value;
 end;
 
 { TJvXMLTree }
@@ -1460,7 +1400,7 @@ begin
   until i > c;
 end;
 
-procedure TJvXMLTree.LoadFromFile(fn: string);
+procedure TJvXMLTree.LoadFromFile(const fn: string);
 begin
   ClearNodes;
   ClearAttributes;
@@ -1477,28 +1417,28 @@ var
   p1, p2: Integer;
   attName, attValue: string;
   attOperator: TJvXMLFilterOperator;
-  atom: TJvXMLFilterAtom;
+  Atom: TJvXMLFilterAtom;
   //    a:TJvXMLAttribute;
   //    n:TJvXMLNode;
 
-  function trimquotes(s: string): string;
+  function trimquotes(const s: string): string;
   var
     cc: Integer;
   begin
     Result := Trim(s);
     if s = '' then Exit;
-    if (s[1] = '"') or (s[1] = '''') then delete(Result, 1, 1);
+    if (s[1] = '"') or (s[1] = '''') then Delete(Result, 1, 1);
     if s = '' then Exit;
     cc := Length(Result);
-    if (Result[cc] = '"') or (Result[cc] = '''') then delete(Result, cc, 1);
+    if (Result[cc] = '"') or (Result[cc] = '''') then Delete(Result, cc, 1);
   end;
 
-  function splitNameValue(s: string): Boolean;
+  function splitNameValue(const s: string): Boolean;
   var
     pp: Integer;
   begin
-    //      Result:=false;
-    pp := posStr(' $ne$ ', s, 1);
+    //      Result:=False;
+    pp := PosStr(' $ne$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoNE;
@@ -1507,7 +1447,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' $ine$ ', s, 1);
+    pp := PosStr(' $ine$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoINE;
@@ -1516,7 +1456,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' $ge$ ', s, 1);
+    pp := PosStr(' $ge$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoGE;
@@ -1525,7 +1465,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' $ige$ ', s, 1);
+    pp := PosStr(' $ige$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoIGE;
@@ -1534,7 +1474,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' $gt$ ', s, 1);
+    pp := PosStr(' $gt$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoGT;
@@ -1543,7 +1483,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' $igt$ ', s, 1);
+    pp := PosStr(' $igt$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoIGT;
@@ -1552,7 +1492,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' $le$ ', s, 1);
+    pp := PosStr(' $le$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoLE;
@@ -1561,7 +1501,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' $ile$ ', s, 1);
+    pp := PosStr(' $ile$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoILE;
@@ -1570,7 +1510,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' $lt$ ', s, 1);
+    pp := PosStr(' $lt$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoLT;
@@ -1579,7 +1519,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' $ilt$ ', s, 1);
+    pp := PosStr(' $ilt$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoILT;
@@ -1588,7 +1528,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' $eq$ ', s, 1);
+    pp := PosStr(' $eq$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoEQ;
@@ -1597,7 +1537,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' $ieq$ ', s, 1);
+    pp := PosStr(' $ieq$ ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoIEQ;
@@ -1606,7 +1546,7 @@ var
       Result := (attName <> '') and (attValue <> '');
       Exit;
     end;
-    pp := posStr(' = ', s, 1);
+    pp := PosStr(' = ', s, 1);
     if pp > 0 then
     begin
       attOperator := xfoEQ;
@@ -1618,52 +1558,52 @@ var
     attOperator := xfoNOP;
     attName := s;
     attValue := '';
-    Result := true;
+    Result := True;
     Exit;
   end;
 
 begin
   Filters := TList.Create;
-  p1 := posStr('[', FilterStr, 1);
+  p1 := PosStr('[', FilterStr, 1);
   if p1 = 0 then
-  begin // just a name filter on name
-    name := FilterStr;
+  begin // just a Name filter on Name
+    Name := FilterStr;
     Exit;
   end
   else
   begin
     Name := Copy(FilterStr, 1, p1 - 1);
-    delete(FilterStr, 1, p1 - 1);
+    Delete(FilterStr, 1, p1 - 1);
   end;
   repeat
     FilterStr := Trim(FilterStr);
-    p1 := posStr('[', FilterStr, 1);
+    p1 := PosStr('[', FilterStr, 1);
     if p1 = 0 then Exit;
-    p2 := posStr(']', FilterStr, p1 + 1);
+    p2 := PosStr(']', FilterStr, p1 + 1);
     if p2 = 0 then Exit;
     theFilter := Copy(FilterStr, p1 + 1, p2 - p1 - 1);
-    delete(FilterStr, 1, p2);
+    Delete(FilterStr, 1, p2);
     if theFilter = '' then Exit;
     // check for attribute filter
     if theFilter[1] = '@' then
     begin
       if not splitNameValue(Copy(theFilter, 2, Length(theFilter))) then Exit;
-      atom := TJvXMLFilterAtom.Create;
-      atom.Name := attName;
-      atom.Operator := attOperator;
-      atom.Value := attValue;
-      atom.AttributeFilter := true;
-      Filters.Add(atom);
+      Atom := TJvXMLFilterAtom.Create;
+      Atom.Name := attName;
+      Atom.Operator := attOperator;
+      Atom.Value := attValue;
+      Atom.AttributeFilter := True;
+      Filters.Add(Atom);
     end
     else
     begin // childfilter
       if not splitNameValue(theFilter) then Exit;
-      atom := TJvXMLFilterAtom.Create;
-      atom.Name := attName;
-      atom.Operator := attOperator;
-      atom.Value := attValue;
-      atom.AttributeFilter := false;
-      Filters.Add(atom);
+      Atom := TJvXMLFilterAtom.Create;
+      Atom.Name := attName;
+      Atom.Operator := attOperator;
+      Atom.Value := attValue;
+      Atom.AttributeFilter := False;
+      Filters.Add(Atom);
     end;
   until FilterStr = '';
 end;
@@ -1677,39 +1617,6 @@ begin
       TJvXMLFilterAtom(Filters[i]).Free;
   filters.Free;
   inherited Destroy;
-end;
-
-procedure TJvXMLFilter.SetFilters(const Value: TList);
-begin
-  FFilters := Value;
-end;
-
-procedure TJvXMLFilter.SetName(const Value: string);
-begin
-  FName := Value;
-end;
-
-{ TJvXMLFilterAtom }
-
-procedure TJvXMLFilterAtom.SetAttributeFilter(const Value: Boolean);
-begin
-  FAttributeFilter := Value;
-end;
-
-procedure TJvXMLFilterAtom.SetName(const Value: string);
-begin
-  FName := Value;
-end;
-
-procedure TJvXMLFilterAtom.SetOperator(
-  const Value: TJvXMLFilterOperator);
-begin
-  FOperator := Value;
-end;
-
-procedure TJvXMLFilterAtom.SetValue(const Value: string);
-begin
-  FValue := Value;
 end;
 
 end.

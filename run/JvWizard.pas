@@ -519,7 +519,7 @@ type
     FAnchors: TAnchors;
     FIndent: Integer;
     FFont: TFont;
-    procedure SetText(Value: string);
+    procedure SetText(const Value: string);
     procedure SetAlignment(Value: TAlignment);
     procedure SetAnchors(Value: TAnchors);
     procedure SetAnchorPlacement(Value: Integer);
@@ -1901,7 +1901,7 @@ begin
   end;
 end;
 
-procedure TJvWizardPageTitle.SetText(Value: string);
+procedure TJvWizardPageTitle.SetText(const Value: string);
 begin
   if FText <> Value then
   begin

@@ -174,7 +174,7 @@ type
     procedure check(Expr: boolean; const Message: string; E:
       TJvgXMLSerializerException);
 
-    procedure WriteOutStream(Value: string);
+    procedure WriteOutStream(const Value: string);
     { Private declarations }
   protected
     procedure SerializeInternal(Component: TObject; Level: integer = 1);
@@ -259,9 +259,10 @@ end;
 //{ пишет строку в выходящий поток. Исп-ся при сериализации }
 { writes string to output stream. Used for serialization. [translated] }
 
-procedure TJvgXMLSerializer.WriteOutStream(Value: string);
+procedure TJvgXMLSerializer.WriteOutStream(const Value: string);
 begin
-  OutStream.Write(Pchar(Value)[0], Length(Value));
+  if Value <> '' then
+    OutStream.Write(PChar(Value)[0], Length(Value));
 end;
 
 //  Конвертирует компонент в XML-код в соответствии

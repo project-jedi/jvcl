@@ -303,7 +303,7 @@ function VarIsStr(const V: Variant): Boolean;
   because they do not work properly sometimes, so do not use them }
 // (rom) ReplaceStrings1, GetSubStr removed
 function GetParameter: string;
-function GetLongFileName(FileName: string): string;
+function GetLongFileName(const FileName: string): string;
 {* from unit FileCtrl}
 function DirectoryExists(const Name: string): Boolean;
 procedure ForceDirectories(Dir: string);
@@ -321,7 +321,7 @@ function ReplaceAllStrings(S: string; Words, Frases: TStrings): string;
   in the list, Words, and if founds, replaces this Word
   with string from another list, Frases, with the same Index,
   and then update NewSelStart variable }
-function ReplaceStrings(S: string; PosBeg, Len: Integer; Words, Frases: TStrings; var NewSelStart: Integer): string;
+function ReplaceStrings(const S: string; PosBeg, Len: Integer; Words, Frases: TStrings; var NewSelStart: Integer): string;
 { CountOfLines calculates the lines count in a string, S,
   each line must be separated from another with CrLf sequence }
 function CountOfLines(const S: string): Integer;
@@ -730,16 +730,16 @@ function DiskInDrive(Drive: Char): Boolean;
 procedure PError(const Text: string);
 
 // execute a program without waiting
-procedure Exec(FileName, Parameters, Directory: string);
+procedure Exec(const FileName, Parameters, Directory: string);
 // execute a program and wait for it to finish
-procedure ExecuteAndWait(FileName: string; Visibility: Integer);
+procedure ExecuteAndWait(const FileName: string; Visibility: Integer);
 
 {$IFDEF VCL}
 // returns True if this is the first instance of the program that is running
 function FirstInstance(const ATitle: string): Boolean;
 // restores a window based on it's classname and Caption. Either can be left empty
 // to widen the search
-procedure RestoreOtherInstance(MainFormClassName, MainFormCaption: string);
+procedure RestoreOtherInstance(const MainFormClassName, MainFormCaption: string);
 
 // manipulate the traybar and start button
 procedure HideTraybar;
@@ -755,11 +755,11 @@ procedure MonitorOff;
 procedure LowPower;
 
 // send a key to the window named AppName
-function SendKey(AppName: string; Key: Char): Boolean;
+function SendKey(const AppName: string; Key: Char): Boolean;
 {$ENDIF VCL}
 {$IFDEF MSWINDOWS}
 // associates an extension to a specific program
-procedure AssociateExtension(IconPath, ProgramName, Path, Extension: string);
+procedure AssociateExtension(const IconPath, ProgramName, Path, Extension: string);
 
 function GetRecentDocs: TStringList;
 procedure AddToRecentDocs(const Filename: string);
@@ -2867,7 +2867,7 @@ end;
       SelStart := NewSelStart-1;
     end; }
 
-function ReplaceStrings(S: string; PosBeg, Len: Integer; Words, Frases: TStrings;
+function ReplaceStrings(const S: string; PosBeg, Len: Integer; Words, Frases: TStrings;
   var NewSelStart: Integer): string;
 var
   I, Beg, Ent, LS, F: Integer;
@@ -6219,7 +6219,7 @@ begin
     Result := GetLongFileName(Result);
 end;
 
-function GetLongFileName(FileName: string): string;
+function GetLongFileName(const FileName: string): string;
 {$IFDEF MSWINDOWS}
 var
   SearchRec: TSearchRec;
@@ -6717,7 +6717,7 @@ begin
   end;
 end;
 
-procedure Exec(FileName, Parameters, Directory: string);
+procedure Exec(const FileName, Parameters, Directory: string);
 var
   Operation: string;
 begin
@@ -6740,7 +6740,7 @@ end;
 
 { (rb) Duplicate of JclMiscel.WinExec32AndWait }
 
-procedure ExecuteAndWait(FileName: string; Visibility: Integer);
+procedure ExecuteAndWait(const FileName: string; Visibility: Integer);
 {$IFDEF MSWINDOWS}
 var
   zAppName: array [0..512] of Char;
@@ -6782,7 +6782,7 @@ begin
   end;
 end;
 
-procedure RestoreOtherInstance(MainFormClassName, MainFormCaption: string);
+procedure RestoreOtherInstance(const MainFormClassName, MainFormCaption: string);
 var
   OtherWnd, OwnerWnd: HWND;
 begin
@@ -6896,7 +6896,7 @@ begin
   SendMessage(H, WM_KEYDOWN, vKey, lParam);
 end;
 
-function SendKey(AppName: string; Key: Char): Boolean;
+function SendKey(const AppName: string; Key: Char): Boolean;
 var
   vKey, ScanCode: Word;
   ConvKey: Longint;
@@ -6943,7 +6943,7 @@ begin
     Longint(PChar('WindowMetrics')), SMTO_NORMAL or SMTO_ABORTIFHUNG, 10000, Dummy);
 end;
 
-procedure AssociateFileExtension(IconPath, ProgramName, Path, Extension: string);
+procedure AssociateFileExtension(const IconPath, ProgramName, Path, Extension: string);
 begin
   with TRegistry.Create do
   begin
@@ -6973,7 +6973,7 @@ begin
   RebuildIconCache;
 end;
 
-procedure AssociateExtension(IconPath, ProgramName, Path, Extension: string);
+procedure AssociateExtension(const IconPath, ProgramName, Path, Extension: string);
 begin
   AssociateFileExtension(IconPath, ProgramName, Path, Extension);
 end;

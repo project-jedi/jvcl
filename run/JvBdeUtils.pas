@@ -116,10 +116,8 @@ function IsDirectory(const DatabaseName: string): Boolean;
 function GetBdeDirectory: string;
 function BdeErrorMsg(ErrorCode: DBIResult): string;
 function LoginToDatabase(Database: TDatabase; OnLogin: TDatabaseLoginEvent): Boolean;
-function DataSetFindValue(ADataSet: TBDEDataSet; const Value,
-  FieldName: string): Boolean;
-function DataSetFindLike(ADataSet: TBDEDataSet; const Value,
-  FieldName: string): Boolean;
+function DataSetFindValue(ADataSet: TBDEDataSet; const Value, FieldName: string): Boolean;
+function DataSetFindLike(ADataSet: TBDEDataSet; const Value, FieldName: string): Boolean;
 function DataSetRecNo(DataSet: TDataSet): Longint;
 function DataSetRecordCount(DataSet: TDataSet): Longint;
 function DataSetPositionStr(DataSet: TDataSet): string;

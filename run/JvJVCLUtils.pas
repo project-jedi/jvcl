@@ -148,14 +148,14 @@ function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
 
 { Execute executes other program and waiting for it
   terminating, then return its Exit Code }
-function Execute(const CommandLine: string; WorkingDirectory: string): Integer;
+function Execute(const CommandLine, WorkingDirectory: string): Integer;
 
 // launches the specified CPL file
 // format: <Filename> [,@n] or [,,m] or [,@n,m]
 // where @n = zero-based index of the applet to start (if there is more than one
 // m is the zero-based index of the tab to display
 {$IFDEF VCL}
-procedure LaunchCpl(FileName: string);
+procedure LaunchCpl(const FileName: string);
 
 {
   GetControlPanelApplets retrieves information about all control panel applets in a specified folder.
@@ -290,14 +290,14 @@ function RBTag(Parent: TWinControl): Integer;
 { FindFormByClass returns first form with specified
   class, FormClass, owned by Application global variable }
 function FindFormByClass(FormClass: TFormClass): TForm;
-function FindFormByClassName(FormClassName: string): TForm;
+function FindFormByClassName(const FormClassName: string): TForm;
 { AppMinimized returns True, if Application is minimized }
 function AppMinimized: Boolean;
 function IsForegroundTask: Boolean;
 {$IFDEF VCL}
 { MessageBox is Application.MessageBox with string (not PChar) parameters.
   if Caption parameter = '', it replaced with Application.Title }
-function MessageBox(const Msg: string; Caption: string; const Flags: Integer): Integer;
+function MessageBox(const Msg, Caption: string; const Flags: Integer): Integer;
 function MsgBox(const Caption, Text: string; Flags: Integer): Integer;
 function MsgDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 function MsgDlg2(const Msg, ACaption: string; DlgType: TMsgDlgType;
@@ -1104,7 +1104,7 @@ end;
 
 // (rom) a thread to wait would be more elegant, also JCL function available
 
-function Execute(const CommandLine: string; WorkingDirectory: string): Integer;
+function Execute(const CommandLine, WorkingDirectory: string): Integer;
 {$IFDEF MSWINDOWS}
 var
   r: Boolean;
@@ -1142,15 +1142,17 @@ end;
 {$IFDEF LINUX}
 begin
   if WorkingDirectory = '' then
-    WorkingDirectory := GetCurrentDir;
-  Result := Libc.system(PChar(Format('cd "%s" ; %s',
-    [WorkingDirectory, CommandLine])));
+    Result := Libc.system(PChar(Format('cd "%s" ; %s',
+      [GetCurrentDir, CommandLine])))
+  else
+    Result := Libc.system(PChar(Format('cd "%s" ; %s',
+      [WorkingDirectory, CommandLine])));
 end;
 {$ENDIF LINUX}
 
 {$IFDEF VCL}
 
-procedure LaunchCpl(FileName: string);
+procedure LaunchCpl(const FileName: string);
 begin
   // rundll32.exe shell32,Control_RunDLL ';
   RunDLL32('shell32.dll', 'Control_RunDLL', FileName, True);
@@ -3149,7 +3151,7 @@ begin
     end;
 end;
 
-function FindFormByClassName(FormClassName: string): TForm;
+function FindFormByClassName(const FormClassName: string): TForm;
 var
   I: Integer;
 begin
@@ -3158,7 +3160,7 @@ begin
     if Application.Components[I].ClassName = FormClassName then
     begin
       Result := Application.Components[I] as TForm;
-      break;
+      Break;
     end;
 end;
 
@@ -3209,12 +3211,16 @@ end;
 
 {$IFDEF VCL}
 
-function MessageBox(const Msg: string; Caption: string; const Flags: Integer):
+function MessageBox(const Msg, Caption: string; const Flags: Integer):
   Integer;
+var
+  P: PChar;
 begin
   if Caption = '' then
-    Caption := Application.Title;
-  Result := Application.MessageBox(PChar(Msg), PChar(Caption), Flags);
+    P := Pointer(Caption)
+  else
+    P := PChar(Application.Title);
+  Result := Application.MessageBox(PChar(Msg), P, Flags);
 end;
 
 const

@@ -97,12 +97,11 @@ type
     FOnFreeDfmStream: TJvInterpreterFreeDfmStream;
     procedure LoadForm(AForm: TJvInterpreterForm);
   protected
-    function GetValue(Identifier: string; var Value: Variant;
+    function GetValue(const Identifier: string; var Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; override;
-    function SetValue(Identifier: string; const Value: Variant;
+    function SetValue(const Identifier: string; const Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; override;
-    function GetUnitSource(UnitName: string; var Source: string): Boolean;
-      override;
+    function GetUnitSource(const UnitName: string; var Source: string): Boolean; override;
     procedure CreateDfmStream(const UnitName: string; var Stream: TStream); dynamic;
     procedure FreeDfmStream(Stream: TStream); dynamic;
   public
@@ -395,7 +394,7 @@ begin
     Form.Visible := False;
 end;
 
-function TJvInterpreterFm.GetValue(Identifier: string; var Value: Variant;
+function TJvInterpreterFm.GetValue(const Identifier: string; var Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
 var
   JvInterpreterSrcClass: TJvInterpreterIdentifier;
@@ -477,7 +476,7 @@ begin
   Result := Result or inherited GetValue(Identifier, Value, Args);
 end;
 
-function TJvInterpreterFm.SetValue(Identifier: string; const Value: Variant;
+function TJvInterpreterFm.SetValue(const Identifier: string; const Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
 begin
   if (Args.Obj = nil) and (CurInstance is TJvInterpreterForm) then
@@ -502,7 +501,7 @@ begin
   Result := Result or inherited SetValue(Identifier, Value, Args);
 end;
 
-function TJvInterpreterFm.GetUnitSource(UnitName: string; var Source: string): Boolean;
+function TJvInterpreterFm.GetUnitSource(const UnitName: string; var Source: string): Boolean;
 var
   FN: TFileName;
 begin
@@ -517,12 +516,15 @@ begin
     if not Result then
     begin
       if ExtractFileExt(UnitName) = '' then
-        UnitName := UnitName + '.pas';
-      if FileExists(UnitName) then
-        FN := UnitName
+        FN := UnitName + '.pas'
       else
-        FN := FindInPath(ExtractFileName(UnitName), ExtractFilePath(FFileName));
+        FN := UnitName;
       Result := FileExists(FN);
+      if not Result then
+      begin
+        FN := FindInPath(ExtractFileName(FN), ExtractFilePath(FFileName));
+        Result := FileExists(FN);
+      end;
       if Result then
         Source := LoadTextFile(FN)
     end;
