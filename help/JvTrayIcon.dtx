@@ -73,6 +73,7 @@ Description
   * Delay is set to 100.
   * Active is set to False.
   * Visibility is set to [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide].
+  * Snap is set to False
 Parameters
   AOwner - A component, typically the form, that is responsible for freeing the component.
 See Also
@@ -410,11 +411,8 @@ Description
   Typically, clicking a tray icon causes the application to display a window with additional information;
   right-clicking displays a shortcut menu.
   
-  \Include tvRestoreClick in Visibility to automatically restore the application and the visibility of 
-  the application button when the user clicks the tray icon with the left button.
-
-  \Include tvMinimizeClick in Visibility to automatically hide the application and 
-  the application button when the user clicks the tray icon with the left button.
+  Use the tvRestoreDbClick and tvMinimizeDbClick flags from Visibility to automate the process of
+  hiding and restoring the application upon clicking of the tray icon with the left button.
 See Also
   OnDblClick, OnMouseDown, OnMouseUp, Visibility
 ----------------------------------------------------------------------------------------------------
@@ -427,11 +425,8 @@ Description
   Typically, double-clicking a tray icon causes the application to executes the default shortcut menu
   command.
   
-  \Include tvRestoreDbClick in Visibility to automatically restore the application and the visibility
-  of the application button when the user double-clicks the tray icon.
-
-  \Include tvMinimizeDbClick in Visibility to automatically hide the application and the application
-  button when the user double-clicks the tray icon, respectively.
+  Use the tvRestoreDbClick and tvMinimizeDbClick flags from Visibility to automate the process of
+  hiding and restoring the application upon double-clicking of the tray icon.
 Note
   Assigning an OnDblClick event handler, overrides the tvRestoreDbClick and tvMinimizeDbClick flag in
   Visibility. Thus the application isn't automatically restored or hidden when the user double-clicks
@@ -512,43 +507,24 @@ Description
 See Also
   HideApplication, Visibility
 ----------------------------------------------------------------------------------------------------
+@@TJvTrayIcon.Snap
+Summary
+  Specifies whether the hiding and restoring of the application should be animated.
+Description
+  Set Snap to True to make the hiding and restoring of the application appear suddenly. Set Snap to
+  False to make it appear animated.
+  
+  Use Visibility to automate the hiding and restoring of the application.
+See Also
+  Options
+----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.Visibility
 <AUTOLINK OFF>
 Summary
   Specifies options and default appearance for the tray icon.
 Description
 <AUTOLINK ON>
-  Use the Visibility property to customize the appearance and functionality of the tray icon. The 
-  possible values of Visibility are
-  <TABLE>
-  Value                Meaning
-  -----                -------
-  tvVisibleTaskBar     Indicates whether the application and the application button on the taskbar are
-                        visible. 
-                        
-                       Use this flag at run-time to show or hide the application. For example removing
-                        this flag from Visibility will hide the application. Use this
-                        flag at design-time to indicate whether the application and the application button
-                        must be visible when the application starts up.
-  tvVisibleTaskList    (Windows 95, 98 and me.) Shows the application in the windows task manager
-                        application. This is default behaviour. If this flag is not set, TJvTrayIcon
-                        removes the application from the task manager; the application prevent itself
-                        from being closed when the user logs off. The application close only when the
-                        system is shut down.
-  tvAutoHide           Automatically removes the application button on the taskbar if the user minimizes
-                        the application.
-  tvVisibleDesign      Shows the tray icon in the traybar notification area at design-time.
-  tvRestoreClick       Automatically restores the application and the visibility of the application
-                        button on the taskbar, when the user clicks the tray icon with the left button.
-  tvRestoreDbClick     Automatically restores the application and the visibility of the application
-                        button on the taskbar, when the user double-clicks the tray icon. Assigning
-                        an OnDblClick event handler overrides this behaviour.
-  tvMinimizeClick      Automatically hides the application and removes the application
-                        button from the taskbar, when the user clicks the tray icon with the left button.
-  tvMinimizeDbClick    Automatically hides the application and removes the application
-                        button from the taskbar, when the user double-clicks the tray icon. Assigning
-                        an OnDblClick event handler overrides this behaviour.
-  </TABLE>
+  Use the Visibility property to customize the appearance and functionality of the tray icon.
 <AUTOLINK OFF>
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.VisibleInTaskList
@@ -634,3 +610,34 @@ Parameters
 <TITLE TTrayVisibility type>
 <AUTOLINK OFF>
 <COMBINE TJvTrayIcon.Visibility>
+@@TTrayVisibility.tvVisibleTaskBar
+  Indicates whether the application and the application button on the taskbar are visible. 
+                        
+  Use this flag at run-time to show or hide the application. For example removing
+  this flag from Visibility will hide the application. Use this
+  flag at design-time to indicate whether the application and the application button
+  must be visible when the application starts up.
+@@TTrayVisibility.tvVisibleTaskList    
+  (Windows 95, 98 and me.) Shows the application in the windows task manager
+  application. This is default behaviour. If this flag is not set, <LINK TJvTrayIcon,TJvTrayIcon>
+  removes the application from the task manager; the application prevent itself
+  from being closed when the user logs off. The application close only when the
+  system is shut down.
+@@TTrayVisibility.tvAutoHide           
+  Automatically removes the application button on the taskbar if the user minimizes the application.
+@@TTrayVisibility.tvVisibleDesign
+  Shows the tray icon in the traybar notification area at design-time.
+@@TTrayVisibility.tvRestoreClick
+  Automatically restores the application and the visibility of the application
+  button on the taskbar, when the user clicks the tray icon with the left button.
+@@TTrayVisibility.tvRestoreDbClick
+  Automatically restores the application and the visibility of the application
+  button on the taskbar, when the user double-clicks the tray icon. Assigning
+  an <LINK TJvTrayIcon.OnDblClick,OnDblClick> event handler overrides this behaviour.
+@@TTrayVisibility.tvMinimizeClick
+  Automatically hides the application and removes the application
+  button from the taskbar, when the user clicks the tray icon with the left button.
+@@TTrayVisibility.tvMinimizeDbClick
+  Automatically hides the application and removes the application
+  button from the taskbar, when the user double-clicks the tray icon. Assigning
+  an <LINK TJvTrayIcon.OnDblClick,OnDblClick> event handler overrides this behaviour.

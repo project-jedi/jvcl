@@ -76,8 +76,7 @@ Description
 Summary
   Represents the types of directory searches a TJvSearchFiles component can perform.
 Description
-  TJvDirOption represents the types of directory searches a TJvSearchFiles can perform. The following
-  table gives the possible values:
+  TJvDirOption represents the types of directory searches a TJvSearchFiles can perform.
 @@TJvDirOption.doExcludeSubDirs
   Only searches for files or directories in the directory specified by <LINK TJvSearchFiles.RootDirectory,
   RootDirectory>.
@@ -96,6 +95,13 @@ Description
 @@TJvErrorResponse
 <TITLE TJvErrorResponse type>
 <AUTOLINK OFF>
+@@TJvErrorResponse.erAbort      
+  Aborts the entire search operation; Search will return with result False.
+@@TJvErrorResponse.erIgnore
+  Aborts the search operation in the directory where the error occurred, and continues
+  in the next.
+@@TJvErrorResponse.erRaise
+  Raises a system error.
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchAttributes
 Summary
@@ -413,16 +419,7 @@ Summary
   Specifies how to react on errors.
 Description
 <AUTOLINK ON>
-  Use ErrorResponse to specify how the file search component should react on errors. The possible 
-  values of ErrorResponse are:
-  <TABLE>
-  Value        Meaning
-  -----        -------
-  erAbort      Aborts the entire search operation; Search will return with result False.
-  erIgnore     Aborts the search operation in the directory where the error occurred, and continues
-                in the next.
-  erRaise      Raises a system error.
-  </TABLE>
+  Use ErrorResponse to specify how the file search component should react on errors. 
 <AUTOLINK OFF>
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.FileParams
@@ -556,38 +553,13 @@ See Also
 Summary
   Specifies various behavioral properties of the search component.
 Description
-  Set Options to include the desired properties for the search component. Options is a set drawn from
-  the following values: 
-<TABLE>
-Value                     Meaning
-------------------------  --------------------------------------------------------------------------
-soAllowDuplicates         Allow duplicate file or directory names be stored in the Files and
-                           Directories lists. If soOwnerData is included in Options then this flag
-                           is ignored.
-soCheckRootDirValid       Checks whether the root directory is valid as specified by DirParams. If
-                           the root directory isn't valid then no search for files or directories is
-                           performed in that directory; if also DirOption equals doExcludeSubDirs or
-                           doExcludeCompleteInvalidDirs then no search at all is performed.
-                           Otherwise the component only searches for files or directories in the
-                           sub-directories of the root directory.
-soExcludeFilesInRootDir   Disables searching for files or directories in the root directory as
-                           specified by RootDirectory. If DirOption equals doExcludeSubDirs then no
-                           search at all is performed.
-soOwnerData               Doesn't fill the Files and Directories lists with found file or directory
-                           names while searching.
-soSearchDirs              Searches for directories; ie if a valid - as specified by DirParams -
-                           directory is found, the component will trigger an OnFindDirectory event, 
-                           add the directory name to the Directories list - if soOwnerData isn't
-                           included in Options - and update TotalDirectories and TotalFileSize.
-soSearchFiles             Searches for files; ie if a valid - as specified by FileParams - file is 
-                           found, the component will trigger an OnFindFile event, add the file name
-                           to the Files list - if soOwnerData isn't included in Options - and update
-                           TotalFileSize and TotalFiles.
-soSorted                  Automatically sorts the strings in the Files and Directories lists. If
-                           soOwnerData is included in Options then this flag is ignored.
-soStripDirs               Strips the path of a directory or file name before inserting it in the 
-                           Files and Directories lists.
-</TABLE>
+  Use Options to
+
+  * Specify whether to search for files, directories or both.
+  * Control the format of the Files and Directories lists.
+  * Specify whether to search in the start directory as specified by RootDirectory.
+
+  By default, all options except soSearchFiles are off.
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.RootDirectory
 Summary
@@ -675,6 +647,9 @@ Description
 See Also
   Searching, TotalDirectories, TotalFiles
 ----------------------------------------------------------------------------------------------------
+@@TJvSearchFilesError
+<TITLE TJvSearchFilesError type>
+----------------------------------------------------------------------------------------------------
 @@TJvSearchOption
 <AUTOLINK OFF>
 <COMBINEWITH TJvSearchOptions>
@@ -685,8 +660,6 @@ Description
   TJvSearchOption values control the behaviour of a <LINK TJvSearchFiles,TJvSearchFiles> component.
 
   TJvSearchOptions is a set of TJvSearchOption values.
-
-  The following table lists the possible values:
 @@TJvSearchOption.soAllowDuplicates
   Allow duplicate file or directory names be stored in the <LINK TJvSearchFiles.Files,Files> and 
   <LINK TJvSearchFiles.Directories,Directories> lists. If soOwnerData
@@ -891,8 +864,6 @@ Description
   whether it can be added to the search results.
 
   TJvSearchTypes is a set of TJvSearchType values.
-
-  The following table lists the possible values:
 @@TJvSearchType.stAttribute
   Match the file or directories attributes to the attributes specified by <LINK TJvSearchParams.Attributes,
   Attributes>.

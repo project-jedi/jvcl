@@ -82,17 +82,6 @@ Summary
 Description
 <AUTOLINK ON>
   Set Operation to indicate what kind of file operation the TJvSHFileOperation component must perform.
-  
-  The possible values of Operation are:
-  <TABLE>
-  Value        Meaning
-  -----        -------
-  foCopy       Copies the files specified by SourceFiles to the location specified by DestFiles. 
-  foDelete     Deletes the files specified by SourceFiles. 
-  foMove       Moves the files specified by SourceFiles to the location specified by DestFiles. 
-  foRename     Renames the file specified by SourceFiles. This operation cannot rename multiple files
-                with a single function call. Use foMove instead. 
-  </TABLE>
 <AUTOLINK OFF>
 See Also
   Execute
@@ -152,8 +141,6 @@ Description
   TJvSHFileOption values control the behaviour of the file operation of a TJvSHFileOperation component.
 
   \TJvSHFileOptions is a set of TJvSHFileOption values.
-
-  The following table lists the possible values:
 Note
   Some flags are not supported on all Shell32.dll versions, these flags are marked with a version number. 
   This version number indicates that the programming element was first implemented in that version and
@@ -207,3 +194,14 @@ Note
 @@TJvSHFileOpType
 <TITLE TJvSHFileOpType type>
 <AUTOLINK OFF>
+@@TJvSHFileOpType.foCopy       
+  Copies the files specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles> to the location 
+  specified by <LINK TJvSHFileOperation.DestFiles,DestFiles>. 
+@@TJvSHFileOpType.foDelete     
+  Deletes the files specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles>. 
+@@TJvSHFileOpType.foMove       
+  Moves the files specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles> to the location
+  specified by <LINK TJvSHFileOperation.DestFiles,DestFiles>. 
+@@TJvSHFileOpType.foRename     
+  Renames the file specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles>. This operation 
+  cannot rename multiple files with a single function call. Use foMove instead. 

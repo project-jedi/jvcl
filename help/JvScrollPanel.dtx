@@ -39,7 +39,7 @@ Description
 
   If AutoHide is False, the scroll buttons don’t hide automatically. 
 See Also
-  AutoRepeat, ScrollAmoun
+  AutoRepeat, ScrollAmount
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScrollPanel.AutoRepeat
 Summary
@@ -110,20 +110,17 @@ Summary
   Specifies how the user can scroll the scrolling panel.
 Description
 <AUTOLINK ON>
-  Set ScrollDirection to specify how the user can scroll the scrolling panel. The possible values of
-  ScrollDirection are:
-  <TABLE>
-  Value         Meaning
-  -----         -------
-  sdHorizontal  The user can scroll the scrolling panel horizontally.
-  sdVertical    The user can scroll the scrolling panel vertically.
-</TABLE>
+  Set ScrollDirection to specify how the user can scroll the scrolling panel.
 <AUTOLINK OFF>
 See Also
   AutoHide, ScrollAmount
 ----------------------------------------------------------------------------------------------------
 @@TJvDivideKind
 <TITLE TJvDivideKind type>
+@@TJvDivideKind.dkDivider
+  The control displays a line at the center of the client area.
+@@TJvDivideKind.dkSeparator
+  The control fills an empty space.
 ----------------------------------------------------------------------------------------------------
 @@TJvDivider
 ##JVCL:Component
@@ -144,13 +141,7 @@ Summary
   Determines the shape of the control.
 Description
 <AUTOLINK ON>
-  Kind specifies whether the control is a divider or a seperator. These are the possible values for Kind:
-  <TABLE>
-  Value        Meaning
-  -----        -------
-  dkDivider    The control displays a line at the center of the client area.
-  dkSeparator  The control fills an empty space.
-</TABLE>
+  Kind specifies whether the control is a divider or a seperator.
 <AUTOLINK OFF>
 See Also
   Vertical
@@ -167,6 +158,10 @@ See Also
 @@TJvScrollDirection
 <TITLE TJvScrollDirection type>
 <AUTOLINK OFF>
+@@TJvScrollDirection.sdHorizontal
+  The user can scroll the scrolling panel horizontally.
+@@TJvScrollDirection.sdVertical
+  The user can scroll the scrolling panel vertically.
 ----------------------------------------------------------------------------------------------------
 @@TJvScrolledEvent
 <TITLE TJvScrolledEvent type>
@@ -197,7 +192,6 @@ Summary
   Represents different kinds of scroll actions.
 Description
   TJvScrollKind represents different kinds of scroll actions a user can perform on a scrolling panel. 
-  The following table gives the possible values:
 @@TJvScrollKind.sbUp
   The contents of a scrolling panel is scrolled up.
 @@TJvScrollKind.sbDown

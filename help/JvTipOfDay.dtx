@@ -107,7 +107,7 @@ Description
   dialog. The value of Font is a TFont object. Set the properties of the TFont object to specify the
   font face, color, size, style, and any other aspects of the font.
   
-  Set DefaultFonts to True, to assign the default font associated with Style to TipFont.
+  Set DefaultFonts to True, to assign the default font associated with Style to HeaderFont.
 See Also
   DefaultFonts, HeaderText, TipFont
 ----------------------------------------------------------------------------------------------------
@@ -127,7 +127,7 @@ Description
   \Read IsAutoExecute in an OnAfterExecute or OnCanShow event handler to determine whether the user
   called Execute to display the dialog, or the dialog is automatically displayed.
 See Also
-  Exeucte
+  Execute
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.LoadFromFile
 Summary
@@ -182,22 +182,7 @@ Summary
   Specifies options for the dialog.
 Description
 <AUTOLINK ON>
-  Use the Options property to customize the functionality of the dialog. The possible values of Options
-  are:
-  <TABLE>
-  Value            Meaning
-  -----            -------
-  toShowOnStartUp  Specifies whether the checkbox on the dialog is checked or unchecked. Also, if no
-                    OnCanShow event handler is used, it determines whether the dialog is shown on 
-                    start up of the application. 
-                    
-                   Use flag toShowOnStartUp before calling Execute, to
-                    specify whether the checkbox must be checked or unchecked. Use flag toShowOnStartUp
-                    after calling Execute, to determine whether the checkbox was checked or unchecked
-                    when the user closed the dialog.
-  toUseRegistry   Specifies whether to use the built-in method - that uses the registry - to stored the 
-                   value of the checkbox. 
-  </TABLE>
+  Use the Options property to customize the functionality of the dialog.
 <AUTOLINK OFF>
 See Also
   Execute
@@ -218,14 +203,8 @@ See Also
 Summary
   Specifies the Tip of the Day dialog's style.
 Description
-  Use Style to determine the appearance of the dialog. Style can have one of the following values: 
 <AUTOLINK ON>
-  <TABLE>
-  Value        Meaning
-  -----        -------
-  tsVC         A "VC++ 4.0 look" Tip of the Day dialog.
-  tsStandard   A "Standard Component Gallery" Tip of the Day dialog.
-  </TABLE>
+  Use Style to determine the appearance of the dialog.
 <AUTOLINK OFF>
 See Also
   DefaultFonts
@@ -268,6 +247,20 @@ See Also
 <TITLE TJvTipOfDayOption type>
 <AUTOLINK OFF>
 <COMBINE TJvTipOfDay.Options>
+@@TJvTipOfDayOption.toShowOnStartUp
+  Specifies whether the checkbox on the dialog is checked or unchecked. Also, if no
+  <LINK TJvTipOfDay.OnCanShow,OnCanShow> event handler is used, it determines whether the dialog is 
+  shown on start up of the application. 
+                    
+  Use flag toShowOnStartUp before calling Execute, to
+  specify whether the checkbox must be checked or unchecked. Use flag toShowOnStartUp
+  after calling <LINK TJvTipOfDay.Execute,Execute>, to determine whether the checkbox was checked or
+  unchecked when the user closed the dialog.
+@@TJvTipOfDayOption.toUseRegistry
+  Specifies whether to use the built-in method - that uses the registry - to store the 
+  value of the checkbox. 
+@@TJvTipOfDayOption.toShowWhenFormShown
+  Shows the tip dialog when the parent form of the TJvTipOfDay component is shown.
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDayOptions
 <TITLE TJvTipOfDayOptions type>
@@ -278,3 +271,7 @@ See Also
 <TITLE TJvTipOfDayStyle type>
 <AUTOLINK OFF>
 <COMBINE TJvTipOfDay.Style>
+@@TJvTipOfDayStyle.tsVC
+  A "VC++ 4.0 look" Tip of the Day dialog.
+@@TJvTipOfDayStyle.tsStandard
+  A "Standard Component Gallery" Tip of the Day dialog.
