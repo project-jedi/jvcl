@@ -64,6 +64,15 @@ type
     Flags: Longint;
   end;
 
+  TSegmentRenderType = (srtNone, srtPolygon, srtRect, srtCircle);
+  TPointArray = array of TPoint;
+
+  TSegmentRenderInfo = record
+    RenderType: TSegmentRenderType;
+    Points: TPointArray;
+  end;
+  TSegmentRenderInfoArray = array of TSegmentRenderInfo;
+
   EJVCLSegmentedLEDException = class(EJVCLException);
 
   TJvCustomSegmentedLEDDisplay = class(TJvGraphicControl)
@@ -180,14 +189,6 @@ type
     property Items[Index: Integer]: TJvCustomSegmentedLEDDigit read GetItem write SetItem; default;
   end;
 
-  TSegmentRenderType = (srtNone, srtPolygon, srtRect, srtCircle);
-  TPointArray = array of TPoint;
-  TSegmentRenderInfo = record
-    RenderType: TSegmentRenderType;
-    Points: TPointArray;
-  end;
-  TSegmentRenderInfoArray = array of TSegmentRenderInfo;
-
   TJvCustomSegmentedLEDDigit = class(TCollectionItem)
   private
     FLeft: Integer;
@@ -236,7 +237,7 @@ type
     procedure Paint;
     procedure PaintSegment(Index: Integer);
 
-    class function MapperFileID: string; dynamic; abstract;
+    class function MapperFileID: string; virtual;
 
     property BaseTop: Integer read GetBaseTop;
     property Height: Integer read GetHeight;
@@ -251,9 +252,9 @@ type
     function GetHitInfo(X, Y: Integer): TSLDHitInfo; overload;
     function GetHitInfo(X, Y: Integer; out SegmentIndex: Integer): TSLDHitInfo; overload;
     function PtInSegment(SegmentIndex: Integer; Pt: TPoint): Boolean; virtual;
-    class function SegmentCount: Integer; virtual; abstract;
-    class function GetSegmentName(Index: Integer): string; virtual; abstract;
-    class function GetSegmentIndex(Name: string): Integer; virtual; abstract;
+    class function SegmentCount: Integer; virtual;
+    class function GetSegmentName(Index: Integer): string; virtual;
+    class function GetSegmentIndex(Name: string): Integer; virtual;
     function GetSegmentStates: Int64;
     function GetSegmentString: string; virtual; abstract;
   end;
@@ -1185,6 +1186,36 @@ begin
   Result := FSegmentStates;
 end;
 
+class function TJvCustomSegmentedLEDDigit.MapperFileID: string;
+begin
+  // DO NOTHING.
+  // THIS CAN'T BE AN ABSTRACT CLASS METHOD AS THIS IS NOT
+  // SUPPORTED BY C++ BUILDER
+end;
+
+class function TJvCustomSegmentedLEDDigit.GetSegmentIndex(
+  Name: string): Integer;
+begin
+  // DO NOTHING.
+  // THIS CAN'T BE AN ABSTRACT CLASS METHOD AS THIS IS NOT
+  // SUPPORTED BY C++ BUILDER
+end;
+
+class function TJvCustomSegmentedLEDDigit.GetSegmentName(
+  Index: Integer): string;
+begin
+  // DO NOTHING.
+  // THIS CAN'T BE AN ABSTRACT CLASS METHOD AS THIS IS NOT
+  // SUPPORTED BY C++ BUILDER
+end;
+
+class function TJvCustomSegmentedLEDDigit.SegmentCount: Integer;
+begin
+  // DO NOTHING.
+  // THIS CAN'T BE AN ABSTRACT CLASS METHOD AS THIS IS NOT
+  // SUPPORTED BY C++ BUILDER
+end;
+
 //===TJvBaseSegmentedLEDDigit=======================================================================
 
 procedure TJvBaseSegmentedLEDDigit.EnableAllSegs;
@@ -1883,3 +1914,7 @@ finalization
   FreeAndNil(GDigitClassList);
   RemoveModuleUnloadProc(ModuleUnload);
 end.
+
+
+
+
