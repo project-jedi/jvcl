@@ -739,7 +739,6 @@ type
   protected
     FFileName: TFileName;
     FLocation: TFileLocation;
-    FLoadedFinished: Boolean;
     FOnGetFileName: TJvAppStorageGetFileNameEvent;
     FPhysicalReadOnly: Boolean;
 
@@ -763,7 +762,6 @@ type
 
     function GetPhysicalReadOnly: Boolean; override;
 
-    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -2899,14 +2897,7 @@ constructor TJvCustomAppMemoryFileStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLocation := flExeFile;
-  FLoadedFinished := False;
   FPhysicalReadOnly := False;
-end;
-
-procedure TJvCustomAppMemoryFileStorage.Loaded;
-begin
-  inherited Loaded;
-  FLoadedFinished := True;
 end;
 
 procedure TJvCustomAppMemoryFileStorage.Reload;
@@ -2970,7 +2961,7 @@ begin
   begin
     FFileName := PathAddExtension(Value, DefaultExtension);
     FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
-    if FLoadedFinished and not IsUpdating then
+    if not (csLoading in ComponentState) and not IsUpdating then
       Reload;
   end;
 end;
@@ -2981,7 +2972,7 @@ begin
   begin
     FLocation := Value;
     FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
-    if FLoadedFinished and not IsUpdating then
+    if not (csLoading in ComponentState) and not IsUpdating then
       Reload;
   end;
 end;
