@@ -251,7 +251,7 @@ type
     FBodyColor: TColor;
     FGradientTo: TColor;
     FGradientFrom: TColor;
-    FSeperatorColor: TColor;
+    FSeparatorColor: TColor;
     FOnChange: TNotifyEvent;
     procedure SetBodyColor(const Value: TColor);
     procedure SetGradientFrom(const Value: TColor);
@@ -265,7 +265,7 @@ type
     property BodyColor: TColor read FBodyColor write SetBodyColor default $00F7DFD6;
     property GradientFrom: TColor read FGradientFrom write SetGradientFrom default clWhite;
     property GradientTo: TColor read FGradientTo write SetGradientTo default $00F7D7C6;
-    property SeparatorColor: TColor read FSeperatorColor write SetSeperatorColor default $00F7D7C6;
+    property SeparatorColor: TColor read FSeparatorColor write SetSeperatorColor default $00F7D7C6;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -964,7 +964,7 @@ begin
   FBodyColor := $00F7DFD6;
   FGradientFrom := clWhite;
   FGradientTo := $00F7D7C6;
-  FSeperatorColor := $00F7D7C6;
+  FSeparatorColor := $00F7D7C6;
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
@@ -1017,9 +1017,9 @@ end;
 
 procedure TJvXPBarColors.SetSeperatorColor(const Value: TColor);
 begin
-  if FSeperatorColor <> Value then
+  if FSeparatorColor <> Value then
   begin
-    FSeperatorColor := Value;
+    FSeparatorColor := Value;
     Change;
   end;
 end;
