@@ -40,7 +40,7 @@ requires
   vclie50;
 
 contains
-  JvgAlignForm in '..\..\run\JvgAlignForm.pas',
+  JvgAlignForm in '..\..\run\JvgAlignForm.pas' {AlignForm},
   JvgAlignFunction in '..\..\run\JvgAlignFunction.pas',
   JvgBitBtn in '..\..\run\JvgBitBtn.pas',
   JvgRuler in '..\..\run\JvgRuler.pas',
@@ -87,8 +87,8 @@ contains
   JvgSysRequirements in '..\..\run\JvgSysRequirements.pas',
   JvgProcess in '..\..\run\JvgProcess.pas',
   JvgProcessUtils in '..\..\run\JvgProcessUtils.pas',
-  JvgQPrintPreviewForm in '..\..\run\JvgQPrintPreviewForm.pas',
-  JvgQPrintSetupForm in '..\..\run\JvgQPrintSetupForm.pas',
+  JvgQPrintPreviewForm in '..\..\run\JvgQPrintPreviewForm.pas' {JvgPrintSetup},
+  JvgQPrintSetupForm in '..\..\run\JvgQPrintSetupForm.pas' {JvgPrintSetup},
   JvgQRLabel in '..\..\run\JvgQRLabel.pas',
   JvgTransparentMemo in '..\..\run\JvgTransparentMemo.pas',
   JvgTreeView in '..\..\run\JvgTreeView.pas',
@@ -104,7 +104,7 @@ contains
   JvgBevel in '..\..\run\JvgBevel.pas',
   JvgButton in '..\..\run\JvgButton.pas',
   JvgCheckBox in '..\..\run\JvgCheckBox.pas',
-  JvgCheckVersionInfoForm in '..\..\run\JvgCheckVersionInfoForm.pas',
+  JvgCheckVersionInfoForm in '..\..\run\JvgCheckVersionInfoForm.pas' {fCheckVersionInfo},
   JvgDBGrid in '..\..\run\JvgDBGrid.pas',
   JvgExportComponents in '..\..\run\JvgExportComponents.pas',
   JvgFlyingText in '..\..\run\JvgFlyingText.pas',

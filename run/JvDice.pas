@@ -59,16 +59,13 @@ type
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure CreateBitmap;
-    {$IFNDEF COMPILER6_UP} // Polaris
-    procedure SetAutoSize(Value: Boolean);
-    {$ENDIF}
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
     procedure SetValue(Value: TJvDiceValue);
     procedure TimerExpired(Sender: TObject);
   protected
-    procedure SetAutoSize(Value: Boolean); override;
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP}override;{$ENDIF}
     function GetPalette: HPALETTE; override;
     procedure AdjustSize;override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;

@@ -1,1 +1,1 @@
-del /s *.dcu *.ddp *.dsk *.~* *.cfg *.dof *.drc %1 %2 %3 %4 %5 %6 %7 %8 %9
+del /s *.dcu *.ddp *.dsk *.~* *.cfg *.drc %1 %2 %3 %4 %5 %6 %7 %8 %9

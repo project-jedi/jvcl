@@ -1,6 +1,6 @@
 object JvgLogicsEditor: TJvgLogicsEditor
-  Left = 200
-  Top = 131
+  Left = 469
+  Top = 172
   Width = 790
   Height = 550
   Caption = 'glLogicsEditor'
@@ -80,7 +80,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
       Top = 5
       Width = 37
       Height = 13
-      Caption = #221#235#229#236#229#237#242
+      Caption = 'Элемент'
     end
     object iLink: TImage
       Left = 596
@@ -113,7 +113,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
       Top = 29
       Width = 41
       Height = 13
-      Caption = #209#242#224#242#243#241':'
+      Caption = 'Статус:'
     end
     object Label5: TLabel
       Left = 613
@@ -147,7 +147,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
       Width = 42
       Height = 13
       Anchors = [akTop, akRight]
-      Caption = #200#241#242#232#237#224
+      Caption = 'Истина'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -161,7 +161,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
       Width = 32
       Height = 13
       Anchors = [akTop, akRight]
-      Caption = #203#238#230#252
+      Caption = 'Ложь'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -187,8 +187,8 @@ object JvgLogicsEditor: TJvgLogicsEditor
       TabOrder = 0
       OnChange = cbModeChange
       Items.Strings = (
-        #209#226#238#225#238#228#237#251#233' '#253#235#229#236#229#237#242
-        #207#229#240#226#251#233' '#253#235#229#236#229#237#242)
+        'Свободный элемент'
+        'Первый элемент')
     end
     object cbNext: TComboBox
       Left = 638
@@ -228,7 +228,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
       Top = 5
       Width = 225
       Height = 17
-      Caption = #205#229' '#243#247#232#242#251#226#224#242#252' '#239#240#238#225#229#235#251' '#239#240#232' '#224#237#224#235#232#231#229
+      Caption = 'Не учитывать пробелы при анализе'
       TabOrder = 4
       OnClick = cbIgnoreSpacesClick
     end
@@ -239,6 +239,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
     Width = 782
     Height = 19
     Panels = <>
+    SimplePanel = False
   end
   object ToolBar1: TToolBar
     Left = 0
@@ -269,14 +270,14 @@ object JvgLogicsEditor: TJvgLogicsEditor
     object tbNew: TToolButton
       Left = 36
       Top = 0
-      Caption = #196#238#225#224#226#232#242#252' '#253#235#229#236#229#237#242
+      Caption = 'Добавить элемент'
       ImageIndex = 1
       OnClick = tbNewClick
     end
     object ToolButton3: TToolButton
       Left = 64
       Top = 0
-      Caption = #211#228#224#235#232#242#252' '#253#235#229#236#229#237#242
+      Caption = 'Удалить элемент'
       ImageIndex = 2
     end
     object ToolButton2: TToolButton
@@ -362,7 +363,9 @@ object JvgLogicsEditor: TJvgLogicsEditor
         object Splitter2: TSplitter
           Left = 189
           Top = 1
+          Width = 3
           Height = 67
+          Cursor = crHSplit
           Align = alRight
         end
         object Shape6: TShape
