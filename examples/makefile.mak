@@ -3,8 +3,6 @@ ROOT = $(MAKEDIR)
 !endif
 #---------------------------------------------------------------------------------------------------
 RUN = ..\..\run
-DSGN = ..\..\design
-ARCH = ..\..\archive
 COM = ..\..\common
 BIN = ..\..\bin
 DCU = ..\..\dcu
@@ -19,145 +17,41 @@ SRCHH = ..\..\$(RUN);..\..\$(COM);$(JCLHH);
 SRCHHH = ..\..\..\$(RUN);..\..\..\$(COM);$(JCLHHH);
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**
-DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRC) -n$(DCU) -r$(SRC) -u$(SRC) -q -w -B
-DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -B
-DCCHH = $(ROOT)\dcc32.exe -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u$(SRCHH) -q -w -B
-DCCHHH = $(ROOT)\dcc32.exe -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -B
+DCC  = -$(ROOT)\dcc32.exe -e$(BIN) -i$(SRC) -n$(DCU) -r$(SRC) -u$(SRC) -q -w -B
+DCCH = -$(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -B
+DCCHH = -$(ROOT)\dcc32.exe -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u$(SRCHH) -q -w -B
+DCCHHH = -$(ROOT)\dcc32.exe -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -B
 BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
-default: \
-jsb.exe \
-jsr.exe \
-sc.exe \
-js.exe \
-Gl_demo.exe \
-_glXMLSerializer_demo.exe \
-JvAniProj.exe \
-AppDdeCmdExample.exe \
-JvAppHotKeyDemo.exe \
-JvAppInstDemo.exe \
-ArrowButtonDemo.exe \
-JvAviCapDemo.exe \
-BalloonPrj.exe \
-JvBehaviorLabelDemo.exe \
-BmpAnimDemo.exe \
-JvBrowserFolder.exe \
-CaptionButtonDemo.exe \
-ChangeNotifyDemo.exe \
-JvCharMapDemo.exe \
-JvChartDemo.exe \
-CheckTVDemo.exe \
-JvClipboardViewerProj.exe \
-JVCLDemo.exe \
-ColorButtonDemo.exe \
-ColorComboDemo.exe \
-JvComboListBoxDemo.exe \
-ContentScrollerDemo.exe \
-ControlsExample.exe \
-CreateProcessExample.exe \
-CsvDataDemo.exe \
-JvDataEmbeddedProj.exe \
-DBDTPDemo.exe \
-DBEXPL32.exe \
-JvDBGridExportDemo.exe \
-JvDbMaskEditDemo.exe \
-WebMapper.exe \
-UseCase.exe \
-DepWalk.exe \
-JvDialogsDemo.exe \
-AdvancePro.exe \
-DockOptionDemo.exe \
-HowToUse.exe \
-MSDN2002Pro.exe \
-VCDemoPro.exe \
-VIDDemoPro.exe \
-JvDomainUpDownDemo.exe \
-JvDotNetDemo.exe \
-DSAExamples.exe \
-MessageDlgEditor.exe \
-JvEdits.exe \
-JvErrorIndicatorDemo.exe \
-FileDirDemo.exe \
-FindReplaceDemo.exe \
-prjControls.exe \
-Demo.exe \
-RxGIFAnm.exe \
-BasicDemo.exe \
-CollectionDemo.exe \
-SimpleHIDWrite.exe \
-UsagesDemo.exe \
-JvHtmlParserProj.exe \
-JvID3v1Demo.exe \
-JvID3v2Demo.exe \
-InspectorSimpleExample.exe \
-InspExample.exe \
-InspectorDBExample.exe \
-Install2LabelDemo.exe \
-JvItemViewerDemo.exe \
-ViewerDemo2.exe \
-JvLinkLabelDemo.exe \
-ListCombDemo.exe \
-JvLogFileDemo.exe \
-MailExample.exe \
-Balls.exe \
-Philosophers.exe \
-JvMarkupLabelDemo.exe \
-JvMenusExample.exe \
-JvMouseGestureDemo.exe \
-JvMruListDemo.exe \
-JvMultiHTTPGrabberDemo.exe \
-EventViewer.exe \
-JvObjPickerDemo.exe \
-JvOLEDragCursorsDemo.exe \
-OLBarDemo.exe \
-pm.exe \
-PageListDemo.exe \
-JvPanelDemo.exe \
-JvParameterListDemo.exe \
-JvPlayListProj.exe \
-PlugInDemo.exe \
-SamplePluginOne.dll \
-MDIPlugin.dll \
-MDISample.exe \
-ChangePropertiesPlugin.dll \
-PropertiesPlugInDemo.exe \
-ExceptionPlugin.dll \
-ExceptionPlugInDemo.exe \
-DataPlugin.dll \
-DataPlugInDemo.exe \
-JvPlgMainApp.exe \
-JvPrvwDemo.exe \
-ProfilerDemo.exe \
-JvProgressDialogDemo.exe \
-RegEditDemo.exe \
-EditorDemo.exe \
-MessengerDemo.exe \
-JvRollOutDemo.exe \
-RunDLL32Demo.exe \
-JvScreenCaptureProj.exe \
-ScrollWinDemo.exe \
-JvSearchFileProj.exe \
-JvShellHookDemo.exe \
-ShFileOpDemo.exe \
-JvSimpleXMLDemo.exe \
-JvSimpleXMLEncodeDemo.exe \
-JvSimpleXMLSpeedTest.exe \
-XMLValidator.exe \
-SpecialProgressTestPrj.exe \
-JvSpellCheckerDemo.exe \
-JvStringGridDemo.exe \
-JvSystemPopupProj.exe \
-SystemPopupTest.exe \
-JvThreadProj.exe \
-JvThumbnailDemo.exe \
-PhotoOp.exe \
-TimeLineDemo.exe \
-TipsDemo.exe \
-SimpleTLTest1.exe \
-JvTranslatorProj.exe \
-TransparentButtonDemo.exe \
-JvTrayIconDemo.exe \
-JvTreeViewAsMenu.exe \
+default: uib globus docking inspector standard threads diagram ralib rxlib plugin xml mega surveyor
+#---------------------------------------------------------------------------------------------------
+surveyor: jsb.exe jsr.exe sc.exe js.exe
+#---------------------------------------------------------------------------------------------------
+globus: Gl_demo.exe _glXMLSerializer_demo.exe
+#---------------------------------------------------------------------------------------------------
+xml: JvSimpleXMLDemo.exe JvSimpleXMLEncodeDemo.exe JvSimpleXMLSpeedTest.exe XMLValidator.exe
+#---------------------------------------------------------------------------------------------------
+rxlib: Rxdemo.exe RxGIFAnm.exe EditorDemo.exe MessengerDemo.exe DBEXPL32.exe
+#---------------------------------------------------------------------------------------------------
+diagram: WebMapper.exe UseCase.exe DepWalk.exe
+#---------------------------------------------------------------------------------------------------
+threads: Balls.exe Philosophers.exe
+#---------------------------------------------------------------------------------------------------
+docking: AdvancePro.exe DockOptionDemo.exe HowToUse.exe MSDN2002Pro.exe VCDemoPro.exe VIDDemoPro.exe
+#---------------------------------------------------------------------------------------------------
+inspector: InspectorSimpleExample.exe InspExample.exe InspectorDBExample.exe
+#---------------------------------------------------------------------------------------------------
+mega: JVCLDemo.exe
+#---------------------------------------------------------------------------------------------------
+plugin: PlugInDemo.exe SamplePluginOne.dll MDIPlugin.dll MDISample.exe ChangePropertiesPlugin.dll \
+PropertiesPlugInDemo.exe ExceptionPlugin.dll ExceptionPlugInDemo.exe DataPlugin.dll DataPlugInDemo.exe \
+JvPlgMainApp.exe
+#---------------------------------------------------------------------------------------------------
+ralib: Pas2Rai2.exe RAControls.exe DBMove.exe DBTree.exe LineNumbers.exe RAEditorTest.exe \
+RAHLEdPropDlgTest.exe ColorHintsTest.exe JvInterpreterTest.exe SampleProject1.exe DynamicLoad.exe \
+JvInterpreterEndUser.exe MDIapp.exe RANotepad.exe
+#---------------------------------------------------------------------------------------------------
+uib: \
 #api1.exe \
 #api2.exe \
 #api3.exe \
@@ -171,47 +65,30 @@ JvTreeViewAsMenu.exe \
 #StartRestore.exe \
 #Client.exe \
 #Server.exe \
-UIB.dll \
-Backup.exe \
-Restore.exe \
-BlobStream.exe \
-BlobSample.exe \
-cursor.exe \
-DataPump.exe \
-MetaData.exe \
-Query.exe \
-QuickScript.exe \
-Script.exe \
-StoredProc.exe \
-QueryStream.exe \
-JvUninstallCtrlsDemo.exe \
-JvUrlListGrabberDemo.exe \
-JvFormatEditDemo.exe \
-JvValidatorsDemo.exe \
-JvWinDialogsDemo.exe \
-JvWindowsTitleProj.exe \
-WndProcHookDemo.exe \
-Hospital.exe \
-WinXPBarDemo.exe \
-SimpleDemo.exe \
-JvZLibMultipleDemo.exe \
-JvZoomProj.exe \
-LinkedConsumers.exe \
-Pas2Rai2.exe \
-RAControls.exe \
-DBMove.exe \
-DBTree.exe \
-LineNumbers.exe \
-RAEditorTest.exe \
-RAHLEdPropDlgTest.exe \
-ColorHintsTest.exe \
-JvInterpreterTest.exe \
-SampleProject1.exe \
-DynamicLoad.exe \
-JvInterpreterEndUser.exe \
-MDIapp.exe \
-RANotepad.exe \
-Rxdemo.exe 
+UIB.dll Backup.exe Restore.exe BlobStream.exe BlobSample.exe cursor.exe DataPump.exe MetaData.exe \
+Query.exe QuickScript.exe Script.exe StoredProc.exe QueryStream.exe
+#---------------------------------------------------------------------------------------------------
+standard: JvAniProj.exe AppDdeCmdExample.exe JvAppHotKeyDemo.exe JvAppInstDemo.exe ArrowButtonDemo.exe \
+JvAviCapDemo.exe BalloonPrj.exe JvBehaviorLabelDemo.exe BmpAnimDemo.exe JvBrowserFolder.exe \
+CaptionButtonDemo.exe ChangeNotifyDemo.exe JvCharMapDemo.exe JvChartDemo.exe CheckTVDemo.exe \
+JvClipboardViewerProj.exe ColorButtonDemo.exe ColorComboDemo.exe JvComboListBoxDemo.exe \
+ContentScrollerDemo.exe ControlsExample.exe CreateProcessExample.exe CsvDataDemo.exe JvDataEmbeddedProj.exe \
+DBDTPDemo.exe JvDBGridExportDemo.exe JvDbMaskEditDemo.exe JvDialogsDemo.exe JvDomainUpDownDemo.exe \
+JvDotNetDemo.exe DSAExamples.exe MessageDlgEditor.exe JvEdits.exe JvErrorIndicatorDemo.exe FileDirDemo.exe \
+FindReplaceDemo.exe prjControls.exe BasicDemo.exe CollectionDemo.exe SimpleHIDWrite.exe \
+UsagesDemo.exe JvHtmlParserProj.exe JvID3v1Demo.exe JvID3v2Demo.exe Install2LabelDemo.exe \
+JvItemViewerDemo.exe ViewerDemo2.exe JvLinkLabelDemo.exe ListCombDemo.exe JvLogFileDemo.exe MailExample.exe \
+JvMarkupLabelDemo.exe JvMenusExample.exe JvMouseGestureDemo.exe JvMruListDemo.exe JvMultiHTTPGrabberDemo.exe \
+EventViewer.exe JvObjPickerDemo.exe JvOLEDragCursorsDemo.exe OLBarDemo.exe pm.exe PageListDemo.exe \
+JvPanelDemo.exe JvParameterListDemo.exe JvPlayListProj.exe JvPrvwDemo.exe ProfilerDemo.exe \
+JvProgressDialogDemo.exe RegEditDemo.exe JvRollOutDemo.exe RunDLL32Demo.exe JvScreenCaptureProj.exe \
+ScrollWinDemo.exe JvSearchFileProj.exe JvShellHookDemo.exe ShFileOpDemo.exe SpecialProgressTestPrj.exe \
+JvSpellCheckerDemo.exe JvStringGridDemo.exe JvSystemPopupProj.exe SystemPopupTest.exe JvThreadProj.exe \
+JvThumbnailDemo.exe PhotoOp.exe TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe JvTranslatorProj.exe \
+TransparentButtonDemo.exe JvTrayIconDemo.exe JvTreeViewAsMenu.exe JvUninstallCtrlsDemo.exe \
+JvUrlListGrabberDemo.exe JvFormatEditDemo.exe JvValidatorsDemo.exe JvWinDialogsDemo.exe \
+JvWindowsTitleProj.exe WndProcHookDemo.exe Hospital.exe WinXPBarDemo.exe SimpleDemo.exe \
+JvZLibMultipleDemo.exe JvZoomProj.exe LinkedConsumers.exe
 #---------------------------------------------------------------------------------------------------
 Gl_demo.exe: "Globus\Visual Components Demo\Gl_demo.dpr"
   @cd Globus\Visual Components Demo
@@ -480,11 +357,6 @@ FindReplaceDemo.exe: "JvFindReplace\FindReplaceDemo.dpr"
 
 prjControls.exe: "JvFooterAndGroupHeader\prjControls.dpr"
   @cd JvFooterAndGroupHeader
-  $(DCC) $&.dpr
-  @cd ..
-
-Demo.exe: "JvGanttChart\Demo.dpr"
-  @cd JvGanttChart
   $(DCC) $&.dpr
   @cd ..
 
@@ -1147,5 +1019,6 @@ Rxdemo.exe: "RxLib\Rxdemo.dpr"
   @cd RxLib
   $(DCC) $&.dpr
   @cd ..
+#---------------------------------------------------------------------------------------------------
 
 
