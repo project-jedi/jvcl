@@ -1418,7 +1418,11 @@ begin
       R := TabRect(I);
       if PtInRect(R, P) then
       begin
-        TabIndex := I;
+        if (TabIndex <> I) and CanChange then
+        begin
+          TabIndex := I;
+          Change;
+        end;
         Break;
       end;
     end;
@@ -1463,7 +1467,11 @@ begin
       R := TabRect(I);
       if PtInRect(R, P) then
       begin
-        TabIndex := I;
+        if (TabIndex <> I) and CanChange then
+        begin
+          TabIndex := I;
+          Change;
+        end;
         Break;
       end;
     end;
@@ -1676,7 +1684,11 @@ begin
       R := TabRect(I);
       if PtInRect(R, P) then
       begin
-        ActivePageIndex := I;
+        if (ActivePageIndex <> I) and CanChange then
+        begin
+          ActivePageIndex := I;
+          Change;
+        end;
         Break;
       end;
     end;
@@ -1779,7 +1791,11 @@ begin
       R := TabRect(I);
       if PtInRect(R, P) then
       begin
-        ActivePageIndex := I;
+        if (ActivePageIndex <> I) and CanChange then
+        begin
+          ActivePageIndex := I;
+          Change;
+        end;
         Break;
       end;
     end;
