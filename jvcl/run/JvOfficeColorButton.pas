@@ -118,9 +118,10 @@ type
     procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen postion
     {$IFDEF VCL}
     procedure CreateWnd; override;
-    {$ELSE}
-    procedure InitWidget; override;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure InitWidget; override;
+    {$ENDIF VisualCLX}
     procedure SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean); override;
     procedure FontChanged; override;
     procedure DefineProperties(Filer: TFiler); override;

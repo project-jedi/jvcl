@@ -225,8 +225,7 @@ function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
 
 procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
   SrcDC: HDC; SrcX, SrcY, SrcW, Srch: Integer;
-  {$IFDEF VCL} Palette: HPALETTE; {$ELSE} Dummy: Integer; {$ENDIF}
-  TransparentColor: TColorRef);
+  Palette: HPALETTE; TransparentColor: TColorRef);
 procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
   DstX, DstY: Integer; TransparentColor: TColorRef);
 function PaletteEntries(Palette: HPALETTE): Integer;
@@ -1805,10 +1804,16 @@ begin
         TransparentColor := clWhite
       else
         TransparentColor := ColorToRGB(TransparentColor);
+      {$IFDEF VCL}
       StretchBltTransparent(Dest.Handle, DstX, DstY, DstW, DstH,
         Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, Srch,
-        {$IFDEF VCL} Bitmap.Palette, {$ELSE} 0, {$ENDIF}
-        TransparentColor);
+        Bitmap.Palette, TransparentColor);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      StretchBltTransparent(Dest.Handle, DstX, DstY, DstW, DstH,
+        Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, Srch,
+        0, TransparentColor);
+      {$ENDIF VisualCLX}
     end;
     {$IFDEF VisualCLX}
     Bitmap.Canvas.Stop;
@@ -2327,7 +2332,12 @@ begin
   TCustomControlHack(AForm).DestroyHandle;
   with AForm do
   begin
-    BorderStyle := {$IFDEF VCL} bsNone {$ELSE} fbsNone {$ENDIF};
+    {$IFDEF VCL}
+    BorderStyle := bsNone;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BorderStyle := fbsNone;
+    {$ENDIF VisualCLX}
     BorderIcons := [];
     Parent := AControl;
   end;

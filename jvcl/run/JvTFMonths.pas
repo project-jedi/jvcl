@@ -35,9 +35,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  {$ELSE}
-  QGraphics, QControls, QForms, QDialogs, Types,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, Types,
+  {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
   JvTypes,
   {$ENDIF USEJVCL}
