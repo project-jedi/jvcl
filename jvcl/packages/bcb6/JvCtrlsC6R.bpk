@@ -11,9 +11,9 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="JvCtrlsC6R.bpl"/>
+    <PROJECT value="JvCtrlsc6R.bpl"/>
     <OBJFILES value="
-      ..\..\dcu\JvCtrlsC6R.obj
+      ..\..\dcu\JvCtrlsc6R.obj
       ..\..\dcu\JvCharMap.obj
       ..\..\dcu\JvClock.obj
       ..\..\dcu\JvColorBox.obj
@@ -58,7 +58,7 @@
       ..\..\dcu\JvCaptionButton.obj
       ..\..\dcu\JvCaptionPanel.obj
     "/>
-    <RESFILES value="JvCtrlsC6R.res"/>
+    <RESFILES value="JvCtrlsc6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
@@ -70,9 +70,9 @@
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
     <PACKAGES value="
-       JvCoreC6R.bpi 
-       JvStdCtrlsC6R.bpi 
-       JvSystemC6R.bpi 
+       JvCorec6R.bpi 
+       JvStdCtrlsc6R.bpi 
+       JvSystemc6R.bpi 
        rtl.bpi 
        vcl.bpi 
        vclx.bpi 
@@ -89,7 +89,7 @@
     <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
-    <MAINSOURCE value="JvCtrlsC6R.cpp"/>
+    <MAINSOURCE value="JvCtrlsc6R.cpp"/>
     <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="..\..\run;..\..\design;..\..\common;..\..\resources;..\..\dcu;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
@@ -117,11 +117,11 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST> 
-      <FILE FILENAME="JvCtrlsC6R.res" FORMNAME="" UNITNAME="JvCtrlsC6R.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvCtrlsC6R.cpp" FORMNAME="" UNITNAME="JvCtrlsC6R" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvStdCtrlsC6R.bpi" FORMNAME="" UNITNAME="JvStdCtrlsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvSystemC6R.bpi" FORMNAME="" UNITNAME="JvSystemC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCtrlsc6R.res" FORMNAME="" UNITNAME="JvCtrlsc6R.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCtrlsc6R.cpp" FORMNAME="" UNITNAME="JvCtrlsc6R" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCorec6R.bpi" FORMNAME="" UNITNAME="JvCorec6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvStdCtrlsc6R.bpi" FORMNAME="" UNITNAME="JvStdCtrlsc6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvSystemc6R.bpi" FORMNAME="" UNITNAME="JvSystemc6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
