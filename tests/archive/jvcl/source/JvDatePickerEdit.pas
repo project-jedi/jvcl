@@ -148,6 +148,7 @@ type
     procedure SetShowCheckbox(const AValue: Boolean); override;
     function GetEnableValidation: Boolean; virtual;
     procedure UpdateDisplay; virtual;
+    function ValidateDate(const ADate: TDateTime): Boolean; virtual;
     function ActiveFigure: TJvDateFigureInfo;
     procedure CloseUp;
     procedure DropDown;
@@ -414,12 +415,20 @@ begin
   end;
 end;
 
+function TJvCustomDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
+begin
+  if (not AllowNoDate) and (ADate = 0) then
+    RaiseNoDate;
+  result := True;
+end;
+
 procedure TJvCustomDatePickerEdit.SetDate(const AValue: TDateTime);
 begin
-  if (not AllowNoDate) and (AValue = 0) then
-    RaiseNoDate;
-  FDate := AValue;
-  UpdateDisplay;
+  if ValidateDate(AValue) then
+  begin
+    FDate := AValue;
+    UpdateDisplay;
+  end;
 end;
 
 procedure TJvCustomDatePickerEdit.SetNoDateText(const AValue: string);

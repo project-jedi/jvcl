@@ -67,6 +67,7 @@ type
     procedure SetShowCheckbox(const AValue: Boolean); override;
     procedure UpdateDisplay; override;
     function GetEnableValidation: Boolean; override;
+    function ValidateDate(const ADate: TDateTime): Boolean; override;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property EnforceRequired: Boolean read FEnforceRequired write SetEnforceRequired default True;
@@ -82,6 +83,7 @@ type
     property Date;
     property Dropped;
   published
+    property AllowNoDate;
     property Anchors;
     property AutoSelect;
     property AutoSize default False;
@@ -157,7 +159,7 @@ constructor TJvCustomDBDatePickerEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
-  FEnforceRequired := True;
+  FEnforceRequired := False;
   FDataLink := TFieldDataLink.Create;
   with FDataLink do
   begin
@@ -295,6 +297,11 @@ begin
    pop up just from tabbing over the control, therefore we temporary disable it}
   if InternalChanging or Leaving then
     Result := Result and IsLinked;
+end;
+
+function TJvCustomDBDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
+begin
+  result := (not IsLinked) or (FDataLink.DataSet.IsEmpty) or (inherited ValidateDate(ADate));
 end;
 
 end.
