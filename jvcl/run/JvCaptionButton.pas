@@ -297,6 +297,9 @@ uses
   JvThemes,
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
+  {$IFNDEF COMPILER7_UP}
+  TmSchema,
+  {$ENDIF COMPILER7_UP}
   JvJVCLUtils, JvJCLUtils,
   {$ENDIF JVCLThemesEnabled}
   JvDsgnIntf, JvTypes, JvResources;
