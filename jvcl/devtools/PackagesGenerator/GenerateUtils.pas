@@ -7,10 +7,22 @@ uses Classes;
 type
   TGenerateCallback = procedure (msg : string);
 
-// YOU MUST CALL THIS PROCEDURE BEFORE ANYOTHER IN THIS FILE
-procedure LoadConfig(XmlFileName : string; IncFileName : string);
+// YOU MUST CALL THIS PROCEDURE BEFORE ANY OTHER IN THIS FILE
+// AND EVERYTIME YOU CHANGE THE MODEL NAME
+// (except Generate as it will call it automatically)
+procedure LoadConfig(XmlFileName : string; ModelName : string);
 
-procedure Generate(packages : TStrings; targets : TStrings; path, prefix, format : string; callback : TGenerateCallback; makeDof : Boolean = False);
+procedure Generate(packages : TStrings;
+                   targets : TStrings;
+                   callback : TGenerateCallback;
+                   XmlFileName : string;
+                   ModelName : string;
+                   makeDof : Boolean = False;
+                   path : string = '';
+                   prefix : string = '';
+                   format : string = '';
+                   incFileName : string = ''
+                  );
 
 procedure EnumerateTargets(targets : TStrings);
 
@@ -18,13 +30,15 @@ procedure EnumeratePackages(Path : string; packages : TStrings);
 
 procedure ExpandTargets(targets : TStrings);
 
+function PackagesLocation : string;
+
 var
   StartupDir : string;
 
 implementation
 
 uses Windows, SysUtils, JclSysUtils, JclStrings, JclFileUtils, JvSimpleXml,
-    ShellApi, JclDateTime, Contnrs;
+    ShellApi, JclDateTime, Contnrs, FileUtils;
 
 type
   TTarget = class (TObject)
@@ -95,20 +109,27 @@ type
   end;
 
 var
-  GCallBack   : TGenerateCallBack;
-  TargetList  : TTargetList;
-  AliasList   : TAliasList;
-  DefinesList : TDefinesList;
+  GCallBack         : TGenerateCallBack;
+  GPackagesLocation : string;
+  GIncFileName      : string;
+  GPrefix           : string;
+  GFormat           : string;
+  TargetList        : TTargetList;
+  AliasList         : TAliasList;
+  DefinesList       : TDefinesList;
 
-procedure LoadConfig(XmlFileName : string; IncFileName : string);
+function PackagesLocation : string;
+begin
+  Result := GPackagesLocation;
+end;
+
+procedure LoadConfig(XmlFileName : string; ModelName : string);
 var
   xml : TJvSimpleXml;
   Node : TJvSimpleXmlElem;
   i : integer;
   all : string;
   target : TTarget;
-
-  incfile : TStringList;
 begin
   FreeAndNil(TargetList);
   FreeAndNil(AliasList);
@@ -116,10 +137,18 @@ begin
   xml := TJvSimpleXml.Create(nil);
   try
     xml.LoadFromFile(XmlFileName);
-    Node := xml.Root.Items.ItemNamed['targets'];
-    TargetList := TTargetList.Create(Node);
-    Node := xml.Root.Items.ItemNamed['aliases'];
-    AliasList := TAliasList.Create(Node);
+    Node := xml.root.Items.itemNamed['models'].items[0];
+    for i := 0 to xml.root.Items.itemNamed['models'].items.count - 1 do
+      if xml.root.Items.itemNamed['models'].items[i].Properties.ItemNamed['Name'].value = ModelName then
+        Node := xml.root.Items.itemNamed['models'].items[i];
+
+    TargetList := TTargetList.Create(Node.Items.ItemNamed['targets']);
+    AliasList  := TAliasList.Create(Node.Items.ItemNamed['aliases']);
+    
+    GIncFileName      := Node.Properties.ItemNamed['IncFile'].Value;
+    GPackagesLocation := Node.Properties.ItemNamed['packages'].Value;
+    GFormat           := Node.Properties.ItemNamed['format'].Value;
+    GPrefix           := Node.Properties.ItemNamed['prefix'].Value;
 
     // create the 'all' alias
     all := '';
@@ -131,23 +160,19 @@ begin
         all := all + Target.PName + ',';
     end;
     all := Copy(all, 1, length(all)-1);
-    Node.Items[0].Properties.ItemNamed['name'].Value := 'all';
-    Node.Items[0].Properties.ItemNamed['value'].Value := all;
-    AliasList.Add(TAlias.Create(Node.Items[0]));
+
+    Node := TJvSimpleXmlElemClassic.Create(nil);
+    try
+      Node.Properties.Add('name', 'all');
+      Node.Properties.Add('value', all);
+      AliasList.Add(TAlias.Create(Node));
+    finally
+      Node.Free;
+    end;
   finally
     xml.Free;
   end;
 
-  FreeAndNil(DefinesList);
-  // read the include file
-  incfile := TStringList.Create;
-  try
-    if FileExists(IncFileName) then
-      incfile.LoadFromFile(IncFileName);
-    DefinesList := TDefinesList.Create(incfile);
-  finally
-    incfile.free;
-  end;
 end;
 
 procedure SendMsg(Msg : string);
@@ -748,7 +773,17 @@ begin
   end;
 end;
 
-procedure Generate(packages : TStrings; targets : TStrings; path, prefix, format : string; callback : TGenerateCallback; makeDof : Boolean);
+procedure Generate(packages : TStrings;
+                   targets : TStrings;
+                   callback : TGenerateCallback;
+                   XmlFileName : string;
+                   ModelName : string;
+                   makeDof : Boolean = False;
+                   path : string = '';
+                   prefix : string = '';
+                   format : string = '';
+                   incfileName : string = ''
+                  );
 var
   rec : TSearchRec;
   i : Integer;
@@ -760,9 +795,35 @@ var
   templateTime : TDateTime;
   persoTarget : string;
   target : string;
+
+  incfile : TStringList;
 begin
+  LoadConfig(XmlFileName, ModelName);
+
+  FreeAndNil(DefinesList);
+  if incFileName = '' then
+    incFileName := GIncFileName;
+  // read the include file
+  incfile := TStringList.Create;
+  try
+    if FileExists(IncFileName) then
+      incfile.LoadFromFile(IncFileName);
+    DefinesList := TDefinesList.Create(incfile);
+  finally
+    incfile.free;
+  end;
+
   GCallBack := CallBack;
+  
+  if PathIsAbsolute(PackagesLocation) then
+    path := PackagesLocation
+  else
+    path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
+    
   path := StrEnsureSuffix(PathSeparator, path);
+
+  Prefix := GPrefix;
+  Format := GFormat;
   // for all targets
 //  EnsureTargets(targets);
   i := 0;

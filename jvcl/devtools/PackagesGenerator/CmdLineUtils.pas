@@ -13,20 +13,25 @@ procedure Help;
 begin
   WriteLn('pg - Jedi Package generator');
   WriteLn;
+  WriteLn('   pg [-m=MODEL] [-x=CONFIGFILE] [-t=TARGETS]');
+  WriteLn('      [-p=PATH] [-r=PREFIX] [-f=FORMAT] [-i=INCLUDEFILE] [-d]');
+  WriteLn;
   WriteLn(#9'-h'#9#9'prints this help message');
-  WriteLn(#9'-d'#9#9'Generates the DOFs files where applicable');
-  WriteLn(#9'-p=PATH'#9#9'the path to packages');
-  WriteLn(#9#9#9'  Defaults to "..'+PathSeparator+'..'+PathSeparator+'packages"');
-  WriteLn(#9'-t=TARGETS'#9'comma separated list of targets');
-  WriteLn(#9#9#9'  Defaults to "all"');
-  WriteLn(#9'-r=PREFIX'#9'Prefix to use for package name generation');
-  WriteLn(#9#9#9'  Defaults to "Jv"');
-  WriteLn(#9'-f=FORMAT'#9'Format of generated package name');
-  WriteLn(#9#9#9'  Defaults to "%p%n%e%v%t"');
+  WriteLn(#9'-m=MODEL'#9'The name of the model to use');
+  WriteLn(#9#9#9'  Defaults to "JVCL"');
   WriteLn(#9'-x=CONFIGFILE'#9'Location of the xml configuration file');
   WriteLn(#9#9#9'  Defaults to "pgEdit.xml"');
+  WriteLn(#9'-t=TARGETS'#9'comma separated list of targets');
+  WriteLn(#9#9#9'  Defaults to "all"');
+  WriteLn(#9'-p=PATH'#9#9'the path to packages');
+  WriteLn(#9#9#9'  Defaults to the value from the model');
+  WriteLn(#9'-r=PREFIX'#9'Prefix to use for package name generation');
+  WriteLn(#9#9#9'  Defaults to the value from the model');
+  WriteLn(#9'-f=FORMAT'#9'Format of generated package name');
+  WriteLn(#9#9#9'  Defaults to the value from the model');
   WriteLn(#9'-i=INCLUDEFILE'#9'Location of the include file');
-  WriteLn(#9#9#9'  Defaults to "..'+PathSeparator+'..'+PathSeparator+'common'+PathSeparator+'JVCL.INC"');
+  WriteLn(#9#9#9'  Defaults to the value from the model');
+  WriteLn(#9'-d'#9#9'Generates the DOFs files where applicable');
 end;
 
 procedure Error(Msg : string);
@@ -50,6 +55,7 @@ var
   prefix : string;
   Format : string;
   xmlconfig : string;
+  modelName : string;
   incfile : string;
   curParam : string;
   targets : TStringList;
@@ -91,44 +97,53 @@ begin
       end;
     end;
 
-    if packagesPath = '' then
-      packagesPath := '..'+PathSeparator+'..'+PathSeparator+'packages';
 
     if targetList = '' then
       targetList := 'all';
 
+    if xmlconfig = '' then
+      xmlconfig := 'pgEdit.xml';
+
+    if modelName = '' then
+      modelName := 'JVCL';
+
+{
+    if packagesPath = '' then
+      packagesPath := '..'+PathSeparator+'..'+PathSeparator+'packages';
+      
     if prefix = '' then
       prefix := 'Jv';
 
     if format = '' then
       format := '%p%n%e%v%t';
 
-    if xmlconfig = '' then
-      xmlconfig := 'pgEdit.xml';
-
     if incfile = '' then
-      incfile := '..'+PathSeparator+'..'+PathSeparator+'common'+PathSeparator+'JVCL.INC';
+      incfile := '..'+PathSeparator+'..'+PathSeparator+'common'+PathSeparator+'JVCL.INC';}
 
-    LoadConfig(xmlconfig, incfile);      
+    LoadConfig(xmlconfig, modelName);      
 
     StrToStrings(targetList, ',', targets, False);
     ExpandTargets(targets);
 
-    if PathIsAbsolute(packagesPath) then
+{    if PathIsAbsolute(packagesPath) then
       packagesPath := packagesPath
     else
-      packagesPath := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + packagesPath);
+      packagesPath := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + packagesPath);}
 
     packages := TStringList.Create;
     try
       EnumeratePackages(packagesPath, packages);
       Generate(packages,
                targets,
+               WriteMsg,
+               XmlConfig,
+               ModelName,
+               FindCmdLineSwitch('d', ['-', '/'], True),
                packagesPath,
                prefix,
                Format,
-               WriteMsg,
-               FindCmdLineSwitch('d', ['-', '/'], True));
+               incfile
+              );
     finally
       packages.Free;
     end;

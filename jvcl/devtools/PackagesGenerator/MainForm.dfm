@@ -46,6 +46,9 @@ object frmMain: TfrmMain
     Align = alLeft
     BevelOuter = bvLowered
     TabOrder = 1
+    DesignSize = (
+      137
+      502)
     object jlbList: TJvListBox
       Left = 8
       Top = 8
@@ -162,7 +165,7 @@ object frmMain: TfrmMain
     object pnlOptions: TPanel
       Left = 194
       Top = 28
-      Width = 596
+      Width = 195
       Height = 22
       BevelOuter = bvNone
       Caption = 'Options'
@@ -172,87 +175,37 @@ object frmMain: TfrmMain
       object shHideOptions: TShape
         Left = 0
         Top = 0
-        Width = 597
+        Width = 195
         Height = 22
         Align = alClient
         Brush.Color = clBtnFace
         Pen.Style = psClear
       end
-      object lblPrefix: TLabel
-        Left = 364
-        Top = 4
-        Width = 26
-        Height = 13
-        Caption = 'Prefix'
-      end
-      object lblFormat: TLabel
-        Left = 448
-        Top = 4
-        Width = 37
-        Height = 13
-        Caption = 'Formats'
-      end
-      object lblPackagesLocation: TLabel
+      object lblModel: TLabel
         Left = 0
         Top = 4
-        Width = 59
+        Width = 61
         Height = 13
-        Caption = 'Packages in'
+        Caption = 'Model to use'
       end
-      object lblIncFile: TLabel
-        Left = 176
-        Top = 4
-        Width = 31
-        Height = 13
-        Caption = 'Inc file'
-      end
-      object cmbFormat: TComboBox
-        Left = 492
+      object cmbModel: TComboBox
+        Left = 68
         Top = 0
-        Width = 105
+        Width = 89
         Height = 21
+        Style = csDropDownList
         ItemHeight = 13
         TabOrder = 0
-        Text = '%p%n%e%v%t'
-        Items.Strings = (
-          '%p%n%e%v%t'
-          '%p%n,%p%n%v0')
+        OnClick = cmbModelClick
       end
-      object cmbPrefix: TComboBox
-        Left = 396
+      object btnEditModel: TButton
+        Left = 160
         Top = 0
-        Width = 45
+        Width = 33
         Height = 21
-        ItemHeight = 13
+        Caption = 'Edit'
         TabOrder = 1
-        Text = 'Jv'
-        Items.Strings = (
-          'Jv'
-          'Jcl')
-      end
-      object jdePackagesLocation: TJvDirectoryEdit
-        Left = 64
-        Top = 0
-        Width = 101
-        Height = 21
-        AcceptFiles = False
-        InitialDir = '..\..\packages'
-        ButtonFlat = False
-        NumGlyphs = 1
-        TabOrder = 2
-        Text = '..\..\packages'
-        OnChange = jdePackagesLocationChange
-      end
-      object jfeIncFile: TJvFilenameEdit
-        Left = 212
-        Top = 0
-        Width = 145
-        Height = 21
-        DialogOptions = []
-        ButtonFlat = False
-        NumGlyphs = 1
-        TabOrder = 3
-        Text = '..\..\common\JVCL.INC'
+        OnClick = btnEditModelClick
       end
     end
   end
@@ -264,6 +217,9 @@ object frmMain: TfrmMain
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
+    DesignSize = (
+      653
+      502)
     object lblDependencies: TLabel
       Left = 12
       Top = 132
@@ -1496,22 +1452,10 @@ object frmMain: TfrmMain
       'jsgDependencies.Height'
       'pnlEdit.Width'
       'jsgFiles.Height'
-      'cmbPrefix.Text'
-      'cmbFormat.Text'
-      'jdePackagesLocation.Text'
       'odlAddFiles.InitialDir'
-      'jfeIncFile.FileName')
+      'cmbModel.ItemIndex')
     StoredValues = <>
     Left = 704
-    Top = 172
-  end
-  object jaiIniStore: TJvAppINIFileStore
-    StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
-    Buffered = False
-    FileName = 'pgEdit.ini'
-    SubStores = <>
-    Left = 732
     Top = 172
   end
   object jpmFilesPopup: TJvPopupMenu
@@ -1552,9 +1496,8 @@ object frmMain: TfrmMain
   object jaxStore: TJvAppXmlStore
     StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
-    FileName = 'pgEdit.xml'
     RootNodeName = 'Configuration'
-    Left = 716
-    Top = 216
+    Left = 732
+    Top = 172
   end
 end

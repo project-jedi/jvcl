@@ -38,12 +38,20 @@ uses JclStrings, GenerateUtils;
 procedure TfrmTargets.FormShow(Sender: TObject);
 var
   i : Integer;
+  targets : TStringList;
 begin
-  if clbBuilds.Items.Count = 0 then
-  begin
-    EnumerateTargets(clbBuilds.Items);
-    for i := 0 to clbBuilds.Items.Count - 1 do
-      clbBuilds.Checked[i] := True;
+  targets := TStringList.Create;
+  try
+    EnumerateTargets(targets);
+
+    if targets.Text <> clbBuilds.Items.Text then
+    begin
+      clbBuilds.Items.Assign(targets);
+      for i := 0 to clbBuilds.Items.Count - 1 do
+        clbBuilds.Checked[i] := True;
+    end;
+  finally
+    targets.Free;
   end;
 end;
 

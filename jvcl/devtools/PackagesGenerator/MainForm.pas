@@ -8,7 +8,7 @@ uses
   JvStatusBar, ExtCtrls, JvSplitter, StdCtrls, JvListBox, JvCtrls,
   JvControlBar, ImgList, ActnList, JvComponent, JvBaseDlg, JvBrowseFolder,
   Mask, JvToolEdit, AppEvnts, Grids, JvGrids, JvFormPlacement, JvAppStore,
-  JvAppIniStore, JvStringGrid, JvAppXmlStore;
+  JvStringGrid, JvAppXmlStore, JvAppIniStore;
 
 type
   TfrmMain = class(TForm)
@@ -43,8 +43,7 @@ type
     mnuNextPackage: TMenuItem;
     jbfFolder: TJvBrowseForFolderDialog;
     pnlEdit: TPanel;
-    jdePackagesLocation: TJvDirectoryEdit;
-    lblPackagesLocation: TLabel;
+    lblModel: TLabel;
     aevEvents: TApplicationEvents;
     ledName: TEdit;
     rbtRuntime: TRadioButton;
@@ -76,7 +75,6 @@ type
     lblC5PFlags: TLabel;
     lblC6PFlags: TLabel;
     jfsStore: TJvFormStorage;
-    jaiIniStore: TJvAppINIFileStore;
     mnuHelp: TMenuItem;
     mnuKnown: TMenuItem;
     mnuAbout: TMenuItem;
@@ -85,10 +83,6 @@ type
     N3: TMenuItem;
     mnuExit: TMenuItem;
     btnAdvancedBCB: TButton;
-    lblPrefix: TLabel;
-    cmbPrefix: TComboBox;
-    lblFormat: TLabel;
-    cmbFormat: TComboBox;
     actOptions: TAction;
     mnuParameters: TMenuItem;
     jpmFilesPopup: TJvPopupMenu;
@@ -103,9 +97,9 @@ type
     jaxStore: TJvAppXmlStore;
     pnlOptions: TPanel;
     shHideOptions: TShape;
-    lblIncFile: TLabel;
-    jfeIncFile: TJvFilenameEdit;
     mnuDeletePackage: TMenuItem;
+    cmbModel: TComboBox;
+    btnEditModel: TButton;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -155,6 +149,9 @@ type
     procedure actDeleteExecute(Sender: TObject);
     procedure actOptionsExecute(Sender: TObject);
     procedure actOptionsUpdate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure btnEditModelClick(Sender: TObject);
+    procedure cmbModelClick(Sender: TObject);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
@@ -181,7 +178,7 @@ implementation
 uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
   GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi, AdvancedBCBForm,
-  GenerationMessagesForm;
+  GenerationMessagesForm, ModelsForm;
 {$R *.dfm}
 
 procedure TfrmMain.actExitExecute(Sender: TObject);
@@ -200,16 +197,14 @@ begin
 end;
 
 constructor TfrmMain.Create(AOwner: TComponent);
-var
-  IncFileName : string;
 begin
   inherited;
 
   jaxStore.FileName := StrEnsureSuffix(PathSeparator, ExtractFilePath(Application.exename)) + 'pgEdit.xml';
-  IncFileName := jfeIncFile.FileName;
-  if not PathIsAbsolute(IncFileName) then
-    IncFileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+IncFileName);
-  LoadConfig(jaxStore.FileName, IncFileName);
+  if cmbModel.ItemIndex >-1 then
+    LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex])
+  else
+    LoadConfig(jaxStore.FileName, '');
 
   with jsgDependencies do
   begin
@@ -284,10 +279,10 @@ var
 begin
   if odlAddFiles.Execute then
   begin
-    if PathIsAbsolute(jdePackagesLocation.Text) then
-      PackagesDir := jdePackagesLocation.Text
+    if PathIsAbsolute(PackagesLocation) then
+      PackagesDir := PackagesLocation
     else
-      PackagesDir := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+jdePackagesLocation.Text);
+      PackagesDir := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+PackagesLocation);
     for i := 0 to odlAddFiles.Files.Count-1 do
     begin
       row := jsgFiles.InsertRow(jsgFiles.RowCount-1);
@@ -385,10 +380,10 @@ procedure TfrmMain.LoadPackagesList;
 var
   path : string;
 begin
-  if PathIsAbsolute(jdePackagesLocation.Text) then
-    path := jdePackagesLocation.Text
+  if PathIsAbsolute(PackagesLocation) then
+    path := PackagesLocation
   else
-    path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+jdePackagesLocation.Text);
+    path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+PackagesLocation);
 
   EnumeratePackages(path, jlbList.Items);
   path := StrEnsureSuffix(PathSeparator, path);
@@ -414,10 +409,10 @@ var
   filesNode : TJvSimpleXmlElem;
   fileNode : TJvSimpleXmlElem;
 begin
-  if PathIsAbsolute(jdePackagesLocation.Text) then
-    FileName := jdePackagesLocation.Text
+  if PathIsAbsolute(PackagesLocation) then
+    FileName := PackagesLocation
   else
-    FileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + jdePackagesLocation.Text);
+    FileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
 
   FileName := FileName + PathSeparator+'xml'+PathSeparator + ledName.Text;
   if rbtDesign.Checked then
@@ -516,10 +511,10 @@ begin
   if jlbList.ItemIndex < 0 then
     Exit;
 
-  if PathIsAbsolute(jdePackagesLocation.Text) then
-    xmlFileName := jdePackagesLocation.Text
+  if PathIsAbsolute(PackagesLocation) then
+    xmlFileName := PackagesLocation
   else
-    xmlFileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + jdePackagesLocation.Text);
+    xmlFileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
   xmlFileName := xmlFileName + PathSeparator+'xml'+PathSeparator;
   if rbtDesign.Checked then
     xmlFileName := xmlFileName + jlbList.Items[jlbList.ItemIndex] + '.xml'
@@ -597,10 +592,10 @@ var
 begin
   if IsOkToChange then
   begin
-    if PathIsAbsolute(jdePackagesLocation.Text) then
-      path := jdePackagesLocation.Text
+    if PathIsAbsolute(PackagesLocation) then
+      path := PackagesLocation
     else
-      path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + jdePackagesLocation.Text);
+      path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
 
     frmTargets.Path := path;
     if frmTargets.ShowModal = mrOk then
@@ -617,7 +612,7 @@ begin
         end;
 
         frmGenMessages.Show;
-        Generate(jlbList.Items, targets, path, cmbPrefix.Text, cmbFormat.Text, AddMessage, frmTargets.chkGenDof.Checked);
+        Generate(jlbList.Items, targets, AddMessage, jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], frmTargets.chkGenDof.Checked);
       finally
         targets.Free;
       end;
@@ -754,6 +749,13 @@ procedure TfrmMain.FormShow(Sender: TObject);
 begin
   // Load the list of packages
   LoadPackagesList;
+
+  // force the models to be loaded in appropriate form and
+  // load the names in the combo box
+  frmModels.LoadModels(jaxStore.FileName);
+  cmbModel.Items.Assign(frmModels.cmbModels.Items);
+
+  jfsStore.RestoreFormPlacement;
 end;
 
 procedure TfrmMain.MoveLine(sg : TStringGrid; direction : Integer);
@@ -858,10 +860,10 @@ begin
         'Deleting a package',
         MB_ICONQUESTION or MB_YESNO) = MRYES) then
   begin
-    if PathIsAbsolute(jdePackagesLocation.Text) then
-      path := jdePackagesLocation.Text
+    if PathIsAbsolute(PackagesLocation) then
+      path := PackagesLocation
     else
-      path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+jdePackagesLocation.Text);
+      path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+PackagesLocation);
 
     path := StrEnsureSuffix(PathSeparator, path) + 'xml'+PathSeparator + jlbList.Items[jlbList.ItemIndex]+'.xml';
     if not DeleteFile(path) then
@@ -880,6 +882,24 @@ end;
 procedure TfrmMain.actOptionsUpdate(Sender: TObject);
 begin
   actOptions.Checked := pnlOptions.Visible;
+end;
+
+procedure TfrmMain.Button1Click(Sender: TObject);
+begin
+  frmModels.ShowModal;
+  jaxStore.Reload;
+end;
+
+procedure TfrmMain.btnEditModelClick(Sender: TObject);
+begin
+  frmModels.EditIndex := cmbModel.ItemIndex;
+  if frmModels.ShowModal = mrOk then
+    cmbModel.ItemIndex := frmModels.cmbModels.ItemIndex;
+end;
+
+procedure TfrmMain.cmbModelClick(Sender: TObject);
+begin
+  LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex]);
 end;
 
 end.
