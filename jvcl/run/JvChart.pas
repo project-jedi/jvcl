@@ -43,8 +43,15 @@ unit JvChart;
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls,
   Forms, Dialogs, ExtCtrls, Printers, Clipbrd,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QExtCtrls, QPrinters, QClipbrd,
+  Types, QWindows,
+  {$ENDIF VisualCLX}
   JvComponent, JvJCLUtils;
 
 const
@@ -266,7 +273,9 @@ type
     procedure MyYHeader(strText: string); // NEW
     procedure MyHeaderFont;
     procedure MyAxisFont;
+    {$IFDEF VCL}
     procedure MyGraphVertFont; // vertical font handle
+    {$ENDIF VCL}
     procedure MySmallGraphFont;
     function MyTextHeight(strText: string): Longint;
     { TEXTOUT stuff }
@@ -347,8 +356,10 @@ type
     property Anchors;
     property AutoSize;
     property Constraints;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
+    {$ENDIF}
     property DragMode;
     property Enabled;
     property ParentShowHint;
@@ -1792,7 +1803,11 @@ var
 begin
   if Length(strText) = 0 then
     exit;
+  {$IFDEF VCL}
   MyGraphVertFont; // Select Vertical Font Output.
+  {$ELSE}
+  MyAxisFont;
+  {$ENDIF VCL}
   if Options.XStartOffset > 10 then
   begin
       {ht := MyTextHeight(strText); }// not used (ahuser)
@@ -1802,9 +1817,13 @@ begin
     if vert < 0 then
       vert := 0;
     horiz := 2;
+    {$IFDEF VCL}
       // NOTE: Because of the logical font selected, this time TextOut goes vertical.
       // If this doesn't go vertical, it may be because the font selection above failed.
     MyLeftTextOut(horiz, vert, strText);
+    {$ELSE}
+    TextOutAngle(ChartCanvas, 90, horiz, vert, strText);
+    {$ENDIF}
   end;
   MyAxisFont;
 //   Self.MyLeftTextOut(horiz,vert+50,'*');
@@ -2401,6 +2420,7 @@ begin
   ChartCanvas.Font.Assign(Options.AxisFont);
 end;
 
+{$IFDEF VCL}
 procedure TJvChart.MyGraphVertFont;
 begin
   if Ord(FYFontHandle) = 0 then
@@ -2409,6 +2429,7 @@ begin
   if not PrintInSession then
     Assert(ChartCanvas.Font.Handle = FYFontHandle);
 end;
+{$ENDIF VCL}
 
 procedure TJvChart.MyHeaderFont;
 begin
@@ -2436,7 +2457,6 @@ begin
 end;
 
 { Text Left Aligned to X,Y boundary }
-
 procedure TJvChart.MyLeftTextOut(X, Y: Integer; const Text: string);
 begin
   ChartCanvas.TextOut(X, Y + 1, Text);
