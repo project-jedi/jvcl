@@ -24,8 +24,9 @@ LIBDIR = $(ROOT)\Projects\lib
 
 !ifndef HPPDIR
 HPPDIR = $(ROOT)\Include\Vcl
-#HPPDIR = $(JVCLROOT)\lib\c6
 !endif
+
+#-------------------------------------------------------------------------------
 
 !ifndef EDITION
 !error You must specify a EDITION: make -DEDITION=d6 or make -DEDITION=d5p (Packages Generator)
@@ -50,6 +51,15 @@ JVCLROOT = $(JVCLPACKAGEDIR)\..
 DEVTOOLS = $(JVCLROOT)\devtools
 DEVTOOLS_BACK = ..\packages\bin
 
+#CONFIGFILENAME=template.cfg
+CONFIGFILENAME=dcc32.cfg
+CFGFILE=..\$(PKGDIR)\$(CONFIGFILENAME)
+
+!ifndef PERSONALEDITION_OPTION
+# It is not allowed to be empty
+PERSONALEDITION_OPTION = -DDUMMYDUMMY
+!endif
+
 !ifndef DCCOPT
 DCCOPT=-Q -M
 !endif
@@ -69,124 +79,124 @@ JVCLRESDIRS=$(JVCLROOT)\Resources
 #-------------------------------------------------------------------------------
 
 default: \
-  BuildJCLdcpFiles \
-  pg.exe \
-  Compile \
-  Clean
+		BuildJCLdcpFiles \
+		pg.exe \
+		Compile \
+		Clean
 
 
 ################################################################################
 BuildJCLdcpFiles:
-        # for C++ targets compile JCL .dcp files
-        IF EXIST "$(ROOT)\bin\bcc32.exe" IF NOT EXIST "$(DCPDIR)\CJclVClx.dcp" $(MAKE) -s -f MakeJCLDcp4BCB.mak
+	# for C++ targets compile JCL .dcp files
+	IF EXIST "$(ROOT)\bin\bcc32.exe" IF NOT EXIST "$(DCPDIR)\CJclVClx.dcp" $(MAKE) -s -f MakeJCLDcp4BCB.mak
 
 ################################################################################
 BuildJCLdcpFilesForce:
-        # for C++ targets compile JCL .dcp files
-        IF EXIST "$(ROOT)\bin\bcc32.exe" $(MAKE) -s -f MakeJCLDcp4BCB.mak
+	# for C++ targets compile JCL .dcp files
+	IF EXIST "$(ROOT)\bin\bcc32.exe" $(MAKE) -s -f MakeJCLDcp4BCB.mak
 
 ################################################################################
 Bpg2Make.exe:
-        @echo [Compiling: Bpg2Make.exe]
-        @cd $(DEVTOOLS)
-        $(MAKE) -f makefile.mak -s Bpg2Make.exe
-        @cd $(DEVTOOLS_BACK)
-        $(DEVTOOLS)\bin\Bpg2Make.exe "..\$(PKGDIR) Packages.bpg"
+	@echo [Compiling: Bpg2Make.exe]
+	@cd $(DEVTOOLS)
+	$(MAKE) -f makefile.mak -s Bpg2Make.exe
+	@cd $(DEVTOOLS_BACK)
+	$(DEVTOOLS)\bin\Bpg2Make.exe "..\$(PKGDIR) Packages.bpg"
 
 ################################################################################
 GeneratePackages:
-        @echo [Compiling: pg.exe]
-        @cd $(DEVTOOLS)
-        #-SET C5PFLAGS=
-        #if $(VERSION)==5 SET C5PFLAGS=-LUvcl50
-        $(MAKE) -f makefile.mak -s pg.exe
-        #-SET C5PFLAGS=
-        @cd $(DEVTOOLS_BACK)
-        echo [Generating: Delphi Packages]
-        @$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(EDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
-        @IF NOT $(MASTEREDITION)! == ! @$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(MASTEREDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
+	@echo [Compiling: pg.exe]
+	@cd $(DEVTOOLS)
+	#-SET C5PFLAGS=
+	#if $(VERSION)==5 SET C5PFLAGS=-LUvcl50
+	$(MAKE) -f makefile.mak -s pg.exe
+	#-SET C5PFLAGS=
+	@cd $(DEVTOOLS_BACK)
+	echo [Generating: Delphi Packages]
+	@$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(EDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
+	@IF NOT $(MASTEREDITION)! == ! @$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(MASTEREDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
 
 ################################################################################
 pg.exe: Templates GeneratePackages
-        # do nothing
+	# do nothing
+
+################################################################################
+configfile:
+	# create dcc32.cfg file
+	-@del "$(CFG)" >NUL 2>NUL
+	-@IF EXIST "$(ROOT)\bin\dcc32.cfg" @type "$(ROOT)\bin\dcc32.cfg" >>"$(CFG)"
+	@echo. >>"$(CFG)"
+	@echo -Q>>"$(CFG)"
+	@echo -U"$(ROOT)\Lib;$(ROOT)\Lib\Obj">>"$(CFG)"
+	@echo -R"$(ROOT)\Lib">>"$(CFG)"
+	@echo -I"$(ROOT)\Include;$(ROOT)\Include\Vcl">>"$(CFG)"
+	@echo -U"$(DCPDIR);$(LIBDIR);$(BPLDIR)">>"$(CFG)"
+	#
+	@echo -I"$(JCLINCLUDEDIRS)">>"$(CFG)"
+	@echo -U"$(JCLSOURCEDIRS)">>"$(CFG)"
+	#
+	@echo -I"$(JVCLINCLUDEDIRS)">>"$(CFG)"
+	@echo -U"$(UNITOUTDIR);$(JVCLSOURCEDIRS);$(LIBDIR)">>"$(CFG)"
+	@echo -R"$(JVCLRESDIRS)">>"$(CFG)"
+
 
 ################################################################################
 Templates:
-        @echo [Generating: Templates]
-        @type &&|
--Q
--U"$(ROOT)\Lib;$(ROOT)\Lib\Obj"
--R"$(ROOT)\Lib"
--I"$(ROOT)\Include;$(ROOT)\Include\Vcl"
--U"$(DCPDIR);$(LIBDIR);$(BPLDIR)"
--LE"$(BPLDIR)"
--LN"$(DCPDIR)"
-$(PERSONALEDITION_OPTION)
-
--I"$(JCLINCLUDEDIRS)"
--U"$(JCLSOURCEDIRS)"
-
--I"$(JVCLINCLUDEDIRS)"
--U"$(UNITOUTDIR);$(JVCLSOURCEDIRS);$(LIBDIR)"
--R"$(JVCLRESDIRS)"
-
--N"$(UNITOUTDIR)"
--N1"$(HPPDIR)"
--N2"$(UNITOUTDIR)\obj"
-| > ..\$(PKGDIR)\template.cfg
-        @IF NOT $(MASTEREDITION)! == ! @copy ..\$(PKGDIR)\template.cfg $(PKGDIR_MASTEREDITION)\template.cfg
+	@echo [Generating: Templates]
+	@$(MAKE) -f makefile.mak "-DCFG=$(CFGFILE)" configfile >NUL
+	#
+	@echo -LE"$(BPLDIR)">>"$(CFGFILE)"
+	@echo -LN"$(DCPDIR)">>"$(CFGFILE)"
+	@echo $(PERSONALEDITION_OPTION)>>"$(CFGFILE)"
+	#
+	@echo -N"$(UNITOUTDIR)">>"$(CFGFILE)"
+	@echo -N1"$(HPPDIR)">>"$(CFGFILE)"
+	@echo -N2"$(UNITOUTDIR)\obj">>"$(CFGFILE)"
+	#
+	#
+	@IF NOT $(MASTEREDITION)! == ! @copy "$(CFGFILE)" "$(PKGDIR_MASTEREDITION)\$(CONFIGFILENAME)"
 
 ################################################################################
 Compile: Bpg2Make.exe CompilePackages
 
 ################################################################################
 CompilePackages:
-        @echo [Compiling: Packages]
-        @cd $(JVCLPACKAGEDIR)
-
-        # create temporary batch file that calls "make"
-        @type &&|
-@echo off
-IF NOT $(JCLROOT)!==! SET ADDFLAGS=-U$(JCLROOT)\dcu
-SET BPLDIR=$(BPLDIR)
-SET BPILIBDIR=$(LIBDIR)
-SET PATH=$(ROOT)\bin;$(LIBDIR);(BPLDIR);%PATH%
-SET LIBDIR=$(LIBDIR)
-SET HPPDIR=$(HPPDIR)
-SET DCCOPT=$(DCCOPT)
-SET DCC=$(DCC)
-$(MAKE) -f "$(PKGDIR) Packages.mak" $(MAKEOPTIONS) $(TARGETS)
-| >tmp.bat
-        @tmp.bat
-        -@del tmp.bat >NUL
+	@echo [Compiling: Packages]
+	@cd $(JVCLPACKAGEDIR)
+	#
+	# create temporary batch file that calls "make"
+	@echo @echo off>tmp.bat
+	@echo IF NOT $(JCLROOT)!==! SET ADDFLAGS=-U$(JCLROOT)\dcu>>tmp.bat
+	@echo SET BPLDIR=$(BPLDIR)>>tmp.bat
+	@echo SET BPILIBDIR=$(LIBDIR)>>tmp.bat
+	@echo SET PATH=$(ROOT)\bin;$(LIBDIR);(BPLDIR);%PATH%>>tmp.bat
+	@echo SET LIBDIR=$(LIBDIR)>>tmp.bat
+	@echo SET HPPDIR=$(HPPDIR)>>tmp.bat
+	@echo SET DCCOPT=$(DCCOPT)>>tmp.bat
+	@echo SET DCC=$(DCC)>>tmp.bat
+	@echo $(MAKE) -f "$(PKGDIR) Packages.mak" $(MAKEOPTIONS) $(TARGETS)>>tmp.bat
+	#
+	#
+	@call tmp.bat
+	-@del tmp.bat >NUL
 
 ################################################################################
 Clean:
-        @echo [Cleaning...]
-        -del /f /q "$(PKGDIR) Packages.mak" 2>NUL
-        -del /f /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak" 2>NUL
+	@echo [Cleaning...]
+	-del /f /q "$(PKGDIR) Packages.mak" 2>NUL
+	-del /f /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak" 2>NUL
+	-del /f /q "$(PKGDIR_MASTEREDITION)\*.cfg" "$(PKGDIR_MASTEREDITION)\*.mak" 2>NUL
 
 ################################################################################
 Installer:
-        @echo [Compiling: Installer]
-        @cd ..\..\install\JVCLInstall
-        @type &&|
--Q
--U"$(ROOT)\Lib;$(ROOT)\Lib\Obj"
--R"$(ROOT)\Lib"
--I"$(ROOT)\Include;$(ROOT)\Include\Vcl"
--U"$(DCPDIR);$(LIBDIR);$(BPLDIR)"
-
--I"$(JCLINCLUDEDIRS)"
--U"$(JCLSOURCEDIRS)"
-
--I"$(JVCLINCLUDEDIRS)"
--U"$(UNITOUTDIR);$(JVCLSOURCEDIRS);$(LIBDIR)"
--R"$(JVCLRESDIRS)"
-
--E"$(JVCLROOT)\packages\bin"
-| > JVCLInstall.cfg
-        $(DCC) -DNO_JCL JVCLInstall.dpr
-        start JVCLInstall.exe "--jcl-path=$(JCLROOT)"
+	@echo [Compiling: Installer]
+	@cd ..\..\install\JVCLInstall
+	@$(MAKE) -f makefile.mak "-DCFG=JVCLInstall.cfg" configfile >NUL
+	#
+	@echo -E"$(JVCLROOT)\packages\bin">>JVCLInstall.cfg
+	#
+	#
+	@$(DCC) -DNO_JCL JVCLInstall.dpr
+	@start JVCLInstall.exe "--jcl-path=$(JCLROOT)"
 
 
