@@ -85,6 +85,9 @@ type
   TJvCustomInspectorRegItem = class;
   TJvInspectorEventData = class;
   TJvInspectorPropData = class;
+  
+{$HPPEMIT 'class TJvCustomInspectorItem;'}
+{$HPPEMIT 'class TJvCustomInspectorData;'}
 
   TInspectorItemFlag = (iifReadonly, iifHidden, iifExpanded, iifVisible,
     iifQualifiedNames, iifAutoUpdate, iifMultiLine, iifValueList,
@@ -1210,7 +1213,7 @@ type
     function IsAssigned: Boolean; virtual; abstract;
     function IsInitialized: Boolean; virtual; abstract;
     class function ItemRegister: TJvInspectorRegister; virtual;
-    class function New: TJvCustomInspectorData;
+    class function New: TJvCustomInspectorData; virtual;
     function NewItem(const AParent: TJvCustomInspectorItem): TJvCustomInspectorItem; virtual;
     procedure SetAsSet(const Buf); virtual; abstract;
     property AsFloat: Extended read GetAsFloat write SetAsFloat;
@@ -1247,7 +1250,7 @@ type
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
-    class function New(const AParent: TJvCustomInspectorItem; const Ordinal: Integer; const ADataParent: TJvCustomInspectorData): TJvCustomInspectorItem;
+    class function New(const AParent: TJvCustomInspectorItem; const Ordinal: Integer; const ADataParent: TJvCustomInspectorData): TJvCustomInspectorItem; overload;
     procedure SetAsSet(const Buf); override;
     property BitOffset: Integer read FBitOffset;
     property DataParent: TJvCustomInspectorData read FDataParent;
@@ -1386,7 +1389,7 @@ type
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
-    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo): TJvCustomInspectorItem;
+    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo): TJvCustomInspectorItem; overload;
     procedure SetAsSet(const Buf); override;
     property OnGetAsFloat: TJvInspAsFloat read FOnGetAsFloat write SetOnGetAsFloat;
     property OnGetAsInt64: TJvInspAsInt64 read FOnGetAsInt64 write SetOnGetAsInt64;
