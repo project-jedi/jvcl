@@ -150,9 +150,13 @@ begin
         tmp2 := tmp;
       tmp := AdjustLineBreaks(tmp{$IFDEF COMPILER6_UP},cStyle[ToWindows]{$ENDIF});
       if CompareBeforeWrite and (tmp = tmp2) then
+      begin
+        writeln(ExtractFilename(Filename), ' not converted');
         Exit;
+      end;
       F.Size := 0;
       F.Write(tmp[1],Length(tmp));
+      writeln(ExtractFilename(Filename), ' converted');
     end;
   finally
     F.Free;
@@ -176,12 +180,8 @@ begin
       begin
         if (FindData.dwFileAttributes and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY) then
           writeln('ERROR: ',FindData.cFileName,' is read-only!')
-        else
-        begin
-          writeln(FindData.cFileName);
-          if ConvertFile(APath + FindData.cFileName,ToWindows,CompareBeforeWrite) then
+        else if ConvertFile(APath + FindData.cFileName,ToWindows,CompareBeforeWrite) then
             Inc(Result);
-        end;
       end;
     until not FindNextFile(SearchHandle,FindData);
   finally
@@ -269,7 +269,7 @@ begin
       Inc(Count,ConvertFiles(ExpandUNCFilename(ParamStr(i)),ToWindows,CompareBeforeWrite,Recurse));
   end;
   writeln('');
-  writeln('Done: ', Count,' files converted.');
+  writeln('Done: ', Count, ' files converted.');
 end;
 
 end.
