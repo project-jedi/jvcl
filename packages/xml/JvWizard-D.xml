@@ -19,6 +19,6 @@
   <Contains>
     <File Name="..\..\design\JvWizardEditorForm.pas" Targets="all" Formname="JvWizardPageListEditor" Condition=""/>
     <File Name="..\..\design\JvWizardReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvWizardAboutInfoForm.pas" Targets="all" Formname="JvWizardAboutDialog" Condition=""/>
+    <File Name="..\..\design\JvWizardAboutInfoForm.pas" Targets="allbutclx" Formname="JvWizardAboutDialog" Condition=""/>
   </Contains>
 </Package>

@@ -46,7 +46,7 @@
     <File Name="..\..\design\JvDesignerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDsgnConsts.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDsgnEditors.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvIDEZoom.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvIDEZoom.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvJVCLAboutEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvPaintBoxEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvProviderToolbarFrame.pas" Targets="all" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
