@@ -118,6 +118,11 @@ type
     property OnEnter;
     property OnExit;
     property OnGetCaption: TJvImageListViewerCaptionEvent read FOnGetCaption write FOnGetCaption;
+    property OnDrawItem;
+    property OnOptionsChanged;
+    property OnItemChanging;
+    property OnItemChanged;
+    property OnItemHint;
     property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;

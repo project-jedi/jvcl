@@ -40,11 +40,11 @@ uses
 type
   TJvImageItem = class(TJvViewerItem)
   private
-    FFileName: string;
+    FFileName: WideString;
     FPicture: TPicture;
-    FCaption: TCaption;
-    procedure SetFileName(const Value: string);
-    procedure SetCaption(const Value: TCaption);
+    FCaption: WideString;
+    procedure SetFileName(const Value: WideString);
+    procedure SetCaption(const Value: WideString);
     procedure SetPicture(const Value: TPicture);
     function GetPicture: TPicture;
     procedure CreatePicture;
@@ -55,10 +55,11 @@ type
     procedure ReduceMemoryUsage; override;
   public
     destructor Destroy; override;
+    procedure Refresh;
   public
-    property FileName: string read FFileName write SetFileName;
+    property FileName: WideString read FFileName write SetFileName;
     property Picture: TPicture read GetPicture write SetPicture;
-    property Caption: TCaption read FCaption write SetCaption;
+    property Caption: WideString read FCaption write SetCaption;
   end;
 
   TJvImageViewerOptions = class(TJvCustomItemViewerOptions)
@@ -102,42 +103,42 @@ type
 
   TJvImageLoadEvent = procedure(Sender: TObject; Item: TJvImageItem) of object;
   TJvImageLoadErrorEvent = procedure(Sender: TObject; E: Exception;
-    const FileName: string; var Handled: Boolean) of object;
+    const FileName: WideString; var Handled: Boolean) of object;
   TJvImageViewerLoadProgress = procedure(Sender: TObject; Item: TJvImageItem; Stage: TProgressStage;
     PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string) of object;
 
   TJvImagesViewer = class(TJvCustomItemViewer)
   private
-    FFileMask: string;
-    FDirectory: string;
+    FFileMask: WideString;
+    FDirectory: WideString;
     FOnLoadError: TJvImageLoadErrorEvent;
     FOnLoadProgress: TJvImageViewerLoadProgress;
     FOnLoadBegin: TNotifyEvent;
     FOnLoadEnd: TNotifyEvent;
-    procedure SetDirectory(const Value: string);
-    procedure SetFileMask(const Value: string);
+    procedure SetDirectory(const Value: WideString);
+    procedure SetFileMask(const Value: WideString);
     function GetItems(Index: Integer): TJvImageItem;
-    procedure ExpandFileMask(const Mask: string; Strings: TStrings);
+    procedure ExpandFileMask(const Mask: WideString; Strings: TStrings);
     function ScaleRect(ARect, RefRect: TRect): TRect;
     function GetOptions: TJvImageViewerOptions;
     procedure SetOptions(const Value: TJvImageViewerOptions);
   protected
     function GetItemClass: TJvViewerItemClass; override;
     function GetOptionsClass: TJvItemViewerOptionsClass; override;
-    function LoadErrorHandled(E: Exception; const FileName: string): Boolean;
+    function LoadErrorHandled(E: Exception; const FileName: WideString): Boolean;
     procedure DoLoadBegin; virtual;
     procedure DoLoadProgress(Item: TJvImageItem; Stage: TProgressStage; PercentDone: Byte; RedrawNow: Boolean; const R:
-      TRect; const Msg: string);
+      TRect; const Msg: WideString);
     procedure DoLoadEnd; virtual;
     procedure DrawItem(Index: Integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
-    function LoadImages: Boolean;
+    function LoadImages: Boolean;virtual;
     property Items[Index: Integer]: TJvImageItem read GetItems;
     property Count;
   published
-    property Directory: string read FDirectory write SetDirectory;
-    property FileMask: string read FFileMask write SetFileMask;
+    property Directory: WideString read FDirectory write SetDirectory;
+    property FileMask: WideString read FFileMask write SetFileMask;
     property Options: TJvImageViewerOptions read GetOptions write SetOptions;
     property SelectedIndex;
     property OnScroll;
@@ -267,7 +268,7 @@ end;
 
 procedure TJvImageItem.CreatePicture;
 var
-  S: string;
+  S: WideString;
 begin
   if FPicture = nil then
   begin
@@ -311,26 +312,31 @@ begin
   Result := FPicture;
 end;
 
-procedure TJvImageItem.SetFileName(const Value: string);
+procedure TJvImageItem.SetFileName(const Value: WideString);
 begin
   if (AnsiCompareFilename(FFileName, Value) <> 0) and Changing then
   begin
     FFileName := Value;
-    // don't load image unless necessary
+    // don't load image until .Picture is used
     FreeAndNil(FPicture);
   end;
 end;
 
 procedure TJvImageItem.SetPicture(const Value: TPicture);
 begin
-  if Value <> nil then
-    GetPicture.Assign(Value)
-  else
-    FreeAndNil(FPicture);
-  Changed;
+  if Changing then
+  begin
+    if Value <> nil then
+      GetPicture.Assign(Value)
+    else if Assigned(FPicture) then
+    begin
+      FreeAndNil(FPicture);
+      Changed;
+    end;
+  end;
 end;
 
-procedure TJvImageItem.SetCaption(const Value: TCaption);
+procedure TJvImageItem.SetCaption(const Value: WideString);
 begin
   if (FCaption <> Value) and Changing then
   begin
@@ -344,6 +350,11 @@ begin
   inherited ReduceMemoryUsage;
   if FileName <> '' then // release image if we can recreate it from it's filename
     Picture := nil;
+end;
+
+procedure TJvImageItem.Refresh;
+begin
+  FreeAndNil(FPicture);
 end;
 
 //=== { TJvImagesViewer } ====================================================
@@ -414,7 +425,7 @@ var
   ImageRect: TRect;
   TotalPadding, BottomRightShift: Integer;
   AItem: TJvImageItem;
-  S: string;
+  S: WideString;
 
   procedure ModifyRect(var R: TRect; ALeft, ATop, ARight, ABottom: Integer);
   begin
@@ -511,7 +522,7 @@ begin
   begin
     if Options.Layout = tlCenter then
       S := ' ' + S + ' ';
-    ViewerDrawText(Canvas, PChar(S), Length(S),
+    ViewerDrawText(Canvas, S, Length(S),
       TextRect, DT_END_ELLIPSIS or DT_EDITCONTROL, Options.Alignment, tlCenter, False);
   end;
 end;
@@ -531,7 +542,7 @@ var
   I, J: Integer;
   F: TSearchRec;
   Files, FileMasks: TStringList;
-  TmpDir: string;
+  TmpDir: WideString;
 begin
   BeginUpdate;
   try
@@ -579,7 +590,7 @@ begin
   end;
 end;
 
-procedure TJvImagesViewer.SetDirectory(const Value: string);
+procedure TJvImagesViewer.SetDirectory(const Value: WideString);
 begin
   if FDirectory <> Value then
   begin
@@ -588,7 +599,7 @@ begin
   end;
 end;
 
-procedure TJvImagesViewer.SetFileMask(const Value: string);
+procedure TJvImagesViewer.SetFileMask(const Value: WideString);
 begin
   if FFileMask <> Value then
   begin
@@ -597,13 +608,13 @@ begin
   end;
 end;
 
-procedure TJvImagesViewer.ExpandFileMask(const Mask: string;
+procedure TJvImagesViewer.ExpandFileMask(const Mask: WideString;
   Strings: TStrings);
 var
   Start, Current: PChar;
   TmpChar: Char;
 begin
-  Current := PChar(Mask);
+  Current := PChar(string(Mask));
   Start := Current;
   while (Current <> nil) and (Current^ <> #0) do
   begin
@@ -622,7 +633,7 @@ begin
     Strings.Add(Start);
 end;
 
-function TJvImagesViewer.LoadErrorHandled(E: Exception; const FileName: string): Boolean;
+function TJvImagesViewer.LoadErrorHandled(E: Exception; const FileName: WideString): Boolean;
 begin
   Result := False;
   if Assigned(FOnLoadError) then
@@ -637,7 +648,7 @@ end;
 
 procedure TJvImagesViewer.DoLoadProgress(Item: TJvImageItem;
   Stage: TProgressStage; PercentDone: Byte; RedrawNow: Boolean;
-  const R: TRect; const Msg: string);
+  const R: TRect; const Msg: WideString);
 begin
   if Assigned(FOnLoadProgress) then
     FOnLoadProgress(Self, Item, Stage, PercentDone, RedrawNow, R, Msg);
