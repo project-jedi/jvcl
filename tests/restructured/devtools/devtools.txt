@@ -48,6 +48,21 @@ Creates a DOF file from a template. Command line:
 MakeDOF.exe <filemask> <template>
 MakeDOF always scans subdirs and overwrites any existing files.
 
+JTouch
+======
+Touches date / time and (optional) attributes of selected files
+jtouch.exe [options] <filemask> where options can be:
+/H or /?       shows help screen
+/D:YYYY-MM-DD  set the date (default today)
+/T:HH:MM:SS    set the time (default now)
+/A:[-|+]ARSH   add/remove attributes (archive,read-only,system,hidden), (no default)
+/M:CHL         modify Create, cHange and/or Last access date (can be combined), (default cHange)
+/S             recurse into subdirs, (default false)
+/F             force touch of read-only files (temporarily changes attributes to FILE_ATTRIBUTE_NORMAL)
+
+
+
+
 
 
 
