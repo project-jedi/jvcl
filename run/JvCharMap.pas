@@ -258,14 +258,14 @@ type
     procedure FontChanged; override;
     procedure DoRangeChange(Sender: TObject);
     procedure DoSelectChar(AChar: WideChar); virtual;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function CellSize: TSize;
     {$IFNDEF COMPILER6_UP}
     procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     procedure SetBounds(ALeft: Integer; ATop: Integer;
       AWidth: Integer; AHeight: Integer); override;
   published
@@ -990,9 +990,9 @@ begin
     PanelVisible := True;
 end;
 
-procedure TJvCustomCharMap.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvCustomCharMap.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  Msg.Result := 1;
+  Result := True;
 end;
 
 procedure TJvCustomCharMap.WMHScroll(var Msg: TWMHScroll);

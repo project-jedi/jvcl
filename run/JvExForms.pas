@@ -45,7 +45,6 @@ type
 {$ENDIF VisualCLX}
 
 type
-  
   TJvExScrollingWinControl = class(TScrollingWinControl, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -407,8 +406,8 @@ type
   protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
-  end; // do not implement Painting()
-  
+  end;
+   // do not implement Painting()
   TJvExForm = class(TForm, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -474,8 +473,8 @@ type
   protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
-  end; // do not implement Painting()
-  
+  end;
+   // do not implement Painting()
   TJvExToolWindow = class(TToolWindow, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -549,6 +548,7 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
 
 implementation
 
@@ -765,6 +765,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExScrollBox.VisibleChanged;
@@ -978,6 +979,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomFrame.VisibleChanged;
@@ -1191,6 +1193,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExFrame.VisibleChanged;
@@ -1404,6 +1407,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomForm.VisibleChanged;
@@ -1589,6 +1593,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExForm.VisibleChanged;
@@ -1774,6 +1779,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExToolWindow.VisibleChanged;
@@ -1987,5 +1993,6 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 end.

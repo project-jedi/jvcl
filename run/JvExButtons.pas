@@ -38,7 +38,6 @@ uses
   JvThemes, JvExControls;
 
 type
-  
   TJvExSpeedButton = class(TSpeedButton, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -164,6 +163,7 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
 
 implementation
 
@@ -502,5 +502,6 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 end.

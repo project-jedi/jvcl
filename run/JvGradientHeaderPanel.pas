@@ -72,9 +72,9 @@ type
     function GetLabelAlignment: TAlignment;
     procedure SetLabelAlignment(const Value: TAlignment);
     procedure AdjustLabelWidth;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoLabelFontChange(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
@@ -387,10 +387,10 @@ begin
   AdjustLabelWidth;
 end;
 
-procedure TJvGradientHeaderPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvGradientHeaderPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   { Reduce flickering FGradient completely fills the TJvGradientHeaderPanel }
-  Msg.Result := 1;
+  Result := True;
 end;
 
 end.

@@ -82,7 +82,6 @@ type
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure SetMaxLines(const Value: Integer);
     function GetLines: TStrings;
     procedure SetLines(const Value: TStrings);
@@ -91,6 +90,7 @@ type
     procedure SetReadOnly(const Value: Boolean);
     procedure SetClipboardCommands(const Value: TJvClipboardCommands);
   protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -519,10 +519,12 @@ begin
   inherited;
 end;
 
-procedure TJvCustomMemo.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvCustomMemo.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if not Transparent then
-    DefaultHandler(Msg);
+    Result := inherited DoPaintBackground(Canvas, Param)
+  else
+    Result := False;
 end;
 
 function TJvCustomMemo.GetReadOnly: Boolean;

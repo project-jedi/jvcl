@@ -2,23 +2,18 @@
 
 // ****************** Control **********************
 (*$DEFINE JV_CONTROL_EVENTS_CLASS(ClassName)
-  EMPTYLINE
   TJvEx##ClassName = class(T##ClassName, IJvControlEvents)
 *)
 (*$DEFINE JV_CONTROL_EVENTS_CLASS1(ClassName, Intf1)
-  EMPTYLINE
   TJvEx##ClassName = class(T##ClassName, Intf1, IJvControlEvents)
 *)
 (*$DEFINE JV_CONTROL_EVENTS_CLASS2(ClassName, Intf2, Intf1)
-  EMPTYLINE
   TJvEx##ClassName = class(T##ClassName, Intf2, Intf1, IJvControlEvents)
 *)
 (*$DEFINE JV_CONTROL_EVENTS_CLASS3(ClassName, Intf3, Intf2, Intf1)
-  EMPTYLINE
   TJvEx##ClassName = class(T##ClassName, Intf3, Intf2, Intf1, IJvControlEvents)
 *)
 (*$DEFINE JV_CONTROL_EVENTS_CLASS4(ClassName, Intf4, Intf3, Intf2, Intf1)
-  EMPTYLINE
   TJvEx##ClassName = class(T##ClassName, Intf4, Intf3, Intf2, Intf1, IJvControlEvents)
 *)
 
@@ -167,6 +162,7 @@
   JV_CONTROL_EVENTS_END_OPEN
   {$ENDIF VisualCLX}
   end;
+  EMPTYLINE
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_END
@@ -182,6 +178,7 @@
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  EMPTYLINE
 *)
 
 (*$DEFINE JV_CUSTOMCONTROL_EVENTS_END
@@ -190,6 +187,7 @@
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
   end;
+  EMPTYLINE
 *)
 
 (*$DEFINE JV_CONTROL_EVENTS(ClassName)
@@ -442,12 +440,14 @@ end;
 (*$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPLX(ClassName)
 JV_CUSTOMCONTROL_EVENTS_IMPLX_OPEN_VCL
 {$ENDIF VCL}
+  EMPTYLINE
 *)
 
 (*$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPL(ClassName)
 JV_CUSTOMCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
 DISPATCHCODE(ClassName)
 {$ENDIF VCL}
+  EMPTYLINE
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPL(ClassName)
@@ -455,4 +455,5 @@ JV_WINCONTROL_EVENTS_IMPLX(ClassName)
 {$IFDEF VCL}
 DISPATCHCODE(ClassName)
 {$ENDIF VCL}
+  EMPTYLINE
 *)

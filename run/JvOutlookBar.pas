@@ -41,11 +41,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls,
-  Buttons, Graphics, ImgList, Forms, StdCtrls,
+  Buttons, Graphics, ImgList, Forms, StdCtrls, ExtCtrls,
   JvThemes,
   {$IFDEF JVCLThemesEnabled}
-  UxTheme, {$IFNDEF COMPILER7_UP}TmSchema,{$ENDIF}
-  {$ENDIF}
+  UxTheme,
+  {$IFNDEF COMPILER7_UP}
+  TmSchema,
+  {$ENDIF COMPILER7_UP}
+  {$ENDIF JVCLThemesEnabled}
   JvComponent;
 
 const
@@ -192,7 +195,7 @@ type
     {$IFDEF JVCLThemesEnabled}
     FHotPageBtn: Integer;
     FThemedBackGround: Boolean;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     FOnPageChange: TOutlookBarPageChange;
     FOnPageChanging: TOutlookBarPageChanging;
     FButtonRect: TRect;
@@ -213,7 +216,7 @@ type
     procedure SetBorderStyle(const Value: TBorderStyle);
     {$IFDEF JVCLThemesEnabled}
     procedure SetThemedBackground(const Value: Boolean);
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     function DrawTopPages: Integer;
     procedure DrawCurrentPage(PageIndex: Integer);
     procedure DrawPageButton(R: TRect; Pressed: Boolean);
@@ -222,7 +225,6 @@ type
     procedure DrawArrowButtons(Index: Integer);
     procedure DrawButtonFrame(PageIndex, ButtonIndex, PressedIndex: Integer);
     function DrawBitmap(R: TRect; Bmp: TBitmap): Boolean;
-    procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure DoDwnClick(Sender: TObject);
     procedure DoUpClick(Sender: TObject);
     procedure RedrawRect(R: TRect; Erase: Boolean = False);
@@ -234,6 +236,7 @@ type
     function GetActivePage: TJvOutlookBarPage;
     function GetActivePageIndex: Integer;
   protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure FontChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
     function GetButtonHeight(PageIndex: Integer): Integer;
@@ -277,7 +280,7 @@ type
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex default 0;
     {$IFDEF JVCLThemesEnabled}
     property ThemedBackground: Boolean read FThemedBackGround write SetThemedBackground default True;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     property OnPageChanging: TOutlookBarPageChanging read FOnPageChanging write FOnPageChanging;
     property OnPageChange: TOutlookBarPageChange read FOnPageChange write FOnPageChange;
     property OnButtonClick: TOutlookBarButtonClick read FOnButtonClick write FOnButtonClick;
@@ -300,7 +303,7 @@ type
     property ActivePageIndex;
     {$IFDEF JVCLThemesEnabled}
     property ThemedBackground;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     property OnButtonClick;
     property OnEditButton;
     property OnPageChange;
@@ -341,9 +344,6 @@ type
   end;
 
 implementation
-
-uses
-  ExtCtrls;
 
 {$R ..\resources\JvOutlookBar.res}
 
@@ -2066,10 +2066,10 @@ begin
   Inc(Result, 4);
 end;
 
-procedure TJvCustomOutlookBar.WMEraseBkgnd(var Msg: TMessage);
+function TJvCustomOutlookBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   // don't redraw background: we always fill it anyway
-  Msg.Result := Ord(True);
+  Result := True;
 end;
 
 procedure TJvCustomOutlookBar.RedrawRect(R: TRect; Erase: Boolean = False);

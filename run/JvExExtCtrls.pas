@@ -38,7 +38,6 @@ uses
   JvThemes, JvExControls;
 
 type
-  
   TJvExShape = class(TShape, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -580,8 +579,8 @@ type
    {$IFEND}
   {$ENDIF VisualCLX}
   end;
-{$DEFINE REINTRODUCE_HITTEST}
   
+{$DEFINE REINTRODUCE_HITTEST}
   TJvExCustomControlBar = class(TCustomControlBar, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -715,9 +714,9 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
   end;
+  
 {$UNDEF REINTRODUCE_HITTEST}
 {$IFDEF VCL}
-  
   TJvExPage = class(TPage, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -918,8 +917,8 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
   end;
-  {$IFDEF COMPILER6_UP}
   
+  {$IFDEF COMPILER6_UP}
   TJvExBoundLabel = class(TBoundLabel, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -1267,6 +1266,7 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
   {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 
@@ -1945,6 +1945,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExPanel.VisibleChanged;
@@ -2130,6 +2131,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomRadioGroup.VisibleChanged;
@@ -2343,6 +2345,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExRadioGroup.VisibleChanged;
@@ -2556,6 +2559,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExSplitter.VisibleChanged;
@@ -2864,6 +2868,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExControlBar.VisibleChanged;
@@ -3049,6 +3054,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 {$UNDEF REINTRODUCE_HITTEST}
 {$IFDEF VCL}
 
@@ -3236,6 +3242,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExNotebook.VisibleChanged;
@@ -3421,6 +3428,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExHeader.VisibleChanged;
@@ -3606,6 +3614,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
  {$IFDEF COMPILER6_UP}
 
 {$IFDEF VCL}
@@ -3942,6 +3951,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExLabeledEdit.VisibleChanged;
@@ -4155,6 +4165,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomColorBox.VisibleChanged;
@@ -4368,6 +4379,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExColorBox.VisibleChanged;
@@ -4581,6 +4593,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
  {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 

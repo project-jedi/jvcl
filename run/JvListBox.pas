@@ -168,7 +168,6 @@ type
     FProviderIsActive: Boolean;
     FProviderToggle: Boolean;
 
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure CNKeyDown(var Msg: TWMKeyDown); message CN_KEYDOWN;
@@ -221,6 +220,7 @@ type
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -1937,14 +1937,14 @@ begin
   end;
 end;
 
-procedure TJvCustomListBox.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvCustomListBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if not Background.DoDraw then
-    inherited
+    Result := inherited DoPaintBackground(Canvas, Param)
   else
   begin
-    //    Msg.Result := 1;
-    DrawBackGround(Msg.DC, False);
+    Result := True;
+    DrawBackGround(Canvas.Handle, False);
   end;
 end;
 
