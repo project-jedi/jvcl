@@ -105,6 +105,7 @@ type
     FCalAppearance: TJvMonthCalAppearance;
     FDate: TDateTime;
     FDateError: Boolean;
+    FDeleting: Boolean;
     FDateFigures: TJvDateFigures;
     FDateFormat: string;
     FDropFo: TJvDropCalendar;
@@ -139,7 +140,7 @@ type
     function IsNoDateTextStored: Boolean;
     procedure Change; override;
     procedure Loaded; override;
-    
+
     procedure DoKillFocus(const ANextControl: TWinControl); override;
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
     procedure GetInternalMargins(var ALeft, ARight: Integer); override;
@@ -267,6 +268,7 @@ begin
   FAlwaysReturnEditDate := True;
   FDate := SysUtils.Date;
   FDateError := False;
+  FDeleting := False;
   FDropFo := nil;
   FEnableValidation := True;
 //  FMaxYear := 2900;
@@ -543,43 +545,48 @@ begin
   if [csDesigning, csDestroying] * ComponentState <> [] then
     Exit;
 
-  if Text <> NoDateText then
-  begin
-    lDate := Self.Date;
-    if AttemptTextToDate(Text, lDate) then
+  try
+    if Text <> NoDateText then
     begin
-      BeginInternalChange;
-      try
-        Self.Date := lDate
-      finally
-        EndInternalChange;
-      end;
-    end
-    else
-      if EnableValidation then
+      lDate := Self.Date;
+      if AttemptTextToDate(Text, lDate) then
       begin
-        lActFig := ActiveFigure;
-
-        if lActFig.Figure <> dfNone then
-        begin
-          lFigVal := StrToIntDef(Trim(Copy(Text, lActFig.Start, lActFig.Length)), 0);
-          if SelStart = lActFig.Start + lActFig.Length - 1 then
-            case lActFig.Figure of
-              dfDay:
-                EnforceRange(1, 31);
-              dfMonth:
-                EnforceRange(1, 12);
-              dfYear:
-                {EnforceRange( MinYear, MaxYear)}; //year-validation still under development
-            end;
+        BeginInternalChange;
+        try
+          Self.Date := lDate
+        finally
+          EndInternalChange;
         end;
-       {make sure querying the date in an OnChange event handler always reflects
-        the current contents of the control and not just the last valid value.}
-        lDate := 0;
-        AttemptTextToDate(Text, lDate, lActFig.Figure = dfYear);
-        if AlwaysReturnEditDate then
-          FDate := lDate;
-      end;
+      end
+      else
+        if (not FDeleting) and EnableValidation then
+        begin
+          lActFig := ActiveFigure;
+
+          if lActFig.Figure <> dfNone then
+          begin
+            lFigVal := StrToIntDef(Trim(Copy(Text, lActFig.Start, lActFig.Length)), 0);
+            //only enforce range if the cursor is at the end of the current figure:
+            if SelStart = lActFig.Start + lActFig.Length - 1 then
+              case lActFig.Figure of
+                dfDay:
+                  EnforceRange(1, 31);
+                dfMonth:
+                  EnforceRange(1, 12);
+                dfYear:
+                  {EnforceRange( MinYear, MaxYear)}; //year-validation still under development
+              end;
+          end;
+         {make sure querying the date in an OnChange event handler always reflects
+          the current contents of the control and not just the last valid value.}
+          lDate := 0;
+          AttemptTextToDate(Text, lDate, lActFig.Index = High(TJvDateFigures));
+          if AlwaysReturnEditDate then
+            FDate := lDate;
+        end;
+    end;
+  finally
+    FDeleting := False;
   end;
   inherited Change;
 end;
@@ -633,6 +640,8 @@ begin
       VK_DOWN:
         if AShift = [ssAlt] then
           DropDown;
+      VK_BACK, VK_CLEAR, VK_DELETE, VK_EREOF, VK_OEM_CLEAR:
+        FDeleting := True;
     end;
   inherited KeyDown(AKey, AShift);
 end;
