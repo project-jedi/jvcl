@@ -31,13 +31,13 @@ interface
 
 uses
   Windows,
-  SysUtils, Messages, Classes, Graphics, Controls, Forms, Menus;
+  SysUtils, Messages, Classes, Graphics, Controls, Forms, Menus, JvComponent;
 
 type
   TTextPos = (tpNone, tpLeft, tpRight, tpAbove, tpBelow);
   TSwitchBitmaps = set of Boolean;
 
-  TJvSwitch = class(TCustomControl)
+  TJvSwitch = class(TJvCustomControl)
   private
     FActive: Boolean;
     FBitmaps: array [Boolean] of TBitmap;
@@ -65,6 +65,7 @@ type
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -80,6 +81,9 @@ type
     destructor Destroy; override;
     procedure ToggleSwitch;
   published
+  {$IFDEF JVCLThemesEnabled}
+    property ParentBackground default True;
+  {$ENDIF}
     property Align;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
       default bsNone;
@@ -313,6 +317,11 @@ begin
   end;
 end;
 
+procedure TJvSwitch.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+begin
+  Msg.Result := 1; // the component paints the background in Paint
+end;
+
 procedure TJvSwitch.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
@@ -343,58 +352,49 @@ var
 
   procedure DrawBitmap(Bmp: TBitmap);
   var
-    TmpImage: TBitmap;
     IWidth, IHeight, X, Y: Integer;
     IRect: TRect;
   begin
     IWidth := Bmp.Width;
     IHeight := Bmp.Height;
     IRect := Rect(0, 0, IWidth, IHeight);
-    TmpImage := TBitmap.Create;
-    try
-      TmpImage.Width := IWidth;
-      TmpImage.Height := IHeight;
-      TmpImage.Canvas.Brush.Color := Self.Brush.Color;
-      TmpImage.Canvas.BrushCopy(IRect, Bmp, IRect, Bmp.TransparentColor);
-      X := 0;
-      Y := 0;
-      case FTextPosition of
-        tpNone:
-          begin
-            X := ((Width - IWidth) div 2);
-            Y := ((Height - IHeight) div 2);
-          end;
-        tpLeft:
-          begin
-            X := Width - IWidth;
-            Y := ((Height - IHeight) div 2);
-            Dec(ARect.Right, IWidth);
-          end;
-        tpRight:
-          begin
-            X := 0;
-            Y := ((Height - IHeight) div 2);
-            Inc(ARect.Left, IWidth);
-          end;
-        tpAbove:
-          begin
-            X := ((Width - IWidth) div 2);
-            Y := Height - IHeight;
-            Dec(ARect.Bottom, IHeight);
-          end;
-        tpBelow:
-          begin
-            X := ((Width - IWidth) div 2);
-            Y := 0;
-            Inc(ARect.Top, IHeight);
-          end;
-      end;
-      Canvas.Draw(X, Y, TmpImage);
-      if Focused and FShowFocus and TabStop and not (csDesigning in ComponentState) then
-        Canvas.DrawFocusRect(Rect(X, Y, X + IWidth, Y + IHeight));
-    finally
-      TmpImage.Free;
+    X := 0;
+    Y := 0;
+    case FTextPosition of
+      tpNone:
+        begin
+          X := ((Width - IWidth) div 2);
+          Y := ((Height - IHeight) div 2);
+        end;
+      tpLeft:
+        begin
+          X := Width - IWidth;
+          Y := ((Height - IHeight) div 2);
+          Dec(ARect.Right, IWidth);
+        end;
+      tpRight:
+        begin
+          X := 0;
+          Y := ((Height - IHeight) div 2);
+          Inc(ARect.Left, IWidth);
+        end;
+      tpAbove:
+        begin
+          X := ((Width - IWidth) div 2);
+          Y := Height - IHeight;
+          Dec(ARect.Bottom, IHeight);
+        end;
+      tpBelow:
+        begin
+          X := ((Width - IWidth) div 2);
+          Y := 0;
+          Inc(ARect.Top, IHeight);
+        end;
     end;
+    Bmp.Transparent := True;
+    Canvas.Draw(X, Y, Bmp);
+    if Focused and FShowFocus and TabStop and not (csDesigning in ComponentState) then
+      Canvas.DrawFocusRect(Rect(X, Y, X + IWidth, Y + IHeight));
   end;
 
 begin
