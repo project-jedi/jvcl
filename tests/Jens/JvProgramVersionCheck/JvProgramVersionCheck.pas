@@ -27,8 +27,12 @@ unit JvProgramVersionCheck;
 
 interface
 
-uses Classes, JvPropertyStore, JvAppStorage, JvAppIniStorage, JvComponent,
-  JvParameterList, JvThread, JvThreadDialog;
+uses Classes,
+  {$IFDEF USE_3RDPARTY_INDY}
+  idhttp,
+  {$ENDIF USE_3RDPARTY_INDY}
+  JvPropertyStore, JvAppStorage, JvAppIniStorage, JvComponent,
+  JvParameterList, JvThread, JvUrlListGrabber, JvUrlGrabbers, JvThreadDialog;
 
 type
   TJvProgramReleaseType = (prtProduction, prtBeta, prtAlpha);
@@ -127,7 +131,6 @@ type
       const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string;
       iBaseThread: TJvBaseThread): string; virtual;
   public
-    //    constructor Create (AOwner : TComponent); virtual;
     constructor Create(AOwner: TComponent); override;
     function LoadFileFromRemote(const iRemotePath, iRemoteFileName,
       iLocalPath, iLocalFileName: string; iBaseThread: TJvBaseThread): string;
@@ -141,15 +144,18 @@ type
 
   TJvProgramVersionCustomFileBasedLocation = class(TJvProgramVersionCustomLocation)
   private
-    FVersionInfoLocationPath: string;
+    FVersionInfoLocationPathList: TStringList;
     FVersionInfoFilename:     string;
   protected
+    procedure SetVersionInfoLocationPathList(Value: TStringList);
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function LoadVersionInfoFromRemote(const iLocalDirectory,
       iLocalVersionInfoFileName: string; iBaseThread: TJvBaseThread): string; override;
   published
-    property VersionInfoLocationPath: string
-      Read FVersionInfoLocationPath Write FVersionInfoLocationPath;
+    property VersionInfoLocationPathList: TStringList
+      Read FVersionInfoLocationPathList Write SetVersionInfoLocationPathList;
     property VersionInfoFilename: string Read FVersionInfoFilename
       Write FVersionInfoFilename;
   end;
@@ -167,12 +173,14 @@ type
   TJvProgramVersionProxySettings = class(TPersistent)
   private
     FServer:   string;
-    FPort:     integer;
+    FPort: integer;
     FUsername: string;
     FPassword: string;
+  public
+    constructor Create;
   published
     property Server: string Read FServer Write FServer;
-    property Port: integer Read FPort Write FPort;
+    property Port: integer read FPort write FPort default 80;
     property Username: string Read FUsername Write FUsername;
     property Password: string Read FPassword Write FPassword;
   end;
@@ -183,12 +191,12 @@ type
     FProxySettings:    TJvProgramVersionProxySettings;
     FPasswordRequired: boolean;
   protected
+    property ProxySettings: TJvProgramVersionProxySettings Read FProxySettings;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property ProxySettings: TJvProgramVersionProxySettings Read FProxySettings;
-    property PasswordRequired: boolean Read FPasswordRequired Write FPasswordRequired;
+    property PasswordRequired: boolean Read FPasswordRequired Write FPasswordRequired default False;
   end;
 
   TJvProgramVersionHTTPLocation  = class;
@@ -208,7 +216,26 @@ type
   published
     property OnLoadFileFromRemote: TJvLoadFileFromRemoteHTTPEvent
       Read FOnLoadFileFromRemote Write FOnLoadFileFromRemote;
+    property ProxySettings;
   end;
+
+  {$IFDEF USE_3RDPARTY_INDY}
+  TJvProgramVersionHTTPLocationIndy = class(TJvProgramVersionHTTPLocation)
+  private
+    FIdHttp: TIdHttp;
+  protected
+    function LoadFileFromRemoteInt(const iRemotePath, iRemoteFileName, iLocalPath,
+        iLocalFileName: string; iBaseThread: TJvBaseThread): string; override;
+    function LoadFileFromRemoteIndy(const iRemotePath, iRemoteFileName, iLocalPath,
+        iLocalFileName: string; iBaseThread: TJvBaseThread): string;
+  public
+    constructor Create(AOwner : TComponent); override;
+    destructor Destroy; override;
+  published
+    property ProxySettings;
+  end;
+  {$ENDIF USE_3RDPARTY_INDY}
+
 
   TJvProgramVersionFTPLocation  = class;
   TJvLoadFileFromRemoteFTPEvent = function(iProgramVersionLocation:
@@ -227,7 +254,15 @@ type
   published
     property OnLoadFileFromRemote: TJvLoadFileFromRemoteFTPEvent
       Read FOnLoadFileFromRemote Write FOnLoadFileFromRemote;
+    property ProxySettings;
   end;
+
+  {$IFDEF USE_3RDPARTY_INDY}
+  TJvProgramVersionFTPLocationIndy = class(TJvProgramVersionFTPLocation)
+  published
+    property ProxySettings;
+  end;
+  {$ENDIF USE_3RDPARTY_INDY}
 
   TJvProgramVersionDatabaseLocation  = class;
   TJvLoadFileFromRemoteDatabaseEvent =
@@ -397,7 +432,7 @@ uses
   {$ENDIF UNIX}
   JclFileUtils, JclShell,
   JvDSADialogs,
-  JvParameterListParameter, JvUrlListGrabber, JvUrlGrabbers;
+  JvParameterListParameter;
 
 const
   cProgramVersion = 'Program Version ';
@@ -452,12 +487,15 @@ var
       s := Version;
       Version := '';
     end;
-    try
-      Result := StrToInt(s);
-    except
-      on e: Exception do
-        Result := -1;
-    end;
+    if s = '' then
+      Result := -1
+    else
+      try
+        Result := StrToInt(s);
+      except
+        on e: Exception do
+          Result := -1;
+      end;
   end;
 
 begin
@@ -726,12 +764,40 @@ begin
 end;
 
 //=== { TJvProgramVersionCustomFileBasedLocation } =========================================
+
+constructor TJvProgramVersionCustomFileBasedLocation.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FVersionInfoLocationPathList:= TStringList.Create;
+end;
+
+destructor TJvProgramVersionCustomFileBasedLocation.Destroy;
+begin
+  FreeAndNil(FVersionInfoLocationPathList);
+  Inherited Destroy;
+end;
+
+procedure TJvProgramVersionCustomFileBasedLocation.SetVersionInfoLocationPathList(Value: TStringList);
+begin
+  FVersionInfoLocationPathList.Assign(Value);
+end;
+
 function TJvProgramVersionCustomFileBasedLocation.LoadVersionInfoFromRemote(
   const iLocalDirectory, iLocalVersionInfoFileName: string;
   iBaseThread: TJvBaseThread): string;
+var
+  I : Integer;
 begin
-  Result := LoadFileFromRemote(VersionInfoLocationPath, VersionInfoFilename,
-    iLocalDirectory, iLocalVersionInfoFileName, iBaseThread);
+  for i := 0 to VersionInfoLocationPathList.Count-1 do
+  begin
+    Result := LoadFileFromRemote(VersionInfoLocationPathList[I], VersionInfoFilename,
+      iLocalDirectory, iLocalVersionInfoFileName, iBaseThread);
+    if Result <> '' then
+      exit;
+  end;
+  if Result = '' then
+    Result := LoadFileFromRemote('', VersionInfoFilename,
+      iLocalDirectory, iLocalVersionInfoFileName, iBaseThread);
 end;
 
 //=== { tJvProgramVersionNetworkLocation } =========================================
@@ -752,20 +818,16 @@ begin
     if FileExistsNoDir(PathAppend(iRemotePath, iRemoteFileName)) then
       if (iRemotePath = iLocalPath) and (iRemoteFileName = iLocalFileName) then
         Result := PathAppend(iRemotePath, iRemoteFileName)
-      else if FileCopy(PathAppend(iRemotePath, iRemoteFileName),
-        PathAppend(iLocalPath, iLocalFileName), True) then
-        if FileExistsNoDir(PathAppend(iLocalPath, iLocalFileName)) then
-          Result := PathAppend(iLocalPath, iLocalFileName)
-        else if FileExistsNoDir(PathAppend(iLocalPath, iRemoteFileName)) then
-          Result := PathAppend(iLocalPath, iRemoteFileName)
-        else if FileExistsNoDir(PathAppend(iLocalPath,
-          ExtractFileName(iRemotePath))) then
-          Result := PathAppend(iLocalPath, ExtractFileName(iRemotePath))
-        else
-          Result := PathAppend(iLocalPath, iLocalFileName)
       else
-        Result := '';
-
+        if FileCopy(PathAppend(iRemotePath, iRemoteFileName), PathAppend(iLocalPath, iLocalFileName), True) then
+          if FileExistsNoDir(PathAppend(iLocalPath, iLocalFileName)) then
+            Result := PathAppend(iLocalPath, iLocalFileName)
+          else
+          if FileExistsNoDir(PathAppend(iLocalPath, iRemoteFileName)) then
+            Result := PathAppend(iLocalPath, iRemoteFileName)
+          else
+          if FileExistsNoDir(PathAppend(iLocalPath, ExtractFileName(iRemotePath))) then
+            Result := PathAppend(iLocalPath, ExtractFileName(iRemotePath));
 end;
 
 //=== { tJvProgramVersionHTTPLocation } =========================================
@@ -773,6 +835,7 @@ constructor TJvProgramVersionInternetLocation.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FProxySettings := TJvProgramVersionProxySettings.Create;
+  FPasswordRequired := False;
 end;
 
 destructor TJvProgramVersionInternetLocation.Destroy;
@@ -1227,9 +1290,6 @@ end;
 procedure TJvProgramVersionCheck.SetUserOptions (Value: TJvProgramVersionUserOptions);
 begin
   FUserOptions := Value;
-//  uoCheckFrequency, uoLocalDirectory,
-//    uoAllowedReleaseType, uoLocationTypeSelected, uoLocationNetwork,
-//    uoLocationHTTP, uoLocationDatabase
   IgnoreProperties.AddDelete('CheckFrequency', (uoCheckFrequency IN Value));
   IgnoreProperties.AddDelete('LocalDirectory', (uoLocalDirectory IN Value));
   IgnoreProperties.AddDelete('AllowedReleaseType', (uoAllowedReleaseType IN Value));
@@ -1325,6 +1385,75 @@ begin
       Result := nil;
   end
 end;
+
+
+{$IFDEF USE_3RDPARTY_INDY}
+//=== { TJvProgramVersionHTTPLocationIndy } =========================================
+
+constructor TJvProgramVersionHTTPLocationIndy.Create(AOwner : TComponent);
+begin
+  inherited Create(AOwner);
+  FIdHTTP := TIdHTTP.Create(self);
+end;
+
+destructor TJvProgramVersionHTTPLocationIndy.Destroy;
+begin
+  FIdHttp.Free;
+  inherited Destroy;
+end;
+
+function TJvProgramVersionHTTPLocationIndy.LoadFileFromRemoteInt(const
+    iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string;
+    iBaseThread: TJvBaseThread): string;
+begin
+  Result := '';
+  if Assigned(OnLoadFileFromRemote) then
+    Result := OnLoadFileFromRemote(Self, iRemotePath, iRemoteFilename,
+      iLocalPath, iLocalFileName)
+  else
+    Result := LoadFileFromRemoteIndy(
+        iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName, iBaseThread);
+end;
+
+function TJvProgramVersionHTTPLocationIndy.LoadFileFromRemoteIndy(const
+    iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string;
+    iBaseThread: TJvBaseThread): string;
+var
+  ResultStream : TFileStream;
+  ResultName   : string;
+begin
+  Result := '';
+  if (DirectoryExists(iLocalPath) or (iLocalPath = ''))  then
+    if iLocalFileName = '' then
+      ResultName := PathAppend(iLocalPath, iRemoteFileName)
+    else
+      ResultName := PathAppend(iLocalPath, iLocalFileName)
+  else
+    Exit;
+
+  ResultStream := TFileStream.Create(ResultName, fmCreate);
+  try
+    with FIdHTTP do
+    begin
+      ProxyParams.ProxyPort := ProxySettings.Port;
+      ProxyParams.ProxyServer := ProxySettings.Server;
+      ProxyParams.ProxyUsername := ProxySettings.UserName;
+      ProxyParams.ProxyPassword := ProxySettings.Password;
+      Get (iRemotePath+'/'+iRemoteFileName, ResultStream);
+    end;
+  finally
+    ResultStream.Free;
+  end;
+end;
+
+{$ENDIF USE_3RDPARTY_INDY}
+
+constructor TJvProgramVersionProxySettings.Create;
+begin
+  inherited;
+  FPort := 80;
+end;
+
 
 {$IFDEF UNITVERSIONING}
 const

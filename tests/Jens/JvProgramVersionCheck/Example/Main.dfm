@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 0
-  Top = 0
+  Left = 357
+  Top = 242
   Width = 476
   Height = 413
   Caption = 'Form1'
@@ -62,14 +62,16 @@ object Form1: TForm1
     Top = 150
   end
   object IdHTTP: TIdHTTP
+    MaxLineAction = maException
+    ReadTimeout = 0
     AuthRetries = 0
-    AuthProxyRetries = 0
     AllowCookies = True
     ProxyParams.BasicAuthentication = False
     ProxyParams.ProxyPort = 0
     Request.ContentLength = -1
     Request.ContentRangeEnd = 0
     Request.ContentRangeStart = 0
+    Request.ContentType = 'text/html'
     Request.Accept = 'text/html, */*'
     Request.BasicAuthentication = False
     Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
@@ -80,7 +82,7 @@ object Form1: TForm1
   object ProgramVersionCheck: TJvProgramVersionCheck
     AllowedReleaseType = prtBeta
     CheckFrequency = 0
-    LocalDirectory = 'Version Check'
+    LocalDirectory = 'Version Check\a\b\c'
     LocalVersionInfoFileName = 'ProgramVersionCheckLocal.Ini'
     LocationTypeSelected = pvltNetwork
     LocationNetwork = JvProgramVersionNetworkLocation1
@@ -89,25 +91,24 @@ object Form1: TForm1
     LocationDatabase = JvProgramVersionDatabaseLocation1
     AppStorage = JvAppIniFileStorageVersionCheck
     AppStoragePath = 'Local'
+    UserOptions = [uoCheckFrequency, uoAllowedReleaseType, uoLocationNetwork, uoLocationHTTP, uoLocationFTP, uoLocationDatabase]
     Left = 355
     Top = 205
   end
   object JvProgramVersionNetworkLocation1: TJvProgramVersionNetworkLocation
-    VersionInfoLocationPath = 'Version Check\Remote'
+    VersionInfoLocationPathList.Strings = (
+      'Version Check\Remote')
     VersionInfoFilename = 'ProjektVersions.ini'
     Left = 105
     Top = 200
   end
   object JvProgramVersionHTTPLocation1: TJvProgramVersionHTTPLocation
-    VersionInfoLocationPath = 'www.oratool.de/test'
     VersionInfoFilename = 'ProjektVersions_http.ini'
-    PasswordRequired = False
     OnLoadFileFromRemote = JvProgramVersionHTTPLocation1LoadFileFromRemote
     Left = 105
     Top = 240
   end
   object JvProgramVersionFTPLocation1: TJvProgramVersionFTPLocation
-    PasswordRequired = False
     OnLoadFileFromRemote = JvProgramVersionFTPLocation1LoadFileFromRemote
     Left = 105
     Top = 280
@@ -119,7 +120,7 @@ object Form1: TForm1
   object JvFtpUrlGrabber: TJvFtpUrlGrabber
     FileName = 'output.txt'
     Agent = 'JEDI-VCL'
-    Left = 225
-    Top = 190
+    Left = 250
+    Top = 30
   end
 end
