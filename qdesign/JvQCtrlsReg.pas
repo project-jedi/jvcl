@@ -44,14 +44,14 @@ implementation
 
 uses
   Classes,
-  QControls, QImgList, QActnList,
-  DesignEditors, DesignIntf,
-  JvQDsgnConsts,
+  QControls, QImgList, QActnList, 
+  DesignEditors, DesignIntf, 
+  JvQDsgnConsts, 
   {$IFDEF USEWINDOWS}
   JvQUninstallControls, JvQCharMap,
   {$ENDIF USEWINDOWS}
-  JvQDsgnIntf,
-  QTypes,
+  JvQDsgnIntf, 
+  QTypes, 
   JvQZoom, JvQBehaviorLabel, JvQArrowButton, JvQaScrollText, JvQClock,
   JvQContentScroller, JvQColorBox, JvQColorButton, JvQDice, JvQFooter,
   JvQGroupHeader, JvQHint, JvQHtControls, JvQInstallLabel, JvQItemsPanel,
@@ -85,8 +85,7 @@ begin
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
     TJvHTLabel, TJvWinampLabel]);
   RegisterComponents(RsPaletteListComboTree, [TJvImageComboBox, TJvImageListBox,
-    TJvHTListBox, TJvHTComboBox]);
-
+    TJvComboListBox, TJvHTListBox, TJvHTComboBox]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
   {$ENDIF USEWINDOWS} 
@@ -96,10 +95,7 @@ begin
     TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice]);
-  {$IFDEF USEWINDOWS}
-  RegisterComponents(RsPaletteVisual, [TJvCharMap]);
-  {$ENDIF USEWINDOWS}
+  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice, TJvCharMap]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
@@ -118,7 +114,9 @@ begin
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
   RegisterComponentEditor(TJvRollOut, TJvRollOutDefaultEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
-  RegisterComponentEditor(TJvFooter, TJvFooterEditor); 
+  RegisterComponentEditor(TJvFooter, TJvFooterEditor);
+  RegisterComponentEditor(TJvImageListBox, TJvStringsEditor);
+  RegisterComponentEditor(TJvImageComboBox, TJvStringsEditor);
   RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
 
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
