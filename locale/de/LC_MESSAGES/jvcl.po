@@ -1,4 +1,3 @@
-﻿# JVCL localization template
 # Copyright (C) 2004 The Jedi Visual Component Library group
 # This file is distributed under the same license as the JVCL package.
 # JVCL Group <jvcl@sourceforge.net>, 2004.
@@ -7,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
 "POT-Creation-Date: 2004-02-24 22:21\n"
-"PO-Revision-Date: 2004-03-22 13:49+0100\n"
+"PO-Revision-Date: 2004-05-22 18:43+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -5292,8 +5291,8 @@ msgstr ""
 msgid "Error in Presets"
 msgstr ""
 
-#. === JvParameterList.pas ====================================================
-#. Programmer's name for it: RsErrParameterMustBeEntered
+#  === JvParameterList.pas ====================================================
+#  Programmer's name for it: RsErrParameterMustBeEntered
 #: JvResources.pas:1275
 msgid "Parameter \"%s\" must be entered!"
 msgstr ""
@@ -5397,7 +5396,7 @@ msgstr ""
 msgid "PCX: Unable to retrieve palette"
 msgstr ""
 
-#. Programmer's name for it: RsEPcxInvalid
+#  Programmer's name for it: RsEPcxInvalid
 #: JvResources.pas:1315
 msgid "PCX: Invalid PCX file"
 msgstr ""
@@ -5451,8 +5450,8 @@ msgstr ""
 msgid "Previous Month|"
 msgstr ""
 
-#. === JvPlugin.pas ===========================================================
-#. Programmer's name for it: RsEFmtResNotFound
+#  === JvPlugin.pas ===========================================================
+#  Programmer's name for it: RsEFmtResNotFound
 #: JvResources.pas:1335
 msgid "Resource not found: %s"
 msgstr ""
@@ -5505,7 +5504,7 @@ msgstr ""
 msgid "Max number of ID's exceeded (%d)"
 msgstr ""
 
-#. Programmer's name for it: RsEMaxStackSizeExceededd
+#  Programmer's name for it: RsEMaxStackSizeExceededd
 #: JvResources.pas:1352
 msgid "Max stack size exceeded (%d)"
 msgstr ""
@@ -5558,7 +5557,7 @@ msgstr ""
 msgid "(value not set)"
 msgstr ""
 
-#. Programmer's name for it: RsUnknownCaption
+#  Programmer's name for it: RsUnknownCaption
 #: JvResources.pas:1373
 msgid "(Unknown)"
 msgstr ""
@@ -5661,8 +5660,8 @@ msgstr ""
 msgid "Wrong file type for this converter"
 msgstr ""
 
-#. === JvSAL.pas ==============================================================
-#. Programmer's name for it: RsEBooleanStackOverflow
+#  === JvSAL.pas ==============================================================
+#  Programmer's name for it: RsEBooleanStackOverflow
 #: JvResources.pas:1404
 msgid "Boolean stack overflow"
 msgstr ""
@@ -5712,7 +5711,7 @@ msgstr ""
 msgid "Variable %s is not yet defined;%s"
 msgstr ""
 
-#. Programmer's name for it: RsEProceduresNears
+#  Programmer's name for it: RsEProceduresNears
 #: JvResources.pas:1414
 msgid "Procedure %s near %s"
 msgstr ""
@@ -5766,7 +5765,7 @@ msgstr ""
 msgid "Not a schedule"
 msgstr ""
 
-#. Programmer's name for it: RsEUnknownScheduleVersions
+#  Programmer's name for it: RsEUnknownScheduleVersions
 #: JvResources.pas:1433
 msgid "Unknown schedule version ($%s)"
 msgstr ""
@@ -5877,7 +5876,7 @@ msgstr ""
 msgid "Invalid XML Element: Unexpected character in property declaration. Expecting \" or ' but \"%s\"  found"
 msgstr ""
 
-#. Programmer's name for it: RsEUnexpectedValueForLPos
+#  Programmer's name for it: RsEUnexpectedValueForLPos
 #: JvResources.pas:1481
 msgid "Unexpected value for lPos"
 msgstr ""
@@ -8577,43 +8576,44 @@ msgstr "Es existiert keine korrespondierende linke Klammer zur rechten. Position
 msgid "Expression string is empty."
 msgstr "Ausdruck ist leer."
 
-#. JvPageSetupTitled
+#  JvPageSetupTitled
 #: JvPageSetupTitled.rc
 msgid "Page Setup with Header & Footer"
-msgstr ""
+msgstr "Seite einrichten mit Kopf- und Fußzeile"
 
 msgid "Paper"
-msgstr ""
+msgstr "Papier"
 
 msgid "Si&ze"
-msgstr ""
+msgstr "&Größe"
 
 msgid "P&ortrait"
-msgstr ""
+msgstr "&Hochformat"
 
 msgid "L&andscape"
-msgstr ""
+msgstr "&Querformat"
 
 msgid "&Left:"
-msgstr ""
+msgstr "&Links"
 
 msgid "&Right:"
-msgstr ""
+msgstr "&Rechts"
 
 msgid "&Top:"
-msgstr ""
+msgstr "&Oben"
 
 msgid "&Bottom:"
-msgstr ""
+msgstr "&Unten"
 
 msgid "Page Header:"
-msgstr ""
+msgstr "Kopfzeile:"
 
 msgid "Page Footer:"
-msgstr ""
+msgstr "Fußzeile:"
 
 msgid "&Printer..."
-msgstr ""
+msgstr "&Drucker..."
 
 msgid "Margins"
-msgstr ""
+msgstr "Rahmen"
+
