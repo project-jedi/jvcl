@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Jedi Package Generator</title>
+  <link rel="STYLESHEET" type="text/css" href="styles/default.css">
+</head>
+<body>
+<h1>Jedi Package Generator</h1>
+<hr style="width: 100%; height: 2px;"><br>
+In an effort to easify the generation of component packages for the
+JVCL, a package generator has been created. Even if it is extensively
+used by the JVCL team, it has been designed to be as generic as
+possible and as such may seem a bit complex at first. You will find in
+this file the documentation you need to understand how to take
+advantage of this tool.<br>
+The package generator comes in two different version: Graphical User
+Interface (pgEdit.exe) and Command Line (pg.exe). They both work from
+the same set of XML configuration files, pgEdit having the advantage to
+allow you to safely edit the source XML files. Here is the general
+principle:<br>
+<br>
+<div style="text-align: center;"><img
+ style="width: 533px; height: 454px;" alt="Package Generator Flow"
+ src="images/pg-flow.png"><br>
+</div>
+<br>
+Each file has its own role:<br>
+<br>
+<table style="text-align: left; width: 100%;" border="0" cellspacing="0"
+ cellpadding="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">Package XML
+Source Files<br>
+      </td>
+      <td style="vertical-align: top;">Each packageXML source file
+indicates which files are to be included in the package, which other
+packages this package depends on and various compilation options such
+as PFLAGS (Pascal Flags) for C++ Builder. All inclusions and
+dependencies can be conditionned by a compilation directive.<br>
+A runtime package must have the '-R' suffix, while a design time
+package must have a '-D' suffix. Hence, JvCore-R.xml is a runtime
+package source file while JvCore-D.xml is a design time package source
+file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">XML Configuration File<br>
+      </td>
+      <td style="vertical-align: top;">This file contains the
+declaration of models that the package generator will use to generate
+the files. Each model declares targets (Delphi, C++ Builder or Kylix
+versions) the format of the filenames to output, the location of
+package files and a possible include file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Template Files<br>
+      </td>
+      <td style="vertical-align: top;">These files are skeletons for
+the final output files. They contain special markers that will get
+replaced by values taken from the XML configuration file and the
+Package Source XML files to generate the final output files.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Include File<br>
+      </td>
+      <td style="vertical-align: top;">The Delphi packages are Pascal
+source files and as such can include conditional compilation
+directives. However C++ Builder package source files are XML files and
+as such do not support conditions. Hence when modifications are done to
+an include file that have impact on which files are to be included in a
+package, you must regenerate the packages for C++ Builder. The
+conditions are read from the include file given to the package
+generator.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Existing Output Files<br>
+      </td>
+      <td style="vertical-align: top;">If the files to be generated
+already exist, they will be used to determine if any change was done to
+them since the last time they were generated. If not, the output files
+will be left untouched.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>Package XML Source Files Format</h2>
+Here is a basic XML source file (Extracted from JvCore-R.xml):<br>
+<br>
+<table
+ style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="0" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><code>&lt;?xml
+version="1.0" encoding="iso-8859-1"?&gt;<br>
+&lt;Package Name="JvCore" Design="0"&gt;<br>
+&nbsp; &lt;Description&gt;JVCL Core Runtime Package&lt;/Description&gt;<br>
+&nbsp; &lt;C5PFlags&gt;-LUCJcl50&lt;/C5PFlags&gt;<br>
+&nbsp; &lt;C6PFlags&gt;-LUCJcl&lt;/C6PFlags&gt;<br>
+&nbsp; &lt;C5Libs/&gt;<br>
+&nbsp; &lt;C6Libs/&gt;<br>
+&nbsp; &lt;Requires&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;Package Name="ThemeManager6"
+Targets="D6,D6p,C6,C6p" Condition="JVCLThemesEnabled"/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;Package Name="CJCL" Targets="C6,C6p"
+Condition=""/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;Package Name="vclx"
+Targets="D6,D6p,D7,D7p,C6,C6p,K2,K3" Condition=""/&gt;<br>
+&nbsp; &lt;/Requires&gt;<br>
+&nbsp; &lt;Contains&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;File Name="..\..\common\JvConsts.pas"
+Targets="all" Formname="" Condition=""/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;File Name="..\..\run\JvColorProvider.pas"
+Targets="all" Formname="" Condition=""/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;File Name="..\..\run\JvComponent.pas"
+Targets="all" Formname="" Condition=""/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;File Name="..\..\run\JvJVCLAboutForm.pas"
+Targets="all" Formname="JvJVCLAboutForm" Condition=""/&gt;<br>
+&nbsp; &lt;/Contains&gt;<br>
+&lt;/Package&gt;<br>
+      </code></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+When reading those files, the package generator doesn't check for the
+existence of the nodes and properties in the XML file. It assumes they
+exist and if they don't you will most likely end up with an exception.
+This is why we recomment you use pgEdit.exe to edit these files, which
+will ensure the format of the xml files is correct. Here is a
+description of each node and its usage:<br>
+<br>
+<table style="text-align: left; width: 100%;" border="1" cellspacing="2"
+ cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Node<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Parent
+Node<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top; white-space: nowrap;">none (root
+node)<br>
+      </td>
+      <td style="vertical-align: top;">This is the root node. Its only
+properties are Name and Design. Name is obviously the name of the
+package while Design is 1 when the package is a designtime package, 0
+when it is a run time package. The root node doesn't have to be called
+package, but it MUST have those two properties<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Description<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This is the description of the
+package as it will be displayed in the IDE<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">C5PFlags<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">The package files for C++
+Builder 5 contain a special node to allow to pass extra arguments to
+the pascal compiler. This node indicates the value to use for the
+PFLAGS node in C++ Builder 5 packages. In the example above, we put
+-LUCJcl50 to indicate to link the file CJcl50.dcp into the package.
+Options are separated by spaces and if followed by a string in
+parenthesis, the string is considered to be a condition. If the
+condition doesn't exist when the file are generated, the option is
+removed. For instance, if you type -LUCJcl50(USEJVCL) then if USEJVCL
+is not defined in the include file, then -LUCJcl50 will be removed from
+the final string. The final value will be the replacement for
+%C5PFLAGS% in template files<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">C6PFlags<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This is node has the same
+meaning as C5PFlags but for C++ Builder 6, hence being the replacement
+for %C6PFLAGS%<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">C5Libs<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">In some rare occasions, it may
+be necessary to indicate some extra libraries to the C++ linker. This
+happened for instance with the Network related packages in the JVCL as
+they required wininet.lib. The value here should be a space separated
+list of library files and will be the replacement for %C5LIBS%<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">C6Libs<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This node has the same meaning
+as C5Libs but will be the replacement for %C6LIBS%<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Requires<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Contains<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">Requires<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">File<br>
+      </td>
+      <td style="vertical-align: top;">Contains<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>XML Configuration File Format</h2>
+<br>
+<table
+ style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="0" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><code>&lt;?xml
+version="1.0" encoding="iso-8859-1"?&gt;<br>
+&lt;Configuration&gt;<br>
+&nbsp; &lt;pgEdit&gt;<br>
+&nbsp;&nbsp;&nbsp;
+&lt;odlAddFiles_InitialDir&gt;..\..\run&lt;/odlAddFiles_InitialDir&gt;<br>
+&nbsp;&nbsp;&nbsp;
+&lt;cmbModel_ItemIndex&gt;0&lt;/cmbModel_ItemIndex&gt;<br>
+&nbsp; &lt;/pgEdit&gt;<br>
+&nbsp; &lt;models&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;model name="JVCL" prefix="Jv"
+format="%p%n%e%v%t" <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+packages="..\..\packages" incfile="..\..\common\jvcl.inc"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;targets&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;target name="d7"
+pname="d7p" pdir="d7per" defines="COMPILER7_UP"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/targets&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;aliases&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;alias name="Delphi"
+value="d7,d7p"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/aliases&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/model&gt;<br>
+&nbsp; &lt;/models&gt;<br>
+&lt;/Configuration&gt;</code><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>Template Files Format</h2>
+<br>
+<br>
+</body>
+</html>
