@@ -1,0 +1,2 @@
+JVCL3Install is obsolute. It does no more work with the
+current JVCL 3 version. Use the JVCLInstall (without the "3").
