@@ -84,11 +84,13 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
+    function GetReadOnly: Boolean;
     function GetTextMargins: TPoint;
     procedure ResetMaxLength;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetFocused(Value: Boolean);
+    procedure SetReadOnly(Value: Boolean);
     procedure UpdateData(Sender: TObject);
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
@@ -105,8 +107,6 @@ type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Reset; override;
-    function GetReadOnly: Boolean; override;
-    procedure SetReadOnly(Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -146,7 +146,7 @@ type
     property ParentShowHint;
     property PasswordChar;
     property PopupMenu;
-    property ReadOnly default False;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property ShowHint;
     property TabOrder;
     property TabStop;
