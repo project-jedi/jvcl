@@ -62,12 +62,11 @@ contains
   JvBalloonHint in '..\..\run\JvBalloonHint.pas',
   JvBandForms in '..\..\run\JvBandForms.pas',
   JvBandObject in '..\..\run\JvBandObject.pas',
-  JvUtils in '..\..\run\JvUtils.pas',
   JvBaseThumbnail in '..\..\run\JvBaseThumbnail.pas',
   JvPluginManager in '..\..\run\JvPluginManager.pas',
   JvPlugin in '..\..\run\JvPlugin.pas',
-  JvHLEditor in '..\..\run\JvHLEditor.pas',
   JvEditor in '..\..\run\JvEditor.pas',
+  JvHLEditor in '..\..\run\JvHLEditor.pas',
   JvHLParser in '..\..\run\JvHLParser.pas',
   JvValidateEdit in '..\..\run\JvValidateEdit.pas',
   JvHLEditorPropertyForm in '..\..\run\JvHLEditorPropertyForm.pas' {JvHLEditorParamsForm};

@@ -70,7 +70,6 @@ contains
   JvSpeedbarSetupForm in '..\..\run\JvSpeedbarSetupForm.pas' {JvSpeedbarSetupWindow},
   JvColorForm in '..\..\run\JvColorform.pas',
   JvDsgnIntf in '..\..\run\JvDsgnIntf.pas',
-  JvStrUtil in '..\..\run\JvStrUtil.pas',
   JvImageDrawThread in '..\..\run\JvImageDrawThread.pas',
   JvRegAuto in '..\..\run\JvRegAuto.pas',
   JvWinampLabel in '..\..\run\JvWinampLabel.pas',

@@ -51,7 +51,6 @@ contains
   JvStringHolder in '..\..\run\JvStringHolder.pas',
   JvTimeLimit in '..\..\run\JvTimeLimit.pas',
   JvWinHelp in '..\..\run\JvWinHelp.pas',
-  JvRle in '..\..\run\JvRle.pas',
   JvGraph in '..\..\run\JvGraph.pas',
   JvTranslator in '..\..\run\JvTranslator.pas',
   JvPrint in '..\..\run\JvPrint.pas',
