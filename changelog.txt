@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-04-07
+- New JVCL installer // ahuser
 2004-04-05
 - Added EDI Component donation from Raymond Alexander. NB! Requires the latest JCL (don't forget to recompile DJVCL.dpk!) // peter3
 2004-04-04
