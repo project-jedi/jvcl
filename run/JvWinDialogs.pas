@@ -68,7 +68,7 @@ const
   OFN_EX_NOPLACESBAR = 1; // for new style of standard Windows dialogs
   {$EXTERNALSYM OFN_EX_NOPLACESBAR}
 
-  SpecialFolders: array[0..29] of TSpecialFolderInfo = (
+  SpecialFolders: array [0..29] of TSpecialFolderInfo = (
     (Name: 'Alt Startup'; ID: CSIDL_ALTSTARTUP),
     (Name: 'Application Data'; ID: CSIDL_APPDATA),
     (Name: 'Recycle Bin'; ID: CSIDL_BITBUCKET),
@@ -252,18 +252,16 @@ type
   end;
 
   TJvShellAboutDialog = class(TJvCommonDialog)
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   private
     FCaption: string;
     FIcon: TIcon;
     FOtherText: string;
     FProduct: string;
-  private
     procedure SetIcon(NewValue: TIcon);
-  private
     function StoreIcon: Boolean;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   public
     function Execute: Boolean; override;
   published
@@ -308,8 +306,7 @@ type
   public
     procedure Execute; override;
   published
-    property DestinationFolder: string read FDestinationFolder write
-      FDestinationFolder;
+    property DestinationFolder: string read FDestinationFolder write FDestinationFolder;
   end;
 
   TJvAddHardwareDialog = class(TJvCommonDialogP)
@@ -344,6 +341,7 @@ type
   end;
 
   {$IFDEF VCL}
+
   // (p3) this extension (PlacesBar) is already in TJvOpenDialog
   TJvOpenDialog2000 = class(TOpenDialog)
   public
@@ -355,6 +353,7 @@ type
   public
     function Execute: Boolean; override;
   end;
+
   {$ENDIF VCL}
 
   TJvURLAssociationDialogOption = (uaDefaultName, uaRegisterAssoc);
@@ -367,7 +366,7 @@ type
     FFileName: TFileName;
     FOptions: TJvURLAssociationDialogOptions;
     FDefaultProtocol: string;
-    FReturnValue: HResult;
+    FReturnValue: HRESULT;
     function GetParentHandle: THandle;
   public
     // Returns false if user cancelled or if the user
@@ -382,7 +381,7 @@ type
     // Possible return values:
     // S_OK -  content type succesfully associated with the extnesion
     // S_FALSE - nothing was registered (f ex a one time registration)
-    property ReturnValue: HResult read FReturnValue;
+    property ReturnValue: HRESULT read FReturnValue;
   published
     // The file (type) to associate with the Protocol
     // NB! FileName *must* contain an extension!
@@ -406,7 +405,7 @@ type
     FAssociatedApp: string;
     FFileName: TFileName;
     FOptions: TJvMIMEAssociationOptions;
-    FReturnValue: HResult;
+    FReturnValue: HRESULT;
     function GetParentHandle: THandle;
   public
     function Execute: Boolean; override;
@@ -420,7 +419,7 @@ type
     // E_FLAGS - invalid flag combination
     // E_OUTOFMEMORY - out of memory
     // E_POINTER - one of the input pointers are invalid
-    property ReturnValue: HResult read FReturnValue;
+    property ReturnValue: HRESULT read FReturnValue;
   published
     // The file (type) to associate with the Protocol
     // NB! FileName *must* contain an extension!
@@ -514,15 +513,14 @@ type
     property DistInfo: TJvSoftwareUpdateInfo read FDistInfo write FDistInfo;
   end;
 
-  // Tools routines
+// Tools routines
 function GetSpecialFolderPath(const FolderName: string; CanCreate: Boolean): string;
 procedure AddToRecentDocs(const FileName: string);
 procedure ClearRecentDocs;
 function ExtractIconFromFile(FileName: string; Index: Integer): HICON;
 function CreateShellLink(const AppName, Desc: string; Dest: string): string;
 procedure GetShellLinkInfo(const LinkFile: WideString; var SLI: TShellLinkInfo);
-procedure SetShellLinkInfo(const LinkFile: WideString; const SLI:
-  TShellLinkInfo);
+procedure SetShellLinkInfo(const LinkFile: WideString; const SLI: TShellLinkInfo);
 function RecycleFile(FileToRecycle: string): Boolean;
 function CopyFile(FromFile, ToDir: string): Boolean;
 function ShellObjectTypeEnumToConst(ShellObjectType: TShellObjectType): UINT;
@@ -536,7 +534,7 @@ type
     var lpIconIndex: Integer): DWORD; stdcall;
   SHChangeIconProcW = function(Wnd: HWND; szFileName: PWideChar;
     Reserved: Integer; var lpIconIndex: Integer): DWORD; stdcall;
-  SHFormatDriveProc = function(Wnd: HWND; drive: UINT; fmtID: UINT;
+  SHFormatDriveProc = function(Wnd: HWND; Drive: UINT; fmtID: UINT;
     Options: UINT): DWORD; stdcall;
   SHShutDownDialogProc = procedure(Wnd: HWND); stdcall;
   SHRunDialogProc = function(Wnd: HWND; Unknown1: Integer; Unknown2: Pointer;
@@ -553,9 +551,9 @@ type
     Style: UINT): Integer; stdcall;
   SHHandleDiskFullProc = procedure(Owner: HWND; uDrive: UINT); stdcall;
   NewLinkHereProc = procedure(HWND: THandle; HInstance: THandle; CmdLine: PChar;
-    cmdShow: Integer); stdcall;
-  SHOpenWithProc = procedure(HWND: THandle; HInstance: THandle; cmdLine: PChar;
-    cmdShow: Integer); stdcall;
+    CmdShow: Integer); stdcall;
+  SHOpenWithProc = procedure(HWND: THandle; HInstance: THandle; CmdLine: PChar;
+    CmdShow: Integer); stdcall;
   GetOpenFileNameExProc = function(var OpenFile: TOpenFileNameEx): BOOL; stdcall;
   GetSaveFileNameExProc = function(var SaveFile: TOpenFileNameEx): BOOL; stdcall;
   URLAssociationDialogProcA = function(hwndParent: HWND; dwInFlags: DWORD; const pcszFile: PChar; const pcszURL: PChar;
@@ -566,10 +564,10 @@ type
   MIMEAssociationDialogProcA = function(hwndParent: HWND; dwInFlags: DWORD;
     const pcszFile: PChar; const pcszMIMEContentType: PChar; pszAppBuf: PChar; ucAppBufLen: UINT): HRESULT; stdcall;
   MIMEAssociationDialogProcW = function(hwndParent: HWND; dwInFlags: DWORD;
-    const pcszFile: PWideChar; const pcszMIMEContentType: PWideChar; pszAppBuf: PWideChar; ucAppBufLen: UINT): HRESULT;
-  stdcall;
-  SoftwareUpdateMessageBoxProc = function(hWnd: HWND; szDistUnit: LPCWSTR; dwFlags: DWORD; var psdi: TSoftDistInfo):
-    DWORD; stdcall;
+    const pcszFile: PWideChar; const pcszMIMEContentType: PWideChar; pszAppBuf: PWideChar;
+      ucAppBufLen: UINT): HRESULT; stdcall;
+  SoftwareUpdateMessageBoxProc = function(hWnd: HWND; szDistUnit: LPCWSTR; dwFlags: DWORD;
+    var psdi: TSoftDistInfo): DWORD; stdcall;
 
 var
   FreePIDL: FreePIDLProc = nil;
@@ -614,20 +612,18 @@ var
   SHDocvwHandle: THandle = 0;
 
 {$IFDEF VisualCLX}
+
 function GetForegroundWindow: HWND;
 begin
-  Result := Windows.GetForegroundWindow ;
+  Result := Windows.GetForegroundWindow;
 end;
 
 function GetDesktopWindow: HWND;
 begin
-  Result := Windows.GetDeskTopWindow ;
+  Result := Windows.GetDesktopWindow;
 end;
 
 {$ENDIF VisualCLX}
-
-
-
 
 procedure LoadJvDialogs;
 begin
@@ -635,33 +631,33 @@ begin
   if ShellHandle > 0 then
   begin
     if Win32Platform = VER_PLATFORM_WIN32_NT then
-      SHChangeIconW := GetProcAddress(ShellHandle, PChar(62))
+      @SHChangeIconW := GetProcAddress(ShellHandle, PChar(62))
     else
-      SHChangeIcon := GetProcAddress(ShellHandle, PChar(62));
-    SHFormatDrive := GetProcAddress(ShellHandle, PChar('SHFormatDrive'));
-    FreePIDL := GetProcAddress(ShellHandle, PChar(155));
-    SHShutDownDialog := GetProcAddress(ShellHandle, PChar(60));
-    SHRunDialog := GetProcAddress(ShellHandle, PChar(61));
-    SHFindFiles := GetProcAddress(ShellHandle, PChar(90));
-    SHFindComputer := GetProcAddress(ShellHandle, PChar(91));
-    SHObjectProperties := GetProcAddress(ShellHandle, PChar(178));
-    SHNetConnectionDialog := GetProcAddress(ShellHandle, PChar(160));
-    SHOutOfMemoryMessageBox := GetProcAddress(ShellHandle, PChar(126));
-    SHHandleDiskFull := GetProcAddress(ShellHandle, PChar(185));
-    SHStartNetConnectionDialog := GetProcAddress(ShellHandle, PChar(215));
-    SHOpenWith := GetProcAddress(ShellHandle, PChar('OpenAs_RunDLLA'));
+      @SHChangeIcon := GetProcAddress(ShellHandle, PChar(62));
+    @SHFormatDrive := GetProcAddress(ShellHandle, PChar('SHFormatDrive'));
+    @FreePIDL := GetProcAddress(ShellHandle, PChar(155));
+    @SHShutDownDialog := GetProcAddress(ShellHandle, PChar(60));
+    @SHRunDialog := GetProcAddress(ShellHandle, PChar(61));
+    @SHFindFiles := GetProcAddress(ShellHandle, PChar(90));
+    @SHFindComputer := GetProcAddress(ShellHandle, PChar(91));
+    @SHObjectProperties := GetProcAddress(ShellHandle, PChar(178));
+    @SHNetConnectionDialog := GetProcAddress(ShellHandle, PChar(160));
+    @SHOutOfMemoryMessageBox := GetProcAddress(ShellHandle, PChar(126));
+    @SHHandleDiskFull := GetProcAddress(ShellHandle, PChar(185));
+    @SHStartNetConnectionDialog := GetProcAddress(ShellHandle, PChar(215));
+    @SHOpenWith := GetProcAddress(ShellHandle, PChar('OpenAs_RunDLLA'));
   end;
 
   CommHandle := LoadLibrary('comdlg32.dll');
   if CommHandle > 0 then
   begin
-    GetOpenFileNameEx := GetProcAddress(CommHandle, PChar('GetOpenFileNameA'));
-    GetSaveFileNameEx := GetProcAddress(CommHandle, PChar('GetSaveFileNameA'));
+    @GetOpenFileNameEx := GetProcAddress(CommHandle, PChar('GetOpenFileNameA'));
+    @GetSaveFileNameEx := GetProcAddress(CommHandle, PChar('GetSaveFileNameA'));
   end;
 
   AppWizHandle := LoadLibrary('appwiz.cpl');
   if AppWizHandle > 0 then
-    NewLinkHere := GetProcAddress(AppWizHandle, PChar('NewLinkHereA'));
+    @NewLinkHere := GetProcAddress(AppWizHandle, PChar('NewLinkHereA'));
   URLHandle := LoadLibrary('url.dll');
   if URLHandle > 0 then
   begin
@@ -673,7 +669,7 @@ begin
   end;
   SHDocvwHandle := LoadLibrary('shdocvw.dll');
   if SHDocvwHandle > 0 then
-    SoftwareUpdateMessageBox := GetProcAddress(SHDocvwHandle, 'SoftwareUpdateMessageBox');
+    @SoftwareUpdateMessageBox := GetProcAddress(SHDocvwHandle, 'SoftwareUpdateMessageBox');
 end;
 
 procedure UnloadJvDialogs;
@@ -713,7 +709,7 @@ end;
                 this dialog box is only designed to be the child of
                 another window, not a stand-alone application.
 
-      drive   = The 0 based (A: == 0) drive number of the drive
+      Drive   = The 0 based (A: == 0) Drive number of the Drive
                 to format.
 
       fmtID   = Currently must be set to SHFMT_ID_DEFAULT.
@@ -791,13 +787,12 @@ var
 begin
   Result := False;
   //  lpfnDoOrganizeFavDlg := nil;
-  ShModule := SafeLoadLibrary('shdocvw.dll');
+  SHModule := SafeLoadLibrary('shdocvw.dll');
   try
-    if ShModule <= HINSTANCE_ERROR then
+    if SHModule <= HINSTANCE_ERROR then
       Exit;
     Path := GetSpecialFolderPath('Favorites', True) + #0#0;
-    lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHModule,
-      'DoOrganizeFavDlg'));
+    lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHModule, 'DoOrganizeFavDlg'));
     if not Assigned(lpfnDoOrganizeFavDlg) then
       raise EWinDialogError.CreateRes(@RsEFunctionNotSupported);
     lpfnDoOrganizeFavDlg(GetForegroundWindow, PChar(Path));
@@ -820,7 +815,7 @@ const
   CPL_NEWINQUIRE = 8;
 
 type
-  PCPLInfo = ^TCPLInfo;
+  PCPLInfo = ^TCplInfo;
   TCplInfo = packed record
     idIcon: Integer;
     idName: Integer;
@@ -829,6 +824,7 @@ type
   end;
 
 {$IFDEF VCL}
+
 constructor TJvAppletDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -871,7 +867,7 @@ procedure TJvAppletDialog.Load;
 var
   I: Integer;
   AplInfo: TCplInfo;
-  Buffer: array[0..1023] of Char;
+  Buffer: array [0..1023] of Char;
 begin
   Unload;
   if AppletName <> '' then
@@ -933,8 +929,9 @@ end;
 
 function TJvAppletDialog.ValidApplet: Boolean;
 begin
-  Result := Assigned(FAppletFunc) and (AppletIndex >= 0) and (AppletIndex < Count)
+  Result := Assigned(FAppletFunc) and (AppletIndex >= 0) and (AppletIndex < Count);
 end;
+
 {$ENDIF VCL}
 
 //=== { TJvComputerNameDialog } ==============================================
@@ -949,10 +946,8 @@ function TJvComputerNameDialog.Execute: Boolean;
 var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
-  NameBuffer: array[0..MAX_PATH] of Char;
-  {$IFDEF MSWINDOWS}
+  NameBuffer: array [0..MAX_PATH] of Char;
   WindowList: Pointer;
-  {$ENDIF MSWINDOWS}
 begin
   Result := False;
 
@@ -966,16 +961,12 @@ begin
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
   BrowseInfo.ulFlags := BIF_BROWSEFORCOMPUTER;
-  {$IFDEF MSWINDOWS}
   WindowList := DisableTaskWindows(0);
-  {$ENDIF MSWINDOWS}
   try
     Result := SHBrowseForFolder(BrowseInfo) <> nil;
   finally
-    {$IFDEF MSWINDOWS}
     EnableTaskWindows(WindowList);
-    {$ENDIF MSWINDOWS}
-    FreePidl(BrowseInfo.pidlRoot);
+    FreePIDL(BrowseInfo.pidlRoot);
   end;
   if Result then
     FComputerName := NameBuffer;
@@ -994,10 +985,8 @@ var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
   ItemSelected: PItemIDList;
-  NameBuffer: array[0..MAX_PATH] of Char;
-  {$IFDEF MSWINDOWS}
+  NameBuffer: array [0..MAX_PATH] of Char;
   WindowList: Pointer;
-  {$ENDIF MSWINDOWS}
 begin
   ItemIDList := nil;
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
@@ -1006,16 +995,12 @@ begin
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
   BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS;
-  {$IFDEF MSWINDOWS}
   WindowList := DisableTaskWindows(0);
-  {$ENDIF MSWINDOWS}
   try
     ItemSelected := SHBrowseForFolder(BrowseInfo);
     Result := ItemSelected <> nil;
   finally
-    {$IFDEF MSWINDOWS}
     EnableTaskWindows(WindowList);
-    {$ENDIF MSWINDOWS}
   end;
 
   if Result then
@@ -1101,7 +1086,7 @@ begin
           Err := errCannotFormat;
       else
         Err := errOther;
-      end; // case
+      end;
     FOnError(Self, Err);
   end;
 end;
@@ -1111,7 +1096,7 @@ begin
   // (rom) secured
   Value := UpCase(Value);
   if Value in ['A'..'Z'] then
-    FDrive := UpCase(Value);
+    FDrive := Value;
 end;
 
 function GetSpecialFolderPath(const FolderName: string; CanCreate: Boolean): string;
@@ -1120,7 +1105,7 @@ var
   Found: Boolean;
   I: Integer;
   PIDL: PItemIDList;
-  Buf: array[0..MAX_PATH] of Char;
+  Buf: array [0..MAX_PATH] of Char;
 begin
   Found := False;
   Folder := 0;
@@ -1477,7 +1462,7 @@ var
   SL: IShellLink;
   PF: IPersistFile;
   FindData: TWin32FindData;
-  AStr: array[0..MAX_PATH] of Char;
+  AStr: array [0..MAX_PATH] of Char;
 begin
   OleCheck(CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
     IShellLink, SL));
@@ -1506,8 +1491,8 @@ begin
   end;
 end;
 
-procedure SetShellLinkInfo(const LinkFile: WideString; const SLI:
-  TShellLinkInfo);
+procedure SetShellLinkInfo(const LinkFile: WideString;
+  const SLI: TShellLinkInfo);
 { Sets information for an existing shell link }
 var
   SL: IShellLink;
@@ -1564,7 +1549,7 @@ end;
 
 function CopyFile(FromFile, ToDir: string): Boolean;
 var
-  F: TShFileOpStruct;
+  F: TSHFileOpStruct;
 begin
   F.Wnd := 0;
   F.wFunc := FO_COPY;
@@ -1612,8 +1597,7 @@ end;
 
 procedure TJvDiskFullDialog.SetDriveChar(Value: Char);
 begin
-  if Value in ['a'..'z'] then
-    Value := Char(Ord(Value) - $20);
+  Value := UpCase(Value);
   if not (Value in ['A'..'Z']) then
     raise EWinDialogError.CreateResFmt(@RsEInvalidDriveChar, [Value]);
   FDriveChar := Value;
@@ -1630,8 +1614,8 @@ end;
 
 function TJvChangeIconDialog.Execute: Boolean;
 var
-  Buf: array[0..MAX_PATH] of Char;
-  BufW: array[0..MAX_PATH] of WideChar;
+  Buf: array [0..MAX_PATH] of Char;
+  BufW: array [0..MAX_PATH] of WideChar;
 begin
   if Assigned(SHChangeIconW) then
   begin
@@ -1673,6 +1657,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 //=== { TJvOpenDialog2000 } ==================================================
 
 function TJvOpenDialog2000.Execute: Boolean;
@@ -1692,6 +1677,7 @@ begin
   else
     Result := inherited Execute;
 end;
+
 {$ENDIF VCL}
 
 //=== { TJvURLAssociationDialog } ============================================
@@ -1872,7 +1858,7 @@ begin
     end;
     case dwFlags of
       SOFTDIST_FLAG_USAGE_EMAIL:
-        Flags := ufEMail;
+        Flags := ufEmail;
       SOFTDIST_FLAG_USAGE_PRECACHE:
         Flags := ufPreCache;
       SOFTDIST_FLAG_USAGE_AUTOINSTALL:

@@ -73,7 +73,7 @@ type
     procedure lvProviderEditing(Sender: TObject; Item: TListItem;
       var AllowEdit: Boolean); dynamic;
     procedure lvProviderEdited(Sender: TObject; Item: TListItem;
-      var S: String); dynamic;
+      var S: string); dynamic;
     procedure aiRenameExecute(Sender: TObject); dynamic;
   private
     FBeforeNewItem: TDsgFmeBeforeNewItem;
@@ -317,7 +317,7 @@ begin
 end;
 
 procedure TfmeJvProviderTreeListDsgn.lvProviderEdited(Sender: TObject;
-  Item: TListItem; var S: String);
+  Item: TListItem; var S: string);
 var
   DataItem: IJvDataItem;
   ItemText: IJvDataItemText;
