@@ -66,7 +66,7 @@ implementation
 uses
   JvQPageList;
 
-//=== TJvNavPanePageImageIndexProperty =======================================
+//=== { TJvNavPanePageImageIndexProperty } ===================================
 
 function TJvNavPanePageImageIndexProperty.ImageList: TCustomImageList;
 var
@@ -82,21 +82,21 @@ begin
     Result := P.LargeImages;
 end;
 
-//=== TJvNavPanelHeaderImageIndexProperty ====================================
+//=== { TJvNavPanelHeaderImageIndexProperty } ================================
 
 function TJvNavPanelHeaderImageIndexProperty.ImageList: TCustomImageList;
 begin
   Result := TJvNavPanelHeader(GetComponent(0)).Images;
 end;
 
-//=== TJvNavPanelButtonImageIndexProperty ====================================
+//=== { TJvNavPanelButtonImageIndexProperty } ================================
 
 function TJvNavPanelButtonImageIndexProperty.ImageList: TCustomImageList;
 begin
   Result := TJvNavPanelButton(GetComponent(0)).Images;
 end;
 
-//=== TJvNavIconButtonImageIndexProperty =====================================
+//=== { TJvNavIconButtonImageIndexProperty } =================================
 
 function TJvNavIconButtonImageIndexProperty.ImageList: TCustomImageList;
 begin

@@ -109,7 +109,7 @@ begin
     THackTreeView(TreeView).Items.GetFirstNode.Expand(False);
 end;
 
-//=== TJvPageLinksProperty ===================================================
+//=== { TJvPageLinksProperty } ===============================================
 
 procedure TJvPageLinksProperty.Edit;
 begin
@@ -121,7 +121,7 @@ begin
   Result := [paDialog, paReadOnly];
 end;
 
-//=== TfrmJvTreeViewLinksEditor ==============================================
+//=== { TfrmJvTreeViewLinksEditor } ==========================================
 
 function GetStrippedText(const AText: string): string;
 var

@@ -124,7 +124,7 @@ begin
   end;
 end;
 
-//=== TJvOutlookBarPagesPropertyEditor =======================================
+//=== { TJvOutlookBarPagesPropertyEditor } ===================================
 
 procedure TJvOutlookBarPagesPropertyEditor.Edit;
 begin
@@ -156,7 +156,7 @@ begin
   Result := Format('(%s)', [GetPropType^.Name]);
 end;
 
-//=== TJvOutlookBarComponentEditor ===========================================
+//=== { TJvOutlookBarComponentEditor } =======================================
 
 procedure TJvOutlookBarComponentEditor.ExecuteVerb(Index: Integer);
 begin
@@ -183,7 +183,7 @@ begin
   Result := 1;
 end;
 
-//=== TJvOutlookBarActivePageEditor ==========================================
+//=== { TJvOutlookBarActivePageEditor } ======================================
 
 procedure TJvOutlookBarActivePageEditor.Edit;
 begin
@@ -244,7 +244,7 @@ begin
     inherited SetValue(Value);
 end;
 
-//=== TJvOutlookBarButtonImageIndexProperty ==================================
+//=== { TJvOutlookBarButtonImageIndexProperty } ==============================
 
 function TJvOutlookBarButtonImageIndexProperty.GetBar: TJvCustomOutlookBar;
 begin

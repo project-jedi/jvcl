@@ -339,7 +339,7 @@ resourcestring
   RsExecute = 'Execute';
   RsJvHLEdPropDlgIni = 'JvHLEdPropDlg.ini';
 
-//=== TJvIconListForm.pas ====================================================
+//=== { TJvIconListForm.pas } ================================================
 resourcestring
   RsLoadIcon = 'Load Icon';
 
@@ -624,7 +624,7 @@ resourcestring
   RsSingleLine = 'Line';
   RsMultipleLines = 'Lines';
 
-//=== TJvSpeedbarForm.pas ====================================================
+//=== { TJvSpeedbarForm.pas } ================================================
   RsESBItemNotCreate = 'Cannot create a new Speedbar button';
   RsConfirmSBDelete = 'Are you sure you want to delete current section?';
   RsSpeedbarDesigner = 'Speedbar designer...';

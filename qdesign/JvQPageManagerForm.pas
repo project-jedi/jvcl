@@ -150,7 +150,7 @@ begin
   end;
 end;
 
-//=== TJvProxyListProperty ===================================================
+//=== { TJvProxyListProperty } ===============================================
 
 function TJvProxyListProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -173,7 +173,7 @@ begin
   ShowProxyEditor(Designer, TJvPageManager(GetComponent(0)));
 end;
 
-//=== TJvPageBtnProperty =====================================================
+//=== { TJvPageBtnProperty } =================================================
 
 procedure TJvPageBtnProperty.GetValues(Proc: TGetStrProc);
 var
@@ -192,7 +192,7 @@ begin
   end;
 end;
 
-//=== TJvPageNameProperty ====================================================
+//=== { TJvPageNameProperty } ================================================
 
 function TJvPageNameProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -211,7 +211,7 @@ begin
       Proc(PageProxy.PageManager.PageNames[I]);
 end;
 
-//=== TJvPageManagerEditor ===================================================
+//=== { TJvPageManagerEditor } ===============================================
 
 procedure TJvPageManagerEditor.ExecuteVerb(Index: Integer);
 begin
@@ -234,7 +234,7 @@ begin
   Result := 1;
 end;
 
-//=== TJvProxyEditor =========================================================
+//=== { TJvProxyEditor } =====================================================
 
 procedure TJvProxyEditor.SetPageManager(Value: TJvPageManager);
 begin

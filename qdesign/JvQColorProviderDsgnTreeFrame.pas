@@ -61,7 +61,7 @@ uses
   JclStrings,
   JvQColorProvider, JvQDataProviderIntf, JvQColorProviderAddDialogForm, JvQTypes;
 
-//=== TfmeJvColorProviderDsgnTree =============================================
+//=== { TfmeJvColorProviderDsgnTree } =========================================
 
 procedure TfmeJvColorProviderDsgnTree.UpdateActionStates;
 var

@@ -140,7 +140,7 @@ const
 type
   THackOutlookBar = class(TJvCustomOutlookBar);
 
-//=== TFrmOLBEditor ==========================================================
+//=== { TFrmOLBEditor } ======================================================
 
 function GetFullPathName(C: TComponent): string;
 begin

@@ -128,7 +128,7 @@ type
   TOpenSvc = class(TJvDataConsumer);
   TOpenConsumerAggregate = class(TJvDataConsumerAggregatedObject);
 
-//=== TJvDataConsumerExtPropertyEditor =======================================
+//=== { TJvDataConsumerExtPropertyEditor } ===================================
 
 function TJvDataConsumerExtPropertyEditor.GetConsumerExt: TJvDataConsumerAggregatedObject;
 begin
@@ -145,7 +145,7 @@ begin
   Result := TOpenConsumerAggregate(GetConsumerExt).ConsumerImpl;
 end;
 
-//=== TJvDataConsumerProperty ================================================
+//=== { TJvDataConsumerProperty } ============================================
 
 procedure TJvDataConsumerProperty.CheckAndAddComp(const S: string);
 var
@@ -283,7 +283,7 @@ begin
   end;
 end;
 
-//=== TJvDataProviderTreeProperty ============================================
+//=== { TJvDataProviderTreeProperty } ========================================
 
 procedure TJvDataProviderTreeProperty.Edit;
 begin
@@ -304,7 +304,7 @@ procedure TJvDataProviderTreeProperty.SetValue(const Value: string);
 begin
 end;
 
-//=== TJvDataProviderItemIDProperty ==========================================
+//=== { TJvDataProviderItemIDProperty } ======================================
 
 procedure TJvDataProviderItemIDProperty.Edit;
 begin
@@ -342,7 +342,7 @@ procedure TJvDataProviderItemIDProperty.SetValue(const Value: string);
 begin
 end;
 
-//=== TJvDataConsumerContextEditor ===========================================
+//=== { TJvDataConsumerContextEditor } =======================================
 
 procedure TJvDataConsumerContextProperty.Edit;
 begin
@@ -389,7 +389,7 @@ begin
   end;
 end;
 
-//=== TJvConsumerNotifyComponentProperty =====================================
+//=== { TJvConsumerNotifyComponentProperty } =================================
 
 function TJvConsumerNotifyComponentProperty.IsValidComp(AComponent: TComponent): Boolean;
 const
@@ -434,7 +434,7 @@ begin
   end;
 end;
 
-//=== TJvProviderEditor ======================================================
+//=== { TJvProviderEditor } ==================================================
 
 function TJvProviderEditor.Provider: IJvDataProvider;
 begin

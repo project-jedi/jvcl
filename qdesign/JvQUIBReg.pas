@@ -65,8 +65,8 @@ uses
 
 procedure Register;
 begin 
-  GroupDescendentsWith(TJvUIBDataSet, TControl);
   {$IFNDEF DelphiPersonalEdition}
+  GroupDescendentsWith(TJvUIBDataSet, TControl);
   GroupDescendentsWith(TJvUIBCustomDataSet, TControl);
   {$ENDIF DelphiPersonalEdition} 
 

@@ -34,15 +34,15 @@ unit JvQPageListEditorForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, Types, QTypes,
-  QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,  
-  DesignIntf, DesignEditors,  
-  ClxDesignWindows,  
+  SysUtils, Classes, 
+  Types, QGraphics, QControls, QForms, QDialogs, QActnList, QImgList,
+  QComCtrls, QStdCtrls, QToolWin, QMenus, 
+  QExtCtrls, QTypes,  
+  DesignIntf, DesignEditors, QDesignWindows, 
   JvQPageList;
 
-type 
-  TfrmPageListEditor = class(TClxDesignWindow)  
+type
+  TfrmPageListEditor = class(TDesignWindow)
     ToolBar1: TToolBar;
     btnAdd: TToolButton;
     btnDelete: TToolButton;
@@ -84,7 +84,6 @@ type
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override; 
-    function UniqueName(Component: TComponent): string; override;  
     function GetEditState: TEditState; override;
   end;
 
@@ -94,10 +93,7 @@ implementation
 uses
   JvQDsgnConsts;
 
-
-
 {$R *.xfm}
-
 
 procedure ShowPageListEditor(Designer: IDesigner; APageList: TJvCustomPageList);
 var
@@ -233,12 +229,6 @@ procedure TfrmPageListEditor.ItemsModified(const Designer: IDesigner);
 begin
   if not (csDestroying in ComponentState) then
     UpdateList(lbPages.ItemIndex);
-end;
-
-
-function TfrmPageListEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
 end;
 
 
