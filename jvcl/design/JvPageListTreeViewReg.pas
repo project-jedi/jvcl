@@ -66,7 +66,8 @@ uses
   QComCtrls,
   {$ENDIF VisualCLX}
   JvNavigationPane, JvPageList, JvPageListTreeView, 
-  JvDsgnConsts, JvPageListEditors, JvTreeItemsEditorForm, JvPageLinkEditorForm, JvPageListEditorForm;
+  JvDsgnConsts, JvPageListEditors, JvNavPaneEditors,
+  JvTreeItemsEditorForm, JvPageLinkEditorForm, JvPageListEditorForm;
 
 
 procedure Register;
@@ -99,6 +100,10 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvCustomPage),
     TJvCustomPageList, cActivePage, TJvActivePageProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvSettingsTreeImages, '', TJvSettingsTreeImagesProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvNavPanelPage, 'ImageIndex', TJvNavPanePageImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvNavPanelHeader, 'ImageIndex', TJvNavPanelHeaderImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvNavPanelButton, 'ImageIndex', TJvNavPanelButtonImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvNavIconButton, 'ImageIndex', TJvNavIconButtonImageIndexProperty);
 
   //  RegisterPropertyEditor(TypeInfo(Integer), TJvSettingsTreeImages, 'CollapsedIndex', TJvSettingsTreeImagesProperty);
   //  RegisterPropertyEditor(TypeInfo(Integer), TJvSettingsTreeImages, 'ExpandedIndex', TJvSettingsTreeImagesProperty);
