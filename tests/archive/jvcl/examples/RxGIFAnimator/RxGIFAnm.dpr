@@ -11,7 +11,7 @@ uses
 {$R *.RES}
 
 begin
-  RxErrorIntercept;
+  JvErrorIntercept;
   Application.Title := 'RX GIF Animator';
   Application.CreateForm(TAnimatorForm, AnimatorForm);
   Application.Run;

@@ -16,7 +16,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, JvPlacemnt, JvSpeedbar, Grids, JvxCtrls,
   ComCtrls {$IFDEF COMPILER3_UP}, ExtDlgs {$IFNDEF CBUILDER}, Jpeg {$ENDIF} {$ENDIF},
-  JvGIF, Mask, JvToolEdit {$IFDEF COMPILER4_UP}, ImgList {$ENDIF};
+  JvGIF, Mask, JvToolEdit {$IFDEF COMPILER4_UP}, ImgList, JvComponent {$ENDIF};
 
 type
   TAnimatorForm = class(TForm)
