@@ -103,7 +103,6 @@ type
 
   TJvTimerEvent = class(TCollectionItem)
   private
-    FOwner: TComponent;
     FCycled: Boolean;
     FEnabled: Boolean;
     FExecCount: Integer;
@@ -146,10 +145,12 @@ type
     FOnFinish: TNotifyEvent;
     FOnTimers: TAllTimersEvent;
     FActive: Boolean;
+    FSorted: boolean;
     procedure TimerWndProc(var Msg: TMessage);
     procedure UpdateTimer;
     procedure SetEvents(const Value: TJvTimerEvents);
     procedure SetActive(Value: Boolean);
+    procedure SetSorted(const Value: boolean);
   protected
     procedure DoTimer(Event: TJvTimerEvent); dynamic;
   public
@@ -160,6 +161,8 @@ type
   published
     property Active: Boolean read FActive write SetActive default False;
     property Events: TJvTimerEvents read FEvents write SetEvents;
+    // NB! Setting sorted to true means that the index of the Events are changed!!!
+    property Sorted:boolean read FSorted write SetSorted default False;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnTimers: TAllTimersEvent read FOnTimers write FOnTimers;
   end;
@@ -178,6 +181,7 @@ const
 
 constructor TJvTimerEvent.Create(ACollection: TCollection);
 begin
+  FHandle := INVALID_HANDLE_VALUE;
   inherited Create(ACollection);
   FCycled := True;
   FRepeatCount := 0;
@@ -185,7 +189,6 @@ begin
   FExecCount := 0;
   FInterval := DefaultInterval;
   FLastExecute := GetTickCount;
-  FHandle := INVALID_HANDLE_VALUE;
 end;
 
 destructor TJvTimerEvent.Destroy;
@@ -233,7 +236,7 @@ begin
   if FRepeatCount <> Value then
   begin
     Value := Max(Value, Integer(not FCycled));
-    if not (csDesigning in FOwner.ComponentState) then
+    if not (csDesigning in FParentList.ComponentState) then
       if FEnabled and (Value <= FExecCount) then
         Enabled := False;
     FRepeatCount := Value;
@@ -292,7 +295,7 @@ var
   T: TJvTimerEvent;
 begin
   T := Events.Add;
-  T.FOwner := Self;
+  T.FParentList := Self;
   with T do
   begin
     OnTimer := AOnTimer;
@@ -303,7 +306,8 @@ begin
     Result := FHandle;
   end;
   Events.CalculateInterval(GetTickCount);
-  Events.Sort;
+  if Sorted then
+    Events.Sort;
   UpdateTimer;
 end;
 
@@ -392,7 +396,8 @@ begin
         StartTicks := GetTickCount;
         Events.UpdateEvents(StartTicks);
         Events.CalculateInterval(StartTicks);
-        Events.Sort;
+        if Sorted then
+          Events.Sort;
         UpdateTimer;
       end
       else
@@ -578,10 +583,12 @@ begin
   if Action = cnAdded then
     with TJvTimerEvent(Item) do
     begin
+      FParentList := FParent;
       FHandle := NextHandle;
       FParentList := Self.FParent;
       CalculateInterval(GetTickCount);
-      Sort;
+      if FParent.Sorted then
+        Sort;
       FParent.UpdateTimer;
     end;
 end;
@@ -672,6 +679,15 @@ begin
     Result := Items[I]
   else
     Result := nil;
+end;
+
+procedure TJvTimerList.SetSorted(const Value: boolean);
+begin
+  if FSorted <> Value then
+  begin
+    FSorted := Value;
+    if FSorted then Events.Sort;
+  end;
 end;
 
 end.
