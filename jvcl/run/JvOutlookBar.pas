@@ -1317,6 +1317,7 @@ begin
   if csDestroying in ComponentState then
     Exit;
   R := GetPageButtonRect(0);
+
   for I := 0 to Pages.Count - 1 do
   begin
     if DoDrawPageButton(R, I, FPressedPageBtn = I) then
@@ -1396,6 +1397,8 @@ begin
   R := GetButtonRect(Index, Pages[Index].TopButtonIndex);
   H := GetButtonHeight(Index);
   C := Canvas.Pen.Color;
+  Canvas.Font := Pages[Index].Font;
+
 {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
@@ -1506,6 +1509,7 @@ begin
   AColor := Canvas.Brush.Color;
   try
     Canvas.Brush.Color := Pages[PageIndex].Color;
+    Canvas.Font := Self.Font;
     if DoDrawPage(R, PageIndex) then
     begin
       if not DrawBitmap(R, Pages[PageIndex].Image) then
@@ -1544,7 +1548,6 @@ begin
   begin
     if DoDrawPageButton(R, I, FPressedPageBtn = I) then
     begin
-
 {$IFDEF JVCLThemesEnabled}
       if ThemeServices.ThemesEnabled then
       begin
@@ -1772,6 +1775,8 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
+  Canvas.Font := Self.Font;
+  Canvas.Brush.Color := Self.Color;
   if Pages.Count = 0 then // we only need to draw the background when there are no pages
   begin
 {$IFDEF JVCLThemesEnabled}
@@ -1786,8 +1791,6 @@ begin
     else
 {$ENDIF JVCLThemesEnabled}
     begin
-      Canvas.Font := Font;
-      Canvas.Brush.Color := Color;
       if DoDrawBackGround then
         Canvas.FillRect(ClientRect);
     end;
@@ -2293,8 +2296,9 @@ begin
   inherited FontChanged;
   for I := 0 to Pages.Count - 1 do
     if Pages[I].ParentFont then
-    begin
+    begin //set the font of the buttons as well
       Pages[I].ParentFont := False;
+      Pages[I].Font := Self.Font;
       Pages[I].ParentFont := True; // reset flag
     end;
 end;
