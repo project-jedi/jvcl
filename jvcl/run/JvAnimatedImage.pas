@@ -171,7 +171,7 @@ implementation
 
 uses
   JclSysUtils,
-  JvTypes, JvJVCLUtils;
+  JvConsts, JvJVCLUtils;
 
 
 //=== TJvHackBitmap ==========================================================

@@ -33,12 +33,12 @@ unit JvPickDate;
 interface
 
 uses
-  Windows, Classes, JvTypes,
+  Windows, Classes,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}
   Controls, SysUtils, Graphics,
-  jvSpeedButton, JvJCLUtils;
+  JvTypes, JvSpeedButton, JvJCLUtils;
 
 { Calendar dialog }
 

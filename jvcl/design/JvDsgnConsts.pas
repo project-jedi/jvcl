@@ -33,9 +33,9 @@ interface
 {$IFNDEF COMPLILER6_UP}
 const
   sLineBreak = #10#13;
-{$ENDIF}
+  {$ENDIF}
 
-//=== strings used by several editors ======================================
+//=== strings used by several editors ========================================
 resourcestring
   SPreviewEllipsis = 'Preview...';
   SDesignerEllipsis = 'Designer...';
@@ -48,6 +48,7 @@ resourcestring
   SPreviousPage = 'Previous Page';
   SJVCLActionsCategory = 'JVCL';
   SPropertyEditors = '\Property Editors';
+  SJvEditorString = 'Click to edit...';
 
 //=== JVCL IDE palettes ======================================================
 resourcestring
@@ -83,17 +84,22 @@ resourcestring
   SPaletteValidators = 'Jv Validators';
   SPaletteWizard = 'Jv Wizard';
 
-//=== JvAVICaptureEditors.pas ==============================================
+//=== JvAnimatedEditor.pas ===================================================
+resourcestring
+  RsEditPicture = 'Edit picture...';
+  RsLoadAniCursor = 'Load from ANI...';
+
+//=== JvAVICaptureEditors.pas ================================================
 resourcestring
   SDisconnected = 'Disconnected';
   SdIsNotWithinTheValidRangeOfdd = '%d is not within the valid range of %d..%d';
 
-//=== JvBandObjectDLLWizard.pas ============================================
+//=== JvBandObjectDLLWizard.pas ==============================================
 resourcestring
   SCreatesABandObjectDLLProject = 'Creates a Band Object DLL Project.';
   SBandObjectDLLWizard = 'Band Object DLL Wizard';
 
-//=== JvBandObjectDLLWizardForm.pas ========================================
+//=== JvBandObjectDLLWizardForm.pas ==========================================
 resourcestring
   SBandNameHasToBeAValidIdentifier = 'Band name has to be a valid identifier!';
   SPleaseEnterBandDescription = 'Please enter band description!';
@@ -108,33 +114,33 @@ resourcestring
     'Band Type' + sLineBreak +
     'Select the type of band object to create.';
 
-//=== JvChangeNotifyEditor.pas =============================================
+//=== JvChangeNotifyEditor.pas ===============================================
 resourcestring
   SNotificationsEllipsis = 'Notifications...';
 
-//=== JvCheckedItemsForm.pas ===============================================
+//=== JvCheckedItemsForm.pas =================================================
 resourcestring
   SItemEditor = 'Item editor';
   SEnabled = 'Enabled';
 
-//=== JvColorProviderDesignerForm.pas ======================================
+//=== JvColorProviderDesignerForm.pas ========================================
 resourcestring
   SSystemColors = 'System colors';
   SStandardColors = 'Standard colors';
   SCustomColorsEllipsis = 'Custom colors...';
   SColorMsg = 'Copy standard and system colors from the default context?';
 
-//=== JvColorProviderEditors.pas ===========================================
+//=== JvColorProviderEditors.pas =============================================
 resourcestring
   SMappingDoesNotExistForThisColorProv = 'Mapping does not exist for this color provider.';
   SInvalidPropertyValue = 'Invalid property value';
 
-//=== JvCsvDataEditor.pas ==================================================
+//=== JvCsvDataEditor.pas ====================================================
 resourcestring
   SJvCsvDataSetSelectCSVFileToOpen = 'JvCsvDataSet - Select CSV File to Open';
   SCsvFilter = '*.csv';
 
-//=== JvCsvDataForm.pas ====================================================
+//=== JvCsvDataForm.pas ======================================================
 resourcestring
   SMustTypeAValidFieldNameAndSelectAFi =
     'Must type a valid field name and select a field type. ' +
@@ -153,37 +159,37 @@ resourcestring
     'not been made yet. (Click no, to go back.) ' + sLineBreak +
     'Are you sure you want to close the CSV Fields editor? ';
 
-//=== JvDataConsumerContextSelectForm.pas ==================================
+//=== JvDataConsumerContextSelectForm.pas ====================================
 resourcestring
   SConsumerDoesNotSupportContextSelect = 'Consumer does not support context selection.';
   SIJvDataConsumerProviderIsNotSupported = 'IJvDataConsumerProvider is not supported by the specified consumer.';
 
-//=== JvDataConsumerItemSelectForm.pas =====================================
+//=== JvDataConsumerItemSelectForm.pas =======================================
 resourcestring
   SDataProviderItemSelector = 'DataProvider Item Selector';
 
-//=== JvDataContextManagerForm.pas =========================================
+//=== JvDataContextManagerForm.pas ===========================================
 resourcestring
   SDataProviderContextManager = 'DataProvider Context Manager';
 
-//=== JvDataProviderDesignerForm.pas =======================================
+//=== JvDataProviderDesignerForm.pas =========================================
 resourcestring
   SDataProviderDesigner = 'DataProvider Designer';
   SInternalErrorUnableToRetrieveContext = 'Internal error: unable to retrieve context list';
 
-//=== JvDataProviderEditors.pas ============================================
+//=== JvDataProviderEditors.pas ==============================================
 resourcestring
   SSpecifiedProviderIsNotATComponentDe = 'Specified provider is not a TComponent descendant';
   STreeDesignerEllipsis = 'Tree designer...';
   SContextManagerEllipsis = 'Context manager...';
   SInvalidVerbd = 'Invalid verb#: %d';
 
-//=== JvDataProviderItemDesign.pas =========================================
+//=== JvDataProviderItemDesign.pas ===========================================
 resourcestring
   SUnknown = '<unknown>';
   SNoItem = '<no item>';
 
-//=== JvDateTimeForm.pas ===================================================
+//=== JvDateTimeForm.pas =====================================================
 resourcestring
   SSelectDate = 'Select Date';
   SSelectTime = 'Select Time';
@@ -198,14 +204,19 @@ resourcestring
   SFileName = '(Filename)';
   SDirectory = '(Directory)';
 
-//=== JvDsgnEditors.pas ====================================================
+//=== JvDBMemDatasetEditor.pas ===============================================
+resourcestring
+  RsBorrowStructure = 'Borrow structure...';
+
+//=== JvDsgnEditors.pas ======================================================
 resourcestring
   SStripFilePath = '&Strip file path';
   SExecutableFilesExeExeAllFiles = 'Executable files (*.exe)|*.exe|All files (*.*)|*.*';
   SItems = 'Items';
   SFmtEditEllipsis = '%s Editor...';
+  RsSaveImageList = 'Save to bitmap...';
 
-//=== JvFooterEditor.pas ===================================================
+//=== JvFooterEditor.pas =====================================================
 resourcestring
   SAddButtonText = 'Add button';
   SMSOffice = 'MS Office 2000';
@@ -214,17 +225,21 @@ resourcestring
   SPrevious = 'Previous';
   SNext = 'Next';
 
-//=== JvgComponentListEditorForm.pas =======================================
+//=== JvFormPropertiesForm.pas ===============================================
+resourcestring
+  RsStorageDesigner = 'Form Storage Designer...';
+
+//=== JvgComponentListEditorForm.pas =========================================
 resourcestring
   SEditComponentListEllipsis = 'Edit component list...';
 
-//=== JvgHelpPanelEditor.pas ===============================================
+//=== JvgHelpPanelEditor.pas =================================================
 resourcestring
   SRTFAndTextFilesrtftxtrtftxt = 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
   SLoadRTFFile = 'Load RTF file';
   SPreviewRTFText = 'Preview RTF text';
 
-//=== JvID3v2EditorForm.pas ================================================
+//=== JvID3v2EditorForm.pas ==================================================
 resourcestring
   SfiErrorFrame = 'Error';
   SfiPaddingFrame = 'Padding';
@@ -364,65 +379,85 @@ resourcestring
 
   SIDV2FileInfoCaption = 'File info';
 
-//=== JvgLabelEditorForm.pas ===============================================
+  // (rom) from JvConsts.pas
+  SID3CommitTag = '&Commit';
+  SID3FileInfoTag = 'File &info';
+  SID3FrameEditorTag = 'Frame edi&tor';
+  SID3RemoveTag = '&Remove tag...';
+  SID3RemoveTagConfirmation = 'Remove tag?';
+  SID3Err_FileDoesNotExists = 'File %s does not exists';
+  SID3Err_NoFileSpecified = 'No file specified';
+  SID3Err_NoValidMPEGTag = 'This file has not a valid MPEG tag';
+
+//=== JvgLabelEditorForm.pas =================================================
 resourcestring
   SEditLabel = 'Edit &Label...';
 
-//=== JvgLogicItemEditorForm.pas ===========================================
+//=== JvgLogicItemEditorForm.pas =============================================
 resourcestring
   SLogicElements = 'Logic Element: %s';
   SResult = '[RESULT]';
   SNotDefined = '[ not defined ]';
 
-//=== JvgLogicsEditorForm.pas ==============================================
+//=== JvgLogicsEditorForm.pas ================================================
 resourcestring
   SCaption = 'Caption';
   SComments = 'Comments';
   SEditComponentEllipsis = 'Edit component...';
 
-//=== JvgReportEditorForm.pas ==============================================
+//=== JvGradientCaptionForm.pas ==============================================
+resourcestring
+  RsCaptionDesigner = 'Edit Captions...';
+  RsGradientCaptions = 'Captions';
+
+//=== JvgReportEditorForm.pas ================================================
 resourcestring
   SEditReport = 'Edit report...';
   SPreviewReportEllipsis = 'Preview report...';
   SDeleteObject = 'Delete object?';
   SPagePreview = 'Page Preview';
 
-//=== JvgReportParamsForm.pas ==============================================
+//=== JvgReportParamsForm.pas ================================================
 resourcestring
   SEditParamsEllipsis = 'Edit params...';
 
-//=== JvGroupHeaderEditor.pas ==============================================
+//=== JvGroupHeaderEditor.pas ================================================
 resourcestring
   SStandardFlat = 'Standard/Flat';
   SWeb = 'Web';
 
-//=== JvgShadowEditor.pas ==================================================
+//=== JvgShadowEditor.pas ====================================================
 resourcestring
   SUpdateAllEditControl = 'Update all edit control';
 
-//=== JVHLEditEditor.pas ===================================================
+//=== JVHLEditEditor.pas =====================================================
 resourcestring
   SHLEditorMsg = 'Please select "JvHLEditor" first';
   SHLEditorMsgTitle = 'Cannot edit';
   SExecute = 'Execute';
+  RsJvHLEdPropDlgIni = 'JvHLEdPropDlg.ini';
 
-//=== JvID3v2EditorForm.pas ================================================
+//=== TJvIconListForm.pas ====================================================
+resourcestring
+  RsLoadIcon = 'Load Icon';
+
+//=== JvID3v2EditorForm.pas ==================================================
 resourcestring
   SCommit = 'Commit?';
 
-//=== JvIDEZoom.pas ========================================================
+//=== JvIDEZoom.pas ==========================================================
 resourcestring
   SZoomEditWindow = 'Zoom Edit Window';
 
-//=== JvImagePreviewForm.pas ===============================================
+//=== JvImagePreviewForm.pas =================================================
 resourcestring
   SPreview = 'Preview';
 
-//=== JvJVCLAboutEditor.pas ================================================
+//=== JvJVCLAboutEditor.pas ==================================================
 resourcestring
   SVersions = 'Version %s';
 
-//=== JvLookoutEditor.pas ==================================================
+//=== JvLookoutEditor.pas ====================================================
 resourcestring
   SAddPage = 'Add page';
   SActivate = 'Activate';
@@ -431,26 +466,26 @@ resourcestring
   SScrollDown = 'Scroll Down';
   SAddPage_ = 'Add Page';
 
-//=== JvMailEditor.pas =====================================================
+//=== JvMailEditor.pas =======================================================
 resourcestring
   SSend = 'Send';
   SAddress = 'Address';
 
-//=== JvOutlookBarEditors.pas ==============================================
+//=== JvOutlookBarEditors.pas ================================================
 resourcestring
   SOLEditor = 'OutlookBar Editor...';
 
-//=== JvOutlookBarForm.pas =================================================
+//=== JvOutlookBarForm.pas ===================================================
 resourcestring
   SDesignerIsNilInFormClosed = 'Designer is nil in FormClosed';
   SFmtCaption = 'Editing %s';
   SOutlookBarCaption = 'OutlookBar Editor';
 
-//=== JvPageLinkEditor.pas =================================================
+//=== JvPageLinkEditor.pas ===================================================
 resourcestring
   SCreateLinkToPaged = 'Create link to page %d';
 
-//=== JvPageListTreeViewReg.pas ============================================
+//=== JvPageListTreeViewReg.pas ==============================================
 resourcestring
   SFmtInterfaceNotSupported = '%s does not support the required interface (%s)';
   SNextPageAmp = 'Ne&xt Page';
@@ -458,12 +493,19 @@ resourcestring
   SNewPage = '&New Page';
   SDelPage = '&Delete Page';
 
-//=== JvPictureEditForm.pas ================================================
+//=== JvPageManagerForm.pas ==================================================
+resourcestring
+  RsProxyEditor = 'Edit Proxies...';
+  RsPageProxies = '%s Page Proxies';
+  RsProxyName = 'Page Proxy Name';
+  RsPageName = 'Page Name';
+
+//=== JvPictureEditForm.pas ==================================================
 resourcestring
   SLoadPicture = 'Load picture';
   SSavePictureAs = 'Save picture as';
 
-//=== JvPluginParamsForm.pas ===============================================
+//=== JvPluginParamsForm.pas =================================================
 resourcestring
   SPluginParamsFormInfoText =
     'The settings above will create the following project:' +
@@ -471,7 +513,7 @@ resourcestring
     '* A project called Plg%0:s.%1:s' + sLineBreak +
     '* A unit called Plugin%0:s, containing the data module T%0:s.';
 
-//=== JvPluginWizard.pas ===================================================
+//=== JvPluginWizard.pas =====================================================
 resourcestring
   SJvPluginWizard = 'Jv Plugin Wizard';
   SProjects = 'Projects';
@@ -485,36 +527,36 @@ resourcestring
     '// type and the type created must be the same as the declared type above.';
   SJediPuginWizard = 'JEDI Plugin Wizard';
 
-//=== JvPreviewReg.pas =====================================================
+//=== JvPreviewReg.pas =======================================================
 resourcestring
   SCreatePreview = 'Create Preview';
   SClearPreview = 'Clear Preview';
 
-//=== JvScheduleEditorForm.pas =============================================
+//=== JvScheduleEditorForm.pas ===============================================
 resourcestring
   SInvalidScheduleSettingsFound = 'Invalid schedule settings found.';
   SStop = 'Stop';
   SRun = 'Run';
 
-//=== JvScheduleEditors.pas ================================================
+//=== JvScheduleEditors.pas ==================================================
 resourcestring
   SEventEditor = 'Event editor...';
 
-//=== JvScrollMaxEditor.pas ================================================
+//=== JvScrollMaxEditor.pas ==================================================
 resourcestring
   SAddBand = 'Add Band';
 
-//=== JvSegmentedLEDDisplayEditors.pas =====================================
+//=== JvSegmentedLEDDisplayEditors.pas =======================================
 resourcestring
   SAddDigit = 'Add digit';
   SRemoveDigit = 'Remove digit';
   SEditMappingEllipsis = 'Edit mapping...';
 
-//=== JvSegmentedLEDDisplayMappingForm.pas =================================
+//=== JvSegmentedLEDDisplayMappingForm.pas ===================================
 resourcestring
   SSegmentedLEDDisplayMappingEditor = 'Segmented LED Display Mapping Editor';
 
-//=== JvSegmentedLEDDisplayMappingForm.pas =================================
+//=== JvSegmentedLEDDisplayMappingForm.pas ===================================
 resourcestring
   STextFilter =
     'Text files (*.TXT)|*.TXT|Config files (*.SYS;*.INI)|*.SYS;*.INI|Batch files (*.BAT)|*.BAT|All files (*.*)|*.*';
@@ -522,32 +564,38 @@ resourcestring
   SSingleLine = 'Line';
   SMultipleLines = 'Lines';
 
-//=== JvTimeFrameworkReg.pas ===============================================
+//=== TJvSpeedbarForm.pas ====================================================
+  RsESBItemNotCreate = 'Cannot create a new Speedbar button';
+  RsConfirmSBDelete = 'Are you sure you want to delete current section?';
+  RsSpeedbarDesigner = 'Speedbar designer...';
+  RsNewSectionName = 'Untitled (%d)';
+
+//=== JvTimeFrameworkReg.pas =================================================
 resourcestring
   SGridLayout = 'Grid Layout';
   SCustomDraw = 'Custom Draw';
 
-//=== JvTimerListEditor.pas ================================================
+//=== JvTimerListEditor.pas ==================================================
 resourcestring
   SEventsEllipsis = 'Events...';
 
-//=== JvTreeItemsEditorForm.pas ============================================
+//=== JvTreeItemsEditorForm.pas ==============================================
 resourcestring
   SLinksEditorEllipsis = 'Links Editor...';
 
-//=== JvValidatorsEditorForm.pas ===========================================
+//=== JvValidatorsEditorForm.pas =============================================
 resourcestring
   SJvValidatorsItemsEditorEllipsis = 'JvValidators Items Editor...';
   SJvValidatorItemsEditorEllipsis = 'JvValidator Items Editor';
 
-//=== JvWizardEditorForm.pas ===============================================
+//=== JvWizardEditorForm.pas =================================================
 resourcestring
   SPageListEllipsis = 'Page List...';
   SNewWelcomePage = 'New Welcome Page';
   SNewInteriorPage = 'New Interior Page';
   SDeletePage = 'Delete Page';
 
-//=== DataProvider design time constants ===================================
+//=== DataProvider design time constants =====================================
 resourcestring
   SDataProviderDesignerCaption = 'Editing %s%s...';
   SDataProviderContextManCaption = 'Editing contexts for ''%s''...';
@@ -564,6 +612,16 @@ resourcestring
   SDataProviderNoSubItems = 'item does not support IJvDataItems';
   SDataProviderNoMan = 'IJvDataItemsManagement is not supported';
 
+//=== not taken into JVCL ====================================================
+{
+resourcestring
+  // TJvTimerList component editor
+  srEventNotCreate = 'Cannot create a new event';
+  srTimerDesigner = 'Edit Events...';
+  srTimerEvents = '%s.Events';
+}
+
 implementation
 
 end.
+

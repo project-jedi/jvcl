@@ -90,7 +90,7 @@ implementation
 
 uses
   Consts, Windows, BDE,
-  JvConsts;
+  JvResources;
 
 {$R *.dfm}
 
@@ -171,7 +171,7 @@ begin
     begin
       DetailsPanel.Height := FDetailsHeight;
       ClientHeight := DetailsPanel.Height + BasicPanel.Height;
-      DetailsBtn.Caption := '<< &' + SDetails;
+      DetailsBtn.Caption := RsDetailsLeft;
       FCurItem := 0;
       ShowError;
     end
@@ -179,7 +179,7 @@ begin
     begin
       ClientHeight := BasicPanel.Height;
       DetailsPanel.Height := 0;
-      DetailsBtn.Caption := '&' + SDetails + ' >>';
+      DetailsBtn.Caption := RsDetailsRight;
     end;
     DetailsPanel.Enabled := Value;
     FDetails := Value;

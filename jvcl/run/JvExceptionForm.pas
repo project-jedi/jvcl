@@ -83,7 +83,7 @@ implementation
 
 uses
   Windows, ComObj, Consts,
-  JvTypes, JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;
+  JvTypes, JvJVCLUtils, JvJCLUtils, JvResources;
 
 {$R *.dfm}
 
@@ -204,14 +204,14 @@ begin
     begin
       DetailsPanel.Height := FDetailsHeight;
       ClientHeight := DetailsPanel.Height + BasicPanel.Height;
-      DetailsBtn.Caption := '<< &' + SDetails;
+      DetailsBtn.Caption := RsDetailsLeft;
       ShowError;
     end
     else
     begin
       ClientHeight := BasicPanel.Height;
       DetailsPanel.Height := 0;
-      DetailsBtn.Caption := '&' + SDetails + ' >>';
+      DetailsBtn.Caption := RsDetailsRight;
     end;
     DetailsPanel.Enabled := Value;
     FDetails := Value;

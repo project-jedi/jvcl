@@ -38,8 +38,8 @@ uses
   {$ENDIF COMPILER6_UP}
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Grids, Menus,
-  JvSpeedButton, JvSpeedBar, JvFormPlacement, JvTypes, JvJVCLUtils,
-  JvComponent, JvAppStore, JvAppRegistryStore;
+  JvSpeedButton, JvSpeedBar, JvFormPlacement, JvJVCLUtils,
+  JvConsts, JvComponent, JvAppStore, JvAppRegistryStore;
 
 type
   TSelectData = record
@@ -170,7 +170,7 @@ implementation
 
 uses
   TypInfo, Math,
-  JvConsts, JvPropsStorage, JvDsgnTypes;
+  JvPropsStorage, JvDsgnConsts, JvDsgnTypes;
 
 {$R *.dfm}
 
@@ -233,7 +233,7 @@ function TJvSpeedbarCompEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := srSpeedbarDesigner;
+      Result := RsSpeedbarDesigner;
   end;
 end;
 
@@ -359,7 +359,7 @@ end;
 
 function TJvSpeedbarEditor.ConfirmDelete: Boolean;
 begin
-  Result := MessageDlg(srConfirmSBDelete, mtWarning, mbYesNoCancel, 0) = mrYes;
+  Result := MessageDlg(RsConfirmSBDelete, mtWarning, mbYesNoCancel, 0) = mrYes;
 end;
 
 procedure TJvSpeedbarEditor.SaveSelection;
@@ -580,7 +580,7 @@ begin
   begin
     I := 0;
     repeat
-      S := Format(srNewSectionName, [I]);
+      S := Format(RsNewSectionName, [I]);
       Inc(I);
     until FBar.SearchSection(S) < 0;
     I := NewSpeedSection(FBar, S);
@@ -721,7 +721,7 @@ begin
       raise;
     end
   else
-    raise EJvSpeedbarError.Create(srSBItemNotCreate);
+    raise EJvSpeedbarError.Create(RsESBItemNotCreate);
 end;
 
 procedure TJvSpeedbarEditor.RemoveButtonClick(Sender: TObject);

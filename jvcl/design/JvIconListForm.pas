@@ -111,7 +111,7 @@ implementation
 
 uses
   SysUtils, Clipbrd, Consts, Math,
-  JvJVCLUtils, JvJCLUtils, JvConsts, JvAniFile;
+  JvJVCLUtils, JvJCLUtils, JvDsgnConsts, JvAniFile;
 
 {$R *.dfm}
 
@@ -298,7 +298,7 @@ begin
   end;
   with FFileDialog do
   begin
-    Title := srLoadIcon;
+    Title := RsLoadIcon;
     Options := [ofHideReadOnly, ofFileMustExist];
     DefaultExt := GraphicExtension(TIcon);
     Filter := GraphicFilter(TIcon);

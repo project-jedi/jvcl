@@ -30,10 +30,9 @@ unit JvSpeedbarSetupForm;
 interface
 
 uses
-  Windows,
-  SysUtils, Messages, Classes, Graphics, Controls, Forms, StdCtrls, Grids,
-  ExtCtrls,
-  JvTypes, JvSpeedBar, JvSpeedButton, JvComponent;
+  Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, StdCtrls,
+  Grids, ExtCtrls,
+  JvConsts, JvSpeedBar, JvSpeedButton, JvComponent;
 
 type
   TJvSpeedbarSetupWindow = class(TJvForm)
@@ -91,7 +90,7 @@ implementation
 
 uses
   Consts, Math,
-  JvConsts, JvJVCLUtils;
+  JvJVCLUtils, JvResources;
 
 {$R *.dfm}
 
@@ -380,10 +379,10 @@ begin
   { Load string resources }
   CloseBtn.Caption := SOKButton;
   HelpBtn.Caption := SHelpButton;
-  Caption := SCustomizeSpeedbar;
-  CategoriesLabel.Caption := SSpeedbarCategories;
-  ButtonsLabel.Caption := SAvailButtons;
-  HintLabel.Caption := SSpeedbarEditHint;
+  Caption := RsCustomizeSpeedbar;
+  CategoriesLabel.Caption := RsSpeedbarCategories;
+  ButtonsLabel.Caption := RsAvailButtons;
+  HintLabel.Caption := RsSpeedbarEditHint;
 end;
 
 procedure TJvSpeedbarSetupWindow.FormDestroy(Sender: TObject);

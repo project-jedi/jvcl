@@ -609,7 +609,7 @@ type
     procedure UpdateExceptionPos(E: Exception; const UnitName: string);
     procedure Init; dynamic;
     procedure ErrorExpected(Exp: string);
-    procedure ErrorNotImplemented(Message: string);
+    procedure ErrorNotImplemented(Msg: string);
     function PosBeg: Integer;
     function PosEnd: Integer;
     procedure Back;
@@ -852,7 +852,7 @@ procedure JvInterpreterErrorN2(const AErrCode: Integer; const AErrPos: Integer;
 function RFD(Identifier: string; Offset: Integer; Typ: Word): TJvInterpreterRecField;
 
 { raise error ieNotImplemented }
-procedure NotImplemented(Message: string);
+procedure NotImplemented(Msg: string);
 
 { clear list of TObject }
 procedure ClearList(List: TList);
@@ -1416,10 +1416,9 @@ begin
   Result.Typ := Typ;
 end;
 
-procedure NotImplemented(Message: string);
+procedure NotImplemented(Msg: string);
 begin
-  JvInterpreterErrorN(ieInternal, -1,
-    Message + sNotImplemented);
+  JvInterpreterErrorN(ieInternal, -1, Msg + RsENotImplemented);
 end;
 
 //RWare: added check for "char", otherwise function with ref variable
@@ -4680,9 +4679,9 @@ begin
     JvInterpreterErrorN2(ieExpected, PosBeg, Exp, LoadStr2(irEndOfFile));
 end;
 
-procedure TJvInterpreterExpression.ErrorNotImplemented(Message: string);
+procedure TJvInterpreterExpression.ErrorNotImplemented(Msg: string);
 begin
-  JvInterpreterErrorN(ieInternal, PosBeg, Message + sNotImplemented);
+  JvInterpreterErrorN(ieInternal, PosBeg, Msg + RsENotImplemented);
 end;
 
 function TJvInterpreterExpression.PosBeg: Integer;

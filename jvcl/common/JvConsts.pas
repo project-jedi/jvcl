@@ -30,7 +30,13 @@ unit JvConsts;
 interface
 
 uses
-  SysUtils;
+  SysUtils,
+  {$IFDEF VCL}
+  Controls;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls;
+  {$ENDIF VisualCLX}
 
 const
   { JvEditor }
@@ -62,7 +68,6 @@ const
 
   { RALib 1.55 }
 
-const
   {$IFDEF DELPHI2}
   SDelphiKey = 'Software\Borland\Delphi\2.0';
   {$ENDIF}
@@ -103,150 +108,35 @@ const
   SDelphiKey = 'Software\Borland\Delphi\8.0';
   {$ENDIF}
 
-resourcestring
-  { JvPickDate }
-  SNextYear              = 'Next Year|';
-  SNextMonth             = 'Next Month|';
-  SPrevYear              = 'Previous Year|';
-  SPrevMonth             = 'Previous Month|';
-
-  { JvVCLUtils }
-  SNotImplemented        = 'Function not yet implemented';
-  SFileNotExec           = 'File specified is not an executable file, dynamic-link library, or icon file';
-  SLoadLibError          = 'Could not load library ''%s''';
-  SDetails               = 'Details';
-
-  // JvTConst
-  { JvDualList }
-  SDualListSrcCaption         = '&Source';
-  SDualListDestCaption        = '&Destination';
-
-  { JvClipView }
-  SClipbrdUnknown             = 'Cannot display. Data in Clipboard is in an unknown format.';
-  SClipbrdEmpty               = 'Clipboard is empty';
-
-  { JvSpeedbar }
-  SCustomizeSpeedbar          = 'Customize Speedbar';
-  SAvailButtons               = '&Available buttons:';
-  SSpeedbarCategories         = '&Categories:';
-  SSpeedbarEditHint           = 'To add command buttons, drag and drop buttons onto the SpeedBar. To remove command buttons, drag them off of the SpeedBar.';
-
-  { MathParser }
-  SParseSyntaxError           = 'Syntax error';
-  SParseNotCramp              = 'Invalid condition (no cramp)';
-  SParseDivideByZero          = 'Divide by zero';
-  SParseSqrError              = 'Invalid floating operation';
-  SParseLogError              = 'Invalid floating operation';
-  SParseInvalidFloatOperation = 'Invalid floating operation';
-
-  // JvDConst
-  { JvDBLists }
-  SLocalDatabase          = 'Cannot perform this operation on a local database';
-
-  { JvDBUtils }
-  SRetryLogin             = 'Do you wish to retry the connect to database?';
-
-  { JvDBFilter }
-  SExprNotBoolean         = 'Field ''%s'' is not of type Boolean';
-  SExprBadNullTest        = 'NULL only allowed with ''='' and ''<>''';
-  SExprBadField           = 'Field ''%s'' cannot be used in a filter expression';
-
-  { JvChPswDlg }
-  SChangePassword         = 'Change password';
-  SOldPasswordLabel       = '&Old password:';
-  SNewPasswordLabel       = '&New password:';
-  SConfirmPasswordLabel   = '&Confirm password:';
-  SPasswordChanged        = 'Password has been changed';
-  SPasswordNotChanged     = 'Password has not been changed';
-  SPasswordsMismatch      = 'The new and confirmed passwords do not match';
-
-  { JvDbExcpt }
-  SDBExceptCaption        = 'Database Engine Error';
-  SBDEErrorLabel          = 'BDE Error';
-  SServerErrorLabel       = 'Server Error';
-  SErrorMsgLabel          = 'Error message';
-  SNextButton             = '&Next';
-  SPrevButton             = '&Prev';
-
-  { JvDBFilter expression parser }
-  SExprIncorrect          = 'Incorrectly formed filter expression';
-  SExprTermination        = 'Filter expression incorrectly terminated';
-  SExprNameError          = 'Unterminated field name';
-  SExprStringError        = 'Unterminated string constant';
-  SExprInvalidChar        = 'Invalid filter expression character: ''%s''';
-  SExprNoRParen           = ''')'' expected but %s found';
-  SExprExpected           = 'Expression expected but %s found';
-  SExprBadCompare         = 'Relational operators require a field and a constant';
-
-  { JvDBUtils }
-  SConfirmSave            = 'The data were changed. Save them?';
-
-  { JvDBCtrl }
-  SDeleteMultipleRecords  = 'Delete all selected records?';
-
-  srJvHLEdPropDlgIni = 'JvHLEdPropDlg.ini';
-
-  { for RegisterActions }
-  srJVCLActions     = 'JVCL';
-  srJvDialogActions = 'Jv Dialog';
-
-  { TImageList component editor }
-  srSaveImageList      = 'Save to bitmap...';
-
-  { TJvFormStorage component editor }
-  srStorageDesigner    = 'Form Storage Designer...';
-
-  { TJvPageManager component editor }
-  srProxyEditor        = 'Edit Proxies...';
-  srPageProxies        = '%s Page Proxies';
-  srProxyName          = 'Page Proxy Name';
-  srPageName           = 'Page Name';
-
-  { TJvSpeedBar component editor }
-  srSBItemNotCreate    = 'Cannot create a new Speedbar button';
-  srConfirmSBDelete    = 'Are you sure you want to delete current section?';
-  srSpeedbarDesigner   = 'Speedbar designer...';
-  srNewSectionName     = 'Untitled (%d)';
-
-  { TJvTimerList component editor }
-  srEventNotCreate     = 'Cannot create a new event';
-  srTimerDesigner      = 'Edit Events...';
-  srTimerEvents        = '%s.Events';
-
-  { TJvAnimatedImage component editor }
-  srAniCurFilter       = 'Animated Cursors (*.ani)|*.ani|Any files (*.*)|*.*';
-  srEditPicture        = 'Edit picture...';
-  srLoadAniCursor      = 'Load from ANI...';
-
-  { TJvIconList property editor }
-  srLoadIcon           = 'Load Icon';
-
-  { TJvxGradientCaption component editor }
-  srCaptionDesigner    = 'Edit Captions...';
-  srGradientCaptions   = 'Captions';
-
-  { TJvMemoryTable & TJvMemoryData component editor }
-  srBorrowStructure    = 'Borrow structure...';
-
-  { various editors }
-  SJvEditorString = 'Click to edit...';
-
-  { JvID3_ component editor }
-  SID3CommitTag = '&Commit';
-  SID3FileInfoTag = 'File &info';
-  SID3FrameEditorTag = 'Frame edi&tor';
-  SID3RemoveTag = '&Remove tag...';
-  SID3RemoveTagConfirmation = 'Remove tag?';
-  SID3Err_FileDoesNotExists = 'File %s does not exists';
-  SID3Err_NoFileSpecified = 'No file specified';
-  SID3Err_NoValidMPEGTag = 'This file has not a valid MPEG tag';
-
-const
   { JvDataProvider constants }
   { Consumer attributes }
   DPA_RenderDisabledAsGrayed = 1;
   DPA_RendersSingleItem      = 2;
   DPA_ConsumerDisplaysList   = 3;
+
+  crHand     = TCursor(14000);
+  crDragHand = TCursor(14001);
+
+  CM_JVBASE = CM_BASE + 80;
+  { Command message for JvSpeedbar editor }
+  CM_SPEEDBARCHANGED = CM_JVBASE + 0;
+  { Command message for TJvSpeedButton }
+  CM_JVBUTTONPRESSED = CM_JVBASE + 1;
+  // (rom) disabled unused
+  { Command messages for TJvWindowHook }
+  //CM_RECREATEWINDOW  = CM_JVBASE + 2;
+  //CM_DESTROYHOOK     = CM_JVBASE + 3;
+  { Notify message for TJvxTrayIcon }
+  //CM_TRAYICON        = CM_JVBASE + 4;
+
+  { Values for WParam for CM_SPEEDBARCHANGED message }
+  SBR_CHANGED = 0;        { change buttons properties  }
+  SBR_DESTROYED = 1;      { destroy SpeedBar           }
+  SBR_BTNSELECT = 2;      { select button in SpeedBar  }
+  SBR_BTNSIZECHANGED = 3; { button size changed        }
+
+  { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
+  PaletteMask = $02000000;
 
 implementation
 

@@ -648,8 +648,11 @@ procedure SetDefaultMenuFont(AFont: TFont);
 implementation
 
 uses
-  CommCtrl, Forms, ExtCtrls, Consts, JvTypes,
-  JvJVCLUtils, JvJCLUtils, Math {$IFDEF COMPILER6_UP}, Types{$ENDIF};
+  CommCtrl, Forms, ExtCtrls, Consts, Math,
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF COMPILER6_UP}
+  JvConsts, JvTypes, JvJVCLUtils, JvJCLUtils;
 
 const
   DefMarginColor: TColor = clBlue;
@@ -1730,8 +1733,7 @@ begin
       BitBlt(Canvas.Handle, X, Y, Bitmap.Width, Bitmap.Height,
         Bitmap.Canvas.Handle, 0, 0, SRCCOPY)
     else
-      DrawBitmapTransparent(Canvas, X, Y, Bitmap, Bitmap.TransparentColor
-        and not PaletteMask);
+      DrawBitmapTransparent(Canvas, X, Y, Bitmap, Bitmap.TransparentColor and not PaletteMask);
   end;
 end;
 
@@ -2628,8 +2630,7 @@ begin
       BitBlt(Canvas.Handle, X, Y, Bitmap.Width, Bitmap.Height,
         Bitmap.Canvas.Handle, 0, 0, SRCCOPY)
     else
-      DrawBitmapTransparent(Canvas, X, Y, Bitmap, Bitmap.TransparentColor
-        and not PaletteMask);
+      DrawBitmapTransparent(Canvas, X, Y, Bitmap, Bitmap.TransparentColor and not PaletteMask);
   end;
 end;
 

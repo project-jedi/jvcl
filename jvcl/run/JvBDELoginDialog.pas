@@ -104,7 +104,7 @@ implementation
 uses
   Windows, Registry, BDE,
   IniFiles, Graphics,
-  JvJVCLUtils, JvTypes, JvResources;
+  JvJVCLUtils, JvConsts, JvResources;
 
 const
   keyLastLoginUserName = 'LastUser';

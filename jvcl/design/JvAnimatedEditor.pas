@@ -62,7 +62,7 @@ implementation
 
 uses
   TypInfo,
-  JvConsts, JvAniFile;
+  JvDsgnConsts, JvAniFile;
 
 const
   cGlyphName = 'GLYPH';
@@ -146,10 +146,10 @@ end;
 function TJvAnimatedEditor.GetVerb(Index: Integer): string;
 begin
   if Index = GetVerbCount - 1 then
-    Result := srLoadAniCursor
+    Result := RsLoadAniCursor
   else
   if Index = GetVerbCount - 2 then
-    Result := srEditPicture
+    Result := RsEditPicture
   else
     Result := inherited GetVerb(Index);
 end;

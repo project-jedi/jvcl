@@ -163,7 +163,7 @@ uses
   Variants,
   {$ENDIF}
   Forms, Controls, Dialogs, DBConsts, Math,
-  JvConsts, JvTypes, JvJVCLUtils, JvJCLUtils;
+  JvResources, JvTypes, JvJVCLUtils, JvJCLUtils;
 
 { Utility routines }
 
@@ -194,7 +194,7 @@ begin
     DataSet.UpdateRecord;
     if DataSet.Modified then
     begin
-      case MessageDlg(SConfirmSave, mtConfirmation, mbYesNoCancel, 0) of
+      case MessageDlg(RsConfirmSave, mtConfirmation, mbYesNoCancel, 0) of
         mrYes:
           DataSet.Post;
         mrNo:

@@ -60,7 +60,7 @@ implementation
 
 uses
   DsnDBCst, DSDesign, DBReg, Dialogs,
-  JvJVCLUtils, JvMemoryDataSet, JvSelectDataSetForm, JvConsts;
+  JvJVCLUtils, JvMemoryDataSet, JvSelectDataSetForm, JvConsts, JvDsgnConsts;
 
 //=== TJvAbstractMemDataSetEditor ============================================
 
@@ -157,7 +157,7 @@ begin
     0:
       Result := SDatasetDesigner;
     1:
-      Result := srBorrowStructure;
+      Result := RsBorrowStructure;
   end;
 end;
 

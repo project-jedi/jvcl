@@ -110,7 +110,7 @@ implementation
 
 uses
   Consts, Buttons,
-  JvConsts, JvDsgnTypes;
+  JvDsgnConsts, JvDsgnTypes;
 
 {$R *.dfm}
 
@@ -240,7 +240,7 @@ function TJvPageManagerEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := srProxyEditor;
+      Result := RsProxyEditor;
   end;
 end;
 
@@ -379,7 +379,7 @@ procedure TJvProxyEditor.FormShow(Sender: TObject);
 begin
   if FPageManager.PageOwner <> nil then
   begin
-    Caption := Format(srPageProxies, [FPageManager.PageOwner.Name]);
+    Caption := Format(RsPageProxies, [FPageManager.PageOwner.Name]);
   end;
 end;
 
@@ -438,9 +438,9 @@ begin
   begin
     case Col of
       0:
-        CellText := srProxyName;
+        CellText := RsProxyName;
       1:
-        CellText := srPageName;
+        CellText := RsPageName;
     end;
   end
   else

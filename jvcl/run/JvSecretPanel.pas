@@ -1,4 +1,3 @@
-{$I JVCL.INC}
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -32,6 +31,8 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
 unit JvSecretPanel;
 
 interface
@@ -43,8 +44,7 @@ uses
 type
   TGlyphLayout = (glGlyphLeft, glGlyphRight, glGlyphTop, glGlyphBottom);
   TScrollDirection = (sdVertical, sdHorizontal);
-  TPanelDrawEvent = procedure(Sender: TObject; Canvas: TCanvas;
-    Rect: TRect) of object;
+  TPanelDrawEvent = procedure(Sender: TObject; Canvas: TCanvas; Rect: TRect) of object;
 
   TJvSecretPanel = class(TJvCustomPanel)
   private
@@ -163,7 +163,8 @@ type
 
 implementation
 uses
-  SysUtils, Consts, Math, ActnList, CommCtrl, JvThemes, JvJCLUtils, JvJVCLUtils;
+  SysUtils, Consts, Math, ActnList, CommCtrl,
+  JvConsts, JvThemes, JvJCLUtils, JvJVCLUtils;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
