@@ -187,6 +187,11 @@ const
   NIN_BALLOONTIMEOUT            = WM_USER + 4;
   NIN_BALLOONUSERCLICK          = WM_USER + 5;
 
+ {$IFDEF COMPILER5}
+  sLineBreak =  #13#10;
+ {$ENDIF}
+
+
 {**************************************************}
 
 {$IFNDEF COMPILER6_UP}
