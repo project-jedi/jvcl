@@ -47,104 +47,6 @@ uses
   SysUtils, Classes,
   JvTypes, JvSpeedButton, JvJCLUtils, JvExGrids;
 
-{ Calendar dialog }
-
-function SelectDate(Sender: TWinControl; var Date: TDateTime; const DlgCaption: TCaption;
-  AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
-  AWeekendColor: TColor; BtnHints: TStrings;
-  MinDate: TDateTime = 0;
-  MaxDate: TDateTime = 0): Boolean; // Polaris
-function SelectDateStr(Sender: TWinControl; var StrDate: string; const DlgCaption: TCaption;
-  AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
-  AWeekendColor: TColor; BtnHints: TStrings;
-  MinDate: TDateTime = 0;
-  MaxDate: TDateTime = 0): Boolean; // Polaris
-function PopupDate(var Date: TDateTime; Edit: TWinControl;
-  MinDate: TDateTime = 0;
-  MaxDate: TDateTime = 0): Boolean;
-
-{ Popup calendar }
-
-function CreatePopupCalendar(AOwner: TComponent;
-  ABiDiMode: TBiDiMode = bdLeftToRight;
-  MinDate: TDateTime = 0;
-  MaxDate: TDateTime = 0): TWinControl;
-procedure SetupPopupCalendar(PopupCalendar: TWinControl;
-  AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
-  AWeekendColor: TColor; BtnHints: TStrings; FourDigitYear: Boolean;
-  MinDate: TDateTime = 0;
-  MaxDate: TDateTime = 0);
-
-const
-  PopupCalendarSize: TPoint = (X: 187; Y: 124);
-
-implementation
-
-uses
-  Consts, Math,
-  JvThemes, JvConsts, JvResources, JvToolEdit, JvJVCLUtils;
-
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvPickDate.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvPickDate.res}
-{$ENDIF LINUX}
-
-const
-  SBtnGlyphs: array [0..3] of PChar =
-    ('JV_PREV2', 'JV_PREV1', 'JV_NEXT1', 'JV_NEXT2');
-
-procedure FontSetDefault(AFont: TFont);
-{$IFDEF VCL}
-var
-  NonClientMetrics: TNonClientMetrics;
-{$ENDIF VCL}  
-begin
-  {$IFDEF VCL}
-  NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
-  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
-    AFont.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont)
-  else
-  {$ENDIF VCL}
-    with AFont do
-    begin
-      Color := clWindowText;
-      {$IFDEF MSWINDOWS}
-      Name := 'MS Sans Serif';
-      {$ENDIF MSWINDOWS}
-      {$IFDEF LINUX}
-      Name := 'Verdana';
-      {$ENDIF LINUX}
-      Size := 8;
-      Style := [];
-    end;
-end;
-
-//=== TJvTimerSpeedButton ====================================================
-
-type
-  TJvTimerSpeedButton = class(TJvSpeedButton)
-  public
-    constructor Create(AOwner: TComponent); override;
-  published
-    property AllowTimer default True;
-    property Style default bsWin31;
-  end;
-
-constructor TJvTimerSpeedButton.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  Style := bsWin31;
-  AllowTimer := True;
-  ControlStyle := ControlStyle + [csReplicatable];
-end;
-
-//=== TJvCalendar ============================================================
-
-{ TJvCalendar implementation copied from Borland CALENDAR.PAS sample unit
-  and modified }
-
 type
   TDayOfWeek = 0..6;
 
@@ -218,6 +120,111 @@ type
     property MinDate: TDateTime read FMinDate write SetMinDate stored False; // polaris
     property MaxDate: TDateTime read FMaxDate write SetMaxDate stored False; // polaris
   end;
+
+{ Calendar dialog }
+
+function SelectDate(Sender: TWinControl; var Date: TDateTime; const DlgCaption: TCaption;
+  AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
+  AWeekendColor: TColor; BtnHints: TStrings;
+  MinDate: TDateTime = 0;
+  MaxDate: TDateTime = 0): Boolean; // Polaris
+function SelectDateStr(Sender: TWinControl; var StrDate: string; const DlgCaption: TCaption;
+  AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
+  AWeekendColor: TColor; BtnHints: TStrings;
+  MinDate: TDateTime = 0;
+  MaxDate: TDateTime = 0): Boolean; // Polaris
+function PopupDate(var Date: TDateTime; Edit: TWinControl;
+  MinDate: TDateTime = 0;
+  MaxDate: TDateTime = 0): Boolean;
+
+{ Popup calendar }
+
+function CreatePopupCalendar(AOwner: TComponent;
+  ABiDiMode: TBiDiMode = bdLeftToRight;
+  MinDate: TDateTime = 0;
+  MaxDate: TDateTime = 0): TWinControl;
+procedure SetupPopupCalendar(PopupCalendar: TWinControl;
+  AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
+  AWeekendColor: TColor; BtnHints: TStrings; FourDigitYear: Boolean;
+  MinDate: TDateTime = 0;
+  MaxDate: TDateTime = 0);
+
+const
+  PopupCalendarSize: TPoint = (X: 187; Y: 124);
+
+implementation
+
+uses
+  {$IFDEF VCL}
+  Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
+  Math,
+  JvThemes, JvConsts, JvResources, JvToolEdit, JvJVCLUtils;
+
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvPickDate.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvPickDate.res}
+{$ENDIF LINUX}
+
+const
+  SBtnGlyphs: array [0..3] of PChar =
+    ('JV_PREV2', 'JV_PREV1', 'JV_NEXT1', 'JV_NEXT2');
+
+procedure FontSetDefault(AFont: TFont);
+{$IFDEF VCL}
+var
+  NonClientMetrics: TNonClientMetrics;
+{$ENDIF VCL}  
+begin
+  {$IFDEF VCL}
+  NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
+  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
+    AFont.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont)
+  else
+  {$ENDIF VCL}
+    with AFont do
+    begin
+      Color := clWindowText;
+      {$IFDEF MSWINDOWS}
+      Name := 'MS Sans Serif';
+      Size := 8;
+      {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+      Name := 'Verdana'; // asn: or Helvetica ?
+      Height := 11;
+      {$ENDIF LINUX}
+      Style := [];
+    end;
+end;
+
+//=== TJvTimerSpeedButton ====================================================
+
+type
+  TJvTimerSpeedButton = class(TJvSpeedButton)
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property AllowTimer default True;
+    property Style default bsWin31;
+  end;
+
+constructor TJvTimerSpeedButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Style := bsWin31;
+  AllowTimer := True;
+  ControlStyle := ControlStyle + [csReplicatable];
+end;
+
+//=== TJvCalendar ============================================================
+
+{ TJvCalendar implementation copied from Borland CALENDAR.PAS sample unit
+  and modified }
 
 constructor TJvCalendar.Create(AOwner: TComponent);
 begin
@@ -941,12 +948,12 @@ begin
   FFourDigitYear := FourDigitYear;
   Height := Max(PopupCalendarSize.Y, 120);
   Width := Max(PopupCalendarSize.X, 180);
-  {$IFDEF VisuaLCLX}
+  {$IFDEF LINUX}
   Constraints.MaxWidth := Width;
   Constraints.MaxHeight := Height;
   Constraints.MinWidth := Constraints.MaxWidth;
   Constraints.MinHeight := Constraints.MaxHeight;
-  {$ENDIF VisualCLX}
+  {$ENDIF LINUX}
 
   Color := clBtnFace;
   FontSetDefault(Font);
@@ -1263,12 +1270,11 @@ begin
   Caption := RsDateDlgCaption;
   {$IFDEF VCL}
   BorderStyle := bsToolWindow;
-  Color := clBtnFace;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   BorderStyle := fbsToolWindow;
-  Color := clBase;
   {$ENDIF VisualCLX}
+  Color := clBtnFace;
   BorderIcons := [biSystemMenu];
   ClientHeight := 158; // Polaris
   ClientWidth := 222;
