@@ -69,6 +69,7 @@ type
     procedure StoreData; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function  GetCombinedIgnoreProperties: TStrings;
+    property  AboutJVCL;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -79,7 +80,7 @@ type
     procedure Clear; virtual;
     function TranslatePropertyName(AName: string): string; virtual;
     property CombinedIgnoreProperties: TStrings read GetCombinedIgnoreProperties;
-  published
+    property IgnoreProperties: TStrings read GetIgnoreProperties write SetIgnoreProperties;
     property AutoLoad: Boolean read FAutoLoad write SetAutoLoad;
     property AppStoragePath: string read FAppStoragePath write SetPath;
     property Enabled: Boolean read FEnabled write FEnabled default True;
@@ -87,11 +88,12 @@ type
       default False;
     property ClearBeforeLoad: Boolean read FClearBeforeLoad write FClearBeforeLoad default False;
     property IgnoreLastLoadTime: Boolean read FIgnoreLastLoadTime write FIgnoreLastLoadTime default False;
-    property IgnoreProperties: TStrings read GetIgnoreProperties write SetIgnoreProperties;
     property OnBeforeLoadProperties: TNotifyEvent read FOnBeforeLoadProperties write FOnBeforeLoadProperties;
     property OnAfterLoadProperties: TNotifyEvent read FOnAfterLoadProperties write FOnAfterLoadProperties;
     property OnBeforeStoreProperties: TNotifyEvent read FOnBeforeStoreProperties write FOnBeforeStoreProperties;
     property OnAfterStoreProperties: TNotifyEvent read FOnAfterStoreProperties write FOnAfterStoreProperties;
+    property Tag;
+  published
   end;
 
   TJvCustomPropertyListStore = class(TJvCustomPropertyStore)
@@ -127,7 +129,6 @@ type
     property Objects[Index: Integer]: TObject read GetObject write SetObject;
     property Items: TStringList read GetItems;
     property Count: Integer read GetCount;
-  published
     { Defines if the Items.Objects- Objects will be freed inside the clear procedure }
     property FreeObjects: Boolean read FFreeObjects write FFreeObjects default True;
     { Defines if new List entries will be created if there are stored entries, which
@@ -135,7 +136,7 @@ type
     property CreateListEntries: Boolean read FCreateListEntries write FCreateListEntries default True;
     property ItemName: string read FItemName write FItemName;
     property Sorted: Boolean read GetSorted write SetSorted;
-    property Duplicates: TDuplicates read GetDuplicates write SetDuplicates;
+  published
   end;
 
 implementation
