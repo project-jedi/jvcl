@@ -1,5 +1,4 @@
 Tgl3DColors
-TJv7SegmentedLEDCharacterMapper
 TJvAddHardwareDialog
 TJvAddPrinterDialog
 TJvAirBrush
@@ -10,8 +9,10 @@ TJvAnimatedImage
 TJvAppAnimatedIcon
 TJvAppDdeCmd
 TJvAppEvents
+TJvAppINIFileStore
 TJvAppletDialog
 TJvApplicationHotKey
+TJvAppRegistryStore
 TJvArrayButton
 TJvArrowButton
 TJvaScrollText
@@ -25,7 +26,7 @@ TJvBitBtn
 TJvBitmapButton
 TJvBmpAnimator
 TJvBrowseForFolderDialog
-TJvCabFile
+TJvCABFile
 TJvCaesarCipher
 TJvCalcEdit
 TJvCalculator
@@ -129,10 +130,10 @@ TJvFormatDriveDialog
 TJvFormAutoSize
 TJvFormMagnet
 TJvFormStorage
-TJvFormToHtml
+TJvFormToHTML
 TJvFormWallpaper
 TJvForthScript
-TJvFtpGrabber
+TJvFTPGrabber
 TJvg3DColors
 TJvGammaPanel
 TJvgAskListBox
@@ -220,10 +221,10 @@ TJvHTButton
 TJvHTComboBox
 TJvHTLabel
 TJvHTListBox
-TJvHtmlParser
-TJvHttpGrabber
-TJvId3v1
-TJvId3v2
+TJvHTMLParser
+TJvHTTPGrabber
+TJvID3v1
+TJvID3v2
 TJvImage
 TJvImageComboBox
 TJvImageDialog
@@ -268,7 +269,7 @@ TJvMouseGestureHook
 TJvMovableBevel
 TJvMRUList
 TJvMRUManager
-TJvMultiHttpGrabber
+TJvMultiHTTPGrabber
 TJvNewLinkDialog
 TJvNTEventLog
 TJvObjectPickerDialog
@@ -312,9 +313,9 @@ TJvRas32
 TJvRecentMenuButton
 TJvRegistryTreeView
 TJvRenameError
-TJvRgbToHtml
+TJvRGBToHTML
 TJvRichEdit
-TJvRichEditToHtml
+TJvRichEditToHTML
 TJvRollOut
 TJvRunDialog
 TJvSAL
@@ -363,8 +364,8 @@ TJvStatusBar
 TJvSticker
 TJvStrHolder
 TJvStringGrid
-TJvStringListToHtml
-TJvStrToHtml
+TJvStringListToHTML
+TJvStrToHTML
 TJvSwitch
 TJvSyncSplitter
 TJvSystemColors
@@ -424,7 +425,7 @@ TJvWizardRouteMapNodes
 TJvWizardRouteMapSteps
 TJvxClock
 TJvXMLDatabase
-TJvXorCipher
+TJvXORCipher
 TJvxSlider
 TJvxSplitter
 TJvYearGrid
