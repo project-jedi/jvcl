@@ -38,7 +38,7 @@ description : TJvCsvDataSet in-memory-dataset component usable by any
 			CSV Fields, using the CSVFieldDef property.
 			If you don't set those properties, the component
 			won't work. It is also *recommended* but not 
-			required to right-click on the component and 
+			required to right-click on the component and
 			let the Delphi IDE define the field objects
 			so that you can access them in your program.
 
@@ -49,6 +49,7 @@ description : TJvCsvDataSet in-memory-dataset component usable by any
 			more information.
 
 Known Issues and Updates:
+  Nov 17, 2003 - Now implements TDataSet.Locate!!! (needs more testing)
   Sept 26, 2003 - Obones made C++Builder fixes.
   Sept 24, 2003 - 
 	MERGE ALERT: This version is merged with Peter's version, minus 
@@ -146,6 +147,7 @@ uses
   DB,
   SysUtils,
   Classes,
+  Variants,
   Graphics;
 
 const
@@ -271,7 +273,7 @@ type
 
   protected
     FTempBuffer:PChar;
-    FInitialWorkingDirectory:String; // Current working dir may change in a delphi app, causing us trouble. 
+    FInitialWorkingDirectory:String; // Current working dir may change in a delphi app, causing us trouble.
     FStoreDefs: boolean;
     FEnquoteBackslash: boolean; // causes _Enquote to use Backslashes. NOT the default behaviour.
     FTimeZoneCorrection: integer; // defaults to 0 (none)
@@ -420,7 +422,17 @@ type
     // SELECT * FROM TABLE WHERE <fieldname> LIKE <pattern>:
     procedure SetFilter(FieldName, pattern: string); // Make Rows Visible Only if they match filterString
 
-    procedure ClearFilter; // Clear all previous SetFilters, shows All Rows.
+    procedure ClearFilter; // Clear all previous SetFilters, shows All Rows. Refresh screen.
+
+    procedure _ClearFilter; // Clear Previous Filtering. DOES NOT REFRESH SCREEN.
+
+    // ----------- THIS IS A DUMMY FUNCTION, DON'T USE IT!:
+function Locate(const KeyFields: string; const KeyValues: Variant;
+  Options: TLocateOptions): Boolean; override;
+
+    //------------
+
+
 
     /// procedure FilteredDeletion(Inverted:Boolean); /// XXX TODO?
     /// procedure DeleteRowsMatchingFilter; /// XXX TODO?
@@ -479,8 +491,10 @@ type
     procedure Flush; virtual; // Save CSV file to disk if file has changed and SavesChanges is true.
                   // Note: FLUSH will make backup copies if FAutoBackupCount>0!!!
 
+    function GetAsString(const Row,Column:integer):string; virtual;
+
     { Row Access as String }
-    function GetRowAsString(const Index: integer): string; virtual; // Return any row by index, special: -1 means last row 
+    function GetRowAsString(const Index: integer): string; virtual; // Return any row by index, special: -1 means last row
     function GetColumnsAsString: string; virtual;
     { Row Append one String }
     procedure AppendRowString(RowAsString:String); // Along with GetRowAsString, easy way to copy a dataset to another dataset!
@@ -534,6 +548,9 @@ type
     property OnDeleteError;
     property OnEditError;
     property OnCalcFields;
+    // Master-Detail table link properties:  Todo: Emulate this part of TTable.
+    //property MasterFields;
+    //property MasterSource;
 
      // Additional Properties
     property Changed: boolean read FFileDirty write FFileDirty;
@@ -914,10 +931,12 @@ var
   fieldRec: PCsvColumn;
   FieldIndex: integer;
   fieldValue: string;
-  m:TBookmark;
+  stillVisible : Integer;
+  //m:TBookmark;
 begin
-  m := GetBookmark;
+//  m := GetBookmark;
   fieldRec := FCsvColumns.FindByName(FieldName);
+  stillVisible := 0;
   if not Assigned(fieldRec) then Exit;
   FieldIndex := fieldRec^.FPhysical;
   valueLen := Length(pattern); // if valuelen is zero then we are searching for blank or nulls
@@ -940,38 +959,38 @@ begin
       else
       begin
         fieldValue := UpperCase(fieldValue);
-        if not JvCsvWildcardMatch(fieldValue, pattern) then // hide row if not same prefix
-          pRow^.filtered := true;
+        if JvCsvWildcardMatch(fieldValue, pattern) then // hide row if not same prefix
+          Inc(stillVisible)   // count the number that are still visible.
+        else
+          pRow^.filtered := true
       end;
-
     end
   end;
   FIsFiltered := true;
   if Active then begin
-    try
-        GotoBookmark(m);
-    except
-        on  E:EDatabaseError do begin
-            First;
-            exit;
-        end;
-    end;
-    if (Self.RecNo>=0) then begin
-      pRow := PCsvRow( FData[Self.RecNo] );
-      if (pRow^.filtered) then
-            First;
-    end else
+    //try
+    //    GotoBookmark(m);
+    //except
+    //    on  E:EDatabaseError do begin
+    //        First;
+    //        exit;
+    //    end;
+    //end;
+    //if (Self.RecNo>=0) then begin
+    //  pRow := PCsvRow( FData[Self.RecNo] );
+    //  if (pRow^.filtered) then
+    //        First;
+    //end else
        First;
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.ClearFilter; // Clear Previous Filtering.
+
+procedure TJvCsvCustomInMemoryDataSet._ClearFilter; // Clear Previous Filtering.
 var
   t: integer;
   pRow: PCsvRow;
-  m:TBookmark;
 begin
-  m := GetBookmark;
   for t := 0 to FData.Count - 1 do
   begin
     pRow := PCsvRow(FData[t]);
@@ -979,8 +998,20 @@ begin
       pRow^.filtered := false; // clear all filter bits.
   end;
   FIsFiltered := false;
+end;
+
+procedure TJvCsvCustomInMemoryDataSet.ClearFilter; // Clear Previous Filtering.
+var
+  m:TBookmark;
+begin
+  m := GetBookmark;
+  _ClearFilter;
+  // Update screen.
   if Active then begin
-      GotoBookmark(m);
+    if Assigned(m) then
+        GotoBookmark(m)
+    else
+        First;
   end;
 end;
 
@@ -1171,6 +1202,80 @@ begin
   Result := false; // not yet implemented! XXX
 end;
 
+function TJvCsvCustomInMemoryDataSet.Locate(const KeyFields: string; const KeyValues: Variant;
+  Options: TLocateOptions): Boolean; // override;
+  // Options is    [loCaseInsensitive]
+  //              or [loPartialKey]
+  //              or [loPartialKey,loCaseInsensitive]
+  //              or [] {none}
+var
+  KeyFieldArray:Array[0..20] of String;
+  FieldLookup:Array[0..20] of TField;
+  FieldIndex:Array[0..20] of Integer;
+
+  t,lo,hi,Count,VarCount:Integer;
+  Value:Variant;
+  MatchCount:Integer;
+  StrValueA,StrValueB:String;
+
+begin
+   Result := False;
+   Count := StrSplit(KeyFields, ',', Chr(0), KeyFieldArray, 20);
+   if not ((VarType(KeyValues) and varArray)>0) then exit;
+   lo := VarArrayLowBound(KeyValues,1);
+   hi := VarArrayHighBound(KeyValues,1);
+   VarCount := (hi-lo)+1;
+   if (VarCount<>Count) then exit;
+   if (Count=0) then exit;
+   if Length(KeyFieldArray[0])=0 then exit;
+   for t := 0 to 20 do begin
+      if (t<Count) then begin
+        FieldLookup[t] :=   FieldByName( KeyFieldArray[t] );
+        if not Assigned(FieldLookup[t]) then exit;
+        FieldIndex[t] := FieldLookup[t].Index;
+      end else begin
+          FieldLookup[t] := nil;
+          FieldIndex[t] := -1;
+      end;
+   end;
+
+   // Now search
+   First;
+   while not eof do begin
+      MatchCount := 0;
+      for t := 0 to Count-1 do begin
+           Value := FieldLookup[t].Value;
+           if Value = KeyValues[t+lo] then
+              Inc(MatchCount)
+           else if (Options <> []) then begin
+              if VarIsStr(Value) then begin
+                 StrValueA := Value;
+                 StrValueB := KeyValues[t+lo];
+                 if  loCaseInsensitive in Options then begin
+                       StrValueA := UpperCase(StrValueA);
+                       StrValueB := UpperCase(StrValueB);
+                 end;
+                 if StrValueA=StrValueB then
+                    Inc(MatchCount)
+                 else begin
+                   if loPartialKey in Options then begin
+                      if Pos(StrValueB,StrValueA)=1 then
+                            Inc(MatchCount);
+                   end;
+                 end;
+              end;
+           end; 
+      end;
+      if MatchCount=Count then begin
+          result := true;
+          exit;
+      end;
+      Next;
+   end;
+   
+end;
+
+
 function TJvCsvCustomInMemoryDataSet.InternalSkipFiltered(defaultResult: TGetResult; ForwardBackwardMode: boolean):
   TGetResult;
 var
@@ -1340,35 +1445,37 @@ end;
 
 function TJvCsvCustomInMemoryDataSet._Enquote(strVal: string): string;
   // puts whole string in quotes, escapes embedded commas and quote characters!
+  // Can optionally deal with newlines also.
 var
   s: string;
   t, l: integer;
   ch: char;
+  localEnquoteBackslash:Boolean;
 begin
+ localEnquoteBackslash := FEnquoteBackslash; // can force on, or let it turn on automatically.
+
+ if Pos(strVal,Chr(13))>0 then  // we are going to need to enquote the backslashes
+    localEnquoteBackslash := true; // absolutely need it in just this case.
+ if Pos(strVal,Chr(10))>0 then
+    localEnquoteBackslash := true; // absolutely need it in just this case.
+
   s := '"';
   l := Length(strVal);
   for t := 1 to l do
   begin
     ch := strVal[t];
-    if FEnquoteBackslash then
-    begin // backslash quoting ( C/C++ )
-      if ch = '\' then // double each backslash
-        s := s + '\\'
-      else if ch = '"' then // escape quotes with a backslash
-        s := s + '\"'
-      else
-        s := s + ch;
-    end
-    else
-    begin
-                // simpler method: doubled-quotes ( Pascal )
-      if ch = '"' then // escape quotes by doubling them.
+    if ch = Chr(13) then // slighlty unstandard csv behavior, hopefully transparently interoperable with other apps that read CSVs 
+        s := s + '\r'
+    else if ch = Chr(10) then // replace linefeed with \n. slighlty unstandard csv behavior.
+        s := s + '\n'
+    else if (localEnquoteBackslash) and (ch = '\') then begin // it would be ambiguous not to escape this in this case!
+        s := s + '\\';
+        FEnquoteBackslash := true; // XXX This is a lurking bug. Some day we'll get bit by it.
+    end else if ch = '"' then // always escape quotes by doubling them, since this is standard CSV behaviour
         s := s + '""'
-      else
+    else if Ord(ch)>=32 then // strip any other low-ascii-unprintables
         s := s + ch;
-
-    end;
-  end;
+  end; {for}
   s := s + '"'; // end quote.
   Result := s;
 end;
@@ -1452,9 +1559,11 @@ begin
             // then we MUST encode the whole string as a string literal in quotes with the embeddded quotes
             // and backslashes preceded by a backslash character.
             //----------------------------------------------------------------------------------------------------
-          if (Pos(JvCsvSep, NewVal) > 0)
-            or (Pos('"', NewVal) > 0)
-            or ((Pos('\', NewVal) > 0) and (FEnquoteBackslash)) then
+          if   ( Pos( JvCsvSep, NewVal) > 0)
+            or ( Pos( Chr(13),  NewVal)>0)
+            or ( Pos( Chr(10),  NewVal)>0)
+            or ( Pos( '"',      NewVal) > 0)
+            or ((Pos( '\',      NewVal) > 0) and (FEnquoteBackslash)) then
           begin
             NewVal := _Enquote(NewVal); // puts whole string in quotes, escapes embedded commas and quote characters!
           end;
@@ -1559,8 +1668,16 @@ begin
         skipFlag := true; // whatever is after the backslash is an escaped literal character.
         continue;
       end
-      else
+      else begin
+        // backslashed escape codes for carriage return, linefeed.
+        if skipFlag then begin
+            if ch = 'n' then
+                ch := chr(10)
+            else if ch = 'r' then
+                ch := chr(13);
+        end;
         skipFlag := false;
+      end;
     end
     else
     begin
@@ -2967,6 +3084,20 @@ begin
      JvCsvDatabaseError(FTableName, sDataSetNotOpen);
   ProcessCsvDataRow(RowAsString, FData.Count);
   Last;
+end;
+
+function TJvCsvCustomInMemoryDataSet.GetAsString(const Row,Column:integer):string; //virtual;
+var
+  ResultString: string;
+  GetIndex:Integer;
+begin
+  if (Row<0) then   {lastrow}
+      GetIndex := FData.Count-1
+    else
+      GetIndex := Row; { actual index specified }
+
+      { return string}
+  Result := GetCsvRowItem( FData.GetRowPtr(GetIndex), Column );
 end;
 
 function TJvCsvCustomInMemoryDataSet.GetRowAsString(const Index: integer): string;
