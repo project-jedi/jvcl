@@ -63,6 +63,7 @@ type
     JvColorAxisConfigCombo: TJvFullColorAxisCombo;
     JvColorSpaceCombo: TJvFullColorSpaceCombo;
     ColorBox: TColorBox;
+    JvFullColorGroup: TJvFullColorGroup;
     procedure ButtonGraphicsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure JvComboBoxColorSpaceSelect(Sender: TObject);
@@ -74,6 +75,7 @@ type
     procedure ButtonApplyClick(Sender: TObject);
     procedure LabelDrawOldClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure JvFullColorGroupChange(Sender: TObject);
   private
     FUpdating: Boolean;
     FExpanded: Boolean;
@@ -110,8 +112,19 @@ begin
 end;
 
 procedure TJvFullColorForm.FormCreate(Sender: TObject);
+var
+  CS: TJvDEFColorSpace;
+  Index:Integer;
 begin
-  LabelDrawOld.Color := ColorSpaceManager.ConvertToColor(FullColor);
+  with ColorSpaceManager do
+  begin
+    CS := TJvDEFColorSpace(ColorSpace[csDEF]);
+
+    for Index:=0 to CS.ColorCount-1 do
+      JvFullColorGroup.Items.Add(CS.ConvertFromColor(CS.ColorValue[Index]));
+
+    LabelDrawOld.Color := ConvertToColor(FullColor);
+  end;
   SetFullColor(FullColor);
   SetOptions(Options);
 end;
@@ -195,6 +208,23 @@ begin
   UpdateColorValue;
 end;
 
+procedure TJvFullColorForm.JvFullColorGroupChange(Sender: TObject);
+begin
+  if FUpdating then
+    Exit;
+
+  FUpdating := True;
+  with (Sender as TJvFullColorGroup), ColorSpaceManager do
+    if (SelectedIndex>-1) then
+  begin
+    JvColorSpaceCombo.ColorSpaceID:=GetColorSpaceID(Selected);
+    FullColor := Selected;
+  end;
+  FUpdating := False;
+
+  UpdateColorSpace;
+end;
+
 procedure TJvFullColorForm.JvComboBoxColorSpaceSelect(Sender: TObject);
 begin
   if FUpdating then
@@ -212,7 +242,8 @@ begin
     Exit;
   FUpdating := True;
   with Sender as TColorBox, ColorSpaceManager do
-    FullColor := ColorSpace[csDEF].ConvertFromColor(Colors[ItemIndex]);
+    FullColor := ConvertToID(ConvertFromColor(Colors[ItemIndex]),
+                             GetColorSpaceID(FullColor));
   FUpdating := False;
   UpdateColorSpace;
 end;
@@ -243,11 +274,10 @@ begin
 
   LColorID := ColorSpaceManager.GetColorSpaceID(FullColor);
 
-  if LColorID = csDEF then
+  if (LColorID=csDEF) then
   begin
-    JvColorPanel.FullColor := fclDEFWindowText;
-    JvFullColorTrackBar.Visible := False;
-    JvColorAxisConfigCombo.Enabled := False;
+    JvFullColorGroup.Selected := FullColor;
+
     for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
     begin
       FScrollBarAxes[I].Enabled := False;
@@ -258,8 +288,8 @@ begin
   end
   else
   begin
-    JvFullColorTrackBar.Visible := True;
-    JvColorAxisConfigCombo.Enabled := True;
+    JvColorPanel.FullColor := FullColor;
+
     for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
     begin
       FScrollBarAxes[I].Enabled := True;
@@ -269,11 +299,11 @@ begin
       FSpinEditAxes[I].Value := ValueAxes[I];
     end;
   end;
-  JvColorPanel.FullColor := FullColor;
+
   JvColorSpaceCombo.ColorSpaceID := LColorID;
 
   NewIndex := -1;
-  DefColorSpace:=ColorSpaceManager.ColorSpace[csDef];
+  DefColorSpace:=ColorSpaceManager.ColorSpace[csDEF];
   with ColorBox, Items, ColorSpaceManager do
   begin
     for J := 0 to Items.Count - 1 do
@@ -307,21 +337,40 @@ begin
 
   if Assigned(LColorSpace) then
   begin
-    JvColorAxisConfigCombo.ColorID := LColorSpace.ID;
-    for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
+    if (LColorSpace.ID = csDEF) then
     begin
-      FLabelAxes[I].Caption := LColorSpace.AxisName[I];
-      AxisMin := LColorSpace.AxisMin[I];
-      AxisMax := LColorSpace.AxisMax[I];
-      FScrollBarAxes[I].Min := AxisMin;
-      FScrollBarAxes[I].Max := AxisMax;
-      FSpinEditAxes[I].MinValue := AxisMin;
-      FSpinEditAxes[I].MaxValue := AxisMax;
+      PanelGraphic.Visible := False;
+      JvFullColorGroup.Visible := Expanded;
+
+      for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
+      begin
+        FScrollBarAxes[I].Enabled := False;
+        FScrollBarAxes[I].Position := 0;
+        FSpinEditAxes[I].Enabled := False;
+        FSpinEditAxes[I].Value := 0;
+      end;
+    end
+    else
+    begin
+      PanelGraphic.Visible := Expanded;
+      JvFullColorGroup.Visible := False;
+
+      JvColorAxisConfigCombo.ColorID := LColorSpace.ID;
+      for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
+      begin
+        FLabelAxes[I].Caption := LColorSpace.AxisName[I];
+        AxisMin := LColorSpace.AxisMin[I];
+        AxisMax := LColorSpace.AxisMax[I];
+        FScrollBarAxes[I].Min := AxisMin;
+        FScrollBarAxes[I].Max := AxisMax;
+        FSpinEditAxes[I].MinValue := AxisMin;
+        FSpinEditAxes[I].MaxValue := AxisMax;
+      end;
+
+      JvColorPanel.FullColor := FullColor;
+      JvFullColorTrackBar.FullColor := FullColor;
     end;
   end;
-
-  JvColorPanel.FullColor := FullColor;
-  JvFullColorTrackBar.FullColor := FullColor;
 
   FUpdating := False;
 
@@ -396,8 +445,9 @@ end;
 
 procedure TJvFullColorForm.LabelDrawOldClick(Sender: TObject);
 begin
-  FullColor := ColorSpaceManager.ConvertToID(LabelDrawOld.Color,
-    ColorSpaceManager.GetColorSpaceID(FullColor));
+  with ColorSpaceManager do
+    FullColor := ConvertToID(ConvertFromColor(LabelDrawOld.Color),
+                             GetColorSpaceID(FullColor));
 end;
 
 procedure TJvFullColorForm.FormKeyDown(Sender: TObject; var Key: Word;

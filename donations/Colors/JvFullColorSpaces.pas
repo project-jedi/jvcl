@@ -38,6 +38,22 @@ type
   TJvFullColorSpaceID = type Byte;
   TJvFullColor = type Cardinal;
 
+
+const
+  JvSystemColorMask =
+{$IFDEF COMPILER7_UP}
+    clSystemColor;
+{$ELSE COMPILER7_UP}
+    $80000000;
+{$ENDIF COMPILER7_UP}
+
+  JvSubFullColorMask     = $03000000;
+
+  JvSystemFullColorMask  = $01000000;
+  JvSpecialFullColorMask = $03000000;
+
+  
+
 const
   csRGB = TJvFullColorSpaceID(1 shl 2);
   csHLS = TJvFullColorSpaceID(2 shl 2);
@@ -50,10 +66,10 @@ const
   csLAB = TJvFullColorSpaceID(9 shl 2);
   csDEF = TJvFullColorSpaceID(10 shl 2);
 
-  csMIN = csRGB;
-  csMAX = csDEF;
-
   csID_MASK = $FC;
+  
+  csMIN = $04 and csID_MASK;
+  csMAX = $FF and csID_MASK;
 
   RGB_MIN = 0;
   RGB_MAX = 255;
@@ -232,17 +248,19 @@ type
     FDelphiColors: TStringList;
     procedure AddDelphiColor(const S: string);
   protected
-    function GetAxisName(Index: TJvAxisIndex): string; override;
-    function GetName: string; override;
+    function GetName:string; override;
     function GetShortName: string; override;
-    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
     function GetNumberOfColors: Cardinal; override;
+    function GetColorName(Index: Integer): string;
+    function GetColorValue(Index: Integer): TColor;
   public
     constructor Create(ColorID: TJvFullColorSpaceID); override;
     destructor Destroy; override;
     function ConvertFromColor(AColor: TColor): TJvFullColor; override;
     function ConvertToColor(AColor: TJvFullColor): TColor; override;
-    function ColorName(Index: Integer): string;
+    property ColorCount:Cardinal read GetNumberOfColors;
+    property ColorName[Index:Integer]:string read GetColorName;
+    property ColorValue[Index:Integer]:TColor read GetColorValue; default;
   end;
 
   TJvColorSpaceManager = class(TPersistent)
@@ -254,6 +272,7 @@ type
     function GetColorSpace(ID: TJvFullColorSpaceID): TJvColorSpace; virtual;
   public
     procedure RegisterColorSpace(NewColorSpace: TJvColorSpace);
+    procedure UnRegisterColorSpace(AColorSpace: TJvColorSpace);
     constructor Create;
     destructor Destroy; override;
     function ConvertToID(AColor: TJvFullColor; DestID: TJvFullColorSpaceID): TJvFullColor;
@@ -272,6 +291,9 @@ function ColorSpaceManager: TJvColorSpaceManager;
 function GetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex): Byte;
 function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex; NewValue: Byte): TJvFullColor;
 
+// (outchy) move to another unit
+function IsClassInModule(Module:HMODULE; ObjectClass:TClass):Boolean;
+
 function RGBToBGR(Value: Cardinal):Cardinal;
 
 procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
@@ -283,12 +305,14 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Math;
+  TypInfo, Math;
 
 var
   GlobalColorSpaceManager: TJvColorSpaceManager = nil;
 
 resourcestring
+  RsErr_NoTypeInfo         = 'The class %s contains no run time type info'+sLineBreak+
+                             '"Class in module" test cannot be executed';
   RsErr_UnnamedAxis        = 'Unnamed Color Axis';
   RsErr_UnnamedSpace       = 'Unnamed Color Space';
   RsErr_UCS                = 'UCS';
@@ -1378,9 +1402,10 @@ constructor TJvDEFColorSpace.Create(ColorID: TJvFullColorSpaceID);
 begin
   inherited Create(ColorID);
   FDelphiColors := TStringList.Create;
+  // ignore duplicates
+  FDelphiColors.Duplicates:=dupIgnore;
   GetColorValues(AddDelphiColor);
-  // (outchy) already added
-  //FDelphiColors.AddObject('clNone', TObject(clNone));
+  AddDelphiColor('clNone');
 end;
 
 destructor TJvDEFColorSpace.Destroy;
@@ -1409,53 +1434,59 @@ begin
       NewColor := AColor;
       Break;
     end;
+
   Result := inherited ConvertFromColor(NewColor);
-  // (outchy) added clDefault support
+
   if NewColor = clNone then
     // mark it as clNone
-    Result := Result or ($03 shl 24)
-  else
-  if NewColor = clDefault then
+    Result := Result or JvSpecialFullColorMask
+  else if NewColor = clDefault then
     // mark it as clDefault
-    Result := Result or ($03 shl 24)
-  else
-  if (NewColor and ($80 shl 24)) <> 0 then
+    Result := Result or JvSpecialFullColorMask
+  else if ((NewColor and JvSystemColorMask)=JvSystemColorMask) then
     // mark it as predefined color
-    Result := Result or ($01 shl 24);
+    Result := Result or JvSystemFullColorMask
+
+  else if ((NewColor and JvSystemColorMask)=0) then
+    Result := ColorSpaceManager.ColorSpace[csRGB].ConvertFromColor(NewColor)
+    // should never happend because there should be no way ...
+  else raise EJvColorSpaceError.CreateResFmt(@RsErr_InconvertibleColor,
+                                              [Cardinal(NewColor)]);
 end;
 
 function TJvDEFColorSpace.ConvertToColor(AColor: TJvFullColor): TColor;
 begin
   Result := inherited ConvertToColor(AColor);
-  case (AColor shr 24) and $03 of
-    1:
-      Result := Result or ($80 shl 24);
-    3: begin
+  case (AColor and JvSubFullColorMask) of
+    JvSystemFullColorMask:
+      Result := Cardinal(Result) or JvSystemColorMask;
+    JvSpecialFullColorMask: begin
          if Result = (clNone and $FFFFFF) then
-           Result := clNone;
-         // (outchy) added clDefault
-         if Result = (clDefault and $FFFFFF) then
-           Result := clDefault;
-       end;  
+           Result := clNone
+         else if Result = (clDefault and $FFFFFF) then
+           Result := clDefault
+         else raise EJvColorSpaceError.CreateResFmt(@RsErr_InconvertibleColor,
+                                                    [Cardinal(AColor)]);
+       end;
+    else raise EJvColorSpaceError.CreateResFmt(@RsErr_InconvertibleColor,
+                                               [Cardinal(AColor)]);
   end;
 end;
 
-function TJvDEFColorSpace.ColorName(Index: Integer): string;
+function TJvDEFColorSpace.GetColorName(Index: Integer): string;
 begin
   if (Index >= 0) and (Index < FDelphiColors.Count) then
-    Result := FDelphiColors[Index]
+    Result := FDelphiColors.Strings[Index]
   else
     Result := '';
 end;
 
-function TJvDEFColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
+function TJvDEFColorSpace.GetColorValue(Index: Integer): TColor;
 begin
-  Result := 0;
-end;
-
-function TJvDEFColorSpace.GetAxisName(Index: TJvAxisIndex): string;
-begin
-  Result := RsErr_NoName;
+  if (Index >= 0) and (Index < FDelphiColors.Count) then
+    Result := TColor(FDelphiColors.Objects[Index])
+  else
+    Result := clNone;
 end;
 
 function TJvDEFColorSpace.GetName: string;
@@ -1502,7 +1533,7 @@ begin
     Result := AColor
   else
   begin
-    Color := ColorSpace[SourceID].ConvertToColor(AColor);
+    Color := ColorToRGB(ColorSpace[SourceID].ConvertToColor(AColor));
     Result := ColorSpace[DestID].ConvertFromColor(Color);
   end;
 end;
@@ -1514,22 +1545,16 @@ end;
 
 function TJvColorSpaceManager.ConvertFromColor(AColor: TColor): TJvFullColor;
 var
-  ID: Byte;
+  MaskedColor:Cardinal;
 begin
-  if AColor = clDefault then
-    AColor := clNone;
-  ID := AColor shr 24;
-  if AColor = clNone then
+  MaskedColor := Cardinal(AColor) and JvSystemColorMask;
+  if   (AColor = clNone) or (AColor = clDefault)
+    or (MaskedColor=JvSystemColorMask) then
     Result := ColorSpace[csDEF].ConvertFromColor(AColor)
-  else
-    case ID of
-      $00:
-        Result := ColorSpace[csRGB].ConvertFromColor(AColor);
-      $80:
-        Result := ColorSpace[csDEF].ConvertFromColor(AColor);
-    else
-      raise EJvColorSpaceError.CreateResFmt(@RsErr_InconvertibleColor, [Cardinal(AColor)]);
-    end;
+  else if (MaskedColor=0) then
+    Result := ColorSpace[csRGB].ConvertFromColor(AColor)
+  else raise EJvColorSpaceError.CreateResFmt(@RsErr_InconvertibleColor,
+                                              [Cardinal(AColor)]);
 end;
 
 function TJvColorSpaceManager.GetColorSpaceID(AColor: TJvFullColor): TJvFullColorSpaceID;
@@ -1586,6 +1611,63 @@ begin
   FColorSpaceList.Add(Pointer(NewColorSpace));
 end;
 
+procedure TJvColorSpaceManager.UnRegisterColorSpace(AColorSpace: TJvColorSpace);
+begin
+  // maybe more than one instance of one class
+  while (FColorSpaceList.Remove(AColorSpace)>=0) do ;
+end;
+
+var
+  CurrentModule : HMODULE = 0;
+  UnitNames : TStringList = nil;
+
+procedure PackageInfoProc(const Name: string; NameType: TNameType;
+  Flags: Byte; Param: Pointer);
+begin
+  if NameType = ntContainsUnit
+    then UnitNames.Add(Name);
+end;
+
+function IsClassInModule(Module:HMODULE; ObjectClass:TClass):Boolean;
+var
+  PackageFlags:Integer;
+  AClassTypeInfo:PTypeInfo;
+  AClassTypeData:PTypeData;
+begin
+  Result:=False;
+  if (CurrentModule <> Module) then
+    try
+      UnitNames.Clear;
+      CurrentModule:=Module;
+      GetPackageInfo(Module,nil,PackageFlags,PackageInfoProc);
+    except
+      Exit;
+    end;
+
+  AClassTypeInfo:=ObjectClass.ClassInfo;
+  if (AClassTypeInfo = nil)
+    then EJVCLException.CreateFmt(RsErr_NoTypeInfo,[ObjectClass.ClassName]);
+
+  AClassTypeData:=GetTypeData(AClassTypeInfo);
+  if (AClassTypeData = nil)
+    then EJVCLException.CreateFmt(RsErr_NoTypeInfo,[ObjectClass.ClassName]);
+
+  Result:=UnitNames.IndexOf(AClassTypeData.UnitName)<>-1;
+end;
+
+procedure ModuleUnloadProc(HInstance: Integer);
+var
+  Index: Integer;
+  CS: TJvColorSpace;
+begin
+  for Index:=ColorSpaceManager.Count-1 downto 0 do
+  begin
+    CS := ColorSpaceManager.ColorSpaceByIndex[Index];
+    if IsClassInModule(HInstance,CS.ClassType)
+      then ColorSpaceManager.UnRegisterColorSpace(CS);
+  end;
+end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1597,6 +1679,9 @@ const
 {$ENDIF UNITVERSIONING}
 
 initialization
+  UnitNames:=TStringList.Create;
+  AddModuleUnloadProc(ModuleUnloadProc);
+
   ColorSpaceManager.RegisterColorSpace(TJvRGBColorSpace.Create(csRGB));
   ColorSpaceManager.RegisterColorSpace(TJvHLSColorSpace.Create(csHLS));
   ColorSpaceManager.RegisterColorSpace(TJvCMYColorSpace.Create(csCMY));
@@ -1607,12 +1692,16 @@ initialization
   ColorSpaceManager.RegisterColorSpace(TJvXYZColorSpace.Create(csXYZ));
   ColorSpaceManager.RegisterColorSpace(TJvLABColorSpace.Create(csLAB));
   ColorSpaceManager.RegisterColorSpace(TJvDEFColorSpace.Create(csDEF));
+
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
 finalization
+  RemoveModuleUnloadProc(ModuleUnloadProc);
   FreeAndNil(GlobalColorSpaceManager);
+  CurrentModule:=0;
+  FreeAndNil(UnitNames);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

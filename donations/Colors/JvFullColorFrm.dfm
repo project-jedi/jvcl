@@ -172,13 +172,22 @@ object JvFullColorForm: TJvFullColorForm
     object ColorBox: TColorBox
       Left = 88
       Top = 200
-      Width = 129
+      Width = 201
       Height = 22
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
       ItemHeight = 16
       TabOrder = 6
       OnSelect = ComboBoxPredefinedSelect
     end
+  end
+  object JvFullColorGroup: TJvFullColorGroup
+    Left = 416
+    Top = 8
+    Width = 289
+    Height = 361
+    ColCount = 8
+    SquareSize = 30
+    OnChange = JvFullColorGroupChange
   end
   object PanelGraphic: TPanel
     Left = 416
@@ -271,7 +280,6 @@ object JvFullColorForm: TJvFullColorForm
     Top = 32
     Width = 209
     Height = 21
-    ColorSpaceID = 28
     ItemHeight = 13
     TabOrder = 0
     OnSelect = JvComboBoxColorSpaceSelect

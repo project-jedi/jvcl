@@ -474,7 +474,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Colors', [TJvFullColorDialog, TJvFullColorCircleDialog]);
+  RegisterComponents('Jv Colors', [TJvFullColorDialog, TJvFullColorCircleDialog]);
 end;
 
 {$IFDEF UNITVERSIONING}

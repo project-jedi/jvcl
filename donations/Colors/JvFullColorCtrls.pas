@@ -597,6 +597,7 @@ type
     FMouseIndex: Integer;
     FSelectedIndex: Integer;
     FBrush: TBrush;
+    FOnChange: TNotifyEvent;
     procedure SetItems(const Value: TJvFullColorList);
     procedure SetColCount(const Value: Integer);
     procedure SetEdge(const Value: TJvFullColorEdge);
@@ -632,6 +633,7 @@ type
     property MouseEdge: TJvFullColorEdge read FMouseEdge write SetMouseEdge default feRaised;
     property SquareSize: Integer read FSquareSize write SetSquareSize default 6;
     property Brush: TBrush read FBrush write SetBrush;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Align;
     property Anchors;
     property BevelInner;
@@ -672,8 +674,8 @@ uses
   Math, TypInfo, GraphUtil, Types;
 
 resourcestring
-  RsEDuplicateTrackBar = 'TrackBar already used by component "%s"';
-  //RsEDuplicateTrackBar = 'TrackBar déjà utilisée par le composant "%s"';
+  Rs_EDuplicateTrackBar     = 'TrackBar already used by component "%s"';
+  Rs_EUnsupportedColorSpace = 'Unsupported color space "%d"';
 
 type
   TJvFullColorAxisConfigs = array[TJvAxisIndex] of TJvAxisIndex;
@@ -802,12 +804,16 @@ end;
 
 procedure TJvFullColorComponent.SetFullColor(const Value: TJvFullColor);
 var
+  NewColorID: TJvFullColorSpaceID;
   OldColorID: TJvFullColorSpaceID;
   OldColor: TJvFullColor;
 begin
   if Value <> FullColor then
   begin
     OldColor := FFullColor;
+    NewColorID := ColorSpaceManager.GetColorSpaceID(Value);
+    if (NewColorID=csDEF) then
+      raise EJvFullColorError.CreateFmt(Rs_EUnsupportedColorSpace,[NewColorID]);
     OldColorID := ColorSpaceManager.GetColorSpaceID(OldColor);
     FFullColor := Value;
     if OldColorID <> ColorSpaceManager.GetColorSpaceID(FFullColor) then
@@ -1254,7 +1260,7 @@ end;
 procedure TJvFullColorPanel.SetColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FColorTrackBar) and Value.Linked then
-    raise EJvFullColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvFullColorError.CreateResFmt(@Rs_EDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FColorTrackBar) then
   begin
@@ -2032,7 +2038,7 @@ end;
 procedure TJvFullColorCircle.SetBlueColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FBlueColorTrackBar) and Value.Linked then
-    raise EJvFullColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvFullColorError.CreateResFmt(@Rs_EDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FBlueColorTrackBar) then
   begin
@@ -2058,7 +2064,7 @@ end;
 procedure TJvFullColorCircle.SetGreenColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FGreenColorTrackBar) and Value.Linked then
-    raise EJvFullColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvFullColorError.CreateResFmt(@Rs_EDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FGreenColorTrackBar) then
   begin
@@ -2084,7 +2090,7 @@ end;
 procedure TJvFullColorCircle.SetRedColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FRedColorTrackBar) and Value.Linked then
-    raise EJvFullColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvFullColorError.CreateResFmt(@Rs_EDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FRedColorTrackBar) then
   begin
@@ -2110,7 +2116,7 @@ end;
 procedure TJvFullColorCircle.SetCommonColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FCommonColorTrackBar) and Value.Linked then
-    raise EJvFullColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvFullColorError.CreateResFmt(@Rs_EDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FCommonColorTrackBar) then
   begin
@@ -3378,15 +3384,15 @@ var
 begin
   XOffset := Width - (FSquareSize * ColCount) - 2;
   XInc := XOffset div ColCount;
-  XPos := ((XOffset - XInc * (ColCount - 1)) div 2) + 1;
+  XPos := ((XOffset - (XInc * (ColCount - 1))) div 2) + 1;
 
-  RowCount := Items.Count div ColCount + 1;
-  YOffset := Height - FSquareSize * RowCount - 2;
+  RowCount := (Items.Count div ColCount) + 1;
+  YOffset := Height - (FSquareSize * RowCount) - 2;
   if RowCount = 1 then
     YInc := 0
   else
     YInc := YOffset div RowCount;
-  YPos := YOffset - (YInc * (RowCount + 1)) div 2 + 1;
+  YPos := ((YOffset - (YInc * (RowCount - 1))) div 2) + 1;
 end;
 
 procedure TJvFullColorGroup.ItemsChange(Sender: TObject; Index: Integer;
@@ -3482,7 +3488,7 @@ begin
     Exit;
   end;
 
-  RowCount := Items.Count div ColCount + 1;
+  RowCount := (Items.Count div ColCount) + 1;
 
   Sum := YPos;
   if Y < YPos then
@@ -3702,6 +3708,8 @@ end;
 procedure TJvFullColorGroup.SetSelectedIndex(const Value: Integer);
 begin
   FSelectedIndex := EnsureRange(Value, -1, Items.Count - 1);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TJvFullColorGroup.SetBrush(const Value: TBrush);
@@ -3711,7 +3719,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Colors', [TJvFullColorPanel, TJvFullColorTrackBar,
+  RegisterComponents('Jv Colors', [TJvFullColorPanel, TJvFullColorTrackBar,
     TJvFullColorLabel, TJvFullColorCircle, TJvFullColorSpaceCombo,
     TJvFullColorAxisCombo, TJvFullColorGroup]);
 end;

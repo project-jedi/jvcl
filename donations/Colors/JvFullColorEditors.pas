@@ -35,7 +35,7 @@ uses
   JvFullColorCtrls;
 
 type
-  TJvColorIDEditor = class(TPropertyEditor)
+  TJvColorIDEditor = class(TOrdinalProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
