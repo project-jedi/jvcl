@@ -67,6 +67,8 @@ end;
 
 procedure TJvSearchFiles.Search;
 begin
+  if (FRootDirectory <> '') and (FRootDirectory[Length(FRootDirectory)] = PathDelim) then
+    Delete(FRootDirectory, Length(FRootDirectory), 1);
   FFiles.Clear;
   SearchDirs(FRootDirectory);
 end;
