@@ -114,7 +114,7 @@ implementation
 
 uses
   Forms, ComCtrls, Controls, SysUtils, TypInfo, Consts,
-  JvConsts, JvDsgnConsts, JvPageLinkEditorForm, JvTreeItemsEditorForm;
+  JvDsgnConsts, JvPageLinkEditorForm, JvTreeItemsEditorForm;
 
 type
   THackTreeView = class(TJvCustomPageListTreeView);

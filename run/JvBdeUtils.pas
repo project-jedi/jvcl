@@ -2037,7 +2037,7 @@ var
 begin
   { Make sure that the table is opened and is exclusive }
   if not Table.Active or not Table.Exclusive then
-    raise EDatabaseError.Create(STableNotInExclusiveMode);
+    raise EDatabaseError.Create(RsETableNotInExclusiveMode);
   { Initialize the table descriptor }
   FillChar(TblDesc, SizeOf(CRTblDesc), #0);
   with TblDesc do
@@ -2077,9 +2077,9 @@ var
 begin
   // Make sure the table is open exclusively so we can get the db handle...
   if not Table.Active then
-    raise EDatabaseError.Create(STableNotOpen);
+    raise EDatabaseError.Create(RsETableNotOpen);
   if not Table.Exclusive then
-    raise EDatabaseError.Create(STableNotOpenExclusively);
+    raise EDatabaseError.Create(RsETableNotOpenExclusively);
 
   // Get the table properties to determine table type...
   Check(DbiGetCursorProps(Table.Handle, Props));
@@ -2112,7 +2112,7 @@ begin
     Check(DbiPackTable(Table.DBHandle, Table.Handle, nil, szDBASE, True))
   else
     // Pack only works on Paradox or dBASE; nothing else...
-    raise EDatabaseError.Create(SNoParadoxDBaseTable);
+    raise EDatabaseError.Create(RsENoParadoxDBaseTable);
   Table.Open;
 end;
 

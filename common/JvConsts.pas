@@ -54,25 +54,19 @@ const
   SCancel = 'Cancel';
 
   { Menu Designer }
+  { (rom) disabled unused
   SMDMenuDesigner       = 'Menu &Designer';
   SMDInsertItem         = '&Insert';
   SMDDeleteItem         = '&Delete';
   SMDCreateSubmenuItem  = 'Create &SubMenu';
-
-  SCantGetShortCut      = 'Target FileName for ShortCut %s not available';
+  }
 
   { RALib 1.23 }
-  SPropertyNotExists    = 'Property "%s" does not exist';
-  SInvalidPropertyType  = 'Property "%s" has invalid type';
+  // (rom) now in JvJCLUtils.pas
 
   { RALib 1.55 }
 
 resourcestring
-  { JvAni.pas, JvAniFile.pas }
-  RC_AniExtension = 'ani';
-  RC_AniFilterName = 'ANI Image';
-  SInvalidAnimatedIconImage = 'Animated icon image is not valid';
-
   { JvHLEdPropDlg }
   SHLEdPropDlg_Caption = 'Editor Properties';
   SHLEdPropDlg_tsEditor = 'Editor';
@@ -147,17 +141,7 @@ const
   {$ENDIF}
 
 resourcestring
-  { JvToolEdit }
-  SBrowse                = 'Browse';
-  {$IFDEF MSWINDOWS}
-  SDefaultFilter         = 'All files (*.*)|*.*';
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  SDefaultFilter         = 'All files (*)|*';
-  {$ENDIF LINUX}
-
   { JvPickDate }
-  SDateDlgTitle          = 'Select a Date';
   SNextYear              = 'Next Year|';
   SNextMonth             = 'Next Month|';
   SPrevYear              = 'Previous Year|';
@@ -214,24 +198,6 @@ resourcestring
   SExprNotBoolean         = 'Field ''%s'' is not of type Boolean';
   SExprBadNullTest        = 'NULL only allowed with ''='' and ''<>''';
   SExprBadField           = 'Field ''%s'' cannot be used in a filter expression';
-  SCaptureFilter          = 'Cannot perform this operation when controls are captured';
-  SNotCaptureFilter       = 'Cannot perform this operation when controls are not captured';
-
-  { JvDBCtrl }
-  SInactiveData           = 'Closed';
-  SBrowseData             = 'Browse';
-  SEditData               = 'Edit';
-  SInsertData             = 'Insert';
-  SSetKeyData             = 'Search';
-  SCalcFieldsData         = 'Calculate';
-
-  { LoginDlg }
-  SRegistration           = 'Registration';
-  SAppTitleLabel          = 'Application "%s"';
-  SHintLabel              = 'Type your user name and password';
-  SUserNameLabel          = '&User name:';
-  SPasswordLabel          = '&Password:';
-  SInvalidUserName        = 'Invalid user name or password';
 
   { JvChPswDlg }
   SChangePassword         = 'Change password';
@@ -262,83 +228,11 @@ resourcestring
 
   { JvDBUtils }
   SConfirmSave            = 'The data were changed. Save them?';
-  SDatabaseName           = 'Database name: %s';
-
-  { LoginDlg }
-  SUnlockCaption          = 'Unlock application';
-  SUnlockHint             = 'Type your password';
 
   { JvDBCtrl }
   SDeleteMultipleRecords  = 'Delete all selected records?';
 
-  { Polaris patch }
-  SDateMinLimit           = 'Enter a date before "%s"';
-  SDateMaxLimit           = 'Enter a date after "%s"';
-  SDateOutOfRange         = '%s - Enter a date between "%s" and "%s"';
-  SDateOutOfMin           = '%s - Enter a date after "%s"';
-  SDateOutOfMax           = '%s - Enter a date before "%s"';
-
-  { JvID3_ }
-
-  SID3FrameNotFound          = 'Frame not found';
-  SID3UnknownEncoding        = 'Unknown encoding';
-  SID3UnknownVersion         = 'Unknown version';
-  SID3DuplicateFrame         = 'Frame is a duplicate of another frame in the tag.';
-  SID3AlreadyContainsFrame   = 'Tag already contains a ''%s'' frame.';
-  SID3ControllerNotActive    = 'Controller is not active';
-  SID3EncodingNotSupported   = 'Encoding not supported in this version.';
-  SID3VersionNotSupported    = 'Version not supported.';
-  SID3NoController           = 'No controller specified.';
-  SID3InvalidLanguageValue   = '''%s'' is an invalid language value.';
-  SID3InvalidPartInSetValue  = '''%s'' is an invalid ''part in set'' value.';
-  SID3InvalidTimeValue       = '''%s'' is an invalid time value.'#13'Value must be of format ''HHMM''.';
-  SID3InvalidDateValue       = '''%s'' is an invalid date value.'#13'Value must be of format ''DDMM''.';
-  SID3ValueTooBig            = '''%d'' is an invalid value. Value is too big.';
-  SID3StringTooLong          = '''%s'' is an invalid value. String is too long.';
-  SID3InvalidCharinList      = 'Invalid char ''%s'' in string ''%s'' in list.';
-  SID3InvalidFrameClass      = 'Frame class ''%s'' can''t be used to represent frame ID ''%s''';
-  SID3FrameIDNotSupported    = 'Frame ID ''%s'' not supported by this frame';
-  SID3FrameIDStrNotSupported = 'Frame ID string ''%s'' not supported by this frame';
-
   srJvHLEdPropDlgIni = 'JvHLEdPropDlg.ini';
-
-  { see JvCtlReg }
-  {$IFDEF COMPILER3_UP}
-  srSamplesPalette = 'Samples';
-  {$ENDIF}
-
-  { JVCL IDE palettes }
-  SPaletteSystem = 'Jv System';
-  SPaletteDialog = 'Jv Dialogs';
-  SPaletteButton = 'Jv Buttons';
-  SPaletteEdit = 'Jv Edits';
-  SPaletteCustom = 'Jv Custom';
-  SPaletteBarPanel = 'Jv Bars and Panels';
-  SPaletteLabel = 'Jv Labels';
-  SPaletteListComboTree = 'Jv Lists, Combos and Trees';
-  SPaletteScrollerTracker = 'Jv Scrollers and Trackers';
-  SPaletteSliderSplitter = 'Jv Sliders and Splitters';
-  SPaletteImageAnimator = 'Jv Images and Animators';
-  SPaletteVisual = 'Jv Visual';
-  SPaletteNonVisual = 'Jv Non-Visual';
-  SPaletteAppForm = 'Jv Application and Forms';
-  SPaletteInterNetWork = 'Jv Internet and Network';
-  SPaletteEncryptCompress = 'Jv Encrypt and Compress';
-  SPaletteDBVisual = 'Jv Data Controls';
-  SPaletteDBNonVisual = 'Jv Data Access';
-  SPaletteHMIIndicator = 'Jv HMI Indicators';
-  SPaletteHMINonVisual = 'Jv HMI Non-Visual';
-  SPaletteHMIControls = 'Jv HMI Controls';
-  SPaletteBDE = 'Jv BDE Components';
-  SPaletteMTThreads = 'Jv Threading';
-  SPalettePrintPreview = 'Jv Print Preview';
-  SPaletteTimeFramework = 'Jv TimeFrameWork';
-  SPaletteUIB = 'Jv UIB';
-  SPaletteInterpreter = 'Jv Interpreter';
-  SPaletteGlobusComponents1 = 'JVCL Globus Components 1';
-  SPaletteGlobusComponents2 = 'JVCL Globus Components 2';
-  SPaletteValidators = 'Jv Validators';
-  SPaletteWizard = 'Jv Wizard';
 
   { for RegisterActions }
   srJVCLActions     = 'JVCL';
@@ -412,10 +306,6 @@ resourcestring
 
   { JvUrlListGrabber }
   sENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
-
-  { JvAppXmlStore }
-  SNodeCannotBeEmpty = 'The node must be given a name';
-  SDelSubTreeNotImplemented = 'DeleteSubTreeInt has not been implemented yet';
 
 implementation
 

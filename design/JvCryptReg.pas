@@ -39,7 +39,8 @@ uses
   {$IFNDEF BCB}
   JvZlibMultiple,
   {$ENDIF BCB}
-  JvConsts, JvVigenereCipher, JvCabFile, JvCaesarCipher, JvGenetic,
+  JvDsgnConsts,
+  JvVigenereCipher, JvCabFile, JvCaesarCipher, JvGenetic,
   JvSerialMaker, JvXorCipher;
 
 {$R ..\resources\JvCryptReg.dcr}

@@ -73,8 +73,9 @@ implementation
 
 uses
   Classes,
+  JvDsgnConsts,
   JvTFGlance, JvTFGlanceTextViewer, JvTFMonths, JvTFWeeks, JvTFDays,
-  JvTFAlarm, JvTFManager, JvConsts, JvDsgnConsts;
+  JvTFAlarm, JvTFManager;
 
 //=== TJvTFGridLayoutCategory ================================================
 

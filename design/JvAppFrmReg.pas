@@ -41,7 +41,8 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvAppAnimatedIcon, JvAppEvent, JvAppHotKey, JvFormTransparent,
+  JvDsgnConsts,
+  JvAppAnimatedIcon, JvAppEvent, JvAppHotKey, JvFormTransparent,
   JvFormAnimatedIcon, JvFormAnimation, JvFormWallpaper,
   JvFormMagnet, JvAnimTitle, JvFormAutoSize, JvGradientCaption,
   JvGradientCaptionForm, JvFormWallpaperEditor;

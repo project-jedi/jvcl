@@ -41,7 +41,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts,
+  JvDsgnConsts,
   JvInterpreterParser, JvInterpreter, JvInterpreter_all, JvInterpreter_Classes,
   JvInterpreter_ComCtrls, JvInterpreter_Contnrs, JvInterpreter_Controls,
   {$IFNDEF DelphiPersonalEdition}

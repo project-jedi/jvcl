@@ -1198,7 +1198,7 @@ begin
     Delete(TgtPath, 1, Length(SubStoreItem.RootPath) + 1);
     TgtPath := '\' + OptimizePaths([TgtPath]);
     if TgtPath = '\' then
-      raise EJVCLAppStoreError.Create(SInvalidPath);
+      raise EJVCLAppStoreError.Create(RsEInvalidPath);
   end;
 end;
 
@@ -1469,7 +1469,7 @@ begin
             OrdValue := ReadIntegerInt(Path, OrdValue);
         end
         else
-          raise EJVCLAppStoreError.Create(SInvalidType);
+          raise EJVCLAppStoreError.Create(RsEInvalidType);
       except
         on E: EConvertError do
           if StoreOptions.DefaultIfReadConvertError then
@@ -1517,7 +1517,7 @@ begin
       WriteIntegerInt(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
   end
   else
-    raise EJVCLAppStoreError.Create(SInvalidType);
+    raise EJVCLAppStoreError.Create(RsEInvalidType);
 end;
 
 procedure TJvCustomAppStore.ReadEnumeration(const Path: string; const TypeInfo: PTypeInfo;
@@ -1577,7 +1577,7 @@ begin
               (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
             end;
           else
-            raise EJVCLAppStoreError.Create(SUnknownBaseType);
+            raise EJVCLAppStoreError.Create(RsEUnknownBaseType);
         end;
       end;
     finally
@@ -1624,7 +1624,7 @@ begin
                   Lst.IndexOf(IntToStr(I)) > - 1);
             end;
           else
-            raise EJVCLAppStoreError.Create(SUnknownBaseType);
+            raise EJVCLAppStoreError.Create(RsEUnknownBaseType);
         end;
       end;
     finally
@@ -1819,107 +1819,107 @@ end;
 
 function TJvAppStore.IsFolderInt(Path: string; ListIsValue: Boolean): Boolean;
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 function TJvAppStore.PathExistsInt(const Path: string): Boolean;
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 function TJvAppStore.ValueStoredInt(const Path: string): Boolean;
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.DeleteValueInt(const Path: string);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.DeleteSubTreeInt(const Path: string);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 function TJvAppStore.ReadIntegerInt(const Path: string; Default: Integer): Integer;
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.WriteIntegerInt(const Path: string; Value: Integer);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 function TJvAppStore.ReadFloatInt(const Path: string; Default: Extended): Extended;
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.WriteFloatInt(const Path: string; Value: Extended);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 function TJvAppStore.ReadStringInt(const Path: string; Default: string): string;
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.WriteStringInt(const Path: string; Value: string);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 function TJvAppStore.ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer;
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.WriteBinaryInt(const Path: string; const Buf; BufSize: Integer);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 function TJvAppStore.ReadDateTimeInt(const Path: string; Default: TDateTime): TDateTime;
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.WriteDateTimeInt(const Path: string; Value: TDateTime);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 function TJvAppStore.ReadBooleanInt(const Path: string; Default: Boolean): Boolean;
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.WriteBooleanInt(const Path: string; Value: Boolean);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.ReadEnumerationInt(const Path: string; const TypeInfo: PTypeInfo; const Default; out Value);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.WriteEnumerationInt(const Path: string; const TypeInfo: PTypeInfo; const Value);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.ReadSetInt(const Path: string; const ATypeInfo: PTypeInfo; const Default; out Value);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 procedure TJvAppStore.WriteSetInt(const Path: string; const ATypeInfo: PTypeInfo; const Value);
 begin
-  raise EJVCLAppStoreError.Create(SInvalidPath);
+  raise EJVCLAppStoreError.Create(RsEInvalidPath);
 end;
 
 //=== TJvAppSubStores ========================================================
@@ -2048,7 +2048,7 @@ begin
     if TJvAppSubStores(Collection).CheckUniqueBase(Value, Index) then
       FRootPath := Value
     else
-      raise EJVCLAppStoreError.CreateFmt(SNotAUniqueRootPath, [Value]);
+      raise EJVCLAppStoreError.CreateFmt(RsENotAUniqueRootPath, [Value]);
 end;
 
 procedure TJvAppSubStore.SetAppStore(Value: TJvCustomAppStore);
@@ -2056,7 +2056,7 @@ begin
   if Value <> AppStore then
   begin
     if (Value <> nil) and (Value.HasSubStore(OwnerStore) or (Value = OwnerStore)) then
-      raise EJVCLAppStoreError.Create(SCircularReferenceOfStorages);
+      raise EJVCLAppStoreError.Create(RsECircularReferenceOfStorages);
     if AppStore <> nil then
       AppStore.RemoveFreeNotification(OwnerStore);
     FAppStore := Value;

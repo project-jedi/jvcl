@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, Graphics, Controls,
-  JvID3v2Types, JvID3v2Base, JvConsts;
+  JvID3v2Types, JvID3v2Base;
 
 type
   TJvID3Persistent = class(TPersistent)
@@ -331,7 +331,8 @@ type
 implementation
 
 uses
-  SysUtils, Math;
+  SysUtils, Math,
+  JvResources;
 
 //=== Local procedures =======================================================
 
@@ -781,7 +782,7 @@ end;
 procedure TJvID3UDText.Add(const ADescription, AValue: string);
 begin
   if not Assigned(FController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   with TJvID3UserFrame(FController.AddFrame(fiUserText)) do
   begin
@@ -862,7 +863,7 @@ end;
 procedure TJvID3UDUrl.Add(const ADescription, AURL: string);
 begin
   if not Assigned(FController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   with TJvID3URLUserFrame(FController.AddFrame(fiWWWUser)) do
   begin

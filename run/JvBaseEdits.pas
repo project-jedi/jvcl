@@ -293,7 +293,7 @@ implementation
 
 uses
   Consts, Math,
-  JvJCLUtils, JvCalc;
+  JvJCLUtils, JvCalc, JvResources;
 
 {$R ..\resources\JvBaseEdits.res}
 
@@ -638,7 +638,7 @@ begin
       end;
     end;
     if RaiseOnError and (Result <> NewValue) then
-      raise ERangeError.CreateFmt(ReplaceStr(SOutOfRange, '%d', '%.*f'),
+      raise ERangeError.CreateFmt(RsEOutOfRangeXFloat,
         [DecimalPlaces, FMinValue, DecimalPlaces, FMaxValue]);
   end;
 end;

@@ -43,10 +43,11 @@ implementation
 
 uses
   Classes,
+  JvDsgnConsts,
   {$IFNDEF DelphiPersonalEdition}
   JvUIBDataSet,
   {$ENDIF DelphiPersonalEdition}
-  JvUIB, JvConsts;
+  JvUIB;
 
 {$R ..\Resources\JvUIBReg.dcr}
 

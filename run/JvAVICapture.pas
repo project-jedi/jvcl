@@ -41,7 +41,8 @@ unit JvAVICapture;
 interface
 
 uses
-  Classes, Controls, Windows, VFW, MMSystem, SysUtils, Graphics, Messages;
+  Classes, Controls, Windows, VFW, MMSystem, SysUtils, Graphics, Messages,
+  JvTypes;
 
 type
   TJvScrollPos = class(TPersistent)
@@ -250,8 +251,8 @@ type
   // according to Microsoft documentation. But there can be more than 1 source per driver...
   TJvDriverIndex = -1..9;
 
-  // The exception trigerred when an invalid index driver index is given
-  EInvalidDriverIndex = class(Exception)
+  // The exception triggered when an invalid index driver index is given
+  EInvalidDriverIndexError = class(EJVCLException)
   public
     constructor Create(Index: TJvDriverIndex; MaxIndex: TJvDriverIndex);
   end;
@@ -1227,7 +1228,7 @@ begin
     Result := Name;
   end
   else
-    Result := SNotConnected;
+    Result := RsNotConnected;
 end;
 
 function TJvAVICapture.GetDriverVersion: string;
@@ -1240,7 +1241,7 @@ begin
     Result := Version;
   end
   else
-    Result := SNotConnected;
+    Result := RsNotConnected;
 end;
 
 procedure TJvAVICapture.SetScrollPos(nScrollPos: TJvScrollPos);
@@ -1272,7 +1273,7 @@ begin
     Result := Name;
   end
   else
-    Result := SNotConnected;
+    Result := RsNotConnected;
 end;
 
 procedure TJvAVICapture.SetDriverIndex(nIndex: TJvDriverIndex);
@@ -1421,7 +1422,7 @@ begin
     end
     else
       // if not, trigger an exception
-      raise EInvalidDriverIndex.Create(Driver, Drivers.Count - 1);
+      raise EInvalidDriverIndexError.Create(Driver, Drivers.Count - 1);
   end;
   AdjustSize;
 end;
@@ -1656,7 +1657,7 @@ end;
 procedure TJvAVICapture.DoError(errId: Integer; str: string);
 begin
   if csDesigning in ComponentState then
-    Windows.MessageBox(WindowHandle, PChar(str), PChar(SErrorMessagePrefix + IntToStr(errId)), MB_ICONERROR);
+    Windows.MessageBox(WindowHandle, PChar(str), PChar(RsErrorMessagePrefix + IntToStr(errId)), MB_ICONERROR);
   if Assigned(FOnError) then
     FOnError(Self, errID, str);
 end;
@@ -1743,11 +1744,11 @@ begin
     StopSingleFrameCapture;
 end;
 
-//=== EInvalidDriverIndex ====================================================
+//=== EInvalidDriverIndexError ===============================================
 
-constructor EInvalidDriverIndex.Create(Index: TJvDriverIndex; MaxIndex: TJvDriverIndex);
+constructor EInvalidDriverIndexError.Create(Index: TJvDriverIndex; MaxIndex: TJvDriverIndex);
 begin
-  inherited CreateFmt(SInvalidDriverIndex, [Index, MaxIndex]);
+  inherited CreateFmt(RsEInvalidDriverIndex, [Index, MaxIndex]);
 end;
 
 end.

@@ -55,7 +55,7 @@ uses
   {$IFNDEF USEJVCL}
   JvWizardAboutInfoForm,
   {$ENDIF USEJVCL}
-  JvConsts,
+  JvDsgnConsts,
   JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardEditorForm;
 
 {$R ..\resources\JvWizardReg.dcr}

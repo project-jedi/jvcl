@@ -86,7 +86,8 @@ type
 implementation
 
 uses
-  JvTypes, JvConsts, TypInfo;
+  TypInfo,
+  JvTypes, JvConsts, JvResources;
 
 const
   cNullDigit = '0';
@@ -134,7 +135,7 @@ end;
 procedure TJvAppXmlStore.SetRootNodeName(const Value: string);
 begin
   if Value = '' then
-    raise EPropertyError.Create(SNodeCannotBeEmpty)
+    raise EPropertyError.Create(RsENodeCannotBeEmpty)
   else
   begin
     StringReplace(Value, ' ', '_', [rfReplaceAll]);
@@ -174,7 +175,7 @@ begin
   TopSection := GetAbsPath(Path);
   if TopSection = '' then
     TopSection := Path;
-  raise EJVCLAppStoreError.Create(SDelSubTreeNotImplemented);
+  raise EJVCLAppStoreError.Create(RsEDelSubTreeNotImplemented);
 end;
 
 function TJvAppXmlStore.DoReadInteger(const Path: string; Default: Integer): Integer;

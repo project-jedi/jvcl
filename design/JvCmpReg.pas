@@ -41,7 +41,8 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvAlarms, JvConverter, JvDataEmbedded, JvCreateProcess,
+  JvDsgnConsts,
+  JvAlarms, JvConverter, JvDataEmbedded, JvCreateProcess,
   JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile, JvStringHolder,
   JvTimeLimit, JvWinHelp, JvTranslator, JvPrint, JvEasterEgg,
   JvMouseGesture, JvLogFile, JvDataEmbeddedEditor, JvPatcherEditor,

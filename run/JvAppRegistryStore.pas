@@ -125,7 +125,7 @@ begin
     if Windows.RegCreateKey(FRegHKEY, PChar(Key), ResKey) = ERROR_SUCCESS then
       RegCloseKey(ResKey)
     else
-      raise Exception.CreateFmt(SUnableToCreateKey, [Key]);
+      raise Exception.CreateFmt(RsEUnableToCreateKey, [Key]);
 end;
 
 procedure TJvAppRegistryStore.EnumFolders(const Path: string; const Strings: TStrings;
@@ -150,7 +150,7 @@ begin
           Inc(I);
         until EnumRes <> ERROR_SUCCESS;
         if EnumRes <> ERROR_NO_MORE_ITEMS then
-          raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
+          raise EJclRegistryError.Create(RsEEnumeratingRegistry);
       finally
         RegCloseKey(TmpHKEY);
       end;
@@ -184,7 +184,7 @@ begin
           Inc(I);
         until EnumRes <> ERROR_SUCCESS;
         if EnumRes <> ERROR_NO_MORE_ITEMS then
-          raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
+          raise EJclRegistryError.Create(RsEEnumeratingRegistry);
       finally
         RegCloseKey(TmpHKEY);
       end;
@@ -216,7 +216,7 @@ begin
           Inc(I);
         until (EnumRes <> ERROR_SUCCESS) or Result;
         if EnumRes <> ERROR_NO_MORE_ITEMS then
-          raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
+          raise EJclRegistryError.Create(RsEEnumeratingRegistry);
       end;
     finally
       RegCloseKey(PathHKEY);

@@ -163,7 +163,7 @@ implementation
 
 uses
   Registry, Consts, IniFiles,
-  JvJCLUtils, JvJVCLUtils, JvConsts, JvTypes;
+  JvJCLUtils, JvJVCLUtils, JvResources, JvTypes;
 
 {$R *.dfm}
 
@@ -566,9 +566,9 @@ begin
   if Icon.Empty then
     Icon.Handle := LoadIcon(0, IDI_APPLICATION);
   AppIcon.Picture.Assign(Icon);
-  AppTitleLabel.Caption := Format(SAppTitleLabel, [Application.Title]);
-  PasswordLabel.Caption := SPasswordLabel;
-  UserNameLabel.Caption := SUserNameLabel;
+  AppTitleLabel.Caption := Format(RsAppTitleLabel, [Application.Title]);
+  PasswordLabel.Caption := RsPasswordLabel;
+  UserNameLabel.Caption := RsUserNameLabel;
   OkBtn.Caption := SOKButton;
   CancelBtn.Caption := SCancelButton;
 end;
@@ -592,7 +592,7 @@ begin
   if FSelectDatabase then
   begin
     ClientHeight := CustomCombo.Top + PasswordEdit.Top - UserNameEdit.Top;
-    S := SDatabaseName;
+    S := RsDatabaseName;
     I := Pos(':', S);
     if I = 0 then
       I := Length(S);
@@ -606,13 +606,13 @@ begin
   end;
   if not FUnlockMode then
   begin
-    HintLabel.Caption := SHintLabel;
-    Caption := SRegistration;
+    HintLabel.Caption := RsHintLabel;
+    Caption := RsRegistrationCaption;
   end
   else
   begin
-    HintLabel.Caption := SUnlockHint;
-    Caption := SUnlockCaption;
+    HintLabel.Caption := RsUnlockHint;
+    Caption := RsUnlockCaption;
   end;
   if (UserNameEdit.Text = EmptyStr) and not FUnlockMode then
     ActiveControl := UserNameEdit

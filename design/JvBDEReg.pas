@@ -41,12 +41,10 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvBDEEditors, JvConsts, 
-  JvBdeUtils, JvBDEFilter, JvBDEIndex, JvBDELists, JvBDEMove,
-  JvBDEProgress, JvBDEQBE, JvBDESecurity, JvBDEMemTable,
-  JvBDEQuery, JvBDESQLScript,
-  JvBDEMemTableEditor, JvBDESecurityEditor;
-
+  JvDsgnConsts,
+  JvBDEEditors, JvBdeUtils, JvBDEFilter, JvBDEIndex, JvBDELists, JvBDEMove,
+  JvBDEProgress, JvBDEQBE, JvBDESecurity, JvBDEMemTable, JvBDEQuery,
+  JvBDESQLScript, JvBDEMemTableEditor, JvBDESecurityEditor;
 
 {$R ..\resources\JvBDEReg.dcr}
 

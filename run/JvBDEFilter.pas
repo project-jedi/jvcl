@@ -140,7 +140,7 @@ implementation
 
 uses
   DBConsts, Dialogs, DbCommon,
-  JvConsts, JvJVCLUtils, JvDBUtils, JvBdeUtils;
+  JvResources, JvJVCLUtils, JvDBUtils, JvBdeUtils;
 
 procedure DropAllFilters(DataSet: TDataSet);
 begin
@@ -647,7 +647,7 @@ end;
 
 procedure TJvDBFilter.BeforeDataChange(DataSet: TDataSet);
 begin
-  raise EJVCLFilterError.Create(SCaptureFilter);
+  raise EJVCLFilterError.Create(RsECaptureFilter);
 end;
 
 procedure TJvDBFilter.BeforeDataCancel(DataSet: TDataSet);
@@ -708,7 +708,7 @@ begin
         FActivating := True;
         try
           if FCaptured then
-            raise EJVCLFilterError.Create(SCaptureFilter);
+            raise EJVCLFilterError.Create(RsECaptureFilter);
           DbiSetToBegin((FDatalink.DataSet as TBDEDataSet).Handle);
           if FExprHandle = nil then
             RecreateExprFilter;
@@ -858,7 +858,7 @@ begin
     end;
   end
   else
-    raise EJVCLFilterError.Create(SNotCaptureFilter);
+    raise EJVCLFilterError.Create(RsENotCaptureFilter);
 end;
 
 procedure TJvDBFilter.UpdateFuncFilter;

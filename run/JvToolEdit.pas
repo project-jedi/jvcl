@@ -793,8 +793,8 @@ function PaintEdit(Editor: TCustomEdit; const AText: string;
 implementation
 
 uses
-  ShellAPI, Consts, Math,
-  JvThemes, ExtDlgs, JvConsts, JvJVCLUtils, JvPickDate, JvBrowseFolder;
+  ShellAPI, Consts, Math, ExtDlgs,
+  JvThemes, JvResources, JvJVCLUtils, JvPickDate, JvBrowseFolder;
 
 {$R ..\resources\JvToolEdit.res}
 
@@ -2280,8 +2280,8 @@ begin
     end
     else
     begin
-      NewDialog.Title := SBrowse;
-      NewDialog.Filter := SDefaultFilter;
+      NewDialog.Title := RsBrowseCaption;
+      NewDialog.Filter := RsDefaultFilter;
       NewDialog.Options := [ofHideReadOnly];
     end;
   finally
@@ -2291,12 +2291,12 @@ end;
 
 function TJvFilenameEdit.IsCustomTitle: Boolean;
 begin
-  Result := CompareStr(SBrowse, FDialog.Title) <> 0;
+  Result := CompareStr(RsBrowseCaption, FDialog.Title) <> 0;
 end;
 
 function TJvFilenameEdit.IsCustomFilter: Boolean;
 begin
-  Result := CompareStr(SDefaultFilter, FDialog.Filter) <> 0;
+  Result := CompareStr(RsDefaultFilter, FDialog.Filter) <> 0;
 end;
 
 procedure TJvFilenameEdit.ButtonClick;
@@ -2612,7 +2612,7 @@ begin
   FMaxDate := NullDate;
 
   FBlanksChar := ' ';
-  FTitle := SDateDlgTitle;
+  FTitle := RsDateDlgCaption;
   FPopupColor := clMenu;
   FDefNumGlyphs := 2;
   FStartOfWeek := Mon;
@@ -2816,7 +2816,7 @@ begin
       if FDateAutoBetween then
         SetMaxDate(Value)
       else
-        raise Exception.CreateFmt(SDateMinLimit, [DateToStr(FMaxDate)]);
+        raise EJVCLException.CreateFmt(RsEDateMinLimit, [DateToStr(FMaxDate)]);
     FMinDate := Value;
     UpdatePopup;
     if FDateAutoBetween then
@@ -2833,7 +2833,7 @@ begin
       if FDateAutoBetween then
         SetMinDate(Value)
       else
-        raise Exception.CreateFmt(SDateMaxLimit, [DateToStr(FMinDate)]);
+        raise EJVCLException.CreateFmt(RsEDateMaxLimit, [DateToStr(FMinDate)]);
     FMaxDate := Value;
     UpdatePopup;
     if FDateAutoBetween then
@@ -2924,7 +2924,7 @@ end;
 
 function TJvCustomDateEdit.IsCustomTitle: Boolean;
 begin
-  Result := (CompareStr(SDateDlgTitle, DialogTitle) <> 0) and
+  Result := (CompareStr(RsDateDlgCaption, DialogTitle) <> 0) and
     (DialogTitle <> EmptyStr); // Polaris
 end;
 
@@ -3172,15 +3172,15 @@ begin
     begin
       if ((FMinDate <> NullDate) and (FMaxDate <> NullDate) and
         ((Value < FMinDate) or (Value > FMaxDate))) then
-        raise Exception.CreateFmt(SDateOutOfRange, [FormatDateTime(FDateFormat, Value),
+        raise EJVCLException.CreateFmt(RsEDateOutOfRange, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMinDate), FormatDateTime(FDateFormat, FMaxDate)])
       else
       if (FMinDate <> NullDate) and (Value < FMinDate) then
-        raise Exception.CreateFmt(SDateOutOfMin, [FormatDateTime(FDateFormat, Value),
+        raise EJVCLException.CreateFmt(RsEDateOutOfMin, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMinDate)])
       else
       if (FMaxDate <> NullDate) and (Value > FMaxDate) then
-        raise Exception.CreateFmt(SDateOutOfMax, [FormatDateTime(FDateFormat, Value),
+        raise EJVCLException.CreateFmt(RsEDateOutOfMax, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMaxDate)]);
     end;
   inherited SetDate(Value);

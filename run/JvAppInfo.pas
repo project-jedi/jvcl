@@ -128,7 +128,7 @@ begin
             tkString, tkLString:
               SetStrProp(Self, PropList[I], Value);
           else
-            raise EJVCLException.CreateFmt(SInvalidPropertyFmt, [PropList[I].Name]);
+            raise EJVCLException.CreateFmt(RsEInvalidPropertyFmt, [PropList[I].Name]);
           end;
         Inc(I);
       end;
@@ -160,7 +160,7 @@ begin
           tkString, tkLString:
             Value := GetStrProp(Self, PropList[I]);
         else
-          raise EJVCLException.CreateFmt(SInvalidPropertyFmt, [PropList[I].Name]);
+          raise EJVCLException.CreateFmt(RsEInvalidPropertyFmt, [PropList[I].Name]);
         end;
         Ini.WriteString(Section, PropList[I].Name, Value);
         Inc(I);
@@ -201,7 +201,7 @@ begin
             tkString, tkLString:
               SetStrProp(Self, PropList[I], Value);
           else
-            raise EJVCLException.CreateFmt(SInvalidPropertyFmt, [PropList[I].Name]);
+            raise EJVCLException.CreateFmt(RsEInvalidPropertyFmt, [PropList[I].Name]);
           end;
         Inc(I);
       end;
@@ -234,7 +234,7 @@ begin
           tkString, tkLString:
             Value := GetStrProp(Self, PropList[I]);
         else
-          raise EJVCLException.CreateFmt(SInvalidPropertyFmt, [PropList[I].Name]);
+          raise EJVCLException.CreateFmt(RsEInvalidPropertyFmt, [PropList[I].Name]);
         end;
         Reg.WriteString(Section, PropList[i].Name, Value);
         Inc(I);
@@ -272,7 +272,7 @@ end;
 procedure TJvAppInfo.CheckPath;
 begin
   if SavePath = '' then
-    raise EJVCLException.Create(SNoPathSpecified);
+    raise EJVCLException.Create(RsENoPathSpecified);
 end;
 
 end.

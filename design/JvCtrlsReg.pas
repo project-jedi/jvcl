@@ -41,7 +41,8 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvZoom, JvBehaviorLabel, JvArrowButton,
+  JvDsgnConsts,
+  JvZoom, JvBehaviorLabel, JvArrowButton,
   JvaScrollText, JvCaptionButton, JvClock, JvContentScroller, JvColorBox,
   JvColorButton, JvDice, JvDriveCtrls, JvFooter, JvGroupHeader, JvHint,
   JvHtControls, JvInstallLabel, JvItemsPanel, JvListComb, JvPageScroller,

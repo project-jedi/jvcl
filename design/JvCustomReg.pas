@@ -47,7 +47,8 @@ uses
   {$ENDIF COMPILER7_UP}
   ToolsAPI,
   JclSchedule,
-  JvConsts, JvTrayIcon, JvGammaPanel, JvInspector, JvLinkLabel,
+  JvDsgnConsts,
+  JvTrayIcon, JvGammaPanel, JvInspector, JvLinkLabel,
   JvLookOut, JvOutlookBar, JvScheduledEvents, JvThumbImage,
   JvThumbnails, JvThumbviews, JvTimeLine, JvTMTimeLine, JvBalloonHint,
   JvValidateEdit, JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser,

@@ -1194,7 +1194,7 @@ uses
   Forms,
   {$ENDIF COMPILER6_UP}
   JclBase, JclFileUtils, JclLogic, JclDateTime,
-  JvConsts, JvResources;
+  JvResources;
 
 type
   TJvID3StringList = class(TStringList)
@@ -1365,7 +1365,7 @@ begin
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       Result := WideStringToStringEx(SP.SW, CP_ACP);
   else
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -1380,7 +1380,7 @@ begin
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       Result := SP.SW;
   else
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -1421,7 +1421,7 @@ begin
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       SP.SW := StringToWideStringEx(S, CP_ACP);
   else
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -1436,7 +1436,7 @@ begin
       Result := Length(SP.SW);
   else
     Result := 0;
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -1456,7 +1456,7 @@ begin
       Result := LengthUTF8Str(GetStringW(SP, Encoding));
   else
     Result := 0;
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 *)
@@ -1478,7 +1478,7 @@ begin
       Result := LengthUTF8Str(GetStringW(S, FromEnc));
   else
     Result := 0;
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -1494,7 +1494,7 @@ begin
       Result := 2;
   else
     Result := 0;
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -1535,7 +1535,7 @@ begin
           for I := 0 to SourceA.Count - 1 do
             DestW.Add(StringToWideStringEx(SourceA[I], CP_ACP));
       else
-        ID3Error(SID3UnknownEncoding);
+        ID3Error(RsEID3UnknownEncoding);
       end;
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       case DestEnc of
@@ -1546,11 +1546,11 @@ begin
           for I := 0 to SourceW.Count - 1 do
             DestW.Add(SourceW[I]);
       else
-        ID3Error(SID3UnknownEncoding);
+        ID3Error(RsEID3UnknownEncoding);
       end;
 
   else
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -1565,7 +1565,7 @@ begin
       Result := SP.SW = '';
   else
     Result := False;
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -1591,7 +1591,7 @@ begin
         { Note, don't set Result to True }
         S := cUnknownLanguage;
       heRaise:
-        Frame.ErrorFmt(SID3InvalidLanguageValue, [S]);
+        Frame.ErrorFmt(RsEID3InvalidLanguageValue, [S]);
     else
       Exit;
     end
@@ -1636,7 +1636,7 @@ begin
         { Note, don't set Result to True }
         S := '0000';
       heRaise:
-        Frame.ErrorFmt(SID3InvalidTimeValue, [S]);
+        Frame.ErrorFmt(RsEID3InvalidTimeValue, [S]);
     end;
 end;
 
@@ -1671,7 +1671,7 @@ begin
         { Note, don't set Result to True }
         S := '0101';
       heRaise:
-        Frame.ErrorFmt(SID3InvalidDateValue, [S]);
+        Frame.ErrorFmt(RsEID3InvalidDateValue, [S]);
     end;
 end;
 
@@ -1700,10 +1700,10 @@ begin
           ienUTF_16, ienUTF_16BE, ienUTF_8:
             SetLength(SP.SW, MaxCharCount);
         else
-          Frame.Error(SID3UnknownEncoding);
+          Frame.Error(RsEID3UnknownEncoding);
         end;
       heRaise:
-        Frame.ErrorFmt(SID3StringTooLong, [GetStringA(SP, Frame.Encoding)]);
+        Frame.ErrorFmt(RsEID3StringTooLong, [GetStringA(SP, Frame.Encoding)]);
     end;
 end;
 
@@ -1804,7 +1804,7 @@ begin
             Strings[I] := S;
           end;
         heRaise:
-          Frame.ErrorFmt(SID3InvalidCharInList, [ASeparator, S]);
+          Frame.ErrorFmt(RsEID3InvalidCharInList, [ASeparator, S]);
       else
         Break;
       end;
@@ -1839,7 +1839,7 @@ begin
             Strings[I] := S;
           end;
         heRaise:
-          Frame.ErrorFmt(SID3InvalidCharInList, [ASeparator, S]);
+          Frame.ErrorFmt(RsEID3InvalidCharInList, [ASeparator, S]);
       else
         Break;
       end;
@@ -1903,7 +1903,7 @@ begin
         { Note, don't set Result to True }
         S := '';
       heRaise:
-        Frame.ErrorFmt(SID3InvalidPartInSetValue, [S]);
+        Frame.ErrorFmt(RsEID3InvalidPartInSetValue, [S]);
     end;
 end;
 
@@ -2005,7 +2005,7 @@ begin
       if DestEnc = ienISO_8859_1 then
         S.SA := WideStringToStringEx(S.SW, CP_ACP);
   else
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -2295,7 +2295,7 @@ begin
       Result := 4;
   else
     Result := 0;
-    ID3Error(SID3UnknownVersion);
+    ID3Error(RsEID3UnknownVersion);
   end;
 end;
 
@@ -2784,7 +2784,7 @@ class function TJvID3AudioEncryptionFrame.FindOrCreate(AController: TJvID3Contro
   const AOwnerID: string): TJvID3AudioEncryptionFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AOwnerID);
   if not Assigned(Result) then
@@ -2924,7 +2924,7 @@ end;
 function TJvID3Base.GetStream: TJvID3Stream;
 begin
   if not Assigned(FController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   if icsUsingTempStream in FController.FState then
     Result := FController.FTempStream
@@ -2992,7 +2992,7 @@ class function TJvID3BinaryFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3BinaryFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AFrameID);
   if not Assigned(Result) then
@@ -3180,7 +3180,7 @@ class function TJvID3ContentFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3ContentFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AFrameID);
   if not Assigned(Result) then
@@ -3355,7 +3355,7 @@ var
   FrameClass: TJvID3FrameClass;
 begin
   if not Active and not (icsReading in FState) then
-    ID3Error(SID3ControllerNotActive, Self);
+    ID3Error(RsEID3ControllerNotActive, Self);
 
   FrameClass := GetFrameClass(AFrameID);
 
@@ -3485,7 +3485,7 @@ begin
       LFrameClass := FrameClass.ClassName
     else
       LFrameClass := '';
-    ID3ErrorFmt(SID3InvalidFrameClass, [LFrameClass, ID3_FrameIDToString(AFrameID)], Self);
+    ID3ErrorFmt(RsEID3InvalidFrameClass, [LFrameClass, ID3_FrameIDToString(AFrameID)], Self);
   end;
 end;
 
@@ -3499,7 +3499,7 @@ const
   CHandleError: array [Boolean] of TJvID3HandleError = (heRaise, heAutoCorrect);
 begin
   if not Active then
-    ID3Error(SID3ControllerNotActive);
+    ID3Error(RsEID3ControllerNotActive);
 
   try
     if coRemoveEmptyFrames in Options then
@@ -3528,7 +3528,7 @@ var
   ID3v1Ctrl: TJvID3v1;
 begin
   if not Active then
-    ID3Error(SID3ControllerNotActive, Self);
+    ID3Error(RsEID3ControllerNotActive, Self);
 
   ID3v1Ctrl := TJvID3v1.Create(nil);
   try
@@ -3634,7 +3634,7 @@ var
   ID3v1Ctrl: TJvID3v1;
 begin
   if not Active then
-    ID3Error(SID3ControllerNotActive, Self);
+    ID3Error(RsEID3ControllerNotActive, Self);
 
   ID3v1Ctrl := TJvID3v1.Create(nil);
   try
@@ -3801,7 +3801,7 @@ var
   IDs: TJvID3FrameIDs;
 begin
   if not Active then
-    ID3Error(SID3ControllerNotActive, Self);
+    ID3Error(RsEID3ControllerNotActive, Self);
 
   IDs := FrameIDs - FFrames.GetFrameIDs;
   { IDs represents a set of frames we have to construct }
@@ -3909,7 +3909,7 @@ begin
       Result := ive2_4;
   else
     Result := ive2_3;
-    ID3Error(SID3UnknownVersion, Self);
+    ID3Error(RsEID3UnknownVersion, Self);
   end;
 end;
 
@@ -3957,7 +3957,7 @@ begin
       Result := ive2_4;
   else
     Result := ive2_3;
-    ID3Error(SID3UnknownVersion, Self);
+    ID3Error(RsEID3UnknownVersion, Self);
   end;
 end;
 
@@ -4275,7 +4275,7 @@ end;
 procedure TJvID3Controller.SetReadEncodingAs(const Value: TJvID3ForceEncoding);
 begin
   if (FReadVersionAs in [ifv2_2, ifv2_3]) and (Value in [ifeUTF_16BE, ifeUTF_8]) then
-    ID3Error(SID3EncodingNotSupported, Self);
+    ID3Error(RsEID3EncodingNotSupported, Self);
 
   FReadEncodingAs := Value;
 end;
@@ -4304,7 +4304,7 @@ end;
 procedure TJvID3Controller.SetWriteEncodingAs(const Value: TJvID3ForceEncoding);
 begin
   if (FWriteVersionAs in [ifv2_2, ifv2_3]) and (Value in [ifeUTF_16BE, ifeUTF_8]) then
-    ID3Error(SID3EncodingNotSupported, Self);
+    ID3Error(RsEID3EncodingNotSupported, Self);
 
   FWriteEncodingAs := Value;
 end;
@@ -4590,7 +4590,7 @@ class function TJvID3DoubleListFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3DoubleListFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AFrameID);
   if not Assigned(Result) then
@@ -4652,7 +4652,7 @@ begin
         Inc(Result, LengthTerminatorEnc(ToEncoding));
       end;
   else
-    Error(SID3UnknownEncoding);
+    Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -4666,7 +4666,7 @@ begin
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       Result := (FListW.Count = 0) or ((FListW.Count = 1) and (FListW[0] = ''));
   else
-    Error(SID3UnknownEncoding);
+    Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -4722,7 +4722,7 @@ begin
         ienUTF_16, ienUTF_16BE, ienUTF_8:
           FListW.Add(S1.SW + '=' + S2.SW);
       else
-        Error(SID3UnknownEncoding);
+        Error(RsEID3UnknownEncoding);
       end;
     end;
   end;
@@ -4819,7 +4819,7 @@ begin
           WriteTerminatorEnc;
         end;
     else
-      Error(SID3UnknownEncoding);
+      Error(RsEID3UnknownEncoding);
     end;
   end;
 end;
@@ -4848,7 +4848,7 @@ begin
     ive2_4:
       { Nothing }
   else
-    ID3Error(SID3VersionNotSupported, Controller);
+    ID3Error(RsEID3VersionNotSupported, Controller);
   end;
 end;
 
@@ -4881,7 +4881,7 @@ begin
       end;
   else
     Result := 0;
-    ID3Error(SID3UnknownVersion, Controller);
+    ID3Error(RsEID3UnknownVersion, Controller);
   end;
 end;
 
@@ -5510,10 +5510,10 @@ end;
 procedure TJvID3Frame.CheckFrameID(const AFrameID: TJvID3FrameID);
 begin
   if AFrameID in [fiErrorFrame, fiPaddingFrame] then
-    ErrorFmt(SID3FrameIDNotSupported, [ID3_FrameIDToString(AFrameID)]);
+    ErrorFmt(RsEID3FrameIDNotSupported, [ID3_FrameIDToString(AFrameID)]);
 
   if TJvID3Controller.GetFrameClass(AFrameID) <> ClassType then
-    ErrorFmt(SID3FrameIDNotSupported, [ID3_FrameIDToString(AFrameID)]);
+    ErrorFmt(RsEID3FrameIDNotSupported, [ID3_FrameIDToString(AFrameID)]);
 end;
 
 procedure TJvID3Frame.CheckFrameIDStr(const S: string);
@@ -5522,10 +5522,10 @@ var
 begin
   LFrameID := ID3_StringToFrameID(S);
   if LFrameID in [fiErrorFrame, fiPaddingFrame] then
-    ErrorFmt(SID3FrameIDStrNotSupported, [S]);
+    ErrorFmt(RsEID3FrameIDStrNotSupported, [S]);
 
   if TJvID3Controller.GetFrameClass(LFrameID) <> ClassType then
-    ErrorFmt(SID3FrameIDStrNotSupported, [S]);
+    ErrorFmt(RsEID3FrameIDStrNotSupported, [S]);
 end;
 
 function TJvID3Frame.CheckIsUnique: Boolean;
@@ -5565,7 +5565,7 @@ begin
       ive2_3, ive2_4:
         Result := ID3_FrameIDToString(FrameID, 4);
     else
-      Error(SID3UnknownVersion);
+      Error(RsEID3UnknownVersion);
     end
   else
     Result := FFrameIDStr;
@@ -5592,7 +5592,7 @@ end;
 function TJvID3Frame.GetStream: TJvID3Stream;
 begin
   if not Assigned(FController) then
-    Error(SID3NoController);
+    Error(RsEID3NoController);
 
   if icsUsingTempStream in FController.FState then
     Result := FController.FTempStream
@@ -6134,7 +6134,7 @@ var
   I: Integer;
 begin
   if not (ANewVersion in CSupportedVersions) then
-    ID3Error(SID3VersionNotSupported, Controller);
+    ID3Error(RsEID3VersionNotSupported, Controller);
 
   for I := Count - 1 downto 0 do
     Frames[I].ChangeToVersion(ANewVersion);
@@ -6147,7 +6147,7 @@ end;
 procedure TJvID3Frames.CheckCanAddFrame(FrameID: TJvID3FrameID);
 begin
   if not FController.CanAddFrame(FrameID) then
-    ID3ErrorFmt(SID3AlreadyContainsFrame, [ID3_FrameIDToString(FrameID)]);
+    ID3ErrorFmt(RsEID3AlreadyContainsFrame, [ID3_FrameIDToString(FrameID)]);
 end;
 
 function TJvID3Frames.CheckFrames(const HandleError: TJvID3HandleError): Boolean;
@@ -6167,7 +6167,7 @@ begin
         heAutoCorrect:
           Frames[I].Free;
         heRaise:
-          Frames[I].Error(SID3DuplicateFrame);
+          Frames[I].Error(RsEID3DuplicateFrame);
       else
         Exit;
       end;
@@ -6246,14 +6246,14 @@ function TJvID3Frames.FrameByID(const FrameID: TJvID3FrameID): TJvID3Frame;
 begin
   Result := FindFrame(FrameID);
   if Result = nil then
-    ID3ErrorFmt(SID3FrameNotFound, [ID3_FrameIDToString(FrameID)], Controller);
+    ID3ErrorFmt(RsEID3FrameNotFound, [ID3_FrameIDToString(FrameID)], Controller);
 end;
 
 function TJvID3Frames.FrameByName(const FrameName: string): TJvID3Frame;
 begin
   Result := FindFrame(FrameName);
   if Result = nil then
-    ID3ErrorFmt(SID3FrameNotFound, [FrameName], Controller);
+    ID3ErrorFmt(RsEID3FrameNotFound, [FrameName], Controller);
 end;
 
 function TJvID3Frames.GetCount: Integer;
@@ -6459,7 +6459,7 @@ class function TJvID3GeneralObjFrame.FindOrCreate(AController: TJvID3Controller;
   const AContentDescription: string): TJvID3GeneralObjFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AContentDescription);
   if not Assigned(Result) then
@@ -6472,7 +6472,7 @@ end;
 class function TJvID3GeneralObjFrame.FindOrCreate(AController: TJvID3Controller): TJvID3GeneralObjFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController);
   if not Assigned(Result) then
@@ -6483,7 +6483,7 @@ class function TJvID3GeneralObjFrame.FindOrCreateW(AController: TJvID3Controller
   const AContentDescription: WideString): TJvID3GeneralObjFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AContentDescription);
   if not Assigned(Result) then
@@ -6678,7 +6678,7 @@ begin
         FMajorVersion := 4;
       end;
   else
-    ID3Error(SID3VersionNotSupported);
+    ID3Error(RsEID3VersionNotSupported);
   end;
 end;
 
@@ -6886,7 +6886,7 @@ begin
             FValue := 0;
           end;
         heRaise:
-          ErrorFmt(SID3ValueTooBig, [FValue]);
+          ErrorFmt(RsEID3ValueTooBig, [FValue]);
       end;
   end
   else
@@ -6911,7 +6911,7 @@ class function TJvID3NumberFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3NumberFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AFrameID);
   if not Assigned(Result) then
@@ -6947,7 +6947,7 @@ begin
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       FValue := StrToIntDef(WideStringToStringEx(ANewText.SW, CP_ACP), 0);
   else
-    Error(SID3UnknownEncoding);
+    Error(RsEID3UnknownEncoding);
   end;
 
   UpdateFrameSize;
@@ -7013,7 +7013,7 @@ end;
 class function TJvID3OwnershipFrame.FindOrCreate(AController: TJvID3Controller): TJvID3OwnershipFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController);
   if not Assigned(Result) then
@@ -7248,7 +7248,7 @@ class function TJvID3PictureFrame.FindOrCreate(AController: TJvID3Controller;
   const AType: TJvID3PictureType): TJvID3PictureFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AType);
   if not Assigned(Result) then
@@ -7450,7 +7450,7 @@ end;
 class function TJvID3PlayCounterFrame.FindOrCreate(AController: TJvID3Controller): TJvID3PlayCounterFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController);
   if not Assigned(Result) then
@@ -7565,7 +7565,7 @@ end;
 class function TJvID3PopularimeterFrame.FindOrCreate(AController: TJvID3Controller): TJvID3PopularimeterFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController);
   if not Assigned(Result) then
@@ -7576,7 +7576,7 @@ class function TJvID3PopularimeterFrame.FindOrCreate(AController: TJvID3Controll
   const AEmailAddress: string): TJvID3PopularimeterFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AEmailAddress);
   if not Assigned(Result) then
@@ -7701,7 +7701,7 @@ begin
         ienUTF_16, ienUTF_16BE, ienUTF_8:
           Result := CheckIsLanguageListW(Self, FListW, HandleError);
       else
-        Error(SID3UnknownEncoding);
+        Error(RsEID3UnknownEncoding);
       end;
   else
     case Encoding of
@@ -7710,7 +7710,7 @@ begin
       ienUTF_16, ienUTF_16BE, ienUTF_8:
         Result := CheckListW(Self, FListW, SeparatorW, HandleError);
     else
-      Error(SID3UnknownEncoding);
+      Error(RsEID3UnknownEncoding);
     end;
   end;
 
@@ -7739,7 +7739,7 @@ class function TJvID3SimpleListFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3SimpleListFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AFrameID);
   if not Assigned(Result) then
@@ -7797,7 +7797,7 @@ begin
             { x2 }
             Result := Result * 2;
         else
-          Error(SID3UnknownEncoding);
+          Error(RsEID3UnknownEncoding);
         end;
       end;
     ienUTF_16, ienUTF_16BE, ienUTF_8:
@@ -7823,11 +7823,11 @@ begin
           ienUTF_16BE:
             { Nothing };
         else
-          Error(SID3UnknownEncoding);
+          Error(RsEID3UnknownEncoding);
         end;
       end;
   else
-    Error(SID3UnknownEncoding);
+    Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -7871,7 +7871,7 @@ begin
       else
         AText.SW := FListW.GetSeparatedText('');
   else
-    Error(SID3UnknownEncoding);
+    Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -7895,7 +7895,7 @@ begin
       else
         ExtractStringsW(SeparatorW, PWideChar(ANewText.SW), FListW);
   else
-    Error(SID3UnknownEncoding);
+    Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -8021,7 +8021,7 @@ begin
       ive2_4:
         FAllowedEncodings := [ienISO_8859_1, ienUTF_16, ienUTF_16BE, ienUTF_8];
     else
-      ID3Error(SID3UnknownVersion);
+      ID3Error(RsEID3UnknownVersion);
     end
   else
   begin
@@ -8101,7 +8101,7 @@ begin
   if B <= Integer(High(TJvID3Encoding)) then
     SourceEncoding := TJvID3Encoding(B)
   else
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
 
   AEncoding := DestEncoding;
 end;
@@ -8202,7 +8202,7 @@ begin
       Result := ReadStringUTF8(S.SW);
   else
     Result := 0;
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 
   if SourceEncoding <> DestEncoding then
@@ -8318,7 +8318,7 @@ begin
       Result := ReadUserStringUTF8(S1.SW, S2.SW);
   else
     Result := 0;
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 
   if SourceEncoding <> DestEncoding then
@@ -8484,7 +8484,7 @@ begin
       Result := WriteStringUTF8(GetStringW(S, SourceEncoding));
   else
     Result := 0;
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -8564,7 +8564,7 @@ begin
       Result := WriteTerminatorW;
   else
     Result := 0;
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -8590,7 +8590,7 @@ begin
         GetStringW(S1, SourceEncoding), GetStringW(S2, SourceEncoding));
   else
     Result := 0;
-    ID3Error(SID3UnknownEncoding);
+    ID3Error(RsEID3UnknownEncoding);
   end;
 end;
 
@@ -8716,7 +8716,7 @@ end;
 class function TJvID3TermsOfUseFrame.FindOrCreate(AController: TJvID3Controller): TJvID3TermsOfUseFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController);
   if not Assigned(Result) then
@@ -8905,7 +8905,7 @@ class function TJvID3TextFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3TextFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AFrameID);
   if not Assigned(Result) then
@@ -9019,7 +9019,7 @@ class function TJvID3TimestampFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3TimestampFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AFrameID);
   if not Assigned(Result) then
@@ -9188,7 +9188,7 @@ class function TJvID3URLFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3URLFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, AFrameID);
   if not Assigned(Result) then
@@ -9315,7 +9315,7 @@ class function TJvID3URLUserFrame.FindOrCreate(AController: TJvID3Controller;
   const Index: Integer): TJvID3URLUserFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, Index);
   if not Assigned(Result) then
@@ -9451,7 +9451,7 @@ class function TJvID3UserFrame.FindOrCreate(AController: TJvID3Controller;
   const Index: Integer): TJvID3UserFrame;
 begin
   if not Assigned(AController) then
-    ID3Error(SID3NoController);
+    ID3Error(RsEID3NoController);
 
   Result := Find(AController, Index);
   if not Assigned(Result) then

@@ -45,7 +45,8 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   ToolsAPI,
-  JvConsts, JvSegmentedLEDDisplay, JvLED, JvDialButton,
+  JvDsgnConsts,
+  JvSegmentedLEDDisplay, JvLED, JvDialButton,
   JvSegmentedLEDDisplayEditors, JvSegmentedLEDDisplayMapperFrame;
 
 procedure Register;

@@ -298,7 +298,7 @@ begin
   TopSection := GetAbsPath(Path);
   if TopSection = '' then
     TopSection := DefaultSection;
-  raise EJVCLAppStoreError.Create(SDelSubTreeNotImplemented);
+  raise EJVCLAppStoreError.Create(RsEDelSubTreeNotImplemented);
 end;
 
 function TJvAppIniStore.DoReadInteger(const Path: string; Default: Integer): Integer;
@@ -537,7 +537,7 @@ end;
 function TJvAppINIFileStore.ReadValue(const Section, Key: string): string;
 begin
   if Section = '' then
-    raise EJVCLAppStoreError.Create(SReadValueFailed);
+    raise EJVCLAppStoreError.Create(RsEReadValueFailed);
   if IniFile <> nil then
     Result := IniFile.ReadString(Section, Key, '')
   else
@@ -549,7 +549,7 @@ begin
   if IniFile <> nil then
   begin
     if Section = '' then
-      raise EJVCLAppStoreError.Create(SWriteValueFailed);
+      raise EJVCLAppStoreError.Create(RsEWriteValueFailed);
     IniFile.WriteString(Section, Key, Value);
     FLastUserAct := GetTickCount;
     FHasWritten := True;

@@ -41,7 +41,8 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvClipboardMonitor, JvClipboardViewer, JvCommStatus, {JvComputerInfo,}
+  JvDsgnConsts,
+  JvClipboardMonitor, JvClipboardViewer, JvCommStatus, {JvComputerInfo,}
   JvDdeCmd, JvDeviceChanged, JvDirectories, JvDragDrop, JvHidControllerClass,
   JvJoystick, JvKeyboardStates, JvMRUList, JvMRUManager, JvNTEventLog, JvRas32,
   JvAppInst, JvScreenSaver, JvShellHook, JvSHFileOperation, JvSoundControl,
