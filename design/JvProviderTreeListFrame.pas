@@ -31,13 +31,30 @@ unit JvProviderTreeListFrame;
 
 interface
 
-uses 
+uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls,
   JvDataProvider, JvDataProviderImpl;
 
 type
   TGetVirtualRootEvent = procedure(Sender: TObject; var AVirtualRoot: IJvDataItem) of object;
+  TMasterConsumer = class(TJvDataConsumer)
+  private
+    FSlave: TJvDataConsumer;
+  protected
+    OldOnChanged: TJvDataConsumerChangeEvent;
+    procedure SetSlave(Value: TJvDataConsumer);
+    procedure LimitSubServices(Sender: TJvDataConsumer;
+      var SubSvcClass: TJvDataConsumerAggregatedObjectClass);
+    procedure SlaveChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    function GetInterface(const IID: TGUID; out Obj): Boolean; override;
+
+    property Slave: TJvDataConsumer read FSlave write FSlave;
+  end;
+  
   TfmeJvProviderTreeList = class(TFrame)
     lvProvider: TListView;
     procedure lvProviderCustomDrawItem(Sender: TCustomListView;
@@ -51,7 +68,7 @@ type
       Selected: Boolean);
   private
     { Private declarations }
-    FConsumerSvc: TJvDataConsumer;
+    FConsumerSvc: TMasterConsumer;
     FOnGetVirtualRoot: TGetVirtualRootEvent;
     FOnItemSelect: TNotifyEvent;
     FUseVirtualRoot: Boolean;
@@ -79,7 +96,7 @@ type
     function GetSelectedIndex: Integer;
     property OnGetVirtualRoot: TGetVirtualRootEvent read FOnGetVirtualRoot write FOnGetVirtualRoot;
     property OnItemSelect: TNotifyEvent read FOnItemSelect write FOnItemSelect;
-    property Provider: TJvDataConsumer read FConsumerSvc;
+    property Provider: TMasterConsumer read FConsumerSvc;
     property UseVirtualRoot: Boolean read FUseVirtualRoot write SetUseVirtualRoot;
   end;
 
@@ -103,6 +120,68 @@ begin
   else
     Result := -1;
 end;
+
+function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
+begin
+  Result := CompareMem(@IID1, @IID2, SizeOf(IID1));
+end;
+
+//===TMasterConsumer================================================================================
+
+procedure TMasterConsumer.SetSlave(Value: TJvDataConsumer);
+begin
+  if Value <> Slave then
+  begin
+    if Slave <> nil then
+      Slave.OnChanged := OldOnChanged;
+    FSlave := Value;
+    if Slave <> nil then
+    begin
+      OldOnChanged := Slave.OnChanged;
+      Slave.OnChanged := SlaveChanged;
+    end;
+    ViewChanged(nil);
+    Changed(ccrViewChanged);
+  end;
+end;
+
+procedure TMasterConsumer.LimitSubServices(Sender: TJvDataConsumer;
+  var SubSvcClass: TJvDataConsumerAggregatedObjectClass);
+begin
+  if not SubSvcClass.InheritsFrom(TJvDataConsumerContext) and
+      not SubSvcClass.InheritsFrom(TJvDataConsumerItemSelect) and
+      not SubSvcClass.InheritsFrom(TJvCustomDataConsumerViewList) then
+    SubSvcClass := nil;
+end;
+
+procedure TMasterConsumer.SlaveChanged(Sender: TJvDataConsumer;
+  Reason: TJvDataConsumerChangeReason);
+begin
+  if Reason = ccrViewChanged then
+    ViewChanged(nil);
+  Changed(Reason);
+end;
+
+constructor TMasterConsumer.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner, [DPA_ConsumerDisplaysList, DPA_RenderDisabledAsGrayed]);
+  BeforeCreateSubSvc := LimitSubServices;
+end;
+
+destructor TMasterConsumer.Destroy;
+begin
+  Slave := nil;
+  inherited Destroy;
+end;
+
+function TMasterConsumer.GetInterface(const IID: TGUID; out Obj): Boolean;
+begin
+  Result := inherited GetInterface(IID, Obj);
+  if not Result and not IsEqualGUID(IID, IJvDataConsumerItemSelect) and (Slave <> nil) then
+    Result := Slave.GetInterface(IID, Obj);
+end;
+
+//===TfmeJvProviderTreeList=========================================================================
 
 function TfmeJvProviderTreeList.DoGetVirtualRoot: IJvDataItem;
 begin
@@ -154,11 +233,17 @@ procedure TfmeJvProviderTreeList.ConsumerChanged(Sender: TJvDataConsumer;
   Reason: TJvDataConsumerChangeReason);
 begin
   if UseVirtualRoot then
+  begin
     GenerateVirtualRoot;
+  end;
   if GetViewList = nil then
-    lvProvider.Items.Count := 0
+  begin
+    lvProvider.Items.Count := 0;
+  end
   else
+  begin
     lvProvider.Items.Count := GetViewList.Count + Ord(UsingVirtualRoot);
+  end;
   lvProvider.Invalidate;
 end;
 
@@ -170,7 +255,7 @@ end;
 constructor TfmeJvProviderTreeList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed, DPA_ConsumerDisplaysList]);
+  FConsumerSvc := TMasterConsumer.Create(Self);
   FConsumerSvc.OnChanged := ConsumerChanged;
 end;
 
@@ -182,21 +267,31 @@ end;
 
 function TfmeJvProviderTreeList.GetDataItem(Index: Integer): IJvDataItem;
 begin
-  if UsingVirtualRoot and (Index = 0) then
-    Result := FVirtualRoot
-  else if (Index >= Ord(UsingVirtualRoot)) then
-    Result := GetViewList.Item(Index - Ord(UsingVirtualRoot));
+  Provider.Enter;
+  try
+    if UsingVirtualRoot and (Index = 0) then
+      Result := FVirtualRoot
+    else if (Index >= Ord(UsingVirtualRoot)) then
+      Result := GetViewList.Item(Index - Ord(UsingVirtualRoot));
+  finally
+    Provider.Leave;
+  end;
 end;
 
 function TfmeJvProviderTreeList.LocateID(ID: string): Integer;
 begin
-  if UsingVirtualRoot and AnsiSameText(ID, FVirtualRoot.GetID) then
-    Result := 0
-  else
-  begin
-    Result := GetViewList.IndexOfID(ID);
-    if UsingVirtualRoot and (Result >= 0) then
-      Inc(Result);
+  Provider.Enter;
+  try
+    if UsingVirtualRoot and AnsiSameText(ID, FVirtualRoot.GetID) then
+      Result := 0
+    else
+    begin
+      Result := GetViewList.IndexOfID(ID);
+      if UsingVirtualRoot and (Result >= 0) then
+        Inc(Result);
+    end;
+  finally
+    Provider.Leave;
   end;
 end;
 
@@ -286,35 +381,45 @@ var
 begin
   if (Provider.ProviderIntf = nil) or (Item.Index > GetViewList.Count) then
     Exit;
-  if UsingVirtualRoot and (Item.Index = 0) then
-  begin
-    DataItem := FVirtualRoot;
-    Item.Indent := 0;
-  end
-  else
-  begin
-    DataItem := GetViewList.Item(Item.Index - Ord(UsingVirtualRoot));
-    Item.Indent := GetViewList.ItemLevel(Item.Index - Ord(UsingVirtualRoot)) + Ord(UsingVirtualRoot);
-  end;
-  if DataItem <> nil then
-  begin
-    if Supports(DataItem, IJvDataItemText, ItemText) then
-      Item.Caption := ItemText.Caption
+  Provider.Enter;
+  try
+    if UsingVirtualRoot and (Item.Index = 0) then
+    begin
+      DataItem := FVirtualRoot;
+      Item.Indent := 0;
+    end
     else
     begin
-      if DataItem = FVirtualRoot then
-        Item.Caption := SDataItemRootCaption
-      else
-        Item.Caption := SDataItemNoTextIntf;
+      DataItem := GetViewList.Item(Item.Index - Ord(UsingVirtualRoot));
+      Item.Indent := GetViewList.ItemLevel(Item.Index - Ord(UsingVirtualRoot)) + Ord(UsingVirtualRoot);
     end;
-  end
+    if DataItem <> nil then
+    begin
+      if Supports(DataItem, IJvDataItemText, ItemText) then
+        Item.Caption := ItemText.Caption
+      else
+      begin
+        if DataItem = FVirtualRoot then
+          Item.Caption := SDataItemRootCaption
+        else
+          Item.Caption := SDataItemNoTextIntf;
+      end;
+    end
+  finally
+    Provider.Leave;
+  end;
 end;
 
 procedure TfmeJvProviderTreeList.lvProviderDblClick(Sender: TObject);
 begin
-  if lvProvider.Selected <> nil then
-    if lvProvider.Selected.Index >= Ord(UsingVirtualRoot) then
-      GetViewList.ToggleItem(lvProvider.Selected.Index - Ord(UsingVirtualRoot));
+  Provider.Enter;
+  try
+    if lvProvider.Selected <> nil then
+      if lvProvider.Selected.Index >= Ord(UsingVirtualRoot) then
+        GetViewList.ToggleItem(lvProvider.Selected.Index - Ord(UsingVirtualRoot));
+  finally
+    Provider.Leave;
+  end;
 end;
 
 procedure TfmeJvProviderTreeList.lvProviderMouseDown(Sender: TObject;
@@ -324,18 +429,23 @@ var
   ItemLevel: Integer;
   TmpRect: TRect;
 begin
-  Item := GetItemIndexAt(lvProvider, X, Y);
-  if Item <> -1 then
-  begin
-    if UsingVirtualRoot and (Item = 0) then
-      ItemLevel := 0
-    else
-      ItemLevel := GetViewList.ItemLevel(Item - Ord(UsingVirtualRoot)) + Ord(UsingVirtualRoot);
-    ListView_GetItemRect(lvProvider.Handle, Item, TmpRect, LVIR_BOUNDS);
-    TmpRect.Right := TmpRect.Left + (Succ((TmpRect.Bottom - TmpRect.Top) + 2) * Succ(ItemLevel));
-    if (X < TmpRect.Right) and (X > TmpRect.Right - ((TmpRect.Bottom - TmpRect.Top) + 2)) then
-      if Item >= Ord(UsingVirtualRoot) then
-        GetViewList.ToggleItem(Item - Ord(UsingVirtualRoot));
+  Provider.Enter;
+  try
+    Item := GetItemIndexAt(lvProvider, X, Y);
+    if Item <> -1 then
+    begin
+      if UsingVirtualRoot and (Item = 0) then
+        ItemLevel := 0
+      else
+        ItemLevel := GetViewList.ItemLevel(Item - Ord(UsingVirtualRoot)) + Ord(UsingVirtualRoot);
+      ListView_GetItemRect(lvProvider.Handle, Item, TmpRect, LVIR_BOUNDS);
+      TmpRect.Right := TmpRect.Left + (Succ((TmpRect.Bottom - TmpRect.Top) + 2) * Succ(ItemLevel));
+      if (X < TmpRect.Right) and (X > TmpRect.Right - ((TmpRect.Bottom - TmpRect.Top) + 2)) then
+        if Item >= Ord(UsingVirtualRoot) then
+          GetViewList.ToggleItem(Item - Ord(UsingVirtualRoot));
+    end;
+  finally
+    Provider.Leave;
   end;
 end;
 

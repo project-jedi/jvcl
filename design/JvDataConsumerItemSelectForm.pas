@@ -46,6 +46,7 @@ type
     procedure fmeTreeListlvProviderDblClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     FConsumer: TJvDataConsumer;
@@ -59,6 +60,7 @@ type
     procedure UpdateViewList;
     procedure UpdateConsumerSvc;
     procedure Loaded; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function DesignerFormName: string; override;
     function AutoStoreSettings: Boolean; override;
   public
@@ -113,16 +115,24 @@ begin
   Result := FConsumer;
 end;
 
+type
+  TOpenConsumer = class(TJvDataConsumer);
+
 procedure TfrmJvDataConsumerItemSelect.SetConsumer(Value: TJvDataConsumer);
 begin
   if Value <> Consumer then
   begin
+    if Consumer <> nil then
+      TOpenConsumer(Consumer).VCLComponent.RemoveFreeNotification(Self);
     FConsumer := Value;
+    fmeTreeList.Provider.Slave := Value;
     if Value <> nil then
     begin
       fmeTreeList.Provider.SetProviderIntf(Value.ProviderIntf);
       fmeTreeList.Provider.SetContextIntf(Value.ContextIntf);
       UpdateViewList;
+      if TOpenConsumer(Value).VCLComponent <> nil then
+        TOpenConsumer(Value).VCLComponent.FreeNotification(Self);
     end
     else
       fmeTreeList.Provider.SetProviderIntf(nil);
@@ -146,16 +156,21 @@ var
 begin
   if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then
   begin
-    if ViewList.Count = 0 then
-      ViewList.RebuildView;
-    fmeTreeList.lvProvider.Items.Count := ViewList.Count;
-    if Supports(Consumer as IJvDataConsumer, IJvDataConsumerItemSelect, ItemSelect) then
-    begin
-      if ItemSelect.GetItem <> nil then
+    fmeTreeList.Provider.Enter;
+    try
+      if ViewList.Count = 0 then
+        ViewList.RebuildView;
+      fmeTreeList.lvProvider.Items.Count := ViewList.Count;
+      if Supports(Consumer as IJvDataConsumer, IJvDataConsumerItemSelect, ItemSelect) then
       begin
-        ViewList.ExpandTreeTo(ItemSelect.GetItem);
-        fmeTreeList.SelectItemID(ItemSelect.GetItem.GetID);
+        if ItemSelect.GetItem <> nil then
+        begin
+          ViewList.ExpandTreeTo(ItemSelect.GetItem);
+          fmeTreeList.SelectItemID(ItemSelect.GetItem.GetID);
+        end;
       end;
+    finally
+      fmeTreeList.Provider.Leave;
     end;
   end;
 end;
@@ -191,6 +206,16 @@ begin
     end;
 end;
 
+procedure TfrmJvDataConsumerItemSelect.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+  begin
+    if (Consumer <> nil) and (TOpenConsumer(Consumer).VCLComponent = AComponent) then
+      Consumer := nil;
+  end;
+end;
+
 function TfrmJvDataConsumerItemSelect.DesignerFormName: string;
 begin
   Result := 'DataProvider Item Selector';
@@ -219,6 +244,14 @@ procedure TfrmJvDataConsumerItemSelect.btnCancelClick(Sender: TObject);
 begin
   inherited;
   Close;
+end;
+
+procedure TfrmJvDataConsumerItemSelect.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  inherited;
+  if Action in [caHide, caFree] then
+    Consumer := nil;
 end;
 
 end.
