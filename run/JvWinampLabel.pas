@@ -125,17 +125,13 @@ type
 implementation
 
 uses
-  JvTypes;
+  JvTypes, JvResources;
 
 const
   // (p3) fixed as suggested by Remko Bonte
   Row1: string[31] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ"@ ';
   Row2: string[31] = '0123456789._:()-''!_+\/[]^&%.=$#';
   Row3: string[31] = 'ÂÖÄ?* ';
-
-resourcestring
-  RC_InvalidSkin = 'Invalid skin';
-  RC_WinampRC = 'WINAMP1';
 
 {$R ..\resources\JvWinampLabel.res}
 

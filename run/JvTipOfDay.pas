@@ -148,16 +148,9 @@ implementation
 
 uses
   Windows, ExtCtrls, JvButton, Dialogs, SysUtils, Registry,
-  JvWndProcHook;
+  JvWndProcHook, JvResources;
 
 {$R ..\resources\JvTipOfDay.res}
-
-resourcestring
-  RC_CloseCaption = '&Close';
-  RC_NextCaption = '&Next Tip';
-  RC_TipsTitle = 'Tips and Tricks';
-  RC_TipsHeaderText = 'Did you know...';
-  RC_TipsCheckBoxText = '&Show Tips on Startup';
 
 const
   // (rom) Jedi registry keys need rework

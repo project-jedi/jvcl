@@ -67,10 +67,8 @@ type
 implementation
 
 uses
-  ShellApi, JvJVCLUtils;
-
-resourcestring
-  RC_EmptyItem = '<Empty>';
+  ShellApi,
+  JvJVCLUtils, JvResources;
 
 constructor TJvStartMenuButton.Create(AOwner: TComponent);
 var

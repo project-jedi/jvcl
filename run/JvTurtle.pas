@@ -223,40 +223,10 @@ type
     property OnRequestImageSize: TRequestImageSizeEvent read FOnRequestImageSize write SetOnRequestImageSize;
   end;
 
-resourcestring
-  sErrorCanvasNotAssigned = '#Error: Canvas not assigned';
-  sEmptyScript = 'empty script';
-  sInvalidIntegerIns = 'invalid integer in %s';
-  sInvalidColorIns = 'invalid color in %s';
-  sInvalidCopyMode = 'invalid copy mode';
-  sInvalidPenMode = 'invalid pen mode';
-  sInvalidTextIns = 'invalid text in %s';
-  sMissingFontname = 'missing fontname';
-  sNumberExpectedIns = 'number expected in %s';
-  sStackOverflow = 'stack overflow';
-  sStackUnderflow = 'stack underflow';
-  sNumberStackUnderflow = 'number stack underflow';
-  sNumberStackOverflow = 'number stack overflow';
-  sMissingAfterComment = 'missing } after comment';
-  sErrorIns = 'error in %s';
-  sDivisionByZero = 'division by zero';
-  sInvalidParameterIns = 'invalid parameter in %s';
-  sSymbolsIsNotDefined = 'symbol %s is not defined';
-  sMissingAfterBlock = 'missing ] after block';
-  sStackUnderflowIns = 'stack underflow in %s';
-  sSymbolExpectedAfterIf = 'symbol expected after if';
-  sCanNotTakeSqrtOf = 'can not take sqrt of 0';
-  sNotAllowedIns = '0 not allowed in %s';
-  sNeedMinimumOfSidesIns = 'need minimum of 3 sides in %s';
-  sMaximumSidesExceededIns = 'maximum 12 sides exceeded in %s';
-  sTokenExpected = 'token expected';
-  ssDoesNotExist = '%s does not exist';
-  sDivisionByZeroNotAllowedInIn = 'division by zero not allowed in in-';
-
 implementation
 
 uses
-  JvConsts, JvTypes;
+  JvConsts, JvTypes, JvResources;
 
 constructor TJvTurtle.Create(AOwner: TComponent);
 begin

@@ -177,15 +177,20 @@ type
     property Options: TglAskLBOptions read FOptions write SetOptions;
   end;
 
-
-resourcestring
-  sYes = 'yes';
-  sNo = 'no';
-
 implementation
 
 uses
-  JvConsts, JvJCLUtils, JvgUtils;
+  JvConsts, JvJCLUtils,
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
+  JvgUtils;
+
+{$IFNDEF USEJVCL}
+resourcestring
+  sYes = 'yes';
+  sNo = 'no';
+{$ENDIF USEJVCL}
 
 constructor TJvgAskListBox.Create(AOwner: TComponent);
 begin

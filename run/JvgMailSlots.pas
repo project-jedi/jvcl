@@ -84,12 +84,18 @@ type
 implementation
 
 uses
-  JvConsts, JvgUtils, JvgTypes;
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
+  JvConsts,
+  JvgUtils, JvgTypes;
 
+{$IFNDEF USEJVCL}
 resourcestring
   sTJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
   sTJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
   sTJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
+{$ENDIF USEJVCL}
 
 constructor TJvgMailSlotServer.Create(AOwner: TComponent);
 begin

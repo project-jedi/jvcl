@@ -580,17 +580,10 @@ var
   SoftwareUpdateMessageBox: SoftwareUpdateMessageBoxProc = nil;
 
 implementation
+
 uses
-  urlmon;
-
-
-resourcestring
-  //SDiskFullError =
-  //  'TJvDiskFullDialog does not support removable media or network drives.';
-  SNotSupported = 'This function is not supported by your version of Windows';
-  SInvalidDriveChar = 'Invalid drive (%s)';
-{ make Delphi 5 compiler happy // andreas
-  SUnsupportedDisk = 'Unsupported drive (%s): JvDiskFullDialog only supports fixed drives.';}
+  UrlMon,
+  JvResources;
 
 const
   Shell32 = 'shell32.dll';

@@ -33,6 +33,7 @@ interface
 
 { Constant messages for TJvgSysRequirements }
 
+{$IFNDEF USEJVCL}
 resourcestring
 (* RUSSIAN
   ERR_VideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
@@ -46,6 +47,7 @@ resourcestring
   ERR_ColorDepth = 'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
   ERR_SystemFont = 'In system the small font should be established. Change to small fonts in Monitor Control Panel.';
   ERR_OSPlatform = 'The program requires %s or better.';
+{$ENDIF USEJVCL}
 
 implementation
 

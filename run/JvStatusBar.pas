@@ -98,14 +98,11 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
-
-resourcestring
-  sInvalidControlSelection = 'Invalid control selection.';
-
 implementation
+
 uses
   Math,
-  JvConsts;
+  JvConsts, JvResources;
   
 constructor TJvStatusBar.Create(AOwner: TComponent);
 begin

@@ -115,11 +115,7 @@ type
 implementation
 
 uses
-  JvThumbnails, JvTypes;
-
-resourcestring
-  sUnknownFileExtension = 'Unknown file extension %s';
-  sFileFilters = '|PCX Files(*.pcx)|*.pcx|Targa Files(*.tga)|*.tga';
+  JvThumbnails, JvTypes, JvResources;
 
 constructor TJvThumbImage.Create(AOwner: TComponent);
 begin

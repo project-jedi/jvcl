@@ -108,10 +108,8 @@ type
 
 implementation
 
-resourcestring
-  sWeekOf = 'Week of %s';
-
-{ TJvTFWeeks }
+uses
+  JvResources;
 
 procedure TJvTFWeeks.ConfigCells;
 var

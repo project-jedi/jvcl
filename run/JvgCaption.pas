@@ -123,15 +123,22 @@ type
 
   {$DEFINE GL_CAPT_BUTTONS}
 
-resourcestring
-  sOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
-
 implementation
+
 uses
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
   JvConsts;
+
 {$IFDEF GL_CAPT_BUTTONS}
 {$R ..\Resources\JvgCaption.res}
 {$ENDIF}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  sOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
+{$ENDIF USEJVCL}
 
 //==============================================================
 

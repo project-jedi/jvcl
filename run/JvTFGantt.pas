@@ -110,12 +110,10 @@ type
   end; { TJvTFGantt }
 
 
-resourcestring
-  sThisIsTheMajorScale = 'This is the Major Scale';
-  sThisIsTheMinorScale = 'This is the Minor Scale';
-
 implementation
 
+uses
+  JvResources;
 
 procedure TJvTFGantt.DrawMajor(ACanvas: TCanvas);
 var

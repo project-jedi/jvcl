@@ -65,10 +65,15 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
   JvConsts;
 
+{$IFNDEF USEJVCL}
 resourcestring
   sUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
+{$ENDIF USEJVCL}
 
 constructor TJvgHTTPVersionInfo.Create(AOwner: TComponent);
 begin

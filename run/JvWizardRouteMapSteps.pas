@@ -74,10 +74,8 @@ type
 
 implementation
 
-resourcestring
-  rsActiveStepFormat = 'Step %d of %d';
-  rsBackTo = 'Back to';
-  rsNextStep = 'Next Step';
+uses
+  JvResources;
 
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);
 begin

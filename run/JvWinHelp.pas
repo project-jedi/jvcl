@@ -60,8 +60,8 @@ type
 
 implementation
 
-resourcestring
-  RC_OwnerForm = 'Owner must be of type TCustomForm';
+uses
+  JvResources;
 
 constructor TJvWinHelp.Create(AOwner: TComponent);
 begin

@@ -52,10 +52,7 @@ type
 implementation
 
 uses
-  JvTypes;
-
-resourcestring
-  SInvalidPartner = 'TJvSyncSplitter.SetPartner: cannot set Partner to Self!';
+  JvTypes, JvResources;
 
 procedure TJvSyncSplitter.Notification(AComponent: TComponent; Operation: TOperation);
 begin

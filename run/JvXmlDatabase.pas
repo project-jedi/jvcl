@@ -196,17 +196,10 @@ type
 
 
 implementation
+
 uses
-  JvJCLUtils;
+  JvJCLUtils, JvResources;
 
-resourcestring
-  RS_UNKNOWNINST = 'Unknown Instruction %s';
-  RS_UNEXPECTEDEND = 'Unexpected end of query';
-  RS_UNEXPECTEDINST = 'Unexpected statement %s';
-
-{ TJvXMLDatabase }
-
-{**********************************************************************}
 constructor TJvXMLDatabase.Create(AOwner: TComponent);
 begin
   inherited;

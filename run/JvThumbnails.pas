@@ -164,12 +164,9 @@ implementation
 
 uses
   jpeg,
-  JvThumbViews;
+  JvThumbViews, JvResources;
 
 //uses {$IFNDEF COMPILER6_UP}Gifimage,{$ENDIF} Pcx_unit, Targa, PngImage, jpeg;
-
-resourcestring
-  sUnknown = 'Unknown';
 
 constructor TJvThumbnail.Create(AOwner: TComponent);
 begin

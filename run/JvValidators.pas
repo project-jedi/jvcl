@@ -222,29 +222,19 @@ type
     property OnRemoveError: TNotifyEvent read FOnRemoveError write FOnRemoveError;
   end;
 
-resourcestring
-  SInterfaceNotSupported = '%s does not support the %s interface';
-  SCircularReference = 'Circular reference not allowed';
-  SInsertNilValidator = 'Cannot insert nil validator';
-  SRemoveNilValidator = 'Cannot remove nil validator';
-  SValidatorNotChild = 'Validator is not owned by this component';
-
-
-
-resourcestring
-  sInvalidIndexd = 'Invalid index (%d)';
-
 implementation
+
 uses
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
   TypInfo,
   Forms,
   JclUnicode, // for reg exp support
-  JvConsts;
+  JvConsts, JvResources;
+
 var
-  FValidatorsList:TStringList = nil;
+  FValidatorsList: TStringList = nil;
 
 procedure Debug(const Msg: string); overload;
 begin

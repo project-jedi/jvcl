@@ -125,11 +125,16 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
   JvConsts;
 
+{$IFNDEF USEJVCL}
 resourcestring
   SHelp = ' help ';
   SOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
+{$ENDIF USEJVCL}
 
 constructor TJvgHelpPanel.Create(AOwner: TComponent);
 begin

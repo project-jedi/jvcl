@@ -764,20 +764,10 @@ type
 
 {$HPPEMIT '#undef TDate'}
 
-resourcestring
-  sCellDatesCannotBeChanged = 'Cell Dates cannot be changed';
-  sCellMapHasBeenCorrupteds = 'Cell map has been corrupted %s';
-  sCellObjectNotAssigned = 'Cell object not assigned';
-  sInvalidColIndexd = 'Invalid col index (%d)';
-  sInvalidRowIndexd = 'Invalid row index (%d)';
-  sApptIndexOutOfBoundsd = 'Appt index out of bounds (%d)';
-  sCellCannotBeSplit = 'Cell cannot be split';
-  sASubcellCannotBeSplit = 'A subcell cannot be split';
-
 implementation
 
 uses
-  JvConsts;
+  JvConsts, JvResources;
 
 { TJvTFGlanceCell }
 { TODO 3 -cMisc : Complete TGlance.Assign }

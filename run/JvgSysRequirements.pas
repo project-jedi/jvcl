@@ -86,7 +86,11 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
+  JvResources;
+  {$ELSE}
   JvgConstSysRequirements;
+  {$ENDIF USEJVCL}
 
 constructor TJvgSysRequirements.Create(AOwner: TComponent);
 begin

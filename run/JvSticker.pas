@@ -78,7 +78,8 @@ type
 implementation
 
 uses
-  Dialogs;
+  Dialogs,
+  JvResources;
 
 const
   SC_DRAGMOVE = $F012;
@@ -88,9 +89,6 @@ const
 const
   cPosList: array [1..8] of Integer =
     (HTTOPLEFT, HTTOP, HTTOPRIGHT, HTRIGHT, HTBOTTOMRIGHT, HTBOTTOM, HTBOTTOMLEFT, HTLEFT);
-
-resourcestring
-  SEditSticker = 'Edit sticker';
 
 constructor TJvStickSizer.CreateEx(AOwner: TComponent; AControl: TControl);
 var

@@ -75,10 +75,16 @@ type
 implementation
 
 uses
-  JvConsts, JvgUtils, JvgTypes;
+  JvConsts,
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
+  JvgUtils, JvgTypes;
 
+{$IFNDEF USEJVCL}
 resourcestring
   sOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
+{$ENDIF USEJVCL}
 
 //=== TJvg3DLocalColors ======================================================
 
