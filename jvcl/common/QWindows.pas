@@ -3421,7 +3421,9 @@ const
   Mask = $00FF;
 var
   Canvas: TCanvas;
-  R: TRect;
+  InnerRect, R: TRect;
+  Pts: array of TPoint;
+  i: Integer;
 begin
   Result := False;
   if (Handle = nil) or (not QPainter_isActive(Handle)) then
@@ -3435,73 +3437,145 @@ begin
       case uType of
         DFC_CAPTION:
           begin
-           // draw button
-            Result := DrawFrameControl(Handle, Rect, DFC_BUTTON, DFCS_BUTTONPUSH or (uState and not Mask));
-            if Result then
+            if uState and Mask <> 0 then
             begin
-              R := Rect;
-              Dec(R.Right);
-              Dec(R.Bottom);
+             // draw button
+              Result := DrawFrameControl(Handle, Rect, DFC_BUTTON, DFCS_BUTTONPUSH or (uState and not Mask));
+              if Result then
+              begin
+                R := Rect;
+                Dec(R.Right);
+                Dec(R.Bottom);
 
-              Canvas.Pen.Style := psSolid;
-              Canvas.Pen.Color := clBlack;
-              Canvas.Pen.Width := 1;
-              Canvas.Brush.Style := bsClear;
-              // draw image
-              case uState and Mask of
-                DFCS_CAPTIONCLOSE:
-                  begin
-                    Canvas.Pen.Width := 2;
-                    Dec(R.Right);
-                    Dec(R.Bottom);
-                    Canvas.MoveTo(R.Left + 4, R.Top + 4);
-                    Canvas.LineTo(R.Right - 4, R.Bottom - 4);
-                    Canvas.MoveTo(R.Left + 4, R.Bottom - 4);
-                    Canvas.LineTo(R.Right - 4, R.Top + 4);
-                  end;
-                DFCS_CAPTIONMIN:
-                  begin
-                    Canvas.MoveTo(R.Left + 4, R.Bottom - 4);
-                    Canvas.LineTo(R.Right - 4 - 5, R.Bottom - 4);
-                    Canvas.MoveTo(R.Left + 4, R.Bottom - 5);
-                    Canvas.LineTo(R.Right - 4 - 5, R.Bottom - 5);
-                  end;
-                DFCS_CAPTIONMAX:
-                  begin
-                    Canvas.Rectangle(R.Left + 4, R.Top + 4, R.Right - 4, R.Bottom - 4);
-                    Canvas.MoveTo(R.Left + 5, R.Top + 5);
-                    Canvas.LineTo(R.Right - 5, R.Top + 5);
-                  end;
-                DFCS_CAPTIONRESTORE:
-                  begin
-                    QPainter_save(Handle);
-                    ExcludeClipRect(Handle, R.Left + 4, R.Top + 8, R.Right - 8, R.Bottom - 4);
+                Canvas.Pen.Style := psSolid;
+                Canvas.Pen.Color := clBlack;
+                Canvas.Pen.Width := 1;
+                Canvas.Brush.Style := bsClear;
+                // draw image
+                case uState and Mask of
+                  DFCS_CAPTIONCLOSE:
+                    begin
+                      Canvas.Pen.Width := 2;
+                      Dec(R.Right);
+                      Dec(R.Bottom);
+                      Canvas.MoveTo(R.Left + 4, R.Top + 4);
+                      Canvas.LineTo(R.Right - 4, R.Bottom - 4);
+                      Canvas.MoveTo(R.Left + 4, R.Bottom - 4);
+                      Canvas.LineTo(R.Right - 4, R.Top + 4);
+                    end;
+                  DFCS_CAPTIONMIN:
+                    begin
+                      Canvas.MoveTo(R.Left + 4, R.Bottom - 4);
+                      Canvas.LineTo(R.Right - 4 - 5, R.Bottom - 4);
+                      Canvas.MoveTo(R.Left + 4, R.Bottom - 5);
+                      Canvas.LineTo(R.Right - 4 - 5, R.Bottom - 5);
+                    end;
+                  DFCS_CAPTIONMAX:
+                    begin
+                      Canvas.Rectangle(R.Left + 4, R.Top + 4, R.Right - 4, R.Bottom - 4);
+                      Canvas.MoveTo(R.Left + 5, R.Top + 5);
+                      Canvas.LineTo(R.Right - 5, R.Top + 5);
+                    end;
+                  DFCS_CAPTIONRESTORE:
+                    begin
+                      QPainter_save(Handle);
+                      ExcludeClipRect(Handle, R.Left + 4, R.Top + 8, R.Right - 8, R.Bottom - 4);
 
-                    Canvas.Rectangle(R.Left + 8, R.Top + 4, R.Right - 4, R.Bottom - 8);
-                    Canvas.MoveTo(R.Left + 9, R.Top + 5);
-                    Canvas.LineTo(R.Right - 5, R.Top + 5);
+                      Canvas.Rectangle(R.Left + 8, R.Top + 4, R.Right - 4, R.Bottom - 8);
+                      Canvas.MoveTo(R.Left + 9, R.Top + 5);
+                      Canvas.LineTo(R.Right - 5, R.Top + 5);
 
-                    QPainter_restore(Handle);
+                      QPainter_restore(Handle);
 
-                    Canvas.Rectangle(R.Left + 4, R.Top + 8, R.Right - 8, R.Bottom - 4);
-                    Canvas.MoveTo(R.Left + 5, R.Top + 9);
-                    Canvas.LineTo(R.Right - 9, R.Top + 9);
-                  end;
-                DFCS_CAPTIONHELP:
-                  begin
-                    Canvas.Font.Style := [fsBold];
-                    QPainter_setFont(Handle, Canvas.Font.Handle);
-                    DrawText(Handle, '?', 1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-                  end;
+                      Canvas.Rectangle(R.Left + 4, R.Top + 8, R.Right - 8, R.Bottom - 4);
+                      Canvas.MoveTo(R.Left + 5, R.Top + 9);
+                      Canvas.LineTo(R.Right - 9, R.Top + 9);
+                    end;
+                  DFCS_CAPTIONHELP:
+                    begin
+                      Canvas.Font.Style := [fsBold];
+                      QPainter_setFont(Handle, Canvas.Font.Handle);
+                      DrawText(Handle, '?', 1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+                    end;
+                end;
               end;
             end;
           end;
+
         DFC_MENU:
           begin
-            // not implemented
+            Canvas.Brush.Color := clWhite;
+            Canvas.Pen.Style := psSolid;
+            Canvas.Brush.Style := bsSolid;
+            Canvas.Pen.Color := clBlack;
+            case uState and Mask of
+              DFCS_MENUARROW, DFCS_MENUARROWRIGHT:
+                begin
+                  Canvas.FillRect(Rect); // white background
+                  R := Types.Rect(0, 0, 5, 10);
+                  OffsetRect(R,
+                    ((Rect.Right - Rect.Left) - R.Right) div 2,
+                    ((Rect.Bottom - Rect.Top) - R.Bottom) div 2);
+
+                  SetLength(Pts, 3);
+                  if (uState and Mask) = DFCS_MENUARROW then
+                  begin
+                    Pts[0] := Point(R.Left + 0, R.Top + 0);
+                    Pts[1] := Point(R.Left + 0, R.Top + 10);
+                    Pts[2] := Point(R.Left + 5, R.Top + 5);
+                  end
+                  else
+                  begin
+                    Pts[0] := Point(R.Left + 5, R.Top + 0);
+                    Pts[1] := Point(R.Left + 5, R.Top + 10);
+                    Pts[2] := Point(R.Left + 0, R.Top + 5);
+                  end;
+                  Canvas.Brush.Color := clBlack;
+                  Canvas.Polygon(Pts);
+
+                  Result := True;
+                end;
+              DFCS_MENUCHECK:
+                begin
+                  Canvas.FillRect(Rect); // white background
+                  R := Types.Rect(0, 0, 12, 12);
+                  OffsetRect(R,
+                    ((Rect.Right - Rect.Left) - R.Right) div 2,
+                    ((Rect.Bottom - Rect.Top) - R.Bottom) div 2);
+
+
+                  Canvas.Brush.Color := clBlack;
+                  SetLength(Pts, 3);
+                  for i := 0 to 3 do
+                  begin
+                    Pts[0] := Point(R.Left + 0, R.Top + 8 - i);
+                    Pts[1] := Point(R.Left + 4, R.Top + 12 - i);
+                    Pts[2] := Point(R.Left + 12, R.Top + 4 - i);
+                    Canvas.Polyline(Pts);
+                  end;
+
+                  Result := True;
+                end;
+              DFCS_MENUBULLET:
+                begin
+                  Canvas.FillRect(Rect); // white background
+                  R := Types.Rect(0, 0, 7, 7);
+                  OffsetRect(R,
+                    ((Rect.Right - Rect.Left) - R.Right) div 2,
+                    ((Rect.Bottom - Rect.Top) - R.Bottom) div 2);
+                  Canvas.Brush.Color := clBlack;
+                  Canvas.Ellipse(R);
+
+                  Result := True;
+                end;
+            end;
           end;
+
         DFC_SCROLL:
           begin
+            // not implemented
+            raise Exception.Create('not implemented');
+
             case uState and Mask of
               DFCS_SCROLLCOMBOBOX:
                 begin
@@ -3563,30 +3637,49 @@ begin
           case uState and Mask of
             DFCS_BUTTONPUSH:
               begin
-                if uState and (DFCS_TRANSPARENT) = 0 then
+                InnerRect := Rect;
+                InflateRect(InnerRect, -2, -2);
+                if uState and (DFCS_TRANSPARENT) <> 0 then
+                  ExcludeClipRect(Handle, InnerRect);
+
+                if uState and DFCS_INACTIVE <> 0 then
+                  R := DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0)
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  R := DrawButtonFace(Canvas, Rect, 1, True, False, uState and DFCS_FLAT <> 0)
+                else
+                if uState and DFCS_HOT <> 0 then
+                  R := DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0, clSilver)
+                else
+                if uState and DFCS_MONO <> 0 then
                 begin
-                  if uState and DFCS_INACTIVE <> 0 then
-                    DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0)
+                  Canvas.Pen.Style := psSolid;
+                  Canvas.Pen.Color := clBlack;
+                  Canvas.Pen.Width := 1;
+                  if uState and (DFCS_TRANSPARENT) <> 0 then
+                    Canvas.Brush.Style := bsClear
                   else
-                  if uState and DFCS_PUSHED <> 0 then
-                    DrawButtonFace(Canvas, Rect, 1, True, False, uState and DFCS_FLAT <> 0)
-                  else
-                  if uState and DFCS_HOT <> 0 then
-                    DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0, clHighlight)
-                  else
-                  if uState and DFCS_MONO <> 0 then
-                    DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0, clBackground)
-                  else
-                    DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0);
-                  Result := True;
-                end;
+                    Canvas.Brush.Color := clButton;
+                  Canvas.Rectangle(Rect);
+                  R := Rect;
+                  InflateRect(R, -1, -1);
+                end
+                else
+                  R := DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0);
+
+                if uState and DFCS_ADJUSTRECT <> 0 then
+                  PRect(@Rect)^ := R;
+                Result := True;
               end;
           else
             // not implemented
+            raise Exception.Create('not implemented');
           end;
+
         DFC_POPUPMENU:
           begin
             // not implemented
+            raise Exception.Create('not implemented');
           end;
       end;
     finally
@@ -3602,11 +3695,6 @@ begin
   DFC_BUTTON = 4;
   DFC_POPUPMENU = 5;
 
-  DFCS_MENUARROW = 0;
-  DFCS_MENUCHECK = 1;
-  DFCS_MENUBULLET = 2;
-  DFCS_MENUARROWRIGHT = 4;
-
   DFCS_SCROLLUP = 0;
   DFCS_SCROLLDOWN = 1;
   DFCS_SCROLLLEFT = 2;
@@ -3620,7 +3708,6 @@ begin
   DFCS_BUTTONRADIOMASK = 2;
   DFCS_BUTTONRADIO = 4;
   DFCS_BUTTON3STATE = 8;
-  DFCS_BUTTONPUSH = $10;
 
   DFCS_INACTIVE = $100;
   DFCS_PUSHED = $200;
@@ -3823,8 +3910,8 @@ var
 {$ENDIF LINUX}
 begin
   try
-    MapPainterLP(Handle, X, Y); // bitBlt ignores the world matrix
    {$IFDEF MSWINDOWS}
+    MapPainterLP(Handle, X, Y); // GetPixel does not know about the world matrix
     Result := Windows.GetPixel(QPainter_handle(Handle), X, Y);
    {$ENDIF}
    {$IFDEF LINUX}
@@ -3837,7 +3924,7 @@ begin
     try
       pixmap := QPixmap_create(2, 2, depth, QPixmapOptimization_NoOptim);
       tempDC := QPainter_create(pixmap);
-      Bitblt(tempDC, 0, 0, 1, 1, Handle, X, Y, SRCCOPY);
+      BitBlt(tempDC, 0, 0, 1, 1, Handle, X, Y, SRCCOPY);
       img := QImage_create;
       QPixmap_convertToImage(pixmap, img);
       Result := QImage_pixelIndex(img, 0, 0);
@@ -3849,7 +3936,7 @@ begin
       if Assigned(pixmap) then
         QPixmap_destroy(pixmap);
     end;
-   {$ENDIF LINUX} 
+   {$ENDIF LINUX}
   except
     Result := 0;
   end;
