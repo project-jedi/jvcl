@@ -647,7 +647,8 @@ begin
             begin
               tmpStr := repeatLines;
               ApplyFormName(fileNode, tmpStr, target);
-              outFile.Text := outFile.Text + tmpStr;
+              outFile.Text := outFile.Text +
+                              EnsureCondition(tmpStr, fileNode, target);
             end;
           end;
 
@@ -938,10 +939,11 @@ var
   i : integer;
 begin
   inherited Create(True);
-  for i := 0 to Node.Items.Count - 1 do
-  begin
-    Add(TTarget.Create(Node.Items[i]));
-  end;
+  if Assigned(Node) then
+    for i := 0 to Node.Items.Count - 1 do
+    begin
+      Add(TTarget.Create(Node.Items[i]));
+    end;
 end;
 
 function TTargetList.GetItems(index: integer): TTarget;
@@ -1000,10 +1002,11 @@ var
   i : integer;
 begin
   inherited Create(True);
-  for i := 0 to Node.Items.Count - 1 do
-  begin
-    Add(TAlias.Create(Node.Items[i]));
-  end;
+  if Assigned(Node) then
+    for i := 0 to Node.Items.Count - 1 do
+    begin
+      Add(TAlias.Create(Node.Items[i]));
+    end;
 end;
 
 function TAliasList.GetItems(index: integer): TAlias;
@@ -1039,14 +1042,15 @@ var
 begin
   inherited Create;
 
-  for i := 0 to incfile.Count-1 do
-  begin
-    curLine := incfile[i];
-    if Copy(curLine, 1, 8) = '{$DEFINE' then
+  if Assigned(incfile) then
+    for i := 0 to incfile.Count-1 do
     begin
-      Add(Copy(curLine, 10, Length(curLine)-10));
+      curLine := incfile[i];
+      if Copy(curLine, 1, 8) = '{$DEFINE' then
+      begin
+        Add(Copy(curLine, 10, Length(curLine)-10));
+      end;
     end;
-  end;
 end;
 
 initialization
