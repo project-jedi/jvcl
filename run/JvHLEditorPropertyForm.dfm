@@ -23,6 +23,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
     Width = 419
     Height = 321
     ActivePage = tsColors
+    TabIndex = 1
     TabOrder = 0
     object tsEditor: TTabSheet
       Caption = 'Editor'
@@ -253,7 +254,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
           Height = 17
           Caption = '&Bold'
           TabOrder = 0
-          OnClick = ColorChanged
+          OnClick = ColorChange
         end
         object cbItalic: TCheckBox
           Left = 8
@@ -262,7 +263,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
           Height = 17
           Caption = '&Italic'
           TabOrder = 1
-          OnClick = ColorChanged
+          OnClick = ColorChange
         end
         object cbUnderline: TCheckBox
           Left = 8
@@ -271,7 +272,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
           Height = 17
           Caption = '&Underline'
           TabOrder = 2
-          OnClick = ColorChanged
+          OnClick = ColorChange
         end
       end
       object gbUseDefaultsFor: TGroupBox
