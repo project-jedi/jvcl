@@ -834,7 +834,7 @@ end;
 
 procedure TJvDrawImage.Sphere(Bitmap: TBitmap;
   xcenter, a, ycenter, b: Integer; R1, G1, B1, R2, G2, B2: Byte; Smooth: Boolean);
-var (* Dessine un disque color‚*)
+var (* Dessine un disque color *)
   xx, yy: Integer; (* par remplissage avec Couleur1-2 *)
   compt, x_ll, y_ll, x_ray, y_ray: Longint;
 begin
