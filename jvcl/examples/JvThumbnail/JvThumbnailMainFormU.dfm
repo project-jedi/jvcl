@@ -18,7 +18,7 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
     Left = 0
     Top = 0
     Width = 781
-    Height = 565
+    Height = 563
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
@@ -27,7 +27,7 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
       object Splitter1: TSplitter
         Left = 153
         Top = 46
-        Height = 491
+        Height = 489
       end
       object Panel1: TPanel
         Left = 0
@@ -98,12 +98,15 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
           TickStyle = tsNone
           OnChange = TrackBar1Change
         end
-        object DriveComboBox1: TDriveComboBox
+        object DriveComboBox1: TJvDriveCombo
           Left = 2
           Top = 22
           Width = 145
-          Height = 19
-          DirList = DirectoryListBox1
+          Height = 22
+          DriveTypes = [dtFixed, dtRemote, dtCDROM]
+          Offset = 4
+          ImageSize = isSmall
+          ItemHeight = 16
           TabOrder = 1
         end
         object CheckBox1: TCheckBox
@@ -222,27 +225,29 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
         Left = 0
         Top = 46
         Width = 153
-        Height = 491
+        Height = 489
         Align = alLeft
         BevelOuter = bvNone
         Caption = 'Panel2'
         TabOrder = 1
-        object DirectoryListBox1: TDirectoryListBox
+        object DirectoryListBox1: TJvDirectoryListBox
           Left = 0
           Top = 0
           Width = 153
-          Height = 300
+          Height = 298
           Hint = 
             'Set the directory property to the directory where your images lo' +
             'cated and wach the thumbview creating this thumbs'
           Align = alClient
+          DriveCombo = DriveComboBox1
           ItemHeight = 16
+          ScrollBars = ssBoth
           TabOrder = 0
           OnChange = DirectoryListBox1Change
         end
         object RadioGroup1: TRadioGroup
           Left = 0
-          Top = 300
+          Top = 298
           Width = 153
           Height = 86
           Hint = 
@@ -261,7 +266,7 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
         end
         object RadioGroup2: TRadioGroup
           Left = 0
-          Top = 386
+          Top = 384
           Width = 153
           Height = 105
           Hint = 
@@ -284,14 +289,14 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
         Left = 156
         Top = 46
         Width = 617
-        Height = 491
+        Height = 489
         Align = alClient
         BevelOuter = bvNone
         Caption = 'Panel3'
         TabOrder = 2
         object Panel4: TPanel
           Left = 0
-          Top = 475
+          Top = 473
           Width = 617
           Height = 16
           Hint = 
@@ -307,7 +312,7 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
           Left = 0
           Top = 0
           Width = 617
-          Height = 475
+          Height = 473
           HorzScrollBar.Tracking = True
           VertScrollBar.Tracking = True
           Align = alClient
@@ -345,7 +350,7 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
   end
   object Panel5: TPanel
     Left = 0
-    Top = 565
+    Top = 563
     Width = 781
     Height = 24
     Align = alBottom
