@@ -268,7 +268,7 @@ type
 
 { TJvStoredValues }
 
-  TJvStoredValues = class({$IFDEF COMPILER4}TOwnedCollection{$ELSE}TCollection{$ENDIF})
+  TJvStoredValues = class({$IFDEF COMPILER4_UP}TOwnedCollection{$ELSE}TCollection{$ENDIF})
   private
     FStorage: TJvFormPlacement;
     function GetValue(const Name: string): TJvStoredValue;
@@ -1197,7 +1197,7 @@ end;
 
 { TJvStoredValues }
 
-{$IFDEF COMPILER4}
+{$IFDEF COMPILER4_UP}
 constructor TJvStoredValues.Create(AOwner: TPersistent);
 begin
   inherited Create(AOwner, TJvStoredValue);
