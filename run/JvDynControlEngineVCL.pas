@@ -30,14 +30,8 @@ interface
 
 uses
   Classes,
-  {$IFDEF VCL}
   Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
   Buttons, Dialogs, FileCtrl, ExtDlgs, CheckLst,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms, QGraphics,
-  QButtons, QDialogs, QFileCtrls, QExtDlgs, Types, QCheckLst,
-  {$ENDIF VisualCLX}
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type

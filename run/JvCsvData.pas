@@ -152,9 +152,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF VisualCLX}
   QWindows,
-  {$ENDIF LINUX}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   {$IFDEF COMPILER6_UP}
   Variants,
@@ -703,12 +703,7 @@ function JvCsvWildcardMatch(Data, Pattern: string): Boolean;
 implementation
 
 uses
-  {$IFDEF VCL}
   Forms, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QControls,
-  {$ENDIF VisualCLX}
   {$IFNDEF COMPILER6_UP}
   JvJVCLUtils,
   {$ENDIF COMPILER6_UP}
@@ -4096,7 +4091,7 @@ begin
   Path := '';
   FilenameOnly := '';
   for I := Len downto 1 do
-    if FileName[I] = '\' then
+    if FileName[I] = PathDelim then
     begin
       Path := Copy(FileName, 1, I);
       FilenameOnly := Copy(FileName, I + 1, Len);
@@ -4128,12 +4123,16 @@ begin
   begin
     FilenameOnly := FileName;
     GetDir(0, BackupFolder);
-    BackupFolder := BackupFolder + '\';
+    BackupFolder := BackupFolder + PathDelim;
   end;
-  BackupFolder := BackupFolder + 'Backup\';
+  BackupFolder := BackupFolder + 'Backup'+ PathDelim;
   if not DirectoryExists(BackupFolder) then
+		{$IFDEF MSWINDOWS}
     CreateDirectory(PChar(BackupFolder), nil);
-
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+		ForceDirectories(BackupFolder}
+		{$ENDIF LINUX}
   Found := False;
   for I := 0 to MaxFiles - 1 do
   begin
@@ -4160,10 +4159,10 @@ begin
   // extension number to use.
   if FileExists(RemoveFile) then
     DeleteFile(RemoveFile);
-  {$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}  
   Windows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF LINUX}  
   QWindows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
   {$ENDIF LINUX}
   Result := True;

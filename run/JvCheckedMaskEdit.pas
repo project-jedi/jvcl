@@ -94,7 +94,7 @@ type
     property ShowCheckBox: Boolean read GetShowCheckBox write SetShowCheckBox default False;
     property OnCheckClick: TNotifyEvent read FOnCheckClick write FOnCheckClick;
     {$IFDEF VisualCLX}
-    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FEnabledChanged;
+    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
     {$ENDIF VisualCLX}
 
 

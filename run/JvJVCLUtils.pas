@@ -39,11 +39,11 @@ uses
   Libc,
   {$ENDIF LINUX}
   SysUtils, Classes,
-  Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
-  ComCtrls, ImgList, Grids,
   {$IFDEF VisualCLX}
   Qt, QTypes, QWinCursors, QWindows,
   {$ENDIF VisualCLX}
+  Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
+  ComCtrls, ImgList, Grids,
   IniFiles,
   {$IFNDEF NO_JCL}
   JclBase,
@@ -2539,12 +2539,13 @@ begin
   end;
 end;
 {$ENDIF VisualCLX}
-
+{$IFDEF VCL}
 function MsgDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons;
   HelpCtx: Longint): Word;
 begin
   Result := MessageDlg(Msg, AType, AButtons, HelpCtx);
 end;
+{$ENDIF}
 
 { Gradient fill procedure - displays a gradient beginning with a chosen    }
 { color and ending with another chosen color. Based on TGradientFill       }

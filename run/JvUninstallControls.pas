@@ -31,13 +31,7 @@ unit JvUninstallControls;
 interface
 
 uses
-  Windows, SysUtils, Classes,
-  {$IFDEF VCL}
-  Graphics, Controls, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QStdCtrls,
-  {$ENDIF VisualCLX}
+  Windows, SysUtils, Classes, Graphics, Controls, StdCtrls,
   JvComponent, JvTypes;
 
 type

@@ -29,12 +29,7 @@ interface
 
 uses
   Classes, SysUtils,
-  {$IFDEF VCL}
   StdCtrls, ExtCtrls, Graphics, Forms, Controls, Dialogs, ComCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QStdCtrls, QExtCtrls, Types, QGraphics, QForms, QControls, QDialogs, QComCtrls,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}

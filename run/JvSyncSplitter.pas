@@ -136,6 +136,7 @@ begin
   inherited WndProc(Msg);
 end;
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 procedure TJvSyncSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -203,7 +204,7 @@ begin
     end;
   end;
 end;
-{$ENDIF VCL}
+{$ENDIF  VisualCLX}
 
 end.
 

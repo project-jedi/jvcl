@@ -29,15 +29,8 @@ unit JvParameterListParameter;
 interface
 
 uses
-  Classes, SysUtils,
-  {$IFDEF VCL}
-  StdCtrls, ExtCtrls, Graphics, Forms,
+  Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms,
   Controls, FileCtrl, Dialogs, ComCtrls, Buttons,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QStdCtrls, QExtCtrls, Types, QGraphics, QForms,
-  QControls, QFileCtrls, QDialogs, QComCtrls, QButtons,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
@@ -527,11 +520,8 @@ function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; con
   const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult;
 begin
-  Result :=
-    {$IFDEF VCL} JvDSADialogs. {$ENDIF}
-    {$IFDEF VisualCLX} JvQDSADialogs. {$ENDIF}
-    MessageDlg(Msg, DlgType, Buttons, HelpCtx, Center, Timeout, DefaultButton,
-      CancelButton, HelpButton, ADynControlEngine);
+  Result := JvDSADialogs.MessageDlg(Msg, DlgType, Buttons, HelpCtx, Center, Timeout, DefaultButton,
+              CancelButton, HelpButton, ADynControlEngine);
 end;
 
 //=== TJvNoDataParameter =====================================================

@@ -38,11 +38,11 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ImgList,
+  Windows, Messages, 
   {$ENDIF VCL}
+  Graphics, Controls, Forms, StdCtrls, ExtCtrls, ImgList,
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
-  QImgList, Types, QWindows, 
+  QWindows, 
   {$ENDIF VisualCLX}
   {$IFDEF BCB}
   JvTypes, // TDate / TTime macros

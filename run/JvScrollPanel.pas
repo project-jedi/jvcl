@@ -270,15 +270,12 @@ begin
       if FVertical then
       begin
         R := Rect(Width div 2 - 1, 1, Width, Height - 1);
-        {$IFDEF VisualCLX}
-        QWindows.
-        {$ENDIF VisualCLX}
-        DrawEdge(Handle, R, EDGE_ETCHED, BF_LEFT);
+        Windows.DrawEdge(Handle, R, EDGE_ETCHED, BF_LEFT);
       end
       else
       begin
         R := Rect(1, Height div 2 - 1, Width, Height - 1);
-        {$IFDEF VisualCLX} QWindows.{$ENDIF}DrawEdge(Handle, R, EDGE_ETCHED, BF_TOP);
+        Windows.DrawEdge(Handle, R, EDGE_ETCHED, BF_TOP);
       end;
     end;
   if csDesigning in ComponentState then
