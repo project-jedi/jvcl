@@ -50,8 +50,8 @@ uses
   Windows, Messages, Controls, Graphics, Forms, ImgList, ActnList, ExtCtrls,
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-  Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList, QWindows,
-  QTypes, JvTypes, QExtCtrls,
+  Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList,
+  QWindows, QTypes, QExtCtrls, JvTypes,
 {$ENDIF VisualCLX}
   JvConsts, JvXPCore, JvXPCoreUtils;
 
@@ -86,7 +86,9 @@ const
 
   dxColor_FocusedColorXP = $00D8ACB0;
   dxColor_CheckedColorXP = $00D9C1BB;
-
+  {$IFDEF VisualCLX}
+  clHotLight = clActiveHighLight;
+  {$ENDIF VisualCLX}
 type
   TJvXPBarItem = class;
   TJvXPBarItems = class;
@@ -108,9 +110,6 @@ type
     FClient: TJvXPBarItem;
   protected
     procedure AssignClient(AClient: TObject); override;
-{$IFDEF COMPILER6_UP}
-    function IsAutoCheckLinked: Boolean; virtual;
-{$ENDIF}
     function IsCaptionLinked: Boolean; override;
     function IsCheckedLinked: Boolean; override;
     function IsEnabledLinked: Boolean; override;
@@ -122,15 +121,16 @@ type
     procedure SetCaption(const Value: string); override;
     procedure SetHint(const Value: string); override;
     function DoShowHint(var HintStr: string): Boolean; virtual;
+{$IFDEF COMPILER6_UP}
+    function IsAutoCheckLinked: Boolean; virtual;
+    procedure SetAutoCheck(Value: Boolean); override;
+{$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
     procedure SetCaption(const Value: TCaption); override;
     procedure SetHint(const Value: widestring); override;
     function DoShowHint(var HintStr: widestring): Boolean; virtual;
 {$ENDIF VisualCLX}
-{$IFDEF COMPILER6_UP}
-    procedure SetAutoCheck(Value: Boolean); override;
-{$ENDIF}
     procedure SetChecked(Value: Boolean); override;
     procedure SetEnabled(Value: Boolean); override;
     procedure SetImageIndex(Value: Integer); override;
@@ -162,10 +162,12 @@ type
     FOnDblClick: TNotifyEvent;
     FGroupIndex: Integer;
     FChecked: Boolean;
+{$IFDEF VCL}
     FAutoCheck: Boolean;
 {$IFDEF COMPILER6_UP}
     function IsAutoCheckStored: Boolean;
 {$ENDIF}
+{$ENDIF VCL}
     function IsCaptionStored: Boolean;
     function IsEnabledStored: Boolean;
     function IsHintStored: Boolean;
@@ -205,7 +207,9 @@ type
     property WinXPBar: TJvXPCustomWinXPBar read FWinXPBar;
   published
     property Action: TBasicAction read GetAction write SetAction;
+    {$IFDEF VCL}
     property AutoCheck: Boolean read FAutoCheck write FAutoCheck{$IFDEF COMPILER6_UP} stored IsAutoCheckStored{$ENDIF}default False;
+    {$ENDIF VCL}
     property Caption: TCaption read FCaption write SetCaption stored IsCaptionStored;
     property Checked: Boolean read FChecked write SetChecked stored IsCheckedStored default False;
     property Enabled: Boolean read FEnabled write SetEnabled stored IsEnabledStored default True;
@@ -588,13 +592,15 @@ begin
   Client := AClient as TJvXPBarItem;
 end;
 
-{$IFDEF COMPILER6_UP}
 
+{$IFDEF VCL}
+{$IFDEF COMPILER6_UP}
 function TJvXPBarItemActionLink.IsAutoCheckLinked: Boolean;
 begin
   Result := (Client.AutoCheck = (Action as TCustomAction).AutoCheck);
 end;
 {$ENDIF}
+{$ENDIF VCL}
 
 function TJvXPBarItemActionLink.IsCaptionLinked: Boolean;
 begin
@@ -639,12 +645,18 @@ begin
 end;
 
 {$IFDEF VCL}
+{$IFDEF COMPILER6_UP}
+procedure TJvXPBarItemActionLink.SetAutoCheck(Value: Boolean);
+begin
+  if IsAutoCheckLinked then Client.AutoCheck := Value;
+end;
+{$ENDIF}
 
 procedure TJvXPBarItemActionLink.SetCaption(const Value: string);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-  procedure TJvXPBarItemActionLink.SetCaption(const Value: TCaption);
-  {$ENDIF VisualCLX}
+procedure TJvXPBarItemActionLink.SetCaption(const Value: TCaption);
+{$ENDIF VisualCLX}
   begin
     if IsCaptionLinked then
       Client.Caption := Value;
@@ -656,12 +668,6 @@ procedure TJvXPBarItemActionLink.SetCaption(const Value: string);
       Client.Enabled := Value;
   end;
 
-{$IFDEF COMPILER6_UP}
-procedure TJvXPBarItemActionLink.SetAutoCheck(Value: Boolean);
-begin
-  if IsAutoCheckLinked then Client.AutoCheck := Value;
-end;
-{$ENDIF}
 
 procedure TJvXPBarItemActionLink.SetChecked(Value: Boolean);
 begin
@@ -714,7 +720,9 @@ begin
   FWinXPBar := FCollection.FWinXPBar;
   FTag := 0;
   FVisible := True;
+  {$IFDEF VCL}
   FAutoCheck := False;
+  {$ENDIF VCL}
   FChecked := False;
   FGroupIndex := 0;
   FWinXPBar.ItemVisibilityChanged(Self);
@@ -771,10 +779,12 @@ begin
   if Sender is TCustomAction then
     with TCustomAction(Sender) do
     begin
+{$IFDEF VCL}
 {$IFDEF COMPILER6_UP}
       if not CheckDefaults or (Self.AutoCheck = False) then
         Self.AutoCheck := AutoCheck;
 {$ENDIF}
+{$ENDIF VCL}
       if not CheckDefaults or (Self.Caption = '') or (Self.Caption = Self.Name) then
         Self.Caption := Caption;
       if not CheckDefaults or (Self.Checked = False) then
@@ -803,6 +813,9 @@ begin
   HasImages := self.Images <> nil;
   with ACanvas do
   begin
+    {$IFDEF VisualCLX}
+    Start;
+    {$ENDIF VisualCLX}
     Font.Assign(lBar.Font);
     Brush.Color := lBar.Colors.BodyColor;
     if not ShowItemFrame then
@@ -862,9 +875,10 @@ begin
     {$ENDIF VCL}
 
     {$IFDEF VisualCLX}
-    SetPenColor(Handle, Canvas.Font.Color);
+    SetPainterFont(Handle, Font);
     DrawTextW(Handle, PWideChar(ItemCaption), -1, Rect, DT_SINGLELINE or
       DT_VCENTER or DT_END_ELLIPSIS);
+    Stop;
     {$ENDIF VisualCLX}
   end;
 end;
@@ -891,7 +905,9 @@ begin
       Self.Tag := Tag;
       Self.Visible := Visible;
       Self.OnClick := OnClick;
+      {$IFDEF VCL}
       Self.AutoCheck := AutoCheck;
+      {$ENDIF VCL}
       Self.Checked := Checked;
       Self.GroupIndex := GroupIndex;
       Self.OnDblClick := OnDblClick;
@@ -900,13 +916,14 @@ begin
     inherited Assign(Source);
 end;
 
+{$IFDEF VCL}
 {$IFDEF COMPILER6_UP}
-
 function TJvXPBarItem.IsAutoCheckStored: Boolean;
 begin
   Result := (ActionLink = nil) or not FActionLink.IsAutoCheckLinked;
 end;
 {$ENDIF}
+{$ENDIF VCL}
 
 function TJvXPBarItem.IsCaptionStored: Boolean;
 begin
@@ -1873,19 +1890,19 @@ begin
       Exit;
 
 //dejoy add
+    {$IFDEF VCL}
     lItem := FVisibleItems[FHoverIndex];
     with lItem do
     begin
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
       if (not Assigned(ActionLink) and AutoCheck) or
         (Assigned(ActionLink) and not ActionLink.IsAutoCheckLinked and AutoCheck) then
-{$ELSE}
+    {$ELSE}
       if AutoCheck then
-{$ENDIF}
-
+    {$ENDIF}
         lItem.Checked := not lItem.Checked;
     end;
-
+    {$ENDIF VCL}
     if FVisibleItems[FHoverIndex].Checked then
       DrawState := DrawState + [dsClicked]
     else
@@ -1921,6 +1938,9 @@ begin
   Bitmap := TBitmap.Create;
   with Canvas do
   try
+    {$IFDEF VisualCLX}
+    Start;
+    {$ENDIF VisualCLX}
     Bitmap.Assign(nil);
     ItemRect := GetItemRect(Index);
     HasImages := FVisibleItems[Index].Images <> nil;
@@ -1933,6 +1953,9 @@ begin
       FVisibleItems[Index].DrawItem(Self, Canvas, ItemRect, State, ShowItemFrame, Bitmap);
   finally
     Bitmap.Free;
+    {$IFDEF VisualCLX}
+    Stop;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -1966,9 +1989,8 @@ begin
     Draw(0, Rect.Top, FGradient);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-    if not Rolling then
-      FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
-        32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
+    FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
+      32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
 {$ENDIF VisualCLX}
 
 { draw frame... }
@@ -2061,10 +2083,9 @@ begin
       DT_END_ELLIPSIS);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-    SetPenColor(Handle, Font.Color);
-    if not Rolling then // reduces flickering
-      DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
-        DT_END_ELLIPSIS or DT_NOPREFIX);
+    SetPainterFont(Handle, Font);
+    DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
+      DT_END_ELLIPSIS or DT_NOPREFIX);
 {$ENDIF VisualCLX}
 { draw visible items }
     Brush.Color := FColors.BodyColor;
