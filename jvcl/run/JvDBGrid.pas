@@ -111,7 +111,6 @@ type
     FOnChange: TJvDBGridLayoutChangeEvent;
   public
     procedure DoChange(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind);
-  
     property OnChange: TJvDBGridLayoutChangeEvent read FOnChange write FOnChange;
   end;
 
@@ -132,17 +131,25 @@ type
     property NoSelectionWarning: string read FNoSelectionWarning write FNoSelectionWarning;
   end;
 
+  TJvDBGridControlSize = (
+    fcCellSize,     // Fit the control into the cell
+    fcDesignSize,   // Leave the control as it was at design time
+    fcBiggest       // Take the biggest size between Cell size and Design time size
+  );
+  
   TJvDBGridControl = class(TCollectionItem)
   private
     FControlName: string;
     FFieldName: string;
-    FFitCell: Boolean; // True: control size = cell size, False: control size = design size
+    FFitCell: TJvDBGridControlSize;
+    FDesignWidth: Integer;  // value set when needed by PlaceControl
+    FDesignHeight: Integer; // value set when needed by PlaceControl
   public
     procedure Assign(Source: TPersistent); override;
   published
     property ControlName: string read FControlName write FControlName;
     property FieldName: string read FFieldName write FFieldName;
-    property FitCell: Boolean read FFitCell write FFitCell;
+    property FitCell: TJvDBGridControlSize read FFitCell write FFitCell;
   end;
 
   TJvDBGridControls = class(TCollection)
@@ -739,6 +746,7 @@ end;
 {$ENDIF COMPILER6_UP}
 
 //=== { TJvDBGridLayoutChangeLink } ==========================================
+
 procedure TJvDBGridLayoutChangeLink.DoChange(Grid: TJvDBGrid; 
         Kind: TJvDBGridLayoutChangeKind);
 begin
@@ -761,6 +769,8 @@ begin
     ControlName := TJvDBGridControl(Source).ControlName;
     FieldName := TJvDBGridControl(Source).FieldName;
     FitCell := TJvDBGridControl(Source).FitCell;
+    FDesignWidth := 0;
+    FDesignHeight := 0;
   end
   else
     inherited Assign(Source);
@@ -2992,8 +3002,8 @@ begin
   ALeftCol := LeftCol;
   try
     // get useable width
-    TotalWidth := ClientWidth - (Ord(dgIndicator in Options) * IndicatorWidth) - (Ord(dgColLines in Options) *
-      Columns.Count * GridLineWidth);
+    TotalWidth := ClientWidth - (Ord(dgIndicator in Options) * IndicatorWidth)
+      - (Ord(dgColLines in Options) * Columns.Count * GridLineWidth);
     OrigWidth := 0;
     // get width currently occupied by columns
     if FixedCols = 0 then
@@ -3442,6 +3452,8 @@ end;
 procedure TJvDBGrid.PlaceControl(Control: TWinControl; ACol, ARow: Integer);
 var
   R: TRect;
+  GridControl: TJvDBGridControl;
+  ClientTopLeft: TPoint;
 begin
   // DO not test for Assigned(Control) here or you will end
   // up with an infinite loop of error messages. This check must
@@ -3466,30 +3478,60 @@ begin
 
   if Control.Parent <> Self.Parent then
     Control.Parent := Self.Parent;
+
   R := CellRect(ACol, ARow);
+  if ((R.Right - R.Left) < 1) or ((R.Bottom - R.Top) < 1) then
+    // Cell too small to be drawn -> the control is not drawn
+    Control.BoundsRect := Rect(0, 0, 0, 0)
+  else
+  begin
   R.TopLeft := ClientToScreen(R.TopLeft);
   R.TopLeft := TControl(Control.Parent).ScreenToClient(R.TopLeft);
   R.BottomRight := ClientToScreen(R.BottomRight);
   R.BottomRight := TControl(Control.Parent).ScreenToClient(R.BottomRight);
-
-  if FControls.ControlByName(Control.Name).FitCell then
-    Control.BoundsRect := R
+    ClientTopLeft := TControl(Control.Parent).ScreenToClient(Self.ClientOrigin);
+    GridControl := FControls.ControlByName(Control.Name);
+    if GridControl.FitCell in [fcDesignSize, fcBiggest] then
+    begin
+      if GridControl.FitCell = fcBiggest then
+      begin
+        // We choose the biggest size between cell size and design size
+        if GridControl.FDesignWidth = 0 then
+          GridControl.FDesignWidth := Control.Width;
+        if (R.Right - R.Left) > GridControl.FDesignWidth then
+          Control.Width := R.Right - R.Left
+        else
+          Control.Width := GridControl.FDesignWidth;
+        if GridControl.FDesignHeight = 0 then
+          GridControl.FDesignHeight := Control.Height;
+        if (R.Bottom - R.Top) > GridControl.FDesignHeight then
+          Control.Height := R.Bottom - R.Top
   else
+          Control.Height := GridControl.FDesignHeight;
+      end;
+      // Horizontal alignment of the control
+      if (R.Left + Control.Width) > (ClientTopLeft.X + Self.ClientWidth) then
   begin
-    // We're showing the control at design size
-    // Horizontal alignment of the control
-    if (R.Left + Control.Width) > (Self.Left + Self.ClientWidth) then
-      Control.Left := (R.Right - Control.Width) // Right align
+        Control.Left := (R.Right - Control.Width);  // Right align
+        if Control.Left < ClientTopLeft.X then
+          Control.Left := ClientTopLeft.X;
+      end
     else
       Control.Left := R.Left; // Left align
-
-    // Vertical alignment of embedded control
-    if (R.Top + Control.Height) > (Self.Top + Self.ClientHeight) then
-      Control.Top := (R.Bottom - Control.Height) // Bottom align
+      // Vertical alignment of the control
+      if (R.Top + Control.Height) > (ClientTopLeft.Y + Self.ClientHeight) then
+      begin
+        Control.Top := (R.Bottom - Control.Height); // Bottom align
+        if Control.Top < ClientTopLeft.Y then
+          Control.Top := ClientTopLeft.Y;
+      end
+      else
+        Control.Top := R.Top;                       // Top align
+    end
     else
-      Control.Top := R.Top;
+      // Control drawn at cell size
+      Control.BoundsRect := R;
   end;
-
   Control.BringToFront;
   Control.Show;
 
