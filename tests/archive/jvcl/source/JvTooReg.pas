@@ -48,7 +48,7 @@ uses Classes, SysUtils, Controls, Graphics, TypInfo,
 {$ENDIF}
   Consts, ExtCtrls, JvPictEdit, JvHook, JvPicClip, JvPlacemnt, JvPresrDsn, JvMinMaxEd, JvDualList,
   JvClipView, JvSpeedbar, JvSbEdit, JvDataConv, JvCalc, JvPageMngr, JvPgMngrEd, JvMrgMngr,
-  JvStrHlder, JvShell, JvAppEvent, JvVCLUtils, JvTimerLst, JvTimLstEd, JvIcoList, JvIcoLEdit,
+  JvStrHlder, JvAppEvent, JvVCLUtils, JvTimerLst, JvTimLstEd, JvIcoList, JvIcoLEdit,
 {$IFDEF USE_Jv_GIF}JvGIF, JvGIFCtrl, {$ENDIF}JvLConst, JvxCtrls,
 {$IFDEF COMPILER3_UP} {JvResExp, }{$ENDIF}JvMenus, JvMRUList,
 {$IFDEF WIN32}JvNotify, JvGrdCpt, JvGradEdit, {$ENDIF}JvHintProp;
@@ -139,7 +139,7 @@ begin
   RegisterComponents({LoadStr(srRXTools)}'JvX Tools', [TJvPicClip, TJvFormStorage,
     TJvFormPlacement, TJvWindowHook, TJvAppEvents, TJvSpeedBar, TJvxCalculator,
       TJvTimerList, TJvPageManager, TJvMergeManager, TJvMRUManager, TJvSecretPanel,
-      TJvStrHolder, TJvxTrayIcon, TJvMainMenu, TJvPopupMenu,
+      TJvStrHolder, TJvMainMenu, TJvPopupMenu,
 {$IFDEF WIN32}TJvFolderMonitor, {$ENDIF}TJvxClipboardViewer,
 {$IFDEF WIN32}TJvxGradientCaption, {$ENDIF}TJvDualListDialog
 {$IFNDEF COMPILER4_UP}, TJvConverter{$ENDIF}]);
@@ -148,7 +148,7 @@ begin
   RegisterNonActiveX([TJvPicClip, TJvFormPlacement, TJvFormStorage, TJvWindowHook,
     TJvDualListDialog, TJvSecretPanel, TJvSpeedBar, TJvxClipboardViewer,
       TJvPageManager, TJvMergeManager, TJvMRUManager, TJvAppEvents, TJvTimerList,
-      TJvxTrayIcon, TJvFolderMonitor, TJvxGradientCaption], axrComponentOnly);
+      TJvFolderMonitor, TJvxGradientCaption], axrComponentOnly);
 {$ENDIF COMPILER3_UP}
 
   { TJvPicClip }
@@ -199,8 +199,6 @@ begin
 
   { TJvxTrayIcon }
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvxTrayIcon, 'Hint',
-    TStringProperty);
 {$IFDEF COMPILER4_UP}
 
   { JvMenus }
