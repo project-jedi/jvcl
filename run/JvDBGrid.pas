@@ -1780,6 +1780,15 @@ begin
 //  if gdFixed in AState then
 //    Canvas.Brush.Color := FixedColor;
   FCurrentDrawRow := ARow;
+  Canvas.Font := Self.Font;
+  if (DataLink <> nil) and DataLink.Active and (ACol >= 0) and
+    (ACol < Columns.Count) then
+  begin
+    DrawColumn := Columns[ACol];
+    if DrawColumn <> nil then
+      Canvas.Font := DrawColumn.Font;
+  end;
+
   inherited DrawCell(ACol, ARow, ARect, AState);
   with ARect do
     if FTitleArrow and (ARow = 0) and (ACol = 0) and
@@ -1824,8 +1833,7 @@ begin
         FixRect.Bottom - FMsIndicators.Height) shr 1, Indicator);
     end;
   end
-  else if not (csLoading in ComponentState) and
-    (FTitleButtons or (FixedCols > 0)) and
+  else if not (csLoading in ComponentState) and (FTitleButtons or (FixedCols > 0)) and
     (gdFixed in AState) and (dgTitles in Options) and (ARow < TitleOffset) then
   begin
     SavePen := Canvas.Pen.Color;
@@ -1886,14 +1894,14 @@ begin
         //-----------------------------------------
         // FBC -fix Sortmarker
         // Not so elegant, but it works.
-        //----------------------------------------- 
+        //-----------------------------------------
         if AnsiSameText(AField.FieldName, SortedField) then
         begin
           ASortMarker := self.Sortmarker;
           DoGetBtnParams(AField, Canvas.Font, BackColor, ASortMarker, Down);
           self.Sortmarker := ASortMarker;
         end
-        else  
+        else
           DoGetBtnParams(AField, Canvas.Font, BackColor, ASortMarker, Down);
         Canvas.Brush.Color := BackColor;
       end;
