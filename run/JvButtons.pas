@@ -66,15 +66,15 @@ unit JvButtons;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages,
+  Classes, Graphics, Controls, Forms, Buttons,
+  {$IFDEF VisualCLX}
+  QImgList,
+  {$ENDIF VisualCLX}
+  {$IFDEF VCL}
   JvWndProcHook,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QImgList, QWindows,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, Controls, Forms, Buttons,
-  JvComponent, JvExButtons;
+  JvJCLUtils, JvComponent, JvExButtons;
 
 type
   { VCL Buttons unit does not publish TJvButtonGlyph class,
@@ -748,28 +748,14 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      {$IFDEF VCL}
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
-      OffsetRect(TextBounds, -1, -1);
-      Font.Color := clBtnShadow;
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
       DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
       DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
-      {$ENDIF VisualCLX}
     end
     else
-      {$IFDEF VCL}
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds,
-        DT_CENTER or DT_VCENTER or DT_SINGLELINE or Flags);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
       DrawText(Canvas, Caption, Length(Caption), TextBounds,
         DT_CENTER or DT_VCENTER or DT_SINGLELINE or Flags);
-      {$ENDIF VisualCLX}
   end;
 end;
 
@@ -931,12 +917,7 @@ procedure TJvButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
   Caption: string);
 begin
   TextRect := Rect(0, 0, TextRect.Right - TextRect.Left, 0);
-  {$IFDEF VCL}
-  DrawText(Canvas.Handle, PChar(Caption), Length(Caption), TextRect, DT_CALCRECT);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
   DrawText(Canvas, Caption, Length(Caption), TextRect, DT_CALCRECT);
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
