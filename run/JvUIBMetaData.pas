@@ -19,6 +19,7 @@
 { 2000 of these individuals.                                                   }
 {                                                                              }
 { Unit owner:    Henri Gourvest                                                }
+{ Contributor:   Ritsaert Hornstra                                             }
 { Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
@@ -78,7 +79,8 @@ const
     'SELECT FLD.RDB$FIELD_TYPE, FLD.RDB$FIELD_SCALE, '+
     'FLD.RDB$FIELD_LENGTH, FLD.RDB$FIELD_PRECISION, '+
     'FLD.RDB$CHARACTER_SET_ID, FLD.RDB$FIELD_SUB_TYPE, RFR.RDB$FIELD_NAME, '+
-    'FLD.RDB$SEGMENT_LENGTH, RFR.RDB$NULL_FLAG, RFR.RDB$DEFAULT_SOURCE '+
+    'FLD.RDB$SEGMENT_LENGTH, RFR.RDB$NULL_FLAG, RFR.RDB$DEFAULT_SOURCE, ' +
+    'RFR.RDB$FIELD_SOURCE '+
     'FROM RDB$RELATIONS REL, RDB$RELATION_FIELDS RFR, RDB$FIELDS FLD '+
     'WHERE (RFR.RDB$FIELD_SOURCE = FLD.RDB$FIELD_NAME) AND '+
     '(RFR.RDB$RELATION_NAME = REL.RDB$RELATION_NAME) AND '+
@@ -165,7 +167,7 @@ const
     '(PP.RDB$PARAMETER_TYPE = ?) ORDER BY PP.RDB$PARAMETER_TYPE, PP.RDB$PARAMETER_NUMBER';
 
   QRYExceptions =
-    'SELECT RDB$EXCEPTION_NAME, RDB$MESSAGE FROM RDB$EXCEPTIONS ORDER BY RDB$EXCEPTION_NAME';
+    'SELECT RDB$EXCEPTION_NAME, RDB$MESSAGE, RDB$EXCEPTION_NUMBER FROM RDB$EXCEPTIONS ORDER BY RDB$EXCEPTION_NAME';
 
   QRYUDF =
     'SELECT RDB$FUNCTION_NAME, RDB$MODULE_NAME, RDB$ENTRYPOINT, RDB$RETURN_ARGUMENT '+
@@ -177,7 +179,38 @@ const
     'from RDB$FUNCTION_ARGUMENTS where RDB$FUNCTION_NAME = ? '+
     'ORDER BY RDB$ARGUMENT_POSITION';
 
+  QRYRoles =
+    'select RDB$ROLE_NAME, RDB$OWNER_NAME from rdb$roles';
+
 type
+  TMetaNodeType = (
+    MetaNode,
+      MetaDatabase,
+      MetaException,
+      MetaGenerator,
+      MetaCheck,
+      MetaTrigger,
+      MetaUDF,
+      MetaView,
+      MetaProcedure,
+      MetaRole,
+      MetaTable,
+      MetaBaseField,
+        MetaUDFField,
+        MetaField,
+          MetaProcInField,
+          MetaProcOutField,
+          MetaTableField,
+            MetaDomain,
+      MetaConstraint,
+        MetaForeign,
+        MetaIndex,
+        MetaPrimary,
+        MetaUnique
+  );
+
+
+
   TMetaNode = class;
   TMetaNodeClass = class of TMetaNode;
 
@@ -203,6 +236,7 @@ type
     procedure SaveToDDLNode(Stream: TStringStream); virtual;
     function GetNodes(const Index: Integer): TNodeItem;
     class function NodeClass: string; virtual;
+    class function NodeType: TMetaNodeType; virtual;
     constructor Create(AOwner: TMetaNode; ClassIndex: Integer); virtual;
     constructor CreateFromStream(AOwner: TMetaNode; ClassIndex: Integer; Stream: TStream); virtual;
     destructor Destroy; override;
@@ -223,6 +257,7 @@ type
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToStream(Stream: TStream); override;
     property Value: Integer read FValue;
   end;
@@ -241,9 +276,11 @@ type
     procedure LoadFromQuery(QField, QCharset: TJvUIBStatement); virtual;
     procedure LoadFromStream(Stream: TStream); override;
     property SegmentLength: Smallint read FSegmentLength;
+    function GetShortFieldType: string;
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToStream(Stream: TStream); override;
     property Scale: Word read FScale;
     property Length: Smallint read FLength;
@@ -252,12 +289,14 @@ type
     property CharSet: string read FCharSet;
     property SubType: Smallint read FSubType;
     property BytesPerCharacter: Smallint read FBytesPerCharacter;
+    property ShortFieldType: string read GetShortFieldType;
   end;
 
   TMetaField = class(TMetaBaseField)
   private
     procedure LoadFromQuery(Q, C: TJvUIBStatement); override;
   public
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToDDL(Stream: TStringStream); override;
     property SegmentLength;
   end;
@@ -265,32 +304,50 @@ type
   TMetaProcInField = class(TMetaField)
   public
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
   end;
 
   TMetaProcOutField = class(TMetaField)
   public
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
   end;
-                       
+
+  TMetaDomain = class;
+
   TMetaTableField = class(TMetaField)
   private
     FDefaultValue: string;
     FNotNull: boolean;
+    FDomain: Integer;
     procedure LoadFromQuery(Q, C: TJvUIBStatement); override;
     procedure LoadFromStream(Stream: TStream); override;
+    function GetDomain: TMetaDomain;
+    function GetIsForeign: boolean; virtual;
+    function GetIsPrimary: boolean; virtual;
   public
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToDDLNode(Stream: TStringStream); override;
     procedure SaveToStream(Stream: TStream); override;
     property DefaultValue: string read FDefaultValue;
     property NotNull: boolean read FNotNull;
+    property Domain: TMetaDomain read GetDomain;
+    property IsPrimary: boolean read GetIsPrimary;
+    property IsForeign: boolean read GetIsForeign;
   end;
 
 
   TMetaDomain = class(TMetaTableField)
+  private
+    function GetIsForeign: boolean; override;
+    function GetIsPrimary: boolean; override;
+  protected
+    property Domain; // hidden
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
     procedure SaveToDDL(Stream: TStringStream); override;
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
   end;
 
   TMetaConstraint = class(TMetaNode)
@@ -301,6 +358,7 @@ type
     procedure LoadFromStream(Stream: TStream); override;
   public
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToStream(Stream: TStream); override;
     property Fields[const index: Word]: TMetaTableField read GetFields;
     property FieldsCount: Word read GetFieldsCount;
@@ -311,6 +369,7 @@ type
     procedure LoadFromQuery(Q: TJvUIBStatement);
   public
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToDDLNode(Stream: TStringStream); override;
   end;
 
@@ -333,6 +392,7 @@ type
     procedure LoadFromStream(Stream: TStream); override;
   public
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToStream(Stream: TStream); override;
     procedure SaveToDDLNode(Stream: TStringStream); override;
     property ForTable: TMetaTable read GetForTable;
@@ -348,6 +408,7 @@ type
     procedure LoadFromStream(Stream: TStream); override;
   public
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToDDLNode(Stream: TStringStream); override;
     procedure SaveToStream(Stream: TStream); override;
     property Constraint: string read FConstraint;
@@ -360,6 +421,7 @@ type
     procedure LoadFromStream(Stream: TStream); override;
   public
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToDDLNode(Stream: TStringStream); override;
     procedure SaveToStream(Stream: TStream); override;
     property Unique: boolean read FUnique;
@@ -379,6 +441,7 @@ type
     procedure LoadFromStream(Stream: TStream); override;
   public
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToStream(Stream: TStream); override;
     procedure SaveToDDLNode(Stream: TStringStream); override;
     property Prefix: TTriggerPrefix read FPrefix;
@@ -397,7 +460,7 @@ type
     function FindFieldIndex(const name: String): Integer;
     function GetUniques(const Index: Integer): TMetaUnique;
     function GetUniquesCount: Integer;
-    function GetPrimary(const Index: Integer): TMetaUnique;
+    function GetPrimary(const Index: Integer): TMetaPrimary;
     function GetPrimaryCount: Integer;
     function GetIndices(const Index: Integer): TMetaIndex;
     function GetIndicesCount: Integer;
@@ -411,6 +474,7 @@ type
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     function FindFieldName(const name: String): TMetaTableField;
     constructor Create(AOwner: TMetaNode; ClassIndex: Integer); override;
     procedure SaveToStream(Stream: TStream); override;
@@ -419,7 +483,7 @@ type
     property Fields[const Index: Integer]: TMetaTableField read GetFields;
     property FieldsCount: Integer read GetFieldsCount;
 
-    property Primary[const Index: Integer]: TMetaUnique read GetPrimary;
+    property Primary[const Index: Integer]: TMetaPrimary read GetPrimary;
     property PrimaryCount: Integer read GetPrimaryCount; // 0 or 1
 
     property Uniques[const Index: Integer]: TMetaUnique read GetUniques;
@@ -450,16 +514,13 @@ type
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     constructor Create(AOwner: TMetaNode; ClassIndex: Integer); override;
-
     procedure SaveToStream(Stream: TStream); override;
     procedure SaveToDDL(Stream: TStringStream); override;
-
     property Source: string read FSource;
-
     property Fields[const Index: Integer]: TMetaField read GetFields;
     property FieldsCount: Integer read GetFieldsCount;
-
     property Triggers[const Index: Integer]: TMetaTrigger read GetTriggers;
     property TriggersCount: Integer read GetTriggersCount;
   end;
@@ -478,6 +539,7 @@ type
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     constructor Create(AOwner: TMetaNode; ClassIndex: Integer); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure SaveToAlterDDL(Stream: TStringStream);
@@ -494,13 +556,16 @@ type
   TMetaException = class(TMetaNode)
   private
     FMessage: string;
+    FNumber: Integer;
     procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromQuery(QName: TJvUIBStatement);
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToStream(Stream: TStream); override;
     property Message: string read FMessage;
+    property Number: Integer read FNumber;
   end;
 
   TMetaUDFField = class(TMetaBaseField)
@@ -510,6 +575,7 @@ type
     procedure LoadFromQuery(QField, QCharset: TJvUIBStatement); override;
     procedure LoadFromStream(Stream: TStream); override;
   public
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToDDLNode(Stream: TStringStream); override;
     procedure SaveToStream(Stream: TStream); override;
     property Position: Smallint read FPosition;
@@ -528,14 +594,27 @@ type
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     constructor Create(AOwner: TMetaNode; ClassIndex: Integer); override;
     procedure SaveToStream(Stream: TStream); override;
     property Module: string read FModule;
     property Entry: string read FEntry;
     property Return: Smallint read FReturn;
-
     property Fields[const Index: Integer]: TMetaUDFField read GetFields;
     property FieldsCount: Integer read GetFieldsCount;
+  end;
+
+  TMetaRole = class(TMetaNode)
+  private
+    FOwner: string;
+    procedure LoadFromStream(Stream: TStream); override;
+    procedure LoadFromQuery(QName: TJvUIBStatement);
+  public
+    procedure SaveToDDLNode(Stream: TStringStream); override;
+    class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
+    procedure SaveToStream(Stream: TStream); override;
+    property Owner: string read FOwner;
   end;
 
   TMetaDataBase = class(TMetaNode)
@@ -546,6 +625,7 @@ type
     function GetTables(const Index: Integer): TMetaTable;
     function GetTablesCount: Integer;
     function FindTableIndex(const TableName: string): Integer;
+    function FindDomainIndex(const DomainName: string): Integer;
     function GetViews(const Index: Integer): TMetaView;
     function GetViewsCount: Integer;
     function GetDomains(const Index: Integer): TMetaDomain;
@@ -558,8 +638,11 @@ type
     function GetExceptionsCount: Integer;
     function GetUDFS(const Index: Integer): TMetaUDF;
     function GetUDFSCount: Integer;
+    function GetRoles(const Index: Integer): TMetaRole;
+    function GetRolesCount: Integer;
   public
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToStream(Stream: TStream); override;
     function FindTableName(const TableName: string): TMetaTable;
     constructor Create(AOwner: TMetaNode; ClassIndex: Integer); override;
@@ -586,6 +669,9 @@ type
 
     property UDFS[const Index: Integer]: TMetaUDF read GetUDFS;
     property UDFSCount: Integer read GetUDFSCount;
+
+    property Roles[const Index: Integer]: TMetaRole read GetRoles;
+    property RolesCount: Integer read GetRolesCount;
   end;
 
 implementation
@@ -611,6 +697,7 @@ const
   OIDException = 5;
   OIDUDF       = 6;
     OIDUDFField      = 0;
+  OIDRole      = 7; 
 
 procedure WriteString(Stream: TStream; var Str: String);
 var len: Integer;
@@ -766,6 +853,11 @@ begin
   end;
 end;
 
+class function TMetaNode.NodeType: TMetaNodeType;
+begin
+  result := MetaNode;
+end;
+
 { TMetaGenerator }
 
 procedure TMetaGenerator.LoadFromDataBase(Transaction: TJvUIBTransaction;
@@ -809,7 +901,12 @@ end;
 
 class function TMetaGenerator.NodeClass: string;
 begin
-  Result := 'Generators';
+  Result := 'Generator';
+end;
+
+class function TMetaGenerator.NodeType: TMetaNodeType;
+begin
+  Result := MetaGenerator;
 end;
 
 { TMetaTable }
@@ -848,9 +945,9 @@ begin
   Result := FNodeItems[OIDTableFields].Childs.Count;
 end;
 
-function TMetaTable.GetPrimary(const Index: Integer): TMetaUnique;
+function TMetaTable.GetPrimary(const Index: Integer): TMetaPrimary;
 begin
-  Result := TMetaUnique(GetItems(OIDPrimary, Index))
+  Result := TMetaPrimary(GetItems(OIDPrimary, Index))
 end;
 
 function TMetaTable.GetPrimaryCount: Integer;
@@ -1045,10 +1142,15 @@ end;
 
 class function TMetaTable.NodeClass: string;
 begin
-  Result := 'Tables';
+  Result := 'Table';
 end;
 
-{ TMetaField }
+class function TMetaTable.NodeType: TMetaNodeType;
+begin
+  Result := MetaTable;
+end;
+
+{ TMetaBaseField }
 
 procedure TMetaBaseField.LoadFromStream(Stream: TStream);
 begin
@@ -1197,7 +1299,25 @@ end;
 
 class function TMetaBaseField.NodeClass: string;
 begin
-  Result := 'Fields';
+  Result := 'Field';
+end;
+
+function TMetaBaseField.GetShortFieldType: string;
+begin
+  case FFieldType of
+    uftChar..uftCstring:
+      Result := format('%s(%d)', [FieldTypes[FFieldType],
+        FLength div FBytesPerCharacter]);
+    uftNumeric : Result := format('%s(%d,%d)',
+      [FieldTypes[FFieldType], FPrecision, FScale]);
+  else
+    Result := format('%s', [FieldTypes[FFieldType]]);
+  end;
+end;
+
+class function TMetaBaseField.NodeType: TMetaNodeType;
+begin
+  Result := MetaBaseField;
 end;
 
 { TMetaDataBase }
@@ -1212,6 +1332,7 @@ begin
   AddClass(TMetaGenerator);
   AddClass(TMetaException);
   AddClass(TMetaUDF);
+  AddClass(TMetaRole);
 end;
 
 procedure TMetaDataBase.LoadFromDatabase(Transaction: TJvUIBTransaction);
@@ -1385,7 +1506,15 @@ begin
       QNames.Next;
     end;
 
-
+    // ROLES
+    FNodeItems[OIDRole].Childs.Clear;
+    QNames.SQL.Text := QRYRoles;
+    QNames.Open;
+    while not QNames.Eof do
+    begin
+      TMetaRole.Create(Self, OIDRole).LoadFromQuery(QNames);
+      QNames.Next;
+    end;
   finally
     QNames.Free;
     QCharset.Free;
@@ -1438,6 +1567,7 @@ var i: Integer;
     end;
   end;
 begin
+  SaveMainNodes('ROLES', OIDRole, NewLine);
   SaveMainNodes('FUNCTIONS', OIDUDF, NewLine);
   SaveMainNodes('DOMAINS', OIDDomains, BreakLine);
   SaveMainNodes('GENERATORS', OIDGenerator);
@@ -1507,6 +1637,14 @@ begin
   raise Exception.CreateFmt('Table %s not found', [TableName]);
 end;
 
+function TMetaDataBase.FindDomainIndex(const DomainName: string): Integer;
+begin
+  for Result := 0 to DomainsCount - 1 do
+    if Domains[Result].Name = DomainName then
+      Exit;
+  raise Exception.CreateFmt('Domain %s not found', [DomainName]);
+end;
+
 procedure TMetaDataBase.LoadFromStream(Stream: TStream);
 begin
   ReadString(Stream, FName);
@@ -1564,7 +1702,7 @@ end;
 
 class function TMetaDataBase.NodeClass: string;
 begin
-  Result := 'Databases';
+  Result := 'Database';
 end;
 
 procedure TMetaDataBase.SaveToStream(Stream: TStream);
@@ -1573,11 +1711,26 @@ begin
   inherited;
 end;
 
+function TMetaDataBase.GetRoles(const Index: Integer): TMetaRole;
+begin
+  Result := TMetaRole(GetItems(OIDRole, Index));
+end;
+
+function TMetaDataBase.GetRolesCount: Integer;
+begin
+  Result := FNodeItems[OIDRole].Childs.Count
+end;
+
+class function TMetaDataBase.NodeType: TMetaNodeType;
+begin
+  Result := MetaDatabase;
+end;
+
 { TMetaConstraint }
 
 function TMetaConstraint.GetFields(const index: Word): TMetaTableField;
 begin
-  Assert((FieldsCount > 0) and (Index < FieldsCount));
+  Assert((FieldsCount > 0) and (Index < FieldsCount), inttostr(index) + ' ' + ClassName);
   result := TMetaTable(FOwner).Fields[FFields[index]];
 end;
 
@@ -1588,7 +1741,7 @@ end;
 
 class function TMetaConstraint.NodeClass: string;
 begin
-  Result := 'Constraints'
+  Result := 'Constraint'
 end;
 
 procedure TMetaConstraint.LoadFromStream(Stream: TStream);
@@ -1618,11 +1771,16 @@ begin
   end;
 end;
 
+class function TMetaConstraint.NodeType: TMetaNodeType;
+begin
+  Result := MetaConstraint;
+end;
+
 { TMetaUnique }
 
 class function TMetaUnique.NodeClass: string;
 begin
-  Result := 'Uniques';
+  Result := 'Unique';
 end;
 
 procedure TMetaUnique.SaveToDDL(Stream: TStringStream);
@@ -1677,11 +1835,16 @@ begin
 end;
 
 
+class function TMetaPrimary.NodeType: TMetaNodeType;
+begin
+  Result := MetaPrimary;
+end;
+
 { TMetaIndex }
 
 class function TMetaIndex.NodeClass: string;
 begin
-  Result := 'Indices';
+  Result := 'Indice';
 end;
 
 procedure TMetaIndex.LoadFromStream(Stream: TStream);
@@ -1717,6 +1880,11 @@ begin
   Stream.Write(FActive, SizeOf(FActive));
 end;
 
+class function TMetaIndex.NodeType: TMetaNodeType;
+begin
+  Result := MetaIndex;
+end;
+
 { TMetaForeign }
 
 function TMetaForeign.GetForFields(const index: Word): TMetaTableField;
@@ -1738,7 +1906,7 @@ end;
 
 class function TMetaForeign.NodeClass: string;
 begin
-  Result := 'Foreigns'
+  Result := 'Foreign'
 end;
 
 procedure TMetaForeign.LoadFromStream(Stream: TStream);
@@ -1808,11 +1976,16 @@ begin
     Stream.Write(FForFields[i], sizeof(FForFields[i]));
 end;
 
+class function TMetaForeign.NodeType: TMetaNodeType;
+begin
+  Result := MetaForeign;
+end;
+
 { TMetaCheck }
 
 class function TMetaCheck.NodeClass: string;
 begin
-  Result := 'Cheks';
+  Result := 'Check';
 end;
 
 procedure TMetaCheck.LoadFromStream(Stream: TStream);
@@ -1831,6 +2004,11 @@ procedure TMetaCheck.SaveToStream(Stream: TStream);
 begin
   WriteString(Stream, FName);
   WriteString(Stream, FConstraint);
+end;
+
+class function TMetaCheck.NodeType: TMetaNodeType;
+begin
+  Result := MetaCheck;
 end;
 
 { TMetaTrigger }
@@ -1854,7 +2032,7 @@ end;
 
 class function TMetaTrigger.NodeClass: string;
 begin
-  Result := 'Triggers';
+  Result := 'Trigger';
 end;
 
 procedure TMetaTrigger.LoadFromQuery(Q: TJvUIBStatement);
@@ -1910,6 +2088,11 @@ begin
   WriteString(Stream, FSource);
 end;
 
+class function TMetaTrigger.NodeType: TMetaNodeType;
+begin
+  Result := MetaTrigger;
+end;
+
 { TMetaView }
 
 constructor TMetaView.Create(AOwner: TMetaNode; ClassIndex: Integer);
@@ -1931,7 +2114,7 @@ end;
 
 class function TMetaView.NodeClass: string;
 begin
-  Result := 'Views'
+  Result := 'View'
 end;
 
 function TMetaView.GetTriggers(const Index: Integer): TMetaTrigger;
@@ -2003,11 +2186,31 @@ begin
   inherited;
 end;
 
+class function TMetaView.NodeType: TMetaNodeType;
+begin
+  Result := MetaView;
+end;
+
 { TMetaDomain }
+
+function TMetaDomain.GetIsForeign: boolean;
+begin
+  Result := False;
+end;
+
+function TMetaDomain.GetIsPrimary: boolean;
+begin
+  Result := False;
+end;
 
 class function TMetaDomain.NodeClass: string;
 begin
-  Result := 'Domains';
+  Result := 'Domain';
+end;
+
+class function TMetaDomain.NodeType: TMetaNodeType;
+begin
+  Result := MetaDomain;
 end;
 
 procedure TMetaDomain.SaveToDDL(Stream: TStringStream);
@@ -2043,7 +2246,7 @@ end;
 
 class function TMetaProcedure.NodeClass: string;
 begin
-  Result := 'Procedures';
+  Result := 'Procedure';
 end;
 
 function TMetaProcedure.GetOutputFields(const Index: Integer): TMetaProcOutField;
@@ -2148,23 +2351,30 @@ begin
   inherited;
 end;
 
+class function TMetaProcedure.NodeType: TMetaNodeType;
+begin
+  Result := MetaProcedure;
+end;
+
 { TMetaException }
 
 class function TMetaException.NodeClass: string;
 begin
-  Result := 'Exceptions';
+  Result := 'Exception';
 end;
 
 procedure TMetaException.LoadFromQuery(QName: TJvUIBStatement);
 begin
   FName := Trim(QName.Fields.AsString[0]);
   FMessage := QName.Fields.AsString[1];
+  FNumber := QName.Fields.AsInteger[2];
 end;
 
 procedure TMetaException.LoadFromStream(Stream: TStream);
 begin
   ReadString(Stream, FName);
   ReadString(Stream, FMessage);
+  Stream.Read(FNumber, SizeOf(FNumber))
 end;
 
 procedure TMetaException.SaveToDDLNode(Stream: TStringStream);
@@ -2176,14 +2386,20 @@ procedure TMetaException.SaveToStream(Stream: TStream);
 begin
   WriteString(Stream, FName);
   WriteString(Stream, FMessage);
+  Stream.Write(FNumber, SizeOf(FNumber));
   inherited;
+end;
+
+class function TMetaException.NodeType: TMetaNodeType;
+begin
+  Result := MetaException;
 end;
 
 { TMetaUDF }
 
 class function TMetaUDF.NodeClass: string;
 begin
-  Result := 'UDFs';
+  Result := 'UDF';
 end;
 
 procedure TMetaUDF.LoadFromStream(Stream: TStream);
@@ -2229,8 +2445,6 @@ begin
     Stream.WriteString(format('%s  RETURNS PARAMETER %d', [BreakLine, Freturn]));
   end;
 
-
-
   stream.WriteString(format('%s  ENTRY_POINT ''%s'' MODULE_NAME ''%s'';', [BreakLine, FEntry, FModule]));
 end;
 
@@ -2275,7 +2489,45 @@ begin
   Result := FNodeItems[OIDUDFField].Childs.Count;
 end;
 
+class function TMetaUDF.NodeType: TMetaNodeType;
+begin
+  Result := MetaUDF;
+end;
+
 { TMetaTableField }
+
+function TMetaTableField.GetDomain: TMetaDomain;
+begin
+  if (FDomain >= 0) then
+    Result := TMetaDatabase(FOwner.FOwner).Domains[FDomain] else
+    Result := nil;
+end;
+
+function TMetaTableField.GetIsForeign: boolean;
+var i, j: Integer;
+begin
+  for i := 0 to TMetaTable(FOwner).ForeignCount - 1 do
+    for j := 0 to TMetaTable(FOwner).Foreign[i].FieldsCount - 1 do
+    if TMetaTable(FOwner).Foreign[i].Fields[j] = Self then
+      begin
+        Result := True;
+        Exit;
+      end;
+  Result := False;
+end;
+
+function TMetaTableField.GetIsPrimary: boolean;
+var i, j: Integer;
+begin
+  for i := 0 to TMetaTable(FOwner).PrimaryCount - 1 do
+    for j := 0 to TMetaTable(FOwner).Primary[i].FieldsCount - 1 do
+    if TMetaTable(FOwner).Primary[i].Fields[j] = Self then
+      begin
+        Result := True;
+        Exit;
+      end;
+  Result := False;
+end;
 
 procedure TMetaTableField.LoadFromQuery(Q, C: TJvUIBStatement);
 begin
@@ -2291,6 +2543,12 @@ begin
         System.Length(FDefaultValue) - 8);
   end else
     FDefaultValue := '';
+    
+  FDomain := -1;
+  if not (self is TMetaDomain) then
+    if not (Q.Fields.IsNull[10] or (Copy(Q.Fields.AsString[10],1,4) = 'RDB$')) then
+      FDomain :=
+        TMetaDataBase(FOwner.FOwner).FindDomainIndex(Trim(Q.Fields.AsString[10]));
 end;
 
 procedure TMetaTableField.LoadFromStream(Stream: TStream);
@@ -2298,13 +2556,23 @@ begin
   inherited;
   ReadString(Stream, FDefaultValue);
   Stream.Read(FNotNull, SizeOf(FNotNull));
+  Stream.Read(FDomain, SizeOf(FDomain));
+end;
+
+class function TMetaTableField.NodeType: TMetaNodeType;
+begin
+  Result := MetaTableField;
 end;
 
 procedure TMetaTableField.SaveToDDLNode(Stream: TStringStream);
 begin
-  inherited;
-  if (FDefaultValue <> '') then Stream.WriteString(' DEFAULT ' + FDefaultValue);
-  if FNotNull then Stream.WriteString(' NOT NULL');
+  if (FDomain >= 0) then
+    Stream.WriteString(Domain.Name) else
+    inherited;
+  if (FDefaultValue <> '') then
+    Stream.WriteString(' DEFAULT ' + FDefaultValue);
+  if FNotNull then
+    Stream.WriteString(' NOT NULL');
 end;
 
 procedure TMetaTableField.SaveToStream(Stream: TStream);
@@ -2312,20 +2580,31 @@ begin
   inherited;
   WriteString(Stream, FDefaultValue);
   Stream.Write(FNotNull, SizeOf(FNotNull));
+  Stream.Write(FDomain, SizeOf(FDomain));
 end;
 
-{ TMetaInputField }
+{ TMetaProcInField }
 
 class function TMetaProcInField.NodeClass: string;
 begin
-  Result := 'Input parameters';
+  Result := 'Input parameter';
 end;
 
-{ TMetaOutputField }
+class function TMetaProcInField.NodeType: TMetaNodeType;
+begin
+  Result := MetaProcInField;
+end;
+
+{ TMetaProcOutField }
 
 class function TMetaProcOutField.NodeClass: string;
 begin
-  Result := 'Output parameters';
+  Result := 'Output parameter';
+end;
+
+class function TMetaProcOutField.NodeType: TMetaNodeType;
+begin
+  Result := MetaProcOutField;
 end;
 
 { TMetaField }
@@ -2335,6 +2614,11 @@ begin
   inherited;
   FName := Trim(Q.Fields.AsString[6]);
   FSegmentLength := Q.Fields.AsSmallint[7];
+end;
+
+class function TMetaField.NodeType: TMetaNodeType;
+begin
+  Result := MetaField;
 end;
 
 procedure TMetaField.SaveToDDL(Stream: TStringStream);
@@ -2360,6 +2644,11 @@ begin
   Stream.Read(FMechanism, SizeOf(FMechanism));
 end;
 
+class function TMetaUDFField.NodeType: TMetaNodeType;
+begin
+  Result := MetaUDFField;
+end;
+
 procedure TMetaUDFField.SaveToDDLNode(Stream: TStringStream);
 begin
   if FFieldType = uftBlob then
@@ -2378,6 +2667,42 @@ begin
   inherited;
   Stream.Write(FPosition, SizeOf(FPosition));
   Stream.Write(FMechanism, SizeOf(FMechanism));
+end;
+
+{ TMetaRole }
+
+procedure TMetaRole.LoadFromQuery(QName: TJvUIBStatement);
+begin
+  FName := Trim(QName.Fields.AsString[0]);
+  FOwner := QName.Fields.AsString[1];
+end;
+
+procedure TMetaRole.LoadFromStream(Stream: TStream);
+begin
+  ReadString(Stream, FName);
+  ReadString(Stream, FOwner);
+end;
+
+class function TMetaRole.NodeClass: string;
+begin
+  Result := 'Role';
+end;
+
+class function TMetaRole.NodeType: TMetaNodeType;
+begin
+  Result := MetaRole;
+end;
+
+procedure TMetaRole.SaveToDDLNode(Stream: TStringStream);
+begin
+  Stream.WriteString(Format('CREATE ROLE %s /* By user %s */', [FName, Trim(FOwner)]));
+end;
+
+procedure TMetaRole.SaveToStream(Stream: TStream);
+begin
+  WriteString(Stream, FName);
+  WriteString(Stream, FOwner);
+  inherited;
 end;
 
 end.

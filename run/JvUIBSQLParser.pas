@@ -365,7 +365,7 @@ const MANUAL = 365;
 const MAXIMUM = 366;
 const MAX_SEGMENT = 367;
 const MERGE = 368;
-const Message = 369;
+const MESSAGE_ = 369;
 const MINIMUM = 370;
 const MODULE_NAME = 371;
 const NAMES = 372;
@@ -379,7 +379,7 @@ const NOT_GTR = 379;
 const NOT_LSS = 380;
 const NUM_LOG_BUFS = 381;
 const KW_OF = 382;
-const ON = 383;
+const ON_ = 383;
 const ONLY = 384;
 const OPTION = 385;
 const KW_OR = 386;
@@ -924,7 +924,7 @@ const
     (tok_ident: MAXIMUM;              tok_string: 'MAX';                    tok_version: 1),
     (tok_ident: MAX_SEGMENT;          tok_string: 'MAXIMUM_SEGMENT';        tok_version: 1),
     (tok_ident: MERGE;                tok_string: 'MERGE';                  tok_version: 1),
-    (tok_ident: MESSAGE;              tok_string: 'MESSAGE';                tok_version: 1),
+    (tok_ident: MESSAGE_;              tok_string: 'MESSAGE';                tok_version: 1),
     (tok_ident: MINIMUM;              tok_string: 'MIN';                    tok_version: 1),
     (tok_ident: MINUTE;               tok_string: 'MINUTE';                 tok_version: 2),
     (tok_ident: MODULE_NAME;          tok_string: 'MODULE_NAME';            tok_version: 1),
@@ -942,7 +942,7 @@ const
     (tok_ident: KW_NUMERIC;           tok_string: 'NUMERIC';                tok_version: 1),
     (tok_ident: NUM_LOG_BUFS;         tok_string: 'NUM_LOG_BUFFERS';        tok_version: 1),
     (tok_ident: KW_OF;                tok_string: 'OF';                     tok_version: 1),
-    (tok_ident: ON;                   tok_string: 'ON';                     tok_version: 1),
+    (tok_ident: ON_;                  tok_string: 'ON';                     tok_version: 1),
     (tok_ident: ONLY;                 tok_string: 'ONLY';                   tok_version: 1),
     (tok_ident: OPTION;               tok_string: 'OPTION';                 tok_version: 1),
     (tok_ident: KW_OR;                tok_string: 'OR';                     tok_version: 1),

@@ -54,7 +54,6 @@ type
 //******************************************************************************
 // Errors handling
 //******************************************************************************
-
   EUIBConvertError = class(Exception);
 
   EUIBError = class(Exception)
@@ -66,6 +65,13 @@ type
     property SQLCode: Integer read FSQLCode;
   end;
 
+  EUIBException = class(EUIBError)
+  private
+    FNumber: Integer;
+  public
+    property Number: Integer read FNumber;
+  end;
+
   EUIBGFixError    = class(EUIBError);
   EUIBDSQLError    = class(EUIBError);
   EUIBDynError     = class(EUIBError);
@@ -73,6 +79,9 @@ type
   EUIBGSecError    = class(EUIBError);
   EUIBLicenseError = class(EUIBError);
   EUIBGStatError   = class(EUIBError);
+
+
+  EUIBExceptionClass = class of EUIBException;
 
   EUIBParser = class(Exception)
   private
@@ -126,8 +135,13 @@ const
 {$ENDIF}
     );
 
+{$IFDEF DLLREGISTRY}
+  FBINSTANCES = 'SOFTWARE\Firebird Project\Firebird Server\Instances';
+{$ENDIF}
+
   function StrToCharacterSet(const CharacterSet: string): TCharacterSet;
   function CreateDBParams(Params: String; Delimiter: Char = ';'): string;
+  function GetClientLibrary: string;
 
 //******************************************************************************
 // Transaction
@@ -165,6 +179,7 @@ type
     SqlData      : Pchar;
     SqlInd       : PSmallint;
     case byte of
+    // TSQLResult
     0 : ( SqlNameLength   : Smallint;
           SqlName         : array[0..METADATALENGTH-1] of char;
           RelNameLength   : Smallint;
@@ -174,6 +189,7 @@ type
           AliasNameLength : Smallint;
           AliasName       : array[0..METADATALENGTH-1] of char;
           );
+    // TSQLParam
     1 : ( Init            : boolean;
           ID              : Word;
           ParamNameLength : Smallint;
@@ -540,12 +556,15 @@ type
 
   TStatusVector = array[0..19] of ISCStatus;
   PStatusVector = ^TStatusVector;
+
   TOnConnectionLost = procedure(Lib: TUIBLibrary) of object;
+  TOnGetDBExceptionClass = function(Number: Integer): EUIBExceptionClass of object;
 
   TUIBLibrary = class(TUIBaseLibrary)
   private
     FStatusVector: TStatusVector;
     FOnConnectionLost: TOnConnectionLost;
+    FOnGetDBExceptionClass: TOnGetDBExceptionClass;
     FRaiseErrors: boolean;
     procedure GetDSQLInfoData(var StmtHandle: IscStmtHandle;
       var DSQLInfoData: TDSQLInfoData; InfoCode: Byte);
@@ -554,6 +573,7 @@ type
     constructor Create; override;
 
     property OnConnectionLost: TOnConnectionLost read FOnConnectionLost write FOnConnectionLost;
+    property OnGetDBExceptionClass: TOnGetDBExceptionClass read FOnGetDBExceptionClass write FOnGetDBExceptionClass;
     property RaiseErrors: boolean read FRaiseErrors write FRaiseErrors default True;
 
 
@@ -598,10 +618,11 @@ type
 
     function ArrayLookupBounds(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle;
       const RelationName, FieldName: String): TArrayDesc;
-    procedure ArrayGetSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle; ArrayId: TISCQuad;
-      var desc: TArrayDesc; DestArray: PPointer; var SliceLength: Integer);
-    procedure ArrayPutSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle; ArrayId: TISCQuad;
-      var desc: TArrayDesc; DestArray: PPointer; var SliceLength: Integer);
+    procedure ArrayGetSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle;
+      ArrayId: TISCQuad; var desc: TArrayDesc; DestArray: PPointer; var SliceLength: Integer);
+    procedure ArrayPutSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle;
+      var ArrayId: TISCQuad; var desc: TArrayDesc; DestArray: PPointer;
+      var SliceLength: Integer);
 
     procedure ServiceAttach(const ServiceName: string; var SvcHandle: IscSvcHandle; const Spb: string);
     procedure ServiceDetach(var SvcHandle: IscSvcHandle);
@@ -613,7 +634,7 @@ type
     function ErrSQLInterprete(SQLCODE: Smallint): String;
 
     procedure BlobOpen(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle; var BlobHandle: IscBlobHandle; BlobId: TISCQuad; BPB: string = '');
-    function  BlobGetSegment(var BlobHandle: IscBlobHandle; out length: Word; BufferLength: Word; Buffer: PChar): boolean;
+    function  BlobGetSegment(var BlobHandle: IscBlobHandle; out length: Word; BufferLength: Cardinal; Buffer: PChar): boolean;
     procedure BlobClose(var BlobHandle: IscBlobHandle);
     procedure BlobInfo(var BlobHandle: IscBlobHandle; out NumSegments, MaxSegment, TotalLength: Cardinal; out btype : byte);
     procedure BlobSize(var BlobHandle: IscBlobHandle; out Size: Cardinal);
@@ -626,7 +647,7 @@ type
     // you must free memory allocated by this method !!
     procedure BlobReadBuffer(var BlobHandle: IscBlobHandle; var Size: Cardinal; var Buffer: Pointer);
     function  BlobCreate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle; var BlobHandle: IscBlobHandle; BPB: string = ''): TISCQuad;
-    procedure BlobWriteSegment(var BlobHandle: IscBlobHandle; BufferLength: Word; Buffer: PChar);
+    procedure BlobWriteSegment(var BlobHandle: IscBlobHandle; BufferLength: Cardinal; Buffer: PChar);
     procedure BlobWriteString(var BlobHandle: IscBlobHandle; var Str: String);
     procedure BlobWriteStream(var BlobHandle: IscBlobHandle; Stream: TStream);
 
@@ -715,130 +736,6 @@ type
 //  {$ENDIF}
 
 
-{$IFNDEF COMPILER6_UP}
-function TryStrToInt(const S: string; out Value: Integer): Boolean;
-{$ENDIF}
-
-implementation
-uses JvUIBConst;
-{ EUIBParser }
-
-constructor EUIBParser.Create(Line, Character: Integer; dummyForBCB : Integer);
-begin
-  FLine := Line;
-  FCharacter := Character;
-  Message := format('Parse error Line %d, Char %d', [FLine, FCharacter]);
-end;
-
-//******************************************************************************
-// Errors handling
-//******************************************************************************
-
-{$IFNDEF COMPILER6_UP}
-
-function TryStrToInt(const S: string; out Value: Integer): Boolean;
-var
-  E: Integer;
-begin
-  Val(S, Value, E);
-  Result := E = 0;
-end;
-
-{$ENDIF}
-
-const
-  ISC_MASK   = $14000000; // Defines the code as a valid ISC code
-  FAC_MASK   = $00FF0000; // Specifies the facility where the code is located
-  CODE_MASK  = $0000FFFF; // Specifies the code in the message file
-  CLASS_MASK = $F0000000; // Defines the code as warning, error, info, or other
-
-  // Note: Perhaps a debug level could be interesting !!!
-  CLASS_ERROR   = 0; // Code represents an error
-  CLASS_WARNING = 1; // Code represents a warning
-  CLASS_INFO    = 2; // Code represents an information msg
-
-//FACILITY   FAC_CODE    MAX_NUMBER    LAST_CHANGE
-  FAC_JRD        =  0;  //         501   26/10/2002 17:02:13   <- In Use
-  FAC_QLI        =  1;  //         509   07/11/1996 13:38:37
-  FAC_GDEF       =  2;  //         345   07/11/1996 13:38:37
-  FAC_GFIX       =  3;  //         114   25/12/2001 02:59:17   <- In Use
-  FAC_GPRE       =  4;  //           1   07/11/1996 13:39:40
-  FAC_GLTJ       =  5;  //           1   07/11/1996 13:39:40
-  FAC_GRST       =  6;  //           1   07/11/1996 13:39:40
-  FAC_DSQL       =  7;  //          15   22/07/2001 23:26:58   <- In Use
-  FAC_DYN        =  8;  //         215   01/07/2001 17:43:07   <- In Use
-  FAC_FRED       =  9;  //           1   07/11/1996 13:39:40
-  FAC_INSTALL    = 10;  //           1   07/11/1996 13:39:40
-  FAC_TEST       = 11;  //           4   07/11/1996 13:38:41
-  FAC_GBAK       = 12;  //         283   05/03/2002 02:38:49   <- In Use
-  FAC_SQLERR     = 13;  //         917   05/03/2002 02:55:22
-  FAC_SQLWARN    = 14;  //         102   07/11/1996 13:38:42
-  FAC_JRD_BUGCHK = 15;  //         305   05/03/2002 02:29:03
-  FAC_GJRN       = 16;  //         241   07/11/1996 13:38:43
-  FAC_ISQL       = 17;  //         109   10/10/2001 03:27:43
-  FAC_GSEC       = 18;  //          91   04/11/1998 11:06:15   <- In Use
-  FAC_LICENSE    = 19;  //          60   05/03/2002 02:30:12   <- In Use
-  FAC_DOS        = 20;  //          74   05/03/2002 02:31:54
-  FAC_GSTAT      = 21;  //          36   10/10/2001 18:05:16   <- In Use
-
-
-  function GetFacility(code: ISCStatus): Word;
-  begin
-    Result := (code and FAC_MASK) shr 16;
-  end;
-
-  function GetClass(code: ISCStatus): Word;
-  begin
-    Result := (code and CLASS_MASK) shr 30;
-  end;
-
-  function GETCode(code: ISCStatus): Word;
-  begin
-    Result := (code and CODE_MASK) shr 0;
-  end;
-
-  procedure TUIBLibrary.CheckUIBApiCall(const Status: ISCStatus);
-  var
-    Exception: EUIBError;
-  begin
-    if (Status <> 0) and FRaiseErrors then
-    if (GetClass(Status) = CLASS_ERROR) then // only raise CLASS_ERROR
-    begin
-      case GetFacility(Status) of
-        FAC_JRD     : Exception := EUIBError.Create(ErrInterprete);
-        FAC_GFIX    : Exception := EUIBGFIXError.Create(ErrInterprete);
-        FAC_DSQL    : Exception := EUIBDSQLError.Create(ErrInterprete);
-        FAC_DYN     : Exception := EUIBDYNError.Create(ErrInterprete);
-        FAC_GBAK    : Exception := EUIBGBAKError.Create(ErrInterprete);
-        FAC_GSEC    : Exception := EUIBGSECError.Create(ErrInterprete);
-        FAC_LICENSE : Exception := EUIBLICENSEError.Create(ErrInterprete);
-        FAC_GSTAT   : Exception := EUIBGSTATError.Create(ErrInterprete);
-      else
-        Exception := EUIBError.Create(ErrInterprete);
-      end;
-      Exception.FErrorCode := GETCode(Status);
-      Exception.Message := Exception.Message + #13'Error Code: ' + IntToStr(Exception.FErrorCode);
-      Exception.FSQLCode   := ErrSqlcode;
-      if Exception.FSQLCode <> 0 then
-        Exception.Message := Exception.Message + #13 + ErrSQLInterprete(Exception.FSQLCode) +
-          #13'SQL Code: ' + IntToStr(Exception.FSQLCode);
-      if (Exception.FErrorCode = 401) and Assigned(FOnConnectionLost) then
-        FOnConnectionLost(Self);
-      raise Exception;
-    end;
-  end;
-
-//******************************************************************************
-// Database
-//******************************************************************************
-
-
-constructor TUIBLibrary.Create;
-begin
-  inherited;
-  FRaiseErrors := True;
-end;
-
 type
   TParamType = (
     prNone, // no param
@@ -853,7 +750,7 @@ type
     ParamType : TParamType;
   end;
 
-var
+const
 
   DPBInfos : array[1..isc_dpb_Max_Value] of TDPBInfo =
    ((Name: 'cdd_pathname';           ParamType: prIgno), // not implemented
@@ -949,6 +846,171 @@ var
 {$ENDIF}
    );
 
+
+{$IFNDEF COMPILER6_UP}
+function TryStrToInt(const S: string; out Value: Integer): Boolean;
+{$ENDIF}
+
+implementation
+uses JvUIBConst;
+
+const                  
+   BLOBSEGMENT: Word = 16*1024; // best performances
+
+{ EUIBParser }
+
+constructor EUIBParser.Create(Line, Character: Integer; dummyForBCB : Integer);
+begin
+  FLine := Line;
+  FCharacter := Character;
+  Message := format('Parse error Line %d, Char %d', [FLine, FCharacter]);
+end;
+
+//******************************************************************************
+// Errors handling
+//******************************************************************************
+
+{$IFNDEF COMPILER6_UP}
+
+function TryStrToInt(const S: string; out Value: Integer): Boolean;
+var
+  E: Integer;
+begin
+  Val(S, Value, E);
+  Result := E = 0;
+end;
+
+{$ENDIF}
+
+const
+  ISC_MASK   = $14000000; // Defines the code as a valid ISC code
+  FAC_MASK   = $00FF0000; // Specifies the facility where the code is located
+  CODE_MASK  = $0000FFFF; // Specifies the code in the message file
+  CLASS_MASK = $F0000000; // Defines the code as warning, error, info, or other
+
+  // Note: Perhaps a debug level could be interesting !!!
+  CLASS_ERROR   = 0; // Code represents an error
+  CLASS_WARNING = 1; // Code represents a warning
+  CLASS_INFO    = 2; // Code represents an information msg
+
+//FACILITY   FAC_CODE    MAX_NUMBER    LAST_CHANGE
+  FAC_JRD        =  0;  //         501   26/10/2002 17:02:13   <- In Use
+  FAC_QLI        =  1;  //         509   07/11/1996 13:38:37
+  FAC_GDEF       =  2;  //         345   07/11/1996 13:38:37
+  FAC_GFIX       =  3;  //         114   25/12/2001 02:59:17   <- In Use
+  FAC_GPRE       =  4;  //           1   07/11/1996 13:39:40
+  FAC_GLTJ       =  5;  //           1   07/11/1996 13:39:40
+  FAC_GRST       =  6;  //           1   07/11/1996 13:39:40
+  FAC_DSQL       =  7;  //          15   22/07/2001 23:26:58   <- In Use
+  FAC_DYN        =  8;  //         215   01/07/2001 17:43:07   <- In Use
+  FAC_FRED       =  9;  //           1   07/11/1996 13:39:40
+  FAC_INSTALL    = 10;  //           1   07/11/1996 13:39:40
+  FAC_TEST       = 11;  //           4   07/11/1996 13:38:41
+  FAC_GBAK       = 12;  //         283   05/03/2002 02:38:49   <- In Use
+  FAC_SQLERR     = 13;  //         917   05/03/2002 02:55:22
+  FAC_SQLWARN    = 14;  //         102   07/11/1996 13:38:42
+  FAC_JRD_BUGCHK = 15;  //         305   05/03/2002 02:29:03
+  FAC_GJRN       = 16;  //         241   07/11/1996 13:38:43
+  FAC_ISQL       = 17;  //         109   10/10/2001 03:27:43
+  FAC_GSEC       = 18;  //          91   04/11/1998 11:06:15   <- In Use
+  FAC_LICENSE    = 19;  //          60   05/03/2002 02:30:12   <- In Use
+  FAC_DOS        = 20;  //          74   05/03/2002 02:31:54
+  FAC_GSTAT      = 21;  //          36   10/10/2001 18:05:16   <- In Use
+
+
+  function GetFacility(code: ISCStatus): Word;
+  begin
+    Result := (code and FAC_MASK) shr 16;
+  end;
+
+  function GetClass(code: ISCStatus): Word;
+  begin
+    Result := (code and CLASS_MASK) shr 30;
+  end;
+
+  function GETCode(code: ISCStatus): Word;
+  begin
+    Result := (code and CODE_MASK) shr 0;
+  end;
+
+  procedure TUIBLibrary.CheckUIBApiCall(const Status: ISCStatus);
+  var
+    Exception: EUIBError;
+    Number: Integer;
+  begin
+    if (Status <> 0) and FRaiseErrors then
+    if (GetClass(Status) = CLASS_ERROR) then // only raise CLASS_ERROR
+    begin
+      case GetFacility(Status) of
+        FAC_JRD     :
+          if Status = isc_except then
+        begin
+          Number := FStatusVector[3];
+          if assigned(FOnGetDBExceptionClass) then
+            Exception := FOnGetDBExceptionClass(Number).Create(ErrInterprete) else
+            Exception := EUIBException.Create(ErrInterprete);
+          EUIBException(Exception).FNumber := Number;
+        end else
+          Exception := EUIBError.Create(ErrInterprete);
+        FAC_GFIX    : Exception := EUIBGFIXError.Create(ErrInterprete);
+        FAC_DSQL    : Exception := EUIBDSQLError.Create(ErrInterprete);
+        FAC_DYN     : Exception := EUIBDYNError.Create(ErrInterprete);
+        FAC_GBAK    : Exception := EUIBGBAKError.Create(ErrInterprete);
+        FAC_GSEC    : Exception := EUIBGSECError.Create(ErrInterprete);
+        FAC_LICENSE : Exception := EUIBLICENSEError.Create(ErrInterprete);
+        FAC_GSTAT   : Exception := EUIBGSTATError.Create(ErrInterprete);
+      else
+        Exception := EUIBError.Create(ErrInterprete);
+      end;
+      Exception.FSQLCode   := ErrSqlcode;
+      if Exception.FSQLCode <> 0 then
+        Exception.Message := Exception.Message + ErrSQLInterprete(Exception.FSQLCode) + #13#10;
+      Exception.FErrorCode := GETCode(Status);
+      Exception.Message := Exception.Message + 'Error Code: ' + IntToStr(Exception.FErrorCode);
+      if (Exception.FErrorCode = 401) and Assigned(FOnConnectionLost) then
+        FOnConnectionLost(Self);
+      raise Exception;
+    end;
+  end;
+
+//******************************************************************************
+// Database
+//******************************************************************************
+
+
+  constructor TUIBLibrary.Create;
+  begin
+    inherited;
+    FRaiseErrors := True;
+  end;
+
+  function GetClientLibrary: string;
+  {$IFDEF DLLREGISTRY}
+  var
+    Key: HKEY;
+    Size: Cardinal;
+    HR: Integer;
+  {$ENDIF}
+  begin
+  {$IFDEF DLLREGISTRY}
+    HR := RegOpenKeyEx(HKEY_LOCAL_MACHINE, FBINSTANCES, 0, KEY_READ, Key);
+    if (HR = ERROR_SUCCESS) then
+    begin
+      HR := RegQueryValueEx(Key, 'DefaultInstance', nil, nil, nil, @Size);
+      if (HR = ERROR_SUCCESS) then
+      begin
+        SetLength(Result, Size);
+        HR := RegQueryValueEx(Key, 'DefaultInstance', nil, nil, Pointer(Result), @Size);
+        if (HR = ERROR_SUCCESS) then
+          Result := Trim(Result)+ 'bin\' + GDS32DLL;
+      end;
+      RegCloseKey(Key);
+    end;
+    if (HR <> ERROR_SUCCESS) then
+  {$ENDIF}
+    Result := GDS32DLL;
+  end;
+
   function CreateDBParams(Params: String; Delimiter: Char = ';'): string;
   var
     BufferSize: Integer;
@@ -989,12 +1051,12 @@ var
       0  ..   255 :
         begin
           AddByte(1);
-          AddByte(ACard)
+          AddByte(Byte(ACard))
         end;
       256.. 65535 :
         begin
           AddByte(2);
-          AddWord(ACard)
+          AddWord(Word(ACard))
         end;
       else
         AddByte(4);
@@ -1050,7 +1112,7 @@ var
                   if TryStrToInt(CurValue, AValue) and (AValue in [0..255]) then
                   begin
                     AddByte(Code);
-                    AddByte(AValue);
+                    AddByte(Byte(AValue));
                   end;
                 prCard :
                   if TryStrToInt(CurValue, AValue) and (AValue > 0) then
@@ -1106,7 +1168,7 @@ var
       if (len = Length(CharacterSetStr[Result])) and
         (CompareText(CharacterSetStr[Result], CharacterSet) = 0) then
           Exit;
-    raise EUIBError.CreateFmt('CharacterSet %s not Found', [CharacterSet]);
+    raise Exception.CreateFmt('CharacterSet %s not Found', [CharacterSet]);
   end;  
 
 //******************************************************************************
@@ -1525,8 +1587,8 @@ var
     end;
   end;
 
-  procedure TUIBLibrary.ArrayPutSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle; ArrayId: TISCQuad;
-    var desc: TArrayDesc; DestArray: PPointer; var SliceLength: Integer);
+  procedure TUIBLibrary.ArrayPutSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle;
+    var ArrayId: TISCQuad; var desc: TArrayDesc; DestArray: PPointer; var SliceLength: Integer);
   begin
     Lock;
     try
@@ -1559,20 +1621,21 @@ var
   function TUIBLibrary.ErrInterprete: String;
   var
     StatusVector: PStatusVector;
-    i : Integer;
+    len: Integer;
     buffer: array[0..512] of char;
   begin
     StatusVector := @FStatusVector;
     Lock;
     try
-      if isc_interprete(buffer, @StatusVector) > 0 then
-        Result := Result + Trim(buffer);
-
+      repeat
+        len := isc_interprete(buffer, @StatusVector);
+        if len > 0 then
+          Result := Result + copy(buffer, 0, len) + #13#10 else
+          Break;
+      until False;
     finally
       UnLock;
     end;
-    for i := 1 to 255 do if Result[i] = #0 then Break; // Quick trim
-    SetLength(Result, i-1);
   end;
 
   function TUIBLibrary.ErrSQLInterprete(SQLCODE: Smallint): String;
@@ -1654,9 +1717,11 @@ var
   end;
 
   function TUIBLibrary.BlobGetSegment(var BlobHandle: IscBlobHandle; out length: Word;
-    BufferLength: Word; Buffer: PChar): boolean;
+    BufferLength: Cardinal; Buffer: PChar): boolean;
   var AStatus: ISCStatus;
   begin
+    if BufferLength > BLOBSEGMENT then
+      BufferLength := BLOBSEGMENT;
     Lock;
     try
       AStatus := isc_get_segment(@FStatusVector, @BlobHandle, @length, BufferLength, Buffer);
@@ -1874,11 +1939,20 @@ type
     end;
   end;
 
-  procedure TUIBLibrary.BlobWriteSegment(var BlobHandle: IscBlobHandle; BufferLength: Word; Buffer: PChar);
+  procedure TUIBLibrary.BlobWriteSegment(var BlobHandle: IscBlobHandle; BufferLength: Cardinal; Buffer: PChar);
+  var size: Word;
   begin
     Lock;
     try
-      CheckUIBApiCall(isc_put_segment(@FStatusVector, @BlobHandle, BufferLength, Buffer));
+      while BufferLength > 0 do
+      begin
+        if BufferLength > BLOBSEGMENT then
+          size := BLOBSEGMENT else
+          size := BufferLength;
+        CheckUIBApiCall(isc_put_segment(@FStatusVector, @BlobHandle, Size, Buffer));
+        dec(BufferLength, size);
+        inc(Buffer, size);
+      end;
     finally
       UnLock;
     end;
@@ -2195,7 +2269,7 @@ const
   procedure TSQLDA.CheckRange(const Index: Word);
   begin
     if Index >= Word(FXSQLDA.sqln) then
-      raise EUIBError.CreateFmt(EUIB_FIELDNUMNOTFOUND, [Index]);
+      raise Exception.CreateFmt(EUIB_FIELDNUMNOTFOUND, [Index]);
   end;
 
   function TSQLDA.DecodeString(const Code: Smallint; Index: Word): String;
@@ -2534,7 +2608,7 @@ const
       if FXSQLDA.sqlvar[Result].AliasNameLength = Length(name) then
         if StrLIComp(@FXSQLDA.sqlvar[Result].aliasname, PChar(Name),
           FXSQLDA.sqlvar[Result].AliasNameLength) = 0 then Exit;
-    raise EUIBError.CreateFmt(EUIB_FIELDSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_FIELDSTRNOTFOUND, [name]);
   end;
 
   function TSQLDA.GetByNameAsDouble(const Name: String): Double;
@@ -3500,7 +3574,7 @@ end;
 function TSQLParams.GetFieldIndex(const name: String): Word;
 begin
   if not FindParam(name, Result) then
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameAsBoolean(const Name: String;
@@ -3510,7 +3584,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsBoolean(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameAsCurrency(const Name: String;
@@ -3520,7 +3594,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsCurrency(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameAsDateTime(const Name: String;
@@ -3530,7 +3604,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsDateTime(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameAsDouble(const Name: String;
@@ -3540,7 +3614,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsDouble(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameAsInt64(const Name: String;
@@ -3550,7 +3624,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsInt64(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameAsInteger(const Name: String;
@@ -3560,7 +3634,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsInteger(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameAsQuad(const Name: String;
@@ -3570,7 +3644,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsQuad(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameAsSingle(const Name: String;
@@ -3580,7 +3654,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsSingle(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameAsSmallint(const Name: String;
@@ -3590,7 +3664,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsSmallint(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameAsString(const Name, Value: String);
@@ -3599,7 +3673,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsString(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameAsWideString(const Name: String; const Value: WideString);
@@ -3608,7 +3682,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsWideString(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 procedure TSQLParams.SetByNameIsNull(const Name: String;
@@ -3618,7 +3692,7 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetIsNull(Field, Value) else
-    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 destructor TMemoryPool.Destroy;
@@ -3822,6 +3896,7 @@ end;
               Inc(NewLen); // empty string not null
             if sqllen = 0 then
               getmem(sqldata, NewLen+2) else
+
               ReallocMem(sqldata, NewLen+2);
             sqllen := NewLen + 2;
             PVary(sqldata).vary_length := NewLen;
@@ -4324,7 +4399,7 @@ end;
   begin
     len := Length(Name);
     if len > MaxParamLength then
-      raise EUIBError.CreateFmt(EUIB_SIZENAME, [Name]);
+      raise Exception.CreateFmt(EUIB_SIZENAME, [Name]);
 
     Result := FXSQLDA.sqln;
     if (len > 0) and FindParam(Name, num) then
