@@ -39,10 +39,12 @@ package JvQDBK3D;
 
 requires
   JvQCoreK3D,
-  JvQDBK3R
+  JvQDBK3R,
+  visualdbclx
   ;
 
 contains
+  JvQSelectDataSetForm in '../../qdesign/JvQSelectDataSetForm.pas' {JvSelectDataSetForm},
   JvQCsvDataEditor in '../../qdesign/JvQCsvDataEditor.pas' ,
   JvQCsvDataForm in '../../qdesign/JvQCsvDataForm.pas' {JvCsvDefStrDialog},
   JvQDBReg in '../../qdesign/JvQDBReg.pas' 

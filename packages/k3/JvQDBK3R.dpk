@@ -48,6 +48,7 @@ contains
   JvQMemoryDataset in '../../qrun/JvQMemoryDataset.pas' ,
   JvQCsvData in '../../qrun/JvQCsvData.pas' ,
   JvQCsvParse in '../../qrun/JvQCsvParse.pas' ,
+  JvQDBRemoteLogin in '../../qrun/JvQDBRemoteLogin.pas' ,
   JvQDBUtils in '../../qrun/JvQDBUtils.pas' ,
   JvQExDBGrids in '../../qrun/JvQExDBGrids.pas' ,
   JvQAppDBStorage in '../../qrun/JvQAppDBStorage.pas' 
