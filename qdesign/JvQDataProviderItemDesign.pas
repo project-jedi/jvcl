@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-06-27
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,7 +36,6 @@ interface
 
 uses
   Classes,
-  QWindows,
   JvQDataProviderIntf;
 
 type
@@ -61,12 +60,12 @@ procedure RegisterDataItemIntfProp(const IID: TGUID; const PropClass: TJvDataPro
 implementation
 
 uses
+  SysUtils, TypInfo,
+  QWindows, QImgList, 
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  QImgList,
-  SysUtils, TypInfo,
-  JvQDsgnConsts;
+  {$ENDIF MSWINDOWS} 
+  JvDsgnConsts;
 
 type
   PPropData = ^TPropData;
@@ -194,17 +193,17 @@ begin
     properties to be appended to the existing property list. }
   // (rom) is there some security so we do not blow up everything by exceeding the 2048 bytes?
   PNewInfo := CloneTypeInfo(Pointer(PInteger(P)^), 2048);
-  {$IFDEF MSWINDOWS}
+{$IFDEF MSWINDOWS}
   if VirtualProtect(P, 4, PAGE_WRITECOPY, OldProtect) then
   try
     PInteger(P)^ := Integer(PNewInfo);
   finally
     VirtualProtect(P, 4, OldProtect, OldProtect);
   end;
-  {$ENDIF}
-  {$IFDEF LINUX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
   WriteProcessMemory(GetCurrentProcess, P, PNewInfo, 4, OldProtect);  // asn ???
-  {$ENDIF LINUX}
+{$ENDIF LINUX}
 end;
 
 procedure ClearTypeInfo(const AClass: TClass);
@@ -223,7 +222,7 @@ begin
   finally
     VirtualProtect(P, 4, OldProtect, OldProtect);
   end;
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   WriteProcessMemory(GetCurrentProcess, P, PNewType, 4, OldProtect);  // asn ???
   {$ENDIF LINUX}
