@@ -2419,7 +2419,9 @@ begin
         Control.AdjustSize;
     end;
 
-    if (uFlags and SWP_NOOWNERZORDER = 0) and (uFlags and SWP_NOZORDER = 0) then
+    if (uFlags and SWP_NOOWNERZORDER = 0) and (uFlags and SWP_NOZORDER = 0) and
+       (Cardinal(WndInsertAfter) <> HWND_TOP) and (Cardinal(WndInsertAfter) <> HWND_BOTTOM) and
+       (Cardinal(WndInsertAfter) <> HWND_TOPMOST) then
       if (not QWidget_isTopLevel(Wnd)) and (QWidget_parentWidget(Wnd) <> nil) then
         SetWindowPos(QWidget_parentWidget(Wnd), WndInsertAfter, 0, 0, 0, 0,
           SWP_NOSIZE or SWP_NOMOVE or SWP_NOREDRAW or SWP_NOACTIVATE or
@@ -8794,7 +8796,7 @@ begin
 end;
 
 initialization
-  OutputDebugString('Loading QWindows.pas');
+  //OutputDebugString('Loading QWindows.pas');
   {$IFDEF LINUX}
   InitGetTickCount;
   WaitObjectList := THandleObjectList.Create;
@@ -8807,20 +8809,5 @@ finalization
   {$ENDIF LINUX}
   AppEventHook.Free;
   GlobalCaret.Free;
-  OutputDebugString('Unloaded QWindows.pas');
+  //OutputDebugString('Unloaded QWindows.pas');
 end.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
