@@ -33,9 +33,7 @@ unit ModuleLoader;
 
 interface
 
-{$WEAKPACKAGEUNIT ON}
-
-// each OS gets its own IFDEFed complete code block to make reading easier
+{$WEAKPACKAGEUNIT ON} // (ahuser) why is it a weak package unit?
 
 {$IFDEF MSWINDOWS}
 
@@ -45,6 +43,18 @@ uses
 type
   // Handle to a loaded DLL
   TModuleHandle = HINST;
+
+{$ENDIF MSWINDOWS}
+
+{$IFDEF LINUX}
+uses
+  Types, Libc;
+
+type
+  // Handle to a loaded .so
+  TModuleHandle = Pointer;
+
+{$ENDIF LINUX}
 
 const
   // Value designating an unassigned TModuleHandle or a failed loading
@@ -57,31 +67,6 @@ function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
 function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
 function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
-
-{$ENDIF MSWINDOWS}
-
-{$IFDEF LINUX}
-
-uses
-  Types, Libc;
-
-type
-  // Handle to a loaded .so
-  TModuleHandle = Pointer;
-
-const
-  // Value designating an unassigned TModuleHandle or a failed loading
-  INVALID_MODULEHANDLE_VALUE = TModuleHandle(nil);
-
-function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
-function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
-procedure UnloadModule(var Module: TModuleHandle);
-function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
-function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
-function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
-function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
-
-{$ENDIF LINUX}
 
 // (p3)
 // Simple DLL loading class. The idea is to use it to dynamically load
@@ -99,6 +84,7 @@ function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; 
 type
   TModuleLoadMethod = (ltDontResolveDllReferences, ltLoadAsDataFile, ltAlteredSearchPath);
   TModuleLoadMethods = set of TModuleLoadMethod;
+
   TModuleLoader = class(TObject)
   private
     FHandle: TModuleHandle;
@@ -339,39 +325,6 @@ end;
 
 {$ENDIF LINUX}
 
-// support routines for the TModuleLoader class
-
-function InternalLoadLibraryEx(const lpLibFilename: PChar; hFile: HFILE; dwFlags: DWORD): TModuleHandle;
-begin
-  {$IFDEF LINUX}
-  Result := dlopen(lpLibFilename, dwFlags);
-  {$ENDIF LINUX}
-  {$IFDEF MSWINDOWS}
-  Result := LoadLibraryEx(lpLibFilename, hFile, dwFlags);
-  {$ENDIF MSWINDOWS}
-end;
-
-function InternalGetProcAddress(hModule: TModuleHandle;
-  lpProcName: PChar): Pointer;
-begin
-  {$IFDEF LINUX}
-  Result := dlsym(hModule, lpProcName);
-  {$ENDIF LINUX}
-  {$IFDEF MSWINDOWS}
-  Result := GetProcAddress(hModule, lpProcName);
-  {$ENDIF MSWINDOWS}
-end;
-
-function InternalFreeLibrary(hModule: TModuleHandle): BOOL;
-begin
-  {$IFDEF LINUX}
-  Result := dlclose(hModule) = 0;
-  {$ENDIF LINUX}
-  {$IFDEF MSWINDOWS}
-  Result := FreeLibrary(hModule);
-  {$ENDIF MSWINDOWS}
-end;
-
 //=== TModuleLoader ==========================================================
 
 constructor TModuleLoader.Create(const ADLLName: string; LoadMethods: TModuleLoadMethods = []);
@@ -413,7 +366,7 @@ begin
   Result := Loaded;
   if Result and not Assigned(AProc) then
   begin
-    AProc := InternalGetProcAddress(Handle, PChar(AName));
+    AProc := GetModuleSymbol(Handle, AName);
     Result := Assigned(AProc);
   end;
   if not Result then
@@ -428,23 +381,27 @@ var
   Module: TModuleHandle;
   P: Pointer;
 begin
-  Module := InternalLoadLibraryEx(PChar(ADLLName), 0, 0);
-  Result := Module <> 0;
+  Result := LoadModule(Module, ADLLName);
   if Result then
   begin
     if AProcName <> '' then
     begin
-      P := InternalGetProcAddress(Module, PChar(AProcName));
+      P := GetModuleSymbol(Module, AProcName);
       Result := Assigned(P);
     end;
-    InternalFreeLibrary(Module);
+    UnloadModule(Module);
   end;
 end;
 
 procedure TModuleLoader.Load(LoadMethods: TModuleLoadMethods);
 const
   cLoadMethods: array [TModuleLoadMethod] of DWORD =
+    {$IFDEF MSWINDOWS}
     (DONT_RESOLVE_DLL_REFERENCES, LOAD_LIBRARY_AS_DATAFILE, LOAD_WITH_ALTERED_SEARCH_PATH);
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    RTLD_LAZY, RTLD_LAZY, RTLD_LAZY // there is not really a equivalent under Linux
+    {$ENDIF LINUX}
 var
   Flags: DWORD;
   I: TModuleLoadMethod;
@@ -454,7 +411,7 @@ begin
     if I in LoadMethods then
       Flags := Flags or cLoadMethods[I];
   if FHandle = INVALID_MODULEHANDLE_VALUE then
-    FHandle := InternalLoadLibraryEx(PChar(DLLName), 0, Flags);
+    LoadModuleEx(FHandle, DLLName, Flags);
   if FHandle = INVALID_MODULEHANDLE_VALUE then
     Error(GetLastError);
 end;
@@ -472,7 +429,7 @@ end;
 procedure TModuleLoader.Unload;
 begin
   if FHandle <> INVALID_MODULEHANDLE_VALUE then
-    InternalFreeLibrary(FHandle);
+    UnloadModule(FHandle);
   FHandle := INVALID_MODULEHANDLE_VALUE;
 end;
 
