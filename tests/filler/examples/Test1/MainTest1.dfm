@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 387
   Top = 227
-  Width = 870
-  Height = 640
+  Width = 548
+  Height = 439
   Caption = 'Form1'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,6 +11,8 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object JvFillLabel1: TJvFillLabel
@@ -52,9 +54,27 @@ object Form1: TForm1
     ItemHeight = 13
     TabOrder = 1
   end
+  object btnEditStrings: TButton
+    Left = 160
+    Top = 135
+    Width = 75
+    Height = 25
+    Caption = 'Edit strings'
+    TabOrder = 2
+    OnClick = btnEditStringsClick
+  end
+  object btnEditTree: TButton
+    Left = 160
+    Top = 165
+    Width = 75
+    Height = 25
+    Caption = 'Edit tree'
+    TabOrder = 3
+    OnClick = btnEditTreeClick
+  end
   object JvFontFiller1: TJvFontFiller
-    Left = 455
-    Top = 75
+    Left = 300
+    Top = 20
   end
   object JvStringsFiller1: TJvStringsFiller
     Strings.Strings = (
@@ -66,7 +86,7 @@ object Form1: TForm1
       'Line 6'
       'Line 7'
       'Line 8')
-    Left = 540
+    Left = 300
     Top = 75
   end
 end

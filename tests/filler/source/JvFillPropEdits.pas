@@ -17,7 +17,7 @@ implementation
 
 uses
   Classes, Consts, DsgnIntf, SysUtils, TypInfo,
-  JvFillIntf;
+  JvFillBasicImpl, JvFillIntf;
 //  Dialogs; // for testing only!! remove later!!
 
 type
@@ -90,7 +90,7 @@ end;
 procedure RegFillerPropEdits;
 begin
 {$IFNDEF COMPILER6_UP}
-  RegisterPropertyEditor(TypeInfo(TComponent), nil, 'Filler', TFillerProperty);
+  RegisterPropertyEditor(TypeInfo(TComponent), TComponent, 'Filler', TFillerProperty);
 {$ENDIF COMPILER6_UP}
 end;
 

@@ -32,15 +32,16 @@ uses
   Forms, Graphics;
 
 type
-  TJvFontItems = class(TJvFillerItems)
+  TJvFontItems = class(TJvBaseFillerItems)
   protected
+    procedure InitImplementers; override;
     function getCount: Integer; override;
     function getItem(I: Integer): IFillerItem; override;
-    procedure DrawItem(ACanvas:TCanvas; var ARect: TRect; Index: integer;State: TOwnerDrawState; AOptions: TPersistent = nil); override;
-    function MeasureItem(ACanvas:TCanvas; Index: integer; AOptions: TPersistent = nil): TSize; override;
   end;
 
   TJvFontItem = class(TJvFillerTextItem)
+  protected
+    procedure InitID; override;
   public
     constructor Create(AItems: IFillerItems; const Index: Integer);
   end;
@@ -55,6 +56,12 @@ type
 
 { TJvFontItems }
 
+procedure TJvFontItems.InitImplementers;
+begin
+  inherited InitImplementers;
+  AddIntfImpl(TJvCustomFillerItemsTextRenderer.Create(Self));
+end;
+
 function TJvFontItems.getCount: Integer;
 begin
   Result := Screen.Fonts.Count;
@@ -65,7 +72,8 @@ begin
   Result := TJvFontItem.Create(Self, I);
 end;
 
-procedure TJvFontItems.DrawItem(ACanvas:TCanvas; var ARect: TRect; Index: integer;State: TOwnerDrawState; AOptions: TPersistent);
+{
+procedure TJvFontItems.DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent);
 var
   TmpFont: TFont;
 begin
@@ -75,7 +83,7 @@ begin
     try
       TmpFont.Assign(ACanvas.Font);
       try
-        ACanvas.Font.Name := Screen.Fonts[Index];
+        ACanvas.Font.Name := (Item as IFillerItemText).Caption;
         ACanvas.TextRect(ARect, ARect.Left, ARect.Top, ACanvas.Font.Name);
       finally
         ACanvas.Font.Assign(TmpFont);
@@ -85,20 +93,20 @@ begin
     end;
   end
   else
-    ACanvas.TextRect(ARect, ARect.Left, ARect.Top, (getItem(Index) as IFillerItemText).Caption);
+    ACanvas.TextRect(ARect, ARect.Left, ARect.Top, (Item as IFillerItemText).Caption);
 end;
 
-function TJvFontItems.MeasureItem(ACanvas:TCanvas; Index: integer; AOptions: TPersistent): TSize;
+function TJvFontItems.MeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent): TSize;
 var
   TmpFont: TFont;
 begin
-  if (Index > -1) and (AOptions <> nil) and (AOptions is TFontFillerOptions) and TFontFillerOptions(AOptions).UseFontNames then
+  if (Item <> nil) and (AOptions <> nil) and (AOptions is TFontFillerOptions) and TFontFillerOptions(AOptions).UseFontNames then
   begin
     TmpFont := TFont.Create;
     try
       TmpFont.Assign(ACanvas.Font);
       try
-        ACanvas.Font.Name := Screen.Fonts[Index];
+        ACanvas.Font.Name := (Item as IFillerItemText).Caption;
         Result := ACanvas.TextExtent(ACanvas.Font.Name);
       finally
         ACanvas.Font.Assign(TmpFont);
@@ -107,18 +115,24 @@ begin
       TmpFont.Free;
     end;
   end
-  else if Index > -1 then
-    Result := ACanvas.TextExtent((getItem(Index) as IFillerItemText).Caption)
+  else if Item <> nil then
+    Result := ACanvas.TextExtent((Item as IFillerItemText).Caption)
   else
     Result := ACanvas.TextExtent('WyWyWyWyWyWyWy');
 end;
+}
 
 { TJvFontItem }
+
+procedure TJvFontItem.InitID;
+begin
+  SetID(IntToHex(TJvFontItemText(TextImpl).FIndex, 4));
+end;
 
 constructor TJvFontItem.Create(AItems: IFillerItems; const Index: Integer);
 begin
   inherited Create(AItems, TJvFontItemText);
-  TJvFontItemText(TextImpl).FIndex := Index; 
+  TJvFontItemText(TextImpl).FIndex := Index;
 end;
 
 { TJvFontItemText }

@@ -14,8 +14,15 @@ type
     JvFillLabel1: TJvFillLabel;
     JvStringsFiller1: TJvStringsFiller;
     JvFillListBox2: TJvFillListBox;
+    btnEditStrings: TButton;
+    btnEditTree: TButton;
+    procedure btnEditStringsClick(Sender: TObject);
+    procedure btnEditTreeClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
+    JvTreeFiller1: TJvTreeFiller;
   public
     { Public declarations }
   end;
@@ -26,5 +33,28 @@ var
 implementation
 
 {$R *.DFM}
+
+uses
+  JvFillerEditor;
+
+procedure TForm1.btnEditStringsClick(Sender: TObject);
+begin
+  EditFiller(JvStringsFiller1);
+end;
+
+procedure TForm1.btnEditTreeClick(Sender: TObject);
+begin
+  EditFiller(JvTreeFiller1);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  JvTreeFiller1 := TJvTreeFiller.Create(Self);
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  JvTreeFiller1.Free;
+end;
 
 end.

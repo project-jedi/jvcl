@@ -5,7 +5,7 @@ interface
 {$I JVCL.INC}
 
 uses
-  Windows, Classes, StdCtrls, Controls, Graphics, JvFillIntf, JvListBox, JvLabel;
+  Windows, Classes, StdCtrls, Controls, Graphics, JvFillIntf, JvFillBasicImpl, JvListBox, JvLabel;
 
 type
   TJvFillListBox = class(TJvCustomListBox, IFillerNotify)
@@ -120,8 +120,8 @@ type
     procedure FillerChanging(const AFiller: IFiller; AReason: TJvFillerChangeReason);
     procedure FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
     procedure UpdateCaption;
-    function GetLabelText: string; override;
-    procedure DoDrawText(var Rect: TRect; Flags: Longint); override;
+    function GetLabelCaption: string; override;
+    procedure DoDrawText(var Rect: TRect; Flags: Word); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -179,7 +179,7 @@ type
 implementation
 
 uses
-  Math,
+  Math, SysUtils,
   JclStrings,
   JvTypes;
 
@@ -213,8 +213,10 @@ begin
 end;
 
 procedure TJvFillListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
+var
+  ItemsRenderer: IFillerItemsRenderer;
 begin
-  if FillerIntf <> nil then
+  if (FillerIntf <> nil) and Supports(FillerIntf, IFillerItemsRenderer, ItemsRenderer) then
   begin
     Canvas.Font := Font;
     if odSelected in State then
@@ -224,7 +226,7 @@ begin
     end
     else
       Canvas.Brush.Color := Color;
-    (FillerIntf as IFillerItems).DrawItem(Canvas, Rect, Index, State);
+    ItemsRenderer.DrawItemByIndex(Canvas, Rect, Index, State);
   end
   else
     inherited;
@@ -236,19 +238,13 @@ begin
     frDestroy:
       begin
         if HasParent then
-        begin
-//          OwnerData := True;
           Count := 0;
-        end;
         FFiller := nil;
       end;
     else
       begin
         if HasParent then
-        begin
-//          OwnerData := True;
           Count := (FillerIntf as IFillerItems).Count;
-        end;
       end;
   end;
   Invalidate;
@@ -260,19 +256,13 @@ begin
     frDestroy:
       begin
         if HasParent then
-        begin
-//          OwnerData := True;
           Count := 0;
-        end;
         FFiller := nil;
       end;
     else
       begin
         if HasParent then
-        begin
-//          OwnerData := True;
           Count := (FillerIntf as IFillerItems).Count;
-        end;
       end;
   end;
   Invalidate;
@@ -281,12 +271,17 @@ end;
 procedure TJvFillListBox.MeasureItem(Index: Integer; var Height: Integer);
 var
   aSize: TSize;
+  ItemsRenderer: IFillerItemsRenderer;
 begin
-  aSize.cy := ItemHeight;
-  if FillerIntf <> nil then
-    aSize := (FillerIntf as IFillerItems).MeasureItem(Canvas, Index);
-  if aSize.cy <> 0 then
-    Height := aSize.cy;
+  if (FillerIntf <> nil) and Supports(FillerIntf, IFillerItemsRenderer, ItemsRenderer) then
+  begin
+    aSize.cy := ItemHeight;
+    aSize := ItemsRenderer.MeasureItemByIndex(Canvas, Index);
+    if aSize.cy <> 0 then
+      Height := aSize.cy;
+  end
+  else
+    inherited;
 end;
 
 procedure TJvFillListBox.CreateParams(var Params: TCreateParams);
@@ -303,8 +298,9 @@ begin
 end;
 
 procedure TJvFillListBox.setFiller(const Value: IFiller);
-var
+{var
   aSize:TSize;
+  ItemsRenderer: IFillerItemsRenderer;}
 begin
   if FFiller <> Value then
   begin
@@ -312,27 +308,20 @@ begin
     begin
       FFiller.UnRegisterChangeNotify(self);
       if HasParent then
-      begin
-//        OwnerData := True;
         Count := 0;
-      end;
     end;
     FFiller := Value;
     if FFiller <> nil then
     begin
       FFiller.RegisterChangeNotify(self);
       if HasParent then
-      begin
-//        OwnerData := True;
         Count := (FillerIntf as IFillerItems).Count;
-      end;
-{      else
-        OwnerData := False;}
-      aSize := (FillerIntf as IFillerItems).MeasureItem(Canvas, -1);
+{
+      aSize := FillerIntf.getItems.MeasureItemByIndex(Canvas, -1);
       if aSize.cx <> 0 then
         ClientWidth := aSize.cx;
       if aSize.cy <> 0 then
-        ItemHeight := aSize.cy;
+        ItemHeight := aSize.cy;}
     end;
   end;
 end;
@@ -347,7 +336,7 @@ begin
   else
   begin
     if Succeeded(FFiller.QueryInterface(IInterfaceComponentReference, CompRef)) then
-      Result := CompRef.GetComponent
+      Result := CompRef.GetComponent as TComponent
     else
       Result := nil;
   end;
@@ -399,7 +388,7 @@ begin
   else
   begin
     if Succeeded(FFiller.QueryInterface(IInterfaceComponentReference, CompRef)) then
-      Result := CompRef.GetComponent
+      Result := CompRef.GetComponent as TComponent
     else
       Result := nil;
   end;
@@ -427,23 +416,24 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-procedure TJvFillLabel.DoDrawText(var Rect: TRect; Flags: Integer);
+procedure TJvFillLabel.DoDrawText(var Rect: TRect; Flags: Word);
 var
   Tmp: TSize;
+  Renderer: IFillerItemsRenderer;
 begin
-  if (FillerIntf <> nil) and (fsCanRender in FillerIntf.getSupports) and
+  if (FillerIntf <> nil) and Supports(FillerIntf, IFillerItemsRenderer, Renderer) and
     (FIndex >= 0) and (FIndex < (FillerIntf as IFillerItems).Count) then
   begin
     Canvas.Brush.Color := Color;
     Canvas.Font := Font;
     if (Flags and DT_CALCRECT <> 0) then
     begin
-      Tmp := (FillerIntf as IFillerItems).MeasureItem(Canvas, FIndex);
+      Tmp := Renderer.MeasureItemByIndex(Canvas, FIndex);
       Rect.Right := Tmp.cx;
       Rect.Bottom := Tmp.cy;
     end
     else
-      (FillerIntf as IFillerItems).DrawItem(Canvas, Rect, FIndex, []);
+      Renderer.DrawItemByIndex(Canvas, Rect, FIndex, []);
   end
   else
     inherited DoDrawText(Rect, Flags);
@@ -469,13 +459,13 @@ begin
   end;
 end;
 
-function TJvFillLabel.GetLabelText: string;
+function TJvFillLabel.GetLabelCaption: string;
 begin
   if (FillerIntf <> nil) and (fsText in FillerIntf.getSupports) and
-    (FIndex >= 0) and (FIndex < (FillerIntf as IFillerItems).Count) then
+      (FIndex >= 0) and (FIndex < (FillerIntf as IFillerItems).Count) then
     Result := ((FillerIntf as IFillerItems).Items[FIndex] as IFillerItemText).Caption
   else
-    Result := inherited GetLabelText;
+    Result := inherited GetLabelCaption;
 end;
 
 procedure TJvFillLabel.SetFiller(const Value: IFiller);
@@ -508,10 +498,12 @@ end;
 procedure TJvFillLabel.UpdateCaption;
 var
   tmp: TSize;
+  Renderer: IFillerItemsRenderer;
 begin
-  if (FillerIntf <> nil) and not AutoSize then
+  if AutoSize and (FillerIntf <> nil) and
+    Supports(FillerIntf, IFillerItemsRenderer, Renderer) then
   begin
-    tmp := (FillerIntf as IFillerItems).MeasureItem(Canvas,Index);
+    tmp := Renderer.MeasureItemByIndex(Canvas, Index);
     if (tmp.cy <> 0)  then
       Height := tmp.cy;
     if tmp.cx <> 0 then
