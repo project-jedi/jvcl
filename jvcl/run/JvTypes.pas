@@ -27,6 +27,8 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
   (rom) all types from a single file should be put back in their file
+  (p3) disagree, putting them here makes it more obvious when equivalent
+       types are declared in different units (f ex progress event types)
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -43,6 +45,7 @@ const
   // (rom) unused
   {$IFDEF COMPILER7_UP}
   // (rom) is this correct?
+  // (p3) yes
   DEFAULT_SYSCOLOR_MASK = $000000FF;
   {$ELSE}
   DEFAULT_SYSCOLOR_MASK = $80000000;
@@ -64,8 +67,7 @@ type
 
   TJvDoneFileEvent = procedure(Sender: TObject; FileName: string; FileSize: Integer; Url: string) of object;
   TJvDoneStreamEvent = procedure(Sender: TObject; Stream: TStream; StreamSize: Integer; Url: string) of object;
-  TJvProgressEvent = procedure(Sender: TObject; Position: Integer; TotalSize: Integer; Url: string;
-    var Continue: Boolean) of object;
+  TJvHTTPProgressEvent = procedure(Sender: TObject; Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean) of object;
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
   PRGBArray = ^TRGBArray; // JvThumbImage, JvImageSplit, JvRegion
@@ -101,8 +103,8 @@ type
 //  EJvDirectoryError = class(EJVCLException); // JvDirectorySpy
 //  TListEvent = procedure(Sender: TObject; Title: string; Handle: THandle) of object; // JvWindowsTitle
 
-  TJvPrintProgressEvent = procedure(Sender: TObject; Current, Total: Integer) of object;
-  TJvNextPageEvent = procedure(Sender: TObject; PageNumber: Integer) of object;
+  TJvProgressEvent = procedure (Sender: TObject; Current, Total: Integer) of object;
+  TJvNextPageEvent = procedure (Sender: TObject; PageNumber: Integer) of object;
   TJvBitmapStyle = (bsNormal, bsCentered, bsStretched);
 
 //  TOnOpened = procedure(Sender: TObject; Value: string) of object; // archive
@@ -278,6 +280,10 @@ type
 const
   DefaultTrackFontOptions = [hoFollowFont, hoPreserveColor, hoPreserveStyle];
 
+// from JvListView.pas
+type
+  TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
+  TJvListViewColumnSortEvent = procedure (Sender: TObject; Column: integer; var AMethod:TJvSortMethod) of object;
 
 implementation
 

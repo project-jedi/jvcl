@@ -48,7 +48,7 @@ type
     FOnError: TJvErrorEvent;
     FOnDoneFile: TJvDoneFileEvent;
     FOnDoneStream: TJvDoneStreamEvent;
-    FOnProgress: TJvProgressEvent;
+    FOnProgress: TJvHTTPProgressEvent;
     FAgent: string;
     FBytesReaded: Integer;
     FTotalBytes: Integer;
@@ -66,7 +66,7 @@ type
     constructor Create(Url, Referer, Username, FileName, Password: string;
       OutPutMode: TJvOutputMode; OnError: TJvErrorEvent;
       OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
-      OnProgress: TJvProgressEvent; Agent: string;
+      OnProgress: TJvHTTPProgressEvent; Agent: string;
       OnStatus: TJvFTPProgressEvent);
     destructor Destroy; override;
   end;
@@ -83,7 +83,7 @@ type
     FOnError: TJvErrorEvent;
     FOnDoneFile: TJvDoneFileEvent;
     FOnDoneStream: TJvDoneStreamEvent;
-    FOnProgress: TJvProgressEvent;
+    FOnProgress: TJvHTTPProgressEvent;
     FAgent: string;
     FOnReceived: TNotifyEvent;
     FOnResolving: TNotifyEvent;
@@ -121,7 +121,7 @@ type
     property OnDoneFile: TJvDoneFileEvent read FOnDoneFile write FOnDoneFile;
     property OnDoneStream: TJvDoneStreamEvent read FOnDoneStream write FOnDoneStream;
     property OnError: TJvErrorEvent read FOnError write FOnError;
-    property OnProgress: TJvProgressEvent read FOnProgress write FOnProgress;
+    property OnProgress: TJvHTTPProgressEvent read FOnProgress write FOnProgress;
     property OnResolvingName: TNotifyEvent read FOnResolving write FOnResolving;
     property OnResolvedName: TNotifyEvent read FOnResolved write FOnResolved;
     property OnConnectingToServer: TNotifyEvent read FOnConnecting write FOnConnecting;
@@ -284,7 +284,7 @@ end;
 constructor TJvHttpThread.Create(Url, Referer, Username, FileName,
   Password: string; OutPutMode: TJvOutputMode; OnError: TJvErrorEvent;
   OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
-  OnProgress: TJvProgressEvent; Agent: string; OnStatus: TJvFTPProgressEvent);
+  OnProgress: TJvHTTPProgressEvent; Agent: string; OnStatus: TJvFTPProgressEvent);
 begin
   inherited Create(True);
   FUrl := Url;
