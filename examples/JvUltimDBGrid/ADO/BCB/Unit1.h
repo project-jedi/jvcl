@@ -32,7 +32,7 @@ __published:	// Composants gérés par l'EDI
    TADOTable *LookupTable;
    TJvDBComboBox *JvDBComboBox1;
    TDBLookupComboBox *DBLookupComboBox1;
-   TPanel *Panel1;
+   TPanel *PanelButtons;
    TButton *B_Connect;
    TButton *B_TitleIndic;
    TButton *B_WordWrap;
@@ -47,6 +47,7 @@ __published:	// Composants gérés par l'EDI
    TBCDField *MainTablePrice;
    TMemoField *MainTableComment;
    TButton *B_Search;
+   TPanel *PanelGrid;
    TJvDBGridFooter *JvDBGridFooter1;
    TADOQuery *CountQuery;
    void __fastcall B_ModFooterClick(TObject *Sender);
