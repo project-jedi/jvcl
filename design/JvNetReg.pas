@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-03-20
+Last Modified: 2004-03-22
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -41,26 +41,39 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  {$IFDEF MSWINDOWS}
+  JvHTMLParser, JvMail,  JvMailEditor, JvHTMLParserEditor,
+  JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  JvRichEditToHTML,
+  {$ENDIF VCL}
   JvTypes, JvDsgnConsts,
-  JvStringListToHTML, JvFormToHTML, JvHTMLParser,
-  JvRGBToHTML, JvRichEditToHTML, JvStrToHTML, JvMail,
-  JvMailEditor, JvHTMLParserEditor, JvUrlListGrabber, JvUrlGrabbers,
-  JvUrlListGrabberEditors;
+  JvStringListToHTML, JvFormToHTML, JvRGBToHTML,  JvStrToHTML;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvNetReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvNetReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteInterNetWork, [TJvFTPURLGrabber, TJvHTTPURLGrabber,
-    TJvLocalFileURLGrabber, TJvMail, TJvHTMLParser, TJvStrToHTML,
-    TJvStringListToHTML, TJvFormToHTML, TJvRichEditToHTML, TJvRGBToHTML,
-    TJvUrlListGrabber]);
-
+  RegisterComponents(RsPaletteInterNetWork, [
+    {$IFDEF MSWINDOWS}
+    TJvFTPURLGrabber, TJvHTTPURLGrabber,
+    TJvLocalFileURLGrabber, TJvMail, TJvHTMLParser,
+    {$ENDIF MSWINDOWS}
+    TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML
+    {$IFDEF VCL}
+    ,TJvRichEditToHTML
+    {$ENDIF VCL}
+    {$IFDEF MSWINDOWS}
+    ,TJvUrlListGrabber
+    {$ENDIF MSWINDOWS}
+    ]);
+  {$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(TJvParserInfoList),
     TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberIndex),
@@ -69,8 +82,10 @@ begin
     TJvUrlListGrabber, '', TJvUrlGrabberDefaultPropertiesListEditor);
   RegisterPropertyEditor(TypeInfo(TJvCustomUrlGrabberDefaultProperties),
     TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesEditor);
-
+  {$IFDEF VCL}
   RegisterComponentEditor(TJvMail, TJvMailEditor);
+  {$ENDIF VCL}
+  {$ENDIF MSWINDOWS}
 end;
 
 end.
