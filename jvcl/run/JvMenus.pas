@@ -1824,7 +1824,7 @@ end;
 
 function TJvPopupMenu.GetActiveItemPainter: TJvCustomMenuItemPainter;
 begin
-  if Style = msItemPainter then
+  if (Style = msItemPainter) and (ItemPainter <> nil) then
     Result := ItemPainter
   else
     Result := FStyleItemPainter;
@@ -2388,6 +2388,7 @@ begin
     // Text Shortcut SubMenuArrow.
     // with the two last ones being not compulsory
 
+    CaptionRect := Rect(0, 0, 0, 0);
     Windows.DrawText(Canvas.Handle,
       PChar(Item.Caption),
       Length(Item.Caption),
@@ -2403,14 +2404,14 @@ begin
       // If the current item is the first one and it's not
       // alone, then discard its width because for some reason
       // the canvas is never correct.
-      if Item = Item.Parent.Items[0] then
+      {if Item = Item.Parent.Items[0] then
       begin
         if Item.Parent.Count > 1 then
           Result := 0
         else
           Result := MaxWidth;
         Exit;
-      end;
+      end;}
 
       for I := 0 to Item.Parent.Count - 1 do
       begin
