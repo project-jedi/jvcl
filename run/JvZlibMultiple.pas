@@ -79,7 +79,7 @@ implementation
 {$IFNDEF COMPILER6_UP}
 uses
   FileCtrl;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 {*******************************************************}
 {  Format of the File:                                  }

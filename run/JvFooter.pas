@@ -36,7 +36,6 @@ uses
 
 type
   EJvFooterError = class(EJVCLException);
-  TJvFooter = class;
 
   TJvFooterBtn = class(TJvBitBtn)
   private
@@ -74,12 +73,13 @@ type
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     //    property DockManager;
   published
     property Align;
     property Anchors;
     property AutoSize;
+    property BevelStyle: TJvBevelStyle read FBevelStyle write SetBevelStyle default bsLowered;
+    property BevelVisible: Boolean read FBevelVisible write SetBevelVisible default False;
     property BiDiMode;
     property Color;
     property Constraints;
@@ -92,7 +92,7 @@ type
     property ParentBiDiMode;
     {$IFDEF COMPILER7_UP}
     property ParentBackground;
-    {$ENDIF}
+    {$ENDIF COMPILER7_UP}
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -122,8 +122,6 @@ type
     property OnStartDock;
     property OnStartDrag;
     //property OnUnDock;
-    property BevelStyle: TJvBevelStyle read FBevelStyle write SetBevelStyle default bsLowered;
-    property BevelVisible: Boolean read FBevelVisible write SetBevelVisible default False;
   end;
 
 implementation
@@ -153,14 +151,12 @@ var
 begin
   Result := FButtonIndex;
   if Parent <> nil then
-  begin
     for I := 0 to Parent.ControlCount - 1 do
       if Parent.Controls[I] = Self then
       begin
         Result := I;
         Break;
       end;
-  end;
 end;
 
 procedure TJvFooterBtn.SetButtonIndex(const Value: Integer);
@@ -238,9 +234,10 @@ begin
   FBevelVisible := False;
 end;
 
-destructor TJvFooter.Destroy;
+procedure TJvFooter.Loaded;
 begin
-  inherited Destroy;
+  TJvFooter(Parent).UpdatePosition;
+  inherited Loaded;
 end;
 
 procedure TJvFooter.GetBtnsValues(const ABtnIndex: Integer;
@@ -410,13 +407,6 @@ begin
       BevelLine(Color2, 0, 1, Width, 1);
     end;
 end;
-
-procedure TJvFooter.Loaded;
-begin
-  TJvFooter(Parent).UpdatePosition;
-  inherited Loaded;
-end;
-
 
 end.
 

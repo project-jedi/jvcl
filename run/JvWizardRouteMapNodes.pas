@@ -23,27 +23,27 @@ Last Modified: 2002-02-12
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Nodes style route map for TJvWizardRouteMap
+
+History:
+10/14/2003
+  Added option to allow user to turn off the clicking of the nodes
+  during runtime. S Steed.
+05/02/2002
+  Initial create
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{*****************************************************************************
-Purpose:      Nodes style route map for TJvWizardRouteMap
-History:
----------------------------------------------------------------------------
-Date(mm/dd/yy)   Comments
----------------------------------------------------------------------------
-10/14/2003 Added option to allow user to turn off the clicking of the nodes
-during runtime. S Steed.
-
-05/02/2002       Initial create
-******************************************************************************}
+{$I JVCL.INC}
 
 unit JvWizardRouteMapNodes;
 
 interface
 
 uses
-  Windows, Classes, Messages, Graphics, StdCtrls, JvWizard;
+  Windows, Classes, Messages, Graphics, StdCtrls,
+  JvWizard;
 
 type
   TJvWizardRouteMapNodes = class;
@@ -60,14 +60,14 @@ type
     procedure SetSelected(Value: TColor);
     procedure SetUnselected(Value: TColor);
     procedure SetDisabled(Value: TColor);
-    procedure DoChange;
+    procedure Changed;
   public
     constructor Create(ARouteMap: TJvWizardRouteMapNodes);
   published
-    property Selected: TColor read FSelected write SetSelected;
-    property Unselected: TColor read FUnselected write SetUnselected;
-    property Line: TColor read FLine write SetLine;
-    property Disabled: TColor read FDisabled write SetDisabled;
+    property Selected: TColor read FSelected write SetSelected default clLime;
+    property Unselected: TColor read FUnselected write SetUnselected default clWhite;
+    property Line: TColor read FLine write SetLine default clBtnShadow;
+    property Disabled: TColor read FDisabled write SetDisabled default clBtnFace;
   end;
 
   TJvWizardRouteMapNodes = class(TJvWizardRouteMapControl)
@@ -88,37 +88,35 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property ItemHeight: Integer read FItemHeight write SetItemHeight;
-    property AllowClickableNodes: Boolean read FAllowClickableNodes write SetAllowClickableNodes default true; // ss 10/14/2003
+    property ItemHeight: Integer read FItemHeight write SetItemHeight default 20;
+    property AllowClickableNodes: Boolean read FAllowClickableNodes write SetAllowClickableNodes default True; // ss 10/14/2003
     property Align;
-    property Color;
+    property Color default clBackground;
     property Font;
-    property Indent: Integer read FIndent write SetIndent;
-    property NodeColors: TJvWizardRouteMapNodeColors
-      read FNodeColors write FNodeColors;
-    property UsePageTitle: Boolean read FUsePageTitle write SetUsePageTitle;
+    property Indent: Integer read FIndent write SetIndent default 8;
+    property NodeColors: TJvWizardRouteMapNodeColors read FNodeColors write FNodeColors;
+    property UsePageTitle: Boolean read FUsePageTitle write SetUsePageTitle default True;
     property OnDisplaying;
   end;
 
 implementation
 
-{ TJvWizardRouteMapNodeColors }
+//=== TJvWizardRouteMapNodeColors ============================================
 
 constructor TJvWizardRouteMapNodeColors.Create(ARouteMap: TJvWizardRouteMapNodes);
 begin
+  inherited Create;
   FRouteMap := ARouteMap;
   FSelected := clLime;
   FUnselected := clWhite;
-  FDisabled := clBtnFace;
   FLine := clBtnShadow;
+  FDisabled := clBtnFace;
 end;
 
-procedure TJvWizardRouteMapNodeColors.DoChange;
+procedure TJvWizardRouteMapNodeColors.Changed;
 begin
   if Assigned(FRouteMap) then
-  begin
     FRouteMap.Invalidate;
-  end;
 end;
 
 procedure TJvWizardRouteMapNodeColors.SetDisabled(Value: TColor);
@@ -126,7 +124,7 @@ begin
   if FDisabled <> Value then
   begin
     FDisabled := Value;
-    DoChange;
+    Changed;
   end;
 end;
 
@@ -135,7 +133,7 @@ begin
   if FLine <> Value then
   begin
     FLine := Value;
-    DoChange;
+    Changed;
   end;
 end;
 
@@ -144,7 +142,7 @@ begin
   if FSelected <> Value then
   begin
     FSelected := Value;
-    DoChange;
+    Changed;
   end;
 end;
 
@@ -153,33 +151,33 @@ begin
   if FUnselected <> Value then
   begin
     FUnselected := Value;
-    DoChange;
+    Changed;
   end;
 end;
 
-{ TJvWizardRouteMapNodes }
+//=== TJvWizardRouteMapNodes =================================================
 
 constructor TJvWizardRouteMapNodes.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FItemHeight := 20;
   Color := clBackground;
   Font.Color := clWhite;
   FUsePageTitle := True;
   FIndent := 8;
-  FAllowClickableNodes := true; // ss 10/14/2003
+  FAllowClickableNodes := True; // ss 10/14/2003
   FNodeColors := TJvWizardRouteMapNodeColors.Create(Self);
 end;
 
 destructor TJvWizardRouteMapNodes.Destroy;
 begin
   FNodeColors.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvWizardRouteMapNodes.PageAtPos(Pt: TPoint): TJvWizardCustomPage;
 var
-  i, Count: Integer;
+  I, Count: Integer;
   ARect: TRect;
 begin
   if AllowClickableNodes then // ss 10/14/2003
@@ -191,19 +189,19 @@ begin
       Count := PageCount;
       ARect := Bounds(ARect.Left, ARect.Top + Trunc((FItemHeight - 12) / 2),
         ARect.Right - ARect.Left, FItemHeight);
-      i := 0;
-      while i < Count do
+      I := 0;
+      while I < Count do
       begin
-        if CanDisplay(Pages[i]) then
+        if CanDisplay(Pages[I]) then
         begin
           if PtInRect(ARect, Pt) then
           begin
-            Result := Pages[i];
+            Result := Pages[I];
             Exit;
           end;
           OffsetRect(ARect, 0, FItemHeight);
         end;
-        Inc(i);
+        Inc(I);
       end;
     end;
   end;
@@ -213,7 +211,7 @@ end;
 procedure TJvWizardRouteMapNodes.Paint;
 var
   ARect, ATextRect, NodeRect: TRect;
-  i: Integer;
+  I: Integer;
   AColor: TColor;
   AFont: TFont;
   IsFirstPage, IsLastPage: Boolean;
@@ -233,24 +231,26 @@ begin
       AFont.Assign(Self.Font);
       ARect := Bounds(ARect.Left + FIndent, ARect.Top + FIndent,
         ARect.Right - ARect.Left - FIndent, FItemHeight);
-      for i := 0 to PageCount - 1 do
+      for I := 0 to PageCount - 1 do
       begin
-        IsFirstPage := Wizard.IsFirstPage(Pages[i], not (csDesigning in ComponentState));
-        IsLastPage := Wizard.IsLastPage(Pages[i], not (csDesigning in ComponentState));
-        if CanDisplay(Pages[i]) then
+        IsFirstPage := Wizard.IsFirstPage(Pages[I], not (csDesigning in ComponentState));
+        IsLastPage := Wizard.IsLastPage(Pages[I], not (csDesigning in ComponentState));
+        if CanDisplay(Pages[I]) then
         begin
           AColor := Color;
-          if i = PageIndex then
+          if I = PageIndex then
           begin
             AFont.Color := Self.Font.Color;
             AFont.Style := AFont.Style + [fsBold]
           end
-          else if not Pages[i].Enabled then
+          else
+          if not Pages[I].Enabled then
           begin
             AFont.Color := clBtnShadow;
             AFont.Style := AFont.Style - [fsBold];
           end
-          else if not Pages[i].EnableJumpToPage then  // Nonn...
+          else
+          if not Pages[I].EnableJumpToPage then  // Nonn...
           begin
             AFont.Color := NodeColors.Disabled;
             AFont.Style := AFont.Style - [fsBold];    // ... Nonn
@@ -263,9 +263,7 @@ begin
 
           ATextRect := ARect;
           if not (IsFirstPage or IsLastPage) then
-          begin
             ATextRect.Left := ATextRect.Left + 18;
-          end;
 
           NodeRect := ATextRect;
           NodeRect.Right := NodeRect.Left + 12;
@@ -279,11 +277,13 @@ begin
 
           try
             Pen.Color := FNodeColors.Line;
-            if i = PageIndex then
+            if I = PageIndex then
               Brush.Color := FNodeColors.Selected
-            else if not Pages[i].EnableJumpToPage then  // Nonn
+            else
+            if not Pages[I].EnableJumpToPage then  // Nonn
               Brush.Color := FNodeColors.Disabled       // Nonn
-            else if Pages[i].Enabled then
+            else
+            if Pages[I].Enabled then
               Brush.Color := FNodeColors.Unselected
             else
               Brush.Color := FNodeColors.Disabled;
@@ -331,10 +331,10 @@ begin
 
             if FUsePageTitle then
               DrawText(Canvas.Handle,
-                PChar((Pages[i] as TJvWizardCustomPage).Header.Title.Text), -1,
+                PChar((Pages[I] as TJvWizardCustomPage).Header.Title.Text), -1,
                 ATextRect, DT_LEFT or DT_SINGLELINE or DT_VCENTER)
             else
-              DrawText(Canvas.Handle, PChar(Pages[i].Caption), -1, ATextRect,
+              DrawText(Canvas.Handle, PChar(Pages[I].Caption), -1, ATextRect,
                 DT_LEFT or DT_SINGLELINE or DT_VCENTER);
           finally
             OffsetRect(ARect, 0, FItemHeight);

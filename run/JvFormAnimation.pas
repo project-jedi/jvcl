@@ -31,7 +31,8 @@ unit JvFormAnimation;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, JvComponent;
+  Windows, SysUtils, Classes, Controls, Forms,
+  JvComponent;
 
 type
   TJvFormAnimation = class(TJvComponent)
@@ -41,6 +42,7 @@ type
     // (rom) simplified
     procedure AnimateDisappear(N: Integer);
     procedure AnimateAppear(N: Integer);
+    procedure DeleteRegions;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -85,15 +87,18 @@ begin
     Sleep(10);
   end;
   FForm.Visible := False;
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+  SetWindowRgn(FForm.Handle, 0, True);
+  DeleteRegions;
 end;
 
 procedure TJvFormAnimation.AnimateAppear(N: Integer);
 var
   I: Integer;
+  Rgn: HRGN;
 begin
   FForm.Visible := False;
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+  Rgn := CreateRectRgn(0, 0, 0, 0);
+  SetWindowRgn(FForm.Handle, Rgn, True);
   FForm.Visible := True;
   for I := N downto 0 do
   begin
@@ -102,6 +107,17 @@ begin
     Sleep(10);
   end;
   SetWindowRgn(FForm.Handle, 0, True);
+  DeleteObject(Rgn);
+  DeleteRegions;
+end;
+
+procedure TJvFormAnimation.DeleteRegions;
+var
+  I: Integer;
+begin
+  for I := Low(FRegions) to High(FRegions) do
+    DeleteObject(FRegions[I]);
+  SetLength(FRegions, 0);
 end;
 
 procedure TJvFormAnimation.DisappearEllipse;
