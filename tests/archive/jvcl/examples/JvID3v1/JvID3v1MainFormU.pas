@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvComponent, StdCtrls, Mask, JvToolEdit,
   JvDragDrop, JvId3v1, ComCtrls, ToolWin, ActnList, ImgList, JvJVCLAbout,
-  JvBaseDlg, JvTipOfDay, JvBalloonHint;
+  JvBaseDlg, JvTipOfDay, JvBalloonHint, JvMaskEdit, JvSpin;
 
 type
   TJvID3v1MainForm = class(TForm)
@@ -19,7 +19,6 @@ type
     edtYear: TEdit;
     edtComment: TEdit;
     cmbGenre: TComboBox;
-    lblTitle: TLabel;
     lblArtist: TLabel;
     lblAlbum: TLabel;
     lblYear: TLabel;
@@ -44,6 +43,9 @@ type
     actAbout: TAction;
     ToolButton6: TToolButton;
     JvBalloonHint1: TJvBalloonHint;
+    sedTrack: TJvSpinEdit;
+    lblTitle: TLabel;
+    lblTrack: TLabel;
     procedure actSaveExecute(Sender: TObject);
     procedure actEraseExecute(Sender: TObject);
     procedure actExitExecute(Sender: TObject);
@@ -79,8 +81,10 @@ begin
   S := StrTrimQuotes(S);
   JvFilenameEdit1.Hint := S;
   JvId3v11.FileName := S;
+  JvId3v11.Open;
   UpdateCtrls;
   UpdateCaption;
+  FocusControl(edtTitle);
 end;
 
 procedure TJvID3v1MainForm.FillGenres(Strings: TStrings);
@@ -98,11 +102,15 @@ begin
     JvId3v11.Artist := edtArtist.Text;
     JvId3v11.Album := edtAlbum.Text;
     JvId3v11.Year := edtYear.Text;
-    with cmbGenre do
-      JvId3v11.Genre := byte(Items.Objects[ItemIndex]);
+    JvId3v11.GenreAsString := cmbGenre.Text;
     JvId3v11.Comment := edtComment.Text;
-//    JvId3v11.WriteTag;
-    UpdateCaption;
+    JvId3v11.AlbumTrack := sedTrack.AsInteger;
+
+    if JvId3v11.Commit then
+      UpdateCaption
+    else
+      JvBalloonHint1.ActivateHint(ToolButton2, 'Could not save changes.'#13+
+        'The file is probably opened by another application.', ikError, 'Error');
   end;
 end;
 
@@ -112,7 +120,7 @@ begin
     JvBalloonHint1.ActivateHint(JvFilenameEdit1, 'First select a mp3 file', ikError, 'Error', 5000)
   else
   begin
-//    JvId3v11.RemoveTag;
+    JvId3v11.Erase;
     UpdateCtrls;
     UpdateCaption;
   end;
@@ -193,6 +201,7 @@ begin
   edtArtist.Text := JvId3v11.Artist;
   edtYear.Text := JvId3v11.Year;
   edtComment.Text := JvId3v11.Comment;
+  sedTrack.AsInteger := JvId3v11.AlbumTrack;
   cmbGenre.ItemIndex := cmbGenre.Items.IndexOfObject(TObject(JvId3v11.Genre));
 end;
 

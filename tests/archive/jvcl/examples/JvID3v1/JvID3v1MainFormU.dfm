@@ -19,21 +19,13 @@ object JvID3v1MainForm: TJvID3v1MainForm
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object lblTitle: TLabel
-    Left = 28
-    Top = 104
-    Width = 20
-    Height = 13
-    Caption = '&Title'
-    FocusControl = edtTitle
-  end
   object lblArtist: TLabel
     Left = 25
     Top = 128
     Width = 23
     Height = 13
     Caption = '&Artist'
-    FocusControl = edtAlbum
+    FocusControl = edtArtist
   end
   object lblAlbum: TLabel
     Left = 19
@@ -74,6 +66,22 @@ object JvID3v1MainForm: TJvID3v1MainForm
     Height = 13
     Caption = 'lblHasTag'
   end
+  object lblTitle: TLabel
+    Left = 28
+    Top = 104
+    Width = 20
+    Height = 13
+    Caption = '&Title'
+    FocusControl = edtTitle
+  end
+  object lblTrack: TLabel
+    Left = 189
+    Top = 80
+    Width = 38
+    Height = 13
+    Caption = 'T&rack #'
+    FocusControl = sedTrack
+  end
   object JvFilenameEdit1: TJvFilenameEdit
     Left = 8
     Top = 56
@@ -93,7 +101,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
     Width = 217
     Height = 21
     MaxLength = 30
-    TabOrder = 1
+    TabOrder = 2
   end
   object edtAlbum: TEdit
     Left = 56
@@ -101,7 +109,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
     Width = 217
     Height = 21
     MaxLength = 30
-    TabOrder = 3
+    TabOrder = 4
   end
   object edtArtist: TEdit
     Left = 56
@@ -109,7 +117,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
     Width = 217
     Height = 21
     MaxLength = 30
-    TabOrder = 2
+    TabOrder = 3
   end
   object edtYear: TEdit
     Left = 56
@@ -117,7 +125,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
     Width = 49
     Height = 21
     MaxLength = 4
-    TabOrder = 4
+    TabOrder = 5
   end
   object edtComment: TEdit
     Left = 56
@@ -125,7 +133,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
     Width = 217
     Height = 21
     MaxLength = 30
-    TabOrder = 6
+    TabOrder = 7
   end
   object cmbGenre: TComboBox
     Left = 149
@@ -135,7 +143,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
     Style = csDropDownList
     ItemHeight = 13
     Sorted = True
-    TabOrder = 5
+    TabOrder = 6
   end
   object ToolBar1: TToolBar
     Left = 0
@@ -150,7 +158,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
     ParentShowHint = False
     ShowCaptions = True
     ShowHint = True
-    TabOrder = 7
+    TabOrder = 8
     Wrapable = False
     object ToolButton1: TToolButton
       Left = 0
@@ -201,20 +209,28 @@ object JvID3v1MainForm: TJvID3v1MainForm
       ShowHint = True
     end
   end
+  object sedTrack: TJvSpinEdit
+    Left = 232
+    Top = 80
+    Width = 41
+    Height = 21
+    MaxValue = 255.000000000000000000
+    TabOrder = 1
+  end
   object JvDragDrop1: TJvDragDrop
     DropTarget = Owner
     OnDrop = JvDragDrop1Drop
-    Left = 248
-    Top = 80
+    Left = 88
+    Top = 128
   end
   object JvId3v11: TJvId3v1
     Active = False
-    Left = 216
-    Top = 80
+    Left = 152
+    Top = 104
   end
   object ActionList1: TActionList
     Images = ImageList1
-    Left = 184
+    Left = 152
     Top = 80
     object actSave: TAction
       Caption = 'Save'
@@ -251,8 +267,8 @@ object JvID3v1MainForm: TJvID3v1MainForm
   object ImageList1: TImageList
     Height = 20
     Width = 20
-    Left = 152
-    Top = 80
+    Left = 120
+    Top = 104
     Bitmap = {
       494C010106000900040014001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000500000003C00000001001000000000008025
@@ -619,16 +635,16 @@ object JvID3v1MainForm: TJvID3v1MainForm
         'The About Box is made by using a TJvJVCLAboutComponent component' +
         '.')
     Title = 'Tips and Tricks'
-    Left = 120
-    Top = 80
+    Left = 88
+    Top = 104
   end
   object JvJVCLAboutComponent1: TJvJVCLAboutComponent
-    Left = 88
+    Left = 120
     Top = 80
   end
   object JvBalloonHint1: TJvBalloonHint
     DefaultHeader = 'Information'
-    Left = 56
+    Left = 88
     Top = 80
   end
 end
