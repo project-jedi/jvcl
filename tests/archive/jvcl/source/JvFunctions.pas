@@ -294,6 +294,7 @@ function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): 
 { D5 compatibility functions }
 procedure RaiseLastOSError;
 function IncludeTrailingPathDelimiter(const APath: string): string;
+function ExcludeTrailingPathDelimiter(const APath: string): string;
 {$ENDIF}
 
 implementation
@@ -336,6 +337,14 @@ begin
   else
     Result := APath;
 end;
+
+function ExcludeTrailingPathDelimiter(const APath: string): string;
+begin
+  Result := APath;
+  while (Length(Result) > 0) and (Result[Length(Result)] = '\') do
+    SetLength(Result,Length(Result)-1);
+end;
+
 {$ENDIF}
 
 {*****************************************************}

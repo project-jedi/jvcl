@@ -74,9 +74,11 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    {$IFDEF COMPILER6_UP}
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    {$ENDIF}
     property OnResize;
     property OnStartDock;
     property OnStartDrag;

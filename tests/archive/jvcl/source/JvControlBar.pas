@@ -144,7 +144,9 @@ begin
         it.Caption := Controls[i].Hint
       else
         it.Caption := Controls[i].Name;
+      {$IFDEF COMPILER6UP}
       it.AutoCheck := true;
+      {$ENDIF}
       it.Tag := i;
       it.OnClick := PopupMenuClick;
       it.Checked := Controls[i].Visible;
