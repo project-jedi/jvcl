@@ -73,6 +73,7 @@ type
     FKeepText: Boolean;
     FFindText: string;
     FReplaceText: string;
+    FNumberReplaced: integer; // only used by Replace All
     procedure SetPosition(Value: TPoint);
     procedure SetDialogTop(Value: Integer);
     procedure SetDialogLeft(Value: Integer);
@@ -100,7 +101,7 @@ type
     procedure DoOnClose(Sender: TObject); virtual;
     procedure DoFailed(Sender: TObject); virtual;
     procedure DoReplacingAll; virtual;
-    procedure DoReplacedAll; virtual;
+    procedure DoReplacedAll(Sender: TObject); virtual;
     procedure DoProgress(Position: Integer; var Terminate: Boolean); virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -348,26 +349,33 @@ begin
   RLen := Length(FReplaceText);
   TLen := Length(Txt);
   FoundPos := FindInText(Txt, FFindText, 0, TLen, True);
-  DoReplacingAll;
-  while FoundPos.StartAt > -1 do
+
+  if FoundPos.StartAt > -1 then
   begin
-    if (frWholeWord in TmpOptions) and not FoundPos.isWhole then
-      Continue;
-    if (frMatchCase in TmpOptions) and not FoundPos.isSameCase then
-      Continue;
-    Delete(Txt, FoundPos.StartAt + 1, SLen);
-    Insert(FReplaceText, Txt, FoundPos.StartAt + 1);
-    FoundPos := FindInText(Txt, FFindText, FoundPos.StartAt + RLen + 1, TLen + (RLen - SLen), True);
-    if FoundPos.StartAt mod 60 = 0 then
+    DoReplacingAll;
+    FNumberReplaced := 0;
+    while FoundPos.StartAt > -1 do
     begin
-      DoProgress(FoundPos.StartAt, Terminate);
-      if Terminate then
-        Exit;
+      Inc(FNumberReplaced);
+      if (frWholeWord in TmpOptions) and not FoundPos.isWhole then
+        Continue;
+      if (frMatchCase in TmpOptions) and not FoundPos.isSameCase then
+        Continue;
+      Delete(Txt, FoundPos.StartAt + 1, SLen);
+      Insert(FReplaceText, Txt, FoundPos.StartAt + 1);
+      FoundPos := FindInText(Txt, FFindText, FoundPos.StartAt + RLen + 1, TLen + (RLen - SLen), True);
+      if FoundPos.StartAt mod 60 = 0 then
+      begin
+        DoProgress(FoundPos.StartAt, Terminate);
+        if Terminate then
+          Exit;
+      end;
     end;
-  end;
-  DoReplacedAll;
-  FEditControl.Text := Txt;
-  DoFailed(FReplaceDialog);
+    FEditControl.Text := Txt;
+    DoReplacedAll(FReplaceDialog);
+  end
+  else
+    DoFailed(FReplaceDialog);
 end;
 
 function TJvFindReplace.ReplaceOne(Sender: TObject): Boolean;
@@ -554,8 +562,14 @@ begin
     FOnReplacingAll(Self);
 end;
 
-procedure TJvFindReplace.DoReplacedAll;
+procedure TJvFindReplace.DoReplacedAll(Sender: TObject);
 begin
+  if FShowDialogs then
+  begin
+    MessageBox(TFindDialog(Sender).Handle, PChar(Format(RsXOccurencesReplaced, [FNumberReplaced, TFindDialog(Sender).FindText])),
+      PChar(RsReplaceCaption), MB_OK or MB_ICONINFORMATION);
+  end;
+
   if Assigned(FOnReplacedAll) then
     FOnReplacedAll(Self);
 end;
