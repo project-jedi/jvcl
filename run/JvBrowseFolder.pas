@@ -625,6 +625,18 @@ const
     CanSimulate: False; Alternative: fdNoSpecialFolder)
     );
 
+procedure InitSHFolder;
+const
+  SHFolderDll = 'SHFolder.dll';
+var
+  SHFolderHandle: HMODULE;
+begin
+  { You never know, maybe someone does not have SHFolder.dll, thus load on request }
+  SHFolderHandle := GetModuleHandle(SHFolderDll);
+  if SHFolderHandle <> 0 then
+    @SHGetFolderPathProc := GetProcAddress(SHFolderHandle, 'SHGetFolderPathA');
+end;
+
 procedure GetCSIDLLocation(const ASpecialDirectory: TFromDirectory;
   var CSIDL: Cardinal; var APath: string);
 { This function is a bit overkill }
@@ -655,6 +667,8 @@ begin
   CSIDL := 0;
   GetMem(Buffer, MAX_PATH);
   try
+    if not Assigned(SHGetFolderPathProc) then
+      InitSHFolder;
     if Assigned(SHGetFolderPathProc) and
       Succeeded(SHGetFolderPathProc(0, CSIDLLocations[LSpecialDirectory].CSIDL, 0, 0, Buffer)) then
 
@@ -1393,19 +1407,5 @@ begin
   end;
 end;
 
-procedure InitProcs;
-const
-  SHFolderDll = 'SHFolder.dll';
-var
-  SHFolderHandle: HMODULE;
-begin
-  { You never know, maybe someone does not have SHFolder.dll, thus load on request }
-  SHFolderHandle := GetModuleHandle(SHFolderDll);
-  if SHFolderHandle <> 0 then
-    @SHGetFolderPathProc := GetProcAddress(SHFolderHandle, 'SHGetFolderPathA');
-end;
-
-initialization
-  InitProcs;
 end.
 
