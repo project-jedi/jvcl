@@ -4830,7 +4830,7 @@ begin
     }
     GetAttributes(Paragraph);
     Paragraph.sStyle := -(Paragraph.sStyle + 1);
-    if (Paragraph.sStyle >= Low(THeadingStyle)) and (Paragraph.sStyle <= Low(THeadingStyle)) then
+    if (Paragraph.sStyle >= Low(THeadingStyle)) and (Paragraph.sStyle <= High(THeadingStyle)) then
       Result := THeadingStyle(Paragraph.sStyle)
     else
       Result := 0;
