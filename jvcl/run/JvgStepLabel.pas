@@ -92,7 +92,7 @@ var
   Caption: string;
   I: Integer;
 begin
-  StepCount;
+//  StepCount;
 end;
 
 end.

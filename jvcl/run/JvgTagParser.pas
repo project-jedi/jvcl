@@ -31,7 +31,7 @@ unit JvgTagParser;
 interface
 
 uses
-  Classes, SysUtils, HTTPApp;
+  Classes, SysUtils, HTTPApp{$IFDEF COMPILER6_UP}, HTTPProd{$ENDIF COMPILER6_UP};
 
 type
   TJvgTagParser = class(TObject)
