@@ -54,11 +54,13 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FDataLink: TFieldDataLink;
     FBeepOnError: Boolean;
+    FTrimValue: boolean;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
   protected
+    function IsDateAndTimeField:Boolean;
     // Adding capability to edit
     procedure DoExit; override;
     procedure DataChange(Sender: TObject);
@@ -78,6 +80,7 @@ type
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property TrimValue:boolean read FTrimValue write FTrimValue default True;
   end;
 
 implementation
@@ -107,6 +110,7 @@ begin
   OnCloseUp := CalendarOnCloseUp;
   OnDropDown := CalendarOnDropDown;
   FBeepOnError := True;
+  FTrimValue := True;
 end;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -145,15 +149,23 @@ begin
   if FDataLink.Field <> nil then
   begin
     if Kind = dtkDate then
-      Date := Trunc(FDataLink.Field.AsDateTime)
+    begin
+      if IsDateAndTimeField then
+        DateTime := FDataLink.Field.AsDateTime
+      else
+        DateTime := Trunc(FDataLink.Field.AsDateTime);
+    end
     else
-      Time := Frac(FDataLink.Field.AsDateTime);
+    begin
+      if IsDateAndTimeField then
+        DateTime := FDataLink.Field.AsDateTime
+      else
+        DateTime := Frac(FDataLink.Field.AsDateTime);
+    end;
   end
-  else
-  if csDesigning in ComponentState then
+  else if csDesigning in ComponentState then
   begin
-    Date := Date;
-    Time := Now;
+    DateTime := Now;
   end;
   CheckNullValue;
 end;
@@ -235,15 +247,27 @@ begin
       begin
         FDataLink.Edit;
         if Kind = dtkDate then
-          Date := NullDate
+        begin
+          if IsDateAndTimeField then
+            DateTime := NullDate
+          else
+            DateTime := Trunc(NullDate);
+        end
         else
-          Time := Frac(NullDate);
+        begin
+          if IsDateAndTimeField then
+            DateTime := NullDate
+          else
+            DateTime := Frac(NullDate);
+        end;
         CheckNullValue;
         UpdateData(Self);
       end;
     VK_INSERT:
       if ssShift in Shift then
         FDataLink.Edit;
+    else
+      FDataLink.Edit;
   end;
 end;
 
@@ -339,17 +363,21 @@ begin
     Exit;
   if Kind = dtkDate then
   begin
-    if Trunc(NullDate) = Trunc(Date) then
+    if Trunc(NullDate) = Trunc(DateTime) then
       FDataLink.Field.Value := NULL
+    else if IsDateAndTimeField then
+      FDataLink.Field.AsDateTime := DateTime
     else
-      FDataLink.Field.AsDateTime := Trunc(Date);
+      FDataLink.Field.AsDateTime := Trunc(DateTime);
   end
   else
   begin
-    if Frac(NullDate) = Frac(Time) then
+    if Frac(NullDate) = Frac(DateTime) then
       FDataLink.Field.Value := NULL
+    else if IsDateAndTimeField then
+      FDataLink.Field.AsDateTime := DateTime
     else
-      FDataLink.Field.AsDateTime := Frac(Time);
+      FDataLink.Field.AsDateTime := Frac(DateTime);
   end;
 end;
 
@@ -377,6 +405,12 @@ end;
 procedure TJvDBDateTimePicker.CalendarOnDropDown(Sender: TObject);
 begin
   FDataLink.Edit;
+end;
+
+function TJvDBDateTimePicker.IsDateAndTimeField: Boolean;
+begin
+  with FDataLink do
+    Result := (Field <> nil) and (Field.DataType in [ftDateTime, ftTimeStamp]) and not TrimValue;
 end;
 
 end.
