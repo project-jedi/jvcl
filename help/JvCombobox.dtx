@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Locked (marcelb)
+##Status: Incomplete
 ----------------------------------------------------------------------------------------------------
 @@JvCombobox.pas
 Summary
@@ -14,16 +14,28 @@ JVCLInfo
   GROUP=JVCL.EditsMemosAndCombos.Combos
   FLAG=Component
 Summary
-  Provider-aware TComboBox descendant.
+  \Provider-aware TComboBox.
 Description
   TJvComboBox is a provider-aware TComboBox descendant. TJvComboBox provides the following
-  additional features compared to the standard TComboBox
+  additional features compared to the standard TComboBox:
+
+  <INCLUDE JvCombobox_Features.inc.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboBox
 Summary
-  Write here a summary (1 line)
+  Base class for provider aware combo boxes.
 Description
-  Write here a description
+  Use TJvCustomComboBox as a base class when defining new controls that represent a combo box and
+  should use some of the new features introduced in this class. It is a direct descendant of
+  TCustomComboBox.
+
+  TJvCustomComboBox provides the following additional features compared to the Borland
+  TCustomComboBox:
+
+  <INCLUDE JvCombobox_Features.inc.dtx>
+
+  Do not create instances of TJvCustomComboBox. To put a combo box in a form, use a descendant of
+  TJvCustomComboBox, such as TJvComboBox.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboBox.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -156,16 +168,4 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomComboBox.WndProc
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Msg - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
