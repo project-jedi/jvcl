@@ -36,6 +36,7 @@ uses
 type
   TParseContext = record
     InImplementation, InInterfaceSection: Boolean;
+    LastToken, CurToken: TTokenInfo;
   end;
 
   { TVCLConverter
@@ -62,6 +63,7 @@ type
     FUnixLineBreak: Boolean;
     FForceOverwrite: Boolean;
 
+    FIncludeFiles: TStringList;
     FUsesUnits: TStringList;
       { contains the units in the "uses" clause (sorted). This is used to find
         contructs like "type TMyType = MyUnit.TMyType;" or "JvJVCLUtils.func" }
@@ -86,13 +88,11 @@ type
         file names. }
     procedure CheckCondition(Parser: TPascalParser; EndifToken: PTokenInfo);
       { Removes if necessary the condition blocks. }
-    procedure CheckUses(Token: PTokenInfo);
+    procedure CheckUses(Token: PTokenInfo; var Context: TParseContext);
       { Parses the uses-clause and allows the replacement of unit names. }
-    procedure CheckFileHead(Token: PTokenInfo);
+    procedure CheckFileHead(Token: PTokenInfo; var Context: TParseContext);
       { Replaces the "unit", "program", ... name and adds the unit name to the
         UsedUnits list. }
-    procedure CheckStruct(Token: PTokenInfo);
-      { Parses class/interface/object/record. }
     procedure CheckFunction(Token: PTokenInfo; var Context: TParseContext);
       { Parses procedure/function. }
     procedure CheckFunctionVarDecls(Token: PTokenInfo; var Context: TParseContext);
@@ -100,7 +100,8 @@ type
     function GetLineBreak: string;
     function CheckFullQualifiedUnitIdentifier(Token: PTokenInfo;
       var Context: TParseContext): Boolean;
-    function GetNextToken(Parser: TPascalParser; var Token: PTokenInfo): Boolean;
+    function GetNextToken(Parser: TPascalParser; var Token: PTokenInfo;
+      var Context: TParseContext): Boolean;
   protected
     procedure InitUnitReplaceList; virtual;
       { InitUnitReplaceList is called in the constructor after all sub objects
@@ -188,6 +189,10 @@ begin
   FKeepLines := True;
   FReduceConditions := True;
 
+  FIncludeFiles := TStringList.Create;
+  FIncludeFiles.Sorted := True;
+  FIncludeFiles.Duplicates := dupIgnore;
+
   FUsesUnits := TStringList.Create;
   FUsesUnits.Sorted := True;
   FUsesUnits.Duplicates := dupIgnore;
@@ -212,6 +217,7 @@ end;
 
 destructor TVCLConverter.Destroy;
 begin
+  FIncludeFiles.Free;
   FUsesUnits.Free;
   FLockedUsesUnits.Free;
   FIgnoreUnits.Free;
@@ -292,6 +298,7 @@ var
 begin
   FFilename := Filename;
   FUsesUnits.Clear;
+  FIncludeFiles.Clear;
   Lines := TStringList.Create;
   try
     Lines.LoadFromFile(Filename);
@@ -353,9 +360,18 @@ end;
 
 function TVCLConverter.IsUnitIgnored(const AName: string): Boolean;
 var
-  Index: Integer;
+  Index, i: Integer;
 begin
   Result := FIgnoreUnits.Find(AName, Index);
+  if not Result then
+  begin
+    for i := FIncludeFiles.Count - 1 downto 0 do
+    begin
+      Result := FIgnoreUnits.Find(FIncludeFiles[i] + '::' + AName, Index);
+      if Result then
+        Break;
+    end;
+  end;
 end;
 
 function TVCLConverter.IsUsesUnit(const AName: string): Boolean;
@@ -380,7 +396,8 @@ begin
   end;
 end;
 
-function TVCLConverter.CheckFullQualifiedUnitIdentifier(Token: PTokenInfo; var Context: TParseContext): Boolean;
+function TVCLConverter.CheckFullQualifiedUnitIdentifier(Token: PTokenInfo;
+  var Context: TParseContext): Boolean;
 var
   ParserIndex: Integer;
   Parser: TPascalParser;
@@ -389,14 +406,15 @@ begin
   Result := False;
   with Context do
   begin
-    if InImplementation and not IsProtectedByConditions and IsUsesUnit(Token.Value) then
+    if (Context.LastToken.Kind = tkSymbol) and (Context.LastToken.Value <> '.') and
+       not IsProtectedByConditions and IsUsesUnit(Token.Value) then
     begin
+      // "UnitName.xxx" but not ".Unitname.xxx"
       Tk := Token^;
       Parser := Token.Parser;
       ParserIndex := Parser.Index;
-      if GetNextToken(Parser, Token) and (Token.Kind = tkSymbol) and (Token.Value = '.') then
+      if GetNextToken(Parser, Token, Context) and (Token.Kind = tkSymbol) and (Token.Value = '.') then
       begin
-        // "UnitName.xxx" but not ".Unitname.xxx"
         ReplaceUnitName(@Tk);
         Result := True;
       end
@@ -417,16 +435,6 @@ begin
       tkIdent:
         begin
           S := Token.Value;
-          if (InInterfaceSection or InImplementation) and
-             (SameText(S, 'class') or
-              SameText(S, 'record') or
-              SameText(S, 'interface') or
-              SameText(S, 'object')) then
-          begin
-            CheckStruct(Token);
-            Result := True;
-          end
-          else
           if InImplementation and
              (SameText(S, 'procedure') or
               SameText(S, 'function') or
@@ -461,7 +469,7 @@ begin
     begin
       InImplementation := False;
       InInterfaceSection := False;
-      while GetNextToken(Parser, Token) do
+      while GetNextToken(Parser, Token, Context) do
       begin
         case Token.Kind of
           tkIdent:
@@ -470,7 +478,7 @@ begin
               begin
                 S := Token.Value;
                 if SameText(S, 'uses') then
-                  CheckUses(Token)
+                  CheckUses(Token, Context)
                 else
                 if (not InInterfaceSection) and (not InImplementation) and
                    SameText(S, 'interface') then
@@ -482,7 +490,7 @@ begin
                     SameText(S, 'package') or
                     SameText(S, 'library')) then
                 begin
-                  CheckFileHead(Token);
+                  CheckFileHead(Token, Context);
                 end
                 else
                 if SameText(S, 'implementation') then
@@ -517,6 +525,7 @@ begin
       IncFilename := TrimCopy(S, 4, MaxInt)
     else
       IncFilename := TrimCopy(S, 9, MaxInt);
+    FIncludeFiles.Add(IncFilename);
     OrgIncFilename := IncFilename;
     TranslateInc(IncFilename);
     if IncFilename <> OrgIncFilename then
@@ -714,14 +723,14 @@ begin
     Remove(Cond.Negative);
 end;
 
-procedure TVCLConverter.CheckUses(Token: PTokenInfo);
+procedure TVCLConverter.CheckUses(Token: PTokenInfo; var Context: TParseContext);
 var
   Parser: TPascalParser;
   StartConditionStackCount: Integer;
 begin
   StartConditionStackCount := FConditionStack.OpenCount;
   Parser := Token.Parser;
-  while GetNextToken(Parser, Token) do
+  while GetNextToken(Parser, Token, Context) do
   begin
     case Token.Kind of
       tkSymbol:
@@ -751,7 +760,7 @@ begin
   end;
 end;
 
-procedure TVCLConverter.CheckFileHead(Token: PTokenInfo);
+procedure TVCLConverter.CheckFileHead(Token: PTokenInfo; var Context: TParseContext);
 var
   Parser: TPascalParser;
   NewFilename, Filename, Ext: string;
@@ -765,7 +774,7 @@ begin
 
   Filename := '';
   Parser := Token.Parser;
-  while GetNextToken(Parser, Token) do
+  while GetNextToken(Parser, Token, Context) do
   begin
     if Token.Kind = tkIdent then
     begin
@@ -788,98 +797,6 @@ begin
   end;
 end;
 
-{ Delphi allows the redeclaration of used units in class/interface/object/record. }
-procedure TVCLConverter.CheckStruct(Token: PTokenInfo);
-var
-  Parser: TPascalParser;
-  LastIdent: string;
-  LastIdentToken: TTokenInfo;
-  NextBase: Boolean;
-  LastSymbol: string;
-begin
-  Parser := Token.Parser;
-  if Token <> nil then
-  begin
-    if (Token.Kind = tkSymbol) and (Token.Value = '(') then
-    begin
-      // This is the only place where the used units names could be used.
-      NextBase := True;
-      LastIdent := '';
-      FillChar(LastIdentToken, SizeOf(LastIdentToken), 0);
-      while GetNextToken(Parser, Token) do
-      begin
-        case Token.Kind of
-          tkIdent:
-            begin
-              if NextBase then
-              begin
-                LastIdent := Token.Value;
-                LastIdentToken := Token^;
-              end
-              else
-                LastIdent := '';
-            end;
-          tkSymbol:
-            begin
-              if Token.Value = ')' then
-                Break;
-              if NextBase then
-              begin
-                if (Token.Value = '.') then
-                begin
-                  if IsUsesUnit(LastIdent) and
-                     not IsProtectedByConditions then // no condition block protects it
-                  begin
-                    // "UnitName.xxx" but not ".Unitname.xxx"
-                    ReplaceUnitName(@LastIdentToken);
-                    LastIdent := '';
-                  end;
-                  NextBase := False;
-                end;
-              end;
-              if Token.Value = ',' then
-                NextBase := True;
-            end;
-        end;
-      end;
-    end;
-  end;
-
-  if (Token <> nil) and ((Token.Value = ';') or (Token.Value = 'of')) then
-    Exit;
-
- // parse complete structure
-  while GetNextToken(Parser, Token) do
-  begin
-    case Token.Kind of
-      tkSymbol:
-        begin
-          if (Token.Value = '.') and (LastSymbol = ':') then // variable declaration
-          begin
-            if IsUsesUnit(LastIdent) and
-               not IsProtectedByConditions then // no condition block protects it
-            begin
-              // "UnitName.xxx" but not ".Unitname.xxx"
-              ReplaceUnitName(@LastIdentToken);
-              LastIdent := '';
-            end;
-          end;
-          LastSymbol := Token.Value;
-        end;
-      tkIdent:
-        begin
-          if SameText(Token.Value, 'end') then
-            Break
-          else
-          if SameText(Token.Value, 'record') then
-            CheckStruct(Token);
-          LastIdent := Token.Value;
-          LastIdentToken := Token^;
-        end;
-    end;
-  end;
-end;
-
 procedure TVCLConverter.CheckFunction(Token: PTokenInfo; var Context: TParseContext);
 var
   Parser: TPascalParser;
@@ -893,7 +810,7 @@ begin
   try
    // procedure/function header
     InParams := False;
-    while GetNextToken(Parser, Token) do
+    while GetNextToken(Parser, Token, Context) do
     begin
       if not InParams then
       begin
@@ -945,7 +862,7 @@ begin
       CheckFunctionVarDecls(Token, Context);
 
     BeginBlockCount := 1;
-    while GetNextToken(Parser, Token) do
+    while GetNextToken(Parser, Token, Context) do
     begin
       if Token.Kind = tkIdent then
       begin
@@ -975,7 +892,7 @@ var
   LastTokenValue: string;
 begin
   Parser := Token.Parser;
-  while GetNextToken(Parser, Token) do
+  while GetNextToken(Parser, Token, Context) do
   begin
     case Token.Kind of
       tkIdent:
@@ -1099,14 +1016,17 @@ begin
 end;
 
 function TVCLConverter.GetNextToken(Parser: TPascalParser;
-  var Token: PTokenInfo): Boolean;
+  var Token: PTokenInfo; var Context: TParseContext): Boolean;
 begin
+  Context.LastToken := Context.CurToken;
   while Parser.GetToken(Token) and (Token.Kind = tkComment) do
   begin
     if Token.ExKind = tekOption then
       CheckOption(Token);
   end;
   Result := Token <> nil;
+  if Result then
+    Context.CurToken := Token^;
 end;
 
 end.

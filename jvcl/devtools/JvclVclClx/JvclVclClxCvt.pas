@@ -174,7 +174,7 @@ begin
   FPackageModels := TPackageModelList.Create(FJVCLDir + ParsePath('/devtools/bin/pgEdit.xml'));
   FModel := FPackageModels.FindModel('JVCL');
   if FModel = nil then
-    Fail;
+    raise Exception.Create('No Model found.');
   ExpandPackageTargetsObj := FModel.ExpandTargets;
 
   FCvt := TJVCLConverter.Create(ExtractFilePath(ParamStr(0)) + 'VclClxData', FModel);
