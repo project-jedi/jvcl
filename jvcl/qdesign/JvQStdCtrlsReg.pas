@@ -32,6 +32,10 @@ unit JvQStdCtrlsReg;
 
 {$I jvcl.inc}
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
 interface
 
 procedure Register;
@@ -45,15 +49,12 @@ uses
   DesignEditors, DesignIntf, 
   JvQDsgnConsts, JvQTypes,  
   JvQGauges, JvQStdDsgnEditors, QComCtrlsEx, 
-  {$IFDEF USEWINDOWS}
-  JvQBrowseFolder,
-  {$ENDIF USEWINDOWS}
   JvQCombobox, JvQColorCombo, JvQComCtrls,
   JvQSpin, JvQEdit, JvQProgressBar, JvQMaskEdit, JvQBaseEdits, JvQCalc,
   JvQToolEdit, JvQBevel, JvQCheckBox, JvQSpeedButton, JvQSecretPanel,
   JvQCheckListBox, JvQControlBar, JvQCtrls, JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQLabel, JvQRadioButton, JvQRadioGroup, JvQScrollBar, JvQShape,
-  JvQStatusBar, JvQGrids, JvQStringGrid, JvQBitBtn, JvQPanel, JvQImageList,
+  JvQStaticText, JvQStatusBar, JvQGrids, JvQStringGrid, JvQBitBtn, JvQPanel, JvQImageList,
   JvQTransparentPanel, JvQCheckedItemsForm, JvQProgressEditor, JvQDsgnEditors,
   JvQCheckedMaskEdit;
 
@@ -72,28 +73,25 @@ const
 begin
   RegisterComponents(RsPaletteVisual, [TJvShape]);
   RegisterComponents(RsPaletteNonVisual, [ 
-    TJvCalculator]);
-{$IFDEF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [TJvBrowseForFolderDialog]);
-{$ENDIF USEWINDOWS}
+    TJvCalculator]); 
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
-    TJvCheckBox, TJvRadioButton, TJvRadioGroup,
-    TUpDown,
+    TJvCheckBox, TJvRadioButton, TJvRadioGroup,  
+    TUpDown, 
     TJvSpinButton]);
-  RegisterComponents(RsPaletteEdit, [TJvEdit,
+  RegisterComponents(RsPaletteEdit, [TJvEdit, 
     TJvMaskEdit, TJvCheckedMaskEdit, TJvComboEdit, TJvCalcEdit,
-    TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit,
+    TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit, 
     TJvDateEdit]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [TJvPageControl,
-    TJvTabControl, TJvTabDefaultPainter,
-    TGauge,
-    TJvProgressBar, TJvGradientProgressBar, TJvStatusBar,
+    TJvTabControl, TJvTabDefaultPainter, 
+    TGauge, 
+    TJvProgressBar, TJvGradientProgressBar, TJvStatusBar, 
     TJvControlBar, TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel]);
-  RegisterComponents(RsPaletteLabel, [
+  RegisterComponents(RsPaletteLabel, [ 
     TJvLabel]);
-  RegisterComponents(RsPaletteListComboTree, [TJvComboBox, TJvCheckedComboBox,
+  RegisterComponents(RsPaletteListComboTree, [TJvComboBox, TJvCheckedComboBox, 
     TJvCheckListBox, 
     TJvColorComboBox, 
     TJvDrawGrid, TJvStringGrid]);
