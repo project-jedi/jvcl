@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
+S Steed. - added AllowClickableNodes property
 
 Last Modified: 2002-02-12
 
@@ -31,6 +32,9 @@ History:
 ---------------------------------------------------------------------------
 Date(mm/dd/yy)   Comments
 ---------------------------------------------------------------------------
+10/14/2003 Added option to allow user to turn off the clicking of the nodes
+during runtime. S Steed.
+
 05/02/2002       Initial create
 ******************************************************************************}
 
@@ -72,9 +76,11 @@ type
     FUsePageTitle: Boolean;
     FNodeColors: TJvWizardRouteMapNodeColors;
     FIndent: Integer;
+    FAllowClickableNodes: Boolean;
     procedure SetItemHeight(Value: Integer);
     procedure SetUsePageTitle(Value: Boolean);
     procedure SetIndent(Value: Integer);
+    procedure SetAllowClickableNodes(const Value: Boolean);
   protected
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; override;
     procedure Paint; override;
@@ -83,6 +89,7 @@ type
     destructor Destroy; override;
   published
     property ItemHeight: Integer read FItemHeight write SetItemHeight;
+    property AllowClickableNodes: Boolean read FAllowClickableNodes write SetAllowClickableNodes default true; // ss 10/14/2003
     property Align;
     property Color;
     property Font;
@@ -160,6 +167,7 @@ begin
   Font.Color := clWhite;
   FUsePageTitle := True;
   FIndent := 8;
+  FAllowClickableNodes := true; // ss 10/14/2003
   FNodeColors := TJvWizardRouteMapNodeColors.Create(Self);
 end;
 
@@ -174,26 +182,29 @@ var
   i, Count: Integer;
   ARect: TRect;
 begin
-  ARect := ClientRect;
-  InflateRect(ARect, -1, -1);
-  if PtInRect(ARect, Pt) then
+  if AllowClickableNodes then // ss 10/14/2003
   begin
-    Count := PageCount;
-    ARect := Bounds(ARect.Left, ARect.Top + Trunc((FItemHeight - 12) / 2),
-               ARect.Right - ARect.Left, FItemHeight);
-    i := 0;
-    while i < Count do
+    ARect := ClientRect;
+    InflateRect(ARect, -1, -1);
+    if PtInRect(ARect, Pt) then
     begin
-      if CanDisplay(Pages[i]) then
+      Count := PageCount;
+      ARect := Bounds(ARect.Left, ARect.Top + Trunc((FItemHeight - 12) / 2),
+        ARect.Right - ARect.Left, FItemHeight);
+      i := 0;
+      while i < Count do
       begin
-        if PtInRect(ARect, Pt) then
+        if CanDisplay(Pages[i]) then
         begin
-          Result := Pages[i];
-          Exit;
+          if PtInRect(ARect, Pt) then
+          begin
+            Result := Pages[i];
+            Exit;
+          end;
+          OffsetRect(ARect, 0, FItemHeight);
         end;
-        OffsetRect(ARect, 0, FItemHeight);
+        Inc(i);
       end;
-      Inc(i);
     end;
   end;
   Result := nil;
@@ -324,7 +335,7 @@ begin
         end;
       end;
     finally
-        AFont.Free;
+      AFont.Free;
     end;
   end;
 end;
@@ -356,4 +367,15 @@ begin
   end;
 end;
 
+procedure TJvWizardRouteMapNodes.SetAllowClickableNodes(
+  const Value: Boolean);
+begin
+  if FAllowClickableNodes <> Value then
+  begin
+    FAllowClickableNodes := Value;
+    Invalidate;
+  end;
+end;
+
 end.
+
