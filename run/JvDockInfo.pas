@@ -156,6 +156,8 @@ uses
   SysUtils, 
   JvDockGlobals, JvDockVSNetStyle;
 
+//=== Local procedures =======================================================
+
 function FindDockForm(const FormName: string): TCustomForm;
 begin
   if Pos(RsDockJvDockInfoSplitter, FormName) > 0 then
@@ -204,170 +206,6 @@ begin
     Result := FindDockPanel(ControlName);
 end;
 
-//=== { TJvDockInfoZone } ====================================================
-
-function TJvDockInfoZone.GetChildControlCount: Integer;
-var
-  Zone: TJvDockBaseZone;
-begin
-  Result := 0;
-  if ChildZone <> nil then
-  begin
-    Inc(Result);
-    Zone := ChildZone;
-    while Zone.NextSibling <> nil do
-    begin
-      Zone := Zone.NextSibling;
-      if TJvDockInfoZone(Zone).DockControl <> nil then
-        Inc(Result);
-    end;
-  end;
-end;
-
-procedure TJvDockInfoZone.SetDockInfoFromControlToNode(Control: TControl);
-begin
-  DockRect := Control.BoundsRect;
-  UnDockWidth := Control.UnDockWidth;
-  UnDockHeight := Control.UnDockHeight;
-  if Control is TJvDockVSPopupPanel then
-    Control.Visible := False
-  else
-    Visible := Control.Visible;
-
-  if Control is TForm then
-  begin
-    BorderStyle := TForm(Control).BorderStyle;
-    FormStyle := TForm(Control).FormStyle;
-    WindowState := TForm(Control).WindowState;
-    LRDockWidth := Control.LRDockWidth;
-    TBDockHeight := Control.TBDockHeight;
-  end;
-end;
-
-procedure TJvDockInfoZone.SetDockInfoFromDockControlToNode(DockControl: TJvDockBaseControl);
-
-  function GetLastDockSiteName(AControl: TControl): string;
-  begin
-    Result := RsDockCannotFindWindow;
-    if AControl <> nil then
-    begin
-      if AControl.Parent is TJvDockableForm then
-        Result := AControl.Parent.Name
-      else
-      if AControl is TJvDockPanel then
-        Result := AControl.Parent.Name + RsDockJvDockInfoSplitter + AControl.Name;
-    end;
-  end;
-
-begin
-  CanDocked := DockControl.EnableDock;
-  EachOtherDocked := DockControl.EachOtherDock;
-  LeftDocked := DockControl.LeftDock;
-  TopDocked := DockControl.TopDock;
-  RightDocked := DockControl.RightDock;
-  BottomDocked := DockControl.BottomDock;
-  if DockControl is TJvDockClient then
-  begin
-    VSPaneWidth := TJvDockClient(DockControl).VSPaneWidth;
-    UnDockLeft := TJvDockClient(DockControl).UnDockLeft;
-    UnDockTop := TJvDockClient(DockControl).UnDockTop;
-    LastDockSiteName := GetLastDockSiteName(TJvDockClient(DockControl).LastDockSite);
-  end
-  else
-    VSPaneWidth := 0;
-end;
-
-procedure TJvDockInfoZone.SetDockInfoFromNodeToControl(Control: TControl);
-var
-  lbDockServer: TJvDockServer;
-
-  procedure SetPopupPanelSize(PopupPanel: TJvDockVSPopupPanel);
-  begin
-  end;
-
-  procedure SetDockSiteSize(DockSite: TJvDockPanel);
-  begin
-    if DockSite.Align in [alTop, alBottom] then
-      DockSite.JvDockManager.DockSiteSize := DockRect.Bottom - DockRect.Top
-    else
-      DockSite.JvDockManager.DockSiteSize := DockRect.Right - DockRect.Left;
-  end;
-
-begin
-  if (ParentName = '') or ((Control is TJvDockPanel) and
-    (TJvDockPanel(Control).VisibleDockClientCount > 0)) then
-  begin
-    TWinControl(Control).DisableAlign;
-    try
-      if Control is TForm then
-      begin
-        TForm(Control).BorderStyle := BorderStyle;
-        TForm(Control).FormStyle := FormStyle;
-        if WindowState = wsNormal then
-          Control.BoundsRect := DockRect;
-        TForm(Control).WindowState := WindowState;
-      end
-      else
-      begin
-        if Control is TJvDockVSPopupPanel then
-          SetPopupPanelSize(Control as TJvDockVSPopupPanel)
-        else
-          SetDockSiteSize(Control as TJvDockPanel);
-      end;
-      lbDockServer := FindDockServer(Control);
-      if lbDockServer <> nil then
-      begin
-        lbDockServer.GetClientAlignControl(alTop);
-        lbDockServer.GetClientAlignControl(alBottom);
-        lbDockServer.GetClientAlignControl(alLeft);
-        lbDockServer.GetClientAlignControl(alRight);
-      end;
-    finally
-      TWinControl(Control).EnableAlign;
-    end;
-  end;
-  Control.Visible := Visible;
-  Control.LRDockWidth := LRDockWidth;
-  Control.TBDockHeight := TBDockHeight;
-  Control.UnDockHeight := UnDockHeight;
-  Control.UnDockWidth := UnDockWidth;
-end;
-
-procedure TJvDockInfoZone.SetDockInfoFromNodeToDockControl(DockControl: TJvDockBaseControl);
-
-  function GetLastDockSite(const AName: string): TWinControl;
-  begin
-    Result := FindDockPanel(AName);
-    if Result = nil then
-    begin
-      Result := FindDockForm(AName);
-      if Result is TJvDockableForm then
-        Result := TJvDockableForm(Result).DockableControl;
-    end;
-  end;
-
-begin
-  if DockControl is TJvDockClient then
-  begin
-    TJvDockClient(DockControl).UnDockLeft := UnDockLeft;
-    TJvDockClient(DockControl).UnDockTop := UnDockTop;
-    TJvDockClient(DockControl).LastDockSite := GetLastDockSite(LastDockSiteName);
-    if Visible then
-    begin
-      TJvDockClient(DockControl).ParentVisible := False;
-      TJvDockClient(DockControl).MakeShowEvent;
-    end
-    else
-      TJvDockClient(DockControl).MakeHideEvent;
-    TJvDockClient(DockControl).VSPaneWidth := VSPaneWidth;
-  end;
-  DockControl.EnableDock := CanDocked;
-  DockControl.LeftDock := LeftDocked;
-  DockControl.TopDock := TopDocked;
-  DockControl.BottomDock := BottomDocked;
-  DockControl.RightDock := RightDocked;
-end;
-
 //=== { TJvDockInfoTree } ====================================================
 
 constructor TJvDockInfoTree.Create(TreeZone: TJvDockTreeZoneClass);
@@ -385,6 +223,30 @@ destructor TJvDockInfoTree.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FDataStream);
+end;
+
+function TJvDockInfoTree.CreateHostControl(ATreeZone: TJvDockInfoZone): TWinControl;
+var
+  Form: TForm;
+  DockClient: TJvDockClient;
+begin
+  Result := nil;
+  case ATreeZone.DockFormStyle of
+    dsConjoin:
+      begin
+        Form := TJvDockConjoinHostForm.Create(Application);
+        DockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
+        Result := DockClient.CreateConjoinPanelClass(Form).Parent;
+      end;
+    dsTab:
+      begin
+        Form := TJvDockTabHostForm.Create(Application);
+        DockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
+        Result := DockClient.CreateTabDockClass(Form).Parent;
+      end;
+  end;
+  if Result <> nil then
+    Result.Name := ATreeZone.DockFormName;
 end;
 
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromApp(Control: TControl);
@@ -766,7 +628,23 @@ begin
   end;
 end;
 
+function TJvDockInfoTree.FindDockForm(const FormName: string): TCustomForm;
+begin
+  if Pos(RsDockJvDockInfoSplitter, FormName) > 0 then
+    Result := nil
+  else
+    Result := JvDockFindDockFormWithName(FormName);
+end;
+
 {$IFDEF USEJVCL}
+
+function TJvDockInfoTree.GetAppStoragePath: string;
+begin
+  Result := FAppStoragePath;
+  if (Result = '') and (FAppStorage <> nil) then
+    Result := FAppStorage.Path;
+end;
+
 procedure TJvDockInfoTree.ReadInfoFromAppStorage;
 begin
   AppStorage.BeginUpdate;
@@ -785,6 +663,7 @@ begin
     AppStorage.EndUpdate;
   end;
 end;
+
 {$ENDIF USEJVCL}
 
 procedure TJvDockInfoTree.ReadInfoFromIni;
@@ -967,38 +846,6 @@ end;
 
 {$ENDIF USEJVCL}
 
-function TJvDockInfoTree.FindDockForm(const FormName: string): TCustomForm;
-begin
-  if Pos(RsDockJvDockInfoSplitter, FormName) > 0 then
-    Result := nil
-  else
-    Result := JvDockFindDockFormWithName(FormName);
-end;
-
-function TJvDockInfoTree.CreateHostControl(ATreeZone: TJvDockInfoZone): TWinControl;
-var
-  Form: TForm;
-  DockClient: TJvDockClient;
-begin
-  Result := nil;
-  case ATreeZone.DockFormStyle of
-    dsConjoin:
-      begin
-        Form := TJvDockConjoinHostForm.Create(Application);
-        DockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
-        Result := DockClient.CreateConjoinPanelClass(Form).Parent;
-      end;
-    dsTab:
-      begin
-        Form := TJvDockTabHostForm.Create(Application);
-        DockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
-        Result := DockClient.CreateTabDockClass(Form).Parent;
-      end;
-  end;
-  if Result <> nil then
-    Result.Name := ATreeZone.DockFormName;
-end;
-
 procedure TJvDockInfoTree.SetDockControlInfo(ATreeZone: TJvDockInfoZone);
 var
   DockBaseControl: TJvDockBaseControl;
@@ -1068,7 +915,6 @@ begin
 end;
 
 {$IFDEF USEJVCL}
-
 procedure TJvDockInfoTree.WriteInfoToAppStorage;
 begin
   AppStorage.BeginUpdate;
@@ -1127,15 +973,169 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
+//=== { TJvDockInfoZone } ====================================================
 
-function TJvDockInfoTree.GetAppStoragePath: string;
+function TJvDockInfoZone.GetChildControlCount: Integer;
+var
+  Zone: TJvDockBaseZone;
 begin
-  Result := FAppStoragePath;
-  if (Result = '') and (FAppStorage <> nil) then
-    Result := FAppStorage.Path;
+  Result := 0;
+  if ChildZone <> nil then
+  begin
+    Inc(Result);
+    Zone := ChildZone;
+    while Zone.NextSibling <> nil do
+    begin
+      Zone := Zone.NextSibling;
+      if TJvDockInfoZone(Zone).DockControl <> nil then
+        Inc(Result);
+    end;
+  end;
 end;
-{$ENDIF USEJVCL}
+
+procedure TJvDockInfoZone.SetDockInfoFromControlToNode(Control: TControl);
+begin
+  DockRect := Control.BoundsRect;
+  UnDockWidth := Control.UnDockWidth;
+  UnDockHeight := Control.UnDockHeight;
+  if Control is TJvDockVSPopupPanel then
+    Control.Visible := False
+  else
+    Visible := Control.Visible;
+
+  if Control is TForm then
+  begin
+    BorderStyle := TForm(Control).BorderStyle;
+    FormStyle := TForm(Control).FormStyle;
+    WindowState := TForm(Control).WindowState;
+    LRDockWidth := Control.LRDockWidth;
+    TBDockHeight := Control.TBDockHeight;
+  end;
+end;
+
+procedure TJvDockInfoZone.SetDockInfoFromDockControlToNode(DockControl: TJvDockBaseControl);
+
+  function GetLastDockSiteName(AControl: TControl): string;
+  begin
+    Result := RsDockCannotFindWindow;
+    if AControl <> nil then
+    begin
+      if AControl.Parent is TJvDockableForm then
+        Result := AControl.Parent.Name
+      else
+      if AControl is TJvDockPanel then
+        Result := AControl.Parent.Name + RsDockJvDockInfoSplitter + AControl.Name;
+    end;
+  end;
+
+begin
+  CanDocked := DockControl.EnableDock;
+  EachOtherDocked := DockControl.EachOtherDock;
+  LeftDocked := DockControl.LeftDock;
+  TopDocked := DockControl.TopDock;
+  RightDocked := DockControl.RightDock;
+  BottomDocked := DockControl.BottomDock;
+  if DockControl is TJvDockClient then
+  begin
+    VSPaneWidth := TJvDockClient(DockControl).VSPaneWidth;
+    UnDockLeft := TJvDockClient(DockControl).UnDockLeft;
+    UnDockTop := TJvDockClient(DockControl).UnDockTop;
+    LastDockSiteName := GetLastDockSiteName(TJvDockClient(DockControl).LastDockSite);
+  end
+  else
+    VSPaneWidth := 0;
+end;
+
+procedure TJvDockInfoZone.SetDockInfoFromNodeToControl(Control: TControl);
+var
+  lbDockServer: TJvDockServer;
+
+  procedure SetPopupPanelSize(PopupPanel: TJvDockVSPopupPanel);
+  begin
+  end;
+
+  procedure SetDockSiteSize(DockSite: TJvDockPanel);
+  begin
+    if DockSite.Align in [alTop, alBottom] then
+      DockSite.JvDockManager.DockSiteSize := DockRect.Bottom - DockRect.Top
+    else
+      DockSite.JvDockManager.DockSiteSize := DockRect.Right - DockRect.Left;
+  end;
+
+begin
+  if (ParentName = '') or ((Control is TJvDockPanel) and
+    (TJvDockPanel(Control).VisibleDockClientCount > 0)) then
+  begin
+    TWinControl(Control).DisableAlign;
+    try
+      if Control is TForm then
+      begin
+        TForm(Control).BorderStyle := BorderStyle;
+        TForm(Control).FormStyle := FormStyle;
+        if WindowState = wsNormal then
+          Control.BoundsRect := DockRect;
+        TForm(Control).WindowState := WindowState;
+      end
+      else
+      begin
+        if Control is TJvDockVSPopupPanel then
+          SetPopupPanelSize(Control as TJvDockVSPopupPanel)
+        else
+          SetDockSiteSize(Control as TJvDockPanel);
+      end;
+      lbDockServer := FindDockServer(Control);
+      if lbDockServer <> nil then
+      begin
+        lbDockServer.GetClientAlignControl(alTop);
+        lbDockServer.GetClientAlignControl(alBottom);
+        lbDockServer.GetClientAlignControl(alLeft);
+        lbDockServer.GetClientAlignControl(alRight);
+      end;
+    finally
+      TWinControl(Control).EnableAlign;
+    end;
+  end;
+  Control.Visible := Visible;
+  Control.LRDockWidth := LRDockWidth;
+  Control.TBDockHeight := TBDockHeight;
+  Control.UnDockHeight := UnDockHeight;
+  Control.UnDockWidth := UnDockWidth;
+end;
+
+procedure TJvDockInfoZone.SetDockInfoFromNodeToDockControl(DockControl: TJvDockBaseControl);
+
+  function GetLastDockSite(const AName: string): TWinControl;
+  begin
+    Result := FindDockPanel(AName);
+    if Result = nil then
+    begin
+      Result := FindDockForm(AName);
+      if Result is TJvDockableForm then
+        Result := TJvDockableForm(Result).DockableControl;
+    end;
+  end;
+
+begin
+  if DockControl is TJvDockClient then
+  begin
+    TJvDockClient(DockControl).UnDockLeft := UnDockLeft;
+    TJvDockClient(DockControl).UnDockTop := UnDockTop;
+    TJvDockClient(DockControl).LastDockSite := GetLastDockSite(LastDockSiteName);
+    if Visible then
+    begin
+      TJvDockClient(DockControl).ParentVisible := False;
+      TJvDockClient(DockControl).MakeShowEvent;
+    end
+    else
+      TJvDockClient(DockControl).MakeHideEvent;
+    TJvDockClient(DockControl).VSPaneWidth := VSPaneWidth;
+  end;
+  DockControl.EnableDock := CanDocked;
+  DockControl.LeftDock := LeftDocked;
+  DockControl.TopDock := TopDocked;
+  DockControl.BottomDock := BottomDocked;
+  DockControl.RightDock := RightDocked;
+end;
 
 {$IFDEF UNITVERSIONING}
 const
