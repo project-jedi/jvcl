@@ -32,12 +32,14 @@ interface
 
 uses
   SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Windows, Graphics,
+  Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, Types,
-  JvJVCLUtils,
+  Types, QWindows, QGraphics,
   {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 

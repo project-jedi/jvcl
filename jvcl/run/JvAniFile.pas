@@ -38,7 +38,7 @@ uses
   Windows, Graphics, Forms, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QForms, QDialogs, Types,
+  QWindows, QGraphics, QForms, QDialogs, Types,
   {$ENDIF VisualCLX}
   JvTypes;
 
@@ -92,8 +92,10 @@ type
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
     procedure LoadFromFile(const FileName: string); virtual;
+    {$IFDEF VCL} // DecreaseBMPColors is not VCLX compatible
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
+    {$ENDIF VCL}
     property DefaultRate: Longint read GetDefaultRate;
     property IconCount: Integer read GetIconCount;
     property Icons[Index: Integer]: TIcon read GetIcon;
@@ -119,6 +121,7 @@ begin
   Result := Value + (Value mod 2); // Up Value to nearest word boundary
 end;
 
+{$IFDEF VCL}
 procedure DecreaseBMPColors(Bmp: TBitmap; Colors: Integer);
 var
   Stream: TStream;
@@ -133,6 +136,7 @@ begin
     end;
   end;
 end;
+{$ENDIF VCL}
 
 function GetDInColors(BitCount: Word): Integer;
 begin
@@ -254,7 +258,12 @@ begin
   CurDir := GetCurrentDir;
   with TOpenDialog.Create(Application) do
     try
-      Options := [ofHideReadOnly, ofFileMustExist];
+      Options := [
+        {$IFDEF VCL}
+        ofHideReadOnly,
+        {$ENDIF VCL}
+        ofFileMustExist
+      ];
       DefaultExt := RsAniExtension;
       Filter := RsAniCurFilter;
       if Execute then
@@ -394,9 +403,11 @@ begin
   else
   if Dest is TBitmap then
   begin
+    {$IFDEF VCL}
     if IconCount > 0 then
       AssignToBitmap(TBitmap(Dest), TBitmap(Dest).Canvas.Brush.Color, True, False)
     else
+    {$ENDIF VCL}
       Dest.Assign(nil);
   end
   else
@@ -711,9 +722,14 @@ end;
 procedure TJvAnimatedCursorImage.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   if FIcons.Count > 0 then
+    {$IFDEF VCL}
     DrawRealSizeIcon(ACanvas, Icons[0], ARect.Left, ARect.Top);
+    {$ELSE}
+    ACanvas.Draw(ARect.Left, ARect.Top, Icons[0]);
+    {$ENDIF VCL}
 end;
 
+{$IFDEF VCL}
 procedure TJvAnimatedCursorImage.AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
   DecreaseColors, Vertical: Boolean);
 var
@@ -752,5 +768,6 @@ begin
     Temp.Free;
   end;
 end;
+{$ENDIF VCL}
 
 end.

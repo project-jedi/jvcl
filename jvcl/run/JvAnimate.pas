@@ -26,7 +26,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvAnimate;
 
@@ -41,6 +41,12 @@ uses
   QGraphics, QControls, QForms, QComCtrls,
   {$ENDIF VisualCLX}
   JvThemes, JVCLVer;
+
+{$IFDEF VisualCLX}
+ {$IF not declared(TAnimate)}
+  This unit needs at least Delphi 7 or Kylix 3.
+ {$IFEND}
+{$ENDIF VisualCLX}
 
 type
   TJvAnimate = class(TAnimate)

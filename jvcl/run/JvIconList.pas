@@ -23,14 +23,21 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvIconList;
 
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics;
+  Windows, SysUtils,
+  {$IFDEF VCL}
+  Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics,
+  {$ENDIF VisualCLX}
+  Classes;
 
 type
   TJvIconList = class(TPersistent)
@@ -260,10 +267,22 @@ end;
 function TJvIconList.AddResource(Instance: THandle; ResId: PChar): Integer;
 var
   Ico: TIcon;
+  {$IFDEF VisualCLX}
+  ResStream: TResourceStream;
+  {$ENDIF VisualCLX}
 begin
   Ico := TIcon.Create;
   try
+    {$IFDEF VCL}
     Ico.Handle := LoadIcon(Instance, ResId);
+    {$ELSE}
+    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResID), RT_RCDATA);
+    try
+      Ico.LoadFromStream(ResStream);
+    finally
+      ResStream.Free;
+    end;
+    {$ENDIF VCL}
     Result := AddIcon(Ico);
   except
     Ico.Free;
@@ -346,10 +365,22 @@ procedure TJvIconList.InsertResource(Index: Integer; Instance: THandle;
   ResId: PChar);
 var
   Ico: TIcon;
+  {$IFDEF VisualCLX}
+  ResStream: TResourceStream;
+  {$ENDIF VisualCLX}
 begin
   Ico := TIcon.Create;
   try
+    {$IFDEF VCL}
     Ico.Handle := LoadIcon(Instance, ResId);
+    {$ELSE}
+    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResID), RT_RCDATA);
+    try
+      Ico.LoadFromStream(ResStream);
+    finally
+      ResStream.Free;
+    end;
+    {$ENDIF VCL}
     FList.Insert(Index, Ico);
     Ico.OnChange := IconChanged;
   except

@@ -358,7 +358,7 @@ begin
     DrawIcon(ACanvas.Handle, Rect.Left, Rect.Top, FCurrentIcon.Handle);
   {$ELSE}
   if not FCurrentIcon.Empty then
-    Canvas.Draw(Rect.Left, Rect.Top, FCurrentIcon);
+    ACanvas.Draw(Rect.Left, Rect.Top, FCurrentIcon);
   {$ENDIF VCL}
 end;
 
