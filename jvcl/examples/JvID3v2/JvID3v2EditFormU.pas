@@ -450,7 +450,7 @@ begin
     edtYear.Text := IntToStr(YearOf(JvID3v21.Texts.RecordingTime))
   else
     edtYear.Text := IntToStr(JvID3v21.Texts.Year);
-  cmbGenre.Text := GenreToNiceGenre('(17) Rock' {JvID3v21.Texts.ContentType});
+  cmbGenre.Text := GenreToNiceGenre(JvID3v21.Texts.ContentType);
   { Note that WinAmp doesn't care about other properties than Text of TJvID3ContentFrame }
   memComment.Lines.Text := TJvID3ContentFrame.FindOrCreate(JvID3v21, fiComment).Text;
   edtComposer.Text := GetFirstOfList(JvID3v21.Texts.Composer);
