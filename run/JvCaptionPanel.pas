@@ -41,7 +41,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls,
-  JvComponent;
+  JvComponent, JvThemes;
 
 type
   TJvCapBtnStyle = (capClose, capMax, capMin, capRestore, capHelp);
@@ -125,6 +125,7 @@ type
     function CanStartDrag: Boolean; virtual;
     procedure DoLeaveDrag; virtual;
     procedure WMNCLButtonUp(var Msg: TWMNCLButtonUp); message WM_NCLBUTTONUP;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -765,6 +766,11 @@ begin
   inherited;
   if FDragging then
     MouseUp(mbLeft, [], Msg.XCursor, Msg.YCursor);
+end;
+
+procedure TJvCaptionPanel.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
 end;
 
 procedure TJvCaptionPanel.SetOutlookLook(const Value: Boolean);

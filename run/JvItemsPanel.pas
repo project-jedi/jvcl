@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
-  JvComponent;
+  JvComponent, JvThemes;
 
 type
   TJvPanelItemClickEvent = procedure(Sender: TObject; ItemIndex: Integer) of object;
@@ -81,6 +81,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -420,6 +421,11 @@ procedure TJvItemsPanel.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   PaintUp;
+end;
+
+procedure TJvItemsPanel.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
 end;
 
 procedure TJvItemsPanel.SetHotTrack(const Value: Boolean);

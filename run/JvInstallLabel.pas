@@ -104,7 +104,7 @@ resourcestring
 implementation
 
 uses
-  JvTypes;
+  JvTypes, JvThemes;
 
 type
   PStyles = ^TStyles;
@@ -121,6 +121,7 @@ end;
 constructor TJvInstallLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csParentBackground]);
   FLines := TStringList.Create;
   FStyles := TList.Create;
   FImageChangeLink := TChangeLink.Create;
@@ -259,7 +260,7 @@ begin
   with inherited Canvas do
   begin
     Brush.Color := Color;
-    FillRect(ClientRect);
+    DrawThemedBackground(Self, inherited Canvas, ClientRect);
   end;
 
   if csDesigning in ComponentState then

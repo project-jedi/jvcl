@@ -181,6 +181,9 @@ type
 
 implementation
 
+uses
+  JvThemes;
+
 {$R ..\resources\JvLinkLabel.res}
 
 const
@@ -273,6 +276,7 @@ begin
   inherited Create(AOwner);
   FText := TStringList.Create;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+  IncludeThemeStyle(Self, [csParentBackground]);
   Width := 160;
   Height := 17;
   FNodeTree := TNodeTree.Create;
@@ -466,7 +470,7 @@ begin
         // repaint canvas
         Canvas.Brush.Color := Color;
         Canvas.Brush.Style := bsSolid;
-        Canvas.FillRect(ClientRect);
+        DrawThemedBackground(Self, Canvas, ClientRect);
       end;
       Canvas.Brush.Style := bsClear;
 
@@ -483,7 +487,8 @@ begin
       TmpBmp.Canvas.FillRect(Rect(0,0,TmpBmp.Width - 1,TmpBmp.Height - 1));
 
       TmpBmp.Transparent := True;
-      TmpBmp.TransparentMode := tmAuto;
+      TmpBmp.TransparentMode := tmFixed;
+      TmpBmp.TransparentColor := Color;
 
       // Set new start point
       // The new start point is relative to temporary canvas, Left & Top Corner
@@ -640,9 +645,15 @@ begin
   if Transparent <> Value then
   begin
     if Value then
-      ControlStyle := ControlStyle - [csOpaque]
+    begin
+      ControlStyle := ControlStyle - [csOpaque];
+      ExcludeThemeStyle(Self, [csParentBackground]);
+    end
     else
+    begin
       ControlStyle := ControlStyle + [csOpaque];
+      IncludeThemeStyle(Self, [csParentBackground]);
+    end;
     Invalidate;
   end;
 end;

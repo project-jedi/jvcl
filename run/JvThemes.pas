@@ -37,13 +37,23 @@ uses
  {$IFDEF COMPILER7_UP}Themes,{$ELSE}ThemeSrv,{$ENDIF}
 {$ENDIF}
 {$IFDEF COMPLIB_VCL}
-  Controls, StdCtrls,
+  Controls, StdCtrls, Graphics,
 {$ENDIF}
 {$IFDEF COMPLIB_CLX}
-  QControls,
+  QControls, QGraphics,
 {$ENDIF}
   Contnrs;
 
+const
+ // Add a message handler to a component that is themed by the ThemeManager but
+ // should not be themed.
+  CM_DENYSUBCLASSING = CM_BASE + 2000; // from ThemeMgr.pas
+
+type
+  TWinControlThemeInfo = class(TWinControl)
+  public
+    property Color;
+  end;
 
 {$IFDEF JVCLThemesEnabled}
 
@@ -704,8 +714,6 @@ type
 
 function ThemeServices: TThemeServicesEx;
 
-procedure PerformEraseBackground(Control: TControl; DC: HDC);
-
 {$ENDIF}
 
 type
@@ -729,7 +737,61 @@ procedure IncludeThemeStyle(Control: TControl; Style: TThemeStyle);
 procedure ExcludeThemeStyle(Control: TControl; Style: TThemeStyle);
 function GetThemeStyle(Control: TControl): TThemeStyle;
 
+{ DrawThemedBackground fills R with Canvas.Brush.Color. If the control uses
+  csParentBackground and the color is that of it's parent the Rect is not filled
+  because the it is done by the JvThemes/VCL7. }
+procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas; const R: TRect); overload;
+procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect; Brush: HBRUSH);  overload;
+
+{ PerformEraseBackground sends a WM_ERASEBKGND message to the Control's parent. }
+procedure PerformEraseBackground(Control: TControl; DC: HDC);
+
 implementation
+
+procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas; const R: TRect);
+begin
+{$IFDEF JVCLThemesEnabled}
+  if (not (csDesigning in Control.ComponentState)) and
+     (Control.Parent <> nil) and
+     (Canvas.Brush.Color = TWinControlThemeInfo(Control.Parent).Color) and
+     (ThemeServices.ThemesEnabled) and
+     (csParentBackground in GetThemeStyle(Control)) then
+    Exit;
+{$ENDIF}
+  Canvas.FillRect(R);
+end;
+
+procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect; Brush: HBRUSH);
+{$IFDEF JVCLThemesEnabled}
+var
+  LogBrush: TLogBrush;
+{$ENDIF}
+begin
+{$IFDEF JVCLThemesEnabled}
+  GetObject(Brush, SizeOf(LogBrush), @LogBrush);
+  if (not (csDesigning in Control.ComponentState)) and
+     (Control.Parent <> nil) and
+     (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
+     (ThemeServices.ThemesEnabled) and
+     (csParentBackground in GetThemeStyle(Control)) then
+    Exit;
+{$ENDIF}
+  FillRect(DC, R, Brush);
+end;
+
+procedure PerformEraseBackground(Control: TControl; DC: HDC);
+{ Mike Lischke is the original author of this code. }
+var
+  WindowOrg: TPoint;
+begin
+  if Control.Parent <> nil then
+  begin
+    GetWindowOrgEx(DC, WindowOrg);
+    SetWindowOrgEx(DC, WindowOrg.X + Control.Left, WindowOrg.Y + Control.Top, nil);
+    Control.Parent.Perform(WM_ERASEBKGND, DC, 0);
+    SetWindowOrgEx(DC, WindowOrg.X, WindowOrg.Y, nil);
+  end;
+end;
 
 {$IFDEF JVCLThemesEnabled}
 procedure TThemeServicesEx.ApplyThemeChange;
@@ -745,18 +807,6 @@ begin
     {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ThemeServices
   );
 end;
-
-procedure PerformEraseBackground(Control: TControl; DC: HDC);
-{ Mike Lischke is the original author of this code. }
-var
-  WindowOrg: TPoint;
-begin
-  GetWindowOrgEx(DC, WindowOrg);
-  SetWindowOrgEx(DC, WindowOrg.X + Control.Left, WindowOrg.Y + Control.Top, nil);
-  Control.Parent.Perform(WM_ERASEBKGND, DC, 0);
-  SetWindowOrgEx(DC, WindowOrg.X, WindowOrg.Y, nil);
-end;
-
 
 {$IFDEF COMPILER7_UP}
 
@@ -1114,3 +1164,4 @@ end;
 {$ENDIF} // JVCLThemesEnabled
 
 end.
+
