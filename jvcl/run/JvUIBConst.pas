@@ -23,8 +23,10 @@
 { Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
+
 {$I JVCL.INC}
 {$I JvUIB.inc}
+
 unit JvUIBConst;
 
 interface
@@ -42,9 +44,8 @@ type
   // JvUIB Server Commands
   TServerCommand = (scGetClassObject, scInvokeMethod);
 
-resourceString
-
-{$IFDEF UIBLANG_EN}
+resourcestring
+  {$IFDEF UIBLANG_EN}
   sUIBTrue  = 'True';
   sUIBFalse = 'False';
 
@@ -75,9 +76,9 @@ resourceString
   EJvUIB_CantConnect   = 'Can''t connect to server.';
   EJvUIB_ClassNotFound = 'Class not found.';
   EJvUIB_DataType      = 'Data type error.';
-{$ENDIF UIBLANG_EN}
+  {$ENDIF UIBLANG_EN}
 
-{$IFDEF UIBLANG_FR}
+  {$IFDEF UIBLANG_FR}
   sUIBTrue  = 'Vrai';
   sUIBFalse = 'Faux';
 
@@ -108,9 +109,9 @@ resourceString
   EJvUIB_CantConnect   = 'Impossible de se connecter au serveur.';
   EJvUIB_ClassNotFound = 'La Classe n''a pas été trouvée.';
   EJvUIB_DataType      = 'Erreur de type de donnée.';
-{$ENDIF UIBLANG_FR}
+  {$ENDIF UIBLANG_FR}
 
-{$IFDEF UIBLANG_CZ}
+  {$IFDEF UIBLANG_CZ}
   sUIBTrue  = 'Ano';
   sUIBFalse = 'Ne';
 
@@ -134,49 +135,49 @@ resourceString
   EUIB_MUSTBEOPEN          = 'The query must be opened first.';
   EUIB_EXPLICITTRANS       = 'Transaction must be started explicitly.';
   EUIB_EXCEPTIONNOTFOUND   = 'Exception name %s, not found.';
-  EUIB_EXPTIONREGISTERED   = 'Exception: %d allready registered';
+  EUIB_EXPTIONREGISTERED   = 'Exception: %d already registered';
   EUIB_NOAUTOSTOP          = 'Transaction must be closed explicitly.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Nelze pøipojit server.';
   EJvUIB_ClassNotFound = 'Tøída neexistuje.';
   EJvUIB_DataType      = 'Chybný typ dat.';
-{$ENDIF UIBLANG_CZ}
+  {$ENDIF UIBLANG_CZ}
 
-{$IFDEF UIBLANG_DE}
+  {$IFDEF UIBLANG_DE}
   sUIBTrue  = 'Wahr';
   sUIBFalse = 'Falsch';
 
   // UIB Errors
-  EUIB_INVALIDEIBVERSION   = 'Falsche Datenbankserverversion. Bitte ueberpruefen sie die Compiler Optionen.';
+  EUIB_INVALIDEIBVERSION   = 'Falsche Version des Datenbankservers. Bitte ueberprüfen sie die Compileroptionen.';
   EUIB_CANTLOADLIB         = 'Kann Bibliothek %s nicht laden.';
-  EUIB_DBHANDLEALLREADYSET = 'Datenbank Handle bereits zugewiesen. Bitte erst Verbindung von der Datenbank trennen.';
+  EUIB_DBHANDLEALLREADYSET = 'Datenbank-Handle bereits zugewiesen. Bitte erst Verbindung zur Datenbank trennen.';
   EUIB_TRANSACTIONNOTDEF   = 'Transaktion nicht zugewiesen.';
   EUIB_DATABASENOTDEF      = 'Datenbank nicht zugewiesen.';
-  EUIB_QUERYNOTOPEN        = 'Abfrage nicht geoeffnet.';
+  EUIB_QUERYNOTOPEN        = 'Abfrage nicht geöffnet.';
   EUIB_CASTERROR           = 'Fehler bei Typumwandlung.';
   EUIB_UNEXPECTEDERROR     = 'Unerwarteter Fehler.';
-  EUIB_FIELDNUMNOTFOUND    = 'Feld Nummer: %d not found.';
+  EUIB_FIELDNUMNOTFOUND    = 'Feld Nummer %d nicht gefunden.';
   EUIB_FIELDSTRNOTFOUND    = 'Feld "%s" nicht gefunden.';
   EUIB_PARAMSTRNOTFOUND    = 'Parameter "%s" nicht gefunden.';
-  EUIB_BLOBFIELDNOTFOUND   = 'Blob Feld Nummer: %d nicht gefunden.';
+  EUIB_BLOBFIELDNOTFOUND   = 'Blob-Feld Nummer: %d nicht gefunden.';
   EUIB_FETCHBLOBNOTSET     = 'Die Eigenschaft FetchBlob muss gesetzt sein um diese Methode zu nutzen.';
-  EUIB_INDEXERROR          = 'Index ausserhalb des gueltigen Bereichs. (%d)';
-  EUIB_SIZENAME            = 'Name ist zu lang. (%s)';
+  EUIB_INDEXERROR          = 'Index ausserhalb des gültigen Bereichs (%d).';
+  EUIB_SIZENAME            = 'Name ist zu lang (%s).';
   EUIB_MUSTBEPREPARED      = 'Die Abfrage muss erst vorbereitet werden.';
-  EUIB_MUSTBEOPEN          = 'The query must be opened first.';
-  EUIB_EXPLICITTRANS       = 'Transaction must be started explicitly.';
-  EUIB_EXCEPTIONNOTFOUND   = 'Exception name %s, not found.';
-  EUIB_EXPTIONREGISTERED   = 'Exception: %d allready registered';
-  EUIB_NOAUTOSTOP          = 'Transaction must be closed explicitly.';
+  EUIB_MUSTBEOPEN          = 'Die Abfrage muss erst geöffnet werden.';
+  EUIB_EXPLICITTRANS       = 'Die Transaktion muss explizit gestartet werden.';
+  EUIB_EXCEPTIONNOTFOUND   = 'Ausnahme "%s" nicht gefunden.';
+  EUIB_EXPTIONREGISTERED   = 'Ausnahme %d bereits registriert.';
+  EUIB_NOAUTOSTOP          = 'Die Transaktion muss explizit beendet werden.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Verbindung zum Server kann nicht aufgebaut werden.';
   EJvUIB_ClassNotFound = 'Klasse nicht gefunden.';
   EJvUIB_DataType      = 'Datentypfehler.';
-{$ENDIF UIBLANG_DE}
+  {$ENDIF UIBLANG_DE}
 
-{$IFDEF UIBLANG_RU}
+  {$IFDEF UIBLANG_RU}
   sUIBTrue  = 'Äà';
   sUIBFalse = 'Íåò';
 
@@ -207,10 +208,9 @@ resourceString
   EJvUIB_CantConnect   = 'Íå ìîãó óñòàíîâèòü ñîåäèíåíèå ñ ñåðâåðîì.';
   EJvUIB_ClassNotFound = 'Êëàññ íå íàéäåí.';
   EJvUIB_DataType      = 'Îøèáêà òèïà äàííûõ.';
-{$ENDIF UIBLANG_RU}
+  {$ENDIF UIBLANG_RU}
 
-{$IFDEF UIBLANG_ES}
-
+  {$IFDEF UIBLANG_ES}
   sUIBTrue             = 'Si';
   sUIBFalse            = 'No';
 
@@ -241,8 +241,7 @@ resourceString
   EJvUIB_CantConnect   = 'Imposible conectar con el servidor.';
   EJvUIB_ClassNotFound = 'Clase no encontrada.';
   EJvUIB_DataType      = 'Error de tipo de dato.';
-{$ENDIF UIBLANG_ES}
-
+  {$ENDIF UIBLANG_ES}
 
 implementation
 

@@ -75,7 +75,7 @@ resourcestring
   RsEmptyItem = '<Empty>';
 
   RsDatabaseName = 'Database name: %s';
-  RsDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
+  RsDataItemRenderHasNoText = '(item does not support the IJvDataItemText interface)';
   RsError = 'Error';
   RsFalse = 'False';
   RsTrue = 'True';
@@ -92,9 +92,9 @@ resourcestring
   RsEDateOutOfRange = '%s - Enter a date between "%s" and "%s"';
   RsEDateOutOfMin = '%s - Enter a date after "%s"';
   RsEDateOutOfMax = '%s - Enter a date before "%s"';
-  RsEID3NoController = 'No controller specified.';
+  RsEID3NoController = 'No controller specified';
   RsEReturnStackOverflow = 'return stack overflow';
-  RsESorryForOneDimensionalArraysOnly = 'Sorry. For one-dimensional arrays only.';
+  RsESorryForOneDimensionalArraysOnly = 'Sorry, for one-dimensional arrays only';
   RsELocalDatabase = 'Cannot perform this operation on a local database';
 
 //=== JvAni.pas ==============================================================
@@ -122,7 +122,7 @@ resourcestring
 //=== JvAppRegistryStore.pas =================================================
 resourcestring
   RsEUnableToCreateKey = 'Unable to create key ''%s''';
-  RsEEnumeratingRegistry = 'Error enumerating registry.';
+  RsEEnumeratingRegistry = 'Error enumerating registry';
 
 //=== JvAppStore.pas =========================================================
 resourcestring
@@ -260,7 +260,7 @@ resourcestring
   RsNoValuesHere = 'No values here!';
 
   RsEDataIndexCannotBeNegative = 'Data: index cannot be negative';
-  RsEDataIndexTooLargeProbablyAnInternal = 'Data: index too large. probably an internal error.';
+  RsEDataIndexTooLargeProbablyAnInternal = 'Data: index too large. Probably an internal error';
   RsEGetAverageValueIndexNegative = 'GetAverageValue: Index negative';
   RsESetAverageValueIndexNegative = 'SetAverageValue: Index negative';
   RsEChartOptionsPenCountPenCountOutOf = 'JvChart.Options.PenCount - PenCount out of range';
@@ -317,11 +317,11 @@ resourcestring
 //=== JvContextProvider.pas ==================================================
 resourcestring
   RsContextItemEmptyCaption = '(no context assigned to this item)';
-  RsENoContextAssigned = 'No context has been assigned to this item.';
+  RsENoContextAssigned = 'No context has been assigned to this item';
 
-  RsENoContextItem = 'Specified item is not a context item.';
-  RsENotSupportedIInterfaceComponentReference = 'Component does not support IInterfaceComponentReference.';
-  RsENotSupportedIJvDataProvider = 'Component does not support IJvDataProvider.';
+  RsENoContextItem = 'Specified item is not a context item';
+  RsENotSupportedIInterfaceComponentReference = 'Component does not support IInterfaceComponentReference';
+  RsENotSupportedIJvDataProvider = 'Component does not support IJvDataProvider';
 
 //=== JvCreateProcess.pas ====================================================
 resourcestring
@@ -330,7 +330,7 @@ resourcestring
   RsHigh = 'High';
   RsRealTime = 'RealTime';
 
-  RsEProcessIsRunning = 'Can''t perform this operation when process is running';
+  RsEProcessIsRunning = 'Cannot perform this operation when process is running';
   RsEProcessNotRunning = 'Process is not running';
 
 //=== JvCSVBaseControls.pas ==================================================
@@ -356,36 +356,36 @@ resourcestring
   RsECsvErrFormat = '%s: %s';
   RsEProblemReadingRow = 'Problem reading row %d';
   RsENoRecord = 'No records';
-  RsETimeTConvError = 'SetFieldData Error - TimeT-to-DateTime conversion error.';
-  RsEFieldTypeNotHandled = 'SetFieldData Error - Field type not handled.';
+  RsETimeTConvError = 'SetFieldData Error - TimeT-to-DateTime conversion error';
+  RsEFieldTypeNotHandled = 'SetFieldData Error - Field type not handled';
   RsEUnableToLocateCSVFileInfo = 'Unable to locate CSV file information for field %s';
-  RsEPhysicalLocationOfCSVField = 'Physical location of CSV field %s unknown.';
+  RsEPhysicalLocationOfCSVField = 'Physical location of CSV field %s unknown';
   RsEInvalidFieldTypeCharacter = 'Invalid field type character: %s';
   RsEUnexpectedError = 'Unexpected error parsing CSV Field Definitions';
-  RsEFieldDefinitionError = 'Field Definition Error. CsvFieldDef, FieldDefs, and file contents must match.';
-  RsEInvalidCsvKeyDef = 'Invalid CsvKeyDef property. InternalInitFieldDefs failed.';
-  RsEInternalErrorParsingCsvKeyDef = 'Internal Error parsing CsvKeyDef. InternalInitFieldDefs failed.';
-  RsEContainsField = 'CsvKeyDef contains field ''%s'' which is not defined. InternalInitFieldDefs failed.';
-  RsEInsertBlocked = 'InternalAddRecord Can''t Add. Insert blocked.';
-  RsEPostingHasBeenBlocked = 'Posting to this database has been blocked.';
+  RsEFieldDefinitionError = 'Field Definition Error. CsvFieldDef, FieldDefs, and file contents must match';
+  RsEInvalidCsvKeyDef = 'Invalid CsvKeyDef property. InternalInitFieldDefs failed';
+  RsEInternalErrorParsingCsvKeyDef = 'Internal Error parsing CsvKeyDef. InternalInitFieldDefs failed';
+  RsEContainsField = 'CsvKeyDef contains field ''%s'' which is not defined. InternalInitFieldDefs failed';
+  RsEInsertBlocked = 'InternalAddRecord cannot Add. Insert blocked';
+  RsEPostingHasBeenBlocked = 'Posting to this database has been blocked';
   RsEKeyNotUnique = '%s - Key is not unique ';
-  RsECannotInsertNewRow = 'Can''t insert new row. Insert blocked.';
-  RsECannotPost = 'Post: Can''t post. Not in not dsEdit or dsInsert mode';
-  RsESortFailedCommaSeparated = 'Sort failed. You must give a comma separated list of field names.';
+  RsECannotInsertNewRow = 'Cannot insert new row. Insert blocked';
+  RsECannotPost = 'Cannot post. Not in dsEdit or dsInsert mode';
+  RsESortFailedCommaSeparated = 'Sort failed. You must give a comma separated list of field names';
   RsESortFailedFieldNames = 'Sort failed. Unable to parse field names. ';
   RsESortFailedInvalidFieldNameInList = 'Sort failed. Invalid field name in list: %s';
   RsEDataSetNotOpen = 'AppendRowString: DataSet is not open (active not set to true)';
-  RsEErrorProcessingFirstLine = 'Error processing first line of CSV file.';
-  RsEFieldInFileButNotInDefinition = 'ProcessCsvHeaderRow: Field %s found in file, but not in field definitions.';
-  RsECsvFieldLocationError = 'Csv field location error: %s';
-  RsEFieldNotFound = 'Field %s not found in the data file.';
-  RsECsvStringTooLong = 'CSV String is too long: %s...';
+  RsEErrorProcessingFirstLine = 'Error processing first line of CSV file';
+  RsEFieldInFileButNotInDefinition = 'ProcessCsvHeaderRow: Field %s found in file, but not in field definitions';
+  RsECsvFieldLocationError = 'CSV field location error: %s';
+  RsEFieldNotFound = 'Field %s not found in the data file';
+  RsECsvStringTooLong = 'CSV string is too long: %s...';
   RsEInternalLimit = 'JvCsvData - Internal Limit of MAXCOLUMNS (%d) reached. CSV Data has too many columns';
-  RsETableNameNotSet = 'TJvCsvCustomInMemorYDataSet.FTableName is not set.';
+  RsETableNameNotSet = 'TJvCsvCustomInMemorYDataSet.FTableName is not set';
   RsEGetMode = 'GetMode???';
   RsENoTableName = 'noTableName';
   RsETableNameRequired = 'LoadFromFile=True, so a TableName is required';
-  RsEInternalCompare = 'InternalCompare. Nil value detected.';
+  RsEInternalCompare = 'InternalCompare. Nil value detected';
 
 //=== JvCsvParse.pas =========================================================
 resourcestring
@@ -393,36 +393,36 @@ resourcestring
 
 //=== JvDataProvider.pas =====================================================
 resourcestring
-  RsEItemsMayNotBeMovedInTheMainTree = 'Items may not be moved in the main tree.';
+  RsEItemsMayNotBeMovedInTheMainTree = 'Items may not be moved in the main tree';
   RsEInvalidIndex = 'Invalid index';
-  RsEItemCanNotBeDeleted = 'Item can not be deleted.';
-  RsEContextNameExpected = 'Context name expected.';
-  RsEConsumerStackIsEmpty = 'Consumer stack is empty.';
-  RsEContextStackIsEmpty = 'Context stack is empty.';
-  RsEAContextWithThatNameAlreadyExists = 'A context with that name already exists.';
-  RsECannotCreateAContextWithoutAContext = 'Cannot create a context without a context list owner.';
-  RsEComponentDoesNotSupportTheIJvDataPr = 'Component does not support the IJvDataProvider interface.';
-  RsEComponentDoesNotSupportTheIInterfac = 'Component does not support the IInterfaceComponentReference interface.';
-  RsEYouMustSpecifyAProviderBeforeSettin = 'You must specify a provider before setting the context.';
+  RsEItemCanNotBeDeleted = 'Item cannot be deleted';
+  RsEContextNameExpected = 'Context name expected';
+  RsEConsumerStackIsEmpty = 'Consumer stack is empty';
+  RsEContextStackIsEmpty = 'Context stack is empty';
+  RsEAContextWithThatNameAlreadyExists = 'A context with that name already exists';
+  RsECannotCreateAContextWithoutAContext = 'Cannot create a context without a context list owner';
+  RsEComponentDoesNotSupportTheIJvDataPr = 'Component does not support the IJvDataProvider interface';
+  RsEComponentDoesNotSupportTheIInterfac = 'Component does not support the IInterfaceComponentReference interface';
+  RsEYouMustSpecifyAProviderBeforeSettin = 'You must specify a provider before setting the context';
   RsEProviderHasNoContextNameds = 'Provider has no context named "%s"';
-  RsEProviderDoesNotSupportContexts = 'Provider does not support contexts.';
-  RsETheSpecifiedContextIsNotPartOfTheSa = 'The specified context is not part of the same provider.';
-  RsEYouMustSpecifyAProviderBeforeSettin_ = 'You must specify a provider before setting the item.';
-  RsEItemNotFoundInTheSelectedContext = 'Item not found in the selected context.';
+  RsEProviderDoesNotSupportContexts = 'Provider does not support contexts';
+  RsETheSpecifiedContextIsNotPartOfTheSa = 'The specified context is not part of the same provider';
+  RsEYouMustSpecifyAProviderBeforeSettin_ = 'You must specify a provider before setting the item';
+  RsEItemNotFoundInTheSelectedContext = 'Item not found in the selected context';
   RsEViewListOutOfSync = 'ViewList out of sync';
 
-  RsEProviderIsNoIJvDataConsumer = 'Provider property of ''%s'' does not point to a IJvDataConsumer.';
-  RsEComponentIsNotDataConsumer = 'Component ''%s'' is not a data consumer.';
-  RsECannotAddNil = 'Cannot add a nil pointer.';
+  RsEProviderIsNoIJvDataConsumer = 'Provider property of ''%s'' does not point to a IJvDataConsumer';
+  RsEComponentIsNotDataConsumer = 'Component ''%s'' is not a data consumer';
+  RsECannotAddNil = 'Cannot add a nil pointer';
   RsEConsumerNoSupportIJvDataConsumerClientNotify =
-    'Consumer does not support the ''IJvDataConsumerClientNotify'' interface.';
-  RsENotifierNoSupprtIJvDataConsumer = 'Notifier does not support the ''IJvDataConsumer'' interface.';
+    'Consumer does not support the ''IJvDataConsumerClientNotify'' interface';
+  RsENotifierNoSupprtIJvDataConsumer = 'Notifier does not support the ''IJvDataConsumer'' interface';
 
-  RsEExtensibleIntObjDuplicateClass = 'Implementation of that class already exists.';
-  RsEExtensibleIntObjCollectionExpected = 'Expected collection.';
+  RsEExtensibleIntObjDuplicateClass = 'Implementation of that class already exists';
+  RsEExtensibleIntObjCollectionExpected = 'Expected collection';
   RsEExtensibleIntObjClassNameExpected = 'Missing ClassName property';
-  RsEExtensibleIntObjInvalidClass = 'Invalid class type.';
-  RsEDataProviderNeedsItemsImpl = 'Can''t create a data provider without an IJvDataItems implementation.';
+  RsEExtensibleIntObjInvalidClass = 'Invalid class type';
+  RsEDataProviderNeedsItemsImpl = 'Cannot create a data provider without an IJvDataItems implementation';
 
 //=== JvDatePickerEdit.pas ===================================================
 resourcestring
@@ -498,34 +498,34 @@ resourcestring
 resourcestring
   RsInTheCurrentQueue = 'in the current queue';
 
-  RsDSActkShowText = 'Don''t show this dialog again';
-  RsDSActkAskText = 'Don''t ask me again';
-  RsDSActkWarnText = 'Don''t warn me again';
+  RsDSActkShowText = 'Do not show this dialog again';
+  RsDSActkAskText = 'Do not ask me again';
+  RsDSActkWarnText = 'Do not warn me again';
 
   RsCntdownText = 'This dialog is closing in %d %s.';
   RsCntdownSecText = 'second';
   RsCntdownSecsText = 'seconds';
 
-  RsECannotEndCustomReadIfNotInCustomRea = 'Cannot end custom read if not in custom read mode.';
-  RsECannotEndCustomWriteIfNotInCustomWr = 'Cannot end custom write if not in custom write mode.';
-  RsECannotEndReadIfNotInReadMode = 'Cannot end read if not in read mode.';
-  RsECannotEndWriteIfNotInWriteMode = 'Cannot end write if not in write mode.';
-  RsEJvDSADialogPatchErrorJvDSADialogCom = 'JvDSADialog patch error: JvDSADialog component not found.';
+  RsECannotEndCustomReadIfNotInCustomRea = 'Cannot end custom read if not in custom read mode';
+  RsECannotEndCustomWriteIfNotInCustomWr = 'Cannot end custom write if not in custom write mode';
+  RsECannotEndReadIfNotInReadMode = 'Cannot end read if not in read mode';
+  RsECannotEndWriteIfNotInWriteMode = 'Cannot end write if not in write mode';
+  RsEJvDSADialogPatchErrorJvDSADialogCom = 'JvDSADialog patch error: JvDSADialog component not found';
 
   RsEDSARegKeyCreateError = 'Unable to create key %s';
-  RsEDSADuplicateID = 'DSA dialog with ID ''%d'' is already assigned to another dialog name.';
-  RsEDSADuplicateName = 'DSA dialog named ''%s'' is already assigned to another dialog ID.';
-  RsEDSADialogIDNotFound = 'DSA dialog %d does not exist.';
-  RsEDSADuplicateCTK_ID = 'CheckMarkText ID %d already registered.';
-  RsEDSADialogIDNotStored = 'DSA dialog %d has not been stored.';
-  RsEDSAKeyNotFound = 'Key %s does not exist.';
-  RsEDSAKeyNoAccessAs = 'Key %s cannot be accessed as %s.';
+  RsEDSADuplicateID = 'DSA dialog with ID ''%d'' is already assigned to another dialog name';
+  RsEDSADuplicateName = 'DSA dialog named ''%s'' is already assigned to another dialog ID';
+  RsEDSADialogIDNotFound = 'DSA dialog %d does not exist';
+  RsEDSADuplicateCTK_ID = 'CheckMarkText ID %d already registered';
+  RsEDSADialogIDNotStored = 'DSA dialog %d has not been stored';
+  RsEDSAKeyNotFound = 'Key %s does not exist';
+  RsEDSAKeyNoAccessAs = 'Key %s cannot be accessed as %s';
 
-  RsECtrlHasNoCheckedProp = 'The specified control has no "Checked" property.';
-  RsECtrlHasNoCaptionProp = 'The specified control has no "Caption" property.';
-  RsEDialogIDChangeOnlyInDesign = 'The dialog ID can only be changed at design time.';
-  RsEOnlyAllowedOnForms = 'TJvDSADialog is only allowed on forms.';
-  RsEAlreadyDSADialog = 'The form already has a TJvDSADialog component.';
+  RsECtrlHasNoCheckedProp = 'The specified control has no "Checked" property';
+  RsECtrlHasNoCaptionProp = 'The specified control has no "Caption" property';
+  RsEDialogIDChangeOnlyInDesign = 'The dialog ID can only be changed at design time';
+  RsEOnlyAllowedOnForms = 'TJvDSADialog is only allowed on forms';
+  RsEAlreadyDSADialog = 'The form already has a TJvDSADialog component';
 
   RsEDSAAccessBool = 'Boolean';
   RsEDSAAccessFloat = 'Float';
@@ -615,10 +615,10 @@ resourcestring
   RsEDSOUnknownKeys = 'DSO unknown key %s';
 
 //=== Jvg3DColors.pas ========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsEOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvGammaPanel.pas =======================================================
 resourcestring
@@ -636,32 +636,32 @@ resourcestring
   RsDefaultR = 'R : ---';
 
 //=== JvgAskListBox.pas ======================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsYes = 'yes';
   RsNo = 'no';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgButton.pas ==========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsEErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgCaption.pas =========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsEOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgCheckVersionInfoForm.pas ============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsNoNewerVersionOfProgramAvailable = 'No newer version of program available';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgConstSysRequirements.pas ============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   { RUSSIAN
   RsVideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
@@ -678,37 +678,37 @@ resourcestring
     'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
   RsSystemFont = 'In system small fonts should be established. Change to small fonts in Monitor Control Panel.';
   RsOSPlatform = 'The program requires %s or better.';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvGenetic.pas ==========================================================
 resourcestring
   RsENoTest = 'TJvGenetic: OnTestMember must be assigned';
 
 //=== JvgExportComponents.pas ================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsEDataSetIsUnassigned = 'DataSet is unassigned';
   RsESaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgHelpPanel.pas =======================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsHelp = ' help ';
   RsOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgHint.pas ============================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsEOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgHTTPVersionInfo.pas =================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsEUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvGIF.pas ==============================================================
 resourcestring
@@ -724,7 +724,7 @@ resourcestring
   RsEGIFVersion = 'Unknown GIF version';
 
 //=== JvgLogics.pas ==========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsEqualTo = 'equal to';
   RsStartingWith = 'starting with';
@@ -734,39 +734,39 @@ resourcestring
   RsNotEmpty = 'not empty';
   RsStep = 'Step ';
   RsComments = 'Comments';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgMailSlots.pas =======================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsETJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
   RsETJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
   RsETJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgProgress.pas ========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsProgressCaption = 'Progress...[%d%%]';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgQPrintPreviewForm.pas ===============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsPageOfPages = 'Page %d of %d';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvGradientHeaderPanel.pas ==============================================
 resourcestring
   RsYourTextHereCaption = 'Put your text here ...';
 
 //=== JvgReport.pas ==========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsOLELinkedObjectNotFound = 'OLE: Linked object not found.';
   RsErrorText = 'Error';
-  RsErrorReadingComponent = 'Error reading component.';
-  {$ENDIF USEJVCL}
+  RsErrorReadingComponent = 'Error reading component';
+{$ENDIF USEJVCL}
 
 //=== JvGridPreviewForm.pas ==================================================
 resourcestring
@@ -781,32 +781,32 @@ resourcestring
   RsPrintOptionsTimeFormat = 'h:nn am/pm';
 
 //=== JvgSingleInstance.pas ==================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsOneInstanceOfThisProgramIsAlreadyRu =
     'One instance of this program is already running. A second instance launch is not allowed.';
   RsSecondInstanceLaunchOfs = 'Second instance launch of %s';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgSmallFontsDefense.pas ===============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgUtils.pas ===========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsERightBracketsNotFound = 'Right brackets not found';
-  RsERightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
+  RsERightBracketHavntALeftOnePosd = 'Right bracket does not have a left one. Pos: %d';
   RsEDivideBy = 'Divide by 0';
   RsEDuplicateSignsAtPos = 'Duplicate signs at Pos: %d';
-  RsEExpressionStringIsEmpty = 'Expression string is empty.';
+  RsEExpressionStringIsEmpty = 'Expression string is empty';
   RsEObjectMemoryLeak = 'object memory leak';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgXMLSerializer.pas ===================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   { RUSSIAN
   RsOpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
@@ -816,7 +816,7 @@ resourcestring
   RsOpenXMLTagNotFound = 'Open tag not found: <%s>';
   RsCloseXMLTagNotFound = 'Close tag not found: </%s>';
   RsUnknownProperty = 'Unknown property: %s';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvHint.pas =============================================================
 resourcestring
@@ -900,13 +900,13 @@ resourcestring
   RsEAlreadyReadingWriting = 'Already reading or writing';
   RsEAlreadyReadingWritingFrame = 'Already reading/writing frame';
   RsEAlreadyUsingTempStream = 'Already using temp stream';
-  RsECannotCallCanRead = 'Can''t call CanRead while writing';
-  RsEControllerDoesNotSupportCompression = 'Controller doesn''t support compression';
-  RsEControllerDoesNotSupportCRC = 'Controller doesn''t support CRC';
-  RsEControllerDoesNotSupportEncryption = 'Controller doesn''t support encryption';
-  RsEControllerDoesNotSupportFooter = 'Controller doesn''t support footer';
+  RsECannotCallCanRead = 'Cannot call CanRead while writing';
+  RsEControllerDoesNotSupportCompression = 'Controller does not support compression';
+  RsEControllerDoesNotSupportCRC = 'Controller does not support CRC';
+  RsEControllerDoesNotSupportEncryption = 'Controller does not support encryption';
+  RsEControllerDoesNotSupportFooter = 'Controller does not support footer';
   RsECouldNotFindAllowableEncoding = 'Could not find allowable encoding';
-  RsECouldNotReadData = 'Couldn''t read data from stream';
+  RsECouldNotReadData = 'Could not read data from stream';
   RsEErrorInFrame = 'Error in frame %s (%s), %s';
   RsEFrameSizeDiffers = 'Frame size differs from actually amount of data written';
   RsEFrameSizeTooBig = 'Frame size is too big';
@@ -917,25 +917,25 @@ resourcestring
   RsENotWriting = 'Not writing';
   RsENotWritingFrame = 'Not writing frame';
   RsETagTooBig = 'Tag is too big';
-  RsEValueTooBig = 'Can''t write value in v2.2; too big';
+  RsEValueTooBig = 'Cannot write value in v2.2; too big';
   RsENotReading = 'Not reading';
 
   RsEID3FrameNotFound = 'Frame not found';
   RsEID3UnknownEncoding = 'Unknown encoding';
   RsEID3UnknownVersion = 'Unknown version';
-  RsEID3DuplicateFrame = 'Frame is a duplicate of another frame in the tag.';
-  RsEID3AlreadyContainsFrame = 'Tag already contains a ''%s'' frame.';
+  RsEID3DuplicateFrame = 'Frame is a duplicate of another frame in the tag';
+  RsEID3AlreadyContainsFrame = 'Tag already contains a ''%s'' frame';
   RsEID3ControllerNotActive = 'Controller is not active';
-  RsEID3EncodingNotSupported = 'Encoding not supported in this version.';
-  RsEID3VersionNotSupported = 'Version not supported.';
-  RsEID3InvalidLanguageValue = '''%s'' is an invalid language value.';
-  RsEID3InvalidPartInSetValue = '''%s'' is an invalid ''part in set'' value.';
-  RsEID3InvalidTimeValue = '''%s'' is an invalid time value.'#13'Value must be of format ''HHMM''.';
-  RsEID3InvalidDateValue = '''%s'' is an invalid date value.'#13'Value must be of format ''DDMM''.';
-  RsEID3ValueTooBig = '''%d'' is an invalid value. Value is too big.';
-  RsEID3StringTooLong = '''%s'' is an invalid value. String is too long.';
-  RsEID3InvalidCharinList = 'Invalid char ''%s'' in string ''%s'' in list.';
-  RsEID3InvalidFrameClass = 'Frame class ''%s'' can''t be used to represent frame ID ''%s''';
+  RsEID3EncodingNotSupported = 'Encoding not supported in this version';
+  RsEID3VersionNotSupported = 'Version not supported';
+  RsEID3InvalidLanguageValue = '''%s'' is an invalid language value';
+  RsEID3InvalidPartInSetValue = '''%s'' is an invalid ''part in set'' value';
+  RsEID3InvalidTimeValue = '''%s'' is an invalid time value.'#13'Value must be of format ''HHMM''';
+  RsEID3InvalidDateValue = '''%s'' is an invalid date value.'#13'Value must be of format ''DDMM''';
+  RsEID3ValueTooBig = '''%d'' is an invalid value. Value is too big';
+  RsEID3StringTooLong = '''%s'' is an invalid value. String is too long';
+  RsEID3InvalidCharinList = 'Invalid char ''%s'' in string ''%s'' in list';
+  RsEID3InvalidFrameClass = 'Frame class ''%s'' cannot be used to represent frame ID ''%s''';
   RsEID3FrameIDNotSupported = 'Frame ID ''%s'' not supported by this frame';
   RsEID3FrameIDStrNotSupported = 'Frame ID string ''%s'' not supported by this frame';
 
@@ -962,44 +962,44 @@ resourcestring
   RsXLinesCaption = ' lines';
   RsOneLineCaption = '1 line';
 
-  RsEJvInspItemHasParent = 'Item already assigned to another parent.';
-  RsEJvInspItemNotAChild = 'Specified Item is not a child of this item.';
-  RsEJvInspItemColNotFound = 'Specified column does not belong to this compound item.';
-  RsEJvInspItemItemIsNotCol = 'Specified item is not a column of this compound item.';
-  RsEJvInspItemInvalidPropValue = 'Invalid property value %s.';
-  RsEJvInspDataNoAccessAs = 'Data cannot be accessed as %s.';
-  RsEJvInspDataNotInit = 'Data not initialized.';
-  RsEJvInspDataNotAssigned = 'Data not assigned.';
-  RsEJvInspDataNoValue = 'Data has no value.';
-  RsEJvInspDataStrTooLong = 'String too long.';
-  RsEJvInspRegNoCompare = 'Cannot compare %s to %s.';
-  RsEJvInspNoGenReg = 'Unable to create generic item registration list.';
-  RsEJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector.';
-  RsEJvInspPaintOnlyUsedOnce = 'Inspector painter can only be linked to one inspector.';
+  RsEJvInspItemHasParent = 'Item already assigned to another parent';
+  RsEJvInspItemNotAChild = 'Specified Item is not a child of this item';
+  RsEJvInspItemColNotFound = 'Specified column does not belong to this compound item';
+  RsEJvInspItemItemIsNotCol = 'Specified item is not a column of this compound item';
+  RsEJvInspItemInvalidPropValue = 'Invalid property value %s';
+  RsEJvInspDataNoAccessAs = 'Data cannot be accessed as %s';
+  RsEJvInspDataNotInit = 'Data not initialized';
+  RsEJvInspDataNotAssigned = 'Data not assigned';
+  RsEJvInspDataNoValue = 'Data has no value';
+  RsEJvInspDataStrTooLong = 'String too long';
+  RsEJvInspRegNoCompare = 'Cannot compare %s to %s';
+  RsEJvInspNoGenReg = 'Unable to create generic item registration list';
+  RsEJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector';
+  RsEJvInspPaintOnlyUsedOnce = 'Inspector painter can only be linked to one inspector';
 
-  RsEInspectorInternalError = 'Internal error: two data instances pointing to the same data are registered.';
-  RsESpecifierBeforeSeparator = 'A specifier should be placed before and after a separator.';
-  RsEDOrDDOnlyOnce = '''d'' or ''dd'' should appear only once.';
-  RsEMOrMMOnlyOnce = '''m'' or ''mm'' should appear only once.';
-  RsEYYOrYYYYOnlyOnce = '''yy'' or ''yyyy'' should appear only once.';
-  RsEOnlyDOrDDAllowed = 'Only ''d'' or ''dd'' are allowed.';
-  RsEOnlyMOrMMAllowed = 'Only ''m'' or ''mm'' are allowed.';
-  RsEOnlyYYOrYYYYAllowed = 'Only ''yy'' or ''yyyy'' are allowed.';
-  RsEOnlyTwoSeparators = 'Only two separators are allowed.';
+  RsEInspectorInternalError = 'Internal error: two data instances pointing to the same data are registered';
+  RsESpecifierBeforeSeparator = 'A specifier should be placed before and after a separator';
+  RsEDOrDDOnlyOnce = '''d'' or ''dd'' should appear only once';
+  RsEMOrMMOnlyOnce = '''m'' or ''mm'' should appear only once';
+  RsEYYOrYYYYOnlyOnce = '''yy'' or ''yyyy'' should appear only once';
+  RsEOnlyDOrDDAllowed = 'Only ''d'' or ''dd'' are allowed';
+  RsEOnlyMOrMMAllowed = 'Only ''m'' or ''mm'' are allowed';
+  RsEOnlyYYOrYYYYAllowed = 'Only ''yy'' or ''yyyy'' are allowed';
+  RsEOnlyTwoSeparators = 'Only two separators are allowed';
   RsEOnlyDMYSAllowed = 'Only ''d'', ''m'', ''y'' and ''%s'' are allowed';
-  RsEDOrDDRequired = '''d'' or ''dd'' are required.';
-  RsEMOrMMRequired = '''m'' or ''mm'' are required.';
-  RsEYYOrYYYYRequired = '''yy'' or ''yyyy'' are required.';
-  RsEInstanceAlreadyExists = 'Instance already exists with another name.';
-  RsENameAlreadyExistsForInstance = 'Name already exists for another instance.';
-  RsEInstanceNonexistent = 'Instance does not exist.';
-  RsEMethodAlreadyExists = 'Method already exists with another name.';
-  RsENameAlreadyExistsForMethod = 'Name already exists for another method.';
-  RsENamedInstanceNonexistent = 'Instance named ''%s'' does not exist.';
-  RsEMethodNonexistent = 'Method does not exist.';
-  RsENamedMethodNonexistent = 'Method named ''%s'' does not exist.';
-  RsENotSeparately = '%s cannot be created separately.';
-  RsENoNewInstance = '%s does not allow a new instance to be created.';
+  RsEDOrDDRequired = '''d'' or ''dd'' are required';
+  RsEMOrMMRequired = '''m'' or ''mm'' are required';
+  RsEYYOrYYYYRequired = '''yy'' or ''yyyy'' are required';
+  RsEInstanceAlreadyExists = 'Instance already exists with another name';
+  RsENameAlreadyExistsForInstance = 'Name already exists for another instance';
+  RsEInstanceNonexistent = 'Instance does not exist';
+  RsEMethodAlreadyExists = 'Method already exists with another name';
+  RsENameAlreadyExistsForMethod = 'Name already exists for another method';
+  RsENamedInstanceNonexistent = 'Instance named ''%s'' does not exist';
+  RsEMethodNonexistent = 'Method does not exist';
+  RsENamedMethodNonexistent = 'Method named ''%s'' does not exist';
+  RsENotSeparately = '%s cannot be created separately';
+  RsENoNewInstance = '%s does not allow a new instance to be created';
 
   // (rom) converted assertions
   RsEJvAssertSetTopIndex = 'TJvCustomInspector.SetTopIndex: unexpected MaxIdx <= -1';
@@ -1021,7 +1021,7 @@ resourcestring
 resourcestring
   RsNotImplemented = 'Function not yet implemented';
 
-  RsESorryDynamicArraysSupportIsMadeForO = 'Sorry. Dynamic arrays support is made for one-dimensional arrays only.';
+  RsESorryDynamicArraysSupportIsMadeForO = 'Sorry. Dynamic arrays support is made for one-dimensional arrays only';
   RsEUnknownRecordType = 'Unknown RecordType';
   RsERangeCheckError = 'range check error';
 
@@ -1054,7 +1054,7 @@ resourcestring
 //=== JvJoystick.pas =========================================================
 resourcestring
   RsNoJoystickDriver = 'The joystick driver is not present.';
-  RsCannotCaptureJoystick = 'Can''t capture the joystick';
+  RsCannotCaptureJoystick = 'Cannot capture the joystick';
   RsJoystickUnplugged = 'The specified joystick is not connected to the system.';
   RsJoystickErrorParam = 'The specified joystick device identifier is invalid.';
 
@@ -1141,7 +1141,7 @@ resourcestring
 
 //=== JvMTData.pas ===========================================================
 resourcestring
-  RsEMethodOnlyForMainThread = '%s method can only be used by the main VCL thread.';
+  RsEMethodOnlyForMainThread = '%s method can only be used by the main VCL thread';
 
 //=== JvMTSync.pas ===========================================================
 resourcestring
@@ -1153,8 +1153,8 @@ resourcestring
 resourcestring
   RsECurThreadIsPartOfManager = 'Current MTThread is part of the MTManager';
   RsECheckTerminateCalledByWrongThread = 'CheckTerminate can only be called by the same thread';
-  RsEThreadNotInitializedOrWaiting = 'Cannot run: thread is not Initializing or Waiting.';
-  RsECannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread.';
+  RsEThreadNotInitializedOrWaiting = 'Cannot run: thread is not Initializing or Waiting';
+  RsECannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread';
   RsEReleaseOfUnusedTicket = 'Release of unused ticket';
 
 //=== JvMultiHttpGrabber.pas =================================================
@@ -1235,8 +1235,8 @@ resourcestring
   RsWrongOS = 'TJvPerfMon95 component is intended for Win95/98 only';
 
   RsECantOpenPerfKey = 'Performance registry key not found';
-  RsECantStart = 'Can''t start performance statistics (%s)';
-  RsECantStop = 'Can''t stop performance statistics (%s)';
+  RsECantStart = 'Cannot start performance statistics (%s)';
+  RsECantStop = 'Cannot stop performance statistics (%s)';
   RsEKeyNotExist = 'Specified key "%s" does not exist';
 
 //=== JvPickDate.pas =========================================================
@@ -1339,21 +1339,21 @@ resourcestring
 
 //=== JvSchedEvtStore.pas ====================================================
 resourcestring
-  RsEStructureStackIsEmpty = 'Structure stack is empty.';
+  RsEStructureStackIsEmpty = 'Structure stack is empty';
   RsEScheduleIsActiveReadingANewSchedule =
-    'Schedule is active. Reading a new schedule can only be done on inactive schedules.';
+    'Schedule is active. Reading a new schedule can only be done on inactive schedules';
   RsEScheduleIsActiveStoringOfAScheduleC =
-    'Schedule is active. Storing of a schedule can only be done on inactive schedules.';
-  RsENotImplemented_ = 'not implemented.';
-  RsENotASchedule = 'Not a schedule.';
+    'Schedule is active. Storing of a schedule can only be done on inactive schedules';
+  RsENotImplemented_ = 'not implemented';
+  RsENotASchedule = 'Not a schedule';
   RsEUnknownScheduleVersions = 'Unknown schedule version ($%s)';
-  RsEUnexpectedStructure = 'Unexpected structure.';
-  RsEIncorrectIdentifierFound = 'Incorrect identifier found.';
-  RsEIncorrectStructure = 'Incorrect structure found.';
+  RsEUnexpectedStructure = 'Unexpected structure';
+  RsEIncorrectIdentifierFound = 'Incorrect identifier found';
+  RsEIncorrectStructure = 'Incorrect structure found';
 
 //=== JvScheduledEvents.pas ==================================================
 resourcestring
-  RsECannotRestart = 'Cannot restart: Event is being triggered or is executing.';
+  RsECannotRestart = 'Cannot restart: Event is being triggered or is executing';
 
 //=== JvScrollMax.pas ========================================================
 resourcestring
@@ -1369,9 +1369,9 @@ resourcestring
 
 //=== JvSegmentedLEDDisplay.pas ==============================================
 resourcestring
-  RsEInvalidClass = 'Invalid class.';
-  RsEInvalidMappingFile = 'Invalid mapping file.';
-  RsEDuplicateDigitClass = 'Duplicate DigitClass registered.';
+  RsEInvalidClass = 'Invalid class';
+  RsEInvalidMappingFile = 'Invalid mapping file';
+  RsEDuplicateDigitClass = 'Duplicate DigitClass registered';
 
 //=== JvSegmentedLEDDisplayMapperFrame.pas ===================================
 resourcestring
@@ -1391,15 +1391,15 @@ resourcestring
   // RsEInvalidBoolean = '''%s'' is not a valid Boolean value'; make Delphi 5 compiler happy // andreas
   {$ENDIF COMPILER6_UP}
   RsEInvalidXMLElementUnexpectedCharacte =
-    'Invalid XML Element: Unexpected character in properties declaration ("%s" found).';
+    'Invalid XML Element: Unexpected character in property declaration ("%s" found)';
   RsEInvalidXMLElementUnexpectedCharacte_ =
-    'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found.';
+    'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found';
   RsEUnexpectedValueForLPos = 'Unexpected value for lPos';
-  RsEInvalidXMLElementExpectedBeginningO = 'Invalid XML Element: Expected beginning of tag but "%s" found.';
-  RsEInvalidXMLElementExpectedEndOfTagBu = 'Invalid XML Element: Expected end of tag but "%s" found.';
+  RsEInvalidXMLElementExpectedBeginningO = 'Invalid XML Element: Expected beginning of tag but "%s" found';
+  RsEInvalidXMLElementExpectedEndOfTagBu = 'Invalid XML Element: Expected end of tag but "%s" found';
   RsEInvalidXMLElementMalformedTagFoundn = 'Invalid XML Element: malformed tag found (no valid name)';
   RsEInvalidXMLElementErroneousEndOfTagE =
-    'Invalid XML Element: Erroneous end of tag, expecting </%s> but </%s> found.';
+    'Invalid XML Element: Erroneous end of tag, expecting </%s> but </%s> found';
   RsEInvalidCommentExpectedsButFounds = 'Invalid Comment: expected "%s" but found "%s"';
   RsEInvalidCommentNotAllowedInsideComme = 'Invalid Comment: "--" not allowed inside comments';
   RsEInvalidCommentUnexpectedEndOfData = 'Invalid Comment: Unexpected end of data';
@@ -1408,7 +1408,7 @@ resourcestring
   RsEInvalidHeaderExpectedsButFounds = 'Invalid Header: expected "%s" but found "%s"';
   RsEInvalidStylesheetExpectedsButFounds = 'Invalid Stylesheet: expected "%s" but found "%s"';
   RsEInvalidStylesheetUnexpectedEndOfDat = 'Invalid Stylesheet: Unexpected end of data';
-  RsEInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog.';
+  RsEInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog';
 
 //=== JvSpeedbar.pas =========================================================
 resourcestring
@@ -1436,7 +1436,7 @@ resourcestring
 
 //=== JvStatusBar.pas ========================================================
 resourcestring
-  RsEInvalidControlSelection = 'Invalid control selection.';
+  RsEInvalidControlSelection = 'Invalid control selection';
 
 //=== JvSticker.pas ==========================================================
 resourcestring
@@ -1444,7 +1444,7 @@ resourcestring
 
 //=== JvStrings.pas ==========================================================
 resourcestring
-  RsECannotLoadResource = 'Can''t load resource: %s';
+  RsECannotLoadResource = 'Cannot load resource: %s';
   RsEIncorrectStringFormat = 'Base64: Incorrect string format';
 
 //=== JvSyncSplitter.pas =====================================================
@@ -1461,10 +1461,10 @@ resourcestring
   RsEInvalidPrimeTimeEndTime = 'Invalid PrimeTime EndTime';
   RsEColumnIndexOutOfBounds = 'Column index out of bounds';
   RsERowIndexOutOfBounds = 'Row index out of bounds';
-  RsEMapColNotFoundForAppointment = 'Map col not found for appointment';
+  RsEMapColNotFoundForAppointment = 'Map column not found for appointment';
   RsECorruptAppointmentMap = 'Corrupt appointment map';
   RsEGridGranularityCannotBeGreater = 'Grid granularity cannot be greater ' +
-    'then the time block granularity';
+    'than the time block granularity';
   RsETimeBlockGranularityMustBeEvenly = 'Time block granularity must be evenly ' +
     'divisible by the grid granularity';
   RsETimeBlocksMustBeginExactlyOn = 'Time blocks must begin exactly on ' +
@@ -1658,7 +1658,7 @@ resourcestring
   RsENotSupported = 'This function is not supported by your version of Windows';
   RsEInvalidDriveChar = 'Invalid drive (%s)';
   { make Delphi 5 compiler happy // andreas
-    RsEUnsupportedDisk = 'Unsupported drive (%s): JvDiskFullDialog only supports fixed drives.';}
+    RsEUnsupportedDisk = 'Unsupported drive (%s): JvDiskFullDialog only supports fixed drives';}
 
 //=== JvWinHelp.pas ==========================================================
 resourcestring
@@ -1673,8 +1673,8 @@ resourcestring
   RsTitle = 'Title';
   RsSubtitle = 'Subtitle';
 
-  RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant.';
-  RsEInvalidWizardPage = 'The pages belong to another wizard.';
+  RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant';
+  RsEInvalidWizardPage = 'The pages belong to another wizard';
 
 //=== JvWizardCommon.pas =====================================================
 resourcestring
@@ -1739,4 +1739,3 @@ resourcestring
 implementation
 
 end.
-
