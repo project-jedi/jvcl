@@ -170,7 +170,6 @@ var
   strlist: TStrings;
   i : integer;
 begin
-  // TODO allowcreate
   Result := false;
   strlist := TStringList.Create;
   try
@@ -179,8 +178,8 @@ begin
     Ininame := RootKey;
     i := 0;
     while (i < strlist.Count) and
-      ( FileExists(IniName + PathDelim + strlist[i]) or
-      ( (strlist[i][1] = '.') and AllowCreate))
+      (FileExists(IniName + PathDelim + strlist[i]) or
+       (strlist[i][1] = '.'))
     do
     begin
       IniName := IniName + PathDelim + strlist[i];
