@@ -2,6 +2,7 @@ Changelog for JVCL 3.0
 ======================
 2004-11-28:
 - JvFooter now uses JvImgBtn instead of JvBitBtn (JvBitBtn renders disabled hi-color glyphs badly) // peter3
+- JvMouseGesture changed to comply with JVCL coding rules. A JVCL Converter file has been added to the /converter folder to simplify updating old projects to use the new types and names. Event handlers still needs to be updated manually. // peter3
 2004-11-25:
 - The package generator has been updated to allow for GUID values (D2005 requirement) // obones
 - JVCL Installer and build.exe have been updated to allow Delphi 2005 installation/compilation // ahuser

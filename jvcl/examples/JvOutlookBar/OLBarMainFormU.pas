@@ -31,7 +31,7 @@ unit OLBarMainFormU;
 interface
 
 uses
-  Windows, Messages, SysUtils, {$IFDEF DELPHI6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvOutlookBar, ComCtrls, StdCtrls, Menus, ExtCtrls, ImgList,
   JvComponent, JvExControls, ActnList, JvGIF, jpeg;
 

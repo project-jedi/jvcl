@@ -27,7 +27,6 @@ object OLBarMainForm: TOLBarMainForm
     Top = 0
     Width = 5
     Height = 369
-    Cursor = crHSplit
     AutoSnap = False
     ResizeStyle = rsUpdate
   end
@@ -37,7 +36,6 @@ object OLBarMainForm: TOLBarMainForm
     Width = 697
     Height = 19
     Panels = <>
-    SimplePanel = False
   end
   object JvOutlookBar1: TJvOutlookBar
     Left = 0
@@ -53,45 +51,51 @@ object OLBarMainForm: TOLBarMainForm
             Caption = 'Today'
             ImageIndex = 0
             Tag = 0
+            AutoToggle = False
           end
           item
             Caption = 'Inbox'
             ImageIndex = 1
             Tag = 0
+            AutoToggle = False
           end
           item
             Caption = 'Calendar'
             ImageIndex = 2
             Tag = 0
+            AutoToggle = False
           end
           item
             Caption = 'Contacts'
             ImageIndex = 3
             Tag = 0
+            AutoToggle = False
           end
           item
             Caption = 'Tasks'
             ImageIndex = 4
             Tag = 0
+            AutoToggle = False
           end
           item
             Caption = 'Deleted'
             ImageIndex = 5
             Tag = 0
+            AutoToggle = False
           end>
+        ButtonSize = olbsLarge
         Caption = 'Standard Shortcuts'
         Color = 4210816
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
         DownFont.Charset = DEFAULT_CHARSET
         DownFont.Color = clWindowText
         DownFont.Height = -11
         DownFont.Name = 'MS Sans Serif'
         DownFont.Style = []
-        ButtonSize = olbsLarge
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
         ParentColor = False
         TopButtonIndex = 0
       end
@@ -101,36 +105,40 @@ object OLBarMainForm: TOLBarMainForm
             Caption = 'Drafts'
             ImageIndex = 6
             Tag = 0
+            AutoToggle = False
           end
           item
             Caption = 'Outbox'
             ImageIndex = 7
             Tag = 0
+            AutoToggle = False
           end
           item
             Caption = 'Sent Items'
             ImageIndex = 8
             Tag = 0
+            AutoToggle = False
           end
           item
             Caption = 'Journal'
             ImageIndex = 9
             Tag = 0
+            AutoToggle = False
           end>
+        ButtonSize = olbsLarge
         Caption = 'My Shortcuts'
-        Color = clBtnShadow
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
+        Color = clDefault
         DownFont.Charset = DEFAULT_CHARSET
         DownFont.Color = clWindowText
         DownFont.Height = -11
         DownFont.Name = 'MS Sans Serif'
         DownFont.Style = []
-        ButtonSize = olbsLarge
-        ParentColor = True
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentColor = False
         TopButtonIndex = 0
       end
       item
@@ -139,30 +147,33 @@ object OLBarMainForm: TOLBarMainForm
             Caption = 'My Computer'
             ImageIndex = 10
             Tag = 0
+            AutoToggle = False
           end
           item
             Caption = 'My Documents'
             ImageIndex = 11
             Tag = 0
+            AutoToggle = False
           end
           item
             Caption = 'Favorites'
             ImageIndex = 12
             Tag = 0
+            AutoToggle = False
           end>
+        ButtonSize = olbsLarge
         Caption = 'Other Shortcuts'
-        Color = 8404992
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
+        Color = clNone
         DownFont.Charset = DEFAULT_CHARSET
         DownFont.Color = clWindowText
         DownFont.Height = -11
         DownFont.Name = 'MS Sans Serif'
         DownFont.Style = []
-        ButtonSize = olbsLarge
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
         ParentColor = False
         TopButtonIndex = 0
       end>
