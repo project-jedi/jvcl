@@ -31,8 +31,8 @@ unit JvActions;
 interface
 
 uses
-  JclMapi,
   {$IFDEF MSWINDOWS}
+  JclMapi,
   Windows, ShellAPI, ActnList,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
@@ -90,7 +90,7 @@ type
   published
     property MailOptions: TJvSendMailOptions read FMailOptions write FMailOptions;
   end;
-{$ENDIF WINDOWS}
+  {$ENDIF WINDOWS}
 
   TJvWebAction = class(TAction)
   private

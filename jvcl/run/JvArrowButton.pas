@@ -37,16 +37,14 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Controls, Forms, Graphics, Buttons, CommCtrl, Menus,
+  Windows, Messages, Controls, Forms, Graphics, Buttons, CommCtrl, Menus,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QControls, QForms, QGraphics, QButtons, QMenus,
+  QTypes, QControls, QForms, QGraphics, QButtons, QImgList, QMenus, Types,
+  QWindows,
   {$ENDIF VisualCLX}
-  JvClxUtils, JvComponent, JvTypes;
+  JvComponent, JvTypes;
 
 type
   TJvArrowButton = class(TJvGraphicControl)
@@ -89,7 +87,9 @@ type
     {$ENDIF VCL}
   protected
     FState: TButtonState;
+    {$IFDEF VCL}
     function GetPalette: HPALETTE; override;
+    {$ENDIF VCL}
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -154,6 +154,7 @@ type
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
+      {$IFDEF VisualCLX} override; {$ENDIF VisualCLX}
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
@@ -200,6 +201,19 @@ type
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
+
+function DrawText(Canvas: TCanvas; Caption: TCaption; var R: TRect;
+  Flags: Integer): Integer;
+begin
+  {$IFDEF VCL}
+  Result := Windows.DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, Flags);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Canvas.Start;
+  Result := QWindows.DrawText(Canvas.Handle, WideString(Caption), Length(Caption), R, Flags);
+  Canvas.Stop;
+  {$ENDIF VisualCLX}
+end;
 
 procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
 begin
@@ -451,7 +465,9 @@ begin
     TmpImage.Height := IHeight;
     IRect := Rect(0, 0, IWidth, IHeight);
     TmpImage.Canvas.Brush.Color := clBtnFace;
+    {$IFDEF VCL}
     TmpImage.Palette := CopyPalette(FOriginal.Palette);
+    {$ENDIF VCL}
     I := State;
     if Ord(I) >= NumGlyphs then
       I := bsUp;
@@ -473,7 +489,9 @@ begin
             MonoBmp := TBitmap.Create;
             DDB := TBitmap.Create;
             DDB.Assign(FOriginal);
+            {$IFDEF VCL}
             DDB.HandleType := bmDDB;
+            {$ENDIF VCL}
             if NumGlyphs > 1 then
               with TmpImage.Canvas do
               begin { Change white & gray to clBtnHighlight and clBtnShadow }
@@ -519,7 +537,9 @@ begin
               begin
                 Assign(FOriginal);
                 GrayedBitmap(MonoBmp);
+                {$IFDEF VCL}
                 HandleType := bmDDB;
+                {$ENDIF VCL}
                 Canvas.Brush.Color := clBlack;
                 Width := IWidth;
                 if Monochrome then
@@ -570,12 +590,23 @@ begin
     Exit;
   Index := CreateButtonGlyph(State);
   with GlyphPos do
+    {$IFDEF VCL}
     if Transparent or (State = bsExclusive) then
       ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0,
         clNone, clNone, ILD_Transparent)
     else
       ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0,
         ColorToRGB(clBtnFace), clNone, ILD_Normal);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    // (ahuser) transparent not really supported under CLX
+    if Transparent or (State = bsExclusive) then
+    begin
+      FGlyphList.Draw(Canvas, X, Y, Index, itImage, True);
+    end
+    else
+      FGlyphList.Draw(Canvas, X, Y, Index, itImage, True);
+    {$ENDIF VisualCLX}
 end;
 
 procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
@@ -591,13 +622,13 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      ClxDrawText(Canvas, S, TextBounds, 0);
+      DrawText(Canvas, S, TextBounds, 0);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      ClxDrawText(Canvas, S, TextBounds, 0);
+      DrawText(Canvas, S, TextBounds, 0);
     end
     else
-      ClxDrawText(Canvas, S, TextBounds,
+      DrawText(Canvas, S, TextBounds,
         DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 end;
@@ -624,7 +655,7 @@ begin
   begin
     TextBounds := Rect(0, 0, Client.Right - Client.Left, 0);
     S := Caption;
-    ClxDrawText(Canvas, S, TextBounds, DT_CALCRECT);
+    DrawText(Canvas, S, TextBounds, DT_CALCRECT);
     TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom -
       TextBounds.Top);
   end
@@ -907,10 +938,18 @@ begin
     begin
       GetCursorPos(P);
       FMouseInControl := not (FindDragTarget(P, True) = Self);
+      {$IFDEF VCL}
       if FMouseInControl then
         Perform(CM_MOUSELEAVE, 0, 0)
       else
         Perform(CM_MOUSEENTER, 0, 0);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      if FMouseInControl then
+        MouseLeave(Self)
+      else
+        MouseEnter(Self);
+      {$ENDIF VisualCLX}
     end;
 end;
 
@@ -930,7 +969,9 @@ procedure TJvArrowButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   Pnt: TPoint;
+  {$IFDEF VCL}
   Msg: TMsg;
+  {$ENDIF VCL}
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if not Enabled then
@@ -950,10 +991,15 @@ begin
   begin
     Pnt := ClientToScreen(Point(0, Height));
     FPopUp.Popup(Pnt.X, Pnt.Y);
+    {$IFDEF VCL}
     while PeekMessage(Msg, HWND_DESKTOP, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
       {nothing};
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Application.ProcessMessages;
+    {$ENDIF VisualCLX}
   end;
 
   if FArrowClick then
@@ -1010,10 +1056,12 @@ begin
   inherited Click;
 end;
 
+{$IFDEF VCL}
 function TJvArrowButton.GetPalette: HPALETTE;
 begin
   Result := Glyph.Palette;
 end;
+{$ENDIF VCL}
 
 function TJvArrowButton.GetGlyph: TBitmap;
 begin
