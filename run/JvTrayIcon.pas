@@ -151,10 +151,11 @@ type
     procedure Hook;
     procedure UnHook;
     procedure WndProc(var Mesg: TMessage);
-    procedure DoMouseMove(Shift: TShiftState; X, Y: Integer);
     procedure DoMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure DoMouseMove(Shift: TShiftState; X, Y: Integer);
     procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoDoubleClick(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure DoClick(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure OnDblClickTimer(Sender: TObject); { Vlad S}
     function ApplicationHook(var Msg: TMessage): Boolean;
     function NotifyIcon(dwMessage: DWORD): boolean;
@@ -268,7 +269,7 @@ begin
   FBalloonCloser.Enabled := false;
   FBalloonCloser.OnTimer := OnBalloonCloserTimer;
 
-  FDblClickTimer := TTimer.Create(self);  { Vlad S}
+  FDblClickTimer := TTimer.Create(self); { Vlad S}
   FDblClickTimer.Enabled := false;
   FDblClickTimer.OnTimer := OnDblClickTimer; { Vlad S}
 
@@ -426,10 +427,10 @@ begin
             end;
           end;
       else
-          if (Msg = FTaskbarRestartMsg) and (FActive) then
-            SetActive(True);
-          Result := DefWindowProc(FHandle, Msg, wParam, lParam);
-    end; // with
+        if (Msg = FTaskbarRestartMsg) and (FActive) then
+          SetActive(True);
+        Result := DefWindowProc(FHandle, Msg, wParam, lParam);
+      end; // with
   except
     Application.HandleException(Self);
   end;
@@ -451,6 +452,7 @@ begin
 end;
 
 //HEG: New
+
 procedure TJvTrayIcon.SetCurrentIcon(Value: TIcon);
 begin
   FCurrentIcon.Assign(Value);
@@ -460,6 +462,7 @@ begin
 end;
 
 //HEG: New
+
 procedure TJvTrayIcon.IconPropertyChanged;
 var
   Ico: TIcon;
@@ -477,13 +480,13 @@ begin
         Ico.Free;
       end;
     end
-    else
-    if Assigned(Icon) and (not Icon.Empty) then
+    else if Assigned(Icon) and (not Icon.Empty) then
       SetCurrentIcon(Icon)
     else
       SetCurrentIcon(Application.Icon);
   end;
 end;
+
 procedure TJvTrayIcon.SetIcon(Icon: TIcon);
 begin
   FIcon.Assign(Icon);
@@ -694,64 +697,31 @@ procedure TJvTrayIcon.DoMouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   FDblClicked := false;
+  FClickedButton := Button;
+  FClickedShift := Shift;
+  FClickedX := X;
+  FClickedY := Y;
+  FDblClickTimer.Interval := GetDoubleClickTime;
+  FDblClickTimer.Enabled := true;
+
   if Assigned(FOnMouseDown) then
     FOnMouseDown(Self, Button, Shift, X, Y);
-  if (Button = mbLeft) and (FDropDownMenu <> nil) then
-  begin
-    SetForegroundWindow(FHandle);
-    FDropDownMenu.Popup(X, Y);
-    PostMessage(FHandle, WM_NULL, 0, 0);
-  end;
 end;
 
 procedure TJvTrayIcon.DoMouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-var
-    hasPopup: boolean;
 begin
-  hasPopup := false;
-  if (Button = mbRight) and (FPopupMenu <> nil) then
-  begin
-    SetForegroundWindow(FHandle);
-    FPopupMenu.Popup(X, Y);
-    PostMessage(FHandle, WM_NULL, 0, 0);
-    hasPopup := true;
-  end
-  else
-  if Button = mbLeft then
-    if not ApplicationVisible then
-    begin
-      if tvRestoreClick in Visibility then
-        Visibility := Visibility + [tvVisibleTaskBar]
-    end
-    else
-    begin
-      if tvMinimizeClick in Visibility then
-        Visibility := Visibility - [tvVisibleTaskBar]
-    end;
-
   if Assigned(FOnMouseUp) then
     FOnMouseUp(Self, Button, Shift, X, Y);
-  if (not hasPopup) and Assigned(FOnClick) and not FDblClicked then
-  begin
-    { Vlad S}
-    //FOnClick(Self, Button, Shift, X, Y);
-    FClickedButton := Button;
-    FClickedShift := Shift;
-    FClickedX  := X;
-    FClickedY := Y;
-    FDblClickTimer.Interval := GetDoubleClickTime() + 10;
-    FDblClickTimer.Enabled := true;
-  end;
 end;
 
 procedure TJvTrayIcon.OnDblClickTimer(Sender: TObject); { Vlad S}
 begin
-    FDblClickTimer.Enabled := false;
-    // Double-clicking the right mouse button actually generates four messages:
-    // WM_RBUTTONDOWN, WM_RBUTTONUP, WM_RBUTTONDBLCLK, and WM_RBUTTONUP again
-    if (not FDblClicked) then
-        FOnClick(Self, FClickedButton, FClickedShift, FClickedX, FClickedY);
+  FDblClickTimer.Enabled := false;
+  // Double-clicking a mouse button actually generates four messages:
+  // WM_XBUTTONDOWN, WM_XBUTTONUP, WM_XBUTTONDBLCLK, and WM_XBUTTONUP again
+  if (not FDblClicked) then
+    DoClick(FClickedButton, FClickedShift, FClickedX, FClickedY);
 end;
 
 procedure TJvTrayIcon.DoDoubleClick(Button: TMouseButton;
@@ -764,8 +734,7 @@ begin
 
   if Assigned(FOnDblClick) then
     FOnDblClick(Self, Button, Shift, X, Y)
-  else
-  if Button = mbLeft then
+  else if Button = mbLeft then
   begin
     if FPopupMenu <> nil then
       for I := 0 to FPopupMenu.Items.Count - 1 do
@@ -785,6 +754,38 @@ begin
         Visibility := Visibility + [tvVisibleTaskBar];
     end;
   end;
+end;
+
+procedure TJvTrayIcon.DoClick(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  if Assigned(FOnClick) then
+    FOnClick(Self, Button, Shift, X, Y);
+  if (Button = mbLeft) then
+  begin
+    if (FDropDownMenu <> nil) then
+    begin
+      SetForegroundWindow(FHandle);
+      FDropDownMenu.Popup(X, Y);
+      PostMessage(FHandle, WM_NULL, 0, 0);
+    end;
+    if not ApplicationVisible then
+    begin
+      if tvRestoreClick in Visibility then
+        Visibility := Visibility + [tvVisibleTaskBar]
+    end
+    else
+    begin
+      if tvMinimizeClick in Visibility then
+        Visibility := Visibility - [tvVisibleTaskBar]
+    end;
+  end
+  else if (Button = mbRight) and (FPopupMenu <> nil) then
+  begin
+    SetForegroundWindow(FHandle);
+    FPopupMenu.Popup(X, Y);
+    PostMessage(FHandle, WM_NULL, 0, 0);
+  end
 end;
 
 procedure TJvTrayIcon.SetIconIndex(const Value: Integer);
@@ -837,14 +838,14 @@ function TJvTrayIcon.NotifyIcon(dwMessage: DWORD): boolean;
 begin
   Result := Shell_NotifyIcon(dwMessage, @FIconData);
 
-{  if FActive and (tvAutoHideIcon in Visibility) then
-  begin
-    if Application.MainForm.Visible then
-      Result := Shell_NotifyIcon(NIM_DELETE,@FIconData)
-    else
-      Result := Shell_NotifyIcon(NIM_ADD,@FIconData);
-  end;
-  }
+  {  if FActive and (tvAutoHideIcon in Visibility) then
+    begin
+      if Application.MainForm.Visible then
+        Result := Shell_NotifyIcon(NIM_DELETE,@FIconData)
+      else
+        Result := Shell_NotifyIcon(NIM_ADD,@FIconData);
+    end;
+    }
 end;
 
 procedure TJvTrayIcon.ActivePropertyChanged;
@@ -909,5 +910,6 @@ begin
       Icons := nil;
   end;
 end;
+
 end.
 
