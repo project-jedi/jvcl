@@ -116,6 +116,7 @@ TipsDemo.exe \
 SimpleTLTest1.exe \
 TransparentButtonDemo.exe \
 JvLogFileDemo.exe \
+JvTrayIconDemo.exe \
 #---------------------------------------------------------------------------------------------------
 
 AppDdeCmdExample.exe: AppDdeCmdExample\AppDdeCmdExample.dpr
@@ -575,6 +576,10 @@ TransparentButtonDemo.exe: TransBtn\TransparentButtonDemo.dpr
 
 JvLogFileDemo.exe: JvLogFile\JvLogFileDemo.dpr
   cd JvLogFile
+  $(DCC) $&.dpr
+  cd ..
+JvTrayIconDemo.exe: JvTrayIcon\JvTrayIconDemo.dpr
+  cd JvTrayIcon
   $(DCC) $&.dpr
   cd ..
 

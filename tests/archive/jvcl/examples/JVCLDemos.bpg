@@ -33,7 +33,7 @@ PROJECTS = AppDdeCmdExample.exe ArrowButtonDemo.exe BmpAnimDemo.exe \
   JvInterpreterEndUser.exe MDIapp.exe RANotepad.exe RegEditDemo.exe \
   RunDLL32Demo.exe DBEXPL32.exe Rxdemo.exe RxGIFAnm.exe ScrollWinDemo.exe \
   TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDemo.exe \
-  JvLogFileDemo.exe
+  JvLogFileDemo.exe JvTrayIconDemo.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -315,3 +315,6 @@ SimpleHIDWrite.exe: HID\ReadWriteDemo\SimpleHIDWrite.dpr
 JvLogFileDemo.exe: JvLogFile\JvLogFileDemo.dpr
   $(DCC)
   
+JvTrayIconDemo.exe: JvTrayIcon\JvTrayIconDemo.dpr
+  $(DCC)
+
