@@ -1,0 +1,2287 @@
+----------------------------------------------------------------------------------------------------
+@@JvEditor.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains the TJvEditor component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Andrei Prygounkov
+----------------------------------------------------------------------------------------------------
+@@ecBackspace
+Description
+  Write here a description
+ecBackspace = ecInsertPara + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecBackspaceWord
+Description
+  Write here a description
+ecBackspaceWord = ecIntern + 10 ;
+----------------------------------------------------------------------------------------------------
+@@ecBackTab
+Description
+  Write here a description
+ecBackTab = ecInsertPara + 5 ;
+----------------------------------------------------------------------------------------------------
+@@ecBeginCompound
+Description
+  Write here a description
+ecBeginCompound = ecUndo + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecBeginDoc
+Description
+  Write here a description
+ecBeginDoc = ecBeginLine + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecBeginLine
+Description
+  Write here a description
+ecBeginLine = ecSelNextPage + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecBeginRecord
+Description
+  Write here a description
+ecBeginRecord = ecRecordMacro + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecBeginUpdate
+Description
+  Write here a description
+ecBeginUpdate = ecUndo + 4 ;
+----------------------------------------------------------------------------------------------------
+@@ecChangeCase
+Description
+  Write here a description
+ecChangeCase = ecToUpperCase + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecChangeInsertMode
+Description
+  Write here a description
+ecChangeInsertMode = ecInsertPara + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ecCharFirst
+Description
+  Write here a description
+ecCharFirst = $00 ;
+----------------------------------------------------------------------------------------------------
+@@ecCharLast
+Description
+  Write here a description
+ecCharLast = $FF ;
+----------------------------------------------------------------------------------------------------
+@@ecClipboardCopy
+Description
+  Write here a description
+ecClipboardCopy = ecInsertPara + 11 ;
+----------------------------------------------------------------------------------------------------
+@@ecClipboardCut
+Description
+  Write here a description
+ecClipboardCut = ecClipboardCopy + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecClipboardPaste
+Description
+  Write here a description
+ecClipboardPaste = ecClipboardCopy + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecColumnBlock
+Description
+  Write here a description
+ecColumnBlock = ecCommandFirst + 102 ;
+----------------------------------------------------------------------------------------------------
+@@ecCommandFirst
+Description
+  Write here a description
+ecCommandFirst = $100 ;
+----------------------------------------------------------------------------------------------------
+@@ecCompletionIdentifiers
+Description
+  Write here a description
+ecCompletionIdentifiers = ecGotoBookmark9 + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecCompletionTemplates
+Description
+  Write here a description
+ecCompletionTemplates = ecCompletionIdentifiers + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecDelete
+Description
+  Write here a description
+ecDelete = ecInsertPara + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecDeleteLine
+Description
+  Write here a description
+ecDeleteLine = ecClipboardPaste + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecDeleteSelected
+Description
+  Write here a description
+ecDeleteSelected = ecInsertPara + 10 ;
+----------------------------------------------------------------------------------------------------
+@@ecDeleteWord
+Description
+  Write here a description
+ecDeleteWord = ecDeleteLine + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecDown
+Description
+  Write here a description
+ecDown = ecLeft + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ecEndCompound
+Description
+  Write here a description
+ecEndCompound = ecUndo + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ecEndDoc
+Description
+  Write here a description
+ecEndDoc = ecBeginLine + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ecEndLine
+Description
+  Write here a description
+ecEndLine = ecBeginLine + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecEndRecord
+Description
+  Write here a description
+ecEndRecord = ecRecordMacro + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ecEndUpdate
+Description
+  Write here a description
+ecEndUpdate = ecUndo + 5 ;
+----------------------------------------------------------------------------------------------------
+@@ecGotoBookmark0
+Description
+  Write here a description
+ecGotoBookmark0 = ecSetBookmark9 + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecGotoBookmark1
+Description
+  Write here a description
+ecGotoBookmark1 = ecGotoBookmark0 + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecGotoBookmark2
+Description
+  Write here a description
+ecGotoBookmark2 = ecGotoBookmark0 + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecGotoBookmark3
+Description
+  Write here a description
+ecGotoBookmark3 = ecGotoBookmark0 + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ecGotoBookmark4
+Description
+  Write here a description
+ecGotoBookmark4 = ecGotoBookmark0 + 4 ;
+----------------------------------------------------------------------------------------------------
+@@ecGotoBookmark5
+Description
+  Write here a description
+ecGotoBookmark5 = ecGotoBookmark0 + 5 ;
+----------------------------------------------------------------------------------------------------
+@@ecGotoBookmark6
+Description
+  Write here a description
+ecGotoBookmark6 = ecGotoBookmark0 + 6 ;
+----------------------------------------------------------------------------------------------------
+@@ecGotoBookmark7
+Description
+  Write here a description
+ecGotoBookmark7 = ecGotoBookmark0 + 7 ;
+----------------------------------------------------------------------------------------------------
+@@ecGotoBookmark8
+Description
+  Write here a description
+ecGotoBookmark8 = ecGotoBookmark0 + 8 ;
+----------------------------------------------------------------------------------------------------
+@@ecGotoBookmark9
+Description
+  Write here a description
+ecGotoBookmark9 = ecGotoBookmark0 + 9 ;
+----------------------------------------------------------------------------------------------------
+@@ecInclusiveBlock
+Description
+  Write here a description
+ecInclusiveBlock = ecCommandFirst + 100 ;
+----------------------------------------------------------------------------------------------------
+@@ecIndent
+Description
+  Write here a description
+ecIndent = ecInsertPara + 6 ;
+----------------------------------------------------------------------------------------------------
+@@ecInsertPara
+Description
+  Write here a description
+ecInsertPara = ecCommandFirst + 121 ;
+----------------------------------------------------------------------------------------------------
+@@ecIntern
+Description
+  Write here a description
+ecIntern = $1000 ;
+----------------------------------------------------------------------------------------------------
+@@ecLeft
+Description
+  Write here a description
+ecLeft = ecCommandFirst + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecLineBlock
+Description
+  Write here a description
+ecLineBlock = ecCommandFirst + 101 ;
+----------------------------------------------------------------------------------------------------
+@@ecNextPage
+Description
+  Write here a description
+ecNextPage = ecWindowTop + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ecNextWord
+Description
+  Write here a description
+ecNextWord = ecPrevWord + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecNonInclusiveBlock
+Description
+  Write here a description
+ecNonInclusiveBlock = ecCommandFirst + 103 ;
+----------------------------------------------------------------------------------------------------
+@@ecPlayMacro
+Description
+  Write here a description
+ecPlayMacro = ecRecordMacro + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecPrevPage
+Description
+  Write here a description
+ecPrevPage = ecWindowTop + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecPrevWord
+Description
+  Write here a description
+ecPrevWord = ecSelDown + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecRecordMacro
+Description
+  Write here a description
+ecRecordMacro = ecCompletionTemplates + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecRedo
+Description
+  Write here a description
+ecRedo = ecUndo + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecRight
+Description
+  Write here a description
+ecRight = ecLeft + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecScrollLineDown
+Description
+  Write here a description
+ecScrollLineDown = ecScrollLineUp + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecScrollLineUp
+Description
+  Write here a description
+ecScrollLineUp = ecSelAll + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelAll
+Description
+  Write here a description
+ecSelAll = ecBeginLine + 8 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelBeginDoc
+Description
+  Write here a description
+ecSelBeginDoc = ecBeginLine + 6 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelBeginLine
+Description
+  Write here a description
+ecSelBeginLine = ecBeginLine + 4 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelColumnDown
+Description
+  Write here a description
+ecSelColumnDown = ecSelColumnLeft + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelColumnLeft
+Description
+  Write here a description
+ecSelColumnLeft = ecIntern + 0 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelColumnRight
+Description
+  Write here a description
+ecSelColumnRight = ecSelColumnLeft + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelColumnUp
+Description
+  Write here a description
+ecSelColumnUp = ecSelColumnLeft + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelDown
+Description
+  Write here a description
+ecSelDown = ecSelLeft + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelEndDoc
+Description
+  Write here a description
+ecSelEndDoc = ecBeginLine + 7 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelEndLine
+Description
+  Write here a description
+ecSelEndLine = ecBeginLine + 5 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelLeft
+Description
+  Write here a description
+ecSelLeft = ecCommandFirst + 9 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelNextPage
+Description
+  Write here a description
+ecSelNextPage = ecWindowTop + 5 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelNextWord
+Description
+  Write here a description
+ecSelNextWord = ecPrevWord + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelPrevPage
+Description
+  Write here a description
+ecSelPrevPage = ecWindowTop + 4 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelPrevWord
+Description
+  Write here a description
+ecSelPrevWord = ecPrevWord + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelRight
+Description
+  Write here a description
+ecSelRight = ecSelLeft + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelUp
+Description
+  Write here a description
+ecSelUp = ecSelLeft + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecSelWord
+Description
+  Write here a description
+ecSelWord = ecPrevWord + 4 ;
+----------------------------------------------------------------------------------------------------
+@@ecSetBookmark0
+Description
+  Write here a description
+ecSetBookmark0 = ecEndUpdate + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecSetBookmark1
+Description
+  Write here a description
+ecSetBookmark1 = ecSetBookmark0 + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecSetBookmark2
+Description
+  Write here a description
+ecSetBookmark2 = ecSetBookmark0 + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecSetBookmark3
+Description
+  Write here a description
+ecSetBookmark3 = ecSetBookmark0 + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ecSetBookmark4
+Description
+  Write here a description
+ecSetBookmark4 = ecSetBookmark0 + 4 ;
+----------------------------------------------------------------------------------------------------
+@@ecSetBookmark5
+Description
+  Write here a description
+ecSetBookmark5 = ecSetBookmark0 + 5 ;
+----------------------------------------------------------------------------------------------------
+@@ecSetBookmark6
+Description
+  Write here a description
+ecSetBookmark6 = ecSetBookmark0 + 6 ;
+----------------------------------------------------------------------------------------------------
+@@ecSetBookmark7
+Description
+  Write here a description
+ecSetBookmark7 = ecSetBookmark0 + 7 ;
+----------------------------------------------------------------------------------------------------
+@@ecSetBookmark8
+Description
+  Write here a description
+ecSetBookmark8 = ecSetBookmark0 + 8 ;
+----------------------------------------------------------------------------------------------------
+@@ecSetBookmark9
+Description
+  Write here a description
+ecSetBookmark9 = ecSetBookmark0 + 9 ;
+----------------------------------------------------------------------------------------------------
+@@ecTab
+Description
+  Write here a description
+ecTab = ecInsertPara + 4 ;
+----------------------------------------------------------------------------------------------------
+@@ecToLowerCase
+Description
+  Write here a description
+ecToLowerCase = ecToUpperCase + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecToUpperCase
+Description
+  Write here a description
+ecToUpperCase = ecDeleteLine + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ecUndo
+Description
+  Write here a description
+ecUndo = ecChangeCase + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecUnindent
+Description
+  Write here a description
+ecUnindent = ecInsertPara + 7 ;
+----------------------------------------------------------------------------------------------------
+@@ecUp
+Description
+  Write here a description
+ecUp = ecLeft + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecUser
+Description
+  Write here a description
+ecUser = $8000 ;
+----------------------------------------------------------------------------------------------------
+@@ecWindowBottom
+Description
+  Write here a description
+ecWindowBottom = ecWindowTop + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ecWindowTop
+Description
+  Write here a description
+ecWindowTop = ecSelWord + 1 ;
+----------------------------------------------------------------------------------------------------
+@@EJvEditorError
+<TITLEIMG EJvEditorError>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@GutterRightMargin
+Description
+  Write here a description
+GutterRightMargin = 2 ;
+----------------------------------------------------------------------------------------------------
+@@Max_X
+Description
+  Write here a description
+Max_X = 1024 ;
+----------------------------------------------------------------------------------------------------
+@@Max_X_Scroll
+Description
+  Write here a description
+Max_X_Scroll = Max_X ;
+----------------------------------------------------------------------------------------------------
+@@PJvSelectionRec
+<TITLE PJvSelectionRec type>
+<COMBINE TJvSelectionRec>
+----------------------------------------------------------------------------------------------------
+@@sLineBreakLen
+Description
+  Write here a description
+sLineBreakLen = Length ( sLineBreak ) ;
+----------------------------------------------------------------------------------------------------
+@@TAdjustPersistentBlockMode
+<TITLE TAdjustPersistentBlockMode type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TAdjustPersistentBlockMode.amInsert
+  Description for amInsert
+@@TAdjustPersistentBlockMode.amDelete
+  Description for amDelete
+@@TAdjustPersistentBlockMode.amDeleteLine
+  Description for amDeleteLine
+@@TAdjustPersistentBlockMode.amLineConcat
+  Description for amLineConcat
+@@TAdjustPersistentBlockMode.amLineBreak
+  Description for amLineBreak
+----------------------------------------------------------------------------------------------------
+@@TBookMark
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TBookMark.X
+  Description for X
+@@TBookMark.Y
+  Description for Y
+@@TBookMark.Valid
+  Description for Valid
+----------------------------------------------------------------------------------------------------
+@@TBookMarkNum
+<TITLE TBookMarkNum type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = 0..9 ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TBookMarks
+<TITLE TBookMarks type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = array [ TBookMarkNum ] of TBookMark ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TCellRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TCellRect.Width
+  Description for Width
+@@TCellRect.Height
+  Description for Height
+----------------------------------------------------------------------------------------------------
+@@TCommand2Event
+<TITLE TCommand2Event type>
+  Sender  - Description for this parameter
+  Key1    - Description for this parameter
+  Shift1  - Description for this parameter
+  Key2    - Description for this parameter
+  Shift2  - Description for this parameter
+  Command - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TCompletionList
+<TITLE TCompletionList type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TCompletionList.cmIdentifiers
+  Description for cmIdentifiers
+@@TCompletionList.cmTemplates
+  Description for cmTemplates
+----------------------------------------------------------------------------------------------------
+@@TEditCommand
+<TITLE TEditCommand type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = Word ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion
+<TITLEIMG TJvCompletion>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.CaretChar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.CloseUp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Apply - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.CRLF
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.DoCompletion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AMode - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.DropDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AMode      - Description for this parameter
+  ShowAlways - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.DropDownCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.DropDownWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.Enabled
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.Identifiers
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.Interval
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.ItemHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.ItemIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.ListBoxStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.Mode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.SelectItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.Separator
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.Templates
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCompletion.Visible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95
+<TITLEIMG TJvControlScrollBar95>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.DoScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Msg - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Handle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Kind
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.LargeChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Max
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Min
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.OnScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Page
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Position
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.SetParams
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AMin      - Description for this parameter
+  AMax      - Description for this parameter
+  APosition - Description for this parameter
+  APage     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.SmallChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor
+<TITLEIMG TJvCustomEditor>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.AutoIndent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.BackSpaceUnindents
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.BeginCompound
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.BeginUpdate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.BlockOverwrite
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.BorderStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.CalcCellRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X - Description for this parameter
+  Y - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.CanCopy
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.CanCut
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.CanPaste
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.CaretFromPos
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Pos - Description for this parameter
+  X   - Description for this parameter
+  Y   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.CaretX
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.CaretY
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.CellRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.ClearSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.ClipboardCopy
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.ClipboardCut
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.ClipboardPaste
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.Cols
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.Command
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACommand - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.Completion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.CursorBeyondEOF
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.DeleteSelected
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.DoubleClickLine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.EndCompound
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.EndUpdate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.GetSelText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.GetText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Position - Description for this parameter
+  Buffer   - Description for this parameter
+  Count    - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.GetTextLen
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.GetWordOnCaret
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.GroupUndo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.Gutter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.GutterColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.GutterWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.HideCaret
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.IndentColumns
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X    - Description for this parameter
+  BegY - Description for this parameter
+  EndY - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.IndentLines
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnIndent - Description for this parameter
+  BegY     - Description for this parameter
+  EndY     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.IndentSelLines
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnIndent - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.InsertColumnText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X    - Description for this parameter
+  Y    - Description for this parameter
+  Text - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.InsertMode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.InsertText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Text - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.KeepTrailingBlanks
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.Keyboard
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.LastVisibleCol
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.LastVisibleRow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.LeftCol
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.Lines
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.MakeRowVisible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ARow - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.Modified
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnChangeStatus
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnCompletionApply
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnCompletionDrawItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnCompletionIdentifier
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnCompletionMeasureItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnCompletionTemplate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnDblClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnGetLineAttr
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnGutterClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnGutterDblClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnPaintGutter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnResize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.OnSelectionChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.PaintCaret
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  bShow - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.PersistentBlocks
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.PosFromCaret
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X - Description for this parameter
+  Y - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.PostCommand
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACommand - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.ReadOnly
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.Recording
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.ReplaceWord
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  NewString - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.ReplaceWord2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  NewString - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.RightMargin
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.RightMarginColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.RightMarginVisible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.Rows
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.ScrollBars
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SelBackColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SelBlockFormat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SelectAll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SelectRange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  BegX - Description for this parameter
+  BegY - Description for this parameter
+  EndX - Description for this parameter
+  EndY - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SelForeColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SelLength
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SelStart
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SelText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SetCaret
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X - Description for this parameter
+  Y - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SetLeftTop
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ALeftCol - Description for this parameter
+  ATopRow  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SetSelText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AValue - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.SmartTab
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.TabStops
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.TopRow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.UndoAfterSave
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.UndoBuffer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.UnIndentColumns
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X    - Description for this parameter
+  BegY - Description for this parameter
+  EndY - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.VisibleColCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditor.VisibleRowCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvEditKey
+<TITLEIMG TJvEditKey>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvEditKey.Create2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACommand - Description for this parameter
+  AKey1    - Description for this parameter
+  AShift1  - Description for this parameter
+  AKey2    - Description for this parameter
+  AShift2  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvEditor
+<TITLEIMG TJvEditor>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvEditorClient
+<TITLEIMG TJvEditorClient>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvEditorStrings
+<TITLEIMG TJvEditorStrings>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvEditorStrings.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvEditorStrings.DeleteColumnText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  BegX - Description for this parameter
+  BegY - Description for this parameter
+  EndX - Description for this parameter
+  EndY - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvEditorStrings.DeleteText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  BegX - Description for this parameter
+  BegY - Description for this parameter
+  EndX - Description for this parameter
+  EndY - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvEditorStrings.Insert
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+  S     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvEditorStrings.InsertColumnText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X    - Description for this parameter
+  Y    - Description for this parameter
+  Text - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvEditorStrings.InsertText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X    - Description for this parameter
+  Y    - Description for this parameter
+  Text - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvEditorStrings.Internal
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvGutter
+<TITLEIMG TJvGutter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvGutter.Invalidate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvGutter.Paint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard
+<TITLEIMG TJvKeyboard>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACommand - Description for this parameter
+  AKey1    - Description for this parameter
+  AShift1  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.Add2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACommand - Description for this parameter
+  AKey1    - Description for this parameter
+  AShift1  - Description for this parameter
+  AKey2    - Description for this parameter
+  AShift2  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.Add2Ctrl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACommand - Description for this parameter
+  AKey1    - Description for this parameter
+  AShift1  - Description for this parameter
+  AKey2    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.Command
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AKey   - Description for this parameter
+  AShift - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.Command2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AKey1   - Description for this parameter
+  AShift1 - Description for this parameter
+  AKey2   - Description for this parameter
+  AShift2 - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.OnCommand2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.SetDefLayout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSelectionRec
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TJvSelectionRec.Selected
+  Description for Selected
+@@TJvSelectionRec.SelBlockFormat
+  Description for SelBlockFormat
+@@TJvSelectionRec.SelBegX
+  Description for SelBegX
+@@TJvSelectionRec.SelBegY
+  Description for SelBegY
+@@TJvSelectionRec.SelEndX
+  Description for SelEndX
+@@TJvSelectionRec.SelEndY
+  Description for SelEndY
+@@TJvSelectionRec.SelStartX
+  Description for SelStartX
+@@TJvSelectionRec.SelStartY
+  Description for SelStartY
+@@TJvSelectionRec.SelLineOrgBegX
+  Description for SelLineOrgBegX
+@@TJvSelectionRec.SelLineOrgEndX
+  Description for SelLineOrgEndX
+----------------------------------------------------------------------------------------------------
+@@TLineAttr
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TLineAttr.FC
+  Description for FC
+@@TLineAttr.BC
+  Description for BC
+@@TLineAttr.Style
+  Description for Style
+----------------------------------------------------------------------------------------------------
+@@TLineAttrs
+<TITLE TLineAttrs type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = array [ 0.. Max_X ] of TLineAttr ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TMacro
+<TITLE TMacro type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = string ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TModifiedAction
+<TITLE TModifiedAction type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TModifiedAction.maAll
+  Description for maAll
+@@TModifiedAction.maInsert
+  Description for maInsert
+@@TModifiedAction.maDelete
+  Description for maDelete
+@@TModifiedAction.maInsertColumn
+  Description for maInsertColumn
+@@TModifiedAction.maDeleteColumn
+  Description for maDeleteColumn
+@@TModifiedAction.maReplace
+  Description for maReplace
+----------------------------------------------------------------------------------------------------
+@@TOnChangeStatus
+<TITLE TOnChangeStatus type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = TNotifyEvent ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TOnCompletion
+<TITLE TOnCompletion type>
+  Sender - Description for this parameter
+  Cancel - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TOnCompletionApply
+<TITLE TOnCompletionApply type>
+  Sender    - Description for this parameter
+  OldString - Description for this parameter
+  NewString - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TOnGetLineAttr
+<TITLE TOnGetLineAttr type>
+  Sender - Description for this parameter
+  Line   - Description for this parameter
+  Index  - Description for this parameter
+  Attrs  - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TOnGutterClick
+<TITLE TOnGutterClick type>
+  Sender - Description for this parameter
+  Line   - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TOnPaintGutter
+<TITLE TOnPaintGutter type>
+  Sender - Description for this parameter
+  Canvas - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TSelBlockFormat
+<TITLE TSelBlockFormat type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TSelBlockFormat.bfInclusive
+  Description for bfInclusive
+@@TSelBlockFormat.bfLine
+  Description for bfLine
+@@TSelBlockFormat.bfColumn
+  Description for bfColumn
+@@TSelBlockFormat.bfNonInclusive
+  Description for bfNonInclusive
+----------------------------------------------------------------------------------------------------
+@@TUndo
+<TITLEIMG TUndo>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TUndo.JvEditor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TUndo.Redo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TUndo.RestoreSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TUndo.SaveSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TUndo.Undo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TUndoBuffer
+<TITLEIMG TUndoBuffer>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TUndoBuffer.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AUndo - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TUndoBuffer.CanUndo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TUndoBuffer.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TUndoBuffer.Delete
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TUndoBuffer.Redo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TUndoBuffer.Undo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@twoKeyCommand
+Description
+  Write here a description
+twoKeyCommand = High ( Word ) ;
+----------------------------------------------------------------------------------------------------
+@@WM_EDITCOMMAND
+Description
+  Write here a description
+WM_EDITCOMMAND = CM_BASE + $101 ;

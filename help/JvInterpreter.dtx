@@ -1,0 +1,2336 @@
+----------------------------------------------------------------------------------------------------
+@@JvInterpreter.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains the TJvInterpreter component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Andrei Prygounkov
+----------------------------------------------------------------------------------------------------
+@@C2V
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  C - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@cJvInterpreterMaxArgs
+Description
+  Write here a description
+cJvInterpreterMaxArgs = 32 ;
+----------------------------------------------------------------------------------------------------
+@@cJvInterpreterMaxRecFields
+Description
+  Write here a description
+cJvInterpreterMaxRecFields = 32 ;
+----------------------------------------------------------------------------------------------------
+@@cJvInterpreterStackMax
+Description
+  Write here a description
+cJvInterpreterStackMax = 199 ;
+----------------------------------------------------------------------------------------------------
+@@ClearList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  List - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@Cmp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S1 - Description for this parameter
+  S2 - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@EJvInterpreterError
+<TITLEIMG EJvInterpreterError>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@EJvInterpreterError.Assign
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  E - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@EJvInterpreterError.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@EJvInterpreterError.ErrCode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@EJvInterpreterError.ErrLine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@EJvInterpreterError.ErrName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@EJvInterpreterError.ErrName2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@EJvInterpreterError.ErrPos
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@EJvInterpreterError.ErrUnitName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@EJvInterpreterError.Message1
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@GlobalJvInterpreterAdapter
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@ieAccessDenied
+Description
+  Write here a description
+ieAccessDenied = 7 ;
+----------------------------------------------------------------------------------------------------
+@@ieArrayBadDimension
+Description
+  Write here a description
+ieArrayBadDimension = ieArrayBase + 4 ;
+----------------------------------------------------------------------------------------------------
+@@ieArrayBadRange
+Description
+  Write here a description
+ieArrayBadRange = ieArrayBase + 5 ;
+----------------------------------------------------------------------------------------------------
+@@ieArrayBase
+Description
+  Write here a description
+ieArrayBase = 170 ;
+----------------------------------------------------------------------------------------------------
+@@ieArrayIndexOutOfBounds
+Description
+  Write here a description
+ieArrayIndexOutOfBounds = ieArrayBase + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ieArrayNotEnoughParams
+Description
+  Write here a description
+ieArrayNotEnoughParams = ieArrayBase + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ieArrayRequired
+Description
+  Write here a description
+ieArrayRequired = ieArrayBase + 6 ;
+----------------------------------------------------------------------------------------------------
+@@ieArrayTooManyParams
+Description
+  Write here a description
+ieArrayTooManyParams = ieArrayBase + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ieBadRemark
+Description
+  Write here a description
+ieBadRemark = ieSyntaxBase + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ieBooleanRequired
+Description
+  Write here a description
+ieBooleanRequired = ieSyntaxBase + 5 ;
+----------------------------------------------------------------------------------------------------
+@@ieClassRequired
+Description
+  Write here a description
+ieClassRequired = ieSyntaxBase + 6 ;
+----------------------------------------------------------------------------------------------------
+@@ieDfmNotFound
+Description
+  Write here a description
+ieDfmNotFound = ieRuntimeBase + 8 ;
+----------------------------------------------------------------------------------------------------
+@@ieDirectInvalidArgument
+Description
+  Write here a description
+ieDirectInvalidArgument = ieFunctionBase + 8 ;
+----------------------------------------------------------------------------------------------------
+@@ieDirectInvalidConvention
+Description
+  Write here a description
+ieDirectInvalidConvention = ieFunctionBase + 10 ;
+----------------------------------------------------------------------------------------------------
+@@ieDirectInvalidResult
+Description
+  Write here a description
+ieDirectInvalidResult = ieFunctionBase + 9 ;
+----------------------------------------------------------------------------------------------------
+@@ieDllErrorLoadLibrary
+Description
+  Write here a description
+ieDllErrorLoadLibrary = ieFunctionBase + 4 ;
+----------------------------------------------------------------------------------------------------
+@@ieDllFunctionNotFound
+Description
+  Write here a description
+ieDllFunctionNotFound = ieFunctionBase + 7 ;
+----------------------------------------------------------------------------------------------------
+@@ieDllInvalidArgument
+Description
+  Write here a description
+ieDllInvalidArgument = ieFunctionBase + 5 ;
+----------------------------------------------------------------------------------------------------
+@@ieDllInvalidResult
+Description
+  Write here a description
+ieDllInvalidResult = ieFunctionBase + 6 ;
+----------------------------------------------------------------------------------------------------
+@@ieErrorPos
+Description
+  Write here a description
+ieErrorPos = 5 ;
+----------------------------------------------------------------------------------------------------
+@@ieEventNotRegistered
+Description
+  Write here a description
+ieEventNotRegistered = ieRuntimeBase + 7 ;
+----------------------------------------------------------------------------------------------------
+@@ieExpected
+Description
+  Write here a description
+ieExpected = ieSyntaxBase + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ieExpressionStackOverflow
+Description
+  Write here a description
+ieExpressionStackOverflow = 8 ;
+----------------------------------------------------------------------------------------------------
+@@ieExternal
+Description
+  Write here a description
+ieExternal = 6 ;
+----------------------------------------------------------------------------------------------------
+@@ieFunctionBase
+Description
+  Write here a description
+ieFunctionBase = 180 ;
+----------------------------------------------------------------------------------------------------
+@@ieIdentifierExpected
+Description
+  Write here a description
+ieIdentifierExpected = ieSyntaxBase + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ieIdentifierRedeclared
+Description
+  Write here a description
+ieIdentifierRedeclared = ieSyntaxBase + 11 ;
+----------------------------------------------------------------------------------------------------
+@@ieIncompatibleTypes
+Description
+  Write here a description
+ieIncompatibleTypes = ieFunctionBase + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ieIntegerOverflow
+Description
+  Write here a description
+ieIntegerOverflow = ieRuntimeBase + 4 ;
+----------------------------------------------------------------------------------------------------
+@@ieIntegerRequired
+Description
+  Write here a description
+ieIntegerRequired = ieSyntaxBase + 8 ;
+----------------------------------------------------------------------------------------------------
+@@ieInternal
+Description
+  Write here a description
+ieInternal = 2 ;
+----------------------------------------------------------------------------------------------------
+@@ieMainUndefined
+Description
+  Write here a description
+ieMainUndefined = ieRuntimeBase + 5 ;
+----------------------------------------------------------------------------------------------------
+@@ieMissingOperator
+Description
+  Write here a description
+ieMissingOperator = ieSyntaxBase + 10 ;
+----------------------------------------------------------------------------------------------------
+@@ieNotAllowedBeforeElse
+Description
+  Write here a description
+ieNotAllowedBeforeElse = ieSyntaxBase + 7 ;
+----------------------------------------------------------------------------------------------------
+@@ieNotEnoughParams
+Description
+  Write here a description
+ieNotEnoughParams = ieFunctionBase + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ieOk
+Description
+  Write here a description
+ieOk = 0 ;
+----------------------------------------------------------------------------------------------------
+@@ieRaise
+Description
+  Write here a description
+ieRaise = 4 ;
+----------------------------------------------------------------------------------------------------
+@@ieRecordNotDefined
+Description
+  Write here a description
+ieRecordNotDefined = ieRegisterBase + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ieRegisterBase
+Description
+  Write here a description
+ieRegisterBase = 30 ;
+----------------------------------------------------------------------------------------------------
+@@ieROCRequired
+Description
+  Write here a description
+ieROCRequired = ieSyntaxBase + 9 ;
+----------------------------------------------------------------------------------------------------
+@@ieRuntimeBase
+Description
+  Write here a description
+ieRuntimeBase = 50 ;
+----------------------------------------------------------------------------------------------------
+@@ieStackOverFlow
+Description
+  Write here a description
+ieStackOverFlow = ieRuntimeBase + 2 ;
+----------------------------------------------------------------------------------------------------
+@@ieSyntaxBase
+Description
+  Write here a description
+ieSyntaxBase = 100 ;
+----------------------------------------------------------------------------------------------------
+@@ieTooManyParams
+Description
+  Write here a description
+ieTooManyParams = ieFunctionBase + 1 ;
+----------------------------------------------------------------------------------------------------
+@@ieTypeMistmatch
+Description
+  Write here a description
+ieTypeMistmatch = ieRuntimeBase + 3 ;
+----------------------------------------------------------------------------------------------------
+@@ieUnitNotFound
+Description
+  Write here a description
+ieUnitNotFound = ieRuntimeBase + 6 ;
+----------------------------------------------------------------------------------------------------
+@@ieUnknown
+Description
+  Write here a description
+ieUnknown = 1 ;
+----------------------------------------------------------------------------------------------------
+@@ieUnknownIdentifier
+Description
+  Write here a description
+ieUnknownIdentifier = ieSyntaxBase + 4 ;
+----------------------------------------------------------------------------------------------------
+@@ieUserBase
+Description
+  Write here a description
+ieUserBase = $300 ;
+----------------------------------------------------------------------------------------------------
+@@ieUserBreak
+Description
+  Write here a description
+ieUserBreak = 3 ;
+----------------------------------------------------------------------------------------------------
+@@irClass
+Description
+  Write here a description
+irClass = 305 ;
+----------------------------------------------------------------------------------------------------
+@@irDeclaration
+Description
+  Write here a description
+irDeclaration = 303 ;
+----------------------------------------------------------------------------------------------------
+@@irEndOfFile
+Description
+  Write here a description
+irEndOfFile = 304 ;
+----------------------------------------------------------------------------------------------------
+@@irExpression
+Description
+  Write here a description
+irExpression = 301 ;
+----------------------------------------------------------------------------------------------------
+@@irIdentifier
+Description
+  Write here a description
+irIdentifier = 302 ;
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterArrayElementDelete
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AArray   - Description for this parameter
+  AElement - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterArrayElementInsert
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AArray   - Description for this parameter
+  AElement - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterArrayHigh
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AArray - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterArrayLength
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AArray - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterArrayLow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AArray - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterArraySetLength
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AArray - Description for this parameter
+  ASize  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AErrCode - Description for this parameter
+  AErrPos  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterErrorN
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AErrCode - Description for this parameter
+  AErrPos  - Description for this parameter
+  AErrName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterErrorN2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AErrCode  - Description for this parameter
+  AErrPos   - Description for this parameter
+  AErrName1 - Description for this parameter
+  AErrName2 - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterVarAssignment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest   - Description for this parameter
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterVarAsType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  V       - Description for this parameter
+  VarType - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterVarCopy
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest   - Description for this parameter
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@JvInterpreterVarFree
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  V - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@noInstance
+Description
+  Write here a description
+noInstance = HINST ( 0 ) ;
+----------------------------------------------------------------------------------------------------
+@@NotImplemented
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Message - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@O2V
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  O - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@Offset
+Description
+  Write here a description
+Offset : 0 ;
+----------------------------------------------------------------------------------------------------
+@@P2R
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  P - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@P2V
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  P - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@PNameArray
+<TITLE PNameArray type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = ^ TNameArray ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@prArgsNoCheck
+Description
+  Write here a description
+prArgsNoCheck = -1 ;
+----------------------------------------------------------------------------------------------------
+@@PTypeArray
+<TITLE PTypeArray type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = ^ TTypeArray ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@PValueArray
+<TITLE PValueArray type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = ^ TValueArray ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@R2V
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ARecordType - Description for this parameter
+  ARec        - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@RFD
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Identifier - Description for this parameter
+  Offset     - Description for this parameter
+  Typ        - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@RFDNull
+Description
+  Write here a description
+RFDNull : TJvInterpreterRecField = ( Identifier :  ;
+----------------------------------------------------------------------------------------------------
+@@S2V
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  I - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TCallConvention
+<TITLE TCallConvention type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = set of ( ccFastCall , ccStdCall , ccCDecl , ccDynamic , ccVirtual , ccClass ) ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TJvArrayVariantType
+<TITLEIMG TJvArrayVariantType>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvClassVariantType
+<TITLEIMG TJvClassVariantType>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter
+<TITLEIMG TJvInterpreterAdapter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  AClassType - Description for this parameter
+  Identifier - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddClassEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  AClassType - Description for this parameter
+  Identifier - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddConst
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  Identifier - Description for this parameter
+  Value      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddConstEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AUnitName   - Description for this parameter
+  AIdentifier - Description for this parameter
+  AValue      - Description for this parameter
+  AData       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddDGet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType     - Description for this parameter
+  Identifier     - Description for this parameter
+  GetFunc        - Description for this parameter
+  ParamCount     - Description for this parameter
+  ParamTypes     - Description for this parameter
+  ResTyp         - Description for this parameter
+  CallConvention - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddDGetEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType     - Description for this parameter
+  Identifier     - Description for this parameter
+  GetFunc        - Description for this parameter
+  ParamCount     - Description for this parameter
+  ParamTypes     - Description for this parameter
+  ResTyp         - Description for this parameter
+  CallConvention - Description for this parameter
+  Data           - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddEvent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  AClassType - Description for this parameter
+  Identifier - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddEventEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AUnitName   - Description for this parameter
+  AClassType  - Description for this parameter
+  AIdentifier - Description for this parameter
+  AData       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddExtFun
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName    - Description for this parameter
+  Identifier  - Description for this parameter
+  DllInstance - Description for this parameter
+  DllName     - Description for this parameter
+  FunName     - Description for this parameter
+  FunIndex    - Description for this parameter
+  ParamCount  - Description for this parameter
+  ParamTypes  - Description for this parameter
+  ResTyp      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddExtFunEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AUnitName    - Description for this parameter
+  AIdentifier  - Description for this parameter
+  ADllInstance - Description for this parameter
+  ADllName     - Description for this parameter
+  AFunName     - Description for this parameter
+  AFunIndex    - Description for this parameter
+  AParamCount  - Description for this parameter
+  AParamTypes  - Description for this parameter
+  AResTyp      - Description for this parameter
+  AData        - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddExtUnit
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Identifier - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddExtUnitEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Identifier - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddFun
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  Identifier - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddFunEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  Identifier - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddGet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  Identifier - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddGetEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  Identifier - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddHandler
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  Identifier - Description for this parameter
+  EventClass - Description for this parameter
+  Code       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddHandlerEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AUnitName   - Description for this parameter
+  AIdentifier - Description for this parameter
+  AEventClass - Description for this parameter
+  ACode       - Description for this parameter
+  AData       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddIDGet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddIDGetEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddIDSet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  SetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddIDSetEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  SetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddIGet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  Identifier - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddIGetEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  Identifier - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddIntfGet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IID        - Description for this parameter
+  Identifier - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddIntfGetEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IID        - Description for this parameter
+  Identifier - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddISet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  Identifier - Description for this parameter
+  SetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddISetEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  Identifier - Description for this parameter
+  SetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddOnGet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Method - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddOnSet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Method - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddRec
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName    - Description for this parameter
+  Identifier  - Description for this parameter
+  RecordSize  - Description for this parameter
+  Fields      - Description for this parameter
+  CreateFunc  - Description for this parameter
+  DestroyFunc - Description for this parameter
+  CopyFunc    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddRecEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName    - Description for this parameter
+  Identifier  - Description for this parameter
+  RecordSize  - Description for this parameter
+  Fields      - Description for this parameter
+  CreateFunc  - Description for this parameter
+  DestroyFunc - Description for this parameter
+  CopyFunc    - Description for this parameter
+  Data        - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddRecGet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  RecordType - Description for this parameter
+  Identifier - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddRecGetEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  RecordType - Description for this parameter
+  Identifier - Description for this parameter
+  GetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  ResTyp     - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddRecSet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  RecordType - Description for this parameter
+  Identifier - Description for this parameter
+  SetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddRecSetEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  RecordType - Description for this parameter
+  Identifier - Description for this parameter
+  SetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddSet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  Identifier - Description for this parameter
+  SetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddSetEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClassType - Description for this parameter
+  Identifier - Description for this parameter
+  SetFunc    - Description for this parameter
+  ParamCount - Description for this parameter
+  ParamTypes - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddSrcFun
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName     - Description for this parameter
+  Identifier   - Description for this parameter
+  PosBeg       - Description for this parameter
+  PosEnd       - Description for this parameter
+  ParamCount   - Description for this parameter
+  ParamTypes   - Description for this parameter
+  ParamNames   - Description for this parameter
+  ResTyp       - Description for this parameter
+  AResDataType - Description for this parameter
+  Data         - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddSrcFunEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AUnitName    - Description for this parameter
+  AIdentifier  - Description for this parameter
+  APosBeg      - Description for this parameter
+  APosEnd      - Description for this parameter
+  AParamCount  - Description for this parameter
+  AParamTypes  - Description for this parameter
+  AParamNames  - Description for this parameter
+  AResTyp      - Description for this parameter
+  AResDataType - Description for this parameter
+  AData        - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddSrcUnit
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Identifier - Description for this parameter
+  Source     - Description for this parameter
+  UsesList   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddSrcUnitEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Identifier - Description for this parameter
+  Source     - Description for this parameter
+  UsesList   - Description for this parameter
+  Data       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.AddSrcVar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  Identifier - Description for this parameter
+  Typ        - Description for this parameter
+  VTyp       - Description for this parameter
+  Value      - Description for this parameter
+  DataType   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.Assign
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapter.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAddVarFunc
+<TITLE TJvInterpreterAddVarFunc type>
+  UnitName   - Description for this parameter
+  Identifier - Description for this parameter
+  Typ        - Description for this parameter
+  VTyp       - Description for this parameter
+  Value      - Description for this parameter
+  ADataType  - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterArgs
+<TITLEIMG TJvInterpreterArgs>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterArgs.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterArgs.Delete
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterArgs.OpenArray
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterEvent
+<TITLEIMG TJvInterpreterEvent>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterEvent.Args
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterEventClass
+<TITLEIMG TJvInterpreterEventClass>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression
+<TITLEIMG TJvInterpreterExpression>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.Adapter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.BaseErrLine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.CurPos
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.LastError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.OnGetValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.OnSetValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.Run
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.SharedAdapter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.Source
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.Token
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.TokenStr
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.TTyp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterExpression.VResult
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunction
+<TITLEIMG TJvInterpreterFunction>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunction.CurInstance
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunction.CurUnitName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunction.LocalVars
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunction.Run
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunDesc
+<TITLEIMG TJvInterpreterFunDesc>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunDesc.ClassIdentifier
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunDesc.Identifier
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunDesc.ParamCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunDesc.ParamNames
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunDesc.ParamTypes
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunDesc.PosBeg
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunDesc.PosEnd
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunDesc.ResDataType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunDesc.ResTyp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterFunDesc.UnitName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterIdentifier
+<TITLEIMG TJvInterpreterIdentifier>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterIdentifierList
+<TITLEIMG TJvInterpreterIdentifierList>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterIdentifierList.Duplicates
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterIdentifierList.Find
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Identifier - Description for this parameter
+  Index      - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterIdentifierList.IndexOf
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  Identifier - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterIdentifierList.Sort
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Compare - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterMethodList
+<TITLEIMG TJvInterpreterMethodList>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterMethodList.Sort
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Compare - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterProgram
+<TITLEIMG TJvInterpreterProgram>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterProgram.OnStatement
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterProgram.Pas
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterProgram.Run
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterUnit
+<TITLEIMG TJvInterpreterUnit>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterUnit.CallFunction
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FunName - Description for this parameter
+  Args    - Description for this parameter
+  Params  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterUnit.CallFunctionEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Instance - Description for this parameter
+  UnitName - Description for this parameter
+  FunName  - Description for this parameter
+  Args     - Description for this parameter
+  Params   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterUnit.Compile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterUnit.DeclareExternalFunction
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Declaration - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterUnit.FunctionExists
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName - Description for this parameter
+  FunName  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterUnit.OnGetUnitSource
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterUnit.Run
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterUnit.UnitSection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterVar
+<TITLEIMG TJvInterpreterVar>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterVarList
+<TITLEIMG TJvInterpreterVarList>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterVarList.AddVar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  Identifier - Description for this parameter
+  Typ        - Description for this parameter
+  VTyp       - Description for this parameter
+  Value      - Description for this parameter
+  DataType   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterVarList.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterVarList.DeleteVar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  Identifier - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterVarList.FindVar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnitName   - Description for this parameter
+  Identifier - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterVarList.GetValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Identifier - Description for this parameter
+  Value      - Description for this parameter
+  Args       - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterVarList.SetValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Identifier - Description for this parameter
+  Value      - Description for this parameter
+  Args       - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvObjectVariantType
+<TITLEIMG TJvObjectVariantType>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvPointerVariantType
+<TITLEIMG TJvPointerVariantType>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvRecordVariantType
+<TITLEIMG TJvRecordVariantType>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvSetVariantType
+<TITLEIMG TJvSetVariantType>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleVariantType
+<TITLEIMG TJvSimpleVariantType>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleVariantType.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  V - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleVariantType.Copy
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest     - Description for this parameter
+  Source   - Description for this parameter
+  Indirect - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TNameArray
+<TITLE TNameArray type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = array [ 0..c JvInterpreterMaxArgs ] of string ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TParserState
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TParserState.CurPos
+  Description for CurPos
+@@TParserState.Token
+  Description for Token
+@@TParserState.TTyp
+  Description for TTyp
+@@TParserState.PrevTTyp
+  Description for PrevTTyp
+@@TParserState.Backed
+  Description for Backed
+@@TParserState.AllowAssignment
+  Description for AllowAssignment
+----------------------------------------------------------------------------------------------------
+@@TSimpleEvent
+<TITLE TSimpleEvent type>
+  None.
+----------------------------------------------------------------------------------------------------
+@@TStackPtr
+<TITLE TStackPtr type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = -1..c JvInterpreterStackMax ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TTypeArray
+<TITLE TTypeArray type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = array [ 0..c JvInterpreterMaxArgs ] of Word ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TUnitSection
+<TITLE TUnitSection type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TUnitSection.usUnknown
+  Description for usUnknown
+@@TUnitSection.usInterface
+  Description for usInterface
+@@TUnitSection.usImplementation
+  Description for usImplementation
+@@TUnitSection.usInitialization
+  Description for usInitialization
+@@TUnitSection.usFinalization
+  Description for usFinalization
+----------------------------------------------------------------------------------------------------
+@@TValueArray
+<TITLE TValueArray type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = array [ 0..c JvInterpreterMaxArgs ] of Variant ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@Typ
+Description
+  Write here a description
+Typ : 0 ) ;
+----------------------------------------------------------------------------------------------------
+@@TypeName2VarTyp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  TypeName - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@V2C
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  V - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@V2O
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  V - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@V2OA
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  V        - Description for this parameter
+  OA       - Description for this parameter
+  OAValues - Description for this parameter
+  Size     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@V2P
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  V - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@V2R
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  V - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@V2S
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  V - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@varArray
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@varClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@varObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@varPointer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@varRecord
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@varSet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)

@@ -1,0 +1,845 @@
+----------------------------------------------------------------------------------------------------
+@@JvDBCtrl.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains the TJvDBCtrl component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+----------------------------------------------------------------------------------------------------
+@@DefJvGridOptions
+Description
+  Write here a description
+DefJvGridOptions = [ dgEditing , dgTitles , dgIndicator , dgColumnResize , dgColLines , dgRowLines , dgConfirmDelete , dgCancelOnExit ] ;
+----------------------------------------------------------------------------------------------------
+@@TCheckTitleBtnEvent
+<TITLE TCheckTitleBtnEvent type>
+  Sender  - Description for this parameter
+  ACol    - Description for this parameter
+  Field   - Description for this parameter
+  Enabled - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TDataValueEvent
+<TITLE TDataValueEvent type>
+  Sender  - Description for this parameter
+  DataSet - Description for this parameter
+  Value   - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TDBEditShowEvent
+<TITLE TDBEditShowEvent type>
+  Sender    - Description for this parameter
+  Field     - Description for this parameter
+  AllowEdit - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TDBLabelOptions
+<TITLE TDBLabelOptions type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TDBLabelOptions.doCaption
+  Description for doCaption
+@@TDBLabelOptions.doGlyph
+  Description for doGlyph
+@@TDBLabelOptions.doBoth
+  Description for doBoth
+----------------------------------------------------------------------------------------------------
+@@TDBLabelStyle
+<TITLE TDBLabelStyle type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TDBLabelStyle.lsState
+  Description for lsState
+@@TDBLabelStyle.lsRecordNo
+  Description for lsRecordNo
+@@TDBLabelStyle.lsRecordSize
+  Description for lsRecordSize
+----------------------------------------------------------------------------------------------------
+@@TDBStatusKind
+<TITLE TDBStatusKind type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = dsInactive . . dsCalcFields ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TGetBtnParamsEvent
+<TITLE TGetBtnParamsEvent type>
+  Sender     - Description for this parameter
+  Field      - Description for this parameter
+  AFont      - Description for this parameter
+  Background - Description for this parameter
+  SortMarker - Description for this parameter
+  IsDown     - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TGetCellParamsEvent
+<TITLE TGetCellParamsEvent type>
+  Sender     - Description for this parameter
+  Field      - Description for this parameter
+  AFont      - Description for this parameter
+  Background - Description for this parameter
+  Highlight  - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TGetCellPropsEvent
+<TITLE TGetCellPropsEvent type>
+  Sender     - Description for this parameter
+  Field      - Description for this parameter
+  AFont      - Description for this parameter
+  Background - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TGetStringEvent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)----------------------------------------------------------------------------------------------------
+@@TGlyphAlign
+<TITLE TGlyphAlign type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = glGlyphLeft . . glGlyphRight ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit
+<TITLEIMG TJvDBCalcEdit>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.DataField
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.DataSource
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.DefaultParams
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.EmptyIsNull
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.ExecuteAction
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.Field
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.ReadOnly
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.UpdateAction
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.UpdateFieldParams
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.UseRightToLeftAlignment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.ZeroEmpty
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit
+<TITLEIMG TJvDBComboEdit>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.DataField
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.DataSource
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.ExecuteAction
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.Field
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.ReadOnly
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.UpdateAction
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.UseRightToLeftAlignment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit
+<TITLEIMG TJvDBDateEdit>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.DataField
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.DataSource
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.ExecuteAction
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.Field
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.ReadOnly
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.UpdateAction
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.UpdateMask
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.UseRightToLeftAlignment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid
+<TITLEIMG TJvDBGrid>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.AutoAppend
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.ClearSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.DefaultDataCellDraw
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Rect  - Description for this parameter
+  Field - Description for this parameter
+  State - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.DefaultDrawing
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.DisableScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.EnableScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.FixedCols
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.GotoSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.IniStorage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.MouseToCell
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X    - Description for this parameter
+  Y    - Description for this parameter
+  ACol - Description for this parameter
+  ARow - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.MultiSelect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnCheckButton
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnEditChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnGetBtnParams
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnGetCellParams
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnGetCellProps
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnKeyPress
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnShowEditor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnTitleBtnClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnTopLeftChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.Options
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.RestoreLayout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IniFile - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.RestoreLayoutReg
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IniFile - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.RowsHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.SaveLayout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IniFile - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.SaveLayoutReg
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IniFile - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.ScrollDisabled
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.SelCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.SelectAll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.ShowGlyphs
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.TitleButtons
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.TitleOffset
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.ToggleRowSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.UnselectAll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel
+<TITLEIMG TJvDBStatusLabel>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.CalcRecCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.Captions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.DatasetName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.DatasetState
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.DataSource
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.EditColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.GlyphAlign
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.OnGetDataName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.OnGetRecNo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.OnGetRecordCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.ShowOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.Style
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.UpdateData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel.UpdateStatus
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TSortMarker
+<TITLE TSortMarker type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TSortMarker.smNone
+  Description for smNone
+@@TSortMarker.smDown
+  Description for smDown
+@@TSortMarker.smUp
+  Description for smUp
+----------------------------------------------------------------------------------------------------
+@@TTitleClickEvent
+<TITLE TTitleClickEvent type>
+  Sender - Description for this parameter
+  ACol   - Description for this parameter
+  Field  - Description for this parameter

@@ -1,0 +1,1230 @@
+----------------------------------------------------------------------------------------------------
+@@JvSpeedbar.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains the TJvSpeedbar component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+----------------------------------------------------------------------------------------------------
+@@DefButtonHeight
+Description
+  Write here a description
+DefButtonHeight = 23 ;
+----------------------------------------------------------------------------------------------------
+@@DefButtonWidth
+Description
+  Write here a description
+DefButtonWidth = 24 ;
+----------------------------------------------------------------------------------------------------
+@@DrawCellButton
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Grid         - Description for this parameter
+  R            - Description for this parameter
+  Item         - Description for this parameter
+  Image        - Description for this parameter
+  ARightToLeft - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@EJvSpeedbarError
+<TITLEIMG EJvSpeedbarError>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@FindSpeedBar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Pos - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@NewSpeedItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AOwner    - Description for this parameter
+  ASpeedbar - Description for this parameter
+  Section   - Description for this parameter
+  AName     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@NewSpeedSection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ASpeedbar - Description for this parameter
+  ACaption  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@SBR_BTNSELECT
+Description
+  Write here a description
+SBR_BTNSELECT = 2 ;
+----------------------------------------------------------------------------------------------------
+@@SBR_BTNSIZECHANGED
+Description
+  Write here a description
+SBR_BTNSIZECHANGED = 3 ;
+----------------------------------------------------------------------------------------------------
+@@SBR_CHANGED
+Description
+  Write here a description
+SBR_CHANGED = 0 ;
+----------------------------------------------------------------------------------------------------
+@@SBR_DESTROYED
+Description
+  Write here a description
+SBR_DESTROYED = 1 ;
+----------------------------------------------------------------------------------------------------
+@@TApplyAlignEvent
+<TITLE TApplyAlignEvent type>
+  Sender - Description for this parameter
+  Align  - Description for this parameter
+  Apply  - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TBarOrientation
+<TITLE TBarOrientation type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TBarOrientation.boHorizontal
+  Description for boHorizontal
+@@TBarOrientation.boVertical
+  Description for boVertical
+----------------------------------------------------------------------------------------------------
+@@TBarPosition
+<TITLE TBarPosition type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TBarPosition.bpAuto
+  Description for bpAuto
+@@TBarPosition.bpCustom
+  Description for bpCustom
+----------------------------------------------------------------------------------------------------
+@@TBoundLine
+<TITLE TBoundLine type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TBoundLine.blTop
+  Description for blTop
+@@TBoundLine.blBottom
+  Description for blBottom
+@@TBoundLine.blLeft
+  Description for blLeft
+@@TBoundLine.blRight
+  Description for blRight
+----------------------------------------------------------------------------------------------------
+@@TBoundLines
+<TITLE TBoundLines type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = set of TBoundLine ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TForEachItem
+<TITLE TForEachItem type>
+  Item - Description for this parameter
+  Data - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl
+<TITLEIMG TJvBtnControl>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.Activate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Rect - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.Alignment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.AssignSpeedItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.Glyph
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.ImageIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.Images
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.Layout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.Margin
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.NumGlyphs
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.ReleaseHandle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.Spacing
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvBtnControl.WordWrap
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar
+<TITLEIMG TJvSpeedBar>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.AcceptDropItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item - Description for this parameter
+  X    - Description for this parameter
+  Y    - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.AddItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Section - Description for this parameter
+  Item    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.AddSection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACaption - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.Align
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.BoundLines
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.BtnHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.BtnOffsetHorz
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.BtnOffsetVert
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.BtnWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.Customize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HelpCtx - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.DeleteSection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Section - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.EditMode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.FindItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item    - Description for this parameter
+  Section - Description for this parameter
+  Index   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.GetEditing
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.Images
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.IniStorage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Section - Description for this parameter
+  Index   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.ItemsCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Section - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.NewItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AOwner  - Description for this parameter
+  Section - Description for this parameter
+  AName   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.OnAddItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.OnApplyAlign
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.OnCustomize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.OnPosChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.OnVisibleChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.Options
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.Orientation
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.Position
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.RemoveItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.RemoveSection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Section - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.RestoreLayout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IniFile - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.RestoreLayoutReg
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IniFile - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.SaveLayout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IniFile - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.SaveLayoutReg
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IniFile - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.ScaleFlags
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.SearchItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ItemName - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.SearchSection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACaption - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.SectionCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.Sections
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.SetEditing
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Win - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.SetFontDefault
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.Version
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBar.Wallpaper
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarOption
+<TITLE TJvSpeedBarOption type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TJvSpeedBarOption.sbAllowDrag
+  Description for sbAllowDrag
+@@TJvSpeedBarOption.sbAllowResize
+  Description for sbAllowResize
+@@TJvSpeedBarOption.sbFlatBtns
+  Description for sbFlatBtns
+@@TJvSpeedBarOption.sbGrayedBtns
+  Description for sbGrayedBtns
+@@TJvSpeedBarOption.sbTransparentBtns
+  Description for sbTransparentBtns
+@@TJvSpeedBarOption.sbStretchBitmap
+  Description for sbStretchBitmap
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarOptions
+<TITLE TJvSpeedBarOptions type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = set of TJvSpeedBarOption ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarSection
+<TITLEIMG TJvSpeedBarSection>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarSection.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarSection.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarSection.Count
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarSection.GetParentComponent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarSection.HasParent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarSection.Index
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarSection.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarSection.List
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarSection.RemoveItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedBarSection.SpeedBar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem
+<TITLEIMG TJvSpeedItem>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Action
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.AllowAllUp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.AllowTimer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.ASection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.BtnCaption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Button
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.ButtonClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.CheckBtnMenuDropDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Click
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Cursor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Down
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.DropDownMenu
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Enabled
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Font
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.GetParentComponent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Glyph
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.GroupIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.HasParent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Hint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.ImageIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.InvalidateItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Layout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Left
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Margin
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.MarkDropDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.NumGlyphs
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.OnClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.OnDblClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.OnMouseDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.OnMouseEnter
+Summary
+  Occurs when the mouse pointer moves over the <xxx>.
+Description
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  <xxx>.
+See Also
+  HotTrack, OnMouseLeave
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the <xxx>.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  <xxx>. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
+See Also
+  HotTrack, OnMouseEnter
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.OnMouseMove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.OnMouseUp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.ParentFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.ParentShowHint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.SetParentComponent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.ShowHint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Spacing
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.SpeedBar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Stored
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Tag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Top
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.UpdateSection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.Visible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvSpeedItem.WordWrap
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TSbScaleFlags
+<TITLE TSbScaleFlags type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = set of ( sfOffsetX , sfOffsetY , sfBtnSizeX , sfBtnSizeY ) ; - for reference)

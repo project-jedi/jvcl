@@ -1,0 +1,1293 @@
+----------------------------------------------------------------------------------------------------
+@@JvHidControllerClass.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains the TJvHidControllerClass component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Robert Marquardt
+----------------------------------------------------------------------------------------------------
+@@cHidControllerClassVersion
+Description
+  Write here a description
+cHidControllerClassVersion = 1.0.10 ;
+----------------------------------------------------------------------------------------------------
+@@cHidKeyboardClass
+Description
+  Write here a description
+cHidKeyboardClass = Keyboard ;
+----------------------------------------------------------------------------------------------------
+@@cHidMouseClass
+Description
+  Write here a description
+cHidMouseClass = Mouse ;
+----------------------------------------------------------------------------------------------------
+@@cHidNoClass
+Description
+  Write here a description
+cHidNoClass = HIDClass ;
+----------------------------------------------------------------------------------------------------
+@@HidCheck
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  RetVal - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@HidCheck
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  RetVal - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@HidError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  RetVal - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@HidErrorString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  RetVal - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice
+<TITLEIMG TJvHidDevice>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.Attributes
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.CancelIO
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Mode - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.Caps
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.CloseFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.CloseFileEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Mode - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.Configuration
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.DeviceIoControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IoControlCode - Description for this parameter
+  InBuffer      - Description for this parameter
+  InSize        - Description for this parameter
+  OutBuffer     - Description for this parameter
+  OutSize       - Description for this parameter
+  BytesReturned - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.DeviceStrings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.DeviceStringsUnicode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.FlushQueue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetButtonCaps
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ButtonCaps - Description for this parameter
+  Count      - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetButtons
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageList    - Description for this parameter
+  UsageLength  - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetButtonsEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageList    - Description for this parameter
+  UsageLength  - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DataList     - Description for this parameter
+  DataLength   - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetFeature
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Report - Description for this parameter
+  Size   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetScaledUsageValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageValue   - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetSpecificButtonCaps
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ButtonCaps - Description for this parameter
+  Count      - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetSpecificValueCaps
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ValueCaps - Description for this parameter
+  Count     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetUsages
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageList    - Description for this parameter
+  UsageLength  - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetUsagesEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageList    - Description for this parameter
+  UsageLength  - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetUsageValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageValue   - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetUsageValueArray
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageValue           - Description for this parameter
+  UsageValueByteLength - Description for this parameter
+  Report               - Description for this parameter
+  ReportLength         - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.GetValueCaps
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ValueCaps - Description for this parameter
+  Count     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.HasReadWriteAccess
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.HidFileHandle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.HidOverlappedRead
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.HidOverlappedReadResult
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.HidOverlappedWrite
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.HidOverlappedWriteResult
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.IsCheckedOut
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.IsPluggedIn
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.LanguageStrings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.LinkCollectionNodes
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.LinkCollectionParam
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.MaxButtonListLength
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.MaxDataListLength
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.MaxUsageListLength
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.NumInputBuffers
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.NumOverlappedBuffers
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.OnUnplug
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.OpenFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.OpenFileEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Mode - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.PhysicalDescriptor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.PnPInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.PreparsedData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.ProductName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.ReadFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Report    - Description for this parameter
+  ToRead    - Description for this parameter
+  BytesRead - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.ReadFileEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Report   - Description for this parameter
+  ToRead   - Description for this parameter
+  CallBack - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.ReportTypeParam
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.SerialNumber
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.SetButtons
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageList    - Description for this parameter
+  UsageLength  - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.SetData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DataList     - Description for this parameter
+  DataLength   - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.SetFeature
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Report - Description for this parameter
+  Size   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.SetScaledUsageValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageValue   - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.SetUsages
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageList    - Description for this parameter
+  UsageLength  - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.SetUsageValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageValue   - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.SetUsageValueArray
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageValue           - Description for this parameter
+  UsageValueByteLength - Description for this parameter
+  Report               - Description for this parameter
+  ReportLength         - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.UnsetButtons
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageList    - Description for this parameter
+  UsageLength  - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.UnsetUsages
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UsageList    - Description for this parameter
+  UsageLength  - Description for this parameter
+  Report       - Description for this parameter
+  ReportLength - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.UsagePageParam
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.UsageParam
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.VendorName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.WriteFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Report       - Description for this parameter
+  ToWrite      - Description for this parameter
+  BytesWritten - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDevice.WriteFileEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Report   - Description for this parameter
+  ToWrite  - Description for this parameter
+  CallBack - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController
+<TITLEIMG TJvHidDeviceController>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.CheckIn
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HidDev - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.CheckOut
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HidDev - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.CheckOutByClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HidDev    - Description for this parameter
+  ClassName - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.CheckOutByID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HidDev - Description for this parameter
+  Vid    - Description for this parameter
+  Pid    - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.CheckOutByIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HidDev - Description for this parameter
+  Idx    - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.CheckOutByProductName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HidDev      - Description for this parameter
+  ProductName - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.CheckOutByVendorName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HidDev     - Description for this parameter
+  VendorName - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.CountByClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ClassName - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.CountByID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Vid - Description for this parameter
+  Pid - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.CountByProductName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ProductName - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.CountByVendorName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  VendorName - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.DeviceChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.Enumerate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.HidGuid
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.HidVersion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  None.
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.NumCheckedInDevices
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.NumCheckedOutDevices
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.NumUnpluggedDevices
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.OnDeviceChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.OnDeviceUnplug
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidDeviceController.OnEnumerate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidEnumerateEvent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HidDev - Description for this parameter
+  Idx    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)----------------------------------------------------------------------------------------------------
+@@TJvHidOpenExMode
+<TITLE TJvHidOpenExMode type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TJvHidOpenExMode.omhRead
+  Description for omhRead
+@@TJvHidOpenExMode.omhWrite
+  Description for omhWrite
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo
+<TITLEIMG TJvHidPnPInfo>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.Address
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.BusNumber
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.BusType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.Capabilities
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.Characteristics
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.ClassDescr
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.ClassGUID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.CompatibleIDs
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.ConfigFlags
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.DeviceDescr
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.DeviceID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.DevicePath
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.DevType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.Driver
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.EnumeratorName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.Exclusive
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.FriendlyName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.HardwareID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.LegacyBusType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.LocationInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.LowerFilters
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.Mfg
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.PhysDevObjName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.Security
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.Service
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.UINumber
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.UINumberFormat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidPnPInfo.UpperFilters
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+----------------------------------------------------------------------------------------------------
+@@TJvHidUnplugEvent
+<TITLE TJvHidUnplugEvent type>
+  HidDev - Description for this parameter
+----------------------------------------------------------------------------------------------------
+@@TJvPhysicalDescriptor
+<TITLE TJvPhysicalDescriptor type>
+Description
+  Write here a description
+  No desciption is needed for already described items such as sets,
+  pointers to records etc.
+(Value = array of WORD ; - for reference)
