@@ -92,7 +92,7 @@ function IsKeyword(s1: PChar): Boolean;
 function ValidVarReference(s1: PChar): Boolean;
 function GetParenthesis(s1, s2: PChar): Boolean;
 procedure GetVarReference(s1, s2, sidx: PChar);
-procedure PcharEatWs(s1: PChar);
+procedure PcharEatWhiteChars(s1: PChar);
 
   { Debugging functions related to GetToken function. }
 function GetTokenCount: Integer;
@@ -375,23 +375,23 @@ begin
   w := 0;
 
   { Empty in, Empty Out }
-  if (strlen(s1) = 0) then 
+  if (strlen(s1) = 0) then
   begin
     s2[0] := Chr(0);
   end;
-     
+
   InQuotes := False;
 
   { skip leading space }
   while (s1[x] = ' ') or (s1[x] = Chr(9)) do
     Inc(x);
 
-  while True do 
+  while True do
   begin
-    if EndChar(s1[x]) and (not InQuotes) then 
+    if EndChar(s1[x]) and (not InQuotes) then
     begin
       { return punctuation one symbol at a time }
-      if (w < 1) then 
+      if (w < 1) then
       begin
         s2[w] := s1[x];
         Inc(w);
@@ -407,32 +407,32 @@ begin
     { Break if space found and not in quotes }
     if (s1[x] = ' ') and (not InQuotes) then
       Break
-    else 
+    else
     begin
       s2[w] := s1[x];
       Inc(w);
     end;
-   
+
     Inc(x);
   end;
   // s2[x] := Chr(0);
 
   { detect not-equal, less-than-or-equal and greater-than-or-equal operators }
-  if (w = 1) then 
+  if (w = 1) then
   begin
-    if (s2[0] = '<') and (s1[x] = '>') then 
+    if (s2[0] = '<') and (s1[x] = '>') then
     begin
       s2[w] := '>';
       Inc(x);
       Inc(w);   // char literal
-    end 
-    else if (s2[0] = '<') and (s1[x] = '=') then 
+    end
+    else if (s2[0] = '<') and (s1[x] = '=') then
     begin
       s2[w] := '=';
       Inc(x);
       Inc(w);
-    end 
-    else if (s2[0] = '>') and (s1[x] = '=') then 
+    end
+    else if (s2[0] = '>') and (s1[x] = '=') then
     begin
       s2[w] := '=';
       Inc(x);
@@ -456,18 +456,18 @@ function StrEatWhiteSpace(s: String): String;
 var
   c: array [0..1024] of Char;
 begin
-  if Length(s) > 1024 then 
+  if Length(s) > 1024 then
   begin
     Result := s;
     Exit;
   end;
   StrCopy(c, PChar(s));
-  PcharEatWs(c);
+  PcharEatWhiteChars(c);
   Result := String(c);
 end;
 
 { strip whitespace from pchar - space or tab }
-procedure PcharEatWs(s1: PChar);
+procedure PcharEatWhiteChars(s1: PChar);
 var
   T, U, L: Integer;
 begin
@@ -545,8 +545,8 @@ var
 begin
   GetToken(s1, s2);
   sidx[0] := Chr(0);
-  PCharEatWs(s1);
-  if (s1[0] = '[') then 
+  PcharEatWhiteChars(s1);
+  if (s1[0] = '[') then
   begin
     brackets := 0;
     repeat
@@ -562,7 +562,7 @@ begin
     until brackets <= 0;
 
     { Remove outermost brackets }
-    StrLCopy(sidx, sidx + 1,strlen(sidx) - 2);
+    StrLCopy(sidx, sidx + 1, strlen(sidx) - 2);
   end;
 end;
 
