@@ -478,19 +478,23 @@ type
   published
     property Color;
     property Caption: TCaption read GetCaption write SetCaption;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
+    property OnStartDock;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnUnDock;
+    property OnEndDock;
+    {$ENDIF VCL}
     property DragMode;
     property Iconic: Boolean read GetIconic write SetIconic default False;
     property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
     property Hint: string read GetHint write SetHint;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnContextPopup;
-    property OnDockDrop;
-    property OnDockOver;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -507,9 +511,7 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnShow;
-    property OnStartDock;
     property OnStartDrag;
-    property OnUnDock;
   end;
 
   TJvNavPaneToolPanel = class;
