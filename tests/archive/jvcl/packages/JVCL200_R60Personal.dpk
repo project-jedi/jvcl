@@ -32,7 +32,8 @@ requires
   rtl,
   vclx,
   vcljpg,
-  VclSmp;
+  VclSmp,
+  djcl60;
 
 contains
   JvAddPrinter in '..\source\JvAddPrinter.pas',
