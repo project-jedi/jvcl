@@ -29,51 +29,21 @@ unit JvExButtons;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, Buttons, StdCtrls,
+  Windows, Messages, Graphics, Controls, Forms, Buttons, StdCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QButtons, QStdCtrls,
+  Qt, QGraphics, QControls, QForms, QButtons, QStdCtrls,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvExControls;
 
 type
-  IJvSpeedButtonEvents = interface(IJvControlEvents)
-    ['{3EEBF34C-1B91-49C4-81DF-7DDF2C247698}']
-    procedure ButtonPressed(Sender: TSpeedButton; GroupIndex: Integer);
-  end;
-
-  JV_CONTROL_EVENTS_BEGIN1(SpeedButton, IJvSpeedButtonEvents)
-  protected
-   // IJvSpeedButtonEvents
-    procedure ButtonPressed(Sender: TSpeedButton; GroupIndex: Integer); dynamic;
-  JV_CONTROL_EVENTS_END
-
+  JV_CONTROL_EVENTS(SpeedButton)
   JV_WINCONTROL_EVENTS(BitBtn)
 
 implementation
 
-JV_CONTROL_EVENTS_IMPLX(SpeedButton)
-
-{$IFDEF VCL}
-procedure TJvExSpeedButton.ButtonPressed(Sender: TSpeedButton; GroupIndex: Integer);
-begin
-  InheritMsg(Self, CM_BUTTONPRESSED, GroupIndex, Integer(Sender));
-end;
-
-procedure TJvExSpeedButton.Dispatch(var Msg);
-begin
-  if not DispatchMsg(Self, Msg) then
-    case TMessage(Msg).Msg of
-      CM_BUTTONPRESSED:
-        with TMessage(Msg) do
-          ButtonPressed(TSpeedButton(LParam), WParam);
-    else
-      inherited Dispatch(Msg);
-    end;
-end;
-{$ENDIF VCL}
-
+JV_CONTROL_EVENTS_IMPL(SpeedButton)
 JV_WINCONTROL_EVENTS_IMPL(BitBtn)
 
 end.

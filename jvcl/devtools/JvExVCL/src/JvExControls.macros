@@ -1,19 +1,28 @@
+{$DEFINE EMPTYLINE}
+
+// ****************** Control **********************
 (*$DEFINE JV_CONTROL_EVENTS_CLASS(ClassName)
+  EMPTYLINE
   TJvEx##ClassName = class(T##ClassName, IJvControlEvents)
 *)
 (*$DEFINE JV_CONTROL_EVENTS_CLASS1(ClassName, Intf1)
+  EMPTYLINE
   TJvEx##ClassName = class(T##ClassName, Intf1, IJvControlEvents)
 *)
 (*$DEFINE JV_CONTROL_EVENTS_CLASS2(ClassName, Intf2, Intf1)
+  EMPTYLINE
   TJvEx##ClassName = class(T##ClassName, Intf2, Intf1, IJvControlEvents)
 *)
 (*$DEFINE JV_CONTROL_EVENTS_CLASS3(ClassName, Intf3, Intf2, Intf1)
+  EMPTYLINE
   TJvEx##ClassName = class(T##ClassName, Intf3, Intf2, Intf1, IJvControlEvents)
 *)
 (*$DEFINE JV_CONTROL_EVENTS_CLASS4(ClassName, Intf4, Intf3, Intf2, Intf1)
+  EMPTYLINE
   TJvEx##ClassName = class(T##ClassName, Intf4, Intf3, Intf2, Intf1, IJvControlEvents)
 *)
 
+// ****************** Win Control **********************
 (*$DEFINE JV_WINCONTROL_EVENTS_CLASS(ClassName)
   JV_CONTROL_EVENTS_CLASS1(ClassName, IJvWinControlEvents)
 *)
@@ -27,10 +36,25 @@
   JV_CONTROL_EVENTS_CLASS4(ClassName, Intf3, Intf2, Intf1, IJvWinControlEvents)
 *)
 
+// ****************** Custom Control **********************
+(*$DEFINE JV_CUSTOMCONTROL_EVENTS_CLASS(ClassName)
+  JV_CONTROL_EVENTS_CLASS1(ClassName, IJvWinControlEvents)
+*)
+(*$DEFINE JV_CUSTOMCONTROL_EVENTS_CLASS1(ClassName, Intf1)
+  JV_CONTROL_EVENTS_CLASS2(ClassName, Intf1, IJvWinControlEvents)
+*)
+(*$DEFINE JV_CUSTOMCONTROL_EVENTS_CLASS2(ClassName, Intf2, Intf1)
+  JV_CONTROL_EVENTS_CLASS3(ClassName, Intf2, Intf1, IJvWinControlEvents)
+*)
+(*$DEFINE JV_CUSTOMCONTROL_EVENTS_CLASS3(ClassName, Intf3, Intf2, Intf1)
+  JV_CONTROL_EVENTS_CLASS4(ClassName, Intf3, Intf2, Intf1, IJvWinControlEvents)
+*)
 
+
+// ****************** Control **********************
 (*$DEFINE JV_CONTROL_EVENTS_DECL
   protected
-   // TControl
+  { IJvControlEvents }
     procedure VisibleChanged; dynamic;
     procedure EnabledChanged; dynamic;
     procedure TextChanged; dynamic;
@@ -45,11 +69,16 @@
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
+  {$IFNDEF HASAUTOSIZE}
+  {$IFNDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); virtual;
+  {$ENDIF !COMPILER6_UP}
+  {$ENDIF !HASAUTOSIZE}
 *)
 
+// ****************** Win Control **********************
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL
-  protected
-   // TWinControl
+  { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -57,7 +86,7 @@
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
 *)
 
-
+// ****************** Control **********************
 (*$DEFINE JV_CONTROL_EVENTS_BEGIN(ClassName)
   JV_CONTROL_EVENTS_CLASS(ClassName)
   {$IFDEF VCL}
@@ -82,6 +111,7 @@
   JV_CONTROL_EVENTS_DECL
 *)
 
+// ****************** Win Control **********************
 (*$DEFINE JV_WINCONTROL_EVENTS_BEGIN(ClassName)
   JV_CONTROL_EVENTS_BEGIN1(ClassName, IJvWinControlEvents)
   JV_WINCONTROL_EVENTS_DECL
@@ -108,6 +138,10 @@
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+    {$IFDEF REINTRODUCE_HITTEST}
+  protected
+    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
+    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -122,6 +156,43 @@
   end;
 *)
 
+(*$DEFINE JV_WINCONTROL_EVENTS_END
+  public
+    procedure Dispatch(var Msg); override;
+  private
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+  protected
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+    {$IFDEF REINTRODUCE_HITTEST}
+  protected
+    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
+    {$ENDIF REINTRODUCE_HITTEST}
+  private
+    FCanvas: TCanvas;
+   {$IF not declared(PatchedVCLX)}
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+  protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+   {$IFEND}
+  protected
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    procedure Paint; virtual;
+    property Canvas: TCanvas read FCanvas;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  {$ENDIF VisualCLX}
+  end;
+*)
+
 (*$DEFINE JV_CONTROL_EVENTS(ClassName)
   JV_CONTROL_EVENTS_BEGIN(ClassName)
   JV_CONTROL_EVENTS_END
@@ -129,13 +200,17 @@
 
 (*$DEFINE JV_WINCONTROL_EVENTS(ClassName)
   JV_WINCONTROL_EVENTS_BEGIN(ClassName)
+  JV_WINCONTROL_EVENTS_END
+*)
+
+(*$DEFINE JV_CUSTOMCONTROL_EVENTS(ClassName)
+  JV_WINCONTROL_EVENTS_BEGIN(ClassName)
   JV_CONTROL_EVENTS_END
 *)
 
 (*$DEFINE JV_CONTROL_EVENTS_IMPLX(ClassName)
-
+EMPTYLINE
 {$IFDEF VCL}
-
 procedure TJvEx##ClassName.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -205,8 +280,25 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
+
+{$IFNDEF HASAUTOSIZE}
+ {$IFNDEF COMPILER6_UP}
+procedure TJvEx##ClassName.SetAutoSize(Value: Boolean);
+begin
+  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+end;
+ {$ENDIF COMPILER6_UP}
+{$ENDIF !HASAUTOSIZE}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
+ {$IFDEF REINTRODUCE_HITTEST}
+function TJvEx##ClassName.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
+end;
+ {$ENDIF REINTRODUCE_HITTEST}
+
  {$IF not declared(PatchedVCLX)}
 procedure TJvEx##ClassName.MouseEnter(Control: TControl);
 begin
@@ -225,21 +317,23 @@ end;
 {$ENDIF VisualCLX}
 *)
 
+(*$DEFINE DISPATCHCODE(ClassName)
+procedure TJvEx##ClassName.Dispatch(var Msg);
+begin
+  DispatchMsg(Self, Msg);
+end;
+*)
+
 (*$DEFINE JV_CONTROL_EVENTS_IMPL(ClassName)
 JV_CONTROL_EVENTS_IMPLX(ClassName)
 {$IFDEF VCL}
-procedure TJvEx##ClassName.Dispatch(var Msg);
-begin
-  if not DispatchMsg(Self, Msg) then
-    inherited Dispatch(Msg);
-end;
+DISPATCHCODE(ClassName)
 {$ENDIF VCL}
 *)
 
-(*$DEFINE JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
+(*$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
 JV_CONTROL_EVENTS_IMPLX(ClassName)
 {$IFDEF VCL}
-
 procedure TJvEx##ClassName.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -273,17 +367,69 @@ end;
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPLX(ClassName)
-  JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL
-  {$ENDIF VCL}
+JV_CUSTOMCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+end;
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  FCanvas.Free;
+  inherited Destroy;
+end;
+
+procedure TJvEx##ClassName.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  if not (csDestroying in ComponentState) then
+  begin
+    ControlState := ControlState + [csWidgetPainting];
+    try
+      TControlCanvas(FCanvas).StartPaint;
+      try
+        QPainter_setClipRegion(FCanvas.Handle, EventRegion);
+        Paint;
+      finally
+        TControlCanvas(FCanvas).StopPaint;
+      end;
+    finally
+      ControlState := ControlState - [csWidgetPainting];
+    end;
+  end;
+end;
+
+procedure TJvEx##ClassName.Paint;
+var
+  Event: QPaintEventH;
+begin
+  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
+  try
+    QObject_event(Handle, Event);
+  finally
+    QPaintEvent_destroy(Event);
+  end;
+end;
+{$ENDIF VisualCLX}
+*)
+
+(*$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPLX(ClassName)
+JV_CUSTOMCONTROL_EVENTS_IMPLX_OPEN_VCL
+{$ENDIF VCL}
+*)
+
+(*$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPL(ClassName)
+JV_CUSTOMCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
+DISPATCHCODE(ClassName)
+{$ENDIF VCL}
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPL(ClassName)
-JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
-procedure TJvEx##ClassName.Dispatch(var Msg);
-begin
-  if not DispatchMsg(Self, Msg) then
-    inherited Dispatch(Msg);
-end;
-
+JV_WINCONTROL_EVENTS_IMPLX(ClassName)
+{$IFDEF VCL}
+DISPATCHCODE(ClassName)
 {$ENDIF VCL}
 *)

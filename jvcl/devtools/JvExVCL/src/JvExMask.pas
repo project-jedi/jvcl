@@ -29,10 +29,10 @@ unit JvExMask;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, Mask,
+  Windows, Messages, Graphics, Controls, Forms, Mask,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QMask,
+  Qt, QGraphics, QControls, QForms, QMask,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvExControls;

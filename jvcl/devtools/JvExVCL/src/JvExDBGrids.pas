@@ -29,21 +29,21 @@ unit JvExDBGrids;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, DBGrids,
+  Windows, Messages, Graphics, Controls, Forms, DBGrids,
   {$ENDIF VCl}
   {$IFDEF VisualCLX}
-  QControls, QForms, QDBGrids,
+  Qt, QGraphics, QControls, QForms, QDBGrids,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvExControls;
 
 type
-  JV_WINCONTROL_EVENTS(CustomDBGrid)
-  JV_WINCONTROL_EVENTS(DBGrid)
+  JV_CUSTOMCONTROL_EVENTS(CustomDBGrid)
+  JV_CUSTOMCONTROL_EVENTS(DBGrid)
 
 implementation
 
-JV_WINCONTROL_EVENTS_IMPL(CustomDBGrid)
-JV_WINCONTROL_EVENTS_IMPL(DBGrid)
+JV_CUSTOMCONTROL_EVENTS_IMPL(CustomDBGrid)
+JV_CUSTOMCONTROL_EVENTS_IMPL(DBGrid)
 
 end.
