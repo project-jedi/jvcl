@@ -1377,7 +1377,7 @@ var
   RetValue: string;
 begin
   if ((Length(S) mod 4) <> 0) or (S = '') then
-    raise Exception.Create('Base64: ' + sIncorrectstringFormat);
+    raise Exception.Create(sIncorrectStringFormat);
 
   SetLength(RetValue, ((Length(S) div 4) - 1) * 3);
   for i := 1 to ((Length(S) div 4) - 1) do

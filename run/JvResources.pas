@@ -763,6 +763,12 @@ resourcestring
   sNotSeparately = '%s cannot be created separately.';
   sNoNewInstance = '%s does not allow a new instance to be created.';
 
+  sStringListEditorCaption = 'String list editor';
+  sButtonOKCaption = '&OK';
+  sButtonCancelCaption = 'Cancel';
+  sXLinesCaption = ' lines';
+  sOneLineCaption = '1 line';
+
   // (rom) converted assertions
   sJvAssertSetTopIndex = 'TJvCustomInspector.SetTopIndex: unexpected MaxIdx <= -1';
   sJvAssertInspectorPainter = 'TJvInspectorCustomCompoundItem.DivideRect: unexpected Inspector.Painter = nil';
@@ -770,6 +776,10 @@ resourcestring
   sJvAssertParent = 'TJvInspectorSetMemberData.New: unexpected AParent = nil';
   sJvAssertPropInfo = 'TJvInspectorPropData.New: unexpected PropInfo = nil';
   sJvAssertINIFile = 'TJvInspectorINIFileData.New: unexpected AINIFile = nil';
+
+//=== JvInspXVCL.pas =========================================================
+resourcestring
+  SNoNodeSpecified = 'TJvInspectorxNodeData.New: No node specified';
 
 //=== JvInstallLabel.pas =====================================================
 resourcestring
@@ -782,6 +792,15 @@ resourcestring
   sUnknownRecordType = 'Unknown RecordType';
   sRangeCheckError = 'range check error';
 
+//=== JvInterpreter_Quickrpt.pas =============================================
+resourcestring
+  SNoQuickReportFound = 'TQuickRep component not found on the form';
+
+//=== JvInterpreter_System.pas ===============================================
+resourcestring
+  SSizeMustBeEven = 'The size of bounds array must be even!';
+  SForOneDimensionOnly = 'Sorry. For one-dimensional arrays only.';
+
 //=== JvInterpreterConst.pas =================================================
 
 //=== JvJanTreeView.pas ======================================================
@@ -792,6 +811,7 @@ resourcestring
   sSearch = 'Search';
   sSearchFor = 'Search for:';
   sNoMoresFound = 'No more %s found';
+  sBadTokenState = 'Bad token state';
 
 //=== JvJoystick.pas =========================================================
 resourcestring
@@ -810,22 +830,32 @@ resourcestring
 //=== JvLinkLabel.pas ========================================================
 resourcestring
   sUnableToLocateMode = 'Unable to locate specified node';
-  sTagNotFound = 'Tag not found';
+  sTagNotFound = 'TJvCustomLinkLabel.UpdateDynamicTag: Tag not found';
+
+//=== JvLinkLabelParser.pas ==================================================
+resourcestring
+  SNoMoreElementsToReturn = 'TElementEnumerator.GetNextElement: No more elements to return';
+  SUnsupportedState = 'TDefaultParser.ParseNode: Unsupported state';
 
 //=== JvLinkLabelTextHandler.pas =============================================
 resourcestring
-  sNoMoreWords = 'No more words to return';
-  sUnsupported = 'Unsupported TParentTextElement descendant encountered';
+  sNoMoreWords = 'TWordEnumerator.GetNext: No more words to return';
+  sUnsupported = 'TTextHandler.EmptyBuffer: Unsupported TParentTextElement descendant encountered';
+
+//=== JvLinkLabelTools.pas ===================================================
+resourcestring
+  SCannotBeInstantiated = 'This class cannot be instantiated';
 
 //=== JvLinkLabelTree.pas ====================================================
 resourcestring
   sTNodeGetNodeTypeUnknownClass = 'TNode.GetNodeType: Unknown class';
   sNoMoreNodesToReturn = 'No more nodes to return';
   sNoMoreRecordsToReturn = 'No more records to return';
+  sWordInfoIndexOutOfBounds = 'TStringNode.GetWordInfo: Index out of bounds';
 
 //=== JvListView.pas =========================================================
 resourcestring
-  sTooManyColumns = 'too many columns';
+  sTooManyColumns = 'TJvListView.GetColumnsOrder: too many columns';
 
 //=== JvMail.pas =============================================================
 resourcestring
@@ -840,7 +870,7 @@ resourcestring
 
 //=== JvMouseGesture.pas =====================================================
 resourcestring
-  sCannotHookTwice = 'Fatal: You cannot hook this event twice';
+  sCannotHookTwice = 'JvMouseGesture Fatal: You cannot hook this event twice';
 
 //=== JvMRUList.pas ==========================================================
 resourcestring
@@ -1045,6 +1075,7 @@ resourcestring
 resourcestring
   sInvalidClass = 'Invalid class.';
   sInvalidMappingFile = 'Invalid mapping file.';
+  sDuplicateDigitClass = 'Duplicate DigitClass registered.';
 
 //=== JvSegmentedLEDDisplayMapperFrame.pas ===================================
 resourcestring
@@ -1094,6 +1125,10 @@ resourcestring
 resourcestring
   SNoDictionaryLoaded = 'No dictionary loaded';
 
+//=== JvSpin.pas =============================================================
+resourcestring
+  SOutOfRangeFloat = 'Value must be between %g and %g';
+
 //=== JvStatusBar.pas ========================================================
 resourcestring
   sInvalidControlSelection = 'Invalid control selection.';
@@ -1105,7 +1140,7 @@ resourcestring
 //=== JvStrings.pas ==========================================================
 resourcestring
   sCannotLoadResource = 'Can''t load resource: %s';
-  sIncorrectstringFormat = 'Incorrect string format';
+  sIncorrectStringFormat = 'Base64: Incorrect string format';
 
 //=== JvSyncSplitter.pas =====================================================
 resourcestring
@@ -1224,6 +1259,10 @@ resourcestring
 //=== JvTimeLimit.pas ========================================================
 resourcestring
   RC_Expired = 'The test period has expired, please register this application';
+
+//=== JvTimeList.pas =========================================================
+resourcestring
+  sOwnerMustBeTJvTimerList = 'Owner of TJvTimerEvents must be a TJvTimerList';
 
 //=== JvTipOfDay.pas =========================================================
 resourcestring

@@ -558,7 +558,7 @@ begin
   if IsWordInfoInArray(Pos) then
     Result := FWordInfoArray[Pos]
   else
-    raise ENodeError.Create('TStringNode.GetWordInfo: Index out of bounds');
+    raise ENodeError.Create(sWordInfoIndexOutOfBounds);
 end;
 
 function TStringNode.IsPointInNode(const P: TPoint): Boolean;

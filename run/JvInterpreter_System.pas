@@ -42,6 +42,9 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 
 implementation
 
+uses
+  JvTypes, JvResources;
+
 { TObject }
 
 { function ClassType: TClass; }
@@ -261,7 +264,7 @@ var
 begin
   V2OA(Args.Values[0], OA, OAV, OAS);
   if Odd(OAS) then
-    raise Exception.Create('The size of bounds array must be even!');
+    raise EJVCLException.Create(SSizeMustBeEven);
   SetLength(AI, OAS);
   for i := 0 to OAS -1 do
     AI[i] := OAV[i];
@@ -360,7 +363,7 @@ begin
   if VarIsArray(Args.Values[0]) then
   begin
     if VarArrayDimCount(Args.Values[0]) > 1 then
-      raise Exception.Create('Sorry. For one-dimensional arrays only.');
+      raise EJVCLException.Create(SForOneDimensionOnly);
     Value := VarArrayHighBound(Args.Values[0], 1)-VarArrayLowBound(Args.Values[0], 1);
   end
   else
@@ -499,7 +502,7 @@ begin
   if VarIsArray(Args.Values[0]) then
   begin
     if VarArrayDimCount(Args.Values[0]) > 1 then
-      raise Exception.Create('Sorry. For one-dimensional arrays only.');
+      raise EJVCLException.Create(SForOneDimensionOnly);
     Value := VarArrayLowBound(Args.Values[0], 1);
   end
   else
@@ -513,7 +516,7 @@ begin
   if VarIsArray(Args.Values[0]) then
   begin
     if VarArrayDimCount(Args.Values[0]) > 1 then
-      raise Exception.Create('Sorry. For one-dimensional arrays only.');
+      raise EJVCLException.Create(SForOneDimensionOnly);
     Value := VarArrayLowBound(Args.Values[0], 1);
   end
   else

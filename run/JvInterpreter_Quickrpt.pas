@@ -44,7 +44,7 @@ implementation
 uses
   SysUtils, Classes, Controls, Forms, Graphics, Db,
   QrPrntr, Quickrpt, QrCtrls,
-  JvInterpreterFm;
+  JvInterpreterFm, JvResources;
 
 procedure JvInterpreterRunReportPreview(const FileName: string);
 var
@@ -63,7 +63,7 @@ begin
           Break;
         end;
     if QuickRep1 = nil then
-      raise Exception.Create('TQuickRep component not found on the form');
+      raise Exception.Create(SNoQuickReportFound);
     QuickRep1.Preview;
   finally
     Form.Free;
@@ -87,7 +87,7 @@ begin
           Break;
         end;
     if QuickRep1 = nil then
-      raise Exception.Create('TQuickRep component not found on the form');
+      raise Exception.Create(SNoQuickReportFound);
     QuickRep1.Preview;
   finally
     Form.Free;

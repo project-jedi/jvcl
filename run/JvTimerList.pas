@@ -155,7 +155,7 @@ implementation
 
 uses
   Consts, Forms, SysUtils, Math,
-  JvJVCLUtils;
+  JvJVCLUtils, JvResources;
 
 const
   MinInterval = 100; { 0.1 sec }
@@ -482,7 +482,7 @@ end;
 constructor TJvTimerEvents.Create(AOwner: TPersistent);
 begin
   if not (AOwner is TJvTimerList) then
-    raise Exception.Create('Owner of TJvTimerEvents must be a TJvTimerList!');
+    raise Exception.Create(sOwnerMustBeTJvTimerList);
   inherited Create(AOwner,TJvTimerEvent);
   FParent := TJvTimerList(AOwner); 
 end;

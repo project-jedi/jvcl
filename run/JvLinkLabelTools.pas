@@ -90,13 +90,14 @@ type
 implementation
 
 uses
-  ShellAPI;
+  ShellAPI,
+  JvResources;
 
 //=== TStaticObject ==========================================================
 
 constructor TStaticObject.Create;
 begin
-  raise EGenericToolsError.Create('This class cannot be instantiated');
+  raise EGenericToolsError.Create(SCannotBeInstantiated);
 end;
 
 //=== TStringTools ===========================================================
