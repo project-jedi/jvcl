@@ -392,15 +392,15 @@ begin
   {$ENDIF VCL}
   FCaptionFont := TFont.Create;
   FIcon := TIcon.Create;
-  {$IFDEF MSWINDOWS}
+  {$IFDEF VCL}
   // (rom) Warning! This seems no standard Windows font
 //  FCaptionFont.Name := 'MS Shell Dlg 2';
   FCaptionFont.Size := 10;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   FCaptionFont.Name := 'Helvetica';
   FCaptionFont.Height := 13;
-  {$ENDIF UNIX}
+  {$ENDIF VisualCLX}
   FCaptionFont.Style := [fsBold];
   FCaptionFont.Color := clWhite;
   FCaptionFont.OnChange := DoCaptionFontChange;
