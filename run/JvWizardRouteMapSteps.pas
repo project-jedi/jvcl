@@ -35,12 +35,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, Types, QWindows,
-  {$ENDIF VisualCLX}
   JvWizard;
 
 type
@@ -246,7 +241,7 @@ begin
   begin
     SetRect(DividerRect, Left + FIndent, TextRect.Bottom + 5, Width - FIndent,
       TextRect.Bottom + 6);
-    DrawEdge(Canvas.Handle, DividerRect, EDGE_RAISED, BF_FLAT OR BF_BOTTOM);
+    Windows.DrawEdge(Canvas.Handle, DividerRect, EDGE_RAISED, BF_FLAT OR BF_BOTTOM);
   end;
 
   { do the previous step }
