@@ -32,7 +32,7 @@ interface
 uses
   SysUtils,
   {$IFDEF VCL}
-  Controls
+  Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls,
