@@ -42,6 +42,8 @@ uses
 
 type
   TJvAppIniStore = class(TJvCustomAppStore)
+  private
+    fBaseSection : String;
   protected
     function ValueExists(const Section, Key: string): Boolean; virtual; abstract;
     function ReadValue(const Section, Key: string): string; virtual; abstract;
@@ -51,14 +53,16 @@ type
     function ValueStored(const Path: string): Boolean; override;
     procedure DeleteValue(const Path: string); override;
     procedure DeleteSubTree(const Path: string); override;
-    function ReadInteger(const Path: string; Default: Integer = 0): Integer; override;
-    procedure WriteInteger(const Path: string; Value: Integer); override;
-    function ReadFloat(const Path: string; Default: Extended = 0): Extended; override;
-    procedure WriteFloat(const Path: string; Value: Extended); override;
-    function ReadString(const Path: string; Default: string = ''): string; override;
-    procedure WriteString(const Path: string; Value: string); override;
-    function ReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
-    procedure WriteBinary(const Path: string; const Buf; BufSize: Integer); override;
+    function ReadIntegerInt(const Path: string; Default: Integer = 0): Integer; override;
+    procedure WriteIntegerInt(const Path: string; Value: Integer); override;
+    function ReadFloatInt(const Path: string; Default: Extended = 0): Extended; override;
+    procedure WriteFloatInt(const Path: string; Value: Extended); override;
+    function ReadStringInt(const Path: string; Default: string = ''): string; override;
+    procedure WriteStringInt(const Path: string; Value: string); override;
+    function ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer; override;
+    procedure WriteBinaryInt(const Path: string; const Buf; BufSize: Integer); override;
+  published
+    property BaseSection : String read fBaseSection write fBaseSection;
   end;
 
   { Storage to INI file. Optionally a buffered version (TMemIniFile) is used. IdleDelay will then
@@ -94,6 +98,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function PathExists(const Path: string): boolean; override;
     procedure Flush;
     function IsFolder(Path: string; ListIsValue: Boolean = True): Boolean; override;
   published
@@ -248,7 +253,7 @@ var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(Path, Section, Key);
+  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
   Result := ValueExists(Section, Key);
 end;
 
@@ -257,7 +262,7 @@ var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(Path, Section, Key);
+  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
   RemoveValue(Section, Key);
 end;
 
@@ -268,13 +273,13 @@ begin
   TopSection := GetAbsPath(Path);
 end;
 
-function TJvAppIniStore.ReadInteger(const Path: string; Default: Integer = 0): Integer;
+function TJvAppIniStore.ReadIntegerInt(const Path: string; Default: Integer = 0): Integer;
 var
   Section: string;
   Key: string;
   Value: string;
 begin
-  SplitKeyPath(Path, Section, Key);
+  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
@@ -286,22 +291,22 @@ begin
     Result := Default;
 end;
 
-procedure TJvAppIniStore.WriteInteger(const Path: string; Value: Integer);
+procedure TJvAppIniStore.WriteIntegerInt(const Path: string; Value: Integer);
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(Path, Section, Key);
+  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
   WriteValue(Section, Key, IntToStr(Value));
 end;
 
-function TJvAppIniStore.ReadFloat(const Path: string; Default: Extended = 0): Extended;
+function TJvAppIniStore.ReadFloatInt(const Path: string; Default: Extended = 0): Extended;
 var
   Section: string;
   Key: string;
   Value: string;
 begin
-  SplitKeyPath(Path, Section, Key);
+  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
@@ -313,43 +318,43 @@ begin
     Result := Default;
 end;
 
-procedure TJvAppIniStore.WriteFloat(const Path: string; Value: Extended);
+procedure TJvAppIniStore.WriteFloatInt(const Path: string; Value: Extended);
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(Path, Section, Key);
+  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
   WriteValue(Section, Key, FloatToStr(Value));
 end;
 
-function TJvAppIniStore.ReadString(const Path: string; Default: string = ''): string;
+function TJvAppIniStore.ReadStringInt(const Path: string; Default: string = ''): string;
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(Path, Section, Key);
+  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
   if ValueExists(Section, Key) then
     Result := ReadValue(Section, Key)
   else
     Result := Default;
 end;
 
-procedure TJvAppIniStore.WriteString(const Path: string; Value: string);
+procedure TJvAppIniStore.WriteStringInt(const Path: string; Value: string);
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(Path, Section, Key);
+  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
   WriteValue(Section, Key, Value);
 end;
 
-function TJvAppIniStore.ReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
+function TJvAppIniStore.ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer;
 var
   Section: string;
   Key: string;
   Value: string;
 begin
-  SplitKeyPath(Path, Section, Key);
+  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
@@ -359,12 +364,12 @@ begin
     Result := 0;
 end;
 
-procedure TJvAppIniStore.WriteBinary(const Path: string; const Buf; BufSize: Integer);
+procedure TJvAppIniStore.WriteBinaryInt(const Path: string; const Buf; BufSize: Integer);
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(Path, Section, Key);
+  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
   WriteValue(Section, Key, BufToBinStr(Buf, BufSize));
 end;
 
@@ -487,6 +492,7 @@ begin
     Strings.Add('');
 end;
 
+
 function TJvAppINIFileStore.ValueExists(const Section, Key: string): Boolean;
 begin
   if IniFile <> nil then
@@ -497,6 +503,8 @@ end;
 
 function TJvAppINIFileStore.ReadValue(const Section, Key: string): string;
 begin
+  if Section = '' THEN
+    raise Exception.Create ('TJvAppINIFileStore.ReadValue : Section undefined');
   if IniFile <> nil then
     Result := IniFile.ReadString(Section, Key, '')
   else
@@ -507,6 +515,8 @@ procedure TJvAppINIFileStore.WriteValue(const Section, Key, Value: string);
 begin
   if IniFile <> nil then
   begin
+    if Section = '' THEN
+      raise Exception.Create ('TJvAppINIFileStore.WriteValue : Section undefined');
     IniFile.WriteString(Section, Key, Value);
     FLastUserAct := GetTickCount;
     FHasWritten := True;
@@ -547,6 +557,15 @@ begin
   StoresList.Remove(Self); *)
   inherited Destroy;
 end;
+
+function TJvAppINIFileStore.PathExists(const Path: string): boolean;
+var
+  Section: string;
+  Key: string;
+begin
+  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  Result := IniFile.SectionExists(Section+'\'+Key);
+End;
 
 procedure TJvAppINIFileStore.Flush;
 begin
