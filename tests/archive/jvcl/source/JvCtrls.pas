@@ -517,11 +517,14 @@ begin
   begin
     if not IsEnabled then
       Button := tbPushButtonDisabled
-    else if IsDown then
+    else
+    if IsDown then
       Button := tbPushButtonPressed
-    else if FMouseInControl then
+    else
+    if FMouseInControl then
       Button := tbPushButtonHot
-    else if IsDefault then
+    else
+    if IsDefault then
       Button := tbPushButtonDefaulted
     else
       Button := tbPushButtonNormal;
