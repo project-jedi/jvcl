@@ -15,6 +15,7 @@ object frmGenMessages: TfrmGenMessages
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

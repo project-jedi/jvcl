@@ -13,6 +13,7 @@ object frmTargets: TfrmTargets
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

@@ -12,6 +12,7 @@ object frmAboutMe: TfrmAboutMe
   Font.Style = []
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -467,7 +468,7 @@ object frmAboutMe: TfrmAboutMe
         #9'              Dave Jewell '
         #9'              Martin Waldenburg'
         ''
-        'Contributors:     Peter Th'#246'rnqvist'
+        'Contributors:     Peter Thörnqvist'
         #9'          Arioch')
       TabOrder = 0
     end

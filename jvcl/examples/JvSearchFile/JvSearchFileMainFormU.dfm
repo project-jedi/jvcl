@@ -48,6 +48,7 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
       Top = 14
       Width = 281
       Height = 21
+      DialogKind = dkWin32
       ButtonFlat = False
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
@@ -192,6 +193,7 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
     Top = 72
   end
   object JvFormStorage1: TJvFormStorage
+    AppStorage = JvAppIniFileStorage1
     StoredProps.Strings = (
       'edFileMask.Text'
       'chkRecursive.Checked'
@@ -203,7 +205,16 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
       'rbInclude.Checked'
       'rbExclude.Checked')
     StoredValues = <>
-    Left = 186
+    Left = 154
+    Top = 72
+  end
+  object JvAppIniFileStorage1: TJvAppIniFileStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    FileName = 'JvSearchFilesProj.ini'
+    DefaultSection = 'Settings'
+    SubStorages = <>
+    Left = 192
     Top = 72
   end
 end

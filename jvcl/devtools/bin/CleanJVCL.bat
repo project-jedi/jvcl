@@ -8,10 +8,10 @@ echo. 4. Deletes all files created from compiling (dcu's, dsk's exe's etc)
 echo. 
 echo. Hit Ctrl+C NOW if you want to quit, any other key to run the batch
 pause
-cd ..
-rem Build the tools we need:
-make
-cd bin
+if NOT EXIST crlf.exe goto maketools
+if NOT EXIST dc.exe goto maketools
+if NOT EXIST jconvert.exe goto maketools
+:clean
 rem Fix CRLF corruption:
 crlf -s -q ..\..\..\*.pas ..\..\..\*.dfm ..\..\..\*.dpk ..\..\..\*.dpr
 echo.
@@ -21,10 +21,18 @@ echo.
 rem Convert remaining DFM's to text:
 jconvert -i -t -s ..\..\..\*.dfm
 echo.
-cd ..
-cd ..
 rem Delete garbage:
+cd ..
+cd ..
 del /s /q *.dcu *.ddp *.dsk *.exe .#* .cvsignore >NUL
 rem Go back were we started:
 cd devtools\bin
+goto end
 
+:maketools
+rem Build the tools we need:
+cd ..
+make crlf.exe dc.exe jconvert.exe
+cd bin
+goto clean
+:end

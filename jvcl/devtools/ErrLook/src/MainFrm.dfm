@@ -17,6 +17,7 @@ object frmMain: TfrmMain
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
+  Scaled = false
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy

@@ -13,6 +13,7 @@ object frmMain: TfrmMain
   Menu = MainMenu1
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
