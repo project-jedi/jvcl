@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
 "POT-Creation-Date: 2004-02-24 22:21\n"
-"PO-Revision-Date: 2004-02-25 16:53+1000\n"
-"Last-Translator: obones <obones@meloo.com>\n"
+"PO-Revision-Date: 2004-04-20 10:06+1000\n"
+"Last-Translator: Olivier Sannier <osannier@opcom.com>\n"
 "Language-Team: JVCL <jvcl@users.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1541,14 +1541,14 @@ msgstr "< &Retour"
 #. Programmer's name for it: RsPrevButtonCaption
 #: JvResources.pas:44
 msgid "< &Prev"
-msgstr "< &Préc"
+msgstr "< &Précédent"
 
 #. Programmer's name for it: RsNextButtonCaption
 #. Programmer's name for it: RsNextButtonCaption
 #: JvResources.pas:45
 #: JvWizard.pas:930
 msgid "&Next >"
-msgstr "&Suiv >"
+msgstr "&Suivant >"
 
 #. Programmer's name for it: RsDateDlgCaption
 #: JvResources.pas:46
