@@ -735,6 +735,10 @@ type
     var SubSvcClass: TJvDataConsumerAggregatedObjectClass) of object;
   TAfterCreateSubSvcEvent = procedure(Sender: TJvDataConsumer;
     SubSvc: TJvDataConsumerAggregatedObject) of object;
+  TJvDataConsumerChangeReason = (ccrProviderSelected, ccrProviderChanged, ccrViewChanged,
+    ccrContextChanged, ccrOther);
+  TJvDataConsumerChangeEvent = procedure(Sender: TJvDataConsumer;
+    Reason: TJvDataConsumerChangeReason) of object;
   TJvDataConsumer = class(TExtensibleInterfacedPersistent, IJvDataConsumer, IJvDataProviderNotify,
     IJvDataConsumerProvider)
   private
@@ -744,7 +748,7 @@ type
     FContext: IJvDataContext;
     FAfterCreateSubSvc: TAfterCreateSubSvcEvent;
     FBeforeCreateSubSvc: TBeforeCreateSubSvcEvent;
-    FOnChanged: TNotifyEvent;
+    FOnChanged: TJvDataConsumerChangeEvent;
     FNeedFixups: Boolean;
     FFixupContext: TJvDataContextID;
     procedure SetProvider(Value: IJvDataProvider);
@@ -760,10 +764,10 @@ type
     procedure DoProviderChanged(ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure DoAfterCreateSubSvc(ASvc: TJvDataConsumerAggregatedObject);
     procedure DoBeforeCreateSubSvc(var AClass: TJvDataConsumerAggregatedObjectClass);
-    procedure DoChanged;
+    procedure DoChanged(Reason: TJvDataConsumerChangeReason);
     { Misc. }
     procedure DoAddAttribute(Attr: Integer);
-    procedure Changed;
+    procedure Changed(Reason: TJvDataConsumerChangeReason);
     procedure ProviderChanging;
     procedure ProviderChanged;
     procedure ContextChanging;
@@ -798,7 +802,7 @@ type
     procedure Enter;
     procedure Leave;
 
-    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
+    property OnChanged: TJvDataConsumerChangeEvent read FOnChanged write FOnChanged;
     property AfterCreateSubSvc: TAfterCreateSubSvcEvent read FAfterCreateSubSvc
       write FAfterCreateSubSvc;
     property BeforeCreateSubSvc: TBeforeCreateSubSvcEvent read FBeforeCreateSubSvc
@@ -829,7 +833,7 @@ type
     function KeepOnContextChange: Boolean; virtual;
     { Notifies the consumer service a change has taken place. Sub services should call this method
       when something has changed. }
-    procedure Changed;
+    procedure Changed(Reason: TJvDataConsumerChangeReason);
     { Notifies the consumer service (and other extensions) a change has taken place that might have
       influenced the view list. }
     procedure NotifyViewChanged;
@@ -3415,7 +3419,8 @@ begin
       FixupExtensions;
       FNeedFixups := False;
     end;
-    Changed;
+    ViewChanged(nil);
+    Changed(ccrProviderSelected);
   end;
 end;
 
@@ -3489,10 +3494,10 @@ begin
     BeforeCreateSubSvc(Self, AClass);
 end;
 
-procedure TJvDataConsumer.DoChanged;
+procedure TJvDataConsumer.DoChanged(Reason: TJvDataConsumerChangeReason);
 begin
   if @FOnChanged <> nil then
-    OnChanged(Self);
+    OnChanged(Self, Reason);
 end;
 
 procedure TJvDataConsumer.DoAddAttribute(Attr: Integer);
@@ -3504,11 +3509,11 @@ begin
   end;
 end;
 
-procedure TJvDataConsumer.Changed;
+procedure TJvDataConsumer.Changed(Reason: TJvDataConsumerChangeReason);
 begin
   if VCLComponent is TControl then
     TControl(VCLComponent).Invalidate;
-  DoChanged;
+  DoChanged(Reason);
 end;
 
 procedure TJvDataConsumer.ProviderChanging;
@@ -3657,7 +3662,7 @@ begin
   for I := 0 to ExtensionCount - 1 do
     if Extension(I) <> AExtension then
     Extension(I).ViewChanged(AExtension);
-  Changed;
+  Changed(ccrViewChanged);
 end;
 
 function TJvDataConsumer.ExtensionCount: Integer;
@@ -3736,7 +3741,7 @@ procedure TJvDataConsumer.DataProviderChanged(const ADataProvider: IJvDataProvid
   AReason: TDataProviderChangeReason; Source: IUnknown);
 begin
   DoProviderChanged(ADataProvider, AReason, Source);
-  Changed;
+  Changed(ccrProviderChanged);
 end;
 
 function TJvDataConsumer.VCLComponent: TComponent;
@@ -3795,7 +3800,7 @@ begin
     ContextChanging;
     FContext := Value;
     ContextChanged;
-    Changed;
+    Changed(ccrContextChanged);
   end;
 end;
 
@@ -3825,10 +3830,10 @@ begin
   Result := True;
 end;
 
-procedure TJvDataConsumerAggregatedObject.Changed;
+procedure TJvDataConsumerAggregatedObject.Changed(Reason: TJvDataConsumerChangeReason);
 begin
   StreamedInWithoutProvider := ConsumerImpl.ProviderIntf = nil;
-  ConsumerImpl.Changed;
+  ConsumerImpl.Changed(Reason);
 end;
 
 procedure TJvDataConsumerAggregatedObject.NotifyViewChanged;
@@ -4021,7 +4026,7 @@ begin
   begin
     FItem := Value;
     NotifyViewChanged;
-    Changed;
+//    Changed;
   end;
 end;
 
@@ -4171,7 +4176,7 @@ begin
   if Value <> LevelIndent then
   begin
     FLevelIndent := Value;
-    Changed;
+    Changed(ccrOther);
   end;
 end;
 
@@ -4189,8 +4194,13 @@ begin
   ClearView;
   if (ConsumerImpl <> nil) and (ConsumerImpl.ProviderIntf <> nil) then
   begin
-    Idx := 0;
-    AddItems(Idx, RootItems, AutoExpandLevel);
+    ConsumerImpl.Enter;
+    try
+      Idx := 0;
+      AddItems(Idx, RootItems, AutoExpandLevel);
+    finally
+      ConsumerImpl.Leave;
+    end;
   end;
   NotifyViewChanged;
 end;
