@@ -32,17 +32,19 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Messages, Graphics, Controls, Forms, StdCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls, QForms, QStdCtrls,
-  {$ENDIF}
+  Types, Qt, QWindows, QGraphics, QControls, QForms, QStdCtrls,
+  {$ENDIF VisualCLX}
   JVCLVer, JvThemes, JvExStdCtrls;
 
+  { TODO -oahuser : CLX does not work (especially Paint) }
+  
 type
   TJvGroupBox = class(TJvExGroupBox)
   private
@@ -53,6 +55,9 @@ type
     FOnParentColorChange: TNotifyEvent;
     FOver: Boolean;
     FPropagateEnable: Boolean;
+    {$IFDEF VisualCLX}
+    FCanvas: TCanvas;
+    {$ENDIF VisualCLX}
     procedure SetPropagateEnable(const Value: Boolean);
     procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   {$IFDEF JVCLThemesEnabledD56}
@@ -68,10 +73,21 @@ type
     procedure EnabledChanged; override;
     procedure ParentColorChanged; override;
     procedure DoHotKey; dynamic;
+    {$IFDEF VCL}
     procedure Paint; override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    procedure Paint; virtual;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    {$IFDEF VCL}
     property Canvas;
+    {$ELSE}
+    property Canvas: TCanvas read FCanvas;
+    {$ENDIF VCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
@@ -93,6 +109,10 @@ uses
 constructor TJvGroupBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF VisualCLX}
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+  {$ENDIF VisualCLX}
   FHintColor := clInfoBk;
   FOver := False;
   FPropagateEnable := False;
@@ -100,7 +120,32 @@ begin
   IncludeThemeStyle(Self, [csParentBackground]);
 end;
 
+destructor TJvGroupBox.Destroy;
+begin
+  inherited Destroy;
+  {$IFDEF VisualCLX}
+  // Keep FCanvas as long as possible because the destructor may handle a
+  // pending Invalidate.
+  FCanvas.Free;
+  {$ENDIF VisualCLX}
+end;
+
+procedure TJvGroupBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  TControlCanvas(FCanvas).StartPaint;
+  try
+    QPainter_setClipRegion(FCanvas.Handle, EventRegion);
+    Paint;
+  finally
+    TControlCanvas(FCanvas).StopPaint;
+  end;
+end;
+
 procedure TJvGroupBox.Paint;
+{$IFDEF VisualCLX}
+const
+  clWindowFrame = cl3DDkShadow;
+{$ENDIF VisualCLX}
 var
   H: Integer;
   R: TRect;
@@ -139,40 +184,70 @@ begin
     Font := Self.Font;
     H := TextHeight('0');
     R := Rect(0, H div 2 - 1, Width, Height);
+    {$IFDEF VCl}
     if Ctl3D then
+    {$ELSE}
+    if BorderStyle = bsSunken3d then
+    {$ENDIF VCL}
     begin
       Inc(R.Left);
       Inc(R.Top);
       Brush.Color := clBtnHighlight;
+      {$IFDEF VCL}
       FrameRect(R);
+      {$ELSE}
+      QWindows.FrameRect(Canvas, R);
+      {$ENDIF VCL}
       OffsetRect(R, -1, -1);
       Brush.Color := clBtnShadow;
     end
     else
       Brush.Color := clWindowFrame;
+    {$IFDEF VCL}
     FrameRect(R);
+    {$ELSE}
+    QWindows.FrameRect(Canvas, R);
+    {$ENDIF VCL}
     if Text <> '' then
     begin
+      {$IFDEF VCL}
       if not UseRightToLeftAlignment then
         R := Rect(8, 0, 0, H)
       else
+      {$ENDIF VCL}
         R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
       // calculate text rect
+      {$IFDEF VCL}
       DrawText(Handle, PChar(Text), Length(Text), R, Flags or DT_CALCRECT);
+      {$ELSE}
+      DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags or DT_CALCRECT);
+      {$ENDIF VCL}
       Brush.Color := Color;
       if not Enabled then
       begin
         OffsetRect(R, 1, 1);
         Font.Color := clBtnHighlight;
+        {$IFDEF VCL}
         DrawText(Handle, PChar(Text), Length(Text), R, Flags);
+        {$ELSE}
+        DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
+        {$ENDIF VCL}
         OffsetRect(R, -1, -1);
         Font.Color := clBtnShadow;
         SetBkMode(Handle, Windows.TRANSPARENT);
+        {$IFDEF VCL}
         DrawText(Handle, PChar(Text), Length(Text), R, Flags);
+        {$ELSE}
+        DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
+        {$ENDIF VCL}
       end
       else
+        {$IFDEF VCL}
         DrawText(Handle, PChar(Text), Length(Text), R, Flags);
+        {$ELSE}
+        DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
+        {$ENDIF VCL}
     end;
   end;
 end;
