@@ -938,7 +938,6 @@ end;
 constructor TJvDBMaskEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  inherited ReadOnly := True;
   ControlStyle := ControlStyle + [csReplicatable];
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
@@ -947,7 +946,8 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   FDataLink.OnActiveChange := ActiveChange;
   // new stuff that isn't in the VCL version.
-  FBeepOnError  := true;  
+  FBeepOnError  := true;
+  inherited SetReadOnly(True);
 end;
 
 destructor TJvDBMaskEdit.Destroy;
@@ -2823,12 +2823,12 @@ constructor TJvDBComboEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
-  inherited ReadOnly := True;
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateData;
+  inherited SetReadOnly(True);
   AlwaysEnable := True;
 end;
 
@@ -2939,12 +2939,16 @@ end;
 
 function TJvDBComboEdit.GetReadOnly: Boolean;
 begin
-  Result := FDataLink.ReadOnly;
+  if FDataLink <> nil then
+    Result := FDataLink.ReadOnly
+  else
+    Result := true;
 end;
 
 procedure TJvDBComboEdit.SetReadOnly(Value: Boolean);
 begin
-  FDataLink.ReadOnly := Value;
+  if FDataLink <> nil then
+    FDataLink.ReadOnly := Value;
 end;
 
 function TJvDBComboEdit.GetField: TField;
@@ -2988,7 +2992,7 @@ end;
 
 procedure TJvDBComboEdit.EditingChange(Sender: TObject);
 begin
-  inherited ReadOnly := not FDataLink.Editing;
+  inherited SetReadOnly(not FDataLink.Editing);
 end;
 
 procedure TJvDBComboEdit.UpdateData(Sender: TObject);
@@ -3014,7 +3018,7 @@ begin
   SetFocused(True);
   inherited;
   if SysLocale.FarEast and FDataLink.CanModify then
-    inherited ReadOnly := False;
+    inherited SetReadOnly(False);
 end;
 
 procedure TJvDBComboEdit.CMExit(var Msg: TCMExit);
@@ -3078,7 +3082,6 @@ constructor TJvDBDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
-  inherited ReadOnly := True;
   FInReset := False; // Polaris
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
@@ -3087,6 +3090,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   Self.OnAcceptDate := AfterPopup;
   AlwaysEnable := True;
+  inherited SetReadOnly(True);
   UpdateMask;
 end;
 
@@ -3280,7 +3284,7 @@ end;
 
 procedure TJvDBDateEdit.EditingChange(Sender: TObject);
 begin
-  inherited ReadOnly := not FDataLink.Editing;
+  inherited SetReadOnly(not FDataLink.Editing);
   if FDataLink.Editing and DefaultToday and (FDataLink.Field <> nil) and
     (FDataLink.Field.AsDateTime = NullDate) then
     FDataLink.Field.AsDateTime := SysUtils.Now;
@@ -3401,7 +3405,6 @@ constructor TJvDBCalcEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
-  inherited ReadOnly := True;
   //Polaris
   FEmptyIsNull := ZeroEmpty;
   FLEmptyIsNull := True;
@@ -3411,6 +3414,7 @@ begin
   FDataLink.OnDataChange := DataChange;
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateFieldData;
+  inherited SetReadOnly(True);
   AlwaysEnable := True;
 end;
 
@@ -3734,7 +3738,7 @@ end;
 
 procedure TJvDBCalcEdit.EditingChange(Sender: TObject);
 begin
-  inherited ReadOnly := not FDataLink.Editing;
+  inherited SetReadOnly(not FDataLink.Editing);
 end;
 
 procedure TJvDBCalcEdit.UpdateFieldData(Sender: TObject);

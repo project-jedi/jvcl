@@ -434,10 +434,12 @@ begin
     lEnd := RowCount - 1;
     if BlankTop then
       LStart := MoveBlankTop;
-
-    QuickSort(LStart, lEnd);
-    if not Ascending then
-      InvertGrid;
+    if LStart < LEnd then
+    begin
+      QuickSort(LStart, lEnd);
+      if not Ascending then
+        InvertGrid;
+    end;
   end;
 end;
 
