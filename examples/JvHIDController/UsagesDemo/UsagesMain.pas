@@ -73,7 +73,7 @@ begin
   if Assigned(DevListBox) then
   begin
     // hand back all the devices assigned to the list entries
-    for I := 0 to DevListBox.Count-1 do
+    for I := 0 to DevListBox.Items.Count-1 do
     begin
       Dev := TJvHidDevice(DevListBox.Items.Objects[I]);
       HidCtl.CheckIn(Dev);
