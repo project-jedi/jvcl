@@ -1038,7 +1038,7 @@ var
   { Specific information about the table structure, indexes, etc. }
   TblDesc: CRTblDesc;
   { Uses as a handle to the database }
-  hDb: hDbiDb;
+  hDb: hDBIDb;
   { Path to the currently opened table }
   TablePath: array [0..dbiMaxPathLen] of Char;
   Exclusive: Boolean;
@@ -1929,7 +1929,7 @@ end;
 procedure AddReference(Tbl: TTable; RefName: string; RefField: Word;
   MasterTable: string; MasterField: Word; ModOp, DelOp: RINTQual);
 var
-  hDb: hDbiDb;
+  hDb: hDBIDb;
   TblDesc: CRTblDesc;
   RInt: pRINTDesc;
   Dir: string;

@@ -1489,6 +1489,7 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 procedure TJvTabControl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (Key = VK_TAB) and (ssCtrl in Shift) then
@@ -1537,12 +1538,13 @@ end;
 
 function TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean;
 begin
-  Result := true;
+  Result := True;
   if Assigned(TabPainter) then
     TabPainter.DrawTab(Self, Canvas, Images, TabIndex, Tabs[TabIndex].Caption, Rect, TabIndex = Self.TabIndex, Enabled)
   else
     Result := inherited DrawTab(TabIndex, Rect, Active);
 end;
+
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
@@ -1641,7 +1643,7 @@ var
   I, RealIndex: Integer;
 begin
   {$IFDEF VisualCLX}
-  Result := false;
+  Result := False;
   {$ENDIF VisualCLX}
   if TabPainter <> nil then
   begin

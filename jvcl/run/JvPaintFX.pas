@@ -170,7 +170,7 @@ resourcestring
   RsESourceBitmapTooSmall = 'Source bitmap too small';
 
 const
-  // TJvRGBTriple = TJvRGBQuad for VisualCLX
+  // TJvRGBTriple = TRGBQuad for VisualCLX
   bpp = SizeOf(TJvRGBTriple);
 
 function TrimInt(N, Min, Max: Integer): Integer;
@@ -449,10 +449,10 @@ var
   fx, fy: Single;
   r1, r2: Single;
   ifx, ify: Integer;
-  dx, dy: Single;
+  DX, DY: Single;
   rmax: Single;
   ty, tx: Integer;
-  weight_x, weight_y: array [0..1] of Single;
+  WeightX, WeightY: array [0..1] of Single;
   Weight: Single;
   new_red, new_green: Integer;
   new_blue: Integer;
@@ -469,9 +469,9 @@ begin
   begin
     for tx := 0 to Dst.Width - 1 do
     begin
-      dx := tx - xmid;
-      dy := ty - ymid;
-      r1 := Sqrt(dx * dx + dy * dy);
+      DX := tx - xmid;
+      DY := ty - ymid;
+      r1 := Sqrt(DX * DX + DY * DY);
       if r1 = 0 then
       begin
         fx := xmid;
@@ -480,31 +480,31 @@ begin
       else
       begin
         r2 := rmax / 2 * (1 / (1 - r1 / rmax) - 1);
-        fx := dx * r2 / r1 + xmid;
-        fy := dy * r2 / r1 + ymid;
+        fx := DX * r2 / r1 + xmid;
+        fy := DY * r2 / r1 + ymid;
       end;
       ify := Trunc(fy);
       ifx := Trunc(fx);
       // Calculate the weights.
       if fy >= 0 then
       begin
-        weight_y[1] := fy - ify;
-        weight_y[0] := 1 - weight_y[1];
+        WeightY[1] := fy - ify;
+        WeightY[0] := 1 - WeightY[1];
       end
       else
       begin
-        weight_y[0] := -(fy - ify);
-        weight_y[1] := 1 - weight_y[0];
+        WeightY[0] := -(fy - ify);
+        WeightY[1] := 1 - WeightY[0];
       end;
       if fx >= 0 then
       begin
-        weight_x[1] := fx - ifx;
-        weight_x[0] := 1 - weight_x[1];
+        WeightX[1] := fx - ifx;
+        WeightX[0] := 1 - WeightX[1];
       end
       else
       begin
-        weight_x[0] := -(fx - ifx);
-        Weight_x[1] := 1 - weight_x[0];
+        WeightX[0] := -(fx - ifx);
+        WeightX[1] := 1 - WeightX[0];
       end;
 
       if ifx < 0 then
@@ -541,7 +541,7 @@ begin
             new_green := sli[Bmp.Width - ifx - ix].rgbGreen;
             new_blue  := sli[Bmp.Width - ifx - ix].rgbBlue;
           end;
-          Weight := weight_x[ix] * weight_y[iy];
+          Weight := WeightX[ix] * WeightY[iy];
           total_red := total_red + new_red * Weight;
           total_green := total_green + new_green * Weight;
           total_blue := total_blue + new_blue * Weight;
@@ -1072,10 +1072,10 @@ class procedure TJvPaintFX.SmoothResize(var Src, Dst: TBitmap);
 var
   X, Y, xP, yP, yP2, xP2: Integer;
   Read, Read2: PByteArray;
-  t, z, z2, iz2: Integer;
+  T, z, z2, iz2: Integer;
   pc: PByteArray;
   w1, w2, w3, w4: Integer;
-  Col1r, col1g, col1b, Col2r, col2g, col2b: Byte;
+  Col1r, Col1g, Col1b, Col2r, Col2g, Col2b: Byte;
 begin
   xP2 := ((Src.Width - 1) shl 15) div Dst.Width;
   yP2 := ((Src.Height - 1) shl 15) div Dst.Height;
@@ -1093,27 +1093,27 @@ begin
     iz2 := $8000 - z2;
     for X := 0 to Dst.Width - 1 do
     begin
-      t := xP shr 15;
-      Col1r := Read[t * bpp];
-      Col1g := Read[t * bpp + 1];
-      Col1b := Read[t * bpp + 2];
-      Col2r := Read2[t * bpp];
-      Col2g := Read2[t * bpp + 1];
-      Col2b := Read2[t * bpp + 2];
+      T := xP shr 15;
+      Col1r := Read[T * bpp];
+      Col1g := Read[T * bpp + 1];
+      Col1b := Read[T * bpp + 2];
+      Col2r := Read2[T * bpp];
+      Col2g := Read2[T * bpp + 1];
+      Col2b := Read2[T * bpp + 2];
       z := xP and $7FFF;
       w2 := (z * iz2) shr 15;
       w1 := iz2 - w2;
       w4 := (z * z2) shr 15;
       w3 := z2 - w4;
       pc[X * bpp + 2] :=
-        (Col1b * w1 + Read[(t + 1) * bpp + 2] * w2 +
-        Col2b * w3 + Read2[(t + 1) * bpp + 2] * w4) shr 15;
+        (Col1b * w1 + Read[(T + 1) * bpp + 2] * w2 +
+        Col2b * w3 + Read2[(T + 1) * bpp + 2] * w4) shr 15;
       pc[X * bpp + 1] :=
-        (Col1g * w1 + Read[(t + 1) * bpp + 1] * w2 +
-        Col2g * w3 + Read2[(t + 1) * bpp + 1] * w4) shr 15;
+        (Col1g * w1 + Read[(T + 1) * bpp + 1] * w2 +
+        Col2g * w3 + Read2[(T + 1) * bpp + 1] * w4) shr 15;
       pc[X * bpp] :=
-        (Col1r * w1 + Read2[(t + 1) * bpp] * w2 +
-        Col2r * w3 + Read2[(t + 1) * bpp] * w4) shr 15;
+        (Col1r * w1 + Read2[(T + 1) * bpp] * w2 +
+        Col2r * w3 + Read2[(T + 1) * bpp] * w4) shr 15;
       Inc(xP, xP2);
     end;
     Inc(yP, yP2);
@@ -1139,7 +1139,7 @@ var
   xDiff,
     yDiff,
     ifx, ify,
-    px, py,
+    PX, PY,
     ix, iy,
     X, Y: Integer;
   nw, ne,
@@ -1155,12 +1155,12 @@ begin
   for Y := 0 to Dst.Height - 1 do
   begin
     P3 := Dst.ScanLine[Y];
-    py := 2 * (Y - CY) + 1;
+    PY := 2 * (Y - CY) + 1;
     for X := 0 to Dst.Width - 1 do
     begin
-      px := 2 * (X - CX) + 1;
-      fx := (((px * cAngle - py * sAngle) - 1) / 2 + CX) - xDiff;
-      fy := (((px * sAngle + py * cAngle) - 1) / 2 + CY) - yDiff;
+      PX := 2 * (X - CX) + 1;
+      fx := (((PX * cAngle - PY * sAngle) - 1) / 2 + CX) - xDiff;
+      fy := (((PX * sAngle + PY * cAngle) - 1) / 2 + CY) - yDiff;
       ifx := Round(fx);
       ify := Round(fy);
 
@@ -1306,10 +1306,10 @@ var
   R: Single;
   theta: Single;
   ifx, ify: Integer;
-  dx, dy: Single;
+  DX, DY: Single;
   OFFSET: Single;
   ty, tx: Integer;
-  weight_x, weight_y: array [0..1] of Single;
+  WeightX, WeightY: array [0..1] of Single;
   Weight: Single;
   new_red, new_green: Integer;
   new_blue: Integer;
@@ -1335,9 +1335,9 @@ var
 
 begin
   OFFSET := -(Pi / 2);
-  dx := Bmp.Width - 1;
-  dy := Bmp.Height - 1;
-  R := Sqrt(dx * dx + dy * dy);
+  DX := Bmp.Width - 1;
+  DY := Bmp.Height - 1;
+  R := Sqrt(DX * DX + DY * DY);
   tx2 := R;
   ty2 := R;
   txmid := (Bmp.Width - 1) / 2; //Adjust these to move center of rotation
@@ -1353,9 +1353,9 @@ begin
   begin
     for tx := 0 to Round(tx2) do
     begin
-      dx := tx - txmid;
-      dy := ty - tymid;
-      R := Sqrt(dx * dx + dy * dy);
+      DX := tx - txmid;
+      DY := ty - tymid;
+      R := Sqrt(DX * DX + DY * DY);
       if R = 0 then
       begin
         fx := 0;
@@ -1363,7 +1363,7 @@ begin
       end
       else
       begin
-        theta := ArcTan2(dx, dy) - R / Amount - OFFSET;
+        theta := ArcTan2(DX, DY) - R / Amount - OFFSET;
         fx := R * Cos(theta);
         fy := R * Sin(theta);
       end;
@@ -1375,23 +1375,23 @@ begin
       // Calculate the weights.
       if fy >= 0 then
       begin
-        weight_y[1] := fy - ify;
-        weight_y[0] := 1 - weight_y[1];
+        WeightY[1] := fy - ify;
+        WeightY[0] := 1 - WeightY[1];
       end
       else
       begin
-        weight_y[0] := -(fy - ify);
-        weight_y[1] := 1 - weight_y[0];
+        WeightY[0] := -(fy - ify);
+        WeightY[1] := 1 - WeightY[0];
       end;
       if fx >= 0 then
       begin
-        weight_x[1] := fx - ifx;
-        weight_x[0] := 1 - weight_x[1];
+        WeightX[1] := fx - ifx;
+        WeightX[0] := 1 - WeightX[1];
       end
       else
       begin
-        weight_x[0] := -(fx - ifx);
-        Weight_x[1] := 1 - weight_x[0];
+        WeightX[0] := -(fx - ifx);
+        WeightX[1] := 1 - WeightX[0];
       end;
 
       if ifx < 0 then
@@ -1428,7 +1428,7 @@ begin
             new_green := sli[(Bmp.Width - ifx - ix) * bpp + 1];
             new_blue := sli[(Bmp.Width - ifx - ix) * bpp + 2];
           end;
-          Weight := weight_x[ix] * weight_y[iy];
+          Weight := WeightX[ix] * WeightY[iy];
           total_red := total_red + new_red * Weight;
           total_green := total_green + new_green * Weight;
           total_blue := total_blue + new_blue * Weight;
@@ -1559,7 +1559,7 @@ end;
 
 class procedure TJvPaintFX.SqueezeHor(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
 var
-  dx, X, Y, c, CX: Integer;
+  DX, X, Y, C, CX: Integer;
   R: TRect;
   Bm: TBitmap;
   p0, P1: PByteArray;
@@ -1577,46 +1577,46 @@ begin
     P1 := Src.ScanLine[Y];
     for X := 0 to Src.Width - 1 do
     begin
-      c := X * bpp;
-      p0[c] := P1[c];
-      p0[c + 1] := P1[c + 1];
-      p0[c + 2] := P1[c + 2];
+      C := X * bpp;
+      p0[C] := P1[C];
+      p0[C + 1] := P1[C + 1];
+      p0[C + 2] := P1[C + 2];
     end;
     case Style of
-      mbhor:
+      mbHor:
         begin
-          dx := Amount;
-          R := Rect(dx, Y, Src.Width - dx, Y + 1);
+          DX := Amount;
+          R := Rect(DX, Y, Src.Width - DX, Y + 1);
         end;
-      mbtop:
+      mbTop:
         begin
-          dx := Round((Src.Height - 1 - Y) / Src.Height * Amount);
-          R := Rect(dx, Y, Src.Width - dx, Y + 1);
+          DX := Round((Src.Height - 1 - Y) / Src.Height * Amount);
+          R := Rect(DX, Y, Src.Width - DX, Y + 1);
         end;
       mbBottom:
         begin
-          dx := Round(Y / Src.Height * Amount);
-          R := Rect(dx, Y, Src.Width - dx, Y + 1);
+          DX := Round(Y / Src.Height * Amount);
+          R := Rect(DX, Y, Src.Width - DX, Y + 1);
         end;
       mbDiamond:
         begin
-          dx := Round(Amount * Abs(Cos(Y / (Src.Height - 1) * Pi)));
-          R := Rect(dx, Y, Src.Width - dx, Y + 1);
+          DX := Round(Amount * Abs(Cos(Y / (Src.Height - 1) * Pi)));
+          R := Rect(DX, Y, Src.Width - DX, Y + 1);
         end;
       mbWaste:
         begin
-          dx := Round(Amount * Abs(Sin(Y / (Src.Height - 1) * Pi)));
-          R := Rect(dx, Y, Src.Width - dx, Y + 1);
+          DX := Round(Amount * Abs(Sin(Y / (Src.Height - 1) * Pi)));
+          R := Rect(DX, Y, Src.Width - DX, Y + 1);
         end;
       mbRound:
         begin
-          dx := Round(Amount * Abs(Sin(Y / (Src.Height - 1) * Pi)));
-          R := Rect(CX - dx, Y, CX + dx, Y + 1);
+          DX := Round(Amount * Abs(Sin(Y / (Src.Height - 1) * Pi)));
+          R := Rect(CX - DX, Y, CX + DX, Y + 1);
         end;
       mbRound2:
         begin
-          dx := Round(Amount * Abs(Sin(Y / (Src.Height - 1) * Pi * 2)));
-          R := Rect(CX - dx, Y, CX + dx, Y + 1);
+          DX := Round(Amount * Abs(Sin(Y / (Src.Height - 1) * Pi * 2)));
+          R := Rect(CX - DX, Y, CX + DX, Y + 1);
         end;
     end;
     Dst.Canvas.StretchDraw(R, Bm);
@@ -1660,8 +1660,8 @@ type
 
   // List of source pixels contributing to a destination pixel
   TCList = record
-    n: Integer;
-    p: PContributorList;
+    N: Integer;
+    P: PContributorList;
   end;
 
   TCListList = array [0..0] of TCList;
@@ -1693,7 +1693,7 @@ var
   Center: Single; // Filter calculation variables
   Width, fscale, Weight: Single; // Filter calculation variables
   Left, Right: Integer; // Filter calculation variables
-  n: Integer; // Pixel number
+  N: Integer; // Pixel number
   Work: TBitmap;
   Contrib: PCListList;
   RGB: TRGB;
@@ -1757,8 +1757,8 @@ begin
       fscale := 1.0 / xscale;
       for I := 0 to DstWidth - 1 do
       begin
-        Contrib^[I].n := 0;
-        GetMem(Contrib^[I].p, Trunc(Width * 2.0 + 1) * SizeOf(TContributor));
+        Contrib^[I].N := 0;
+        GetMem(Contrib^[I].P, Trunc(Width * 2.0 + 1) * SizeOf(TContributor));
         Center := I / xscale;
         // Original code:
         // Left := Ceil(Center - Width);
@@ -1771,16 +1771,16 @@ begin
           if (Weight = 0.0) then
             Continue;
           if (J < 0) then
-            n := -J
+            N := -J
           else
           if (J >= SrcWidth) then
-            n := SrcWidth - J + SrcWidth - 1
+            N := SrcWidth - J + SrcWidth - 1
           else
-            n := J;
-          k := Contrib^[I].n;
-          Contrib^[I].n := Contrib^[I].n + 1;
-          Contrib^[I].p^[k].Pixel := n;
-          Contrib^[I].p^[k].Weight := Weight;
+            N := J;
+          k := Contrib^[I].N;
+          Contrib^[I].N := Contrib^[I].N + 1;
+          Contrib^[I].P^[k].Pixel := N;
+          Contrib^[I].P^[k].Weight := Weight;
         end;
       end;
     end
@@ -1790,8 +1790,8 @@ begin
     begin
       for I := 0 to DstWidth - 1 do
       begin
-        Contrib^[I].n := 0;
-        GetMem(Contrib^[I].p, Trunc(AWidth * 2.0 + 1) * SizeOf(TContributor));
+        Contrib^[I].N := 0;
+        GetMem(Contrib^[I].P, Trunc(AWidth * 2.0 + 1) * SizeOf(TContributor));
         Center := I / xscale;
         // Original code:
         // Left := Ceil(Center - AWidth);
@@ -1804,16 +1804,16 @@ begin
           if (Weight = 0.0) then
             Continue;
           if J < 0 then
-            n := -J
+            N := -J
           else
           if J >= SrcWidth then
-            n := SrcWidth - J + SrcWidth - 1
+            N := SrcWidth - J + SrcWidth - 1
           else
-            n := J;
-          k := Contrib^[I].n;
-          Contrib^[I].n := Contrib^[I].n + 1;
-          Contrib^[I].p^[k].Pixel := n;
-          Contrib^[I].p^[k].Weight := Weight;
+            N := J;
+          k := Contrib^[I].N;
+          Contrib^[I].N := Contrib^[I].N + 1;
+          Contrib^[I].P^[k].Pixel := N;
+          Contrib^[I].P^[k].Weight := Weight;
         end;
       end;
     end;
@@ -1830,10 +1830,10 @@ begin
         RGB.R := 0.0;
         RGB.G := 0.0;
         RGB.B := 0.0;
-        for J := 0 to Contrib^[I].n - 1 do
+        for J := 0 to Contrib^[I].N - 1 do
         begin
-          Color := SourceLine^[Contrib^[I].p^[J].Pixel];
-          Weight := Contrib^[I].p^[J].Weight;
+          Color := SourceLine^[Contrib^[I].P^[J].Pixel];
+          Weight := Contrib^[I].P^[J].Weight;
           if (Weight = 0.0) then
             Continue;
           RGB.R := RGB.R + Color.R * Weight;
@@ -1870,7 +1870,7 @@ begin
 
     // Free the memory allocated for horizontal filter weights
     for I := 0 to DstWidth - 1 do
-      FreeMem(Contrib^[I].p);
+      FreeMem(Contrib^[I].P);
 
     FreeMem(Contrib);
 
@@ -1886,8 +1886,8 @@ begin
       fscale := 1.0 / yscale;
       for I := 0 to DstHeight - 1 do
       begin
-        Contrib^[I].n := 0;
-        GetMem(Contrib^[I].p, Trunc(Width * 2.0 + 1) * SizeOf(TContributor));
+        Contrib^[I].N := 0;
+        GetMem(Contrib^[I].P, Trunc(Width * 2.0 + 1) * SizeOf(TContributor));
         Center := I / yscale;
         // Original code:
         // Left := Ceil(Center - Width);
@@ -1900,16 +1900,16 @@ begin
           if Weight = 0.0 then
             Continue;
           if J < 0 then
-            n := -J
+            N := -J
           else
           if J >= SrcHeight then
-            n := SrcHeight - J + SrcHeight - 1
+            N := SrcHeight - J + SrcHeight - 1
           else
-            n := J;
-          k := Contrib^[I].n;
-          Contrib^[I].n := Contrib^[I].n + 1;
-          Contrib^[I].p^[k].Pixel := n;
-          Contrib^[I].p^[k].Weight := Weight;
+            N := J;
+          k := Contrib^[I].N;
+          Contrib^[I].N := Contrib^[I].N + 1;
+          Contrib^[I].P^[k].Pixel := N;
+          Contrib^[I].P^[k].Weight := Weight;
         end;
       end
     end
@@ -1919,8 +1919,8 @@ begin
     begin
       for I := 0 to DstHeight - 1 do
       begin
-        Contrib^[I].n := 0;
-        GetMem(Contrib^[I].p, Trunc(AWidth * 2.0 + 1) * SizeOf(TContributor));
+        Contrib^[I].N := 0;
+        GetMem(Contrib^[I].P, Trunc(AWidth * 2.0 + 1) * SizeOf(TContributor));
         Center := I / yscale;
         // Original code:
         // Left := Ceil(Center - AWidth);
@@ -1933,16 +1933,16 @@ begin
           if Weight = 0.0 then
             Continue;
           if J < 0 then
-            n := -J
+            N := -J
           else
           if J >= SrcHeight then
-            n := SrcHeight - J + SrcHeight - 1
+            N := SrcHeight - J + SrcHeight - 1
           else
-            n := J;
-          k := Contrib^[I].n;
-          Contrib^[I].n := Contrib^[I].n + 1;
-          Contrib^[I].p^[k].Pixel := n;
-          Contrib^[I].p^[k].Weight := Weight;
+            N := J;
+          k := Contrib^[I].N;
+          Contrib^[I].N := Contrib^[I].N + 1;
+          Contrib^[I].P^[k].Pixel := N;
+          Contrib^[I].P^[k].Weight := Weight;
         end;
       end;
     end;
@@ -1963,10 +1963,10 @@ begin
         RGB.G := 0;
         RGB.B := 0;
         // Weight := 0.0;
-        for J := 0 to Contrib^[I].n - 1 do
+        for J := 0 to Contrib^[I].N - 1 do
         begin
-          Color := PColorRGB(Integer(SourceLine) + Contrib^[I].p^[J].Pixel * Delta)^;
-          Weight := Contrib^[I].p^[J].Weight;
+          Color := PColorRGB(Integer(SourceLine) + Contrib^[I].P^[J].Pixel * Delta)^;
+          Weight := Contrib^[I].P^[J].Weight;
           if (Weight = 0.0) then
             Continue;
           RGB.R := RGB.R + Color.R * Weight;
@@ -2003,7 +2003,7 @@ begin
 
     // Free the memory allocated for vertical filter weights
     for I := 0 to DstHeight - 1 do
-      FreeMem(Contrib^[I].p);
+      FreeMem(Contrib^[I].P);
 
     FreeMem(Contrib);
   finally
@@ -2046,7 +2046,7 @@ class procedure TJvPaintFX.FlipDown(const Dst: TBitmap);
 var
   Bmp: TBitmap;
   W, H, X, Y: Integer;
-  pd, ps: PByteArray;
+  PD, PS: PByteArray;
 begin
   W := Dst.Width;
   H := Dst.Height;
@@ -2057,13 +2057,13 @@ begin
   Dst.PixelFormat := pf24bit;
   for Y := 0 to H - 1 do
   begin
-    pd := Bmp.ScanLine[Y];
-    ps := Dst.ScanLine[H - 1 - Y];
+    PD := Bmp.ScanLine[Y];
+    PS := Dst.ScanLine[H - 1 - Y];
     for X := 0 to W - 1 do
     begin
-      pd[X * bpp] := ps[X * bpp];
-      pd[X * bpp + 1] := ps[X * bpp + 1];
-      pd[X * bpp + 2] := ps[X * bpp + 2];
+      PD[X * bpp] := PS[X * bpp];
+      PD[X * bpp + 1] := PS[X * bpp + 1];
+      PD[X * bpp + 2] := PS[X * bpp + 2];
     end;
   end;
   Dst.Assign(Bmp);
@@ -2074,7 +2074,7 @@ class procedure TJvPaintFX.FlipRight(const Dst: TBitmap);
 var
   dest: TBitmap;
   W, H, X, Y: Integer;
-  pd, ps: PByteArray;
+  PD, PS: PByteArray;
 begin
   W := Dst.Width;
   H := Dst.Height;
@@ -2085,13 +2085,13 @@ begin
   Dst.PixelFormat := pf24bit;
   for Y := 0 to H - 1 do
   begin
-    pd := dest.ScanLine[Y];
-    ps := Dst.ScanLine[Y];
+    PD := dest.ScanLine[Y];
+    PS := Dst.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      pd[X * bpp] := ps[(W - 1 - X) * bpp];
-      pd[X * bpp + 1] := ps[(W - 1 - X) * bpp + 1];
-      pd[X * bpp + 2] := ps[(W - 1 - X) * bpp + 2];
+      PD[X * bpp] := PS[(W - 1 - X) * bpp];
+      PD[X * bpp + 1] := PS[(W - 1 - X) * bpp + 1];
+      PD[X * bpp + 2] := PS[(W - 1 - X) * bpp + 2];
     end;
   end;
   Dst.Assign(dest);
@@ -2131,23 +2131,23 @@ begin
           begin
             tb := P1[X + 1];
             hasb := True;
-            p3[X * bpp] := TraceB;
-            p3[X * bpp + 1] := TraceB;
-            p3[X * bpp + 2] := TraceB;
+            P3[X * bpp] := TraceB;
+            P3[X * bpp + 1] := TraceB;
+            P3[X * bpp + 2] := TraceB;
           end
           else
           begin
             if P1[X] <> tb then
             begin
-              p3[X * bpp] := TraceB;
-              p3[X * bpp + 1] := TraceB;
-              p3[X * bpp + 2] := TraceB;
+              P3[X * bpp] := TraceB;
+              P3[X * bpp + 1] := TraceB;
+              P3[X * bpp + 2] := TraceB;
             end
             else
             begin
-              p3[(X + 1) * bpp] := TraceB;
-              p3[(X + 1) * bpp + 1] := TraceB;
-              p3[(X + 1) * bpp + 1] := TraceB;
+              P3[(X + 1) * bpp] := TraceB;
+              P3[(X + 1) * bpp + 1] := TraceB;
+              P3[(X + 1) * bpp + 1] := TraceB;
             end;
           end;
         end;
@@ -2157,23 +2157,23 @@ begin
           begin
             tb := P2[X];
             hasb := True;
-            p3[X * bpp] := TraceB;
-            p3[X * bpp + 1] := TraceB;
-            p3[X * bpp + 2] := TraceB;
+            P3[X * bpp] := TraceB;
+            P3[X * bpp + 1] := TraceB;
+            P3[X * bpp + 2] := TraceB;
           end
           else
           begin
             if P1[X] <> tb then
             begin
-              p3[X * bpp] := TraceB;
-              p3[X * bpp + 1] := TraceB;
-              p3[X * bpp + 2] := TraceB;
+              P3[X * bpp] := TraceB;
+              P3[X * bpp + 1] := TraceB;
+              P3[X * bpp + 2] := TraceB;
             end
             else
             begin
-              p4[X * bpp] := TraceB;
-              p4[X * bpp + 1] := TraceB;
-              p4[X * bpp + 2] := TraceB;
+              P4[X * bpp] := TraceB;
+              P4[X * bpp + 1] := TraceB;
+              P4[X * bpp + 2] := TraceB;
             end;
           end;
         end;
@@ -2197,23 +2197,23 @@ begin
             begin
               tb := P1[X - 1];
               hasb := True;
-              p3[X * bpp] := TraceB;
-              p3[X * bpp + 1] := TraceB;
-              p3[X * bpp + 2] := TraceB;
+              P3[X * bpp] := TraceB;
+              P3[X * bpp + 1] := TraceB;
+              P3[X * bpp + 2] := TraceB;
             end
             else
             begin
               if P1[X] <> tb then
               begin
-                p3[X * bpp] := TraceB;
-                p3[X * bpp + 1] := TraceB;
-                p3[X * bpp + 2] := TraceB;
+                P3[X * bpp] := TraceB;
+                P3[X * bpp + 1] := TraceB;
+                P3[X * bpp + 2] := TraceB;
               end
               else
               begin
-                p3[(X - 1) * bpp] := TraceB;
-                p3[(X - 1) * bpp + 1] := TraceB;
-                p3[(X - 1) * bpp + 2] := TraceB;
+                P3[(X - 1) * bpp] := TraceB;
+                P3[(X - 1) * bpp + 1] := TraceB;
+                P3[(X - 1) * bpp + 2] := TraceB;
               end;
             end;
           end;
@@ -2223,23 +2223,23 @@ begin
             begin
               tb := P2[X];
               hasb := True;
-              p3[X * bpp] := TraceB;
-              p3[X * bpp + 1] := TraceB;
-              p3[X * bpp + 2] := TraceB;
+              P3[X * bpp] := TraceB;
+              P3[X * bpp + 1] := TraceB;
+              P3[X * bpp + 2] := TraceB;
             end
             else
             begin
               if P1[X] <> tb then
               begin
-                p3[X * bpp] := TraceB;
-                p3[X * bpp + 1] := TraceB;
-                p3[X * bpp + 2] := TraceB;
+                P3[X * bpp] := TraceB;
+                P3[X * bpp + 1] := TraceB;
+                P3[X * bpp + 2] := TraceB;
               end
               else
               begin
-                p4[X * bpp] := TraceB;
-                p4[X * bpp + 1] := TraceB;
-                p4[X * bpp + 2] := TraceB;
+                P4[X * bpp] := TraceB;
+                P4[X * bpp + 1] := TraceB;
+                P4[X * bpp + 2] := TraceB;
               end;
             end;
           end;
@@ -2371,15 +2371,15 @@ begin
   B.Canvas.Draw(0, 0, Src);
   for Y := 0 to B.Height - 1 do
   begin
-    p := B.ScanLine[Y];
+    P := B.ScanLine[Y];
     if (Y mod 2) = 0 then
     begin
       for X := 0 to B.Width - 1 do
         if (X mod 2) = 0 then
         begin
-          p[X * bpp] := $FF;
-          p[X * bpp + 1] := $FF;
-          p[X * bpp + 2] := $FF;
+          P[X * bpp] := $FF;
+          P[X * bpp + 1] := $FF;
+          P[X * bpp + 2] := $FF;
         end;
     end
     else
@@ -2387,9 +2387,9 @@ begin
       for X := 0 to B.Width - 1 do
         if ((X + 1) mod 2) = 0 then
         begin
-          p[X * bpp] := $FF;
-          p[X * bpp + 1] := $FF;
-          p[X * bpp + 2] := $FF;
+          P[X * bpp] := $FF;
+          P[X * bpp + 1] := $FF;
+          P[X * bpp + 2] := $FF;
         end;
     end;
   end;
@@ -2413,24 +2413,24 @@ begin
   B.Canvas.Draw(0, 0, Src);
   for Y := 0 to B.Height - 1 do
   begin
-    p := B.ScanLine[Y];
+    P := B.ScanLine[Y];
     if (Y mod 2) = 0 then
     begin
       for X := 0 to B.Width - 1 do
         if (X mod 2) = 0 then
         begin
-          p[X * bpp] := $FF;
-          p[X * bpp + 1] := $FF;
-          p[X * bpp + 2] := $FF;
+          P[X * bpp] := $FF;
+          P[X * bpp + 1] := $FF;
+          P[X * bpp + 2] := $FF;
         end;
     end
     else
     begin
       for X := 0 to B.Width - 1 do
       begin
-        p[X * bpp] := $FF;
-        p[X * bpp + 1] := $FF;
-        p[X * bpp + 2] := $FF;
+        P[X * bpp] := $FF;
+        P[X * bpp + 1] := $FF;
+        P[X * bpp + 2] := $FF;
       end;
 
     end;
@@ -2444,7 +2444,7 @@ end;
 class procedure TJvPaintFX.FoldRight(Src1, Src2, Dst: TBitmap; Amount: Single);
 var
   W, H, X, Y, xf, xf0: Integer;
-  ps1, ps2, pd: PByteArray;
+  PS1, PS2, PD: PByteArray;
 begin
   Src1.PixelFormat := pf24bit;
   Src2.PixelFormat := pf24bit;
@@ -2456,41 +2456,41 @@ begin
   xf := Round(Amount * W);
   for Y := 0 to H - 1 do
   begin
-    ps1 := Src1.ScanLine[Y];
-    ps2 := Src2.ScanLine[Y];
-    pd := Dst.ScanLine[Y];
+    PS1 := Src1.ScanLine[Y];
+    PS2 := Src2.ScanLine[Y];
+    PD := Dst.ScanLine[Y];
     for X := 0 to xf do
     begin
       xf0 := xf + (xf - X);
       if xf0 < W then
       begin
-        pd[xf0 * bpp] := ps1[X * bpp];
-        pd[xf0 * bpp + 1] := ps1[X * bpp + 1];
-        pd[xf0 * bpp + 2] := ps1[X * bpp + 2];
-        pd[X * bpp] := ps2[X * bpp];
-        pd[X * bpp + 1] := ps2[X * bpp + 1];
-        pd[X * bpp + 2] := ps2[X * bpp + 2];
+        PD[xf0 * bpp] := PS1[X * bpp];
+        PD[xf0 * bpp + 1] := PS1[X * bpp + 1];
+        PD[xf0 * bpp + 2] := PS1[X * bpp + 2];
+        PD[X * bpp] := PS2[X * bpp];
+        PD[X * bpp + 1] := PS2[X * bpp + 1];
+        PD[X * bpp + 2] := PS2[X * bpp + 2];
       end;
     end;
     if (2 * xf) < W - 1 then
       for X := 2 * xf + 1 to W - 1 do
       begin
-        pd[X * bpp] := ps1[X * bpp];
-        pd[X * bpp + 1] := ps1[X * bpp + 1];
-        pd[X * bpp + 2] := ps1[X * bpp + 2];
+        PD[X * bpp] := PS1[X * bpp];
+        PD[X * bpp + 1] := PS1[X * bpp + 1];
+        PD[X * bpp + 2] := PS1[X * bpp + 2];
       end;
   end;
 end;
 
 class procedure TJvPaintFX.Mandelbrot(const Dst: TBitmap; Factor: Integer);
 const
-  maxX = 1.25;
-  minX = -2;
-  maxY = 1.25;
-  minY = -1.25;
+  MaxX = 1.25;
+  MinX = -2;
+  MaxY = 1.25;
+  MinY = -1.25;
 var
   W, H, X, Y : Integer;
-  dx, dy: Extended;
+  DX, DY: Extended;
   Line: PByteArray;
   Color: Integer;
 
@@ -2498,36 +2498,36 @@ var
   const
     MAX_ITERATION = 64;
   var
-    OLD_A: Extended; {just a variable to keep 'a' from being destroyed}
+    OldA: Extended; {just a variable to keep 'a' from being destroyed}
     A, B: Extended; {function Z divided in real and imaginary parts}
-    LENGTH_Z: Extended; {length of Z, sqrt(length_z)>2 => Z->infinity}
-    iteration: Integer;
+    LengthZ: Extended; {length of Z, sqrt(length_z)>2 => Z->infinity}
+    Iteration: Integer;
   begin
     A := 0; {initialize Z(0) = 0}
     B := 0;
-    ITERATION := 0; {initialize iteration}
+    Iteration := 0; {initialize Iteration}
     repeat
-      OLD_A := A; {saves the 'a'  (Will be destroyed in next line}
+      OldA := A; {saves the 'a'  (Will be destroyed in next line}
       A := A * A - B * B + CA;
-      B := 2 * OLD_A * B + CBi;
-      ITERATION := ITERATION + 1;
-      LENGTH_Z := A * A + B * B;
-    until (LENGTH_Z >= 4) or (ITERATION > MAX_ITERATION);
-    Result := iteration;
+      B := 2 * OldA * B + CBi;
+      Iteration := Iteration + 1;
+      LengthZ := A * A + B * B;
+    until (LengthZ >= 4) or (Iteration > MAX_ITERATION);
+    Result := Iteration;
   end;
 
 begin
   W := Dst.Width;
   H := Dst.Height;
   Dst.PixelFormat := pf24bit;
-  dx := (MaxX - MinX) / W;
-  dy := (Maxy - MinY) / H;
+  DX := (MaxX - MinX) / W;
+  DY := (MaxY - MinY) / H;
   for Y := 0 to H - 1 do
   begin
     Line := Dst.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      Color := IsMandel(MinX + X * dx, MinY + Y * dy);
+      Color := IsMandel(MinX + X * DX, MinY + Y * DY);
       if Color > Factor then
         Color := $FF
       else
@@ -2615,35 +2615,35 @@ end;
 
 class procedure TJvPaintFX.Shake(Src, Dst: TBitmap; Factor: Single);
 var
-  X, Y, H, W, dx: Integer;
-  p: PByteArray;
+  X, Y, H, W, DX: Integer;
+  P: PByteArray;
 begin
   Dst.Canvas.Draw(0, 0, Src);
   Dst.PixelFormat := pf24bit;
   W := Dst.Width;
   H := Dst.Height;
-  dx := Round(Factor * W);
-  if dx = 0 then
+  DX := Round(Factor * W);
+  if DX = 0 then
     Exit;
-  if dx > (W div 2) then
+  if DX > (W div 2) then
     Exit;
 
   for Y := 0 to H - 1 do
   begin
-    p := Dst.ScanLine[Y];
+    P := Dst.ScanLine[Y];
     if (Y mod 2) = 0 then
-      for X := dx to W - 1 do
+      for X := DX to W - 1 do
       begin
-        p[(X - dx) * bpp] := p[X * bpp];
-        p[(X - dx) * bpp + 1] := p[X * bpp + 1];
-        p[(X - dx) * bpp + 2] := p[X * bpp + 2];
+        P[(X - DX) * bpp] := P[X * bpp];
+        P[(X - DX) * bpp + 1] := P[X * bpp + 1];
+        P[(X - DX) * bpp + 2] := P[X * bpp + 2];
       end
     else
-      for X := W - 1 downto dx do
+      for X := W - 1 downto DX do
       begin
-        p[X * bpp] := p[(X - dx) * bpp];
-        p[X * bpp + 1] := p[(X - dx) * bpp + 1];
-        p[X * bpp + 2] := p[(X - dx) * bpp + 2];
+        P[X * bpp] := P[(X - DX) * bpp];
+        P[X * bpp + 1] := P[(X - DX) * bpp + 1];
+        P[X * bpp + 2] := P[(X - DX) * bpp + 2];
       end;
   end;
 
@@ -2651,41 +2651,41 @@ end;
 
 class procedure TJvPaintFX.ShakeDown(Src, Dst: TBitmap; Factor: Single);
 var
-  X, Y, H, W, dy: Integer;
-  p, P2, p3: PByteArray;
+  X, Y, H, W, DY: Integer;
+  P, P2, P3: PByteArray;
 begin
   Dst.Canvas.Draw(0, 0, Src);
   Dst.PixelFormat := pf24bit;
   W := Dst.Width;
   H := Dst.Height;
-  dy := Round(Factor * H);
-  if dy = 0 then
+  DY := Round(Factor * H);
+  if DY = 0 then
     Exit;
-  if dy > (H div 2) then
+  if DY > (H div 2) then
     Exit;
 
-  for Y := dy to H - 1 do
+  for Y := DY to H - 1 do
   begin
-    p := Dst.ScanLine[Y];
-    P2 := Dst.ScanLine[Y - dy];
+    P := Dst.ScanLine[Y];
+    P2 := Dst.ScanLine[Y - DY];
     for X := 0 to W - 1 do
       if (X mod 2) = 0 then
       begin
-        P2[X * bpp] := p[X * bpp];
-        P2[X * bpp + 1] := p[X * bpp + 1];
-        P2[X * bpp + 2] := p[X * bpp + 2];
+        P2[X * bpp] := P[X * bpp];
+        P2[X * bpp + 1] := P[X * bpp + 1];
+        P2[X * bpp + 2] := P[X * bpp + 2];
       end;
   end;
-  for Y := H - 1 - dy downto 0 do
+  for Y := H - 1 - DY downto 0 do
   begin
-    p := Dst.ScanLine[Y];
-    p3 := Dst.ScanLine[Y + dy];
+    P := Dst.ScanLine[Y];
+    P3 := Dst.ScanLine[Y + DY];
     for X := 0 to W - 1 do
       if (X mod 2) <> 0 then
       begin
-        p3[X * bpp] := p[X * bpp];
-        p3[X * bpp + 1] := p[X * bpp + 1];
-        p3[X * bpp + 2] := p[X * bpp + 2];
+        P3[X * bpp] := P[X * bpp];
+        P3[X * bpp + 1] := P[X * bpp + 1];
+        P3[X * bpp + 2] := P[X * bpp + 2];
       end;
   end;
 end;
@@ -2695,7 +2695,7 @@ var
   cval, sval: array [0..255] of Integer;
   I, X, Y, W, H, XX, YY: Integer;
   Asin, Acos: Extended;
-  ps1, ps2, pd: PByteArray;
+  PS1, PS2, PD: PByteArray;
 begin
   W := Src1.Width;
   H := Src1.Height;
@@ -2711,18 +2711,18 @@ begin
   end;
   for Y := 0 to H - 1 do
   begin
-    pd := Dst.ScanLine[Y];
-    ps2 := Src2.ScanLine[Y];
+    PD := Dst.ScanLine[Y];
+    PS2 := Src2.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      XX := X + sval[ps2[X * bpp]];
-      YY := Y + cval[ps2[X * bpp]];
+      XX := X + sval[PS2[X * bpp]];
+      YY := Y + cval[PS2[X * bpp]];
       if (XX >= 0) and (XX < W) and (YY >= 0) and (YY < H) then
       begin
-        ps1 := Src1.ScanLine[YY];
-        pd[X * bpp] := ps1[XX * bpp];
-        pd[X * bpp + 1] := ps1[XX * bpp + 1];
-        pd[X * bpp + 2] := ps1[XX * bpp + 2];
+        PS1 := Src1.ScanLine[YY];
+        PD[X * bpp] := PS1[XX * bpp];
+        PD[X * bpp + 1] := PS1[XX * bpp + 1];
+        PD[X * bpp + 2] := PS1[XX * bpp + 2];
       end;
     end;
   end;
@@ -2731,7 +2731,7 @@ end;
 
 class procedure TJvPaintFX.SplitRound(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
 var
-  X, Y, W, c, c00, dx, CX: Integer;
+  X, Y, W, C, c00, DX, CX: Integer;
   R, R00: TRect;
   Bm, bm2: TBitmap;
   p0, p00, P1: PByteArray;
@@ -2755,30 +2755,30 @@ begin
   bm2.Width := CX;
   p0 := Bm.ScanLine[0];
   p00 := bm2.ScanLine[0];
-  dx := 0;
+  DX := 0;
   for Y := 0 to Src.Height - 1 do
   begin
     P1 := Src.ScanLine[Y];
     for X := 0 to CX - 1 do
     begin
-      c := X * bpp;
+      C := X * bpp;
       c00 := (CX + X) * bpp;
-      p0[c] := P1[c];
-      p0[c + 1] := P1[c + 1];
-      p0[c + 2] := P1[c + 2];
-      p00[c] := P1[c00];
-      p00[c + 1] := P1[c00 + 1];
-      p00[c + 2] := P1[c00 + 2];
+      p0[C] := P1[C];
+      p0[C + 1] := P1[C + 1];
+      p0[C + 2] := P1[C + 2];
+      p00[C] := P1[c00];
+      p00[C + 1] := P1[c00 + 1];
+      p00[C + 2] := P1[c00 + 2];
     end;
     case Style of
       mbSplitRound:
-        dx := Round(Amount * Abs(Sin(Y / (Src.Height - 1) * Pi)));
+        DX := Round(Amount * Abs(Sin(Y / (Src.Height - 1) * Pi)));
       mbSplitWaste:
-        dx := Round(Amount * Abs(Cos(Y / (Src.Height - 1) * Pi)));
+        DX := Round(Amount * Abs(Cos(Y / (Src.Height - 1) * Pi)));
     end;
-    R := Rect(0, Y, dx, Y + 1);
+    R := Rect(0, Y, DX, Y + 1);
     Dst.Canvas.StretchDraw(R, Bm);
-    R00 := Rect(W - 1 - dx, Y, W - 1, Y + 1);
+    R00 := Rect(W - 1 - DX, Y, W - 1, Y + 1);
     Dst.Canvas.StretchDraw(R00, bm2);
   end;
   Bm.Free;
@@ -2806,7 +2806,7 @@ end;
 
 class procedure TJvPaintFX.FilterRed(const Dst: TBitmap; Min, Max: Integer);
 var
-  c, X, Y: Integer;
+  C, X, Y: Integer;
   P1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
@@ -2814,20 +2814,20 @@ begin
     P1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * bpp;
-      if (P1[c + 2] > Min) and (P1[c + 2] < Max) then
-        P1[c + 2] := $FF
+      C := X * bpp;
+      if (P1[C + 2] > Min) and (P1[C + 2] < Max) then
+        P1[C + 2] := $FF
       else
-        P1[c + 2] := 0;
-      P1[c] := 0;
-      P1[c + 1] := 0;
+        P1[C + 2] := 0;
+      P1[C] := 0;
+      P1[C + 1] := 0;
     end;
   end;
 end;
 
 class procedure TJvPaintFX.FilterGreen(const Dst: TBitmap; Min, Max: Integer);
 var
-  c, X, Y: Integer;
+  C, X, Y: Integer;
   P1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
@@ -2835,20 +2835,20 @@ begin
     P1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * bpp;
-      if (P1[c + 1] > Min) and (P1[c + 1] < Max) then
-        P1[c + 1] := $FF
+      C := X * bpp;
+      if (P1[C + 1] > Min) and (P1[C + 1] < Max) then
+        P1[C + 1] := $FF
       else
-        P1[c + 1] := 0;
-      P1[c] := 0;
-      P1[c + 2] := 0;
+        P1[C + 1] := 0;
+      P1[C] := 0;
+      P1[C + 2] := 0;
     end;
   end;
 end;
 
 class procedure TJvPaintFX.FilterBlue(const Dst: TBitmap; Min, Max: Integer);
 var
-  c, X, Y: Integer;
+  C, X, Y: Integer;
   P1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
@@ -2856,20 +2856,20 @@ begin
     P1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * bpp;
-      if (P1[c] > Min) and (P1[c] < Max) then
-        P1[c] := $FF
+      C := X * bpp;
+      if (P1[C] > Min) and (P1[C] < Max) then
+        P1[C] := $FF
       else
-        P1[c] := 0;
-      P1[c + 1] := 0;
-      P1[c + 2] := 0;
+        P1[C] := 0;
+      P1[C + 1] := 0;
+      P1[C + 2] := 0;
     end;
   end;
 end;
 
 class procedure TJvPaintFX.FilterXRed(const Dst: TBitmap; Min, Max: Integer);
 var
-  c, X, Y: Integer;
+  C, X, Y: Integer;
   P1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
@@ -2877,18 +2877,18 @@ begin
     P1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * bpp;
-      if (P1[c + 2] > Min) and (P1[c + 2] < Max) then
-        P1[c + 2] := $FF
+      C := X * bpp;
+      if (P1[C + 2] > Min) and (P1[C + 2] < Max) then
+        P1[C + 2] := $FF
       else
-        P1[c + 2] := 0;
+        P1[C + 2] := 0;
     end;
   end;
 end;
 
 class procedure TJvPaintFX.FilterXGreen(const Dst: TBitmap; Min, Max: Integer);
 var
-  c, X, Y: Integer;
+  C, X, Y: Integer;
   P1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
@@ -2896,18 +2896,18 @@ begin
     P1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * bpp;
-      if (P1[c + 1] > Min) and (P1[c + 1] < Max) then
-        P1[c + 1] := $FF
+      C := X * bpp;
+      if (P1[C + 1] > Min) and (P1[C + 1] < Max) then
+        P1[C + 1] := $FF
       else
-        P1[c + 1] := 0;
+        P1[C + 1] := 0;
     end;
   end;
 end;
 
 class procedure TJvPaintFX.FilterXBlue(const Dst: TBitmap; Min, Max: Integer);
 var
-  c, X, Y: Integer;
+  C, X, Y: Integer;
   P1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
@@ -2915,11 +2915,11 @@ begin
     P1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * bpp;
-      if (P1[c] > Min) and (P1[c] < Max) then
-        P1[c] := $FF
+      C := X * bpp;
+      if (P1[C] > Min) and (P1[C] < Max) then
+        P1[C] := $FF
       else
-        P1[c] := 0;
+        P1[C] := 0;
     end;
   end;
 end;
@@ -2935,8 +2935,8 @@ type
     B: Byte;
   end;
 var
-  X, XX, Y, YY, Cx, Cy, Dx, Dy, XSquared, YSquared: Double;
-  Nx, Ny, Py, Px, I: Integer;
+  X, XX, Y, YY, CX, CY, DX, DY, XSquared, YSquared: Double;
+  NX, NY, PY, PX, I: Integer;
   Line: PByteArray;
   cc: array [0..15] of TJvRGBTriplet;
   AColor: TColor;
@@ -2952,21 +2952,21 @@ begin
   if Niter < nc then
     Niter := nc;
   try
-    Nx := Dst.Width;
-    Ny := Dst.Height;
-    Cx := 0;
-    Cy := 1;
-    Dx := (x1 - x0) / nx;
-    Dy := (y1 - y0) / ny;
-    Py := 0;
-    while PY < Ny do
+    NX := Dst.Width;
+    NY := Dst.Height;
+    CX := 0;
+    CY := 1;
+    DX := (x1 - x0) / NX;
+    DY := (y1 - y0) / NY;
+    PY := 0;
+    while PY < NY do
     begin
-      Line := Dst.ScanLine[py];
+      Line := Dst.ScanLine[PY];
       PX := 0;
-      while (Px < Nx) do
+      while (PX < NX) do
       begin
-        X := x0 + px * dx;
-        Y := y0 + py * dy;
+        X := x0 + PX * DX;
+        Y := y0 + PY * DY;
         if Mandel then
         begin
           CX := X;
@@ -2974,31 +2974,31 @@ begin
           X := 0;
           Y := 0;
         end;
-        xsquared := 0;
-        ysquared := 0;
+        XSquared := 0;
+        YSquared := 0;
         I := 0;
-        while (I <= niter) and (xsquared + ysquared < (4)) do
+        while (I <= Niter) and (XSquared + YSquared < (4)) do
         begin
-          xsquared := X * X;
-          ysquared := Y * Y;
-          XX := xsquared - ysquared + CX;
+          XSquared := X * X;
+          YSquared := Y * Y;
+          XX := XSquared - YSquared + CX;
           YY := (2 * X * Y) + CY;
           X := XX;
           Y := YY;
           I := I + 1;
         end;
         I := I - 1;
-        if (I = niter) then
+        if (I = Niter) then
           I := 0
         else
-          I := Round(I / (niter / nc));
+          I := Round(I / (Niter / nc));
         //        Canvas.Pixels[PX,PY] := ConvertColor(I);
-        Line[px * 3] := cc[I].B;
-        Line[px * 3 + 1] := cc[I].G;
-        Line[px * 3 + 2] := cc[I].R;
-        Px := Px + 1;
+        Line[PX * 3] := cc[I].B;
+        Line[PX * 3 + 1] := cc[I].G;
+        Line[PX * 3 + 2] := cc[I].R;
+        PX := PX + 1;
       end;
-      Py := Py + 1;
+      PY := PY + 1;
     end;
   finally
   end;
@@ -3007,19 +3007,19 @@ end;
 class procedure TJvPaintFX.Invert(Src: TBitmap);
 var
   W, H, X, Y: Integer;
-  p: PByteArray;
+  P: PByteArray;
 begin
   W := Src.Width;
   H := Src.Height;
   Src.PixelFormat := pf24bit;
   for Y := 0 to H - 1 do
   begin
-    p := Src.ScanLine[Y];
+    P := Src.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      p[X * bpp] := not p[X * bpp];
-      p[X * bpp + 1] := not p[X * bpp + 1];
-      p[X * bpp + 2] := not p[X * bpp + 2];
+      P[X * bpp] := not P[X * bpp];
+      P[X * bpp + 1] := not P[X * bpp + 1];
+      P[X * bpp + 2] := not P[X * bpp + 2];
     end;
   end;
 end;
@@ -3027,19 +3027,19 @@ end;
 class procedure TJvPaintFX.MirrorRight(Src: TBitmap);
 var
   W, H, X, Y: Integer;
-  p: PByteArray;
+  P: PByteArray;
 begin
   W := Src.Width;
   H := Src.Height;
   Src.PixelFormat := pf24bit;
   for Y := 0 to H - 1 do
   begin
-    p := Src.ScanLine[Y];
+    P := Src.ScanLine[Y];
     for X := 0 to W div 2 do
     begin
-      p[(W - 1 - X) * bpp] := p[X * bpp];
-      p[(W - 1 - X) * bpp + 1] := p[X * bpp + 1];
-      p[(W - 1 - X) * bpp + 2] := p[X * bpp + 2];
+      P[(W - 1 - X) * bpp] := P[X * bpp];
+      P[(W - 1 - X) * bpp + 1] := P[X * bpp + 1];
+      P[(W - 1 - X) * bpp + 2] := P[X * bpp + 2];
     end;
   end;
 end;
@@ -3069,13 +3069,15 @@ end;
 
 class procedure TJvPaintFX.Triangles(const Dst: TBitmap; Amount: Integer);
 type
-  Ttriplet = record
-    R, G, B: Byte;
+  TTriplet = record
+    R: Byte;
+    G: Byte;
+    B: Byte;
   end;
 var
   W, H, X, Y, tb, tm, te: Integer;
-  ps: PByteArray;
-  T: ttriplet;
+  PS: PByteArray;
+  T: TTriplet;
 begin
   W := Dst.Width;
   H := Dst.Height;
@@ -3086,10 +3088,10 @@ begin
   tm := Amount div 2;
   for Y := 0 to H - 1 do
   begin
-    ps := Dst.ScanLine[Y];
-    t.R := ps[0];
-    t.G := ps[1];
-    t.B := ps[2];
+    PS := Dst.ScanLine[Y];
+    T.R := PS[0];
+    T.G := PS[1];
+    T.B := PS[2];
     tb := Y mod (Amount - 1);
     if tb > tm then
       tb := 2 * tm - tb;
@@ -3100,19 +3102,19 @@ begin
     begin
       if (X mod tb) = 0 then
       begin
-        t.R := ps[X * bpp];
-        t.G := ps[X * bpp + 1];
-        t.B := ps[X * bpp + 2];
+        T.R := PS[X * bpp];
+        T.G := PS[X * bpp + 1];
+        T.B := PS[X * bpp + 2];
       end;
       if ((X mod te) = 1) and (tb <> 0) then
       begin
-        t.R := ps[X * bpp];
-        t.G := ps[X * bpp + 1];
-        t.B := ps[X * bpp + 2];
+        T.R := PS[X * bpp];
+        T.G := PS[X * bpp + 1];
+        T.B := PS[X * bpp + 2];
       end;
-      ps[X * bpp] := t.R;
-      ps[X * bpp + 1] := t.G;
-      ps[X * bpp + 2] := t.B;
+      PS[X * bpp] := T.R;
+      PS[X * bpp + 1] := T.G;
+      PS[X * bpp + 2] := T.B;
     end;
   end;
 end;
@@ -3266,8 +3268,8 @@ class procedure TJvPaintFX.HeightMap(const Dst: TBitmap; Amount: Integer);
 var
   Bm: TBitmap;
   W, H, X, Y: Integer;
-  pb, ps: PByteArray;
-  c: Integer;
+  pb, PS: PByteArray;
+  C: Integer;
 begin
   H := Dst.Height;
   W := Dst.Width;
@@ -3282,13 +3284,13 @@ begin
     pb := Bm.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      c := Round((pb[X * bpp] + pb[X * bpp + 1] + pb[X * bpp + 2]) / 3 / 255 * Amount);
-      if (Y - c) >= 0 then
+      C := Round((pb[X * bpp] + pb[X * bpp + 1] + pb[X * bpp + 2]) / 3 / 255 * Amount);
+      if (Y - C) >= 0 then
       begin
-        ps := Dst.ScanLine[Y - c];
-        ps[X * bpp] := pb[X * bpp];
-        ps[X * bpp + 1] := pb[X * bpp + 1];
-        ps[X * bpp + 2] := pb[X * bpp + 2];
+        PS := Dst.ScanLine[Y - C];
+        PS[X * bpp] := pb[X * bpp];
+        PS[X * bpp + 1] := pb[X * bpp + 1];
+        PS[X * bpp + 2] := pb[X * bpp + 2];
       end;
     end;
   end;
@@ -3298,7 +3300,7 @@ end;
 class procedure TJvPaintFX.Turn(Src, Dst: TBitmap);
 var
   W, H, X, Y: Integer;
-  ps, pd: PByteArray;
+  PS, PD: PByteArray;
 begin
   H := Src.Height;
   W := Src.Width;
@@ -3308,13 +3310,13 @@ begin
   Dst.Width := H;
   for Y := 0 to H - 1 do
   begin
-    ps := Src.ScanLine[Y];
+    PS := Src.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      pd := Dst.ScanLine[W - 1 - X];
-      pd[Y * bpp] := ps[X * bpp];
-      pd[Y * bpp + 1] := ps[X * bpp + 1];
-      pd[Y * bpp + 2] := ps[X * bpp + 2];
+      PD := Dst.ScanLine[W - 1 - X];
+      PD[Y * bpp] := PS[X * bpp];
+      PD[Y * bpp + 1] := PS[X * bpp + 1];
+      PD[Y * bpp + 2] := PS[X * bpp + 2];
     end;
   end;
 end;
@@ -3322,7 +3324,7 @@ end;
 class procedure TJvPaintFX.TurnRight(Src, Dst: TBitmap);
 var
   W, H, X, Y: Integer;
-  ps, pd: PByteArray;
+  PS, PD: PByteArray;
 begin
   H := Src.Height;
   W := Src.Width;
@@ -3332,13 +3334,13 @@ begin
   Dst.Width := H;
   for Y := 0 to H - 1 do
   begin
-    ps := Src.ScanLine[Y];
+    PS := Src.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      pd := Dst.ScanLine[X];
-      pd[(H - 1 - Y) * bpp] := ps[X * bpp];
-      pd[(H - 1 - Y) * bpp + 1] := ps[X * bpp + 1];
-      pd[(H - 1 - Y) * bpp + 2] := ps[X * bpp + 2];
+      PD := Dst.ScanLine[X];
+      PD[(H - 1 - Y) * bpp] := PS[X * bpp];
+      PD[(H - 1 - Y) * bpp + 1] := PS[X * bpp + 1];
+      PD[(H - 1 - Y) * bpp + 2] := PS[X * bpp + 2];
     end;
   end;
 end;
@@ -3364,7 +3366,7 @@ begin
     Val := 0;
   for Y := 0 to Dst.Height - 1 do
   begin
-    p := Dst.ScanLine[Y];
+    P := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
       if ((P[X].rgbBlue <> B) or (P[X].rgbGreen <> G) or (P[X].rgbRed <> R)) then
@@ -3392,7 +3394,7 @@ end;
 class procedure TJvPaintFX.Blend(const Src1, Src2: TBitmap; var Dst: TBitmap; Amount: Single);
 var
   W, H, X, Y: Integer;
-  ps1, ps2, pd: PByteArray;
+  PS1, PS2, PD: PByteArray;
 begin
   W := Src1.Width;
   H := Src1.Height;
@@ -3403,14 +3405,14 @@ begin
   Dst.PixelFormat := pf24bit;
   for Y := 0 to H - 1 do
   begin
-    ps1 := Src1.ScanLine[Y];
-    ps2 := Src2.ScanLine[Y];
-    pd := Dst.ScanLine[Y];
+    PS1 := Src1.ScanLine[Y];
+    PS2 := Src2.ScanLine[Y];
+    PD := Dst.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      pd[X * bpp] := Round((1 - Amount) * ps1[X * bpp] + Amount * ps2[X * bpp]);
-      pd[X * bpp + 1] := Round((1 - Amount) * ps1[X * bpp + 1] + Amount * ps2[X * bpp + 1]);
-      pd[X * bpp + 2] := Round((1 - Amount) * ps1[X * bpp + 2] + Amount * ps2[X * bpp + 2]);
+      PD[X * bpp] := Round((1 - Amount) * PS1[X * bpp] + Amount * PS2[X * bpp]);
+      PD[X * bpp + 1] := Round((1 - Amount) * PS1[X * bpp + 1] + Amount * PS2[X * bpp + 1]);
+      PD[X * bpp + 2] := Round((1 - Amount) * PS1[X * bpp + 2] + Amount * PS2[X * bpp + 2]);
     end;
   end;
 end;
@@ -3418,7 +3420,7 @@ end;
 class procedure TJvPaintFX.Blend2(const Src1, Src2: TBitmap; var Dst: TBitmap; Amount: Single);
 var
   W, H, X, Y: Integer;
-  Ps1, Ps2, Pd: PByteArray;
+  PS1, PS2, PD: PByteArray;
 begin
   W := Src1.Width;
   H := Src1.Height;
@@ -3429,21 +3431,21 @@ begin
   Dst.PixelFormat := pf24bit;
   for Y := 0 to H - 1 do
   begin
-    Ps1 := Src1.ScanLine[Y];
-    Ps2 := Src2.ScanLine[Y];
-    Pd := Dst.ScanLine[Y];
+    PS1 := Src1.ScanLine[Y];
+    PS2 := Src2.ScanLine[Y];
+    PD := Dst.ScanLine[Y];
     for X := 0 to W - 1 do
-      if ((Ps2[X * bpp] = $FF) and (Ps2[X * bpp + 1] = $FF) and (Ps2[X * bpp + 2] = $FF)) then
+      if ((PS2[X * bpp] = $FF) and (PS2[X * bpp + 1] = $FF) and (PS2[X * bpp + 2] = $FF)) then
       begin
-        Pd[X * bpp] := $FF;
-        Pd[X * bpp + 2] := $FF;
-        Pd[X * bpp + 2] := $FF;
+        PD[X * bpp] := $FF;
+        PD[X * bpp + 2] := $FF;
+        PD[X * bpp + 2] := $FF;
       end
       else
       begin
-        Pd[X * bpp] := Round((1 - Amount) * Ps1[X * bpp] + Amount * Ps2[X * bpp]);
-        Pd[X * bpp + 1] := Round((1 - Amount) * Ps1[X * bpp + 1] + Amount * Ps2[X * bpp + 1]);
-        Pd[X * bpp + 2] := Round((1 - Amount) * Ps1[X * bpp + 2] + Amount * Ps2[X * bpp + 2]);
+        PD[X * bpp] := Round((1 - Amount) * PS1[X * bpp] + Amount * PS2[X * bpp]);
+        PD[X * bpp + 1] := Round((1 - Amount) * PS1[X * bpp + 1] + Amount * PS2[X * bpp + 1]);
+        PD[X * bpp + 2] := Round((1 - Amount) * PS1[X * bpp + 2] + Amount * PS2[X * bpp + 2]);
       end;
   end;
 end;
