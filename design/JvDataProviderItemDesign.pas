@@ -53,14 +53,11 @@ type
 
 procedure RegisterDataItemIntfProp(const IID: TGUID; const PropClass: TJvDataProviderItemClass);
 
-
-resourcestring
-  sunknown = '<unknown>';
-
 implementation
 
 uses
-  ImgList, SysUtils, TypInfo, Windows;
+  ImgList, SysUtils, TypInfo, Windows,
+  JvDsgnConsts;
 
 type
   PPropData = ^TPropData;
@@ -98,7 +95,7 @@ end;
 function StringBaseLen(NumItems: Integer; StartString: PChar): Integer;
 begin
   Result := 0;
-  while (NumItems > 0) do
+  while NumItems > 0 do
   begin
     Inc(Result, 1 + PByte(StartString)^);
     Inc(StartString, 1 + PByte(StartString)^);
@@ -173,6 +170,8 @@ var
   PNewInfo: Pointer;
   OldProtect: Cardinal;
 begin
+  // (rom) please encapsulate these manipulations in functions
+  // (rom) i think the JCL already contains some of them
   P := Pointer(AClass);
   Dec(P, 60);                         // Now pointing to TypeInfo of the VMT table.
   { Below the typeinfo is cloned, while an additional 2048 bytes are reserved at the end. This 2048
@@ -268,7 +267,24 @@ begin
   end;
 end;
 
-//===TJvDataProviderItem============================================================================
+//=== TJvDataProviderItem ====================================================
+
+constructor TJvDataProviderItem.Create(AnItem: IJvDataItem);
+var
+  I: Integer;
+  IUnk: IUnknown;
+  PrpData: PPropData;
+begin
+  inherited Create;
+  FItem := AnItem;
+  ClearPropList(ClassType);
+  for I := High(GIntfPropReg) downto 0 do
+    if Supports(AnItem, GIntfPropReg[I].GUID, IUnk) then
+    begin
+      PrpData := GetPropData(GetTypeData(GIntfPropReg[I].PropClass.ClassInfo));
+      AppendPropList(ClassType, PPropInfo(Cardinal(PrpData) + 2), PrpData.PropCount);
+    end;
+end;
 
 function TJvDataProviderItem.Item: IJvDataItem;
 begin
@@ -283,25 +299,6 @@ begin
     Result := inherited GetOwner;
 end;
 
-constructor TJvDataProviderItem.Create(AnItem: IJvDataItem);
-var
-  I: Integer;
-  IUnk: IUnknown;
-  PrpData: PPropData;
-begin
-  inherited Create;
-  FItem := AnItem;
-  ClearPropList(ClassType);
-  for I := High(GIntfPropReg) downto 0 do
-  begin
-    if Supports(AnItem, GIntfPropReg[I].GUID, IUnk) then
-    begin
-      PrpData := GetPropData(GetTypeData(GIntfPropReg[I].PropClass.ClassInfo));
-      AppendPropList(ClassType, PPropInfo(Cardinal(PrpData) + 2), PrpData.PropCount);
-    end;
-  end;
-end;
-
 function TJvDataProviderItem.GetNamePath: string;
 var
   Comp: TPersistent;
@@ -310,14 +307,14 @@ begin
   if (Comp <> nil) and (Comp is TComponent) then
     Result := (Comp as TComponent).Name
   else
-    Result := sunknown;
+    Result := SUnknown;
   if Item <> nil then
     Result := Result + ': Item[' + Item.GetID + ']'
   else
-    Result := Result + ': <no item>';
+    Result := Result + ': ' + SNoItem;
 end;
 
-//===TJvDataItemTextPropView========================================================================
+//=== TJvDataItemTextPropView ================================================
 
 type
   TJvDataItemTextPropView = class(TJvDataProviderItem)
@@ -338,7 +335,7 @@ begin
   (Item as IJvDataItemText).Caption := Value;
 end;
 
-//===TJvDataItemImagePropView=======================================================================
+//=== TJvDataItemImagePropView ===============================================
 
 type
   TJvDataItemImagePropView = class(TJvDataProviderItem)
@@ -385,7 +382,7 @@ begin
   (Item as IJvDataItemImage).SelectedIndex := Value;
 end;
 
-//===TJvDataItemsImagesPropView=====================================================================
+//=== TJvDataItemsImagesPropView =============================================
 
 type
   TJvDataItemsImagesPropView = class(TJvDataProviderItem)
@@ -432,7 +429,7 @@ begin
   (Item as IJvDataItemsImages).Images := Value;
 end;
 
-//===Registration of default interface property views===============================================
+//=== Registration of default interface property views =======================
 
 procedure RegProviderItemInterfaces;
 begin
@@ -447,4 +444,5 @@ initialization
 
 finalization
   ClearTypeInfo(TJvDataProviderItem);   // undo the hacking of TJvDataProviderItem
+
 end.

@@ -100,8 +100,9 @@ begin
     try
       Form.Consumer := AConsumer;
       Form.Designer := ADesigner;
-    finally
+    except
       FreeAndNil(Form);
+      raise;
     end;
   end;
   Form.Show;

@@ -33,38 +33,34 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvDataProviderDesignerForm, Menus, ActnList, JvProviderTreeListFrame,
-  JvBaseDsgnFrame, JvBaseDsgnToolbarFrame, JvStdToolbarDsgnFrame,
-  JvProviderToolbarFrame, {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF}
-  JvDataProvider;
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  JvDataProviderDesignerForm, Menus, ActnList,
+  JvProviderTreeListFrame, JvBaseDsgnFrame, JvBaseDsgnToolbarFrame,
+  JvStdToolbarDsgnFrame, JvProviderToolbarFrame, JvDataProvider;
 
 type
   TfrmJvDataContextManager = class(TfrmDataProviderDesigner)
     procedure FormDestroy(Sender: TObject);
-  private
-    { Private declarations }
   protected
-    { Protected declarations }
     function GetProvider: IJvDataProvider; override;
     procedure SetProvider(Value: IJvDataProvider); override;
     procedure Loaded; override;
     function DesignerFormName: string; override;
   public
-    { Public declarations }
   end;
 
 procedure ManageProviderContexts(AProvider: IJvDataProvider;
-  ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; PropName: string);
+  ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF}; PropName: string);
 
-
-resourcestring
-  sDataProviderContextManager = 'DataProvider Context Manager';
 
 implementation
 
 uses
-  JvContextProvider,
-  JvBaseDsgnForm, JvDataProviderImpl, JvDsgnConsts;
+  JvContextProvider, JvBaseDsgnForm, JvDataProviderImpl, JvDsgnConsts;
 
 {$R *.DFM}
 
@@ -72,15 +68,13 @@ function IsContextDesignForm(Form: TJvBaseDesign; const Args: array of const): B
 begin
   Result := Form is TfrmJvDataContextManager;
   if Result then
-  begin
-    with (Form as TfrmJvDataContextManager) do
+    with Form as TfrmJvDataContextManager do
       Result := (Pointer(Provider) = Args[0].VInterface) and
         (Pointer(Designer) = Args[1].VInterface);
-  end;
 end;
 
 procedure ManageProviderContexts(AProvider: IJvDataProvider;
-  ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; PropName: string);
+  ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF}; PropName: string);
 var
   Form: TfrmJvDataContextManager;
 begin
@@ -95,12 +89,14 @@ begin
       Form.Designer := ADesigner;
     except
       FreeAndNil(Form);
-      raise
+      raise;
     end;
   end;
   Form.Show;
   Form.BringToFront;
 end;
+
+//=== TJvContextRootItem =====================================================
 
 type
   TJvContextRootItem = class(TJvBaseDataItem)
@@ -122,7 +118,7 @@ begin
     Result := TExtensibleInterfacedPersistent(GetItems.GetImplementer).GetInterface(IID, Obj);
 end;
 
-//===TfrmJvDataContextManager=======================================================================
+//=== TfrmJvDataContextManager ===============================================
 
 function TfrmJvDataContextManager.GetProvider: IJvDataProvider;
 var
@@ -135,8 +131,8 @@ begin
     {$IFNDEF COMPILER6_UP}
     Supports(CtxProv.Provider, IJvDataProvider, Result);
     {$ELSE}
-    Result := CtxProv.Provider
-    {$ENDIF}
+    Result := CtxProv.Provider;
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -148,7 +144,8 @@ var
   ProviderImpl: TComponent;
 begin
   FRootItem := nil;
-  if csDestroying in ComponentState then Exit;
+  if csDestroying in ComponentState then
+    Exit;
   if (InternalProvider <> nil) and (Value <> GetProvider) then
   begin
     if Supports(InternalProvider, IInterfaceComponentReference, ICR) then
@@ -159,11 +156,12 @@ begin
       {$IFNDEF COMPILER6_UP}
       if Value = nil then
         CtxProv.Provider := nil
-      else if Supports(Value, IInterfaceComponentReference, ICR) then
+      else
+      if Supports(Value, IInterfaceComponentReference, ICR) then
         CtxProv.Provider := ICR.GetComponent;
       {$ELSE}
       CtxProv.Provider := Value;
-      {$ENDIF}
+      {$ENDIF COMPILER6_UP}
     end;
     if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then
       ViewList.RebuildView;
@@ -186,12 +184,11 @@ end;
 
 function TfrmJvDataContextManager.DesignerFormName: string;
 begin
-  Result := sDataProviderContextManager;
+  Result := SDataProviderContextManager;
 end;
 
 procedure TfrmJvDataContextManager.FormDestroy(Sender: TObject);
 begin
-  inherited;
   FRootItem := nil;
 end;
 

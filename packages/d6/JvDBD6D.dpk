@@ -28,6 +28,7 @@ package JvDBD6D;
 
 requires
   JvDBD6R,
+  JvCoreD6D,
   designide,
   dclstd,
   dcldb;

@@ -28,7 +28,8 @@ package JvMMD6D;
 
 requires
   JvMMD6R,
-  designide,
+  JvCoreD6D,
+  DesignIde,
   DJCL60,
   JvCmpD6R;
 

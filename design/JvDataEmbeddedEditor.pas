@@ -50,13 +50,10 @@ type
   end;
 
 
-resourcestring
-  sAllFiles = 'All Files (*.*)|*.*';
-
 implementation
 
 uses
-  JvConsts;
+  JvConsts, JvDsgnConsts;
 
 procedure TJvDataEmbeddedEditor.Edit;
 var
@@ -66,7 +63,7 @@ begin
   FStream := TMemoryStream(GetOrdValue);
   with TOpenDialog.Create(nil) do
   begin
-    Filter := sAllFiles;
+    Filter := SAllFilesFilter;
     if Execute then
     begin
       Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);

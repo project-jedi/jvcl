@@ -28,6 +28,7 @@ package JvDBD5D;
 
 requires
   JvDBD5R,
+  JvCoreD5D,
   dcldb50,
   dclstd50;
 

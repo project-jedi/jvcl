@@ -33,16 +33,20 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvBaseDsgnForm, ActnList, Menus, ImgList, ToolWin, ComCtrls, StdCtrls,
-  ExtCtrls, {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF}
-  JvDataProvider, JvDataProviderItemDesign, JvDataProviderImpl,
+  ActnList, Menus, ImgList, ToolWin, ComCtrls, StdCtrls, ExtCtrls,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  JvBaseDsgnForm, JvDataProvider, JvDataProviderItemDesign, JvDataProviderImpl,
   JvProviderTreeListFrame, JvBaseDsgnFrame, JvBaseDsgnToolbarFrame,
   JvStdToolbarDsgnFrame, JvProviderToolbarFrame;
 
 type
   {$IFDEF COMPILER6_UP}
   IFormDesigner = IDesigner;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   TfrmDataProviderDesigner = class(TJvBaseDesign)
     pmProviderEditor: TPopupMenu;
     miAddItem: TMenuItem;
@@ -60,7 +64,6 @@ type
     procedure cbContextsChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    { Private declarations }
     FDesigner: IFormDesigner;
   protected
     FOrgSelect: IDesignerSelections;
@@ -80,7 +83,6 @@ type
     function DesignerFormName: string; override;
     function AutoStoreSettings: Boolean; override;
   public
-    { Public declarations }
     PropName: string;
     destructor Destroy; override;
     property Provider: IJvDataProvider read GetProvider write SetProvider;
@@ -90,28 +92,21 @@ type
 procedure DesignProvider(AProvider: IJvDataProvider;
   ADesigner: IFormDesigner; PropName: string);
 
-
-resourcestring
-  sDataProviderDesigner = 'DataProvider Designer';
-  sInternalErrorUnableToRetrieveContex = 'Internal error: unable to retrieve context list.';
-
 implementation
 
 {$R *.DFM}
 
 uses
-  Commctrl,
-  JvDsgnConsts, JvConsts, JvTypes;
+  CommCtrl,
+  JvConsts, JvDsgnConsts, JvTypes;
 
 function IsProviderDesignForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin
   Result := Form is TfrmDataProviderDesigner;
   if Result then
-  begin
-    with (Form as TfrmDataProviderDesigner) do
+    with Form as TfrmDataProviderDesigner do
       Result := (Pointer(Provider) = Args[0].VInterface) and
         (Pointer(Designer) = Args[1].VInterface);
-  end;
 end;
 
 procedure DesignProvider(AProvider: IJvDataProvider;
@@ -130,12 +125,14 @@ begin
       Form.Designer := ADesigner;
     except
       FreeAndNil(Form);
-      raise
+      raise;
     end;
   end;
   Form.Show;
   Form.BringToFront;
 end;
+
+//=== TJvProviderRootItem ====================================================
 
 type
   TJvProviderRootItem = class(TJvBaseDataItem)
@@ -157,7 +154,7 @@ begin
     Result := TExtensibleInterfacedPersistent(GetItems.GetImplementer).GetInterface(IID, Obj);
 end;
 
-//===TfrmDataProviderDesigner=======================================================================
+//=== TfrmDataProviderDesigner ===============================================
 
 procedure TfrmDataProviderDesigner.ResetSelection;
 begin
@@ -169,8 +166,7 @@ end;
 
 procedure TfrmDataProviderDesigner.SetNewSelection(AnItem: IJvDataItem);
 begin
-  if FPropView <> nil then
-    FreeAndNil(FPropView);
+  FreeAndNil(FPropView);
   FPropView := TJvDataProviderItem.Create(AnItem);
   if Designer <> nil then
     Designer.SelectComponent(FPropView);
@@ -206,20 +202,16 @@ begin
   begin
     Item := fmeTreeList.GetDataItem(fmeTreeList.lvProvider.Selected.Index);
     if (Item <> nil) and Supports(Item, IJvDataItems, Items) then
-    begin
       if Supports(Items, IJvDataItemsManagement, Man) then
         Supports(Items, IJvDataItemsDesigner, Dsgn);
-    end;
-    if (Item <> nil) then
+    if Item <> nil then
       Item.GetItems.QueryInterface(IJvDataItemsManagement, ParentMan);
   end
   else
   begin
     if Supports(InternalProvider, IJvDataItems, Items) then
-    begin
       if Supports(Items, IJvDataItemsManagement, Man) then
         Supports(Items, IJvDataItemsDesigner, Dsgn);
-    end;
   end;
 
   // Update OI
@@ -293,10 +285,8 @@ var
   VL: IJvDataConsumerViewList;
 begin
   if SubSvc is TJvCustomDataConsumerViewList then
-  begin
     if SubSvc.GetInterface(IJvDataConsumerViewList, VL) then
       VL.ExpandOnNewItem := True;
-  end;
 end;
 
 function TfrmDataProviderDesigner.InternalProvider: IJvDataProvider;
@@ -340,7 +330,7 @@ begin
     FOrgSelect := TDesignerSelections.Create;
     {$ELSE}
     FOrgSelect := TDesignerSelectionList.Create;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     FDesigner := Value;
     if Designer <> nil then
       Designer.GetSelections(FOrgSelect);
@@ -362,7 +352,7 @@ end;
 
 function TfrmDataProviderDesigner.DesignerFormName: string;
 begin
-  Result := sDataProviderDesigner;
+  Result := SDataProviderDesigner;
 end;
 
 function TfrmDataProviderDesigner.AutoStoreSettings: Boolean;
@@ -397,7 +387,8 @@ begin
   begin
     if Supports(Items, IJvDataItemsDesigner, Dsgn) then
       Item := Dsgn.NewByKind(TMenuItem(Sender).Tag)
-    else if Supports(Items, IJvDataItemsManagement, Mangr) then
+    else
+    if Supports(Items, IJvDataItemsManagement, Mangr) then
       Item := Mangr.New
     else // should never occur
       raise EJVCLException.CreateFmt(SDataProviderAddErrorReason, [SDataProviderNoManOrDsgn]);
@@ -414,8 +405,7 @@ begin
     raise EJVCLException.CreateFmt(SDataProviderAddErrorReason, [SDataProviderNoSubItems]);
 end;
 
-procedure TfrmDataProviderDesigner.aiDeleteItemExecute(
-  Sender: TObject);
+procedure TfrmDataProviderDesigner.aiDeleteItemExecute(Sender: TObject);
 var
   I: Integer;
   Item: IJvDataItem;
@@ -483,7 +473,7 @@ begin
       if Supports(InternalProvider, IJvDataContexts, CtxList) then
         fmeTreeList.Provider.SetContextIntf(CtxList.GetContext(CtxIdx))
       else
-        raise EJVCLException.Create(sInternalErrorUnableToRetrieveContex);
+        raise EJVCLException.Create(SInternalErrorUnableToRetrieveContext);
     end
     else
       fmeTreeList.Provider.SetContextIntf(nil);
@@ -494,7 +484,6 @@ end;
 
 procedure TfrmDataProviderDesigner.FormDestroy(Sender: TObject);
 begin
-  inherited;
   ResetSelection;
   FRootItem := nil;
   Provider := nil;
