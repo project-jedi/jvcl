@@ -1,6 +1,0 @@
-[Directories]
-OutputDir=
-UnitOutputDir=..\..\..\Dcu
-PackageDLLOutputDir=
-PackageDCPOutputDir=
-SearchPath=..\..\..\source;..\..\..\resources

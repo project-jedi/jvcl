@@ -1,6 +1,0 @@
-<%
-  Request("UPDATE boxes.xml SET BoxStatus = 3 WHERE (BoxId = $box)");
-  Request("INSERT INTO loans.xml(LoanId, LoanUser, LoanClient, LoanDeparture) VALUES(NULL, $curuser, $client, NOW())");
-  Request("INSERT INTO loans_box.xml(LBLoan, LBBox) VALUES($lastid, $box)");
-  Redirect("box_loan.xhs");
-%>

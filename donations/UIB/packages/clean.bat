@@ -1,2 +1,0 @@
-del *.~*; *.dcu; *.obj
-exit

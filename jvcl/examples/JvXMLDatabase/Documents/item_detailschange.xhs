@@ -1,5 +1,0 @@
-<%
-  Request("UPDATE items.xml SET ItemCat = $category, ItemName = '$name', ItemSerial = '$serial', ItemComment = '$comment', ItemStatus = $status, ItemPhoto = '$image'
-    WHERE (ItemId = $id)");
-  Redirect("item.xhs?id=$id");
-%>

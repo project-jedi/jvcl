@@ -1,3 +1,0 @@
-*.DesignSize
-TPageControl.TabIndex
-TJvPageControl.TabIndex

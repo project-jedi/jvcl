@@ -1,1 +1,0 @@
-Contains images for the help file (such as control/component images)

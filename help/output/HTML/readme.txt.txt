@@ -1,1 +1,0 @@
-Doc-O-matic output folder for HTML filter

@@ -1,5 +1,0 @@
-<%
-  Request("DELETE FROM box_items.xml WHERE (BIItem =  $id)");
-  Request("UPDATE items.xml SET ItemStatus = 1 WHERE (ItemId = $id)");
-  Redirect("box.xhs?id=$box");
-%>
