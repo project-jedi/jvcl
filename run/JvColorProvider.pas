@@ -416,7 +416,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    function Add(Name, Description: string; Callback: TJvColorProviderColorAdder): Integer;
+    function Add(Name: string; Callback: TJvColorProviderColorAdder): Integer;
     procedure Delete(Callback: TJvColorProviderColorAdder); overload;
     procedure Delete(Index: Integer); overload;
     procedure Delete(Name: string); overload;
@@ -426,13 +426,16 @@ type
 
     function Count: Integer;
     function Names(Index: Integer): string;
-    function Descriptions(Index: Integer): string;
     function Callbacks(Index: Integer): TJvColorProviderColorAdder;
 
     property DefaultAdder: Integer read FDefaultAdder write FDefaultAdder;
   end;
-  
+
 const
+  cColorItemIDPrefix = 'TCOLOR=';
+  cColorProviderGroupHeaderID = 'ColorGroupHeader_';
+  cColorProviderAddItemID = 'CP_ADDITEM';
+  cColorProviderColorMapItemID = 'COLMAP:';
   ColorProvider_NotAColor = TColor($EFFFFFFF);
 
 function ColorProviderColorAdderRegister: TJvColorProviderColorAdderRegister;
@@ -445,6 +448,10 @@ uses
   JclRTTI, JclStrings,
   JvConsts;
 
+const
+  aisPrvEvt = 'aisPrvEvt';
+  aisStdDlg = 'aisStdDlg';
+
 type
   TOpenWriter = class(TWriter);
 
@@ -453,7 +460,7 @@ var
   S: string;
 begin
   S := Item.GetID;
-  Result := Copy(S, 1, 7) = 'TCOLOR=';
+  Result := Copy(S, 1, 7) = cColorItemIDPrefix;
   if Result then
     Color := StrToInt('$0' + Copy(S, 8, 8));
 end;
@@ -461,10 +468,21 @@ end;
 resourcestring
   SDelphiConstantNames = 'Delphi constant names';
   SEnglishNames = 'English names';
-  SSpecifiedMappingError = 'Specified mapping does not belong to the current provider.';
+  SSpecifiedMappingError = 'Specified mapping does not belong to the current provider';
   SCustomColors = 'Custom colors';
   SStandardColors = 'Standard colors';
   SSystemColors = 'System colors';
+  SAlreadyRegistered = '''%s'' is already registered';
+  SNoSettings = '(no settings)';
+  SNoICR = 'Component does not support IInterfaceComponentReference';
+  SNoColProv = 'Component does not support IJvColorProvider';
+  SMappingCollectionExpected = 'Mapping collection expected';
+  SExpectedMappingName = 'Expected mapping name';
+  SExpectedNameMappings = 'Expected name mappings';
+  SInvalidNameMappingSpecification = 'Invalid name mapping specification';
+  SUnknownColor = 'Unknown color ''%s''';
+  SInvalidColor = 'Invalid color (%d)';
+  SItemNotForList = 'Item does not belong to this list';
 
 function GetUniqueMappingName(Mappings: TJvColorProviderNameMappings; Prefix: string): string;
 var
@@ -523,8 +541,8 @@ begin
   if AdderReg = nil then
   begin
     AdderReg := TJvColorProviderColorAdderRegister.Create;
-    AdderReg.Add('aisPrvEvt', 'Provider event', AddColorProviderEvent);
-    AdderReg.DefaultAdder := AdderReg.Add('aisStdDlg', 'Standard color dialog', AddColorColorDialog);
+    AdderReg.Add(aisPrvEvt, AddColorProviderEvent);
+    AdderReg.DefaultAdder := AdderReg.Add(aisStdDlg, AddColorColorDialog);
     AdderReg.FMinimumKeep := AdderReg.Count;
     AdderReg.FDefaultAfterClear := AdderReg.DefaultAdder;
   end;
@@ -1156,10 +1174,10 @@ begin
     if (Value = nil) or Supports(Value, IInterfaceComponentReference, ICR) then
       SetColorProviderIntf(PI)
     else
-      raise EJVCLException.Create('Component does not support IInterfaceComponentReference.');
+      raise EJVCLException.Create(SNoICR);
   end
   else
-    raise EJVCLException.Create('Component does not support IJvColorProvider.');
+    raise EJVCLException.Create(SNoColProv);
 end;
 
 class function TJvColorMappingProvider.ItemsClass: TJvDataItemsClass;
@@ -1232,15 +1250,15 @@ begin
   FNotifiers.Remove(Value);
 end;
 
-function TJvColorProviderColorAdderRegister.Add(Name, Description: string;
+function TJvColorProviderColorAdderRegister.Add(Name: string;
   Callback: TJvColorProviderColorAdder): Integer;
 begin
   Result := IndexOf(Name);
   if Result = -1 then
-    Result := FList.AddObject(Name + '=' + Description, TObject(@Callback))
+    Result := FList.AddObject(Name, TObject(@Callback))
   else
   if @Callbacks(Result) <> @Callback then
-    raise EJVCLException.CreateFmt('''%s'' is already registered', [Name]);
+    raise EJVCLException.CreateFmt(SAlreadyRegistered, [Name]);
 end;
 
 procedure TJvColorProviderColorAdderRegister.Delete(Callback: TJvColorProviderColorAdder);
@@ -1300,7 +1318,7 @@ end;
 
 function TJvColorProviderColorAdderRegister.IndexOf(Name: string): Integer;
 begin
-  Result := FList.IndexOfName(Name);
+  Result := FList.IndexOf(Name);
 end;
 
 function TJvColorProviderColorAdderRegister.IndexOf(Callback: TJvColorProviderColorAdder): Integer;
@@ -1315,12 +1333,7 @@ end;
 
 function TJvColorProviderColorAdderRegister.Names(Index: Integer): string;
 begin
-  Result := FList.Names[Index];
-end;
-
-function TJvColorProviderColorAdderRegister.Descriptions(Index: Integer): string;
-begin
-  Result := FList.Values[Names(Index)];
+  Result := FList[Index];
 end;
 
 function TJvColorProviderColorAdderRegister.Callbacks(Index: Integer): TJvColorProviderColorAdder;
@@ -1587,7 +1600,7 @@ begin
     end;
   end;
   if ColorFound then
-    SetID('TCOLOR=' + IntToHex(ColorValue, 8))
+    SetID(cColorItemIDPrefix + IntToHex(ColorValue, 8))
   else
     SetID('Item' + IntToStr(ListNumber) + '.' + IntToStr(ListIndex));
 end;
@@ -1607,7 +1620,7 @@ var
 begin
   Supports(GetItems.GetProvider.SelectedConsumer, IJvColorProviderSettings, Settings);
   if Settings = nil then
-    Result := '(no settings)'
+    Result := SNoSettings
   else
     case ListNumber of
       0:
@@ -1630,7 +1643,7 @@ end;
 
 procedure TJvColorHeaderItem.InitID;
 begin
-  SetID('ColorGroupHeader_' + IntToStr(ListNumber));
+  SetID(cColorProviderGroupHeaderID + IntToStr(ListNumber));
 end;
 
 procedure TJvColorHeaderItem.InitImplementers;
@@ -1669,7 +1682,7 @@ var
 begin
   Supports(GetItems.GetProvider.SelectedConsumer, IJvColorProviderSettings, Settings);
   if Settings = nil then
-    Result := '(no settings)'
+    Result := SNoSettings
   else
     Result := Settings.CustomColorSettings.AddColorSettings.Caption;
 end;
@@ -1685,7 +1698,7 @@ end;
 
 procedure TJvColorAddItem.InitID;
 begin
-  SetID('CP_ADDITEM');
+  SetID(cColorProviderAddItemID);
 end;
 
 procedure TJvColorAddItem.InitImplementers;
@@ -2149,7 +2162,7 @@ end;
 procedure TJvColorProvider.ReadMappings(Reader: TReader);
 begin
   if Reader.ReadValue <> vaCollection then
-    raise EReadError.Create('Mapping collection expected.');
+    raise EReadError.Create(SMappingCollectionExpected);
   Mappings.Clear;
   while not Reader.EndOfList do
     ReadMapping(Reader);
@@ -2175,20 +2188,20 @@ var
 begin
   Reader.ReadListBegin;
   if not AnsiSameStr(Reader.ReadStr, 'Name') then
-    raise EReadError.Create('Expected mapping name');
+    raise EReadError.Create(SExpectedMappingName);
   Index := AddMapping(Reader.ReadString);
   if not AnsiSameStr(Reader.ReadStr, 'Names') then
-    raise EReadError.Create('Expected name mappings');
+    raise EReadError.Create(SExpectedNameMappings);
   Reader.ReadListBegin;
   while not Reader.EndOfList do
   begin
     S := Reader.ReadString;
     IEqualPos := Pos('=', S);
     if IEqualPos < 1 then
-      raise EReadError.Create('Invalid name mapping specification.');
+      raise EReadError.Create(SInvalidNameMappingSpecification);
     I := IndexOfColor(StrToInt(Trim(Copy(S, 1, IEqualPos - 1))));
     if I < 0 then
-      raise EReadError.CreateFmt('Unknown color ''%s''.', [Trim(Copy(S, 1, IEqualPos - 1))]);
+      raise EReadError.CreateFmt(SUnknownColor, [Trim(Copy(S, 1, IEqualPos - 1))]);
     FColorList[I].Names[Index] := Trim(Copy(S, IEqualPos + 1, Length(S) - IEqualPos));
   end;
   Reader.ReadListEnd;
@@ -2242,7 +2255,7 @@ begin
     ctCustom:
       AddColor(FCstColors[SelectedContextIndex], Color);
   end;
-  Changed(pcrAdd, (GetItems as IJvDataIDSearch).Find('TCOLOR=' + IntToHex(Color, 8), True));
+  Changed(pcrAdd, (GetItems as IJvDataIDSearch).Find(cColorItemIDPrefix + IntToHex(Color, 8), True));
 end;
 
 function TJvColorProvider.IndexOfMapping(Mapping: TJvColorProviderNameMapping): Integer;
@@ -2694,6 +2707,13 @@ begin
         RenderColorText;
       end
       else
+      if AnsiSameText(Item.GetID, cColorProviderAddItemID) then
+      begin
+        CurrentColorValue := clNone;
+        RenderColorBox;
+        RenderColorText;
+      end
+      else
         RenderGroupHeader;
     finally
       CurrentSettings := nil;
@@ -3024,7 +3044,7 @@ begin
     Color := Reader.ReadInteger;
     ColIdx := CPImpl.IndexOfColor(Color);
     if ColIdx < 0 then
-      raise EReadError.CreateFmt('Invalid color (%d).', [Color]);
+      raise EReadError.CreateFmt(SInvalidColor, [Color]);
     if CPImpl.IndexOfColIdx(List, ColIdx) < 0 then
     begin
       SetLength(List, Length(List) + 1);
@@ -3215,7 +3235,7 @@ end;
 
 procedure TJvColorMapItem.InitID;
 begin
-  SetID('COLMAP:' + IntToStr(Index));
+  SetID(cColorProviderColorMapItemID + IntToStr(Index));
 end;
 
 constructor TJvColorMapItem.Create(AOwner: IJvDataItems; AIndex: Integer);
@@ -3288,13 +3308,13 @@ begin
         Delete(MapIdx);
       end
       else
-        raise EJVCLDataItems.Create('Item does not belong to this list.');
+        raise EJVCLDataItems.Create(SItemNotForList);
     end
     else
-      raise EJVCLDataItems.Create('Item does not belong to this list.');
+      raise EJVCLDataItems.Create(SItemNotForList);
   end
   else
-    raise EJVCLDataItems.Create('Item does not belong to this list.');
+    raise EJVCLDataItems.Create(SItemNotForList);
 end;
 
 initialization
