@@ -1268,6 +1268,7 @@ var
 
 begin
   Result := False;
+  if not Active then exit;
   if Pos(',',KeyFields)>0 then
     Count := StrSplit(KeyFields, ',', Chr(0), KeyFieldArray, 20)
   else
@@ -1842,7 +1843,7 @@ begin
   pSource := GetActiveRecordBuffer;
   if pSource = nil then
   begin
-    //JvCsvDatabaseError('CsvDataSet.GetFieldData: Unable to get active record buffer');
+    OutputDebugString( 'GetActiveRecordBuffer');
     Exit;
   end;
 
@@ -3681,9 +3682,13 @@ begin
   Dif := 0;
   if (ColumnIndex < 0) or (ColumnIndex > MAXCOLUMNS) then
     Exit;
+
   Copy1 := CsvRowGetColumnMarker(pItem, ColumnIndex);
   if Copy1 = COLUMN_ENDMARKER then
     Exit;
+    // Update new rows:  FIX previous fix!
+  if (ColumnIndex >= pItem^.columns) then
+      pItem^.columns := ColumnIndex+1;
 
   if Copy1 > MAXLINELENGTH then
     Exit;
