@@ -509,11 +509,7 @@ begin
   if FEndColor <> Value then
   begin
     FEndColor := Value;
-    if FEndColor < 0 then
-      FEnd := GetSysColor(FEndColor and not DEFAULT_SYSCOLOR_MASK)
-    else
-      FEnd := FEndColor;
-
+    FEnd := ColorToRGB(FEndColor);
     FIsChanged := True;
     UpdateBuffer;
   end;
@@ -626,11 +622,7 @@ begin
   if FStartColor <> Value then
   begin
     FStartColor := Value;
-    if FStartColor < 0 then
-      FStart := GetSysColor(FStartColor and not DEFAULT_SYSCOLOR_MASK)
-    else
-      FStart := FStartColor;
-
+    FStart := ColorToRGB(FStartColor);
     FIsChanged := True;
     UpdateBuffer;
   end;

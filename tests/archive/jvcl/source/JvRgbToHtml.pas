@@ -83,9 +83,7 @@ var
   Clr: TColor;
 begin
   FColor := Value;
-  Clr := Value;
-  if Clr < 0 then
-    Clr := GetSysColor(Clr and not (DEFAULT_SYSCOLOR_MASK));
+  Clr := ColorToRGB(Value);
   FHtml := IntToHex(GetRValue(Clr), 2) + IntToHex(GetGValue(Clr), 2) + IntToHex(GetBValue(Clr), 2);
 end;
 {**************************************************}

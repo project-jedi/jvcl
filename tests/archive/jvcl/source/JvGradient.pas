@@ -110,14 +110,8 @@ begin
     Exit;
   if (FOldX <> Width) or (FOldY <> Height) then
   begin
-    if FStartColor < 0 then
-      FStart := GetSysColor(FStartColor and not DEFAULT_SYSCOLOR_MASK)
-    else
-      FStart := FStartColor;
-    if FEndColor < 0 then
-      FEnd := GetSysColor(FEndColor and not DEFAULT_SYSCOLOR_MASK)
-    else
-      FEnd := FEndColor;
+    FStart := ColorToRGB(FStartColor);
+    FEnd := ColorToRGB(FEndColor);
 
     FOldX := Width;
     FOldY := Height;
