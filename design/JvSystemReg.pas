@@ -20,8 +20,8 @@ uses
   JvScreenSaver,  JvShellHook,  JvSHFileOperation, JvSoundControl,  JvSystemColors,
   JvThread,  JvThreadTimer,  JvTimerList, JvChangeNotify,  JvSimpleXml, JvXMLDatabase,
   JvWndProcHook, JvFormPlacement, JvTimer, JvSearchFiles, JvPerfMon95,
-  JvChangeNotifyEditor, JvTimerListForm, JvMinMaxForm, JvFormPropertiesForm,
-  JvPerfStatEditor,
+  JvChangeNotifyEditor, JvMinMaxForm, JvFormPropertiesForm,
+  JvPerfStatEditor, JvTimerListEditor,
   JvDsgnEditors;
 
 {$R ..\resources\JvSystemReg.dcr}
@@ -45,7 +45,6 @@ begin
     TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList
     ]);
 
-  RegisterPropertyEditor(TypeInfo(TList), TJvTimerList, 'Events', TJvTimersItemListProperty);
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage, 'StoredProps',
@@ -61,8 +60,7 @@ begin
 
   RegisterComponentEditor(TJvFormStorage, TJvFormStorageEditor);
   RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
-  RegisterComponentEditor(TJvTimerList, TJvTimersCollectionEditor);
-  RegisterNoIcon([TJvTimerEvent]);
+  RegisterComponentEditor(TJvTimerList, TJvTimerListDefaultEditor);
 end;
 
 end.
