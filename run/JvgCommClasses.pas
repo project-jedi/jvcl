@@ -75,7 +75,7 @@ type
     property RGBToColor: Longint read FRGBToColor write FRGBToColor;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
-    property FromColor: TColor read FFromColor write SetFromColor default $00808080;
+    property FromColor: TColor read FFromColor write SetFromColor default clGray;
     property ToColor: TColor read FToColor write SetToColor default 0;
   end;
   //*************************************{ . TJvgCustomGradient . }
@@ -528,9 +528,9 @@ constructor TJvgTwainColors.Create;
 begin
   inherited Create;
   //...set defaults
-  FFromColor := $00808080;
+  FFromColor := clGray;
   FRGBFromColor := ColorToRGB(FFromColor);
-  FToColor := 0;
+  FToColor := clBlack;
   FRGBToColor := ColorToRGB(FToColor);
 end;
 

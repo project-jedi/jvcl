@@ -59,6 +59,7 @@ const
   MaxActivePaneWidth = 100;
   VSNETPageInactiveFontColor = $00525552;
   VSNETPageInactiveSheetColor = $00EFF3F7;
+  JvDockXorColor = $00FFD8CE;
 
 resourcestring
   {$IFNDEF USEJVCL}

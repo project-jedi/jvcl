@@ -53,9 +53,11 @@ const
   DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
     dgColLines, dgRowLines, dgConfirmDelete, dgCancelOnExit];
 
-{$IFDEF BCB}
-{$NODEFINE DefJvGridOptions}
-{$ENDIF BCB}
+  {$IFDEF BCB}
+  {$NODEFINE DefJvGridOptions}
+  {$ENDIF BCB}
+
+  JvDefaultAlternateRowColor = TColor($00DDDDDD);
 
 type
   TSelectColumn = (scDataBase, scGrid);
@@ -177,7 +179,7 @@ type
     procedure SetTitleArrow(const Value: Boolean);
     procedure ShowSelectColumnClick;
     procedure SetAlternateRowColor(const Value: TColor);
-    procedure ReadAlternRowColor(Reader: TReader);
+    procedure ReadAlternateRowColor(Reader: TReader);
     procedure SetAutoSizeColumnIndex(const Value: Integer);
     procedure SetAutoSizeColumns(const Value: Boolean);
     procedure SetMaxColumnWidth(const Value: Integer);
@@ -2545,13 +2547,13 @@ end;
 procedure TJvDBGrid.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineProperty('AlternRowColor', ReadAlternRowColor, nil, False);
+  Filer.DefineProperty('AlternRowColor', ReadAlternateRowColor, nil, False);
 end;
 
-procedure TJvDBGrid.ReadAlternRowColor(Reader: TReader);
+procedure TJvDBGrid.ReadAlternateRowColor(Reader: TReader);
 begin
   if Reader.ReadBoolean then
-    AlternateRowColor := $00DDDDDD // this was the previous default row color
+    AlternateRowColor := JvDefaultAlternateRowColor // this was the previous default row color
   else
     AlternateRowColor := clNone;
 end;

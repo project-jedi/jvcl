@@ -148,11 +148,17 @@ implementation
 uses
   JvJVCLUtils;
 
+{.$R *.dfm}// not needed
+
 const
   cAlphaIncrement = 5;
   cCaptionHeight = 8;
 
-{.$R *.dfm}// not needed
+  JvDefaultCaptionDotColor = TColor($00F8FCF8);
+  JvDefaultCaptionDotShadowColor = TColor($00B8BCB8);
+  JvDefaultTrackBorderColor = TColor($00663300);
+  JvDefaultHotTrackColor = TColor($00CC9999);
+  JvDefaultTrackColor = TColor($00D6BEB5);
 
 procedure DrawDesktopAlertCaption(Canvas: TCanvas; ARect: TRect; ColorFrom, ColorTo: TColor; DrawDots: Boolean);
 var
@@ -168,12 +174,12 @@ begin
   if DrawDots then
     for I := 0 to 9 do // draw the dots
     begin
-      Canvas.Brush.Color := $808080;
+      Canvas.Brush.Color := clGray;
       Canvas.FillRect(R);
       OffsetRect(R, 1, 1);
-      Canvas.Brush.Color := $F8FCF8;
+      Canvas.Brush.Color := JvDefaultCaptionDotColor;
       Canvas.FillRect(R);
-      Canvas.Brush.Color := $B8BCB8;
+      Canvas.Brush.Color := JvDefaultCaptionDotShadowColor;
       Canvas.FillRect(Rect(R.Left, R.Top, R.Left + 1, R.Top + 1));
       OffsetRect(R, 3, -1);
     end;
@@ -624,13 +630,13 @@ begin
     Brush.Style := bsClear;
     if bsMouseInside in MouseStates then
     begin
-      Pen.Color := $00663300;
+      Pen.Color := JvDefaultTrackBorderColor;
       Rectangle(Rect);
       InflateRect(Rect, -1, -1);
       if bsMouseDown in MouseStates then
-        Brush.Color := $00CC9999
+        Brush.Color := JvDefaultHotTrackColor
       else
-        Brush.Color := $00D6BEB5;
+        Brush.Color := JvDefaultTrackColor;
       FillRect(Rect);
     end;
     case ToolType of

@@ -59,6 +59,8 @@ const
   TVM_GETLINECOLOR = TV_FIRST + 41;
   {$EXTERNALSYM TVM_GETLINECOLOR}
 
+  JvDefaultInactiveColorFrom = TColor($D7D7D7);
+  JvDefaultInactiveColorTo= TColor($ADADAD);
 type
   TJvIPAddress = class;
 
@@ -299,8 +301,8 @@ type
     property ActiveColorTo: TColor read FActiveColorTo write SetActiveColorTo default clBtnFace;
     property ActiveGradientDirection: TFillDirection read FActiveGradientDirection write SetActiveGradientDirection default fdTopToBottom;
     property InactiveFont: TFont read FInactiveFont write SetInactiveFont stored IsInactiveFontStored;
-    property InactiveColorFrom: TColor read FInactiveColorFrom write SetInactiveColorFrom default $D7D7D7;
-    property InactiveColorTo: TColor read FInactiveColorTo write SetInactiveColorTo default $ADADAD;
+    property InactiveColorFrom: TColor read FInactiveColorFrom write SetInactiveColorFrom default JvDefaultInactiveColorFrom;
+    property InactiveColorTo: TColor read FInactiveColorTo write SetInactiveColorTo default JvDefaultInactiveColorTo;
     property InactiveGradientDirection: TFillDirection read FInactiveGradientDirection write SetInactiveGradientDirection default fdTopToBottom;
     property DisabledFont: TFont read FDisabledFont write SetDisabledFont stored IsDisabledFontStored;
     property DisabledColorFrom: TColor read FDisabledColorFrom write SetDisabledColorFrom default clBtnFace;
@@ -1151,8 +1153,8 @@ begin
   else
     FInactiveFont.Assign(Screen.IconFont);
   FInactiveFont.OnChange := DoFontChange;
-  FInactiveColorFrom := $D7D7D7;
-  FInactiveColorTo := $ADADAD;
+  FInactiveColorFrom := JvDefaultInactiveColorFrom;
+  FInactiveColorTo := JvDefaultInactiveColorTo;
   FInactiveGradientDirection := fdTopToBottom;
   FGlyphLayout := blGlyphLeft;
 end;

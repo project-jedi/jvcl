@@ -35,6 +35,9 @@ uses
   Forms, Dialogs, ExtCtrls,
   JvgTypes, JvComponent, JvgUtils, JvgCommClasses;
 
+const
+  JvDefaultPassiveColor = TColor($00202020);
+
 type
   TJvgSpecialSymbol = (ssyNone, ssyColon, ssySlash, ssyBackslash);
 
@@ -88,7 +91,7 @@ type
     property Value: Double read FValue write SetValue;
     property DigitSize: TJvgPointClass read FDSize write FDSize;
     property ActiveColor: TColor read FActiveColor write SetActiveColor default clWhite;
-    property PassiveColor: TColor read FPassiveColor write SetPassiveColor default $00202020;
+    property PassiveColor: TColor read FPassiveColor write SetPassiveColor default JvDefaultPassiveColor;
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default clBlack;
     property Positions: Word read FPositions write SetPositions default 0;
     property PenWidth: Word read FPenWidth write SetPenWidth default 1;
@@ -146,7 +149,7 @@ begin
   FDSize.Y := 21;
   FDSize.OnChanged := SmthChanged;
   FActiveColor := clWhite;
-  FPassiveColor := $00202020;
+  FPassiveColor := JvDefaultPassiveColor;
   FBackgroundColor := clBlack;
   FPositions := 0;
   FPenWidth := 1;

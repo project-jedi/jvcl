@@ -225,7 +225,7 @@ type
     // NB! Color is published but not used
     property Align default alBottom;
     property AutoSnap default False;
-    property Cursor {$IFDEF VCL}write SetCursor{$ENDIF VCL} default crSizeNS;
+    property Cursor {$IFDEF VCL} write SetCursor {$ENDIF VCL} default crSizeNS;
     {$IFDEF VCL}
     // DragZone is the number of pixels in the center of the control that constitutes the draggable area.
     // For example, with a left/right aligned splitter and a DragZone of 100, 50 pixels above and 50 pixels below
@@ -658,14 +658,11 @@ type
   protected
     procedure UpdatePageList;
     function GetAction: TBasicAction;
-    {$IFDEF VCL}
-    {$IFDEF COMPILER6_UP} override;
-    {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
+      {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
     {$IFDEF VisualCLX}
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override;
     {$ENDIF VisualCLX}
-    procedure SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property NavPanel: TJvNavPanelButton read FNavPanel;
@@ -1179,7 +1176,6 @@ end;
 //=== TCustomImageListEx =====================================================
 
 {$IFDEF COMPILER5}
-
 procedure TCustomImageListEx.Draw(Canvas: TCanvas; X, Y, Index: Integer;
   ADrawingStyle: TDrawingStyle; AImageType: TImageType; Enabled: Boolean);
 const
@@ -1322,7 +1318,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvIconPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   Msg.Result := 1;
@@ -1330,7 +1325,6 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
 function TJvIconPanel.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
@@ -1572,7 +1566,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvCustomNavigationPane.WMNCPaint(var Msg: TWMNCPaint);
 var
   AColor: TColor;
@@ -1685,7 +1678,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvCustomNavigationPane.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   if ActivePage = nil then
@@ -1715,6 +1707,7 @@ begin
     FBackground.DrawImage(Canvas, ClientRect);
   end;
 end;
+
 {$ENDIF VisualCLX}
 
 procedure TJvCustomNavigationPane.SetBackground(const Value: TJvNavPaneBackgroundImage);
@@ -1930,7 +1923,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvCustomNavigationPane.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  inherited;
+  inherited ControlsListChanged(Control, Inserting);
   InternalStyleManagerChanged(Self, StyleManager);
 end;
 {$ENDIF VisualCLX}
@@ -2066,7 +2059,7 @@ begin
             TCustomImageListEx(Images).Draw(Canvas,
               (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
               (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
-              ImageIndex, {$IFDEF VisualCLX}itImage, {$ENDIF}Enabled);
+              ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
         end;
       nibDropArrow:
         begin
@@ -2427,7 +2420,6 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
 function TJvNavPanelButton.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -2985,7 +2977,7 @@ begin
   UpdatePageList;
 end;
 
-procedure TJvNavPanelPage.SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl);
+procedure TJvNavPanelPage.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if (FNavPanel = nil) or (FIconButton = nil) or (csDestroying in ComponentState) then
@@ -3113,7 +3105,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvNavPanelPage.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  inherited;
+  inherited ControlsListChanged(Control, Inserting);
   InternalStyleManagerChanged(Self, StyleManager);
 end;
 {$ENDIF VisualCLX}
@@ -3339,12 +3331,13 @@ begin
 end;
 
 {$IFDEF VCL}
-function TJvOutlookSplitter.GetDragZoneRect:TRect;
+
+function TJvOutlookSplitter.GetDragZoneRect: TRect;
 begin
   Result := ClientRect;
   if DragZone <> 0 then
   begin
-    if (Align in [alLeft, alRight]) then
+    if Align in [alLeft, alRight] then
     begin
       if DragZone < RectHeight(Result) then
       begin
@@ -3352,7 +3345,8 @@ begin
         Result.Bottom := Result.Top + DragZone;
       end;
     end
-    else if (Align in [alTop, alBottom]) then
+    else
+    if Align in [alTop, alBottom] then
     begin
       if DragZone < RectWidth(Result) then
       begin
@@ -3397,7 +3391,9 @@ begin
   inherited Cursor := Value;
   FOldCursor := Value;
 end;
+
 {$ENDIF VCL}
+
 //=== TJvNavPanelHeader ======================================================
 
 constructor TJvNavPanelHeader.Create(AOwner: TComponent);
@@ -3508,7 +3504,7 @@ begin
     if Y > Height - Images.Height - 4 then
       Y := Height - Images.Height - 4;
     TCustomImageListEx(Images).Draw(Canvas, X, Y, ImageIndex,
-      {$IFDEF VisualCLX}itImage, {$ENDIF}True);
+      {$IFDEF VisualCLX} itImage, {$ENDIF} True);
   end;
 end;
 
@@ -3582,7 +3578,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvNavPanelHeader.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   Msg.Result := 1;
@@ -3590,7 +3585,6 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
 function TJvNavPanelHeader.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
@@ -3656,7 +3650,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvNavPanelHeader.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  inherited;
+  inherited ControlsListChanged(Control, Inserting);
   InternalStyleManagerChanged(Self, StyleManager);
 end;
 {$ENDIF VisualCLX}
@@ -4140,7 +4134,7 @@ begin
   FBackground := TJvNavPaneBackgroundImage.Create;
   FBackground.OnChange := DoImagesChange;
 
-  ControlStyle := [csAcceptsControls, {$IFDEF VCL}csCaptureMouse, {$ENDIF VCL}csClickEvents,
+  ControlStyle := [csAcceptsControls, {$IFDEF VCL} csCaptureMouse, {$ENDIF VCL} csClickEvents,
   csOpaque, csDoubleClicks, csReplicatable];
 
   FButtons := TJvNavPaneToolButtons.Create(Self);
@@ -4593,7 +4587,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
 function TJvNavPaneToolPanel.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
@@ -4616,6 +4609,7 @@ begin
   inherited;
   Color := AColor;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvNavPaneToolPanel.SetParentStyleManager(const Value: Boolean);
@@ -4922,7 +4916,7 @@ begin
       if Assigned(Images) then
         TCustomImageListEx(Images).Draw(
           Canvas, (Width - Images.Width) div 2, (Height - Images.Height) div 2,
-          ImageIndex, {$IFDEF VisualCLX}itImage, {$ENDIF}Enabled);
+          ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
   else
     raise EJVCLException.CreateRes(@RsEUnsupportedButtonType);
   end;
@@ -5081,7 +5075,7 @@ var
 begin
   G := Picture.Graphic;
   if G <> nil then
-    if not ({$IFDEF VCL}(G is TMetaFile) or {$ENDIF}(G is TIcon)) then
+    if not ({$IFDEF VCL} (G is TMetaFile) or {$ENDIF} (G is TIcon)) then
       G.Transparent := FTransparent;
   if not FDrawing then Change;
 end;

@@ -178,7 +178,6 @@ Known Issues:
     conventional) table in pixels.
 }
 
-
 {$I jvcl.inc}
 
 unit JvgCrossTable;
@@ -189,6 +188,11 @@ uses
   Windows, Messages, Classes, Controls, Graphics, Buttons, Dialogs,
   StdCtrls, ExtCtrls, SysUtils, Forms, DB, DBCtrls, Menus, DBTables, Printers,
   JvComponent, JvgTypes, JvgCommClasses, JvgUtils, JvgBevel;
+
+const
+  JvDefaultCaptionsColor = TColor($00FFF2D2);
+  JvDefaultResultsColor = TColor($00C5DEC5);
+  JvDefaultIntermediateResultsColor = TColor($00ABCCF1);
 
 type
   TglPrintingStatus = (fpsContinue, fpsResume, fpsAbort);
@@ -494,10 +498,10 @@ begin
   FVerticalGrid := true;
   FHorizontalGrid := true;
 
-  Colors.Captions := $00FFF2D2;
+  Colors.Captions := JvDefaultCaptionsColor;
   Colors.Cells := clWhite;
-  Colors.Results := $00C5DEC5;
-  Colors.IntermediateResults := $00ABCCF1;
+  Colors.Results := JvDefaultResultsColor;
+  Colors.IntermediateResults := JvDefaultIntermediateResultsColor;
 
   Options := [fcoIntermediateColResults, fcoIntermediateRowResults,
     fcoColResults, fcoRowResults,
