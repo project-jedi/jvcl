@@ -15,10 +15,8 @@ object frmDrop: TfrmDrop
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   OnClose = FormClose
+  OnCreate = FormCreate
   OnShow = FormShow
-  DesignSize = (
-    290
-    287)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -49,11 +47,10 @@ object frmDrop: TfrmDrop
     Images = ImageList1
     Indent = 19
     TabOrder = 1
-    OnAddition = tvFoldersAddition
-    OnCollapsed = tvFoldersCollapsed
     OnDblClick = tvFoldersDblClick
     OnExpanding = tvFoldersExpanding
-    OnExpanded = tvFoldersExpanded
+    OnGetImageIndex = tvFoldersGetImageIndex
+    OnGetSelectedIndex = tvFoldersGetSelectedIndex
   end
   object btnOK: TButton
     Left = 120
