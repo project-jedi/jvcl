@@ -16,13 +16,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-03-26
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 program buildtarget;
 {$APPTYPE CONSOLE}
@@ -47,7 +46,6 @@ var
 
   Editions: array of string = nil;
   Targets: array of TTarget = nil;
-
 
 
 function ExtractFileDir(const S: string): string;
@@ -77,6 +75,21 @@ begin
   begin
     for i := 1 to len do
       if UpCase(S1[i]) <> UpCase(S2[i]) then
+        Exit;
+    Result := True;
+  end;
+end;
+
+function StartsText(const SubStr, S: string): Boolean;
+var
+  i, len: Integer;
+begin
+  Result := False;
+  len := Length(SubStr);
+  if len <= Length(S) then
+  begin
+    for i := 1 to len do
+      if UpCase(SubStr[i]) <> UpCase(S[i]) then
         Exit;
     Result := True;
   end;
@@ -364,7 +377,7 @@ begin
   Editions[High(Editions)] := ed;
 end;
 
-procedure AddAllEditions;
+procedure AddAllEditions(AddPersonal: Boolean);
 var
   i: Integer;
 begin
@@ -372,7 +385,8 @@ begin
   for i := 0 to High(Targets) do
   begin
     AddEdition(Targets[i].Name);
-    AddEdition(Targets[i].PerName);
+    if AddPersonal then
+      AddEdition(Targets[i].PerName);
   end;
 end;
 
@@ -394,21 +408,43 @@ begin
     Result := -1;
 end;
 
+procedure Help;
 var
-  KeyName: string;
-  reg: HKEY;
-  len: Longint;
-  RegTyp: LongWord;
-  S: string;
-  i, Count: Integer;
+  i: Integer;
 begin
-  JVCLRoot := ExtractFileDir(ParamStr(0)); // $(JVCL)\Packages\bin
-  JVCLRoot := ExtractFileDir(JVCLRoot); // $(JVCL)\Packages
-  JVCLRoot := ExtractFileDir(JVCLRoot); // $(JVCL)
+  AddAllEditions(True);
+  WriteLn('buildtarget.exe setups the environment for the given targets and executes the');
+  WriteLn('make file that does the required actions.');
+  WriteLn;
+  WriteLn('buildtarget.exe [TARGET] [OPTIONS]');
+  WriteLn('  targets:');
 
-  LoadTargetNames;
+  Write('    ');
+  for i := 0 to High(Editions) - 1 do
+    Write(Editions[i], ', ');
+  if Length(Editions) > 0 then
+    WriteLn(Editions[High(Editions)]);
+  //WriteLn('    c5, c6, c6p, d5, d5s, d6, d6p, d7, d7p, d7clx');
 
- // read command line 
+  WriteLn;
+  WriteLn('  OPTIONS:');
+  WriteLn('    --make=X        X will be added to the make command line.');
+  WriteLn('    --jcl-path=X    sets the JCLROOT environment variable to X.');
+  WriteLn('    --bpl-path=X    sets the BPLDIR and DCPDIR environment variable to X.');
+  WriteLn('    --lib-path=X    sets the LIBDIR environment variable to X (BCB only).');
+  WriteLn('    --build         forces the Delphi compiler to build instead the targets.');
+  WriteLn('    --targets=X     sets the TARGET environment variable to X. Only these .bpl');
+  WriteLn('                    files will be compiled.');
+  WriteLn('                    (Example:');
+  WriteLn('                      buildtarget "--targets=JvCoreD7R.bpl JvCoreD7R.bpl" )');
+  WriteLn;
+end;
+
+procedure ProcessArgs;
+var
+  i, Count: Integer;
+  S: string;
+begin
   i := 1;
   Count := ParamCount;
   while i <= Count do
@@ -416,17 +452,43 @@ begin
     S := ParamStr(i);
     if S[1] = '-' then
     begin
-      if SameText(S, '-MAKE') then
+      if StartsText('--make=', S) then
       begin
-        Inc(i);
-        MakeOptions := MakeOptions + ' "' + ParamStr(i) + '"';
+        Delete(S, 1, 7);
+        if S <> '' then
+          MakeOptions := MakeOptions + ' "' + S + '"';
+      end
+      else if StartsText('--jcl-path=', S) then
+      begin
+        Delete(S, 1, 11);
+        SetEnvironmentVariable('JCLROOT', Pointer(S));
+      end
+      else if StartsText('--bpl-path=', S) then
+      begin
+        Delete(S, 1, 11);
+        SetEnvironmentVariable('BPLDIR', Pointer(S));
+        SetEnvironmentVariable('DCPDIR', Pointer(S));
+      end
+      else if StartsText('--lib-path=', S) then
+      begin
+        Delete(S, 1, 11);
+        SetEnvironmentVariable('LIBDIR', Pointer(S));
+      end
+      else if SameText(S, '--build') then
+      begin
+        SetEnvironmentVariable('DCCOPT', '-Q -M -B');
+      end
+      else if StartsText('--targets=', S) then
+      begin
+        Delete(S, 1, 10);
+        SetEnvironmentVariable('TARGETS', Pointer(S));
       end;
     end
     else
     begin
       if SameText(S, 'all') then
       begin
-        AddAllEditions;
+        AddAllEditions(False);
       end
       else if IndexOfEdition(S) = -1 then
       begin
@@ -438,16 +500,26 @@ begin
     end;
     Inc(i);
   end;
+end;
+
+
+var
+  KeyName: string;
+  reg: HKEY;
+  len: Longint;
+  RegTyp: LongWord;
+  i: Integer;
+begin
+  JVCLRoot := ExtractFileDir(ParamStr(0)); // $(JVCL)\Packages\bin
+  JVCLRoot := ExtractFileDir(JVCLRoot); // $(JVCL)\Packages
+  JVCLRoot := ExtractFileDir(JVCLRoot); // $(JVCL)
+
+  LoadTargetNames;
+  ProcessArgs;
 
   if Length(Editions) = 0 then
   begin
-    WriteLn('You must specify an Edition.');
-    AddAllEditions;
-    Write('  available editions: ');
-    for i := 0 to High(Editions) - 1 do
-      Write(Editions[i], ', ');
-    if Length(Editions) > 0 then
-      Write(Editions[High(Editions)]);
+    Help;
     Halt(1);
   end;
 
@@ -485,6 +557,7 @@ begin
     UnitOutDir := JVCLRoot + '\lib\' + Copy(Edition, 1, 2);
 
    // setup environment and execute build.bat
+    SetEnvironmentVariable('PERSONALEDITION_OPTION', nil);
     SetEnvironmentVariable('ROOT', PChar(Root));
     SetEnvironmentVariable('JVCLROOT', PChar(JVCLRoot));
     SetEnvironmentVariable('VERSION', PChar(Version));
@@ -492,6 +565,7 @@ begin
 
     if (UpCase(PkgDir[3]) = 'P') or (UpCase(PkgDir[3]) = 'S') then
     begin
+      SetEnvironmentVariable('PERSONALEDITION_OPTION', '-DDelphiPersonalEdition');
       SetEnvironmentVariable('PKGDIR', PChar(Copy(PkgDir, 1, 2)));
       SetEnvironmentVariable('EDITION', PChar(Copy(Edition, 1, 2)));
       Execute('"' + Root + '\bin\make.exe" -f makefile.mak pg.exe');

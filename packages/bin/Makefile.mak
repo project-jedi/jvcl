@@ -74,20 +74,20 @@ BuildJCLdcpFiles:
 ################################################################################
 Bpg2Make.exe:
         @echo [Compiling: Bpg2Make.exe]
-        cd $(DEVTOOLS)
+        @cd $(DEVTOOLS)
         $(MAKE) -f makefile.mak -s Bpg2Make.exe
-        cd $(DEVTOOLS_BACK)
+        @cd $(DEVTOOLS_BACK)
         $(DEVTOOLS)\bin\Bpg2Make.exe "..\$(PKGDIR) Packages.bpg"
 
 ################################################################################
 GeneratePackages:
         @echo [Compiling: pg.exe]
-        cd $(DEVTOOLS)
+        @cd $(DEVTOOLS)
         #-SET C5PFLAGS=
         #if $(VERSION)==5 SET C5PFLAGS=-LUvcl50
         $(MAKE) -f makefile.mak -s pg.exe
         #-SET C5PFLAGS=
-        cd $(DEVTOOLS_BACK)
+        @cd $(DEVTOOLS_BACK)
         echo [Generating: Delphi Packages]
         $(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(EDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
         IF NOT $(MASTEREDITION)! == ! $(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(MASTEREDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
@@ -107,6 +107,7 @@ Templates:
 -U"$(DCPDIR);$(LIBDIR);$(BPLDIR)"
 -LE"$(BPLDIR)"
 -LN"$(DCPDIR)"
+$(PERSONALEDITION_OPTION)
 
 -I"$(JCLROOT)\source;$(JCLROOT)\source\common"
 -U"$(JCLROOT)\source\common;$(JCLROOT)\source\windows;$(JCLROOT)\source\vcl;$(JCLROOT)\source\visclx"
@@ -128,7 +129,7 @@ Compile: Bpg2Make.exe CompilePackages
 ################################################################################
 CompilePackages:
         @echo [Compiling: Packages]
-        cd $(JVCLPACKAGEDIR)
+        @cd $(JVCLPACKAGEDIR)
 
         # create temporary batch file that calls "make"
         @type &&|
@@ -143,8 +144,8 @@ SET DCCOPT=$(DCCOPT)
 SET DCC=$(DCC)
 $(MAKE) -f "$(PKGDIR) Packages.mak" $(TARGETS)
 | >tmp.bat
-        tmp.bat
-        -del tmp.bat >NUL
+        @tmp.bat
+        -@del tmp.bat >NUL
 
 ################################################################################
 Clean:
