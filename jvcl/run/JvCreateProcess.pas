@@ -220,7 +220,7 @@ implementation
 uses
   Math,
   JclSysUtils,
-  JvJVCLUtils, JvTypes;
+  JvJCLUtils, JvTypes;
 
 resourcestring
   RsProcessIsRunning = 'Can''t perform this operation when process is running';

@@ -47,7 +47,6 @@ function Spaces(count: integer): string;
 function DupStr(const str: string; Count: integer): string;
 function DupChar(C: Char; Count: integer): string;
 procedure Msg(msg: string);
-function IsPointInRect(P: TPoint; R: TRect): boolean;
 function RectW(R: TRect): integer;
 function RectH(R: TRect): integer;
 function IncColor(lColor: LongInt; bOffset: byte): LongInt;
@@ -273,7 +272,8 @@ end;
 
 function IsPointInRect(P: TPoint; R: TRect): boolean;
 begin
-  Result := (P.x > R.Left) and (P.x < R.Right) and (P.y > R.Top) and (P.y < R.Bottom);
+  Result := PtInRect(R,P);
+//  Result := (P.x > R.Left) and (P.x < R.Right) and (P.y > R.Top) and (P.y < R.Bottom);
 end;
 
 //{ Длина примоугольника }

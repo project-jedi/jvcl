@@ -31,7 +31,7 @@ interface
 
 uses
   Windows, Messages, Classes, Graphics, Controls, Forms, Menus,
-  JvWndProcHook, JvJVCLUtils;
+  JvWndProcHook, JvJCLUtils, JvJVCLUtils;
 
 type
   THideDirection = (hdLeftToRight, hdRightToLeft);
@@ -922,8 +922,8 @@ begin
     GetWindowRect(Form.Handle, DrawRect);
     OffsetRect(R, -DrawRect.Left, -DrawRect.Top);
     DrawRect := R;
-    Image.Width := WidthOf(R);
-    Image.Height := HeightOf(R);
+    Image.Width := RectWidth(R);
+    Image.Height := RectHeight(R);
     R := Rect(-Image.Width div 4, 0, Image.Width, Image.Height);
     if SysGradient then
     begin

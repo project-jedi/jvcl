@@ -163,7 +163,7 @@ type
 
 implementation
 uses
-  SysUtils, Consts, Math, ActnList, CommCtrl, JvThemes, JvJVCLUtils;
+  SysUtils, Consts, Math, ActnList, CommCtrl, JvThemes, JvJCLUtils, JvJVCLUtils;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -352,7 +352,7 @@ begin
     LastLine := FLines.Count - 1;
     while (LastLine >= 0) and (Trim(FLines[LastLine]) = '') do
       Dec(LastLine);
-    InflateWidth := HeightOf(FTxtRect) -
+    InflateWidth := RectHeight(FTxtRect) -
       (LastLine + 1 - FFirstLine) * FTxtDivider;
     if InflateWidth > 0 then
       InflateRect(FTxtRect, 0, -InflateWidth div 2);
@@ -396,18 +396,18 @@ begin
         SetBkMode(Handle, Transparent);
       end;
     end;
-    R := Bounds(0, 0, WidthOf(FTxtRect), HeightOf(FTxtRect));
+    R := Bounds(0, 0, RectWidth(FTxtRect), RectHeight(FTxtRect));
     if FDirection = sdHorizontal then
     begin
       if IsRightToLeft then
       begin
         R.Right := R.Left + FScrollCnt;
-        R.Left := R.Right - (FMaxScroll - WidthOf(FTxtRect));
+        R.Left := R.Right - (FMaxScroll - RectWidth(FTxtRect));
       end
       else
       begin
         R.Left := R.Right - FScrollCnt;
-        R.Right := R.Left + (FMaxScroll - WidthOf(FTxtRect));
+        R.Right := R.Left + (FMaxScroll - RectWidth(FTxtRect));
       end;
     end
     else
@@ -424,7 +424,7 @@ begin
         StrCopy(STmp, ' ')
       else
         StrPLCopy(STmp, FLines[I], sizeof(STmp) - 1);
-      if R.Top >= HeightOf(FTxtRect) then
+      if R.Top >= RectHeight(FTxtRect) then
         break
       else if R.Bottom > 0 then
       begin
@@ -573,15 +573,15 @@ begin
       FMaxScroll := 0;
       for I := FFirstLine to FLines.Count - 1 do
         FMaxScroll := Max(FMaxScroll, Canvas.TextWidth(FLines[I]));
-      Inc(FMaxScroll, WidthOf(FTxtRect));
+      Inc(FMaxScroll, RectWidth(FTxtRect));
     end
     else
     begin { sdVertical }
       FMaxScroll := ((FLines.Count - FFirstLine) * FTxtDivider) +
-        HeightOf(FTxtRect);
+        RectHeight(FTxtRect);
     end;
-    FMemoryImage.Width := WidthOf(FTxtRect);
-    FMemoryImage.Height := HeightOf(FTxtRect);
+    FMemoryImage.Width := RectWidth(FTxtRect);
+    FMemoryImage.Height := RectHeight(FTxtRect);
     with FMemoryImage.Canvas do
     begin
       Font := Self.Font;

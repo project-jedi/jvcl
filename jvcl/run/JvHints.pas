@@ -74,7 +74,7 @@ implementation
 
 uses
   SysUtils, Math,
-  JvJVCLUtils;
+  JvJCLUtils;
 
 var
   HintStyle: THintStyle = hsRectangle;
@@ -207,7 +207,7 @@ begin
       OffsetRect(R, HintShadowSize, HintShadowSize);
       Inc(TileOffs, HintShadowSize);
     end;
-    W := Min(Max(8, Min(WidthOf(R), HeightOf(R)) div 4), WidthOf(R) div 2);
+    W := Min(Max(8, Min(RectWidth(R), RectHeight(R)) div 4), RectWidth(R) div 2);
     case FPos of
       hpTopRight:
         Tail := CreatePolyRgn([Point(TileOffs, Height - HintShadowSize),
@@ -289,7 +289,7 @@ var
 begin
   R := ClientRect;
   FImage.Handle := CreateCompatibleBitmap(Canvas.Handle,
-    WidthOf(ClientRect), HeightOf(ClientRect));
+    RectWidth(ClientRect), RectHeight(ClientRect));
   FImage.Canvas.Font := Self.Canvas.Font;
   if (HintStyle <> hsRectangle) or (HintShadowSize > 0) or HintTail then
     FImage.Canvas.Draw(0, 0, FSrcImage);
@@ -329,13 +329,13 @@ begin
     if Rect.Top < 0 then
       Rect.Top := BoundsRect.Top
     else
-      Rect.Bottom := Rect.Top + HeightOf(BoundsRect);
+      Rect.Bottom := Rect.Top + RectHeight(BoundsRect);
 
     Rect.Left := P.X + 1;
     if Rect.Left < 0 then
       Rect.Left := BoundsRect.Left
     else
-      Rect.Right := Rect.Left + WidthOf(BoundsRect);
+      Rect.Right := Rect.Left + RectWidth(BoundsRect);
   end;
 
   if Rect.Top + Height > Screen.Height then
@@ -399,8 +399,8 @@ begin
     try
       with FSrcImage do
       begin
-        Width := WidthOf(BoundsRect);
-        Height := HeightOf(BoundsRect);
+        Width := RectWidth(BoundsRect);
+        Height := RectHeight(BoundsRect);
         BitBlt(Canvas.Handle, 0, 0, Width, Height, ScreenDC, Rect.Left,
           Rect.Top, SRCCOPY);
       end;
@@ -434,14 +434,14 @@ begin
     taCenter: OffsetRect(FTextRect, -1, 0);
     taRightJustify: OffsetRect(FTextRect, -4, 0);
   end;
-  FRoundFactor := Max(6, Min(WidthOf(Result), HeightOf(Result)) div 4);
+  FRoundFactor := Max(6, Min(RectWidth(Result), RectHeight(Result)) div 4);
   if HintStyle = hsRoundRect then
     InflateRect(FRect, FRoundFactor div 4, FRoundFactor div 4)
   else
   if HintStyle = hsEllipse then
   begin
-    X := WidthOf(FRect) / 2;
-    Y := HeightOf(FRect) / 2;
+    X := RectWidth(FRect) / 2;
+    Y := RectHeight(FRect) / 2;
     if (X <> 0) and (Y <> 0) then
     begin
       Factor := Round(Y / 3);
@@ -456,7 +456,7 @@ begin
   Inc(Result.Bottom, HintShadowSize);
   if HintTail then
   begin
-    FTileSize.Y := Max(14, Min(WidthOf(FTextRect), HeightOf(FTextRect)) div 2);
+    FTileSize.Y := Max(14, Min(RectWidth(FTextRect), RectHeight(FTextRect)) div 2);
     FTileSize.X := FTileSize.Y - 8;
     Inc(Result.Right, FTileSize.X);
     Inc(Result.Bottom, FTileSize.Y);

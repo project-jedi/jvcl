@@ -275,7 +275,7 @@ implementation
 
 uses
   Consts, Forms, SysUtils, Math,
-  JvJVCLUtils, JvConsts, JvTypes, JvThemes;
+  JvJVCLUtils, JvJCLUtils, JvConsts, JvTypes, JvThemes;
 
 {$R ..\resources\JvxSlider.res}
 
@@ -961,7 +961,7 @@ begin
   ValueBefore := FValue;
   P := GetThumbPosition(Value);
   InvalidateThumb;
-  FThumbRect := Bounds(P.X, P.Y, WidthOf(FThumbRect), HeightOf(FThumbRect));
+  FThumbRect := Bounds(P.X, P.Y, RectWidth(FThumbRect), RectHeight(FThumbRect));
   InvalidateThumb;
   if FSliding then
   begin
@@ -1159,7 +1159,7 @@ begin
     if CanFocus then
       SetFocus;
     P := Point(X, Y);
-    if PointInRect(P, FThumbRect) then
+    if PtInRectInclusive(FThumbRect,P) then
       ThumbMouseDown(Button, Shift, X, Y)
     else
     begin
@@ -1167,7 +1167,7 @@ begin
         Rect := Bounds(X, Y, Width, Height);
       InflateRect(Rect, Ord(Orientation = soVertical) * 3,
         Ord(Orientation = soHorizontal) * 3);
-      if PointInRect(P, Rect) and CanModify and not ReadOnly then
+      if PtInRectInclusive(Rect, P) and CanModify and not ReadOnly then
       begin
         MouseCapture := True;
         FTracking := True;

@@ -272,7 +272,7 @@ implementation
 
 uses
   Consts,
-  JvThemes, JvJVCLUtils;
+  JvThemes, JvJCLUtils;
 
 {$R ..\resources\JvCtrls.res}
 

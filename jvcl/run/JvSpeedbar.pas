@@ -2750,7 +2750,7 @@ begin
     if FResizing then
     begin
       P := Parent.ScreenToClient(ClientToScreen(Point(X, Y)));
-      if not PointInRect(P, Parent.ClientRect) then
+      if not PtInRectInclusive(Parent.ClientRect,P) then
         Exit;
       case Align of
         alTop:

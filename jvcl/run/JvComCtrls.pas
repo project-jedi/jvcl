@@ -324,8 +324,8 @@ type
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
   end;
 
-  TPageChangedEvent = procedure(Sender: TObject; Item: TTreeNode; Page: TTabSheet) of object;
-
+  TPageChangedEvent = procedure (Sender: TObject; Item: TTreeNode; Page: TTabSheet) of object;
+  TJvTreeViewComparePageEvent = procedure (Sender: TObject; Page:TTabSheet; Node:TTreeNode; var Matches:boolean) of object;
   TJvTreeView = class(TTreeView)
   private
     FAutoDragScroll: Boolean;
@@ -350,6 +350,7 @@ type
     FOnVScroll: TNotifyEvent;
     FPageControl: TPageControl;
     FOnPage: TPageChangedEvent;
+    FOnComparePage: TJvTreeViewComparePageEvent;
     procedure InternalCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     function GetSelectedCount: Integer;
@@ -378,6 +379,7 @@ type
     function GetUseUnicode: boolean;
     procedure SetUseUnicode(const Value: boolean);
   protected
+    function DoComparePage(Page: TTabSheet; Node: TTreeNode): boolean;virtual;
     function CreateNode: TTreeNode; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
@@ -437,6 +439,7 @@ type
     {$IFNDEF COMPILER6_UP}
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
     {$ENDIF}
+    property OnComparePage:TJvTreeViewComparePageEvent read FOnComparePage write FOnComparePage;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -449,7 +452,7 @@ type
 implementation
 
 uses
-  JclSysUtils, JvJVCLUtils, JvTypes;
+  JclSysUtils, JvJCLUtils, JvTypes;
 
 const
   TVIS_CHECKED = $2000;
@@ -1661,7 +1664,7 @@ begin
               //Search for the correct page
               J := -1;
               for I := 0 to FPageControl.PageCount - 1 do
-                if FPageControl.Pages[I].Caption = Selected.Text then
+                if DoComparePage(FPageControl.Pages[I], Selected) then
                   J := I;
               if J <> -1 then
               begin
@@ -1673,6 +1676,14 @@ begin
         end;
 
     end;
+end;
+
+function TJvTreeView.DoComparePage(Page:TTabSheet;Node:TTreeNode):boolean;
+begin
+ if Assigned(FOnComparePage) then
+   FOnComparePage(Self, Page, Node, Result)
+ else
+  Result := AnsiCompareText(Page.Caption, Node.Text) = 0;
 end;
 
 procedure TJvTreeView.WMTimer(var Msg: TWMTimer);

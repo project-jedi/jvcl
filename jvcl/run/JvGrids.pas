@@ -205,7 +205,7 @@ implementation
 
 uses
   SysUtils, Math,
-  JvJVCLUtils;
+  JvJCLUtils, JvJVCLUtils;
 
 const
   MaxCustomExtents = MaxListSize;

@@ -642,6 +642,7 @@ begin
       begin
         InternalInsertColor(Items.Count - 1, CD.Color, S);
         ItemIndex := Items.Count - 2;
+        Change;
       end
       else
         ColorValue := CD.Color;
