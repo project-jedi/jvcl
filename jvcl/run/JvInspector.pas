@@ -36,7 +36,9 @@
       - System Sound (Beep) on enter key removed.
     Oct 1, 2003, Warren Postma warrenpstma@hotmail.com
       - New Name, UserData properties in TJvInspectorCustomCategoryItem
-    
+    Oct 10, 2003, Andreas Hausladen andreas.hausladen@gmx.de
+      - implemented Theming and MouseWheel
+
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -298,6 +300,7 @@ type
     procedure WMHScroll(var Msg: TWMScroll); message WM_HSCROLL;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
+    procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
     function YToIdx(const Y: Integer): Integer; virtual;
     property BandSizing: Boolean read FBandSizing write FBandSizing;
     property BandSizingBand: Integer read FBandSizingBand write FBandSizingBand;
@@ -1601,12 +1604,12 @@ type
 implementation
 
 uses
-  Consts, Dialogs, ExtCtrls, Forms,
+  Consts, Dialogs, ExtCtrls, Forms, Buttons,
 {$IFDEF COMPILER6_UP}
   RTLConsts,
 {$ENDIF}
   JclRTTI, JclLogic,
-  JvWndProcHook;
+  JvWndProcHook, JvThemes;
 
 type
   PMethod = ^TMethod;
@@ -5661,12 +5664,17 @@ begin
         BFlags := DFCS_INACTIVE
       else if Pressed then
         BFlags := DFCS_FLAT or DFCS_PUSHED;
-      DrawFrameControl(ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLCOMBOBOX);
+      DrawThemedFrameControl(Inspector, ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLCOMBOBOX);
     end
     else if iifEditButton in Flags then
     begin
       if Pressed then
         BFlags := BF_FLAT;
+{$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesEnabled then
+        DrawThemedButtonFace(Inspector, ACanvas, R, 0, bsNew, False, Pressed, False, False)
+      else
+{$ENDIF}
       DrawEdge(ACanvas.Handle, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or BFlags);
       W := 2;
       G := (WidthOf(R) - 2 * Ord(Pressed) - (3 * W)) div 4;
@@ -7606,8 +7614,8 @@ begin
     DeleteObject(Rgn);
     try
       { Paint the 3d checkbox: Frame }
-      Frame3D(ACanvas, ARect, clBlack, clWhite, 1);
-      Frame3D(ACanvas, ARect, clBlack, cl3DLight, 1);
+{      Frame3D(ACanvas, ARect, clBlack, clWhite, 1);
+      Frame3D(ACanvas, ARect, clBlack, cl3DLight, 1);}
 
       if Bool then
         with ACanvas do
@@ -10842,6 +10850,17 @@ begin
   BeginUpdate;
    Root.Clear;
   EndUpdate;
+end;
+
+procedure TJvCustomInspector.WMMouseWheel(var Msg: TWMMouseWheel);
+var
+  Count: Integer;
+  Index: Integer;
+begin
+  Count := -Msg.WheelDelta div (120 div 5); // 5 items per scroll
+  Index := TopIndex + Count;
+  if Index > -1 then
+    TopIndex := Index;
 end;
 
 initialization
