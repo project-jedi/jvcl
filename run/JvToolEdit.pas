@@ -152,8 +152,10 @@ type
     procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$IFDEF JVCLThemesEnabled}
     procedure WMNCPaint(var Msg: TWMNCPaint); message WM_NCPAINT;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
+    {$ENDIF JVCLThemesEnabled}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     (* ++ RDB ++ *)
     procedure UpdateEdit;
@@ -409,7 +411,7 @@ type
     //Polaris
     property Align;
     property AutoSize;
-    property AddQuotes:boolean read FAddQuotes write FAddQuotes default true;
+    property AddQuotes: boolean read FAddQuotes write FAddQuotes default true;
     property DialogKind: TFileDialogKind read FDialogKind write SetDialogKind
       default dkOpen;
     property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt;
@@ -587,7 +589,7 @@ type
     FTitle: string;
     FOnAcceptDate: TExecDateDialog;
     FDefaultToday: Boolean;
-//    FHooked: Boolean;
+    //    FHooked: Boolean;
     FPopupColor: TColor;
     FCheckOnExit: Boolean;
     FBlanksChar: Char;
@@ -624,7 +626,7 @@ type
     function StoreMaxDate: Boolean;
     // Polaris
     function FourDigitYear: Boolean;
-//    function FormatSettingsChange(var Msg: TMessage): Boolean;
+    //    function FormatSettingsChange(var Msg: TMessage): Boolean;
     procedure CMExit(var Msg: TCMExit); message CM_EXIT;
     procedure WMContextMenu(var Message: TWMContextMenu); message WM_CONTEXTMENU;
   protected
@@ -638,7 +640,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure CreateWindowHandle(const Params: TCreateParams); override;
-//    procedure DestroyWindowHandle; override;
+    //    procedure DestroyWindowHandle; override;
     function AcceptPopup(var Value: Variant): Boolean; override;
     procedure AcceptValue(const Value: Variant); override;
     procedure SetPopupValue(const Value: Variant); override;
@@ -789,7 +791,7 @@ function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   AAlignment: TAlignment; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
 function PaintEdit(Editor: TCustomEdit; const AText: string;
-  AAlignment: TAlignment; PopupVisible: Boolean; ButtonWidth: Integer;
+  AAlignment: TAlignment; PopupVisible: Boolean; {ButtonWidth: Integer;}
   DisabledTextColor: TColor; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
 
@@ -829,8 +831,8 @@ type
   end;
 
 const
-  sFileBmp = 'JV_FEDITBMP';  { Filename and directory editor button glyph }
-  sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
+  sFileBmp = 'JV_FEDITBMP'; { Filename and directory editor button glyph }
+  sDateBmp = 'JV_DEDITBMP'; { Date editor button glyph }
 
 var
   // (rom) changed to var
@@ -838,7 +840,7 @@ var
   FileBitmap: TBitmap = nil;
   GDateHook: TDateHook;
 
-//=== Local procedures =======================================================
+  //=== Local procedures =======================================================
 
 function DateHook: TDateHook;
 begin
@@ -960,43 +962,31 @@ end;
 function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   AAlignment: TAlignment; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
-var
-  ButtonWidth: Integer;
-  R: TRect;
 begin
   if not (csDestroying in Editor.ComponentState) then
   begin
-    SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@R));
-    if Editor.BiDiMode = bdRightToLeft then
-      ButtonWidth := R.Left - 1
-    else
-      ButtonWidth := Editor.ClientWidth - R.Right - 2;
-    if ButtonWidth < 0 then
-      ButtonWidth := 0;
-
     Result := PaintEdit(Editor, AText, AAlignment, Editor.PopupVisible,
-      ButtonWidth, Editor.FDisabledTextColor, StandardPaint, ACanvas, Msg);
+      Editor.FDisabledTextColor, StandardPaint, ACanvas, Msg);
   end
   else
     Result := True;
 end;
 
 function PaintEdit(Editor: TCustomEdit; const AText: string;
-  AAlignment: TAlignment; PopupVisible: Boolean; ButtonWidth: Integer;
+  AAlignment: TAlignment; PopupVisible: Boolean; {ButtonWidth: Integer;}
   DisabledTextColor: TColor; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
 var
-  AWidth, ALeft: Integer;
-  Margins: TPoint;
-  R: TRect;
+  LTextWidth, X: Integer;
+  EditRect: TRect;
   DC: HDC;
   PS: TPaintStruct;
   S: string;
   ExStyle: DWORD;
 const
   AlignStyle: array [Boolean, TAlignment] of DWORD =
-  ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
-    (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
+    ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
+     (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
 begin
   Result := True;
   if csDestroying in Editor.ComponentState then
@@ -1040,29 +1030,25 @@ begin
       ACanvas.Font := Font;
       with ACanvas do
       begin
-        R := ClientRect;
+        SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
         if not (NewStyleControls and Ctl3D) and (BorderStyle = bsSingle) then
         begin
           Brush.Color := clWindowFrame;
-          FrameRect(R);
-          InflateRect(R, -1, -1);
+          FrameRect(ClientRect);
         end;
         S := AText;
-        AWidth := TextWidth(S);
-        Margins := EditorTextMargins(Editor);
+        LTextWidth := TextWidth(S);
         if PopupVisible then
-          ALeft := Margins.X
+          X := EditRect.Left
         else
         begin
-          if ButtonWidth > 0 then
-            Inc(AWidth);
           case AAlignment of
             taLeftJustify:
-              ALeft := Margins.X;
+              X := EditRect.Left;
             taRightJustify:
-              ALeft := ClientWidth - ButtonWidth - AWidth - Margins.X - 1 {Polaris - 2};
+              X := EditRect.Right - LTextWidth;
           else
-            ALeft := (ClientWidth - ButtonWidth - AWidth) div 2;
+            X := (EditRect.Right + EditRect.Left - LTextWidth) div 2;
           end;
         end;
         if SysLocale.MiddleEast then
@@ -1076,7 +1062,7 @@ begin
           try
             ACanvas.Brush.Style := bsClear;
             ACanvas.Font.Color := DisabledTextColor;
-            ACanvas.TextRect(R, ALeft, Margins.Y, S);
+            ACanvas.TextRect(EditRect, X, EditRect.Top, S);
           finally
             RestoreDC(ACanvas.Handle, -1);
           end;
@@ -1084,7 +1070,7 @@ begin
         else
         begin
           Brush.Color := Color;
-          ACanvas.TextRect(R, ALeft, Margins.Y, S);
+          ACanvas.TextRect(EditRect, X, EditRect.Top, S);
         end;
       end;
     finally
@@ -1132,7 +1118,8 @@ end;
 
 procedure TDateHook.Hook;
 begin
-  if FHooked then Exit;
+  if FHooked then
+    Exit;
 
   Application.HookMainWindow(FormatSettingsChange);
   FHooked := True;
@@ -1140,7 +1127,8 @@ end;
 
 procedure TDateHook.Unhook;
 begin
-  if not FHooked then Exit;
+  if not FHooked then
+    Exit;
 
   Application.UnhookMainWindow(FormatSettingsChange);
   FHooked := False;
@@ -1806,19 +1794,25 @@ begin
 end;
 
 procedure TJvCustomComboEdit.SetEditRect;
+const
+  CPixelsBetweenEditAndButton = 2;
 var
   Loc: TRect;
   LLeft: Integer;
   LTop: Integer;
+  LRight: Integer;
 begin
   AdjustHeight;
+
+  LTop := 0;
+  LLeft := 0;
+  LRight := 0;
+
   {$IFDEF JVCLThemesEnabled}
   { If flat and themes are enabled, move the left edge of the edit rectangle
     to the right, otherwise the theme edge paints over the border }
   if ThemeServices.ThemesEnabled then
   begin
-    LTop := 0;
-    LLeft := 0;
     if BorderStyle = bsSingle then
     begin
       if not Ctl3D then
@@ -1829,15 +1823,20 @@ begin
         LTop := 1;
       end;
     end;
-  end
-  else
-  {$ENDIF}
-  begin
-    LLeft := 0;
-    LTop := 0;
   end;
-  SetRect(Loc, LLeft, LTop, ClientWidth - FBtnControl.Width {Polaris - 2}, ClientHeight - 1);
+  {$ENDIF}
+
+  if NewStyleControls and (BorderStyle = bsSingle) then
+  begin
+    if Ctl3D then
+      LRight := 1
+    else
+      LRight := 2;
+  end;
+
+  SetRect(Loc, LLeft, LTop, FBtnControl.Left + LRight - CPixelsBetweenEditAndButton, ClientHeight - 1);
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
+
   //Polaris
   //  SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN, MakeLong(0, FBtnControl.Width));
 end;
@@ -1939,18 +1938,18 @@ begin
     else
     {$ENDIF JVCLThemesEnabled}
     begin
-      if Ctl3D and (BorderStyle = bsSingle) then
-        BtnRect := Bounds(Width - FButton.Width - 4, 0,
-          FButton.Width, Height - 4)
-      else
+      if BorderStyle = bsSingle then
       begin
-        if BorderStyle = bsSingle then
-          BtnRect := Bounds(Width - FButton.Width - 2, 2,
+        if Ctl3D then
+          BtnRect := Bounds(Width - FButton.Width - 4, 0,
             FButton.Width, Height - 4)
         else
-          BtnRect := Bounds(Width - FButton.Width, 0,
-            FButton.Width, Height);
-      end;
+          BtnRect := Bounds(Width - FButton.Width - 2, 2,
+            FButton.Width, Height - 4)
+      end
+      else
+        BtnRect := Bounds(Width - FButton.Width, 0,
+          FButton.Width, Height);
     end
   else
     BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
@@ -1999,20 +1998,20 @@ begin
     inherited
   else
     with TCanvas.Create do
+    try
+      Handle := Msg.DC;
+      SaveDC(Msg.DC);
       try
-        Handle := Msg.DC;
-        SaveDC(Msg.DC);
-        try
-          Brush.Color := FDisabledColor;
-          Brush.Style := bsSolid;
-          FillRect(ClientRect);
-          Msg.Result := 1;
-        finally
-          RestoreDC(Msg.DC, -1);
-        end;
+        Brush.Color := FDisabledColor;
+        Brush.Style := bsSolid;
+        FillRect(ClientRect);
+        Msg.Result := 1;
       finally
-        Free;
+        RestoreDC(Msg.DC, -1);
       end;
+    finally
+      Free;
+    end;
 end;
 
 procedure TJvCustomComboEdit.WMKillFocus(var Msg: TWMKillFocus);
@@ -2022,15 +2021,15 @@ begin
   PopupCloseUp(FPopup, False);
 end;
 
+{$IFDEF JVCLThemesEnabled}
 procedure TJvCustomComboEdit.WMNCCalcSize(var Msg: TWMNCCalcSize);
 begin
-  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) then
     with Msg.CalcSize_Params^ do
       InflateRect(rgrc[0], 1, 1);
-  {$ENDIF JVCLThemesEnabled}
   inherited;
 end;
+{$ENDIF JVCLThemesEnabled}
 
 procedure TJvCustomComboEdit.WMNCHitTest(var Msg: TWMNCHitTest);
 var
@@ -2046,15 +2045,13 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.WMNCPaint(var Msg: TWMNCPaint);
 {$IFDEF JVCLThemesEnabled}
+procedure TJvCustomComboEdit.WMNCPaint(var Msg: TWMNCPaint);
 var
   DC: HDC;
   DrawRect: TRect;
   Details: TThemedElementDetails;
-{$ENDIF JVCLThemesEnabled}
 begin
-  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) then
   begin
     DC := GetWindowDC(Handle);
@@ -2072,9 +2069,9 @@ begin
     Msg.Result := 0;
   end
   else
-  {$ENDIF JVCLThemesEnabled}
     inherited;
 end;
+{$ENDIF JVCLThemesEnabled}
 
 procedure TJvCustomComboEdit.WMPaint(var Msg: TWMPaint);
 var
@@ -2085,8 +2082,8 @@ begin
   else
   begin
     Canvas := nil;
-    if not PaintComboEdit(Self, Text, FAlignment, Focused and not PopupVisible,
-      Canvas, Msg) then
+    if not PaintEdit(Self, Text, FAlignment, PopupVisible,
+      DisabledTextColor, Focused and not PopupVisible, Canvas, Msg) then
       inherited;
     Canvas.Free;
   end;
@@ -2715,7 +2712,7 @@ begin
   try
     if NewStyleControls and (DialogKind = dkWin32) then
       Action := BrowseForFolder(FDialogText, True, Temp, Self.HelpContext)
-      //BrowseDirectory(Temp, FDialogText, Self.HelpContext)
+        //BrowseDirectory(Temp, FDialogText, Self.HelpContext)
     else
       Action := SelectDirectory(Temp, FOptions, Self.HelpContext);
   finally
@@ -3334,3 +3331,4 @@ initialization
 finalization
   DestroyLocals;
 end.
+

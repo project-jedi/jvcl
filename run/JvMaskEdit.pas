@@ -502,8 +502,8 @@ var
   Canvas: TControlCanvas;
   Style: Integer;
   AAlignment: TAlignment;
-  R: TRect;
-  ButtonWidth: Integer;
+  //R: TRect;
+  //ButtonWidth: Integer;
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -511,6 +511,8 @@ begin
     inherited
   else
   begin
+    { (rb) Alignment switching is already in PaintEdit ?? }
+    { (rb) implementation VCL <> VisualCLX }
     Style := GetWindowLong(Handle, GWL_STYLE);
     if (Style and ES_RIGHT) <> 0 then
       AAlignment := AlignmentValues[UseRightToLeftAlignment, taRightJustify]
@@ -519,15 +521,15 @@ begin
     else
       AAlignment := AlignmentValues[UseRightToLeftAlignment, taLeftJustify];
 
-    SendMessage(Handle, EM_GETRECT, 0, Integer(@R));
+    {SendMessage(Handle, EM_GETRECT, 0, Integer(@R));
     if BiDiMode = bdRightToLeft then
       ButtonWidth := R.Left - 1
     else
       ButtonWidth := ClientWidth - R.Right - 2;
-    if ButtonWidth < 0 then ButtonWidth := 0;
+    if ButtonWidth < 0 then ButtonWidth := 0;}
 
     Canvas := nil;
-    if not PaintEdit(Self, Text, AAlignment, False, ButtonWidth, FDisabledTextColor,
+    if not PaintEdit(Self, Text, AAlignment, False, {ButtonWidth,} FDisabledTextColor,
        Focused, Canvas, Msg) then
       inherited;
     Canvas.Free;
@@ -565,7 +567,7 @@ begin
       else
       begin
         ACanvas := nil;
-        if not PaintEdit(Self, Text, taLeftJustify, False, 0, FDisabledTextColor,
+        if not PaintEdit(Self, Text, taLeftJustify, False, {0,} FDisabledTextColor,
            Focused, ACanvas) then
           inherited;
         ACanvas.Free;
