@@ -785,11 +785,11 @@ end;
 function CaptureScreen(WndHandle: LongWord): TBitmap;
 var
   R: TRect;
-  WP:TWindowPlacement;
+  WP: TWindowPlacement;
 begin
   if GetWindowRect(WndHandle, R) then
   begin
-    GetWindowPlacement(WndHandle, WP);
+    GetWindowPlacement(WndHandle, @WP);
     if IsIconic(WndHandle) then
       ShowWindow(WndHandle, SW_RESTORE);
     BringWindowToTop(WndHandle);
