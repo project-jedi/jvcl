@@ -44,6 +44,9 @@ uses
   {$IFDEF VCL}
   DesignWindows,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QDesignWindows,
+  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
@@ -509,14 +512,18 @@ begin
     M.Action := A;
     if I = 0 then
     begin
+      {$IFDEF VCL}
       M.Default := True;
+      {$ENDIF VCL}
       btnNew.Action := A;
     end;
     popNew.Items.Add(M);
     M := TMenuItem.Create(popForm);
     M.Action := A;
+    {$IFDEF VCL}
     if I = 0 then
       M.Default := True;
+    {$ENDIF VCL}
     popForm.Items.Insert(I,M);
   end;
   if J < 2 then
