@@ -26,6 +26,9 @@
 
  RECENT CHANGES:
     Apr 10, 2004, Marcel Bestebroer:
+      - Double clicking a category item will now expand/collapse regardless
+        of the position of the mouse (used to work only when clicking left of
+        the divider bar). See mantis issue 1610.
       - Changed the MatchPercentage of the type mapper (changing the weights
         of the various parts so that a type info match will always override
         a class+name match).
@@ -3040,7 +3043,7 @@ begin
       (iifExpanded in Item.Flags)) then
     begin
       if PtInRect(Item.Rects[iprBtnDstRect], Point(X, Y)) or
-        ((ssDouble in Shift) and (XB < Pred(DividerAbs))) then
+        ((ssDouble in Shift) and (Item.IsCategory or (XB < Pred(DividerAbs)))) then
       begin
         Item.Expanded := not Item.Expanded;
         Selecting := False;
