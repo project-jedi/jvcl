@@ -76,9 +76,9 @@ LocaleToUnicode=1
 ImagebaseMultiple=1
 SuspiciousTypecast=1
 PrivatePropAccessor=1
-UnsafeType=0
-UnsafeCode=0
-UnsafeCast=0
+UnsafeType=1
+UnsafeCode=1
+UnsafeCast=1
 [Linker]
 MapFile=0
 OutputObjs=0
@@ -88,15 +88,15 @@ RemoteSymbols=0
 MinStackSize=16384
 MaxStackSize=1048576
 ImageBase=4194304
-ExeDescription=JVCL Unified Interbase Components
+ExeDescription=JVCLX Non-Visual Components
 [Directories]
 OutputDir=
-UnitOutputDir=..\..\lib\d7
+UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=..\..\run;..\..\common;..\..\Resources
-Packages=
-Conditionals=
+SearchPath=$(DELPHI)\Source\ToolsAPI;../../qcommon;../../qrun;../../qdesign
+Packages=rtl;visualclx;visualdbclx
+Conditionals=VisualCLX
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
@@ -110,7 +110,7 @@ ActiveLang=
 ProjectLang=
 RootDir=
 [Version Info]
-IncludeVerInfo=0
+IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
 MinorVer=0

@@ -1,0 +1,50 @@
+package JvQCmpD7R;
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCLX Components Runtime Package'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  JvQCoreD7R,
+  JvQSystemD7R,
+  JvQStdCtrlsD7R,
+  rtl,
+  visualclx;
+
+contains
+  JvQPatchFile in '..\..\qrun\JvQPatchFile.pas',
+  JvQPrint in '..\..\qrun\JvQPrint.pas',
+  JvQProfilerForm in '..\..\qrun\JvQProfilerForm.pas' {ProfReport},
+  JvQStringHolder in '..\..\qrun\JvQStringHolder.pas',
+  JvQTimeLimit in '..\..\qrun\JvQTimeLimit.pas',
+  JvQTranslator in '..\..\qrun\JvQTranslator.pas',
+  JvQWinHelp in '..\..\qrun\JvQWinHelp.pas',
+  JvQAlarms in '..\..\qrun\JvQAlarms.pas',
+  JvQConverter in '..\..\qrun\JvQConverter.pas',
+  JvQDataEmbedded in '..\..\qrun\JvQDataEmbedded.pas',
+  JvQLogFile in '..\..\qrun\JvQLogFile.pas',
+  JvQLogForm in '..\..\qrun\JvQLogForm.pas' {FoLog},
+  JvQMergeManager in '..\..\qrun\JvQMergeManager.pas';
+
+end.

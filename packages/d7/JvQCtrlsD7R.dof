@@ -88,13 +88,13 @@ RemoteSymbols=0
 MinStackSize=16384
 MaxStackSize=1048576
 ImageBase=4194304
-ExeDescription=JVCLX Standard Controls
+ExeDescription=JVCLX Controls Runtime Package
 [Directories]
 OutputDir=
-UnitOutputDir=
+UnitOutputDir=..\..\lib\d7
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=$(JVCL)\jvcl\source;$(JVCL)\jcl\source;G:\Program Files\Borland\Delphi7\Source\ToolsAPI
+SearchPath=$(DELPHI)\Source\ToolsAPI;../../qcommon;../../qrun
 Packages=vcl;rtl;vclx;indy;vclie;xmlrtl;inetdbbde;inet;inetdbxpress;dbrtl;soaprtl;dsnap;VclSmp;dbexpress;vcldb;dbxcds;inetdb;bdertl;vcldbx;adortl;teeui;teedb;tee;ibxpress;visualclx;visualdbclx;vclactnband;vclshlctrls;IntrawebDB_50_70;Intraweb_50_70;Rave50CLX;Rave50VCL;dclaxserver;DJcl;JVCL200_R70;qrpt;PDF_InTheBox_Delphi;JvXPCtrlsD7R;JvWizardD7R;JvCtrlsD7R;JvUIBD7R;JvTimeFrameworkD7R;JvCoreD7R;JvSystemD7R;JvStdCtrlsD7R;JvPrintPreviewD7R;JvCmpD7R;JvJansD7R;JvGlobusD7R;JvDotNetCtrlsD7R;JvDlgsD7R;JvCustomD7R;dclusr;DJclVcl
 Conditionals=VisualCLX
 DebugSourceDirs=
@@ -105,17 +105,13 @@ HostApplication=
 Launcher=
 UseLauncher=0
 DebugCWD=
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=1
 MajorVer=7
 MinorVer=0
 Release=4
-Build=462
+Build=463
 Debug=0
 PreRelease=0
 Special=0
@@ -126,7 +122,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Borland Software Corporation
 FileDescription=Jedi VisualCLX Component Library
-FileVersion=7.0.4.462
+FileVersion=7.0.4.463
 InternalName=DCLUSR70
 LegalCopyright=Copyright © 2003 André Snepvangers
 LegalTrademarks=
@@ -134,41 +130,6 @@ OriginalFilename=DCLUSR70.BPL
 ProductName=Borland Package Library
 ProductVersion=7.0
 [Excluded Packages]
-G:\Program Files\Borland\Delphi7\Bin\dclstd70.bpl=Borland Standard Components
-G:\Program Files\Borland\Delphi7\Bin\dbx70.bpl=Borland SQL Explorer UI Package
-g:\program files\borland\delphi7\Bin\dclnet70.bpl=Borland Internet Components
-g:\program files\borland\delphi7\Bin\dclmlwiz70.bpl=Borland Markup Language Wizards
-g:\program files\borland\delphi7\Bin\dclsmp70.bpl=Borland Sample Components
-g:\program files\borland\delphi7\Bin\dclocx70.bpl=Borland Sample Imported ActiveX Controls
-g:\program files\borland\delphi7\Bin\dclsoap70.bpl=Borland SOAP Components
-g:\program files\borland\delphi7\Bin\dcl31w70.bpl=Delphi 1.0 Compatibility Components
-G:\Program Files\Borland\Delphi7\Bin\dcldb70.bpl=Borland Database Components
-g:\program files\borland\delphi7\Bin\dclclxdb70.bpl=Borland CLX Database Components
-g:\program files\borland\delphi7\Bin\dclsmpedit70.bpl=Borland Editor Script Enhancements
-g:\program files\borland\delphi7\Bin\dclite70.bpl=Borland Integrated Translation Environment
-D:\WINNT\System32\ibevnt70.bpl=Borland Interbase Event Alerter Component
-G:\Program Files\Borland\Delphi7\Bin\dclmid70.bpl=Borland MyBase DataAccess Components
-g:\program files\borland\delphi7\Bin\dclemacsedit70.bpl=Borland Editor Emacs Enhancements
-g:\program files\borland\delphi7\Bin\dcldbxcds70.bpl=Borland SimpleDataset Component (DBX)
-G:\Program Files\Borland\Delphi7\Bin\dcldbx70.bpl=Borland dbExpress Components
-g:\program files\borland\delphi7\Bin\dclib70.bpl=InterBase Data Access Components
-g:\program files\borland\delphi7\Bin\dclindy70.bpl=Internet Direct (Indy) for D7 Property and Component Editors
-g:\program files\borland\delphi7\Bin\dclie70.bpl=Internet Explorer Components
-g:\program files\borland\delphi7\Bin\dclIntraweb_50_70.bpl=Intraweb 5.0 Design Package for Delphi 7
-G:\Program Files\Borland\Delphi7\Projects\Bpl\JclDebugIde70.bpl=JCL Debug IDE extension for Delphi 7
-G:\Program Files\Borland\Delphi7\Projects\Bpl\IdeOpenDlgFavorite70.bpl=JCL Open and Save IDE dialogs with favorite folders for Delphi 7
-G:\Program Files\Borland\Delphi7\Projects\Bpl\ProjectAnalyzer70.bpl=JCL Project Analyzer for Delphi 7
-g:\program files\borland\delphi7\Bin\dclaxserver70.bpl=Microsoft Office 97 Sample Automation Server Wrapper Components
-g:\program files\borland\delphi7\bin\dclRave70.bpl=Rave Reports BE 5.0 Package
-g:\program files\borland\delphi7\Bin\dclshlctrls70.bpl=Shell Control Property and Component Editors
-G:\Program Files\Borland\Delphi7\My Components\PDF In-The-Box for Delphi\Delphi 7\PDF_InTheBox_Delphi.bpl=Synactis PDF In-The-Box
-g:\program files\borland\delphi7\Bin\dclact70.bpl=Borland ActionBar Components
-g:\program files\borland\delphi7\Bin\dclado70.bpl=Borland ADO DB Components
-G:\Program Files\Borland\Delphi7\Bin\dclbde70.bpl=Borland BDE DB Components
-g:\program files\borland\delphi7\Bin\applet70.bpl=Borland Control Panel Applet Package
-g:\program files\borland\delphi7\Bin\DBWEBXPRT.BPL=Borland Web Wizard Package
-g:\program files\borland\delphi7\Projects\Bpl\dclusr70.bpl=Injection User Components
-g:\program files\borland\delphi7\Bin\dcltee70.bpl=TeeChart Components
 G:\Program Files\Borland\Delphi7\Projects\Bpl\JvCoreD7D.bpl=JVCL Core Components
 g:\program files\borland\delphi7\Projects\Bpl\JvXPCtrlsD7D.bpl=JVCL XP Controls
 g:\program files\borland\delphi7\Projects\Bpl\JvWizardD7D.bpl=JVCL Wizard Design Time Package
@@ -185,3 +146,15 @@ g:\program files\borland\delphi7\Projects\Bpl\JvTimeFrameworkD7D.bpl=JVCL Time F
 g:\program files\borland\delphi7\Projects\Bpl\JvUIBD7D.bpl=JVCL Unified Interbase Components
 g:\program files\borland\delphi7\Projects\Bpl\JvCtrlsD7D.bpl=JVCL Visual Controls
 G:\Program Files\Borland\Delphi7\Projects\Bpl\JVCL200_D70.bpl=JEDI-VCL Components
+[HistoryLists\hlConditionals]
+Count=1
+Item0=VisualCLX
+[HistoryLists\hlUnitAliases]
+Count=1
+Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[HistoryLists\hlSearchPath]
+Count=1
+Item0=$(DELPHI)\Source\ToolsAPI;../../qcommon;../../qrun
+[HistoryLists\hlUnitOutputDirectory]
+Count=1
+Item0=..\..\lib\d7

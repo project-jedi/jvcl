@@ -88,7 +88,7 @@ RemoteSymbols=0
 MinStackSize=16384
 MaxStackSize=1048576
 ImageBase=4194304
-ExeDescription=JVCLX Standard Controls
+ExeDescription=JVCLX Multimedia and Image Components
 [Directories]
 OutputDir=
 UnitOutputDir=
@@ -108,14 +108,14 @@ DebugCWD=
 [Language]
 ActiveLang=
 ProjectLang=
-RootDir=
+RootDir=G:\Program Files\Borland\Delphi7\Bin\
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=1
 MajorVer=7
 MinorVer=0
 Release=4
-Build=462
+Build=461
 Debug=0
 PreRelease=0
 Special=0
@@ -126,7 +126,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Borland Software Corporation
 FileDescription=Jedi VisualCLX Component Library
-FileVersion=7.0.4.462
+FileVersion=7.0.4.461
 InternalName=DCLUSR70
 LegalCopyright=Copyright © 2003 André Snepvangers
 LegalTrademarks=

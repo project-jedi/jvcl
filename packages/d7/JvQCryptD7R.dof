@@ -88,7 +88,7 @@ RemoteSymbols=0
 MinStackSize=16384
 MaxStackSize=1048576
 ImageBase=4194304
-ExeDescription=JVCL Unified Interbase Components
+ExeDescription=JVCLX Encryption and Compression Runtime Package
 [Directories]
 OutputDir=
 UnitOutputDir=..\..\lib\d7
@@ -105,10 +105,6 @@ HostApplication=
 Launcher=
 UseLauncher=0
 DebugCWD=
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
 [Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0

@@ -1,4 +1,4 @@
-package JvValidatorsD7D;
+package JvQCryptD7D;
 {$R *.res}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
@@ -21,18 +21,17 @@ package JvValidatorsD7D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Validators and Error Provider Components'}
+{$DESCRIPTION 'JVCLX Encryption and Compression Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  JvValidatorsD7R,
-  JvCoreD7D,
+  JvQCryptD7R,
   rtl,
-  designide;
+  visualclx,
+  JvQCoreD7D;
 
 contains
-  JvValidatorsReg in '..\..\design\JvValidatorsReg.pas',
-  JvValidatorsEditorForm in '..\..\design\JvValidatorsEditorForm.pas' {frmValidatorsEditor};
+  JvQCryptReg in '..\..\qdesign\JvQCryptReg.pas';
 
 end.
