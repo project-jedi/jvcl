@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: QToolWin.pas, released on 2004-05-16
+The Original Code is: QNotebook.pas, released on 2004-05-16
 
 The Initial Developer of the Original Code is Andreas Hausladen
                                               [Andreas dott Hausladen att gmx dott de]
