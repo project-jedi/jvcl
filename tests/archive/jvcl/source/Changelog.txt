@@ -1,2 +1,18 @@
-2002-07-07 (2.00)
+2002-07-05
+- Added JvInspector and support units (JvInspDB and JvINspXVCL) from Marcel Berestroeber. 
+
+- JvInspector bug fixes by Deepak Shenoy:
+
+-- InspectorItem.SelectValue() 
+   Added "If SL.Count>0" check to ensure no infinite loop occurs when no items are in the list
+-- InspectorItem.SetEditCtrl()
+   Reset Window Proc to old window proc before freeing the Old Edit Ctrl because I was getting a weird access violation when I tabbed too fast and tabbing was on. (Deepak Shenoy)
+Note: have to consider reusing? Or somehow allowing custom call in at this point.
+-- InspectorItem.DrawValue()
+   Added the "If Data=nil" check at the beginning because sometimes we were getting data=nil (??)
+
+
+2002-07-01 (2.00)
 - New restructured version released: for more details on changes, see restruct_changelog.txt; for more info on demo changes, see restruct_demochanges.txt
+
+      
