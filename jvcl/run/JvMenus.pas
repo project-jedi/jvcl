@@ -649,7 +649,7 @@ implementation
 
 uses
   CommCtrl, Forms, ExtCtrls, Consts, JvConsts,
-  JvJVCLUtils, JvJCLUtils, Math, Types;
+  JvJVCLUtils, JvJCLUtils, Math {$IFDEF COMPILER6_UP}, Types{$ENDIF};
 
 const
   DefMarginColor: TColor = clBlue;
@@ -2161,7 +2161,7 @@ end;
 procedure TJvCustomMenuItemPainter.Measure(Item: TMenuItem; var Width,
   Height: Integer);
 begin
-  PreparePaint(Item, Types.Rect(0,0,0,0), [], true);
+  PreparePaint(Item, Rect(0,0,0,0), [], true);
 
   if IsPopup then
   begin
