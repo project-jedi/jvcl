@@ -9,10 +9,14 @@ uses
   JvBaseDlg, JvBrowseFolder, PersistForm, PersistSettings, Menus;
 
 type
-  // a TEdit that doesn't allow pasting of non-numeric text if ES_NUMBER is in GWL_STYLE
+  // a TEdit that doesn't allow pasting of non-numeric text if Numeric is true
   TEdit = class(StdCtrls.TEdit)
   private
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    function GetNumeric:boolean;
+    procedure SetNumeric(Value:boolean);
+  published
+    property Numeric:boolean read GetNumeric write SetNumeric;
   end;
 
   TfrmOptions = class(TfrmPersistable)
@@ -127,18 +131,38 @@ uses
 
 { TEdit }
 
+function TEdit.GetNumeric: boolean;
+begin
+  HandleNeeded;
+  if HandleAllocated then
+    Result := GetWindowLong(Handle, GWL_STYLE) and ES_NUMBER = ES_NUMBER
+  else
+    Result := false;
+end;
+
+procedure TEdit.SetNumeric(Value: boolean);
+begin
+  HandleNeeded;
+  if HandleAllocated then
+  begin
+    if Value then
+      SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or ES_NUMBER)
+    else
+      SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) and not ES_NUMBER);
+  end;
+end;
+
 {$UNDEF RPLUS}
 {$IFOPT R+}
 {$R-}
 {$DEFINE RPLUS}
 {$ENDIF}
-
 procedure TEdit.WMPaste(var Msg: TMessage);
 var S: string; V, C: integer;
 begin
   S := Text;
   inherited;
-  if GetWindowLong(Handle, GWL_STYLE) and ES_NUMBER = ES_NUMBER then
+  if Numeric then
   begin
     Val(Text, V, C);
     if C <> 0 then
@@ -349,9 +373,9 @@ end;
 procedure TfrmOptions.FormCreate(Sender: TObject);
 begin
   if edShapeWidth <> nil then
-    MakeEditNumeric(edShapeWidth.Handle);
+    edShapeWidth.Numeric := true;
   if edShapeHeight <> nil then
-    MakeEditNumeric(edShapeHeight.Handle);
+    edShapeHeight.Numeric := true;
 end;
 
 procedure TfrmOptions.acSystemPathExecute(Sender: TObject);
