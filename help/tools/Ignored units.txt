@@ -109,6 +109,7 @@ JvTipOfDayProp
 JvToolReg
 JvTransLEDReg
 JvTransparentForm
+JvUIBase
 JvUIBConst
 JvUIBError
 JvWallpaperEditForm

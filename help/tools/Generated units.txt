@@ -269,7 +269,6 @@ JvStartMenuButton
 JvSticker
 JvStringHolder
 JvStrings
-JvStrToHtml
 JvSwitch
 JvTFAlarm
 JvTFGantt
@@ -290,13 +289,13 @@ JvTransparentPanel
 JvTurtle
 JvTypes
 JvUIB
-JvUIBase
 JvUIBLib
 JvUIBObj
 JvUIBSrv
 JvUpDown
 JvVersionInfo
 JvVigenereCipher
+JvVirtualKeySelectionFrame
 JvWaitingGradient
 JvWaitingProgress
 JvWavePlayer
