@@ -86,24 +86,27 @@ TODO:
 * Implement IFiller (Marcel?)
 * Implement XP theming (Remko?)
 * Remove unnecessary IFDEF's (WIN32, COMPILER3, COMPILER4 etc). We don't support 16-bit and we don't support compilers before COMPILER5.
+* Merge utility units and put component specific routines into separate units
+* Split design units where editors and forms are in the same file (bad!)
+* rename all DB related units to "JvDB", all BDE to "JvBDE" etc
 * Add remaining donations:
 
-  Globus (Andrey Chudin)
-  Jans (Jan Verhoeven)
-  UIB (Henri Gourvest)(?)   
+  Globus (Andrey Chudin) - already compliant
+  Jans (Jan Verhoeven) - already compliant
+  UIB (Henri Gourvest) - already compliant
 
-  ManagedThreads (Erwin Molendijk)(?) 
-  Print Preview (peter3)
-  Validators (peter3)
-  Error Provider (peter3)
-  TreeView w. Checkbox and RadioButton support (peter3)
-  VS.NET style TreeView and JvPageList (peter3)
+  Print Preview (peter3) - already compliant
+  Validators (peter3) - already compliant
+  Error Provider (peter3) - already compliant
+  TreeView w. Checkbox and RadioButton support (peter3) - already compliant
+  VS.NET style TreeView and JvPageList (peter3) - already compliant
   LED control (marcelb)
-  XML Database (sebastien)
+  XML Database (sebastien) - already compliant
   JvAviCAP (obones)
-  JvStructStorage (peter3) (?)
   TreeViewCombo and DirPathCombo (mbeck)
   ExpressionEdit (rbarre) (?)
   GoogleSearcher (Basri Kanca)(?)
+  JvStructStorage (peter3) (?) - already compliant
+  ManagedThreads (Erwin Molendijk)(?) 
   TDBRadioGroup based on TPanel (anonymous)
   

@@ -1,4 +1,4 @@
-unit JvCsvDataDsgn;
+unit JvCsvDataEditor;
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -13,7 +13,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvaDsgn.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):  Warren Postma (warrenpstma@hotmail.com)
@@ -38,16 +38,16 @@ Known Issues:
 interface
 
 uses Windows,
-     Messages,
-     Db,
-     SysUtils,
-     Classes,
-     Forms,
-     Dialogs,
-     Graphics,
-     DesignIntf,
-     DesignEditors,
-     JvCsvData;
+  Messages,
+  Db,
+  SysUtils,
+  Classes,
+  Forms,
+  Dialogs,
+  Graphics,
+  DesignIntf,
+  DesignEditors,
+  JvCsvData;
 
 
 
@@ -82,50 +82,50 @@ implementation
 { CsvDataDefStrDsgn= String Editor at design time for CSVDefs }
 
 
-uses JvCsvDataDefStrDsgn; {,DSDESIGN}
+uses JvCsvDataForm; {,DSDESIGN}
 
 function TJvCsvDefStrProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
-function DoCsvDefDialog(OldValue:String):String;
+function DoCsvDefDialog(OldValue: string): string;
 var
-  Dialog:TJvCsvDefStrDialog;
-  dlgResult:Integer;
+  Dialog: TJvCsvDefStrDialog;
+  dlgResult: Integer;
   WindowList: Pointer;
 begin
-    WindowList := DisableTaskWindows(0);
-    try
-      dlgResult := idCancel;
-      Dialog :=  TJvCsvDefStrDialog.Create(nil); // no owner!
-      Dialog.SetCsvStr(OldValue);
-      dlgResult := Dialog.ShowModal;
-      if dlgResult = idOk then
-              result := Dialog.GetCsvStr
-      else
-              result := OldValue;
-    finally
-      Dialog.Free;
-      EnableTaskWindows(WindowList);
-    end;
+  WindowList := DisableTaskWindows(0);
+  Dialog := TJvCsvDefStrDialog.Create(nil); // no owner!
+  try
+    dlgResult := idCancel;
+    Dialog.SetCsvStr(OldValue);
+    dlgResult := Dialog.ShowModal;
+    if dlgResult = idOk then
+      result := Dialog.GetCsvStr
+    else
+      result := OldValue;
+  finally
+    Dialog.Free;
+    EnableTaskWindows(WindowList);
+  end;
 end;
 
 procedure TJvCsvDefStrProperty.Edit;
 var
-  s1,s2:String;
-  Component:TJvCsvCustomInMemoryDataSet;
+  s1, s2: string;
+  Component: TJvCsvCustomInMemoryDataSet;
 begin
 
-    Component := GetComponent(0) as TJvCsvCustomInMemoryDataSet;
-    
-    s1 := GetValue();
-    if (s1 = '') then
-        s1 := Component.GetCsvHeader; // todo! read first line of CSV file!
-    s2 := DoCsvDefDialog(s1);        
+  Component := GetComponent(0) as TJvCsvCustomInMemoryDataSet;
+
+  s1 := GetValue();
+  if (s1 = '') then
+    s1 := Component.GetCsvHeader; // todo! read first line of CSV file!
+  s2 := DoCsvDefDialog(s1);
 
     //if s1<>s2 then begin // on change of csv value.
-    SetValue(s2);
+  SetValue(s2);
     //end
 end;
 
@@ -181,6 +181,7 @@ end;
 
 
 { TJvFilenameProperty }
+
 procedure TJvFilenameProperty.Edit;
 var
   csvFileOpen: TOpenDialog;
@@ -205,20 +206,22 @@ end;
 
 
 // VCL Registration
+
 procedure Register;
 begin
 { Property Editors }
- RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'CsvFieldDef', TJvCsvDefStrProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'CsvFieldDef', TJvCsvDefStrProperty);
 // RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'TableName', TFilenameProperty);
- RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'Filename', TJvFileNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'Filename', TJvFileNameProperty);
 
  { Component Editor - Verbs for the Right-Clicky-on-ye-component thing
    Requires a working DSDESIGN.pas source that will compile. }
 // RegisterComponentEditor(TCSVDataSet, TCSVDataSetComponentEditor);
 
 { Component }
-  RegisterComponents( 'Jv Data Access', [TJvCSVDataSet]); // {'Data Access'}
+  RegisterComponents('Jv Data Access', [TJvCSVDataSet]); // {'Data Access'}
 
 end;
 
 end.
+

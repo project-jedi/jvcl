@@ -1,4 +1,4 @@
-package JvCoreD7D;
+package JvSystemD7D;
 
 {$R *.res}
 {$ALIGN 8}
@@ -11,29 +11,27 @@ package JvCoreD7D;
 {$LOCALSYMBOLS ON}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION ON}
+{$OPTIMIZATION OFF}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS OFF}
 {$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES OFF}
+{$STACKFRAMES ON}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Core Designtime Package'}
+{$DESCRIPTION 'JVCL System Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   rtl,
-  JvCoreD7R,
-  designide;
+  JvSystemD7R,
+  vcl;
 
 contains
-  JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',
-  JvxDConst in '..\..\design\JvxDConst.pas',
-  JvCoreReg in '..\..\design\JvCoreReg.pas';
+  JvSystemReg in '..\..\design\JvSystemReg.pas';
 
 end.

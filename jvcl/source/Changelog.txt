@@ -89,6 +89,9 @@ Changelog for JVCL 3.0
   JvTimeLineEdit -> JvTimeLineEditor
   JvCheckItm -> JvCheckedItemsForm
   JvaDsgn -> JvDesignerUtils
+  JvDateTimeDlg -> JvDateTimeForm
+  JvCsvDataDsgn > JvCsvDataEditor
+  JvCsvDataDefStrDsgn -> JvCsvDataForm
   
 
     

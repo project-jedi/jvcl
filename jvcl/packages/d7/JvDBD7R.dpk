@@ -31,7 +31,9 @@ requires
   JvCoreD7R,
   dbrtl,
   vcldb,
-  JvStdCtrlsD7R;
+  JvStdCtrlsD7R,
+  vcl,
+  bdertl;
 
 contains
   JvDBConst in '..\..\run\JvDBConst.pas',
@@ -43,6 +45,8 @@ contains
   JvDBSpinEdit in '..\..\run\JvDBSpinEdit.pas',
   JvDBTreeView in '..\..\run\JvDBTreeView.pas',
   JvLookup in '..\..\run\JvLookup.pas',
-  JvDBUtils in '..\..\run\JvDBUtils.pas';
+  JvDBUtils in '..\..\run\JvDBUtils.pas',
+  JvCsvData in '..\..\source\JvCsvData.pas',
+  JvCsvParse in '..\..\source\JvCsvParse.pas';
 
 end.

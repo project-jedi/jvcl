@@ -10,7 +10,7 @@ uses
   Classes, ActnList, DesignIntf,
   JvxDConst, JVCLVer,
   JvActions, JvActnRes, JvJVCLAbout, 
-  JvJVCLAboutProperty;
+  JvJVCLAboutEditor;
 
 {.$R ..\resources\JvCoreReg.dcr}
 
