@@ -14,7 +14,7 @@ All Rights Reserved.
 Contributor(s):
 Jens Fudickar [jens.fudickar@oratool.de]
 
-Last Modified: 2003-11-03
+Last Modified: 2003-12-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -1019,7 +1019,7 @@ end;
 
 procedure TJvParameterList.Assign(Source: TPersistent);
 begin
-  // (rom) no inherited Assign?
+  inherited Assign(Source);
   Messages.Assign(TJvParameterList(Source).Messages);
   ArrangeSettings := TJvParameterList(Source).ArrangeSettings;
   AppStore := TJvParameterList(Source).AppStore;
@@ -1754,7 +1754,7 @@ begin
     Exit;
   SavePath := ParameterList.Path;
   try
-    ParameterList.Path := GetSelectPath(sloLoad, ACaption);
+    ParameterList.Path := GetSelectListPath(sloLoad, ACaption);
     if ParameterList.Path <> '' then
     begin
       ParameterList.LoadData;
@@ -1773,7 +1773,7 @@ begin
     Exit;
   SavePath := ParameterList.Path;
   try
-    ParameterList.Path := GetSelectPath(sloStore, ACaption);
+    ParameterList.Path := GetSelectListPath(sloStore, ACaption);
     if ParameterList.Path <> '' then
     begin
       ParameterList.GetDataFromWinControls;

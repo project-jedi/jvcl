@@ -14,7 +14,7 @@ All Rights Reserved.
 Contributor(s):
 Jens Fudickar [jens.fudickar@oratool.de]
 
-Last Modified: 2003-11-03
+Last Modified: 2003-12-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -1287,7 +1287,10 @@ end;
 
 procedure TJvDynControlVCLComboBox.ControlSetValue(Value: variant);
 begin
-  Text := Value;
+  if Style = csDropDownList then
+    ItemIndex := Items.IndexOf(Value)
+  else
+    Text := Value;
 end;
 
 function TJvDynControlVCLComboBox.ControlGetValue: variant;

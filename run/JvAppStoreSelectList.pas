@@ -8,14 +8,10 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvPlacemnt.PAS, released on 2002-07-04.
-
-The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software
+The Initial Developers of the Original Code is: Jens Fudickar
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2003-12-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -58,6 +54,7 @@ type
     function GetAppStore: TJvCustomAppStore; virtual;
     procedure SetAppStore(Value: TJvCustomAppStore); virtual;
     procedure SetSelectPath(Value: string);
+    function GetStoragePath : string; virtual;
     function GetDynControlEngine: TJvDynControlEngine; virtual;
     procedure SetDynControlEngine(Value: TJvDynControlEngine); virtual;
     procedure CreateDialog(AOperation: TJvAppStoreSelectListOperation; ACaption: string = '');
@@ -81,7 +78,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function GetSelectPath(AOperation: TJvAppStoreSelectListOperation; ACaption: string = ''): string;
+    function GetSelectListPath(AOperation: TJvAppStoreSelectListOperation; ACaption: string = ''): string;
     procedure ManageSelectList(ACaption: string = '');
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
   published
@@ -143,6 +140,11 @@ begin
   FSelectPath := Value;
 end;
 
+function  TJvAppStoreSelectList.GetStoragePath : string;
+begin
+  Result := SelectPath;
+end;
+
 function TJvAppStoreSelectList.GetDynControlEngine: TJvDynControlEngine;
 begin
   if Assigned(FDynControlEngine) then
@@ -161,7 +163,9 @@ var
   Value: string;
 begin
   Value := IComboBoxData.ControlValue;
-  if Operation <> sloStore then
+  if Operation = sloStore then
+    SelectDialog.ModalResult := mrOk
+  else
     if SelectList.IndexOf(Value) >= 0 then
       SelectDialog.ModalResult := mrOk;
 end;
@@ -301,7 +305,7 @@ begin
     end;
 end;
 
-function TJvAppStoreSelectList.GetSelectPath(AOperation: TJvAppStoreSelectListOperation;
+function TJvAppStoreSelectList.GetSelectListPath(AOperation: TJvAppStoreSelectListOperation;
   ACaption: string = ''): string;
 begin
   try
@@ -312,7 +316,7 @@ begin
     begin
       case AOperation of
         sloLoad:
-          Result := SelectPath + PathDelim + IComboBoxData.ControlValue;
+          Result := AppStore.ConcatPaths ([GetStoragePath,IComboBoxData.ControlValue]);
         sloStore:
           begin
             if SelectList.IndexOf(IComboBoxData.ControlValue) < 0 then
@@ -320,7 +324,7 @@ begin
               SelectList.Add(IComboBoxData.ControlValue);
               StoreSelectList;
             end;
-            Result := SelectPath + PathDelim + IComboBoxData.ControlValue;
+            Result := AppStore.ConcatPaths ([GetStoragePath,IComboBoxData.ControlValue]);
           end;
         sloManage:
           begin
@@ -329,7 +333,7 @@ begin
               SelectList.Delete(SelectList.IndexOf(IComboBoxData.ControlValue));
               StoreSelectList;
             end;
-            Result := SelectPath + PathDelim + IComboBoxData.ControlValue;
+            Result := AppStore.ConcatPaths ([GetStoragePath,IComboBoxData.ControlValue]);
           end;
       end;
     end;
@@ -340,7 +344,7 @@ end;
 
 procedure TJvAppStoreSelectList.ManageSelectList(ACaption: string = '');
 begin
-  GetSelectPath(sloManage, ACaption);
+  GetSelectListPath(sloManage, ACaption);
 end;
 
 procedure TJvAppStoreSelectList.LoadSelectList;
@@ -349,10 +353,10 @@ var
 begin
   if Assigned(AppStore) then
   begin
-    AppStore.ReadStringList(SelectPath, FSelectList, True);
+    AppStore.ReadStringList(GetStoragePath, FSelectList, true);
     if CheckEntries then
       for I := FSelectList.Count - 1 downto 0 do
-        if not AppStore.PathExists(SelectPath + PathDelim + FSelectList[I]) then
+        if not AppStore.PathExists(AppStore.ConcatPaths ([GetStoragePath,FSelectList[I]])) then
           FSelectList.Delete(I);
   end;
 end;
@@ -360,7 +364,7 @@ end;
 procedure TJvAppStoreSelectList.StoreSelectList;
 begin
   if Assigned(AppStore) then
-    AppStore.WriteStringList(SelectPath, FSelectList);
+    AppStore.WriteStringList(GetStoragePath, FSelectList);
 end;
 
 end.
