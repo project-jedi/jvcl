@@ -58,8 +58,6 @@ type
   public
     { Public declarations }
     JM:TJvCharMap;
-    procedure AfterConstruction; override;
-
   end;
 
 var
@@ -80,7 +78,7 @@ begin
   JM := TJvCharMap.Create(self);
 //  JM.Align := alClient;
   JM.Parent := self;
-  JM.EndChar := 512;
+  JM.CharRange.EndChar := 512;
   JM.OnKeyUp := DoJMKeyUp;
   JM.OnMouseUp := DoJMMouseUp;
   JM.OnMouseWheel := DoJMMouseWheel;
@@ -90,14 +88,16 @@ begin
   JM.Top := 8;
   JM.Height := Panel1.Top - JM.Top - 20;
   JM.Anchors := [akTop, akBottom];
-//  JM.AutoSizeColumns := true;
   JM.PopupMenu := PopupMenu1;
   chkZoomPanel.Checked := JM.ShowZoomPanel;
-  udStart.Position := JM.StartChar;
-  udEnd.Position := JM.EndChar;
+  udStart.Position := JM.CharRange.StartChar;
+  udEnd.Position := JM.CharRange.EndChar;
   udColumns.Position := JM.Columns;
   cbColor.ColorValue := JM.Color;
   cbFont.Fontname := JM.Font.Name;
+  cbColor.OnChange := cbColorChange;
+  cbFont.OnChange := cbFontChange;
+
   {$IFDEF USETNT}
   edCharacter := TTntEdit.Create(self);
   {$ELSE}
@@ -140,13 +140,13 @@ end;
 
 procedure TForm1.udStartClick(Sender: TObject; Button: TUDBtnType);
 begin
-  JM.StartChar := udStart.Position;
+  JM.CharRange.StartChar := udStart.Position;
 end;
 
 procedure TForm1.udEndClick(Sender: TObject; Button: TUDBtnType);
 begin
   if not chkUnicode.Checked then
-    JM.EndChar := udEnd.Position;
+    JM.CharRange.EndChar := udEnd.Position;
 end;
 
 procedure TForm1.udColumnsClick(Sender: TObject; Button: TUDBtnType);
@@ -259,21 +259,12 @@ begin
   reInfo.Hint := trim(reInfo.Lines.Text);
 end;
 
-procedure TForm1.AfterConstruction;
-begin
-  inherited;
-  cbFont.FontName := JM.Font.Name;
-  cbColor.ColorValue := JM.Color;
-  cbColor.OnChange := cbColorChange;
-  cbFont.OnChange := cbFontChange;
-end;
-
 procedure TForm1.chkUnicodeClick(Sender: TObject);
 begin
   if chkUnicode.Checked then
-    JM.EndChar := $FEFF
+    JM.CharRange.EndChar := $FEFF
   else
-    JM.EndChar := udEnd.Position;
+    JM.CharRange.EndChar := udEnd.Position;
 end;
 
 procedure TForm1.Copy1Click(Sender: TObject);
@@ -307,5 +298,6 @@ begin
  if JM <> nil then
    JM.Font.Name := cbFont.FontName;
 end;
+
 
 end.
