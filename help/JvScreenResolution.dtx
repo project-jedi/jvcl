@@ -1,38 +1,42 @@
-================================================================
+@@$TJvScreenResolution
+<TITLE TJvScreenResolution overview>
+<GROUP JVCL.Miscel>
+----------------------------------------------------------------------------------------------------
 @@JvScreenResolution.pas
-Note:
-<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
-
-C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
-
-Conditions:
-The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
-
-Author:
-Sebastien Buysse
-
-Version:
-1.20 Beta
-
-================================================================
+<GROUP JVCL.FileRef>
+Summary
+  Contains the TJvScreenResolution component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Sébastien Buysse
+----------------------------------------------------------------------------------------------------
 @@TJvScreenResolution
-Description:
-This is the easiest way to change the resolutions of the screen and to list all resolutions supported.
+<GROUP TJvScreenResolution>
+Summary
+Description
+----------------------------------------------------------------------------------------------------
+@@TJvScreenResolution.GetSupportedModes
+Summary
+Description
+Parameters
+  Modes - //: array of TDevMode
+  Count - //: Integer
+See Also
+  SetMode
+----------------------------------------------------------------------------------------------------
+@@TJvScreenResolution.SetMode
+Summary
+  The SetMode function changes the display settings to the specified graphics mode. 
+Description
+  Using the DEVMODE returned by the GetSupportedModes function ensures that the DEVMODE passed to 
+  SetMode is valid and contains only values supported by the display driver.
 
-================================================================
-@@TJvScreenResolution.GetSupportedModes@array of TDevMode@Integer
-Description:
-This method list the supported resolutions. 
-
-Parameters:
-Modes - This array will contain the supported modes 
-Count - This variable will countain the number of modes stored in the array
-
-================================================================
-@@TJvScreenResolution.SetMode@TDevMode
-Description:
-This method is for changing the resolution. 
-
-Parameters:
-Value - This is a TDevMode retrieved with the methos GetSuppotedModes.
-
+  When the display mode is changed dynamically, the WM_DISPLAYCHANGE message is sent to all running 
+  applications with the following message parameters:
+Parameters
+  Value - //: TDevMode
+Result
+  True  - The settings change was successful.
+  False - 
+See Also
+  GetSupportedModes

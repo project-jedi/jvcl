@@ -1,214 +1,164 @@
-================================================================
+----------------------------------------------------------------------------------------------------
+@@$TJvScrollText
+<TITLE TJvScrollText overview>
+<GROUP JVCL.Miscel>
+----------------------------------------------------------------------------------------------------
+@@$TJvScrollThread
+<TITLE TJvScrollThread overview>
+----------------------------------------------------------------------------------------------------
 @@JvScrollText.pas
-Note:
-<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
-
-C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
-
-Conditions:
-The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
-
-Author:
-Sebastien Buysse
-
-Version:
-1.20 Beta
-
-================================================================
+Summary
+  Contains the TJvScrollText component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Sébastien Buysse
+----------------------------------------------------------------------------------------------------
 @@TJvScrollText
-Description:
-This is a scroll text with mutli lines
-
-================================================================
-@@TJvScrollText.FAboutJVCL
-
-================================================================
-@@TJvScrollText.FActive
-
-================================================================
-@@TJvScrollText.FCurrPos
-
-================================================================
-@@TJvScrollText.FDeja
-
-================================================================
-@@TJvScrollText.FDelay
-
-================================================================
-@@TJvScrollText.FDirection
-
-================================================================
-@@TJvScrollText.FDown
-
-================================================================
-@@TJvScrollText.FFont
-
-================================================================
-@@TJvScrollText.FMemo
-
-================================================================
-@@TJvScrollText.FPixel
-
-================================================================
-@@TJvScrollText.FScroll
-
-================================================================
-@@TJvScrollText.FScrollSaved
-
-================================================================
-@@TJvScrollText.FSelectable
-
-================================================================
-@@TJvScrollText.FStartY
-
-================================================================
-@@TJvScrollText.FStrings
-
-================================================================
-@@TJvScrollText.FTimerTag
-
-================================================================
-@@TJvScrollText.CalculateMemo@TObject
-
-================================================================
-@@TJvScrollText.Create@TComponent
-
-================================================================
+<GROUP TJvScrollText>
+Summary
+Description
+----------------------------------------------------------------------------------------------------
+@@TJvScrollText.Create
+Summary
+Description
+Parameters
+  AOwner - 
+See Also
+----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Destroy
-
-================================================================
-@@TJvScrollText.FontChanged@TObject
-
-================================================================
-@@TJvScrollText.GetAlignment
-
-================================================================
-@@TJvScrollText.GetColor
-
-================================================================
-@@TJvScrollText.GetFont
-
-================================================================
-@@TJvScrollText.MouseD@TObject@TMouseButton@TShiftState@Integer@Integer
-
-================================================================
-@@TJvScrollText.MouseM@TObject@TShiftState@Integer@Integer
-
-================================================================
-@@TJvScrollText.MouseU@TObject@TMouseButton@TShiftState@Integer@Integer
-
-================================================================
-@@TJvScrollText.OnScroll@TObject
-
-================================================================
-@@TJvScrollText.Pause
-Description:
-Call this method to temporary pause the scroll
-
-================================================================
-@@TJvScrollText.Reset
-Description:
-Call this method to reset the position of the scroll
-
-================================================================
-@@TJvScrollText.SetActive@Boolean
-
-================================================================
-@@TJvScrollText.Setalignment@TAlignment
-
-================================================================
-@@TJvScrollText.SetColor@TColor
-
-================================================================
-@@TJvScrollText.SetDelay@Cardinal
-
-================================================================
-@@TJvScrollText.SetDirection@TDirection
-
-================================================================
-@@TJvScrollText.SetFont@TFont
-
-================================================================
-@@TJvScrollText.SetItems@TStringList
-
-================================================================
-@@TJvScrollText.SetPixel@Integer
-
-================================================================
-@@TJvScrollText.Unpause
-Description:
-Call this method to unpause the scroll
-
-================================================================
-@@TJvScrollText.WMSize@TWMSize
-
-================================================================
+Summary
+Description
+Parameters
+  None.
+See Also
+----------------------------------------------------------------------------------------------------
 @@TJvScrollText.AboutJVCL
-
-================================================================
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Active
-Description:
-if active is true, the text will scroll
-
-================================================================
-@@TJvScrollText.Align
-
-================================================================
+Summary
+Description
+See Also
+----------------------------------------------------------------------------------------------------
 @@TJvScrollText.BackgroundColor
-Description:
-This is the background color for the scroll
-
-================================================================
+Summary
+  Specifies the background color of the control.
+Description
+  Use Color to read or change the background color of the control.
+See Also
+----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Delay
-Description:
-This is the delay you want to wait between two scrolls
-
-================================================================
+Summary
+  The interval between two moves of the label.
+Description
+  Interval indicates the delay (in milliseconds) between two stages of appearing.
+See Also
+----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Font
-Description:
-This is the font used for the text
-
-================================================================
+Summary
+  Controls the attributes of text written on or in the control.
+Description
+  To change to a new font, specify a new TFont object. To modify a font, change the value of the 
+  Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
+See Also
+----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Items
-Description:
-This is the text to scroll
+Summary
+  Specifies a text string that identifies the control to the user.
+Description
+  Use Caption to specify the text string that labels the control.
 
-================================================================
-@@TJvScrollText.ParentShowHint
+  To underline a character in a Caption that labels a component, include an ampersand (&) before the
+  character. This type of character is called an accelerator character. The user can then select the 
+  component by pressing Alt while typing the underlined character. To display an ampersand character 
+  in the caption, use two ampersands (&&).
 
-================================================================
+  Note:	Controls that display text use either the Caption property or the Text property to specify 
+  the text value. Which property is used depends on the type of control. In general, Caption is used 
+  for text that appears as a window title or label, while Text is used for text that appears as the 
+  content of a control.
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvScrollText.Pause
+Summary
+Description
+Parameters
+  None.
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvScrollText.Reset
+Summary
+Description
+Parameters
+  None.
+See Also
+----------------------------------------------------------------------------------------------------
 @@TJvScrollText.ScrollDirection
-Description:
-This is the direction for the scroll (left,right,top,bottom)
+Summary
+  Determines how text is scrolled within the component.
+Description
+  The possible values of Alignment are
 
-================================================================
+  <TABLE>
+    Value               Meaning
+    -----               -------
+    drFromLeft          Text is scrolled from left to right.
+    drFromRight         Text is scrolled from right to left.
+    drFromTop           Text is scrolled from top to bottom.
+    drFromBottom        Text is scrolled from bottom to top.
+  </TABLE>
+See Also
+----------------------------------------------------------------------------------------------------
 @@TJvScrollText.ScrollPixels
-Description:
-This is the distance in pixel between two scroll
-
-================================================================
-@@TJvScrollText.ShowHint
-
-================================================================
+Summary
+  Determines the amount of pixels the text is moved per scroll event.
+Description
+See Also
+----------------------------------------------------------------------------------------------------
 @@TJvScrollText.TextAlignment
-Description:
-This is the alignment of the text (centered, left, right)
-
-================================================================
+Summary
+  Determines how text is aligned within the component.
+Description
+  The possible values of Alignment are
+  
+  <TABLE>
+    Value               Meaning
+    -----               -------
+    taLeftJustify       Text is aligned at the left of the control.
+    taCenter            Text is centered in the control.
+    taRightJustify      Text is aligned at the right of the control.
+  </TABLE>
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvScrollText.Unpause
+Summary
+Description
+Parameters
+  None.
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvScrollText.WMSize
+Summary
+Description
+Parameters
+  Msg - 
+See Also
+----------------------------------------------------------------------------------------------------
 @@TJvScrollThread
-
-================================================================
-@@TJvScrollThread.FDelay
-
-================================================================
-@@TJvScrollThread.FOnDraw
-
-================================================================
+<GROUP TJvScrollThread>
+Summary
+Description
+----------------------------------------------------------------------------------------------------
 @@TJvScrollThread.Draw
-
-================================================================
+Summary
+Description
+Parameters
+  None.
+See Also
+----------------------------------------------------------------------------------------------------
 @@TJvScrollThread.Execute
-
-================================================================
-@@RC_TestText
-
+Summary
+Description
+Parameters
+  None.
+See Also

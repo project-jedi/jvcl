@@ -1,94 +1,75 @@
-================================================================
+----------------------------------------------------------------------------------------------------
+@@$TJvSpacer
+<TITLE TJvSpacer overview>
+<GROUP JVCL.Miscel>
+  TJvSpacer can be used as a spacer on a window. 
+  
+  Set property Align to position the spacing object on the screen; and set property Spacing to 
+  determine the size of the control.
+  
+  Note that you can't place components on a TJvSpacer, and that it has no caption.
+----------------------------------------------------------------------------------------------------
 @@JvSpacer.pas
-Note:
-<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
-
-C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
-
-Conditions:
-The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
-
-Author:
-Peter Below
-
-Version:
-1.20 Beta
-
-================================================================
+Summary
+  Contains the TJvSpacer component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Peter Below
+----------------------------------------------------------------------------------------------------
 @@TJvSpacer
+<GROUP TJvSpacer>
+Summary
+  Can be used as a spacer on a window.
+Description
+  Use TJvSpacer if you want to set some space between objects on a window. Set property Align to 
+  position the spacing object on the screen; and set property Spacing to determine the size of the
+  control.
+  
+  Note that you can't place components on a TJvSpacer, and that it has no caption.
+----------------------------------------------------------------------------------------------------
+@@TJvSpacer.Create
+Summary
+  Creates and initializes an instance of JvSpacer.
+Description
+  Call Create to create an instance of JvSpacer at runtime. A JvSpacer component placed on a 
+  form at design time is created automatically.
 
-================================================================
-@@TJvSpacer.FAboutJVCL
+  Pass a single Component as a parameter to provide the scroll bar with an Owner that is responsible
+  for freeing it.
 
-================================================================
-@@TJvSpacer.FSpacing
+  Create calls the inherited Create method, then sets the initial values for the spacing object as 
+  follows: 
 
-================================================================
-@@TJvSpacer.Create@TComponent
-
-================================================================
-@@TJvSpacer.SetBounds@Integer@Integer@Integer@Integer
-
-================================================================
-@@TJvSpacer.SetSpacing@Integer
-
-================================================================
+  * Spacing is set 4.
+  * csAcceptsControls and csSetCaption are removed from ControlStyle.
+Parameters
+  aOwner - The owner for the instance of TJvSpacer.
+----------------------------------------------------------------------------------------------------
 @@TJvSpacer.AboutJVCL
-
-================================================================
-@@TJvSpacer.Align
-
-================================================================
-@@TJvSpacer.Color
-
-================================================================
-@@TJvSpacer.DragCursor
-
-================================================================
-@@TJvSpacer.DragKind
-
-================================================================
-@@TJvSpacer.DragMode
-
-================================================================
-@@TJvSpacer.OnCanResize
-
-================================================================
-@@TJvSpacer.OnClick
-
-================================================================
-@@TJvSpacer.OnDblClick
-
-================================================================
-@@TJvSpacer.OnDragDrop
-
-================================================================
-@@TJvSpacer.OnDragOver
-
-================================================================
-@@TJvSpacer.OnEndDrag
-
-================================================================
-@@TJvSpacer.OnMouseDown
-
-================================================================
-@@TJvSpacer.OnMouseMove
-
-================================================================
-@@TJvSpacer.OnMouseUp
-
-================================================================
-@@TJvSpacer.OnResize
-
-================================================================
-@@TJvSpacer.OnStartDrag
-
-================================================================
-@@TJvSpacer.ParentColor
-
-================================================================
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvSpacer.SetBounds
+Summary
+  Sets the spacing object's boundary properties all at once.
+Description
+  Use SetBounds to change all of the control’s boundary properties at once. SetBounds uses the Spacing
+  property to determine the actual new height or width of the spacing object.
+Parameters
+  ALeft   - Specifies the horizontal coordinate of the left edge of the spacing object relative to 
+            its parent. 
+  ATop    - Specifies the vertical coordinate of the top left edge of the spacing object relative to
+            its parent.
+  AWidth  - Specifies the horizontal size of the spacing object or form in pixels.
+  AHeight - Specifies the vertical size of the spacing object in pixels.
+See Also
+  Spacing
+----------------------------------------------------------------------------------------------------
 @@TJvSpacer.Spacing
-
-================================================================
-@@TJvSpacer.Visible
-
+Summary
+  Determines the size of the spacing object.
+Description
+  Use Spacing in combination with property Align to set the size of the spacing object. If Align equals
+  alTop or alBottom then Spacing determines the height of the spacing object. If Align equals alLeft or
+  alRight then Spacing determines the width of the spacing object.
+See Also
+  SetBounds
