@@ -27,6 +27,12 @@ msgstr ""
 msgid "ToolBar1"
 msgstr ""
 
+msgid "ExceptionDialog"
+msgstr ""
+
+msgid "TextLabel"
+msgstr ""
+
 msgid "ToolButton1"
 msgstr ""
 
@@ -175,6 +181,9 @@ msgid "Arial"
 msgstr ""
 
 msgid "Verdana"
+msgstr ""
+
+msgid "Courier New"
 msgstr ""
 
 msgid "qrp"
