@@ -85,10 +85,9 @@ object frmMain: TfrmMain
         Height = 314
         Align = alClient
         BandWidth = 150
-        BevelKind = bkTile
         BevelInner = bvNone
         RelativeDivider = True
-        Divider = 45
+        Divider = 43
         ItemHeight = 16
         Painter = JvInspectorBorlandPainter1
         ReadOnly = False
@@ -143,7 +142,7 @@ object frmMain: TfrmMain
     ImageMargin.Right = 0
     ImageMargin.Bottom = 0
     ImageSize.Height = 0
-    ImageSize.Width = 0
+    ImageSize.Width = 16
     Left = 16
     Top = 24
     object File1: TMenuItem
@@ -171,6 +170,9 @@ object frmMain: TfrmMain
       end
       object ClearEvents1: TMenuItem
         Action = acClearEvents
+      end
+      object INcludeTrailingPathDelimiter1: TMenuItem
+        Action = acTrailingPathDelimiter
       end
       object N2: TMenuItem
         Caption = '-'
@@ -235,6 +237,10 @@ object frmMain: TfrmMain
       Caption = 'Reload Cursors'
       OnExecute = acReloadCursorsExecute
     end
+    object acTrailingPathDelimiter: TAction
+      Caption = 'Include Trailing Path Delimiter'
+      OnExecute = acTrailingPathDelimiterExecute
+    end
   end
   object JvSaveDialog1: TJvSaveDialog
     DefaultExt = 'txt'
@@ -256,6 +262,7 @@ object frmMain: TfrmMain
     Top = 56
   end
   object JvInspectorBorlandPainter1: TJvInspectorBorlandPainter
+    DrawNameEndEllipsis = False
     Left = 114
     Top = 24
   end
