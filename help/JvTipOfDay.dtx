@@ -35,6 +35,23 @@ Description
 
   Use the other properties of TJvTipOfDay to alter the appearance of the dialog.
 ----------------------------------------------------------------------------------------------------
+@@TJvTipOfDay.AppStore
+Summary
+  \Storage Component to store the values of the Show On Startup Checkbox
+Description
+  Use this component to define a TJvAppStore-Component to store the values of the checkbox permanent.
+  If you don't use this component you had to manage this manual.
+See Also
+  AppStorePath, TJvAppStore, TJvTipOfDayOption.toUseAppStore
+----------------------------------------------------------------------------------------------------
+@@TJvTipOfDay.AppStorePath
+Summary
+  \Specifies the path used by AppStore.
+Description
+  Specifies the path in which the settings for the Show On Startup Checkbox will be saved.
+See Also
+  AppStore
+----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.ButtonClose
 Summary
   \Controls the attributes of the close button on the dialog.
@@ -260,9 +277,9 @@ Description
   specify whether the checkbox must be checked or unchecked. Use flag toShowOnStartUp
   after calling <LINK TJvTipOfDay.Execute,Execute>, to determine whether the checkbox was checked or
   unchecked when the user closed the dialog.
-@@TJvTipOfDayOption.toUseRegistry
-  Specifies whether to use the built-in method - that uses the registry - to store the
-  value of the checkbox.
+@@TJvTipOfDayOption.toUseAppStore
+  Specifies whether to use the built-in method to store the value of the checkbox using the 
+  TJvAppStore-Component.
 @@TJvTipOfDayOption.toShowWhenFormShown
   Shows the tip dialog when the parent form of the TJvTipOfDay component is shown.
 ----------------------------------------------------------------------------------------------------

@@ -1577,6 +1577,7 @@ resourcestring
   RsTipsTitle = 'Tips and Tricks';
   RsTipsHeaderText = 'Did you know...';
   RsTipsCheckBoxText = '&Show Tips on Startup';
+  RsStoreShowOnStartUp = 'Show On Startup';
 
 //=== JvToolEdit.pas =========================================================
 resourcestring
