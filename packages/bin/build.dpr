@@ -491,6 +491,10 @@ begin
   WriteLn('    --jcl-path=X    sets the JCLROOT environment variable to X.');
   WriteLn('    --bpl-path=X    sets the BPLDIR and DCPDIR environment variable to X.');
   WriteLn('    --lib-path=X    sets the LIBDIR environment variable to X (BCB only).');
+  WriteLn('    --hpp-path=X    sets the HPPDIR environment variable to X (BCB only).');
+  WriteLn('                      Defaults to $(ROOT)\Include\Vcl');
+  WriteLn('                      Set this to an empty string if you want the hpp files to');
+  WriteLn('                      be left in the same directory as their source pas file.');
   WriteLn('    --build         forces the Delphi compiler to build the targets.');
   WriteLn('    --targets=X     sets the TARGETS environment variable to X. Only these .bpl');
   WriteLn('                    files will be compiled.');
@@ -504,9 +508,11 @@ procedure ProcessArgs;
 var
   i, Count: Integer;
   S: string;
+  HppPathSet: Boolean;
 begin
   i := 1;
   Count := ParamCount;
+  HppPathSet := False;
   while i <= Count do
   begin
     S := ParamStr(i);
@@ -533,6 +539,11 @@ begin
       begin
         Delete(S, 1, 11);
         SetEnvironmentVariable('LIBDIR', Pointer(S));
+      end
+      else if StartsText('--hpp-path=', S) then
+      begin
+        Delete(S, 1, 11);
+        SetEnvironmentVariable('HPPDIR', Pointer(S));
       end
       else if SameText(S, '--build') then
       begin
@@ -568,6 +579,8 @@ begin
     end;
     Inc(i);
   end;
+  if not HppPathSet then
+    SetEnvironmentVariable('HPDIR', '$(ROOT)\Include\Vcl');
 end;
 
 var
