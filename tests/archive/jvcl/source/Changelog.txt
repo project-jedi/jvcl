@@ -1,4 +1,6 @@
 2003-03-23
+Merged TJvRichEdit with TJvxRichEdit. TJvxRichEdit renamed to TJvRichEdit. JvRichEdit.pas moved to \archive. // roko, peter3
+2003-03-23
 - Removed TJvOpenDialog2000 and TJvSaveDialog2000 from registration in JVCLReg.pas: use TJvOpenDialog and TJvSaveDialog instead. They contain a better implementation of the same things as the xxx2000 versions. // peter3
 - Added EnablePopupChange property to TJvCustomCalcEdit (in JvCurrEdit.pas). Set it to true to get notified when changes are done in the popup calculator // peter3
  
