@@ -24,6 +24,9 @@ object ImageWindowChild2: TImageWindowChild2
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      203
+      65)
     object ImageWindow1: TJvImageWindow
       Left = 0
       Top = 0
@@ -35,7 +38,7 @@ object ImageWindowChild2: TImageWindowChild2
       Margin = 4
       ColCount = 8
       ImageCount = 8
-      ImageList = ImageList1
+      Images = ImageList1
       GridColor = clBlack
       Align = alTop
       OnClick = ImageWindow1Click

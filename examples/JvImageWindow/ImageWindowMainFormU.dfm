@@ -1,8 +1,8 @@
 object ImageWindowMainForm: TImageWindowMainForm
   Left = 597
   Top = 256
-  Width = 276
-  Height = 386
+  Width = 266
+  Height = 253
   Caption = 'Test program for ImageWindow'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,15 +20,14 @@ object ImageWindowMainForm: TImageWindowMainForm
   object ImageWindow1: TJvImageWindow
     Left = 0
     Top = 0
-    Width = 268
-    Height = 342
-    BackColor = clBtnFace
+    Width = 258
+    Height = 207
+    Optimal = True
     Ghost = False
-    Margin = 24
-    ColCount = 3
+    Margin = 16
     ImageCount = 12
-    ImageList = ImageList1
-    GridColor = clWhite
+    Images = ImageList1
+    GridColor = clWindowText
     Align = alClient
     OnClick = ImageWindow1Click
   end
