@@ -1100,7 +1100,10 @@ begin
     if (Offset.X <> 0) and (Offset.Y <> 0) then
     begin
       GetWindowOrgEx(DC, WindowOrg);
-      SetWindowOrgEx(DC, WindowOrg.X + Offset.X, WindowOrg.Y + Offset.Y, nil);
+      if Control is TGraphicControl then
+        SetWindowOrgEx(DC, -Offset.X, -Offset.Y, nil)
+      else
+        SetWindowOrgEx(DC, WindowOrg.X + Offset.X, WindowOrg.Y + Offset.Y, nil);
     end;
 
     OrgRgn := 0;
