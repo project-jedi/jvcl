@@ -21,16 +21,7 @@ Last Modified: 2002-05-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-
-{$I JVCL.INC}
-
-{ support classes for the (TJvColorButton) }
-
-unit JvColorBox;
-
-{
+Description:
   TJvColorBox:
     A color selectionbox that works just like the one in Win95/NT 4.0
 
@@ -49,19 +40,26 @@ unit JvColorBox;
   would allow for the others to be installed too
   It's your choice...
 
-}
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
+unit JvColorBox;
 
 interface
 
 uses
   Windows, Messages, Forms, SysUtils, Classes, Graphics, Controls,
-  Dialogs, ExtCtrls, StdCtrls, Buttons, Menus, JvComponent;
+  Dialogs, ExtCtrls, StdCtrls, Buttons, Menus,
+  JvComponent;
 
-{ a square with a sunken frame and a color, sets Color when clicked }
-{ draws a frame when active (MouseEnter)                            }
 type
-  TJvColorClickEvent = procedure(Sender: TObject; Button: TMouseButton; Color: TColor) of object;
+  TJvColorClickEvent = procedure(Sender: TObject; Button: TMouseButton;
+    Shift: TShiftState; Color: TColor) of object;
 
+  { a square with a sunken frame and a color, sets Color when clicked
+    draws a frame when active (MouseEnter) }
   TJvColorSquare = class(TJvGraphicControl)
   private
     FInside: Boolean;
@@ -71,15 +69,13 @@ type
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
-
+    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
     procedure DrawFocusFrame;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   published
     property Color default clWhite;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle;
@@ -92,30 +88,26 @@ type
     property OnMouseUp;
   end;
 
-  { a window with 20 Colorsquares and a button that activates a TColorDialog... }
+  { a window with 20 Color squares and a button that activates a TColorDialog... }
   TJvColorBox = class(TJvCustomControl)
   private
     FColorClick: TJvColorClickEvent;
     FBorderStyle: TBorderStyle;
-    FSquares: array[1..20] of TJvColorSquare;
+    FSquares: array [1..20] of TJvColorSquare;
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure DrawColorBoxes;
   protected
     procedure Paint; override;
-    procedure DoExit; override;
-    procedure DoEnter; override;
-    // procedure CreateParams(var Params: TCreateParams); override;
-    procedure ColorClicked(Sender: TObject; Button: TMouseButton; Color: TColor);
+    procedure ColorClicked(Sender: TObject; Button: TMouseButton; Shift: TShiftState; Color: TColor);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   published
     property Align;
-    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle;
+    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Visible;
     property Top;
-    property Width;
-    property Height;
+    property Width default 78;
+    property Height default 96;
     property Left;
     property Enabled;
     property OnEnter;
@@ -128,27 +120,24 @@ type
 
   TJvCustomDropButton = class(TJvCustomControl)
   private
-    FAssociate: TPopupMenu;
+    FDropDown: TPopupMenu;
     FIsDown: Boolean;
     FArrowWidth: Integer;
     procedure SetArrowWidth(Value: Integer);
-    procedure SetAssociate(Value: TPopupMenu);
+    procedure SetDropDown(Value: TPopupMenu);
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   protected
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
-    property DropDown: TPopupMenu read FAssociate write SetAssociate;
+    property DropDown: TPopupMenu read FDropDown write SetDropDown;
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 13;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   end;
 
   TJvDropButton = class(TJvCustomDropButton)
@@ -168,7 +157,8 @@ type
 
 implementation
 
-uses JvThemes;
+uses
+  JvThemes;
 
 const
   // (rom) nonstandard colors renamed
@@ -176,7 +166,7 @@ const
   clPrivateSky = TColor($F7CEA5);
   clPrivateCream = TColor($F7FFFF);
 
-  Colors: array[1..20] of TColor =
+  Colors: array [1..20] of TColor =
   (clWhite, clBlack, clSilver, clDkGray,
     clRed, clMaroon, clYellow, clOlive,
     clLime, clGreen, clAqua, clTeal,
@@ -201,17 +191,12 @@ begin
   FInside := False;
 end;
 
-destructor TJvColorSquare.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvColorSquare.SetBorderStyle(Value: TBorderStyle);
 begin
   if FBorderStyle <> Value then
   begin
     FBorderStyle := Value;
-    Repaint;
+    Invalidate;
   end;
 end;
 
@@ -222,14 +207,14 @@ begin
   Rect := ClientRect;
   if FBorderStyle = bsSingle then
   begin
-    Frame3d(Canvas, Rect, clBtnFace, clBtnFace, 1);
-    Frame3d(Canvas, Rect, clBtnShadow, clBtnHighLight, 1);
-    Frame3d(Canvas, Rect, cl3DDkShadow, clBtnFace, 1);
+    Frame3D(Canvas, Rect, clBtnFace, clBtnFace, 1);
+    Frame3D(Canvas, Rect, clBtnShadow, clBtnHighLight, 1);
+    Frame3D(Canvas, Rect, cl3DDkShadow, clBtnFace, 1);
   end;
 
   with Canvas do
   begin
-    Brush.Color := self.Color;
+    Brush.Color := Self.Color;
     Brush.Style := bsSolid;
     FillRect(Rect);
   end;
@@ -243,9 +228,9 @@ begin
   if FInside and Enabled then
   begin
     Rect := ClientRect;
-    Frame3d(Canvas, Rect, cl3DDkShadow, cl3DDkShadow, 1);
-    Frame3d(Canvas, Rect, clBtnHighLight, clBtnHighLight, 1);
-    Frame3d(Canvas, Rect, cl3DDkShadow, cl3DDkShadow, 1);
+    Frame3D(Canvas, Rect, cl3DDkShadow, cl3DDkShadow, 1);
+    Frame3D(Canvas, Rect, clBtnHighLight, clBtnHighLight, 1);
+    Frame3D(Canvas, Rect, cl3DDkShadow, cl3DDkShadow, 1);
   end;
 end;
 
@@ -256,7 +241,7 @@ begin
   if csDesigning in ComponentState then
     Exit;
   FInside := True;
-  Repaint;
+  Invalidate;
 end;
 
 procedure TJvColorSquare.CMMouseLeave(var Msg: TMessage);
@@ -266,16 +251,14 @@ begin
   if csDesigning in ComponentState then
     Exit;
   FInside := False;
-  Repaint;
+  Invalidate;
 end;
 
 procedure TJvColorSquare.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  //if True then
-  //  ;
   if Assigned(FColorClick) then
-    FColorClick(Self, Button, Color);
+    FColorClick(Self, Button, Shift, Color);
 end;
 
 //=== TJvColorBox ============================================================
@@ -289,7 +272,7 @@ begin
   Height := 96;
   FBorderStyle := bsSingle;
 
-  for I := 1 to 20 do
+  for I := Low(FSquares) to High(FSquares) do
   begin
     FSquares[I] := TJvColorSquare.Create(Self);
     FSquares[I].BorderStyle := FBorderStyle;
@@ -297,21 +280,6 @@ begin
     FSquares[I].OnColorClick := ColorClicked;
     FSquares[I].Color := Colors[I];
   end;
-
-end;
-
-{
-procedure TJvColorBox.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  ControlStyle := ControlStyle + [csAcceptsControls];
-end;
-}
-
-destructor TJvColorBox.Destroy;
-begin
-  // don't destroy colorsquares here: they're destroyed automatically
-  inherited Destroy;
 end;
 
 procedure TJvColorBox.DrawColorBoxes;
@@ -336,20 +304,11 @@ begin
   end;
 end;
 
-procedure TJvColorBox.DoExit;
-begin
-  inherited DoExit;
-end;
-
-procedure TJvColorBox.DoEnter;
-begin
-  inherited DoEnter;
-end;
-
-procedure TJvColorBox.ColorClicked(Sender: TObject; Button: TMouseButton; Color: TColor);
+procedure TJvColorBox.ColorClicked(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; Color: TColor);
 begin
   if Assigned(FColorClick) then
-    FColorClick(Self, Button, Color);
+    FColorClick(Self, Button, Shift, Color);
 end;
 
 procedure TJvColorBox.SetBorderStyle(Value: TBorderStyle);
@@ -359,9 +318,9 @@ begin
   if FBorderStyle <> Value then
   begin
     FBorderStyle := Value;
-    for I := 1 to 20 do
+    for I := Low(FSquares) to High(FSquares) do
       FSquares[I].BorderStyle := Value;
-    Repaint;
+    Invalidate;
   end;
 end;
 
@@ -373,18 +332,18 @@ begin
   { frame }
   if FBorderStyle = bsSingle then
   begin
-    Frame3d(Canvas, Rect, clBtnFace, cl3DDkShadow, 1);
-    Frame3d(Canvas, Rect, clBtnHighLight, clBtnShadow, 1);
-    Frame3d(Canvas, Rect, clBtnFace, clBtnFace, 1);
+    Frame3D(Canvas, Rect, clBtnFace, cl3DDkShadow, 1);
+    Frame3D(Canvas, Rect, clBtnHighLight, clBtnShadow, 1);
+    Frame3D(Canvas, Rect, clBtnFace, clBtnFace, 1);
   end
   else
   begin
-    Frame3d(Canvas, Rect, clBtnFace, clBtnFace, 1);
-    Frame3d(Canvas, Rect, clBtnShadow, clBtnHighLight, 1);
-    Frame3d(Canvas, Rect, cl3DDkShadow, clBtnFace, 1);
+    Frame3D(Canvas, Rect, clBtnFace, clBtnFace, 1);
+    Frame3D(Canvas, Rect, clBtnShadow, clBtnHighLight, 1);
+    Frame3D(Canvas, Rect, cl3DDkShadow, clBtnFace, 1);
   end;
 
-  { colorsquares }
+  { color squares }
   DrawColorBoxes;
 end;
 
@@ -401,30 +360,11 @@ begin
   Height := 21;
 end;
 
-destructor TJvCustomDropButton.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvCustomDropButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   FIsDown := True;
   inherited MouseDown(Button, Shift, X, Y);
-end;
-
-procedure TJvCustomDropButton.SetArrowWidth(Value: Integer);
-begin
-  if FArrowWidth <> Value then
-  begin
-    FArrowWidth := Value;
-    Repaint;
-  end;
-end;
-
-procedure TJvCustomDropButton.SetAssociate(Value: TPopupMenu);
-begin
-  FAssociate := Value;
 end;
 
 procedure TJvCustomDropButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -434,29 +374,43 @@ var
 begin
   FIsDown := False;
   inherited MouseUp(Button, Shift, X, Y);
-  if Assigned(FAssociate) then
+  if Assigned(FDropDown) then
   begin
     Pt := ClientToScreen(Point(0, Height));
-    FAssociate.PopUp(Pt.X, Pt.Y);
+    FDropDown.Popup(Pt.X, Pt.Y);
   end;
+end;
+
+procedure TJvCustomDropButton.SetArrowWidth(Value: Integer);
+begin
+  if FArrowWidth <> Value then
+  begin
+    FArrowWidth := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCustomDropButton.SetDropDown(Value: TPopupMenu);
+begin
+  FDropDown := Value;
 end;
 
 procedure TJvCustomDropButton.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Enabled then
-    Repaint;
-{$ENDIF}
+    Invalidate;
+  {$ENDIF}
 end;
 
 procedure TJvCustomDropButton.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Enabled then
     Invalidate;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvCustomDropButton.Paint;
@@ -468,11 +422,7 @@ begin
   DrawThemedButtonFace(Self, Canvas, ClientRect, 1, bsAutoDetect, False,
     FIsDown, Focused, IsMouseOver(Self));
 
-  if FIsDown then
-    Increment := 1
-  else
-    Increment := 0;
-
+  Increment := Ord(FIsDown);
   Rec := ClientRect;
   Rec.Left := Width - FArrowWidth;
   OffsetRect(Rec, Increment, Increment);
@@ -517,12 +467,12 @@ begin
   Invalidate;
 end;
 
-procedure TJvColorSquare.CMColorChanged(var Message: TMessage);
+procedure TJvColorSquare.CMColorChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnChange) then
     FOnChange(Self);
-  Repaint;
+  Invalidate;
 end;
 
 end.

@@ -68,9 +68,6 @@ type
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     {$ENDIF VisualCLX}
-    procedure DoMouseEnter(AControl: TControl);
-    procedure DoMouseLeave(AControl: TControl);
-    procedure DoParentColorChange;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -126,11 +123,6 @@ begin
     Application.HintColor := FHintColor;
     FOver := True;
   end;
-  DoMouseEnter(AControl);
-end;
-
-procedure TJvAnimate.DoMouseEnter;
-begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -156,11 +148,6 @@ begin
     FOver := False;
     Application.HintColor := FSaved;
   end;
-  DoMouseLeave(AControl);
-end;
-
-procedure TJvAnimate.DoMouseLeave;
-begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
@@ -178,11 +165,6 @@ begin
   {$IFDEF VisualCLX}
   inherited ParentColorChanged;
   {$ENDIF VisualCLX}
-  DoParentColorChange;
-end;
-
-procedure TJvAnimate.DoParentColorChange;
-begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

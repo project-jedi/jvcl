@@ -51,13 +51,13 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
+    {$IFDEF VCL}
+    FOnCtl3DChanged: TNotifyEvent;
+    {$ENDIF VCL}
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FFontSave: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
-    {$IFDEF VCL}
-    FOnCtl3DChanged: TNotifyEvent;
-    {$ENDIF VCL}
     FAutoSize: Boolean;
     FAssociated: TControl;
     FCanvas: TControlCanvas;
@@ -69,7 +69,7 @@ type
     function GetReadOnly: Boolean;
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetAssociated(const Value: TControl);
-    procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
+    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetWordWrap(const Value: Boolean);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetLayout(const Value: TTextLayout);
@@ -90,7 +90,7 @@ type
     procedure ParentColorChanged; dynamic;
     procedure TextChanged; dynamic;
     procedure FontChanged; dynamic;
-    procedure DoCtl3DChange;
+    procedure Ctl3DChanged; dynamic;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
@@ -103,9 +103,6 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure CalcAutoSize; virtual;
-    procedure DoMouseEnter(AControl: TControl);
-    procedure DoMouseLeave(AControl: TControl);
-    procedure DoParentColorChange;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -205,10 +202,10 @@ end;
 procedure TJvCheckBox.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
-  DoCtl3DChange;
+  Ctl3DChanged;
 end;
 
-procedure TJvCheckBox.DoCtl3DChange;
+procedure TJvCheckBox.Ctl3DChanged;
 begin
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
@@ -243,11 +240,6 @@ begin
     end;
     FOver := True;
   end;
-  DoMouseEnter(AControl);
-end;
-
-procedure TJvCheckBox.DoMouseEnter;
-begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -275,11 +267,6 @@ begin
     if FHotTrack then
       Font.Assign(FFontSave);
   end;
-  DoMouseLeave(AControl);
-end;
-
-procedure TJvCheckBox.DoMouseLeave;
-begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
@@ -297,11 +284,6 @@ begin
   {$IFDEF VisualCLX}
   inherited ParentColorChanged;
   {$ENDIF VisualCLX}
-  DoParentColorChange;
-end;
-
-procedure TJvCheckBox.DoParentColorChange;
-begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -432,7 +414,7 @@ begin
   Result := FCanvas;
 end;
 
-procedure TJvCheckBox.SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
+procedure TJvCheckBox.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
 begin
   if FHotTrackFontOptions <> Value then
   begin

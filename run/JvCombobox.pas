@@ -31,7 +31,7 @@ unit JvCombobox;
 interface
 
 uses
-  Windows, Dialogs, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   JvDataProvider, JvDataProviderIntf, JvMaxPixel, JvItemsSearchs, JVCLVer;
 
 type
@@ -78,30 +78,31 @@ type
     procedure MakeListInternal; virtual;
     procedure ActivateInternal; virtual;
   end;
+
   TJvComboBoxStringsClass = class of TJvComboBoxStrings;
 
   TJvComboBoxMeasureStyle = (cmsStandard, cmsAfterCreate, cmsBeforeDraw);
 
   TJvCustomComboBox = class(TCustomComboBox)
   private
-    FKey: Word;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
+    FSaved: TColor;
+    FOver: Boolean;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    FOnParentColorChanged: TNotifyEvent;
+    FOnCtl3DChanged: TNotifyEvent;
     {$IFNDEF COMPILER6_UP}
     FAutoComplete: Boolean;
     FLastTime: Cardinal;      // SPM - Ported backward from Delphi 7
     FFilter: string;          // SPM - ditto
     FIsDropping: Boolean;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
+    FKey: Word;
     FSearching: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     FMaxPixel: TJvMaxPixel;
     FItemSearchs: TJvItemsSearchs;
-    FAboutJVCL: TJVCLAboutInfo;
     FReadOnly: Boolean; // ain
     FConsumerSvc: TJvDataConsumer;
     FProviderIsActive: Boolean;
@@ -111,10 +112,20 @@ type
     FLastSetItemHeight: Integer;
     procedure MaxPixelChanged(Sender: TObject);
     procedure SetReadOnly(const Value: Boolean); // ain
-    procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
-    procedure CNMeasureItem(var Message: TWMMeasureItem); message CN_MEASUREITEM;
-    procedure WMInitDialog(var Message: TWMInitDialog); message WM_INITDialog;
+    procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
+    procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
+    procedure WMInitDialog(var Msg: TWMInitDialog); message WM_INITDIALOG;
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
+    procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK; // ain
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
   protected
+    procedure MouseEnter(AControl: TControl); dynamic;
+    procedure MouseLeave(AControl: TControl); dynamic;
+    procedure ParentColorChanged; dynamic;
+    procedure Ctl3DChanged; dynamic;
     procedure CreateWnd; override; // ain
     {$IFDEF COMPILER6_UP}
     function GetItemsClass: TCustomComboBoxStringsClass; override;
@@ -122,14 +133,8 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$IFNDEF COMPILER6_UP}
     procedure KeyPress(var Key: Char); override;  // SPM - Ported backward from D7
-    {$ENDIF}
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
-    procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK; // ain
-    procedure SetItemHeight(Value: Integer); {$IFDEF COMPILER6_UP}override;{$ENDIF}
+    {$ENDIF COMPILER6_UP}
+    procedure SetItemHeight(Value: Integer); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     function GetMeasureStyle: TJvComboBoxMeasureStyle;
     procedure SetMeasureStyle(Value: TJvComboBoxMeasureStyle);
     procedure PerformMeasure;
@@ -138,17 +143,15 @@ type
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     {$IFNDEF COMPILER6_UP}
     function SelectItem(const AnItem: string): Boolean;  // SPM - Ported from D7
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure SetConsumerService(Value: TJvDataConsumer);
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
-    procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer;
-      SubSvc: TJvDataConsumerAggregatedObject);
+    procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer; SubSvc: TJvDataConsumerAggregatedObject);
     function IsProviderSelected: Boolean;
     procedure DeselectProvider;
     procedure UpdateItemCount;
     function HandleFindString(StartIndex: Integer; Value: string; ExactMatch: Boolean): Integer;
     procedure Loaded; override;
-
     property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
     {$IFNDEF COMPILER6_UP}
     property IsDropping: Boolean read FIsDropping write FIsDropping;
@@ -159,14 +162,13 @@ type
       default cmsStandard;
     {$IFNDEF COMPILER6_UP}
     property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
-
+    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -174,13 +176,12 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DestroyWnd; override;
     procedure WndProc(var Msg: TMessage); override; // ain
-    function GetItemCount: Integer; {$IFDEF COMPILER6_UP}override;{$ELSE}virtual;{$ENDIF}
+    function GetItemCount: Integer; {$IFDEF COMPILER6_UP} override; {$ELSE} virtual; {$ENDIF}
     function GetItemText(Index: Integer): string; virtual;
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
-    function DeleteExactString(Value: string; All: Boolean;
-      CaseSensitive: Boolean = True): Integer;
+    function DeleteExactString(Value: string; All: Boolean; CaseSensitive: Boolean = True): Integer;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -189,11 +190,10 @@ type
   published
     property HintColor;
     property MaxPixel;
-
     property AutoComplete default True;
     {$IFDEF COMPILER6_UP}
     property AutoDropDown default False;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
@@ -235,7 +235,7 @@ type
     property OnClick;
     {$IFDEF COMPILER6_UP}
     property OnCloseUp;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
@@ -252,11 +252,10 @@ type
     property OnMeasureItem;
     {$IFDEF COMPILER6_UP}
     property OnSelect;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property OnStartDock;
     property OnStartDrag;
     property Items; { Must be published after OnMeasureItem }
-
     property OnMouseEnter;
     property OnMouseLeave;
     property OnCtl3DChanged;
@@ -266,14 +265,17 @@ type
 implementation
 
 uses
-  Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}TypInfo,
+  Consts, TypInfo,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF COMPILER6_UP}
   JvConsts, JvResources;
 
-//===TJvComboBoxStrings=============================================================================
+//=== TJvComboBoxStrings =====================================================
 
 function TJvComboBoxStrings.Get(Index: Integer): string;
 var
-  Text: array[0..4095] of Char;
+  Text: array [0..4095] of Char;
   Len: Integer;
 begin
   if UseInternal then
@@ -439,10 +441,11 @@ end;
 
 { Copies the strings at the combo box to the FInternalList. To minimize the memory usage when a
   large list is used, each item copied is immediately removed from the combo box list. }
+
 procedure TJvComboBoxStrings.MakeListInternal;
 var
   Cnt: Integer;
-  Text: array[0..4095] of Char;
+  Text: array [0..4095] of Char;
   Len: Integer;
   S: string;
   Obj: TObject;
@@ -498,7 +501,7 @@ begin
   end;
 end;
 
-//===TJvCustomComboBox==============================================================================
+//=== TJvCustomComboBox ======================================================
 
 type
   PStrings = ^TStrings;
@@ -532,9 +535,8 @@ begin
   {$IFNDEF COMPILER6_UP}
   FAutoComplete := True;
   FLastTime := 0;           // SPM - Ported backward from Delphi 7
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   FSearching := False;
-  // ControlStyle := ControlStyle + [csAcceptsControls];
   FOver := False;
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
@@ -619,7 +621,7 @@ end;
 
 procedure TJvCustomComboBox.PerformMeasureItem(Index: Integer; var Height: Integer);
 var
-  tmpSize: TSize;
+  TmpSize: TSize;
   VL: IJvDataConsumerViewList;
   Item: IJvDataItem;
   ItemsRenderer: IJvDataItemsRenderer;
@@ -629,14 +631,14 @@ begin
     OnMeasureItem(Self, Index, Height)
   else
   begin
-    tmpSize.cy := Height;
+    TmpSize.cy := Height;
     if IsProviderSelected then
     begin
       Provider.Enter;
       try
         if ((Index = -1) or IsFixedHeight or not HandleAllocated) and
             Supports(Provider.ProviderIntf, IJvDataItemsRenderer, ItemsRenderer) then
-          tmpSize := ItemsRenderer.AvgItemSize(Canvas)
+          TmpSize := ItemsRenderer.AvgItemSize(Canvas)
         else
         if (Index <> -1) and not IsFixedHeight and HandleAllocated then
         begin
@@ -644,14 +646,14 @@ begin
           begin
             Item := VL.Item(Index);
             if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
-              tmpSize := ItemRenderer.Measure(Canvas)
+              TmpSize := ItemRenderer.Measure(Canvas)
             else
             if DP_FindItemsRenderer(Item, ItemsRenderer) then
-              tmpSize := ItemsRenderer.MeasureItem(Canvas, Item);
+              TmpSize := ItemsRenderer.MeasureItem(Canvas, Item);
           end;
         end;
-        if tmpSize.cy > Height then
-          Height := tmpSize.cy;
+        if TmpSize.cy > Height then
+          Height := TmpSize.cy;
       finally
         Provider.Leave;
       end;
@@ -684,6 +686,7 @@ begin
     PerformMeasureItem(HeightIndex, NewHeight);
     Perform(CB_SETITEMHEIGHT, HeightIndex, NewHeight);
   end;
+  // (rom) Strange, this is already the overridden implementor of OnDrawItem
   if Assigned(OnDrawItem) and (Style in [csOwnerDrawFixed, csOwnerDrawVariable]) then
     OnDrawItem(Self, Index, Rect, State)
   else
@@ -748,6 +751,7 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 // SPM - Ported backward from Delphi 7 and modified:
 procedure TJvCustomComboBox.KeyPress(var Key: Char);
 
@@ -876,6 +880,7 @@ begin
     Change;
   end;
 end;
+
 {$ENDIF COMPILER6_UP}
 
 function TJvCustomComboBox.GetItemCount: Integer;
@@ -895,11 +900,11 @@ begin
     end;
   end
   else
-  {$IFDEF COMPILER6_UP}                                                    
+    {$IFDEF COMPILER6_UP}
     Result := inherited GetItemCount;
-  {$ELSE}
+    {$ELSE}
     Result := Items.Count;
-  {$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvCustomComboBox.SetConsumerService(Value: TJvDataConsumer);
@@ -961,7 +966,8 @@ var
   VL: IJvDataConsumerViewList;
   Cnt: Integer;
 begin
-  if HandleAllocated and IsProviderSelected and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+  if HandleAllocated and IsProviderSelected and
+    Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
   begin
     Cnt := VL.Count - SendMessage(Handle, CB_GETCOUNT, 0, 0);
     while Cnt > 0 do
@@ -985,7 +991,8 @@ var
   Item: IJvDataItem;
   ItemText: IJvDataItemText;
 begin
-  if IsProviderSelected and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+  if IsProviderSelected and
+    Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
   begin
     Provider.Enter;
     try
@@ -1068,6 +1075,11 @@ end;
 procedure TJvCustomComboBox.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
+  Ctl3DChanged;
+end;
+
+procedure TJvCustomComboBox.Ctl3DChanged;
+begin
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
@@ -1075,18 +1087,29 @@ end;
 procedure TJvCustomComboBox.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
+  ParentColorChanged;
+end;
+
+procedure TJvCustomComboBox.ParentColorChanged;
+begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
 procedure TJvCustomComboBox.CMMouseEnter(var Msg: TMessage);
 begin
+  inherited;
+  MouseEnter(Self);
+end;
+
+procedure TJvCustomComboBox.MouseEnter(AControl: TControl);
+begin
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     FOver := True;
   end;
@@ -1096,10 +1119,19 @@ end;
 
 procedure TJvCustomComboBox.CMMouseLeave(var Msg: TMessage);
 begin
+  inherited;
+  MouseLeave(Self);
+end;
+
+procedure TJvCustomComboBox.MouseLeave(AControl: TControl);
+begin
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
-    Application.HintColor := FSaved;
     FOver := False;
+    Application.HintColor := FSaved;
   end;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
@@ -1131,18 +1163,18 @@ begin
   end;
 end;
 
-procedure TJvCustomComboBox.CNCommand(var Message: TWMCommand);
+procedure TJvCustomComboBox.CNCommand(var Msg: TWMCommand);
 var
   VL: IJvDataConsumerViewList;
   Item: IJvDataItem;
   ItemText: IJvDataItemText;
 begin
   {$IFNDEF COMPILER6_UP}
-  if Message.NotifyCode = CBN_DROPDOWN then
+  if Msg.NotifyCode = CBN_DROPDOWN then
     FIsDropping := True;
   try
   {$ENDIF COMPILER6_UP}
-    if (Message.NotifyCode = CBN_SELCHANGE) and IsProviderSelected then
+    if (Msg.NotifyCode = CBN_SELCHANGE) and IsProviderSelected then
     begin
       Provider.Enter;
       try
@@ -1174,23 +1206,23 @@ begin
       inherited;
   {$IFNDEF COMPILER6_UP}
   finally
-    if Message.NotifyCode = CBN_DROPDOWN then
+    if Msg.NotifyCode = CBN_DROPDOWN then
       FIsDropping := False;
   end;
   {$ENDIF COMPILER6_UP}
 end;
 
-procedure TJvCustomComboBox.CNMeasureItem(var Message: TWMMeasureItem);
+procedure TJvCustomComboBox.CNMeasureItem(var Msg: TWMMeasureItem);
 begin
-  inherited; // Normal behavior, specifically setting correct itemHeight
+  inherited; // Normal behavior, specifically setting correct ItemHeight
   { Call MeasureItem if a provider is selected and the style is not csOwnerDrawVariable.
-    if Style is set to csOwnerDrawVariable Measure will  have been called already. }
+    if Style is set to csOwnerDrawVariable Measure will have been called already. }
   if (Style <> csOwnerDrawVariable) and IsProviderSelected then
-    with Message.MeasureItemStruct^ do
+    with Msg.MeasureItemStruct^ do
       MeasureItem(itemID, Integer(itemHeight));
 end;
 
-procedure TJvCustomComboBox.WMInitDialog(var Message: TWMInitDialog);
+procedure TJvCustomComboBox.WMInitDialog(var Msg: TWMInitDialog);
 begin
   inherited;
   if (MeasureStyle = cmsAfterCreate) or (IsProviderSelected and
@@ -1333,7 +1365,7 @@ begin
     inherited;
 end;
 
-procedure TJvCustomComboBox.WMLButtonDblClk(var Msg: TWMLButtonDown);
+procedure TJvCustomComboBox.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
   if not ReadOnly then
     inherited;
