@@ -16,6 +16,7 @@ object Form1: TForm1
   OldCreateOrder = False
   Position = poDesktopCenter
   Scaled = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object reXML: TRichEdit
@@ -62,7 +63,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 456
-    Height = 65
+    Height = 71
     Align = alTop
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -72,12 +73,13 @@ object Form1: TForm1
       Left = 18
       Top = 22
       Width = 420
-      Height = 36
+      Height = 42
       Anchors = [akLeft, akTop, akRight, akBottom]
       AutoSize = False
       Caption = 
         'Type in an XML string in the memo or click "Load" to load XML da' +
-        'ta from a file. Click "Validate" to check for correct syntax.'
+        'ta from a file. You can also drag a file from Explorer onto the ' +
+        'form to load it. Click "Validate" to check the syntax.'
       WordWrap = True
     end
     object Label2: TLabel
@@ -96,7 +98,7 @@ object Form1: TForm1
   end
   object sbResults: TStatusBar
     Left = 0
-    Top = 304
+    Top = 311
     Width = 456
     Height = 19
     Panels = <
@@ -104,6 +106,17 @@ object Form1: TForm1
         Width = 50
       end>
     SimplePanel = False
+  end
+  object chkAutoValidate: TCheckBox
+    Left = 112
+    Top = 275
+    Width = 209
+    Height = 17
+    Anchors = [akLeft, akBottom]
+    Caption = '&Auto validate on open/drop'
+    Checked = True
+    State = cbChecked
+    TabOrder = 5
   end
   object JvSimpleXml1: TJvSimpleXML
     IndentString = '  '
