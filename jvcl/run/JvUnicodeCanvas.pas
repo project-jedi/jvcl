@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-09-25
+Last Modified: 2003-10-11
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,17 +24,22 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 unit JvUnicodeCanvas;
-{$I JVCL.INC}
+{$IFDEF LINUX}
+ {$I jvcl.inc}
+{$ELSE}
+ {$I JVCL.INC}
+{$ENDIF}
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils,
 {$IFDEF COMPLIB_VCL}
-  Windows, Graphics;
+  Windows, Graphics,
 {$ENDIF}
 {$IFDEF COMPLIB_CLX}
-  Qt, QGraphics;
+  Qt, Types, QGraphics,
 {$ENDIF}
+  Classes;
 
 type
   TExtTextOutOptionsType = (etoClipped, etoOpaque);
@@ -57,7 +62,7 @@ type
   {$IFDEF COMPILER_6UP}
     function ExtTextOut(X, Y: Integer; Options: TExtTextOutOptions;
       Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean; overload;
-  {$ENDIF}    
+  {$ENDIF}
 
   {$IFDEF COMPLIB_VCL}
    {$IFDEF COMPILER_6UP}
@@ -70,24 +75,22 @@ type
   {$ENDIF}
 
   {$IFDEF COMPLIB_CLX}
-    procedure TextOutVCL(Canvas: TCanvas; X, Y: Integer; const Text: WideString);
-    procedure TextRectVCL(Canvas: TCanvas; Rect: TRect; X, Y: Integer;
+    procedure TextOutVCL(X, Y: Integer; const Text: WideString);
+    procedure TextRectVCL(Rect: TRect; X, Y: Integer;
       const Text: WideString; TextFlags: Integer = 0);
   {$ENDIF}
   end;
 
 implementation
 
-{$IFDEF MSWINDOWS}
+{$IFDEF COMPLIB_VCL}
 function ExtTextOutOptionsToInt(Options: TExtTextOutOptions): Integer;
 begin
   Result := 0;
   if etoClipped in Options then Result := Result or ETO_CLIPPED;
   if etoOpaque in Options then Result := Result or ETO_OPAQUE;
 end;
-{$ENDIF}
 
-{$IFDEF COMPLIB_VCL}
 function TUnicodeCanvas.TextExtentW(const Text: WideString): TSize;
 begin
   Result.cX := 0;
@@ -135,7 +138,7 @@ end;
 
 // ------------
 
-{$IFDEF COMPILER_6UP}
+ {$IFDEF COMPILER_6UP}
 function TUnicodeCanvas.TextExtent(const Text: WideString): TSize;
 begin
   Result := TextExtentW(Text);
@@ -167,25 +170,46 @@ function TUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TExtTextOutOptions; R
 begin
   Result := ExtTextOutW(X, Y, Options, Rect, Text, lpDx);
 end;
-{$ENDIF COMPILER_6UP}
+ {$ENDIF COMPILER_6UP}
+
+function TUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TExtTextOutOptions; Rect: PRect;
+  const Text: String; lpDx: Pointer): Boolean;
+begin
+  Changing;
+  Result := Windows.ExtTextOut(Handle,
+    X, Y, ExtTextOutOptionsToInt(Options),
+    Rect, PChar(Text), Length(Text), lpDx);
+  Changed;
+end;
+
+function TUnicodeCanvas.ExtTextOutW(X, Y: Integer; Options: TExtTextOutOptions;
+  Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
+begin
+  Changing;
+  Result := Windows.ExtTextOutW(Handle,
+    X, Y, ExtTextOutOptionsToInt(Options),
+    Rect, PWideChar(Text), Length(Text), lpDx);
+  Changed;
+end;
 
 {$ENDIF COMPLIB_VCL}
 
 
 {$IFDEF COMPLIB_CLX}
-function TUnicodeCanvas.TextExtentW(const Text: WideChar): TSize;
+
+function TUnicodeCanvas.TextExtentW(const Text: WideString): TSize;
 begin
   Result := TextExtent(Text);
 end;
 
-function TUnicodeCanvas.TextHeightW(const Text: WideChar): Integer;
+function TUnicodeCanvas.TextHeightW(const Text: WideString): Integer;
 begin
   Result := TextHeight(Text);
 end;
 
 procedure TUnicodeCanvas.TextOutW(X, Y: Integer; const Text: WideString);
 begin
-  TextOutVCL(X, Y, Text);
+  TextOutVCL( X, Y, Text);
 end;
 
 procedure TUnicodeCanvas.TextRectW(Rect: TRect; X, Y: Integer;
@@ -203,56 +227,32 @@ procedure TUnicodeCanvas.TextOutVCL(X, Y: Integer; const Text: WideString);
 var
   R: TRect;
 begin
-  if Canvas.Brush.Style = bsSolid then
+  if Brush.Style = bsSolid then
   begin
     R := Rect(0, 0, MaxLongint, MaxLongint);
-    Canvas.TextExtent(Text, R);
+    TextExtent(Text, R);
     OffsetRect(R, X, Y);
-    Canvas.FillRect(R);
+    FillRect(R);
   end;
-  Canvas.TextOut(X, Y, Text);
+  TextOut(X, Y, Text);
 end;
 
 procedure TUnicodeCanvas.TextRectVCL(Rect: TRect; X, Y: Integer;
   const Text: WideString; TextFlags: Integer = 0);
 begin
-  if Canvas.Brush.Style = bsSolid then
-    Canvas.FillRect(Rect);
-  Canvas.TextRect(Rect, X, Y, Text, TextFlags);
+  if Brush.Style = bsSolid then
+    FillRect(Rect);
+  TextRect(Rect, X, Y, Text, TextFlags);
 end;
-{$ENDIF COMPLIB_CLX}
 
 function TUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TExtTextOutOptions; Rect: PRect;
   const Text: String; lpDx: Pointer): Boolean;
 begin
-{$IFDEF MSWINDOWS}
-  Changing;
-  Result := Windows.ExtTextOut(
-  {$IFDEF COMPLIB_VCL}
-    Handle,
-  {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
-    QPainter_device(Handle)
-  {$ENDIF}
-    X, Y, ExtTextOutOptionsToInt(Options),
-    Rect, PChar(Text), Length(Text), lpDx);
-  Changed;
-{$ELSE}
   Result := ExtTextOutW(X, Y, Options, Rect, WideString(Text), lpDx);
-{$ENDIF}
 end;
 
 function TUnicodeCanvas.ExtTextOutW(X, Y: Integer; Options: TExtTextOutOptions;
   Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
-{$IFDEF MSWINDOWS}
-begin
-  Changing;
-  Result := Windows.ExtTextOutW(Handle, X, Y, ExtTextOutOptionsToInt(Options),
-    Rect, PWideChar(Text), Length(Text), lpDx);
-  Changed;
-end;
-{$ELSE}
-
 { missing feature: horizontal text alignment }
 var
   RecallBrush: TBrush;
@@ -302,7 +302,7 @@ begin
     end
     else
     begin
-     // put each char in its cell
+     // put each char in it's cell
       TextLen := Length(Text);
       if (etoOpaque in Options) and (Rect = nil) then
       begin
@@ -357,6 +357,7 @@ begin
   Changed;
   PenPos := RecallPenPos;
 end;
-{$ENDIF MSWINDOWS}
+
+{$ENDIF COMPLIB_CLX}
 
 end.
