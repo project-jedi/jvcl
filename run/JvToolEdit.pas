@@ -51,11 +51,16 @@ uses
   {$IFDEF VisualCLX}
   Qt, QComboEdits, JvQExComboEdits, QWindows,
   {$ENDIF VisualCLX}
+  {$IFDEF VCL}
+  JvExControls,
+  {$ENDIF}
   JvSpeedButton, JvTypes, JvExMask, JvExForms, JvButton;
 
 const
   scAltDown = scAlt + VK_DOWN;
   DefEditBtnWidth = 21;
+
+  CM_POPUPCLOSEUP = CM_BASE + $0300; // arbitrary value
 
 type
   TFileExt = type string;
@@ -63,14 +68,22 @@ type
   TCloseUpEvent = procedure(Sender: TObject; Accept: Boolean) of object;
   TPopupAlign = (epaRight, epaLeft);
 
+  {$IFDEF VisualCLX}
   TJvPopupWindow = class(TJvExCustomForm)
+  {$ENDIF}
+  {$IFDEF VCL}
+  TJvPopupWindow = class(TJvExCustomControl)
+  {$ENDIF}
   private
     FEditor: TWinControl;
     FCloseUp: TCloseUpEvent;
     {$IFDEF VCL}
     procedure WMMouseActivate(var Msg: TMessage); message WM_MOUSEACTIVATE;
+    procedure WMActivate(var Msg: TWMActivate); message WM_ACTIVATE;
     {$ENDIF VCL}
   protected
+    FActiveControl: TWinControl;
+    FIsFocusable: Boolean;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
@@ -89,6 +102,11 @@ type
     function GetPopupText: string; virtual;
     procedure Hide;
     procedure Show(Origin: TPoint); virtual; // Polaris
+    { Determines the ctrl that receives the keyboard input if the dropdown
+      window is showing, but the combo edit still has focus }
+    property ActiveControl: TWinControl read FActiveControl;
+    { Determines whether the popup window may be activated }
+    property IsFocusable: Boolean read FIsFocusable;
     property OnCloseUp: TCloseUpEvent read FCloseUp write FCloseUp;
   end;
 
@@ -234,11 +252,13 @@ type
     procedure UpdateGroup; // RDB
 
     {$IFDEF VCL}
+    procedure CMWantSpecialKey(var Msg: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CNCtlColor(var Msg: TMessage); message CN_CTLCOLOREDIT;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT; // RDB
+    procedure CMPopupCloseup(var Msg: TMessage); message CM_POPUPCLOSEUP;
     {$IFDEF JVCLThemesEnabled}
     procedure WMNCPaint(var Msg: TWMNCPaint); message WM_NCPAINT;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
@@ -261,6 +281,9 @@ type
       NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect); override;
     {$ENDIF VisualCLX}
     {$ENDIF COMPILER6_UP}
+    {$IFDEF VCL}
+    procedure WndProc(var Msg: TMessage); override;
+    {$ENDIF VCL}
     procedure DoClearText; override;
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
@@ -290,6 +313,7 @@ type
     function GetActionLinkClass: TControlActionLinkClass; override;
     function GetPopupValue: Variant; virtual;
     function GetReadOnly: Boolean; virtual;
+    function GetSettingCursor: Boolean;
     procedure AcceptValue(const Value: Variant); virtual;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure AdjustHeight;
@@ -314,6 +338,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure PopupChange; virtual;
     procedure PopupCloseUp(Sender: TObject; Accept: Boolean); virtual; //virtual Polaris
+    procedure AsyncPopupCloseUp(Accept: Boolean); virtual;
     procedure PopupDropDown(DisableEdit: Boolean); virtual;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); override; // RDB
     procedure SetDirectInput(Value: Boolean); // Polaris
@@ -360,6 +385,7 @@ type
     property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaRight;
     property PopupVisible: Boolean read GetPopupVisible;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property SettingCursor: Boolean read GetSettingCursor;
     property ShowButton: Boolean read GetShowButton write SetShowButton default True;
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
   public
@@ -1047,14 +1073,17 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  Math, Consts,
+  Math, Consts, MaskUtils,
   {$IFDEF MSWINDOWS}
   ShellAPI,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   JvBrowseFolder, ActiveX,
   {$ENDIF VCL}
-  JvExControls, JvPickDate, JvJCLUtils, JvJVCLUtils,
+  {$IFDEF VisualClx}
+  JvExControls,
+  {$ENDIF}
+  JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JvConsts, JvFinalize;
 
 const
@@ -1069,8 +1098,22 @@ const
 
 type
   TCustomEditAccessProtected = class(TCustomEdit);
-  TCustomFormAccessProtected = class(TCustomForm);    
+  TCustomFormAccessProtected = class(TCustomForm);
   TWinControlAccessProtected = class(TWinControl);
+
+  TCustomMaskEditAccessPrivate = class(TCustomEdit)
+  private
+    // Do not remove these fields, although they are not used.
+    FEditMask: TEditMask;
+    FMaskBlank: Char;
+    FMaxChars: Integer;
+    FMaskSave: Boolean;
+    FMaskState: TMaskedState;
+    FCaretPos: Integer;
+    FBtnDownX: Integer;
+    FOldValue: string;
+    FSettingCursor: Boolean;
+  end;
 
 const
   sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }
@@ -1695,7 +1738,7 @@ end;
 
 {$IFDEF VCL}
 
-//=== TAutoCompleteSource ====================================================
+//=== { TAutoCompleteSource } ================================================
 
 {$IFDEF COMPILER7_UP}
 
@@ -2016,6 +2059,11 @@ begin
   UpdateMargins;
 end;
 
+procedure TJvCustomComboEdit.AsyncPopupCloseUp(Accept: Boolean);
+begin
+  PostMessage(Handle, CM_POPUPCLOSEUP, Ord(Accept), 0);
+end;
+
 function TJvCustomComboEdit.BtnWidthStored: Boolean;
 begin
   if (FImageKind = ikDefault) and (DefaultImages <> nil) and (DefaultImageIndex >= 0) then
@@ -2068,6 +2116,26 @@ begin
   inherited;
   DoCtl3DChanged;
 end;
+
+{$ENDIF VCL}
+
+{$IFDEF VCL}
+procedure TJvCustomComboEdit.CMPopupCloseup(var Msg: TMessage);
+begin
+  PopupCloseUp(Self, Boolean(Msg.WParam));
+end;
+{$ENDIF VCL}
+
+{$IFDEF VCL}
+procedure TJvCustomComboEdit.CMWantSpecialKey(var Msg: TCMWantSpecialKey);
+begin
+  inherited;
+  { Ignore tabs when popup is visible }
+  if PopupVisible and (Msg.CharCode = VK_TAB) then Msg.Result := 1;
+end;
+{$ENDIF VCL}
+
+{$IFDEF VCL}
 
 procedure TJvCustomComboEdit.CNCtlColor(var Msg: TMessage);
 var
@@ -2229,10 +2297,22 @@ end;
 {$ENDIF VisualCLX}
 
 procedure TJvCustomComboEdit.DoKillFocus(FocusedWnd: HWND);
+var
+  Sender: TWinControl;
 begin
   inherited DoKillFocus(FocusedWnd);
   FFocused := False;
-  PopupCloseUp(FPopup, False);
+
+  Sender := FindControl(FocusedWnd);
+  if (Sender <> Self) and (Sender <> FPopup) and
+    {(Sender <> FButton)} ((FPopup <> nil) and
+    not FPopup.ContainsControl(Sender)) then
+  begin
+    { MSDN : While processing this message (WM_KILLFOCUS), do not make any
+             function calls that display or activate a window.
+    }
+    AsyncPopupCloseUp(False);
+  end;
 end;
 
 function TJvCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
@@ -2383,6 +2463,11 @@ begin
   Result := FReadOnly;
 end;
 
+function TJvCustomComboEdit.GetSettingCursor: Boolean;
+begin
+  Result := TCustomMaskEditAccessPrivate(Self).FSettingCursor;
+end;
+
 function TJvCustomComboEdit.GetShowButton: Boolean;
 begin
   Result := FBtnControl.Visible;
@@ -2495,6 +2580,7 @@ begin
   if Key in [Tab, Lf] then
   begin
     Key := #0;
+    { (rb) Next code has no use because Key = #0? } 
     if (Form <> nil) {and Form.KeyPreview} then
       TWinControlAccessProtected(Form).KeyPress(Key);
   end;
@@ -3330,6 +3416,23 @@ begin
       inherited;
     Canvas.Free;
   end;
+end;
+{$ENDIF VCL}
+
+{$IFDEF VCL}
+procedure TJvCustomComboEdit.WndProc(var Msg: TMessage);
+begin
+  if not SettingCursor and PopupVisible and
+    (Msg.Msg >= WM_KEYFIRST) and (Msg.Msg <= WM_KEYLAST) and
+    (FPopup is TJvPopupWindow) and Assigned(TJvPopupWindow(FPopup).ActiveControl) then
+  begin
+    with Msg do
+      Result := TJvPopupWindow(FPopup).ActiveControl.Perform(Msg, WParam, LParam);
+
+    if Msg.Result = 0 then Exit;
+  end;
+
+  inherited WndProc(Msg)
 end;
 {$ENDIF VCL}
 
@@ -4332,10 +4435,6 @@ begin
   end;
 end;
 
-procedure TJvFileDirEdit.ClearFileList;
-begin
-end;
-
 procedure TJvFileDirEdit.Change;
 var
   Ps: Integer;
@@ -4350,6 +4449,9 @@ begin
     inherited Change;
 end;
 
+procedure TJvFileDirEdit.ClearFileList;
+begin
+end;
 
 {$IFDEF JVCLThemesEnabled}
 procedure TJvFileDirEdit.CMSysColorChange(var Msg: TMessage);
@@ -4849,8 +4951,13 @@ end;
 
 constructor TJvPopupWindow.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualClx}
   // (p3) have to use CreateNew for VCL as well since there is no dfm
   inherited CreateNew(AOwner);
+  {$ELSE}
+  inherited Create(AOwner);
+  {$ENDIF}
+
   FEditor := TWinControl(AOwner);
   ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable, csAcceptsControls];
   Visible := False;
@@ -4859,7 +4966,7 @@ begin
   ParentCtl3D := False;
   Parent := FEditor;
   // use same size on small and large font:
-  Scaled := False;
+  //Scaled := False;
   {$ENDIF VCL}
 end;
 
@@ -4975,9 +5082,21 @@ end;
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
+procedure TJvPopupWindow.WMActivate(var Msg: TWMActivate);
+begin
+  if Msg.Active = WA_INACTIVE then
+    CloseUp(False);
+  inherited;
+end;
+{$ENDIF VCL}
+
+{$IFDEF VCL}
 procedure TJvPopupWindow.WMMouseActivate(var Msg: TMessage);
 begin
-  Msg.Result := MA_NOACTIVATE;
+  if FIsFocusable then
+    inherited
+  else
+    Msg.Result := MA_NOACTIVATE;
 end;
 {$ENDIF VCL}
 
