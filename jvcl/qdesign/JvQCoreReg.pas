@@ -87,8 +87,9 @@ begin
   // in this case, thus the registration of 'nil' property editors 
   RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
   RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil); 
-
-  RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvColorProperty);
+ 
+  
+  RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvColorProperty); 
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
@@ -112,6 +113,10 @@ begin
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
 
+  RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
+  RegisterComponentEditor(TImageList, TJvImageListEditor);
+ 
+
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
   // DataProvider related editors
@@ -124,7 +129,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
-
+ 
 
   RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS} TJvSendMailAction, {$ENDIF} TJvWebAction], TJvStandardActions);
   RegisterZoom;

@@ -41,7 +41,7 @@ uses
   {$ENDIF MSWINDOWS}
   QControls, QForms, QToolWin, QMenus, QActnList, QComCtrls, QImgList, 
   DesignEditors, DesignIntf, DesignMenus, QDesignWindows, 
-  JvQOutlookBar;
+  JvQOutlookBar, QTypes, QExtCtrls;
 
 type
   TFrmOLBEditor = class(TDesignWindow)
@@ -233,9 +233,9 @@ var
       Result := nil;
       Exit;
     end;
-    Result := Node.GetNextSibling;
+    Result := Node.getNextSibling;
     if Result = nil then
-      Result := Node.GetPrevSibling;
+      Result := Node.getPrevSibling;
     if Result = nil then
       Result := Node.Parent;
     if Result = nil then
@@ -308,8 +308,8 @@ begin
   Sel := tvItems.Selected <> nil;
   acNewButton.Enabled := Sel;
   acDelete.Enabled := Sel;
-  acUp.Enabled := Sel and (tvItems.Selected.GetPrevSibling <> nil);
-  acDown.Enabled := Sel and (tvItems.Selected.GetNextSibling <> nil);
+  acUp.Enabled := Sel and (tvItems.Selected.getPrevSibling <> nil);
+  acDown.Enabled := Sel and (tvItems.Selected.getNextSibling <> nil);
   acUpdate.Enabled := Screen.ActiveForm = Self;
 end;
 
@@ -325,7 +325,7 @@ end;
 procedure TFrmOLBEditor.acNewButtonExecute(Sender: TObject);
 var
   B: TJvOutlookBarButton;
-  P: tJvOutlookBarPage;
+  P: TJvOutlookBarPage;
   N: TTreeNode;
 begin
   N := tvItems.Selected;
@@ -333,7 +333,7 @@ begin
     N := N.Parent;
   P := TJvOutlookBarPage(N.Data);
   B := P.Buttons.Add;
-  B.Caption := getButtonName(OutlookBar);
+  B.Caption := GetButtonName(OutlookBar);
   tvItems.Selected := tvItems.Items.AddChildObject(N, B.Caption, B);
 end;
 
@@ -590,12 +590,15 @@ begin
     if OpenKey(GetRegPath, True) then
     try
     // Width, Height, TextLabels
-      WriteInteger(cWidth, Width);
-      WriteInteger(cHeight, Height);
-      WriteBool(cTextLabels, acShowTextLabels.Checked);
-      WriteBool(cToolBar, acToolBar.Checked);
+      Width := ReadInteger(cWidth);
+      Height := ReadInteger(cHeight);
+      acShowTextLabels.Checked := ReadBool(cTextLabels);
+      acToolBar.Checked := not ReadBool(cToolBar);
+      acToolBar.Execute;
+      acShowTextLabels.Checked := not ReadBool(cTextLabels);
+      acShowTextLabels.Execute; // toggles
     finally
-      CloseKey;  
+      CloseKey;
     end;
   finally
     Free;
@@ -606,17 +609,16 @@ end;
 function TFrmOLBEditor.GetRegPath: string;
 {$IFDEF MSWINDOWS}
 const
-  cRegKey = '\JVCL\OutlookBar Editor';
-begin 
-  Result := Designer.GetBaseRegKey + cRegKey; 
+  cRegKey = '\JVCLX\OutlookBar Editor';
+begin
+  Result := Designer.GetBaseRegKey + cRegKey;
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 const
-  cRegKey = 'OutlookBar Editor';
+  cRegKey = '/.JVCLX/OutlookBar Editor';
 begin
-  Result := SDelphiKey + RsPropertyEditors + cRegKey
-              + PathDelim + cJvOutlookBar;
+  Result := SDelphiKey + cRegKey;
 end;
 {$ENDIF LINUX}
 
@@ -624,18 +626,18 @@ procedure TFrmOLBEditor.SwitchItems(Node1, Node2: TTreeNode);
 var
   I: Integer;
 begin
-  if TObject(Node1.Data) is TJvOutlookbarButton then
+  if TObject(Node1.Data) is TJvOutlookBarButton then
   begin
-    I := TJvOutlookbarButton(Node1.Data).Index;
-    TJvOutlookbarButton(Node1.Data).Index := TJvOutlookbarButton(Node2.Data).Index;
-    TJvOutlookbarButton(Node2.Data).Index := I;
+    I := TJvOutlookBarButton(Node1.Data).Index;
+    TJvOutlookBarButton(Node1.Data).Index := TJvOutlookBarButton(Node2.Data).Index;
+    TJvOutlookBarButton(Node2.Data).Index := I;
   end
   else
-  if TObject(Node1.Data) is TJvOutlookbarPage then
+  if TObject(Node1.Data) is TJvOutlookBarPage then
   begin
-    I := TJvOutlookbarPage(Node1.Data).Index;
-    TJvOutlookbarPage(Node1.Data).Index := TJvOutlookbarPage(Node2.Data).Index;
-    TJvOutlookbarPage(Node2.Data).Index := I;
+    I := TJvOutlookBarPage(Node1.Data).Index;
+    TJvOutlookBarPage(Node1.Data).Index := TJvOutlookBarPage(Node2.Data).Index;
+    TJvOutlookBarPage(Node2.Data).Index := I;
   end;
 end;
 

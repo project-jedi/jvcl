@@ -297,9 +297,7 @@ begin
         end;
       end
       else
-      begin
         TStrings(ComponentsList.Items.Objects[IdxComp]).Add(PropName);
-      end;
       UpdateCurrent;
     end;
   end;
@@ -483,13 +481,14 @@ begin
 end;
 
 procedure TJvFormPropsDlg.UpBtnClick(Sender: TObject);
-var i:integer;
+var
+  I: Integer;
 begin
-  i := StoredList.ItemIndex;
-  if i > 0 then
+  I := StoredList.ItemIndex;
+  if I > 0 then
   begin
-    StoredList.Items.Exchange(i, i - 1);
-    StoredList.ItemIndex := i - 1;
+    StoredList.Items.Exchange(I, I - 1);
+    StoredList.ItemIndex := I - 1;
   end;
 //  BoxMoveFocusedItem(StoredList, StoredList.ItemIndex - 1);
   if FDesigner <> nil then
@@ -498,13 +497,14 @@ begin
 end;
 
 procedure TJvFormPropsDlg.DownBtnClick(Sender: TObject);
-var i:integer;
+var
+  I: Integer;
 begin
-  i := StoredList.ItemIndex;
-  if i < StoredList.Items.Count - 1 then
+  I := StoredList.ItemIndex;
+  if I < StoredList.Items.Count - 1 then
   begin
-    StoredList.Items.Exchange(i, i+1);
-    StoredList.ItemIndex := i + 1;
+    StoredList.Items.Exchange(I, I + 1);
+    StoredList.ItemIndex := I + 1;
   end;
 //  BoxMoveFocusedItem(StoredList, StoredList.ItemIndex + 1);
   if FDesigner <> nil then

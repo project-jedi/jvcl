@@ -37,7 +37,7 @@ uses
   QExtDlgs, QMenus, QStdCtrls, QImgList, Qt,
   DsnConst,
   RTLConsts, DesignIntf, DesignEditors, DesignMenus,
-  ClxEditors, ClxImgEdit;
+  ClxEditors;
 
 type
   TJvDateTimeExProperty = class(TDateTimeProperty)
@@ -110,14 +110,6 @@ type
       ASelected: Boolean); dynamic;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean); dynamic;
-  end;
-
-  TJvDefaultImageIndexProperty = class(TIntegerProperty)
-  protected
-    function ImageList: TCustomImageList; virtual;
-  public
-//    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
   end;
 
 procedure DefaultPropertyDrawName(Prop: TPropertyEditor; Canvas: TCanvas;
@@ -197,185 +189,6 @@ function TJvTimeExProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := inherited GetAttributes + [paDialog];
 end;
-
-//=== { TJvDefaultImageIndexProperty } =======================================
-
-procedure GetImages(ImageList: TImageList; Index: Integer; Image, Mask: TBitmap);
-var
-  R: TRect;
-begin
-  with ImageList do
-  begin
-    R := Rect(0, 0, Width, Height);
-    Image.Width := Width;
-    Image.Height := Height;
-    Mask.Width := Width;
-    Mask.Height := Height;
-  end;
-  with Image.Canvas do
-  begin
-    Brush.Color := clWhite;
-    FillRect(R);
-    ImageList.Draw(Image.Canvas, 0, 0, Index);
-  end;
-  with Mask.Canvas do
-  begin
-    Brush.Color := clWhite;
-    FillRect(R);
-    ImageList.Draw(Mask.Canvas, 0, 0, Index, itMask);
-  end;
-end;
-
-(*
-function EditImageIndex(AImageList: TImageList; Index: integer): integer;
-var
-  I: Integer;
-  ListItems: TClxImageListEditor;
-begin
-  Result := -1;
-  ListItems := TClxImageListEditor.CreateImgListEditor(Application, AImageList);
-  with ListItems do
-    try
-      Screen.Cursor := crHourglass;
-      try
-        if AImageList.Width = 0 then
-          FImageXDivOffset := 1
-        else
-          FImageXDivOffset := MainImage.Width div AImageList.Width;
-        if AImageList.Height = 0 then
-          FImageYDivOffset := 1
-        else
-          FImageYDivOffset := MainImage.Height div AImageList.Height;
-        if FImageXDivOffset = 0 then
-          FImageXDivOffset := 1;
-        if FImageYDivOffset = 0 then
-          FImageYDivOffset := 1;
-        FComponentList := AImageList;
-        FImageList.Assign(ComponentList);
-        with ImageListView do
-        begin
-          Assign(ImageList);
-          if (Width > 24) or (Height > 24) then StretchImageList(ImageList,
-            FImageListView, 24, 24)
-          else if (Width < 24) and (Height < 24) then CenterImageList(FImageList,
-            FImageListView, 24, 24);
-        end;
-        ImageList.Clear;
-        with ImageBitmap do
-        begin
-          Height := ImageList.Height;
-          Width := ImageList.Width;
-        end;
-        for I := 0 to ComponentList.Count - 1 do
-          with TImageInfo.Create(InfoList, ListItems) do
-          begin
-            FNew := False;
-            FAutoOp := False;
-            GetImages(ComponentList, I, FBitmap, FMask);
-            TransparentColor := clDefault;
-            Change;
-          end;
-        ActiveControl := ImageView;
-        with ImageView do
-        begin
-          Selected := nil;
-          Item := nil;
-          if (Items.Count > 0) and (Index >= 0) and (Index < Items.Count)  then
-          begin
-            Item := Items[Index];
-            Selected := Item;
-            if Assigned(Item) then
-              Item.MakeVisible;
-            end;
-          end;
-        end;
-        UpdateImageView;
-        SelectImage(Index);
-        Help.Top := Apply.Top;
-        Apply.Visible := False;
-      finally
-        Screen.Cursor := crDefault;
-      end;
-      Caption := Format('Select index from ' + SImageListEditorCaption, [AImageList.Owner.Name, DotSep,
-        AImageList.Name]);
-      if ShowModal = mrOk then
-      begin
-        with ListView do
-        for i := 0 to items.count - 1 do
-        begin
-          if Items[i] = Selected then
-          begin
-            Result := i;
-            break;
-          end;
-        end;
-      end
-    finally
-      Free;
-    end;
-  end;
-end;
-*)
-
-function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
-const
-  cImageList = 'ImageList';
-  cImages = 'Images';
-begin
-  if TypInfo.GetPropInfo(GetComponent(0), cImageList) <> nil then
-    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImageList))
-  else
-  if TypInfo.GetPropInfo(GetComponent(0), cImages) <> nil then
-    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImages))
-  else
-    Result := nil;
-end;
-
-(*
-procedure TJvDefaultImageIndexProperty.Edit;
-var
-  mresult: integer;
-begin
-  mresult := EditImageIndex(ImagesList, GetValue);
-  if mresult >= 0 then
-    SetValue(mresult);
-end;
-*)
-
-function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paValueList, paMultiSelect, paRevertable, paDialog];
-end;
-
-(*
-function TJvDefaultImageIndexProperty.GetValue: string;
-begin
-  Result := IntToStr(GetOrdValue);
-end;
-
-procedure TJvDefaultImageIndexProperty.SetValue(const Value: string);
-var
-  XValue: Integer;
-begin
-  try
-    XValue := StrToInt(Value);
-    SetOrdValue(XValue);
-  except
-    inherited SetValue(Value);
-  end;
-end;
-
-procedure TJvDefaultImageIndexProperty.GetValues(Proc: TGetStrProc);
-var
-  Tmp: TCustomImageList;
-  I: Integer;
-begin
-  Tmp := ImageList;
-  if Assigned(Tmp) then
-    for I := 0 to Tmp.Count - 1 do
-      Proc(IntToStr(I));
-end;
-*)
 
 //=== { TColorPropertyEx } ==================================================
 

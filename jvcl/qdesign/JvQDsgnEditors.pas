@@ -40,9 +40,11 @@ interface
 
 uses
   Types, QWindows, QForms, QControls, QGraphics, QExtCtrls, QDialogs,
-  QExtDlgs, QMenus, QStdCtrls, QImgList,
-  ClxImgEdit, DsnConst, JvQImageIndexEdit,
-  RTLConsts, DesignIntf, DesignEditors, DesignMenus, CLXEditors,
+  QExtDlgs, QMenus, QStdCtrls, QImgList, 
+  ClxImgEdit, DsnConst, 
+  RTLConsts, DesignIntf, DesignEditors, DesignMenus, CLXEditors,   
+  JvQImageIndexEdit, 
+
   Classes, SysUtils;
 
 
@@ -430,6 +432,12 @@ begin
 end;
 
 
+
+
+
+
+
+
 procedure TJvDefaultImageIndexProperty.Edit;
 var
   SelectedIndex: integer;
@@ -444,8 +452,8 @@ begin
     begin
       SetValue(inttostr(SelectedIndex));
       ImageList.assign(tmp);
-    end;  
-    tmp.Free;  
+    end;
+    tmp.Free;
   end;
 end;
 
