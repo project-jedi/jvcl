@@ -354,7 +354,7 @@ end;
 
 function TAboutDialog.GetWindowsVersion: string;
 begin
-  Result := JvJVCLUtils.GetWindowsVersion;
+  Result := JvJCLUtils.GetWindowsVersion;
 end;
 
 procedure TAboutDialog.SetAppData(const AppTitle: string; AIcon: TIcon);

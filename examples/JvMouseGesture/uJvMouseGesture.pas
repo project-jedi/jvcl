@@ -29,7 +29,7 @@ unit uJvMouseGesture;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvMouseGesture, ExtCtrls, JvComponent;
 
 type
@@ -66,6 +66,11 @@ implementation
 
 {$R *.dfm}
 
+function booltostr(AValue:boolean):string;
+const cBool:array[boolean] of PChar = ('false','true');
+begin
+  Result := cBool[AValue];
+end;
 
 procedure TForm1.FormMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
@@ -123,8 +128,8 @@ end;
 procedure TForm1.RefreshCaption;
 begin
   Memo1.Clear;
-  Caption := 'hook on form active = ' + booltostr(JvMouseGesture1.Active,true) +
-             '  ApplicationHook active = '+ booltostr(JvMouseGestureHook1.Active,true);
+  Caption := 'hook on form active = ' + booltostr(JvMouseGesture1.Active) +
+             '  ApplicationHook active = '+ booltostr(JvMouseGestureHook1.Active);
   Memo1.Lines.Add(Caption);
 end;
 

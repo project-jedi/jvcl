@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 345
   Top = 154
-  Width = 744
-  Height = 638
+  Width = 423
+  Height = 402
   Caption = 'Dialogs Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,8 +16,8 @@ object Form1: TForm1
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 736
-    Height = 611
+    Width = 415
+    Height = 375
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
@@ -252,98 +252,50 @@ object Form1: TForm1
     object TabSheet2: TTabSheet
       Caption = 'Other Dialogs'
       ImageIndex = 1
-      object Button11: TButton
+      object Button18: TButton
         Left = 10
         Top = 12
         Width = 115
         Height = 25
-        Caption = 'Password'
-        TabOrder = 0
-      end
-      object Button14: TButton
-        Left = 10
-        Top = 48
-        Width = 115
-        Height = 25
-        Caption = 'Exchange listboxes'
-        TabOrder = 1
-      end
-      object Button16: TButton
-        Left = 10
-        Top = 83
-        Width = 115
-        Height = 25
-        Caption = 'Login'
-        TabOrder = 2
-      end
-      object Button17: TButton
-        Left = 10
-        Top = 115
-        Width = 115
-        Height = 25
-        Caption = 'Serial'
-        TabOrder = 3
-      end
-      object Button18: TButton
-        Left = 10
-        Top = 148
-        Width = 115
-        Height = 25
         Caption = 'Calculator'
-        TabOrder = 4
+        TabOrder = 0
         OnClick = Button18Click
-      end
-      object Button19: TButton
-        Left = 10
-        Top = 181
-        Width = 115
-        Height = 25
-        Caption = 'Progress Dlg'
-        TabOrder = 5
       end
       object Button20: TButton
         Left = 10
-        Top = 215
+        Top = 47
         Width = 115
         Height = 25
         Caption = 'Disk Prompt'
-        TabOrder = 6
+        TabOrder = 1
         OnClick = Button20Click
       end
       object Button21: TButton
-        Left = 138
-        Top = 78
+        Left = 10
+        Top = 150
         Width = 115
         Height = 25
         Caption = 'Copy Error'
-        TabOrder = 7
+        TabOrder = 2
         OnClick = Button21Click
       end
       object Button22: TButton
-        Left = 138
-        Top = 10
+        Left = 10
+        Top = 82
         Width = 115
         Height = 25
         Caption = 'Delete Error'
-        TabOrder = 8
+        TabOrder = 3
         OnClick = Button22Click
       end
       object Button23: TButton
-        Left = 140
-        Top = 43
+        Left = 12
+        Top = 115
         Width = 115
         Height = 25
         Caption = 'Rename Error'
-        TabOrder = 9
+        TabOrder = 4
         OnClick = Button23Click
-      end
-      object Button34: TButton
-        Left = 486
-        Top = 374
-        Width = 115
-        Height = 25
-        Caption = 'Fatal exit'
-        TabOrder = 10
       end
     end
   end
@@ -382,12 +334,10 @@ object Form1: TForm1
     Top = 298
   end
   object JvDiskPrompt1: TJvDiskPrompt
-    Style = []
     Left = 454
     Top = 194
   end
   object JvCopyError1: TJvCopyError
-    Style = []
     Left = 454
     Top = 142
   end
@@ -397,7 +347,6 @@ object Form1: TForm1
     Top = 90
   end
   object JvRenameError1: TJvRenameError
-    Style = []
     Left = 454
     Top = 46
   end

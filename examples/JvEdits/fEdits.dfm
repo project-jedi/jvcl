@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 310
   Top = 275
   BorderStyle = bsDialog
-  Caption = 'Form1'
+  Caption = 'Edits demo'
   ClientHeight = 144
   ClientWidth = 338
   Color = clBtnFace
@@ -20,8 +20,8 @@ object Form1: TForm1
     Top = 8
     Width = 307
     Height = 21
+    AddQuotes = False
     ButtonFlat = False
-    NumGlyphs = 1
     TabOrder = 0
   end
   object JvDirectoryBox1: TJvDirectoryEdit
@@ -30,7 +30,6 @@ object Form1: TForm1
     Width = 307
     Height = 21
     ButtonFlat = False
-    NumGlyphs = 1
     TabOrder = 1
   end
   object JvButtonBox1: TJvComboEdit
@@ -39,8 +38,7 @@ object Form1: TForm1
     Width = 307
     Height = 21
     ButtonFlat = False
-    GlyphKind = gkEllipsis
-    NumGlyphs = 1
+    ImageKind = ikEllipsis
     TabOrder = 3
     OnButtonClick = JvButtonBox1ButtonClick
   end
@@ -50,7 +48,6 @@ object Form1: TForm1
     Width = 307
     Height = 21
     ButtonFlat = False
-    NumGlyphs = 2
     TabOrder = 2
   end
   object JvCalcEdit1: TJvCalcEdit
@@ -59,7 +56,6 @@ object Form1: TForm1
     Width = 307
     Height = 21
     AutoSize = False
-    NumGlyphs = 2
     TabOrder = 4
   end
 end

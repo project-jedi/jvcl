@@ -33,7 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ImgList, ComCtrls,
-  JvComponent, JvErrorIndicator, JvImageWindow;
+  JvComponent, JvErrorIndicator, JvExControls, JvImageSquare;
 
 type
   // Example of a control that implements the IJvErrorIndicatorClient interface
@@ -142,6 +142,7 @@ begin
   edClient.TabOrder := 2;
   edClient.Text := 'Type and hit RETURN to show this text as an error message';
   edClient.OnKeyUp := DoClientKey;
+  memDescription.WordWrap := true;
 end;
 
 procedure TfrmErrIndicatorDemo .DoClientKey(Sender: TObject; var Key: Word; Shift: TShiftState);

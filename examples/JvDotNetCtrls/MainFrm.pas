@@ -29,7 +29,7 @@ unit MainFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, DBCtrls, ComCtrls, CheckLst, Mask,
   JvDotNetControls, JvDBDotNetControls;
 

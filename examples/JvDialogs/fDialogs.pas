@@ -72,12 +72,7 @@ type
     Button29: TButton;
     Button30: TButton;
     Button31: TButton;
-    Button11: TButton;
-    Button14: TButton;
-    Button16: TButton;
-    Button17: TButton;
     Button18: TButton;
-    Button19: TButton;
     Button20: TButton;
     Button21: TButton;
     Button22: TButton;
@@ -88,7 +83,6 @@ type
     JvObjectPropertiesDlg1: TJvObjectPropertiesDialog;
     JvOutOfMemoryDlg1: TJvOutOfMemoryDialog;
     JvOutOfSpaceDlg1: TJvDiskFullDialog;
-    Button34: TButton;
     JvPageSetupDialog1: TJvPageSetupDialog;
     JvPageSetupTitledDialog1: TJvPageSetupTitledDialog;
     JvBrowseFolder2: TJvBrowseForFolderDialog;

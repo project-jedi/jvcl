@@ -4,7 +4,7 @@ object CaptionEditDlg: TCaptionEditDlg
   Width = 345
   Height = 178
   Caption = 'Caption Editor'
-  Color = clSilver
+  Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11

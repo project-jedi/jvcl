@@ -3,7 +3,7 @@ program WebMapper;
 uses
   Forms,
   MainForm in 'MainForm.pas' {MainDlg},
-  JimParse in 'JimParse.pas';
+  JimParse;
 
 {$R *.RES}
 

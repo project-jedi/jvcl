@@ -43,7 +43,7 @@ uses
   Forms, Dialogs, StdCtrls, ExtCtrls, JvSpeedbar, Grids,
   ComCtrls, ExtDlgs {$IFNDEF BCB}, Jpeg {$ENDIF},
   JvGIF, JvLabel, Mask, JvToolEdit, ImgList,
-  JvComponent, JvFormPlacement, JvExControls, JvExExtCtrls;
+  JvComponent, JvFormPlacement, JvExControls, JvExExtCtrls, JvExMask;
 
 type
   TAnimatorForm = class(TForm)
@@ -221,7 +221,8 @@ var
 
 implementation
 
-uses Clipbrd, JvJVCLUtils, JvHints,
+uses
+  Clipbrd, JvJVCLUtils, JvJCLUtils, JvHints,
   GIFPrvw, GIFPal, About, Math;
 
 {$R *.DFM}
@@ -444,7 +445,7 @@ begin
       FModified := True;
     end;
   end
-  else Beep;
+  else MessageBeep(MB_ICONEXCLAMATION);
 end;
 
 procedure TAnimatorForm.ConfirmSave;
@@ -597,25 +598,27 @@ begin
         L := 0;
         T := 0;
       end;
-      if (W <= WidthOf(DrawRect)) and
-        (H <= HeightOf(DrawRect)) then
+
+
+      if (W <= RectWidth(DrawRect)) and
+        (H <= RectHeight(DrawRect)) then
       begin
         DrawRect := Bounds(L, T, Frame.Width, Frame.Height);
       end
       else begin
-        Size := DrawRect.Top + MulDiv(H, WidthOf(DrawRect), W);
+        Size := DrawRect.Top + MulDiv(H, RectWidth(DrawRect), W);
         if Size > DrawRect.Bottom then begin
-          L := MulDiv(L, HeightOf(DrawRect), H);
-          T := MulDiv(T, HeightOf(DrawRect), H);
-          W := MulDiv(Frame.Width, HeightOf(DrawRect), H);
-          H := MulDiv(Frame.Height, HeightOf(DrawRect), H);
+          L := MulDiv(L, RectHeight(DrawRect), H);
+          T := MulDiv(T, RectHeight(DrawRect), H);
+          W := MulDiv(Frame.Width, RectHeight(DrawRect), H);
+          H := MulDiv(Frame.Height, RectHeight(DrawRect), H);
           DrawRect := Bounds(L, T, W, H);
         end
         else begin
-          L := MulDiv(L, WidthOf(DrawRect), W);
-          T := MulDiv(T, WidthOf(DrawRect), W);
-          H := MulDiv(Frame.Height, WidthOf(DrawRect), W);
-          W := MulDiv(Frame.Width, WidthOf(DrawRect), W);
+          L := MulDiv(L, RectWidth(DrawRect), W);
+          T := MulDiv(T, RectWidth(DrawRect), W);
+          H := MulDiv(Frame.Height, RectWidth(DrawRect), W);
+          W := MulDiv(Frame.Width, RectWidth(DrawRect), W);
           DrawRect := Bounds(L, T, W, H);
         end;
       end;

@@ -29,14 +29,14 @@ object JvID3v2MainForm: TJvID3v2MainForm
     Left = 185
     Top = 0
     Width = 3
-    Height = 401
+    Height = 404
     Cursor = crHSplit
   end
   object ListView1: TListView
     Left = 188
     Top = 0
     Width = 346
-    Height = 401
+    Height = 404
     Align = alClient
     Columns = <
       item
@@ -55,7 +55,7 @@ object JvID3v2MainForm: TJvID3v2MainForm
     Left = 0
     Top = 0
     Width = 185
-    Height = 401
+    Height = 404
     Align = alLeft
     TabOrder = 1
     object JvDriveCombo1: TJvDriveCombo
@@ -74,7 +74,7 @@ object JvID3v2MainForm: TJvID3v2MainForm
       Left = 1
       Top = 23
       Width = 183
-      Height = 377
+      Height = 380
       Align = alClient
       Directory = 'C:\'
       DriveCombo = JvDriveCombo1

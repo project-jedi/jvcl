@@ -29,7 +29,7 @@ unit fBalls;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvMTThreading, StdCtrls, JvMTSync, JvMTData, JvMTConsts,
   ExtCtrls, ComCtrls, TeeProcs, TeEngine, Chart,
   JvMtComponents, JvComponent;

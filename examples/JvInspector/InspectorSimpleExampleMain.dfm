@@ -18,7 +18,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 352
-    Height = 512
+    Height = 515
     Align = alClient
     BandWidth = 150
     BevelKind = bkTile
@@ -35,7 +35,7 @@ object Form1: TForm1
     Left = 352
     Top = 0
     Width = 185
-    Height = 512
+    Height = 515
     Align = alRight
     TabOrder = 1
     object Label1: TLabel

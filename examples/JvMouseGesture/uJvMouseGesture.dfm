@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 336
   Top = 303
   Width = 426
-  Height = 376
+  Height = 272
   Caption = 'Form1'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -53,7 +53,6 @@ object Form1: TForm1
     Width = 145
     Height = 21
     ItemHeight = 13
-    ItemIndex = 2
     TabOrder = 2
     Text = 'Right mouse button'
     OnChange = ComboBox1Change
