@@ -30,6 +30,9 @@ unit JvDockHashTable;
 interface
 
 uses
+  {$IFDEF COMPILER9_UP}
+  Windows, // inline
+  {$ENDIF COMPILER9_UP}
   {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -208,6 +211,10 @@ begin
     FEntryList[Index] := CreateKeyNode(Name, Data, Index)
   else
   begin
+    {$IFDEF COMPILER9}
+    // Compiler thinks that ParentNode is not initialized.
+    ParentNode := nil;
+    {$ENDIF COMPILER9}
     Node := FEntryList[Index];
     repeat
       Value := CompareKey(Name, Node.FKeyName);
