@@ -25,7 +25,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvCSVBaseEditor;
+unit JvCsvBaseEditor;
 
 interface
 
