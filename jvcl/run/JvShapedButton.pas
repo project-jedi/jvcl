@@ -94,7 +94,7 @@ type
     procedure SetRegionRevPentagon(ALeft, ATop, AWidth, AHeight: Integer);
     procedure SetRegionRing(ALeft, ATop, AWidth, AHeight: Integer);
 
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseLeave(Control: TControl); override;
     procedure MouseEnter(Control: TControl); override;
     procedure FontChanged; override;
