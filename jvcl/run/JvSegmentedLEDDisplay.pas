@@ -65,7 +65,6 @@ type
     FDigitClass: TJvSegmentedLEDDigitClass;
     FDigits: TJvSegmentedLEDDigits;
     FDotSize: Integer;
-    FFullRefreshNeeded: Boolean;
     FDigitHeight: Integer;
     FDigitSpacing: Integer;
     FDigitWidth: Integer;
@@ -126,8 +125,6 @@ type
     property DigitWidth: Integer read FDigitWidth write SetDigitWidth default 20;
     { Size of the DP type segments }
     property DotSize: Integer read FDotSize write SetDotSize default 4;
-    { Determines if a full repaint/refresh of the control is needed. }
-    property FullRefreshNeeded: Boolean read FFullRefreshNeeded;
     { Specifies the color to use for a segment that is lit. }
     property SegmentLitColor: TColor read FSegmentLitColor write SetSegmentLitColor default clWindowText;
     { Specifies the spacing between adjacent segments. Rounded down to an even value. }
@@ -786,7 +783,6 @@ end;
 
 procedure TJvCustomSegmentedLEDDisplay.InvalidateView;
 begin
-  FFullRefreshNeeded := True;
   Invalidate;
 end;
 
@@ -1023,7 +1019,7 @@ end;
 
 function TJvCustomSegmentedLEDDigit.NeedsPainting: Boolean;
 begin
-  Result := FRecalcNeeded or ((Display <> nil) and Display.FullRefreshNeeded);
+  Result := FRecalcNeeded;
 end;
 
 procedure TJvCustomSegmentedLEDDigit.Paint;
