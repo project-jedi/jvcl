@@ -37,7 +37,7 @@ uses
   SysUtils, Classes, Messages, Menus, Buttons, Controls, Graphics, Forms,
   ImgList, ActnList,
   ExtCtrls, Grids, IniFiles,
-  JvTypes, JvxCtrls, JvFormPlacement, JvComponent;
+  JvAppStore, JvTypes, JvxCtrls, JvFormPlacement, JvComponent;
 
 const
   DefButtonWidth = 24;
@@ -147,8 +147,6 @@ type
     procedure SetStorage(Value: TJvFormPlacement);
     procedure IniSave(Sender: TObject);
     procedure IniLoad(Sender: TObject);
-    procedure InternalSaveLayout(IniFile: TObject; const Section: string);
-    procedure InternalRestoreLayout(IniFile: TObject; const Section: string);
     procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   protected
@@ -190,10 +188,12 @@ type
     function FindItem(Item: TJvSpeedItem; var Section, Index: Integer): Boolean;
     function SearchSection(const ACaption: string): Integer;
     procedure Customize(HelpCtx: THelpContext);
-    procedure SaveLayoutReg(IniFile: TRegIniFile);
-    procedure RestoreLayoutReg(IniFile: TRegIniFile);
-    procedure SaveLayout(IniFile: TIniFile);
-    procedure RestoreLayout(IniFile: TIniFile);
+    procedure SaveLayout;
+    procedure RestoreLayout;
+    procedure LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure Load;
+    procedure Save;
     function ItemsCount(Section: Integer): Integer;
     function Items(Section, Index: Integer): TJvSpeedItem;
     property EditMode: Boolean read GetEditing;
@@ -2819,16 +2819,16 @@ end;
 
 procedure TJvSpeedBar.IniSave(Sender: TObject);
 begin
-  if (Name <> '') and (FIniLink.IniObject <> nil) then
-    InternalSaveLayout(FIniLink.IniObject, FIniLink.RootSection +
-      GetDefaultSection(Self));
+  if (Name <> '') and IniStorage.IsActive then
+    SaveToAppStore(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
+      IniStorage.AppStoragePath, GetDefaultSection(Self)]));
 end;
 
 procedure TJvSpeedBar.IniLoad(Sender: TObject);
 begin
-  if (Name <> '') and (FIniLink.IniObject <> nil) then
-    InternalRestoreLayout(FIniLink.IniObject, FIniLink.RootSection +
-      GetDefaultSection(Self));
+  if (Name <> '') and IniStorage.IsActive then
+    LoadFromAppStore(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
+      IniStorage.AppStoragePath, GetDefaultSection(Self)]));
 end;
 
 const
@@ -2845,9 +2845,9 @@ const
 type
   PIniData = ^TIniData;
   TIniData = record
-    IniFile: TObject;
+    AppStore: TJvCustomAppStore;
     I: Integer;
-    Sect: string;
+    Path: string;
   end;
 
 procedure TJvSpeedBar.HideItem(Item: TJvSpeedItem; Data: Longint);
@@ -2860,51 +2860,38 @@ begin
   if Item.Visible and Item.Stored then
   begin
     Inc(PIniData(Data)^.I);
-    IniWriteString(PIniData(Data)^.IniFile, PIniData(Data)^.Sect,
-      sBtn + IntToStr(PIniData(Data)^.I),
+    with PIniData(Data)^ do
+      AppStore.WriteString(AppStore.ConcatPaths([Path, sBtn + IntToStr(I)]),
       Format('%s,%d,%d', [Item.Name, Item.Left, Item.Top]));
   end;
 end;
 
-procedure TJvSpeedBar.InternalSaveLayout(IniFile: TObject;
-  const Section: string);
-var
-  Data: TIniData;
+procedure TJvSpeedBar.SaveLayout;
 begin
-  Data.Sect := Section;
-  Data.IniFile := IniFile;
-  Data.I := 0;
-  IniEraseSection(IniFile, Data.Sect);
-  IniWriteInteger(IniFile, Data.Sect, sPosition, Integer(Align));
-  if Align in [alTop, alBottom] then
-    IniWriteInteger(IniFile, Data.Sect, sBarWidth, Height)
-  else
-  if Align in [alLeft, alRight] then
-    IniWriteInteger(IniFile, Data.Sect, sBarWidth, Width);
-  IniWriteInteger(IniFile, Data.Sect, sVer, FVersion);
-  IniWriteInteger(IniFile, Data.Sect, sPixelsPerInch, Screen.PixelsPerInch);
-  IniWriteInteger(IniFile, Data.Sect, sBtnWidth, FButtonSize.X);
-  IniWriteInteger(IniFile, Data.Sect, sBtnHeight, FButtonSize.Y);
-  ForEachItem(WriteItemLayout, Longint(@Data));
-  IniWriteInteger(IniFile, Data.Sect, sCount, Data.I);
+  Save;
 end;
 
-procedure TJvSpeedBar.InternalRestoreLayout(IniFile: TObject;
-  const Section: string);
+procedure TJvSpeedBar.RestoreLayout;
+begin
+  Load;
+end;
+
+procedure TJvSpeedBar.LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
 const
   Delims = [' ', ','];
 var
   Item: TJvSpeedItem;
-  Count, I: Integer;
-  Sect, S: string;
+  Count: Integer;
+  I: Integer;
+  S: string;
 begin
-  Sect := Section;
   FPrevAlign := Align;
-  if IniReadInteger(IniFile, Sect, sVer, FVersion) < FVersion then
+  if AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, sVer]), FVersion) < FVersion then
+    // (marcelb) shouldn't we raise an exception "Invalid version" here?
     Exit;
   if sbAllowDrag in Options then
   try
-    Align := TAlign(IniReadInteger(IniFile, Sect, sPosition, Integer(Align)));
+    Align := TAlign(AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, sPosition]), Integer(Align)));
   except
     Align := alTop;
   end;
@@ -2912,7 +2899,7 @@ begin
     I := TForm(Owner).PixelsPerInch
   else
     I := 0;
-  if Screen.PixelsPerInch <> IniReadInteger(IniFile, Sect, sPixelsPerInch, I) then
+  if Screen.PixelsPerInch <> AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, sPixelsPerInch]), I) then
   begin
     if FPrevAlign <> Align then
       PosChanged;
@@ -2921,23 +2908,23 @@ begin
   if sbAllowResize in Options then
   begin
     if Align in [alTop, alBottom] then
-      Height := IniReadInteger(IniFile, Sect, sBarWidth, Height)
+      Height := AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, sBarWidth]), Height)
     else
     if Align in [alLeft, alRight] then
-      Width := IniReadInteger(IniFile, Sect, sBarWidth, Width);
+      Width := AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, sBarWidth]), Width);
   end;
   if FPrevAlign <> Align then
     PosChanged;
-  {if (IniReadInteger(IniFile, Sect, sBtnWidth, FButtonSize.X) >
-    FButtonSize.X) or (IniReadInteger(IniFile, Sect, sBtnHeight,
+  {if (AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, sBtnWidth]), FButtonSize.X) >
+    FButtonSize.X) or (AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, sBtnHeight]),
     FButtonSize.Y) > FButtonSize.Y) then Exit;}
-  Count := IniReadInteger(IniFile, Sect, sCount, 0);
+  Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, sCount]), 0);
   if Count > 0 then
   begin
     ForEachItem(HideItem, 0);
     for I := 1 to Count do
     begin
-      S := IniReadString(IniFile, Sect, sBtn + IntToStr(I), '');
+      S := AppStorage.ReadString(AppStorage.ConcatPaths([Path, sBtn + IntToStr(I)]), '');
       if S <> '' then
       begin
         Item := SearchItem(ExtractWord(1, S, Delims));
@@ -2955,24 +2942,36 @@ begin
   Repaint;
 end;
 
-procedure TJvSpeedBar.SaveLayout(IniFile: TIniFile);
+procedure TJvSpeedBar.SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+var
+  Data: TIniData;
 begin
-  InternalSaveLayout(IniFile, GetDefaultSection(Self));
+  Data.AppStore := AppStorage;
+  Data.Path := Path;
+  Data.I := 0;
+  AppStorage.DeleteSubTree(Path);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sPosition]), Integer(Align));
+  if Align in [alTop, alBottom] then
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sBarWidth]), Height)
+  else
+  if Align in [alLeft, alRight] then
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sBarWidth]), Width);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sVer]), FVersion);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sPixelsPerInch]), Screen.PixelsPerInch);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sBtnWidth]), FButtonSize.X);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sBtnHeight]), FButtonSize.Y);
+  ForEachItem(WriteItemLayout, Longint(@Data));
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sCount]), Data.I);
 end;
 
-procedure TJvSpeedBar.RestoreLayout(IniFile: TIniFile);
+procedure TJvSpeedBar.Load;
 begin
-  InternalRestoreLayout(IniFile, GetDefaultSection(Self));
+  IniLoad(nil);
 end;
 
-procedure TJvSpeedBar.SaveLayoutReg(IniFile: TRegIniFile);
+procedure TJvSpeedBar.Save;
 begin
-  InternalSaveLayout(IniFile, GetDefaultSection(Self));
-end;
-
-procedure TJvSpeedBar.RestoreLayoutReg(IniFile: TRegIniFile);
-begin
-  InternalRestoreLayout(IniFile, GetDefaultSection(Self));
+  IniSave(nil);
 end;
 
 //=== TJvBtnControl ==========================================================
