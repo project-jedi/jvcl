@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJCL60.bpl JvCoreD6R.bpl JvCoreD6D.bpl JvSystemD6R.bpl \
+PROJECTS = JvCoreD6R.bpl JvCoreD6D.bpl JvSystemD6R.bpl \
   JvSystemD6D.bpl JvStdCtrlsD6R.bpl JvStdCtrlsD6D.bpl JvCtrlsD6R.bpl \
   JvCtrlsD6D.bpl JvCmpD6R.bpl JvCmpD6D.bpl JvCustomD6R.bpl JvCustomD6D.bpl \
   JvDlgsD6R.bpl JvDlgsD6D.bpl JvCryptD6R.bpl JvCryptD6D.bpl JvMMD6R.bpl \
@@ -149,9 +149,6 @@ JvValidatorsD6D.bpl: D6\JvValidatorsD6D.dpk
   $(DCC)
 
 JvValidatorsD6R.bpl: D6\JvValidatorsD6R.dpk
-  $(DCC)
-
-DJCL60.bpl: ..\..\..\JCL\packages\DJCL60.dpk
   $(DCC)
 
 JvUIBD6D.bpl: d6\JvUIBD6D.dpk
