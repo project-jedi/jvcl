@@ -2928,14 +2928,20 @@ begin
         ScrollDC(
           FEditorClient.Canvas.Handle, // handle of device context
           0, // horizontal scroll units
-          (OldFTopRow - ScrollPos) * FCellRect.Height, // vertical scroll units
+          (OldFTopRow - ScrollPos) * CellRect.Height, // vertical scroll units
           R, // address of structure for scrolling rectangle
           RClip, // address of structure for clipping rectangle
           0, // handle of scrolling region
           @RUpdate // address of structure for update rectangle
           );
-        Inc(RUpdate.Bottom, FCellRect.Height);
-        InvalidateRect(Handle, @RUpdate, False);
+        if (RUpdate.Left = 0) and (RUpdate.Top = 0) and
+           (RUpdate.Right = 0) and (RUpdate.Bottom = 0) then
+          Invalidate
+        else
+        begin
+          Inc(RUpdate.Bottom, CellRect.Height);
+          InvalidateRect(Handle, @RUpdate, False);
+        end;
       end
       else
       {$ENDIF VCL}
@@ -2948,7 +2954,7 @@ begin
       OldFLeftCol := FLeftCol;
       FLeftCol := ScrollPos;
       {$IFDEF VCL}
-      if Abs((OldFLeftCol - ScrollPos) * FCellRect.Width) < FEditorClient.Width then
+      if Abs((OldFLeftCol - ScrollPos) * CellRect.Width) < FEditorClient.Width then
       begin
         R := FEditorClient.ClientRect;
         R.Right := R.Left + CellRect.Width * FVisibleColCount;
@@ -2956,15 +2962,21 @@ begin
         Inc(RClip.Right, CellRect.Width);
         ScrollDC(
           FEditorClient.Canvas.Handle, // handle of device context
-          (OldFLeftCol - ScrollPos) * FCellRect.Width, // horizontal scroll units
+          (OldFLeftCol - ScrollPos) * CellRect.Width, // horizontal scroll units
           0, // vertical scroll units
           R, // address of structure for scrolling rectangle
           RClip, // address of structure for clipping rectangle
           0, // handle of scrolling region
           @RUpdate // address of structure for update rectangle
           );
-        Inc(RUpdate.Right, FCellRect.Width); // draw italic chars correctly
-        InvalidateRect(Handle, @RUpdate, False);
+        if (RUpdate.Left = 0) and (RUpdate.Top = 0) and
+           (RUpdate.Right = 0) and (RUpdate.Bottom = 0) then
+          Invalidate
+        else
+        begin
+          Inc(RUpdate.Right, CellRect.Width); // draw italic chars correctly
+          InvalidateRect(Handle, @RUpdate, False);
+        end;
       end
       else
       {$ENDIF VCL}
@@ -3996,10 +4008,10 @@ begin
   OffsetRect(ECR, -FGutterWidth, 0);
   if FAllRepaint then
     ECR := FEditorClient.BoundsRect;
-  BX := ECR.Left div FCellRect.Width - 1;
-  EX := ECR.Right div FCellRect.Width + 1;
-  BY := ECR.Top div FCellRect.Height;
-  EY := ECR.Bottom div FCellRect.Height + 1;
+  BX := ECR.Left div CellRect.Width - 1;
+  EX := ECR.Right div CellRect.Width + 1;
+  BY := ECR.Top div CellRect.Height;
+  EY := ECR.Bottom div CellRect.Height + 1;
   for I := BY to EY do
     PaintLine(FTopRow + I, FLeftCol + BX, FLeftCol + EX);
 
@@ -4028,13 +4040,13 @@ begin
   begin
     FEditorClient.Canvas.Brush.Color := Color;
     FEditorClient.Canvas.FillRect(Bounds(FEditorClient.Left, (Line - FTopRow) *
-      FCellRect.Height, 1, FCellRect.Height));
+      CellRect.Height, 1, CellRect.Height));
   end;
   {right part}
   R := Bounds(CalcCellRect(ColPainted - FLeftCol, Line - FTopRow).Left,
-    (Line - FTopRow) * FCellRect.Height,
-    (FLeftCol + FVisibleColCount - ColPainted + 2) * FCellRect.Width,
-    FCellRect.Height);
+    (Line - FTopRow) * CellRect.Height,
+    (FLeftCol + FVisibleColCount - ColPainted + 2) * CellRect.Width,
+    CellRect.Height);
   {if the line is selected, paint right empty space with selected background}
   if FSelection.IsSelected and (FSelection.SelBlockFormat in [bfInclusive, bfLine, bfNonInclusive]) and
     (Line >= FSelection.SelBegY) and (Line < FSelection.SelEndY) then
@@ -4393,8 +4405,8 @@ end;
 
 procedure TJvCustomEditorBase.Mouse2Cell(X, Y: Integer; var CX, CY: Integer);
 begin
-  CX := Round((X - FEditorClient.Left) / FCellRect.Width);
-  CY := (Y - FEditorClient.Top) div FCellRect.Height;
+  CX := Round((X - FEditorClient.Left) / CellRect.Width);
+  CY := (Y - FEditorClient.Top) div CellRect.Height;
 end;
 
 procedure TJvCustomEditorBase.Mouse2Caret(X, Y: Integer; var CX, CY: Integer);
@@ -4420,8 +4432,8 @@ begin
     CX := 0;
   if CY < 0 then
     CY := 0;
-  CX := FCellRect.Width * CX;
-  CY := FCellRect.Height * CY;
+  CX := CellRect.Width * CX;
+  CY := CellRect.Height * CY;
 end;
 
 function TJvCustomEditorBase.PosFromMouse(X, Y: Integer): Integer;
@@ -4690,10 +4702,10 @@ end;
 function TJvCustomEditorBase.CalcCellRect(X, Y: Integer): TRect;
 begin
   Result := Bounds(
-    FEditorClient.Left + X * FCellRect.Width + 1,
-    FEditorClient.Top + Y * FCellRect.Height,
-    FCellRect.Width,
-    FCellRect.Height)
+    FEditorClient.Left + X * CellRect.Width + 1,
+    FEditorClient.Top + Y * CellRect.Height,
+    CellRect.Width,
+    CellRect.Height)
 end;
 
 procedure TJvCustomEditorBase.SetCaret(X, Y: Integer);
