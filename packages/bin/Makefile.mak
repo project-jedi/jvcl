@@ -84,7 +84,7 @@ default: \
 ################################################################################
 BuildJCLdcpFiles:
 	# for C++ targets compile JCL .dcp files
-	IF EXIST "$(ROOT)\bin\bcc32.exe" IF NOT EXIST "$(DCPDIR)\CJclVClx.dcp" $(MAKE) -s -f MakeJCLDcp4BCB.mak
+	IF EXIST "$(ROOT)\bin\bcc32.exe" IF NOT EXIST "$(DCPDIR)\CJcl*.dcp" $(MAKE) -s -f MakeJCLDcp4BCB.mak
 
 ################################################################################
 BuildJCLdcpFilesForce:
@@ -108,7 +108,7 @@ GeneratePackages:
 	$(MAKE) -f makefile.mak -s pg.exe
 	#-SET C5PFLAGS=
 	@cd $(DEVTOOLS_BACK)
-	echo [Generating: Delphi Packages]
+	echo [Generating: JVCL Packages]
 	@$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(EDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
 	@IF NOT $(MASTEREDITION)! == ! @$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(MASTEREDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
 
