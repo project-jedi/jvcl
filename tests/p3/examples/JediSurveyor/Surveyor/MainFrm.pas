@@ -615,8 +615,8 @@ begin
     FSurvey.SurveyTaker.MailAddress := edUserEMail.Text;
   // create and attach response file
   acSendMail.Mail.Attachments.Clear;
-  DeleteFile(FTempSurveyFilename);
-  FTempSurveyFilename := GetTempSurveyFileName;
+  if FTempSurveyFilename = '' then
+    FTempSurveyFilename := GetTempSurveyFileName;
   FSurvey.SaveToFile(FTempSurveyFilename,ffBinary);
   acSendMail.Mail.Attachments.Add(FTempSurveyFilename);
 
