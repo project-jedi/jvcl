@@ -209,7 +209,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
   ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils, JvFixedEditPopup,
-  JvUnicodeCanvas;
+  JvUnicodeCanvas, JvTypes;
 
 const
   Max_X = 1024; {max symbols per row}
@@ -224,9 +224,6 @@ const
 {$ENDIF}
 
 const
-{$IFNDEF COMPILER6_UP}
-  sLineBreak = #13#10;
-{$ENDIF}
   sLineBreakLen = Length(sLineBreak);
 
 type
@@ -1104,7 +1101,7 @@ implementation
 
 uses
   Consts, Math,
-  JvThemes, JvConsts, JvTypes;
+  JvThemes, JvConsts;
 
 
 procedure MbcsStrLead(var P: PChar);
