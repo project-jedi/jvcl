@@ -996,6 +996,7 @@ begin
   inherited;
 
   FEditorTrick := TJvUrlGrabberDefPropEdTrick.Create(self);
+  FFileName := 'output.txt'; 
 end;
 
 destructor TJvUrlGrabberDefaultProperties.Destroy;
