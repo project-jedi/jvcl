@@ -2320,6 +2320,47 @@ begin
       VK_DOWN:
         if SelectedIndex < Pred(VisibleCount) then
           SelectedIndex := SelectedIndex + 1;
+      VK_LEFT:
+        begin
+          if Item is TJvInspectorCustomCompoundItem then
+          with Item as TJvInspectorCustomCompoundItem do
+          begin
+            if SelectedColumnIndex > 0 then
+              SelectedColumnIndex := SelectedColumnIndex - 1
+            else
+            if SelectedIndex > 0 then
+              SelectedIndex := SelectedIndex - 1;
+          end
+          else
+          if SelectedIndex > 0 then
+            SelectedIndex := SelectedIndex - 1;
+          if Item <> Selected then
+          begin
+            if Selected is TJvInspectorCustomCompoundItem then
+              TJvInspectorCustomCompoundItem(Selected).SelectedColumnIndex :=
+                TJvInspectorCustomCompoundItem(Selected).ColumnCount - 1;
+          end;
+        end;
+      VK_RIGHT:
+        begin
+          if Item is TJvInspectorCustomCompoundItem then
+          with Item as TJvInspectorCustomCompoundItem do
+          begin
+            if SelectedColumnIndex < Pred(ColumnCount) then
+              SelectedColumnIndex := SelectedColumnIndex + 1
+            else
+            if SelectedIndex < Pred(VisibleCount) then
+              SelectedIndex := SelectedIndex + 1;
+          end
+          else
+          if SelectedIndex < Pred(VisibleCount) then
+            SelectedIndex := SelectedIndex + 1;
+          if Item <> Selected then
+          begin
+            if Selected is TJvInspectorCustomCompoundItem then
+              TJvInspectorCustomCompoundItem(Selected).SelectedColumnIndex := 0;
+          end;
+        end;
       VK_PRIOR:
         begin
           if SelectedIndex > TopIndex  then
@@ -4509,54 +4550,45 @@ end;
 procedure TJvCustomInspectorItem.EditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Sender <> Inspector then
-    { OnKeyDown event from the edit control. Pass control to the inspector.
-      When the inspector finishes it will pass control to EditKeyDown method
-      with the Sender parameter pointing to itself. }
-    Inspector.KeyDown(Key, Shift)
-  else
+  if Shift = [] then
   begin
-    { OnKeyDown event called from the inspector. Handle item keys }
-    if Shift = [] then
-    begin
-      case Key of
-        VK_RETURN:
-          Apply;
-        VK_ESCAPE:
-          Undo;
-      end;
-      if (Key = VK_RETURN) or (Key = VK_ESCAPE) then
-        Key := 0;
-    end
-    else
-    if Shift = [ssCtrl] then
-      case Key of
-        VK_UP:
-          if iifValueList in Flags then
-          begin
-            SelectValue(-1);
-            Key := 0;
-          end;
-        VK_DOWN:
-          if iifValueList in Flags then
-          begin
-            SelectValue(1);
-            Key := 0;
-          end;
-        VK_RETURN:
-          if iifValueList in Flags then
-          begin
-            SelectValue(1);
-            Key := 0;
-          end
-          else
-          if iifEditButton in Flags then
-          begin
-            Key := 0;
-            ButtonClick(Sender);
-          end;
-      end;
-  end;
+    case Key of
+      VK_RETURN:
+        Apply;
+      VK_ESCAPE:
+        Undo;
+    end;
+    if (Key = VK_RETURN) or (Key = VK_ESCAPE) then
+      Key := 0;
+  end
+  else
+  if Shift = [ssCtrl] then
+    case Key of
+      VK_UP:
+        if iifValueList in Flags then
+        begin
+          SelectValue(-1);
+          Key := 0;
+        end;
+      VK_DOWN:
+        if iifValueList in Flags then
+        begin
+          SelectValue(1);
+          Key := 0;
+        end;
+      VK_RETURN:
+        if iifValueList in Flags then
+        begin
+          SelectValue(1);
+          Key := 0;
+        end
+        else
+        if iifEditButton in Flags then
+        begin
+          Key := 0;
+          ButtonClick(Sender);
+        end;
+    end;
 end;
 
 procedure TJvCustomInspectorItem.EditMouseDown(Sender: TObject;
@@ -4583,6 +4615,21 @@ end;
 procedure TJvCustomInspectorItem.Edit_WndProc(var Message: TMessage);
 var
   ExecInherited: Boolean;
+
+  function LeftRightCanNavigate: Boolean;
+  begin
+    Result := (
+      (Message.WParam = VK_LEFT) and (
+        (EditCtrl.SelLength = Length(EditCtrl.Text)) or
+        (EditCtrl.SelStart < 1)
+      )
+     ) or (
+      (Message.WParam = VK_RIGHT) and (
+        (EditCtrl.SelLength = Length(EditCtrl.Text)) or
+        (EditCtrl.SelStart >= Length(EditCtrl.Text))
+      )
+     );
+  end;
 begin
   ExecInherited := True;
   case Message.Msg of
@@ -4602,14 +4649,14 @@ begin
                 ExecInherited := False;
             end;
           end;
-          if (Message.Msg = WM_KEYDOWN) and (KeyDataToShiftState(Message.LParam) = []) and
-            ((Message.WParam in [VK_NEXT, VK_PRIOR]) or (not DroppedDown and
-            (Message.WParam in [VK_DOWN, VK_UP]))) then
-          begin
-            PostMessage(Inspector.Handle, Message.Msg, Message.WParam, Message.LParam);
-            Message.Result := 1;
-            ExecInherited := False;
-          end;
+        if (Message.Msg = WM_KEYDOWN) and (KeyDataToShiftState(Message.LParam) = []) and
+          ((Message.WParam in [VK_NEXT, VK_PRIOR]) or (not DroppedDown and
+          (Message.WParam in [VK_DOWN, VK_UP])) or LeftRightCanNavigate) then
+        begin
+          PostMessage(Inspector.Handle, Message.Msg, Message.WParam, Message.LParam);
+          Message.Result := 1;
+          ExecInherited := False;
+        end;
       end;
   end;
   if ExecInherited then
