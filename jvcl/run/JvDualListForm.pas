@@ -30,11 +30,20 @@ unit JvDualListForm;
 interface
 
 uses
-  Windows,
-  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  JvListBox, JvCtrls, JvComponent, JvExStdCtrls;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  JvListBox, JvCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
+  {$ENDIF VisualCLX}
+  JvComponent, JvExStdCtrls;
 
 type
+  {$IFDEF VisualCLX}
+  TJvListBox = TListBox;
+  {$ENDIF VisualCLX}
   TJvDualListForm = class(TJvForm)
     SrcList: TJvListBox;
     DstList: TJvListBox;
@@ -68,8 +77,10 @@ type
   private
     function GetShowHelp: Boolean;
     procedure SetShowHelp(Value: Boolean);
+  {$IFDEF VCL}
   protected
     procedure CreateParams(var Params: TCreateParams); override;
+  {$ENDIF VCL}
   public
     procedure SetButtons;
     property ShowHelp: Boolean read GetShowHelp write SetShowHelp default True;
@@ -78,15 +89,27 @@ end;
 implementation
 
 uses
+  {$IFDEF VCL}
   Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
   JvJVCLUtils, JvBoxProcs;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF VisualCLX}
 
+{$IFDEF VCL}
 procedure TJvDualListForm.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
 end;
+{$ENDIF VCL}
 
 procedure TJvDualListForm.SetButtons;
 var
@@ -157,20 +180,24 @@ procedure TJvDualListForm.SrcListDragOver(Sender, Source: TObject;
   X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   BoxDragOver(SrcList, Source, X, Y, State, Accept, SrcList.Sorted);
+  {$IFDEF VCL}
   if State = dsDragLeave then
     (Source as TJvListBox).DragCursor := crDrag;
   if (State = dsDragEnter) and ((Source as TJvListBox).SelCount > 1) then
     (Source as TJvListBox).DragCursor := crMultiDrag;
+  {$ENDIF VCL}
 end;
 
 procedure TJvDualListForm.DstListDragOver(Sender, Source: TObject;
   X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   BoxDragOver(DstList, Source, X, Y, State, Accept, DstList.Sorted);
+  {$IFDEF VCL}
   if State = dsDragLeave then
     (Source as TJvListBox).DragCursor := crDrag;
   if (State = dsDragEnter) and ((Source as TJvListBox).SelCount > 1) then
     (Source as TJvListBox).DragCursor := crMultiDrag;
+  {$ENDIF VCL}
 end;
 
 procedure TJvDualListForm.SrcListDragDrop(Sender, Source: TObject;
@@ -233,7 +260,13 @@ end;
 
 procedure TJvDualListForm.HelpBtnClick(Sender: TObject);
 begin
+  {$IFDEF VCL}
   Application.HelpContext(HelpContext);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Application.ContextHelp(HelpContext);
+  {$ENDIF VisualCLX}
+
 end;
 
 procedure TJvDualListForm.FormCreate(Sender: TObject);
@@ -241,8 +274,10 @@ begin
   OkBtn.Caption := SOKButton;
   CancelBtn.Caption := SCancelButton;
   HelpBtn.Caption := SHelpButton;
+  {$IFDEF VCL}
   if NewStyleControls then
     Font.Style := [];
+  {$ENDIF VCL}
 end;
 
 procedure TJvDualListForm.ListClick(Sender: TObject);
