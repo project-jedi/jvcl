@@ -34,6 +34,7 @@ requires
 
 contains
   JvTFUtils in '..\..\run\JvTFUtils.pas',
+  JvTFGantt in '..\..\run\JvTFGantt.pas',
   JvTFManager in '..\..\run\JvTFManager.pas',
   JvTFWeeks in '..\..\run\JvTFWeeks.pas',
   JvTFAlarm in '..\..\run\JvTFAlarm.pas',

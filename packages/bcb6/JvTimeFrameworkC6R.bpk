@@ -5,6 +5,7 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JvTimeFrameworkC6R.bpl"/>
     <OBJFILES value="..\..\dcu\JvTimeFrameworkC6R.obj ..\..\dcu\JvTFWeeks.obj 
+      ..\..\dcu\JvTFGantt.obj
       ..\..\dcu\JvTFAlarm.obj ..\..\dcu\JvTFDays.obj ..\..\dcu\JvTFGlance.obj 
       ..\..\dcu\JvTFGlanceTextViewer.obj ..\..\dcu\JvTFManager.obj 
       ..\..\dcu\JvTFMonths.obj ..\..\dcu\JvTFSparseMatrix.obj 
@@ -55,6 +56,7 @@
       <FILE FILENAME="JvTimeFrameworkC6R.cpp" FORMNAME="" UNITNAME="JvTimeFrameworkC6R" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvTFWeeks.pas" FORMNAME="" UNITNAME="JvTFWeeks" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvTFGantt.pas" FORMNAME="" UNITNAME="JvTFGantt" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvTFAlarm.pas" FORMNAME="" UNITNAME="JvTFAlarm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvTFDays.pas" FORMNAME="" UNITNAME="JvTFDays" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvTFGlance.pas" FORMNAME="" UNITNAME="JvTFGlance" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
