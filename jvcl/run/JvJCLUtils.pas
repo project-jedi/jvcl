@@ -70,12 +70,12 @@ uses
   Graphics, Clipbrd,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QClipbrd,
+  Qt, QGraphics, QClipbrd, QWindows, Types,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  TypInfo, JvClxUtils;
+  TypInfo;
 
 const
   {$IFDEF MSWINDOWS}
@@ -273,7 +273,7 @@ function MakeValidFileName(const FileName: TFileName; const ReplaceBadChar: Char
 
 {**** Graphic routines }
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 { TTFontSelected returns True, if True Type font
   is selected in specified device context }
 function TTFontSelected(const DC: HDC): Boolean;
@@ -288,7 +288,9 @@ procedure SetRect(out R: TRect; Left, Top, Right, Bottom: Integer);
 {**** other routines }
 procedure SwapInt(var Int1, Int2: Integer);
 function IntPower(Base, Exponent: Integer): Integer;
+{$IFDEF VCL}
 function ChangeTopException(E: TObject): TObject;
+{$ENDIF}
 function StrToBool(const S: string): Boolean;
 
 function Var2Type(V: Variant; const VarType: Integer): Variant;
@@ -647,7 +649,7 @@ function ExtractFilePath2(const FileName: string): string;
 {end JvStrUtils}
 
 {$IFDEF LINUX}
-function GetTempFileName(const Prefix: string);
+function GetTempFileName(const Prefix: string): string;
 {$ENDIF LINUX}
 
 { begin JvFileUtil }
@@ -739,7 +741,7 @@ procedure Exec(FileName, Parameters, Directory: string);
 // execute a program and wait for it to finish
 procedure ExecuteAndWait(FileName: string; Visibility: Integer);
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 // returns True if Drive is accessible
 function DiskInDrive(Drive: Char): Boolean;
 // returns True if this is the first instance of the program that is running
@@ -763,7 +765,8 @@ procedure LowPower;
 
 // send a key to the window named AppName
 function SendKey(AppName: string; Key: Char): Boolean;
-
+{$ENDIF VCL}
+{$IFDEF MSWINDOWS}
 // associates an extension to a specific program
 procedure AssociateExtension(IconPath, ProgramName, Path, Extension: string);
 
@@ -920,16 +923,16 @@ procedure HugeDec(var HugePtr: Pointer; Amount: Longint);
 function HugeOffset(HugePtr: Pointer; Amount: Longint): Pointer;
 procedure HugeMove(Base: Pointer; Dst, Src, Size: Longint);
 procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 function WindowClassName(Wnd: HWND): string;
 procedure SwitchToWindow(Wnd: HWND; Restore: Boolean);
 procedure ActivateWindow(Wnd: HWND);
 procedure ShowWinNoAnimate(Handle: HWND; CmdShow: Integer);
-procedure CenterWindow(Wnd: HWND);
 procedure KillMessage(Wnd: HWND; Msg: Cardinal);
 { SetWindowTop put window to top without recreating window }
 procedure SetWindowTop(const Handle: HWND; const Top: Boolean);
-{$ENDIF MSWINDOWS}
+{$ENDIF VCL}
+procedure CenterWindow(Wnd: HWND);
 function MakeVariant(const Values: array of Variant): Variant;
 
 
@@ -966,11 +969,19 @@ procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
 implementation
 
 uses
-  Math, Consts,
+  Math,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  SysConst, ComObj, Registry, ShellAPI, MMSystem,
+  SysConst,
+  {$IFDEF WINDOWS}
+  ComObj, ShellAPI, MMSystem, Registry,
+  {$ENDIF}
+  {$IFDEF VCL}
+  Consts,
+  {$ELSE}
+  QConsts,
+  {$ENDIF}
   JclSysInfo, JclStrings,
   JvTypes;
 
@@ -1557,7 +1568,7 @@ begin
   FileName := AnsiUpperCase(ExtractFileName(FileName));
 {$ENDIF}
 {$IFDEF LINUX}
-  FileName := ExtactFileName(FileName);
+  FileName := ExtractFileName(FileName);
 {$ENDIF}
   DosError := FindFirst(Path, faAnyFile, SearchRec);
   while DosError = 0 do
@@ -2135,6 +2146,7 @@ begin
     Result := Base;
 end;
 
+{$IFDEF VCL}
 function ChangeTopException(E: TObject): TObject;
 type
   PRaiseFrame = ^TRaiseFrame;
@@ -2161,6 +2173,7 @@ begin
     Result := nil;
 //    raise Exception.Create('Not in exception');
 end;
+{$ENDIF}
 
 function MakeValidFileName(const FileName: TFileName;
   const ReplaceBadChar: Char): TFileName;
@@ -2173,7 +2186,7 @@ begin
       Result[I] := ReplaceBadChar;
 end;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 function TTFontSelected(const DC: HDC): Boolean;
 var
   TM: TTEXTMETRIC;
@@ -2558,6 +2571,16 @@ begin
     Result := H * Ss.Count;
     if not CalcHeight then
       for I := 0 to Ss.Count - 1 do
+        ExtTextOut(
+          Canvas.Handle, // handle of device context
+          R.Left, // X-coordinate of reference point
+          R.Top + H * I, // Y-coordinate of reference point
+          ETO_CLIPPED, // text-output options
+          @RClip, // optional clipping and/or opaquing rectangle
+          PChar(Ss[I]),
+          Length(Ss[I]), // number of characters in string
+          nil); // address of array of intercharacter spacing values
+(*)
         ClxExtTextOut(
           Canvas, // handle of device context
           R.Left, // X-coordinate of reference point
@@ -2566,6 +2589,7 @@ begin
           @RClip, // optional clipping and/or opaquing rectangle
           Ss[I],
           nil); // address of array of intercharacter spacing values
+(*)
   finally
     Ss.Free;
   end;
@@ -6490,7 +6514,7 @@ end;
 {$ENDIF LINUX}
 
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 { (rb) Duplicate of JclFileUtils.DiskInDrive }
 
 function DiskInDrive(Drive: Char): Boolean;
@@ -6642,7 +6666,7 @@ var
   vKey, ScanCode: Word;
   lParam, ConvKey: Longint;
   Shift, Ctrl: Boolean;
-  H: HWND;
+  H: Windows.HWND;
 begin
   H := FindWindow(PChar(AppName), nil);
   if H <> 0 then
@@ -6670,6 +6694,9 @@ begin
   else
     Result := False;
 end;
+{$ENDIF VCL}
+
+{$IFDEF MSWINDOWS}
 
 {$WARNINGS ON}
 
@@ -7215,7 +7242,7 @@ var
 begin
   b := Filename;
   R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
-  if ClxDrawText(Canvas, b, R,
+  if DrawText(Canvas.Handle, PChar(b), -1, R,
     DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or
     DT_CALCRECT or DT_NOPREFIX) > 0 then
     Result := b
@@ -7698,14 +7725,19 @@ begin
     Result := S;
 end;
 
-{$IFDEF MSWINDOWS}
 function WindowClassName(Wnd: HWND): string;
+{$IFDEF VCL}
 var
   Buffer: array[0..255] of Char;
 begin
   SetString(Result, Buffer, GetClassName(Wnd, Buffer, SizeOf(Buffer) - 1));
 end;
+{$ENDIF}
+{$IFDEF VisualCLX}
 
+{$ENDIF}
+
+{$IFDEF VCL}
 function GetAnimation: Boolean;
 var
   Info: TAnimationInfo;
@@ -7852,7 +7884,7 @@ begin
     Result := True;
   end;
 end;
-{$ENDIF MSWINDOWS}
+{$ENDIF VCL}
 
 {$IFDEF MSWINDOWS}
 function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
@@ -7863,7 +7895,12 @@ var
 begin
   with BrowseInfo do
   begin
+    {$IFDEF VCL}
     hwndOwner := Handle;
+    {$ENDIF}
+    {$IFDEF VisualCLX}
+    hwndOwner := QWidget_WinID(handle);
+    {$ENDIF}
     pidlRoot := nil;
     pszDisplayName := FN;
     lpszTitle := PChar(Title);
@@ -7913,6 +7950,7 @@ begin
     end;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 procedure CenterWindow(Wnd: HWND);
 var
@@ -7923,10 +7961,16 @@ begin
     (GetSystemMetrics(SM_CYSCREEN) - R.Bottom + R.Top) div 2,
     R.Right - R.Left, R.Bottom - R.Top);
   FitRectToScreen(R);
+  {$IFDEF VCL}
   SetWindowPos(Wnd, 0, R.Left, R.Top, 0, 0, SWP_NOACTIVATE or
     SWP_NOSIZE or SWP_NOZORDER);
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWidget_move(Wnd, R.Left, R.Top );
+  {$ENDIF}
 end;
 
+{$IFDEF VCL}
 procedure KillMessage(Wnd: HWND; Msg: Cardinal);
 { Delete the requested message from the queue, but throw back }
 { any WM_QUIT msgs that PeekMessage may also return.          }
@@ -7947,7 +7991,7 @@ begin
     SWP_NOSIZE or SWP_NOACTIVATE);
 end;
 
-{$ENDIF MSWINDOWS}
+{$ENDIF VCL}
 
 function MakeVariant(const Values: array of Variant): Variant;
 begin
