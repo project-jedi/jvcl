@@ -7200,7 +7200,7 @@ var
 begin
   LStr := '';
   for I := 1 to Length(Str) do
-    if Str[I] in ['0'..'9','-','+', DecimalSeparator] then
+    if Str[I] in ['0'..'9', '-', '+', DecimalSeparator] then
       LStr := LStr + Str[I];
   try
     if not TextToFloat(PChar(LStr), Result, fvCurrency) then
@@ -7216,7 +7216,7 @@ var
   I: Integer;
 begin
   for I := 1 to Length(Str) do
-    if Str[I] in ['0'..'9','-','+', DecimalSeparator] then
+    if Str[I] in ['0'..'9', '-', '+', DecimalSeparator] then
       LStr := LStr + Str[I];
   Result := Def;
   if LStr <> '' then
@@ -8499,7 +8499,7 @@ begin
 
   J := 1;
   for I := 1 to Length(Result) do
-    if Result[I] in ['-','+','0'..'9', DecimalSeparator, ThousandSeparator] then
+    if Result[I] in ['0'..'9', '-', '+', DecimalSeparator, ThousandSeparator] then
     begin
       Result[J] := Result[I];
       Inc(J);

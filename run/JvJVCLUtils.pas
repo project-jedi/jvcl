@@ -155,6 +155,9 @@ function Execute(const CommandLine, WorkingDirectory: string): Integer;
 {$IFDEF VCL}
 procedure LaunchCpl(const FileName: string);
 
+// for Win 2000 and XP
+procedure ShowSafeRemovalDialog;
+
 {
   GetControlPanelApplets retrieves information about all control panel applets in a specified folder.
   APath is the Path to the folder to search and AMask is the filename mask (containing wildcards if necessary) to use.
@@ -1236,6 +1239,11 @@ begin
   // rundll32.exe shell32,Control_RunDLL ';
   RunDLL32('shell32.dll', 'Control_RunDLL', FileName, True);
   //  WinExec(PChar(RC_RunCpl + FileName), SW_SHOWNORMAL);
+end;
+
+procedure ShowSafeRemovalDialog;
+begin
+  LaunchCpl('HOTPLUG.DLL');
 end;
 
 const

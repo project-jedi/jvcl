@@ -2675,7 +2675,7 @@ end;
 function TJvCustomCsvDataSet.GetFileName: string;
 begin
    // If FTableName is not set, you can't save or load a file, fire an exception:
-   Assert(Length(FTableName) <> 0, 'TJvCustomCsvDataSet.GetFileName - TableName property is not set');
+   Assert(Length(FTableName) <> 0, RsEInvalidTableName);
 
    if (Length(FTableName) > 2) and (FTableName[1] = '.') and
      IsPathDelimiter(FTableName, 2) then // reasonably portable, okay?
@@ -3029,7 +3029,7 @@ var
   I: Integer;
 begin
   Result := 0;
-  Assert(Length(SortAscending)>=SortColumnCount);
+  Assert(Length(SortAscending) >= SortColumnCount);
   
   // null check, raise exception
   if (not Assigned(Left)) or (not Assigned(Right)) then

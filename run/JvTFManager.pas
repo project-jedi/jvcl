@@ -1096,10 +1096,7 @@ end;
 
 function CenterRect(Rect1, Rect2: TRect): TRect;
 var
-  Rect1Width,
-    Rect1Height,
-    Rect2Width,
-    Rect2Height: Integer;
+  Rect1Width, Rect1Height, Rect2Width, Rect2Height: Integer;
 begin
   Rect1Width := Rect1.Right - Rect1.Left - 1;
   Rect1Height := Rect1.Bottom - Rect1.Top - 1;
@@ -1114,8 +1111,7 @@ end;
 
 function MoveRect(ARect: TRect; NewLeft, NewTop: Integer): TRect;
 var
-  XOffset,
-    YOffset: Integer;
+  XOffset, YOffset: Integer;
 begin
   XOffset := NewLeft - ARect.Left;
   YOffset := NewTop - ARect.Top;
@@ -1493,13 +1489,18 @@ end;
 procedure TJvTFAppt.Notify(Sender: TObject; Code: TJvTFServNotifyCode);
 begin
   case Code of
-    sncConnectAppt: Connect(TJvTFSched(Sender));
-    sncDisconnectAppt: Disconnect(TJvTFSched(Sender));
+    sncConnectAppt:
+      Connect(TJvTFSched(Sender));
+    sncDisconnectAppt:
+      Disconnect(TJvTFSched(Sender));
     // implicit post fix
     //sncPostAppt        : FModified := False;
-    sncPostAppt: PostApptNotification;
-    sncDeleteAppt: InternalClearSchedules;
-    sncRefresh: FModified := False;
+    sncPostAppt:
+      PostApptNotification;
+    sncDeleteAppt:
+      InternalClearSchedules;
+    sncRefresh:
+      FModified := False;
   end;
 end;
 
@@ -2735,17 +2736,23 @@ begin
   end;
 end;
 
-procedure TJvTFScheduleManager.Notify(Sender: TObject;
-  Code: TJvTFServNotifyCode);
+procedure TJvTFScheduleManager.Notify(Sender: TObject; Code: TJvTFServNotifyCode);
 begin
   case Code of
-    sncConnectComponent: ConnectComponent(TJvTFComponent(Sender));
-    sncDisconnectComponent: DisconnectComponent(TJvTFComponent(Sender));
-    sncConnectControl: ConnectControl(TJvTFControl(Sender));
-    sncDisconnectControl: DisconnectControl(TJvTFControl(Sender));
-    sncLoadAppt: AddAppt(TJvTFAppt(Sender));
-    sncDestroyAppt: RemoveAppt(TJvTFAppt(Sender));
-    sncDestroySchedule: RemoveSchedule(TJvTFSched(Sender));
+    sncConnectComponent:
+      ConnectComponent(TJvTFComponent(Sender));
+    sncDisconnectComponent:
+      DisconnectComponent(TJvTFComponent(Sender));
+    sncConnectControl:
+      ConnectControl(TJvTFControl(Sender));
+    sncDisconnectControl:
+      DisconnectControl(TJvTFControl(Sender));
+    sncLoadAppt:
+      AddAppt(TJvTFAppt(Sender));
+    sncDestroyAppt:
+      RemoveAppt(TJvTFAppt(Sender));
+    sncDestroySchedule:
+      RemoveSchedule(TJvTFSched(Sender));
   end;
 end;
 
@@ -3447,26 +3454,19 @@ var
   BatchStartDate: TDate;
   BatchEndDate: TDate;
 
-  /////////////////////////////////////////////
-  //        SUBORDINATE ROUTINES
-  /////////////////////////////////////////////
-
-  procedure UpdateCompares(_aSched: TJvTFSched);
+  procedure UpdateCompares(ASched: TJvTFSched);
   begin
-    CompName := _aSched.SchedName;
-    CompDate := _aSched.SchedDate;
+    CompName := ASched.SchedName;
+    CompDate := ASched.SchedDate;
   end;
 
-  procedure NewBatch(_aSched: TJvTFSched);
+  procedure NewBatch(ASched: TJvTFSched);
   begin
-    BatchName := _aSched.SchedName;
-    BatchStartDate := _aSched.SchedDate;
-    BatchEndDate := _aSched.SchedDate;
+    BatchName := ASched.SchedName;
+    BatchStartDate := ASched.SchedDate;
+    BatchEndDate := ASched.SchedDate;
   end;
 
-  ////////////////
-  // MAIN ROUTINE
-  ////////////////
 begin
   if FSchedBatch.Count = 0 then
     Exit;
@@ -3540,15 +3540,13 @@ begin
     FOnGetApptDisplayText(Self, AComponent, Appt, Result);
 end;
 
-procedure TJvTFScheduleManager.SetApptDescription(Appt: TJvTFAppt;
-  var Value: string);
+procedure TJvTFScheduleManager.SetApptDescription(Appt: TJvTFAppt; var Value: string);
 begin
   if Assigned(FOnSetApptDescription) then
     FOnSetApptDescription(Self, Appt, Value);
 end;
 
-procedure TJvTFScheduleManager.GetApptDescription(Appt: TJvTFAppt;
-  var Value: string);
+procedure TJvTFScheduleManager.GetApptDescription(Appt: TJvTFAppt; var Value: string);
 begin
   if Assigned(FOnGetApptDescription) then
     FOnGetApptDescription(Self, Appt, Value);
@@ -3659,9 +3657,7 @@ procedure TJvTFHint.SetHintText(StartDate, EndDate: TDate; StartTime,
   EndTime: TTime; const Desc: string; ShowDatesTimes, ShowDesc: Boolean);
 var
   ShowDates: Boolean;
-  HintText,
-    DFormat,
-    TFormat: string;
+  HintText, DFormat, TFormat: string;
 begin
   HintText := '';
   if ShowDatesTimes then
@@ -3960,11 +3956,16 @@ procedure TJvTFControl.Notify(Sender: TObject;
   Code: TJvTFServNotifyCode);
 begin
   case Code of
-    sncRequestSchedule: ReqSchedNotification(TJvTFSched(Sender));
-    sncReleaseSchedule: RelSchedNotification(TJvTFSched(Sender));
-    sncRefresh: RefreshControl;
-    sncDestroyAppt: DestroyApptNotification(TJvTFAppt(Sender));
-    sncDestroySchedule: DestroySchedNotification(TJvTFSched(Sender));
+    sncRequestSchedule:
+      ReqSchedNotification(TJvTFSched(Sender));
+    sncReleaseSchedule:
+      RelSchedNotification(TJvTFSched(Sender));
+    sncRefresh:
+      RefreshControl;
+    sncDestroyAppt:
+      DestroyApptNotification(TJvTFAppt(Sender));
+    sncDestroySchedule:
+      DestroySchedNotification(TJvTFSched(Sender));
   end;
 end;
 
@@ -4189,15 +4190,19 @@ begin
   Result := TJvTFSched(FSchedules.Objects[Index]);
 end;
 
-procedure TJvTFComponent.Notify(Sender: TObject;
-  Code: TJvTFServNotifyCode);
+procedure TJvTFComponent.Notify(Sender: TObject; Code: TJvTFServNotifyCode);
 begin
   case Code of
-    sncRequestSchedule: ReqSchedNotification(TJvTFSched(Sender));
-    sncReleaseSchedule: RelSchedNotification(TJvTFSched(Sender));
-    sncRefresh: RefreshComponent;
-    sncDestroyAppt: DestroyApptNotification(TJvTFAppt(Sender));
-    sncDestroySchedule: DestroySchedNotification(TJvTFSched(Sender));
+    sncRequestSchedule:
+      ReqSchedNotification(TJvTFSched(Sender));
+    sncReleaseSchedule:
+      RelSchedNotification(TJvTFSched(Sender));
+    sncRefresh:
+      RefreshComponent;
+    sncDestroyAppt:
+      DestroyApptNotification(TJvTFAppt(Sender));
+    sncDestroySchedule:
+      DestroySchedNotification(TJvTFSched(Sender));
   end;
 end;
 
@@ -4422,8 +4427,7 @@ procedure TJvTFPrinter.FinishDoc;
 var
   I: Integer;
   aCanvas: TMetafileCanvas;
-  HeaderRect,
-    FooterRect: TRect;
+  HeaderRect, FooterRect: TRect;
 begin
   if Aborted then
     Exit;
@@ -4488,11 +4492,7 @@ end;
 
 function TJvTFPrinter.GetBodyHeight: Integer; // always in pixels
 var
-  PhysHeight,
-    TopMarginPels,
-    BottomMarginPels,
-    HeaderPels,
-    FooterPels: Integer;
+  PhysHeight, TopMarginPels, BottomMarginPels, HeaderPels, FooterPels: Integer;
 begin
   {$IFDEF VCL}
   PhysHeight := Windows.GetDeviceCaps(Printer.Handle, PHYSICALHEIGHT);
@@ -4526,9 +4526,7 @@ end;
 
 function TJvTFPrinter.GetBodyWidth: Integer; // always in pixels
 var
-  PhysWidth,
-    LeftMarginPels,
-    RightMarginPels: Integer;
+  PhysWidth, LeftMarginPels, RightMarginPels: Integer;
 begin
   PhysWidth := Windows.GetDeviceCaps(Printer.Handle, PHYSICALWIDTH);
   LeftMarginPels := ConvertMeasure(PageLayout.MarginLeft, Measure, pmPixels, True);
@@ -4545,8 +4543,7 @@ begin
   Result := FDocDateTime;
 end;
 
-procedure TJvTFPrinter.GetHeaderFooterRects(var HeaderRect,
-  FooterRect: TRect);
+procedure TJvTFPrinter.GetHeaderFooterRects(var HeaderRect, FooterRect: TRect);
 begin
   HeaderRect.Left := FMarginOffsets.Left;
   HeaderRect.Top := FMarginOffsets.Top;
@@ -4564,9 +4561,12 @@ end;
 function TJvTFPrinter.GetMarginOffset(Index: Integer): Integer;
 begin
   case Index of
-    1: Result := FMarginOffsets.Left;
-    2: Result := FMarginOffsets.Top;
-    3: Result := FMarginOffsets.Right;
+    1:
+      Result := FMarginOffsets.Left;
+    2:
+      Result := FMarginOffsets.Top;
+    3:
+      Result := FMarginOffsets.Right;
   else
     Result := FMarginOffsets.Bottom;
   end;
@@ -4588,10 +4588,14 @@ end;
 function TJvTFPrinter.GetPageCount: Integer;
 begin
   case State of
-    spsNoDoc: raise EJvTFPrinterError.CreateRes(@RsECouldNotRetrievePageCount);
-    spsCreating: Result := FBodies.Count;
-    spsAssembling: Result := FPageCount;
-    spsFinished: Result := FPages.Count;
+    spsNoDoc:
+      raise EJvTFPrinterError.CreateRes(@RsECouldNotRetrievePageCount);
+    spsCreating:
+      Result := FBodies.Count;
+    spsAssembling:
+      Result := FPageCount;
+    spsFinished:
+      Result := FPages.Count;
   else
     Result := -1;
   end;
@@ -4599,12 +4603,7 @@ end;
 
 function TJvTFPrinter.GetUnprintable: TJvTFMargins;
 var
-  LeftMarg,
-    TopMarg,
-    WidthPaper,
-    HeightPaper,
-    WidthPrintable,
-    HeightPrintable: Integer;
+  LeftMarg, TopMarg, WidthPaper, HeightPaper, WidthPrintable, HeightPrintable: Integer;
 begin
   LeftMarg := Windows.GetDeviceCaps(Printer.Handle, PHYSICALOFFSETX);
   TopMarg := Windows.GetDeviceCaps(Printer.Handle, PHYSICALOFFSETY);
@@ -4624,9 +4623,7 @@ end;
 
 procedure TJvTFPrinter.InitializeMargins;
 var
-  I,
-    Unprintable,
-    NewMargin: Integer;
+  I, Unprintable, NewMargin: Integer;
   Horz: Boolean;
 begin
   for I := 1 to 4 do
@@ -4634,9 +4631,12 @@ begin
     SetMarginOffset(I, 0);
 
     case I of
-      1: Unprintable := GetUnprintable.Left;
-      2: Unprintable := GetUnprintable.Top;
-      3: Unprintable := GetUnprintable.Right;
+      1:
+        Unprintable := GetUnprintable.Left;
+      2:
+        Unprintable := GetUnprintable.Top;
+      3:
+        Unprintable := GetUnprintable.Right;
     else
       Unprintable := GetUnprintable.Bottom;
     end;
@@ -4645,9 +4645,12 @@ begin
     NewMargin := ConvertMeasure(Unprintable, pmPixels, Measure, Horz);
 
     case I of
-      1: PageLayout.FMargins.Left := NewMargin;
-      2: PageLayout.FMargins.Top := NewMargin;
-      3: PageLayout.FMargins.Right := NewMargin;
+      1:
+        PageLayout.FMargins.Left := NewMargin;
+      2:
+        PageLayout.FMargins.Top := NewMargin;
+      3:
+        PageLayout.FMargins.Right := NewMargin;
     else
       PageLayout.FMargins.Bottom := NewMargin;
     end;
@@ -4670,8 +4673,7 @@ procedure TJvTFPrinter.NewPage;
 var
   aMetafile: TMetafile;
   aCanvas: TCanvas;
-  HeaderRect,
-    FooterRect: TRect;
+  HeaderRect, FooterRect: TRect;
 begin
   if Aborted then
     Exit;
@@ -4754,8 +4756,7 @@ end;
 function TJvTFPrinter.PrinterToScreen(Value: Integer;
   Horizontal: Boolean): Integer;
 var
-  ScreenPPI,
-    PrinterPPI: Integer;
+  ScreenPPI, PrinterPPI: Integer;
 begin
   ScreenPPI := Screen.PixelsPerInch;
   if Horizontal then
@@ -4779,8 +4780,7 @@ end;
 function TJvTFPrinter.ScreenToPrinter(Value: Integer;
   Horizontal: Boolean): Integer;
 var
-  ScreenPPI,
-    PrinterPPI: Integer;
+  ScreenPPI, PrinterPPI: Integer;
 begin
   ScreenPPI := Screen.PixelsPerInch;
   if Horizontal then
@@ -4915,9 +4915,12 @@ end;
 function TJvTFPrinterPageLayout.GetMargin(Index: Integer): Integer;
 begin
   case Index of
-    1: Result := FMargins.Left;
-    2: Result := FMargins.Top;
-    3: Result := FMargins.Right;
+    1:
+      Result := FMargins.Left;
+    2:
+      Result := FMargins.Top;
+    3:
+      Result := FMargins.Right;
   else
     Result := FMargins.Bottom;
   end;
@@ -4970,12 +4973,8 @@ end;
 
 procedure TJvTFPrinterPageLayout.SetMargin(Index, Value: Integer);
 var
-  Unprintable,
-    UserMarginPels,
-    CurrMargin,
-    NewMargin: Integer;
-  Horz,
-    Err: Boolean;
+  Unprintable, UserMarginPels, CurrMargin, NewMargin: Integer;
+  Horz, Err: Boolean;
 begin
   SetPropertyCheck;
 
@@ -4984,9 +4983,12 @@ begin
   begin
     Horz := (Index = 1) or (Index = 3);
     case Index of
-      1: Unprintable := Printer.GetUnprintable.Left;
-      2: Unprintable := Printer.GetUnprintable.Top;
-      3: Unprintable := Printer.GetUnprintable.Right;
+      1:
+        Unprintable := Printer.GetUnprintable.Left;
+      2:
+        Unprintable := Printer.GetUnprintable.Top;
+      3:
+        Unprintable := Printer.GetUnprintable.Right;
     else
       Unprintable := Printer.GetUnprintable.Bottom;
     end;
@@ -5010,18 +5012,24 @@ begin
 
     if not Err then
       case Index of
-        1: FMargins.Left := NewMargin;
-        2: FMargins.Top := NewMargin;
-        3: FMargins.Right := NewMargin;
+        1:
+          FMargins.Left := NewMargin;
+        2:
+          FMargins.Top := NewMargin;
+        3:
+          FMargins.Right := NewMargin;
       else
         FMargins.Bottom := NewMargin;
       end
     else
       //SetMargin(Index, NewMargin);
       case Index of
-        1: MarginLeft := NewMargin;
-        2: MarginTop := NewMargin;
-        3: MarginRight := NewMargin;
+        1:
+          MarginLeft := NewMargin;
+        2:
+          MarginTop := NewMargin;
+        3:
+          MarginRight := NewMargin;
       else
         MarginBottom := NewMargin;
       end;
@@ -5190,8 +5198,10 @@ end;
 function TJvTFDWNames.GetDWName(DWIndex: Integer): string;
 begin
   case Source of
-    dwnsSysLong: Result := SysUtils.LongDayNames[DWIndex];
-    dwnsSysShort: Result := SysUtils.ShortDayNames[DWIndex];
+    dwnsSysLong:
+      Result := SysUtils.LongDayNames[DWIndex];
+    dwnsSysShort:
+      Result := SysUtils.ShortDayNames[DWIndex];
   else // dwnsCustom
     Result := GetDWN(DWIndex);
   end;
@@ -5200,13 +5210,20 @@ end;
 procedure TJvTFDWNames.SetDWN(Index: Integer; const Value: string);
 begin
   case Index of
-    1: FDWN_Sunday := Value;
-    2: FDWN_Monday := Value;
-    3: FDWN_Tuesday := Value;
-    4: FDWN_Wednesday := Value;
-    5: FDWN_Thursday := Value;
-    6: FDWN_Friday := Value;
-    7: FDWN_Saturday := Value;
+    1:
+      FDWN_Sunday := Value;
+    2:
+      FDWN_Monday := Value;
+    3:
+      FDWN_Tuesday := Value;
+    4:
+      FDWN_Wednesday := Value;
+    5:
+      FDWN_Thursday := Value;
+    6:
+      FDWN_Friday := Value;
+    7:
+      FDWN_Saturday := Value;
   end;
 
   if Source = dwnsCustom then
