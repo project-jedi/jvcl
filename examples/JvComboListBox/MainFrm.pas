@@ -232,6 +232,7 @@ begin
   with LB do
     if ItemIndex >= 0 then
       Delete(ItemIndex);
+  Caption := Format('Clipboard count: %d', [LB.Items.Count]);
 end;
 
 procedure TfrmMain.cbDrawStyleChange(Sender: TObject);
