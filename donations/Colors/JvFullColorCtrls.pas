@@ -587,6 +587,8 @@ type
   end;
 
   TJvFullColorEdge = (feRaised, feLowered, feFlat);
+  TJvFormatHintEvent = procedure (Sender: TObject; HintColor: TJvFullColor;
+    var HintText: string) of object;
 
   TJvFullColorGroup = class(TCustomControl)
   private
@@ -600,17 +602,20 @@ type
     FSelectedIndex: Integer;
     FBrush: TBrush;
     FOnChange: TNotifyEvent;
+    FOnFormatHint: TJvFormatHintEvent;
     procedure SetItems(const Value: TJvFullColorList);
     procedure SetColCount(const Value: Integer);
+    function GetRowCount: Integer;
     procedure SetEdge(const Value: TJvFullColorEdge);
     procedure SetMouseEdge(const Value: TJvFullColorEdge);
     procedure SetSelectedEdge(const Value: TJvFullColorEdge);
     procedure SetSquareSize(const Value: Integer);
-    procedure MouseLeave(var Msg: TWMMouse); message WM_MOUSELEAVE;
     function GetSelected: TJvFullColor;
     procedure SetSelected(const Value: TJvFullColor);
     procedure SetSelectedIndex(const Value: Integer);
     procedure SetBrush(const Value: TBrush);
+    procedure MouseLeave(var Msg: TWMMouse); message WM_MOUSELEAVE;
+    procedure CMHintShow(var Message: TMessage); message CM_HINTSHOW;
   protected
     procedure Paint; override;
     procedure ItemsChange(Sender: TObject; Index: Integer;
@@ -627,6 +632,7 @@ type
     property MouseIndex: Integer read FMouseIndex;
     property SelectedIndex: Integer read FSelectedIndex write SetSelectedIndex;
     property Selected: TJvFullColor read GetSelected write SetSelected;
+    property RowCount: Integer read GetRowCount;
   published
     property Items: TJvFullColorList read FItems write SetItems;
     property ColCount: Integer read FColCount write SetColCount default 4;
@@ -636,6 +642,7 @@ type
     property SquareSize: Integer read FSquareSize write SetSquareSize default 6;
     property Brush: TBrush read FBrush write SetBrush;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnFormatHint: TJvFormatHintEvent read FOnFormatHint write FOnFormatHint;
     property Align;
     property Anchors;
     property BevelInner;
@@ -673,7 +680,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  Math, TypInfo, GraphUtil, Types;
+  Math, TypInfo, GraphUtil, Types, Forms;
 
 resourcestring
   Rs_EDuplicateTrackBar     = 'TrackBar already used by component "%s"';
@@ -3377,8 +3384,8 @@ end;
 procedure TJvFullColorList.EndUpdate;
 begin
   if FUpdateCount > 0 then
-    Dec(FUpdateCount)
-  else
+    Dec(FUpdateCount);
+  if FUpdateCount = 0 then
     Change(-1, foAllChanged);
 end;
 
@@ -3423,18 +3430,16 @@ procedure TJvFullColorGroup.CalcRects(out XPos, YPos, XInc, YInc: Integer);
 var
   XOffset: Integer;
   YOffset: Integer;
-  RowCount: Integer;
 begin
   XOffset := Width - (FSquareSize * ColCount) - 2;
   XInc := XOffset div ColCount;
   XPos := ((XOffset - (XInc * (ColCount - 1))) div 2) + 1;
 
-  RowCount := (Items.Count div ColCount) + 1;
   YOffset := Height - (FSquareSize * RowCount) - 2;
   if RowCount = 1 then
     YInc := 0
   else
-    YInc := YOffset div RowCount;
+    YInc := YOffset div (RowCount + 1);
   YPos := ((YOffset - (YInc * (RowCount - 1))) div 2) + 1;
 end;
 
@@ -3492,10 +3497,93 @@ begin
   Refresh;
 end;
 
+procedure TJvFullColorGroup.CMHintShow(var Message: TMessage);
+var
+  AHintInfo: PHintInfo;
+  Sum, XPos, YPos, XInc, YInc, Index: Integer;
+  ColorIndex: Integer;
+  AFullColor: TJvFullColor;
+  AColorID: TJvFullColorSpaceID;
+  AColorSpace: TJvColorSpace;
+begin
+  AHintInfo:=PHintInfo(Message.LParam);
+  ColorIndex := -1;
+
+  CalcRects(XPos,YPos,XInc,YInc);
+
+  Sum := YPos;
+  with AHintInfo^, CursorPos, CursorRect do
+    for Index := 0 to RowCount - 1 do
+  begin
+    if Y < Sum then
+    begin
+      Top := Max(0,Sum-YInc);
+      Bottom := Sum;
+      Break;
+    end
+    else if (Y >= Sum) and (Y < (Sum+FSquareSize)) then
+    begin
+      Top := Sum;
+      Bottom := Sum+FSquareSize;
+      ColorIndex := Index * ColCount;
+      Break;
+    end;
+    Inc(Sum, FSquareSize + YInc);
+  end;
+
+  Sum := XPos;
+  with AHintInfo^, CursorPos, CursorRect do
+    for Index := 0 to ColCount do
+           // not -1 because of last space after the colcount - 1 
+  begin
+    if X < Sum then
+    begin
+      Left := Max(0,Sum-XInc);
+      Right := Sum;
+      ColorIndex := -1;
+      Break;
+    end
+    else if (X >= Sum) and (X < (Sum+FSquareSize)) then
+    begin
+      Left := Sum;
+      Right := Sum+FSquareSize;
+      if (ColorIndex<>-1) then
+        ColorIndex := ColorIndex + Index;
+      Break;
+    end;
+    Inc(Sum, FSquareSize + XInc);
+  end;
+
+  if (ColorIndex >= Items.Count) then
+    ColorIndex := -1;
+
+  if (ColorIndex>-1) then
+    with ColorSpaceManager do
+  begin
+    AFullColor := Items.Items[ColorIndex];
+    AColorID := GetColorSpaceID(AFullColor);
+    AColorSpace := ColorSpace[AColorID];
+
+
+    AHintInfo.HintStr := Format('FullColor : %.8x, ColorSpace : %s (%d)'+sLineBreak+
+                                'Axis %s = %d'+sLineBreak+
+                                'Axis %s = %d'+sLineBreak+
+                                'Axis %s = %d',[AFullColor,AColorSpace.Name,AColorID,
+                                AColorSpace.AxisName[axIndex0],GetAxisValue(AFullColor,axIndex0),
+                                AColorSpace.AxisName[axIndex1],GetAxisValue(AFullColor,axIndex1),
+                                AColorSpace.AxisName[axIndex2],GetAxisValue(AFullColor,axIndex2)]);
+    if Assigned(FOnFormatHint) then
+      FOnFormatHint(Self,AFullColor,AHintInfo.HintStr);
+  end
+  else
+    AHintInfo.HintStr := Hint;
+
+  Message.Result:=0;
+end;
+
 procedure TJvFullColorGroup.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   Index: Integer;
-  RowCount: Integer;
   Sum: Integer;
   XPos, YPos, XInc, YInc: Integer;
   ColIndex, RowIndex: Integer;
@@ -3530,8 +3618,6 @@ begin
     FMouseIndex := -1;
     Exit;
   end;
-
-  RowCount := (Items.Count div ColCount) + 1;
 
   Sum := YPos;
   if Y < YPos then
@@ -3625,7 +3711,6 @@ var
 begin
   inherited Paint;
   CalcRects(XOffset, YOffset, XInc, YInc);
-  //BevelRect(Rect(0, 0, Width - 1, Height - 1), FEdge, bsClear, Color);
 
   Y := YOffset;
   X := XOffset;
@@ -3643,7 +3728,7 @@ begin
       Edge := feFlat;
 
     BevelRect(Rect(X, Y, X + FSquareSize, Y + FSquareSize), Edge, Brush.Style,
-      ColorSpaceManager.ConvertToID(Items[Index], csRGB));
+      ColorSpaceManager.ConvertToColor(Items[Index]));
     Inc(Index);
     if Index mod ColCount = 0 then
     begin
@@ -3660,7 +3745,7 @@ begin
     Brush.Color := Color;
     Pen.Color := Color;
     Y := YOffset;
-    for IndexY := 0 to Items.Count div ColCount + 1 do
+    for IndexY := 0 to RowCount do
     begin
       Rectangle(Max(ClipRect.Left, 1), Max(Y - YInc + 1, 1),
         Min(ClipRect.Right, Width - 2), Min(Y, Height - 2));
@@ -3707,9 +3792,15 @@ begin
   Refresh;
 end;
 
+function TJvFullColorGroup.GetRowCount: Integer;
+begin
+  Result := Max((Items.Count + ColCount - 1) div ColCount, 1);
+end;
+
 procedure TJvFullColorGroup.SetItems(const Value: TJvFullColorList);
 begin
   FItems.Assign(Value);
+  Invalidate;
 end;
 
 procedure TJvFullColorGroup.SetSquareSize(const Value: Integer);
