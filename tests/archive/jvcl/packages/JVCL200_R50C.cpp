@@ -124,7 +124,6 @@ USEUNIT("..\source\JvRegistry.pas");
 USEUNIT("..\source\JvRenameError.pas");
 USEUNIT("..\source\JvReversedLabel.pas");
 USEUNIT("..\source\JvRgbToHtml.pas");
-USEUNIT("..\source\JvRichEdit.pas");
 USEUNIT("..\source\JvRichEditToHtml.pas");
 USEUNIT("..\source\JvRle.pas");
 USEUNIT("..\source\JvScreenCanvas.pas");

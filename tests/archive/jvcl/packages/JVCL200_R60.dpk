@@ -183,7 +183,6 @@ contains
   JvRenameError in '..\source\JvRenameError.pas',
   JvReversedLabel in '..\source\JvReversedLabel.pas',
   JvRgbToHtml in '..\source\JvRgbToHtml.pas',
-  JvRichEdit in '..\source\JvRichEdit.pas',
   JvRichEditToHtml in '..\source\JvRichEditToHtml.pas',
   JvRle in '..\source\JvRle.pas',
   JvScreenCanvas in '..\source\JvScreenCanvas.pas',

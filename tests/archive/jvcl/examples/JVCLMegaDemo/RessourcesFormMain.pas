@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvLabel, JvHotLink, JvRichEd, ComCtrls, JvRichEdit;
+  Dialogs, StdCtrls, JvLabel, JvHotLink, JvRichEd, ComCtrls;
 
 type
   TRessourcesForm = class(TForm)

@@ -130,7 +130,7 @@ uses
 
   // Win32
   JvStatusBar, JvProgressBar,
-  JvTabControl, JvRichEdit,
+  JvTabControl, {JvRichEdit,}
   JvUpDown, JvHotKey, JvAnimate, JvDateTimePicker,
   JvMonthCalendar, JvListView, JvHeaderControl, JvToolBar,
   JvCoolBar, JvPageScroller,
@@ -294,7 +294,7 @@ begin
 
   // Jv Win32
   RegisterComponents(srJvWin32Palette,
-    [TJvTabControl, TJvPageControl, TJvRichEdit, TJvTrackBar,
+    [TJvTabControl, TJvPageControl, {TJvRichEdit, }TJvTrackBar,
      {$IFNDEF DelphiPersonalEdition}
      TJvProgressBar,
      {$ENDIF}

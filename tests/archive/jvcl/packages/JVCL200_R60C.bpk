@@ -53,7 +53,7 @@
       ..\lib6\JvRadioGroup.obj ..\lib6\JvRas32.obj ..\lib6\JvRealLabel.obj 
       ..\lib6\JvRecentMenuBtn.obj ..\lib6\JvRegistry.obj 
       ..\lib6\JvRenameError.obj ..\lib6\JvReversedLabel.obj 
-      ..\lib6\JvRgbToHtml.obj ..\lib6\JvRichEdit.obj 
+      ..\lib6\JvRgbToHtml.obj
       ..\lib6\JvRichEditToHtml.obj ..\lib6\JvRle.obj ..\lib6\JvScreenCanvas.obj 
       ..\lib6\JvScreenResolution.obj ..\lib6\JvScreenSaver.obj 
       ..\lib6\JvScrollBar.obj ..\lib6\JvScrollBox.obj 
@@ -351,7 +351,6 @@
       <FILE FILENAME="..\source\JvRenameError.pas" FORMNAME="" UNITNAME="JvRenameError" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvReversedLabel.pas" FORMNAME="" UNITNAME="JvReversedLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRgbToHtml.pas" FORMNAME="" UNITNAME="JvRgbToHtml" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvRichEdit.pas" FORMNAME="" UNITNAME="JvRichEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRichEditToHtml.pas" FORMNAME="" UNITNAME="JvRichEditToHtml" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRle.pas" FORMNAME="" UNITNAME="JvRle" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvScreenCanvas.pas" FORMNAME="" UNITNAME="JvScreenCanvas" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

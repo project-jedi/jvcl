@@ -447,7 +447,7 @@ begin
   RegisterComponents(srJvControlsPalette, [TJvTextListBox,
     TJvxCheckListBox, TJvxSplitter, TJvxSlider,
     TJvxLabel,
-    TJvxRichEdit,
+    TJvRichEdit,
     TJvxClock, TJvAnimatedImage, TJvxDrawGrid, TJvxSpeedButton,
     {$IFDEF USE_JV_GIF}
     TJvGIFAnimator,
@@ -461,7 +461,7 @@ begin
   {$ENDIF}
 
   RegisterNonActiveX([TJvCustomComboEdit, TJvCustomDateEdit, TJvCustomNumEdit,
-    TJvFileDirEdit, TJvxCustomListBox, TJvxRichEdit], axrComponentOnly);
+    TJvFileDirEdit, TJvxCustomListBox, TJvRichEdit], axrComponentOnly);
   RegisterNonActiveX([TScroller], axrComponentOnly);
 
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);

@@ -52,7 +52,7 @@
       ..\lib5\JvRadioGroup.obj ..\lib5\JvRas32.obj ..\lib5\JvRealLabel.obj 
       ..\lib5\JvRecentMenuBtn.obj ..\lib5\JvRegistry.obj 
       ..\lib5\JvRenameError.obj ..\lib5\JvReversedLabel.obj 
-      ..\lib5\JvRgbToHtml.obj ..\lib5\JvRichEdit.obj 
+      ..\lib5\JvRgbToHtml.obj
       ..\lib5\JvRichEditToHtml.obj ..\lib5\JvRle.obj ..\lib5\JvScreenCanvas.obj 
       ..\lib5\JvScreenResolution.obj ..\lib5\JvScreenSaver.obj 
       ..\lib5\JvScrollBar.obj ..\lib5\JvScrollBox.obj 

@@ -13,12 +13,16 @@ The Original Code is: JvRichEd.PAS, released on 2002-07-04.
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
+Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s):
   Polaris Software
+  Sébastien Buysse [sbuysse@buypin.com] (original code in JvRichEdit.pas)
+  Michael Beck [mbeck@bigfoot.com] (contributor to JvRichEdit.pas)
+  Roman Kovbasiouk [roko@users.sourceforge.net] (merging JvRichEdit.pas)
 
-Last Modified: 2002-07-04
+Last Modified: 2003-03-10
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -44,7 +48,7 @@ uses
   Ole2, OleAuto,
   {$ENDIF}
   CommCtrl, Messages, SysUtils, Classes, Controls, Forms, Graphics, StdCtrls,
-  Dialogs, RichEdit, Menus, ComCtrls;
+  Dialogs, RichEdit, Menus, ComCtrls, JVCLVer;
 
 type
   TRichEditVersion = 1..3;
@@ -339,6 +343,16 @@ type
     {$IFDEF COMPILER3_UP}
     FOnCloseFindDialog: TRichEditFindCloseEvent;
     {$ENDIF}
+    // From JvRichEdit.pas by Sébastien Buysse
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor, FSavedHintColor: TColor;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    FOnCtl3DChanged: TNotifyEvent;
+    FOnParentColorChanged: TNotifyEvent;
+    FOnHorizontalScroll: TNotifyEvent;
+    FOnVerticalScroll: TNotifyEvent;
+
     function GetAutoURLDetect: Boolean;
     function GetWordSelection: Boolean;
     function GetLangOptions: TRichLangOptions;
@@ -400,6 +414,13 @@ type
     {$IFDEF COMPILER5_UP}
     procedure WMRButtonUp(var Msg: TMessage); message WM_RBUTTONUP;
     {$ENDIF}
+    // From JvRichEdit.pas by Sébastien Buysse
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
+    procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWindowHandle(const Params: TCreateParams); override;
@@ -424,12 +445,14 @@ type
     procedure SetSelStart(Value: Integer); override;
     property AllowInPlace: Boolean read FAllowInPlace write FAllowInPlace default True;
     {$ENDIF}
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property AllowObjects: Boolean read FAllowObjects write SetAllowObjects default True;
     property AutoURLDetect: Boolean read GetAutoURLDetect write SetAutoURLDetect default True;
     property AutoVerbMenu: Boolean read FAutoVerbMenu write FAutoVerbMenu default True;
     property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
     property HideScrollBars: Boolean read FHideScrollBars
       write SetHideScrollBars default True;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Title: string read FTitle write SetTitle;
     property LangOptions: TRichLangOptions read GetLangOptions write SetLangOptions default [rlAutoFont];
     property Lines: TStrings read FRichEditStrings write SetRichEditStrings;
@@ -456,6 +479,13 @@ type
     property OnCloseFindDialog: TRichEditFindCloseEvent read FOnCloseFindDialog
       write FOnCloseFindDialog;
     {$ENDIF}
+    // From JvRichEdit.pas by Sébastien Buysse
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
+    property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -506,8 +536,9 @@ type
     property SelectionType: TRichSelectionType read GetSelectionType;
   end;
 
-  TJvxRichEdit = class(TJvCustomRichEdit)
+  TJvRichEdit = class(TJvCustomRichEdit)
   published
+    property AboutJVCL;
     property Align;
     property Alignment;
     property AutoURLDetect;
@@ -531,6 +562,7 @@ type
     property Font;
     property HideSelection;
     property HideScrollBars;
+    property HintColor;
     property Title;
     {$IFDEF COMPILER3_UP}
     property ImeMode;
@@ -599,6 +631,12 @@ type
     property OnCloseFindDialog;
     {$ENDIF}
     property OnURLClick;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnCtl3DChanged;
+    property OnParentColorChange;
+    property OnVerticalScroll;
+    property OnHorizontalScroll;
   end;
 
 var
@@ -3654,7 +3692,8 @@ var
   DC: HDC;
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle - [csSetCaption];
+  FHintColor := clInfoBk;
+  ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
   FSelAttributes := TJvTextAttributes.Create(Self, atSelected);
   FDefAttributes := TJvTextAttributes.Create(Self, atDefaultText);
   FWordAttributes := TJvTextAttributes.Create(Self, atWord);
@@ -4937,6 +4976,53 @@ begin
           { cannot allocate enough memory to maintain the undo state }
         end;
     end;
+end;
+
+// From JvRichEdit.pas by Sébastien Buysse
+procedure TJvCustomRichEdit.CMCtl3DChanged(var Msg: TMessage);
+begin
+  inherited;
+  if Assigned(FOnCtl3DChanged) then
+    FOnCtl3DChanged(Self);
+end;
+
+procedure TJvCustomRichEdit.CMParentColorChanged(var Msg: TMessage);
+begin
+  inherited;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+procedure TJvCustomRichEdit.WMHScroll(var Msg: TWMHScroll);
+begin
+  inherited;
+  if Assigned(FOnHorizontalScroll) then
+    FOnHorizontalScroll(Self);
+end;
+
+procedure TJvCustomRichEdit.WMVScroll(var Msg: TWMVScroll);
+begin
+  inherited;
+  if Assigned(FOnVerticalScroll) then
+    FOnVerticalScroll(Self);
+end;
+
+procedure TJvCustomRichEdit.MouseEnter(var Msg: TMessage);
+begin
+  FSavedHintColor := Application.HintColor;
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  Application.HintColor := FHintColor;
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvCustomRichEdit.MouseLeave(var Msg: TMessage);
+begin
+  Application.HintColor := FSavedHintColor;
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
 end;
 
 function TJvCustomRichEdit.SaveClipboard(NumObj, NumChars: Integer): Boolean;
