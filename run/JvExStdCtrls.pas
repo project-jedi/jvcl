@@ -595,14 +595,6 @@ type
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
-  {$IFDEF VisualCLX}
-  public
-    procedure Clear; override;
-    procedure CopyToClipboard; override;
-    procedure CutToClipboard; override;
-    procedure PasteFromClipboard; override;
-    procedure Undo; override;
-  {$ENDIF VisualCLX}
   end;
   
   TJvExEdit = class(TEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
@@ -703,14 +695,6 @@ type
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
-  {$IFDEF VisualCLX}
-  public
-    procedure Clear; override;
-    procedure CopyToClipboard; override;
-    procedure CutToClipboard; override;
-    procedure PasteFromClipboard; override;
-    procedure Undo; override;
-  {$ENDIF VisualCLX}
   end;
   
   TJvExCustomMemo = class(TCustomMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
@@ -811,14 +795,6 @@ type
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
-  {$IFDEF VisualCLX}
-  public
-    procedure Clear; override;
-    procedure CopyToClipboard; override;
-    procedure CutToClipboard; override;
-    procedure PasteFromClipboard; override;
-    procedure Undo; override;
-  {$ENDIF VisualCLX}
   end;
   
   TJvExMemo = class(TMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
@@ -919,14 +895,6 @@ type
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
-  {$IFDEF VisualCLX}
-  public
-    procedure Clear; override;
-    procedure CopyToClipboard; override;
-    procedure CutToClipboard; override;
-    procedure PasteFromClipboard; override;
-    procedure Undo; override;
-  {$ENDIF VisualCLX}
   end;
   
 {$IFDEF VCL}
@@ -3410,35 +3378,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvExCustomEdit.Clear;
-begin
-  if DoClearText then
-    inherited Clear;
-end;
-
-procedure TJvExCustomEdit.Undo;
-begin
-  if DoUndo then
-    inherited Undo;
-end;
-
-procedure TJvExCustomEdit.CopyToClipboard;
-begin
-  if DoClipboardCopy then
-    inherited CopyToClipboard;
-end;
-
-procedure TJvExCustomEdit.CutToClipboard;
-begin
-  if DoClipboardCut then
-    inherited CutToClipboard;
-end;
-
-procedure TJvExCustomEdit.PasteFromClipboard;
-begin
-  if DoClipboardPaste then
-    inherited PasteFromClipboard;
-end;
 
 procedure TJvExCustomEdit.EMGetRect(var Msg: TMessage);
 begin
@@ -3718,35 +3657,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvExEdit.Clear;
-begin
-  if DoClearText then
-    inherited Clear;
-end;
-
-procedure TJvExEdit.Undo;
-begin
-  if DoUndo then
-    inherited Undo;
-end;
-
-procedure TJvExEdit.CopyToClipboard;
-begin
-  if DoClipboardCopy then
-    inherited CopyToClipboard;
-end;
-
-procedure TJvExEdit.CutToClipboard;
-begin
-  if DoClipboardCut then
-    inherited CutToClipboard;
-end;
-
-procedure TJvExEdit.PasteFromClipboard;
-begin
-  if DoClipboardPaste then
-    inherited PasteFromClipboard;
-end;
 
 procedure TJvExEdit.EMGetRect(var Msg: TMessage);
 begin
@@ -4029,35 +3939,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvExCustomMemo.Clear;
-begin
-  if DoClearText then
-    inherited Clear;
-end;
-
-procedure TJvExCustomMemo.Undo;
-begin
-  if DoUndo then
-    inherited Undo;
-end;
-
-procedure TJvExCustomMemo.CopyToClipboard;
-begin
-  if DoClipboardCopy then
-    inherited CopyToClipboard;
-end;
-
-procedure TJvExCustomMemo.CutToClipboard;
-begin
-  if DoClipboardCut then
-    inherited CutToClipboard;
-end;
-
-procedure TJvExCustomMemo.PasteFromClipboard;
-begin
-  if DoClipboardPaste then
-    inherited PasteFromClipboard;
-end;
 
 procedure TJvExCustomMemo.EMGetRect(var Msg: TMessage);
 begin
@@ -4337,35 +4218,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvExMemo.Clear;
-begin
-  if DoClearText then
-    inherited Clear;
-end;
-
-procedure TJvExMemo.Undo;
-begin
-  if DoUndo then
-    inherited Undo;
-end;
-
-procedure TJvExMemo.CopyToClipboard;
-begin
-  if DoClipboardCopy then
-    inherited CopyToClipboard;
-end;
-
-procedure TJvExMemo.CutToClipboard;
-begin
-  if DoClipboardCut then
-    inherited CutToClipboard;
-end;
-
-procedure TJvExMemo.PasteFromClipboard;
-begin
-  if DoClipboardPaste then
-    inherited PasteFromClipboard;
-end;
 
 procedure TJvExMemo.EMGetRect(var Msg: TMessage);
 begin
