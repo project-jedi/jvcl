@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Generated
+##Status: Partial (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvListView.pas
 Summary
@@ -8,78 +8,35 @@ Summary
 Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
-@@EJvListViewError
-<TITLE EJvListViewError type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = EJVCLException; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvListItem
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvListItem.CreateEnh
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AOwner - Description for this parameter
-  Popup  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvListItem.PopupMenu
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@TJvListView
 <TITLEIMG TJvListView>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Lists
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Enhanced list view component.
 Description
-  Write here a description
+  Use TJvListView when you need a list view in your application and can benefit from the extended
+  capability of the JVCL implementation.
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.AutoClipboardCopy
 Summary
-  Write here a summary (1 line)
+  Indicates whether the current selected item is automatically copied to the clipboard when the user
+  copis.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set AutoClipboardCopy to true to have th eselected item automatically copied to the clipbaord when
+  the presses the default copy shortcut (Ctrl+C).
 ----------------------------------------------------------------------------------------------------
-@@TJvListView.ColClick
+@@TJvListView.AutoSelect
 Summary
-  Write here a summary (1 line)
+  Specifies whether the control automatically selects the first item in the list.
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Column - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set AutoSelect to true to have the list view automatically select the first item in the list
+  when the list gains focus and no item is previously is selected.
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.ColumnsOrder
 Summary
-  Write here a summary (1 line)
+  Specifies the column order as a string.
 Description
   Write here a description
 See Also
@@ -88,26 +45,17 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.HeaderImages
 Summary
-  Write here a summary (1 line)
+  Sets the images used for headers.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvListView.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx>.
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
-See Also
-  HotTrack
+  Assign an existing TImagelist to this property to specify the images to draw on the column headers. You
+  also need to set the ImageIndex of individual column headers to display the images.
+Note
+  Due to a limitation of the header control its height is fixed. Always use images that fit within 
+  the fixed height of the header.
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.InvertSelection
 Summary
-  Write here a summary (1 line)
+  Inverts the selection in the list view.
 Description
   Write here a description
 See Also
@@ -116,18 +64,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.ItemPopup
 Summary
-  Write here a summary (1 line)
+  Provides access to each nodes popup menu.
 Description
   Write here a description
-Parameters
-  Item - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.LoadFromCSV
 Summary
-  Write here a summary (1 line)
+  Loads the listview content from a CSV file.
 Description
   Write here a description
 Parameters
@@ -139,7 +85,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.LoadFromFile
 Summary
-  Write here a summary (1 line)
+  Loads the listview content from a file.
 Description
   Write here a description
 Parameters
@@ -150,7 +96,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.LoadFromStream
 Summary
-  Write here a summary (1 line)
+  Loads the listview content from a stream.
 Description
   Write here a description
 Parameters
@@ -159,9 +105,33 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvListView.MoveDown
+Summary
+  Moves an item in the list.
+Description
+  Use MoveDown to move a list item one step down in the list.
+Parameters
+  Index - The current index of the item to move.
+  Focus - Set to true if the moved item should be selected and focused.
+Return value
+  The (new) index of the item.
+See Also
+  MoveUp, SelectNextItem, SelectPtevItem
+----------------------------------------------------------------------------------------------------
+@@TJvListView.MoveUp
+Summary
+  Moves an item in the list.
+Description
+  Use MoveUp to move a list item one step up in the list.
+Parameters
+  Index - The current index of the item to move.
+  Focus - Set to true if the moved item should be selected and focused.
+See Also
+  MoveDown, SelectNextItem, SelectPtevItem
+----------------------------------------------------------------------------------------------------
 @@TJvListView.OnAutoSort
 Summary
-  Write here a summary (1 line)
+  Occurs when the list is sorted due to a header click.
 Description
   Write here a description
 See Also
@@ -170,7 +140,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.OnHorizontalScroll
 Summary
-  Write here a summary (1 line)
+  Occurs when the control is scrolled horizontally.
 Description
   Write here a description
 See Also
@@ -179,22 +149,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.OnLoadProgress
 Summary
-  Write here a summary (1 line)
+  Occurs when a load is in progress.
 Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvListView.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the control changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-----------------------------------------------------------------------------------------------------
 @@TJvListView.OnSaveProgress
 Summary
-  Write here a summary (1 line)
+  Occurs when a save is in progress.
 Description
   Write here a description
 See Also
@@ -203,7 +167,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.OnVerticalScroll
 Summary
-  Write here a summary (1 line)
+  Occurs when the control is scrolled vertically.
 Description
   Write here a description
 See Also
@@ -212,7 +176,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.SaveToCSV
 Summary
-  Write here a summary (1 line)
+    Saves the listview content to a CSV file.
 Description
   Write here a description
 Parameters
@@ -224,7 +188,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.SaveToFile
 Summary
-  Write here a summary (1 line)
+  Saves the listview content to a file.
 Description
   Write here a description
 Parameters
@@ -236,7 +200,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.SaveToStream
 Summary
-  Write here a summary (1 line)
+  Saves the listview content to a stream.
 Description
   Write here a description
 Parameters
@@ -246,43 +210,33 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvListView.SetBounds
+@@TJvListView.SelectNextItem
 Summary
-  Write here a summary (1 line)
+  Selects the next item in the list.
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  Call SelectNextItem to select the next item in the list view. If no item is selected, this method selects the first item.
 Parameters
-  ALeft   - Description for this parameter
-  ATop    - Description for this parameter
-  AWidth  - Description for this parameter
-  AHeight - Description for this parameter
+  Focus - Set to true to make the new item both selected (default) and focused.
+Return value
+  The index of the selected item.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SelectPrevItem, MoveUp, MoveDown
 ----------------------------------------------------------------------------------------------------
-@@TJvListView.SetSmallImages
+@@TJvListView.SelectPrevItem
 Summary
-  Write here a summary (1 line)
+  Selects the previous item in the list.
 Description
-  Write here a description
+  Call SelectPrevItem to select the previous item in the list view. If no item is selected, this method does nothing.
 Parameters
-  Value - Description for this parameter
+  Focus - Set to true to make the new item both selected (default) and focused.
+Return value
+  The index of the selected item.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvListView.SmallImages
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SelectPrevItem, MoveUp, MoveDown
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.SortMethod
 Summary
-  Write here a summary (1 line)
+  Specifies the sort method to use.
 Description
   Write here a description
 See Also
@@ -291,7 +245,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.SortOnClick
 Summary
-  Write here a summary (1 line)
+  Specifies whether clicking on a header column sorts the list.
 Description
   Write here a description
 See Also
@@ -300,7 +254,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.UnselectAll
 Summary
-  Write here a summary (1 line)
+  Removes the selection from selected items.
 Description
   Write here a description
 See Also
@@ -310,7 +264,7 @@ See Also
 @@TJvOnProgress
 <TITLE TJvOnProgress type>
 Summary
-  Write here a summary (1 line)
+  Event type used when saving and loading data in a list view.
 Description
   This type is used by (for reference):
     TJvListView.OnLoadProgress
