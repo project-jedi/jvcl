@@ -33,11 +33,9 @@ unit JvChartDemoFm;
 interface
 
 uses
-  SysUtils,  WinTypes,  WinProcs,
-  Messages,  Classes,   Graphics,
-  Controls,  Forms,     Dialogs,
-  ExtCtrls,  StdCtrls,  Buttons,
-  Spin,      JvChart, JvComponent, JvExControls;
+  Windows, SysUtils, Messages, Classes, Graphics, Controls,
+  Forms, Dialogs, ExtCtrls, StdCtrls, Buttons, Spin,
+  JvChart, JvComponent, JvExControls;
 
 type
   TJvChartDemoForm = class(TForm)
@@ -75,7 +73,6 @@ type
     procedure SpeedButton10Click(Sender: TObject);
     procedure SpeedButton11Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
     procedure SpeedButton12Click(Sender: TObject);
     procedure SpeedButton14Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -93,112 +90,115 @@ implementation
 
 procedure TJvChartDemoForm.ButtonNewValuesClick(Sender: TObject);
 var
-   I           : Integer;
-   nValueCount : Integer;
-   hgt,hg0: Double;
+  I: Integer;
+  nValueCount: Integer;
+  hgt, hg0: Double;
 begin
-   Randomize;
-   nValueCount := 20;
-   Chart.ResetGraphModule;
-   
-   for I := 0 to nValueCount-1 do
-   begin
-     if i >0 then begin
-      hgt := (Random( (I mod 5)*250)*5 +7500);
-      hg0 := Random( (I mod 3)*650 ) +1003;
-     end else begin
+  Randomize;
+  nValueCount := 20;
+  Chart.ResetGraphModule;
+
+  for I := 0 to nValueCount - 1 do
+  begin
+    if i > 0 then
+    begin
+      hgt := (Random((I mod 5) * 250) * 5 + 7500);
+      hg0 := Random((I mod 3) * 650) + 1003;
+    end
+    else
+    begin
       hgt := 7000; // first element must be fixed for debug 0/1 offset purposes
       hg0 := 1000;
+    end;
+    // Set Data.Value[Pen, Series] := dataValue ...
+    Chart.Data.Value[0, I] := hgt;
+    Chart.Data.Value[1, I] := hg0;
+    Chart.Data.Value[2, I] := hgt - hg0;
+    Chart.Options.XLegends.Add(FormatDateTime('yyyy-mm-dd', (now - 3.0) + (i / 16)));
+  end;
+  with Chart.Options do
+  begin
+    Title := 'Chart Title';
+    XAxisHeader := 'Date/Time';
+    YAxisHeader := 'Readings (ug/m3)';
+    PenCount := 3;
 
-     end;
-     // Set Data.Value[Pen, Series] := dataValue ...
-      Chart.Data.Value[0,I] := hgt;
-      Chart.Data.Value[1,I]  := hg0;
-      Chart.Data.Value[2,I] := hgt-hg0;
-      Chart.Options.XLegends.Add( FormatDateTime( 'yyyy-mm-dd', (now-3.0)+(i/16) ) );
-   end;
-   with Chart.Options do begin
-       Title := 'Chart Title';
-       XAxisHeader := 'Date/Time';
-       YAxisHeader := 'Readings (ug/m3)';
-       PenCount := 3;
+    PenLegends.Clear;
+    PenLegends.Add('HgT');
+    PenLegends.Add('Hg0');
+    PenLegends.Add('Hg2+');
 
-       PenLegends.Clear;
-       PenLegends.Add('HgT');
-       PenLegends.Add('Hg0');
-       PenLegends.Add('Hg2+');
+    PenUnit.Clear;
+    PenUnit.Add('ug/m3');
+    PenUnit.Add('ug/m3');
+    PenUnit.Add('ug/m3');
 
-       PenUnit.Clear;
-       PenUnit.Add('ug/m3');
-       PenUnit.Add('ug/m3');
-       PenUnit.Add('ug/m3');
-
-       ShowLegend := TRUE;
-       ChartKind := ckChartLine;
-   end;
-   Chart.AutoFormatGraph;
+    ShowLegend := TRUE;
+    ChartKind := ckChartLine;
+  end;
+  Chart.AutoFormatGraph;
    //Chart.ResizeChartCanvas;
 end;
 
 procedure TJvChartDemoForm.SpeedButton1Click(Sender: TObject);
 begin
-   Chart.GraphToClipboard;
+  Chart.GraphToClipboard;
 end;
 
 procedure TJvChartDemoForm.FormResize(Sender: TObject);
 begin
- if not Assigned(Chart) then exit;
-   Chart.ResizeChartCanvas;
+  if Assigned(Chart) then
+    Chart.ResizeChartCanvas;
 end;
 
 procedure TJvChartDemoForm.SpeedButton2Click(Sender: TObject);
 begin
-   Chart.PrintGraph;
+  Chart.PrintGraph;
 end;
 
 procedure TJvChartDemoForm.SpeedButton3Click(Sender: TObject);
 begin
-   Chart.Options.ChartKind := ckChartBar;
+  Chart.Options.ChartKind := ckChartBar;
    // ShowAsBar;
 end;
 
 procedure TJvChartDemoForm.SpeedButton4Click(Sender: TObject);
 begin
 {   Chart.ShowAsLine; this show it without marks}
-   Chart.Options.ChartKind := ckChartLineWithMarkers;
+  Chart.Options.ChartKind := ckChartLineWithMarkers;
 end;
 
 procedure TJvChartDemoForm.SpeedButton5Click(Sender: TObject);
 begin
-   Chart.Options.ChartKind := ckChartStackedBarAverage;
+  Chart.Options.ChartKind := ckChartStackedBarAverage;
 end;
 
 procedure TJvChartDemoForm.SpeedButton6Click(Sender: TObject);
 begin
-   Chart.Options.ChartKind := ckChartStackedBar;
+  Chart.Options.ChartKind := ckChartStackedBar;
 end;
 
 procedure TJvChartDemoForm.SpeedButton7Click(Sender: TObject);
 begin
-   Chart.PivotData; // TODO: CRASH.
+  Chart.PivotData; // TODO: CRASH.
 end;
 
 procedure TJvChartDemoForm.SpeedButton8Click(Sender: TObject);
 begin
-   //Chart.ShowAsBarWithAve;
-   Chart.Options.ChartKind := ckChartBarAverage;
+  //Chart.ShowAsBarWithAve;
+  Chart.Options.ChartKind := ckChartBarAverage;
 end;
 
 procedure TJvChartDemoForm.SpeedButton10Click(Sender: TObject);
 begin
-   // Chart.ShowAsPie;
-   Chart.Options.ChartKind := ckChartPieChart;
+  // Chart.ShowAsPie;
+  Chart.Options.ChartKind := ckChartPieChart;
 end;
 
 procedure TJvChartDemoForm.SpeedButton12Click(Sender: TObject);
 begin
-   //Chart.ShowAsMark;
-   Chart.Options.ChartKind := ckChartMarkers;
+  //Chart.ShowAsMark;
+  Chart.Options.ChartKind := ckChartMarkers;
 end;
 
 procedure TJvChartDemoForm.SpinEdit1Change(Sender: TObject);
@@ -211,57 +211,46 @@ procedure TJvChartDemoForm.Button2Click(Sender: TObject);
 begin
 //   Chart.SetYGap(15);
 //   Chart.SetYGapCount(15);
-   Chart.PlotGraph;
+  Chart.PlotGraph;
 end;
 
 procedure TJvChartDemoForm.SpeedButton11Click(Sender: TObject);
 begin
    {Get the current font for the Header text...}
-   FontDialog1.Font.Assign( Chart.Options.AxisFont );
+  FontDialog1.Font.Assign(Chart.Options.AxisFont);
 
-   if FontDialog1.Execute then
-   begin
-      {Set the font for the Header text...}
-      Chart.Options.AxisFont.Assign( FontDialog1.Font );
-
-   end;
-   Chart.PlotGraph;
-   Chart.Invalidate;
+  if FontDialog1.Execute then
+    {Set the font for the Header text...}
+    Chart.Options.AxisFont := FontDialog1.Font;
+  Chart.PlotGraph;
+  Chart.Invalidate;
 end;
 
 procedure TJvChartDemoForm.Button4Click(Sender: TObject);
 begin
 //   Chart.SetYMaxMin(10000,0);
- Chart.Options.YMax := 10000;
- Chart.Options.YMin := 10000;
- Chart.AutoFormatGraph;
+  Chart.Options.YMax := 10000;
+  Chart.Options.YMin := 10000;
+  Chart.AutoFormatGraph;
 //   Chart.PlotGraph;
-end;
-
-procedure TJvChartDemoForm.FormActivate(Sender: TObject);
-begin
-if not Assigned(Chart) then exit;
-   {This is needed for Win 3.X, as it does not send Resize message at startup}
-   Chart.ResizeChartCanvas;
 end;
 
 procedure TJvChartDemoForm.SpeedButton14Click(Sender: TObject);
 begin
-
   Chart.Options.ChartKind := ckChartDeltaAverage;
 end;
 
 procedure TJvChartDemoForm.FormCreate(Sender: TObject);
 begin
-if not Assigned(Chart) then exit;
-//   Chart.ShowAsLineWithMark;
-  ButtonNewValuesClick(Sender);
+  if Assigned(Chart) then
+    //   Chart.ShowAsLineWithMark;
+    ButtonNewValuesClick(Sender);
 end;
 
 procedure TJvChartDemoForm.SpeedButton13Click(Sender: TObject);
 begin
-
   Chart.Align := alClient;
 end;
 
 end.
+

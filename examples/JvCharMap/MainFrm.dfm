@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 313
-  Top = 122
+  Top = 123
   Width = 647
-  Height = 431
+  Height = 430
   ActiveControl = cbColor
   Caption = 'JvCharMap Demo'
   Color = clBtnFace
@@ -28,7 +28,7 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Top = 248
+    Top = 244
     Width = 639
     Height = 156
     Align = alBottom
@@ -105,6 +105,7 @@ object Form1: TForm1
       Height = 21
       TabOrder = 0
       Text = '0'
+      OnChange = edStartChange
     end
     object udStart: TUpDown
       Left = 65
@@ -117,7 +118,6 @@ object Form1: TForm1
       Position = 0
       TabOrder = 1
       Wrap = False
-      OnClick = udStartClick
     end
     object edEnd: TEdit
       Left = 96
@@ -126,6 +126,7 @@ object Form1: TForm1
       Height = 21
       TabOrder = 2
       Text = '0'
+      OnChange = edEndChange
     end
     object udEnd: TUpDown
       Left = 161
@@ -138,7 +139,6 @@ object Form1: TForm1
       Position = 0
       TabOrder = 3
       Wrap = False
-      OnClick = udEndClick
     end
     object edCols: TEdit
       Left = 192
@@ -147,6 +147,7 @@ object Form1: TForm1
       Height = 21
       TabOrder = 4
       Text = '1'
+      OnChange = edColsChange
     end
     object udColumns: TUpDown
       Left = 257
@@ -154,12 +155,11 @@ object Form1: TForm1
       Width = 15
       Height = 21
       Associate = edCols
-      Min = 1
+      Min = 0
       Max = 32767
       Position = 1
       TabOrder = 5
       Wrap = False
-      OnClick = udColumnsClick
     end
     object cbColor: TJvColorComboBox
       Left = 8
@@ -294,9 +294,9 @@ object Form1: TForm1
       Width = 73
       Height = 17
       Hint = 
-        'Shows and hides the drop shadow. Also, when checking/unchecking,' +
-        ' the shadow is offset randomly  from the zoom panel. Default off' +
-        'set value  is 2px.'
+        'Shows and hides the drop shadow.'#13#10'Also, when checking/unchecking' +
+        ', the shadow is offset randomly from the zoom panel.'#13#10' Default o' +
+        'ffset value is 2px.'
       Caption = 'Shado&w'
       TabOrder = 7
       OnClick = chkShadowClick

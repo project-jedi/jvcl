@@ -68,9 +68,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnFontClick(Sender: TObject);
     procedure chkZoomPanelClick(Sender: TObject);
-    procedure udStartClick(Sender: TObject; Button: TUDBtnType);
-    procedure udEndClick(Sender: TObject; Button: TUDBtnType);
-    procedure udColumnsClick(Sender: TObject; Button: TUDBtnType);
     procedure chkUnicodeClick(Sender: TObject);
     procedure Copy1Click(Sender: TObject);
     procedure btnSelectClick(Sender: TObject);
@@ -80,21 +77,25 @@ type
     procedure cbLocalesClick(Sender: TObject);
     procedure chkShadowClick(Sender: TObject);
     procedure chkDisplayAllClick(Sender: TObject);
+    procedure edColsChange(Sender: TObject);
+    procedure edEndChange(Sender: TObject);
+    procedure edStartChange(Sender: TObject);
   private
-{$IFDEF USETNT}
+    {$IFDEF USETNT}
     edCharacter: TTntEdit;
-{$ELSE}
+    {$ELSE}
     edCharacter: TEdit;
-{$ENDIF}
+    {$ENDIF}
     procedure FillFilter;
     procedure FillLocales;
     procedure DoJMSelectChar(Sender:TObject; AChar:WideChar);
     procedure DoJMResize(Sender:TObject);
     procedure DoJMValidateChar(Sender: TObject; AChar: WideChar; var
-    Valid: boolean);
+    Valid: Boolean);
     procedure DisplayInfo(AChar:WideChar);
   public
     JM: TJvCharMap;
+    Changing: Boolean;
   end;
 
 var
@@ -138,11 +139,11 @@ begin
   cbFont.OnChange := cbFontChange;
   chkShadow.Checked := JM.ShowShadow;
 
-{$IFDEF USETNT}
+  {$IFDEF USETNT}
   edCharacter := TTntEdit.Create(self);
-{$ELSE}
+  {$ELSE}
   edCharacter := TEdit.Create(self);
-{$ENDIF}
+  {$ENDIF}
   edCharacter.Parent := Panel1;
   edCharacter.Left := reInfo.Left;
   edCharacter.Top := btnSelect.Top + 4;
@@ -168,21 +169,6 @@ end;
 procedure TForm1.chkZoomPanelClick(Sender: TObject);
 begin
   JM.ShowZoomPanel := chkZoomPanel.Checked;
-end;
-
-procedure TForm1.udStartClick(Sender: TObject; Button: TUDBtnType);
-begin
-  JM.CharRange.StartChar := udStart.Position;
-end;
-
-procedure TForm1.udEndClick(Sender: TObject; Button: TUDBtnType);
-begin
-  JM.CharRange.EndChar := udEnd.Position;
-end;
-
-procedure TForm1.udColumnsClick(Sender: TObject; Button: TUDBtnType);
-begin
-  JM.Columns := udColumns.Position;
 end;
 
 function GetTypeString1(AChar: WideChar): WideString;
@@ -332,13 +318,13 @@ end;
 
 procedure TForm1.FillFilter;
 var
-  i: TJvCharMapUnicodeFilter;
+  I: TJvCharMapUnicodeFilter;
 begin
   cbFilter.Items.BeginUpdate;
   try
     cbFilter.Items.Clear;
-    for i := Low(TJvCharMapUnicodeFilter) to High(TJvCharMapUnicodeFilter) do
-      cbFilter.Items.Add(GetEnumName(typeinfo(TJvCharMapUnicodeFilter), Ord(i)));
+    for I := Low(TJvCharMapUnicodeFilter) to High(TJvCharMapUnicodeFilter) do
+      cbFilter.Items.Add(GetEnumName(TypeInfo(TJvCharMapUnicodeFilter), Ord(I)));
   finally
     cbFilter.Items.EndUpdate;
   end;
@@ -353,15 +339,16 @@ begin
 end;
 
 procedure TForm1.FillLocales;
-var i:integer;
+var
+  I: Integer;
 begin
   cbLocales.Items.BeginUpdate;
   try
     cbLocales.Items.Clear;
     cbLocales.Items.AddObject('System Default',TObject(LOCALE_SYSTEM_DEFAULT));
     cbLocales.Items.AddObject('User Default',TObject(LOCALE_USER_DEFAULT));
-    for i := 0 to Languages.Count - 1 do
-      cbLocales.Items.AddObject(Languages.Name[i], TObject(Languages.LocaleID[i]));
+    for I := 0 to Languages.Count - 1 do
+      cbLocales.Items.AddObject(Languages.Name[I], TObject(Languages.LocaleID[I]));
   finally
     cbLocales.Items.EndUpdate;
   end;
@@ -372,10 +359,8 @@ end;
 procedure TForm1.cbLocalesClick(Sender: TObject);
 begin
   with cbLocales do
-  begin
     if ItemIndex > -1 then
       JM.Locale := LCID(Items.Objects[ItemIndex]);
-  end;
 end;
 
 procedure TForm1.DoJMResize(Sender: TObject);
@@ -398,7 +383,7 @@ begin
 end;
 
 procedure TForm1.DoJMValidateChar(Sender: TObject; AChar: WideChar;
-  var Valid: boolean);
+  var Valid: Boolean);
 begin
   Valid := Valid or chkDisplayAll.Checked;
 end;
@@ -406,6 +391,54 @@ end;
 procedure TForm1.chkDisplayAllClick(Sender: TObject);
 begin
   JM.Invalidate;
+end;
+
+procedure TForm1.edColsChange(Sender: TObject);
+begin
+  if not Changing then
+  begin
+    Changing := True;
+    try
+      JM.Columns := StrToInt(edCols.Text);
+    except
+      JM.Columns := 16;
+      edCols.Text := '16';
+      udColumns.Position := 16;
+    end;
+    Changing := False;
+  end;
+end;
+
+procedure TForm1.edEndChange(Sender: TObject);
+begin
+  if not Changing then
+  begin
+    Changing := True;
+    try
+      JM.CharRange.EndChar := StrToInt(edEnd.Text);
+    except
+      JM.CharRange.EndChar := 255;
+      edEnd.Text := '255';
+      udEnd.Position := 255;
+    end;
+    Changing := False;
+  end;
+end;
+
+procedure TForm1.edStartChange(Sender: TObject);
+begin
+  if not Changing then
+  begin
+    Changing := True;
+    try
+      JM.CharRange.StartChar := StrToInt(edStart.Text);
+    except
+      JM.CharRange.StartChar := 0;
+      edStart.Text := '0';
+      udStart.Position := 0;
+    end;
+    Changing := False;
+  end;
 end;
 
 end.

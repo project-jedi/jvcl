@@ -12,7 +12,6 @@ object JvChartDemoForm: TJvChartDemoForm
   Font.Style = []
   OldCreateOrder = True
   Position = poScreenCenter
-  OnActivate = FormActivate
   OnCreate = FormCreate
   OnResize = FormResize
   PixelsPerInch = 96
