@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -496,12 +496,13 @@ type
     FXAxisPosition : Integer; // how far down (in Y dimension) is the X axis?
 
     FOnOptionsChangeEvent : TJvChartEvent; {NEW:Component fires this event for when options change.}
-    
+
     FCursorPosition :Integer; // NEW: -1 means no visible cursor, 0..n means make
                               // particular value highlighted.  The highlight is painted
                               // over top of the TImage, so that we can just restore the TImage
                               // without replotting the whole chart.
 
+    
 
     procedure PaintCursor; // called from Paint iif a Cursor is visible. does NOT modify FPicture!
 
@@ -1590,7 +1591,7 @@ begin
       YDivisionStr := FormatFloat('0.00', YDivision );
 
     Options.PrimaryYAxis.YLegends.Add( YDivisionStr );
-    OutputDebugSTring(PChar('YDivisionStr='+YDivisionStr));
+    
   end;
 
 end;
@@ -1627,7 +1628,7 @@ begin
         V := FData.Value[J, I];
 
         if IsNan(V) then begin
-             OutputDebugString('gap');
+
              continue;
         end;
         if nYMin > V then
@@ -1800,7 +1801,7 @@ begin
    if (Y2>Height) then begin
       // I suspect that the value of YPixelGap is too large in some cases.
       Options.PrimaryYAxis.Normalize;
-      OutputDebugString( PChar('Y2 is bogus. pyvc='+IntToStr(pyvc)) );
+      //OutputDebugString( PChar('Y2 is bogus. pyvc='+IntToStr(pyvc)) );
    end;
   MyRectangle(  X1, Y1, X2, Y2 );
 
@@ -2150,8 +2151,8 @@ var
             Assert(Y<Height);
             Assert(Y>0);
             Assert(X>0);
-            if (X>=Width) then
-                OutputDebugString('foo!');
+            //if (X>=Width) then
+            //    OutputDebugString('foo!');
             Assert(X<Width);
 
             X2 := BarXPosition(N+1)-3;
@@ -2281,7 +2282,9 @@ var
                   ChartCanvas.Pen.Style := Options.GetPenStyle(I);
                   if (i >0) then begin
                     for i2 := 0 to I-1 do begin
-                      Y1 := Round(GraphConstrainedLineY(i2,J));
+                      V := GraphConstrainedLineY(i2,J);
+                      if IsNan(V) then continue;
+                      Y1 := Round(V);
                       if (Y1 = Y) then begin
                           Dec(Y); // Prevent line-overlap. Show dotted line above other line.
                           if ChartCanvas.Pen.Style=psSolid then
@@ -2887,7 +2890,7 @@ end;
 
 procedure TJvChart.CalcYEnd;
 begin
- OutputDebugString(PChar('CalcYEnd Height='+IntToStr(Height) ) );
+// OutputDebugString(PChar('CalcYEnd Height='+IntToStr(Height) ) );
  if not Assigned(FBitmap) then
     Options.YEnd := 0
  else

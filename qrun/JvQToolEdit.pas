@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -816,7 +816,12 @@ uses
 const
   sUnitName = 'JvToolEdit';
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvToolEdit.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvToolEdit.res}
+{$ENDIF LINUX}
 
 type
   TWinControlHack = class(TWinControl);
@@ -3161,7 +3166,10 @@ end;
 
 function TJvFilenameEdit.GetFileName: TFileName;
 begin
-  Result := ClipFilename(inherited Text);
+  if AddQuotes then
+    Result := ClipFilename(inherited Text)
+  else
+    Result := inherited Text;
 end;
 
 function TJvFilenameEdit.GetFilter: string;

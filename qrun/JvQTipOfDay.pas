@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ interface
 
 uses
   Classes,
-
+  
   
   QGraphics, QControls, QForms, QStdCtrls,
   
@@ -85,9 +85,7 @@ type
     
     
     procedure FormHide(Sender : TObject);
-    procedure ButtonClick(Sender : TObject);
     
-
     procedure FontChanged(Sender: TObject);
     // function GetRegKey: string;
     function GetTips: TStrings;
@@ -128,7 +126,11 @@ type
     procedure UpdateTip;
     { Handles button clicks on the 'Next' button: }
     procedure HandleNextClick(Sender: TObject);
-
+    { Hooks/Unhooks the parent form, this is done if
+      toShowWhenFormShown is in Options }
+    procedure HookForm;
+    procedure UnHookForm;
+    
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -167,7 +169,15 @@ uses
   
   JvQButton, JvQResources;
 
+
+
 {$R ../Resources/JvTipOfDay.res}
+
+const
+  psInsideFrame: TPenStyle = psSolid;
+  
+
+
 
 type
   TControlAccess = class(TControl);
@@ -297,7 +307,6 @@ begin
     FRunning := False;
   end;
 
-
 end;
 
 
@@ -312,12 +321,7 @@ begin
     Release ;   // destroy it
     FRunning := False;
   end;
-end;
-
-procedure TJvTipOfDay.ButtonClick(Sender : TObject);
-begin
-  with sender as TControl do
-    FormHide(Parent)
+  inherited
 end;
 
 
@@ -347,51 +351,21 @@ begin
   UpdateTip;
 end;
 
-(*)
 procedure TJvTipOfDay.HookForm;
 begin
-  if Owner is TControl then
-    FForm := GetParentForm(TControl(Owner))
-  else
-    FForm := nil;
-  if not Assigned(FForm) then
-    Exit;
-
-  FDummyMsgSend := False;
-  JvWndProcHook.RegisterWndProcHook(FForm, HookProc, hoAfterMsg);
+  
 end;
 
-function TJvTipOfDay.HookProc(var Msg: TMessage): Boolean;
-begin
-  Result := False;
-  case Msg.Msg of
-    WM_ACTIVATEAPP:
-      begin
-        { Maybe the form is hooked by other components that are also
-          waiting for WM_ACTIVATEAPP; if we call AutoExecute now, those
-          components will not receive that message until the tip dialog
-          is closed; Thus we send a dummy message to the hooked window and
-          respond to that message }
-        PostMessage(FForm.Handle, WM_NULL, 0, 0);
-        FDummyMsgSend := True;
-      end;
-    // (rom) better use a private message value
-    WM_NULL:
-      if not FRunning and FDummyMsgSend then
-      begin
-        FDummyMsgSend := False;
-        AutoExecute;
-        UnHookForm;
-      end;
-  end;
-end;
-(*)
+
+
 procedure TJvTipOfDay.InitStandard(AForm: TForm);
 begin
   with AForm do
   begin
+    
+    
     BorderStyle := fbsDialog;
-    FormStyle := fsStayOnTop;
+    
     { Title }
     Caption := Self.Title;
     ClientHeight := 267;
@@ -479,7 +453,6 @@ begin
         SetBounds(252, 232, 75, 25);
         Assign(ButtonClose);
         ModalResult := mrOk;
-//        OnClick := ButtonClick;
       end
     else
       { ..so create a TJvButton unless Flat is set to True }
@@ -490,7 +463,6 @@ begin
         Cancel := True;
         Default := True;
         Assign(ButtonClose);
-        OnClick := ButtonClick;
         ModalResult := mrOk;
       end;
   end;
@@ -500,8 +472,10 @@ procedure TJvTipOfDay.InitVC(AForm: TForm);
 begin
   with AForm do
   begin
+    
+    
     BorderStyle := fbsDialog;
-    FormStyle := fsStayOnTop;
+    
 
     { Title }
     Caption := Self.Title;
@@ -516,7 +490,7 @@ begin
       SetBounds(8, 8, 384, 206);
       Brush.Color := Self.Color;
       Pen.Color := clGray;
-      Pen.Style := psDash;
+      Pen.Style := psInsideFrame;
     end;
     with TShape.Create(AForm) do
     begin
@@ -584,7 +558,6 @@ begin
         Parent := AForm;
         SetBounds(317, 225, 75, 25);
         Assign(ButtonClose);
-//        OnClick := ButtonClick;
         ModalResult := mrOk;
       end
     else
@@ -596,7 +569,6 @@ begin
         Cancel := True;
         Default := True;
         Assign(ButtonClose);
-        OnClick := ButtonClick;
         ModalResult := mrOk;
       end;
 
@@ -624,11 +596,10 @@ begin
   inherited Loaded;
   if csDesigning in ComponentState then
     Exit;
-(*)
+
   if toShowWhenFormShown in Options then
     HookForm
   else
-(*)
     // Call AutoExecute, which will call Execute.
     // Execute will determine (by calling CanShow) if the dialog actually
     // must be shown.
@@ -721,12 +692,12 @@ procedure TJvTipOfDay.SetTips(const Value: TStrings);
 begin
   FTips.Assign(Value);
 end;
-(*)
+
 procedure TJvTipOfDay.UnHookForm;
 begin
-  JvWndProcHook.UnRegisterWndProcHook(FForm, HookProc, hoAfterMsg);
+  
 end;
-(*)
+
 procedure TJvTipOfDay.UpdateFonts;
 var
   SavedDefaultFonts: Boolean;

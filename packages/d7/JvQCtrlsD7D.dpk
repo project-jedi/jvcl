@@ -24,18 +24,14 @@ package JvQCtrlsD7D;
 {$DESCRIPTION 'JVCLX Visual Controls'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
+{$DEFINE VisualCLX}
 
 requires
   JvQCoreD7D,
   JvQCtrlsD7R,
   designide,
-  vclactnband,
-  vclx,
-  vcl,
   rtl,
-  visualclx,
   JvQCoreD7R,
-  DJcl,
   JvQSystemD7R,
   JvQStdCtrlsD7R;
 
