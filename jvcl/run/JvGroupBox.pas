@@ -154,6 +154,8 @@ var
   Details: TThemedElementDetails;
   CaptionRect: TRect;
   {$ENDIF}
+  LastBkMode: Integer;
+  pText: {$IFDEF VCL}PChar;{$ELSE}WideString;{$ENDIF}
 begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
@@ -181,73 +183,70 @@ begin
   {$ENDIF JVCLThemesEnabled}
   with Canvas do
   begin
-    Font := Self.Font;
-    H := TextHeight('0');
-    R := Rect(0, H div 2 - 1, Width, Height);
-    {$IFDEF VCl}
-    if Ctl3D then
+    {$IFDEF VCL}
+    pText := PChar(Text);
     {$ELSE}
-    if True then
+    pText := Text;
+    Start;
     {$ENDIF VCL}
-    begin
-      Inc(R.Left);
-      Inc(R.Top);
-      Brush.Color := clBtnHighlight;
+    LastBkMode := GetBkMode(Handle);
+    try
+      Font := Self.Font;
+      H := TextHeight('0');
+      R := Rect(0, H div 2 - 1, Width, Height);
+      {$IFDEF VCl}
+      if Ctl3D then
+      {$ELSE}
+      if True then
+      {$ENDIF VCL}
+      begin
+        Inc(R.Left);
+        Inc(R.Top);
+        Brush.Color := clBtnHighlight;
+        {$IFDEF VCL}
+        FrameRect(R);
+        {$ELSE}
+        QWindows.FrameRect(Canvas, R);
+        {$ENDIF VCL}
+        OffsetRect(R, -1, -1);
+        Brush.Color := clBtnShadow;
+      end
+      else
+        Brush.Color := clWindowFrame;
       {$IFDEF VCL}
       FrameRect(R);
       {$ELSE}
       QWindows.FrameRect(Canvas, R);
       {$ENDIF VCL}
-      OffsetRect(R, -1, -1);
-      Brush.Color := clBtnShadow;
-    end
-    else
-      Brush.Color := clWindowFrame;
-    {$IFDEF VCL}
-    FrameRect(R);
-    {$ELSE}
-    QWindows.FrameRect(Canvas, R);
-    {$ENDIF VCL}
-    if Text <> '' then
-    begin
-      {$IFDEF VCL}
-      if not UseRightToLeftAlignment then
-        R := Rect(8, 0, 0, H)
-      else
-      {$ENDIF VCL}
-        R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
-      Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
-      // calculate text rect
-      {$IFDEF VCL}
-      DrawText(Handle, PChar(Text), Length(Text), R, Flags or DT_CALCRECT);
-      {$ELSE}
-      DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags or DT_CALCRECT);
-      {$ENDIF VCL}
-      Brush.Color := Color;
-      if not Enabled then
+      if Text <> '' then
       begin
-        OffsetRect(R, 1, 1);
-        Font.Color := clBtnHighlight;
-        {$IFDEF VCL}
-        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
-        {$ELSE}
-        DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
-        {$ENDIF VCL}
-        OffsetRect(R, -1, -1);
-        Font.Color := clBtnShadow;
-        SetBkMode(Handle, Windows.TRANSPARENT);
-        {$IFDEF VCL}
-        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
-        {$ELSE}
-        DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
-        {$ENDIF VCL}
-      end
-      else
-        {$IFDEF VCL}
-        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
-        {$ELSE}
-        DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
-        {$ENDIF VCL}
+        if not UseRightToLeftAlignment then
+          R := Rect(8, 0, 0, H)
+        else
+          R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
+        Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
+        // calculate text rect
+        SetBkMode(Handle, OPAQUE);
+        DrawText(Handle, pText, Length(Text), R, Flags or DT_CALCRECT);
+        Brush.Color := Color;
+        if not Enabled then
+        begin
+          OffsetRect(R, 1, 1);
+          Font.Color := clBtnHighlight;
+          DrawText(Handle, pText, Length(Text), R, Flags);
+          OffsetRect(R, -1, -1);
+          Font.Color := clBtnShadow;
+          SetBkMode(Handle, TRANSPARENT);
+          DrawText(Handle, pText, Length(Text), R, Flags);
+        end
+        else
+          DrawText(Handle, pText, Length(Text), R, Flags);
+      end;
+    finally
+      SetBkMode(Handle, LastBkMode);
+      {$IFDEF VisualCLX}
+      Stop;
+      {$ENDIF VisualCLX}
     end;
   end;
 end;
