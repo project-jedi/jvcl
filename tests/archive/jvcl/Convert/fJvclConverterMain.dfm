@@ -8,7 +8,7 @@ object frmMain: TfrmMain
   Font.Charset = ANSI_CHARSET
   Font.Color = clBlack
   Font.Height = -11
-  Font.Name = 'Arial'
+  Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = True
@@ -16,15 +16,15 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 13
   object JvPageControl: TPageControl
     Left = 0
     Top = 26
     Width = 463
-    Height = 314
-    ActivePage = tbsStrings
+    Height = 295
+    ActivePage = tbsFiles
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object tbsFiles: TTabSheet
       BorderWidth = 2
@@ -33,7 +33,7 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 451
-        Height = 281
+        Height = 263
         Align = alClient
         Columns = <
           item
@@ -52,7 +52,6 @@ object frmMain: TfrmMain
             Caption = 'Microseconds'
             Width = 100
           end>
-        FlatScrollBars = True
         MultiSelect = True
         ReadOnly = True
         RowSelect = True
@@ -72,7 +71,7 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 451
-        Height = 281
+        Height = 263
         Align = alClient
         KeyOptions = [keyEdit, keyAdd]
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goThumbTracking]
@@ -180,6 +179,24 @@ object frmMain: TfrmMain
       Action = AboutMe
     end
   end
+  object sbStatus: TStatusBar
+    Left = 0
+    Top = 321
+    Width = 463
+    Height = 19
+    Panels = <
+      item
+        Text = 'Ready'
+        Width = 150
+      end
+      item
+        Width = 150
+      end
+      item
+        Width = 50
+      end>
+    SimplePanel = False
+  end
   object OpenDialog: TOpenDialog
     DefaultExt = 'pas'
     Filter = 'All files (*.*)|*.*|Pascal sources|*.pas;*.dpr|Text files|*.txt'
@@ -283,10 +300,11 @@ object frmMain: TfrmMain
       Caption = 'E&xit'
       Hint = 'Exit|Quits the application'
       ImageIndex = 10
+      ShortCut = 32883
     end
     object FileOpen: TAction
       Category = 'File'
-      Caption = 'Add files to Convert'
+      Caption = 'Add files to Convert...'
       Hint = 'Add Individual Files to convert'
       ImageIndex = 5
       OnExecute = btnAddClick
@@ -297,6 +315,7 @@ object frmMain: TfrmMain
       Enabled = False
       Hint = 'Convert files'
       ImageIndex = 7
+      ShortCut = 120
       OnExecute = btnStartClick
       OnUpdate = ConvertUpdate
     end
@@ -305,6 +324,7 @@ object frmMain: TfrmMain
       Caption = 'Open Conversion Data'
       Hint = 'Open Conversion Repository'
       ImageIndex = 11
+      ShortCut = 16463
       OnExecute = OpenDataExecute
     end
     object AboutMe: TAction
@@ -337,6 +357,7 @@ object frmMain: TfrmMain
       Enabled = False
       Hint = 'Delete current Line'
       ImageIndex = 0
+      ShortCut = 16430
       OnExecute = btnDeleteClick
       OnUpdate = DeleteLineUpdate
     end
@@ -352,7 +373,7 @@ object frmMain: TfrmMain
     end
     object IterateSubdirectories: TAction
       Category = 'File'
-      Caption = 'Scan Subdirectories '
+      Caption = 'Scan Subdirectories...'
       Hint = 'Scan Subdirectories and add files'
       ImageIndex = 14
       OnExecute = IterateSubdirectoriesExecute
