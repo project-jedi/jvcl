@@ -3,6 +3,10 @@
 BCB = $(MAKEDIR)\..
 !endif
 
+!ifndef EXTRAUNITDIRS
+EXTRAUNITDIRS=.
+!endif
+
 DCCOPT = $(DCCOPT) -N1"$(HPPDIR)"
 
 # ---------------------------------------------------------------------------
@@ -168,7 +172,7 @@ BRCC32 = brcc32
 !endif
 
 !if $d(PATHPAS)
-.PATH.PAS = $(PATHPAS)
+.PATH.PAS = $(PATHPAS);$(EXTRAUNITDIRS)
 !endif
 
 !if $d(PATHASM)
