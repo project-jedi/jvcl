@@ -1,7 +1,3 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -33,22 +29,26 @@ unit JvQSystemReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
 procedure Register;
 
 implementation
 
 uses
   Classes,
-  
-  
+
+
   QControls,
-  
+
 
   DesignEditors, DesignIntf,
-  
+
   JvQDsgnConsts,
-  
-  {$IFDEF MSWINDOWS}
+
+  {$IFDEF USEWINDOWS}
   JvQMRUList, JvQMRUManager,
   JvQCommStatus, {JvComputerInfo,}
   {JvDeviceChanged, JvDirectories, JvSystemColors, JvKeyboardStates,} JvQJoystick,
@@ -56,7 +56,7 @@ uses
   JvQShellHook, JvQSHFileOperation, JvQSoundControl, JvQChangeNotify, JvQSearchFiles,
   JvQPerfMon95, JvQComputerInfoEx,
   JvQChangeNotifyEditor, JvQPerfStatEditor, JvQTimerList, JvQTimerListEditor,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   JvQThread, JvQThreadTimer, JvQTimer, JvQSimpleXml, JvQXMLDatabase,
   JvQFormPlacement, JvQAppXMLStorage, JvQFormPlacementSelectList,
   JvQMinMaxForm, JvQFormPropertiesForm, JvQDsgnEditors;
@@ -70,38 +70,40 @@ uses
 
 procedure Register;
 begin
-  
+  {$IFDEF MSWINDOWS}
   GroupDescendentsWith(TJvSimpleXML, TControl);
   GroupDescendentsWith(TJvTimer, TControl);
-  
+  GroupDescendentsWith(TJvAppInstances, TControl);
+  GroupDescendentsWith(TJvTimerList, TControl);
+  {$ENDIF MSWINDOWS}
 
   RegisterComponents(RsPalettePersistence, [TJvFormStorage, TJvFormStorageSelectList,
       TJvAppXMLFileStorage]);
   RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase]);
-  
-  {$IFDEF MSWINDOWS}
+
+  {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteSystem, [{TJvComputerInfo, // - do not register this component as default}
     TJvSHFileOperation, TJvChangeNotify, TJvAppInstances, TJvNTEventLog,
     TJvScreenSaver, TJvNTEventLog, TJvScreenSaver, TJvJoystick, TJvSoundControl,
     {TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
     TJvPerfStat95, TJvComputerInfoEx]);
   RegisterComponents(RsPaletteInternetWork, [TJvRas32, TJvCommStatus]);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [
-    {$IFDEF MSWINDOWS}
+    {$IFDEF USEWINDOWS}
     TJvSearchFiles, TJvMRUList, TJvMRUManager, TJvShellHook,
-    {$ENDIF MSWINDOWS}
+    {$ENDIF USEWINDOWS}
 
     TJvTimer, TJvThread, TJvThreadTimer
-    {$IFDEF WINDOWS}, TJvTimerList {$ENDIF}
+    {$IFDEF USEWINDOWS}, TJvTimerList {$ENDIF}
     ]);
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage,
     'StoredProps', TJvStoredPropsProperty);
-  
-  {$IFDEF MSWINDOWS}
+
+  {$IFDEF USEWINDOWS}
   RegisterPropertyEditor(TypeInfo(string), TJvChangeItem,
     'Directory', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvPerfStatItem,
@@ -110,7 +112,7 @@ begin
     'RootDirectory', TJvDirectoryProperty);
   RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
   RegisterComponentEditor(TJvTimerList, TJvTimerListDefaultEditor);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
 
   RegisterComponentEditor(TJvFormStorage, TJvFormStorageEditor);
 end;

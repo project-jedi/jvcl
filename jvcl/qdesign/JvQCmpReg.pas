@@ -39,9 +39,9 @@ procedure Register;
 implementation
 
 uses
-  Classes,  
-  QControls,  
-  DesignEditors, DesignIntf, 
+  Classes,
+  QControls,
+  DesignEditors, DesignIntf,
   JvQDsgnConsts,
   {$IFDEF USEWINDOWS}
   JvQCreateProcess, JvQWinHelp,
@@ -60,10 +60,12 @@ uses
 {$ENDIF LINUX}
 
 procedure Register;
-begin 
+begin
+  {$IFDEF MSWINDOWS}
   GroupDescendentsWith(TJvDataEmbedded, TControl);
-  GroupDescendentsWith(TJvStrHolder, TControl); 
-
+  GroupDescendentsWith(TJvStrHolder, TControl);
+  GroupDescendentsWith(TJvPageManager, TControl);
+  {$ENDIF MSWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvAlarms, TJvConverter,
     TJvDataEmbedded,
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
@@ -71,7 +73,7 @@ begin
     TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvCreateProcess, TJvWinHelp]);
-  {$ENDIF USEWINDOWS}
+  {$ENDIF USWINDOWS}
 
 
   {$IFDEF USEWINDOWS}
