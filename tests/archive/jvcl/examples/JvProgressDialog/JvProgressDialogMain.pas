@@ -9,7 +9,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GIFImage, ExtCtrls, JvProgressDialog, jpeg, ExtDlgs,
-  JvComponent;
+  JvComponent, JvBaseDlg;
 
 type
   TfrmProgressDialogDemo = class(TForm)
