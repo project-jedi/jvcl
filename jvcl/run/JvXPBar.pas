@@ -41,7 +41,7 @@ uses
   Windows, Messages, Controls, Graphics, Forms, ImgList, ActnList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QControls, QGraphics, QForms, QImgList, QActnList, QWindows,
+  Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList, QWindows,
   QTypes, JvTypes,
   {$ENDIF VisualCLX}
   JvXPCore, JvXPCoreUtils;
@@ -1166,6 +1166,11 @@ begin
   FShowLinkCursor := True;
   FShowRollButton := True;
   FVisibleItems := TJvXPBarVisibleItems.Create(Self);
+  {$IFDEF VisualCLX}
+  // asn: TODO: implement doublebuffering
+  //      For now prevent background drawing, to reduce flickering
+  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
+  {$ENDIF VisualCLX}
 end;
 
 destructor TJvXPCustomWinXPBar.Destroy;
@@ -1640,7 +1645,11 @@ begin
     Rect := GetClientRect;
 
     { fill non-client area }
-
+    {$IFDEF VisualCLX}
+    Brush.Color := TJvXPWinControl(parent).Color;
+    with Rect do
+      FillRect(Bounds(Left, Top, Right-Left, 5));
+    {$ENDIF VisualCLX}
     Inc(Rect.Top, 5 + FHeaderHeight);
     Brush.Color := FColors.BodyColor; //$00F7DFD6;
     FillRect(Rect);
@@ -1653,8 +1662,9 @@ begin
     Draw(0, Rect.Top, FGradient);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
-      32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
+    if not Rolling then
+      FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
+        32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
     {$ENDIF VisualCLX}
 
     { draw frame... }
@@ -1748,8 +1758,9 @@ begin
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     SetPenColor(Handle, Font.Color);
-    DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
-      DT_END_ELLIPSIS or DT_NOPREFIX);
+    if not Rolling then   // reduces flickering 
+      DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
+        DT_END_ELLIPSIS or DT_NOPREFIX);
     {$ENDIF VisualCLX}
     { draw visible items }
     Brush.Color := FColors.BodyColor;
