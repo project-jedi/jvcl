@@ -32,9 +32,6 @@ interface
 uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Forms, Controls, StdCtrls,
-  {$IFDEF VisualCLX}
-  QTypes,
-  {$ENDIF VisualCLX}
   JvComponent, JvMarkupCommon;
 
 type
@@ -449,12 +446,7 @@ begin
   ieol := 0; // Not needed but removed Warning
   R := Rect(0, 0, FBmp.Width, FBmp.Height);
   FBmp.Canvas.Brush.Color := BackColor;
-  {$IFDEF VisualCLX}
-  FBmp.Canvas.Brush.Style := bsSolid;
-  {$ENDIF VisualCLX}
   FBmp.Canvas.FillRect(R);
-  FBmp.TransparentColor := BackColor;
-  FBmp.Transparent := True;
   C := FElementStack.Count;
   if C = 0 then
     Exit;
@@ -532,6 +524,9 @@ begin
     else
       isol := ieol + 1;
   until (ieol >= C - 1) and (el.EolText = '');
+  // clxfix: set transparency after bitmap has be drawn
+  FBmp.TransparentColor := BackColor;
+  FBmp.Transparent := True;
   PageBottom := Y;
 end;
 
