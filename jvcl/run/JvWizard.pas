@@ -334,7 +334,8 @@ interface
 {$I JVCL.INC}
 
 uses Windows, {$IFDEF COMPILER6_UP}Types, {$ENDIF}Classes, Messages, SysUtils,
-  Controls, Forms, Graphics, Buttons, ImgList, JvWizardCommon{$IFDEF USEJVCL}, JvComponent{$ENDIF};
+  Controls, Forms, Graphics, Buttons, ImgList, JvWizardCommon
+  {$IFDEF USEJVCL}, JvComponent{$ENDIF};
 
 type
   TJvWizardAboutInfoForm = (JvWizardAbout); // Added by <Steve Forbes>
@@ -762,9 +763,9 @@ type
 
   { YW - JvWizard Control }
 {$IFDEF USEJVCL}
-  TJvWizard = class(TCustomControl)
-{$ELSE}
   TJvWizard = class(TJvCustomControl)
+{$ELSE}
+  TJvWizard = class(TCustomControl)
 {$ENDIF}
   private
     FPages: TJvWizardPageList;

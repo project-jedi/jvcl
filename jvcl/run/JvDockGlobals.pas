@@ -34,16 +34,17 @@ uses Messages, JvDockControlForm, JvDockInfo, JvDockSupportControl;
 
 resourcestring
   RsDockProductName = 'Jv Docking';
+  RsNewPage = 'New Page';
+  RsNextPage = 'Next Page';
+  RsPrevPage = 'Previous Page';
+  RsDelPage = 'Delete Page';
+
   {$IFNDEF USEJVCL}
   RsDockServerName = 'JVCL Dock Server Component';
   RsDockClientName = 'JVCL Dock Client Component';
   RsDockStyleName = 'JVCL Dock Style Component';
 
-  RsNewPage = 'New Page';
-  RsNextPage = 'Next Page';
-  RsPrevPage = 'Previous Page';
-  RsDelPage = 'Delete Page';
-  
+
   RsDockManagerVersion = '1.0.0.0';
   RsDockStyleVersion   = '1.0.0.0';
 
