@@ -12,8 +12,8 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 PROJECTS = Jv3rdC5R.bpl                                    \
            JvCoreC5R.bpl JvCoreC5D.bpl                     \
            JvSystemC5R.bpl JvSystemC5D.bpl                 \
-           JvCtrlsC5R.bpl JvCtrlsC5D.bpl                   \
            JvStdCtrlsC5R.bpl JvStdCtrlsC5D.bpl             \
+           JvCtrlsC5R.bpl JvCtrlsC5D.bpl                   \
            JvCmpC5R.bpl JvCmpC5D.bpl                       \
            JvCustomC5R.bpl JvCustomC5D.bpl                 \
            JvDlgsC5R.bpl JvDlgsC5D.bpl                     \

@@ -11,8 +11,8 @@ DCC =dcc $<
 PROJECTS = bplJvQ3rdK3R.so                               \
   bplJvQCoreK3R.so bplJvQCoreK3D.so                      \
   bplJvQSystemK3R.so bplJvQSystemK3D.so                  \
-  bplJvQCtrlsK3R.so bplJvQCtrlsK3D.so                    \
   bplJvQStdCtrlsK3R.so bplJvQStdCtrlsK3D.so              \
+  bplJvQCtrlsK3R.so bplJvQCtrlsK3D.so                    \
   bplJvQCmpK3R.so bplJvQCmpK3D.so                        \
   bplJvQCustomK3R.so bplJvQCustomK3D.so                  \
   bplJvQDlgsK3R.so bplJvQDlgsK3D.so                      \
