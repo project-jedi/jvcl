@@ -31,34 +31,38 @@ unit JvDragDrop;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, ShellApi,
-  JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Controls, ShellAPI, JvComponent;
 
 type
+  TJvDropEvent = procedure(Sender: TObject; Pos: TPoint; Value: TStrings) of object;
+
   TJvDragDrop = class(TJvComponent)
   private
     FAcceptDrag: Boolean;
-    { (rb) Don't remember FHandle, it may be changed, for instance by
-      setting FormStyle }
-    //FHandle: THandle;
-    FFiles: TStringList;
-    FOnDrop: TDropEvent;
+    FStreamedAcceptDrag: Boolean;
+    FFiles: TStrings;
+    FOnDrop: TJvDropEvent;
     FIsHooked: Boolean;
+    FTargetStrings: TStrings;
+    FDropTarget: TWinControl;
     procedure DropFiles(Handle: HDROP);
     procedure SetAcceptDrag(Value: Boolean);
+    procedure SetDropTarget(const Value: TWinControl);
     function WndProc(var Msg: TMessage): Boolean;
   protected
     procedure HookControl;
     procedure UnHookControl;
     procedure Loaded; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    { (rb) Should be changed to TStrings }
-    property Files: TStringList read FFiles;
+    property Files: TStrings read FFiles;
+    property TargetStrings: TStrings read FTargetStrings write FTargetStrings;
   published
     property AcceptDrag: Boolean read FAcceptDrag write SetAcceptDrag default True;
-    property OnDrop: TDropEvent read FOnDrop write FOnDrop;
+    property DropTarget: TWinControl read FDropTarget write SetDropTarget;
+    property OnDrop: TJvDropEvent read FOnDrop write FOnDrop;
   end;
 
 implementation
@@ -66,103 +70,168 @@ implementation
 uses
   JvWndProcHook;
 
+{ TJvDragDrop }
+
 constructor TJvDragDrop.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FAcceptDrag := True;
+  FAcceptDrag := False;
+  FStreamedAcceptDrag := True;
   FFiles := TStringList.Create;
   FIsHooked := False;
+  if (Owner is TWinControl) and (csDesigning in ComponentState) then
+    FDropTarget := TWinControl(Owner);
 end;
 
 destructor TJvDragDrop.Destroy;
 begin
-  FFiles.Free;
-  { (rb) Actually Owner now = nil, thus the unhooking is already done, in the
-    function TJvWndProcHook.Notification }
   UnHookControl;
+  FFiles.Free;
   inherited Destroy;
-end;
-
-procedure TJvDragDrop.SetAcceptDrag(Value: Boolean);
-begin
-  FAcceptDrag := Value;
-  if [csDesigning, csLoading] * ComponentState <> [] then
-    Exit;
-
-  if Owner is TWinControl then
-  begin
-    DragAcceptFiles(TWinControl(Owner).Handle, FAcceptDrag);
-    if FAcceptDrag then
-      HookControl
-    else
-      UnHookControl;
-  end;
-end;
-
-function TJvDragDrop.WndProc(var Msg: TMessage): boolean;
-begin
-  Result := Msg.Msg = WM_DROPFILES;
-  if Result then
-    DropFiles(HDrop(Msg.wParam))
 end;
 
 procedure TJvDragDrop.DropFiles(Handle: HDROP);
 var
-  pszFileWithPath, pszFile: PChar;
-  iFile, iStrLen, iTempLen: Integer;
+  Buffer: PChar;
+  I, BufferLength, NeededLength: Integer;
   MousePt: TPoint;
   Count: Integer;
 begin
   FFiles.Clear;
-  iStrLen := 128;
-  pszFileWithPath := StrAlloc(iStrLen);
-  pszFile := StrAlloc(iStrLen);
-  Count := DragQueryFile(Handle, $FFFFFFFF, pszFile, iStrLen);
-  iFile := 0;
-  while iFile < Count do
-  begin
-    iTempLen := DragQueryFile(Handle, iFile, nil, 0) + 1;
-    if iTempLen > iStrLen then
+
+  BufferLength := MAX_PATH;
+
+  { Note: Do not use fixed stack buffers of size MAX_PATH,
+          to prevent buffer overrun attacks, be paranoid <g> }
+  GetMem(Buffer, BufferLength);
+  try
+    { Return value is a count of the dropped files }
+    Count := DragQueryFile(Handle, $FFFFFFFF, nil, 0);
+
+    for I := 0 to Count-1 do
     begin
-      iStrLen := iTempLen;
-      StrDispose(pszFileWithPath);
-      pszFileWithPath := StrAlloc(iStrLen);
+      { Return value is the required size, in characters, of the buffer,
+        *not* including the terminating null character (hence the + 1) }
+      NeededLength := DragQueryFile(Handle, I, nil, 0) + 1;
+      if NeededLength > BufferLength then
+      begin
+        BufferLength := NeededLength;
+        ReallocMem(Buffer, BufferLength);
+      end;
+      DragQueryFile(Handle, I, Buffer, BufferLength);
+      FFiles.Add(Buffer);
     end;
-    DragQueryFile(Handle, iFile, pszFileWithPath, iStrLen);
-    FFiles.Add(StrPas(pszFileWithPath));
-    Inc(iFile);
+  finally
+    FreeMem(Buffer);
   end;
-  StrDispose(pszFileWithPath);
+
+  if Assigned(FTargetStrings) then
+    FTargetStrings.Assign(FFiles);
+
   if Assigned(FOnDrop) then
   begin
     DragQueryPoint(Handle, MousePt);
     FOnDrop(Self, MousePt, FFiles);
   end;
+
   DragFinish(Handle);
+end;
+
+procedure TJvDragDrop.HookControl;
+begin
+  if FIsHooked then
+    Exit;
+
+  { Paranoia checks }
+  if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
+    FIsHooked := RegisterWndProcHook(FDropTarget, WndProc, hoBeforeMsg);
 end;
 
 procedure TJvDragDrop.Loaded;
 begin
   inherited Loaded;
-  SetAcceptDrag(FAcceptDrag);
+  SetAcceptDrag(FStreamedAcceptDrag);
 end;
 
-procedure TJvDragDrop.HookControl;
+procedure TJvDragDrop.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
-  if FIsHooked then Exit;
+  inherited Notification(AComponent, Operation);
 
-  if (Owner is TWinControl) and not (csDesigning in ComponentState) then
-    FIsHooked := RegisterWndProcHook(TWinControl(Owner), WndProc, hoBeforeMsg);
+  if (AComponent = FDropTarget) and (Operation = opRemove) then
+    DropTarget := nil;
+end;
+
+procedure TJvDragDrop.SetAcceptDrag(Value: Boolean);
+begin
+  if csLoading in ComponentState then
+    { When loading, delay changing to active until all properties are loaded }
+    FStreamedAcceptDrag := Value
+  else
+    if Value <> FAcceptDrag then
+  begin
+    FAcceptDrag := Value;
+
+    if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
+    begin
+      { If the component is being destroyed, we don't want to call it's Handle
+        property, which will implicitly re-create it's already destroyed handle }
+      if not (csDestroying in FDropTarget.ComponentState) then
+        DragAcceptFiles(FDropTarget.Handle, FAcceptDrag);
+
+      if FAcceptDrag then
+        HookControl
+      else
+        UnHookControl;
+    end;
+  end;
+end;
+
+procedure TJvDragDrop.SetDropTarget(const Value: TWinControl);
+var
+  WasActive: Boolean;
+begin
+  if csLoading in ComponentState then
+    FDropTarget := Value
+  else
+    if Value <> FDropTarget then
+  begin
+    WasActive := AcceptDrag;
+
+    { This will implicitly unhook the current DropTarget }
+    AcceptDrag := False;
+
+    if Assigned(FDropTarget) then
+      FDropTarget.RemoveFreeNotification(Self);
+
+    FDropTarget := Value;
+
+    if Assigned(FDropTarget) then
+      FDropTarget.FreeNotification(Self);
+
+    if WasActive then
+      { And hook again.. }
+      AcceptDrag := True;
+  end;
 end;
 
 procedure TJvDragDrop.UnHookControl;
 begin
-  if not FIsHooked then Exit;
+  if not FIsHooked then
+    Exit;
 
   FIsHooked := False;
 
-  if (Owner is TWinControl) and not (csDesigning in ComponentState) then
-    UnRegisterWndProcHook(TWinControl(Owner), WndProc, hoBeforeMsg);
+  { Paranoia checks }
+  if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
+    UnRegisterWndProcHook(FDropTarget, WndProc, hoBeforeMsg);
+end;
+
+function TJvDragDrop.WndProc(var Msg: TMessage): Boolean;
+begin
+  Result := Msg.Msg = WM_DROPFILES;
+  if Result then
+    DropFiles(HDROP(Msg.WParam))
 end;
 
 end.
