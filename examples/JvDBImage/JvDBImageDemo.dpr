@@ -2,12 +2,12 @@ program JvDBImageDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  JvDBImageDemoMainForm in 'JvDBImageDemoMainForm.pas' {JvDBImageDemoMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvDBImageDemoMainFrm, JvDBImageDemoMainFrm);
   Application.Run;
 end.

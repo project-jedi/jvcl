@@ -2,14 +2,14 @@ program JvDotNetDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {MainForm};
+  JvDotNetDemoMainForm in 'JvDotNetDemoMainForm.pas' {JvDotNetDemoMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.Title := 'JVCL DotNet Controls Demo';
-  Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TJvDotNetDemoMainFrm, JvDotNetDemoMainFrm);
   Application.Run;
 end.
 

@@ -5,8 +5,7 @@ uses
   JvExceptionForm,
   GifMain in 'GIFMAIN.PAS' {AnimatorForm},
   GifPrvw in 'GIFPRVW.PAS' {PreviewForm},
-  GIFPal in 'GIFPal.pas' {PaletteForm},
-  About in 'About.pas';
+  GIFPal in 'GIFPal.pas' {PaletteForm};
 
 {$R *.RES}
 

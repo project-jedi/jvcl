@@ -2,12 +2,12 @@ program JvNavPaneDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  JvNavPaneDemoMainForm in 'JvNavPaneDemoMainForm.pas' {JvNavPaneDemoMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvNavPaneDemoMainFrm, JvNavPaneDemoMainFrm);
   Application.Run;
 end.

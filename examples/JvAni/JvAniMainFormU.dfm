@@ -3,6 +3,7 @@ object JvAniMainForm: TJvAniMainForm
   Top = 308
   Width = 496
   Height = 350
+  ActiveControl = DriveComboBox1
   Caption = 'ANI Viewer'
   Color = clBtnFace
   Constraints.MinHeight = 350
@@ -15,6 +16,10 @@ object JvAniMainForm: TJvAniMainForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnActivate = FormActivate
+  OnCreate = FormCreate
+  DesignSize = (
+    488
+    323)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -63,7 +68,6 @@ object JvAniMainForm: TJvAniMainForm
     Height = 22
     DriveTypes = [dtFixed, dtRemote, dtCDROM]
     Offset = 4
-    ImageSize = isSmall
     ItemHeight = 16
     TabOrder = 2
   end

@@ -34,24 +34,21 @@ uses
   JvFullColorDialogs;
 
 type
-  TMainForm = class(TForm)
+  TJvFullColorDialogMainFrm = class(TForm)
     JvFullColorLabel: TJvFullColorLabel;
     LabelInfo: TLabel;
     JvFullColorDialog: TJvFullColorDialog;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure JvFullColorLabelDblClick(Sender: TObject);
-    procedure JvFullColorDialogApply(Sender: TObject;
-      AFullColor: TJvFullColor);
-  private
-    { Déclarations privées }
+    procedure JvFullColorDialogApply(Sender: TObject; AFullColor: TJvFullColor);
   public
     procedure UpdateCaption (ALabel: TJvFullColorLabel);
     procedure UpdateAllCaptions;
   end;
 
 var
-  MainForm: TMainForm;
+  JvFullColorDialogMainFrm: TJvFullColorDialogMainFrm;
 
 implementation
 
@@ -60,12 +57,12 @@ implementation
 uses
   Math;
 
-procedure TMainForm.Button1Click(Sender: TObject);
+procedure TJvFullColorDialogMainFrm.Button1Click(Sender: TObject);
 begin
   JvFullColorLabel.Caption := 'test';
 end;
 
-procedure TMainForm.FormCreate(Sender: TObject);
+procedure TJvFullColorDialogMainFrm.FormCreate(Sender: TObject);
 var
   Index: Integer;
   LDEFColorSpace: TJvDEFColorSpace;
@@ -110,7 +107,7 @@ begin
   UpdateAllCaptions;
 end;
 
-procedure TMainForm.UpdateAllCaptions;
+procedure TJvFullColorDialogMainFrm.UpdateAllCaptions;
 var
   Index: Integer;
 begin
@@ -119,7 +116,7 @@ begin
        UpdateCaption(TJvFullColorLabel(Controls[Index]));
 end;
 
-procedure TMainForm.UpdateCaption(ALabel: TJvFullColorLabel);
+procedure TJvFullColorDialogMainFrm.UpdateCaption(ALabel: TJvFullColorLabel);
 var
   Index: Cardinal;
   LColor: TColor;
@@ -147,7 +144,7 @@ begin
                 AxisName[axIndex2],GetAxisValue(ALabel.LabelColor,axIndex2)]);
 end;
 
-procedure TMainForm.JvFullColorLabelDblClick(Sender: TObject);
+procedure TJvFullColorDialogMainFrm.JvFullColorLabelDblClick(Sender: TObject);
 begin
   with TJvFullColorLabel(Sender) do
   begin
@@ -161,7 +158,7 @@ begin
   end;
 end;
 
-procedure TMainForm.JvFullColorDialogApply(Sender: TObject;
+procedure TJvFullColorDialogMainFrm.JvFullColorDialogApply(Sender: TObject;
   AFullColor: TJvFullColor);
 begin
   with TJvFullColorDialog(Sender) do

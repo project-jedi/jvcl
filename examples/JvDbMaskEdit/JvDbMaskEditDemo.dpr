@@ -2,13 +2,13 @@ program JvDbMaskEditDemo;
 
 uses
   Forms,
-  JvDbMaskEditDemoFm in 'JvDbMaskEditDemoFm.pas' {Form1},
+  JvDbMaskEditDemoForm in 'JvDbMaskEditDemoForm.pas' {JvDbMaskEditDemoFrm},
   StdCtrls;
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvDbMaskEditDemoFrm, JvDbMaskEditDemoFrm);
   Application.Run;
 end.

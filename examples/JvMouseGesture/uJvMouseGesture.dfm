@@ -1,4 +1,4 @@
-object Form1: TForm1
+object JvMouseGestureDemoMainFrm: TJvMouseGestureDemoMainFrm
   Left = 336
   Top = 303
   Width = 514
@@ -18,6 +18,9 @@ object Form1: TForm1
   Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
+  DesignSize = (
+    506
+    359)
   PixelsPerInch = 96
   TextHeight = 13
   object Memo1: TMemo
@@ -38,6 +41,9 @@ object Form1: TForm1
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = ' Gesture Detection  '
     TabOrder = 1
+    DesignSize = (
+      489
+      217)
     object Label1: TLabel
       Left = 48
       Top = 88
@@ -139,6 +145,9 @@ object Form1: TForm1
       OnMouseDown = FormMouseDown
       OnMouseMove = FormMouseMove
       OnMouseUp = FormMouseUp
+      DesignSize = (
+        213
+        189)
       object Label2: TLabel
         Left = 41
         Top = 94
@@ -155,7 +164,7 @@ object Form1: TForm1
     Grid = 15
     Delay = 500
     Active = False
-    Left = 16
+    Left = 24
     Top = 88
   end
   object JvMouseGestureHook1: TJvMouseGestureHook

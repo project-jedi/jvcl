@@ -51,6 +51,7 @@ type
     procedure FileListBox1Click(Sender: TObject);
     procedure SaveClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     Activated: Boolean;
   end;
@@ -99,6 +100,12 @@ begin
     GetWindowsDirectory(Buffer, SizeOf(Buffer));
     DirectoryListBox1.Directory := Buffer + '\Cursors';
   end;
+end;
+
+procedure TJvAniMainForm.FormCreate(Sender: TObject);
+begin
+ // show the \data\ directtory where an example .ani is
+ DirectoryListBox1.Directory := extractFileDir(Application.ExeName) + '\data\';
 end;
 
 end.

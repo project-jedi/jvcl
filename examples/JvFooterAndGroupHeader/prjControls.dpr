@@ -2,13 +2,13 @@ program prjControls;
 
 uses
   Forms,
-  uFormMain in 'uFormMain.pas' {Form1};
+  JvFooterAndGroupHeaderDemoForm in 'JvFooterAndGroupHeaderDemoForm.pas' {JvFooterAndGroupHeaderDemoFrm};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvFooterAndGroupHeaderDemoFrm, JvFooterAndGroupHeaderDemoFrm);
   Application.Run;
 end.
 

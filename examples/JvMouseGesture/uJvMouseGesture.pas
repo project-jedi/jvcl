@@ -34,7 +34,7 @@ uses
   JvExStdCtrls, JvCheckBox, JvRadioButton;
 
 type
-  TForm1 = class(TForm)
+  TJvMouseGestureDemoMainFrm = class(TForm)
     Memo1: TMemo;
     JvMouseGesture1: TJvMouseGesture;
     JvMouseGestureHook1: TJvMouseGestureHook;
@@ -62,14 +62,12 @@ type
     procedure rbFormOnlyClick(Sender: TObject);
   private
     procedure RefreshCaption;
-  public
   end;
 
 var
-  Form1: TForm1;
+  JvMouseGestureDemoMainFrm: TJvMouseGestureDemoMainFrm;
 
 implementation
-
 
 {$R *.dfm}
 
@@ -79,7 +77,7 @@ begin
   Result := cBool[AValue];
 end;
 
-procedure TForm1.FormMouseDown(Sender: TObject; Button: TMouseButton;
+procedure TJvMouseGestureDemoMainFrm.FormMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if not rbFormOnly.Checked then
@@ -88,14 +86,14 @@ begin
     JvMouseGesture1.StartMouseGesture(x,y);
 end;
 
-procedure TForm1.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TJvMouseGestureDemoMainFrm.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
   if JvMouseGesture1.TrailActive then
     JvMouseGesture1.TrailMouseGesture(x,y);
 end;
 
-procedure TForm1.FormMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TJvMouseGestureDemoMainFrm.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if JvMouseGesture1.TrailActive then
@@ -105,14 +103,14 @@ begin
   end;
 end;
 
-procedure TForm1.FormShow(Sender: TObject);
+procedure TJvMouseGestureDemoMainFrm.FormShow(Sender: TObject);
 begin
   JvMouseGesture1.Active := True;
   JvMouseGestureHook1.Active := False;
   RefreshCaption;
 end;
 
-procedure TForm1.RefreshCaption;
+procedure TJvMouseGestureDemoMainFrm.RefreshCaption;
 begin
   Memo1.Clear;
   Caption := 'Panel Hooked = ' + BoolToStr(JvMouseGesture1.Active) +
@@ -121,7 +119,7 @@ begin
 end;
 
 
-procedure TForm1.cbMouseButtonChange(Sender: TObject);
+procedure TJvMouseGestureDemoMainFrm.cbMouseButtonChange(Sender: TObject);
 begin
   chkNoPopup.Enabled := false;
   case cbMouseButton.ItemIndex of
@@ -135,25 +133,25 @@ begin
   end;
 end;
 
-procedure TForm1.Memo1ContextPopup(Sender: TObject; MousePos: TPoint;
+procedure TJvMouseGestureDemoMainFrm.Memo1ContextPopup(Sender: TObject; MousePos: TPoint;
   var Handled: Boolean);
 begin
   // if we have a gesture and the user wants to surpress the popup, return true
   Handled := chkNoPopup.Checked and rbAppEvents.Checked and (JvMouseGestureHook1.MouseGesture.Gesture <> '');
 end;
 
-procedure TForm1.JvMouseGestureHook1MouseGestureCustomInterpretation(
+procedure TJvMouseGestureDemoMainFrm.JvMouseGestureHook1MouseGestureCustomInterpretation(
   Sender: TObject; const AGesture: String);
 begin
   Memo1.Lines.Add('Gesture (via hook) = ' + AGesture);
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TJvMouseGestureDemoMainFrm.FormCreate(Sender: TObject);
 begin
   cbMouseButton.ItemIndex := 2;
 end;
 
-procedure TForm1.rbFormOnlyClick(Sender: TObject);
+procedure TJvMouseGestureDemoMainFrm.rbFormOnlyClick(Sender: TObject);
 begin
   if rbFormOnly.Checked then
   begin

@@ -2,13 +2,13 @@ program JvDBGridExportDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmMain};
+  JvDBGridExportDemoMainForm in 'JvDBGridExportDemoMainForm.pas' {JvDBGridExportDemoMainFrm};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvDBGridExportDemoMainFrm, JvDBGridExportDemoMainFrm);
   Application.Run;
 end.
 

@@ -2,12 +2,12 @@ program JvDialogsDemo;
 
 uses
   Forms,
-  fDialogs in 'fDialogs.pas' {Form1};
+  fDialogs in 'fDialogs.pas' {JvDialogsDemoFrm};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvDialogsDemoFrm, JvDialogsDemoFrm);
   Application.Run;
 end.

@@ -2,7 +2,7 @@ program DepWalk;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmMain},
+  DependencyWalkerDemoMainForm in 'DependencyWalkerDemoMainForm.pas' {DependencyWalkerDemoMainFrm},
   StatsFrm in 'StatsFrm.pas' {frmUnitStats},
   PrintFrm in 'PrintFrm.pas' {frmPrint},
   DepWalkConsts in 'DepWalkConsts.pas',
@@ -15,6 +15,6 @@ uses
 begin
   Application.Initialize;
   Application.Title := 'Dependency Walker';
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TDependencyWalkerDemoMainFrm, DependencyWalkerDemoMainFrm);
   Application.Run;
 end.
