@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-04-05
+- Added EDI Component donation from Raymond Alexander. NB! Requires the latest JCL (don't forget to recompile DJVCL.dpk!) // peter3
 2004-04-04
 - Removed JvTabControl and moved TJvTabControl into JvComCtrls.pas // peter3
 - Added TabPainter property to JvPageControl and JvTabControl // peter3
