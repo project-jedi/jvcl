@@ -32,10 +32,14 @@ interface
 
 uses
   Classes, SysUtils, ActnList, StdActns,
+  {$IFNDEF COMPILER6_UP}Dialogs,{$ENDIF}
   JvBaseDlg, JvBrowseFolder, JvSelectDirectory, JvConnectNetwork,
   JvWinDialogs, JvDialogs, JvPageSetupTitled, JvPageSetup;
 
 type
+  {$IFNDEF COMPILER6_UP}
+  TCommonDialogClass = class of TCommonDialog;
+  {$ENDIF}
   TJvCommonDialogClass = class of TJvCommonDialog;
   TJvCommonDialogPClass = class of TJvCommonDialogP;
   TJvCommonDialogFClass = class of TJvCommonDialogF;
@@ -49,11 +53,16 @@ type
   protected
     FDialog: TJvCommonDialog;
     function GetDialogClass: TJvCommonDialogClass; virtual;
+    property OnAccept: TNotifyEvent read FOnAccept write FOnAccept;
+    property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
   public
     constructor Create(AOwner: TComponent); override;
     function HandlesTarget(Target: TObject): Boolean; override;
+    {$IFDEF COMPILER6_UP}
     procedure ExecuteTarget(Target: TObject); override;
     property ExecuteResult: Boolean read FExecuteResult;
+    {$ENDIF}
+
     property BeforeExecute: TNotifyEvent read FBeforeExecute write FBeforeExecute;
   published
     property Caption;
@@ -62,10 +71,10 @@ type
     property Hint;
     property ImageIndex;
     property ShortCut;
+    {$IFDEF COMPILER6_UP}
     property SecondaryShortCuts;
+    {$ENDIF}
     property Visible;
-    property OnAccept: TNotifyEvent read FOnAccept write FOnAccept;
-    property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
   end;
 
   TJvCommonDialogPAction = class(TCustomAction)
@@ -86,19 +95,21 @@ type
     property Hint;
     property ImageIndex;
     property ShortCut;
+    {$IFDEF COMPILER6_UP}
     property SecondaryShortCuts;
+    {$ENDIF}
     property Visible;
     property BeforeExecute: TNotifyEvent read FBeforeExecute write FBeforeExecute;
     property AfterExecute: TNotifyEvent read FAfterExecute write FAfterExecute;
   end;
 
-  TJvCommonDialogFAction = class(TCustomAction)
+  TJvCommonDialogFAction = class(TJvCommonDialogAction)
   private
     FBeforeExecute: TNotifyEvent;
     FAfterExecute: TNotifyEvent;
   protected
     FDialog: TJvCommonDialogF;
-    function GetDialogClass: TJvCommonDialogFClass; virtual;
+    function GetDialogClass: TJvCommonDialogFClass; reintroduce; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     function HandlesTarget(Target: TObject): Boolean; override;
@@ -110,7 +121,9 @@ type
     property Hint;
     property ImageIndex;
     property ShortCut;
+    {$IFDEF COMPILER6_UP}
     property SecondaryShortCuts;
+    {$ENDIF}
     property Visible;
     property BeforeExecute: TNotifyEvent read FBeforeExecute write FBeforeExecute;
     property AfterExecute: TNotifyEvent read FAfterExecute write FAfterExecute;
@@ -171,11 +184,11 @@ type
     property Dialog: TJvControlPanelDialog read GetDialog;
   end;
 
-  TJvOpenFileAction = class(TCommonDialogAction)
+  TJvOpenFileAction = class(TJvCommonDialogAction)
   private
     function GetDialog: TJvOpenDialog;
   protected
-    function GetDialogClass: TCommonDialogClass; override;
+    function GetDialogClass: TCommonDialogClass; reintroduce; virtual;
   published
     property Caption;
     property Dialog: TJvOpenDialog read GetDialog;
@@ -184,8 +197,10 @@ type
     property Hint;
     property ImageIndex;
     property ShortCut;
-    property SecondaryShortCuts;
     property Visible;
+    {$IFDEF COMPILER6_UP}
+    property SecondaryShortCuts;
+    {$ENDIF}
     property OnAccept;
     property OnCancel;
   end;
@@ -236,12 +251,15 @@ begin
   begin
     FDialog := DialogClass.Create(Self);
     FDialog.Name := Copy(DialogClass.ClassName, 2, Length(DialogClass.ClassName));
+   {$IFDEF COMPILER6_UP}
     FDialog.SetSubComponent(True);
+    {$ENDIF}
   end;
   DisableIfNoHandler := False;
   Enabled := True;
 end;
 
+{$IFDEF COMPILER6_UP}
 procedure TJvCommonDialogAction.ExecuteTarget(Target: TObject);
 begin
   FExecuteResult := False;
@@ -260,7 +278,7 @@ begin
       FOnCancel(Self);
   end;
 end;
-
+{$ENDIF}
 function TJvCommonDialogAction.GetDialogClass: TJvCommonDialogClass;
 begin
   Result := nil;

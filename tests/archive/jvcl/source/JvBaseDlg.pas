@@ -42,15 +42,15 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
-  TJvCommonDialogP = class(TJvComponent)
+  TJvCommonDialogP = class(TJvCommonDialog)
   public
-    procedure Execute; virtual; abstract;
+    procedure Execute; reintroduce; virtual; abstract;
   end;
 
   // (rom) alternative to TJvCommonDialog
-  TJvCommonDialogF = class(TJvComponent)
+  TJvCommonDialogF = class(TJvCommonDialog)
   public
-    function Execute: Boolean; virtual; abstract;
+    function Execute: Boolean; reintroduce; virtual; abstract; 
   end;
 
 implementation
