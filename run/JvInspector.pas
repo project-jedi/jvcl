@@ -232,6 +232,7 @@ type
     procedure Paint; override;
     procedure RebuildVisible; virtual;
     procedure RemoveNotifySort(const Item: TJvCustomInspectorItem); virtual;
+    procedure RemoveVisible(const Item: TJvCustomInspectorItem); virtual;
     procedure Resize; override;
     function ScrollfactorV: Extended; virtual;
     procedure SetAfterDataCreate(const Value: TInspectorDataEvent); virtual;
@@ -2749,6 +2750,20 @@ end;
 procedure TJvCustomInspector.RemoveNotifySort(const Item: TJvCustomInspectorItem);
 begin
   SortNotificationList.Remove(Item);
+end;
+
+procedure TJvCustomInspector.RemoveVisible(const Item: TJvCustomInspectorItem);
+var
+  Idx: Integer;
+begin
+  Idx := FVisible.IndexOfObject(Item);
+  if Idx > -1 then
+  begin
+    FVisible.Delete(Idx);
+    if SelectedIndex >= Idx then
+      SelectedIndex := SelectedIndex - 1;
+    Invalidate;
+  end;
 end;
 
 procedure TJvCustomInspector.Resize;
@@ -5432,6 +5447,7 @@ begin
   if Inspector <> nil then
   begin
     Inspector.RemoveNotifySort(Self);
+    Inspector.RemoveVisible(Self);
     if Inspector.RowSizingItem = Self then
     begin
       Inspector.RowSizing := False;
@@ -5441,7 +5457,8 @@ begin
   FItems.Free;
   if Data <> nil then
     FData.RemoveItem(Self);
-  FRowSizing.Free;
+  FreeAndNil(FRowSizing);
+  FItems := nil;
 end;
 
 procedure TJvCustomInspectorItem.Clear;
