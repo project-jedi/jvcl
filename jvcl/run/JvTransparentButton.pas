@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, CommCtrl,
-  ExtCtrls, Menus, Forms, ImgList, JvComponent, Buttons, JvButton;
+  ExtCtrls, Menus, Forms, ImgList, ActnList, JvComponent, Buttons, JvButton;
 
 type
   TJvFrameStyle = (fsRegular, fsIndent, fsExplorer, fsNone, fsLight, fsDark, fsMono);
@@ -40,6 +40,16 @@ type
     ttaBottom, ttaBottomLeft, ttaLeft, ttaCenter);
 
 type
+  TJvTransparentButtonActionLink = class(TControlActionLink)
+  protected
+    FClient: TJvCustomGraphicButton;
+    procedure AssignClient(AClient: TObject); override;
+    function IsCheckedLinked: Boolean; override;
+    function IsGroupIndexLinked: Boolean; override;
+    procedure SetGroupIndex(Value: Integer); override;
+    procedure SetChecked(Value: Boolean); override;
+  end;
+
   TJvTransparentButton = class(TJvCustomGraphicButton)
   private
     FTextAlign: TJvTextAlign;
@@ -72,11 +82,14 @@ type
     procedure PaintFrame(Canvas: TCanvas); override;
     procedure DrawTheText(ARect: TRect; Canvas: TCanvas); virtual;
     procedure DrawTheBitmap(ARect: TRect; Canvas: TCanvas); virtual;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean);override;
+    function GetActionLinkClass: TControlActionLinkClass; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas;
   published
+    property Action;
     property Align;
     property AutoGray: Boolean read FAutoGray write SetAutoGray default True;
     property BorderWidth: Cardinal read FBorderSize write SetBorderWidth default 1;
@@ -156,18 +169,22 @@ type
     procedure SetBorderWidth(Value: Cardinal);
     procedure GlyphChanged(Sender: TObject);
   protected
+    function GetActionLinkClass: TControlActionLinkClass; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure AddGlyphs;
     procedure PaintButton(Canvas: TCanvas); override;
     procedure PaintFrame(Canvas: TCanvas); override;
     procedure DrawTheText(ARect: TRect; Canvas: TCanvas); virtual;
     procedure DrawTheBitmap(ARect: TRect; Canvas: TCanvas); virtual;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean);override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas;
     property InternalList: TImageList read FImList;
   published
+    property Action;
     property Align;
     property Anchors;
     property Constraints;
@@ -179,6 +196,7 @@ type
     property Down;
     property Enabled;
     property Font;
+
     property HiFont: TFont read FHiFont write SetHiFont;
     property FrameStyle: TJvFrameStyle read FOutline write SetFrameStyle default fsExplorer;
     property ActiveImage: TImageList read FActiveList write SetActiveList;
@@ -213,6 +231,25 @@ type
   end;
 
 implementation
+
+{ create a grayed version of a color bitmap }
+{ SLOW! don't use in realtime! }
+
+procedure GrayBitmap(Bmp: TBitmap; R, G, B: Integer);
+var
+  I, J: Integer;
+  Col: Longint;
+begin
+  if Bmp.Empty then
+    Exit;
+  for I := 0 to Bmp.Width do
+    for J := 0 to Bmp.Height do
+    begin
+      Col := Bmp.Canvas.Pixels[I, J];
+      Col := (GetRValue(Col) * R + GetGValue(Col) * G + GetBValue(Col) * B) div (R + G + B);
+      Bmp.Canvas.Pixels[I, J] := RGB(Col, Col, Col);
+    end;
+end;
 
 { create a grayed version of a color bitmap }
 { SLOW! don't use in realtime! }
@@ -316,9 +353,51 @@ begin
   DisabledBitmap(Bmp);
 end;
 
+{ TJvTransparentButtonActionLink }
+
+procedure TJvTransparentButtonActionLink.AssignClient(AClient: TObject);
+begin
+  inherited AssignClient(AClient);
+  FClient := AClient as TJvCustomGraphicButton;
+end;
+
+function TJvTransparentButtonActionLink.IsCheckedLinked: Boolean;
+begin
+  if FClient is TJvTransparentButton then
+    Result := inherited IsCheckedLinked and (TJvTransparentButton(FClient).Down = (Action as TCustomAction).Checked)
+  else if FClient is TJvTransparentButton2 then
+    Result := inherited IsCheckedLinked and (TJvTransparentButton2(FClient).Down = (Action as TCustomAction).Checked)
+  else
+    Result := false;
+end;
+
+function TJvTransparentButtonActionLink.IsGroupIndexLinked: Boolean;
+begin
+  Result := false;
+end;
+
+procedure TJvTransparentButtonActionLink.SetChecked(Value: Boolean);
+begin
+  if IsCheckedLinked then
+  begin
+    if FClient is TJvTransparentButton then
+      TJvTransparentButton(FClient).Down := Value
+    else if FClient is TJvTransparentButton2 then
+      TJvTransparentButton2(FClient).Down := Value;
+  end;
+end;
+
+procedure TJvTransparentButtonActionLink.SetGroupIndex(Value: Integer);
+begin
+  //
+end;
+
+{ TJvTransparentButton }
+
 constructor TJvTransparentButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  AllowAllUp := true;
   FNumGlyphs := 1;
   FAutoGray := True;
   FShowPressed := True;
@@ -326,7 +405,7 @@ begin
   FBorderSize := 1;
   FTransparent := True;
 
-  FImList := TImageList.Create(nil);
+  FImList := TImageList.Create(self);
   FGlyph := TBitmap.Create;
   FGrayGlyph := TBitmap.Create;
   FDisabledGlyph := TBitmap.Create;
@@ -344,7 +423,7 @@ begin
   FGlyph.Free;
   FGrayGlyph.Free;
   FDisabledGlyph.Free;
-  FImList.Free;
+//  FImList.Free;
   inherited Destroy;
 end;
 
@@ -735,6 +814,7 @@ begin
       clNone, clNone, ILD_Transparent);
   end;
 end;
+
 procedure TJvTransparentButton.GlyphChanged(Sender: TObject);
 var
   GlyphNum: Integer;
@@ -753,29 +833,46 @@ begin
     AddGlyphs(Glyph, Glyph.TransparentColor {Glyph.Canvas.Pixels[0,Height]}, GlyphNum);
   end;
 end;
-{ create a grayed version of a color bitmap }
-{ SLOW! don't use in realtime! }
 
-procedure GrayBitmap(Bmp: TBitmap; R, G, B: Integer);
-var
-  I, J: Integer;
-  Col: Longint;
-begin
-  if Bmp.Empty then
-    Exit;
-  for I := 0 to Bmp.Width do
-    for J := 0 to Bmp.Height do
+procedure TJvTransparentButton.ActionChange(Sender: TObject;
+  CheckDefaults: Boolean);
+  procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
+  begin
+    with Glyph do
     begin
-      Col := Bmp.Canvas.Pixels[I, J];
-      Col := (GetRValue(Col) * R + GetGValue(Col) * G + GetBValue(Col) * B) div (R + G + B);
-      Bmp.Canvas.Pixels[I, J] := RGB(Col, Col, Col);
+      Width := ImageList.Width;
+      Height := ImageList.Height;
+      Canvas.Brush.Color := clFuchsia;//! for lack of a better color
+      Canvas.FillRect(Rect(0,0, Width, Height));
+      ImageList.Draw(Canvas, 0, 0, Index);
     end;
+    GlyphChanged(Glyph);
+  end;
+begin
+  inherited ActionChange(Sender, CheckDefaults);
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    begin
+      if not CheckDefaults then
+        Down := Checked;
+      { Copy image from action's imagelist }
+      if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
+        (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
+        CopyImage(ActionList.Images, ImageIndex);
+    end;
+
 end;
 
+function TJvTransparentButton.GetActionLinkClass: TControlActionLinkClass;
+begin
+  Result := TJvTransparentButtonActionLink;
+end;
 
+{ TJvTransparentButton2 }
 constructor TJvTransparentButton2.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  AllowAllUp := true;
   FHiFont := TFont.Create;
   FHiFont.Assign(Font);
   FAutoGray := True;
@@ -1346,6 +1443,25 @@ begin
     if AComponent = FDownList then
       DownImage := nil;
   end;
+end;
+
+procedure TJvTransparentButton2.ActionChange(Sender: TObject;
+  CheckDefaults: Boolean);
+begin
+  inherited;
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    begin
+      if not CheckDefaults then
+        Down := Checked;
+      if not CheckDefaults or (ActiveIndex = -1) then
+        ActiveIndex := ImageIndex;
+    end;
+end;
+
+function TJvTransparentButton2.GetActionLinkClass: TControlActionLinkClass;
+begin
+  Result := TJvTransparentButtonActionLink;
 end;
 
 end.
