@@ -353,6 +353,7 @@ resourcestring
   RsErrorRowItem = '<ERROR>';
 
   RsECsvErrFormat = '%s: %s';
+  RsECsvInvalidSeparatorFmt = 'Invalid separator character (%s)'; 
   RsEProblemReadingRow = 'Problem reading row %d';
   RsENoRecord = 'No records';
   RsETimeTConvError = 'SetFieldData Error - TimeT-to-DateTime conversion error';
