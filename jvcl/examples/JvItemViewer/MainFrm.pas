@@ -100,8 +100,6 @@ type
       TextRect: TRect);
     procedure DoITV3Click(Sender: TObject);
     procedure ViewItem(Item: TJvImageItem; LoadFromFile: Boolean);
-    procedure DoITV3ItemHint(Sender: TObject; Index: Integer;
-    var HintInfo: THintInfo; var Handled: Boolean);
   public
     ITV: TJvImagesViewer;
     ITV2: TJvImageListViewer;
