@@ -39,7 +39,7 @@ unit JvOutlookBar;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, ActnList,
   {$IFDEF VCL}
   Windows, Messages, Controls, Buttons, Graphics,
   ImgList, Forms, StdCtrls, ExtCtrls,
@@ -63,34 +63,67 @@ const
 
 type
   TJvBarButtonSize = (olbsLarge, olbsSmall);
+  TJvOutlookBarButton = class;
 
+  TJvOutlookBarButtonActionLink = class(TActionLink)
+  private
+    FClient: TJvOutlookBarButton;
+  protected
+    procedure AssignClient(AClient: TObject); override;
+    function IsCaptionLinked: Boolean; override;
+    function IsImageIndexLinked: Boolean; override;
+    function IsOnExecuteLinked: Boolean; override;
+    function IsEnabledLinked: Boolean;override;
+    {$IFDEF VCL}
+    procedure SetCaption(const Value: string); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure SetCaption(const Value: TCaption); override;
+    {$ENDIF VisualCLX}
+    procedure SetEnabled(Value: Boolean); override;
+    procedure SetImageIndex(Value: Integer); override;
+    procedure SetOnExecute(Value: TNotifyEvent); override;
+    property Client: TJvOutlookBarButton read FClient write FClient;
+  end;
+
+  TJvOutlookBarButtonActionLinkClass = class of TJvOutlookBarButtonActionLink;
   TJvOutlookBarButton = class(TCollectionItem)
   private
+    FActionLink: TJvOutlookBarButtonActionLink;
     FImageIndex: TImageIndex;
     FCaption: TCaption;
     FTag: Integer;
     FDown: Boolean;
     FEnabled: Boolean;
     FAutoToggle: Boolean;
+    FOnClick: TNotifyEvent;
     procedure SetCaption(const Value: TCaption);
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetDown(const Value: Boolean);
     procedure Change;
     procedure SetEnabled(const Value: Boolean);
+    procedure SetAction(Value: TBasicAction);
   protected
     function GetDisplayName: string; override;
+    function GetActionLinkClass: TJvOutlookBarButtonActionLinkClass; dynamic;
+    function GetAction: TBasicAction; virtual;
+    procedure DoActionChange(Sender: TObject);
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
   public
+    procedure Click; dynamic;
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure EditCaption;
   published
+    property Action:TBasicAction read GetAction write SetAction;
     property Caption: TCaption read FCaption write SetCaption;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property Tag: Integer read FTag write FTag;
     property Down: Boolean read FDown write SetDown default False;
     property AutoToggle: Boolean read FAutoToggle write FAutoToggle;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
+    property OnClick:TNotifyEvent read FOnClick write FOnClick; 
   end;
 
   TJvOutlookBarButtons = class(TOwnedCollection)
@@ -303,6 +336,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure InitiateAction; override;
     function GetButtonAtPos(P: TPoint): TJvOutlookBarButton;
     function GetPageButtonAtPos(P: TPoint): TJvOutlookBarPage;
   protected
@@ -409,6 +443,11 @@ const
   cButtonTopOffset = 2;
   cInitRepeatPause = 400;
   cRepeatPause = 100;
+
+function MethodsEqual(const Method1, Method2: TMethod): Boolean;
+begin
+  Result := (Method1.Code = Method2.Code) and (Method1.Data = Method2.Data);
+end;
 
 //=== { TJvOutlookBarEdit } ==================================================
 
@@ -653,6 +692,66 @@ begin
     end;
 end;
 
+//=== { TJvOutlookBarButtonActionLink } =============================================
+
+procedure TJvOutlookBarButtonActionLink.AssignClient(AClient: TObject);
+begin
+  Client := AClient as TJvOutlookBarButton;
+end;
+
+function TJvOutlookBarButtonActionLink.IsCaptionLinked: Boolean;
+begin
+  Result := inherited IsCaptionLinked and
+    (Client.Caption = (Action as TCustomAction).Caption);
+end;
+
+function TJvOutlookBarButtonActionLink.IsEnabledLinked: Boolean;
+begin
+  Result := inherited IsEnabledLinked and
+    (Client.Enabled = (Action as TCustomAction).Enabled);
+end;
+
+function TJvOutlookBarButtonActionLink.IsImageIndexLinked: Boolean;
+begin
+  Result := inherited IsImageIndexLinked and
+    (Client.ImageIndex = (Action as TCustomAction).ImageIndex);
+end;
+
+function TJvOutlookBarButtonActionLink.IsOnExecuteLinked: Boolean;
+begin
+  Result := inherited IsOnExecuteLinked and
+    MethodsEqual(TMethod(Client.OnClick), TMethod(Action.OnExecute));
+end;
+
+{$IFDEF VCL}
+procedure TJvOutlookBarButtonActionLink.SetCaption(const Value: string);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvOutlookBarButtonActionLink.SetCaption(const Value: TCaption);
+{$ENDIF VisualCLX}
+begin
+  if IsCaptionLinked then
+    Client.Caption := Value;
+end;
+
+procedure TJvOutlookBarButtonActionLink.SetEnabled(Value: Boolean);
+begin
+  if IsEnabledLinked then
+    Client.Enabled := Value;
+end;
+
+procedure TJvOutlookBarButtonActionLink.SetImageIndex(Value: Integer);
+begin
+  if IsImageIndexLinked then
+    Client.ImageIndex := Value;
+end;
+
+procedure TJvOutlookBarButtonActionLink.SetOnExecute(Value: TNotifyEvent);
+begin
+  if IsOnExecuteLinked then
+    Client.OnClick := Value;
+end;
+
 //=== { TJvOutlookBarButton } ================================================
 
 constructor TJvOutlookBarButton.Create(Collection: TCollection);
@@ -756,6 +855,65 @@ begin
   begin
     FEnabled := Value;
     Change;
+  end;
+end;
+
+procedure TJvOutlookBarButton.Click;
+begin
+  if Assigned(FOnCLick) then FOnClick(Self);
+end;
+
+function TJvOutlookBarButton.GetAction: TBasicAction;
+begin
+  if FActionLink <> nil then
+    Result := FActionLink.Action
+  else
+    Result := nil;
+end;
+
+function TJvOutlookBarButton.GetActionLinkClass: TJvOutlookBarButtonActionLinkClass;
+begin
+  Result := TJvOutlookBarButtonActionLink;
+end;
+
+procedure TJvOutlookBarButton.ActionChange(Sender: TObject;
+  CheckDefaults: Boolean);
+begin
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    begin
+      if not CheckDefaults or (Self.Caption = '') then
+        Self.Caption := Caption;
+      if not CheckDefaults or Self.Enabled then
+        Self.Enabled := Enabled;
+      if not CheckDefaults or (Self.ImageIndex = -1) then
+        Self.ImageIndex := ImageIndex;
+      if not CheckDefaults or not Assigned(Self.OnClick) then
+        Self.OnClick := OnExecute;
+    end;
+end;
+
+procedure TJvOutlookBarButton.DoActionChange(Sender: TObject);
+begin
+  if Sender = Action then
+    ActionChange(Sender, False);
+end;
+
+procedure TJvOutlookBarButton.SetAction(Value: TBasicAction);
+begin
+  if Value = nil then
+  begin
+    FActionLink.Free;
+    FActionLink := nil;
+  end
+  else
+  begin
+    if FActionLink = nil then
+      FActionLink := GetActionLinkClass.Create(Self);
+    FActionLink.Action := Value;
+    FActionLink.OnChange := DoActionChange;
+    ActionChange(Value, csLoading in Value.ComponentState);
+    Value.FreeNotification(Collection.Owner as TJvCustomOutlookBar); // deligates notification to owner!
   end;
 end;
 
@@ -1309,6 +1467,7 @@ end;
 
 procedure TJvCustomOutlookBar.Notification(AComponent: TComponent;
   Operation: TOperation);
+var I, J:Integer;
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
@@ -1321,6 +1480,13 @@ begin
     else
     if AComponent = FPageImages then
       PageImages := nil;
+    if (AComponent is TBasicAction) and not (csDestroying in ComponentState) then
+    begin
+      for I := 0 to Pages.Count - 1 do
+        for J := 0 to Pages[I].Buttons.Count - 1 do
+          if AComponent = Pages[I].Buttons[J].Action then
+            Pages[I].Buttons[J].Action := nil;
+    end;
   end;
 end;
 
@@ -1996,10 +2162,14 @@ begin
   if (Index > -1) then
   begin
     with ActivePage.Buttons[Index] do
+    begin
       if AutoToggle then
         Down := not Down;
+      Click;
+    end;
     if Assigned(FOnButtonClick) then
       FOnButtonClick(Self, Index);
+
   end;
 end;
 
@@ -2588,6 +2758,16 @@ begin
       FPageImages.RegisterChanges(FPageChangeLink);
     Invalidate;
   end;
+end;
+
+procedure TJvCustomOutlookBar.InitiateAction;
+var
+  I, J: Integer;
+begin
+  inherited InitiateAction;
+  for I := 0 to Pages.Count - 1 do
+    for J := 0 to Pages[I].Buttons.Count - 1 do
+      Pages[I].Buttons[J].ActionChange(Pages[I].Buttons[J].Action, csLoading in ComponentState);
 end;
 
 end.
