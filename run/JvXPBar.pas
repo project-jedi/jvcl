@@ -336,7 +336,10 @@ type
     property OnItemClick: TJvXPBarOnItemClickEvent read FOnItemClick write FOnItemClick;
     procedure AdjustClientRect(var Rect: TRect); override;
     // show hints for individual items in the list
-    function HintShow(var HintInfo: THintInfo): Boolean;{$IFDEF USEJVCL} override;{$ELSE} dynamic;{$ENDIF}
+    function HintShow(var HintInfo: THintInfo): Boolean;
+{$IFDEF USEJVCL} override;
+{$ELSE} dynamic;
+{$ENDIF}
 {$IFNDEF USEJVCL}
     procedure CMHintShow(var Msg: TCMHintShow); message CM_HINTSHOW;
 {$ENDIF USEJVCL}
@@ -625,24 +628,21 @@ end;
 
 procedure TJvXPBarItem.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
-  if Action is TCustomAction then
+  if Sender is TCustomAction then
     with TCustomAction(Sender) do
     begin
-      if (CheckDefaults or Update()) then // mw added to update action
-      begin
-        if not CheckDefaults or (Self.Caption = '') then
-          Self.Caption := Caption;
-        if not CheckDefaults or Self.Enabled then
-          Self.Enabled := Enabled;
-        if not CheckDefaults or (Self.Hint = '') then
-          Self.Hint := Hint;
-        if not CheckDefaults or (Self.ImageIndex = -1) then
-          Self.ImageIndex := ImageIndex;
-        if not CheckDefaults or Self.Visible then
-          Self.Visible := Visible;
-        if not CheckDefaults or not Assigned(Self.OnClick) then
-          Self.OnClick := OnExecute;
-      end;
+      if not CheckDefaults or (Self.Caption = '') or (Self.Caption = Self.Name) then
+        Self.Caption := Caption;
+      if not CheckDefaults or Self.Enabled then
+        Self.Enabled := Enabled;
+      if not CheckDefaults or (Self.Hint = '') then
+        Self.Hint := Hint;
+      if not CheckDefaults or (Self.ImageIndex = -1) then
+        Self.ImageIndex := ImageIndex;
+      if not CheckDefaults or Self.Visible then
+        Self.Visible := Visible;
+      if not CheckDefaults or not Assigned(Self.OnClick) then
+        Self.OnClick := OnExecute;
     end;
 end;
 
@@ -1813,7 +1813,7 @@ var
 begin
   inherited InitiateAction;
   // go through each item and update
-  for i:= 0 to Items.Count - 1 do
+  for i := 0 to Items.Count - 1 do
     Items[i].ActionChange(Items[i].Action, csLoading in ComponentState);
 end;
 
