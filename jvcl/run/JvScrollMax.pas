@@ -1103,6 +1103,7 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF JVCLThemesEnabled}
 function TJvScrollMax.GetParentBackground: Boolean;
 begin
   Result := inherited ParentBackground;
@@ -1114,6 +1115,7 @@ begin
   FPnlEdit.ParentBackground := Value;
   FScrollBar.ParentBackground := Value;
 end;
+{$ENDIF}
 
 procedure TJvScrollMax.CreateParams(var Params: TCreateParams);
 begin
