@@ -433,8 +433,7 @@ begin
             REG_DWORD :
               begin
                 TmpItem.ImageIndex := imBin;
-                TmpItem.SubItems.Add(Format('0x%.8x (%d)', [Cardinal(D),
-                  Cardinal(D)]));
+                TmpItem.SubItems.Add(Format('0x%.8x (%d)', [Cardinal(Pointer(D)^),Cardinal(Pointer(D)^)]));
               end;
             REG_NONE:
               begin
