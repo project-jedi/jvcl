@@ -36,7 +36,7 @@ uses
    Variants,
 {$ENDIF}
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
-  StdCtrls, Mask, IniFiles, JvToolEdit, DB, DBGrids, 
+  StdCtrls, Mask, IniFiles, JvToolEdit, DB, DBGrids,
   {$IFNDEF COMPILER3_UP} DBTables, {$ENDIF}
   JvPlacemnt, JvDateUtil, DBCtrls, JvxCtrls, JvCurrEdit;
 
@@ -2374,6 +2374,9 @@ begin
 {$IFDEF WIN32}
   Field := Column.Field;
 {$ENDIF}
+  if Assigned(DataSource) and Assigned(DataSource.Dataset) and DataSource.Dataset.Active and
+    (SelectedRows.IndexOf(DataSource.DataSet.Bookmark) > -1) then
+      Include(State,gdSelected);
   NewBackgrnd := Canvas.Brush.Color;
   Highlight := (gdSelected in State) and ((dgAlwaysShowSelection in Options) or
     Focused);
