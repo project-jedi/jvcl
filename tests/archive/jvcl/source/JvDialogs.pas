@@ -385,8 +385,8 @@ end;
 function TJvOpenDialog.TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool;
 const
   PlacesBar: array[Boolean] of DWORD = (OFN_EX_NOPLACESBAR, 0);
-var
-  DialogData2000: TOpenFileName2000;
+//var
+//  DialogData2000: TOpenFileName2000;
 begin
   TOpenFileName(DialogData).hInstance := FindClassHInstance(Self.ClassType);
   FActiveSettingDone := False;

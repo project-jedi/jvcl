@@ -82,6 +82,9 @@ implementation
 uses JvCtlConst;
 
 {$IFNDEF BCB3}
+{$IFDEF COMPILER6_UP}
+{$WARN SYMBOL_DEPRECATED OFF}
+{$ENDIF}
 
 function ChangeTopException(E: TObject): TObject;
 type
@@ -111,6 +114,9 @@ begin
   Result := E;
 {$ENDIF LINUX}
 end;
+{$IFDEF COMPILER6_UP}
+{$WARN SYMBOL_DEPRECATED ON}
+{$ENDIF}
 {$ENDIF BCB3}
 {##################### From JvUtils unit #####################}
 

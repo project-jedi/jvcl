@@ -31,6 +31,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
 unit JvUtils;
 
@@ -1678,6 +1679,9 @@ begin
     Result := Base;
 end;
 
+{$IFDEF COMPILER6_UP}
+{$WARN SYMBOL_DEPRECATED OFF}
+{$ENDIF}
 function ChangeTopException(E : TObject): TObject;
 type
   PRaiseFrame = ^TRaiseFrame;
@@ -1700,6 +1704,9 @@ begin
    Result := nil;
 //    raise Exception.Create('Not in exception');
 end;
+{$IFDEF COMPILER6_UP}
+{$WARN SYMBOL_DEPRECATED ON}
+{$ENDIF}
 
 function MakeValidFileName(const FileName : TFileName;
 	const ReplaceBadChar : Char) : TFileName;

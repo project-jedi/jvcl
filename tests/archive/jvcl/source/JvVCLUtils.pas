@@ -24,6 +24,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
 unit JvVCLUtils;
 
