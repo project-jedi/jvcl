@@ -13,9 +13,6 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  DesignSize = (
-    468
-    427)
   PixelsPerInch = 96
   TextHeight = 13
   object Label3: TLabel

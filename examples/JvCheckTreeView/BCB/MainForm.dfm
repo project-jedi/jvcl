@@ -13,9 +13,6 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
-  DesignSize = (
-    513
-    373)
   PixelsPerInch = 96
   TextHeight = 13
   object Label6: TLabel

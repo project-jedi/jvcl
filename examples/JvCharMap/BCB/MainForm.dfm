@@ -13,9 +13,6 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
-  DesignSize = (
-    639
-    403)
   PixelsPerInch = 96
   TextHeight = 13
   object lblChars: TLabel
@@ -35,9 +32,6 @@ object frmMain: TfrmMain
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
-    DesignSize = (
-      639
-      156)
     object Label1: TLabel
       Left = 8
       Top = 8
