@@ -608,7 +608,10 @@ var
   OldFilter: string;
   OldFiltered: Boolean;
   PV: string;
-  I: Integer;
+  // I: Integer;
+
+  cNode: TTreeNode;
+  fbnString: string;
 begin
 //  CheckDataSet;
   if not ValidDataSet or UpdateLocked then
@@ -649,10 +652,11 @@ begin
         First;
         while not Eof do
         begin
+          fbnString:=FieldByName(FDetailField).AsString; // avoid overhead
           if FUseFilter or
             (((ParentValue = Null) and
-            ((Length(FieldByName(FDetailField).AsString) = 0) or
-            (Copy(Trim(FieldByName(FDetailField).AsString), 1, 1) = '-'))) or
+            ((fbnString = '') or
+            (Copy(Trim(fbnString), 1, 1) = '-'))) or
             (FieldByName(FDetailField).Value = ParentValue)) then
           begin
             with Items.AddChild(ANode, FieldByName(FItemField).Text) as TJvDBTreeNode do
@@ -675,13 +679,37 @@ begin
         end;
       end;
       if ANode = nil then
-        for I := 0 to Items.Count - 1 do
-          with Items[I] as TJvDBTreeNode do
-            HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> Null
+        begin
+          cNode := Items.GetFirstNode;
+          while Assigned(cNode) do
+            with TJvDBTreeNode(cNode) do
+            begin
+              HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> Null;
+              cNode := cNode.GetNext;
+            end;
+          {
+          // Peter Zolja - inefficient code, faster code above
+          for I := 0 to Items.Count - 1 do
+            with Items[I] as TJvDBTreeNode do
+              HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> Null
+          }
+        end
       else
-        for I := 0 to ANode.Count - 1 do
-          with ANode[I] as TJvDBTreeNode do
-            HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> Null
+        begin
+          cNode := ANode.getFirstChild;
+          while Assigned(cNode) do
+            with TJvDBTreeNode(cNode) do
+            begin
+              HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> Null;
+              cNode := cNode.GetNext;
+            end;
+          {
+          // Peter Zolja - inefficient code, faster code above
+          for I := 0 to ANode.Count - 1 do
+            with ANode[I] as TJvDBTreeNode do
+              HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> Null
+          }
+        end;
     finally
       try
         GotoBookmark(BK);
