@@ -317,7 +317,7 @@ type
     destructor Destroy; override;
     procedure ExecuteTarget(Target: TObject); override;
   published
-    property Options : TJvShowSingleRecordWindowOptions read FOptions;
+    property Options : TJvShowSingleRecordWindowOptions read FOptions write FOptions;
   end;
 
   TJvDatabaseOpenAction = class(TJvDatabaseBaseActiveAction)
@@ -348,14 +348,8 @@ uses
 {$ENDIF UNITVERSIONING}
   SysUtils,
   DBGrids,
-  JvParameterList, JvParameterListParameter, JvPanel,
+  JvResources, JvParameterList, JvParameterListParameter, JvPanel,
   Grids;
-
-resourcestring
-  RSSRWPostButtonCaption = '&Post';
-  RSSRWCancelButtonCaption = '&Cancel';
-  RSSRWCloseButtonCaption = 'C&lose';
-  RSPositionDialogCaption = 'Change Current Record Position';
 
 type
   TJvDatabaseActionEngineList = class(TList)
@@ -407,9 +401,9 @@ constructor TJvShowSingleRecordWindowOptions.Create;
 begin
   inherited Create;
   FDialogCaption := '';
-  FPostButtonCaption := RSSRWPostButtonCaption;
-  FCancelButtonCaption := RSSRWCancelButtonCaption;
-  FCloseButtonCaption := RSSRWCloseButtonCaption;
+  FPostButtonCaption := RsSRWPostButtonCaption;
+  FCancelButtonCaption := RsSRWCancelButtonCaption;
+  FCloseButtonCaption := RsSRWCloseButtonCaption;
   FBorderStyle := bsDialog;
   FTop := 0;
   FLeft := 0;
@@ -1118,7 +1112,7 @@ begin
     begin
       SearchName := 'CurrentPosition';
       ReadOnly := TRUE;
-      Caption := 'Current Position';
+      Caption := RsDBPosCurrentPosition;
       AsString := inttostr(EngineRecNo+1)+' / '+inttostr(EngineRecordCount);
       Width := 150;
       LabelWidth := 80;
@@ -1128,7 +1122,7 @@ begin
     Parameter:= TJvBaseParameter(tJvEditParameter.Create(ParameterList));
     with tJvEditParameter(Parameter) do
     begin
-      Caption := 'New Position';
+      Caption := RsDBPosNewPosition;
       SearchName := 'NewPosition';
      // EditMask := '999999999;0;_';
       Width := 150;
@@ -1138,26 +1132,21 @@ begin
     Parameter:= TJvBaseParameter(TJvRadioGroupParameter.Create(ParameterList));
     with TJvRadioGroupParameter(Parameter) do
     begin
-      Caption := 'Movement Type';
+      Caption := RsDBPosMovementType;
       SearchName := 'Kind';
       Width := 305;
       Height := 54;
       Columns := 2;
-      ItemList.Add ('Absolute');
-      ItemList.Add ('Forward');
-      ItemList.Add ('Backward');
-      ItemList.Add ('Percental');
+      ItemList.Add (RsDBPosAbsolute);
+      ItemList.Add (RsDBPosForward);
+      ItemList.Add (RsDBPosBackward);
+      ItemList.Add (RsDBPosPercental);
       ItemIndex := 0;
     end;
     ParameterList.AddParameter(Parameter);
-//    ParameterList.Width := 300;
     ParameterList.ArrangeSettings.WrapControls := True;
     ParameterList.ArrangeSettings.MaxWidth := 350;
-//    ParameterList.ArrangeSettings.AutoSize := asHeight;
-    //ParameterList.DistanceHorizontal := 10;
-    ParameterList.Messages.OkButton := 'Ok';
-    ParameterList.Messages.CancelButton := 'Cancel';
-    ParameterList.Messages.Caption := RSPositionDialogCaption;
+    ParameterList.Messages.Caption := RsDBPosDialogCaption;
     if ParameterList.ShowParameterDialog then
     begin
       s := ParameterList.ParameterbyName ('NewPosition').AsString;
