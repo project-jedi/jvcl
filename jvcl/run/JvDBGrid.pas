@@ -1125,9 +1125,11 @@ begin
   inherited Options := Value - [dgMultiSelect];
   NewOptions := TDrawGrid(Self).Options;
   {
-  if FTitleButtons then begin
+  if FTitleButtons then
+  begin
     TDrawGrid(Self).Options := NewOptions + [goFixedHorzLine, goFixedVertLine];
-  end else
+  end
+  else
   }
   begin
     if not (dgColLines in Value) then

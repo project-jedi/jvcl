@@ -129,7 +129,7 @@ type
 
 
     <CODE>
-      if JvMouseGesture1.TrailActive then begin
+      if JvMouseGesture1.TrailActive then
         JvMouseGesture1.EndMouseGesture;
     </CODE>
 

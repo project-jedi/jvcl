@@ -431,7 +431,8 @@ var
       //      if fDrawWallpapper then
       CreateBitmapExt(DC, TmpBitmap, Rect(0, 0, 100, 100), r.left, r.top,
         fwoNone, fdsDefault, True, FTranspColor, clBlack)
-        //      else begin
+        //      else
+        //      begin
  //        ChangeBitmapColor( TmpBitmap, FTranspColor, ItemStyle.Color );
  //        BitBlt( DC, r.left, r.top, TmpBitmap.Width, TmpBitmap.Height, TmpBitmap.Canvas.handle,
  //                0, 0, SRCCOPY );

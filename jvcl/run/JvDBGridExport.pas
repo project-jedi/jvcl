@@ -87,7 +87,7 @@ type
     procedure CheckVisibleColumn;
   protected
     procedure HandleException;
-    function ExportField(aField: TField): Boolean;
+    function ExportField(AField: TField): Boolean;
     function DoProgress(Min, Max, Position: Cardinal; const AText: string): Boolean; virtual;
     function DoExport: Boolean; virtual; abstract;
     procedure DoSave; virtual;
@@ -101,7 +101,7 @@ type
     // (p3) these should be published: all exporters must support them
     property Caption: string read FCaption write FCaption;
     property Grid: TDBGrid read FGrid write FGrid;
-    property Filename: TFilename read FFilename write FFilename;
+    property FileName: TFilename read FFilename write FFilename;
     property Silent: Boolean read FSilent write FSilent default True;
     property OnProgress: TJvExportProgressEvent read FOnProgress write FOnProgress;
     property OnException: TNotifyEvent read FOnException write FOnException;
@@ -126,7 +126,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Filename;
+    property FileName;
     property Caption;
     property Grid;
     property OnProgress;
@@ -153,7 +153,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Filename;
+    property FileName;
     property Caption;
     property Grid;
     property OnProgress;
@@ -183,7 +183,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Filename;
+    property FileName;
     property Caption;
     property Grid;
     property OnProgress;
@@ -199,7 +199,7 @@ type
     FDestination: TExportDestination;
     FExportSeparator: TExportSeparator;
     procedure SetExportSeparator(const Value: TExportSeparator);
-    function SeparatorToString(aSeparator: TExportSeparator): string;
+    function SeparatorToString(ASeparator: TExportSeparator): string;
     procedure SetDestination(const Value: TExportDestination);
   protected
     function DoExport: Boolean; override;
@@ -210,7 +210,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Filename;
+    property FileName;
     property Caption;
     property Grid;
     property OnProgress;
@@ -222,7 +222,7 @@ type
   TJvDBGridXMLExport = class(TJvCustomDBGridExport)
   private
     FXML: TJvSimpleXML;
-    function ClassNameNoT(aField: TField): string;
+    function ClassNameNoT(AField: TField): string;
   protected
     function DoExport: Boolean; override;
     procedure DoSave; override;
@@ -231,7 +231,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Filename;
+    property FileName;
     property Caption;
     property Grid;
     property OnProgress;
@@ -252,9 +252,7 @@ uses
   JclRegistry,
   JvResources;
 
-// ***********************************************************************
-// TJvCustomDBGridExport
-// ***********************************************************************
+//=== TJvCustomDBGridExport ==================================================
 
 constructor TJvCustomDBGridExport.Create(AOwner: TComponent);
 begin
@@ -278,16 +276,16 @@ end;
 
 procedure TJvCustomDBGridExport.DoSave;
 begin
-  if FileExists(Filename) then
-    DeleteFile(Filename);
+  if FileExists(FileName) then
+    DeleteFile(FileName);
 end;
 
-function TJvCustomDBGridExport.ExportField(aField: TField): Boolean;
+function TJvCustomDBGridExport.ExportField(AField: TField): Boolean;
 begin
-  Result := not (aField.DataType in [ftUnknown, ftBlob, ftGraphic,
+  Result := not (AField.DataType in [ftUnknown, ftBlob, ftGraphic,
     ftParadoxOle, ftDBaseOle, ftTypedBinary, ftCursor, ftADT,
-      ftArray, ftReference, ftDataSet, ftOraBlob, ftOraClob, ftVariant,
-      ftInterface, ftIDispatch, ftGuid]);
+    ftArray, ftReference, ftDataSet, ftOraBlob, ftOraClob, ftVariant,
+    ftInterface, ftIDispatch, ftGuid]);
 end;
 
 procedure TJvCustomDBGridExport.CheckVisibleColumn;
@@ -315,7 +313,7 @@ begin
     raise EJvExportDBGridException.Create(RsGridIsUnassigned);
   if not Assigned(Grid.DataSource) or not Assigned(Grid.DataSource.DataSet) then
     raise EJvExportDBGridException.Create(RsDataSetIsUnassigned);
-//  if Filename = '' then
+//  if FileName = '' then
 //    raise EJvExportDBGridException.Create(RsFilenameEmpty);
   CheckVisibleColumn;
   Result := DoExport;
@@ -346,9 +344,7 @@ begin
     Grid := nil;
 end;
 
-// ***********************************************************************
-// TJvDBGridWordExport
-// ***********************************************************************
+//=== TJvDBGridWordExport ====================================================
 
 constructor TJvDBGridWordExport.Create(AOwner: TComponent);
 begin
@@ -505,9 +501,7 @@ begin
   end;
 end;
 
-// ***********************************************************************
-// TJvDBGridExcelExport
-// ***********************************************************************
+//=== TJvDBGridExcelExport ===================================================
 
 constructor TJvDBGridExcelExport.Create(AOwner: TComponent);
 begin
@@ -561,10 +555,8 @@ begin
   if VarIsEmpty(FExcel) then
     Exit;
   try
-
     FExcel.WorkBooks.Add;
     FExcel.Visible := Visible;
-
 
     lTable := FExcel.ActiveWorkbook.ActiveSheet;
 
@@ -617,15 +609,15 @@ begin
           if not DoProgress(0, lRecCount, ARecNo, Caption) then
             Last;
         end;
-        if FAutoFit then begin
-           try
-             lTable.Columns.AutoFit; // NEW! Autofit!
-           except
-              on E:Exception do begin
-                OutputDebugString(PChar('lTable.Columns.AutoFit failed. '+E.Message));
-              end;
-           end;
-        end;
+        if FAutoFit then
+          try
+            lTable.Columns.AutoFit; // NEW! Autofit!
+          except
+             {$IFDEF DEBUGINFO_ON}
+             on E: Exception do
+               OutputDebugString(PChar('lTable.Columns.AutoFit failed. ' + E.Message));
+             {$ENDIF DEBUGINFO_ON}
+          end;
         DoProgress(0, lRecCount, lRecCount, Caption);
       finally
         try
@@ -660,9 +652,10 @@ end;
 
 procedure TJvDBGridExcelExport.DoClose;
 begin
-  if not VarIsEmpty(FExcel) and (FClose = scNever) then begin
+  if not VarIsEmpty(FExcel) and (FClose = scNever) then
+  begin
     FExcel.Visible := True;
-    exit;
+    Exit;
   end;
 
   if not VarIsEmpty(FExcel) and (FClose <> scNever) then
@@ -679,9 +672,7 @@ begin
   end;
 end;
 
-// ***********************************************************************
-// TJvDBGridHTMLExport
-// ***********************************************************************
+//=== TJvDBGridHTMLExport ====================================================
 
 constructor TJvDBGridHTMLExport.Create(AOwner: TComponent);
 begin
@@ -779,7 +770,7 @@ var
 
   function FontSizeToHTML(PtSize: Integer): Integer;
   begin
-    case abs(PtSize) of
+    case Abs(PtSize) of
       0..8:
         Result := 1;
       9..10:
@@ -922,9 +913,7 @@ begin
   FDocument.SaveToFile(FileName);
 end;
 
-// ***********************************************************************
-// TJvDBGridCSVExport
-// ***********************************************************************
+//=== TJvDBGridCSVExport =====================================================
 
 constructor TJvDBGridCSVExport.Create(AOwner: TComponent);
 begin
@@ -941,9 +930,9 @@ begin
   inherited Destroy;
 end;
 
-function TJvDBGridCSVExport.SeparatorToString(aSeparator: TExportSeparator): string;
+function TJvDBGridCSVExport.SeparatorToString(ASeparator: TExportSeparator): string;
 begin
-  case aSeparator of
+  case ASeparator of
     esTab:
       Result := #9;
     esSemiColon:
@@ -1048,9 +1037,7 @@ begin
   // do nothing
 end;
 
-// ***********************************************************************
-// TJvDBGridXMLExport
-// ***********************************************************************
+//=== TJvDBGridXMLExport =====================================================
 
 constructor TJvDBGridXMLExport.Create(AOwner: TComponent);
 begin
@@ -1067,9 +1054,9 @@ end;
 
 // From DSDEfine of Delphi designer
 
-function TJvDBGridXMLExport.ClassNameNoT(aField: TField): string;
+function TJvDBGridXMLExport.ClassNameNoT(AField: TField): string;
 begin
-  Result := aField.ClassName;
+  Result := AField.ClassName;
   if Result[1] = 'T' then
     Delete(Result, 1, 1);
   if CompareText('Field', Copy(Result, Length(Result) - 4, 5)) = 0 then { do not localize }
@@ -1173,9 +1160,7 @@ begin
   // do nothing
 end;
 
-// ***********************************************************************
-// End
-// ***********************************************************************
+//============================================================================
 
 type
   TGridValue = packed record

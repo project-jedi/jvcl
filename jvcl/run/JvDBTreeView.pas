@@ -1079,7 +1079,8 @@ begin
           FDataLink.DataSet.Post;
           Change2(Self.Selected); {?}
         except
-          on e: Exception do begin
+          on E: Exception do
+          begin
             DataLink.DataSet.Cancel;
             if InAddChild then
             begin
@@ -1087,7 +1088,7 @@ begin
               if Sel <> nil then
                 Selected := Sel;
             end;
-            raise Exception.Create(e.message);  // stupid
+            raise;
           end;
         end;
       end

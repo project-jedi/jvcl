@@ -576,7 +576,8 @@ begin
     DeleteObject( Scroll );
     ReleaseDC( 0, DC );
 
-  end else
+  end
+  else
   begin//..expanded
 
     if fgoFluentlyExpand in Options then

@@ -1772,7 +1772,8 @@ begin
     begin
       Perform( wM_KEYDOWN, VK_TAB, 1);
       for i:=1 to RowCount-FixedRows-1 do Perform( wM_KEYDOWN, VK_UP, 1);
-    end else
+    end
+    else
     begin Perform( wM_KEYDOWN, VK_DOWN, 1); end;
 //    Grid.SetFocus;
      Grid.EditorMode:=false;

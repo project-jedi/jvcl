@@ -1060,7 +1060,8 @@ begin
     //  pRow := PCsvRow( FData[Self.RecNo] );
     //  if (pRow^.filtered) then
     //        First;
-    //end else
+    //end
+    //else
     First;
   end;
 end;
@@ -1816,10 +1817,8 @@ begin
             cp := -1
           else
             for cp := 1 to Field.Size - 1 do
-            begin
               if PChar(Buffer)[cp] = Chr(0) then
                 Break;
-            end;
           if cp > Field.Size - 1 then
             cp := Field.Size - 1;
           NewVal := Copy(PChar(Buffer), 1, cp + 1);
@@ -1847,40 +1846,27 @@ begin
         begin
           NewVal := IntToStr(Ord(PWordBool(Buffer)^)); // bugfix May 26, 2003 - WP
         end;
-
-         // There are two ways of handling date and time:
+      // There are two ways of handling date and time:
       ftDateTime:
         case CsvColumnData^.FFlag of
               // Localized time in Ascii
           jcsvAsciiDateTime:
             begin
-              DT := TimeStampToDateTime(
-                MSecsToTimeStamp(
-                Double(Buffer^)));
+              DT := TimeStampToDateTime(MSecsToTimeStamp(Double(Buffer^)));
               NewVal := DateTimeToTimeToIsoAscii(DT);
-                  //OutputDebugString(PChar('date '+NewVal));
-
+              //OutputDebugString(PChar('date '+NewVal));
             end;
-
-             // GMT Times are stored in HEX
+          // GMT Times are stored in HEX
           jcsvGMTDateTime:
             begin
-              DT := TimeStampToDateTime(
-                MSecsToTimeStamp(
-                Double(Buffer^)));
+              DT := TimeStampToDateTime(MSecsToTimeStamp(Double(Buffer^)));
               NewVal := DateTimeToTimeTHex(DT, 0);
-
             end;
-
           jcsvTZDateTime: // Move a GMT time into a timezone:
             begin
-              DT := TimeStampToDateTime(
-                MSecsToTimeStamp(
-                Double(Buffer^)));
+              DT := TimeStampToDateTime(MSecsToTimeStamp(Double(Buffer^)));
               NewVal := DateTimeToTimeTHex(DT, FTimeZoneCorrection);
-
             end;
-
         else
           JvCsvDatabaseError(FTableName, RsETimeTConvError);
         end;
@@ -2018,8 +2004,9 @@ begin
   pSource := GetActiveRecordBuffer; // This should not be nil EXCEPT if table is Empty or Closed.
   if pSource = nil then
   begin
+    // (rom) no OutputDebugString in production code
     {$IFDEF DEBUGINFO_ON}
-    if Self.FData.Count>0 then
+    if Self.FData.Count > 0 then
       OutputDebugString( 'TJvCustomCsvDataSet.GetFieldData: GetActiveRecordBuffer is nil but table is not empty. (Internal Fault Condition).');
     {$ENDIF DEBUGINFO_ON}
     Exit;
@@ -2721,26 +2708,26 @@ end;
 function TJvCustomCsvDataSet.GetFileName: string;
 begin
    // If FTableName is not set, you can't save or load a file, fire an exception:
-   Assert(Length(FTableName) <> 0,'TJvCustomCsvDataSet.GetFileName - TableName property is not set');
+   Assert(Length(FTableName) <> 0, 'TJvCustomCsvDataSet.GetFileName - TableName property is not set');
 
    if (Length(FTableName) > 2) and (FTableName[1] = '.') and
-       IsPathDelimiter(FTableName, 2) then // reasonably portable, okay?
+     IsPathDelimiter(FTableName, 2) then // reasonably portable, okay?
    begin
      // Design-time local paths that don't move if the current working
      // directory moves.  These paths reference the directory the program
      // starts in.  To use this at design time you have to enter the
      // table name as '.\Subdirectory\FileName.csv' (or './subdir/...' on Kylix)
      Result := IncludeTrailingPathDelimiter(FInitialWorkingDirectory) +   FTableName;  // SPECIAL CASE.
-   end else begin
+   end
+   else
      Result := ExpandUNCFilename(FTableName); // Expand using current working directory to full path name. DEFAULT BEHAVIOR.
-   end;
 end;
 
 function TJvCustomCsvDataSet.InternalLoadFileStrings: Boolean;
 begin
   Result := False;
   // BUGFIX: Problem with tables with LoadsFromFile would not load at all. FEB 2004.
-  if (FLoadsFromFile) and (not FileExists(FTableName)) then
+  if FLoadsFromFile and not FileExists(FTableName) then
     Exit; // We can return immediately ONLY if there is no file to load,
           // otherwise this routine is parsing already-loaded data, and we should NOT
           // return, or we won't get our data in the table. -WP.
@@ -4111,7 +4098,7 @@ begin
       if (AsciiDateStr[Index] <> Separators[t]) and
         (AsciiDateStr[Index] <> Separators2[t]) then
       begin
-            // (rom) no OutputDebugString in production code
+        // (rom) no OutputDebugString in production code
         {$IFDEF DEBUGINFO_ON}
         OutputDebugString('TimeTAsciiToDateTime:illegal separator Char');
         {$ENDIF DEBUGINFO_ON}
@@ -4123,7 +4110,7 @@ begin
     begin
       // (rom) no OutputDebugString in production code
       {$IFDEF DEBUGINFO_ON}
-      OutputDebugString('TimeTAsciiToDateTime:range error');
+      OutputDebugString('TimeTAsciiToDateTime: range error');
       {$ENDIF DEBUGINFO_ON}
       Exit; // a value is out of range.
     end;

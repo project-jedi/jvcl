@@ -42,7 +42,7 @@ type
   TJvgCGI = class(TObject)
   private
     FAutoHeaderAndFooter: boolean;
-    procedure Split(s: string);
+    procedure Split(S: string);
     procedure Decode(sl: TStringList);
   public
     //      Names: TStringList;
@@ -77,7 +77,8 @@ begin
   GetEnvironmentVariable('QUERY_STRING', @Val, SizeOf(Val));
   //_____________________________POST METHOD
 //  if Val='' then
-//  begin Read(Input,Val); sMsg := 'Post'; end else sMsg := 'Get';
+//  begin Read(Input,Val); sMsg := 'Post'; end
+//  else sMsg := 'Get';
 
 //  MessageBox(0,Val, PChar(sMsg+' method detected.'),MB_OK); //exit;
 
@@ -128,67 +129,67 @@ begin
   Writeln('</HTML>');
 end;
 
-procedure TJvgCGI.Split(s: string);
+procedure TJvgCGI.Split(S: string);
 var
-  i, lastI: Integer;
+  I, lastI: Integer;
 
-  procedure Extract(LastI, i: Integer);
+  procedure Extract(LastI, I: Integer);
 //  var
-//    j: Integer;
+//    J: Integer;
   begin
-    {    j := LastI;
-        while (s[j]<>'=')and(s[j]<>#0) do inc(j);
-        Names.Add( Copy( s, LastI, j-LastI ) );
-        Values.Add( Copy( s, j+1, i-j-1 ) );}
-    Params.Add(Copy(s, LastI, i - LastI + 1));
+    {    J := LastI;
+        while (S[J]<>'=')and(S[J]<>#0) do inc(J);
+        Names.Add( Copy( S, LastI, J-LastI ) );
+        Values.Add( Copy( S, J+1, I-J-1 ) );}
+    Params.Add(Copy(S, LastI, I - LastI + 1));
   end;
 begin
-  i := 1;
+  I := 1;
   lastI := 1;
-  while i < Length(s) do
+  while I < Length(S) do
   begin
-    if (s[i] = '&') or (s[i] = '?') then
+    if (S[I] = '&') or (S[I] = '?') then
     begin
-      Extract(LastI, i - 1);
-      lastI := i + 1;
+      Extract(LastI, I - 1);
+      lastI := I + 1;
     end;
-    Inc(i);
+    Inc(I);
   end;
-  Extract(LastI, i + 1);
+  Extract(LastI, I + 1);
 end;
 
 procedure TJvgCGI.Decode(sl: TStringList);
 var
-  i, j: Integer;
-  s: string;
+  I, J: Integer;
+  S: string;
 begin
-  for i := 0 to sl.Count - 1 do
+  for I := 0 to sl.Count - 1 do
   begin
-    s := sl[i];
-    for j := 1 to Length(s) do
-      if s[j] = '+' then
-        s[j] := ' '
+    S := sl[I];
+    for J := 1 to Length(S) do
+      if S[J] = '+' then
+        S[J] := ' '
       else
-      if s[j] = '%' then
-      try
-        s := Copy(s, 0, j - 1) + Char(StrToInt('$' + Copy(s, j + 1, 2))) + Copy(s, j + 3, Length(s) - j - 2);
-      except
-      end;
-    if s[1] = '?' then
-      s := Copy(s, 2, Length(s) - 1);
-    sl[i] := s;
+      if S[J] = '%' then
+        try
+          S := Copy(S, 0, J - 1) + Char(StrToInt('$' + Copy(S, J + 1, 2))) + Copy(S, J + 3, Length(S) - J - 2);
+        except
+        end;
+    if S[1] = '?' then
+      S := Copy(S, 2, Length(S) - 1);
+    sl[I] := S;
 
   end;
 end;
 
 function TJvgCGI.ParamNameIndex(str: string): Integer;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Params.Count - 1 do
-    if CompareText(Params.Names[i], str) = 0 then
+  for I := 0 to Params.Count - 1 do
+    if CompareText(Params.Names[I], str) = 0 then
     begin
-      Result := i;
+      Result := I;
       Exit;
     end;
   Result := -1;
@@ -196,11 +197,11 @@ end;
 
 function TJvgCGI.ParamValueIndex(str: string): Integer;
 //var
-//  i: Integer;
+//  I: Integer;
 begin
-  {  for i:=0 to Params.Count-1 do
-      if CompareText( Params.Values[i], str ) = 0 then exit;
-      begin Result := i; exit; end;}
+  {  for I:=0 to Params.Count-1 do
+      if CompareText( Params.Values[I], str ) = 0 then exit;
+      begin Result := I; exit; end;}
   Result := -1;
 end;
 

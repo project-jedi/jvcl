@@ -541,7 +541,8 @@ begin
   Result := TList.Create;
   try
     for I := 0 to Source.Count - 1 do
-      if (Source[I] <> nil) and (TObject(Source[I]) is TExtension) then begin
+      if (Source[I] <> nil) and (TObject(Source[I]) is TExtension) then
+      begin
         Ext := TExtension.Create;
         try
           Ext.Assign(Source[I]);

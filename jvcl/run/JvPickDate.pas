@@ -480,7 +480,8 @@ end;
 
 procedure TJvCalendar.SetCalendarDate(Value: TDateTime);
 begin
-  //  if FDate <> Value then begin
+  //if FDate <> Value then
+  //begin
   if (FMinDate <> NullDate) and (Value < FMinDate) then
     Value := FMinDate
   else
@@ -489,7 +490,7 @@ begin
   FDate := Value;
   UpdateCalendar;
   Change;
-  //  end;
+  //end;
 end;
 
 function TJvCalendar.StoreCalendarDate: Boolean;
@@ -1368,14 +1369,16 @@ begin
     ParentColor := True;
   end;
 
-  {  with TButton.Create(Self) do begin
+  {  with TButton.Create(Self) do
+     begin
       Parent := Control;
       SetBounds(0, 0, 112, 21);
       Caption := ResStr(SOKButton);
       ModalResult := mrOk;
     end;
 
-    with TButton.Create(Self) do begin
+    with TButton.Create(Self) do
+    begin
       Parent := Control;
       SetBounds(111, 0, 111, 21);
       Caption := ResStr(SCancelButton);
