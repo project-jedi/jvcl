@@ -33,8 +33,7 @@
     <File Name="..\..\design\JvID3v2DefineForm.pas" Targets="allbutclx" Formname="JvID3DefineDlg" Condition=""/>
     <File Name="..\..\design\JvID3v2EditorForm.pas" Targets="allbutclx" Formname="JvID3FramesEditor" Condition=""/>
     <File Name="..\..\design\JvImagePreviewForm.pas" Targets="allbutclx" Formname="ImageForm" Condition=""/>
-    <File Name="..\..\design\JvMMReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQMMReg.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvMMReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvPictureEditForm.pas" Targets="allbutclx" Formname="PictureEditDialog" Condition=""/>
   </Contains>
 </Package>

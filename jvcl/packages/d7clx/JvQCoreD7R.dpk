@@ -60,7 +60,6 @@ contains
   QToolWin in '..\..\qcommon\QToolWin.pas' ,
   QComboEdits in '..\..\qcommon\QComboEdits.pas' ,
   QNotebook in '..\..\qcommon\QNotebook.pas' ,
-  QComCtrlsEx in '..\..\qcommon\QComCtrlsEx.pas' ,
   QWinCursors in '..\..\qcommon\QWinCursors.pas' ,
   JvQConsts in '..\..\qcommon\JvQConsts.pas' ,
   JvQColorProvider in '..\..\qrun\JvQColorProvider.pas' ,
