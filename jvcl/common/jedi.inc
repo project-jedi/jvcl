@@ -1000,10 +1000,14 @@
 
 // for Delphi/BCB trial versions remove the point from the line below
 {.$UNDEF SUPPORTS_WEAKPACKAGEUNIT}
+{$ENDIF JEDI_INC}
 
 // History:
 
 // $Log$
+// Revision 1.9  2004/08/08 20:13:05  peter3
+// - Missing ENDIF added
+//
 // Revision 1.8  2004/08/08 16:04:17  peter3
 // - D8 support added
 // - D9 support added (guesswork)
@@ -1072,4 +1076,3 @@
 //  - add Kylix definitions
 //  - add RTL definitions
 //  - add FPC definitions
-
