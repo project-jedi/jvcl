@@ -181,7 +181,7 @@ begin
       begin
         Reg.RootKey := Longint(TmpNode.Data);
         Result := True;
-        Exit;
+        Break;
       end;
       TmpNode := TmpNode.Parent;
     end;
@@ -273,6 +273,40 @@ begin
     Result := Result + ' ' + IntToHex(Buffer[I], 2);
 end;
 
+function RegTypes(AType: Integer): string;
+const
+  StrTypes : array [0..10] of PChar =
+   ('REG_NONE', 'REG_SZ', 'REG_EXPAND_SZ', 'REG_BINARY', 'REG_DWORD',
+    'REG_DWORD_BIG_ENDIAN', 'REG_LINK', 'REG_MULTI_SZ', 'REG_RESOURCE_LIST',
+    'REG_FULL_RESOURCE_DESCRIPTOR', 'REG_RESOURCE_REQUIREMENTS_LIST');
+begin
+  if (AType >= 0) and (AType <= High(StrTypes)) then
+    Result := StrTypes[AType]
+  else
+    Result := 'UNKNOWN';
+end;
+
+//=== { TJvRegistryTreeView } ================================================
+
+constructor TJvRegistryTreeView.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FRegistryKeys := [hkCurrentUser, hkLocalMachine];
+  FRootCaption := RsMyComputer;
+  FDefaultCaption := RsDefaultCaption;
+  FDefaultNoValue := RsDefaultNoValue;
+  SetDefaultImages;
+end;
+
+destructor TJvRegistryTreeView.Destroy;
+begin
+  if Assigned(FListView) and (TListViewAccessProtected(FListView).SmallImages = FInternalImages) then
+    TListViewAccessProtected(FListView).SmallImages := nil;
+  if Assigned(FInternalImages) then
+    FInternalImages.Free;
+  inherited Destroy;
+end;
+
 function TJvRegistryTreeView.GetCurrentPath: string;
 begin
   Result := GetFullPath(Selected);
@@ -354,29 +388,17 @@ begin
   FReg.OpenKeyReadOnly(AKey);
 end;
 
-function RegTypes(AType : Integer) : String;
-const
-  StrTypes : Array[0..10] of String = ('REG_NONE', 'REG_SZ','REG_EXPAND_SZ',
-    'REG_BINARY','REG_DWORD','REG_DWORD_BIG_ENDIAN','REG_LINK','REG_MULTI_SZ',
-    'REG_RESOURCE_LIST','REG_FULL_RESOURCE_DESCRIPTOR','REG_RESOURCE_REQUIREMENTS_LIST');
-begin
-  if (AType >= 0) and (AType <= High(StrTypes)) then
-    Result := StrTypes[AType]
-  else
-    Result := 'UNKNOWN';
-end;
-
 function TJvRegistryTreeView.FillListView(Node: TTreeNode): Boolean;
 var
-  I,J: Integer;
+  I, J: Integer;
   TmpItem: TListItem;
   S, T: string;
   DefaultSet: Boolean;
   Info: TRegKeyInfo;
-  D : Array of Byte;
-  DataType : Cardinal;
-  Len, Len1 : Cardinal;
-  AListView:TListViewAccessProtected;
+  D: array of Byte;
+  DataType: Cardinal;
+  Len, Len1: Cardinal;
+  AListView: TListViewAccessProtected;
 begin
   Result := False;
   if not Assigned(FListView) then
@@ -405,7 +427,7 @@ begin
           DataType := 0;
           RegEnumValue(FReg.CurrentKey, I, PChar(S), Len, nil, @DataType, @D[0], @Len1);
           SetLength(S,Len);
-        { set default item }
+          { set default item }
           if (S = '') and not DefaultSet then
           begin
             TmpItem := AListView.Items.Insert(0);
@@ -418,19 +440,19 @@ begin
             TmpItem.Caption := S;
           end;
           case DataType of
-            REG_SZ, REG_EXPAND_SZ,REG_MULTI_SZ :
+            REG_SZ, REG_EXPAND_SZ,REG_MULTI_SZ:
               begin
                 if DataType = REG_MULTI_SZ then
                   for J := 0 to Pred(Len1) do
                     if D[J] = 0 then
                       D[J] := Ord(' ');
-                T := String(PChar(D));
+                T := string(PChar(D));
                 if (T = '') and AnsiSameText(TmpItem.Caption, FDefaultCaption) then
                   T := FDefaultNoValue;
                 TmpItem.ImageIndex := imText;
                 TmpItem.SubItems.Add(T);
               end;
-            REG_DWORD :
+            REG_DWORD:
               begin
                 TmpItem.ImageIndex := imBin;
                 TmpItem.SubItems.Add(Format('0x%.8x (%d)', [Cardinal(Pointer(D)^),Cardinal(Pointer(D)^)]));
@@ -645,34 +667,15 @@ begin
     SetDefaultImages;
 end;
 
-constructor TJvRegistryTreeView.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FRegistryKeys := [hkCurrentUser, hkLocalMachine];
-  FRootCaption := RsMyComputer;
-  FDefaultCaption := RsDefaultCaption;
-  FDefaultNoValue := RsDefaultNoValue;
-  SetDefaultImages;
-end;
-
-destructor TJvRegistryTreeView.Destroy;
-begin
-  if Assigned(FListView) and (TListViewAccessProtected(FListView).SmallImages = FInternalImages) then
-    TListViewAccessProtected(FListView).SmallImages := nil;
-  if Assigned(FInternalImages) then
-    FInternalImages.Free;
-  inherited Destroy;
-end;
-
 procedure TJvRegistryTreeView.RefreshNode(Node: TTreeNode);
 var
-  b: Boolean;
+  B: Boolean;
 begin
   Items.BeginUpdate;
   try
-    b := False;
+    B := False;
     if Node <> nil then
-      b := Node.Expanded;
+      B := Node.Expanded;
     OpenRegistry(Node);
     try
       if Node <> nil then
@@ -686,7 +689,7 @@ begin
       end;
     finally
       if Node <> nil then
-        Node.Expanded := b;
+        Node.Expanded := B;
       CloseRegistry;
     end;
   finally
