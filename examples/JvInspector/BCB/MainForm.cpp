@@ -162,7 +162,7 @@ void __fastcall TfrmMain::AddCompoundTest()
 void __fastcall TfrmMain::AddCtrl(const TJvCustomInspectorItem* Parent, const TControl* Ctrl)
 {
   TJvInspectorCustomCategoryItem* InspCat;
-  TNotifyEvent M;
+//  TNotifyEvent M;
 
   InspCat = new TJvInspectorCustomCategoryItem(Parent, NULL);
   InspCat->DisplayName = Ctrl->Name + ": " + const_cast<TControl *>(Ctrl)->ClassName(); // The cast to avoid a warning because ClassName is not a const method
@@ -171,11 +171,20 @@ void __fastcall TfrmMain::AddCtrl(const TJvCustomInspectorItem* Parent, const TC
     TJvInspectorTMethodItem* tmi = dynamic_cast<TJvInspectorTMethodItem*>(TJvInspectorPropData::New(NULL, InspCat, Ctrl, "OnChange"));
     tmi->AddInstance(frmTest, "frmTest");
     tmi->AddInstance(this, "frmInspector");
-#pragma message ("Fixme")
+
+    // There is no way to directly convert from a TNotifyEvent to a TMethod
+    // So we need to do the job ourselvs by getting the address using the method name
+    // Then we set the Data member to the instance to which the method is to be applied 
 //    M = frmTest->Edit1Change1;
-//    tmi->AddMethod(dynamic_cast<TMethod>(M), "Edit1Change1");
+    TMethod tmpMethod;
+    tmpMethod.Code = frmTest->MethodAddress("Edit1Change1");
+    tmpMethod.Data = frmTest;
+    tmi->AddMethod(tmpMethod, "Edit1Change1");
+
 //    M = Edit1Change2;
-//    tmi->AddMethod(static_cast<TMethod>(M), "Edit1Change2");
+    tmpMethod.Code = MethodAddress("Edit1Change2");
+    tmpMethod.Data = this;
+    tmi->AddMethod(tmpMethod, "Edit1Change2");
   }
   else
     TJvInspectorPropData::New(NULL, InspCat, Ctrl);
