@@ -9,7 +9,7 @@ implementation
 uses
   Classes,
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf,
+  DesignEditors, DesignIntf, VCLEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -20,9 +20,12 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('Jv Custom',[
-    TJvPluginManager
-    ]);
+  RegisterComponents('Jv Custom',[TJvPluginManager]);
+
+// Bianconi
+  RegisterPropertyEditor(TypeInfo(TShortCut), TJvPluginCommand, 'ShortCut', TShortCutProperty);
+// End of Bianconi 
+
   RegisterPackageWizard( TJvPluginWizard.Create );
 //  RegisterLibraryExpert(TJvPluginWizard.Create)
 end;
