@@ -38,7 +38,7 @@ object ScriptOutlineForm: TScriptOutlineForm
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
-    EnableCloseBtn = True
+    EnableCloseButton = True
     DockStyle = MainForm.JvDockVIDStyle1
     Left = 56
     Top = 48

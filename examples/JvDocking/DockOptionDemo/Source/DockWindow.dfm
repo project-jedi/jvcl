@@ -33,7 +33,7 @@ object DockWindow_Form: TDockWindow_Form
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
-    EnableCloseBtn = True
+    EnableCloseButton = True
     DockStyle = Main_Form.JvDockVIDStyle1
     Left = 64
     Top = 64

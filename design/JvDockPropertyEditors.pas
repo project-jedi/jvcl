@@ -182,23 +182,23 @@ begin
         Page.Panel.Invalidate;
       end;
     1:
-      if Page.PageCount >= 0 then
+      if Page.Count >= 0 then
       begin
-        if Page.ActivePageIndex = Page.PageCount - 1 then
+        if Page.ActivePageIndex = Page.Count - 1 then
           Page.ActivePageIndex := 0
         else
           Page.ActivePageIndex := Page.ActivePageIndex + 1;
       end;
     2:
-      if Page.PageCount >= 0 then
+      if Page.Count >= 0 then
       begin
         if Page.ActivePageIndex = 0 then
-          Page.ActivePageIndex := Page.PageCount - 1
+          Page.ActivePageIndex := Page.Count - 1
         else
           Page.ActivePageIndex := Page.ActivePageIndex - 1;
       end;
     3:
-      if Page.PageCount >= 0 then
+      if Page.Count >= 0 then
         Page.ActivePage.Free;
   end;
 end;

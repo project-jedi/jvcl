@@ -110,8 +110,8 @@ type
   TJvDockCustomControl = class(TCustomControl)
   {$ENDIF USEJVCL}
   private
-    function GetlbDockManager: IJvDockManager;
-    procedure SetlbDockManager(const Value: IJvDockManager);
+    function GetJvDockManager: IJvDockManager;
+    procedure SetJvDockManager(const Value: IJvDockManager);
   protected
     procedure WndProc(var Msg: TMessage); override;
     procedure CustomStartDock(var Source: TJvDockDragDockObject); virtual;
@@ -128,7 +128,7 @@ type
   public
     procedure UpdateCaption(Exclude: TControl); virtual;
     property DockManager;
-    property lbDockManager: IJvDockManager read GetlbDockManager write SetlbDockManager;
+    property JvDockManager: IJvDockManager read GetJvDockManager write SetJvDockManager;
   end;
 
   TJvDockCustomPanel = class(TJvDockCustomControl)
@@ -299,12 +299,12 @@ type
     FActivePage: TJvDockTabSheet;
     FNewDockSheet: TJvDockTabSheet;
     FUndockingPage: TJvDockTabSheet;
-    FlbDockTabSheetClass: TJvDockTabSheetClass;
+    FTabSheetClass: TJvDockTabSheetClass;
     procedure ChangeActivePage(Page: TJvDockTabSheet);
     procedure DeleteTab(Page: TJvDockTabSheet; Index: Integer);
     function GetActivePageIndex: Integer;
     function GetPage(Index: Integer): TJvDockTabSheet;
-    function GetPageCount: Integer;
+    function GetCount: Integer;
     procedure InsertPage(Page: TJvDockTabSheet);
     procedure InsertTab(Page: TJvDockTabSheet);
     procedure MoveTab(CurIndex, NewIndex: Integer);
@@ -356,11 +356,11 @@ type
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
     property ActivePage: TJvDockTabSheet read FActivePage write SetActivePage;
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex;
-    property PageCount: Integer read GetPageCount;
+    property Count: Integer read GetCount;
     property Pages[Index: Integer]: TJvDockTabSheet read GetPage;
     property PageSheets: TList read FPages;
-    property lbDockTabSheetClass: TJvDockTabSheetClass read FlbDockTabSheetClass
-      write FlbDockTabSheetClass;
+    property TabSheetClass: TJvDockTabSheetClass read FTabSheetClass
+      write FTabSheetClass;
   end;
 
   TJvDockTabStrings = class(TStrings)
@@ -544,7 +544,7 @@ implementation
 
 uses
   Consts, ComStrs,
-  JvDockGlobals, JvDockControlForm, JvDockSupportProc;
+  JvDockGlobals, JvDockControlForm, JvDockJvDockSupportProc;
 
 type
   TNCButtonProc = procedure(Msg: TWMNCHitMessage; Button: TMouseButton;
@@ -556,7 +556,7 @@ begin
   Result := Page.GetDockClientFromMousePos(SmallPointToPoint(Msg.Pos));
   if (Result <> nil) and Assigned(Proc) then
   begin
-    JvGlobalDockClient := FindDockClient(Result);
+    JvJvGlobalDockClient := FindDockClient(Result);
     Proc(Page.DoMouseEvent(Msg, Page), Button, MouseStation);
   end;
 end;
@@ -842,9 +842,9 @@ begin
       WM_CAPTURECHANGED:
         JvGlobalDockManager.DragDone(False);
       WM_LBUTTONUP, WM_RBUTTONUP:
-        if not JvGlobalDockClient.CanFloat then
+        if not JvJvGlobalDockClient.CanFloat then
         begin
-          if (TargetControl = nil) and (JvGlobalDockClient.ParentForm.HostDockSite = nil) then
+          if (TargetControl = nil) and (JvJvGlobalDockClient.ParentForm.HostDockSite = nil) then
             JvGlobalDockManager.DragDone(True)
           else
             JvGlobalDockManager.DragDone(TargetControl <> nil);
@@ -912,12 +912,12 @@ end;
 
 //=== TJvDockCustomControl ===================================================
 
-function TJvDockCustomControl.GetlbDockManager: IJvDockManager;
+function TJvDockCustomControl.GetJvDockManager: IJvDockManager;
 begin
   Result := IJvDockManager(DockManager);
 end;
 
-procedure TJvDockCustomControl.SetlbDockManager(const Value: IJvDockManager);
+procedure TJvDockCustomControl.SetJvDockManager(const Value: IJvDockManager);
 begin
   DockManager := Value;
 end;
@@ -1006,10 +1006,10 @@ begin
       DockRect := R;
       if THackWinControl(DragTarget).UseDockManager then
         if TargetControl is TJvDockCustomPanel then
-          if TJvDockCustomPanel(DragTarget).lbDockManager <> nil then
+          if TJvDockCustomPanel(DragTarget).JvDockManager <> nil then
           begin
             R := DockRect;
-            TJvDockCustomPanel(DragTarget).lbDockManager.PositionDockRect(Control,
+            TJvDockCustomPanel(DragTarget).JvDockManager.PositionDockRect(Control,
               DropOnControl, DropAlign, R);
             DockRect := R;
           end;
@@ -1070,7 +1070,7 @@ begin
             DockableForm.FloatingChild.Dock(Self, Rect(0, 0, 0, 0));
           DockableForm.FloatingChild.Visible := True;
           if Self is TJvDockCustomPanel then
-            lbDockManager.ReplaceZoneChild(DockableForm, DockableForm.FloatingChild);
+            JvDockManager.ReplaceZoneChild(DockableForm, DockableForm.FloatingChild);
         finally
         end;
     end;
@@ -1851,7 +1851,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := [csDoubleClicks, csOpaque];
   FPages := TList.Create;
-  FlbDockTabSheetClass := TJvDockTabSheet;
+  FTabSheetClass := TJvDockTabSheet;
 end;
 
 destructor TJvDockPageControl.Destroy;
@@ -1874,7 +1874,7 @@ procedure TJvDockPageControl.UpdateTabHighlights;
 var
   I: Integer;
 begin
-  for I := 0 to PageCount - 1 do
+  for I := 0 to Count - 1 do
     Pages[I].SetHighlighted(Pages[I].FHighlighted);
 end;
 
@@ -2047,7 +2047,7 @@ var
   I: Integer;
 begin
   Result := nil;
-  for I := 0 to PageCount - 1 do
+  for I := 0 to Count - 1 do
     if (Client.Parent = Pages[I]) and (Client.HostDockSite = Self) then
     begin
       Result := Pages[I];
@@ -2060,7 +2060,7 @@ begin
   Result := FPages[Index];
 end;
 
-function TJvDockPageControl.GetPageCount: Integer;
+function TJvDockPageControl.GetCount: Integer;
 begin
   Result := FPages.Count;
 end;
@@ -2181,8 +2181,8 @@ var
   DockCtl: TControl;
 begin
   Msg.Result := 0;
-  if FlbDockTabSheetClass <> nil then
-    FNewDockSheet := FlbDockTabSheetClass.Create(Self)
+  if FTabSheetClass <> nil then
+    FNewDockSheet := FTabSheetClass.Create(Self)
   else
     FNewDockSheet := TJvDockTabSheet.Create(Self);
   try
@@ -2276,8 +2276,8 @@ var
   DockCtl: TControl;
 begin
   inherited;
-  if JvGlobalDockClient <> nil then
-    DockCtl := ButtonEvent(Self, Msg, mbLeft, msTabPage, JvGlobalDockClient.DoNCButtonDown)
+  if JvJvGlobalDockClient <> nil then
+    DockCtl := ButtonEvent(Self, Msg, mbLeft, msTabPage, JvJvGlobalDockClient.DoNCButtonDown)
   else
     DockCtl := nil;
   if (DockCtl <> nil) and (Style = tsTabs) then
@@ -2289,11 +2289,11 @@ var
   DockCtl: TControl;
 begin
   inherited;
-  if JvGlobalDockClient <> nil then
-    DockCtl := ButtonEvent(Self, Msg, mbLeft, msTabPage, JvGlobalDockClient.DoNCButtonDblClk)
+  if JvJvGlobalDockClient <> nil then
+    DockCtl := ButtonEvent(Self, Msg, mbLeft, msTabPage, JvJvGlobalDockClient.DoNCButtonDblClk)
   else
     DockCtl := nil;
-  if (DockCtl <> nil) and JvGlobalDockClient.CanFloat then
+  if (DockCtl <> nil) and JvJvGlobalDockClient.CanFloat then
     DockCtl.ManualDock(nil, nil, alNone);
 end;
 
@@ -2307,7 +2307,7 @@ end;
 
 procedure TJvDockPageControl.SetActivePageIndex(const Value: Integer);
 begin
-  if (Value > -1) and (Value < PageCount) then
+  if (Value > -1) and (Value < Count) then
     ActivePage := Pages[Value]
   else
     ActivePage := nil;
@@ -2419,51 +2419,51 @@ end;
 procedure TJvDockPageControl.WMLButtonUp(var Msg: TWMLButtonUp);
 begin
   inherited;
-  if JvGlobalDockClient <> nil then
-    ButtonEvent(Self, Msg, mbLeft, msTabPage, JvGlobalDockClient.DoNCButtonUp);
+  if JvJvGlobalDockClient <> nil then
+    ButtonEvent(Self, Msg, mbLeft, msTabPage, JvJvGlobalDockClient.DoNCButtonUp);
 end;
 
 procedure TJvDockPageControl.WMMButtonDblClk(var Msg: TWMMButtonDblClk);
 begin
   inherited;
-  if JvGlobalDockClient <> nil then
-    ButtonEvent(Self, Msg, mbMiddle, msTabPage, JvGlobalDockClient.DoNCButtonDblClk);
+  if JvJvGlobalDockClient <> nil then
+    ButtonEvent(Self, Msg, mbMiddle, msTabPage, JvJvGlobalDockClient.DoNCButtonDblClk);
 end;
 
 procedure TJvDockPageControl.WMMButtonDown(var Msg: TWMMButtonDown);
 begin
   inherited;
-  if JvGlobalDockClient <> nil then
-    ButtonEvent(Self, Msg, mbMiddle, msTabPage, JvGlobalDockClient.DoNCButtonDown);
+  if JvJvGlobalDockClient <> nil then
+    ButtonEvent(Self, Msg, mbMiddle, msTabPage, JvJvGlobalDockClient.DoNCButtonDown);
 end;
 
 procedure TJvDockPageControl.WMMButtonUp(var Msg: TWMMButtonUp);
 begin
   inherited;
-  if JvGlobalDockClient <> nil then
-    ButtonEvent(Self, Msg, mbMiddle, msTabPage, JvGlobalDockClient.DoNCButtonUp);
+  if JvJvGlobalDockClient <> nil then
+    ButtonEvent(Self, Msg, mbMiddle, msTabPage, JvJvGlobalDockClient.DoNCButtonUp);
 end;
 
 procedure TJvDockPageControl.WMRButtonDblClk(var Msg: TWMRButtonDblClk);
 begin
   inherited;
-  if JvGlobalDockClient <> nil then
-    ButtonEvent(Self, Msg, mbRight, msTabPage, JvGlobalDockClient.DoNCButtonDblClk);
+  if JvJvGlobalDockClient <> nil then
+    ButtonEvent(Self, Msg, mbRight, msTabPage, JvJvGlobalDockClient.DoNCButtonDblClk);
 end;
 
 procedure TJvDockPageControl.WMRButtonDown(var Msg: TWMRButtonDown);
 begin
   Msg.Msg := WM_LBUTTONDOWN;
   inherited;
-  if JvGlobalDockClient <> nil then
-    ButtonEvent(Self, Msg, mbRight, msTabPage, JvGlobalDockClient.DoNCButtonDown);
+  if JvJvGlobalDockClient <> nil then
+    ButtonEvent(Self, Msg, mbRight, msTabPage, JvJvGlobalDockClient.DoNCButtonDown);
 end;
 
 procedure TJvDockPageControl.WMRButtonUp(var Msg: TWMRButtonUp);
 begin
   inherited;
-  if JvGlobalDockClient <> nil then
-    ButtonEvent(Self, Msg, mbRight, msTabPage, JvGlobalDockClient.DoNCButtonUp);
+  if JvJvGlobalDockClient <> nil then
+    ButtonEvent(Self, Msg, mbRight, msTabPage, JvJvGlobalDockClient.DoNCButtonUp);
 end;
 
 //=== TJvDockManager =========================================================
@@ -2724,10 +2724,10 @@ var
   var
     D: TJvDockDragDockObject;
   begin
-    if Assigned(JvGlobalDockClient) then
+    if Assigned(JvJvGlobalDockClient) then
     begin
       D := DragObject;
-      JvGlobalDockClient.FormStartDock(D);
+      JvJvGlobalDockClient.FormStartDock(D);
       DragObject := D;
     end;
     if DragObject = nil then
@@ -2749,7 +2749,7 @@ begin
     with DragObject do
     begin
       if Control.HostDockSite is TJvDockCustomPanel then
-        ARect := TJvDockCustomPanel(Control.HostDockSite).lbDockManager.GetFrameRectEx(Control)
+        ARect := TJvDockCustomPanel(Control.HostDockSite).JvDockManager.GetFrameRectEx(Control)
       else
         GetWindowRect(TWinControl(Control).Handle, ARect);
       DockRect := ARect;
@@ -2857,8 +2857,8 @@ begin
       begin
         if Target = nil then
         begin
-          if Assigned(JvGlobalDockClient) then
-            JvGlobalDockClient.FormPositionDockRect(DragObject);
+          if Assigned(JvJvGlobalDockClient) then
+            JvJvGlobalDockClient.FormPositionDockRect(DragObject);
         end
         else
         begin
@@ -3216,7 +3216,7 @@ begin
     else
     if HostDockSite is TJvDockCustomPanel then
     begin
-      Rect := TJvDockCustomPanel(HostDockSite).lbDockManager.GetFrameRect(Control);
+      Rect := TJvDockCustomPanel(HostDockSite).JvDockManager.GetFrameRect(Control);
       if HostDockSite.Align in [alTop, alBottom] then
         TBDockHeight := Rect.Bottom - Rect.Top
       else
@@ -3249,8 +3249,8 @@ end;
 
 procedure TJvDockManager.ResetCursor;
 begin
-  if (JvGlobalDockClient <> nil) and (JvGlobalDockClient.DockStyle <> nil) then
-    JvGlobalDockClient.DockStyle.ResetCursor(DragObject);
+  if (JvJvGlobalDockClient <> nil) and (JvJvGlobalDockClient.DockStyle <> nil) then
+    JvJvGlobalDockClient.DockStyle.ResetCursor(DragObject);
 end;
 
 //=== TSiteList ==============================================================

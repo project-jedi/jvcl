@@ -35,7 +35,7 @@ uses
   {$IFDEF USEJVCL}
   JvAppStorage,
   {$ENDIF USEJVCL}
-  JvDockControlForm, JvDockSupportClass, JvDockSupportProc;
+  JvDockControlForm, JvDockJvDockSupportClass, JvDockJvDockSupportProc;
 
 type
   TJvDockInfoTree = class;
@@ -324,9 +324,9 @@ var
   procedure SetDockSiteSize(DockSite: TJvDockPanel);
   begin
     if DockSite.Align in [alTop, alBottom] then
-      DockSite.lbDockManager.DockSiteSize := DockRect.Bottom - DockRect.Top
+      DockSite.JvDockManager.DockSiteSize := DockRect.Bottom - DockRect.Top
     else
-      DockSite.lbDockManager.DockSiteSize := DockRect.Right - DockRect.Left;
+      DockSite.JvDockManager.DockSiteSize := DockRect.Right - DockRect.Left;
   end;
 
 begin
