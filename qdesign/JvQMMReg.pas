@@ -37,7 +37,7 @@ implementation
 uses
   Classes,
 
-  DesignEditors, DesignIntf, QGraphics,
+  DesignEditors, DesignIntf, QGraphics, QControls,
 
   JvQDsgnConsts, JvQQtKeyEditorForm,
   JvQAni, JvQBmpAnimator, JvQPicClip, JvQIconList,
@@ -48,9 +48,9 @@ uses
   JvQImageRotate, JvQImageTransform, JvQImageSquare, JvQStarfield,
   JvQWaitingGradient, JvQWaitingProgress, JvQSpecialProgress,
   JvQSlider, JvQAnimatedImage, JvQSpecialImage, JvQAnimatedEditor,
-  JvQIconListForm, JvQColorTrackBar
-  {$IFDEF _LINUX}, JvQPictureEditors,  JvQPictureEditForm {$ENDIF}
-  ;
+  JvQIconListForm, JvQColorTrackBar,
+  JvQFullColorDialogs, JvQFullColorCtrls, JvQFullColorEditors,
+  JvQFullColorSpacesEditors, JvQFullColorSpaces ;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvMMReg.dcr}
@@ -61,6 +61,8 @@ uses
 
 procedure Register;
 begin
+  GroupDescendentsWith(TJvFullColorDialog, TControl);
+  GroupDescendentsWith(TJvFullColorCircleDialog, TControl);
   RegisterComponents(RsPaletteImageAnimator, [TJvBmpAnimator,
     TJvPicClip, TJvImageRotate, TJvImageTransform,
     TJvImageSquare, TJvStarfield,
@@ -79,7 +81,7 @@ begin
 
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
   {$IFDEF _LINUX}
-  RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
+//  RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
   {$ENDIF LINUX}
 //  RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
@@ -89,9 +91,23 @@ begin
 //  RegisterComponentEditor(TImage, TJvGraphicsEditor);
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
-  {$IFDEF USE_JV_GIF}
-//  RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);
-  {$ENDIF USE_JV_GIF}
+  // JvFullColor components and editors
+  RegisterComponents(RsPaletteBarPanel, [TJvFullColorPanel, TJvFullColorTrackBar, TJvFullColorGroup]);
+  RegisterComponents(RsPaletteLabel, [TJvFullColorLabel]);
+  RegisterComponents(RsPaletteListComboTree, [TJvFullColorSpaceCombo, TJvFullColorAxisCombo]);
+  RegisterComponents(RsPaletteDialog, [TJvFullColorDialog, TJvFullColorCircleDialog]);
+  RegisterComponents(RsPaletteVisual, [TJvFullColorCircle]);
+  RegisterPropertyEditor(TypeInfo(TJvFullColor), nil, '', TJvFullColorProperty);
+  RegisterPropertyEditor(TypeInfo(TJvFullColorList), nil, '', TJvFullColorListEditor);
+  {$IFDEF COMPILER6_UP}
+  RegisterSelectionEditor(TJvFullColorPanel, TJvFullColorSelection);
+  RegisterSelectionEditor(TJvFullColorTrackBar, TJvFullColorSelection);
+  RegisterSelectionEditor(TJvFullColorCircle, TJvFullColorSelection);
+  RegisterSelectionEditor(TJvFullColorLabel, TJvFullColorSelection);
+  RegisterSelectionEditor(TJvFullColorSpaceCombo, TJvFullColorSelection);
+  RegisterSelectionEditor(TJvFullColorAxisCombo, TJvFullColorSelection);
+  {$ENDIF COMPILER6_UP}
+  RegisterPropertyEditor(TypeInfo(TJvFullColorSpaceID), nil, '', TJvColorIDEditor);
 
 end;
 
