@@ -161,7 +161,7 @@ procedure Register;
 implementation
 
 uses
-  Registry;
+  Registry, Dialogs;
 
 {$R *.dfm}
 
@@ -192,7 +192,7 @@ end;
 procedure ShowEditor(Designer: IDesigner; OutlookBar: TJvCustomOutlookBar);
 var
   I: Integer;
-  AEditor: TFrmOLBEditor;
+  AEditor: TfrmOLBEditor;
 begin
   AEditor := nil;
   for I := 0 to Screen.FormCount - 1 do
@@ -220,13 +220,12 @@ begin
       {$IFDEF COMPILER6_UP}
       AEditor.Designer := Designer;
       {$ELSE}
-      AEditor.Designer := IFormDesigner(Designer);
+      AEditor.Designer := Designer as IFormDesigner;
       {$ENDIF}
       AEditor.OutlookBar := OutlookBar;
       AEditor.Show;
     except
-      if Assigned(AEditor) then
-        AEditor.Free;
+      AEditor.Free;
       raise;
     end;
   end;
@@ -253,7 +252,7 @@ begin
   if GetComponent(0) is TJvCustomOutlookBar then
     Result := TJvCustomOutlookBar(GetComponent(0))
   else
-  if GetComponent(0) is TJvOutlookBarPage then
+    if GetComponent(0) is TJvOutlookBarPage then
     Result := THackOL(THackPages(TJvOutlookBarPage(GetComponent(0)).Collection).GetOwner)
   else
     Result := nil;
@@ -319,7 +318,7 @@ begin
   if I < 0 then
     Result := ''
   else
-  if I < THackOL(OL).Pages.Count then
+    if I < THackOL(OL).Pages.Count then
     Result := THackOL(OL).Pages[I].Caption
   else
     Result := inherited GetValue;
@@ -396,6 +395,7 @@ begin
     Close;
   end
   else
+    if Item is TTreeNode then
     DeleteItem(Item);
 end;
 
@@ -408,20 +408,25 @@ end;
 {$ELSE}
 
 procedure TFrmOLBEditor.ComponentDeleted(Component: IPersistent);
+var
+  P: TPersistent;
 begin
-  if ExtractPersistent(Component) = OutlookBar then
+  P := ExtractPersistent(Component);
+  if P = OutlookBar then
   begin
     OutlookBar := nil;
     Close;
-  end
-  else
-    DeleteItem(ExtractPersistent(Component));
+  end;
 end;
 
 procedure TFrmOLBEditor.FormClosed(AForm: TCustomForm);
 begin
+  Assert(Designer <> nil, 'Designer is nil in FormClosed');
   if AForm = Designer.Form then
+  begin
+    Designer := nil;
     Close;
+  end;
 end;
 
 procedure TFrmOLBEditor.FormModified;
@@ -443,7 +448,7 @@ begin
     if TObject(Node.Data) is TJvOutlookBarPage then
       THackOL(OutlookBar).ActivePageIndex := TJvOutlookBarPage(Node.Data).Index
     else
-    if TObject(Node.Data) is TJvOutlookBarButton then
+      if TObject(Node.Data) is TJvOutlookBarButton then
     begin
       THackOL(OutlookBar).ActivePageIndex := TJvOutlookBarPage(Node.Parent.Data).Index;
       Node.Parent.Expand(False);
@@ -468,46 +473,41 @@ var
 
   function FindNextNode(const Node: TTreeNode): TTreeNode;
   begin
-    if Node.GetNextSibling <> nil then
-      Result := Node.GetNextSibling
-    else
-    if Node.GetPrevSibling <> nil then
-      Result := Node.GetPrevSibling
-    else
-    if Node.GetPrevVisible <> nil then
-      Result := Node.GetPrevVisible
-    else
-    if Node.GetNextVisible <> nil then
-      Result := Node.GetNextVisible
-    else
-    if Node.GetPrev <> nil then
-      Result := Node.GetPrev
-    else
-    if Node.GetNext <> nil then
-      Result := Node.GetNext
-    else
-    if Node.Parent <> nil then
-      Result := Node.Parent
-    else
+    if Node = nil then
+    begin
+      Result := nil;
+      Exit;
+    end;
+    Result := Node.GetNextSibling;
+    if Result = nil then
+      Result := Node.GetPrevSibling;
+    if Result = nil then
+      Result := Node.Parent;
+    if Result = nil then
       Result := tvItems.Items.GetFirstNode;
+    if Result = Node then
+      Result := nil;
   end;
 
 begin
   N2 := tvItems.Selected;
   N := tvItems.Items.GetFirstNode;
-  while Assigned(N) do
-  begin
-    if N.Data = Item then
+  try
+    while Assigned(N) do
     begin
-      N2 := FindNextNode(N);
-      N.Data := nil;
-      N.Delete;
-      Break;
+      if (N = Item) then
+      begin
+        N2 := FindNextNode(N);
+        N.Data := nil;
+        N.Delete;
+        Exit;
+      end;
+      N := N.GetNext;
+      N2 := N;
     end;
-    N := N.GetNext;
-  end;
-  if tvItems.CanFocus then
+  finally
     tvItems.Selected := N2;
+  end;
 end;
 
 procedure TFrmOLBEditor.UpdateList;
@@ -592,7 +592,7 @@ begin
     if pr is TJvOutlookBarPage then
       THackOL(OutlookBar).Pages.Delete(TJvOutlookBarPage(pr).Index)
     else
-    if pr is TJvOutlookBarButton then
+      if pr is TJvOutlookBarButton then
     begin
       P := TJvOutlookBarPage(N.Parent.Data);
       P.Buttons.Delete(TJvOutlookBarButton(pr).Index);
@@ -691,7 +691,7 @@ begin
           N2 := N;
       end
       else
-      if TObject(N.Data) is TJvOutlookBarButton then
+        if TObject(N.Data) is TJvOutlookBarButton then
       begin
         N.Text := TJvOutlookBarButton(N.Data).Caption;
         if N.Selected then
@@ -760,7 +760,7 @@ begin
   tbTop.ShowCaptions := acShowTextLabels.Checked;
   tbTop.ButtonHeight := 16;
   tbTop.ButtonWidth := 16;
-//  ClientWidth := Max(ClientWidth, btnDown.Left + btnDown.Width + 4);
+  //  ClientWidth := Max(ClientWidth, btnDown.Left + btnDown.Width + 4);
 end;
 
 procedure TFrmOLBEditor.StoreSettings;
@@ -828,7 +828,7 @@ begin
     TJvOutlookbarButton(Node2.Data).Index := I;
   end
   else
-  if TObject(Node1.Data) is TJvOutlookbarPage then
+    if TObject(Node1.Data) is TJvOutlookbarPage then
   begin
     I := TJvOutlookbarPage(Node1.Data).Index;
     TJvOutlookbarPage(Node1.Data).Index := TJvOutlookbarPage(Node2.Data).Index;
