@@ -583,8 +583,7 @@ begin
     // clear background.
     Rect := GetClientRect;
     Brush.Color := Self.Color;
-    FillRect(Rect);
-
+    
     // draw gradient borders.
     if IsSpecialDrawState then
     begin
@@ -595,8 +594,11 @@ begin
         else
           Bitmap.Assign(FFcGradient);
         
+        Bitmap.Canvas.Start;
         
-        Draw(1, 1, Bitmap);
+        BitBlt(Handle, 1, 1, Width, Height, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
+        
+        Bitmap.Canvas.Stop;
         
       finally
         Bitmap.Free;
@@ -608,16 +610,25 @@ begin
     begin
       Offset := 2 * Integer(IsSpecialDrawState);
       
+      FBgGradient.Canvas.start;
       
-      Draw(1 + Offset, 1 + Offset, FBgGradient);
+      BitBlt(Handle, 1 + Offset, 1 + Offset, Width - 3 * Offset, Height - 3 * Offset,
+        FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
+      
+      FBgGradient.Canvas.Stop;
       
     end
     // ...or click gradient.
     else
+    begin
       
+      FCkGradient.Canvas.Start;
       
-       Draw(1, 1, FCkGradient);
+      BitBlt(Handle, 1, 1, Width, Height, FCkGradient.Canvas.Handle, 0, 0, SRCCOPY);
       
+      FCkGradient.Canvas.Stop;
+      
+    end;
     // draw border lines.
     if Enabled then
       Pen.Color := dxColor_Btn_Enb_Border_WXP
@@ -773,7 +784,6 @@ begin
   with Canvas do
   begin
     Rect := GetClientRect;
-//    InflateRect(Rect, -1, -1);
     Brush.Color := TJvXPWinControl(Parent).Color;
     Brush.Style := bsSolid;
     FillRect(Rect);

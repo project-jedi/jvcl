@@ -39,7 +39,7 @@ uses
   Classes,  SysUtils,
   
   
-  Types, QControls, QGraphics, QForms, QImgList, QActnList, QWindows,
+  Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList, QWindows,
   QTypes, JvQTypes,
   
   JvQXPCore, JvQXPCoreUtils;
@@ -1103,6 +1103,11 @@ begin
   FShowLinkCursor := True;
   FShowRollButton := True;
   FVisibleItems := TJvXPBarVisibleItems.Create(Self);
+  
+  // asn: TODO: implement doublebuffering
+  //      For now prevent background drawing, to reduce flickering
+  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
+  
 end;
 
 destructor TJvXPCustomWinXPBar.Destroy;
@@ -1332,10 +1337,7 @@ begin
   if FGradientWidth <> Width then
   begin
     FGradientWidth := Width;
-
-    // recreate gradient rect
-    JvXPCreateGradientRect(Width, FHeaderHeight, clWhite, $00F7D7C6, 32, gsLeft, True,
-      FGradient);
+    
   end;
 
   // resize to maximum height
@@ -1571,15 +1573,22 @@ begin
     Rect := GetClientRect;
 
     { fill non-client area }
-    Inc(Rect.Top, 5);
+    
+    Brush.Color := TJvXPWinControl(parent).Color;
+    with Rect do
+      FillRect(Bounds(Left, Top, Right-Left, 5));
+    
+    Inc(Rect.Top, 5 + FHeaderHeight);
     Brush.Color := FColors.BodyColor; //$00F7DFD6;
     FillRect(Rect);
+    Dec(Rect.Top, FHeaderHeight);
 
     { draw header }
     
     
-    FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
-      32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
+    if not Rolling then
+      FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
+        32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
     
 
     { draw frame... }
@@ -1670,8 +1679,9 @@ begin
     
     
     SetPenColor(Handle, Font.Color);
-    DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
-      DT_END_ELLIPSIS or DT_NOPREFIX);
+    if not Rolling then   // reduces flickering 
+      DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
+        DT_END_ELLIPSIS or DT_NOPREFIX);
     
     { draw visible items }
     Brush.Color := FColors.BodyColor;
