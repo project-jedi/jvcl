@@ -146,6 +146,8 @@ type
 
   PRGBArray = ^TRGBArray; // JvThumbImage, JvImageSplit, JvRegion
   TRGBArray = array [0..MaxPixelCount - 1] of TRGBTriple;
+  PRGBQuadArray = ^TRGBQuadArray;
+  TRGBQuadArray = array [0..MaxPixelCount - 1] of TRGBQuad;
   TBalance = 0..100;
 
   TJvVolumeRec = record
