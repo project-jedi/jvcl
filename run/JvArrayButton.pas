@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2003-10-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,8 +30,14 @@ unit JvArrayButton;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, Buttons;
+  {$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, Controls, Forms, ExtCtrls, Buttons,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  Types, QGraphics, QControls, QForms, QExtCtrls, QButtons,
+  {$ENDIF}
+  SysUtils, Classes,
+  JvClxUtils;
 
 type
   TArrayButtonClicked = procedure(ACol, ARow: Integer) of object;
@@ -48,12 +54,12 @@ type
     FColors: TStringList;
     FHints: TStringList;
   {$IFDEF JVCLThemesEnabled}
+    FMouseOverBtn: TPoint;
     FThemed: Boolean;
     procedure SetThemed(Value: Boolean);
   {$ENDIF}
     procedure SetCols(const Value: Integer);
     procedure SetRows(const Value: Integer);
-    procedure SetOnArrayButtonClicked(const Value: TArrayButtonClicked);
     procedure SetCaptions(const Value: TStringList);
     procedure SetColors(const Value: TStringList);
     procedure MouseToCell(const x, y: Integer; var ACol, ARow: Integer);
@@ -79,6 +85,7 @@ type
     {Renders the image of the button.}
     procedure DoShowHint(var HintStr: string; var CanShow: Boolean;
       var HintInfo: THintInfo);
+
     {this procedure can be used in response to a application.onshowhint event
      button hints are stored in the hints property from arry top-left to array bottom right
      in your application create a seperate onshowhint event Handler
@@ -115,7 +122,7 @@ type
   {$IFDEF JVCLThemesEnabled}
     property Themed: Boolean read FThemed write SetThemed default False;
   {$ENDIF}
-    property OnArrayButtonClicked: TArrayButtonClicked read FOnArrayButtonClicked write SetOnArrayButtonClicked;
+    property OnArrayButtonClicked: TArrayButtonClicked read FOnArrayButtonClicked write FOnArrayButtonClicked;
     {provides you with the Column and Row of the clicked button
     the topleft button has Column=0 and Row=0}
   end;
@@ -130,18 +137,19 @@ uses
 constructor TJvArrayButton.Create(AOwner: TComponent);
 begin
   inherited;
-  width := 35;
-  height := 35;
+  Width := 35;
+  Height := 35;
   FColor := clSilver;
   FPushDown := false;
   FCols := 1;
   FRows := 1;
-  showhint := true;
+  ShowHint := true;
   FCaptions := TStringList.create;
   FHints := TStringList.create;
   FColors := TStringList.create;
 {$IFDEF JVCLThemesEnabled}
   FThemed := False;
+  FMouseOverBtn := Point(-1, -1);  
 {$ENDIF}
 end;
 
@@ -149,8 +157,8 @@ procedure TJvArrayButton.MouseToCell(const x, y: Integer; var ACol, ARow: Intege
 var
   dh, dw: Integer;
 begin
-  dh := (height - 2) div FRows;
-  dw := (width - 2) div FCols;
+  dh := (Height - 2) div FRows;
+  dw := (Width - 2) div FCols;
   ACol := x div dw;
   ARow := y div dh;
 end;
@@ -160,36 +168,39 @@ procedure TJvArrayButton.MouseDown(Button: TMouseButton;
 var
   Col, Row: Integer;
 begin
-  if button = mbleft then
+  if Button = mbLeft then
   begin
-    FPushDown := true;
-    {  dh:=(height-2) div FRows;
-      dw:=(width-2) div FCols;
-      Col:=x div dw;
-      Row:=y div dh;}
+    FPushDown := True;
     MouseToCell(x, y, Col, Row);
-    FptDown := point(Col, Row);
-    invalidate;
+    FptDown := Point(Col, Row);
+    Invalidate;
   end;
 end;
 
 procedure TJvArrayButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  if button = mbleft then
+  if Button = mbLeft then
   begin
-    FPushDown := false;
-    invalidate;
-    if assigned(FonArraybuttonClicked) then
-      onarraybuttonclicked(FptDown.x, FptDown.y);
+    FPushDown := False;
+    Invalidate;
+    if Assigned(FOnArraybuttonClicked) then
+      OnArrayButtonClicked(FptDown.x, FptDown.y);
   end
 end;
 
 {$IFDEF JVCLThemesEnabled}
 procedure TJvArrayButton.MouseMove(Shift: TShiftState; X, Y: Integer);
+var Pt: TPoint;
 begin
   inherited;
-  Paint;
+  MouseToCell(X, Y, Pt.X, Pt.Y);
+  if (not FPushDown) and
+     ((Pt.X <> FMouseOverBtn.X) or (Pt.Y <> FMouseOverBtn.Y)) then
+  begin
+    FMouseOverBtn := Pt;
+    Invalidate;
+  end;
 end;
 
 procedure TJvArrayButton.CMMouseEnter(var Message: TMessage);
@@ -212,8 +223,8 @@ var
   dh, dw: Integer;
   x0, y0: Integer;
   cap: string;
-  backColor: TColor;
-  index: Integer;
+  BackColor: TColor;
+  Index: Integer;
 
   procedure DrawBackground(AColor: TColor);
   begin
@@ -221,7 +232,7 @@ var
     DrawThemedBackground(Self, Canvas, R);
   end;
 
-  procedure drawup;
+  procedure DrawUp;
   begin
 {$IFDEF JVCLThemesEnabled}
     if FThemed and ThemeServices.ThemesEnabled then
@@ -231,18 +242,16 @@ var
       SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
     end
     else
+{$ENDIF}
     begin
-{$ENDIF}
-    DrawBackground(BackColor);
-    Frame3D(Self.Canvas, R, clBtnHighlight, clBlack, 1);
-{$IFDEF JVCLThemesEnabled}
+      DrawBackground(BackColor);
+      Frame3D(Self.Canvas, R, clBtnHighlight, clBlack, 1);
     end;
-{$ENDIF}
     if cap <> '' then
-      DrawText(Canvas.Handle, PChar(cap), -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      ClxDrawText(Canvas, cap, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 
-  procedure drawdown;
+  procedure DrawDown;
   begin
 {$IFDEF JVCLThemesEnabled}
     if FThemed and ThemeServices.ThemesEnabled then
@@ -252,60 +261,58 @@ var
       SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
     end
     else
+{$ENDIF}
     begin
-{$ENDIF}
-    DrawBackground(BackColor);
-    Frame3D(Self.Canvas, R, clblack, clBtnHighlight, 1);
-{$IFDEF JVCLThemesEnabled}
+      DrawBackground(BackColor);
+      Frame3D(Self.Canvas, R, clblack, clBtnHighlight, 1);
     end;
-{$ENDIF}
     if cap <> '' then
-      DrawText(Canvas.Handle, PChar(cap), -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      ClxDrawText(Canvas, cap, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 
 begin
-  dh := (height - 2) div FRows;
-  dw := (width - 2) div FCols;
+  dh := (Height - 2) div FRows;
+  dw := (Width - 2) div FCols;
   for Row := 0 to FRows - 1 do
   begin
     y0 := 1 + Row * dh;
     for Col := 0 to FCols - 1 do
     begin
       x0 := 1 + Col * dw;
-      R := rect(x0, y0, x0 + dw, y0 + dh);
-      index := Row * FCols + Col;
-      if index < FCaptions.count then
-        cap := FCaptions[index]
+      R := Rect(x0, y0, x0 + dw, y0 + dh);
+      Index := Row * FCols + Col;
+      if Index < FCaptions.Count then
+        cap := FCaptions[Index]
       else
         cap := '';
-      if index < FColors.count then
+      if Index < FColors.Count then
       try
-        backColor := stringtoColor(FColors[index]);
+        BackColor := StringToColor(FColors[Index]);
       except
-        backColor := clsilver;
+        BackColor := clSilver;
       end
       else
-        backColor := clsilver;
+        BackColor := clSilver;
       if (csDesigning in ComponentState) then
-        drawup
+        DrawUp
       else if (FptDown.x = Col) and (FptDown.y = Row) then
       begin
         if FPushDown then
-          drawdown
+          DrawDown
         else
-          drawup;
+          DrawUp;
       end
       else
-        drawup;
+        DrawUp;
     end;
   end;
 end;
 
 destructor TJvArrayButton.Destroy;
 begin
-  FCaptions.free;
+  FCaptions.Free;
   FHints.Free;
-  FColors.free;
+  FColors.Free;
   inherited;
 end;
 
@@ -313,10 +320,10 @@ procedure TJvArrayButton.SetCols(const Value: Integer);
 begin
   if FCols <> Value then
   begin
-    if (value >= 1) and (value <= 10) then
+    if (Value >= 1) and (Value <= 10) then
     begin
-      FCols := value;
-      invalidate;
+      FCols := Value;
+      Invalidate;
     end
   end;
 end;
@@ -325,10 +332,10 @@ procedure TJvArrayButton.SetRows(const Value: Integer);
 begin
   if FRows <> Value then
   begin
-    if (value >= 1) and (value <= 10) then
+    if (Value >= 1) and (Value <= 10) then
     begin
-      FRows := value;
-      invalidate;
+      FRows := Value;
+      Invalidate;
     end
   end;
 end;
@@ -348,69 +355,64 @@ begin
 end;
 {$ENDIF}
 
-procedure TJvArrayButton.SetonArrayButtonClicked(
-  const Value: TArrayButtonClicked);
-begin
-  FonArrayButtonClicked := Value;
-end;
-
 procedure TJvArrayButton.SetCaptions(const Value: TStringList);
 begin
-  FCaptions.assign(Value);
-  invalidate;
+  FCaptions.Assign(Value);
+  Invalidate;
 end;
 
 procedure TJvArrayButton.CMFontChanged(var Message: TMessage);
 begin
   Canvas.Font.Assign(font);
-  invalidate;
+  Invalidate;
 end;
 
 procedure TJvArrayButton.SetColors(const Value: TStringList);
 begin
-  FColors.assign(Value);
-  invalidate;
+  FColors.Assign(Value);
+  Invalidate;
 end;
 
 function TJvArrayButton.CellRect(ACol, ARow: Integer): TRect;
 var
   dh, dw, x0, y0: Integer;
 begin
-  dh := (height - 2) div FRows;
-  dw := (width - 2) div FCols;
+  dh := (Height - 2) div FRows;
+  dw := (Width - 2) div FCols;
   y0 := 1 + ARow * dh;
   x0 := 1 + ACol * dw;
   //  pt1:=clienttoscreen(point(x0,y0));
   //  pt2:=clienttoscreen(point(x0+dw,y0+dh));
   //  result:=rect(pt1.x,pt1.y,pt2.x,pt2.y);
-  result := rect(x0, y0, x0 + dw, y0 + dh);
+  Result := Rect(x0, y0, x0 + dw, y0 + dh);
 end;
 
-procedure TJvArrayButton.DoShowHint(var HintStr: string;
-  var CanShow: Boolean; var HintInfo: THintInfo);
+procedure TJvArrayButton.DoShowHint(var HintStr: string; var CanShow: Boolean;
+  var HintInfo: THintInfo);
 var
   ACol, ARow, x, y: Integer;
-  index: Integer;
+  Index: Integer;
 begin
-  if HintInfo.HintControl = self then
+  if HintInfo.HintControl = Self then
   begin
     x := HintInfo.CursorPos.x;
-    y := HintInfo.cursorPos.y;
+    y := HintInfo.CursorPos.y;
     MouseToCell(x, y, ACol, ARow);
-    if ((ACol < 0) or (ARow < 0)) then exit;
-    index := ARow * FCols + ACol;
-    if index < FHints.count then
-      Hintstr := FHints[index]
+    if ((ACol < 0) or (ARow < 0)) then
+      Exit;
+    Index := ARow * FCols + ACol;
+    if Index < FHints.count then
+      HintStr := FHints[Index]
     else
-      Hintstr := Hint;
+      HintStr := Hint;
     Hintinfo.CursorRect := CellRect(ACol, ARow);
-    canshow := true;
+    CanShow := True;
   end;
 end;
 
 procedure TJvArrayButton.SetHints(const Value: TStringList);
 begin
-  FHints.assign(Value);
+  FHints.Assign(Value);
 end;
 
 end.
