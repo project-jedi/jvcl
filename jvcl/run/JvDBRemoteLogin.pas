@@ -34,7 +34,7 @@ interface
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms,
   Dialogs, DBClient,
-  JvDBLoginForm;
+  JvLoginForm;
 
 type
   TJvDBRemoteLogin = class(TJvCustomLogin)
@@ -269,8 +269,7 @@ begin
     else
       Ini := TIniFile.Create(IniFileName);
     try
-      Result := IniReadString(Ini, SKeyLoginSection, SKeyLastLoginUserName,
-        UserName);
+      Result := IniReadString(Ini, RSKeyLoginSection, RSKeyLastLoginUserName, UserName);
     finally
       Ini.Free;
     end;
