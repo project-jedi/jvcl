@@ -1234,8 +1234,8 @@ end;
 
 procedure TJvUIBStatement.Close(const Mode: TEndTransMode);
 begin
-  if Mode = etmStayIn then
-    CloseCursor else
+//  if Mode = etmStayIn then
+//    CloseCursor else
     InternalClose(Mode, False);
 end;
 
