@@ -8,7 +8,7 @@ package JvCustCtrls60R;
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS OFF}
+{$LOCALSYMBOLS OFF}                            
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
@@ -54,7 +54,6 @@ contains
   JvThumbnails in '..\source\jvThumbNails.pas',
   JvThumbviews in '..\source\JvThumbviews.pas',
   JvTimeLine in '..\source\JvTimeLine.pas',
-  JvTipOfDay in '..\source\JvTipOfDay.pas',
   JvTMTL in '..\source\JvTMTL.pas',
   JvBalloonHint in '..\source\JvBalloonHint.pas',
   JvBandForms in '..\source\JvBandForms.pas',

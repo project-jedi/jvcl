@@ -42,8 +42,8 @@ contains
   JvFormImage in '..\source\JvFormImage.pas' {FormImg},
   JvFormLists in '..\source\JvFormLists.pas',
   JvFormWallpaper in '..\source\JvFormWallpaper.pas',
+  JvFormWallpaperEdit in '..\source\JvFormWallpaperEdit.pas',
   JvMagnet in '..\source\JvMagnet.pas',
-  JvPerforated in '..\source\JvPerforated.pas',
   JvSplshWnd in '..\source\JvSplshWnd.pas';
 
 end.

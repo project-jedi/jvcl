@@ -33,7 +33,10 @@ requires
   JvStdCtrls60R;
 
 contains
+  JvDBUtils in '..\source\JvDBUtils.pas',
   JvDBConst in '..\source\JvDBConst.pas',
+  JvLookUp in '..\source\JvLookUp.pas',
+  JvMemDS   in '..\source\JvMemDS.pas',
   JvDBDatePickerEdit in '..\source\JvDBDatePickerEdit.pas',
   JvDBDateTimePicker in '..\source\JvDBDateTimePicker.pas',
   JvDBLookupTreeView in '..\source\JvDBLookupTreeView.pas',

@@ -60,7 +60,6 @@ contains
   JvScreenSaver in '..\source\JvScreenSaver.pas',
   JvShellHook in '..\source\JvShellHook.pas',
   JvSHFileOp in '..\source\JvSHFileOp.pas',
-  JvSHFmt in '..\source\JvSHFmt.pas',
   JvSoundControl in '..\source\JvSoundControl.pas',
   JvSystemColors in '..\source\JvSystemColors.pas',
   JvThread in '..\source\JvThread.pas',

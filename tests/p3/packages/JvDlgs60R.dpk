@@ -32,9 +32,6 @@ requires
 
 contains
   JvDSADialogs in '..\source\JvDSADialogs.pas',
-  JvExcptDlg in '..\source\JvExcptDlg.pas',
-  JvNagScreen in '..\source\JvNagScreen.pas',
-  JvSerialDlg in '..\source\JvSerialDlg.pas',
   JvTipOfDay in '..\source\JvTipOfDay.pas',
   JvWinDialogs in '..\source\JvWinDialogs.pas',
   JvAddPrinter in '..\source\JvAddPrinter.pas',
@@ -48,7 +45,6 @@ contains
   JvConnectNetwork in '..\source\JvConnectNetwork.pas',
   JvSelectDirectory in '..\source\JvSelectDirectory.pas',
   JvBrowseFolder in '..\source\JvBrowseFolder.pas',
-  JvFormLogin in '..\source\JvFormLogin.pas',
   JvCopyError in '..\source\JvCopyError.pas',
   JvDeleteError in '..\source\JvDeleteError.pas',
   JvRenameError in '..\source\JvRenameError.pas',

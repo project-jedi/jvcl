@@ -48,7 +48,6 @@ contains
   JvQuery in '..\source\JvQuery.pas',
   JvSQLS in '..\source\JvSQLS.pas',
   JvxLoginDlg in '..\source\JvxLoginDlg.pas',
-  JvDBUtils in '..\source\JvDBUtils.pas',
   JvQBndDlg in '..\source\JvQbnddlg.pas' {JvQueryParamsDialog},
   JvDBComb in '..\source\JvDBComb.pas',
   JvDBCtrl in '..\source\JvDbCtrl.pas',
