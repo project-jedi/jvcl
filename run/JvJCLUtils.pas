@@ -3440,12 +3440,8 @@ end;
 { begin JvIconClipboardUtils}
 { Icon clipboard routines }
 
-{$IFDEF COMPILER6_UP}
 var
-{$ELSE}
-const
-{$ENDIF COMPILER6_UP}
-  Private_CF_ICON: Word = 0;
+  Private_CF_ICON: Word;
 
 function CF_ICON: Word;
 begin
