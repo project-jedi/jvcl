@@ -1240,21 +1240,6 @@ begin
 end;
 {$ENDIF COMPILER5}
 
-//=== TObjectList ============================================================
-
-type
-  TObjectList = class(TList)
-  protected
-    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
-  end;
-
-procedure TObjectList.Notify(Ptr: Pointer; Action: TListNotification);
-begin
-  inherited Notify(Ptr, Action);
-  if Action = lnDeleted then
-    TObject(Ptr).Free;
-end;
-
 //=== TJvIconPanel ===========================================================
 
 constructor TJvIconPanel.Create(AOwner: TComponent);
