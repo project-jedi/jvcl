@@ -754,7 +754,7 @@ end;
 var
   FullColorSpaceEditorList:TList = nil;
 
-procedure ModuleUnloadProc(HInstance: Integer);
+{procedure ModuleUnloadProc(HInstance: Integer);
 var
   Index:Integer;
   AEditorClass:TJvFullColorSpacePropertyClass;
@@ -766,7 +766,7 @@ begin
       and(IsClassInModule(HInstance,AEditorClass))
       then FullColorSpaceEditorList.Items[Index]:=nil;
   end;
-end;
+end; }
 
 procedure InitFullColorSpaceEditorList;
 var
@@ -807,7 +807,7 @@ const
 initialization
   FullColorSpaceEditorList:=TList.Create;
   InitFullColorSpaceEditorList;
-  AddModuleUnloadProc(ModuleUnloadProc);
+//  AddModuleUnloadProc(ModuleUnloadProc);
 
   RegisterFullColorSpaceEditor(csDEF, TJvDEFColorSpaceProperty);
 {$IFDEF UNITVERSIONING}
@@ -815,7 +815,7 @@ initialization
 {$ENDIF UNITVERSIONING}
 
 finalization
-  RemoveModuleUnloadProc(ModuleUnloadProc);
+//  RemoveModuleUnloadProc(ModuleUnloadProc);
   FreeAndNil(FullColorSpaceEditorList);
 {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
