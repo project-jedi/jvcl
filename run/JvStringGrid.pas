@@ -113,34 +113,51 @@ type
     procedure InvalidateRow(ARow: Integer);
     property InplaceEditor;
     // Calculates and sets the width of a specific column or all columns if Index < 0
-    // based on the content in the affected Cells.
+    // based on the text in the affected Cells.
     // MinWidth is the minimum width of the column(s). If MinWidth is < 0,
     // DefaultColWidth is used instead
     procedure AutoSizeCol(Index, MinWidth: integer);
     // Inserts a new row at the specified Index and moves all existing rows >= Index down one step
-    // Returns the inserted row as a TStrings
+    // Returns the inserted row as an empty TStrings
     function InsertRow(Index: integer): TStrings;
     // Inserts a new column at the specified Index and moves all existing columns >= Index to the right
-    // Returns the inserted column as a TStrings
+    // Returns the inserted column as an empty TStrings
     function InsertCol(Index: integer): TStrings;
     // Removes the row at Index and moves all rows > Index up one step
     procedure RemoveRow(Index: integer);
     // Removes the column at Index and moves all cols > Index to the left
     procedure RemoveCol(Index: integer);
     // Hides the row at Index by setting it's height = -1
-    // Calling this method repeatedly does nothing
+    // Calling this method repeatedly does nothing (the row retains it's Index even if it's hidden)
     procedure HideRow(Index: integer);
     // Shows the row at Index by setting it's height to AHeight
     // if AHeight <= 0, DefaultRowHeight is used instead
     procedure ShowRow(Index, AHeight: integer);
-    // Hides the column at Index by setting it's width = -1
-    // Calling this method repeatedly does nothing
+    // Hides the column at Index by setting it's ColWidth = -1
+    // Calling this method repeatedly does nothing (the column retains it's Index even if it's hidden)
     procedure HideCol(Index: integer);
+    // Returns true if the Cell at ACol/ARow is hidden, i.e if it's RowHeight or ColWidth < 0
+    function IsHidden(ACol, ARow:integer):boolean;
     // Shows the column at Index by setting it's width to AWidth
     // If AWidth <= 0, DefaultColWidth is used instead
     procedure ShowCol(Index, AWidth: integer);
+    // HideCell hides a cell by hiding the row and column that it belongs to.
+    // This means that both a row and a column is hidden
+    procedure HideCell(ACol,ARow:integer);
+    // ShowCell shows a previously hidden cell by showing it's corresponding row and column and
+    // using AWidth/AHeight to set it's size. If AWidth < 0, DefaultColWidth is used instead.
+    // If AHeight < 0, DefaultRowHeight is used instead. If one dimension of the Cell wasn't
+    // hidden, nothing happens to that dimension (i.e if ColWidth < 0 but RowHeight := 24, only ColWidth is
+    // changed to AWidth 
+    procedure ShowCell(ACol,ARow, AWidth, AHeight:integer);
     // Removes the content in the Cells but does not remove any rows or columns
     procedure Clear;
+    // Hides all rows and columns
+    procedure HideAll;
+    // Shows all hidden rows and columns, setting their width/height to AWidth/AHeight as necessary
+    // If AWidth < 0, DefaultColWidth is used. If AHeight < 0, DefaultRowHeight is used
+    procedure ShowAll(AWidth,AHeight:integer);
+
     procedure SortGrid(Column: Integer; Ascending: Boolean = True; Fixed: Boolean = False;
       SortType: TJvSortType = stClassic; BlankTop: Boolean = True);
     procedure SaveToFile(FileName: string);
@@ -960,6 +977,50 @@ begin
       ColWidths[i] := AColWidth;
     end;
   end;
-end;  
+end;
+
+procedure TJvStringGrid.HideAll;
+var i:integer;
+begin
+  if ColCount < RowCount then
+    for i := 0 to ColCount - 1 do
+      ColWidths[i] := -1
+  else
+    for i := 0 to RowCount - 1 do
+      RowHeights[i] := -1;
+end;
+
+procedure TJvStringGrid.ShowAll(AWidth, AHeight: integer);
+var i:integer;
+begin
+  if AWidth < 0 then AWidth := DefaultColWidth;
+  if AHeight < 0 then AHeight := DefaultRowHeight;
+  for i := 0 to ColCount - 1 do
+    if ColWidths[i] < 0 then
+      ColWidths[i] := AWidth;
+  for i := 0 to RowCount - 1 do
+    if RowHeights[i] < 0 then
+      RowHeights[i] := AHeight;
+end;
+
+function TJvStringGrid.IsHidden(ACol, ARow: integer): boolean;
+begin
+  Result := (ColWidths[ACol] < 0) or (RowHeights[ARow] < 0);
+end;
+
+procedure TJvStringGrid.HideCell(ACol, ARow: integer);
+begin
+  ColWidths[ACol] := -1;
+  RowHeights[ARow] := -1;
+end;
+
+procedure TJvStringGrid.ShowCell(ACol, ARow, AWidth, AHeight: integer);
+begin
+  if AWidth < 0 then AWidth := DefaultColWidth;
+  if AHeight < 0 then AWidth := DefaultRowHeight;
+  if ColWidths[ACol] <  0 then ColWidths[ACol] := AWidth;
+  if RowHeights[ARow] < 0 then RowHeights[ARow] := AHeight;
+end;
+
 end.
 
