@@ -4,7 +4,7 @@ unit MainFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtDlgs, ImgList, Menus, StdCtrls, ComCtrls,
   ExtCtrls, JvDesktopAlert, JvAppStorage, JvAppIniStorage, JvComponent,
   JvFormPlacement, JvBaseDlg;
