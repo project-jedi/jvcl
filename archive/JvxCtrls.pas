@@ -28,7 +28,7 @@ Changes:
              specified rendering implementations.
            * D5 users: when changing a property that might clear out the provider (Caption,
              ImageIndex and Image) you can run into Access Violations if the Provider property is
-             collapsed. This is due to a limitation in D5 property editors and can not be solved.  
+             collapsed. This is due to a limitation in D5 property editors and can not be solved.
 2003-08-17:
   * All implementation moved from TJvLabel to TJvCustomLabel. TJvLabel now only publishes
     properties and events.
@@ -49,15 +49,14 @@ unit JvxCtrls;
 interface
 
 uses
-  Windows, Registry,
+  Windows, Registry, ShellAPI,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
   Buttons, Menus, IniFiles, ImgList,
-  JvAppStore, JvTimer, JvConsts, JvFormPlacement, JvComponent, JVCLVer,
-  JvTypes,
-  JvDataProvider, JvDataProviderImpl;
+  JvTimer, JvConsts, JvPlacemnt, JvComponent, JVCLVer,
+  JvTypes;
 
 type
   TPositiveInt = 1..MaxInt;
@@ -304,8 +303,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
-    procedure SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    //procedure LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    //procedure SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
     procedure Load;
     procedure Save;
     procedure ApplyState(AState: TCheckBoxState; EnabledOnly: Boolean);
@@ -418,7 +417,7 @@ type
     FAngle: TJvLabelRotateAngle;
     FSpacing: integer;
     FHotTrackFontOptions: TJvTrackFontOptions;
-    FConsumerSvc: TJvDataConsumer;
+    //FConsumerSvc: TJvDataConsumer;
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -473,14 +472,14 @@ type
     procedure Click; override;
     procedure Paint; override;
     procedure Loaded; override;
-    procedure MouseEnter; dynamic;
-    procedure MouseLeave; dynamic;
+    procedure MouseEnter; reintroduce;
+    procedure MouseLeave; reintroduce;
     function GetImageWidth:integer;virtual;
     function GetImageHeight:integer;virtual;
-    procedure SetConsumerService(Value: TJvDataConsumer);
-    function ProviderActive: Boolean;
-    procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
-    procedure NonProviderChange;
+    //procedure SetConsumerService(Value: TJvDataConsumer);
+    //function ProviderActive: Boolean;
+    //procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
+    //procedure NonProviderChange;
     property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
     property AutoOpenURL: boolean read FAutoOpenURL write FAutoOpenURL;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
@@ -505,7 +504,7 @@ type
     property ShowFocus: Boolean read FShowFocus write SetShowFocus default False;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property URL: string read FURL write FURL;
-    property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
+    //property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -785,8 +784,8 @@ type
     procedure Loaded; override;
     procedure PaintGlyph(Canvas: TCanvas; ARect: TRect; AState: TJvButtonState;
       DrawMark: Boolean); virtual;
-    procedure MouseEnter; dynamic;
-    procedure MouseLeave; dynamic;
+    procedure MouseEnter; reintroduce;
+    procedure MouseLeave; reintroduce;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -956,15 +955,25 @@ function CheckBitmap: TBitmap;
 
 implementation
 
-{$R ..\resources\JvxCtrls.res}
+{$R JvxCtrls.res}
 
 uses
   SysUtils, Consts, Math, ActnList, CommCtrl,
-  JvThemes, JvJVCLUtils;
+  JvThemes, JvJVCLUtils, JvJCLUtils, JvFunctions;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
+
+function HeightOf(const R: TRect): Integer;
+begin
+  Result := R.Bottom - R.Top;
+end;
+
+function WidthOf(const R: TRect): Integer;
+begin
+  Result := R.Right - R.Left;
+end;
 
 //=== TJvTextListBox =========================================================
 
@@ -2011,7 +2020,7 @@ const
   sCount = 'Count';
   sItem = 'Item';
 
-procedure TJvxCheckListBox.LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+{procedure TJvxCheckListBox.LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
 var
   I: Integer;
   ACount: Integer;
@@ -2035,6 +2044,7 @@ begin
   for I := 0 to Items.Count - 1 do
     AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sItem + IntToStr(I)]), Integer(State[I]));
 end;
+}
 
 procedure TJvxCheckListBox.Load;
 begin
@@ -2058,14 +2068,14 @@ end;
 
 procedure TJvxCheckListBox.IniSave(Sender: TObject);
 begin
-  if (Name <> '') and (IniStorage.IsActive) then
-    InternalSave(GetDefaultSection(Self));
+{  if (Name <> '') and (IniStorage.IsActive) then
+    InternalSave(GetDefaultSection(Self));}
 end;
 
 procedure TJvxCheckListBox.IniLoad(Sender: TObject);
 begin
-  if (Name <> '') and (IniStorage.IsActive) then
-    InternalLoad(GetDefaultSection(Self));
+{  if (Name <> '') and (IniStorage.IsActive) then
+    InternalLoad(GetDefaultSection(Self));}
 end;
 
 procedure TJvxCheckListBox.ReadCheckData(Reader: TReader);
@@ -2223,16 +2233,16 @@ end;
 
 procedure TJvxCheckListBox.InternalLoad(const Section: string);
 begin
-  if IniStorage.IsActive then
+  {if IniStorage.IsActive then
     with IniStorage do
-      LoadFromAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
+      LoadFromAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));}
 end;
 
 procedure TJvxCheckListBox.InternalSave(const Section: string);
 begin
-  if IniStorage.IsActive then
+{  if IniStorage.IsActive then
     with IniStorage do
-      SaveToAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
+      SaveToAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));}
 end;
 
 function TJvxCheckListBox.GetItemWidth(Index: Integer): Integer;
@@ -2712,8 +2722,8 @@ end;
 constructor TJvCustomLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RendersSingleItem]);
-  FConsumerSvc.OnChanged := ConsumerServiceChanged;
+  //FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RendersSingleItem]);
+  //FConsumerSvc.OnChanged := ConsumerServiceChanged;
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
@@ -2742,15 +2752,15 @@ begin
   FChangeLink.Free;
   FHotTrackFont.Free;
   FFontSave.Free;
-  FreeAndNil(FConsumerSvc);
+  //FreeAndNil(FConsumerSvc);
   inherited;
 end;
 
 function TJvCustomLabel.GetLabelCaption: string;
-var
-  ItemText: IJvDataItemText;
+{var
+  ItemText: IJvDataItemText;}
 begin
-  if ProviderActive then
+{  if ProviderActive then
   begin
     Provider.Enter;
     try
@@ -2762,7 +2772,7 @@ begin
       Provider.Leave;
     end;
   end
-  else
+  else}
     Result := Caption;
 end;
 
@@ -2811,14 +2821,14 @@ begin
 end;
 
 procedure TJvCustomLabel.DoDrawText(var Rect: TRect; Flags: Word);
-var
+{var
   Tmp: TSize;
   TmpItem: IJvDataItem;
   ItemsRenderer: IJvDataItemsRenderer;
   ItemRenderer: IJvDataItemRenderer;
-  DrawState: TProviderDrawStates;
+  DrawState: TProviderDrawStates;}
 begin
-  if ProviderActive then
+{  if ProviderActive then
   begin
     Provider.Enter;
     try
@@ -2855,7 +2865,7 @@ begin
       Provider.Leave;
     end;
   end
-  else
+  else}
     DoDrawCaption(Rect, Flags);
 end;
 
@@ -2975,7 +2985,7 @@ end;
 procedure TJvCustomLabel.Loaded;
 begin
   inherited Loaded;
-  Provider.Loaded;
+  //Provider.Loaded;
 end;
 
 procedure TJvCustomLabel.AdjustBounds;
@@ -3218,7 +3228,7 @@ end;
 
 procedure TJvCustomLabel.CMTextChanged(var Msg: TMessage);
 begin
-  NonProviderChange;
+  //NonProviderChange;
   Invalidate;
   AdjustBounds;
 end;
@@ -3307,8 +3317,8 @@ procedure TJvCustomLabel.SetImageIndex(const Value: TImageIndex);
 begin
   if FImageIndex <> Value then
   begin
-    if Images <> nil then
-      NonProviderChange;
+    {if Images <> nil then
+      NonProviderChange;}
     FImageIndex := Value;
     Invalidate;
   end;
@@ -3318,7 +3328,7 @@ procedure TJvCustomLabel.SetImages(const Value: TCustomImageList);
 begin
   if FImages <> Value then
   begin
-    NonProviderChange;
+    //NonProviderChange;
     if FImages <> nil then
     begin
       FImages.RemoveFreeNotification(self);
@@ -3337,11 +3347,11 @@ end;
 function TJvCustomLabel.GetImageHeight: integer;
 begin
   Result := 0;
-  if not ProviderActive and (Images <> nil) then
+  if {not ProviderActive and} (Images <> nil) then
     Result := Images.Height;
 end;
 
-procedure TJvCustomLabel.SetConsumerService(Value: TJvDataConsumer);
+{procedure TJvCustomLabel.SetConsumerService(Value: TJvDataConsumer);
 begin
 end;
 
@@ -3361,12 +3371,12 @@ procedure TJvCustomLabel.NonProviderChange;
 begin
   if Provider <> nil then
     Provider.Provider := nil;
-end;
+end;}
 
 function TJvCustomLabel.GetImageWidth: integer;
 begin
   Result := 0;
-  if not ProviderActive and (Images <> nil) then
+  if {not ProviderActive and }(Images <> nil) then
     Result := Images.Width;
 end;
 
@@ -3392,11 +3402,11 @@ end;
 procedure TJvCustomLabel.Click;
 var
   HasBeenHandled: Boolean;
-  TmpItem: IJvDataItem;
-  ItemHandler: IJvDataItemBasicAction;
+  {TmpItem: IJvDataItem;
+  ItemHandler: IJvDataItemBasicAction;}
 begin
   HasBeenHandled := False;
-  if ProviderActive then
+{  if ProviderActive then
   begin
     Provider.Enter;
     try
@@ -3406,12 +3416,12 @@ begin
     finally
       Provider.Leave;
     end;
-  end;
+  end;}
   if not HasBeenHandled then
   begin
     inherited Click;
     if AutoOpenURL and (URL <> '') then
-      OpenObject(URL);
+      ShellExecute(0, 'open', PChar(URL), nil, nil, SW_SHOWNORMAL);
   end;
 end;
 
@@ -4701,7 +4711,7 @@ begin
   try
     Lines.Text := Caption;
     for I := 0 to Lines.Count - 1 do
-      Lines[I] := MinimizeText(Lines[I], Canvas, Width);
+      Lines[I] := MinimizeName(Lines[I], Canvas, Width);
     StrPLCopy(Buffer, TrimRight(Lines.Text), MaxLen);
   finally
     Lines.Free;

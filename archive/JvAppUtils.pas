@@ -134,7 +134,10 @@ implementation
 
 uses
   SysUtils, Messages, Consts,
-  JvTypes, JvStrUtils, JvFileUtil, JvFormPlacement;
+  JvTypes, JvStrUtils, JvFileUtil, JvPlacemnt;
+
+const
+  CrLf = #13#10;
 
 function GetDefaultSection(Component: TComponent): string;
 var

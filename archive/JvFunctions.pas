@@ -42,7 +42,13 @@ uses
 {$IFNDEF COMPILER6_UP}
 type
   EOSError = class(EWin32Error);
-  {$ENDIF}
+{$ENDIF}
+
+type
+  TWallpaperStyle = (wpTile, wpCenter, wpStretch);
+  TJvWallpaperStyle = TWallpaperStyle;
+  PRGBArray = ^TRGBArray;
+  TRGBArray = array [0..MaxPixelCount - 1] of TRGBTriple;
 
 // Transform an icon to a bitmap
 function IconToBitmap(Ico: HICON): TBitmap;

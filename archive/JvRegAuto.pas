@@ -221,6 +221,7 @@ uses
 
 const
   cSlash = '/';
+  CrLf = #13#10;
 
 function GetUserHome: string;
 begin

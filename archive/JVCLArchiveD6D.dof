@@ -1,0 +1,122 @@
+[FileVersion]
+Version=6.0
+[Compiler]
+A=8
+B=0
+C=1
+D=1
+E=0
+F=0
+G=1
+H=1
+I=1
+J=0
+K=0
+L=1
+M=0
+N=1
+O=1
+P=1
+Q=0
+R=0
+S=0
+T=0
+U=0
+V=1
+W=0
+X=1
+Y=1
+Z=1
+ShowHints=1
+ShowWarnings=1
+UnitAliases=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[Linker]
+MapFile=0
+OutputObjs=0
+ConsoleApp=1
+DebugInfo=0
+RemoteSymbols=0
+MinStackSize=16384
+MaxStackSize=1048576
+ImageBase=4194304
+ExeDescription=JVCL 3 Archive components
+[Directories]
+OutputDir=$(DELPHI)\ExeFiles
+UnitOutputDir=
+PackageDLLOutputDir=
+PackageDCPOutputDir=
+SearchPath=
+Packages=vcl;rtl;vclx;VclSmp;vclshlctrls;PackageOthers;Misc;ThemeManager6;VirtualTreesD6;DJcl;AHComps;visualclx;Indy60;JvAppFrmD6R;JvCoreD6R;JvCustomD6R;JvCmpD6R;JvMMD6R;JvStdCtrlsD6R;JvPageCompsD6R;JvSystemD6R;JvCtrlsD6R
+Conditionals=
+DebugSourceDirs=
+UsePackages=0
+[Parameters]
+RunParams=
+HostApplication=
+Launcher=
+UseLauncher=0
+DebugCWD=
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=C:\Borland\Delphi6\Bin\
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1031
+CodePage=1252
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+[Excluded Packages]
+C:\Borland\Delphi6\Bin\dcldb60.bpl=Borland Datenbankkomponenten
+c:\borland\delphi6\Bin\dclie60.bpl=Internet Explorer-Komponenten
+c:\borland\delphi6\Projects\Bpl\IcsDel60.bpl=Internet Component Suite (ICS) for Delphi 6
+c:\WINDOWS\System32\ibevnt60.bpl=Borland Interbase Event Alerter Component
+c:\borland\delphi6\Projects\Bpl\FlatStyle_D6.bpl=FlatStyle
+C:\Borland\Delphi6\Bin\dbx60.bpl=Borland SQL-Explorer UI-Package
+c:\borland\delphi6\Bin\dclclxdb60.bpl=Borland CLX-Datenbankkomponenten
+c:\borland\delphi6\Bin\dcldbx60.bpl=Borland dbExpress-Komponenten
+c:\borland\delphi6\Bin\dclcds60.bpl=Borland Basis-Komponenten für Cached ClientDataset
+C:\Borland\Delphi6\Bin\dclmid60.bpl=Borland MyBase-Datenzugriffskomponenten
+c:\borland\delphi6\Bin\dclbdecds60.bpl=Borland Local BDE-ClientDataset-Komponenten
+c:\borland\delphi6\Bin\dcldbxcds60.bpl=Borland Lokale DBX-ClientDataset-Komponenten
+C:\Borland\Delphi6\Bin\dcltee60.bpl=TeeChart-Komponenten
+C:\Borland\Delphi6\Bin\dclbde60.bpl=Borland BDE-DB-Komponenten
+c:\borland\delphi6\Bin\dcloffice2k60.bpl=MS Office 2000 - Beispielkomp.: Wrapper für Automations-Server
+c:\borland\delphi6\Projects\Bpl\DDelphiX_for6.bpl=DelphiX Designtime Package
+C:\Borland\Delphi6\Projects\Bpl\DelphiX_for6.bpl=DelphiX - DirectX components for Delphi
+c:\borland\delphi6\Bin\dclnet60.bpl=Borland Internet-Komponenten
+c:\borland\delphi6\Bin\dclado60.bpl=Borland ADO-DB-Komponenten
+c:\borland\delphi6\Bin\dclib60.bpl=InterBase Datenzugriffskomponenten
+c:\borland\delphi6\Bin\dclocx60.bpl=Borland importierte ActiveX-Beispielkomponenten
+c:\borland\delphi6\Bin\dclqrt60.bpl=QuickReport-Komponenten
+c:\borland\delphi6\Bin\dcltqr60.bpl=Entwurfs-Package für TeeChart für QuickReport-Komponenten
+c:\borland\delphi6\Bin\DBWEBXPRT.BPL=Borland Web-Experten-Package
+c:\borland\delphi6\Bin\dclsoap60.bpl=Borland Soap-Komponenten
+[HistoryLists\hlUnitAliases]
+Count=1
+Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[HistoryLists\hlUnitOutputDirectory]
+Count=1
+Item0=C:\Development\sourceforge\others\jedi\JVCL3\dcu
+[HistoryLists\hlOutputDirectorry]
+Count=1
+Item0=$(DELPHI)\ExeFiles

@@ -60,7 +60,7 @@ type
 implementation
 
 uses
-  JvJVCLUtils;
+  JvFunctions;
 
 constructor TJvTransparentForm.Create(AOwner: TComponent);
 begin

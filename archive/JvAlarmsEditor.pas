@@ -52,7 +52,7 @@ type
 implementation
 
 uses
-  JvConsts;
+  JvConsts, JvxDConst;
 
 function TJvAlarmsEditor.GetAttributes: TPropertyAttributes;
 begin
