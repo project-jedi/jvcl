@@ -109,11 +109,6 @@ resourcestring
   RsAniCurFilter = 'Animated Cursors (*.ani)|*.ani|Any files (*.*)|*.*';
   RsEWriteStreamNotImplemented = 'TJvAnimatedCursorImage.WriteStream not implemented';
 
-//=== JvAppInfo.pas ==========================================================
-resourcestring
-  RsEInvalidPropertyFmt = 'Invalid property: %s';
-  RsENoPathSpecified = 'No path specified';
-
 //=== JvAppIniStorage.pas ======================================================
 resourcestring
   RsEReadValueFailed = 'TJvAppIniFileStorage.ReadValue: Section undefined';

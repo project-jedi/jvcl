@@ -78,6 +78,11 @@ uses
   IniFiles, TypInfo,
   JvTypes, JvResources;
 
+//=== JvAppInfo.pas ==========================================================
+resourcestring
+  RsEInvalidPropertyFmt = 'Invalid property: %s';
+  RsENoPathSpecified = 'No path specified';
+
 constructor TJvAppInfo.Create;
 begin
   inherited Create;
