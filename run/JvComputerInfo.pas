@@ -28,33 +28,23 @@ Known Issues:
     In previous versions of this component, published properties could be used to change the
     computer info values in the registry. These published properties were also stored in the DFM file.
     At start-up, the registry values on the end-users computer could be changed (silently) to the
-    developers values. The current implementation uses another scheme: the published properties all have
-    a dummy property setter (this is so you can see the value at design-time) but to actually change any value,
-    you must call the SetXXX methods explicitly to change the values. This change also means that if you used
-    a previous version of this component, you only need to recompile the application using it to remove any risk
-    of modifying the end users computer.
-
-    There is one problem though. Using code like
-
-      JvComputerInfo1.Company := 'New company';
-
-    to update a registry value, will not work anymore (the value is just ignored) and
-    you will not recieve any error messages telling you so. You must check
-    through your code and manually change the code to
-
-      JvComputerInfo1.SetCompany('New company');
-
-    instead.
+    developers values. The current implementation uses another scheme:
+      the published properties are now all read-only and the class is derived from TObject, making it impossible to
+      install in the IDE. To change a value, you must call the SetXX method explicitly
   2003-09-23:
     - Converted from TComponent -> TObject. If you are using this class in your projects, you will need
-     to instantiate it dyanimcally since you can no longer drop it on a form.
+     to instantiate it dynamically since you can no longer drop it on a form.
 
     - If you open a(n old) form containing a TJvComputerinfo component, you will get an error message from Delphi
      ('TJvComputerInfo not found' or similar). Please click "Ignore All" to remove the component from the form permanently.
       You now need to create the class in code and get/set properties manually.
 
-      This change has been done to promote safety snce the TComponent based version could
-      modify importnant registry values on end-user computers, creating a lot of problems.
+      This change has been done to promote safety since the TComponent based version could
+      modify important registry values on end-user computers, creating a lot of problems.
+  2003-12-10:
+    Made all properties read-only.
+    Changed UserName to RegisteredOwner
+    Changed Company to RegisteredOrganization
 
 
 -----------------------------------------------------------------------------}
@@ -72,9 +62,6 @@ uses
 type
   TJvComputerInfo = class(TObject)
   private
-    FDummyStr:string;
-    FDummyInt:integer;
-    FDummyTime: TTime;
     function GetCompany: string;
     function GetComputerName: string;
     function GetUsername: string;
@@ -106,25 +93,24 @@ type
     procedure SetVersionNumber(const Value: string);
   published
     // (p3)
-    property RealComputerName: string read GetRealComputerName write FDummyStr;
-    property LoggedOnUser: string read GetLoggedOnUser write FDummyStr;
+    property RealComputerName: string read GetRealComputerName;
+    property LoggedOnUser: string read GetLoggedOnUser;
 
     // This is the same as RealComputerName if you are running on NT
-    property ComputerName: string read GetComputerName write FDummyStr;
-    // this is really RegisteredOwner
-    property Username: string read GetUsername write FDummyStr;
-    // this is really RegisteredOrganization
-    property Company: string read GetCompany write FDummyStr;
-    property Comment: string read GetComment write FDummyStr;
-    property WorkGroup: string read GetWorkGroup write FDummyStr;
-    property ProductID: string read GetProductID write FDummyStr;
-    property ProductKey: string read GetProductKey write FDummyStr;
-    property ProductName: string read GetProductName write FDummyStr;
-    property DVDRegion: Integer read GetDVDRegion write FDummyInt;
-    property VersionNumber: string read GetVersionNumber write FDummyStr;
-    property Version: string read GetVersion write FDummyStr;
-    property TimeRunning: TTime read GetTime write FDummyTime stored false;
-    property DayRunning: Integer read GetDay write FDummyInt stored false;
+    property ComputerName: string read GetComputerName;
+    property RegisteredOwner: string read GetUsername;
+    property RegisteredOrganization: string read GetCompany;
+
+    property Comment: string read GetComment;
+    property WorkGroup: string read GetWorkGroup;
+    property ProductID: string read GetProductID;
+    property ProductKey: string read GetProductKey;
+    property ProductName: string read GetProductName;
+    property DVDRegion: Integer read GetDVDRegion;
+    property VersionNumber: string read GetVersionNumber;
+    property Version: string read GetVersion;
+    property TimeRunning: TTime read GetTime;
+    property DayRunning: Integer read GetDay;
   end;
 
 implementation

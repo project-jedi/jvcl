@@ -2464,7 +2464,8 @@ var
 begin
   Result := 0;
   for I := 0 to Pred(Index) do
-    Inc(Result, VisibleItems[I].Height);
+    if VisibleItems[I] <> nil then
+      Inc(Result, VisibleItems[I].Height);
 end;
 
 procedure TJvCustomInspector.IncPaintGeneration;

@@ -32,8 +32,8 @@ uses
   Windows, Classes, SysUtils, ComCtrls, CommCtrl, JvComCtrls;
 
 type
-  TJvTVCheckBoxStyle = (cbsNone,cbsNative,cbsJVCL);
-  TJvTVCascadeOption = (poOnCheck,poOnUnCheck);
+  TJvTVCheckBoxStyle = (cbsNone, cbsNative, cbsJVCL);
+  TJvTVCascadeOption = (poOnCheck, poOnUnCheck);
   TJvTVCascadeOptions = set of TJvTVCascadeOption;
 
   TJvTreeViewCheckBoxOptions = class(TPersistent)
@@ -48,8 +48,9 @@ type
     procedure ChangeImage(OldIndex, NewIndex: integer);
     procedure SetStyle(const Value: TJvTVCheckBoxStyle);
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create;
-    property TreeView:TJvTreeView read FTreeView;
+    property TreeView: TJvTreeView read FTreeView;
   published
     // Style determines what type of checkboxes/radioitems are displayed in the treeview. Style can have one of the following values:
     // cbsNone   - no checkboxes or radiobuttons are displayed. Works like a normal treeview
@@ -59,21 +60,22 @@ type
     // cbsJVCL  - use the custom JVCL style. With this option you can display any type of images
     //            by setting up your own StateImages ImageList and change the index properties below
     //            (see CheckBoxUnCheckedIndex etc)
-    property Style:TJvTVCheckBoxStyle read FStyle write SetStyle;
+    property Style: TJvTVCheckBoxStyle read FStyle write SetStyle;
     // CascadeLevels controls how many levels down a check or uncheck of a checkbox is propagated
     // If CascadeLevels is -1, checks and unchecks are cascaded to all children recursively regardless of depth.
     // If CascadeLevels is 0 (the default), no propagation takes place. If CascadeLevels > 0, the check/uncheck is
     // propagated that number of levels (i.e if CascadeLevels = 2, checks will propagate 2 levels below
     // the currently selected node)
     // Note that this only works if Style = cbsJVCL!
-    property CascadeLevels:integer read FCascadeLevels write FCascadeLevels default 0;
+    property CascadeLevels: integer read FCascadeLevels write FCascadeLevels default 0;
     // CascadeOptions determines how propagation of checks/unchecks are performed. CascadeOptions is a
     // set that can contain a combination of the following values:
     // cbOnCheck - the checkbox state is propagated when the node is checked
     // cbOnUnCheck - the checkbox state is propagated when the node is unchecked
     // If both values are set, the checkbox state is always propagated (unless CascadeLevels = 0, of course)
     // Setting this property to an empty set is equivalent to setting CascadeLevels := 0, i.e no propagation
-    property CascadeOptions:TJvTVCascadeOptions read FCascadeOptions write FCascadeOptions default [poOnCheck,poOnUnCheck];
+    property CascadeOptions: TJvTVCascadeOptions read FCascadeOptions write FCascadeOptions default [poOnCheck,
+      poOnUnCheck];
 
     // Use the properties below in combination with an imagelist assigned to the
     // Treeviews StateImages property to control what images are displayed for the various checkbox and radioitems states
@@ -114,8 +116,8 @@ type
     procedure ToggleNode(Node: TTreeNode); virtual;
     procedure Click; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure DoToggled(Node:TTreeNode);dynamic;
-    function DoToggling(Node:TTreeNode):boolean;dynamic;
+    procedure DoToggled(Node: TTreeNode); dynamic;
+    function DoToggling(Node: TTreeNode): boolean; dynamic;
   public
 
     // get / set whether Node is checked
@@ -159,7 +161,7 @@ begin
       while Assigned(tmp) do
       begin
         if (tmp.StateIndex in [cRadioUnChecked, cRadioChecked]) then
-           tmp.StateIndex := cRadioUnChecked;
+          tmp.StateIndex := cRadioUnChecked;
         tmp := tmp.getNextSibling;
       end;
       Node.StateIndex := cRadioChecked;
@@ -169,18 +171,39 @@ end;
 
 { TJvTreeViewCheckBoxOptions }
 
+procedure TJvTreeViewCheckBoxOptions.Assign(Source: TPersistent);
+begin
+  if (Source <> Self) and (Source is TJvTreeViewCheckBoxOptions) then
+  begin
+    Style := TJvTreeViewCheckBoxOptions(Source).Style;
+    CascadeLevels := TJvTreeViewCheckBoxOptions(Source).CascadeLevels;
+    CascadeOptions := TJvTreeViewCheckBoxOptions(Source).CascadeOptions;
+    CheckBoxUnCheckedIndex := TJvTreeViewCheckBoxOptions(Source).CheckBoxUnCheckedIndex;
+    CheckBoxCheckedIndex := TJvTreeViewCheckBoxOptions(Source).CheckBoxCheckedIndex;
+    RadioUncheckedIndex := TJvTreeViewCheckBoxOptions(Source).RadioUncheckedIndex;
+    RadioCheckedIndex := TJvTreeViewCheckBoxOptions(Source).RadioCheckedIndex;
+    Exit;
+  end;
+  inherited;
+end;
+
 procedure TJvTreeViewCheckBoxOptions.ChangeImage(OldIndex, NewIndex: integer);
 var
   N: TTreeNode;
 begin
   if Assigned(FTreeView) then
   begin
-    N := FTreeView.Items.GetFirstNode;
-    while Assigned(N) do
-    begin
-      if N.StateIndex = OldIndex then
-        N.StateIndex := NewIndex;
-      N := N.GetNext;
+    FTreeView.Items.BeginUpdate;
+    try
+      N := FTreeView.Items.GetFirstNode;
+      while Assigned(N) do
+      begin
+        if N.StateIndex = OldIndex then
+          N.StateIndex := NewIndex;
+        N := N.GetNext;
+      end;
+    finally
+      FTreeView.Items.EndUpdate;
     end;
   end;
 end;
@@ -193,7 +216,7 @@ begin
   FImageIndices[2] := 3;
   FImageIndices[3] := 4;
   FCascadeLevels := 0;
-  FCascadeOptions := [poOnCheck,poOnUnCheck]
+  FCascadeOptions := [poOnCheck, poOnUnCheck]
 end;
 
 function TJvTreeViewCheckBoxOptions.GetImageIndex(const Index: Integer): integer;
@@ -212,7 +235,6 @@ begin
     FImageIndices[Index] := Value;
   end;
 end;
-
 
 procedure TJvTreeViewCheckBoxOptions.SetStyle(const Value: TJvTVCheckBoxStyle);
 begin
@@ -234,7 +256,7 @@ begin
     GetCursorPos(P);
     P := ScreenToClient(P);
     if (htOnStateIcon in GetHitTestInfoAt(P.X, P.Y)) then
-      InternalSetChecked(Selected,not Checked[Selected], CheckBoxOptions.CascadeLevels);
+      InternalSetChecked(Selected, not Checked[Selected], CheckBoxOptions.CascadeLevels);
   end;
   inherited;
 end;
@@ -249,14 +271,14 @@ end;
 procedure TJvCheckTreeView.DoToggled(Node: TTreeNode);
 begin
   if Assigned(FOnToggled) then
-    FOnToggled(self,Node);
+    FOnToggled(self, Node);
 end;
 
 function TJvCheckTreeView.DoToggling(Node: TTreeNode): boolean;
 begin
   Result := true;
   if Assigned(FOnToggling) then
-    FOnToggling(self,Node,Result);
+    FOnToggling(self, Node, Result);
 end;
 
 function TJvCheckTreeView.GetCheckBox(Node: TTreeNode): boolean;
@@ -281,7 +303,7 @@ procedure TJvCheckTreeView.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited;
   if (CheckBoxOptions.Style = cbsJVCL) and (Key = VK_SPACE) and Assigned(Selected) then
-    InternalSetChecked(Selected,not Checked[Selected],CheckBoxOptions.CascadeLevels);
+    InternalSetChecked(Selected, not Checked[Selected], CheckBoxOptions.CascadeLevels);
 end;
 
 procedure TJvCheckTreeView.SetCheckBox(Node: TTreeNode; const Value: boolean);
@@ -303,22 +325,24 @@ end;
 
 procedure TJvCheckTreeView.SetCheckBoxOptions(const Value: TJvTreeViewCheckBoxOptions);
 begin
-  // FCheckBoxOptions := Value;
+  FCheckBoxOptions.Assign(Value);
 end;
 
-procedure TJvCheckTreeView.InternalSetChecked(Node: TTreeNode;const Value: boolean;Levels:integer);
-var tmp:TTreeNode;
+procedure TJvCheckTreeView.InternalSetChecked(Node: TTreeNode; const Value: boolean; Levels: integer);
+var
+  tmp: TTreeNode;
 begin
   if (Checked[Node] <> Value) then
     ToggleNode(Node);
   if (Levels <> 0) and CheckBox[Node]
-    and ((Value and (poOnCheck in CheckBoxOptions.CascadeOptions)) or (not Value and (poOnUnCheck in CheckBoxOptions.CascadeOptions))) then
+    and ((Value and (poOnCheck in CheckBoxOptions.CascadeOptions)) or (not Value and (poOnUnCheck in
+    CheckBoxOptions.CascadeOptions))) then
   begin
     tmp := Node.getFirstChild;
     while tmp <> nil do
     begin
       if CheckBox[tmp] then
-        InternalSetChecked(tmp,Value,Levels-Ord(Levels > 0));
+        InternalSetChecked(tmp, Value, Levels - Ord(Levels > 0));
       tmp := tmp.getNextSibling;
     end;
   end;
@@ -329,7 +353,7 @@ procedure TJvCheckTreeView.SetChecked(Node: TTreeNode;
 begin
   with CheckBoxOptions do
     if Style = cbsJVCL then
-      InternalSetChecked(Node,Value,CheckBoxOptions.CascadeLevels)
+      InternalSetChecked(Node, Value, CheckBoxOptions.CascadeLevels)
     else
       inherited Checked[Node] := Value;
 end;
