@@ -33,11 +33,11 @@ unit JvControlPanel;
 
 
 
-interface
+interface     
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, Menus, JvTypes, JvButton, JvDirectories, JvCPLFunctions;
+  StdCtrls, Menus, JvTypes, JvButton, JvDirectories, JvFunctions;
 
 type
   TJvControlPanel = class(TJvButton)

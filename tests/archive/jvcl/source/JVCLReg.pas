@@ -60,7 +60,7 @@ uses
 
   //Controls
   JvPlaylist, JvButtonShaped, JvFavoritesButton, JvClock, JvStartMenuBtn,
-  JvScrollText, JvRecentMenuBtn, {$IFNDEF D6PersonalEdition}JvControlPanel,{$ENDIF}
+  JvScrollText, JvRecentMenuBtn, {$IFNDEF DelphiPersonalEdition}JvControlPanel,{$ENDIF}
   JvGradientCaption,
   JvZoom, JvWaitingGradient, JvSpecialProgress, JvWaitingProgress,
   JvGammaPanel, JvSlider, JvSpinEdit,
@@ -147,7 +147,7 @@ uses
   //JvBands
   JvBandForms, JvBandObjectDLLWizard,
 
-{$IFNDEF D6PersonalEdition}
+{$IFNDEF DelphiPersonalEdition}
   //DB-Aware components
   JvDBDateTimePicker,
   JvDBProgressBar,
@@ -334,7 +334,7 @@ begin
       TJvPageControl,
       TJvRichEdit,
       TJvTrackBar,
-      {$IFNDEF D6PersonalEdition}
+      {$IFNDEF DelphiPersonalEdition}
       TJvProgressBar,
       {$ENDIF}
       TJvUpDown,
@@ -389,7 +389,7 @@ begin
     TJvNTEventLog
       ]);
 
-{$IFNDEF D6PersonalEdition}
+{$IFNDEF DelphiPersonalEdition}
   // Jv Data Controls
   // ================
   RegisterComponents('Jv Data Controls', [
@@ -560,7 +560,7 @@ begin
     TJvFavoritesButton,
       TJvStartMenuBtn,
       TJvRecentMenuBtn,
-{$IFNDEF D6PersonalEdition}
+{$IFNDEF DelphiPersonalEdition}
       TJvControlPanel,
 {$ENDIF}      
 

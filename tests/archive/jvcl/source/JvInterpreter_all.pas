@@ -44,7 +44,7 @@ uses JvInterpreter,
   JvInterpreter_Windows,
   JvInterpreter_StdCtrls, JvInterpreter_ComCtrls, JvInterpreter_ExtCtrls, JvInterpreter_Forms,
   JvInterpreter_Menus, JvInterpreter_Grids,
-{$IFNDEF D6PersonalEdition}
+{$IFNDEF DelphiPersonalEdition}
   JvInterpreter_Db, JvInterpreter_DBTables, JvInterpreter_DbCtrls, JvInterpreter_DbGrids,
   JvInterpreter_Quickrpt,
 {$ENDIF}
@@ -76,7 +76,7 @@ initialization
   JvInterpreter_Menus.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Grids.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
-{$IFNDEF D6PersonalEdition}
+{$IFNDEF DelphiPersonalEdition}
   JvInterpreter_Db.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_DBTables.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_DbCtrls.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
