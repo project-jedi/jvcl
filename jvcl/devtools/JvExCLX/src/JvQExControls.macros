@@ -52,9 +52,10 @@ Known Issues:
 
 //  Name                  Implements
 //  JV_CONTROL            WndProc, HintColor, Perform, CMFocusChanged,
+//                        FocusChanged, DoFocusChanged (deprecated),
 //                        ColorToRGB, OnParentColorChange, AboutJVCLX
 //
-//  JV_CUSTOMCONTROL      WMTimer, WMEraseBkGround, CMFontChanged,
+//  JV_CUSTOMCONTROL      WMEraseBkGround, CMFontChanged,
 //                        JV_CONTROL
 //
 //  JV_WINCUSTOMCONTROL   Paint,
@@ -64,7 +65,7 @@ Known Issues:
 //                        JV_WINCUSTOMCONTROL
 //
 //  JV_EDITCONTROL        ClipboardCmds, Clear, CopyToClipboard, CutToClipboard,
-//                        PasteFromClipBoard, Undo, EMSetRect, EMGetRect
+//                        PasteFromClipBoard, Undo, EMSetRect, EMGetRect.
 //                        JV_WINCONTROL
 //
 //  JV_CUSTOMFORM         JV_CUSTOMCONTROL
@@ -72,10 +73,6 @@ Known Issues:
 //
 //  TWidgetControl VCL compatibility methods
 //  protected
-//    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-//    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-//    procedure WMEraseBkGround(var Msg: TMessage); message WM_ERASEBKGND;
-//    procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
 //    procedure CreateWnd; virtual;
 //    procedure RecreateWnd;
 //    procedure Paint;
@@ -95,17 +92,22 @@ Known Issues:
   { QControl }
   private
     FAboutJVCL: TJVCLAboutInfo;
+    FDragCursor: TCursor;
+    FDragKind: TDragKind;
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FOnParentColorChanged: TNotifyEvent;
   protected
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    procedure ColorChanged; override;
+    procedure FocusChanged(Control: TWinControl); virtual;
+    procedure FontChanged; override;
     procedure ParentColorChanged; override;
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); virtual;
-    procedure WndProc(var Msg: TMessage); virtual;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault;
+    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
   public
     procedure Dispatch(var Message); override;
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -145,23 +147,16 @@ Known Issues:
   private
     procedure OnFontChanged(Sender: TObject);
   protected
-    procedure BoundsChanged; override;
-    procedure ColorChanged; override;
     procedure CreateWidget; override;
-    procedure FontChanged; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function WidgetFlags: Integer; override;
-    procedure WMEraseBkGround(var Msg: TMessage); message WM_ERASEBKGND;
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
     procedure CreateWnd; virtual;
     procedure RecreateWnd;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: QWidgetH); dynamic;
     procedure DoKillFocus(FocusedWnd: QWidgetH); dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
     function ColorToRGB(Value: TColor): TColor;
@@ -175,7 +170,6 @@ Known Issues:
   protected
     procedure Paint; virtual;
 *)
-
 
 (*$DEFINE JV_WINCUSTOMCONTROL_BEGIN(ClassName)
   { QWinCustomControl }
@@ -192,10 +186,7 @@ Known Issues:
   end;
 
   { QWinCustomControl }
-  TJvExPub##ClassName = class(TJvEx##ClassName)
-  published
-    property Style default
-  end;
+  TJvExPub##ClassName = class(TJvEx##ClassName);
   EMPTYLINE
 *)
 
@@ -261,7 +252,7 @@ Known Issues:
   end;
 
   { QCustomControl }
-  TJvExPub##ClassName = class(TJvEx##ClassName)
+  TJvExPub##ClassName = class(TJvEx##ClassName);
   EMPTYLINE
 *)
 
@@ -314,10 +305,7 @@ Known Issues:
   end;
 
   { QEditControl }
-  TJvExPub##ClassName = class(TJvEx##ClassName)
-  published
-    property Style default dsSystemDefault;
-  end;
+  TJvExPub##ClassName = class(TJvEx##ClassName);
   EMPTYLINE
 *)
 
@@ -352,10 +340,7 @@ Known Issues:
   end;
 
   { QCustomForm }
-  TJvExPub##ClassName = class(TJvEx##ClassName)
-  published
-    property Style default dsSystemDefault;
-  end;
+  TJvExPub##ClassName = class(TJvEx##ClassName);
   EMPTYLINE
 *)
 
@@ -363,6 +348,7 @@ Known Issues:
   JV_CUSTOMFORM_BEGIN(ClassName)
   JV_CUSTOMFORM_END(ClassName)
 *)
+
 
 // *************************************************************************
 // ************************* IMPLEMENTATION MACROS *************************
@@ -387,6 +373,16 @@ begin
     Application.HintColor := FSavedHintColor;
   end;
   inherited MouseLeave(Control);
+end;
+
+procedure TJvEx##ClassName.FocusChanged(Control: TWinControl);
+begin
+  { notification }
+end;
+
+procedure TJvEx##ClassName.FontChanged;
+begin
+  Canvas.Font.Assign := Font;
 end;
 
 procedure TJvEx##ClassName.ParentColorChanged;
@@ -447,9 +443,15 @@ end;
 *)
 
 (*$DEFINE JV_CONTROL_IMPL(ClassName)
-   JV_IMPL_CONTROL_CREATE(ClassName)
-   JV_IMPL_CONTROL(ClassName)
-   JV_IMPL_CONTROL_COMMON(ClassName)
+JV_IMPL_CONTROL_CREATE(ClassName)
+procedure TJvEx##ClassName.ColorChanged;
+begin
+  inherited ColorChanged;
+  Canvas.Brush.Color := Color;
+end;
+
+JV_IMPL_CONTROL(ClassName)
+JV_IMPL_CONTROL_COMMON(ClassName)
 *)
 
 //
@@ -458,12 +460,12 @@ end;
 
 (*$DEFINE JV_IMPL_WINCUSTOMCONTROL(ClassName)
 { QWinCustomControl }
-procedure TJvEx##ClassName.DoSetFocus(FocusedWnd: HWND);
+procedure TJvEx##ClassName.DoSetFocus(FocusedWnd: QWidgetH);
 begin
   { notification }
 end;
 
-procedure TJvEx##ClassName.DoKillFocus(FocusedWnd: HWND);
+procedure TJvEx##ClassName.DoKillFocus(FocusedWnd: QWidgetH);
 begin
   { notification }
 end;
@@ -471,30 +473,6 @@ end;
 function TJvEx##ClassName.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
-end;
-
-procedure TJvEx##ClassName.WMEraseBkGround(var Msg: TMessage);
-var
-  Bmp := TBitmap;
-begin
-  Bmp := TBitmap.Create;
-  Bmp.Width := Width;
-  Bmp.Height := Height;
-  with Bmp do
-  begin
-    Canvas.Start;
-    Msg.Result := DoPaintBackground(Canvas, Msg.Param);
-    Canvas.Stop;
-  end;
-  if Msg.Result then
-  then
-    Canvas.Draw(0,0, Bmp);
-  Bmp.destroy;
-end;
-
-procedure TJvEx##ClassName.CMFocusChanged(var Msg: TCMFocusChanged);
-begin
-  Msg.Result := DoFocusChanged(Msg.WinControl);
 end;
 
 procedure TJvEx##ClassName.OnFontChanged(Sender: TObject);
@@ -508,21 +486,6 @@ begin
   PostMessage(Self.Handle, CM_FONTCHANGED, 0, 0);
 end;
 
-procedure TJvEx##ClassName.CMFontChanged(var Message: TMessage);
-begin
-  FontChanged;
-end;
-
-procedure TJvEx##ClassName.WMTimer(var Msg: TWMTimer);
-begin
-  with Msg do
-  begin
-    if TimerProc <> nil then
-       TimerProc(Handle, WM_TIMER, TimerID, GetTickCount);
-    Result := 1;
-  end;
-end;
-
 procedure TJvEx##ClassName.ColorChanged;
 begin
   inherited ColorChanged;
@@ -531,12 +494,6 @@ begin
     Palette.Color := Color;
     Brush.Color := Color;
   end;
-end;
-
-procedure TJvEx##ClassName.FontChanged;
-begin
-  inherited FontChanged;
-  Canvas.Font.Assign(Font);
 end;
 
 procedure TJvEx##ClassName.CreateWidget;
@@ -568,19 +525,8 @@ begin
 end;
 
 procedure TJvEx##ClassName.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-var
-  PixMap: QPixmapH;
 begin
-  PixMap := QPixmap_create;
-  try
-    ControlState := ControlState + [csPaintCopy];
-    QPixmap_grabWidget(PixMap, Handle, 0, 0, Width, Height);
-    Qt.BitBlt(PaintDevice, X, Y, PixMap, 0, 0, Width, Height, RasterOp_CopyROP, True);
-  end;
-  finally
-    ControlState := ControlState - [csPaintCopy];
-    QPixMap_destroy(PixMap);
-  end;
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
 
 procedure TJvEx##ClassName.PaintWindow(PaintDevice: QPaintDeviceH);
@@ -598,6 +544,11 @@ end;
 function TJvEx##ClassName.ColorToRGB(Value: TColor): TColor;
 begin
   Result := QWindows.ColorToRGB(Value, self);
+end;
+
+procedure TJvEx##ClassName.DoGetDlgCode(var Code: TDlgCodes);
+begin
+  Result := InputKeys;
 end;
   EMPTYLINE
 *) // MACRO END WINCUSTOMCONTROL
@@ -627,7 +578,6 @@ begin
   inherited Create(AOwner);
   Font.OnChange := OnFontChanged;
   FHintColor := clDefault;
-  FVCLMessages := TJvVCLMessages.Create(self);
   CREATE_CUSTOMCODE
 end;
 
