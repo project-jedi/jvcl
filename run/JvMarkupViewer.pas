@@ -96,7 +96,9 @@ uses
 constructor TJvMarkupViewer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
   FElementStack := TJvHTMLElementStack.Create;
   FTagStack := TJvHTMLElementStack.Create;
   Width := 300;

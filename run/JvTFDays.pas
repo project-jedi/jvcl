@@ -54,8 +54,8 @@ uses
   StdCtrls, ImgList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QImgList,
+  QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QImgList, QWindows, Types,
   {$ENDIF VisualCLX}
   JvTFManager, JvTFSparseMatrix,
   {$IFDEF USEJVCL}

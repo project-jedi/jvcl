@@ -32,8 +32,13 @@ unit JvTFGlanceTextViewer;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QStdCtrls, Types, QWindows,
+  {$ENDIF}
   {$IFDEF USEJVCL}
   JvComponent,
   {$ENDIF USEJVCL}

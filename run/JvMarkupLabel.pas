@@ -119,7 +119,9 @@ uses
 constructor TJvMarkupLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
   FElementStack := TJvHTMLElementStack.Create;
   FTagStack := TJvHTMLElementStack.Create;
   Color := clWhite;

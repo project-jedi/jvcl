@@ -31,7 +31,14 @@ unit JvTFUtils;
 
 interface
 
-uses Windows, Classes, SysUtils, Graphics;
+uses
+  {$IFDEF VCL}
+  Windows, Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, Types,
+  {$ENDIF}
+  Classes, SysUtils;
 
 Type
   TJvTFVisibleScrollBars  = set of (vsbHorz, vsbVert);
