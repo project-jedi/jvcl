@@ -60,6 +60,11 @@ cd ..\..\packages
 IF ERRORLEVEL 1 GOTO error
 echo.
 echo Cleaning
+
+..\devtools\bin\NoQuotes PACKAGE %PACKAGE%
+Call NoQuotesBatch.bat
+del /f NoQuotesBatch.bat
+
 del /f "%PACKAGE%.mak"
 del /f /q %DIR%\*.mak
 echo.
