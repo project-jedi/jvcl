@@ -48,7 +48,14 @@
               No recursion is done. You don't have to specify the 'all' alias,
               it will be derived from the target list. If you defined some Perso
               target, do not forget to include them in the value for your alias
-
+              
+    Finally, CLX filename replacements (see accompanying doc for more details)
+       
+       The format for each filename node is:
+          original replacement
+          
+       original     the prefix to be replaced in file names
+       replacement  the value to use as a replacement
 
     Be careful, all properties of the model node must exist and the targets and
     aliases children must exist too. If there is no target specified, none will
@@ -76,6 +83,11 @@
         <alias name="allbutclx" value="c5,c6,c6p,d5,d5s,d6,d6p,d7,d7p"/>
         <alias name="allbutperso" value="c5,c6,d5,d6,d7"/>
       </aliases>
+      <ClxReplacements>
+        <replacement original="\run\Jv" replacement="\qrun\JvQ"/>
+        <replacement original="\design\Jv" replacement="\qdesign\JvQ"/>
+        <replacement original="\common\Jv" replacement="\qcommon\JvQ"/>
+      </ClxReplacements>
     </model>
     <Model Name="JCL" format="%e%p%n" NoLibSuffixFormat="%e%p%n%v0" prefix="Jcl" packages="" incfile="">
       <targets>
