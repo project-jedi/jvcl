@@ -313,6 +313,7 @@ contains
   JvImageDrawThread in '..\source\JvImageDrawThread.pas',
   JvInspector in '..\source\JvInspector.pas',
   JvInspDB in '..\source\JvInspDB.pas',
-  JvHidControllerClass in '..\source\JvHidControllerClass.pas';
+  JvHidControllerClass in '..\source\JvHidControllerClass.pas',
+  JvAnalogClock in '..\source\JvAnalogClock.pas';
 
 end.
