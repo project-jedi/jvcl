@@ -2331,13 +2331,13 @@ procedure TGnuGettextInstance.TranslateStrings(sl: TStrings; const TextDomain: s
 var
   Line: AnsiString;
   i: Integer;
-//  TempList: TStringList;
+  TempList: TStringList;
 begin
   if sl.Count > 0 then
   begin
     sl.BeginUpdate;
     try
-{      TempList := TStringList.Create;
+      TempList := TStringList.Create;
       try
         TempList.Assign(sl);
         for i := 0 to TempList.Count - 1 do
@@ -2349,13 +2349,15 @@ begin
         sl.Assign(TempList);
       finally
         TempList.Free;
-      end;}
+      end;
+{
       for i := 0 to sl.Count - 1 do
       begin
         Line := sl.Strings[i];
         if Line <> '' then
           sl.Strings[i] := dgettext(TextDomain, Line);
       end;
+      }
     finally
       sl.EndUpdate;
     end;

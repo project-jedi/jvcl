@@ -199,14 +199,13 @@ begin
         FinalizeUnitList := P.Next
       else
         N.Next := P.Next;
-      P.Free;
+        P.Free;
       Break;
     end;
     N := P;
     P := P.Next;
   end;
 end;
-
 //============================================================================
 
 type
@@ -406,9 +405,9 @@ end;
 initialization
 
 finalization
-//
-// on linux this causing exceptions, if you try do deselect Jv Core.
+// asn: causes exceptions on linux 
   FinalizeUnits;
+{$ENDIF MSWINDOWS}
 
 end.
-{$ENDIF MSWINDOWS}
+

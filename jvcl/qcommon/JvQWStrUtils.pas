@@ -49,7 +49,7 @@ type
     foUnicodeLB  // reads/writes BOM_LSB_FIRST/BOM_MSB_FIRST
    );
   TWideFileOptions = set of TWideFileOptionsType;
-
+ 
   TSearchFlag = (
     sfCaseSensitive,    // match letter case
     sfIgnoreNonSpacing, // ignore non-spacing characters in search
@@ -57,9 +57,8 @@ type
                         // (this applies to the pattern as well as the search text)
     sfWholeWordOnly     // match only text at end/start and/or surrounded by white spaces
   );
-  TSearchFlags = set of TSearchFlag;
-
-  // UTF conversion schemes (UCS) data types
+  TSearchFlags = set of TSearchFlag; 
+    // UTF conversion schemes (UCS) data types
   PUCS4 = ^UCS4;
   UCS4 = Cardinal;
   PUCS2 = PWideChar;
@@ -753,7 +752,7 @@ begin
     Dec(Result);
 end;
 
-//=== TWStrings ==============================================================
+//=== { TWStrings } ==========================================================
 
 constructor TWStrings.Create;
 begin
@@ -1428,7 +1427,7 @@ begin
   Writer.WriteListEnd;
 end;
 
-//=== TWStringList ===========================================================
+//=== { TWStringList } =======================================================
 
 constructor TWStringList.Create;
 begin
