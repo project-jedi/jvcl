@@ -719,7 +719,6 @@ end;
 
 //=== { TJvLookupControl } ===================================================
 
-// (rom) changed to var
 var
   SearchTickCount: Longint = 0;
 

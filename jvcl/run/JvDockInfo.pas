@@ -764,14 +764,13 @@ begin
 end;
 
 {$IFDEF USEJVCL}
-
 procedure TJvDockInfoTree.ReadInfoFromAppStorage;
 begin
   AppStorage.BeginUpdate;
   try
     CreateZoneAndAddInfoFromAppStorage;
     DoFloatAllForm;
-  // (rom) this is disputable
+    // (rom) this is disputable
     Application.ProcessMessages;
     try
       FJvDockInfoStyle := isJVCLReadInfo;

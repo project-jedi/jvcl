@@ -203,7 +203,7 @@ begin
   if FDir <> Value then
   begin
     if not (csDesigning in FParent.FOwner.ComponentState) and
-           ((Length(Value) = 0) or not DirectoryExists(Value)) then
+      ((Length(Value) = 0) or not DirectoryExists(Value)) then
       raise EJVCLException.CreateResFmt(@RsEFmtInvalidPath, [Value]);
     FDir := Value;
   end;
@@ -420,7 +420,6 @@ begin
   end;
 end;
 
-
 //=== { TJvChangeThread } ====================================================
 
 constructor TJvChangeThread.Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer);
@@ -475,7 +474,6 @@ begin
   if Assigned(FNotify) then
     FNotify(Self, FIndex);
 end;
-
 
 end.
 

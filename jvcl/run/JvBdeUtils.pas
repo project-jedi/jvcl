@@ -929,7 +929,6 @@ begin
   end;
 end;
 
-// (rom) changed to var
 var
   SaveIndexFieldNames: TStringList = nil;
 

@@ -626,7 +626,6 @@ end;
 
 constructor TJvDockDragDockObject.Create(AControl: TControl);
 begin
-  // (rom) added inherited Create
   inherited Create;
   FControl := AControl;
   FBrush := TBrush.Create;
@@ -2471,7 +2470,6 @@ end;
 
 constructor TJvDockManager.Create;
 begin
-  // (rom) added inherited Create
   inherited Create;
   FDockServersList := TList.Create;
   FDockClientsList := TList.Create;

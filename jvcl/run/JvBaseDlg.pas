@@ -50,7 +50,7 @@ type
     procedure Execute; virtual; abstract;
   end;
 
-  // (rom) alternative to TJvCommonDialog
+  // (rom) alternative to TJvCommonDialogP
   TJvCommonDialogF = class(TJvComponent)
   public
     function Execute: Boolean; virtual; abstract;

@@ -666,7 +666,6 @@ end;
 
 //=== { TJvAppEvents } =======================================================
 
-// (rom) changed to var
 var
   AppList: TJvAppEventList = nil;
 

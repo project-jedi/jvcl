@@ -282,7 +282,6 @@ procedure TJvCheckListBox.SelectAll;
 var
   I: Integer;
 begin
-  // (rom) simplified
   if MultiSelect then
     for I := 0 to Items.Count - 1 do
       Selected[I] := True;

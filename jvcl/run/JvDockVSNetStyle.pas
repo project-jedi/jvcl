@@ -2097,7 +2097,6 @@ end;
 
 constructor TJvDockVSBlock.Create(Owner: TJvDockVSChannel);
 begin
-  // (rom) added inherited Create
   inherited Create;
   FVSChannel := Owner;
   FVSPaneList := TList.Create;
@@ -2348,7 +2347,6 @@ end;
 constructor TJvDockVSPane.Create(ABlock: TJvDockVSBlock; AForm: TForm;
   AWidth: Integer; AIndex: Integer);
 begin
-  // (rom) added inherited Create
   inherited Create;
   FBlock := ABlock;
   FDockForm := AForm;

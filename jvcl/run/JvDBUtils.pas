@@ -83,7 +83,6 @@ type
 
   TCreateLocateObject = function: TJvLocateObject;
 
-// (rom) changed to var
 var
   CreateLocateObject: TCreateLocateObject = nil;
 
