@@ -44,7 +44,7 @@ type
 
   TJvID3Text = class(TJvID3Persistent)
   private
-    FDummyList: TStrings;
+    FDummyList: TStringList;
     function GetDateTime(const FrameID: Integer{TJvID3FrameID}): TDateTime;
     function GetList(const FrameID: Integer{TJvID3FrameID}): TStrings;
     function GetNumber(const FrameID: Integer{TJvID3FrameID}): Cardinal;

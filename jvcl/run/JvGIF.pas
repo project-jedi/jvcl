@@ -467,7 +467,7 @@ type
   TExtension = class(TPersistent)
   private
     FExtType: TExtensionType;
-    FData: TStrings;
+    FData: TStringList;
     FExtRec: TExtensionRecord;
   public
     destructor Destroy; override;
@@ -2516,12 +2516,12 @@ var
       end;
   end;
 
-  function ReadDataBlock(Stream: TStream): TStrings;
+  function ReadDataBlock(Stream: TStream): TStringList;
   var
     BlockSize: Byte;
     S: string;
   begin
-    Result := TStringlist.Create;
+    Result := TStringList.Create;
     try
       repeat
         Stream.Read(BlockSize, SizeOf(Byte));

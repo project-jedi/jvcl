@@ -39,12 +39,13 @@ type
   private
     FTagParams: TStringList;
     FAttributeFilter: TStringList;
+    function GetAttributeFilter: TStrings;
   public
     constructor Create;
     destructor Destroy; override;
     function Attributes(const STag: string): TStrings;
     procedure OnHTMLTag(Sender: TObject; Tag: TTag; const TagString: string; TagParams: TStrings; var ReplaceText: string);
-    property AttributeFilter: TStringList read FAttributeFilter;
+    property AttributeFilter: TStrings read GetAttributeFilter;
   end;
 
 implementation
@@ -61,6 +62,11 @@ begin
   FTagParams.Free;
   FAttributeFilter.Free;
   inherited Destroy;
+end;
+
+function TJvgTagParser.GetAttributeFilter: TStrings;
+begin
+  Result := FAttributeFilter;
 end;
 
 function TJvgTagParser.Attributes(const STag: string): TStrings;

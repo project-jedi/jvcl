@@ -36,7 +36,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QGraphics, QImgList, QDialogs, QControls, Types, ClxEditors,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   {$IFDEF VCL}
   VCLEditors,

@@ -54,7 +54,7 @@ type
     function GetReadMsg: TJclEmailReadMsg;
     function GetSubject: string;
     function GetUserLogged: Boolean;
-    procedure SetAttachment(const Value: TStrings);
+    procedure SetAttachments(const Value: TStrings);
     procedure SetBody(const Value: string);
     procedure SetFindOptions(const Value: TJclEmailFindOptions);
     procedure SetHtmlBody(const Value: Boolean);
@@ -68,7 +68,7 @@ type
     function Execute: Boolean;
     property Mailer: TJclEmail read FMailer write FMailer;
   published
-    property Attachments: TStrings read GetAttachments write SetAttachment;
+    property Attachments: TStrings read GetAttachments write SetAttachments;
     property Body: string read GetBody write SetBody;
     property FindOptions: TJclEmailFindOptions read GetFindOptions write SetFindOptions;
     property HtmlBody: Boolean read GetHtmlBody write SetHtmlBody;
@@ -199,7 +199,7 @@ begin
   Result := Mailer.UserLogged;
 end;
 
-procedure TJvSendMailOptions.SetAttachment(const Value: TStrings);
+procedure TJvSendMailOptions.SetAttachments(const Value: TStrings);
 begin
   Mailer.Attachments.Assign(Value);
 end;

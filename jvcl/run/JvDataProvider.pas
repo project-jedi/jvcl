@@ -383,7 +383,7 @@ type
     is retrieved, but a new link is added when the caption is changed. }
   TJvDataItemContextTextImpl = class(TJvDataItemTextImpl, IJvDataContextSensitive)
   private
-    FContextStrings: TStrings;
+    FContextStrings: TStringList;
   protected
     function GetCaption: string; override;
     procedure SetCaption(const Value: string); override;

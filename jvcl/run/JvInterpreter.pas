@@ -727,7 +727,7 @@ type
     FExit: Boolean;
     FFunctionStack: TList;
     FFunctionContext: Pointer; { PFunctionContext }
-    FSS: TStrings;
+    FSS: TStringList;
     FStateStack: array [0..cJvInterpreterStackMax] of TParserState;
     FStateStackPtr: TStackPtr;
     FEventList: TList;
@@ -829,8 +829,9 @@ type
   { main JvInterpreter component }
   TJvInterpreterProgram = class(TJvInterpreterUnit)
   private
-    FPas: TStrings;
+    FPas: TStringList;
     FOnStatement: TNotifyEvent;
+    function GetPas: TStrings;
     procedure SetPas(Value: TStrings);
   protected
     procedure DoOnStatement; override;
@@ -839,7 +840,7 @@ type
     destructor Destroy; override;
     procedure Run; override;
   published
-    property Pas: TStrings read FPas write SetPas;
+    property Pas: TStrings read GetPas write SetPas;
     property OnGetValue;
     property OnSetValue;
     property OnGetUnitSource;
@@ -7537,8 +7538,8 @@ begin
   end;
 end;
 
-function TJvInterpreterUnit.FunctionExists(const UnitName: string; const FunctionName: string)
-  : Boolean;
+function TJvInterpreterUnit.FunctionExists(const UnitName: string;
+  const FunctionName: string): Boolean;
 begin
   Result := FAdapter.FindFunDesc(UnitName, FunctionName) <> nil;
 end;
@@ -7571,6 +7572,11 @@ destructor TJvInterpreterProgram.Destroy;
 begin
   FPas.Free;
   inherited Destroy;
+end;
+
+function TJvInterpreterProgram.GetPas: TStrings;
+begin
+  Result := FPas;
 end;
 
 procedure TJvInterpreterProgram.SetPas(Value: TStrings);

@@ -38,7 +38,7 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd, Types,
   QWindows,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 {$HPPEMIT '#define TDate Controls::TDate'}

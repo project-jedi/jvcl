@@ -68,12 +68,12 @@ function HexToAscii(s: String): String;
 function AsciiToHex(s: String): String;
 function StripQuotes(s1: String): String;
 
-  { TStringList helper functions }
-function GetIntValueFromResultString(VarName: String; ResultStrings: TStringList;
+{ TStrings helper functions }
+function GetIntValueFromResultString(VarName: String; ResultStrings: TStrings;
   DefVal: Integer): Integer;
-function GetValueFromResultString(VarName: String; ResultStrings: TStringList): String;
+function GetValueFromResultString(VarName: string; ResultStrings: TStrings): string;
 
-  { Pascal Low Level PChar Functions }
+{ Pascal Low Level PChar Functions }
 function ValidNumericLiteral(s1: PChar): Boolean;
 function ValidIntLiteral(s1: PChar): Boolean;
 function ValidHexLiteral(s1: PChar): Boolean;
@@ -712,7 +712,7 @@ end;
 // VariableName = Value  - usual format in ini files
 // Label Name = Value    - labels names can contain spaces.
 //-----------------------------------------------------------------------------
-function GetIntValueFromResultString(VarName: String; ResultStrings: TStringList;
+function GetIntValueFromResultString(VarName: String; ResultStrings: TStrings;
   DefVal: Integer): Integer;
 var
   s: String;
@@ -729,7 +729,7 @@ end;
 // VariableName = Value  - usual format in ini files
 // Label Name = Value    - labels names can contain spaces.
 //-----------------------------------------------------------------------------
-function GetValueFromResultString(VarName: String; ResultStrings: TStringList): String;
+function GetValueFromResultString(VarName: String; ResultStrings: TStrings): String;
 var
   label1, value1: String;
   len1, pos1, t, Count: Integer;
@@ -750,8 +750,8 @@ begin
     // found a value to extract:
     if (pos1 > 0) then 
     begin
-      Label1 := Copy(ResultStrings[t], 1,pos1 - 1);
-      Value1 := Copy(ResultStrings[t], pos1 + 1,len1);
+      Label1 := Copy(ResultStrings[t], 1, pos1 - 1);
+      Value1 := Copy(ResultStrings[t], pos1 + 1, len1);
 
       if VarName = Label1 then 
       begin // found it!

@@ -142,6 +142,22 @@ type
 
   TJvDockCustomTabControl = class;
 
+  TJvDockTabStrings = class(TStrings)
+  private
+    FTabControl: TJvDockCustomTabControl;
+  protected
+    function Get(Index: Integer): string; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const S: string); override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
+    procedure SetUpdateState(Updating: Boolean); override;
+  public
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    procedure Insert(Index: Integer; const S: string); override;
+  end;
+
   TJvDockDrawTabEvent = procedure(Control: TJvDockCustomTabControl; TabIndex: Integer;
     const Rect: TRect; Active: Boolean) of object;
 
@@ -161,7 +177,7 @@ type
     FScrollOpposite: Boolean;
     FStyle: TTabStyle;
     FTabPosition: TTabPosition;
-    FTabs: TStrings;
+    FTabs: TJvDockTabStrings;
     FTabSize: TSmallPoint;
     FUpdating: Boolean;
     FSavedAdjustRect: TRect;
@@ -171,6 +187,7 @@ type
     FOnGetImageIndex: TTabGetImageEvent;
     function GetDisplayRect: TRect;
     function GetTabIndex: Integer;
+    function GetTabs: TStrings;
     procedure ImageListChange(Sender: TObject);
     function InternalSetMultiLine(Value: Boolean): Boolean;
     procedure SetMultiLine(Value: Boolean);
@@ -225,7 +242,7 @@ type
     property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
     property TabPosition: TTabPosition read FTabPosition write SetTabPosition
       default tpTop;
-    property Tabs: TStrings read FTabs write SetTabs;
+    property Tabs: TStrings read GetTabs write SetTabs;
     property TabWidth: Smallint read FTabSize.X write SetTabWidth default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
@@ -358,22 +375,6 @@ type
     property Pages[Index: Integer]: TJvDockTabSheet read GetPage;
     property PageSheets: TList read FPages;
     property TabSheetClass: TJvDockTabSheetClass read FTabSheetClass write FTabSheetClass;
-  end;
-
-  TJvDockTabStrings = class(TStrings)
-  private
-    FTabControl: TJvDockCustomTabControl;
-  protected
-    function Get(Index: Integer): string; override;
-    function GetCount: Integer; override;
-    function GetObject(Index: Integer): TObject; override;
-    procedure Put(Index: Integer; const S: string); override;
-    procedure PutObject(Index: Integer; AObject: TObject); override;
-    procedure SetUpdateState(Updating: Boolean); override;
-  public
-    procedure Clear; override;
-    procedure Delete(Index: Integer); override;
-    procedure Insert(Index: Integer; const S: string); override;
   end;
 
   TJvDockDragOperation = (dopNone, dopDrag, dopDock);
@@ -1134,7 +1135,7 @@ begin
   TabStop := True;
   ControlStyle := [csAcceptsControls, csDoubleClicks];
   FTabs := TJvDockTabStrings.Create;
-  TJvDockTabStrings(FTabs).FTabControl := Self;
+  FTabs.FTabControl := Self;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
 end;
@@ -1386,6 +1387,11 @@ begin
       InternalSetMultiLine(True);
     RecreateWnd;
   end;
+end;
+
+function TJvDockCustomTabControl.GetTabs: TStrings;
+begin
+  Result := FTabs;
 end;
 
 procedure TJvDockCustomTabControl.SetTabs(Value: TStrings);

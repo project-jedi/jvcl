@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2003-11-11
+Last Modified: 2004-01-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,39 +34,45 @@ uses
   SysUtils, Classes;
 
 type
+  // (rom) made them all class functions
   TJvItemsSearchs = class(TObject)
   public
-    function SearchExactString(Items: TStrings; Value: string;
+    class function SearchExactString(Items: TStrings; Value: string;
       CaseSensitive: Boolean = True; StartIndex: Integer = -1): Integer;
-    function SearchPrefix(Items: TStrings; Value: string;
+    class function SearchPrefix(Items: TStrings; Value: string;
       CaseSensitive: Boolean = True; StartIndex: Integer = -1): Integer;
-    function SearchSubString(Items: TStrings; Value: string;
+    class function SearchSubString(Items: TStrings; Value: string;
       CaseSensitive: Boolean = True; StartIndex: Integer = -1): Integer;
-    function DeleteExactString(Items: TStrings; Value: string; All: Boolean;
+    class function DeleteExactString(Items: TStrings; Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
   end;
 
 implementation
 
-function TJvItemsSearchs.DeleteExactString(Items: TStrings; Value: string;
+class function TJvItemsSearchs.DeleteExactString(Items: TStrings; Value: string;
   All: Boolean; CaseSensitive: Boolean): Integer;
 var
   I: Integer;
 begin
   Result := 0;
-  I := SearchExactString(Items, Value, CaseSensitive);
-  while I <> -1 do
-  begin
-    Inc(Result);
-    Items.Delete(I);
-    if All then
-      I := SearchExactString(Items, Value, CaseSensitive)
-    else
-      Exit;
+  Items.BeginUpdate;
+  try
+    I := SearchExactString(Items, Value, CaseSensitive);
+    while I <> -1 do
+    begin
+      Inc(Result);
+      Items.Delete(I);
+      if All then
+        I := SearchExactString(Items, Value, CaseSensitive)
+      else
+        Exit;
+    end;
+  finally
+    Items.EndUpdate;
   end;
 end;
 
-function TJvItemsSearchs.SearchExactString(Items: TStrings; Value: string;
+class function TJvItemsSearchs.SearchExactString(Items: TStrings; Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 var
   I: Integer;
@@ -111,7 +117,7 @@ begin
   end;
 end;
 
-function TJvItemsSearchs.SearchPrefix(Items: TStrings; Value: string;
+class function TJvItemsSearchs.SearchPrefix(Items: TStrings; Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 var
   I: Integer;
@@ -157,7 +163,7 @@ begin
   end;
 end;
 
-function TJvItemsSearchs.SearchSubString(Items: TStrings; Value: string;
+class function TJvItemsSearchs.SearchSubString(Items: TStrings; Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 var
   I: Integer;

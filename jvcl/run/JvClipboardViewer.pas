@@ -211,6 +211,7 @@ procedure ComponentToStrings(Instance: TComponent; Text: TStrings);
 var
   Mem, MemOut: TMemoryStream;
 begin
+  Text.BeginUpdate;
   Mem := TMemoryStream.Create;
   try
     Mem.WriteComponent(Instance);
@@ -225,6 +226,7 @@ begin
     end;
   finally
     Mem.Free;
+    Text.EndUpdate;
   end;
 end;
 

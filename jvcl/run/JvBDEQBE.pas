@@ -323,8 +323,13 @@ var
   end;
 
 begin
-  for I := 0 to QBEText.Count - 1 do
-    QBEText[I] := ReplaceString(QBEText[I]);
+  QBEText.BeginUpdate;
+  try
+    for I := 0 to QBEText.Count - 1 do
+      QBEText[I] := ReplaceString(QBEText[I]);
+  finally
+    QBEText.EndUpdate;
+  end;
 end;
 
 procedure TJvQBEQuery.SetPrepared(Value: Boolean);

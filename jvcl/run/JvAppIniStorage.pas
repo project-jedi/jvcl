@@ -297,23 +297,28 @@ var
   RefPath: string;
   I: Integer;
 begin
-  RefPath := GetAbsPath(Path);
-  if RefPath = '' then
-    RefPath := DefaultSection;
-  IniFile.ReadSections(Strings);
-  I := Strings.Count - 1;
-  while I >= 0 do
-  begin
-    if (RefPath <> '') and ((Copy(Strings[I], 1, Length(RefPath) + 1) <> RefPath + '\') or
-      (Pos('\', Copy(Strings[I], 2 + Length(RefPath), Length(Strings[I]) - Length(RefPath))) > 0)) then
-      Strings.Delete(I)
-    else
-    if ReportListAsValue and ValueExists(Strings[I], cCount) then
-      Strings.Delete(I)
-    else
-    if RefPath <> '' then
-      Strings[I] := Copy(Strings[I], 1 + Length(RefPath), Length(Strings[I]) - Length(RefPath));
-    Dec(I);
+  Strings.BeginUpdate;
+  try
+    RefPath := GetAbsPath(Path);
+    if RefPath = '' then
+      RefPath := DefaultSection;
+    IniFile.ReadSections(Strings);
+    I := Strings.Count - 1;
+    while I >= 0 do
+    begin
+      if (RefPath <> '') and ((Copy(Strings[I], 1, Length(RefPath) + 1) <> RefPath + '\') or
+        (Pos('\', Copy(Strings[I], 2 + Length(RefPath), Length(Strings[I]) - Length(RefPath))) > 0)) then
+        Strings.Delete(I)
+      else
+      if ReportListAsValue and ValueExists(Strings[I], cCount) then
+        Strings.Delete(I)
+      else
+      if RefPath <> '' then
+        Strings[I] := Copy(Strings[I], 1 + Length(RefPath), Length(Strings[I]) - Length(RefPath));
+      Dec(I);
+    end;
+  finally
+    Strings.EndUpdate;
   end;
 end;
 
@@ -324,19 +329,24 @@ var
   RefPath: string;
   I: Integer;
 begin
-  PathIsList := ReportListAsValue and ListStored(Path);
-  RefPath := GetAbsPath(Path);
-  if RefPath = '' then
-    RefPath := DefaultSection;
-  IniFile.ReadSectionValues(RefPath, Strings);
-  for I := Strings.Count - 1 downto 0 do
-  begin
-    Strings[I] := Copy(Strings[I], 1, Pos(cKeyValueSeparator, Strings[I]) - 1);
-    if PathIsList and (AnsiSameText(cCount, Strings[I]) or NameIsListItem(Strings[I])) then
-      Strings.Delete(I);
+  Strings.BeginUpdate;
+  try
+    PathIsList := ReportListAsValue and ListStored(Path);
+    RefPath := GetAbsPath(Path);
+    if RefPath = '' then
+      RefPath := DefaultSection;
+    IniFile.ReadSectionValues(RefPath, Strings);
+    for I := Strings.Count - 1 downto 0 do
+    begin
+      Strings[I] := Copy(Strings[I], 1, Pos(cKeyValueSeparator, Strings[I]) - 1);
+      if PathIsList and (AnsiSameText(cCount, Strings[I]) or NameIsListItem(Strings[I])) then
+        Strings.Delete(I);
+    end;
+    if PathIsList then
+      Strings.Add('');
+  finally
+    Strings.EndUpdate;
   end;
-  if PathIsList then
-    Strings.Add('');
 end;
 
 
@@ -457,27 +467,27 @@ end;
 
 function TJvCustomAppIniStorage.GetAsString: string;
 var
-  tmpList : TStringList;
+  TmpList : TStringList;
 begin
-  tmpList := TStringList.Create;
+  TmpList := TStringList.Create;
   try
-    IniFile.GetStrings(tmpList);
-    Result := tmpList.Text;
+    IniFile.GetStrings(TmpList);
+    Result := TmpList.Text;
   finally
-    tmpList.Free;
+    TmpList.Free;
   end;
 end;
 
 procedure TJvCustomAppIniStorage.SetAsString(const Value: string);
 var
-  tmpList : TStringList;
+  TmpList: TStringList;
 begin
-  tmpList := TStringList.Create;
+  TmpList := TStringList.Create;
   try
-    tmpList.Text := Value;
-    IniFile.SetStrings(tmpList);
+    TmpList.Text := Value;
+    IniFile.SetStrings(TmpList);
   finally
-    tmpList.Free;
+    TmpList.Free;
   end;
 end;
 

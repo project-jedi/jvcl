@@ -395,9 +395,14 @@ begin
 
   if Node <> nil then
   begin
-    Strings.Clear;
-    for I := 0 to Node.Items.Count - 1 do
-      Strings.Add(Node.Items[I].Name);
+    Strings.BeginUpdate;
+    try
+      Strings.Clear;
+      for I := 0 to Node.Items.Count - 1 do
+        Strings.Add(Node.Items[I].Name);
+    finally
+      Strings.EndUpdate;
+    end;
   end
   else
     raise EJVCLException.CreateFmt(RsEPathDoesntExists, [RefPath]);
@@ -421,13 +426,18 @@ begin
 
   if Node <> nil then
   begin
-    Strings.Clear;
-    for I := 0 to Node.Items.Count - 1 do
-    begin
-      Name := Node.Items[I].Name;
-      if (not PathIsList or (not AnsiSameText(cCount, Name) and
-        not NameIsListItem(Name))) then
-        Strings.Add(Name);
+    Strings.BeginUpdate;
+    try
+      Strings.Clear;
+      for I := 0 to Node.Items.Count - 1 do
+      begin
+        Name := Node.Items[I].Name;
+        if (not PathIsList or (not AnsiSameText(cCount, Name) and
+          not NameIsListItem(Name))) then
+          Strings.Add(Name);
+      end;
+    finally
+      Strings.EndUpdate;
     end;
   end
   else

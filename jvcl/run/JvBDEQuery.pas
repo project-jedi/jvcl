@@ -608,8 +608,13 @@ var
   end;
 
 begin
-  for I := 0 to SQL.Count - 1 do
-    Query.Add(ReplaceString(SQL[I]));
+  Query.BeginUpdate;
+  try
+    for I := 0 to SQL.Count - 1 do
+      Query.Add(ReplaceString(SQL[I]));
+  finally
+    Query.EndUpdate;
+  end;
 end;
 
 function TJvQuery.GetMacroCount: Word;

@@ -527,7 +527,7 @@ begin
   try
     Count := 0;
     tmpDir := ExpandUNCFileName(Directory);
-    FileMasks := TStringlist.Create;
+    FileMasks := TStringList.Create;
     try
       FileMasks.Sorted := true; // make sure no duplicates are added
       ExpandFileMask(Filemask, FileMasks);

@@ -360,7 +360,7 @@ type
     function GetCanModify: Boolean; override; //already virtual!
 
     // internal calls:
-    procedure AppendPlaceHolderCommasToAllRows(Strings:TStrings); // Add placeholders to end of a csv file.
+    procedure AppendPlaceHolderCommasToAllRows(Strings: TStrings); // Add placeholders to end of a csv file.
     procedure ProcessCsvHeaderRow;
     procedure ProcessCsvDataRow(const datarow: string; Index: Integer);
     procedure SetCsvFieldDef(CsvFieldDefs: string);
@@ -2449,16 +2449,20 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.AppendPlaceHolderCommasToAllRows(Strings:TStrings); // Add 1+ commas to FCsvFileAsStrings[1 .. Count-1]
+procedure TJvCsvCustomInMemoryDataSet.AppendPlaceHolderCommasToAllRows(Strings: TStrings); // Add 1+ commas to FCsvFileAsStrings[1 .. Count-1]
 var
-  Commas:String;
-  t:Integer;
+  Commas: string;
+  I: Integer;
 begin
-  for t := 1 to AppendedFieldCount  do
+  for I := 1 to AppendedFieldCount do
     Commas := Commas + JvCsvSep;
 
-  for t := 1 to Strings.Count-1 do begin
-      Strings[t] := Strings[t] + Commas;
+  Strings.BeginUpdate;
+  try
+    for I := 1 to Strings.Count-1 do
+      Strings[I] := Strings[I] + Commas;
+  finally
+    Strings.EndUpdate;
   end;
 end;
 
@@ -2998,7 +3002,7 @@ end;
 procedure TJvCsvCustomInMemoryDataSet.OpenWith(Strings: TStrings);
 begin
   Active := False;
-  if (FHasHeaderRow) then
+  if FHasHeaderRow then
       FHeaderRow := Strings[0];
   AssignFromStrings(Strings); // parse strings
 end;
@@ -3009,31 +3013,31 @@ procedure TJvCsvCustomInMemoryDataSet.AppendWith(Strings: TStrings);
 begin
 
   //Active := False;
-  if (FHasHeaderRow) then
+  if FHasHeaderRow then
     FHeaderRow := Strings[0];
   AssignFromStrings(Strings); // parse strings
   // Refresh.
-//  DataEvent(deDataSetChange, 0);
-//  DataEvent(deRecordChange, 0);
+  // DataEvent(deDataSetChange, 0);
+  // DataEvent(deRecordChange, 0);
   Resync([]);
-//  DataEvent(deUpdateState, 0);
+  // DataEvent(deUpdateState, 0);
   if Active then
     Last;
-
 end;
 
 { Additional Custom Methods - internal use }
 
 procedure TJvCsvCustomInMemoryDataSet.AssignFromStrings(const Strings: TStrings);
 var
-//  HeaderRowFound: Boolean;
-  t: Integer;
-  startIndex,indexCounter: Integer;
+  // HeaderRowFound: Boolean;
+  I: Integer;
+  startIndex, indexCounter: Integer;
 begin
-// CheckInactive;
-// if NOT FFieldsInitialized then
-// InternalInitFieldDefs; // must know about field definitions first.
-  if Strings = nil then Exit;
+  // CheckInactive;
+  // if NOT FFieldsInitialized then
+  // InternalInitFieldDefs; // must know about field definitions first.
+  if Strings = nil then
+    Exit;
   FData.EnquoteBackslash := FEnquoteBackslash;
 
   indexCounter := 0;
@@ -3043,39 +3047,45 @@ begin
   else
     startIndex := 0;
 
-   for t := startIndex to Strings.Count - 1 do
-   begin
-       // for now ignore any trace or debug data unless
-       // someone has defined an event to handle it.
-    if Pos('>>', Strings[t]) = 1 then
+  for I := startIndex to Strings.Count - 1 do
+  begin
+    // for now ignore any trace or debug data unless
+    // someone has defined an event to handle it.
+    if Pos('>>', Strings[I]) = 1 then
     begin
       if Assigned(FOnSpecialData) then
-        FOnSpecialData(Self, t, Strings[t]);
-      continue;
+        FOnSpecialData(Self, I, Strings[I]);
+      Continue;
     end;
     // Process the row:
-    ProcessCsvDataRow(Strings[t], indexCounter);
+    ProcessCsvDataRow(Strings[I], indexCounter);
     Inc(indexCounter);
   end;
-  if Active then First;
+  if Active then
+    First;
 end;
 
 procedure TJvCsvCustomInMemoryDataSet.AssignToStrings(Strings: TStrings);
 var
-  t: Integer;
+  I: Integer;
   Line: string;
 begin
-  // copy out the current data set to a TStringList.
-  Strings.Clear;
+  Strings.BeginUpdate;
+  try
+    // copy out the current data set to a TStringList.
+    Strings.Clear;
 
-  { Save header row with data rows? }
-  if FHasHeaderRow then
-    Strings.Add(GetColumnsAsString);
+    { Save header row with data rows? }
+    if FHasHeaderRow then
+      Strings.Add(GetColumnsAsString);
 
-  for t := 0 to FData.Count - 1 do
-  begin
-    CsvRowToString(FData.GetRowPtr(t), Line);
-    Strings.Add(Line);
+    for I := 0 to FData.Count - 1 do
+    begin
+      CsvRowToString(FData.GetRowPtr(I), Line);
+      Strings.Add(Line);
+    end;
+  finally
+    Strings.EndUpdate;
   end;
 end;
 

@@ -196,12 +196,12 @@ begin
     ImageName.Caption := Format('%s (%d x %d)',
       [AnsiLowerCase(ExtractFilename(FileListBox.Filename)),
        Image.Picture.Width, Image.Picture.Height]);
-    {$ENDIF}
+    {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
     ImageName.Caption := Format('%s (%d x %d)',
       [ExtractFilename(FileListBox.Filename),
        Image.Picture.Width, Image.Picture.Height]);
-    {$ENDIF}
+    {$ENDIF LINUX}
   except
     Image.Picture.Assign(nil);
     ImageName.Caption := '';
@@ -209,10 +209,10 @@ begin
   ZoomImage;
   {$IFDEF MSWINDOWS}
   FileExt := AnsiLowerCase(FileName);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   FileExt := FileName;
-  {$ENDIF}
+  {$ENDIF LINUX}
   if FileExt <> '' then
     Caption := FFormCaption + ' - ' + MinimizeName(FileExt, PathLabel.Canvas,
       PathLabel.Width)

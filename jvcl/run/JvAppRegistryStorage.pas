@@ -144,6 +144,8 @@ begin
   Key := GetAbsPath(Path);
   if RegKeyExists(FRegHKEY, Key) then
     if RegOpenKey(FRegHKEY, PChar(Key), TmpHKEY) = ERROR_SUCCESS then
+    begin
+      Strings.BeginUpdate;
       try
         I := 0;
         repeat
@@ -157,7 +159,9 @@ begin
           raise EJclRegistryError.Create(RsEEnumeratingRegistry);
       finally
         RegCloseKey(TmpHKEY);
+        Strings.EndUpdate;
       end;
+    end;
 end;
 
 procedure TJvAppRegistryStorage.EnumValues(const Path: string; const Strings: TStrings;
@@ -177,6 +181,8 @@ begin
   Key := GetAbsPath(Path);
   if RegKeyExists(FRegHKEY, Key) then
     if RegOpenKey(FRegHKEY, PChar(Key), TmpHKEY) = ERROR_SUCCESS then
+    begin
+      Strings.BeginUpdate;
       try
         I := 0;
         repeat
@@ -191,7 +197,9 @@ begin
           raise EJclRegistryError.Create(RsEEnumeratingRegistry);
       finally
         RegCloseKey(TmpHKEY);
+        Strings.EndUpdate;
       end;
+    end;
 end;
 
 function TJvAppRegistryStorage.IsFolderInt(Path: string; ListIsValue: Boolean): Boolean;

@@ -49,7 +49,7 @@ type
 
   TJvDriveCombo = class(TJvCustomComboBox)
   private
-    FDrives: TStrings;
+    FDrives: TStringList;
     FImages: TImageList;
     FImageWidth: Integer;
     FImageSize: TJvImageSize;
@@ -131,7 +131,7 @@ type
 
   TJvDriveList = class(TJvCustomListBox)
   private
-    FDrives: TStrings;
+    FDrives: TStringList;
     FImages: TImageList;
     FImageWidth: Integer;
     FImageSize: TJvImageSize;
@@ -365,7 +365,7 @@ implementation
 
 uses
   Math,
-  JvJCLUtils, JvJVCLUtils;
+  JvJCLUtils, JvJVCLUtils, JvConsts;
 
 const
   cDirPrefix = #32;
@@ -1145,7 +1145,8 @@ var
   SearchRec: TSearchRec;
 begin
   Result := 0;
-  Status := FindFirst(ConcatPaths(ParentDirectory, '*.*'), faDirectory, SearchRec);
+  DirectoryList.BeginUpdate;
+  Status := FindFirst(ConcatPaths(ParentDirectory, AllFilePattern), faDirectory, SearchRec);
   try
     while Status = 0 do
     begin
@@ -1161,6 +1162,7 @@ begin
     end;
   finally
     FindClose(SearchRec);
+    DirectoryList.EndUpdate;
   end;
 end;
 

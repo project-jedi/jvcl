@@ -359,7 +359,7 @@ type
     {$IFDEF VCL}
     property DragCursor;
     property DragKind;
-    {$ENDIF}
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property ParentShowHint;
@@ -1823,7 +1823,7 @@ begin
     MyLeftTextOut(horiz, vert, strText);
     {$ELSE}
     TextOutAngle(ChartCanvas, 90, horiz, vert, strText);
-    {$ENDIF}
+    {$ENDIF VCL}
   end;
   MyAxisFont;
 //   Self.MyLeftTextOut(horiz,vert+50,'*');

@@ -353,7 +353,7 @@ type
     FAlignment: TAlignment;
     FSelImage: TPicture;
     FSelMargin: Integer;
-    FDisplayValues: TStrings;
+    FDisplayValues: TStringList;
     FDisplayAllFields: Boolean;
     {$IFDEF JVCLThemesEnabled}
     FOver: Boolean;
@@ -2323,8 +2323,7 @@ destructor TJvDBLookupCombo.Destroy;
 begin
   FSelImage.Free;
   FSelImage := nil;
-  FDisplayValues.Free;
-  FDisplayValues := nil;
+  FreeAndNil(FDisplayValues);
   inherited Destroy;
 end;
 

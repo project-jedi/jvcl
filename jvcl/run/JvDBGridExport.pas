@@ -165,11 +165,13 @@ type
   private
     FDocument: TStringList;
     FDocTitle: string;
-    FFooter: TStrings;
-    FHeader: TStrings;
+    FHeader: TStringList;
+    FFooter: TStringList;
     FIncludeColumnHeader: boolean;
-    procedure SetFooter(const Value: TStrings);
+    function GetHeader: TStrings;
+    function GetFooter: TStrings;
     procedure SetHeader(const Value: TStrings);
+    procedure SetFooter(const Value: TStrings);
   protected
     procedure DoSave; override;
     function DoExport: boolean; override;
@@ -184,8 +186,8 @@ type
     property Grid;
     property OnProgress;
     property IncludeColumnHeader:boolean read FIncludeColumnHeader write FIncludeColumnHeader default true;
-    property Header: TStrings read FHeader write SetHeader;
-    property Footer: TStrings read FFooter write SetFooter;
+    property Header: TStrings read GetHeader write SetHeader;
+    property Footer: TStrings read GetFooter write SetFooter;
     property DocTitle: string read FDocTitle write FDocTitle;
   end;
 
@@ -665,8 +667,8 @@ begin
   FDocument := TStringList.Create;
   Caption := RsExportHTML;
   FDocTitle := RsHTMLExportDocTitle;
-  FHeader := TStringlist.Create;
-  FFooter := TStringlist.Create;
+  FHeader := TStringList.Create;
+  FFooter := TStringList.Create;
   FIncludeColumnHeader := true;
   SetDefaultData;
 end;
@@ -681,18 +683,28 @@ end;
 
 procedure TJvDBGridHTMLExport.SetDefaultData;
 begin
-  FHeader.Add('<html><head><title><#TITLE></title>');
-  FHeader.Add('<style type=text/css>');
-  FHeader.Add('#STYLE');
-  FHeader.Add('</style>');
-  FHeader.Add('</head><body>');
+  Header.Add('<html><head><title><#TITLE></title>');
+  Header.Add('<style type=text/css>');
+  Header.Add('#STYLE');
+  Header.Add('</style>');
+  Header.Add('</head><body>');
 
-  FFooter.Add('</body></html>');
+  Footer.Add('</body></html>');
+end;
+
+function TJvDBGridHTMLExport.GetFooter: TStrings;
+begin
+  Result := FFooter;
 end;
 
 procedure TJvDBGridHTMLExport.SetFooter(const Value: TStrings);
 begin
   FFooter.Assign(Value);
+end;
+
+function TJvDBGridHTMLExport.GetHeader: TStrings;
+begin
+  Result := FHeader;
 end;
 
 procedure TJvDBGridHTMLExport.SetHeader(const Value: TStrings);

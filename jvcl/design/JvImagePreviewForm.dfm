@@ -50,7 +50,7 @@ object ImageForm: TImageForm
     Width = 146
     Height = 15
     AutoSize = False
-    Caption = 'E:\...\dev\JVCL3\design'
+    Caption = 'E:\Daten\dev\JVCL3\design'
   end
   object ImageName: TLabel
     Left = 319
@@ -278,7 +278,9 @@ object ImageForm: TImageForm
     Top = 6
   end
   object AppStorage: TJvAppRegistryStorage
-    RegRoot = hkCurrentUser
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    SubStorages = <>
     Left = 215
     Top = 5
   end

@@ -98,18 +98,28 @@ procedure TJvCaesarCipher.Decode(It: TStrings);
 var
   I: Integer;
 begin
-  // (rom) fixed loop to start at 0 instead of 1
-  for I := 0 to It.Count-1 do
-    It[I] := Crypt(It[I], -Fn);
+  It.BeginUpdate;
+  try
+    // (rom) fixed loop to start at 0 instead of 1
+    for I := 0 to It.Count-1 do
+      It[I] := Crypt(It[I], -Fn);
+  finally
+    It.EndUpdate;
+  end;
 end;
 
 procedure TJvCaesarCipher.Encode(It: TStrings);
 var
   I: Integer;
 begin
-  // (rom) fixed loop to start at 0 instead of 1
-  for I := 0 to It.Count - 1 do
-    It[I] := Crypt(It[I], Fn);
+  It.BeginUpdate;
+  try
+    // (rom) fixed loop to start at 0 instead of 1
+    for I := 0 to It.Count - 1 do
+      It[I] := Crypt(It[I], Fn);
+  finally
+    It.EndUpdate;
+  end;
 end;
 
 function TJvCaesarCipher.DecodeStream(Value: TStream): TStream;

@@ -142,7 +142,6 @@ type
     FSaved: TColor;
     FOver: Boolean;
     FMaxWidth: Integer;
-    FItemSearchs: TJvItemsSearchs;
     FScrollBars: TScrollStyle;
     FSorted: Boolean;
     FOnGetText: TJvListBoxDataEvent;
@@ -875,7 +874,6 @@ begin
   FHintColor := clInfoBk;
   FOver := False;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-  FItemSearchs := TJvItemsSearchs.Create;
 end;
 
 procedure TJvCustomListBox.CreateDragImage(const S: string);
@@ -1136,7 +1134,7 @@ function TJvCustomListBox.DeleteExactString(Value: string; All: Boolean;
 begin
   if not IsProviderSelected then
   begin
-    Result := FItemSearchs.DeleteExactString(Items, Value, CaseSensitive);
+    Result := TJvItemsSearchs.DeleteExactString(Items, Value, CaseSensitive);
     Changed;
   end
   else
@@ -1171,7 +1169,6 @@ end;
 
 destructor TJvCustomListBox.Destroy;
 begin
-  FreeAndNil(FItemSearchs);
   FreeAndNil(FBackground);
   FreeAndNil(FConsumerStrings);
   FreeAndNil(FConsumerSvc);
@@ -1739,19 +1736,19 @@ end;
 function TJvCustomListBox.SearchExactString(Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
-  Result := FItemSearchs.SearchExactString(ItemsShowing, Value, CaseSensitive, StartIndex);
+  Result := TJvItemsSearchs.SearchExactString(ItemsShowing, Value, CaseSensitive, StartIndex);
 end;
 
 function TJvCustomListBox.SearchPrefix(Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
-  Result := FItemSearchs.SearchPrefix(ItemsShowing, Value, CaseSensitive, StartIndex);
+  Result := TJvItemsSearchs.SearchPrefix(ItemsShowing, Value, CaseSensitive, StartIndex);
 end;
 
 function TJvCustomListBox.SearchSubString(Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
-  Result := FItemSearchs.SearchSubString(ItemsShowing, Value, CaseSensitive, StartIndex);
+  Result := TJvItemsSearchs.SearchSubString(ItemsShowing, Value, CaseSensitive, StartIndex);
 end;
 
 procedure TJvCustomListBox.SelectAll;

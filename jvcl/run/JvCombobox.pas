@@ -50,7 +50,7 @@ type
     {$IFNDEF COMPILER6_UP}
     FComboBox: TJvCustomComboBox;
     {$ENDIF COMPILER6_UP}
-    FInternalList: TStrings;
+    FInternalList: TStringList;
     FUseInternal: Boolean;
     FUpdating: Boolean;
     FDestroyCnt: Integer;
@@ -100,7 +100,6 @@ type
     FKey: Word;
     FSearching: Boolean;
     FMaxPixel: TJvMaxPixel;
-    FItemSearchs: TJvItemsSearchs;
     FReadOnly: Boolean; // ain
     FConsumerSvc: TJvDataConsumer;
     FProviderIsActive: Boolean;
@@ -530,14 +529,12 @@ begin
   FOver := False;
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
-  FItemSearchs := TJvItemsSearchs.Create;
   FReadOnly := False; // ain
 end;
 
 destructor TJvCustomComboBox.Destroy;
 begin
   FMaxPixel.Free;
-  FItemSearchs.Free;
   FreeAndNil(FConsumerSvc);
   inherited Destroy;
 end;
@@ -545,13 +542,13 @@ end;
 function TJvCustomComboBox.SearchExactString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
-  Result := FItemSearchs.SearchExactString(Items, Value, CaseSensitive);
+  Result := TJvItemsSearchs.SearchExactString(Items, Value, CaseSensitive);
 end;
 
 function TJvCustomComboBox.SearchPrefix(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
-  Result := FItemSearchs.SearchPrefix(Items, Value, CaseSensitive);
+  Result := TJvItemsSearchs.SearchPrefix(Items, Value, CaseSensitive);
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -1097,13 +1094,13 @@ end;
 function TJvCustomComboBox.SearchSubString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
-  Result := FItemSearchs.SearchSubString(Items, Value, CaseSensitive);
+  Result := TJvItemsSearchs.SearchSubString(Items, Value, CaseSensitive);
 end;
 
 function TJvCustomComboBox.DeleteExactString(Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
 begin
-  Result := FItemSearchs.DeleteExactString(Items, Value, CaseSensitive);
+  Result := TJvItemsSearchs.DeleteExactString(Items, Value, CaseSensitive);
 end;
 
 procedure TJvCustomComboBox.MaxPixelChanged(Sender: TObject);
