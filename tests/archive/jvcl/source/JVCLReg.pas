@@ -54,8 +54,9 @@ uses
   JvLabel, JvScrollBar, JvRadioGroup, JvPanel, JvMemo,
 
   //Edits
-  JvCustomBox, JvFileNameBox, JvDirectoryBox, JvImageBox, JvButtonBox,
-  JvFloatEdit, JvCalculatorBox, JvTypedEdit,
+{  JvCustomBox, JvFileNameBox, JvDirectoryBox, JvImageBox, JvButtonBox,
+  JvCalculatorBox, }
+  JvTypedEdit, JvFloatEdit,
 
   //Controls
   JvPlaylist, JvButtonShaped, JvFavoritesButton, JvClock, JvStartMenuBtn,
@@ -365,7 +366,10 @@ begin
 {$IFNDEF D6PersonalEdition}
   // Jv Data Controls
   // ================
-  RegisterComponents('Jv Data Controls', [TJvDBDateTimePicker,TJvDBProgressBar]);
+  RegisterComponents('Jv Data Controls', [
+    TJvDBDateTimePicker,
+      TJvDBProgressBar
+      ]);
 {$ENDIF}
 
   // Jv Dialogs
@@ -573,13 +577,13 @@ begin
 
   // Jv Composites
   // =============
-  RegisterComponents('Jv Composites', [
+{  RegisterComponents('Jv Composites', [
     TJvDirectoryBox,
       TJvFileNameBox,
       TJvImageBox,
       TJvButtonBox,
       TJvCalculatorBox
-      ]);
+      ]); }
 
 end;
 
