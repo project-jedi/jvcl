@@ -15,6 +15,9 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
+Contributor(s):
+Burov Dmitry, translation of russian text.
+
 Last Modified: 2002-07-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -2123,11 +2126,10 @@ begin
 end;
 
 {*********************** from JvStrUtil unit ***********************}
-{ SubStr returns substring from string, S,
-  separated with Separator string}
 
 function SubStr(const S: string; const Index: Integer; const Separator: string): string;
 // {Вырезает подстроку. Подстроки разделяются символом Sep}
+{ SubStr returns substring from string, S, separated with Separator string [translated]}
 var
   I: Integer;
   pB, pE: PChar;

@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -137,7 +138,7 @@ begin
 
   ProcessMessage(E.Message, '', '');
   if not (fehSupressExceptions in Options) then
-    Application.MessageBox(PChar(E.Message), PChar('Что-то случилось - ' +
+    Application.MessageBox(PChar(E.Message), PChar('Something has occured - ' +
       Application.Title), MB_OK + MB_ICONSTOP);
 end;
 
@@ -151,6 +152,7 @@ begin
     begin
       Application.OnException := OnException;
       // Настройка ссылки на глобальный обработчик процедуры Assert
+      { Setting up link to global Assert handler [translated] }
       AssertErrorProc := @AssertErrorHandler_gl;
       ExceptionHandler := self;
     end;
@@ -168,7 +170,9 @@ begin
 
   Msg := '';
   try
-    if not FileExists(FileName) then { первое создание лога }
+    if not FileExists(FileName) then
+    // { первое создание лога }
+    { 1st creation of log }
     try
       if not assigned(SysInfo) then
         SysInfo := TJvgSysInfo.Create(nil);
@@ -191,7 +195,8 @@ begin
       Msg := Msg +
         #13#10'##################### exception log header end'#13#10;
     except
-      { Сбои в работе TJvgSysInfo не должны мешать обработчику }
+      // { Сбои в работе TJvgSysInfo не должны мешать обработчику }
+      { Handler should not to suffer from errors in TJvgSysInfo's working }
     end;
 
     if ExceptObject <> nil then
@@ -234,7 +239,7 @@ begin
 
   except
     on E: Exception do
-      ShowMessage(E, 'Ошибка при сохранении протокола. '#13#10#13#10 +
+      ShowMessage(E, 'An error occured while saving the log'#13#10#13#10 +
         E.Message);
   end;
 
@@ -342,7 +347,8 @@ begin
   ProcessMessage(E.Message, '', ID);
 end;
 
-{ Отображает сообщение, если исключение не внутреннее - EJvgHandlerException }
+//{ Отображает сообщение, если исключение не внутреннее - EJvgHandlerException }
+{ Shows message, if the Exception is not internal one. - EJvgHandlerException }
 
 procedure TJvgExceptionHandler.ShowMessage(E: Exception; const Message: string);
 begin
@@ -358,7 +364,8 @@ begin
   Application.OnException := OnException;
 end;
 
-{ Вызывает исключение с заданным сообщением без протоколирования }
+//{ Вызывает исключение с заданным сообщением без протоколирования }
+{ Fires exception with given message without logging it. }
 
 procedure TJvgExceptionHandler.RaiseMessage(const Message: string);
 begin

@@ -875,6 +875,9 @@ begin
     end;
 end;
 
+{ (rb) This function seems to translate a number to a russian string, but is
+       half translated (only const part), need to roll back to an all russian
+       version or tranlate (and change it's logic) to a english version }
 function NumberByWord(const N: Longint): string;
 const
   Ten: array [0..9] of string =
@@ -943,13 +946,13 @@ begin
         // (rom) needs translation
         case NumStr[1] of
           '1':
-            StrVsp := 'одна тыс€ча';
+            StrVsp := 'одна тыс€ча'; // 'one thousand'
           '2':
-            StrVsp := 'две тыс€чи';
+            StrVsp := 'две тыс€чи'; // 'two thousands'
           '3', '4':
-            StrVsp := StrVsp + ' тыс€чи';
+            StrVsp := StrVsp + ' тыс€чи'; // ' thousands'
           '5'..'9':
-            StrVsp := StrVsp + ' тыс€ч';
+            StrVsp := StrVsp + ' тыс€ч'; // ' of thousands'
         end;
         StrVsp := StrVsp + ' ' + NumberByWord(Back(Copy(NumStr, 2, 3)));
       end;
@@ -1389,44 +1392,45 @@ begin
   Result := GetKeyState(VK) and $8000 = $8000;
 end;
 
-
+{ (rb) maybe construct a english variant, change name to indicate it's a russian
+       function? }
 function LastDate(const Dat: TDateTime): string;
 const
   D2D: array [0..9] of 1..3 = (3, 1, 2, 2, 2, 3, 3, 3, 3, 3);
-  Day: array [1..3] of string = ('день', 'дн€', 'дней');
-  Month: array [1..3] of string = ('мес€ц', 'мес€ца', 'мес€цев');
-  Year: array [1..3] of string = ('год', 'года', 'лет');
-  Week: array [1..4] of string = ('неделю', '2 недели', '3 недели', 'мес€ц');
+  Day: array [1..3] of string = ('день', 'дн€', 'дней'); // Day, Days, Days
+  Month: array [1..3] of string = ('мес€ц', 'мес€ца', 'мес€цев'); // Month, Months, Months
+  Year: array [1..3] of string = ('год', 'года', 'лет'); // Year, Years, Years
+  Week: array [1..4] of string = ('неделю', '2 недели', '3 недели', 'мес€ц'); // Week, 2 Weeks, 3 Weeks, Month
 var
   Y, M, D: Integer;
 begin
   if Date = Dat then
-    Result := 'сегодн€'
+    Result := 'сегодн€' // Today
   else
   if Dat = Date - 1 then
-    Result := 'вчера'
+    Result := 'вчера' // Yesterday
   else
   if Dat = Date - 2 then
-    Result := 'позавчера'
+    Result := 'позавчера' // Day before yesterday
   else
   if Dat > Date then
-    Result := 'в будущем'
+    Result := 'в будущем' // In the future
   else
   begin
     D := Trunc(Date - Dat);
     Y := Round(D / 365);
     M := Round(D / 30);
     if Y > 0 then
-      Result := IntToStr(Y) + ' ' + Year[D2D[StrToInt(IntToStr(Y)[Length(IntToStr(Y))])]] + ' назад'
+      Result := IntToStr(Y) + ' ' + Year[D2D[StrToInt(IntToStr(Y)[Length(IntToStr(Y))])]] + ' назад' // ago
     else
     if M > 0 then
-      Result := IntToStr(M) + ' ' + Month[D2D[StrToInt(IntToStr(M)[Length(IntToStr(M))])]] + ' назад'
+      Result := IntToStr(M) + ' ' + Month[D2D[StrToInt(IntToStr(M)[Length(IntToStr(M))])]] + ' назад' // ago
     else
     if D > 6 then
-      Result := Week[D div 7] + ' назад'
+      Result := Week[D div 7] + ' назад' // ago
     else
     if D > 0 then
-      Result := IntToStr(D) + ' ' + Day[D2D[StrToInt(IntToStr(D)[Length(IntToStr(D))])]] + ' назад'
+      Result := IntToStr(D) + ' ' + Day[D2D[StrToInt(IntToStr(D)[Length(IntToStr(D))])]] + ' назад' // ago
   end;
 end;
 

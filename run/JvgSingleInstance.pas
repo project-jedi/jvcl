@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -98,8 +99,8 @@ begin
   FCheckEvent := TEvent.Create(nil, False, True, ParamStr(0));
   if FCheckEvent.WaitFor(10) <> wrSignaled then
   begin
-    Application.MessageBox('Копия данной программы уже запущена. Повторный запуск программы не разрешен.',
-      PChar('Повторный запуск программы ' + ExtractFileName(ParamStr(0))),
+    Application.MessageBox('One instance of this program is already running. A second instance launch is not allowed.',
+      PChar('Second instance launch of ' + ExtractFileName(ParamStr(0))),
       MB_ICONSTOP or MB_OK);
     Halt;
   end;

@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -27,9 +28,10 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{
-  Итератор для поиска файлов по FindFirst/Next включая поддиректории.
-}
+
+//  Итератор для поиска файлов по FindFirst/Next включая поддиректории.
+{ Iterator, searching files by FindFirst/Next including subdirs [translated] }
+
 unit JvgFileIterator;
 
 interface
@@ -63,11 +65,15 @@ type
     function GetPath: string;
     function CheckFileExt(const FileName: string): boolean;
   public
+    { Last result of search [translated] }
     property CurrentItem: TSearchRec read GetCurrentItem; // последний результат поиска
+    { Path to search in [translated] }
     property Path: string read GetPath; // заданный для поиска путь
+    { And attributes [translated] }
     property Attr: Integer read FAttr; // и атрибуты
     property Recurse: boolean read FRecurse;
 
+    { Windows Error Code [translated] }
     property ErrorCode: integer read FLastSearchResult; // код ошибки Windows
     constructor Create;
     destructor Destroy; override;

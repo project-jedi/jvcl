@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -35,11 +36,11 @@ interface
 uses Windows, Graphics, Controls, Classes, ExtCtrls, JvgTypes, ComCtrls, JvgCommClasses;
 
 const
-  TCS_SCROLLOPPOSITE = $0001; //вкладка с несколькими страницами
+  TCS_SCROLLOPPOSITE = $0001; //вкладка с несколькими страницами; multipage tab [translated]
   TCS_BOTTOM = $0002;
-  TCS_RIGHT = $0002; //используется с TCS_VERTICAL
+  TCS_RIGHT = $0002; //используется с TCS_VERTICAL; used with TCS_VERTICAL [translated]
   TCS_HOTTRACK = $0040;
-  TCS_VERTICAL = $0080; //только для режима с несколькими строками
+  TCS_VERTICAL = $0080; //только для режима с несколькими строками; Only for multi-line mode [translated]
 
 type
   TglOnGetGradientColors = procedure(Sender: TObject; Index: integer; var Gradient: TJvgGradient) of object;

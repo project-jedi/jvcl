@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -93,7 +94,7 @@ begin
       ShowModal;
     end
     else
-      Application.MessageBox('Данных о новой версии программы не найдено.', 'SiteBuilder', MB_OK + MB_ICONINFORMATION);
+      Application.MessageBox('No newer version of program available', 'SiteBuilder', MB_OK + MB_ICONINFORMATION);
 
   finally
     VersionInfo.Free;

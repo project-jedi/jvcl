@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -25,79 +26,157 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{
-  Компонент позволяет печатать так называемые Cross Tables, разбивая крупные
-  таблицы на несколько листов как по ширине, так и по высоте.
+//  Компонент позволяет печатать так называемые Cross Tables, разбивая крупные
+//  таблицы на несколько листов как по ширине, так и по высоте.
+//
+//  Для построения таблицы необходимо указать исходный набор данных(DataSet)
+//  и три поля: ColumnFieldName, RowFieldName и ValueFieldName, первые два
+//  из которых указывают на поля столбцов и строк соответственно, а последнее
+//  используется для заполнения Cross Table.
+//
+//  Размеры ячеек в сантиметрах таблицы задаются свойствами
+//  CaptColWidthInSantim, CaptRowHeightInSantim, ColWidthInSantim и RowHeightInSantim.
+//
+//  Отступы при печати страниц определяются параметрами свойства IndentsInSantim.
+//
+//  Цвета и шрифты заголовков, ячеек и итоговых значений таблицы настраиваются
+//  через свойства Colors и Fonts.
+//
+//  Заголовок отчета и параметры его выравнивания задаются свойствами Title и
+//  TitleAlignment соответственно. Выводом заголовока на каждой странице можно управлять
+//  в обработчике события OnPrintTableElement.
+//
+//  Компоненту можно передавать DataSet с установленным свойством Filter;
+//--------------
+//  Свойство Optons:TPCTOptions;
+//
+//  TPCTOptions = set of ( fcoIntermediateColResults, fcoIntermediateRowResults,
+//      fcoColResults, fcoRowResults,
+//     fcoIntermediateColCaptions, fcoIntermediateRowCaptions,
+//     fcoIntermediateLeftIndent, fcoIntermediateTopIndent,
+//     fcoIntermediateRightIndent, fcoIntermediateBottomIndent,
+//     fcoShowPageNumbers, fcoVertColCaptionsFont );
+//
+//   fcoIntermediateColResults		- вывод промежуточных итогов по столбцам;
+//   fcoIntermediateRowResults		- вывод промежуточных итогов по строкам;
+//   fcoColResults			- вывод итогов по столбцам;
+//   fcoRowResults			- вывод итогов по строкам;
+//   fcoIntermediateColCaptions		- отображение заголовков столбцов на каждой странице или только на первой;
+//   fcoIntermediateRowCaptions		- отображение заголовков строк на каждой странице;
+//   fcoIntermediateLeftIndent		- использовать левый отступ на каждой странице;
+//   fcoIntermediateTopIndent		- соотв-но;
+//   fcoIntermediateRightIndent		- соотв-но;
+//   fcoIntermediateBottomIndent		- соотв-но;
+//   fcoShowPageNumbers		- отображение номера страницы в соответствии с разбиением;
+//   fcoVertColCaptionsFont		- вывод заголовков столбцов вертикальным шрифтом;
+//
+//--------------
+//
+//___СОБЫТИЯ___
+//
+//  OnPrintQuery	- информирует о необходимом кол-ве страниц для вывода таблицы;
+//                  позволяет отменить печать;
+//
+//  OnPrintNewPage	- информирует о начале печати очередной страницы; позволяет отменить печать;
+//
+//  OnPrintTableElement	- информирует о печати каждого элемента таблицы ( заголовка, очередной ячейки );
+//                                       позволяет изменить значение ячейки, задать индивидуальный шрифт и цвет фона,
+//                                       установить параметры выравнивания текста, отменить печать;
+//                                       Параметр TableElement: TPCTableElement = ( teTitle, teCell, teColCapt, teRowCapt,  TeColIRes, teRowIRes, teColRes,
+//                                        teRowRes ); указывает на тип выводимого элемента.
+//
+//  OnCalcResult	- если данное событие назначено, то расчет итогов осуществляется Вами. Событие передает  значение текущей ячейки и
+//                                       значения итогов для данного столбца и строки. Если событие OnCalcResult не назначено, расчет выполняется
+//                                       компонентом,   причем предполагается, что значение ячейки можно преобразовать в значение single и итоги
+//                                       рассчитываются как суммы соответствующих столбцов и строк.
+//
+//  OnDuplicateCellValue  - событие инициируется, если какой-либо паре значений колонки и строки соответствует более одного значения.
+//
+//___МЕТОДЫ___
+//
+//    procedure Print; - без слов.
+//    procedure PreviewTo( Canvas: TCanvas; PageWidth, PageHeight: integer );  - вывод таблицы на произвольный холст(Canvas) с указанием
+                                                                               размеров условной таблицы в точках.
+{ [Translation]
 
-  Для построения таблицы необходимо указать исходный набор данных(DataSet)
-  и три поля: ColumnFieldName, RowFieldName и ValueFieldName, первые два
-  из которых указывают на поля столбцов и строк соответственно, а последнее
-  используется для заполнения Cross Table.
+  Component allows printing so-called Cross-Tables, splitting large tables
+  into several sheets in both height and width.
 
-  Размеры ячеек в сантиметрах таблицы задаются свойствами
-  CaptColWidthInSantim, CaptRowHeightInSantim, ColWidthInSantim и RowHeightInSantim.
+  Source DataSet, and 3 fields (ColumnFieldName, RowFieldName and ValueFieldName)
+  need to be specified to build the table. The table is filled with value of
+  ValueFieldName in rows and columns determined by RowFieldName and ColumnFieldName.
 
-  Отступы при печати страниц определяются параметрами свойства IndentsInSantim.
+  The properties CaptColWidthInSantim, CaptRowHeightInSantim, ColWidthInSantim
+  and RowHeightInSantim specify sizes of table in cm.
 
-  Цвета и шрифты заголовков, ячеек и итоговых значений таблицы настраиваются
-  через свойства Colors и Fonts.
+  Property IndentsInSantim determines indents (margins?) when printing pages.
 
-  Заголовок отчета и параметры его выравнивания задаются свойствами Title и
-  TitleAlignment соответственно. Выводом заголовока на каждой странице можно управлять
-  в обработчике события OnPrintTableElement.
+  Colors and fonts of titles(headers), cells, and aggregates of the table are
+  specified with Colors and Fonts properties.
 
-  Компоненту можно передавать DataSet с установленным свойством Filter;
---------------
-  Свойство Optons:TPCTOptions;
+  Report's header and the adjustment of the latter are specified with
+  Title and TitleAdjustment properties.
+
+  One can control printing of header on each page by writing an
+  OnPrintTableElement event handler.
+
+  DataSet with assigned .Filter can be passed to the component.
+
+  Properties
+  ----------
+
+  Options: TPCTOptions;
 
   TPCTOptions = set of ( fcoIntermediateColResults, fcoIntermediateRowResults,
-      fcoColResults, fcoRowResults,
-     fcoIntermediateColCaptions, fcoIntermediateRowCaptions,
-     fcoIntermediateLeftIndent, fcoIntermediateTopIndent,
-     fcoIntermediateRightIndent, fcoIntermediateBottomIndent,
-     fcoShowPageNumbers, fcoVertColCaptionsFont );
+    fcoColResults, fcoRowResults, fcoIntermediateColCaptions, fcoIntermediateRowCaptions,
+    fcoIntermediateLeftIndent, fcoIntermediateTopIndent, fcoIntermediateRightIndent,
+    fcoIntermediateBottomIndent, fcoShowPageNumbers, fcoVertColCaptionsFont );
 
-   fcoIntermediateColResults		- вывод промежуточных итогов по столбцам;
-   fcoIntermediateRowResults		- вывод промежуточных итогов по строкам;
-   fcoColResults			- вывод итогов по столбцам;
-   fcoRowResults			- вывод итогов по строкам;
-   fcoIntermediateColCaptions		- отображение заголовков столбцов на каждой странице или только на первой;
-   fcoIntermediateRowCaptions		- отображение заголовков строк на каждой странице;
-   fcoIntermediateLeftIndent		- использовать левый отступ на каждой странице;
-   fcoIntermediateTopIndent		- соотв-но;
-   fcoIntermediateRightIndent		- соотв-но;
-   fcoIntermediateBottomIndent		- соотв-но;
-   fcoShowPageNumbers		- отображение номера страницы в соответствии с разбиением;
-   fcoVertColCaptionsFont		- вывод заголовков столбцов вертикальным шрифтом;
+  fcoIntermediateColResults	  - Showing intermediate results (summaries, totals, agregates) by columns
+  fcoIntermediateRowResults		- Showing intermediate results by rows
+  fcoColResults			          - Showing results (summaries, totals, agregates) by columns
+  fcoRowResults			          - Showing results by rows
+  fcoIntermediateColCaptions	- showing Column Headers(Titles) on each page or the 1st only.
+  fcoIntermediateRowCaptions	- showing Row Headers on each page.
+  fcoIntermediateLeftIndent		- Use left indent(margin) on each page.
+  fcoIntermediateTopIndent		- Use top indent(margin) on each page.
+  fcoIntermediateRightIndent	- Use right indent(margin) on each page.
+  fcoIntermediateBottomIndent	- Use bottom indent(margin) on each page.
+  fcoShowPageNumbers		      - Showing pages numbers according to splitting ( of the whole report to pages)
+  fcoVertColCaptionsFont		  - Showing column headers by vertical font (text? alignment?)
 
---------------
+  Events
+  ------
 
-___СОБЫТИЯ___
+  OnPrintQuery	       - Tells (informs of) required pages number(count) for
+                         printing the table. Allows to cancel printing
+  OnPrintNewPage	     - Notifies about every new page starting printing (and
+                         allows to cancel printing)
+  OnPrintTableElement	 - Notifies about every new table element (Caption(header,
+                         title), each cell) (and allows to cancel printing).
+                         Allows to change cell's value, or assign specific color
+                         and font to it, to set(customise) parameters of text
+                         alignment, to cancel the printing.
+                         Parameter TableElement: TPCTableElement = (teTitle, teCell,
+                         teColCapt, teRowCapt,  TeColIRes, teRowIRes, teRowRes)
+                         specifies type of element being printed.
+  OnCalcResult	       - If the event is assigned, it is You to process calculation
+                         of totals(agregates). Event gives You values of current
+                         cell and totals for column and row. If event is not
+                         assigned, the component proceeds it, assuming cell value
+                         can be casted to single, and calculating totals as sums
+                         of all cells in the row/column
+  OnDuplicateCellValue - Event is fired if some pair [Column & Row] value matches
+                         another pairs value.
 
-  OnPrintQuery	- информирует о необходимом кол-ве страниц для вывода таблицы;
-                  позволяет отменить печать;
+  Methods
+  -------
 
-  OnPrintNewPage	- информирует о начале печати очередной страницы; позволяет отменить печать;
-
-  OnPrintTableElement	- информирует о печати каждого элемента таблицы ( заголовка, очередной ячейки );
-                                       позволяет изменить значение ячейки, задать индивидуальный шрифт и цвет фона,
-                                       установить параметры выравнивания текста, отменить печать;
-                                       Параметр TableElement: TPCTableElement = ( teTitle, teCell, teColCapt, teRowCapt,  TeColIRes, teRowIRes, teColRes,
-                                        teRowRes ); указывает на тип выводимого элемента.
-
-  OnCalcResult	- если данное событие назначено, то расчет итогов осуществляется Вами. Событие передает  значение текущей ячейки и
-                                       значения итогов для данного столбца и строки. Если событие OnCalcResult не назначено, расчет выполняется
-                                       компонентом,   причем предполагается, что значение ячейки можно преобразовать в значение single и итоги
-                                       рассчитываются как суммы соответствующих столбцов и строк.
-
-  OnDuplicateCellValue  - событие инициируется, если какой-либо паре значений колонки и строки соответствует более одного значения.
-
-___МЕТОДЫ___
-
-    procedure Print; - без слов.
-    procedure PreviewTo( Canvas: TCanvas; PageWidth, PageHeight: integer );  - вывод таблицы на произвольный холст(Canvas) с указанием
-                                                                               размеров условной таблицы в точках.
-
+  procedure Print;
+    No comment needed.
+  procedure PreviewTo( Canvas: TCanvas; PageWidth, PageHeight: integer );
+    Rendering the table to the given canvas, specifying size of conditional(virtual,
+    conventional) table in pixels.
 }
 unit JvgCrossTable;
 

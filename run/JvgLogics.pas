@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -30,16 +31,17 @@ Known Issues:
 unit JvgLogics;
 
 interface
+
 uses
   Classes, JvComponent, SysUtils, Graphics;
 
 type
-
   TLogicRule = (lrEqual, lrBeginWith, lrEndWith, lrContains, lrContainsIn,
     ltNotEmpty);
+
 const
-  LogicRuleLabels: array[TLogicRule] of string = ('равно',
-    'начинается с', 'оканчивается на', 'содержит', 'содержится в', 'не пусто');
+  LogicRuleLabels: array[TLogicRule] of string = ('equal to',
+    'starting with', 'ends with', 'contains', 'is contained within', 'not empty');
 
 type
   TJvgLogics = class;

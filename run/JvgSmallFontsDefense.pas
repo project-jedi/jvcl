@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -72,7 +73,8 @@ begin
   if csDesigning in ComponentState then
   begin
     if not IsSmallFonts then
-      ShowMessage('Проектирование приложения в режиме крупных шрифтов недопустимо!'#13#10'Компонент TJvgSmallFontsDefence отказывается работать в таких условиях.');
+      ShowMessage('Cannot design application with Large Fonts!'#13#10' +
+        'Component TJvgSmallFontsDefence refuses to work in such conditions.');
   end
   else
 end;

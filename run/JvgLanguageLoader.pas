@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -31,14 +32,23 @@ Known Issues:
 eng:
  Load new string resources from file to components. Uses RTTI
 
-rus:
-Заменяет по словарю из файла все найденные строки одного языка на другой
- Словарь в виде текста вида:
- Строка на языке 1=Строка на языке 2
- ...
- Строка на языке 1=Строка на языке 2
- ===================================================================
+ Replaces the found lines(strings) from one language to another if found in dictionary
+
+ Dictionary is text like:
+   Langauge1_line=Language2_line
+   ..
+   Language1_line=Language2_line
 }
+
+// rus:
+// Заменяет по словарю из файла все найденные строки одного языка на другой
+//  Словарь в виде текста вида:
+//  Строка на языке 1=Строка на языке 2
+//  ...
+//  Строка на языке 1=Строка на языке 2
+// ===================================================================
+//
+
 unit JvgLanguageLoader;
 
 interface
@@ -49,7 +59,8 @@ uses
 
 type
   TLanguageLoaderOptions = set of (lofTrimSpaces);
-  {опция удаления начальных и завершающих пробелов}
+  //{опция удаления начальных и завершающих пробелов}
+  { Option to Trim first and last spaces [translated] }
 
   TJvgLanguageLoader = class(TJvComponent)
   private
@@ -67,16 +78,13 @@ type
 procedure LoadLanguage(Component: TComponent; FileName: string; Options:
   TLanguageLoaderOptions);
 
-procedure Register;
-
 implementation
-uses TypInfo;
 
-procedure Register;
-begin
-end;
+uses
+  TypInfo;
 
-{Ф-ия для загрузки словаря без предварительного создания компонента}
+//{Ф-ия для загрузки словаря без предварительного создания компонента}
+{ Function to load dictionary without previous creation of the component [translated] }
 
 procedure LoadLanguage(Component: TComponent; FileName: string; Options:
   TLanguageLoaderOptions);
@@ -93,8 +101,10 @@ end;
 
 { TJvgLanguageLoader }
 
-{  Загрузка словаря, обход указанного компонента и  }
-{  всех его дочерних компонентов                    }
+//{  Загрузка словаря, обход указанного компонента и  }
+//{  всех его дочерних компонентов                    }
+{ Loading dictionary, passing the given component and all his children components
+  [translated] }
 
 procedure TJvgLanguageLoader.LoadLanguage(Component: TComponent; FileName:
   string);
@@ -103,7 +113,8 @@ procedure TJvgLanguageLoader.LoadLanguage(Component: TComponent; FileName:
   var
     i: integer;
   begin
-    { обработка своцств компонента }
+    //{ обработка своцств компонента }
+    { Processing the component's properties [translated] }
     UpdateComponent(Component);
     for i := 0 to Component.ComponentCount - 1 do
       UpdateAllComponents(Component.Components[i]);
@@ -111,7 +122,8 @@ procedure TJvgLanguageLoader.LoadLanguage(Component: TComponent; FileName:
 begin
   sl := TStringList.Create;
   try
-    { Загрузка словаря из заданного файла }
+    //{ Загрузка словаря из заданного файла }
+    { Loading dictionary from given file }
     sl.LoadFromFile(FileName);
     sl.Sorted := true;
     UpdateAllComponents(Component);
@@ -120,8 +132,10 @@ begin
   end;
 end;
 
-{ Проход по всем свойствам компонента                        }
-{ Для всех строковых свойств - загрузка перевода из сооваря  }
+//{ Проход по всем свойствам компонента                        }
+//{ Для всех строковых свойств - загрузка перевода из сооваря  }
+{ Passing(iterating) all the component's properties
+  For all string properties - load the translation from dictionary [translated] }
 
 procedure TJvgLanguageLoader.UpdateComponent(Component: TPersistent);
 var
@@ -154,9 +168,13 @@ begin
 
       case PropTypeInf^.Kind of
         tkString, tkLString:
-          if PropName <> 'Name' then { Переводить свойство Name не следует }
+          //{ Переводить свойство Name не следует }
+          { .Name is not to be translated [translated] }
+          if PropName <> 'Name' then
           begin
-            { Получение значения свойства и поиск перевода в словаре }
+            //{ Получение значения свойства и поиск перевода в словаре }
+            { Retrieving the property's value and searchin for translation in
+              dictionary [translated] }
             StringPropValue := GetStrProp(Component, PropInfo);
             SetStrProp(Component, PropInfo,
               TranslateString(StringPropValue));
@@ -168,11 +186,13 @@ begin
 
             if Assigned(PropObject) then
             begin
-              { Для дочерних свойств-классов вызов просмотра свойств }
+              //{ Для дочерних свойств-классов вызов просмотра свойств }
+              { For children properties-classes calling iterate again [translated] }
               if (PropObject is TPersistent) then
                 UpdateComponent(PropObject as TPersistent);
 
-              { Индивидуальный подход к некоторым классам }
+              //{ Индивидуальный подход к некоторым классам }
+              { Specific handling of some certain classes [translated] }
               if (PropObject is TStrings) then
               begin
                 for j := 0 to (PropObject as TStrings).Count - 1 do
@@ -191,11 +211,11 @@ begin
                   TListItems(PropObject).Item[j].Caption :=
                     TranslateString(TListItems(PropObject).Item[j].Caption);
               end;
-              { Здесь можно добавить обработку остальных классов }
+              //{ Здесь можно добавить обработку остальных классов }
+              { And here may be added more specific handlers for certain other
+                classes [translated] }
             end;
-
           end;
-
       end;
     end;
   finally
@@ -203,7 +223,8 @@ begin
   end;
 end;
 
-{ Поиск перевода для заданной строки в словаре }
+//{ Поиск перевода для заданной строки в словаре }
+{ Searching for translation of given line in dictionary [translated] }
 
 function TJvgLanguageLoader.TranslateString(sString: string): string;
 begin
