@@ -415,7 +415,8 @@ type
     { vertical numeric decimal places }
 
     { more design time }
-    property AutoUpdateGraph: Boolean read FAutoUpdateGraph write FAutoUpdateGraph default False;
+
+    property AutoUpdateGraph: Boolean read FAutoUpdateGraph write FAutoUpdateGraph default True;
     property MouseEdit: Boolean read FMouseEdit write FMouseEdit default True;
     property MouseInfo: Boolean read FMouseInfo write FMouseInfo default True;
     //OLD:property ShowLegend: Boolean read FShowLegend write FShowLegend default True;
@@ -448,8 +449,7 @@ type
   TJvChart = class(TJvGraphicControl) // formerly was a child of TImage
   private
     FUpdating :Boolean; // PREVENT ENDLES EVENT LOOPING.
-    FAutoPlot:Boolean; // Default is true.
-    FAutoPlotDone:Boolean; // Has paint method called PlotGraph already?
+    FAutoPlotDone:Boolean; // If Options.AutoUpdateGraph is set, then has paint method called PlotGraph already?
 
 
     FOnChartClick:TJvChartClickEvent; // mouse click event
@@ -618,7 +618,6 @@ type
     property Picture: TPicture read FPicture; // write SetPicture;
 
 
-    property AutoPlot:Boolean read FAutoPlot write FAutoPlot default true; // Default is true.
 
 
     // NEW: Ability to highlight a particular sample by setting the Cursor position!
@@ -961,6 +960,8 @@ begin
   inherited Create;
   FOwner := Owner;
 
+  FAutoUpdateGraph  := true;
+  
   FPrimaryYAxis := TJvChartYAxisOptions.Create(Self);
   FSecondaryYAxis := TJvChartYAxisOptions.Create(Self);
 
@@ -1282,7 +1283,6 @@ begin
   inherited Create(AOwner); {by TImage...}
 //   Color := clWindow;
   FPicture := TPicture.Create;
-  FAutoPlot := true;
 
   FCursorPosition := -1; // Invisible until CursorPosition is set >=0 to make it visible. 
 
@@ -1467,7 +1467,7 @@ begin
     DesignModePaint;
   end
   else begin
-    if FAutoPlot and (not FAutoPlotDone) then begin
+    if Options.AutoUpdateGraph and (not FAutoPlotDone) then begin
         FAutoPlotDone:= true;
         PlotGraph; // Makes sure something is visible in the TPicture.
     end;
@@ -1841,6 +1841,8 @@ begin
   Assert(Assigned(Options));
   Assert(Assigned(Options.PrimaryYAxis));
   Assert(Options.PrimaryYAxis.YPixelGap > 0);
+
+  ChartCanvas.Font := Options.AxisFont; 
 
   for I := 0 to Options.PrimaryYAxis.YValueCount do
   begin
@@ -2780,7 +2782,7 @@ begin
   if Assigned(FOnOptionsChangeEvent) then begin
     FOnOptionsChangeEvent(Self);
   end;
-  if FAutoPlot then 
+  if Options.AutoUpdateGraph then 
     FAutoPlotDone := false; // Next paint will also call PlotGraph
 end;
 
