@@ -17,6 +17,7 @@ uses
   JvConsts, JvAlarms, JvConverter, JvDataEmbedded, JvCreateProcess,
   JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile,
   JvStringHolder, JvTimeLimit, JvWinHelp, JvTranslator, JvPrint, JvEasterEgg,
+  JvMouseGesture,
   JvDataEmbeddedEditor, JvPatcherEditor, JvProfilerForm,
   JvPageManagerForm,
   JvDsgnEditors;
@@ -28,7 +29,8 @@ begin
   RegisterComponents(SPaletteNonVisual,[
     TJvAlarms, TJvConverter, TJvDataEmbedded, TJvCreateProcess,
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
-    TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvTranslatorStrings, TJvPrint, TJvEasterEgg
+    TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvTranslatorStrings, TJvPrint, TJvEasterEgg,
+    TJvMouseGesture, TJvMouseGestureHook
     ]);
 
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess, '', TJvExeNameProperty);

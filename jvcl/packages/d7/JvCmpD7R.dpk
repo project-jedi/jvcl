@@ -45,6 +45,7 @@ contains
   JvPrint in '..\..\run\JvPrint.pas',
   JvCreateProcess in '..\..\run\JvCreateProcess.pas',
   JvEasterEgg in '..\..\run\JvEasterEgg.pas',
-  JvProfilerForm in '..\..\run\JvProfilerForm.pas' {ProfReport};
+  JvProfilerForm in '..\..\run\JvProfilerForm.pas' {ProfReport},
+  JvMouseGesture in '..\..\run\JvMouseGesture.pas';
 
 end.
