@@ -26,7 +26,9 @@ Known Issues:
 {$I JVCL.INC}
 
 unit JvDBReg;
+
 {$IFDEF DelphiPersonalEdition}
+
 interface
 
 implementation
@@ -34,7 +36,9 @@ implementation
 end.
 
 {$ELSE}
+
 interface
+
 uses
   Classes,
   {$IFDEF COMPILER6_UP}
@@ -135,6 +139,8 @@ begin
   RegisterPropertyEditor(TypeInfo(Integer), TJvDBGrid, 'RowsHeight', nil);
   RegisterComponentEditor(TJvMemoryData, TJvMemoryDataEditor);
 end;
+
 {$ENDIF DelphiPersonalEdition}
+
 end.
 
