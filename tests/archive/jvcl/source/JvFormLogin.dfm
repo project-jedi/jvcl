@@ -14,9 +14,6 @@ object FormLogi: TFormLogi
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  DesignSize = (
-    298
-    149)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

@@ -15,9 +15,6 @@ object PassForm: TPassForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
-  DesignSize = (
-    333
-    128)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

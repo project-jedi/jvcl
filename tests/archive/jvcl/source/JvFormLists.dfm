@@ -13,9 +13,6 @@ object FormListb: TFormListb
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  DesignSize = (
-    483
-    352)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
