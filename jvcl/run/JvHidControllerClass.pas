@@ -20,7 +20,6 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-  I do not clean the source style for this file ;-)
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -36,30 +35,28 @@ uses
   {$IFDEF USEJVCL}
   JvComponent,
   {$ENDIF USEJVCL}
-  DBT, SetupApi, Hid, ModuleLoader;
+  DBT, SetupApi, HID, ModuleLoader;
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.23';
+  cHidControllerClassVersion = '1.0.25';
 
   // strings from the registry for CheckOutByClass
-  cHidKeyboardClass = 'Keyboard';
-  cHidMouseClass    = 'Mouse';
-  cHidNoClass       = 'HIDClass';
+  cHidNoClass = 'HIDClass';
 
 type
   // forward declarations
   TJvHidDeviceController = class;
-  TJvHidDevice           = class;
+  TJvHidDevice = class;
 
   // the Event function declarations
-  TJvHidEnumerateEvent  = function (HidDev: TJvHidDevice;
-                                    const Idx: Integer): Boolean of object;
-  TJvHidPlugEvent       = procedure(HidDev: TJvHidDevice) of object;
-  TJvHidUnplugEvent     = TJvHidPlugEvent;
-  TJvHidDataEvent       = procedure(HidDev: TJvHidDevice; ReportID: Byte;
-                                    const Data: Pointer; Size: Word) of object;
-  TJvHidDataErrorEvent  = procedure(HidDev: TJvHidDevice; Error: DWORD) of object;
+  TJvHidEnumerateEvent = function(HidDev: TJvHidDevice;
+    const Idx: Integer): Boolean of object;
+  TJvHidPlugEvent = procedure(HidDev: TJvHidDevice) of object;
+  TJvHidUnplugEvent = TJvHidPlugEvent;
+  TJvHidDataEvent = procedure(HidDev: TJvHidDevice; ReportID: Byte;
+    const Data: Pointer; Size: Word) of object;
+  TJvHidDataErrorEvent = procedure(HidDev: TJvHidDevice; Error: DWORD) of object;
 
   // check out test function
   TJvHidCheckCallback = function(HidDev: TJvHidDevice): Boolean; stdcall;
@@ -101,43 +98,46 @@ type
     FService: string;
     FUINumber: DWORD;
     FUINumberFormat: string;
-    function GetRegistryPropertyString(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): string;
-    function GetRegistryPropertyStringList(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): TStringList;
-    function GetRegistryPropertyDWord(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): DWORD;
+    function GetRegistryPropertyString(PnPHandle: HDEVINFO;
+      const DevData: TSPDevInfoData; Prop: DWORD): string;
+    function GetRegistryPropertyStringList(PnPHandle: HDEVINFO;
+      const DevData: TSPDevInfoData; Prop: DWORD): TStringList;
+    function GetRegistryPropertyDWord(PnPHandle: HDEVINFO;
+      const DevData: TSPDevInfoData; Prop: DWORD): DWORD;
     function GetCompatibleIDs: TStrings;
     function GetHardwareID: TStrings;
     function GetLowerFilters: TStrings;
     function GetUpperFilters: TStrings;
   public
-    property DeviceID:        DWORD       read FDeviceID;
-    property DevicePath:      string      read FDevicePath;
+    property DeviceID: DWORD read FDeviceID;
+    property DevicePath: string read FDevicePath;
     // registry values
-    property Capabilities:    DWORD       read FCapabilities;
-    property ClassDescr:      string      read FClassDescr;
-    property ClassGUID:       string      read FClassGUID;
-    property CompatibleIDs:   TStrings    read GetCompatibleIDs;
-    property ConfigFlags:     DWORD       read FConfigFlags;
-    property DeviceDescr:     string      read FDeviceDescr;
-    property Driver:          string      read FDriver;
-    property FriendlyName:    string      read FFriendlyName;
-    property HardwareID:      TStrings    read GetHardwareID;
-    property LowerFilters:    TStrings    read GetLowerFilters;
-    property Mfg:             string      read FMfg;
-    property UpperFilters:    TStrings    read GetUpperFilters;
-    property Address:         string      read FAddress;
-    property BusNumber:       DWORD       read FBusNumber;
-    property BusType:         string      read FBusType;
-    property Characteristics: string      read FCharacteristics;
-    property DevType:         DWORD       read FDevType;
-    property EnumeratorName:  string      read FEnumeratorName;
-    property Exclusive:       DWORD       read FExclusive;
-    property LegacyBusType:   DWORD       read FLegacyBusType;
-    property LocationInfo:    string      read FLocationInfo;
-    property PhysDevObjName:  string      read FPhysDevObjName;
-    property SecuritySDS:     string      read FSecuritySDS;
-    property Service:         string      read FService;
-    property UINumber:        DWORD       read FUINumber;
-    property UINumberFormat:  string      read FUINumberFormat;
+    property Capabilities: DWORD read FCapabilities;
+    property ClassDescr: string read FClassDescr;
+    property ClassGUID: string read FClassGUID;
+    property CompatibleIDs: TStrings read GetCompatibleIDs;
+    property ConfigFlags: DWORD read FConfigFlags;
+    property DeviceDescr: string read FDeviceDescr;
+    property Driver: string read FDriver;
+    property FriendlyName: string read FFriendlyName;
+    property HardwareID: TStrings read GetHardwareID;
+    property LowerFilters: TStrings read GetLowerFilters;
+    property Mfg: string read FMfg;
+    property UpperFilters: TStrings read GetUpperFilters;
+    property Address: string read FAddress;
+    property BusNumber: DWORD read FBusNumber;
+    property BusType: string read FBusType;
+    property Characteristics: string read FCharacteristics;
+    property DevType: DWORD read FDevType;
+    property EnumeratorName: string read FEnumeratorName;
+    property Exclusive: DWORD read FExclusive;
+    property LegacyBusType: DWORD read FLegacyBusType;
+    property LocationInfo: string read FLocationInfo;
+    property PhysDevObjName: string read FPhysDevObjName;
+    property SecuritySDS: string read FSecuritySDS;
+    property Service: string read FService;
+    property UINumber: DWORD read FUINumber;
+    property UINumberFormat: string read FUINumberFormat;
     constructor Create(APnPHandle: HDEVINFO; ADevData: TSPDevInfoData; ADevicePath: PChar);
     destructor Destroy; override;
   end;
@@ -163,177 +163,170 @@ type
   TJvHidDevice = class(TObject)
   private
     // internal control variables
-    FMyController:         TJvHidDeviceController;
-    FIsPluggedIn:          Boolean;
-    FIsCheckedOut:         Boolean;
-    FIsEnumerated:         Boolean;
-    FHidFileHandle:        THandle;
-    FHidOverlappedRead:    THandle;
-    FHidOverlappedWrite:   THandle;
-    FOvlRead:              TOverlapped;
-    FOvlWrite:             TOverlapped;
+    FMyController: TJvHidDeviceController;
+    FIsPluggedIn: Boolean;
+    FIsCheckedOut: Boolean;
+    FIsEnumerated: Boolean;
+    FHidFileHandle: THandle;
+    FHidOverlappedRead: THandle;
+    FHidOverlappedWrite: THandle;
+    FOvlRead: TOverlapped;
+    FOvlWrite: TOverlapped;
     // internal properties part
-    FAttributes:           THIDDAttributes;
-    FPnPInfo:              TJvHidPnPInfo;
-    FVendorName:           WideString;
-    FProductName:          WideString;
-    FPhysicalDescriptor:   TJvPhysicalDescriptor;
-    FPreparsedData:        PHIDPPreparsedData;
-    FSerialNumber:         WideString;
-    FLanguageStrings:      TStringList;
-    FNumInputBuffers:      Integer;
+    FAttributes: THIDDAttributes;
+    FPnPInfo: TJvHidPnPInfo;
+    FVendorName: WideString;
+    FProductName: WideString;
+    FPhysicalDescriptor: TJvPhysicalDescriptor;
+    FPreparsedData: PHIDPPreparsedData;
+    FSerialNumber: WideString;
+    FLanguageStrings: TStringList;
+    FNumInputBuffers: Integer;
     FNumOverlappedBuffers: Integer;
-    FThreadSleepTime:      Integer;
-    FLinkCollection:       array of THIDPLinkCollectionNode;
-    FMaxDataListLength:    ULONG;
-    FMaxUsageListLength:   ULONG;
-    FMaxButtonListLength:  ULONG;
-    FReportTypeParam:      THIDPReportType;
-    FUsagePageParam:       TUsage;
-    FLinkCollectionParam:  WORD;
-    FUsageParam:           TUsage;
-    FData:                 TJvHidDataEvent;
-    FDataError:            TJvHidDataErrorEvent;
-    FUnplug:               TJvHidUnplugEvent;
-    FHasReadWriteAccess:   Boolean;
-    FDataThread:           TJvHidDeviceReadThread;
-    FTag:                  Integer;
-
+    FThreadSleepTime: Integer;
+    FLinkCollection: array of THIDPLinkCollectionNode;
+    FMaxDataListLength: ULONG;
+    FMaxUsageListLength: ULONG;
+    FMaxButtonListLength: ULONG;
+    FReportTypeParam: THIDPReportType;
+    FUsagePageParam: TUsage;
+    FLinkCollectionParam: WORD;
+    FUsageParam: TUsage;
+    FData: TJvHidDataEvent;
+    FDataError: TJvHidDataErrorEvent;
+    FUnplug: TJvHidUnplugEvent;
+    FHasReadWriteAccess: Boolean;
+    FDataThread: TJvHidDeviceReadThread;
+    FTag: Integer;
     // tells if access to device is allowed
-    function  IsAccessible: Boolean;
+    function IsAccessible: Boolean;
     procedure GetMax;
-
     // internal property implementors
-    function  GetDeviceStringAnsi   (Idx: Byte): string;
-    function  GetDeviceStringUnicode(Idx: Byte): WideString;
-    function  GetLinkCollectionNode (Idx: WORD): THIDPLinkCollectionNode;
-    function  GetConfiguration:         THIDDConfiguration;
-    function  GetPreparsedData:         PHIDPPreparsedData;
-    function  GetCaps:                  THIDPCaps;
-    function  GetVendorName:            WideString;
-    function  GetProductName:           WideString;
-    function  GetSerialNumber:          WideString;
-    function  GetPhysicalDescriptor:    TJvPhysicalDescriptor;
-    function  GetLanguageStrings:       TStrings;
-    function  GetOverlappedReadResult:  DWORD;
-    function  GetOverlappedWriteResult: DWORD;
-    procedure SetConfiguration       (const Config: THIDDConfiguration);
-    procedure SetDataEvent           (const DataEvent: TJvHidDataEvent);
-    procedure SetNumInputBuffers     (const Num: Integer);
+    function GetDeviceStringAnsi(Idx: Byte): string;
+    function GetDeviceStringUnicode(Idx: Byte): WideString;
+    function GetLinkCollectionNode(Idx: WORD): THIDPLinkCollectionNode;
+    function GetConfiguration: THIDDConfiguration;
+    function GetPreparsedData: PHIDPPreparsedData;
+    function GetCaps: THIDPCaps;
+    function GetVendorName: WideString;
+    function GetProductName: WideString;
+    function GetSerialNumber: WideString;
+    function GetPhysicalDescriptor: TJvPhysicalDescriptor;
+    function GetLanguageStrings: TStrings;
+    function GetOverlappedReadResult: DWORD;
+    function GetOverlappedWriteResult: DWORD;
+    procedure SetConfiguration(const Config: THIDDConfiguration);
+    procedure SetDataEvent(const DataEvent: TJvHidDataEvent);
+    procedure SetNumInputBuffers(const Num: Integer);
     procedure SetNumOverlappedBuffers(const Num: Integer);
-    procedure SetReportTypeParam     (const ReportType: THIDPReportType);
-    procedure SetThreadSleepTime     (const SleepTime: Integer);
-    procedure SetUsagePageParam      (const UsagePage: TUsage);
+    procedure SetReportTypeParam(const ReportType: THIDPReportType);
+    procedure SetThreadSleepTime(const SleepTime: Integer);
+    procedure SetUsagePageParam(const UsagePage: TUsage);
     procedure StartThread;
     procedure StopThread;
-
     // Constructor is hidden! Only a TJvHidDeviceController can create a TJvHidDevice object.
     constructor CtlCreate(const APnPInfo: TJvHidPnPInfo;
-                          const Controller: TJvHidDeviceController);
-
+      const Controller: TJvHidDeviceController);
   protected
-    // internal event implementors
+    // internal event implementor
     procedure DoUnplug;
-
   public
     // dummy constructor
     constructor Create;
     destructor Destroy; override;
-
-    // read only properties
-    property Attributes:               THIDDAttributes       read FAttributes;
-    property Caps:                     THIDPCaps             read GetCaps;
-    property HasReadWriteAccess:       Boolean               read FHasReadWriteAccess;
-    property HidFileHandle:            THandle               read FHidFileHandle;
-    property HidOverlappedRead:        THandle               read FHidOverlappedRead;
-    property HidOverlappedWrite:       THandle               read FHidOverlappedWrite;
-    property HidOverlappedReadResult:  DWORD                 read GetOverlappedReadResult;
-    property HidOverlappedWriteResult: DWORD                 read GetOverlappedWriteResult;
-    property IsCheckedOut:             Boolean               read FIsCheckedOut;
-    property IsPluggedIn:              Boolean               read FIsPluggedIn;
-    property LanguageStrings:          TStrings              read GetLanguageStrings;
-    property MaxButtonListLength:      ULONG                 read FMaxButtonListLength;
-    property MaxDataListLength:        ULONG                 read FMaxDataListLength;
-    property MaxUsageListLength:       ULONG                 read FMaxUsageListLength;
-    property PhysicalDescriptor:       TJvPhysicalDescriptor read GetPhysicalDescriptor;
-    property PnPInfo:                  TJvHidPnPInfo         read FPnPInfo;
-    property PreparsedData:            PHIDPPreparsedData    read GetPreparsedData;
-    property ProductName:              WideString            read GetProductName;
-    property SerialNumber:             WideString            read GetSerialNumber;
-    property VendorName:               WideString            read GetVendorName;
-    // read write properties
-    property Configuration:        THIDDConfiguration read GetConfiguration      write SetConfiguration;
-    property LinkCollectionParam:  WORD               read FLinkCollectionParam  write FLinkCollectionParam;
-    property NumInputBuffers:      Integer            read FNumInputBuffers      write SetNumInputBuffers;
-    property NumOverlappedBuffers: Integer            read FNumOverlappedBuffers write SetNumOverlappedBuffers;
-    property ReportTypeParam:      THIDPReportType    read FReportTypeParam      write SetReportTypeParam;
-    property Tag:                  Integer            read FTag                  write FTag;
-    property ThreadSleepTime:      Integer            read FThreadSleepTime      write SetThreadSleepTime;
-    property UsagePageParam:       TUsage             read FUsagePageParam       write SetUsagePageParam;
-    property UsageParam:           TUsage             read FUsageParam           write FUsageParam;
-    // indexed properties
-    property DeviceStrings       [Idx: Byte]: string                  read GetDeviceStringAnsi;
-    property DeviceStringsUnicode[Idx: Byte]: WideString              read GetDeviceStringUnicode;
-    property LinkCollectionNodes [Idx: WORD]: THIDPLinkCollectionNode read GetLinkCollectionNode;
-    // event properties
-    property OnData:               TJvHidDataEvent      read FData      write SetDataEvent;
-    property OnDataError:          TJvHidDataErrorEvent read FDataError write FDataError;
-    property OnUnplug:             TJvHidUnplugEvent    read FUnplug    write FUnplug;
-
     // methods
-    function  CancelIO             (const Mode: TJvHidOpenExMode): Boolean;
+    function CancelIO(const Mode: TJvHidOpenExMode): Boolean;
     procedure CloseFile;
-    procedure CloseFileEx          (const Mode: TJvHidOpenExMode);
-    function  DeviceIoControl      (IoControlCode: DWORD; InBuffer: Pointer; InSize: DWORD;
-                                    OutBuffer: Pointer; OutSize: DWORD;
-                                    var BytesReturned: DWORD):                      Boolean;
-    function  FlushQueue:                                                           Boolean;
-    function  GetButtonCaps        (ButtonCaps: PHIDPButtonCaps; var Count: WORD):  NTSTATUS;
-    function  GetButtons           (UsageList: PUsage; var UsageLength: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  GetButtonsEx         (UsageList: PUsageAndPage; var UsageLength: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  GetData              (DataList: PHIDPData; var DataLength: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  GetFeature           (var Report; const Size: Integer):               Boolean;
-    function  GetScaledUsageValue  (var UsageValue: Integer;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  GetSpecificButtonCaps(ButtonCaps: PHIDPButtonCaps; var Count: WORD):  NTSTATUS;
-    function  GetSpecificValueCaps (ValueCaps:  PHIDPValueCaps;  var Count: WORD):  NTSTATUS;
-    function  GetUsages            (UsageList: PUsage; var UsageLength: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  GetUsagesEx          (UsageList: PUsageAndPage; var UsageLength: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  GetUsageValue        (var UsageValue: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  GetUsageValueArray   (UsageValue: PChar; UsageValueByteLength: WORD;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  GetValueCaps         (ValueCaps:  PHIDPValueCaps;  var Count: WORD):  NTSTATUS;
-    function  OpenFile:                                                             Boolean;
-    function  OpenFileEx           (Mode: TJvHidOpenExMode):                        Boolean;
-    function  SetButtons           (UsageList: PUsage; var UsageLength: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  SetData              (DataList: PHIDPData; var DataLength: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  SetFeature           (var Report; const Size: Integer):               Boolean;
-    function  SetScaledUsageValue  (UsageValue: Integer;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  SetUsages            (UsageList: PUsage; var UsageLength: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  SetUsageValue        (UsageValue: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  SetUsageValueArray   (UsageValue: PChar; UsageValueByteLength: WORD;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  UnsetButtons         (UsageList: PUsage; var UsageLength: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  UnsetUsages          (UsageList: PUsage; var UsageLength: ULONG;
-                                    var Report; ReportLength: ULONG):               NTSTATUS;
-    function  ReadFile             (var Report; ToRead:  DWORD; var BytesRead:    DWORD): Boolean;
-    function  ReadFileEx           (var Report; ToRead:  DWORD;
-                                    CallBack: TPROverlappedCompletionRoutine):            Boolean;
-    function  WriteFile            (var Report; ToWrite: DWORD; var BytesWritten: DWORD): Boolean;
-    function  WriteFileEx          (var Report; ToWrite: DWORD;
-                                    CallBack: TPROverlappedCompletionRoutine):            Boolean;
+    procedure CloseFileEx(const Mode: TJvHidOpenExMode);
+    function DeviceIoControl(IoControlCode: DWORD; InBuffer: Pointer; InSize: DWORD;
+      OutBuffer: Pointer; OutSize: DWORD;
+      var BytesReturned: DWORD): Boolean;
+    function FlushQueue: Boolean;
+    function GetButtonCaps(ButtonCaps: PHIDPButtonCaps; var Count: WORD): NTSTATUS;
+    function GetButtons(UsageList: PUsage; var UsageLength: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function GetButtonsEx(UsageList: PUsageAndPage; var UsageLength: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function GetData(DataList: PHIDPData; var DataLength: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function GetFeature(var Report; const Size: Integer): Boolean;
+    function GetScaledUsageValue(var UsageValue: Integer;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function GetSpecificButtonCaps(ButtonCaps: PHIDPButtonCaps; var Count: WORD): NTSTATUS;
+    function GetSpecificValueCaps(ValueCaps: PHIDPValueCaps; var Count: WORD): NTSTATUS;
+    function GetUsages(UsageList: PUsage; var UsageLength: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function GetUsagesEx(UsageList: PUsageAndPage; var UsageLength: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function GetUsageValue(var UsageValue: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function GetUsageValueArray(UsageValue: PChar; UsageValueByteLength: WORD;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function GetValueCaps(ValueCaps: PHIDPValueCaps; var Count: WORD): NTSTATUS;
+    function OpenFile: Boolean;
+    function OpenFileEx(Mode: TJvHidOpenExMode): Boolean;
+    function SetButtons(UsageList: PUsage; var UsageLength: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function SetData(DataList: PHIDPData; var DataLength: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function SetFeature(var Report; const Size: Integer): Boolean;
+    function SetScaledUsageValue(UsageValue: Integer;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function SetUsages(UsageList: PUsage; var UsageLength: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function SetUsageValue(UsageValue: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function SetUsageValueArray(UsageValue: PChar; UsageValueByteLength: WORD;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function UnsetButtons(UsageList: PUsage; var UsageLength: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function UnsetUsages(UsageList: PUsage; var UsageLength: ULONG;
+      var Report; ReportLength: ULONG): NTSTATUS;
+    function ReadFile(var Report; ToRead: DWORD; var BytesRead: DWORD): Boolean;
+    function ReadFileEx(var Report; ToRead: DWORD;
+      CallBack: TPROverlappedCompletionRoutine): Boolean;
+    function WriteFile(var Report; ToWrite: DWORD; var BytesWritten: DWORD): Boolean;
+    function WriteFileEx(var Report; ToWrite: DWORD;
+      CallBack: TPROverlappedCompletionRoutine): Boolean;
+    // read only properties
+    property Attributes: THIDDAttributes read FAttributes;
+    property Caps: THIDPCaps read GetCaps;
+    property HasReadWriteAccess: Boolean read FHasReadWriteAccess;
+    property HidFileHandle: THandle read FHidFileHandle;
+    property HidOverlappedRead: THandle read FHidOverlappedRead;
+    property HidOverlappedWrite: THandle read FHidOverlappedWrite;
+    property HidOverlappedReadResult: DWORD read GetOverlappedReadResult;
+    property HidOverlappedWriteResult: DWORD read GetOverlappedWriteResult;
+    property IsCheckedOut: Boolean read FIsCheckedOut;
+    property IsPluggedIn: Boolean read FIsPluggedIn;
+    property LanguageStrings: TStrings read GetLanguageStrings;
+    property MaxButtonListLength: ULONG read FMaxButtonListLength;
+    property MaxDataListLength: ULONG read FMaxDataListLength;
+    property MaxUsageListLength: ULONG read FMaxUsageListLength;
+    property PhysicalDescriptor: TJvPhysicalDescriptor read GetPhysicalDescriptor;
+    property PnPInfo: TJvHidPnPInfo read FPnPInfo;
+    property PreparsedData: PHIDPPreparsedData read GetPreparsedData;
+    property ProductName: WideString read GetProductName;
+    property SerialNumber: WideString read GetSerialNumber;
+    property VendorName: WideString read GetVendorName;
+    // read write properties
+    property Configuration: THIDDConfiguration read GetConfiguration write SetConfiguration;
+    property LinkCollectionParam: WORD read FLinkCollectionParam write FLinkCollectionParam;
+    property NumInputBuffers: Integer read FNumInputBuffers write SetNumInputBuffers;
+    property NumOverlappedBuffers: Integer read FNumOverlappedBuffers write SetNumOverlappedBuffers;
+    property ReportTypeParam: THIDPReportType read FReportTypeParam write SetReportTypeParam;
+    property Tag: Integer read FTag write FTag;
+    property ThreadSleepTime: Integer read FThreadSleepTime write SetThreadSleepTime;
+    property UsagePageParam: TUsage read FUsagePageParam write SetUsagePageParam;
+    property UsageParam: TUsage read FUsageParam write FUsageParam;
+    // indexed properties
+    property DeviceStrings[Idx: Byte]: string read GetDeviceStringAnsi;
+    property DeviceStringsUnicode[Idx: Byte]: WideString read GetDeviceStringUnicode;
+    property LinkCollectionNodes[Idx: WORD]: THIDPLinkCollectionNode read GetLinkCollectionNode;
+    // event properties
+    property OnData: TJvHidDataEvent read FData write SetDataEvent;
+    property OnDataError: TJvHidDataErrorEvent read FDataError write FDataError;
+    property OnUnplug: TJvHidUnplugEvent read FUnplug write FUnplug;
   end;
 
   // controller class to manage all HID devices
@@ -345,86 +338,79 @@ type
   {$ENDIF USEJVCL}
   private
     // internal properties part
-    FHidGuid:              TGUID;
-    FArrivalEvent:         TJvHidPlugEvent;
-    FDeviceChangeEvent:    TNotifyEvent;
-    FEnumerateEvent:       TJvHidEnumerateEvent;
-    FDevDataEvent:         TJvHidDataEvent;
-    FDevDataErrorEvent:    TJvHidDataErrorEvent;
-    FDevUnplugEvent:       TJvHidUnplugEvent;
-    FRemovalEvent:         TJvHidUnplugEvent;
-    FDeviceChangeFired:    Boolean;
-    FDevThreadSleepTime:   Integer;
-    FVersion:              string;
-    FDummy:                string;
+    FHidGuid: TGUID;
+    FArrivalEvent: TJvHidPlugEvent;
+    FDeviceChangeEvent: TNotifyEvent;
+    FEnumerateEvent: TJvHidEnumerateEvent;
+    FDevDataEvent: TJvHidDataEvent;
+    FDevDataErrorEvent: TJvHidDataErrorEvent;
+    FDevUnplugEvent: TJvHidUnplugEvent;
+    FRemovalEvent: TJvHidUnplugEvent;
+    FDevThreadSleepTime: Integer;
+    FVersion: string;
+    FDummy: string;
     // internal list of all HID device objects
-    FList:                 TList;
+    FList: TList;
     // counters for the list
-    FNumCheckedInDevices:  Integer;
+    FNumCheckedInDevices: Integer;
     FNumCheckedOutDevices: Integer;
-    FNumUnpluggedDevices:  Integer;
+    FNumUnpluggedDevices: Integer;
     // internal worker functions
-    function  CheckThisOut(var HidDev: TJvHidDevice; Idx: Integer; Check: Boolean): Boolean;
-    procedure FillInList  (var List: TList);
-    function  EventPipe   (var Msg: TMessage): Boolean;
-
+    function CheckThisOut(var HidDev: TJvHidDevice; Idx: Integer; Check: Boolean): Boolean;
+    function EventPipe(var Msg: TMessage): Boolean;
+    // internal event implementors
+    procedure SetDeviceChangeEvent(const Notifier: TNotifyEvent);
+    procedure SetEnumerate(const Enumerator: TJvHidEnumerateEvent);
+    procedure SetDevThreadSleepTime(const DevTime: Integer);
+    procedure SetDevData(const DataEvent: TJvHidDataEvent);
+    procedure SetDevDataError(const DataErrorEvent: TJvHidDataErrorEvent);
+    procedure SetDevUnplug(const Unplugger: TJvHidUnplugEvent);
   protected
+    procedure Loaded; override;
     procedure DoArrival(HidDev: TJvHidDevice);
     procedure DoRemoval(HidDev: TJvHidDevice);
     procedure DoDeviceChange;
-    // internal event implementors
-    function  DoEnumerate          (HidDev: TJvHidDevice; Idx: Integer): Boolean;
-    procedure SetDeviceChangeEvent (const Notifier:       TNotifyEvent);
-    procedure SetEnumerate         (const Enumerator:     TJvHidEnumerateEvent);
-    procedure SetDevThreadSleepTime(const DevTime:        Integer);
-    procedure SetDevData           (const DataEvent:      TJvHidDataEvent);
-    procedure SetDevDataError      (const DataErrorEvent: TJvHidDataErrorEvent);
-    procedure SetDevUnplug         (const Unplugger:      TJvHidUnplugEvent);
-
+    function DoEnumerate(HidDev: TJvHidDevice; Idx: Integer): Boolean;
   public
-    // just to be complete the GUID
-    property HidGuid: TGUID read FHidGuid;
-
     // normal constructor/destructor
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy;                    override;
-
+    destructor Destroy; override;
     // methods to hand out HID device objects
-    procedure CheckIn              (var HidDev: TJvHidDevice);
-    function  CheckOut             (var HidDev: TJvHidDevice): Boolean;
-    function  CheckOutByClass      (var HidDev: TJvHidDevice; const ClassName:   string):     Boolean;
-    function  CheckOutByID         (var HidDev: TJvHidDevice; const Vid, Pid:    Integer):    Boolean;
-    function  CheckOutByIndex      (var HidDev: TJvHidDevice; const Idx:         Integer):    Boolean;
-    function  CheckOutByProductName(var HidDev: TJvHidDevice; const ProductName: WideString): Boolean;
-    function  CheckOutByVendorName (var HidDev: TJvHidDevice; const VendorName:  WideString): Boolean;
-    function  CheckOutByCallback   (var HidDev: TJvHidDevice; Check: TJvHidCheckCallback):    Boolean;
+    procedure CheckIn(var HidDev: TJvHidDevice);
+    function CheckOut(var HidDev: TJvHidDevice): Boolean;
+    function CheckOutByClass(var HidDev: TJvHidDevice; const ClassName: string): Boolean;
+    function CheckOutByID(var HidDev: TJvHidDevice; const Vid, Pid: Integer): Boolean;
+    function CheckOutByIndex(var HidDev: TJvHidDevice; const Idx: Integer): Boolean;
+    function CheckOutByProductName(var HidDev: TJvHidDevice; const ProductName: WideString): Boolean;
+    function CheckOutByVendorName(var HidDev: TJvHidDevice; const VendorName: WideString): Boolean;
+    function CheckOutByCallback(var HidDev: TJvHidDevice; Check: TJvHidCheckCallback): Boolean;
     // methods to count HID device objects
-    function  CountByClass         (const ClassName:   string):     Integer;
-    function  CountByID            (const Vid, Pid:    Integer):    Integer;
-    function  CountByProductName   (const ProductName: WideString): Integer;
-    function  CountByVendorName    (const VendorName:  WideString): Integer;
-    function  CountByCallback      (Check: TJvHidCheckCallback):    Integer;
+    function CountByClass(const ClassName: string): Integer;
+    function CountByID(const Vid, Pid: Integer): Integer;
+    function CountByProductName(const ProductName: WideString): Integer;
+    function CountByVendorName(const VendorName: WideString): Integer;
+    function CountByCallback(Check: TJvHidCheckCallback): Integer;
     // iterate over the HID devices
-    function  Enumerate: Integer;
+    function Enumerate: Integer;
     class function HidVersion: string;
-
-    property NumCheckedInDevices:  Integer read FNumCheckedInDevices;
+    // just to be complete the GUID
+    property HidGuid: TGUID read FHidGuid;
+    property NumCheckedInDevices: Integer read FNumCheckedInDevices;
     property NumCheckedOutDevices: Integer read FNumCheckedOutDevices;
-    property NumUnpluggedDevices:  Integer read FNumUnpluggedDevices;
-
+    property NumUnpluggedDevices: Integer read FNumUnpluggedDevices;
   published
-    property DevThreadSleepTime: Integer              read FDevThreadSleepTime write SetDevThreadSleepTime default 100;
-    property Version:            string               read FVersion            write FDummy stored False;
-    property  OnArrival:         TJvHidPlugEvent      read FArrivalEvent       write FArrivalEvent;
+    property DevThreadSleepTime: Integer read FDevThreadSleepTime write SetDevThreadSleepTime default 100;
+    property Version: string read FVersion write FDummy stored False;
+    property OnArrival: TJvHidPlugEvent read FArrivalEvent write FArrivalEvent;
     // the iterator event
-    property  OnEnumerate:       TJvHidEnumerateEvent read FEnumerateEvent     write SetEnumerate;
+    property OnEnumerate: TJvHidEnumerateEvent read FEnumerateEvent write SetEnumerate;
     // the central event for HID device changes
-    property  OnDeviceChange:    TNotifyEvent         read FDeviceChangeEvent  write SetDeviceChangeEvent;
+    property OnDeviceChange: TNotifyEvent read FDeviceChangeEvent write SetDeviceChangeEvent;
     // these events are copied to TJvHidDevices on creation
-    property  OnDeviceData:      TJvHidDataEvent      read FDevDataEvent       write SetDevData;
-    property  OnDeviceDataError: TJvHidDataErrorEvent read FDevDataErrorEvent  write SetDevDataError;
-    property  OnDeviceUnplug:    TJvHidUnplugEvent    read FDevUnplugEvent     write SetDevUnplug;
-    property  OnRemoval:         TJvHidUnplugEvent    read FRemovalEvent       write FRemovalEvent;
+    property OnDeviceData: TJvHidDataEvent read FDevDataEvent write SetDevData;
+    property OnDeviceDataError: TJvHidDataErrorEvent read FDevDataErrorEvent write SetDevDataError;
+    property OnDeviceUnplug: TJvHidUnplugEvent read FDevUnplugEvent write SetDevUnplug;
+    property OnRemoval: TJvHidUnplugEvent read FRemovalEvent write FRemovalEvent;
     // to be callable at design time
     procedure DeviceChange;
   end;
@@ -451,13 +437,13 @@ uses
 
 type
   EControllerError = class(EJVCLException);
-  EHidClientError  = class(EJVCLException);
+  EHidClientError = class(EJVCLException);
 
 {$ELSE}
 
 type
   EControllerError = class(Exception);
-  EHidClientError  = class(Exception);
+  EHidClientError = class(Exception);
 
 resourcestring
   RsUnknownLocaleIDFmt = 'unknown Locale ID $%.4x';
@@ -498,16 +484,17 @@ var
   // counter to prevent a second TJvHidDeviceController instance
   GlobalInstanceCount: Integer = 0;
 
-//== these are declared inconsistent in Windows.pas ============================
+//== =these are declared inconsistent in Windows.pas =========================
 
 function ReadFileEx(hFile: THandle; var Buffer; nNumberOfBytesToRead: DWORD;
   var Overlapped: TOverlapped; lpCompletionRoutine: TPROverlappedCompletionRoutine): BOOL; stdcall;
   external Kernel32DllName name 'ReadFileEx';
+
 function WriteFileEx(hFile: THandle; var Buffer; nNumberOfBytesToWrite: DWORD;
   var Overlapped: TOverlapped; lpCompletionRoutine: TPROverlappedCompletionRoutine): BOOL; stdcall;
- external Kernel32DllName name 'WriteFileEx';
+  external Kernel32DllName name 'WriteFileEx';
 
-//== TJvHidDeviceReadThread ====================================================
+//=== { TJvHidDeviceReadThread } =============================================
 
 constructor TJvHidDeviceReadThread.CtlCreate(const Dev: TJvHidDevice);
 begin
@@ -517,29 +504,21 @@ begin
   SetLength(Report, Dev.Caps.InputReportByteLength);
 end;
 
-//------------------------------------------------------------------------------
-
 constructor TJvHidDeviceReadThread.Create(CreateSuspended: Boolean);
 begin
   raise EControllerError.CreateRes(@RsEDirectThreadCreationNotAllowed);
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TJvHidDeviceReadThread.DoData;
 begin
-  Device.OnData(Device, Report[0], @Report[1], NumBytesRead-1);
+  Device.OnData(Device, Report[0], @Report[1], NumBytesRead - 1);
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TJvHidDeviceReadThread.DoDataError;
 begin
   if Assigned(Device.FDataError) then
     Device.FDataError(Device, FErr);
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TJvHidDeviceReadThread.Execute;
 var
@@ -582,45 +561,44 @@ begin
     Device.CancelIO(omhRead);
 end;
 
-//== TJvHidPnPInfo =============================================================
+//=== { TJvHidPnPInfo } ======================================================
 
 constructor TJvHidPnPInfo.Create(APnPHandle: HDEVINFO; ADevData: TSPDevInfoData; ADevicePath: PChar);
 begin
-  FDeviceID   := ADevData.DevInst;
+  inherited Create;
+  FDeviceID := ADevData.DevInst;
   FDevicePath := ADevicePath;
 
   // primary information
-  FCapabilities    := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_CAPABILITIES);
-  FClassDescr      := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_CLASS);
-  FClassGUID       := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_CLASSGUID);
-  FCompatibleIDs   := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_COMPATIBLEIDS);
-  FConfigFlags     := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_CONFIGFLAGS);
-  FDeviceDescr     := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_DEVICEDESC);
-  FDriver          := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_DRIVER);
-  FFriendlyName    := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_FRIENDLYNAME);
-  FHardwareID      := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_HARDWAREID);
-  FLowerFilters    := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_LOWERFILTERS);
-  FMfg             := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_MFG);
-  FUpperFilters    := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_UPPERFILTERS);
-  FService         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_SERVICE);
+  FCapabilities := GetRegistryPropertyDWord(APnPHandle, ADevData, SPDRP_CAPABILITIES);
+  FClassDescr := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_CLASS);
+  FClassGUID := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_CLASSGUID);
+  FCompatibleIDs := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_COMPATIBLEIDS);
+  FConfigFlags := GetRegistryPropertyDWord(APnPHandle, ADevData, SPDRP_CONFIGFLAGS);
+  FDeviceDescr := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_DEVICEDESC);
+  FDriver := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_DRIVER);
+  FFriendlyName := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_FRIENDLYNAME);
+  FHardwareID := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_HARDWAREID);
+  FLowerFilters := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_LOWERFILTERS);
+  FMfg := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_MFG);
+  FUpperFilters := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_UPPERFILTERS);
+  FService := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_SERVICE);
 
   // secondary information not all likely to exist for a HID device
-  FAddress         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_ADDRESS);
-  FBusNumber       := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_BUSNUMBER);
-  FBusType         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_BUSTYPEGUID);
-  FCharacteristics := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_CHARACTERISTICS);
-  FDevType         := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_DEVTYPE);
-  FEnumeratorName  := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_ENUMERATOR_NAME);
-  FExclusive       := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_EXCLUSIVE);
-  FLegacyBusType   := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_LEGACYBUSTYPE);
-  FLocationInfo    := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_LOCATION_INFORMATION);
-  FPhysDevObjName  := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_PHYSICAL_DEVICE_OBJECT_NAME);
-  FSecuritySDS     := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_SECURITY_SDS);
-  FUINumber        := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_UI_NUMBER);
-  FUINumberFormat  := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_UI_NUMBER_DESC_FORMAT);
+  FAddress := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_ADDRESS);
+  FBusNumber := GetRegistryPropertyDWord(APnPHandle, ADevData, SPDRP_BUSNUMBER);
+  FBusType := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_BUSTYPEGUID);
+  FCharacteristics := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_CHARACTERISTICS);
+  FDevType := GetRegistryPropertyDWord(APnPHandle, ADevData, SPDRP_DEVTYPE);
+  FEnumeratorName := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_ENUMERATOR_NAME);
+  FExclusive := GetRegistryPropertyDWord(APnPHandle, ADevData, SPDRP_EXCLUSIVE);
+  FLegacyBusType := GetRegistryPropertyDWord(APnPHandle, ADevData, SPDRP_LEGACYBUSTYPE);
+  FLocationInfo := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_LOCATION_INFORMATION);
+  FPhysDevObjName := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_PHYSICAL_DEVICE_OBJECT_NAME);
+  FSecuritySDS := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_SECURITY_SDS);
+  FUINumber := GetRegistryPropertyDWord(APnPHandle, ADevData, SPDRP_UI_NUMBER);
+  FUINumberFormat := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_UI_NUMBER_DESC_FORMAT);
 end;
-
-//------------------------------------------------------------------------------
 
 destructor TJvHidPnPInfo.Destroy;
 begin
@@ -628,66 +606,57 @@ begin
   FHardwareID.Free;
   FLowerFilters.Free;
   FUpperFilters.Free;
+  inherited Destroy;
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidPnPInfo.GetCompatibleIDs: TStrings;
 begin
   Result := FCompatibleIDs;
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidPnPInfo.GetHardwareID: TStrings;
 begin
   Result := FHardwareID;
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidPnPInfo.GetLowerFilters: TStrings;
 begin
   Result := FLowerFilters;
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidPnPInfo.GetUpperFilters: TStrings;
 begin
   Result := FUpperFilters;
 end;
 
-//------------------------------------------------------------------------------
-
 // internal helpers to read values from a devices registry area
 
-function TJvHidPnPInfo.GetRegistryPropertyString(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): string;
+function TJvHidPnPInfo.GetRegistryPropertyString(PnPHandle: HDEVINFO;
+  const DevData: TSPDevInfoData; Prop: DWORD): string;
 var
   BytesReturned: DWORD;
-  RegDataType:   DWORD;
-  Buffer:        array [0..256] of Char;
+  RegDataType: DWORD;
+  Buffer: array [0..256] of Char;
 begin
   BytesReturned := 0;
-  RegDataType   := 0;
-  Buffer[0]     := #0;
+  RegDataType := 0;
+  Buffer[0] := #0;
   SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
     RegDataType, PBYTE(@Buffer[0]), SizeOf(Buffer), BytesReturned);
   Result := Buffer;
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidPnPInfo.GetRegistryPropertyStringList(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): TStringList;
+function TJvHidPnPInfo.GetRegistryPropertyStringList(PnPHandle: HDEVINFO;
+  const DevData: TSPDevInfoData; Prop: DWORD): TStringList;
 var
   BytesReturned: DWORD;
   RegDataType: DWORD;
-  Buffer: array[0..16383] of Char;
+  Buffer: array [0..16383] of Char;
   P: PChar;
 begin
   BytesReturned := 0;
-  RegDataType   := 0;
-  Buffer[0]     := #0;
+  RegDataType := 0;
+  Buffer[0] := #0;
   SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
     RegDataType, PBYTE(@Buffer[0]), SizeOf(Buffer), BytesReturned);
   Result := TStringList.Create;
@@ -699,33 +668,31 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidPnPInfo.GetRegistryPropertyDWord(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): DWORD;
+function TJvHidPnPInfo.GetRegistryPropertyDWord(PnPHandle: HDEVINFO;
+  const DevData: TSPDevInfoData; Prop: DWORD): DWORD;
 var
   BytesReturned: DWORD;
-  RegDataType:   DWORD;
+  RegDataType: DWORD;
 begin
   BytesReturned := 0;
-  RegDataType   := 0;
-  Result        := 0;
+  RegDataType := 0;
+  Result := 0;
   SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
     RegDataType, PBYTE(@Result), SizeOf(Result), BytesReturned);
 end;
 
-//== TJvHidDevice ==============================================================
+//=== { TJvHidDevice } =======================================================
 
-// dummy constructor to catch invalid Creates
+// dummy constructor to catch invalid Create calls
 
 constructor TJvHidDevice.Create;
 begin
-  FHidFileHandle      := INVALID_HANDLE_VALUE;
-  FHidOverlappedRead  := INVALID_HANDLE_VALUE;
+  inherited Create;
+  FHidFileHandle := INVALID_HANDLE_VALUE;
+  FHidOverlappedRead := INVALID_HANDLE_VALUE;
   FHidOverlappedWrite := INVALID_HANDLE_VALUE;
   raise EControllerError.CreateRes(@RsEDirectHidDeviceCreationNotAllowed);
 end;
-
-//------------------------------------------------------------------------------
 
 // create and fill in a HidDevice object
 // the constructor is only accessible from TJvHidController
@@ -738,33 +705,33 @@ begin
   inherited Create;
 
   // initialize private data
-  FPnPInfo              := APnPInfo;
-  FMyController         := Controller;
-  FIsPluggedIn          := True;
-  FIsCheckedOut         := False;
-  FIsEnumerated         := False;
-  FHidOverlappedRead    := INVALID_HANDLE_VALUE;
-  FHidOverlappedWrite   := INVALID_HANDLE_VALUE;
-  FVendorName           := '';
-  FProductName          := '';
-  FPreparsedData        := nil;
+  FPnPInfo := APnPInfo;
+  FMyController := Controller;
+  FIsPluggedIn := True;
+  FIsCheckedOut := False;
+  FIsEnumerated := False;
+  FHidOverlappedRead := INVALID_HANDLE_VALUE;
+  FHidOverlappedWrite := INVALID_HANDLE_VALUE;
+  FVendorName := '';
+  FProductName := '';
+  FPreparsedData := nil;
   SetLength(FPhysicalDescriptor, 0);
-  FSerialNumber         := '';
-  FLanguageStrings      := TStringList.Create;
-  FNumInputBuffers      := 0;
+  FSerialNumber := '';
+  FLanguageStrings := TStringList.Create;
+  FNumInputBuffers := 0;
   FNumOverlappedBuffers := 0;
   SetLength(FLinkCollection, 0);
-  FMaxDataListLength    := 0;
-  FMaxUsageListLength   := 0;
-  FMaxButtonListLength  := 0;
-  FReportTypeParam      := HIDP_Input;
-  FThreadSleepTime      := 100;
-  FUsagePageParam       := 0;
-  FLinkCollectionParam  := 0;
-  FUsageParam           := 0;
-  FDataThread           := nil;
-  OnData                := Controller.OnDeviceData;
-  OnUnplug              := Controller.OnDeviceUnplug;
+  FMaxDataListLength := 0;
+  FMaxUsageListLength := 0;
+  FMaxButtonListLength := 0;
+  FReportTypeParam := HIDP_Input;
+  FThreadSleepTime := 100;
+  FUsagePageParam := 0;
+  FLinkCollectionParam := 0;
+  FUsageParam := 0;
+  FDataThread := nil;
+  OnData := Controller.OnDeviceData;
+  OnUnplug := Controller.OnDeviceUnplug;
 
   FHidFileHandle := CreateFile(PChar(PnPInfo.DevicePath), GENERIC_READ or GENERIC_WRITE,
     FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
@@ -785,11 +752,9 @@ begin
   CloseFile;
 end;
 
-//------------------------------------------------------------------------------
-
 // If a TJvHidDevice is destroyed the TJvHidController has to be informed.
 // If the device is plugged in this TJvHidDevice instance is destroyed,
-// but another instance is created in the controller list
+// but another instance is created in the controller list to replace it.
 
 destructor TJvHidDevice.Destroy;
 var
@@ -799,10 +764,10 @@ var
   Dev: TJvHidDevice;
 begin
   // if we need to clone the object
-  TmpOnData   := OnData;
+  TmpOnData := OnData;
   TmpOnUnplug := OnUnplug;
   // to prevent strange problems
-  OnData   := nil;
+  OnData := nil;
   OnUnplug := nil;
   // free the data which needs special handling
   CloseFile;
@@ -826,8 +791,8 @@ begin
           begin
             Dev := TJvHidDevice.CtlCreate(FPnPInfo, FMyController);
             // make it a complete clone
-            Dev.OnData          := TmpOnData;
-            Dev.OnUnplug        := TmpOnUnplug;
+            Dev.OnData := TmpOnData;
+            Dev.OnUnplug := TmpOnUnplug;
             Dev.ThreadSleepTime := ThreadSleepTime;
             FList.Items[I] := Dev;
             // the FPnPInfo has been handed over to the new object
@@ -851,16 +816,12 @@ begin
   inherited Destroy;
 end;
 
-//------------------------------------------------------------------------------
-
 // if check changes change check only here
 
 function TJvHidDevice.IsAccessible: Boolean;
 begin
   Result := IsPluggedIn and (IsCheckedOut or FIsEnumerated);
 end;
-
-//------------------------------------------------------------------------------
 
 // open the device "file" (for the other methods)
 
@@ -886,8 +847,6 @@ begin
     end;
   Result := HidFileHandle <> INVALID_HANDLE_VALUE;
 end;
-
-//------------------------------------------------------------------------------
 
 // open second device "file" for ReadFileEx and WriteFileEx
 
@@ -920,8 +879,6 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
-
 // implement OnUnplug event
 
 procedure TJvHidDevice.DoUnplug;
@@ -937,16 +894,12 @@ begin
   OnUnplug := nil;
 end;
 
-//------------------------------------------------------------------------------
-
 // implementing indexed properties read
 
 function TJvHidDevice.GetDeviceStringAnsi(Idx: Byte): string;
 begin
   Result := WideCharToString(PWideChar(GetDeviceStringUnicode(Idx)));
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.GetDeviceStringUnicode(Idx: Byte): WideString;
 var
@@ -958,8 +911,6 @@ begin
       if HidD_GetIndexedString(HidFileHandle, Idx, Buffer, SizeOf(Buffer)) then
         Result := Buffer;
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.GetLinkCollectionNode(Idx: WORD): THIDPLinkCollectionNode;
 var
@@ -976,8 +927,6 @@ begin
     Result := FLinkCollection[Idx];
 end;
 
-//------------------------------------------------------------------------------
-
 // implementing properties write
 
 procedure TJvHidDevice.SetNumInputBuffers(const Num: Integer);
@@ -989,8 +938,6 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TJvHidDevice.SetNumOverlappedBuffers(const Num: Integer);
 begin
   if (Num <> FNumOverlappedBuffers) and OpenFileEx(omhRead) then
@@ -1000,29 +947,23 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 // internal helper for the following functions
 
 procedure TJvHidDevice.GetMax;
 begin
   if IsAccessible then
   begin
-    FMaxDataListLength   := HidP_MaxDataListLength  (ReportTypeParam, PreparsedData);
-    FMaxUsageListLength  := HidP_MaxUsageListLength (ReportTypeParam, UsagePageParam, PreparsedData);
+    FMaxDataListLength := HidP_MaxDataListLength(ReportTypeParam, PreparsedData);
+    FMaxUsageListLength := HidP_MaxUsageListLength(ReportTypeParam, UsagePageParam, PreparsedData);
     FMaxButtonListLength := HidP_MaxButtonListLength(ReportTypeParam, UsagePageParam, PreparsedData);
   end;
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TJvHidDevice.SetReportTypeParam(const ReportType: THIDPReportType);
 begin
   FReportTypeParam := ReportType;
   GetMax;
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TJvHidDevice.SetThreadSleepTime(const SleepTime: Integer);
 begin
@@ -1031,26 +972,20 @@ begin
     FThreadSleepTime := SleepTime;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TJvHidDevice.SetUsagePageParam(const UsagePage: TUsage);
 begin
   FUsagePageParam := UsagePage;
   GetMax;
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDevice.GetConfiguration: THIDDConfiguration;
 begin
-  Result.cookie         := nil;
-  Result.size           := 0;
+  Result.cookie := nil;
+  Result.size := 0;
   Result.RingBufferSize := 0;
   if OpenFile then
     HidD_GetConfiguration(HidFileHandle, Result, SizeOf(THIDDConfiguration));
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.GetPreparsedData: PHIDPPreparsedData;
 begin
@@ -1063,15 +998,11 @@ begin
   Result := FPreparsedData;
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDevice.GetCaps: THIDPCaps;
 begin
   FillChar(Result, SizeOf(THIDPCaps), #0);
   HidP_GetCaps(PreparsedData, Result);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.GetVendorName: WideString;
 var
@@ -1088,8 +1019,6 @@ begin
   Result := FVendorName;
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDevice.GetProductName: WideString;
 var
   Buffer: array [0..253] of WideChar;
@@ -1105,13 +1034,11 @@ begin
   Result := FProductName;
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDevice.GetSerialNumber: WideString;
 var
   I: Integer;
   Len: Integer;
-  IDs:    array [0..253] of WORD;
+  IDs: array [0..253] of WORD;
   Buffer: array [0..253] of WideChar;
 begin
   if FSerialNumber = '' then
@@ -1130,7 +1057,7 @@ begin
             if IDs[I] = 0 then
               Len := I
             else
-              Len := I+1;
+              Len := I + 1;
             Break;
           end;
         // compensate for buggy function
@@ -1146,8 +1073,6 @@ begin
   Result := FSerialNumber;
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDevice.GetPhysicalDescriptor: TJvPhysicalDescriptor;
 var
   I: Integer;
@@ -1157,7 +1082,7 @@ begin
     begin
       I := 0;
       SetLength(FPhysicalDescriptor, 2048);
-      while not HidD_GetPhysicalDescriptor(HidFileHandle, FPhysicalDescriptor[0], I*SizeOf(WORD)) do
+      while not HidD_GetPhysicalDescriptor(HidFileHandle, FPhysicalDescriptor[0], I * SizeOf(WORD)) do
       begin
         Inc(I);
         if (I > 2048) or (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
@@ -1172,13 +1097,11 @@ begin
   Result := FPhysicalDescriptor;
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDevice.GetLanguageStrings: TStrings;
 var
-  I:    Integer;
-  Len:  Integer;
-  IDs:  array [0..253] of WORD;
+  I: Integer;
+  Len: Integer;
+  IDs: array [0..253] of WORD;
   Name: array [0..255] of Char;
 begin
   if FLanguageStrings.Count = 0 then
@@ -1194,7 +1117,7 @@ begin
             if IDs[I] = 0 then
               Len := I
             else
-              Len := I+1;
+              Len := I + 1;
             Break;
           end;
       // transform id into localized language name
@@ -1211,8 +1134,6 @@ begin
   Result := FLanguageStrings;
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDevice.GetOverlappedReadResult: DWORD;
 begin
   Result := 0;
@@ -1220,8 +1141,6 @@ begin
     if not GetOverlappedResult(HidOverlappedRead, FOvlRead, Result, False) then
       Result := 0;
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.GetOverlappedWriteResult: DWORD;
 begin
@@ -1231,19 +1150,15 @@ begin
       Result := 0;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TJvHidDevice.SetConfiguration(const Config: THIDDConfiguration);
 begin
   if OpenFile then
     HidD_SetConfiguration(HidFileHandle, Config, SizeOf(THIDDConfiguration));
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TJvHidDevice.SetDataEvent(const DataEvent: TJvHidDataEvent);
 begin
-  // this assignment is a bit tricky because a thread may running
+  // this assignment is a bit tricky because a thread may be running
   // kill the thread with the old event still in effect
   if not Assigned(DataEvent) then
     StopThread;
@@ -1251,8 +1166,6 @@ begin
   FData := DataEvent;
   StartThread;
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TJvHidDevice.StartThread;
 begin
@@ -1265,8 +1178,6 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TJvHidDevice.StopThread;
 begin
   if Assigned(FDataThread) then
@@ -1278,8 +1189,7 @@ begin
   end;
 end;
 
-//-- TJvHidDevice methods ------------------------------------------------------
-
+// TJvHidDevice methods:
 // generally the parameter count of the methods is reduced with the Param properties
 // first assign the Param properties the desired value then call a method
 // normally you will address the same Usage, UsagePage, ReportType or LinkCollection
@@ -1321,8 +1231,6 @@ begin
     Result := CallCancelIO(HidOverlappedWrite);
 end;
 
-//------------------------------------------------------------------------------
-
 // close the device "file"
 // if you want to open the file directly close this
 // to get undisturbed access
@@ -1332,10 +1240,8 @@ begin
   if HidFileHandle <> INVALID_HANDLE_VALUE then
     CloseHandle(HidFileHandle);
   FNumInputBuffers := 0;
-  FHidFileHandle   := INVALID_HANDLE_VALUE;
+  FHidFileHandle := INVALID_HANDLE_VALUE;
 end;
-
-//------------------------------------------------------------------------------
 
 // same for the other device "file"
 
@@ -1356,8 +1262,6 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 // all the methods which directly map to a HID-function
 
 function TJvHidDevice.FlushQueue: Boolean;
@@ -1367,16 +1271,12 @@ begin
     Result := HidD_FlushQueue(HidFileHandle);
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDevice.GetFeature(var Report; const Size: Integer): Boolean;
 begin
   Result := False;
   if OpenFile then
     Result := HidD_GetFeature(HidFileHandle, Report, Size);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.SetFeature(var Report; const Size: Integer): Boolean;
 begin
@@ -1385,203 +1285,186 @@ begin
     Result := HidD_SetFeature(HidFileHandle, Report, Size);
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDevice.GetSpecificButtonCaps(ButtonCaps: PHIDPButtonCaps; var Count: WORD): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_GetSpecificButtonCaps(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageParam, ButtonCaps, Count, PreparsedData);
+    Result := HidP_GetSpecificButtonCaps(ReportTypeParam, UsagePageParam,
+      LinkCollectionParam, UsageParam, ButtonCaps, Count, PreparsedData);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.GetButtonCaps(ButtonCaps: PHIDPButtonCaps; var Count: WORD): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
     Result := HidP_GetButtonCaps_(ReportTypeParam, ButtonCaps, Count, PreparsedData);
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDevice.GetSpecificValueCaps(ValueCaps: PHIDPValueCaps; var Count: WORD): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_GetSpecificValueCaps(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageParam, ValueCaps, Count, PreparsedData);
+    Result := HidP_GetSpecificValueCaps(ReportTypeParam, UsagePageParam,
+      LinkCollectionParam, UsageParam, ValueCaps, Count, PreparsedData);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.GetValueCaps(ValueCaps: PHIDPValueCaps; var Count: WORD): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
     Result := HidP_GetValueCaps_(ReportTypeParam, ValueCaps, Count, PreparsedData);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.GetData(DataList: PHIDPData; var DataLength: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.GetData(DataList: PHIDPData; var DataLength: ULONG;
+  var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_GetData(ReportTypeParam, DataList, DataLength, PreparsedData, Report, ReportLength);
+    Result := HidP_GetData(ReportTypeParam, DataList, DataLength, PreparsedData,
+      Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.SetData(DataList: PHIDPData; var DataLength: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.SetData(DataList: PHIDPData; var DataLength: ULONG;
+  var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_SetData(ReportTypeParam, DataList, DataLength, PreparsedData, Report, ReportLength);
+    Result := HidP_SetData(ReportTypeParam, DataList, DataLength, PreparsedData,
+      Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.GetUsages(UsageList: PUsage; var UsageLength: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.GetUsages(UsageList: PUsage; var UsageLength: ULONG;
+  var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_GetUsages(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageList, UsageLength, PreparsedData, Report, ReportLength);
+    Result := HidP_GetUsages(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageList, UsageLength, PreparsedData, Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.GetButtons(UsageList: PUsage; var UsageLength: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.GetButtons(UsageList: PUsage; var UsageLength: ULONG;
+  var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_GetButtons(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageList, UsageLength, PreparsedData, Report, ReportLength);
+    Result := HidP_GetButtons(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageList, UsageLength, PreparsedData, Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.GetUsagesEx(UsageList: PUsageAndPage; var UsageLength: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.GetUsagesEx(UsageList: PUsageAndPage; var UsageLength: ULONG;
+  var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_GetUsagesEx(ReportTypeParam, LinkCollectionParam, UsageList, UsageLength, PreparsedData, Report, ReportLength);
+    Result := HidP_GetUsagesEx(ReportTypeParam, LinkCollectionParam, UsageList,
+      UsageLength, PreparsedData, Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.GetButtonsEx(UsageList: PUsageAndPage; var UsageLength: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.GetButtonsEx(UsageList: PUsageAndPage; var UsageLength: ULONG;
+  var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_GetButtonsEx(ReportTypeParam, LinkCollectionParam, UsageList, UsageLength, PreparsedData, Report, ReportLength);
+    Result := HidP_GetButtonsEx(ReportTypeParam, LinkCollectionParam, UsageList,
+      UsageLength, PreparsedData, Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.SetUsages(UsageList: PUsage; var UsageLength: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.SetUsages(UsageList: PUsage; var UsageLength: ULONG;
+  var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_SetUsages(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageList, UsageLength, PreparsedData, Report, ReportLength);
+    Result := HidP_SetUsages(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageList, UsageLength, PreparsedData, Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.SetButtons(UsageList: PUsage; var UsageLength: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.SetButtons(UsageList: PUsage; var UsageLength: ULONG;
+  var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_SetButtons(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageList, UsageLength, PreparsedData, Report, ReportLength);
+    Result := HidP_SetButtons(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageList, UsageLength, PreparsedData, Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.UnsetUsages(UsageList: PUsage; var UsageLength: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.UnsetUsages(UsageList: PUsage; var UsageLength: ULONG;
+  var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_UnsetUsages(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageList, UsageLength, PreparsedData, Report, ReportLength);
+    Result := HidP_UnsetUsages(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageList, UsageLength, PreparsedData, Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.UnsetButtons(UsageList: PUsage; var UsageLength: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.UnsetButtons(UsageList: PUsage; var UsageLength: ULONG;
+  var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_UnsetButtons(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageList, UsageLength, PreparsedData, Report, ReportLength);
+    Result := HidP_UnsetButtons(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageList, UsageLength, PreparsedData, Report, ReportLength);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.GetUsageValue(var UsageValue: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_GetUsageValue(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageParam,
-                                 UsageValue, PreparsedData, Report, ReportLength);
+    Result := HidP_GetUsageValue(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageParam, UsageValue, PreparsedData, Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.GetScaledUsageValue(var UsageValue: Integer; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.GetScaledUsageValue(var UsageValue: Integer;
+  var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_GetScaledUsageValue(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageParam,
-                                       UsageValue, PreparsedData, Report, ReportLength);
+    Result := HidP_GetScaledUsageValue(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageParam, UsageValue, PreparsedData, Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.GetUsageValueArray(UsageValue: PChar; UsageValueByteLength: WORD; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.GetUsageValueArray(UsageValue: PChar;
+  UsageValueByteLength: WORD; var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_GetUsageValueArray(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageParam,
-                                      UsageValue, UsageValueByteLength, PreparsedData, Report, ReportLength);
+    Result := HidP_GetUsageValueArray(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageParam, UsageValue, UsageValueByteLength, PreparsedData, Report, ReportLength);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.SetUsageValue(UsageValue: ULONG; var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_SetUsageValue(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageParam,
-                                 UsageValue, PreparsedData, Report, ReportLength);
+    Result := HidP_SetUsageValue(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageParam, UsageValue, PreparsedData, Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.SetScaledUsageValue(UsageValue: Integer; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.SetScaledUsageValue(UsageValue: Integer; var Report;
+  ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_SetScaledUsageValue(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageParam,
-                                       UsageValue, PreparsedData, Report, ReportLength);
+    Result := HidP_SetScaledUsageValue(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageParam, UsageValue, PreparsedData, Report, ReportLength);
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.SetUsageValueArray(UsageValue: PChar; UsageValueByteLength: WORD; var Report; ReportLength: ULONG): NTSTATUS;
+function TJvHidDevice.SetUsageValueArray(UsageValue: PChar;
+  UsageValueByteLength: WORD; var Report; ReportLength: ULONG): NTSTATUS;
 begin
-  Result := HIDP_STATUS_NULL;  // for not plugged in
+  Result := HIDP_STATUS_NULL; // for not plugged in
   if IsAccessible then
-    Result := HidP_SetUsageValueArray(ReportTypeParam, UsagePageParam, LinkCollectionParam, UsageParam,
-                                      UsageValue, UsageValueByteLength, PreparsedData, Report, ReportLength);
+    Result := HidP_SetUsageValueArray(ReportTypeParam, UsagePageParam, LinkCollectionParam,
+      UsageParam, UsageValue, UsageValueByteLength, PreparsedData, Report, ReportLength);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.DeviceIoControl(IoControlCode: DWORD; InBuffer: Pointer; InSize: DWORD;
   OutBuffer: Pointer; OutSize: DWORD; var BytesReturned: DWORD): Boolean;
 begin
   Result := False;
   if OpenFile then
-    Result := Windows.DeviceIoControl(HidFileHandle, IoControlCode, InBuffer, InSize, OutBuffer, OutSize, BytesReturned, nil);
+    Result := Windows.DeviceIoControl(HidFileHandle, IoControlCode, InBuffer, InSize,
+      OutBuffer, OutSize, BytesReturned, nil);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDevice.ReadFile(var Report; ToRead: DWORD; var BytesRead: DWORD): Boolean;
 begin
@@ -1590,8 +1473,6 @@ begin
     Result := Windows.ReadFile(HidFileHandle, Report, ToRead, BytesRead, nil);
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDevice.WriteFile(var Report; ToWrite: DWORD; var BytesWritten: DWORD): Boolean;
 begin
   Result := False;
@@ -1599,14 +1480,13 @@ begin
     Result := Windows.WriteFile(HidFileHandle, Report, ToWrite, BytesWritten, nil);
 end;
 
-//------------------------------------------------------------------------------
-
 // the TOverlapped structure is not needed externally
 // the hEvent element is used to transport the device object
 // to the callback function
 // Better not implement a Delphi event with that
 
-function TJvHidDevice.ReadFileEx(var Report; ToRead: DWORD; CallBack: TPROverlappedCompletionRoutine): Boolean;
+function TJvHidDevice.ReadFileEx(var Report; ToRead: DWORD;
+  CallBack: TPROverlappedCompletionRoutine): Boolean;
 begin
   Result := False;
   if OpenFileEx(omhRead) then
@@ -1617,9 +1497,8 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
-function TJvHidDevice.WriteFileEx(var Report; ToWrite: DWORD; CallBack: TPROverlappedCompletionRoutine): Boolean;
+function TJvHidDevice.WriteFileEx(var Report; ToWrite: DWORD;
+  CallBack: TPROverlappedCompletionRoutine): Boolean;
 begin
   Result := False;
   if OpenFileEx(omhWrite) then
@@ -1630,90 +1509,28 @@ begin
   end;
 end;
 
-//== TJvHidDeviceController ====================================================
-
-// internal worker function to find all Hid devices and create their objects
-
-procedure TJvHidDeviceController.FillInList(var List: TList);
-var
-  PnPHandle: HDEVINFO;
-  DevData: TSPDevInfoData;
-  DeviceInterfaceData: TSPDeviceInterfaceData;
-  FunctionClassDeviceData: PSPDeviceInterfaceDetailData;
-  Success: LongBool;
-  Devn: Integer;
-  BytesReturned: DWORD;
-  HidDev: TJvHidDevice;
-  PnPInfo: TJvHidPnPInfo;
-begin
-  // create list
-  List := TList.Create;
-
-  if not IsHidLoaded then
-    Exit;
-
-  // Get a handle for the Plug and Play node and request currently active HID devices
-  PnPHandle := SetupDiGetClassDevs(@FHidGuid, nil, 0, DIGCF_PRESENT or DIGCF_DEVICEINTERFACE);
-  if PnPHandle = Pointer(INVALID_HANDLE_VALUE) then
-    Exit;
-  Devn := 0;
-  repeat
-    DeviceInterfaceData.cbSize := SizeOf(TSPDeviceInterfaceData);
-    // Is there a HID device at this table entry?
-    Success := SetupDiEnumDeviceInterfaces(PnPHandle, nil, FHidGuid, Devn, DeviceInterfaceData);
-    if Success then
-    begin
-      DevData.cbSize := SizeOf(DevData);
-      BytesReturned  := 0;
-      SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData, nil, 0, BytesReturned, @DevData);
-      if (BytesReturned <> 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
-      begin
-        FunctionClassDeviceData := AllocMem(BytesReturned);
-        FunctionClassDeviceData.cbSize := 5;
-        if SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData, FunctionClassDeviceData, BytesReturned, BytesReturned, @DevData) then
-        begin
-          // fill in PnPInfo of device
-          PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, PChar(@FunctionClassDeviceData.DevicePath));
-          // create HID device object and add it to the device list
-          try
-            HidDev := TJvHidDevice.CtlCreate(PnPInfo, Self);
-            List.Add(HidDev);
-          except
-            // ignore device if unreadable
-          end;
-          Inc(Devn);
-        end;
-        FreeMem(FunctionClassDeviceData);
-      end;
-    end;
-  until not Success;
-  SetupDiDestroyDeviceInfoList(PnPHandle);
-end;
-
-//------------------------------------------------------------------------------
-
-// the controller fills its list on creation and connects the event pipe
+//=== { TJvHidDeviceController } =============================================
 
 constructor TJvHidDeviceController.Create(AOwner: TComponent);
 const
   cHidGuid: TGUID = '{4d1e55b2-f16f-11cf-88cb-001111000030}';
 begin
   inherited Create(AOwner);
-  FDeviceChangeEvent    := nil;
-  FEnumerateEvent       := nil;
-  FDevUnplugEvent       := nil;
-  FList                 := nil;
-  FDeviceChangeFired    := False;
-  FNumCheckedInDevices  := 0;
+  FDeviceChangeEvent := nil;
+  FEnumerateEvent := nil;
+  FDevUnplugEvent := nil;
+  FNumCheckedInDevices := 0;
   FNumCheckedOutDevices := 0;
-  FNumUnpluggedDevices  := 0;
-  FDevThreadSleepTime   := 100;
-  FVersion              := cHidControllerClassVersion;
+  FNumUnpluggedDevices := 0;
+  FDevThreadSleepTime := 100;
+  FVersion := cHidControllerClassVersion;
 
   // this is just to remind you that one controller is sufficient
   Inc(GlobalInstanceCount);
   if GlobalInstanceCount > 1 then
     raise EControllerError.CreateRes(@RsEOnlyOneControllerPerProgram);
+
+  FList := TList.Create;
 
   if LoadSetupApi then
     LoadHid;
@@ -1721,12 +1538,60 @@ begin
     HidD_GetHidGuid(FHidGuid)
   else
     FHidGuid := cHidGuid;
+end;
 
-  FillInList(FList);
-  FNumCheckedInDevices := FList.Count;
+// unplug or kill all controlled TJvHidDevices on controller destruction
+
+destructor TJvHidDeviceController.Destroy;
+var
+  I: Integer;
+  HidDev: TJvHidDevice;
+begin
+  Dec(GlobalInstanceCount);
+  // this only triggers if a second instance throws an exception
+  if GlobalInstanceCount > 0 then
+    Exit;
+  // to prevent strange problems
+  FDeviceChangeEvent := nil;
+  FDevUnplugEvent := nil;
+  OnEnumerate := nil;
+  // unhook event pipe
   if IsHidLoaded then
+    Application.UnhookMainWindow(EventPipe);
+
+  for I := 0 to FList.Count - 1 do
+  begin
+    HidDev := FList.Items[I];
+    with HidDev do
+    begin
+      // set to uncontrolled
+      FMyController := nil;
+      if IsCheckedOut then
+        DoUnplug // pull the plug for checked out TJvHidDevices
+      else
+        Free; // kill TJvHidDevices which are not checked out
+    end;
+  end;
+  FList.Free;
+
+  if IsHidLoaded then
+    UnloadSetupApi;
+  UnloadHid;
+
+  inherited Destroy;
+end;
+
+procedure TJvHidDeviceController.Loaded;
+begin
+  inherited Loaded;
+  if IsHidLoaded then
+  begin
     // only hook messages if there is a HID DLL
     Application.HookMainWindow(EventPipe);
+    // this one executes after Create completed which ensures
+    // that all global elements like Application.MainForm are initialized
+    PostMessage(Application.Handle, WM_DEVICECHANGE, DBT_DEVNODES_CHANGED, 0);
+  end;
 end;
 
 procedure TJvHidDeviceController.DoArrival(HidDev: TJvHidDevice);
@@ -1749,8 +1614,6 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 // implement OnDeviceChange event
 
 procedure TJvHidDeviceController.DoDeviceChange;
@@ -1758,51 +1621,6 @@ begin
   if Assigned(FDeviceChangeEvent) then
     FDeviceChangeEvent(Self);
 end;
-
-//------------------------------------------------------------------------------
-
-// unplug or kill all controlled TJvHidDevices on controller destruction
-
-destructor TJvHidDeviceController.Destroy;
-var
-  I: Integer;
-  HidDev: TJvHidDevice;
-begin
-  Dec(GlobalInstanceCount);
-  // this only triggers if a second instance throws an exception
-  if GlobalInstanceCount > 0 then
-    Exit;
-  // to prevent strange problems
-  FDeviceChangeEvent := nil;
-  FDevUnplugEvent    := nil;
-  OnEnumerate        := nil;
-  // unhook event pipe
-  if IsHidLoaded then
-    Application.UnhookMainWindow(EventPipe);
-
-  if Assigned(FList) then
-    for I := 0 to FList.Count - 1 do
-    begin
-      HidDev := FList.Items[I];
-      with HidDev do
-      begin
-        // set to uncontrolled
-        FMyController := nil;
-        if IsCheckedOut then
-          DoUnplug // pull the plug for checked out TJvHidDevices
-        else
-          Free;    // kill TJvHidDevices which are not checked out
-      end;
-    end;
-  FList.Free;
-
-  UnloadHid;
-  UnloadSetupApi;
-
-  inherited Destroy;
-end;
-
-//------------------------------------------------------------------------------
 
 // gets all the Windows events/messages directly
 
@@ -1814,29 +1632,86 @@ begin
     DeviceChange;
 end;
 
-//------------------------------------------------------------------------------
-
 // implements OnDeviceChange event
 // it is published to allow calling at design time
 
 procedure TJvHidDeviceController.DeviceChange;
 var
-  I:       Integer;
-  J:       Integer;
-  NewList: TList;
-  HidDev:  TJvHidDevice;
+  I: Integer;
+  J: Integer;
+  HidDev: TJvHidDevice;
   Changed: Boolean;
+  NewList: TList;
+
+  // internal worker function to find all HID devices and create their objects
+
+  procedure FillInList;
+  var
+    PnPHandle: HDEVINFO;
+    DevData: TSPDevInfoData;
+    DeviceInterfaceData: TSPDeviceInterfaceData;
+    FunctionClassDeviceData: PSPDeviceInterfaceDetailData;
+    Success: LongBool;
+    Devn: Integer;
+    BytesReturned: DWORD;
+    HidDev: TJvHidDevice;
+    PnPInfo: TJvHidPnPInfo;
+  begin
+    if not IsHidLoaded then
+      Exit;
+
+    // Get a handle for the Plug and Play node and request currently active HID devices
+    PnPHandle := SetupDiGetClassDevs(@FHidGuid, nil, 0, DIGCF_PRESENT or DIGCF_DEVICEINTERFACE);
+    if PnPHandle = Pointer(INVALID_HANDLE_VALUE) then
+      Exit;
+    Devn := 0;
+    repeat
+      DeviceInterfaceData.cbSize := SizeOf(TSPDeviceInterfaceData);
+      // Is there a HID device at this table entry?
+      Success := SetupDiEnumDeviceInterfaces(PnPHandle, nil, FHidGuid, Devn, DeviceInterfaceData);
+      if Success then
+      begin
+        DevData.cbSize := SizeOf(DevData);
+        BytesReturned := 0;
+        SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData, nil, 0, BytesReturned, @DevData);
+        if (BytesReturned <> 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
+        begin
+          FunctionClassDeviceData := AllocMem(BytesReturned);
+          FunctionClassDeviceData.cbSize := 5;
+          if SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData,
+            FunctionClassDeviceData, BytesReturned, BytesReturned, @DevData) then
+          begin
+            // fill in PnPInfo of device
+            PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, PChar(@FunctionClassDeviceData.DevicePath));
+            // create HID device object and add it to the device list
+            try
+              HidDev := TJvHidDevice.CtlCreate(PnPInfo, Self);
+              NewList.Add(HidDev);
+            except
+              // ignore device if unreadable
+            end;
+            Inc(Devn);
+          end;
+          FreeMem(FunctionClassDeviceData);
+        end;
+      end;
+    until not Success;
+    SetupDiDestroyDeviceInfoList(PnPHandle);
+  end;
+
 begin
   Changed := False;
   // get new device list
-  FillInList(NewList);
+  NewList := TList.Create;
+  FillInList;
 
   // unplug devices in FList which are not in NewList
   for I := FList.Count - 1 downto 0 do
   begin
     HidDev := FList.Items[I];
     for J := NewList.Count - 1 downto 0 do
-      if (TJvHidDevice(NewList.Items[J]).PnPInfo.DeviceID = HidDev.PnPInfo.DeviceID) and HidDev.IsPluggedIn then
+      if (TJvHidDevice(NewList.Items[J]).PnPInfo.DeviceID = HidDev.PnPInfo.DeviceID) and
+        HidDev.IsPluggedIn then
       begin
         HidDev := nil;
         Break;
@@ -1855,7 +1730,8 @@ begin
   // delete devices from NewList which are in FList
   for I := 0 to NewList.Count - 1 do
     for J := 0 to FList.Count - 1 do
-      if (TJvHidDevice(NewList[I]).PnPInfo.DeviceID = TJvHidDevice(FList[J]).PnPInfo.DeviceID) and TJvHidDevice(FList[J]).IsPluggedIn then
+      if (TJvHidDevice(NewList[I]).PnPInfo.DeviceID = TJvHidDevice(FList[J]).PnPInfo.DeviceID) and
+        TJvHidDevice(FList[J]).IsPluggedIn then
       begin
         TJvHidDevice(NewList[I]).FMyController := nil; // prevent Free/Destroy from accessing this controller
         TJvHidDevice(NewList[I]).Free;
@@ -1876,23 +1752,21 @@ begin
   NewList.Free;
 
   // recount the devices
-  FNumCheckedInDevices  := 0;
+  FNumCheckedInDevices := 0;
   FNumCheckedOutDevices := 0;
-  FNumUnpluggedDevices  := 0;
+  FNumUnpluggedDevices := 0;
   for I := 0 to FList.Count - 1 do
   begin
     HidDev := FList.Items[I];
-    Inc(FNumCheckedInDevices,  Ord(not HidDev.IsCheckedOut));
+    Inc(FNumCheckedInDevices, Ord(not HidDev.IsCheckedOut));
     Inc(FNumCheckedOutDevices, Ord(HidDev.IsCheckedOut));
-    Inc(FNumUnpluggedDevices,  Ord(not HidDev.IsPluggedIn));
+    Inc(FNumUnpluggedDevices, Ord(not HidDev.IsPluggedIn));
   end;
   FNumCheckedOutDevices := FNumCheckedOutDevices - FNumUnpluggedDevices;
 
-  if Changed or not FDeviceChangeFired then
+  if Changed then
     DoDeviceChange;
 end;
-
-//------------------------------------------------------------------------------
 
 class function TJvHidDeviceController.HidVersion: string;
 var
@@ -1912,21 +1786,17 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
-// assign OnDeviceChange and immediately fire if needed
+// assign OnDeviceChange and immediately fire it
 
 procedure TJvHidDeviceController.SetDeviceChangeEvent(const Notifier: TNotifyEvent);
 begin
   if @FDeviceChangeEvent <> @Notifier then
   begin
     FDeviceChangeEvent := Notifier;
-    DeviceChange;
-    FDeviceChangeFired := True;
+    if not (csLoading in ComponentState) then
+      DeviceChange;
   end;
 end;
-
-//------------------------------------------------------------------------------
 
 // implement OnEnumerate event
 
@@ -1947,8 +1817,6 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 // assign OnEnumerate event
 
 procedure TJvHidDeviceController.SetEnumerate(const Enumerator: TJvHidEnumerateEvent);
@@ -1956,13 +1824,11 @@ begin
   FEnumerateEvent := Enumerator;
 end;
 
-//------------------------------------------------------------------------------
-
 // assign DevThreadSleepTime
 
 procedure TJvHidDeviceController.SetDevThreadSleepTime(const DevTime: Integer);
 var
-  I:   Integer;
+  I: Integer;
   Dev: TJvHidDevice;
 begin
   if DevTime <> FDevThreadSleepTime then
@@ -1978,13 +1844,11 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 // assign OnDevData event
 
 procedure TJvHidDeviceController.SetDevData(const DataEvent: TJvHidDataEvent);
 var
-  I:   Integer;
+  I: Integer;
   Dev: TJvHidDevice;
 begin
   if @DataEvent <> @FDevDataEvent then
@@ -2000,13 +1864,11 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 // assign OnDevDataError event
 
 procedure TJvHidDeviceController.SetDevDataError(const DataErrorEvent: TJvHidDataErrorEvent);
 var
-  I:   Integer;
+  I: Integer;
   Dev: TJvHidDevice;
 begin
   if @DataErrorEvent <> @FDevDataErrorEvent then
@@ -2022,13 +1884,11 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 // assign OnDevUnplug event
 
 procedure TJvHidDeviceController.SetDevUnplug(const Unplugger: TJvHidUnplugEvent);
 var
-  I:   Integer;
+  I: Integer;
   Dev: TJvHidDevice;
 begin
   if @Unplugger <> @FDevUnplugEvent then
@@ -2043,8 +1903,6 @@ begin
     FDevUnplugEvent := Unplugger;
   end;
 end;
-
-//------------------------------------------------------------------------------
 
 // send an OnEnumerate event for all plugged HidDevices
 // it is explicitly allowed to check out any device in the event
@@ -2063,8 +1921,6 @@ begin
     end;
 end;
 
-//-- TJvHidDeviceController methods --------------------------------------------
-
 // internal worker function to check out a TJvHidDevice
 
 function TJvHidDeviceController.CheckThisOut(var HidDev: TJvHidDevice; Idx: Integer; Check: Boolean): Boolean;
@@ -2080,11 +1936,10 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 // method CheckOutByProductName hands out the first HidDevice with a matching ProductName
 
-function TJvHidDeviceController.CheckOutByProductName(var HidDev: TJvHidDevice; const ProductName: WideString): Boolean;
+function TJvHidDeviceController.CheckOutByProductName(var HidDev: TJvHidDevice;
+  const ProductName: WideString): Boolean;
 var
   I: Integer;
 begin
@@ -2099,11 +1954,10 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
-
 // method CheckOutByVendorName hands out the first HidDevice with a matching VendorName
 
-function TJvHidDeviceController.CheckOutByVendorName(var HidDev: TJvHidDevice; const VendorName: WideString): Boolean;
+function TJvHidDeviceController.CheckOutByVendorName(var HidDev: TJvHidDevice;
+  const VendorName: WideString): Boolean;
 var
   I: Integer;
 begin
@@ -2118,13 +1972,12 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
-
 // method CheckOutByCallback hands out the first HidDevice which is accepted by the Check function
 // only checked in devices are presented to the Check function
 // the device object is usable like during Enumerate
 
-function TJvHidDeviceController.CheckOutByCallback(var HidDev: TJvHidDevice; Check: TJvHidCheckCallback): Boolean;
+function TJvHidDeviceController.CheckOutByCallback(var HidDev: TJvHidDevice;
+  Check: TJvHidCheckCallback): Boolean;
 var
   I: Integer;
   Dev: TJvHidDevice;
@@ -2148,12 +2001,11 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 // method CheckOutByClass hands out the first HidDevice with a matching Class
 // Class comes from the registry (examples: 'Mouse', 'Keyboard')
 
-function TJvHidDeviceController.CheckOutByClass(var HidDev: TJvHidDevice; const ClassName: string): Boolean;
+function TJvHidDeviceController.CheckOutByClass(var HidDev: TJvHidDevice;
+  const ClassName: string): Boolean;
 var
   I: Integer;
 begin
@@ -2168,12 +2020,11 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
-
 // method CheckOutByID hands out the first HidDevice with a matching VendorID and ProductID
 // Pid = -1 matches all ProductIDs
 
-function TJvHidDeviceController.CheckOutByID(var HidDev: TJvHidDevice; const Vid, Pid: Integer): Boolean;
+function TJvHidDeviceController.CheckOutByID(var HidDev: TJvHidDevice;
+  const Vid, Pid: Integer): Boolean;
 var
   I: Integer;
 begin
@@ -2188,20 +2039,17 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 // method CheckOutByIndex hands out the HidDevice in the list with the named index
 // this is mainly for check out during OnEnumerate
 
-function TJvHidDeviceController.CheckOutByIndex(var HidDev: TJvHidDevice; const Idx: Integer): Boolean;
+function TJvHidDeviceController.CheckOutByIndex(var HidDev: TJvHidDevice;
+  const Idx: Integer): Boolean;
 begin
   Result := False;
   HidDev := nil;
   if (Idx >= 0) and (Idx < FList.Count) then
     Result := CheckThisOut(HidDev, Idx, True);
 end;
-
-//------------------------------------------------------------------------------
 
 // method CheckOut simply hands out the first available HidDevice in the list
 
@@ -2218,8 +2066,6 @@ begin
       Break;
   end;
 end;
-
-//------------------------------------------------------------------------------
 
 // method CheckIn hands a checked out HidDevice back in
 
@@ -2244,19 +2090,16 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 function TJvHidDeviceController.CountByClass(const ClassName: string): Integer;
 var
   I: Integer;
 begin
   Result := 0;
   for I := 0 to FList.Count - 1 do
-    if TJvHidDevice(FList[I]).IsPluggedIn and (ClassName = TJvHidDevice(FList[I]).PnPInfo.ClassDescr) then
+    if TJvHidDevice(FList[I]).IsPluggedIn and
+      (ClassName = TJvHidDevice(FList[I]).PnPInfo.ClassDescr) then
       Inc(Result);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDeviceController.CountByID(const Vid, Pid: Integer): Integer;
 var
@@ -2265,12 +2108,10 @@ begin
   Result := 0;
   for I := 0 to FList.Count - 1 do
     if TJvHidDevice(FList[I]).IsPluggedIn and
-       (Vid = TJvHidDevice(FList[I]).Attributes.VendorID) and
-       ((Pid = TJvHidDevice(FList[I]).Attributes.ProductID) or (Pid = -1)) then
+      (Vid = TJvHidDevice(FList[I]).Attributes.VendorID) and
+      ((Pid = TJvHidDevice(FList[I]).Attributes.ProductID) or (Pid = -1)) then
       Inc(Result);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDeviceController.CountByProductName(const ProductName: WideString): Integer;
 var
@@ -2278,11 +2119,10 @@ var
 begin
   Result := 0;
   for I := 0 to FList.Count - 1 do
-    if TJvHidDevice(FList[I]).IsPluggedIn and (ProductName = TJvHidDevice(FList[I]).ProductName) then
+    if TJvHidDevice(FList[I]).IsPluggedIn and
+      (ProductName = TJvHidDevice(FList[I]).ProductName) then
       Inc(Result);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDeviceController.CountByVendorName(const VendorName: WideString): Integer;
 var
@@ -2290,11 +2130,10 @@ var
 begin
   Result := 0;
   for I := 0 to FList.Count - 1 do
-    if TJvHidDevice(FList[I]).IsPluggedIn and (VendorName = TJvHidDevice(FList[I]).VendorName) then
+    if TJvHidDevice(FList[I]).IsPluggedIn and
+      (VendorName = TJvHidDevice(FList[I]).VendorName) then
       Inc(Result);
 end;
-
-//------------------------------------------------------------------------------
 
 function TJvHidDeviceController.CountByCallback(Check: TJvHidCheckCallback): Integer;
 var
@@ -2321,7 +2160,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//============================================================================
 
 // a helper function to check the return values just
 // like Win32Check
@@ -2334,16 +2173,12 @@ begin
   Result := RetVal;
 end;
 
-//------------------------------------------------------------------------------
-
 function HidCheck(const RetVal: LongBool): LongBool;
 begin
   if not RetVal then
     raise EHidClientError.CreateRes(@RsEHIDBooleanError);
   Result := RetVal;
 end;
-
-//------------------------------------------------------------------------------
 
 function HidError(const RetVal: NTSTATUS): NTSTATUS;
 var
@@ -2356,42 +2191,56 @@ begin
   Result := RetVal;
 end;
 
-//------------------------------------------------------------------------------
-
 function HidErrorString(const RetVal: NTSTATUS): string;
 begin
   Result := '';
   // only check HID errors
   if ((RetVal and NTSTATUS($00FF0000)) = HIDP_STATUS_SUCCESS) and
-     ((RetVal and NTSTATUS($C0000000)) <> 0) then
+    ((RetVal and NTSTATUS($C0000000)) <> 0) then
   begin
     case RetVal of
-      HIDP_STATUS_NULL:                    Result := RsHIDP_STATUS_NULL;
-      HIDP_STATUS_INVALID_PREPARSED_DATA:  Result := RsHIDP_STATUS_INVALID_PREPARSED_DATA;
-      HIDP_STATUS_INVALID_REPORT_TYPE:     Result := RsHIDP_STATUS_INVALID_REPORT_TYPE;
-      HIDP_STATUS_INVALID_REPORT_LENGTH:   Result := RsHIDP_STATUS_INVALID_REPORT_LENGTH;
-      HIDP_STATUS_USAGE_NOT_FOUND:         Result := RsHIDP_STATUS_USAGE_NOT_FOUND;
-      HIDP_STATUS_VALUE_OUT_OF_RANGE:      Result := RsHIDP_STATUS_VALUE_OUT_OF_RANGE;
-      HIDP_STATUS_BAD_LOG_PHY_VALUES:      Result := RsHIDP_STATUS_BAD_LOG_PHY_VALUES;
-      HIDP_STATUS_BUFFER_TOO_SMALL:        Result := RsHIDP_STATUS_BUFFER_TOO_SMALL;
-      HIDP_STATUS_INTERNAL_ERROR:          Result := RsHIDP_STATUS_INTERNAL_ERROR;
-      HIDP_STATUS_I8042_TRANS_UNKNOWN:     Result := RsHIDP_STATUS_I8042_TRANS_UNKNOWN;
-      HIDP_STATUS_INCOMPATIBLE_REPORT_ID:  Result := RsHIDP_STATUS_INCOMPATIBLE_REPORT_ID;
-      HIDP_STATUS_NOT_VALUE_ARRAY:         Result := RsHIDP_STATUS_NOT_VALUE_ARRAY;
-      HIDP_STATUS_IS_VALUE_ARRAY:          Result := RsHIDP_STATUS_IS_VALUE_ARRAY;
-      HIDP_STATUS_DATA_INDEX_NOT_FOUND:    Result := RsHIDP_STATUS_DATA_INDEX_NOT_FOUND;
-      HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE: Result := RsHIDP_STATUS_DATA_INDEX_OUT_OF_RANGE;
-      HIDP_STATUS_BUTTON_NOT_PRESSED:      Result := RsHIDP_STATUS_BUTTON_NOT_PRESSED;
-      HIDP_STATUS_REPORT_DOES_NOT_EXIST:   Result := RsHIDP_STATUS_REPORT_DOES_NOT_EXIST;
-      HIDP_STATUS_NOT_IMPLEMENTED:         Result := RsHIDP_STATUS_NOT_IMPLEMENTED;
+      HIDP_STATUS_NULL:
+        Result := RsHIDP_STATUS_NULL;
+      HIDP_STATUS_INVALID_PREPARSED_DATA:
+        Result := RsHIDP_STATUS_INVALID_PREPARSED_DATA;
+      HIDP_STATUS_INVALID_REPORT_TYPE:
+        Result := RsHIDP_STATUS_INVALID_REPORT_TYPE;
+      HIDP_STATUS_INVALID_REPORT_LENGTH:
+        Result := RsHIDP_STATUS_INVALID_REPORT_LENGTH;
+      HIDP_STATUS_USAGE_NOT_FOUND:
+        Result := RsHIDP_STATUS_USAGE_NOT_FOUND;
+      HIDP_STATUS_VALUE_OUT_OF_RANGE:
+        Result := RsHIDP_STATUS_VALUE_OUT_OF_RANGE;
+      HIDP_STATUS_BAD_LOG_PHY_VALUES:
+        Result := RsHIDP_STATUS_BAD_LOG_PHY_VALUES;
+      HIDP_STATUS_BUFFER_TOO_SMALL:
+        Result := RsHIDP_STATUS_BUFFER_TOO_SMALL;
+      HIDP_STATUS_INTERNAL_ERROR:
+        Result := RsHIDP_STATUS_INTERNAL_ERROR;
+      HIDP_STATUS_I8042_TRANS_UNKNOWN:
+        Result := RsHIDP_STATUS_I8042_TRANS_UNKNOWN;
+      HIDP_STATUS_INCOMPATIBLE_REPORT_ID:
+        Result := RsHIDP_STATUS_INCOMPATIBLE_REPORT_ID;
+      HIDP_STATUS_NOT_VALUE_ARRAY:
+        Result := RsHIDP_STATUS_NOT_VALUE_ARRAY;
+      HIDP_STATUS_IS_VALUE_ARRAY:
+        Result := RsHIDP_STATUS_IS_VALUE_ARRAY;
+      HIDP_STATUS_DATA_INDEX_NOT_FOUND:
+        Result := RsHIDP_STATUS_DATA_INDEX_NOT_FOUND;
+      HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE:
+        Result := RsHIDP_STATUS_DATA_INDEX_OUT_OF_RANGE;
+      HIDP_STATUS_BUTTON_NOT_PRESSED:
+        Result := RsHIDP_STATUS_BUTTON_NOT_PRESSED;
+      HIDP_STATUS_REPORT_DOES_NOT_EXIST:
+        Result := RsHIDP_STATUS_REPORT_DOES_NOT_EXIST;
+      HIDP_STATUS_NOT_IMPLEMENTED:
+        Result := RsHIDP_STATUS_NOT_IMPLEMENTED;
     else
       Result := Format(RsUnknownHIDFmt, [RetVal]);
     end;
     Result := RsHIDErrorPrefix + Result;
   end;
 end;
-
-//------------------------------------------------------------------------------
 
 {$IFNDEF USEJVCL}
 
@@ -2407,3 +2256,4 @@ end;
 {$ENDIF USEJVCL}
 
 end.
+
