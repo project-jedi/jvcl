@@ -142,7 +142,7 @@ implementation
 uses
   {$IFDEF VCL}
   Consts,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QConsts,
   {$ENDIF VisualCLX}

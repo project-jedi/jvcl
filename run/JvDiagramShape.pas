@@ -160,7 +160,7 @@ type
     procedure SetFont(Value: TFont);
     procedure FontChange(Sender: TObject);
   protected
-    procedure SetAutoSize(Value: Boolean);{$IFDEF VCL} override;{$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
     procedure RefreshText;
     {$IFDEF VCL}
     procedure SetParent(AParent: TWinControl); override;
@@ -2077,8 +2077,8 @@ begin
       TJvBluntSingleHeadOpenDashArrow, TJvSubCaseArrow]);
 end;
 
-class procedure TJvCustomDiagramShape.SetMultiSelected(
-  ParentControl: TWinControl; Value: Boolean);
+class procedure TJvCustomDiagramShape.SetMultiSelected(ParentControl: TWinControl;
+  Value: Boolean);
 var
   I: Integer;
 begin

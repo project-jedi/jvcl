@@ -218,7 +218,7 @@ type
     procedure MakeColorButtons;
     procedure AdjustColorButtons();
 
-    procedure SetEnabled({$IFDEF VisualCLX}const{$ENDIF}Value: Boolean); override;
+    procedure SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean); override;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -837,7 +837,7 @@ begin
 
 end;
 
-procedure TJvCustomOfficeColorPanel.SetEnabled({$IFDEF VisualCLX}const{$ENDIF}Value: Boolean);
+procedure TJvCustomOfficeColorPanel.SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean);
 var
   i: integer;
 begin

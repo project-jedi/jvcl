@@ -15,14 +15,15 @@ CopyRight (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
-Maciej Kaczkowski
+  Maciej Kaczkowski
 
 Last Modified: 2004-02-02
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-description : Ht Controls
+Description:
+  HT Controls
 
 Known Issues:
 Maciej Kaczkowski:
@@ -91,7 +92,7 @@ Maciej Kaczkowski:
   [+] Added <IND="%d"> where %d is indention from left
 
   2003-10-11
-  [*] fixed <A HREF> with alignment but work only when autosize=true
+  [*] fixed <A HREF> with alignment but work only when autosize=True
   [*] fixed probem with autosize when alignment not left
   [+] Added <A HREF> to JvHTListBox but the same problem with hyperlinks
       when alignement is not left (need to rebuild the ItemHTDrawEx draw
@@ -121,7 +122,7 @@ type
   private
     FHyperLinkClick: THyperLinkClick;
     FHideSel: Boolean;
-    FSelectedColor: TColor;         // <-+-- Kaczkowski: from JvMultilineListBox
+    FSelectedColor: TColor;         // <-+-- Kaczkowski: from JvMultiLineListBox
     FSelectedTextColor: TColor;     // <-+
     FDisabledTextColor: TColor;     // <-+
     procedure SetHideSel(Value: Boolean);
@@ -144,28 +145,27 @@ type
   protected
     property HideSel: Boolean read FHideSel write SetHideSel;
 
-   // Kaczkowski - moved from JvMultilineListBox
+    // Kaczkowski - moved from JvMultiLineListBox
     property ColorHighlight: TColor read FSelectedColor write FSelectedColor;
     property ColorHighlightText: TColor read FSelectedTextColor write FSelectedTextColor;
     property ColorDisabledText: TColor read FDisabledTextColor write FDisabledTextColor;
-   // Kaczkowski - end
+    // Kaczkowski - end
     property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
   end;
 
   TJvHTListBox = class(TJvCustomHTListBox)
   published
     property HideSel;
-
-   // Kaczkowski - moved from JvMultilineListBox
-    property ColorHighlight;
-    property ColorHighlightText;
-    property ColorDisabledText;
-   // Kaczkowski - end
     property OnHyperLinkClick;
 
     property Align;
     property BorderStyle;
     property Color;
+    // Kaczkowski - moved from JvMultilineListBox
+    property ColorHighlight;
+    property ColorHighlightText;
+    property ColorDisabledText;
+    // Kaczkowski - end
     property Columns;
     {$IFDEF VCL}
     property DragCursor;
@@ -183,8 +183,8 @@ type
     property Enabled;
     property ExtendedSelect;
     property Font;
-  //  property IntegralHeight;
-  //  property ItemHeight;
+    //property IntegralHeight;
+    //property ItemHeight;
     property Items;
     property MultiSelect;
     property ParentColor;
@@ -193,7 +193,7 @@ type
     property PopupMenu;
     property ShowHint;
     property Sorted;
-  //  property Style;
+    //property Style;
     property TabOrder;
     property TabStop;
     property Visible;
@@ -201,14 +201,14 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-  //  property OnDrawItem;
+    //property OnDrawItem;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-  //  property OnMeasureItem;
+    //property OnMeasureItem;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -216,7 +216,6 @@ type
     property Anchors;
     property Constraints;
   end;
-
 
   TJvCustomHTComboBox = class(TJvExCustomComboBox)
   private
@@ -247,23 +246,23 @@ type
   protected
     property HideSel: Boolean read FHideSel write SetHideSel;
     property DropWidth: Integer read FDropWidth write SetDropWidth;
-   // Kaczkowski - based on JvMultilineListBox
+    // Kaczkowski - based on JvMultilineListBox
     property ColorHighlight: TColor read FSelectedColor write FSelectedColor;
     property ColorHighlightText: TColor read FSelectedTextColor write FSelectedTextColor;
     property ColorDisabledText: TColor read FDisabledTextColor write FDisabledTextColor;
-   // Kaczkowski - end
+    // Kaczkowski - end
   end;
 
   TJvHTComboBox = class(TJvCustomHTComboBox)
   published
     property HideSel;
     property DropWidth;
-   // Kaczkowski - based on JvMultilineListBox
+    // Kaczkowski - based on JvMultilineListBox
     property ColorHighlight;
     property ColorHighlightText;
     property ColorDisabledText;
     property Color;
-//    property Style;
+    // property Style;
     {$IFDEF VCL}
     property AutoSize;
     property DragCursor;
@@ -279,7 +278,7 @@ type
     property DropDownCount;
     property Enabled;
     property Font;
-  //  property ItemHeight;
+    // property ItemHeight;
     property Items;
     property MaxLength;
     property ParentColor;
@@ -297,7 +296,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-  //  property OnDrawItem;
+    // property OnDrawItem;
     property OnDropDown;
     property OnEndDrag;
     property OnEnter;
@@ -305,7 +304,7 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-  //  property OnMeasureItem;
+    // property OnMeasureItem;
     property OnStartDrag;
     property Constraints;
   end;
@@ -344,7 +343,7 @@ type
   {$ENDIF VisualCLX}
   published
     property Align;
-//    property Alignment;  // Kaczkowski
+    // property Alignment;  // Kaczkowski
     property AutoSize;
     property Caption;
     property Color;
@@ -364,11 +363,11 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-   // property ShowAccelChar;
+    // property ShowAccelChar;
     property ShowHint;
     property Transparent;
     property Visible;
-   // property WordWrap;
+    // property WordWrap;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -405,44 +404,62 @@ implementation
 
 uses
   JclLogic,
-  JvJVCLUtils;
+  JvJVCLUtils, JvConsts;
+
+const
+  cBR = '<BR>';
+  cHR = '<HR>';
+  cTagBegin = '<';
+  cTagEnd = '>';
+  cLT = '<';
+  cGT = '>';
+  cQuote = '"';
+  cCENTER = 'CENTER';
+  cRIGHT = 'RIGHT';
+  cHREF = 'HREF';
+  cIND = 'IND';
+  cColor = 'COLOR';
+  cBGCOLOR = 'BGCOLOR';
+  cMAILTO = 'MAILTO:';
+  cURLTYPE = '://';
 
 // Kaczkowski - begin
-function PrepareText(a: string):string;
+function PrepareText(A: string): string;
 type
   THtmlCode = packed record
     HTML: PChar;
     TEXT: Char;
   end;
-
 const
-  Conversions: array[0..6] of THtmlCode = (
+  Conversions: array [0..6] of THtmlCode =
+   (
     (HTML: '&amp;';   TEXT: '&'),
     (HTML: '&quot;';  TEXT: '"'),
     (HTML: '&reg;';   TEXT: '®'),
     (HTML: '&copy;';  TEXT: '©'),
     (HTML: '&trade;'; TEXT: '™'),
     (HTML: '&euro;';  TEXT: '€'),
-    (HTML: '&nbsp;';  TEXT: ' '));
+    (HTML: '&nbsp;';  TEXT: ' ')
+   );
 var
-  i: Integer;
+  I: Integer;
 begin
-  Result := a;
-  for i := Low(Conversions) to High(Conversions) do
-    with Conversions[i] do
-      Result := stringReplace(Result, HTML, TEXT, [rfReplaceAll, rfIgnoreCase]);
-  Result := stringReplace(Result, #13#10, '', [rfReplaceAll, rfIgnoreCase]); // only <BR> can be new line
-  Result := stringReplace(Result, '<BR>', #13#10, [rfReplaceAll, rfIgnoreCase]);
-  Result := stringReplace(Result, '<HR>', '<HR>'#13#10, [rfReplaceAll, rfIgnoreCase]); // fixed <HR><BR>
+  Result := A;
+  for I := Low(Conversions) to High(Conversions) do
+    with Conversions[I] do
+      Result := StringReplace(Result, HTML, TEXT, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, sLineBreak, '', [rfReplaceAll, rfIgnoreCase]); // only <BR> can be new line
+  Result := StringReplace(Result, cBR, sLineBreak, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, cHR, cHR + sLineBreak, [rfReplaceAll, rfIgnoreCase]); // fixed <HR><BR>
 end;
 
-function BeforeTag(var Str: string; DeleteToTag: Boolean = false):string;
+function BeforeTag(var Str: string; DeleteToTag: Boolean = False): string;
 begin
-  if Pos('<', Str) > 0 then
+  if Pos(cTagBegin, Str) > 0 then
   begin
-    Result := Copy(Str, 1, Pos('<', Str)-1);
+    Result := Copy(Str, 1, Pos(cTagBegin, Str)-1);
     if DeleteToTag then
-      Delete(Str, 1, Pos('<', Str)-1);
+      Delete(Str, 1, Pos(cTagBegin, Str)-1);
   end
   else
   begin
@@ -452,20 +469,20 @@ begin
   end;
 end;
 
-function GetChar(Str:string; Pos: Word; up: Boolean= false):Char;
+function GetChar(Str: string; Pos: Word; Up: Boolean = False): Char;
 begin
   if Length(Str) >= Pos then
-    Result := str[pos]
+    Result := Str[Pos]
   else
     Result := ' ';
-  if up then
+  if Up then
     Result := UpCase(Result);
 end;
 
-function DeleteTag(Str: string):string;
+function DeleteTag(Str: string): string;
 begin
-  if (GetChar(Str, 1) = '<') and (Pos('>', Str) > 1) then
-    Delete(Str, 1, Pos('>', Str));
+  if (GetChar(Str, 1) = cTagBegin) and (Pos(cTagEnd, Str) > 1) then
+    Delete(Str, 1, Pos(cTagEnd, Str));
   Result := Str;
 end;
 
@@ -475,15 +492,23 @@ procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   var LinkName: string);
 const
   DefaultLeft = 0; // (ahuser) was 2
-
 var
-  vText, vM, TagPrp, Prp, tempLink: string;
+  vText, vM, TagPrp, Prp, TempLink: string;
   vCount: Integer;
-  vStr:   TstringList;
+  vStr:   TStringList;
   Selected: Boolean;
   Alignment: TAlignment;
   Trans, IsLink: Boolean;
   CurLeft: Integer;
+  // for begin and end
+  OldFontStyles: TFontStyles;
+  OldFontColor : TColor;
+  OldBrushColor: TColor;
+  OldAlignment : TAlignment;
+  OldFont: TFont;
+  // for font style
+  RemFontColor,
+  RemBrushColor: TColor;
 
   function ExtractPropertyValue(const Tag: string; PropName: string): string;
   begin
@@ -492,8 +517,8 @@ var
     if Pos(PropName, UpperCase(Tag)) > 0 then
     begin
       Result := Copy(Tag, Pos(PropName, UpperCase(Tag)) + Length(PropName), Length(Tag));
-      Result := Copy(Result, Pos('"', Result) + 1, Length(Result));
-      Result := Copy(Result, 1, Pos('"', Result) - 1);
+      Result := Copy(Result, Pos(cQuote, Result) + 1, Length(Result));
+      Result := Copy(Result, 1, Pos(cQuote, Result) - 1);
     end;
   end;
 
@@ -506,13 +531,13 @@ var
         Canvas.Font.Style := Canvas.Font.Style - [Style];
   end;
 
-  function CalcPos(const str: string):Integer;
+  function CalcPos(const Str: string):Integer;
   begin
     case Alignment of
       taRightJustify:
-        Result := (Rect.Right - Rect.Left) - ItemHTWidth(Canvas, Rect, State, str);
+        Result := (Rect.Right - Rect.Left) - ItemHTWidth(Canvas, Rect, State, Str);
       taCenter:
-        Result := (Rect.Right - Rect.Left - ItemHTWidth(Canvas, Rect, State, str)) div 2;
+        Result := (Rect.Right - Rect.Left - ItemHTWidth(Canvas, Rect, State, Str)) div 2;
     else
       Result := DefaultLeft;
     end;
@@ -537,18 +562,18 @@ var
         begin
           MouseOnLink := True;
           Canvas.Font.Color := clRed; // hover link
-          LinkName := tempLink;
+          LinkName := TempLink;
         end;
       if not CalcWidth then
       begin
         {$IFDEF VCL}
-        if trans then
+        if Trans then
           Canvas.Brush.Style := bsClear; // for transparent
         {$ENDIF VCL}
         {$IFDEF VisualCLX}
-        if not trans then
-          Canvas.FillRect(R);  // for opaque ( transparent = false )
-        {$ENDIF}
+        if not Trans then
+          Canvas.FillRect(R);  // for opaque ( transparent = False )
+        {$ENDIF VisualCLX}
         Canvas.TextOut(R.Left, R.Top, M);
       end;
       CurLeft := CurLeft + Width;
@@ -558,27 +583,14 @@ var
   procedure NewLine;
   begin
     if Assigned(Canvas) then
-    begin
       if vCount < vStr.Count-1 then
       begin
         Width := Max(Width, CurLeft);
         CurLeft := DefaultLeft;
         Rect.Top := Rect.Top + CanvasMaxTextHeight(Canvas);
       end;
-    end;
   end;
 
-var
-  // for begin and end
-  OldFontStyles: TFontStyles;
-  OldFontColor : TColor;
-  OldBrushColor: TColor;
-  OldAlignment : TAlignment;
-  OldFont: TFont;
-
-  // for font style
-  RemFontColor,
-  RemBrushColor: TColor;
 begin
   // (p3) remove warnings
   OldFontColor := 0;
@@ -606,7 +618,7 @@ begin
     vStr.Text := PrepareText(vText);
     Trans := True;
     LinkName := '';
-    tempLink := '';
+    TempLink := '';
 
     Selected := (odSelected in State) or (odDisabled in State);
 
@@ -621,13 +633,13 @@ begin
       while Length(vText) > 0 do
       begin
         vM := BeforeTag(vText, True);
-        vM := StringReplace(vM, '&lt;', '<', [rfReplaceAll, rfIgnoreCase]); // <--+ this must be here
-        vM := StringReplace(vM, '&gt;', '>', [rfReplaceAll, rfIgnoreCase]); // <--/
-        if (GetChar(vText, 1) = '<') then
+        vM := StringReplace(vM, '&lt;', cLT, [rfReplaceAll, rfIgnoreCase]); // <--+ this must be here
+        vM := StringReplace(vM, '&gt;', cGT, [rfReplaceAll, rfIgnoreCase]); // <--/
+        if GetChar(vText, 1) = cTagBegin then
         begin
           Draw(vM);
-          if (Pos('>', vText) = 0) then
-            Insert('>', vText, 2);
+          if Pos(cTagEnd, vText) = 0 then
+            Insert(cTagEnd, vText, 2);
           if GetChar(vText, 2) = '/' then
           begin
             case GetChar(vText, 3, True) of
@@ -636,10 +648,14 @@ begin
                   IsLink := False;
                   Canvas.Font.Assign(OldFont);
                 end;
-              'B': Style(fsBold, False);
-              'I': Style(fsItalic, False);
-              'U': Style(fsUnderLine, False);
-              'S': Style(fsStrikeOut, False);
+              'B':
+                Style(fsBold, False);
+              'I':
+                Style(fsItalic, False);
+              'U':
+                Style(fsUnderLine, False);
+              'S':
+                Style(fsStrikeOut, False);
               'F':
                 begin
                   if not Selected then // restore old colors
@@ -658,11 +674,11 @@ begin
                 begin
                   if GetChar(vText, 3, True) = 'L' then // ALIGN
                   begin
-                    TagPrp := UpperCase(Copy(vText, 2, Pos('>', vText)-2));
-                    if Pos('CENTER', TagPrp) > 0 then
+                    TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText)-2));
+                    if Pos(cCenter, TagPrp) > 0 then
                       Alignment := taCenter
                     else
-                    if Pos('RIGHT',  TagPrp) > 0 then
+                    if Pos(cRIGHT, TagPrp) > 0 then
                       Alignment := taRightJustify
                     else
                       Alignment := taLeftJustify;
@@ -672,77 +688,74 @@ begin
                   end
                   else
                   begin   // A HREF
-                    TagPrp := Copy(vText, 2, Pos('>', vText)-2);
-                    if Pos('HREF', UpperCase(TagPrp)) > 0 then
+                    TagPrp := Copy(vText, 2, Pos(cTagEnd, vText)-2);
+                    if Pos(cHREF, UpperCase(TagPrp)) > 0 then
                     begin
                       IsLink := True;
                       OldFont.Assign(Canvas.Font);
                       if not Selected then
                         Canvas.Font.Color := clBlue;
-                      tempLink := ExtractPropertyValue(TagPrp, 'HREF');
+                      TempLink := ExtractPropertyValue(TagPrp, cHREF);
                     end;
                   end;
                 end;
-              'B': Style(fsBold, True);
+              'B':
+                Style(fsBold, True);
               'I':
+                if GetChar(vText, 3, True) = 'N' then //IND="%d"
                 begin
-                  if GetChar(vText, 3, True) = 'N' then //IND="%d"
-                  begin
-                    TagPrp := Copy(vText, 2, Pos('>', vText)-2);
-                    CurLeft := StrToInt(ExtractPropertyValue(TagPrp, 'IND')); // ex IND="10"
-                  end
-                  else
-                    Style(fsItalic, True); // ITALIC
-                end;
-              'U': Style(fsUnderLine, True);
-              'S': Style(fsStrikeOut, True);
+                  TagPrp := Copy(vText, 2, Pos(cTagEnd, vText)-2);
+                  CurLeft := StrToInt(ExtractPropertyValue(TagPrp, cIND)); // ex IND="10"
+                end
+                else
+                  Style(fsItalic, True); // ITALIC
+              'U':
+                Style(fsUnderLine, True);
+              'S':
+                Style(fsStrikeOut, True);
               'H':
+                if (GetChar(vText, 3, True) = 'R') and (not CalcWidth) and Assigned(Canvas) then // HR
                 begin
-                  if (GetChar(vText, 3, true) = 'R') and (not CalcWidth) and Assigned(Canvas) then // HR
-                  begin
-                    if odDisabled in State then // only when disabled
-                       Canvas.Pen.Color := Canvas.Font.Color;
-                    Canvas.MoveTo(0,rect.top+CanvasMaxTextHeight(Canvas));
-                    Canvas.Lineto(rect.Right,rect.top+CanvasMaxTextHeight(Canvas));
-                  end;
+                  if odDisabled in State then // only when disabled
+                     Canvas.Pen.Color := Canvas.Font.Color;
+                  Canvas.MoveTo(0,rect.top+CanvasMaxTextHeight(Canvas));
+                  Canvas.Lineto(rect.Right,rect.top+CanvasMaxTextHeight(Canvas));
                 end;
               'F':
+                if (Pos(cTagEnd, vText) > 0) and (not Selected) and Assigned(Canvas) and not CalcWidth then // F from FONT
                 begin
-                  if (Pos('>', vText) > 0) and (not Selected) and Assigned(Canvas) and (not CalcWidth) then // F from FONT
+                  TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText)-2));
+                  RemFontColor  := Canvas.Font.Color;
+                  RemBrushColor := Canvas.Brush.Color;
+                  if Pos(cCOLOR, TagPrp) > 0 then
                   begin
-                    TagPrp := UpperCase(Copy(vText, 2, Pos('>', vText)-2));
-                    RemFontColor  := Canvas.Font.Color;
-                    RemBrushColor := Canvas.Brush.Color;
-                    if Pos('COLOR', TagPrp) > 0 then
-                    begin
-                      Prp := ExtractPropertyValue(TagPrp, 'COLOR');
-                      Canvas.Font.Color := stringToColor(Prp);
-                    end;
-                    if Pos('BGCOLOR', TagPrp) > 0 then
-                    begin
-                      Prp := ExtractPropertyValue(TagPrp, 'BGCOLOR');
-                      Canvas.Brush.Color := stringToColor(Prp);
-                      Trans := False;
-                    end;
+                    Prp := ExtractPropertyValue(TagPrp, cCOLOR);
+                    Canvas.Font.Color := stringToColor(Prp);
+                  end;
+                  if Pos(cBGCOLOR, TagPrp) > 0 then
+                  begin
+                    Prp := ExtractPropertyValue(TagPrp, cBGCOLOR);
+                    Canvas.Brush.Color := stringToColor(Prp);
+                    Trans := False;
                   end;
                 end;
             end;
           end;
           vText := DeleteTag(vText);
           vM := '';
-        end; // if
-      end; // while
+        end;
+      end;
       Draw(vM);
       NewLine;
       vM := '';
-    end; // for
+    end;
   finally
     if Canvas <> nil then
     begin
       Canvas.Font.Style := OldFontStyles;
       Canvas.Font.Color := OldFontColor;
-      Canvas.Brush.Color:= OldBrushColor;
-      Alignment         := OldAlignment;
+      Canvas.Brush.Color := OldBrushColor;
+      Alignment := OldAlignment;
   {    Canvas.Font.Color := RemFontColor;
       Canvas.Brush.Color:= RemBrushColor;}
     end;
@@ -769,13 +782,13 @@ var
 begin
   Result := '';
   S := PrepareText(Text);
-  while Pos('<', s) > 0 do
+  while Pos(cTagBegin, s) > 0 do
   begin
-    Result := Result + Copy(s, 1, Pos('<', s)-1);
-    if Pos('>',s) > 0 then
-      Delete(s, 1, Pos('>', s))
+    Result := Result + Copy(s, 1, Pos(cTagBegin, s)-1);
+    if Pos(cTagEnd, s) > 0 then
+      Delete(s, 1, Pos(cTagEnd, s))
     else
-      Delete(s, 1, Pos('<', s));
+      Delete(s, 1, Pos(cTagBegin, s));
   end;
   Result := Result + s;
 end;
@@ -792,22 +805,22 @@ end;
 // Kaczkowski - begin
 function ItemHTHeight(Canvas: TCanvas; const Text: string):Integer;
 var
-  str: TstringList;
+  Str: TStringList;
 begin
   try
-    str := TstringList.Create;
-    str.Text := PrepareText(Text);
-    Result := str.Count * CanvasMaxTextHeight(Canvas);
+    Str := TStringList.Create;
+    Str.Text := PrepareText(Text);
+    Result := Str.Count * CanvasMaxTextHeight(Canvas);
   finally
-    FreeAndNil(str);
+    FreeAndNil(Str);
   end;
   if Result = 0 then
-    Result := CanvasMaxTextHeight(Canvas); // if str.count = 0;
+    Result := CanvasMaxTextHeight(Canvas); // if Str.count = 0;
   Inc(Result);
 end;
 
 function IsHyperLink(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  Text: string; MouseX, MouseY: Integer; var HyperLink: string): Boolean; overload
+  Text: string; MouseX, MouseY: Integer; var HyperLink: string): Boolean; overload;
 var
   W: Integer;
 begin
@@ -824,17 +837,17 @@ end;
 
 // Kaczkowski - end
 
-//=== TJvCustomHTListBox ===========================================================
+//=== TJvCustomHTListBox =====================================================
 
 constructor TJvCustomHTListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-// Kaczkowski
+  // Kaczkowski
   Style := lbOwnerDrawVariable;
   ColorHighlight := clHighlight;
   ColorHighlightText := clHighlightText;
   ColorDisabledText := clGrayText;
-// Kaczkowski
+  // Kaczkowski
 end;
 
 {$IFDEF VCL}
@@ -919,7 +932,7 @@ var
   State: TOwnerDrawState;
   I: Integer;
 begin
-  inherited MouseUp(Button,Shift,X,Y);
+  inherited MouseUp(Button,Shift, X, Y);
   I := Self.ItemAtPos(Point(X, Y), True);
   if I <> -1 then
   begin
@@ -934,8 +947,8 @@ begin
       Canvas.Font.Color := Font.Color;
     if IsHyperLink(Canvas, R, State, Items[I], X, Y, LinkName) then
     begin
-      if (Pos('://', LinkName) > 0) or // ftp:// http:// e2k://
-         (Pos('MAILTO:', UpperCase(LinkName)) > 0) then // ex: mailto:name@server.com
+      if (Pos(cURLTYPE, LinkName) > 0) or // ftp:// http:// e2k://
+         (Pos(cMAILTO, UpperCase(LinkName)) > 0) then // ex: mailto:name@server.com
         ShellExecute(0, 'open', PChar(LinkName), nil, nil, SW_NORMAL);
       if Assigned(FHyperLinkClick) then
         FHyperLinkClick(Self, LinkName);
@@ -943,17 +956,17 @@ begin
   end;
 end;
 
-//=== TJvCustomHTComboBox ==========================================================
+//=== TJvCustomHTComboBox ====================================================
 
 constructor TJvCustomHTComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-// Kaczkowski
+  // Kaczkowski
   Style := csOwnerDrawVariable;
   ColorHighlight := clHighlight;
   ColorHighlightText := clHighlightText;
   ColorDisabledText := clGrayText;
-// Kaczkowski
+  // Kaczkowski
 end;
 
 {$IFDEF VCL}
@@ -1039,9 +1052,10 @@ begin
   end;
 end;
 
-//=== TJvCustomHTLabel =============================================================
+//=== TJvCustomHTLabel =======================================================
 
 {$IFDEF VisualCLX}
+
 constructor TJvCustomHTLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1057,14 +1071,15 @@ end;
 
 procedure TJvCustomHTLabel.TextChanged;
 begin
-  if Autosize then
+  if AutoSize then
   begin
     Height := ItemHtHeight(Canvas, Caption);
     Width := ItemHtWidth(Canvas, ClientRect, [], Caption)+ 2;
   end;
   Invalidate;
 end;
-(*)
+
+(*
 procedure TJvCustomHTLabel.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
 //  TControlCanvas(FCanvas).StartPaint;
@@ -1077,7 +1092,8 @@ begin
 //    TControlCanvas(FCanvas).StopPaint;
   end;
 end;
-(*)
+*)
+
 {$ENDIF VisualCLX}
 
 procedure TJvCustomHTLabel.FontChanged;
@@ -1122,7 +1138,7 @@ begin
     {$IFDEF VisualCLX}
     Canvas.Font.Assign(Font);
     Rect.Bottom := ItemHTHeight(Canvas, Caption);
-    MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption)+2;
+    MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption) + 2;
     {$ENDIF VisualCLX}
     Rect.Right := Rect.Left + MaxWidth;
     X := Left;
@@ -1154,7 +1170,8 @@ begin
   Canvas.FillRect(ClientRect);
   Rect := ClientRect;
   case Layout of
-    tlTop: ;
+    tlTop:
+      ;
     tlBottom:
       Rect.Top := Rect.Bottom - ItemHTHeight(Canvas, Caption);
     tlCenter:
@@ -1182,7 +1199,8 @@ begin
   inherited MouseMove(Shift,X,Y);
   R := ClientRect;
   case Layout of
-    tlTop: ;
+    tlTop:
+      ;
     tlBottom:
       R.Top := R.Bottom - ItemHTHeight(Canvas, Caption);
     tlCenter:
@@ -1211,8 +1229,8 @@ begin
   end;
   if IsHyperLink(Canvas, R, Caption, X, Y, LinkName) then
   begin
-    if (Pos('://', LinkName) > 0) or // ftp:// http:// e2k://
-       (Pos('MAILTO:', UpperCase(LinkName)) > 0) then // ex: mailto:name@server.com
+    if (Pos(cURLTYPE, LinkName) > 0) or // ftp:// http:// e2k://
+       (Pos(cMAILTO, UpperCase(LinkName)) > 0) then // ex: mailto:name@server.com
       ShellExecute(0, 'open', PChar(LinkName), nil, nil, SW_NORMAL);
     if Assigned(FHyperLinkClick) then
       FHyperLinkClick(Self, LinkName);

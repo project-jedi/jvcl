@@ -26,8 +26,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.Inc}
-
+{$I jvcl.inc}
 
 unit JvNetscapeSplitter;
 
@@ -39,14 +38,13 @@ uses
   Windows, Messages, Graphics, Forms, ExtCtrls, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows,Qt, QGraphics, QForms, QExtCtrls, QControls, Types,
+  QWindows, Qt, QGraphics, QForms, QExtCtrls, QControls, Types,
   {$ENDIF VisualCLX}
   JvExExtCtrls;
 
 const
   MOVEMENT_TOLERANCE = 5; // See WMLButtonUp message handler.
   DEF_BUTTON_HIGHLIGHT_COLOR = $00FFCFCF; // RGB(207,207,255)
-
 
 type
   TJvButtonWidthType = (btwPixels, btwPercentage);
@@ -55,57 +53,41 @@ type
   TJvWindowsButtons = set of TJvWindowsButton;
 
   TJvCustomNetscapeSplitter = class(TJvExSplitter)
-  protected
-    {$IFDEF VCL}
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure Paint; override;
-    {$ENDIF VCL}
-  public
-    constructor Create(AOwner: TComponent); override;
-
-  protected
-  {$IFDEF VCL}
-    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure WMLButtonUp(var Msg: TWMLButtonUp); message WM_LBUTTONUP;
-    procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
-  {$ENDIF VCL}
-
   private
-    FBusy:Boolean;
-    FShowButton: boolean;
+    FBusy: Boolean;
+    FShowButton: Boolean;
     FButtonWidthType: TJvButtonWidthType;
-    FButtonWidth: integer;
+    FButtonWidth: Integer;
     FOnMaximize: TNotifyEvent;
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
-    FMaximized: boolean;
-    FMinimized: boolean;
+    FMaximized: Boolean;
+    FMinimized: Boolean;
     // Internal use for "restoring" from "maximized" state
-    FRestorePos: integer;
+    FRestorePos: Integer;
     // For internal use to avoid calling GetButtonRect when not necessary
     FLastKnownButtonRect: TRect;
     // Internal use to avoid unecessary painting
-    FIsHighlighted: boolean;
+    FIsHighlighted: Boolean;
     // Internal for detecting real clicks
-    FGotMouseDown: boolean;
+    FGotMouseDown: Boolean;
     FButtonColor: TColor;
     FButtonHighlightColor: TColor;
     FArrowColor: TColor;
     FTextureColor1: TColor;
     FTextureColor2: TColor;
-    FAutoHighlightColor : boolean;
-    FAllowDrag: boolean;
+    FAutoHighlightColor: Boolean;
+    FAllowDrag: Boolean;
     FButtonStyle: TJvButtonStyle;
     FWindowsButtons: TJvWindowsButtons;
     FOnClose: TNotifyEvent;
     FButtonCursor: TCursor;
-    procedure SetShowButton(const Value: boolean);
+    procedure SetShowButton(const Value: Boolean);
     procedure SetButtonWidthType(const Value: TJvButtonWidthType);
-    procedure SetButtonWidth(const Value: integer);
+    procedure SetButtonWidth(const Value: Integer);
     function GetButtonRect: TRect;
-    procedure SetMaximized(const Value: boolean);
-    procedure SetMinimized(const Value: boolean);
+    procedure SetMaximized(const Value: Boolean);
+    procedure SetMinimized(const Value: Boolean);
     function GetAlign: TAlign;
     procedure SetAlign(Value: TAlign);
     procedure SetArrowColor(const Value: TColor);
@@ -114,8 +96,8 @@ type
     procedure SetButtonStyle(const Value: TJvButtonStyle);
     procedure SetTextureColor1(const Value: TColor);
     procedure SetTextureColor2(const Value: TColor);
-    procedure SetAutoHighLightColor(const Value: boolean);
-    procedure SetAllowDrag(const Value: boolean);
+    procedure SetAutoHighLightColor(const Value: Boolean);
+    procedure SetAllowDrag(const Value: Boolean);
     procedure SetWindowsButtons(const Value: TJvWindowsButtons);
     procedure SetButtonCursor(const Value: TCursor);
   protected
@@ -123,123 +105,74 @@ type
     // UpdateControlSize
     FControl: TControl;
     FDownPos: TPoint;
-
+    {$IFDEF VCL}
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure Paint; override;
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMLButtonUp(var Msg: TWMLButtonUp); message WM_LBUTTONUP;
+    procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
+    {$ENDIF VCL}
     procedure LoadOtherProperties(Reader: TReader); dynamic;
     procedure StoreOtherProperties(Writer: TWriter); dynamic;
     procedure DefineProperties(Filer: TFiler); override;
     {$IFDEF COMPILER4_UP}
-    function DoCanResize(var NewSize: integer): boolean; override;
-    {$ENDIF}
+    function DoCanResize(var NewSize: Integer): Boolean; override;
+    {$ENDIF COMPILER4_UP}
     procedure Loaded; override;
-    procedure PaintButton(Highlight: boolean); dynamic;
-    function DrawArrow(ACanvas: TCanvas; AvailableRect: TRect; Offset: integer;
-       ArrowSize: integer; Color: TColor): integer; dynamic;
-    function WindowButtonHitTest(X, Y: integer): TJvWindowsButton; dynamic;
-    function ButtonHitTest(X, Y: integer): boolean; dynamic;
+    procedure PaintButton(Highlight: Boolean); dynamic;
+    function DrawArrow(ACanvas: TCanvas; AvailableRect: TRect; Offset: Integer;
+      ArrowSize: Integer; Color: TColor): Integer; dynamic;
+    function WindowButtonHitTest(X, Y: Integer): TJvWindowsButton; dynamic;
+    function ButtonHitTest(X, Y: Integer): Boolean; dynamic;
     procedure DoMaximize; dynamic;
     procedure DoMinimize; dynamic;
     procedure DoRestore; dynamic;
     procedure DoClose; dynamic;
     procedure FindControl; dynamic;
-    procedure UpdateControlSize(NewSize: integer); dynamic;
+    procedure UpdateControlSize(NewSize: Integer); dynamic;
     function GrabBarColor: TColor;
-    function VisibleWinButtons: integer;
-
+    function VisibleWinButtons: Integer;
   public
+    constructor Create(AOwner: TComponent); override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
-
-    property ButtonRect: TRect
-       read GetButtonRect;
-    property RestorePos: integer
-       read FRestorePos
-       write FRestorePos;
-    property Maximized: boolean
-       read FMaximized
-       write SetMaximized;
-    property Minimized: boolean
-       read FMinimized
-       write SetMinimized;
-
-    property AllowDrag: boolean
-       read FAllowDrag
-       write SetAllowDrag
-       default TRUE;
-    property ButtonCursor: TCursor
-       read FButtonCursor
-       write SetButtonCursor;
-    property ButtonStyle: TJvButtonStyle
-       read FButtonStyle
-       write SetButtonStyle
-       default bsNetscape;
-    property WindowsButtons: TJvWindowsButtons
-       read FWindowsButtons
-       write SetWindowsButtons
-       default [wbMin, wbMax, wbClose];
-    property ButtonWidthType: TJvButtonWidthType
-       read FButtonWidthType
-       write SetButtonWidthType
-       default btwPixels;
-    property ButtonWidth: integer
-       read FButtonWidth
-       write SetButtonWidth
-       default 100;
-    property ShowButton: boolean
-       read FShowButton
-       write SetShowButton
-       default TRUE;
-    property ButtonColor: TColor
-       read FButtonColor
-       write SetButtonColor
-       default clBtnFace;
-    property ArrowColor: TColor
-       read FArrowColor
-       write SetArrowColor
-       default clNavy;
-    property ButtonHighlightColor: TColor
-       read FButtonHighlightColor
-       write SetButtonHighlightColor
-       default DEF_BUTTON_HIGHLIGHT_COLOR;
-    property AutoHighlightColor: Boolean
-       read FAutoHighlightColor
-       write SetAutoHighlightColor
-       default FALSE;
-    property TextureColor1: TColor
-       read FTextureColor1
-       write SetTextureColor1
-       default clWhite;
-    property TextureColor2: TColor
-       read FTextureColor2
-       write SetTextureColor2
-       default clNavy;
-    property Align: TAlign // Need to know when it changes to redraw arrows
-       read GetAlign
-       write SetAlign;
-    property Width
-       default 10;  // it looks best with 10
-    property Beveled
-       default FALSE; // it looks best without the bevel
+    property ButtonRect: TRect read GetButtonRect;
+    property RestorePos: Integer read FRestorePos write FRestorePos;
+    property Maximized: Boolean read FMaximized write SetMaximized;
+    property Minimized: Boolean read FMinimized  write SetMinimized;
+    property AllowDrag: Boolean read FAllowDrag write SetAllowDrag default True;
+    property ButtonCursor: TCursor read FButtonCursor write SetButtonCursor;
+    property ButtonStyle: TJvButtonStyle read FButtonStyle write SetButtonStyle default bsNetscape;
+    property WindowsButtons: TJvWindowsButtons read FWindowsButtons write SetWindowsButtons
+      default [wbMin, wbMax, wbClose];
+    property ButtonWidthType: TJvButtonWidthType read FButtonWidthType write SetButtonWidthType
+      default btwPixels;
+    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 100;
+    property ShowButton: Boolean read FShowButton write SetShowButton default True;
+    property ButtonColor: TColor read FButtonColor write SetButtonColor default clBtnFace;
+    property ArrowColor: TColor read FArrowColor write SetArrowColor default clNavy;
+    property ButtonHighlightColor: TColor read FButtonHighlightColor write SetButtonHighlightColor
+      default DEF_BUTTON_HIGHLIGHT_COLOR;
+    property AutoHighlightColor: Boolean read FAutoHighlightColor write SetAutoHighlightColor
+      default False;
+    property TextureColor1: TColor read FTextureColor1 write SetTextureColor1 default clWhite;
+    property TextureColor2: TColor read FTextureColor2 write SetTextureColor2 default clNavy;
+    property Align: TAlign read GetAlign write SetAlign; // Need to know when it changes to redraw arrows
+    property Width default 10; // it looks best with 10
+    property Beveled default False; // it looks best without the bevel
     property Enabled;
-
-    property OnClose: TNotifyEvent
-       read FOnClose
-       write FOnClose;
-    property OnMaximize: TNotifyEvent
-       read FOnMaximize
-       write FOnMaximize;
-    property OnMinimize: TNotifyEvent
-       read FOnMinimize
-       write FOnMinimize;
-    property OnRestore: TNotifyEvent read FOnRestore  write FOnRestore;
-
     property HintColor;
+    property OnClose: TNotifyEvent read FOnClose write FOnClose;
+    property OnMaximize: TNotifyEvent read FOnMaximize write FOnMaximize;
+    property OnMinimize: TNotifyEvent read FOnMinimize write FOnMinimize;
+    property OnRestore: TNotifyEvent read FOnRestore write FOnRestore;
     property OnParentColorChange;
   end;
 
-  TJvNetscapeSplitter=class(TJvCustomNetscapeSplitter)
+  TJvNetscapeSplitter = class(TJvCustomNetscapeSplitter)
   published
     property Maximized;
     property Minimized;
-
     property AllowDrag;
     property ButtonCursor;
     property ButtonStyle;
@@ -257,14 +190,12 @@ type
     property Width;
     property Beveled;
     property Enabled;
-
+    property ShowHint;
+    property HintColor;
     property OnClose;
     property OnMaximize;
     property OnMinimize;
     property OnRestore;
-
-    property ShowHint;
-    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
@@ -275,45 +206,42 @@ implementation
 uses
   JvThemes;
 
-procedure SetRectEmpty(var rec:TRect);
+procedure SetRectEmpty(var R: TRect);
 begin
-  rec.Left:=0;
-  rec.Top:=0;
-  rec.Right:=0;
-  rec.Bottom:=0;
+  FillChar(R, SizeOf(TRect), #0);
 end;
-
 
 constructor TJvCustomNetscapeSplitter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   IncludeThemeStyle(Self, [csParentBackground]);
 
-  Beveled := FALSE;
-  FAllowDrag := TRUE;
+  Beveled := False;
+  FAllowDrag := True;
   FButtonStyle := bsNetscape;
   FWindowsButtons := [wbMin, wbMax, wbClose];
   FButtonWidthType := btwPixels;
   FButtonWidth := 100;
-  FShowButton := TRUE;
+  FShowButton := True;
   SetRectEmpty(FLastKnownButtonRect);
-  FIsHighlighted := FALSE;
-  FGotMouseDown := FALSE;
+  FIsHighlighted := False;
+  FGotMouseDown := False;
   FControl := nil;
-  FDownPos := Point(0,0);
-  FMaximized := FALSE;
-  FMinimized := FALSE;
+  FDownPos := Point(0, 0);
+  FMaximized := False;
+  FMinimized := False;
   FRestorePos := -1;
   Width := 10;
   FButtonColor := clBtnFace;
   FArrowColor := clNavy;
   FButtonHighlightColor := DEF_BUTTON_HIGHLIGHT_COLOR;
-  FAutoHighLightColor := FALSE;
+  FAutoHighLightColor := False;
   FTextureColor1 := clWhite;
   FTextureColor2 := clNavy;
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomNetscapeSplitter.MouseEnter(Control: TControl);
 var
   Pos: TPoint;
@@ -331,16 +259,16 @@ begin
     // The order is important here.  ButtonHitTest must be evaluated before
     // the ButtonStyle because it will change the cursor (over button or not).
     // If the order were reversed, the cursor would not get set for bsWindows
-    // style since short-circuit boolean eval would stop it from ever being
+    // style since short-circuit Boolean eval would stop it from ever being
     // called in the first place.
-    if ButtonHitTest(Pos.x, Pos.y) and (ButtonStyle = bsNetscape) then
+    if ButtonHitTest(Pos.X, Pos.Y) and (ButtonStyle = bsNetscape) then
     begin
       if not FIsHighlighted then
-        PaintButton(TRUE)
+        PaintButton(True)
     end
     else
-      if FIsHighlighted then
-        PaintButton(FALSE);
+    if FIsHighlighted then
+      PaintButton(False);
   end;
 end;
 
@@ -352,12 +280,11 @@ begin
 
     //from dfs
     if (ButtonStyle = bsNetscape) and FIsHighlighted then
-      PaintButton(FALSE);
+      PaintButton(False);
 
-    FGotMouseDown := FALSE;
+    FGotMouseDown := False;
   end;
 end;
-
 
 procedure TJvCustomNetscapeSplitter.Paint;
 {$IFDEF JVCLThemesEnabled}
@@ -370,8 +297,7 @@ begin
     Exit;
   FBusy := True;
   try
-  // Exclude button rect from update region here for less flicker.
-
+    // Exclude button rect from update region here for less flicker.
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
     begin
@@ -395,11 +321,11 @@ begin
       end;
     end;
     {$ELSE}
-      inherited Paint;
+    inherited Paint;
     {$ENDIF JVCLThemesEnabled}
 
     // Don't paint while being moved unless ResizeStyle = rsUpdate!!!
-    // Make rect smaller if Beveled is true.
+    // Make rect smaller if Beveled is True.
     PaintButton(FIsHighlighted);
   finally
     FBusy := False;
@@ -408,7 +334,8 @@ end;
 {$ENDIF VCL}
 
 //dfs
-function TJvCustomNetscapeSplitter.ButtonHitTest(X, Y: integer): boolean;
+
+function TJvCustomNetscapeSplitter.ButtonHitTest(X, Y: Integer): Boolean;
 begin
   // We use FLastKnownButtonRect here so that we don't have to recalculate the
   // button rect with GetButtonRect every time the mouse moved.  That would be
@@ -440,7 +367,7 @@ begin
 end;
 
 {$IFDEF COMPILER4_UP}
-function TJvCustomNetscapeSplitter.DoCanResize(var NewSize: integer): boolean;
+function TJvCustomNetscapeSplitter.DoCanResize(var NewSize: Integer): Boolean;
 begin
   Result := inherited DoCanResize(NewSize);
   // D4 version has a bug that causes it to not honor MinSize, which causes a
@@ -475,9 +402,9 @@ begin
 end;
 
 function TJvCustomNetscapeSplitter.DrawArrow(ACanvas: TCanvas; AvailableRect: TRect;
-  Offset, ArrowSize: integer; Color: TColor): integer;
+  Offset, ArrowSize: Integer; Color: TColor): Integer;
 var
-  x, y, q, i, j: integer;
+  X, Y, Q, I, J: Integer;
   ArrowAlign: TAlign;
 begin
   // STB Nitro drivers have a LineTo bug, so I've opted to use the slower
@@ -491,78 +418,81 @@ begin
   if FMaximized then
   begin
     case Align of
-      alLeft:   ArrowAlign := alRight;
-      alRight:  ArrowAlign := alLeft;
-      alTop:    ArrowAlign := alBottom;
+      alLeft:
+        ArrowAlign := alRight;
+      alRight:
+        ArrowAlign := alLeft;
+      alTop:
+        ArrowAlign := alBottom;
     else //alBottom
       ArrowAlign := alTop;
     end;
   end
   else
     ArrowAlign := Align;
-  q := ArrowSize * 2 - 1;
-  Result := q;
+  Q := ArrowSize * 2 - 1;
+  Result := Q;
   ACanvas.Pen.Color := Color;
   with AvailableRect do
   begin
     case ArrowAlign of
       alLeft:
         begin
-          x := Left + ((Right - Left - ArrowSize) div 2) + 1;
+          X := Left + ((Right - Left - ArrowSize) div 2) + 1;
           if Offset < 0 then
-            y := Bottom + Offset - q
+            Y := Bottom + Offset - Q
           else
-            y := Top + Offset;
-          for j := x + ArrowSize - 1 downto x do
+            Y := Top + Offset;
+          for J := X + ArrowSize - 1 downto X do
           begin
-            for i := y to y + q - 1 do
-              ACanvas.Pixels[j, i] := Color;
-            Inc(y);
-            Dec(q,2);
+            for I := Y to Y + Q - 1 do
+              ACanvas.Pixels[J, I] := Color;
+            Inc(Y);
+            Dec(Q, 2);
           end;
         end;
       alRight:
         begin
-          x := Left + ((Right - Left - ArrowSize) div 2) + 1;
+          X := Left + ((Right - Left - ArrowSize) div 2) + 1;
           if Offset < 0 then
-            y := Bottom + Offset - q
+            Y := Bottom + Offset - Q
           else
-            y := Top + Offset;
-          for j := x to x + ArrowSize - 1 do
+            Y := Top + Offset;
+          for J := X to X + ArrowSize - 1 do
           begin
-            for i := y to y + q - 1 do
-              ACanvas.Pixels[j, i] := Color;
-            Inc(y);
-            Dec(q,2);
+            for I := Y to Y + Q - 1 do
+              ACanvas.Pixels[J, I] := Color;
+            Inc(Y);
+            Dec(Q, 2);
           end;
         end;
       alTop:
         begin
           if Offset < 0 then
-            x := Right + Offset - q
+            X := Right + Offset - Q
           else
-            x := Left + Offset;
-          y := Top + ((Bottom - Top - ArrowSize) div 2) + 1;
-          for i := y + ArrowSize - 1 downto y do
+            X := Left + Offset;
+          Y := Top + ((Bottom - Top - ArrowSize) div 2) + 1;
+          for I := Y + ArrowSize - 1 downto Y do
           begin
-            for j := x to x + q - 1 do
-              ACanvas.Pixels[j, i] := Color;
-            Inc(x);
-            Dec(q,2);
+            for J := X to X + Q - 1 do
+              ACanvas.Pixels[J, I] := Color;
+            Inc(X);
+            Dec(Q, 2);
           end;
         end;
     else // alBottom
       if Offset < 0 then
-        x := Right + Offset - q
+        X := Right + Offset - Q
       else
-        x := Left + Offset;
-      y := Top + ((Bottom - Top - ArrowSize) div 2) + 1;
-      for i := y to y + ArrowSize - 1 do
+        X := Left + Offset;
+      Y := Top + ((Bottom - Top - ArrowSize) div 2) + 1;
+      for I := Y to Y + ArrowSize - 1 do
       begin
-        for j := x to x + q - 1 do
-          ACanvas.Pixels[j, i] := Color;
-        Inc(x);
-        Dec(q,2);
+        for J := X to X + Q - 1 do
+          ACanvas.Pixels[J, I] := Color;
+        Inc(X);
+        Dec(Q, 2);
       end;
     end;
   end;
@@ -579,10 +509,14 @@ begin
   FControl := nil;
   P := Point(Left, Top);
   case Align of
-    alLeft: Dec(P.X);
-    alRight: Inc(P.X, Width);
-    alTop: Dec(P.Y);
-    alBottom: Inc(P.Y, Height);
+    alLeft:
+      Dec(P.X);
+    alRight:
+      Inc(P.X, Width);
+    alTop:
+      Dec(P.Y);
+    alBottom:
+      Inc(P.Y, Height);
   else
     Exit;
   end;
@@ -610,7 +544,7 @@ end;
 
 function TJvCustomNetscapeSplitter.GetButtonRect: TRect;
 var
-  BW: integer;
+  BW: Integer;
 begin
   if ButtonStyle = bsWindows then
   begin
@@ -623,8 +557,8 @@ begin
     else
     begin
       if Align in [alLeft, alRight] then
-        Result := Rect(0, 0, ClientRect.Right - ClientRect.Left, BW -
-          VisibleWinButtons)
+        Result := Rect(0, 0, ClientRect.Right - ClientRect.Left,
+          BW - VisibleWinButtons)
       else
         Result := Rect(ClientRect.Right - BW + VisibleWinButtons, 0,
           ClientRect.Right, ClientRect.Bottom - ClientRect.Top);
@@ -685,13 +619,11 @@ end;
 
 function TJvCustomNetscapeSplitter.GrabBarColor: TColor;
 var
-  BeginRGB: array[0..2] of Byte;
-  RGBDifference: array[0..2] of integer;
-  R,G,B: Byte;
-  BeginColor,
-  EndColor: TColor;
-  NumberOfColors: integer;
-
+  BeginRGB: array [0..2] of Byte;
+  RGBDifference: array [0..2] of Integer;
+  R, G, B: Byte;
+  BeginColor, EndColor: TColor;
+  NumberOfColors: Integer;
 begin
   //Need to figure out how many colors available at runtime
   NumberOfColors := 256;
@@ -707,11 +639,11 @@ begin
   RGBDifference[1] := GetGValue(ColorToRGB(EndColor)) - BeginRGB[1];
   RGBDifference[2] := GetBValue(ColorToRGB(EndColor)) - BeginRGB[2];
 
-  R := BeginRGB[0] + MulDiv (180, RGBDifference[0], NumberOfColors - 1);
-  G := BeginRGB[1] + MulDiv (180, RGBDifference[1], NumberOfColors - 1);
-  B := BeginRGB[2] + MulDiv (180, RGBDifference[2], NumberOfColors - 1);
+  R := BeginRGB[0] + MulDiv(180, RGBDifference[0], NumberOfColors - 1);
+  G := BeginRGB[1] + MulDiv(180, RGBDifference[1], NumberOfColors - 1);
+  B := BeginRGB[2] + MulDiv(180, RGBDifference[2], NumberOfColors - 1);
 
-  Result := RGB (R, G, B);
+  Result := RGB(R, G, B);
 end;
 
 procedure TJvCustomNetscapeSplitter.Loaded;
@@ -722,10 +654,10 @@ begin
     FindControl;
     if FControl <> nil then
       case Align of
-        alLeft,
-        alRight:  FRestorePos := FControl.Width;
-        alTop,
-        alBottom: FRestorePos := FControl.Height;
+        alLeft, alRight:
+          FRestorePos := FControl.Width;
+        alTop, alBottom:
+          FRestorePos := FControl.Height;
       end;
   end;
 end;
@@ -735,19 +667,19 @@ begin
   RestorePos := Reader.ReadInteger;
 end;
 
-procedure TJvCustomNetscapeSplitter.PaintButton(Highlight: boolean);
+procedure TJvCustomNetscapeSplitter.PaintButton(Highlight: Boolean);
 const
   TEXTURE_SIZE = 3;
 var
   BtnRect: TRect;
   CaptionBtnRect: TRect;
-  BW: integer;
+  BW: Integer;
   TextureBmp: TBitmap;
-  x, y: integer;
-  RW, RH: integer;
+  X, Y: Integer;
+  RW, RH: Integer;
   OffscreenBmp: TBitmap;
-  WinButton: array[0..2] of TJvWindowsButton;
-  b: TJvWindowsButton;
+  WinButton: array [0..2] of TJvWindowsButton;
+  B: TJvWindowsButton;
   BtnFlag: UINT;
 begin
   if (not FShowButton) or (not Enabled) or (GetParentForm(Self) = nil) then
@@ -775,72 +707,66 @@ begin
       else
         BW := BtnRect.Bottom;
       FillChar(WinButton, SizeOf(WinButton), 0);
-      x := 0;
+      X := 0;
       if Align in [alLeft, alRight] then
       begin
-        for b := High(TJvWindowsButton) downto Low(TJvWindowsButton) do
-          if b in WindowsButtons then
+        for B := High(TJvWindowsButton) downto Low(TJvWindowsButton) do
+          if B in WindowsButtons then
           begin
-            WinButton[x] := b;
-            Inc(x);
+            WinButton[X] := B;
+            Inc(X);
           end;
       end
       else
       begin
-        for b := Low(TJvWindowsButton) to High(TJvWindowsButton) do
-          if b in WindowsButtons then
+        for B := Low(TJvWindowsButton) to High(TJvWindowsButton) do
+          if B in WindowsButtons then
           begin
-            WinButton[x] := b;
-            Inc(x);
+            WinButton[X] := B;
+            Inc(X);
           end;
       end;
-      for x := 0 to VisibleWinButtons - 1 do
+      for X := 0 to VisibleWinButtons - 1 do
       begin
         if Align in [alLeft, alRight] then
-          CaptionBtnRect := Bounds(0, x * BW, BW, BW)
+          CaptionBtnRect := Bounds(0, X * BW, BW, BW)
         else
-          CaptionBtnRect := Bounds(x * BW, 0, BW, BW);
+          CaptionBtnRect := Bounds(X * BW, 0, BW, BW);
         BtnFlag := 0;
-        case WinButton[x] of
+        case WinButton[X] of
           wbMin:
-            begin
-              if Minimized then
-                BtnFlag := DFCS_CAPTIONRESTORE
-              else
-                BtnFlag := DFCS_CAPTIONMIN;
-            end;
+            if Minimized then
+              BtnFlag := DFCS_CAPTIONRESTORE
+            else
+              BtnFlag := DFCS_CAPTIONMIN;
           wbMax:
-            begin
-              if Maximized then
-                BtnFlag := DFCS_CAPTIONRESTORE
-              else
-                BtnFlag := DFCS_CAPTIONMAX;
-            end;
+            if Maximized then
+              BtnFlag := DFCS_CAPTIONRESTORE
+            else
+              BtnFlag := DFCS_CAPTIONMAX;
           wbClose:
-            begin
-              BtnFlag := DFCS_CAPTIONCLOSE;
-            end;
+            BtnFlag := DFCS_CAPTIONCLOSE;
         end;
-        DrawFrameControl(OffscreenBmp.Canvas.Handle, CaptionBtnRect, DFC_CAPTION,
-          BtnFlag);
+        DrawFrameControl(OffscreenBmp.Canvas.Handle,
+          CaptionBtnRect, DFC_CAPTION, BtnFlag);
       end;
     end
     else
     begin
       // Draw basic button
       OffscreenBmp.Canvas.Brush.Color := clGray;
-  {$IFDEF VCL}
+      {$IFDEF VCL}
       OffscreenBmp.Canvas.FrameRect(BtnRect);
-  {$ELSE}
-      FrameRect(OffscreenBmp.Canvas,BtnRect);
-  {$ENDIF VCL}
-     InflateRect(BtnRect, -1, -1);
+      {$ELSE}
+      FrameRect(OffscreenBmp.Canvas, BtnRect);
+      {$ENDIF VCL}
+      InflateRect(BtnRect, -1, -1);
 
       OffscreenBmp.Canvas.Pen.Color := clWhite;
       with BtnRect, OffscreenBmp.Canvas do
       begin
         // This is not going to work with the STB bug.  Have to find workaround.
-        MoveTo(Left, Bottom-1);
+        MoveTo(Left, Bottom - 1);
         LineTo(Left, Top);
         LineTo(Right, Top);
       end;
@@ -866,13 +792,15 @@ begin
           BW := BtnRect.Right - BtnRect.Left;
           DrawArrow(OffscreenBmp.Canvas, BtnRect, 1, BW, ArrowColor);
           BW := DrawArrow(OffscreenBmp.Canvas, BtnRect, -1, BW, ArrowColor);
-          InflateRect(BtnRect, 0, -(BW+4));
-        end else begin
+          InflateRect(BtnRect, 0, -(BW + 4));
+        end
+        else
+        begin
           InflateRect(BtnRect, -4, 0);
           BW := BtnRect.Bottom - BtnRect.Top;
           DrawArrow(OffscreenBmp.Canvas, BtnRect, 1, BW, ArrowColor);
           BW := DrawArrow(OffscreenBmp.Canvas, BtnRect, -1, BW, ArrowColor);
-          InflateRect(BtnRect, -(BW+4), 0);
+          InflateRect(BtnRect, -(BW + 4), 0);
         end;
 
         // Draw the texture
@@ -894,30 +822,26 @@ begin
               Height := RH;
               // Draw first square
               Canvas.Brush.Color := OffscreenBmp.Canvas.Brush.Color;
-              Canvas.FillRect(Rect(0, 0, RW+1, RH+1));
-              Canvas.Pixels[1,1] := TextureColor1;
-              Canvas.Pixels[2,2] := TextureColor2;
+              Canvas.FillRect(Rect(0, 0, RW + 1, RH + 1));
+              Canvas.Pixels[1, 1] := TextureColor1;
+              Canvas.Pixels[2, 2] := TextureColor2;
 
               // Tile first square all the way across
-              for x := 1 to ((RW div TEXTURE_SIZE) + ord(RW mod TEXTURE_SIZE > 0)) do
-              begin
-                Canvas.CopyRect(Bounds(x * TEXTURE_SIZE, 0, TEXTURE_SIZE,
-                   TEXTURE_SIZE), Canvas, Rect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE));
-              end;
+              for X := 1 to ((RW div TEXTURE_SIZE) + ord(RW mod TEXTURE_SIZE > 0)) do
+                Canvas.CopyRect(Bounds(X * TEXTURE_SIZE, 0, TEXTURE_SIZE,
+                  TEXTURE_SIZE), Canvas, Rect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE));
 
               // Tile first row all the way down
-              for y := 1 to ((RH div TEXTURE_SIZE) + ord(RH mod TEXTURE_SIZE > 0)) do
-              begin
-                Canvas.CopyRect(Bounds(0, y * TEXTURE_SIZE, RW, TEXTURE_SIZE),
-                   Canvas, Rect(0, 0, RW, TEXTURE_SIZE));
-              end;
+              for Y := 1 to ((RH div TEXTURE_SIZE) + ord(RH mod TEXTURE_SIZE > 0)) do
+                Canvas.CopyRect(Bounds(0, Y * TEXTURE_SIZE, RW, TEXTURE_SIZE),
+                  Canvas, Rect(0, 0, RW, TEXTURE_SIZE));
 
               // Above could be better if it reversed process when splitter was
               // taller than it was wider.  Optimized only for horizontal right now.
             end;
             // Copy texture bitmap to the screen.
             OffscreenBmp.Canvas.CopyRect(BtnRect, TextureBmp.Canvas,
-               Rect(0, 0, RW, RH));
+              Rect(0, 0, RW, RH));
           finally
             TextureBmp.Free;
           end;
@@ -926,7 +850,7 @@ begin
     end;
 (**)
     Canvas.CopyRect(ButtonRect, OffscreenBmp.Canvas, Rect(0, 0,
-       OffscreenBmp.Width, OffscreenBmp.Height));
+      OffscreenBmp.Width, OffscreenBmp.Height));
   finally
     OffscreenBmp.Free;
   end;
@@ -948,7 +872,7 @@ begin
   {$ENDIF COMPILER4_UP}
 end;
 
-procedure TJvCustomNetscapeSplitter.SetAllowDrag(const Value: boolean);
+procedure TJvCustomNetscapeSplitter.SetAllowDrag(const Value: Boolean);
 var
   Pt: TPoint;
 begin
@@ -958,7 +882,7 @@ begin
     // Have to reset cursor in case it's on the splitter at the moment
     GetCursorPos(Pt);
     Pt := ScreenToClient(Pt);
-    ButtonHitTest(Pt.x, Pt.y);
+    ButtonHitTest(Pt.X, Pt.Y);
   end;
 end;
 
@@ -972,7 +896,7 @@ begin
   end;
 end;
 
-procedure TJvCustomNetscapeSplitter.SetAutoHighLightColor(const Value: boolean);
+procedure TJvCustomNetscapeSplitter.SetAutoHighLightColor(const Value: Boolean);
 begin
   if FAutoHighLightColor <> Value then
   begin
@@ -1018,7 +942,7 @@ begin
     Invalidate;
 end;
 
-procedure TJvCustomNetscapeSplitter.SetButtonWidth(const Value: integer);
+procedure TJvCustomNetscapeSplitter.SetButtonWidth(const Value: Integer);
 begin
   if Value <> FButtonWidth then
   begin
@@ -1044,7 +968,7 @@ begin
   end;
 end;
 
-procedure TJvCustomNetscapeSplitter.SetMaximized(const Value: boolean);
+procedure TJvCustomNetscapeSplitter.SetMaximized(const Value: Boolean);
 begin
   if Value <> FMaximized then
   begin
@@ -1061,14 +985,14 @@ begin
     if Value then
     begin
       if FMinimized then
-        FMinimized := FALSE
+        FMinimized := False
       else
       begin
         case Align of
-          alLeft,
-          alRight:  FRestorePos := FControl.Width;
-          alTop,
-          alBottom: FRestorePos := FControl.Height;
+          alLeft, alRight:
+            FRestorePos := FControl.Width;
+          alTop, alBottom:
+            FRestorePos := FControl.Height;
         else
           Exit;
         end;
@@ -1077,10 +1001,10 @@ begin
         UpdateControlSize(-3000)
       else
         case Align of
-          alLeft,
-          alBottom: UpdateControlSize(3000);
-          alRight,
-          alTop: UpdateControlSize(-3000);
+          alLeft, alBottom:
+            UpdateControlSize(3000);
+          alRight, alTop:
+            UpdateControlSize(-3000);
         else
           Exit;
         end;
@@ -1096,11 +1020,10 @@ begin
   end;
 end;
 
-procedure TJvCustomNetscapeSplitter.SetMinimized(const Value: boolean);
+procedure TJvCustomNetscapeSplitter.SetMinimized(const Value: Boolean);
 begin
   if Value <> FMinimized then
   begin
-
     if csLoading in ComponentState then
     begin
       FMinimized := Value;
@@ -1114,7 +1037,7 @@ begin
     if Value then
     begin
       if FMaximized then
-        FMaximized := FALSE
+        FMaximized := False
       else
       begin
         case Align of
@@ -1147,7 +1070,7 @@ begin
   end;
 end;
 
-procedure TJvCustomNetscapeSplitter.SetShowButton(const Value: boolean);
+procedure TJvCustomNetscapeSplitter.SetShowButton(const Value: Boolean);
 begin
   if Value <> FShowButton then
   begin
@@ -1189,8 +1112,9 @@ begin
   Writer.WriteInteger(RestorePos);
 end;
 
-procedure TJvCustomNetscapeSplitter.UpdateControlSize(NewSize: integer);
-  procedure MoveViaMouse(FromPos, ToPos: integer; Horizontal: boolean);
+procedure TJvCustomNetscapeSplitter.UpdateControlSize(NewSize: Integer);
+
+  procedure MoveViaMouse(FromPos, ToPos: Integer; Horizontal: Boolean);
   begin
     if Horizontal then
     begin
@@ -1205,8 +1129,9 @@ procedure TJvCustomNetscapeSplitter.UpdateControlSize(NewSize: integer);
       MouseUp(mbLeft, [ssLeft], 0, ToPos);
     end;
   end;
+
 begin
-  if (FControl <> nil) then
+  if FControl <> nil then
   begin
     { You'd think that using FControl directly would be the way to change it's
       position (and thus the splitter's position), wouldn't you?  But, TSplitter
@@ -1215,20 +1140,20 @@ begin
       splitter has an internal variable (FOldSize) that will not get updated.
       Because of this, if you try to then move the newly positioned splitter
       back to the old position, it won't go there (NewSize <> OldSize must be
-      true).  Now, what are the odds that the user will move the splitter back
+      True).  Now, what are the odds that the user will move the splitter back
       to the exact same pixel it used to be on?  Normally, extremely low.  But,
       if the splitter has been restored from it's minimized position, it then
       becomes quite likely:  i.e. they drag it back all the way to the min
       position.  What a pain. }
     case Align of
       alLeft:
-        MoveViaMouse(Left, FControl.Left + NewSize, TRUE);
+        MoveViaMouse(Left, FControl.Left + NewSize, True);
               // alLeft: FControl.Width := NewSize;
       alTop:
-        MoveViaMouse(Top, FControl.Top + NewSize, FALSE);
+        MoveViaMouse(Top, FControl.Top + NewSize, False);
              // FControl.Height := NewSize;
       alRight:
-        MoveViaMouse(Left, (FControl.Left + FControl.Width - Width) - NewSize, TRUE);
+        MoveViaMouse(Left, (FControl.Left + FControl.Width - Width) - NewSize, True);
         {begin
           Parent.DisableAlign;
           try
@@ -1239,7 +1164,7 @@ begin
           end;
         end;}
       alBottom:
-        MoveViaMouse(Top, (FControl.Top + FControl.Height - Height) - NewSize, FALSE);
+        MoveViaMouse(Top, (FControl.Top + FControl.Height - Height) - NewSize, False);
         {begin
           Parent.DisableAlign;
           try
@@ -1254,45 +1179,45 @@ begin
   end;
 end;
 
-function TJvCustomNetscapeSplitter.VisibleWinButtons: integer;
+function TJvCustomNetscapeSplitter.VisibleWinButtons: Integer;
 var
-  x: TJvWindowsButton;
+  X: TJvWindowsButton;
 begin
   Result := 0;
-  for x := Low(TJvWindowsButton) to High(TJvWindowsButton) do
-    if x in WindowsButtons then
+  for X := Low(TJvWindowsButton) to High(TJvWindowsButton) do
+    if X in WindowsButtons then
       Inc(Result);
 end;
 
-function TJvCustomNetscapeSplitter.WindowButtonHitTest(X, Y: integer): TJvWindowsButton;
+function TJvCustomNetscapeSplitter.WindowButtonHitTest(X, Y: Integer): TJvWindowsButton;
 var
   BtnRect: TRect;
-  i: integer;
-  b: TJvWindowsButton;
-  WinButton: array[0..2] of TJvWindowsButton;
-  BW: integer;
-  BRs: array[0..2] of TRect;
+  I: Integer;
+  B: TJvWindowsButton;
+  WinButton: array [0..2] of TJvWindowsButton;
+  BW: Integer;
+  BRs: array [0..2] of TRect;
 begin
   Result := wbMin;
   // Figure out which one was hit.  This function assumes ButtonHitTest has
-  // been called and returned TRUE.
+  // been called and returned True.
   BtnRect := ButtonRect; // So we don't repeatedly call GetButtonRect
-  i := 0;
+  I := 0;
   if Align in [alLeft, alRight] then
   begin
-    for b := High(TJvWindowsButton) downto Low(TJvWindowsButton) do
-      if b in WindowsButtons then
+    for B := High(TJvWindowsButton) downto Low(TJvWindowsButton) do
+      if B in WindowsButtons then
       begin
-        WinButton[i] := b;
-        Inc(i);
+        WinButton[I] := B;
+        Inc(I);
       end;
   end
   else
-    for b := Low(TJvWindowsButton) to High(TJvWindowsButton) do
-      if b in WindowsButtons then
+    for B := Low(TJvWindowsButton) to High(TJvWindowsButton) do
+      if B in WindowsButtons then
       begin
-        WinButton[i] := b;
-        Inc(i);
+        WinButton[I] := B;
+        Inc(I);
       end;
 
   if Align in [alLeft, alRight] then
@@ -1300,13 +1225,13 @@ begin
   else
     BW := BtnRect.Bottom - BtnRect.Top;
   FillChar(BRs, SizeOf(BRs), 0);
-  for i := 0 to VisibleWinButtons - 1 do
+  for I := 0 to VisibleWinButtons - 1 do
     if ((Align in [alLeft, alRight]) and PtInRect(Bounds(BtnRect.Left,
-      BtnRect.Top + (BW * i), BW, BW), Point(X, Y))) or ((Align in [alTop,
-      alBottom]) and PtInRect(Bounds(BtnRect.Left + (BW * i), BtnRect.Top, BW,
-      BW), Point(X, Y))) then
+      BtnRect.Top + (BW * I), BW, BW), Point(X, Y))) or ((Align in [alTop,
+      alBottom]) and PtInRect(Bounds(BtnRect.Left + (BW * I), BtnRect.Top, BW,
+        BW), Point(X, Y))) then
     begin
-      Result := WinButton[i];
+      Result := WinButton[I];
       break;
     end;
 end;
@@ -1319,15 +1244,16 @@ begin
     FindControl;
     if FControl <> nil then
       case Align of
-        alLeft,
-        alRight:  FRestorePos := FControl.Width;
-        alTop,
-        alBottom: FRestorePos := FControl.Height;
+        alLeft, alRight:
+          FRestorePos := FControl.Width;
+        alTop, alBottom:
+          FRestorePos := FControl.Height;
       end;
   end;
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomNetscapeSplitter.WMLButtonDown(var Msg: TWMLButtonDown);
 begin
   if Enabled then
@@ -1349,7 +1275,7 @@ end;
 procedure TJvCustomNetscapeSplitter.WMLButtonUp(var Msg: TWMLButtonUp);
 var
   CurPos: TPoint;
-  OldMax: boolean;
+  OldMax: Boolean;
 begin
   inherited;
 
@@ -1360,24 +1286,28 @@ begin
       CurPos := ClientToScreen(Point(Msg.XPos, Msg.YPos));
       // More than a little movement is not a click, but a regular resize.
       if ((Align in [alLeft, alRight]) and
-         (Abs(FDownPos.x - CurPos.X) <= MOVEMENT_TOLERANCE)) or
-         ((Align in [alTop, alBottom]) and
-         (Abs(FDownPos.y - CurPos.Y) <= MOVEMENT_TOLERANCE)) then
+        (Abs(FDownPos.X - CurPos.X) <= MOVEMENT_TOLERANCE)) or
+        ((Align in [alTop, alBottom]) and
+        (Abs(FDownPos.Y - CurPos.Y) <= MOVEMENT_TOLERANCE)) then
       begin
         StopSizing;
         if ButtonStyle = bsNetscape then
           Maximized := not Maximized
         else
           case WindowButtonHitTest(Msg.XPos, Msg.YPos) of
-            wbMin: Minimized := not Minimized;
-            wbMax: Maximized := not Maximized;
-            wbClose: DoClose;
+            wbMin:
+              Minimized := not Minimized;
+            wbMax:
+              Maximized := not Maximized;
+            wbClose:
+              DoClose;
           end;
       end;
     end;
-    FGotMouseDown := FALSE;
+    FGotMouseDown := False;
   end
-  else if AllowDrag then
+  else
+    if AllowDrag then
   begin
     FindControl;
     if FControl = nil then
@@ -1385,8 +1315,10 @@ begin
 
     OldMax := FMaximized;
     case Align of
-      alLeft, alRight: FMaximized := FControl.Width <= MinSize;
-      alTop, alBottom: FMaximized := FControl.Height <= MinSize;
+      alLeft, alRight:
+        FMaximized := FControl.Width <= MinSize;
+      alTop, alBottom:
+        FMaximized := FControl.Height <= MinSize;
     end;
     if FMaximized then
     begin
@@ -1418,20 +1350,21 @@ begin
     // The order is important here.  ButtonHitTest must be evaluated before
     // the ButtonStyle because it will change the cursor (over button or not).
     // If the order were reversed, the cursor would not get set for bsWindows
-    // style since short-circuit boolean eval would stop it from ever being
+    // style since short-circuit Boolean eval would stop it from ever being
     // called in the first place.
     if ButtonHitTest(Msg.XPos, Msg.YPos) and (ButtonStyle = bsNetscape) then
     begin
       if not FIsHighlighted then
-        PaintButton(TRUE)
+        PaintButton(True)
     end
     else
-      if FIsHighlighted then
-        PaintButton(FALSE);
+    if FIsHighlighted then
+      PaintButton(False);
   end
   else
     DefaultHandler(Msg); // Bypass TSplitter and just let normal handling occur.
 end;
+
 {$ENDIF VCL}
 
 end.

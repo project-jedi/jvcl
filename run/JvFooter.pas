@@ -236,7 +236,7 @@ var
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvFooterBtn.SetParent(AParent: TWinControl);
-{$ENDIF}
+{$ENDIF VCL}
 begin
   {$IFDEF VisualCLX}
   AParent := ParentA;

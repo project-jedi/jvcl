@@ -22,18 +22,16 @@ Last Modified: 2002-01-24
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-{*****************************************************************************
-  Purpose:   Jv Wizard Component Editor
+Description:
+  Jv Wizard Component Editor
 
-  History:
-  ---------------------------------------------------------------------------
+History:
   Date(mm/dd/yy)   Comments
-  ---------------------------------------------------------------------------
   01/24/2002       First Create
   01/25/2002       TJvWizardAboutDialogProperty, Added by <Steve Forbes>
-******************************************************************************}
+
+Known Issues:
+-----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
 
@@ -57,7 +55,8 @@ uses
   {$ELSE}
   JvWizardAboutInfoForm,
   {$ENDIF USEJVCL}
-  JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardRouteMapList, JvWizardEditorForm;
+  JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardRouteMapList,
+  JvWizardEditorForm;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvWizardReg.dcr}

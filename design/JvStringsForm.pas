@@ -69,7 +69,7 @@ type
     // (rom) removed string[15] to increase flexibility
     SingleLine: string;
     MultipleLines: string;
-    FFilename: string;
+    FFileName: string;
   end;
 
 implementation
@@ -93,10 +93,10 @@ begin
   with OpenDialog do
   begin
     Filter := RsTextFilter;
-    Filename := FFilename;
+    FileName := FFileName;
     if Execute then
     begin
-      FFilename := Filename;
+      FFileName := FileName;
       Memo.Lines.LoadFromFile(FileName);
     end;
   end;
@@ -105,12 +105,12 @@ end;
 procedure TJvStrEditDlg.FileSave(Sender: TObject);
 begin
   if SaveDialog.FileName = '' then
-    SaveDialog.FileName := FFilename;
+    SaveDialog.FileName := FFileName;
   with SaveDialog do
   begin
     Filter := RsTextFilter;
     if Execute then
-      // FFilename := Filename;
+      // FFileName := FileName;
       Memo.Lines.SaveToFile(FileName);
   end;
 end;
@@ -135,7 +135,7 @@ begin
   {$ENDIF VCL}
   SingleLine := RsSingleLine;
   MultipleLines := RsMultipleLines;
- // set anchors
+  // set anchors
   BevelBorder.Anchors := [akLeft, akTop, akRight, akBottom];
   Memo.Anchors := [akLeft, akTop, akRight, akBottom];
   OKBtn.Anchors := [akRight, akBottom];

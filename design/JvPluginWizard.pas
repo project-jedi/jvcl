@@ -153,7 +153,7 @@ uses
   JclFileUtils,
   JvPlugin, JvPluginParamsForm, JvConsts, JvDsgnConsts;
 
-{$R ..\resources\JvPluginWiz.res}
+{$R ..\Resources\JvPluginWiz.res}
 
 const
   CrLf = sLineBreak;
@@ -400,6 +400,8 @@ end;
 
 constructor TJvOTAFile.Create(const Source: string);
 begin
+  // (rom) added inherited Create;
+  inherited Create;
   FSource := Source;
 end;
 
@@ -655,16 +657,21 @@ begin
     begin
       NewModule := Module.GetOwner(0);
     {$ENDIF COMPILER5}
-    {$IFDEF COMPILER6_UP}
-    if Module.OwnerModuleCount > 0 then
-    begin
-      NewModule := Module.OwnerModules[0];
-    {$ENDIF COMPILER6_UP}
-      if NewModule <> nil then
-        if NewModule.QueryInterface(IOTAProject, Result) <> S_OK then
-          Result := nil;
+      {$IFDEF COMPILER6_UP}
+      if Module.OwnerModuleCount > 0 then
+      begin
+        NewModule := Module.OwnerModules[0];
+      {$ENDIF COMPILER6_UP}
+        if NewModule <> nil then
+          if NewModule.QueryInterface(IOTAProject, Result) <> S_OK then
+            Result := nil;
+      {$IFDEF COMPILER6_UP}
+      end;
+      {$ENDIF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     end;
-  end
+    {$ENDIF COMPILER5}
+  end;
 end;
 
 {*****************************************************************************
@@ -754,8 +761,7 @@ end;
   11/07/2003   slesage              Initial creation of the Method.
  *****************************************************************************}
 
-function TJvPluginModuleCreator.NewFormFile(const FormIdent,
-  AncestorIdent: string): IOTAFile;
+function TJvPluginModuleCreator.NewFormFile(const FormIdent, AncestorIdent: string): IOTAFile;
 begin
   Result := nil;
 end;
@@ -786,8 +792,7 @@ end;
   11/07/2003   slesage              Initial creation of the Method.
  *****************************************************************************}
 
-function TJvPluginModuleCreator.NewImplSource(const ModuleIdent, FormIdent,
-  AncestorIdent: string): IOTAFile;
+function TJvPluginModuleCreator.NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string): IOTAFile;
 var
   TypeName: string;
   Ancestor: string;
@@ -808,8 +813,7 @@ begin
 
     // (rom) fixed missing "," after "Controls"
     'uses' + CrLf +
-    '  Windows, Messages, SysUtils, Classes, Dialogs, Forms,' + CrLf +
-    '  Controls,' + CrLf +
+    '  Windows, Messages, SysUtils, Classes, Dialogs, Forms, Controls,' + CrLf +
     '  JvPlugin;' + CrLf2 +
 
     'type' + CrLf +
@@ -871,8 +875,7 @@ end;
   11/07/2003   slesage              Initial creation of the Method.
  *****************************************************************************}
 
-function TJvPluginModuleCreator.NewIntfSource(const ModuleIdent, FormIdent,
-  AncestorIdent: string): IOTAFile;
+function TJvPluginModuleCreator.NewIntfSource(const ModuleIdent, FormIdent, AncestorIdent: string): IOTAFile;
 begin
   Result := nil;
 end;
