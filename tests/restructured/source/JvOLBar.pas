@@ -910,7 +910,8 @@ end;
 procedure TJvCustomOutlookBar.DrawButtons(Index:integer);
 var i,H:integer;R,R2,R3:TRect;C:TColor;
 begin
-  if Pages[Index].Buttons.Count <= 0 then Exit;
+  if (Index < 0) or (Index >= Pages.Count) or (Pages[Index].Buttons = nil) or
+   (Pages[Index].Buttons.Count <= 0)  then Exit;
   R2 := getPageRect(Index);
   R := getButtonRect(Index,Pages[Index].TopButtonIndex);
   H := getButtonHeight(Index);
@@ -953,6 +954,8 @@ end;
 procedure TJvCustomOutlookBar.DrawArrowButtons(Index:integer);
 var R:TRect;H:integer;
 begin
+  if (Index < 0) or (Index >= Pages.Count) or (Pages[Index].Buttons = nil) or
+   (Pages[Index].Buttons.Count <= 0)  then Exit;
   R := getPageRect(Index);
   H := getButtonHeight(Index);
   TopButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and (Pages[Index].TopButtonIndex > 0);
@@ -983,7 +986,7 @@ end;
 procedure TJvCustomOutlookBar.DrawCurrentPage(PageIndex:integer);
 var R:TRect;AColor:TColor;
 begin
-  if (PageIndex < 0) or (PageIndex >= Pages.Count) then Exit;
+  if (PageIndex < 0) or (PageIndex >= Pages.Count) or (Pages[PageIndex].Buttons = nil) then Exit;
   R := getPageRect(PageIndex);
   AColor := Canvas.Brush.Color;
   try
