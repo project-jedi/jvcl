@@ -64,10 +64,6 @@ IF ERRORLEVEL 1 GOTO error
 echo.
 echo Cleaning
 
-..\devtools\bin\NoQuotes PACKAGE %PACKAGE%
-Call NoQuotesBatch.bat
-del /f NoQuotesBatch.bat
-
 del /f "%PACKAGE%.mak"
 del /f /q %DIR%\*.cfg
 if NOT !%DIR2%==! del /f /q %DIR2%\*.cfg
