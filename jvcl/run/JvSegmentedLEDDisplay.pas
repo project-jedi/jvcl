@@ -489,7 +489,7 @@ begin
   Result.Y := Y;
 end;
 
-//=== TJvCustomSegmentedLEDDisplay ===========================================
+//=== { TJvCustomSegmentedLEDDisplay } =======================================
 
 constructor TJvCustomSegmentedLEDDisplay.Create(AOwner: TComponent);
 begin
@@ -912,7 +912,7 @@ begin
   end;
 end;
 
-//=== TJvSegmentedLEDDigits ==================================================
+//=== { TJvSegmentedLEDDigits } ==============================================
 
 constructor TJvSegmentedLEDDigits.Create(AOwner: TPersistent);
 begin
@@ -940,7 +940,7 @@ begin
   Display.UpdateBounds;
 end;
 
-//=== TJvCustomSegmentedLEDDigit =============================================
+//=== { TJvCustomSegmentedLEDDigit } =========================================
 
 constructor TJvCustomSegmentedLEDDigit.Create(Collection: TCollection);
 begin
@@ -1271,7 +1271,7 @@ begin
   Result := 0;
 end;
 
-//=== TJvBaseSegmentedLEDDigit ===============================================
+//=== { TJvBaseSegmentedLEDDigit } ===========================================
 
 procedure TJvBaseSegmentedLEDDigit.EnableAllSegs;
 begin
@@ -1482,7 +1482,7 @@ begin
   end;
 end;
 
-//=== TJvSegmentedLEDCharacterMapper =========================================
+//=== { TJvSegmentedLEDCharacterMapper } =====================================
 
 constructor TJvSegmentedLEDCharacterMapper.Create(ADisplay: TJvCustomSegmentedLEDDisplay);
 begin
@@ -1816,7 +1816,7 @@ begin
   end;
 end;
 
-//=== TJv7SegmentedLEDDigit ==================================================
+//=== { TJv7SegmentedLEDDigit } ==============================================
 
 procedure TJv7SegmentedLEDDigit.EnableAllSegs;
 begin

@@ -198,7 +198,7 @@ begin
   end;
 end;
 
-//=== TJvCustomLogin =========================================================
+//=== { TJvCustomLogin } =====================================================
 
 constructor TJvCustomLogin.Create(AOwner: TComponent);
 begin
@@ -448,7 +448,7 @@ begin
 end;
 {$ENDIF VCL}
 
-//=== TJvLoginDialog =========================================================
+//=== { TJvLoginDialog } =====================================================
 
 procedure TJvLoginDialog.Loaded;
 var
@@ -530,7 +530,7 @@ begin
   end;
 end;
 
-//=== TJvLoginForm ===========================================================
+//=== { TJvLoginForm } =======================================================
 
 procedure TJvLoginForm.FormCreate(Sender: TObject);
 begin

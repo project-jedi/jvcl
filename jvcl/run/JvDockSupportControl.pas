@@ -622,7 +622,7 @@ begin
   end;
 end;
 
-//=== TJvDockDragDockObject ==================================================
+//=== { TJvDockDragDockObject } ==============================================
 
 constructor TJvDockDragDockObject.Create(AControl: TControl);
 begin
@@ -923,7 +923,7 @@ begin
   DockManager := Value;
 end;
 
-//=== TJvDockCustomPanel =====================================================
+//=== { TJvDockCustomPanel } =================================================
 
 constructor TJvDockCustomPanel.Create(AOwner: TComponent);
 begin
@@ -1130,7 +1130,7 @@ begin
   DoubleBuffered := DoubleBuffered or (Result <> nil);
 end;
 
-//=== TJvDockCustomTabControl ================================================
+//=== { TJvDockCustomTabControl } ============================================
 
 constructor TJvDockCustomTabControl.Create(AOwner: TComponent);
 begin
@@ -1669,7 +1669,7 @@ begin
   inherited PaintWindow(DC);
 end;
 
-//=== TJvDockTabSheet ========================================================
+//=== { TJvDockTabSheet } ====================================================
 
 constructor TJvDockTabSheet.Create(AOwner: TComponent);
 begin
@@ -1841,7 +1841,7 @@ begin
   FHighlighted := Value;
 end;
 
-//=== TJvDockPageControl =====================================================
+//=== { TJvDockPageControl } =================================================
 
 constructor TJvDockPageControl.Create(AOwner: TComponent);
 begin
@@ -2467,7 +2467,7 @@ begin
     ButtonEvent(Self, Msg, mbRight, msTabPage, JvGlobalDockClient.DoNCButtonUp);
 end;
 
-//=== TJvDockManager =========================================================
+//=== { TJvDockManager } =====================================================
 
 constructor TJvDockManager.Create;
 begin
@@ -3251,7 +3251,7 @@ begin
     JvGlobalDockClient.DockStyle.ResetCursor(DragObject);
 end;
 
-//=== TSiteList ==============================================================
+//=== { TSiteList } ==========================================================
 
 procedure TSiteList.AddSite(ASite: TWinControl);
 var
@@ -3326,7 +3326,7 @@ begin
   end;
 end;
 
-//=== TJvDockCustomPanelSplitter =============================================
+//=== { TJvDockCustomPanelSplitter } =========================================
 
 constructor TJvDockCustomPanelSplitter.Create(AOwner: TComponent);
 begin

@@ -94,7 +94,7 @@ type
 
 implementation
 
-//=== TJvSoundControl ========================================================
+//=== { TJvSoundControl } ====================================================
 
 constructor TJvSoundControl.Create(AOwner: TComponent);
 var
@@ -226,7 +226,7 @@ begin
   end;
 end;
 
-//=== TJvSoundValue ==========================================================
+//=== { TJvSoundValue } ======================================================
 
 constructor TJvSoundValue.Create;
 begin

@@ -192,7 +192,7 @@ begin
     end;
 end;
 
-//=== TJvTimerSpeedButton ====================================================
+//=== { TJvTimerSpeedButton } ================================================
 
 type
   TJvTimerSpeedButton = class(TJvSpeedButton)
@@ -211,7 +211,7 @@ begin
   ControlStyle := ControlStyle + [csReplicatable];
 end;
 
-//=== TJvCalendar ============================================================
+//=== { TJvCalendar } ========================================================
 
 { TJvCalendar implementation copied from Borland CALENDAR.PAS sample unit
   and modified }
@@ -739,7 +739,7 @@ begin
   inherited DoBoundsChanged;
 end;
 
-//=== TJvLocCalendar =========================================================
+//=== { TJvLocCalendar } =====================================================
 
 type
   TJvLocCalendar = class(TJvCalendar)
@@ -821,7 +821,7 @@ begin
       Frame3D(Canvas, ARect, clBtnShadow, clBtnHighlight, 1);
 end;
 
-//=== TJvPopupCalendar =======================================================
+//=== { TJvPopupCalendar } ===================================================
 
 type
   TJvPopupCalendar = class(TJvPopupWindow)
@@ -1225,7 +1225,7 @@ begin
   CheckButton; // Polaris
 end;
 
-//=== TJvSelectDateDlg =======================================================
+//=== { TJvSelectDateDlg } ===================================================
 
 type
   TJvSelectDateDlg = class(TForm)

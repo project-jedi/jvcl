@@ -447,7 +447,7 @@ implementation
 
 uses JvThemes, JvJCLUtils, Math, DBConsts;
 
-//=== TJvLookupDataSourceLink ======================================================
+//=== { TJvLookupDataSourceLink } ==================================================
 
 procedure TJvLookupDataSourceLink.ActiveChanged;
 begin
@@ -483,7 +483,7 @@ begin
     FDBLookupControl.ListLinkDataChanged;
 end;
 
-//=== TJvDBLookupControl =====================================================
+//=== { TJvDBLookupControl } =================================================
 
 function VarEquals(const V1, V2: Variant): Boolean;
 begin
@@ -837,7 +837,7 @@ begin
   Message.Result := Integer(FDataLink);
 end;
 
-//=== TJvDBLookupTreeViewCombo ===============================================
+//=== { TJvDBLookupTreeViewCombo } ===========================================
 
 constructor TJvDBLookupTreeViewCombo.Create(AOwner: TComponent);
 begin
@@ -1293,7 +1293,7 @@ begin
   end;
 end;
 
-//=== TJvTreePopupDataList =======================================================
+//=== { TJvTreePopupDataList } ===================================================
 
 constructor TJvTreePopupDataList.Create(AOwner: TComponent);
 begin
@@ -1336,7 +1336,7 @@ begin
   FTree.SelectNode(Value);
 end;
 
-//=== TJvPopupTree ===========================================================
+//=== { TJvPopupTree } =======================================================
 
 {******* from ComCtl98 unit}
   // Jean-Luc Mattei
@@ -1399,7 +1399,7 @@ begin
   (Owner.Owner as TJvDBLookupTreeViewCombo).CloseUp(True);
 end;
 
-//=== TJvDBLookupTreeView ====================================================
+//=== { TJvDBLookupTreeView } ================================================
 
 type
   TJvDBLookupTreeViewTree = class(TJvDBTreeView)
@@ -1669,7 +1669,7 @@ end;
 
 {# Translate properties }
 
-//=== TJvDBLookupTreeViewTree ================================================
+//=== { TJvDBLookupTreeViewTree } ============================================
 
 procedure TJvDBLookupTreeViewTree.DataScrolled;
 begin

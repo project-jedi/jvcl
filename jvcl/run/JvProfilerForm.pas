@@ -178,7 +178,7 @@ begin
   Result := Buff;
 end;
 
-//=== TJvProfiler ============================================================
+//=== { TJvProfiler } ========================================================
 
 constructor TJvProfiler.Create(AOwner: TComponent);
 begin
@@ -353,7 +353,7 @@ begin
   end;
 end;
 
-//=== TProfReport ============================================================
+//=== { TProfReport } ========================================================
 
 procedure TProfReport.FormShow(Sender: TObject);
 var

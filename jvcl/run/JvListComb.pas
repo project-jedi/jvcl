@@ -366,7 +366,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== TJvImageItem ============================================================
+//=== { TJvImageItem } ========================================================
 
 constructor TJvImageItem.Create(Collection: TCollection);
 begin
@@ -480,7 +480,7 @@ begin
     S.Exchange(I, Value);
 end;
 
-//=== TJvImageItems ===========================================================
+//=== { TJvImageItems } =======================================================
 
 constructor TJvImageItems.Create(AOwner: TPersistent);
 begin
@@ -542,7 +542,7 @@ begin
     TWinControl(GetOwner).Invalidate;
 end;
 
-//=== TJvImageComboBox =======================================================
+//=== { TJvImageComboBox } ===================================================
 
 constructor TJvImageComboBox.Create(AOwner: TComponent);
 begin
@@ -895,7 +895,7 @@ begin
     Result := FImageHeight;
 end;
 
-//=== TJvImageListBox ========================================================
+//=== { TJvImageListBox } ====================================================
 
 constructor TJvImageListBox.Create(AOwner: TComponent);
 begin

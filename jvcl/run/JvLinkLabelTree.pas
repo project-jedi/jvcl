@@ -334,7 +334,7 @@ begin
   TDynamicNode.ResetCount;
 end;
 
-//=== TNodeTree ==============================================================
+//=== { TNodeTree } ==========================================================
 
 constructor TNodeTree.Create;
 begin
@@ -384,7 +384,7 @@ begin
   Result := FRoot.IsPointInNode(P);
 end;
 
-//=== TParentNode ============================================================
+//=== { TParentNode } ========================================================
 
 constructor TParentNode.Create;
 begin
@@ -472,7 +472,7 @@ begin
   Result := FChildren.IndexOf(Node);
 end;
 
-//=== TNodeList ==============================================================
+//=== { TNodeList } ==========================================================
 
 function TNodeList.Add(Item: TNode): Integer;
 begin
@@ -504,7 +504,7 @@ begin
   Result := inherited Remove(Item);
 end;
 
-//=== TStringNode ============================================================
+//=== { TStringNode } ========================================================
 
 constructor TStringNode.Create(const Text: string);
 begin
@@ -587,7 +587,7 @@ begin
   Result := Pos <= High(FWordInfoArray);
 end;
 
-//=== TStyleNode =============================================================
+//=== { TStyleNode } =========================================================
 
 constructor TStyleNode.Create(const Style: TFontStyle);
 begin
@@ -596,7 +596,7 @@ begin
 end;
 
 // Bianconi
-//=== TColorNode =============================================================
+//=== { TColorNode } =========================================================
 
 constructor TColorNode.Create(const AColor : TColor);
 begin
@@ -612,7 +612,7 @@ begin
 end;
 // End of Bianconi
 
-//=== TUnknownNode ===========================================================
+//=== { TUnknownNode } =======================================================
 
 constructor TUnknownNode.Create(const Tag: string);
 begin
@@ -620,7 +620,7 @@ begin
   FTag := Tag;
 end;
 
-//=== TActionNode ============================================================
+//=== { TActionNode } ========================================================
 
 constructor TActionNode.Create(const Action: TActionType);
 begin
@@ -628,7 +628,7 @@ begin
   FAction := Action;
 end;
 
-//=== TAreaNode ==============================================================
+//=== { TAreaNode } ==========================================================
 
 constructor TAreaNode.Create;
 begin
@@ -742,7 +742,7 @@ begin
   end;
 end;
 
-//=== TNode ==================================================================
+//=== { TNode } ==============================================================
 
 // Bianconi #2
 constructor TNode.Create;
@@ -792,7 +792,7 @@ begin
   raise ENodeError.CreateRes(@RsETNodeGetNodeTypeUnknownClass);
 end;
 
-//=== TTopLevelNodeEnumerator ================================================
+//=== { TTopLevelNodeEnumerator } ============================================
 
 constructor TTopLevelNodeEnumerator.Create(const Root: TParentNode;
   NodeClass: TNodeClass);
@@ -857,7 +857,7 @@ begin
   FIndex := 0;
 end;
 
-//=== TRectEnumerator ========================================================
+//=== { TRectEnumerator } ====================================================
 
 constructor TRectEnumerator.Create(const List: TRectList);
 begin
@@ -893,7 +893,7 @@ begin
   FIndex := 0;
 end;
 
-//=== TRectList ==============================================================
+//=== { TRectList } ==========================================================
 
 procedure TRectList.AddRect(const Rect: TRect);
 var
@@ -917,7 +917,7 @@ begin
   Result := FList[Index];
 end;
 
-//=== TLinkNode ==============================================================
+//=== { TLinkNode } ==========================================================
 
 constructor TLinkNode.Create;
 begin
@@ -945,7 +945,7 @@ begin
   LinkNodeCount := 0;
 end;
 
-//=== TRootNode ==============================================================
+//=== { TRootNode } ==========================================================
 
 procedure TRootNode.AddRect(const Rect: TRect);
 begin
@@ -994,7 +994,7 @@ begin
   end;
 end;
 
-//=== TDynamicNode ===========================================================
+//=== { TDynamicNode } =======================================================
 
 constructor TDynamicNode.Create;
 begin

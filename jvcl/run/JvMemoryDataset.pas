@@ -390,7 +390,7 @@ type
     BookmarkFlag: TBookmarkFlag;
   end;
 
-//=== TJvMemoryRecord ========================================================
+//=== { TJvMemoryRecord } ====================================================
 
 constructor TJvMemoryRecord.Create(MemoryData: TJvMemoryData);
 begin
@@ -465,7 +465,7 @@ begin
     FMemoryData.FRecords.Move(CurIndex, Value);
 end;
 
-//=== TJvMemoryData ==========================================================
+//=== { TJvMemoryData } ======================================================
 
 constructor TJvMemoryData.Create(AOwner: TComponent);
 begin
@@ -2291,7 +2291,7 @@ begin
   Result := TRecordStatus(FieldByName(FStatusName).AsInteger) = rsOriginal;
 end;
 
-//=== TJvMemBlobStream =======================================================
+//=== { TJvMemBlobStream } ===================================================
 
 constructor TJvMemBlobStream.Create(Field: TBlobField; Mode: TBlobStreamMode);
 begin

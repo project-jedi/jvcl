@@ -192,7 +192,7 @@ implementation
 var
   Registered: Boolean = False;
 
-//=== TJvPageProxy ===========================================================
+//=== { TJvPageProxy } =======================================================
 
 constructor TJvPageProxy.Create(AOwner: TComponent);
 begin
@@ -275,7 +275,7 @@ begin
     FOnHide(Next);
 end;
 
-//=== TJvPageManager =========================================================
+//=== { TJvPageManager } =====================================================
 
 constructor TJvPageManager.Create(AOwner: TComponent);
 begin
@@ -797,7 +797,7 @@ begin
     end;
 end;
 
-//=== TJvPageHistory =========================================================
+//=== { TJvPageHistory } =====================================================
 
 constructor TJvPageHistory.Create;
 begin

@@ -154,7 +154,7 @@ implementation
 uses
   JvConsts;
 
-//=== TGroupButton ===========================================================
+//=== { TGroupButton } =======================================================
 
 type
   TGroupButton = class(TRadioButton)
@@ -220,7 +220,7 @@ begin
   TJvDBRadioPanel(Parent).KeyDown(Key, Shift);
 end;
 
-//=== TDBRadioPanel ==========================================================
+//=== { TDBRadioPanel } ======================================================
 
 constructor TJvDBRadioPanel.Create(AOwner: TComponent);
 begin

@@ -364,7 +364,7 @@ begin
   Inc(Rect.Right);
 end;
 
-//=== TJvRollOutImageOptions =================================================
+//=== { TJvRollOutImageOptions } =============================================
 
 constructor TJvRollOutImageOptions.Create;
 begin
@@ -439,7 +439,7 @@ begin
   end;
 end;
 
-//=== TJvRollOutColors =======================================================
+//=== { TJvRollOutColors } ===================================================
 
 constructor TJvRollOutColors.Create;
 begin
@@ -522,7 +522,7 @@ begin
   end;
 end;
 
-//=== TJvCustomRollOut =======================================================
+//=== { TJvCustomRollOut } ===================================================
 
 constructor TJvCustomRollOut.Create(AOwner: TComponent);
 begin
@@ -1187,7 +1187,7 @@ begin
   FreeAndNil(FTabStops);
 end;
 
-//=== TJvRollOutAction =======================================================
+//=== { TJvRollOutAction } ===================================================
 
 destructor TJvRollOutAction.Destroy;
 begin

@@ -278,7 +278,7 @@ end;
 {$RANGECHECKS ON}
 {$ENDIF RANGECHECKS_ON}
 
-//=== TSharedImage ===========================================================
+//=== { TSharedImage } =======================================================
 
 const
   GIFSignature = 'GIF';
@@ -467,7 +467,7 @@ type
         (APPE: TAppExtension);
   end;
 
-//=== TExtension =============================================================
+//=== { TExtension } =========================================================
 
 type
   TExtension = class(TPersistent)
@@ -1183,7 +1183,7 @@ begin
   end;
 end;
 
-//=== TGIFItem ===============================================================
+//=== { TGIFItem } ===========================================================
 
 destructor TGIFItem.Destroy;
 begin
@@ -1197,7 +1197,7 @@ begin
     FImageData.SetSize(0);
 end;
 
-//=== TGIFData ===============================================================
+//=== { TGIFData } ===========================================================
 
 constructor TGIFData.Create;
 begin
@@ -1217,7 +1217,7 @@ begin
     FComment.Clear;
 end;
 
-//=== TJvGIFFrame ============================================================
+//=== { TJvGIFFrame } ========================================================
 
 constructor TJvGIFFrame.Create(AOwner: TJvGIFImage);
 begin
@@ -1864,7 +1864,7 @@ begin
     ACanvas.StretchDraw(ARect, Bitmap);
 end;
 
-//=== TJvGIFImage ============================================================
+//=== { TJvGIFImage } ========================================================
 
 constructor TJvGIFImage.Create;
 begin

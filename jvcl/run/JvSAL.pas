@@ -175,7 +175,7 @@ const
   cEndProc = 'end-proc';
   cVar = 'var-';
 
-//=== TJvSAL =================================================================
+//=== { TJvSAL } =============================================================
 
 constructor TJvSAL.Create(AOwner: TComponent);
 begin
@@ -614,7 +614,7 @@ begin
   // do nothing
 end;
 
-//=== TJvAtom ================================================================
+//=== { TJvAtom } ============================================================
 
 procedure TJvAtom.SetActor(const Value: TJvSALProc);
 begin
@@ -626,7 +626,7 @@ begin
   FValue := AValue;
 end;
 
-//=== TJvAtoms ===============================================================
+//=== { TJvAtoms } ===========================================================
 
 destructor TJvAtoms.Destroy;
 begin
@@ -643,7 +643,7 @@ begin
   Clear;
 end;
 
-//=== TJvSALProcAtom =========================================================
+//=== { TJvSALProcAtom } =====================================================
 
 procedure TJvSALProcAtom.SetActor(const Value: TJvSALProc);
 begin

@@ -543,7 +543,7 @@ begin
   Int2 := I;
 end;
 
-//=== TJvSpeedBarSection =====================================================
+//=== { TJvSpeedBarSection } =================================================
 
 constructor TJvSpeedBarSection.Create(AOwner: TComponent);
 begin
@@ -679,7 +679,7 @@ begin
   Result := FTitle;
 end;
 
-//=== TJvSpeedBarButton ======================================================
+//=== { TJvSpeedBarButton } ==================================================
 
 type
   TJvSpeedBarButton = class(TJvSpeedButton)
@@ -898,7 +898,7 @@ begin
     inherited Paint;
 end;
 
-//=== TJvSpeedItem ===========================================================
+//=== { TJvSpeedItem } =======================================================
 
 constructor TJvSpeedItem.Create(AOwner: TComponent);
 begin
@@ -1476,7 +1476,7 @@ end;
 const
   InternalVer = 1;
 
-//=== TJvSpeedBar ============================================================
+//=== { TJvSpeedBar } ========================================================
 
 constructor TJvSpeedBar.Create(AOwner: TComponent);
 begin
@@ -3041,7 +3041,7 @@ begin
   IniSave(nil);
 end;
 
-//=== TJvBtnControl ==========================================================
+//=== { TJvBtnControl } ======================================================
 
 constructor TJvBtnControl.Create(AOwner: TComponent);
 begin

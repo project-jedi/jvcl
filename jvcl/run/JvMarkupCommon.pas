@@ -95,7 +95,7 @@ type
 
 implementation
 
-//=== TJvHTMLElement =========================================================
+//=== { TJvHTMLElement } =====================================================
 
 procedure TJvHTMLElement.Breakup(ACanvas: TCanvas; Available: Integer);
 var
@@ -186,7 +186,7 @@ begin
   FWidth := Value;
 end;
 
-//=== TJvHTMLElementStack ====================================================
+//=== { TJvHTMLElementStack } ================================================
 
 destructor TJvHTMLElementStack.Destroy;
 begin

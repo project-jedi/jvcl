@@ -145,7 +145,7 @@ begin
   Result := PropInfo^.PropType^;
 end;
 
-//=== TJvPropInfoList ========================================================
+//=== { TJvPropInfoList } ====================================================
 
 constructor TJvPropInfoList.Create(AObject: TObject; Filter: TTypeKinds);
 begin
@@ -288,7 +288,7 @@ begin
   end;
 end;
 
-//=== TJvPropertyStorage =====================================================
+//=== { TJvPropertyStorage } =================================================
 
 function TJvPropertyStorage.GetItemName(const APropName: string): string;
 begin

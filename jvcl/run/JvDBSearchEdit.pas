@@ -147,7 +147,7 @@ implementation
 uses
   JvConsts;
 
-//=== TJvDBCustomSearchEdit ==================================================
+//=== { TJvDBCustomSearchEdit } ==============================================
 
 constructor TJvDBCustomSearchEdit.Create;
 begin

@@ -420,7 +420,7 @@ begin
     Result := Result or DSOP_FLAG_SKIP_TARGET_COMPUTER_DC_CHECK;
 end;
 
-//=== TObjectPickerScope =====================================================
+//=== { TObjectPickerScope } =================================================
 
 procedure TObjectPickerScope.Assign(Source: TPersistent);
 begin
@@ -439,7 +439,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== TObjectPickerScopes ====================================================
+//=== { TObjectPickerScopes } ================================================
 
 constructor TObjectPickerScopes.Create({OWNER AOwner: TComponent});
 begin
@@ -503,7 +503,7 @@ begin
   TObjectPickerScope(inherited Items[Index]).Assign(Value);
 end;
 
-//=== TObjectPickerSelection =================================================
+//=== { TObjectPickerSelection } =============================================
 
 constructor TObjectPickerSelection.Create(Selection: PDsSelection;
   const AttributeCount: Integer);
@@ -548,7 +548,7 @@ begin
   Result := WideCharToString(FSelection^.pwzUPN);
 end;
 
-//=== TObjectPickerSelections ================================================
+//=== { TObjectPickerSelections } ============================================
 
 destructor TObjectPickerSelections.Destroy;
 begin
@@ -631,7 +631,7 @@ begin
     OleCheck(HR);
 end;
 
-//=== TJvObjectPickerDialog ==================================================
+//=== { TJvObjectPickerDialog } ==============================================
 
 constructor TJvObjectPickerDialog.Create(AOwner: TComponent);
 begin

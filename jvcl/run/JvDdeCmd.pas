@@ -90,7 +90,7 @@ const
 const
   DdeTopicStr = 'System';
 
-//=== TAppDdeMgr =============================================================
+//=== { TAppDdeMgr } =========================================================
 
 type
   TAppDdeMgr = class(TObject)
@@ -162,7 +162,7 @@ begin
   Commands.Clear;
 end;
 
-//=== TJvAppDdeCmd ===========================================================
+//=== { TJvAppDdeCmd } =======================================================
 
 constructor TJvAppDdeCmd.Create(AOwner: TComponent);
 begin

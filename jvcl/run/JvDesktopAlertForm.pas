@@ -220,7 +220,7 @@ begin
   {$ENDIF VisualCLX}
 end;
 
-//=== TJvFormDesktopAlert ====================================================
+//=== { TJvFormDesktopAlert } ================================================
 
 constructor TJvFormDesktopAlert.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
@@ -596,7 +596,7 @@ begin
   FadeOut;
 end;
 
-//=== TJvDesktopAlertButton ==================================================
+//=== { TJvDesktopAlertButton } ==============================================
 
 constructor TJvDesktopAlertButton.Create(AOwner: TComponent);
 begin

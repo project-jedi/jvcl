@@ -325,7 +325,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-//=== TJvDBTreeViewDataLink ==================================================
+//=== { TJvDBTreeViewDataLink } ==============================================
 
 constructor TJvDBTreeViewDataLink.Create(ATreeView: TJvCustomDBTreeView);
 begin
@@ -353,7 +353,7 @@ begin
   FTreeView.InternalDataScrolled;
 end;
 
-//=== TJvDBTreeNode ==========================================================
+//=== { TJvDBTreeNode } ======================================================
 
 procedure TJvDBTreeNode.MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode);
 var
@@ -376,7 +376,7 @@ begin
   FMasterValue := AValue;
 end;
 
-//=== TJvCustomDBTreeView ====================================================
+//=== { TJvCustomDBTreeView } ================================================
 
 constructor TJvCustomDBTreeView.Create(AOwner: TComponent);
 begin

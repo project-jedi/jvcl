@@ -142,7 +142,7 @@ implementation
 uses
   JvResources;
 
-//=== TJvOfficeColorForm =====================================================
+//=== { TJvOfficeColorForm } =================================================
 
 constructor TJvOfficeColorForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 var
@@ -420,7 +420,7 @@ begin
   end;
 end;
 
-//=== TJvSubDragBar ==========================================================
+//=== { TJvSubDragBar } ======================================================
 
 procedure TJvSubDragBar.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);

@@ -156,7 +156,7 @@ uses
   JclRTTI, JclSchedule,
   JvConsts, JvTypes, JvResources;
 
-//=== TJvSchedEvtStore =======================================================
+//=== { TJvSchedEvtStore } ===================================================
 
 procedure TJvSchedEvtStore.PushStruct(const StructType: TSchedEvtStructKind);
 begin
@@ -447,7 +447,7 @@ begin
   raise EJVCLException.CreateRes(@RsENotImplemented_);
 end;
 
-//=== TBinStore ==============================================================
+//=== { TBinStore } ==========================================================
 
 const
   BinStreamID = 'JVSE';
@@ -897,7 +897,7 @@ begin
   FStream.WriteBuffer(I, SizeOf(I));
 end;
 
-//=== TTxtStore ==============================================================
+//=== { TTxtStore } ==========================================================
 
 const
   TxtIdentifiers: array [TSchedEvtItemKind] of PChar =

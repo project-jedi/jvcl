@@ -373,7 +373,7 @@ begin
     AControl.Free;
 end;
 
-//=== TJvPointX ==============================================================
+//=== { TJvPointX } ==========================================================
 
 procedure TJvPointX.Assign(Source: TPersistent);
 begin
@@ -398,7 +398,7 @@ begin
   FY := Pt.Y;
 end;
 
-//=== TJvSIMConnector ========================================================
+//=== { TJvSIMConnector } ====================================================
 
 constructor TJvSIMConnector.Create(AOwner: TComponent);
 begin
@@ -1476,7 +1476,7 @@ begin
   SetVo;
 end;
 
-//=== TJvLogic ===============================================================
+//=== { TJvLogic } ===========================================================
 
 constructor TJvLogic.Create(AOwner: TComponent);
 var
@@ -1867,7 +1867,7 @@ begin
   end;
 end;
 
-//=== TJvSimButton ===========================================================
+//=== { TJvSimButton } =======================================================
 
 constructor TJvSimButton.Create(AOwner: TComponent);
 begin
@@ -2072,7 +2072,7 @@ begin
   end;
 end;
 
-//=== TJvSimLight ============================================================
+//=== { TJvSimLight } ========================================================
 
 constructor TJvSimLight.Create(AOwner: TComponent);
 begin
@@ -2281,7 +2281,7 @@ begin
   end;
 end;
 
-//=== TJvSimBin ==============================================================
+//=== { TJvSimBin } ==========================================================
 
 constructor TJvSimBin.Create(AOwner: TComponent);
 begin
@@ -2316,7 +2316,7 @@ begin
   Height := 65;
 end;
 
-//=== TJvSimLogicBox =========================================================
+//=== { TJvSimLogicBox } =====================================================
 
 constructor TJvSimLogicBox.Create(AOwner: TComponent);
 begin
@@ -2528,7 +2528,7 @@ begin
   Height := 65;
 end;
 
-//=== TJvSimReverse ==========================================================
+//=== { TJvSimReverse } ======================================================
 
 constructor TJvSimReverse.Create(AOwner: TComponent);
 var

@@ -179,7 +179,7 @@ begin
   Result := '';
 end;
 
-//=== TJvInterpreterReader ===================================================
+//=== { TJvInterpreterReader } ===============================================
 
 type
   TJvInterpreterReader = class(TReader)
@@ -202,7 +202,7 @@ begin
   TJvInterpreterForm(Root).FMethodList.Add(Result);
 end;
 
-//=== TJvInterpreterForm =====================================================
+//=== { TJvInterpreterForm } =================================================
 
 constructor TJvInterpreterForm.CreateNew(AOwner: TComponent; Dummy: Integer = 0);
 begin
@@ -304,7 +304,7 @@ begin
   end;
 end;
 
-//=== TJvInterpreterFm =======================================================
+//=== { TJvInterpreterFm } ===================================================
 
 function TJvInterpreterFm.MakeForm(const FileName: TFileName): TForm;
 var

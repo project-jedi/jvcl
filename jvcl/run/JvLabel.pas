@@ -276,7 +276,7 @@ const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
 
-//=== TJvCustomLabel =========================================================
+//=== { TJvCustomLabel } =====================================================
 
 function DrawShadowText(Canvas: TCanvas; Str: PChar; Count: Integer; var Rect: TRect;
   Format: Word; ShadowSize: Byte; ShadowColor: TColorRef;

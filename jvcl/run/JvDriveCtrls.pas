@@ -407,7 +407,7 @@ begin
   Result := False;
 end;
 
-//=== TJvDriveCombo ==========================================================
+//=== { TJvDriveCombo } ======================================================
 
 constructor TJvDriveCombo.Create(AOwner: TComponent);
 begin
@@ -692,7 +692,7 @@ begin
   end;
 end;
 
-//=== TJvDriveList ===========================================================
+//=== { TJvDriveList } =======================================================
 
 constructor TJvDriveList.Create(AOwner: TComponent);
 begin
@@ -1003,7 +1003,7 @@ begin
   end;
 end;
 
-//=== TJvDirectoryListBox ====================================================
+//=== { TJvDirectoryListBox } ================================================
 
 function AddPathBackslash(Path: string): string;
 begin
@@ -1464,7 +1464,7 @@ begin
   end;
 end;
 
-//=== TJvFileListBox =========================================================
+//=== { TJvFileListBox } =====================================================
 
 constructor TJvFileListBox.Create(AOwner: TComponent);
 var

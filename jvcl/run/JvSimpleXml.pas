@@ -854,7 +854,7 @@ begin
   SimpleXMLDecode(Result, False);
 end;
 
-//=== TJvSimpleXML ===========================================================
+//=== { TJvSimpleXML } =======================================================
 
 constructor TJvSimpleXML.Create(AOwner: TComponent);
 begin
@@ -1091,7 +1091,7 @@ begin
   LoadFromFile(Value);
 end;
 
-//=== TJvSimpleXMLElem =======================================================
+//=== { TJvSimpleXMLElem } ===================================================
 
 procedure TJvSimpleXMLElem.Assign(Value: TJvSimpleXMLElem);
 var
@@ -1269,7 +1269,7 @@ begin
   end;
 end;
 
-//=== TJvSimpleXMLElems ======================================================
+//=== { TJvSimpleXMLElems } ==================================================
 
 function TJvSimpleXMLElems.Add(const Name: string): TJvSimpleXMLElemClassic;
 begin
@@ -1676,7 +1676,7 @@ begin
     FElems.Sort;
 end;
 
-//=== TJvSimpleXMLProps ======================================================
+//=== { TJvSimpleXMLProps } ==================================================
 
 function TJvSimpleXMLProps.Add(const Name, Value: string): TJvSimpleXMLProp;
 var
@@ -1986,7 +1986,7 @@ begin
     Result := Prop.Value;
 end;
 
-//=== TJvSimpleXMLProp =======================================================
+//=== { TJvSimpleXMLProp } ===================================================
 
 function TJvSimpleXMLProp.GetBoolValue: Boolean;
 begin
@@ -2045,7 +2045,7 @@ begin
   end;
 end;
 
-//=== TJvSimpleXMLElemClassic ================================================
+//=== { TJvSimpleXMLElemClassic } ============================================
 
 procedure TJvSimpleXMLElemClassic.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
 //<element Prop="foo" Prop='bar'/>
@@ -2207,7 +2207,7 @@ begin
     Parent.DoSaveProgress;
 end;
 
-//=== TJvSimpleXMLElemComment ================================================
+//=== { TJvSimpleXMLElemComment } ============================================
 
 procedure TJvSimpleXMLElemComment.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
 //<!-- declarations for <head> & <body> -->
@@ -2297,7 +2297,7 @@ begin
     Parent.DoSaveProgress;
 end;
 
-//=== TJvSimpleXMLElemCData ==================================================
+//=== { TJvSimpleXMLElemCData } ==============================================
 
 procedure TJvSimpleXmlElemCData.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
 //<![CDATA[<greeting>Hello, world!</greeting>]]>
@@ -2385,7 +2385,7 @@ begin
     Parent.DoSaveProgress;
 end;
 
-//=== TJvSimpleXMLElemText ===================================================
+//=== { TJvSimpleXMLElemText } ===============================================
 
 procedure TJvSimpleXMLElemText.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
 var
@@ -2454,7 +2454,7 @@ begin
     Parent.DoSaveProgress;
 end;
 
-//=== TJvSimpleXMLElemHeader =================================================
+//=== { TJvSimpleXMLElemHeader } =============================================
 
 constructor TJvSimpleXMLElemHeader.Create(const AOwner: TJvSimpleXMLElem);
 begin
@@ -2553,7 +2553,7 @@ begin
     Parent.DoSaveProgress;
 end;
 
-//=== TJvSimpleXMLElemDocType ================================================
+//=== { TJvSimpleXMLElemDocType } ============================================
 
 procedure TJvSimpleXmlElemDocType.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
 {
@@ -2644,7 +2644,7 @@ begin
     Parent.DoSaveProgress;
 end;
 
-//=== TJvSimpleXMLElemSheet ==================================================
+//=== { TJvSimpleXMLElemSheet } ==============================================
 
 procedure TJvSimpleXMLElemSheet.LoadFromStream(const Stream: TStream;
   Parent: TJvSimpleXML);
@@ -2728,7 +2728,7 @@ begin
     Parent.DoSaveProgress;
 end;
 
-//=== TJvSimpleXMLElemsProlog ================================================
+//=== { TJvSimpleXMLElemsProlog } ============================================
 
 constructor TJvSimpleXMLElemsProlog.Create;
 begin
@@ -2871,7 +2871,7 @@ begin
     Item[I].SaveToStream(Stream, '', Parent);
 end;
 
-//=== TJvSimpleHashTable =====================================================
+//=== { TJvSimpleHashTable } =================================================
 
 constructor TJvSimpleHashTable.Create;
 begin
@@ -2927,7 +2927,7 @@ begin
   XmlCreateInto(Result, TJvSimpleXMLElemClassic.Create(nil));
 end;
 
-//=== TXmlVariant ============================================================
+//=== { TXmlVariant } ========================================================
 
 procedure TXmlVariant.CastTo(var Dest: TVarData; const Source: TVarData;
   const AVarType: TVarType);

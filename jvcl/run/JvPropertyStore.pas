@@ -153,7 +153,7 @@ const
   cObject = 'Object';
   cItem = 'Item';
 
-//=== TCombinedStrings =======================================================
+//=== { TCombinedStrings } ===================================================
 
 type
   // Read-only TStrings combining multiple TStrings instances in a single list
@@ -259,7 +259,7 @@ procedure TCombinedStrings.Insert(Index: Integer; const S: string);
 begin
 end;
 
-//=== TJvCustomPropertyStore =================================================
+//=== { TJvCustomPropertyStore } =============================================
 
 constructor TJvCustomPropertyStore.Create(AOwner: TComponent);
 const
@@ -552,7 +552,7 @@ procedure TJvCustomPropertyStore.StoreData;
 begin
 end;
 
-//=== TJvCustomPropertyListStore =============================================
+//=== { TJvCustomPropertyListStore } =========================================
 
 constructor TJvCustomPropertyListStore.Create(AOwner: TComponent);
 begin

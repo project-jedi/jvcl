@@ -524,7 +524,7 @@ begin
               CancelButton, HelpButton, ADynControlEngine);
 end;
 
-//=== TJvNoDataParameter =====================================================
+//=== { TJvNoDataParameter } =================================================
 
 constructor TJvNoDataParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -537,7 +537,7 @@ begin
   Result := True;
 end;
 
-//=== TJvButtonParameter =====================================================
+//=== { TJvButtonParameter } =================================================
 
 function TJvButtonParameter.GetParameterNameExt: string;
 begin
@@ -586,7 +586,7 @@ begin
     end;
 end;
 
-//=== TJvBasePanelEditParameter ==============================================
+//=== { TJvBasePanelEditParameter } ==========================================
 
 constructor TJvBasePanelEditParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -797,7 +797,7 @@ begin
   end;
 end;
 
-//=== TJvLabelParameter ======================================================
+//=== { TJvLabelParameter } ==================================================
 
 procedure TJvLabelParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
@@ -805,7 +805,7 @@ begin
     GetParameterName, Caption);
 end;
 
-//=== TJvImageParameter ======================================================
+//=== { TJvImageParameter } ==================================================
 
 constructor TJvImageParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -873,7 +873,7 @@ begin
     end;
 end;
 
-//=== TJvArrangeParameter ====================================================
+//=== { TJvArrangeParameter } ================================================
 
 constructor TJvArrangeParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -892,7 +892,7 @@ begin
   FArrangeSettings.Assign(Value);
 end;
 
-//=== TJvPanelParameter ======================================================
+//=== { TJvPanelParameter } ==================================================
 
 constructor TJvPanelParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -934,7 +934,7 @@ begin
     ITmpPanel.ControlSetBorder(BevelInner, BevelOuter, BevelWidth, BorderStyle, BorderWidth);
 end;
 
-//=== TJvGroupBoxParameter ===================================================
+//=== { TJvGroupBoxParameter } ===============================================
 
 function TJvGroupBoxParameter.GetParameterNameExt: string;
 begin
@@ -992,7 +992,7 @@ begin
     GroupBox.TabOrder := Value;
 end;
 
-//=== TJvListParameter =======================================================
+//=== { TJvListParameter } ===================================================
 
 constructor TJvListParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1160,7 +1160,7 @@ begin
   //    ItemList.IndexOf (AsString) := ItemIndex;
 end;
 
-//=== TJvRadioGroupParameter =================================================
+//=== { TJvRadioGroupParameter } =============================================
 
 procedure TJvRadioGroupParameter.Assign(Source: TPersistent);
 begin
@@ -1184,7 +1184,7 @@ begin
     ITmpRadioGroup.ControlSetColumns(Columns);
 end;
 
-//=== TJvCheckBoxParameter ===================================================
+//=== { TJvCheckBoxParameter } ===============================================
 
 procedure TJvCheckBoxParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
@@ -1192,7 +1192,7 @@ begin
     GetParameterName, Caption);
 end;
 
-//=== TJvComboBoxParameter ===================================================
+//=== { TJvComboBoxParameter } ===============================================
 
 procedure TJvComboBoxParameter.Assign(Source: TPersistent);
 begin
@@ -1240,7 +1240,7 @@ begin
     ITmpItems.ControlSetSorted(Sorted);
 end;
 
-//=== TJvListBoxParameter ====================================================
+//=== { TJvListBoxParameter } ================================================
 
 procedure TJvListBoxParameter.Assign(Source: TPersistent);
 begin
@@ -1286,7 +1286,7 @@ begin
   Result := FState = cbChecked;
 end;
 
-//=== TJvCheckListBoxParameter ====================================================
+//=== { TJvCheckListBoxParameter } ================================================
 
 constructor TJvCheckListBoxParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1426,7 +1426,7 @@ begin
   Inherited SetItemList(Value);
 end;
 
-//=== TJvTimeParameter ===================================================
+//=== { TJvTimeParameter } ===============================================
 
 procedure TJvTimeParameter.Assign(Source: TPersistent);
 begin
@@ -1454,7 +1454,7 @@ begin
     DynControlTime.ControlSetFormat(Format);
 end;
 
-//=== TJvDateTimeParameter ===================================================
+//=== { TJvDateTimeParameter } ===============================================
 
 procedure TJvDateTimeParameter.Assign(Source: TPersistent);
 begin
@@ -1491,7 +1491,7 @@ begin
     end;
 end;
 
-//=== TJvDateParameter ===================================================
+//=== { TJvDateParameter } ===============================================
 
 procedure TJvDateParameter.Assign(Source: TPersistent);
 begin
@@ -1528,7 +1528,7 @@ begin
     end;
 end;
 
-//=== TJvEditParameter =======================================================
+//=== { TJvEditParameter } ===================================================
 
 constructor TJvEditParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1572,7 +1572,7 @@ begin
   end;
 end;
 
-//=== TJvButtonEditParameter ================================================
+//=== { TJvButtonEditParameter } ============================================
 
 function TJvButtonEditParameter.GetParameterNameExt: string;
 begin
@@ -1598,7 +1598,7 @@ begin
     OnButtonClick := TJvButtonEditParameter(Source).OnButtonClick;
 end;
 
-//=== TJvNumberEditParameter ================================================
+//=== { TJvNumberEditParameter } ============================================
 
 procedure TJvNumberEditParameter.Assign(Source: TPersistent);
 begin
@@ -1607,7 +1607,7 @@ begin
     EditorType := TJvNumberEditParameter(Source).EditorType;
 end;
 
-//=== TJvIntegerEditParameter ================================================
+//=== { TJvIntegerEditParameter } ============================================
 
 constructor TJvIntegerEditParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1691,7 +1691,7 @@ begin
     Result := True;
 end;
 
-//=== TJvDoubleEditParameter =================================================
+//=== { TJvDoubleEditParameter } =============================================
 
 constructor TJvDoubleEditParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1777,7 +1777,7 @@ begin
     Result := True;
 end;
 
-//=== TJvFileNameParameter ===================================================
+//=== { TJvFileNameParameter } ===============================================
 
 procedure TJvFileNameParameter.Assign(Source: TPersistent);
 begin
@@ -1865,7 +1865,7 @@ begin
   Result := True;
 end;
 
-//=== TJvDirectoryParameter ==================================================
+//=== { TJvDirectoryParameter } ==============================================
 
 procedure TJvDirectoryParameter.Assign(Source: TPersistent);
 begin
@@ -1929,7 +1929,7 @@ begin
   Result := True;
 end;
 
-///=== TJvMemoParameter ======================================================
+///=== { TJvMemoParameter } ==================================================
 
 constructor TJvMemoParameter.Create(AParameterList: TJvParameterList);
 begin

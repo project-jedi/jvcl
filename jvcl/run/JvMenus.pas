@@ -841,7 +841,7 @@ begin
   end;
 end;
 
-//=== TJvMenuChangeLink ======================================================
+//=== { TJvMenuChangeLink } ==================================================
 
 procedure TJvMenuChangeLink.Change(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
 begin
@@ -849,7 +849,7 @@ begin
     FOnChange(Sender, Source, Rebuild);
 end;
 
-//=== TJvMainMenu ============================================================
+//=== { TJvMainMenu } ========================================================
 
 constructor TJvMainMenu.Create(AOwner: TComponent);
 begin
@@ -1252,7 +1252,7 @@ begin
     Result := FStyleItemPainter;
 end;
 
-//=== TJvPopupList ===========================================================
+//=== { TJvPopupList } =======================================================
 
 type
   TJvPopupList = class(TList)
@@ -1371,7 +1371,7 @@ begin
     DeallocateHWnd(Window);
 end;
 
-//=== TJvPopupMenu ===========================================================
+//=== { TJvPopupMenu } =======================================================
 
 constructor TJvPopupMenu.Create(AOwner: TComponent);
 begin
@@ -1835,7 +1835,7 @@ begin
     Result := FStyleItemPainter;
 end;
 
-//=== TJvCustomMenuItemPainter ===============================================
+//=== { TJvCustomMenuItemPainter } ===========================================
 
 constructor TJvCustomMenuItemPainter.Create(AOwner: TComponent);
 begin
@@ -2732,7 +2732,7 @@ begin
 // Do nothing, on purpose
 end;
 
-//=== TJvBtnMenuItemPainter ==================================================
+//=== { TJvBtnMenuItemPainter } ==============================================
 
 constructor TJvBtnMenuItemPainter.Create(AOwner: TComponent; Lowered: Boolean);
 begin
@@ -2771,7 +2771,7 @@ begin
   FImageMargin.Bottom := FImageMargin.Bottom + 1;
 end;
 
-//=== TJvOfficeMenuItemPainter ===============================================
+//=== { TJvOfficeMenuItemPainter } ===========================================
 
 procedure TJvOfficeMenuItemPainter.Paint(Item: TMenuItem; ItemRect: TRect; State: TMenuOwnerDrawState);
 begin
@@ -2859,7 +2859,7 @@ begin
     DrawFrame(ARect);
 end;
 
-//=== TJvXPMenuItemPainter ===================================================
+//=== { TJvXPMenuItemPainter } ===============================================
 
 constructor TJvXPMenuItemPainter.Create(AOwner: TComponent);
 begin
@@ -3303,7 +3303,7 @@ begin
   inherited DrawCheckImage(Rect(ARect.Left - 2, ARect.Top, ARect.Right - 2, ARect.Bottom - 1));
 end;
 
-//=== TJvOwnerDrawMenuItemPainter ============================================
+//=== { TJvOwnerDrawMenuItemPainter } ========================================
 
 procedure TJvOwnerDrawMenuItemPainter.Measure(Item: TMenuItem; var Width,
   Height: Integer);
@@ -3335,7 +3335,7 @@ begin
   end;
 end;
 
-//=== TJvImageMargin =========================================================
+//=== { TJvImageMargin } =====================================================
 
 procedure TJvImageMargin.Assign(Source: TPersistent);
 begin
@@ -3350,7 +3350,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== TJvMenuImageSize =======================================================
+//=== { TJvMenuImageSize } ===================================================
 
 procedure TJvMenuImageSize.Assign(Source: TPersistent);
 begin

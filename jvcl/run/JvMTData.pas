@@ -134,7 +134,7 @@ const
   cRead = 'Read';
   cWrite = 'Write';
 
-//=== TMTBoundedQueue ========================================================
+//=== { TMTBoundedQueue } ====================================================
 
 constructor TMTBoundedQueue.Create(Size: Integer; Name: string = '');
 begin
@@ -196,7 +196,7 @@ begin
   end;
 end;
 
-//=== TMTAsyncBuffer =========================================================
+//=== { TMTAsyncBuffer } =====================================================
 
 constructor TMTAsyncBuffer.Create(Size: Integer; Name: string = '');
 begin
@@ -247,7 +247,7 @@ begin
 end;
 
 
-//=== TMTBufferToVCL =========================================================
+//=== { TMTBufferToVCL } =====================================================
 
 destructor TMTBufferToVCL.Destroy;
 begin
@@ -302,7 +302,7 @@ begin
   end;
 end;
 
-//=== TMTVCLToBuffer =========================================================
+//=== { TMTVCLToBuffer } =====================================================
 
 destructor TMTVCLToBuffer.Destroy;
 begin

@@ -418,7 +418,7 @@ const
   cFalse = 'FALSE';
   cTrue = 'TRUE';
 
-  //=== TJvParameterListMessages ===============================================
+  //=== { TJvParameterListMessages } ===========================================
 
 constructor TJvParameterListMessages.Create;
 begin
@@ -434,7 +434,7 @@ begin
   HistoryClearCaption := RsHistoryClearCaption;
 end;
 
-//=== TJvParameterListEnableDisableReason ====================================
+//=== { TJvParameterListEnableDisableReason } ================================
 
 procedure TJvParameterListEnableDisableReason.SetAsString(Value: string);
 begin
@@ -533,7 +533,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== TJvParameterListEnableDisableReasonList ================================
+//=== { TJvParameterListEnableDisableReasonList } ============================
 
 procedure TJvParameterListEnableDisableReasonList.Clear;
 var
@@ -632,7 +632,7 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-//=== TJvParameterPropertyValues =============================================
+//=== { TJvParameterPropertyValues } =========================================
 
 constructor TJvParameterPropertyValues.Create;
 begin
@@ -665,7 +665,7 @@ begin
   AddObject(AName, Value)
 end;
 
-//=== TJvBaseParameter =======================================================
+//=== { TJvBaseParameter } ===================================================
 
 constructor TJvBaseParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -966,7 +966,7 @@ begin
   Result := GetParameterNameBase + GetParameterNameExt;
 end;
 
-//=== TJvParameterList =======================================================
+//=== { TJvParameterList } ===================================================
 
 constructor TJvParameterList.Create(AOwner: TComponent);
 begin
@@ -1708,7 +1708,7 @@ begin
   IntParameterList.Clear;
 end;
 
-//=== TJvParameterListPropertyStore ==========================================
+//=== { TJvParameterListPropertyStore } ======================================
 
 procedure TJvParameterListPropertyStore.LoadData;
 var
@@ -1754,7 +1754,7 @@ begin
           end;
 end;
 
-//=== TJvParameterListPropertyStore ==========================================
+//=== { TJvParameterListPropertyStore } ======================================
 
 function TJvParameterListSelectList.GetDynControlEngine: TJvDynControlEngine;
 begin

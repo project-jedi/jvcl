@@ -627,7 +627,7 @@ begin
 end;
 
 
-//=== TJvCustomSpinEdit ======================================================
+//=== { TJvCustomSpinEdit } ==================================================
 
 procedure TJvCustomSpinEdit.Change;
 var
@@ -1470,7 +1470,7 @@ begin
   end;
 end;
 
-//=== TJvSpinButton ==========================================================
+//=== { TJvSpinButton } ======================================================
 
 procedure TJvSpinButton.BottomClick;
 begin
@@ -1821,7 +1821,7 @@ begin
   end;
 end;
 
-//=== TJvSpinEdit ============================================================
+//=== { TJvSpinEdit } ========================================================
 
 // (rom) quite unusual not to have it in the Custom base class
 
@@ -1892,7 +1892,7 @@ begin
   end;
 end;
 
-//=== TJvUpDown ==============================================================
+//=== { TJvUpDown } ==========================================================
 
 constructor TJvUpDown.Create(AOwner: TComponent);
 begin
@@ -1975,7 +1975,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-//=== TSpinButtonBitmaps =====================================================
+//=== { TSpinButtonBitmaps } =================================================
 
 procedure TSpinButtonBitmaps.AddClient;
 begin
@@ -2667,7 +2667,7 @@ begin
   FResetOnDraw := True;
 end;
 
-//=== TSpinButtonBitmapsManager ==============================================
+//=== { TSpinButtonBitmapsManager } ==========================================
 
 procedure TSpinButtonBitmapsManager.AddClient;
 begin

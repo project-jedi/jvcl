@@ -448,8 +448,10 @@ begin
 end;
 *)
 
-{ TNoEventLabel }
+//=== { TNoEventLabel } ======================================================
+
 {$IFDEF VCL}
+
 procedure TNoEventLabel.Dispatch(var Message);
 begin
   with TMessage(Message) do
@@ -461,7 +463,7 @@ begin
     inherited;
 end;
 
-{ TNoEventGradient }
+//=== { TNoEventGradient } ===================================================
 
 procedure TNoEventGradient.Dispatch(var Message);
 begin
@@ -473,6 +475,7 @@ begin
   else
     inherited;
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}

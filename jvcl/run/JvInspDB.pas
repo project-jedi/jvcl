@@ -149,7 +149,7 @@ begin
     Result := AField.FieldName;
 end;
 
-//=== TJvInspectorDBData =====================================================
+//=== { TJvInspectorDBData } =================================================
 
 destructor TJvInspectorDBData.Destroy;
 begin
@@ -595,7 +595,7 @@ begin
   Field.AsInteger := TmpInt;
 end;
 
-//=== TJvInspectorTFieldTypeRegItem ==========================================
+//=== { TJvInspectorTFieldTypeRegItem } ======================================
 
 constructor TJvInspectorTFieldTypeRegItem.Create(const AFieldName, AFieldTable: string;
   const AFieldType: TFieldType;  ATypeInfo: PTypeInfo);

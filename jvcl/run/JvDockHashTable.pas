@@ -84,7 +84,7 @@ uses
   SysUtils,
   JvDockGlobals;
 
-//=== TJvDockControlHashTable ================================================
+//=== { TJvDockControlHashTable } ============================================
 
 constructor TJvDockControlHashTable.Create(Size: Integer; RiseExcept: Boolean);
 begin

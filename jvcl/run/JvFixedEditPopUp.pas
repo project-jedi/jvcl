@@ -182,7 +182,7 @@ begin
     GlobalHiddenPopup.UpdateItems;
 end;
 
-//=== THiddenPopupObject =====================================================
+//=== { THiddenPopupObject } =================================================
 
 function THiddenPopupObject.CanUndo: Boolean;
 begin

@@ -145,7 +145,7 @@ uses
   Math,
   JvJCLUtils;
 
-//=== TJvImageListViewerOptions ==============================================
+//=== { TJvImageListViewerOptions } ==========================================
 
 constructor TJvImageListViewerOptions.Create(AOwner: TJvCustomItemViewer);
 begin
@@ -192,7 +192,7 @@ begin
   end;
 end;
 
-//=== TJvImageListViewer =====================================================
+//=== { TJvImageListViewer } =================================================
 
 constructor TJvImageListViewer.Create(AOwner: TComponent);
 begin

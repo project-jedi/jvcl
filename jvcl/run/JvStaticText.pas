@@ -176,7 +176,7 @@ implementation
 uses
   JvJVCLUtils, JvThemes;
 
-//=== TJvCustomStaticText ====================================================
+//=== { TJvCustomStaticText } ================================================
 
 constructor TJvCustomStaticText.Create(AOwner: TComponent);
 begin
@@ -467,7 +467,7 @@ begin
   end;
 end;
 
-//=== TJvTextMargins =========================================================
+//=== { TJvTextMargins } =====================================================
 
 procedure TJvTextMargins.Change;
 begin

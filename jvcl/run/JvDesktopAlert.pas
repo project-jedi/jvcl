@@ -278,7 +278,7 @@ begin
   Result := FGlobalStacker;
 end;
 
-//=== TJvDesktopAlertChangePersistent ========================================
+//=== { TJvDesktopAlertChangePersistent } ====================================
 
 procedure TJvDesktopAlertChangePersistent.Change;
 begin
@@ -286,7 +286,7 @@ begin
     FOnChange(Self);
 end;
 
-//=== TJvDesktopAlertColors ==================================================
+//=== { TJvDesktopAlertColors } ==============================================
 
 constructor TJvDesktopAlertColors.Create;
 begin
@@ -361,7 +361,7 @@ begin
   end;
 end;
 
-//=== TJvDesktopAlertLocation ================================================
+//=== { TJvDesktopAlertLocation } ============================================
 
 constructor TJvDesktopAlertLocation.Create;
 begin
@@ -415,7 +415,7 @@ begin
   end;
 end;
 
-//=== TJvDesktopAlertButtonItem ==============================================
+//=== { TJvDesktopAlertButtonItem } ==========================================
 
 procedure TJvDesktopAlertButtonItem.Assign(Source: TPersistent);
 begin
@@ -432,7 +432,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== TJvDesktopAlertButtons =================================================
+//=== { TJvDesktopAlertButtons } =============================================
 
 constructor TJvDesktopAlertButtons.Create(AOwner: TPersistent);
 begin
@@ -471,7 +471,7 @@ begin
   inherited Items[Index] := Value;
 end;
 
-//=== TJvDesktopAlert ========================================================
+//=== { TJvDesktopAlert } ====================================================
 
 constructor TJvDesktopAlert.Create(AOwner: TComponent);
 begin
@@ -936,7 +936,7 @@ begin
   FDesktopForm.tbClose.OnClick := Value;
 end;
 
-//=== TJvDesktopAlertStack ===================================================
+//=== { TJvDesktopAlertStack } ===============================================
 
 constructor TJvDesktopAlertStack.Create(AOwner: TComponent);
 begin

@@ -230,7 +230,7 @@ begin
 end;
 }
 
-//=== TJvDivider =============================================================
+//=== { TJvDivider } =========================================================
 
 constructor TJvDivider.Create(AOwner: TComponent);
 begin
@@ -288,7 +288,7 @@ begin
     end;
 end;
 
-//=== TJvScrollButton ========================================================
+//=== { TJvScrollButton } ====================================================
 
 constructor TJvScrollButton.Create(AOwner: TComponent);
 begin
@@ -473,7 +473,7 @@ begin
   Invalidate;
 end;
 
-//=== TJvCustomScrollPanel ===================================================
+//=== { TJvCustomScrollPanel } ===============================================
 
 constructor TJvCustomScrollPanel.Create(AOwner: TComponent);
 begin
@@ -709,7 +709,7 @@ begin
   FDownRight.Visible := Visible;
 end;
 
-//=== TJvScrollingWindow =====================================================
+//=== { TJvScrollingWindow } =================================================
 
 constructor TJvScrollingWindow.Create(AComponent: TComponent);
 begin

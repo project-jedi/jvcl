@@ -367,7 +367,7 @@ begin
 end;
 }
 
-//=== TJvScroller ============================================================
+//=== { TJvScroller } ========================================================
 
 type
   TJvScroller = class(TPanel)
@@ -417,7 +417,7 @@ begin
 end;
 {$ENDIF VCL}
 
-//=== TJvPanelScrollBar ===========================================================
+//=== { TJvPanelScrollBar } =======================================================
 
 constructor TJvPanelScrollBar.Create(AOwner: TComponent);
 begin
@@ -541,7 +541,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-//=== TJvBandBtn =============================================================
+//=== { TJvBandBtn } =========================================================
 
 type
   TJvBandBtn = class(TJvNoFrameButton)
@@ -575,7 +575,7 @@ begin
     end;
 end;
 
-//=== TJvScrollMaxBand =======================================================
+//=== { TJvScrollMaxBand } ===================================================
 
 constructor TJvScrollMaxBand.Create(AOwner: TComponent);
 begin
@@ -967,7 +967,7 @@ begin
   ExpandedHeight := FExpandedHeight * M div D;
 end;
 
-//=== TJvScrollMaxBands ======================================================
+//=== { TJvScrollMaxBands } ==================================================
 
 procedure TJvScrollMaxBands.AlignControls(AControl: TControl; var Rect: TRect);
 var
@@ -1104,7 +1104,7 @@ begin
   end;
 end;
 
-//=== TJvScrollMax ===========================================================
+//=== { TJvScrollMax } =======================================================
 
 constructor TJvScrollMax.Create(AOwner: TComponent);
 begin

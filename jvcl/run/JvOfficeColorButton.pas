@@ -214,7 +214,7 @@ type
   TJvOfficeColorFormAccessProtected = class(TJvOfficeColorForm);
   TJvOfficeColorPanelAccessProtected = class(TJvOfficeColorPanel);
 
-//=== TJvColorArrowButton ====================================================
+//=== { TJvColorArrowButton } ================================================
 
 type
   TJvColorArrowButton = class(TJvColorSpeedButton)
@@ -288,7 +288,7 @@ begin
   DrawTriangle(Canvas, (Height div 2) - 2, (Width - FArrowWidth) div 2, FArrowWidth);
 end;
 
-//=== TJvColorMainButton =====================================================
+//=== { TJvColorMainButton } =================================================
 
 type
   TJvColorMainButton = class(TJvSubColorButton)
@@ -301,7 +301,7 @@ begin
   Result := FEdgeWidth;
 end;
 
-//=== TJvCustomOfficeColorButton =============================================
+//=== { TJvCustomOfficeColorButton } =========================================
 
 constructor TJvCustomOfficeColorButton.Create(AOwner: TComponent);
 begin
@@ -740,7 +740,7 @@ begin
   Properties.OtherCaption := Reader.ReadString;
 end;
 
-//=== TJvOfficeColorButtonProperties =========================================
+//=== { TJvOfficeColorButtonProperties } =====================================
 
 constructor TJvOfficeColorButtonProperties.Create;
 begin

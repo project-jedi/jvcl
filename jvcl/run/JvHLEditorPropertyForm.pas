@@ -208,7 +208,7 @@ begin
     Result := Result * Form.PixelsPerInch div 96;
 end;
 
-//=== TJvSampleViewer ========================================================
+//=== { TJvSampleViewer } ====================================================
 
 type
   TJvSampleViewer = class(TJvHLEditor)
@@ -282,7 +282,7 @@ begin
   (Owner as TJvHLEditorParamsForm).lbElementsClick((Owner as TJvHLEditorParamsForm).lbElements);
 end;
 
-//=== TJvHLEdPropDlg =========================================================
+//=== { TJvHLEdPropDlg } =====================================================
 
 constructor TJvHLEdPropDlg.Create(AOwner: TComponent);
 begin
@@ -584,7 +584,7 @@ begin
   end;
 end;
 
-//=== TJvHLEditorParamsForm ==================================================
+//=== { TJvHLEditorParamsForm } ==============================================
 
 constructor TJvHLEditorParamsForm.Create(AOwner: TComponent);
 var

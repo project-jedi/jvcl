@@ -822,7 +822,7 @@ begin
 end;
 *)
 
-//=== TJvDockVIDVCStyle ======================================================
+//=== { TJvDockVIDVCStyle } ==================================================
 
 constructor TJvDockVIDVCStyle.Create(AOwner: TComponent);
 begin
@@ -1111,7 +1111,7 @@ begin
     FSystemInfoChange(Value);
 end;
 
-//=== TJvDockVIDVCPanel ======================================================
+//=== { TJvDockVIDVCPanel } ==================================================
 
 function TJvDockVIDVCPanel.CreateDockManager: IDockManager;
 var
@@ -1189,7 +1189,7 @@ begin
   Invalidate;
 end;
 
-//=== TJvDockVIDVCTree =======================================================
+//=== { TJvDockVIDVCTree } ===================================================
 
 constructor TJvDockVIDVCTree.Create(DockSite: TWinControl;
   DockZoneClass: TJvDockZoneClass);
@@ -2406,7 +2406,7 @@ begin
   ReadControlName(Stream, CompName);
 end;
 
-//=== TJvDockVIDVCConjoinPanel ===============================================
+//=== { TJvDockVIDVCConjoinPanel } ===========================================
 
 function TJvDockVIDVCConjoinPanel.CreateDockManager: IDockManager;
 var
@@ -2484,7 +2484,7 @@ begin
   Invalidate;
 end;
 
-//=== TJvDockNewTabPageControl ===============================================
+//=== { TJvDockNewTabPageControl } ===========================================
 
 constructor TJvDockVIDVCTabPageControl.Create(AOwner: TComponent);
 begin
@@ -3048,7 +3048,7 @@ begin
   ActivePage := Value;
 end;
 
-//=== TJvDockTabPanel ========================================================
+//=== { TJvDockTabPanel } ====================================================
 
 constructor TJvDockTabPanel.Create(AOwner: TComponent);
 begin
@@ -3723,7 +3723,7 @@ begin
   Height := FTabHeight + FTabTopOffset + FTabBottomOffset;
 end;
 
-//=== TJvDockVIDVCTabSheet ===================================================
+//=== { TJvDockVIDVCTabSheet } ===============================================
 
 constructor TJvDockVIDVCTabSheet.Create(AOwner: TComponent);
 begin
@@ -3812,7 +3812,7 @@ begin
 end;
 {$ENDIF USEJVCL}
 
-//=== TJvDockVIDVCDragDockObject =============================================
+//=== { TJvDockVIDVCDragDockObject } =========================================
 
 constructor TJvDockVIDVCDragDockObject.Create(AControl: TControl);
 
@@ -4008,7 +4008,7 @@ begin
   Result := inherited CanLeave(NewTarget);
 end;
 
-//=== TJvDockVIDVCZone =======================================================
+//=== { TJvDockVIDVCZone } ===================================================
 
 function TJvDockVIDVCZone.GetSplitterLimit(IsMin: Boolean): Integer;
 begin
@@ -4229,7 +4229,7 @@ begin
     end;
 end;
 
-//=== TJvDockVIDVCTabServerOption ============================================
+//=== { TJvDockVIDVCTabServerOption } ========================================
 
 constructor TJvDockVIDVCTabServerOption.Create(ADockStyle: TJvDockBasicStyle);
 begin
@@ -4371,7 +4371,7 @@ begin
     raise Exception.Create(RsEDockTabPositionMustBetpBottom);
 end;
 
-///=== TJvDockVIDVCConjoinServerOption =======================================
+///=== { TJvDockVIDVCConjoinServerOption } ===================================
 
 constructor TJvDockVIDVCConjoinServerOption.Create(ADockStyle: TJvDockBasicStyle);
 begin

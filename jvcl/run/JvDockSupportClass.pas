@@ -202,7 +202,7 @@ type
 
 implementation
 
-//=== TJvDockBaseZone ========================================================
+//=== { TJvDockBaseZone } ====================================================
 
 constructor TJvDockBaseZone.Create(BaseTree: TJvDockBaseTree);
 begin
@@ -297,7 +297,7 @@ begin
   end;
 end;
 
-//=== TJvDockBaseTree ========================================================
+//=== { TJvDockBaseTree } ====================================================
 
 constructor TJvDockBaseTree.Create(TreeZone: TJvDockTreeZoneClass);
 begin
@@ -460,7 +460,7 @@ begin
   end;
 end;
 
-//=== TJvDockBaseGetFormEventComponent =======================================
+//=== { TJvDockBaseGetFormEventComponent } ===================================
 
 constructor TJvDockBaseGetFormEventComponent.Create(AOwner: TComponent);
 begin

@@ -361,7 +361,7 @@ type
 
   TJvUndoBufferAccessProtected = class(TJvUndoBuffer);
 
-//=== TJvEditorStrings =======================================================
+//=== { TJvEditorStrings } ===================================================
 
 constructor TJvEditorStrings.Create;
 begin
@@ -706,7 +706,7 @@ begin
   end;
 end;
 
-//=== TJvCustomEditor ========================================================
+//=== { TJvCustomEditor } ====================================================
 
 constructor TJvCustomEditor.Create(AOwner: TComponent);
 begin
@@ -2129,7 +2129,7 @@ begin
   end;
 end;
 
-//=== TJvInsertUndo ==========================================================
+//=== { TJvInsertUndo } ======================================================
 
 constructor TJvInsertUndo.Create(AJvEditor: TJvCustomEditor;
   ACaretX, ACaretY: Integer; const AText: string);
@@ -2173,7 +2173,7 @@ begin
   TJvCustomEditor(JvEditor).SetCaretInternal(du.CaretX, du.CaretY);
 end;
 
-//=== TJvOverwriteUndo =======================================================
+//=== { TJvOverwriteUndo } ===================================================
 
 constructor TJvOverwriteUndo.Create(AJvEditor: TJvCustomEditor;
   ACaretX, ACaretY: Integer; const AOldText, ANewText: string);
@@ -2220,7 +2220,7 @@ begin
   end;
 end;
 
-//=== TJvInsertColumnUndo ====================================================
+//=== { TJvInsertColumnUndo } ================================================
 
 procedure TJvInsertColumnUndo.Undo;
 var
@@ -2249,7 +2249,7 @@ begin
   GetEditor.SetCaretInternal(CaretX, CaretY);
 end;
 
-//=== TJvUnindentColumnUndo ====================================================
+//=== { TJvUnindentColumnUndo } ================================================
 
 constructor TJvUnindentColumnUndo.Create(AJvEditor: TJvCustomEditor;
   ACaretX, ACaretY, ABegX, ABegY: Integer; const AText: string);
@@ -2291,7 +2291,7 @@ begin
     GetEditor.SetCaretInternal(CaretX, CaretY);
 end;
 
-//=== TJvDeleteUndo ==========================================================
+//=== { TJvDeleteUndo } ======================================================
 
 procedure TJvDeleteUndo.Undo;
 var
@@ -2320,7 +2320,7 @@ begin
 end;
 
 
-//=== TJvDeleteLineUndo ==========================================================
+//=== { TJvDeleteLineUndo } ======================================================
 
 {procedure TJvDeleteLineUndo.Redo;
 begin
@@ -2339,7 +2339,7 @@ begin
   GetEditor.SetCaretInternal(CaretX, CaretY);
 end;
 
-//=== TJvBackspaceUndo =======================================================
+//=== { TJvBackspaceUndo } ===================================================
 
 procedure TJvBackspaceUndo.Undo;
 var
@@ -2400,7 +2400,7 @@ begin
   end;
 end;
 
-//=== TJvReplaceUndo =========================================================
+//=== { TJvReplaceUndo } =====================================================
 
 constructor TJvReplaceUndo.Create(AJvEditor: TJvCustomEditor;
   ACaretX, ACaretY: Integer; ABegX, ABegY: Integer; const AText, ANewText: string);
@@ -2429,7 +2429,7 @@ begin
   GetEditor.SetCaretInternal(CaretX, CaretY);
 end;
 
-//=== TJvDeleteSelectedUndo ==================================================
+//=== { TJvDeleteSelectedUndo } ==============================================
 
 constructor TJvDeleteSelectedUndo.Create(AJvEditor: TJvCustomEditor;
   ACaretX, ACaretY: Integer; const AText: string);
@@ -2467,7 +2467,7 @@ begin
   end;
 end;
 
-//=== TJvEditorCompletion ====================================================
+//=== { TJvEditorCompletion } ================================================
 
 constructor TJvCompletion.Create(AJvEditor: TJvCustomEditor);
 begin

@@ -1939,7 +1939,7 @@ begin
   FErrorCode := AErrorCode;
 end;
 
-//=== TConversionFormatList ==================================================
+//=== { TConversionFormatList } ==============================================
 
 constructor TConversionFormatList.Create;
 begin
@@ -2011,7 +2011,7 @@ begin
   Result := inherited Items[Index] as TJvConversion;
 end;
 
-//=== TImageDataObject =======================================================
+//=== { TImageDataObject } ===================================================
 
 constructor TImageDataObject.Create(ABitmap: TBitmap);
 begin
@@ -2137,7 +2137,7 @@ begin
   Result := E_NOTIMPL;
 end;
 
-//=== TJvConversion ==========================================================
+//=== { TJvConversion } ======================================================
 
 function TJvConversion.CanHandle(const AKind: TJvConversionKind): Boolean;
 begin
@@ -2239,7 +2239,7 @@ begin
   Result := False;
 end;
 
-//=== TJvCustomRichEdit ======================================================
+//=== { TJvCustomRichEdit } ==================================================
 
 constructor TJvCustomRichEdit.Create(AOwner: TComponent);
 var
@@ -4181,7 +4181,7 @@ begin
   end;
 end;
 
-//=== TJvMSTextConversion ====================================================
+//=== { TJvMSTextConversion } ================================================
 
 constructor TJvMSTextConversion.Create(const AConverterFileName, AExtensions,
   ADescription: string; const AKind: TJvConversionKind);
@@ -4756,7 +4756,7 @@ begin
   end;
 end;
 
-//=== TJvOEMConversion =======================================================
+//=== { TJvOEMConversion } ===================================================
 
 function TJvOEMConversion.ConvertRead(Buffer: PChar;
   BufSize: Integer): Integer;
@@ -4793,7 +4793,7 @@ begin
   Result := ctkBothPreferRTF;
 end;
 
-//=== TJvParaAttributes ======================================================
+//=== { TJvParaAttributes } ==================================================
 
 constructor TJvParaAttributes.Create(AOwner: TJvCustomRichEdit);
 begin
@@ -5428,7 +5428,7 @@ begin
   SetAttributes(Paragraph);
 end;
 
-//=== TJvRichEditStrings =====================================================
+//=== { TJvRichEditStrings } =================================================
 
 procedure TJvRichEditStrings.AddStrings(Strings: TStrings);
 var
@@ -5881,7 +5881,7 @@ begin
   end;
 end;
 
-//=== TJvRTFConversion =======================================================
+//=== { TJvRTFConversion } ===================================================
 
 function TJvRTFConversion.CanHandle(const AExtension: string;
   const AKind: TJvConversionKind): Boolean;
@@ -5936,7 +5936,7 @@ begin
   Result := ctkBothPreferRTF;
 end;
 
-//=== TJvStreamConversion ====================================================
+//=== { TJvStreamConversion } ================================================
 
 function TJvStreamConversion.ConvertRead(Buffer: PChar;
   BufSize: Integer): Integer;
@@ -6008,7 +6008,7 @@ begin
   end;
 end;
 
-//=== TJvTextAttributes ======================================================
+//=== { TJvTextAttributes } ==================================================
 
 constructor TJvTextAttributes.Create(AOwner: TJvCustomRichEdit;
   AttributeType: TJvAttributeType);
@@ -6661,7 +6661,7 @@ begin
   SetAttributes(Format);
 end;
 
-//=== TJvTextConversion ======================================================
+//=== { TJvTextConversion } ==================================================
 
 function TJvTextConversion.CanHandle(const AExtension: string;
   const AKind: TJvConversionKind): Boolean;
@@ -6679,7 +6679,7 @@ begin
   Result := ctkBothPreferText;
 end;
 
-//=== TMSTextConversionThread ================================================
+//=== { TMSTextConversionThread } ============================================
 
 constructor TMSTextConversionThread.Create;
 begin
@@ -6693,7 +6693,7 @@ begin
     GCurrentConverter.DoConversion;
 end;
 
-//=== TOleUILinkInfo =========================================================
+//=== { TOleUILinkInfo } =====================================================
 
 constructor TOleUILinkInfo.Create(ARichEdit: TJvCustomRichEdit;
   ReObject: TReObject);
@@ -6813,7 +6813,7 @@ begin
   Result := S_OK;
 end;
 
-//=== TOleUIObjInfo ==========================================================
+//=== { TOleUIObjInfo } ======================================================
 
 constructor TOleUIObjInfo.Create(ARichEdit: TJvCustomRichEdit;
   ReObject: TReObject);
@@ -6900,7 +6900,7 @@ begin
     Result := E_NOTIMPL;
 end;
 
-//=== TRichEditOleCallback ===================================================
+//=== { TRichEditOleCallback } ===============================================
 
 constructor TRichEditOleCallback.Create(ARichEdit: TJvCustomRichEdit);
 begin

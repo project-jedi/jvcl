@@ -554,7 +554,7 @@ begin
   end;
 end;
 
-//=== TJvDockVSNetStyle ======================================================
+//=== { TJvDockVSNetStyle } ==================================================
 
 constructor TJvDockVSNetStyle.Create(AOwner: TComponent);
 begin
@@ -918,7 +918,7 @@ begin
   end;
 end;
 
-//=== TJvDockVSNETTree =======================================================
+//=== { TJvDockVSNETTree } ===================================================
 
 constructor TJvDockVSNETTree.Create(DockSite: TWinControl;
   DockZoneClass: TJvDockZoneClass);
@@ -1325,7 +1325,7 @@ begin
   Stream.Position := Stream.Position + 1;
 end;
 
-//=== TJvDockVSNETConjoinServerOption ========================================
+//=== { TJvDockVSNETConjoinServerOption } ====================================
 
 constructor TJvDockVSNETConjoinServerOption.Create(ADockStyle: TJvDockBasicStyle);
 begin
@@ -1348,7 +1348,7 @@ begin
   SetInactiveTitleEndColor_WithoutChangeSystemInfo(clBtnFace);
 end;
 
-//=== TJvDockVSNETTabServerOption ============================================
+//=== { TJvDockVSNETTabServerOption } ========================================
 
 constructor TJvDockVSNETTabServerOption.Create(ADockStyle: TJvDockBasicStyle);
 begin
@@ -1358,7 +1358,7 @@ begin
   ShowTabImages := True;
 end;
 
-//=== TJvDockVSNETZone =======================================================
+//=== { TJvDockVSNETZone } ===================================================
 
 constructor TJvDockVSNETZone.Create(Tree: TJvDockTree);
 begin
@@ -1436,7 +1436,7 @@ begin
   FVSPaneVisible := Value;
 end;
 
-//=== TJvDockVSNETTabPanel ===================================================
+//=== { TJvDockVSNETTabPanel } ===============================================
 
 constructor TJvDockVSNETTabPanel.Create(AOwner: TComponent);
 begin
@@ -1445,7 +1445,7 @@ begin
   CaptionTopOffset := 1;
 end;
 
-//=== TJvDockVSNETTabPageControl =============================================
+//=== { TJvDockVSNETTabPageControl } =========================================
 
 constructor TJvDockVSNETTabPageControl.Create(AOwner: TComponent);
 begin
@@ -1459,7 +1459,7 @@ begin
   inherited ShowControl(AControl);
 end;
 
-//=== TJvDockVSChannel =======================================================
+//=== { TJvDockVSChannel } ===================================================
 
 constructor TJvDockVSChannel.Create(AOwner: TComponent);
 begin
@@ -2094,7 +2094,7 @@ begin
   end;
 end;
 
-//=== TJvDockVSBlock =========================================================
+//=== { TJvDockVSBlock } =====================================================
 
 constructor TJvDockVSBlock.Create(Owner: TJvDockVSChannel);
 begin
@@ -2239,7 +2239,7 @@ begin
   FVSPaneList.Delete(Index);
 end;
 
-//=== TJvDockVSNETPanel ======================================================
+//=== { TJvDockVSNETPanel } ==================================================
 
 constructor TJvDockVSNETPanel.Create(AOwner: TComponent);
 begin
@@ -2344,7 +2344,7 @@ begin
     CreateVSChannel;
 end;
 
-//=== TJvDockVSPane ==========================================================
+//=== { TJvDockVSPane } ======================================================
 
 constructor TJvDockVSPane.Create(ABlock: TJvDockVSBlock; AForm: TForm;
   AWidth: Integer; AIndex: Integer);
@@ -2359,7 +2359,7 @@ begin
   FVisible := AForm.Visible;
 end;
 
-//=== TJvDockVSPopupPanel ====================================================
+//=== { TJvDockVSPopupPanel } ================================================
 
 constructor TJvDockVSPopupPanel.Create(AOwner: TComponent);
 begin
@@ -2411,7 +2411,7 @@ begin
     inherited ShowDockPanel(MakeVisible, Client, PanelSizeFrom);
 end;
 
-//=== TJvDockVSNETTabSheet ===================================================
+//=== { TJvDockVSNETTabSheet } ===============================================
 
 constructor TJvDockVSNETTabSheet.Create(AOwner: TComponent);
 begin
@@ -2424,7 +2424,7 @@ begin
   FOldVisible := Value;
 end;
 
-//=== TJvDockVSPopupPanelSplitter ============================================
+//=== { TJvDockVSPopupPanelSplitter } ========================================
 
 constructor TJvDockVSPopupPanelSplitter.Create(AOwner: TComponent);
 begin
@@ -2782,7 +2782,7 @@ begin
   FSplitWidth := Value;
 end;
 
-//=== TPopupPanelAnimate =====================================================
+//=== { TPopupPanelAnimate } =================================================
 
 constructor TPopupPanelAnimate.Create(AOwner: TComponent);
 begin
@@ -2968,7 +2968,7 @@ begin
   end;
 end;
 
-//=== TJvDockVSNETChannelOption ==============================================
+//=== { TJvDockVSNETChannelOption } ==========================================
 
 constructor TJvDockVSNETChannelOption.Create(ADockStyle: TJvDockBasicStyle);
 begin
@@ -3073,8 +3073,8 @@ begin
   FShowImage := Value;
 end;
 
-{ (ahuer) not used:
-//=== TJvDockAppEvents =======================================================
+//=== { TJvDockAppEvents } ===================================================
+{ (ahuser) not used:
 
 constructor TJvDockAppEvents.Create(AOwner: TComponent);
 begin

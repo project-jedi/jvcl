@@ -137,7 +137,7 @@ implementation
 uses
   JvResources;
 
-//=== TJvPlugin ==============================================================
+//=== { TJvPlugin } ==========================================================
 
 constructor TJvPlugIn.Create(AOwner: TComponent);
 begin
@@ -225,7 +225,7 @@ begin
   TriggerPluginMessageEvent(APluginMessage, AMessageText);
 end;
 
-//=== TJvPluginCommand =======================================================
+//=== { TJvPluginCommand } ===================================================
 
 constructor TJvPluginCommand.Create(Collection: TCollection);
 begin
@@ -252,7 +252,7 @@ begin
   FBitmap.Assign(Value)
 end;
 
-//=== TJvPluginCommands ======================================================
+//=== { TJvPluginCommands } ==================================================
 
 constructor TJvPluginCommands.Create(APlugIn: TJvPlugIn);
 begin

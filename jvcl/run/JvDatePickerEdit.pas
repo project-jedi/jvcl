@@ -314,7 +314,7 @@ uses
 const
   DateMaskSuffix = '!;1;_';
 
-//=== TJvCustomDatePickerEdit ================================================
+//=== { TJvCustomDatePickerEdit } ============================================
 
 function TJvCustomDatePickerEdit.ActiveFigure: TJvDateFigureInfo;
 var
@@ -1039,7 +1039,7 @@ begin
   end;
 end;
 
-//=== TJvDropCalendar ========================================================
+//=== { TJvDropCalendar } ====================================================
 
 procedure TJvDropCalendar.CalKeyPress(Sender: TObject; var Key: Char);
 begin

@@ -391,7 +391,7 @@ const
 type
   PStrings = ^TStrings;
 
-//=== TJvListBoxStrings ======================================================
+//=== { TJvListBoxStrings } ==================================================
 
 constructor TJvListBoxStrings.Create;
 begin
@@ -698,7 +698,7 @@ begin
   end;
 end;
 
-//=== TJvCustomListBox =======================================================
+//=== { TJvCustomListBox } ===================================================
 
 constructor TJvCustomListBox.Create(AOwner: TComponent);
 var
@@ -2105,7 +2105,7 @@ begin
   inherited WndProc(Msg);
 end;
 
-//=== TJvListBoxBackground ===================================================
+//=== { TJvListBoxBackground } ===============================================
 
 constructor TJvListBoxBackground.Create;
 begin

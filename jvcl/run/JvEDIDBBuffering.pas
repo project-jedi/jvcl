@@ -224,7 +224,7 @@ const
   Default_SegmentKeyPrefix = '';
   Default_ElementNonKeyPrefix = 'E';
 
-//=== TJvEDIDBProfiler =======================================================
+//=== { TJvEDIDBProfiler } ===================================================
 
 constructor TJvEDIDBProfiler.Create(AOwner: TComponent);
 begin
@@ -341,7 +341,7 @@ begin
   end;
 end;
 
-//=== TJvEDIDBSpecProfiler ===================================================
+//=== { TJvEDIDBSpecProfiler } ===============================================
 
 procedure TJvEDIDBSpecProfiler.BuildProfile(EDIFileSpec: TEDIFileSpec);
 var
@@ -397,7 +397,7 @@ begin
   ElementList.Free;
 end;
 
-//=== TJvEDIDBSEFProfiler ====================================================
+//=== { TJvEDIDBSEFProfiler } ================================================
 
 procedure TJvEDIDBSEFProfiler.BuildProfile(EDISEFFile: TEDISEFFile);
 var
@@ -467,7 +467,7 @@ begin
   end;
 end;
 
-//=== TJclEDIFieldDef ========================================================
+//=== { TJclEDIFieldDef } ====================================================
 
 constructor TJvEDIFieldDef.Create(Collection: TCollection);
 begin
@@ -475,7 +475,7 @@ begin
   FUpdateStatus := usUnmodified;
 end;
 
-//=== TJvEDIFieldDefs ========================================================
+//=== { TJvEDIFieldDefs } ====================================================
 
 function TJvEDIFieldDefs.Add: TJvEDIFieldDef;
 begin
@@ -497,7 +497,7 @@ begin
   inherited Update(Item);
 end;
 
-//=== TJvEDIDBBuffer =========================================================
+//=== { TJvEDIDBBuffer } =====================================================
 
 constructor TJvEDIDBBuffer.Create(AOwner: TComponent);
 begin

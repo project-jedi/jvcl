@@ -231,7 +231,7 @@ implementation
 uses
   JvDotNetUtils;
 
-//=== TJvDotNetCheckListBox ==================================================
+//=== { TJvDotNetCheckListBox } ==============================================
 
 constructor TJvDotNetCheckListBox.Create(AOwner: TComponent);
 begin
@@ -252,7 +252,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetEdit ==========================================================
+//=== { TJvDotNetEdit } ======================================================
 
 constructor TJvDotNetEdit.Create(AOwner: TComponent);
 begin
@@ -273,7 +273,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetHotKey ========================================================
+//=== { TJvDotNetHotKey } ====================================================
 
 constructor TJvDotNetHotKey.Create(AOwner: TComponent);
 begin
@@ -294,7 +294,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetListBox =======================================================
+//=== { TJvDotNetListBox } ===================================================
 
 constructor TJvDotNetListBox.Create(AOwner: TComponent);
 begin
@@ -315,7 +315,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetListView ======================================================
+//=== { TJvDotNetListView } ==================================================
 
 constructor TJvDotNetListView.Create(AOwner: TComponent);
 begin
@@ -336,7 +336,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetMaskEdit ======================================================
+//=== { TJvDotNetMaskEdit } ==================================================
 
 constructor TJvDotNetMaskEdit.Create(AOwner: TComponent);
 begin
@@ -357,7 +357,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetMemo ==========================================================
+//=== { TJvDotNetMemo } ======================================================
 
 constructor TJvDotNetMemo.Create(AOwner: TComponent);
 begin
@@ -378,7 +378,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetRichEdit ======================================================
+//=== { TJvDotNetRichEdit } ==================================================
 
 constructor TJvDotNetRichEdit.Create(AOwner: TComponent);
 begin
@@ -399,7 +399,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetScrollBox =====================================================
+//=== { TJvDotNetScrollBox } =================================================
 
 constructor TJvDotNetScrollBox.Create(AOwner: TComponent);
 begin
@@ -420,7 +420,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetTreeView ======================================================
+//=== { TJvDotNetTreeView } ==================================================
 
 constructor TJvDotNetTreeView.Create(AOwner: TComponent);
 begin
@@ -443,7 +443,7 @@ end;
 
 {$IFDEF USEJVCL}
 
-//=== TJvDotNetFilenameEdit ==================================================
+//=== { TJvDotNetFilenameEdit } ==============================================
 
 constructor TJvDotNetFilenameEdit.Create(AOwner: TComponent);
 begin
@@ -464,7 +464,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetDirectoryEdit =================================================
+//=== { TJvDotNetDirectoryEdit } =============================================
 
 constructor TJvDotNetDirectoryEdit.Create(AOwner: TComponent);
 begin
@@ -487,7 +487,7 @@ end;
 
 {$ENDIF USEJVCL}
 
-//=== TJvDotNetButton ========================================================
+//=== { TJvDotNetButton } ====================================================
 
 constructor TJvDotNetButton.Create(AOwner: TComponent);
 begin
