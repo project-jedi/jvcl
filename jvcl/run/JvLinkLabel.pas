@@ -33,9 +33,6 @@ Description:
         Doc\Readme.txt!
 -----------------------------------------------------------------------------}
 
-// Bianconi
-// Known Bugs
-
 unit JvLinkLabel;
 
 interface
@@ -60,6 +57,7 @@ type
     FRenderer: IRenderer;
     FActiveLinkNode: TLinkNode;
     FHotLinks: Boolean;
+    FLinkCursor : TCursor;  // Bianconi
 //    FRect: TRect;
     FAutoHeight: Boolean;
     FMarginWidth: Integer;
@@ -75,6 +73,8 @@ type
     function GetLinkStyle: TFontStyles;
     procedure SetLinkColor(const Value: TColor);
     procedure SetLinkStyle(const Value: TFontStyles);
+    function GetLinkCursor : TCursor;                     // Bianconi
+    procedure SetLinkCursor(AValue : TCursor);            // Bianconi
     procedure SynchronizeRootAndFont;
     function GetLinkColorClicked: TColor;
     procedure SetLinkColorClicked(const Value: TColor);
@@ -117,6 +117,7 @@ type
     property LinkColor: TColor read GetLinkColor write SetLinkColor;
     property LinkColorClicked: TColor read GetLinkColorClicked write SetLinkColorClicked;
     property LinkColorHot: TColor read GetLinkColorHot write SetLinkColorHot;
+    property LinkCursor : TCursor read GetLinkCursor write SetLinkCursor default crHandPoint;
     property LinkStyle: TFontStyles read GetLinkStyle write SetLinkStyle;
     property HotLinks: Boolean read FHotLinks write FHotLinks;
     property AutoHeight: Boolean read FAutoHeight write SetAutoHeight;
@@ -145,6 +146,7 @@ type
     property LinkColor;
     property LinkColorClicked;
     property LinkColorHot;
+    property LinkCursor;               // Bianconi
     property LinkStyle;
     property HotLinks;
     property AutoHeight;
@@ -183,7 +185,8 @@ implementation
 uses
   JvThemes;
 
-{$R ..\resources\JvLinkLabel.res}
+// Bianconi - Use property LinkCursor
+//{.$R ..\resources\JvLinkLabel.res}
 
 resourcestring
   sUnableToLocateMode = 'Unable to locate specified node';
@@ -277,6 +280,7 @@ end;
 constructor TJvCustomLinkLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FLinkCursor := crHandPoint;
   FText := TStringList.Create;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
   IncludeThemeStyle(Self, [csParentBackground]);
@@ -297,7 +301,7 @@ begin
   SetLinkColorHot(clPurple);
   SetLinkStyle([fsUnderline]);
 
-  Screen.Cursors[crNewLinkHand] := LoadCursor(HInstance, 'LINKHAND');
+  //  Screen.Cursors[crNewLinkHand] := LoadCursor(HInstance, 'LINKHAND');  // Bianconi
 end;
 
 function TJvCustomLinkLabel.CreateParser: IParser;
@@ -423,7 +427,7 @@ begin
 
   if FNodeTree.IsPointInNodeClass(ptP, TLinkNode) then
   begin
-    Cursor := crNewLinkHand;
+    Cursor := LinkCursor;
     if FHotLinks and not IsActiveLinkNodeClicked then
       ActivateLinkNodeAtPos(Point(X, Y), lsHot);
   end
@@ -609,6 +613,19 @@ begin
     FRenderer.LinkStyle := Value;
     Invalidate;
   end;
+end;
+
+// Bianconi
+function TJvCustomLinkLabel.GetLinkCursor : TCursor;
+begin
+  Result := FLinkCursor;
+end;
+
+// Bianconi
+procedure TJvCustomLinkLabel.SetLinkCursor(AValue : TCursor);
+begin
+  if( FLinkCursor = AValue ) then Exit;
+  FLinkCursor := AValue;
 end;
 
 procedure TJvCustomLinkLabel.SetMarginHeight(const Value: Integer);
