@@ -23,80 +23,77 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvSimPID;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms;
 
 type
   TJvSymFunc = (sfPid, sfAdd, sfCompare, sfRamp, sfMul);
+
   TJvSimPID = class(TGraphicControl)
   private
-    //    fSymFunc:TJvSymFunc;
-    FMV: extended;
-    FMVColor: tcolor;
-    FSP: extended;
-    FSPColor: tcolor;
-    FCV: extended;
-    FCVColor: tcolor;
-    FKD: extended;
-    FKP: extended;
-    FKI: extended;
-    FI: extended;
-    FD: extended;
-    FDirect: boolean;
-    FManual: boolean;
+    FMV: Extended;
+    FMVColor: TColor;
+    FSP: Extended;
+    FSPColor: TColor;
+    FCV: Extended;
+    FCVColor: TColor;
+    FKD: Extended;
+    FKP: Extended;
+    FKI: Extended;
+    FI: Extended;
+    FD: Extended;
+    FDirect: Boolean;
+    FManual: Boolean;
     FSource: TJvSimPID;
-    FActive: boolean;
+    FActive: Boolean;
     FSymFunc: TJvSymFunc;
-    procedure SetMV(value: extended);
-    procedure SetMVColor(value: tcolor);
-    procedure SetSP(const Value: extended);
-    procedure SetSPColor(const Value: tcolor);
-    procedure SetCV(const Value: extended);
-    procedure SetCVColor(const Value: tcolor);
-    procedure SetKD(const Value: extended);
-    procedure SetKI(const Value: extended);
-    procedure SetKP(const Value: extended);
+    procedure SetMV(Value: Extended);
+    procedure SetMVColor(Value: TColor);
+    procedure SetSP(const Value: Extended);
+    procedure SetSPColor(const Value: TColor);
+    procedure SetCV(const Value: Extended);
+    procedure SetCVColor(const Value: TColor);
+    procedure SetKD(const Value: Extended);
+    procedure SetKI(const Value: Extended);
+    procedure SetKP(const Value: Extended);
     procedure CalcOut;
-    procedure SetDirect(const Value: boolean);
-    procedure SetManual(const Value: boolean);
+    procedure SetDirect(const Value: Boolean);
+    procedure SetManual(const Value: Boolean);
     procedure SetSource(const Value: TJvSimPID);
-    procedure SetActive(const Value: boolean);
+    procedure SetActive(const Value: Boolean);
     procedure SetSymFunc(const Value: TJvSymFunc);
-    { Private declarations }
-
   protected
     procedure Paint; override;
-    { Protected declarations }
-
   public
-    constructor Create(Aowner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     procedure Execute;
-    { Public declarations }
-
   published
     property SymFunc: TJvSymFunc read FSymFunc write SetSymFunc;
     property Source: TJvSimPID read FSource write SetSource;
-    property MV: extended read FMV write SetMV;
-    property MVColor: tcolor read FMVColor write SetMVColor;
-    property SP: extended read FSP write SetSP;
-    property SPColor: tcolor read FSPColor write SetSPColor;
-    property CV: extended read FCV write SetCV;
-    property CVColor: tcolor read FCVColor write SetCVColor;
-    property KP: extended read FKP write SetKP;
-    property KI: extended read FKI write SetKI;
-    property KD: extended read FKD write SetKD;
-    property Direct: boolean read FDirect write SetDirect;
-    property Manual: boolean read FManual write SetManual;
-    property Active: boolean read FActive write SetActive;
-    property Color;
+    property MV: Extended read FMV write SetMV;
+    property MVColor: TColor read FMVColor write SetMVColor default clRed;
+    property SP: Extended read FSP write SetSP;
+    property SPColor: TColor read FSPColor write SetSPColor default clLime;
+    property CV: Extended read FCV write SetCV;
+    property CVColor: TColor read FCVColor write SetCVColor default clYellow;
+    property KP: Extended read FKP write SetKP;
+    property KI: Extended read FKI write SetKI;
+    property KD: Extended read FKD write SetKD;
+    property Direct: Boolean read FDirect write SetDirect default False;
+    property Manual: Boolean read FManual write SetManual default False;
+    property Active: Boolean read FActive write SetActive default False;
     property Align;
+    property Color default clWhite;
+    property Height default 100;
     property Visible;
+    property Width default 20;
     property ShowHint;
     property PopupMenu;
     property OnMouseDown;
@@ -104,107 +101,20 @@ type
     property OnMouseUp;
     property OnClick;
     property OnDblClick;
-    { Published declarations }
-
   end;
 
 implementation
 
-var
-  drawrect: trect;
-
-procedure TJvSimPID.SetMV(value: extended);
-var
-  MVold: extended;
+constructor TJvSimPID.Create(AOwner: TComponent);
 begin
-  MVold := FMV;
-  if value <> FMV then
-  begin
-    if Value > 100 then
-      MV := 100
-    else if Value < 0 then
-      MV := 0
-    else
-      FMV := value;
-  end;
-  FI := FI + KI * (FMV - FSP);
-  if FI > 50 then FI := 50;
-  if FI < -50 then FI := -50;
-  FD := KD * (FMV - MVold);
-  if FD > 50 then FD := 50;
-  if FD < -50 then FD := -50;
-  CalcOut;
-end;
-
-procedure TJvSimPID.SetMVColor(value: tcolor);
-begin
-  if value <> FMVColor then
-  begin
-    FMVColor := value;
-    invalidate;
-  end;
-end;
-
-procedure TJvSimPID.Paint;
-var
-  buff, bw: integer;
-  R: trect;
-begin
-  Drawrect := Clientrect;
-  with Canvas, drawrect do
-  begin
-    Pen.color := clgray;
-    Pen.width := 1;
-    Rectangle(left, top, right, bottom);
-    inflaterect(Drawrect, -1, -1);
-    R := DrawRect;
-    bw := (R.right - R.left) div 3;
-    // first draw the Measured Value
-    Brush.Color := MVColor;
-    Buff := DrawRect.Top;
-    Drawrect.top := Drawrect.top + round((100 - MV) * (bottom - top) / 100);
-    DrawRect.left := R.left + bw;
-    DrawRect.right := R.right - bw;
-    FillRect(Drawrect);
-    Drawrect.bottom := Drawrect.top;
-    Drawrect.top := Buff;
-    Brush.color := color;
-    Fillrect(Drawrect);
-    // and now the SetPoint
-    DrawRect := R;
-    Brush.Color := SPColor;
-    Buff := DrawRect.Top;
-    Drawrect.top := Drawrect.top + round((100 - SP) * (bottom - top) / 100);
-    Drawrect.right := R.left + bw;
-    FillRect(Drawrect);
-    Drawrect.bottom := Drawrect.top;
-    Drawrect.top := Buff;
-    Brush.color := color;
-    Fillrect(Drawrect);
-    // draw the Corrective Value (CV)
-    DrawRect := R;
-    Brush.Color := CVColor;
-    Buff := DrawRect.Top;
-    Drawrect.top := Drawrect.top + round((100 - CV) * (bottom - top) / 100);
-    Drawrect.left := R.right - bw;
-    FillRect(Drawrect);
-    Drawrect.bottom := Drawrect.top;
-    Drawrect.top := Buff;
-    Brush.color := color;
-    Fillrect(Drawrect);
-  end;
-end;
-
-constructor TJvSimPID.Create(Aowner: tcomponent);
-begin
-  inherited Create(Aowner);
-  color := clwhite;
-  MVcolor := clRed;
+  inherited Create(AOwner);
+  Color := clWhite;
+  MVColor := clRed;
   SPColor := clLime;
-  CVcolor := clyellow;
-  Direct := false;
-  Manual := false;
-  Active := false;
+  CVcolor := clYellow;
+  Direct := False;
+  Manual := False;
+  Active := False;
   FMV := 50;
   FSP := 50;
   FCV := 50;
@@ -215,89 +125,169 @@ begin
   Height := 100;
 end;
 
-procedure TJvSimPID.SetSP(const Value: extended);
+procedure TJvSimPID.SetMV(Value: Extended);
+var
+  MVOld: Extended;
 begin
-  if value <> FSP then
+  MVOld := FMV;
+  if Value <> FMV then
   begin
     if Value > 100 then
-      SP := 100
-    else if Value < 0 then
-      SP := 0
+      MV := 100
     else
-      FSP := value;
+    if Value < 0 then
+      MV := 0
+    else
+      FMV := Value;
+  end;
+  FI := FI + KI * (FMV - FSP);
+  if FI > 50 then
+    FI := 50;
+  if FI < -50 then
+    FI := -50;
+  FD := KD * (FMV - MVOld);
+  if FD > 50 then
+    FD := 50;
+  if FD < -50 then
+    FD := -50;
+  CalcOut;
+end;
+
+procedure TJvSimPID.SetMVColor(Value: TColor);
+begin
+  if Value <> FMVColor then
+  begin
+    FMVColor := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvSimPID.Paint;
+var
+  bw: Integer;
+  DrawRect: TRect;
+
+  procedure DrawValue(Left, Right: Integer; Value: Extended; AColor: TColor);
+  var
+    R: TRect;
+  begin
+    R.Left := Left;
+    R.Right := Right;
+    R.Top := DrawRect.Top + Round((100 - Value) *
+      (DrawRect.Bottom - DrawRect.Top) / 100);
+    R.Bottom := DrawRect.Bottom;
+    Canvas.Brush.Color := AColor;
+    Canvas.FillRect(R);
+    Canvas.Brush.Color := Color;
+    R.Bottom := R.Top;
+    R.Top := DrawRect.Top;
+    Canvas.FillRect(R);
+  end;
+
+begin
+  DrawRect := ClientRect;
+  with Canvas, DrawRect do
+  begin
+    Pen.Color := clGray;
+    Pen.Width := 1;
+    Rectangle(Left, Top, Right, Bottom);
+    InflateRect(DrawRect, -1, -1);
+
+    bw := (Right - Left) div 3;
+    // first draw the Measured Value
+    DrawValue(Left + bw, Right - bw, SP, SPColor);
+    // and now the SetPoint
+    DrawValue(Left, Left + bw, MV, MVColor);
+    // draw the Corrective Value (CV)
+    DrawValue(Right - bw, Right, CV, CVColor);
+  end;
+end;
+
+procedure TJvSimPID.SetSP(const Value: Extended);
+begin
+  if Value <> FSP then
+  begin
+    if Value > 100 then
+      FSP := 100
+    else
+    if Value < 0 then
+      FSP := 0
+    else
+      FSP := Value;
     CalcOut;
   end;
 end;
 
-procedure TJvSimPID.SetSPColor(const Value: tcolor);
+procedure TJvSimPID.SetSPColor(const Value: TColor);
 begin
-  if value <> FSPColor then
+  if Value <> FSPColor then
   begin
-    FSPColor := value;
-    invalidate;
+    FSPColor := Value;
+    Invalidate;
   end;
-
 end;
 
-procedure TJvSimPID.SetCV(const Value: extended);
+procedure TJvSimPID.SetCV(const Value: Extended);
 begin
-  if value <> FCV then
+  if Value <> FCV then
   begin
     if Value > 100 then
-      CV := 100
-    else if Value < 0 then
-      CV := 0
+      FCV := 100
     else
-      FCV := value;
+    if Value < 0 then
+      FCV := 0
+    else
+      FCV := Value;
   end;
-  invalidate;
-  ;
+  Invalidate;
 end;
 
-procedure TJvSimPID.SetCVColor(const Value: tcolor);
+procedure TJvSimPID.SetCVColor(const Value: TColor);
 begin
-  if value <> FCVColor then
+  if Value <> FCVColor then
   begin
-    FCVColor := value;
-    invalidate;
+    FCVColor := Value;
+    Invalidate;
   end;
-
 end;
 
-procedure TJvSimPID.SetKD(const Value: extended);
+procedure TJvSimPID.SetKD(const Value: Extended);
 begin
   FKD := Value;
 end;
 
-procedure TJvSimPID.SetKI(const Value: extended);
+procedure TJvSimPID.SetKI(const Value: Extended);
 begin
   FKI := Value;
-  if FKI = 0 then FI := 0;
+  if FKI = 0 then
+    FI := 0;
 end;
 
-procedure TJvSimPID.SetKP(const Value: extended);
+procedure TJvSimPID.SetKP(const Value: Extended);
 begin
   FKP := Value;
 end;
 
 procedure TJvSimPID.CalcOut;
 var
-  output: extended;
+  Output: Extended;
 begin
-  if Fmanual then exit;
-  if FDirect then
-    output := 50 + KP * (FMV - FSP) + FI + FD
-  else
-    output := 50 - (KP * (FMV - FSP) + FI + FD);
-  SetCV(output);
+  if not Manual then
+  begin
+    if Direct then
+      Output := 50 + KP * (MV - SP) + FI + FD
+    else
+      Output := 50 - (KP * (MV - SP) + FI + FD);
+    SetCV(Output);
+  end;
 end;
 
-procedure TJvSimPID.SetDirect(const Value: boolean);
+procedure TJvSimPID.SetDirect(const Value: Boolean);
 begin
   FDirect := Value;
 end;
 
-procedure TJvSimPID.SetManual(const Value: boolean);
+procedure TJvSimPID.SetManual(const Value: Boolean);
 begin
   FManual := Value;
 end;
@@ -309,17 +299,17 @@ end;
 
 procedure TJvSimPID.Execute;
 var
-  value: extended;
+  Value: Extended;
 begin
-  if not FActive then exit;
-  if assigned(source) then
-  begin
-    value := source.CV;
-    setMV(value);
-  end;
+  if Active then
+    if Assigned(FSource) then
+    begin
+      Value := Source.CV;
+      SetMV(Value);
+    end;
 end;
 
-procedure TJvSimPID.SetActive(const Value: boolean);
+procedure TJvSimPID.SetActive(const Value: Boolean);
 begin
   FActive := Value;
 end;
