@@ -104,6 +104,12 @@ type
     FIsFixedHeight: Boolean;
     FMeasureStyle: TJvComboBoxMeasureStyle;
     FLastSetItemHeight: Integer;
+    {$IFDEF VCL}
+    FEmptyValue: string;
+    FIsEmptyValue: boolean;
+    FEmptyFontColor, FOldFontColor: TColor;
+    procedure SetEmptyValue(const Value: string);
+    {$ENDIF VCL}
     procedure MaxPixelChanged(Sender: TObject);
     procedure SetReadOnly(const Value: Boolean); // ain
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
@@ -112,6 +118,14 @@ type
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK; // ain
   protected
+    {$IFDEF VCL}
+    function GetText: TCaption; virtual;
+    procedure SetText(const Value: TCaption); virtual;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure DoEmptyValueEnter; virtual;
+    procedure DoEmptyValueExit; virtual;
+    {$ENDIF VCL}
     procedure CreateWnd; override; // ain
     {$IFDEF COMPILER6_UP}
     function GetItemsClass: TCustomComboBoxStringsClass; override;
@@ -155,6 +169,11 @@ type
     {$ENDIF COMPILER5}
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
+    {$IFDEF VCL}
+    property Text:TCaption read GetText write SetText;
+    property EmptyValue:string read FEmptyValue write SetEmptyValue;
+    property EmptyFontColor:TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -192,6 +211,8 @@ type
     property DragMode;
     property DropDownCount;
     property Enabled;
+    property EmptyValue;
+    property EmptyFontColor;
     property Font;
     property ImeMode;
     property ImeName;
@@ -520,6 +541,7 @@ begin
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
   FReadOnly := False; // ain
+  FEmptyFontColor := clGrayText;
 end;
 
 destructor TJvCustomComboBox.Destroy;
@@ -1180,7 +1202,82 @@ begin
   inherited CreateWnd;
   SendMessage(EditHandle, EM_SETREADONLY, Ord(ReadOnly), 0);
   UpdateItemCount;
+  if Focused then
+    DoEmptyValueEnter
+  else
+    DoEmptyValueExit;
 end;
+
+{$IFDEF VCL}
+
+procedure TJvCustomComboBox.SetEmptyValue(const Value: string);
+begin
+  FEmptyValue := Value;
+  if HandleAllocated then
+  begin
+    if Focused then
+      DoEmptyValueEnter
+    else
+      DoEmptyValueExit;
+  end;
+end;
+
+procedure TJvCustomComboBox.DoEnter;
+begin
+  inherited;
+  DoEmptyValueEnter;
+end;
+
+procedure TJvCustomComboBox.DoExit;
+begin
+  inherited;
+  DoEmptyValueExit;
+end;
+
+procedure TJvCustomComboBox.DoEmptyValueEnter;
+begin
+  if EmptyValue <> '' then
+  begin
+    if FIsEmptyValue then
+    begin
+      Text := '';
+      FIsEmptyValue := false;
+      if not (csDesigning in ComponentState) then
+        Font.Color := FOldFontColor;
+    end;
+  end;
+end;
+
+procedure TJvCustomComboBox.DoEmptyValueExit;
+begin
+  if EmptyValue <> '' then
+  begin
+    if Text = '' then
+    begin
+      Text := EmptyValue;
+      FIsEmptyValue := true;
+      if not (csDesigning in ComponentState) then
+      begin
+        FOldFontColor := Font.Color;
+        Font.Color := FEmptyFontColor;
+      end;
+    end;
+  end;
+end;
+
+function TJvCustomComboBox.GetText: TCaption;
+begin
+  if FIsEmptyValue then
+    Result := ''
+  else
+    Result := inherited Text;
+end;
+
+procedure TJvCustomComboBox.SetText(const Value: TCaption);
+begin
+  inherited Text := Value;
+end;
+{$ENDIF VCL}
 
 procedure TJvCustomComboBox.DestroyWnd;
 begin
