@@ -94,6 +94,7 @@ echo     BPLDirectory      The place where to put the BPL and TDS files.
 echo                       Defaults to $(BCB)\Projects\Bpl
 echo.
 echo Any additional argument (up to the 9th) will be passed to make
+echo BCB MUST be closed before running this batch file
 echo.
 :end
 
