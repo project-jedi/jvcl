@@ -68,6 +68,7 @@ type
       Position, Max: Integer; Kind: TProgressKind);
     procedure EvCaptureLine(const Text: string; var Aborted: Boolean);
     procedure EvIdle(Sender: TObject);
+    procedure EvMainFormActivate(Sender: TObject);
   public
     class function Build(Installer: TInstaller; Client: TWinControl): TFrameInstall;
     procedure Execute;
@@ -323,6 +324,7 @@ begin
 
   FormCompile := TFormCompile.Create(Self);
   try
+    Application.MainForm.OnActivate := EvMainFormActivate;
     FormCompile.Position := poDesigned;
     Pt := RichEditLog.ClientToScreen(Point((RichEditLog.Width - BtnDetails.Width) div 2, 0));
     FormCompile.Top := Pt.Y;
@@ -373,6 +375,7 @@ begin
       LblTarget.Caption := RsComplete;
     end;
   finally
+    Application.MainForm.OnActivate := nil;
     FormCompile.Free;
   end;
 
@@ -407,6 +410,12 @@ procedure TFrameInstall.LblOpenFileClick(Sender: TObject);
 begin
   if ShellExecute(Handle, 'open', PChar(LblOpenFile.Hint), nil, nil, SW_SHOW) < 32 then // do not localize
     MessageDlg(RsErrorOpeningFile, mtError, [mbOk], 0);
+end;
+
+procedure TFrameInstall.EvMainFormActivate(Sender: TObject);
+begin
+  if Assigned(FormCompile) then
+    FormCompile.BringToFront;
 end;
 
 end.
