@@ -100,7 +100,6 @@ type
     FIndex: Integer;
     FInterval: Integer;
     FNotify: TJvThreadNotifyEvent;
-    procedure Change(Index: Integer);
     procedure SynchChange;
   public
     constructor Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer);
@@ -122,6 +121,7 @@ type
     procedure CheckActive(const Name: string);
     function NotifyError(const Msg: string): string;
     procedure DoThreadChangeNotify(Sender: TObject; Index: Integer);
+    procedure DoThreadTerminate(Sender:TObject);
   protected
     procedure Change(Item: TJvChangeItem); virtual;
   public
@@ -325,6 +325,11 @@ begin
   Change(Notifications[Index]);
 end;
 
+procedure TJvChangeNotify.DoThreadTerminate(Sender: TObject);
+begin
+  FThread := nil;
+end;
+
 procedure TJvChangeNotify.SetActive(const Value: Boolean);
 const
   cActions: array [TJvChangeAction] of Cardinal =
@@ -367,14 +372,15 @@ begin
     end;
     FThread := TJvChangeThread.Create(FNotifyArray, FCollection.Count, FInterval);
     FThread.OnChangeNotify := DoThreadChangeNotify;
+    FThread.OnTerminate := DoThreadTerminate;
     FThread.Resume;
   end
-  else
-  if FThread <> nil then
+  else if (FThread <> nil) then
   begin
     FThread.Terminate;
-    FThread.WaitFor;
-    FreeAndNil(FThread);
+    FThread := nil;
+//    FThread.WaitFor;
+//    FreeAndNil(FThread);
   end;
 
   {
@@ -409,13 +415,9 @@ begin
   FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
   for I := 0 to FCount - 1 do
     FNotifyArray[I] := NotifyArray[I];
+  FreeOnTerminate := true;
 end;
 
-procedure TJvChangeThread.Change(Index: Integer);
-begin
-  FIndex := Index;
-  Synchronize(SynchChange);
-end;
 
 procedure TJvChangeThread.Execute;
 var
@@ -429,7 +431,8 @@ begin
       if (I >= 0) and (I < FCount) then
       begin
         try
-          Change(I);
+          FIndex := i;
+          Synchronize(SynchChange);
         finally
           // (rom) raising an exception in a thread is not a good idea
           // (rom) Assert removed
