@@ -61,7 +61,8 @@ type
   protected
     function WithinDelta(Val1, Val2: TDateTime): Boolean; virtual;
     // returns True if NullDate matches Date or Frac(NullDate) matches Frac(Time) depending on Kind
-    function CheckNullValue: Boolean; virtual;
+    function CheckNullValue: Boolean; overload;
+    function CheckNullValue(const ANullText, AFormat: string; AKind: TDateTimeKind; ADateTime, ANullDate: TDateTime): Boolean;overload;virtual;
     procedure Change; override;
     function MsgSetDateTime(Value: TSystemTime): Boolean; override;
   public
@@ -103,17 +104,23 @@ end;
 
 function TJvDateTimePicker.CheckNullValue: Boolean;
 begin
+  Result := CheckNullValue(NullText, Format, Kind, DateTime, NullDate);
+end;
+
+function TJvDateTimePicker.CheckNullValue(const ANullText, AFormat: string;
+  AKind: TDateTimeKind; ADateTime, ANullDate: TDateTime): Boolean;
+begin
  // Warren added NullText length check so that this feature can be disabled if not used!
-   if Length(NullText)=0 then begin
-        result := false;
+   if Length(ANullText) = 0 then begin
+        Result := false;
    end else
-       Result := ((Kind = dtkDate) and (Trunc(DateTime) = Trunc(NullDate)) or
-    ((Kind = dtkTime) and WithinDelta(DateTime, NullDate)));
+       Result := ((AKind = dtkDate) and (Trunc(ADateTime) = Trunc(ANullDate)) or
+    ((AKind = dtkTime) and WithinDelta(ADateTime, ANullDate)));
 
   if Result then
-    SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(FNullText)))
+    SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(ANullText)))
   else
-    SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(Format)));
+    SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(AFormat)));
 end;
 
 procedure TJvDateTimePicker.SetNullDate(const Value: TDateTime);
@@ -145,7 +152,7 @@ end;
 function TJvDateTimePicker.MsgSetDateTime(Value: TSystemTime): Boolean;
 begin
   Result := inherited MsgSetDateTime(Value);
-  CheckNullValue;
+  CheckNullValue(NullText, Format, Kind, SystemTimeToDateTime(Value), NullDate);
 end;
 
 procedure TJvDateTimePicker.Change;
@@ -207,6 +214,7 @@ begin
       inherited;
     end;
 end;
+
 
 end.
 
