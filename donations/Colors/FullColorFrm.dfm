@@ -273,7 +273,7 @@ object JvFullColorForm: TJvFullColorForm
     Top = 32
     Width = 153
     Height = 21
-    ColorSpaceID = 9
+    ColorSpaceID = 28
     ItemHeight = 13
     TabOrder = 0
     OnSelect = JvComboBoxColorSpaceSelect

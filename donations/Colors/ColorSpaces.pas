@@ -161,6 +161,19 @@ type
     function ConvertToColor(AColor: TJvFullColor): TColor; override;
   end;
 
+  TJvYIQColorSpace = class(TJvColorSpace)
+  protected
+    function GetAxisName(Index: TJvAxisIndex): string; override;
+    function GetAxisMin(Index: TJvAxisIndex): Byte; override;
+    function GetAxisMax(Index: TJvAxisIndex): Byte; override;
+    function GetName: string; override;
+    function GetShortName: string; override;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
+  public
+    function ConvertFromColor(AColor: TColor): TJvFullColor; override;
+    function ConvertToColor(AColor: TJvFullColor): TColor; override;
+  end;
+  
   TJvDEFColorSpace = class(TJvColorSpace)
   private
     FDelphiColors: TStringList;
@@ -200,19 +213,6 @@ type
     property Count: Integer read GetCount;
   end;
 
-  TJvYIQColorSpace = class(TJvColorSpace)
-  protected
-    function GetAxisName(Index: TJvAxisIndex): string; override;
-    function GetAxisMin(Index: TJvAxisIndex): Byte; override;
-    function GetAxisMax(Index: TJvAxisIndex): Byte; override;
-    function GetName: string; override;
-    function GetShortName: string; override;
-    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
-  public
-    function ConvertFromColor(AColor: TColor): TJvFullColor; override;
-    function ConvertToColor(AColor: TJvFullColor): TColor; override;
-  end;
-
   EJvColorSpaceError = class(EJVCLException);
 
 function ColorSpaceManager: TJvColorSpaceManager;
@@ -221,7 +221,7 @@ function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex; NewValue: Byte)
 
 //function RGBToColor(const Color: TJvFullColor): TColor;
 
-procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Cardinal);
+procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
 function JoinColorParts(Part1, Part2, Part3: Cardinal): TJvFullColor;
 
 implementation
@@ -327,7 +327,7 @@ begin
 end;
 }
 
-procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Cardinal);
+procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
 begin
   Part1 := AColor and $000000FF;
   Part2 := (AColor shr 8) and $000000FF;
@@ -457,7 +457,7 @@ end;
 function TJvHLSColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
 var
   Hue, Lightness, Saturation: Double;
-  Red, Green, Blue: Cardinal;
+  Red, Green, Blue: Integer;
   ColorMax, ColorMin, ColorDiff, ColorSum: Double;
   RedDelta, GreenDelta, BlueDelta: Extended;
 begin
@@ -516,7 +516,7 @@ function TJvHLSColorSpace.ConvertToColor(AColor: TJvFullColor): TColor;
 var
   Red, Green, Blue: Double;
   Magic1, Magic2: Double;
-  Hue, Lightness, Saturation: Cardinal;
+  Hue, Lightness, Saturation: Integer;
 
   function HueToRGB(Lightness, Saturation, Hue: Double): Integer;
   var
@@ -618,7 +618,7 @@ end;
 
 function TJvCMYColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
 var
-  Red, Green, Blue: Cardinal;
+  Red, Green, Blue: Integer;
 begin
   SplitColorParts(AColor, Red, Green, Blue);
   Result := inherited ConvertFromColor(
@@ -627,7 +627,7 @@ end;
 
 function TJvCMYColorSpace.ConvertToColor(AColor: TJvFullColor): TColor;
 var
-  Cyan, Magenta, Yellow: Cardinal;
+  Cyan, Magenta, Yellow: Integer;
 begin
   SplitColorParts(AColor, Cyan, Magenta, Yellow);
   Result := inherited ConvertToColor(JoinColorParts(CMY_MAX - Cyan, CMY_MAX - Magenta, CMY_MAX - Yellow));
@@ -679,9 +679,7 @@ var
   Y, U, V: Integer;
   Red, Green, Blue: Integer;
 begin
-  Red := AColor and $000000FF;
-  Green := (AColor shr 8) and $000000FF;
-  Blue := (AColor shr 16) and $000000FF;
+  SplitColorParts(AColor,Red,Green,Blue);
 
   Y := Round(0.257*Red + 0.504*Green + 0.098*Blue) + 16;
   V := Round(0.439*Red - 0.368*Green - 0.071*Blue) + 128;
@@ -699,9 +697,7 @@ var
   Red, Green, Blue: Integer;
   Y, U, V: Integer;
 begin
-  Y := (AColor)        and $000000FF;
-  U := (AColor shr 8)  and $000000FF;
-  V := (AColor shr 16) and $000000FF;
+  SplitColorParts(AColor,Y,U,V);
 
   Y := Y - 16;
   U := U - 128;
@@ -711,9 +707,9 @@ begin
   Green := Round(1.164*Y - 0.391*U - 0.813*V);
   Blue := Round(1.164*Y + 2.018*U - 0.001*V);
 
-  Red := EnsureRange(Red , 0, RGB_MAX);
-  Green := EnsureRange(Green, 0, RGB_MAX);
-  Blue := EnsureRange(Blue, 0, RGB_MAX);
+  Red := EnsureRange(Red , RGB_MIN, RGB_MAX);
+  Green := EnsureRange(Green, RGB_MIN, RGB_MAX);
+  Blue := EnsureRange(Blue, RGB_MIN, RGB_MAX);
 
   Result := inherited ConvertToColor(JoinColorParts(Red, Green, Blue));
 end;
@@ -762,12 +758,10 @@ end;
 function TJvHSVColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
 var
   Hue, Saturation, Value: Integer;
-  Red, Green, Blue: Byte;
+  Red, Green, Blue: Integer;
   ColorMax, ColorMin, ColorDelta: Integer;
 begin
-  Red := AColor and $000000FF;
-  Green := (AColor shr 8) and $000000FF;
-  Blue := (AColor shr 16) and $000000FF;
+  SplitColorParts(AColor,Red,Green,Blue);
 
   if Red > Green then
     ColorMax := Red
@@ -814,9 +808,9 @@ end;
 
 function TJvHSVColorSpace.ConvertToColor(AColor: TJvFullColor): TColor;
 var
-  Hue, Saturation, Value: Cardinal;
-  Red, Green, Blue: Cardinal;
-  P, Q, T, Summ, Rest: Cardinal;
+  Hue, Saturation, Value: Integer;
+  Red, Green, Blue: Integer;
+  P, Q, T, Summ, Rest: Integer;
 begin
   SplitColorParts(AColor, Hue, Saturation, Value);
 
@@ -938,9 +932,7 @@ var
   Y, I, Q: Integer;
   Red, Green, Blue: Integer;
 begin
-  Red := AColor and $000000FF;
-  Green := (AColor shr 8) and $000000FF;
-  Blue := (AColor shr 16) and $000000FF;
+  SplitColorParts(AColor,Red,Green,Blue);
 
   Y := Round(0.299*Red + 0.587*Green + 0.114*Blue);
   I := Round(0.596*Red - 0.275*Green - 0.321*Blue) + 128;
@@ -958,9 +950,7 @@ var
   Red, Green, Blue: Integer;
   Y, I, Q: Integer;
 begin
-  Y := (AColor)        and $000000FF;
-  I := (AColor shr 8)  and $000000FF;
-  Q := (AColor shr 16) and $000000FF;
+  SplitColorParts(AColor,Y,I,Q);
 
   //Y := Y;
   I := I - 128;
@@ -970,9 +960,9 @@ begin
   Green := Round(Y - 0.272*I - 0.647*Q);
   Blue := Round(Y - 1.105*I + 1.702*Q);
 
-  Red := EnsureRange(Red , 0, RGB_MAX);
-  Green := EnsureRange(Green, 0, RGB_MAX);
-  Blue := EnsureRange(Blue, 0, RGB_MAX);
+  Red := EnsureRange(Red , RGB_MIN, RGB_MAX);
+  Green := EnsureRange(Green, RGB_MIN, RGB_MAX);
+  Blue := EnsureRange(Blue, RGB_MIN, RGB_MAX);
 
   Result := inherited ConvertToColor(JoinColorParts(Red, Green, Blue));
 end;
@@ -1158,7 +1148,9 @@ begin
     case ID of
       $00:
         Result := ColorSpace[csRGB].ConvertFromColor(AColor);
-      clSystemColor shr 24:
+      clSystemColor shr 24,
+      clNone shr 24,
+      clDefault shr 24:
         Result := ColorSpace[csDEF].ConvertFromColor(AColor);
     else
       raise EJvColorSpaceError.CreateResFmt(@RsEInconvertibleColor, [Cardinal(AColor)]);

@@ -230,6 +230,7 @@ var
   ValueAxes: array [TJvAxisIndex] of Byte;
   J: Integer;
   LColorID: TJvColorSpaceID;
+  DefColorSpace:TJvColorSpace;
 begin
   if FUpdating then
     Exit;
@@ -272,11 +273,12 @@ begin
   JvColorSpaceCombo.ColorSpaceID := LColorID;
 
   NewIndex := -1;
+  DefColorSpace:=ColorSpaceManager.ColorSpace[csDef];
   with ColorBox, Items, ColorSpaceManager do
   begin
     for J := 0 to Items.Count - 1 do
     begin
-      C := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(Colors[J]);
+      C := DefColorSpace.ConvertFromColor(Colors[J]);
       if ConvertToID(C, LColorID) = FullColor then
       begin
         NewIndex := J;
