@@ -288,9 +288,6 @@ begin
   end
   else
   if MouseOver and Enabled or (csDesigning in ComponentState) then
-    {$IFDEF VisualCLX}
-    QWindows.
-    {$ENDIF VisualCLX}
     DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
       FillStyles[Flat] or BF_RECT);
 

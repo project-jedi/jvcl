@@ -218,7 +218,7 @@ type
   TJvaColorButton = class(TJvExBitBtn)
   private
     {$IFDEF VisualCLX}
-    FCanvas: TCanvas;
+    FCanvas: TCanvas;    // asn: never created
     {$ENDIF VisualCLX}
     FGlyphDrawer: TJvButtonGlyph;
     FOnPaint: TPaintButtonEvent;
@@ -1748,9 +1748,6 @@ begin
     PaintRect := Rect(0, 0, Width, Height);
     if not NoBorder then
     begin
-      {$IFDEF VisualCLX}
-      QWindows.
-      {$ENDIF VisualCLX}
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
         FillStyles[Transparent] or BF_RECT);
       InflateRect(PaintRect, -1, -1);

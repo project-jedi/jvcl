@@ -187,9 +187,6 @@ begin
   {$ENDIF VisualCLX}
   GradientFillRect(FBmpImage.Canvas, R, ColorFrom, ColorTo, fdLeftToRight, 255);
   if BorderStyle = bsSingle then
-    {$IFDEF VisualCLX}
-    QWindows.
-    {$ENDIF VisualCLX}
     DrawEdge(FBmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT);
   {$IFDEF VisualCLX}
   FBmpImage.Canvas.Stop;

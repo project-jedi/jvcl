@@ -2373,8 +2373,8 @@ var
         LColors[2] := clBtnShadow;
         BottomFlags := EDGE_SUNKEN;
       end;
-      Windows.DrawEdge(Handle, R, TopFlags, BF_TOPLEFT or BF_SOFT);
-      Windows.DrawEdge(Handle, R, BottomFlags, BF_BOTTOMRIGHT or BF_SOFT);
+      DrawEdge(Handle, R, TopFlags, BF_TOPLEFT or BF_SOFT);
+      DrawEdge(Handle, R, BottomFlags, BF_BOTTOMRIGHT or BF_SOFT);
       InflateRect(R, -1, -1);
 
       Pen.Color := LColors[0];
@@ -2431,10 +2431,10 @@ var
       if ADownState = sbBottomDown then
         BottomFlags := EDGE_SUNKEN;
       RSrc := R;
-      Windows.DrawEdge(Handle, R, TopFlags, BF_RECT or BF_SOFT or BF_ADJUST);
+      DrawEdge(Handle, R, TopFlags, BF_RECT or BF_SOFT or BF_ADJUST);
       R1 := Bounds(0, H, Width, Height);
       R1.Bottom := Height;
-      Windows.DrawEdge(Handle, R1, BottomFlags, BF_RECT or BF_SOFT or BF_ADJUST);
+      DrawEdge(Handle, R1, BottomFlags, BF_RECT or BF_SOFT or BF_ADJUST);
       if not CustomGlyphs then
       begin
         UpArrow.LoadFromResourceName(HInstance, sSpinUpBtnPole);
