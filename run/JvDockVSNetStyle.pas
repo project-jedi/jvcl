@@ -1969,7 +1969,12 @@ begin
   try
     VSChannel.AddDockControl(Control);
     ShowDockPanel(VisibleDockClientCount > 1, Control, sdfDockPanel);
-    Control.Dock(VSChannel.VSPopupPanel, Rect(0, 0, 0, 0));
+    { using a null-rect as parameter for Dock causes align problems }
+    Control.Dock(VSChannel.VSPopupPanel, Control.BoundsRect);
+//    Control.Dock(VSChannel.VSPopupPanel, Rect(0, 0, 0, 0));
+    { (rb) For every call to InsertControl there must be a call to RemoveControl.
+      That is not guaranteed now, so JvDockManager may be filled with dangling
+      references }
     VSChannel.VSPopupPanel.JvDockManager.InsertControl(Control, alNone, nil);
     VSChannel.VSPopupPanel.JvDockManager.ShowSingleControl(Control);
     JvDockManager.HideControl(Control);
@@ -2006,7 +2011,9 @@ begin
     JvDockLockWindow(nil);
     Panel.DisableAlign;
     try
-      Control.Dock(Panel, Rect(0, 0, 0, 0));
+      { using a null-rect as parameter for Dock causes align problems }
+      Control.Dock(Panel, Control.BoundsRect);
+//      Control.Dock(Panel, Rect(0, 0, 0, 0));
       Panel.JvDockManager.ShowControl(Control);
       JvDockManager.RemoveControl(Control);
       Panel.VSChannel.RemoveDockControl(Control);
