@@ -35,14 +35,13 @@ unit JvArrowButton;
 interface
 
 uses
-  Classes,
+  Classes, Windows, Messages, Controls, Graphics, Buttons, Menus,
   {$IFDEF VCL}
-  Windows, Messages, CommCtrl,
+  CommCtrl,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QTypes, QImgList, QWindows,
+  QImgList,
   {$ENDIF VisualCLX}
-  Controls, Graphics, Buttons, Menus,
   JvComponent, JvTypes;
 
 type
@@ -890,7 +889,7 @@ begin
   else
   if FMouseInControl and Enabled or (csDesigning in ComponentState) then
     {$IFDEF VisualCLX}
-    QWindows.  
+    QWindows.
     {$ENDIF VisualCLX}
     DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
       FillStyles[Flat] or BF_RECT);
