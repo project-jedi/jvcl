@@ -34,6 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls,
   ShellAPI, CommCtrl,
+  JvConsts,
   JVCL3Install, JvExStdCtrls, JVCLData, ImgList, FrmDirEditBrowse;
 
 type
@@ -285,9 +286,35 @@ begin
 end;
 
 procedure TFrameConfigPage.CheckBoxXPThemingClick(Sender: TObject);
+var
+  i: Integer;
 begin
   if FInitializing > 0 then
     Exit;
+
+  if (Sender = CheckBoxXPTheming) and (CheckBoxXPTheming.Tag = 0) then
+  begin
+    CheckBoxXPTheming.Tag := 1;
+    // Is a Delphi/BCB version below 7 installed
+    for i := 0 to Installer.SelTargetCount - 1 do
+    begin
+      if Installer.SelTargets[i].InstallJVCL then
+      begin
+        if Installer.SelTargets[i].Target.Version < 7 then
+        begin
+          // give the user a hint to the readme.htm
+          if FileExists(Installer.Data.JVCLDir + PathDelim + SReadmeHTM) then
+          begin
+            if MessageDlg(RsReadReadmeForXPThemingInfo, mtInformation,
+              [mbYes, mbNo], 0) = mrYes then
+              if not OpenAtAnchor(Installer.Data.JVCLDir + PathDelim + SReadmeHTM, 'Theming') then
+                MessageDlg(RsErrorOpeningReadmeHTM, mtError, [mbOk], 0);
+          end;
+          Break;
+        end;
+      end;
+    end;
+  end;
 
   with Installer.Data do
   begin
@@ -371,13 +398,20 @@ end;
 
 procedure TFrameConfigPage.BtnEditJvclIncClick(Sender: TObject);
 begin
-  if FormJvclIncConfig.Config = nil then
-  begin
-    FormJvclIncConfig.Config := Installer.Data.JVCLConfig;
+  if FormJvclIncConfig.imgProjectJEDI.Picture.Graphic = nil then
     FormJvclIncConfig.imgProjectJEDI.Picture.Assign(FormMain.ImageLogo.Picture);
-  end;
+
+  FormJvclIncConfig.Config.Assign(Installer.Data.JVCLConfig);
+
   FormJvclIncConfig.UpdateCheckStates;
-  FormJvclIncConfig.ShowModal;
+  if FormJvclIncConfig.ShowModal = mrOk then
+  begin
+    if FormJvclIncConfig.Config.Modified then
+    begin
+      Installer.Data.JVCLConfig.Assign(FormJvclIncConfig.Config);
+      Installer.Data.JVCLConfig.Modified := True;
+    end;
+  end;
   UpdateJvclIncSettings;
 end;
 

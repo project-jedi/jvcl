@@ -15,6 +15,7 @@ object FormJvclIncConfig: TFormJvclIncConfig
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -68,16 +69,6 @@ object FormJvclIncConfig: TFormJvclIncConfig
       Caption = 'LblComment'
     end
   end
-  object BtnClose: TBitBtn
-    Left = 664
-    Top = 368
-    Width = 75
-    Height = 25
-    Cancel = True
-    Caption = '&Close'
-    TabOrder = 2
-    OnClick = BtnCloseClick
-  end
   object TitlePanel: TPanel
     Left = 0
     Top = 0
@@ -86,7 +77,7 @@ object FormJvclIncConfig: TFormJvclIncConfig
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
-    TabOrder = 3
+    TabOrder = 2
     DesignSize = (
       744
       44)
@@ -137,6 +128,24 @@ object FormJvclIncConfig: TFormJvclIncConfig
     Height = 4
     Align = alTop
     BevelOuter = bvNone
+    TabOrder = 3
+  end
+  object BtnCancel: TButton
+    Left = 664
+    Top = 368
+    Width = 75
+    Height = 25
+    Caption = '&Cancel'
+    ModalResult = 2
     TabOrder = 4
+  end
+  object BtnOk: TButton
+    Left = 576
+    Top = 368
+    Width = 75
+    Height = 25
+    Caption = '&OK'
+    ModalResult = 1
+    TabOrder = 5
   end
 end

@@ -32,19 +32,18 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JVCLConfiguration, CheckLst, Buttons, ExtCtrls,
-  ImgList,
+  Dialogs, StdCtrls, CheckLst, Buttons, ExtCtrls, ImgList,
   {$IFDEF USE_DXGETTEXT}
   gnugettext,
   {$ENDIF USE_DXGETTEXT}
-  JvComponent;
+  JvComponent,
+  JVCLConfiguration;
 
 type
   TFormJvclIncConfig = class(TJvForm)
     CheckListBox: TCheckListBox;
     ScrollBox: TScrollBox;
     LblComment: TLabel;
-    BtnClose: TBitBtn;
     BevelBorder: TBevel;
     TitlePanel: TPanel;
     imgProjectJEDI: TImage;
@@ -53,19 +52,21 @@ type
     PanelSpace: TPanel;
     Label1: TLabel;
     PaintBoxWhite: TPaintBox;
+    BtnCancel: TButton;
+    BtnOk: TButton;
     procedure CheckListBoxClick(Sender: TObject);
-    procedure BtnCloseClick(Sender: TObject);
     procedure CheckListBoxClickCheck(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure PaintBoxWhitePaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FConfig: TJVCLConfig;
     FFileName: string;
   public
     procedure UpdateCheckStates;
     property FileName: string read FFileName write FFileName;
-    property Config: TJVCLConfig read FConfig write FConfig;
+    property Config: TJVCLConfig read FConfig;
   end;
 
 var
@@ -79,11 +80,6 @@ procedure TFormJvclIncConfig.CheckListBoxClick(Sender: TObject);
 begin
   LblComment.Caption := FConfig.Items[CheckListBox.ItemIndex].Comment;
   LblComment.Font.Color := clWindowText;
-end;
-
-procedure TFormJvclIncConfig.BtnCloseClick(Sender: TObject);
-begin
-  Close;
 end;
 
 procedure TFormJvclIncConfig.CheckListBoxClickCheck(Sender: TObject);
@@ -118,6 +114,7 @@ end;
 
 procedure TFormJvclIncConfig.PaintBoxWhitePaint(Sender: TObject);
 begin
+ // XP Theming makes the panel gray so we paint a white rectangle
   PaintBoxWhite.Canvas.Brush.Color := clWindow;
   PaintBoxWhite.Canvas.FillRect(PaintBoxWhite.ClientRect);
 end;
@@ -127,6 +124,12 @@ begin
   {$IFDEF USE_DXGETTEXT}
   TranslateComponent(Label1, 'JVCLInstall');
   {$ENDIF USE_DXGETTEXT}
+  FConfig := TJVCLConfig.Create;
+end;
+
+procedure TFormJvclIncConfig.FormDestroy(Sender: TObject);
+begin
+  FConfig.Free;
 end;
 
 end.

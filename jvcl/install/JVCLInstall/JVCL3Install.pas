@@ -33,7 +33,8 @@ interface
 uses
   Windows, ShellAPI, SysUtils, Classes, Core, Graphics, Controls, Forms,
   StdCtrls, Dialogs,
-  DelphiData, JVCLData, Utils;
+  DelphiData, JVCLData, Utils,
+  JvConsts;
 
 type
   TInstallType = (itFreshInstall, itUpdate, itUninstall);
@@ -378,7 +379,7 @@ begin
   Btn.Top := TWinControl(Client.FindComponent('piPageMemo')).BoundsRect.Bottom + 8; // do not localize
   Btn.Parent := Client;
   Btn.Caption := RsShowMPL;
-  Btn.Hint := '|' + sMPLHomepage;
+  Btn.Hint := '|' + Installer.JVCLDir + PathDelim + sMPLFile;
   Btn.OnClick := Installer.DoHomepageClick;
 end;
 
