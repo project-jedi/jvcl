@@ -1920,7 +1920,7 @@ begin
             FmtError(RsEInvalidXMLElementExpectedEndOfTagBu, [lBuf[i]]);
       else
         begin
-          if lBuf[i] in [#9, #10, #13, ' ', '.'] then
+          if lBuf[i] in [#9, #10, #13, ' '{, '.'}] then
           begin
             if lPos = 2 then
               Error(RsEInvalidXMLElementMalformedTagFoundn);
