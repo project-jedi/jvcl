@@ -616,7 +616,7 @@ end;
 
 function TJvFormPlacement.ReadString(const Ident, Default: string): string;
 begin
-  if IsActive then
+  if Assigned(AppStorage) then
     Result := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, Ident]), Default)
   else
     Result := '';
@@ -624,13 +624,13 @@ end;
 
 procedure TJvFormPlacement.WriteString(const Ident, Value: string);
 begin
-  if IsActive then
+  if Assigned(AppStorage) then
     AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, Ident]), Value);
 end;
 
 function TJvFormPlacement.ReadInteger(const Ident: string; Default: Longint): Longint;
 begin
-  if IsActive then
+  if Assigned(AppStorage) then
     Result := AppStorage.ReadInteger(AppStoragePath + Ident, Default)
   else
     Result := Default;
@@ -638,7 +638,7 @@ end;
 
 procedure TJvFormPlacement.WriteInteger(const Ident: string; Value: Longint);
 begin
-  if IsActive then
+  if Assigned(AppStorage) then
     AppStorage.WriteInteger(AppStoragePath + Ident, Value);
 end;
 
@@ -657,7 +657,7 @@ begin
   { (marcelb) say what? Store when the component has done a restore previously or if it's inactive?
     I think it should only store if Active is set to True. Changed accordingly }
 //  if FRestored or not Active then
-  if IsActive then
+  if Assigned(AppStorage) then
   begin
     WriteInteger(siVersion, FVersion);
     SavePlacement;
@@ -671,7 +671,7 @@ var
   cActive: TComponent;
 begin
   FSaved := False;
-  if IsActive and (ReadInteger(siVersion, 0) >= FVersion) then
+  if Assigned(AppStorage) and (ReadInteger(siVersion, 0) >= FVersion) then
   begin
     RestorePlacement;
     FRestored := True;
