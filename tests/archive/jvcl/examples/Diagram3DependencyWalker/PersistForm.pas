@@ -21,8 +21,6 @@ var
   frmPersistable: TfrmPersistable;
 
 implementation
-uses
-  IniFiles;
 
 {$R *.DFM}
 

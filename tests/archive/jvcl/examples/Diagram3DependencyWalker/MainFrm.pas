@@ -192,6 +192,7 @@ type
     FOffsetX, FOffsetY: integer;
     FReload: boolean;
     FIntfLineColor, FImplLineColor, FIntfSelColor, FImplSelColor: TColor;
+
     function GetPersistStorage: TPersistStorage;
     procedure LoadSettings;
     procedure SaveSettings;
@@ -209,12 +210,11 @@ type
     function InSkipList(const Filename: string): boolean;
     procedure Arrange(AList: TList);
     procedure DoShapeClick(Sender: TObject);
+    procedure DoShapeMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure SortItems(ATag: integer; AList: TList; InvertedSort: boolean);
 
     procedure CreateDiagramBitmap(Bmp: TBitmap);
     procedure HighlightConnectors(AShape: TJvCustomDiagramShape);
-    procedure DoShapeMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure DoBeginFocusRect(Sender: TObject; ARect: TRect; Button: TMouseButton; Shift: TShiftState; var Allow: boolean);
     procedure DoEndFocusRect(Sender: TObject; ARect: TRect; Button: TMouseButton; Shift: TShiftState);
     procedure DoFocusingRect(Sender: TObject; ARect: TRect; Shift: TShiftState; var Continue: boolean);
@@ -1025,6 +1025,7 @@ end;
 
 procedure TfrmMain.DoShapeMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+  inherited;
   Selected := Sender as TJvCustomDiagramShape;
   if Button = mbLeft then
     HighLightConnectors(Selected);
@@ -1629,6 +1630,9 @@ begin
       UsesStrings.Free;
     end;
   end;
+  // scroll to top:
+  reStatistics.SelStart := 0;
+  SendMessage(reStatistics.Handle,EM_SCROLLCARET,0,0);
 end;
 
 procedure TfrmMain.SetSelected(const Value: TJvCustomDiagramShape);
@@ -1662,6 +1666,7 @@ begin
     Errors.Free;
   end;
 end;
+
 
 end.
 
