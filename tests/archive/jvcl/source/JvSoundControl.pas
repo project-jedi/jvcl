@@ -237,8 +237,8 @@ end;
 
 function TJvSoundValue.GetValue: TVolumeRec;
 begin
-  Result.LeftVolume := Round(((FVolume * FBalance) / 100)) shl 9;
-  Result.RightVolume := Round(((FVolume * (100 - FBalance)) / 100)) shl 9;
+  Result.LeftVolume := ((FVolume * FBalance) div 100) shl 9;
+  Result.RightVolume := ((FVolume * (100 - FBalance)) div 100) shl 9;
 end;
 
 function TJvSoundValue.GetVolume: Byte;

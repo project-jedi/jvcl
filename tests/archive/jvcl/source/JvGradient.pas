@@ -98,11 +98,13 @@ var
   Deltas: array [0..2] of Real; //R,G,B
   r: TRect;
   FStart, FEnd: TColor;
+  FInternalSteps:word;
 begin
   if csDestroying in ComponentState then
     Exit;
   if (FOldX <> Width) or (FOldY <> Height) then
   begin
+    FInternalSteps := FSteps;
     FStart := ColorToRGB(FStartColor);
     FEnd := ColorToRGB(FEndColor);
 
@@ -123,17 +125,17 @@ begin
           bt.Canvas.Brush.Color := FStart;
           bt.Canvas.Brush.Style := bsSolid;
           bt.Canvas.FillRect(Rect(0, 0, Width, Height));
-          if FSteps > (Width div 2) then
-            FSteps := Trunc(Width / 2);
-          if FSteps > (Height div 2) then
-            FSteps := Trunc(Height / 2);
-          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FSteps;
-          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FSteps;
-          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FSteps;
+          if FInternalSteps > (Width div 2) then
+            FInternalSteps := Trunc(Width / 2);
+          if FInternalSteps > (Height div 2) then
+            FInternalSteps := Trunc(Height / 2);
+          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FInternalSteps;
+          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FInternalSteps;
+          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FInternalSteps;
           bt.Canvas.Brush.Style := bsSolid;
-          j := (Width / FSteps) / 2;
-          k := (Height / FSteps) / 2;
-          for i := 0 to FSteps do
+          j := (Width / FInternalSteps) / 2;
+          k := (Height / FInternalSteps) / 2;
+          for i := 0 to FInternalSteps do
           begin
             r.Top := Round(i * k);
             r.Bottom := Height - r.Top;
@@ -147,14 +149,14 @@ begin
         end;
       grHorizontal:
         begin
-          if FSteps > Width then
-            FSteps := Width;
-          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FSteps;
-          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FSteps;
-          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FSteps;
+          if FInternalSteps > Width then
+            FInternalSteps := Width;
+          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FInternalSteps;
+          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FInternalSteps;
+          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FInternalSteps;
           bt.Canvas.Brush.Style := bsSolid;
-          j := Width / FSteps;
-          for i := 0 to FSteps do
+          j := Width / FInternalSteps;
+          for i := 0 to FInternalSteps do
           begin
             r.Top := 0;
             r.Bottom := Height;
@@ -167,14 +169,14 @@ begin
         end;
       grVertical:
         begin
-          if FSteps > Height then
-            FSteps := Height;
-          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FSteps;
-          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FSteps;
-          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FSteps;
+          if FInternalSteps > Height then
+            FInternalSteps := Height;
+          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FInternalSteps;
+          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FInternalSteps;
+          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FInternalSteps;
           bt.Canvas.Brush.Style := bsSolid;
-          j := Height / FSteps;
-          for i := 0 to FSteps do
+          j := Height / FInternalSteps;
+          for i := 0 to FInternalSteps do
           begin
             r.Left := Width;
             r.Right := 0;
@@ -190,17 +192,17 @@ begin
           bt.Canvas.Brush.Color := FStart;
           bt.Canvas.Brush.Style := bsSolid;
           bt.Canvas.FillRect(Rect(0, 0, Width, Height));
-          if FSteps > (Width div 2) then
-            FSteps := Trunc(Width / 2);
-          if FSteps > (Height div 2) then
-            FSteps := Trunc(Height / 2);
-          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FSteps;
-          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FSteps;
-          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FSteps;
+          if FInternalSteps > (Width div 2) then
+            FInternalSteps := Trunc(Width / 2);
+          if FInternalSteps > (Height div 2) then
+            FInternalSteps := Trunc(Height / 2);
+          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FInternalSteps;
+          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FInternalSteps;
+          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FInternalSteps;
           bt.Canvas.Brush.Style := bsSolid;
-          j := (Width / FSteps) / 2;
-          k := (Height / FSteps) / 2;
-          for i := 0 to FSteps do
+          j := (Width / FInternalSteps) / 2;
+          k := (Height / FInternalSteps) / 2;
+          for i := 0 to FInternalSteps do
           begin
             r.Top := Round(i * k);
             r.Bottom := Height - r.Top;
@@ -218,17 +220,17 @@ begin
           bt.Canvas.Brush.Color := FStart;
           bt.Canvas.Brush.Style := bsSolid;
           bt.Canvas.FillRect(Rect(0, 0, Width, Height));
-          if FSteps > (Width div 2) then
-            FSteps := Trunc(Width / 2);
-          if FSteps > (Height div 2) then
-            FSteps := Trunc(Height / 2);
-          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FSteps;
-          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FSteps;
-          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FSteps;
+          if FInternalSteps > (Width div 2) then
+            FInternalSteps := Trunc(Width / 2);
+          if FInternalSteps > (Height div 2) then
+            FInternalSteps := Trunc(Height / 2);
+          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FInternalSteps;
+          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FInternalSteps;
+          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FInternalSteps;
           bt.Canvas.Brush.Style := bsSolid;
-          j := (Width / FSteps) / 2;
-          k := (Height / FSteps) / 2;
-          for i := 0 to FSteps do
+          j := (Width / FInternalSteps) / 2;
+          k := (Height / FInternalSteps) / 2;
+          for i := 0 to FInternalSteps do
           begin
             r.Top := Round(i * k);
             r.Bottom := Height - r.Top;
