@@ -541,7 +541,9 @@ begin
         end;
         // Adjust Root start point relative to control's canvas.
         FNodeTree.Root.StartingPoint := Point(TmpRect.Left, TmpRect.Top);  // Bianconi #2
+        TmpBmp.Transparent := false;
         Canvas.Draw(TmpRect.Left,TmpRect.Top,TmpBmp);
+        TmpBmp.savetofile('C:\Linklabel.bmp');
       end;
     finally
       TmpBmp.Free;

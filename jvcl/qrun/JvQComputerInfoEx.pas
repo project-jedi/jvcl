@@ -52,10 +52,11 @@ uses
   
   Qt, QControls, QGraphics,
   
-  Windows, Messages, ShlObj, 
+  Windows, Messages, ShlObj,
   JclWin32, JclSysInfo,
   JvQJCLUtils, JvQDataProvider, JvQTypes, JvQComponent;
 
+{$HPPEMIT '#include <dbt.h>'}
 // these are defined here to avoid including DBT.pas
 const
 {$EXTERNALSYM DBT_DEVICEARRIVAL}
@@ -142,6 +143,7 @@ const
 
 
 type
+{$EXTERNALSYM PDevBroadcastHdr}
   PDevBroadcastHdr = ^TDevBroadcastHdr;
 {$EXTERNALSYM DEV_BROADCAST_HDR}
   DEV_BROADCAST_HDR = packed record
@@ -151,6 +153,7 @@ type
   end;
   TDevBroadcastHdr = DEV_BROADCAST_HDR;
 
+{$EXTERNALSYM PDevBroadcastVolume}
   PDevBroadcastVolume = ^TDevBroadcastVolume;
 {$EXTERNALSYM DEV_BROADCAST_VOLUME}
   DEV_BROADCAST_VOLUME = packed record
@@ -1337,9 +1340,9 @@ type
 implementation
 
 uses
-  WinInet, Registry, ShellAPI, ActiveX, Math,
+  WinInet, Registry, ShellAPI, ActiveX,
   JclShell, JclRegistry, JclFileUtils,
-  JvQJVCLUtils, JvQResources;
+  JvQJVCLUtils, JvQResources, Math;
 
 var
   IsDesigning: Boolean = False;

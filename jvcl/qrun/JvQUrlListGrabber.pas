@@ -563,7 +563,7 @@ begin
       if DefaultGrabberIndex > -1 then
         FUrls.Objects[I] := JvUrlGrabberClassList[DefaultGrabberIndex].Create(Self, FUrls[I], FDefaultGrabbersProperties.Items[DefaultGrabberIndex])
       else
-        raise ENoGrabberForUrl.CreateFmt(RsENoGrabberForUrl, [FUrls[I]]);
+        raise ENoGrabberForUrl.CreateResFmt(@RsENoGrabberForUrl, [FUrls[I]]);
 
       // add in the list of owned objects
       FGrabbers.Add(TJvCustomUrlGrabber(FUrls.Objects[I]));
@@ -625,7 +625,7 @@ begin
   if Status = gsStopped then
     FUrl := Value
   else
-    raise EGrabberNotStopped.Create(RsEGrabberNotStopped);
+    raise EGrabberNotStopped.CreateRes(@RsEGrabberNotStopped);
 end;
 
 procedure TJvCustomUrlGrabber.DoClosed;
@@ -872,7 +872,6 @@ end;
 procedure TJvCustomUrlGrabberDefaultProperties.Assign(Source: TPersistent);
 begin
   if Source is TJvCustomUrlGrabberDefaultProperties then
-  begin
     with Source as TJvCustomUrlGrabberDefaultProperties do
     begin
       Self.Agent := Agent;
@@ -880,10 +879,9 @@ begin
       Self.UserName := UserName;
       Self.FileName := FileName;
       Self.OutputMode := OutputMode;
-    end;
-  end
+    end
   else
-    inherited;
+    inherited Assign(Source);
 end;
 
 constructor TJvCustomUrlGrabberDefaultProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);

@@ -583,9 +583,9 @@ begin
     Hint := TJvTimeItem(Source).Hint;
     Color := TJvTimeItem(Source).Color;
     TextColor := TJvTimeItem(Source).TextColor;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvTimeItem.Update;
@@ -852,7 +852,7 @@ end;
 procedure TJvTLScrollBtn.SetDirection(const Value: TJvScrollArrow);
 begin
   FDirection := Value;
-  if TimeLine <> nil then
+  if (TimeLine <> nil) and (TimeLine.parent <> nil )then
   begin
     UpdatePlacement;
     Invalidate;
@@ -1922,8 +1922,7 @@ end;
 
 procedure TJvCustomTimeLine.Paint;
 begin
-  if (FUpdate <> 0) or (csDestroying in ComponentState) or (csCreating in ControlState)
-  then
+  if (FUpdate <> 0) or (csDestroying in ComponentState) then
     Exit;
   DrawTimeLine(Canvas);
   if Focused then
