@@ -33,7 +33,6 @@ unit JvFunctions;
 
 
 interface
-
 uses
   Windows, Graphics, Classes, Messages, Controls,
   ComCtrls, SysUtils, ShellApi, JvTypes, ImgList;
@@ -42,6 +41,7 @@ uses
 type
   EOSError = class(EWin32Error);
 {$ENDIF}
+
   //Transform an icon to a bitmap
 function IconToBitmap(ico: HIcon): TBitmap;
 {$EXTERNALSYM IconToBitmap}
@@ -137,14 +137,6 @@ procedure LaunchCpl(FileName: string);
          tmp.ImageIndex := integer(Strings.Objects[i]);
   The function returns true if any Control Panel Applets were found (i.e Strings.Count is > 0 when returning)
 }
-{$IFNDEF D6PersonalEdition}
-function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
-{ GetControlPanelApplet works like GetControlPanelApplets, with the difference that it only loads and searches one cpl file (according to AFilename).
-  Note though, that some CPL's contains multiple applets, so the Strings and Images lists can contain multiple return values.
-  The function returns true if any Control Panel Applets were found in AFilename (i.e if items were added to Strings)
-}
-function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
-{$ENDIF}
 // execute a program without waiting
 procedure Exec(FileName, Parameters, Directory: string);
 // execute a program and wait for it to finish
@@ -302,7 +294,6 @@ uses
   Forms, Registry, ExtCtrls,
 {$IFDEF COMPILER6_UP}Types, {$ENDIF}MMSystem,
   ShlObj, CommCtrl, 
-  {$IFNDEF D6PersonalEdition}Cpl,{$ENDIF}
   { jvcl} JvDirectories,
   { jcl } JCLStrings;
 
@@ -808,109 +799,6 @@ begin
   //  WinExec(PChar(RC_RunCpl + FileName), SW_SHOWNORMAL);
 end;
 
-{$IFNDEF D6PersonalEdition}
-resourcestring
-  RC_CplAddress = 'CPlApplet';
-
-function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
-var
-  hLib: HMODULE; // Library Handle to *.cpl file
-  hIco: HICON;
-  CplCall: TCPLApplet; // Pointer to CPlApplet() function
-  i: LongInt;
-  tmpCount, Count: LongInt;
-  S: WideString;
-  // the three types of information that can be returned
-  CPLInfo: TCPLInfo;
-  InfoW: TNewCPLInfoW;
-  InfoA: TNewCPLInfoA;
-begin
-  Result := False;
-  hLib := SafeLoadLibrary(AFilename);
-  if hLib = 0 then
-    Exit;
-  tmpCount := Strings.Count;
-  try
-    @CplCall := GetProcAddress(hLib, PChar(RC_CplAddress));
-    if @CplCall = nil then
-      Exit;
-    CplCall(GetFocus, CPL_INIT, 0, 0); // Init the *.cpl file
-    try
-      Count := CplCall(GetFocus, CPL_GETCOUNT, 0, 0);
-      for i := 0 to Count - 1 do
-      begin
-        FillChar(InfoW, sizeof(InfoW), 0);
-        FillChar(InfoA, sizeof(InfoA), 0);
-        FillChar(CPLInfo, sizeof(CPLInfo), 0);
-        S := '';
-        CplCall(GetFocus, CPL_NEWINQUIRE, i, LongInt(@InfoW));
-        if InfoW.dwSize = sizeof(InfoW) then
-        begin
-          hIco := InfoW.hIcon;
-          S := WideString(InfoW.szName);
-        end
-        else
-        begin
-          if InfoW.dwSize = sizeof(InfoA) then
-          begin
-            Move(InfoW, InfoA, sizeof(InfoA));
-            hIco := CopyIcon(InfoA.hIcon);
-            S := string(InfoA.szName);
-          end
-          else
-          begin
-            CplCall(GetFocus, CPL_INQUIRE, i, LongInt(@CPLInfo));
-            LoadStringA(hLib, CPLInfo.idName, InfoA.szName, sizeof(InfoA.szName));
-            hIco := LoadImage(hLib, PChar(CPLInfo.idIcon), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
-            S := string(InfoA.szName);
-          end;
-        end;
-        if S <> '' then
-        begin
-          S := Format('%s=%s,@%d', [S, AFilename, i]);
-          if Images <> nil then
-          begin
-            hIco := CopyIcon(hIco);
-            ImageList_AddIcon(Images.Handle, hIco);
-            Strings.AddObject(S, TObject(Images.Count - 1));
-          end
-          else
-            Strings.AddObject(S, IconToBitmap2(hIco, 16, clMenu));
-          // (p3) not sure this is really needed...
-          // DestroyIcon(hIco);
-        end;
-      end;
-      Result := tmpCount < Strings.Count;
-    finally
-      CplCall(GetFocus, CPL_EXIT, 0, 0);
-    end;
-  finally
-    FreeLibrary(hLib);
-  end;
-end;
-
-function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
-var H: THandle; F: TSearchRec;
-begin
-  H := FindFirst(IncludeTrailingPathDelimiter(APath) + AMask, faAnyFile, F);
-  if Images <> nil then
-  begin
-    Images.Clear;
-    Images.BkColor := clMenu;
-  end;
-  if Strings <> nil then
-    Strings.Clear;
-  while H = 0 do
-  begin
-    if F.Attr and faDirectory = 0 then
-      //    if (F.Name <> '.') and (F.Name <> '..') then
-      GetControlPanelApplet(APath + F.Name, Strings, Images);
-    H := FindNext(F);
-  end;
-  FindClose(F);
-  Result := Strings.Count > 0;
-end;
-{$ENDIF}
 
 procedure Exec(FileName, Parameters, Directory: string);
 var
