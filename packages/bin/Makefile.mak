@@ -103,7 +103,7 @@ Templates:
 -U"$(ROOT)\Lib;$(ROOT)\Lib\Obj"
 -R"$(ROOT)\Lib"
 -I"$(ROOT)\Include;$(ROOT)\Include\Vcl"
--I"$(DCPDIR);$(LIBDIR);$(BPLDIR)"
+-U"$(DCPDIR);$(LIBDIR);$(BPLDIR)"
 -LE"$(BPLDIR)"
 -LN"$(DCPDIR)"
 
