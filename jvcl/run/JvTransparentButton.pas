@@ -85,6 +85,7 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure SetBorderWidth(Value: Cardinal);
     procedure GlyphChanged(Sender: TObject);
+    procedure CalcGlyphCount;
   protected
     procedure AddGlyphs(aGlyph: TBitmap; AColor: TColor; Value: Integer);
     procedure PaintButton(Canvas: TCanvas); override;
@@ -99,6 +100,7 @@ type
     property Canvas;
   published
     property Action;
+    property AllowAllUp;
     property Align;
     property Anchors;
     property Constraints;
@@ -111,6 +113,7 @@ type
     property Down;
     property Enabled;
     property Font;
+    property GroupIndex;
     property HotTrack;
     property HotTrackFont;
     property HotTrackFontOptions;
@@ -198,6 +201,7 @@ type
   published
     property Action;
     property Align;
+    property AllowAllUp;
     property Anchors;
     property Constraints;
     property AutoGray: Boolean read FAutoGray write SetAutoGray default True;
@@ -208,6 +212,7 @@ type
     property Down;
     property Enabled;
     property Font;
+    property GroupIndex;
     property HotTrack;
     property HotTrackFont;
     property HotTrackFontOptions;
@@ -415,6 +420,21 @@ end;
 
 //=== TJvTransparentButton ===================================================
 
+procedure TJvTransparentButton.CalcGlyphCount;
+var GlyphNum:Integer;
+begin
+  if (Glyph <> nil) and (Glyph.Height > 0) then
+  begin
+    if Glyph.Width mod Glyph.Height = 0 then
+    begin
+      GlyphNum := Glyph.Width div Glyph.Height;
+      if GlyphNum > 4 then
+        GlyphNum := 1;
+      SetNumGlyphs(GlyphNum);
+    end;
+  end;
+end;
+
 constructor TJvTransparentButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -455,14 +475,12 @@ var
   I, TmpWidth: Integer;
   Dest, Source: TRect;
 begin
+  FImList.Clear;
   Bmp := TBitmap.Create;
   try
-    if aGlyph.Empty then
-      Exit;
     if not aGlyph.Empty then
     begin
       { destroy old list }
-      FImList.Clear;
       TmpWidth := aGlyph.Width div FNumGlyphs;
       FImList.Width := TmpWidth;
       FImList.Height := aGlyph.Height;
@@ -497,6 +515,7 @@ end;
 procedure TJvTransparentButton.SetGlyph(Bmp: TBitmap);
 begin
   FGlyph.Assign(Bmp);
+  CalcGlyphCount;
   Invalidate;
 end;
 
@@ -505,6 +524,7 @@ begin
   if FNumGlyphs <> Value then
   begin
     FNumGlyphs := Value;
+    GlyphChanged(Self);
     Invalidate;
   end;
 end;
@@ -590,7 +610,7 @@ begin
     if not Transparent then
       FillRect(TmpRect);
 
-    if (bsMouseDown in MouseStates) then
+    if (bsMouseDown in MouseStates) or Down then
     begin
       case FrameStyle of
         fsRegular:
@@ -890,22 +910,9 @@ begin
 end;
 
 procedure TJvTransparentButton.GlyphChanged(Sender: TObject);
-var
-  GlyphNum: Integer;
 begin
   Invalidate;
-  GlyphNum := 1;
-  if (Glyph <> nil) and (Glyph.Height > 0) then
-  begin
-    if Glyph.Width mod Glyph.Height = 0 then
-    begin
-      GlyphNum := Glyph.Width div Glyph.Height;
-      if GlyphNum > 4 then
-        GlyphNum := 1;
-      SetNumGlyphs(GlyphNum);
-    end;
-    AddGlyphs(Glyph, Glyph.TransparentColor {Glyph.Canvas.Pixels[0,Height]}, GlyphNum);
-  end;
+  AddGlyphs(Glyph, Glyph.TransparentColor, NumGlyphs);
 end;
 
 procedure TJvTransparentButton.ActionChange(Sender: TObject;
@@ -1315,7 +1322,7 @@ begin
 
     TmpRect := Rect(1, 1, Width - 1, Height - 1);
 
-    if bsMouseDown in MouseStates then
+    if (bsMouseDown in MouseStates) or Down then
     begin
       if FrameStyle <> fsNone then
       begin
@@ -1354,7 +1361,7 @@ begin
       end;
     end;
 
-    if not (bsMouseDown in MouseStates) then
+    if not (bsMouseDown in MouseStates) and not Down then
     begin
       InflateRect(TmpRect, 1, 1);
       case FrameStyle of
@@ -1527,6 +1534,7 @@ end;
 procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
 var
   Index: Integer;
+  HelpRect:TRect;
 begin
   if FImList.Count = 0 then
     Exit;
@@ -1544,7 +1552,16 @@ begin
     else
       Index := 0; { active }
 
-    if (bsMouseDown in MouseStates) and FShowPressed then
+    { Norris }
+    if (bsMouseInside in MouseStates) and Down then
+    begin
+      HelpRect := ClientRect;
+      InflateRect(HelpRect, -BorderWidth - 1, -BorderWidth - 1);
+      Canvas.Brush.Bitmap := Pattern;
+      Self.Canvas.FillRect(HelpRect);
+    end;
+
+    if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
       OffsetRect(ARect, 1, 1);
 
     FImList.Draw(Canvas, ARect.Left, ARect.Top, Index);
@@ -1590,6 +1607,7 @@ function TJvTransparentButton2.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TJvTransparentButtonActionLink;
 end;
+
 
 end.
 
