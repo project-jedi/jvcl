@@ -39,9 +39,9 @@ procedure Register;
 implementation
 
 uses
-  Classes, QDialogs, QActnList, 
-  DesignEditors, DesignIntf, 
-  JvQDsgnConsts, 
+  Classes, QDialogs, QActnList, QExtDlgs,
+  DesignEditors, DesignIntf,
+  JvQDsgnConsts,
   {$IFDEF USEWINDOWS}
   JvQWinDialogs, JvQAddPrinter, JvQCommonDialogD, JvQConnectNetwork, JvQCopyError,
   JvQDeleteError, JvQRenameError, JvQDiskPrompt, JvQFindFiles,
@@ -63,29 +63,36 @@ procedure Register;
 const
   cAppletName = 'AppletName';
   cAppletIndex = 'AppletIndex';
-begin 
+begin
+  RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog]);
   RegisterComponents(RsPaletteDialog, [TJvSelectDirectory,  TJvTipOfDay,
-    TJvFindReplace, TJvDSADialog]); 
-  {$IFDEF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [TJvConnectNetwork,
-    TJvDisconnectNetwork, TJvAddPrinterDialog, TJvFindFilesDialog,
-    TJvFormatDriveDialog, TJvOrganizeFavoritesDialog,
-    TJvComputerNameDialog, TJvChangeIconDialog,
-    TJvShellAboutDialog, TJvRunDialog, TJvObjectPropertiesDialog,
-    TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog,
-    TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,
-    TJvObjectPickerDialog, TJvDualListDialog, TJvImageDialog, TJvLoginDialog,
-    TJvProgressDialog, TJvProgressComponent, TJvDiskPrompt, TJvCopyError,
-    TJvDeleteError, TJvRenameError, TJvDesktopAlert, TJvDesktopAlertStack]);
-  {$ENDIF USEWINDOWS}
- 
+    TJvFindReplace, TJvDSADialog]);
+
+  RegisterComponents(RsPaletteDialog, [
+    {$IFDEF USEWINDOWS}
+    TJvConnectNetwork, TJvDisconnectNetwork, TJvAddPrinterDialog,
+    TJvFindFilesDialog, TJvFormatDriveDialog, TJvOrganizeFavoritesDialog,
+    TJvComputerNameDialog, TJvChangeIconDialog, TJvShellAboutDialog,
+    TJvRunDialog, TJvObjectPropertiesDialog, TJvNewLinkDialog,
+    TJvAddHardwareDialog, TJvOpenWithDialog, TJvDiskFullDialog,
+    TJvExitWindowsDialog, TJvOutOfMemoryDialog, TJvObjectPickerDialog,
+    TJvImageDialog,
+    {$ENDIF USEWINDOWS}
+    TJvLoginDialog, TJvProgressDialog, TJvProgressComponent,
+    {$IFDEF USEWINDOWS}
+    TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError,
+    {$ENDIF USEWINDOWS}
+    TJvDesktopAlert, TJvDesktopAlertStack]);
+
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-  RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor); 
+  RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
+  RegisterComponentEditor(TOpenPictureDialog, TJvBaseDlgEditor);
+  RegisterComponentEditor(TSavePictureDialog, TJvBaseDlgEditor);
   {$IFDEF USEWINDOWS}
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
   {$ENDIF USEWINDOWS}
