@@ -145,6 +145,8 @@ type
     procedure WMEraseBkgnd(var M: TWMEraseBkgnd); message WM_ERASEBKGND;
     function ParentVisible: boolean;
   protected
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+    function GetActionLinkClass: TControlActionLinkClass; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoOnEdited(var Caption: string); virtual;
     procedure EditKeyDown(Sender: TObject; var Key: Char);
@@ -212,6 +214,7 @@ type
   public
     property Data;
   published
+    property Action;
     property ButtonBorder;
     property Caption;
     property Down;
@@ -232,6 +235,7 @@ type
     constructor Create(AOwner: TComponent); override;
     property Data;
   published
+    property Action;
     property Down;
     property FillColor default clBtnFace;
     property GroupIndex;
@@ -453,6 +457,8 @@ type
   end;
 
 implementation
+uses
+  ActnList;
 
 const
   cSpeed = 20;
@@ -530,6 +536,14 @@ type
   TJvLookOutEdit = class(TEdit)
   private
     procedure CMExit(var Message: TCMExit); message CM_EXIT;
+  end;
+
+  TJvLookOutButtonActionLink = class(TControlActionLink)
+  protected
+    FClient: TJvCustomLookoutButton;
+    procedure AssignClient(AClient: TObject); override;
+    function IsCheckedLinked: Boolean; override;
+    procedure SetChecked(Value: Boolean); override;
   end;
 
 procedure TJvLookOutEdit.CMExit(var Message: TCMExit);
@@ -1460,6 +1474,25 @@ begin
       FPopUpMenu := nil;
   end;
   Invalidate;
+end;
+
+procedure TJvCustomLookOutButton.ActionChange(Sender: TObject;
+  CheckDefaults: Boolean);
+begin
+  inherited ActionChange(Sender,CheckDefaults);
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    begin
+      if not CheckDefaults or (Self.Down = False) then
+        Self.Down := Checked;
+      if not CheckDefaults or (Self.ImageIndex = -1) then
+        Self.ImageIndex := ImageIndex;
+    end;
+end;
+
+function TJvCustomLookOutButton.GetActionLinkClass: TControlActionLinkClass;
+begin
+  Result := TJvLookOutButtonActionLink;
 end;
 
 { TJvExpressButton }
@@ -2732,6 +2765,27 @@ begin
   finally
     ReleaseDC(Handle, DC);
   end;
+end;
+
+{ TJvLookOutButtonActionLink }
+
+procedure TJvLookOutButtonActionLink.AssignClient(AClient: TObject);
+begin
+  inherited AssignClient(AClient);
+  FClient := AClient as TJvCustomLookoutButton;
+end;
+
+
+function TJvLookOutButtonActionLink.IsCheckedLinked: Boolean;
+begin
+  Result := inherited IsCheckedLinked and
+    (FClient.Down = (Action as TCustomAction).Checked);
+end;
+
+procedure TJvLookOutButtonActionLink.SetChecked(Value: Boolean);
+begin
+  if IsCheckedLinked then
+    FClient.Down := Value;
 end;
 
 end.
