@@ -35,7 +35,7 @@ const
     requires the user to install or compile the JCL. Changing this constant
     will only change the displayed string but not the JCL version testing
     code. }
-  JCLVersion = '1.92 or 1.93(CVS)';
+  JCLVersion = '1.95';
 
 
   { JCLBrowsePaths specifies the JCL directories that could be found in the
@@ -61,8 +61,8 @@ const
     directory to be accepted as a new enought JCL version. The paths must start
     with a backslash. A leading "+" means that the file must exist, a leading
     "-" means that the file must not exist. }
-  JCLIdentifyOutdated: array[0..2] of string = (
-//    '+\source\windows\win32api\WinBase.int' // 1.93(CVS)
+  JCLIdentifyOutdated: array[0..3] of string = (
+     '+\source\common\JclArrayLists.pas', // 1.95
      '+\source\common\JclCompression.pas',
      '+\source\common\JclUnitVersioning.pas',
      '+\source\common\JclWideStrings.pas'
