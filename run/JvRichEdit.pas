@@ -272,6 +272,7 @@ type
     FAutoVerbMenu: Boolean;
     FAllowInPlace: Boolean;
     FDefaultJvConverter: TConversionClass;
+    FImageRect: TRect;
     FOnSelChange: TNotifyEvent;
     FOnResizeRequest: TRichEditResizeEvent;
     FOnProtectChange: TRichEditProtectChange;
@@ -416,6 +417,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear; override;
+    procedure SaveToImage(Picture: TPicture);
 
     procedure InsertBitmap(ABitmap: TBitmap; const Sizeable: Boolean);
     // InsertFormatText inserts formatted text at the cursor position given by Index.
@@ -3280,11 +3282,11 @@ var
   DC: HDC;
 begin
   inherited Create(AOwner);
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   ControlStyle := ControlStyle + [csAcceptsControls, csNeedsBorderPaint] - [csSetCaption];
-  {$ELSE}
+{$ELSE}
   ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
-  {$ENDIF}
+{$ENDIF}
   FHintColor := clInfoBk;
   FSelAttributes := TJvTextAttributes.Create(Self, atSelected);
   FDefAttributes := TJvTextAttributes.Create(Self, atDefaultText);
@@ -4597,6 +4599,7 @@ procedure TJvCustomRichEdit.RequestSize(const Rect: TRect);
 begin
   if Assigned(OnResizeRequest) then
     OnResizeRequest(Self, Rect);
+  FImageRect := Rect;
 end;
 
 procedure TJvCustomRichEdit.URLClick(const URLText: string; Button: TMouseButton);
@@ -5313,20 +5316,54 @@ end;
 
 procedure TJvCustomRichEdit.AddFormatText(const S: string; const AFont: TFont);
 begin
-  InsertFormatText(GetTextLen,S,AFont);
+  InsertFormatText(GetTextLen, S, AFont);
+end;
+
+procedure TJvCustomRichEdit.SaveToImage(Picture: TPicture);
+var
+  ABmp: TBitmap;
+  Range: TFormatRange;
+  R: TRect;
+begin
+  if (Picture = nil) or (ClientWidth = 0) or (ClientHeight = 0) or not HandleAllocated then Exit;
+  ABmp := TBitmap.Create;
+  try
+    if IsRectEmpty(FImageRect) then
+    begin
+      FImageRect.Right := ClientWidth;
+      FImageRect.Bottom := ClientHeight;
+    end;
+    ABmp.Width := FImageRect.Right;
+    ABmp.Height := FImageRect.Bottom;
+    R.Top     := 0;
+    R.Left    := 0;
+    R.Right   := FImageRect.Right * Screen.PixelsPerInch;
+    R.Bottom  := FImageRect.Bottom * Screen.PixelsPerInch;
+    Range.hdc := ABmp.Canvas.Handle;
+    Range.hdcTarget := ABmp.Canvas.Handle;
+    Range.rc := R;
+    Range.rcPage := R;
+    Range.chrg.cpMin := 0;
+    Range.chrg.cpMax := -1;
+    SendMessage(Handle, EM_FORMATRANGE, 1, integer(@Range));
+    Picture.Assign(ABmp);
+  finally
+    ABmp.Free;
+  end;
+
 end;
 
 initialization
   RichEditVersion := 1;
   OldError := SetErrorMode(SEM_NOOPENFILEERRORBOX);
   try
-    {$IFNDEF RICHEDIT_VER_10}
+{$IFNDEF RICHEDIT_VER_10}
     FLibHandle := LoadLibrary(RichEdit20ModuleName);
     if (FLibHandle > 0) and (FLibHandle < HINSTANCE_ERROR) then
       FLibHandle := 0;
-    {$ELSE}
+{$ELSE}
     FLibHandle := 0;
-    {$ENDIF}
+{$ENDIF}
     if FLibHandle = 0 then
     begin
       FLibHandle := LoadLibrary(RichEdit10ModuleName);
