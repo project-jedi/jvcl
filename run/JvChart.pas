@@ -495,15 +495,16 @@ type
     FXAxisPosition : Integer; // how far down (in Y dimension) is the X axis?
 
     FOnOptionsChangeEvent : TJvChartEvent; {NEW:Component fires this event for when options change.}
-    {$IFDEF VCL}
-    // Y Axis Vertical Font
-    FYFontHandle: HFont; // Y AXIS VERTICAL TEXT: Vertical Font Handle (remember to DeleteObject)
-    FYLogFont: TLogFont; // Y AXIS VERTICAL TEXT: Logical Font Options Record
 
     FCursorPosition :Integer; // NEW: -1 means no visible cursor, 0..n means make
                               // particular value highlighted.  The highlight is painted
                               // over top of the TImage, so that we can just restore the TImage
                               // without replotting the whole chart.
+
+    {$IFDEF VCL}
+    // Y Axis Vertical Font
+    FYFontHandle: HFont; // Y AXIS VERTICAL TEXT: Vertical Font Handle (remember to DeleteObject)
+    FYLogFont: TLogFont; // Y AXIS VERTICAL TEXT: Logical Font Options Record
 
     procedure MakeVerticalFont; // Call GDI calls to get the Y Axis Vertical Font handle
     procedure MyGraphVertFont; // vertical font handle
