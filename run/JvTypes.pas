@@ -472,7 +472,7 @@ type
 
 implementation
 
-//=== TJvPersistent ==========================================================
+//=== { TJvPersistent } ======================================================
 
 {$IFDEF COMPILER6_UP}
 constructor TJvPersistent.Create(AOwner: TComponent);

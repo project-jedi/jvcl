@@ -391,7 +391,7 @@ resourcestring
   RsVersion = '2.0.1'; // always increase version number on new releases!
 {$ENDIF USEJVCL}
 
-//=== TJvXPCustomComponent ===================================================
+//=== { TJvXPCustomComponent } ===============================================
 
 constructor TJvXPCustomComponent.Create(AOwner: TComponent);
 begin
@@ -408,7 +408,7 @@ begin
 end;
 {$ENDIF USEJVCL}
 
-//=== TJvXPCustomControl =====================================================
+//=== { TJvXPCustomControl } =================================================
 
 constructor TJvXPCustomControl.Create(AOwner: TComponent);
 begin
@@ -817,7 +817,7 @@ begin
     InternalRedraw;
 end;
 
-//=== TJvXPStyle =============================================================
+//=== { TJvXPStyle } =========================================================
 
 constructor TJvXPStyle.Create(AOwner: TComponent);
 begin
@@ -852,7 +852,7 @@ begin
   end;
 end;
 
-//=== TJvXPStyleManager ======================================================
+//=== { TJvXPStyleManager } ==================================================
 
 constructor TJvXPStyleManager.Create(AOwner: TComponent);
 begin
@@ -906,7 +906,7 @@ begin
     FControls.Delete(FControls.IndexOf(AControls[I]));
 end;
 
-//=== TJvXPCustomStyleControl ================================================
+//=== { TJvXPCustomStyleControl } ============================================
 
 constructor TJvXPCustomStyleControl.Create(AOwner: TComponent);
 begin
@@ -944,7 +944,7 @@ begin
   end;
 end;
 
-//=== TJvXPGradient ==========================================================
+//=== { TJvXPGradient } ======================================================
 
 constructor TJvXPGradient.Create(AOwner: TControl);
 begin

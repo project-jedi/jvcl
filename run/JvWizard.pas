@@ -1020,7 +1020,7 @@ type
     procedure Click; override;
   end;
 
-//=== TJvWizardButtonControl =================================================
+//=== { TJvWizardButtonControl } =============================================
 
 constructor TJvWizardButtonControl.Create(AOwner: TComponent);
 begin
@@ -1070,7 +1070,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-//=== TJvWizardBaseButton ====================================================
+//=== { TJvWizardBaseButton } ================================================
 
 procedure TJvWizardBaseButton.Click;
 var
@@ -1103,7 +1103,7 @@ begin
   // do nothing (make Delphi 5 compiler happy)
 end;
 
-//=== TJvWizardStartButton ===================================================
+//=== { TJvWizardStartButton } ===============================================
 
 constructor TJvWizardStartButton.Create(AOwner: TComponent);
 begin
@@ -1132,7 +1132,7 @@ begin
   Result := Caption <> RsFirstButtonCaption;
 end;
 
-//=== TJvWizardLastButton ====================================================
+//=== { TJvWizardLastButton } ================================================
 
 constructor TJvWizardLastButton.Create(AOwner: TComponent);
 begin
@@ -1160,7 +1160,7 @@ begin
   Result := Caption <> RsLastButtonCaption;
 end;
 
-//=== TJvWizardBackButton ====================================================
+//=== { TJvWizardBackButton } ================================================
 
 constructor TJvWizardBackButton.Create(AOwner: TComponent);
 begin
@@ -1188,7 +1188,7 @@ begin
   Result := Caption <> RsBackButtonCaption;
 end;
 
-//=== TJvWizardNextButton ====================================================
+//=== { TJvWizardNextButton } ================================================
 
 constructor TJvWizardNextButton.Create(AOwner: TComponent);
 begin
@@ -1216,7 +1216,7 @@ begin
   Result := Caption <> RsNextButtonCaption;
 end;
 
-//=== TJvWizardFinishButton ==================================================
+//=== { TJvWizardFinishButton } ==============================================
 
 constructor TJvWizardFinishButton.Create(AOwner: TComponent);
 begin
@@ -1238,7 +1238,7 @@ begin
   Result := Caption <> RsFinishButtonCaption;
 end;
 
-//=== TJvWizardCancelButton ==================================================
+//=== { TJvWizardCancelButton } ==============================================
 
 constructor TJvWizardCancelButton.Create(AOwner: TComponent);
 begin
@@ -1262,7 +1262,7 @@ begin
   Result := Caption <> SCancelButton;
 end;
 
-//=== TJvWizardHelpButton ====================================================
+//=== { TJvWizardHelpButton } ================================================
 
 constructor TJvWizardHelpButton.Create(AOwner: TComponent); // Added by Theodore
 begin
@@ -1315,7 +1315,7 @@ begin
   Result := Caption <> SHelpButton;
 end;
 
-//=== TJvWizardNavigateButton ================================================
+//=== { TJvWizardNavigateButton } ============================================
 
 function TJvWizardNavigateButton.GetCaption: string;
 begin
@@ -1412,7 +1412,7 @@ begin
   Result := not Assigned(FControl) or FControl.StoreCaption;
 end;
 
-//=== TJvWizardRouteMapControl ===============================================
+//=== { TJvWizardRouteMapControl } ===========================================
 
 constructor TJvWizardRouteMapControl.Create(AOwner: TComponent);
 begin
@@ -1649,7 +1649,7 @@ begin
     FOnDisplaying(Self, APage, Result);
 end;
 
-//=== TJvWizardImage =========================================================
+//=== { TJvWizardImage } =====================================================
 
 constructor TJvWizardImage.Create;
 begin
@@ -1731,7 +1731,7 @@ begin
   DoChange;
 end;
 
-//=== TJvWizardGraphicObject =================================================
+//=== { TJvWizardGraphicObject } =============================================
 
 constructor TJvWizardGraphicObject.Create;
 begin
@@ -1767,7 +1767,7 @@ begin
   DoChange;
 end;
 
-//=== TJvWizardPageTitle =====================================================
+//=== { TJvWizardPageTitle } =================================================
 
 constructor TJvWizardPageTitle.Create;
 begin
@@ -1941,7 +1941,7 @@ begin
   DoChange;
 end;
 
-//=== TJvWizardPageObject ====================================================
+//=== { TJvWizardPageObject } ================================================
 
 procedure TJvWizardPageObject.DoChange;
 begin
@@ -1959,7 +1959,7 @@ begin
   Initialize;
 end;
 
-//=== TJvWizardPageHeader ====================================================
+//=== { TJvWizardPageHeader } ================================================
 
 constructor TJvWizardPageHeader.Create;
 begin
@@ -2142,7 +2142,7 @@ begin
     WizardPage.Realign;
 end;
 
-//=== TJvWizardWaterMark =====================================================
+//=== { TJvWizardWaterMark } =================================================
 
 constructor TJvWizardWaterMark.Create;
 begin
@@ -2238,7 +2238,7 @@ begin
     WizardPage.Realign;
 end;
 
-//=== TJvWizardPagePanel =====================================================
+//=== { TJvWizardPagePanel } =================================================
 
 constructor TJvWizardPagePanel.Create;
 begin
@@ -2276,7 +2276,7 @@ begin
   end;
 end;
 
-//=== TJvWizardCustomPage ====================================================
+//=== { TJvWizardCustomPage } ================================================
 
 constructor TJvWizardCustomPage.Create(AOwner: TComponent);
 begin
@@ -2581,7 +2581,7 @@ begin
   Header.Title := Value;
 end;
 
-//=== TJvWizardWelcomePage ===================================================
+//=== { TJvWizardWelcomePage } ===============================================
 
 constructor TJvWizardWelcomePage.Create(AOwner: TComponent);
 begin
@@ -2618,14 +2618,14 @@ begin
   FHeader.PaintTo(ACanvas, ARect);
 end;
 
-//=== TJvWizardInteriorPage ==================================================
+//=== { TJvWizardInteriorPage } ==============================================
 
 procedure TJvWizardInteriorPage.DrawPage(ACanvas: TCanvas; var ARect: TRect);
 begin
   FHeader.PaintTo(ACanvas, ARect);
 end;
 
-//=== TJvWizardPageList ======================================================
+//=== { TJvWizardPageList } ==================================================
 
 destructor TJvWizardPageList.Destroy;
 begin
@@ -2648,7 +2648,7 @@ begin
   end;
 end;
 
-//=== TJvWizard ==============================================================
+//=== { TJvWizard } ==========================================================
 
 constructor TJvWizard.Create(AOwner: TComponent);
 begin

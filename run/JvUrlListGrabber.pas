@@ -466,7 +466,7 @@ begin
   Result := GJvUrlGrabberClassList;
 end;
 
-//=== TJvUrlListGrabber ======================================================
+//=== { TJvUrlListGrabber } ==================================================
 
 constructor TJvUrlListGrabber.Create(AOwner: TComponent);
 begin
@@ -575,7 +575,7 @@ begin
   Filer.DefineProperty('DefaultGrabbersPropertiesList', DefaultGrabbersProperties.Read, DefaultGrabbersProperties.Write, True);
 end;
 
-//=== TJvCustomUrlGrabber ==========================================================
+//=== { TJvCustomUrlGrabber } ======================================================
 
 constructor TJvCustomUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
@@ -685,7 +685,7 @@ begin
   Result := '';
 end;
 
-//=== TJvUrlGrabberList ======================================================
+//=== { TJvUrlGrabberList } ==================================================
 
 function TJvUrlGrabberList.Add(AGrabber: TJvCustomUrlGrabber): Integer;
 begin
@@ -707,7 +707,7 @@ begin
   inherited Items[Index] := AGrabber;
 end;
 
-//=== TJvCustomUrlGrabberClassList =================================================
+//=== { TJvCustomUrlGrabberClassList } =============================================
 
 function TJvUrlGrabberClassList.Add(AGrabberClass: TJvCustomUrlGrabberClass): Integer;
 begin
@@ -755,7 +755,7 @@ begin
   inherited Items[Index] := AGrabberClass;
 end;
 
-//=== TJvCustomUrlGrabberThread ====================================================
+//=== { TJvCustomUrlGrabberThread } ================================================
 
 constructor TJvCustomUrlGrabberThread.Create(Grabber: TJvCustomUrlGrabber);
 begin
@@ -800,7 +800,7 @@ begin
     Host := Value;
 end;
 
-//=== TJvUrlGrabberDefaultPropertiesList ===============================
+//=== { TJvUrlGrabberDefaultPropertiesList } ===========================
 
 constructor TJvUrlGrabberDefaultPropertiesList.Create(AOwner: TJvUrlListGrabber);
 begin
@@ -855,7 +855,7 @@ begin
   end;
 end;
 
-//=== TJvUrlGrabberDefPropEdTrick ============================================
+//=== { TJvUrlGrabberDefPropEdTrick } ========================================
 
 constructor TJvUrlGrabberDefPropEdTrick.Create(GrabberDefaults: TJvCustomUrlGrabberDefaultProperties);
 begin
@@ -863,7 +863,7 @@ begin
     FDefaultProperties := GrabberDefaults;
 end;
 
-//=== TJvCustomUrlGrabberDefaultProperties =========================================
+//=== { TJvCustomUrlGrabberDefaultProperties } =====================================
 
 procedure TJvCustomUrlGrabberDefaultProperties.Assign(Source: TPersistent);
 begin

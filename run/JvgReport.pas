@@ -234,7 +234,7 @@ resourcestring
   RsErrorReadingComponent = 'Error reading component.';
 {$ENDIF USEJVCL}
 
-//=== TJvgReportScrollBox ====================================================
+//=== { TJvgReportScrollBox } ================================================
 
 constructor TJvgReportScrollBox.Create(AOwner: TComponent);
 begin
@@ -274,7 +274,7 @@ begin
     FOnDraw(Self);
 end;
 
-//=== TJvgReportItem =========================================================
+//=== { TJvgReportItem } =====================================================
 
 constructor TJvgReportItem.Create(AOwner: TComponent);
 begin

@@ -113,7 +113,7 @@ type
 var
   lpFrHintComponent: TJvgHint;
 
-//=== TJvgHint ===============================================================
+//=== { TJvgHint } ===========================================================
 
 constructor TJvgHint.Create(AOwner: TComponent);
 begin
@@ -208,7 +208,7 @@ begin
   HW.ActivateHint(R, Caption);
 end;
 
-//=== TJvgHintWindow =========================================================
+//=== { TJvgHintWindow } =====================================================
 
 constructor TJvgHintWindow.Create(AOwner: TComponent);
 begin

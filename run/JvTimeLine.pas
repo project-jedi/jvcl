@@ -562,7 +562,7 @@ end;
 {$ENDIF COMPILER6_UP}
 // PRY END
 
-//=== TJvTimeItem ============================================================
+//=== { TJvTimeItem } ========================================================
 
 constructor TJvTimeItem.Create(Collection: TCollection);
 begin
@@ -760,7 +760,7 @@ begin
   end;
 end;
 
-//=== TJvTimeItems ===========================================================
+//=== { TJvTimeItems } =======================================================
 
 constructor TJvTimeItems.Create(TimeLine: TJvCustomTimeLine);
 begin
@@ -805,7 +805,7 @@ begin
     FTimeLine.UpdateItems;
 end;
 
-//=== TJvTLScrollBtn =========================================================
+//=== { TJvTLScrollBtn } =====================================================
 
 constructor TJvTLScrollBtn.Create(AOwner: TComponent);
 begin
@@ -1071,7 +1071,7 @@ begin
   end;
 end;
 
-//=== TJvCustomTimeLine ======================================================
+//=== { TJvCustomTimeLine } ==================================================
 
 constructor TJvCustomTimeLine.Create(AOwner: TComponent);
 var

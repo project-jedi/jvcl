@@ -123,7 +123,7 @@ begin
     Result := Big - Small;
 end;
 
-//=== TJvTimerThread =========================================================
+//=== { TJvTimerThread } =====================================================
 
 constructor TJvTimerThread.Create(ATimer: TJvThreadTimer);
 begin
@@ -204,7 +204,7 @@ begin
   Sleep(0);
 end;
 
-//=== TJvThreadTimer =========================================================
+//=== { TJvThreadTimer } =====================================================
 
 constructor TJvThreadTimer.Create(AOwner: TComponent);
 begin

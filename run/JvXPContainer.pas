@@ -191,7 +191,7 @@ type
 
 implementation
 
-//=== TJvXPCustomContainer ===================================================
+//=== { TJvXPCustomContainer } ===============================================
 
 constructor TJvXPCustomContainer.Create(AOwner: TComponent);
 begin

@@ -1603,7 +1603,7 @@ end;
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
-//=== TDateHook ==============================================================
+//=== { TDateHook } ==========================================================
 
 procedure TDateHook.Add;
 begin
@@ -1658,7 +1658,7 @@ end;
 
 {$ENDIF VCL}
 
-//=== TJvCustomComboEdit =====================================================
+//=== { TJvCustomComboEdit } =================================================
 
 function TJvCustomComboEdit.AcceptPopup(var Value: Variant): Boolean;
 begin
@@ -2957,7 +2957,7 @@ begin
 end;
 {$ENDIF VCL}
 
-//=== TJvCustomComboEditActionLink ===========================================
+//=== { TJvCustomComboEditActionLink } =======================================
 
 function TJvCustomComboEditActionLink.IsCaptionLinked: Boolean;
 begin
@@ -3012,7 +3012,7 @@ begin
     (FClient as TJvCustomComboEdit).ClickKey := Value;
 end;
 
-//=== TJvCustomDateEdit ======================================================
+//=== { TJvCustomDateEdit } ==================================================
 
 function TJvCustomDateEdit.AcceptPopup(var Value: Variant): Boolean;
 var
@@ -3597,7 +3597,7 @@ end;
 
 {$ENDIF VCL}
 
-//=== TJvDateEdit ============================================================
+//=== { TJvDateEdit } ========================================================
 
 // (rom) unusual not to have it implemented in the Custom base class
 
@@ -3628,7 +3628,7 @@ begin
   inherited SetDate(Value);
 end;
 
-//=== TJvDirectoryEdit =======================================================
+//=== { TJvDirectoryEdit } ===================================================
 
 procedure TJvDirectoryEdit.ButtonClick;
 var
@@ -3786,7 +3786,7 @@ begin
     Text := Text + ';' + Temp;
 end;
 
-//=== TJvEditButton ==========================================================
+//=== { TJvEditButton } ======================================================
 
 procedure TJvEditButton.Click;
 begin
@@ -3927,7 +3927,7 @@ begin
 end;
 {$ENDIF VCL}
 
-//=== TJvFileDirEdit =========================================================
+//=== { TJvFileDirEdit } =====================================================
 
 procedure TJvFileDirEdit.ClearFileList;
 begin
@@ -4141,7 +4141,7 @@ end;
 
 {$ENDIF VCL}
 
-//=== TJvFilenameEdit ========================================================
+//=== { TJvFilenameEdit } ====================================================
 
 procedure TJvFilenameEdit.ButtonClick;
 var
@@ -4441,7 +4441,7 @@ begin
   end;
 end;
 
-//=== TJvPopupWindow =========================================================
+//=== { TJvPopupWindow } =====================================================
 
 procedure TJvPopupWindow.CloseUp(Accept: Boolean);
 begin

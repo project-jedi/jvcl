@@ -83,7 +83,7 @@ resourcestring
   RsEOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
 {$ENDIF USEJVCL}
 
-//=== TJvg3DLocalColors ======================================================
+//=== { TJvg3DLocalColors } ==================================================
 
 constructor TJvg3DLocalColors.Create(AOwner: TComponent);
 begin
@@ -147,7 +147,7 @@ begin
   FShadow := Value; {TWinControl(Owner).Invalidate;}
 end;
 
-//=== TJvg3DColors ===========================================================
+//=== { TJvg3DColors } =======================================================
 
 constructor TJvg3DColors.Create(AOwner: TComponent);
 begin

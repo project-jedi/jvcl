@@ -289,7 +289,7 @@ uses
 {$R ../Resources/JvxSlider.res}
 {$ENDIF LINUX}
 
-//=== TJvCustomSlider ========================================================
+//=== { TJvCustomSlider } ====================================================
 
 const
   ImagesResNames: array [TSliderImage] of PChar =
@@ -1292,7 +1292,7 @@ begin
   end;
 end;
 
-//=== TJvCustomTrackBar ======================================================
+//=== { TJvCustomTrackBar } ==================================================
 
 constructor TJvCustomTrackBar.Create(AOwner: TComponent);
 begin
@@ -1307,7 +1307,7 @@ begin
   inherited Destroy;
 end;
 
-//=== TJvSliderImages ========================================================
+//=== { TJvSliderImages } ====================================================
 
 function TJvSliderImages.GetImage(Index: Integer): TBitmap;
 begin

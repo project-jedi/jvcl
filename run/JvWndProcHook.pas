@@ -234,7 +234,7 @@ begin
   TJvReleaser.Instance.Release(AObject);
 end;
 
-//=== TJvWndProcHook =========================================================
+//=== { TJvWndProcHook } =====================================================
 
 procedure TJvWndProcHook.Add(AHookInfos: TJvHookInfos);
 var
@@ -430,7 +430,7 @@ begin
     HookInfos.Delete(Order, Hook);
 end;
 
-//=== TJvHookInfos ===========================================================
+//=== { TJvHookInfos } =======================================================
 
 procedure TJvHookInfos.Add(const Order: TJvHookOrder; Hook: TJvControlHook);
 var
@@ -739,7 +739,7 @@ begin
       }
 end;
 
-//=== TJvWindowHook ==========================================================
+//=== { TJvWindowHook } ======================================================
 
 constructor TJvWindowHook.Create(AOwner: TComponent);
 begin
@@ -911,7 +911,7 @@ begin
   Writer.WriteBoolean(IsForm);
 end;
 
-//=== TJvReleaser ============================================================
+//=== { TJvReleaser } ========================================================
 
 procedure TJvReleaser.CMRelease(var Msg: TMessage);
 var

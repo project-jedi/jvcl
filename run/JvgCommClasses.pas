@@ -1410,7 +1410,7 @@ begin
   end;
 end;
 
-{ TJvgGradient }
+//=== { TJvgGradient } =======================================================
 
 // { paints the gradient; отрисовывает градиент }
 

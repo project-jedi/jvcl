@@ -171,7 +171,7 @@ type
     property Font;
   end;
 
-//=== TJvgTabStyle ===========================================================
+//=== { TJvgTabStyle } =======================================================
 
 constructor TJvgTabStyle.Create(AOwner: TWinControl);
 begin
@@ -328,7 +328,7 @@ begin
   FGradient.OnChanged := Value;
 end;
 
-//=== TJvgTabsWallpaper ======================================================
+//=== { TJvgTabsWallpaper } ==================================================
 
 constructor TJvgTabsWallpaper.Create;
 begin

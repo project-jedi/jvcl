@@ -131,7 +131,7 @@ implementation
 uses
   JvgUtils;
 
-//=== TJvgGridItems ==========================================================
+//=== { TJvgGridItems } ======================================================
 
 constructor TJvgGridItems.Create(ItemClass: TCollectionItemClass);
 begin
@@ -176,7 +176,7 @@ begin
     FOnUpdate(Self);
 end;
 
-//=== TJvgGridItem ===========================================================
+//=== { TJvgGridItem } =======================================================
 
 constructor TJvgGridItem.Create(Collection: TCollection);
 begin
@@ -318,7 +318,7 @@ begin
   OnValuesChange(Self);
 end;
 
-//=== TJvgInspectorGrid ======================================================
+//=== { TJvgInspectorGrid } ==================================================
 
 constructor TJvgInspectorGrid.Create(AOwner: TComponent);
 begin

@@ -129,7 +129,7 @@ type
     procedure Execute; override;
   end;
 
-//=== TJvThread ==============================================================
+//=== { TJvThread } ==========================================================
 
 constructor TJvThread.Create(AOwner: TComponent);
 begin
@@ -319,7 +319,7 @@ begin
   end;
 end;
 
-//=== TJvHideThread ==========================================================
+//=== { TJvHideThread } ======================================================
 
 constructor TJvHideThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;
   Params: Pointer);

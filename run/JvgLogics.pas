@@ -234,7 +234,7 @@ uses
   JvConsts,
   JvgUtils;
 
-//=== TJvgLogicElement =======================================================
+//=== { TJvgLogicElement } ===================================================
 
 constructor TJvgLogicElement.Create(Collection: TCollection);
 begin
@@ -329,7 +329,7 @@ begin
   FValue := Value;
 end;
 
-//=== TJvgLogics =============================================================
+//=== { TJvgLogics } =========================================================
 
 constructor TJvgLogics.Create(AOwner: TPersistent; ItemClass: TCollectionItemClass);
 begin
@@ -500,7 +500,7 @@ begin
   FDictionary.Assign(Value);
 end;
 
-//=== TJvgLogicProducer ======================================================
+//=== { TJvgLogicProducer } ==================================================
 
 constructor TJvgLogicProducer.Create(AOwner: TComponent);
 begin
@@ -561,7 +561,7 @@ begin
   Result := Logics.OnTraceMessage;
 end;
 
-//=== TJvgCommentAreas =======================================================
+//=== { TJvgCommentAreas } ===================================================
 
 function TJvgCommentAreas.Add: TJvgCommentArea;
 begin
@@ -584,7 +584,7 @@ begin
   Items[Index].Assign(Value);
 end;
 
-//=== TJvgLogicVariants ======================================================
+//=== { TJvgLogicVariants } ==================================================
 
 function TJvgLogicVariants.Add: TJvgLogicVariant;
 begin

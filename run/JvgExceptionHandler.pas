@@ -104,7 +104,7 @@ begin
   //  RaiseAssertException(E, ErrorAddr, PChar(@ErrorAddr)+4);
 end;
 
-//=== TJvgExceptionHandler ===================================================
+//=== { TJvgExceptionHandler } ===============================================
 
 constructor TJvgExceptionHandler.Create(AOwner: TComponent);
 begin
