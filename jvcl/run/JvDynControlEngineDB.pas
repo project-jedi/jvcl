@@ -34,65 +34,63 @@ uses
 type
   TJvDynControlEngineDB = class(TJvCustomDynControlEngine)
   private
-    fDynControlEngine : TJvDynControlEngine;
+    FDynControlEngine: TJvDynControlEngine;
   protected
-    function IsControlTypeValid (const ADynControlType: TJvDynControlType;
-      AControlClass: TControlClass) : Boolean; Override;
-    function GetFieldControlType(AField : TField): TJvDynControlType; virtual;
-    function GetDynControlEngine : TJvDynControlEngine;
-    procedure SetDynControlEngine (ADynControlEngine : TJvDynControlEngine);
+    function GetFieldControlType(AField: TField): TJvDynControlType; virtual;
+    function GetDynControlEngine: TJvDynControlEngine;
+    procedure SetDynControlEngine (ADynControlEngine: TJvDynControlEngine);
   public
-    function CreateDBFieldControl(AField : TField; AOwner: TComponent;
-      AParentControl: TWinControl; AControlName: string; ADatasource: TDatasource): TWinControl; virtual;
-
+    function IsControlTypeValid(const ADynControlType: TJvDynControlType;
+      AControlClass: TControlClass): Boolean; override;
+    function CreateDBFieldControl(AField: TField; AOwner: TComponent;
+      AParentControl: TWinControl; AControlName: string; ADataSource: TDataSource): TWinControl; virtual;
     function CreateDBControl(AControlType: TJvDynControlType; AOwner: TComponent;
       AParentControl: TWinControl; AControlName: string;
-      ADatasource: TDatasource; const ADataField: string): TControl; virtual;
-
+      ADataSource: TDataSource; const ADataField: string): TControl; virtual;
     function CreateDBTextControl(AOwner: TComponent;
-      AParentControl: TWinControl; const AControlName : string;
-      ADatasource: TDatasource; const ADataField: string; const ACaption: string): TWinControl;
+      AParentControl: TWinControl; const AControlName: string;
+      ADataSource: TDataSource; const ADataField: string; const ACaption: string): TWinControl;
     function CreateDBEditControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl; virtual;
     function CreateDBCheckboxControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField, ACaption: string): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource;
+      const ADataField, ACaption: string): TWinControl; virtual;
     function CreateDBComboBoxControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField: string; AItems: TStrings): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string;
+      AItems: TStrings): TWinControl; virtual;
     function CreateDBImageControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl; virtual;
     function CreateDBRadioGroupControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField, ACaption: string; AItems: TStrings): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource; const ADataField, ACaption: string;
+      AItems: TStrings): TWinControl; virtual;
     function CreateDBMemoControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl; virtual;
     function CreateDBListBoxControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField: string; AItems: TStrings): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string;
+      AItems: TStrings): TWinControl; virtual;
     function CreateDBDateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl; virtual;
     function CreateDBDateControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl; virtual;
     function CreateDBTimeControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl; virtual;
     function CreateDBCalculateControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl; virtual;
     function CreateDBSpinControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl; virtual;
-    function CreateDBDirectoryControl(AOwner: TComponent;
-      AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
-    function CreateDBFileNameControl(AOwner: TComponent;
-      AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl; virtual;
+    function CreateDBDirectoryControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl;
+    function CreateDBFileNameControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl;
     function CreateDBGridControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource): TWinControl; virtual;
+      const AControlName: string; ADataSource: TDataSource): TWinControl; virtual;
     function CreateDBNavigatorControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource): TWinControl; virtual;
-
-    procedure CreateControlsFromDatasourceOnControl (ADatasource: TDatasource;
-      AControl: TWinControl; AShowInvisibleFields : Boolean = False;
-      ALabelOnTop : Boolean = True;
-      ALabelDefaultWidth : Integer = 0; AFieldDefaultWidth : Integer = 0;
-      AMaxFieldWidth : Integer = 300; AFieldSizeStep : Integer = 250);
-
-    property DynControlEngine : TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
-  published
+      const AControlName: string; ADataSource: TDataSource): TWinControl; virtual;
+    procedure CreateControlsFromDatasourceOnControl (ADataSource: TDataSource;
+      AControl: TWinControl; AShowInvisibleFields: Boolean = False; ALabelOnTop: Boolean = True;
+      ALabelDefaultWidth: Integer = 0; AFieldDefaultWidth: Integer = 0;
+      AMaxFieldWidth: Integer = 300; AFieldSizeStep: Integer = 250);
+    property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
   end;
 
 procedure SetDefaultDynControlEngineDB(AEngine: TJvDynControlEngineDB);
@@ -113,31 +111,32 @@ uses
 var
   GlobalDefaultDynControlEngineDB: TJvDynControlEngineDB = nil;
 
-procedure TJvDynControlEngineDB.SetDynControlEngine (ADynControlEngine : TJvDynControlEngine);
+procedure TJvDynControlEngineDB.SetDynControlEngine (ADynControlEngine: TJvDynControlEngine);
 begin
-  fDynControlEngine := ADynControlEngine;
+  FDynControlEngine := ADynControlEngine;
 end;
 
-function TJvDynControlEngineDB.GetDynControlEngine : TJvDynControlEngine;
+function TJvDynControlEngineDB.GetDynControlEngine: TJvDynControlEngine;
 begin
-  if Assigned (fDynControlEngine) then
-    Result := fDynControlEngine
+  if Assigned(FDynControlEngine) then
+    Result := FDynControlEngine
   else
     Result := DefaultDynControlEngine;
 end;
 
-function TJvDynControlEngineDB.IsControlTypeValid (const ADynControlType: TJvDynControlType;
-      AControlClass: TControlClass) : Boolean;
+function TJvDynControlEngineDB.IsControlTypeValid(const ADynControlType: TJvDynControlType;
+  AControlClass: TControlClass): Boolean;
 var
   Valid: Boolean;
 begin
-  Valid := Inherited IsControlTypeValid (ADynControlType, AControlClass);
+  Valid := inherited IsControlTypeValid(ADynControlType, AControlClass);
   case ADynControlType of
 //    jctDBText:
 //      Valid := Valid and Supports(AControlClass, IJvDynControlLabel);
     jctDBButtonEdit:
-      Valid := Valid and Supports(AControlClass, IJvDynControlButton)
-                     and Supports(AControlClass, IJvDynControlData);
+      Valid := Valid and
+        Supports(AControlClass, IJvDynControlButton) and
+        Supports(AControlClass, IJvDynControlData);
     jctDBMemo:
       Valid := Valid and
         Supports(AControlClass, IJvDynControlItems) and
@@ -152,109 +151,123 @@ begin
       jctDBDirectoryEdit, jctDBFileNameEdit :
       Valid := Valid and Supports(AControlClass, IJvDynControlData);
   end;
-  if ADynControlType IN [
-    jctDBEdit, jctDBText, jctDBListBox, jctDBComboBox, jctDBImage, jctDBRadioGroup,
-    jctDBMemo, jctDBDateTimeEdit, jctDBDateEdit, jctDBTimeEdit,
+  if ADynControlType in [jctDBEdit, jctDBText, jctDBListBox, jctDBComboBox, jctDBImage,
+    jctDBRadioGroup, jctDBMemo, jctDBDateTimeEdit, jctDBDateEdit, jctDBTimeEdit,
     jctDBCalculateEdit, jctDBSpinEdit, jctDBDirectoryEdit, jctDBFileNameEdit, jctDBGrid] then
-      Valid := Valid and Supports(AControlClass, IJvDynControlDataBase);
+    Valid := Valid and Supports(AControlClass, IJvDynControlDataBase);
   Result := Valid;
 end;
 
-function TJvDynControlEngineDB.GetFieldControlType(AField : TField): TJvDynControlType;
+function TJvDynControlEngineDB.GetFieldControlType(AField: TField): TJvDynControlType;
 begin
   if not Assigned(AField) then
-    Raise Exception.Create ('TJvDynControlEngineDB.GetFieldControlType : AField must be assigned');
-  Case AField.Datatype of
-    ftMemo : Result := jctDBMemo;
-    ftGraphic : Result := jctDBImage;
-    ftString : Result := jctDBEdit;
-    ftDate : Result := jctDBDateEdit;
-    ftTime : Result := jctDBTimeEdit;
-    ftDateTime : Result := jctDBDateTimeEdit;
-    ftBoolean : Result := jctDBCheckBox;
+    raise EJVCLException.CreateRes(@RsEUnassignedField);
+  case AField.Datatype of
+    ftMemo:
+      Result := jctDBMemo;
+    ftGraphic:
+      Result := jctDBImage;
+    ftString:
+      Result := jctDBEdit;
+    ftDate:
+      Result := jctDBDateEdit;
+    ftTime:
+      Result := jctDBTimeEdit;
+    ftDateTime:
+      Result := jctDBDateTimeEdit;
+    ftBoolean:
+      Result := jctDBCheckBox;
   else
     Result := jctDBEdit;
   end;
 end;
 
-function TJvDynControlEngineDB.CreateDBFieldControl(AField : TField; AOwner: TComponent;
-      AParentControl: TWinControl; AControlName: string; ADatasource: TDatasource): TWinControl;
+function TJvDynControlEngineDB.CreateDBFieldControl(AField: TField; AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string; ADataSource: TDataSource): TWinControl;
 begin
-  Result:= TWinControl(CreateDBControl(GetFieldControlType(AField), AOwner, AParentControl, AControlName, ADatasource, AField.FieldName));
+  Result:= TWinControl(CreateDBControl(GetFieldControlType(AField), AOwner, AParentControl,
+    AControlName, ADataSource, AField.FieldName));
 end;
 
-function TJvDynControlEngineDB.CreateDBControl(AControlType: TJvDynControlType; AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string;
-  ADatasource: TDatasource; const ADataField: string): TControl;
+function TJvDynControlEngineDB.CreateDBControl(AControlType: TJvDynControlType;
+  AOwner: TComponent; AParentControl: TWinControl; AControlName: string;
+  ADataSource: TDataSource; const ADataField: string): TControl;
 var
   DynCtrl: IJvDynControlDatabase;
 begin
   Result := CreateControl(AControlType, AOwner, AParentControl, AControlName);
   if not Supports(Result, IJvDynControlDatabase, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  DynCtrl.ControlSetDatasource (ADatasource);
-  DynCtrl.ControlSetDatafield (ADataField);
+  DynCtrl.ControlSetDatasource(ADataSource);
+  DynCtrl.ControlSetDatafield(ADataField);
 end;
 
 
-function TJvDynControlEngineDB.createDBTextControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName : string;
-  ADatasource: TDatasource; const ADataField: string; const ACaption: string): TWinControl;
+function TJvDynControlEngineDB.CreateDBTextControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string;
+  ADataSource: TDataSource; const ADataField: string; const ACaption: string): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBText, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBText, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   DynCtrl.ControlSetCaption(ACaption);
 end;
 
-function TJvDynControlEngineDB.createDBEditControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
+function TJvDynControlEngineDB.CreateDBEditControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl;
 var
   DynCtrlEdit: IJvDynControlEdit;
 begin
-  Result := TWinControl(CreateDBControl(jctDBEdit, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBEdit, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
   if not Supports(Result, IJvDynControlEdit, DynCtrlEdit) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
 end;
 
-function TJvDynControlEngineDB.createDBCheckboxControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField, ACaption: string): TWinControl;
+function TJvDynControlEngineDB.CreateDBCheckboxControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string; ADataSource: TDataSource; const ADataField, ACaption: string): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBCheckBox, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBCheckBox, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   DynCtrl.ControlSetCaption(ACaption);
 end;
 
-function TJvDynControlEngineDB.createDBComboBoxControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string; AItems: TStrings): TWinControl;
-var
-  DynCtrlItems: IJvDynControlItems;
-begin
-  Result := TWinControl(CreateDBControl(jctDBComboBox, AOwner, AParentControl, AControlName, ADatasource, ADataField));
-  if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
-    raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  DynCtrlItems.ControlSetItems(AItems);
-end;
-
-function TJvDynControlEngineDB.createDBImageControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
-begin
-  Result := TWinControl(CreateDBControl(jctDBImage, AOwner, AParentControl, AControlName, ADatasource, ADataField));
-end;
-
-function TJvDynControlEngineDB.createDBRadioGroupControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField, ACaption: string;
+function TJvDynControlEngineDB.CreateDBComboBoxControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string; ADataSource: TDataSource; const ADataField: string;
   AItems: TStrings): TWinControl;
 var
+  DynCtrlItems: IJvDynControlItems;
+begin
+  Result := TWinControl(CreateDBControl(jctDBComboBox, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
+  if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
+  DynCtrlItems.ControlSetItems(AItems);
+end;
+
+function TJvDynControlEngineDB.CreateDBImageControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl;
+begin
+  Result := TWinControl(CreateDBControl(jctDBImage, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
+end;
+
+function TJvDynControlEngineDB.CreateDBRadioGroupControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string; ADataSource: TDataSource;
+  const ADataField, ACaption: string; AItems: TStrings): TWinControl;
+var
   DynCtrl: IJvDynControl;
   DynCtrlItems: IJvDynControlItems;
 begin
-  Result := TWinControl(CreateDBControl(jctDBRadioGroup, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBRadioGroup, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   DynCtrl.ControlSetCaption(ACaption);
@@ -263,113 +276,131 @@ begin
   DynCtrlItems.ControlSetItems(AItems);
 end;
 
-function TJvDynControlEngineDB.createDBMemoControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
+function TJvDynControlEngineDB.CreateDBMemoControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string; ADataSource: TDataSource; const ADataField: string): TWinControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBMemo, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBMemo, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
 end;
 
-function TJvDynControlEngineDB.createDBListBoxControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string; AItems: TStrings): TWinControl;
+function TJvDynControlEngineDB.CreateDBListBoxControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string; ADataSource: TDataSource; const ADataField: string;
+  AItems: TStrings): TWinControl;
 var
   DynCtrlItems: IJvDynControlItems;
 begin
-  Result := TWinControl(CreateDBControl(jctDBListBox, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBListBox, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
   if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   DynCtrlItems.ControlSetItems(AItems);
 end;
 
-function TJvDynControlEngineDB.createDBDateTimeControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
+function TJvDynControlEngineDB.CreateDBDateTimeControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string; ADataSource: TDataSource;
+  const ADataField: string): TWinControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBDateTimeEdit, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBDateTimeEdit, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
 end;
 
-function TJvDynControlEngineDB.createDBDateControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
+function TJvDynControlEngineDB.CreateDBDateControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string; ADataSource: TDataSource;
+  const ADataField: string): TWinControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBDateEdit, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBDateEdit, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
 end;
 
-function TJvDynControlEngineDB.createDBTimeControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
+function TJvDynControlEngineDB.CreateDBTimeControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string; ADataSource: TDataSource;
+  const ADataField: string): TWinControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBTimeEdit, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBTimeEdit, AOwner, AParentControl,
+  AControlName, ADataSource, ADataField));
 end;
 
-function TJvDynControlEngineDB.createDBCalculateControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
+function TJvDynControlEngineDB.CreateDBCalculateControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string; ADataSource: TDataSource;
+  const ADataField: string): TWinControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBCalculateEdit, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBCalculateEdit, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
 end;
 
-function TJvDynControlEngineDB.createDBSpinControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
+function TJvDynControlEngineDB.CreateDBSpinControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string; ADataSource: TDataSource;
+  const ADataField: string): TWinControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBSpinEdit, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBSpinEdit, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
 end;
 
 function TJvDynControlEngineDB.CreateDBDirectoryControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string; ADataSource: TDataSource;
+  const ADataField: string): TWinControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBDirectoryEdit, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBDirectoryEdit, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
 end;
 
 function TJvDynControlEngineDB.CreateDBFileNameControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; ADatasource: TDatasource; const ADataField: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string; ADataSource: TDataSource;
+  const ADataField: string): TWinControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBFileNameEdit, AOwner, AParentControl, AControlName, ADatasource, ADataField));
+  Result := TWinControl(CreateDBControl(jctDBFileNameEdit, AOwner, AParentControl,
+    AControlName, ADataSource, ADataField));
 end;
 
-function TJvDynControlEngineDB.CreateDBGridControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource): TWinControl;
+function TJvDynControlEngineDB.CreateDBGridControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string; ADataSource: TDataSource): TWinControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBGrid, AOwner, AParentControl, AControlName, ADatasource, ''));
+  Result := TWinControl(CreateDBControl(jctDBGrid, AOwner, AParentControl,
+    AControlName, ADataSource, ''));
 end;
 
-function TJvDynControlEngineDB.CreateDBNavigatorControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ADatasource: TDatasource): TWinControl;
+function TJvDynControlEngineDB.CreateDBNavigatorControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string; ADataSource: TDataSource): TWinControl;
 begin
-  Result := TWinControl(CreateDBControl(jctDBNavigator, AOwner, AParentControl, AControlName, ADatasource, ''));
+  Result := TWinControl(CreateDBControl(jctDBNavigator, AOwner, AParentControl,
+    AControlName, ADataSource, ''));
 end;
 
 type
-  tAccessCustomControl = Class(TCustomControl);
+  TAccessCustomControl = class(TCustomControl);
 
-procedure TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl (ADatasource: TDatasource;
-      AControl: TWinControl; AShowInvisibleFields : Boolean = False; ALabelOnTop : Boolean = True; ALabelDefaultWidth : Integer = 0;
-      AFieldDefaultWidth : Integer = 0; AMaxFieldWidth : Integer = 300; AFieldSizeStep : Integer = 250);
+procedure TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl(ADataSource: TDataSource;
+  AControl: TWinControl; AShowInvisibleFields: Boolean = False; ALabelOnTop: Boolean = True;
+  ALabelDefaultWidth: Integer = 0; AFieldDefaultWidth: Integer = 0; AMaxFieldWidth: Integer = 300;
+  AFieldSizeStep: Integer = 250);
 var
-  i : Integer;
+  I: Integer;
   Control: TWinControl;
   LabelControl: TWinControl;
 begin
-  If not Assigned(ADataSource) or
-     not Assigned(ADatasource.Dataset) or
-     not Assigned(AControl) then
-    Raise Exception.Create('TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl : ADatasource, ADatasource.Dataset and AControl must be assigned');
-  if not ADatasource.Dataset.Active then
-    Raise Exception.Create('TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl : ADatasource.Dataset must be active');
-  for i := 0 to ADatasource.Dataset.Fieldcount -1 do
-    if ADatasource.Dataset.Fields[i].visible or AShowInvisibleFields then
+  if not Assigned(ADataSource) or not Assigned(ADataSource.DataSet) or not Assigned(AControl) then
+    raise EJVCLException.CreateRes(@RsEUnassignedMultiple);
+  if not ADataSource.DataSet.Active then
+    raise EJVCLException.CreateRes(@RsEUnassignedDataSet);
+  for I := 0 to ADataSource.DataSet.FieldCount -1 do
+    if ADataSource.DataSet.Fields[I].Visible or AShowInvisibleFields then
     begin
-      Control := CreateDBFieldControl(ADatasource.Dataset.Fields[i], AControl, AControl, '', ADatasource);
+      Control := CreateDBFieldControl(ADataSource.DataSet.Fields[I], AControl, AControl, '', ADataSource);
       if AFieldDefaultWidth > 0 then
         Control.Width := AFieldDefaultWidth
       else
       begin
-        if ADatasource.Dataset.Fields[i].Size > 0 then
-          Control.Width := tAccessCustomControl(AControl).Canvas.TextWidth(' ')*ADatasource.Dataset.Fields[i].Size;
+        if ADataSource.DataSet.Fields[I].Size > 0 then
+          Control.Width :=
+            TAccessCustomControl(AControl).Canvas.TextWidth(' ') * ADataSource.DataSet.Fields[I].Size;
         if (AMaxFieldWidth > 0) and (Control.Width > AMaxFieldWidth) then
           Control.Width := AMaxFieldWidth;
       end;
-      LabelControl := GetDynControlEngine.CreateLabelControlPanel(
-          AControl, AControl, '', '&'+ADatasource.Dataset.Fields[i].DisplayLabel,
-          Control, ALabelOnTop, ALabelDefaultWidth);
+      LabelControl := GetDynControlEngine.CreateLabelControlPanel(AControl, AControl,
+        '', '&' + ADataSource.DataSet.Fields[I].DisplayLabel, Control, ALabelOnTop, ALabelDefaultWidth);
       if (AFieldSizeStep > 0) then
-        if ((LabelControl.Width Mod AFieldSizeStep) <> 0) then
-          LabelControl.Width := ((LabelControl.Width Div AFieldSizeStep)+1)* AFieldSizeStep;
+        if ((LabelControl.Width mod AFieldSizeStep) <> 0) then
+          LabelControl.Width := ((LabelControl.Width div AFieldSizeStep) + 1) * AFieldSizeStep;
     end;
 end;
 

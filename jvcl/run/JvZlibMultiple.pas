@@ -32,7 +32,8 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Dialogs,
-  JclZLib, JvComponent;
+  JclCompression,
+  JvComponent;
 
 // ----------------------------------------------------------------------------}
 // 2004-07-27 *** ALL USERS READ THIS: (wpostma) ***
@@ -182,7 +183,7 @@ procedure TJvZlibMultiple.AddFile(FileName, Directory, FilePath: string;
 var
   Stream: TStream;
   FileStream: TFileStream;
-  ZStream: TJclZLibWriter;
+  ZStream: TJclZLibCompressStream;
   Buffer: array[0..1023] of Byte;
   Count: Integer;
 
@@ -214,7 +215,7 @@ begin
   Stream := TMemoryStream.Create;
   FileStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyWrite);
   try
-    ZStream := TJclZLibWriter.Create(Stream);
+    ZStream := TJclZLibCompressStream.Create(Stream);
     try
       if Assigned(FOnCompressingFile) then
         FOnCompressingFile(Self, FilePath);
@@ -318,7 +319,7 @@ procedure TJvZlibMultiple.DecompressStream(Stream: TStream;
   Directory: string; Overwrite: Boolean; const RelativePaths: Boolean);
 var
   FileStream: TFileStream;
-  ZStream: TJclZLibReader;
+  ZStream: TJclZLibDecompressStream;
   CStream: TMemoryStream;
   B, LastPos: Byte;
   S: string;
@@ -375,7 +376,7 @@ begin
         else
           FileStream := nil; // skip it!
 
-        ZStream := TJclZLibReader.Create(CStream);
+        ZStream := TJclZLibDecompressStream.Create(CStream);
         try
           TotalByteCount := 0;
 

@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvXPProgress.PAS, released on 2004-04-05.
 
-The Initial Developer of the Original Code is Stefano Pessina [pessina@tntdeveloping.com]
+The Initial Developer of the Original Code is Stefano Pessina [pessina att tntdeveloping dott com]
 Portions created by Stefano Pessina are Copyright (C) 2004 Stefano Pessina.
 All Rights Reserved.
 

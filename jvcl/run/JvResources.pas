@@ -624,6 +624,12 @@ resourcestring
   RsEUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass';
   RsENoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass';
 
+//=== JvDynControlEngineDB.pas ===============================================
+resourcestring
+  RsEUnassignedField = 'TJvDynControlEngineDB.GetFieldControlType: AField must be assigned';
+  RsEUnassignedMultiple = 'TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl: ADataSource, ADataSource.Dataset and AControl must be assigned';
+  RsEUnassignedDataSet = 'TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl: ADataSource.Dataset must be active';
+
 //=== JvEDIDBBuffering.pas ===================================================
 resourcestring
   RsENoProfileDatasets = 'Not all profile datasets have been assigned.';

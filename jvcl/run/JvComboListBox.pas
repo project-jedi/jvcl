@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
     dejoy(dejoy att ynl dott gov dott cn)
-    tsoyran(tsoyran@otenet.gr), Jan Verhoeven, Kyriakos Tasos,
+    tsoyran(tsoyran att otenet dott gr), Jan Verhoeven, Kyriakos Tasos,
     Andreas Hausladen <ahuser at users dot sourceforge dot net>.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
