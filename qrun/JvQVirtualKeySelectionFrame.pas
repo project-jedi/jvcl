@@ -41,7 +41,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   {$IFDEF USE_DXGETTEXT}
-  JvGnugettext,
+  JvQGnugettext,
   {$ENDIF USE_DXGETTEXT}
   StdCtrls;
 
