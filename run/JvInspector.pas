@@ -138,6 +138,9 @@ type
   EJvInspectorData = class(EJvInspector);
   EJvInspectorReg = class(EJvInspector);
 
+  TOnSetItemColors = procedure(Item: TJvCustomInspectorItem; Canvas:TCanvas) of Object;
+
+
   TJvCustomInspector = class(TJvCustomControl)
   private
     FAfterDataCreate: TInspectorDataEvent;
@@ -460,6 +463,7 @@ type
   TJvInspectorBorlandPainter = class(TJvInspectorBorlandNETBasePainter)
   private
     FDividerLightColor: TColor;
+    FOnSetItemColors : TOnSetItemColors;
   protected
     function DividerWidth: Integer; override;
     procedure DoPaint; override;
@@ -475,10 +479,12 @@ type
     property DividerColor default clBtnShadow;
     property DividerLightColor: TColor read GetDividerLightColor write SetDividerLightColor default clBtnHighlight;
     property ValueColor default clNavy;
+    property OnSetItemColors : TOnSetItemColors read FOnSetItemColors write FOnSetItemColors;
   end;
 
   TJvInspectorDotNETPainter = class(TJvInspectorBorlandNETBasePainter)
   private
+      FOnSetItemColors : TOnSetItemColors;
   protected
     procedure ApplyNameFont; override;
     procedure DoPaint; override;
@@ -487,6 +493,7 @@ type
     property DividerColor default clBtnFace;
     property SelectedColor default clHighlight;
     property SelectedTextColor default clHighlightText;
+    property OnSetItemColors : TOnSetItemColors read FOnSetItemColors write FOnSetItemColors; 
   end;
 
   TJvInspectorItemSizing = class(TPersistent)
@@ -2237,7 +2244,7 @@ end;
 
 function TJvCustomInspector.GetVisibleItems(const I: Integer): TJvCustomInspectorItem;
 begin
-  if I < 0 then
+  if (I < 0) or (I>= FVisible.Count) then
     Result := nil
   else
     Result := TJvCustomInspectorItem(FVisible.Objects[I]);
@@ -4009,6 +4016,9 @@ begin
   ApplyNameFont;
   Item.DrawName(Canvas);
   ApplyValueFont;
+  if Assigned(FOnSetItemColors) then
+       FOnSetItemColors(Item, Canvas); // Custom colors for canvas and font for cells depending on values.
+
   Item.DrawValue(Canvas);
 
   if ButtonImage <> nil then
@@ -4134,6 +4144,8 @@ begin
   Item.DrawName(Canvas);
   ApplyCanvasState(Canvas, SaveIdx);
   ApplyValueFont;
+  if Assigned(FOnSetItemColors) then
+       FOnSetItemColors(Item, Canvas); // Custom colors for canvas and font for cells depending on values.
   Item.DrawValue(Canvas);
   RestoreCanvasState(Canvas, SaveIdx);
 
@@ -6482,8 +6494,14 @@ end;
 //=== TJvInspectorEnumItem ===================================================
 
 function TJvInspectorEnumItem.GetDisplayValue: string;
+var
+ IntVal:Integer;
 begin
-  Result := GetEnumName(Data.TypeInfo, Ord(Data.AsOrdinal));
+  IntVal := Ord(Data.AsOrdinal);
+  if (IntVal<0) then // prevent GetEnumName crash. WAP.
+     result := IntToStr(IntVal)
+  else
+     Result := GetEnumName(Data.TypeInfo, IntVal);
 end;
 
 procedure TJvInspectorEnumItem.GetValueList(const Strings: TStrings);
@@ -6504,8 +6522,13 @@ begin
   OrdVal := GetEnumValue(Data.TypeInfo, Value);
   if OrdVal <> -1 then
     Data.AsOrdinal := GetEnumValue(Data.TypeInfo, Value)
-  else
-    raise EJvInspectorItem.CreateFmt(sJvInspItemInvalidPropValue, [AnsiQuotedStr(Value, '''')]);
+  else begin
+      OrdVal := StrToIntDef(Value,-1);
+      if (OrdVal>=0) and ( Length(GetEnumName(Data.TypeInfo,OrdVal))>0 ) then
+          Data.AsOrdinal := OrdVal
+      else
+        raise EJvInspectorItem.CreateFmt(sJvInspItemInvalidPropValue, [AnsiQuotedStr(Value, '''')]);
+  end;
 end;
 
 procedure TJvInspectorEnumItem.SetFlags(const Value: TInspectorItemFlags);
