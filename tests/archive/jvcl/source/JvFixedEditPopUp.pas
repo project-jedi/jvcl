@@ -29,21 +29,26 @@ Description:
 
   By overriding TCustomEdit.GetPopupMenu (virtual), you can return an instance of this popup menu
   instead of the default, i.e:
+  interface:
 
-  TMyEdit.GetPopupMenu:TPopupMenu;
-  begin
-    Result := inherited GetPopupMenu;
-    if Result = nil then // user has not assigned his own popup menu, so use fixed default
-      FixedDefaultEditPopUp(self);
-  end;
+    function GetPopupMenu:TPopupMenu;override;
 
-  The popup is a constructed as a singelton shared between all edit controls using it, so it is
-  as resource friendly as we could make it. The popup is not created until first use, so if
-  you don't use it, it doesn't steal any reasources.
+  implementation:
+
+    function TMyEdit.GetPopupMenu:TPopupMenu;
+    begin
+      Result := inherited GetPopupMenu;
+      if Result = nil then // user has not assigned his own popup menu, so use fixed default
+        Result := FixedDefaultEditPopUp(self);
+    end;
+
+  The popup is constructed as a singelton shared between all edit controls using it, so it is
+  as resource friendly as we could make it and you should NOT free it after use. The popup is
+  not created until first use, so if you don't use it, it doesn't take any resources.
 
   The popup automatically handles cut, copy, paste, select all, clear and undo events and it's aware
   of and can also handle the ClipboardCommands property in some JVCL edits. Menu items
-  are autmatically enabled / disabled according to the current state of the edit using it.
+  are automatically enabled / disabled according to the current state of the edit.
 
   The popup is "self-translating" based on Windows locale. If you want to
   use resourcestrings and supply your own translations, call FixedDefaultEditPopUseResourceString(true);
