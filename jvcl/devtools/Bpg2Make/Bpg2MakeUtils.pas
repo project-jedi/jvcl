@@ -12,6 +12,7 @@ uses
  {$IFNDEF LINUX}
 const
   PathDelim = '\';
+  sLineBreak = #13#10;
  {$ENDIF}
 {$ENDIF}
 
