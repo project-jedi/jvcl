@@ -625,6 +625,7 @@ aDsSelection
 
 const
   ANYSIZE_ARRAY = 1;
+  {$EXTERNAL_SYM ANYSIZE_ARRAY}
 
 type
   PDS_SELECTION = ^DS_SELECTION;
