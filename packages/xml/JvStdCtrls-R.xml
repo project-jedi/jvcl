@@ -92,5 +92,6 @@
     <File Name="..\..\run\JvHotKey.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvRadioGroup.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLinkedControls.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

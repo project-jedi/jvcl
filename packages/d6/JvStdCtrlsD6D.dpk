@@ -46,8 +46,6 @@ requires
 contains
   JvCheckedItemsForm in '..\..\design\JvCheckedItemsForm.pas' {JvCheckItemsEditor},
   JvProgressEditor in '..\..\design\JvProgressEditor.pas' ,
-  JvLinkedControlsEditor in '..\..\design\JvLinkedControlsEditor.pas' ,
-  JvLinkedControlsEditorForm in '..\..\design\JvLinkedControlsEditorForm.pas' {frmLinkedControlsEditor},
   JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas' 
   ;
 
