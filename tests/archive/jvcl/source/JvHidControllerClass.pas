@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, Classes, Forms, SysUtils, Dialogs,
-  DBT, SetupApi, Hid;
+  DBT, SetupApi, Hid, JvComponent;
 
 const
   // a version string for the component
@@ -248,7 +248,7 @@ type
 
   // controller class to manage all HID devices
 
-  TJvHidDeviceController = class(TComponent)
+  TJvHidDeviceController = class(TJvComponent)
   private
     // internal properties part
     FHidGuid:              TGUID;

@@ -37,7 +37,7 @@ interface
 uses
 {$IFDEF COMPLIB_VCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  TypInfo, Registry, IniFiles;
+  TypInfo, Registry, IniFiles, JvComponent;
 {$ENDIF COMPLIB_VCL}
 {$IFDEF COMPLIB_CLX}
   SysUtils, Classes, QForms,
@@ -53,7 +53,7 @@ type
   TRegAutoEvent = procedure (Sender : TObject; Operation : TRegAutoOperation) of object;
   TStorageMedia = (raRegistry, raIniFile, raIniStrings);
 
-  TJvRegAuto = class(TComponent)
+  TJvRegAuto = class(TJvComponent)
   private
     ObjProp : string;
     TypeInf : PTypeInfo;

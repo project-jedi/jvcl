@@ -58,7 +58,7 @@ unit JvDBMove;
 interface
 
 uses
-  BDE, Windows, Messages, SysUtils, Classes, DB, DBTables
+  BDE, Windows, Messages, SysUtils, Classes, DB, DBTables, JvComponent
   {$IFDEF COMPILER6_UP}, Variants {$ENDIF}
   ;
 
@@ -69,7 +69,7 @@ type
 
   TMoveEvent = procedure(Sender : TJvDBMove; Table : TTable; var Action : TMoveAction) of object;
 
-  TJvDBMove = class(TComponent)
+  TJvDBMove = class(TJvComponent)
   private
     SDatabase : string;
     DDatabase : string;

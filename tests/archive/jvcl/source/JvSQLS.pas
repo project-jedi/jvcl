@@ -36,13 +36,13 @@ interface
 
 uses
   Windows, Messages, Bde, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, DB, DBTables, DBCtrls, JvDBUtil;
+  StdCtrls, ExtCtrls, DB, DBTables, DBCtrls, JvDBUtil, JvComponent;
 
 type
   TJvaSQLScript = class;
   TOnScriptProgress = procedure(Sender : TJvaSQLScript; var Cancel : boolean; Line : integer) of object;
 
-  TJvaSQLScript = class(TComponent)
+  TJvaSQLScript = class(TJvComponent)
   private
     FOnProgress : TOnScriptProgress;
     FScript : TStrings;

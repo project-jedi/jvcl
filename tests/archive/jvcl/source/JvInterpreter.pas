@@ -159,7 +159,7 @@ unit JvInterpreter;
 
 interface
 
-uses SysUtils, Classes, JvInterpreterParser
+uses SysUtils, Classes, JvInterpreterParser, JvComponent
 {$IFDEF COMPILER6_UP}
   , Variants
 {$ENDIF COMPILER6_UP}
@@ -529,7 +529,7 @@ type
   TStackPtr = - 1..99;
   
  { Expression evaluator }
-  TJvInterpreterExpression = class(TComponent)
+  TJvInterpreterExpression = class(TJvComponent)
   private
     Parser: TJvInterpreterParser;
     FVResult: Variant;
