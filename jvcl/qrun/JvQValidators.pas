@@ -251,7 +251,7 @@ uses
   Masks, 
   Variants, 
   TypInfo,  
-  JvQWStrUtils, 
+  JclWideStrings, 
   JvQTypes, JvQResources;
 
 const

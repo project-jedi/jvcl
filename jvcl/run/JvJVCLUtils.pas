@@ -29,15 +29,18 @@ unit JvJVCLUtils;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
-  RTLConsts, Variants,
-  {$ENDIF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShellAPI, Registry,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX}
+  {$ENDIF HAS_UNIT_LIBC}
   SysUtils, Classes,
   {$IFDEF VisualCLX}
   Qt, QTypes, QWinCursors, QWindows,

@@ -242,9 +242,9 @@ procedure GetWordGridFormatValues(Proc: TGetStrProc);
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   ComObj, Graphics, Clipbrd,
   JclRegistry,
   JvConsts, JvResources;

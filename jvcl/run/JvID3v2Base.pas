@@ -39,7 +39,7 @@ uses
   JclUnicode,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  JvQWStrUtils,
+  JclWideStrings,
   {$ENDIF VisualCLX}
   JvComponent, JvID3v2Types, JvID3v1;
 

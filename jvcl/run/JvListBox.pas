@@ -379,9 +379,9 @@ implementation
 
 uses
   Consts, TypInfo,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JclBase,
   JvJVCLUtils, JvConsts, JvCtrls, JvResources;
 

@@ -33,9 +33,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, // GetCurrentThreadID => Linux: System.pas
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc, // GetCurrentThreadID Linux
-  {$ENDIF LINUX}
+  {$ENDIF HAS_UNIT_LIBC}
   Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   JvComponent, JvBaseDlg, JvAppStorage;
 

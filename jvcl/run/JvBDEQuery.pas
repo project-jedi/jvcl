@@ -180,9 +180,9 @@ procedure CreateQueryParams(List: TParams; const Value: PChar; Macro: Boolean;
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   Forms, Consts, BDEConst,
   JvDBUtils, JvBdeUtils;
 

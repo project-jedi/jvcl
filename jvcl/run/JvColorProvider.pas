@@ -503,11 +503,11 @@ implementation
 
 uses
   SysUtils,
-  {$IFNDEF COMPILER6_UP}
-  Consts,
-  {$ELSE}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF COMPILER6_UP}
+  {$ELSE}
+  Consts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   Controls,
   JclStrings,
   JvJVCLUtils, JvConsts, JvResources;

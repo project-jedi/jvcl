@@ -223,9 +223,12 @@ implementation
 uses
   SysUtils, Registry, Forms, Controls, Dialogs, Consts, Math,
   IniFiles, DBConsts, BDEConst, DBCommon,
-  {$IFDEF COMPILER6_UP}
-  Variants, RTLConsts,
-  {$ENDIF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JvConsts, JvJVCLUtils, JvJCLUtils, JvTypes, JvResources;
 
 { Utility routines }

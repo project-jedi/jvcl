@@ -35,9 +35,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, // TWin32FindData
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc, // stat()
-  {$ENDIF LINUX}
+  {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF VCL}
   Messages,
   {$ENDIF VCL}

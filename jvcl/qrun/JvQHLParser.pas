@@ -50,7 +50,8 @@ interface
 uses
   SysUtils, Classes,
   QDialogs,
-  JvQTypes, JvQJCLUtils, JvQWStrUtils;
+  JclWideStrings,
+  JvQTypes, JvQJCLUtils;
 
 const
   ieBadRemark = 1;

@@ -41,9 +41,9 @@ uses
   QMenus, QButtons, QControls, QWindows, QGraphics, Types,
   QForms, QImgList, QActnList, QExtCtrls, QGrids, QTypes,
   {$ENDIF VisualCLX}
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JvSpeedButton, JvAppStorage, JvConsts, JvTypes, JvFormPlacement,
   JvComponent, JvThemes, JvExControls;
 

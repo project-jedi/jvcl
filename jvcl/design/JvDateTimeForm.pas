@@ -33,9 +33,9 @@ unit JvDateTimeForm;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils,
   {$IFDEF VCL}
   Controls, Forms, StdCtrls, ComCtrls, Menus,

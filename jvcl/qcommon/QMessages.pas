@@ -45,10 +45,10 @@ uses
   SysUtils, Classes, Types, SyncObjs,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
-  {$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF}
+  {$ENDIF HAS_UNIT_LIBC}
   Qt, QTypes, QForms, QControls, QWindows;
 
 const
@@ -60,11 +60,11 @@ const
 //
   CM_BASE = $B000;
   CM_PARENTSHOWHINTCHANGED = CM_BASE + 1;
-  CM_PARENTCOLORCHANGED = CM_BASE + 2;
-  CM_PARENTFONTCHANGED = CM_BASE + 3;
-  CM_RECREATEWINDOW = CM_BASE + 4;
-  CM_KEYDOWN = CM_BASE + 5;
-  CM_WANTKEY = CM_BASE + 6;
+  CM_PARENTCOLORCHANGED    = CM_BASE + 2;
+  CM_PARENTFONTCHANGED     = CM_BASE + 3;
+  CM_RECREATEWINDOW        = CM_BASE + 4;
+  CM_KEYDOWN               = CM_BASE + 5;
+  CM_WANTKEY               = CM_BASE + 6;
 
 // VCL Messages
 // taken from Controls (VCL)
@@ -219,11 +219,11 @@ type
   end;
 
 
-  { Message }
+{ Message }
 function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
- { Limitation: Handle must be a TWidgetControl derived class handle }
+{ Limitation: Handle must be a TWidgetControl derived class handle }
 function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
- { SendMsg synchronizes with the main thread }
+{ SendMsg synchronizes with the main thread }
 function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 //function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 
@@ -259,7 +259,7 @@ var
 function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: PMessageData;
-  i: Integer;
+  I: Integer;
 begin
   try
     Result := False;
@@ -296,8 +296,8 @@ begin
     if Assigned(AppHookList) then
     begin
       Result := True;
-      for i := AppHookList.Count - 1 downto 0 do
-        if PApplicationHookItem(AppHookList[i]).Proc(Sender, Event) then
+      for I := AppHookList.Count - 1 downto 0 do
+        if PApplicationHookItem(AppHookList[I]).Proc(Sender, Event) then
           Exit;
       Result := False;
     end;
@@ -443,18 +443,18 @@ end;
 
 procedure UninstallApplicationHook(Hook: TApplicationHook);
 var
-  i: Integer;
+  I: Integer;
   Item: PApplicationHookItem;
 begin
   if AppHookList <> nil then
   begin
-    for i := AppHookList.Count - 1 downto 0 do
+    for I := AppHookList.Count - 1 downto 0 do
     begin
-      Item := AppHookList[i];
+      Item := AppHookList[I];
       if @Item.Proc = @Hook then
       begin
         Dispose(Item);
-        AppHookList.Delete(i);
+        AppHookList.Delete(I);
       end;
     end;
     if AppHookList.Count = 0 then
@@ -464,12 +464,12 @@ end;
 
 procedure FinalizeAppHookList;
 var
-  i: Integer;
+  I: Integer;
   Item: PApplicationHookItem;
 begin
-  for i := 0 to AppHookList.Count - 1 do
+  for I := 0 to AppHookList.Count - 1 do
   begin
-    Item := AppHookList[i];
+    Item := AppHookList[I];
     Dispose(Item);
   end;
   FreeAndNil(AppHookList);

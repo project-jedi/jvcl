@@ -41,9 +41,9 @@ uses
   {$IFDEF VisualCLX}
   Types, QWindows, QForms, QDialogs, QFileCtrls,
   {$ENDIF VisualCLX}
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   JvXMLTree, JvComponent, JvStrings, JvTypes;
 
 const

@@ -75,10 +75,10 @@ type
 
 implementation
 
-{$IFDEF COMPILER6_UP}
+{$IFDEF HAS_UNIT_VARIANTS}
 uses
   Variants;
-{$ENDIF COMPILER6_UP}
+{$ENDIF HAS_UNIT_VARIANTS}
 
 constructor TJvDBSpinEdit.Create(AOwner: TComponent);
 begin
