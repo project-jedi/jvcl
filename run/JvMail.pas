@@ -23,12 +23,13 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
------------------------------------------------------------------------------
-Doesn't work with Paegasus Mail because it has no MAPI support at all.      }
-
-{$I jvcl.inc}
+  Doesn't work with Paegasus Mail because it has no MAPI support at all.
+-----------------------------------------------------------------------------}
+// $Id$
 
 unit JvMail;
+
+{$I jvcl.inc}
 
 interface
 

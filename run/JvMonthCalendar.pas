@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvMonthCalendar;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvMonthCalendar;
 
 interface
 

@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvMarkupCommon;
+
+{$I jvcl.inc}
 
 interface
 

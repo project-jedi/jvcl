@@ -26,9 +26,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvMaskEdit;
+
+{$I jvcl.inc}
 
 interface
 
