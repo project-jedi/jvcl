@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <link rel="STYLESHEET" href="default.css" type="text/css">
+  <link type="text/css" href="default.css" rel="STYLESHEET">
   <title>Installation Notes for JVCL</title>
 </head>
 <body>
@@ -45,7 +45,7 @@ you have installed</li>
 C++ Builder). Delete all of the files related to JVCL and JCL</li>
   <li>Delete or rename the top folder where JCL and JVCL is installed</li>
   <li>Start regedit (click <b>Start - Run</b>, type "regedit.exe" and
-hit <b> Enter</b>). Open the key <font size="2" face="Courier New">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
+hit <b> Enter</b>). Open the key <font face="Courier New" size="2">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
 and delete all name/value items in the list related to JVCL.
 (&lt;compiler&gt; is either "Delphi" or "C++Builder", &lt;version&gt;
 is the IDE version you have installed)</li>
@@ -77,7 +77,7 @@ what
 you want!). We recommend but do not require that the JCL and JVCL
 folders should be created as siblings, i.e the
 folder structure looks like this:</p>
-<p><font face="Courier New" size="2">JEDI<br>
+<p><font size="2" face="Courier New">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
@@ -167,7 +167,7 @@ you want!). </p>
 the same base folder as JVCL, but we do recommend that the JCL and JVCL
 folders are created as siblings, i.e the folder structure should look
 like this:</p>
-<p><font face="Courier New" size="2">JEDI<br>
+<p><font size="2" face="Courier New">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
@@ -284,8 +284,8 @@ are in JCL\source subdirectories and in JVCL\resources)<br>
 installation directory. Then you need to add the JVCL paths to
 C++&nbsp;Builder's
 environment paths but this has an big drawback: You won't be able to
-share your project with people who installed the JVCL in another
-directory. <br>
+easily share your project(s) with people who installed the JVCL in a
+different directory. <br>
 </p>
 <p>All you need to do is start C++&nbsp;Builder and select <span
  style="font-weight: bold;">File-Close All</span>. Then select the <span
@@ -305,29 +305,37 @@ to the Library paths:<br>
   </li>
 </ul>
 <p></p>
+<p>Then in the <span style="font-weight: bold;">Environment Variables</span>
+tab, in the <span style="font-weight: bold;">User overrides</span>
+section, click <span style="font-weight: bold;">New...</span> , set
+the variable name to INCLUDEPATH and its value to
+'JVCL\common;JVCL\run;jcl\source\common;jcl\source\vcl;jcl\source\visclx;jcl\source\windows'
+(without the quotes)</p>
+<p>Do not forget to add the complete path to where you installed the
+JVCL and JCL. For instance, if you put the JVCL in c:\prog\lib\, then
+'JVCL\common' becomes 'c:\prog\lib\JVCL\common'.<br>
+</p>
 <p>Finally,
 select the <span style="font-weight: bold;">Directories/Conditionals</span>
 tab in <span style="font-weight: bold;">Project-Options</span> and add
-those paths to the Include paths:<br>
+this path to the Include paths:<br>
 </p>
 <ul>
-  <li>JCL\source\common</li>
-  <li>JCL\source\vcl</li>
-  <li>JCL\source\visclx</li>
-  <li>JCL\source\windows</li>
-  <li>JVCL\run</li>
-  <li>JVCL\common</li>
+  <li>$(INCLUDEPATH)</li>
 </ul>
-<p></p>
-<p>You will then be able to use the JVCL components. If you do some
-modifications to the JVCL source code to add functionality and/or fix
-bugs, remember to recompile the package in which the modified files are
-included or you won't see the effect of your changes.<br>
 <br>
-</p>
+Any new project you create will work directly. However, if you want to
+share a project, then all you have to do is ask your users to define
+the INCLUDEPATH Environment variable and set it to the correct values.
+They should then be able to use your project. When you receive a
+project using the JVCL, ensure that the Include Paths in its Project
+Options contains $(INCLUDEPATH) and you should be able to compile and
+link the project.<br>
+<p></p>
+<br>
 <p>In both cases, if you want to be able to open the JVCL source files
 in the IDE by
-using the navigation shorctuts, add thos paths to the Browsing Path
+using the navigation shorctuts, add those paths to the Browsing Path
 list in the Library tab of Tools-Environment Options:<br>
 </p>
 <ul>
@@ -337,6 +345,12 @@ list in the Library tab of Tools-Environment Options:<br>
 </ul>
 <p></p>
 <br>
+<p>You will then be able to use the JVCL components. If you do some
+modifications to the JVCL source code to add functionality and/or fix
+bugs, remember to recompile the package in which the modified files are
+included or you won't see the effect of your changes.<br>
+<br>
+</p>
 <h2><big><font size="2"><big>Reinstalling </big></font></big><span
  style="font-weight: bold;">
 and </span><font size="2"><big>updating for
