@@ -24,6 +24,7 @@
     <Package Name="vcljpg" Targets="D7,D7p" Condition=""/>
   </Requires>
   <Contains>
+    <File Name="..\..\run\JvDynControlEngineJVCL.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImageList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvItemsSearchs.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLabel.pas" Targets="all" Formname="" Condition=""/>
