@@ -67,7 +67,7 @@ type
   IJvDataConsumerClientNotify = interface;
 
   IJvDataProvider = interface
-  ['{62A7A17D-1E21-427E-861D-C92FBB9B09A6}']
+    ['{62A7A17D-1E21-427E-861D-C92FBB9B09A6}']
     procedure RegisterChangeNotify(ANotify: IJvDataProviderNotify);
     procedure UnregisterChangeNotify(ANotify: IJvDataProviderNotify);
     function GetItems: IJvDataItems;
@@ -90,14 +90,14 @@ type
   end;
 
   IJvDataProviderNotify = interface
-  ['{5B9D1847-6D35-4D9C-8BC2-2054997AB120}']
+    ['{5B9D1847-6D35-4D9C-8BC2-2054997AB120}']
     procedure DataProviderChanging(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure DataProviderChanged(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
     function Consumer: IJvDataConsumer;
   end;
 
   IJvDataItems = interface
-  ['{93747660-24FB-4294-BF4E-C7F88EA23983}']
+    ['{93747660-24FB-4294-BF4E-C7F88EA23983}']
     function GetCount: Integer;
     function GetItem(Index: Integer): IJvDataItem;
     function GetItemByID(ID: string): IJvDataItem;
@@ -114,7 +114,7 @@ type
   end;
 
   IJvDataItemsImages = interface
-  ['{735755A6-AD11-460C-B985-46464D73EDBC}']
+    ['{735755A6-AD11-460C-B985-46464D73EDBC}']
     function GetDisabledImages: TCustomImageList;
     procedure SetDisabledImages(const Value: TCustomImageList);
     function GetHotImages: TCustomImageList;
@@ -136,7 +136,7 @@ type
   end;
 
   IJvDataItemsManagement = interface
-  ['{76611CC0-9DCD-4394-8B6E-1ADEF1942BC3}']
+    ['{76611CC0-9DCD-4394-8B6E-1ADEF1942BC3}']
     function Add(Item: IJvDataItem): IJvDataItem;
     function New: IJvDataItem;
     procedure Clear;
@@ -157,12 +157,12 @@ type
   end;
 
   IJvDataTextSearch = interface
-  ['{E3BC388D-50F6-402D-9E30-36D5F7F40616}']
+    ['{E3BC388D-50F6-402D-9E30-36D5F7F40616}']
     function Find(Text: string; const Recursive: Boolean = False): IJvDataItem;
   end;
 
   IJvDataItem = interface
-  ['{C965CF64-A1F2-44A4-B856-3A4EC6B693E1}']
+    ['{C965CF64-A1F2-44A4-B856-3A4EC6B693E1}']
     function GetItems: IJvDataItems;
     function GetIndex: Integer;
     function GetImplementer: TObject;
@@ -181,7 +181,7 @@ type
   end;
 
   IJvDataItemText = interface
-  ['{94FA56D9-281B-4252-B46D-15E7BADA70DA}']
+    ['{94FA56D9-281B-4252-B46D-15E7BADA70DA}']
     function GetCaption: string;
     procedure SetCaption(const Value: string);
     function Editable: Boolean;
@@ -189,7 +189,7 @@ type
   end;
 
   IJvDataItemImage = interface
-  ['{6425D73A-90CF-42ED-9AB2-63125A4C0774}']
+    ['{6425D73A-90CF-42ED-9AB2-63125A4C0774}']
     function GetAlignment: TAlignment;
     procedure SetAlignment(Value: TAlignment);
     function GetImageIndex: Integer;
@@ -202,12 +202,12 @@ type
   end;
 
   IJvDataItemBasicAction = interface
-  ['{86859A20-560D-4E9A-AC8B-2457789451B0}']
+    ['{86859A20-560D-4E9A-AC8B-2457789451B0}']
     function Execute(Sender: TObject): Boolean;
   end;
 
   IJvDataItemStates = interface
-  ['{5BD81E0B-DAD2-4560-943A-205E0FF2A97F}']
+    ['{5BD81E0B-DAD2-4560-943A-205E0FF2A97F}']
     function Get_Enabled: TDataItemState;
     procedure Set_Enabled(Value: TDataItemState);
     function Get_Checked: TDataItemState;

@@ -39,7 +39,7 @@ Description:
     begin
       Result := inherited GetPopupMenu;
       if Result = nil then // user has not assigned his own popup menu, so use fixed default
-        Result := FixedDefaultEditPopUp(self);
+        Result := FixedDefaultEditPopUp(Self);
     end;
 
   The popup is constructed as a singelton shared between all edit controls using it, so it is
@@ -70,22 +70,19 @@ Description:
       * Clear: WM_CLEAR
       * Select All: EM_SETSEL with wParam=0 and lParam=-1
 
-
-
------------------------------------------------------------------------------}
-{histroy
+History:
 3.0:
   2003-09-19:
     - introduced IFixedPopupIntf
     - speed optimation in THiddenPopupObject.GetPopupMenu
-
-}
+-----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
 
 unit JvFixedEditPopUp;
 
 interface
+
 uses
   Windows, Messages, SysUtils, Classes, Controls, Menus, TypInfo,
   JvComponent;
@@ -125,6 +122,7 @@ procedure FixedDefaultEditPopUseResourceString(Value: Boolean);
 procedure FixedDefaultEditPopupUpdate(AEdit: TWinControl);
 
 implementation
+
 uses
   JvResources;
 
@@ -157,31 +155,31 @@ type
   end;
 
 var
-  FHiddenPopup: THiddenPopupObject = nil;
-  FUseResourceStrings: Boolean = False;
+  GlobalHiddenPopup: THiddenPopupObject = nil;
+  GlobalUseResourceStrings: Boolean = False;
 
 function FixedDefaultEditPopup(AEdit: TWinControl; Update: Boolean = True): TPopupMenu;
 begin
-  if FHiddenPopup = nil then
-    FHiddenPopup := THiddenPopupObject.Create(nil);
-  FHiddenPopup.Edit := AEdit;
-  Result := FHiddenPopup.GetPopupMenuEx(Update);
+  if GlobalHiddenPopup = nil then
+    GlobalHiddenPopup := THiddenPopupObject.Create(nil);
+  GlobalHiddenPopup.Edit := AEdit;
+  Result := GlobalHiddenPopup.GetPopupMenuEx(Update);
 end;
 
-procedure FixedDefaultEditPopUseResourceString(Value:boolean);
+procedure FixedDefaultEditPopUseResourceString(Value: Boolean);
 begin
-  FUseResourceStrings := Value;
+  GlobalUseResourceStrings := Value;
 end;
 
 procedure FixedDefaultEditPopupUpdate(AEdit: TWinControl);
 begin
-  if (FHiddenPopup <> nil) and (FHiddenPopup.Edit = AEdit) then
-    FHiddenPopup.UpdateItems;
+  if (GlobalHiddenPopup <> nil) and (GlobalHiddenPopup.Edit = AEdit) then
+    GlobalHiddenPopup.UpdateItems;
 end;
 
-{ THiddenPopupObject }
+//=== THiddenPopupObject =====================================================
 
-function THiddenPopupObject.CanUndo: boolean;
+function THiddenPopupObject.CanUndo: Boolean;
 begin
   if (Edit <> nil) and Edit.HandleAllocated then
     Result := SendMessage(Edit.Handle, EM_CANUNDO, 0, 0) <> 0
@@ -190,7 +188,8 @@ begin
 end;
 
 procedure THiddenPopupObject.DoCopy(Sender: TObject);
-var PopupIntf: IFixedPopupIntf;
+var
+  PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
     if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
@@ -200,7 +199,8 @@ begin
 end;
 
 procedure THiddenPopupObject.DoCut(Sender: TObject);
-var PopupIntf: IFixedPopupIntf;
+var
+  PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
     if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
@@ -210,7 +210,8 @@ begin
 end;
 
 procedure THiddenPopupObject.DoDelete(Sender: TObject);
-var PopupIntf: IFixedPopupIntf;
+var
+  PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
     if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
@@ -220,17 +221,19 @@ begin
 end;
 
 procedure THiddenPopupObject.DoPaste(Sender: TObject);
-var PopupIntf: IFixedPopupIntf;
+var
+  PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
     if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
       PopupIntf.Paste
     else
-      Edit.Perform(WM_PASTE,0,0);
+      Edit.Perform(WM_PASTE, 0, 0);
 end;
 
 procedure THiddenPopupObject.DoSelectAll(Sender: TObject);
-var PopupIntf: IFixedPopupIntf;
+var
+  PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
     if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
@@ -240,7 +243,8 @@ begin
 end;
 
 procedure THiddenPopupObject.DoUndo(Sender: TObject);
-var PopupIntf: IFixedPopupIntf;
+var
+  PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
   begin
@@ -252,21 +256,23 @@ begin
 end;
 
 type
-  TIntegerSet = Set of 0..SizeOf(Integer) * 8 - 1;
+  TIntegerSet = set of 0..SizeOf(Integer) * 8 - 1;
 
 function THiddenPopupObject.GetClipboardCommands: TJvClipboardCommands;
+const
+  cClipboardCommands = 'ClipboardCommands';
 var
   Value: TIntegerSet;
-  i: integer;
+  I: Integer;
 begin
-  if IsPublishedProp(Edit, 'ClipboardCommands') then
+  if IsPublishedProp(Edit, cClipboardCommands) then
   begin
     Result := [];
     // does it really have to be this complicated ?!
-    Integer(Value) := GetOrdProp(Edit, 'ClipboardCommands');
-    for i := 0 to SizeOf(Integer) * 8 - 1 do
-      if i in Value then
-        Include(Result, TJvClipboardCommand(i));
+    Integer(Value) := GetOrdProp(Edit, cClipboardCommands);
+    for I := 0 to SizeOf(Integer) * 8 - 1 do
+      if I in Value then
+        Include(Result, TJvClipboardCommand(I));
   end
   else
     Result := [caCopy, caCut, caPaste, caUndo];
@@ -276,31 +282,30 @@ procedure THiddenPopupObject.GetDefaultMenuCaptions;
 var
   H: HMODULE;
   hMenu, hSubMenu: THandle;
-  buf: array[0..255] of Char;
+  Buf: array [0..255] of Char;
 begin
   // get the translated captions from Windows' own default popup:
   H := GetModuleHandle('user32.dll');
   hMenu := LoadMenu(H, MakeIntResource(1));
-  if hMenu = 0 then Exit;
+  if hMenu = 0 then
+    Exit;
   try
-    hSubMenu := GetSubMenu(hMenu,0);
-    if hSubMenu = 0 then Exit;
+    hSubMenu := GetSubMenu(hMenu, 0);
+    if hSubMenu = 0 then
+      Exit;
 
-    if GetMenuString(hSubMenu, WM_UNDO, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[0].Caption := buf;
-
-    if GetMenuString(hSubMenu, WM_CUT, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[2].Caption := buf;
-    if GetMenuString(hSubMenu, WM_COPY, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[3].Caption := buf;
-    if GetMenuString(hSubMenu, WM_PASTE, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[4].Caption := buf;
-    if GetMenuString(hSubMenu, WM_CLEAR, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[5].Caption := buf;
-
-    if GetMenuString(hSubMenu, EM_SETSEL, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[7].Caption := buf;
-
+    if GetMenuString(hSubMenu, WM_UNDO, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[0].Caption := Buf;
+    if GetMenuString(hSubMenu, WM_CUT, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[2].Caption := Buf;
+    if GetMenuString(hSubMenu, WM_COPY, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[3].Caption := Buf;
+    if GetMenuString(hSubMenu, WM_PASTE, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[4].Caption := Buf;
+    if GetMenuString(hSubMenu, WM_CLEAR, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[5].Caption := Buf;
+    if GetMenuString(hSubMenu, EM_SETSEL, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[7].Caption := Buf;
   finally
     DestroyMenu(hMenu);
   end;
@@ -317,7 +322,7 @@ var
 begin
   if FPopupMenu = nil then
   begin
-    FPopupMenu := TPopupMenu.Create(self);
+    FPopupMenu := TPopupMenu.Create(Self);
     { build menu:
       Undo
       -
@@ -330,45 +335,45 @@ begin
     }
 
     // start off with resourcestrings (in case GetDefaultMenuCaptions fails)
-    m := TMenuItem.Create(self);
+    m := TMenuItem.Create(Self);
     m.Caption := RsUndoItem;
     m.OnClick := DoUndo;
     FPopupMenu.Items.Add(m);
 
-    m := TMenuItem.Create(self);
+    m := TMenuItem.Create(Self);
     m.Caption := '-';
     FPopupMenu.Items.Add(m);
 
-    m := TMenuItem.Create(self);
+    m := TMenuItem.Create(Self);
     m.Caption := RsCutItem;
     m.OnClick := DoCut;
     FPopupMenu.Items.Add(m);
 
-    m := TMenuItem.Create(self);
+    m := TMenuItem.Create(Self);
     m.Caption := RsCopyItem;
     m.OnClick := DoCopy;
     FPopupMenu.Items.Add(m);
 
-    m := TMenuItem.Create(self);
+    m := TMenuItem.Create(Self);
     m.Caption := RsPasteItem;
     m.OnClick := DoPaste;
     FPopupMenu.Items.Add(m);
 
-    m := TMenuItem.Create(self);
+    m := TMenuItem.Create(Self);
     m.Caption := RsDeleteItem;
     m.OnClick := DoDelete;
     FPopupMenu.Items.Add(m);
 
-    m := TMenuItem.Create(self);
+    m := TMenuItem.Create(Self);
     m.Caption := '-';
     FPopupMenu.Items.Add(m);
 
-    m := TMenuItem.Create(self);
+    m := TMenuItem.Create(Self);
     m.Caption := RsSelectAllItem;
     m.OnClick := DoSelectAll;
     FPopupMenu.Items.Add(m);
 
-    if not FUseResourceStrings then
+    if not GlobalUseResourceStrings then
       GetDefaultMenuCaptions;
   end;
   if Update then
@@ -426,7 +431,7 @@ begin
   end;
 end;
 
-function THiddenPopupObject.GetTextLen: integer;
+function THiddenPopupObject.GetTextLen: Integer;
 begin
   if (Edit <> nil) and Edit.HandleAllocated then
     Result := Edit.GetTextLen
@@ -434,7 +439,7 @@ begin
     Result := 0;
 end;
 
-function THiddenPopupObject.ReadOnly: boolean;
+function THiddenPopupObject.ReadOnly: Boolean;
 begin
   if (Edit <> nil) and Edit.HandleAllocated then
     Result := GetWindowLong(Edit.Handle, GWL_STYLE) and ES_READONLY = ES_READONLY
@@ -442,7 +447,7 @@ begin
     Result := False;
 end;
 
-function THiddenPopupObject.SelLength: integer;
+function THiddenPopupObject.SelLength: Integer;
 var
   StartPos, EndPos: Integer;
   MsgResult: Longint;
@@ -464,10 +469,10 @@ begin
   if FEdit <> Value then
   begin
     if FEdit <> nil then
-      FEdit.RemoveFreeNotification(self);
+      FEdit.RemoveFreeNotification(Self);
     FEdit := Value;
     if FEdit <> nil then
-      FEdit.FreeNotification(self);
+      FEdit.FreeNotification(Self);
   end;
 end;
 
@@ -482,6 +487,7 @@ end;
 initialization
 
 finalization
-  FHiddenPopup.Free;
+  GlobalHiddenPopup.Free;
 
 end.
+

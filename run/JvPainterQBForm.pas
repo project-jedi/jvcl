@@ -67,7 +67,7 @@ type
     {$IFDEF VCL}
     procedure qbpresetsDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
-    {$ENDIF}
+    {$ENDIF VCL}
     procedure qbpresetsClick(Sender: TObject);
     procedure SetLabels;
     procedure AddBackdrop1Click(Sender: TObject);
@@ -85,7 +85,7 @@ type
     {$IFDEF VisualCLX}
     procedure qbpresetsDrawItem(Sender: TObject; Index: Integer;
       Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
-    {$ENDIF}
+    {$ENDIF VisualCLX}
   private
     FPainterForm: TJvDrawImage;
   public
@@ -100,7 +100,7 @@ var
 implementation
 
 uses
-  JvConsts, JvResources;
+  JvConsts, JvResources, JvTypes;
 
 {$IFDEF VCL}
 {$R *.dfm}
@@ -330,7 +330,7 @@ end;
 
 // end of functions used in Quick Background
 
-procedure setQBFuncs;
+procedure SetQBFuncs;
 begin
   QBFuncs[0] := BGProd;
   QBFuncs[1] := BGSum;
@@ -379,23 +379,23 @@ procedure TPainterQBForm.QuickBack;
 var
   Bmp: TBitmap;
   I, J: Integer;
-  Line: PByteArray;
+  Line: PJvRGBArray;
 begin
   RedBack := QBFuncs[QBRedFn];
   GreenBack := QBFuncs[QBGreenFn];
   BlueBack := QBFuncs[QBBlueFn];
-  Bmp := TBitMap.Create;
+  Bmp := TBitmap.Create;
   try
     Bmp.Assign(FPainterForm.Picture.Bitmap);
     Bmp.PixelFormat := pf24bit;
     for I := 0 to Bmp.Height - 1 do
     begin
-      Line := PByteArray(Bmp.ScanLine[I]);
+      Line := Bmp.ScanLine[I];
       for J := 0 to Bmp.Width - 1 do
       begin
-        Line[J * 3] := QBDRed + RedBack(I, J);
-        Line[J * 3 + 1] := QBDGreen + GreenBack(I, J);
-        Line[J * 3 + 2] := QBDBlue + BlueBack(I, J);
+        Line[J].rgbRed   := QBDRed + RedBack(I, J);
+        Line[J].rgbGreen := QBDGreen + GreenBack(I, J);
+        Line[J].rgbBlue  := QBDBlue + BlueBack(I, J);
       end;
     end;
     FPainterForm.Preview(Bmp);
@@ -425,14 +425,14 @@ begin
 end;
 
 
-{$IFDEF VisualCLX}
-procedure TPainterQBForm.qbpresetsDrawItem(Sender: TObject; Index: Integer;
-  Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
-{$ENDIF}
 {$IFDEF VCL}
 procedure TPainterQBForm.qbpresetsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
-{$ENDIF}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TPainterQBForm.qbpresetsDrawItem(Sender: TObject; Index: Integer;
+  Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
+{$ENDIF VisualCLX}
 var
   S: string;
   P: Integer;
@@ -442,8 +442,8 @@ begin
   S := Copy(S, 1, P - 1);
   qbpresets.Canvas.TextRect(Rect, Rect.Left, Rect.Top, S);
   {$IFDEF VisualCLX}
-  Handled := true;
-  {$ENDIF}
+  Handled := True;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TPainterQBForm.qbpresetsClick(Sender: TObject);

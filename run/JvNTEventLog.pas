@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
@@ -87,10 +88,11 @@ type
     constructor Create(AOwner: TComponent);
   end;
 
-  TJvNTEventLogRecord = class
+  TJvNTEventLogRecord = class(TObject)
   private
     FEventLog: TJvNTEventLog;
     FCurrentRecord: Pointer;
+    FOwner: TComponent;
     function GetRecordNumber: Cardinal;
     function GetDateTime: TDateTime;
     function GetID: DWORD;
@@ -117,17 +119,17 @@ type
     property EventString[Index: Cardinal]: string read GetString;
     property MessageText: string read GetMessageText;
     property UserName: string read GetUsername;
+    property Owner: TComponent read FOwner;
   end;
 
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
-  Registry;
-  {$ELSE}
   Registry,
-  JvJCLUtils;
-  {$ENDIF}
+  {$IFNDEF COMPILER6_UP}
+  JvJCLUtils,
+  {$ENDIF COMPILER6_UP}
+  JvResources;
 
 const
   EVENTLOG_SEQUENTIAL_READ = $0001;
@@ -136,6 +138,7 @@ const
   EVENTLOG_BACKWARDS_READ = $0008;
 
 type
+  PEventLogRecord = ^TEventLogRecord;
   TEventLogRecord = packed record
     Length: DWORD; // Length of full record
     Reserved: DWORD; // Used by the service
@@ -154,7 +157,6 @@ type
     DataLength: DWORD;
     DataOffset: DWORD; // Offset from beginning of record
   end;
-  PEventLogRecord = ^TEventLogRecord;
 
 //=== TJvNTEventLog ==========================================================
 
@@ -189,40 +191,40 @@ end;
 
 procedure TJvNTEventLog.SetServer(const Value: string);
 var
-  lOldActive: Boolean;
+  OldActive: Boolean;
 begin
   if FServer <> Value then
   begin
-    lOldActive := Active;
+    OldActive := Active;
     Active := False;
     FServer := Value;
-    Active := lOldActive;
+    Active := OldActive;
   end
 end;
 
 procedure TJvNTEventLog.SetSource(const Value: string);
 var
-  lOldActive: Boolean;
+  OldActive: Boolean;
 begin
   if FSource <> Value then
   begin
-    lOldActive := Active;
+    OldActive := Active;
     Active := False;
     FSource := Value;
-    Active := lOldActive;
+    Active := OldActive;
   end
 end;
 
 procedure TJvNTEventLog.SetLog(const Value: string);
 var
-  lOldActive: Boolean;
+  OldActive: Boolean;
 begin
   if FLog <> Value then
   begin
-    lOldActive := Active;
+    OldActive := Active;
     Active := False;
     FLog := Value;
-    Active := lOldActive;
+    Active := OldActive;
   end
 end;
 
@@ -362,7 +364,7 @@ end;
 
 procedure TNotifyChangeEventLog.Execute;
 var
-  lResult: DWORD;
+  LResult: DWORD;
 begin
   // (rom) secure thread against exceptions
   try
@@ -371,9 +373,9 @@ begin
       // reset event signal, so we can get it again
       ResetEvent(FEventHandle);
       // wait for event to happen
-      lResult := WaitForSingleObject(FEventHandle, INFINITE);
+      LResult := WaitForSingleObject(FEventHandle, INFINITE);
       // check event Result
-      case lResult of
+      case LResult of
         WAIT_OBJECT_0:
           Synchronize(DoChange);
       else
@@ -388,31 +390,34 @@ end;
 
 constructor TJvNTEventLogRecord.Create(AOwner: TComponent);
 begin
+  // (rom) added inherited Create
+  inherited Create;
   FEventLog := TJvNTEventLog(AOwner);
   FCurrentRecord := nil;
+  FOwner := AOwner;
 end;
 
 function TJvNTEventLogRecord.GetRecordNumber: Cardinal;
 begin
-  Result := PEventLogRecord(fCurrentRecord)^.RecordNumber;
+  Result := PEventLogRecord(FCurrentRecord)^.RecordNumber;
 end;
 
 function TJvNTEventLogRecord.GetMessageText: string;
 var
   MessagePath: string;
-  Count, i: Integer;
-  p: PChar;
-  Args, pArgs: ^PChar;
+  Count, I: Integer;
+  P: PChar;
+  Args, PArgs: ^PChar;
   St: string;
 
-  function FormatMessageFrom(const dllName: string): Boolean;
+  function FormatMessageFrom(const DllName: string): Boolean;
   var
     DllModule: THandle;
     Buffer: array [0..2047] of Char;
     FullDLLName: array [0..MAX_PATH] of Char;
   begin
     Result := False;
-    ExpandEnvironmentStrings(PChar(dllName), FullDLLName, MAX_PATH);
+    ExpandEnvironmentStrings(PChar(DllName), FullDLLName, MAX_PATH);
     DllModule := LoadLibraryEx(FullDLLName, 0, LOAD_LIBRARY_AS_DATAFILE);
     if DllModule <> 0 then
     try
@@ -435,13 +440,13 @@ begin
   Count := StringCount;
   GetMem(Args, Count * SizeOf(PChar));
   try
-    pArgs := Args;
-    p := PEventLogRecord(fCurrentRecord)^.StringOffset + PChar(fCurrentRecord);
-    for i := 0 to Count - 1 do
+    PArgs := Args;
+    P := PEventLogRecord(FCurrentRecord)^.StringOffset + PChar(FCurrentRecord);
+    for I := 0 to Count - 1 do
     begin
-      pArgs^ := p;
-      Inc(p, lstrlen(p) + 1);
-      Inc(pArgs)
+      PArgs^ := P;
+      Inc(P, lstrlen(P) + 1);
+      Inc(PArgs);
     end;
 
     with TRegistry.Create do
@@ -450,16 +455,16 @@ begin
       OpenKey(Format('SYSTEM\CurrentControlSet\Services\EventLog\%s\%s', [FEventLog.Log, FEventLog.Source]), False);
       MessagePath := ReadString('EventMessageFile');
       repeat
-        i := Pos(';', MessagePath);
-        if i <> 0 then
+        I := Pos(';', MessagePath);
+        if I <> 0 then
         begin
-          if FormatMessageFrom(Copy(MessagePath, 1, i)) then
-            break;
-          MessagePath := Copy(MessagePath, i, MaxInt);
+          if FormatMessageFrom(Copy(MessagePath, 1, I)) then
+            Break;
+          MessagePath := Copy(MessagePath, I, MaxInt);
         end
         else
-          FormatMessageFrom(MessagePath)
-      until i = 0
+          FormatMessageFrom(MessagePath);
+      until I = 0;
     end
   finally
     FreeMem(Args)
@@ -485,17 +490,17 @@ end;
 
 function TJvNTEventLogRecord.GetType: string;
 begin
-  case PEventLogRecord(fCurrentRecord)^.EventType of
+  case PEventLogRecord(FCurrentRecord)^.EventType of
     EVENTLOG_ERROR_TYPE:
-      Result := 'Error';
+      Result := RsLogError;
     EVENTLOG_WARNING_TYPE:
-      Result := 'Warning';
+      Result := RsLogWarning;
     EVENTLOG_INFORMATION_TYPE:
-      Result := 'Information';
+      Result := RsLogInformation;
     EVENTLOG_AUDIT_SUCCESS:
-      Result := 'Success Audit';
+      Result := RsLogSuccessAudit;
     EVENTLOG_AUDIT_FAILURE:
-      Result := 'Failure Audit';
+      Result := RsLogFailureAudit;
   else
     Result := '';
   end;
@@ -503,35 +508,35 @@ end;
 
 function TJvNTEventLogRecord.GetSource: string;
 begin
-  Result := PChar(fCurrentRecord) + SizeOf(TEventLogRecord);
+  Result := PChar(FCurrentRecord) + SizeOf(TEventLogRecord);
 end;
 
 function TJvNTEventLogRecord.GetComputer: string;
 var
   P: PChar;
 begin
-  P := PChar(fCurrentRecord) + SizeOf(TEventLogRecord);
+  P := PChar(FCurrentRecord) + SizeOf(TEventLogRecord);
   Result := P + StrLen(P) + 1;
 end;
 
 function TJvNTEventLogRecord.GetID: DWORD;
 begin
-  Result := PEventLogRecord(fCurrentRecord)^.EventID;
+  Result := PEventLogRecord(FCurrentRecord)^.EventID;
 end;
 
 function TJvNTEventLogRecord.GetStringCount: DWORD;
 begin
-  Result := PEventLogRecord(fCurrentRecord)^.NumStrings;
+  Result := PEventLogRecord(FCurrentRecord)^.NumStrings;
 end;
 
 function TJvNTEventLogRecord.GetCategory: Cardinal;
 begin
-  Result := PEventLogRecord(fCurrentRecord)^.EventCategory;
+  Result := PEventLogRecord(FCurrentRecord)^.EventCategory;
 end;
 
 function TJvNTEventLogRecord.GetSID: PSID;
 begin
-  Result := PSID(PChar(fCurrentRecord) + PEventLogRecord(fCurrentRecord)^.userSIDOffset);
+  Result := PSID(PChar(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.userSIDOffset);
 end;
 
 function TJvNTEventLogRecord.GetString(Index: Cardinal): string;
@@ -540,22 +545,22 @@ var
 begin
   if Index < StringCount then
   begin
-    P := PChar(fCurrentRecord) + PEventLogRecord(fCurrentRecord)^.StringOffset;
+    P := PChar(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.StringOffset;
     while Index > 0 do
     begin
       Inc(P, StrLen(P) + 1);
       Dec(Index);
-    end
-  end
+    end;
+  end;
 end;
 
 function TJvNTEventLogRecord.GetDateTime: TDateTime;
 const
-  lStartPoint: TDateTime = 25569.0; // January 1, 1970 00:00:00
+  StartPoint: TDateTime = 25569.0; // January 1, 1970 00:00:00
 begin
-  // Result := IncSecond(lStartPoint, PEventLogRecord(fCurrentRecord)^.TimeGenerated);
-//  Result := IncSecond(lStartPoint, PEventLogRecord(fCurrentRecord)^.TimeWritten);
-  Result := ((lStartPoint * 86400.0) + PEventLogRecord(fCurrentRecord)^.TimeWritten) / 86400.0;
+  // Result := IncSecond(StartPoint, PEventLogRecord(FCurrentRecord)^.TimeGenerated);
+//  Result := IncSecond(StartPoint, PEventLogRecord(FCurrentRecord)^.TimeWritten);
+  Result := ((StartPoint * 86400.0) + PEventLogRecord(FCurrentRecord)^.TimeWritten) / 86400.0;
 end;
 
 end.

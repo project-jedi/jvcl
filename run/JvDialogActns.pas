@@ -70,7 +70,6 @@ type
     procedure ExecuteTarget(Target: TObject); override;
     property ExecuteResult: Boolean read FExecuteResult;
     {$ENDIF COMPILER6_UP}
-
     property BeforeExecute: TNotifyEvent read FBeforeExecute write FBeforeExecute;
   published
     property Caption;
@@ -254,7 +253,7 @@ begin
   begin
     FDialog := DialogClass.Create(Self);
     FDialog.Name := Copy(DialogClass.ClassName, 2, Length(DialogClass.ClassName));
-   {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     FDialog.SetSubComponent(True);
     {$ENDIF COMPILER6_UP}
   end;
