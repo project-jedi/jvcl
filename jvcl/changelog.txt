@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2005-10-12:
+- Renamed JvImagesViewer.TJvImageItem to JvImagesViewer.TJvPictureItem (TJvImageItem also defined in JvListComb) // peter3
 2005-01-01:
 - Added JvDatabaseActionList and JvDatabase*Action // JFudickar
   The new actions not only work with datasource components, also it's possible to connect them to a dbgrid or other components.
