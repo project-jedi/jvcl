@@ -76,6 +76,7 @@ type
     procedure DoChangeColor(AForegroundColor, ABackgroundColor: TColor); virtual;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   published
     property Align;
     {$IFDEF VCL}
@@ -403,6 +404,11 @@ procedure TJvGammaPanel.DoChangeColor(AForegroundColor, ABackgroundColor: TColor
 begin
   if Assigned(FOnChangeColor) then
     FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
+end;
+
+destructor TJvGammaPanel.Destroy;
+begin
+  inherited;
 end;
 
 end.
