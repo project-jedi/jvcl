@@ -90,19 +90,19 @@ type
     Property ActiveButtonText: TColor index 36 read GetColor write SetColor stored False;
     Property ActiveBase: TColor index 37 read GetColor write SetColor stored False;
     Property ActiveBackground: TColor index 38 read GetColor write SetColor stored False;
-    Property ActiveShadow: TColor index 49 read GetColor write SetColor stored False;
+    Property ActiveShadow: TColor index 39 read GetColor write SetColor stored False;
     Property ActiveHighlight: TColor index 40 read GetColor write SetColor stored False;
     Property ActiveHighlightedText: TColor index 41 read GetColor write SetColor stored False;
-    Property HintColor: TColor index 42 read GetColor write SetColor stored False;
-    Property DeskTopBackgroundColor:  TColor index 43 read GetColor write SetColor stored False;
-    
+//    Property HintColor: TColor index 42 read GetColor write SetColor stored False;
+//    Property DeskTopBackgroundColor:  TColor index 43 read GetColor write SetColor stored False;
+
   end;
 
 implementation
 
 const
-  
-  
+
+
   ColorArray: array[0..43] of TColor = (
     clNormalForeground, clNormalButton, clNormalLight, clNormalMidlight, clNormalDark, clNormalMid,
     clNormalText, clNormalBrightText, clNormalButtonText, clNormalBase, clNormalBackground,
@@ -116,7 +116,7 @@ const
     clActiveText, clActiveBrightText, clActiveButtonText, clActiveBase, clActiveBackground,
     clActiveShadow, clActiveHighlight, clActiveHighlightedText,
     clInfoBk, clDesktop );
-  
+
 
 procedure TJvSystemColors.SetColor(Index: Integer; Value: TColor);
 var
