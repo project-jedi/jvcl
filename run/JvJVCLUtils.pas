@@ -2403,19 +2403,6 @@ begin
 end;
 {$ENDIF VCL}
 
-function GetTickCount64: Int64;
-var
-  QFreq, QCount:Int64;
-begin
-   Result := GetTickCount;
-   if QueryPerformanceFrequency(QFreq) then
-   begin
-     QueryPerformanceCounter(QCount);
-     if QFreq <> 0 then
-       Result := (QCount div QFreq) * 1000;
-  end;
-end;
-
 procedure Delay(MSecs: Int64);
 var
   FirstTickCount, Now: Int64;
@@ -2428,9 +2415,9 @@ begin
   until (Now - FirstTickCount >= MSecs);
 end;
 
-function GetTimeRunning: Int64;
+function GetTickCount64: Int64;
 var
-  QFreq, QCount:Int64;
+  QFreq, QCount: Int64;
 begin
    Result := GetTickCount;
    if QueryPerformanceFrequency(QFreq) then
