@@ -748,7 +748,7 @@ begin
   inherited EnabledChanged;
  for i := 0 to High(FEditControls) do
     if (FEditControls[I] <> nil) and (FEditControls[I].Handle <> 0) then
-      EnableWindow(FEditControls[I].Handle, Enabled);
+      EnableWindow(FEditControls[I].Handle, Enabled and not (csDesigning in ComponentState));
 end;
 
 procedure TJvIPAddress.CNCommand(var Msg: TWMCommand);
@@ -871,7 +871,7 @@ begin
              (FEditControls[FEditControlCount] <> nil) then
           begin
             FEditControls[FEditControlCount].Handle := ChildWnd;
-            EnableWindow(ChildWnd, Enabled);
+            EnableWindow(ChildWnd, Enabled and not (csDesigning in ComponentState));
             Inc(FEditControlCount);
           end;
         end;

@@ -1305,8 +1305,9 @@ begin
   FDeadList.Free;
   DeleteCriticalSection(FLock);
 
+  Clear; // destroy TThemeHook instances which require ThemeHookComponent
   ThemeHookComponent.Free; // global variable
-  ThemeHookComponent := nil;
+
   inherited Destroy;
 end;
 
@@ -1451,7 +1452,7 @@ begin
       if ThemeServices.ThemesEnabled then
         ThemedEraseBkGnd(TWMEraseBkGnd(Msg), Handled);
     CN_CTLCOLORSTATIC,
-      CN_CTLCOLORBTN:
+    CN_CTLCOLORBTN:
       if ThemeServices.ThemesEnabled then
         ThemedCtlColorStatic(TWMCtlColorStatic(Msg), Handled);
   end;
