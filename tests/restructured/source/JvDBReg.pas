@@ -118,7 +118,7 @@ begin
 {$ENDIF}
 
   { Data aware components and controls }
-  RegisterComponents({LoadStr(srRXDBAware)}'JvX DBAware', [
+  RegisterComponents('Jv Data Controls', [
 {$IFDEF COMPILER3_UP}TJvMemoryData, {$ENDIF}
     TJvDBGrid, TJvDBLookupList, TJvDBLookupCombo, TJvLookupEdit, TJvDBDateEdit,
       TJvDBCalcEdit, TJvDBComboEdit, {$IFDEF WIN32}TJvDBRichEdit, {$ENDIF}
