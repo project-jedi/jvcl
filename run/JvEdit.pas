@@ -104,6 +104,7 @@ type
     function GetFlat: Boolean;
     {$IFDEF JVCLThemesEnabled}
     procedure SetThemedPassword(const Value: Boolean);
+    procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
     {$ENDIF JVCLThemesEnabled}
   protected
     procedure DoClipboardCut; override;
@@ -651,6 +652,10 @@ end;
 procedure TJvCustomEdit.Loaded;
 begin
   inherited Loaded;
+  { (rb) I think that csLoading flag can be used instead of FIsLoaded.
+         FIsLoaded is set a bit later to true than csLoading but that
+         does not matter AFAICS
+  }
   FIsLoaded := true;
   FOldFontColor := Font.Color;
   SelStart := FStreamedSelStart;
@@ -942,6 +947,17 @@ begin
   end;
 end;
 {$ENDIF VCL}
+
+{$IFDEF JVCLThemesEnabled}
+procedure TJvCustomEdit.WMSetFont(var Msg: TWMSetFont);
+begin
+  if ThemedPassword then
+    // Retrieves MS Shell Dlg.
+    // Other way is to use Screen.IconFont
+    Msg.Font := GetStockObject(DEFAULT_GUI_FONT);
+  inherited;
+end;
+{$ENDIF JVCLThemesEnabled}
 
 {$IFDEF UNITVERSIONING}
 const
