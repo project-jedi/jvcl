@@ -1,5 +1,97 @@
 Changelog for JVCL 3.0
 ======================
+2003-06-19:
+- Updated units with latest changes from official jvcl
+
+2003-06-18:
+- Renamed units:
+  JvTMTL -> JvTMTimeLine
+  JvAutoSizeCompo -> JvFormAutoSize
+  JvGrdCpt -> JvGradientCaption
+  JvPlacemnt -> JvFormPlacement
+  JvVerInf -> JvVersionInfo
+  JvUCB -> JvUninstallCtrls
+  JvTimerLst -> JvTimerList
+  JvSysComp -> JvCreateProcess
+  JvObjStr -> JvObjectStrings
+  JvMrgMngr -> JvMergeManager
+  JvMouseTimerU -> JvMouseTimer
+  JvFDualList -> JvDualListForm
+  JvExcptDlg -> JvExceptionForm
+  JvDBSecur -> JvDBSecurity
+  JvDBRichEd -> JvDBRichEdit
+  JvDBPrgrss -> JvDBProgress
+  JvDBExcpt -> JvDBExceptionForm
+  JvColorBtn -> JvColorButton
+  JvCntScr -> JvContentScroller
+  JvCmdEdit -> JvCommandEdit
+  JvChPswDlg -> JvCheckPasswordForm
+  JvOLBar -> JvOutlookBar
+  JvSbSetup -> JvSpeedbarSetupForm
+  JvRegTV -> JvRegistryTreeview
+  JvPrgrss -> JvProgressUtils
+  JvPluginMan -> JvPluginManager
+  JvQbnddlg -> JvQueryParamsForm
+  JvRadioCtl -> JvRadioControl
+  JvRecentMenuBtn -> JvRecentMenuButton
+  JvRemLog -> JvRemoteLogin
+  JvSHFileOp -> JvSHFileOperation
+  JvSplshWnd -> JvSplashWindow
+  JvSQLS -> JvSQLScript
+  JvStartMenuBtn -> JvStartMenuButton
+  JvStrHlder -> JvStringHolder
+  JvRichEd -> JvRichEdit
+  JvControlPanel -> JvControlPanelButton
+  JvClipMon -> JvClipboardMonitor
+  JvClipView -> JvClipboardViewer
+  JvDataConv -> JvConverter
+  JvPageMngr -> JvPageManager
+  JvBmpAnim -> JvBmpAnimator
+  JvClipIcon -> JvIconClipboardUtils
+  JvArrowBtn -> JvArrowButton
+  JvMemDS -> JvMemoryDataset
+  JvMagnet -> JvFormMagnet
+  JvDlg -> JvProgressForm
+  JvCurrEdit -> JvBaseEdits
+  JvDBComb -> JvDBCombobox
+  JvDBCtrl -> JvDBControls
+  JvHLEdPropDlg -> JvHLEditorPropertyForm
+  JvIcoList -> JvIconList
+  JvPropAutoSave -> JvAutoSave
+  JvTransBtn -> JvTransparentButton
+  JvxLogin -> JvLoginForm
+  JvxLoginDlg -> JvDBLoginDialog
+  JvProps -> JvPropsStorage
+  JvxAnimate -> JvAnimatedImage
+
+  JvAppletProperty -> JvAppletEditor
+  JvBehaviorLabelProperty -> JvBehaviorLabelEditor
+  JvChNtfyProperty -> JvChangeNotifyEditor
+  JvTimLstEd -> JvTimerListForm
+  JvTipOfDayProp -> JvTipOfDayEditor
+  JvStrLEdit -> JvStringsForm
+  JvSelDSFrm -> JvSelectDataSetForm
+  JvPresrDsn -> JvFormPropertiesForm
+  JvPluginParams -> JvPluginParamsForm
+  JvPictEdit -> JvPictureEditForm
+  JvPgMngrEd -> JvPageManagerForm
+  JvOutEdit -> JvLookoutEditor
+  JvOLBEditor -> JvOutlookBarForm
+  JvMinMaxEd -> JvMinMaxForm
+  JvJVCLAboutProperty -> JvJVCLAboutEditor
+  JvImagPrvw -> JvImagePreviewForm
+  JvID3v2Define -> JvID3v2DefineForm
+  JvIcoLEdit -> JvIconListForm
+  JvHTHintEditor -> JvHTHintForm
+  JvGradEdit -> JvGradientCaptionForm
+  JvDirFrm -> JvDirectoryListForm
+  JvSbEdit -> JvSpeedbarForm
+  JvTimeLineEdit -> JvTimeLineEditor
+  JvCheckItm -> JvCheckedItemsForm
+  JvaDsgn -> JvDesignerUtils
+  
+
+    
 2003-06-17:
 - Changed folder structure:
   * Each Delphi/BCB package collection has it's own subfolder in \packages
