@@ -94,10 +94,20 @@ type
     FOnColorButtonClick: TNotifyEvent;
     FOnArrowClick: TNotifyEvent;
     procedure SetFlat(const Value: Boolean);
-    procedure SetColor(const Value: TColor);
+
+
+    // Set Control Color
+    procedure SetControlBgColor(const Value: TColor);
+    function GetControlBgColor: TColor;
+
+    // Get Selection Color: (The Value of this control)
+    procedure SetSelectedColor(const Value: TColor);
+    function GetSelectedColor: TColor;
+    
+    
     function GetCustomColors: TStrings;
     procedure SetCustomColors(const Value: TStrings);
-    function GetColor: TColor;
+
     function GetGlyph: TBitmap;
     procedure SetGlyph(const Value: TBitmap);
     function GetProperties: TJvOfficeColorButtonProperties;
@@ -138,8 +148,9 @@ type
     destructor Destroy; override;
     procedure AdjustSize; override;
     property Flat: Boolean read FFlat write SetFlat default True;
-    property Color: TColor read GetColor write SetColor default clBlack;
-    property SelectedColor: TColor read GetColor write SetColor default clBlack;
+    property Color:TColor read GetControlBgColor write SetControlBgColor default clDefault;
+//    property Color: TColor read GetColor write SetColor default clBtnFace; // COLOR OF THE BACKGROUND OF THE CONTROL
+    property SelectedColor: TColor read GetSelectedColor write SetSelectedColor default clBlack; // COLOR SELECTED IN THE BUTTON.
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
     property Properties: TJvOfficeColorButtonProperties read GetProperties write SetProperties;
     {$IFDEF VCL}
@@ -177,7 +188,9 @@ type
     property TabStop;
     property Visible;
     property Flat;
-    property Color;
+    property Color;  // basic Control color.
+    property SelectedColor; // WPostma. Added to published!
+
     property CustomColors;
     {$IFDEF VCL}
     property Options;
@@ -462,7 +475,7 @@ begin
   else
   begin
     TJvSubColorButton(Sender).Down := True;
-    SetColor(TJvSubColorButton(Sender).ButtonColor);
+    SetSelectedColor(TJvSubColorButton(Sender).ButtonColor);
   end;
   if Assigned(FOnArrowClick) then
     FOnArrowClick(Self);
@@ -493,7 +506,7 @@ begin
   Result := FColorsForm.ColorPanel.CustomColors;
 end;
 
-function TJvCustomOfficeColorButton.GetColor: TColor;
+function TJvCustomOfficeColorButton.GetSelectedColor: TColor;
 begin
   Result := FColorsForm.ColorPanel.Color;
 end;
@@ -523,12 +536,30 @@ begin
   end;
 end;
 
-procedure TJvCustomOfficeColorButton.SetColor(const Value: TColor);
+
+
+// NEW: Set Control Background Color
+procedure TJvCustomOfficeColorButton.SetControlBgColor(const Value: TColor);
+begin
+  if Value = clDefault then // If set to clDefault then no change.
+      exit;
+  if Value<>FArrowButton.Color then begin
+      FMainButton.Color := Value;
+      FArrowButton.Color := Value;
+  end;
+end;
+
+function TJvCustomOfficeColorButton.GetControlBgColor: TColor;
+begin
+ result := FArrowButton.Color;
+end;
+
+{WPostma - Property SelectedColor (GetColor/SetColor) is the actual user-selected value}
+procedure TJvCustomOfficeColorButton.SetSelectedColor(const Value: TColor);
 begin
   if FColorsForm.ColorPanel.SelectedColor <> Value then
   begin
     FColorsForm.ColorPanel.SelectedColor := Value;
-    FMainButton.ButtonColor := Value;
   end;
 end;
 
