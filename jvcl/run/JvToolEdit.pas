@@ -127,7 +127,6 @@ type
     FPopupAlign: TPopupAlign;
     { (rb) Only used for backwards compatibility; eventually remove: }
     FGlyph: TBitmap;
-    FClipboardCommands: TJvClipboardCommands; // RDB
     FGroupIndex: Integer; // RDB
     FDisabledColor: TColor; // RDB
     FDisabledTextColor: TColor; // RDB
@@ -166,27 +165,27 @@ type
     procedure UpdateBtnBounds;
     procedure UpdateEdit; // RDB
 
+    {$IFDEF VCL}
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CNCtlColor(var Msg: TMessage); message CN_CTLCOLOREDIT;
-    procedure WMCut(var Msg: TWMCut); message WM_CUT;
-    procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    procedure WMClear(var Msg: TWMClear); message WM_CLEAR;
-    procedure WMCopy(var Msg: TWMCopy); message WM_COPY; // RDB
-    procedure WMUndo(var Msg: TWMUndo); message WM_UNDO; // RDB
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT; // RDB
     {$IFDEF JVCLThemesEnabled}
     procedure WMNCPaint(var Msg: TWMNCPaint); message WM_NCPAINT;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
     {$ENDIF JVCLThemesEnabled}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
+    {$ENDIF VCL}
   protected
     FButton: TJvEditButton; // Polaris
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TCustomControl;
+    function DoClearText: Boolean; override;
+    function DoClipboardCut: Boolean; override;
+    function DoClipboardPaste: Boolean; override;
+    procedure Resize; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure EnabledChanged; override;
@@ -219,7 +218,7 @@ type
     procedure PopupChange; virtual;
     procedure PopupCloseUp(Sender: TObject; Accept: Boolean); virtual; //virtual Polaris
     procedure PopupDropDown(DisableEdit: Boolean); virtual;
-    procedure SetClipboardCommands(const Value: TJvClipboardCommands); // RDB
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands); override; // RDB
     procedure SetDirectInput(Value: Boolean); // Polaris
     procedure SetDisabledColor(const Value: TColor); virtual; // RDB
     procedure SetDisabledTextColor(const Value: TColor); virtual; // RDB
@@ -237,7 +236,6 @@ type
     property ButtonHint: string read GetButtonHint write SetButtonHint;
     property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth stored BtnWidthStored;
     property ClickKey: TShortCut read FClickKey write FClickKey default scAltDown;
-    property ClipboardCommands: TJvClipboardCommands read FClipboardCommands write SetClipboardCommands default [caCopy..caUndo]; // RDB
     property DirectInput: Boolean read GetDirectInput write SetDirectInput default True;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow; // RDB
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText; // RDB
@@ -1306,7 +1304,6 @@ begin
   (* ++ RDB ++ *)
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
-  FClipboardCommands := [caCopy..caUndo];
   FGroupIndex := -1;
   FGlyph := TBitmap.Create;
   FStreamedButtonWidth := -1;
@@ -1855,13 +1852,12 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.SetClipboardCommands(
-  const Value: TJvClipboardCommands);
+procedure TJvCustomComboEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
 begin
-  if FClipboardCommands <> Value then
+  if ClipboardCommands <> Value then
   begin
-    FClipboardCommands := Value;
-    ReadOnly := FClipboardCommands <= [caCopy];
+    inherited SetClipboardCommands(Value);
+    ReadOnly := ClipboardCommands <= [caCopy];
   end;
 end;
 
@@ -2108,22 +2104,23 @@ begin
   FPopupVisible := (FPopup <> nil) and FPopup.Visible;
 end;
 
-procedure TJvCustomComboEdit.WMClear(var Msg: TWMClear);
+function TJvCustomComboEdit.DoClearText: Boolean;
 begin
   Text := '';
+  Result := False; // the job is already done
 end;
 
-procedure TJvCustomComboEdit.WMCopy(var Msg: TWMCopy);
+function TJvCustomComboEdit.DoClipboardCut: Boolean;
 begin
-  if caCopy in ClipboardCommands then
-    inherited;
+  Result := FDirectInput and not ReadOnly and
+    inherited DoClipboardCut;
 end;
 
-procedure TJvCustomComboEdit.WMCut(var Msg: TWMCut);
+function TJvCustomComboEdit.DoClipboardPaste: Boolean;
 begin
-  if not FDirectInput or ReadOnly then
-    Exit;
-  inherited;
+  Result := FDirectInput and not ReadOnly and
+    inherited DoClipboardPaste;
+  UpdateEdit;
 end;
 
 function TJvCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
@@ -2221,14 +2218,6 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.WMPaste(var Msg: TWMPaste);
-begin
-  if not FDirectInput or ReadOnly then
-    Exit;
-  UpdateEdit;
-  inherited;
-end;
-
 procedure TJvCustomComboEdit.DoSetFocus(FocusedWnd: HWND);
 begin
   inherited DoSetFocus(FocusedWnd);
@@ -2236,11 +2225,11 @@ begin
   SetShowCaret;
 end;
 
-procedure TJvCustomComboEdit.WMSize(var Msg: TWMSize);
+procedure TJvCustomComboEdit.Resize;
 var
   MinHeight: Integer;
 begin
-  inherited;
+  inherited Resize;
   if not (csLoading in ComponentState) then
   begin
     MinHeight := GetMinHeight;
@@ -2258,12 +2247,6 @@ begin
       FPopup.SetBounds(0, Height + 1, 10, 10);
   end;
   UpdateBtnBounds;
-end;
-
-procedure TJvCustomComboEdit.WMUndo(var Msg: TWMUndo);
-begin
-  if caUndo in ClipboardCommands then
-    inherited;
 end;
 
 //=== TJvCustomComboEditActionLink ===========================================

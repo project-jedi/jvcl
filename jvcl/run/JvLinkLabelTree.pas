@@ -39,7 +39,7 @@ unit JvLinkLabelTree;
 interface
 
 uses
-  Graphics, Windows, Classes, SysUtils,
+  Windows, Graphics, Classes, SysUtils,
   JvLinkLabelTools, JvTypes;
 
 type

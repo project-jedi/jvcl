@@ -37,12 +37,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, CheckLst, Controls, Forms,
-  JvItemsSearchs, JVCLVer, JvExCheckLst;
+  JvItemsSearchs, JvExCheckLst;
 
 type
   TJvCheckListBox = class(TJvExCheckListBox)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHotTrack: Boolean;
     FColor: TColor;
     FSaved: TColor;
@@ -88,7 +87,6 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property MultiSelect;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HorScrollbar: Boolean read FScroll write SetHScroll default True;

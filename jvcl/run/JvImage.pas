@@ -38,7 +38,7 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QExtCtrls, QControls, QForms,
   {$ENDIF VisualCLX}
-  JVCLVer, JvExExtCtrls;
+  JvExExtCtrls;
 
 type
   TPicState = (stDefault, stEntered, stClicked1, stClicked2, stDown);
@@ -69,7 +69,6 @@ type
 
   TJvImage = class(TJvExImage)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOnStateChanged: TNotifyEvent;
@@ -99,7 +98,6 @@ type
     destructor Destroy; override;
     procedure Loaded; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Pictures: TJvPictures read FPictures write FPictures;
     property Picture: TPicture read FPicture write SetPicture;
@@ -216,22 +214,20 @@ begin
     if UsesPictures then
       State := stEntered;
     FOver := True;
+    inherited MouseEnter(Control);
   end;
-  inherited MouseEnter(Control);
 end;
 
 procedure TJvImage.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
     if UsesPictures then
       ApplyClick;
     FOver := False;
+    inherited MouseLeave(Control);
   end;
-  inherited MouseLeave(Control);
 end;
 
 // (rom) improvement. now only non-transparent pixels are considered

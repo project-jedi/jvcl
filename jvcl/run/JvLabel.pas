@@ -37,7 +37,7 @@ Changes:
   * Implementation moved to TJvCustomLabel. TJvLabel now only publishes properties and events.
 2003-03-24:
   * JvHotLink merged into JvLabel:
-    To simulate JvHotlink, set AutoOpenURL to true, modify HotTrackFont to fit and assign
+    To simulate JvHotlink, set AutoOpenURL to True, modify HotTrackFont to fit and assign
     a URL (or file-path) to the URL property.
   * JvAngleLabel merged into JvLabel: set Angle > 0 and font to a TrueTrype font to rotate the text // peter3
 Known Issues:
@@ -51,9 +51,14 @@ unit JvLabel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  ImgList,
-  JVCLVer, JvTypes, JvComponent, JvConsts, JvDataProvider, JvDataProviderIntf;
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ImgList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Qt, QGraphics, QControls, QForms, QStdCtrls, QImgList, Types, QWindows,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
+  JvTypes, JvComponent, JvConsts, JvDataProvider, JvDataProviderIntf;
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
@@ -75,7 +80,6 @@ type
     FDragging: Boolean;
     FLeftMargin: Integer;
     FRightMargin: Integer;
-    FAboutJVCL: TJVCLAboutInfo;
     FImageIndex: TImageIndex;
     FImages: TCustomImageList;
     FChangeLink:TChangeLink;
@@ -85,10 +89,10 @@ type
     FFontSave: TFont;
     FHintColor: TColor;
     FHintSaved: TColor;
-    FAutoOpenURL: boolean;
+    FAutoOpenURL: Boolean;
     FURL: string;
     FAngle: TJvLabelRotateAngle;
-    FSpacing: integer;
+    FSpacing: Integer;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FConsumerSvc: TJvDataConsumer;
     function GetTransparent: Boolean;
@@ -105,15 +109,13 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure SetWordWrap(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
-    procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
-    procedure WMRButtonUp(var Msg: TWMRButtonUp); message WM_RBUTTONUP;
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetImages(const Value: TCustomImageList);
     procedure DoImagesChange(Sender:TObject);
     procedure DrawAngleText(Flags: Word);
     procedure SetAngle(const Value: TJvLabelRotateAngle);
     procedure SetHotTrackFont(const Value: TFont);
-    procedure SetSpacing(const Value: integer);
+    procedure SetSpacing(const Value: Integer);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
     procedure DoFocusChanged(Control: TWinControl); override;
@@ -128,7 +130,12 @@ type
     procedure DoDrawCaption(var Rect: TRect; Flags: Word); virtual;
     procedure DoDrawText(var Rect: TRect; Flags: Word); virtual;
     procedure AdjustBounds;
+    {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure SetAutoSize(Value: Boolean); virtual;
+    {$ENDIF VisualCLX}
     function GetDefaultFontColor: TColor; virtual;
     function GetLabelCaption: string; virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -141,14 +148,14 @@ type
     procedure Loaded; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    function GetImageWidth:integer;virtual;
-    function GetImageHeight:integer;virtual;
+    function GetImageWidth:Integer;virtual;
+    function GetImageHeight:Integer;virtual;
     procedure SetConsumerService(Value: TJvDataConsumer);
     function ProviderActive: Boolean;
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure NonProviderChange;
     property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
-    property AutoOpenURL: boolean read FAutoOpenURL write FAutoOpenURL;
+    property AutoOpenURL: Boolean read FAutoOpenURL write FAutoOpenURL;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
@@ -160,7 +167,7 @@ type
     property Images:TCustomImageList read FImages write SetImages;
     property ImageIndex:TImageIndex read FImageIndex write SetImageIndex;
     // specifies the offset between the right edge of the image and the left edge of the text (in pixels)
-    property Spacing:integer read FSpacing write SetSpacing default 4;
+    property Spacing:Integer read FSpacing write SetSpacing default 4;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property LeftMargin: Integer read FLeftMargin write SetLeftMargin default 0;
     property RightMargin: Integer read FRightMargin write SetRightMargin default 0;
@@ -179,8 +186,6 @@ type
     destructor Destroy; override;
     property Canvas;
     property MouseInControl: Boolean read FMouseInControl;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvLabel = class(TJvCustomLabel)
@@ -190,16 +195,18 @@ type
     property AutoSize;
     property Caption;
     property Color;
+    {$IFDEF VCL}
     property DragCursor;
+    property BiDiMode;
+    property DragKind;
+    property ParentBiDiMode;
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property FocusControl;
     property Font;
     property Anchors;
-    property BiDiMode;
     property Constraints;
-    property DragKind;
-    property ParentBiDiMode;
     property Layout;
     property ParentColor;
     property ParentFont;
@@ -226,10 +233,7 @@ type
     property OnMouseLeave;
     property OnStartDrag;
     property OnContextPopup;
-    property OnEndDock;
-    property OnStartDock;
 
-    property AboutJVCL;
     property Angle;
     property AutoOpenURL;
     property HintColor;
@@ -389,8 +393,17 @@ begin
     if Flags and DT_CALCRECT = 0 then
       Images.Draw(Canvas, 0,0,ImageIndex);
   end;
-  DrawShadowText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags,
-    SizeShadow, ColorToRGB(ColorShadow), PosShadow);
+  {$IFDEF VisualCLX}
+  Canvas.Start;
+  try
+  {$ENDIF VisualCLX}
+    DrawShadowText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags,
+      SizeShadow, ColorToRGB(ColorShadow), PosShadow);
+  {$IFDEF VisualCLX}
+  finally
+    Canvas.Stop;
+  end;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomLabel.DoDrawText(var Rect: TRect; Flags: Word);
@@ -442,6 +455,7 @@ begin
     DoDrawCaption(Rect, Flags);
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomLabel.DrawAngleText(Flags: Word);
 var
   Text: array[0..4096] of Char;
@@ -505,6 +519,69 @@ begin
   else
     Canvas.TextOut(TextX, TextY, Text);
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomLabel.DrawAngleText(Flags: Word);
+var
+  Text: array[0..4096] of Char;
+  MRect: TRect;
+  TextX, TextY: Integer;
+  Phi: Real;
+  Angle10: Integer;
+begin
+  Angle10 := Angle * 10;
+  StrLCopy(@Text, PChar(GetLabelCaption), SizeOf(Text) - 1);
+  if (Flags and DT_CALCRECT <> 0) and ((Text[0] = #0) or ShowAccelChar and
+    (Text[0] = '&') and (Text[1] = #0)) then
+    StrCopy(Text, ' ');
+  MRect := ClientRect;
+
+  Canvas.Start;
+  QPainter_save(Canvas.Handle);
+  try
+    QPainter_rotate(Canvas.Handle, -(Angle div 2));
+
+    Phi := Angle10 * Pi / 1800;
+    if not AutoSize then
+    begin
+      TextX := Trunc(0.5 * ClientWidth - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
+        Sin(Phi));
+      TextY := Trunc(0.5 * ClientHeight - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) + 0.5 * Canvas.TextWidth(Text) *
+        Sin(Phi));
+    end
+    else
+    begin
+      ClientWidth := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
+      ClientHeight := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
+      TextX := 2;
+      if (Angle10 > 900) and (Angle10 < 2700) then
+        TextX := TextX + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)));
+      if Angle10 > 1800 then
+        TextX := TextX + Trunc(Canvas.TextHeight(Text) * Abs(Sin(Phi)));
+      TextY := 2;
+      if Angle10 < 1800 then
+        TextY := TextY + Trunc(Canvas.TextWidth(Text) * Abs(Sin(Phi)));
+      if (Angle10 > 900) and (Angle10 < 2700) then
+        TextY := TextY + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)));
+    end;
+
+    QPainter_translate(Canvas.Handle, TextX, TextY);
+    if not Enabled then
+    begin
+      Canvas.Font.Color := clBtnHighlight;
+      Canvas.TextOut(1, 1, Text);
+      Canvas.Font.Color := clBtnShadow;
+      Canvas.TextOut(0, 0, Text);
+    end
+    else
+      Canvas.TextOut(0, 0, Text);
+  finally
+    QPainter_restore(Canvas.Handle);
+    Canvas.Stop;
+  end;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomLabel.Paint;
 var
@@ -572,13 +649,22 @@ begin
     Inc(Rect.Left, FLeftMargin);
     Dec(Rect.Right, FRightMargin);
     InflateRect(Rect, -1, 0);
-    DC := GetDC(0);
+    DC := GetDC(NullHandle);
     Canvas.Handle := DC;
-    DoDrawText(Rect, DT_EXPANDTABS or DT_CALCRECT or WordWraps[FWordWrap]);
-    Dec(Rect.Left, FLeftMargin);
-    Inc(Rect.Right, FRightMargin);
-    Canvas.Handle := 0;
-    ReleaseDC(0, DC);
+    {$IFDEF VisualCLX}
+    Canvas.Start(False);
+    try
+    {$ENDIF VisualCLX}
+      DoDrawText(Rect, DT_EXPANDTABS or DT_CALCRECT or WordWraps[FWordWrap]);
+      Dec(Rect.Left, FLeftMargin);
+      Inc(Rect.Right, FRightMargin);
+    {$IFDEF VisualCLX}
+    finally
+      Canvas.Stop;
+    end;
+    {$ENDIF VisualCLX}
+    Canvas.Handle := NullHandle;
+    ReleaseDC(NullHandle, DC);
     InflateRect(Rect, 1, 0);
     X := Left;
     AAlignment := FAlignment;
@@ -604,7 +690,9 @@ end;
 
 procedure TJvCustomLabel.SetAutoSize(Value: Boolean);
 begin
+  {$IFDEF VCL}
   inherited SetAutoSize(Value);
+  {$ENDIF VCL}
   FAutoSize := Value;
   AdjustBounds;
 end;
@@ -742,6 +830,8 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   if (Button = mbLeft) and Enabled then
     FDragging := True;
+  if Button = mbRight then // (ahuser) moved from WMRButtonDown
+    UpdateTracking;
 end;
 
 procedure TJvCustomLabel.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -808,18 +898,6 @@ begin
       FFocusControl.SetFocus;
 end;
 
-procedure TJvCustomLabel.WMRButtonDown(var Msg: TWMRButtonDown);
-begin
-  inherited;
-  UpdateTracking;
-end;
-
-procedure TJvCustomLabel.WMRButtonUp(var Msg: TWMRButtonUp);
-begin
-  inherited;
-  UpdateTracking;
-end;
-
 procedure TJvCustomLabel.EnabledChanged;
 begin
   inherited EnabledChanged;
@@ -853,8 +931,6 @@ end;
 
 procedure TJvCustomLabel.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FMouseInControl and Enabled and not FDragging then
   begin
     Application.HintColor := FHintSaved;
@@ -896,7 +972,7 @@ begin
   end;
 end;
 
-function TJvCustomLabel.GetImageHeight: integer;
+function TJvCustomLabel.GetImageHeight: Integer;
 begin
   Result := 0;
   if not ProviderActive and (Images <> nil) then
@@ -925,7 +1001,7 @@ begin
     Provider.Provider := nil;
 end;
 
-function TJvCustomLabel.GetImageWidth: integer;
+function TJvCustomLabel.GetImageWidth: Integer;
 begin
   Result := 0;
   if not ProviderActive and (Images <> nil) then
@@ -984,7 +1060,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvCustomLabel.SetSpacing(const Value: integer);
+procedure TJvCustomLabel.SetSpacing(const Value: Integer);
 begin
   if FSpacing <> Value then
   begin

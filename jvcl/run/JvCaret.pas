@@ -42,7 +42,7 @@ uses
   QWindows, Qt, QGraphics, QControls, QForms,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JVCLVer, JvTypes;
+  JvTypes;
 
 type
   { A caret can be specified either by giving a bitmap that defines its shape

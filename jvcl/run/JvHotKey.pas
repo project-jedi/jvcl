@@ -34,12 +34,11 @@ interface
 uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, ComCtrls,
-  JVCLVer, JvExComCtrls;
+  JvExComCtrls;
 
 type
   TJvHotKey = class(TJvExHotKey)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -51,7 +50,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -90,20 +88,18 @@ begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  inherited MouseEnter(AControl);
 end;
 
 procedure TJvHotKey.MouseLeave(AControl: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
+    inherited MouseLeave(AControl);
   end;
-  inherited MouseLeave(AControl);
 end;
 
 procedure TJvHotKey.ParentColorChanged;

@@ -44,12 +44,11 @@ uses
   {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QMask, QForms, QWindows,
   {$ENDIF VisualCLX}
-  JvComponent, JvTypes, JVCLVer, JvCaret, JvToolEdit, JvExMask;
+  JvComponent, JvTypes, JvCaret, JvToolEdit, JvExMask;
 
 type
   TJvCustomMaskEdit = class(TJvExCustomMaskEdit)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FOnEnabledChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnSetFocus: TJvFocusChangeEvent;
@@ -61,38 +60,28 @@ type
     FCaret: TJvCaret;
     FEntering: Boolean;
     FLeaving: Boolean;
-    FClipboardCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
     FDisabledColor: TColor;
     FDisabledTextColor: TColor;
     FProtectPassword: Boolean;
     FLastNotifiedText: String;
     procedure SetHotTrack(Value: Boolean);
-    procedure UpdateEdit;
     function GetPasswordChar: Char;
     function GetText: TCaption;
     procedure SetPasswordChar(const Value: Char);
     {$IFDEF VCL}
     procedure SetText(const Value: TCaption);
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     {$ENDIF VCL}
   protected
+    procedure UpdateEdit;
     procedure CaretChanged(Sender: TObject); dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
     procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
-    {$IFDEF VCL}
-    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
-    procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
-    procedure WMCut(var Msg: TWMCut); message WM_CUT;
-    procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
-    {$ENDIF VCL}
-    function DoAllowUndo: Boolean; dynamic;
-    function DoAllowPaste: Boolean; dynamic;
-    function DoAllowCopy: Boolean; dynamic;
-    function DoAllowCut: Boolean; dynamic;
+    function DoClipboardPaste: Boolean; override;
     {$IFDEF VisualCLX}
     procedure SetText(const Value: TCaption); override;
     {$ENDIF VisualCLX}
@@ -104,7 +93,7 @@ type
     procedure SetCaret(const Value: TJvCaret);
     procedure SetDisabledColor(const Value: TColor); virtual;
     procedure SetDisabledTextColor(const Value: TColor); virtual;
-    procedure SetClipboardCommands(const Value: TJvClipboardCommands);
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
     procedure SetGroupIndex(const Value: Integer);
     procedure NotifyIfChanged;
     procedure Change; override;
@@ -112,12 +101,6 @@ type
     {$IFDEF VCL}
     procedure DefaultHandler(var Msg); override;
     {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure CopyToClipboard; override;
-    procedure CutToClipboard; override;
-    procedure PasteFromClipboard; override;
-    procedure Undo; override;
-    {$ENDIF VisualCLX}
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -132,8 +115,6 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Caret: TJvCaret read FCaret write SetCaret;
 
-    property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
-      write SetClipboardCommands default [caCopy..caUndo];
     property DisabledTextColor: TColor read FDisabledTextColor write
       SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
@@ -143,13 +124,10 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvMaskEdit = class(TJvCustomMaskEdit)
   published
-    property AboutJVCL;
     property Caret;
     property ClipboardCommands;
     property DisabledTextColor;
@@ -228,7 +206,6 @@ begin
   FCaret.OnChanged := CaretChanged;
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
-  FClipboardCommands := [caCopy..caUndo];
   FGroupIndex := -1;
   FEntering := False;
   FLeaving := False;
@@ -316,10 +293,10 @@ end;
 
 procedure TJvCustomMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
 begin
-  if FClipboardCommands <> Value then
+  if ClipboardCommands <> Value then
   begin
-    FClipboardCommands := Value;
-    ReadOnly := FClipboardCommands <= [caCopy];
+    inherited SetClipboardCommands(Value);
+    ReadOnly := ClipboardCommands <= [caCopy];
   end;
 end;
 
@@ -362,79 +339,12 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomMaskEdit.WMCopy(var Msg: TWMCopy);
+function TJvCustomMaskEdit.DoClipboardPaste: Boolean;
 begin
-  if DoAllowCopy then
-    inherited;
+  Result := inherited DoClipboardPaste;
+  if Result then
+    UpdateEdit;
 end;
-
-procedure TJvCustomMaskEdit.WMCut(var Msg: TWMCut);
-begin
-  if DoAllowCut then
-    inherited;
-end;
-
-procedure TJvCustomMaskEdit.WMPaste(var Msg: TWMPaste);
-begin
-  if DoAllowPaste then
-    inherited;
-  UpdateEdit;
-end;
-
-procedure TJvCustomMaskEdit.WMUndo(var Msg: TWMUndo);
-begin
-  if DoAllowUndo then
-    inherited;
-end;
-{$ENDIF VCL}
-
-function TJvCustomMaskEdit.DoAllowUndo: Boolean;
-begin
-  Result := caUndo in ClipboardCommands;
-end;
-
-function TJvCustomMaskEdit.DoAllowPaste: Boolean;
-begin
-  Result := caPaste in ClipboardCommands;
-end;
-
-function TJvCustomMaskEdit.DoAllowCopy: Boolean;
-begin
-  Result := caCopy in ClipboardCommands;
-end;
-
-function TJvCustomMaskEdit.DoAllowCut: Boolean;
-begin
-  Result := caCut in ClipboardCommands;
-end;
-
-{$IFDEF VisualCLX}
-procedure TJvCustomMaskEdit.Undo;
-begin
-  if DoAllowUndo then
-    inherited Undo;
-end;
-
-procedure TJvCustomMaskEdit.CopyToClipboard;
-begin
-  if DoAllowCopy then
-    inherited CopyToClipboard;
-end;
-
-procedure TJvCustomMaskEdit.CutToClipboard;
-begin
-  if DoAllowCut then
-    inherited CutToClipboard;
-end;
-
-procedure TJvCustomMaskEdit.PasteFromClipboard;
-begin
-  if DoAllowPaste then
-    inherited PasteFromClipboard;
-  UpdateEdit;
-end;
-{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
 

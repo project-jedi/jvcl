@@ -31,7 +31,7 @@ interface
 
 uses
   Windows, Classes, Messages, Graphics, CommDlg, Dialogs,
-  JVCLVer, JvBaseDlg;
+  JvBaseDlg;
 
 const
   // Internal events

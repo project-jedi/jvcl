@@ -70,7 +70,6 @@ type
 
   TJvStatusBar = class(TJvExStatusBar)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -101,7 +100,6 @@ type
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     property AutoHintShown: Boolean read FAutoHintShown;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Color;
     property Font;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;

@@ -41,12 +41,11 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QButtons, QMenus,
   {$ENDIF VisualCLX}
-  JVCLVer, JvTypes, JvExButtons;
+  JvTypes, JvExButtons;
 
 type
   TJvBitBtn = class(TJvExBitBtn)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -74,7 +73,6 @@ type
     procedure Click; override;
     property Canvas: TCanvas read GetCanvas;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;

@@ -30,9 +30,9 @@ unit JvxSlider;
 interface
 
 uses
-  Windows,
-  Controls, ExtCtrls, Classes, Graphics, Messages, Menus,
-  JVCLVer, JvComponent, JvExControls;
+  Windows, Forms, Controls, ExtCtrls, Graphics, Messages, Menus,
+  SysUtils, Classes,
+  JvComponent, JvExControls;
 
 type
   TNumThumbStates = 1..2;
@@ -274,7 +274,7 @@ type
 implementation
 
 uses
-  Consts, Forms, SysUtils, Math,
+  Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvTypes, JvThemes;
 
 {$R ..\resources\JvxSlider.res}

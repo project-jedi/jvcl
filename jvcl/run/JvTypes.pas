@@ -76,6 +76,10 @@ type
   TJvHTTPProgressEvent = procedure(Sender: TObject; UserData, Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean) of object;
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
+  // from JvComponent.pas
+  TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo);
+  TJvClipboardCommands = set of TJvClipboardCommand;
+
   // used in JvSpeedButton, JvArrowButton, JvButton
   TJvCMButtonPressed = packed record
     Msg: Cardinal;

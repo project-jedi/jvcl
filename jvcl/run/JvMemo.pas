@@ -48,7 +48,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvCaret, JVCLVer, JvComponent, JvExStdCtrls;
+  JvCaret, JvTypes, JvComponent, JvExStdCtrls;
 
 const
   WM_AUTOBAR = WM_USER + 43;
@@ -56,7 +56,6 @@ const
 type
   TJvCustomMemo = class(TJvExCustomMemo)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FMaxLines: Integer;
     FHotTrack: Boolean;
     FHintColor: TColor;
@@ -68,26 +67,23 @@ type
     FCaret: TJvCaret;
     FHideCaret: Boolean;
     FOrigLines: TStrings;
-    FClipboardCommands: TJvClipboardCommands;
     FTransparent: Boolean;
-    procedure SetHotTrack(const Value: Boolean);
-    procedure CaretChanged(Sender: TObject); dynamic;
+    procedure SetHotTrack(Value: Boolean);
     procedure SetCaret(const Value: TJvCaret);
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
-    procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
-    procedure WMCut(var Msg: TWMCut); message WM_CUT;
-    procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure SetMaxLines(const Value: Integer);
     function GetLines: TStrings;
     procedure SetLines(const Value: TStrings);
     procedure SetHideCaret(const Value: Boolean);
-    function GetReadOnly: Boolean;
-    procedure SetReadOnly(const Value: Boolean);
-    procedure SetClipboardCommands(const Value: TJvClipboardCommands);
   protected
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
+    function DoClipboardCut: Boolean; override;
+    function DoClipboardPaste: Boolean; override;
+    function DoClearText: Boolean; override;
+    function DoUndo: Boolean; override;
+    procedure CaretChange(Sender: TObject); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
@@ -109,16 +105,12 @@ type
     function CharOfLine(iLine: Integer): Integer;
     property CurrentLine: Integer read GetCurrentLine write SetCurrentLine;
   protected
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property ClipboardCommands: TJvClipboardCommands read FClipboardCommands write SetClipboardCommands default
-      [caCopy..caUndo];
     property Caret: TJvCaret read FCaret write SetCaret;
     property HideCaret: Boolean read FHideCaret write SetHideCaret;
     property MaxLines: Integer read FMaxLines write SetMaxLines;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Lines: TStrings read GetLines write SetLines;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -129,7 +121,6 @@ type
 
   TJvMemo = class(TJvCustomMemo)
   published
-    property AboutJVCL;
     property AutoSize;
     property Caret;
     property ClipboardCommands;
@@ -212,8 +203,7 @@ begin
   FOver := False;
   // ControlStyle := ControlStyle + [csAcceptsControls];
   FCaret := TJvCaret.Create(Self);
-  FCaret.OnChanged := CaretChanged;
-  FClipboardCommands := [caCopy..caUndo];
+  FCaret.OnChanged := CaretChange;
   FTransparent := False;
 end;
 
@@ -276,7 +266,7 @@ begin
   inherited MouseLeave(Control);
 end;
 
-procedure TJvCustomMemo.SetHotTrack(const Value: Boolean);
+procedure TJvCustomMemo.SetHotTrack(Value: Boolean);
 begin
   FHotTrack := Value;
   Ctl3D := not FHotTrack;
@@ -371,7 +361,7 @@ begin
   end;
 end;
 
-procedure TJvCustomMemo.CaretChanged(Sender: TObject);
+procedure TJvCustomMemo.CaretChange(Sender: TObject);
 begin
   FCaret.CreateCaret;
 end;
@@ -468,7 +458,8 @@ begin
               Scroll(WM_VSCROLL, SB_PAGEDOWN);
             VK_PRIOR:
               Scroll(WM_VSCROLL, SB_PAGEUP);
-            VK_HOME: Scroll(WM_VSCROLL, SB_TOP);
+            VK_HOME:
+              Scroll(WM_VSCROLL, SB_TOP);
             VK_END:
               Scroll(WM_VSCROLL, SB_BOTTOM);
           end;
@@ -478,30 +469,6 @@ begin
     end;
   end;
   inherited WndProc(Msg);
-end;
-
-procedure TJvCustomMemo.WMCopy(var Msg: TWMCopy);
-begin
-  if caCopy in ClipboardCommands then
-    inherited;
-end;
-
-procedure TJvCustomMemo.WMCut(var Msg: TWMCut);
-begin
-  if caCut in ClipboardCommands then
-    inherited;
-end;
-
-procedure TJvCustomMemo.WMPaste(var Msg: TWMPaste);
-begin
-  if caPaste in ClipboardCommands then
-    inherited;
-end;
-
-procedure TJvCustomMemo.WMUndo(var Msg: TWMUndo);
-begin
-  if caUndo in ClipboardCommands then
-    inherited;
 end;
 
 procedure TJvCustomMemo.WMPaint(var Msg: TWMPaint);
@@ -525,25 +492,33 @@ begin
     Result := False;
 end;
 
-function TJvCustomMemo.GetReadOnly: Boolean;
-begin
-  Result := inherited ReadOnly;
-end;
-
-procedure TJvCustomMemo.SetReadOnly(const Value: Boolean);
-begin
-  inherited ReadOnly := Value;
-  if Value then
-    FClipboardCommands := [caCopy];
-end;
-
 procedure TJvCustomMemo.SetClipboardCommands(const Value: TJvClipboardCommands);
 begin
-  if FClipboardCommands <> Value then
+  if ClipboardCommands <> Value then
   begin
-    FClipboardCommands := Value;
-    ReadOnly := FClipboardCommands <= [caCopy];
+    inherited SetClipboardCommands(Value);
+    ReadOnly := ClipboardCommands <= [caCopy];
   end;
+end;
+
+function TJvCustomMemo.DoClearText: Boolean;
+begin
+  Result := not ReadOnly and inherited DoClearText;
+end;
+
+function TJvCustomMemo.DoUndo: Boolean;
+begin
+  Result := not ReadOnly and inherited DoUndo;
+end;
+
+function TJvCustomMemo.DoClipboardCut: Boolean;
+begin
+  Result := not ReadOnly and inherited DoClipboardCut;
+end;
+
+function TJvCustomMemo.DoClipboardPaste: Boolean;
+begin
+  Result := not ReadOnly and inherited DoClipboardPaste;
 end;
 
 end.

@@ -39,14 +39,13 @@ interface
 
 uses
   Windows, Messages, Graphics, StdCtrls,
-  JVCLVer;
+  JvExStdCtrls;
 
 type
   TPositiveInt = 1..MaxInt;
 
-  TJvTextListBox = class(TCustomListBox)
+  TJvTextListBox = class(TJvExCustomListBox)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FMaxWidth: Integer;
     procedure ResetHorizontalExtent;
     procedure SetHorizontalExtent;
@@ -54,7 +53,6 @@ type
   protected
     procedure WndProc(var Msg: TMessage); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property BorderStyle;
     property Color;

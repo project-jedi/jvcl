@@ -232,8 +232,8 @@ type
   protected
     //Polaris up to protected
     FButtonKind: TSpinButtonKind;
-    function DoAllowPaste: Boolean; override;
-    function DoAllowCut: Boolean; override;
+    function DoClipboardPaste: Boolean; override;
+    function DoClipboardCut: Boolean; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
@@ -1325,7 +1325,8 @@ type
     procedure ScrollMessage(var Msg: TWMVScroll);
     procedure WMHScroll(var Msg: TWMHScroll); message CN_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message CN_VSCROLL;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+  public
+    procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1375,16 +1376,17 @@ begin
   ScrollMessage(TWMVScroll(Msg));
 end;
 
-procedure TJvUpDown.WMSize(var Msg: TWMSize);
-begin
-  inherited;
-  if Width <> DefBtnWidth then
-    Width := DefBtnWidth;
-end;
-
 procedure TJvUpDown.WMVScroll(var Msg: TWMVScroll);
 begin
   ScrollMessage(Msg);
+end;
+
+procedure TJvUpDown.Resize;
+begin
+  if Width <> DefBtnWidth then
+    Width := DefBtnWidth
+  else
+    inherited Resize;
 end;
 
 //=== TJvCustomSpinEdit ======================================================
@@ -1459,6 +1461,7 @@ begin
     raise ERangeError.CreateFmt(RsEOutOfRangeFloat, [FMinValue, FMaxValue]);
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomSpinEdit.CMBiDiModeChanged(var Msg: TMessage);
 begin
   inherited;
@@ -1472,6 +1475,7 @@ begin
   ResizeButton;
   SetEditRect;
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomSpinEdit.EnabledChanged;
 begin
@@ -2157,24 +2161,10 @@ begin
   Result := True;
 end;
 
-function TJvCustomSpinEdit.DoAllowPaste: Boolean;
+function TJvCustomSpinEdit.DoClipboardPaste: Boolean;
 begin
   Result := (FEditorEnabled and not ReadOnly) and
-    inherited DoAllowPaste;
-end;
-
-function TJvCustomSpinEdit.DoAllowCut: Boolean;
-begin
-  Result := (FEditorEnabled and not ReadOnly) and
-    inherited DoAllowCut;
-end;
-
-(*   (ahuser) see the new DoAllowPaste() method
-procedure TJvCustomSpinEdit.WMPaste(var Msg: TWMPaste);
-begin
-  if not FEditorEnabled or ReadOnly then
-    Exit;
-  inherited;
+    inherited DoClipboardPaste;
 
   { Polaris code:
   if not FEditorEnabled or ReadOnly then
@@ -2188,7 +2178,12 @@ begin
   end;
   }
 end;
-*)
+
+function TJvCustomSpinEdit.DoClipboardCut: Boolean;
+begin
+  Result := (FEditorEnabled and not ReadOnly) and
+    inherited DoClipboardCut;
+end;
 
 procedure TJvCustomSpinEdit.Resize;
 var

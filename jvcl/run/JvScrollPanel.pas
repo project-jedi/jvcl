@@ -36,7 +36,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   ToolWin, ExtCtrls,
-  JvComponent, JVCLVer, JvExForms;
+  JvComponent, JvExForms;
 
 type
   TJvCustomScrollPanel = class;
@@ -99,7 +99,6 @@ type
 
   TJvCustomScrollPanel = class(TJvExToolWindow)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FScrollDirection: TJvScrollDirection;
     FScrollAmount: Word;
     FAutoHide: Boolean;
@@ -133,7 +132,6 @@ type
     property ScrollAmount: Word read FScrollAmount write FScrollAmount default 16;
     property OnScrolling: TJvScrollingEvent read FOnScrolling write FOnScrolling;
     property OnScrolled: TJvScrolledEvent read FOnScrolled write FOnScrolled;
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -143,7 +141,6 @@ type
   public
     constructor Create(AComponent: TComponent); override;
   published
-    property AboutJVCL;
     property AutoArrange;
     property AutoHide default True;
     property AutoRepeat default False;

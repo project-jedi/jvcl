@@ -37,7 +37,7 @@ Changes:
 interface
 uses
   Windows, SysUtils, Messages, Classes, Graphics, Controls,
-  ImgList, ComCtrls, JVCLVer, JvComponent, JvThemes, JvExComCtrls;
+  ImgList, ComCtrls, JvComponent, JvThemes, JvExComCtrls;
 
 type
   EPageListError = class(Exception);
@@ -251,7 +251,6 @@ type
     FPageList: IPageList;
     FPageDefault: Integer;
     FLinks: TJvPageLinks;
-    FAboutJVCL: TJVCLAboutInfo;
     FOnParentColorChanged: TNotifyEvent;
     {$IFNDEF COMPILER6_UP}
     FPageListComponent: TComponent;
@@ -291,8 +290,6 @@ type
     property Items:TJvPageIndexNodes read GetItems write SetItems;
 
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   { TJvSettingsTreeImages is a property class that describes the images used in a

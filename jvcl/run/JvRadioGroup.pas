@@ -33,12 +33,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls,
-  JVCLVer, JvThemes, JvExControls, JvExExtCtrls;
+  JvThemes, JvExControls, JvExExtCtrls;
 
 type
   TJvRadioGroup = class(TJvExRadioGroup, IJvDenySubClassing)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -55,7 +54,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground default True;

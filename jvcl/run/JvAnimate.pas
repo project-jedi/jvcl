@@ -40,7 +40,7 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QComCtrls,
   {$ENDIF VisualCLX}
-  JvThemes, JVCLVer, JvExComCtrls;
+  JvThemes, JvExComCtrls;
 
 {$IFDEF VisualCLX}
  {$IF not declared(TJvExAnimate)}
@@ -51,7 +51,6 @@ uses
 type
   TJvAnimate = class(TJvExAnimate)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
@@ -63,7 +62,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter;
     property OnMouseLeave;

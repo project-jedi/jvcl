@@ -42,7 +42,7 @@ uses
   Types, QWindows, QGraphics, QControls, QForms, QExtCtrls,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JVCLVer, JvThemes, JvComponent, JvExControls;
+  JvThemes, JvComponent, JvExControls;
 
 type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;

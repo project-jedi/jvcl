@@ -31,8 +31,14 @@ unit JvFormWallpaper;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls,
-  JVCLVer, JvComponent;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, Types,
+  {$ENDIF VisualCLX}
+  JvComponent;
 
 type
   TJvFormWallpaper = class(TJvGraphicControl)
@@ -77,17 +83,19 @@ var
   C, L: Integer;
   Bmp: TBitmap;
 begin
-  inherited;
   if (FImage <> nil) and (FImage.Width > 0) and (FImage.Height > 0) then
   begin
     Bmp := TBitmap.Create;
-    Bmp.Width := Width;
-    Bmp.Height := Height;
-    for C := 0 to (Width div FImage.Width) do
-      for L := 0 to (Height div FImage.Height) do
-        Bmp.Canvas.Draw(C * FImage.Width, L * FImage.Height, FImage.Graphic);
-    Canvas.Draw(0, 0, Bmp);
-    Bmp.Free;
+    try
+      Bmp.Width := Width;
+      Bmp.Height := Height;
+      for C := 0 to (Width div FImage.Width) do
+        for L := 0 to (Height div FImage.Height) do
+          Bmp.Canvas.Draw(C * FImage.Width, L * FImage.Height, FImage.Graphic);
+      Canvas.Draw(0, 0, Bmp);
+    finally
+      Bmp.Free;
+    end;
   end;
 end;
 

@@ -97,7 +97,6 @@ type
     procedure SetOnDrawItem(Value: TDrawItemEvent);
     procedure SetOnGetItemWidth(Value: TGetItemWidthEvent);
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
@@ -105,6 +104,7 @@ type
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
   protected
+    procedure Resize; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -1023,9 +1023,9 @@ begin
     inherited;
 end;
 
-procedure TJvxCustomListBox.WMSize(var Msg: TWMSize);
+procedure TJvxCustomListBox.Resize;
 begin
-  inherited;
+  inherited Resize;
   SetColumnWidth;
 end;
 

@@ -15,9 +15,9 @@ Portions created by Joe Doe are Copyright (C) 1999 Joe Doe.
 Portions created by XXXX Corp. are Copyright (C) 1998, 1999 XXXX Corp.
 All Rights Reserved.
 
-Contributor(s): Andreas Hausladen <Andreas.Hausladen@gmx.de> (XP Theming)
+Contributor(s): -
 
-Last Modified: 2003-12-11
+Last Modified: 2004-01-16
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -32,21 +32,13 @@ unit JvComponent;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, StdCtrls, Controls, ExtCtrls, Forms, CheckLst, ComCtrls,
-  {$ELSE}
-  Types, QTypes, QStdCtrls, QExtCtrls, QControls, QForms, QCheckLst, QComCtrls,
-  {$ENDIF VCL}
+  Classes,
   {$IFDEF USE_DXGETTEXT}
   gnugettext,
   {$ENDIF USE_DXGETTEXT}
-  JVCLVer, JvTypes, JvExControls, JvExExtCtrls, JvExComCtrls, JvExForms;
+  JVCLVer, JvExControls, JvExExtCtrls, JvExComCtrls, JvExForms;
 
 type
-  TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo);
-  TJvClipboardCommands = set of TJvClipboardCommand;
-
   TJvComponent = class(TComponent)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -54,50 +46,17 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
-  TJvGraphicControl = class(TJvExGraphicControl)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  end;
-
-  TJvCustomTreeView = class(TJvExCustomTreeView)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  end;
-
-  TJvCustomPanel = class(TJvExCustomPanel)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  end;
-
-  TJvCustomControl = class(TJvExCustomControl)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  end;
-
-  TJvWinControl = class(TJvExWinControl)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  end;
+  TJvGraphicControl = class(TJvExGraphicControl);
+  TJvCustomTreeView = class(TJvExCustomTreeView);
+  TJvCustomPanel = class(TJvExCustomPanel);
+  TJvCustomControl = class(TJvExCustomControl);
+  TJvWinControl = class(TJvExWinControl);
 
   TJvForm = class(TJvExForm)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
   {$IFDEF USE_DXGETTEXT}
   public
     constructor Create(AOwner: TComponent); override;
   {$ENDIF USE_DXGETTEXT}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation

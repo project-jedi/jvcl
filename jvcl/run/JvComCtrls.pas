@@ -46,7 +46,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, ComCtrls, CommCtrl, StdActns,
   Contnrs,
-  JclBase, JVCLVer, JvComponent, JvExControls, JvExComCtrls;
+  JclBase, JvComponent, JvExControls, JvExComCtrls;
 
 const
   JvDefPageControlBorder = 4;
@@ -208,7 +208,6 @@ type
 
   TJvPageControl = class(TJvExPageControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FClientBorderWidth: TBorderWidth;
     FHideAllTabs: Boolean;
     FColor: TColor;
@@ -244,7 +243,6 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTabImages;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintSource: TJvHintSource read FHintSource write FHintSource default hsDefault;
     property HandleGlobalTab: Boolean read FHandleGlobalTab write FHandleGlobalTab default False;
     property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default
@@ -264,7 +262,6 @@ type
 
   TJvTrackBar = class(TJvExTrackBar)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FToolTips: Boolean;
     FToolTipSide: TJvTrackToolTipSide;
     FToolTipText: WideString;
@@ -293,7 +290,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property ShowRange: Boolean read FShowRange write SetShowRange default True;
     property ToolTips: Boolean read FToolTips write SetToolTips default False;
     property ToolTipSide: TJvTrackToolTipSide read FToolTipSide write SetToolTipSide default tsLeft;
@@ -341,7 +337,6 @@ type
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnEditCancelled: TNotifyEvent;
     FOnSelectionChange: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
     FColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
@@ -436,7 +431,6 @@ type
     property PageControl: TPageControl read FPageControl write FPageControl;
     property OnPageChanged: TPageChangedEvent read FOnPage write FOnPage;
 
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property AutoDragScroll: Boolean read FAutoDragScroll write FAutoDragScroll default False;
     {$IFNDEF COMPILER6_UP}
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;

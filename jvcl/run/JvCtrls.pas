@@ -36,7 +36,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ImgList, ActnList,
-  JvButton, JVCLVer;
+  JvButton;
 
 type
   TJvImgBtnLayout = (blImageLeft, blImageRight);
@@ -154,7 +154,6 @@ type
 
   TJvImgBtn = class(TJvCustomImageButton)
   published
-    property AboutJVCL;
     property Alignment;
     property Animate;
     property AnimateFrames;

@@ -31,8 +31,14 @@ unit JvStarfield;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls,
-  JvTypes, JvImageDrawThread, JVCLVer;
+  {$IFDEF VCL}
+  Windows, Graphics, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, Types, QWindows,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
+  JvTypes, JvImageDrawThread, JvComponent;
 
 type
   TJvStars = record
@@ -42,9 +48,8 @@ type
     Speed: Integer;
   end;
 
-  TJvStarfield = class(TGraphicControl)
+  TJvStarfield = class(TJvGraphicControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FStarfield: array of TJvStars;
     FThread: TJvImageDrawThread;
     FActive: Boolean;
@@ -63,7 +68,6 @@ type
     destructor Destroy; override;
     procedure Resize; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property Anchors;
     property Constraints;
@@ -184,7 +188,6 @@ end;
 
 procedure TJvStarfield.Paint;
 begin
-  inherited Paint;
   if csDesigning in ComponentState then
   begin
     Canvas.Brush.Style := bsClear;

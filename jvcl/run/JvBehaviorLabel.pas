@@ -49,9 +49,9 @@ uses
   Windows, Messages, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QGraphics, QStdCtrls, QExtCtrls, QForms,
+  QTypes, QControls, QGraphics, QStdCtrls, QExtCtrls, QForms, Types, 
   {$ENDIF VisualCLX}
-  JVCLVer, JvExStdCtrls;
+  JvExStdCtrls;
 
 type
   TJvCustomBehaviorLabel = class;
@@ -159,7 +159,7 @@ type
   private
     FInterval: Cardinal;
     FDirection: TJvLabelScrollDirection;
-    FOriginalText: string;
+    FOriginalText: TCaption;
     FTimer: TTimer;
     FPad: Boolean;
     procedure SetDirection(const Value: TJvLabelScrollDirection);
@@ -221,7 +221,6 @@ type
     // drFromTop   - label appears from the parents top edge and moves to the bottom edge where it stops
     // drFromBottom - label appears from the parents bottom edge and moves to the top edge where it stops
     property AppearFrom: TJvAppearDirection read FAppearFrom write FAppearFrom default drFromRight;
-
   end;
 
   // TJvLabelTyping implements a behavior where the label's original Caption is typed
@@ -260,7 +259,7 @@ type
     FTextPos: Integer;
     FCharValue: Integer;
     FTimer: TTimer;
-    FOriginalText: string;
+    FOriginalText: TCaption;
     procedure SetInterval(const Value: Cardinal);
     procedure DoTimerEvent(Sender: TObject);
   protected
@@ -279,9 +278,9 @@ type
   // "decode attempts", i.e character changes
   TJvLabelCodeBreaker = class(TJvLabelBehavior)
   private
-    FScratchPad: string;
-    FOriginal: string;
-    FDecodedText: string;
+    FScratchPad: TCaption;
+    FOriginal: TCaption;
+    FDecodedText: TCaption;
     FInterval: Integer;
     FCurrentPos: Integer;
     FTimer: TTimer;
@@ -293,7 +292,7 @@ type
   public
     constructor Create(ALabel: TJvCustomBehaviorLabel); override;
   published
-    property DecodedText: string read FDecodedText write FDecodedText;
+    property DecodedText: TCaption read FDecodedText write FDecodedText;
     property Interval: Integer read FInterval write SetInterval default 10;
   end;
 
@@ -301,13 +300,12 @@ type
 
   TJvCustomBehaviorLabel = class(TJvExCustomLabel)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FBehavior: TJvLabelBehaviorName;
     FOptions: TJvLabelBehavior;
     FOnParentColorChanged: TNotifyEvent;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
-    FLocalText: string;
+    FLocalText: TCaption;
     FUseLocalText: Boolean;
     function GetOptions: TJvLabelBehavior;
     function BehaviorStored: Boolean;
@@ -319,7 +317,12 @@ type
     procedure Resize; override;
     procedure DoStart; dynamic;
     procedure DoStop; dynamic;
+    {$IFDEF VCL}
     function GetLabelText: string; override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function GetLabelText: WideString; override;
+    {$ENDIF VisualCLX}
     property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior stored BehaviorStored;
     property Caption;
     property BehaviorOptions: TJvLabelBehavior read GetOptions write SetOptions;
@@ -329,8 +332,6 @@ type
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvBehaviorLabel = class(TJvCustomBehaviorLabel)
@@ -358,7 +359,9 @@ type
     property Color;
     property Constraints;
     property OnEndDrag;
+    {$IFDEF VCL}
     property DragKind;
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -543,6 +546,7 @@ begin
     FOnStop(Self);
 end;
 
+{$IFDEF VCL}
 function TJvCustomBehaviorLabel.GetLabelText: string;
 begin
   if FUseLocalText then
@@ -550,6 +554,17 @@ begin
   else
     Result := inherited GetLabelText;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+function TJvCustomBehaviorLabel.GetLabelText: WideString;
+begin
+  if FUseLocalText then
+    Result := FLocalText
+  else
+    Result := inherited GetLabelText;
+end;
+{$ENDIF VisualCLX}
 
 function TJvCustomBehaviorLabel.BehaviorStored: Boolean;
 begin
@@ -611,8 +626,14 @@ begin
   if csDesigning in ComponentState then
   begin
     F := GetParentForm(Self);
+    {$IFDEF VCL}
     if (F <> nil) and (F.Designer <> nil) then
       F.Designer.Modified;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    if (F <> nil) and (F.DesignerHook <> nil) then
+      F.DesignerHook.Modified;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -813,7 +834,7 @@ end;
 
 procedure TJvLabelScroll.DoTimerEvent(Sender: TObject);
 var
-  Tmp: string;
+  Tmp: TCaption;
 begin
   FTimer.Enabled := False;
   if OwnerLabel.Caption <> '' then
@@ -850,7 +871,7 @@ end;
 
 procedure TJvLabelScroll.DoPadding(Value: Boolean);
 var
-  Tmp: string;
+  Tmp: TCaption;
 begin
   Tmp := FOriginalText;
   if Value and not (csDestroying in OwnerLabel.ComponentState) then
@@ -1046,7 +1067,7 @@ end;
 
 procedure TJvLabelTyping.DoTimerEvent(Sender: TObject);
 var
-  Tmp: string;
+  Tmp: TCaption;
   I: Integer;
 begin
   FTimer.Enabled := False;
@@ -1206,7 +1227,12 @@ begin
   else
   if FScratchPad[FCurrentPos] <> DecodedText[FCurrentPos] then
   begin
+    {$IFDEF VCL}
     FScratchPad[FCurrentPos] := Char(32 + Random(Ord(DecodedText[FCurrentPos]) + 10));
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FScratchPad[FCurrentPos] := WideChar(32 + Random(Ord(DecodedText[FCurrentPos]) + 10));
+    {$ENDIF VisualCLX}
     with OwnerLabel do
     begin
       Caption := Copy(Caption, 1, FCurrentPos - 1) +

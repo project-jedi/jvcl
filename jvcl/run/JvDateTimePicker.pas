@@ -42,7 +42,7 @@ interface
 uses
   Windows, Messages, CommCtrl,
   SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  JVCLVer, JvExComCtrls;
+  JvExComCtrls;
 
 type
   {$IFDEF BCB}
@@ -51,7 +51,6 @@ type
 
   TJvDateTimePicker = class(TJvExDateTimePicker)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOnParentColorChanged: TNotifyEvent;
@@ -73,7 +72,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     // The initial date to display when the drop-down calendar is shown and NullDate = Date/Time
     property DropDownDate: TDate read FDropDownDate write FDropDownDate;
     // The Date/Time (depending on the Kind property) that represents an empty "null" value, default is 1899-12-31

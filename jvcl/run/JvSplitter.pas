@@ -38,12 +38,11 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QForms, QExtCtrls, QControls, Types,
   {$ENDIF VisualCLX}
-  JVCLVer, JvExExtCtrls;
+  JvExExtCtrls;
 
 type
   TJvSplitter = class(TJvExSplitter)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOnParentColorChanged: TNotifyEvent;
@@ -58,7 +57,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property ShowHint;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter;
