@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, StdCtrls,
-  JvStaticText, JvTypes, JvImageDrawThread, JVCLVer, JvComponent;
+  JvStaticText, JvTypes, JvImageDrawThread, JvComponent;
 
 type
   TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel
@@ -353,12 +353,10 @@ begin
   SetItems(FItems);
   FActive := Value;
   if not (csDesigning in ComponentState) then
-  begin
     if Value then
       FScroll.Resume
     else
       FScroll.Suspend;
-  end;
 end;
 
 procedure TJvScrollText.SetDelay(const Value: Cardinal);

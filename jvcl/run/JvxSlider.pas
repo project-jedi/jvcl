@@ -281,8 +281,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Consts,
-  Math,
+  Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvTypes, JvThemes;
 
 {$IFDEF MSWINDOWS}
@@ -304,8 +303,7 @@ constructor TJvCustomSlider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlState := ControlState + [csCreating];
-  ControlStyle := [csClickEvents, csCaptureMouse,
-    csDoubleClicks, csOpaque];  // csAcceptsControls
+  ControlStyle := [csClickEvents, csCaptureMouse, csDoubleClicks, csOpaque];  // csAcceptsControls
   IncludeThemeStyle(Self, [csParentBackground]);
   Width := 150;
   Height := 40;
@@ -409,8 +407,8 @@ var
   P: TPoint;
 begin
   GetCursorPos(P);
-  if not (csDesigning in ComponentState) and PtInRect(FThumbRect,
-    ScreenToClient(P)) then
+  if not (csDesigning in ComponentState) and
+    PtInRect(FThumbRect, ScreenToClient(P)) then
   begin
     Windows.SetCursor(Screen.Cursors[crHand]);
   end
@@ -450,7 +448,7 @@ begin
       BottomColor := clBtnHighlight;
     Frame3D(Canvas, R, TopColor, BottomColor, FBevelWidth);
   end;
-  if (csOpaque in ControlStyle) then
+  if csOpaque in ControlStyle then
     DrawThemedBackground(Self, Canvas, R, Self.Color);
   if FRuler.Width > 0 then
   begin
@@ -458,8 +456,7 @@ begin
       TransColor := clNone
     else
       TransColor := FRuler.TransparentColor;
-    DrawBitmapTransparent(Canvas, FRulerOrg.X, FRulerOrg.Y, FRuler,
-      TransColor);
+    DrawBitmapTransparent(Canvas, FRulerOrg.X, FRulerOrg.Y, FRuler, TransColor);
   end;
   if (soShowFocus in Options) and FFocused and
     not (csDesigning in ComponentState) then
@@ -468,7 +465,7 @@ begin
     InflateRect(R, -2, -2);
     Canvas.DrawFocusRect(R);
   end;
-  if (soShowPoints in Options) then
+  if soShowPoints in Options then
   begin
     if Assigned(FOnDrawPoints) then
       FOnDrawPoints(Self)
@@ -525,8 +522,8 @@ begin
   DrawBitmapRectTransparent(Canvas, Origin.X, Origin.Y, R, Image, TransColor);
 end;
 
-procedure TJvCustomSlider.InternalDrawPoints(ACanvas: TCanvas; PointsStep,
-  PointsHeight, ExtremePointsHeight: Longint);
+procedure TJvCustomSlider.InternalDrawPoints(ACanvas: TCanvas;
+  PointsStep, PointsHeight, ExtremePointsHeight: Longint);
 const
   MinInterval = 3;
 var
@@ -579,8 +576,7 @@ begin
   end;
 end;
 
-procedure TJvCustomSlider.DefaultDrawPoints(PointsStep, PointsHeight,
-  ExtremePointsHeight: Longint);
+procedure TJvCustomSlider.DefaultDrawPoints(PointsStep, PointsHeight, ExtremePointsHeight: Longint);
 begin
   InternalDrawPoints(Canvas, PointsStep, PointsHeight, ExtremePointsHeight);
 end;
@@ -756,7 +752,7 @@ procedure TJvCustomSlider.DefineProperties(Filer: TFiler);
 begin
   if Filer is TReader then
     inherited DefineProperties(Filer);
-  Filer.DefineBinaryProperty('UserImages', ReadUserImages, WriteUserImages,DoWrite);
+  Filer.DefineBinaryProperty('UserImages', ReadUserImages, WriteUserImages, DoWrite);
 end;
 
 procedure TJvCustomSlider.ReadUserImages(Stream: TStream);
@@ -884,7 +880,7 @@ begin
     if not (csReading in ComponentState) then
       if Min + Increment > Max then
         FIncrement := Max - Min;
-    if (soShowPoints in Options) then
+    if soShowPoints in Options then
       Invalidate;
     Self.Value := FValue;
     RangeChanged;
@@ -905,8 +901,8 @@ end;
 
 procedure TJvCustomSlider.SetIncrement(Value: Longint);
 begin
-  if not (csReading in ComponentState) and ((Value > MaxValue - MinValue) or
-    (Value < 1)) then
+  if not (csReading in ComponentState) and
+    ((Value > MaxValue - MinValue) or (Value < 1)) then
     raise EJVCLException.CreateResFmt(@SOutOfRange, [1, MaxValue - MinValue]);
   if (Value > 0) and (FIncrement <> Value) then
   begin
@@ -959,8 +955,9 @@ begin
     MinIndent := R.Left + Indent
   else
     MinIndent := R.Top + Indent;
-  Offset := Min(GetOffsetByValue(GetValueByOffset(Min(Max(Offset, MinIndent),
-    MinIndent + GetRulerLength))), MinIndent + GetRulerLength);
+  Offset :=
+    Min(GetOffsetByValue(GetValueByOffset(Min(Max(Offset, MinIndent), MinIndent + GetRulerLength))),
+      MinIndent + GetRulerLength);
   if Orientation = soHorizontal then
   begin
     Result.X := Offset;
@@ -1071,7 +1068,7 @@ begin
     else
     if NewValue <= MinValue then
       NewValue := MinValue;
-    if (NewValue <> Value) then
+    if NewValue <> Value then
       Value := NewValue;
   end;
 end;
@@ -1113,7 +1110,7 @@ begin
   if Active <> FFocused then
   begin
     FFocused := Active;
-    if (soShowFocus in Options) then
+    if soShowFocus in Options then
       Invalidate;
   end;
   inherited FocusChanged(Control);
@@ -1284,7 +1281,7 @@ end;
 procedure TJvCustomSlider.ThumbMouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if (Button = mbLeft) then
+  if Button = mbLeft then
   begin
     FSliding := False;
     FThumbDown := False;

@@ -109,12 +109,10 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property Cycled: Boolean read FCycled write FCycled default False;
     property Glyph: TBitmap read FGlyph write SetGlyph;
-    property GlyphLayout: TGlyphLayout read FGlyphLayout write SetGlyphLayout
-      default glGlyphLeft;
+    property GlyphLayout: TGlyphLayout read FGlyphLayout write SetGlyphLayout default glGlyphLeft;
     property Interval: Cardinal read GetInterval write SetInterval default 30;
     property Lines: TStrings read GetLines write SetLines;
-    property ScrollDirection: TScrollDirection read FDirection write SetDirection
-      default sdVertical;
+    property ScrollDirection: TScrollDirection read FDirection write SetDirection default sdVertical;
     property TextStyle: TPanelBevel read FTextStyle write SetTextStyle default bvNone;
     property Anchors;
     property Constraints;
