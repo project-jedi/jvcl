@@ -47,6 +47,24 @@ uses
   JvInspector;
 
 type
+
+// In the same spirit as the TJvTypeInfoHelper class in JvInspector.pas
+// we define here a TJvTypeInfoExtraHelper class for the types that
+// are used by the editors in this unit. Please refer to JvInspector.pas
+// for more details on this C++ Builder compatibility issue.
+  TJvTypeInfoExtraHelper = class (TJvTypeInfoHelper)
+  private
+    FTAlignProp      : TAlign;
+    FTAnchorsProp    : TAnchors;
+    FTColorProp      : TColor;
+    FTImageIndexProp : TImageIndex;
+  published
+    property TAlignProp      : TAlign      read FTAlignProp;
+    property TAnchorsProp    : TAnchors    read FTAnchorsProp;
+    property TColorProp      : TColor      read FTColorProp;
+    property TImageIndexProp : TImageIndex read FTImageIndexProp;
+  end;
+
   { TAlign item editor. Descents from the enumeration item to keep DisplayValue available }
   TJvInspectorAlignItem = class(TJvInspectorEnumItem)
   private
@@ -953,5 +971,9 @@ class procedure TJvInspectorTImageIndexItem.UnregisterAsDefaultItem;
 begin
   TJvCustomInspectorData.ItemRegister.Delete(Self);
 end;
+
+initialization
+  // Register our Extra TypeInfo helper class for BCB
+  RegisterTypeInfoHelper(TJvTypeInfoExtraHelper);
 
 end.

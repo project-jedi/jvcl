@@ -255,8 +255,8 @@ type
     procedure SetUserData(Index: Integer; Value: Pointer);
 
   public
-    procedure AddRow(const Item: PCsvRow);
-    procedure InsertRow(const position: Integer; const Item: PCsvRow);
+    procedure AddRow( Item: PCsvRow);
+    procedure InsertRow(const position: Integer;  Item: PCsvRow);
 
     procedure AddRowStr(const Item: string;Separator:char); // convert String->TJvCsvRow
     function GetRowPtr(const RowIndex: Integer): PCsvRow;
@@ -3002,12 +3002,12 @@ begin
   FUserData[Index] := Value;
 end;
 
-procedure TJvCsvRows.AddRow(const Item: PCsvRow);
+procedure TJvCsvRows.AddRow( Item: PCsvRow);
 begin
   Add(Pointer(Item));
 end;
 
-procedure TJvCsvRows.InsertRow(const position: Integer; const Item: PCsvRow);
+procedure TJvCsvRows.InsertRow(const position: Integer;  Item: PCsvRow);
 begin
   Insert(position, Pointer(Item));
 end;
