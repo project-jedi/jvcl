@@ -75,8 +75,7 @@ type
 
 
 { VCL Register }
-
-procedyre Register;
+procedure Register;
 
 implementation
 
