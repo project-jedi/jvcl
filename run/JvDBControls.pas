@@ -2770,6 +2770,11 @@ var
   Coord: TGridCoord;
 begin
   inherited CalcSizingState(X, Y, State, Index, SizingPos, SizingOfs, FixedInfo);
+
+  // do nothing if not authorized to size columns
+  if not (dgColumnResize in Options) then
+    exit;
+
   if (State = gsNormal) and (Y <= RowHeights[0]) then
   begin
     Coord := MouseCoord(X, Y);
