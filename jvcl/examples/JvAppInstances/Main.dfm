@@ -1,6 +1,7 @@
 object FormMain: TFormMain
   Left = 192
   Top = 114
+  BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'JvAppInstances Test'
   ClientHeight = 330
@@ -16,6 +17,34 @@ object FormMain: TFormMain
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object Label1: TLabel
+    Left = 224
+    Top = 272
+    Width = 91
+    Height = 13
+    Caption = 'Running instances:'
+  end
+  object RunningInstances: TLabel
+    Left = 224
+    Top = 296
+    Width = 3
+    Height = 13
+    Caption = '-'
+  end
+  object Label2: TLabel
+    Left = 352
+    Top = 272
+    Width = 74
+    Height = 13
+    Caption = 'Max. instances:'
+  end
+  object MaxInstances: TLabel
+    Left = 352
+    Top = 296
+    Width = 3
+    Height = 13
+    Caption = '-'
+  end
   object MemoCmdLine: TMemo
     Left = 8
     Top = 8
@@ -57,22 +86,14 @@ object FormMain: TFormMain
     TabOrder = 4
     OnClick = CheckBoxActiveClick
   end
-  object BtnInstanceCount: TButton
-    Left = 208
-    Top = 296
-    Width = 113
-    Height = 25
-    Caption = 'Instance Count'
-    TabOrder = 5
-    OnClick = BtnInstanceCountClick
-  end
   object JvAppInstances: TJvAppInstances
+    MaxInstances = 5
     OnInstanceCreated = EvInstanceCreated
     OnInstanceDestroyed = EvInstanceDestroyed
     OnUserNotify = JvAppInstancesUserNotify
     OnCmdLineReceived = EvCmdLineReceived
     OnRejected = JvAppInstancesRejected
-    Left = 16
+    Left = 56
     Top = 16
   end
 end

@@ -5,6 +5,8 @@ object MainForm: TMainForm
   Height = 393
   Caption = 'TJvAppDdeCmd Example'
   Color = clBtnFace
+  Constraints.MinHeight = 150
+  Constraints.MinWidth = 200
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -18,7 +20,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 528
-    Height = 325
+    Height = 322
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
@@ -32,7 +34,7 @@ object MainForm: TMainForm
   end
   object Panel1: TPanel
     Left = 0
-    Top = 325
+    Top = 322
     Width = 528
     Height = 41
     Align = alBottom
@@ -56,7 +58,6 @@ object MainForm: TMainForm
     end
   end
   object JvAppDdeCmd1: TJvAppDdeCmd
-    CorrectParams = True
     OnBusyChanged = PvAppDdeCmd1BusyChanged
     OnExecParsedCmd = PvAppDdeCmd1ExecParsedCmd
     Left = 8

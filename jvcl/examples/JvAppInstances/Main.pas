@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvAppInst, Mask, JvMaskEdit, JvSpin;
+  Dialogs, StdCtrls, JvAppInst;
 
 type
   TFormMain = class(TForm)
@@ -40,20 +40,20 @@ type
     JvAppInstances: TJvAppInstances;
     Button1: TButton;
     CheckBoxActive: TCheckBox;
-    BtnInstanceCount: TButton;
+    Label1: TLabel;
+    RunningInstances: TLabel;
+    Label2: TLabel;
+    MaxInstances: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure BtnQuitClick(Sender: TObject);
     procedure CheckBoxActiveClick(Sender: TObject);
     procedure EvCmdLineReceived(Sender: TObject;
       CmdLine: TStrings);
-    procedure EvInstanceCreated(Sender: TObject;
-      ProcessId: Cardinal);
-    procedure EvInstanceDestroyed(Sender: TObject;
-      ProcessId: Cardinal);
+    procedure EvInstanceCreated(Sender: TObject; ProcessId: Cardinal);
+    procedure EvInstanceDestroyed(Sender: TObject; ProcessId: Cardinal);
     procedure JvAppInstancesRejected(Sender: TObject);
     procedure JvAppInstancesUserNotify(Sender: TObject; Param: Integer);
     procedure Button1Click(Sender: TObject);
-    procedure BtnInstanceCountClick(Sender: TObject);
   private
   public
   end;
@@ -67,8 +67,10 @@ implementation
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
-  Caption := 'pid: ' + IntToStr(GetCurrentProcessId);
+  Caption := 'Pid: ' + IntToStr(GetCurrentProcessId);
   CheckBoxActive.Checked := JvAppInstances.Active;
+  MaxInstances.Caption := Format('%d', [JvAppInstances.MaxInstances]);
+  RunningInstances.Caption := Format('%d', [JvAppInstances.AppInstances.InstanceCount]);
 end;
 
 procedure TFormMain.BtnQuitClick(Sender: TObject);
@@ -89,20 +91,26 @@ end;
 procedure TFormMain.EvInstanceCreated(Sender: TObject;
   ProcessId: Cardinal);
 begin
-  MemoLog.Lines.Add('Instance created (pid: ' + IntToStr(ProcessId) + ')');
+  MemoLog.Lines.Add('Instance created (Pid: ' + IntToStr(ProcessId) + ')');
+  MaxInstances.Caption := Format('%d', [JvAppInstances.MaxInstances]);
+  RunningInstances.Caption := Format('%d', [JvAppInstances.AppInstances.InstanceCount]);
 end;
 
 procedure TFormMain.EvInstanceDestroyed(Sender: TObject;
   ProcessId: Cardinal);
 begin
-  MemoLog.Lines.Add('Instance destroyed (pid: ' + IntToStr(ProcessId) + ')');
+  MemoLog.Lines.Add('Instance destroyed (Pid: ' + IntToStr(ProcessId) + ')');
+  MaxInstances.Caption := Format('%d', [JvAppInstances.MaxInstances]);
+  RunningInstances.Caption := Format('%d', [JvAppInstances.AppInstances.InstanceCount]);
 end;
 
 procedure TFormMain.JvAppInstancesRejected(Sender: TObject);
 begin
-  ShowMessage('I was rejected (pid: ' + IntToStr(GetCurrentProcessId) + ').'#10 +
-              'Now I call UserNotify(100)');
+  ShowMessage('I was rejected (Pid: ' + IntToStr(GetCurrentProcessId) + ').'#10 +
+    'Now I call UserNotify(100)');
   JvAppInstances.UserNotify(100);
+  MaxInstances.Caption := Format('%d', [JvAppInstances.MaxInstances]);
+  RunningInstances.Caption := Format('%d', [JvAppInstances.AppInstances.InstanceCount]);
 end;
 
 procedure TFormMain.JvAppInstancesUserNotify(Sender: TObject;
@@ -128,11 +136,6 @@ begin
   end
   else
     MessageDlg('Error starting new process instance.', mtError, [mbOk], 0);
-end;
-
-procedure TFormMain.BtnInstanceCountClick(Sender: TObject);
-begin
-  ShowMessage('Active instances: ' + IntToStr(JvAppInstances.AppInstances.InstanceCount));
 end;
 
 end.
