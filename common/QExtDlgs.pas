@@ -99,7 +99,7 @@ implementation
 
 const
   DefaultFilter =
-    'Supported (*.bmp *.png *.xpm *.ico)|*.bmp;*.png;*.xpm*.ico' + '|' +
+    'Supported (*.bmp *.png *.xpm *.ico)|*.bmp;*.png;*.xpm;*.ico' + '|' +
     'Bitmaps (*.bmp *.png *.xpm)|*.bmp;*.png;*.xpm' + '|' +
     'Icons (*.ico)|*.ico'  + '|' + SDefaultFilter;
   DefaultExt = '*.bmp';
