@@ -37,7 +37,7 @@ uses
   {$ENDIF MSWINDOWS}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, Grids, Menus, Clipbrd,
   {$IFDEF USEJVCL}
-  JvTypes,
+  JvJVCLUtils, JvTypes,
   {$ENDIF USEJVCL}
   SysUtils, StdCtrls, Classes;
 
@@ -67,12 +67,12 @@ type
 
   TYearData = record
     DisplayText : string;
-    InfoText    : string;
-    DayInMonth  : Integer;
+    InfoText: string;
+    DayInMonth: Integer;
     DefaultColor: TColor;
-    CustomColor : TColor;
-    Custom      : Boolean;
-    BookMark    : Boolean; // this is not saved
+    CustomColor: TColor;
+    Custom: Boolean;
+    BookMark: Boolean; // this is not saved
   end;
 
   TJvYearGridOrientation = (yoHorizontal, yoVertical);

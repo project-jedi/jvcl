@@ -127,9 +127,8 @@ procedure TJvTimerThread.Execute;
 begin
   repeat
     if (not ThreadClosed) and (SleepEx(FInterval, False) = 0) and
-       (not ThreadClosed) and FOwner.FEnabled then
+      (not ThreadClosed) and FOwner.FEnabled then
       with FOwner do
-      begin
         if SyncEvent then
           Synchronize(Timer)
         else
@@ -142,7 +141,6 @@ begin
               HandleException;
             end;
           end;
-      end;
   until Terminated;
 end;
 

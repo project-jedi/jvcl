@@ -69,7 +69,7 @@ uses
 const
   {$EXTERNALSYM AC_SRC_ALPHA}
   AC_SRC_ALPHA = $01;
-{$ENDIF COMPILEr6_UP}
+{$ENDIF COMPILER6_UP}
 
 type
   {$IFNDEF COMPILER6_UP}
@@ -345,7 +345,7 @@ type
          introduced TAlphaBitmap. TBitmapAdapter hides the implementation details
          of the TBitmap/TAlphaBitmap }
 
-  TAlphaBitmap = class
+  TAlphaBitmap = class(TObject)
   private
     FHandle: HDC;
     FBitmapInfo: TBitmapInfo;
@@ -354,7 +354,6 @@ type
     FBitsMem: Pointer;
     FBitCount: Byte;
     FHasAlphaChannel: Boolean;
-
     function GetWidth: Integer;
     function GetHeight: Integer;
   protected
@@ -377,7 +376,7 @@ type
     property HasAlphaChannel: Boolean read FHasAlphaChannel;
   end;
 
-  TBitmapAdapter = class
+  TBitmapAdapter = class(TObject)
   private
     FBitmap: TObject;
     FMargins: TMargins;
@@ -405,7 +404,7 @@ type
     property TransparentColor: TColorRef read FTransparentColor write FTransparentColor;
   end;
 
-  TGlobalXPData = class
+  TGlobalXPData = class(TObject)
   private
     FCaptionButtonHeight: Integer;
     FCaptionButtonCount: Integer;
@@ -444,11 +443,14 @@ function TranslateBitmapFileName(const S: string): string;
 var
   I: Integer;
 begin
-  SetLength(Result, Length(S));
+  // (rom) simplified
+  Result := S;
   for I := 1 to Length(S) do
     case S[I] of
-      'A'..'Z', '0'..'9': Result[I] := S[I];
-      'a'..'z': Result[I] := UpCase(S[I]);
+      'A'..'Z', '0'..'9':
+        {do nothing};
+      'a'..'z':
+        Result[I] := UpCase(S[I]);
     else
       Result[I] := '_';
     end;
@@ -465,7 +467,6 @@ begin
   MemDC := CreateCompatibleDC(DesktopDC);
   try
     OldBitmap := SelectObject(MemDC, Src);
-
     BitBlt(Dst, 0, 0, Size.X, Size.Y, MemDC, 0, 0, SRCCOPY);
   finally
     SelectObject(MemDC, OldBitmap);
@@ -740,6 +741,12 @@ end;
 
 //=== TAlphaBitmap ===========================================================
 
+destructor TAlphaBitmap.Destroy;
+begin
+  FreeHandle;
+  inherited Destroy;
+end;
+
 function TAlphaBitmap.CreateDIB(ADC: HDC; AWidth, AHeight: Integer): HBitmap;
 begin
   with FBitmapInfo.bmiHeader do
@@ -769,12 +776,6 @@ begin
   else
     FOldBitmap := 0;
   FHandle := H;
-end;
-
-destructor TAlphaBitmap.Destroy;
-begin
-  FreeHandle;
-  inherited Destroy;
 end;
 
 procedure TAlphaBitmap.Duplicate(Src: HBitmap);
@@ -835,7 +836,7 @@ var
 begin
   Stream := TResourceStream.CreateFromID(Instance, ResID, RT_BITMAP);
   try
-    Stream.read(BitmapInfoHeader, SizeOf(TBitmapInfoHeader));
+    Stream.Read(BitmapInfoHeader, SizeOf(TBitmapInfoHeader));
     FBitCount := BitmapInfoHeader.biBitCount;
   finally
     Stream.Free;
@@ -854,8 +855,7 @@ begin
   end;
 end;
 
-procedure TAlphaBitmap.LoadFromResourceName(Instance: THandle;
-  const ResName: string);
+procedure TAlphaBitmap.LoadFromResourceName(Instance: THandle; const ResName: string);
 var
   Stream: TCustomMemoryStream;
   BitmapInfoHeader: TBitmapInfoHeader;
@@ -863,7 +863,7 @@ var
 begin
   Stream := TResourceStream.Create(Instance, ResName, RT_BITMAP);
   try
-    Stream.read(BitmapInfoHeader, SizeOf(TBitmapInfoHeader));
+    Stream.Read(BitmapInfoHeader, SizeOf(TBitmapInfoHeader));
     FBitCount := BitmapInfoHeader.biBitCount;
   finally
     Stream.Free;
@@ -884,15 +884,9 @@ end;
 
 //=== TBitmapAdapter =========================================================
 
-procedure TBitmapAdapter.Clear;
-begin
-  FreeAndNil(FBitmap);
-end;
-
 constructor TBitmapAdapter.Create;
 begin
   inherited Create;
-
   FTransparentColor := clFuchsia;
 end;
 
@@ -900,6 +894,11 @@ destructor TBitmapAdapter.Destroy;
 begin
   FBitmap.Free;
   inherited Destroy;
+end;
+
+procedure TBitmapAdapter.Clear;
+begin
+  FreeAndNil(FBitmap);
 end;
 
 function TBitmapAdapter.Draw(ACanvas: TCanvas; const Rect: TRect;
@@ -949,17 +948,14 @@ begin
       BlendFunction.SourceConstantAlpha := $FF;
       BlendFunction.AlphaFormat := AC_SRC_ALPHA;
 
-      Result := AlphaBlend(
-        ACanvas.Handle, DestRect.Left, DestRect.Top, W, H,
-        Handle, SrcX, SrcY, W, H,
-        BlendFunction);
+      Result := AlphaBlend(ACanvas.Handle, DestRect.Left, DestRect.Top, W, H,
+        Handle, SrcX, SrcY, W, H, BlendFunction);
     end;
   end
   else
   if FBitmap is TBitmap then
     with TBitmap(FBitmap) do
-      Result := TransparentBlt(
-        ACanvas.Handle, DestRect.Left, DestRect.Top, W, H,
+      Result := TransparentBlt(ACanvas.Handle, DestRect.Left, DestRect.Top, W, H,
         Canvas.Handle, SrcX, SrcY, W, H, Self.TransparentColor)
   else
     Result := False;
@@ -970,8 +966,7 @@ function TBitmapAdapter.DrawPart(ACanvas: TCanvas; const SrcRect,
 begin
   // Same width/height?
   if (SrcRect.Right - SrcRect.Left = DestRect.Right - DestRect.Left) and
-     (SrcRect.Bottom - SrcRect.Top = DestRect.Bottom - DestRect.Top) then
-
+    (SrcRect.Bottom - SrcRect.Top = DestRect.Bottom - DestRect.Top) then
     Result := DrawFixedPart(ACanvas, DestRect, SrcRect.Left, SrcRect.Top)
   else
   begin
@@ -980,14 +975,12 @@ begin
 
     if FBitmap is TAlphaBitmap then
       with TAlphaBitmap(FBitmap) do
-        Result := TransparentBltStretch(
-          ACanvas.Handle, DestRect, Handle, SrcRect,
+        Result := TransparentBltStretch(ACanvas.Handle, DestRect, Handle, SrcRect,
           AMargins^, Self.TransparentColor)
     else
     if FBitmap is TBitmap then
       with TBitmap(FBitmap) do
-        Result := TransparentBltStretch(
-          ACanvas.Handle, DestRect, Canvas.Handle, SrcRect,
+        Result := TransparentBltStretch(ACanvas.Handle, DestRect, Canvas.Handle, SrcRect,
           AMargins^, Self.TransparentColor)
     else
       Result := False;
@@ -1021,8 +1014,7 @@ begin
     Result := 0;
 end;
 
-procedure TBitmapAdapter.LoadFromResourceID(Instance: THandle;
-  ResID: Integer);
+procedure TBitmapAdapter.LoadFromResourceID(Instance: THandle; ResID: Integer);
 var
   AlphaBitmap: TAlphaBitmap;
 begin
@@ -1046,8 +1038,7 @@ begin
   end;
 end;
 
-procedure TBitmapAdapter.LoadFromResourceName(Instance: THandle;
-  const ResName: string);
+procedure TBitmapAdapter.LoadFromResourceName(Instance: THandle; const ResName: string);
 var
   AlphaBitmap: TAlphaBitmap;
 begin
@@ -1073,11 +1064,6 @@ end;
 
 //=== TGlobalXPData ==========================================================
 
-procedure TGlobalXPData.AddClient;
-begin
-  Inc(FClientCount);
-end;
-
 constructor TGlobalXPData.Create;
 begin
   inherited Create;
@@ -1088,6 +1074,11 @@ destructor TGlobalXPData.Destroy;
 begin
   FCaptionButtons.Free;
   inherited Destroy;
+end;
+
+procedure TGlobalXPData.AddClient;
+begin
+  Inc(FClientCount);
 end;
 
 function TGlobalXPData.Draw(ACanvas: TCanvas; State: Integer;
@@ -1115,10 +1106,10 @@ procedure TGlobalXPData.DrawSimple(ACanvas: TCanvas; State: Integer;
   const DrawRect: TRect);
 const
   // Normal, Hot, Pushed, Disabled,
-  cCaptionButton: array [0..3] of TThemedWindow = (twMinButtonNormal, twMinButtonHot,
-    twMinButtonPushed, twMinButtonDisabled);
-  cNormalButton: array [0..3] of TThemedButton = (tbPushButtonNormal, tbPushButtonHot,
-    tbPushButtonPressed, tbPushButtonDisabled);
+  cCaptionButton: array [0..3] of TThemedWindow =
+    (twMinButtonNormal, twMinButtonHot, twMinButtonPushed, twMinButtonDisabled);
+  cNormalButton: array [0..3] of TThemedButton =
+    (tbPushButtonNormal, tbPushButtonHot, tbPushButtonPressed, tbPushButtonDisabled);
 var
   Details: TThemedElementDetails;
   DrawRgn: HRGN;
@@ -2064,7 +2055,7 @@ var
 begin
   // if we receive a TTN_GETDISPINFO notification
   // and it is from the tooltip
-  Result := (Msg.NMHdr.Code = TTN_NEEDTEXT) and (Msg.NMHdr.hWndFrom = FToolTipHandle);
+  Result := (Msg.NMHdr.Code = TTN_NEEDTEXT) and (Msg.NMHdr.hwndFrom = FToolTipHandle);
 
   if Result and (ShowHint or (ParentShowHint and ParentForm.ShowHint)) then
   begin
@@ -2617,7 +2608,7 @@ begin
         Redraw(rkTotalCaptionBar);
       end;
     WM_LBUTTONDOWN, WM_NCLBUTTONUP, WM_LBUTTONUP, WM_NCMOUSEMOVE, WM_NCRBUTTONUP,
-      WM_RBUTTONUP, WM_NCRBUTTONDOWN, WM_RBUTTONDOWN, WM_NCLBUTTONDOWN:
+    WM_RBUTTONUP, WM_NCRBUTTONDOWN, WM_RBUTTONDOWN, WM_NCLBUTTONDOWN:
       ForwardToToolTip(Msg);
   end;
 end;
@@ -2764,7 +2755,9 @@ begin
 end;
 
 initialization
+
 finalization
   FinalizeUnit(sUnitName);
+
 end.
 
