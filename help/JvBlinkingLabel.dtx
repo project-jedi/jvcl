@@ -1,0 +1,54 @@
+----------------------------------------------------------------------------------------------------
+@@$TJvBlinkingLabel
+<GROUP JVCL.LabelsAndStatic>
+<TITLE TJvBlinkingLabel: overview>
+  TJvBlinkingLabel extends the TJvLabel with options to let the label blink.
+
+  To use a JvBlinkingLabel button
+  * drop a TJvBlinkingLabel on a form.
+  * Set Blinking to True to to let the label blink.
+  * Set the property BlinkingDelay (in milliseconds) to determine the time the label is invisible
+    during blinking.
+  * Set the property BlinkingTime (in milliseconds) to determine the time the label is visible
+    during blinking.
+----------------------------------------------------------------------------------------------------
+@@JvBlinkingLabel.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains all code for TJvBlinkingLabel.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Sébastien Buysse
+----------------------------------------------------------------------------------------------------
+@@TJvBlinkingLabel
+<GROUP TJvBlinkingLabel>
+<TITLEIMG TJvBlinkingLabel>
+Summary
+  An extended version of a TJvLabel.
+Description
+  TJvBlinkingLabel extends the TJvLabel with options to let the label blink.
+----------------------------------------------------------------------------------------------------
+@@TJvBlinkingLabel.Blinking
+Summary
+  Switched the label to blinking mode.
+Description
+	Set Blinking to True to let the label blink.
+See also
+	BlinkingDElay, BlinkingTime
+----------------------------------------------------------------------------------------------------
+@@TJvBlinkingLabel.BlinkingDelay
+Summary
+  Determines the time the label is invisible during blinking.
+Description
+  Set BlinkingDelay to the time (in milliseconds) the label should be invisible during blinking.
+See Also
+  Blinking, BlinkingTime
+----------------------------------------------------------------------------------------------------
+@@TJvBlinkingLabel.BlinkingTime
+Summary
+  Determines the time the label is visible during blinking.
+Description
+  Set BlinkingTime to the time (in milliseconds) the label should be visible during blinking.
+See Also
+  Blinking, BlinkingDelay
+----------------------------------------------------------------------------------------------------
