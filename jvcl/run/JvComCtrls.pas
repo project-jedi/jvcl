@@ -840,15 +840,20 @@ end;
 procedure TJvPageControl.DrawDefaultTab(TabIndex: Integer;
   const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
 var
-  ImageIndex: Integer;
+  ImageIndex, RealIndex: Integer;
   R: TRect;
   S: string;
 begin
-  if not Pages[TabIndex].Enabled then
+  RealIndex := TabIndex;
+  while not Pages[RealIndex].TabVisible do
+    Inc(RealIndex);
+  if RealIndex >= PageCount then Exit;
+
+  if not Pages[RealIndex].Enabled then
     Canvas.Font.Color := clGrayText;
   if Active then
     Canvas.Font.Style := [fsBold];
-  if DefaultDraw then
+  if not DefaultDraw then
     Exit;
   R := Rect;
   Canvas.FillRect(R);
@@ -857,13 +862,13 @@ begin
   begin
     SaveDC(Canvas.Handle);
     Images.Draw(Canvas, Rect.Left + 4, Rect.Top + 2,
-      ImageIndex, Pages[TabIndex].Enabled);
+      ImageIndex, Pages[RealIndex].Enabled);
     // images.draw fouls the canvas colors if it draws
     // the image disabled, thus the SaveDC/RestoreDC
     RestoreDC(Canvas.Handle, -1);
     R.Left := R.Left + Images.Width + 4;
   end;
-  S := Pages[TabIndex].Caption;
+  S := Pages[RealIndex].Caption;
   InflateRect(R, -2, -2);
   // (p3) TODO: draw rotated when TabPosition in tbLeft, tbRight
   DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_LEFT or DT_TOP);
@@ -872,12 +877,17 @@ end;
 procedure TJvPageControl.DrawShadowTab(TabIndex: Integer;
   const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
 var
-  ImageIndex: Integer;
+  ImageIndex, RealIndex: Integer;
   R: TRect;
   S: string;
 begin
   //inherited;
-  if not Pages[TabIndex].Enabled then
+  RealIndex := TabIndex;
+  while not Pages[RealIndex].TabVisible do
+    Inc(RealIndex);
+  if RealIndex >= PageCount then Exit;
+
+  if not Pages[RealIndex].Enabled then
     Canvas.Font.Color := clGrayText;
   if not Active then
   begin
@@ -887,20 +897,20 @@ begin
       Font.Color := clInactiveCaptionText;
     end;
   end;
-  if DefaultDraw then
+  if not DefaultDraw then
     Exit;
   R := Rect;
-  Canvas.Fillrect(R);
+  Canvas.FillRect(R);
   ImageIndex := GetImageIndex(TabIndex);
   if (ImageIndex >= 0) and Assigned(Images) then
   begin
     SaveDC(Canvas.Handle);
     Images.Draw(Canvas, Rect.Left + 4, Rect.Top + 2,
-      ImageIndex, Pages[TabIndex].Enabled);
+      ImageIndex, Pages[RealIndex].Enabled);
     RestoreDC(Canvas.Handle, -1);
     R.Left := R.Left + Images.Width + 4;
   end;
-  S := Pages[TabIndex].Caption;
+  S := Pages[RealIndex].Caption;
   InflateRect(R, -2, -2);
   DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_LEFT or DT_TOP);
 end;
@@ -967,7 +977,7 @@ begin
   begin
     SaveActivePage := ActivePage;
     for I := 0 to PageCount - 1 do
-      Pages[I].TabVisible := not FHideAllTabs;
+      Pages[I].TabVisible := Pages[I].TabVisible and not FHideAllTabs;
     ActivePage := SaveActivePage;
     if FHideAllTabs then
       TabStop := False;

@@ -94,6 +94,8 @@ type
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure ParentColorChanged; override;
+    procedure RepaintBackground;virtual;
+
 
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
@@ -239,7 +241,7 @@ begin
   inherited EnabledChanged;
   if not Enabled then
     FStates := [];
-  Repaint;
+  RepaintBackground;
 end;
 
 procedure TJvCustomGraphicButton.MouseEnter(Control: TControl);
@@ -251,7 +253,7 @@ begin
     Include(FStates, bsMouseInside);
     inherited MouseEnter(Control);
     if Flat then
-      Refresh;
+      RepaintBackground;
   end;
 end;
 
@@ -264,7 +266,7 @@ begin
     Exclude(FStates, bsMouseInside);
     inherited MouseLeave(Control); // trigger event
     if Flat then
-      Refresh;
+      RepaintBackground;
   end;
 end;
 
@@ -308,7 +310,7 @@ begin
   if InsideBtn(X, Y) then
   begin
     FStates := [bsMouseDown, bsMouseInside];
-    Repaint;
+    RepaintBackground;
   end;
   Tmp := ClientToScreen(Point(0, Height));
   DoDropDownMenu(Button, Shift, Tmp.X, Tmp.Y);
@@ -323,12 +325,12 @@ begin
     if not InsideBtn(X, Y) then
     begin
       Exclude(FStates, bsMouseInside);
-      Repaint;
+      RepaintBackground;
     end
     else
     begin
       Include(FStates, bsMouseInside);
-      Repaint;
+      RepaintBackground;
     end;
   end;
 end;
@@ -340,7 +342,7 @@ begin
     Exit;
   inherited MouseUp(Button, Shift, X, Y);
   Exclude(FStates, bsMouseDown);
-  Repaint;
+  RepaintBackground;
 end;
 
 function TJvCustomGraphicButton.DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean;
@@ -380,7 +382,7 @@ begin
       ControlStyle := ControlStyle - [csOpaque]
     else
       ControlStyle := ControlStyle + [csOpaque];
-    Invalidate;
+    RepaintBackground;
   end;
 end;
 
@@ -408,7 +410,6 @@ begin
     end
     else
       Exclude(FStates, bsMouseDown);
-    Repaint;
   end;
 end;
 
@@ -501,7 +502,7 @@ begin
       begin
         Down := false;
         Exclude(FStates, bsMouseDown);
-        Invalidate;
+        RepaintBackground;
       end;
       FAllowAllUp := Sender.AllowAllUp;
     end;
@@ -526,7 +527,7 @@ end;
 procedure TJvCustomGraphicButton.CMSysColorChange(var Msg: TMessage);
 begin
   inherited;
-  Invalidate;
+  RepaintBackground;
 end;
 {$ENDIF VCL}
 
@@ -707,6 +708,17 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FDropDownMenu) then
     DropDownMenu := nil;
+end;
+
+procedure TJvCustomGraphicButton.RepaintBackground;
+var R:TRect;
+begin
+  if (Parent <> nil) and Parent.HandleAllocated then
+  begin
+    R := BoundsRect;
+    InvalidateRect(Parent.Handle,@R, true);
+  end;
+  Repaint;
 end;
 
 initialization
