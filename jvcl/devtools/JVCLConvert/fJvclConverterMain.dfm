@@ -200,11 +200,17 @@ object frmMain: TfrmMain
       end>
     SimplePanel = False
   end
-  object OpenDialog: TOpenDialog
+  object OpenDialog: TJvOpenDialog
     DefaultExt = 'pas'
-    Filter = 'All files (*.*)|*.*|Pascal sources|*.pas;*.dpr|Text files|*.txt'
+    Filter = 
+      'All files (*.*)|*.*|Pascal sources|*.pas;*.dpr;*.dfm;*.dpk|Text ' +
+      'files|*.txt'
     FilterIndex = 2
-    Options = [ofAllowMultiSelect]
+    InitialDir = '.'
+    Options = [ofAllowMultiSelect, ofPathMustExist, ofFileMustExist]
+    Height = 342
+    UseUserSize = True
+    Width = 561
     Left = 264
     Top = 88
   end

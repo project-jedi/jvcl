@@ -40,7 +40,7 @@ uses
   ComCtrls, ExtCtrls, Grids, ValEdit, JvComCtrls, Menus, ActnList, StdActns, ImgList,
   ToolWin,
   JvComponent, JvSearchFiles, JvBaseDlg, JvBrowseFolder, JVCLConvertUtils,
-  JvFormPlacement, JvAppStorage, JvAppIniStorage;
+  JvFormPlacement, JvAppStorage, JvAppIniStorage, JvDialogs;
 
 type
   { TValueListEditor (imposer class that allows "=" in strings) }
@@ -54,7 +54,7 @@ type
   end;
 
   TfrmMain = class(TForm)
-    OpenDialog: TOpenDialog;
+    OpenDialog: TJvOpenDialog;
     JvPageControl: TPageControl;
     tbsFiles: TTabSheet;
     tbsStrings: TTabSheet;
@@ -588,7 +588,7 @@ begin
   begin
     JvSearchFiles1.RootDirectory := JvBrowseFolder1.Directory;
     if JvSearchFiles1.FileParams.FileMask = '' then
-      JvSearchFiles1.FileParams.FileMask := '*.pas;*.dpr;*.dpk';
+      JvSearchFiles1.FileParams.FileMask := '*.pas;*.dpr;*.dpk;*.dfm';
     JvSearchFiles1.Search;
   end;
 end;
