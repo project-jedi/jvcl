@@ -31,7 +31,7 @@ unit JvTranslator;
 interface
 
 uses
-  SysUtils, Classes, Forms, TypInfo, ComCtrls, Menus, IniFiles, Dialogs,
+  SysUtils, Classes, Forms, ComCtrls, Menus, IniFiles, Dialogs,
   JvSimpleXml, JvComponent;
 
 type
@@ -101,8 +101,31 @@ type
 implementation
 
 uses
-  JvTypes;
+  TypInfo, JvTypes;
 
+function InternalGetWideStrProp(Instance: TObject; const PropName: string): WideString; overload;
+begin
+  {$IFDEF COMPILER6_UP}
+  Result := GetWideStrProp(Instance,PropName);
+  {$ELSE}
+  Result := GetStrProp(Instance, PropName);
+  {$ENDIF}
+end;
+
+function InternalGetPropList(AObject: TObject; out PropList: PPropList): Integer;
+begin
+  {$IFDEF COMPILER6_UP}
+  Result := GetPropList(AObject,PropList);
+  {$ELSE}
+  Result := GetTypeData(AObject.ClassInfo)^.PropCount;
+  if Result > 0 then
+  begin
+    GetMem(PropList, Result * SizeOf(Pointer));
+    GetPropInfos(AObject.ClassInfo, PropList);
+  end;
+  Result := GetPropList(AObject.ClassInfo,[tkUnknown..tkDynArray],PropList);
+  {$ENDIF}
+end;
 //=== TJvTranslator ==========================================================
 
 constructor TJvTranslator.Create(AOwner: TComponent);
@@ -219,7 +242,7 @@ var
 
     if (AnObject <> nil) and not InSkipList(AnObject.ClassType) then
     begin
-      Count := GetPropList(AnObject, PropList);
+      Count := InternalGetPropList(AnObject, PropList);
       for j := 0 to Count - 1 do
       begin
         PropInfo := PropList[j];
@@ -282,7 +305,7 @@ var
         TranslatorStringsToXML(TJvTranslatorStrings(AComponent), Elem);
         Exit;
       end;
-      Count := GetPropList(AComponent, PropList);
+      Count := InternalGetPropList(AComponent, PropList);
       for i := 0 to Count - 1 do
       begin
         PropInfo := PropList[i];
@@ -297,7 +320,7 @@ var
             tkSet:
               Elem.Properties.Add(PropName, GetSetProp(AComponent, PropName));
             tkString, tkLString, tkWString:
-              Elem.Properties.Add(PropName, GetWideStrProp(AComponent, PropName));
+              Elem.Properties.Add(PropName, InternalGetWideStrProp(AComponent, PropName));
             tkClass:
               begin
                 AnObj := GetObjectProp(AComponent, PropName);

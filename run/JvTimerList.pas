@@ -61,7 +61,9 @@ type
 
   TJvTimerEvent = class;
   TJvTimerList  = class;
-
+  {$IFNDEF COMPILER6_UP}
+  TCollectionNotification = (cnAdded, cnDeleted);
+  {$ENDIF}
   // (rom) used THandle where needed
   TJvTimerEvents = class(TOwnedCollection)
   private
@@ -75,11 +77,7 @@ type
     procedure CalculateInterval(StartTicks: Longint);
     procedure UpdateEvents(StartTicks: Longint);
     function ProcessEvents: Boolean;
-    {$IFNDEF COMPILER6_UP}
-    procedure Added(var Item: TCollectionItem); override;
-    {$ELSE}
-    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
-    {$ENDIF}
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); {$IFDEF COMPILER6_UP}override;{$ENDIF}
   public
     constructor Create(AOwner:TPersistent);
     procedure Activate;
@@ -90,6 +88,7 @@ type
     function NextHandle: THandle;
     function GetEnabledCount: Integer;
     procedure Sort;
+
     function Add:TJvTimerEvent;
     procedure Assign(Source:TPersistent);override;
     property Items[Index:integer]:TJvTimerEvent read GetItem write SetItem;default;
@@ -414,22 +413,12 @@ end;
 function TJvTimerEvents.Add: TJvTimerEvent;
 begin
   Result := TJvTimerEvent(inherited Add);
+  {$IFNDEF COMPILER6_UP}
+  // (p3) yuk! some hack...
+  Notify(Result,cnAdded);
+  {$ENDIF}
 end;
 
-{$IFNDEF COMPILER6_UP}
-procedure TJvTimerEvents.Added(var Item: TCollectionItem);
-begin
-  inherited;
-  with TJvTimerEvent(Item) do
-  begin
-    FHandle := NextHandle;
-    FParentList := self.FParent;
-    CalculateInterval(GetTickCount);
-    Sort;
-    FParent.UpdateTimer;
-  end;
-end;
-{$ENDIF}
 
 procedure TJvTimerEvents.Assign(Source: TPersistent);
 var i:integer;
@@ -557,7 +546,7 @@ begin
   Inc(FSequence);
   Result := FSequence;
 end;
-{$IFDEF COMPILER6_UP}
+
 procedure TJvTimerEvents.Notify(Item: TCollectionItem;
   Action: TCollectionNotification);
 begin
@@ -572,7 +561,6 @@ begin
     FParent.UpdateTimer;
   end;
 end;
-{$ENDIF}
 
 function TJvTimerEvents.ProcessEvents: Boolean;
 var

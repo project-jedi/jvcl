@@ -19,7 +19,7 @@ type
 
     procedure EnumDrivers;
   public
-    constructor Create(const ADesigner: IDesigner; APropCount: Integer); override;
+    constructor Create(const ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; APropCount: Integer); override;
     destructor Destroy; override;
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -42,7 +42,7 @@ uses JvVirtualKeyEditorForm, Controls;
 
 { TJvDriverIndexEditor }
 
-constructor TJvDriverIndexEditor.Create(const ADesigner: IDesigner; APropCount: Integer);
+constructor TJvDriverIndexEditor.Create(const ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; APropCount: Integer);
 begin
   inherited;
   FDrivers := TStringList.Create;

@@ -49,6 +49,9 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOver: Boolean;
+    {$IFNDEF COMPILER6_UP}
+    FMenu:TMainMenu;
+    {$ENDIF}
     FTempMenu : TJvPopupMenu;
     FButtonMenu : TMenuItem;
     FMenuShowingCount : Integer;
@@ -59,7 +62,7 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure OnMenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
     function GetMenu: TMainMenu;
-    procedure SetMenu(const nMenu: TMainMenu);
+    procedure SetMenu(const Value: TMainMenu);
     procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
     procedure CNDropDownClosed(var Message: TMessage); message CN_DROPDOWNCLOSED;
     procedure AdjustSize; override;
@@ -129,32 +132,40 @@ end;
 
 function TJvToolBar.GetMenu: TMainMenu;
 begin
+  {$IFDEF COMPILER6_UP}
   Result := inherited Menu;
+  {$ELSE}
+  Result := FMenu;
+  {$ENDIF}
 end;
 
-procedure TJvToolBar.SetMenu(const nMenu: TMainMenu);
+procedure TJvToolBar.SetMenu(const Value: TMainMenu);
 begin
   // if trying to set the same menu, do nothing
-  if Menu = nMenu then exit;
+  if Menu = Value then Exit;
 
-  if assigned(Menu) and (Menu is TJvMainMenu) then
+  if Assigned(Menu) and (Menu is TJvMainMenu) then
   begin
     // if the current menu is a TJvMainMenu, we must
     // unregister us from being told the changes
     TJvMainMenu(Menu).UnregisterChanges(FChangeLink);
   end;
 
-  if nMenu is TJvMainMenu then
+  if Value is TJvMainMenu then
   begin
     // if the new menu is a TJvMainMenu then we register a link
     // with the menu to get informed when it has changed
-    TJvMainMenu(nMenu).RegisterChanges(FChangeLink);
+    TJvMainMenu(Value).RegisterChanges(FChangeLink);
   end;
 
   // and we set the inherited value, so that the inherited
   // methods can deal with the menu too, the most obvious
   // one being the creation of the required TToolButton
-  inherited Menu := nMenu;
+  {$IFDEF COMPILER6_UP}
+  inherited Menu := Value;
+  {$ELSE}
+  FMenu := Value;
+  {$ENDIF}
 end;
 
 procedure TJvToolBar.OnMenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);

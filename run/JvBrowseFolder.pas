@@ -160,6 +160,7 @@ type
     odNoBelowDomain, odSystemAncestorsOnly, odFileSystemDirectoryOnly,
     odStatusAvailable, odIncludeFiles, odIncludeUrls, odEditBox,
     odNewDialogStyle, odShareable, odUsageHint, odNoNewButtonFolder, odValidate);
+  // (p3) shouldn't TOptionsDir be changed to T(Jv)OptionsDirectories?
   TOptionsDir = set of TOptionsDirectory;
 
   // (rom) changed name
