@@ -95,6 +95,7 @@ implementation
 
 uses
   Math,
+  JclStrings, 
   JvConsts, JvJVCLUtils, JvDsgnConsts;
 
 {$IFDEF VCL}
@@ -108,20 +109,25 @@ function SelectImage(var AFileName: string; const Extensions, Filter: string): B
 var
   ErrMode: Cardinal;
   Filters: TStrings;
+
 begin
   with TImageForm.Create(Application) do
   try
     FileListBox.Mask := Extensions;
     FilterCombo.Filter := Filter;
+    { TODO 3 -oJVCL -cCOMPILER5 : Delimiter and DelimitedText are not available in D5 }
     Filters := TStringlist.Create;
-    Filters.Delimiter := '|';
-    Filters.DelimitedText := Filter;
-    if Filters.IndexOf(AllFilePattern) < 0 then
-    begin
-      Filters.Add(AllFilePattern);
+    try
+      Filters.Delimiter := '|';
+      Filters.DelimitedText := Filter;
+      if Filters.IndexOf(AllFilePattern) < 0 then
+      begin
+        Filters.Add(AllFilePattern);
+      end;
+      FilterCombo.Filter := Filters.DelimitedText;
+    finally
+      Filters.Free;
     end;
-    FilterCombo.Filter := Filters.DelimitedText;
-    Filters.Free;
     {$IFDEF MSWINDOWS}
     ErrMode := SetErrorMode(SEM_NOOPENFILEERRORBOX or SEM_FAILCRITICALERRORS);
     {$ENDIF MSWINDOWS}

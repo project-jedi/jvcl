@@ -104,7 +104,7 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
 //    property Associated: TControl read FAssociated write SetAssociated;
     property LinkedControls:TStrings read GetLinkedControls write SetLinkedControls;
-    property LinkOptions:TJvLinkedControlsOptions read FLinkOptions write FLinkOptions default [lcLinkChecked, lcLinkEnabled];
+    property LinkOptions:TJvLinkedControlsOptions read FLinkOptions write FLinkOptions default [loLinkChecked, loLinkEnabled];
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
@@ -144,7 +144,7 @@ begin
   FLayout := tlCenter;
   FLinkedControls := TStringlist.Create;
   FLinkedControls.OnChange := LinkedControlsChange;
-  FLinkOptions := [lcLinkChecked, lcLinkEnabled];
+  FLinkOptions := [loLinkChecked, loLinkEnabled];
 end;
 
 destructor TJvCheckBox.Destroy;
@@ -411,9 +411,9 @@ begin
     C := F.FindComponent(FLinkedControls[i]);
     if (C is TControl) and (C <> self) then
       TControl(C).Enabled :=
-          ((LinkOptions = [lcLinkChecked, lcLinkEnabled]) and Checked and Enabled)
-          or ((LinkOptions = [lcLinkChecked]) and Checked)
-          or ((LinkOptions = [lcLinkEnabled]) and Enabled);
+          ((LinkOptions = [loLinkChecked, loLinkEnabled]) and Checked and Enabled)
+          or ((LinkOptions = [loLinkChecked]) and Checked)
+          or ((LinkOptions = [loLinkEnabled]) and Enabled);
   end;
 end;
 

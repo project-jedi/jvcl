@@ -36,7 +36,7 @@ implementation
 
 uses
   Classes, Controls,
-  FiltEdit,
+  FiltEdit, ImgList, 
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -107,6 +107,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvCheckBox, 'LinkedControls', TJvLinkedControlsProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvRadioButton, 'LinkedControls', TJvLinkedControlsProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
 end;
 
 end.

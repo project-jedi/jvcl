@@ -5,23 +5,24 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvExStdCtrls, JvCheckBox, JvRadioButton, Buttons,
-  ExtCtrls;
+  ExtCtrls, JvEdit, JvExControls, JvComponent, JvLabel, ImgList;
 
 type
   TForm1 = class(TForm)
     chkShowToolTips: TJvCheckBox;
-    edPrefix: TEdit;
+    edPrefix: TJvEdit;
     chkShowPrefix: TJvCheckBox;
     btnEdit: TSpeedButton;
     rbOption1: TJvRadioButton;
     rbOption2: TJvRadioButton;
     rbOption3: TJvRadioButton;
-    lblOption1: TLabel;
-    lblOption2: TLabel;
-    lblOption3: TLabel;
+    lblOption1: TJvLabel;
+    lblOption2: TJvLabel;
+    lblOption3: TJvLabel;
     pnlInfo: TPanel;
-    lblInfo: TLabel;
-    lblPrefix: TLabel;
+    lblInfo: TJvLabel;
+    lblPrefix: TJvLabel;
+    ImageList1: TImageList;
     procedure btnEditClick(Sender: TObject);
   private
     { Private declarations }
