@@ -187,7 +187,7 @@ procedure HookBitmap;
 implementation
 
 uses
-  //JclSysUtils,
+  JclSysUtils,
   JvConsts, JvJVCLUtils;
 
 
