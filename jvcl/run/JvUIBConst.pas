@@ -4,18 +4,16 @@
 { Project JEDI Code Library (JCL)                                              }
 {                                                                              }
 { The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.0 (the "License"); you may not use this file except in compliance with the }
+{ 1.1 (the "License"); you may not use this file except in compliance with the }
 { License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
 {                                                                              }
 { Software distributed under the License is distributed on an "AS IS" basis,   }
 { WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
 { the specific language governing rights and limitations under the License.    }
 {                                                                              }
-{ The Original Code is JvUIBLib.pas.                                           }
-{                                                                              }
 { The Initial Developer of the Original Code is documented in the accompanying }
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ 2000 of these individuals.                                                   }
+{ 2003 of these individuals.                                                   }
 {                                                                              }
 { UIB Constants                                                                }
 {                                                                              }
@@ -70,12 +68,11 @@ const
   ALLViews = [OIDViewFields, OIDViewTrigers];
   ALLProcedures = [OIDProcFieldIn, OIDProcFieldOut];
   ALLUDFs = [OIDUDFField];
-  {$IFDEF LINUX}
+{$IFDEF LINUX}
   BreakLine = #10;
-  {$ELSE}
+{$ELSE}
   BreakLine = #13;
-  {$ENDIF LINUX}
-  // (rom) this is wrong for Windows #13#10 is correct
+{$ENDIF}
   NewLine = BreakLine + BreakLine;
 
 resourcestring
@@ -116,8 +113,6 @@ resourcestring
   EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
   EUIB_CHARSETNOTFOUND     = 'CharacterSet %s not found.';
   EUIB_UNEXPECTEDCASTERROR = 'Unexpected cast error.';
-
-  EUIB_ERRCODEFMT          = 'Error Code: %d';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Can''t connect to server.';
@@ -163,8 +158,6 @@ resourcestring
   EUIB_CHARSETNOTFOUND     = 'CharacterSet %s not found.';
   EUIB_UNEXPECTEDCASTERROR = 'Unexpected cast error.';
 
-  EUIB_ERRCODEFMT          = 'Error Code: %d';
-
   // ORB Errors
   EJvUIB_CantConnect   = 'Impossible de se connecter au serveur.';
   EJvUIB_ClassNotFound = 'La Classe n''a pas йtй trouvйe.';
@@ -209,8 +202,6 @@ resourcestring
   EUIB_CHARSETNOTFOUND     = 'CharacterSet %s not found.';
   EUIB_UNEXPECTEDCASTERROR = 'Unexpected cast error.';
 
-  EUIB_ERRCODEFMT          = 'Error Code: %d';
-
   // ORB Errors
   EJvUIB_CantConnect   = 'Nelze pшipojit server.';
   EJvUIB_ClassNotFound = 'Tшнda neexistuje.';
@@ -248,14 +239,12 @@ resourcestring
   EUIB_TABLESTRNOTFOUND    = 'Tabelle "%s" nicht gefunden.';
   EUIB_DOMAINSTRNOTFOUND   = 'Domдne %s nicht gefunden.';
   EUIB_PROCSTRNOTFOUND     = 'Prozedur %s nicht gefunden.';
-  EUIB_CACHEDFETCHNOTSET   = 'CachedFetch property ist nicht auf True gesetzt.';
-  EUIB_PARSESQLDIALECT     = 'Parse-Fehler: SET SQL DIALECT';
-  EUIB_PARSESETNAMES       = 'Parse-Fehler: SET NAMES';
-  EUIB_BADAUTODLL          = '"SET AUTODDL" Parameter muss "ON" oder "OFF" lauten.';
-  EUIB_CHARSETNOTFOUND     = 'CharacterSet %s nicht gefunden.';
-  EUIB_UNEXPECTEDCASTERROR = 'Unerwarteter Fehler bei Typumwandlung.';
-
-  EUIB_ERRCODEFMT          = 'Fehler-Code: %d';
+  EUIB_CACHEDFETCHNOTSET   = 'CachedFetch property not set to True.';
+  EUIB_PARSESQLDIALECT     = 'Parse error: SET SQL DIALECT';
+  EUIB_PARSESETNAMES       = 'Parse error: SET NAMES';
+  EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
+  EUIB_CHARSETNOTFOUND     = 'CharacterSet %s not found.';
+  EUIB_UNEXPECTEDCASTERROR = 'Unexpected cast error.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Verbindung zum Server kann nicht aufgebaut werden.';
@@ -301,8 +290,6 @@ resourcestring
   EUIB_CHARSETNOTFOUND     = 'CharacterSet %s not found.';
   EUIB_UNEXPECTEDCASTERROR = 'Unexpected cast error.';
 
-  EUIB_ERRCODEFMT          = 'Error Code: %d';
-
   // ORB Errors
   EJvUIB_CantConnect   = 'Не могу установить соединение с сервером.';
   EJvUIB_ClassNotFound = 'Класс не найден.';
@@ -310,8 +297,8 @@ resourcestring
   {$ENDIF UIBLANG_RU}
 
   {$IFDEF UIBLANG_ES}
-  sUIBTrue  = 'Si';
-  sUIBFalse = 'No';
+  sUIBTrue             = 'Si';
+  sUIBFalse            = 'No';
 
   // UIB Errors
   EUIB_INVALIDEIBVERSION   = 'Versiуn incorrecta del Servidor de Base de Datos, verifica las opciones del compilador.';
@@ -346,8 +333,6 @@ resourcestring
   EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
   EUIB_CHARSETNOTFOUND     = 'CharacterSet %s not found.';
   EUIB_UNEXPECTEDCASTERROR = 'Unexpected cast error.';
-
-  EUIB_ERRCODEFMT          = 'Error Code: %d';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Imposible conectar con el servidor.';
