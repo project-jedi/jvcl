@@ -52,6 +52,7 @@ type
     procedure SetDelay(const Value: Cardinal);
     procedure SetStars(const Value: Word);
   protected
+    procedure Paint; override;
   public
     procedure Resize; override;
     constructor Create(AOwner: TComponent); override;
@@ -59,6 +60,8 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
+    property Anchors;
+    property Constraints;
     property Delay: Cardinal read FDelay write SetDelay default 50;
     property Active: Boolean read FActive write SetActive default False;
     property Stars: Word read FStars write SetStars default 100;
@@ -160,7 +163,12 @@ begin
         FStarfield[i].Color := RGB(j, j, j);
       end;
     end;
-    Canvas.Draw(0, 0, FBmp)
+    Canvas.Lock;
+    try
+      Canvas.Draw(0,0,FBMP);
+    finally
+      Canvas.Unlock;
+    end;
   end;
 end;
 
@@ -182,6 +190,18 @@ procedure TJvStarfield.SetDelay(const Value: Cardinal);
 begin
   FDelay := Value;
   FThread.Delay := Value;
+end;
+
+procedure TJvStarfield.Paint;
+begin
+  inherited;
+  if (csDesigning in ComponentState) then
+  begin
+    Canvas.Brush.Style := bsClear;
+    Canvas.Pen.Style := psDot;
+    Canvas.Pen.Color := clBlack;
+    Canvas.Rectangle(ClientRect);
+  end;
 end;
 
 end.
