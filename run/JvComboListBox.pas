@@ -115,7 +115,7 @@ type
     property ImeMode;
     property ImeName;
     property IntegralHeight;
-    property ItemHeight;
+    property ItemHeight default 17;
     property Items;
 
     property MultiSelect;
@@ -202,6 +202,7 @@ begin
   FDrawStyle := dsOriginal;
   FButtonWidth := 20;
   FLastHotTrack := -1;
+  ItemHeight := 17;
 //  ControlStyle := ControlStyle + [csCaptureMouse];
 end;
 
@@ -321,7 +322,7 @@ var
   Pt: TPoint;
   i: integer;
 begin
-  if (Index < 0) or (Index >= Items.Count) then Exit;
+  if (Index < 0) or (Index >= Items.Count) or Assigned(OnDrawItem) then Exit;
   Canvas.Lock;
   try
     Canvas.Brush.Color := Self.Color;
@@ -364,7 +365,7 @@ begin
     begin
       Canvas.Font.Color := clWindowText;
       TmpRect := Rect;
-      InflateRect(TmpRect, -4, -4);
+      InflateRect(TmpRect, -2, -2);
       if DoDrawText(Index, Items[Index], TmpRect) then
         DrawText(Canvas.Handle, PChar(Items[Index]), Length(Items[Index]),
           TmpRect, DT_WORDBREAK or DT_LEFT or DT_TOP or DT_EDITCONTROL or DT_NOPREFIX or DT_END_ELLIPSIS);
