@@ -1,5 +1,7 @@
 unit JvSegmentedLEDDisplayMapperFrame;
 
+{$I JVCL.INC}
+
 interface
 
 uses
