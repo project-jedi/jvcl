@@ -31,45 +31,36 @@ unit JvgScrollBox;
 
 interface
 uses
-  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvgUtils, Forms, JVCLver, OleCtnrs, ExtCtrls, SysUtils;
+  Windows, Messages, Classes, Controls, Graphics, Forms,
+  OleCtnrs, ExtCtrls, SysUtils,
+  JVCLVer,
+  JvgTypes, JvgCommClasses, JvgUtils;
 
 type
   TOnEraseBkgndEvent = procedure(Sender: TObject; DC: HDC) of object;
 
   TJvgScrollBox = class(TScrollBox)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FBack: TBitmap;
     Buffer: TBitmap;
     FOnEraseBkgndEvent: TOnEraseBkgndEvent;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     function GetBack: TBitmap;
     procedure SetBack(Value: TBitmap);
     procedure SetOnEraseBkgndEvent(const Value: TOnEraseBkgndEvent);
   public
-    BufferedDraw: boolean;
+    BufferedDraw: Boolean;
     procedure ApplyBuffer(DC: HDC);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
-      False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Background: TBitmap read GetBack write SetBack;
-    property OnEraseBkgndEvent: TOnEraseBkgndEvent read FOnEraseBkgndEvent
-      write SetOnEraseBkgndEvent;
+    property OnEraseBkgndEvent: TOnEraseBkgndEvent read FOnEraseBkgndEvent write SetOnEraseBkgndEvent;
   end;
 
-procedure Register;
 implementation
-
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-
-procedure Register;
-begin
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-//________________________________________________________ Methods _
 
 constructor TJvgScrollBox.Create(AOwner: TComponent);
 begin
@@ -87,15 +78,14 @@ begin
     FBack.Free;
   if Assigned(Buffer) then
     Buffer.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgScrollBox.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 var
   DC: HDC;
-  r: TRect;
-  IHeight, IWidth, SavedIHeight, x_, y_, XOffset, YOffset, SavedYOffset:
-  integer;
+  R: TRect;
+  IHeight, IWidth, SavedIHeight, x_, y_, XOffset, YOffset, SavedYOffset: Integer;
   Canvas: TCanvas;
 begin
   Canvas := nil;
@@ -103,7 +93,7 @@ begin
   if BufferedDraw and (Buffer = nil) then
     Buffer := TBitmap.Create;
 
-  if assigned(Buffer) then
+  if Assigned(Buffer) then
   begin
     Buffer.Width := Width;
     Buffer.Height := Height;
@@ -115,9 +105,8 @@ begin
     DC := Msg.DC;
 
   try
-
     if not Assigned(FBack) then
-      exit;
+      Exit;
 
     if FBack.Width <= 8 then
       with Canvas do
@@ -136,49 +125,43 @@ begin
     begin
       //  Sendmessage(self.Handle, WM_SETREDRAW, 0, 0);
       //    BitBlt( Msg.DC, x_, y_, 100, 100, FBack.canvas.Handle, 0, 0, SRCCOPY);
-      r := ClientRect;
-      x_ := r.left;
-      y_ := r.top;
+      R := ClientRect;
+      x_ := R.Left;
+      y_ := R.Top;
       IHeight := FBack.Height;
       IWidth := FBack.Width;
       SavedIHeight := IHeight;
 
-      XOffset := HorzScrollBar.Position - trunc(HorzScrollBar.Position /
-        IWidth) * IWidth;
-      YOffset := VertScrollBar.Position - trunc(VertScrollBar.Position /
-        IHeight) * IHeight;
+      XOffset := HorzScrollBar.Position - Trunc(HorzScrollBar.Position / IWidth) * IWidth;
+      YOffset := VertScrollBar.Position - Trunc(VertScrollBar.Position / IHeight) * IHeight;
       SavedYOffset := YOffset;
-      while x_ < r.right do
+      while x_ < R.Right do
       begin
-        //if x_+IWidth > r.right then IWidth := r.right-x_;
-        while y_ < r.bottom do
+        //if x_+IWidth > R.right then IWidth := R.right-x_;
+        while y_ < R.Bottom do
         begin
           IHeight := SavedIHeight;
-          //if y_+IHeight-YOffset > r.bottom then IHeight := r.bottom-y_;
+          //if y_+IHeight-YOffset > R.bottom then IHeight := R.bottom-y_;
           BitBlt(DC, x_, y_, IWidth - XOffset, IHeight - YOffset,
-            FBack.canvas.Handle, XOffset, YOffset, SRCCOPY);
+            FBack.Canvas.Handle, XOffset, YOffset, SRCCOPY);
           Inc(y_, IHeight - YOffset);
           YOffset := 0;
         end;
         Inc(x_, IWidth - XOffset);
-        y_ := r.top;
+        y_ := R.Top;
         XOffset := 0;
         YOffset := SavedYOffset;
       end;
-
     end;
-
   finally
-    if Assigned(OnEraseBkgndEvent) then
-      OnEraseBkgndEvent(self, DC);
+    if Assigned(FOnEraseBkgndEvent) then
+      FOnEraseBkgndEvent(Self, DC);
     if Assigned(Canvas) then
       Canvas.Free;
     if BufferedDraw then
       ApplyBuffer(Msg.DC);
   end;
 end;
-
-//===========================================================================
 
 function TJvgScrollBox.GetBack: TBitmap;
 begin
@@ -189,9 +172,8 @@ end;
 
 procedure TJvgScrollBox.SetBack(Value: TBitmap);
 begin
-  if Assigned(FBack) then
-    FBack.Free;
-  FBack := TBitmap.Create;
+  if not Assigned(FBack) then
+    FBack := TBitmap.Create;
   FBack.Assign(Value);
   Invalidate;
 end;

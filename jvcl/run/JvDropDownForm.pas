@@ -21,16 +21,16 @@ Last Modified: 2002-12-09
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A generic container form to be displayed as dropdown below a TCustomEdit
+  descendant.
+
+  There's still plenty of room for improvement here.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{ A generic container form to be displayed as dropdown below a TCustomEdit
- descendant.
-
- There's still plenty of room for improvement here.
-}
 
 unit JvDropDownForm;
 
@@ -54,7 +54,7 @@ type
     function GetEdit: TCustomEdit;
     procedure DoSetFocus(const APreviousControl: TWinControl); dynamic;
     procedure DoKillFocus(const ANextControl: TWinControl); virtual;
-    procedure DoClose(var AAction: TCloseAction); override;
+    procedure DoClose(var Action: TCloseAction); override;
     procedure DoShow; override;
     procedure CreateParams(var AParams: TCreateParams); override;
     property Edit: TCustomEdit read GetEdit;
@@ -67,29 +67,28 @@ type
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
   end;
 
-{TODO : IsChildOf should probably better be moved somewhere into the JCL}
-function IsChildOf(const AChild, AParent: HWND): Boolean;
-
-
-resourcestring
-  sTJvCustomDropDownFormCreateOwnerMus = 'TJvCustomDropDownForm.Create: Owner must be a TCustomEdit';
+{TODO : IsChildWindow should probably better be moved somewhere into the JCL}
+function IsChildWindow(const AChild, AParent: HWND): Boolean;
 
 implementation
 
 uses
-  JvConsts,
-  SysUtils;
+  SysUtils,
+  JvConsts;
 
-function IsChildOf(const AChild, AParent: HWND): Boolean;
+resourcestring
+  sTJvCustomDropDownFormCreateOwnerMus = 'TJvCustomDropDownForm.Create: Owner must be a TCustomEdit';
+
+function IsChildWindow(const AChild, AParent: HWND): Boolean;
 var
   LParent: HWND;
 begin
- {determines whether one control is the child (or grand^x-child) of another}
+ {determines whether a window is the child (or grand^x-child) of another}
   LParent := AChild;
-  repeat
+  // (rom) changed to while loop
+  while (LParent <> AParent) and (LParent <> 0);
     LParent := GetParent(LParent);
-  until (LParent = AParent) or (LParent = 0);
-  Result := LParent = AParent;
+  Result := (LParent = AParent) and (LParent <> 0);
 end;
 
 type
@@ -123,10 +122,10 @@ begin
   AParams.Style := AParams.Style or WS_BORDER;
 end;
 
-procedure TJvCustomDropDownForm.DoClose(var AAction: TCloseAction);
+procedure TJvCustomDropDownForm.DoClose(var Action: TCloseAction);
 begin
-  AAction := caFree;
-  inherited;
+  Action := caFree;
+  inherited DoClose(Action);
 end;
 
 procedure TJvCustomDropDownForm.DoShow;
@@ -149,7 +148,7 @@ end;
 
 procedure TJvCustomDropDownForm.WMKillFocus(var AMessage: TMessage);
 begin
-  if IsChildOf(AMessage.WParam, Self.Handle) then
+  if IsChildWindow(AMessage.WParam, Self.Handle) then
     inherited
   else
   begin
@@ -165,15 +164,15 @@ end;
 
 procedure TJvCustomDropDownForm.DoKillFocus(const ANextControl: TWinControl);
 begin
-  if Assigned(OnKillFocus) then
-    OnKillFocus(Self, ANextControl);
+  if Assigned(FOnKillFocus) then
+    FOnKillFocus(Self, ANextControl);
   if CloseOnLeave then
     Close;
 end;
 
 procedure TJvCustomDropDownForm.WMSetFocus(var AMessage: TMessage);
 begin
-  if IsChildOf(AMessage.WParam, Self.Handle) then
+  if IsChildWindow(AMessage.WParam, Self.Handle) then
     inherited
   else
   begin
@@ -187,11 +186,10 @@ begin
   end;
 end;
 
-procedure TJvCustomDropDownForm.DoSetFocus(
-  const APreviousControl: TWinControl);
+procedure TJvCustomDropDownForm.DoSetFocus(const APreviousControl: TWinControl);
 begin
-  if Assigned(OnSetFocus) then
-    OnSetFocus(Self, APreviousControl);
+  if Assigned(FOnSetFocus) then
+    FOnSetFocus(Self, APreviousControl);
 end;
 
 end.
