@@ -61,7 +61,7 @@ object frmMain: TfrmMain
       Items.Data = {
         010000001F0000001500000015000000FFFFFFFFFFFFFFFF0000000000000000
         06537572766579}
-      LineColor = clScrollBar
+      LineColor = 13160660
     end
   end
   object JvStatusBar1: TJvStatusBar
@@ -76,6 +76,7 @@ object frmMain: TfrmMain
       item
         Width = 50
       end>
+    SimplePanel = False
   end
   object nbDetails: TNotebook
     Left = 175
@@ -169,6 +170,7 @@ object frmMain: TfrmMain
         PlainText = True
         ScrollBars = ssVertical
         TabOrder = 2
+        Zoom = 100
         OnChange = SurveyChanged
       end
       object edTitle: TEdit
@@ -213,8 +215,13 @@ object frmMain: TfrmMain
         Width = 219
         Height = 21
         Anchors = [akLeft, akBottom]
+        CalAlignment = dtaLeft
         Date = 37691.8494962616
         Time = 37691.8494962616
+        DateFormat = dfShort
+        DateMode = dmComboBox
+        Kind = dtkDate
+        ParseInput = False
         TabOrder = 6
         OnChange = SurveyChanged
         DropDownDate = 37691
@@ -226,8 +233,13 @@ object frmMain: TfrmMain
         Width = 180
         Height = 21
         Anchors = [akLeft, akBottom]
+        CalAlignment = dtaLeft
         Date = 37691.8494962616
         Time = 37691.8494962616
+        DateFormat = dfShort
+        DateMode = dmComboBox
+        Kind = dtkDate
+        ParseInput = False
         TabOrder = 7
         OnChange = SurveyChanged
         DropDownDate = 37691
@@ -329,6 +341,7 @@ object frmMain: TfrmMain
         PlainText = True
         TabOrder = 3
         WordWrap = False
+        Zoom = 100
         OnChange = SurveyChanged
       end
       object reItemDescription: TJvRichEdit
@@ -340,6 +353,7 @@ object frmMain: TfrmMain
         PlainText = True
         TabOrder = 1
         WordWrap = False
+        Zoom = 100
         OnChange = SurveyChanged
       end
       object chkRequired: TJvCheckBox

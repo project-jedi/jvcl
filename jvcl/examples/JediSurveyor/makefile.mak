@@ -8,12 +8,13 @@
 ROOT = $(MAKEDIR)
 !endif
 #---------------------------------------------------------------------------------------------------
-SRC = ..\..\Source
-ARCH = ..\..\Archive
-COM = ..\..\Common
-BIN = .
-DCU = ..\..\Dcu
-JCL = ..\..\..\JCL\source
+# some of these paths probably needs to be changed for everything to compile...
+SRC = ..\..\..\run
+ARCH = ..\..\..\archive
+COM = ..\..\..\common
+BIN = ..\..\..\bin
+DCU = ..\..\..\Dcu
+JCL = ..\..\..\..\..\JCL\source;..\..\..\..\..\JCL\source\windows;..\..\..\..\..\JCL\source\common
 DRC = $&.drc
 SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU)
 SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
