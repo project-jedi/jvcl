@@ -41,7 +41,7 @@ uses
 
 type
   {$IFDEF COMPILER6_UP}
-  IFormDesigner = IDesigner
+  IFormDesigner = IDesigner;
   {$ENDIF}
   TfrmDataProviderDesigner = class(TJvBaseDesign)
     pmProviderEditor: TPopupMenu;
