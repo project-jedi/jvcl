@@ -333,19 +333,24 @@ begin
     begin
     // draw frame
       Canvas.Brush.Style := bsClear;
-      Canvas.Pen.Width := 2;
       if HotTrackCombo then
-        Canvas.Pen.Color := clBtnFace
-      else
+      begin
         Canvas.Pen.Color := clHighlight;
+        Canvas.Pen.Width := 1;
+      end
+      else
+      begin
+        Canvas.Pen.Color := clHighlight;
+        Canvas.Pen.Width := 2;
+      end;
 
-{      aPoints[0] := Point(Rect.Left, Rect.Top);
-      aPoints[1] := Point(Rect.Right - 1, Rect.Top);
-      aPoints[2] := Point(Rect.Right - 1, Rect.Bottom - 1);
-      aPoints[3] := Point(Rect.Left, Rect.Bottom - 1);
+      aPoints[0] := Point(Rect.Left, Rect.Top);
+      aPoints[1] := Point(Rect.Right - 2, Rect.Top);
+      aPoints[2] := Point(Rect.Right - 2, Rect.Bottom - 2);
+      aPoints[3] := Point(Rect.Left, Rect.Bottom - 2);
       aPoints[4] := Point(Rect.Left, Rect.Top);
       Canvas.Polygon(aPoints);
-}
+
     // draw button body
       if ButtonWidth > 2 then // 2 because Pen.Width is 2
       begin
@@ -451,6 +456,11 @@ begin
     if (i = ItemIndex) and (X >= R.Right - ButtonWidth)
       and (X <= R.Right) then
     begin
+      if not FMouseOver then
+      begin
+        FMouseOver := true;
+        InvalidateItem(i);
+      end;
       P.X := R.Right;
       OldAlign := DropdownMenu.Alignment;
       try
@@ -496,13 +506,13 @@ begin
       if not FMouseOver then
       begin
         FMouseOver := true;
-        InvalidateItem(ItemIndex);
+        InvalidateItem(i);
       end;
     end
     else if FMouseOver then
     begin
       FMouseOver := false;
-      InvalidateItem(ItemIndex);
+      InvalidateItem(i);
     end;
   end;
   inherited;
