@@ -7,7 +7,14 @@ procedure Help;
 
 implementation
 
-uses Classes, SysUtils, GenerateUtils, JclStrings, JclFileUtils, FileUtils;
+uses
+  Classes, SysUtils, GenerateUtils,
+  {$IFDEF NO_JCL}
+  UtilsJcl,
+  {$ELSE}
+  JclStrings, JclFileUtils,
+  {$ENDIF NO_JCL}
+  FileUtils;
 
 procedure Help;
 begin
