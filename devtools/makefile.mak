@@ -100,9 +100,9 @@ dc.exe: DFMCleaner\dc.dpr
   cd ..
   
 pg.exe: PackagesGenerator\pg.dpr
-  cd PackagesGenerator
+  @cd PackagesGenerator
   $(DCC) $&.dpr
-  cd ..
+  @cd ..
 
 pgEdit.exe: PackagesGenerator\pgEdit.dpr
   cd PackagesGenerator
