@@ -31,8 +31,12 @@ unit JvEDIDBBuffering;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Contnrs,
-  JvComponent, DB, JclEDI, JclEDI_ANSIX12, JclEDISEF;
+  SysUtils, Classes, Contnrs, DB,
+  {$IFDEF VCL}
+  Windows, Messages,
+  {$ENDIF VCL}
+  JclEDI, JclEDI_ANSIX12, JclEDISEF,
+  JvComponent;
 
 const
   Field_SegmentId = 'SegmentId';
