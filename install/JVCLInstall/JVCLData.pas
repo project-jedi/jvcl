@@ -1022,32 +1022,32 @@ begin
     DeinstallJVCL(nil, nil);
 
  // remove old
-  AddPaths(Target.BrowsingPaths, False, ExtractFileDir(Owner.JVCLDir),
-    ['jvcl3\common', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qrun']);
-  AddPaths(Target.SearchPaths, False, ExtractFileDir(Owner.JVCLDir),
-    ['jvcl3\common', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qrun']);
+  AddPaths(Target.BrowsingPaths, False, Owner.JVCLDir,
+    ['common', 'run', 'qcommon', 'qrun']);
+  AddPaths(Target.SearchPaths, False, Owner.JVCLDir,
+    ['common', 'run', 'qcommon', 'qrun']);
 
 
  // common
-  AddPaths(Target.BrowsingPaths, True, ExtractFileDir(Owner.JVCLDir),
-    ['jvcl3\common']);
-  AddPaths(Target.SearchPaths, True, ExtractFileDir(Owner.JVCLDir),
-    ['jvcl3\common', Target.InsertDirMacros(UnitOutDir)]);
+  AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir,
+    ['common']);
+  AddPaths(Target.SearchPaths, True, Owner.JVCLDir,
+    ['common', Target.InsertDirMacros(UnitOutDir)]);
 
  // add
   if pkVCL in InstallMode then
   begin
-    AddPaths(Target.BrowsingPaths, True, ExtractFileDir(Owner.JVCLDir),
-      ['jvcl3\run']);
-    AddPaths(Target.SearchPaths, {Add:=}DeveloperInstall, ExtractFileDir(Owner.JVCLDir),
-      ['jvcl3\run']);
+    AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir,
+      ['run']);
+    AddPaths(Target.SearchPaths, {Add:=}DeveloperInstall, Owner.JVCLDir,
+      ['run']);
   end;
   if pkCLX in InstallMode then
   begin
-    AddPaths(Target.BrowsingPaths, True, ExtractFileDir(Owner.JVCLDir),
-      ['jvcl3\qcommon', 'jvcl3\qrun']);
-    AddPaths(Target.SearchPaths, {Add:=}DeveloperInstall, ExtractFileDir(Owner.JVCLDir),
-      ['jvcl3\qcommon', 'jvcl3\qrun']);
+    AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir,
+      ['qcommon', 'qrun']);
+    AddPaths(Target.SearchPaths, {Add:=}DeveloperInstall, Owner.JVCLDir,
+      ['qcommon', 'qrun']);
   end;
 
   AllPackages := TProjectGroup.Create(Self, '');
@@ -1110,7 +1110,7 @@ begin
     end
     else
       reg.DeleteValue(Name);
-      
+
   finally
     List.Free;
   end;
@@ -1176,10 +1176,10 @@ begin
 
 
  // remove JVCL 3 directories
-  AddPaths(Target.BrowsingPaths, {Add:=}False, ExtractFileDir(Owner.JVCLDir),
-    ['jvcl3\common', 'jvcl3\design', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qdesign', 'jvcl3\qrun']);
-  AddPaths(Target.SearchPaths, {Add:=}False, ExtractFileDir(Owner.JVCLDir),
-    ['jvcl3\common', 'jvcl3\design', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qdesign', 'jvcl3\qrun',
+  AddPaths(Target.BrowsingPaths, {Add:=}False, Owner.JVCLDir,
+    ['common', 'design', 'run', 'qcommon', 'qdesign', 'qrun']);
+  AddPaths(Target.SearchPaths, {Add:=}False, Owner.JVCLDir,
+    ['common', 'design', 'run', 'qcommon', 'qdesign', 'qrun',
     Target.InsertDirMacros(UnitOutDir), UnitOutDir]);
   Target.SavePaths;
 
