@@ -3125,7 +3125,10 @@ const
 
   function TSQLResult.GetEof: boolean;
   begin
-    Result := FScrollEOF and (not CachedFetch or (FCurrentRecord = RecordCount - 1));
+    Result := FScrollEOF and (
+       (not CachedFetch) or
+       (RecordCount = 0) or
+       (FCurrentRecord = RecordCount - 1));
   end;
 
   function TSQLResult.GetBof: boolean;
