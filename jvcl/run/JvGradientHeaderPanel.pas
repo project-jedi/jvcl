@@ -40,7 +40,7 @@ uses
   JvGradient, JvTypes, JvComponent;
 
 type
-  TJvGradientHeaderPanel = class(TCustomControl)
+  TJvGradientHeaderPanel = class(TJvCustomControl)
   private
     FGradient: TJvGradient;
     FLabel: TLabel;
