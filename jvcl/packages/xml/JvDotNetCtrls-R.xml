@@ -9,7 +9,7 @@
     <Package Name="JvCore-R" Targets="allbutclx" Condition="USEJVCL"/>
     <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition="USEJVCL"/>
     <Package Name="JvDB-R" Targets="allbutperso" Condition="USEJVCL"/>
-    <Package Name="CJCL50" Targets="C5" Condition="USEJVCL"/>
+    <Package Name="CJCL50" Targets="C5,C5s" Condition="USEJVCL"/>
     <Package Name="CJCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="CJCLVCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
@@ -17,8 +17,8 @@
     <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="dbrtl" Targets="C6,D6,D7" Condition=""/>
     <Package Name="vcldb" Targets="C6,D6,D7" Condition=""/>
-    <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
-    <Package Name="vclx50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
+    <Package Name="vclx50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="vcldb50" Targets="C5,D5" Condition=""/>
   </Requires>
   <Contains>

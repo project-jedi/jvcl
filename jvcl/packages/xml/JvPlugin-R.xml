@@ -7,8 +7,8 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
-    <Package Name="vcl50" Targets="C5" Condition=""/>
-    <Package Name="CJCL50" Targets="C5" Condition=""/>
+    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
+    <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>

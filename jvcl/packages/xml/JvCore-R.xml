@@ -10,7 +10,7 @@
     <Package Name="ThemeManager6" Targets="D6,D6p,C6,C6p" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManager5" Targets="D5,D5s,C5,C5s" Condition="JVCLThemesEnabled"/>
     <Package Name="Jv3rd-R" Targets="all" Condition="USE_DXGETTEXT"/>
-    <Package Name="CJCL50" Targets="C5" Condition=""/>
+    <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="CJcl" Targets="C6,C6p" Condition=""/>
     <Package Name="CJclVcl" Targets="C6,C6p" Condition=""/>
     <Package Name="DJCL50" Targets="D5,D5s" Condition=""/>
@@ -20,10 +20,10 @@
     <Package Name="rtl" Targets="D7,D7p,C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="vcljpg" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl50" Targets="C5" Condition=""/>
-    <Package Name="vcljpg50" Targets="C5" Condition=""/>
-    <Package Name="vclx50" Targets="D5,D5s,C5" Condition=""/>
-    <Package Name="bcbsmp50" Targets="C5" Condition=""/>
+    <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
+    <Package Name="vcljpg50" Targets="C5,C5s" Condition=""/>
+    <Package Name="vclx50" Targets="D5,D5s,C5,C5s" Condition=""/>
+    <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
     <Package Name="DJcl" Targets="allclx" Condition=""/>
     <Package Name="visualclx" Targets="allclx" Condition=""/>
   </Requires>

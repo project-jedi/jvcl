@@ -12,8 +12,8 @@
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
-    <Package Name="vclx50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
+    <Package Name="vclx50" Targets="C5,C5s,D5,D5s" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvDockingReg.pas" Targets="allbutclx" Formname="" Condition=""/>
