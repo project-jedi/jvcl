@@ -22,6 +22,9 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+{$I jvcl.inc}
+{$I windowsonly.inc}
+
 // $Id$
 unit JvDesktopAlert;
 
@@ -173,6 +176,8 @@ type
     procedure SetShowHint(const Value: boolean);
     procedure SetWaitTime(const Value: integer);
     procedure SetOptions(const Value: TJvDesktopAlertOptions);
+    function GetCloseButtonClick: TNotifyEvent;
+    procedure SetCloseButtonClick(const Value: TNotifyEvent);
   protected
     FFormButtons: array of TControl;
     FDesktopForm: TJvFormDesktopAlert;
@@ -209,6 +214,7 @@ type
     property AlphaBlendValue: byte read GetAlphaBlendValue write SetAlphaBlendValue default 255;
 
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
+    property OnCloseButtonClick:TNotifyEvent read GetCloseButtonClick write SetCloseButtonClick;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -519,8 +525,10 @@ begin
   FDesktopForm.Moveable := (daoCanMove in Options);
   FDesktopForm.MoveAnywhere := (daoCanMoveAnywhere in Options);
   FDesktopForm.Closeable := (daoCanClose in Options);
-
   FDesktopForm.ClickableMessage := daoCanClick in Options;
+  if not Assigned(FDesktopForm.tbClose.OnClick) then
+    FDesktopForm.tbClose.OnClick := FDesktopForm.acCloseExecute;
+
   if not (daoCanFade in Options) or (csDesigning in ComponentState) then
   begin
     FDesktopForm.FadeInTime := 0;
@@ -845,6 +853,16 @@ begin
     if not (daoCanMove in FOptions) then
       Exclude(FOptions, daoCanMoveAnywhere);
   end;
+end;
+
+function TJvDesktopAlert.GetCloseButtonClick: TNotifyEvent;
+begin
+  Result := FDesktopForm.tbClose.OnClick;
+end;
+
+procedure TJvDesktopAlert.SetCloseButtonClick(const Value: TNotifyEvent);
+begin
+  FDesktopForm.tbClose.OnClick := Value;
 end;
 
 { TJvDesktopAlertStack }
