@@ -55,6 +55,7 @@ type
     FDistanceVertical: Integer;
     FDistanceHorizontal: Integer;
     FShowNotVisibleAtDesignTime: Boolean;
+    FMaxWidth: Integer;
     procedure SetWrapControls(Value: Boolean);
     procedure SetAutoArrange(Value: Boolean);
     procedure SetAutoSize(Value: TJvAutoSizePanel);
@@ -62,6 +63,7 @@ type
     procedure SetBorderTop(Value: Integer);
     procedure SetDistanceVertical(Value: Integer);
     procedure SetDistanceHorizontal(Value: Integer);
+    procedure SetMaxWidth(Value: Integer);
     procedure Rearrange;
   public
     constructor Create(APanel: TJvPanel);
@@ -75,6 +77,7 @@ type
     property ShowNotVisibleAtDesignTime: Boolean read FShowNotVisibleAtDesignTime write FShowNotVisibleAtDesignTime default True;
     property AutoSize: TJvAutoSizePanel read FAutoSize write SetAutoSize default asNone;
     property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
+    property MaxWidth: Integer read FMaxWidth write SetMaxWidth default 0;
   end;
 
   {$IFDEF VCL}
@@ -139,6 +142,7 @@ type
     procedure Loaded; override;
     procedure Resize; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
+    function GetNextControlByTabOrder (iTabOrder : Integer): TWinControl;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -241,7 +245,7 @@ type
 implementation
 
 uses
-  JvMouseTimer;
+  JvMouseTimer, Types;
 
 const
   BkModeTransparent = TRANSPARENT;
@@ -261,6 +265,11 @@ constructor TJvArrangeSettings.Create(APanel: TJvPanel);
 begin
   inherited Create;
   FPanel := APanel;
+  FMaxWidth := 0;
+  FBorderLeft := 0;
+  FBorderTop := 0;
+  FDistanceVertical:= 0;
+  FDistanceHorizontal:= 0;
   WrapControls := True;
   ShowNotVisibleAtDesignTime := True;
   FAutoSize := asNone;
@@ -332,6 +341,15 @@ begin
   end;
 end;
 
+procedure TJvArrangeSettings.SetMaxWidth(Value: Integer);
+begin
+  if Value <> FMaxWidth then
+  begin
+    FMaxWidth := Value;
+    Rearrange;
+  end;
+end;
+
 procedure TJvArrangeSettings.Assign(Source: TPersistent);
 var
   A: TJvArrangeSettings;
@@ -347,6 +365,7 @@ begin
     FDistanceVertical := A.DistanceVertical;
     FDistanceHorizontal := A.DistanceHorizontal;
     FShowNotVisibleAtDesignTime := A.ShowNotVisibleAtDesignTime;
+    FMaxWidth := A.MaxWidth;
 
     Rearrange;
   end
@@ -824,15 +843,28 @@ begin
     ArrangeControls;
 end;
 
+function TJvPanel.GetNextControlByTabOrder (iTabOrder : Integer): TWinControl;
+var i: Integer;
+begin
+  Result := nil;
+  for I := 0 to ControlCount - 1 do
+    if Controls[I] is TWinControl then
+      if TWinControl(Controls[I]).TabOrder = iTabOrder then
+      begin
+        Result := TWinControl(Controls[I]);
+        exit;
+      end;
+end;
+
 procedure TJvPanel.ArrangeControls;
 var
-  AktX, AktY, NewX, NewY, MaxY: Integer;
+  AktX, AktY, NewX, NewY, MaxY, NewMaxX : Integer;
   ControlMaxX, ControlMaxY: Integer;
+  TmpWidth, TmpHeight: Integer;
   LastTabOrder: Integer;
-  LastControlCount, CurrControlCount: Integer;
   CurrControl: TWinControl;
   I: Integer;
-  OldHeight: Integer;
+  OldHeight, OldWidth: Integer;
 begin
   if (not ArrangeEnabled) or FArrangeControlActive or (ControlCount = 0) then
     Exit;
@@ -843,18 +875,19 @@ begin
   FArrangeControlActive := True;
   try
     OldHeight := Height;
-    LastControlCount := 0;
-    CurrControlCount := 0;
+    OldWidth := Width;
+    TmpHeight := Height;
+    TmpWidth := Width;
     AktY := FArrangeSettings.BorderTop;
     AktX := FArrangeSettings.BorderLeft;
     LastTabOrder := -1;
     MaxY := -1;
-    if (FArrangeSettings.AutoSize in [asWidth, asBoth]) and (Align in [alLeft, alRight]) then
-      ControlMaxX := Width - 2 * FArrangeSettings.BorderLeft
+    if (FArrangeSettings.AutoSize in [asWidth, asBoth]) then
+      ControlMaxX := TmpWidth - 2 * FArrangeSettings.BorderLeft
     else
       ControlMaxX := -1;
-    if (FArrangeSettings.AutoSize in [asHeight, asBoth]) and (Align in [alTop, alBottom]) then
-      ControlMaxY := Height - 2 * FArrangeSettings.BorderTop
+    if (FArrangeSettings.AutoSize in [asHeight, asBoth])then
+      ControlMaxY := TmpHeight - 2 * FArrangeSettings.BorderTop
     else
       ControlMaxY := -1;
 
@@ -863,70 +896,76 @@ begin
       begin
         if Controls[I] is TJvPanel then
           TJvPanel(Controls[I]).ArrangeSettings.Rearrange;
-        if Controls[I].Width + 2 * FArrangeSettings.BorderLeft > Width then
-          Width := Controls[I].Width + 2 * FArrangeSettings.BorderLeft;
+        if (Controls[I].Width + 2 * FArrangeSettings.BorderLeft > TmpWidth) then
+          TmpWidth := Controls[I].Width + 2 * FArrangeSettings.BorderLeft;
       end;
 
-    while CurrControlCount < ControlCount do
+    if (TmpWidth > FArrangeSettings.MaxWidth) and (FArrangeSettings.MaxWidth > 0) then
+      TmpWidth := FArrangeSettings.MaxWidth ;
+    CurrControl := GetNextControlByTabOrder(LastTabOrder+1);
+    while Assigned(CurrControl) do
     begin
-      for I := 0 to ControlCount - 1 do
+      LastTabOrder := CurrControl.TabOrder;
+      if CurrControl.Visible or
+        ((csDesigning in ComponentState) and FArrangeSettings.ShowNotVisibleAtDesignTime) then
       begin
-        if Controls[I] is TWinControl then
+        NewMaxX := AktX + CurrControl.Width +
+                   FArrangeSettings.DistanceHorizontal +
+                   FArrangeSettings.BorderLeft;
+        if (((NewMaxX > TmpWidth) AND NOT (FArrangeSettings.AutoSize in [asWidth, asBoth]))
+             OR
+             ((NewMaxX > FArrangeSettings.MaxWidth) and
+              (FArrangeSettings.MaxWidth > 0)
+             )
+           ) and
+           (AktX > FArrangeSettings.BorderLeft) and // Only Valid if there is one control in the current line
+           FArrangeSettings.WrapControls then
         begin
-          CurrControl := TWinControl(Controls[I]);
-          if CurrControl.TabOrder = (LastTabOrder + 1) then
-          begin
-            LastTabOrder := CurrControl.TabOrder;
-            Inc(CurrControlCount);
-            if CurrControl.Visible or
-              ((csDesigning in ComponentState) and FArrangeSettings.ShowNotVisibleAtDesignTime) then
-            begin
-              NewX := AktX;
-              NewY := AktY;
-              if ((AktX + CurrControl.Width + FArrangeSettings.DistanceHorizontal + FArrangeSettings.BorderLeft) > Width) and
-                 (AktX > FArrangeSettings.BorderLeft) and
-                 FArrangeSettings.WrapControls then
-              begin
-                AktX := FArrangeSettings.BorderLeft;
-                AktY := AktY + MaxY + FArrangeSettings.DistanceVertical;
-                MaxY := -1;
-                NewX := AktX;
-                NewY := AktY;
-              end;
-              AktX := AktX + CurrControl.Width;
-              if AktX > ControlMaxX then
-                ControlMaxX := AktX;
-              AktX := AktX + FArrangeSettings.DistanceHorizontal;
-              CurrControl.Left := NewX;
-              CurrControl.Top := NewY;
-              if CurrControl.Height > MaxY then
-                MaxY := CurrControl.Height;
-              ControlMaxY := AktY + MaxY;
-            end;
-          end;
+          AktX := FArrangeSettings.BorderLeft;
+          AktY := AktY + MaxY + FArrangeSettings.DistanceVertical;
+          MaxY := -1;
+          NewX := AktX;
+          NewY := AktY;
+        end
+        else
+        begin
+          NewX := AktX;
+          NewY := AktY;
         end;
+        AktX := AktX + CurrControl.Width;
+        if AktX > ControlMaxX then
+          ControlMaxX := AktX;
+        AktX := AktX + FArrangeSettings.DistanceHorizontal;
+        CurrControl.Left := NewX;
+        CurrControl.Top := NewY;
+        if CurrControl.Height > MaxY then
+          MaxY := CurrControl.Height;
+        ControlMaxY := AktY + MaxY;
       end;
-      if CurrControlCount = LastControlCount then
-        Break;
-      LastControlCount := CurrControlCount;
+      CurrControl := GetNextControlByTabOrder(LastTabOrder+1);
     end;
 
     if not (csLoading in ComponentState) then
     begin
-      if FArrangeSettings.AutoSize in [asWidth, asBoth] then
+      if (FArrangeSettings.AutoSize in [asWidth, asBoth]) then
         if ControlMaxX >= 0 then
-          Width := ControlMaxX + FArrangeSettings.BorderLeft
+          if (FArrangeSettings.MaxWidth > 0) and (ControlMaxX >= FArrangeSettings.MaxWidth) then
+            TmpWidth := FArrangeSettings.MaxWidth
+          else
+            TmpWidth := ControlMaxX + FArrangeSettings.BorderLeft
         else
-          Width := 0;
-      if FArrangeSettings.AutoSize in [asHeight, asBoth] then
+          TmpWidth := 0;
+      if (FArrangeSettings.AutoSize in [asHeight, asBoth]) then
         if ControlMaxY >=0  then
-          Height := ControlMaxY + FArrangeSettings.BorderTop
+          TmpHeight := ControlMaxY + FArrangeSettings.BorderTop
         else
-          Height := 0;
+          TmpHeight := 0;
+      Width := TmpWidth;
+      Height := TmpHeight;
     end;
     FArrangeWidth := ControlMaxX + 2 * FArrangeSettings.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * FArrangeSettings.BorderTop;
-    if OldHeight <> Height then
+    if (OldWidth <> TmpWidth) OR (OldHeight <> Height) then
       {$IFDEF VCL}
       SendMessage(GetFocus, WM_PAINT, 0, 0);
       {$ENDIF VCL}
@@ -939,14 +978,16 @@ begin
 end;
 
 procedure TJvPanel.SetWidth(Value: Integer);
+var changed : Boolean;
 begin
-  if inherited Width <> Value then
+  changed := inherited Width <> Value;
+  inherited Width := Value;
+  if changed then
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Value, Height)
     else
     if Parent is TJvPanel then
        TJvPanel(Parent).ArrangeSettings.Rearrange;
-  inherited Width := Value;
 end;
 
 function TJvPanel.GetWidth: Integer;
@@ -955,14 +996,16 @@ begin
 end;
 
 procedure TJvPanel.SetHeight(Value: Integer);
+var changed : Boolean;
 begin
-  if inherited Height <> Value then
+  changed := inherited Height <> Value;
+  inherited Height := Value;
+  if changed then
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Width, Value)
     else
     if Parent is TJvPanel then
        TJvPanel(Parent).ArrangeSettings.Rearrange;
-  inherited Height := Value;
 end;
 
 function TJvPanel.GetHeight: Integer;
