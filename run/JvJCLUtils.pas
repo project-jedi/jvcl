@@ -60,12 +60,12 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows,  ShlObj, ActiveX,
+  Windows, Messages, ShlObj, ActiveX,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc, Xlib,
   {$ENDIF LINUX}
-  SysUtils, Messages, Classes,
+  SysUtils, Classes,
   {$IFDEF VCL}
   Graphics, Clipbrd,
   {$ENDIF VCL}
