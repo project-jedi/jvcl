@@ -37,7 +37,8 @@ end;
 function Opt_SMExportComponents(Target: TCompileTarget): Boolean;
 begin
   if Target.Version = 9 then
-    Result := FileExists(Target.RootDir + Target.VersionedDCP('\Projects\bpl\SMExportd2005.dcp'))
+    Result := true 
+    //Result := FileExists(Target.RootDir + Target.VersionedDCP('\SMExportd2005.dcp'))
   else
     Result := FileExists(Target.RootDir + Target.VersionedDCP(Format('\Projects\bpl\SMExport%s%d.dcp',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));
 end;
@@ -47,7 +48,8 @@ end;
 function Opt_SMImportComponents(Target: TCompileTarget): Boolean;
 begin
   if Target.Version = 9 then
-    Result := FileExists(Target.RootDir + Target.VersionedDCP('\Projects\bpl\SMImportd2005.dcp'))
+    Result := true
+    //Result := FileExists(Target.RootDir + Target.VersionedDCP('\bpl\SMImportd2005.dcp'))
   else
     Result := FileExists(Target.RootDir + Target.VersionedDCP(Format('\Projects\bpl\SMImport%s%d.dcp',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));
 end;
@@ -64,7 +66,6 @@ end;
 function Opt_ICSComponents(Target: TCompileTarget): Boolean;
 begin
   if Target.IsBCB then
-    //Result := FileExists(Target.RootDir + Target.VersionedDCP(Format('\Projects\bpl\IcsDel%d%d.dcp',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));
     Result := False
   else
     Result := FileExists(Target.RootDir + Target.VersionedDCP(Format('\Projects\bpl\IcsDel%d%d.dcp',[Target.Version,0])));  
@@ -75,9 +76,9 @@ end;
 function Opt_CXEditorComponents(Target: TCompileTarget): Boolean;
 begin
   if Target.Version = 9 then 
-    Result := FileExists(GetSystemDir+(Format('\System32\cxEditors%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])))
+    Result := FileExists(GetSystemDir+(Format('\cxEditors%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])))
   else
-    Result := FileExists(GetSystemDir+(Format('\System32\cxEditorsVCL%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));  
+    Result := FileExists(GetSystemDir+(Format('\cxEditorsVCL%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));  
 end;
 
 {------------------------------------------------------------------------------}
@@ -85,9 +86,9 @@ end;
 function Opt_CXGridComponents(Target: TCompileTarget): Boolean;
 begin
   if Target.Version = 9 then 
-    Result := FileExists((Format('C:\WIndows\System32\cxGrid%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])))
+    Result := FileExists(GetSystemDir+(Format('\cxGrid%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])))
   else
-    Result := FileExists(GetSystemDir+(Format('\System32\cxGridVCL%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));  
+    Result := FileExists(GetSystemDir+(Format('\cxGridVCL%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));  
 end;
 
 
