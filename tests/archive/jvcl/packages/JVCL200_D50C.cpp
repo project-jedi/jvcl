@@ -4,8 +4,7 @@
 #pragma hdrstop
 USERES("JVCL200_D50C.res");
 USEPACKAGE("vcl50.bpi");
-USEUNIT("..\Source\JVCLReg.pas");
-USERES("..\source\JVCLReg.dcr");
+USEUNIT("..\source\JVCLReg.pas");
 USEUNIT("..\Source\JvAlarmsEditor.pas");
 USEUNIT("..\Source\JvBaseDlgEditor.pas");
 USEUNIT("..\Source\JvCommonDialogDEditor.pas");
@@ -59,7 +58,7 @@ USEPACKAGE("dclstd50.bpi");
 USEPACKAGE("vclx50.bpi");
 USEPACKAGE("vclbde50.bpi");
 USEPACKAGE("vcljpg50.bpi");
-//---------------------------------------------------------------------------
+#//---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
 
@@ -72,3 +71,4 @@ int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
         return 1;
 }
 //---------------------------------------------------------------------------
+
