@@ -97,7 +97,7 @@ uses
   Windows,
 {$ENDIF}
   SysUtils, Classes, Graphics,
-  JvEditor, JvHLParser, JclUnicode;
+  JvEditor, JvHLParser;
 
 const
   { Max_Line - maximum line numbers, scanned by editor for comments }
