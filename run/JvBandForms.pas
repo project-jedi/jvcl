@@ -59,7 +59,7 @@ type
   TzGetPointLEvent = function(Sender: TObject): TPointL of object;
 
   {:Base class for band forms.
-  @cat jvBandFormComponents
+  @cat JvBandFormComponents
   }
   TJvBandForm = class(TForm)
   private
