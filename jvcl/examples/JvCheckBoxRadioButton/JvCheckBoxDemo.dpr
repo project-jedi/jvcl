@@ -2,12 +2,12 @@ program JvCheckBoxDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  JvCheckBoxRadioBtnFrmU in 'JvCheckBoxRadioBtnFrmU.pas' {JvCheckBoxRadioBtnFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvCheckBoxRadioBtnFrm, JvCheckBoxRadioBtnFrm);
   Application.Run;
 end.
