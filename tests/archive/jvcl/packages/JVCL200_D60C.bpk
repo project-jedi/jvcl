@@ -81,7 +81,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JVCL200_D60C.cpp"/>
     <INCLUDEPATH value="..\Source;$(BCB)\Projects;$(BCB)\include;$(BCB)\include\vcl;..\common"/>
-    <LIBPATH value="&quot;C:\Program Files\Developer Express Inc\ExpressQuantumGrid 4\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressDataController\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressEditors Library 4\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\XP Theme Manager\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\CX Library\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressBars\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressCommon\C++Builder 6\Lib&quot;;$(BCB)\Projects\Lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects;..\lib6"/>
+    <LIBPATH value="$(BCB)\Projects\Lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects;..\lib6"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -105,7 +105,7 @@
   <FILELIST>
       <FILE FILENAME="jvcl200_D60C.res" FORMNAME="" UNITNAME="jvcl200_D60C.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JVCL200_D60C.cpp" FORMNAME="" UNITNAME="jvcl200_D60C" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvaDBReg.pas" FORMNAME="" UNITNAME="JvaDBReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvaCtlReg.pas" FORMNAME="" UNITNAME="JvaCtlReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvIDEZoom.pas" FORMNAME="" UNITNAME="JvIDEZoom" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -161,17 +161,17 @@
       <FILE FILENAME="..\source\JvSchedEvntReg.pas" FORMNAME="" UNITNAME="JvSchedEvntReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTransLEDReg.pas" FORMNAME="" UNITNAME="JvTransLedReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvJVCLAboutProperty.pas" FORMNAME="" UNITNAME="JvJVCLAboutProperty" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\dcldb.bpi" FORMNAME="" UNITNAME="dcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\designdgm.bpi" FORMNAME="" UNITNAME="designdgm" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\bdertl.bpi" FORMNAME="" UNITNAME="bdertl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\dcldb.bpi" FORMNAME="" UNITNAME="dcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\designdgm.bpi" FORMNAME="" UNITNAME="designdgm" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\bdertl.bpi" FORMNAME="" UNITNAME="bdertl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\source\bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvxDConst.pas" FORMNAME="" UNITNAME="JvxDConst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvBehaviorLabelProperty.pas" FORMNAME="" UNITNAME="JvBehaviorLabelProperty" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvScheduleEditor.pas" FORMNAME="FrmScheduleEditor" UNITNAME="JvScheduleEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -188,7 +188,7 @@
       <FILE FILENAME="..\source\JvAnimatedEditor.pas" FORMNAME="" UNITNAME="JvAnimatedEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvProgressEditor.pas" FORMNAME="" UNITNAME="JvProgressEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JVDBEditors.pas" FORMNAME="" UNITNAME="JVDBEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\Lib\JVCL200_R60C.bpi" FORMNAME="" UNITNAME="JVCL200_R60C" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\Lib\JVCL200_R60C.bpi" FORMNAME="" UNITNAME="JVCL200_R60C" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvID3v2Editor.pas" FORMNAME="JvID3FramesEditor" UNITNAME="JvID3v2Editor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvID3v2Define.pas" FORMNAME="JvID3DefineDlg" UNITNAME="JvID3v2Define" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -229,12 +229,12 @@ ProductVersion=1.0.0.0
 [HistoryLists\hlIncludePath]
 Count=2
 Item0=..\Source;$(BCB)\Projects;$(BCB)\include;$(BCB)\include\vcl;..\common
-Item1=..\Source;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
+Item1=..\Source;$(BCB)\Projects;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=2
 Item0=$(BCB)\Projects\Lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects;..\lib6
-Item1=$(BCB)\Projects\Lib;..\Source;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Item1=$(BCB)\Projects\Lib;..\Source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1

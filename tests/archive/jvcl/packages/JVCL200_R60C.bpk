@@ -191,13 +191,13 @@
     <USERDEFINES value=""/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JVCL200_R60C.cpp"/>
-    <INCLUDEPATH value="..\source;&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;$(BCB)\include;$(BCB)\include\vcl;..\common"/>
-    <LIBPATH value="&quot;C:\Program Files\Developer Express Inc\ExpressQuantumGrid 4\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressDataController\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressEditors Library 4\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\XP Theme Manager\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\CX Library\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressBars\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressCommon\C++Builder 6\Lib&quot;;..\source;$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;&quot;V:\code library\source&quot;;..\common;$(BCB)\Lib\Psdk"/>
+    <INCLUDEPATH value="..\source;&quot;$(BCB)\Projects&quot;;$(BCB)\include;$(BCB)\include\vcl;..\common"/>
+    <LIBPATH value="..\source;$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;&quot;V:\code library\source&quot;;..\common;$(BCB)\Lib\Psdk"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\source -I&quot;C:\Program Files\Borland\CBuilder6\Projects&quot; 
+    <IDLCFLAGS value="-I..\source -I&quot;$(BCB)\Projects&quot; 
       -I$(BCB)\include -I$(BCB)\include\vcl -I..\common -src_suffix cpp -boa"/>
     <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
     <PFLAGS value="-N2..\lib6 -N0..\lib6 -$Y- -$L- -$D- -$A8 -v -JPHNE -M -LUvcl"/>
@@ -216,7 +216,7 @@
   <FILELIST>
       <FILE FILENAME="jvcl200_R60C.res" FORMNAME="" UNITNAME="jvcl200_R60C.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JVCL200_R60C.cpp" FORMNAME="" UNITNAME="jvcl200_R60C" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAddPrinter.pas" FORMNAME="" UNITNAME="JvAddPrinter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAlarms.pas" FORMNAME="" UNITNAME="JvAlarms" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAni.pas" FORMNAME="" UNITNAME="JvAni" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -592,14 +592,14 @@
       <FILE FILENAME="..\source\JvxRConst.pas" FORMNAME="" UNITNAME="JvxRConst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTransLED.pas" FORMNAME="" UNITNAME="JvTransLED" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvJVCLAbout.pas" FORMNAME="JvJVCLAboutForm" UNITNAME="JvJVCLAbout" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\inet.bpi" FORMNAME="" UNITNAME="inet" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\bdertl.bpi" FORMNAME="" UNITNAME="bdertl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\qrpt.bpi" FORMNAME="" UNITNAME="qrpt" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\inet.bpi" FORMNAME="" UNITNAME="inet" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\bdertl.bpi" FORMNAME="" UNITNAME="bdertl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\qrpt.bpi" FORMNAME="" UNITNAME="qrpt" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="c:\program files\borland\cbuilder6\lib\release\vclsmp.bpi" FORMNAME="" UNITNAME="vclsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="c:\program files\borland\cbuilder6\lib\release\dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\common\bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -651,8 +651,8 @@ ProductVersion=1.0.0.0
 
 [HistoryLists\hlIncludePath]
 Count=2
-Item0=..\source;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;..\common
-Item1=..\source;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
+Item0=..\source;$(BCB)\Projects;$(BCB)\include;$(BCB)\include\vcl;..\common
+Item1=..\source;$(BCB)\Projects;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=9
@@ -664,7 +664,7 @@ Item4=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:
 Item5=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;V:\code library\dcu
 Item6=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source
 Item7=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib
-Item8=$(BCB)\Projects\Lib;..\source;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Item8=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
