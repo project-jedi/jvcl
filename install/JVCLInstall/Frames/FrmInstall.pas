@@ -87,6 +87,7 @@ class function TFrameInstall.Build(Installer: TInstaller;
   Client: TWinControl): TFrameInstall;
 begin
   Result := TFrameInstall.Create(Client);
+  Installer.PackageInstaller.Translate(Result);
   Result.FInstaller := Installer;
   Result.Parent := Client;
   Result.Align := alClient;

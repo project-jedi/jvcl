@@ -65,7 +65,7 @@ type
 implementation
 
 uses
-  InstallerConsts, AHCompBrowseFolderDlg;
+  InstallerConsts, AHCompBrowseFolderDlg, Core;
 
 {$R *.dfm}
 
@@ -79,6 +79,7 @@ class function TFrameDirEditBrowse.Build(const Caption, Dir: string;
   Client: TWinControl): TFrameDirEditBrowse;
 begin
   Result := TFrameDirEditBrowse.Create(Client);
+  PackageInstaller.Translate(Result);
   Result.Name := '';
   Result.LblCaption.Caption := Caption;
   Result.FOnChange := OnChange;

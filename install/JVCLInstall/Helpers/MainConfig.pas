@@ -33,10 +33,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JVCLConfiguration, CheckLst, Buttons, ExtCtrls,
-  ImgList;
+  ImgList,
+  JvComponent;
 
 type
-  TFormJvclIncConfig = class(TForm)
+  TFormJvclIncConfig = class(TJvForm)
     CheckListBox: TCheckListBox;
     ScrollBox: TScrollBox;
     LblComment: TLabel;

@@ -75,6 +75,7 @@ type
     procedure DoPageRecreate(Sender: TObject);
     procedure DoUpdateNavigation(Sender: TObject);
     procedure DoPageShow(Sender: TObject);
+    procedure DoTranslate(Sender: TObject);
 
     procedure RecreatePage(var Msg: TMessage); message WM_USER + 1;
   public
@@ -88,7 +89,7 @@ var
 implementation
 
 uses
-  InstallerConsts, PageBuilder, JvResources, Utils;
+  InstallerConsts, PageBuilder, JvConsts, JvResources, Utils;
 
 (* // Main.pas  - see InstallerConsts.pas
 resourcestring
@@ -197,6 +198,13 @@ begin
   end;
 end;
 
+procedure TFormMain.DoTranslate(Sender: TObject);
+begin
+  {$IFDEF USE_DXGETTEXT}
+  TranslateComponent(TComponent(Sender), 'JVCLInstall');
+  {$ENDIF USE_DXGETTEXT}
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   Application.HintHidePause := MaxInt;
@@ -214,6 +222,7 @@ begin
   PackageInstaller.OnPagesChanged := DoPagesChanged;
   PackageInstaller.OnPageRecreate := DoPageRecreate;
   PackageInstaller.OnUpdateNavigation := DoUpdateNavigation;
+  PackageInstaller.OnTranslate := DoTranslate;
 
   Caption := PackageInstaller.Installer.InstallerName;
   Application.Title := Caption;
@@ -365,17 +374,18 @@ end;
 
 {$IFDEF USE_DXGETTEXT}
 
-{$IFDEF MSWINDOWS}
-const PathSeparator = '\';
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-const PathSeparator = '/';
-{$ENDIF LINUX}
+procedure InitDxgettext;
+var
+  Path: string;
+begin
+  Path := ExtractFilePath(Application.ExeName) + '..' + PathDelim + 'locale';
+  bindtextdomain('JVCLInstall', Path);
+  bindtextdomain('jvcl', Path);
+  AddDomainForResourceString('JVCLInstall');
+end;
 
 initialization
-  bindtextdomain('JVCLInstall', ExtractFilePath(Application.ExeName)+'..'+PathSeparator+'locale');
-  bindtextdomain('jvcl', ExtractFilePath(Application.ExeName)+'..'+PathSeparator+'locale');
-  AddDomainForResourceString('JVCLInstall');
+  InitDxgettext;
 
 {$ENDIF USE_DXGETTEXT}
 

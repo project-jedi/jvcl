@@ -99,6 +99,7 @@ class function TFrameConfigPage.Build(Installer: TInstaller;
   Client: TWinControl): TFrameConfigPage;
 begin
   Result := TFrameConfigPage.Create(Client);
+  Installer.PackageInstaller.Translate(Result);
   Result.FInstaller := Installer;
   Result.Parent := Client;
   Result.Align := alClient;
