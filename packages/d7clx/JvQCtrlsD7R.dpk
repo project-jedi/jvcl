@@ -55,7 +55,6 @@ contains
   JvQButtons in '..\..\qrun\JvQButtons.pas',
   JvQCaptionPanel in '..\..\qrun\JvQCaptionPanel.pas',
   JvQaScrollText in '..\..\qrun\JvQaScrollText.pas',
-  JvQLabel in '..\..\qrun\JvQLabel.pas',
   JvQNetscapeSplitter in '..\..\qrun\JvQNetscapeSplitter.pas',
   JvQOfficeColorButton in '..\..\qrun\JvQOfficeColorButton.pas',
   JvQOfficeColorForm in '..\..\qrun\JvQOfficeColorForm.pas',

@@ -29,7 +29,6 @@ package JvQStdCtrlsD7D;
 requires
   JvQCoreD7D,
   JvQStdCtrlsD7R,
-  JvQCtrlsD7R,
   DJclVClx;
 
 contains

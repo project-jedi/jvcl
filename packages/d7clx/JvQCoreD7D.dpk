@@ -33,8 +33,6 @@ requires
   rtl,
   visualclx,
   DJcl,
-  JvQStdCtrlsD7R,
-  JvQSystemD7R,
   DJclVClx;
 
 contains
