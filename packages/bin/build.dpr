@@ -187,7 +187,7 @@ var
   f: file of Byte;
 begin
   inherited Create;
-  FileMode := 2;
+  FileMode := 0;
   AssignFile(f, Filename);
   Reset(f);
   SetLength(FText, FileSize(f));
