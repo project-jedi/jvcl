@@ -312,6 +312,8 @@ contains
   JvSpinEdit in '..\Source\JvSpinEdit.pas',
   JvTranslator in '..\Source\JvTranslator.pas',
   JvSimpleXml in '..\Source\JvSimpleXml.pas',
-  JvHotkeyEx in '..\Source\JvHotkeyEx.pas';
+  JvHotkeyEx in '..\Source\JvHotkeyEx.pas',
+  JvObjSel in '..\source\JvObjSel.pas',
+  JvObjPickerComp in '..\source\JvObjPickerComp.pas';
 
 end.

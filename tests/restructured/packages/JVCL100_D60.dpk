@@ -63,7 +63,6 @@ contains
   JvChNtfyProperty in '..\Source\JvChNtfyProperty.pas',
   JvLCProperty in '..\Source\JvLCProperty.pas',
   JvTipProperty in '..\Source\JvTipProperty.pas',
-  JvP3Reg in '..\Source\JvP3Reg.pas',
-  jvDialogsReg in '..\Source\jvDialogsReg.pas';
+  JvAppletProperty in '..\source\JvAppletProperty.pas';
 
 end.
