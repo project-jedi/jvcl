@@ -216,13 +216,13 @@ type
 
 {**** string handling routines}
 
+type
+  TSetOfChar = TSysCharSet;
+
  {const Separators is used in GetWordOnPos, JvUtils.ReplaceStrings and SubWord}
 const
-  Separators: set of Char = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
+  Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
   ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
-
-type
-  TSetOfChar = set of Char;
 
 type
   TDateOrder = (doMDY, doDMY, doYMD);
@@ -247,10 +247,8 @@ type
   TCharSet = TSysCharSet;
 const
   DigitChars = ['0'..'9'];
-  {$IFNDEF CBUILDER}
   Brackets = ['(', ')', '[', ']', '{', '}'];
   StdWordDelims = [#0..' ', ',', '.', ';', '/', '\', ':', '''', '"', '`'] + Brackets;
-  {$ENDIF}
 type
   // JvDriveCtrls / JvLookOut
   TJvImageSize = (isSmall, isLarge);
