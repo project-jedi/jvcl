@@ -32,10 +32,10 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Controls,
+  Windows, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls,
+  QControls, QForms,
   {$ENDIF VisualCLX}
   JvComponent, JvErrorIndicator;
 
@@ -237,12 +237,6 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   TypInfo,
-  {$IFDEF VCL}
-  Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms,
-  {$ENDIF VisualCLX}
   JclUnicode, // for reg exp support
   JvTypes, JvResources;
 
