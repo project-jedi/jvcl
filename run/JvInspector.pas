@@ -9255,7 +9255,7 @@ end;
 //=== TJvCustomInspectorData =================================================
 
 constructor TJvCustomInspectorData.CreatePrim(const AName: string;
-  {$IFNDEF BCB}const{$ENDIF} ATypeInfo: PTypeInfo);
+   ATypeInfo: PTypeInfo);
 begin
   inherited Create;
   Name := AName;
