@@ -38,14 +38,38 @@ uses
 type
   TJvScreenResolution = class(TJvComponent)
   private
-  published
+    FCount:integer;
+    function GetCount: integer;
+    function GetMode(Index: integer): TDevMode;
+  public
     procedure GetSupportedModes(var Modes: array of TDevMode; var Count: Integer);
     function SetMode(Value: TDevMode): Boolean;
+    // simpler access to DevModes
+    property Modes[Index:integer]:TDevMode read GetMode;
+    property Count:integer read GetCount;
   end;
 
 implementation
+uses
+  RTLConsts;
 
 {************************************************************}
+
+function TJvScreenResolution.GetCount: integer;
+var DevMode:TDevMode;
+begin
+  if FCount = 0 then
+    while EnumDisplaySettings(nil, FCount, DevMode) do
+      Inc(FCount);
+  Result := FCount;
+end;
+
+function TJvScreenResolution.GetMode(Index: integer): TDevMode;
+begin
+  if (Index < 0) or (Index >= Count) then
+    raise Exception.CreateFmt(SListIndexError,[Index]);
+  EnumDisplaySettings(nil,Index,Result);
+end;
 
 procedure TJvScreenResolution.GetSupportedModes(var Modes: array of TDevMode; var Count: Integer);
 var
