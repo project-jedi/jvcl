@@ -186,6 +186,10 @@ type
     procedure Start;
     procedure Stop;
 
+    // Persisting schedules
+    procedure LoadFromStreamBin(const S: TStream);
+    procedure SaveToStreamBin(const S: TStream);
+
     property Data: Pointer read FData write FData;
     property LastSnoozeInterval: TSystemTime read FLastSnoozeInterval;
     property NextFire: TTimeStamp read GetNextFire;
@@ -202,7 +206,8 @@ implementation
 
 uses
   contnrs, Forms, TypInfo,
-  JclDateTime, JclRTTI;
+  JclDateTime, JclRTTI,
+  JvTypes;
 
 { registry constants }
 
@@ -1173,7 +1178,7 @@ end;
 procedure TJvEventCollectionItem.Start;
 begin
   if FState in [sesTriggered, sesExecuting] then
-    raise Exception.Create('Can''t restart: Event is being triggered or is executing.');
+    raise EJVCLException.Create('Can''t restart: Event is being triggered or is executing.');
   if State = sesPaused then
   begin
     FScheduleFire := Schedule.NextEventFromNow(CountMissedEvents);
@@ -1198,6 +1203,279 @@ procedure TJvEventCollectionItem.Stop;
 begin
   if State <> sesNotInitialized then
     FState := sesNotInitialized
+end;
+
+const
+  BinStreamID = 'JVSE';
+  BinStreamVer = Word($0001);
+
+procedure TJvEventCollectionItem.LoadFromStreamBin(const S: TStream);
+  { Pre:
+      S.Position set to start of schedule info.
+      Schedule either uninitialized or stopped.
+    Post:
+      if succesful:
+        S.Position set to the first byte after the schedule info.
+        Schedule contains a new instance set to the info read from the stream.
+        State set to uninitialized.
+      on failure:
+        S.Position unchanged (ie. at start of schedule info).
+        Schedule unchanged
+        State unchanged. }
+var
+  OrgSPos: Integer;
+  TempString: string;
+  TempInteger: Integer;
+  NewSchedule: IJclSchedule;
+  TempStamp: TTimeStamp;
+  TempVal: TScheduleWeekDays;
+begin
+  OrgSPos := S.Position;
+  try
+    if not (State in [sesNotInitialized, sesEnded]) then
+      raise EJVCLException.Create('Schedule is active. Reading a new schedule can only be done on inactive schedules.');
+    SetLength(TempString, Length(BinStreamID));
+    S.ReadBuffer(TempString[1], Length(BinStreamID));
+    S.ReadBuffer(TempInteger, SizeOf(BinStreamVer));
+    if not AnsiSameText(TempString, BinStreamID) then
+      raise EJVCLException.Create('Not a schedule stream.');
+    if Word(TempInteger) > BinStreamVer then
+      raise EJVCLException.Create('Wrong version ($' + IntToHex(Word(TempInteger), 4) + ').');
+    NewSchedule := CreateSchedule;
+    // Standard properties
+    S.ReadBuffer(TempStamp, SizeOf(TempStamp));
+    NewSchedule.StartDate := TempStamp;
+    S.ReadBuffer(TempInteger, SizeOf(TScheduleRecurringKind));
+    NewSchedule.RecurringType := TScheduleRecurringKind(TempInteger);
+    if NewSchedule.RecurringType <> srkOneShot then
+    begin
+      S.ReadBuffer(TempInteger, SizeOf(TScheduleEndKind));
+      NewSchedule.EndType := TScheduleEndKind(TempInteger);
+      if NewSchedule.EndType = sekDate then
+      begin
+        S.ReadBuffer(TempStamp, SizeOf(TempStamp));
+        NewSchedule.EndDate := TempStamp;
+      end
+      else if NewSchedule.EndType in [sekDayCount, sekTriggerCount] then
+      begin
+        S.ReadBuffer(TempInteger, SizeOf(Cardinal));
+        NewSchedule.EndCount := Cardinal(TempInteger);
+      end;
+      // Daily frequency properties
+      S.ReadBuffer(TempInteger, SizeOf(Cardinal));
+      (NewSchedule as IJclScheduleDayFrequency).StartTime := Cardinal(TempInteger);
+      S.ReadBuffer(TempInteger, SizeOf(Cardinal));
+      (NewSchedule as IJclScheduleDayFrequency).EndTime := Cardinal(TempInteger);
+      S.ReadBuffer(TempInteger, SizeOf(Cardinal));
+      (NewSchedule as IJclScheduleDayFrequency).Interval := Cardinal(TempInteger);
+
+      case NewSchedule.RecurringType of
+        srkDaily:
+          begin
+            // Daily schedule properties
+            S.ReadBuffer(TempInteger, SizeOf(Boolean));
+            (NewSchedule as IJclDailySchedule).EveryWeekDay := Boolean(Byte(TempInteger));
+            if not Boolean(Byte(TempInteger)) then
+            begin
+              S.ReadBuffer(TempInteger, SizeOf(Cardinal));
+              (NewSchedule as IJclDailySchedule).Interval := Cardinal(TempInteger);
+            end;
+          end;
+        srkWeekly:
+          begin
+            // Weekly schedule properties
+            TempInteger := 0;
+            S.ReadBuffer(TempInteger, SizeOf(TScheduleWeekDays));
+            JclIntToSet(TypeInfo(TScheduleWeekDays), TempVal, TempInteger);
+
+            (NewSchedule as IJclWeeklySchedule).DaysOfWeek := TempVal;
+            S.ReadBuffer(TempInteger, SizeOf(Cardinal));
+            (NewSchedule as IJclWeeklySchedule).Interval := Cardinal(TempInteger);
+          end;
+        srkMonthly:
+          begin
+            // Monthly schedule properties
+            S.ReadBuffer(TempInteger, SizeOf(TScheduleIndexKind));
+            (NewSchedule as IJclMonthlySchedule).IndexKind := TScheduleIndexKind(TempInteger);
+            if (NewSchedule as IJclMonthlySchedule).IndexKind in [sikDay .. sikSunday] then
+            begin
+              S.ReadBuffer(TempInteger, SizeOf(Integer));
+              (NewSchedule as IJclMonthlySchedule).IndexValue := TempInteger;
+            end;
+            if (NewSchedule as IJclMonthlySchedule).IndexKind in [sikNone] then
+            begin
+              S.ReadBuffer(TempInteger, SizeOf(Integer));
+              (NewSchedule as IJclMonthlySchedule).Day := TempInteger;
+            end;
+            S.ReadBuffer(TempInteger, SizeOf(Cardinal));
+            (NewSchedule as IJclMonthlySchedule).Interval := Cardinal(TempInteger);
+          end;
+        srkYearly:
+          begin
+            // Yearly schedule properties
+            S.ReadBuffer(TempInteger, SizeOf(TScheduleIndexKind));
+            (NewSchedule as IJclYearlySchedule).IndexKind := TScheduleIndexKind(TempInteger);
+            if (NewSchedule as IJclYearlySchedule).IndexKind in [sikDay .. sikSunday] then
+            begin
+              S.ReadBuffer(TempInteger, SizeOf(Integer));
+              (NewSchedule as IJclYearlySchedule).IndexValue := TempInteger;
+            end;
+            if (NewSchedule as IJclYearlySchedule).IndexKind in [sikNone] then
+            begin
+              S.ReadBuffer(TempInteger, SizeOf(Integer));
+              (NewSchedule as IJclYearlySchedule).Day := TempInteger;
+            end;
+            S.ReadBuffer(TempInteger, SizeOf(Cardinal));
+            (NewSchedule as IJclYearlySchedule).Month := Cardinal(TempInteger);
+            S.ReadBuffer(TempInteger, SizeOf(Cardinal));
+            (NewSchedule as IJclYearlySchedule).Interval := Cardinal(TempInteger);
+          end;
+        else
+          raise EJVCLException.Create('Bad schedule info.');
+      end;
+    end;
+    // All went OK. Set the new state and schedule
+    FState := sesNotInitialized;
+    FSchedule := NewSchedule;
+  except
+    // something went wrong. Pretent we didn't read the stream at all
+    S.Position := OrgSPos;
+    raise;
+  end;
+end;
+
+procedure TJvEventCollectionItem.SaveToStreamBin(const S: TStream);
+  { Pre:
+      S.Position set to position where schedule is to be stored.
+      S assumed to be able to grow as needed or is large enough to hold schedule info
+      Schedule either uninitialized, stopped or paused.
+    Post:
+      if succesful:
+        S.Position set to the first byte after the schedule info.
+        State and Schedule unchanged.
+      on failure:
+        S.Position unchanged.
+        State and Schedule unchanged. }
+var
+  TempStream: TStream;
+  TempInteger: Integer;
+  TempStamp: TTimeStamp;
+  TempVal: TScheduleWeekDays;
+begin
+  TempStream := TMemoryStream.Create;
+  try
+    if not (State in [sesNotInitialized, sesEnded, sesPaused]) then
+      raise EJVCLException.Create('Schedule is active. Write a schedule can only be done on inactive schedules.');
+    // Write ID and version
+    TempStream.WriteBuffer(BinStreamID, Length(BinStreamID));
+    TempInteger := BinStreamVer;
+    TempStream.WriteBuffer(TempInteger, SizeOf(Word));
+    // Standard properties
+    TempStamp := Schedule.StartDate;
+    TempStream.WriteBuffer(TempStamp, SizeOf(TTimeStamp));
+    TempInteger := Ord(Schedule.RecurringType);
+    TempStream.WriteBuffer(TempInteger, SizeOf(TScheduleRecurringKind));
+
+    if Schedule.RecurringType <> srkOneShot then
+    begin
+      TempInteger := Ord(Schedule.EndType);
+      TempStream.WriteBuffer(TempInteger, SizeOf(TScheduleEndKind));
+      if Schedule.EndType = sekDate then
+      begin
+        TempStamp := Schedule.EndDate;
+        TempStream.WriteBuffer(TempStamp, SizeOf(TTimeStamp));
+      end
+      else if Schedule.EndType in [sekDayCount, sekTriggerCount] then
+      begin
+        TempInteger := Schedule.EndCount;
+        TempStream.WriteBuffer(TempInteger, SizeOf(Cardinal));
+      end;
+      // Daily frequency properties
+      with Schedule as IJclScheduleDayFrequency do
+      begin
+        TempInteger := Integer(StartTime);
+        TempStream.WriteBuffer(TempInteger, SizeOf(Cardinal));
+        TempInteger := Integer(EndTime);
+        TempStream.WriteBuffer(TempInteger, SizeOf(Cardinal));
+        TempInteger := Integer(Interval);
+        TempStream.WriteBuffer(TempInteger, SizeOf(Cardinal));
+      end;
+
+      case Schedule.RecurringType of
+        srkDaily:
+          with Schedule as IJclDailySchedule do
+          begin
+            // Daily schedule properties
+            TempInteger := Ord(EveryWeekDay);
+            TempStream.WriteBuffer(TempInteger, SizeOf(Boolean));
+            if not EveryWeekDay then
+            begin
+              TempInteger := Cardinal(Interval);
+              TempStream.WriteBuffer(TempInteger, SizeOf(Cardinal));
+            end;
+          end;
+        srkWeekly:
+          with Schedule as IJclWeeklySchedule do
+          begin
+            // Weekly schedule properties
+            TempVal := DaysOfWeek;
+            TempInteger := JclSetToInt(TypeInfo(TScheduleWeekDays), TempVal);
+            TempStream.WriteBuffer(TempInteger, SizeOf(TScheduleWeekDays));
+            TempInteger := Interval;
+            TempStream.WriteBuffer(TempInteger, SizeOf(Cardinal));
+          end;
+        srkMonthly:
+          with Schedule as IJclMonthlySchedule do
+          begin
+            // Monthly schedule properties
+            TempInteger := Ord(IndexKind);
+            TempStream.WriteBuffer(TempInteger, SizeOf(TScheduleIndexKind));
+            if IndexKind in [sikDay .. sikSunday] then
+            begin
+              TempInteger := IndexValue;
+              TempStream.WriteBuffer(TempInteger, SizeOf(Integer));
+            end;
+            if IndexKind in [sikNone] then
+            begin
+              TempInteger := Day;
+              TempStream.WriteBuffer(TempInteger, SizeOf(Integer));
+            end;
+            TempInteger := Integer(Interval);
+            TempStream.WriteBuffer(TempInteger, SizeOf(Cardinal));
+          end;
+        srkYearly:
+          with Schedule as IJclYearlySchedule do
+          begin
+            // Yearly schedule properties
+            TempInteger := Ord(IndexKind);
+            TempStream.WriteBuffer(TempInteger, SizeOf(TScheduleIndexKind));
+            if IndexKind in [sikDay .. sikSunday] then
+            begin
+              TempInteger := IndexValue;
+              TempStream.WriteBuffer(TempInteger, SizeOf(Integer));
+            end;
+            if IndexKind in [sikNone] then
+            begin
+              TempInteger := Day;
+              TempStream.WriteBuffer(TempInteger, SizeOf(Integer));
+            end;
+            TempInteger := Integer(Month);
+            TempStream.WriteBuffer(TempInteger, SizeOf(Cardinal));
+            TempInteger := Integer(Interval);
+            TempStream.WriteBuffer(TempInteger, SizeOf(Cardinal));
+          end;
+        else
+          raise EJVCLException.Create('Bad schedule info.');
+      end;
+    end;
+    { All went OK. Store it in the specified stream. This could raise an exception if the stream is
+      not large enough and can't grow. In that case the state of the stream is undetermined. However
+      the number of bytes to copy will fit into a single block ($F000 bytes) so the stream will most
+      likely be left in it's initial state. }
+    S.CopyFrom(TempStream, 0);
+  finally
+    TempStream.Free;
+  end;
 end;
 
 initialization
