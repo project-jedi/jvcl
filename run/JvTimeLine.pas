@@ -42,7 +42,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
-  QImgList, Types, QWindows,
+  QImgList, Types, QWindows, 
   {$ENDIF VisualCLX}
   {$IFDEF BCB}
   JvTypes, // TDate / TTime macros
@@ -936,7 +936,7 @@ end;
 procedure TJvTLScrollBtn.SetDirection(const Value: TJvScrollArrow);
 begin
   FDirection := Value;
-  if TimeLine <> nil then
+  if (TimeLine <> nil) and (TimeLine.parent <> nil )then
   begin
     UpdatePlacement;
     Invalidate;
