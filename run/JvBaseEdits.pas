@@ -79,7 +79,7 @@ type
     procedure SetFormatOnEditing(Value: Boolean);
     function GetText: string; {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     procedure SetText(const AValue: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
-    function TextToValText(const AValue: string): string;
+//    function TextToValText(const AValue: string): string;
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function IsFormatStored: Boolean;
     {$IFDEF VCL}
@@ -735,6 +735,7 @@ begin
   Result := inherited Text;
 end;
 
+(*
 function TJvCustomNumEdit.TextToValText(const AValue: string): string;
 var
   I: Integer;
@@ -768,7 +769,7 @@ begin
   if Result = '-' then
     Result := '-0';
 end;
-
+*)
 
 procedure TJvCustomNumEdit.SetText(const AValue: string);
 begin

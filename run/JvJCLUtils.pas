@@ -966,6 +966,10 @@ procedure CopyRectDIBits(ACanvas: TCanvas; const DestRect: TRect;
 function IsTrueType(const FontName: string): Boolean;
 {$ENDIF VCL}
 
+// Removes all non-numeric characters from AValue and returns
+// the resulting string
+function TextToValText(const AValue: string): string;
+
 implementation
 
 uses
@@ -8254,6 +8258,34 @@ begin
 end;
 
 {$ENDIF VCL}
+
+function TextToValText(const AValue: string): string;
+var i, j:integer;
+begin
+  Result := DelRSpace(AValue);
+  if DecimalSeparator <> ThousandSeparator then
+    Result := DelChars(Result, ThousandSeparator);
+
+  if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
+    Result := ReplaceStr(Result, '.', DecimalSeparator);
+  if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
+    Result := ReplaceStr(Result, ',', DecimalSeparator);
+
+  j := 1;
+  for i := 1 to Length(Result) do
+    if Result[i] in ['-','+','0'..'9', DecimalSeparator, ThousandSeparator] then
+    begin
+      Result[j] := Result[i];
+      Inc(j);
+    end;
+  SetLength(Result, j - 1);
+
+  if Result = '' then
+    Result := '0'
+  else
+  if Result = '-' then
+    Result := '-0';
+end;
 
 end.
 
