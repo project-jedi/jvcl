@@ -29,7 +29,8 @@ unit JvclVclClxCvt;
 interface
 
 uses
-  SysUtils, Classes, VclClxCvt, PackageInformation, PackageModels, JclFileUtils, JclDateTime;
+  SysUtils, Classes, VclClxCvt, PackageInformation, PackageModels, JclFileUtils,
+  JclDateTime;
 
 type
   TJVCLConverter = class(TVCLConverter)
