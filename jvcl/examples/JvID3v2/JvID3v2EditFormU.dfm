@@ -379,8 +379,11 @@ object JvID3v2EditForm: TJvID3v2EditForm
           end>
         ReadOnly = True
         RowSelect = True
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 0
         ViewStyle = vsReport
+        OnInfoTip = lsvAllFramesInfoTip
       end
     end
   end
@@ -390,18 +393,12 @@ object JvID3v2EditForm: TJvID3v2EditForm
     Width = 121
     Height = 308
     Align = alLeft
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
     ItemHeight = 13
     Items.Strings = (
       'Winamp tags'
       'Lyrics'
       'Pictures'
       'All Frames')
-    ParentFont = False
     TabOrder = 1
     OnClick = lsbNavigatorClick
   end
