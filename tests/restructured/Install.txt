@@ -3,9 +3,23 @@ Install notes for JEDI-VCL (JVCL) Version 2.00 ALPHA for Delphi 5 / Delphi 6
 
 1) IMPORTANT - in order to use JVCL, you need to have JCL (JEDI Code Library) INSTALLED on your computer. JCL is available from http://sourceforge.net/projects/jcl/
 
-Please follow their instructions for installation (you should not have installed the DJCL package in the Delphi IDE)
+Please follow JCL's instructions for installation (do not install the DJCL package in the Delphi IDE: just build it)
 
-2) Unzip the JVCL files to a subdirectory of your choice (IMPORTANT: it should be a sibling to the JCL subdirectory, i.e. it is on the same level as JCL:
+2) If you have an older JVCL installed, uninstall it before continuing. Uninstall must be performed manually in the following manner:
+  a) Start Delphi
+  b) Click on Component|Install Package
+  c) Find and select the JEDI-VCL package in the list and click the Remove button. Answer "Yes" to the prompt.
+  d) Search your hard-drive for files named JVCL100_D60.* and JVCL100_R60.*. Delete the found bpl and dcp files
+  e) Optional: Delete the folder with the old JVCL
+  f) Optional: Remove the old JVCL folder path from Delphi's Library path
+
+2) If you've had an older JVCL installed, you need to do the following to enable the new palette tab layout:
+  a) close Delphi if it's running
+  b) Run regedit.exe (in your Windows folder)
+  c) Open the key HKEY_CURRENT_USER\Software\Borland\Delphi\6.0\Palette
+  d) In the right-side listview, delete all keys that have JEDI or JVCL or similar in their names (select item, hit Del key)
+  
+3) Unzip the JVCL files to a subdirectory of your choice (IMPORTANT: it should be a sibling to the JCL subdirectory, i.e. it is on the same level as JCL:
 
 - JCL
 - JVCL
@@ -16,18 +30,20 @@ Please follow their instructions for installation (you should not have installed
     c) for Delphi 5 it's "JVCL200_D50.dpk" 
 
 
-4) Click on the "Compile" button, and then on the "Install" button
+4) Click on the "Compile" button, and then on the "Install" button. If you get an error saying "<filename>.res not found: recreated", just hit the Compile button again and the res file will be created for you.
 
-If you get compile error stating that zlib.pas, or some *.obj files are missing, please make sure that in your packages the following paths:
+If you get compile error stating that zlib.pas, or some *.obj files are missing, please make sure that you have the zlib files on your computer and in Delphi's library path.
 
-$(DELPHI)\source\extras\zlib\
-$(DELPHI)\source\extras\zlib\obj
+If not, you need to install those files from your Delphi CD first. 
 
-are in your Search path ( click on package "Options", and then on "Directories" tab)
-
-Of course, you need to install those files from Delphi first. If these files doesn't exist, please install them from your Delphi CD.
+You will get a couple of warnings about "implicitly included" files, but this is normal and can be ignored.
 
 5) The window showing all the components that have been installed will be very big, and most probably you won't see the "OK" button, so just close the window (or hit ENTER). You should now have JVCL installed on your PC. 
+
+6) To use the components in a program you need to add the DCU output path to the Delphi library path, like this:
+  a) If you are using Delphi 6 or Delphi 6 Personal, add the folder <JVCL>\lib6 to the path
+  b) If you are using Delphi 5, add the folder <JVCL>\lib5 to the path
+  <JVCL> is the full drive and path to the folder where you put the JVCL files
 
 
 If there are installation problems, please contact us via: 
