@@ -36,11 +36,11 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Forms, Controls, Graphics, ExtCtrls, Tabs, Dialogs,
-  ExtDlgs, Menus, StdCtrls, ImgEdit, ImgList,
+  ExtDlgs, Menus, StdCtrls, ImgEdit, ImgList, FiltEdit, 
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
-  QExtDlgs, QMenus, QStdCtrls, QImgList,
+  QWindows, QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
+  QExtDlgs, QMenus, QStdCtrls, QImgList, Types,
   {$ENDIF VisualCLX}
   DsnConst,
   {$IFDEF COMPILER6_UP}

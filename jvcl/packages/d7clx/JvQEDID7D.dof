@@ -4,7 +4,7 @@ UnsafeCode=0
 UnsafeCast=0
 [Directories]
 UnitOutputDir=..\..\lib\d7clx
-SearchPath=..\..\qrun;..\..\qcommon;..\..\Resources
+SearchPath=..\..\qdesign;..\..\qrun;..\..\qcommon;..\..\common;..\..\Resources
 [Excluded Packages]
 $(DELPHI)\Bin\dcldb70.bpl=Borland Database Components
 $(DELPHI)\Bin\dclstd70.bpl=Borland Standard Components
@@ -37,3 +37,4 @@ $(DELPHI)\Projects\Bpl\JvDlgsD7D.bpl=JVCL Dialog Components
 $(DELPHI)\Projects\Bpl\JvCustomD7D.bpl=JVCL Custom Controls
 $(DELPHI)\Projects\Bpl\JvDotNetCtrlsD7D.bpl=JVCL DotNet Controls
 $(DELPHI)\Projects\Bpl\JvGlobusD7D.bpl=JVCL Globus Components
+
