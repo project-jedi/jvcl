@@ -464,6 +464,11 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
+{$IFDEF VisualCLX}
+type
+  TOpenWidgetControl = class(TWidgetControl);
+{$ENDIF VisualCLX}
+
 procedure TJvInplaceEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   ListPos: TPoint;
@@ -479,7 +484,12 @@ begin
       begin
         StopTracking;
         MousePos := PointToSmallPoint(ListPos);
+        {$IFDEF VCL}
         SendMessage(FActiveList.Handle, WM_LBUTTONDOWN, 0, Integer(MousePos));
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        TOpenWidgetControl(FActiveList).Mousdown( mbLeft, Shift, MousePos.X , MousePos.Y);
+        {$ENDIF VisualCLX}
         Exit;
       end;
     end;
