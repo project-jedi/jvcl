@@ -2070,7 +2070,7 @@ procedure TJvDBCalcEdit.UpdateFieldData(Sender: TObject);
 begin
   inherited UpdateData;
   //Polaris  if (Value = 0) and ZeroEmpty then FDataLink.Field.Clear
-  if (Trim(Text) = EmptyStr) and FEmptyIsNull then
+  if (Trim(Text) = '') and FEmptyIsNull then
     FDataLink.Field.Clear
       //if (Value = 0) and ZeroEmpty then
 //  FDataLink.Field.Clear
@@ -2216,7 +2216,7 @@ begin
   FRecordCount := -1;
   FRecordNo := -1;
   ShowAccelChar := False;
-  FDataSetName := EmptyStr;
+  FDataSetName := '';
   FDataLink := TJvStatusDataLink.Create(Self);
   FStyle := lsState;
   GlyphAlign := glGlyphLeft;

@@ -744,7 +744,7 @@ begin
   FLookupLink := TLookupSourceLink.Create;
   FLookupLink.FDataControl := Self;
   FListFields := TList.Create;
-  FEmptyValue := EmptyStr;
+  FEmptyValue := '';
   FEmptyStrIsNull := True; // Polaris
   FEmptyItemColor := clWindow;
   FValue := FEmptyValue;
@@ -789,7 +789,7 @@ end;
 
 function TJvLookupControl.StoreEmpty: Boolean;
 begin
-  Result := (FEmptyValue <> EmptyStr);
+  Result := (FEmptyValue <> '');
 end;
 
 procedure TJvLookupControl.CheckNotFixed;
@@ -823,9 +823,8 @@ end;
 
 function TJvLookupControl.GetKeyValue: Variant;
 begin
-  { (rb) EmptyStr is provided for backwards compatibility only in D7 }
   if ValueIsEmpty(Value) then
-    if (Value = EmptyStr) and FEmptyStrIsNull then
+    if (Value = '') and FEmptyStrIsNull then
       Result := Null // Polaris
     else
       Result := FEmptyValue // Polaris
@@ -1126,7 +1125,7 @@ begin
     if (FDataLink.DataSource <> nil) and (FMasterField <> nil) and
       FDataLink.Edit then
     begin
-      if FEmptyValue = EmptyStr then
+      if FEmptyValue = '' then
         FMasterField.Clear
       else
         FMasterField.AsString := FEmptyValue;
@@ -1137,7 +1136,7 @@ begin
     if FDataLink.Edit then
       SetFieldValue(FMasterField, FEmptyValue); // Polaris
     FValue := FEmptyValue;
-    FDisplayValue := EmptyStr;
+    FDisplayValue := '';
     inherited Text := DisplayEmpty;
     Invalidate;
     Click;
@@ -1243,7 +1242,7 @@ end;
 procedure TJvLookupControl.SetFieldValue(Field: TField; const Value: string);
 begin
   if Value = FEmptyValue then
-    if (FEmptyValue = EmptyStr) and FEmptyStrIsNull then
+    if (FEmptyValue = '') and FEmptyStrIsNull then
       Field.Clear
     else
       Field.AsString := FEmptyValue
@@ -1479,7 +1478,7 @@ end;
 
 function TJvLookupControl.EmptyRowVisible: Boolean;
 begin
-  Result := DisplayEmpty <> EmptyStr;
+  Result := DisplayEmpty <> '';
 end;
 
 procedure TJvLookupControl.UpdateDisplayValue;
@@ -2010,7 +2009,7 @@ end;
 
 procedure TJvDBLookupList.UpdateDisplayEmpty(const Value: string);
 begin
-  UpdateBufferCount(RowCount - Ord(Value <> EmptyStr));
+  UpdateBufferCount(RowCount - Ord(Value <> ''));
 end;
 
 procedure TJvDBLookupList.UpdateBufferCount(Rows: Integer);

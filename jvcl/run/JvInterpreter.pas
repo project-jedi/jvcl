@@ -7965,6 +7965,8 @@ begin
 end;
 
 procedure TJvInterpreterRecord.NewRecord(var Value: Variant);
+const
+  EmptyStr: string = '';
 var
   I: Integer;
   Rec: PChar;

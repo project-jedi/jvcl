@@ -390,7 +390,7 @@ begin
       DataSet.EnableControls;
     end;
   finally
-    FLookupValue := EmptyStr;
+    FLookupValue := '';
     FLookupField := nil;
     DataSet.FreeBookmark(FBookmark);
     FBookmark := nil;

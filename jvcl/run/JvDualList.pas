@@ -103,7 +103,7 @@ constructor TJvDualListDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FShowHelp := True;
-  FTitle := EmptyStr;
+  FTitle := '';
   FList1 := TStringList.Create;
   FList2 := TStringList.Create;
   FLabel1Caption := RsDualListSrcCaption;
