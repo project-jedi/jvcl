@@ -291,7 +291,7 @@ type
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
   protected
-    procedure DoDropDownMenu(Sender:TObject; MousePos:TPoint; var Handled:boolean);
+    procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: boolean);
     procedure DoColorsChange(Sender: TObject);
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -304,7 +304,7 @@ type
     property Colors: TJvNavPanelColors read FColors write SetColors;
     property StyleManager: TJvNavPaneStyleManager read FStyleManager write SetStyleManager;
     property DropDownMenu: TPopupMenu read GetDropDownMenu write SetDropDownMenu;
-    property OnDropDownMenu:TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
+    property OnDropDownMenu: TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
   end;
 
   TJvNavIconButtonType = (nibDropDown, nibImage, nibDropArrow, nibClose);
@@ -380,13 +380,11 @@ type
   TJvNavPanelToolButton = class(TJvCustomGraphicButton)
   private
     FChangeLink: TChangeLink;
-    FCaption: TCaption;
     FImages: TCustomImageList;
     FImageIndex: TImageIndex;
     FButtonType: TJvNavIconButtonType;
     procedure DoImagesChange(Sender: TObject);
     procedure SetButtonType(const Value: TJvNavIconButtonType);
-    procedure SetCaption(const Value: TCaption);
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetImages(const Value: TCustomImageList);
   protected
@@ -398,7 +396,7 @@ type
     property Images: TCustomImageList read FImages write SetImages;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property ButtonType: TJvNavIconButtonType read FButtonType write SetButtonType;
-    property Caption: TCaption read FCaption write SetCaption;
+    property Caption;
   end;
 
   TJvNavPanelButton = class(TJvCustomGraphicButton)
@@ -430,8 +428,8 @@ type
     {$IFDEF VisualCLX}
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
     {$ENDIF VisualCLX}
-    property Alignment:TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property WordWrap:boolean read FWordWrap write SetWordWrap default False;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property WordWrap: boolean read FWordWrap write SetWordWrap default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -522,8 +520,8 @@ type
     property Colors: TJvNavPanelColors read GetColors write SetColors;
     property StyleManager: TJvNavPaneStyleManager read FStyleManager write SetStyleManager;
     property Header: TJvNavPanelHeader read FHeader;
-    property Alignment:TAlignment read GetAlignment write SetAlignment;
-    property WordWrap:boolean read GetWordWrap write SetWordWrap;
+    property Alignment: TAlignment read GetAlignment write SetAlignment;
+    property WordWrap: boolean read GetWordWrap write SetWordWrap;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -615,8 +613,8 @@ type
     FButtons: TJvNavPaneToolButtons;
     FRealButtons: TList;
     FOnButtonClick: TJvNavPaneToolButtonClick;
-    FDropDown: TJvNavIconButton;
-    FCloseButton: TJvNavIconButton;
+    FDropDown: TJvNavPanelToolButton;
+    FCloseButton: TJvNavPanelToolButton;
     FOnClose: TNotifyEvent;
     FShowGrabber: Boolean;
     FOnDropDownMenu: TContextPopupEvent;
@@ -645,7 +643,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure TextChanged; override;
     procedure FontChanged; override;
-    procedure DoDropDownMenu(Sender:TObject; MousePos:TPoint; var Handled:boolean);
+    procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: boolean);
     {$IFDEF VCL}
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMNCPaint(var Message: TWMNCPaint); message WM_NCPAINT;
@@ -699,8 +697,7 @@ type
     property StyleManager: TJvNavPaneStyleManager read FStyleManager write SetStyleManager;
     property OnButtonClick: TJvNavPaneToolButtonClick read FOnButtonClick write FOnButtonClick;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
-    property OnDropDownMenu:TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
-
+    property OnDropDownMenu: TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
 
     property OnClick;
     property OnContextPopup;
@@ -766,7 +763,7 @@ type
     procedure SetAlignment(const Value: TAlignment);
     procedure SetWordWrap(const Value: boolean);
   protected
-    procedure UpdatePages;virtual;
+    procedure UpdatePages; virtual;
     {$IFDEF VisualCLX}
     function WidgetFlags: Integer; override;
     {$ENDIF VisualCLX}
@@ -776,7 +773,7 @@ type
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Loaded; override;
-    procedure DoDropDownMenu(Sender:TObject; MousePos:TPoint; var Handled:boolean);
+    procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: boolean);
     function InternalGetPageClass: TJvCustomPageClass; override;
     property NavPages[Index: Integer]: TJvNavPanelPage read GetNavPage;
   public
@@ -806,7 +803,7 @@ type
     property SmallImages: TCustomImageList read GetSmallImages write SetSmallImages;
     property SplitterHeight: Integer read GetSplitterHeight write SetSplitterHeight default 7;
     property WordWrap: boolean read FWordWrap write SetWordWrap default False;
-    property OnDropDownMenu:TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
+    property OnDropDownMenu: TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
   end;
 
   TJvNavigationPane = class(TJvCustomNavigationPane)
@@ -932,11 +929,11 @@ uses
   QForms, QActnList,
   {$ENDIF VisualCLX}
   JvJVCLUtils, JvJCLUtils;
-  
+
 const
   cNavPanelButtonGroupIndex = 113;
-  
-{$IFDEF COMPILER5}
+
+  {$IFDEF COMPILER5}
 type
   TCustomImageListEx = class(TCustomImageList)
   public
@@ -1534,7 +1531,8 @@ begin
 end;
 
 procedure TJvCustomNavigationPane.UpdatePages;
-var I:Integer;
+var
+  I: Integer;
 begin
   for i := 0 to PageCount - 1 do
   begin
@@ -1561,7 +1559,7 @@ procedure TJvCustomNavigationPane.DoDropDownMenu(Sender: TObject;
   MousePos: TPoint; var Handled: boolean);
 begin
   if Assigned(FOnDropDownMenu) then
-    FOnDropDownMenu(Self, MousePos, Handled);  
+    FOnDropDownMenu(Self, MousePos, Handled);
 end;
 
 { TJvNavIconButton }
@@ -1700,26 +1698,20 @@ begin
         end;
       nibClose:
         begin
-          // area should be 9 x 8, centered
-          P.X := Rect.Left + (RectWidth(Rect) - 8) div 2 + Ord(bsMouseDown in MouseStates);
-          P.Y := Rect.Top + (RectHeight(Rect) - 7) div 2 + Ord(bsMouseDown in MouseStates);
+          // area should be 8 x 8, centered
+          P.X := (RectWidth(ClientRect) - 8) div 2 + Ord(bsMouseDown in MouseStates);
+          P.Y := (RectHeight(ClientRect) - 8) div 2 + Ord(bsMouseDown in MouseStates);
           Canvas.Pen.Color := clBlack;
           for i := 0 to 7 do
           begin
-            Canvas.MoveTo(P.X, P.Y);
-            Canvas.LineTo(P.X + 2, P.Y);
-            Inc(P.X);
-            Inc(P.Y);
+            Canvas.MoveTo(P.X + I, P.Y + I);
+            Canvas.LineTo(P.X + I + 2, P.Y + I);
           end;
-          P.X := Rect.Left + (RectWidth(Rect) - 8) div 2 + Ord(bsMouseDown in MouseStates);
-          P.Y := Rect.Top + (RectHeight(Rect) - 7) div 2 + Ord(bsMouseDown in MouseStates);
-          Inc(P.Y, 7);
+          Inc(P.X, 7);
           for i := 0 to 7 do
           begin
-            Canvas.MoveTo(P.X, P.Y);
-            Canvas.LineTo(P.X + 2, P.Y);
-            Inc(P.X);
-            Dec(P.Y);
+            Canvas.MoveTo(P.X - I, P.Y + I);
+            Canvas.LineTo(P.X - I + 2, P.Y + I);
           end;
         end;
 
@@ -1822,7 +1814,7 @@ constructor TJvNavPanelButton.Create(AOwner: TComponent);
 begin
   inherited;
   FAlignment := taLeftJustify;
-  
+
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
   ControlStyle := ControlStyle + [csOpaque, csDisplayDragImage];
@@ -1887,8 +1879,8 @@ procedure TJvNavPanelButton.Paint;
 //  cWordWrap: array[boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 var
   R: TRect;
-  X, Y:Integer;
-  function IsValidImage:boolean;
+  X, Y: Integer;
+  function IsValidImage: boolean;
   begin
     Result := Assigned(Images) and (ImageIndex >= 0);
   end;
@@ -2778,8 +2770,8 @@ end;
 
 procedure TJvNavPanelHeader.Paint;
 const
-  cAlignment:array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  cWordWrap:array[boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
+  cAlignment: array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  cWordWrap: array[boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 
 var
   R, TempRect: TRect;
@@ -2827,7 +2819,7 @@ begin
         X := R.Right - Images.Width;
       taRightJustify:
         X := R.Left + 4;
-      else  // taCenter
+    else // taCenter
       begin
         if Caption <> '' then
         begin
@@ -3420,30 +3412,18 @@ begin
   {$ENDIF VisualCLX}
   Font.Style := [fsBold];
 
-  FCloseButton := TJvNavIconButton.Create(Self);
+  FCloseButton := TJvNavPanelToolButton.Create(Self);
   FCloseButton.ButtonType := nibClose;
-  FCloseButton.Anchors := [akRight, akTop];
-  //  FCloseButton.Colors.ButtonColorFrom := clNone;
-  //  FCloseButton.Colors.ButtonColorTo := clNone;
-  //  FCloseButton.Colors.ButtonSelectedColorFrom := clNone;
-  //  FCloseButton.Colors.ButtonSelectedColorTo := clNone;
-  //  FCloseButton.Colors.ButtonHotColorFrom := clNone;
-  //  FCloseButton.Colors.ButtonHotColorTo := clNone;
   FCloseButton.Parent := Self;
   FCloseButton.Visible := True;
   FCloseButton.OnClick := DoCloseClick;
 
-  FDropDown := TJvNavIconButton.Create(Self);
+  FDropDown := TJvNavPanelToolButton.Create(Self);
+  FDropDown.Visible := False;
   FDropDown.ButtonType := nibDropArrow;
-  FDropDown.Anchors := [akRight, akTop];
   FDropDown.OnDropDownMenu := DoDropDownMenu;
-  //  FDropDown.Colors.ButtonColorFrom := clNone;
-  //  FDropDown.Colors.ButtonColorTo := clNone;
-  //  FDropDown.Colors.ButtonSelectedColorFrom := clNone;
-  //  FDropDown.Colors.ButtonSelectedColorTo := clNone;
-  //  FDropDown.Colors.ButtonHotColorFrom := clNone;
-  //  FDropDown.Colors.ButtonHotColorTo := clNone;
   FDropDown.Parent := Self;
+
   Width := 185;
   Height := 41;
 end;
@@ -3589,14 +3569,16 @@ begin
     else
       Inc(R.Left, 12);
     Canvas.Font := Self.Font;
-
-    SetBkMode(Canvas.Handle, TRANSPARENT);
-    {$IFDEF VCL}
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
-    {$ENDIF VisualCLX}
+    if DropDownMenu = nil then
+    begin
+      SetBkMode(Canvas.Handle, TRANSPARENT);
+      {$IFDEF VCL}
+      DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
+      {$ENDIF VisualCLX}
+    end;
     // draw the client areas top rounding
     R := ClientRect;
     Inc(R.Top, HeaderHeight);
@@ -3649,15 +3631,19 @@ begin
 end;
 
 procedure TJvNavPaneToolPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+const
+  cOffset = 14;
+  cWidth = 18;
+  cHeight = 18;
 begin
   inherited;
   if Parent <> nil then
   begin
-    FCloseButton.SetBounds(ClientWidth - 18, (HeaderHeight - 22) div 2, 18, 22);
+    FCloseButton.SetBounds(ClientWidth - cWidth - 2, (HeaderHeight - cHeight) div 2, cWidth, cHeight);
     if FCloseButton.Visible then
-      FDropDown.SetBounds(FCloseButton.Left - 19, (HeaderHeight - 22) div 2, 18, 22)
+      FDropDown.SetBounds(cOffset, (HeaderHeight - cHeight) div 2, Width - cWidth - cOffset - 2, cHeight)
     else
-      FDropDown.SetBounds(ClientWidth - 18, (HeaderHeight - 22) div 2, 18, 22);
+      FDropDown.SetBounds(cOffset, (HeaderHeight - cHeight) div 2, Width - cOffset - 4, cHeight);
   end;
 end;
 
@@ -3726,6 +3712,7 @@ begin
   begin
     FDropDown.DropDownMenu := Value;
     FDropDown.Visible := Value <> nil;
+    Invalidate;
   end;
 end;
 
@@ -3790,8 +3777,8 @@ begin
       FColorFrom := FStyleManager.Colors.ButtonColorFrom;
       FColorTo := FStyleManager.Colors.ButtonColorTo;
       FButtonColor := FStyleManager.Colors.SplitterColorTo;
-      FDropDown.StyleManager := FStyleManager;
-      FCloseButton.StyleManager := FStyleManager;
+//      FDropDown.StyleManager := FStyleManager;
+//      FCloseButton.StyleManager := FStyleManager;
       Invalidate;
     end;
   end;
@@ -3800,6 +3787,7 @@ end;
 procedure TJvNavPaneToolPanel.TextChanged;
 begin
   inherited TextChanged;
+  FDropDown.Caption := Caption;
   Invalidate;
 end;
 
@@ -3918,9 +3906,9 @@ end;
 procedure TJvNavPanelToolButton.Paint;
 var
   R: TRect;
+  I: Integer;
 begin
 //  inherited;
-  R := ClientRect;
   if MouseStates <> [] then
   begin
     Canvas.Pen.Color := $6B2408;
@@ -3930,19 +3918,65 @@ begin
       Canvas.Brush.Color := $B59284;
     Canvas.Rectangle(ClientRect);
   end;
-{  if Caption <> '' then
-  begin
-    Canvas.Font := Font;
-    SetBkMode(Canvas.Handle, TRANSPARENT);
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_LEFT or DT_VCENTER or DT_NOPREFIX);
-    if Assigned(Images) then // draw image to the right
-      TCustomImageListEx(Images).Draw(Canvas, Width - Images.Width - 4, (Height - Images.Height) div 2, ImageIndex, dsTransparent, itImage, Enabled);
-  end
-  else}
-  if Assigned(Images) then
-    TCustomImageListEx(Images).Draw(
-      Canvas, (Width - Images.Width) div 2, (Height - Images.Height) div 2,
-      ImageIndex, dsTransparent, itImage, Enabled);
+  case ButtonType of
+    nibDropArrow: // dropdown arrow is 7x4, right-aligned
+      begin
+        R := ClientRect;
+        if Caption <> '' then
+        begin
+          InflateRect(R, -2, -2);
+          Canvas.Font := Font;
+          SetBkMode(Canvas.Handle, TRANSPARENT);
+          InflateRect(R, -2, 0);
+          DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_LEFT or DT_VCENTER or DT_NOPREFIX);
+          InflateRect(R, 2, 0);
+        end;
+        R.Left := R.Right - 11;
+        Dec(R.Right, 4);
+        R.Top := (RectHeight(ClientRect) - 4) div 2;
+        Canvas.Pen.Color := clWindowText;
+        for I := 0 to 3 do
+        begin
+          Canvas.MoveTo(R.Left, R.Top);
+          Canvas.LineTo(R.Right, R.Top);
+          Dec(R.Right);
+          Inc(R.Left);
+          Inc(R.Top);
+        end;
+      end;
+    nibClose:
+      begin
+      // close button is 8x8, centered
+        if bsMouseDown in MouseStates then
+          Canvas.Pen.Color := clHighlightText
+        else
+          Canvas.Pen.Color := clWindowText;
+        R := ClientRect;
+        InflateRect(R, -(RectWidth(R) div 2 - 4), -(RectHeight(R) div 2 - 4));
+        if Odd(Height) or Odd(Width) then
+        begin
+          Inc(R.Right);
+          Inc(R.Bottom);
+        end;
+        // (p3) this isn't exactly the same as MS's but good enough for me :)
+        for I := 0 to 7 do
+        begin
+          Canvas.MoveTo(R.Left + I, R.Top + I);
+          Canvas.LineTo(R.Left + I + 2, R.Top + I);
+        end;
+        for I := 0 to 7 do
+        begin
+          Canvas.MoveTo(R.Right - I, R.Top + I);
+          Canvas.LineTo(R.Right - I - 2, R.Top + I);
+        end;
+      end;
+    nibImage:
+      if Assigned(Images) then
+        TCustomImageListEx(Images).Draw(
+          Canvas, (Width - Images.Width) div 2, (Height - Images.Height) div 2,
+          ImageIndex, dsTransparent, itImage, Enabled);
+  end;
+
 end;
 
 procedure TJvNavPanelToolButton.SetButtonType(const Value: TJvNavIconButtonType);
@@ -3950,15 +3984,6 @@ begin
   if FButtonType <> Value then
   begin
     FButtonType := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvNavPanelToolButton.SetCaption(const Value: TCaption);
-begin
-  if FCaption <> Value then
-  begin
-    FCaption := Value;
     Invalidate;
   end;
 end;
