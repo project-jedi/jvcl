@@ -93,11 +93,11 @@ begin
   Dialog := TJvCsvDefStrDialog.Create(nil); // no owner!
 //  DlgResult := idCancel;
   try
-    Dialog.SetSeparator(ASeparator);
-    Dialog.SetCsvStr(OldValue);
+    Dialog.Separator := ASeparator;
+    Dialog.CsvStr := OldValue;
     DlgResult := Dialog.ShowModal;
     if DlgResult = idOk then
-      Result := Dialog.GetCsvStr
+      Result := Dialog.CsvStr
     else
       Result := OldValue;
   finally

@@ -70,21 +70,22 @@ type
     procedure SpeedButtonDelClick(Sender: TObject);
     procedure ListBoxFieldsKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-  protected
+  private
     FUpdating: Boolean;
     FOriginalCsvStr: string;
+    FSeparator: Char;
     FTypeChars: array [0..6] of Char;
     FFieldTypeCh: Char;
-    FSeparator: Char;
     procedure ItemChange;
     function MakeString: string; // take changes, put back into string format
     procedure UpdateCsvStr;
     procedure LengthDisabled;
     procedure LengthEnabled(FieldLength: Integer);
-  public
     procedure SetCsvStr(ACsvStr: string);
     function GetCsvStr: string;
-    procedure SetSeparator(ASeparator: Char);
+  public
+    property Separator: Char read FSeparator write FSeparator;
+    property CsvStr: string read GetCsvStr write SetCsvStr;
   end;
 
 var
@@ -107,7 +108,7 @@ begin
     if S = '' then
       S := ListBoxFields.Items[I]
     else
-      S := S + FSeparator + '"' + ListBoxFields.Items[I] + '"';
+      S := S + FSeparator + ListBoxFields.Items[I];
   EditCsvStr.Text := S;
 end;
 
@@ -186,6 +187,11 @@ begin
     end;
 end;
 
+function TJvCsvDefStrDialog.GetCsvStr: string;
+begin
+  Result := EditCsvStr.Text;
+end;
+
 procedure TJvCsvDefStrDialog.SetCsvStr(ACsvStr: string);
 var
   Fields: array of string;
@@ -223,11 +229,6 @@ begin
     FUpdating := False;
   end;
   Self.ActiveControl := EditFieldName;
-end;
-
-function TJvCsvDefStrDialog.GetCsvStr: string;
-begin
-  Result := EditCsvStr.Text;
 end;
 
 procedure TJvCsvDefStrDialog.ButtonOkClick(Sender: TObject);
@@ -484,11 +485,6 @@ begin
 // LabelKey.Caption := IntToStr(Key);
   if Key = VK_DELETE then
     SpeedButtonDelClick(Sender);
-end;
-
-procedure TJvCsvDefStrDialog.SetSeparator(ASeparator: Char);
-begin
-  FSeparator := ASeparator;
 end;
 
 end.
