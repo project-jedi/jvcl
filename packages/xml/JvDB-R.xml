@@ -47,5 +47,6 @@
     <File Name="..\..\run\JvDBGrid.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBGridExport.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBGridSelectColumnForm.pas" Targets="all" Formname="frmSelectColumn" Condition=""/>
+    <File Name="..\..\run\JvExDBGrids.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
