@@ -336,7 +336,7 @@ uses
   Consts, Math,
   JvStrUtils, JvCalc;
 
-{$R ..\resources\JvCurrEdit.res}
+{$R ..\resources\JvBaseEdits.res}
 
 const
   sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }

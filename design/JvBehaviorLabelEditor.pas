@@ -14,18 +14,11 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
-procedure Register;
 
 implementation
 uses
-  JvxDConst, JvBehaviorLabel;
+  JvBehaviorLabel;
 
-
-procedure Register;
-begin
-  RegisterComponents(srJvStandardPalette, [TJvBehaviorLabel]);
-  RegisterPropertyEditor(typeinfo(TJvLabelBehaviorName),TJvBehaviorLabel,'Behavior',TJvLabelBehaviorProperty);
-end;
 
 { TJvLabelBehaviorProperty }
 

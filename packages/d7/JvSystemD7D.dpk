@@ -29,9 +29,13 @@ package JvSystemD7D;
 requires
   rtl,
   JvSystemD7R,
-  vcl;
+  vcl,
+  designide,
+  vclactnband,
+  vclx;
 
 contains
-  JvSystemReg in '..\..\design\JvSystemReg.pas';
+  JvSystemReg in '..\..\design\JvSystemReg.pas',
+  JvChangeNotifyEditor in '..\..\design\JvChangeNotifyEditor.pas';
 
 end.

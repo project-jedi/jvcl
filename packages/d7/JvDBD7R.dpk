@@ -46,7 +46,7 @@ contains
   JvDBTreeView in '..\..\run\JvDBTreeView.pas',
   JvLookup in '..\..\run\JvLookup.pas',
   JvDBUtils in '..\..\run\JvDBUtils.pas',
-  JvCsvData in '..\..\source\JvCsvData.pas',
-  JvCsvParse in '..\..\source\JvCsvParse.pas';
+  JvCsvData in '..\..\run\JvCsvData.pas',
+  JvCsvParse in '..\..\run\JvCsvParse.pas';
 
 end.

@@ -39,7 +39,7 @@ uses
   JvTypes, JvButton, JvDirectories, JvFunctions;
 
 type
-  TJvControlPanel = class(TJvCustomButton)
+  TJvControlPanelButton = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
@@ -63,14 +63,14 @@ type
 
 implementation
 
-constructor TJvControlPanel.Create(AOwner: TComponent);
+constructor TJvControlPanelButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDirs := TJvDirectories.Create(Self);
   FPopup := TPopupMenu.Create(Self);
 end;
 
-destructor TJvControlPanel.Destroy;
+destructor TJvControlPanelButton.Destroy;
 var
   I: Integer;
 begin
@@ -82,14 +82,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvControlPanel.CreateParams(var Params: TCreateParams);
+procedure TJvControlPanelButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   if not (csDesigning in ComponentState) then
     Refresh;
 end;
 
-procedure TJvControlPanel.AddToPopup(Item: TMenuItem; Path: string);
+procedure TJvControlPanelButton.AddToPopup(Item: TMenuItem; Path: string);
 var
   I: Integer;
   It: TMenuItem;
@@ -123,7 +123,7 @@ begin
   end;
 end;
 
-procedure TJvControlPanel.Click;
+procedure TJvControlPanelButton.Click;
 var
   P: TPoint;
 begin
@@ -135,7 +135,7 @@ begin
   end;
 end;
 
-procedure TJvControlPanel.Notification(AComponent: TComponent;
+procedure TJvControlPanelButton.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -143,7 +143,7 @@ begin
     Images := nil; // (p3) calls Refresh
 end;
 
-procedure TJvControlPanel.Refresh;
+procedure TJvControlPanelButton.Refresh;
 var
   St: string;
 begin
@@ -157,7 +157,7 @@ begin
   PopupMenu := FPopup;
 end;
 
-procedure TJvControlPanel.SetImages(const Value: TImageList);
+procedure TJvControlPanelButton.SetImages(const Value: TImageList);
 begin
   if FImages <> Value then
   begin
@@ -166,7 +166,7 @@ begin
   end;
 end;
 
-procedure TJvControlPanel.DoLinkClick(Sender: TObject);
+procedure TJvControlPanelButton.DoLinkClick(Sender: TObject);
 begin
   if Assigned(FOnLinkClick) then
     FOnLinkClick(Self, (Sender as TMenuItem).Hint);

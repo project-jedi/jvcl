@@ -37,7 +37,7 @@ uses
   JvButton, JvDirectories, JvTypes, JvFunctions;
 
 type
-  TJvRecentMenuBtn = class(TJvCustomButton)
+  TJvRecentMenuButton = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
@@ -69,7 +69,7 @@ resourcestring
 const
   cMaxItems = 15;
 
-constructor TJvRecentMenuBtn.Create(AOwner: TComponent);
+constructor TJvRecentMenuButton.Create(AOwner: TComponent);
 var
   It: TMenuItem;
 begin
@@ -89,7 +89,7 @@ begin
   FPopup.OnPopup := CreatePopup;
 end;
 
-destructor TJvRecentMenuBtn.Destroy;
+destructor TJvRecentMenuButton.Destroy;
 begin
   FDirs.Free;
   DeleteItem(FPopup.Items);
@@ -97,7 +97,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvRecentMenuBtn.Click;
+procedure TJvRecentMenuButton.Click;
 var
   P: TPoint;
 begin
@@ -110,13 +110,13 @@ begin
     FOnPopup(Self);
 end;
 
-procedure TJvRecentMenuBtn.UrlClick(Sender: TObject);
+procedure TJvRecentMenuButton.UrlClick(Sender: TObject);
 begin
   if Assigned(FOnLinkClick) then
     FOnLinkClick(Self, (Sender as TMenuItem).Hint);
 end;
 
-procedure TJvRecentMenuBtn.CreatePopup(Sender: TObject);
+procedure TJvRecentMenuButton.CreatePopup(Sender: TObject);
 begin
   DynBuild(FPopup.Items, FDirs.Recent);
 end;
@@ -187,7 +187,7 @@ begin
 end;
 
 
-procedure TJvRecentMenuBtn.InternalFileFind(const Path, FileMask: string; Strings: TStringList);
+procedure TJvRecentMenuButton.InternalFileFind(const Path, FileMask: string; Strings: TStringList);
 var
   H: THandle;
   Sr: TSearchRec;
@@ -220,7 +220,7 @@ begin
   end;
 end;
 
-procedure TJvRecentMenuBtn.DynBuild(Item: TMenuItem; Directory: string);
+procedure TJvRecentMenuButton.DynBuild(Item: TMenuItem; Directory: string);
 var
   It: TMenuItem;
   Bmp: TBitmap;
@@ -250,7 +250,7 @@ begin
   Item.Items[0].Visible := (Item.Count = 1);
 end;
 
-procedure TJvRecentMenuBtn.DeleteItem(Item: TMenuItem; LookTag: Boolean);
+procedure TJvRecentMenuButton.DeleteItem(Item: TMenuItem; LookTag: Boolean);
 var
   I: Integer;
 begin

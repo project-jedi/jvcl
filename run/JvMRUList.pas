@@ -8,14 +8,17 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvMRUList.PAS, released on 2002-07-04.
+The Original Code is: JvMru.PAS, released on 2001-02-28.
 
-The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Contributor(s):
+Michael Beck [mbeck@bigfoot.com].
+Arioch [the_Arioch@nm.ru]
+
+Last Modified: 2002-07-11
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -29,686 +32,702 @@ unit JvMRUList;
 
 interface
 
+{*******************************************************}
+{   This unit is an interface to the MRU List (comctl32)}
+{   Informations from :                                 }
+{      http://www.geocities.com/SiliconValley/4942      }
+{*******************************************************}
+
+(*
+the_Arioch@nm.ru
+
+Changes are:
+ 0) Memory leaks in GetItem and EnumerateItems been fixed in JVCL 1.32
+ 1) fixed bug 2 Microsoft bugs. Read article at URL above.
+ 2) added ItemData property that allows to read data w|o using event
+ 3) EnumerateItems now relies upon GetItem to remove duplication of code.
+     Now, if any bug - You may fix it one time, not 2 times :)
+ 4) one more thing - i cannot get the reason that almost all of the methods
+    of the component are published rather than public. I think it is also a bug
+ 5) added MoveToTop(index) method; Warning! it changes ItemData property
+ 6) added DelayedWrite property
+ 7) renamed DeleteString to DeleteItem - cause it is the same for both String and Data
+ 8) added UseUnicode property - if List is of string type then it will use WideString methods
+ 9) added WantUnicode property - it will set UseUnicode respecting to used platform
+10) some storage modifiers added for published property
+xx) why keep UnicodeAvailable in every component? I wish Delphi could map
+    property to a global variable :(
+*)
+
 uses
-  SysUtils, Classes, Menus, IniFiles,
-  {$IFDEF WIN32}
-  Registry,
-  {$ENDIF}
-  JvFormPlacement {, JvComponent};
+  Windows, SysUtils, Classes,
+  JvComponent, JvTypes;
 
 type
-  TJvRecentStrings = class;
+  TJvDataType = (dtString, dtBinary);
+  TOnEnumData = procedure(Sender: TObject; Data: Pointer; Size: Integer; Index: Integer) of object;
+  TOnEnumText = procedure(Sender: TObject; Value: string; Index: Integer) of object;
+  TOnEnumUnicodeText = procedure(Sender: TObject; Value: WideString; Index: Integer) of object;
 
-  TGetItemEvent = procedure(Sender: TObject; var Caption: string;
-    var ShortCut: TShortCut; UserData: Longint) of object;
-  TReadItemEvent = procedure(Sender: TObject; IniFile: TObject;
-    const Section: string; Index: Integer; var RecentName: string;
-    var UserData: Longint) of object;
-  TWriteItemEvent = procedure(Sender: TObject; IniFile: TObject;
-    const Section: string; Index: Integer; const RecentName: string;
-    UserData: Longint) of object;
-  TClickMenuEvent = procedure(Sender: TObject; const RecentName,
-    Caption: string; UserData: Longint) of object;
-  TGetItemInfoEvent = procedure(Sender: TObject; Item: TMenuItem) of object;
+  TJvMruReturnData = record
+    case Byte of
+      0: (P: Pointer; );
+      1: (S: PChar; );
+      2: (Ws: PWideChar; );
+  end;
+  PJvMruReturnData = ^TJvMruReturnData;
+  TMRUCount = 0..29;
 
-  TAccelDelimiter = (adTab, adSpace);
-  TRecentMode = (rmInsert, rmAppend);
-
-  TJvMRUManager = class(TComponent)
+  TJvMruList = class(TJvComponent)
   private
-    FList: TStrings;
-    FItems: TList;
-    FIniLink: TJvIniLink;
-    FSeparateSize: Word;
-    FAutoEnable: Boolean;
-    FAutoUpdate: Boolean;
-    FShowAccelChar: Boolean;
-    FRemoveOnSelect: Boolean;
-    FStartAccel: Cardinal;
-    FAccelDelimiter: TAccelDelimiter;
-    FRecentMenu: TMenuItem;
-    FOnChange: TNotifyEvent;
-    FOnGetItem: TGetItemEvent;
-    FOnClick: TClickMenuEvent;
-    FOnReadItem: TReadItemEvent;
-    FOnWriteItem: TWriteItemEvent;
-    FOnAfterUpdate: TNotifyEvent;
-    FOnBeforeUpdate: TNotifyEvent;
-    FOnItemInfo: TGetItemInfoEvent;
-    FDuplicates: TDuplicates;
-    procedure ListChanged(Sender: TObject);
-    procedure ClearRecentMenu;
-    procedure SetRecentMenu(Value: TMenuItem);
-    procedure SetSeparateSize(Value: Word);
-    function GetStorage: TJvFormPlacement;
-    procedure SetStorage(Value: TJvFormPlacement);
-    function GetCapacity: Integer;
-    procedure SetCapacity(Value: Integer);
-    function GetMode: TRecentMode;
-    procedure SetMode(Value: TRecentMode);
-    procedure SetStartAccel(Value: Cardinal);
-    procedure SetShowAccelChar(Value: Boolean);
-    procedure SetAccelDelimiter(Value: TAccelDelimiter);
-    procedure SetAutoEnable(Value: Boolean);
-    procedure AddMenuItem(Item: TMenuItem);
-    procedure MenuItemClick(Sender: TObject);
-    procedure IniSave(Sender: TObject);
-    procedure IniLoad(Sender: TObject);
-    procedure InternalLoad(Ini: TObject; const Section: string);
-    procedure InternalSave(Ini: TObject; const Section: string);
-    procedure SetDuplicates(const Value: TDuplicates);
-    procedure DoDuplicateFixUp;
+    FUnicodeAvailable: Boolean;
+    FUseUnicode: Boolean;
+    FDelayedWrite: Boolean;
+    FWantUnicode: Boolean;
+    FMax: TMRUCount;
+    FSubKey: WideString;
+    FKey: TJvRegKey;
+    FList: THandle;
+    FType: TJvDataType;
+    FOnEnumData: TOnEnumData;
+    FOnEnumText: TOnEnumText;
+    FOnEnumUnicodeText: TOnEnumUnicodeText;
+    FItemIndex: Integer;
+    FItemData: TJvMruReturnData;
+    procedure SetKey(const Value: TJvRegKey);
+    procedure SetMax(const Value: TMRUCount);
+    function GetSubKey: string;
+    procedure SetSubKeyUnicode(const Value: WideString);
+    procedure SetSubKey(const Value: string);
+    procedure SetType(const Value: TJvDataType);
+    procedure SetUseUnicode(const Value: Boolean);
+    procedure SetWantUnicode(const Value: Boolean);
+    procedure SetItemData(const P: Pointer);
+    function GetActive: Boolean;
+    procedure SetActive(const Value: Boolean);
   protected
-    procedure Change; dynamic;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure DoReadItem(Ini: TObject; const Section: string;
-      Index: Integer; var RecentName: string; var UserData: Longint); dynamic;
-    procedure DoWriteItem(Ini: TObject; const Section: string; Index: Integer;
-      const RecentName: string; UserData: Longint); dynamic;
-    procedure GetItemData(var Caption: string; var ShortCut: TShortCut;
-      UserData: Longint); dynamic;
-    procedure GetItemInfo(Item: TMenuItem); dynamic;
-    procedure DoClick(const RecentName, Caption: string; UserData: Longint); dynamic;
-    procedure DoBeforeUpdate; virtual;
-    procedure DoAfterUpdate; virtual;
+    function InternalGetItem(Index: Integer; FireEvent: Boolean = True): Boolean;
+    procedure ReCreateList;
+    procedure NeedUnicode;
+    procedure DoEnumText; virtual;
+    procedure DoUnicodeEnumText; virtual;
+    // Arioch: even DataSize can be retained later from properties - but let 'em be.
+    procedure DoEnumData(DataSize: Integer); virtual;
   public
+    procedure Close;
+    procedure Open;
+    function ItemDataSize: Integer;
+    property ItemDataAsPointer: Pointer read FItemData.P;
+    property ItemDataAsPChar: PChar read FItemData.S;
+    property ItemDataAsPWideChar: pWideChar read FItemData.Ws;
+    property ItemIndex: Integer read FItemIndex;
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Add(const RecentName: string; UserData: Longint);
-    procedure Clear;
-    procedure Remove(const RecentName: string);
-    procedure UpdateRecentMenu;
-    procedure RemoveInvalid;
-    {$IFDEF WIN32}
-    procedure LoadFromRegistry(Ini: TRegIniFile; const Section: string);
-    procedure SaveToRegistry(Ini: TRegIniFile; const Section: string);
-    {$ENDIF WIN32}
-    procedure LoadFromIni(Ini: TIniFile; const Section: string);
-    procedure SaveToIni(Ini: TIniFile; const Section: string);
-    property Strings: TStrings read FList;
+    procedure MoveToTop(const Index: Integer);
+
+    property UnicodeAvailable: Boolean read FUnicodeAvailable;
+    property UseUnicode: Boolean read FUseUnicode write SetUseUnicode;
+
+    // Arioch: the methods below are not public but published in original code
+    function AddString(Value: string): Boolean;
+    function AddPChar(Value: string): Boolean;
+    function AddData(Value: Pointer; Size: Integer): Boolean;
+    function GetItemsCount: Integer;
+    function EnumItems: Boolean;
+    function GetMostRecentItem: Boolean;
+    function GetItem(Index: Integer = 0): Boolean;
+    function FindString(Value: string): Integer;
+    function FindData(Value: Pointer; Size: Integer): Integer;
+
+    function DeleteItem(Index: Integer = 0): Boolean;
+    function DeleteKey: Boolean;
+
+    // Arioch: the following are function for Unicode Enabling
+    function AddUnicodeString(Value: widestring): Boolean;
+    function AddUnicodePChar(Value: PWideChar): Boolean;
+    function FindUnicodeString(Value: widestring): Integer;
   published
-    // Duplicates works just as for TStrings, but the list doesn't need to be sorted
-    property Duplicates: TDuplicates read FDuplicates write SetDuplicates;
-    property AccelDelimiter: TAccelDelimiter read FAccelDelimiter write SetAccelDelimiter default adTab;
-    property AutoEnable: Boolean read FAutoEnable write SetAutoEnable default True;
-    property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate default True;
-    property Capacity: Integer read GetCapacity write SetCapacity default 10;
-    property Mode: TRecentMode read GetMode write SetMode default rmInsert;
-    property RemoveOnSelect: Boolean read FRemoveOnSelect write FRemoveOnSelect default False;
-    property IniStorage: TJvFormPlacement read GetStorage write SetStorage;
-    property SeparateSize: Word read FSeparateSize write SetSeparateSize default 0;
-    property RecentMenu: TMenuItem read FRecentMenu write SetRecentMenu;
-    property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
-    property StartAccel: Cardinal read FStartAccel write SetStartAccel default 1;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OnClick: TClickMenuEvent read FOnClick write FOnClick;
-    // OnGetItemData is called just before the menu item is created
-    property OnGetItemData: TGetItemEvent read FOnGetItem write FOnGetItem;
-    property OnReadItem: TReadItemEvent read FOnReadItem write FOnReadItem;
-    property OnWriteItem: TWriteItemEvent read FOnWriteItem write FOnWriteItem;
-    // called just before the menu items are updated
-    property OnBeforeUpdate: TNotifyEvent read FOnBeforeUpdate write FOnBeforeUpdate;
-    // called just after the menu items have been updated
-    property OnAfterUpdate: TNotifyEvent read FOnAfterUpdate write FOnAfterUpdate;
-    // called just before the newly created menu item is added to the RecentMenu submenu
-    // this makes it easier to set any additional properties of the menu item not
-    // handled by OnGetItemData.
-    property OnGetItemInfo: TGetItemInfoEvent read FOnItemInfo write FOnItemInfo;
+    property DelayedWrite: Boolean read FDelayedWrite write FDelayedWrite default False;
+    property WantUnicode: Boolean read FWantUnicode write SetWantUnicode default False;
+    property RootKey: TJvRegKey read FKey write SetKey default hkCurrentUser;
+    property SubKey: string read GetSubKey write SetSubKey stored False;
+    // Arioch: it will be read from RCDATA for compatiblility, but unicode value should be stored!
+    property SubKeyUnicode: WideString read FSubKey write SetSubKeyUnicode stored True;
+
+    property MaxItems: TMRUCount read FMax write SetMax default 10;
+    property DataType: TJvDataType read FType write SetType default dtstring;
+
+    property OnEnumText: TOnEnumText read FOnEnumText write FOnEnumText;
+    property OnEnumUnicodeText: TOnEnumUnicodeText read FOnEnumUnicodeText write FOnEnumUnicodeText;
+    property OnEnumData: TOnEnumData read FOnEnumData write FOnEnumData;
+    property Active: Boolean read GetActive write SetActive;
   end;
 
-  TJvRecentStrings = class(TStringList)
-  private
-    FMaxSize: Integer;
-    FMode: TRecentMode;
-    procedure SetMaxSize(Value: Integer);
-  public
-    constructor Create;
-    function Add(const S: string): Integer; override;
-    procedure AddStrings(Strings: TStrings); override;
-    procedure DeleteExceed;
-    procedure Remove(const S: string);
-    property MaxSize: Integer read FMaxSize write SetMaxSize;
-    property Mode: TRecentMode read FMode write FMode;
-  end;
+  EMruException = class(EJVCLException);
 
 implementation
 
 uses
-  Controls, Math,
-  JvAppUtils;
+  Registry,
+  JvFunctions;
+
+resourcestring
+  RC_ErrorMRU_Creating = 'Unable to create MRU';
+  RC_ErrorMRU_Unicode = 'Windows NT required for Unicode in MRU';
+
+var
+  hComCtlDll: HMODULE = 0;
 
 const
-  siRecentItem = 'Item_%d';
-  siRecentData = 'User_%d';
+  DllComCtlName = 'COMCTL32.DLL';
 
-//=== TJvMRUManager ==========================================================
+type
+  MruCompareString = function(lpszString1, lpszString2: PChar): Integer;
+  MruCompareData = function(lpData1, lpData2: Pointer; cbData: DWORD): Integer;
+  MruCompareStringW = function(lpszString1, lpszString2: PWideChar): Integer;
 
-constructor TJvMRUManager.Create(AOwner: TComponent);
+  TMruRec = packed record
+    cbSize: DWORD;
+    nMaxItems: DWORD;
+    dwFlags: DWORD;
+    hKey: HKEY;
+    case Boolean of
+      False: (
+        lpszSubKey: PChar;
+        case Boolean of
+          False:
+            (lpfnCompareString: MruCompareString; );
+          True:
+            (lpfnCompareData: MruCompareData; );
+          );
+      True: (
+        lpszSubKeyW: PWideChar;
+        lpfnCompareStringW: MruCompareStringW; );
+  end;
+  PMruRec = ^TMruRec;
+
+const
+  MRUF_STRING_LIST = 0;
+  MRUF_BINARY_LIST = 1;
+  MRUF_DELAYED_SAVE = 2;
+
+type
+  TCreateMruList = function(lpCreateInfo: PMruRec): THandle; stdcall;
+  TFreeMruList = procedure(hList: THandle); stdcall;
+
+  TAddMruString = function(hList: THandle; lpszString: PChar): Integer; stdcall;
+  TAddMruStringW = function(hList: THandle; lpszString: PWideChar): Integer; stdcall;
+  TAddMruData = function(hList: THandle; lpData: Pointer; cbData: DWORD): Integer; stdcall;
+
+  TDelMruString = function(hList: THandle; nItemPos: Integer): Boolean; stdcall;
+
+  TEnumMruList = function(hList: THandle; nItemPos: Integer; lpBuffer: Pointer; nBufferSize: DWord): Integer; stdcall;
+
+  TFindMruString = function(hList: THandle; lpszString: PChar; lpRegNum: Pinteger): Integer; stdcall;
+  TFindMruStringW = function(hList: THandle; lpszString: PWideChar; lpRegNum: Pinteger): Integer; stdcall;
+  TFindMruData = function(hList: THandle; lpData: Pointer; cbData: DWORD; lpRegNum: Pinteger): Integer; stdcall;
+
+var
+  CreateMruList: TCreateMruList;
+  FreeMruList: TFreeMruList;
+  AddMruString: TAddMrustring;
+  AddMruData: TAddMruData;
+  DelMruString: TDelMruString;
+  EnumMruList: TEnumMruList;
+  FindMruString: TFindMruString;
+  FindMruData: TFindMruData;
+
+  //Arioch:  Unicode functions for WinNT
+  CreateMruListW: TCreateMruList;
+  AddMruStringW: TAddMrustringW;
+  FindMruStringW: TFindMruStringW;
+  EnumMruListW: TEnumMruList;
+
+constructor TJvMruList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FList := TJvRecentStrings.Create;
-  FItems := TList.Create;
-  TJvRecentStrings(FList).OnChange := ListChanged;
-  FIniLink := TJvIniLink.Create;
-  FIniLink.OnSave := IniSave;
-  FIniLink.OnLoad := IniLoad;
-  FAutoUpdate := True;
-  FAutoEnable := True;
-  FShowAccelChar := True;
-  FStartAccel := 1;
+  FList := 0;
+  FMax := 10;
+  FType := dtString;
+  FKey := hkCurrentUser;
+  FUnicodeAvailable := Win32Platform = VER_PLATFORM_Win32_NT;
+  FDelayedWrite := False;
+  SetWantUnicode(False);
+  FItemData.P := nil;
+
+  // ReCreateList;
+  Close; // since there is PUBLISHED .Active property - let it control how it will be.
 end;
 
-destructor TJvMRUManager.Destroy;
+destructor TJvMruList.Destroy;
 begin
-  ClearRecentMenu;
-  FIniLink.Free;
-  TJvRecentStrings(FList).OnChange := nil;
-  FList.Free;
-  FItems.Free;
-  FItems := nil;
+  if FList <> 0 then
+    FreeMruList(FList);
   inherited Destroy;
 end;
 
-procedure TJvMRUManager.Notification(AComponent: TComponent; Operation: TOperation);
+function TJvMruList.AddData(Value: Pointer; Size: Integer): Boolean;
 begin
-  inherited Notification(AComponent, Operation);
-  if (AComponent = RecentMenu) and (Operation = opRemove) then
-    RecentMenu := nil;
+  Result := False;
+  if FList <> 0 then
+    Result := AddMruData(FList, Value, Size) <> -1;
 end;
 
-procedure TJvMRUManager.GetItemData(var Caption: string; var ShortCut: TShortCut;
-  UserData: Longint);
+function TJvMruList.AddPChar(Value: string): Boolean;
 begin
-  if Assigned(FOnGetItem) then
-    FOnGetItem(Self, Caption, ShortCut, UserData);
+  Result := False;
+  if FList <> 0 then
+  begin
+    Result := AddMruString(FList, PChar(Value)) <> -1;
+    // (p3) call EnumText here ?
+    //  Arioch: Why? What for?
+    //  Whether You want them - make a special sepearate set of events
+    //  And there's danger that eventHandler tries to get a list of items,
+    //  thus, killing current section!
+  end;
 end;
 
-procedure TJvMRUManager.DoClick(const RecentName, Caption: string; UserData: Longint);
+function TJvMruList.AddUnicodePChar(Value: PWideChar): Boolean;
 begin
-  if Assigned(FOnClick) then
-    FOnClick(Self, RecentName, Caption, UserData);
+  NeedUnicode;
+  Result := False;
+  if FList <> 0 then
+  begin
+    Result := AddMruStringW(FList, PWideChar(Value)) <> -1;
+    // (p3) call EnumText here?
+    // See above
+  end;
 end;
 
-procedure TJvMRUManager.MenuItemClick(Sender: TObject);
+function TJvMruList.AddString(Value: string): Boolean;
+begin
+  Result := AddPchar(PChar(Value));
+end;
+
+function TJvMruList.AddUnicodeString(Value: widestring): Boolean;
+begin
+  Result := AddUnicodePChar(PWideChar(Value));
+end;
+
+function TJvMruList.DeleteItem(Index: Integer): Boolean;
+begin
+  Result := False;
+  if FList <> 0 then
+  begin
+    Result := DelMruString(FList, Index);
+    ReCreateList; // Arioch: fixes MS's bug
+  end;
+end;
+
+function TJvMruList.EnumItems: Boolean;
 var
-  I: Integer;
+  Index: Integer;
 begin
-  if Sender is TMenuItem then
-  begin
-    I := TMenuItem(Sender).Tag;
-    if (I >= 0) and (I < FList.Count) then
-    try
-      DoClick(FList[I], TMenuItem(Sender).Caption, Longint(FList.Objects[I]));
-    finally
-      if RemoveOnSelect then
-        Remove(FList[I]);
-    end;
-  end;
-end;
-
-function TJvMRUManager.GetCapacity: Integer;
-begin
-  Result := TJvRecentStrings(FList).MaxSize;
-end;
-
-procedure TJvMRUManager.SetCapacity(Value: Integer);
-begin
-  TJvRecentStrings(FList).MaxSize := Value;
-end;
-
-function TJvMRUManager.GetMode: TRecentMode;
-begin
-  Result := TJvRecentStrings(FList).Mode;
-end;
-
-procedure TJvMRUManager.SetMode(Value: TRecentMode);
-begin
-  TJvRecentStrings(FList).Mode := Value;
-end;
-
-function TJvMRUManager.GetStorage: TJvFormPlacement;
-begin
-  Result := FIniLink.Storage;
-end;
-
-procedure TJvMRUManager.SetStorage(Value: TJvFormPlacement);
-begin
-  FIniLink.Storage := Value;
-end;
-
-procedure TJvMRUManager.SetAutoEnable(Value: Boolean);
-begin
-  if FAutoEnable <> Value then
-  begin
-    FAutoEnable := Value;
-    if Assigned(FRecentMenu) and FAutoEnable then
-      FRecentMenu.Enabled := FRecentMenu.Count > 0;
-  end;
-end;
-
-procedure TJvMRUManager.SetStartAccel(Value: Cardinal);
-begin
-  if FStartAccel <> Value then
-  begin
-    FStartAccel := Value;
-    if FAutoUpdate then
-      UpdateRecentMenu;
-  end;
-end;
-
-procedure TJvMRUManager.SetAccelDelimiter(Value: TAccelDelimiter);
-begin
-  if FAccelDelimiter <> Value then
-  begin
-    FAccelDelimiter := Value;
-    if FAutoUpdate and ShowAccelChar then
-      UpdateRecentMenu;
-  end;
-end;
-
-procedure TJvMRUManager.SetShowAccelChar(Value: Boolean);
-begin
-  if FShowAccelChar <> Value then
-  begin
-    FShowAccelChar := Value;
-    if FAutoUpdate then
-      UpdateRecentMenu;
-  end;
-end;
-
-procedure TJvMRUManager.Add(const RecentName: string; UserData: Longint);
-var
-  I: Integer;
-begin
-  if not (Duplicates = dupAccept) and (FList.IndexOf(RecentName) > -1) then
-  begin
-    if Duplicates = dupError then
-      raise Exception.Create('Duplicates not allowed in MRU list.')
-  end
-  else
-  begin
-    I := TJvRecentStrings(FList).Add(RecentName);
-    FList.Objects[I] := TObject(UserData);
-  end;
-end;
-
-procedure TJvMRUManager.Clear;
-begin
-  FList.Clear;
-end;
-
-procedure TJvMRUManager.Remove(const RecentName: string);
-begin
-  TJvRecentStrings(FList).Remove(RecentName);
-end;
-
-procedure TJvMRUManager.AddMenuItem(Item: TMenuItem);
-begin
-  if Assigned(Item) then
-  begin
-    FRecentMenu.Add(Item);
-    FItems.Add(Item);
-  end;
-end;
-
-procedure TJvMRUManager.DoDuplicateFixUp;
-var
-  I, J: Integer;
-  Tmp: Boolean;
-begin
-  if Duplicates = dupAccept then
+  Result := False;
+  if FList = 0 then
     Exit;
-  Tmp := AutoUpdate;
-  try
-    AutoUpdate := False;
-    I := FList.Count - 1;
-    while I >= 0 do
+
+  Index := 0;
+  while GetItem(Index) do
+    Inc(Index);
+  if Index > 0 then
+    Result := True;
+end;
+
+function TJvMruList.FindData(Value: Pointer; Size: Integer): Integer;
+begin
+  Result := -1;
+  if FList <> 0 then
+    Result := FindMruData(FList, Value, Size, nil);
+end;
+
+function TJvMruList.FindString(Value: string): Integer;
+begin
+  Result := -1;
+  if FList <> 0 then
+    Result := FindMruString(FList, PChar(Value), nil);
+end;
+
+function TJvMruList.FindUnicodeString(Value: widestring): Integer;
+begin
+  NeedUnicode;
+  Result := -1;
+  if FList <> 0 then
+    Result := FindMruStringW(FList, PWideChar(Value), nil);
+end;
+
+function TJvMruList.GetItem(Index: Integer): Boolean;
+begin
+  Result := InternalGetItem(Index);
+end;
+
+function TJvMruList.InternalGetItem(Index: Integer; FireEvent: Boolean): Boolean;
+var
+  i: Integer;
+  P: Pointer;
+  EnP: TEnumMruList;
+begin
+  Result := False;
+  if FList = 0 then
+    Exit;
+  P := nil;
+
+  if FType = dtString then
+  begin
+    if not UseUnicode then
     begin
-      // we don't raise an error here even if Duplicates is dupError
-      J := FList.IndexOf(FList[I]);
-      while (J > -1) and (J <> I) do
+      ReAllocMem(P, 256);
+      i := EnumMruList(FList, Index, P, 256);
+      if i > 255 then
       begin
-        FList.Delete(J);
-        Dec(I);
-        J := FList.IndexOf(FList[I]);
+        ReAllocMem(P, i + 1);
+        i := EnumMruList(FList, Index, P, i + 1);
       end;
-      Dec(I);
-    end;
-  finally
-    AutoUpdate := Tmp;
-  end;
-end;
-
-procedure TJvMRUManager.UpdateRecentMenu;
-const
-  AccelDelimChars: array [TAccelDelimiter] of Char = (#9, ' ');
-var
-  I: Integer;
-  L: Cardinal;
-  S: string;
-  C: string[2];
-  ShortCut: TShortCut;
-  Item: TMenuItem;
-begin
-  ClearRecentMenu;
-  DoDuplicateFixUp;
-  DoBeforeUpdate;
-  if Assigned(FRecentMenu) then
-  begin
-    if (FList.Count > 0) and (FRecentMenu.Count > 0) then
-      AddMenuItem(NewLine);
-    for I := 0 to FList.Count - 1 do
-    begin
-      if (FSeparateSize > 0) and (I > 0) and (I mod FSeparateSize = 0) then
-        AddMenuItem(NewLine);
-      S := FList[I];
-      ShortCut := scNone;
-      GetItemData(S, ShortCut, Longint(FList.Objects[I]));
-      Item := NewItem(GetShortHint(S), ShortCut, False, True,
-        MenuItemClick, 0, '');
-      Item.Hint := GetLongHint(S);
-      if FShowAccelChar then
+      if i <> -1 then
       begin
-        L := Cardinal(I) + FStartAccel;
-        if L < 10 then
-          C := '&' + Char(Ord('0') + L)
-        else
-        if L <= (Ord('Z') + 10) then
-          C := '&' + Char(L + Ord('A') - 10)
-        else
-          C := ' ';
-        Item.Caption := C + AccelDelimChars[FAccelDelimiter] + Item.Caption;
+        Result := True;
+        SetItemData(P);
+        FItemIndex := Index;
+        if FireEvent then
+          DoEnumText
       end;
-      Item.Tag := I;
-      GetItemInfo(Item);
-      AddMenuItem(Item);
-    end;
-    DoAfterUpdate;
-    if AutoEnable then
-      FRecentMenu.Enabled := FRecentMenu.Count > 0;
-  end;
-end;
-
-procedure TJvMRUManager.ClearRecentMenu;
-var
-  Item: TMenuItem;
-begin
-  while FItems.Count > 0 do
-  begin
-    Item := TMenuItem(FItems[0]);
-    if Assigned(FRecentMenu) and (FRecentMenu.IndexOf(Item) >= 0) then
-      Item.Free;
-    FItems.Remove(Item);
-  end;
-  if Assigned(FRecentMenu) and AutoEnable then
-    FRecentMenu.Enabled := FRecentMenu.Count > 0;
-end;
-
-procedure TJvMRUManager.SetRecentMenu(Value: TMenuItem);
-begin
-  ClearRecentMenu;
-  FRecentMenu := Value;
-  {$IFDEF WIN32}
-  if Value <> nil then
-    Value.FreeNotification(Self);
-  {$ENDIF}
-  UpdateRecentMenu;
-end;
-
-procedure TJvMRUManager.SetSeparateSize(Value: Word);
-begin
-  if FSeparateSize <> Value then
-  begin
-    FSeparateSize := Value;
-    if FAutoUpdate then
-      UpdateRecentMenu;
-  end;
-end;
-
-procedure TJvMRUManager.ListChanged(Sender: TObject);
-begin
-  Change;
-  if FAutoUpdate then
-    UpdateRecentMenu;
-end;
-
-procedure TJvMRUManager.IniSave(Sender: TObject);
-begin
-  if (Name <> '') and (FIniLink.IniObject <> nil) then
-    InternalSave(FIniLink.IniObject, FIniLink.RootSection +
-      GetDefaultSection(Self));
-end;
-
-procedure TJvMRUManager.IniLoad(Sender: TObject);
-begin
-  if (Name <> '') and (FIniLink.IniObject <> nil) then
-    InternalLoad(FIniLink.IniObject, FIniLink.RootSection +
-      GetDefaultSection(Self));
-end;
-
-procedure TJvMRUManager.Change;
-begin
-  if Assigned(FOnChange) then
-    FOnChange(Self);
-end;
-
-procedure TJvMRUManager.DoReadItem(Ini: TObject; const Section: string;
-  Index: Integer; var RecentName: string; var UserData: Longint);
-begin
-  if Assigned(FOnReadItem) then
-    FOnReadItem(Self, Ini, Section, Index, RecentName, UserData)
-  else
-  begin
-    RecentName := IniReadString(Ini, Section, Format(siRecentItem, [Index]), RecentName);
-    UserData := IniReadInteger(Ini, Section, Format(siRecentData, [Index]), UserData);
-  end;
-end;
-
-procedure TJvMRUManager.DoWriteItem(Ini: TObject; const Section: string;
-  Index: Integer; const RecentName: string; UserData: Longint);
-begin
-  if Assigned(FOnWriteItem) then
-    FOnWriteItem(Self, Ini, Section, Index, RecentName, UserData)
-  else
-  begin
-    IniWriteString(Ini, Section, Format(siRecentItem, [Index]), RecentName);
-    if UserData = 0 then
-      IniDeleteKey(Ini, Section, Format(siRecentData, [Index]))
+    end
     else
-      IniWriteInteger(Ini, Section, Format(siRecentData, [Index]), UserData);
-  end;
-end;
+    begin // Unicode
+      ReAllocMem(P, 512);
+      i := EnumMruListW(FList, Index, P, 256);
+      if i > 255 then
+      begin
+        ReAllocMem(P, (i + 1) * 2);
+        i := EnumMruListW(FList, Index, P, i + 1);
+      end;
+      if i <> -1 then
+      begin
+        Result := True;
+        SetItemData(P);
+        FItemIndex := Index;
+        if FireEvent then
+          DoUnicodeEnumText;
+      end;
+    end
+  end
+  else // FType = dtBinary
+  begin
+    ReAllocMem(P, 1024);
 
-procedure TJvMRUManager.InternalLoad(Ini: TObject; const Section: string);
-var
-  I: Integer;
-  S: string;
-  UserData: Longint;
-  AMode: TRecentMode;
-begin
-  AMode := Mode;
-  FList.BeginUpdate;
-  try
-    FList.Clear;
-    Mode := rmInsert;
-    for I := TJvRecentStrings(FList).MaxSize - 1 downto 0 do
+    if UnicodeAvailable then
+      EnP := EnumMruListW
+    else
+      EnP := EnumMruList;
+    //Arioch: work-around MS bug
+
+    i := EnP(FList, Index, P, 1024);
+
+    if i >= 1024 then
     begin
-      S := '';
-      UserData := 0;
-      DoReadItem(Ini, Section, I, S, UserData);
-      if S <> '' then
-        Add(S, UserData);
+      ReAllocMem(P, 64000); // Arioch: Hmmm We'll never guess how much may there appear :)
+      i := EnP(FList, 0, P, 64000);
     end;
-  finally
-    Mode := AMode;
-    FList.EndUpdate;
+
+    if i <> -1 then
+    begin
+      Result := True;
+      ReAllocMem(P, i);
+      // Arioch: should we waste more memory than we need?
+      // and we can know the size of memory allocated
+      // with GetMem and ReAllocMem, so we know how big Data was
+      SetItemData(P);
+      FItemIndex := Index;
+      if FireEvent then
+        DoEnumData(i);
+    end;
   end;
 end;
 
-procedure TJvMRUManager.InternalSave(Ini: TObject; const Section: string);
+function TJvMruList.GetItemsCount: Integer;
+begin
+  Result := 0;
+  if FList <> 0 then
+    Result := EnumMruList(FList, -1, nil, 0);
+end;
+
+function TJvMruList.GetMostRecentItem: Boolean;
+begin
+  Result := GetItem(0);
+end;
+
+function TJvMruList.GetSubKey: string;
+begin
+  Result := string(FSubKey);
+end;
+
+procedure TJvMruList.MoveToTop(const Index: Integer);
 var
-  I: Integer;
+  b: Boolean;
 begin
-  IniEraseSection(Ini, Section);
-  for I := 0 to FList.Count - 1 do
-    DoWriteItem(Ini, Section, I, FList[I], Longint(FList.Objects[I]));
-end;
-
-{$IFDEF WIN32}
-
-procedure TJvMRUManager.LoadFromRegistry(Ini: TRegIniFile; const Section: string);
-begin
-  InternalLoad(Ini, Section);
-end;
-
-procedure TJvMRUManager.SaveToRegistry(Ini: TRegIniFile; const Section: string);
-begin
-  InternalSave(Ini, Section);
-end;
-
-{$ENDIF WIN32}
-
-procedure TJvMRUManager.LoadFromIni(Ini: TIniFile; const Section: string);
-begin
-  InternalLoad(Ini, Section);
-end;
-
-procedure TJvMRUManager.SaveToIni(Ini: TIniFile; const Section: string);
-begin
-  InternalSave(Ini, Section);
-end;
-
-procedure TJvMRUManager.DoAfterUpdate;
-begin
-  if Assigned(FOnAfterUpdate) then
-    FOnAfterUpdate(Self);
-end;
-
-procedure TJvMRUManager.DoBeforeUpdate;
-begin
-  if Assigned(FOnBeforeUpdate) then
-    FOnBeforeUpdate(Self);
-end;
-
-procedure TJvMRUManager.RemoveInvalid;
-var
-  I: Integer;
-begin
-  for I := FList.Count - 1 downto 0 do
-    if not FileExists(FList[I]) then
-      FList.Delete(I);
-end;
-
-procedure TJvMRUManager.GetItemInfo(Item: TMenuItem);
-begin
-  if Assigned(FOnItemInfo) then
-    FOnItemInfo(Self, Item);
-end;
-
-procedure TJvMRUManager.SetDuplicates(const Value: TDuplicates);
-begin
-  if FDuplicates <> Value then
+  b := False;
+  if InternalGetItem(Index, False) then
   begin
-    FDuplicates := Value;
-    if FAutoUpdate then
-      UpdateRecentMenu;
-  end;
-end;
-
-//=== TJvRecentStrings =======================================================
-
-constructor TJvRecentStrings.Create;
-begin
-  inherited Create;
-  FMaxSize := 10;
-  FMode := rmInsert;
-end;
-
-procedure TJvRecentStrings.SetMaxSize(Value: Integer);
-begin
-  if FMaxSize <> Value then
-  begin
-    FMaxSize := Max(1, Value);
-    DeleteExceed;
-  end;
-end;
-
-procedure TJvRecentStrings.DeleteExceed;
-var
-  I: Integer;
-begin
-  BeginUpdate;
-  try
-    if FMode = rmInsert then
-      for I := Count - 1 downto FMaxSize do
-        Delete(I)
+    if FType = dtString then
+    begin
+      if UseUnicode then
+        b := AddUnicodePChar(ItemDataAsPWideChar)
+      else
+        b := AddPChar(ItemDataAsPChar);
+    end
     else
-    begin { rmAppend }
-      while Count > FMaxSize do
-        Delete(0);
-    end;
-  finally
-    EndUpdate;
+      b := AddData(ItemDataAsPointer, ItemDataSize);
+  end;
+  if b then
+    FItemIndex := 0;
+end;
+
+procedure TJvMruList.NeedUnicode;
+begin
+  if not UnicodeAvailable then
+    raise EMruException.Create(RC_ErrorMRU_Unicode);
+end;
+
+procedure TJvMruList.ReCreateList;
+begin
+  Close;
+  Open;
+end;
+
+procedure TJvMruList.SetItemData(const P: Pointer);
+begin
+  if P = FItemData.P then
+    Exit;
+  if FItemData.P <> nil then
+    FreeMem(FItemData.P);
+  FItemData.P := P;
+end;
+
+procedure TJvMruList.SetKey(const Value: TJvRegKey);
+begin
+  if Value <> FKey then
+  begin
+    FKey := Value;
+    ReCreateList;
   end;
 end;
 
-procedure TJvRecentStrings.Remove(const S: string);
-var
-  I: Integer;
+procedure TJvMruList.SetMax(const Value: TMRUCount);
 begin
-  I := IndexOf(S);
-  if I >= 0 then
-    Delete(I);
+  if Value <> FMax then
+  begin
+    FMax := Value;
+    ReCreateList;
+  end;
 end;
 
-function TJvRecentStrings.Add(const S: string): Integer;
+procedure TJvMruList.SetSubKey(const Value: string);
 begin
-  Result := IndexOf(S);
-  if Result >= 0 then
+  SetSubKeyUnicode(WideString(Value));
+end;
+
+procedure TJvMruList.SetSubKeyUnicode(const Value: WideString);
+begin
+  if Value <> FSubKey then
   begin
-    if FMode = rmInsert then
-      Move(Result, 0)
-    else { rmAppend }
-      Move(Result, Count - 1);
+    FSubKey := Value;
+    ReCreateList;
+  end;
+end;
+
+procedure TJvMruList.SetType(const Value: TJvDataType);
+begin
+  if Value <> FType then
+  begin
+    FType := Value;
+    ReCreateList;
+  end;
+end;
+
+procedure TJvMruList.SetUseUnicode(const Value: Boolean);
+begin
+  if Value then
+    NeedUnicode;
+  if FUseUnicode = Value then
+    Exit;
+  FUseUnicode := Value;
+end;
+
+procedure TJvMruList.SetWantUnicode(const Value: Boolean);
+begin
+  if FWantUnicode = Value then
+    Exit;
+
+  FWantUnicode := Value;
+  FUseUnicode := FWantUnicode and FUnicodeAvailable;
+end;
+
+procedure TJvMruList.Close;
+begin
+  if FList <> 0 then
+  begin
+    FreeMruList(FList);
+    FList := 0;
+  end;
+
+  FItemIndex := -1;
+  SetItemData(Pointer(nil));
+end;
+
+procedure TJvMruList.Open;
+var
+  FLst: TMruRec;
+begin
+  if csDesigning in ComponentState then
+    Exit;
+
+  if FSubKey <> '' then
+  begin
+    FLst.cbSize := SizeOf(FList);
+    FLst.nMaxItems := FMax;
+    case FType of
+      dtString:
+        begin
+          FLst.dwFlags := MRUF_STRING_LIST;
+          FLst.lpfnCompareString := nil;
+        end;
+      dtBinary:
+        begin
+          FLst.dwFlags := MRUF_BINARY_LIST;
+          FLst.lpfnCompareData := nil;
+        end;
+    end;
+    if FDelayedWrite then
+      with FLst do
+        dwFlags := MRUF_DELAYED_SAVE or dwFlags;
+    case FKey of
+      hkClassesRoot:
+        FLst.hKey := HKEY_CLASSES_ROOT;
+      hkCurrentUser:
+        FLst.hKey := HKEY_CURRENT_USER;
+      hkLocalMachine:
+        FLst.hKey := HKEY_LOCAL_MACHINE;
+      hkUsers:
+        FLst.hKey := HKEY_USERS;
+      hkCurrentConfig:
+        FLst.hKey := HKEY_CURRENT_CONFIG;
+    end;
+    if UseUnicode then
+    // Arioch changed this
+      FLst.lpszSubKeyW := PWideChar(FSubKey)
+    else
+      FLst.lpszSubKey := PChar(GetSubKey);
+
+    if UseUnicode then
+    // Arioch changed this
+      FList := CreateMruListW(@FLst)
+    else
+      FList := CreateMruList(@FLst);
+
+    if FList = 0 then
+      raise EMruException.Create(RC_ErrorMRU_Creating);
+  end;
+end;
+
+function TJvMruList.ItemDataSize: Integer;
+// Arioch: Here we rely on undocumemted internal structure
+// that has been used by GetMem/FreeMem for ages!
+// for example see sources for GetMem.Inc in VCL sources
+//
+// JVCL should have a list were it relies upon undocumented parts of Delphi,
+//  Windows, etc..., so when new version of D,Win,... is realeased we could
+//  check the list instead of hunting for misty bug;
+begin
+  Result := 0;
+  if ItemDataAsPointer = nil then
+    Exit;
+  Result := Integer(Pointer(Integer(ItemDataAsPointer) - SizeOf(Integer))^);
+end;
+
+procedure TJvMruList.DoEnumText;
+begin
+  if Assigned(FOnEnumText) then
+    FOnEnumText(Self, string(FItemData.S), ItemIndex);
+//    FOnEnumText(Self, S, Index);
+end;
+
+procedure TJvMruList.DoUnicodeEnumText;
+begin
+  if Assigned(FOnEnumUnicodeText) then
+    FOnEnumUnicodeText(Self, WideString(FItemData.Ws), FItemIndex);
+//    FOnEnumUnicodeText(Self, S, Index);
+end;
+
+procedure TJvMruList.DoEnumData(DataSize: Integer);
+begin
+  if Assigned(FOnEnumData) then
+    FOnEnumData(Self, FItemData.P, DataSize, FItemIndex);
+end;
+
+function TJvMruList.DeleteKey: Boolean;
+begin
+  Result := False;
+  with TRegistry.Create do
+  try
+    if (FList = 0) and (SubKey <> '') and KeyExists(SubKey) then
+      Result := DeleteKey(SubKey);
+  finally
+    free;
+  end;
+end;
+
+function TJvMruList.GetActive: Boolean;
+begin
+  Result := FList <> 0;
+end;
+
+procedure TJvMruList.SetActive(const Value: Boolean);
+begin
+  if GetActive <> Value then
+  begin
+    if Value then
+      Open
+    else
+      Close;
+  end;
+end;
+
+initialization
+  hComCtlDll := LoadLibrary(DllComCtlName);
+  if hComCtlDll <> 0 then
+  begin
+    // (rom) can we get them by name?
+    CreateMruList := GetProcAddress(hComCtlDll, PChar(151));
+    FreeMruList := GetProcAddress(hComCtlDll, PChar(152));
+    AddMruString := GetProcAddress(hComCtlDll, PChar(153));
+    AddMruData := GetProcAddress(hComCtlDll, PChar(167));
+    DelMruString := GetProcAddress(hComCtlDll, PChar(156));
+    EnumMruList := GetProcAddress(hComCtlDll, PChar(154));
+    FindMruString := GetProcAddress(hComCtlDll, PChar(155));
+    FindMruData := GetProcAddress(hComCtlDll, PChar(169));
+
+    if Win32Platform = VER_PLATFORM_Win32_NT then
+    begin
+      CreateMRUListW := GetProcAddress(hComCtlDll, PChar(400));
+      AddMRUStringW := GetProcAddress(hComCtlDll, PChar(401));
+      FindMRUStringW := GetProcAddress(hComCtlDll, PChar(402));
+      EnumMRUListW := GetProcAddress(hComCtlDll, PChar(403));
+    end;
+    (* else  Since TurboPascal 7.0 all the global vars are filled with Zero'es at the start, yes?
+    begin
+      CreateMRUListW := nil;
+      AddMRUStringW := nil;
+      FindMRUStringW := nil;
+      EnumMRUListW := nil;
+    end;   *)
   end
   else
-  begin
-    BeginUpdate;
-    try
-      if FMode = rmInsert then
-        Insert(0, S)
-      else { rmAppend }
-        Insert(Count, S);
-      DeleteExceed;
-    finally
-      EndUpdate;
-    end;
-  end;
-  if FMode = rmInsert then
-    Result := 0
-  else { rmAppend }
-    Result := Count - 1;
-end;
+    PError('MRU');
 
-procedure TJvRecentStrings.AddStrings(Strings: TStrings);
-var
-  I: Integer;
-begin
-  BeginUpdate;
-  try
-    if FMode = rmInsert then
-    begin
-      for I := Min(Strings.Count, FMaxSize) - 1 downto 0 do
-        AddObject(Strings[I], Strings.Objects[I]);
-    end
-    else { rmAppend }
-      for I := 0 to Min(Strings.Count, FMaxSize) - 1 do
-        AddObject(Strings[I], Strings.Objects[I]);
-    DeleteExceed;
-  finally
-    EndUpdate;
-  end;
-end;
+finalization
+  if hComCtlDll <> 0 then
+    FreeLibrary(hComCtlDll);
 
 end.
 

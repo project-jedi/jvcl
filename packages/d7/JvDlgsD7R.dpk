@@ -53,6 +53,7 @@ contains
   JvDeleteError in '..\..\run\JvDeleteError.pas',
   JvRenameError in '..\..\run\JvRenameError.pas',
   JvDiskPrompt in '..\..\run\JvDiskPrompt.pas',
-  JvFindFiles in '..\..\run\JvFindFiles.pas';
+  JvFindFiles in '..\..\run\JvFindFiles.pas',
+  JvObjectPickerDialog in '..\..\run\JvObjectPickerDialog.pas';
 
 end.
