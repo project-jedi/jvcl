@@ -14,7 +14,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   DesignSize = (
     862
-    606)
+    613)
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid
@@ -264,6 +264,9 @@ object Form1: TForm1
       Category = 'JVCL-DB'
       Caption = 'Single Record Window'
       ImageIndex = 0
+      Options.PostButtonCaption = '&Post'
+      Options.CancelButtonCaption = '&Cancel'
+      Options.CloseButtonCaption = 'C&lose'
     end
     object JvDatabaseFirstAction1: TJvDatabaseFirstAction
       Category = 'JVCL-DB'
