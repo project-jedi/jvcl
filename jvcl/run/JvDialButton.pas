@@ -15,7 +15,7 @@ Portions created by Rudolph Velthuis are Copyright (C) 1997 drs. Rudolph Velthui
 All Rights Reserved.
 
 Contributor(s):
-  marcelb - renaming TJvDialButton
+  marcelb - renaming TJvDialButton, adding on/off state and on/off color for pointer.
 
 Last Modified: 2002-07-16
 
@@ -71,11 +71,13 @@ type
     FMinAngle: TJvDialAngle;
     FPointerRect: TRect;
     FPointerColor: TColor;
+    FPointerColorOff: TColor;
     FPointerSize: Integer;
     FPointerShape: TJvDialPointerShape;
     FPosition: Integer;
     FRadius: Integer;
     FSize: Integer;
+    FState: Boolean;
     FSmallChange: Integer;
     FTicks: TList;
     FTickStyle: TTickStyle;
@@ -99,11 +101,13 @@ type
     procedure SetMax(Value: Integer);
     procedure SetMaxAngle(Value: TJvDialAngle);
     procedure SetPointerColor(Value: TColor);
+    procedure SetPointerColorOff(Value: TColor);
     procedure SetPointerSize(Value: Integer);
     procedure SetPointerShape(Value: TJvDialPointerShape);
     procedure SetPosition(Value: Integer);
     procedure SetRadius(Value: Integer);
     procedure SetSmallChange(Value: Integer);
+    procedure SetState(Value: Boolean);
     procedure SetTickStyle(Value: TTickStyle);
     procedure UpdateSize;
     procedure TimerExpired(Sender: TObject);
@@ -112,6 +116,7 @@ type
     procedure BitmapNeeded; dynamic;
     procedure Change; dynamic;
     procedure ClearTicks;
+    procedure Click; override;
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -147,7 +152,8 @@ type
     property MaxAngle: TJvDialAngle read FMaxAngle write SetMaxAngle default 3300;
     property Min: Integer read FMin write SetMin default 0;
     property MinAngle: TJvDialAngle read FMinAngle write SetMinAngle default 300;
-    property PointerColor: TColor read FPointerColor write SetPointerColor default clBtnText;
+    property PointerColorOn: TColor read FPointerColor write SetPointerColor default clBtnText;
+    property PointerColorOff: TColor read FPointerColorOff write SetPointerColorOff default clGrayText;
     property PointerSize: Integer read FPointerSize write SetPointerSize default 33;
     property PointerShape: TJvDialPointerShape read FPointerShape write SetPointerShape default psLine;
     property Position: Integer read FPosition write SetPosition default 0;
@@ -155,6 +161,7 @@ type
     property RepeatDelay: TJvRepeatValue read FRepeatDelay write FRepeatDelay default 400;
     property RepeatRate: TJvRepeatValue read FRepeatRate write FRepeatRate default 100;
     property SmallChange: Integer read FSmallChange write SetSmallChange default 1;
+    property State: Boolean read FState write SetState default True;
     property TickStyle: TTickStyle read FTickStyle write SetTickStyle stored True;
     property TabStop default True;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -196,7 +203,8 @@ type
     property ParentColor;
     property ParentCtl3D;
     property ParentShowHint;
-    property PointerColor;
+    property PointerColorOn;
+    property PointerColorOff;
     property PointerSize;
     property PointerShape;
     property PopupMenu;
@@ -206,6 +214,7 @@ type
     property RepeatRate;
     property ShowHint;
     property SmallChange;
+    property State;
     property TickStyle;
     property TabOrder;
     property TabStop;
@@ -274,9 +283,11 @@ begin
   FMin := 0;
   FMinAngle := 300;
   FPointerColor := clBtnText;
+  FPointerColorOff := clGrayText;
   FPointerSize := 33;
   FRadius := rcMinRadius;
   FSmallChange := 1;
+  FState := True;
   TabStop := True;
   FTickStyle := tsAuto;
   FBitmapInvalid := True;
@@ -590,6 +601,15 @@ begin
   end;
 end;
 
+procedure TJvCustomDialButton.SetState(Value: Boolean);
+begin
+  if Value <> FState then
+  begin
+    FState := Value;
+    DrawPointer;
+  end;
+end;
+
 procedure TJvCustomDialButton.SetTickStyle(Value: TTickStyle);
 begin
   if FTickStyle <> Value then
@@ -732,8 +752,16 @@ begin
   Canvas.CopyRect(FPointerRect, FBitmap.Canvas, FPointerRect);
   // This is for a solid dot. I'd also like to make a Ctl3D type of dot or
   // an open type of dot. We'd also have to make a disabled type of dot.
-  Canvas.Pen.Color := FPointerColor;
-  Canvas.Brush.Color := FPointerColor;
+  if State then
+  begin
+    Canvas.Pen.Color := FPointerColor;
+    Canvas.Brush.Color := FPointerColor;
+  end
+  else
+  begin
+    Canvas.Pen.Color := FPointerColorOff;
+    Canvas.Brush.Color := FPointerColorOff;
+  end;
   case FPointerShape of
     psLine:
       begin
@@ -1068,6 +1096,13 @@ begin
     end;
 end;
 
+procedure TJvCustomDialButton.Click;
+begin
+  inherited Click;
+  FState := not FState;
+  Invalidate;
+end;
+
 procedure TJvCustomDialButton.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array[TBorderStyle] of Cardinal = (0, WS_BORDER);
@@ -1086,7 +1121,18 @@ begin
   if Value <> FPointerColor then
   begin
     FPointerColor := Value;
-    DrawPointer;
+    if State then
+      DrawPointer;
+  end;
+end;
+
+procedure TJvCustomDialButton.SetPointerColorOff(Value: TColor);
+begin
+  if Value <> FPointerColorOff then
+  begin
+    FPointerColorOff := Value;
+    if not State then
+      DrawPointer;
   end;
 end;
 
