@@ -96,7 +96,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    
   end;
 
   // This class handles the flushing into a disk file
@@ -114,8 +113,10 @@ type
     property FileName;
     property Location;
     property RootNodeName;
+
+    property OnGetFileName;
   end;
-  
+
 implementation
 
 uses

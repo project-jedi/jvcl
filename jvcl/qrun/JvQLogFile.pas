@@ -35,7 +35,10 @@ interface
 
 uses
   SysUtils, Classes,
+  
+  
   QControls, QForms,
+  
   JvQComponent;
 
 type

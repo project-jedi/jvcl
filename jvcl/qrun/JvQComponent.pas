@@ -86,12 +86,12 @@ implementation
 constructor TJvForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  TranslateComponent(Self);
+  TranslateComponent(Self, 'jvcl');
 end;
 
 procedure TJvForm.RefreshTranslation;
 begin
-  ReTranslateComponent(self);
+  ReTranslateComponent(Self, 'jvcl');
 end;
 
 {$ENDIF USE_DXGETTEXT}

@@ -40,7 +40,7 @@ uses
   
   QControls, QForms, QStdCtrls, QMask, 
   
-  JvQToolEdit, JvQComponent, JvQExMask;
+  JvQToolEdit, JvQComponent, JvQExMask, QComboEdits, JvQExComboEdits;
 
 type
   TFoPatch = class(TJvForm)

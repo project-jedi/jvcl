@@ -289,7 +289,7 @@ begin
   try
     for i := 0 to List.Count - 1 do
     begin
-      Result := Result or TJvHideThread(List[i]).Terminated;
+      Result := Result and TJvHideThread(List[i]).Terminated;
       if not Result then
         Break;
     end;

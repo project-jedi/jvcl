@@ -256,9 +256,17 @@ procedure TJvCustomMaskEdit.SetHotTrack(Value: Boolean);
 begin
   FHotTrack := Value;
   if Value then
+  begin
     
     BorderStyle := bsSingle; // maybe bsNone
     
+  end
+  else
+  begin
+    
+    BorderStyle := bsSingle; 
+    
+  end;
 end;
 
 procedure TJvCustomMaskEdit.CaretChanged(Sender: TObject);
