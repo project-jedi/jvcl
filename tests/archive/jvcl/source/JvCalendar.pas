@@ -409,6 +409,8 @@ begin
     3: Result := FTitleTextColor;
     4: Result := FMonthBackColor;
     5: Result := FTrailingTextColor;
+  else
+    Result := 0;
   end;
 end;
 
