@@ -4,14 +4,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, FileCtrl, ExtCtrls, JvAni;
+  StdCtrls, FileCtrl, ExtCtrls, JvAni, JvCombobox, JvDriveCtrls, JvListBox;
 
 type
   TJvAniMainForm = class(TForm)
     Image1: TImage;
-    FileListBox1: TFileListBox;
-    DirectoryListBox1: TDirectoryListBox;
-    DriveComboBox1: TDriveComboBox;
+    FileListBox1: TJvFileListBox;
+    DirectoryListBox1: TJvDirectoryListBox;
+    DriveComboBox1: TJvDriveCombo;
     Memo1: TMemo;
     procedure FileListBox1Click(Sender: TObject);
   end;

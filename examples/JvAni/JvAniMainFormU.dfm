@@ -23,7 +23,7 @@ object JvAniMainForm: TJvAniMainForm
     Center = True
     Transparent = True
   end
-  object FileListBox1: TFileListBox
+  object FileListBox1: TJvFileListBox
     Left = 0
     Top = 134
     Width = 145
@@ -32,22 +32,28 @@ object JvAniMainForm: TJvAniMainForm
     Mask = '*.ani'
     TabOrder = 0
     OnClick = FileListBox1Click
+    ForceFileExtensions = False
   end
-  object DirectoryListBox1: TDirectoryListBox
+  object DirectoryListBox1: TJvDirectoryListBox
     Left = 0
     Top = 34
     Width = 145
     Height = 97
     FileList = FileListBox1
+    DriveCombo = DriveComboBox1
     ItemHeight = 16
+    ScrollBars = ssBoth
     TabOrder = 1
   end
-  object DriveComboBox1: TDriveComboBox
+  object DriveComboBox1: TJvDriveCombo
     Left = 2
     Top = 12
     Width = 145
-    Height = 19
-    DirList = DirectoryListBox1
+    Height = 22
+    DriveTypes = [dtFixed, dtRemote, dtCDROM]
+    Offset = 4
+    ImageSize = isSmall
+    ItemHeight = 16
     TabOrder = 2
   end
   object Memo1: TMemo
