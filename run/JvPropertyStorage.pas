@@ -969,14 +969,14 @@ procedure TJvPropertyStorage.ReadProperty(const APath, AStorageName: string; con
 begin
   if Assigned(AppStorage) then
     With AppStorage Do
-      ReadProperty(ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, True)]), PersObj, PropName, False, True);
+      ReadProperty(ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, True)]), PersObj, PropName, True, True);
 end;
 
 procedure TJvPropertyStorage.WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName : string);
 begin
   if Assigned(AppStorage) then
     With AppStorage Do
-      WriteProperty(ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, False)]), PersObj, PropName, False);
+      WriteProperty(ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, False)]), PersObj, PropName, True);
 end;
 
 
