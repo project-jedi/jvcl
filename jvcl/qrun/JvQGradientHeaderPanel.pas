@@ -75,8 +75,8 @@ type
     procedure SetShowHint(const Value: Boolean);
     function GetLabelFont: TFont;
     procedure SetLabelFont(const Value: TFont);
-    function GetGradientStyle: TJvGradStyle;
-    procedure SetGradientStyle(const Value: TJvGradStyle);
+    function GetGradientStyle: TJvGradientStyle;
+    procedure SetGradientStyle(const Value: TJvGradientStyle);
     function GetLabelAlignment: TAlignment;
     procedure SetLabelAlignment(const Value: TAlignment);
     procedure AdjustLabelWidth;
@@ -96,7 +96,7 @@ type
     property GradientStartColor: TColor read GetGradientStartColor write SetGradientStartColor default clBlack;
     property GradientEndColor: TColor read GetGradientEndColor write SetGradientEndColor default clWhite;
     property GradientSteps: Integer read GetGradientSteps write SetGradientSteps default 100;
-    property GradientStyle: TJvGradStyle read GetGradientStyle write SetGradientStyle;
+    property GradientStyle: TJvGradientStyle read GetGradientStyle write SetGradientStyle;
     property LabelLeft: Integer read GetLabelLeft write SetLabelLeft default 10;
     property LabelTop: Integer read GetLabelTop write SetLabelTop default 8;
     property LabelCursor: TCursor read GetLabelCursor write SetLabelCursor default crDefault;
@@ -322,12 +322,12 @@ begin
   AdjustLabelWidth;
 end;
 
-function TJvGradientHeaderPanel.GetGradientStyle: TJvGradStyle;
+function TJvGradientHeaderPanel.GetGradientStyle: TJvGradientStyle;
 begin
   Result := FGradient.Style;
 end;
 
-procedure TJvGradientHeaderPanel.SetGradientStyle(const Value: TJvGradStyle);
+procedure TJvGradientHeaderPanel.SetGradientStyle(const Value: TJvGradientStyle);
 begin
   FGradient.Style := Value;
 end;

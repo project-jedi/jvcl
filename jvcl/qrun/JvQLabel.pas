@@ -64,6 +64,7 @@ uses
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
+  TJvLabelRotateAngle = 0..360;
 
   TJvCustomLabel = class(TJvGraphicControl)
   private
