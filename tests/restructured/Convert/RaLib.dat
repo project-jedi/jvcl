@@ -194,4 +194,5 @@ TTracerMain=TJvTracerMain
 TTracerSocket=TJvTracerSocket 
 TTrayForm=TJvTrayForm 
 TWHook=TJvWHook 
-=
+RAI2Const=JvInterpreterConst
+RAI2=JvInterpreter
