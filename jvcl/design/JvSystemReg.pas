@@ -50,7 +50,7 @@ uses
   JvSimpleXml, JvXMLDatabase, JvWndProcHook, JvFormPlacement, JvTimer,
   JvSearchFiles, JvPerfMon95, JvChangeNotifyEditor, JvMinMaxForm,
   JvFormPropertiesForm, JvPerfStatEditor, JvTimerListEditor, JvDsgnEditors,
-  JvAppXMLStorage;
+  JvAppXMLStorage, JvFormPlacementSelectList;
 
 {$R ..\resources\JvSystemReg.dcr}
 
@@ -64,8 +64,8 @@ begin
       TJvSystemColors, TJvAppDdeCmd, TJvPerfStat95]);
   RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase,
     TJvRas32, TJvCommStatus]);
-  RegisterComponents(RsPaletteNonVisual, [TJvFormStorage, TJvSearchFiles,
-      TJvMRUList, TJvMRUManager, TJvShellHook, TJvWindowHook,
+  RegisterComponents(RsPaletteNonVisual, [TJvFormStorage, TJvFormStorageSelectList, 
+      TJvSearchFiles, TJvMRUList, TJvMRUManager, TJvShellHook, TJvWindowHook,
       TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList, TJvAppXMLStorage]);
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
