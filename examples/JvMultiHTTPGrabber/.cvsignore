@@ -1,4 +1,5 @@
 *.dcu
+*.~*
 MainFrm.ddp
 JvMultiHTTPGrabberDemo.cfg
 JvMultiHTTPGrabberDemo.dof
