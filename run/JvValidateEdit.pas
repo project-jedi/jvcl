@@ -96,6 +96,7 @@ type
     FCriticalPoints: TJvValidateEditCriticalPoints;
     FStandardFontColor: TColor;
     FAutoAlignment: Boolean;
+    FTrimDecimals: Boolean;
     FOldFontChange: TNotifyEvent;
     procedure DisplayText;
     function ScientificStrToFloat(SciString: string): Double;
@@ -131,18 +132,17 @@ type
     procedure FontChange(Sender: TObject);
     procedure EnforceMaxValue;
     procedure EnforceMinValue;
-    {$IFDEF VCL}
-    // procedure CMChanged(var Message: TMessage); message CM_CHANGED;
-    {$ENDIF VCL}
+    procedure SetTrimDecimals(const Value: Boolean);
   protected
     function IsValidChar(const S: string; Key: Char; Posn: Integer): Boolean; virtual;
     function MakeValid(ParseString: string): string;virtual;
-    procedure Change; override; // (ahuser) CM_CHANGED is only called by TCustomEdit.Change
+    procedure Change; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoClipboardPaste; override;
     procedure SetText(const NewValue: TCaption); override;
     property CheckChars: string read FCheckChars write SetCheckChars;
+    property TrimDecimals: Boolean read FTrimDecimals write SetTrimDecimals;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces;
     property DisplayFormat: TJvValidateEditDisplayFormat read FDisplayFormat
       write SetDisplayFormat;
@@ -165,6 +165,7 @@ type
     procedure KeyPress(var Key: Char); override;
     function DoValidate(const Key: Char; const AText: string;
       const Posn: Integer): Boolean;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -204,8 +205,9 @@ type
     property CriticalPoints;
     property DisabledColor;
     property DisabledTextColor;
+    property TrimDecimals default False;
     property DisplayFormat default dfInteger;
-    property DecimalPlaces default 0; // (chrislatta) Must be after DisplayFormat to stream properly
+    property DecimalPlaces default 0;
     property DisplayPrefix;
     property DisplaySuffix;
     property DragMode;
@@ -312,6 +314,15 @@ begin
   end;
 end;
 
+procedure TJvCustomValidateEdit.Loaded;
+begin
+  inherited Loaded;
+  if DisplayFormat = dfCurrency then
+    if FDecimalPlaces = 0 then
+      FDecimalPlaces := CurrencyDecimals;
+  EditText := FEditText;
+end;
+
 procedure TJvCustomValidateEdit.SetHasMaxValue(NewValue: Boolean);
 begin
   if FHasMaxValue <> NewValue then
@@ -354,6 +365,16 @@ begin
   end;
 end;
 
+procedure TJvCustomValidateEdit.SetTrimDecimals(const Value: Boolean);
+begin
+  if Value <> FTrimDecimals then
+  begin
+    FTrimDecimals := Value;
+    if not (csLoading in ComponentState) then
+      EditText := FEditText;
+  end;
+end;
+
 procedure TJvCustomValidateEdit.SetDecimalPlaces(NewValue: Cardinal);
 begin
   if ControlState = [csReadingState] then
@@ -361,7 +382,8 @@ begin
   else
   if FDisplayFormat in [dfCurrency, dfFloat, dfScientific, dfPercent] then
     FDecimalPlaces := NewValue;
-  EditText := FEditText;
+  if not (csLoading in ComponentState) then
+    EditText := FEditText;
 end;
 
 procedure TJvCustomValidateEdit.SetDisplayFormat(NewValue:
@@ -408,8 +430,9 @@ begin
           FCheckChars := NUMBERS + DecimalSeparator;
           if FAutoAlignment then
             Alignment := taRightJustify;
-          if FDecimalPlaces = 0 then
-            FDecimalPlaces := CurrencyDecimals;
+          if not (csLoading in ComponentState) then
+            if FDecimalPlaces = 0 then
+              FDecimalPlaces := CurrencyDecimals;
         end;
       dfFloat, dfPercent:
         begin
@@ -476,7 +499,8 @@ begin
     else
     begin
       // ...or just display the value
-      EditText := FEditText;
+      if not (csLoading in ComponentState) then
+        EditText := FEditText;
     end;
   end;
 end;
@@ -486,7 +510,8 @@ begin
   if FZeroEmpty <> NewValue then
   begin
     FZeroEmpty := NewValue;
-    EditText := FEditText;
+    if not (csLoading in ComponentState) then
+      EditText := FEditText;
   end;
 end;
 
@@ -796,10 +821,24 @@ end;
 procedure TJvCustomValidateEdit.ChangeText(const NewValue: string);
 var
   S: string;
+  Ps, I: Integer;
 begin
   FSelfChange := True;
   try
-    S := FDisplayPrefix + NewValue + FDisplaySuffix;
+    Ps := 0;
+    if TrimDecimals then
+    begin
+      Ps := Pos(DecimalSeparator, NewValue);
+      if Ps > 0 then
+      begin
+        I := Length(NewValue);
+        while (I > Ps) and (NewValue[I] = '0') do
+          Dec(I);
+        S := FDisplayPrefix + Copy(NewValue, 1, I) + FDisplaySuffix;
+      end;
+    end;
+    if Ps = 0 then
+      S := FDisplayPrefix + NewValue + FDisplaySuffix;
     if S <> inherited Text then
       inherited SetText(S);
   finally
@@ -939,17 +978,12 @@ begin
   end;
 end;
 
-{procedure TJvCustomValidateEdit.CMChanged(var Message: TMessage);}
-
 procedure TJvCustomValidateEdit.Change;
 begin
   // Update FEditText for User changes, so that the AsInteger, etc,
   // functions work while editing
   if not FSelfChange then
     FEditText := inherited Text;
-  { // (ahuser) Done by inherited Change
-  if Assigned(OnChange) then
-    OnChange(Self);}
   inherited Change;
 end;
 
