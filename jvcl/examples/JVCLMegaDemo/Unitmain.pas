@@ -1,6 +1,6 @@
 {******************************************************************
 
-                       JEDI-VCL Demo
+                       JEDI-VCL Mega Demo
 
  Copyright (C) 2002 Project JEDI
 
@@ -41,7 +41,7 @@ uses
   ExtCtrls, JvExExtCtrls, JvSplitter, JvCtrls, JvCaptionPanel, JvToolBar,
   JvAppStorageBaseMainFrmU, ControlsExampleMainFormU, JvCheckBox,
   JvHtControls, JvStatusBar, JvNetscapeSplitter, JvDbMaskEditDemoForm,
-  JvOutlookBarCustomDrawDemoMainForm;
+  JvOutlookBarCustomDrawDemoMainForm, JvBevel, JvGradient;
 
 type
   TMainform = class(TForm)
@@ -84,6 +84,8 @@ type
     StatusBar: TJvStatusBar;
     JvNavPanelButton1: TJvNavPanelButton;
     JvNetscapeSplitter1: TJvNetscapeSplitter;
+    JvGradient1: TJvGradient;
+    SmallImages: TImageList;
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure CreateDemoForm(const ID: Integer; ShowForm: Boolean = True);
@@ -295,11 +297,7 @@ begin
             aJvBitBtn.ShowHint := False;
             aJvBitBtn.OnClick := CompClick;
             aFileName := gBitmapFilePath + 'T' + compUsedSL[J] + '.BMP';
-            {
-            if not FileExists(AFileName) and (aTabSheet.Caption <> 'none') then
-              MessageDlg('File "' + AFileName + '" for Bitmap not found!', mtError, [mbOk], 0)
-            else
-            }
+            if  FileExists(AFileName) then
             try
               if aTabSheet.Caption <> 'none' then
                 aJvBitBtn.Glyph.LoadFromFile(AFileName);
@@ -398,7 +396,10 @@ begin
     62: TheFormArray[ID] := TTMTimeLineMainForm.Create(nil);
     63: TheFormArray[ID] := TTransBtnFormMain.Create(nil);
     64: TheFormArray[ID] := TJvZLibMultipleMainForm.Create(nil);
-    65: TheFormArray[ID] := TWelcomeForm.Create(nil);
+    65: begin
+            TheFormArray[ID] := TWelcomeForm.Create(nil);
+            TheFormArray[ID].Align := alClient;
+        end;
     66: TheFormArray[ID] := TOtherMainForm.Create(nil);
     67: TheFormArray[ID] := TProfiler32MainForm.Create(nil);
     68: TheFormArray[ID] := TFindReplaceMainForm.Create(nil);

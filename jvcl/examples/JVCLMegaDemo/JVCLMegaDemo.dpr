@@ -1,7 +1,15 @@
 program JVCLMegaDemo;
+  { JVCL 3.0 Mega demo
 
+    The two primary units/forms for this demo are
+        Unitmain.pas [Mainfrm]
+        hello.pas    [WelcomeForm]
+   }
 uses
   Forms,
+  Controls,
+  Unitmain in 'Unitmain.pas' {Mainfrm}, 
+  hello in 'hello.pas' {WelcomeForm: TFrame},
   JvDBSearchDemoMainForm in '..\JvDBSearch\JvDBSearchDemoMainForm.pas' {Mainform},
   JvFormsU in 'JvFormsU.pas' {JvFormsFrm: TFrame},
   JvAnimatedTitelform in 'JvAnimatedTitelform.pas' {frAnimatedTitel},
@@ -21,7 +29,6 @@ uses
   JvPanelsU in 'JvPanelsU.pas' {JvPanelsFrm: TFrame},
   JvDateTimeU in 'JvDateTimeU.pas' {JvDateTimeFrm: TFrame},
   JvControlsU in 'JvControlsU.pas' {JvControls: TFrame},
-  hello in 'hello.pas' {WelcomeForm: TFrame},
   JvZoomMainFormU in '..\JvZoom\JvZoomMainFormU.pas' {JvZoomMainForm},
   ContentScrollerMainFormU in '..\JvContentScroller\ContentScrollerMainFormU.pas' {ContentScrollerMainForm},
   JvButtonsU in 'JvButtonsU.pas' {JvButtons: TFrame},
@@ -131,7 +138,6 @@ uses
   JvDBHTLabelDemoMainForm in '..\JvDBHTLabel\JvDBHTLabelDemoMainForm.pas' {JvDBHTLabelDemoMainFrm},
   JvDBImageDemoMainForm in '..\JvDBImage\JvDBImageDemoMainForm.pas' {JvDBImageDemoMainFrm},
   JvDbMaskEditDemoForm in '..\JvDbMaskEdit\JvDbMaskEditDemoForm.pas' {JvDbMaskEditDemoFrm},
-  Unitmain in 'Unitmain.pas' {Mainfrm},
   JvDesktopAlertDemoForm in '..\JvDesktopAlert\JvDesktopAlertDemoForm.pas' {JvDesktopAlertDemoFrm},
   WebMapperDemoMainForm in '..\JvDiagramShape\1. WebSiteScanner\WebMapperDemoMainForm.pas' {WebMapperDemoMainFrm},
   JimParse in '..\JvDiagramShape\1. WebSiteScanner\JimParse.pas',
