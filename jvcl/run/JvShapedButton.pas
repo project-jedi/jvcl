@@ -31,7 +31,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvButtonUtils, JvThemes;
+  StdCtrls, JvButtonUtils, JvThemes; 
 
 type
   TJvButtonShapes = (jvSLeftArrow, jvRightArrow, jvSRound, jvSHex, jvSOctagon, jvSPar,
@@ -81,6 +81,8 @@ type
     procedure SetButton(ALeft, ATop, AWidth, AHeight: Integer);
     procedure DoAntiAlias(Bmp:TBitmap);
     procedure SetAntiAlias(const Value: boolean);
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
     procedure SetRegionOctagon(ALeft, ATop, AWidth, AHeight: Integer);
     procedure SetRegionTriangleDown(ALeft, ATop, AWidth, AHeight: Integer);
@@ -100,7 +102,6 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure SetButtonStyle(ADefault: Boolean); override;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   public
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
@@ -129,7 +130,6 @@ implementation
 constructor TJvShapedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  IncludeThemeStyle(Self, [csParentBackground]);
   FAntiAlias := false;
   bm := Tbitmap.create;
   SetBounds(Left, Top, 65, 65);
@@ -1760,14 +1760,14 @@ begin
     ActionFocus := ItemAction = oda_Focus
   end;
 
+  bm.PixelFormat := pf24bit;
   bm.width := width;
   bm.height := height;
-  bm.PixelFormat := pf24bit;
 
   with bm.Canvas do
   begin
     pen.width := 2;
-    Brush.Color := Color;
+    Brush.Color := Self.Color;
     if not ActionFocus then
     begin
       // fill with current color
@@ -1885,6 +1885,8 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect (Rect);}
   end; // with FCanvas and if DrawEntire
+  bm.Transparent := True;
+  bm.TransparentColor := Self.Color;
   FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
@@ -2621,6 +2623,12 @@ begin
     FAntiAlias := Value;
     Invalidate;
   end;
+end;
+
+procedure TJvShapedButton.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+begin
+  DrawThemedBackground(Self, Msg.DC, ClientRect, Parent.Brush.Handle, False);
+  Msg.Result := 1;
 end;
 
 end.
