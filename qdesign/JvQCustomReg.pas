@@ -47,14 +47,14 @@ uses
   DesignEditors, DesignIntf,
   
 
+  
   ToolsAPI,
   JvQDsgnConsts,
   JclSchedule,
   
   JvQGammaPanel, JvQLinkLabel, JvQLookOut, JvQOutlookBar, JvQScheduledEvents,
   JvQTimeLine, JvQTMTimeLine, JvQValidateEdit, JvQChart,
-  JvQTimeLineEditor,
-  JvQOutlookBarEditors, JvQLookoutEditor;
+  JvQTimeLineEditor, JvQOutlookBarEditors, JvQLookoutEditor;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCustomReg.dcr}
@@ -104,7 +104,6 @@ begin
   RegisterComponentEditor(TJvLookOut, TJvLookOutEditor);
   RegisterComponentEditor(TJvLookOutPage, TJvLookOutPageEditor);
   RegisterComponentEditor(TJvExpress, TJvExpressEditor);
-//  RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
   RegisterClass(TJvLookoutPage);
 end;
 

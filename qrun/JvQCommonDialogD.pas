@@ -35,7 +35,7 @@ unit JvQCommonDialogD;
 interface
 
 uses
-  Windows, SysUtils, Classes, QControls,
+  Windows, SysUtils, Classes, QControls, QWindows,
   JvQTypes, JvQComponent;
 
 type

@@ -35,10 +35,10 @@ interface
 
 uses
   SysUtils, Classes,
-
-
+  
+  
   QControls, QForms, QStdCtrls, QMask,
-
+  
   JvQToolEdit, JvQComponent, JvQExMask;
 
 type
@@ -110,7 +110,7 @@ end;
 procedure TPatchFrm.OkBtnClick(Sender: TObject);
 var
   Src, Dest: TFileStream;
-  buf1, buf2: array[0..1023] of Byte;
+  buf1, buf2: array [0..1023] of Byte;
   i, j: Integer;
   res1, res2: Integer;
   iCount, LastCount: Integer;

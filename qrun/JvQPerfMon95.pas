@@ -378,15 +378,15 @@ end;
 
 //=== TJvPerfStatItems =======================================================
 
-function TJvPerfStatItems.Add: TJvPerfStatItem;
-begin
-  Result := TJvPerfStatItem(inherited Add);
-end;
-
 constructor TJvPerfStatItems.Create(AOwner: TJvPerfStat95);
 begin
   inherited Create(TJvPerfStatItem);
   FOwner := AOwner;
+end;
+
+function TJvPerfStatItems.Add: TJvPerfStatItem;
+begin
+  Result := TJvPerfStatItem(inherited Add);
 end;
 
 function TJvPerfStatItems.GetItem(Index: Integer): TJvPerfStatItem;

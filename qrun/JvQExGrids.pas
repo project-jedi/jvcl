@@ -38,7 +38,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvQExGrids;
+
 interface
+
 uses
   
   
@@ -59,10 +61,10 @@ type
  
 
 
-{$IFNDEF HAS_GRID_EDITSTYLE}
- // Compiler 5 and VisualCLX do not have TEditStyle
+  {$IFNDEF HAS_GRID_EDITSTYLE}
+  // Compiler 5 and VisualCLX do not have TEditStyle
   TEditStyle = (esSimple, esEllipsis, esPickList);
-{$ENDIF HAS_GRID_EDITSTYLE}
+  {$ENDIF HAS_GRID_EDITSTYLE}
 
 
   TJvExInplaceEdit = class(TInplaceEdit, IJvWinControlEvents, IJvControlEvents, IPerformControl)
@@ -207,7 +209,7 @@ type
   
   end;
   
-
+  
 
   TJvExDrawGrid = class(TDrawGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   

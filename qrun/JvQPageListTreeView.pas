@@ -23,6 +23,11 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Changes:
+2002-10-22:
+  Changed TJvPageIndexNode.SetPageIndex to only set the parent PageIndex if the Treeview is a
+  TJvCustomSettingsTreeView since this is the first class implementing this behaviour
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
@@ -30,13 +35,9 @@ Known Issues:
 {$I jvcl.inc}
 
 unit JvQPageListTreeView;
-{
-Changes:
-2002-10-22:
-  Changed TJvPageIndexNode.SetPageIndex to only set the parent PageIndex if the Treeview is a
-  TJvCustomSettingsTreeView since this is the first class implementing this behaviour
-}
+
 interface
+
 uses
   SysUtils, Classes,
   
@@ -64,7 +65,6 @@ type
   protected
     procedure DefineProperties(Filer: TFiler); override;
   end;
-
 
   // this is  a "fake" class so we have something to anchor the design-time editor with
   TJvPageLinks = class(TPersistent)
@@ -97,14 +97,12 @@ type
     procedure SetPageDefault(const Value: Integer);
     procedure SetLinks(const Value: TJvPageLinks);
     procedure SetPageList(const Value: IPageList);
-
     function GetItems: TJvPageIndexNodes;
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function CreateNode: TTreeNode; //override;
     function CreateNodes: TTreeNodes;  //override;
-
     function CanChange(Node: TTreeNode): Boolean; //override;
     procedure Change(Node: TTreeNode); override;
   public
@@ -183,12 +181,10 @@ type
     FLastSelected: TTreeNode;
     procedure Delete(Node: TTreeNode); override;
 
-    procedure GetImageIndex(Sender: TObject; Node: TTreeNode);
-    procedure GetSelectedIndex(Sender: TObject; Node: TTreeNode);
-//    procedure DoGetImageIndex(Node: TTreeNode); override;
-    procedure DoGetImageIndex(Item: TCustomViewItem); override;
-    procedure DoGetSelectedIndex(Node: TTreeNode); override;
-
+    procedure DoGetImageIndex(Sender: TObject; Node: TTreeNode);
+    procedure DoGetSelectedIndex(Sender: TObject; Node: TTreeNode);
+    procedure GetImageIndex(Node: TTreeNode); //override;
+    procedure GetSelectedIndex(Node: TTreeNode); //override;
     function CanChange(Node: TTreeNode): Boolean; //override;
     procedure Change(Node: TTreeNode); override;
     procedure ResetPreviousNode(NewNode: TTreeNode); virtual;
@@ -356,10 +352,10 @@ type
     property OnCollapsing;
 //    property OnCompare;
     property OnContextPopup;
-    
+
 //    property OnAddition;
 //    property OnCreateNodeClass;
-    
+
 //    property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
@@ -424,7 +420,8 @@ begin
       N.ImageIndex := ImageIndex;
       N.SelectedIndex := SelectedIndex;
     end
-    else if Recurse then
+    else
+    if Recurse then
       ResetSiblings(N.getFirstChild, ImageIndex, SelectedIndex, Recurse);
     N := N.getPrevSibling;
   end;
@@ -436,7 +433,8 @@ begin
       N.ImageIndex := ImageIndex;
       N.SelectedIndex := SelectedIndex;
     end
-    else if Recurse then
+    else
+    if Recurse then
       ResetSiblings(N.getFirstChild, ImageIndex, SelectedIndex, Recurse);
     N := N.getNextSibling;
   end;
@@ -472,29 +470,7 @@ begin
   end;
 end;
 
-{ TJvCustomPageListTreeView }
-function TJvCustomPageListTreeView.CanChange(Node: TTreeNode): Boolean;
-begin
-  Result := Assigned(Node) and Assigned(FPageList); //inherited CanChange(Node);
-  if Result then
-    Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
-end;
-
-procedure TJvCustomPageListTreeView.Change(Node: TTreeNode);
-var i: Integer;
-begin
-  inherited Change(Node);
-  if Assigned(FPageList) and Assigned(Node) then
-  begin
-    i := TJvPageIndexNode(Node).PageIndex;
-    if (i >= 0) and (i < FPageList.GetPageCount) then
-      FPageList.SetActivePageIndex(i)
-    else if (PageDefault >= 0) and (PageDefault < FPageList.GetPageCount) then
-      FPageList.SetActivePageIndex(PageDefault)
-    else
-      FPageList.SetActivePageIndex(-1);
-  end;
-end;
+//=== TJvCustomPageListTreeView ==============================================
 
 constructor TJvCustomPageListTreeView.Create(AOwner: TComponent);
 begin
@@ -504,17 +480,42 @@ begin
   ReadOnly := True;
 end;
 
-function TJvCustomPageListTreeView.CreateNode: TTreeNode;
-begin
-  Result := TJvPageIndexNode.Create(Items);
-  TJvPageIndexNode(Result).PageIndex := PageDefault;
-end;
-
 destructor TJvCustomPageListTreeView.Destroy;
 begin
   FLinks.Free;
   
   inherited Destroy;
+end;
+
+function TJvCustomPageListTreeView.CanChange(Node: TTreeNode): Boolean;
+begin
+  Result := true; //inherited CanChange(Node);
+  if Result and Assigned(Node) and Assigned(FPageList) then
+    Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
+end;
+
+procedure TJvCustomPageListTreeView.Change(Node: TTreeNode);
+var
+  I: Integer;
+begin
+  inherited Change(Node);
+  if Assigned(FPageList) and Assigned(Node) then
+  begin
+    I := TJvPageIndexNode(Node).PageIndex;
+    if (I >= 0) and (I < FPageList.GetPageCount) then
+      FPageList.SetActivePageIndex(I)
+    else
+    if (PageDefault >= 0) and (PageDefault < FPageList.GetPageCount) then
+      FPageList.SetActivePageIndex(PageDefault)
+    else
+      FPageList.SetActivePageIndex(-1);
+  end;
+end;
+
+function TJvCustomPageListTreeView.CreateNode: TTreeNode;
+begin
+  Result := TJvPageIndexNode.Create(Items);
+  TJvPageIndexNode(Result).PageIndex := PageDefault;
 end;
 
 function TJvCustomPageListTreeView.CreateNodes: TTreeNodes;
@@ -538,7 +539,8 @@ begin
 end;
 
 procedure TJvCustomPageListTreeView.SetPageDefault(const Value: Integer);
-var N: TTreeNode;
+var
+  N: TTreeNode;
 begin
   if FPageDefault <> Value then
   begin
@@ -558,8 +560,7 @@ begin
   //  FLinks.Assign(Value);
 end;
 
-procedure TJvCustomPageListTreeView.SetPageList(
-  const Value: IPageList);
+procedure TJvCustomPageListTreeView.SetPageList(const Value: IPageList);
 begin
   if FPageList <> Value then
   begin
@@ -580,18 +581,17 @@ begin
   Result := TJvPageIndexNodes(CreateNodes);
 end;
 
-procedure TJvCustomPageListTreeView.SetItems(
-  const Value: TJvPageIndexNodes);
+procedure TJvCustomPageListTreeView.SetItems(const Value: TJvPageIndexNodes);
 begin
   inherited Items := Value;
 end;
 
-{ TJvPageIndexNode }
+//=== TJvPageIndexNode =======================================================
 
 procedure TJvPageIndexNode.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  if (Source is TJvPageIndexNode) then
+  if Source is TJvPageIndexNode then
     PageIndex := TJvPageIndexNode(Source).PageIndex;
 end;
 
@@ -600,12 +600,13 @@ begin
   if FPageIndex <> Value then
   begin
     FPageIndex := Value;
-    if (TreeView is TJvCustomSettingsTreeView) and (Parent <> nil) and (Parent.getFirstChild = Self) and not HasChildren then
+    if (TreeView is TJvCustomSettingsTreeView) and (Parent <> nil) and
+      (Parent.getFirstChild = Self) and not HasChildren then
       TJvPageIndexNode(Parent).PageIndex := Value;
   end;
 end;
 
-{ TJvPageIndexNodes }
+//=== TJvPageIndexNodes ======================================================
 
 procedure TJvPageIndexNodes.DefineProperties(Filer: TFiler);
 begin
@@ -668,7 +669,7 @@ begin
 end;
 
 
-{ TJvSettingsTreeImages }
+//=== TJvSettingsTreeImages ==================================================
 
 constructor TJvSettingsTreeImages.Create;
 begin
@@ -679,14 +680,34 @@ begin
   FImageIndex := -1;
 end;
 
+//=== TJvCustomSettingsTreeView ==============================================
 
-{ TJvCustomSettingsTreeView }
+constructor TJvCustomSettingsTreeView.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FNodeImages := TJvSettingsTreeImages.Create;
+  FNodeImages.TreeView := Self;
+  AutoExpand := True;
+  ShowButtons := False;
+//  ShowLines := False;
+  ReadOnly := True;
+  // we need to assign to these since the TTreeView checks if they are assigned
+  // and won't call GetImageIndex without them
+  inherited OnGetImageIndex := DoGetImageIndex;
+  inherited OnGetSelectedIndex := DoGetSelectedIndex;
+end;
+
+destructor TJvCustomSettingsTreeView.Destroy;
+begin
+  FNodeImages.TreeView := nil;
+  FNodeImages.Free;
+  inherited Destroy;
+end;
 
 function TJvCustomSettingsTreeView.CanChange(Node: TTreeNode): Boolean;
 begin
-//  Result := inherited CanChange(Node);
-  Result := (Selected <> nil) and not Selected.HasChildren ;
-  if Result then // Selected is the previous selected node
+  Result := inherited CanChange(Node);
+  if Result and (Selected <> nil) and not Selected.HasChildren then // Selected is the previous selected node
   begin
     Selected.ImageIndex := FNodeImages.ImageIndex;
     Selected.SelectedIndex := FNodeImages.ImageIndex;
@@ -710,21 +731,6 @@ begin
   end;
 end;
 
-constructor TJvCustomSettingsTreeView.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FNodeImages := TJvSettingsTreeImages.Create;
-  FNodeImages.TreeView := Self;
-  AutoExpand := True;
-  ShowButtons := False;
-//  ShowLines := False;
-  ReadOnly := True;
-  // we need to assign to these since the TTreeView checks if they are assigned
-  // and won't call GetImageIndex without them
-  inherited OnGetImageIndex := GetImageIndex;
-  inherited OnGetSelectedIndex := GetSelectedIndex;
-end;
-
 procedure TJvCustomSettingsTreeView.Delete(Node: TTreeNode);
 begin
   inherited Delete(Node);
@@ -732,27 +738,22 @@ begin
     FLastSelected := nil;
 end;
 
-destructor TJvCustomSettingsTreeView.Destroy;
-begin
-  FNodeImages.TreeView := nil;
-  FNodeImages.Free;
-  inherited Destroy;
-end;
-
-procedure TJvCustomSettingsTreeView.GetImageIndex(Sender: TObject; Node: TTreeNode);
+procedure TJvCustomSettingsTreeView.DoGetImageIndex(Sender: TObject;
+  Node: TTreeNode);
 begin
   if Assigned(FOnGetImageIndex) then
     FOnGetImageIndex(Sender, Node)
   else
-    DoGetImageIndex(Node);
+    GetImageIndex(Node);
 end;
 
-procedure TJvCustomSettingsTreeView.GetSelectedIndex(Sender: TObject; Node: TTreeNode);
+procedure TJvCustomSettingsTreeView.DoGetSelectedIndex(Sender: TObject;
+  Node: TTreeNode);
 begin
   if Assigned(FOnGetSelectedIndex) then
     FOnGetSelectedIndex(Sender, Node)
   else
-    DoGetSelectedIndex(Node);
+    GetSelectedIndex(Node);
 end;
 
 procedure TJvCustomSettingsTreeView.Expand(Node: TTreeNode);
@@ -772,22 +773,16 @@ begin
       ResetPreviousNode(N);
       N.ImageIndex := FNodeImages.SelectedIndex;
       N.SelectedIndex := FNodeImages.SelectedIndex;
-      R := N.DisplayRect; //(False);
-      InvalidateRect(R, True);
+      R := N.DisplayRect;
+      QWindows.InvalidateRect(Handle, @R, True);
       SetPreviousNode(N);
     end;
   end;
   inherited Expand(Node);
 end;
 
-type
-  TJvHack = class(TCustomViewItem);
-
-procedure TJvCustomSettingsTreeView.DoGetImageIndex(Item: TCustomViewItem);
-var
-  Node : TTreeNode;
+procedure TJvCustomSettingsTreeView.GetImageIndex(Node: TTreeNode);
 begin
-  Node := TTreeNode(Item);
   if Node.HasChildren then
   begin
     if Node.Expanded then
@@ -795,8 +790,10 @@ begin
     else
       Node.ImageIndex := FNodeImages.CollapsedIndex;
   end
-  else if Node.Selected
-  or (Node.Parent <> nil) and (Node.Parent.Selected and (Node.Parent.getFirstChild = Node)) then
+  else
+  if Node.Selected or
+    ((Node.Parent <> nil) and Node.Parent.Selected and
+    (Node.Parent.getFirstChild = Node)) then
   begin
     ResetPreviousNode(Node);
     Node.ImageIndex := FNodeImages.SelectedIndex;
@@ -807,9 +804,9 @@ begin
   Node.SelectedIndex := Node.ImageIndex;
 end;
 
-procedure TJvCustomSettingsTreeView.DoGetSelectedIndex(Node: TTreeNode);
+procedure TJvCustomSettingsTreeView.GetSelectedIndex(Node: TTreeNode);
 begin
-  DoGetImageIndex(Node);
+  GetImageIndex(Node);
 end;
 
 procedure TJvCustomSettingsTreeView.Loaded;
@@ -826,18 +823,17 @@ procedure TJvCustomSettingsTreeView.ResetPreviousNode(NewNode: TTreeNode);
 var
   R: TRect;
 begin
-  if (FLastSelected <> nil) and (FLastSelected <> NewNode) and (NewNode <> nil)
-     and not NewNode.HasChildren then
+  if (FLastSelected <> nil) and (FLastSelected <> NewNode) and
+    (NewNode <> nil) and not NewNode.HasChildren then
   begin
     FLastSelected.ImageIndex := FNodeImages.ImageIndex;
     FLastSelected.SelectedIndex := FNodeImages.ImageIndex;
-    R := FLastSelected.DisplayRect; //(False);
-    InvalidateRect(R, True);
+    R := FLastSelected.DisplayRect;
+    QWindows.InvalidateRect(Handle, @R, True);
   end;
 end;
 
-procedure TJvCustomSettingsTreeView.SetImageSelection(
-  const Value: TJvSettingsTreeImages);
+procedure TJvCustomSettingsTreeView.SetImageSelection(const Value: TJvSettingsTreeImages);
 begin
   //  FNodeImages := Value;
 end;

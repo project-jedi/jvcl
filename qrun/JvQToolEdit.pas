@@ -54,7 +54,7 @@ uses
   RTLConsts, Variants,
   
   
-  qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
+  Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
   QMask, QImgList, QActnList, QExtDlgs, QComboEdits, QWindows, Types,
   JvQExComboEdits,
   
@@ -827,7 +827,10 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
-  ShellAPI, Math,
+  {$IFDEF MSWINDOWS}
+  ShellAPI,
+  {$ENDIF MSWINDOWS}
+  Math,
   
   QConsts,
   
@@ -1712,8 +1715,9 @@ begin
       Exit;
     if FPopupVisible then
       PopupCloseUp(FPopup, False);
-    {else if (not ReadOnly or AlwaysEnable) and (not DirectInput) then
-      PopupDropDown(True);}
+    {else
+     if (not ReadOnly or AlwaysEnable) and (not DirectInput) then
+       PopupDropDown(True);}
   end;
   inherited MouseDown(Button, Shift, X, Y);
 end;
@@ -1952,7 +1956,8 @@ begin
         ControlStyle := ControlStyle - [csFixedWidth];
       RecreateGlyph;
     end
-      //    else if (Value <> ButtonWidth) and (Value < ClientWidth) then begin
+      //else
+      //if (Value <> ButtonWidth) and (Value < ClientWidth) then begin
       //Polaris
     else
     if (Value <> ButtonWidth) and

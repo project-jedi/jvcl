@@ -38,7 +38,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvQExExtCtrls;
+
 interface
+
 uses
   
   
@@ -728,7 +730,7 @@ type
   end;
   
 
-
+  
 
 implementation
 

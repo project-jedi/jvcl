@@ -12,13 +12,13 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvCommonDialogDEditor.PAS, released on 2001-02-28.
+The Original Code is: JvPerfStatEditor.PAS, released on YYYY-MM-DD.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
-Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
+The Initial Developer of the Original Code is ?
+Portions created by ? are Copyright (C) 2001 ?.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck att bigfoot dott com].
+Contributor(s): 
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,51 +30,48 @@ Known Issues:
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
-unit JvQCommonDialogDEditor;
+unit JvQPerfStatEditor;
 
 interface
 
 uses
-  SysUtils,
+  SysUtils, Classes,
+  
+  
+  QDialogs,
+  
   
   DesignEditors, DesignIntf,
   
-  JvQCommonDialogD;
+  JvQPerfMon95;
 
 type
-  TJvCommonDialogDEditor = class(TDefaultEditor)
+  TJvPerfStatProperty = class(TStringProperty)
   public
-    function GetVerbCount: Integer; override;
-    function GetVerb(Index: Integer): string; override;
-    procedure ExecuteVerb(Index: Integer); override;
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
   end;
 
 implementation
 
-uses
-  JvQDsgnConsts;
-
-procedure TJvCommonDialogDEditor.ExecuteVerb(Index: Integer);
+function TJvPerfStatProperty.GetAttributes: TPropertyAttributes;
 begin
-  with Component as TJvCommonDialogD do
-    case Index of
-      0:
-        Execute;
-    end;
+  Result := [paValueList, paSortList, paMultiSelect];
 end;
 
-function TJvCommonDialogDEditor.GetVerb(Index: Integer): string;
+procedure TJvPerfStatProperty.GetValues(Proc: TGetStrProc);
+var
+  I: Integer;
+  Values: TStringList;
 begin
-  case Index of
-    0:
-      Result := RsPreviewEllipsis;
+  Values := TStringList.Create;
+  try
+    JvGetPerfStatItems(Values);
+    for I := 0 to Values.Count - 1 do
+      Proc(Values[I]);
+  finally
+    Values.Free;
   end;
 end;
 
-function TJvCommonDialogDEditor.GetVerbCount: Integer;
-begin
-  Result := 1;
-end;
-
 end.
-

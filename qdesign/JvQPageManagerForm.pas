@@ -36,19 +36,19 @@ uses
   SysUtils, Classes,
   
   
-  QWindows, QForms, QGrids, QStdCtrls, QControls, QExtCtrls, QGraphics, Types,
-
+  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QGrids, Types, QWindows,
+  
   
   RTLConsts, DesignIntf, DesignEditors,
   
   
-  ClxDesignWindows,
+  ClxEditors, QDesignWindows,
   
   
   JvQSpeedButton, JvQPageManager, JvQJVCLUtils, JvQComponent;
 
 type
-  TJvProxyEditor = class(TClxDesignWindow)
+  TJvProxyEditor = class(TDesignWindow)
     BtnPanel: TPanel;
     CloseBtn: TButton;
     DeleteBtn: TButton;
@@ -179,7 +179,7 @@ begin
   if (List = nil) or (List.Count = 0) then
     Result := srNone
   else
-    FmtStr(Result, '(%s)', [GetPropType^.Name]);
+    Result := Format('(%s)', [GetPropType^.Name]);
 end;
 
 procedure TJvProxyListProperty.Edit;
@@ -459,6 +459,7 @@ begin
   Proxy := ProxyByRow(ProxyGrid.Row - 1);
   if Proxy <> nil then
   begin
+    
     
     TCustomForm(Designer.Root).DesignerHook.ValidateRename(Proxy, Proxy.Name, '');
     

@@ -170,7 +170,7 @@ procedure TJvAppInstances.Check;
 begin
   if Active and not (csDesigning in ComponentState) then
     if MaxInstances > 0 then
-      //if AppInstances.InstanceCount > MaxInstances then
+      if AppInstances.InstanceCount > MaxInstances then
       begin
         if GetIsRemoteInstanceActive then
         begin

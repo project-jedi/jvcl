@@ -53,7 +53,7 @@ type
     FSourceRect: TRect;
     FDestRect: TRect;
     FScroll: TJvImageDrawThread;
-    FAlwaysRestart: boolean;
+    FAlwaysRestart: Boolean;
     procedure Deplace(Sender: TObject);
     procedure UpdateBitmap;
     function GetActive: Boolean;
@@ -91,7 +91,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property AlwaysRestart:boolean read FAlwaysRestart write FAlwaysRestart default False;
+    property AlwaysRestart: Boolean read FAlwaysRestart write FAlwaysRestart default False;
     property StartColor: TColor read FStartColor write SetStartColor default clBtnFace;
     property Visible;
     property Width default 100;
@@ -136,7 +136,7 @@ begin
   FScroll.FreeOnTerminate := False;
   FScroll.Delay := 50;
   FScroll.OnDraw := Deplace;
-  // (p3) don't set color: it will set ParentColor to false
+  // (p3) don't set color: it will set ParentColor to False
 //  Color := clBtnFace;
 
   { (rb) Set the size properties last; will trigger Resize }
@@ -258,11 +258,11 @@ begin
     Exit;
   Canvas.FillRect(Rect(FLeftOffset + FBitmap.Width, 0, Width, Height));
   
-  OffsetRect(FDestRect, left, top);
+  OffsetRect(FDestRect, Left, Top);
   
   Canvas.CopyRect(FDestRect, FBitmap.Canvas, FSourceRect);
   
-  OffsetRect(FDestRect, -left, -top);
+  OffsetRect(FDestRect, -Left, -Top);
   
 end;
 
@@ -283,13 +283,16 @@ procedure TJvWaitingGradient.SetActive(const Value: Boolean);
 begin
 //  if csLoading in ComponentState then
 //    Exit;
-  if FScroll = nil then Exit;
+  if FScroll = nil then
+    Exit;
   if Value and FScroll.Suspended then
   begin
     FScroll.Resume;
-    if AlwaysRestart then Restart;
+    if AlwaysRestart then
+      Restart;
   end
-  else if not Value and not FScroll.Suspended then
+  else
+  if not Value and not FScroll.Suspended then
     FScroll.Suspend;
 end;
 

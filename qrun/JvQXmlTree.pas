@@ -260,7 +260,8 @@ begin
             oList.Append('CT:' + clean(xTag));
             dec(aLevel);
           end
-          else if xtag[Length(xTag)] = '/' then
+          else
+          if xtag[Length(xTag)] = '/' then
           begin
             oList.Append('ET:' + clean(xTag));
           end
@@ -283,7 +284,7 @@ begin
     end;
     inc(p1);
   until p1 > c;
-  alist.assign(oList);
+  alist.Assign(oList);
   oList.Free;
 end;
 
@@ -452,7 +453,8 @@ begin
   begin
     if ValueType = xvtString then
       Result := Result + spc + '  ' + Value + sLineBreak
-    else if ValueType = xvtCDATA then
+    else
+    if ValueType = xvtCDATA then
     begin
       Result := Result + spc + '  ' + '<![CDATA[' + ExpandCDATA(value) + ']]>' + sLineBreak;
     end
@@ -1040,7 +1042,8 @@ begin
   begin
     if ValueType = xvtString then
       Result := Result + spc + '  ' + Value + sLineBreak
-    else if ValueType = xvtCDATA then
+    else
+    if ValueType = xvtCDATA then
     begin
       Result := Result + spc + '  ' + '<![CDATA[' + ExpandCDATA(value) + ']]>' + sLineBreak;
     end
@@ -1328,7 +1331,7 @@ end;
 
 procedure TJvXMLTree.SetLines(const Value: TStringList);
 begin
-  FLines.assign(Value);
+  FLines.Assign(Value);
 end;
 
 procedure TJvXMLTree.LoadFromStream(Stream: TStream);
@@ -1428,20 +1431,24 @@ begin
       n := n.AddNodeEx(AName, '');
       inc(FNodeCount);
     end
-    else if token = 'CT:' then
+    else
+    if token = 'CT:' then
     begin
       n := n.ParentNode;
     end
-    else if token = 'ET:' then
+    else
+    if token = 'ET:' then
     begin
       n.AddNodeEx(AName, '');
     end
-    else if token = 'TX:' then
+    else
+    if token = 'TX:' then
     begin
       n.Value := AName;
       n.ValueType := xvtString;
     end
-    else if token = 'CD:' then
+    else
+    if token = 'CD:' then
     begin
       n.value := AName;
       n.ValueType := xvtCDATA;

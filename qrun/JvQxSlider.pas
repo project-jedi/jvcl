@@ -279,7 +279,11 @@ type
 implementation
 
 uses
-  Consts, Math,
+  
+  
+  QConsts,
+  
+  Math,
   JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQTypes, JvQThemes;
 
 {$IFDEF MSWINDOWS}

@@ -146,8 +146,7 @@ type
     FImageOptions: TJvRollOutImageOptions;
     FToggleAnywhere: Boolean;
     FShowFocus: Boolean;
-    FTabStops: TStringlist;
-
+    FTabStops: TStringList;
     procedure SetGroupIndex(Value: Integer);
     procedure SetPlacement(Value: TJvPlacement);
     procedure WriteAWidth(Writer: TWriter);
@@ -226,7 +225,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     function MouseIsOnButton: Boolean;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure Collapse; virtual;
@@ -240,10 +238,8 @@ type
     procedure SetRollOut(const Value: TJvCustomRollOut);
     procedure SetLinkCheckedToCollapsed(const Value: Boolean);
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-
     procedure ExecuteTarget(Target: TObject); override;
     procedure UpdateTarget(Target: TObject); override;
     function HandlesTarget(Target: TObject): Boolean; override;
@@ -272,6 +268,7 @@ type
     property Font;
     property GroupIndex;
     property ImageOptions;
+    
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -295,8 +292,6 @@ type
     property OnStartDrag;
     property OnExpand;
     property OnCollapse;
-
-
   end;
 
 implementation
@@ -313,6 +308,7 @@ uses
 
 
 procedure InternalFrame3D(Canvas: TCanvas; var Rect: TRect; TopColor, BottomColor: TColor; Width: Integer);
+
   procedure DoRect;
   var
     TopRight, BottomLeft: TPoint;
@@ -351,13 +347,7 @@ begin
   Inc(Rect.Right);
 end;
 
-{ TJvRollOutImageOptions }
-
-procedure TJvRollOutImageOptions.Change;
-begin
-  if Assigned(FOnChange) then
-    FOnChange(Self);
-end;
+//=== TJvRollOutImageOptions =================================================
 
 constructor TJvRollOutImageOptions.Create;
 begin
@@ -373,6 +363,12 @@ destructor TJvRollOutImageOptions.Destroy;
 begin
   FChangeLink.Free;
   inherited Destroy;
+end;
+
+procedure TJvRollOutImageOptions.Change;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TJvRollOutImageOptions.DoChangeLink(Sender: TObject);
@@ -426,13 +422,7 @@ begin
   end;
 end;
 
-{ TJvRollOutColors }
-
-procedure TJvRollOutColors.Change;
-begin
-  if Assigned(FOnChange) then
-    FOnChange(Self);
-end;
+//=== TJvRollOutColors =======================================================
 
 constructor TJvRollOutColors.Create;
 begin
@@ -444,6 +434,12 @@ begin
   FColor := clBtnFace;
   FFrameBottom := clBtnHighlight;
   FFrameTop := clBtnShadow;
+end;
+
+procedure TJvRollOutColors.Change;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TJvRollOutColors.SetButtonBottom(const Value: TColor);
@@ -509,7 +505,7 @@ begin
   end;
 end;
 
-{ TJvCustomRollOut }
+//=== TJvCustomRollOut =======================================================
 
 constructor TJvCustomRollOut.Create(AOwner: TComponent);
 begin
@@ -670,7 +666,7 @@ begin
     FCollapsed := Value;
     if Value then
     begin
-      if FPlacement = plTop then
+      if Placement = plTop then
         ChangeHeight(FCHeight)
       else
         ChangeWidth(FCWidth);
@@ -678,7 +674,7 @@ begin
     end
     else
     begin
-      if FPlacement = plTop then
+      if Placement = plTop then
         ChangeHeight(FAHeight)
       else
         ChangeWidth(FAWidth);
@@ -871,9 +867,9 @@ var
   R: TRect;
   TopC, BottomC: TColor;
   FIndex: Integer;
-
-  ws: widestring;
-
+  
+  WS: WideString;
+  
 begin
   if FPlacement = plTop then
     FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
@@ -890,12 +886,14 @@ begin
     TopC := Colors.ButtonBottom;
     BottomC := Colors.ButtonTop;
   end
-  else if FInsideButton then
+  else
+  if FInsideButton then
   begin
     TopC := Colors.ButtonTop;
     BottomC := Colors.ButtonBottom;
   end
-{  else if Focused then
+{ else
+  if Focused then
   begin
     TopC := clHighlight;
     BottomC := clHighlight;
@@ -948,12 +946,12 @@ begin
       OffsetRect(R, 1, 1);
     
     
-    ws := Caption;
+    WS := Caption;
     SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
-      DrawText(Canvas.Handle, ws , -1, FButtonHeight , BevelWidth + 2, Canvas.Textwidth(ws), FButtonHeight, DT_VCENTER, 270)
+      DrawText(Canvas.Handle, WS, -1, FButtonHeight , BevelWidth + 2, Canvas.TextWidth(WS), FButtonHeight, DT_VCENTER, 270)
     else
-      DrawText(Canvas.Handle, ws , -1, BevelWidth + 2, 0, Canvas.Textwidth(ws), FButtonHeight, DT_VCENTER, 0)
+      DrawText(Canvas.Handle, WS, -1, BevelWidth + 2, 0, Canvas.TextWidth(WS), FButtonHeight, DT_VCENTER, 0)
     
   end;
   if ShowFocus and Focused then
@@ -1159,13 +1157,13 @@ begin
   FreeAndNil(FTabStops);
 end;
 
-{ TJvRollOutAction }
+//=== TJvRollOutAction =======================================================
 
 destructor TJvRollOutAction.Destroy;
 begin
   if RollOut <> nil then
     RollOut.RemoveFreeNotification(Self);
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvRollOutAction.Execute: Boolean;
@@ -1195,7 +1193,7 @@ end;
 
 procedure TJvRollOutAction.ExecuteTarget(Target: TObject);
 begin
-  inherited;
+  inherited ExecuteTarget(Target);
   if Target is TJvCustomRollOut then
   begin
     if LinkCheckedToCollapsed then
