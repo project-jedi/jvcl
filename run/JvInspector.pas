@@ -3559,6 +3559,8 @@ var
   {$ENDIF VCL}
   BCount: Integer;
   BPerPage: Integer;
+  ShowVertSB: Boolean; //HEG
+  ShowHorzSB: Boolean; //HEG
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -3572,37 +3574,41 @@ begin
     ScFactor := ScrollfactorV;
     { Needed to redisplay the scrollbar after it's hidden in the CloseUp method
       of an enumerated item's combobox }
-    ShowScrollBars(SB_VERT, Round((DrawHeight) / ScFactor) >= Round(ClHeight / ScFactor));
-    {$IFDEF VCL}
-    with ScrollInfo do
+    ShowVertSB := Round((DrawHeight) / ScFactor) >= Round(ClHeight / ScFactor);
+    ShowScrollBars(SB_VERT, ShowVertSB);
+    if ShowVertSB then
     begin
-      cbSize := SizeOf(ScrollInfo);
-      fMask := SIF_ALL;
-      nMin := 0;
-      nMax := Round((IdxToY(Succ(YToIdx(ImageHeight - ClientHeight))) + ClientHeight) / ScFactor);
-      nPage := Round(ClHeight / ScFactor);
-      nPos := Round(IdxToY(TopIndex) / ScFactor);
-      nTrackPos := 0;
-    end;
-    SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    with FVertScrollBar do
-    begin
-      Min := 0;
-      try
-//        Max := Round((IdxToY(Succ(YToIdx(ImageHeight - ClientHeight))) + ClientHeight) / ScFactor);
-//        LargeChange := Round(ClHeight / ScFactor);
-//        Position := Round(IdxToY(TopIndex) / ScFactor);
-        if ImageHeight > ClientHeight then
-          Max := ImageHeight-Clientheight;
-        LargeChange := Self.ClientHeight;
-        Position := IdxToY(TopIndex);
-      except
-        on E: Exception do ShowMessage(E.Message);
+      {$IFDEF VCL}
+      with ScrollInfo do
+      begin
+        cbSize := SizeOf(ScrollInfo);
+        fMask := SIF_ALL;
+        nMin := 0;
+        nMax := Round((IdxToY(Succ(YToIdx(ImageHeight - ClientHeight))) + ClientHeight) / ScFactor);
+        nPage := Round(ClHeight / ScFactor);
+        nPos := Round(IdxToY(TopIndex) / ScFactor);
+        nTrackPos := 0;
       end;
+      SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      with FVertScrollBar do
+      begin
+        Min := 0;
+        try
+  //        Max := Round((IdxToY(Succ(YToIdx(ImageHeight - ClientHeight))) + ClientHeight) / ScFactor);
+  //        LargeChange := Round(ClHeight / ScFactor);
+  //        Position := Round(IdxToY(TopIndex) / ScFactor);
+          if ImageHeight > ClientHeight then
+            Max := ImageHeight-Clientheight;
+          LargeChange := Self.ClientHeight;
+          Position := IdxToY(TopIndex);
+        except
+          on E: Exception do ShowMessage(E.Message);
+        end;
+      end;
+      {$ENDIF VisualCLX}
     end;
-    {$ENDIF VisualCLX}
   end
   else
   begin
@@ -3611,29 +3617,33 @@ begin
       of an enumerated item's combobox }
     BCount := BandStarts.Count;
     BPerPage := ClientWidth div BandWidth;
-    ShowScrollBars(SB_HORZ, BCount > BPerPage);
-    {$IFDEF VCL}
-    with ScrollInfo do
+    ShowHorzSB := BCount > BPerPage;
+    ShowScrollBars(SB_HORZ, ShowHorzSB);
+    if ShowHorzSB then
     begin
-      cbSize := SizeOf(ScrollInfo);
-      fMask := SIF_ALL;
-      nMin := 0;
-      nMax := BCount - 1;
-      nPage := BPerPage;
-      nPos := GetBandFor(TopIndex);
-      nTrackPos := 0;
+      {$IFDEF VCL}
+      with ScrollInfo do
+      begin
+        cbSize := SizeOf(ScrollInfo);
+        fMask := SIF_ALL;
+        nMin := 0;
+        nMax := BCount - 1;
+        nPage := BPerPage;
+        nPos := GetBandFor(TopIndex);
+        nTrackPos := 0;
+      end;
+      SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      with FHorzScrollBar do
+      begin
+        Min := 0;
+        Max := BCount - 1;
+        LargeChange := BPerPage;
+        Position := GetBandFor(TopIndex);
+      end;
+      {$ENDIF VisualCLX}
     end;
-    SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    with FHorzScrollBar do
-    begin
-      Min := 0;
-      Max := BCount - 1;
-      LargeChange := BPerPage;
-      Position := GetBandFor(TopIndex);
-    end;
-    {$ENDIF VisualCLX}
   end;
   Invalidate;
 end;
