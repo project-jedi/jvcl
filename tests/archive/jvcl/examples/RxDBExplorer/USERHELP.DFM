@@ -44,7 +44,7 @@ object CustomizeHelpDlg: TCustomizeHelpDlg
     TabOrder = 1
     OnChange = FileNameChange
   end
-  object HelpList: TJvxDrawGrid 
+  object HelpList: TJvDrawGrid
     Left = 8
     Top = 20
     Width = 321

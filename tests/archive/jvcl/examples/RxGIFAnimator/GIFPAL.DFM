@@ -53,7 +53,7 @@ object PaletteForm: TPaletteForm
     BevelOuter = bvNone
     BorderWidth = 5
     TabOrder = 1
-    object ColorGrid: TJvxDrawGrid 
+    object ColorGrid: TJvDrawGrid
       Left = 5
       Top = 5
       Width = 234

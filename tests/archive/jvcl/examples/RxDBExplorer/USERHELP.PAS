@@ -21,7 +21,7 @@ type
     FormStorage: TJvFormStorage ;
     FileName: TJvFilenameEdit ;
     Label2: TLabel;
-    HelpList: TJvxDrawGrid ;
+    HelpList: TJvDrawGrid ;
     OkBtn: TButton;
     CancelBtn: TButton;
     procedure FormCreate(Sender: TObject);

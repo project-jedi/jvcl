@@ -43,7 +43,7 @@ object TraceSQL: TTraceSQL
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object TraceBox: TJvxDrawGrid 
+  object TraceBox: TJvDrawGrid
     Left = 0
     Top = 0
     Width = 404

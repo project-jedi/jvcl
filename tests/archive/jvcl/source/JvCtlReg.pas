@@ -447,7 +447,7 @@ begin
   RegisterComponents(srJvControlsPalette, [TJvxCheckListBox, TJvxSplitter, TJvxSlider,
     TJvxLabel,
     TJvRichEdit,
-    TJvxClock, TJvAnimatedImage, TJvxDrawGrid, TJvxSpeedButton,
+    TJvxClock, TJvAnimatedImage, TJvDrawGrid, TJvxSpeedButton,
     {$IFDEF USE_JV_GIF}
     TJvGIFAnimator,
     {$ENDIF}

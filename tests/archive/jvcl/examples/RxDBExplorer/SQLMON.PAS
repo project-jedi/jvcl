@@ -20,7 +20,7 @@ type
     Splitter: TJvxSplitter ;
     ViewPanel: TMemo;
     FormStorage: TJvFormStorage ;
-    TraceBox: TJvxDrawGrid ;
+    TraceBox: TJvDrawGrid ;
     SaveLogDialog: TSaveDialog;
     PopupMenu: TPopupMenu;
     miPopupCopy: TMenuItem;

@@ -22,7 +22,7 @@
       ..\lib5\JvDateTimePicker.obj ..\lib5\JvDBDateTimePicker.obj 
       ..\lib5\JvDeleteError.obj ..\lib5\JvDeviceChanged.obj 
       ..\lib5\JvDirectories.obj ..\lib5\JvDiskPrompt.obj ..\lib5\JvDragDrop.obj 
-      ..\lib5\JvDrawGrid.obj ..\lib5\JvEasterEgg.obj ..\lib5\JvEdit.obj 
+      ..\lib5\JvEasterEgg.obj ..\lib5\JvEdit.obj
       ..\lib5\JvFavoritesButton.obj ..\lib5\JvValidateEdit.obj
       ..\lib5\JvFormAlarms.obj ..\lib5\JvFormAnimatedIcon.obj 
       ..\lib5\JvFormAnimation.obj ..\lib5\JvFormImage.obj 
@@ -73,10 +73,8 @@
       ..\lib5\JvWaitingGradient.obj ..\lib5\JvWaitingProgress.obj 
       ..\lib5\JvWavePlayer.obj ..\lib5\JvWinampApi.obj ..\lib5\JvWinampLabel.obj 
       ..\lib5\JvWinHelp.obj ..\lib5\JvXorCipher.obj ..\lib5\JvZoom.obj 
-      ..\lib5\JvBMPListBox.obj ..\lib5\JvButtonDrawGrid.obj 
-      ..\lib5\JvCoupler.obj ..\lib5\JvHighlighter.obj ..\lib5\JvMLButton.obj 
-      ..\lib5\JvMultilineListbox.obj ..\lib5\JvOneSizeFitsAllButton.obj 
-      ..\lib5\JvGroupBox.obj ..\lib5\JvReorderListBox.obj 
+      ..\lib5\JvCoupler.obj ..\lib5\JvHighlighter.obj ..\lib5\JvMLButton.obj
+      ..\lib5\JvOneSizeFitsAllButton.obj ..\lib5\JvGroupBox.obj
       ..\lib5\JvSyncSplitter.obj ..\lib5\JvPopupMemo.obj 
       ..\lib5\JvSizeablePanel.obj ..\lib5\JvSpacer.obj 
       ..\lib5\JvTransparentPanel.obj ..\lib5\JvMousePanel.obj 

@@ -53,7 +53,7 @@ uses
 
   // Additional
   JvImage, JvBitBtn, JvSpeedButton, JvMaskEdit, JvStaticText, JvCheckListBox,
-  JvBevel, JvScrollBox, JvStringGrid, JvDrawGrid, JvShape, JvControlBar,
+  JvBevel, JvScrollBox, JvStringGrid, JvShape, JvControlBar,
   JvSplitter,
 
   // Standard
@@ -143,7 +143,6 @@ uses
   JvArrow,
 
   // Peter Below Goodies
-  JvButtonDrawGrid,
   JvCoupler, JvHighlighter, JvMLButton, JvMousePanel, JvObserverLabel,
   JvObservibleCheckBox, JvOneSizeFitsAllButton, JvGroupBox,
   JvPopupMemo, JvSizeablePanel, JvSpacer, JvSyncSplitter, JvTransparentPanel,
@@ -266,7 +265,7 @@ begin
      TJvOneSizeFitsAllButton, TJvArrowButton,
      TJvTransparentButton, TJvTransparentButton2, 
 
-     TJvPopupMemo, TJvStringGrid, TJvDrawGrid, TJvButtonDrawGrid,
+     TJvPopupMemo, TJvStringGrid,
 
      TJvCheckListBox, TJvImageListBox, TJvFontComboBox,
      TJvColorComboBox, TJvImageComboBox,

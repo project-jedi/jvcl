@@ -23,7 +23,7 @@ type
     OkBtn: TButton;
     CancelBtn: TButton;
     GridPanel: TPanel;
-    ColorGrid: TJvxDrawGrid ;
+    ColorGrid: TJvDrawGrid ;
     procedure ColorGridDrawCell(Sender: TObject; Col, Row: Longint;
       Rect: TRect; State: TGridDrawState);
     procedure FormCreate(Sender: TObject);
