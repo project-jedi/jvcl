@@ -2105,6 +2105,7 @@ end;
 // Polaris
 procedure TJvDBCalcEdit.DoExit;
 begin
+  if Modified then
   try
     CheckRange;
     FDataLink.UpdateRecord;
