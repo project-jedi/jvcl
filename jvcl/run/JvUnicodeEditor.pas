@@ -41,8 +41,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
   Menus, ExtCtrls, StdCtrls, Clipbrd,
+  JclWideStrings,
   JvJCLUtils, JvFixedEditPopup, JvUnicodeCanvas, JvComponent,
-  JvExControls, JvEditorCommon, JvWStrUtils;
+  JvExControls, JvEditorCommon;
 
 type
   TJvCustomWideEditor = class;

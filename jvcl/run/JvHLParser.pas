@@ -44,7 +44,8 @@ interface
 
 uses
   SysUtils, Classes, Dialogs,
-  JvTypes, JvJCLUtils, JvWStrUtils;
+  JclWideStrings,
+  JvTypes, JvJCLUtils;
 
 const
   ieBadRemark = 1;
