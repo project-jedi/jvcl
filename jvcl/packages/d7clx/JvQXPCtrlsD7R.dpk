@@ -1,0 +1,42 @@
+package JvQXPCtrlsD7R;
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCLX XP Controls Runtime Package'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+{$DEFINE USEJVCL}
+
+requires
+  JvQCoreD7R,
+  rtl,
+  visualclx;
+
+contains
+  JvQXPBar in '..\..\qrun\JvQXPBar.pas',
+  JvQXPContainer in '..\..\qrun\JvQXPContainer.pas',
+  JvQXPCore in '..\..\qrun\JvQXPCore.pas',
+  JvQXPCoreUtils in '..\..\qrun\JvQXPCoreUtils.pas',
+  JvQXPButtons in '..\..\qrun\JvQXPButtons.pas',
+  JvQXPCheckCtrls in '..\..\qrun\JvQXPCheckCtrls.pas';
+
+end.
