@@ -52,7 +52,7 @@ uses
   JvLookOut, JvOutlookBar, JvScheduledEvents, JvThumbImage,
   JvThumbnails, JvThumbviews, JvTimeLine, JvTMTimeLine, JvBalloonHint,
   JvValidateEdit, JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser,
-  JvImagesViewer, JvImageListViewer, JvOwnerDrawViewer, 
+  JvImagesViewer, JvImageListViewer, JvOwnerDrawViewer,
   JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors,
   JvOutlookBarEditors, JvLookoutEditor, JvChart;
 
@@ -75,7 +75,8 @@ begin
   RegisterComponents(RsPaletteImageAnimator, [TJvThumbView, TJvThumbnail,
     TJvThumbImage]);
   RegisterComponents(RsPaletteVisual, [TJvInspector, TJvInspectorBorlandPainter,
-    TJvInspectorDotNETPainter, TJvTimeLine, TJvTMTimeLine, TJvChart]);
+    TJvInspectorDotNETPainter, TJvTimeLine, TJvTMTimeLine, TJvChart,
+      TJvImagesViewer, TJvImageListViewer,TJvOwnerDrawViewer]);
   RegisterComponents(RsPaletteNonVisual, [TJvTrayIcon, TJvScheduledEvents,
     TJvBalloonHint]);
 
