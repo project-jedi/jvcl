@@ -1147,6 +1147,9 @@ var
 {.$ENDIF COMPILER7_UP}
 begin
   inherited Create(AOwner);
+  {$IFDEF COMPILER5}
+  FAutoComplete := True;
+  {$ENDIF COMPILER5}
   FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed,
     DPA_ConsumerDisplaysList]);
   FConsumerSvc.OnChanged := ConsumerServiceChanged;
