@@ -239,11 +239,11 @@ type
     FCanvas: TControlCanvas;
     {$IFDEF VCL}
     FDragImages: TDragImageList;
+    FDragItem: TJvTimeItem;
     {$ENDIF VCL}
     FStartPos: TPoint;
     FStates: TJvTimeLineStates;
     FRangeAnchor: TJvTimeItem;
-    FDragItem: TJvTimeItem;
     FAutoSize: Boolean;
     procedure SetHelperYears(Value: Boolean);
     procedure SetFlat(Value: Boolean);
@@ -291,7 +291,9 @@ type
     procedure DrawRightItemHint(ACanvas: TCanvas);
     procedure DrawScrollButtons;
     procedure DoYearFontChange(Sender: TObject);
+    {$IFDEF VCL}
     procedure DoDragOver(Source: TDragObject; X, Y: Integer; CanDrop: Boolean);
+    {$ENDIF VCL}
     function HasItemsToLeft: Boolean;
     function HasItemsToRight: Boolean;
     procedure SetHorzSupport(const Value: Boolean);
@@ -2744,13 +2746,14 @@ begin
   Invalidate;
 end;
 
-
+{$IFDEF VCL}
 procedure TJvCustomTimeLine.DoDragOver(Source: TDragObject; X, Y: Integer;
   CanDrop: Boolean);
 begin
   if (tlDragging in FStates) and FLineVisible then
     MoveDragLine(X);
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomTimeLine.HandleClickSelection(LastFocused,
   NewItem: TJvTimeItem; Shift: TShiftState);

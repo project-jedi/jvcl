@@ -133,7 +133,7 @@ type
     FDateSeparator: Char;
     //    FMinYear: Word;
     //    FMaxYear: Word;
-    procedure ButtonClick(Sender: TObject);
+    procedure DropButtonClick(Sender: TObject);
     procedure CalChange(Sender: TObject);
     procedure CalDestroy(Sender: TObject);
     procedure CalSelect(Sender: TObject);
@@ -325,7 +325,7 @@ begin
     Cursor := crArrow;
     Flat := True;
 //    Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
-    OnClick := ButtonClick;
+    OnClick := DropButtonClick;
     Visible := True;
   end;
 
@@ -346,7 +346,7 @@ begin
   UpdateDisplay;
 end;
 
-procedure TJvCustomDatePickerEdit.ButtonClick(Sender: TObject);
+procedure TJvCustomDatePickerEdit.DropButtonClick(Sender: TObject);
 begin
   if Dropped then
     CloseUp
@@ -381,7 +381,7 @@ var
   P: TPoint;
 begin
   {If we would let the calendar close itself while clicking the button, the
-   ButtonClick method would simply reopen it again as it would find the
+   DropButtonClick method would simply reopen it again as it would find the
    calendar closed.}
   GetCursorPos(P);
   CanClose := not PtInRect(FButtonHolder.BoundsRect, ScreenToClient(P));

@@ -46,20 +46,17 @@ uses
   JvComponent, JvTypes, JvCaret, JvToolEdit, JvExMask;
 
 type
-  TJvCustomMaskEdit = class(TJvExPubCustomMaskEdit)
+  TJvCustomMaskEdit = class(TJvCustomComboEdit)
   private
-    FOnEnabledChanged: TNotifyEvent;
-    FOnSetFocus: TJvFocusChangeEvent;
-    FOnKillFocus: TJvFocusChangeEvent;
     FHotTrack: Boolean;
     FCaret: TJvCaret;
     FEntering: Boolean;
     FLeaving: Boolean;
     FGroupIndex: Integer;
-    FDisabledColor: TColor;
-    FDisabledTextColor: TColor;
     FProtectPassword: Boolean;
     FLastNotifiedText: String;
+    FOnSetFocus: TJvFocusChangeEvent;
+    FOnKillFocus: TJvFocusChangeEvent;
     procedure SetHotTrack(Value: Boolean);
     {$IFDEF VCL}
     procedure SetPasswordChar(const Value: Char);
@@ -80,15 +77,11 @@ type
     {$IFDEF VisualCLX}
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
-    procedure Paint; override;
     {$ENDIF VisualCLX}
-    procedure EnabledChanged; override;
     procedure MouseEnter(Control :TControl); override;
     procedure MouseLeave(Control :TControl); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetCaret(const Value: TJvCaret);
-    procedure SetDisabledColor(const Value: TColor); virtual;
-    procedure SetDisabledTextColor(const Value: TColor); virtual;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
     procedure SetGroupIndex(const Value: Integer);
     procedure NotifyIfChanged;
@@ -111,13 +104,8 @@ type
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property Caret: TJvCaret read FCaret write SetCaret;
-
-    property DisabledTextColor: TColor read FDisabledTextColor write
-      SetDisabledTextColor default clGrayText;
-    property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
 
-    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
   end;
@@ -196,8 +184,6 @@ begin
   FHotTrack := False;
   FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
-  FDisabledColor := clWindow;
-  FDisabledTextColor := clGrayText;
   FGroupIndex := -1;
   FEntering := False;
   FLeaving := False;
@@ -208,14 +194,6 @@ begin
   FCaret.OnChanged := nil;
   FreeAndNil(FCaret);
   inherited Destroy;
-end;
-
-procedure TJvCustomMaskEdit.EnabledChanged;
-begin
-  inherited EnabledChanged;
-  Invalidate;
-  if Assigned(FOnEnabledChanged) then
-    FOnEnabledChanged(Self);
 end;
 
 procedure TJvCustomMaskEdit.MouseEnter(Control: TControl);
@@ -311,26 +289,6 @@ begin
             Clear;
 end;
 
-procedure TJvCustomMaskEdit.SetDisabledColor(const Value: TColor);
-begin
-  if FDisabledColor <> Value then
-  begin
-    FDisabledColor := Value;
-    if not Enabled then
-      Invalidate;
-  end;
-end;
-
-procedure TJvCustomMaskEdit.SetDisabledTextColor(const Value: TColor);
-begin
-  if FDisabledTextColor <> Value then
-  begin
-    FDisabledTextColor := Value;
-    if not Enabled then
-      Invalidate;
-  end;
-end;
-
 procedure TJvCustomMaskEdit.DoClipboardPaste;
 begin
   inherited DoClipboardPaste;
@@ -377,31 +335,13 @@ begin
 
     Canvas := nil;
     if not PaintEdit(Self, Text, AAlignment, False, {ButtonWidth,}
-       FDisabledTextColor, Focused, Canvas, Msg) then
+       DisabledTextColor, Focused, Canvas, Msg) then
       inherited;
     Canvas.Free;
   end;
 end;
 
 {$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-procedure TJvCustomMaskEdit.Paint;
-begin
-  with Canvas do
-  begin
-   // Paint
-    if Enabled then
-      inherited Paint
-    else
-    begin
-      if not PaintEdit(Self, Text, taLeftJustify, False, {0,}
-         FDisabledTextColor, Focused, false, Canvas) then
-        inherited Paint;
-    end;
-  end;
-end;
-{$ENDIF VisualCLX}
 
 function TJvCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
@@ -412,7 +352,7 @@ begin
     Result := inherited DoPaintBackground(Canvas, Param)
   else
   begin
-    Canvas.Brush.Color := FDisabledColor;
+    Canvas.Brush.Color := DisabledColor;
     Canvas.Brush.Style := bsSolid;
     Canvas.FillRect(ClientRect);
     Result := True;
