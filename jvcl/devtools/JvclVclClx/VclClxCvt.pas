@@ -24,6 +24,8 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+{$I jvcl.inc}
+
 unit VclClxCvt;
 
 interface
@@ -33,9 +35,7 @@ uses
 
 type
   TParseContext = record
-    LastIdentToken: TTokenInfo;
     InImplementation, InInterfaceSection: Boolean;
-    LastIdent, LastSymbol: string;
   end;
 
   { TVCLConverter
@@ -97,8 +97,10 @@ type
       { Parses procedure/function. }
     procedure CheckFunctionVarDecls(Token: PTokenInfo; var Context: TParseContext);
     function CaseParseContext(Token: PTokenInfo; var Context: TParseContext): Boolean;
-    function ParseComments(Token: PTokenInfo): Boolean;
     function GetLineBreak: string;
+    function CheckFullQualifiedUnitIdentifier(Token: PTokenInfo;
+      var Context: TParseContext): Boolean;
+    function GetNextToken(Parser: TPascalParser; var Token: PTokenInfo): Boolean;
   protected
     procedure InitUnitReplaceList; virtual;
       { InitUnitReplaceList is called in the constructor after all sub objects
@@ -378,66 +380,64 @@ begin
   end;
 end;
 
-function TVCLConverter.ParseComments(Token: PTokenInfo): Boolean;
+function TVCLConverter.CheckFullQualifiedUnitIdentifier(Token: PTokenInfo; var Context: TParseContext): Boolean;
+var
+  ParserIndex: Integer;
+  Parser: TPascalParser;
+  Tk: TTokenInfo;
 begin
-  if (Token.Kind = tkComment) and (Token.ExKind = tekOption) then
+  Result := False;
+  with Context do
   begin
-    CheckOption(Token);
-    Result := True;
-  end
-  else
-    Result := False;
+    if InImplementation and not IsProtectedByConditions and IsUsesUnit(Token.Value) then
+    begin
+      Tk := Token^;
+      Parser := Token.Parser;
+      ParserIndex := Parser.Index;
+      if GetNextToken(Parser, Token) and (Token.Kind = tkSymbol) and (Token.Value = '.') then
+      begin
+        // "UnitName.xxx" but not ".Unitname.xxx"
+        ReplaceUnitName(@Tk);
+        Result := True;
+      end
+      else
+        Parser.Index := ParserIndex;
+    end;
+  end;
 end;
 
 function TVCLConverter.CaseParseContext(Token: PTokenInfo; var Context: TParseContext): Boolean;
+var
+  S: string;
 begin
-  Result := ParseComments(Token);
-  if Result then
-    Exit;
+  Result := False;
   with Context do
   begin
     case Token.Kind of
       tkIdent:
         begin
-          LastIdent := Token.Value;
-          LastIdentToken := Token^;
+          S := Token.Value;
           if (InInterfaceSection or InImplementation) and
-             (SameText(LastIdent, 'class') or
-              SameText(LastIdent, 'record') or
-              SameText(LastIdent, 'interface') or
-              SameText(LastIdent, 'object')) then
+             (SameText(S, 'class') or
+              SameText(S, 'record') or
+              SameText(S, 'interface') or
+              SameText(S, 'object')) then
           begin
             CheckStruct(Token);
             Result := True;
           end
           else
           if InImplementation and
-             (SameText(LastIdent, 'procedure') or
-              SameText(LastIdent, 'function') or
-              SameText(LastIdent, 'constructor') or
-              SameText(LastIdent, 'destructor')) then
+             (SameText(S, 'procedure') or
+              SameText(S, 'function') or
+              SameText(S, 'constructor') or
+              SameText(S, 'destructor')) then
           begin
             CheckFunction(Token, Context);
             Result := True;
-          end;
-        end;
-      tkSymbol:
-        begin
-          if InImplementation then
-          begin
-            if (Token.Value = '.') and IsUsesUnit(LastIdent) and (LastSymbol <> '.') then
-            begin
-              if not IsProtectedByConditions then // no condition block protects it
-              begin
-                // "UnitName.xxx" but not ".Unitname.xxx"
-                ReplaceUnitName(@LastIdentToken);
-                LastIdent := '';
-              end;
-            end;
-            LastSymbol := Token.Value;
           end
           else
-            LastSymbol := '';
+            Result := CheckFullQualifiedUnitIdentifier(Token, Context);
         end;
     end;
   end;
@@ -447,6 +447,7 @@ procedure TVCLConverter.Parse(Parser: TPascalParser);
 var
   Token: PTokenInfo;
   Context: TParseContext;
+  S: string;
 begin
   FConditionStack := nil;
   FDefines := nil;
@@ -458,34 +459,33 @@ begin
 
     with Context do
     begin
-      FillChar(LastIdentToken, SizeOf(LastIdentToken), 0);
       InImplementation := False;
       InInterfaceSection := False;
-      LastIdent := '';
-      while Parser.GetToken(Token) do
+      while GetNextToken(Parser, Token) do
       begin
         case Token.Kind of
           tkIdent:
             begin
               if not CaseParseContext(Token, Context) then
-              begin                          
-                if SameText(LastIdent, 'uses') then
+              begin
+                S := Token.Value;
+                if SameText(S, 'uses') then
                   CheckUses(Token)
                 else
                 if (not InInterfaceSection) and (not InImplementation) and
-                   SameText(LastIdent, 'interface') then
+                   SameText(S, 'interface') then
                   InInterfaceSection := True
                 else
                 if (not InImplementation) and
-                   (SameText(LastIdent, 'unit') or
-                    SameText(LastIdent, 'program') or
-                    SameText(LastIdent, 'package') or
-                    SameText(LastIdent, 'library')) then
+                   (SameText(S, 'unit') or
+                    SameText(S, 'program') or
+                    SameText(S, 'package') or
+                    SameText(S, 'library')) then
                 begin
                   CheckFileHead(Token);
                 end
                 else
-                if SameText(LastIdent, 'implementation') then
+                if SameText(S, 'implementation') then
                 begin
                   InImplementation := True;
                   InInterfaceSection := False;
@@ -721,9 +721,8 @@ var
 begin
   StartConditionStackCount := FConditionStack.OpenCount;
   Parser := Token.Parser;
-  while Parser.GetToken(Token) do
+  while GetNextToken(Parser, Token) do
   begin
-    ParseComments(Token);
     case Token.Kind of
       tkSymbol:
         if (Token.Value = ';') and (StartConditionStackCount <= FConditionStack.OpenCount) then
@@ -766,9 +765,8 @@ begin
 
   Filename := '';
   Parser := Token.Parser;
-  while Parser.GetToken(Token) do
+  while GetNextToken(Parser, Token) do
   begin
-    ParseComments(Token);
     if Token.Kind = tkIdent then
     begin
       // unit/program/library/package name
@@ -800,10 +798,6 @@ var
   LastSymbol: string;
 begin
   Parser := Token.Parser;
- // ignore comments (except compiler directives)
-  while Parser.GetToken(Token) and (Token.Kind = tkComment) do
-    ParseComments(Token);
-
   if Token <> nil then
   begin
     if (Token.Kind = tkSymbol) and (Token.Value = '(') then
@@ -812,9 +806,8 @@ begin
       NextBase := True;
       LastIdent := '';
       FillChar(LastIdentToken, SizeOf(LastIdentToken), 0);
-      while Parser.GetToken(Token) do
+      while GetNextToken(Parser, Token) do
       begin
-        ParseComments(Token);
         case Token.Kind of
           tkIdent:
             begin
@@ -854,16 +847,10 @@ begin
 
   if (Token <> nil) and ((Token.Value = ';') or (Token.Value = 'of')) then
     Exit;
- // ignore comments (except compiler directives)
-  while Parser.GetToken(Token) and (Token.Kind = tkComment) do
-    ParseComments(Token);
-  if (Token <> nil) and ((Token.Value = ';') or (Token.Value = 'of')) then
-    Exit;
 
  // parse complete structure
-  while Parser.GetToken(Token) do
+  while GetNextToken(Parser, Token) do
   begin
-    ParseComments(Token);
     case Token.Kind of
       tkSymbol:
         begin
@@ -899,30 +886,33 @@ var
   LockedUnitStartCount: Integer;
   BeginBlockCount: Integer;
   InParams: Boolean;
+  LastTokenValue: string;
 begin
   Parser := Token.Parser;
   LockedUnitStartCount := FLockedUsesUnits.Count;
   try
    // procedure/function header
     InParams := False;
-    while Parser.GetToken(Token) do
+    while GetNextToken(Parser, Token) do
     begin
-      if not ParseComments(Token) then
+      if not InParams then
       begin
-        if not InParams then
+        if Token.Kind = tkSymbol then
         begin
-          if Token.Kind = tkSymbol then
-          begin
-            if Token.Value = ';' then
-              InParams := True; // no parameters
-            if Token.Value = '(' then
-              InParams := True;
-          end;
-        end
-        else
-        begin
-          case Token.Kind of
-            tkIdent:
+          if Token.Value = ';' then
+            InParams := True; // no parameters
+          if Token.Value = '(' then
+            InParams := True;
+        end;
+      end
+      else
+      begin
+        case Token.Kind of
+          tkIdent:
+            begin
+              if (LastTokenValue <> ':') and IsUsesUnit(Token.Value) then
+                FLockedUsesUnits.Add(Token.Value) // this unit name is redeclared as parameter
+              else
               begin
                 CaseParseContext(Token, Context);
                 if SameText(Token.Value, 'external') or
@@ -940,18 +930,12 @@ begin
                   Exit; // something very strange happend
                 end;
               end;
-            tkSymbol:
-              begin
-                if (Context.LastSymbol <> ':') and IsUsesUnit(Context.LastIdent) then
-                  FLockedUsesUnits.Add(Context.LastIdent) // this unit name is redeclared as parameter  
-                else
-                  CaseParseContext(Token, Context);
-              end;
-          else
-            CaseParseContext(Token, Context);
-          end;
+            end;
+        else
+          CaseParseContext(Token, Context);
         end;
       end;
+      LastTokenValue := Token.Value;
     end;
 
     if Token = nil then
@@ -961,7 +945,7 @@ begin
       CheckFunctionVarDecls(Token, Context);
 
     BeginBlockCount := 1;
-    while Parser.GetToken(Token) do
+    while GetNextToken(Parser, Token) do
     begin
       if Token.Kind = tkIdent then
       begin
@@ -978,6 +962,7 @@ begin
       CaseParseContext(Token, Context);
     end;
   finally
+    // we leave the function so remove the locked local "unit name" variables
     while FLockedUsesUnits.Count > LockedUnitStartCount do
       FLockedUsesUnits.Delete(FLockedUsesUnits.Count - 1);
   end;
@@ -987,37 +972,34 @@ procedure TVCLConverter.CheckFunctionVarDecls(Token: PTokenInfo;
   var Context: TParseContext);
 var
   Parser: TPascalParser;
+  LastTokenValue: string;
 begin
   Parser := Token.Parser;
-  while Parser.GetToken(Token) do
+  while GetNextToken(Parser, Token) do
   begin
-    if ParseComments(Token) then
-      Continue;
-      
     case Token.Kind of
       tkIdent:
         begin
-          if not CaseParseContext(Token, Context) then // meight find records, ...
+          if (LastTokenValue <> ':') and IsUsesUnit(Token.Value) then
+            FLockedUsesUnits.Add(Token.Value) // this unit name is redeclared as variable/const/resstring
+          else
           begin
-            if SameText(Token.Value, 'begin') then
-              Break;
-            if SameText(Token.Value, 'end') then
+            if not CaseParseContext(Token, Context) then // meight find records, ...
             begin
-              FStatistics.AddError('"end" found but "begin", "var", "const", "type" or "resourcestring" expected.');
-              Exit; // something very strange happend
+              if SameText(Token.Value, 'begin') then
+                Break;
+              if SameText(Token.Value, 'end') then
+              begin
+                FStatistics.AddError('"end" found but "begin", "var", "const", "type" or "resourcestring" expected.');
+                Exit; // something very strange happend
+              end;
             end;
           end;
-        end;
-      tkSymbol:
-        begin
-          if (Context.LastSymbol <> ':') and IsUsesUnit(Context.LastIdent) then
-            FLockedUsesUnits.Add(Context.LastIdent) // this unit name is redeclared as variable/const/resstring
-          else
-            CaseParseContext(Token, Context);
         end;
     else
       CaseParseContext(Token, Context);
     end;
+    LastTokenValue := Token.Value;
   end;
 end;
 
@@ -1114,6 +1096,17 @@ begin
     if FConditionStack.IsIn(ConvertProtected[i]) <> 0 then
       Exit;
   Result := False;
+end;
+
+function TVCLConverter.GetNextToken(Parser: TPascalParser;
+  var Token: PTokenInfo): Boolean;
+begin
+  while Parser.GetToken(Token) and (Token.Kind = tkComment) do
+  begin
+    if Token.ExKind = tekOption then
+      CheckOption(Token);
+  end;
+  Result := Token <> nil;
 end;
 
 end.
