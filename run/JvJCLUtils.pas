@@ -1782,7 +1782,7 @@ end;
 
 function SameFileName(const FN1, FN2: string): Boolean;
 begin
-  Result := CompareText(FN1, FN2) <> 0;
+  Result := CompareText(FN1, FN2) = 0;
 end;
 {$ENDIF COMPILER5}
 
