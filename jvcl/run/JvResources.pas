@@ -822,6 +822,39 @@ resourcestring
 resourcestring
   RsHintCaption = 'Hint';
 
+//=== JvHidControllerClass.pas ===============================================
+{$IFDEF USEJVCL}
+resourcestring
+  RsUnknownLocaleIDFmt = 'unknown Locale ID $%.4x';
+  RsHIDP_STATUS_NULL = 'device not plugged in';
+  RsHIDP_STATUS_INVALID_PREPARSED_DATA = 'invalid preparsed data';
+  RsHIDP_STATUS_INVALID_REPORT_TYPE = 'invalid report type';
+  RsHIDP_STATUS_INVALID_REPORT_LENGTH = 'invalid report length';
+  RsHIDP_STATUS_USAGE_NOT_FOUND = 'usage not found';
+  RsHIDP_STATUS_VALUE_OUT_OF_RANGE = 'value out of range';
+  RsHIDP_STATUS_BAD_LOG_PHY_VALUES = 'bad logical or physical values';
+  RsHIDP_STATUS_BUFFER_TOO_SMALL = 'buffer too small';
+  RsHIDP_STATUS_INTERNAL_ERROR = 'internal error';
+  RsHIDP_STATUS_I8042_TRANS_UNKNOWN = '8042 key translation impossible';
+  RsHIDP_STATUS_INCOMPATIBLE_REPORT_ID = 'incompatible report ID';
+  RsHIDP_STATUS_NOT_VALUE_ARRAY = 'not a value array';
+  RsHIDP_STATUS_IS_VALUE_ARRAY = 'is a value array';
+  RsHIDP_STATUS_DATA_INDEX_NOT_FOUND = 'data index not found';
+  RsHIDP_STATUS_DATA_INDEX_OUT_OF_RANGE = 'data index out of range';
+  RsHIDP_STATUS_BUTTON_NOT_PRESSED = 'button not pressed';
+  RsHIDP_STATUS_REPORT_DOES_NOT_EXIST = 'report does not exist';
+  RsHIDP_STATUS_NOT_IMPLEMENTED = 'not implemented';
+  RsUnknownHIDFmt = 'unknown HID error %x';
+  RsHIDErrorPrefix = 'HID Error: ';
+
+  RsEDirectThreadCreationNotAllowed = 'Direct creation of a TJvDeviceReadThread object is not allowed';
+  RsEDirectHidDeviceCreationNotAllowed = 'Direct creation of a TJvHidDevice object is not allowed';
+  RsEDeviceCannotBeIdentified = 'device cannot be identified';
+  RsEDeviceCannotBeOpened = 'device cannot be opened';
+  RsEOnlyOneControllerPerProgram = 'Only one TJvHidDeviceController allowed per program';
+  RsEHIDBooleanError = 'HID Error: a boolean function failed';
+{$ENDIF USEJVCL}
+
 //=== JvHLEditorPropertyForm.pas =============================================
 resourcestring
   RsHLEdPropDlg_Caption = 'Editor Properties';
