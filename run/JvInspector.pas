@@ -55,7 +55,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows, JvExExtCtrls,
   {$ENDIF VisualCLX}
-  JvClxUtils, JvComponent, JvTypes, JvExControls;
+  JvComponent, JvTypes, JvExControls;
 
 const
   { Inspector Row Size constants }
@@ -5387,6 +5387,9 @@ var
   {$IFDEF VCL}
   MousePos: TSmallPoint;
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Event: QMouseEventH;
+  {$ENDIF VisualCLX}
 begin
   if Tracking then
   begin
@@ -5401,9 +5404,13 @@ begin
         MousePos := PointToSmallPoint(ListPos);
         SendMessage(ListBox.Handle, WM_LBUTTONDOWN, 0, Integer(MousePos));
         {$ELSE}
-        QApplication_sendEventAndDelete(ListBox.Handle,
-          QMouseEvent_create(QEventType_MouseButtonPress,
-          @ListPos, Integer(ButtonState_LeftButton), Integer(ButtonState_LeftButton)));
+        Event := QMouseEvent_create(QEventType_MouseButtonPress,
+          @ListPos, Integer(ButtonState_LeftButton), Integer(ButtonState_LeftButton));
+        try
+          QApplication_sendEvent(ListBox.Handle, Event);
+        finally
+          QMouseEvent_destroy(Event);
+        end;
         {$ENDIF VCL}
         Exit;
       end;
