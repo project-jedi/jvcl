@@ -1,4 +1,4 @@
-package JvQWizardD7R;
+package JvQUIBK3D;
 {$R *.res}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
@@ -21,18 +21,17 @@ package JvQWizardD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCLX Wizard Run Time Package'}
-{$RUNONLY}
+{$DESCRIPTION 'JVCLX Unified Interbase Components'}
+{$DESIGNONLY}
 {$IMPLICITBUILD OFF}
+{$DEFINE ANIMATE}
+{$DEFINE DelphiPersonalEdition}
 
 requires
-  JvQCoreD7R;
+  JvQUIBK3R,
+  JvQCoreK3D;
 
 contains
-  JvQWizardCommon in '..\..\qrun\JvQWizardCommon.pas',
-  JvQWizardRouteMapNodes in '..\..\qrun\JvQWizardRouteMapNodes.pas',
-  JvQWizardRouteMapSteps in '..\..\qrun\JvQWizardRouteMapSteps.pas',
-  JvQWizard in '..\..\qrun\JvQWizard.pas',
-  JvQWizardRouteMapList in '..\..\qrun\JvQWizardRouteMapList.pas';
+  JvQUIBReg in '../../qdesign/JvQUIBReg.pas';
 
 end.

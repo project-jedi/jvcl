@@ -27,19 +27,12 @@ package JvQCustomD7R;
 {$DEFINE VisualCLX}
 
 requires
-  JvQCoreD7R,
-  JvQStdCtrlsD7R,
-  JvQSystemD7R,
-  rtl,
-  visualclx,
-  DJclVClx,
-  DJcl;
+  JvQStdCtrlsD7R;
 
 contains
   JvQChart in '..\..\qrun\JvQChart.pas',
   JvQDiagramShape in '..\..\qrun\JvQDiagramShape.pas',
   JvQGammaPanel in '..\..\qrun\JvQGammaPanel.pas',
-  JvQInspector in '..\..\qrun\JvQInspector.pas',
   JvQLinkLabel in '..\..\qrun\JvQLinkLabel.pas',
   JvQLinkLabelDebug in '..\..\qrun\JvQLinkLabelDebug.pas',
   JvQLinkLabelParser in '..\..\qrun\JvQLinkLabelParser.pas',

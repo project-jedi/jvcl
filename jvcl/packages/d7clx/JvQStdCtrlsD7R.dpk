@@ -64,6 +64,7 @@ contains
   JvQGrids in '..\..\qrun\JvQGrids.pas',
   JvQTimeEdit in '..\..\qrun\JvQTimeEdit.pas',
   JvQSpinButton in '..\..\qrun\JvQSpinButton.pas',
-  JvQGauges in '..\..\qrun\JvQGauges.pas';
+  JvQGauges in '..\..\qrun\JvQGauges.pas',
+  JvQStatusBar in '..\..\qrun\JvQStatusBar.pas';
 
 end.
