@@ -956,7 +956,10 @@ begin
   Canvas.Brush.Style := bsClear;
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
+  begin
+    BitmapNeeded;
     Canvas.Pen.Color := FBitmap.Canvas.Pixels[0, 0]
+  end
   else
   {$ENDIF JVCLThemesEnabled}
   Canvas.Pen.Color := Parent.Brush.Color;
