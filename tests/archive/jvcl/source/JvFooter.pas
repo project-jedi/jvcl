@@ -97,6 +97,9 @@ type
     property Enabled;
     property Font;
     property ParentBiDiMode;
+    {$IFDEF COMPILER7_UP}
+    property ParentBackground;
+    {$ENDIF}
     property ParentColor;
     //property ParentCtl3D;
     property ParentFont;
