@@ -1039,7 +1039,8 @@ begin
       Canvas.Font.Color := clBtnText;
       Style := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
       if (FCellDown.X = ACol) and (FCellDown.Y = ARow) then
-        Style := Style or DFCS_PUSHED;
+        Style := Style or DFCS_PUSHED; 
+      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]); 
       DrawFrameControl(Canvas.Handle, TempRect, DFC_BUTTON, Style);
     end;
     inherited DrawCell(ACol,ARow,ARect,AState);
@@ -1114,7 +1115,8 @@ begin
       else
       if ((FrameFlags1 and BF_BOTTOM) = 0) and
         (goFixedVertLine in Options) then
-        Inc(TempRect.Bottom, GridLineWidth);
+        Inc(TempRect.Bottom, GridLineWidth); 
+      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]); 
       QWindows.DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
       QWindows.DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
     end;

@@ -40,10 +40,10 @@ uses
   Types, QGraphics, QControls, QWindows, 
   SysUtils, Classes,
   QTypes,
-  JvQComponent, JvQMarkupCommon;
+  JvQComponent, JvQMarkupCommon, JvQExControls;
 
 type
-  TJvMarkupLabel = class(TJvPubGraphicControl)
+  TJvMarkupLabel = class(TJvExWinControl)
   private
     FElementStack: TJvHTMLElementStack;
     FTagStack: TJvHTMLElementStack;
@@ -453,7 +453,7 @@ begin
   C := FElementStack.Count;
   if C = 0 then
     Exit;
-  HTMLClearBreaks; 
+  HTMLClearBreaks;
     AClientWidth := ClientWidth - MarginLeft - MarginRight;
 
   Canvas.Brush.Style := bsClear;

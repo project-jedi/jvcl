@@ -70,7 +70,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -149,7 +152,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -229,7 +235,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -315,7 +324,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -458,6 +470,21 @@ procedure TJvExCustomComboEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomComboEdit.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomComboEdit.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomComboEdit.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExCustomComboEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -678,6 +705,21 @@ procedure TJvExComboEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExComboEdit.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExComboEdit.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExComboEdit.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExComboEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -906,6 +948,21 @@ procedure TJvExCustomComboMaskEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomComboMaskEdit.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomComboMaskEdit.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomComboMaskEdit.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExCustomComboMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -1139,6 +1196,21 @@ procedure TJvExComboMaskEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExComboMaskEdit.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExComboMaskEdit.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExComboMaskEdit.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExComboMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
