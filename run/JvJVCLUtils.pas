@@ -36,18 +36,17 @@ uses
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF MSWINDOWS}
-  Windows, Messages, ShellAPI, Registry,
+  ShellAPI, Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   SysUtils, Classes,
   {$IFDEF VisualCLX}
-  Qt, QTypes, QWinCursors, QWindows,
+  Qt, QWinCursors,
   {$ENDIF VisualCLX}
-  Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
-  ComCtrls, ImgList, Grids,
-  IniFiles,
+  Windows, Messages, Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus,
+  Dialogs, ComCtrls, ImgList, Grids, IniFiles,
   {$IFNDEF NO_JCL}
   JclBase,
   {$ENDIF !NO_JCL}
