@@ -505,21 +505,31 @@ begin
                 IntfWinControl := nil;
                 InheritMessage(Instance, PMsg^);
               end;
-          WM_ERASEBKGND:
-            begin
-              IdSaveDC := SaveDC(HDC(PMsg^.WParam)); // protect DC against Stock-Objects from Canvas
-              Canvas := TCanvas.Create;
-              try
-                Canvas.Handle := HDC(PMsg^.WParam);
-                PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
-              finally
-                Canvas.Handle := 0;
-                Canvas.Free;
-                RestoreDC(HDC(PMsg^.WParam), IdSaveDC);
+            WM_ERASEBKGND:
+              begin
+                IdSaveDC := SaveDC(HDC(PMsg^.WParam)); // protect DC against Stock-Objects from Canvas
+                Canvas := TCanvas.Create;
+                try
+                  Canvas.Handle := HDC(PMsg^.WParam);
+                  PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
+                finally
+                  Canvas.Handle := 0;
+                  Canvas.Free;
+                  RestoreDC(HDC(PMsg^.WParam), IdSaveDC);
+                end;
               end;
-            end;
-        else
-          CallInherited := True;
+            WM_PRINTCLIENT,
+            WM_PRINT:
+              begin
+                IdSaveDC := SaveDC(HDC(PMsg^.WParam)); // protect DC against changes
+                try
+                  InheritMessage(Instance, PMsg^);
+                finally
+                  RestoreDC(HDC(PMsg^.WParam), IdSaveDC);
+                end;
+              end;
+          else
+            CallInherited := True;
         end;
       finally
         IntfWinControl := nil;
@@ -692,10 +702,16 @@ begin
       OriginalPainter := Canvas.Handle;
       Canvas.Handle := QPainter_create(Pixmap);
       TControlCanvas(Canvas).StartPaint;
+      {$IFDEF MSWINDOWS}
       QPainter_setClipRegion(Canvas.Handle, EventRegion);
       QPainter_setClipping(Canvas.Handle, True);
       R := Rect(0, 0, 0, 0);
       QRegion_boundingRect(EventRegion, @R);
+      {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+      // asn: region ignored, so paint all
+      R := Rect(0, 0, Width, Height);
+      {$ENDIF LINUX}
     end;
 
     try
