@@ -2955,9 +2955,10 @@ begin
     FDoubleClick := False;
     Exit;
   end;
+  FSelection.Selecting := False;
   Completion.CloseUp(False);
   Mouse2Caret(X, Y, XX, YY);
-  // if (XX = FCaretX) and (YY = FCaretY) then Exit;
+  //if (XX = FCaretX) and (YY = FCaretY) then Exit;
 
   PaintCaret(False);
   if (Button = mbLeft) and not (ssShift in Shift) then
