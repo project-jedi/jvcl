@@ -44,7 +44,7 @@ unit JvDBControls;
 interface
 
 uses
-  Windows, Registry,
+  Windows, 
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}

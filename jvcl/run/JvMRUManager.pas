@@ -30,7 +30,7 @@ unit JvMRUManager;
 interface
 
 uses
-  SysUtils, Classes, Menus, IniFiles, Registry,
+  SysUtils, Classes, Menus, 
   JvAppStore, JvComponent, JvFormPlacement;
 
 type
