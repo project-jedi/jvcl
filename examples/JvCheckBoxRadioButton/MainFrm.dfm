@@ -4,8 +4,8 @@ object Form1: TForm1
   Anchors = [akRight, akBottom]
   BorderStyle = bsDialog
   Caption = 'JvCheckbox and JvRadioButton Demo'
-  ClientHeight = 395
-  ClientWidth = 531
+  ClientHeight = 367
+  ClientWidth = 476
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,16 +16,6 @@ object Form1: TForm1
   Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
-  object btnEdit: TSpeedButton
-    Left = 441
-    Top = 355
-    Width = 75
-    Height = 25
-    Anchors = [akRight, akBottom]
-    Caption = '&Edit...'
-    Enabled = False
-    OnClick = btnEditClick
-  end
   object lblOption1: TJvLabel
     Left = 254
     Top = 104
@@ -104,7 +94,6 @@ object Form1: TForm1
     Top = 86
     Width = 89
     Height = 17
-    Cursor = crUpArrow
     Caption = 'Show &tooltips:'
     Checked = True
     State = cbChecked
@@ -154,8 +143,10 @@ object Form1: TForm1
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Shell Dlg 2'
     HotTrackFont.Style = [fsUnderline]
-    LinkedControls.Strings = (
-      'lblOption1')
+    LinkedControls = <
+      item
+        Control = lblOption1
+      end>
   end
   object rbOption2: TJvRadioButton
     Left = 230
@@ -172,8 +163,10 @@ object Form1: TForm1
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Shell Dlg 2'
     HotTrackFont.Style = [fsUnderline]
-    LinkedControls.Strings = (
-      'lblOption2')
+    LinkedControls = <
+      item
+        Control = lblOption2
+      end>
   end
   object rbOption3: TJvRadioButton
     Left = 230
@@ -190,13 +183,15 @@ object Form1: TForm1
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Shell Dlg 2'
     HotTrackFont.Style = [fsUnderline]
-    LinkedControls.Strings = (
-      'lblOption3')
+    LinkedControls = <
+      item
+        Control = lblOption3
+      end>
   end
   object pnlInfo: TPanel
     Left = 0
     Top = 0
-    Width = 531
+    Width = 476
     Height = 63
     Align = alTop
     BevelInner = bvRaised
@@ -207,7 +202,7 @@ object Form1: TForm1
     object lblInfo: TJvLabel
       Left = 14
       Top = 16
-      Width = 496
+      Width = 422
       Height = 26
       Caption = 
         'This demo shows how LinkedControls can be nested (the checkboxes' +
@@ -235,15 +230,14 @@ object Form1: TForm1
     Top = 110
     Width = 131
     Height = 17
-    Cursor = crUpArrow
     Caption = 'Show &prefix in tooltips:'
     TabOrder = 6
     LinkedControls = <
       item
-        Control = edPrefix
+        Control = lblPrefix
       end
       item
-        Control = lblPrefix
+        Control = edPrefix
       end>
     HotTrack = True
     HotTrackFont.Charset = DEFAULT_CHARSET

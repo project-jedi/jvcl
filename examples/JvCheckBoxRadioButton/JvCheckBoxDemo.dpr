@@ -2,8 +2,7 @@ program JvCheckBoxDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1},
-  JvLinkedControlsEditorForm in '..\..\design\JvLinkedControlsEditorForm.pas' {frmLinkedControlsEditor};
+  MainFrm in 'MainFrm.pas' {Form1};
 
 {$R *.res}
 
