@@ -431,6 +431,9 @@ type
   TSetEditEvent = procedure (Sender: TObject; ACol, ARow: Longint; const Value: string) of object;
   // <EXTLINK borland://TMovedEvent>Click here to view a description of this event.</EXTLINK>
   TMovedEvent = procedure (Sender: TObject; FromIndex, ToIndex: Longint) of object;
+  // <EXTLINK borland://TDrawCellEvent>Click here to view a description of this event.</EXTLINK>
+  TDrawCellEvent = procedure (Sender: TObject; ACol, ARow: Longint;
+    Rect: TRect; State: TGridDrawState) of object;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
   // ibsqlmonitor
