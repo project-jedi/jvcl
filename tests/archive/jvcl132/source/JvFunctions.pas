@@ -133,7 +133,7 @@ begin
     st := Format(SWin32Error, [LastError, SysErrorMessage(LastError)]);
     if (Text <> '') then
       st := Text + ':' + st;
-    raise EWin32Error.Create(st);
+    raise EOSError.Create(st);
   end;
 end;
 

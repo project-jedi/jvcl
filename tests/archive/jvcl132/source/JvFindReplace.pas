@@ -186,7 +186,7 @@ end;
 
 function BoyerMoore(SubStr, S: PChar): integer;
 var
-  CharJump, MatchJump, BackUp: array[0..255] of cardinal;
+  CharJump, MatchJump, BackUp: array[0..255] of integer;
   PatLen, TextLen, u, uA, uB, uText, uPat: integer;
 begin
   Result := 0;
