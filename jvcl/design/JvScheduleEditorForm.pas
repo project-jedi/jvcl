@@ -132,6 +132,12 @@ type
 var
   FrmScheduleEditor: TFrmScheduleEditor;
 
+
+resourcestring
+  sInvalidScheduleSettingsFound = 'Invalid schedule settings found.';
+  sStop = 'Stop';
+  sRun = 'Run';
+
 implementation
 
 {$R *.dfm}
@@ -459,7 +465,7 @@ begin
                   edMonthlyIndexInterval.Text := IntToStr(Interval);
                 end;
             else
-              raise ESchedule.Create(_('Invalid schedule settings found.'));
+              raise ESchedule.Create(sInvalidScheduleSettingsFound);
             end;
           end;
         end;
@@ -496,7 +502,7 @@ begin
                   edYearlyIndexInterval.Text := IntToStr(Interval);
                 end;
             else
-              raise ESchedule.Create(_('Invalid schedule settings found.'));
+              raise ESchedule.Create(sInvalidScheduleSettingsFound);
             end;
           end;
         end;
@@ -608,7 +614,7 @@ begin
   begin
     try
       FBusy := True;
-      btnTest.Caption := _('Stop');
+      btnTest.Caption := sStop;
       btnOk.Enabled := False;
       btnCancel.Enabled := False;
       InitSchedule(FTestSchedule);
@@ -629,7 +635,7 @@ begin
       end;
     finally
       FBusy := False;
-      btnTest.Caption := _('Run');
+      btnTest.Caption := sRun;
       btnOk.Enabled := True;
       btnCancel.Enabled := True;
     end;

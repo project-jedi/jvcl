@@ -90,6 +90,11 @@ type
 procedure DesignProvider(AProvider: IJvDataProvider;
   ADesigner: IFormDesigner; PropName: string);
 
+
+resourcestring
+  sDataProviderDesigner = 'DataProvider Designer';
+  sInternalErrorUnableToRetrieveContex = 'Internal error: unable to retrieve context list.';
+
 implementation
 
 {$R *.DFM}
@@ -357,7 +362,7 @@ end;
 
 function TfrmDataProviderDesigner.DesignerFormName: string;
 begin
-  Result := _('DataProvider Designer');
+  Result := sDataProviderDesigner;
 end;
 
 function TfrmDataProviderDesigner.AutoStoreSettings: Boolean;
@@ -478,7 +483,7 @@ begin
       if Supports(InternalProvider, IJvDataContexts, CtxList) then
         fmeTreeList.Provider.SetContextIntf(CtxList.GetContext(CtxIdx))
       else
-        raise EJVCLException.Create(_('Internal error: unable to retrieve context list.'));
+        raise EJVCLException.Create(sInternalErrorUnableToRetrieveContex);
     end
     else
       fmeTreeList.Provider.SetContextIntf(nil);

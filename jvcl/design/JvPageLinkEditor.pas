@@ -82,6 +82,10 @@ type
 
 procedure ShowPageLinkEditor(TreeView:TJvCustomPageListTreeView);
 
+
+resourcestring
+  sCreateLinkToPaged = 'Create link to page %d';
+
 implementation
 
 type
@@ -148,7 +152,7 @@ procedure TfrmJvTreeViewLinksEditor.CreatePopUpItem(Index: integer);
 var m: TMenuItem;
 begin
   m := TMenuItem.Create(popTree);
-  m.Caption := Format(_('Create link to page %d'), [Index]);
+  m.Caption := Format(sCreateLinkToPaged, [Index]);
   m.Tag := Index;
   if Index < 10 then
     m.ShortCut := ShortCut(Ord('0') + Index, [ssCtrl])

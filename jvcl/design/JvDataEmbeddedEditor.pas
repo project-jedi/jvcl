@@ -49,6 +49,10 @@ type
     procedure Edit; override;
   end;
 
+
+resourcestring
+  sAllFiles = 'All Files (*.*)|*.*';
+
 implementation
 
 uses
@@ -62,7 +66,7 @@ begin
   FStream := TMemoryStream(GetOrdValue);
   with TOpenDialog.Create(nil) do
   begin
-    Filter := _('All Files (*.*)|*.*');
+    Filter := sAllFiles;
     if Execute then
     begin
       Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);

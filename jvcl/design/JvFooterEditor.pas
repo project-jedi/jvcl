@@ -21,6 +21,15 @@ type
     procedure Edit; override;
   end;
 
+
+resourcestring
+  sAddButton = 'Add button';
+  sMSOffice = 'MS Office 2000';
+  sMSEnterpriseManagerWizard = 'MS Enterprise Manager Wizard';
+  sDialogMode = 'Dialog Mode';
+  sPrevious = 'Previous';
+  sNext = 'Next';
+
 implementation
 uses
   Consts, 
@@ -37,15 +46,15 @@ function TJvFooterEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := _('Add button');
+      Result := sAddButton;
     1:
       Result := '-'; // do not localize
     2:
-      Result := _('MS Office 2000');
+      Result := sMSOffice;
     3:
-      Result := _('MS Enterprise Manager Wizard');
+      Result := sMSEnterpriseManagerWizard;
     4:
-      Result := _('Dialog Mode');
+      Result := sDialogMode;
   end;
 end;
 
@@ -73,10 +82,10 @@ begin
     3:
       begin
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
-        FButton.Caption := _('Previous');
+        FButton.Caption := sPrevious;
         FButton.SpaceInterval := 0;
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
-        FButton.Caption := _('Next');
+        FButton.Caption := sNext;
         FButton.Default := True;
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
         FButton.Caption := SCloseButton;

@@ -19,6 +19,10 @@ type
   end;
 
 
+
+resourcestring
+  sAddBand = 'Add Band';
+
 implementation
 uses
   JvScrollMax;
@@ -34,7 +38,7 @@ end;
 function TJvScrollMaxEditor.GetVerb(Index: Integer): string;
 begin
   if Index = GetVerbCount - 1 then
-    Result := _('Add Band')
+    Result := sAddBand
   else
     Result := inherited GetVerb(Index);
 end;

@@ -46,6 +46,13 @@ type
 
 procedure Register;
 
+
+resourcestring
+  sSpecifiedProviderIsNotATComponentDe = 'Specified provider is not a TComponent descendant.';
+  sTreeDesigner = 'Tree designer...';
+  sContextManager = 'Context manager...';
+  sInvalidVerbd = 'Invalid verb#: %d';
+
 implementation
 
 uses
@@ -187,7 +194,7 @@ begin
     if Value <> nil then
     begin
       if not Supports(Value, IInterfaceComponentReference, CompRef) then
-        raise EPropertyError.Create(_('Specified provider is not a TComponent descendant.'));
+        raise EPropertyError.Create(sSpecifiedProviderIsNotATComponentDe);
       ProvComp := CompRef.GetComponent;
     end
     else
@@ -261,7 +268,7 @@ begin
   else if Supports(GetProviderIntf, IInterfaceComponentReference, ICR) then
     Result := ICR.GetComponent.Name
   else
-    raise EPropertyError.Create(_('Specified provider is not a TComponent descendant.'));
+    raise EPropertyError.Create(sSpecifiedProviderIsNotATComponentDe);
 end;
 
 procedure TJvDataConsumerProperty.SetValue(const Value: string);
@@ -449,11 +456,11 @@ function TJvProviderEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := _('Tree designer...');
+      Result := sTreeDesigner;
     1:
-      Result := _('Context manager...');
+      Result := sContextManager;
     else
-      Result := _('Invalid verb#: %d', [Index]);
+      Result := Format(sInvalidVerbd, [Index]);
   end;
 end;
 

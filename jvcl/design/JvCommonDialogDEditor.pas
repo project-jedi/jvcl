@@ -48,6 +48,10 @@ type
     procedure ExecuteVerb(Index: Integer); override;
   end;
 
+
+resourcestring
+  sPreview = 'Preview...';
+
 implementation
 
 procedure TJvCommonDialogDEditor.ExecuteVerb(Index: Integer);
@@ -63,7 +67,7 @@ function TJvCommonDialogDEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := _('Preview...');
+      Result := sPreview;
   end;
 end;
 

@@ -51,6 +51,12 @@ type
     procedure Button3Click(Sender: TObject);
   end;
 
+
+resourcestring
+  sBandNameHasToBeAValidIdentifier = 'Band name has to be a valid identifier!';
+  sPleaseEnterBandDescription = 'Please enter band description!';
+  sHelp = 'Help';
+
 implementation
 
 {$R *.DFM}
@@ -78,7 +84,7 @@ begin
     if not IsValidIdent(Text) then
     begin
       SetFocus;
-      raise Exception.Create(_('Band name has to be a valid identifier!'));
+      raise Exception.Create(sBandNameHasToBeAValidIdentifier);
     end;
   end;
   with EditBandDesc do
@@ -87,7 +93,7 @@ begin
     if Text = '' then
     begin
       SetFocus;
-      raise Exception.Create(_('Please enter band description!'));
+      raise Exception.Create(sPleaseEnterBandDescription);
     end;
   end;
   ModalResult := mrOK;
@@ -102,7 +108,7 @@ begin
   try
     with HelpForm do
     begin
-      Caption := Self.Caption + ' ' + _('Help');
+      Caption := Self.Caption + ' ' + sHelp;
       BorderStyle := bsDialog;
       Top := Self.Top + Self.Height div 2;
       Left := Self.Left + Self.Width div 2;

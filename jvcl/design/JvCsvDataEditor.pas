@@ -81,6 +81,10 @@ type
 { VCL Register }
 procedure Register;
 
+
+resourcestring
+  sJvCsvDataSetSelectCSVFileToOpen = 'JvCsvDataSet - Select CSV File to Open';
+
 implementation
 
 { CsvDataDefStrDsgn= String Editor at design time for CSVDefs }
@@ -191,7 +195,7 @@ var
   csvFileOpen: TOpenDialog;
 begin
   csvFileOpen := TOpenDialog.Create(Application);
-  csvFileOpen.Title := _('JvCsvDataSet - Select CSV File to Open');
+  csvFileOpen.Title := sJvCsvDataSetSelectCSVFileToOpen;
   csvFileOpen.Filename := GetValue;
   csvFileOpen.Filter := '*.csv';
   csvFileOpen.Options := csvFileOpen.Options + [ofPathMustExist];

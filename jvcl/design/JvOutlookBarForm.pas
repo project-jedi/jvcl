@@ -122,6 +122,10 @@ type
 
 
 
+
+resourcestring
+  sDesignerIsNilInFormClosed = 'Designer is nil in FormClosed';
+
 implementation
 
 uses
@@ -210,7 +214,7 @@ end;
 
 procedure TFrmOLBEditor.FormClosed(AForm: TCustomForm);
 begin
-  Assert(Designer <> nil, _('Designer is nil in FormClosed'));
+  Assert(Designer <> nil, sDesignerIsNilInFormClosed);
   if AForm = Designer.Form then
   begin
     Designer := nil;

@@ -51,6 +51,10 @@ type
     procedure Edit; override;
   end;
 
+
+resourcestring
+  sPreview = 'Preview...';
+
 implementation
 
 procedure TJvBaseDlgEditor.Edit;
@@ -86,7 +90,7 @@ function TJvBaseDlgEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := _('Preview...');
+      Result := sPreview;
   end;
 end;
 

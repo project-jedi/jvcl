@@ -50,6 +50,10 @@ type
     function GetVerbCount: Integer; override;
   end;
 
+
+resourcestring
+  sEventEditor = 'Event editor...';
+
 implementation
 
 uses
@@ -91,7 +95,7 @@ end;
 
 function TJvSchedEventComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result := _('Event editor...');
+  Result := sEventEditor;
 end;
 
 function TJvSchedEventComponentEditor.GetVerbCount: Integer;

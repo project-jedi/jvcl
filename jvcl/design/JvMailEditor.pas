@@ -23,6 +23,11 @@ type
     function GetVerbCount: Integer; override;
   end;
 
+
+resourcestring
+  sSend = 'Send';
+  sAddress = 'Address';
+
 implementation
 
 //=== TJvMailEditor ==========================================================
@@ -51,9 +56,9 @@ function TJvMailEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := _('Send');
+      Result := sSend;
     1:
-      Result := _('Address');
+      Result := sAddress;
   end;
 end;
 

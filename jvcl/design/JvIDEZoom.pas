@@ -37,6 +37,10 @@ uses
 
 procedure RegisterZoom;
 
+
+resourcestring
+  sZoomEditWindow = 'Zoom Edit Window';
+
 implementation
 
 type
@@ -92,7 +96,7 @@ begin
     MenuItem := TMenuItem.Create(F);
     with MenuItem do
     begin
-      Caption := _('Zoom Edit Window');
+      Caption := sZoomEditWindow;
       ShortCut := Menus.ShortCut(ord('Z'), [ssAlt]);
       Name := 'JvZoomEditor';
       OnClick := Zoom.Zoom;

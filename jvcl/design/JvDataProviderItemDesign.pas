@@ -53,6 +53,10 @@ type
 
 procedure RegisterDataItemIntfProp(const IID: TGUID; const PropClass: TJvDataProviderItemClass);
 
+
+resourcestring
+  sunknown = '<unknown>';
+
 implementation
 
 uses
@@ -306,7 +310,7 @@ begin
   if (Comp <> nil) and (Comp is TComponent) then
     Result := (Comp as TComponent).Name
   else
-    Result := _('<unknown>');
+    Result := sunknown;
   if Item <> nil then
     Result := Result + ': Item[' + Item.GetID + ']'
   else

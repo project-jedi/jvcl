@@ -148,6 +148,18 @@ type
     function GetAge: TDateTime;
   end;
 
+
+resourcestring
+  sJvPluginWizard = 'Jv Plugin Wizard';
+  sProjects = 'Projects';
+  sNewPlugin = 'New Plugin';
+  sPrivateDeclarations = '{ Private declarations }';
+  sPublicDeclarations = '{ Public declarations }';
+  sIMPORTANTNOTEIfYouChangeTheNameOfTh = '// IMPORTANT NOTE: If you change the name of the Plugin container,' + sLineBreak +
+    '// you must set the type below to the same type. (Delphi changes' + sLineBreak +
+    '// the declaration, but not the procedure itself. Both the return' + sLineBreak +
+    '// type and the type created must be the same as the declared type above.';
+
 implementation
 
 uses
@@ -206,12 +218,12 @@ end;
 
 function TJvPluginWizard.GetName: string;
 begin
-  Result := _('Jv Plugin Wizard');
+  Result := sJvPluginWizard;
 end;
 
 function TJvPluginWizard.GetPage: string;
 begin
-  Result := _('Projects');
+  Result := sProjects;
 end;
 
 function TJvPluginWizard.GetAuthor: string;
@@ -221,7 +233,7 @@ end;
 
 function TJvPluginWizard.GetComment: string;
 begin
-  Result := _('New Plugin');
+  Result := sNewPlugin;
 end;
 
 function TJvPluginWizard.GetGlyph:{$IFDEF COMPILER6_UP}Cardinal;{$ELSE}HICON;{$ENDIF}
@@ -820,9 +832,9 @@ begin
     '  ' + aPluginClassName + ' = class(T' + Ancestor + ')' + CrLf +
 //    '  T' + TypeName + ' = class(T' + Ancestor + ')' + CrLf +
     '  private' + CrLf +
-    '    ' + _('{ Private declarations }') + CrLf +
+    '    ' + sPrivateDeclarations + CrLf +
     '  public' + CrLf +
-    '    ' + _('{ Public declarations }') + CrLf +
+    '    ' + sPublicDeclarations + CrLf +
     '  end;' + CrLf + CrLf +
 
 //  'function RegisterPlugin: T' + TypeName + '; stdcall;' + CrLf + CrLf;
@@ -837,10 +849,7 @@ begin
 
   '{$R *.DFM}' + CrLf + CrLf +
 
-  _('// IMPORTANT NOTE: If you change the name of the Plugin container,' + sLineBreak +
-    '// you must set the type below to the same type. (Delphi changes' + sLineBreak +
-    '// the declaration, but not the procedure itself. Both the return' + sLineBreak +
-    '// type and the type created must be the same as the declared type above.') + sLineBreak +
+  sIMPORTANTNOTEIfYouChangeTheNameOfTh + sLineBreak +
     'function RegisterPlugin: TJvPlugin;' + CrLf + CrLf +
     'begin' + CrLf +
     '  Result := ' + aPluginClassName + '.Create(nil);' + CrLf +

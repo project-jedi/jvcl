@@ -51,6 +51,10 @@ type
 
 procedure EditSLDMapping(ADisplay: TJvCustomSegmentedLEDDisplay; ADesigner: IFormDesigner);
 
+
+resourcestring
+  sSegmentedLEDDisplayMappingEditor = 'Segmented LED Display Mapping Editor';
+
 implementation
 
 {$R *.DFM}
@@ -110,7 +114,7 @@ end;
 
 function TfrmJvSLDMappingEditor.DesignerFormName: string;
 begin
-  Result := _('Segmented LED Display Mapping Editor');
+  Result := sSegmentedLEDDisplayMappingEditor;
 end;
 
 function TfrmJvSLDMappingEditor.AutoStoreSettings: Boolean;

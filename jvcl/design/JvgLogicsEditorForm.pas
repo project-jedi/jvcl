@@ -194,6 +194,12 @@ type
 var
   glLogicsEditor: TJvgLogicsEditor;
 
+
+resourcestring
+  sCaption = 'Caption';
+  sComments = 'Comments';
+  sEditComponent = 'Edit component...';
+
 implementation
 uses JvgTypes,
   JvgUtils,
@@ -437,7 +443,7 @@ begin
     with Sender as TJvgShapePlus do
     begin
       str := CommentArea.Text;
-      if InputQuery(_('Caption'), _('Comments'), str) then
+      if InputQuery(sCaption, sComments, str) then
         CommentArea.Text := str;
       PostMessage(TWinControl(Parent).Handle, WM_LBUTTONUP, 1, 1);
       exit;
@@ -696,7 +702,7 @@ end;
 function TJvgLogicsComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := _('Edit component...');
+    0: Result := sEditComponent;
   end;
 end;
 

@@ -136,6 +136,11 @@ type
     function GetAge: TDateTime;
   end;
 
+
+resourcestring
+  sCreatesABandObjectDLLProject = 'Creates a Band Object DLL Project.';
+  sBandObjectDLLWizard = 'Band Object DLL Wizard';
+
 implementation
 
 uses
@@ -187,7 +192,7 @@ end;
 
 function TJvBandObjectDLLWizard.GetComment: string;
 begin
-  Result := _('Creates a Band Object DLL Project.');
+  Result := sCreatesABandObjectDLLProject;
 end;
 
 {$IFDEF COMPILER6_Up}
@@ -206,7 +211,7 @@ end;
 
 function TJvBandObjectDLLWizard.GetName: string;
 begin
-  Result := _('Band Object DLL Wizard');
+  Result := sBandObjectDLLWizard;
 end;
 
 function TJvBandObjectDLLWizard.GetPage: string;

@@ -67,6 +67,11 @@ Type
 
 procedure Register;
 
+
+resourcestring
+  sGridLayout = 'Grid Layout';
+  sCustomDraw = 'Custom Draw';
+
 implementation
 uses
   Classes,
@@ -77,7 +82,7 @@ uses
 { TJvTFGridLayoutCategory }
 class function TJvTFGridLayoutCategory.Name: String;
 begin
-  Result := _('Grid Layout');
+  Result := sGridLayout;
 end;
 {$ENDIF}
 
@@ -85,7 +90,7 @@ end;
 {$IFDEF COMPILER5}
 class function TJvTFCustomDrawCategory.Name: String;
 begin
-  Result := _('Custom Draw');
+  Result := sCustomDraw;
 end;
 {$ENDIF}
 
