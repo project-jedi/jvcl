@@ -27,8 +27,14 @@ unit JvImageListViewer;
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Controls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Controls,
   Graphics, StdCtrls, ComCtrls, ImgList,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls, QGraphics, QStdCtrls, QComCtrls, QImgList,
+  {$ENDIF VisualCLX}
   JvCustomItemViewer;
 
 type
@@ -133,7 +139,10 @@ type
 implementation
 
 uses
-  CommCtrl, Math,
+  {$IFDEF VCL}
+  CommCtrl,
+  {$ENDIF VCL}
+  Math,
   JvJCLUtils;
 
 //=== TJvImageListViewerOptions ==============================================

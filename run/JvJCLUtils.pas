@@ -972,6 +972,17 @@ function IsTrueType(const FontName: string): Boolean;
 // the resulting string
 function TextToValText(const AValue: string): string;
 
+{$IFDEF VCL}
+function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+{$IFDEF COMPILER6_UP}
+function DrawText(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+{$ENDIF COMPILER6_UP}
+
+function DrawTextW(Canvas :TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+{$ENDIF}
+
 implementation
 
 uses
@@ -7374,9 +7385,7 @@ begin
   b := Filename;
   UniqueString(b);
   R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
-  if DrawText(Canvas.Handle, PChar(b), -1, R,
-    DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or
-    DT_CALCRECT or DT_NOPREFIX) > 0 then
+  if Windows.DrawText(Canvas.Handle, PChar(b), Length(b), R, DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or DT_NOPREFIX) > 0 then
     Result := string(PChar(b))
   else
     Result := Filename;
@@ -8307,6 +8316,36 @@ begin
   if Result = '-' then
     Result := '-0';
 end;
+
+{$IFDEF VCL}
+function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer;
+begin
+  Result := Windows.DrawText(Canvas.Handle, Text, Len, R, WinFlags);
+end;
+
+function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+begin
+  Result := DrawText(Canvas, PChar(Text), Len, R, WinFlags);
+end;
+
+{$IFDEF COMPILER6_UP}
+function DrawText(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+begin
+  Result := DrawTextW(Canvas, Text, Len, R, WinFlags);
+end;
+
+{$ENDIF COMPILER6_UP}
+function DrawTextW(Canvas :TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+begin
+  Result := DrawTextW(Canvas, PWideChar(Text), Len, R, WinFlags);
+end;
+
+function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer;
+begin
+  Result := Windows.DrawTextW(Canvas.Handle, Text, Len, R, WinFlags);
+end;
+
+{$ENDIF}
 
 end.
 

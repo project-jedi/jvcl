@@ -778,6 +778,7 @@ procedure TCustomEdit_Copy(Instance: TWinControl);
 procedure TCustomEdit_Paste(Instance: TWinControl);
 procedure TCustomEdit_Cut(Instance: TWinControl);
 
+
 implementation
 
 {$IFDEF VCL}
@@ -1269,8 +1270,7 @@ begin
 
       if Instance is TCustomForm then
         // TCustomForm calls Paint in it's EventFilter
-      else
-      if Instance is TCustomControl then
+      else if Instance is TCustomControl then
         TOpenCustomControl(Instance).Paint
       else
         Intf.Paint;

@@ -10,17 +10,21 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDateTimePicker.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s):
-Michael Beck [mbeck att bigfoot dott com]
+Michael Beck [mbeck@bigfoot.com]
 
-Peter Thörnqvist [peter3 at sourceforge dot net]:
+Peter Thörnqvist [peter3@peter3.com]:
 * Added NullDate, NullText and DropDownDate properties
   * Bug: When TDateTImePicker is used for TIMES, it is impossible to turn
      off the NullDate feature. It should be optional! -W.Postma.
+
+Marc Geldon [marcgeldon@web.de]
+* Fixed CheckNullValue (any nonformat characters must be enclosed within single quotes!)
+
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,7 +38,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
+{$I JVCL.INC}
 
 unit JvDateTimePicker;
 
@@ -62,7 +66,7 @@ type
     procedure UpdateWeekNumbers(CalHandle: THandle);
   protected
     function WithinDelta(Val1, Val2: TDateTime): Boolean; virtual;
-    // returns True if NullDate matches Date or Frac(NullDate) matches Frac(Time) depending on Kind
+    // returns True if NullDate matches Date or frac(NullDate) matches frac(Time) depending on Kind
     function CheckNullValue: Boolean; overload;
     function CheckNullValue(const ANullText, AFormat: string; AKind: TDateTimeKind; ADateTime, ANullDate: TDateTime): Boolean; overload; virtual;
     procedure Change; override;
@@ -123,7 +127,7 @@ begin
       ((AKind = dtkTime) and WithinDelta(ADateTime, ANullDate)));
 
   if Result then
-    SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(ANullText)))
+    SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar('''' + ANullText + '''')))
   else
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(AFormat)));
 end;

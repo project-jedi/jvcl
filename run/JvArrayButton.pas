@@ -126,7 +126,7 @@ type
 implementation
 
 uses
-  JvThemes;
+  JvJCLUtils, JvThemes;
 
 constructor TJvArrayButton.Create(AOwner: TComponent);
 begin
@@ -253,7 +253,7 @@ var
       Frame3D(Self.Canvas, R, clBtnHighlight, clBlack, 1);
     end;
     if Cap <> '' then
-      DrawText(Canvas.Handle, PChar(Cap), -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      DrawText(Canvas, Cap, -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 
   procedure DrawDown;
@@ -274,7 +274,7 @@ var
       Frame3D(Self.Canvas, R, clblack, clBtnHighlight, 1);
     end;
     if Cap <> '' then
-      DrawText(Canvas.Handle, PChar(Cap), -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      DrawText(Canvas, Cap, -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 
 begin

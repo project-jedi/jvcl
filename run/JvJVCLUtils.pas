@@ -2944,7 +2944,7 @@ begin
         SetBkMode(Handle, Transparent);
         if (ACanvas.CanvasOrientation = coRightToLeft) then
           ChangeBiDiModeAlignment(Alignment);
-        DrawText(Handle, PChar(Text), Length(Text), r, AlignFlags[Alignment]
+        Windows.DrawText(Handle, PChar(Text), Length(Text), R, AlignFlags[Alignment]
           or RTL[ARightToLeft] or WrapFlags[WordWrap]);
       end;
       ACanvas.CopyRect(ARect, DrawBitmap.Canvas, b);
@@ -6441,11 +6441,11 @@ end;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 begin
   if ObjectInstance <> nil then
-    {$IFDEF COMPILER6_UP}
-    Classes.FreeObjectInstance(ObjectInstance);
-    {$ELSE}
-    FreeObjectInstance(ObjectInstance);
-    {$ENDIF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
+  Classes.FreeObjectInstance(ObjectInstance);
+  {$ELSE}
+  FreeObjectInstance(ObjectInstance);
+  {$ENDIF COMPILER6_UP}
 end;
 
 {$ENDIF MSWINDOWS}

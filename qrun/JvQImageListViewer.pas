@@ -31,9 +31,9 @@ unit JvQImageListViewer;
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Controls,
-  Graphics, StdCtrls, ComCtrls, ImgList,
-  JvQCustomItemViewer;
+  SysUtils, Classes,
+  QControls, QGraphics, QStdCtrls, QComCtrls, QImgList,
+  JvCustomItemViewer;
 
 type
   TJvImageListViewerOptions = class(TJvCustomItemViewerOptions)
@@ -135,10 +135,8 @@ type
   end;
 
 implementation
-
 uses
-  CommCtrl, Math,
-  JvQJCLUtils;
+  Math, JvQJCLUtils;
 
 //=== TJvImageListViewerOptions ==============================================
 

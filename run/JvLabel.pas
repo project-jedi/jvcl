@@ -62,7 +62,7 @@ uses
   Qt, QGraphics, QControls, QForms, QStdCtrls, QImgList, Types, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JvTypes, JvComponent, JvConsts, JvDataProvider, JvDataProviderIntf;
+  JvTypes, JvComponent, JvConsts, JvExControls, JvDataProvider, JvDataProviderIntf;
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
@@ -264,7 +264,7 @@ type
     property OnParentColorChange;
   end;
 
-function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
+function DrawShadowText(Canvas: TCanvas; Str: PChar; Count: Integer; var Rect: TRect;
   Format: Word; ShadowSize: Byte; ShadowColor: TColorRef;
   ShadowPos: TShadowPosition): Integer;
 
@@ -282,7 +282,7 @@ const
 
 //=== TJvCustomLabel =========================================================
 
-function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
+function DrawShadowText(Canvas: TCanvas; Str: PChar; Count: Integer; var Rect: TRect;
   Format: Word; ShadowSize: Byte; ShadowColor: TColorRef;
   ShadowPos: TShadowPosition): Integer;
 var
@@ -291,7 +291,7 @@ var
 begin
   RText := Rect;
   RShadow := Rect;
-  Color := SetTextColor(DC, ShadowColor);
+  Color := SetTextColor(Canvas.Handle, ShadowColor);
   case ShadowPos of
     spLeftTop:
       OffsetRect(RShadow, -ShadowSize, -ShadowSize);
@@ -308,11 +308,11 @@ begin
         OffsetRect(RShadow, ShadowSize, -ShadowSize);
       end;
   end;
-  Result := DrawText(DC, Str, Count, RShadow, Format);
+  Result := DrawText(Canvas, Str, Count, RShadow, Format);
   if Result > 0 then
     Inc(Result, ShadowSize);
-  SetTextColor(DC, Color);
-  DrawText(DC, Str, Count, RText, Format);
+  SetTextColor(Canvas.Handle, Color);
+  DrawText(Canvas, Str, Count, RText, Format);
   UnionRect(Rect, RText, RShadow);
 end;
 
@@ -423,7 +423,7 @@ begin
     if Angle <> 0 then
       DrawAngleText(Rect, Flags, IsValidImage, SizeShadow, ColorToRGB(ColorShadow), PosShadow)
     else
-      DrawShadowText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags,
+      DrawShadowText(Canvas, PChar(Text), Length(Text), Rect, Flags,
         SizeShadow, ColorToRGB(ColorShadow), PosShadow);
   {$IFDEF VisualCLX}
   finally

@@ -29,7 +29,7 @@ Known Issues:
 unit JvCoolBar;
 
 interface
-
+{$IFDEF VCL}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
   JvExComCtrls;
@@ -53,4 +53,8 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+implementation
+{$ENDIF VisualCLX}
 end.

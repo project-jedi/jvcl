@@ -291,8 +291,7 @@ var
 begin
   SetRect(RectText, 0, 0, 0, 0);
   //  RectText.Right := ButtonRect.Right - ButtonRect.Left;
-  DrawText(Canvas.Handle, PChar(GetRealCaption), -1, RectText, DT_CALCRECT or
-    Alignments[FAlignment]);
+  DrawText(Canvas, PChar(GetRealCaption), -1, RectText, DT_CALCRECT or Alignments[FAlignment]);
   if IsImageVisible then
   begin
     with GetImageList do
@@ -542,13 +541,13 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      DrawText(Handle, PChar(RealCaption), Length(RealCaption), TextBounds, Flags);
+      DrawText(Canvas, RealCaption, Length(RealCaption), TextBounds, Flags);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Handle, PChar(RealCaption), Length(RealCaption), TextBounds, Flags);
+      DrawText(Canvas, RealCaption, Length(RealCaption), TextBounds, Flags);
     end
     else
-      DrawText(Handle, PChar(RealCaption), Length(RealCaption), TextBounds, Flags);
+      DrawText(Canvas, RealCaption, Length(RealCaption), TextBounds, Flags);
   end;
 end;
 

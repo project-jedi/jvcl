@@ -29,8 +29,15 @@ unit JvGradientCaption;
 interface
 
 uses
+{$IFDEF VCL}
   Windows, Messages, Classes, Graphics, Controls, Forms, Menus,
   JvWndProcHook, JvJCLUtils, JvJVCLUtils;
+{$ENDIF}
+{$IFDEF VisualCLX}
+  QClasses, QGraphics, QControls, QForms, QMenus,
+  JvQJCLUtils, JvQWndProcHook;
+{$ENDIF VisualCLX}
+
 
 type
   THideDirection = (hdLeftToRight, hdRightToLeft);
@@ -902,7 +909,7 @@ var
           Flags := Flags or DT_RIGHT or DT_RTLREADING
         else
           Flags := Flags or DT_LEFT;
-        DrawText(Image.Canvas.Handle, PChar(Text), -1, R, Flags);
+        DrawText(Image.Canvas, Text, -1, R, Flags);
         if IsRightToLeft then
           Dec(R.Right, Image.Canvas.TextWidth(Text))
         else
