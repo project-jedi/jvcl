@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvQExControls.pas, released on 2004-09-21
 
-The Initial Developer of the Original Code is André Snepvangers [ASnepvangers att xs4all dor nl]
+The Initial Developer of the Original Code is André Snepvangers [ASnepvangers att xs4all dot nl]
 Portions created by André Snepvangers are Copyright (C) 2004 André Snepvangers.
 All Rights Reserved.
 
@@ -40,6 +40,11 @@ uses
 
 type
   HWND = QWindows.HWND;
+  {$EXTERNALSYM HWND}
+  HDC = QWindows.HDC;
+  {$EXTERNALSYM HDC}
+  TJvMessage = JvTypes.TJvMessage;
+  {$EXTERNALSYM TJvMessage}
 
   { Add IJvDenySubClassing to the base class list if the control should not
     be themed by the ThemeManager (www.delphi-gems.de).
@@ -81,8 +86,9 @@ type
 
 function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
 function GetCanvas(Instance: TWinControl): TCanvas;
-function GetFocusedControl(Instance: TWinControl): TWinControl;
-function GetHintColor(Instance: TWinControl): TColor;
+function GetFocusedControl(Instance: TControl): TWinControl;
+function GetFocusedWnd(Instance: TControl): QWidgetH;
+function GetHintColor(Instance: TControl): TColor;
 function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
 function IsDoubleBuffered(Instance: TWinControl): Boolean;
 function IsPaintingCopy(Instance: TWinControl): Boolean;
@@ -122,11 +128,11 @@ begin
   begin
     PI := GetPropInfo(Instance, 'DoubleBuffered');
     if PI <> nil then
-      Result := GetOrdProp(Instance, PI) <> 0;
+      Result := GetEnumProp(Instance, PI) <> 0;
   end;
 end;
 
-function GetHintColor(Instance: TWinControl): TColor;
+function GetHintColor(Instance: TControl): TColor;
 var
   PI: PPropInfo;
 begin
@@ -165,7 +171,7 @@ begin
   end;
 end;
 
-function GetFocusedControl(Instance: TWidgetControl): TWidgetControl;
+function GetFocusedControl(Instance: TControl): TWidgetControl;
 var
   Form: TCustomForm;
 begin
@@ -175,9 +181,9 @@ begin
     Result := Form.FocusedControl;
 end;
 
-function GetFocusedWnd(Instance: TWidgetControl): QWidgetH;
+function GetFocusedWnd(Instance: TControl): QWidgetH;
 var
-  Control: TWinControl;
+  Control: TWidgetControl;
 begin
   Result := nil;
   Control := GetFocusedControl(Instance);
@@ -241,7 +247,8 @@ end;
 
 destructor TJvCLXFilters.Destroy;
 begin
-  QObject_hook_destroy(FHook);
+  if Assigned(FHook) then
+    QObject_hook_destroy(FHook);
   inherited Destroy;
 end;
 
@@ -256,21 +263,6 @@ var
   Canvas: TCanvas;
   Instance: TWidgetControl;
 
-  procedure DoInternalFontChanged;
-  var
-    PI: PPropInfo;
-    IntFontChanged: TNotifyEvent;
-  begin
-
-    PI := GetPropInfo(Instance, 'InternalFontChanged', [tkMethod]);
-    if PI <> nil then
-    begin
-      //// TODO
-      IntFontChanged := TNotifyEvent(GetMethodProp(Instance, PI).Data);
-      IntFontChanged(Instance);
-    end;
-  end;
-
 begin
   Instance := FindControl(QWidgetH(Receiver));
   if not Assigned(Instance) then
@@ -282,15 +274,6 @@ begin
     QEventType_ApplicationFontChange    : PostMessage(Instance, CM_SYSFONTCHANGED, 0, 0);
     QEventType_Enter                    : Perform(Instance, CM_MOUSEENTER, 0, 0);
     QEventType_Leave                    : Perform(Instance, CM_MOUSELEAVE, 0, 0);
-
-    QEventType_Message:
-    begin
-      Mesg := TMessage(QCustomEvent_data(QCustomEventH(Event))^);
-      if Mesg.Msg = CM_FONTCHANGED then
-      begin
-        DoInternalFontChanged;
-      end;
-    end;
 
     QEventType_Paint:
     begin
@@ -322,7 +305,7 @@ begin
           end
         else
         begin
-        { csWidgetPainting / Paintbackground }
+        { csWidgetPainting / Erasebackground }
           with TJvMessage(Mesg) do
           begin
             Msg := WM_ERASEBKGND;

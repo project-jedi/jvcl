@@ -38,12 +38,12 @@ uses
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
 type
-  JV_WINCONTROL(ScrollingWinControl)
-  JV_WINCONTROL(ScrollBox)
-  JV_WINCONTROL(CustomFrame)
-  JV_WINCONTROL(Frame)
   JV_CUSTOMFORM(CustomForm) // do not implement Painting() but CreateNew
   JV_CUSTOMFORM(Form) // do not implement Painting() but CreateNew
+  JV_WINCONTROL(CustomFrame)
+  JV_WINCONTROL(Frame)
+  JV_WINCONTROL(ScrollBox)
+  JV_WINCONTROL(ScrollingWinControl)
   JV_WINCONTROL(ToolWindow)
 
 implementation
@@ -55,12 +55,12 @@ const
   UIS_CLEAR      = 2;
   UIS_INITIALIZE = 3;
 
-JV_WINCONTROL_IMPL(ScrollingWinControl)
-JV_WINCONTROL_IMPL(ScrollBox)
-JV_WINCONTROL_IMPL(CustomFrame)
-JV_WINCONTROL_IMPL(Frame)
 JV_CUSTOMFORM_IMPL(CustomForm)
 JV_CUSTOMFORM_IMPL(Form)
+JV_WINCONTROL_IMPL(CustomFrame)
+JV_WINCONTROL_IMPL(Frame)
+JV_WINCONTROL_IMPL(ScrollingWinControl)
+JV_WINCONTROL_IMPL(ScrollBox)
 JV_WINCONTROL_IMPL(ToolWindow)
 
 end.

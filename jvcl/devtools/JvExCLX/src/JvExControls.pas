@@ -49,7 +49,12 @@ type
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
   end;
 
-type
+  TJvMessage = JvTypes.TJvMessage;
+  {$EXTERNALSYM TJvMessage}
+
+  TJvInputKey = (ikAll, ikArrows, ikChars, ikButton, ikTabs, ikEdit {, ikNav, ikEsc} , ikNative);
+  TJvInputKeys = set of TInputKey;
+
   JV_CONTROL(Control)
   JV_WINCONTROL(WinControl)
   JV_CONTROL(GraphicControl)
@@ -63,7 +68,10 @@ function GetHintColor(Instance: TWinControl): TColor;
 function InputKeysToDlgCodes(InputKeys: TJvInputKeys): Integer;
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
-
+(*
+function DoCheckInputKeys(InputKeys: TJvInputKeys; Key: Integer;
+  Shift: TShiftState; const KeyText: string): Boolean;
+*)
 implementation
 
 uses
@@ -151,6 +159,60 @@ begin
   if DlgCodes and DLGC_BUTTON <> 0 then
     Include(Result, ikButton);
 end;
+
+(*
+function DoCheckInputKeys(InputKeys: TJvInputKeys; Key: Integer;
+  Shift: TShiftState; const KeyText: string): Boolean;
+
+  function IsArrowKey: Boolean;
+  begin
+    Result := (Key = VK_LEFT) or (Key = VK_RIGHT) or
+      (Key = VK_DOWN) or (Key = VK_UP);
+  end;
+
+  function IsNavKey: Boolean;
+  begin
+    Result := IsArrowKey or (Key = VK_HOME) or (Key = VK_END) or
+      (Key = VK_PAGEUP) or (Key = VK_PAGEDOWN);
+  end;
+
+  function IsTabKey: Boolean;
+  begin
+    Result := (Key = VK_TAB) or (Key = VK_BACKTAB);
+  end;
+
+  function IsReturnKey: Boolean;
+  begin
+    Result := (Key = VK_ENTER) or (Key = VK_RETURN);
+  end;
+
+  function IsEditKey: Boolean;
+  begin
+    Result := (Key = VK_BACKSPACE) or (Key = VK_INSERT)
+      or (Key = VK_DELETE);
+  end;
+
+  function IsChar: Boolean;
+  begin
+    Result := ((Shift - [ssCtrl, ssAlt] = Shift)
+      and ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0))
+      and not (IsEditKey or IsTabKey or IsReturnKey or (Key = VK_ESCAPE)));
+  end;
+
+begin
+  Result := ikAll in InputKeys;
+  if not Result then
+  begin
+    Result := ((ikChars in InputKeys) and IsChar)
+      or ((ikArrows in InputKeys) and IsArrowKey)
+      or ((ikNav in InputKeys) and IsNavKey)
+      or ((ikEdit in InputKeys) and IsEditKey)
+      or ((ikTabs in InputKeys) and IsTabKey)
+      or ((ikReturns in InputKeys) and IsReturnKey)
+      or ((ikEsc in InputKeys) and (Key = Key_Escape));
+  end;
+end;
+*)
 
 function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
 begin

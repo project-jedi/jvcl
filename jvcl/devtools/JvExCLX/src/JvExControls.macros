@@ -44,25 +44,31 @@ const
   UnitVersion = '$Id$';
 
 initialization
-  OutputDebugString(PChar('Opened ' + UnitVersion));
+  OutputDebugString(PChar('Opened' + RightStr(UnitVersion, Length(UnitVersion) - 4)));
 
 finalization
-  OutputDebugString(PChar('Closed ' + UnitVersion));
+  OutputDebugString(PChar('Closed' + RightStr(UnitVersion, Length(UnitVersion) - 4)));
 EMPTYLINE
 *)
 
 {$UNDEF CREATE_CUSTOMCODE}
 {$UNDEF DESTROY_CUSTOMCODE}
 {$UNDEF IFISNOTCUSTOMFORM}
+{$UNDEF PUBLISHAUTOSIZE}
+{$UNDEF BOUNDSCHANGED_DIRECTIVE}
+{$UNDEF BOUNDSCHANGED_CODE}
 
 {$DEFINE EMPTYLINE}
 {$DEFINE CREATE_CUSTOMCODE}
 {$DEFINE DESTROY_CUSTOMCODE}
 {$DEFINE IFISNOTCUSTOMFORM}
+{$DEFINE PUBLISHAUTOSIZE}
+{$DEFINE BOUNDSCHANGED_CODE}
 
 // *************************************************************************
 // *************************** INTERFACE MACROS ****************************
 // *************************************************************************
+//
 
 (*$DEFINE JV_DECL_CONTROL
   { Control }
@@ -73,40 +79,37 @@ EMPTYLINE
     FOnParentColorChanged: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    {$IFNDEF COMPILER6_UP}
-    function GetAutoSize: Boolean;
-    {$ENDIF !COMPILER6_UP}
   protected
     procedure WndProc(var Mesg: TMessage); override;
-    procedure ColorChanged; dynamic;
-    procedure EnabledChanged; dynamic;
-    procedure FocusChanged; dynamic;
-    procedure FontChanged; dynamic;
-    function HintShow(var HintInf: THintInfo): Boolean; dynamic;
-    function HitTest(X, Y: Integer): Boolean; dynamic;
-    procedure MouseEnter(AControl: TControl); dynamic;
-    procedure MouseLeave(AControl: TControl); dynamic;
-    procedure ParentColorChanged; dynamic;
-    procedure ParentFontChanged; dynamic;
-    procedure ParentShowHintChanged; dynamic;
-    procedure TextChanged; dynamic;
-    procedure VisibleChanged; dynamic;
+    procedure ColorChanged; virtual;
+    procedure EnabledChanged; virtual;
+    procedure FocusChanged; virtual;
+    procedure FontChanged; virtual;
+//    function GetText: TCaption; virtual;
+    function HintShow(var HintInf: THintInfo): Boolean; virtual;
+    function HitTest(X, Y: Integer): Boolean; virtual;
+    procedure MouseEnter(AControl: TControl); virtual;
+    procedure MouseLeave(AControl: TControl); virtual;
+    procedure ParentColorChanged; virtual;
+    procedure ParentFontChanged; virtual;
+    procedure ParentShowHintChanged; virtual;
+    //    procedure SetText(Value: TCaption); virtual;
+    procedure TextChanged; virtual;
+    procedure VisibleChanged; virtual;
     function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; dynamic;
+      const KeyText: WideString): Boolean; virtual;
+    {$IFNDEF COMPILER6_UP}
+    function GetAutoSize: Boolean; virtual;
+    procedure SetAutoSize(Value: Boolean); virtual;
+    {$ENDIF !COMPILER6_UP}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-
-{$IFNDEF COMPILER6_UP}
-  {$IFDEF HASAUTOSIZE}
-    procedure SetAutoSize(Value: Boolean); dynamic
-  {$IFDEF PUBLISHAUTOSIZE}
-  published
-  {$ENDIF PUBLISHAUTOSIZE}
+    {$IFNDEF COMPILER6_UP}
+  PUBLISHAUTOSIZE
     property AutoSize: Boolean read GetAutoSize write SetAutoSize;
-  {$ENDIF HASAUTOSIZE}
-{$ENDIF !COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
@@ -143,18 +146,21 @@ EMPTYLINE
   JV_CONTROL_END(ClassName)
 *)
 
+// JvInplaceEdit BoundsChanged;
+{$DEFINE BOUNDSCHANGED_DIRECTIVE virtual}
+
 (*$DEFINE JV_DECL_WINCONTROL
   { WinControl }
   private
     FInputKeys: TJvInputKeys;
   protected
-    procedure BoundsChanged; {$IFNDEF HASBOUNDSCHANGED} dynamic {$ELSE} override {$ENDIF};
-    procedure CursorChanged; dynamic;
-    procedure DoKillFocus(NextWnd: HWND); dynamic;
-    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function DoEraseBackground(ACanvas: TCanvas; LParam: Integer): Boolean; dynamic;
-    procedure ShowingChanged; dynamic;
-    procedure ShowHintChanged; dynamic;
+    procedure BoundsChanged; BOUNDSCHANGED_DIRECTIVE;
+    procedure CursorChanged; virtual;
+    procedure DoKillFocus(NextWnd: HWND); virtual;
+    procedure DoSetFocus(PreviousWnd: HWND); virtual;
+    function DoEraseBackground(ACanvas: TCanvas; LParam: Integer): Boolean; virtual;
+    procedure ShowingChanged; virtual;
+    procedure ShowHintChanged; virtual;
     property InputKeys: TJvInputKeys read FInputKeys write FInputKeys;
 *)
 
@@ -188,11 +194,11 @@ EMPTYLINE
 (*$DEFINE JV_WINCONTROL_END(ClassName)
   { WinControl }
   private
-    FCanvas: TControlCanvas;
+    FCanvas: TCanvas;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Canvas: TControlCanvas read FCanvas;
+    property Canvas: TCanvas read FCanvas;
   end;
 
   TJvExPub##ClassName = class(TJvEx##ClassName)
@@ -238,11 +244,11 @@ EMPTYLINE
 (*$DEFINE JV_EDITCONTROL_END(ClassName)
   { EditControl End }
   private
-    FCanvas: TControlCanvas;
+    FCanvas: TCanvas;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Canvas: TControlCanvas read FCanvas;
+    property Canvas: TCanvas read FCanvas;
   end;
 
   { EditControl }
@@ -316,12 +322,44 @@ EMPTYLINE
       CM_PARENTFONTCHANGED  : ParentFontChanged;
       CM_HITTEST            : if HitTest(XPos, YPos) then
                                 Result := HTCLIENT;
-      CM_HINTSHOW:
+
+*)
+
+(*
+      WM_GETTEXT:
       begin
-        HintInfo^.HintColor := GetHintColor(Parent);
-        Handled := HintShow(HintInfo^);
+        GetText;
+      end;
+
+      WM_SETTEXT:
+      begin
+        (*
+        The return value is TRUE if the text is set.
+        It is FALSE (for an edit control),
+        LB_ERRSPACE (for a list box), or
+        CB_ERRSPACE (for a combo box)
+        if insufficient space is available to set the text in the edit control.
+        It is CB_ERR if this message is sent to a combo box without an edit control.
+        *)
+        if Value = Self.Text then
+          Handled := True
+        else
+        begin
+          SetText(TJvMessage(Mesg).Text);
+          if GetText <> TJvMessage(Mesg).Text then
+          begin
+            if Self is TCustomEdit then
+              Handled := False
+            else
+              Result := LB_ERRSPACE; { CB_ERRSPACE = LB_ERRSPACE }
+          end
+          else
+            Handled := True;
+        end;
+        Exit;
       end;
 *)
+
 
 (*$DEFINE JV_IMPL_CONTROL(ClassName)
 { Control }
@@ -331,6 +369,17 @@ begin
   begin
     case Msg of
       JV_IMPL_CONTROL_MESSAGES
+
+      CM_HINTSHOW:
+      begin
+        case FHintColor of
+          clNone   : HintInfo^.HintColor := Application.HintColor;
+	  clDefault: HintInfo^.HintColor := GetHintColor(Parent);
+        else
+          HintInfo^.HintColor := FHintcolor;   
+        end;
+        Handled := HintShow(HintInfo^);
+      end;
     end;
   end;
   if Mesg.Result = 0  then
@@ -436,7 +485,6 @@ procedure TJvEx##ClassName.TextChanged;
 begin
   { notification }
 end;
-
 procedure TJvEx##ClassName.VisibleChanged;
 begin
   { notification }
@@ -459,6 +507,47 @@ begin
 end;
   EMPTYLINE
 *) // MACRO END JV_IMPL_CONTROL_COMMON
+
+(*
+function TJvEx##ClassName.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := (csDesigning in ComponentState) or
+    DoCheckInputKeys(FInputKeys, Key, Shift, KeyText);
+end;
+
+
+function TJvEx##ClassName.GetText: TCaption;
+var
+  Len: Integer;
+  Mesg: TMessage;
+begin
+  Len := Perform(WM_GETTEXTLENGTH, 0, 0);
+  SetString(Result, PChar(nil), Len);
+  if Len <> 0 then
+  begin
+    Mesg.Msg := WM_GETTEXT;
+    Mesg.WParam := Len + 1;
+    TJvMessage(Mesg).Text := PChar(Result);
+    Mesg.Result := 0;
+    inherited WndProc(Mesg);
+  end
+  else
+    Result := '';
+end;
+
+procedure TJvEx##ClassName.SetText(const Value: TCaption);
+var
+  Mesg: TMessage;
+begin
+  Mesg.Msg := WM_SETTEXT;
+  Mesg.LParam := 0;
+  TJvMessage(Mesg).Text := PChar(Value);
+  Mesg.Result := 0;
+  inherited WndProc(Mesg);
+end;
+ EMPTYLINE
+*)
 
 (*$DEFINE JV_IMPL_CONTROL_CREATE(ClassName)
 { Control Create }
@@ -504,9 +593,15 @@ JV_IMPL_CONTROL_COMMON(ClassName)
           Canvas.Unlock;
         end;
       end;
+      CM_HINTSHOW: 
+      begin
+        HintInfo^.HintColor := GetHintcolor(Self);   
+        Handled := HintShow(HintInfo^);
+      end;
 *)
 
 (*$DEFINE JV_IMPL_WINCONTROL(ClassName)
+{ WinControl }
 procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
 begin
   with TJvMessage(Mesg) do
@@ -523,14 +618,15 @@ end;
 *)
 
 (*$DEFINE JV_IMPL_WINCONTROL_COMMON(ClassName)
+{ WinControl Common}
 procedure TJvEx##ClassName.DoSetFocus(PreviousWnd: HWND);
 begin
-
+  { notification }
 end;
 
 procedure TJvEx##ClassName.DoKillFocus(NextWnd: HWND);
 begin
-
+  { notification }
 end;
 
 function TJvEx##ClassName.DoEraseBackground(ACanvas: TCanvas; LParam: Integer): Boolean;
@@ -541,12 +637,15 @@ end;
 procedure TJvEx##ClassName.BoundsChanged;
 begin
   { notification }
-  {$IFDEF HASBOUNDSCHANGED}
-  inherited BoundsChanged;
-  {$ENDIF HASBOUNDSCHANGED}
+  BOUNDSCHANGED_CODE
 end;
 
 procedure TJvEx##ClassName.CursorChanged;
+begin
+  { notification }
+end;
+
+procedure TJvEx##ClassName.FocusChanged;
 begin
   { notification }
 end;
@@ -571,7 +670,7 @@ begin
   FHintColor := clDefault;
   FInputKeys := [ikNative];
   FCanvas := TControlCanvas.Create;
-  FCanvas.Control := Self;
+  TControlCanvas(FCanvas).Control := Self;
   CREATE_CUSTOMCODE
 end;
 
@@ -615,7 +714,6 @@ JV_IMPL_WINCONTROL(ClassName)
 JV_IMPL_WINCONTROL_COMMON(ClassName)
 JV_IMPL_CONTROL_COMMON(ClassName)
 *)
-
 
 (*$DEFINE JV_IMPL_EDITCONTROL(ClassName)
 { EditControl }
