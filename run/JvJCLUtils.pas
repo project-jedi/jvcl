@@ -143,9 +143,6 @@ function SubStrW(const S: WideString; const Index: Integer; const Separator: Wid
 function SubStrEnd(const S: string; const Index: Integer; const Separator: string): string;
 { SubWord returns next Word from string, P, and offsets Pointer to the end of Word, P2 }
 function SubWord(P: PChar; var P2: PChar): string;
-{ NumberByWord returns the text representation of
-  the number, N, in normal russian language. Was typed from Monitor magazine }
-function NumberByWord(const N: Longint): string;
 //  function CurrencyByWord(Value : Currency) : string;
 { GetLineByPos returns the Line number, there
   the symbol Pos is pointed. Lines separated with #13 symbol }
@@ -1024,17 +1021,17 @@ resourcestring
 
 function USToLocalFloatStr(const Text: string): string;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := Text;
   if (DecimalSeparator <> '.') or (ThousandSeparator <> ',') then
   begin
-    for i := 0 to Length(Result) do
-      case Result[i] of
+    for I := 0 to Length(Result) do
+      case Result[I] of
         '.':
-          Result[i] := DecimalSeparator;
+          Result[I] := DecimalSeparator;
         ',':
-          Result[i] := ThousandSeparator;
+          Result[I] := ThousandSeparator;
       end;
   end;
 end;
@@ -1169,14 +1166,14 @@ begin
     Inc(P);
   iBeg := P;
   while iBeg >= 1 do
-    if (S[iBeg] in Separators) then
+    if S[iBeg] in Separators then
       Break
     else
       Dec(iBeg);
   Inc(iBeg);
   iEnd := P;
   while iEnd <= Length(S) do
-    if (S[iEnd] in Separators) then
+    if S[iEnd] in Separators then
       Break
     else
       Inc(iEnd);
@@ -1223,7 +1220,8 @@ begin
     if S[P] in Separators then
       if (P < 1) or ((P - 1 > 0) and (S[P - 1] in Separators)) then
         Inc(iBeg)
-      else if not ((P - 1 > 0) and (S[P - 1] in Separators)) then
+      else
+      if not ((P - 1 > 0) and (S[P - 1] in Separators)) then
         Dec(iBeg);
   while iBeg >= 1 do
     if S[iBeg] in Separators then
@@ -1253,7 +1251,8 @@ begin
     if CharInSetW(S[P], Separators) then
       if (P < 1) or ((P - 1 > 0) and CharInSetW(S[P - 1], Separators)) then
         Inc(iBeg)
-      else if not ((P - 1 > 0) and CharInSetW(S[P - 1], Separators)) then
+      else
+      if not ((P - 1 > 0) and CharInSetW(S[P - 1], Separators)) then
         Dec(iBeg);
   while iBeg >= 1 do
     if CharInSetW(S[iBeg], Separators) then
@@ -1287,14 +1286,14 @@ begin
     Inc(StartIndex);
   iBeg := StartIndex;
   while iBeg >= 1 do
-    if (Text[iBeg] in Separators) then
+    if Text[iBeg] in Separators then
       Break
     else
       Dec(iBeg);
   Inc(iBeg);
   iEnd := StartIndex;
   while iEnd <= Len do
-    if (Text[iEnd] in Separators) then
+    if Text[iEnd] in Separators then
       Break
     else
       Inc(iEnd);
@@ -1379,195 +1378,6 @@ begin
     Inc(X);
   Dec(X);
   Inc(Y, CaretY);
-end;
-
-{ (rb) This function seems to translate a number to a russian string, but is
-       half translated (only const part), need to roll back to an all russian
-       version or tranlate (and change it's logic) to a english version }
-
-function NumberByWord(const N: Longint): string;
-const
-  Ten: array [0..9] of PChar =
-    ('zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine');
-  Hun: array [1..9] of PChar =
-    ('onehundred', 'twohundred', 'threehundred', 'fourhundred', 'fivehundred',
-     'sixhundred', 'sevenhundred', 'eighthundred', 'ninehundred');
-  OnTen: array [10..19] of PChar =
-    ('ten', 'eleven', 'twelve', 'thirteen', 'fourteen',
-     'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen');
-  HunIn: array [2..9] of PChar =
-    ('twothousand', 'threethousand', 'fourthousand', 'fivethousand',
-     'sixthousand', 'seventhousand', 'eightthousand', 'ninethousand');
-var
-  StrVsp: string;
-  NumStr: string;
-  StrVsp2: string;
-  I: Byte;
-
-  function IndNumber(Stri: string; Place: Byte): Byte;
-  begin
-    IndNumber := Ord(Stri[Place]) - 48;
-  end;
-
-  function Back(Stri: string): Longint;
-  var
-    Code: Integer;
-    LI: Longint;
-  begin
-    Result := 0;
-    Val(Stri, LI, Code);
-    if Code = 0 then
-      Result := LI;
-  end;
-
-begin
-  NumStr := IntToStr(N);
-  if Length(NumStr) > 9 then
-  begin
-    Result := '*****';
-    Exit;
-  end;
-  case Length(NumStr) of
-    1:
-      StrVsp := Ten[N];
-    2: case NumStr[1] of
-        '1':
-          StrVsp := OnTen[N];
-        '0':
-          StrVsp := NumberByWord(IndNumber(NumStr, 2));
-        '2'..'9':
-          begin
-            StrVsp := HunIn[IndNumber(NumStr, 1)];
-            if NumStr[2] <> '0' then
-              StrVsp := StrVsp + ' ' + NumberByWord(IndNumber(NumStr, 2));
-          end;
-      end;
-    3:
-      begin
-        StrVsp := Hun[IndNumber(NumStr, 1)];
-        StrVsp := StrVsp + ' ' + NumberByWord(Back(Copy(NumStr, 2, 2)));
-      end;
-    4:
-      begin
-        StrVsp := Ten[IndNumber(NumStr, 1)];
-        // (rom) needs translation
-        case NumStr[1] of
-          '1':
-            StrVsp := 'одна тыс€ча'; // 'one thousand'
-          '2':
-            StrVsp := 'две тыс€чи'; // 'two thousands'
-          '3', '4':
-            StrVsp := StrVsp + ' тыс€чи'; // ' thousands'
-          '5'..'9':
-            StrVsp := StrVsp + ' тыс€ч'; // ' of thousands'
-        end;
-        StrVsp := StrVsp + ' ' + NumberByWord(Back(Copy(NumStr, 2, 3)));
-      end;
-    5:
-      begin
-        StrVsp2 := NumberByWord(Back(Copy(NumStr, 1, 2)));
-        I := Pos(' два', StrVsp2);
-        if Pos(' два', StrVsp2) = I then
-          I := 0;
-        if I <> 0 then
-          StrVsp2[I + 3] := 'e';
-        I := Pos(' один', StrVsp2);
-        if Pos(' одинн', StrVsp2) = I then
-          I := 0;
-        if I <> 0 then
-        begin
-          StrVsp2[I + 3] := 'н';
-          StrVsp2[I + 4] := 'а';
-        end;
-        if NumStr[1] <> '1' then
-          case NumStr[2] of
-            '1':
-              StrVsp := ' тыс€ча ';
-            '2'..'4':
-              StrVsp := ' тыс€чи ';
-            '5'..'9':
-              StrVsp := ' тыс€ч ';
-          end
-        else
-          StrVsp := ' тыс€ч ';
-        StrVsp := StrVsp2 + StrVsp + NumberByWord(Back(Copy(NumStr, 3, 3)));
-      end;
-    6:
-      begin
-        StrVsp2 := NumberByWord(Back(Copy(NumStr, 1, 3)));
-        I := Pos(' два', StrVsp2);
-        if Pos(' двад', StrVsp2) = I then
-          I := 0;
-        if I <> 0 then
-          StrVsp2[I + 3] := 'е';
-        I := Pos(' один', Strvsp2);
-        if Pos(' одинн', StrVsp2) = I then
-          I := 0;
-        if I <> 0 then
-        begin
-          StrVsp2[I + 3] := 'н';
-          StrVsp2[I + 4] := 'а';
-        end;
-        if NumStr[2] <> '1' then
-          case NumStr[3] of
-            '1':
-              StrVsp := ' тыс€ча ';
-            '2'..'4':
-              StrVsp := ' тыс€чи ';
-            '5'..'9':
-              StrVsp := ' тыс€ч ';
-          end
-        else
-          StrVsp := ' тыс€ч ';
-        StrVsp := StrVsp2 + StrVsp + NumberByWord(Back(Copy(NumStr, 4, 3)));
-      end;
-    7:
-      begin
-        StrVsp := Ten[IndNumber(NumStr, 1)];
-        case NumStr[1] of
-          '1':
-            StrVsp := 'один миллион';
-          '2'..'4':
-            StrVsp := StrVsp + ' миллиона';
-          '5'..'9':
-            StrVsp := StrVsp + ' миллионов';
-        end;
-        StrVsp := StrVsp + ' ' + NumberByWord(Back(Copy(NumStr, 2, 6)));
-      end;
-    8:
-      begin
-        StrVsp := NumberByWord(Back(Copy(NumStr, 1, 2)));
-        StrVsp := StrVsp + ' миллион';
-        if NumStr[1] <> '1' then
-          case NumStr[2] of
-            '2'..'4':
-              StrVsp := StrVsp + 'а';
-            '0', '5'..'9':
-              StrVsp := StrVsp + 'ов';
-          end
-        else
-          StrVsp := StrVsp + 'ов';
-        StrVsp := StrVsp + ' ' + NumberByWord(Back(Copy(NumStr, 3, 6)));
-      end;
-    9:
-      begin
-        StrVsp := NumberByWord(Back(Copy(Numstr, 1, 3)));
-        StrVsp := StrVsp + ' миллион';
-        if NumStr[2] <> '1' then
-          case NumStr[3] of
-            '2'..'4':
-              StrVsp := StrVsp + 'а';
-            '0', '5'..'9':
-              StrVsp := StrVsp + 'ов';
-          end
-        else
-          StrVsp := StrVsp + 'ов';
-        StrVsp := StrVsp + ' ' + NumberByWord(Back(Copy(NumStr, 4, 6)));
-      end;
-  end;
-  if (Length(StrVsp) > 4) and (Copy(StrVsp, Length(StrVsp) - 3, 4) = Ten[0]) then
-    StrVsp := Copy(StrVsp, 1, Length(StrVsp) - 4);
-  Result := StrVsp;
 end;
 
 function SubStr(const S: string; const Index: Integer; const Separator: string): string;
@@ -2022,11 +1832,14 @@ var
 begin
   if Date = Dat then
     Result := 'сегодн€' // Today
-  else if Dat = Date - 1 then
+  else
+  if Dat = Date - 1 then
     Result := 'вчера' // Yesterday
-  else if Dat = Date - 2 then
+  else
+  if Dat = Date - 2 then
     Result := 'позавчера' // Day before yesterday
-  else if Dat > Date then
+  else
+  if Dat > Date then
     Result := 'в будущем' // In the future
   else
   begin
@@ -2035,11 +1848,14 @@ begin
     M := Round(D / 30);
     if Y > 0 then
       Result := IntToStr(Y) + ' ' + Year[D2D[StrToInt(IntToStr(Y)[Length(IntToStr(Y))])]] + ' назад' // ago
-    else if M > 0 then
+    else
+    if M > 0 then
       Result := IntToStr(M) + ' ' + Month[D2D[StrToInt(IntToStr(M)[Length(IntToStr(M))])]] + ' назад' // ago
-    else if D > 6 then
+    else
+    if D > 6 then
       Result := Week[D div 7] + ' назад' // ago
-    else if D > 0 then
+    else
+    if D > 0 then
       Result := IntToStr(D) + ' ' + Day[D2D[StrToInt(IntToStr(D)[Length(IntToStr(D))])]] + ' назад' // ago
   end;
 end;
@@ -2289,7 +2105,8 @@ begin
       Dec(Exponent);
     end;
   end
-  else if Exponent < 0 then
+  else
+  if Exponent < 0 then
   begin
     Result := 1;
     Inc(Exponent);
@@ -2520,7 +2337,7 @@ end;
 
 function WideCompareText(const S1, S2: WideString): Integer;
 begin
-  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
     Result := CompareText(string(S1), string(S2))
   else
     Result := CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
@@ -2686,10 +2503,10 @@ end;
 
 function Sign(const AValue: Double): TValueSign;
 begin
-  if ((PInt64(@AValue)^ and $7FFFFFFFFFFFFFFF) = $0000000000000000) then
+  if (PInt64(@AValue)^ and $7FFFFFFFFFFFFFFF) = $0000000000000000 then
     Result := ZeroValue
   else
-  if ((PInt64(@AValue)^ and $8000000000000000) = $8000000000000000) then
+  if (PInt64(@AValue)^ and $8000000000000000) = $8000000000000000 then
     Result := NegativeValue
   else
     Result := PositiveValue;
@@ -3367,17 +3184,23 @@ begin
 
         if CmpL1('b') then
           Style(fsBold, True)
-        else if CmpL1('/b') then
+        else
+        if CmpL1('/b') then
           Style(fsBold, False)
-        else if CmpL1('i') then
+        else
+        if CmpL1('i') then
           Style(fsItalic, True)
-        else if CmpL1('/i') then
+        else
+        if CmpL1('/i') then
           Style(fsItalic, False)
-        else if CmpL1('u') then
+        else
+        if CmpL1('u') then
           Style(fsUnderline, True)
-        else if CmpL1('/u') then
+        else
+        if CmpL1('/u') then
           Style(fsUnderline, False)
-        else if Cmp1('c:') then
+        else
+        if Cmp1('c:') then
         begin
           CL := SubStr(PChar(Text) + I, 0, '>');
           if (HideSelColor or not (odSelected in State)) and Assigned(Canvas) then
@@ -3400,7 +3223,8 @@ begin
         Dec(I);
         M1 := '';
       end
-      else if (Text[I] = Chr(13)) and Cmp1(string(Chr(10))) then
+      else
+      if (Text[I] = Chr(13)) and Cmp1(string(Chr(10))) then
       begin
         // new line
         Draw(M1);
@@ -4004,7 +3828,8 @@ begin
         Index := N;
         Break;
       end
-      else if Index = -1 then
+      else
+      if Index = -1 then
       begin
         if C1 <= Colors then
         begin
@@ -4012,7 +3837,8 @@ begin
           C2 := List^[N].Colors;
         end;
       end
-      else if C1 > C2 then
+      else
+      if C1 > C2 then
         Index := N;
     end;
     if Index = -1 then
@@ -4075,7 +3901,8 @@ begin
         W := BM.bmWidth;
         H := BM.bmHeight;
       end
-      else if IconInfo.hbmMask <> 0 then
+      else
+      if IconInfo.hbmMask <> 0 then
       begin { Monochrome icon }
         GetObject(IconInfo.hbmMask, SizeOf(BM), @BM);
         W := BM.bmWidth;
@@ -5693,8 +5520,7 @@ begin
   begin
     for J := 1 to Length(HelpWilds) do
     begin
-      if (InputStr[I + J] = HelpWilds[J]) or
-        (HelpWilds[J] = '?') then
+      if (InputStr[I + J] = HelpWilds[J]) or (HelpWilds[J] = '?') then
       begin
         if J = Length(HelpWilds) then
         begin
@@ -7735,7 +7561,7 @@ end;
 function AllocMemo(Size: Longint): Pointer;
 begin
   if Size > 0 then
-    {$WARNINGS OFF} // HeapAllocFlags is platform
+    {$WARNINGS OFF}  // HeapAllocFlags is platform
     Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
     {$WARNINGS ON}
   else
@@ -8038,9 +7864,9 @@ begin
     Exit;
   BufClass := nil;
   BufTitle := nil;
-  if (MainFormClass <> '') then
+  if MainFormClass <> '' then
     BufClass := StrPAlloc(MainFormClass);
-  if (ATitle <> '') then
+  if ATitle <> '' then
     BufTitle := StrPAlloc(ATitle);
   try
     Result := FindWindow(BufClass, BufTitle);
@@ -8218,7 +8044,8 @@ function MakeVariant(const Values: array of Variant): Variant;
 begin
   if High(Values) - Low(Values) > 1 then
     Result := VarArrayOf(Values)
-  else if High(Values) - Low(Values) = 1 then
+  else
+  if High(Values) - Low(Values) = 1 then
     Result := Values[Low(Values)]
   else
     Result := Null;

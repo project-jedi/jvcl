@@ -464,13 +464,6 @@ begin
 end;
 *)
 
-{ function NumberByWord(const N: longint): string; }
-
-procedure JvInterpreter_NumberByWord(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := NumberByWord(Args.Values[0]);
-end;
-
 { function GetLineByPos(const S: string; const Pos: Integer): Integer; }
 
 procedure JvInterpreter_GetLineByPos(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1029,7 +1022,6 @@ begin
       varByRef, varInteger or varByRef], varEmpty);
     AddFunction(cJvStrUtil, 'SubStr', JvInterpreter_SubStr, 3, [varString, varInteger, varString], varEmpty);
     AddFunction(cJvStrUtil, 'SubStrEnd', JvInterpreter_SubStrEnd, 3, [varString, varInteger, varString], varEmpty);
-    AddFunction(cJvStrUtil, 'NumberByWord', JvInterpreter_NumberByWord, 1, [varEmpty], varEmpty);
     AddFunction(cJvStrUtil, 'GetLineByPos', JvInterpreter_GetLineByPos, 2, [varString, varInteger], varEmpty);
     AddFunction(cJvStrUtil, 'GetXYByPos', JvInterpreter_GetXYByPos, 4, [varString, varInteger, varInteger or varByRef,
       varInteger or varByRef], varEmpty);
