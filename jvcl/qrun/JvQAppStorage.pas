@@ -186,7 +186,7 @@ type
       const List: TObject; const First, Last: Integer);
 
     { Default Function for creating a new Object. The classname could be received from the AppStorage using the Path "Classname" }
-    function DefaultObjectListItemCreateEvent(Sender: TJvCustomAppStorage; const Path: string; Index : Integer): TPersistent;
+    function DefaultObjectListItemCreateEvent(Sender: TJvCustomAppStorage; const Path: string; Index: Integer): TPersistent;
     { ObjectList item reader used by ReadObjectList in the call to ReadList. }
     procedure ReadObjectListItem(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const Index: Integer);
@@ -355,7 +355,7 @@ type
     property AutoReload: Boolean read FAutoReload write FAutoReload default False;
     class function ConcatPaths(const Paths: array of string): string;
     { Resolve a path to it's actual used storage backend and root path. }
-    procedure ResolvePath(const InPath: string; out TgtStore: TJvCustomAppStorage; out TgtPath: string);
+    procedure ResolvePath(const InPath: string; out TargetStore: TJvCustomAppStorage; out TargetPath: string);
     { Determines if the path represents a folder }
     function IsFolder(const Path: string; ListIsValue: Boolean = True): Boolean;
     { Determines if the specified path exists }
@@ -414,13 +414,13 @@ type
       The result value is the number of items read. Uses ReadList with internally provided methods to
       do the actual reading. }
     function ReadObjectList(const Path: string; List: TList;
-      const ClearFirst: Boolean = True) : Integer; overload;
+      const ClearFirst: Boolean = True): Integer; overload;
     { Retrieves a list of objects. The list is optionally cleared before before reading starts.
       The ObjectType of the Object is retrieved from the stored "Classname" value.
       The result value is the number of items read. Uses ReadList with internally provided methods to
       do the actual reading. }
     function ReadObjectList(const Path: string; List: TList;
-      ItemCreator: TJvAppStorageObjectListItemCreateEvent; const ClearFirst: Boolean = True) : Integer; overload;
+      ItemCreator: TJvAppStorageObjectListItemCreateEvent; const ClearFirst: Boolean = True): Integer; overload;
     { Stores a list of objects. Uses WriteList with internally provided methods to do the actual
       storing. }
     procedure WriteObjectList(const Path: string; List: TList);
@@ -429,7 +429,7 @@ type
       The result value is the number of items read. Uses ReadList with internally provided methods to
       do the actual reading. }
     function ReadCollection(const Path: string; List: TCollection;
-      const ClearFirst: Boolean = True) : Integer;
+      const ClearFirst: Boolean = True): Integer;
     { Stores all items of a collection. Uses WriteList with internally provided methods to do the actual
       storing. }
     procedure WriteCollection(const Path: string; List: TCollection);
@@ -457,7 +457,7 @@ type
       exception will be raised. }
     function ReadBoolean(const Path: string; Default: Boolean = True): Boolean;
     { Stores an Boolean value
-      The value is stored as String TRUE/FALSE. }
+      The value is stored as string TRUE/FALSE. }
     procedure WriteBoolean(const Path: string; Value: Boolean);
     { Retrieves a TPersistent-Object with all of its published properties }
     procedure ReadPersistent(const Path: string; const PersObj: TPersistent;
@@ -486,7 +486,7 @@ type
     { Disables the Cryption of Property-Values (Only String-Values) }
     procedure DisablePropertyValueCrypt;
     { Returns the current state if Property-Value Cryption is enabled }
-    function IsPropertyValueCryptEnabled : Boolean;
+    function IsPropertyValueCryptEnabled: Boolean;
     { Root of any values to be read/written. This value is combined with the path given in one of
       the Read*/Write* methods to determine the actual key used. It's always relative to the value
       of Root (which is an absolute path) }
@@ -676,7 +676,7 @@ type
 
     procedure SetFileName(const Value: TFileName);
     procedure SetLocation(const Value: TFileLocation);
-    function DefaultExtension : string; virtual;
+    function DefaultExtension: string; virtual;
 
     function DoGetFileName: TFileName; virtual;
     function GetFullFileName: TFileName;
@@ -1039,9 +1039,9 @@ begin
       Sender.DeleteValue(Path + '\' + cItem + IntToStr(I));
 end;
 
-function TJvCustomAppStorage.DefaultObjectListItemCreateEvent(Sender: TJvCustomAppStorage; const Path: string; Index : Integer): TPersistent;
+function TJvCustomAppStorage.DefaultObjectListItemCreateEvent(Sender: TJvCustomAppStorage; const Path: string; Index: Integer): TPersistent;
 var
-  NewClassName : String;
+  NewClassName: string;
 begin
   NewClassName := Sender.ReadString(Path + '\' + cClassName);
   Result := TPersistent(GetClass(NewClassName).Create);
@@ -1423,285 +1423,285 @@ begin
   Result := OptimizePaths(Paths);
 end;
 
-procedure TJvCustomAppStorage.ResolvePath(const InPath: string; out TgtStore: TJvCustomAppStorage;
-  out TgtPath: string);
+procedure TJvCustomAppStorage.ResolvePath(const InPath: string; out TargetStore: TJvCustomAppStorage;
+  out TargetPath: string);
 var
   SubStorageItem: TJvAppSubStorage;
 begin
-  TgtPath := '\' + ConcatPaths([Path, InPath]);
-  TgtStore := Self;
-  SubStorageItem := SubStorages.MatchFor(TgtPath);
+  TargetPath := '\' + ConcatPaths([Path, InPath]);
+  TargetStore := Self;
+  SubStorageItem := SubStorages.MatchFor(TargetPath);
   if (SubStorageItem <> nil) and (SubStorageItem.AppStorage <> nil) then
   begin
-    TgtStore := SubStorageItem.AppStorage;
-    Delete(TgtPath, 1, Length(SubStorageItem.RootPath) + 1);
-    TgtPath := '\' + OptimizePaths([TgtPath]);
-    if TgtPath = '\' then
+    TargetStore := SubStorageItem.AppStorage;
+    Delete(TargetPath, 1, Length(SubStorageItem.RootPath) + 1);
+    TargetPath := '\' + OptimizePaths([TargetPath]);
+    if TargetPath = '\' then
       raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
   end;
 end;
 
 function TJvCustomAppStorage.IsFolder(const Path: string; ListIsValue: Boolean): Boolean;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  Result := TgtStore.IsFolderInt(TgtPath, ListIsValue);
+  ResolvePath(Path, TargetStore, TargetPath);
+  Result := TargetStore.IsFolderInt(TargetPath, ListIsValue);
 end;
 
 function TJvCustomAppStorage.PathExists(const Path: string): Boolean;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  Result := TgtStore.PathExistsInt(TgtPath);
+  ResolvePath(Path, TargetStore, TargetPath);
+  Result := TargetStore.PathExistsInt(TargetPath);
 end;
 
 function TJvCustomAppStorage.ValueStored(const Path: string): Boolean;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  Result := TgtStore.ValueStoredInt(TgtPath);
+  ResolvePath(Path, TargetStore, TargetPath);
+  Result := TargetStore.ValueStoredInt(TargetPath);
 end;
 
 function TJvCustomAppStorage.ListStored(const Path: string): Boolean;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  Result := TgtStore.ListStoredInt(TgtPath);
+  ResolvePath(Path, TargetStore, TargetPath);
+  Result := TargetStore.ListStoredInt(TargetPath);
 end;
 
 procedure TJvCustomAppStorage.DeleteValue(const Path: string);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.DeleteValueInt(TgtPath);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.DeleteValueInt(TargetPath);
 end;
 
 procedure TJvCustomAppStorage.DeleteSubTree(const Path: string);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.DeleteSubTreeInt(Path);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.DeleteSubTreeInt(Path);
 end;
 
 function TJvCustomAppStorage.ReadInteger(const Path: string; Default: Integer): Integer;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  Result := TgtStore.ReadIntegerInt(TgtPath, Default);
+  ResolvePath(Path, TargetStore, TargetPath);
+  Result := TargetStore.ReadIntegerInt(TargetPath, Default);
 end;
 
 procedure TJvCustomAppStorage.WriteInteger(const Path: string; Value: Integer);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.WriteIntegerInt(TgtPath, Value);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.WriteIntegerInt(TargetPath, Value);
 end;
 
 function TJvCustomAppStorage.ReadFloat(const Path: string; Default: Extended): Extended;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  Result := TgtStore.ReadFloatInt(TgtPath, Default);
+  ResolvePath(Path, TargetStore, TargetPath);
+  Result := TargetStore.ReadFloatInt(TargetPath, Default);
 end;
 
 procedure TJvCustomAppStorage.WriteFloat(const Path: string; Value: Extended);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.WriteFloatInt(TgtPath, Value);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.WriteFloatInt(TargetPath, Value);
 end;
 
 function TJvCustomAppStorage.ReadString(const Path: string; const Default: string): string;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  Result := TgtStore.ReadStringInt(TgtPath, Default);
+  ResolvePath(Path, TargetStore, TargetPath);
+  Result := TargetStore.ReadStringInt(TargetPath, Default);
 end;
 
 procedure TJvCustomAppStorage.WriteString(const Path: string; const Value: string);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.WriteStringInt(TgtPath, Value);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.WriteStringInt(TargetPath, Value);
 end;
 
 function TJvCustomAppStorage.ReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  Result := TgtStore.ReadBinaryInt(TgtPath, Buf, BufSize);
+  ResolvePath(Path, TargetStore, TargetPath);
+  Result := TargetStore.ReadBinaryInt(TargetPath, Buf, BufSize);
 end;
 
 procedure TJvCustomAppStorage.WriteBinary(const Path: string; const Buf; BufSize: Integer);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.WriteBinaryInt(TgtPath, Buf, BufSize);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.WriteBinaryInt(TargetPath, Buf, BufSize);
 end;
 
 function TJvCustomAppStorage.ReadDateTime(const Path: string; Default: TDateTime): TDateTime;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  Result := TgtStore.ReadDateTimeInt(TgtPath, Default);
+  ResolvePath(Path, TargetStore, TargetPath);
+  Result := TargetStore.ReadDateTimeInt(TargetPath, Default);
 end;
 
 procedure TJvCustomAppStorage.WriteDateTime(const Path: string; Value: TDateTime);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.WriteDateTimeInt(TgtPath, Value);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.WriteDateTimeInt(TargetPath, Value);
 end;
 
 function TJvCustomAppStorage.ReadBoolean(const Path: string; Default: Boolean): Boolean;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  Result := TgtStore.ReadBooleanInt(TgtPath, Default);
+  ResolvePath(Path, TargetStore, TargetPath);
+  Result := TargetStore.ReadBooleanInt(TargetPath, Default);
 end;
 
 procedure TJvCustomAppStorage.WriteBoolean(const Path: string; Value: Boolean);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.WriteBooleanInt(TgtPath, Value);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.WriteBooleanInt(TargetPath, Value);
 end;
 
 function TJvCustomAppStorage.ReadList(const Path: string; const List: TObject;
   const OnReadItem: TJvAppStorageListItemEvent): Integer;
 var
   I: Integer;
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TgtStore, TgtPath);
-  Delete(TgtPath, Length(TgtPath) - 1, 2);
-  Result := TgtStore.ReadIntegerInt(TgtPath + '\' + cCount, 0);
+  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  Delete(TargetPath, Length(TargetPath) - 1, 2);
+  Result := TargetStore.ReadIntegerInt(TargetPath + '\' + cCount, 0);
   for I := 0 to Result - 1 do
-    OnReadItem(TgtStore, TgtPath, List, I);
+    OnReadItem(TargetStore, TargetPath, List, I);
 end;
 
 procedure TJvCustomAppStorage.WriteList(const Path: string; const List: TObject; const ItemCount: Integer;
   const OnWriteItem: TJvAppStorageListItemEvent; const OnDeleteItems: TJvAppStorageListDeleteEvent);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
   PrevListCount: Integer;
   I: Integer;
 begin
-  ResolvePath(Path + '\*', TgtStore, TgtPath);
-  Delete(TgtPath, Length(TgtPath) - 1, 2);
-  PrevListCount := TgtStore.ReadIntegerInt(TgtPath + '\' + cCount, 0);
-  TgtStore.WriteIntegerInt(TgtPath + '\' + cCount, ItemCount);
+  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  Delete(TargetPath, Length(TargetPath) - 1, 2);
+  PrevListCount := TargetStore.ReadIntegerInt(TargetPath + '\' + cCount, 0);
+  TargetStore.WriteIntegerInt(TargetPath + '\' + cCount, ItemCount);
   for I := 0 to ItemCount - 1 do
-    OnWriteItem(TgtStore, TgtPath, List, I);
+    OnWriteItem(TargetStore, TargetPath, List, I);
   if (PrevListCount > ItemCount) and Assigned(OnDeleteItems) then
-    OnDeleteItems(TgtStore, TgtPath, List, ItemCount, PrevListCount - 1);
+    OnDeleteItems(TargetStore, TargetPath, List, ItemCount, PrevListCount - 1);
 end;
 
 function TJvCustomAppStorage.ReadObjectList(const Path: string; List: TList;
-      const ClearFirst: Boolean = True) : Integer;
+      const ClearFirst: Boolean = True): Integer;
 begin
   Result := ReadObjectList (Path, List, DefaultObjectListItemCreateEvent, ClearFirst);
 end;
 
 function TJvCustomAppStorage.ReadObjectList(const Path: string; List: TList;
-      ItemCreator: TJvAppStorageObjectListItemCreateEvent; const ClearFirst: Boolean = True) : Integer;
+      ItemCreator: TJvAppStorageObjectListItemCreateEvent; const ClearFirst: Boolean = True): Integer;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TgtStore, TgtPath);
-  Delete(TgtPath, Length(TgtPath) - 1, 2);
+  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  Delete(TargetPath, Length(TargetPath) - 1, 2);
   if ClearFirst then
     List.Clear;
-  TgtStore.FCurrentInstanceCreateEvent := ItemCreator;
-  Result := TgtStore.ReadList(TgtPath, List, TgtStore.ReadObjectListItem);
-  TgtStore.FCurrentInstanceCreateEvent := Nil;
+  TargetStore.FCurrentInstanceCreateEvent := ItemCreator;
+  Result := TargetStore.ReadList(TargetPath, List, TargetStore.ReadObjectListItem);
+  TargetStore.FCurrentInstanceCreateEvent := nil;
 end;
 
 procedure TJvCustomAppStorage.WriteObjectList(const Path: string; List: TList);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TgtStore, TgtPath);
-  Delete(TgtPath, Length(TgtPath) - 1, 2);
-  TgtStore.WriteList(TgtPath, List, List.Count, TgtStore.WriteObjectListItem, TgtStore.DeleteObjectListItem);
+  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  Delete(TargetPath, Length(TargetPath) - 1, 2);
+  TargetStore.WriteList(TargetPath, List, List.Count, TargetStore.WriteObjectListItem, TargetStore.DeleteObjectListItem);
 end;
 
 function TJvCustomAppStorage.ReadCollection(const Path: string; List: TCollection;
-      const ClearFirst: Boolean = True) : Integer;
+  const ClearFirst: Boolean = True): Integer;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TgtStore, TgtPath);
-  Delete(TgtPath, Length(TgtPath) - 1, 2);
+  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  Delete(TargetPath, Length(TargetPath) - 1, 2);
   if ClearFirst then
     List.Clear;
-  Result := TgtStore.ReadList(TgtPath, List, TgtStore.ReadCollectionItem);
+  Result := TargetStore.ReadList(TargetPath, List, TargetStore.ReadCollectionItem);
 end;
 
 procedure TJvCustomAppStorage.WriteCollection(const Path: string; List: TCollection);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TgtStore, TgtPath);
-  Delete(TgtPath, Length(TgtPath) - 1, 2);
-  TgtStore.WriteList(TgtPath, List, List.Count, TgtStore.WriteCollectionItem, TgtStore.DeleteCollectionItem);
+  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  Delete(TargetPath, Length(TargetPath) - 1, 2);
+  TargetStore.WriteList(TargetPath, List, List.Count, TargetStore.WriteCollectionItem, TargetStore.DeleteCollectionItem);
 end;
 
 function TJvCustomAppStorage.ReadStringList(const Path: string; const SL: TStrings;
   const ClearFirst: Boolean): Integer;
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
   SL.BeginUpdate;
   try
-    ResolvePath(Path + '\*', TgtStore, TgtPath);
-    Delete(TgtPath, Length(TgtPath) - 1, 2);
+    ResolvePath(Path + '\*', TargetStore, TargetPath);
+    Delete(TargetPath, Length(TargetPath) - 1, 2);
     if ClearFirst then
       SL.Clear;
-    Result := TgtStore.ReadList(TgtPath, SL, TgtStore.ReadStringListItem);
+    Result := TargetStore.ReadList(TargetPath, SL, TargetStore.ReadStringListItem);
   finally
     SL.EndUpdate;
   end;
@@ -1709,12 +1709,12 @@ end;
 
 procedure TJvCustomAppStorage.WriteStringList(const Path: string; const SL: TStrings);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TgtStore, TgtPath);
-  Delete(TgtPath, Length(TgtPath) - 1, 2);
-  TgtStore.WriteList(TgtPath, SL, SL.Count, TgtStore.WriteStringListItem, TgtStore.DeleteStringListItem);
+  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  Delete(TargetPath, Length(TargetPath) - 1, 2);
+  TargetStore.WriteList(TargetPath, SL, SL.Count, TargetStore.WriteStringListItem, TargetStore.DeleteStringListItem);
 end;
 
 procedure TJvCustomAppStorage.ReadEnumerationInt(const Path: string;  TypeInfo: PTypeInfo;
@@ -1820,21 +1820,21 @@ end;
 procedure TJvCustomAppStorage.ReadEnumeration(const Path: string;  TypeInfo: PTypeInfo;
   const Default; out Value);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.ReadEnumerationInt(TgtPath, TypeInfo, Default, Value);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.ReadEnumerationInt(TargetPath, TypeInfo, Default, Value);
 end;
 
 procedure TJvCustomAppStorage.WriteEnumeration(const Path: string;  TypeInfo: PTypeInfo;
   const Value);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.WriteEnumerationInt(TgtPath, TypeInfo, Value);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.WriteEnumerationInt(TargetPath, TypeInfo, Value);
 end;
 
 procedure TJvCustomAppStorage.ReadSetInt(const Path: string;  ATypeInfo: PTypeInfo; const Default;
@@ -1933,20 +1933,20 @@ end;
 procedure TJvCustomAppStorage.ReadSet(const Path: string;  ATypeInfo: PTypeInfo; const Default;
   out Value);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.ReadSetInt(TgtPath, ATypeInfo, Default, Value);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.ReadSetInt(TargetPath, ATypeInfo, Default, Value);
 end;
 
 procedure TJvCustomAppStorage.WriteSet(const Path: string;  ATypeInfo: PTypeInfo; const Value);
 var
-  TgtStore: TJvCustomAppStorage;
-  TgtPath: string;
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
 begin
-  ResolvePath(Path, TgtStore, TgtPath);
-  TgtStore.WriteSetInt(TgtPath, ATypeInfo, Value);
+  ResolvePath(Path, TargetStore, TargetPath);
+  TargetStore.WriteSetInt(TargetPath, ATypeInfo, Value);
 end;
 
 procedure TJvCustomAppStorage.ReadPersistent(const Path: string; const PersObj: TPersistent;

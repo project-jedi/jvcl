@@ -60,7 +60,7 @@ unit JvQLabel;
 interface
 
 uses
-  QWindows, QMessages, Classes, Types, QGraphics, QControls, QStdCtrls, QImgList, 
+  Types, QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls, QImgList, 
   JvQTypes, JvQComponent, JvQDataProvider;
 
 type
@@ -1056,7 +1056,7 @@ begin
     FAngle := Value;
     if FAngle < 0 then
       Inc(FAngle, 360);
-    FNeedsResize := Autosize;
+    FNeedsResize := AutoSize;
     AdjustBounds;
     Invalidate;
   end;

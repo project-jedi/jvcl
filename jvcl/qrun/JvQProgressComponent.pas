@@ -138,7 +138,7 @@ begin
       BorderStyle := fbsDialog; 
       Position := poMainFormCenter;
       FormStyle := fsStayOnTop;
-      Scaled := false;
+      Scaled := False;
 
       FProgressBar := TProgressBar.Create(FForm);
     end;

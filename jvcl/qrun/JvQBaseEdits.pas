@@ -41,7 +41,7 @@ unit JvQBaseEdits;
 interface
 
 uses
-  QWindows, QMessages, Classes, QControls, QImgList, 
+  Types, QWindows, QMessages, Classes, QControls, QImgList, 
   QTypes, 
   JvQToolEdit;
 
@@ -363,9 +363,7 @@ begin
     ButtonWidth := 21;
   finally
     ControlState := ControlState - [csCreating];
-  end; 
-  FCanvas := TControlCanvas.Create;
-  FCanvas.Control := Self; 
+  end;
 end;
 
 destructor TJvCustomNumEdit.Destroy;
@@ -856,7 +854,7 @@ begin
   else
     S := GetDisplayText;
   if not PaintComboEdit(Self, S, FAlignment,
-    True, FFocused and not PopupVisible, FCanvas) then
+    True, FFocused and not PopupVisible, Canvas) then
     inherited;
 end;
 

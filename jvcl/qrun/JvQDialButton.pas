@@ -39,11 +39,9 @@ unit JvQDialButton;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}  
-  QGraphics, QControls, QForms, QExtCtrls, QComCtrls, Types, QWindows, 
-  SysUtils, Classes,
+  QWindows,  
+  Types, 
+  Classes, QGraphics, QControls, QForms, QExtCtrls, QComCtrls,
   JvQComponent;
 
 type
@@ -697,7 +695,8 @@ end;
 
 procedure TJvCustomDialButton.Paint;
 begin
-  if csCreating in ControlState then exit;
+  if csCreating in ControlState then
+    Exit;
   Canvas.Brush.Color := Parent.Brush.Color;
   DrawThemedBackground(Self, Canvas, ClientRect);
   BitmapNeeded;
@@ -890,7 +889,7 @@ begin
     Canvas.Brush.Color := Parent.Brush.Color;
     Canvas.Brush.Style := bsSolid; 
       Canvas.FillRect(FBitmapRect);
-    SetViewPortOrgEx(Canvas.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
+    SetViewportOrgEx(Canvas.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
       @OldOrg);
     try
       // Draw edge.

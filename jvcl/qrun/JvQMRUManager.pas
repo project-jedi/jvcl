@@ -312,7 +312,7 @@ begin
      if FAutoEnable then
         FRecentMenu.Enabled := IsMenuEnabled
      else
-       FRecentMenu.Enabled := true;
+       FRecentMenu.Enabled := True;
     end;
   end;
 end;

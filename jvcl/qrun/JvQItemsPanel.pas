@@ -88,7 +88,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetItemAt(X, Y: Integer): Integer;
-    function GetItemRect(Index: Integer): Trect;
+    function GetItemRect(Index: Integer): TRect;
     property Canvas;
   published
     property AutoGrow: Boolean read FAutoGrow write SetAutoGrow;
@@ -147,7 +147,7 @@ begin
   BevelInner := bvNone;
   BevelOuter := bvNone;
   FItemHeight := 16;
-  FItems := TStringlist.Create;
+  FItems := TStringList.Create;
   FHotTrackColor := clHighLight;
   FClickable := True;
   FOrientation := poVertical;
@@ -321,7 +321,7 @@ begin
   end;
 end;
 
-function TJvItemsPanel.GetItemRect(Index: Integer): Trect;
+function TJvItemsPanel.GetItemRect(Index: Integer): TRect;
 begin
   Result := Rect(0, 0, 0, 0);
   if (Index < 0) or (Index >= Items.Count) then

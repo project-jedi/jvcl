@@ -49,7 +49,7 @@ type
     FInterval: Cardinal;
     FColor: TColor;
     FRotating: Boolean;
-    procedure SetPicture(Value: TBItmap);
+    procedure SetPicture(Value: TBitmap);
     procedure SetRotating(Value: Boolean);
     procedure Rotate(Sender: TObject);
     procedure SetInterval(Value: Cardinal);
@@ -73,9 +73,9 @@ constructor TJvImageRotate.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOriginal := TBitmap.Create;
-  FRotated := TBItmap.Create;
+  FRotated := TBitmap.Create;
   FTimer := TJvImageDrawThread.Create(True);
-  FTimer.FreeOnTerminate := false;
+  FTimer.FreeOnTerminate := False;
   FTimer.Delay := 20;
   FTimer.OnDraw := Rotate;
   FPosition := 0;
@@ -147,7 +147,7 @@ var
   jRotationAxis, jOriginal, jPrime, jPrimeRotated: Integer;
   RowOriginal: PJvRGBArray;
   RowRotated: PJvRGBArray;
-  Theta, sinTheta, cosTheta: Double;
+  Theta, SinTheta, CosTheta: Double;
   R, G, B: Byte;
 begin
   FRotated.Width := FOriginal.Width;
@@ -156,8 +156,8 @@ begin
   iRotationAxis := FOriginal.Width div 2;
   jRotationAxis := FOriginal.Height div 2;
   Theta := -Value * Pi / 180;
-  sinTheta := Sin(Theta);
-  cosTheta := Cos(Theta);
+  SinTheta := Sin(Theta);
+  CosTheta := Cos(Theta);
   B := FColor mod 256;
   G := Round((FColor div 256) mod 256);
   R := Round((FColor div 256) div 256);
@@ -168,8 +168,8 @@ begin
     for i := FRotated.Width - 1 downto 0 do
     begin
       iPrime := 2 * (i - iRotationAxis) + 1;
-      iPrimeRotated := Round(iPrime * CosTheta - jPrime * sinTheta);
-      jPrimeRotated := Round(iPrime * sinTheta + jPrime * cosTheta);
+      iPrimeRotated := Round(iPrime * CosTheta - jPrime * SinTheta);
+      jPrimeRotated := Round(iPrime * SinTheta + jPrime * CosTheta);
       iOriginal := (iPrimeRotated - 1) div 2 + iRotationAxis;
       jOriginal := (jPrimeRotated - 1) div 2 + jRotationAxis;
       if (iOriginal >= 0) and (iOriginal <= FOriginal.Width - 1) and

@@ -91,6 +91,7 @@ type
     FButtonColor: TColor;
     procedure SetButtonColor(const Value: TColor);
   public
+    constructor Create(AOwner: TComponent); override;
     property ButtonColor: TColor read FButtonColor write SetButtonColor;
   end;
 
@@ -889,7 +890,7 @@ var
   I: Integer;
 begin
   LFlag := False;
-  if Cmp(PropName, 'ShowAutoButton') or cmp(PropName, 'ShowOtherButton') then
+  if Cmp(PropName, 'ShowAutoButton') or Cmp(PropName, 'ShowOtherButton') then
     LFlag := True
   else
   if Cmp(PropName, 'AutoCaption') then
@@ -927,6 +928,12 @@ begin
 end;
 
 //=== { TJvColorSpeedButton } ================================================
+
+constructor TJvColorSpeedButton.Create(AOwner: TComponent);
+begin
+  inherited;
+  FButtonColor := clDefault;
+end;
 
 procedure TJvColorSpeedButton.SetButtonColor(const Value: TColor);
 begin

@@ -280,7 +280,7 @@ begin
     else
     begin
       T := FScrollSaved;
-      Inc(FSCrollSaved);
+      Inc(FScrollSaved);
     end;
   end
   else
@@ -303,7 +303,7 @@ begin
         if - FCurrPos > FText.Width then
           FCurrPos := Width
         else
-          FCurrpos := FCurrPos - T;
+          FCurrPos := FCurrPos - T;
         FText.Left := FCurrPos;
       end;
     drFromRight:
@@ -311,7 +311,7 @@ begin
         if FCurrPos > Width then
           FCurrPos := -Width
         else
-          FCurrpos := FCurrPos + T;
+          FCurrPos := FCurrPos + T;
         FText.Left := FCurrPos;
       end;
     drFromBottom:
@@ -408,7 +408,7 @@ end;
 procedure TJvScrollText.SetItems(const Value: TStrings);
 begin
   FItems.Text := Value.Text;
-  FText.Caption := Value.text;
+  FText.Caption := Value.Text;
   CalculateText(Self);
 end;
 
@@ -451,7 +451,7 @@ begin
       FCurrPos := -Width;
     drFromRight:
       FCurrPos := Width;
-    drFrombottom:
+    drFromBottom:
       FCurrPos := -FText.Height;
   end;
 end;

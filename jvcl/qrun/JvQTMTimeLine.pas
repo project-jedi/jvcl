@@ -139,7 +139,7 @@ type
     procedure SetLineColor(const Value: TColor);
     procedure SetRightClickSelect(const Value: Boolean);
     procedure SetMaxDate(const Value: TDate);
-    procedure SetMinDate(const Value: Tdate);
+    procedure SetMinDate(const Value: TDate);
     procedure SetLargeChange(const Value: Word);
     procedure SetSmallChange(const Value: Word);
     function GetObjects(ADate: TDate): TObject;
@@ -451,7 +451,7 @@ begin
     Parent := Self;
     Transparent := False;
     Layout := blGlyphTop;
-    Glyph.LoadFromResourceName(hInstance, 'SCROLL_LEFT');
+    Glyph.LoadFromResourceName(HInstance, 'SCROLL_LEFT');
 
     OnMouseDown := DoLMouseDown;
     OnMouseUp := DoMouseUp;
@@ -466,7 +466,7 @@ begin
     Parent := Self;
     Transparent := False;
     Layout := blGlyphTop;
-    Glyph.LoadFromResourceName(hInstance, 'SCROLL_RIGHT');
+    Glyph.LoadFromResourceName(HInstance, 'SCROLL_RIGHT');
 
     OnMouseDown := DoRMouseDown;
     OnMouseUp := DoMouseUp;
@@ -613,16 +613,16 @@ begin
   Bmp := TBitmap.Create;
   Tmp := ACanvas.Brush.Color;
   try
-    Bmp.LoadFromResourceName(hInstance, 'MILESTONE_LARGE');
+    Bmp.LoadFromResourceName(HInstance, 'MILESTONE_LARGE');
     ACanvas.Brush.Color := FTodayColor;
 
     ACanvas.FillRect(ARect);
     R := Rect(ARect.Left + ((ARect.Right - ARect.Left) - Bmp.Width) div 2,
       ARect.Top + CanvasMaxTextHeight(ACanvas) + 2,
       ARect.Left + ((ARect.Right - ARect.Left) - Bmp.Width) div 2 + Bmp.Width,
-      ARect.Top + Bmp.Height +CanvasMaxTextHeight(ACanvas) + 2);  
-    Bmp.transparent := true ;
-    ACanvas.Draw( R.Left, R.Top, bmp); 
+      ARect.Top + Bmp.Height + CanvasMaxTextHeight(ACanvas) + 2);  
+    Bmp.Transparent := True;
+    ACanvas.Draw(R.Left, R.Top, Bmp); 
   finally
     ACanvas.Brush.Color := Tmp;
     Bmp.Free;
@@ -649,7 +649,7 @@ begin
     FirstOffset := 1;
   // first loop: draw dates, today and images
   FTmpStyle := Font.Style;
-  for I := 0 to (Width div FDayWidth) do
+  for I := 0 to Width div FDayWidth do
   begin
     R := GetRectForDate(Self.Date + I);
     if (Self.Date + I = SysUtils.Date) and ShowToday then
@@ -1090,7 +1090,7 @@ begin
   end;
 end;
 
-procedure TJvCustomTMTimeline.SetMinDate(const Value: Tdate);
+procedure TJvCustomTMTimeline.SetMinDate(const Value: TDate);
 begin
   if Trunc(FMinDate) <> Trunc(Value) then
   begin

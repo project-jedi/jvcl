@@ -40,7 +40,7 @@ unit JvQCheckedMaskEdit;
 interface
 
 uses
-  QWindows, QMessages, Classes, QControls, QStdCtrls,
+  Types, QWindows, QMessages, Classes, QControls, QStdCtrls,
   JvQMaskEdit;
 
 type
@@ -227,7 +227,7 @@ begin
     FCheck.Enabled := Self.Enabled;
   inherited EnabledChanged; 
   if Assigned(FOnEnabledChanged) then
-     FOnEnabledChanged(self); 
+     FOnEnabledChanged(Self); 
 end;
 
 procedure TJvCustomCheckedMaskEdit.EndInternalChange;
@@ -293,16 +293,10 @@ begin
       with FCheck do
       begin  
         Parent := Self.ClientArea;
-        Height := self.ClientArea.Height;
-        if BorderStyle = bsSingle then
-        begin
-          Top := 2
-        end
-        else
-          Top := 0;
-        Left := 3;
-        Width := 15;
+        Height := Self.ClientArea.Height;
         Color := Self.Color;
+        Left := 3; 
+        Width := 15;
         Anchors := [akLeft, akTop, akBottom];
         Alignment := taLeftJustify;
         TabStop := False;

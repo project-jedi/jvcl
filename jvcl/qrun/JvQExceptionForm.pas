@@ -152,7 +152,7 @@ var
 begin
   VirtualQuery(ExceptAddr, Info, SizeOf(Info));
   if (Info.State <> MEM_COMMIT) or
-    (GetModuleFilename(THandle(Info.AllocationBase), Temp, SizeOf(Temp)) = 0) then
+    (GetModuleFileName(THandle(Info.AllocationBase), Temp, SizeOf(Temp)) = 0) then
   begin
     GetModuleFileName(HInstance, Temp, SizeOf(Temp));
     LogicalAddress := ConvertAddr(LogicalAddress);

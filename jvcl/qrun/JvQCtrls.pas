@@ -38,7 +38,7 @@ unit JvQCtrls;
 interface
 
 uses
-  QWindows, QMessages, Classes, Types, QGraphics, QControls, QStdCtrls, QImgList,
+  Types, QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls, QImgList,
   JvQButton;
 
 
@@ -492,7 +492,7 @@ end;
 procedure TJvCustomImageButton.DrawButtonImage(ImageBounds: TRect);
 
 var
-  glyph: TBitmap;
+  Glyph: TBitmap;
 
 begin
   if csDestroying in ComponentState then
@@ -506,7 +506,7 @@ begin
         Glyph := TBitmap.Create;
         DefaultImgBtnImagesList.GetBitmap(GetKindImageIndex, Glyph);
         Glyph.TransparentColor := clOlive;
-        FCanvas.draw(Left, Top, Glyph);
+        FCanvas.Draw(Left, Top, Glyph);
         Glyph.Free;
       end; 
 end;

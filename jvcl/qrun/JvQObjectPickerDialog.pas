@@ -606,7 +606,7 @@ var
   Format: TFormatEtc;
   I: Integer;
   Selection: PDsSelection;
-  HR: HRESULT;
+  HRes: HRESULT;
 begin
   FreeSelection;
   Format.cfFormat := RegisterClipboardFormat(CFSTR_DSOP_DS_SELECTION_LIST);
@@ -616,8 +616,8 @@ begin
   Format.tymed := TYMED_HGLOBAL;
   FillChar(FMedium, SizeOf(FMedium), 0);
   FMedium.tymed := TYMED_HGLOBAL;
-  HR := DataObj.GetData(Format, FMedium);
-  if Succeeded(HR) then
+  HRes := DataObj.GetData(Format, FMedium);
+  if Succeeded(HRes) then
   begin
     FSelections := GlobalLock(FMedium.hGlobal);
     SetLength(FItems, FSelections^.cItems);
@@ -633,7 +633,7 @@ begin
     end;
   end
   else
-    OleCheck(HR);
+    OleCheck(HRes);
 end;
 
 //=== { TJvObjectPickerDialog } ==============================================
@@ -664,7 +664,7 @@ var
   ScopesInitInfo: array of TDsOpScopeInitInfo;
   Attrs: array of PWideChar;
   AttrStrs: array of WideString;
-  HR: HRESULT;
+  HRes: HRESULT;
   DataObj: IDataObject;
 
   procedure InitializeAttributes;
@@ -708,14 +708,14 @@ begin
   Scopes.Initialize(ScopesInitInfo);
   InitializeAttributes;
   Selection.FreeSelection;
-  HR := FObjectPicker.Initialize(InitInfo);
+  HRes := FObjectPicker.Initialize(InitInfo);
   // (p3) this won't raise a second exception
-  if not Succeeded(HR) then
+  if not Succeeded(HRes) then
     Exit;
   PropogateInitResults;
-//  OleCheck(HR);
-  HR := FObjectPicker.InvokeDialog(0, DataObj);
-  case HR of
+//  OleCheck(HRes);
+  HRes := FObjectPicker.InvokeDialog(0, DataObj);
+  case HRes of
     S_OK:
       begin
         Result := True;
@@ -725,7 +725,7 @@ begin
       Result := False;
   else
     Result := False;
-    OleCheck(HR);
+    OleCheck(HRes);
   end;
 end;
 

@@ -38,8 +38,8 @@ interface
 
 uses 
   Variants, 
-  QWindows, QMessages,
-  QControls, Types, QGraphics, QForms, QButtons, QStdCtrls, QGrids, QExtCtrls, 
+  Types, QWindows, QMessages,
+  QControls, QGraphics, QForms, QButtons, QStdCtrls, QGrids, QExtCtrls, 
   QTypes, 
   SysUtils, Classes,
   JvQTypes, JvQExGrids;
@@ -270,7 +270,7 @@ var
   begin
     with ARect, Canvas do
     begin
-      if (ARow > 0) and ((FMinDate <> NulLDate) or (FMaxDate <> NulLDate)) then
+      if (ARow > 0) and ((FMinDate <> NullDate) or (FMaxDate <> NullDate)) then
         if not CellInRange(ACol, ARow) then
           if TheText <> '' then
           begin

@@ -1973,13 +1973,13 @@ var
   B: TJvOutlookBarButton;
   P: TJvOutlookBarPage;
 begin
-  TJvOutlookBarEdit(FEdit).Tag := Msg.wParam;
+  TJvOutlookBarEdit(FEdit).Tag := Msg.WParam;
 //  TJvOutlookBarEdit(FEdit).Font.Name := Pages[ActivePageIndex].Font.Name;
 //  TJvOutlookBarEdit(FEdit).Font.Size := Pages[ActivePageIndex].Font.Size;
-  case Msg.lParam of
+  case Msg.LParam of
     0: // button
       begin
-        B := TJvOutlookBarButton(Msg.wParam);
+        B := TJvOutlookBarButton(Msg.WParam);
         R := GetButtonTextRect(ActivePageIndex, B.Index);
         R.Left := Max(R.Left, 0);
         R.Right := Min(R.Right, ClientWidth);
@@ -1987,7 +1987,7 @@ begin
       end;
     1: // page
       begin
-        P := TJvOutlookBarPage(Msg.wParam);
+        P := TJvOutlookBarPage(Msg.WParam);
         R := GetPageTextRect(P.Index);
         TJvOutlookBarEdit(FEdit).ShowEdit(P.Caption, R);
       end;

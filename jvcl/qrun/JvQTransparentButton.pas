@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls,
+  Types, QWindows, QMessages, QGraphics, QControls,
   QExtCtrls, QMenus, QForms, QImgList, QActnList, QButtons, 
   JvQComponent, JvQButton;
 
@@ -321,7 +321,6 @@ begin
 
     with TmpImage.Canvas do
     begin
-      Start;
       Brush.Color := clBtnFace;
       FillRect(Rect(0, 0, W, H));
       Brush.Color := clBtnHighlight;
@@ -332,7 +331,6 @@ begin
       SetTextColor(Handle, clBlack);
       SetBkColor(Handle, clWhite);
       BitBlt(Handle, 0, 0, W, H, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-      Stop;
     end;
     Bmp.Assign(TmpImage);
   finally
@@ -427,7 +425,7 @@ begin
   FNumGlyphs := 1;
   FSpacing := 2;
   FTextAlign := ttaCenter;
-  FWordwrap := False;
+  FWordWrap := False;
   FOutline := fsExplorer;
 end;
 
@@ -549,7 +547,7 @@ procedure TJvTransparentButton.SetWordWrap(Value: Boolean);
 begin
   if FWordWrap <> Value then
   begin
-    FWordwrap := Value;
+    FWordWrap := Value;
     Invalidate;
   end;
 end;
@@ -922,7 +920,7 @@ begin
   FImList := TImageList.CreateSize(Width, Height);
   FSpacing := 2;
   FTextAlign := ttaCenter;
-  FWordwrap := False;
+  FWordWrap := False;
   FOutline := fsExplorer;
 end;
 
@@ -1121,7 +1119,7 @@ procedure TJvTransparentButton2.SetWordWrap(Value: Boolean);
 begin
   if FWordWrap <> Value then
   begin
-    FWordwrap := Value;
+    FWordWrap := Value;
     Invalidate;
   end;
 end;

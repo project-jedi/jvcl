@@ -33,7 +33,7 @@ unit JvQDynControlEngine;
 interface
 
 uses
-  Classes, QControls, QForms, QStdCtrls, QGraphics, QButtons,
+  Classes, QControls, QForms, QStdCtrls, Types, QGraphics, QButtons,
   JvQDynControlEngineIntf;
 
 type
@@ -192,7 +192,7 @@ begin
       Valid := Valid and
         Supports(AControlClass, IJvDynControlItems) and
         Supports(AControlClass, IJvDynControlData);
-    jctEdit, jctCalculateEdit, jctSpinEdit, jctFilenameEdit, jctDirectoryEdit,
+    jctEdit, jctCalculateEdit, jctSpinEdit, jctFileNameEdit, jctDirectoryEdit,
       jctCheckBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit:
       Valid := Valid and Supports(AControlClass, IJvDynControlData);
   end;

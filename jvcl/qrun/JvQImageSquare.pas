@@ -168,7 +168,7 @@ end;
 procedure TJvImageSquare.Paint;
 var
   R: TRect;
-  dX, dY: Integer;
+  DX, DY: Integer;
 begin
   R := Rect(0, 0, Width, Height);
 
@@ -189,9 +189,9 @@ begin
   if Assigned(FImageList) then
   begin
     { draw in middle }
-    dX := (Width - FImageList.Width) div 2;
-    dY := (Height - FImageList.Height) div 2;  
-    FImageList.Draw(Canvas, dX, dY, FIndex); 
+    DX := (Width - FImageList.Width) div 2;
+    DY := (Height - FImageList.Height) div 2;  
+    FImageList.Draw(Canvas, DX, DY, FIndex); 
   end;
 end;
 

@@ -398,20 +398,20 @@ begin
     {
       while FActive do
       begin
-        i := WaitForMultipleObjects(FCollection.Count, @FNotifyArray, False, FInterval);
-        if (i >= 0) and (i < FCollection.Count) then
+        I := WaitForMultipleObjects(FCollection.Count, @FNotifyArray, False, FInterval);
+        if (I >= 0) and (I < FCollection.Count) then
         begin
           try
-            Change(FCollection.Items[i]);
+            Change(FCollection.Items[I]);
           finally
-            Assert(FindNextChangeNotification(FNotifyArray[i]));
+            Assert(FindNextChangeNotification(FNotifyArray[I]));
           end;
         end
         else
           Application.ProcessMessages;
       end;
-    for i := 0 to FCollection.Count - 1 do // Iterate
-      FindCloseChangeNotification(FNotifyArray[i]);
+    for I := 0 to FCollection.Count - 1 do // Iterate
+      FindCloseChangeNotification(FNotifyArray[I]);
       }
   end;
 end;
@@ -439,7 +439,7 @@ begin
   FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
   for I := 0 to FCount - 1 do
     FNotifyArray[I] := NotifyArray[I];
-  FreeOnTerminate := true;
+  FreeOnTerminate := True;
 end;
 
 
@@ -455,7 +455,7 @@ begin
       if (I >= 0) and (I < FCount) then
       begin
         try
-          FIndex := i;
+          FIndex := I;
           Synchronize(SynchChange);
         finally
           // (rom) raising an exception in a thread is not a good idea

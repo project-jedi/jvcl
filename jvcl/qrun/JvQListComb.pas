@@ -127,8 +127,8 @@ type
     property Items[Index: Integer]: TJvImageItem read GetItems write SetItems; default;
     property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
   end;
-
-  TJvImageComboBox = class(TJvExCustomComboBox)
+  
+  TJvImageComboBox = class(TCustomComboBox) 
   private
     FItems: TJvImageItems;
     FImageList: TCustomImageList;
@@ -160,11 +160,12 @@ type
     procedure FontChanged; override;
     procedure EnabledChanged; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;  
-    procedure RecreateWidget; 
+    procedure RecreateWidget;
     procedure CreateWidget; override;
-    function DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): boolean; override;
-    procedure MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+    function DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): Boolean; override;
+    procedure MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
                           var Height, Width: Integer); override;
+    procedure SetParent(const AParent: TWidgetControl); override; 
 
     procedure Change; override;
 
@@ -240,11 +241,12 @@ type
   protected
     procedure FontChanged; override;
     procedure ImageListChange(Sender: TObject);
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;  
 //    procedure CreateWidget; override;
-    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState):boolean ; override;
-    procedure MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState):Boolean ; override;
+    procedure MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
                           var Height, Width: Integer); override;
+    procedure SetParent(const AParent: TWidgetControl); override; 
     procedure Resize; override;
 
     function GetImageWidth(Index: Integer): Integer;
@@ -371,7 +373,7 @@ begin
   FListPropertiesUsed := AllListPropertiesUsed;
   FFont := nil;
   FColorHighlight := clHighlight;
-  FColorHighlightText := clHighlightText;  
+  FColorHighlightText := clHighlightText;
 end;
 
 destructor TJvImageItem.Destroy;
@@ -587,10 +589,13 @@ begin
     begin
       FWidth := 0;
       FHeight := 0;
-    end; }
-    Invalidate;
+    end; }  
+    RecreateWidget; 
   end;
 end;
+
+
+
 
 procedure TJvImageComboBox.CreateWidget;
 begin
@@ -604,6 +609,10 @@ begin
   SetDroppedWidth(FDroppedWidth);
 end;
 
+
+
+
+
 procedure TJvImageComboBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -613,7 +622,7 @@ end;
 
 
 
-function TJvImageComboBox.DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): boolean;
+function TJvImageComboBox.DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): Boolean;
 
 var
   Offset, Tmp: Integer;
@@ -706,13 +715,23 @@ begin
   end;
 end;
 
-procedure TJvImageComboBox.MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+
+
+
+procedure TJvImageComboBox.MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
                           var Height, Width: Integer);
 begin
   Height := GetItemHeight(Font) + 4 ;
   if Assigned(FImageList) then
     Height := Max(Height, FImageList.Height + 4);
 end;
+
+procedure TJvImageComboBox.SetParent(const AParent: TWidgetControl);
+begin
+  inherited SetParent(AParent);
+  ResetItemHeight;
+end;
+
 
 procedure TJvImageComboBox.SetColorHighlight(Value: TColor);
 begin
@@ -732,13 +751,18 @@ begin
   end;
 end;
 
+
+
+
 function TJvImageComboBox.GetDroppedWidth: Integer;
 begin
+  HandleNeeded;
   Result := QWidget_width(QCombobox_listBox(Handle));
 end;
 
 procedure TJvImageComboBox.SetDroppedWidth(Value: Integer);
 begin
+  HandleNeeded;
   QWidget_setFixedWidth(QCombobox_listBox(Handle), Value);
   FDroppedWidth := GetDroppedWidth;
 end;
@@ -747,7 +771,8 @@ end;
 procedure TJvImageComboBox.FontChanged;
 begin
   inherited FontChanged;
-  RecreateWidget;
+  ResetItemHeight;  
+  RecreateWidget; 
 end;
 
 procedure TJvImageComboBox.ResetItemHeight;
@@ -761,8 +786,7 @@ begin
     if GetImageHeight(I) > MaxImageHeight then
       MaxImageHeight := GetImageHeight(I);
   end;
-  Invalidate;
-//  ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + 4);
+  ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + 4);
 end;
 
 procedure TJvImageComboBox.Change;
@@ -856,6 +880,7 @@ begin
   FAlignment := taLeftJustify;
 
   FButtonFrame := False;
+  Style := lbOwnerDrawFixed; 
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := ImageListChange;
 end;
@@ -895,7 +920,8 @@ begin
       FWidth := 0;
       FHeight := 0;
     end;}
-    Invalidate;
+    ResetItemHeight;  
+    RecreateWidget; 
   end;
 end;
 
@@ -904,9 +930,11 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-    Invalidate;
+    ResetItemHeight;
   end;
 end;
+
+
 
 procedure TJvImageListBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
@@ -935,13 +963,14 @@ end;
 
 
 
-function TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): boolean;
+function TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean;
+
 var
   SavedColor: TColor;
 begin
   if csDestroying in ComponentState then
     Exit; 
-  Result := true;
+  Result := True;
   if odSelected in State then
   begin
     Canvas.Brush.Color := Items[Index].ColorHighlight;
@@ -1160,18 +1189,29 @@ begin
   end;
 end;
 
-procedure TJvImageListBox.MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+
+
+
+
+procedure TJvImageListBox.SetParent(const AParent: TWidgetControl);
+begin
+  inherited SetParent(AParent);
+  ResetItemHeight;
+end;
+
+procedure TJvImageListBox.MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
                           var Height, Width: Integer);
 begin
-  Height := GetItemHeight(Font) + 4;
-  if assigned(FImageList) then
-    Height := Max(Height, FImageList.Height + 4);
+  Height := Max(GetItemHeight(Font) + 4, FImageList.Height + 4);
 end;
+
+
 
 procedure TJvImageListBox.FontChanged;
 begin
   inherited FontChanged;
-  RecreateWidget;
+  ResetItemHeight;  
+  RecreateWidget; 
 end;
 
 procedure TJvImageListBox.ResetItemHeight;
@@ -1193,6 +1233,8 @@ begin
   end;
   Invalidate;
 end;
+
+
 
 procedure TJvImageListBox.Resize;
 begin

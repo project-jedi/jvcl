@@ -412,15 +412,17 @@ begin
 end;
 
 
+{$DEFINE NeedSetLayer}
+
+
+
+
 
 procedure TShadowWindow.InitWidget;
 
- 
-   {$DEFINE NeedSetLayer}  
-
 var
   {$IFDEF NeedSetLayer}
-  wnd: Windows.HWND;
+  Wnd: Windows.HWND;
   {$ENDIF NeedSetLayer}
   DynamicSetLayeredWindowAttributes: TDynamicSetLayeredWindowAttributes;
 
@@ -437,17 +439,17 @@ var
       @DynamicSetLayeredWindowAttributes := nil;
   end;
 
-begin
-  inherited;
+begin  
+  inherited InitWidget; 
   {$IFDEF NeedSetLayer}
   InitProcs;
   if HandleAllocated and Assigned(DynamicSetLayeredWindowAttributes) then
   begin  
-    wnd := QWidget_winId(Handle);
+    Wnd := QWidget_winId(Handle);
     //SetWindowLong(h, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
     //SetWindowLong(h, GWL_STYLE, WS_POPUP); 
-    SetWindowLong(wnd, GWL_EXSTYLE, GetWindowLong(wnd, GWL_EXSTYLE) or WS_EX_LAYERED);
-    DynamicSetLayeredWindowAttributes(wnd, 0, cShadowAlpha, LWA_ALPHA);
+    SetWindowLong(Wnd, GWL_EXSTYLE, GetWindowLong(Wnd, GWL_EXSTYLE) or WS_EX_LAYERED);
+    DynamicSetLayeredWindowAttributes(Wnd, 0, cShadowAlpha, LWA_ALPHA);
   end;
   {$ENDIF NeedSetLayer}
 end;
@@ -462,7 +464,6 @@ begin
     Integer(WidgetFlags_WStyle_NoBorder) or
     Integer(WidgetFlags_WStyle_Tool);           // WS_EX_TOOLWINDOW
 end;
-
 
 
 procedure TShadowWindow.VisibleChanged;
@@ -494,7 +495,7 @@ begin
 
   Options := [goVertLine, goHorzLine, {goDrawFocusSelected, } goThumbTracking];
   FShowZoomPanel := True;
-  DefaultRowHeight := abs(Font.Height) + 12;
+  DefaultRowHeight := Abs(Font.Height) + 12;
   DefaultColWidth := DefaultRowHeight - 5; 
   FShowShadow := True;
   FShadowSize := 2;
@@ -538,6 +539,7 @@ begin
     AdjustSize;
   RecalcCells;
 end;
+
 
 
 
@@ -828,7 +830,7 @@ begin
   //  ColCount := 20;
   ARows := ACells div ColCount + 1;
   RowCount := ARows;
-  DefaultRowHeight := abs(Font.Height) + 12;
+  DefaultRowHeight := Abs(Font.Height) + 12;
   DefaultColWidth := DefaultRowHeight - 5;
   if AutoSizeWidth or AutoSizeHeight then
     AdjustSize;

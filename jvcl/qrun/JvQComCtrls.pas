@@ -377,7 +377,7 @@ type
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange;
+//    property OnParentColorChange;
     property Color;
   end;
 
@@ -1120,7 +1120,7 @@ begin
   if Owner is TForm then
     FActiveFont.Assign(TForm(Owner).Font)
   else
-    FActiveFont.Assign(Screen.IconFont);
+    FActiveFont.Assign(Screen.HintFont);
   FActiveFont.Color := clHighlight;
   FActiveFont.OnChange := DoFontChange;
   FActiveColorFrom := clWhite;
@@ -1131,7 +1131,7 @@ begin
   if Owner is TForm then
     FDisabledFont.Assign(TForm(Owner).Font)
   else
-    FDisabledFont.Assign(Screen.IconFont);
+    FDisabledFont.Assign(Screen.HintFont);
   FDisabledFont.Color := clGrayText;
   FDisabledFont.OnChange := DoFontChange;
   FDisabledColorFrom := clBtnFace;
@@ -1142,7 +1142,7 @@ begin
   if Owner is TForm then
     FInactiveFont.Assign(TForm(Owner).Font)
   else
-    FInactiveFont.Assign(Screen.IconFont);
+    FInactiveFont.Assign(Screen.HintFont);
   FInactiveFont.OnChange := DoFontChange;
   FInactiveColorFrom := $D7D7D7;
   FInactiveColorTo := $ADADAD;
@@ -1233,7 +1233,7 @@ begin
     InflateRect(ImageRect, -(RectWidth(ImageRect) - Images.Width) div 2, -(RectHeight(ImageRect) - Images.Height) div 2);
     SaveState := SaveDC(Canvas.Handle);
     try
-      Images.Draw(Canvas, ImageRect.Left, ImageRect.Top, ImageIndex, Enabled);
+      Images.Draw(Canvas, ImageRect.Left, ImageRect.Top, ImageIndex, itImage, Enabled);
     finally
       RestoreDC(Canvas.Handle, SaveState);
     end;
@@ -1401,7 +1401,7 @@ end;
 procedure TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean);
 begin
   if Assigned(TabPainter) then
-    TabPainter.DrawTab(Self, Canvas, Images, TabIndex, Tabs[TabIndex], Rect, TabIndex = Self.TabIndex, Enabled)
+    TabPainter.DrawTab(Self, Canvas, Images, TabIndex, Tabs[TabIndex].Caption, Rect, TabIndex = Self.TabIndex, Enabled)
   else
     inherited DrawTab(TabIndex, Rect, Active);
 end;
@@ -1436,7 +1436,7 @@ end;
 constructor TJvPageControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FClientBorderWidth := JvDefPageControlBorder;
+//  FClientBorderWidth := JvDefPageControlBorder;
   FHintSource := hsDefault;
 end;
 
@@ -1458,10 +1458,10 @@ var
   forwrd: Boolean;
 begin
   Result := False;
-  if HandleGlobalTab and not FormKeyPreview and (Key = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
+  if HandleGlobalTab and not FormKeyPreview and (Key = VK_TAB) and (ssCtrl in Shift) then
   begin
     thistab := ActivePage;
-    forwrd := GetKeyState(VK_SHIFT) >= 0;
+    forwrd := not (ssShift in Shift);
     tab := thistab;
     repeat
       tab := FindNextPage(tab, forwrd, True);

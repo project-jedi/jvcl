@@ -71,8 +71,8 @@ unit JvQButtons;
 interface
 
 uses  
-  Types, QGraphics, QControls, QForms, QButtons, QImgList, QWindows, 
-  SysUtils, Classes,
+  Types, QImgList, QWindows, 
+  Classes, QGraphics, QControls, QForms, QButtons,
   JvQComponent, JvQExButtons;
 
 type
@@ -180,8 +180,8 @@ type
 
 implementation
 
-uses
-  Math,
+uses 
+  SysUtils, Math,
   JvQHtControls, JvQDsgnIntf, JvQConsts, JvQResources, JvQTypes, JvQThemes;
 
 type
@@ -764,9 +764,9 @@ end;
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
 var
-  cap: String;
+  Cap: string;
 begin
-  cap := '<ALIGN CENTER>' + Caption; // Kaczkowski
+  Cap := '<ALIGN CENTER>' + Caption; // Kaczkowski
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -825,7 +825,7 @@ begin
   if not Enabled then
     State := bsDisabled
   else
-    if IsDown then
+  if IsDown then
     State := bsDown
   else
     State := bsUp;
@@ -919,7 +919,7 @@ end;
 destructor TJvNoFrameButton.Destroy;
 begin
   FGlyphDrawer.Free;
-  FglyphDrawer := nil;
+  FGlyphDrawer := nil;
   inherited Destroy;
 end;
 
@@ -957,7 +957,8 @@ begin
     Canvas.Font := Self.Font;
     PaintRect := Rect(0, 0, Width, Height);
     if not NoBorder then
-    begin
+    begin 
+      QWindows. 
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
         FillStyles[Transparent] or BF_RECT);
       InflateRect(PaintRect, -1, -1);
