@@ -57,7 +57,7 @@ uses
   {$ELSE}
   JvWizardAboutInfoForm,
   {$ENDIF USEJVCL}
-  JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardEditorForm;
+  JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardRouteMapList, JvWizardEditorForm;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvWizardReg.dcr}
@@ -77,7 +77,7 @@ const
   cPages = 'Pages';
 begin
   RegisterComponents(RsPaletteWizard, [TJvWizard, TJvWizardRouteMapSteps,
-    TJvWizardRouteMapNodes]);
+    TJvWizardRouteMapNodes, TJvWizardRouteMapList]);
   RegisterClasses([TJvWizardCustomPage, TJvWizardWelcomePage,
     TJvWizardInteriorPage]);
   RegisterComponentEditor(TJvWizard, TJvWizardComponentEditor);

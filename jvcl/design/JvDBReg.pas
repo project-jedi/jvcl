@@ -98,7 +98,12 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cIconField, TJvListFieldProperty);
   RegisterPropertyEditor(TypeInfo(TWordGridFormat), TJvDBGridWordExport, '', TDBGridExportWordFormatProperty);
 
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, 'SectionField', TJvDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, 'KeyField', TJvDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, 'ValueField', TJvDataFieldProperty); 
+
   RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
+
 end;
 
 end.

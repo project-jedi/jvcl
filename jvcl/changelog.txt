@@ -3,6 +3,7 @@ Changelog for JVCL 3.0
 2004-02-26
 - Added JvDBSearchEdit and JvDBSearchComboBox to JvDB package and demo to examples. Donated by Lionel Reynaud // peter3
 - Added JvAppDBStorage, a storage implementation that can save to a database // peter3
+- Added JvWizardRouteMapList, a route map that displays the pages as a list // peter3
 2004-02-20
 - BETA 1 released on sourceforge. CVS tagged with JVCL300BETA1 // peter3
 2004-02-10
