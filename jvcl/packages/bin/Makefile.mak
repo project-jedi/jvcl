@@ -133,7 +133,7 @@ GenerateAllPackages:
 	$(MAKE) $(QUIET) -f makefile.mak pg.exe
 	@cd $(DEVTOOLS_BACK)
 	@echo [Generating: JVCL Packages]
-	$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -x=$(DEVTOOLS)\bin\pgEdit.xml
+	"$(DEVTOOLS)\bin\pg.exe" -m=JVCL -p="$(JVCLPACKAGEDIR)" -x="$(DEVTOOLS)\bin\pgEdit.xml"
 
 ################################################################################
 GeneratePackages:
