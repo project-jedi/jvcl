@@ -47,7 +47,7 @@ type
     DefaultDraw: boolean) of object;
   TJvComboListBox = class(TJvCustomListBox)
   private
-    FMouseOver: boolean;
+    FMouseOver, FPushed: boolean;
     FDropdownMenu: TPopupMenu;
     FDrawStyle: TJvComboListBoxDrawStyle;
     FOnDrawImage: TJvComboListDrawImageEvent;
@@ -62,19 +62,21 @@ type
     procedure SetHotTrackCombo(const Value: boolean);
   protected
     procedure InvalidateItem(Index: integer);
+    procedure DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed:boolean);
     procedure DrawItem(Index: integer; Rect: TRect;
       State: TOwnerDrawState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X: integer; Y: integer); override;
     procedure MouseMove(Shift: TShiftState; X: integer; Y: integer);
       override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X: Integer;
+      Y: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
     function DoDrawImage(Index: integer; APicture: TPicture; R: TRect): boolean; virtual;
     function DoDrawText(Index: integer; const AText: string; R: TRect): boolean; virtual;
     procedure CMMouseLeave(var Msg: TMessage); override;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
-
   public
     constructor Create(AOwner: TComponent); override;
     function AddText(const S: string): integer;
@@ -272,6 +274,30 @@ begin
   if Assigned(FOnDrawText) then FOnDrawText(Self, Index, AText, R, Result);
 end;
 
+procedure TJvComboListBox.DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed:boolean);
+var
+  uState:Cardinal;
+begin
+//  Canvas.Font.Style := [];
+  (*
+  Canvas.Font.Name := 'Marlett';
+  if ButtonWidth > Font.Size + 5 then
+    Canvas.Font.Size := Font.Size + 3
+  else
+    Canvas.Font.Size := ButtonWidth;
+  Canvas.Font.Color := clWindowText;
+  S := 'u';
+  SetBkMode(Canvas.Handle, Transparent);
+  DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_VCENTER or DT_CENTER or DT_SINGLELINE);
+  *)
+  uState := DFCS_SCROLLDOWN;
+  if not Highlight then
+    Inc(uState,DFCS_FLAT);
+  if Pushed then
+    Inc(uState,DFCS_PUSHED);
+  DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, uState);
+end;
+
 procedure TJvComboListBox.DrawItem(Index: integer; Rect: TRect;
   State: TOwnerDrawState);
 var
@@ -279,7 +305,6 @@ var
   B: TBitmap;
   aPoints: array[0..4] of TPoint;
   TmpRect: TRect;
-  S: string;
   Pt: TPoint;
   i: integer;
 begin
@@ -358,30 +383,9 @@ begin
     // draw button body
       if ButtonWidth > 2 then // 2 because Pen.Width is 2
       begin
-        Canvas.Brush.Style := bsSolid;
-        TmpRect := Classes.Rect(Rect.Right - ButtonWidth, Rect.Top + 1, Rect.Right - 2, Rect.Bottom - 2);
-        Canvas.Brush.Color := clBtnFace;
-        Canvas.FillRect(TmpRect);
-        if FMouseOver then // highlight
-        begin
-          Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, 1);
-          InflateRect(TmpRect, 1, 1);
-        end
-        else // normal
-        begin
-          Canvas.Brush.Color := clBtnShadow;
-          Canvas.FrameRect(TmpRect);
-        end;
-        // draw arrow in button, use font to do it
-        Canvas.Font.Name := 'Marlett';
-        if ButtonWidth > Font.Size + 5 then
-          Canvas.Font.Size := Font.Size + 3
-        else
-          Canvas.Font.Size := ButtonWidth;
-        Canvas.Font.Color := clWindowText;
-        S := 'u';
-        SetBkMode(Canvas.Handle, TRANSPARENT);
-        DrawText(Canvas.Handle, PChar(S), Length(S), TmpRect, DT_VCENTER or DT_CENTER or DT_SINGLELINE);
+        TmpRect := Classes.Rect(Rect.Right - ButtonWidth - 1,
+          Rect.Top + 1, Rect.Right - 3, Rect.Bottom - 3);
+        DrawComboArrow(Canvas, TmpRect, FMouseOver, FPushed);
       end;
     end;
     Canvas.Pen.Color := clBtnShadow;
@@ -460,11 +464,9 @@ begin
     if (i = ItemIndex) and (X >= R.Right - ButtonWidth)
       and (X <= R.Right) then
     begin
-      if not FMouseOver then
-      begin
-        FMouseOver := true;
-        InvalidateItem(i);
-      end;
+      FMouseOver := true;
+      FPushed := true;
+      InvalidateItem(i);
       P.X := R.Right;
       OldAlign := DropdownMenu.Alignment;
       try
@@ -520,6 +522,17 @@ begin
     end;
   end;
   inherited;
+end;
+
+procedure TJvComboListBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited;
+  if FPushed then
+  begin
+    FPushed := false;
+    InvalidateItem(ItemIndex);
+  end;
 end;
 
 procedure TJvComboListBox.Notification(AComponent: TComponent;
