@@ -22,6 +22,12 @@ c) Open and select individual files
 
 - click on the convert icon.
 
+If you want to check the process first before making any real changes to your files, you can use the simulation mode (see Options)
+
+We have also provided a "Delphi2CompilerDefs.dat" file, that you can use to convert DelphiXXX define settings to CompilerXXX settings.
+
+IMPORTANT:
+=============
 Please note: for best results, you should leave all the Options as they are, i.e. checked, especially the "Whole words only"
 
 To report bugs, please use the JVCL Issue Tracker (follow the "Bugs/Wishes" link from the JVCL Webpage: 

@@ -4,8 +4,7 @@ uses
   Forms,
   fJvclConverterMain in 'fJvclConverterMain.pas' {frmMain},
   FastTime in 'FastTime.pas',
-  fAboutMe in 'fAboutMe.pas' {frmAboutMe},
-  fOpenDialog in 'fOpenDialog.pas' {frmOpenFiles};
+  fAboutMe in 'fAboutMe.pas' {frmAboutMe};
 
 {$R *.RES}
 

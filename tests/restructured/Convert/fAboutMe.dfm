@@ -2,7 +2,7 @@ object frmAboutMe: TfrmAboutMe
   Left = 492
   Top = 406
   Width = 226
-  Height = 345
+  Height = 384
   Caption = 'About Me'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,7 +17,7 @@ object frmAboutMe: TfrmAboutMe
     Left = 8
     Top = 8
     Width = 201
-    Height = 265
+    Height = 305
     BevelInner = bvRaised
     BevelOuter = bvLowered
     ParentColor = True
@@ -378,8 +378,8 @@ object frmAboutMe: TfrmAboutMe
       IsControl = True
     end
     object Label3: TLabel
-      Left = 13
-      Top = 237
+      Left = 5
+      Top = 285
       Width = 156
       Height = 13
       AutoSize = False
@@ -402,8 +402,8 @@ object frmAboutMe: TfrmAboutMe
       IsControl = True
     end
     object JvHotLink1: TJvHotLink
-      Left = 112
-      Top = 237
+      Left = 104
+      Top = 285
       Width = 59
       Height = 13
       Cursor = crHandPoint
@@ -452,9 +452,9 @@ object frmAboutMe: TfrmAboutMe
     end
     object Memo1: TMemo
       Left = 16
-      Top = 176
+      Top = 192
       Width = 137
-      Height = 57
+      Height = 65
       BorderStyle = bsNone
       Color = clBtnFace
       Lines.Strings = (
@@ -462,13 +462,13 @@ object frmAboutMe: TfrmAboutMe
         '             Dave Jewell '
         '             Martin Waldenburg'
         '             Michael Beck'
-        '             ')
+        '             Peter Th'#246'rnqvist')
       TabOrder = 0
     end
   end
   object OKButton: TButton
     Left = 71
-    Top = 284
+    Top = 324
     Width = 75
     Height = 25
     Caption = 'OK'
