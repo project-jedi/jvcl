@@ -339,6 +339,8 @@ uses
 const
   cButtonLeftOffset = 4;
   cButtonTopOffset = 2;
+  cInitRepeatPause = 400;
+  cRepeatPause     = 100;
 
 function Max(Val1, Val2: Integer): Integer;
 begin
@@ -519,6 +521,63 @@ begin
     ReleaseDC(Handle, DC);
   end;
   *)
+end;
+
+//=== TJvRepeatButton ========================================================
+
+type
+  // auto-repeating button using a timer (stolen from Borland's Spin.pas sample component)
+  TJvRepeatButton = class(TSpeedButton)
+  private
+    FRepeatTimer: TTimer;
+    procedure TimerExpired(Sender: TObject);
+  protected
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+  public
+    destructor Destroy; override;
+  end;
+
+{ TJvRepeatButton }
+
+destructor TJvRepeatButton.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TJvRepeatButton.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited;
+  if FRepeatTimer = nil then
+    FRepeatTimer := TTimer.Create(Self);
+  FRepeatTimer.OnTimer := TimerExpired;
+  FRepeatTimer.Interval := cInitRepeatPause;
+  FRepeatTimer.Enabled  := True;
+end;
+
+procedure TJvRepeatButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited;
+  FreeAndNil(FRepeatTimer);
+end;
+
+procedure TJvRepeatButton.TimerExpired(Sender: TObject);
+begin
+  FRepeatTimer.Interval := cRepeatPause;
+  if (FState = bsDown) and MouseCapture then
+  begin
+    try
+      Click;
+    except
+      FRepeatTimer.Enabled := False;
+      raise;
+    end;
+  end;
 end;
 
 //=== TJvOutlookBarButton ====================================================
@@ -890,7 +949,7 @@ end;
 //=== TJvThemedTopBottomButton =================================================
 
 type
-  TJvThemedTopBottomButton = class(TSpeedButton)
+  TJvThemedTopBottomButton = class(TJvRepeatSpeedButton)
   protected
     FIsUpBtn: Boolean;
     procedure Paint; override;
@@ -962,7 +1021,7 @@ begin
     FTopButton := TJvThemedTopBottomButton.Create(Self);
     TJvThemedTopBottomButton(FTopButton).FIsUpBtn := True;
     {$ELSE}
-    FTopButton := TSpeedButton.Create(Self);
+    FTopButton := TJvRepeatButton.Create(Self);
     {$ENDIF}
     with FTopButton do
     begin
@@ -980,7 +1039,7 @@ begin
     FBtmButton := TJvThemedTopBottomButton.Create(Self);
     TJvThemedTopBottomButton(FBtmButton).FIsUpBtn := False;
     {$ELSE}
-    FBtmButton := TSpeedButton.Create(Self);
+    FBtmButton := TJvRepeatButton.Create(Self);
     {$ENDIF}
     with FBtmButton do
     begin
@@ -2061,6 +2120,7 @@ begin
   end;
 end;
 {$ENDIF}
+
 
 end.
 
