@@ -234,9 +234,7 @@ begin
     // clear background.
     Rect := GetClientRect;
     Brush.Color := TJvXPWinControl(Parent).Color;
-    {$IFDEF VCL}
     FillRect(Rect);
-    {$ENDIF VCL}
     // draw designtime rect.
     if csDesigning in ComponentState then
       DrawFocusRect(Rect);
@@ -279,12 +277,13 @@ var
 
   procedure DrawGradient(const Bitmap: TBitmap);
   begin
-    {$IFDEF VCL}
+    {$IFDEF VisualCLX}
+    Bitmap.Canvas.Start;
+    {$ENDIF VisualCLX}
     BitBlt(Canvas.Handle, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
       FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
-    {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    Canvas.Draw( R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1, Bitmap);
+    Bitmap.Canvas.Stop;
     {$ENDIF VisualCLX}
   end;
 
@@ -313,15 +312,14 @@ begin
           begin
             if ClipW <> 0 then
               DrawGradient(FHlGradient);
-            {$IFDEF VCL}
+            {$IFDEF VisualCLX}
+            FBgGradient.Canvas.Start
+            {$ENDIF VisualCLX}
             BitBlt(Handle, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
               ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
               FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
-            {$ENDIF VCL}
             {$IFDEF VisualCLX}
-            Draw(R.Left + 3 + ClipW,
-                 (ClientHeight - FCheckSize) div 2 + 1
-                 + ClipW, FBgGradient);
+            FBgGradient.Canvas.Stop;
             {$ENDIF VisualCLX}
           end
           else
