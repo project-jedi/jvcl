@@ -380,16 +380,11 @@ function XmlCreate: Variant; Overload;
 function VarXml: TVarType;
 
 {$ENDIF COMPILER6_UP}
+
 function SimpleXmlEncode(const S: string): string;
-// NB! This procedure has changed from passing in a var string to returning
-// a string. Previously, you used code like this to decode an XML string:
-// SimpleXMLDecode(SomeString);
-// DoSomething(SomeString);
-// Now you must call it like this:
-// SomeString := SimpleXMLDecode(SomeString);
-// when you've read this warning, you can remove the ProcedureChangedWarning parameter
-// since its only purpose was to get you to read this
 procedure SimpleXMLDecode(var S: string; TrimBlanks:boolean);
+function XMLDecode(const S:string):string;
+function XMLEncode(const S:String):string;
 
 
 implementation
@@ -509,6 +504,12 @@ end;
 
 {$ENDIF !COMPILER6_UP}
 
+function XMLEncode(const S:String):string;
+begin
+  Result := SimpleXMLEncode(S);
+end;
+
+
 function SimpleXmlEncode(const S: string): string;
 const
   NoConversion = [#0..#127] - ['"','&',#39,'<','>'];
@@ -551,6 +552,12 @@ begin
     SetLength(Result, j - 1)
   else
     SetLength(Result, 0);
+end;
+
+function XMLDecode(const S:string):string;
+begin
+  Result := S;
+  SimpleXMLDecode(Result, true);
 end;
 
 procedure SimpleXMLDecode(var S: string; TrimBlanks:boolean);

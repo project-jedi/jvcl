@@ -751,7 +751,7 @@ begin
   else
     Flags := Flags or DT_SINGLELINE or DT_NOCLIP;
 
-  if (MouseStates = [bsMouseDown]) and FShowPressed then
+  if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
     OffsetRect(TmpRect, FOffset, FOffset);
 
   SetBkMode(DC, Windows.TRANSPARENT);
@@ -782,13 +782,13 @@ begin
         if not Enabled then
           Index := 1
         else
-        if (MouseStates = [bsMouseDown]) or Down then
+        if (bsMouseDown in MouseStates) or Down then
           Index := 2;
       4:
         if not Enabled then
           Index := 1
         else
-        if (MouseStates = [bsMouseDown]) or Down then
+        if (bsMouseDown in MouseStates) or Down then
           Index := 2;
     else
       Index := 0;
@@ -797,7 +797,7 @@ begin
     if FGlyph.Empty then
       Exit;
 
-    if ((MouseStates = [bsMouseDown]) and FShowPressed) or Down then
+    if ((bsMouseDown in MouseStates) and FShowPressed) or Down then
       OffsetRect(ARect, FOffset, FOffset);
     { do we need the grayed bitmap ? }
     if (Flat or (FrameStyle = fsExplorer)) and FAutoGray and not (bsMouseInside in MouseStates) and not Down then
@@ -817,7 +817,7 @@ begin
     end;
 
     ImageList_DrawEx(Handle, Index, Canvas.Handle, ARect.Left, ARect.Top, 0, 0,
-      clNone, clNone, ILD_Transparent);
+      clNone, clNone, ILD_TRANSPARENT);
   end;
 end;
 
