@@ -31,7 +31,7 @@ interface
 
 uses SysUtils, Windows,
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 RTLConsts, 
 {$ENDIF}
 Classes, Graphics;

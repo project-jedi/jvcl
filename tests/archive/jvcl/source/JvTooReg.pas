@@ -41,7 +41,7 @@ implementation
 {.$ENDIF}
 
 uses Classes, SysUtils, Controls, Graphics, TypInfo,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
 {$ELSE}
   LibIntf, DsgnIntf,
@@ -50,7 +50,7 @@ uses Classes, SysUtils, Controls, Graphics, TypInfo,
   JvClipView, JvSpeedbar, JvSbEdit, JvDataConv, JvCalc, JvPageMngr, JvPgMngrEd, JvMrgMngr,
   JvStrHlder, JvShell, JvAppEvent, JvVCLUtils, JvTimerLst, JvTimLstEd, JvIcoList, JvIcoLEdit,
 {$IFDEF USE_Jv_GIF}JvGIF, JvGIFCtrl, {$ENDIF}JvLConst, JvxCtrls,
-{$IFDEF Delphi3_Up} {JvResExp, }{$ENDIF}JvMenus, JvMRUList,
+{$IFDEF COMPILER3_UP} {JvResExp, }{$ENDIF}JvMenus, JvMRUList,
 {$IFDEF WIN32}JvNotify, JvGrdCpt, JvGradEdit, {$ENDIF}JvHintProp;
 
 { TJvStringsEditor }
@@ -58,7 +58,7 @@ uses Classes, SysUtils, Controls, Graphics, TypInfo,
 type
   TJvStringsEditor = class(TDefaultEditor)
   public
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
     procedure EditProperty(const PropertyEditor: IProperty;
       var Continue: Boolean); override;
 {$ELSE}
@@ -68,7 +68,7 @@ type
 
   end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 
 procedure TJvStringsEditor.EditProperty(const PropertyEditor: IProperty;
   var Continue: Boolean);
@@ -142,14 +142,14 @@ begin
       TJvStrHolder, TJvxTrayIcon, TJvMainMenu, TJvPopupMenu,
 {$IFDEF WIN32}TJvFolderMonitor, {$ENDIF}TJvxClipboardViewer,
 {$IFDEF WIN32}TJvxGradientCaption, {$ENDIF}TJvDualListDialog
-{$IFNDEF Delphi4_Up}, TJvConverter{$ENDIF}]);
+{$IFNDEF COMPILER4_UP}, TJvConverter{$ENDIF}]);
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   RegisterNonActiveX([TJvPicClip, TJvFormPlacement, TJvFormStorage, TJvWindowHook,
     TJvDualListDialog, TJvSecretPanel, TJvSpeedBar, TJvxClipboardViewer,
       TJvPageManager, TJvMergeManager, TJvMRUManager, TJvAppEvents, TJvTimerList,
       TJvxTrayIcon, TJvFolderMonitor, TJvxGradientCaption], axrComponentOnly);
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
   { TJvPicClip }
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
@@ -201,7 +201,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvxTrayIcon, 'Hint',
     TStringProperty);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 
   { JvMenus }
   RegisterPropertyEditor(TypeInfo(Boolean), TJvMainMenu, 'OwnerDraw', nil);
@@ -220,12 +220,12 @@ begin
 {$IFDEF WIN32}
   { TJvxGradientCaption }
   RegisterComponentEditor(TJvxGradientCaption, TGradientCaptionEditor);
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
   RegisterPropertyEditor(TypeInfo(TJvCaptionList), TJvxGradientCaption, '', TGradientCaptionsProperty);
 {$ENDIF}
 {$ENDIF}
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   { Project Resource Expert }
   //mb RegisterResourceExpert;
 {$ENDIF}

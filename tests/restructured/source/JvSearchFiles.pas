@@ -25,7 +25,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
 {$ENDIF}
@@ -116,7 +116,7 @@ function MakeValidMask(const Mask: string): string;
 implementation
 uses
   JvTypes, JclStrings, JvFunctions
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
   ,FileCtrl
 {$ENDIF}
   ;

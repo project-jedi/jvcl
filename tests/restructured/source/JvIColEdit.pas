@@ -31,14 +31,14 @@ interface
 
 uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   Messages, Classes, Graphics, Forms, Controls, Dialogs, Buttons, JvIcoList,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 RTLConsts,  DesignIntf, DesignEditors,  VCLEditors,
 {$ELSE}
   LibIntf, DsgnIntf,
 {$ENDIF}
 
   StdCtrls, ExtCtrls, JvPlacemnt,
-  {$IFDEF Delphi3_Up} ExtDlgs, {$ELSE}
+  {$IFDEF COMPILER3_UP} ExtDlgs, {$ELSE}
   ImagPrvw, {$ENDIF} Menus, JvSpeedbar;
 
 type
@@ -87,7 +87,7 @@ type
   private
     Icons: TJvIconList;
     FTopIndex, FSelected: Integer;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     FileDialog: TOpenPictureDialog;
 {$ELSE}
     FileDialog: TOpenDialog;
@@ -280,7 +280,7 @@ begin
       with TImage(Image).Picture do begin
         if FTopIndex + I < Icons.Count then Assign(Icons[FTopIndex + I])
         else Assign(nil);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
         TImage(Image).Transparent := True;
 {$ENDIF}
       end;
@@ -297,13 +297,13 @@ begin
 end;
 
 procedure TIconListDialog.FormCreate(Sender: TObject);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 var
   I: Integer;
   Image: TComponent;
 {$ENDIF}
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   FileDialog := TOpenPictureDialog.Create(Self);
   for I := 0 to 4 do begin
     Image := FindComponent(Format(sImage, [I]));
@@ -343,11 +343,11 @@ procedure TIconListDialog.LoadClick(Sender: TObject);
 var
   Ico: TIcon;
   I: Integer;
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
   FileName: string;
 {$ENDIF}
 begin
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
   FileName := '';
   if SelectImage(FileName, GraphicExtension(TIcon), GraphicFilter(TIcon)) then
   begin

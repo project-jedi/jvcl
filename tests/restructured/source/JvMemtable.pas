@@ -44,7 +44,7 @@ type
     FDisableEvents: Boolean;
     procedure EncodeFieldDesc(var FieldDesc: FLDDesc;
       const Name: string; DataType: TFieldType; Size
-      {$IFDEF Delphi4_Up}, Precision {$ENDIF}: Word);
+      {$IFDEF COMPILER4_UP}, Precision {$ENDIF}: Word);
     procedure SetTableName(const Value: TFileName);
     function SupportedFieldType(AType: TFieldType): Boolean;
     procedure DeleteCurrentRecord;
@@ -54,15 +54,15 @@ type
     procedure DoAfterClose; override;
     procedure DoBeforeOpen; override;
     procedure DoAfterOpen; override;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure DoBeforeScroll; override;
     procedure DoAfterScroll; override;
 {$ENDIF}
 {$IFDEF WIN32}
-    function GetRecordCount: {$IFNDEF Delphi3_Up} Longint {$ELSE}
+    function GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE}
       Integer; override {$ENDIF};
 {$ENDIF}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     function GetRecNo: Integer; override;
     procedure SetRecNo(Value: Integer); override;
     procedure InternalDelete; override;
@@ -80,7 +80,7 @@ type
     procedure DeleteTable;
     procedure EmptyTable;
     procedure GotoRecord(RecordNo: Longint);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     function GetFieldData(Field: TField; Buffer: Pointer): Boolean; override;
     function IsSequenced: Boolean; override;
     function Locate(const KeyFields: string; const KeyValues: Variant;
@@ -90,12 +90,12 @@ type
 {$ENDIF}
     procedure SetFieldValues(const FieldNames: array of string;
       const Values: array of const);
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 {$IFNDEF VER80}
     property RecordCount: Longint read GetRecordCount;
 {$ENDIF}
 {$ENDIF}
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
     property RecNo: Longint read GetRecordNumber write SetRecNo;
 {$ENDIF}
   published
@@ -106,7 +106,7 @@ type
 
 implementation
 
-uses DBConsts, JvDBUtils, JvBdeUtils, {$IFDEF Delphi3_Up} BDEConst, {$ENDIF} 
+uses DBConsts, JvDBUtils, JvBdeUtils, {$IFDEF COMPILER3_UP} BDEConst, {$ENDIF} 
   Forms, JvMaxMin;
 
 { Memory tables are created in RAM and deleted when you close them. They
@@ -176,7 +176,7 @@ procedure TJvMemoryTable.CopyStructure(ASource: TDataSet);
 
   procedure CreateField(FieldDef: TFieldDef; AOwner: TComponent);
   begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     FieldDef.CreateField(AOwner, nil, FieldDef.Name, True);
 {$ELSE}
     FieldDef.CreateField(AOwner);
@@ -255,7 +255,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 function TJvMemoryTable.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
 var
@@ -336,7 +336,7 @@ begin
   if not FDisableEvents then inherited DoBeforeOpen;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 procedure TJvMemoryTable.DoBeforeScroll;
 begin
@@ -352,15 +352,15 @@ end;
 
 function TJvMemoryTable.SupportedFieldType(AType: TFieldType): Boolean;
 begin
-  Result := not (AType in [ftUnknown {$IFDEF Delphi4_Up}, ftWideString {$ENDIF}
-    {$IFDEF Delphi5_Up}, ftOraBlob, ftOraClob, ftVariant, ftInterface, 
+  Result := not (AType in [ftUnknown {$IFDEF COMPILER4_UP}, ftWideString {$ENDIF}
+    {$IFDEF COMPILER5_UP}, ftOraBlob, ftOraClob, ftVariant, ftInterface, 
     ftIDispatch, ftGuid {$ENDIF}] + ftNonTextTypes);
 end;
 
 function TJvMemoryTable.CreateHandle: HDBICur;
 var
   I: Integer;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   FldDescList: TFieldDescList;
   FieldDescs: PFLDDesc;
 {$ELSE}
@@ -377,8 +377,8 @@ begin
   if FieldDefs.Count = 0 then
     for I := 0 to FieldCount - 1 do begin
       if not SupportedFieldType(Fields[I].DataType) then
-{$IFDEF Delphi3_Up}
- {$IFDEF Delphi4_Up}
+{$IFDEF COMPILER3_UP}
+ {$IFDEF COMPILER4_UP}
         DatabaseErrorFmt(SUnknownFieldType, [Fields[I].FieldName]);
  {$ELSE}
         DatabaseErrorFmt(SFieldUnsupportedType, [Fields[I].FieldName]);
@@ -390,7 +390,7 @@ begin
         if not (Calculated {$IFDEF WIN32} or Lookup {$ENDIF}) then
           FieldDefs.Add(FieldName, DataType, Size, Required);
     end;
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   FieldDescs := nil;
 {$ENDIF}
   iFldCount := FieldDefs.Count;
@@ -400,7 +400,7 @@ begin
       AnsiToNative(Locale, '$RxInMem$', szTblName, SizeOf(szTblName) - 1)
     else
       AnsiToNative(Locale, TableName, szTblName, SizeOf(szTblName) - 1);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     SetLength(FldDescList, iFldCount);
     FieldDescs := BDE.PFLDDesc(FldDescList);
 {$ELSE}
@@ -408,7 +408,7 @@ begin
 {$ENDIF}
     for I := 0 to FieldDefs.Count - 1 do begin
       with FieldDefs[I] do
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         EncodeFieldDesc(FldDescList[I], Name, DataType, Size, Precision);
 {$ELSE}
         EncodeFieldDesc(PFieldDescList(FieldDescs)^[I], Name, DataType, Size);
@@ -419,7 +419,7 @@ begin
     Check(DbiCreateInMemTable(DBHandle, szTblName, iFldCount, FieldDescs,
       Result));
   finally
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
     if FieldDescs <> nil then FreeMem(FieldDescs, iFldCount * SizeOf(FLDDesc));
 {$ENDIF}
     SetDBFlag(dbfTable, False);
@@ -456,7 +456,7 @@ end;
 
 procedure TJvMemoryTable.EncodeFieldDesc(var FieldDesc: FLDDesc;
   const Name: string; DataType: TFieldType; Size
-  {$IFDEF Delphi4_Up}, Precision {$ENDIF}: Word);
+  {$IFDEF COMPILER4_UP}, Precision {$ENDIF}: Word);
 begin
   with FieldDesc do begin
     FillChar(szName, SizeOf(szName), 0);
@@ -467,7 +467,7 @@ begin
     if iSubType = fldstAUTOINC then iSubType := 0;
 {$ENDIF WIN32}
     case DataType of
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       ftString, ftFixedChar, ftBytes, ftVarBytes, ftBlob..ftTypedBinary:
 {$ELSE}
       ftString, ftBytes, ftVarBytes, ftBlob, ftMemo, ftGraphic
@@ -477,7 +477,7 @@ begin
         iUnits1 := Size;
       ftBCD:
         begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
           { Default precision is 32, Size = Scale }
           if (Precision > 0) and (Precision <= 32) then iUnits1 := Precision
           else iUnits1 := 32;
@@ -491,14 +491,14 @@ begin
 end;
 
 {$IFDEF WIN32}
-function TJvMemoryTable.GetRecordCount: {$IFNDEF Delphi3_Up} Longint {$ELSE} Integer {$ENDIF};
+function TJvMemoryTable.GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer {$ENDIF};
 begin
   if State = dsInactive then _DBError(SDataSetClosed);
   Check(DbiGetRecordCount(Handle, Result));
 end;
 {$ENDIF WIN32}
 
-procedure TJvMemoryTable.SetRecNo(Value: {$IFDEF Delphi3_Up} Integer {$ELSE} Longint {$ENDIF});
+procedure TJvMemoryTable.SetRecNo(Value: {$IFDEF COMPILER3_UP} Integer {$ELSE} Longint {$ENDIF});
 var
   Rslt: DBIResult;
 begin
@@ -513,7 +513,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 function TJvMemoryTable.GetRecNo: Integer;
 {$ELSE}
 function TJvMemoryTable.GetRecordNumber: Longint;
@@ -535,12 +535,12 @@ begin
   RecNo := RecordNo;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 function TJvMemoryTable.IsSequenced: Boolean;
 begin
   Result := not Filtered;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 procedure TJvMemoryTable.SetFieldValues(const FieldNames: array of string;
   const Values: array of const);

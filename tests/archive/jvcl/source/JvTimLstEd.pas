@@ -33,7 +33,7 @@ interface
 uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF} SysUtils,
   Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   Grids,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 RTLConsts,  DesignIntf, DesignEditors, DesignWindows, VCLEditors,
 {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
@@ -90,24 +90,24 @@ type
     function UniqueName(Component: TComponent): string; override;
     procedure Activated; override;
   public
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
     function EditAction(Action: TEditAction): Boolean; override;
     procedure ItemsModified(const Designer: IDesigner); override;
     procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override;
 {$ELSE}
     procedure EditAction(Action: TEditAction); override;
     procedure FormModified; override;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure FormClosed(Form: TCustomForm); override;
 {$ELSE}
     procedure FormClosed(Form: TForm); override;
 {$ENDIF}
 {$ENDIF}
     function GetEditState: TEditState; override;
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
 {$ELSE}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure ComponentDeleted(Component: IPersistent); override;
 {$ELSE}
     procedure ComponentDeleted(Component: TComponent); override;
@@ -144,12 +144,12 @@ uses Consts, {$IFDEF WIN32} JvConst, {$ENDIF} JvLConst, JvDsgn, JvTypes;
  {$D-}
 {$ENDIF}
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 type
   TDesigner = DesignIntf.IDesigner;
   TFormDesigner = DesignIntf.IDesigner;
 {$ELSE}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 type
   TDesigner = IDesigner;
   TFormDesigner = IFormDesigner;
@@ -281,10 +281,10 @@ begin
   if ClipboardComponents then Include(Result, esCanPaste);
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 procedure TJvTimerItemsEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
 {$ELSE}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvTimerItemsEditor.FormClosed(Form: TCustomForm);
 {$ELSE}
 procedure TJvTimerItemsEditor.FormClosed(Form: TForm);
@@ -294,7 +294,7 @@ begin
   if {$IFDEF Delphi6_Up}ADesigner.Root{$ELSE}Form{$ENDIF} = OwnerForm then Free;
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 procedure TJvTimerItemsEditor.ItemsModified(const Designer: IDesigner);
 {$ELSE}
 procedure TJvTimerItemsEditor.FormModified;
@@ -347,7 +347,7 @@ begin
     and ({$IFDEF Delphi6_Up}Designer.Root{$ELSE}Designer.Form{$ENDIF} <> nil);
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 type
   TDesignerSelectionList = IDesignerSelections;
 {$ENDIF}
@@ -375,12 +375,12 @@ begin
   end;
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 procedure TJvTimerItemsEditor.ItemDeleted(const ADesigner: IDesigner; Item: TPersistent);
 begin
   if Item = TimersCollection then begin
 {$ELSE}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure TJvTimerItemsEditor.ComponentDeleted(Component: IPersistent);
 begin
   if ExtractPersistent(Component) = TimersCollection then begin
@@ -467,7 +467,7 @@ begin
   with DrawGrid do ColWidths[0] := ClientWidth;
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 function TJvTimerItemsEditor.EditAction(Action: TEditAction): Boolean;
 begin
   Result := True;
@@ -535,7 +535,7 @@ var
   Item: TJvTimerEvent;
 begin
   CompList := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
   try
 {$ENDIF}
     Item := ItemByRow(DrawGrid.Row - 1);
@@ -543,7 +543,7 @@ begin
       CompList.Add(Item);
       CopyComponents(OwnerForm, CompList);
     end;
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
   finally
     CompList.Free;
   end;
@@ -557,12 +557,12 @@ var
 begin
   if CheckCollection then begin
     CompList := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
     try
 {$ENDIF}
       PasteComponents(OwnerForm, TimersCollection, CompList);
       UpdateData;
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
     finally
       CompList.Free;
     end;

@@ -43,7 +43,7 @@ implementation
 {.$ENDIF}
 
 uses{$IFDEF WIN32}Windows, {$ELSE}WinTypes, {$ENDIF}Classes, SysUtils,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
 {$ELSE}
   LibIntf, DsgnIntf,
@@ -61,7 +61,7 @@ uses{$IFDEF WIN32}Windows, {$ELSE}WinTypes, {$ENDIF}Classes, SysUtils,
 {$IFDEF USE_Jv_GIF}JvGIF, JvGIFCtrl, {$ENDIF}JvHints, JvExcptDlg, JvCConst,
   JvFileUtil, JvDsgn;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 
 { TJvDateProperty }
 
@@ -140,7 +140,7 @@ begin
   inherited SetValue(Value);
 end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 function ValueName(E: Extended): string;
 begin
@@ -247,7 +247,7 @@ end;
 type
   TJvPaintBoxEditor = class(TDefaultEditor)
   public
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
     procedure EditProperty(const PropertyEditor: IProperty;
       var Continue: Boolean); override;
 {$ELSE}
@@ -256,7 +256,7 @@ type
 {$ENDIF}
   end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 
 procedure TJvPaintBoxEditor.EditProperty(const PropertyEditor: IProperty;
   var Continue: Boolean);
@@ -281,7 +281,7 @@ type
   TJvAnimatedEditor = class(TComponentEditor)
   private
     FContinue: Boolean;
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
     procedure CheckEdit(const PropertyEditor: IProperty);
 {$ELSE}
     procedure CheckEdit(PropertyEditor: TPropertyEditor);
@@ -294,7 +294,7 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 
 procedure TJvAnimatedEditor.CheckEdit(const PropertyEditor: IProperty);
 begin
@@ -309,14 +309,14 @@ begin
       PropertyEditor.Edit;
       FContinue := False;
     end;
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
   finally
     PropertyEditor.Free;
   end;
 {$ENDIF}
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 type
   TDesignerSelectionList = IDesignerSelections;
 {$ENDIF}
@@ -326,13 +326,13 @@ var
   Components: TDesignerSelectionList;
 begin
   Components := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
   try
 {$ENDIF}
     FContinue := True;
     Components.Add(Component);
     GetComponentProperties(Components, tkAny, Designer, CheckEdit);
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
   finally
     Components.Free;
   end;
@@ -420,7 +420,7 @@ var
 begin
   if ImageList.Count > 0 then
   begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     SaveDlg := TSavePictureDialog.Create(Application);
 {$ELSE}
     SaveDlg := TSaveDialog.Create(Application);
@@ -445,7 +445,7 @@ begin
             Canvas.FillRect(Bounds(0, 0, Width, Height));
             for I := 0 to ImageList.Count - 1 do
               ImageList.Draw(Canvas, ImageList.Width * I, 0, I);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
             HandleType := bmDIB;
             if PixelFormat in [pf15bit, pf16bit] then
             try
@@ -479,7 +479,7 @@ end;
 function TJvImageListEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     0: Result := SImageListEditor;
 {$ELSE}
     0: Result := LoadStr(SImageEditor);
@@ -510,14 +510,14 @@ begin
   Result := [paMultiSelect, paValueList];
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 resourcestring
   srSamples = 'Samples';
 {$ENDIF}
 
 procedure Register;
 const
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   BaseClass: TClass = TPersistent;
 {$ELSE}
   BaseClass: TClass = TComponent;
@@ -540,14 +540,14 @@ begin
   RegisterComponents(ResStr(srSamples), [TScroller]);
 {$ENDIF}
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   RegisterNonActiveX([TJvCustomComboEdit, TJvCustomDateEdit, TJvCustomNumEdit,
     TJvFileDirEdit, TJvxCustomListBox, TJvxRichEdit], axrComponentOnly);
   RegisterNonActiveX([TScroller], axrComponentOnly);
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, 'Text', nil);
 {$ELSE}
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, 'Text', TStringProperty);
@@ -565,7 +565,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TStrings), TJvxCheckListBox, 'Items', TJvCheckItemsProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   RegisterPropertyEditor(TypeInfo(Boolean), TJvxFontComboBox, 'TrueTypeOnly', nil);
   RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
 {$ELSE}

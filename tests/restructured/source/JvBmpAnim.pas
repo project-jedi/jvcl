@@ -73,7 +73,7 @@ type
   protected
     { Protected declarations }
     procedure Paint; override;
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value:boolean);override;
     property  AutoSize:boolean read FAutoSize write SetAutoSize default False;
 {$ENDIF}
@@ -263,7 +263,7 @@ begin
   end;
 end;
 
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 procedure TJvCustomBmpAnimator.SetAutoSize(Value:boolean);
 begin
   if FAutoSize <> Value then

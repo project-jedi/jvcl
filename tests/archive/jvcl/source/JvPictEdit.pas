@@ -162,7 +162,7 @@ type
 
   TJvGraphicsEditor = class(TDefaultEditor)
   public
-    {$IFDEF DELPHI6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
     {$ELSE}
     procedure EditProperty(Prop: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
@@ -418,7 +418,7 @@ end;
 
 { TJvGraphicsEditor }
 
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 procedure TJvGraphicsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean); 
 {$ELSE}
 procedure TJvGraphicsEditor.EditProperty(Prop: TPropertyEditor; var Continue, FreeEditor: Boolean); 

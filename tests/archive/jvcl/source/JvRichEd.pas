@@ -33,14 +33,14 @@ unit JvRichEd;
 
 interface
 
-uses Windows, {$IFDEF Delphi3_Up} ActiveX, ComObj {$ELSE} Ole2, OleAuto {$ENDIF},
+uses Windows, {$IFDEF COMPILER3_UP} ActiveX, ComObj {$ELSE} Ole2, OleAuto {$ENDIF},
   CommCtrl, Messages, SysUtils, Classes, Controls, Forms, Graphics, StdCtrls,
   Dialogs, RichEdit, Menus, ComCtrls;
 
 type
   TRichEditVersion = 1..3;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 
   TCharFormat2A = record
     cbSize: UINT;
@@ -96,9 +96,9 @@ type
                                 { Nibble 2: border style, 3: color index }
   end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
   TCharFormat2 = TCharFormat2A;
 {$ENDIF}
 
@@ -279,7 +279,7 @@ type
   TRichEditProtectChangeEx = procedure(Sender: TObject; const Message: TMessage;
     StartPos, EndPos: Integer; var AllowChange: Boolean) of object;
   TRichEditFindErrorEvent = procedure(Sender: TObject; const FindText: string) of object;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   TRichEditFindCloseEvent = procedure(Sender: TObject; Dialog: TFindDialog) of object;
 {$ENDIF}
 
@@ -323,7 +323,7 @@ type
     FPopupVerbMenu: TPopupMenu;
     FTitle: string;
     FAutoVerbMenu: Boolean;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     FAllowInPlace: Boolean;
 {$ENDIF}
     FDefaulTJvConverter: TConversionClass;
@@ -334,7 +334,7 @@ type
     FOnSaveClipboard: TRichEditSaveClipboard;
     FOnURLClick: TRichEditURLClickEvent;
     FOnTextNotFound: TRichEditFindErrorEvent;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     FOnCloseFindDialog: TRichEditFindCloseEvent;
 {$ENDIF}
     function GetAutoURLDetect: Boolean;
@@ -377,13 +377,13 @@ type
     function GetCanFindNext: Boolean;
     procedure FindDialogFind(Sender: TObject);
     procedure ReplaceDialogReplace(Sender: TObject);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure FindDialogClose(Sender: TObject);
     procedure SetUIActive(Active: Boolean);
     procedure CMDocWindowActivate(var Message: TMessage); message CM_DOCWINDOWACTIVATE;
     procedure CMUIDeactivate(var Message: TMessage); message CM_UIDEACTIVATE;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure CMBiDiModeChanged(var Message: TMessage); message CM_BIDIMODECHANGED;
 {$ENDIF}
     procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
@@ -395,7 +395,7 @@ type
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     procedure WMSetCursor(var Message: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSetFont(var Message: TWMSetFont); message WM_SETFONT;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     procedure WMRButtonUp(var Message: TMessage); message WM_RBUTTONUP;
 {$ENDIF}
   protected
@@ -412,7 +412,7 @@ type
     function SaveClipboard(NumObj, NumChars: Integer): Boolean; dynamic;
     procedure URLClick(const URLText: string; Button: TMouseButton); dynamic;
     procedure SetPlainText(Value: Boolean); virtual;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure CloseFindDialog(Dialog: TFindDialog); virtual;
     procedure DoSetMaxLength(Value: Integer); override;
     function GetSelLength: Integer; override;
@@ -450,14 +450,14 @@ type
       write FOnResizeRequest;
     property OnURLClick: TRichEditURLClickEvent read FOnURLClick write FOnURLClick;
     property OnTextNotFound: TRichEditFindErrorEvent read FOnTextNotFound write FOnTextNotFound;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property OnCloseFindDialog: TRichEditFindCloseEvent read FOnCloseFindDialog
       write FOnCloseFindDialog;
 {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Clear; {$IFDEF Delphi3_Up} override; {$ENDIF}
+    procedure Clear; {$IFDEF COMPILER3_UP} override; {$ENDIF}
     procedure SetSelection(StartPos, EndPos: Longint; ScrollCaret: Boolean);
     function GetSelection: TCharRange;
     function GetTextRange(StartPos, EndPos: Longint): string;
@@ -468,7 +468,7 @@ type
     function FindText(const SearchStr: string;
       StartPos, Length: Integer; Options: TRichSearchTypes): Integer;
     function GetSelTextBuf(Buffer: PChar; BufSize: Integer): Integer;
-      {$IFDEF Delphi3_Up} override; {$ENDIF}
+      {$IFDEF COMPILER3_UP} override; {$ENDIF}
     function GetCaretPos: TPoint; {$IFDEF COMPILER35_UP} override; {$ENDIF}
     function GetCharPos(CharIndex: Integer): TPoint;
     function InsertObjectDialog: Boolean;
@@ -510,10 +510,10 @@ type
     property AutoURLDetect;
     property AutoVerbMenu;
     property AllowObjects;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property AllowInPlace;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property BorderWidth;
@@ -533,7 +533,7 @@ type
     property ImeMode;
     property ImeName;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Constraints;
     property ParentBiDiMode;
 {$ENDIF}
@@ -564,10 +564,10 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -580,7 +580,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
@@ -592,7 +592,7 @@ type
     property OnSelectionChange;
     property OnStartDrag;
     property OnTextNotFound;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property OnCloseFindDialog;
 {$ENDIF}
     property OnURLClick;
@@ -603,7 +603,7 @@ var
 
 implementation
 
-uses Printers, ComStrs, OleConst, OleDlg {$IFDEF Delphi3_Up}, OleCtnrs {$ENDIF},
+uses Printers, ComStrs, OleConst, OleDlg {$IFDEF COMPILER3_UP}, OleCtnrs {$ENDIF},
   JvMaxMin;
 
 const
@@ -624,14 +624,14 @@ var
 const
   RichEdit10ModuleName = 'RICHED32.DLL';
   RichEdit20ModuleName = 'RICHED20.DLL';
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
   RICHEDIT_CLASSA      = 'RichEdit20A';     { Richedit 2.0 Window Class }
   RICHEDIT_CLASSW      = 'RichEdit20W';     { Richedit 2.0 Unicode }
   RICHEDIT_CLASS10A    = 'RICHEDIT';        { Richedit 1.0 }
   RICHEDIT_CLASS       = RICHEDIT_CLASSA;
 {$ENDIF}
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 
 const
   EM_SETUNDOLIMIT                     = WM_USER + 82; 
@@ -861,7 +861,7 @@ type
 const
   OLEOP_DOVERB = 1;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 const
   FT_DOWN = 1;
@@ -881,7 +881,7 @@ type
   end;
   TTextRange = TTextRangeA;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 function ResStr(const Ident: string): string;
 begin
   Result := Ident;
@@ -1376,7 +1376,7 @@ begin
   if Source is TFont then AssignFont(TFont(Source))
   else if Source is TTextAttributes then begin
     Name := TTextAttributes(Source).Name;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Charset := TTextAttributes(Source).Charset;
 {$ENDIF}
     Style := TTextAttributes(Source).Style;
@@ -1405,7 +1405,7 @@ begin
   else if Dest is TTextAttributes then begin
     TTextAttributes(Dest).Color := Color;
     TTextAttributes(Dest).Name := Name;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     TTextAttributes(Dest).Charset := Charset;
 {$ENDIF}
     TTextAttributes(Dest).Style := Style;
@@ -1440,11 +1440,11 @@ end;
 
 procedure TJvParaAttributes.SetAttributes(var Paragraph: TParaFormat2);
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   RichEdit.HandleNeeded; { we REALLY need the handle for BiDi }
 {$ENDIF}
   if RichEdit.HandleAllocated then begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     if RichEdit.UseRightToLeftAlignment then
       if Paragraph.wAlignment = PFA_LEFT then
         Paragraph.wAlignment := PFA_RIGHT
@@ -1851,7 +1851,7 @@ end;
 procedure ReleaseObject(var Obj);
 begin
   if IUnknown(Obj) <> nil then begin
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
     IUnknown(Obj).Release;
 {$ENDIF}
     IUnknown(Obj) := nil;
@@ -1903,7 +1903,7 @@ begin
     AdviseFlags := ADVF_PRIMEFIRST;
   end;
   if (DrawAspect <> OldAspect) or (DrawAspect = DVASPECT_ICON) then begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Result := OleObject.QueryInterface(IOleCache, OleCache);
 {$ELSE}
     Result := OleObject.QueryInterface(IID_IOleCache, OleCache);
@@ -1968,7 +1968,7 @@ var
 begin
   Result := 0;
   if DrawAspect = DVASPECT_ICON then begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     OleObject.QueryInterface(IDataObject, DataObject);
 {$ELSE}
     OleObject.QueryInterface(IID_IDataObject, DataObject);
@@ -2007,7 +2007,7 @@ begin
       ReleaseObject(EnumMoniker);
     end
     else begin
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
       Moniker.AddRef;
 {$ENDIF}
       Result := Moniker;
@@ -2083,7 +2083,7 @@ begin
   Result := WStrToString(P);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 function GetVCLFrameForm(Form: TCustomForm): IVCLFrameForm;
 begin
   if Form.OleFormObject = nil then TOleForm.Create(Form);
@@ -2105,7 +2105,7 @@ var
   CFRtfNoObjs: Integer;
 
 const
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
   CF_RTFNOOBJS = 'Rich Text Format Without Objects';
 {$ENDIF}
   CF_EMBEDDEDOBJECT = 'Embedded Object';
@@ -2200,7 +2200,7 @@ type
  *    The methods herein may just want to be regular Windows messages.
 }
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   IRichEditOle = interface(IUnknown)
     ['{00020d00-0000-0000-c000-000000000046}']
     function GetClientSite(out clientSite: IOleClientSite): HResult; stdcall;
@@ -2259,7 +2259,7 @@ type
  *    application using RichEdit.
 }
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   IRichEditOleCallback = interface(IUnknown)
     ['{00020d03-0000-0000-c000-000000000046}']
     function GetNewStorage(out stg: IStorage): HResult; stdcall;
@@ -2309,14 +2309,14 @@ type
 { TRichEditOleCallback }
 
 type
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   TRichEditOleCallback = class(TObject, IUnknown, IRichEditOleCallback)
   private
     FDocForm: IVCLFrameForm;
     FFrameForm: IVCLFrameForm;
     FAccelTable: HAccel;
     FAccelCount: Integer;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     FAutoScroll: Boolean;
 {$ENDIF}
     procedure CreateAccelTable;
@@ -2331,7 +2331,7 @@ type
   public
     constructor Create(RichEdit: TJvCustomRichEdit);
     destructor Destroy; override;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     function QueryInterface(const iid: TGUID; out Obj): HResult; stdcall;
     function _AddRef: Longint; stdcall;
     function _Release: Longint; stdcall;
@@ -2357,20 +2357,20 @@ type
       const chrg: TCharRange; var menu: HMENU): HResult; override;
 {$ENDIF}
     function ShowContainerUI(fShow: BOOL): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function QueryInsertObject(const clsid: TCLSID; const stg: IStorage;
       cp: Longint): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function DeleteObject(const oleobj: IOleObject): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function QueryAcceptData(const dataobj: IDataObject; var cfFormat: TClipFormat;
       reco: DWORD; fReally: BOOL; hMetaPict: HGLOBAL): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function ContextSensitiveHelp(fEnterMode: BOOL): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function GetDragDropEffect(fDrag: BOOL; grfKeyState: DWORD;
       var dwEffect: DWORD): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
   end;
 
 constructor TRichEditOleCallback.Create(RichEdit: TJvCustomRichEdit);
@@ -2381,7 +2381,7 @@ end;
 
 destructor TRichEditOleCallback.Destroy;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   DestroyAccelTable;
   FFrameForm := nil;
   FDocForm := nil;
@@ -2389,7 +2389,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 function TRichEditOleCallback.QueryInterface(const iid: TGUID; out Obj): HResult;
 begin
@@ -2469,10 +2469,10 @@ begin
   Result := FRefCount;
 end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 function TRichEditOleCallback.GetNewStorage(
-  {$IFDEF Delphi3_Up} out {$ELSE} var {$ENDIF} stg: IStorage): HResult;
+  {$IFDEF COMPILER3_UP} out {$ELSE} var {$ENDIF} stg: IStorage): HResult;
 begin
   try
     CreateStorage(stg);
@@ -2483,11 +2483,11 @@ begin
 end;
 
 function TRichEditOleCallback.GetInPlaceContext(
-  {$IFDEF Delphi3_Up} out {$ELSE} var {$ENDIF} Frame: IOleInPlaceFrame;
-  {$IFDEF Delphi3_Up} out {$ELSE} var {$ENDIF} Doc: IOleInPlaceUIWindow;
+  {$IFDEF COMPILER3_UP} out {$ELSE} var {$ENDIF} Frame: IOleInPlaceFrame;
+  {$IFDEF COMPILER3_UP} out {$ELSE} var {$ENDIF} Doc: IOleInPlaceUIWindow;
   lpFrameInfo: POleInPlaceFrameInfo): HResult;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   AssignFrame;
   if Assigned(FFrameForm) and FRichEdit.AllowInPlace then begin
     Frame := FFrameForm;
@@ -2532,7 +2532,7 @@ begin
 end;
 
 function TRichEditOleCallback.GetClipboardData(const chrg: TCharRange; reco: DWORD;
-  {$IFDEF Delphi3_Up} out {$ELSE} var {$ENDIF} dataobj: IDataObject): HResult;
+  {$IFDEF COMPILER3_UP} out {$ELSE} var {$ENDIF} dataobj: IDataObject): HResult;
 begin
   Result := E_NOTIMPL;
 end;
@@ -2545,14 +2545,14 @@ end;
 
 function TRichEditOleCallback.GetContextMenu(seltype: Word;
   const oleobj: IOleObject; const chrg: TCharRange;
-  {$IFDEF Delphi3_Up} out {$ELSE} var {$ENDIF} menu: HMENU): HResult;
+  {$IFDEF COMPILER3_UP} out {$ELSE} var {$ENDIF} menu: HMENU): HResult;
 begin
   Result := E_NOTIMPL;
 end;
 
 function TRichEditOleCallback.ShowContainerUI(fShow: BOOL): HResult;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if not fShow then AssignFrame;
   if Assigned(FFrameForm) then begin
     if fShow then begin
@@ -2560,14 +2560,14 @@ begin
       FFrameForm.ClearBorderSpace;
       FRichEdit.SetUIActive(False);
       DestroyAccelTable;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       TForm(FFrameForm.Form).AutoScroll := FAutoScroll;
 {$ENDIF}
       FFrameForm := nil;
       FDocForm := nil;
     end
     else begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       FAutoScroll := TForm(FFrameForm.Form).AutoScroll;
       TForm(FFrameForm.Form).AutoScroll := False;
 {$ENDIF}
@@ -2584,7 +2584,7 @@ end;
 { TOleUIObjInfo - helper interface for Object Properties dialog }
 
 type
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   TOleUIObjInfo = class(TInterfacedObject, IOleUIObjInfo)
 {$ELSE}
   TOleUIObjInfo = class(IOleUIObjInfo)
@@ -2594,7 +2594,7 @@ type
     FReObject: TReObject;
   public
     constructor Create(RichEdit: TJvCustomRichEdit; ReObject: TReObject);
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
     function QueryInterface(const iid: TIID; var obj): HResult; override;
     function AddRef: Longint; override;
     function Release: Longint; override;
@@ -2603,21 +2603,21 @@ type
       var dwObjSize: Longint; var lpszLabel: PChar;
       var lpszType: PChar; var lpszShortType: PChar;
       var lpszLocation: PChar): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function GetConvertInfo(dwObject: Longint; var ClassID: TCLSID;
       var wFormat: Word; var ConvertDefaultClassID: TCLSID;
       var lpClsidExclude: PCLSID; var cClsidExclude: Longint): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function ConvertObject(dwObject: Longint;
       const clsidNew: TCLSID): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function GetViewInfo(dwObject: Longint; var hMetaPict: HGlobal;
       var dvAspect: Longint; var nCurrentScale: Integer): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function SetViewInfo(dwObject: Longint; hMetaPict: HGlobal;
       dvAspect: Longint; nCurrentScale: Integer;
       bRelativeToOrig: BOOL): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
   end;
 
 constructor TOleUIObjInfo.Create(RichEdit: TJvCustomRichEdit;
@@ -2628,7 +2628,7 @@ begin
   FReObject := ReObject;
 end;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 
 function TOleUIObjInfo.QueryInterface(const iid: TIID; var obj): HResult;
 begin
@@ -2646,7 +2646,7 @@ begin
   Result := 0;
 end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 function TOleUIObjInfo.GetObjectInfo(dwObject: Longint;
   var dwObjSize: Longint; var lpszLabel: PChar;
@@ -2723,7 +2723,7 @@ end;
 { TOleUILinkInfo - helper interface for Object Properties dialog }
 
 type
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   TOleUILinkInfo = class(TInterfacedObject, IOleUILinkInfo)
 {$ELSE}
   TOleUILinkInfo = class(IOleUILinkInfo)
@@ -2734,42 +2734,42 @@ type
     FOleLink: IOleLink;
   public
     constructor Create(RichEdit: TJvCustomRichEdit; ReObject: TReObject);
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
     destructor Destroy; override;
     function QueryInterface(const iid: TIID; var obj): HResult; override;
     function AddRef: Longint; override;
     function Release: Longint; override;
 {$ENDIF}
     function GetNextLink(dwLink: Longint): Longint;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function SetLinkUpdateOptions(dwLink: Longint;
       dwUpdateOpt: Longint): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function GetLinkUpdateOptions(dwLink: Longint;
       var dwUpdateOpt: Longint): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function SetLinkSource(dwLink: Longint; pszDisplayName: PChar;
       lenFileName: Longint; var chEaten: Longint;
       fValidateSource: BOOL): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function GetLinkSource(dwLink: Longint; var pszDisplayName: PChar;
       var lenFileName: Longint; var pszFullLinkType: PChar;
       var pszShortLinkType: PChar; var fSourceAvailable: BOOL;
       var fIsSelected: BOOL): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function OpenLinkSource(dwLink: Longint): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function UpdateLink(dwLink: Longint; fErrorMessage: BOOL;
       fErrorAction: BOOL): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function CancelLink(dwLink: Longint): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
     function GetLastUpdate(dwLink: Longint;
       var LastUpdate: TFileTime): HResult;
-      {$IFDEF Delphi3_Up} stdcall {$ELSE} override {$ENDIF};
+      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
   end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure LinkError(const Ident: string);
 begin
   Application.MessageBox(PChar(Ident), PChar(SLinkProperties),
@@ -2789,14 +2789,14 @@ begin
   inherited Create;
   FReObject := ReObject;
   FRichEdit := RichEdit;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   OleCheck(FReObject.poleobj.QueryInterface(IOleLink, FOleLink));
 {$ELSE}
   OleCheck(FReObject.poleobj.QueryInterface(IID_IOleLink, FOleLink));
 {$ENDIF}
 end;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 
 destructor TOleUILinkInfo.Destroy;
 begin
@@ -3420,11 +3420,11 @@ begin
   Width := 185;
   Height := 89;
   AutoSize := False;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   DoubleBuffered := False;
 {$ENDIF}
   FAllowObjects := True;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   FAllowInPlace := True;
 {$ENDIF}
   FAutoVerbMenu := True;
@@ -3446,7 +3446,7 @@ begin
     cpMax := -1;
   end;
   FCallback := TRichEditOleCallback.Create(Self);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
 {$ENDIF}
 end;
@@ -3522,7 +3522,7 @@ begin
   if RichEditVersion >= 2 then Mask := Mask or ENM_LINK;
   SendMessage(Handle, EM_SETEVENTMASK, 0, Mask);
   SendMessage(Handle, EM_SETBKGNDCOLOR, 0, ColorToRGB(Color));
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   DoSetMaxLength(MaxLength);
 {$ENDIF}
   SetWordSelection(FWordSelection);
@@ -3728,7 +3728,7 @@ begin
   if HandleAllocated then BoundsRect := Bounds;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvCustomRichEdit.DoSetMaxLength(Value: Integer);
 begin
   { The rich edit control's default maximum amount of text is 32K }
@@ -3748,7 +3748,7 @@ begin
   Dec(Result.X, GetLineIndex(-1));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 function TJvCustomRichEdit.GetSelLength: Integer;
 begin
   with GetSelection do
@@ -3765,7 +3765,7 @@ begin
   with GetSelection do
     Result := GetTextRange(cpMin, cpMax);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 function TJvCustomRichEdit.GetSelTextBuf(Buffer: PChar; BufSize: Integer): Integer;
 var
@@ -3777,7 +3777,7 @@ begin
   StrPLCopy(Buffer, S, Result);
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure TJvCustomRichEdit.CMBiDiModeChanged(var Message: TMessage);
 var
   AParagraph: TParaFormat2;
@@ -3964,7 +3964,7 @@ begin
   if ScrollCaret then SendMessage(Handle, EM_SCROLLCARET, 0, 0);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvCustomRichEdit.SetSelLength(Value: Integer);
 begin
   with GetSelection do SetSelection(cpMin, cpMin + Value, True);
@@ -3974,7 +3974,7 @@ procedure TJvCustomRichEdit.SetSelStart(Value: Integer);
 begin
   SetSelection(Value, Value, False);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 function TJvCustomRichEdit.GetCharPos(CharIndex: Integer): TPoint;
 var
@@ -4241,10 +4241,10 @@ begin
           CreateStorage(Storage);
           case Data.nSelectedIndex of
             0: OleCheck(OleCreateFromData(Data.lpSrcDataObj,
-               {$IFDEF Delphi3_Up} IOleObject {$ELSE} IID_IOleObject {$ENDIF},
+               {$IFDEF COMPILER3_UP} IOleObject {$ELSE} IID_IOleObject {$ENDIF},
                OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
             1: OleCheck(OleCreateLinkFromData(Data.lpSrcDataObj,
-               {$IFDEF Delphi3_Up} IOleObject {$ELSE} IID_IOleObject {$ENDIF},
+               {$IFDEF COMPILER3_UP} IOleObject {$ELSE} IID_IOleObject {$ENDIF},
                OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
           end;
           try
@@ -4314,7 +4314,7 @@ begin
         hWndOwner := Handle;
         lpszFile := NameBuffer;
         cchFile := SizeOf(NameBuffer);
-        iid := {$IFDEF Delphi3_Up} IOleObject {$ELSE} IID_IOleObject {$ENDIF};
+        iid := {$IFDEF COMPILER3_UP} IOleObject {$ELSE} IID_IOleObject {$ENDIF};
         oleRender := OLERENDER_DRAW;
         lpIOleClientSite := OleClientSite;
         lpIStorage := Storage;
@@ -4398,7 +4398,7 @@ begin
       ObjectProps.lpLP := @LinkProps;
       PropSheet.dwSize := SizeOf(PropSheet);
       PropSheet.hWndParent := Handle;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       PropSheet.hInstance := MainInstance;
 {$ELSE}
       PropSheet.hInstance := HInstance;
@@ -4414,7 +4414,7 @@ begin
       Result := OleUIObjectProperties(ObjectProps) = OLEUI_OK;
     end;
   finally
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
     ObjectProps.lpLinkInfo.Free;
     ObjectProps.lpObjInfo.Free;
     ReleaseObject(ReObject.polesite);
@@ -4523,7 +4523,7 @@ begin
   inherited;
 end;
 
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
 procedure TJvCustomRichEdit.WMRButtonUp(var Message: TMessage);
 begin
   { RichEd20 does not pass the WM_RBUTTONUP message to defwndproc, }
@@ -4680,7 +4680,7 @@ begin
     SendMessage(Handle, EM_STOPGROUPTYPING, 0, 0);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvCustomRichEdit.SetUIActive(Active: Boolean);
 var
   Form: TCustomForm;
@@ -4725,7 +4725,7 @@ begin
     (GetParentForm(Self).ActiveOleControl = Self) then
     {IRichEditOle(FRichEditOle).InPlaceDeactivate};
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { Find & Replace Dialogs }
 
@@ -4737,7 +4737,7 @@ begin
     if RichEditVersion = 1 then
       Options := Options + [frHideUpDown, frDown];
     OnFind := FindDialogFind;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     OnClose := FindDialogClose;
 {$ENDIF}
   end;
@@ -4884,7 +4884,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvCustomRichEdit.FindDialogClose(Sender: TObject);
 begin
   CloseFindDialog(Sender as TFindDialog);
@@ -4894,7 +4894,7 @@ procedure TJvCustomRichEdit.CloseFindDialog(Dialog: TFindDialog);
 begin
   if Assigned(FOnCloseFindDialog) then FOnCloseFindDialog(Self, Dialog);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { Conversion formats }
 

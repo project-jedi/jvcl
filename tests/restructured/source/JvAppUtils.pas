@@ -32,7 +32,7 @@ interface
 
 
 uses Windows, Registry, Classes, Controls, Forms, IniFiles, Grids, JvVCLUtils{, JvComponent}
-{$IFDEF Delphi6_up}
+{$IFDEF COMPILER6_UP}
 , RTLConsts{, Variants}
 {$ENDIF}
 
@@ -726,7 +726,7 @@ type
     FFocusedControl: TWinControl;
     FBorderIcons: TBorderIcons;
     FBorderStyle: TFormBorderStyle;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     FSizeChanging: Boolean;
 {$ENDIF}
     FWindowState: TWindowState; { !! }
@@ -779,7 +779,7 @@ begin
           rcNormalPosition := Rect(rcNormalPosition.Left, rcNormalPosition.Top,
             rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
         if rcNormalPosition.Right > rcNormalPosition.Left then begin
-          if (Position in [poScreenCenter {$IFDEF Delphi4_Up}, poDesktopCenter {$ENDIF}]) and
+          if (Position in [poScreenCenter {$IFDEF COMPILER4_UP}, poDesktopCenter {$ENDIF}]) and
             not (csDesigning in ComponentState) then
           begin
             TJvHackComponent(Form).SetDesigning(True);
@@ -796,7 +796,7 @@ begin
     if LoadState then begin
       WinState := wsNormal;
       { default maximize MDI main form }
-      if ((Application.MainForm = Form) {$IFDEF Delphi4_Up} or
+      if ((Application.MainForm = Form) {$IFDEF COMPILER4_UP} or
         (Application.MainForm = nil) {$ENDIF}) and ((FormStyle = fsMDIForm) or
         ((FormStyle = fsNormal) and (Position = poDefault))) then
         WinState := wsMaximized;
@@ -810,7 +810,7 @@ begin
       end;
 {$IFDEF WIN32}
       if (WinState = wsMinimized) and ((Form = Application.MainForm)
-        {$IFDEF Delphi4_Up} or (Application.MainForm = nil) {$ENDIF}) then
+        {$IFDEF COMPILER4_UP} or (Application.MainForm = nil) {$ENDIF}) then
       begin
         TJvNastyForm(Form).FWindowState := wsNormal;
         PostMessage(Application.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
@@ -851,7 +851,7 @@ begin
 {$IFDEF WIN32}
   if UseRegistry then begin
     IniFile := TRegIniFile.Create(IniFileName);
-  {$IFDEF Delphi5_Up} 
+  {$IFDEF COMPILER5_UP} 
     TRegIniFile(IniFile).Access := KEY_READ;
   {$ENDIF}
   end

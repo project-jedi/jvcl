@@ -100,7 +100,7 @@ type
     property MaxPixel;
 
     property AutoComplete default True;
-    {$IFDEF DELPHI6_UP}
+    {$IFDEF COMPILER6_UP}
     property AutoDropDown default False;
     {$ENDIF}
     property AutoSave;
@@ -140,7 +140,7 @@ type
     property Visible;
     property OnChange;
     property OnClick;
-    {$IFDEF DELPHI6_UP}
+    {$IFDEF COMPILER6_UP}
     property OnCloseUp;
     {$ENDIF}
     property OnContextPopup;
@@ -157,7 +157,7 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMeasureItem;
-    {$IFDEF DELPHI6_UP}
+    {$IFDEF COMPILER6_UP}
     property OnSelect;
     {$ENDIF}
     property OnStartDock;

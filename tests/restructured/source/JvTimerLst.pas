@@ -64,7 +64,7 @@ type
     procedure UpdateTimer;
   protected
 {$IFDEF WIN32}
-    procedure GetChildren(Proc: TGetChildProc {$IFDEF Delphi3_Up};
+    procedure GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP};
       Root: TComponent {$ENDIF}); override;
 {$ELSE}
     procedure WriteComponents(Writer: TWriter); override;
@@ -142,7 +142,7 @@ uses Consts, Controls, Forms, SysUtils, JvVCLUtils, JvMaxMin;
 
 const
   MinInterval = 100; { 0.1 sec }
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   MaxTimerInterval: Longint = High(Longint);
 {$ELSE}
   MaxTimerInterval: Longint = High(Cardinal);
@@ -331,12 +331,12 @@ begin
 end;
 
 {$IFDEF WIN32}
-procedure TJvTimerList.GetChildren(Proc: TGetChildProc {$IFDEF Delphi3_Up};
+procedure TJvTimerList.GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP};
   Root: TComponent {$ENDIF});
 var
   I: Integer;
 begin
-  inherited GetChildren(Proc {$IFDEF Delphi3_Up}, Root {$ENDIF});
+  inherited GetChildren(Proc {$IFDEF COMPILER3_UP}, Root {$ENDIF});
   for I := 0 to FEvents.Count - 1 do
     Proc(TJvTimerEvent(FEvents[I]));
 end;

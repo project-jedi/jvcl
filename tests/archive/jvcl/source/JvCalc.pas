@@ -32,7 +32,7 @@ interface
 
 
 uses Windows, SysUtils,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 Variants,
 {$ENDIF}
 
@@ -112,7 +112,7 @@ type
 
 function CreateCalculatorForm(AOwner: TComponent; AHelpContext: THelpContext): TJvCalculatorForm;
 function CreatePopupCalculator(AOwner: TComponent
-  {$IFDEF Delphi4_Up}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
+  {$IFDEF COMPILER4_UP}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
 procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
   ABeepOnError: Boolean);
 
@@ -697,7 +697,7 @@ begin
   inherited CreateParams(Params);
   with Params do begin
     Style := Style and not (WS_TABSTOP or WS_DISABLED);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     AddBiDiModeExStyle(ExStyle);
 {$ENDIF}
   end;
@@ -726,7 +726,7 @@ type
   end;
 
 function CreatePopupCalculator(AOwner: TComponent
-  {$IFDEF Delphi4_Up}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
+  {$IFDEF COMPILER4_UP}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
 begin
   Result := TJvPopupCalculator.Create(AOwner);
   if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
@@ -737,7 +737,7 @@ begin
       font back to the original info. }
     TJvPopupCalculator(Result).FCalcPanel.ParentFont := True;
     SetDefaultFont(TJvPopupCalculator(Result).Font, clPopup);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     Result.BiDiMode := ABiDiMode;
 {$ENDIF}
   end;

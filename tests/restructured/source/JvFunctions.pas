@@ -38,7 +38,7 @@ uses
   Windows, Graphics, Classes, Messages, Controls,
   ComCtrls, SysUtils, ShellApi, JvTypes, ImgList;
 
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
 type
   EOSError = class(EWin32Error);
 {$ENDIF}
@@ -290,7 +290,7 @@ procedure RunDll32Internal(Wnd: HWnd; const DLLName, FuncName, CmdLine: string; 
 from the function. Returns false if the DLL couldn't be loaded or if GetDLLVersion couldn't be found. }
 function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): boolean;
 
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
 { D5 compatibility functions }
 procedure RaiseLastOSError;
 function IncludeTrailingPathDelimiter(const APath: string): string;
@@ -321,7 +321,7 @@ const
 var
   ShellVersion: Integer;
 
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
 
 procedure RaiseLastOSError;
 begin

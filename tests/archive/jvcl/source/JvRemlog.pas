@@ -30,7 +30,7 @@ unit JvRemLog;
 
 interface
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {$IFDEF RX_MIDAS}
 
 uses SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms,
@@ -81,14 +81,14 @@ type
   end;
 
 {$ENDIF RX_MIDAS}
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 implementation
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {$IFDEF RX_MIDAS}
 
-uses IniFiles, Registry, JvAppUtils, JvVCLUtils {$IFDEF Delphi4_Up}, MConnect {$ENDIF};
+uses IniFiles, Registry, JvAppUtils, JvVCLUtils {$IFDEF COMPILER4_UP}, MConnect {$ENDIF};
 
 const
   keyLoginSection  = 'Remote Login';
@@ -147,7 +147,7 @@ procedure TJvRemoteLogin.PrepareRemoteServer;
 begin
   if Assigned(FRemoteServer) and not FPrepared then
     with TJvServer(RemoteServer) do begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       if RemoteServer is TDispatchConnection then
         TDispatchConnection(RemoteServer).LoginPrompt := False;
 {$ENDIF}
@@ -188,7 +188,7 @@ begin
 end;
 
 procedure TJvRemoteLogin.ServerAfterConnect(Sender: TObject);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 var
   OnGetUser: TGetUsernameEvent;
 {$ENDIF}
@@ -199,7 +199,7 @@ begin
     try
       OnOkClick := Self.OkButtonClick;
       FUsername := ReadUserName(FUsername);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       if FRemoteServer is TDispatchConnection then begin
         OnGetUser := TDispatchConnection(FRemoteServer).OnGetUsername;
         if Assigned(OnGetUser) then OnGetUser(FRemoteServer, FUsername);
@@ -255,7 +255,7 @@ begin
   try
     if UseRegistry then begin
       Ini := TRegIniFile.Create(IniFileName);
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
       TRegIniFile(Ini).Access := KEY_READ;
 {$ENDIF}
     end
@@ -318,6 +318,6 @@ begin
 end;
 
 {$ENDIF RX_MIDAS}
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 end.

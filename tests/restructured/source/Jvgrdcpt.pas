@@ -97,7 +97,7 @@ type
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function IsRightToLeft: Boolean;
 {$ENDIF}
     property Form: TForm read GetForm;
@@ -139,7 +139,7 @@ type
     function GetCaption(Index: Integer): TJvCaption;
     procedure SetCaption(Index: Integer; Value: TJvCaption);
   protected
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     function GetOwner: TPersistent; override;
 {$ENDIF}
     procedure Update(Item: TCollectionItem); override;
@@ -234,7 +234,7 @@ begin
   Result := TJvCaption(inherited Items[Index]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 function TJvCaptionList.GetOwner: TPersistent;
 begin
   Result := FParent;
@@ -416,7 +416,7 @@ begin
   end;
 end;
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 const
   COLOR_GRADIENTACTIVECAPTION   =    27;
   COLOR_GRADIENTINACTIVECAPTION =    28;
@@ -808,7 +808,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvxGradientCaption.IsRightToLeft: Boolean;
 var
   F: TForm;
@@ -869,13 +869,13 @@ var
           end;
         end;
         Flags := DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         if IsRightToLeft then
           Flags := Flags or DT_RIGHT or DT_RTLREADING else
 {$ENDIF}
         Flags := Flags or DT_LEFT;
         DrawText(Image.Canvas.Handle, PChar(Text), -1, R, Flags);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         if IsRightToLeft then
           Dec(R.Right, Image.Canvas.TextWidth(Text)) else
 {$ENDIF}

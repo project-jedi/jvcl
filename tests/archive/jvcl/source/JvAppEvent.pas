@@ -36,7 +36,7 @@ interface
 
 uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   Messages, Classes, Graphics, Controls, Forms{, JvComponent}
-  {$IFDEF Delphi4_Up}, ActnList {$ENDIF};
+  {$IFDEF COMPILER4_UP}, ActnList {$ENDIF};
 
 const
 {$IFDEF WIN32}
@@ -66,10 +66,10 @@ type
     FHintHidePause: Integer;
     FShowMainForm: Boolean;
 {$ENDIF}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     FUpdateMetricSettings: Boolean;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     FHintShortCuts: Boolean;
     FBiDiMode: TBiDiMode;
     FMouseDragImmediate: Boolean;
@@ -78,7 +78,7 @@ type
     FOnActionUpdate: TActionEvent;
     FOnShortCut: TShortCutEvent;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     FBiDiKeyboard: string;
     FNonBiDiKeyboard: string; 
 {$ENDIF}
@@ -114,11 +114,11 @@ type
     procedure SetHintHidePause(Value: Integer);
     procedure SetShowMainForm(Value: Boolean);
 {$ENDIF WIN32}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     function GetUpdateMetricSettings: Boolean;
     procedure SetUpdateMetricSettings(Value: Boolean);
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function GetHintShortCuts: Boolean;
     function GetBiDiMode: TBiDiMode;
     procedure SetHintShortCuts(Value: Boolean);
@@ -128,7 +128,7 @@ type
     procedure SetMouseDragImmediate(Value: Boolean);
     procedure SetMouseDragThreshold(Value: Integer);
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     function GetBiDiKeyboard: string;
     function GetNonBiDiKeyboard: string; 
     procedure SetBiDiKeyboard(const Value: string);
@@ -158,11 +158,11 @@ type
     property ShowMainForm: Boolean read GetShowMainForm write SetShowMainForm
       default True;
 {$ENDIF}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property UpdateMetricSettings: Boolean read GetUpdateMetricSettings
       write SetUpdateMetricSettings default True;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property HintShortCuts: Boolean read GetHintShortCuts write SetHintShortCuts
       default True;
     property BiDiMode: TBiDiMode read GetBiDiMode write SetBiDiMode
@@ -175,7 +175,7 @@ type
     property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;
     property OnShortCut: TShortCutEvent read FOnShortCut write FOnShortCut;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property BiDiKeyboard: string read GetBiDiKeyboard write SetBiDiKeyboard;
     property NonBiDiKeyboard: string read GetNonBiDiKeyboard write SetNonBiDiKeyboard; 
 {$ENDIF}
@@ -218,7 +218,7 @@ type
     FOnShowHint: TShowHintEvent;
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     FOnActionExecute: TActionEvent;
     FOnActionUpdate: TActionEvent;
     FOnShortCut: TShortCutEvent;
@@ -241,7 +241,7 @@ type
       var HintInfo: THintInfo);
     procedure DoActiveControlChange(Sender: TObject);
     procedure DoActiveFormChange(Sender: TObject);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure DoActionExecute(Action: TBasicAction; var Handled: Boolean);
     procedure DoActionUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure DoShortCut(var Msg: TWMKey; var Handled: Boolean);
@@ -277,7 +277,7 @@ begin
     Application.OnMinimize := nil;
     Application.OnRestore := nil;
     Application.OnShowHint := nil;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     Application.OnActionExecute := nil;
     Application.OnActionUpdate := nil;
     Application.OnShortCut := nil;
@@ -305,7 +305,7 @@ begin
       FOnMinimize := Application.OnMinimize;
       FOnRestore := Application.OnRestore;
       FOnShowHint := Application.OnShowHint;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       FOnActionExecute := Application.OnActionExecute;
       FOnActionUpdate := Application.OnActionUpdate;
       FOnShortCut := Application.OnShortCut;
@@ -499,7 +499,7 @@ begin
   if Assigned(FOnActiveFormChange) then FOnActiveFormChange(Sender);
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 
 procedure TJvAppEventList.DoActionExecute(Action: TBasicAction;
   var Handled: Boolean);
@@ -539,7 +539,7 @@ begin
   if Assigned(FOnShortCut) then FOnShortCut(Msg, Handled);
 end;
 
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 const
   AppList: TJvAppEventList = nil;
@@ -554,7 +554,7 @@ begin
   FHintColor := DefHintColor;
   FHintPause := DefHintPause;
   FShowHint := True;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   FUpdateMetricSettings := True;
 {$ENDIF}
 {$IFDEF WIN32}
@@ -562,7 +562,7 @@ begin
   FHintHidePause := DefHintHidePause;
   FShowMainForm := True;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   FHintShortCuts := True;
   FBiDiMode := bdLeftToRight;
   FMouseDragImmediate := True;
@@ -631,7 +631,7 @@ begin
 {$IFNDEF WIN32}
         if UpdateFormatSettings then GetFormatSettings;
 {$ELSE}
-  {$IFNDEF Delphi3_Up}
+  {$IFNDEF COMPILER3_UP}
         if Application.ShowHint then begin
           Application.ShowHint := False;
           Application.ShowHint := True;
@@ -751,7 +751,7 @@ end;
 
 {$ENDIF WIN32}
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 function TJvAppEvents.GetUpdateMetricSettings: Boolean;
 begin
@@ -766,9 +766,9 @@ begin
     Application.UpdateMetricSettings := Value;
 end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 
 function TJvAppEvents.GetHintShortCuts: Boolean;
 begin
@@ -824,9 +824,9 @@ begin
     Application.BiDiMode := Value;
 end;
 
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
 
 function TJvAppEvents.GetBiDiKeyboard: string;
 begin
@@ -854,7 +854,7 @@ begin
     Application.NonBiDiKeyboard := Value;
 end;
 
-{$ENDIF Delphi5_Up}
+{$ENDIF COMPILER5_UP}
 
 procedure TJvAppEvents.UpdateAppProps;
 begin
@@ -869,10 +869,10 @@ begin
       ShowMainForm := FShowMainForm;
       UpdateFormatSettings := FUpdateFormatSettings;
 {$ENDIF}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       UpdateMetricSettings := FUpdateMetricSettings;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       HintShortCuts := FHintShortCuts;
       BiDiMode := FBiDiMode;
       with Mouse do begin
@@ -880,7 +880,7 @@ begin
         DragThreshold := FMouseDragThreshold;
       end;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
       BiDiKeyboard := FBiDiKeyboard;
       NonBiDiKeyboard := FNonBiDiKeyboard;      
 {$ENDIF}

@@ -31,7 +31,7 @@ interface
 
 
 uses Windows,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 RTLConsts, Variants,
 {$ENDIF}
 Classes,
@@ -148,7 +148,7 @@ type
 {$IFDEF WIN32}
     procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure CMBiDiModeChanged(var Message: TMessage); message CM_BIDIMODECHANGED;
 {$ENDIF}
   protected
@@ -231,7 +231,7 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -276,10 +276,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -343,7 +343,7 @@ type
 
 { TJvFilenameEdit }
 
-  TFileDialogKind = (dkOpen, dkSave {$IFDEF Delphi3_Up}, dkOpenPicture,
+  TFileDialogKind = (dkOpen, dkSave {$IFDEF COMPILER3_UP}, dkOpenPicture,
     dkSavePicture {$ENDIF});
 
   TJvFilenameEdit = class(TJvFileDirEdit)
@@ -418,7 +418,7 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -460,10 +460,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -520,7 +520,7 @@ type
     property NumGlyphs;
     property ButtonWidth;
     property HideSelection;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -561,10 +561,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -700,7 +700,7 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -752,10 +752,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -774,7 +774,7 @@ function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
 
 implementation
 
-uses ShellAPI, Consts, {$IFDEF Delphi3_Up} ExtDlgs, {$ENDIF} JvCConst, JvVCLUtils,
+uses ShellAPI, Consts, {$IFDEF COMPILER3_UP} ExtDlgs, {$ENDIF} JvCConst, JvVCLUtils,
   JvStrUtils, JvFileUtil, JvPickDate, JvMaxMin;
 
 {$IFDEF WIN32}
@@ -837,7 +837,7 @@ var
   DC: HDC;
   PS: TPaintStruct;
   S: string;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   ExStyle: DWORD;
 const
   AlignStyle: array[Boolean, TAlignment] of DWORD =
@@ -847,13 +847,13 @@ const
 begin
   Result := True;
   with Editor do begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     if UseRightToLeftAlignment then ChangeBiDiModeAlignment(AAlignment);
 {$ENDIF}
     if StandardPaint {$IFDEF WIN32} and not
       (csPaintCopy in ControlState) {$ENDIF} then
     begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       if SysLocale.MiddleEast and HandleAllocated and (IsRightToLeft) then
       begin { This keeps the right aligned text, right aligned }
         ExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) and (not WS_EX_RIGHT) and
@@ -867,7 +867,7 @@ begin
         if DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) <> ExStyle then
           SetWindowLong(Handle, GWL_EXSTYLE, ExStyle);
       end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
       Result := False;
       { return false if we need to use standard paint handler }
       Exit;
@@ -913,7 +913,7 @@ begin
               ALeft := (ClientWidth - ButtonWidth - AWidth) div 2;
           end;
         end;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         if SysLocale.MiddleEast then UpdateTextFlags;
 {$ENDIF}
         TextRect(R, ALeft, Margins.Y, S);
@@ -1068,7 +1068,7 @@ end;
 constructor TJvCustomComboEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   ControlStyle := ControlStyle + [csCaptureMouse];
 {$ENDIF}
   AutoSize := False;
@@ -1521,7 +1521,7 @@ begin
   SetShowCaret;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure TJvCustomComboEdit.CMBiDiModeChanged(var Message: TMessage);
 begin
   inherited;
@@ -1842,7 +1842,7 @@ var
 begin
   case FDialogKind of
     dkOpen: NewDialog := TOpenDialog.Create(Self);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     dkOpenPicture: NewDialog := TOpenPictureDialog.Create(Self);
     dkSavePicture: NewDialog := TSavePictureDialog.Create(Self);
 {$ENDIF}
@@ -2179,7 +2179,7 @@ begin
     UpdateFormat;
 {$IFDEF DEFAULT_POPUP_CALENDAR}
     FPopup := TJvPopupWindow(CreatePopupCalendar(Self
-      {$IFDEF Delphi4_Up}, BiDiMode {$ENDIF}));
+      {$IFDEF COMPILER4_UP}, BiDiMode {$ENDIF}));
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
     TJvPopupWindow(FPopup).Color := FPopupColor;
 {$ENDIF DEFAULT_POPUP_CALENDAR}
@@ -2408,7 +2408,7 @@ begin
         begin
           if FPopup = nil then
             FPopup := TJvPopupWindow(CreatePopupCalendar(Self
-              {$IFDEF Delphi4_Up}, BiDiMode {$ENDIF}));
+              {$IFDEF COMPILER4_UP}, BiDiMode {$ENDIF}));
           TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
           TJvPopupWindow(FPopup).Color := FPopupColor;
           UpdatePopup;

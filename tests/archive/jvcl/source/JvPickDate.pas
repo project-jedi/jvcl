@@ -32,7 +32,7 @@ interface
 
 uses Windows, Classes,
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 Variants,
 {$ENDIF}
 
@@ -51,7 +51,7 @@ function PopupDate(var Date: TDateTime; Edit: TWinControl): Boolean;
 { Popup calendar }
 
 function CreatePopupCalendar(AOwner: TComponent
-  {$IFDEF Delphi4_Up}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
+  {$IFDEF COMPILER4_UP}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
 procedure SetupPopupCalendar(PopupCalendar: TWinControl;
   AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
   AWeekendColor: TColor; BtnHints: TStrings; FourDigitYear: Boolean);
@@ -202,7 +202,7 @@ begin
 {$IFDEF WIN32}
   Params.ExStyle := Params.ExStyle and not WS_EX_CLIENTEDGE;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   AddBiDiModeExStyle(Params.ExStyle);
 {$ENDIF}
 end;
@@ -568,7 +568,7 @@ type
   end;
 
 function CreatePopupCalendar(AOwner: TComponent
-  {$IFDEF Delphi4_Up}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
+  {$IFDEF COMPILER4_UP}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
 begin
   Result := TJvPopupCalendar.Create(AOwner);
   if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
@@ -579,7 +579,7 @@ begin
       font back to the original info. }
     TJvPopupCalendar(Result).FCalendar.ParentFont := True;
     FontSetDefault(TJvPopupCalendar(Result).Font);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     Result.BiDiMode := ABiDiMode;
 {$ENDIF}
   end;

@@ -29,7 +29,7 @@ Known Issues:
 unit JvCtrls;
 
 {$I JEDI.INC}
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
 {$IFDEF LINUX}
@@ -85,7 +85,7 @@ type
     property TabWidth;
     property Visible;
     property OnClick;
-{$IFDEF DELPHI5_UP}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
     property OnDblClick;

@@ -90,7 +90,7 @@ type
     procedure Notification(AComponent: TComponent;
       AOperation: TOperation); override;
 {$IFDEF WIN32}
-    procedure GetChildren(Proc: TGetChildProc {$IFDEF Delphi3_Up}; Root: TComponent {$ENDIF}); override;
+    procedure GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP}; Root: TComponent {$ENDIF}); override;
 {$ELSE}
     procedure WriteComponents(Writer: TWriter); override;
 {$ENDIF WIN32}
@@ -198,7 +198,7 @@ const
 
 implementation
 
-uses SysUtils, Forms, StdCtrls {$IFDEF Delphi4_Up}, ActnList {$ENDIF};
+uses SysUtils, Forms, StdCtrls {$IFDEF COMPILER4_UP}, ActnList {$ENDIF};
 
 const
   Registered: Boolean = False;
@@ -394,7 +394,7 @@ end;
 procedure TJvPageManager.CheckBtnEnabled;
 begin
   if not (csDesigning in ComponentState) then begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     if GetButton(0) <> nil then begin
       if GetButton(0).Action <> nil then
         TAction(GetButton(0).Action).Enabled := PriorEnabled
@@ -416,12 +416,12 @@ begin
 end;
 
 {$IFDEF WIN32}
-procedure TJvPageManager.GetChildren(Proc: TGetChildProc {$IFDEF Delphi3_Up};
+procedure TJvPageManager.GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP};
   Root: TComponent {$ENDIF});
 var
   I: Integer;
 begin
-  inherited GetChildren(Proc{$IFDEF Delphi3_Up}, Root {$ENDIF});
+  inherited GetChildren(Proc{$IFDEF COMPILER3_UP}, Root {$ENDIF});
   for I := 0 to FPageProxies.Count - 1 do begin
     Proc(TJvPageProxy(FPageProxies.Items[I]));
   end;

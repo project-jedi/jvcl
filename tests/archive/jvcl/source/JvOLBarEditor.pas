@@ -59,7 +59,7 @@ type
     procedure Edit;override;
 
 
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
 {$ELSE}
      procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
@@ -207,7 +207,7 @@ end;
 
 
 
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
  procedure TOLBarComponentEditor.PrepareItem(Index: Integer; const AItem: IMenuItem);
 begin
   case Index of

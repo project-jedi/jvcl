@@ -29,14 +29,14 @@ unit JvStrHlder;
 interface
 
 uses SysUtils, Classes
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 ,Variants, RTLConsts
 {$ENDIF}
 {, JvComponent};
 
 type
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 { TJvMacro }
 
@@ -81,7 +81,7 @@ type
     function GetItem(Index: Integer): TJvMacro;
     procedure SetItem(Index: Integer; Value: TJvMacro);
   public
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     constructor Create(AOwner: TPersistent);
 {$ELSE}
     constructor Create;
@@ -101,7 +101,7 @@ type
     property MacroValues[const MacroName: string]: Variant read GetMacroValue write SetMacroValue;
   end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { TJvStrHolder }
 
@@ -110,7 +110,7 @@ type
     FStrings: TStrings;
     FXorKey: string;
     FReserved: Integer;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     FMacros: TJvMacros;
     FMacroChar: Char;
     FOnExpandMacros: TNotifyEvent;
@@ -132,11 +132,11 @@ type
     function GetCommaText: string;
     procedure SetCommaText(const Value: string);
 {$ENDIF}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     function GetCapacity: Integer;
     procedure SetCapacity(NewCapacity: Integer);
 {$ENDIF}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure SetMacros(Value: TJvMacros);
     procedure RecreateMacros;
     procedure SetMacroChar(Value: Char);
@@ -146,7 +146,7 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure Changed; dynamic;
     procedure Changing; dynamic;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure BeforeExpandMacros; dynamic;
 {$ENDIF}
   public
@@ -154,7 +154,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Clear;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     function MacroCount: Integer;
     function MacroByName(const MacroName: string): TJvMacro;
     function ExpandMacros: string;
@@ -163,7 +163,7 @@ type
     property CommaText: string read GetCommaText write SetCommaText;
 {$ENDIF}
   published
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property Capacity: Integer read GetCapacity write SetCapacity default 0;
     property MacroChar: Char read FMacroChar write SetMacroChar default '%';
     property Macros: TJvMacros read FMacros write SetMacros;
@@ -181,7 +181,7 @@ type
 implementation
 
 uses
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   Consts,
 {$ENDIF}
   JvStrUtils, JvTypes;
@@ -189,7 +189,7 @@ uses
 const
   XorVersion = 1;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 function ExtractName(const Items: string; var Pos: Integer): string;
 var
@@ -370,7 +370,7 @@ end;
 
 { TJvMacros }
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 constructor TJvMacros.Create(AOwner: TPersistent);
 begin
   inherited Create(AOwner, TJvMacro);
@@ -468,7 +468,7 @@ var
   Macros: TJvMacros;
 begin
   Result := Value;
-  Macros := TJvMacros.Create{$IFDEF Delphi4_Up}(Self.GetOwner){$ENDIF};
+  Macros := TJvMacros.Create{$IFDEF COMPILER4_UP}(Self.GetOwner){$ENDIF};
   try
     CreateMacros(Macros, PChar(Result), SpecialChar, ['.']);
     if DoCreate then begin
@@ -527,7 +527,7 @@ begin
     List.Add(MacroByName(ExtractName(MacroNames, Pos)));
 end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { TJvStrHolder }
 
@@ -535,8 +535,8 @@ constructor TJvStrHolder.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStrings := TStringList.Create;
-{$IFDEF Delphi3_Up}
-  FMacros := TJvMacros.Create{$IFDEF Delphi4_Up}(Self){$ENDIF};
+{$IFDEF COMPILER3_UP}
+  FMacros := TJvMacros.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
   FMacroChar := '%';
 {$ENDIF}
   TStringList(FStrings).OnChange := StringsChanged;
@@ -547,7 +547,7 @@ destructor TJvStrHolder.Destroy;
 begin
   FOnChange := nil;
   FOnChanging := nil;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   FMacros.Free;
 {$ENDIF}
   FStrings.Free;
@@ -599,7 +599,7 @@ begin
 end;
 {$ENDIF WIN32}
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 function TJvStrHolder.GetCapacity: Integer;
 begin
   Result := FStrings.Capacity;
@@ -609,9 +609,9 @@ procedure TJvStrHolder.SetCapacity(NewCapacity: Integer);
 begin
   FStrings.Capacity := NewCapacity;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvStrHolder.BeforeExpandMacros;
 begin
   if Assigned(FOnExpandMacros) then FOnExpandMacros(Self);
@@ -674,7 +674,7 @@ begin
     until not Found;
   end;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 procedure TJvStrHolder.DefineProperties(Filer: TFiler);
 
@@ -748,7 +748,7 @@ end;
 
 procedure TJvStrHolder.StringsChanged(Sender: TObject);
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   RecreateMacros;
 {$ENDIF}
   if not (csReading in ComponentState) then Changed;

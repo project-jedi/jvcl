@@ -66,13 +66,13 @@ type
     procedure TimerExpired(Sender: TObject);
   protected
     { Protected declarations }
- {$IFNDEF Delphi6_Up}
+ {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean);
 {$ELSE}
     procedure SetAutoSize(Value: Boolean);  override;
 {$ENDIF}
     function GetPalette: HPALETTE; override;
-    procedure AdjustSize; {$IFDEF Delphi4_Up} override; {$ENDIF}
+    procedure AdjustSize; {$IFDEF COMPILER4_UP} override; {$ENDIF}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure Paint; override;
@@ -101,7 +101,7 @@ type
     property Rotate: Boolean read FRotate write SetRotate;
     property ShowFocus: Boolean read FShowFocus write SetShowFocus;
     property ShowHint;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
@@ -126,13 +126,13 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -216,7 +216,7 @@ end;
 procedure TJvDice.WMSize(var Message: TWMSize);
 begin
   inherited;
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   AdjustSize;
 {$ENDIF}
 end;
@@ -303,7 +303,7 @@ begin
   end
   else if AutoStopInterval > 0 then begin
     Now := GetTickCount;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     if (Now - FTickCount >= Integer(AutoStopInterval))
 {$ELSE}
     if (Now - FTickCount >= AutoStopInterval)
@@ -329,7 +329,7 @@ end;
 
 procedure TJvDice.SetAutoSize(Value: Boolean);
 begin
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
 {$ENDIF}
   FAutoSize := Value;

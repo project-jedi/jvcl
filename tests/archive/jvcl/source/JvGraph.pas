@@ -35,7 +35,7 @@ uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   SysUtils, Classes, Graphics, JvVCLUtils;
 
 type
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
   TPixelFormat = (pfDevice, pf1bit, pf4bit, pf8bit, pf24bit);
 {$ENDIF}
   TMappingMethod = (mmHistogram, mmQuantize, mmTrunc784, mmTrunc666,
@@ -1034,7 +1034,7 @@ begin
 end;
 
 function GetBitmapPixelFormat(Bitmap: TBitmap): TPixelFormat;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 begin
   Result := Bitmap.PixelFormat;
 {$ELSE}

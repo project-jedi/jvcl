@@ -33,7 +33,7 @@ unit JvRegistry;
 interface
 
 uses
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
   Variants,
 {$ENDIF}
   Windows, Registry;

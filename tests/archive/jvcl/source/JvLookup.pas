@@ -34,11 +34,11 @@ unit JvLookup;
 interface
 
 uses SysUtils, Windows, DBCtrls, 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
  Variants, VDBConsts,
 {$ENDIF}
 Messages, Classes, Controls, Forms, Graphics, Menus, DB, Mask,
-  {$IFNDEF Delphi3_Up} DBTables, {$ENDIF} Buttons, StdCtrls, JvDBUtils, JvToolEdit;
+  {$IFNDEF COMPILER3_UP} DBTables, {$ENDIF} Buttons, StdCtrls, JvDBUtils, JvToolEdit;
 
 const
   DefFieldsDelim = ',';
@@ -196,7 +196,7 @@ type
     function Locate(const SearchField: TField; const AValue: string;
       Exact: Boolean): Boolean;
     procedure ResetField; virtual;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
@@ -252,7 +252,7 @@ type
       X, Y: Integer); override;
     procedure Paint; override;
     procedure UpdateDisplayEmpty(const Value: string); override;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
 {$ENDIF}
@@ -283,7 +283,7 @@ type
     property FieldsDelimiter;
     property Font;
     property IgnoreCase;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -330,10 +330,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnEndDock;
@@ -411,7 +411,7 @@ type
     procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMSetCursor(var Message: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure CMBiDiModeChanged(var Message: TMessage); message CM_BIDIMODECHANGED;
 {$ENDIF}
   protected
@@ -466,7 +466,7 @@ type
     property FieldsDelimiter;
     property Font;
     property IgnoreCase;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -515,10 +515,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -620,7 +620,7 @@ end;
     property Enabled;
     property Font;
     property HideSelection;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -668,10 +668,10 @@ end;
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -680,7 +680,7 @@ end;
 implementation
 
 uses DBConsts, Dialogs, {$IFNDEF WIN32} JvStr16, {$ENDIF} JvVCLUtils, JvStrUtils,
-  {$IFNDEF Delphi3_Up} JvBdeUtils, {$ENDIF} JvMaxMin, JvClipIcon;
+  {$IFNDEF COMPILER3_UP} JvBdeUtils, {$ENDIF} JvMaxMin, JvClipIcon;
 
 { TJvDataSourceLink }
 
@@ -760,7 +760,7 @@ begin
   FEmptyValue := EmptyStr;
   FEmptyItemColor := clWindow;
   FValue := FEmptyValue;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   FLocate := CreateLocate(nil);
 {$ELSE}
   FLocate := TJvDBLocate.Create;
@@ -895,7 +895,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvLookupControl.ExecuteAction(Action: TBasicAction): Boolean;
 begin
   Result := inherited ExecuteAction(Action) or ((FDataLink <> nil) and
@@ -1648,7 +1648,7 @@ begin
       else S := Field.DisplayText;
       X := 2;
       AAlignment := Field.Alignment;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       if UseRightToLeftAlignment then ChangeBiDiModeAlignment(AAlignment);
 {$ENDIF}
       case AAlignment of
@@ -1657,7 +1657,7 @@ begin
       end;
       R.Left := R.Right;
       R.Right := R.Right + W;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       if SysLocale.MiddleEast and UseRightToLeftReading then
         Canvas.TextFlags := Canvas.TextFlags or ETO_RTLREADING
       else
@@ -1681,7 +1681,7 @@ begin
       S := DisplayEmpty;
     R.Left := Rect.Left;
     R.Right := Rect.Right;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     if SysLocale.MiddleEast and UseRightToLeftReading then
       Canvas.TextFlags := Canvas.TextFlags or ETO_RTLREADING
     else
@@ -1902,7 +1902,7 @@ end;
 
 procedure TJvDBLookupList.UpdateScrollBar;
 (*
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 var
   SIOld, SINew: TScrollInfo;
 begin
@@ -2010,7 +2010,7 @@ begin
   else inherited;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvDBLookupList.DoMouseWheelDown(Shift: TShiftState;
   MousePos: TPoint): Boolean;
 begin
@@ -2030,7 +2030,7 @@ begin
       Result := MoveBy(-FRecordIndex - 1) <> 0;
   end;
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 procedure TJvDBLookupList.WMVScroll(var Message: TWMVScroll);
 begin
@@ -2081,7 +2081,7 @@ begin
 {$IFDEF WIN32}
     ExStyle := WS_EX_TOOLWINDOW;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     AddBiDiModeExStyle(ExStyle);
 {$ENDIF}
     WindowClass.Style := CS_SAVEBITS;
@@ -2631,7 +2631,7 @@ begin
       Image := GetPicture(True, IsEmpty, TextMargin);
     end;
   end;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if UseRightToLeftAlignment then ChangeBiDiModeAlignment(Alignment);
 {$ENDIF}
   W := ClientWidth - FButtonWidth;
@@ -2654,7 +2654,7 @@ begin
         Brush := Self.Canvas.Brush;
         Pen := Self.Canvas.Pen;
       end;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       if (BiDiMode = bdRightToLeft) then begin
         Inc(X, FButtonWidth);
         Inc(R.Left, FButtonWidth);
@@ -2693,7 +2693,7 @@ begin
     if Selected then Canvas.DrawFocusRect(R);
   end;
   SetRect(R, W, 0, ClientWidth, ClientHeight);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if (BiDiMode = bdRightToLeft) then begin
     R.Left := 0;
     R.Right:= FButtonWidth;
@@ -2866,7 +2866,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure TJvDBLookupCombo.CMBiDiModeChanged(var Message: TMessage);
 begin
   inherited;

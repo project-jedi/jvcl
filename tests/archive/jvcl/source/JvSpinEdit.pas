@@ -98,7 +98,7 @@ begin
   FEdit.Parent := self;
   FEdit.TabStop := true;
   FEdit.BorderStyle := bsNone;
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
   FEdit.BevelInner := bvSpace;
   FEdit.BevelOuter := bvNone;
   FEdit.BevelKind := bkFlat;

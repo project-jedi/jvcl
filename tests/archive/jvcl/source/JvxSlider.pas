@@ -208,7 +208,7 @@ type
     property TabStop default True;
     property Value;
     property Visible;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
@@ -232,10 +232,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnEndDock;
@@ -362,7 +362,7 @@ var
 begin
   if FPaintBuffered then inherited
   else begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Canvas.Lock;
     try
 {$ENDIF}
@@ -390,7 +390,7 @@ begin
         DeleteDC(MemDC);
         DeleteObject(MemBitmap);
       end;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     finally
       Canvas.Unlock;
     end;

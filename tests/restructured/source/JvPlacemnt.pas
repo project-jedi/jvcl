@@ -31,7 +31,7 @@ unit JvPlacemnt;
 interface
 
 uses
- {$IFDEF Delphi6_Up}
+ {$IFDEF COMPILER6_UP}
 RTLConsts, Variants,
 {$ENDIF}
 Windows, Registry, Controls, Messages, Classes, Forms, IniFiles,
@@ -170,23 +170,23 @@ type
 
 { TJvFormStorage }
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   TJvStoredValues = class;
   TJvStoredValue = class;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
   TJvFormStorage = class(TJvFormPlacement)
   private
     FStoredProps: TStrings;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     FStoredValues: TJvStoredValues;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
     procedure SetStoredProps(Value: TStrings);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure SeTJvStoredValues(Value: TJvStoredValues);
     function GeTJvStoredValue(const Name: string): Variant;
     procedure SeTJvStoredValue(const Name: string; Value: Variant);
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -201,14 +201,14 @@ type
 {$IFDEF WIN32}
     procedure SetNotification;
 {$ENDIF WIN32}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property StoredValue[const Name: string]: Variant read GeTJvStoredValue write SeTJvStoredValue;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
   published
     property StoredProps: TStrings read FStoredProps write SetStoredProps;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property StoredValues: TJvStoredValues read FStoredValues write SeTJvStoredValues;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
   end;
 
 { TJvIniLink }
@@ -233,7 +233,7 @@ type
     property OnLoad: TNotifyEvent read FOnLoad write FOnLoad;
   end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 { TJvStoredValue }
 
@@ -278,7 +278,7 @@ type
     function GetItem(Index: Integer): TJvStoredValue;
     procedure SetItem(Index: Integer; StoredValue: TJvStoredValue);
   public
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     constructor Create(AOwner: TPersistent);
 {$ELSE}
     constructor Create;
@@ -292,14 +292,14 @@ type
     property StoredValue[const Name: string]: Variant read GeTJvStoredValue write SeTJvStoredValue;
   end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 implementation
 
 uses SysUtils,
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   Consts,
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
   JvAppUtils, JvStrUtils, JvProps, JvTypes;
 
 const
@@ -700,7 +700,7 @@ begin
 {$IFDEF WIN32}
     if UseRegistry then begin
       FRegIniFile := TRegIniFile.Create(IniFileName);
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
       if ReadOnly then FRegIniFile.Access := KEY_READ;
 {$ENDIF}
       case FRegistryRoot of
@@ -932,20 +932,20 @@ constructor TJvFormStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStoredProps := TStringList.Create;
-{$IFDEF Delphi3_Up}
-  FStoredValues := TJvStoredValues.Create{$IFDEF Delphi4_Up}(Self){$ENDIF Delphi4_Up};
+{$IFDEF COMPILER3_UP}
+  FStoredValues := TJvStoredValues.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF COMPILER4_UP};
   FStoredValues.Storage := Self;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 end;
 
 destructor TJvFormStorage.Destroy;
 begin
   FStoredProps.Free;
   FStoredProps := nil;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   FStoredValues.Free;
   FStoredValues := nil;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
   inherited Destroy;
 end;
 
@@ -970,7 +970,7 @@ begin
 {$ENDIF}
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvFormStorage.SeTJvStoredValues(Value: TJvStoredValues);
 begin
   FStoredValues.Assign(Value);
@@ -986,7 +986,7 @@ begin
   StoredValues.StoredValue[Name] := Value;
 end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 procedure TJvFormStorage.Loaded;
 begin
@@ -1052,7 +1052,7 @@ procedure TJvFormStorage.SavePlacement;
 begin
   inherited SavePlacement;
   SaveProperties;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   StoredValues.SaveValues;
 {$ENDIF}
 end;
@@ -1062,7 +1062,7 @@ begin
   inherited RestorePlacement;
   FRestored := True;
   RestoreProperties;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   StoredValues.RestoreValues;
 {$ENDIF}
 end;
@@ -1107,7 +1107,7 @@ begin
   if Assigned(FOnLoad) then FOnLoad(Self);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 { TJvStoredValue }
 
@@ -1197,7 +1197,7 @@ end;
 
 { TJvStoredValues }
 
-{$IFDEF Delphi4}
+{$IFDEF COMPILER4}
 constructor TJvStoredValues.Create(AOwner: TPersistent);
 begin
   inherited Create(AOwner, TJvStoredValue);
@@ -1284,6 +1284,6 @@ begin
     Items[I].Restore;
 end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 end.

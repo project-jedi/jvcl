@@ -93,7 +93,7 @@ implementation
 uses
   CommCtrl;
 
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
 function TryStrToDateTime(const S:String;out Value:TDateTime):boolean;
 begin
   try
@@ -156,7 +156,7 @@ begin
     or ((Kind = dtkTime) and WithinDelta(DateTime, NullDate)));
   if Result then
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(FNullText)))
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
   // (p3) the Format property doesn't exists in D5: what to do?
   else
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(Format)));

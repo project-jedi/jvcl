@@ -29,7 +29,7 @@ Known Issues:
 unit JvFavoritesButton;
 
 {$OBJEXPORTALL On}
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
 {$IFDEF LINUX}

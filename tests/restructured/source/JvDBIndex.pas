@@ -84,7 +84,7 @@ type
     property Ctl3D;
     property DropDownCount;
     property Font;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -118,13 +118,13 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}

@@ -32,11 +32,11 @@ unit JvDBComb;
 interface
 
 uses Windows, DbCtrls,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
  VDBConsts,
 {$ENDIF}
   Messages, Menus, Graphics, Classes, Controls, DB,
-  {$IFNDEF Delphi3_Up} DBTables, {$ENDIF} StdCtrls, DBConsts;
+  {$IFNDEF COMPILER3_UP} DBTables, {$ENDIF} StdCtrls, DBConsts;
 
 type
 
@@ -69,7 +69,7 @@ type
     function GetStyle: TComboBoxStyle;
 {$ENDIF}
   protected
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
     procedure SetItems(const Value: TStrings);
 {$ELSE}
     procedure SetItems(const Value: TStrings); override;
@@ -99,7 +99,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
@@ -138,7 +138,7 @@ type
     property Enabled;
     property EnableValues: Boolean read FEnableValues write SetEnableValues;
     property Font;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -182,10 +182,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -322,7 +322,7 @@ end;
 
 procedure TJvCustomDBComboBox.SetDataSource(Value: TDataSource);
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
 {$ENDIF}
     FDataLink.DataSource := Value;
@@ -501,7 +501,7 @@ end;
 
 procedure TJvCustomDBComboBox.SetItems(const Value: TStrings);
 begin
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
   inherited SetItems(Value);
 {$ENDIF}  
   //Items.Assign(Value);
@@ -529,7 +529,7 @@ begin
 {$ENDIF}
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvCustomDBComboBox.UseRightToLeftAlignment: Boolean;
 begin
   Result := DBUseRightToLeftAlignment(Self, Field);

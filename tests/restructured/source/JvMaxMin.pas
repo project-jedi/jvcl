@@ -33,7 +33,7 @@ function Max(A, B: Longint): Longint;
 function Min(A, B: Longint): Longint;
 function MaxInteger(const Values: array of Longint): Longint;
 function MinInteger(const Values: array of Longint): Longint;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function MaxInt64(const Values: array of int64): int64;
 function MinInt64(const Values: array of int64): int64;
 {$ENDIF}
@@ -49,7 +49,7 @@ function MinOf(const Values: array of Variant): Variant;
 
 procedure SwapLong(var Int1, Int2: Longint);
 procedure SwapInt(var Int1, Int2: Integer);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure SwapInt64(var Int1, Int2: Int64);
 {$ENDIF}
 
@@ -73,7 +73,7 @@ begin
   I := Int1; Int1 := Int2; Int2 := I;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure SwapInt64(var Int1, Int2: Int64);
 var
   I: Int64;
@@ -119,7 +119,7 @@ begin
     if Values[I] < Result then Result := Values[I];
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 
 function MaxInt64(const Values: array of int64): int64; 
 var
@@ -139,7 +139,7 @@ begin
     if Values[I] < Result then Result := Values[I];
 end;
 
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 function MaxFloat(const Values: array of Extended): Extended;
 var

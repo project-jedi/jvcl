@@ -66,7 +66,7 @@ type
     { Private declarations }
   protected
     { Protected declarations }
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: boolean); override;
 {$ENDIF}
     procedure Grow;
@@ -93,7 +93,7 @@ type
   published
     { Published declarations }
     property AutoGrow: boolean read FAutoGrow write SetAutoGrow;
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
     property AutoSize: boolean read FAutoSize write SetAutoSize;
 {$ENDIF}
     property Items: TStrings read FItems write SetItems;
@@ -262,7 +262,7 @@ begin
   end;
 end;
 
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 procedure TJvItemsPanel.SetAutoSize(Value: boolean);
 begin
   if FAutoSize <> Value then

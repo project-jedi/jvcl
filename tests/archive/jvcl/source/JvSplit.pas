@@ -96,7 +96,7 @@ type
     property ControlFirst: TControl read FControlFirst write SetControlFirst;
     property ControlSecond: TControl read FControlSecond write SetControlSecond;
     property Align: TAlign read GetAlign write SetAlign default alNone;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Constraints;
 {$ENDIF}
     property BevelInner;

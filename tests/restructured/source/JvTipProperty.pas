@@ -55,7 +55,7 @@ uses
 
 procedure TJvTipPropertyEditor.Edit;
 begin
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
   (GetComponent as TJvTipWindow).Execute;
 {$ELSE}
 if Component is TJvTipWindow then

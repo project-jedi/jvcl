@@ -82,7 +82,7 @@ type
 
   TJvxClipboardViewer = class(TJvCustomClipboardViewer)
   published
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -91,13 +91,13 @@ type
 {$ENDIF}
     property ViewFormat;
     property OnChange;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}

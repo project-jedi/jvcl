@@ -137,7 +137,7 @@ begin
   with Font do
     Result := Format('%s,%d,%s,%d,%s,%d', [Name, Size,
       FontStylesToString(Style), Ord(Pitch), ColorToString(Color),
-      {$IFDEF Delphi3_Up} Charset {$ELSE} 0 {$ENDIF}]);
+      {$IFDEF COMPILER3_UP} Charset {$ELSE} 0 {$ENDIF}]);
 end;
 
 type
@@ -166,7 +166,7 @@ begin
         3: Font.Style := StringToFontStyles(S);
         4: Font.Pitch := TFontPitch(StrToIntDef(S, Ord(Font.Pitch)));
         5: Font.Color := StringToColor(S);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
         6: Font.Charset := TFontCharset(StrToIntDef(S, Font.Charset));
 {$ENDIF}
       end;

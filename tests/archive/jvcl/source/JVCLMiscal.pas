@@ -28,7 +28,7 @@ Known Issues:
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 {$I JEDI.INC}
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
 {$IFDEF LINUX}
@@ -42,7 +42,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs, 
     Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls,
-    {$IFDEF DELPHI5} DsgnIntf, {$ENDIF} {$IFDEF DELPHI6_UP} DesignEditors, DesignIntf, {$ENDIF}
+    {$IFDEF COMPILER5} DsgnIntf, {$ENDIF} {$IFDEF COMPILER6_UP} DesignEditors, DesignIntf, {$ENDIF}
     JvMail, JvPerfMon95;
 
 type

@@ -33,7 +33,7 @@ interface
 uses
   Windows,
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignWindows,
 {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
@@ -148,19 +148,19 @@ type
   public
     { Public declarations }
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
     procedure ItemsModified(const Designer: IDesigner); override;
     procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override;
 {$ELSE}
     procedure FormModified; override;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure FormClosed(Form: TCustomForm); override;
 {$ELSE}
     procedure FormClosed(Form: TForm); override;
 {$ENDIF}
 {$ENDIF}
     function GetEditState: TEditState; override;
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
     function EditAction(Action: TEditAction): Boolean; override;
 {$ELSE}
     procedure EditAction(Action: TEditAction); override;
@@ -188,12 +188,12 @@ uses TypInfo, JvMaxMin, JvLConst, JvProps, JvDsgn;
 {$D-}
 {$ENDIF}
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 type
   TDesigner = DesignIntf.IDesigner;
   TFormDesigner = DesignIntf.IDesigner;
 {$ELSE}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 type
   TDesigner = IDesigner;
   TFormDesigner = IFormDesigner;
@@ -289,7 +289,7 @@ begin
     Include(Result, esCanPaste);
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 
 function TJvSpeedbarEditor.EditAction(Action: TEditAction): Boolean;
 begin
@@ -308,7 +308,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 type
   TDesignerSelectionList = IDesignerSelections;
 {$ENDIF}
@@ -336,10 +336,10 @@ begin
 end;
 
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 procedure TJvSpeedbarEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
 {$ELSE}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvSpeedbarEditor.FormClosed(Form: TCustomForm);
 {$ELSE}
 procedure TJvSpeedbarEditor.FormClosed(Form: TForm);
@@ -349,7 +349,7 @@ begin
   if {$IFDEF Delphi6_Up}ADesigner.Root{$ELSE}Form{$ENDIF} = OwnerForm then Free;
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 procedure TJvSpeedbarEditor.ItemsModified(const Designer: IDesigner);
 {$ELSE}
 procedure TJvSpeedbarEditor.FormModified;
@@ -599,7 +599,7 @@ var
 begin
 //----------------
   CompList := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
   try
 {$ENDIF}
     Item := ItemByRow(ButtonsList.Row);
@@ -609,7 +609,7 @@ begin
       CopyComponents(OwnerForm, CompList);
       Item.UpdateSection;
     end;
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
   finally
     CompList.Free;
   end;
@@ -625,7 +625,7 @@ var
 begin
   if CheckSpeedBar then begin
     CompList := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
     try
 {$ENDIF}
       FBar.OnAddItem := OnPasteItem;
@@ -635,7 +635,7 @@ begin
         FBar.OnAddItem := nil;
       end;
       UpdateData;
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
     finally
       CompList.Free;
     end;
@@ -778,7 +778,7 @@ begin
     if (Row < FBar.SectionCount) and (Row >= 0) then begin
       DrawCellText(Sender as TDrawGrid, Col, Row,
         FBar.Sections[Row].Caption, Rect, taLeftJustify, vaCenter
-{$IFDEF Delphi4_Up}, TDrawGrid(Sender).IsRightToLeft{$ENDIF});
+{$IFDEF COMPILER4_UP}, TDrawGrid(Sender).IsRightToLeft{$ENDIF});
     end;
   end;
 end;
@@ -1009,7 +1009,7 @@ begin
   I := CurrentSection;
   if (I >= 0) and (Row < FBar.ItemsCount(I)) then
     DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage
-{$IFDEF Delphi4_Up}, TDrawGrid(Sender).IsRightToLeft{$ENDIF});
+{$IFDEF COMPILER4_UP}, TDrawGrid(Sender).IsRightToLeft{$ENDIF});
 end;
 
 procedure TJvSpeedbarEditor.SectionListMouseDown(Sender: TObject;

@@ -31,7 +31,7 @@ unit JvPicClip;
 interface
 
 uses Messages, Classes, Controls, Windows,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 RTLConsts,
 {$ENDIF}
 Graphics{, JvComponent};
@@ -230,7 +230,7 @@ end;
 procedure TJvPicClip.CheckIndex(Index: Integer);
 begin
   if (Index >= Cols * Rows) or (Index < 0) then
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     raise EListError.CreateFmt(SListIndexError, [Index]);
 {$ELSE}
     raise EListError.CreateFmt('%s (%d)', [LoadStr(SListIndexError), Index]);
@@ -252,7 +252,7 @@ function TJvPicClip.GetGraphicCell(Index: Integer): TBitmap;
 begin
   CheckIndex(Index);
   AssignBitmapCell(Picture.Graphic, FBitmap, Cols, Rows, Index);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if Picture.Graphic is TBitmap then
     if FBitmap.PixelFormat <> pfDevice then
       FBitmap.PixelFormat := TBitmap(Picture.Graphic).PixelFormat;

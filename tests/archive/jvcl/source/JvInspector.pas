@@ -3789,7 +3789,7 @@ var
   TempList: TList;
   I: Integer;
   Item: TJvCustomInspectorItem;
-  {$IFNDEF DELPHI6_UP}
+  {$IFNDEF COMPILER6_UP}
   J: Integer;
   {$ENDIF}
 begin
@@ -3806,7 +3806,7 @@ begin
       else
       begin
         Item.BuildDisplayableList(TempList);
-        {$IFNDEF DELPHI6_UP}
+        {$IFNDEF COMPILER6_UP}
         for J := 0 to TempList.Count - 1 do
           if ItemList.IndexOf(TempList[J]) = -1 then
             ItemList.Add(TempList[J]);

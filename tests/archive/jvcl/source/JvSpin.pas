@@ -90,7 +90,7 @@ type
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property ShowHint;
     property ParentShowHint;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
@@ -103,7 +103,7 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -170,7 +170,7 @@ type
     procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure CMBiDiModeChanged(var Message: TMessage); message CM_BIDIMODECHANGED;
 {$ENDIF}
   protected
@@ -212,7 +212,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -255,10 +255,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnEndDock;
@@ -711,7 +711,7 @@ begin
     with TJvUpDown(FUpDown) do begin
       Visible := True;
       SetBounds(0, 0, DefBtnWidth, Self.Height);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       if (BiDiMode = bdRightToLeft) then Align := alLeft else
 {$ENDIF}
       Align := alRight;
@@ -793,7 +793,7 @@ begin
 {$IFDEF WIN32}
   if FUpDown <> nil then begin
     FUpDown.Width := DefBtnWidth;
- {$IFDEF Delphi4_Up}
+ {$IFDEF COMPILER4_UP}
     if (BiDiMode = bdRightToLeft) then FUpDown.Align := alLeft else
  {$ENDIF}
     FUpDown.Align := alRight;
@@ -803,7 +803,7 @@ begin
       R := Bounds(Width - Height - 1, -1, Height - 3, Height - 3)
     else
       R := Bounds(Width - Height, 0, Height, Height);
- {$IFDEF Delphi4_Up}
+ {$IFDEF COMPILER4_UP}
     if (BiDiMode = bdRightToLeft) then begin
       if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then begin
         R.Left := -1;
@@ -879,7 +879,7 @@ end;
 
 procedure TJvxSpinEdit.CreateParams(var Params: TCreateParams);
 const
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   Alignments: array[Boolean, TAlignment] of DWORD =
     ((ES_LEFT, ES_RIGHT, ES_CENTER), (ES_RIGHT, ES_LEFT, ES_CENTER));
 {$ELSE}
@@ -888,7 +888,7 @@ const
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or ES_MULTILINE or WS_CLIPCHILDREN or
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     Alignments[UseRightToLeftAlignment, FAlignment];
 {$ELSE}
     Alignments[FAlignment];
@@ -905,11 +905,11 @@ procedure TJvxSpinEdit.SetEditRect;
 var
   Loc: TRect;
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if (BiDiMode = bdRightToLeft) then
     SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1,
       ClientHeight + 1) else
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
   SetRect(Loc, 0, 0, ClientWidth - GetButtonWidth - 2, ClientHeight + 1);
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
 end;
@@ -1006,7 +1006,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure TJvxSpinEdit.CMBiDiModeChanged(var Message: TMessage);
 begin
   inherited;

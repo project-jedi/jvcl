@@ -47,7 +47,7 @@ type
     FTileSize: TPoint;
     FRoundFactor: Integer;
     procedure WMEraseBkgnd(var Message: TMessage); message WM_ERASEBKGND;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure WMNCPaint(var Message: TMessage); message WM_NCPAINT;
 {$ENDIF}
     function CreateRegion(Shade: Boolean): HRgn;
@@ -59,12 +59,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure ActivateHintData(Rect: TRect; const AHint: string;
       AData: Pointer); override;
 {$ENDIF}
     function CalcHintRect(MaxWidth: Integer; const AHint: string;
-      AData: Pointer): TRect; {$IFDEF Delphi3_Up} override; {$ENDIF}
+      AData: Pointer): TRect; {$IFDEF COMPILER3_UP} override; {$ENDIF}
   end;
 
 procedure SetHintStyle(Style: THintStyle; ShadowSize: THintShadowSize;
@@ -145,7 +145,7 @@ begin
 end;
 
 {$IFDEF WIN32}
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function GetCursorHeightMargin: Integer;
 { Return number of scanlines between the scanline containing cursor hotspot
   and the last scanline included in the cursor mask. }
@@ -234,7 +234,7 @@ begin
   Params.Style := Params.Style and not WS_BORDER;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvHintWindow.WMNCPaint(var Message: TMessage);
 begin
 end;
@@ -312,7 +312,7 @@ procedure TJvHintWindow.FillRegion(Rgn: HRgn; Shade: Boolean);
 begin
   if Shade then begin
     FImage.Canvas.Brush.Bitmap :=
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       AllocPatternBitmap(clBtnFace, clWindowText);
 {$ELSE}
       CreateTwoColorsBrushPattern(clBtnFace, clWindowText);
@@ -337,7 +337,7 @@ begin
     end;
   finally
     if Shade then begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       FImage.Canvas.Brush.Bitmap := nil;
 {$ELSE}
       FImage.Canvas.Brush.Bitmap.Free;
@@ -367,7 +367,7 @@ var
     DrawText(FImage.Canvas.Handle, StrPCopy(ACaption, Caption),
 {$ENDIF}
       -1, R, DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment]
-      {$IFDEF Delphi4_Up} or DrawTextBiDiModeFlagsReadingOnly {$ENDIF});
+      {$IFDEF COMPILER4_UP} or DrawTextBiDiModeFlagsReadingOnly {$ENDIF});
   end;
 
 begin
@@ -402,7 +402,7 @@ begin
   GetCursorPos(P);
   FPos := hpBottomRight;
   R := CalcHintRect(Screen.Width, AHint, nil);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   OffsetRect(R, Rect.Left - R.Left, Rect.Top - R.Top);
 {$ELSE}
  {$IFDEF WIN32}
@@ -499,7 +499,7 @@ begin
     StrPCopy(ACaption, AHint),
 {$ENDIF}
     -1, Result, DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment]
-    {$IFDEF Delphi4_Up} or DrawTextBiDiModeFlagsReadingOnly {$ENDIF});
+    {$IFDEF COMPILER4_UP} or DrawTextBiDiModeFlagsReadingOnly {$ENDIF});
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);
   FRect := Result;
@@ -534,7 +534,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvHintWindow.ActivateHintData(Rect: TRect; const AHint: string;
   AData: Pointer);
 begin

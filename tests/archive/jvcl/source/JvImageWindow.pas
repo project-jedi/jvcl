@@ -67,7 +67,7 @@ type
     { Protected declarations }
     procedure Paint; override;
     procedure Changed; dynamic;
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: boolean); override;
 {$ENDIF}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -83,7 +83,7 @@ type
   published
     { Published declarations }
     property Optimal: boolean read FOptimal write FOptimal default false;
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
     property AutoSize: boolean read FAutoSize write SetAutoSize default false;
 {$ENDIF}
     property BackColor: TColor read FBackColor write SetBackColor default clWindow;
@@ -415,7 +415,7 @@ begin
   //  inherited MouseUp(Button,Shift,X,Y);
 end;
 
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 procedure TJvImageWindow.SetAutoSize(Value: boolean);
 begin
   if FAutoSize <> Value then

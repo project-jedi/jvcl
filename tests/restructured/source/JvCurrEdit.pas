@@ -118,7 +118,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Clear; {$IFDEF Delphi5_Up} override; {$ENDIF}
+    procedure Clear; {$IFDEF COMPILER5_UP} override; {$ENDIF}
     property AsInteger: Longint read GetAsInteger write SetAsInteger;
     property DisplayText: string read GetDisplayText;
     property PopupVisible;
@@ -149,7 +149,7 @@ type
     property Font;
     property FormatOnEditing;
     property HideSelection;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -192,13 +192,13 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -238,7 +238,7 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -284,13 +284,13 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -825,7 +825,7 @@ begin
   ControlState := ControlState + [csCreating];
   try
     FPopup := TJvPopupWindow(CreatePopupCalculator(Self
-      {$IFDEF Delphi4_Up}, BiDiMode {$ENDIF}));
+      {$IFDEF COMPILER4_UP}, BiDiMode {$ENDIF}));
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
     UpdatePopup;
   finally

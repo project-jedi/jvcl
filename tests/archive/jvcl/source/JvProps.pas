@@ -85,7 +85,7 @@ type
     procedure LoadWCharProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadVariantProperty(const S: string; PropInfo: PPropInfo);
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function StoreInt64Property(PropInfo: PPropInfo): string;
     procedure LoadInt64Property(const S: string; PropInfo: PPropInfo);
 {$ENDIF}
@@ -156,7 +156,7 @@ end;
 
 function GetPropType(PropInfo: PPropInfo): PTypeInfo;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   Result := PropInfo^.PropType^;
 {$ELSE}
   Result := PropInfo^.PropType;
@@ -328,12 +328,12 @@ begin
 {$IFDEF WIN32}
         tkWChar: Def := StoreWCharProperty(PropInfo);
         tkLString: Def := StoreLStringProperty(PropInfo);
-  {$IFNDEF Delphi3_Up} { - Delphi 2.0, C++Builder 1.0 }
+  {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
         tkLWString: Def := StoreLStringProperty(PropInfo);
   {$ENDIF}
         tkVariant: Def := StoreVariantProperty(PropInfo);
 {$ENDIF WIN32}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         tkInt64: Def := StoreInt64Property(PropInfo);
 {$ENDIF}
         tkString: Def := StoreStringProperty(PropInfo);
@@ -344,7 +344,7 @@ begin
       if (Def <> '') or (PropInfo^.PropType^.Kind in [tkString, tkClass])
 {$IFDEF WIN32}
         or (PropInfo^.PropType^.Kind in [tkLString,
-          {$IFNDEF Delphi3_Up} tkLWString, {$ENDIF} tkWChar])
+          {$IFNDEF COMPILER3_UP} tkLWString, {$ENDIF} tkWChar])
 {$ENDIF WIN32}
       then
         S := Trim(ReadString(Section, GetItemName(PropInfo^.Name), Def))
@@ -357,12 +357,12 @@ begin
 {$IFDEF WIN32}
         tkWChar: LoadWCharProperty(S, PropInfo);
         tkLString: LoadLStringProperty(S, PropInfo);
-  {$IFNDEF Delphi3_Up} { - Delphi 2.0, C++Builder 1.0 }
+  {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
         tkLWString: LoadLStringProperty(S, PropInfo);
   {$ENDIF}
         tkVariant: LoadVariantProperty(S, PropInfo);
 {$ENDIF WIN32}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         tkInt64: LoadInt64Property(S, PropInfo);
 {$ENDIF}
         tkString: LoadStringProperty(S, PropInfo);
@@ -387,13 +387,13 @@ begin
       tkFloat: S := StoreFloatProperty(PropInfo);
 {$IFDEF WIN32}
       tkLString: S := StoreLStringProperty(PropInfo);
-  {$IFNDEF Delphi3_Up} { - Delphi 2.0, C++Builder 1.0 }
+  {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
       tkLWString: S := StoreLStringProperty(PropInfo);
   {$ENDIF}
       tkWChar: S := StoreWCharProperty(PropInfo);
       tkVariant: S := StoreVariantProperty(PropInfo);
 {$ENDIF WIN32}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       tkInt64: S := StoreInt64Property(PropInfo);
 {$ENDIF}
       tkString: S := StoreStringProperty(PropInfo);
@@ -402,7 +402,7 @@ begin
       else Exit;
     end;
     if (S <> '') or (PropInfo^.PropType^.Kind in [tkString
-      {$IFDEF WIN32}, tkLString, {$IFNDEF Delphi3_Up} tkLWString, {$ENDIF}
+      {$IFDEF WIN32}, tkLString, {$IFNDEF COMPILER3_UP} tkLWString, {$ENDIF}
       tkWChar {$ENDIF WIN32}]) then
       WriteString(Section, GetItemName(PropInfo^.Name), Trim(S));
   end;
@@ -458,7 +458,7 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvPropsStorage.StoreInt64Property(PropInfo: PPropInfo): string;
 begin
   Result := IntToStr(GetInt64Prop(FObject, PropInfo));
@@ -473,7 +473,7 @@ var
 begin
   Result := '[';
   W := GetOrdProp(FObject, PropInfo);
-  TypeInfo := GetTypeData(GetPropType(PropInfo))^.CompType{$IFDEF Delphi3_Up}^{$ENDIF};
+  TypeInfo := GetTypeData(GetPropType(PropInfo))^.CompType{$IFDEF COMPILER3_UP}^{$ENDIF};
   for I := 0 to SizeOf(TCardinalSet) * 8 - 1 do
     if I in TCardinalSet(W) then begin
       if Length(Result) <> 1 then Result := Result + ',';
@@ -614,7 +614,7 @@ begin
     DecimalSeparator)));
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure TJvPropsStorage.LoadInt64Property(const S: string; PropInfo: PPropInfo);
 begin
   SetInt64Prop(FObject, PropInfo, StrToInt64Def(S, 0));
@@ -654,7 +654,7 @@ var
   EnumName: string;
 begin
   W := 0;
-  TypeInfo := GetTypeData(GetPropType(PropInfo))^.CompType{$IFDEF Delphi3_Up}^{$ENDIF};
+  TypeInfo := GetTypeData(GetPropType(PropInfo))^.CompType{$IFDEF COMPILER3_UP}^{$ENDIF};
   Count := WordCount(S, Delims);
   for N := 1 to Count do begin
     EnumName := ExtractWord(N, S, Delims);

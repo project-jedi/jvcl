@@ -32,7 +32,7 @@ interface
 
 uses SysUtils, Classes
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 , RTLConsts
 {$ENDIF}
 ;
@@ -237,7 +237,7 @@ end;
 procedure TJvObjectStrings.SortList(Compare: TObjectSortCompare);
 begin
   if Sorted then
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Error(SSortedListError, 0);
 {$ELSE}
     raise EListError.Create(LoadStr(SSortedListError));

@@ -229,7 +229,7 @@ uses
 
 const
   shell32 = 'shell32.dll';
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 {$WARN SYMBOL_PLATFORM OFF}
 {$ENDIF}
 function SHQueryRecycleBinW(pszRootPath: PWideChar; var ShQueryRBInfo: TSHQueryRBInfo): HRESULT; external shell32 name 'SHQueryRecycleBinW';

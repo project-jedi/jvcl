@@ -58,7 +58,7 @@ implementation
 
 {$R *.DFM}
 
-{$IFNDEF Delphi6_UP}
+{$IFNDEF COMPILER6_UP}
 
 procedure CopySelected(De,Vers:TListbox);
 var
@@ -83,7 +83,7 @@ end;
 
 procedure TFormListb.btnLeftClick(Sender: TObject);
 begin
-{$IFDEF Delphi6_UP}
+{$IFDEF COMPILER6_UP}
 listbox2.CopySelection(ListBox1);
   while ListBox2.SelCount > 0 do
     ListBox2.DeleteSelected;
@@ -97,7 +97,7 @@ end;
 
 procedure TFormListb.btnRightClick(Sender: TObject);
 begin
-{$IFDEF Delphi6_UP}
+{$IFDEF COMPILER6_UP}
   ListBox1.CopySelection(ListBox2);
   while ListBox1.SelCount > 0 do
     ListBox1.DeleteSelected;

@@ -80,7 +80,7 @@ implementation
 {$IFDEF DCS}
 
 uses DbConsts, TypInfo, JvVCLUtils, JvStrUtils, JvLConst,
-  {$IFDEF Delphi3_Up}{$IFDEF Delphi5_Up} DsnDbCst, {$ELSE} BdeConst, {$ENDIF}{$ENDIF}
+  {$IFDEF COMPILER3_UP}{$IFDEF COMPILER5_UP} DsnDbCst, {$ELSE} BdeConst, {$ENDIF}{$ENDIF}
   DSDesign;
 
 {$R *.DFM}
@@ -176,7 +176,7 @@ end;
 procedure TJvMemDataSetEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     0: ShowFieldsEditor(Designer, TDataSet(Component), TDSDesigner);
 {$ELSE}
     0: ShowDatasetDesigner(Designer, TDataSet(Component));

@@ -32,7 +32,7 @@ unit JvBdeUtils;
 interface
 
 uses SysUtils, Windows, Bde, Registry,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 RTLConsts,
 {$ENDIF}
 Classes, DB, DBTables,
@@ -43,11 +43,11 @@ type
   TLocateFilter = (lfTree, lfCallback);
 {$ENDIF}
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
   TBDEDataSet = TDataSet;
 {$ENDIF}
 
-{$IFNDEF Delphi5_Up}
+{$IFNDEF COMPILER5_UP}
   TDatabaseLoginEvent = TLoginEvent;
 {$ENDIF}
 
@@ -207,11 +207,11 @@ implementation
 
 uses Forms, Controls, Dialogs, Consts, DBConsts, JvDConst, JvVCLUtils,
   JvFileUtil, JvAppUtils, JvStrUtils, JvMaxMin, {$IFNDEF WIN32} JvStr16, {$ENDIF}
-  {$IFDEF Delphi3_Up} BDEConst, DBCommon, {$ENDIF} JvDateUtil;
+  {$IFDEF COMPILER3_UP} BDEConst, DBCommon, {$ENDIF} JvDateUtil;
 
 { Utility routines }
 
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
 procedure DBError(Ident: Word);
 begin
   DatabaseError(LoadStr(Ident));
@@ -230,7 +230,7 @@ end;
 function SetToBookmark(ADataSet: TDataSet; ABookmark: TBookmark): Boolean;
 begin
   Result := False;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   with ADataSet do
     if Active and (ABookmark <> nil) and not (Bof and Eof) and
       BookmarkValid(ABookmark) then
@@ -276,7 +276,7 @@ end;
 
 {$IFDEF WIN32}
 function GetQuoteChar(Database: TDatabase): string;
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 const
   dbQUOTECHAR = $0404000A;
 {$ENDIF}
@@ -307,7 +307,7 @@ begin
 end;
 
 function FieldLogicMap(FldType: TFieldType): Integer;
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 {$IFDEF VER80}
 const
   FldTypeMap: array[TFieldType] of Integer = (
@@ -328,7 +328,7 @@ begin
 end;
 
 function FieldSubtypeMap(FldType: TFieldType): Integer;
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 {$IFDEF VER80}
 const
   FldSubtypeMap: array[TFieldType] of Integer = (
@@ -402,7 +402,7 @@ begin
           else begin
             Val(Value, L, E);
             if E <> 0 then
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
               DatabaseErrorFmt(SInvalidIntegerValue, [Value, FldName]);
 {$ELSE}
               DBErrorFmt(SInvalidIntegerValue, [Value, FldName]);
@@ -597,9 +597,9 @@ begin
   if (DatabaseName = '') then Exit;
   I := 1;
   while I <= Length(DatabaseName) do begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     if DatabaseName[I] in LeadBytes then Inc(I) else
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
     if DatabaseName[I] in [':','\'] then Exit;
     Inc(I);
   end;
@@ -1377,13 +1377,13 @@ function DataSetRecordCount(DataSet: TDataSet): Longint;
 var
   IsCount: Boolean;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if DataSet is TBDEDataSet then begin
 {$ENDIF}
     IsCount := (DbiGetExactRecordCount(TBDEDataSet(DataSet).Handle,
       Result) = DBIERR_NONE) or (DbiGetRecordCount(TBDEDataSet(DataSet).Handle,
       Result) = DBIERR_NONE);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   end
   else
     try
@@ -1405,7 +1405,7 @@ begin
   if (DataSet <> nil) and DataSet.Active and (DataSet.State in [dsBrowse,
     dsEdit]) then
   begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     if not (DataSet is TBDEDataSet) then begin
       Result := DataSet.RecNo;
       Exit;

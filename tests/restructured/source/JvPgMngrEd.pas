@@ -37,7 +37,7 @@ uses
   WinTypes, WinProcs,
 {$ENDIF}
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs, Grids,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
     RTLConsts, DesignIntf, DesignEditors,  VCLEditors, DesignWindows,
 {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
@@ -75,22 +75,22 @@ type
     procedure Activated; override;
   public
     procedure NameProxy(Sender: TObject);
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
     procedure ItemsModified(const Designer: IDesigner); override;
     procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override;
 {$ELSE}
     procedure FormModified; override;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure FormClosed(Form: TCustomForm); override;
 {$ELSE}
     procedure FormClosed(Form: TForm); override;
 {$ENDIF}
 {$ENDIF}
     function GetEditState: TEditState; override;
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
 {$ELSE}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure ComponentDeleted(Component: IPersistent); override;
 {$ELSE}
     procedure ComponentDeleted(Component: TComponent); override;
@@ -141,12 +141,12 @@ uses Consts, Buttons, JvxCtrls, JvConst, JvLConst, JvDsgn;
  {$D-}
 {$ENDIF}
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 type
   TDesigner = DesignIntf.IDesigner;
   TFormDesigner = DesignIntf.IDesigner;
 {$ELSE}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 type
   TDesigner = IDesigner;
   TFormDesigner = IFormDesigner;
@@ -324,10 +324,10 @@ begin
 end;
 
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 procedure TJvProxyEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
 {$ELSE}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvProxyEditor.FormClosed(Form: TCustomForm);
 {$ELSE}
 procedure TJvProxyEditor.FormClosed(Form: TForm);
@@ -337,7 +337,7 @@ begin
   if {$IFDEF Delphi6_Up}ADesigner.Root{$ELSE}Form{$ENDIF} = OwnerForm then Free;
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 procedure TJvProxyEditor.ItemsModified(const Designer: IDesigner);
 {$ELSE}
 procedure TJvProxyEditor.FormModified;
@@ -353,12 +353,12 @@ begin
   SelectProxy(ProxyByRow(ProxyGrid.Row - 1));
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 procedure TJvProxyEditor.ItemDeleted(const ADesigner: IDesigner; Item: TPersistent);
 begin
   if Item = FPageManager then begin
 {$ELSE}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure TJvProxyEditor.ComponentDeleted(Component: IPersistent);
 begin
   if ExtractPersistent(Component) = FPageManager then begin
@@ -416,7 +416,7 @@ begin
     (Designer.{$IFDEF Delphi6_Up}Root{$ELSE}Form{$ENDIF} <> nil);
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 type
   TDesignerSelectionList = IDesignerSelections;
 {$ENDIF}

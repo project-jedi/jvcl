@@ -269,7 +269,7 @@ begin
     if Row < FBar.SectionCount then begin
       DrawCellText(Sender as TDrawGrid, Col, Row,
         FBar.Sections[Row].Caption, Rect, taLeftJustify, vaCenter
-        {$IFDEF Delphi4_Up}, TDrawGrid(Sender).IsRightToLeft {$ENDIF});
+        {$IFDEF COMPILER4_UP}, TDrawGrid(Sender).IsRightToLeft {$ENDIF});
     end;
   end;
 end;
@@ -372,7 +372,7 @@ begin
   I := CurrentSection;
   if (I >= 0) and (Row < FBar.ItemsCount(I)) then
     DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage
-      {$IFDEF Delphi4_Up}, TDrawGrid(Sender).IsRightToLeft {$ENDIF});
+      {$IFDEF COMPILER4_UP}, TDrawGrid(Sender).IsRightToLeft {$ENDIF});
 end;
 
 procedure TJvSpeedbarSetupWindow.CloseBtnClick(Sender: TObject);

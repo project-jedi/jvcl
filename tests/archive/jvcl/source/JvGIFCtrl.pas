@@ -52,10 +52,10 @@ type
     FCache: TBitmap;
     FCacheIndex: Integer;
     FTransColor: TColor;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     FAsyncDrawing: Boolean;
 {$ENDIF}
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
     FAutoSize: Boolean;
 {$ENDIF}
     FOnStart: TNotifyEvent;
@@ -65,10 +65,10 @@ type
     procedure TimerDeactivate;
     function GetFrameBitmap(Index: Integer; var TransColor: TColor): TBitmap;
     function GetDelayTime(Index: Integer): Cardinal;
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
     procedure SetAutoSize(Value: Boolean);
 {$ENDIF}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure SetAsyncDrawing(Value: Boolean);
 {$ENDIF}
     procedure SetAnimate(Value: Boolean);
@@ -81,7 +81,7 @@ type
     procedure TimerExpired(Sender: TObject);
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
   protected
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
 {$ENDIF}
     function GetPalette: HPALETTE; override;
@@ -96,11 +96,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property AsyncDrawing: Boolean read FAsyncDrawing write SetAsyncDrawing default False;
 {$ENDIF}
     property JvxAnimate: Boolean read FAnimate write SetAnimate default False;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property AutoSize default True;
 {$ELSE}
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
@@ -111,7 +111,7 @@ type
     property Loop: Boolean read FLoop write FLoop default True;
     property Stretch: Boolean read FStretch write SetStretch default False;
     property Transparent: Boolean read FTransparent write SetTransparent default True;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
@@ -137,13 +137,13 @@ type
     property OnMouseMove;
     property OnMouseDown;
     property OnMouseUp;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -201,7 +201,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvGIFAnimator.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
   Result := True;
@@ -247,7 +247,7 @@ begin
     FCache := nil;
     Result := TBitmap.Create;
   end;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   Result.Canvas.Lock;
 {$ENDIF}
   try
@@ -304,7 +304,7 @@ begin
       end; { UseCache }
       with FImage.Frames[Last] do
         Draw(Canvas, Bounds(Origin.X, Origin.Y, Width, Height), True);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       if (not UseCache) and (TransColor <> clNone) and FTransparent then
       begin
         TransparentColor := PaletteColor(TransColor);
@@ -317,11 +317,11 @@ begin
     FCache := Result;
     FCacheIndex := Index;
     FTransColor := TransColor;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Result.Canvas.Unlock;
 {$ENDIF}
   except
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Result.Canvas.Unlock;
 {$ENDIF}
     if not UseCache then Result.Free;
@@ -437,7 +437,7 @@ begin
   begin
     TransColor := clNone;
     Frame := GetFrameBitmap(FrameIndex, TransColor);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Frame.Canvas.Lock;
     try
 {$ENDIF}
@@ -454,7 +454,7 @@ begin
           WidthOf(Dest), HeightOf(Dest), Bounds(0, 0, Frame.Width,
           Frame.Height), Frame, TransColor);
       end;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     finally
       Frame.Canvas.Unlock;
     end;
@@ -483,7 +483,7 @@ end;
 
 procedure TJvGIFAnimator.TimerExpired(Sender: TObject);
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if csPaintCopy in ControlState then Exit;
 {$ENDIF}
   if Visible and (FImage.Count > 1) and (Parent <> nil) and
@@ -493,7 +493,7 @@ begin
     try
       if FFrameIndex < FImage.Count - 1 then Inc(FFrameIndex)
       else FFrameIndex := 0;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       Canvas.Lock;
       try
         FTimerRepaint := True;
@@ -548,7 +548,7 @@ begin
   if Assigned(FOnStart) then FOnStart(Self);
 end;
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 procedure TJvGIFAnimator.SetAutoSize(Value: Boolean);
 begin
   if Value <> FAutoSize then begin
@@ -558,7 +558,7 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvGIFAnimator.SetAsyncDrawing(Value: Boolean);
 begin
   if FAsyncDrawing <> Value then begin
@@ -596,7 +596,7 @@ end;
 procedure TJvGIFAnimator.WMSize(var Message: TWMSize);
 begin
   inherited;
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   AdjustSize;
 {$ENDIF}
 end;

@@ -35,7 +35,7 @@ uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, {$ENDIF} Classes, SysUtils,
   Controls, Graphics, ExtCtrls, Menus, Forms;
 
 type
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   IDesigner = TDesigner;
   IFormDesigner = TFormDesigner;
 {$ENDIF}

@@ -308,10 +308,10 @@ begin
     if Handle <> 0 then ShowOwnedPopups(Handle, False);
     Terminate;
   end;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   CallTerminateProcs;
 {$ENDIF}
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
   Halt(10);
 {$ENDIF}
 end;
@@ -519,7 +519,7 @@ begin
 {$IFDEF WIN32}
     if UseRegistry then begin
       Ini := TRegIniFile.Create(IniFileName);
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
       TRegIniFile(Ini).Access := KEY_READ;
 {$ENDIF}
     end

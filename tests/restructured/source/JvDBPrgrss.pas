@@ -420,7 +420,7 @@ function TJvDBProgress.GetDBSession: TSession;
 begin
   Result := Sessions.FindSession(SessionName);
   if Result = nil then
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Result := DBTables.Session;
 {$ELSE}
     Result := DB.Session;
@@ -489,10 +489,10 @@ begin
       traceBLOB: CurFlag := tfBlob;
       traceMISC: CurFlag := tfMisc;
       traceVENDOR: CurFlag := tfVendor;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       traceDATAIN: CurFlag := tfDataIn;
       traceDATAOUT: CurFlag := tfDataOut;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
       else Exit;
     end;
     if (CurFlag in TraceFlags) then

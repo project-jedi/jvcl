@@ -45,7 +45,7 @@ type
   TFixedCellCheckEvent = procedure (Sender: TObject; ACol, ARow: Longint;
     var Enabled: Boolean) of object;
 {$IFDEF WIN32}
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
   TInplaceEditStyle = TEditStyle; //(ieSimple, ieEllipsis, iePickList);
 
 const
@@ -268,7 +268,7 @@ begin
   with Params do begin
     Style := Style or WS_BORDER;
     ExStyle := WS_EX_TOOLWINDOW or WS_EX_TOPMOST;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     AddBiDiModeExStyle(ExStyle);
 {$ENDIF}
     WindowClass.Style := CS_SAVEBITS;
@@ -338,7 +338,7 @@ begin
   if FEditStyle <> ieSimple then Dec(R.Right, FButtonWidth);
   SendMessage(Handle, EM_SETRECTNP, 0, LongInt(@R));
   SendMessage(Handle, EM_SCROLLCARET, 0, 0);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if SysLocale.FarEast then
     SetImeCompositionWindow(Font, R.Left, R.Top);
 {$ENDIF}
@@ -599,7 +599,7 @@ end;
 
 procedure TJvInplaceEdit.WMKillFocus(var Message: TMessage);
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if not SysLocale.FarEast then inherited
   else begin
     ImeName := Screen.DefaultIme;
@@ -742,14 +742,14 @@ procedure TJvxDrawGrid.DrawStr(ARect: TRect; const S: string;
   Align: TAlignment);
 begin
   DrawCellTextEx(Self, 0, 0, S, ARect, Align, vaCenter, False
-    {$IFDEF Delphi4_Up}, IsRightToLeft {$ENDIF});
+    {$IFDEF COMPILER4_UP}, IsRightToLeft {$ENDIF});
 end;
 
 procedure TJvxDrawGrid.DrawMultiline(ARect: TRect; const S: string;
   Align: TAlignment);
 begin
   DrawCellTextEx(Self, 0, 0, S, ARect, Align, vaTopJustify, True
-    {$IFDEF Delphi4_Up}, IsRightToLeft {$ENDIF});
+    {$IFDEF COMPILER4_UP}, IsRightToLeft {$ENDIF});
 end;
 
 procedure TJvxDrawGrid.InvalidateCell(ACol, ARow: Longint);

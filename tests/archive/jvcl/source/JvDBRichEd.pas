@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, ComCtrls, CommCtrl, RichEdit, SysUtils, Classes,
-  Graphics, Controls, Menus, StdCtrls, DB, {$IFNDEF Delphi3_Up} DBTables, {$ENDIF}
+  Graphics, Controls, Menus, StdCtrls, DB, {$IFNDEF COMPILER3_UP} DBTables, {$ENDIF}
   JvRichEd, DBCtrls;
 
 type
@@ -80,7 +80,7 @@ type
     destructor Destroy; override;
     procedure LoadMemo; virtual;
     procedure UpdateMemo;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
@@ -94,7 +94,7 @@ type
     property Align;
     property Alignment;
     property AllowObjects;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property AllowInPlace;
 {$ENDIF}
     property AutoURLDetect;
@@ -108,7 +108,7 @@ type
     property Font;
     property HideSelection;
     property HideScrollBars;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -162,10 +162,10 @@ type
     property OnProtectChangeEx;
     property OnSaveClipboard;
     property OnStartDrag;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
@@ -173,7 +173,7 @@ type
     property OnStartDock;
 {$ENDIF}
     property OnTextNotFound;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property OnCloseFindDialog;
 {$ENDIF}
     property OnURLClick;
@@ -219,7 +219,7 @@ begin
     (AComponent = DataSource) then DataSource := nil;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvDBRichEdit.UseRightToLeftAlignment: Boolean;
 begin
   Result := DBUseRightToLeftAlignment(Self, Field);
@@ -233,7 +233,7 @@ begin
     Result := FDataLink.Editing;
     if not Result and Assigned(FDataLink.Field) then
     try
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       if FDataLink.Field.IsBlob then
 {$ELSE}
       if FDataLink.Field is TBlobField then
@@ -325,7 +325,7 @@ begin
 end;
 
 procedure TJvDBRichEdit.LoadMemo;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 begin
   if FMemoLoaded or (FDataLink.Field = nil) or not
     FDataLink.Field.IsBlob then Exit;
@@ -376,7 +376,7 @@ begin
     else Text := '';
     FMemoLoaded := False;
   end
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   else if FDataLink.Field.IsBlob then begin
 {$ELSE}
   else if FDataLink.Field is TBlobField then begin
@@ -417,7 +417,7 @@ begin
 end;
 
 procedure TJvDBRichEdit.UpdateData(Sender: TObject);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 begin
   if (FDataLink.Field <> nil) then begin
     if FDataLink.Field.IsBlob then FDataLink.Field.Assign(Lines)
@@ -444,7 +444,7 @@ begin
   if FFocused <> Value then begin
     FFocused := Value;
     if not Assigned(FDataLink.Field) or not
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       FDataLink.Field.IsBlob then
 {$ELSE}
       (FDataLink.Field is TBlobField) then
@@ -457,10 +457,10 @@ procedure TJvDBRichEdit.CMEnter(var Message: TCMEnter);
 begin
   SetFocused(True);
   inherited;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if SysLocale.FarEast and FDataLink.CanModify then
     inherited ReadOnly := False;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 end;
 
 procedure TJvDBRichEdit.CMExit(var Message: TCMExit);
@@ -519,7 +519,7 @@ begin
   if FDataLink.Editing and FMemoLoaded then UpdateData(Self);
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvDBRichEdit.ExecuteAction(Action: TBasicAction): Boolean;
 begin
   Result := inherited ExecuteAction(Action) or (FDataLink <> nil) and

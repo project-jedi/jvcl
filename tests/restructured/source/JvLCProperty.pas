@@ -38,7 +38,7 @@ type
 
   TJvListCombProperty = class(TDefaultEditor)
   protected
-{$IFDEF Delphi6_UP}
+{$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
 {$ELSE}
     procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
@@ -59,7 +59,7 @@ uses
 
 { TJvListCombProperty }
 
-{$IFDEF Delphi6_UP}
+{$IFDEF COMPILER6_UP}
 
 procedure TJvListCombProperty.EditProperty(const Prop: IProperty; var Continue: Boolean);
 var PropName: string;

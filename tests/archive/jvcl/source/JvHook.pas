@@ -82,7 +82,7 @@ implementation
 type
   TJvHack = class(TWinControl);
   THookOrder = (hoBeforeMsg, hoAfterMsg);
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
   TCustomForm = TForm;
 {$ENDIF}
 

@@ -33,7 +33,7 @@ unit JvFileUtil;
 interface
 
 uses Windows,
- {$IFDEF Delphi6_Up}
+ {$IFDEF COMPILER6_UP}
 RTLConsts,
 {$ENDIF}
 Messages, SysUtils, Classes, Consts, Controls{, JvComponent};
@@ -44,7 +44,7 @@ procedure CopyFileEx(const FileName, DestName: string;
   OverwriteReadOnly, ShellDialog: Boolean; ProgressControl: TControl);
 procedure MoveFile(const FileName, DestName: TFileName);
 procedure MoveFileEx(const FileName, DestName: TFileName; ShellDialog: Boolean);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function GetFileSize(const FileName: string): Int64;
 {$ELSE}
 function GetFileSize(const FileName: string): Longint;
@@ -61,13 +61,13 @@ function DirExists(Name: string): Boolean;
 procedure ForceDirectories(Dir: string);
 
 function FileLock(Handle: Integer; Offset, LockSize: Longint): Integer;
-  {$IFDEF Delphi4_Up} overload; {$ENDIF}
-{$IFDEF Delphi4_Up}
+  {$IFDEF COMPILER4_UP} overload; {$ENDIF}
+{$IFDEF COMPILER4_UP}
 function FileLock(Handle: Integer; Offset, LockSize: Int64): Integer; overload;
 {$ENDIF}
 function FileUnlock(Handle: Integer; Offset, LockSize: Longint): Integer;
-  {$IFDEF Delphi4_Up} overload; {$ENDIF}
-{$IFDEF Delphi4_Up}
+  {$IFDEF COMPILER4_UP} overload; {$ENDIF}
+{$IFDEF COMPILER4_UP}
 function FileUnlock(Handle: Integer; Offset, LockSize: Int64): Integer; overload;
 {$ENDIF}
 
@@ -91,19 +91,19 @@ procedure CreateFileLink(const FileName, DisplayName: string; Folder: Integer);
 procedure DeleteFileLink(const DisplayName: string; Folder: Integer);
 {$ENDIF WIN32}
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function IsPathDelimiter(const S: string; Index: Integer): Boolean;
 {$ENDIF}
 
 implementation
 
-uses {$IFDEF WIN32} {$IFDEF Delphi3_Up} ActiveX, ComObj, ShlObj, {$ELSE} Ole2,
+uses {$IFDEF WIN32} {$IFDEF COMPILER3_UP} ActiveX, ComObj, ShlObj, {$ELSE} Ole2,
   OleAuto, {$ENDIF} {$ENDIF} JvDateUtil, ShellAPI, FileCtrl, Forms, JvVCLUtils,
   JvPrgrss, JvFunctions;
 
 {$IFDEF WIN32}
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 
 type
 
@@ -172,7 +172,7 @@ function SHGetSpecialFolderLocation(hwndOwner: HWND; nFolder: Integer;
   var ppidl: PItemIDList): HResult; stdcall; far; external Shell32
   name 'SHGetSpecialFolderLocation';
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { TJvBrowseFolderDlg }
 
@@ -487,7 +487,7 @@ type
     property Source: string read FSource write FSource;
   end;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 const
   FOF_NOERRORUI = $0400;
 {$ENDIF}
@@ -582,7 +582,7 @@ function NormalDir(const DirName: string): string;
 begin
   Result := DirName;
   if (Result <> '') and
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     not (AnsiLastChar(Result)^ in [':', '\']) then
 {$ELSE}
     not (Result[Length(Result)] in [':', '\']) then
@@ -598,7 +598,7 @@ function RemoveBackSlash(const DirName: string): string;
 begin
   Result := DirName;
   if (Length(Result) > 1) and
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     (AnsiLastChar(Result)^ = '\') then
 {$ELSE}
     (Result[Length(Result)] = '\') then
@@ -633,7 +633,7 @@ end;
 procedure ForceDirectories(Dir: string);
 begin
   if Length(Dir) = 0 then Exit;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if (AnsiLastChar(Dir) <> nil) and (AnsiLastChar(Dir)^ = '\') then
 {$ELSE}
   if Dir[Length(Dir)] = '\' then
@@ -778,7 +778,7 @@ begin
     MoveFile(FileName, DestName);
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function GetFileSize(const FileName: string): Int64;
 var
   Handle: THandle;
@@ -806,7 +806,7 @@ begin
   else Result := -1;
   FindClose(SearchRec);
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 function FileDateTime(const FileName: string): System.TDateTime;
 var
@@ -975,7 +975,7 @@ begin
     Result := GetLastError;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function FileLock(Handle: Integer; Offset, LockSize: Int64): Integer;
 begin
   if LockFile(Handle, Int64Rec(Offset).Lo, Int64Rec(Offset).Hi,
@@ -991,7 +991,7 @@ begin
   else
     Result := GetLastError;
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 {$ELSE}
 
@@ -1142,7 +1142,7 @@ const
   IID_IPersistFile: TGUID = (
     D1:$0000010B;D2:$0000;D3:$0000;D4:($C0,$00,$00,$00,$00,$00,$00,$46));
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 const
   IID_IShellLinkA: TGUID = (
     D1:$000214EE; D2:$0000; D3:$0000; D4:($C0,$00,$00,$00,$00,$00,$00,$46));
@@ -1200,14 +1200,14 @@ begin
         MultiByteToWideChar(CP_ACP, 0, FileDestPath, -1, FileNameW, MAX_PATH);
         OleCheck(PersistFile.Save(FileNameW, True));
       finally
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
         PersistFile := nil;
 {$ELSE}
         PersistFile.Release;
 {$ENDIF}
       end;
     finally
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       ShellLink := nil;
 {$ELSE}
       ShellLink.Release;
@@ -1234,7 +1234,7 @@ begin
       StrCat(FileDestPath, PChar('\' + DisplayName + LinkExt));
       DeleteFile(FileDestPath);
     finally
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       ShellLink := nil;
 {$ELSE}
       ShellLink.Release;
@@ -1247,7 +1247,7 @@ end;
 
 {$ENDIF WIN32}
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function IsPathDelimiter(const S: string; Index: Integer): Boolean;
 begin
   Result := (Index > 0) and (Index <= Length(S)) and (S[Index] = '\');

@@ -93,7 +93,7 @@ implementation
 
 uses
 {$IFDEF WIN32}
-  Windows, {$IFDEF Delphi3_Up} ComObj, {$ELSE} OleAuto, {$ENDIF Delphi3_Up}
+  Windows, {$IFDEF COMPILER3_UP} ComObj, {$ELSE} OleAuto, {$ENDIF COMPILER3_UP}
 {$ELSE WIN32}
   WinProcs, WinTypes, ToolHelp, JvStr16,
 {$ENDIF WIN32}
@@ -101,7 +101,7 @@ uses
 
 {$R *.DFM}
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 resourcestring
 {$ELSE}
 const
@@ -170,7 +170,7 @@ begin
   end
   else Integer(LogicalAddress) := Integer(LogicalAddress) -
     Integer(Info.AllocationBase);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   StrLCopy(ModName, AnsiStrRScan(Temp, '\') + 1, SizeOf(ModName) - 1);
 {$ELSE}
   StrLCopy(ModName, StrRScan(Temp, '\') + 1, SizeOf(ModName) - 1);
@@ -247,7 +247,7 @@ begin
     S := Format(SCodeError, [S,
       EExternalException(ExceptObj).ExceptionRecord^.ExceptionCode])
 {$ENDIF}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   else if ExceptObj is {$IFDEF Delphi6_Up}EOSError{$ELSE}EWin32Error{$ENDIF} then
     S := Format(SCodeError, [S, {$IFDEF Delphi6_Up}EOSError{$ELSE}EWin32Error{$ENDIF}(ExceptObj).ErrorCode])
 {$ENDIF}

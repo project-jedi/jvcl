@@ -33,7 +33,7 @@ interface
 uses
   SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, DB
-  {$IFNDEF Delphi4_Up}, DBTables {$ENDIF};
+  {$IFNDEF COMPILER4_UP}, DBTables {$ENDIF};
 
 type
   TJvQueryParamsDialog = class(TForm)
@@ -66,11 +66,11 @@ type
   end;
 
 function EditQueryParams(DataSet: TDataSet; List: TParams;
-  AHelpContext: THelpContext {$IFDEF Delphi4_Up} = 0 {$ENDIF}): Boolean;
+  AHelpContext: THelpContext {$IFDEF COMPILER4_UP} = 0 {$ENDIF}): Boolean;
 
 implementation
 
-uses DbConsts, {$IFDEF Delphi3_Up} BdeConst, {$ENDIF} JvVCLUtils, JvTypes;
+uses DbConsts, {$IFDEF COMPILER3_UP} BdeConst, {$ENDIF} JvVCLUtils, JvTypes;
 
 {$R *.DFM}
 
@@ -117,7 +117,7 @@ begin
 end;
 
 function EditQueryParams(DataSet: TDataSet; List: TParams;
-  AHelpContext: THelpContext {$IFDEF Delphi4_Up} = 0 {$ENDIF}): Boolean;
+  AHelpContext: THelpContext {$IFDEF COMPILER4_UP} = 0 {$ENDIF}): Boolean;
 begin
   with TJvQueryParamsDialog.Create(Application) do
   try
@@ -129,11 +129,11 @@ begin
     end;
     if (csDesigning in DataSet.ComponentState) then
       Caption := Format(ResStr(SParamEditor),
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   {$IFDEF CBUILDER}
         [DataSet.Owner.Name, '->', DataSet.Name]);
   {$ELSE}
-    {$IFDEF Delphi4_Up}
+    {$IFDEF COMPILER4_UP}
         [DataSet.Owner.Name, '.', DataSet.Name]);
     {$ELSE}
         [DataSet.Owner.Name, DataSet.Name]);

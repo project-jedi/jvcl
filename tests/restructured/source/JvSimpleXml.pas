@@ -36,7 +36,7 @@ uses
   SysUtils, Classes, IniFiles, JvComponent;
 
 type
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
   THashedStringlist = class(TStringlist);
 {$ENDIF}
   TJvSimpleXmlElem = class;

@@ -31,7 +31,7 @@ unit JvDBUtils;
 interface
 
 uses {$IFDEF WIN32} Windows, Registry, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Classes, SysUtils, DB, {$IFNDEF Delphi3_Up} DBTables, {$ENDIF} IniFiles;
+  Classes, SysUtils, DB, {$IFNDEF COMPILER3_UP} DBTables, {$ENDIF} IniFiles;
 
 type
 
@@ -135,7 +135,7 @@ type
 {$ENDIF}
 
 const
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   {$IFDEF WIN32}
   ftBlobTypes = [ftBlob..ftTypedBinary];
   {$ELSE}
@@ -143,13 +143,13 @@ const
   {$ENDIF}
 {$ELSE}
   ftBlobTypes = [Low(TBlobType)..High(TBlobType)];
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 {$IFDEF COMPILER35_UP} {$NODEFINE ftBlobTypes} {$ENDIF}
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   ftNonTextTypes = [ftBytes, ftVarBytes, ftBlob, ftMemo, ftGraphic
     {$IFDEF WIN32}, ftFmtMemo, ftParadoxOle, ftDBaseOle, ftTypedBinary
-    {$IFDEF Delphi3_Up}, ftCursor {$ENDIF} {$ENDIF}];
+    {$IFDEF COMPILER3_UP}, ftCursor {$ENDIF} {$ENDIF}];
   {$IFDEF VER110} { C++ Builder 3 or higher }
   {$NODEFINE ftNonTextTypes}
   (*$HPPEMIT 'namespace JvDBUtils'*)
@@ -162,9 +162,9 @@ const
 type
   Largeint = Longint;
   {$IFDEF VER110} {$NODEFINE Largeint} {$ENDIF}
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure _DBError(const Msg: string);
 {$ELSE}
 procedure _DBError(Ident: Word);
@@ -173,12 +173,12 @@ procedure _DBError(Ident: Word);
 implementation
 
 uses Forms, Controls, Dialogs, Consts, DBConsts, JvDConst, JvVCLUtils, JvFileUtil,
-  JvAppUtils, JvStrUtils, JvMaxMin, {$IFNDEF Delphi3_Up} JvBdeUtils, {$ENDIF}
+  JvAppUtils, JvStrUtils, JvMaxMin, {$IFNDEF COMPILER3_UP} JvBdeUtils, {$ENDIF}
   {$IFNDEF WIN32} JvStr16, {$ENDIF} JvDateUtil;
 
 { Utility routines }
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure _DBError(const Msg: string);
 begin
   DatabaseError(Msg);
@@ -211,7 +211,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 function SetToBookmark(ADataSet: TDataSet; ABookmark: TBookmark): Boolean;
 begin
   Result := False;
@@ -239,7 +239,7 @@ begin
       try
         Close;
         Open;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
         SetToBookmark(Query, BookMk);
 {$ELSE}
         if Query is TDBDataSet then SetToBookmark(Query, BookMk);
@@ -283,7 +283,7 @@ end;
 
 function TJvLocateObject.FilterApplicable: Boolean;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   Result := FLookupField.FieldKind in [fkData, fkInternalCalc];
 {$ELSE}
   Result := ({$IFDEF WIN32} FLookupField.FieldKind = fkData {$ELSE}
@@ -461,7 +461,7 @@ begin
           end;
         end;
       finally
-        if not Result {$IFDEF Delphi3_Up} and
+        if not Result {$IFDEF COMPILER3_UP} and
           DataSet.BookmarkValid(PChar(Bookmark)) {$ENDIF} then
           DataSet.Bookmark := Bookmark;
       end;
@@ -543,7 +543,7 @@ begin
     end;
   end
   else
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     DatabaseErrorFmt(SFieldTypeMismatch, [Field.DisplayName]);
 {$ELSE}
     DBErrorFmt(SFieldTypeMismatch,
@@ -800,7 +800,7 @@ begin
     if not ReadOnly and not Calculated and IsNull then begin
       FocusControl;
 {$IFDEF WIN32}
-  {$IFNDEF Delphi3_Up}
+  {$IFNDEF COMPILER3_UP}
       DBErrorFmt(SFieldRequired, [DisplayName]);
   {$ELSE}
       DatabaseErrorFmt(SFieldRequired, [DisplayName]);

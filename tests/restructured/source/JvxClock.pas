@@ -34,7 +34,7 @@ interface
 uses Windows, SysUtils, Messages, Classes, Graphics, Controls,
     Forms, StdCtrls, ExtCtrls, Menus, JvTimer
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
     , RTLConsts
 {$ENDIF}
     ;
@@ -98,7 +98,7 @@ type
     procedure WMTimeChange(var Message: TMessage); message WM_TIMECHANGE;
   protected
     { Protected declarations }
- {$IFNDEF Delphi6_Up}
+ {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean);
 {$ELSE}
     procedure SetAutoSize(Value: Boolean);  override;
@@ -134,7 +134,7 @@ type
     property BevelWidth;
     property BorderWidth;
     property BorderStyle;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property UseDockManager default True;
@@ -167,13 +167,13 @@ type
     property OnDragDrop;
     property OnEndDrag;
     property OnResize;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnCanResize;
     property OnConstrainedResize;
     property OnDockDrop;
@@ -503,14 +503,14 @@ begin
 end;
 
 procedure TJvxClock.AlignControls(AControl: TControl; var Rect: TRect);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 var
   InflateWidth: Integer;
 {$ENDIF}
 begin
   inherited AlignControls(AControl, Rect);
   FClockRect := Rect;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   InflateWidth := BorderWidth + 1;
   if BevelOuter <> bvNone then Inc(InflateWidth, BevelWidth);
   if BevelInner <> bvNone then Inc(InflateWidth, BevelWidth);
@@ -527,7 +527,7 @@ end;
 
 procedure TJvxClock.SetAutoSize(Value: Boolean);
 begin
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
 {$ENDIF}
   FAutoSize := Value;

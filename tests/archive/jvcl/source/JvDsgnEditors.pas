@@ -26,7 +26,7 @@ Known Issues:
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 {$I JEDI.INC}
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
 {$IFDEF LINUX}
@@ -40,7 +40,7 @@ unit JvDsgnEditors;
 interface
 
 uses
-  Windows, Forms,  {$IFDEF Delphi6_UP} DesignIntf,  DesignEditors, {$ELSE} DsgnIntf, {$ENDIF}
+  Windows, Forms,  {$IFDEF COMPILER6_UP} DesignIntf,  DesignEditors, {$ELSE} DsgnIntf, {$ENDIF}
   SysUtils, Classes, Dialogs, Controls;
 
 type

@@ -32,7 +32,7 @@ interface
 uses
   Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Mask, JvToolEdit, JvGrdCpt,
-    {$IFDEF Delphi6_Up}
+    {$IFDEF COMPILER6_UP}
 RTLConsts,  DesignIntf, DesignEditors,  VCLEditors,
 {$ELSE}
   LibIntf, DsgnIntf,
@@ -41,7 +41,7 @@ RTLConsts,  DesignIntf, DesignEditors,  VCLEditors,
 
   JvxCtrls, JvPlacemnt;
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 type
   IDesigner = TDesigner;
 {$ENDIF}
@@ -112,7 +112,7 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 
 { TGradientCaptionsProperty }
 
@@ -167,7 +167,7 @@ begin
   Result := 1;
 end;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 
 { TGradientCaptionsProperty }
 
@@ -182,7 +182,7 @@ begin
     Modified;
 end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { TGradCaptionsEditor }
 

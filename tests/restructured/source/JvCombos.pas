@@ -49,7 +49,7 @@ type
     FItemHeightChanging: Boolean;
     procedure SetComboStyle(Value: TOwnerDrawComboStyle);
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure CMRecreateWnd(var Message: TMessage); message CM_RECREATEWND;
 {$ENDIF}
   protected
@@ -65,7 +65,7 @@ type
 
 { TJvxColorComboBox }
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   TColorComboOption = (coIncludeDefault, coIncludeNone);
   TColorComboOptions = set of TColorComboOption;
 {$ENDIF}
@@ -75,7 +75,7 @@ type
     FColorValue: TColor;
     FDisplayNames: Boolean;
     FColorNames: TStrings;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     FOptions: TColorComboOptions;
 {$ENDIF}
     FOnChange: TNotifyEvent;
@@ -83,7 +83,7 @@ type
     procedure SetColorValue(NewValue: TColor);
     procedure SetDisplayNames(Value: Boolean);
     procedure SetColorNames(Value: TStrings);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure SetOptions(Value: TColorComboOptions);
 {$ENDIF}
     procedure ColorNamesChanged(Sender: TObject);
@@ -104,7 +104,7 @@ type
     property ColorNames: TStrings read FColorNames write SetColorNames;
     property DisplayNames: Boolean read FDisplayNames write SetDisplayNames
       default True;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property Options: TColorComboOptions read FOptions write SetOptions
       default [];
 {$ENDIF}
@@ -114,7 +114,7 @@ type
     property DragCursor;
     property Enabled;
     property Font;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -152,10 +152,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -211,7 +211,7 @@ type
     property DragCursor;
     property Enabled;
     property Font;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -249,10 +249,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -375,7 +375,7 @@ begin
   RecreateWnd;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvOwnerDrawComboBox.CMRecreateWnd(var Message: TMessage);
 begin
   if not FItemHeightChanging then
@@ -386,11 +386,11 @@ end;
 { TJvxColorComboBox }
 
 const
-  ColorsInList = {$IFDEF Delphi3_Up} 18 {$ELSE} 16 {$ENDIF};
+  ColorsInList = {$IFDEF COMPILER3_UP} 18 {$ELSE} 16 {$ENDIF};
   ColorValues: array [0..ColorsInList - 1] of TColor = (
     clBlack, clMaroon, clGreen, clOlive, clNavy, clPurple, clTeal, clGray,
     clSilver, clRed, clLime, clYellow, clBlue, clFuchsia, clAqua, clWhite
-    {$IFDEF Delphi3_Up}, clNone, clDefault {$ENDIF});
+    {$IFDEF COMPILER3_UP}, clNone, clDefault {$ENDIF});
 
 constructor TJvxColorComboBox.Create(AOwner: TComponent);
 begin
@@ -425,14 +425,14 @@ begin
   try
     Clear;
     for I := 0 to Pred(ColorsInList) do begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       if ((ColorValues[I] = clDefault) and not (coIncludeDefault in Options)) or
         ((ColorValues[I] = clNone) and not (coIncludeNone in Options)) then
         Continue;
 {$ENDIF}
       if (I <= Pred(FColorNames.Count)) and (FColorNames[I] <> '') then
         ColorName := FColorNames[I]
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       else if ColorValues[I] = clDefault then ColorName := SDefault
 {$ENDIF}
       else
@@ -466,7 +466,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvxColorComboBox.SetOptions(Value: TColorComboOptions);
 begin
   if FOptions <> Value then begin
@@ -566,7 +566,7 @@ begin
       StrPCopy(Text, Items[Index]);
       Rect.Left := Rect.Left + ColorWidth + 6;
       DrawText(Canvas.Handle, Text, StrLen(Text), Rect,
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         DrawTextBiDiModeFlags(DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX));
 {$ELSE}
         DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
@@ -835,7 +835,7 @@ begin
     if FUseFonts and (Integer(Items.Objects[Index]) and WRITABLE_FONTTYPE <> 0) then
       Font.Name := Items[Index];
     DrawText(Handle, Text, StrLen(Text), Rect,
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       DrawTextBiDiModeFlags(DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX));
 {$ELSE}
       DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);

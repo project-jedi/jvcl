@@ -31,7 +31,7 @@ unit JvBDEReg;
 interface
 
 uses Classes,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
 {$ELSE}
   LibIntf, DsgnIntf,
@@ -123,7 +123,7 @@ begin
 {$ENDIF WIN32}
 end;
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 
 {$IFNDEF VER90}
 {$IFNDEF VER93}
@@ -218,7 +218,7 @@ begin
   end;
 end;
 
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 { TJvUserTableNameProperty }
 { For TJvDBSecurity component }
@@ -295,7 +295,7 @@ end;
 
 procedure Register;
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   { Database Components are excluded from the STD SKU }
   if GDAL = LongWord(-16) then
     Exit;
@@ -320,11 +320,11 @@ begin
 {$ENDIF USE_OLD_DBLISTS}
 {$ENDIF CBUILDER}
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   RegisterNonActiveX([TJvQuery, TJvSQLScript, TJvMemoryTable, TJvQBEQuery,
     TJvDBFilter, TJvDBIndexCombo, TJvDBProgress, TJvDBSecurity, TJvBDEItems,
       TJvDatabaseItems, TJvTableItems], axrComponentOnly);
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
   { Property and component editors for data aware controls }
 
@@ -339,7 +339,7 @@ begin
   RegisterComponentEditor(TJvMemoryTable, TJvMemoryTableEditor);
 {$ENDIF}
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   RegisterPropertyEditor(TypeInfo(TParams), TJvQBEQuery, 'Params',
     TJvParamsProperty);
   RegisterPropertyEditor(TypeInfo(TParams), TJvQuery, 'Macros',

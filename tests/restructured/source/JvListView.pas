@@ -104,12 +104,12 @@ type
     property OnLoadProgress: TProgress read FOnLoad write FOnLoad;
     property OnSaveProgress: TProgress read FOnSave write FOnSave;
     property OnAutoSort: TOnSortMethod read FOnSort write FOnSort;
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
     procedure SelectAll;
 {$ENDIF}
     procedure UnselectAll;
     procedure InvertSelection;
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
     procedure DeleteSelected;
 {$ENDIF}
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
@@ -884,7 +884,7 @@ end;
 
 {**************************************************}
 
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
 
 procedure TJvListView.SelectAll;
 var
@@ -938,7 +938,7 @@ end;
 
 {**************************************************}
 
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
 
 procedure TJvListView.DeleteSelected;
 var

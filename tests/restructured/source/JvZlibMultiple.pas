@@ -26,7 +26,7 @@ Known Issues:
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
 {$IFDEF LINUX}
@@ -76,7 +76,7 @@ type
   end;
 
 implementation
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
 uses
   FileCtrl;
 {$ENDIF}

@@ -131,7 +131,7 @@ begin
     if JvxAnimate and (Graphic <> nil) then begin
       Animation.Glyph := Graphic as TBitmap;
       Animation.Visible := True;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       Animation.AsyncDrawing := True;
 {$ENDIF}
       Animation.Active := True;

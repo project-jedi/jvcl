@@ -142,7 +142,7 @@ type
   EFilterError = class(EJVCLException);
 
 procedure DropAllFilters(DataSet: TDataSet);
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function SetLookupFilter(DataSet: TDataSet; Field: TField;
   const Value: string; CaseSensitive, Exact: Boolean): HDBIFilter;
 {$ENDIF}
@@ -150,7 +150,7 @@ function SetLookupFilter(DataSet: TDataSet; Field: TField;
 implementation
 
 uses {$IFNDEF WIN32} DBIErrs, DBIProcs, JvStr16, {$ENDIF} DBConsts, Dialogs,
-  {$IFDEF Delphi3_Up} DbCommon, {$ENDIF} JvDConst, JvVCLUtils, JvDBUtils, JvBdeUtils;
+  {$IFDEF COMPILER3_UP} DbCommon, {$ENDIF} JvDConst, JvVCLUtils, JvDBUtils, JvBdeUtils;
 
 procedure DropAllFilters(DataSet: TDataSet);
 begin
@@ -182,7 +182,7 @@ const
   cFldQuotaLeft = '[';   { left qouta for field names  }
   cFldQuotaRight = ']';  { right qouta for field names }
 
-{$IFNDEF Delphi3_Up} {DbCommon.pas}
+{$IFNDEF COMPILER3_UP} {DbCommon.pas}
 
 { TJvFilterExpr }
 
@@ -761,7 +761,7 @@ begin
   Result := (FToken = etSymbol) and (CompareText(FTokenString, S) = 0);
 end;
 
-{$ENDIF Delphi3_Up} {DbCommon.pas}
+{$ENDIF COMPILER3_UP} {DbCommon.pas}
 
 {$IFDEF WIN32}
   {$HINTS OFF}
@@ -787,9 +787,9 @@ type
 {                                                       }
 {*******************************************************}
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 
   PBufferList = TBufferList;
 
@@ -847,7 +847,7 @@ type
     FCanModify: Boolean;
   end;
 
-{$ELSE Delphi4_Up}
+{$ELSE COMPILER4_UP}
 
   TNastyDataSet = class(TComponent)
   private
@@ -888,9 +888,9 @@ type
     FCanModify: Boolean;
   end;
 
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
-{$ELSE Delphi3_Up}
+{$ELSE COMPILER3_UP}
 
   TNastyDataSet = class(TComponent)
   private
@@ -913,7 +913,7 @@ type
   end;
   TBDENastyDataSet = TNastyDataSet;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {$IFDEF WIN32}
   {$HINTS ON}
@@ -934,7 +934,7 @@ begin
   TNastyDataSet(DataSet).FEOF := Value;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 
 procedure AssignBuffers(const Source: TBufferList; var Dest: TBufferList);
 var
@@ -956,7 +956,7 @@ begin
   AssignBuffers(Value, TNastyDataSet(DataSet).FBuffers);
 end;
 
-{$ELSE Delphi4_Up}
+{$ELSE COMPILER4_UP}
 
 procedure dsGetBuffers(DataSet: TDataSet; var ABuf: PBufferList);
 begin
@@ -968,7 +968,7 @@ begin
   TNastyDataSet(DataSet).FBuffers := Value;
 end;
 
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 function dsGetRecordCount(DataSet: TDataSet): Integer;
 begin
@@ -1201,7 +1201,7 @@ function TJvDBFilter.RecordFilter(RecBuf: Pointer; RecNo: Longint): Smallint;
 var
   ACanModify: Boolean;
   Buffers: PBufferList;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   BufPtr: TBufferList;
 {$ENDIF}
   ActiveRecord: Integer;
@@ -1221,7 +1221,7 @@ begin
       dsSetActiveRecord(DS, 0);
       dsSetRecordCount(DS, 1); { FActiveRecord + 1 }
       dsSetCanModify(DS, False);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       SetLength(BufPtr, 1);
       BufPtr[0] := PChar(RecBuf);
       dsSetBuffers(DS, BufPtr);
@@ -1393,8 +1393,8 @@ begin
       Exit;
     end;
     FParser := TExprParser.Create(FDataLink.DataSet, Expr,
-      TFilterOptions(FOptions) {$IFDEF Delphi4_Up}, [], '', nil {$ENDIF}
-      {$IFDEF Delphi5_Up}, FldTypeMap {$ENDIF});
+      TFilterOptions(FOptions) {$IFDEF COMPILER4_UP}, [], '', nil {$ENDIF}
+      {$IFDEF COMPILER5_UP}, FldTypeMap {$ENDIF});
   finally
     StrDispose(Expr);
   end;

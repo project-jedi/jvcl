@@ -56,9 +56,9 @@ type
     procedure SetItemType(Value: TBDEItemType);
   protected
 {$IFDEF WIN32}
-    function GetRecordCount: {$IFNDEF Delphi3_Up} Longint {$ELSE}
+    function GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE}
       Integer; override {$ENDIF};
-    procedure OpenCursor {$IFDEF Delphi3_Up}(InfoQuery: Boolean){$ENDIF}; override;
+    procedure OpenCursor {$IFDEF COMPILER3_UP}(InfoQuery: Boolean){$ENDIF}; override;
     procedure CloseCursor; override;
 {$ENDIF}
     function CreateHandle: HDBICur; override;
@@ -66,12 +66,12 @@ type
       default bdDatabases;
   public
 {$IFDEF WIN32}
-  {$IFDEF Delphi3_Up}
+  {$IFDEF COMPILER3_UP}
     function Locate(const KeyFields: string; const KeyValues: Variant;
       Options: TLocateOptions): Boolean; override;
   {$ENDIF}
     property DBSession: TSession read GetDBSession;
-  {$IFNDEF Delphi3_Up}
+  {$IFNDEF COMPILER3_UP}
     property RecordCount: Longint read GetRecordCount;
   {$ENDIF}
   published
@@ -89,10 +89,10 @@ type
   TJvDBListDataSet = class(TDBDataSet)
 {$IFDEF WIN32}
   protected
-    function GetRecordCount: {$IFNDEF Delphi3_Up} Longint {$ELSE}
+    function GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE}
       Integer; override {$ENDIF};
   public
-  {$IFDEF Delphi3_Up}
+  {$IFDEF COMPILER3_UP}
     function Locate(const KeyFields: string; const KeyValues: Variant;
       Options: TLocateOptions): Boolean; override;
   {$ELSE}
@@ -227,7 +227,7 @@ type
 
 implementation
 
-uses DBConsts, {$IFDEF Delphi3_Up} BDEConst, {$ENDIF} JvDConst;
+uses DBConsts, {$IFDEF COMPILER3_UP} BDEConst, {$ENDIF} JvDConst;
 
 { Utility routines }
 
@@ -294,7 +294,7 @@ function TJvCustomBDEItems.GetDBSession: TSession;
 begin
   Result := Sessions.FindSession(SessionName);
   if Result = nil then
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Result := DBTables.Session;
 {$ELSE}
     Result := DB.Session;
@@ -318,7 +318,7 @@ begin
   FSessionLink := TJvSessionLink.Create(S);
   try
     TJvSessionLink(FSessionLink).FList := Self;
-    inherited OpenCursor{$IFDEF Delphi3_Up}(InfoQuery){$ENDIF};
+    inherited OpenCursor{$IFDEF COMPILER3_UP}(InfoQuery){$ENDIF};
   except
     FSessionLink.Free;
     FSessionLink := nil;
@@ -338,13 +338,13 @@ end;
 {$ENDIF WIN32}
 
 {$IFDEF WIN32}
-function TJvCustomBDEItems.GetRecordCount: {$IFNDEF Delphi3_Up} Longint {$ELSE} Integer {$ENDIF};
+function TJvCustomBDEItems.GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer {$ENDIF};
 begin
   Result := dsGetRecordCount(Self);
 end;
 {$ENDIF WIN32}
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 function TJvCustomBDEItems.Locate(const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
 begin
@@ -355,11 +355,11 @@ begin
     DoAfterScroll;
   end;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { TJvDBListDataSet }
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 function TJvDBListDataSet.Locate(const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
 begin
@@ -370,10 +370,10 @@ begin
     DoAfterScroll;
   end;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {$IFDEF WIN32}
-function TJvDBListDataSet.GetRecordCount: {$IFNDEF Delphi3_Up} Longint {$ELSE} Integer {$ENDIF};
+function TJvDBListDataSet.GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer {$ENDIF};
 begin
   Result := dsGetRecordCount(Self);
 end;

@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   Menus, ShellApi, JvTypes, JvComponent
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
   ,DateUtils
  {$ENDIF}
   ;
@@ -236,7 +236,7 @@ begin
   FIcon := TIcon.Create;
   FIcon.OnChange := IconChanged;
   FVisible := True;
-  {$IFDEF Delphi6_UP}
+  {$IFDEF COMPILER6_UP}
   FHandle := Classes.AllocateHWnd(WndProc);
   {$ELSE}
   FHandle := AllocateHWnd(WndProc);
@@ -285,7 +285,7 @@ begin
     FTimer.Free;
   SetActive(False);
   FIcon.Free;
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
   Classes.DeallocateHWnd(FHandle);
   {$ELSE}
   DeallocateHWnd(FHandle);

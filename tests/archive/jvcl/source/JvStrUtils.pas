@@ -35,7 +35,7 @@ interface
 uses SysUtils;
 
 type
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   TSysCharSet = set of Char;
 {$ENDIF}
   TCharSet = TSysCharSet;
@@ -179,7 +179,7 @@ function XorDecode(const Key, Source: string): string;
 
 { ** Command line routines ** }
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 function FindCmdLineSwitch(const Switch: string; SwitchChars: TCharSet;
   IgnoreCase: Boolean): Boolean;
 {$ENDIF}
@@ -695,7 +695,7 @@ end;
 function Dec2Numb(N: Longint; A, B: Byte): string;
 var
   C: Integer;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   Number: Cardinal;
 {$ELSE}
   Number: Longint;
@@ -703,7 +703,7 @@ var
 begin
   if N = 0 then Result := '0'
   else begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     Number := Cardinal(N);
 {$ELSE}
     Number := N;
@@ -1022,7 +1022,7 @@ begin
   end;
 end;
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 function FindCmdLineSwitch(const Switch: string; SwitchChars: TCharSet;
   IgnoreCase: Boolean): Boolean;
 var
@@ -1050,7 +1050,7 @@ begin
   end;
   Result := False;
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 function GetCmdLineArg(const Switch: string; SwitchChars: TCharSet): string;
 var

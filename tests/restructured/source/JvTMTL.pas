@@ -210,7 +210,7 @@ type
 
   TJvTMTimeline = class(TJvCustomTMTimeline)
   public
-    {$IFDEF Delphi6_Up}
+    {$IFDEF COMPILER6_UP}
     property RightButton;
     property LeftButton;
     {$ENDIF}
@@ -447,7 +447,7 @@ begin
     OnMouseDown := DoRMouseDown;
     OnMouseUp   := DoMouseUp;
   end;
-  {$IFDEF Delphi6_Up}
+  {$IFDEF COMPILER6_UP}
   FLeftBtn.SetSubComponent(true);
   FRightBtn.SetSubComponent(true);
   {$ENDIF}

@@ -30,10 +30,10 @@ unit JvMemDS;
 
 interface
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 uses Windows, SysUtils, Classes, Controls, DB,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 Variants,
 {$ENDIF}
 JvDBUtils;
@@ -90,7 +90,7 @@ type
     procedure SetBlobData(Field: TField; Buffer: PChar; Value: TMemBlobData);
     function AllocRecordBuffer: PChar; override;
     procedure FreeRecordBuffer(var Buffer: PChar); override;
-{$IFNDEF Delphi5_Up}
+{$IFNDEF COMPILER5_UP}
     function BCDToCurr(BCD: Pointer; var Curr: Currency): Boolean; override;
     function CurrToBCD(const Curr: Currency; BCD: Pointer; Precision,
       Decimals: Integer): Boolean; override;
@@ -139,7 +139,7 @@ type
     function Locate(const KeyFields: string; const KeyValues: Variant;
       Options: TLocateOptions): Boolean; override;
     procedure SortOnFields(const FieldNames: string;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       CaseInsensitive: Boolean = True; Descending: Boolean = False);
 {$ELSE}
       CaseInsensitive, Descending: Boolean);
@@ -154,7 +154,7 @@ type
     property Active;
     property AutoCalcFields;
     property Filtered;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property FieldDefs;
     property ObjectView default False;
 {$ENDIF}
@@ -227,33 +227,33 @@ type
     property Data: Pointer read FData;
   end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 implementation
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
-uses Forms, DbConsts {$IFDEF Delphi5_Up}, ComObj {$ENDIF};
+uses Forms, DbConsts {$IFDEF COMPILER5_UP}, ComObj {$ENDIF};
 
 resourcestring
   SMemNoRecords = 'No data found';
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   SInvalidFields = 'No fields defined';
 {$ENDIF}
 
 const
   ftBlobTypes = [ftBlob, ftMemo, ftGraphic, ftFmtMemo, ftParadoxOle,
-    ftDBaseOle, ftTypedBinary {$IFDEF Delphi5_Up}, ftOraBlob, ftOraClob {$ENDIF}];
+    ftDBaseOle, ftTypedBinary {$IFDEF COMPILER5_UP}, ftOraBlob, ftOraClob {$ENDIF}];
 
   ftSupported = [ftString, ftSmallint, ftInteger, ftWord, ftBoolean, ftFloat,
     ftCurrency, ftDate, ftTime, ftDateTime, ftAutoInc, ftBCD, ftBytes,
-    ftVarBytes {$IFDEF Delphi4_Up}, ftADT, ftFixedChar, ftWideString,
-    ftLargeint {$ENDIF} {$IFDEF Delphi5_Up}, ftVariant, ftGuid {$ENDIF}] + 
+    ftVarBytes {$IFDEF COMPILER4_UP}, ftADT, ftFixedChar, ftWideString,
+    ftLargeint {$ENDIF} {$IFDEF COMPILER5_UP}, ftVariant, ftGuid {$ENDIF}] + 
     ftBlobTypes;
 
   fkStoredFields = [fkData];
 
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
   GuidSize = 38;
 {$ENDIF}
 
@@ -287,7 +287,7 @@ begin
     ftDateTime:
       if TDateTime(Data1^) > TDateTime(Data2^) then Result := 1
       else if TDateTime(Data1^) < TDateTime(Data2^) then Result := -1;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     ftFixedChar:
       if CaseInsensitive then
         Result := AnsiCompareText(PChar(Data1), PChar(Data2))
@@ -304,7 +304,7 @@ begin
       if Int64(Data1^) > Int64(Data2^) then Result := 1
       else if Int64(Data1^) < Int64(Data2^) then Result := -1;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     ftVariant:
       Result := 0;
     ftGuid:
@@ -335,13 +335,13 @@ begin
       ftBytes: Result := Size;
       ftVarBytes: Result := Size + 2;
       ftAutoInc: Result := SizeOf(Longint);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       ftADT: Result := 0;
       ftFixedChar: Inc(Result);
       ftWideString: Result := (Result + 1) * 2;
       ftLargeint: Result := SizeOf(Int64);
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
       ftVariant: Result := SizeOf(Variant);
       ftGuid: Result := GuidSize + 1;
 {$ENDIF}
@@ -350,7 +350,7 @@ begin
 end;
 
 procedure CalcDataSize(FieldDef: TFieldDef; var DataSize: Integer);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 var
   I: Integer;
 {$ENDIF}
@@ -358,7 +358,7 @@ begin
   with FieldDef do begin
     if (DataType in ftSupported - ftBlobTypes) then
       Inc(DataSize, CalcFieldLen(DataType, Size) + 1);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     for I := 0 to ChildDefs.Count - 1 do
       CalcDataSize(ChildDefs[I], DataSize);
 {$ENDIF}
@@ -513,7 +513,7 @@ end;
 
 { Field Management }
 
-{$IFNDEF Delphi5_Up}
+{$IFNDEF COMPILER5_UP}
 
 function TJvMemoryData.BCDToCurr(BCD: Pointer; var Curr: Currency): Boolean;
 begin
@@ -528,7 +528,7 @@ begin
   Result := True;
 end;
 
-{$ENDIF Delphi5_Up}
+{$ENDIF COMPILER5_UP}
 
 procedure TJvMemoryData.InitFieldDefsFromFields;
 var
@@ -544,7 +544,7 @@ begin
     FreeIndexList;
   end;
   Offset := 0;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   inherited InitFieldDefsFromFields;
   { Calculate fields offsets }
   ReallocMem(FOffsets, FieldDefList.Count * SizeOf(Word));
@@ -579,13 +579,13 @@ function TJvMemoryData.FindFieldData(Buffer: Pointer; Field: TField): Pointer;
 var
   Index: Integer;
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   Index := FieldDefList.IndexOf(Field.FullName);
 {$ELSE}
   Index := FieldDefs.IndexOf(Field.FieldName);
 {$ENDIF}
   if (Index >= 0) and (Buffer <> nil) and
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     (FieldDefList[Index].DataType in ftSupported - ftBlobTypes) then
 {$ELSE}
     (FieldDefs[Index].DataType in ftSupported - ftBlobTypes) then
@@ -752,7 +752,7 @@ end;
 function TJvMemoryData.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
 var
   RecBuf, Data: PChar;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
   VarData: Variant;
 {$ENDIF}
 begin
@@ -763,11 +763,11 @@ begin
     if Data <> nil then begin
       Result := Boolean(Data[0]);
       Inc(Data);
-      if Field.DataType in [ftString {$IFDEF Delphi4_Up}, ftFixedChar,
-        ftWideString {$ENDIF} {$IFDEF Delphi5_Up}, ftGuid {$ENDIF}] then
+      if Field.DataType in [ftString {$IFDEF COMPILER4_UP}, ftFixedChar,
+        ftWideString {$ENDIF} {$IFDEF COMPILER5_UP}, ftGuid {$ENDIF}] then
         Result := Result and (StrLen(Data) > 0);
       if Result and (Buffer <> nil) then
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
         if Field.DataType = ftVariant then begin
           VarData := PVariant(Data)^;
           PVariant(Buffer)^ := VarData;
@@ -789,7 +789,7 @@ end;
 procedure TJvMemoryData.SetFieldData(Field: TField; Buffer: Pointer);
 var
   RecBuf, Data: PChar;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
   VarData: Variant;
 {$ENDIF}
 begin
@@ -805,7 +805,7 @@ begin
       if FieldKind <> fkInternalCalc then begin
         Data := FindFieldData(RecBuf, Field);
         if Data <> nil then begin
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
           if DataType = ftVariant then begin
             if Buffer <> nil then
               VarData := PVariant(Buffer)^
@@ -1100,7 +1100,7 @@ end;
 procedure TJvMemoryData.InternalOpen;
 begin
   BookmarkSize := SizeOf(TBookmarkData);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if DefaultFields then CreateFields;
 {$ELSE}
   if DefaultFields then Error(SInvalidFields);
@@ -1115,7 +1115,7 @@ begin
   ClearRecords;
   FAutoInc := 1;
   BindFields(False);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if DefaultFields then DestroyFields;
 {$ENDIF}
   FreeIndexList;
@@ -1196,7 +1196,7 @@ procedure TJvMemoryData.CopyStructure(Source: TDataSet);
     for I := FieldDefs.Count - 1 downto 0 do begin
       if not (FieldDefs.Items[I].DataType in ftSupported) then
         FieldDefs.Items[I].Free
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       else CheckDataTypes(FieldDefs[I].ChildDefs);
 {$ENDIF}
     end;
@@ -1211,7 +1211,7 @@ begin
   Source.FieldDefs.Update;
   FieldDefs := Source.FieldDefs;
   CheckDataTypes(FieldDefs);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   CreateFields;
 {$ELSE}
   for I := 0 to FieldDefs.Count - 1 do begin
@@ -1317,7 +1317,7 @@ end;
 { Index Related }
 
 procedure TJvMemoryData.SortOnFields(const FieldNames: string;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   CaseInsensitive: Boolean = True; Descending: Boolean = False);
 {$ELSE}
   CaseInsensitive, Descending: Boolean);
@@ -1557,6 +1557,6 @@ begin
       Result := Length(GetBlobFromRecord(FField))
 end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 end.

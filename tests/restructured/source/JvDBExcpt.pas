@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, DB, {$IFDEF Delphi3_Up} DBTables, {$ENDIF} JvxCtrls;
+  StdCtrls, ExtCtrls, DB, {$IFDEF COMPILER3_UP} DBTables, {$ENDIF} JvxCtrls;
 
 type
   TDBErrorEvent = procedure (Error: TDBError; var Msg: string) of object;

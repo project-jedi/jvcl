@@ -52,7 +52,7 @@ type
 implementation
 uses
   Jvtypes,
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
   RTLConsts
 {$ELSE}
   Consts

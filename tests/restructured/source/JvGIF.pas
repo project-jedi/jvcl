@@ -32,7 +32,7 @@ unit JvGIF;
 interface
 
 uses Windows,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 RTLConsts,
 {$ENDIF}
 SysUtils, Classes, Graphics, JvGraph;
@@ -42,7 +42,7 @@ const
 
 type
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 
   TProgressStage = (psStarting, psRunning, psEnding);
   TProgressEvent = procedure (Sender: TObject; Stage: TProgressStage;
@@ -61,7 +61,7 @@ type
     property RefCount: Integer read FRefCount;
   end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
   TGIFVersion = (gvUnknown, gv87a, gv89a);
   TGIFBits = 1..8;
@@ -95,7 +95,7 @@ type
     FLooping: Boolean;
     FCorrupted: Boolean;
     FRepeatCount: Word;
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
     FOnProgress: TProgressEvent;
 {$ENDIF}
     function GetBitmap: TBitmap;
@@ -130,12 +130,12 @@ type
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
     function GetWidth: Integer; override;
-    function GetPalette: HPALETTE; {$IFDEF Delphi3_Up} override; {$ENDIF}
-    function GetTransparent: Boolean; {$IFDEF Delphi3_Up} override; {$ENDIF}
+    function GetPalette: HPALETTE; {$IFDEF COMPILER3_UP} override; {$ENDIF}
+    function GetTransparent: Boolean; {$IFDEF COMPILER3_UP} override; {$ENDIF}
     procedure ClearItems;
     procedure NewImage;
     procedure UniqueImage;
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
     procedure Progress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
       const Msg: string); dynamic;
@@ -180,7 +180,7 @@ type
     property ScreenHeight: Integer read GetScreenHeight;
     property TransparentColor: TColor read GetTransparentColor;
     property Version: TGIFVersion read FVersion;
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
     property Palette: HPALETTE read GetPalette;
     property Transparent: Boolean read GetTransparent;
     property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
@@ -318,7 +318,7 @@ begin
   raise EInvalidGraphicOperation.Create(Msg) at ReturnAddr;
 end;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 
 { TSharedImage }
 
@@ -1237,7 +1237,7 @@ begin
       try
         SaveToBitmapStream(Mem);
         FBitmap.LoadFromStream(Mem);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
         if not FBitmap.Monochrome then FBitmap.HandleType := bmDDB;
 {$ENDIF}
       finally
@@ -1371,7 +1371,7 @@ begin
       FBitmap.Height := TGraphic(Source).Height;
       FBitmap.Canvas.Draw(0, 0, TGraphic(Source));
     end;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     if TGraphic(Source).Transparent then begin
       if Source is TBitmap then
         FTransparentColor := TBitmap(Source).TransparentColor
@@ -1393,7 +1393,7 @@ begin
   if (Dest is TJvGIFFrame) or (Dest is TJvGIFImage) then Dest.Assign(Self)
   else if Dest is TGraphic then begin
     Dest.Assign(Bitmap);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     if (Dest is TBitmap) and (FTransparentColor <> clNone) then begin
       TBitmap(Dest).TransparentColor := GetNearestColor(
         TBitmap(Dest).Canvas.Handle, ColorToRGB(FTransparentColor));
@@ -1737,7 +1737,7 @@ constructor TJvGIFImage.Create;
 begin
   inherited Create;
   NewImage;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   inherited SetTransparent(True);
 {$ENDIF}
 end;
@@ -1944,7 +1944,7 @@ begin
   Value := Min(FItems.Count - 1, Max(-1, Value));
   if FFrameIndex <> Value then begin
     FFrameIndex := Value;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     PaletteModified := True;
 {$ENDIF}
     Changed(Self);
@@ -2007,7 +2007,7 @@ function TJvGIFImage.GetTransparent: Boolean;
 var
   I: Integer;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if inherited GetTransparent then
 {$ENDIF}
     for I := 0 to FItems.Count - 1 do
@@ -2514,7 +2514,7 @@ begin
       raise;
     end;
   end;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   PaletteModified := True;
 {$ENDIF}
   Changed(Self);
@@ -2752,7 +2752,7 @@ begin
     end
     else FBackgroundColor := GrayColor(FBackgroundColor);
   end;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   PaletteModified := True;
 {$ENDIF}
   Changed(Self);
@@ -2769,7 +2769,7 @@ begin
   Progress(Self, Stage, PercentDone, False, Rect(0, 0, 0, 0), Msg);
 end;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 procedure TJvGIFImage.Progress(Sender: TObject; Stage: TProgressStage;
   PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
 begin
@@ -2784,7 +2784,7 @@ initialization
 {$IFDEF USE_Jv_GIF}
   TPicture.RegisterFileFormat('gif', LoadStr(SGIFImage), TJvGIFImage);
   TPicture.RegisterClipboardFormat(CF_GIF, TJvGIFImage);
- {$IFDEF Delphi3_Up}
+ {$IFDEF COMPILER3_UP}
 finalization
   TPicture.UnRegisterGraphicClass(TJvGIFImage);
  {$ENDIF}

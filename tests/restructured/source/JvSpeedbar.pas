@@ -31,11 +31,11 @@ unit JvSpeedBar;
 interface
 
 uses Windows, Registry,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 RTLConsts,
 {$ENDIF}
 SysUtils, Classes, Messages, Menus, Buttons, Controls, Graphics, Forms,
-  {$IFDEF Delphi4_Up} ImgList, ActnList, {$ENDIF} ExtCtrls, Grids, IniFiles,
+  {$IFDEF COMPILER4_UP} ImgList, ActnList, {$ENDIF} ExtCtrls, Grids, IniFiles,
   JvTypes, JvxCtrls, JvPlacemnt;
 
 const
@@ -171,7 +171,7 @@ type
 {$IFDEF WIN32}
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    procedure GetChildren(Proc: TGetChildProc {$IFDEF Delphi3_Up}; Root: TComponent {$ENDIF}); override;
+    procedure GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP}; Root: TComponent {$ENDIF}); override;
     procedure SetChildOrder(Component: TComponent; Order: Integer); override;
 {$ELSE}
     procedure WriteComponents(Writer: TWriter); override;
@@ -234,7 +234,7 @@ type
 {$IFDEF WIN32}
     property Images: TImageList read FImages write SetImages;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property BiDiMode;
     property Constraints;
     property ParentBiDiMode;
@@ -275,10 +275,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -302,7 +302,7 @@ type
     FImageIndex: Integer;
     procedure SetImageIndex(Value: Integer);
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function GetAction: TBasicAction;
     procedure SetAction(Value: TBasicAction);
 {$ENDIF}
@@ -400,7 +400,7 @@ type
     property JvSpeedbar: TJvSpeedBar read FParent;
     property Button: TJvxSpeedButton read FButton;
   published
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Action: TBasicAction read GetAction write SetAction;
 {$ENDIF}
     property AllowAllUp: Boolean read GetAllowAllUp write SetAllowAllUp default False;
@@ -538,7 +538,7 @@ const
 
 function FindSpeedBar(const Pos: TPoint): TJvSpeedBar;
 procedure DrawCellButton(Grid: TDrawGrid; R: TRect; Item: TJvSpeedItem;
-  Image: TJvButtonImage {$IFDEF Delphi4_Up}; ARightToLeft: Boolean = False {$ENDIF});
+  Image: TJvButtonImage {$IFDEF COMPILER4_UP}; ARightToLeft: Boolean = False {$ENDIF});
 function NewSpeedSection(ASpeedbar: TJvSpeedBar; const ACaption: string): Integer;
 function NewSpeedItem(AOwner: TComponent; ASpeedbar: TJvSpeedBar; Section: Integer;
   const AName: string): TJvSpeedItem;
@@ -548,7 +548,7 @@ implementation
 uses Dialogs, JvMaxMin, JvVCLUtils, JvAppUtils, JvStrUtils, Consts, JvConst, JvSbSetup;
 
 { JvSpeedbar exceptions }
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 resourcestring
 {$ELSE}
 const
@@ -865,7 +865,7 @@ begin
   if (FItem.JvSpeedbar <> nil) then begin
     TJvButtonGlyph(ButtonGlyph).DrawEx(Canvas, ARect, Caption, Layout,
       Margin, Spacing, DrawMark, FItem.JvSpeedbar.Images, FItem.FImageIndex,
-      AState, {$IFDEF Delphi4_Up} DrawTextBiDiModeFlags(Alignments[Alignment])
+      AState, {$IFDEF COMPILER4_UP} DrawTextBiDiModeFlags(Alignments[Alignment])
       {$ELSE} Alignments[Alignment] {$ENDIF});
   end else
 {$ENDIF}
@@ -1350,7 +1350,7 @@ begin
   FButton.Hint := Value;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvSpeedItem.GetAction: TBasicAction;
 begin
   Result := FButton.Action;
@@ -2311,13 +2311,13 @@ end;
 
 {$IFDEF WIN32}
 
-procedure TJvSpeedBar.GetChildren(Proc: TGetChildProc {$IFDEF Delphi3_Up};  Root: TComponent {$ENDIF});
+procedure TJvSpeedBar.GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP};  Root: TComponent {$ENDIF});
 var
   I, Idx: Integer;
   Sect: TJvSpeedbarSection;
   Item: TJvSpeedItem;
 begin
-  inherited GetChildren(Proc {$IFDEF Delphi3_Up}, Root {$ENDIF});
+  inherited GetChildren(Proc {$IFDEF COMPILER3_UP}, Root {$ENDIF});
   for I := 0 to FSections.Count - 1 do begin
     Sect := Sections[I];
     if Sect <> nil then Proc(Sect);
@@ -2885,7 +2885,7 @@ begin
   else Images := nil;
 {$ENDIF}
   Font := Item.Font;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   BiDiMode := Item.FButton.BiDiMode;
 {$ENDIF}
   SetBounds(0, 0, Item.JvSpeedbar.BtnWidth, Item.JvSpeedbar.BtnHeight);
@@ -2950,7 +2950,7 @@ procedure TJvBtnControl.Paint;
 begin
 {$IFDEF WIN32}
   FImage.DrawEx(Canvas, 0, 0, Margin, Spacing, Layout, Font, Images,
-    ImageIndex, {$IFDEF Delphi4_Up} DrawTextBiDiModeFlags(Alignments[Alignment])
+    ImageIndex, {$IFDEF COMPILER4_UP} DrawTextBiDiModeFlags(Alignments[Alignment])
     {$ELSE} Alignments[Alignment] {$ENDIF});
 {$ELSE}
   FImage.Draw(Canvas, 0, 0, Margin, Spacing, Layout, Font,
@@ -3002,7 +3002,7 @@ begin
 end;
 
 procedure DrawCellButton(Grid: TDrawGrid; R: TRect; Item: TJvSpeedItem;
-  Image: TJvButtonImage {$IFDEF Delphi4_Up}; ARightToLeft: Boolean = False {$ENDIF});
+  Image: TJvButtonImage {$IFDEF COMPILER4_UP}; ARightToLeft: Boolean = False {$ENDIF});
 var
   FBar: TJvSpeedBar;
   AFont: TFont;
@@ -3036,14 +3036,14 @@ begin
 {$IFDEF WIN32}
     Image.DrawEx(Grid.Canvas, R.Left + 1, R.Top + 1, Item.Margin,
       Item.Spacing, Item.Layout, AFont, ImageList, Item.ImageIndex,
-      {$IFDEF Delphi4_Up} Item.FButton.DrawTextBiDiModeFlags(Alignments[Image.Alignment])
+      {$IFDEF COMPILER4_UP} Item.FButton.DrawTextBiDiModeFlags(Alignments[Image.Alignment])
       {$ELSE} Alignments[Image.Alignment] {$ENDIF});
 {$ELSE}
     Image.Draw(Grid.Canvas, R.Left + 1, R.Top + 1, Item.Margin,
       Item.Spacing, Item.Layout, AFont, Alignments[Image.Alignment]);
 {$ENDIF}
     Inc(R.Left, Image.ButtonSize.X + 3);
-    DrawCellText(Grid, 0, 0, Item.Caption, R, taLeftJustify, vaCenter {$IFDEF Delphi4_Up}, ARightToLeft {$ENDIF});
+    DrawCellText(Grid, 0, 0, Item.Caption, R, taLeftJustify, vaCenter {$IFDEF COMPILER4_UP}, ARightToLeft {$ENDIF});
   end;
 end;
 

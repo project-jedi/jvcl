@@ -8,7 +8,7 @@ uses
   Controls,
   Forms,
   Dialogs,
-  {$IFNDEF Delphi6_UP}
+  {$IFNDEF COMPILER6_UP}
   DsgnIntf
   {$ELSE}
   DesignIntf,

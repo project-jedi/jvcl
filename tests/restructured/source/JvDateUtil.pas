@@ -31,7 +31,7 @@ unit JvDateUtil;
 
 
 interface
- {$IFDEF Delphi6_Up}
+ {$IFDEF COMPILER6_UP}
   uses RTLConsts;
 {$ENDIF}
 
@@ -377,7 +377,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure ScanToNumber(const S: string; var Pos: Integer);
 begin
   while (Pos <= Length(S)) and not (S[Pos] in ['0'..'9']) do begin
@@ -395,7 +395,7 @@ begin
   I := 1;
   while I <= Length(DateFormat) do begin
     case Chr(Ord(DateFormat[I]) and $DF) of
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       'E': Result := doYMD;
 {$ENDIF}
       'Y': Result := doYMD;
@@ -432,10 +432,10 @@ begin
   Result := False;
   Y := 0; M := 0; D := 0;
   DateOrder := GetDateOrder(DateFormat);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if ShortDateFormat[1] = 'g' then { skip over prefix text }
     ScanToNumber(S, Pos);
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
   if not (ScanNumber(S, MaxInt, Pos, N1) and ScanChar(S, Pos, DateSeparator) and
     ScanNumber(S, MaxInt, Pos, N2)) then Exit;
   if ScanChar(S, Pos, DateSeparator) then begin
@@ -458,7 +458,7 @@ begin
   end;
   ScanChar(S, Pos, DateSeparator);
   ScanBlanks(S, Pos);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if SysLocale.FarEast and (System.Pos('ddd', ShortDateFormat) <> 0) then
   begin { ignore trailing text }
     if ShortTimeFormat[1] in ['0'..'9'] then  { stop at time digit }
@@ -471,7 +471,7 @@ begin
         (AnsiCompareText(TimeAMString, Copy(S, Pos, Length(TimeAMString))) = 0) or
         (AnsiCompareText(TimePMString, Copy(S, Pos, Length(TimePMString))) = 0);
   end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
   Result := IsValidDate(Y, M, D) and (Pos > Length(S));
 end;
 
@@ -551,7 +551,7 @@ end;
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 begin
   if not InternalStrToDate(DateFormat, S, Result) then
-    raise EConvertError.CreateFmt({$IFDEF Delphi3_Up} SInvalidDate {$ELSE}
+    raise EConvertError.CreateFmt({$IFDEF COMPILER3_UP} SInvalidDate {$ELSE}
       LoadStr(SInvalidDate) {$ENDIF}, [S]);
 end;
 
@@ -609,7 +609,7 @@ var
   Buffer: array[0..1023] of Char;
   SystemTime: TSystemTime;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   DateTimeToSystemTime(Value, SystemTime);
 {$ELSE}
   with SystemTime do begin

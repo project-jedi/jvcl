@@ -30,7 +30,7 @@ unit JvQuery;
 interface
 
 uses Bde, Windows,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 RTLConsts,
 {$ENDIF}
 Classes, SysUtils, DB, DBTables, JvStrUtils, JvBdeUtils{, JvComponent};
@@ -74,15 +74,15 @@ type
     procedure SetRealSQL(Value: TStrings);
 {$ENDIF DEBUG}
   protected
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure InternalFirst; override;
     function GetRecord(Buffer: PChar; GetMode: TGetMode; DoCheck: Boolean): TGetResult; override;
 {$ENDIF}
     procedure Loaded; override;
     function CreateHandle: HDBICur; override;
-    procedure OpenCursor {$IFDEF Delphi3_Up} (InfoQuery: Boolean) {$ENDIF}; override;
+    procedure OpenCursor {$IFDEF COMPILER3_UP} (InfoQuery: Boolean) {$ENDIF}; override;
     procedure Disconnect; override;
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
   protected
     { IProviderSupport }
     procedure PSExecute; override;
@@ -98,9 +98,9 @@ type
     procedure OpenOrExec(ChangeLive: Boolean);
     procedure ExecDirect;
     function MacroByName(const Value: string): TParam;
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
     function IsEmpty: Boolean;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
     property MacroCount: Word read GetMacroCount;
     property OpenStatus: TQueryOpenStatus read FOpenStatus;
 {$IFNDEF DEBUG}
@@ -168,10 +168,10 @@ type
     function GetDBSession: TSession;
     function GetText: string;
 {$ENDIF WIN32}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure ReadParamData(Reader: TReader);
     procedure WriteParamData(Writer: TWriter);
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
     function GetDatabase: TDatabase;
     function GetDatabaseName: string;
     procedure SetDatabaseName(const Value: string);
@@ -181,9 +181,9 @@ type
     procedure SetParamsList(Value: TParams);
     function GetParamsCount: Cardinal;
   protected
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure DefineProperties(Filer: TFiler); override;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
     procedure CheckExecQuery(LineNo, StatementNo: Integer);
     procedure ExecuteScript(StatementNo: Integer); virtual;
   public
@@ -209,7 +209,7 @@ type
 {$ENDIF WIN32}
     property Term: Char read FTerm write FTerm default DefaultTermChar;
     property SQL: TStrings read FSQL write SetQuery;
-    property Params: TParams read FParams write SetParamsList {$IFDEF Delphi4_Up} stored False {$ENDIF};
+    property Params: TParams read FParams write SetParamsList {$IFDEF COMPILER4_UP} stored False {$ENDIF};
     property Transaction: Boolean read FTransaction write FTransaction;
     property BeforeExec: TNotifyEvent read FBeforeExec write FBeforeExec;
     property AfterExec: TNotifyEvent read FAfterExec write FAfterExec;
@@ -224,7 +224,7 @@ procedure CreateQueryParams(List: TParams; const Value: PChar; Macro: Boolean;
 
 implementation
 
-uses JvDBUtils, Consts, DBConsts, Forms {$IFDEF Delphi3_Up}, BDEConst {$ENDIF}
+uses JvDBUtils, Consts, DBConsts, Forms {$IFDEF COMPILER3_UP}, BDEConst {$ENDIF}
   {$IFNDEF WIN32}, JvStr16 {$ENDIF}, JvVCLUtils;
 
 { Parse SQL utility routines }
@@ -300,15 +300,15 @@ begin
       end
       else Name := StrPas(StartPos + 1);
       if Assigned(List) then begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         if List.FindParam(Name) = nil then begin
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
           if Macro then
             List.CreateParam(ftString, Name, ptInput).AsString := TrueExpr
           else List.CreateParam(ftUnknown, Name, ptUnknown);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
       end;
       CurPos^ := CurChar;
       StartPos^ := '?';
@@ -337,7 +337,7 @@ begin
   FMacroChar := DefaultMacroChar;
   FSQLPattern := TStringList.Create;
   TStringList(SQL).OnChange := PatternChanged;
-  FMacros := TParams.Create{$IFDEF Delphi4_Up}(Self){$ENDIF};
+  FMacros := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
 end;
 
 destructor TJvQuery.Destroy;
@@ -355,7 +355,7 @@ begin
   GetMacros; {!! trying this way}
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 procedure TJvQuery.InternalFirst;
 begin
@@ -384,7 +384,7 @@ end;
 procedure TJvQuery.OpenCursor;
 begin
   ExpandMacros;
-  inherited OpenCursor{$IFDEF Delphi3_Up}(InfoQuery){$ENDIF};
+  inherited OpenCursor{$IFDEF COMPILER3_UP}(InfoQuery){$ENDIF};
 end;
 
 procedure TJvQuery.ExecSQL;
@@ -546,7 +546,7 @@ begin
   FSaveQueryChanged(Sender);
 {$ELSE}
   SaveParams := not (ParamCheck or (csDesigning in ComponentState));
-  if SaveParams then List := TParams.Create{$IFDEF Delphi4_Up}(Self){$ENDIF};
+  if SaveParams then List := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
   try
     if SaveParams then List.Assign(Params);
     FSaveQueryChanged(Sender);
@@ -587,10 +587,10 @@ var
   P: PChar;
 {$ENDIF}
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if not (csReading in ComponentState) then begin
-{$ENDIF Delphi4_Up}
-    List := TParams.Create{$IFDEF Delphi4_Up}(Self){$ENDIF};
+{$ENDIF COMPILER4_UP}
+    List := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
     try
   {$IFDEF WIN32}
       CreateMacros(List, PChar(FSQLPattern.Text));
@@ -603,7 +603,7 @@ begin
       end;
   {$ENDIF WIN32}
       List.AssignValues(FMacros);
-  {$IFDEF Delphi4_Up}
+  {$IFDEF COMPILER4_UP}
       FMacros.Clear;
       FMacros.Assign(List);
     finally
@@ -611,16 +611,16 @@ begin
       FMacros.Free;
       FMacros := List;
     except
-  {$ENDIF Delphi4_Up}
+  {$ENDIF COMPILER4_UP}
       List.Free;
     end;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   end
   else begin
     FMacros.Clear;
     CreateMacros(FMacros, PChar(FSQLPattern.Text));
   end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 end;
 
 procedure TJvQuery.CreateMacros(List: TParams; const Value: PChar);
@@ -675,12 +675,12 @@ begin
   Result := FMacros.ParamByName(Value);
 end;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function TJvQuery.IsEmpty: Boolean;
 begin
   Result := IsDataSetEmpty(Self);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 function TJvQuery.GetRealSQL: TStrings;
 begin
@@ -691,7 +691,7 @@ begin
   Result := inherited SQL;
 end;
 
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
 
 { TJvQuery.IProviderSupport }
 
@@ -712,7 +712,7 @@ begin
   ExecSQL;
 end;
 
-{$ENDIF Delphi5_Up}
+{$ENDIF COMPILER5_UP}
 
 {$IFDEF DEBUG}
 procedure TJvQuery.SetRealSQL(Value: TStrings);
@@ -806,7 +806,7 @@ begin
   inherited Create(AOwner);
   FSQL := TStringList.Create;
   TStringList(SQL).OnChange := QueryChanged;
-  FParams := TParams.Create{$IFDEF Delphi4_Up}(Self){$ENDIF};
+  FParams := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
   FQuery := TJvQuery.Create(Self);
   FSemicolonTerm := True;
   FTerm := DefaultTermChar;
@@ -964,11 +964,11 @@ begin
       end;
     end;
     if not StmtFound then begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       DatabaseError(Format(SListIndexError, [StatementNo]));
 {$ELSE}
       DatabaseError(Format('%s: %d', [LoadStr(SListIndexError), StatementNo]));
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
     end;
     if IsTrans then Database.Commit;
   except
@@ -1025,10 +1025,10 @@ var
   P: PChar;
 {$ENDIF}
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if not (csReading in ComponentState) then begin
-{$ENDIF Delphi4_Up}
-    List := TParams.Create{$IFDEF Delphi4_Up}(Self){$ENDIF};
+{$ENDIF COMPILER4_UP}
+    List := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
     try
   {$IFDEF WIN32}
       CreateParams(List, PChar(Text));
@@ -1041,7 +1041,7 @@ begin
       end;
   {$ENDIF WIN32}
       List.AssignValues(FParams);
-  {$IFDEF Delphi4_Up}
+  {$IFDEF COMPILER4_UP}
       FParams.Clear;
       FParams.Assign(List);
     finally
@@ -1049,16 +1049,16 @@ begin
       FParams.Free;
       FParams := List;
     except
-  {$ENDIF Delphi4_Up}
+  {$ENDIF COMPILER4_UP}
       List.Free;
     end;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   end
   else begin
     FParams.Clear;
     CreateParams(FParams, PChar(Text));
   end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 end;
 
 function TJvSQLScript.ParamByName(const Value: string): TParam;
@@ -1076,7 +1076,7 @@ begin
   Result := FParams.Count;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure TJvSQLScript.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
@@ -1093,6 +1093,6 @@ procedure TJvSQLScript.WriteParamData(Writer: TWriter);
 begin
   Writer.WriteCollection(Params);
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 end.

@@ -38,7 +38,7 @@ type
   TLookOutPageEditor = class(TComponentEditor)
   public
 
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
 {$ELSE}
 constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
@@ -56,7 +56,7 @@ constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
   TLookOutEditor = class(TComponentEditor)
   public
 
-{$IFDEF Delphi6_UP}
+{$IFDEF COMPILER6_UP}
      constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
 {$ELSE}
     constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
@@ -73,7 +73,7 @@ constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
   TExpressEditor = class(TComponentEditor)
   public
 
-{$IFDEF Delphi6_UP}
+{$IFDEF COMPILER6_UP}
      constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
 {$ELSE}
     constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
@@ -113,7 +113,7 @@ uses JvLookOut;
 
 
 
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
 constructor TLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
 begin
   inherited Create(Acomponent, ADesigner);
@@ -187,7 +187,7 @@ end;
 { TLookOutEditor }
 
 
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
 constructor TLookOutEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
 begin
   inherited Create(Acomponent, ADesigner);
@@ -269,7 +269,7 @@ end;
 
 { TExpressEditor }
 
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
 constructor TExpressEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
 begin
   inherited Create(Acomponent, ADesigner);

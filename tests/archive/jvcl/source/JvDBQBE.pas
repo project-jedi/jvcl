@@ -57,7 +57,7 @@ type
 {$ELSE}
     FText: PChar;
 {$ENDIF}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     FConstrained: Boolean;
 {$ENDIF}
     FLocal: Boolean;
@@ -77,14 +77,14 @@ type
     procedure SetPrepared(Value: Boolean);
     procedure SetPrepare(Value: Boolean);
     procedure SetStartParam(Value: Char);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure ReadParamData(Reader: TReader);
     procedure WriteParamData(Writer: TWriter);
 {$ENDIF}
 {$IFDEF WIN32}
     function GetRowsAffected: Integer;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
   protected
     { IProviderSupport }
     procedure PSExecute; override;
@@ -96,7 +96,7 @@ type
     function CreateHandle: HDBICur; override;
     procedure Disconnect; override;
     function GetParamsCount: Word;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure DefineProperties(Filer: TFiler); override;
 {$ENDIF}
 {$IFDEF COMPILER35_UP}
@@ -113,7 +113,7 @@ type
     procedure Prepare;
     procedure RefreshQuery;
     procedure UnPrepare;
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
     function IsEmpty: Boolean;
 {$ENDIF}
     property Local: Boolean read FLocal;
@@ -127,7 +127,7 @@ type
     property Text: PChar read FText;
 {$ENDIF}
   published
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property AutoRefresh;
 {$ENDIF}
     property AuxiliaryTables: Boolean read FAuxiliaryTables write FAuxiliaryTables default True;
@@ -137,12 +137,12 @@ type
     property QBE: TStrings read FQBE write SetQuery;
     { Ensure QBE is declared before Params }
     property BlankAsZero: Boolean read FBlankAsZero write FBlankAsZero default False;
-    property Params: TParams read FParams write SetParamsList {$IFDEF Delphi4_Up} stored False {$ENDIF};
+    property Params: TParams read FParams write SetParamsList {$IFDEF COMPILER4_UP} stored False {$ENDIF};
     property RequestLive: Boolean read FRequestLive write FRequestLive default False;
     property UpdateMode;
 {$IFDEF WIN32}
     property UpdateObject;
-  {$IFDEF Delphi3_Up}
+  {$IFDEF COMPILER3_UP}
     property Constrained: Boolean read FConstrained write FConstrained default False;
     property Constraints stored ConstraintsStored;
   {$ENDIF}
@@ -151,7 +151,7 @@ type
 
 implementation
 
-uses DBConsts, {$IFDEF Delphi3_Up} BDEConst, {$ENDIF} JvDBUtils, JvBdeUtils;
+uses DBConsts, {$IFDEF COMPILER3_UP} BDEConst, {$ENDIF} JvDBUtils, JvBdeUtils;
 
 function NameDelimiter(C: Char): Boolean;
 begin
@@ -170,7 +170,7 @@ begin
   inherited Create(AOwner);
   FQBE := TStringList.Create;
   TStringList(QBE).OnChange := QueryChanged;
-  FParams := TParams.Create{$IFDEF Delphi4_Up}(Self){$ENDIF};
+  FParams := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
   FStartParam := DefQBEStartParam;
   FParamCheck := True;
   FAuxiliaryTables:= True;
@@ -265,9 +265,9 @@ procedure TJvQBEQuery.QueryChanged(Sender: TObject);
 var
   List: TParams;
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if not (csReading in ComponentState) then begin
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
     Disconnect;
   {$IFDEF WIN32}
     FText := QBE.Text;
@@ -276,11 +276,11 @@ begin
     FText := QBE.GetText;
   {$ENDIF WIN32}
     if ParamCheck or (csDesigning in ComponentState) then begin
-      List := TParams.Create{$IFDEF Delphi4_Up}(Self){$ENDIF};
+      List := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
       try
         CreateParams(List, PChar(Text));
         List.AssignValues(FParams);
-    {$IFDEF Delphi4_Up}
+    {$IFDEF COMPILER4_UP}
         FParams.Clear;
         FParams.Assign(List);
       finally
@@ -288,11 +288,11 @@ begin
         FParams.Free;
         FParams := List;
       except
-    {$ENDIF Delphi4_Up}
+    {$ENDIF COMPILER4_UP}
         List.Free;
       end;
     end;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     DataEvent(dePropertyChange, 0);
   end
   else begin
@@ -300,7 +300,7 @@ begin
     FParams.Clear;
     CreateParams(FParams, PChar(Text));
   end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 end;
 
 procedure TJvQBEQuery.SetParamsList(Value: TParams);
@@ -308,7 +308,7 @@ begin
   FParams.AssignValues(Value);
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure TJvQBEQuery.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
@@ -499,7 +499,7 @@ begin
         EmbeddedLiteral := False;
       end
       else Name := StrPas(StartPos + 1);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       if List.FindParam(Name) = nil then
 {$ENDIF}
         List.CreateParam(ftUnknown, Name, ptUnknown);
@@ -517,7 +517,7 @@ begin
   until CurChar = #0;
 end;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function TJvQBEQuery.IsEmpty: Boolean;
 begin
   Result := IsDataSetEmpty(Self);
@@ -602,7 +602,7 @@ begin
     Check(DBiSetProp(hDbiObj(StmtHandle), stmtLIVENESS,
       DataType[RequestLive and not ForceUpdateCallback]));
     Check(DBiSetProp(hDbiObj(StmtHandle), stmtAUXTBLS, Longint(FAuxiliaryTables)));
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     if Local and RequestLive and Constrained then
       Check(DBiSetProp(hDbiObj(StmtHandle), stmtCONSTRAINED, LongInt(True)));
 {$ENDIF}
@@ -668,7 +668,7 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
 
 { TJvQBEQuery.IProviderSupport }
 
@@ -695,6 +695,6 @@ begin
     QBE.Text := CommandText;
 end;
 
-{$ENDIF Delphi5_Up}
+{$ENDIF COMPILER5_UP}
 
 end.

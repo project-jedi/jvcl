@@ -31,7 +31,7 @@ unit JvMenus;
 interface
 
 uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF} SysUtils,
-  Classes, Controls, Messages, Graphics, {$IFDEF Delphi4_Up} ImgList, {$ENDIF}
+  Classes, Controls, Messages, Graphics, {$IFDEF COMPILER4_UP} ImgList, {$ENDIF}
   Menus, JvHook;
 
 type
@@ -108,7 +108,7 @@ type
     property MinTextOffset: Cardinal read FMinTextOffset write FMinTextOffset default 0;
     property Style: TJvMenuStyle read FStyle write SetStyle default msStandard;
     property ShowCheckMarks: Boolean read FShowCheckMarks write FShowCheckMarks default True;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OwnerDraw stored False;
 {$ENDIF}
 {$IFDEF WIN32}
@@ -134,7 +134,7 @@ type
     FOnMeasureItem: TMeasureMenuItemEvent;
     FOnDrawMargin: TDrawMarginEvent;
     FOnGetItemParams: TItemParamsEvent;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     FPopupPoint: TPoint;
     FParentBiDiMode: Boolean;
 {$ENDIF}
@@ -150,12 +150,12 @@ type
       var Handled: Boolean);
     procedure WMDrawItem(var Message: TWMDrawItem); message WM_DRAWITEM;
     procedure WMMeasureItem(var Message: TWMMeasureItem); message WM_MEASUREITEM;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     procedure SetBiDiModeFromPopupControl;
 {$ENDIF}
   protected
     procedure Loaded; override;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function UseRightToLeftAlignment: Boolean;
 {$ENDIF}
 {$IFDEF WIN32}
@@ -187,7 +187,7 @@ type
     property MinTextOffset: Cardinal read FMinTextOffset write FMinTextOffset default 0;
     property Style: TJvMenuStyle read FStyle write SetStyle default msStandard;
     property ShowCheckMarks: Boolean read FShowCheckMarks write FShowCheckMarks default True;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OwnerDraw stored False;
 {$ENDIF}
 {$IFDEF WIN32}
@@ -248,7 +248,7 @@ const
   MNC_SELECT = 3;
 {$ENDIF}
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 procedure ProcessMenuChar(AMenu: TMenu; var Message: TWMMenuChar);
 var
   C, I, First, Hilite, Next: Integer;
@@ -347,7 +347,7 @@ begin
     end;
   end;
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 procedure MenuWndMessage(Menu: TMenu; var AMsg: TMessage; var Handled: Boolean);
 var
@@ -384,7 +384,7 @@ begin
       CM_MENUCHANGED: Menu.Dispatch(AMsg);
       WM_MENUCHAR:
         begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
           Menu.ProcessMenuChar(TWMMenuChar(AMsg));
 {$ELSE}
           ProcessMenuChar(Menu, TWMMenuChar(AMsg));
@@ -393,7 +393,7 @@ begin
     end;
 end;
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 procedure RefreshMenuItem(MenuItem: TMenuItem; OwnerDraw: Boolean);
 const
   Breaks: array[TMenuBreak] of Longint = (0, MF_MENUBREAK, MF_MENUBARBREAK);
@@ -514,7 +514,7 @@ begin
       RefreshMenuItem(MenuItem.Items[I], OwnerDraw);
   end;
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 procedure SetDefaultMenuFont(AFont: TFont);
 {$IFDEF WIN32}
@@ -623,7 +623,7 @@ end;
 
 procedure DrawMenuItem(AMenu: TMenu; Item: TMenuItem; Glyph: TGraphic;
   NumGlyphs: Integer; Canvas: TCanvas; ShowCheck: Boolean; Buttons: TBtnStyle;
-  Rect: TRect; MinOffset: {$IFDEF Delphi4_Up} Integer {$ELSE} Cardinal {$ENDIF};
+  Rect: TRect; MinOffset: {$IFDEF COMPILER4_UP} Integer {$ELSE} Cardinal {$ENDIF};
   State: TMenuOwnerDrawState {$IFDEF WIN32}; Images: TImageList;
   ImageIndex: Integer {$ENDIF});
 var
@@ -637,7 +637,7 @@ var
   Ico: HIcon;
   H: Integer;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   ParentMenu: TMenu;
 {$ENDIF}
 
@@ -646,7 +646,7 @@ var
     R: TRect;
   begin
     if Length(Text) = 0 then Exit;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     if (ParentMenu <> nil) and (ParentMenu.IsRightToLeft) then begin
       if Flags and DT_LEFT = DT_LEFT then
         Flags := Flags and (not DT_LEFT) or DT_RIGHT
@@ -709,7 +709,7 @@ var
     SaveColor := Canvas.Brush.Color;
     try
       if not (mdSelected in State) then
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         Bmp := AllocPatternBitmap(clMenu, clBtnHighlight)
 {$ELSE}
         Bmp := CreateTwoColorsBrushPattern(clMenu, clBtnHighlight)
@@ -721,7 +721,7 @@ var
         Canvas.FillRect(ARect);
       finally
         Canvas.Brush.Bitmap := nil;
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
         Bmp.Free;
 {$ENDIF}
       end;
@@ -774,7 +774,7 @@ begin
     end;
   end;
   if Assigned(Item) then begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     ParentMenu := Item.GetParentMenu;
 {$ENDIF}
     if Item.Checked and ShowCheck and IsPopup then begin
@@ -1110,7 +1110,7 @@ begin
 end;
 
 procedure TJvMainMenu.RefreshMenu(AOwnerDraw: Boolean);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 begin
   Self.OwnerDraw := AOwnerDraw and (FHook.WinControl <> nil) and
     not (csDesigning in ComponentState);
@@ -1138,7 +1138,7 @@ begin
     NumGlyphs := 1;
     GetItemParams(Item, State, Canvas.Font, BackColor, Graphic, NumGlyphs);
 {$IFDEF WIN32}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     ImageIndex := Item.ImageIndex;
 {$ELSE}
     ImageIndex := -1;
@@ -1170,7 +1170,7 @@ begin
     if Assigned(FOnDrawItem) then FOnDrawItem(Self, Item, Rect, State)
     else begin
 {$IFDEF WIN32}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       ImageIndex := Item.ImageIndex;
 {$ELSE}
       ImageIndex := -1;
@@ -1215,7 +1215,7 @@ end;
 
 procedure TJvMainMenu.CMMenuChanged(var Message: TMessage);
 begin
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   if IsOwnerDrawMenu then RefreshMenu(True);
 {$ENDIF}
 end;
@@ -1289,7 +1289,7 @@ begin
         NumGlyphs := 1;
         GetItemParams(Item, [], FCanvas.Font, BackColor, Graphic, NumGlyphs);
 {$IFDEF WIN32}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         ImageIndex := Item.ImageIndex;
 {$ELSE}
         ImageIndex := -1;
@@ -1406,7 +1406,7 @@ begin
             if (Handle = HMenu(Message.LParam)) or
               (FindItem(Message.LParam, fkHandle) <> nil) then
             begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
               ProcessMenuChar(TWMMenuChar(Message));
 {$ELSE}
               ProcessMenuChar(TJvPopupMenu(Items[I]), TWMMenuChar(Message));
@@ -1473,7 +1473,7 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   FPopupPoint := Point(-1, -1);
 {$ENDIF}
 end;
@@ -1524,7 +1524,7 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function FindPopupControl(const Pos: TPoint): TControl;
 var
   Window: TWinControl;
@@ -1566,11 +1566,11 @@ begin
   end
   else Result := (BiDiMode = bdRightToLeft);
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 procedure TJvPopupMenu.Popup(X, Y: Integer);
 const
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   Flags: array[Boolean, TPopupAlignment] of Word =
     ((TPM_LEFTALIGN, TPM_RIGHTALIGN, TPM_CENTERALIGN),
      (TPM_RIGHTALIGN, TPM_LEFTALIGN, TPM_CENTERALIGN));
@@ -1582,7 +1582,7 @@ const
 var
   FOnPopup: TNotifyEvent;
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   FPopupPoint := Point(X, Y);
   FParentBiDiMode := ParentBiDiMode;
   try
@@ -1594,7 +1594,7 @@ begin
 {$IFNDEF WIN32}
     PopupList.FMenuHelp := HelpContext;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     AdjustBiDiBehavior;
     TrackPopupMenu(Items.Handle,
       Flags[UseRightToLeftAlignment, Alignment] or Buttons[TrackButton], X, Y,
@@ -1620,7 +1620,7 @@ begin
 end;
 
 procedure TJvPopupMenu.RefreshMenu(AOwnerDraw: Boolean);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 begin
   Self.OwnerDraw := AOwnerDraw and not (csDesigning in ComponentState);
 {$ELSE}
@@ -1654,7 +1654,7 @@ begin
     NumGlyphs := 1;
     GetItemParams(Item, State, Canvas.Font, BackColor, Graphic, NumGlyphs);
 {$IFDEF WIN32}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     ImageIndex := Item.ImageIndex;
 {$ELSE}
     ImageIndex := -1;
@@ -1686,7 +1686,7 @@ begin
     if Assigned(FOnDrawItem) then FOnDrawItem(Self, Item, Rect, State)
     else begin
 {$IFDEF WIN32}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       ImageIndex := Item.ImageIndex;
 {$ELSE}
       ImageIndex := -1;
@@ -1833,7 +1833,7 @@ begin
         NumGlyphs := 1;
         GetItemParams(Item, [], FCanvas.Font, BackColor, Graphic, NumGlyphs);
 {$IFDEF WIN32}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         ImageIndex := Item.ImageIndex;
 {$ELSE}
         ImageIndex := -1;

@@ -37,7 +37,7 @@ uses
 
 type
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   IDesigner = TDesigner;
 {$ENDIF}
 

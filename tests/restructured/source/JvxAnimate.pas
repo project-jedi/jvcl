@@ -41,14 +41,14 @@ type
   private
     FDrawing: Boolean;
     FPaintBuffered: Boolean;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     FLock: TRTLCriticalSection;
 {$ENDIF}
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
   protected
     FGraphic: TGraphic;
     function DoPaletteChange: Boolean;
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
     procedure AdjustSize; virtual; abstract;
 {$ENDIF}
     procedure DoPaintImage; virtual; abstract;
@@ -86,10 +86,10 @@ type
     FOnFrameChanged: TNotifyEvent;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     FAsyncDrawing: Boolean;
 {$ENDIF}
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
     FAutoSize: Boolean;
     procedure SetAutoSize(Value: Boolean);
 {$ENDIF}
@@ -98,7 +98,7 @@ type
     function GetInterval: Cardinal;
     procedure SetInterval(Value: Cardinal);
     procedure SetActive(Value: Boolean);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     procedure SetAsyncDrawing(Value: Boolean);
 {$ENDIF}
     procedure SetCenter(Value: Boolean);
@@ -116,7 +116,7 @@ type
     function TransparentStored: Boolean;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
   protected
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
 {$ENDIF}
     function GetPalette: HPALETTE; override;
@@ -132,7 +132,7 @@ type
     destructor Destroy; override;
   published
     property Align;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
@@ -140,7 +140,7 @@ type
 {$ELSE}
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
 {$ENDIF}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     property AsyncDrawing: Boolean read FAsyncDrawing write SetAsyncDrawing default False;
 {$ENDIF}
     property Active: Boolean read FActive write SetActive default False;
@@ -176,11 +176,11 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
     property OnFrameChanged: TNotifyEvent read FOnFrameChanged write FOnFrameChanged;
@@ -188,15 +188,15 @@ type
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
   end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure HookBitmap;
 {$ENDIF}
 
 implementation
 
-uses JvConst, {$IFDEF Delphi3_Up} JvHook, {$ENDIF} JvVCLUtils;
+uses JvConst, {$IFDEF COMPILER3_UP} JvHook, {$ENDIF} JvVCLUtils;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 { TJvHackBitmap }
 
@@ -232,14 +232,14 @@ begin
   Hooked := True;
 end;
 
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { TJvImageControl }
 
 constructor TJvImageControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   InitializeCriticalSection(FLock);
 {$ENDIF}
   ControlStyle := ControlStyle + [csClickEvents, csCaptureMouse, csOpaque,
@@ -251,7 +251,7 @@ end;
 
 destructor TJvImageControl.Destroy;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   DeleteCriticalSection(FLock);
 {$ENDIF}
   inherited Destroy;
@@ -259,14 +259,14 @@ end;
 
 procedure TJvImageControl.Lock;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   EnterCriticalSection(FLock);
 {$ENDIF}
 end;
 
 procedure TJvImageControl.Unlock;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   LeaveCriticalSection(FLock);
 {$ENDIF}
 end;
@@ -296,7 +296,7 @@ begin
   if FPaintBuffered then
     inherited
   else if Message.DC <> 0 then begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Canvas.Lock;
     try
 {$ENDIF}
@@ -321,7 +321,7 @@ begin
         DeleteDC(MemDC);
         DeleteObject(MemBitmap);
       end;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     finally
       Canvas.Unlock;
     end;
@@ -343,7 +343,7 @@ procedure TJvImageControl.DoPaintControl;
 var
   DC: HDC;
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if GetCurrentThreadID = MainThreadID then begin
     Repaint;
     Exit;
@@ -367,7 +367,7 @@ begin
   Result := False;
   Tmp := FGraphic;
   if Visible and (not (csLoading in ComponentState)) and (Tmp <> nil)
-    {$IFDEF Delphi3_Up} and (Tmp.PaletteModified) {$ENDIF} then
+    {$IFDEF COMPILER3_UP} and (Tmp.PaletteModified) {$ENDIF} then
   begin
     if (GetPalette <> 0) then begin
       ParentForm := GetParentForm(Self);
@@ -378,12 +378,12 @@ begin
         else
           PostMessage(ParentForm.Handle, WM_QUERYNEWPALETTE, 0, 0);
         Result := True;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
         Tmp.PaletteModified := False;
 {$ENDIF}
       end;
     end
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     else begin
       Tmp.PaletteModified := False;
     end;
@@ -688,7 +688,7 @@ end;
 
 procedure TJvAnimatedImage.TimerExpired(Sender: TObject);
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if csPaintCopy in ControlState then Exit;
 {$ENDIF}
   if Visible and (FNumGlyphs > 1) and (Parent <> nil) and
@@ -702,7 +702,7 @@ begin
         if FGlyphNum < FNumGlyphs - 1 then Inc(FGlyphNum)
         else FGlyphNum := 0;
       end;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       Canvas.Lock;
       try
         FTimerRepaint := True;
@@ -746,7 +746,7 @@ begin
     if Assigned(FOnStart) then FOnStart(Self);
 end;
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 procedure TJvAnimatedImage.SetAutoSize(Value: Boolean);
 begin
   if Value <> FAutoSize then begin
@@ -756,7 +756,7 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvAnimatedImage.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
   Result := True;
@@ -802,7 +802,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvAnimatedImage.SetAsyncDrawing(Value: Boolean);
 begin
   if FAsyncDrawing <> Value then begin
@@ -821,7 +821,7 @@ end;
 procedure TJvAnimatedImage.WMSize(var Message: TWMSize);
 begin
   inherited;
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
   AdjustSize;
 {$ENDIF}
 end;

@@ -31,14 +31,14 @@ unit JvOle2Auto;
 interface
 
 {$IFDEF WIN32}
-uses Windows, SysUtils, {$IFDEF Delphi3_Up} ActiveX, ComObj {$ELSE}
+uses Windows, SysUtils, {$IFDEF COMPILER3_UP} ActiveX, ComObj {$ELSE}
   Ole2, OleAuto, OleCtl {$ENDIF};
 {$ELSE}
 uses WinTypes, WinProcs, SysUtils, Ole2, Dispatch;
 {$ENDIF}
 
 const { Maximum number of dispatch arguments }
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   MaxDispArgs = 64;
 {$ELSE}
   MaxDispArgs = 32;
@@ -56,7 +56,7 @@ type
   EOleError = class(EJVCLException);
 {$ENDIF WIN32}
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 type
   EPropReadOnly = class(EOleError);
   EPropWriteOnly = class(EOleError);
@@ -287,7 +287,7 @@ implementation
 
 uses Forms;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 resourcestring
 {$ELSE}
 const
@@ -298,7 +298,7 @@ const
   SOleInvalidParam = 'Invalid parameter value';
   SOleNotSupport   = 'Method or property %s not supported by OLE object';
   SOleNotReference = 'Variant does not reference an OLE automation object';
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
   SOleError        = 'OLE2 error occured. Error code: %.8xH';
 {$ENDIF}
 
@@ -388,7 +388,7 @@ begin
   if not FOleInitialized then raise EOleError.Create(SOleNotInit);
 end;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function OleErrorMsg(ErrorCode: HResult): string;
 begin
   FmtStr(Result, SOleError, [Longint(ErrorCode)]);
@@ -414,7 +414,7 @@ end;
 { Raise exception given an OLE return code and TExcepInfo structure }
 
 procedure DispInvokeError(Status: HResult; const ExcepInfo: TExcepInfo);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 begin
   DispatchInvokeError(Status, ExcepInfo);
 {$ELSE}
@@ -449,7 +449,7 @@ begin
     end;
   if Message = '' then Message := OleErrorMsg(Status);
   raise EClass.Create(Message);
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 end;
 
 {$IFNDEF WIN32}
@@ -567,7 +567,7 @@ begin
 end;
 
 {$ELSE}
- {$IFDEF Delphi3_Up}
+ {$IFDEF COMPILER3_UP}
 
 { Return OLE object stored in a variant }
 
@@ -672,7 +672,7 @@ begin
             Dest.pvarVal := VVariant;
           end;
 {$ENDIF WIN32}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         vtInterface:
           begin
             Dest.vt := VT_UNKNOWN or VT_BYREF;
@@ -683,7 +683,7 @@ begin
             Dest.vt := VT_I8 or VT_BYREF;
             Dest.byRef := VInt64;
           end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
         else raise EOleError.Create(SOleInvalidParam);
       end;
 {$IFNDEF WIN32}

@@ -218,7 +218,7 @@ begin
 {$IFDEF WIN32}
     if UseRegistry then begin
       Ini := TRegIniFile.Create(IniFileName);
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
       TRegIniFile(Ini).Access := KEY_READ;
 {$ENDIF}
     end

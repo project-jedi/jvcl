@@ -30,7 +30,7 @@ unit JvVCLUtils;
 interface
 
 uses  Windows,Classes, Graphics, Forms, Controls, Dialogs
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 , RTLConsts, Variants
 {$ENDIF}
 ;
@@ -137,7 +137,7 @@ function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
 procedure FreeMemo(var fpBlock: Pointer);
 function GetMemoSize(fpBlock: Pointer): Longint;
 function CompareMem(fpBlock1, fpBlock2: Pointer; Size: Cardinal): Boolean;
-{$IFNDEF Delphi5_Up}
+{$IFNDEF COMPILER5_UP}
 procedure FreeAndNil(var Obj);
 {$ENDIF}
 
@@ -167,13 +167,13 @@ const
 
 { ModalResult constants }
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 const
   mrNoToAll  = mrAll + 1;
   mrYesToAll = mrNoToAll + 1;
 {$ENDIF}
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 
 { Mouse Wheel message }
 
@@ -207,7 +207,7 @@ type
 
 {$ENDIF WIN32}
 
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 { Cursor routines }
 
@@ -255,14 +255,14 @@ type
 
 procedure WriteText(ACanvas: TCanvas; ARect: TRect; DX, DY: Integer;
   const Text: string; Alignment: TAlignment; WordWrap: Boolean
-  {$IFDEF Delphi4_Up}; ARightToLeft: Boolean = False {$ENDIF});
+  {$IFDEF COMPILER4_UP}; ARightToLeft: Boolean = False {$ENDIF});
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
   const S: string; const ARect: TRect; Align: TAlignment;
-  VertAlign: TVertAlignment); {$IFDEF Delphi4_Up} overload; {$ENDIF}
+  VertAlign: TVertAlignment); {$IFDEF COMPILER4_UP} overload; {$ENDIF}
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
   const S: string; const ARect: TRect; Align: TAlignment;
-  VertAlign: TVertAlignment; WordWrap: Boolean); {$IFDEF Delphi4_Up} overload; {$ENDIF}
-{$IFDEF Delphi4_Up}
+  VertAlign: TVertAlignment; WordWrap: Boolean); {$IFDEF COMPILER4_UP} overload; {$ENDIF}
+{$IFDEF COMPILER4_UP}
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
   const S: string; const ARect: TRect; Align: TAlignment;
   VertAlign: TVertAlignment; ARightToLeft: Boolean); overload;
@@ -339,13 +339,13 @@ function SetCurrentDir(const Dir: string): Boolean;
 
 {$IFDEF WIN32}
 function CheckWin32(OK: Boolean): Boolean; { obsolete, use Win32Check }
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function Win32Check(RetVal: Bool): Bool;
 {$ENDIF}
 procedure RaiseWin32Error(ErrorCode: DWORD);
 {$ENDIF WIN32}
 
-{$IFNDEF Delphi3_Up} { for Delphi 3.0 and previous versions compatibility }
+{$IFNDEF COMPILER3_UP} { for Delphi 3.0 and previous versions compatibility }
 type
   TCustomForm = TForm;
   TDate = TDateTime;
@@ -354,9 +354,9 @@ type
 function ResStr(Ident: Cardinal): string;
 {$ELSE}
 function ResStr(const Ident: string): string;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 type
   Longword = Longint;
 {$ENDIF}
@@ -436,9 +436,9 @@ begin
       Dest.Canvas.CopyRect(Bounds(0, 0, CellWidth, CellHeight),
         TBitmap(Source).Canvas, Bounds((Index mod Cols) * CellWidth,
         (Index div Cols) * CellHeight, CellWidth, CellHeight));
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       Dest.TransparentColor := TBitmap(Source).TransparentColor;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
     end
     else begin
       Dest.Canvas.Brush.Color := clSilver;
@@ -446,9 +446,9 @@ begin
       Dest.Canvas.Draw(-(Index mod Cols) * CellWidth,
         -(Index div Cols) * CellHeight, Source);
     end;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Dest.Transparent := Source.Transparent;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
   end;
 end;
 
@@ -646,7 +646,7 @@ begin
   if not Bitmap.Monochrome then
     SetStretchBltMode(Dest.Handle, STRETCH_DELETESCANS);
   CanvasChanging := Bitmap.Canvas.OnChanging;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   Bitmap.Canvas.Lock;
 {$ENDIF}
   try
@@ -656,7 +656,7 @@ begin
         SrcX, SrcY, SrcW, SrcH, Dest.CopyMode);
     end
     else begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       if TransparentColor = clDefault then
         TransparentColor := Bitmap.Canvas.Pixels[0, Bitmap.Height - 1];
 {$ENDIF}
@@ -668,7 +668,7 @@ begin
     end;
   finally
     Bitmap.Canvas.OnChanging := CanvasChanging;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Bitmap.Canvas.Unlock;
 {$ENDIF}
   end;
@@ -745,7 +745,7 @@ begin
         Width := FOriginal.Width;
         Height := FOriginal.Height;
         Canvas.CopyRect(IRect, FOriginal.Canvas, IRect);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
         HandleType := bmDDB;
 {$ENDIF}
         Canvas.Brush.Color := OutlineColor;
@@ -884,7 +884,7 @@ begin
       FillRect(Rect(0, 0, IWidth, IHeight));
       Draw(0, 0, Icon);
     end;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Result.TransparentColor := BackColor;
     Result.Transparent := True;
 {$ENDIF}
@@ -899,7 +899,7 @@ function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
 begin
   with TImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
   try
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     if TransparentColor = clDefault then
       TransparentColor := Bitmap.TransparentColor;
 {$ENDIF}
@@ -1118,7 +1118,7 @@ begin
     lfItalic := Ord(fsItalic in Font.Style);
     lfUnderline := Ord(fsUnderline in Font.Style);
     lfStrikeOut := Byte(fsStrikeOut in Font.Style);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     lfCharSet := Byte(Font.Charset);
     if AnsiCompareText(Font.Name, 'Default') = 0 then
       StrPCopy(lfFaceName, DefFontData.Name)
@@ -1351,7 +1351,7 @@ var
 begin
   Info.cbSize := SizeOf(TAnimationInfo);
   if SystemParametersInfo(SPI_GETANIMATION, SizeOf(Info), @Info, 0) then
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Result := Info.iMinAnimate <> 0
 {$ELSE}
     Result := Info.iMinAnimate
@@ -1733,7 +1733,7 @@ asm
 {$ENDIF}
 end;
 
-{$IFNDEF Delphi5_Up}
+{$IFNDEF COMPILER5_UP}
 procedure FreeAndNil(var Obj);
 var
   P: TObject;
@@ -2103,7 +2103,7 @@ end;
 { Cursor routines }
 
 {$IFDEF WIN32}
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 const
   RT_ANICURSOR = MakeIntResource(21);
 {$ENDIF}
@@ -2207,14 +2207,14 @@ end;
 
 procedure WriteText(ACanvas: TCanvas; ARect: TRect; DX, DY: Integer;
   const Text: string; Alignment: TAlignment; WordWrap: Boolean
-  {$IFDEF Delphi4_Up}; ARightToLeft: Boolean = False {$ENDIF});
+  {$IFDEF COMPILER4_UP}; ARightToLeft: Boolean = False {$ENDIF});
 const
   AlignFlags: array [TAlignment] of Integer =
     (DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
      DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
      DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
   WrapFlags: array[Boolean] of Integer = (0, DT_WORDBREAK);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   RTL: array [Boolean] of Integer = (0, DT_RTLREADING);
 {$ENDIF}
 var
@@ -2229,7 +2229,7 @@ begin
   if not WordWrap and (Integer(GetNearestColor(ACanvas.Handle, I)) = I) and
     (Pos(#13, Text) = 0) then
   begin { Use ExtTextOut for solid colors }
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     { In BiDi, because we changed the window origin, the text that does not
       change alignment, actually gets its alignment changed. }
     if (ACanvas.CanvasOrientation = coRightToLeft) and (not ARightToLeft) then
@@ -2242,7 +2242,7 @@ begin
         Left := ARect.Left + (ARect.Right - ARect.Left) shr 1
           - (ACanvas.TextWidth(Text) shr 1);
     end;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     ACanvas.TextRect(ARect, Left, ARect.Top + DY, Text);
 {$ELSE}
   {$IFDEF WIN32}
@@ -2255,7 +2255,7 @@ begin
 {$ENDIF}
   end
   else begin { Use FillRect and DrawText for dithered colors }
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     DrawBitmap.Canvas.Lock;
     try
 {$ENDIF}
@@ -2274,7 +2274,7 @@ begin
         Brush.Style := bsSolid;
         FillRect(B);
         SetBkMode(Handle, TRANSPARENT);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         if (ACanvas.CanvasOrientation = coRightToLeft) then
           ChangeBiDiModeAlignment(Alignment);
         DrawText(Handle, PChar(Text), Length(Text), R, AlignFlags[Alignment]
@@ -2290,7 +2290,7 @@ begin
 {$ENDIF}
       end;
       ACanvas.CopyRect(ARect, DrawBitmap.Canvas, B);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     finally
       DrawBitmap.Canvas.Unlock;
     end;
@@ -2298,7 +2298,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
   const S: string; const ARect: TRect; Align: TAlignment;
@@ -2622,13 +2622,13 @@ end;
 {$IFDEF WIN32}
 
 procedure RaiseWin32Error(ErrorCode: DWORD);
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 var
   Error: {$IFDEF Delphi6_Up}EOSError{$ELSE}EWin32Error{$ENDIF};
 {$ENDIF}
 begin
   if ErrorCode <> ERROR_SUCCESS then begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Error := {$IFDEF Delphi6_Up}EOSError{$ELSE}EWin32Error{$ENDIF}.CreateFmt(
       {$IFDEF Delphi6_Up}SOSError{$ELSE}SWin32Error{$ENDIF}, [ErrorCode,
       SysErrorMessage(ErrorCode)]);
@@ -2644,7 +2644,7 @@ end;
 { Win32Check is used to check the return value of a Win32 API function
   which returns a BOOL to indicate success. }
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function Win32Check(RetVal: Bool): Bool;
 var
   LastError: DWORD;
@@ -2656,7 +2656,7 @@ begin
   end;
   Result := RetVal;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 function CheckWin32(OK: Boolean): Boolean;
 begin
@@ -2665,7 +2665,7 @@ end;
 
 {$ENDIF WIN32}
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function ResStr(Ident: Cardinal): string;
 begin
   Result := LoadStr(Ident);

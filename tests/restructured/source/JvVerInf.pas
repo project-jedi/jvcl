@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvVerInf;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   {$WEAKPACKAGEUNIT}
 {$ENDIF}
 

@@ -118,7 +118,7 @@ implementation
 
 uses Forms, JvVCLUtils, JvFileUtil;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 const
   FILE_NOTIFY_CHANGE_LAST_ACCESS  = $00000020;
   FILE_NOTIFY_CHANGE_CREATION     = $00000040;

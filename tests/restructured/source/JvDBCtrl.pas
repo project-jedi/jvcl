@@ -32,12 +32,12 @@ interface
 
 uses 
   Windows, Registry,
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
    Variants,
 {$ENDIF}
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
   StdCtrls, Mask, IniFiles, JvToolEdit, DB, DBGrids, 
-  {$IFNDEF Delphi3_Up} DBTables, {$ENDIF}
+  {$IFNDEF COMPILER3_UP} DBTables, {$ENDIF}
   JvPlacemnt, JvDateUtil, DBCtrls, JvxCtrls, JvCurrEdit;
 
 { TJvDBGrid }
@@ -167,7 +167,7 @@ type
     function GetTitleOffset: Byte;
     procedure SetFixedCols(Value: Integer);
     function GetFixedCols: Integer;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function CalcLeftColumn: Integer;
 {$ENDIF}
     procedure WMChar(var Msg: TWMChar); message WM_CHAR;
@@ -197,7 +197,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
 {$ENDIF}
@@ -281,13 +281,13 @@ type
 {$IFNDEF WIN32}
     property OnColumnMoved: TMovedEvent read FOnColumnMoved write FOnColumnMoved;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnMouseWheelDown;
     property OnMouseWheelUp;
 {$ENDIF}
@@ -333,7 +333,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
@@ -360,7 +360,7 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -403,10 +403,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -455,7 +455,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateMask; override;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
@@ -486,7 +486,7 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -535,10 +535,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -586,7 +586,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateFieldParams;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
@@ -620,7 +620,7 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -666,10 +666,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -751,7 +751,7 @@ type
     property DragCursor;
     property DragMode;
     property Font;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
@@ -785,10 +785,10 @@ type
 {$IFDEF WIN32}
     property OnStartDrag;
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
@@ -797,7 +797,7 @@ type
 implementation
 
 uses SysUtils, JvStrUtils, Dialogs, ExtCtrls, DbConsts, JvAppUtils, JvVCLUtils,
-  JvDBUtils, {$IFNDEF Delphi3_Up} JvBdeUtils, {$ENDIF} JvPickDate, JvCalc, JvMaxMin,
+  JvDBUtils, {$IFNDEF COMPILER3_UP} JvBdeUtils, {$ENDIF} JvPickDate, JvCalc, JvMaxMin,
   JvDConst;
 
 {$IFDEF WIN32}
@@ -1116,13 +1116,13 @@ begin
       ftFmtMemo: Result := Ord(gpMemo);
       ftParadoxOle, ftDBaseOle: Result := Ord(gpOle);
 {$ENDIF}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       ftCursor: Result := Ord(gpData);
 {$ENDIF}
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       ftReference, ftDataSet: Result := Ord(gpData);
 {$ENDIF}
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
       ftOraClob: Result := Ord(gpMemo);
       ftOraBlob: Result := Ord(gpBlob);
 {$ENDIF}
@@ -1235,7 +1235,7 @@ begin
   ACol := Col;
   inherited LayoutChanged;
   if Datalink.Active and (FixedCols > 0) then
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     Col := Min(Max(CalcLeftColumn, ACol), ColCount - 1);
 {$ELSE}
     Col := Min(Max(inherited FixedCols, ACol), ColCount - 1);
@@ -1250,7 +1250,7 @@ begin
   ACol := Col;
   inherited ColWidthsChanged;
   if Datalink.Active and (FixedCols > 0) then
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     Col := Min(Max(CalcLeftColumn, ACol), ColCount - 1);
 {$ELSE}
     Col := Min(Max(inherited FixedCols, ACol), ColCount - 1);
@@ -1265,7 +1265,7 @@ begin
 end;
 
 function TJvDBGrid.GetTitleOffset: Byte;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 var
   I, J: Integer;
 {$ENDIF}
@@ -1273,7 +1273,7 @@ begin
   Result := 0;
   if dgTitles in Options then begin
     Result := 1;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     if (Datalink <> nil) and (Datalink.Dataset <> nil) and
       Datalink.Dataset.ObjectView then
     begin
@@ -1316,7 +1316,7 @@ begin
   else Result := FFixedCols;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvDBGrid.CalcLeftColumn: Integer;
 begin
   Result := FixedCols + IndicatorOffset;
@@ -1446,7 +1446,7 @@ begin
       case Key of
         VK_LEFT:
           if FixedCols > 0 then begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
             SelectedIndex := CalcLeftColumn - IndicatorOffset;
 {$ELSE}
             SelectedIndex := FixedCols;
@@ -1469,7 +1469,7 @@ begin
       case Key of
         VK_LEFT:
           if (FixedCols > 0) and not (dgRowSelect in Options) then begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
             if SelectedIndex <= CalcLeftColumn - IndicatorOffset then
               Exit;
 {$ELSE}
@@ -1480,7 +1480,7 @@ begin
           if (FixedCols > 0) and (ColCount <> IndicatorOffset + 1) and
             not (dgRowSelect in Options) then
           begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
             SelectedIndex := CalcLeftColumn - IndicatorOffset;
 {$ELSE}
             SelectedIndex := FixedCols;
@@ -1701,7 +1701,7 @@ begin
     if Assigned(FOnCheckButton) then begin
 {$IFDEF WIN32}
       Field := Columns[ACol].Field;
-  {$IFDEF Delphi4_Up}
+  {$IFDEF COMPILER4_UP}
       if ColumnAtDepth(Columns[ACol], ARow) <> nil then
         Field := ColumnAtDepth(Columns[ACol], ARow).Field;
   {$ENDIF}
@@ -1737,14 +1737,14 @@ begin
 end;
 
 procedure TJvDBGrid.Scroll(Distance: Integer);
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 var
   IndicatorRect: TRect;
 {$ENDIF}
 begin
   if FDisableCount = 0 then begin
     inherited Scroll(Distance);
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
     if (dgIndicator in Options) and HandleAllocated and MultiSelect then
     begin
       IndicatorRect := BoxRect(0, 0, 0, RowCount - 1);
@@ -1754,7 +1754,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 
 function TJvDBGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
 begin
@@ -1782,7 +1782,7 @@ begin
   end;
 end;
 
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 procedure TJvDBGrid.EditChanged(Sender: TObject);
 begin
@@ -1841,7 +1841,7 @@ begin
     inherited MouseDown(Button, Shift, X, Y)
   else begin
     Cell := MouseCoord(X, Y);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     if (DragKind = dkDock) and (Cell.X < IndicatorOffset) and
       (Cell.Y < TitleOffset) and (not (csDesigning in ComponentState)) then
     begin
@@ -2016,7 +2016,7 @@ begin
     (ACol < Columns.Count) then
   begin
     Result := Columns[ACol];
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     Result := ColumnAtDepth(Result, ARow);
 {$ENDIF}
   end
@@ -2027,7 +2027,7 @@ end;
 procedure TJvDBGrid.DrawCell(ACol, ARow: Longint; ARect: TRect;
   AState: TGridDrawState);
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   function CalcTitleRect(Col: TColumn; ARow: Integer; var MasterCol: TColumn): TRect;
     { copied from Inprise's DbGrids.pas }
   var
@@ -2105,7 +2105,7 @@ procedure TJvDBGrid.DrawCell(ACol, ARow: Longint; ARect: TRect;
       TitleRect.Right := ButtonRect.Left;
     end;
   end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 var
   FrameOffs: Byte;
@@ -2120,7 +2120,7 @@ var
   FixRect: TRect;
   TitleRect, TextRect: TRect;
   AField: TField;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   MasterCol: TColumn;
   InBiDiMode: Boolean;
 {$ENDIF}
@@ -2131,7 +2131,7 @@ const
 {$ENDIF}
 begin
   inherited DrawCell(ACol, ARow, ARect, AState);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   InBiDiMode := Canvas.CanvasOrientation = coRightToLeft;
 {$ENDIF}
   if (dgIndicator in Options) and (ACol = 0) and (ARow - TitleOffset >= 0)
@@ -2162,7 +2162,7 @@ begin
       Canvas.FillRect(FixRect);
 {$ENDIF}
       ALeft := FixRect.Right - FMsIndicators.Width - FrameOffs;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       if InBiDiMode then Inc(ALeft);
 {$ENDIF}
       FMsIndicators.Draw(Self.Canvas, ALeft, (FixRect.Top +
@@ -2170,7 +2170,7 @@ begin
     end;
   end
   else if not (csLoading in ComponentState) and
-    (FTitleButtons {$IFDEF Delphi4_Up} or (FixedCols > 0) {$ENDIF}) and
+    (FTitleButtons {$IFDEF COMPILER4_UP} or (FixedCols > 0) {$ENDIF}) and
     (gdFixed in AState) and (dgTitles in Options) and (ARow < TitleOffset) then
   begin
     SavePen := Canvas.Pen.Color;
@@ -2187,7 +2187,7 @@ begin
         AField := DrawColumn.Field;
       end
       else DrawColumn := nil;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
       if Assigned(DrawColumn) and not DrawColumn.Showing then Exit;
       TitleRect := CalcTitleRect(DrawColumn, ARow, MasterCol);
       if TitleRect.Right < ARect.Right then
@@ -2212,7 +2212,7 @@ begin
       end;
 {$ELSE}
       TitleRect := ARect;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
       Down := FPressed and FTitleButtons and (FPressedCol = DrawColumn);
       if FTitleButtons or ([dgRowLines, dgColLines] * Options =
         [dgRowLines, dgColLines]) then
@@ -2248,18 +2248,18 @@ begin
         if Bmp <> nil then Indicator := Bmp.Width + 6
         else Indicator := 1;
         TextRect := TitleRect;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
         if DrawColumn.Expandable then
           DrawExpandBtn(TitleRect, TextRect, InBiDiMode, DrawColumn.Expanded);
 {$ENDIF}
         with DrawColumn.Title do
           DrawCellText(Self, ACol, ARow, MinimizeText(Caption, Canvas,
             WidthOf(TextRect) - Indicator), TextRect, Alignment, vaCenter
-            {$IFDEF Delphi4_Up}, IsRightToLeft {$ENDIF});
+            {$IFDEF COMPILER4_UP}, IsRightToLeft {$ENDIF});
         if Bmp <> nil then begin
           ALeft := TitleRect.Right - Bmp.Width - 3;
           if Down then Inc(ALeft);
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
           if IsRightToLeft then ALeft := TitleRect.Left + 3;
 {$ENDIF}
           if (ALeft > TitleRect.Left) and (ALeft + Bmp.Width < TitleRect.Right) then
@@ -2327,7 +2327,7 @@ begin
     end;
   end
   else begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     Canvas.Font := Self.Font;
     if (DataLink <> nil) and DataLink.Active and (ACol >= 0) and
       (ACol < Columns.Count) then
@@ -2674,7 +2674,7 @@ end;
 
 procedure TJvDBComboEdit.SetDataSource(Value: TDataSource);
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
 {$ENDIF}
     FDataLink.DataSource := Value;
@@ -2763,7 +2763,7 @@ procedure TJvDBComboEdit.CMEnter(var Message: TCMEnter);
 begin
   SetFocused(True);
   inherited;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   if SysLocale.FarEast and FDataLink.CanModify then
     inherited ReadOnly := False;
 {$ENDIF}
@@ -2807,7 +2807,7 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvDBComboEdit.UseRightToLeftAlignment: Boolean;
 begin
   Result := DBUseRightToLeftAlignment(Self, Field);
@@ -2922,7 +2922,7 @@ end;
 
 procedure TJvDBDateEdit.SetDataSource(Value: TDataSource);
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
 {$ENDIF}
     FDataLink.DataSource := Value;
@@ -3071,7 +3071,7 @@ begin
   DoExit;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvDBDateEdit.UseRightToLeftAlignment: Boolean;
 begin
   Result := DBUseRightToLeftAlignment(Self, Field);
@@ -3179,7 +3179,7 @@ begin
       E := FDataLink.Field.AsInteger
     else if FDataLink.Field.DataType = ftBoolean then
       E := Ord(FDataLink.Field.AsBoolean)
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     else if FDataLink.Field is TLargeintField then
       E := TLargeintField(FDataLink.Field).AsLargeInt
 {$ENDIF}
@@ -3217,7 +3217,7 @@ end;
 procedure TJvDBCalcEdit.SetDataSource(Value: TDataSource);
 begin
   if FDataLink.DataSource <> Value then begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
 {$ENDIF}
       FDataLink.DataSource := Value;
@@ -3257,7 +3257,7 @@ begin
         DisplayFormat := TNumericField(FDatalink.Field).DisplayFormat;
       Alignment := TNumericField(FDatalink.Field).Alignment;
     end;
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     if FDatalink.Field is TLargeintField then begin
       MaxValue := TLargeintField(FDatalink.Field).MaxValue;
       MinValue := TLargeintField(FDatalink.Field).MinValue;
@@ -3319,7 +3319,7 @@ begin
       Self.AsInteger := FDataLink.Field.AsInteger
     else if FDataLink.Field.DataType = ftBoolean then
       Self.AsInteger := Ord(FDataLink.Field.AsBoolean)
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
     else if FDataLink.Field is TLargeintField then
       Self.Value := TLargeintField(FDataLink.Field).AsLargeInt
 {$ENDIF}
@@ -3395,7 +3395,7 @@ begin
   inherited;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvDBCalcEdit.UseRightToLeftAlignment: Boolean;
 begin
   Result := DBUseRightToLeftAlignment(Self, Field);
@@ -3589,7 +3589,7 @@ begin
   if not (State in [Low(TDBStatusKind)..High(TDBStatusKind)]) then begin
     case State of
       dsFilter: Result := dsSetKey;
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       dsNewValue, dsOldValue, dsCurValue: Result := dsEdit;
 {$ELSE}
       dsUpdateNew, dsUpdateOld: Result := dsEdit;
@@ -3653,7 +3653,7 @@ procedure TJvDBStatusLabel.UpdateData;
 
   function IsSequenced: Boolean;
   begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     Result := FDatalink.DataSet.IsSequenced;
 {$ELSE}
     Result := not ((FDatalink.DataSet is TDBDataSet) and
@@ -3669,7 +3669,7 @@ begin
     if Assigned(FOnGetRecordCount) then
       FOnGetRecordCount(Self, FDataLink.DataSet, FRecordCount)
     else if (FCalcCount or IsSequenced) then
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
       FRecordCount := FDataLink.DataSet.RecordCount;
 {$ELSE}
       FRecordCount := DataSetRecordCount(FDataLink.DataSet)
@@ -3713,7 +3713,7 @@ begin
             if Assigned(FOnGetRecNo) then
               FOnGetRecNo(Self, FDataLink.DataSet, FRecordNo) else
             try
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
               with FDatalink.DataSet do
                 if not IsEmpty then FRecordNo := RecNo;
 {$ELSE}
@@ -3771,7 +3771,7 @@ end;
 
 procedure TJvDBStatusLabel.SetDataSource(Value: TDataSource);
 begin
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
 {$ENDIF}
     FDataLink.DataSource := Value;

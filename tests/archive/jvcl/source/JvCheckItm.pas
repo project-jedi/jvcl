@@ -114,7 +114,7 @@ implementation
  {$D-}
 {$ENDIF}
 
-uses {$IFDEF Delphi3_Up} JvStrLEdit, {$ELSE} StrEdit, {$ENDIF} Consts, JvConst,
+uses {$IFDEF COMPILER3_UP} JvStrLEdit, {$ELSE} StrEdit, {$ENDIF} Consts, JvConst,
   JvVCLUtils, JvBoxProcs;
 
 { TJvCheckItemsProperty }
@@ -351,7 +351,7 @@ begin
   with TJvStrEditDlg.Create(Application) do
     try
 {$IFDEF WIN32}
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
       CodeWndBtn.Visible := False;
 {$ENDIF}
 {$ENDIF}

@@ -40,7 +40,7 @@ type
   public
     procedure ExecuteVerb(Index:integer);override;
 
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
 {$ELSE}
  procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
@@ -57,7 +57,7 @@ implementation
 
 { TJvChangeNotifyEditor }
 
- {$IFDEF Delphi6_UP}
+ {$IFDEF COMPILER6_UP}
 procedure TJvChangeNotifyEditor.EditProperty(const Prop: IProperty;  var Continue: Boolean);
 var PropName:string;
 begin

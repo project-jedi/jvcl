@@ -76,7 +76,7 @@ type
   published
     property Anchors;
     property AutoComplete;
-   {$IFDEF DELPHI6_UP}
+   {$IFDEF COMPILER6_UP}
     property AutoDropDown;
    {$ENDIF}
     property AutoSave;
@@ -171,7 +171,7 @@ type
   published
     property Anchors;
     property AutoComplete;
-   {$IFDEF DELPHI6_UP}
+   {$IFDEF COMPILER6_UP}
     property AutoDropDown;
    {$ENDIF}
     property AutoSave;
