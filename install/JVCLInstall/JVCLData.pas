@@ -36,10 +36,10 @@ uses
   IniFiles, JCLData;
 
 const
-  PackageGeneratorFile = 'devtools\bin\pgEdit.xml';
-  DefaultJCLVersion = '1.92';
-  DefaultJCLIdentifyDirs = '\source\windows\win32api'; // ;-separated list
-  DefaultJCLIdentifyFiles = '\source\common\JvBase.pas'; // ;-separated list
+  sPackageGeneratorFile = 'devtools\bin\pgEdit.xml';
+  sDxgettextRegKey = '\bplfile\Shell\Extract strings\Command';
+  sJvclIncFile = '%s\common\jvcl.inc';
+  sBCBIncludeDir = '%s\Include\Vcl';
 
 type
   TJVCLData = class;
@@ -292,12 +292,6 @@ resourcestring
   RsDeletingFiles = 'Deleting files...';
   RsComplete = 'Complete.';
 
-const
-  sDxgettextRegKey = '\bplfile\Shell\Extract strings\Command';
-  sJvclIncFile = '%s\common\jvcl.inc';
-  sBCBIncludeDir = '%s\Include\Vcl';
-
-
 function ReadRegString(RootKey: HKEY; const Key, Name: string): string;
 var
   Reg: TRegistry;
@@ -342,7 +336,7 @@ begin
   FJVCLConfig.LoadFromFile(JvclIncFilename);
 
   ErrMsg := '';
-  LoadConfig(JVCLDir + '\' + PackageGeneratorFile, 'JVCL', ErrMsg);
+  LoadConfig(JVCLDir + '\' + sPackageGeneratorFile, 'JVCL', ErrMsg);
 
   FTargets := TCompileTargetList.Create;
   SetLength(FConfigs, Targets.Count);
@@ -1019,6 +1013,8 @@ begin
     FOutdatedJCL := False;
     for i := 0 to High(JCLIdentifyOutdated) do
     begin
+      if JCLIdentifyOutdated[i] = '' then
+        Continue;
       if JCLIdentifyOutdated[i][1] = '+' then
       begin
         if not FileExists(FJCLDir + Path(Copy(JCLIdentifyOutdated[i], 2, MaxInt))) then

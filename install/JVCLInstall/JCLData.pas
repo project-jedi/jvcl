@@ -32,8 +32,10 @@ interface
 
 const
   { JCLVersion specifies the string that is displayed when the JVCL Installer
-    requires the user to install or compile the JCL. }
-  JCLVersion = '1.93 (CVS)';
+    requires the user to install or compile the JCL. Changing this constant
+    will only change the displayed string but not the JCL version testing
+    code. }
+  JCLVersion = '1.92 or 1.93(CVS)';
 
 
   { JCLBrowsePaths specifies the JCL directories that could be found in the
@@ -59,8 +61,10 @@ const
     directory to be accepted as a new enought JCL version. The paths must start
     with a backslash. A leading "+" means that the file must exist, a leading
     "-" means that the file must not exist. }
-  JCLIdentifyOutdated: array[0..0] of string = (
-    '+\source\windows\win32api\WinBase.int'
+  JCLIdentifyOutdated: array[0..1] of string = (
+//    '+\source\windows\win32api\WinBase.int' // 1.93(CVS)
+     '+\source\common\JclUnitVersioning.pas',
+     '+\source\common\JclWideStrings.pas'
   );
 
 
