@@ -1,9 +1,11 @@
 unit MainFrm;
-
+{$I JVCL.inc}
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils,
+  {$IFDEF COMPILER6_UP}   Variants,  {$ENDIF COMPILER6_UP}
+  Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvListBox, JvCtrls, JvComponent, JvBaseDlg, JvSHFileOp,
   JvButton, JvToolEdit, Mask, JvCheckBox, JvGroupBox, JvLabel, JvMemo,
   ExtCtrls, JvBevel;
