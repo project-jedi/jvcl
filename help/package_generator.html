@@ -18,8 +18,7 @@ advantage of this tool.<br>
 The package generator comes in two different version: Graphical User
 Interface (pgEdit.exe) and Command Line (pg.exe). They both work from
 the same set of XML configuration files, pgEdit having the advantage to
-allow you to safely edit the source XML files. Here is the general
-principle:<br>
+allow you to safely edit the source XML files. Here is the flow diagram:<br>
 <br>
 <div style="text-align: center;"><img
  style="width: 533px; height: 454px;" alt="Package Generator Flow"
@@ -41,8 +40,8 @@ indicates which files are to be included in the package, which other
 packages this package depends on and various compilation options such
 as PFLAGS (Pascal Flags) for C++ Builder. All inclusions and
 dependencies can be conditionned by a compilation directive.<br>
-A runtime package must have the '-R' suffix, while a design time
-package must have a '-D' suffix. Hence, JvCore-R.xml is a runtime
+A runtime package should have the '-R' suffix, while a design time
+package should have a '-D' suffix. Hence, JvCore-R.xml is a runtime
 package source file while JvCore-D.xml is a design time package source
 file.<br>
       </td>
@@ -76,7 +75,8 @@ File</a><br>
       <td style="vertical-align: top;">The Delphi packages are Pascal
 source files and as such can include conditional compilation
 directives. However C++ Builder package source files are XML files and
-as such do not support conditions. Hence when modifications are done to
+as a result do not support conditions. Hence when modifications are
+done to
 an include file that have impact on which files are to be included in a
 package, you must regenerate the packages for C++ Builder. The
 conditions are read from the include file given to the package
@@ -152,7 +152,8 @@ Targets="all" Formname="JvJVCLAboutForm" Condition=""/&gt;<br>
 <br>
 When reading those files, the package generator doesn't check for the
 existence of the nodes and properties in the XML file. It assumes they
-exist and if they don't you will most likely end up with an exception.
+exist and if they don't you will most likely end up with an Access
+Violation exception.
 This is why we recommend that you use pgEdit.exe to edit these files,
 which
 will ensure the format of the xml files is correct. Here is a
@@ -183,7 +184,7 @@ node)<br>
 properties are Name and Design. Name is obviously the name of the
 package while Design is 1 when the package is a designtime package, 0
 when it is a run time package. The root node doesn't have to be called
-package, but it MUST have those two properties<br>
+package, but it MUST have those two properties.<br>
       </td>
     </tr>
     <tr>
@@ -192,7 +193,7 @@ package, but it MUST have those two properties<br>
       <td style="vertical-align: top;">Package<br>
       </td>
       <td style="vertical-align: top;">This is the description of the
-package as it will be displayed in the IDE<br>
+package as it will be displayed in the IDE.<br>
       </td>
     </tr>
     <tr>
@@ -209,9 +210,10 @@ Options are separated by spaces and if followed by a string in
 parenthesis, the string is considered to be a condition. If the
 condition doesn't exist when the file are generated, the option is
 removed. For instance, if you type -LUCJcl50(USEJVCL) then if USEJVCL
-is not defined in the include file, then -LUCJcl50 will be removed from
-the final string. The final value will be the replacement for
-%C5PFLAGS% in template files<br>
+is not defined in the include file, -LUCJcl50 will be removed from the
+final PFLAGS value. This final value will be the replacement for
+%C5PFLAGS% in
+template files.<br>
       </td>
     </tr>
     <tr>
@@ -251,7 +253,8 @@ as C5Libs but will be the replacement for %C6LIBS%<br>
       <td style="vertical-align: top;">Package<br>
       </td>
       <td style="vertical-align: top;">This node is only the parent of
-all the package nodes, those nodes indicating the packages required by
+all the 'package' nodes, those nodes indicating the packages required
+by
 the current package.<br>
       </td>
     </tr>
@@ -261,9 +264,8 @@ the current package.<br>
       <td style="vertical-align: top;">Package<br>
       </td>
       <td style="vertical-align: top;">This node is only the parent of
-all the file nodes, those nodes indicating the files contained in the
-current package.
-      </td>
+all the 'file' nodes, those nodes indicating the files contained in the
+current package. </td>
     </tr>
     <tr>
       <td style="vertical-align: top;">Package<br>
@@ -293,7 +295,7 @@ process for further information.<br>
             <td style="vertical-align: top;">Targets<br>
             </td>
             <td style="vertical-align: top;">The targets for which the
-package is to be required<br>
+package is to be required.<br>
             </td>
           </tr>
           <tr>
@@ -324,14 +326,14 @@ have those four attributes:<br>
             <td style="vertical-align: top;">Name<br>
             </td>
             <td style="vertical-align: top;">The name of the file to
-include. The extension must be indicated<br>
+include. The extension must be indicated.<br>
             </td>
           </tr>
           <tr>
             <td style="vertical-align: top;">Targets<br>
             </td>
             <td style="vertical-align: top;">The targets for which the
-file is to be included<br>
+file is to be included.<br>
             </td>
           </tr>
           <tr>
@@ -342,7 +344,7 @@ associated with the pas file, if any. It is not the type name, but the
 name of the form that must be indicated here. For instance if the form
 is of type TForm1 then the value must be Form1. Moreover, if the dfm
 file describes a Frame or a Data Module, the name must be followed by a
-colon, a space and TFrame or TDataModule.<br>
+colon, a space and TFrame or TDataModule (as in 'myFrame: TFrame').<br>
             </td>
           </tr>
           <tr>
@@ -431,8 +433,8 @@ node)<br>
       </td>
       <td style="vertical-align: top;">This is the root node of the XML
 file. It doesn't have to have any attributes and may be named
-differently, but that would mean that pgEdit needs to be changed to
-cope with the modification. pg wouldn't mind.<br>
+differently, but that would mean that pgEdit.exe needs to be changed to
+cope with the modification. pg.exe wouldn't mind.<br>
       </td>
     </tr>
     <tr>
@@ -441,8 +443,9 @@ cope with the modification. pg wouldn't mind.<br>
       <td style="vertical-align: top;">Configuration<br>
       </td>
       <td style="vertical-align: top;">This node contains all the
-subnodes required by pgEdit to save its state when it closed down. The
-state includes the values of various components, the size of the form,
+subnodes required by pgEdit to save its state when closed down. The
+state includes the values of various component fields, the size of the
+form,
 its position...<br>
       </td>
     </tr>
@@ -550,7 +553,7 @@ exist in this pseudo root directory.<br>
             <td style="vertical-align: top;">incfile<br>
             </td>
             <td style="vertical-align: top;">The name of the include
-file to parse. This has only an impact for C++ Builder targets<br>
+file to parse. This only has an impact for C++ Builder targets<br>
             </td>
           </tr>
         </tbody>
@@ -617,7 +620,7 @@ not define if there are no reason to use this feature. For instance,
 Delphi 7 Personal Edition doesn't support Databases. With the example
 above you could use the d7 target alone when specifying a file that is
 to be included for Delphi 7 and not Delphi 7 Personal Edition. Use
-'d7,d7p' when including a file that can be used for all versions of
+'d7,d7p' when including a file that must be used for all versions of
 Delphi 7.<br>
             </td>
           </tr>
@@ -643,7 +646,8 @@ packages.<br>
             </td>
             <td style="vertical-align: top;">A character to identify
 the version of the environment. Defaults to the second character of
-name. The expected value is a number and errors will arise if it is not.<br>
+name. The expected value is a number and errors will arise if it is
+not. For instance, for Delphi 7, it should be 7.<br>
             </td>
           </tr>
           <tr>
@@ -655,8 +659,8 @@ result of using this target so that your include file can enclose some
 $DEFINE in $IFDEF that relate to the compiler being used. For instance,
 in the JVCL, we have the JVCLThemesEnabled compilation directive. It
 can be turned on manually, but if the target compiler is version 7 or
-upper, it is turned on by default as the theme support is included in
-the default distribution. Hence in the include file, we did this:<br>
+upper, it is always turned on as the theme support is included in the
+Delphi distribution. Hence in the include file, we have this:<br>
             <code><br>
             </code>
             <table
@@ -724,9 +728,323 @@ to include them in the value for your alias.<br>
 <br>
 <br>
 <h2><a name="Template_Files_Format"></a>Template Files Format</h2>
-<h2><br>
-</h2>
+The template files are either binary of text files. To determine if a
+file is binary, the first 50 bytes are read from it and if more than 10
+percent of them are not ASCII readable characters, the file is
+considered to be binary. An ASCII readable character is one from the
+[#9, #10, #13, #32..#127] set (Delphi Notation). The results of this
+analysis are cached to ensure that this doesn't impact on the speed of
+generation.<br>
+<br>
+If a template file is binary, then no special treatment is applied to
+it, it is simply copied over to the output file.<br>
+If a template file is text, then it is read lines by lines according to
+this state diagram:<br>
+<br>
+<div style="text-align: center;"><img
+ style="width: 530px; height: 394px;" alt="Template state diagram"
+ src="images/pg-template-state.png"><br>
+</div>
+<br>
+In each state, special markers can be found on the line being read.
+Markers are case sensitive and unless indicated otherwise, can be found
+anywhere on the line
+and can be present more than once.<br>
+<br>
+<table
+ style="width: 90%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="1" cellspacing="1" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center;">State<br>
+      </td>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center;">Marker<br>
+      </td>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="12"
+ style="vertical-align: top; white-space: nowrap;">Standard Line<br>
+      </td>
+      <td style="vertical-align: top; white-space: nowrap;">&lt;%%%
+START REQUIRES %%%&gt;<br>
+      </td>
+      <td style="vertical-align: top;">Must be alone on the line. Goes
+to the 'Requires Section' state<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">&lt;%%%
+START FILES %%%&gt;</td>
+      <td style="vertical-align: top;">Must be alone on the line. Goes
+to the 'Files Section' state<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">&lt;%%%
+START FORMS %%%&gt;</td>
+      <td style="vertical-align: top;">Must be alone on the line. Goes
+to the 'Forms Section' state<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">&lt;%%%
+START LIBS %%%&gt;</td>
+      <td style="vertical-align: top;">Must be alone on the line. Goes
+to the 'Libs Section' state<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%NAME%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the name of the
+output file<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%XMLNAME%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the name of the
+package XML source file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%DESCRIPTION%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the description of
+the package<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%C5PFLAGS%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+c5pflags node in the package XML source file, after it has been
+processed for conditions.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%C6PFLAGS%</td>
+      <td style="vertical-align: top;">Replaced by the value from the
+c6pflags node in the package XML source file, after it has been
+processed for conditions.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%TYPE%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by 'DESIGN' or 'RUN'
+depending on the type of the package.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%type%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by 'd' or 'r' according
+to the type of the package.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%DATETIME%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the current date and
+time adjusted to UTC, formated according to the string 'dd-mm-yyyy
+hh:nn:ss' and followed by ' UTC'<br>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="2"
+ style="vertical-align: top; white-space: nowrap;">Requires
+section<br>
+      <br>
+      </td>
+      <td style="vertical-align: top; white-space: nowrap;">%NAME%<br>
+      </td>
+      <td style="vertical-align: top;">The name of the package being
+required, as taken from the package node in the paclage XML source
+file. As explained before, the name may be modified according to the
+format for the curent model.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">&lt;%%% END
+REQUIRES %%%&gt;<br>
+      </td>
+      <td style="vertical-align: top;">Must be alone on the line.
+Returns to the 'Standard Line' state.<br>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="7" style="vertical-align: top;">Files
+section<br>
+Forms section<br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      </td>
+      <td style="vertical-align: top;">%FILENAME% </td>
+      <td style="vertical-align: top;">The name of the source file as
+taken from the 'file' node in the package XML source file<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%UNITNAME%<br>
+      </td>
+      <td style="vertical-align: top;">The name of the source file,
+without any path information and without the extension<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%Unitname%<br>
+      </td>
+      <td style="vertical-align: top;">Same as %UNITNAME% but the
+replacement is all in lower case, except for the first letter which is
+put in upper case<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%FORMNAME%<br>
+      </td>
+      <td style="vertical-align: top;">The name of the form, if any.
+Taken from the formname attribute of the 'file' node in the package XML
+source file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%FORMTYPE%<br>
+      </td>
+      <td style="vertical-align: top;">The type of the form, if any.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%FORMNAMEANDTYPE%<br>
+      </td>
+      <td style="vertical-align: top;">The name and the type of the
+form put together. If no type was specified in the formname attribute,
+then it is equivalent to %FORMNAME%<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%FORMPATHNAME%<br>
+      </td>
+      <td style="vertical-align: top;">The name of the dfm file
+containing the definition of the form.&nbsp; No extension is added, it
+is simply the filename to which the extension was removed.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Files section<br>
+      </td>
+      <td style="vertical-align: top;">&lt;%%% END FILES %%%&gt;<br>
+      </td>
+      <td style="vertical-align: top;">Must be alone on the line.
+Returns to the 'Standard Line' state.
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Forms section<br>
+      </td>
+      <td style="vertical-align: top;">&lt;%%% END FORMS %%%&gt;<br>
+      </td>
+      <td style="vertical-align: top;">Must be alone on the line.
+Returns to the 'Standard Line' state.
+      </td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="3" style="vertical-align: top;">Libs
+section<br>
+      <br>
+      <br>
+      </td>
+      <td style="vertical-align: top;">%FILENAME%<br>
+      </td>
+      <td style="vertical-align: top;">The filename of the library file<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%UNITNAME%<br>
+      </td>
+      <td style="vertical-align: top;">The filename of the library
+file, without any path information nor extension<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&lt;%%% END LIBS %%%&gt;<br>
+      </td>
+      <td style="vertical-align: top;">Must be alone on the line.
+Returns to the 'Standard Line' state.
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Lines that result in a transtion are not included in the output file.
+Any line read in the 'Standard Line' state is written in the output
+file after marker replacement has been done. Lines read in the
+'Section' states will be repeated according to this table:<br>
+<br>
+<table
+ style="width: 90%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="1" cellspacing="1" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center; white-space: nowrap;">Repeating
+section<br>
+      </td>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Requires<br>
+      </td>
+      <td style="vertical-align: top;">The lines read while in this
+state will be replaced for every package required by the one being
+generated. That is, for every 'package' node found in the package XML
+source file. The markers will be replaced before the output occurs.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Libs<br>
+      </td>
+      <td style="vertical-align: top;">The lines read while in this
+state will be replaced for every library to be included in the package
+being generated. That is for every name in the space delimited value of
+the 'C5Libs' or 'C6Libs' node in the package XML source file. The node
+used depends on the target for which the generation takes place. If the
+target environment is not C and/or its version is not 5 or 6, the
+generator will most likely trigger an error.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Files<br>
+      </td>
+      <td style="vertical-align: top;">The lines read while in this
+state will be replaced for every file to be included in the package
+being generated. That is for every file 'node' found in the package XML
+source file. The markers will be replaced before the output occurs.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Forms<br>
+      </td>
+      <td style="vertical-align: top;">This section follows the same
+repeat conditions as the Files section, except that a 'file' node will
+only be used if its 'formname' attribute is not empty.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
 <h2><a name="Include_File_parsing"></a>Include File parsing</h2>
+<br>
 <br>
 <h2><a name="Detailed_Generation_process"></a>Detailed Generation
 process</h2>
