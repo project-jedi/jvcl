@@ -173,7 +173,7 @@ begin
     {$ENDIF COMPILER6_UP}
 end;
 
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 constructor TJvgCaption.Create(AOwner: TComponent);
 begin

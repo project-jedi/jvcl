@@ -50,7 +50,7 @@ unit JvXPBar;
 {$IFNDEF USEJVCL}
 {$UNDEF JVCLThemesEnabled}
 {$UNDEF JVCLThemesEnabledD56}
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 interface
 
@@ -466,7 +466,7 @@ type
       {$IFDEF USEJVCL} override; {$ELSE} dynamic; {$ENDIF}
     {$IFNDEF USEJVCL}
     procedure CMHintShow(var Msg: TCMHintShow); message CM_HINTSHOW;
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
     procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -584,7 +584,7 @@ uses
   UxTheme,
   {$IFNDEF COMPILER7_UP}
   TmSchema,
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF !COMPILER7_UP}
   JvThemes,
   {$ENDIF JVCLThemesEnabled}
   {$IFDEF USEJVCL}
@@ -604,7 +604,7 @@ resourcestring
   RsUntitled = 'untitled';
   RsUntitledFmt = '(%s %d)';
   RsHintShortcutFmt = '%s (%s)';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 const
   FC_HEADER_MARGIN = 6;
@@ -2321,7 +2321,7 @@ procedure TJvXPCustomWinXPBar.CMHintShow(var Msg: TCMHintShow);
 begin
   Msg.Result := Ord(HintShow(Msg.HintInfo^));
 end;
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 {$IFDEF VCL}
 function TJvXPBarItemActionLink.DoShowHint(var HintStr: string): Boolean;

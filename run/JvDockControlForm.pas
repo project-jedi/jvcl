@@ -299,7 +299,7 @@ type
     {$IFNDEF USEJVCL}
     function GetControlName: string; virtual;
     function GetDockStyleVersion: string; virtual;
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
 
     procedure ResetCursor(Source: TJvDockDragDockObject); virtual;
 
@@ -319,7 +319,7 @@ type
     {$IFNDEF USEJVCL}
     property Version: string read GetDockStyleVersion;
     property ControlName: string read GetControlName;
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
 
     property DockPanelClass: TJvDockPanelClass
       read FDockPanelClass write FDockPanelClass;
@@ -413,7 +413,7 @@ type
 
     {$IFNDEF USEJVCL}
     function GetDockStyleVersion: string; virtual;
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
 
     property EnableDock: Boolean read FEnableDock write SetEnableDock default True;
     property LeftDock: Boolean read FLeftDock write SetLeftDock default True;
@@ -423,7 +423,7 @@ type
     property EachOtherDock: Boolean read FEachOtherDock write SetEachOtherDock default True;
     {$IFNDEF USEJVCL}
     property Version: string read GetDockStyleVersion;
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
     property DockStyle: TJvDockBasicStyle read FDockStyle write SetDockStyle;
   end;
 
@@ -516,7 +516,7 @@ type
     property DockSplitterWithAlign[Index: TAlign]: TJvDockSplitter read GetDockSplitterWithAlign;
     {$IFNDEF USEJVCL}
     property Version: string read GetDockStyleVersion;
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
   published
     property LeftSplitterStyle: TJvDockSplitterStyle index 0 read GetSplitterStyleIndex write SetSplitterStyleIndex;
     property RightSplitterStyle: TJvDockSplitterStyle index 1 read GetSplitterStyleIndex write SetSplitterStyleIndex;

@@ -945,7 +945,7 @@ resourcestring
 
   RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant';
   RsEInvalidWizardPage = 'The pages belong to another wizard';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 type
   // (ahuser) introduced for refactoring the WizardButtons

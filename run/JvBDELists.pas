@@ -192,7 +192,7 @@ type
     property TableName;
   end;
 
-{$ENDIF BCB}
+{$ENDIF !BCB}
 
 implementation
 
@@ -624,7 +624,7 @@ begin
   FItemType := dtIndices;
 end;
 
-{$ENDIF BCB}
+{$ENDIF !BCB}
 
 {$IFDEF UNITVERSIONING}
 const

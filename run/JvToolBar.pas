@@ -43,7 +43,7 @@ type
     FChangeLink: TJvMenuChangeLink;
     {$IFNDEF COMPILER6_UP}
     FMenu: TMainMenu;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     FTempMenu: TJvPopupMenu;
     FButtonMenu: TMenuItem;
     FMenuShowingCount: Integer;
@@ -55,7 +55,7 @@ type
     procedure CNDropDownClosed(var Msg: TMessage); message CN_DROPDOWNCLOSED;
     {$IFNDEF COMPILER6_UP}
     procedure BuildButtons(AMenu: TMainMenu);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
   protected
     procedure AdjustSize; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
@@ -144,7 +144,7 @@ begin
   for I := 0 to FMenu.Items.Count - 1 do
     Buttons[I].MenuItem := FMenu.Items[I];
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 procedure TJvToolBar.SetMenu(const Value: TMainMenu);
 begin

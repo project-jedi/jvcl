@@ -160,7 +160,7 @@ begin
   begin
     {$IFNDEF COMPILER6_UP}
     Checked := not Checked;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     if (Tag >= 0) and (Tag < FList.Count) then
       TControl(FList[Tag]).Visible := Checked;
   end;

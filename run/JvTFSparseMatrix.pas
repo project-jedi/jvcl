@@ -76,7 +76,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsEMatrixMustBeEmpty = 'Matrix must be empty before setting null value';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 destructor TJvTFSparseMatrix.Destroy;
 begin

@@ -255,7 +255,7 @@ begin
   AppendStr(string(TVarData(Args.Values[0]).vString), Args.Values[1]);
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 { function UpperCase(const S: string): string; }
 
@@ -1815,7 +1815,7 @@ begin
     {$IFNDEF COMPILER6_UP}
     { EStackOverflow }
     AddClass(cSysUtils, EStackOverflow, 'EStackOverflow');
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     { EControlC }
     AddClass(cSysUtils, EControlC, 'EControlC');
     { EVariantError }
@@ -1832,7 +1832,7 @@ begin
     {$IFNDEF PC_MAPPED_EXCEPTIONS} // Linux define symbol
     { EAbstractError }
     AddClass(cSysUtils, EAbstractError, 'EAbstractError');
-    {$ENDIF PC_MAPPED_EXCEPTIONS}
+    {$ENDIF !PC_MAPPED_EXCEPTIONS}
     { EIntfCastError }
     AddClass(cSysUtils, EIntfCastError, 'EIntfCastError');
     { EInvalidContainer }
@@ -1858,7 +1858,7 @@ begin
     AddFunction(cSysUtils, 'DisposeStr', JvInterpreter_DisposeStr, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AssignStr', JvInterpreter_AssignStr, 2, [varByRef, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AppendStr', JvInterpreter_AppendStr, 2, [varByRef, varEmpty], varEmpty);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     AddFunction(cSysUtils, 'UpperCase', JvInterpreter_UpperCase, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'LowerCase', JvInterpreter_LowerCase, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'CompareStr', JvInterpreter_CompareStr, 2, [varEmpty, varEmpty], varEmpty);
@@ -2064,7 +2064,7 @@ begin
     AddConst(cSysUtils, 'faSysFile', Ord(faSysFile));
     {$IFNDEF COMPILER8_UP}
     AddConst(cSysUtils, 'faVolumeID', Ord(faVolumeID)); // deprecated
-    {$ENDIF ~COMPILER8_UP}
+    {$ENDIF !COMPILER8_UP}
     AddConst(cSysUtils, 'faDirectory', Ord(faDirectory));
     AddConst(cSysUtils, 'faArchive', Ord(faArchive));
     AddConst(cSysUtils, 'faAnyFile', Ord(faAnyFile));

@@ -164,7 +164,7 @@ type
     {$IFNDEF USEJVCL}
     FVersion: string;
     procedure SetVersion(const Value: string);
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
     procedure CMFocusChanged(var Msg: TMessage); message CM_FOCUSCHANGED;
     {$IFDEF VCL}
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
@@ -226,7 +226,7 @@ type
   published
     {$IFNDEF USEJVCL}
     property Version: string read FVersion write SetVersion stored False;
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
   end;
 
   TJvXPUnlimitedControl = class(TJvXPCustomControl)
@@ -391,7 +391,7 @@ resourcestring
   RsCopyright = 'Design eXperience. (c) 2002 M. Hoffmann Version ';
   RsCopyright2 = 'Design eXperience II - (c) 2002 M. Hoffmann Version ';
   RsVersion = '2.0.1'; // always increase version number on new releases!
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 //=== { TJvXPCustomComponent } ===============================================
 
@@ -400,7 +400,7 @@ begin
   inherited Create(AOwner);
   {$IFNDEF USEJVCL}
   FVersion := RsCopyright + RsVersion;
-  {$ENDIF USEJVCL}
+  {$ENDIF !USEJVCL}
 end;
 
 {$IFNDEF USEJVCL}
@@ -408,7 +408,7 @@ procedure TJvXPCustomComponent.SetVersion(const Value: string);
 begin
   // do not enable overwriting this constant.
 end;
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 //=== { TJvXPCustomControl } =================================================
 
@@ -427,7 +427,7 @@ begin
   FModalResult := 0;
   {$IFNDEF USEJVCL}
   FVersion := RsCopyright2 + RsVersion;
-  {$ENDIF USEJVCL}
+  {$ENDIF !USEJVCL}
 end;
 
 {$IFNDEF USEJVCL}
@@ -435,7 +435,7 @@ procedure TJvXPCustomControl.SetVersion(const Value: string);
 begin
   // disallow changing this property.
 end;
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 procedure TJvXPCustomControl.BeginUpdate;
 begin

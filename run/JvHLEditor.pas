@@ -93,7 +93,7 @@ interface
 uses
   {$IFNDEF COMPILER6_UP}
   Windows,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
   SysUtils, Classes, Graphics,
   JvEditor, JvEditorCommon, JvHLParser;
 

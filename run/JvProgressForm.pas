@@ -237,7 +237,7 @@ begin
   // (p3) put topmost but only if not debugging
   {$IFNDEF DEBUGINFO_ON}
   SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-  {$ENDIF DEBUGINFO_ON}
+  {$ENDIF !DEBUGINFO_ON}
   if not tmProgress.Enabled then
     DoProgress; // call at least once
   Result := inherited ShowModal;

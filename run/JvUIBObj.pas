@@ -38,7 +38,7 @@ uses
 type
 {$IFNDEF COMPILER7_UP}
   TDate = TDateTime;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER7_UP}
 {$IFDEF VisualCLX}
   TDate = TDateTime;
 {$ENDIF VisualCLX}
@@ -190,7 +190,7 @@ function SafeArrayAccessData(VarArray: PVarArray; out Data: Pointer): HRESULT; s
 function SafeArrayUnaccessData(VarArray: PVarArray): HRESULT; stdcall;
   external OleAutDllName name 'SafeArrayUnaccessData';
 
-{$ENDIF DELPHI6_UP}
+{$ENDIF !DELPHI6_UP}
 
 function SafeArrayElementTotal(VarArray: PVarArray): Integer;
 var

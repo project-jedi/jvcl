@@ -147,7 +147,7 @@ type
     {$IFNDEF COMPILER6_UP}
     procedure SelectAll;
     procedure DeleteSelected;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     procedure UnselectAll;
     procedure InvertSelection;
     function MoveUp(Index: Integer; Focus: Boolean = True): Integer;

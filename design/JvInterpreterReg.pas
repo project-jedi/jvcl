@@ -52,7 +52,7 @@ uses
   {$IFDEF JVCL_UseQuickReport}
   JvInterpreter_Quickrpt,
   {$ENDIF JVCL_UseQuickReport}
-  {$ENDIF DelphiPersonalEdition}
+  {$ENDIF !DelphiPersonalEdition}
   JvInterpreter_Dialogs, JvInterpreter_ExtCtrls, JvInterpreter_Forms,
   JvInterpreter_Graphics, JvInterpreter_Grids, JvInterpreter_JvEditor,
   JvInterpreter_JvInterpreter, JvInterpreter_JvUtils,

@@ -958,7 +958,7 @@ begin
   ACol := Coord.X;
   ARow := Coord.Y;
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 procedure TJvCustomCharMap.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);

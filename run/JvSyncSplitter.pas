@@ -201,7 +201,7 @@ begin
     end;
   end;
 end;
-{$ENDIF  VisualCLX}
+{$ENDIF VisualCLX}
 
 {$IFDEF UNITVERSIONING}
 const

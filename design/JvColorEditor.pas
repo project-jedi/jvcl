@@ -315,7 +315,7 @@ var
           for Suffix := 'A' to 'P' do
           begin
             KeyName := 'Color' + Suffix;
-            KeyValue := StringReplace(Strings[I], Keyname + '=', '', []);
+            KeyValue := StringReplace(Strings[I], KeyName + '=', '', []);
             WriteString(KeyName, KeyValue);
             Inc(I);
           end;

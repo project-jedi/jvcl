@@ -33,7 +33,7 @@ interface
 uses
   {$IFNDEF DelphiPersonalEdition}
   DBGrids,
-  {$ENDIF DelphiPersonalEdition}  // Defines added by JGB
+  {$ENDIF !DelphiPersonalEdition}  // Defines added by JGB
   {$IFDEF USEJVCL}
   JVCLVer,
   {$ENDIF USEJVCL}

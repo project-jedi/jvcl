@@ -46,7 +46,7 @@ uses
   UxTheme, 
   {$IFNDEF COMPILER7_UP}
   TmSchema,
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
   {$ENDIF VCL}
   JvJCLUtils, JvThemes, JvComponent, JvExButtons;

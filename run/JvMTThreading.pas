@@ -162,7 +162,7 @@ resourcestring
   RsEThreadNotInitializedOrWaiting = 'Cannot run: thread is not Initializing or Waiting';
   RsECannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread';
   RsEReleaseOfUnusedTicket = 'Release of unused ticket';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 threadvar
   _CurrentMTThread: TMTThread;

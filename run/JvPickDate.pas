@@ -936,7 +936,7 @@ var
   VertOffset: Integer;
   HorzOffset: Integer;
   Control, BackPanel: TWinControl;
-{$ENDIF JVCLThemesEnabled}
+{$ENDIF !JVCLThemesEnabled}
 begin
   inherited Create(AOwner);
   FFourDigitYear := IsFourDigitYear;

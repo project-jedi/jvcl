@@ -5556,7 +5556,7 @@ var
   Item: TJvCustomInspectorItem;
   {$IFNDEF COMPILER6_UP}
   J: Integer;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 begin
   TempList := TList.Create;
   try

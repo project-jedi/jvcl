@@ -63,7 +63,7 @@ const
 resourcestring
   {$IFNDEF USEJVCL}
   RsPaletteDocking = 'Jv Docking';
-  {$ENDIF USEJVCL}
+  {$ENDIF !USEJVCL}
   RsDockServerName = 'JVCL Dock Server Component';
   RsDockClientName = 'JVCL Dock Client Component';
   RsDockStyleName = 'JVCL Dock Style Component';

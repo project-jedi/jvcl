@@ -175,7 +175,7 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    {$ENDIF COMPILEr6_UP}
+    {$ENDIF COMPILER6_UP}
     property OnStartDrag;
   end;
 

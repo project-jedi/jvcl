@@ -84,7 +84,7 @@ begin
   finally
     PropertyEditor.Free;
   end;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -103,7 +103,7 @@ begin
   {$ENDIF COMPILER6_UP}
   {$IFNDEF COMPILER6_UP}
   try
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
     FContinue := True;
     Components.Add(Component);
     GetComponentProperties(Components, tkAny, Designer, CheckEdit);
@@ -111,7 +111,7 @@ begin
   finally
     Components.Free;
   end;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 end;
 
 procedure TJvAnimatedEditor.LoadAniFile(Image: TJvAnimatedImage);

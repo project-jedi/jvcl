@@ -568,7 +568,7 @@ begin
         {$ENDIF VCL}
         {$IFDEF VisualCLX}
         QWindows.IgnoreMouseEvents(Handle);
-        {$ENDIF VisuaLCLX}
+        {$ENDIF VisualCLX}
       end;
       MouseUp(Button, Shift, X, Y);
     end;

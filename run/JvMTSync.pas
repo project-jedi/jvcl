@@ -115,7 +115,7 @@ resourcestring
   RsESemaphoreFailure = 'Semaphore failure (%d)';
   RsESemaphoreAbandoned = 'Semaphore was abandoned';
   RsEThreadAbandoned = 'Thread was abandoned';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 //=== { TMTSemaphore } =======================================================
 

@@ -581,7 +581,7 @@ function IncYear(const AValue: TDateTime;
 begin
   Result := IncMonth(AValue, ANumberOfYears * 12);
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 // PRY END
 
 //=== { TJvTimeItem } ========================================================

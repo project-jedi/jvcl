@@ -359,7 +359,7 @@ function SecondsBetween(const Now: TDateTime; const FTime: TDateTime): Integer;
 begin
   Result := Trunc(86400 * (FTime - Now));
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 function IsApplicationMinimized: Boolean;
 begin

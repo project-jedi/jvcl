@@ -45,7 +45,7 @@ type
 
 {$IFDEF JVCL_UseQuickReport}
 procedure ExportToExcel(QuickRep: TCustomQuickRep);
-{$ENDIF JVCL_USEQuickReport}
+{$ENDIF JVCL_UseQuickReport}
 procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportProgress);
 
 implementation

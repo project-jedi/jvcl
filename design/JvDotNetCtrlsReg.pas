@@ -57,7 +57,7 @@ resourcestring
   {$IFNDEF DelphiPersonalEdition}
   RsPaletteDotNetDB = 'Jv DotNet DB';
   {$ENDIF !DelphiPersonalEdition}
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 procedure Register;
 begin

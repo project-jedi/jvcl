@@ -245,7 +245,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsEGlanceControlNotAssigned = 'GlanceControl not assigned';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 //=== { TJvTFGVTextControl } =================================================
 

@@ -183,7 +183,7 @@ begin
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     FPHandle := QWidget_winid((AOwner as TWinControl).Handle)
-    {$ENDIF VisuaLCLX}
+    {$ENDIF VisualCLX}
   else
     // (rom) is this safe?
     FPHandle := GetForegroundWindow;

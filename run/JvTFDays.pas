@@ -1784,7 +1784,7 @@ resourcestring
   RsEAnotherTimeBlockWithTheName = 'Another time block with the name ' +
     '"%s" already exists';
   RsEATimeBlockWithTheNamesDoesNotExist = 'A time block with the name "%s" does not exist';
-  {$ENDIF USEJVCL}
+  {$ENDIF !USEJVCL}
 
 //Type
   // DEF TIMEBLOCK (not conditionally compiled, just marked for reference)
@@ -5195,7 +5195,7 @@ begin
    FOnDrawDataCell(Self, ACanvas, ARect, ColIndex, RowIndex);
 end;
 }
-{$ENDIF Jv_TIMEBLOCKS}
+{$ENDIF !Jv_TIMEBLOCKS}
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
@@ -6422,7 +6422,7 @@ begin
    end;
 end;
 }
-{$ENDIF Jv_TIMEBLOCKS}
+{$ENDIF !Jv_TIMEBLOCKS}
 
 procedure TJvTFDays.DrawAppts(ACanvas: TCanvas; DrawAll: Boolean);
 var
@@ -7980,7 +7980,7 @@ begin
   EndDT := NewEnd;
 end;
 }
-{$ENDIF Jv_TIMEBLOCKS}
+{$ENDIF !Jv_TIMEBLOCKS}
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
@@ -8360,7 +8360,7 @@ begin
   Invalidate;
 end;
 }
-{$ENDIF Jv_TIMEBLOCKS}
+{$ENDIF !Jv_TIMEBLOCKS}
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
@@ -8509,7 +8509,7 @@ begin
    end;
 end;
 }
-{$ENDIF Jv_TIMEBLOCKS}
+{$ENDIF !Jv_TIMEBLOCKS}
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
@@ -8882,7 +8882,7 @@ begin
   Result.DragAccept := (Result.Row > gcHdr) and (Result.Col > gcHdr);
 end;
 }
-{$ENDIF Jv_TIMEBLOCKS}
+{$ENDIF !Jv_TIMEBLOCKS}
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
@@ -9078,7 +9078,7 @@ begin
     Result := EmptyRect;
 end;
 }
-{$ENDIF Jv_TIMEBLOCKS}
+{$ENDIF !Jv_TIMEBLOCKS}
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
@@ -9208,7 +9208,7 @@ begin
     end;
 end;
 }
-{$ENDIF Jv_TIMEBLOCKS}
+{$ENDIF !Jv_TIMEBLOCKS}
 
 {$IFDEF Jv_TIMEBLOCKS}
 // ok

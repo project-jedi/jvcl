@@ -106,7 +106,7 @@ resourcestring
   RsItemEditorEllipsis = 'Item Editor...';
   RsDefaultColorItem = 'Restore Default Colors';
   RsDefaultFontsItem = 'Restore Default Fonts';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 type
   TCustomWinXPBar = class(TJvXPCustomWinXPBar)

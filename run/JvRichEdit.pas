@@ -4219,7 +4219,7 @@ constructor TJvMSTextConversion.Create(const AConverterFileName, AExtensions,
     if (BufStart <> nil) and (BufStart^ <> #0) then
       Strings.Add(BufStart);
   end;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 
 begin
   inherited Create;

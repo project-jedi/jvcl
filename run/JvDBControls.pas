@@ -217,7 +217,7 @@ type
     {$IFNDEF BCB5}
     // Do not use this under BCB5, you will crash the linker.
     property Button;
-    {$ENDIF BCB5}
+    {$ENDIF !BCB5}
     property Field: TField read GetField;
     property Canvas: TCanvas read GetCanvas;
   published

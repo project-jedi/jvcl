@@ -2573,7 +2573,7 @@ begin
     ClearSelection;
   end;
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 procedure TJvTreeView.SetNodePopup(Node: TTreeNode; Value: TPopupMenu);
 begin

@@ -406,7 +406,7 @@ type
     {$IFNDEF WINFORMS}
     property OnStartDock;
     property OnEndDock;
-    {$ENDIF ~WINFORMS}
+    {$ENDIF !WINFORMS}
     {$ENDIF VCL}
   end;
 

@@ -82,7 +82,7 @@ resourcestring
   RsPaletteTimeFramework = 'Jv TimeFrameWork';
   RsGridLayout = 'Grid Layout';
   RsCustomDraw = 'Custom Draw';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 //=== { TJvTFGridLayoutCategory } ============================================
 

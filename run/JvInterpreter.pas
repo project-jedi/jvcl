@@ -212,7 +212,7 @@ type
 
   {$IFNDEF COMPILER6_UP}
   TVarType = Word;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 
   TJvInterpreterArgs = class;
   IJvInterpreterDataType = interface;

@@ -63,7 +63,7 @@ type
   TJvTimerList = class;
   {$IFNDEF COMPILER6_UP}
   TCollectionNotification = (cnAdded, cnDeleted);
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 
   // (rom) used THandle where needed
   TJvTimerEvents = class(TOwnedCollection)
@@ -477,7 +477,7 @@ begin
   {$IFNDEF COMPILER6_UP}
   // (p3) yuk! some hack...
   Notify(Result, cnAdded);
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 end;
 
 procedure TJvTimerEvents.Assign(Source: TPersistent);

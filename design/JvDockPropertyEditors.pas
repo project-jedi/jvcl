@@ -54,7 +54,7 @@ type
     procedure ExecuteVerb(Index: Integer); override;
   end;
 
-  {$ENDIF USEJVCL}
+  {$ENDIF !USEJVCL}
 
   TJvDockVIDTabPageControlEditor = class(TComponentEditor)
   public

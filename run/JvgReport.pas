@@ -681,7 +681,7 @@ begin
   FontChanged;
 end;
 
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 procedure TJvgReportItem.SetSelected(Value: Boolean);
 begin
