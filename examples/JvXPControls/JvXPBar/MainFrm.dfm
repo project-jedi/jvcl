@@ -24,7 +24,7 @@ object frmMain: TfrmMain
     Left = 206
     Top = 0
     Width = 4
-    Height = 438
+    Height = 419
     Cursor = crHSplit
     ResizeStyle = rsUpdate
   end
@@ -32,7 +32,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 206
-    Height = 438
+    Height = 419
     BoundLines = [blLeft, blTop, blRight, blBottom]
     Caption = 'cntWinXPBar'
     Color = 14985086
@@ -42,7 +42,7 @@ object frmMain: TfrmMain
       Left = 1
       Top = 1
       Width = 204
-      Height = 436
+      Height = 417
       HorzScrollBar.Smooth = True
       HorzScrollBar.Style = ssFlat
       HorzScrollBar.Tracking = True
@@ -56,14 +56,14 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 204
-        Height = 183
+        Height = 251
         AutoSize = True
         BorderWidth = 4
         Caption = 'JvXPContainer1'
         Align = alTop
         object dxWinXPBar4: TJvXPBar
           Left = 4
-          Top = 144
+          Top = 212
           Width = 196
           Height = 35
           Caption = 'Structure'
@@ -150,7 +150,7 @@ object frmMain: TfrmMain
         end
         object JvXPBar1: TJvXPBar
           Left = 4
-          Top = 74
+          Top = 142
           Width = 196
           Height = 35
           Hint = 'This bar doesn'#39't use actions'
@@ -168,11 +168,8 @@ object frmMain: TfrmMain
               OnClick = acConnectRemoteServerExecute
             end
             item
-              Caption = 'Web'
-              Hint = 'This is a web synchronize'
-              ImageIndex = 7
+              Action = acSynchronizeWeb
               ImageList = imlWinXPBar
-              OnClick = acConnectRemoteServerExecute
             end>
           RollImages = ilRedButtons
           Font.Charset = DEFAULT_CHARSET
@@ -263,7 +260,7 @@ object frmMain: TfrmMain
         end
         object dxWinXPBar3: TJvXPBar
           Left = 4
-          Top = 109
+          Top = 177
           Width = 196
           Height = 35
           Hint = 'This is a hint'
@@ -329,12 +326,11 @@ object frmMain: TfrmMain
         end
         object dxWinXPBar2: TJvXPBar
           Left = 4
-          Top = 39
+          Top = 107
           Width = 196
           Height = 35
           Caption = 'Settings'
           Collapsed = True
-          Colors.GradientFrom = clCream
           Items = <
             item
               Action = acSettingsDatabase
@@ -426,20 +422,25 @@ object frmMain: TfrmMain
           Left = 4
           Top = 4
           Width = 196
-          Height = 35
-          Hint = 'Cick to see connection options'
+          Height = 103
+          Hint = 'Click to see connection options'
           Caption = 'Connect'
-          Collapsed = True
           Colors.GradientTo = 16244694
           Items = <
             item
               Action = acConnectRemoteServer
+              AutoCheck = True
+              GroupIndex = 1
             end
             item
               Action = acConnectLocalServer
+              AutoCheck = True
+              GroupIndex = 1
             end
             item
               Action = acConnectAdministrator
+              AutoCheck = True
+              GroupIndex = 1
             end>
           RollImages = ilOldButtons
           Icon.Data = {
@@ -514,6 +515,7 @@ object frmMain: TfrmMain
             01FFF00000FFF80000FFF80001FFFC0003FFFC0001FFFC0000FFFE00007FFE00
             003FFE00001FFF00000FFF00000FFF00001FFF80003FFFFC007FFFFFE0FF}
           RollStep = 5
+          ShowItemFrame = True
           Align = alTop
         end
       end
@@ -523,7 +525,7 @@ object frmMain: TfrmMain
     Left = 210
     Top = 0
     Width = 353
-    Height = 438
+    Height = 419
     BoundLines = [blLeft, blTop, blRight, blBottom]
     Caption = 'cntDetails'
     Color = clInfoBk
@@ -587,6 +589,17 @@ object frmMain: TfrmMain
       TabOrder = 4
       OnClick = chkGroupedClick
     end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 419
+    Width = 563
+    Height = 19
+    Panels = <
+      item
+        Width = 50
+      end>
+    SimplePanel = False
   end
   object imlWinXPBar: TImageList
     Left = 288
