@@ -741,6 +741,10 @@ begin
   end;
 end;
 
+var
+  _SHGetSpecialFolderPathA: function(hwndOwner: HWND; lpszPath: PAnsiChar;
+    nFolder: Integer; fCreate: BOOL): BOOL; stdcall;
+
 function TCompileTarget.ReadBDSProjectsDir: string;
 var
   h: HMODULE;
@@ -781,8 +785,11 @@ begin
       end;
     end;
 
+    if not Assigned(_SHGetSpecialFolderPathA) then
+      _SHGetSpecialFolderPathA := GetProcAddress(GetModuleHandle('shell32.dll'), 'SHGetSpecialFolderPathA');
     SetLength(PersDir, MAX_PATH);
-    if SHGetSpecialFolderPath(0, PChar(PersDir), CSIDL_PERSONAL, False) then
+    if Assigned(_SHGetSpecialFolderPathA) and
+       _SHGetSpecialFolderPathA(0, PChar(PersDir), CSIDL_PERSONAL, False) then
     begin
       SetLength(PersDir, StrLen(PChar(PersDir)));
       Result := ExcludeTrailingPathDelimiter(PersDir) + '\' + Result;
