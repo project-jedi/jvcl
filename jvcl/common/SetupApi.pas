@@ -208,11 +208,11 @@ type
   TSPAltPlatformInfoV1 = SP_ALTPLATFORM_INFO_V1;
 
   {$IFDEF WINXP}
-  PSPAltPlatformInfo = PSPAltPlatformInfoV1;
-  TSPAltPlatformInfo = TSPAltPlatformInfoV1;
-  {$ELSE}
   PSPAltPlatformInfo = PSPAltPlatformInfoV2;
   TSPAltPlatformInfo = TSPAltPlatformInfoV2;
+  {$ELSE}
+  PSPAltPlatformInfo = PSPAltPlatformInfoV1;
+  TSPAltPlatformInfo = TSPAltPlatformInfoV1;
   {$ENDIF WINXP}
 
 //
@@ -2564,14 +2564,23 @@ const
   {$EXTERNALSYM SPINST_UNREGSVR}
   SPINST_PROFILEITEMS             = $00000100;
   {$EXTERNALSYM SPINST_PROFILEITEMS}
+  {$IFDEF WINXP}
+  SPINST_COPYINF                  = $00000200;
+  {$EXTERNALSYM SPINST_COPYINF}
+  SPINST_ALL                      = $000003ff;
+  {$EXTERNALSYM SPINST_ALL}
+  {$ELSE}
   SPINST_ALL                      = $000001ff;
   {$EXTERNALSYM SPINST_ALL}
+  {$ENDIF WINXP}
   SPINST_SINGLESECTION            = $00010000;
   {$EXTERNALSYM SPINST_SINGLESECTION}
   SPINST_LOGCONFIG_IS_FORCED      = $00020000;
   {$EXTERNALSYM SPINST_LOGCONFIG_IS_FORCED}
   SPINST_LOGCONFIGS_ARE_OVERRIDES = $00040000;
   {$EXTERNALSYM SPINST_LOGCONFIGS_ARE_OVERRIDES}
+  SPINST_REGISTERCALLBACKAWARE    = $00080000;
+  {$EXTERNALSYM SPINST_REGISTERCALLBACKAWARE}
 
 //
 // Flags for SetupInstallServicesFromInfSection(Ex).  These flags are also used
@@ -2643,6 +2652,12 @@ const
 //
   SPSVCINST_STOPSERVICE = $00000200;
   {$EXTERNALSYM SPSVCINST_STOPSERVICE}
+
+//
+// (AddService) force overwrite of security settings
+//
+  SPSVCINST_CLOBBER_SECURITY = $00000400;
+  {$EXTERNALSYM SPSVCINST_CLOBBER_SECURITY}
 
 //
 // Flags for SetupInitializeFileLog
@@ -2805,6 +2820,8 @@ const
 // These values should cover the same set of registry properties
 // as defined by the CM_DRP codes in cfgmgr32.h.
 //
+// Note that SPDRP codes are zero based while CM_DRP codes are one based!
+//
 const
   SPDRP_DEVICEDESC                  = $00000000; // DeviceDesc (R/W)
   {$EXTERNALSYM SPDRP_DEVICEDESC}
@@ -2864,10 +2881,28 @@ const
   {$EXTERNALSYM SPDRP_CHARACTERISTICS}
   SPDRP_ADDRESS                     = $0000001C; // Device Address (R)
   {$EXTERNALSYM SPDRP_ADDRESS}
+  {$IFDEF WINXP}
+  SPDRP_UI_NUMBER_DESC_FORMAT       = $0000001D;  // UiNumberDescFormat (R/W)
+  {$EXTERNALSYM SPDRP_UI_NUMBER_DESC_FORMAT}
+  SPDRP_DEVICE_POWER_DATA           = $0000001E;  // Device Power Data (R)
+  {$EXTERNALSYM SPDRP_DEVICE_POWER_DATA}
+  SPDRP_REMOVAL_POLICY              = $0000001F;  // Removal Policy (R)
+  {$EXTERNALSYM SPDRP_REMOVAL_POLICY}
+  SPDRP_REMOVAL_POLICY_HW_DEFAULT   = $00000020;  // Hardware Removal Policy (R)
+  {$EXTERNALSYM SPDRP_REMOVAL_POLICY_HW_DEFAULT}
+  SPDRP_REMOVAL_POLICY_OVERRIDE     = $00000021;  // Removal Policy Override (RW)
+  {$EXTERNALSYM SPDRP_REMOVAL_POLICY_OVERRIDE}
+  SPDRP_INSTALL_STATE               = $00000022;  // Device Install State (R)
+  {$EXTERNALSYM SPDRP_INSTALL_STATE}
+
+  SPDRP_MAXIMUM_PROPERTY            = $00000023;  // Upper bound on ordinals
+  {$EXTERNALSYM SPDRP_MAXIMUM_PROPERTY}
+  {$ELSE}
   SPDRP_UI_NUMBER_DESC_FORMAT       = $0000001E; // UiNumberDescFormat (R/W)
   {$EXTERNALSYM SPDRP_UI_NUMBER_DESC_FORMAT}
   SPDRP_MAXIMUM_PROPERTY            = $0000001F; // Upper bound on ordinals
   {$EXTERNALSYM SPDRP_MAXIMUM_PROPERTY}
+  {$ENDIF WINXP}
 //
 // Class registry property codes
 // (Codes marked as read-only (R) may only be used for
@@ -2906,10 +2941,14 @@ const
 // PropertySheetType values for the SetupDiGetClassDevPropertySheets API
 //
 const
-  DIGCDP_FLAG_BASIC    = $00000001;
+  DIGCDP_FLAG_BASIC           = $00000001;
   {$EXTERNALSYM DIGCDP_FLAG_BASIC}
-  DIGCDP_FLAG_ADVANCED = $00000002;
+  DIGCDP_FLAG_ADVANCED        = $00000002;
   {$EXTERNALSYM DIGCDP_FLAG_ADVANCED}
+  DIGCDP_FLAG_REMOTE_BASIC    = $00000003;
+  {$EXTERNALSYM DIGCDP_FLAG_REMOTE_BASIC}
+  DIGCDP_FLAG_REMOTE_ADVANCED = $00000004;
+  {$EXTERNALSYM DIGCDP_FLAG_REMOTE_ADVANCED}
 
 //
 // Define ICON IDs publicly exposed from setupapi.
@@ -2952,12 +2991,43 @@ const
   SPWP_USE_DEVINFO_DATA = $00000001;
 {$EXTERNALSYM SPWP_USE_DEVINFO_DATA}
 
+{$IFDEF WINXP}
+type
+  PSPInfSignerInfoA = TSPInfSignerInfoA;
+  PSPInfSignerInfoW = TSPInfSignerInfoW;
+  PSPInfSignerInfo = TSPInfSignerInfoA;
+  SP_INF_SIGNER_INFO_A = packed record
+    cbSize: DWORD;
+    CatalogFile: array [0..MAX_PATH - 1] of AnsiChar;
+    DigitalSigner: array [0..MAX_PATH - 1] of AnsiChar;
+    DigitalSignerVersion: array [0..MAX_PATH - 1] of AnsiChar;
+  end;
+  SP_INF_SIGNER_INFO_W = packed record
+    cbSize: DWORD;
+    CatalogFile: array [0..MAX_PATH - 1] of WideChar;
+    DigitalSigner: array [0..MAX_PATH - 1] of WideChar;
+    DigitalSignerVersion: array [0..MAX_PATH - 1] of WideChar;
+  end;
+  TSPInfSignerInfoA = SP_INF_SIGNER_INFO_A;
+  TSPInfSignerInfoW = SP_INF_SIGNER_INFO_W;
+  TSPInfSignerInfo = TSPOriginalFileInfoA;
+
+//
+// Flags for use by SetupDiGetCustomDeviceProperty
+//
+const
+  DICUSTOMDEVPROP_MERGE_MULTISZ = $00000001;
+{$ENDIF WINXP}
+
 {$IFNDEF SETUPAPI_LINKONREQUEST}
 
 {$IFDEF WINXP}
 function SetupGetFileQueueCount(FileQueue: HSPFILEQ; SubQueueFileOp: UINT; var NumOperations: UINT): BOOL; stdcall;
+{$EXTERNALSYM SetupGetFileQueueCount}
 function SetupGetFileQueueFlags(FileQueue: HSPFILEQ; var Flags: DWORD): BOOL; stdcall;
+{$EXTERNALSYM SetupGetFileQueueFlags}
 function SetupSetFileQueueFlags(FileQueue: HSPFILEQ; FlagMask: DWORD; Flags: DWORD): BOOL; stdcall;
+{$EXTERNALSYM SetupSetFileQueueFlags}
 {$ENDIF WINXP}
 function SetupGetInfInformationA(InfSpec: Pointer; SearchControl: DWORD;
   ReturnBuffer: PSPInfInformation; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
@@ -3757,6 +3827,26 @@ function SetupInstallServicesFromInfSectionEx(InfHandle: HINF;
   DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallServicesFromInfSectionEx}
 
+{$IFDEF WINXP}
+//
+// High level routine, usually used via rundll32.dll
+// to perform right-click install action on INFs
+// May be called directly:
+//
+// wsprintf(CmdLineBuffer,TEXT("DefaultInstall 132 %s"),InfPath);
+// InstallHinfSection(NULL,NULL,CmdLineBuffer,0);
+//
+procedure InstallHinfSectionA(Window: HWND; ModuleHandle: HINSTANCE;
+  CommandLine: PAnsiChar; ShowCommand: Integer); stdcall;
+{$EXTERNALSYM InstallHinfSectionA}
+procedure InstallHinfSectionW(Window: HWND; ModuleHandle: HINSTANCE;
+  CommandLine: PWideChar; ShowCommand: Integer); stdcall;
+{$EXTERNALSYM InstallHinfSectionW}
+procedure InstallHinfSection(Window: HWND; ModuleHandle: HINSTANCE;
+  CommandLine: PAnsiChar; ShowCommand: Integer); stdcall;
+{$EXTERNALSYM InstallHinfSection}
+{$ENDIF WINXP}
+
 //
 // Define handle type for Setup file log.
 //
@@ -3829,7 +3919,7 @@ procedure SetupCloseLog; stdcall;
 {$EXTERNALSYM SetupCloseLog}
 
 //
-// Backup Information API
+// Backup Information API's
 //
 
 {$IFDEF WIN2000}
@@ -3843,6 +3933,28 @@ function SetupGetBackupInformation(QueueHandle: HSPFILEQ;
   var BackupParams: TSPBackupQueueParamsA): BOOL; stdcall;
 {$EXTERNALSYM SetupGetBackupInformation}
 {$ENDIF WIN2000}
+
+{$IFDEF WINXP}
+function SetupPrepareQueueForRestoreA(QueueHandle: HSPFILEQ;
+  BackupPath: PAnsiChar; RestoreFlags: DWORD): BOOL; stdcall;
+{$EXTERNALSYM SetupPrepareQueueForRestoreA}
+function SetupPrepareQueueForRestoreW(QueueHandle: HSPFILEQ;
+  BackupPath: PWideChar; RestoreFlags: DWORD): BOOL; stdcall;
+{$EXTERNALSYM SetupPrepareQueueForRestoreW}
+function SetupPrepareQueueForRestore(QueueHandle: HSPFILEQ;
+  BackupPath: PAnsiChar; RestoreFlags: DWORD): BOOL; stdcall;
+{$EXTERNALSYM SetupPrepareQueueForRestore}
+
+//
+// Control forcing of Non-Interactive Mode
+// Overridden if SetupAPI is run in non-interactive window session
+//
+
+function SetupSetNonInteractiveMode(NonInteractiveFlag: BOOL): BOOL; stdcall;
+{$EXTERNALSYM SetupSetNonInteractiveMode}
+function SetupGetNonInteractiveMode: BOOL; stdcall;
+{$EXTERNALSYM SetupGetNonInteractiveMode}
+{$ENDIF WINXP}
 
 //
 // Device Installer APIs
@@ -4104,6 +4216,13 @@ function SetupDiInstallDeviceInterfaces(DeviceInfoSet: HDEVINFO;
 function SetupDiInstallInterfaceDevices(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiInstallInterfaceDevices}
+
+{$IFDEF WINXP}
+function SetupDiSetDeviceInterfaceDefault(DeviceInfoSet: HDEVINFO
+  var DeviceInterfaceData: TSPDeviceInterfaceData; Flags: DWORD;
+  Reserved: Pointer): BOOL; stdcall;
+{$EXTERNALSYM SetupDiSetDeviceInterfaceDefault}
+{$ENDIF WINXP}
 
 //
 // Default install handler for DIF_REGISTERDEVICE
@@ -4471,17 +4590,17 @@ function SetupDiGetDeviceRegistryProperty(DeviceInfoSet: HDEVINFO;
 {$EXTERNALSYM SetupDiGetDeviceRegistryProperty}
 
 {$IFDEF WIN2000}
-function SetupDiGetClassRegistryPropertyA(var ClassGuid: TGUID;
+function SetupDiGetClassRegistryPropertyA(const ClassGuid: TGUID;
   Property_: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PBYTE;
   PropertyBufferSize: DWORD; RequiredSize: PDWORD; const MachineName: PAnsiChar;
   Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassRegistryPropertyA}
-function SetupDiGetClassRegistryPropertyW(var ClassGuid: TGUID;
+function SetupDiGetClassRegistryPropertyW(const ClassGuid: TGUID;
   Property_: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PBYTE;
   PropertyBufferSize: DWORD; RequiredSize: PDWORD; const MachineName: PWideChar;
   Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassRegistryPropertyW}
-function SetupDiGetClassRegistryProperty(var ClassGuid: TGUID;
+function SetupDiGetClassRegistryProperty(const ClassGuid: TGUID;
   Property_: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PBYTE;
   PropertyBufferSize: DWORD; RequiredSize: PDWORD; const MachineName: PChar;
   Reserved: Pointer): BOOL; stdcall;
@@ -4502,15 +4621,15 @@ function SetupDiSetDeviceRegistryProperty(DeviceInfoSet: HDEVINFO;
 {$EXTERNALSYM SetupDiSetDeviceRegistryProperty}
 
 {$IFDEF WIN2000}
-function SetupDiSetClassRegistryPropertyA(var ClassGuid: TGUID;
+function SetupDiSetClassRegistryPropertyA(const ClassGuid: TGUID;
   Property_: DWORD; const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
   const MachineName: PAnsiChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetClassRegistryPropertyA}
-function SetupDiSetClassRegistryPropertyW(var ClassGuid: TGUID;
+function SetupDiSetClassRegistryPropertyW(const ClassGuid: TGUID;
   Property_: DWORD; const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
   const MachineName: PWideChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetClassRegistryPropertyW}
-function SetupDiSetClassRegistryProperty(var ClassGuid: TGUID;
+function SetupDiSetClassRegistryProperty(const ClassGuid: TGUID;
   Property_: DWORD; const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
   const MachineName: PChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetClassRegistryProperty}
@@ -4749,6 +4868,51 @@ function SetupDiGetActualSectionToInstall(InfHandle: HINF;
   RequiredSize: PDWORD; Extension: PPSTR): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetActualSectionToInstall}
 
+{$IFDEF WINXP}
+function SetupDiGetActualSectionToInstallExA(InfHandle: HINF;
+  InfSectionName: PAnsiChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+  InfSectionWithExt: PAnsiChar; InfSectionWithExtSize: DWORD;
+  RequiredSize: PDWORD; Extension: PPAnsiChar; Reserved: Pointer): BOOL; stdcall;
+function SetupDiGetActualSectionToInstallExW(InfHandle: HINF;
+  InfSectionName: PWideChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+  InfSectionWithExt: PWideChar; InfSectionWithExtSize: DWORD;
+  RequiredSize: PDWORD; Extension: PPWideChar; Reserved: Pointer): BOOL; stdcall;
+function SetupDiGetActualSectionToInstallEx(InfHandle: HINF;
+  InfSectionName: PAnsiChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+  InfSectionWithExt: PAnsiChar; InfSectionWithExtSize: DWORD;
+  RequiredSize: PDWORD; Extension: PPAnsiChar; Reserved: Pointer): BOOL; stdcall;
+
+//
+// SetupEnumInfSections is for low-level parsing of an INF
+//
+function SetupEnumInfSectionsA(InfHandle: HINF; Index: UINT;
+  Buffer: PAnsiChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+function SetupEnumInfSectionsW(InfHandle: HINF; Index: UINT;
+  Buffer: PWideChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+function SetupEnumInfSections(InfHandle: HINF; Index: UINT;
+  Buffer: PAnsiChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+
+function SetupVerifyInfFileA(InfName: PAnsiChar; AltPlatformInfo: PSPAltPlatformInfo;
+  var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+function SetupVerifyInfFileW(InfName: PWideChar; AltPlatformInfo: PSPAltPlatformInfo;
+  var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+function SetupVerifyInfFile(InfName: PAnsiChar; AltPlatformInfo: PSPAltPlatformInfo;
+  var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+
+function SetupDiGetCustomDevicePropertyA(DeviceInfoSet: HDEVINFO;
+  const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PAnsiChar;
+  Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+  PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+function SetupDiGetCustomDevicePropertyW(DeviceInfoSet: HDEVINFO;
+  const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PWideChar;
+  Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+  PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+function SetupDiGetCustomDeviceProperty(DeviceInfoSet: HDEVINFO;
+  const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PAnsiChar;
+  Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+  PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+{$ENDIF WINXP}
+
 {$ELSE}
 
 // (rom) remove all #defines Microsoft generated in SetupApi.h
@@ -4824,12 +4988,18 @@ function SetupDiGetActualSectionToInstall(InfHandle: HINF;
 (*$HPPEMIT '#undef SetupInstallFilesFromInfSection'*)
 (*$HPPEMIT '#undef SetupInstallServicesFromInfSection'*)
 (*$HPPEMIT '#undef SetupInstallServicesFromInfSectionEx'*)
+{$IFDEF WINXP}
+(*$HPPEMIT '#undef InstallHinfSection'*)
+{$ENDIF WINXP}
 (*$HPPEMIT '#undef SetupInitializeFileLog'*)
 (*$HPPEMIT '#undef SetupLogFile'*)
 (*$HPPEMIT '#undef SetupRemoveFileLogEntry'*)
 (*$HPPEMIT '#undef SetupQueryFileLog'*)
 (*$HPPEMIT '#undef SetupLogError'*)
 (*$HPPEMIT '#undef SetupGetBackupInformation'*)
+{$IFDEF WINXP}
+(*$HPPEMIT '#undef SetupPrepareQueueForRestore'*)
+{$ENDIF WINXP}
 (*$HPPEMIT '#undef SetupDiCreateDeviceInfoListEx'*)
 (*$HPPEMIT '#undef SetupDiGetDeviceInfoListDetail'*)
 (*$HPPEMIT '#undef SetupDiCreateDeviceInfo'*)
@@ -4892,6 +5062,12 @@ function SetupDiGetActualSectionToInstall(InfHandle: HINF;
 (*$HPPEMIT '#undef SetupDiGetHwProfileFriendlyName'*)
 (*$HPPEMIT '#undef SetupDiGetHwProfileFriendlyNameEx'*)
 (*$HPPEMIT '#undef SetupDiGetActualSectionToInstall'*)
+{$IFDEF WINXP}
+(*$HPPEMIT '#undef SetupDiGetActualSectionToInstallEx'*)
+(*$HPPEMIT '#undef SetupEnumInfSections'*)
+(*$HPPEMIT '#undef SetupVerifyInfFile'*)
+(*$HPPEMIT '#undef SetupDiGetCustomDeviceProperty'*)
+{$ENDIF WINXP}
 
 type
   {$IFDEF WINXP}
@@ -5392,6 +5568,15 @@ type
     DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): BOOL; stdcall;
   TSetupInstallServicesFromInfSectionEx = TSetupInstallServicesFromInfSectionExA;
 
+  {$IFDEF WINXP}
+  TInstallHinfSectionA = procedure(Window: HWND; ModuleHandle: HINSTANCE;
+    CommandLine: PAnsiChar; ShowCommand: Integer); stdcall;
+  TInstallHinfSectionW = procedure(Window: HWND; ModuleHandle: HINSTANCE;
+    CommandLine: PWideChar; ShowCommand: Integer); stdcall;
+  TInstallHinfSection = procedure (Window: HWND; ModuleHandle: HINSTANCE;
+    CommandLine: PAnsiChar; ShowCommand: Integer); stdcall;
+  {$ENDIF WINXP}
+
 //
 // Define handle type for Setup file log.
 //
@@ -5451,6 +5636,18 @@ type
     var BackupParams: TSPBackupQueueParamsW): BOOL; stdcall;
   TSetupGetBackupInformation = TSetupGetBackupInformationA;
   {$ENDIF WIN2000}
+
+  {$IFDEF WINXP}
+  TSetupPrepareQueueForRestoreA = function(QueueHandle: HSPFILEQ;
+    BackupPath: PAnsiChar; RestoreFlags: DWORD): BOOL; stdcall;
+  TSetupPrepareQueueForRestoreW = function(QueueHandle: HSPFILEQ;
+    BackupPath: PWideChar; RestoreFlags: DWORD): BOOL; stdcall;
+  TSetupPrepareQueueForRestore = function(QueueHandle: HSPFILEQ;
+    BackupPath: PAnsiChar; RestoreFlags: DWORD): BOOL; stdcall;
+
+  TSetupSetNonInteractiveMode = function(NonInteractiveFlag: BOOL): BOOL; stdcall;
+  TSetupGetNonInteractiveMode = function: BOOL; stdcall;
+  {$ENDIF WINXP}
 
 //
 // Device Installer APIs
@@ -5637,6 +5834,12 @@ type
 
   TSetupDiInstallInterfaceDevices = function(DeviceInfoSet: HDEVINFO;
     var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
+
+  {$IFDEF WINXP}
+  TSetupDiSetDeviceInterfaceDefault = function(DeviceInfoSet: HDEVINFO
+    var DeviceInterfaceData: TSPDeviceInterfaceData; Flags: DWORD;
+    Reserved: Pointer): BOOL; stdcall;
+  {$ENDIF WINXP}
 
 //
 // Default install handler for DIF_REGISTERDEVICE
@@ -6075,6 +6278,48 @@ type
     const InfSectionName: PChar; InfSectionWithExt: PChar; InfSectionWithExtSize: DWORD;
     RequiredSize: PDWORD; Extension: PPSTR): BOOL; stdcall;
 
+  {$IFDEF WINXP}
+  TSetupDiGetActualSectionToInstallExA = function(InfHandle: HINF;
+    InfSectionName: PAnsiChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+    InfSectionWithExt: PAnsiChar; InfSectionWithExtSize: DWORD;
+    RequiredSize: PDWORD; Extension: PPAnsiChar; Reserved: Pointer): BOOL; stdcall;
+  TSetupDiGetActualSectionToInstallExW = function(InfHandle: HINF;
+    InfSectionName: PWideChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+    InfSectionWithExt: PWideChar; InfSectionWithExtSize: DWORD;
+    RequiredSize: PDWORD; Extension: PPWideChar; Reserved: Pointer): BOOL; stdcall;
+  TSetupDiGetActualSectionToInstallEx = function(InfHandle: HINF;
+    InfSectionName: PAnsiChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+    InfSectionWithExt: PAnsiChar; InfSectionWithExtSize: DWORD;
+    RequiredSize: PDWORD; Extension: PPAnsiChar; Reserved: Pointer): BOOL; stdcall;
+
+  TSetupEnumInfSectionsA = function(InfHandle: HINF; Index: UINT;
+    Buffer: PAnsiChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+  TSetupEnumInfSectionsW = function(InfHandle: HINF; Index: UINT;
+    Buffer: PWideChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+  TSetupEnumInfSections = function(InfHandle: HINF; Index: UINT;
+    Buffer: PAnsiChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+
+  TSetupVerifyInfFileA = function(InfName: PAnsiChar; AltPlatformInfo: PSPAltPlatformInfo;
+    var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+  TSetupVerifyInfFileW = function(InfName: PWideChar; AltPlatformInfo: PSPAltPlatformInfo;
+    var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+  TSetupVerifyInfFile = function(InfName: PAnsiChar; AltPlatformInfo: PSPAltPlatformInfo;
+    var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+
+  TSetupDiGetCustomDevicePropertyA = function(DeviceInfoSet: HDEVINFO;
+    const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PAnsiChar;
+    Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+    PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+  TSetupDiGetCustomDevicePropertyW = function(DeviceInfoSet: HDEVINFO;
+    const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PWideChar;
+    Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+    PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+  TSetupDiGetCustomDeviceProperty = function(DeviceInfoSet: HDEVINFO;
+    const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PAnsiChar;
+    Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+    PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+  {$ENDIF WINXP}
+
 var
   {$IFDEF WINXP}
   SetupGetFileQueueCount: TSetupGetFileQueueCount;
@@ -6306,6 +6551,11 @@ var
   SetupInstallServicesFromInfSectionExA: TSetupInstallServicesFromInfSectionExA;
   SetupInstallServicesFromInfSectionExW: TSetupInstallServicesFromInfSectionExW;
   SetupInstallServicesFromInfSectionEx: TSetupInstallServicesFromInfSectionEx;
+  {$IFDEF WINXP}
+  InstallHinfSectionA: TInstallHinfSectionA;
+  InstallHinfSectionW: TInstallHinfSectionW;
+  InstallHinfSection: TInstallHinfSection;
+  {$ENDIF WINXP}
   SetupInitializeFileLogA: TSetupInitializeFileLogA;
   SetupInitializeFileLogW: TSetupInitializeFileLogW;
   SetupInitializeFileLog: TSetupInitializeFileLog;
@@ -6329,6 +6579,13 @@ var
   SetupGetBackupInformationW: TSetupGetBackupInformationW;
   SetupGetBackupInformation: TSetupGetBackupInformation;
   {$ENDIF WIN2000}
+  {$IFDEF WINXP}
+  SetupPrepareQueueForRestoreA: TSetupPrepareQueueForRestoreA;
+  SetupPrepareQueueForRestoreW: TSetupPrepareQueueForRestoreW;
+  SetupPrepareQueueForRestore: TSetupPrepareQueueForRestore;
+  SetupSetNonInteractiveMode: TSetupSetNonInteractiveMode;
+  SetupGetNonInteractiveMode: TSetupGetNonInteractiveMode;
+  {$ENDIF WINXP}
   SetupDiCreateDeviceInfoList: TSetupDiCreateDeviceInfoList;
   SetupDiCreateDeviceInfoListExA: TSetupDiCreateDeviceInfoListExA;
   SetupDiCreateDeviceInfoListExW: TSetupDiCreateDeviceInfoListExW;
@@ -6374,6 +6631,9 @@ var
   SetupDiGetDeviceInterfaceDetail: TSetupDiGetDeviceInterfaceDetail;
   SetupDiInstallDeviceInterfaces: TSetupDiInstallDeviceInterfaces;
   SetupDiInstallInterfaceDevices: TSetupDiInstallDeviceInterfaces;
+  {$IFDEF WINXP}
+  SetupDiSetDeviceInterfaceDefault: TSetupDiSetDeviceInterfaceDefault;
+  {$ENDIF WINXP}
   SetupDiRegisterDeviceInfo: TSetupDiRegisterDeviceInfo;
   SetupDiBuildDriverInfoList: TSetupDiBuildDriverInfoList;
   SetupDiCancelDriverInfoSearch: TSetupDiCancelDriverInfoSearch;
@@ -6519,6 +6779,20 @@ var
   SetupDiGetActualSectionToInstallA: TSetupDiGetActualSectionToInstallA;
   SetupDiGetActualSectionToInstallW: TSetupDiGetActualSectionToInstallW;
   SetupDiGetActualSectionToInstall: TSetupDiGetActualSectionToInstall;
+  {$IFDEF WINXP}
+  SetupDiGetActualSectionToInstallExA: TSetupDiGetActualSectionToInstallExA;
+  SetupDiGetActualSectionToInstallExW: TSetupDiGetActualSectionToInstallExW;
+  SetupDiGetActualSectionToInstallEx: TSetupDiGetActualSectionToInstallEx;
+  SetupEnumInfSectionsA: TSetupEnumInfSectionsA;
+  SetupEnumInfSectionsW: TSetupEnumInfSectionsW;
+  SetupEnumInfSections: TSetupEnumInfSections;
+  SetupVerifyInfFileA: TSetupVerifyInfFileA;
+  SetupVerifyInfFileW: TSetupVerifyInfFileW;
+  SetupVerifyInfFile: TSetupVerifyInfFile;
+  SetupDiGetCustomDevicePropertyA: TSetupDiGetCustomDevicePropertyA;
+  SetupDiGetCustomDevicePropertyW: TSetupDiGetCustomDevicePropertyW;
+  SetupDiGetCustomDeviceProperty: TSetupDiGetCustomDeviceProperty;
+  {$ENDIF WINXP}
 
 {$ENDIF SETUPAPI_LINKONREQUEST}
 
@@ -6788,6 +7062,11 @@ begin
     @SetupInstallServicesFromInfSectionExA := GetModuleSymbolEx(SetupApiLib, 'SetupInstallServicesFromInfSectionExA', Result);
     @SetupInstallServicesFromInfSectionExW := GetModuleSymbolEx(SetupApiLib, 'SetupInstallServicesFromInfSectionExW', Result);
     @SetupInstallServicesFromInfSectionEx := GetModuleSymbolEx(SetupApiLib, 'SetupInstallServicesFromInfSectionExA', Result);
+    {$IFDEF WINXP}
+    @InstallHinfSectionA := GetModuleSymbolEx(SetupApiLib, 'InstallHinfSectionA', Result);
+    @InstallHinfSectionW := GetModuleSymbolEx(SetupApiLib, 'InstallHinfSectionW', Result);
+    @InstallHinfSection := GetModuleSymbolEx(SetupApiLib, 'InstallHinfSectionA', Result);
+    {$ENDIF WINXP}
     @SetupInitializeFileLogA := GetModuleSymbolEx(SetupApiLib, 'SetupInitializeFileLogA', Result);
     @SetupInitializeFileLogW := GetModuleSymbolEx(SetupApiLib, 'SetupInitializeFileLogW', Result);
     @SetupInitializeFileLog := GetModuleSymbolEx(SetupApiLib, 'SetupInitializeFileLogA', Result);
@@ -6811,6 +7090,13 @@ begin
     @SetupGetBackupInformationW := GetModuleSymbolEx(SetupApiLib, 'SetupGetBackupInformationW', Result);
     @SetupGetBackupInformation := GetModuleSymbolEx(SetupApiLib, 'SetupGetBackupInformationA', Result);
     {$ENDIF WIN2000}
+    {$IFDEF WINXP}
+    @SetupPrepareQueueForRestoreA := GetModuleSymbolEx(SetupApiLib, 'SetupPrepareQueueForRestoreA', Result);
+    @SetupPrepareQueueForRestoreW := GetModuleSymbolEx(SetupApiLib, 'SetupPrepareQueueForRestoreW', Result);
+    @SetupPrepareQueueForRestore := GetModuleSymbolEx(SetupApiLib, 'SetupPrepareQueueForRestoreA', Result);
+    @SetupSetNonInteractiveMode := GetModuleSymbolEx(SetupApiLib, 'SetupSetNonInteractiveMode', Result);
+    @SetupGetNonInteractiveMode := GetModuleSymbolEx(SetupApiLib, 'SetupGetNonInteractiveMode', Result);
+    {$ENDIF WINXP}
     @SetupDiCreateDeviceInfoList := GetModuleSymbolEx(SetupApiLib, 'SetupDiCreateDeviceInfoList', Result);
     @SetupDiCreateDeviceInfoListExA := GetModuleSymbolEx(SetupApiLib, 'SetupDiCreateDeviceInfoListExA', Result);
     @SetupDiCreateDeviceInfoListExW := GetModuleSymbolEx(SetupApiLib, 'SetupDiCreateDeviceInfoListExW', Result);
@@ -6856,6 +7142,9 @@ begin
     @SetupDiGetDeviceInterfaceDetail := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceInterfaceDetailA', Result);
     @SetupDiInstallDeviceInterfaces := GetModuleSymbolEx(SetupApiLib, 'SetupDiInstallDeviceInterfaces', Result);
     @SetupDiInstallInterfaceDevices := GetModuleSymbolEx(SetupApiLib, 'SetupDiInstallDeviceInterfaces', Result);
+    {$IFDEF WINXP}
+    @SetupDiSetDeviceInterfaceDefault := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetDeviceInterfaceDefault', Result);
+    {$ENDIF WINXP}
     @SetupDiRegisterDeviceInfo := GetModuleSymbolEx(SetupApiLib, 'SetupDiRegisterDeviceInfo', Result);
     @SetupDiBuildDriverInfoList := GetModuleSymbolEx(SetupApiLib, 'SetupDiBuildDriverInfoList', Result);
     @SetupDiCancelDriverInfoSearch := GetModuleSymbolEx(SetupApiLib, 'SetupDiCancelDriverInfoSearch', Result);
@@ -7001,6 +7290,20 @@ begin
     @SetupDiGetActualSectionToInstallA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallA', Result);
     @SetupDiGetActualSectionToInstallW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallW', Result);
     @SetupDiGetActualSectionToInstall := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallA', Result);
+    {$IFDEF WINXP}
+    @SetupDiGetActualSectionToInstallExA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallExA', Result);
+    @SetupDiGetActualSectionToInstallExW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallExW', Result);
+    @SetupDiGetActualSectionToInstallEx := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallExA', Result);
+    @SetupEnumInfSectionsA := GetModuleSymbolEx(SetupApiLib, 'SetupEnumInfSectionsA', Result);
+    @SetupEnumInfSectionsW := GetModuleSymbolEx(SetupApiLib, 'SetupEnumInfSectionsW', Result);
+    @SetupEnumInfSections := GetModuleSymbolEx(SetupApiLib, 'SetupEnumInfSectionsA', Result);
+    @SetupVerifyInfFileA := GetModuleSymbolEx(SetupApiLib, 'SetupVerifyInfFileA', Result);
+    @SetupVerifyInfFileW := GetModuleSymbolEx(SetupApiLib, 'SetupVerifyInfFileW', Result);
+    @SetupVerifyInfFile := GetModuleSymbolEx(SetupApiLib, 'SetupVerifyInfFileA', Result);
+    @SetupDiGetCustomDevicePropertyA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetCustomDevicePropertyA', Result);
+    @SetupDiGetCustomDevicePropertyW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetCustomDevicePropertyW', Result);
+    @SetupDiGetCustomDeviceProperty := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetCustomDevicePropertyA', Result);
+    {$ENDIF WINXP}
     if not Result then
       UnloadSetupApi;
   end;
@@ -7246,6 +7549,11 @@ begin
   SetupInstallServicesFromInfSectionExA := nil;
   SetupInstallServicesFromInfSectionExW := nil;
   SetupInstallServicesFromInfSectionEx := nil;
+  {$IFDEF WINXP}
+  InstallHinfSectionA := nil;
+  InstallHinfSectionW := nil;
+  InstallHinfSection := nil;
+  {$ENDIF WINXP}
   SetupInitializeFileLogA := nil;
   SetupInitializeFileLogW := nil;
   SetupInitializeFileLog := nil;
@@ -7269,6 +7577,13 @@ begin
   SetupGetBackupInformationW := nil;
   SetupGetBackupInformation := nil;
   {$ENDIF WIN2000}
+  {$IFDEF WINXP}
+  SetupPrepareQueueForRestoreA := nil;
+  SetupPrepareQueueForRestoreW := nil;
+  SetupPrepareQueueForRestore := nil;
+  SetupSetNonInteractiveMode := nil;
+  SetupGetNonInteractiveMode := nil;
+  {$ENDIF WINXP}
   SetupDiCreateDeviceInfoList := nil;
   SetupDiCreateDeviceInfoListExA := nil;
   SetupDiCreateDeviceInfoListExW := nil;
@@ -7314,6 +7629,9 @@ begin
   SetupDiGetDeviceInterfaceDetail := nil;
   SetupDiInstallDeviceInterfaces := nil;
   SetupDiInstallInterfaceDevices := nil;
+  {$IFDEF WINXP}
+  SetupDiSetDeviceInterfaceDefault := nil;
+  {$ENDIF WINXP}
   SetupDiRegisterDeviceInfo := nil;
   SetupDiBuildDriverInfoList := nil;
   SetupDiCancelDriverInfoSearch := nil;
@@ -7459,6 +7777,20 @@ begin
   SetupDiGetActualSectionToInstallA := nil;
   SetupDiGetActualSectionToInstallW := nil;
   SetupDiGetActualSectionToInstall := nil;
+  {$IFDEF WINXP}
+  SetupDiGetActualSectionToInstallExA := nil;
+  SetupDiGetActualSectionToInstallExW := nil;
+  SetupDiGetActualSectionToInstallEx := nil;
+  SetupEnumInfSectionsA := nil;
+  SetupEnumInfSectionsW := nil;
+  SetupEnumInfSections := nil;
+  SetupVerifyInfFileA := nil;
+  SetupVerifyInfFileW := nil;
+  SetupVerifyInfFile := nil;
+  SetupDiGetCustomDevicePropertyA := nil;
+  SetupDiGetCustomDevicePropertyW := nil;
+  SetupDiGetCustomDeviceProperty := nil;
+  {$ENDIF WINXP}
   {$ENDIF SETUPAPI_LINKONREQUEST}
 end;
 
@@ -7694,6 +8026,11 @@ function SetupInstallServicesFromInfSection; external SetupApiModuleName name 'S
 function SetupInstallServicesFromInfSectionExA; external SetupApiModuleName name 'SetupInstallServicesFromInfSectionExA';
 function SetupInstallServicesFromInfSectionExW; external SetupApiModuleName name 'SetupInstallServicesFromInfSectionExW';
 function SetupInstallServicesFromInfSectionEx; external SetupApiModuleName name 'SetupInstallServicesFromInfSectionExA';
+{$IFDEF WINXP}
+function InstallHinfSectionA; external SetupApiModuleName name 'InstallHinfSectionA';
+function InstallHinfSectionW; external SetupApiModuleName name 'InstallHinfSectionW';
+function InstallHinfSection; external SetupApiModuleName name 'InstallHinfSectionA';
+{$ENDIF WINXP}
 function SetupInitializeFileLogA; external SetupApiModuleName name 'SetupInitializeFileLogA';
 function SetupInitializeFileLogW; external SetupApiModuleName name 'SetupInitializeFileLogW';
 function SetupInitializeFileLog; external SetupApiModuleName name 'SetupInitializeFileLogA';
@@ -7717,6 +8054,13 @@ function SetupGetBackupInformationA; external SetupApiModuleName name 'SetupGetB
 function SetupGetBackupInformationW; external SetupApiModuleName name 'SetupGetBackupInformationW';
 function SetupGetBackupInformation; external SetupApiModuleName name 'SetupGetBackupInformationA';
 {$ENDIF WIN2000}
+{$IFDEF WINXP}
+function SetupPrepareQueueForRestoreA; external SetupApiModuleName name 'SetupPrepareQueueForRestoreA';
+function SetupPrepareQueueForRestoreW; external SetupApiModuleName name 'SetupPrepareQueueForRestoreW';
+function SetupPrepareQueueForRestore; external SetupApiModuleName name 'SetupPrepareQueueForRestoreA';
+function SetupSetNonInteractiveMode; external SetupApiModuleName name 'SetupSetNonInteractiveMode';
+function SetupGetNonInteractiveMode; external SetupApiModuleName name 'SetupGetNonInteractiveMode';
+{$ENDIF WINXP}
 function SetupDiCreateDeviceInfoList; external SetupApiModuleName name 'SetupDiCreateDeviceInfoList';
 function SetupDiCreateDeviceInfoListExA; external SetupApiModuleName name 'SetupDiCreateDeviceInfoListExA';
 function SetupDiCreateDeviceInfoListExW; external SetupApiModuleName name 'SetupDiCreateDeviceInfoListExW';
@@ -7765,6 +8109,9 @@ function SetupDiGetDeviceInterfaceDetail; external SetupApiModuleName name 'Setu
 function SetupDiGetInterfaceDeviceDetail; external SetupApiModuleName name 'SetupDiGetDeviceInterfaceDetailA';
 function SetupDiInstallDeviceInterfaces; external SetupApiModuleName name 'SetupDiInstallDeviceInterfaces';
 function SetupDiInstallInterfaceDevices; external SetupApiModuleName name 'SetupDiInstallDeviceInterfaces';
+{$IFDEF WINXP}
+function SetupDiSetDeviceInterfaceDefault; external SetupApiModuleName name 'SetupDiSetDeviceInterfaceDefault';
+{$ENDIF WINXP}
 function SetupDiRegisterDeviceInfo; external SetupApiModuleName name 'SetupDiRegisterDeviceInfo';
 function SetupDiBuildDriverInfoList; external SetupApiModuleName name 'SetupDiBuildDriverInfoList';
 function SetupDiCancelDriverInfoSearch; external SetupApiModuleName name 'SetupDiCancelDriverInfoSearch';
@@ -7911,6 +8258,20 @@ function SetupDiSetSelectedDevice; external SetupApiModuleName name 'SetupDiSetS
 function SetupDiGetActualSectionToInstallA; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallA';
 function SetupDiGetActualSectionToInstallW; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallW';
 function SetupDiGetActualSectionToInstall; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallA';
+{$IFDEF WINXP}
+function SetupDiGetActualSectionToInstallExA; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallExA';
+function SetupDiGetActualSectionToInstallExW; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallExW';
+function SetupDiGetActualSectionToInstallEx; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallExA';
+function SetupEnumInfSectionsA; external SetupApiModuleName name 'SetupEnumInfSectionsA';
+function SetupEnumInfSectionsW; external SetupApiModuleName name 'SetupEnumInfSectionsW';
+function SetupEnumInfSections; external SetupApiModuleName name 'SetupEnumInfSectionsA';
+function SetupVerifyInfFileA; external SetupApiModuleName name 'SetupVerifyInfFileA';
+function SetupVerifyInfFileW; external SetupApiModuleName name 'SetupVerifyInfFileW';;
+function SetupVerifyInfFile; external SetupApiModuleName name 'SetupVerifyInfFileA';
+function SetupDiGetCustomDevicePropertyA; external SetupApiModuleName name 'SetupDiGetCustomDevicePropertyA';
+function SetupDiGetCustomDevicePropertyW; external SetupApiModuleName name 'SetupDiGetCustomDevicePropertyW';
+function SetupDiGetCustomDeviceProperty; external SetupApiModuleName name 'SetupDiGetCustomDevicePropertyA';
+{$ENDIF WINXP}
 
 {$ENDIF SETUPAPI_LINKONREQUEST}
 
