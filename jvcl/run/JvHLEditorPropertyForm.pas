@@ -95,7 +95,7 @@ type
     procedure lbElementsClick(Sender: TObject);
     procedure lbElementsDrawItem(Control: TWinControl; Index: integer;
       Rect: TRect; State: TOwnerDrawState);
-    procedure ColorChanged(Sender: TObject);
+    procedure ColorChange(Sender: TObject);
     procedure cbColorSettingsChange(Sender: TObject);
     procedure DefClick(Sender: TObject);
     procedure CellMouseDown(Sender: TObject; Button: TMouseButton;
@@ -698,7 +698,7 @@ begin
     SetForegroundIndex((Sender as TPanel).Tag)
   else if Button = mbRight then
     SetBackgroundIndex((Sender as TPanel).Tag);
-  ColorChanged(Sender);
+  ColorChange(Sender);
 end;
 
 { color grid ### }
@@ -779,7 +779,7 @@ begin
   end;
 end;
 
-procedure TJvHLEditorParamsForm.ColorChanged(Sender: TObject);
+procedure TJvHLEditorParamsForm.ColorChange(Sender: TObject);
 var
   FC, BC: TColor;
   ST: TFontStyles;
@@ -848,7 +848,7 @@ begin
     SetForegroundIndex(-1);
   if cbDefBackground.Checked then
     SetBackgroundIndex(-1);
-  ColorChanged(nil);
+  ColorChange(nil);
 end;
 
 procedure TJvHLEditorParamsForm.lbElementsDrawItem(Control: TWinControl;
