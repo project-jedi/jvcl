@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvListView;
 
@@ -104,10 +104,10 @@ type
     procedure LoadFromCSV(FileName: string; Separator: Char = ';');
     procedure SetSmallImages(const Value: TCustomImageList);
 
-{$IFNDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     procedure SelectAll;
     procedure DeleteSelected;
-{$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure UnselectAll;
     procedure InvertSelection;
     property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
@@ -876,7 +876,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 procedure TJvListView.SelectAll;
 var
   i: Integer;
@@ -886,7 +885,7 @@ begin
     Items[i].Selected := True;
   Items.EndUpdate;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvListView.UnselectAll;
 var
@@ -924,7 +923,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 procedure TJvListView.DeleteSelected;
 var
   i: Integer;
@@ -947,11 +945,11 @@ begin
   end;
   Items.EndUpdate;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 function TJvListView.GetColumnsOrder: string;
 var
-  Res: array[0..cColumnsHandled - 1] of Integer;
+  Res: array [0..cColumnsHandled - 1] of Integer;
   i: Integer;
 begin
   ListView_GetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
