@@ -3,7 +3,7 @@
 
  Copyright (c) 2003,2004, Andre Snepvangers (asn att xs4all dott nl),
                           Andreas Hausladen (Andreas dott Hausladen att gmx dott de)
- All rights reserved.
+ All rights reserved.    
 
  Version 1.0
  Description: Qt based wrappers for common MS Windows API's
@@ -228,6 +228,17 @@ type
     LParam: Longint;
     Result: Integer;
   end;
+
+  TMsg = packed record
+    hwnd: QWidgetH;
+    message: cardinal;
+    wParam: Longint;
+    lParam: Longint;
+    time: cardinal;
+    pt: TPoint;
+  end;
+
+
 
   TWMScroll = packed record
     Msg: Integer;
@@ -716,6 +727,14 @@ const
   ETO_RTLREADING = $80; // ignored
 
 function FillRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool;
+
+type
+  TGradientDirection = (gdVertical, gdHorizontal);
+
+function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
+  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
+
+
 function GetCurrentPositionEx(Handle: QPainterH; pos: PPoint): LongBool;
 function GetTextExtentPoint32(Handle: QPainterH; const Text: WideString; Len: Integer;
   var Size: TSize): LongBool; overload;
@@ -1222,6 +1241,7 @@ function KillTimer(Wnd: Cardinal; IDEvent: Cardinal): LongBool; overload;
 const
   WM_USER             = $0400;
   WM_TIMER            = $0113;
+  WM_NCPAINT          = $0085;
 
   EM_GETRECT          = $00B2;
   EM_SETRECT          = $00B3;
@@ -2550,10 +2570,12 @@ begin
      // Windows's BitBlt uses logical units
       d_dx := X;d_dy := Y;d_dw := Width;d_dh := Height;
       d_sx := XSrc; d_sy := YSrc;d_sw := Width; d_sh := Height;
+      {$IFDEF DEBUG}
       MapPainterLP(DestDC, d_dx, d_dy);
       MapPainterLPwh(DestDC, d_dw, d_dh);
       MapPainterLP(SrcDC, d_sx, d_sy);
       MapPainterLPwh(SrcDC, d_sw, d_sh);
+      {$ENDIF DEBUG}
 
       if (d_dw = d_sw) and (d_dh = d_sh) then // device bitBlt possible
         Qt.bitBlt(QPainter_device(DestDC), d_dx, d_dy, QPainter_device(SrcDC),
@@ -2590,11 +2612,12 @@ begin
  // Windows's StretchBlt uses logical units
   d_sx := sx;d_sy := sy;d_sw := sw;d_sh := sh;
   d_dx := dx;d_dy := dy;d_dw := dw;d_dh := dh;
+  {$IFDEF DEBUG}
   MapPainterLP(DestDC, d_dx, d_dy);
   MapPainterLPwh(DestDC, d_dw, d_dh);
   MapPainterLP(SrcDC, d_sx, d_sy);
   MapPainterLPwh(SrcDC, d_sw, d_sh);
-
+  {$ENDIF DEBUG}
   if (d_dw = d_sw) and (d_dh = d_sh) then // device bitBlt possible
     Result := BitBlt(DestDC, dx, dy, dw, dh, SrcDC, sx, sy, WinRop)
   else
@@ -4105,6 +4128,8 @@ begin
   R2 := R;
   R2.Bottom := MaxInt;
   QPainter_boundingRect(Handle, @R2, @Result, Flags, PWideString(@Caption), -1, nil);
+
+//  QPainter_boundingRect(Handle, @Result, @Result, Flags, PWideString(@Caption), -1, nil);
 end;
 
 const
@@ -4397,10 +4422,14 @@ begin
     R2.Top := R.Top;
     QPainter_boundingRect(Handle, @R, @R, Flags and not $3F{Alignment},
                           PWideString(@Caption), -1, nil);
+    (*)
     if R.Left <> R2.Left then
       OffsetRect(R, R2.Left, 0);
     if R.Top <> R2.Top then
       OffsetRect(R, 0, R2.Top);
+    (*)  
+//    QPainter_boundingRect(Handle, @R, @R, Flags and not $3F{Alignment},
+//                          @Caption, -1, nil);
     Result := R.Bottom - R.Top;
   end;
   if WinFlags and DT_INTERNAL <> 0 then
@@ -4427,7 +4456,7 @@ function DrawTextW(Handle :QPainterH; Text: PWideChar; Len: Integer;
 var
   WText: WideString;
 begin
-  WText := Text;
+  WText := Text;  
   Result := DrawText(Handle, WText, Len, R, WinFlags);
   if (DT_MODIFYSTRING and WinFlags <> 0) and (Text <> nil) then
   begin
@@ -4626,6 +4655,56 @@ begin
     Result := False;
   end;
 end;
+
+function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
+  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
+var
+  StartRGB: array [0..2] of Byte;
+  RGBKoef: array [0..2] of Double;
+  Brush: HBRUSH;
+  AreaWidth, AreaHeight, I: Integer;
+  ColorRect: TRect;
+  RectOffset: Double;
+begin
+  RectOffset := 0;
+  Result := False;
+  if ColorCount < 1 then
+    Exit;
+  StartColor := ColorToRGB(StartColor);
+  EndColor := ColorToRGB(EndColor);
+  StartRGB[0] := GetRValue(StartColor);
+  StartRGB[1] := GetGValue(StartColor);
+  StartRGB[2] := GetBValue(StartColor);
+  RGBKoef[0] := (GetRValue(EndColor) - StartRGB[0]) / ColorCount;
+  RGBKoef[1] := (GetGValue(EndColor) - StartRGB[1]) / ColorCount;
+  RGBKoef[2] := (GetBValue(EndColor) - StartRGB[2]) / ColorCount;
+  AreaWidth := ARect.Right - ARect.Left;
+  AreaHeight :=  ARect.Bottom - ARect.Top;
+  case ADirection of
+    gdHorizontal:
+      RectOffset := AreaWidth / ColorCount;
+    gdVertical:
+      RectOffset := AreaHeight / ColorCount;
+  end;
+  for I := 0 to ColorCount - 1 do
+  begin
+    Brush := CreateSolidBrush(RGB(
+      StartRGB[0] + Round((I + 1) * RGBKoef[0]),
+      StartRGB[1] + Round((I + 1) * RGBKoef[1]),
+      StartRGB[2] + Round((I + 1) * RGBKoef[2])));
+    case ADirection of
+      gdHorizontal:
+        SetRect(ColorRect, Round(RectOffset * I), 0, Round(RectOffset * (I + 1)), AreaHeight);
+      gdVertical:
+        SetRect(ColorRect, 0, Round(RectOffset * I), AreaWidth, Round(RectOffset * (I + 1)));
+    end;
+    OffsetRect(ColorRect, ARect.Left, ARect.Top);
+    FillRect(DC, ColorRect, Brush);
+    DeleteObject(Brush);
+  end;
+  Result := True;
+end;
+
 
 function DrawIcon(Handle: QPainterH; X, Y: Integer; hIcon: QPixmapH): LongBool;
 var
@@ -5207,7 +5286,6 @@ end;
 function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
   Flags: Cardinal): LongBool;
 var
-  PenDark, PenLight: QPenH;
   Brush: QBrushH;
   ColorDark, ColorLight: TColor;
   ClientRect: TRect;
@@ -5221,72 +5299,64 @@ var
   procedure DoDrawEdge(Outer: Boolean; const R: TRect);
   var
     X1, Y1, X2, Y2: Integer;
-    PenLeftTop, PenRightBottom: QPenH;
+    ColorLeftTop, ColorRightBottom: TColor;
   begin
     X1 := R.Left;
     Y1 := R.Top;
     X2 := R.Right;
     Y2 := R.Bottom;
 
-    PenLeftTop := nil;
-    PenRightBottom := nil;
     if Outer then
     begin
       if Edge and BDR_RAISEDOUTER <> 0 then
       begin
-        PenLeftTop := PenLight;
-        PenRightBottom := PenDark;
+        ColorLeftTop := ColorLight;
+        ColorRightBottom := ColorDark;
       end
       else if Edge and BDR_SUNKENOUTER <> 0 then
       begin
-        PenLeftTop := PenDark;
-        PenRightBottom := PenLight;
+        ColorLeftTop := ColorDark;
+        ColorRightBottom := ColorLight;
       end;
     end
     else
     begin
       if Edge and BDR_RAISEDINNER <> 0 then
       begin
-        PenLeftTop := PenLight;
-        PenRightBottom := PenDark;
+        ColorLeftTop := ColorLight;
+        ColorRightBottom := ColorDark;
       end
       else if Edge and BDR_SUNKENINNER <> 0 then
       begin
-        PenLeftTop := PenDark;
-        PenRightBottom := PenLight;
+        ColorLeftTop := ColorDark;
+        ColorRightBottom := ColorLight;
       end;
     end;
 
     if Flags and BF_DIAGONAL = 0 then
     begin
-      if PenLeftTop <> nil then
-      begin
-        QPainter_setPen(Handle, PenLeftTop);
-        if Flags and BF_LEFT <> 0 then
-          DrawLine(X1, Y1, X1, Y2);
-        if Flags and BF_TOP <> 0 then
-          DrawLine(X1, Y1, X2, Y1);
-      end;
+      SetDCPenColor(Handle, ColorLeftTop);
+      if Flags and BF_LEFT <> 0 then
+        DrawLine(X1, Y1, X1, Y2);
+      if Flags and BF_TOP <> 0 then
+        DrawLine(X1, Y1, X2, Y1);
 
-      if PenRightBottom <> nil then
-      begin
-        QPainter_setPen(Handle, PenRightBottom);
-        if Flags and BF_RIGHT <> 0 then
-          DrawLine(X2, Y1, X2, Y2);
-        if Flags and BF_BOTTOM <> 0 then
-          DrawLine(X1, Y2, X2, Y2);
-      end;
+      SetDCPenColor(Handle, ColorRightBottom);
+      if Flags and BF_RIGHT <> 0 then
+        DrawLine(X2, Y1, X2, Y2);
+      if Flags and BF_BOTTOM <> 0 then
+        DrawLine(X1, Y2, X2, Y2);
     end
     else
     begin
       // diagonal (does not really work properly with Qt's line algorithm)
-      QPainter_setPen(Handle, PenLeftTop);
+      SetDCPenColor(Handle, ColorLeftTop);
       if (Flags and BF_DIAGONAL_ENDTOPLEFT = BF_DIAGONAL_ENDTOPLEFT) or
          (Flags and BF_DIAGONAL_ENDBOTTOMRIGHT = BF_DIAGONAL_ENDBOTTOMRIGHT) then
         DrawLine(X1, Y1, X2, Y2)
       else
       {if (Flags and BF_DIAGONAL_ENDBOTTOMLEFT = BF_DIAGONAL_ENDBOTTOMLEFT) or
-         (Flags and BF_DIAGONAL_ENDTOPRIGHT = BF_DIAGONAL_ENDTOPRIGHT) then} // default 
+         (Flags and BF_DIAGONAL_ENDTOPRIGHT = BF_DIAGONAL_ENDTOPRIGHT) then} // default
         DrawLine(X1, Y2, X2, Y1);
     end;
   end;
@@ -5310,19 +5380,13 @@ begin
         ColorDark := clBlack;
         ColorLight := clWhite;
       end;
-
-      PenDark := CreatePen(PS_SOLID, 1, ColorDark);
-      PenLight := CreatePen(PS_SOLID, 1, ColorLight);
       try
         InflateRect(ClientRect, -1, -1); // remove outer rect
         DoDrawEdge(True, Rect); // outer
         DoDrawEdge(False, ClientRect); // inner
         InflateRect(ClientRect, -1, -1); // remove inner rect
       finally
-        if Assigned(PenDark) then
-          DeleteObject(PenDark);
-        if Assigned(PenLight) then
-          DeleteObject(PenLight);
+
       end;
 
       if Flags and BF_MIDDLE <> 0 then
@@ -5764,7 +5828,7 @@ begin
     try
       pixmap := QPixmap_create(2, 2, depth, QPixmapOptimization_NoOptim);
       tempDC := QPainter_create(pixmap);
-      BitBlt(tempDC, 0, 0, 1, 1, Handle, X, Y, SRCCOPY);
+      BitBlt(tempDC, 0, 0, 2, 2, Handle, X, Y, SRCCOPY);
       img := QImage_create;
       QPixmap_convertToImage(pixmap, img);
       Result := QImage_pixelIndex(img, 0, 0);
@@ -8079,3 +8143,6 @@ finalization
   WaitObjectList.Free;
   {$ENDIF LINUX}
 end.
+
+
+
