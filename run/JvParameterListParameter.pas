@@ -335,8 +335,8 @@ type
     FSorted: Boolean;
     FVariantAsItemIndex: Boolean;
   protected
-    function GetItemList: TStrings; virtual;
-    procedure SetItemList(Value: TStrings); virtual;
+    function GetItemList: TStringList; virtual;
+    procedure SetItemList(Value: TStringList); virtual;
     procedure SetItemIndex(Value: Integer); virtual;
     procedure SetAsString(const Value: string); override;
     function GetAsString: string; override;
@@ -354,7 +354,7 @@ type
     procedure GetData; override;
     procedure SetData; override;
   published
-    property ItemList: TStrings read GetItemList write SetItemList;
+    property ItemList: TStringList read GetItemList write SetItemList;
     property ItemIndex: Integer read FItemIndex write SetItemIndex;
     property Sorted: Boolean read FSorted write FSorted;
     property VariantAsItemIndex: Boolean read FVariantAsItemIndex write FVariantAsItemIndex default False;
@@ -432,7 +432,7 @@ type
     procedure SetWinControlProperties; override;
     function GetItemData(Index: Integer): TJvCheckListItemDataWrapper;
     procedure SetItemData(Index: Integer; Value: TJvCheckListItemDataWrapper);
-    procedure SetItemList(Value: TStrings); override;
+    procedure SetItemList(Value: TStringList); override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
@@ -1181,12 +1181,12 @@ begin
       Result := Null;
 end;
 
-function TJvListParameter.GetItemList: TStrings;
+function TJvListParameter.GetItemList: TStringList;
 begin
   Result := FItemList;
 end;
 
-procedure TJvListParameter.SetItemList(Value: TStrings);
+procedure TJvListParameter.SetItemList(Value: TStringList);
 begin
   FItemList.Assign(Value);
   if Assigned(Value) then
@@ -1613,7 +1613,7 @@ begin
   end;
 end;
 
-procedure TJvCheckListBoxParameter.SetItemList(Value: TStrings);
+procedure TJvCheckListBoxParameter.SetItemList(Value: TStringList);
 var
   I: Integer;
 begin
