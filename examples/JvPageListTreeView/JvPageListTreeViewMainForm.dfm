@@ -1,12 +1,12 @@
-object frmMain: TfrmMain
-  Left = 257
-  Top = 137
+object JvPageListTreeViewMainFrm: TJvPageListTreeViewMainFrm
+  Left = 362
+  Top = 148
   ActiveControl = JvPagedTreeView1
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'VS.Net Options Dialog Look-Alike'
   ClientHeight = 375
-  ClientWidth = 582
+  ClientWidth = 597
   Color = clBtnFace
   DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
@@ -21,27 +21,25 @@ object frmMain: TfrmMain
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
-    Left = 168
+    Left = 180
     Top = 0
     Width = 4
     Height = 322
-    Cursor = crHSplit
   end
   object StatusBar1: TStatusBar
     Left = 0
     Top = 356
-    Width = 582
+    Width = 597
     Height = 19
     Panels = <
       item
         Width = 50
       end>
-    SimplePanel = False
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 168
+    Width = 180
     Height = 322
     Align = alLeft
     BevelOuter = bvNone
@@ -51,7 +49,7 @@ object frmMain: TfrmMain
     object JvPagedTreeView1: TJvSettingsTreeView
       Left = 4
       Top = 4
-      Width = 160
+      Width = 172
       Height = 314
       PageDefault = 0
       PageList = JvPageList1
@@ -60,7 +58,7 @@ object frmMain: TfrmMain
       Indent = 19
       TabOrder = 0
       Items.Data = {
-        0A00000024000000000000000000000000000000FFFFFFFF000000000A000000
+        0A00000024000000010000000100000000000000FFFFFFFF000000000A000000
         0B456E7669726F6E6D656E7420000000FFFFFFFFFFFFFFFF01000000FFFFFFFF
         01000000000000000747656E6572616C22000000FFFFFFFFFFFFFFFF01000000
         FFFFFFFF020000000000000009446F63756D656E747325000000FFFFFFFFFFFF
@@ -74,17 +72,17 @@ object frmMain: TfrmMain
         001650726F6A6563747320616E6420536F6C7574696F6E7322000000FFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFF0900000000000000095461736B204C6973742400
         0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF09000000000000000B5765622042
-        726F77736572270000000000000000000000FFFFFFFFFFFFFFFF000000000200
+        726F77736572270000000100000001000000FFFFFFFFFFFFFFFF000000000200
         00000E536F7572636520436F6E74726F6C20000000FFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFF00000000000000000747656E6572616C25000000FFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFF00000000000000000C5343432050726F76696465722400
-        00000000000000000000FFFFFFFFFFFFFFFF00000000090000000B5465787420
+        00000100000001000000FFFFFFFFFFFFFFFF00000000090000000B5465787420
         456469746F7220000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000
-        00000747656E6572616C260000000000000000000000FFFFFFFFFFFFFFFF0000
+        00000747656E6572616C260000000100000001000000FFFFFFFFFFFFFFFF0000
         0000020000000D416C6C204C616E67756167657320000000FFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFF00000000000000000747656E6572616C1D000000FFFFFFFF
-        FFFFFFFFFFFFFFFFFFFFFFFF000000000000000004546162731E000000000000
-        0000000000FFFFFFFFFFFFFFFF000000000300000005426173696320000000FF
+        FFFFFFFFFFFFFFFFFFFFFFFF000000000000000004546162731E000000010000
+        0001000000FFFFFFFFFFFFFFFF000000000300000005426173696320000000FF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000747656E6572616C1D
         000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000454616273
         23000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000A466F72
@@ -152,41 +150,44 @@ object frmMain: TfrmMain
     end
   end
   object JvStandardPage2: TJvStandardPage
-    Left = 172
+    Left = 184
     Top = 0
-    Width = 410
+    Width = 413
     Height = 322
     Caption = 'JvStandardPage2'
   end
   object JvStandardPage4: TJvStandardPage
-    Left = 172
+    Left = 184
     Top = 0
-    Width = 410
+    Width = 413
     Height = 322
     Caption = 'JvStandardPage4'
   end
   object JvStandardPage1: TJvStandardPage
-    Left = 172
+    Left = 184
     Top = 0
-    Width = 410
+    Width = 413
     Height = 322
     Caption = 'JvStandardPage1'
   end
   object JvStandardPage5: TJvStandardPage
-    Left = 172
+    Left = 184
     Top = 0
-    Width = 410
+    Width = 413
     Height = 322
     Caption = 'JvStandardPage5'
   end
   object JvFooter1: TJvFooter
     Left = 0
     Top = 322
-    Width = 582
+    Width = 597
     Height = 34
     Align = alBottom
+    DesignSize = (
+      597
+      34)
     object JvFooterBtn2: TJvFooterBtn
-      Left = 339
+      Left = 354
       Top = 5
       Width = 75
       Height = 23
@@ -204,7 +205,7 @@ object frmMain: TfrmMain
       SpaceInterval = 6
     end
     object JvFooterBtn3: TJvFooterBtn
-      Left = 420
+      Left = 435
       Top = 5
       Width = 75
       Height = 23
@@ -222,7 +223,7 @@ object frmMain: TfrmMain
       SpaceInterval = 6
     end
     object JvFooterBtn1: TJvFooterBtn
-      Left = 499
+      Left = 514
       Top = 5
       Width = 75
       Height = 23
@@ -239,9 +240,9 @@ object frmMain: TfrmMain
     end
   end
   object JvPageList1: TJvPageList
-    Left = 172
+    Left = 184
     Top = 0
-    Width = 410
+    Width = 413
     Height = 322
     ActivePage = pgEnvironmentGeneral
     PropagateEnable = True
@@ -249,9 +250,12 @@ object frmMain: TfrmMain
     object pgEnvironmentGeneral: TJvStandardPage
       Left = 0
       Top = 17
-      Width = 410
+      Width = 413
       Height = 303
       Caption = 'Environment - General'
+      DesignSize = (
+        413
+        303)
       object Label1: TLabel
         Left = 248
         Top = 8
@@ -297,7 +301,7 @@ object frmMain: TfrmMain
       object JvGroupHeader3: TJvGroupHeader
         Left = 0
         Top = 232
-        Width = 406
+        Width = 409
         Height = 17
         Anchors = [akLeft, akTop, akRight]
         Caption = 'Docked Tool Window Behaviour'
@@ -369,11 +373,7 @@ object frmMain: TfrmMain
         Top = 120
         Width = 73
         Height = 15
-        Orientation = trHorizontal
-        Frequency = 1
         Position = 5
-        SelEnd = 0
-        SelStart = 0
         TabOrder = 6
         ThumbLength = 10
         TickMarks = tmBoth
@@ -429,9 +429,12 @@ object frmMain: TfrmMain
     object pgDocuments: TJvStandardPage
       Left = 0
       Top = 17
-      Width = 410
+      Width = 413
       Height = 303
       Caption = 'Environment - Documents'
+      DesignSize = (
+        413
+        303)
       object Label7: TLabel
         Left = 32
         Top = 112
@@ -449,7 +452,7 @@ object frmMain: TfrmMain
       object JvGroupHeader4: TJvGroupHeader
         Left = 0
         Top = 168
-        Width = 406
+        Width = 409
         Height = 17
         Anchors = [akLeft, akTop, akRight]
         Caption = 'Find and Replace'
@@ -555,7 +558,7 @@ object frmMain: TfrmMain
     object pgDynamicHelp: TJvStandardPage
       Left = 0
       Top = 17
-      Width = 410
+      Width = 413
       Height = 303
       Caption = 'Environment - Dynamic Help'
       object Label9: TLabel
@@ -676,7 +679,7 @@ object frmMain: TfrmMain
     object pgFontsColors: TJvStandardPage
       Left = 0
       Top = 17
-      Width = 410
+      Width = 413
       Height = 303
       Caption = 'Environment - Fonts and Colors'
       object Label12: TLabel
@@ -755,7 +758,7 @@ object frmMain: TfrmMain
         Top = 24
         Width = 281
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 0
         Text = 'Text Editor'
       end
@@ -772,7 +775,7 @@ object frmMain: TfrmMain
         Top = 72
         Width = 281
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 2
         Text = 'Courier New'
       end
@@ -781,7 +784,7 @@ object frmMain: TfrmMain
         Top = 72
         Width = 90
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 3
         Text = ' 10'
       end
@@ -969,49 +972,49 @@ object frmMain: TfrmMain
     object pgHelp: TJvStandardPage
       Left = 0
       Top = 17
-      Width = 410
+      Width = 413
       Height = 303
       Caption = 'Environment - Help'
     end
     object pgInternational: TJvStandardPage
       Left = 0
       Top = 17
-      Width = 410
+      Width = 413
       Height = 303
       Caption = 'Environment - International Settings'
     end
     object pgKeyboard: TJvStandardPage
       Left = 0
       Top = 17
-      Width = 410
+      Width = 413
       Height = 303
       Caption = 'Environment - Keyboard'
     end
     object pgProjSolutions: TJvStandardPage
       Left = 0
       Top = 17
-      Width = 410
+      Width = 413
       Height = 303
       Caption = 'Environment - Projects and Solutions'
     end
     object pgTaskList: TJvStandardPage
       Left = 0
       Top = 17
-      Width = 410
+      Width = 413
       Height = 303
       Caption = 'Environment - Task List'
     end
     object pgWebBrowser: TJvStandardPage
       Left = 0
       Top = 17
-      Width = 410
+      Width = 413
       Height = 303
       Caption = 'Environment - Web Browser'
     end
     object JvGroupHeader1: TJvGroupHeader
       Left = 0
       Top = 320
-      Width = 410
+      Width = 413
       Height = 2
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -1025,7 +1028,7 @@ object frmMain: TfrmMain
     object JvGroupHeader2: TJvGroupHeader
       Left = 0
       Top = 0
-      Width = 410
+      Width = 413
       Height = 17
       Align = alTop
       Caption = 'Settings'
