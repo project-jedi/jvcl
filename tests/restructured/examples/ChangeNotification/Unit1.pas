@@ -108,7 +108,7 @@ begin
 
   b := btnStart.Down;
   btnAdd.Enabled := not b;
-  btnAdd.Enabled := not b;
+  btnDelete.Enabled := not b;
   ResetCaptions(true);
   { do this *after* setting buttons }
   CN1.Active := b;
