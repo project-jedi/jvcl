@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = Jv3rdD5R.bpl
+PROJECTS = Jv3rdD5R.bpl                           \
   JvCoreD5R.bpl JvCoreD5D.bpl                     \
   JvSystemD5R.bpl JvSystemD5D.bpl                 \
   JvStdCtrlsD5R.bpl JvStdCtrlsD5D.bpl             \
