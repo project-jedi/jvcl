@@ -1,3 +1,4 @@
+{$I JEDI.INC}
 unit fTrans;
 
 interface

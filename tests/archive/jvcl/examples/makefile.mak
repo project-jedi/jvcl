@@ -8,8 +8,8 @@
 ROOT = $(MAKEDIR)\..
 !endif
 #---------------------------------------------------------------------------------------------------
-SRC = ..\..\Source
-DCU = ..\..\Dcu
+SRC = ..\..\Source;..\..\Common
+DCU = ..\..\Dcu;..\..\lib5;..\..\lib6
 BIN = ..\..\Bin
 JCL = ..\..\..\JCL\source
 DRC = $&.drc
@@ -41,7 +41,6 @@ JvHtmlParserProj.exe \
 JvLinkLabelDemo.exe \
 JvMousePositionnerProj.exe \
 JvMruList.exe \
-JvOutlookPanelProj.exe \
 JvPlayListProj.exe \
 JvScreenCaptureProj.exe \
 JvSearchFileProj.exe \
@@ -178,11 +177,6 @@ JvMousePositionnerProj.exe: JvMousePositionner\JvMousePositionnerProj.dpr
 
 JvMruList.exe: JvMruList/JvMruList.dpr
   cd JvMruList
-  $(DCC) $&.dpr
-  cd ..
-
-JvOutlookPanelProj.exe: JvOutlookPanel\JvOutlookPanelProj.dpr
-  cd JvOutlookPanel
   $(DCC) $&.dpr
   cd ..
 

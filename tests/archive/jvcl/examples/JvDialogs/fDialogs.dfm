@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 158
   Width = 744
   Height = 638
-  Caption = 'Form1'
+  Caption = 'Dialogs Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -354,7 +354,7 @@ object Form1: TForm1
     end
   end
   object JvFormatDrive1: TJvFormatDrive
-    FormatType = $D.€5!ð4!$!x5!ðF.Ð2!€3!
+    FormatType = ftQuick
     Capacity = dcDefault
     Left = 104
     Top = 474

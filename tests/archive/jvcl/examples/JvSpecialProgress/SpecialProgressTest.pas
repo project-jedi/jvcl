@@ -1,9 +1,10 @@
+{$I JEDI.INC}
 unit SpecialProgressTest;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, {$IFDEF DELPHI6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
   Dialogs, Gauges, JvSpecialProgress, ComCtrls, ExtCtrls, StdCtrls, JvPanel,
   JvSpacer;
 

@@ -1,10 +1,12 @@
+{$I JEDI.INC}
 unit Main;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ToolWin, StdCtrls, ComCtrls,  Menus, ExtCtrls, ImgList, JvScrollPanel, JvLookOut,
+  ToolWin, StdCtrls, ComCtrls, Menus, ExtCtrls, ImgList, JvScrollPanel,
+    JvLookOut,
   JvComponent;
 
 type
@@ -68,12 +70,18 @@ var
 implementation
 
 const
-  BoolOnOff : array[boolean]of string=(' Off ',' On');
-  AlignStr  : array[TAlign] of string=('alNone','alTop','alBottom','alLeft','alRight','alClient','alCustom');
+  BoolOnOff: array[boolean] of string = (' Off ', ' On');
+{$IFDEF DELPHI6_UP}
+  AlignStr: array[TAlign] of string = ('alNone', 'alTop', 'alBottom', 'alLeft',
+    'alRight', 'alClient', 'alCustom');
+{$ELSE}
+  AlignStr: array[TAlign] of string = ('alNone', 'alTop', 'alBottom', 'alLeft',
+    'alRight', 'alClient');
+{$ENDIF}
 {$R *.DFM}
 
 procedure TForm1.Button1Click(Sender: TObject);
-var i,tmp:integer;
+var i, tmp: integer;
 begin
 
 { AutoArrange only moves children - not the panel itself,
@@ -101,12 +109,13 @@ begin
       Width := tmp;
     end;
        { Adjust the TDividers }
-    with ScrollPanel1 do
+  with ScrollPanel1 do
     for i := 0 to ControlCount - 1 do
       if Controls[i] is TJvDivider then
-        TJvDivider(Controls[i]).Vertical := ScrollPanel1.Align in [alTop,alBottom];
+        TJvDivider(Controls[i]).Vertical := ScrollPanel1.Align in [alTop,
+          alBottom];
 
-   Caption := 'Align ' + AlignStr[ScrollPanel1.Align];
+  Caption := 'Align ' + AlignStr[ScrollPanel1.Align];
 end;
 
 procedure TForm1.ExpressButton1Click(Sender: TObject);
@@ -116,8 +125,8 @@ end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-   ScrollPanel1.AutoHide := not ScrollPanel1.AutoHide;
-   Caption := 'Hidden' + BoolOnOff[ScrollPanel1.AutoHide];
+  ScrollPanel1.AutoHide := not ScrollPanel1.AutoHide;
+  Caption := 'Hidden' + BoolOnOff[ScrollPanel1.AutoHide];
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -154,6 +163,4 @@ begin
 end;
 
 end.
-
-
 

@@ -1,9 +1,10 @@
+{$I JEDI.INC}
 unit InfoFrm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, {$IFDEF DELPHI6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls;
 
 type

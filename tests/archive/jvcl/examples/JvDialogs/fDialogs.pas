@@ -4,20 +4,16 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvCommonExecDlg, JvRenameError, JvDeleteError,
   JvCopyError, JvCommonDialogD, JvDiskPrompt, JvProgressDlg, JvCalculator,
-  JvSerialDlg, JvLoginDlg, JvExchListboxes, JvPasswordForm, JvDisconnectNetwork, JvConnectNetwork,
-  JvSelectDirectory, JvBaseDlg,
-  JvFindFiles, JvComponent
-  , JvWinDialogs
-  //  ,  JvAddPrinter
-  , ComCtrls, JvBrowseFolder,
-  JvPageSetupTitled, JvPageSetup, JvAddPrinter, JvSHFmt
-  ;
+  JvSerialDlg, JvLoginDlg, JvExchListboxes, JvPasswordForm, JvDisconnectNetwork,
+  JvConnectNetwork, JvSelectDirectory, JvBaseDlg, JvFindFiles, JvComponent,
+  JvWinDialogs, ComCtrls, JvBrowseFolder, JvPageSetupTitled, JvPageSetup,
+  JvAddPrinter, JvSHFmt;
 
 type
   TForm1 = class(TForm)
     JvFormatDrive1: TJvFormatDrive;
     JvFindFiles1: TJvFindFilesDialog;
-    JvBrowseFolder1: TJvBrowseFolder; //TJvShellAbout;
+    JvBrowseFolder1: TJvBrowseFolder;   //TJvShellAbout;
     JvSelectDirectory1: TJvSelectDirectory;
     JvConnectNetwork1: TJvConnectNetwork;
     JvDisconnectNetwork1: TJvDisconnectNetwork;
