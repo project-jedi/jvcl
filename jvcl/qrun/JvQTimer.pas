@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -19,13 +19,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2004-02-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -123,10 +122,17 @@ procedure TJvTimerThread.Execute;
   begin
     Result := Terminated or Application.Terminated or (FOwner = nil);
   end;
-
+{$IFDEF LINUX}
+  function SleepEx(ms: cardinal; bAlertable: boolean):cardinal;
+  begin
+    Sleep(ms);
+    Result := 0;
+  end;
+{$ENDIF LINUX}
 begin
   repeat
-    if (not ThreadClosed) {and (SleepEx(FInterval, False) = 0)} and
+    if (not ThreadClosed) and
+        (SleepEx(FInterval, False) = 0) and
        (not ThreadClosed) and FOwner.FEnabled then
       with FOwner do
       begin

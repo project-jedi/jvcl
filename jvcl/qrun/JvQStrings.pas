@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,14 +20,13 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2003-10-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
   Should be merged with JCL
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -46,9 +45,6 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  Libc,
-  {$ENDIF LINUX}
   
   
   QGraphics,
@@ -958,9 +954,7 @@ procedure RecurseDirProgs(myDir: string; var aFileList: TStringList);
 var
   sr: TSearchRec;
   FileAttrs: Integer;
-  {$IFDEF MSWINDOWS}
   e: string;
-  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   st: TStatBuf;
   {$ENDIF LINUX}
@@ -2081,12 +2075,10 @@ var
   sr: TSearchRec;
   FileAttrs: Integer;
 begin
-  FileAttrs := {$IFDEF MSWINDOWS}faArchive +{$ENDIF}faDirectory;
+  FileAttrs := faArchive + faDirectory;
   if FindFirst(aDir + amask, FileAttrs, sr) = 0 then
     while FindNext(sr) = 0 do
-      {$IFDEF MSWINDOWS}
       if (sr.Attr and faArchive) <> 0 then
-      {$ENDIF MSWINDOWS}
         aFileList.append(aDir + sr.Name);
   FindClose(sr);
 end;

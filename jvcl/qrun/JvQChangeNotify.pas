@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -14,13 +14,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvChangeNotify.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2002-05-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,6 +28,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}
@@ -40,8 +39,11 @@ interface
 
 uses
   SysUtils, Classes,
-  Windows, Messages,
+  Windows, 
+  
+  
   QGraphics, QControls, QForms, QDialogs,
+  
   JvQComponent;
 
 type
@@ -99,7 +101,6 @@ type
     FIndex: Integer;
     FInterval: Integer;
     FNotify: TJvThreadNotifyEvent;
-    procedure Change(Index: Integer);
     procedure SynchChange;
   public
     constructor Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer);
@@ -121,6 +122,7 @@ type
     procedure CheckActive(const Name: string);
     function NotifyError(const Msg: string): string;
     procedure DoThreadChangeNotify(Sender: TObject; Index: Integer);
+    procedure DoThreadTerminate(Sender:TObject);
   protected
     procedure Change(Item: TJvChangeItem); virtual;
   public
@@ -278,6 +280,7 @@ end;
 destructor TJvChangeNotify.Destroy;
 begin
   Active := False;
+  FCollection.Free;
   inherited Destroy;
 end;
 
@@ -324,6 +327,11 @@ begin
   Change(Notifications[Index]);
 end;
 
+procedure TJvChangeNotify.DoThreadTerminate(Sender: TObject);
+begin
+  FThread := nil;
+end;
+
 procedure TJvChangeNotify.SetActive(const Value: Boolean);
 const
   cActions: array [TJvChangeAction] of Cardinal =
@@ -366,14 +374,15 @@ begin
     end;
     FThread := TJvChangeThread.Create(FNotifyArray, FCollection.Count, FInterval);
     FThread.OnChangeNotify := DoThreadChangeNotify;
+    FThread.OnTerminate := DoThreadTerminate;
     FThread.Resume;
   end
-  else
-  if FThread <> nil then
+  else if (FThread <> nil) then
   begin
     FThread.Terminate;
-    FThread.WaitFor;
-    FreeAndNil(FThread);
+    FThread := nil;
+//    FThread.WaitFor;
+//    FreeAndNil(FThread);
   end;
 
   {
@@ -408,13 +417,9 @@ begin
   FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
   for I := 0 to FCount - 1 do
     FNotifyArray[I] := NotifyArray[I];
+  FreeOnTerminate := true;
 end;
 
-procedure TJvChangeThread.Change(Index: Integer);
-begin
-  FIndex := Index;
-  Synchronize(SynchChange);
-end;
 
 procedure TJvChangeThread.Execute;
 var
@@ -428,7 +433,8 @@ begin
       if (I >= 0) and (I < FCount) then
       begin
         try
-          Change(I);
+          FIndex := i;
+          Synchronize(SynchChange);
         finally
           // (rom) raising an exception in a thread is not a good idea
           // (rom) Assert removed

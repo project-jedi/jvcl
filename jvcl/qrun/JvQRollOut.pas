@@ -14,13 +14,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvRollOut.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2004-03-09
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -45,6 +43,7 @@ Changes 2003-03-23:
      - ImageOffset: change to ImageOptions.Offset // peter3
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -196,7 +195,10 @@ type
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
     procedure ParentColorChanged; override;
+    
+    
     procedure CreateWidget; override;
+    
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -261,9 +263,10 @@ type
     property ButtonHeight;
     property Caption;
     property ChildOffset;
-    property Placement;     // should preceed collapsed
+    property Placement;
     property Collapsed;
     property Colors;
+    
     property DragMode;
     property Enabled;
     property Font;
@@ -549,12 +552,16 @@ begin
   RedrawControl(False);
 end;
 
+
+
+
 procedure TJvCustomRollOut.CreateWidget;
 begin
   inherited CreateWidget;
   if not Collapsed then
     UpdateGroup;
 end;
+
 
 procedure TJvCustomRollOut.AlignControls(AControl: TControl; var Rect: TRect);
 begin

@@ -32,7 +32,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvQID3v2Types;
+unit JvQId3v2Types;
 
 interface
 

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2004-01-11
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -70,10 +69,8 @@ type
   published
     function Execute(P: Pointer): THandle;
     function OneThreadIsRunning: Boolean;
-    {$IFDEF MSWINDOWS}
     function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
-    {$ENDIF MSWINDOWS}
     procedure QuitThread(Thread: THandle);
     procedure Suspend(Thread: THandle); // should not be used
     procedure Resume(Thread: THandle);
@@ -187,7 +184,6 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
 function TJvThread.GetPriority(Thread: THandle): TThreadPriority;
 begin
   Result := tpIdle;
@@ -199,36 +195,20 @@ procedure TJvThread.SetPriority(Thread: THandle; Priority: TThreadPriority);
 begin
   SetThreadPriority(Thread, Integer(Priority));
 end;
-{$ENDIF MSWINDOWS}
 
 procedure TJvThread.QuitThread(Thread: THandle);
 begin
-  {$IFDEF MSWINDOWS}
   TerminateThread(Thread, 0);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  TThread(Thread).Terminate;      
-  {$ENDIF LINUX}
 end;
 
 procedure TJvThread.Suspend(Thread: THandle);
 begin
-  {$IFDEF MSWINDOWS}
   SuspendThread(Thread);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  TThread(Thread).Suspend;
-  {$ENDIF LINUX}
 end;
 
 procedure TJvThread.Resume(Thread: THandle);
 begin
-  {$IFDEF MSWINDOWS}
   ResumeThread(Thread);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  TThread(Thread).Resume;
-  {$ENDIF LINUX}
 end;
 
 procedure TJvThread.DoCreate;

@@ -42,7 +42,7 @@ uses
   Classes, SysUtils,
   
   
-  JclUnicode,
+  JclUnicode, 
   
   JvQComponent, JvQID3v2Types, JvQID3v1;
 

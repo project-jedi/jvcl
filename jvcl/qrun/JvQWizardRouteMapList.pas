@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -19,8 +19,6 @@ Portions created by Peter Thornqvist are Copyright (C) 2004 Peter Thornqvist
 
 Contributor(s):
 
-Last Modified: 2004-02-14
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -31,6 +29,7 @@ History:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -44,14 +43,12 @@ uses
   
   QGraphics, QControls, QForms, Types, QWindows,
   
-  {$IFDEF USEJVCL}
+  
   JvQTypes, JvQConsts, JvQJVCLUtils,
-  {$ENDIF USEJVCL}
+  
   JvQWizard;
 
-{$IFNDEF USEJVCL}
 
-{$ENDIF !USEJVCL}
 
 type
   TJvWizardDrawRouteMapListItem = procedure(Sender: TObject; ACanvas: TCanvas;
@@ -78,10 +75,10 @@ type
     FHotTrack: Boolean;
     FCurvature: Integer;
     FHotTrackBorder: Integer;
-    {$IFDEF USEJVCL}
+    
     FHotTrackFontOptions: TJvTrackFontOptions;
     FActiveFontOptions: TJvTrackFontOptions;
-    {$ENDIF USEJVCL}
+    
     procedure SetItemHeight(const Value: Integer);
     procedure SetHorzOffset(const Value: Integer);
     procedure SetVertOffset(const Value: Integer);
@@ -96,10 +93,10 @@ type
     procedure SetRounded(const Value: Boolean);
     procedure SetItemText(const Value: TRouteMapListItemText);
     procedure SetCurvature(const Value: Integer);
-    {$IFDEF USEJVCL}
+    
     procedure SetActiveFontOptions(const Value: TJvTrackFontOptions);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
-    {$ENDIF USEJVCL}
+    
   protected
     procedure DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -113,10 +110,10 @@ type
     destructor Destroy; override;
   published
     property ActiveFont: TFont read FActiveFont write SetActiveFont;
-    {$IFDEF USEJVCL}
+    
     property ActiveFontOptions: TJvTrackFontOptions read FActiveFontOptions write SetActiveFontOptions default
       DefaultTrackFontOptions;
-    {$ENDIF USEJVCL}
+    
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property Clickable: Boolean read FClickable write FClickable default True;
     property Color default $00C08000;
@@ -128,10 +125,10 @@ type
     property HotTrack: Boolean read FHotTrack write FHotTrack default True;
 
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    {$IFDEF USEJVCL}
+    
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
-    {$ENDIF USEJVCL}
+    
     property IncludeDisabled: Boolean read FIncludeDisabled write SetIncludeDisabled default False;
     property ItemColor: TColor read FItemColor write SetItemColor default clCream;
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 25;
@@ -155,10 +152,10 @@ begin
   FHotTrackFont.Color := clNavy;
   FHotTrackFont.Style := [fsUnderline];
   FHotTrackFont.OnChange := DoFontChange;
-  {$IFDEF USEJVCL}
+  
   FActiveFontOptions := DefaultTrackFontOptions;
   FHotTrackFontOptions := DefaultTrackFontOptions;
-  {$ENDIF USEJVCL}
+  
   Color := $00C08000;
   FHotTrackCursor := crHandPoint;
   FVertOffset := 8;
@@ -438,10 +435,10 @@ end;
 procedure TJvWizardRouteMapList.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
-  {$IFDEF USEJVCL}
+  
   UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   UpdateTrackFont(ActiveFont, Font, FActiveFontOptions);
-  {$ENDIF USEJVCL}
+  
 end;
 
 procedure TJvWizardRouteMapList.SetAlignment(const Value: TAlignment);
@@ -507,7 +504,7 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
+
 
 procedure TJvWizardRouteMapList.SetActiveFontOptions(const Value: TJvTrackFontOptions);
 begin
@@ -527,7 +524,7 @@ begin
   end;
 end;
 
-{$ENDIF USEJVCL}
+
 
 end.
 

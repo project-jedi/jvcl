@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,14 +20,14 @@ All Rights Reserved.
 
 Contributor(s):
 Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
-
-Last Modified: 2004-02-13
+Andreas Hausladen - fixed some bugs, refactoring of the Wizard button classes on 2004-02-29
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {+---------------------------------------------------------------------------+
  | CONTRIBUTORS:                                                             |
@@ -346,9 +346,9 @@ uses
   
   Types,
   
-  {$IFDEF USEJVCL}
+  
   JvQComponent,
-  {$ENDIF USEJVCL}
+  
   JvQWizardCommon;
 
 type
@@ -772,11 +772,9 @@ type
   end;
 
   { YW - JvWizard Control }
-  {$IFDEF USEJVCL}
+  
   TJvWizard = class(TJvCustomControl)
-  {$ELSE}
-  TJvWizard = class(TCustomControl)
-  {$ENDIF USEJVCL}
+  
   private
     FPages: TJvWizardPageList;
     FActivePage: TJvWizardCustomPage;
@@ -793,9 +791,7 @@ type
     FHeaderImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
     FAutoHideButtonBar: boolean;
-    {$IFNDEF USEJVCL}
-    FAboutInfo: TJvWizardAboutInfoForm; // Add by Steve Forbes
-    {$ENDIF !USEJVCL}
+    
     procedure SetShowDivider(Value: Boolean);
     function GetShowRouteMap: Boolean;
     procedure SetShowRouteMap(Value: Boolean);
@@ -850,10 +846,7 @@ type
     property WizardPages[Index:integer]: TJvWizardCustomPage read GetWizardPages;
   published
     property Pages: TJvWizardPageList read FPages;
-    {$IFNDEF USEJVCL}
-    // Add by Steve Forbes
-    property About: TJvWizardAboutInfoForm read FAboutInfo write FAboutInfo stored False;
-    {$ENDIF !USEJVCL}
+    
     property ActivePage: TJvWizardCustomPage read FActivePage write SetActivePage;
     property AutoHideButtonBar:boolean read FAutoHideButtonBar write SetAutoHideButtonBar default True;
     property ButtonBarHeight: Integer read FButtonBarHeight write SetButtonBarHeight;
@@ -890,12 +883,7 @@ type
 implementation
 
 uses
-  {$IFDEF USEJVCL}
-  JvQResources,
-  {$ENDIF USEJVCL}
-  
-  
-  QConsts;
+  QConsts, JvQResources;
   
 
 const
@@ -904,24 +892,10 @@ const
   ciButtonBarHeight = 42;
   ciButtonPlacement = (ciButtonBarHeight - ciButtonHeight) div 2;
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsBackButtonCaption = '< &Back';
-  RsNextButtonCaption = '&Next >';
 
-  RsFirstButtonCaption = 'To &Start Page';
-  RsLastButtonCaption = 'To &Last Page';
-  RsFinishButtonCaption = '&Finish';
-  RsWelcome = 'Welcome';
-  RsTitle = 'Title';
-  RsSubtitle = 'Subtitle';
-
-  RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant';
-  RsEInvalidWizardPage = 'The pages belong to another wizard';
-{$ENDIF USEJVCL}
 
 type
-  // (ahuser) introduces for refactoring  the WizardButtons
+  // (ahuser) introduced for refactoring the WizardButtons
   TJvWizardBaseButton = class(TJvWizardButtonControl)
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); virtual; abstract;
@@ -1968,7 +1942,7 @@ begin
     if Assigned(WizardPage) then
     begin
       { YW - Show Header Divider }
-      if (csDesigning in WizardPage.ComponentState) or FShowDivider then
+      if {(csDesigning in WizardPage.ComponentState) or} FShowDivider then
       begin
         JvWizardDrawBorderEdges(ACanvas, R, fsGroove, [beBottom]);
       end;
@@ -2433,7 +2407,8 @@ begin
   FWaterMark := TJvWizardWaterMark.Create;
   FWaterMark.WizardPage := Self;
   FHeader.FTitle.FText := RsWelcome;
-  FHeader.FShowDivider := False;
+  // welcome pages don't have dividers by default
+//  FHeader.ShowDivider := False;
   Color := clWindow;
 end;
 

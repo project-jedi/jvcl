@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -22,13 +22,12 @@ All Rights Reserved.
 Contributor(s):
   Polaris Software
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -161,7 +160,12 @@ uses
   Math,
   JvQThemes, JvQConsts, JvQResources, JvQToolEdit, JvQJVCLUtils;
 
-{$R ../Resources/JvPickDate.Res}
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvPickDate.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvPickDate.res}
+{$ENDIF LINUX}
 
 const
   SBtnGlyphs: array [0..3] of PChar =

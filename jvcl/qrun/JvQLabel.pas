@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,9 +20,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
-Peter Thornqvist [peter3@peter3.com]
-
-Last Modified: 2003-10-19
+Peter Thornqvist [peter3 at sourceforge dot net]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -47,6 +45,7 @@ Changes:
 Known Issues:
 * Images are only displayed in TJvCustomLabel if Angle = 0.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -94,6 +93,7 @@ type
     FSpacing: Integer;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FConsumerSvc: TJvDataConsumer;
+    FNeedsResize:boolean;
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -131,6 +131,7 @@ type
     
     
     procedure SetAutoSize(Value: Boolean); virtual;
+    
     
     function GetDefaultFontColor: TColor; virtual;
     function GetLabelCaption: string; virtual;
@@ -180,6 +181,8 @@ type
     destructor Destroy; override;
     property Canvas;
     property MouseOver;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
   end;
 
   TJvLabel = class(TJvCustomLabel)
@@ -243,12 +246,13 @@ function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
 
 implementation
 uses
-  JvQThemes, JvQJCLUtils, JvQJVCLUtils, Math;
+  Math,
+  JvQThemes, JvQJCLUtils, JvQJVCLUtils;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
-
+  NullHandle = nil;
 //=== TJvCustomLabel =========================================================
 
 function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
@@ -536,9 +540,9 @@ begin
     
     Brush.Style := bsSolid;
     
-    if not Transparent then
+//    if not Transparent then
      // only FillRect mode because Transparent is always True on JVCLThemesEnabled
-      DrawThemedBackground(Self, Canvas, ClientRect, Self.Color);
+//      DrawThemedBackground(Self, Canvas, ClientRect, Self.Color);
     Brush.Style := bsClear;
     if Angle <> 0 then
       DrawAngleText(DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment])
@@ -579,6 +583,7 @@ procedure TJvCustomLabel.Loaded;
 begin
   inherited Loaded;
   Provider.Loaded;
+  FNeedsResize := true;
   AdjustBounds;
 end;
 
@@ -589,7 +594,7 @@ var
   Rect: TRect;
   AAlignment: TAlignment;
 begin
-  if not (csReading in ComponentState) and AutoSize then
+  if not (csReading in ComponentState) and AutoSize and FNeedsResize then
   begin
     Rect := ClientRect;
     Inc(Rect.Left, FLeftMargin);
@@ -616,13 +621,15 @@ begin
     AAlignment := FAlignment;
     if UseRightToLeftAlignment then
       ChangeBiDiModeAlignment(AAlignment);
-    Rect.Bottom := Max(Rect.Bottom, Rect.Top + GetImageHeight);
+    if ImageIndex > -1 then
+      Rect.Bottom := Max(Rect.Bottom, Rect.Top + GetImageHeight);
     if (AAlignment = taRightJustify) and (Images = nil) then
       Inc(X, Width - Rect.Right);
     if Images <> nil then
       Dec(Rect.Left,GetImageWidth + Spacing);
     SetBounds(X, Top, Rect.Right, Rect.Bottom);
   end;
+  FNeedsResize := false;
 end;
 
 procedure TJvCustomLabel.SetAlignment(Value: TAlignment);
@@ -638,6 +645,7 @@ procedure TJvCustomLabel.SetAutoSize(Value: Boolean);
 begin
   
   FAutoSize := Value;
+  FNeedsResize := FAutoSize;
   AdjustBounds;
 end;
 
@@ -655,6 +663,7 @@ begin
   if FLeftMargin <> Value then
   begin
     FLeftMargin := Max(Value, 0);
+    FNeedsResize := true;
     AdjustBounds;
     Invalidate;
   end;
@@ -665,6 +674,7 @@ begin
   if FRightMargin <> Value then
   begin
     FRightMargin := Max(Value, 0);
+    FNeedsResize := true;
     AdjustBounds;
     Invalidate;
   end;
@@ -684,6 +694,7 @@ begin
   if Value <> FShadowSize then
   begin
     FShadowSize := Value;
+    FNeedsResize := true;
     AdjustBounds;
     Invalidate;
   end;
@@ -748,6 +759,7 @@ begin
   if FWordWrap <> Value then
   begin
     FWordWrap := Value;
+    FNeedsResize := true;
     AdjustBounds;
   end;
 end;
@@ -819,12 +831,14 @@ begin
   inherited TextChanged;
   NonProviderChange;
   Invalidate;
+  FNeedsResize := true;
   AdjustBounds;
 end;
 
 procedure TJvCustomLabel.FontChanged;
 begin
   inherited FontChanged;
+  FNeedsResize := true;
   AdjustBounds;
   UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
 end;
@@ -882,9 +896,12 @@ begin
   if FImageIndex <> Value then
   begin
     if Images <> nil then
+    begin
+      FNeedsResize := true;
       NonProviderChange;
+    end;
     FImageIndex := Value;
-    Invalidate;
+    if FNeedsResize then AdjustBounds else Invalidate;
   end;
 end;
 
@@ -904,7 +921,13 @@ begin
       FImages.FreeNotification(self);
       FImages.RegisterChanges(FChangeLink);
     end;
-    if AutoSize then AdjustBounds else Invalidate;
+    if AutoSize then
+    begin
+      FNeedsResize := true;
+      AdjustBounds;
+    end
+    else
+      Invalidate;
   end;
 end;
 
@@ -928,7 +951,10 @@ procedure TJvCustomLabel.ConsumerServiceChanged(Sender: TJvDataConsumer;
   Reason: TJvDataConsumerChangeReason);
 begin
   if ProviderActive or (Reason = ccrProviderSelect) then
+  begin
+    FNeedsResize := true;
     AdjustBounds;
+  end;
 end;
 
 procedure TJvCustomLabel.NonProviderChange;
@@ -982,8 +1008,8 @@ begin
   begin
     FAngle := Value;
     
-    if Autosize then
-      AdjustBounds;
+    FNeedsResize := Autosize;
+    AdjustBounds;
     
     Invalidate;
   end;
@@ -999,7 +1025,12 @@ begin
   if FSpacing <> Value then
   begin
     FSpacing := Value;
-    if AutoSize then AdjustBounds else Invalidate;
+    if AutoSize then
+    begin
+      FNeedsResize := true;
+      AdjustBounds;
+    end
+    else Invalidate;
   end;
 end;
 
@@ -1012,6 +1043,12 @@ begin
   end;
 end;
 
+
+procedure TJvCustomLabel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  FNeedsResize := (ALeft <> Left) or (ATop <> Top) or (AWidth <> Width) or (AHeight <> Height);
+  inherited;
+end;
 
 end.
 

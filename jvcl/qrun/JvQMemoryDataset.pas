@@ -19,7 +19,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2004-03-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -290,20 +290,21 @@ implementation
 uses
   Forms, Dialogs, DbConsts, Math,
   JvQResources;
+
 resourcestring
   //-------------------- Added by CFZ 2004/03/03 ----------------------
-                   // 'The applied records differs from the changed records.';
-  SNoExactApply = 'Los registros aplicados, difieren de los cambiados.';
-  // 'Record already existent.';
-  SRecordDuplicate = 'Registro ya existente.';
-  // 'Record not found.';
-  SRecordInexistent = 'Registro no encontrado.';
-  // 'Impossible append the record.';
-  SInsertError = 'No se pudo agregar el registro.';
-  // 'Impossible modify the record.';
-  SUpdateError = 'No se pudo modificar el registro.';
-  // 'Impossible erase the record.';
-  SDeleteError = 'No se pudo eliminar el registro.';
+  // 'Los registros aplicados, difieren de los cambiados.';
+  //SNoExactApply = 'The applied records differs from the changed records.';
+  // 'Record already exists.Registro ya existente.';
+  SRecordDuplicate = 'Record already exists.';
+  // 'Registro no encontrado.';
+  SRecordInexistent = 'Record not found.'; //
+  // 'No se pudo agregar el registro.';
+  SInsertError = 'Impossible append the record.';
+  // 'No se pudo modificar el registro.';
+  SUpdateError = 'Impossible modify the record.';
+  // 'No se pudo eliminar el registro.';
+  SDeleteError = 'Impossible erase the record.';
   //--------------------------------------------------------------------
 
 const
@@ -323,6 +324,7 @@ const
   //-------- Added by CFZ 2004/03/03 ---------
   STATUSNAME = 'C67F70Z90'; (* Magic *)
   //------------------------------------------
+
 { Utility routines }
 
 function CalcFieldLen(FieldType: TFieldType; Size: Word): Word;

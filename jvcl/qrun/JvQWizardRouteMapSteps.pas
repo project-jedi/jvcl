@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -19,8 +19,6 @@ Portions created by Max Evans are Copyright (C) 2002 Max Evans
 
 Contributor(s):
 
-Last Modified: 2002-02-12
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -31,6 +29,7 @@ History:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -84,17 +83,12 @@ type
 
 implementation
 
-{$IFDEF USEJVCL}
+
 uses
   JvQResources;
-{$ENDIF USEJVCL}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsActiveStepFormat = 'Step %d of %d';
-  RsBackTo = 'Back to';
-  RsNextStep = 'Next Step';
-{$ENDIF USEJVCL}
+
+
 
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);
 begin
@@ -112,10 +106,22 @@ function TJvWizardRouteMapSteps.DetectPage(const Pt: TPoint): TJvWizardCustomPag
 begin
   // Ignore all disabled pages at run time.
   if PtInRect(GetPreviousArrowRect, Pt) then
-    Result := Wizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState))
+  begin
+    if (PageIndex < Wizard.PageCount) and (PageIndex > 0) and
+       not ((csDesigning in ComponentState) or (bkBack in Wizard.WizardPages[PageIndex].EnabledButtons)) then
+      Result := nil
+    else
+      Result := Wizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState));
+  end
   else
   if PtInRect(GetNextArrowRect, Pt) then
-    Result := Wizard.FindNextPage(PageIndex, 1, not (csDesigning in ComponentState))
+  begin
+    if (PageIndex < Wizard.PageCount) and (PageIndex > 0) and
+       not ((csDesigning in ComponentState) or (bkNext in Wizard.WizardPages[PageIndex].EnabledButtons)) then
+      Result := nil
+    else
+      Result := Wizard.FindNextPage(PageIndex, 1, not (csDesigning in ComponentState));
+  end
   else
     Result := nil;
 end;
@@ -213,25 +219,15 @@ begin
   Canvas.Brush.Style:= bsClear;
 
   S := Format(RsActiveStepFormat, [ActivePageIndex, TotalPageCount]);
-//  {$IFDEF USEJVCL}
-//  StepHeight := ClxDrawText(Canvas, S, TextRect,
-//     DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//  {$ELSE}
   StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//  {$ENDIF USEJVCL}
 
   // Display Active Page Description
   Canvas.Font.Style:= [];
   OffsetRect(TextRect, 0, StepHeight);
   S := Pages[PageIndex].Caption;
-//  {$IFDEF USEJVCL}
-//  ClxDrawText(Canvas, S, TextRect,
-//    DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//  {$ELSE}
   DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
     DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//  {$ENDIF USEJVCL}
   Canvas.Font.Style:= [];
   if FShowDivider then
   begin
@@ -253,26 +249,17 @@ begin
     begin
       if TextRect.Left + FIndent + ArrowRect.Right - ArrowRect.Left < Width then
         OffSetRect(TextRect, ArrowRect.Right, 0);
-      DrawFrameControl(Canvas.Handle, ArrowRect, DFC_SCROLL,
-        DFCS_SCROLLLEFT or DFCS_FLAT);
+      if (csDesigning in ComponentState) or (bkBack in Wizard.WizardPages[PageIndex].EnabledButtons) then
+        DrawFrameControl(Canvas.Handle, ArrowRect, DFC_SCROLL,
+          DFCS_SCROLLLEFT or DFCS_FLAT);
     end;
     S := FPreviousStepText;
-//    {$IFDEF USEJVCL}
-//    StepHeight := ClxDrawText(Canvas, S, TextRect,
-//      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ELSE}
     StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ENDIF USEJVCL}
     OffsetRect(TextRect, 0, StepHeight);
     S := APage.Caption;
-//    {$IFDEF USEJVCL}
-//    ClxDrawText(Canvas, S, TextRect,
-//      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ELSE}
     DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ENDIF USEJVCL}
   end;
 
   { do the next step }
@@ -287,26 +274,17 @@ begin
     if ShowNavigators then
     begin
       OffsetRect(TextRect, ArrowRect.Right, 0);
-      DrawFrameControl(Canvas.Handle, ArrowRect, DFC_SCROLL,
-        DFCS_SCROLLRIGHT or DFCS_FLAT);
+      if (csDesigning in ComponentState) or (bkNext in Wizard.WizardPages[PageIndex].EnabledButtons) then
+        DrawFrameControl(Canvas.Handle, ArrowRect, DFC_SCROLL,
+          DFCS_SCROLLRIGHT or DFCS_FLAT);
     end;
     S := FNextStepText;
-//    {$IFDEF USEJVCL}
-//    StepHeight := ClxDrawText(Canvas, S, TextRect,
-//      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ELSE}
     StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ENDIF USEJVCL}
     OffsetRect(TextRect, 0, StepHeight);
     S := APage.Caption;
-//    {$IFDEF USEJVCL}
-//    ClxDrawText(Canvas, S, TextRect,
-//      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ELSE}
     DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-//    {$ENDIF USEJVCL}
   end;
 end;
 

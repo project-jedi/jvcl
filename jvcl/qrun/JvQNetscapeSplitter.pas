@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -22,13 +22,12 @@ Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 dejoy(dejoy@ynl.gov.cn)
 
-Last Modified: 2004-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -56,7 +55,7 @@ type
 
   TJvCustomNetscapeSplitter = class(TJvExSplitter)
   private
-//    FBusy: Boolean;
+    FBusy: Boolean;
     FShowButton: Boolean;
     FButtonWidthKind: TJvButtonWidthKind;
     FButtonWidth: Integer;

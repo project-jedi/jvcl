@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-03-20
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -53,6 +52,8 @@ type
   // has triggred its own event to indicate a change in its state
   TJvGrabberNotifyEvent = procedure(Sender: TJvUrlListGrabber; Grabber: TJvCustomUrlGrabber) of object;
 
+  // The exception raised by TJvUrlListGrabber when no grabber claimed it was capable
+  // of handling a given URL. This is only raised if DefaultGrabberIndex is -1
   ENoGrabberForUrl = class(Exception);
 
   // This component allows the user to specify a list of URLs to be
@@ -233,6 +234,10 @@ type
   // the status of a grabber
   TJvGrabberStatus = (gsStopped, gsConnecting, gsGrabbing);
 
+  // The exception triggered if someone tries to set the Url property while the
+  // grabber is not stopped
+  EGrabberNotStopped = class(Exception);
+
   // The ancestor of all the Url Grabbers that declares the required
   // methods that a grabber must provide.
   // Do not instanciate a TJvCustomUrlGrabber directly, simply use one
@@ -293,6 +298,8 @@ type
     procedure DoClosed;
     
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; virtual; abstract;
+
+    procedure SetUrl(Value: string);
   public
     constructor Create(AOwner: TComponent); overload; override;
     constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); reintroduce; overload; virtual;
@@ -329,7 +336,7 @@ type
     property Status: TJvGrabberStatus read FStatus;
 
     // the Url being grabbed
-    property Url: string read FUrl;
+    property Url: string read FUrl write SetUrl;
 
     // the user name and password to use for authentication
     property UserName: string read FUserName write FUserName;
@@ -593,6 +600,14 @@ begin
   // useless implementation required for BCB compatibility as
   // C++ doesn't support abstract virtual class methods
   Result := False;
+end;
+
+procedure TJvCustomUrlGrabber.SetUrl(Value: string);
+begin
+  if Status = gsStopped then
+    FUrl := Value
+  else
+    raise EGrabberNotStopped.Create(RsEGrabberNotStopped);
 end;
 
 procedure TJvCustomUrlGrabber.DoClosed;

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -18,9 +18,7 @@ The Initial Developer of the Original Code is Certified Software Corp. [certsoft
 Portions created by Peter Thörnqvist are Copyright (C) 1996 Certified Software Corp.
 All Rights Reserved.
 
-Contributor(s): Peter Thörnqvist [peter3@peter3.com]
-
-Last Modified: 2002-05-26
+Contributor(s): Peter Thörnqvist [peter3 at sourceforge dot net]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -28,6 +26,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
  Use QueryPerformanceCounter / Frequency instead of GetTickCount (the high resolution timer)
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

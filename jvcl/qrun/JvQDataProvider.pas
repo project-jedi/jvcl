@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -36,6 +36,10 @@ Known Issues:
 unit JvQDataProvider;
 
 interface
+
+
+{$HPPEMIT '#define IInterface System::IInterface'}
+
 
 uses
   {$IFDEF MSWINDOWS}
@@ -2569,8 +2573,7 @@ end;
 
 function TJvBaseDataItemSubItems.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
-  Result := inherited GetInterface(IID, Obj)
-  {$IFDEF MSWINDOWS} or Succeeded(FItems.QueryInterface(IID, Obj)){$ENDIF};
+  Result := inherited GetInterface(IID, Obj) or Succeeded(FItems.QueryInterface(IID, Obj));
 end;
 
 //=== TJvCustomDataItemTextRenderer ==========================================
@@ -2884,9 +2887,7 @@ procedure TJvBaseDataItem.InitID;
 var
   G: TGUID;
 begin
-  {$IFDEF MSWINDOWS}
   CoCreateGuid(G);
-  {$ENDIF MSWINDOWS}
   FID := HexBytes(G, SizeOf(G));
 end;
 

@@ -20,8 +20,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-12-10
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -30,6 +28,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -640,10 +639,10 @@ resourcestring
   RsEDSOUnknownKeys = 'DSO unknown key %s';
 
 //=== Jvg3DColors.pas ========================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsEOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
-{$ENDIF USEJVCL}
+
 
 //=== JvGammaPanel.pas =======================================================
 resourcestring
@@ -661,32 +660,32 @@ resourcestring
   RsDefaultR = 'R : ---';
 
 //=== JvgAskListBox.pas ======================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsYes = 'yes';
   RsNo = 'no';
-{$ENDIF USEJVCL}
+
 
 //=== JvgButton.pas ==========================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsEErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
-{$ENDIF USEJVCL}
+
 
 //=== JvgCaption.pas =========================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsEOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
-{$ENDIF USEJVCL}
+
 
 //=== JvgCheckVersionInfoForm.pas ============================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsNoNewerVersionOfProgramAvailable = 'No newer version of program available';
-{$ENDIF USEJVCL}
+
 
 //=== JvgConstSysRequirements.pas ============================================
-{$IFDEF USEJVCL}
+
 resourcestring
   { RUSSIAN
   RsVideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
@@ -703,37 +702,37 @@ resourcestring
     'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
   RsSystemFont = 'In system small fonts should be established. Change to small fonts in Monitor Control Panel.';
   RsOSPlatform = 'The program requires %s or better.';
-{$ENDIF USEJVCL}
+
 
 //=== JvGenetic.pas ==========================================================
 resourcestring
   RsENoTest = 'TJvGenetic: OnTestMember must be assigned';
 
 //=== JvgExportComponents.pas ================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsEDataSetIsUnassigned = 'DataSet is unassigned';
   RsESaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
-{$ENDIF USEJVCL}
+
 
 //=== JvgHelpPanel.pas =======================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsHelp = ' help ';
   RsOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
-{$ENDIF USEJVCL}
+
 
 //=== JvgHint.pas ============================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsEOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
-{$ENDIF USEJVCL}
+
 
 //=== JvgHTTPVersionInfo.pas =================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsEUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
-{$ENDIF USEJVCL}
+
 
 //=== JvGIF.pas ==============================================================
 resourcestring
@@ -749,7 +748,7 @@ resourcestring
   RsEGIFVersion = 'Unknown GIF version';
 
 //=== JvgLogics.pas ==========================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsEqualTo = 'equal to';
   RsStartingWith = 'starting with';
@@ -759,39 +758,39 @@ resourcestring
   RsNotEmpty = 'not empty';
   RsStep = 'Step ';
   RsComments = 'Comments';
-{$ENDIF USEJVCL}
+
 
 //=== JvgMailSlots.pas =======================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsETJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
   RsETJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
   RsETJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
-{$ENDIF USEJVCL}
+
 
 //=== JvgProgress.pas ========================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsProgressCaption = 'Progress...[%d%%]';
-{$ENDIF USEJVCL}
+
 
 //=== JvgQPrintPreviewForm.pas ===============================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsPageOfPages = 'Page %d of %d';
-{$ENDIF USEJVCL}
+
 
 //=== JvGradientHeaderPanel.pas ==============================================
 resourcestring
   RsYourTextHereCaption = 'Put your text here ...';
 
 //=== JvgReport.pas ==========================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsOLELinkedObjectNotFound = 'OLE: Linked object not found.';
   RsErrorText = 'Error';
   RsErrorReadingComponent = 'Error reading component';
-{$ENDIF USEJVCL}
+
 
 //=== JvGridPreviewForm.pas ==================================================
 resourcestring
@@ -806,21 +805,21 @@ resourcestring
   RsPrintOptionsTimeFormat = 'h:nn am/pm';
 
 //=== JvgSingleInstance.pas ==================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsOneInstanceOfThisProgramIsAlreadyRu =
     'One instance of this program is already running. A second instance launch is not allowed.';
   RsSecondInstanceLaunchOfs = 'Second instance launch of %s';
-{$ENDIF USEJVCL}
+
 
 //=== JvgSmallFontsDefense.pas ===============================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
-{$ENDIF USEJVCL}
+
 
 //=== JvgUtils.pas ===========================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsERightBracketsNotFound = 'Right brackets not found';
   RsERightBracketHavntALeftOnePosd = 'Right bracket does not have a left one. Pos: %d';
@@ -828,10 +827,10 @@ resourcestring
   RsEDuplicateSignsAtPos = 'Duplicate signs at Pos: %d';
   RsEExpressionStringIsEmpty = 'Expression string is empty';
   RsEObjectMemoryLeak = 'object memory leak';
-{$ENDIF USEJVCL}
+
 
 //=== JvgXMLSerializer.pas ===================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   { RUSSIAN
   RsOpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
@@ -841,14 +840,14 @@ resourcestring
   RsOpenXMLTagNotFound = 'Open tag not found: <%s>';
   RsCloseXMLTagNotFound = 'Close tag not found: </%s>';
   RsUnknownProperty = 'Unknown property: %s';
-{$ENDIF USEJVCL}
+
 
 //=== JvHint.pas =============================================================
 resourcestring
   RsHintCaption = 'Hint';
 
 //=== JvHidControllerClass.pas ===============================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsUnknownLocaleIDFmt = 'Unknown Locale ID $%.4x';
   RsHIDP_STATUS_NULL = 'Device not plugged in';
@@ -878,7 +877,7 @@ resourcestring
   RsEDeviceCannotBeOpened = 'Device cannot be opened';
   RsEOnlyOneControllerPerProgram = 'Only one TJvHidDeviceController allowed per program';
   RsEHIDBooleanError = 'HID Error: a boolean function failed';
-{$ENDIF USEJVCL}
+
 
 //=== JvHLEditorPropertyForm.pas =============================================
 resourcestring
@@ -1818,6 +1817,7 @@ resourcestring
 //=== JvUrlListGrabber.pas ===================================================
 resourcestring
   RsENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
+  RsEGrabberNotStopped = 'The grabber is not stopped, you cannot change its URL.';
 
 //=== JvValidators.pas =======================================================
 resourcestring
@@ -1881,10 +1881,10 @@ resourcestring
   RsEUnexpectedStatement = 'Unexpected statement %s';
 
 //=== JvXPBar.pas ============================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsUntitled = 'untitled';
-{$ENDIF USEJVCL}
+
 
 //=== JvYearGrid.pas =========================================================
 resourcestring

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -24,13 +24,12 @@ Peter Thornqvist
 Oliver Giesen
 Gustavo Bianconi
 
-Last Modified: 2003-10-10
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -50,6 +49,21 @@ const
   MaxPixelCount = 32767;
 
 type
+  
+
+  // Base class for persistent properties that can show events.
+  // By default, Delhpi and BCB don't show the events of a class
+  // derived from TPersistent unless it also derives from
+  // TComponent. However, up until version 5, you couldn't have
+  // a Component as a Sub Component of another one, thus preventing
+  // from having events for a sub property.
+  // The design time editor associated with TJvPersistent will display
+  // the events, thus mimicking a Sub Component.
+  
+  TJvPersistent = class(TComponent)
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
   
 
   TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers,
@@ -264,7 +278,7 @@ type
   
   
   THintString = WideString;
-  THintStringList = TWStringList;
+  THintStringList = TWideStringList;
   
 
 type
@@ -384,7 +398,110 @@ type
   PCaptionChar = PWideChar;
 
 
+type
+  // equivalent of TPoint, but that can be a published property for BCB
+  TJvPoint = class (TPersistent)
+  private
+    FY: Longint;
+    FX: Longint;
+  published
+    property X: Longint read FX write FX;
+    property Y: Longint read FY write FY;
+  end;
+
+  // equivalent of TRect, but that can be a published property for BCB
+  TJvRect = class (TPersistent)
+  private
+    FTopLeft: TJvPoint;
+    FBottomRight: TJvPoint;
+    function GetBottom: Integer;
+    function GetLeft: Integer;
+    function GetRight: Integer;
+    function GetTop: Integer;
+    procedure SetBottom(const Value: Integer);
+    procedure SetLeft(const Value: Integer);
+    procedure SetRight(const Value: Integer);
+    procedure SetTop(const Value: Integer);
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    property TopLeft    : TJvPoint read FTopLeft     write FTopLeft;
+    property BottomRight: TJvPoint read FBottomRight write FBottomRight;
+  published
+    property Left  : Integer read GetLeft   write SetLeft;
+    property Top   : Integer read GetTop    write SetTop;
+    property Right : Integer read GetRight  write SetRight;
+    property Bottom: Integer read GetBottom write SetBottom;
+  end;
+
 implementation
+
+
+constructor TJvPersistent.Create(AOwner: TComponent);
+begin
+  inherited;
+
+  SetSubComponent(True);
+  Name := 'SubComponent';
+end;
+
+
+{ TJvRect }
+
+constructor TJvRect.Create;
+begin
+  inherited;
+  FTopLeft     := TJvPoint.Create;
+  FBottomRight := TJvPoint.Create;
+end;
+
+destructor TJvRect.Destroy;
+begin
+  FTopLeft.Free;
+  FBottomRight.Free;
+  inherited;
+end;
+
+function TJvRect.GetBottom: Integer;
+begin
+  Result := FBottomRight.Y;
+end;
+
+function TJvRect.GetLeft: Integer;
+begin
+  Result := FTopLeft.X;
+end;
+
+function TJvRect.GetRight: Integer;
+begin
+  Result := FBottomRight.X;
+end;
+
+function TJvRect.GetTop: Integer;
+begin
+  Result := FTopLeft.Y;
+end;
+
+procedure TJvRect.SetBottom(const Value: Integer);
+begin
+  FBottomRight.Y := Value;
+end;
+
+procedure TJvRect.SetLeft(const Value: Integer);
+begin
+  FTopLeft.X := Value;
+end;
+
+procedure TJvRect.SetRight(const Value: Integer);
+begin
+  FBottomRight.X := Value;
+end;
+
+procedure TJvRect.SetTop(const Value: Integer);
+begin
+  FTopLeft.Y := Value;
+end;
 
 end.
 

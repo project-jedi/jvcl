@@ -30,7 +30,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvQID3v2;
+unit JvQId3v2;
 
 interface
 

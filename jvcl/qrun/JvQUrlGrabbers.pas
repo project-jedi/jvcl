@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-03-20
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -82,6 +81,7 @@ type
     property FileName;
     property OutputMode;
     property Agent;
+    property Url;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;
@@ -125,6 +125,7 @@ type
     property FileName;
     property OutputMode;
     property Agent;
+    property Url;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;
@@ -184,6 +185,7 @@ type
     property FileName;
     property OutputMode;
     property Agent;
+    property Url;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -14,19 +14,18 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvValidators.PAS, released on 2003-01-01.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com] .
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net] .
 Portions created by Peter Thörnqvist are Copyright (C) 2003 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2003-01-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -100,8 +99,6 @@ type
 
     function GetParentComponent: TComponent; override;
     function HasParent: Boolean; override;
-
-
     property Value: Variant read GetValidationPropertyValue;
   published
     property Valid: boolean read GetValid write SetValid;
@@ -164,6 +161,29 @@ type
     procedure Validate; override;
   published
     property OnValidate: TJvCustomValidateEvent read FOnValidate write FOnValidate;
+  end;
+  // compares the properties of two controls
+  // if CompareToControl implements the IJvValidationProperty interface, the value
+  // to compare is taken from GetValidationPropertyValue, otherwise RTTI is used to get the
+  // property value
+  TJvControlsCompareValidator = class(TJvBaseValidator)
+  private
+    FCompareToControl:TControl;
+    FCompareToProperty:String;
+    FOperator:TJvValidateCompareOperator;
+    FAllowNull: boolean;
+  protected
+    procedure Validate; override;
+    function GetPropertyValueToCompare:Variant;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+
+  published
+    property CompareToControl:TControl read FCompareToControl write FCompareToControl;
+    property CompareToProperty:string read FCompareToProperty write FCompareToProperty;
+    property Operator: TJvValidateCompareOperator read FOperator write FOperator;
+    property AllowNull:boolean read FAllowNull write FAllowNull default True;
   end;
 
   TJvValidateFailEvent = procedure(Sender: TObject; BaseValidator: TJvBaseValidator; var Continue: boolean) of object;
@@ -233,7 +253,10 @@ uses
   Variants,
   
   TypInfo,
-  JclUnicode, // for reg exp support
+  
+  
+  JclUnicode,
+  
   JvQTypes, JvQResources;
 
 const
@@ -335,6 +358,7 @@ end;
 function TJvBaseValidator.GetValidationPropertyValue: Variant;
 var
   ValProp: IJvValidationProperty;
+  PropInfo:PPropInfo;
 begin
   Result := NULL;
   if (FControlToValidate <> nil) then
@@ -342,7 +366,11 @@ begin
     if Supports(FControlToValidate, IJvValidationProperty, ValProp) then
       Result := ValProp.GetValidationPropertyValue
     else if (FPropertyToValidate <> '') then
-      Result := GetPropValue(FControlToValidate, FPropertyToValidate, false);
+    begin
+      PropInfo := GetPropInfo(FControlToValidate,FPropertyToValidate);
+      if (PropInfo <> nil) and (PropInfo^.GetProc <> nil) then
+        Result := GetPropValue(FControlToValidate, FPropertyToValidate, false);
+    end;
   end;
 end;
 
@@ -514,6 +542,68 @@ begin
   begin
     VR := VarCompareValue(GetValidationPropertyValue, MaximumValue);
     Valid := (VR = vrLessThan) or (VR = vrEqual);
+  end;
+end;
+
+{ TJvControlsCompareValidator }
+
+constructor TJvControlsCompareValidator.Create(AOwner: TComponent);
+begin
+  inherited;
+  FAllowNull := True;
+end;
+
+function TJvControlsCompareValidator.GetPropertyValueToCompare: Variant;
+var
+  ValProp: IJvValidationProperty;
+  PropInfo:PPropInfo;
+begin
+  Result := NULL;
+  if (FCompareToControl <> nil) then
+  begin
+    if Supports(FCompareToControl, IJvValidationProperty, ValProp) then
+      Result := ValProp.GetValidationPropertyValue
+    else if (FCompareToProperty <> '') then
+    begin
+      PropInfo := GetPropInfo(FCompareToControl,FCompareToProperty);
+      if (PropInfo <> nil) and (PropInfo^.GetProc <> nil) then
+        Result := GetPropValue(FCompareToControl, FCompareToProperty, false);
+    end;
+  end;
+end;
+
+procedure TJvControlsCompareValidator.Notification(
+  AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = CompareToControl) then
+    CompareToControl := nil;
+end;
+
+procedure TJvControlsCompareValidator.Validate;
+var
+  Val1, Val2:Variant;
+  VR: TVariantRelationship;
+begin
+  Val1 := GetValidationPropertyValue;
+  Val2 := GetPropertyValueToCompare;
+  if not AllowNull and ((TVarData(Val1).VType in [varEmpty,varNull]) or (TVarData(Val2).VType in [varEmpty,varNull])) then
+  begin
+    Valid := false;
+    Exit;
+  end;
+  VR := VarCompareValue(Val1, Val2);
+  case Operator of
+    vcoLessThan:
+      Valid := VR = vrLessThan;
+    vcoLessOrEqual:
+      Valid := (VR = vrLessThan) or (VR = vrEqual);
+    vcoEqual:
+      Valid := (VR = vrEqual);
+    vcoGreaterOrEqual:
+      Valid := (VR = vrGreaterThan) or (VR = vrEqual);
+    vcoGreaterThan:
+      Valid := (VR = vrGreaterThan);
   end;
 end;
 
@@ -729,10 +819,13 @@ begin
   TJvBaseValidator.RegisterBaseValidator('Range Validator', TJvRangeValidator);
   TJvBaseValidator.RegisterBaseValidator('Regular Expression Validator', TJvRegularExpressionValidator);
   TJvBaseValidator.RegisterBaseValidator('Custom Validator', TJvCustomValidator);
+  TJvBaseValidator.RegisterBaseValidator('Controls Compare Validator', TJvControlsCompareValidator);
 end;
 
+
 initialization
-//  RegisterClasses([TJvValidators, TJvValidationSummary]);
+  // (p3) do NOT touch! This is required to make the registration work!!!
+  RegisterBaseValidators;
 
 finalization
   FinalizeUnit(sUnitName);

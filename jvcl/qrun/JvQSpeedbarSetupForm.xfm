@@ -3,8 +3,8 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
   Top = 121
   Width = 436
   Height = 272
-  VertScrollBar.Range = 260
-  HorzScrollBar.Range = 425
+  HorzScrollBar.Range = 428
+  VertScrollBar.Range = 269
   ActiveControl = SectionList
   BorderIcons = [biSystemMenu]
   BorderStyle = fbsSingle
@@ -48,7 +48,7 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  PixelsPerInch = 96
+  PixelsPerInch = 113
   object Bevel1: TBevel
     Left = 4
     Top = 4
@@ -59,8 +59,8 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
   object ButtonsLabel: TLabel
     Left = 146
     Top = 11
-    Width = 96
-    Height = 13
+    Width = 94
+    Height = 18
     Caption = '&Available buttons:    '
     FocusControl = ButtonsList
   end
@@ -68,14 +68,14 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
     Left = 12
     Top = 11
     Width = 65
-    Height = 13
+    Height = 18
     Caption = '&Categories:    '
   end
   object HintLabel: TLabel
-    Left = 0
-    Top = 231
+    Left = 3
+    Top = 227
     Width = 425
-    Height = 29
+    Height = 42
     AutoSize = False
     Caption = 
       'To add command buttons, drag and drop buttons onto the JvSpeedba' +

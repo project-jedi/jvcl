@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,8 +20,6 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2004-02-05
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -41,6 +39,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -333,7 +332,12 @@ type
 
 implementation
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvSimImages.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvSimImages.res}
+{$ENDIF LINUX}
 
 // general bin procedure
 

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2002-09-29
-
 You may retrieve the latest version of this file at the Project JEDI home page,
 located at http://www.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,17 +35,15 @@ interface
 
 uses
   SysUtils, Classes, SyncObjs, QConsts,
-  {$IFDEF USEJVCL}
+  
   JvQComponent,
-  {$ENDIF USEJVCL}
+  
   JvQMTThreading, JvQMTConsts, JvQMTData, JvQMTSync, JvQMTSyncMon;
 
 type
-  {$IFDEF USEJVCL}
+  
   TJvMTComponent = class(TJvComponent);
-  {$ELSE}
-  TJvMTComponent = class(TComponent);
-  {$ENDIF USEJVCL}
+  
   TJvMTSingleThread = class(TMTThread);
   TJvMTThread = class;
 
@@ -247,18 +244,12 @@ type
   end;
 
 implementation
-{$IFDEF USEJVCL}
+
 uses
   JvQResources;
-{$ENDIF USEJVCL}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsENoThreadManager = 'No ThreadManager specified';
-  RsEOperatorNotAvailable = 'Operation not available while thread is active';
-  RsECannotChangePropertySection = 'Cannot change property of active section';
-  RsECannotChangePropertyBuffer = 'Cannot change property of active buffer';
-{$ENDIF USEJVCL}
+
+
 
 constructor TJvMTManager.Create(aOwner: TComponent);
 begin

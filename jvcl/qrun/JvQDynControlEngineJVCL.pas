@@ -27,16 +27,16 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
+
 
 unit JvQDynControlEngineJVCL;
 
 interface
 
 uses
-  Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
-  Buttons, Dialogs, FileCtrl,
-  JvQMaskEdit, JvQDateTimePicker, JvQBitBtn, JvQCheckBox, JvQBaseEdits,
+  Classes, QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms,
+  QGraphics, QButtons, QDialogs, QFileCtrls,
+  JvQMaskEdit, {JvQDateTimePicker,} JvQBitBtn, JvQCheckBox, JvQBaseEdits,
   JvQLabel, JvQListBox, JvQMemo, JvQPanel, JvQRadioGroup, JvQToolEdit,
   JvQScrollBox, JvQStaticText, JvQComboBox, JvQImage, JvQSpin,
   JvQDynControlEngine, JvQDynControlEngineIntf;

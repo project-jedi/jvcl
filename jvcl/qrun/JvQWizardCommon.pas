@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,13 +21,13 @@ All Rights Reserved.
 Contributor(s):
 Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
 
-Last Modified: 2003-07-11
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
+
 {*****************************************************************************
   Purpose:   All common functions and procedures which used by all components
 
@@ -79,15 +79,12 @@ procedure JvWizardDrawImage(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect;
   Align: TJvWizardImageAlignment; ALayout: TJvWizardImageLayout);
 
 implementation
-{$IFDEF USEJVCL}
+
 uses
   JvQResources;
-{$ENDIF USEJVCL}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsETilingError = 'Tiling only works on images with dimensions > 0';
-{$ENDIF USEJVCL}
+
+
 
 
 const

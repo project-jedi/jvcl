@@ -30,7 +30,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvQID3v1;
+unit JvQId3v1;
 
 interface
 
@@ -105,7 +105,7 @@ implementation
 
 uses
   Math,
-  JvQID3v2Types, JvQTypes, JvQResources;
+  JvQId3v2Types, JvQTypes, JvQResources;
 
 const
   CID3v1Tag = 'TAG';  { do not change case }

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -19,13 +19,16 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2004-02-02
+Contributors:
+Michael Fritz (MenuLocation)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+* Using a divider as RecentMenu when MenuLocation = mruChild doesn't work
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -34,7 +37,7 @@ unit JvQMRUManager;
 interface
 
 uses
-  SysUtils, Classes, Menus, 
+  SysUtils, Classes, Menus,
   JvQAppStorage, JvQComponent, JvQFormPlacement;
 
 type
@@ -54,6 +57,7 @@ type
 
   TAccelDelimiter = (adTab, adSpace);
   TRecentMode = (rmInsert, rmAppend);
+  TMenuLocation = (mruChild, mruSibling);
 
   TJvRecentStrings = class(TStringList)
   private
@@ -92,6 +96,7 @@ type
     FOnBeforeUpdate: TNotifyEvent;
     FOnItemInfo: TGetItemInfoEvent;
     FDuplicates: TDuplicates;
+    FMenuLocation: TMenuLocation;
     procedure ListChanged(Sender: TObject);
     procedure ClearRecentMenu;
     procedure SetRecentMenu(Value: TMenuItem);
@@ -115,6 +120,7 @@ type
     procedure SetDuplicates(const Value: TDuplicates);
     procedure DoDuplicateFixUp;
     function GetStrings: TStrings;
+    procedure SetMenuLocation(const Value: TMenuLocation);
   protected
     procedure Change; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -140,6 +146,7 @@ type
     procedure SaveToAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
     procedure Load;
     procedure Save;
+    function IsMenuEnabled:boolean;
     property Strings: TStrings read GetStrings;
   published
     // Duplicates works just as for TStrings, but the list doesn't need to be sorted
@@ -148,6 +155,7 @@ type
     property AutoEnable: Boolean read FAutoEnable write SetAutoEnable default True;
     property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate default True;
     property Capacity: Integer read GetCapacity write SetCapacity default 10;
+    property MenuLocation: TMenuLocation read FMenuLocation write SetMenuLocation default mruChild;
     property Mode: TRecentMode read GetMode write SetMode default rmInsert;
     property RemoveOnSelect: Boolean read FRemoveOnSelect write FRemoveOnSelect default False;
     property IniStorage: TJvFormPlacement read GetStorage write SetStorage;
@@ -196,6 +204,7 @@ begin
   FAutoEnable := True;
   FShowAccelChar := True;
   FStartAccel := 1;
+  FMenuLocation := mruChild;
 end;
 
 destructor TJvMRUManager.Destroy;
@@ -286,8 +295,13 @@ begin
   if FAutoEnable <> Value then
   begin
     FAutoEnable := Value;
-    if Assigned(FRecentMenu) and FAutoEnable then
-      FRecentMenu.Enabled := FRecentMenu.Count > 0;
+    if Assigned(FRecentMenu) then
+    begin
+     if FAutoEnable then
+        FRecentMenu.Enabled := IsMenuEnabled
+     else
+       FRecentMenu.Enabled := true;
+    end;
   end;
 end;
 
@@ -351,7 +365,15 @@ procedure TJvMRUManager.AddMenuItem(Item: TMenuItem);
 begin
   if Assigned(Item) then
   begin
-    FRecentMenu.Add(Item);
+    if FMenuLocation = mruSibling then
+    begin
+      if FRecentMenu.HasParent and (FRecentMenu.Parent.MenuIndex >= 0) then
+        FRecentMenu.Parent.Insert(FRecentMenu.MenuIndex + FItems.Count + 1, Item)
+      else
+        FRecentMenu.Add(Item);
+    end
+    else
+      FRecentMenu.Add(Item);
     FItems.Add(Item);
   end;
 end;
@@ -386,7 +408,7 @@ end;
 
 procedure TJvMRUManager.UpdateRecentMenu;
 const
-  AccelDelimChars: array [TAccelDelimiter] of Char = (#9, ' ');
+  AccelDelimChars: array[TAccelDelimiter] of Char = (#9, ' ');
 var
   I: Integer;
   L: Cardinal;
@@ -400,11 +422,13 @@ begin
   DoBeforeUpdate;
   if Assigned(FRecentMenu) then
   begin
-    if (Strings.Count > 0) and (FRecentMenu.Count > 0) then
+    if ((Strings.Count > 0) and (FRecentMenu.Count > 0) and (MenuLocation = mruChild)) then
       AddMenuItem(NewLine);
     for I := 0 to Strings.Count - 1 do
     begin
       if (FSeparateSize > 0) and (I > 0) and (I mod FSeparateSize = 0) then
+        AddMenuItem(NewLine)
+      else if (I = 0) and (MenuLocation = mruSibling) and (FRecentMenu.Count = 0) then
         AddMenuItem(NewLine);
       S := Strings[I];
       ShortCut := scNone;
@@ -417,8 +441,7 @@ begin
         L := Cardinal(I) + FStartAccel;
         if L < 10 then
           C := '&' + Char(Ord('0') + L)
-        else
-        if L <= (Ord('Z') + 10) then
+        else if L <= (Ord('Z') + 10) then
           C := '&' + Char(L + Ord('A') - 10)
         else
           C := ' ';
@@ -430,7 +453,7 @@ begin
     end;
     DoAfterUpdate;
     if AutoEnable then
-      FRecentMenu.Enabled := FRecentMenu.Count > 0;
+      FRecentMenu.Enabled := IsMenuEnabled;
   end;
 end;
 
@@ -441,12 +464,14 @@ begin
   while FItems.Count > 0 do
   begin
     Item := TMenuItem(FItems[0]);
-    if Assigned(FRecentMenu) and (FRecentMenu.IndexOf(Item) >= 0) then
-      Item.Free;
     FItems.Remove(Item);
+    // (p3) it doesn't matter if the item is in FRecentMenu or not - it still needs to be freed
+    // this also avoids duplicates when MenuLocation = mruSibling 
+//    if Assigned(FRecentMenu) and (FRecentMenu.IndexOf(Item) >= 0) then
+    Item.Free;
   end;
   if Assigned(FRecentMenu) and AutoEnable then
-    FRecentMenu.Enabled := FRecentMenu.Count > 0;
+    FRecentMenu.Enabled := IsMenuEnabled;
 end;
 
 procedure TJvMRUManager.SetRecentMenu(Value: TMenuItem);
@@ -518,10 +543,10 @@ begin
       [Path, Format(siRecentItem, [Index])]), RecentName);
     if UserData = 0 then
       AppStorage.DeleteValue(AppStorage.ConcatPaths(
-      [Path, Format(siRecentData, [Index])]))
+        [Path, Format(siRecentData, [Index])]))
     else
       AppStorage.WriteInteger(AppStorage.ConcatPaths(
-      [Path, Format(siRecentData, [Index])]), UserData);
+        [Path, Format(siRecentData, [Index])]), UserData);
   end;
 end;
 
@@ -714,6 +739,21 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+procedure TJvMRUManager.SetMenuLocation(const Value: TMenuLocation);
+begin
+  if FMenuLocation <> Value then
+  begin
+    FMenuLocation := Value;
+    UpdateRecentMenu;
+  end;
+end;
+
+function TJvMRUManager.IsMenuEnabled: boolean;
+begin
+  Result := ((MenuLocation = mruChild) and (FRecentMenu.Count > 0)) or
+    ((MenuLocation = mruSibling) and (Strings.Count > 0));
 end;
 
 end.

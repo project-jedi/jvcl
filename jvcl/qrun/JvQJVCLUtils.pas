@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -19,13 +19,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2003-10-25
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -234,13 +233,6 @@ function AppMinimized: Boolean;
 function IsForegroundTask: Boolean;
 
 
-{ Works like InputQuery but displays 2 edits. If PasswordChar <> #0, the second edit's PasswordChar is set }
-function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
-  var AValue1, AValue2:string; PasswordChar:char=#0):boolean;
-
-{ Works like InputQuery but set the edit's PasswordChar to PasswordChar. If PasswordChar = #0, works exactly like InputQuery }
-function InputQueryPassword(const ACaption, APrompt: string; PasswordChar:char; var Value: string): Boolean;
-
 { returns the sum of pc.Left, pc.Width and piSpace}
 function ToRightOf(const pc: TControl; piSpace: Integer = 0): Integer;
 { sets the top of pc to be in the middle of pcParent }
@@ -312,10 +304,9 @@ function IniStrToStr(const Str: string): string;
 // Ini Utilitie Functions
 // Added by RDB
 
-function StringToFontStyles(const Styles: string): TFontStyles;
 function FontStylesToString(Styles: TFontStyles): string;
-function FontToString(Font: TFont): string;
-function StringToFont(const Str: string) : TFont;
+function StringToFontStyles(const Styles: string): TFontStyles;
+
 function RectToStr(Rect: TRect): string;
 function StrToRect(const Str: string; const Def: TRect): TRect;
 function PointToStr(P: TPoint): string;
@@ -492,7 +483,14 @@ procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 
 
 function GetAppHandle: HWND;
-
+// DrawArrow draws a standard arrow in any of four directions and with the specifed color.
+// Rect is the area to draw the arrow in and also defines the size of the arrow
+// Note that this procedure might shrink Rect so that it's width and height is always
+// the same and the width and height are always even, i.e calling with
+// Rect(0,0,12,12) (odd) is the same as calling with Rect(0,0,11,11) (even)
+// Direction defines the direction of the arrow. If Direction is akLeft, the arrow point is
+// pointing to the left
+procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
 
 implementation
 
@@ -1786,15 +1784,15 @@ begin
     if Not (IsRectEmpty(ARect) and
            (GetMapMode(Canvas.Handle) = MM_TEXT) ) then
     begin
-      if Colors < 2 then
+      StartColor := ColorToRGB(StartColor);
+      EndColor := ColorToRGB(EndColor);
+      if (Colors < 2) or (StartColor = EndColor) then
       begin
         Brush := CreateSolidBrush(ColorToRGB(StartColor));
         FillRect(Canvas.Handle, ARect, Brush);
         DeleteObject(Brush);
         Exit;
       end;
-      StartColor := ColorToRGB(StartColor);
-      EndColor := ColorToRGB(EndColor);
       case Direction of
         fdTopToBottom, fdLeftToRight:
         begin
@@ -2045,12 +2043,22 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+var
+  OLEDragCursorsLoaded: Boolean = False;
+
 function LoadOLEDragCursors: Boolean;
 const
   cOle32DLL: PChar = 'ole32.dll';
 var
   Handle: Cardinal;
 begin
+  if OLEDragCursorsLoaded then
+  begin
+    Result := True;
+    Exit;
+  end;
+  OLEDragCursorsLoaded := True;
+
   Result := False;
   if Screen <> nil then
   begin
@@ -2358,114 +2366,6 @@ end;
 {$ENDIF LINUX}
 
 
-
-function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
-  var AValue1, AValue2:string; PasswordChar:char=#0):boolean;
-var
-  AForm:TForm;
-  ALabel1, ALabel2:TLabel;
-  AEdit1, AEdit2:TEdit;
-  ASize, i:integer;
-begin
-  Result := false;
-  AForm := CreateMessageDialog(Prompt1,mtCustom,[mbOK	,mbCancel]);
-  ASize := 0;
-  if AForm <> nil then
-  try
-    AForm.Caption := ACaption;
-    ALabel1 := AForm.FindComponent('Message') as TLabel;
-    for i := 0 to AForm.ControlCount - 1 do
-      if AForm.Controls[i] is TButton then
-        TButton(AForm.Controls[i]).Anchors := [akRight, akBottom];
-    if ALabel1 <> nil then
-    begin
-      AEdit1 := TEdit.Create(AForm);
-      AEdit1.Left := ALabel1.Left;
-      AEdit1.Width := AForm.ClientWidth - AEdit1.Left * 2;
-      AEdit1.Top := ALabel1.Top + ALabel1.Height + 2;
-      AEdit1.Parent := AForm;
-      AEdit1.Anchors := [akLeft, akTop, akRight];
-      AEdit1.Text := AValue1;
-      ALabel1.Caption := Prompt1;
-      ALabel1.FocusControl := AEdit1;
-      Inc(ASize, AEdit1.Height + 2);
-
-      ALabel2 := TLabel.Create(AForm);
-      ALabel2.Left := ALabel1.Left;
-      ALabel2.Top := AEdit1.Top + AEdit1.Height + 7;
-      ALabel2.Caption := Prompt2;
-      ALabel2.Parent := AForm;
-      Inc(ASize, ALabel2.Height + 7);
-
-      AEdit2 := TEdit.Create(AForm);
-      AEdit2.Left := ALabel1.Left;
-      AEdit2.Width := AForm.ClientWidth - AEdit2.Left * 2;
-      AEdit2.Top := ALabel2.Top + ALabel2.Height + 2;
-      AEdit2.Parent := AForm;
-      AEdit2.Anchors := [akLeft, akTop, akRight];
-      AEdit2.Text := AValue1;
-      if PasswordChar <> #0 then
-        AEdit2.PasswordChar := PasswordChar;
-      ALabel2.FocusControl := AEdit2;
-
-      Inc(ASize, AEdit2.Height + 8);
-      AForm.ClientHeight := AForm.ClientHeight + ASize;
-      AForm.ClientWidth := 320;
-      AForm.ActiveControl := AEdit1;
-      Result := AForm.ShowModal = mrOK;
-      if Result then
-      begin
-        AValue1 := AEdit1.Text;
-        AValue2 := AEdit2.Text;
-      end;
-    end;
-  finally
-    AForm.Free;
-  end;
-end;
-
-function InputQueryPassword(const ACaption, APrompt: string; PasswordChar:char; var Value: string): Boolean;
-var
-  AForm:TForm;
-  ALabel:TLabel;
-  AEdit:TEdit;
-  ASize:integer;
-begin
-  Result := false;
-  AForm := CreateMessageDialog(APrompt, mtCustom, [mbOK ,mbCancel]);
-  if AForm <> nil then
-  try
-    AForm.Caption := ACaption;
-    ALabel := AForm.FindComponent('Message') as TLabel;
-    for ASize := 0 to AForm.ControlCount - 1 do
-      if AForm.Controls[ASize] is TButton then
-        TButton(AForm.Controls[ASize]).Anchors := [akRight, akBottom];
-    ASize := 0;
-    if ALabel <> nil then
-    begin
-      AEdit := TEdit.Create(AForm);
-      AEdit.Left := ALabel.Left;
-      AEdit.Width := AForm.ClientWidth - AEdit.Left * 2;
-      AEdit.Top := ALabel.Top + ALabel.Height + 2;
-      AEdit.Parent := AForm;
-      AEdit.Anchors := [akLeft, akTop, akRight];
-      AEdit.Text := Value;
-      AEdit.PasswordChar := PasswordChar;
-      ALabel.Caption := APrompt;
-      ALabel.FocusControl := AEdit;
-      Inc(ASize, AEdit.Height + 2);
-
-      AForm.ClientHeight := AForm.ClientHeight + ASize;
-      AForm.ClientWidth := 320;
-      AForm.ActiveControl := AEdit;
-      Result := AForm.ShowModal = mrOK;
-      if Result then
-        Value := AEdit.Text;
-    end;
-  finally
-    AForm.Free;
-  end;
-end;
 
 procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of
   TControl);
@@ -4935,50 +4835,8 @@ begin
     Include(Result, fsStrikeOut);
 end;
 
-function FontToString(Font: TFont): string;
-begin
-  with Font do
-    Result := Format('%s,%d,%s,%d,%s,%d', [Name, Size,
-      FontStylesToString(Style), Ord(Pitch), ColorToString(Color),Charset]);
-end;
 
 
-Function StringToFont(const Str: string): TFont;
-const
-  Delims = [',', ';'];
-var
-  Pos: Integer;
-  I: Byte;
-  S: string;
-begin
-  Result := TFont.Create;
-  try
-    Pos := 1;
-    I := 0;
-    while Pos <= Length(Str) do
-    begin
-      Inc(I);
-      S := Trim(ExtractSubstr(Str, Pos, Delims));
-      case I of
-        1:
-          result.Name := S;
-        2:
-          result.Size := StrToIntDef(S, result.Size);
-        3:
-          result.Style := StringToFontStyles(S);
-        4:
-          result.Pitch := TFontPitch(StrToIntDef(S, Ord(result.Pitch)));
-        5:
-          result.Color := StringToColor(S);
-        {$IFDEF COMPILER3_UP}
-        6:
-          result.Charset := TFontCharset(StrToIntDef(S, result.Charset));
-        {$ENDIF}
-      end;
-    end;
-  finally
-  end;
-end;
 
 function RectToStr(Rect: TRect): string;
 begin
@@ -5054,7 +4912,53 @@ begin
   end;
 end;
 
-
+procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
+var
+  i,Size: integer;
+begin
+  Size := Rect.Right - Rect.Left;
+  if Odd(Size) then
+  begin
+    Dec(Size);
+    Dec(Rect.Right);
+  end;
+  Rect.Bottom := Rect.Top + Size;
+  Canvas.Pen.Color := Color;
+  case Direction of
+    akLeft:
+      begin
+        for i := 0 to Size div 2 do
+        begin
+          Canvas.MoveTo(Rect.Right - i, Rect.Top + i);
+          Canvas.LineTo(Rect.Right - i, Rect.Bottom - i);
+        end;
+      end;
+    akRight:
+      begin
+        for i := 0 to Size div 2 do
+        begin
+          Canvas.MoveTo(Rect.Left + i, Rect.Top + i);
+          Canvas.LineTo(Rect.Left + i, Rect.Bottom - i);
+        end;
+      end;
+    akTop:
+      begin
+        for i := 0 to Size div 2 do
+        begin
+          Canvas.MoveTo(Rect.Left + i, Rect.Bottom - i);
+          Canvas.LineTo(Rect.Right - i, Rect.Bottom - i);
+        end;
+      end;
+    akBottom:
+      begin
+        for i := 0 to Size div 2 do
+        begin
+          Canvas.MoveTo(Rect.Left + i, Rect.Top + i);
+          Canvas.LineTo(Rect.Right - i, Rect.Top + i);
+        end;
+      end;
+  end;
+end;
 
 initialization
   InitScreenCursors;

@@ -21,9 +21,7 @@ All Rights Reserved.
 
 Contributor(s):
   Polaris Software
-  Peter Thornqvist [peter3@peter3.com]
-
-Last Modified: 2003-10-19
+  Peter Thornqvist [peter3 at sourceforge dot net]
 
 Changes:
 2003-10-19:
@@ -34,6 +32,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -59,7 +58,7 @@ type
   TJvDropDownMenuPos = (dmpBottom, dmpRight);
   TJvButtonState = (rbsUp, rbsDisabled, rbsDown, rbsExclusive, rbsInactive);
 
-
+  
   TButtonStyle = JvQThemes.TButtonStyle;
   
 
@@ -281,7 +280,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    
+
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseEnter;
@@ -498,6 +497,7 @@ type
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
+  NullHandle = nil;
 
 var
   // (rom) changed to var
@@ -801,7 +801,7 @@ begin
       be used as a dock client. }
     NeedRepaint :=
       
-      FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = nil));
+      FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = NullHandle));
 
     inherited MouseEnter(Control); // set MouseOver
 

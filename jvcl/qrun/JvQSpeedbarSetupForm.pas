@@ -40,7 +40,7 @@ uses
   Types, QGraphics, QControls, QForms, QStdCtrls,
   QGrids, QExtCtrls, QWindows,
   
-  JvQConsts, JvQSpeedBar, JvQSpeedButton, JvQComponent;
+  JvQConsts, JvQSpeedbar, JvQSpeedButton, JvQComponent;
 
 type
   TJvSpeedbarSetupWindow = class(TJvForm)
@@ -224,7 +224,7 @@ begin
   if FSpeedbar <> Value then
   begin
     if FSpeedbar <> nil then
-      FSpeedbar.SetEditing(0);
+      FSpeedbar.SetEditing(nil);
     FSpeedbar := Value;
     if FSpeedbar <> nil then
     begin
@@ -271,7 +271,7 @@ begin
   FButton.Free;
   FButton := nil;
   if FSpeedbar <> nil then
-    FSpeedbar.SetEditing(0);
+    FSpeedbar.SetEditing(nil);
   FSpeedbar := nil;
 end;
 
@@ -290,7 +290,8 @@ begin
     if Row < FSpeedbar.SectionCount then
       DrawCellText(Sender as TDrawGrid, Col, Row,
         FSpeedbar.Sections[Row].Caption, Rect, taLeftJustify, vaCenterJustify,
-        TDrawGrid(Sender).IsRightToLeft);
+        false);
+//        TDrawGrid(Sender).IsRightToLeft);
 end;
 
 procedure TJvSpeedbarSetupWindow.ButtonsListMouseDown(Sender: TObject;
@@ -402,7 +403,9 @@ var
 begin
   I := CurrentSection;
   if (I >= 0) and (Row < FSpeedbar.ItemsCount(I)) then
-    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage, TDrawGrid(Sender).IsRightToLeft);
+    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage,
+     false);
+     //TDrawGrid(Sender).IsRightToLeft);
 end;
 
 procedure TJvSpeedbarSetupWindow.CloseBtnClick(Sender: TObject);
@@ -412,7 +415,7 @@ end;
 
 procedure TJvSpeedbarSetupWindow.HelpBtnClick(Sender: TObject);
 begin
-  Application.HelpContext(HelpContext);
+  Application.ContextHelp(HelpContext);
 end;
 
 procedure TJvSpeedbarSetupWindow.FormShow(Sender: TObject);

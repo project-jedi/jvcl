@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com], Antoine Potten [jvcl@antp.be]
 
-Last Modified: 2002-12-08
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,8 +35,7 @@ unit JvQZoom;
 interface
 
 uses
-  SysUtils, Classes,
-  Types, QGraphics, QControls, QForms, QExtCtrls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   JvQComponent;
 
 type
@@ -171,8 +169,7 @@ begin
     control's device context
     Calling PaintWindow will lock the canvas and call Paint
   }
-//  PaintWindow(Canvas.Handle);
-  Repaint;
+  PaintWindow(Canvas.Handle);
 end;
 
 procedure TJvZoom.PaintZoom;
