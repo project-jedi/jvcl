@@ -43,7 +43,7 @@ translation tool installed and want to use it with the JVCL. }
 {.$DEFINE USE_DXGETTEXT}
 
 { Enable this define if you use/have QuickReport }
-{.$DEFINE JVCL_UseQuickReport}
+{$DEFINE JVCL_UseQuickReport}
 
 { Enable this define if you have QReport 4 installed. This will require qr4rund7 instead
 of qrpt. NB! JVCL_UseQuickReport must also be defined}
@@ -92,3 +92,39 @@ OLE automation calls (for VCL only). }
 which revision, date and filename the unit has. }
 {.$DEFINE UNITVERSIONING}
 
+// *********************************************************************
+// Start Definition of Third Party Components
+// *********************************************************************
+
+{ Activates SM-Export Wrapper Components (in DBActions) 
+For further informations have a look at http://www.scalabium.com 
+ATTENTION : 
+BEFORE YOU ACTIVATE THIS OPTION YOU MUST CHANGE THE 
+SMEXPORT PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
+{.$DEFINE USE_3RDPARTY_SMEXPORT}
+
+{ Activates SM-Import Wrapper Components (in DBActions)
+For further informations have a look at http://www.scalabium.com 
+ATTENTION : 
+BEFORE YOU ACTIVATE THIS OPTION YOU MUST CHANGE THE 
+SMIMPORT PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
+{.$DEFINE USE_3RDPARTY_SMIMPORT}
+
+{ Activates the DevExpress cxEditor-Controls
+For further informations have a look at http://www.devexpress.com }
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+
+{ Activates the DevExpress cxEditor-Controls
+For further informations have a look at http://www.devexpress.com }
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
+
+{ Activates the Internet Direct (Indy)-Components
+For further informations have a look at http://www.indyproject.org }
+{.$DEFINE USE_3RDPARTY_INDY}
+
+{ Activates the ICS-Components (Internet component suite
+For further informations have a look at http://www.overbyte.be/ 
+ATTENTION : 
+BEFORE YOU ACTIVATE THIS OPTION YOU MUST CHANGE THE 
+ICS* PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
+{.$DEFINE USE_3RDPARTY_ICS}

@@ -124,6 +124,12 @@ begin
     TJvDatabaseInsertAction, TJvDatabaseCopyAction, TJvDatabaseEditAction,
     TJvDatabaseDeleteAction, TJvDatabasePostAction, TJvDatabaseCancelAction,
     TJvDatabaseSingleRecordWindowAction, TJvDatabaseSimpleAction,
+    {$IFDEF USE_3RDPARTY_SMEXPORT}
+    TJvDatabaseSMExportAction,
+    {$ENDIF USE_3RDPARTY_SMEXPORT}
+    {$IFDEF USE_3RDPARTY_SMIMPORT}
+    TJvDatabaseSMImportAction,
+    {$ENDIF USE_3RDPARTY_SMIMPORT}
     TJvDatabaseOpenAction, TJvDatabaseCloseAction], TJvDialogActions);
 end;
 
