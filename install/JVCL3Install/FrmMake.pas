@@ -54,8 +54,7 @@ type
     procedure MemoLogSelectionChange(Sender: TObject);
     procedure LblOpenFileClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure MemoLogKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure MemoLogKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private-Deklarationen }
     FAborted: Boolean;

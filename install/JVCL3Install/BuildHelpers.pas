@@ -559,7 +559,7 @@ begin
 
     Lines.Add('');
     Lines.Add('contains');
-    for i := 0 to Package.ContaionCount - 1 do
+    for i := 0 to Package.ContainCount - 1 do
     begin
       if Package.Target.IsTargetFor(Package.Contains[i].Targets) then
       begin
