@@ -479,8 +479,8 @@ begin
       begin
         if Assigned(FProgressNotify) then
           FProgressNotify(Self, Counter1 + 1, Cancel);
-        addThumb(ExtractFilename(ReadFileList.Strings[Counter1]),false);
         if Cancel then Break;
+        AddThumb(ExtractFilename(ReadFileList.Strings[Counter1]),true);
         TJvThumbNail(FThumbList.objects[Counter1]).filename := ReadFileList.Strings[Counter1];
         Inc(DiskSize,TJvThumbNail(FThumbList.objects[Counter1]).FileSize);
       end;
@@ -496,7 +496,7 @@ begin
     Emptylist;
   end;
   FDirectory := Value;
-  if (FThumbList.count > 0) and (selected < 0) then SetSelected(0);
+  if (FThumbList.Count > 0) and (Selected < 0) then SetSelected(0);
   Invalidate;
 end;
 
@@ -1003,8 +1003,7 @@ begin
     if not FPainted then
       Exit;
     FThumbList.Sorted := FSorted;
-    if not FSorted then Exit; // can't "unsort"
-    SortList;
+    SetDirectory(FDirectory);  // force reread
     Invalidate;
   end;
 end;
