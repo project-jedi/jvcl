@@ -37,7 +37,7 @@ contains
   JvCsvDataEditor in '..\..\design\JvCsvDataEditor.pas',
   JvDBReg in '..\..\design\JvDBReg.pas',
   JVDBEditors in '..\..\design\JvDBEditors.pas',
-  JvDBMemDatasetEDitor in '..\..\design\JvDBMemDatasetEDitor.pas',
+  JvDBMemDatasetEditor in '..\..\design\JvDBMemDatasetEditor.pas',
   JvSelectDataSetForm in '..\..\design\JvSelectDataSetForm.pas' {JvSelectDataSetForm};
 
 end.
