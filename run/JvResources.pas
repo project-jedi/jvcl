@@ -381,7 +381,7 @@ resourcestring
   RsEFieldNotFound = 'Field %s not found in the data file';
   RsECsvStringTooLong = 'CSV string is too long: %s...';
   RsEInternalLimit = 'JvCsvData - Internal Limit of MAXCOLUMNS (%d) reached. CSV Data has too many columns';
-  RsETableNameNotSet = 'TJvCsvCustomInMemorYDataSet.FTableName is not set';
+  RsETableNameNotSet = 'TJvCustomCsvDataSet.FTableName is not set';
   RsEGetMode = 'GetMode???';
   RsENoTableName = 'noTableName';
   RsETableNameRequired = 'LoadFromFile=True, so a TableName is required';

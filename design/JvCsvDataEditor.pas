@@ -111,18 +111,18 @@ end;
 procedure TJvCsvDefStrProperty.Edit;
 var
   S1, S2: string;
-  Component: TJvCustomCsvInMemoryDataSet;
+  Component: TJvCustomCsvDataSet;
 begin
-  Component := GetComponent(0) as TJvCustomCsvInMemoryDataSet;
+  Component := GetComponent(0) as TJvCustomCsvDataSet;
 
   S1 := GetValue;
   if S1 = '' then
     S1 := Component.GetCsvHeader; // TODO! read first line of CSV file!
   S2 := DoCsvDefDialog(S1);
 
-    //if S1 <> S2 then begin // on change of csv value.
+  //if S1 <> S2 then begin // on change of csv value.
   SetValue(S2);
-    //end
+  //end
 end;
 
 {
