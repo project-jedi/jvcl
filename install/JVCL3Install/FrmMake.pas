@@ -232,7 +232,8 @@ begin
 end;
 
 procedure TMakeThread.Execute;
-var i: Integer;
+var
+  i: Integer;
 begin
   if Terminated then Exit;
   try
@@ -276,10 +277,10 @@ function TMakeThread.CompilePackageGroup(const BpgFilename, IncludePaths,
 var
   PrepareBpgData: TPrepareBpgData;
   Build, Options, DcpOptions, StartDir: string;
-  //JclMakeFilename: string;
-  //Files: TStrings;
-  //PackageList: TPackageList;
-  i: Integer;
+  // JclMakeFilename: string;
+  // Files: TStrings;
+  // PackageList: TPackageList;
+  // i: Integer;
   b: Boolean;
 begin
   Result := True;
