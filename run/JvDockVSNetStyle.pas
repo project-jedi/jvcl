@@ -2847,7 +2847,6 @@ function TJvDockVSNETTree.GetTopGrabbersHTFlag(const MousePos: TPoint;
   out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone;
 var
   ADockClient: TJvDockClient;
-  ButtonNum: Integer;
 begin
   Result := inherited GetTopGrabbersHTFlag(MousePos, HTFlag, Zone);
   if Zone <> nil then
