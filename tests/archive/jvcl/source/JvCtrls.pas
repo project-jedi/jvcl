@@ -211,8 +211,8 @@ type
     destructor Destroy; override;
     procedure Click; override;
     procedure DrawButtonImage(ImageBounds: TRect);
-    procedure DrawButtonFocusRect;
-    procedure DrawButtonFrame(const DrawItemStruct: TDrawItemStruct);
+    procedure DrawButtonFocusRect(const RectContent: TRect);
+    procedure DrawButtonFrame(const DrawItemStruct: TDrawItemStruct; var RectContent: TRect);
     procedure DrawButtonText(TextBounds: TRect; TextEnabled: Boolean);
     property Canvas: TCanvas read FCanvas;
     property CurrentAnimateFrame: Byte read FCurrentAnimateFrame;
@@ -242,6 +242,9 @@ implementation
 
 uses
   Consts,
+  {$IFDEF JVCLThemesEnabled}
+  Themes,
+  {$ENDIF}
   JvFunctions;
 
 {$R *.res}
@@ -344,7 +347,7 @@ begin
   if IsImageVisible then
   begin
     with GetImageList do
-      SetRect(RectImage, 0, 0, Width, Height);
+      SetRect(RectImage, 0, 0, Width - 1, Height - 1);
     InternalSpacing := Spacing;
   end
   else
@@ -426,6 +429,10 @@ begin
   begin
     FMouseInControl := True;
     DoMouseEnter;
+    {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled then
+      Repaint;
+    {$ENDIF}
   end;
 end;
 
@@ -436,6 +443,10 @@ begin
   begin
     FMouseInControl := False;
     DoMouseLeave;
+    {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled then
+      Repaint;
+    {$ENDIF}
   end;
 end;
 
@@ -474,28 +485,26 @@ begin
     FOnMouseLeave(Self);
 end;
 
-procedure TJvImgBtn.DrawButtonFocusRect;
-var
-  R: TRect;
+procedure TJvImgBtn.DrawButtonFocusRect(const RectContent: TRect);
 begin
   if FIsFocused then
   begin
-    R := ClientRect;
-    InflateRect(R, -4, -4);
     FCanvas.Pen.Color := clWindowFrame;
     FCanvas.Brush.Color := clBtnFace;
-    DrawFocusRect(FCanvas.Handle, R);
+    DrawFocusRect(FCanvas.Handle, RectContent);
   end;
 end;
 
-procedure TJvImgBtn.DrawButtonFrame(const DrawItemStruct: TDrawItemStruct);
+procedure TJvImgBtn.DrawButtonFrame(const DrawItemStruct: TDrawItemStruct; var RectContent: TRect);
 var
   IsDown, IsEnabled, IsDefault: Boolean;
   R: TRect;
   Flags: DWORD;
+  {$IFDEF JVCLThemesEnabled}
+  Details: TThemedElementDetails;
+  Button: TThemedButton;
+  {$ENDIF}
 begin
-  R := ClientRect;
-
   with DrawItemStruct do
   begin
     IsEnabled := itemState and ODS_DISABLED = 0;
@@ -503,33 +512,65 @@ begin
     IsDefault := itemState and ODS_FOCUS <> 0;
   end;
 
-  Flags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
-  if IsDown then
-    Flags := Flags or DFCS_PUSHED;
-  if not IsEnabled then
-    Flags := Flags or DFCS_INACTIVE;
-
-  if FIsFocused or IsDefault then
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
   begin
-    FCanvas.Pen.Color := clWindowFrame;
-    FCanvas.Pen.Width := 1;
-    FCanvas.Brush.Style := bsClear;
-    FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-    InflateRect(R, -1, -1);
-  end;
+    if not IsEnabled then
+      Button := tbPushButtonDisabled
+    else if IsDown then
+      Button := tbPushButtonPressed
+    else if FMouseInControl then
+      Button := tbPushButtonHot
+    else if IsDefault then
+      Button := tbPushButtonDefaulted
+    else
+      Button := tbPushButtonNormal;
 
-  if IsDown then
-  begin
-    FCanvas.Pen.Color := clBtnShadow;
-    FCanvas.Pen.Width := 1;
-    FCanvas.Brush.Color := clBtnFace;
-    FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-    InflateRect(R, -1, -1);
+    Details := ThemeServices.GetElementDetails(Button);
+    // Parent background.
+    ThemeServices.DrawParentBackground(Handle, DrawItemStruct.hDC, @Details, True);
+    // Button shape.
+    ThemeServices.DrawElement(DrawItemStruct.hDC, Details, DrawItemStruct.rcItem);
+    // Return content rect
+    RectContent := ThemeServices.ContentRect(FCanvas.Handle, Details, DrawItemStruct.rcItem);
   end
   else
-    DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
-  FCanvas.Brush.Color := Color;
-  FCanvas.FillRect(R);
+  {$ENDIF JVCLThemesEnabled}
+  begin
+    R := ClientRect;
+
+    Flags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
+    if IsDown then
+      Flags := Flags or DFCS_PUSHED;
+    if not IsEnabled then
+      Flags := Flags or DFCS_INACTIVE;
+
+    if FIsFocused or IsDefault then
+    begin
+      FCanvas.Pen.Color := clWindowFrame;
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Style := bsClear;
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+      InflateRect(R, -1, -1);
+    end;
+
+    if IsDown then
+    begin
+      FCanvas.Pen.Color := clBtnShadow;
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Color := clBtnFace;
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+      InflateRect(R, -1, -1);
+    end
+    else
+      DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
+    FCanvas.Brush.Color := Color;
+    FCanvas.FillRect(R);
+
+    // Return content rect
+    RectContent := ClientRect;
+    InflateRect(RectContent, -4, -4);
+  end;
 end;
 
 procedure TJvImgBtn.DrawButtonImage(ImageBounds: TRect);
@@ -570,20 +611,28 @@ end;
 
 procedure TJvImgBtn.DrawItem(const DrawItemStruct: TDrawItemStruct);
 var
-  R, RectText, RectImage: TRect;
+  R, RectContent, RectText, RectImage: TRect;
 begin
-  DrawButtonFrame(DrawItemStruct);
+  DrawButtonFrame(DrawItemStruct, RectContent);
 
-  R := ClientRect;
-  InflateRect(R, -4, -4);
+  //R := ClientRect;
+  //InflateRect(R, -4, -4);
+  R := RectContent;
   if (DrawItemStruct.itemState and ODS_SELECTED <> 0) and Enabled then
-    OffsetRect(R, 1, 1);
+  begin
+    {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled then
+      OffsetRect(R, 1, 0)
+    else
+    {$ENDIF}
+      OffsetRect(R, 1, 1);
+  end;
 
   CalcButtonParts(R, RectText, RectImage);
   DrawButtonText(RectText, Enabled);
   DrawButtonImage(RectImage);
 
-  DrawButtonFocusRect;
+  DrawButtonFocusRect(RectContent);
 end;
 
 function TJvImgBtn.GetActionLinkClass: TControlActionLinkClass;
