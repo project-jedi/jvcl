@@ -123,6 +123,9 @@ type
     mnuFileMask: TMenuItem;
     btnNewRepository: TToolButton;
     NewRepository: TAction;
+    SelectAll: TAction;
+    Edit: TMenuItem;
+    SelectAll1: TMenuItem;
     procedure btnAddClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
@@ -150,6 +153,10 @@ type
       var Handled: Boolean);
     procedure JvSearchFiles1FindFile(Sender: TObject; const AName: string);
     procedure NewRepositoryExecute(Sender: TObject);
+    procedure SearchListKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure SelectAllExecute(Sender: TObject);
+    procedure SelectAllUpdate(Sender: TObject);
   private
     { Private declarations }
     fCurrentDataFile: string;
@@ -185,12 +192,15 @@ const
 
 var
   Lines: TStringList; // create this once to speed things up
+  ch: char;
 
 function TfrmMain.StringReplace(const FullFileName: string; WholeWord, Backup, Simulate: Boolean; var ReplaceTime: TLargeInteger): Integer;
 var
   OldLine, NewLine, HiLine, BackupName: string;
   FromStr, ToStr: string;
   i: Integer;
+  InputStream: TFileStream;
+  OutputStream: TMemoryStream;
 
   function SearchReplace: Integer;
   var
@@ -228,8 +238,38 @@ var
 begin
   Result := 0;
 
-  // Let's just assume the filename exists - ok?
-  Lines.LoadFromFile(FullFileName);
+  //if this is DFM file, convert it to text
+  if upperCase(ExtractFileExt(FullFileName)) = '.DFM' then
+    begin
+      InputStream := TFileStream.Create(FullFileName, fmOpenRead or fmShareDenyWrite);
+      try
+        begin
+          //      if Size < 2 then memLog.Lines.Add('File size ' + IntToStr(Size) + ' for form ' + s);
+          ch := #0;
+          InputStream.Read(ch, 1);
+          case ch of
+            'o', 'O': Lines.LoadFromFile(FullFileName); //ok - text
+            #$FF: //memLog.Lines.Add('Form been saved as BINary: ' + s);
+              begin
+                OutputStream := TMemoryStream.Create;
+                try
+                    InputStream.Position := 0;
+                    ObjectResourceToText(InputStream, OutputStream);
+                    OutputStream.Position := 0;
+                    Lines.LoadFromStream(OutputStream);
+                finally
+                  OutputStream.Free;
+                end; // try/finally
+              end;
+          end;
+        end;
+      finally // wrap up
+        InputStream.Free;
+      end; // try/finally
+    end
+  else
+    Lines.LoadFromFile(FullFileName);
+
   // For each line in the file...
   FastTimer.Start;
   for I := 1 to vleUnits.Strings.Count do // Iterate
@@ -522,8 +562,8 @@ begin
   if JvBrowseFolder1.Execute then
     begin
       JvSearchFiles1.RootDirectory := JvBrowseFolder1.Directory;
-      if JvSearchFiles1.FileParams.FileMask = '' then
-        JvSearchFiles1.FileParams.FileMask := '*.pas;*.dpr;*.dpk';
+      if JvSearchFiles1.SearchParams.FileMask = '' then
+        JvSearchFiles1.SearchParams.FileMask := '*.pas;*.dpr;*.dpk';
       JvSearchFiles1.Search;
     end;
 end;
@@ -601,7 +641,7 @@ begin
     with TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini')) do
       try
         JvSearchFiles1.RootDirectory := ReadString('Settings', 'Path', '');
-        JvSearchFiles1.FileParams.FileMask := ReadString('Settings', 'Mask', '*.dpr;*.dpk;*.pas');
+        JvSearchFiles1.SearchParams.FileMask := ReadString('Settings', 'Mask', '*.dpr;*.dpk;*.pas');
         fCurrentDataFile := ReadString('Settings', 'DATFile', '');
         mnuBackup.Checked := ReadBool('Settings', 'Backup', true);
         mnuWholeWords.Checked := ReadBool('Settings', 'WholeWords', true);
@@ -623,7 +663,7 @@ begin
     with TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini')) do
       try
         WriteString('Settings', 'Path', JvSearchFiles1.RootDirectory);
-        WriteString('Settings', 'Mask', JvSearchFiles1.FileParams.FileMask);
+        WriteString('Settings', 'Mask', JvSearchFiles1.SearchParams.FileMask);
         WriteString('Settings', 'DATFile', fCurrentDataFile);
         WriteBool('Settings', 'Backup', mnuBackup.Checked);
         WriteBool('Settings', 'WholeWords', mnuWholeWords.Checked);
@@ -642,9 +682,9 @@ procedure TfrmMain.mnuFileMaskClick(Sender: TObject);
 var
   S: string;
 begin
-  S := JvSearchFiles1.FileParams.FileMask;
+  S := JvSearchFiles1.SearchParams.FileMask;
   if InputQuery('File Mask', 'Set new file mask:', S) and (S <> '') then
-    JvSearchFiles1.FileParams.FileMask := S;
+    JvSearchFiles1.SearchParams.FileMask := S;
 end;
 
 procedure TfrmMain.ActionList1Update(Action: TBasicAction;
@@ -665,10 +705,26 @@ begin
   fCurrentDataFile := '';
 end;
 
+procedure TfrmMain.SearchListKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_Delete then
+    if RemoveFiles.Enabled then btnRemoveClick(self);
+end;
+
+procedure TfrmMain.SelectAllExecute(Sender: TObject);
+begin
+  SearchList.SelectAll;
+end;
+
+procedure TfrmMain.SelectAllUpdate(Sender: TObject);
+begin
+  SelectAll.Enabled := (SearchList.Items.Count > 0) and (JvPageControl.ActivePage = tbsFiles);
+end;
+
 initialization
   Lines := TStringList.Create;
 finalization
   Lines.Free;
-
 end.
 

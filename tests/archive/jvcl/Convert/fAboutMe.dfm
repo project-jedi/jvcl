@@ -1,8 +1,8 @@
 object frmAboutMe: TfrmAboutMe
   Left = 492
   Top = 406
-  Width = 226
-  Height = 384
+  Width = 237
+  Height = 383
   Caption = 'About Me'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,7 +16,7 @@ object frmAboutMe: TfrmAboutMe
   object Panel1: TPanel
     Left = 8
     Top = 8
-    Width = 201
+    Width = 209
     Height = 305
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -27,15 +27,15 @@ object frmAboutMe: TfrmAboutMe
       Top = 136
       Width = 61
       Height = 13
-      Caption = 'Version: 1.0 '
+      Caption = 'Version: 1.2 '
       IsControl = True
     end
     object Comments: TLabel
-      Left = 16
-      Top = 154
+      Left = 88
+      Top = 136
       Width = 56
       Height = 13
-      Caption = '2002-06-26'
+      Caption = '2002-08-19'
       WordWrap = True
       IsControl = True
     end
@@ -48,7 +48,7 @@ object frmAboutMe: TfrmAboutMe
       IsControl = True
     end
     object Image1: TImage
-      Left = 8
+      Left = 11
       Top = 5
       Width = 177
       Height = 52
@@ -451,18 +451,20 @@ object frmAboutMe: TfrmAboutMe
       Url = 'http://jvcl.sourceforge.net'
     end
     object Memo1: TMemo
-      Left = 16
-      Top = 192
-      Width = 137
-      Height = 65
+      Left = 8
+      Top = 176
+      Width = 193
+      Height = 105
       BorderStyle = bsNone
       Color = clBtnFace
       Lines.Strings = (
-        'Credits: Igor Komar'
-        '             Dave Jewell '
-        '             Martin Waldenburg'
-        '             Michael Beck'
-        '             Peter Th'#246'rnqvist')
+        'Developed by:   Michael Beck'
+        ''
+        'Based on work of: Igor Komar'
+        #9'              Dave Jewell '
+        #9'              Martin Waldenburg'
+        ''
+        'Contributors:     Peter Th'#246'rnqvist')
       TabOrder = 0
     end
   end

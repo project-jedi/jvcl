@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 359
-  Top = 490
+  Left = 366
+  Top = 441
   Width = 471
   Height = 386
   Caption = 'JVCL Conversion Utility'
@@ -22,9 +22,9 @@ object frmMain: TfrmMain
     Top = 26
     Width = 463
     Height = 314
-    ActivePage = tbsFiles
+    ActivePage = tbsStrings
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object tbsFiles: TTabSheet
       Caption = 'Select Files'
@@ -65,6 +65,7 @@ object frmMain: TfrmMain
           ViewStyle = vsReport
           OnColumnClick = SearchListColumnClick
           OnDblClick = SearchListDblClick
+          OnKeyUp = SearchListKeyUp
         end
       end
     end
@@ -211,6 +212,12 @@ object frmMain: TfrmMain
       end
       object Exit1: TMenuItem
         Action = FileExit1
+      end
+    end
+    object Edit: TMenuItem
+      Caption = 'Edit'
+      object SelectAll1: TMenuItem
+        Action = SelectAll
       end
     end
     object Conversion1: TMenuItem
@@ -360,6 +367,14 @@ object frmMain: TfrmMain
       Hint = 'Create New Repository'
       ImageIndex = 1
       OnExecute = NewRepositoryExecute
+    end
+    object SelectAll: TAction
+      Category = 'File'
+      Caption = 'Select All'
+      Hint = 'Select All'
+      ShortCut = 16449
+      OnExecute = SelectAllExecute
+      OnUpdate = SelectAllUpdate
     end
   end
   object StandardImages: TImageList
@@ -4599,13 +4614,6 @@ object frmMain: TfrmMain
       000000000000}
   end
   object JvSearchFiles1: TJvSearchFiles
-    Options = [soOwnerData, soSearchFiles]
-    ErrorResponse = erIgnore
-    DirParams.LastChangeAfter = 29221
-    DirParams.LastChangeBefore = 29221
-    FileParams.SearchTypes = [stFileMask]
-    FileParams.LastChangeAfter = 29221
-    FileParams.LastChangeBefore = 29221
     OnFindFile = JvSearchFiles1FindFile
     Left = 48
     Top = 88
