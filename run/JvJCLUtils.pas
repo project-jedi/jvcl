@@ -293,6 +293,20 @@ function MakeValidFileName(const FileName: TFileName; ReplaceBadChar: Char): TFi
 function IsTTFontSelected(const DC: HDC): Boolean;
 function KeyPressed(VK: Integer): Boolean;
 {$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+{ VisualCLX/crossplatform versions of the same functions in JclQGraphics }
+type
+  TGradientDirection = (gdVertical, gdHorizontal);
+  TRegionBitmapMode = (rmInclude, rmExclude);
+
+procedure ScreenShot(Bmp: TBitmap; Left, Top, Width, Height: Integer; Window: QWidgetH); {overload;}
+function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
+  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
+function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
+  RegionBitmapMode: TRegionBitmapMode): QRegionH;
+{$ENDIF VisualCLX}
+
 { TrueInflateRect inflates rect in other method, than InflateRect API function }
 function TrueInflateRect(const R: TRect; const I: Integer): TRect;
 
@@ -8568,6 +8582,153 @@ begin
   Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, WinRop);
 end;
 {$ENDIF VCL}
+{$IFDEF VisualCLX}
+
+{ JclQGraphics: Crossplatform versions  }
+
+procedure ScreenShot(Bmp: TBitmap; Left, Top, Width, Height: Integer; Window: QWidgetH); {overload;}
+begin
+  if not assigned(Bmp.Handle) then
+    Bmp.Handle := QPixmap_create;
+  QPixmap_grabWindow(Bmp.Handle, QWidget_winID(Window), Left, Top, Width, Height);
+end;
+
+function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
+  RegionBitmapMode: TRegionBitmapMode): QRegionH;
+var
+  FBitmap: TBitmap;
+  X, Y: Integer;
+  StartX: Integer;
+  Region: QRegionH;
+begin
+  Result := NullHandle;
+  (*
+  if Bitmap = nil then
+    EJclGraphicsError.CreateResRec(@RsNoBitmapForRegion);
+  *)
+  if (Bitmap.Width = 0) or (Bitmap.Height = 0) then
+    Exit;
+
+  FBitmap := TBitmap.Create;
+  try
+    FBitmap.Assign(Bitmap);
+
+    for Y := 0 to FBitmap.Height - 1 do
+    begin
+      X := 0;
+      while X < FBitmap.Width do
+      begin
+
+        if RegionBitmapMode = rmExclude then
+        begin
+          while FBitmap.Canvas.Pixels[X,Y] = RegionColor do
+          begin
+            Inc(X);
+            if X = FBitmap.Width then
+              Break;
+          end;
+        end
+        else
+        begin
+          while FBitmap.Canvas.Pixels[X,Y] <> RegionColor do
+          begin
+            Inc(X);
+            if X = FBitmap.Width then
+              Break;
+          end;
+        end;
+
+        if X = FBitmap.Width then
+          Break;
+
+        StartX := X;
+        if RegionBitmapMode = rmExclude then
+        begin
+          while FBitmap.Canvas.Pixels[X,Y] <> RegionColor do
+          begin
+            if X = FBitmap.Width then
+              Break;
+            Inc(X);
+          end;
+        end
+        else
+        begin
+          while FBitmap.Canvas.Pixels[X,Y] = RegionColor do
+          begin
+            if X = FBitmap.Width then
+              Break;
+            Inc(X);
+          end;
+        end;
+        if Result = NullHandle then
+          Result := CreateRectRgn(StartX, Y, X, Y + 1)
+        else
+        begin
+          Region := CreateRectRgn(StartX, Y, X, Y + 1);
+          if Region <> NullHandle then
+          begin
+            CombineRgn(Result, Result, Region, RGN_OR);
+            DeleteObject(Region);
+          end;
+        end;
+      end;
+    end;
+  finally
+    FBitmap.Free;
+  end;
+end;
+
+function FillGradient(DC: QPainterH; ARect: TRect; ColorCount: Integer;
+  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
+var
+  StartRGB: array [0..2] of Byte;
+  RGBKoef: array [0..2] of Double;
+  Brush: HBRUSH;
+  AreaWidth, AreaHeight, I: Integer;
+  ColorRect: TRect;
+  RectOffset: Double;
+begin
+  RectOffset := 0;
+  Result := False;
+  if ColorCount < 1 then
+    Exit;
+  StartColor := ColorToRGB(StartColor);
+  EndColor := ColorToRGB(EndColor);
+  StartRGB[0] := GetRValue(StartColor);
+  StartRGB[1] := GetGValue(StartColor);
+  StartRGB[2] := GetBValue(StartColor);
+  RGBKoef[0] := (GetRValue(EndColor) - StartRGB[0]) / ColorCount;
+  RGBKoef[1] := (GetGValue(EndColor) - StartRGB[1]) / ColorCount;
+  RGBKoef[2] := (GetBValue(EndColor) - StartRGB[2]) / ColorCount;
+  AreaWidth := ARect.Right - ARect.Left;
+  AreaHeight :=  ARect.Bottom - ARect.Top;
+  case ADirection of
+    gdHorizontal:
+      RectOffset := AreaWidth / ColorCount;
+    gdVertical:
+      RectOffset := AreaHeight / ColorCount;
+  end;
+  for I := 0 to ColorCount - 1 do
+  begin
+    Brush := CreateSolidBrush(RGB(
+      StartRGB[0] + Round((I + 1) * RGBKoef[0]),
+      StartRGB[1] + Round((I + 1) * RGBKoef[1]),
+      StartRGB[2] + Round((I + 1) * RGBKoef[2])));
+    case ADirection of
+      gdHorizontal:
+        SetRect(ColorRect, Round(RectOffset * I), 0, Round(RectOffset * (I + 1)), AreaHeight);
+      gdVertical:
+        SetRect(ColorRect, 0, Round(RectOffset * I), AreaWidth, Round(RectOffset * (I + 1)));
+    end;
+    OffsetRect(ColorRect, ARect.Left, ARect.Top);
+    FillRect(DC, ColorRect, Brush);
+    DeleteObject(Brush);
+  end;
+  Result := True;
+end;
+
+{$ENDIF VisualCLX}
+
 
 end.
 
