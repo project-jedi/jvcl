@@ -32,8 +32,12 @@ unit JVCLVer;
 interface
 
 const
+  {$IFDEF VCL}
   JVCL_VERSIONSTRING = '3.00';
-
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  JVCLX_VERSIONSTRING = '1.00';
+  {$ENDIF}
 type
   TJVCLAboutInfo = (JVCLAbout);
 
