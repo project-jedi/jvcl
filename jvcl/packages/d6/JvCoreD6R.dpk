@@ -46,7 +46,7 @@ contains
   JvMouseTimer in '..\..\run\JvMouseTimer.pas',
   JvDsgnIntf in '..\..\run\JvDsgnIntf.pas',
   JvActnResForm in '..\..\design\JvActnResForm.pas' {JvStandardActions: TDataModule},
-  JvDataProviderImpl in '..\..\run\JvDataProviderImpl.pas',
-  JvDataProvider in '..\..\run\JvDataProvider.pas';
+  JvDataProvider in '..\..\run\JvDataProvider.pas',
+  JvDataProviderImpl in '..\..\run\JvDataProviderImpl.pas';
 
 end.
