@@ -16,8 +16,9 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Robert Marquardt copied implementation of TJvCheckBox
 
-Last Modified: 2003-12-15
+Last Modified: 2003-12-22
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -39,65 +40,85 @@ type
   TJvRadioButton = class(TRadioButton)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FOnMouseEnter: TNotifyEvent;
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
-    FOnParentColorChanged: TNotifyEvent;
-    FHotTrack: Boolean;
-    FHotFont: TFont;
-    FFontSave: TFont;
     FOver: Boolean;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    FOnParentColorChanged: TNotifyEvent;
+    {$IFDEF VCL}
+    FOnCtl3DChanged: TNotifyEvent;
+    {$ENDIF VCL}
+    FHotTrack: Boolean;
+    FHotTrackFont: TFont;
+    FFontSave: TFont;
+    FHotTrackFontOptions: TJvTrackFontOptions;
     FAutoSize: Boolean;
     FCanvas: TControlCanvas;
-    FHotTrackFontOptions: TJvTrackFontOptions;
     FWordWrap: Boolean;
     FAlignment: TAlignment;
     FLayout: TTextLayout;
-    FRightButton: boolean;
-    procedure SetHotFont(const Value: TFont);
+    FLeftText: Boolean;
     function GetCanvas: TCanvas;
-    procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
+    function GetReadOnly: Boolean;
+    procedure SetHotTrackFont(const Value: TFont);
+    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetWordWrap(const Value: Boolean);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetLayout(const Value: TTextLayout);
-    procedure SetReadOnly(const Value: boolean);
-    procedure SetRightButton(const Value: boolean);
-    function GetReadOnly: boolean;
-  protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
-    procedure CreateParams(var Params: TCreateParams); override;
+    procedure SetReadOnly(const Value: Boolean);
+    procedure SetLeftText(const Value: Boolean);
+    {$IFDEF VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    property Canvas: TCanvas read GetCanvas;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    {$ENDIF VCL}
+  protected
+    {$IFDEF VCL}
+    procedure MouseEnter(AControl: TControl); dynamic;
+    procedure MouseLeave(AControl: TControl); dynamic;
+    procedure ParentColorChanged; dynamic;
+    procedure TextChanged; dynamic;
+    procedure FontChanged; dynamic;
+    procedure Ctl3DChanged; dynamic;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    procedure ParentColorChanged; override;
+    procedure TextChanged; override;
+    procedure FontChanged; override;
+    {$ENDIF VisualCLX}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure CalcAutoSize; virtual;
-    procedure Loaded;override;
-
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
+    property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property Alignment: TAlignment read FAlignment write SetAlignment;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotFont write SetHotFont;
-    property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
-      DefaultTrackFontOptions;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property ReadOnly:boolean read GetReadOnly write SetReadOnly;
-    property RightButton:boolean read FRightButton write SetRightButton;
-    property Alignment:TAlignment read FAlignment write SetAlignment;
-    property Layout:TTextLayout read FLayout write SetLayout;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions
+      default DefaultTrackFontOptions;
+    property Layout: TTextLayout read FLayout write SetLayout default tlCenter;
+    // show text to the left of the radio bullet
+    property LeftText: Boolean read FLeftText write SetLeftText default False;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
+    {$IFDEF VCL}
+    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
+    {$ENDIF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
@@ -112,67 +133,86 @@ begin
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
   FHotTrack := False;
-  FHotFont := TFont.Create;
+  FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
-  FOver := False;
   FHintColor := clInfoBk;
-  // ControlStyle := ControlStyle + [csAcceptsControls];
+  FOver := False;
   FHotTrackFontOptions := DefaultTrackFontOptions;
   FAutoSize := True;
   FWordWrap := False;
   FAlignment := taLeftJustify;
-  FRightButton := False;
-  FLayout := tlTop;
+  FLeftText := False;
+  FLayout := tlCenter;
 end;
 
 destructor TJvRadioButton.Destroy;
 begin
+  FHotTrackFont.Free;
   FFontSave.Free;
-  FHotFont.Free;
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
 end;
 
+procedure TJvRadioButton.Loaded;
+begin
+  inherited Loaded;
+  CalcAutoSize;
+end;
+
 procedure TJvRadioButton.CreateParams(var Params: TCreateParams);
 const
-  cAlign:array[TAlignment] of word = (BS_LEFT, BS_RIGHT, BS_CENTER);
-  cRightButton:array[boolean] of word = (0, BS_RIGHTBUTTON);
-  cLayout:array[TTextLayout] of word = (BS_TOP, BS_VCENTER, BS_BOTTOM);
-  cWordWrap:array[boolean] of word = (0,BS_MULTILINE);
+  cAlign: array [TAlignment] of Word = (BS_LEFT, BS_RIGHT, BS_CENTER);
+  cLeftText: array [Boolean] of Word = (0, BS_RIGHTBUTTON);
+  cLayout: array [TTextLayout] of Word = (BS_TOP, BS_VCENTER, BS_BOTTOM);
+  cWordWrap: array [Boolean] of Word = (0, BS_MULTILINE);
 begin
   inherited CreateParams(Params);
   with Params do
-    Style := Style or cAlign[Alignment] or cLayout[Layout] or cRightButton[RightButton] or cWordWrap[WordWrap];
+    Style := Style or cAlign[Alignment] or cLayout[Layout] or
+      cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
+
+{$IFDEF VCL}
 
 procedure TJvRadioButton.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
+  Ctl3DChanged;
+end;
+
+procedure TJvRadioButton.Ctl3DChanged;
+begin
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
 
-procedure TJvRadioButton.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
+{$ENDIF VCL}
 
+{$IFDEF VCL}
 procedure TJvRadioButton.CMMouseEnter(var Msg: TMessage);
 begin
+  inherited;
+  MouseEnter(Self);
+end;
+{$ENDIF VCL}
+
+procedure TJvRadioButton.MouseEnter(AControl: TControl);
+begin
+  {$IFDEF VisualCLX}
+  inherited MouseEnter(AControl);
+  {$ENDIF VisualCLX}
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     if FHotTrack then
     begin
       FFontSave.Assign(Font);
-      Font.Assign(FHotFont);
+      Font.Assign(FHotTrackFont);
     end;
     FOver := True;
   end;
@@ -180,40 +220,81 @@ begin
     FOnMouseEnter(Self);
 end;
 
+{$IFDEF VCL}
 procedure TJvRadioButton.CMMouseLeave(var Msg: TMessage);
 begin
+  inherited;
+  MouseLeave(Self);
+end;
+{$ENDIF VCL}
+
+procedure TJvRadioButton.MouseLeave(AControl: TControl);
+begin
+  {$IFDEF VisualCLX}
+  inherited MouseLeave(AControl);
+  {$ENDIF VisualCLX}
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
+    FOver := False;
     Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
-    FOver := False;
   end;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
 
-procedure TJvRadioButton.SetHotFont(const Value: TFont);
+{$IFDEF VCL}
+procedure TJvRadioButton.CMParentColorChanged(var Msg: TMessage);
 begin
-  FHotFont.Assign(Value);
+  inherited;
+  ParentColorChanged;
+end;
+{$ENDIF VCL}
+
+procedure TJvRadioButton.ParentColorChanged;
+begin
+  {$IFDEF VisualCLX}
+  inherited ParentColorChanged;
+  {$ENDIF VisualCLX}
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
 end;
 
-procedure TJvRadioButton.SetAutoSize(Value: Boolean);
+{$IFDEF VCL}
+procedure TJvRadioButton.CMFontChanged(var Msg: TMessage);
 begin
-  if FAutoSize <> Value then
-  begin
-    {$IFDEF COMPILER6_UP}
-    inherited SetAutoSize(Value);
-    {$ENDIF COMPILER6_UP}
-    FAutoSize := Value;
-    if Value then WordWrap := False;
-    CalcAutoSize;
-  end;
+  inherited;
+  FontChanged;
+end;
+{$ENDIF VCL}
+
+procedure TJvRadioButton.FontChanged;
+begin
+  {$IFDEF VisualCLX}
+  inherited FontChanged;
+  {$ENDIF VisualCLX}
+  CalcAutoSize;
+  UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
-function TJvRadioButton.GetCanvas: TCanvas;
+{$IFDEF VCL}
+procedure TJvRadioButton.CMTextChanged(var Msg: TMessage);
 begin
-  Result := FCanvas;
+  inherited;
+  TextChanged;
+end;
+{$ENDIF VCL}
+
+procedure TJvRadioButton.TextChanged;
+begin
+  {$IFDEF VisualCLX}
+  inherited TextChanged;
+  {$ENDIF VisualCLX}
+  CalcAutoSize;
 end;
 
 procedure TJvRadioButton.CalcAutoSize;
@@ -224,50 +305,60 @@ var
   ASize: TSize;
   R: TRect;
 begin
-  if (Parent = nil) or (csDestroying in ComponentState) then
+  if (Parent = nil) or not AutoSize or (csDestroying in ComponentState) or
+    (csLoading in ComponentState) then
     Exit;
-  if AutoSize then
+  ASize := GetDefaultCheckBoxSize;
+  // add some spacing
+  Inc(ASize.cy, 4);
+  FCanvas.Font := Font;
+  R := Rect(0, 0, ClientWidth, ClientHeight);
+  // This is slower than GetTextExtentPoint but it does consider hotkeys
+  if Caption <> '' then
   begin
-    ASize := GetDefaultCheckBoxSize;
-    // add some spacing
-    Inc(ASize.cy, 4);
-    FCanvas.Font := Font;
-    R := Rect(0, 0, ClientWidth, ClientHeight);
-    // This is slower than GetTextExtentPoint but it does consider hotkeys
-    if Caption <> '' then
-    begin
-      DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R, Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
-      AWidth := (R.Right - R.Left) + ASize.cx + 8;
-      AHeight := R.Bottom - R.Top;
-    end
-    else
-    begin
-      AWidth := ASize.cx;
-      AHeight := ASize.cy;
-    end;
-    if AWidth < ASize.cx then
-      AWidth := ASize.cx;
-    if AHeight < ASize.cy then
-      AHeight := ASize.cy;
-    ClientWidth := AWidth;
-    ClientHeight := AHeight;
+    DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
+      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    AWidth := (R.Right - R.Left) + ASize.cx + 8;
+    AHeight := R.Bottom - R.Top;
+  end
+  else
+  begin
+    AWidth := ASize.cx;
+    AHeight := ASize.cy;
+  end;
+  if AWidth < ASize.cx then
+    AWidth := ASize.cx;
+  if AHeight < ASize.cy then
+    AHeight := ASize.cy;
+  ClientWidth := AWidth;
+  ClientHeight := AHeight;
+end;
+
+procedure TJvRadioButton.SetHotTrackFont(const Value: TFont);
+begin
+  FHotTrackFont.Assign(Value);
+end;
+
+procedure TJvRadioButton.SetAutoSize(Value: Boolean);
+begin
+  if FAutoSize <> Value then
+  begin
+    {$IFDEF COMPILER6_UP}
+    // inherited SetAutoSize(Value);
+    {$ENDIF COMPILER6_UP}
+    FAutoSize := Value;
+    if Value then
+      WordWrap := False;
+    CalcAutoSize;
   end;
 end;
 
-procedure TJvRadioButton.CMFontChanged(var Message: TMessage);
+function TJvRadioButton.GetCanvas: TCanvas;
 begin
-  inherited;
-  CalcAutoSize;
-  UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
+  Result := FCanvas;
 end;
 
-procedure TJvRadioButton.CMTextChanged(var Message: TMessage);
-begin
-  inherited;
-  CalcAutoSize;
-end;
-
-procedure TJvRadioButton.SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
+procedure TJvRadioButton.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
 begin
   if FHotTrackFontOptions <> Value then
   begin
@@ -285,12 +376,6 @@ begin
       AutoSize := False;
     RecreateWnd;
   end;
-end;
-
-procedure TJvRadioButton.Loaded;
-begin
-  inherited Loaded;
-  CalcAutoSize;
 end;
 
 procedure TJvRadioButton.SetAlignment(const Value: TAlignment);
@@ -311,22 +396,21 @@ begin
   end;
 end;
 
-procedure TJvRadioButton.SetReadOnly(const Value: boolean);
+procedure TJvRadioButton.SetReadOnly(const Value: Boolean);
 begin
-  if ClicksDisabled <> Value then
-    ClicksDisabled := Value;
+  ClicksDisabled := Value;
 end;
 
-procedure TJvRadioButton.SetRightButton(const Value: boolean);
+procedure TJvRadioButton.SetLeftText(const Value: Boolean);
 begin
-  if FRightButton<> Value then
+  if FLeftText <> Value then
   begin
-    FRightButton := Value;
+    FLeftText := Value;
     RecreateWnd;
   end;
 end;
 
-function TJvRadioButton.GetReadOnly: boolean;
+function TJvRadioButton.GetReadOnly: Boolean;
 begin
   Result := ClicksDisabled;
 end;

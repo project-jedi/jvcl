@@ -17,8 +17,9 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Ain Valtin - ReadOnly, Alignment, Layout, RightButton
+Robert Marquardt RightButton renamed to LeftText
 
-Last Modified: 2003-12-15
+Last Modified: 2003-12-22
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -64,7 +65,7 @@ type
     FWordWrap: Boolean;
     FAlignment: TAlignment;
     FLayout: TTextLayout;
-    FRightButton: Boolean;
+    FLeftText: Boolean;
     function GetCanvas: TCanvas;
     function GetReadOnly: Boolean;
     procedure SetHotTrackFont(const Value: TFont);
@@ -74,7 +75,7 @@ type
     procedure SetAlignment(const Value: TAlignment);
     procedure SetLayout(const Value: TTextLayout);
     procedure SetReadOnly(const Value: Boolean);
-    procedure SetRightButton(const Value: Boolean);
+    procedure SetLeftText(const Value: Boolean);
     {$IFDEF VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -103,13 +104,13 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure CalcAutoSize; virtual;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Loaded; override;
     procedure Toggle; override;
     procedure Click; override;
     procedure SetChecked(Value: Boolean); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
@@ -121,10 +122,10 @@ type
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions
       default DefaultTrackFontOptions;
-    property Layout: TTextLayout read FLayout write SetLayout default tlTop;
+    property Layout: TTextLayout read FLayout write SetLayout default tlCenter;
+    // show text to the left of the checkbox
+    property LeftText: Boolean read FLeftText write SetLeftText default False;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
-    // show button on right side of control
-    property RightButton: Boolean read FRightButton write SetRightButton default False;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     {$IFDEF VCL}
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -153,8 +154,8 @@ begin
   FAutoSize := True;
   FWordWrap := False;
   FAlignment := taLeftJustify;
-  FRightButton := False;
-  FLayout := tlTop;
+  FLeftText := False;
+  FLayout := tlCenter;
 end;
 
 destructor TJvCheckBox.Destroy;
@@ -187,14 +188,14 @@ end;
 procedure TJvCheckBox.CreateParams(var Params: TCreateParams);
 const
   cAlign: array [TAlignment] of Word = (BS_LEFT, BS_RIGHT, BS_CENTER);
-  cRightButton: array [Boolean] of Word = (0, BS_RIGHTBUTTON);
+  cLeftText: array [Boolean] of Word = (0, BS_RIGHTBUTTON);
   cLayout: array [TTextLayout] of Word = (BS_TOP, BS_VCENTER, BS_BOTTOM);
   cWordWrap: array [Boolean] of Word = (0, BS_MULTILINE);
 begin
   inherited CreateParams(Params);
   with Params do
     Style := Style or cAlign[Alignment] or cLayout[Layout] or
-      cRightButton[RightButton] or cWordWrap[WordWrap];
+      cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
 
 {$IFDEF VCL}
@@ -325,7 +326,7 @@ procedure TJvCheckBox.CalcAutoSize;
 const
   Flags: array [Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 var
-  AWidth, AHeight: integer;
+  AWidth, AHeight: Integer;
   ASize: TSize;
   R: TRect;
 begin
@@ -457,11 +458,11 @@ begin
   ClicksDisabled := Value;
 end;
 
-procedure TJvCheckBox.SetRightButton(const Value: Boolean);
+procedure TJvCheckBox.SetLeftText(const Value: Boolean);
 begin
-  if FRightButton <> Value then
+  if FLeftText <> Value then
   begin
-    FRightButton := Value;
+    FLeftText := Value;
     RecreateWnd;
   end;
 end;

@@ -33,7 +33,7 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, ComCtrls,
+  Windows, Messages, Graphics, Controls, Forms, ComCtrls, CommCtrl,
   {$ELSE}
   QGraphics, QControls, QForms, QComCtrls,
   {$ENDIF VCL}
@@ -49,9 +49,9 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FBarColor: TColor;
-    procedure SetBarColor(const Value: TColor);
     {$IFDEF VCL}
+    FFillColor: TColor;
+    procedure SetFillColor(const Value: TColor);
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
@@ -67,12 +67,15 @@ type
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     {$ENDIF VisualCLX}
-    procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property BarColor: TColor read FBarColor write SetBarColor default clNavy;
+    {$IFDEF VCL}
+    property FillColor: TColor read FFillColor write SetFillColor default clHighlight;
+    {$ELSE}
+    property FillColor;
+    {$ENDIF}
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -85,15 +88,12 @@ type
 
 implementation
 
-const
-  PBM_SETBARCOLOR = WM_USER + 9; // lParam = bar color
-
 constructor TJvProgressBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FillColor := clHighlight;
   FHintColor := clInfoBk;
   FOver := False;
-  FBarColor := clNavy;
 end;
 
 {$IFDEF VCL}
@@ -164,20 +164,20 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvProgressBar.SetBarColor(const Value: TColor);
+{$IFDEF VCL}
+
+procedure TJvProgressBar.SetFillColor(const Value: TColor);
 begin
-  if FBarColor <> Value then
+  if FFillColor <> Value then
   begin
-    FBarColor := Value;
-    RecreateWnd;
+    FFillColor := Value;
+    SendMessage(Handle, PBM_SETBARCOLOR, 0, ColorToRGB(FFillColor));
+    // (rom) Invalidate is not good enough
+    Repaint;
   end;
 end;
 
-procedure TJvProgressBar.CreateWnd;
-begin
-  inherited CreateWnd;
-  SendMessage(Handle, PBM_SETBARCOLOR, 0, ColorToRGB(FBarColor));
-end;
+{$ENDIF}
 
 end.
 
