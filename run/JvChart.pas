@@ -38,13 +38,11 @@ Known Issues:
 
 unit JvChart;
 
-{$R JVCHART.DCR}
-
 interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, ExtCtrls, Printers, Clipbrd;
+  Forms, Dialogs, ExtCtrls, Printers, Clipbrd, JvComponent;
 
 const
 
@@ -334,7 +332,7 @@ type
 
 
 
-  TJvChart = class(TGraphicControl) // formerly was a child of TImage
+  TJvChart = class(TJvGraphicControl) // formerly was a child of TImage
   private
     { TImage stuff}
     FPicture: TPicture; // An image drawn via GDI primitives, saveable as
@@ -353,7 +351,7 @@ type
     bStartDrag            : Boolean;
     bMouseLegend          : Boolean;
     bContainsNegative     : Boolean;
-    strColorFile          : String;
+{    strColorFile          : String;} // not used (ahuser)
 
     nOldYOrigin            : integer;
     nOldYGap              : real;
@@ -404,10 +402,10 @@ type
     procedure   MyRectangle(X, Y, X2, Y2: Integer);
     procedure   MyColorRectangle(Pen : Integer; X, Y, X2, Y2: Integer);
     procedure   MyPie(X1, Y1, X2, Y2, X3, Y3, X4, Y4: Longint);     { pie chart segment }
-    procedure   MyArc(X1, Y1, X2, Y2, X3, Y3, X4, Y4: Integer);  { arc }
+//    procedure   MyArc(X1, Y1, X2, Y2, X3, Y3, X4, Y4: Integer);  { arc } // not used (ahuser)
     procedure   MyPolygon(Points: array of TPoint);
-    procedure   MyEllipse(X1, Y1, X2, Y2: Integer);
-    procedure   MyDrawLine(X1, Y1, X2, Y2: Integer);
+//    procedure   MyEllipse(X1, Y1, X2, Y2: Integer); // not used (ahuser)
+//    procedure   MyDrawLine(X1, Y1, X2, Y2: Integer); // not used (ahuser)
     procedure   MyDrawAxisMark( X1, Y1, X2, Y2: Integer); // solid line as a tick on an axis.
 
     procedure   MyDrawDotLine(X1, Y1, X2, Y2: Integer);
@@ -430,10 +428,10 @@ type
     procedure   MyDisplayAsDeltaAverage;
     procedure   MyPieLegend(nPen: Integer);
     procedure   ShowMouseMessage(X,Y,nMouseValue,nMousePen: Integer);
-    procedure   PlotCross(x, y: Integer);
+{    procedure   PlotCross(x, y: Integer); } // not used (ahuser)
     procedure   PlotDiamond(x, y: Integer);
-    procedure   PlotCircle(x, y: Integer);
-    procedure   PlotSquare(x, y: Integer);
+//    procedure   PlotCircle(x, y: Integer); // not used (ahuser)
+//    procedure   PlotSquare(x, y: Integer); // not used (ahuser)
     function    MyPt(AX, AY: Integer): TPoint;
     function    StrToPChar(strText : string): PChar;
     procedure   ClearScreen;
@@ -507,8 +505,6 @@ type
 
   end;
 
-procedure Register;
-
 
 implementation
 
@@ -537,8 +533,8 @@ begin
 end;
 
 procedure TJvChartData.Grow(Pen,values:Integer);
-var
- t,oldAlloc:Integer;
+{var
+ t,oldAlloc:Integer;} // not used (ahuser)
 begin
   if (Pen<0) or (values<0) then
       raise ERangeError.Create('Data: index cannot be negative');
@@ -547,7 +543,7 @@ begin
 
 
   if (values>=FDataAlloc) then begin
-    oldAlloc := FDataAlloc;
+{    oldAlloc := FDataAlloc; } // not used (ahuser)
     while (values>=FDataAlloc) do begin
         FDataAlloc := FDataAlloc + JvChart_DATA_GROWBY;
     end;
@@ -563,8 +559,8 @@ begin
 end;
 
 constructor TJvChartData.Create;
-var
- t:Integer;
+{var
+ t:Integer;} // not used (ahuser)
 begin
      SetLength(FData,JvChart_DATA_GROWBY); // Room for 100 Values, but each value is an array too, we allocate them as necessary
      FDataAlloc := JvChart_DATA_GROWBY;
@@ -628,6 +624,8 @@ begin
       result :=  FPaperColor // usually white
   else if (index >= 0) then
       result := FPenColors[index]
+  else
+      result := clNone; // I hope clNone is a good unknown value (ahuser)
 
 end;
 
@@ -876,9 +874,9 @@ end;
 { call this function : NEVER!                                              }
 {**************************************************************************}
 constructor TJvChart.Create(AOwner: TComponent);
-var
+{var
    I                      : Integer;
-   nXScreenResolution     : LongInt;
+   nXScreenResolution     : LongInt;} // not used (ahuser)
 begin
    inherited Create(AOwner);  {by TImage...}
 //   Color := clWindow;
@@ -954,14 +952,13 @@ end;
 {Paint helper}
 function TJvChart.DestRect: TRect;
 var
-  w, h, cw, ch: Integer;
-  xyaspect: Double;
+  w, h{, cw, ch}: Integer; // not used (ahuser)
+//  xyaspect: Double; // not used (ahuser)
 begin
   w := Picture.Width;
   h := Picture.Height;
-  cw := ClientWidth;
+(*  cw := ClientWidth;
   ch := ClientHeight;
-  (*
   if Stretch or (Proportional and ((w > cw) or (h > ch))) then
   begin
 	if Proportional and (w > 0) and (h > 0) then
@@ -1020,7 +1017,7 @@ end;
 { PAINT }
 procedure TJvChart.Paint; { based on TImage.Paint }
 var
-  Save: Boolean;
+//  Save: Boolean; // not used (ahuser)
   designStr:String;
 begin
   if (csDesigning in ComponentState) or
@@ -1058,8 +1055,8 @@ end;
 {  a) before setting totally new values to the graph                       }
 {**************************************************************************}
 Procedure TJvChart.ResetGraphModule;
-var
-   I,J      : Integer;
+{var
+   I,J      : Integer;} // not used (ahuser)
 begin
    Data.Clear;
    
@@ -1100,7 +1097,7 @@ var
    nPen          : LongInt;
    YLegendStr : String; // left hand side, vertically ascending labels for scale of Y values.
    I,J              : Integer;
-   calcYGap  :Real;
+//   calcYGap  :Real; // not used (ahuser)
    aTextWidth,skipby,maxfit:Integer;
 begin
 
@@ -1265,13 +1262,13 @@ var
 
     // Keep Y in visible chart range:
    function GraphConstrainedLineY:Real;
-                   begin
-                      result := (yOrigin-((FData.Value[I,J]/Options.YGap)*Options.YPixelGap));
-                   if (result >= (yOrigin-1)) then
-                       result := Round(yOrigin)-1
-                  else if (result < 1+(yOrigin - (Options.YEnd-Options.YPixelGap))) then
-                        result := 1+Round( yOrigin - (Options.YEnd-Options.YPixelGap));
-                  end;
+   begin
+      result := (yOrigin-((FData.Value[I,J]/Options.YGap)*Options.YPixelGap));
+      if (result >= (yOrigin-1)) then
+         result := Round(yOrigin)-1
+      else if (result < 1+(yOrigin - (Options.YEnd-Options.YPixelGap))) then
+         result := 1+Round( yOrigin - (Options.YEnd-Options.YPixelGap));
+   end;
 
 begin
   // refuse to refresh under these conditions:
@@ -1584,22 +1581,22 @@ end;
 Procedure TJvChart.MyShowLegend;
 var
    I,K,count   : Integer;
-   DoSeparate  : boolean;
+//   DoSeparate  : boolean; // not used (ahuser)
    XLegendGap  : LongInt;
    nTextHeight : LongInt;
-   nChars      : Integer;
+//   nChars      : Integer; // not used (ahuser)
    yTempOrigin  : LongInt;
-   nMaxLegend  : Integer;
-   xLegendStr, myLabel :String;
+//   nMaxLegend  : Integer; // not used (ahuser)
+   {xLegendStr, }myLabel :String; // not used (ahuser)
 begin
    {X-LEGEND: ...}
-   DoSeparate := FALSE;
+//   DoSeparate := FALSE; // not used (ahuser)
    XLegendGap := 0;
    {Count how many characters to show in the separate legend}
    MySmallGraphFont;
-   nChars := Round(Options.LegendWidth / MyTextWidth('1'));
+//   nChars := Round(Options.LegendWidth / MyTextWidth('1')); // not used (ahuser)
    {Decrease the value due to the color box shown}
-   if (nChars>3) and (nChars<35) then nChars := nChars-3;
+//   if (nChars>3) and (nChars<35) then nChars := nChars-3; // not used (ahuser)
    {Analyse length of Xlegends; put to separate box if > MAX_jvgLEGEND_LEN}
 (*   for I := 0 to Options.XValueCount-1 do
      if Options.XLegends.Count> I then
@@ -1607,8 +1604,8 @@ begin
          DoSeparate := TRUE; *)
 
    {always separate for this type}
-   if (Options.ChartType=JvChartDeltaAverage) then
-      DoSeparate := TRUE;
+{   if (Options.ChartType=JvChartDeltaAverage) then
+      DoSeparate := TRUE; } // not used (ahuser)
 
    {Find out where the X-axis is in Y direction...}
    if (Options.YOrigin < 0) then
@@ -1982,12 +1979,12 @@ end;
 
 Procedure TJvChart.MyYHeader(strText: String);
 var
-  ht,wd,vert,horiz:Integer;
+  {ht,}wd,vert,horiz:Integer; // not used (ahuser)
 begin
   if Length(strText)=0 then exit;
   MyGraphVertFont; // Select Vertical Font Output.
   if (Options.XStartOffset > 10) then begin
-      ht := MyTextHeight(strText);
+      {ht := MyTextHeight(strText); }// not used (ahuser)
       wd := MyTextWidth(strText);
       // Kindof a fudge, but we'll work out something better later... :-) -WAP.
       vert := (Options.YStartOffset*2)+ ((Height div 2)-(wd div 2));
@@ -2070,7 +2067,7 @@ end;
 procedure TJvChart.MouseDown(Button: TMouseButton;Shift:TShiftState;X,Y:Integer);
 var
   XPixelGap  : Double;
-  YPixelGap  : Double;
+//  YPixelGap  : Double; // not used (ahuser)
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
@@ -2149,7 +2146,7 @@ var
    strMessage1 : String;
    strMessage2 : String;
    strMessage3 : String;
-   strMessage5 : String;
+{   strMessage5 : String; } // not used (ahuser)
    nWidth      : Integer;
    nHeight     : Integer;
    nLineH      : Integer;
@@ -2182,11 +2179,11 @@ begin
       end
 
     end else begin
-      nLineCount  := 1;
+{      nLineCount  := 1; } // not used (ahuser)
     end;
 
    nLineH      := Round(MyTextHeight(strMessage1)*1.07);
-   nLineCount  := 0;
+{   nLineCount  := 0; } // not used (ahuser)
    if (nMouseValue=0) then
    begin
       MyColorRectangle(-2,X+3,Y+3,X+nWidth+3+5,Y+nLineH+3);
@@ -2328,13 +2325,13 @@ Procedure TJvChart.MyPieLegend(nPen: Integer);
 var
    I           : Integer;
    nTextHeight : LongInt;
-   nChars      : Integer;
+{   nChars      : Integer;} // not used (ahuser)
    xLegendStr  : String;
 begin
    {Count how many characters to show in the separate legend}
-   nChars := Round(Options.LegendWidth / MyTextWidth('1'));
+{   nChars := Round(Options.LegendWidth / MyTextWidth('1'));} // not used (ahuser)
    {Decrease the value due to the color box shown}
-   if (nChars>4) then nChars := nChars-4;
+{   if (nChars>4) then nChars := nChars-4;} // not used (ahuser)
 
    MySmallGraphFont;
    nTextHeight := Round(MyTextHeight('Mg')*1.2);
@@ -2379,7 +2376,7 @@ begin
 end;
 
 
-procedure TJvChart.PlotSquare(x, y: Integer);
+{procedure TJvChart.PlotSquare(x, y: Integer);
 begin
    MyPolygon([MyPt(x - Options.PointSize, y - Options.PointSize),
               MyPt(x + Options.PointSize, y - Options.PointSize),
@@ -2394,7 +2391,7 @@ begin
              y - Options.PointSize,
              x + Options.PointSize,
              y + Options.PointSize);
-end;
+end;} // not used (ahuser)
 
 
 procedure TJvChart.PlotDiamond(x, y: Integer);
@@ -2406,11 +2403,11 @@ begin
 end;
 
 
-procedure TJvChart.PlotCross(x, y: Integer);
+{procedure TJvChart.PlotCross(x, y: Integer);
 begin
    MyDrawLine(x - Options.PointSize, y, x + Options.PointSize, y);
    MyDrawLine(x, y - Options.PointSize, x, y + Options.PointSize);
-end;
+end;} // not used (ahuser)
 
 
 procedure TJvChart.ClearScreen;
@@ -2580,11 +2577,11 @@ end;
 
 
 Procedure TJvChart.MyHeader(strText: String);
-var
+{var
 //   LogFont           : TLogFont;
    hMetaFileFont     : HFont;
    SaveOldFileFont   : THandle;
-   OldColor          : TColorRef;
+   OldColor          : TColorRef;} // not used (ahuser)
 begin
    MyHeaderFont;
    MyCenterTextOut(Options.XStartOffset + Round(Options.XEnd/2),
@@ -2809,13 +2806,13 @@ begin
 end;
 
 
-Procedure TJvChart.MyArc(X1, Y1, X2, Y2, X3, Y3, X4, Y4: Integer);
+{Procedure TJvChart.MyArc(X1, Y1, X2, Y2, X3, Y3, X4, Y4: Integer);
 begin
    if PrintInSession then
       Printer.Canvas.Arc(X1, Y1, X2, Y2, X3, Y3, X4, Y4)
    else
       ChartCanvas.Arc(X1, Y1, X2, Y2, X3, Y3, X4, Y4);
-end;
+end;} // not used (ahuser)
 
 
 Procedure TJvChart.MyPolygon(Points: array of TPoint);
@@ -2827,7 +2824,7 @@ begin
 end;
 
 
-Procedure TJvChart.MyEllipse(X1, Y1, X2, Y2: Integer);
+{Procedure TJvChart.MyEllipse(X1, Y1, X2, Y2: Integer);
 begin
    if PrintInSession then
       Printer.Canvas.Ellipse(X1, Y1, X2, Y2)
@@ -2840,7 +2837,7 @@ procedure TJvChart.MyDrawLine(X1, Y1, X2, Y2: Integer);
 begin
    MyMoveTo(X1, Y1);
    MyLineTo(X2, Y2);
-end;
+end;} // not used (ahuser)
 
 procedure TJvChart.MyDrawAxisMark( X1, Y1, X2, Y2: Integer);
 begin
@@ -2983,15 +2980,5 @@ begin
       TempData.Free;
    end;
 end;
-
-
-
-
-procedure Register;
-begin
-  RegisterComponents('Jv Custom', [TJvChart]);
-end;
-
-
 
 end.
