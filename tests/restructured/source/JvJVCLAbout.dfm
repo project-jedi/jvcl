@@ -1,6 +1,6 @@
 object JvJVCLAboutForm: TJvJVCLAboutForm
-  Left = 322
-  Top = 322
+  Left = 405
+  Top = 329
   Width = 394
   Height = 330
   Anchors = [akLeft, akTop, akRight, akBottom]
@@ -747,10 +747,6 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       TabOrder = 1
       OnClick = btnOKClick
     end
-  end
-  object JvExecute1: TJvExecute
-    Left = 144
-    Top = 272
   end
   object OpenDialog1: TOpenDialog
     Filter = 'Help files|*.chm; *.hlp'
