@@ -6,7 +6,7 @@ unit FrmCompile;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls;
+  Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls;
 
 type
   TFormCompile = class(TForm)

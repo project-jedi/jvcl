@@ -1,11 +1,11 @@
 object FormCompile: TFormCompile
-  Left = 365
-  Top = 289
+  Left = 348
+  Top = 311
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Compiling'
   ClientHeight = 165
-  ClientWidth = 362
+  ClientWidth = 361
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -200,7 +200,7 @@ object FormCompile: TFormCompile
   end
   object BtnOk: TButton
     Left = 144
-    Top = 136
+    Top = 134
     Width = 75
     Height = 25
     Caption = 'OK'

@@ -67,7 +67,8 @@ uses
   MainConfig in 'Helpers\MainConfig.pas' {FormJvclIncConfig},
   CmdLineUtils in 'CmdLineUtils.pas',
   InstallerConsts in 'InstallerConsts.pas',
-  FrmCompile in 'FrmCompile.pas' {FormCompile};
+  FrmCompile in 'FrmCompile.pas' {FormCompile},
+  FrmCompileMessages in 'FrmCompileMessages.pas' {FormCompileMessages};
 
 {$R *.res}
 
@@ -79,5 +80,6 @@ begin
   Application.Initialize;
   Application.CreateForm(TFormMain, FormMain);
   Application.CreateForm(TFormJvclIncConfig, FormJvclIncConfig);
+  Application.CreateForm(TFormCompileMessages, FormCompileMessages);
   Application.Run;
 end.
