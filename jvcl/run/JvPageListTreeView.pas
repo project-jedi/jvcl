@@ -84,8 +84,8 @@ type
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
     function GetPageIndex: Integer;
-    procedure SetPageIndex(const Value: Integer);
-    procedure SetPageList(const Value: TJvCustomPageList);
+    procedure SetPageIndex(Value: Integer);
+    procedure SetPageList(Value: TJvCustomPageList);
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure TextChanged; override;
@@ -144,8 +144,8 @@ type
     function GetActivePageIndex: Integer;
     procedure SetActivePageIndex(AIndex: Integer);
     function GetPageFromIndex(AIndex: Integer): TJvCustomPage;
-    function getPageCount: Integer;
-    function getPageCaption(AIndex: Integer): string;
+    function GetPageCount: Integer;
+    function GetPageCaption(AIndex: Integer): string;
     procedure Paint; override;
 
     procedure Change; dynamic;
@@ -175,7 +175,7 @@ type
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex;
     property ActivePage: TJvCustomPage read FActivePage write SetActivePage;
     property Pages[Index:Integer]:TJvCustomPage read GetPage;
-    property PageCount: Integer read getPageCount;
+    property PageCount: Integer read GetPageCount;
   end;
 
   TJvStandardPage = class(TJvCustomPage)
@@ -711,9 +711,9 @@ begin
   if Assigned(FPageList) and Assigned(Node) then
   begin
     i := TJvPageIndexNode(Node).PageIndex;
-    if (i >= 0) and (i < FPageList.getPageCount) then
+    if (i >= 0) and (i < FPageList.GetPageCount) then
       FPageList.SetActivePageIndex(i)
-    else if (PageDefault >= 0) and (PageDefault < FPageList.getPageCount) then
+    else if (PageDefault >= 0) and (PageDefault < FPageList.GetPageCount) then
       FPageList.SetActivePageIndex(PageDefault)
     else
       FPageList.SetActivePageIndex(-1);
@@ -724,8 +724,8 @@ constructor TJvCustomPageListTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLinks := TJvPageLinks.Create;
-  FLinks.FTreeView := self;
-  ReadOnly := true;
+  FLinks.FTreeView := Self;
+  ReadOnly := True;
 end;
 
 function TJvCustomPageListTreeView.CreateNode: TTreeNode;
@@ -747,7 +747,7 @@ end;
 function TJvCustomPageListTreeView.CreateNodes: TTreeNodes;
 begin
   if (FItems = nil) and not (csDestroying in ComponentState) then
-    FItems := TJvPageIndexNodes.Create(self);
+    FItems := TJvPageIndexNodes.Create(Self);
   Result := FItems;
 end;
 
@@ -810,7 +810,7 @@ begin
   if Value <> FPageListComponent then
   begin
     if FPageListComponent <> nil then
-      FPageListComponent.RemoveFreeNotification(self);
+      FPageListComponent.RemoveFreeNotification(Self);
     if Value = nil then
     begin
       FPageListComponent := nil;
@@ -821,7 +821,7 @@ begin
       raise EPageListError.CreateFmt(RsEInterfaceNotSupported, [Value.Name, 'IPageList']);
     SetPageList(obj);
     FPageListComponent := Value;
-    FPageListComponent.FreeNotification(self);
+    FPageListComponent.FreeNotification(Self);
   end;
 end;
 {$ENDIF !COMPILER6_UP}
@@ -851,7 +851,7 @@ begin
   if FPageIndex <> Value then
   begin
     FPageIndex := Value;
-    if (TreeView is TJvCustomSettingsTreeView) and (Parent <> nil) and (Parent.getFirstChild = self) and not HasChildren then
+    if (TreeView is TJvCustomSettingsTreeView) and (Parent <> nil) and (Parent.getFirstChild = Self) and not HasChildren then
       TJvPageIndexNode(Parent).PageIndex := Value;
   end;
 end;
@@ -939,23 +939,34 @@ begin
 end;
 
 destructor TJvCustomPage.Destroy;
+var
+  f: TextFile;
 begin
-  if Assigned(PageList) then
-    PageList := nil;
+  AssignFile(f, 'C:\Msg.log');
+  if not FileExists('C:\Msg.log') then Rewrite(f) else Append(f);
+  WriteLn(f, '********************************');
+  CloseFile(f);
+
+  PageList := nil;
   inherited Destroy;
+
+  AssignFile(f, 'C:\Msg.log');
+  if not FileExists('C:\Msg.log') then Rewrite(f) else Append(f);
+  WriteLn(f, 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+  CloseFile(f);
 end;
 
 procedure TJvCustomPage.DoAfterPaint(ACanvas: TCanvas; ARect: TRect);
 begin
   if Assigned(FOnAfterPaint) then
-    FOnAfterPaint(self, ACanvas, ARect);
+    FOnAfterPaint(Self, ACanvas, ARect);
 end;
 
 function TJvCustomPage.DoBeforePaint(ACanvas: TCanvas; ARect: TRect): Boolean;
 begin
   Result := True;
   if Assigned(FonBeforePaint) then
-    FOnBeforePaint(self, ACanvas, ARect, Result);
+    FOnBeforePaint(Self, ACanvas, ARect, Result);
 end;
 
 function GetDesignCaptionFlags(Value: TJvShowDesignCaption): Cardinal;
@@ -980,9 +991,9 @@ var S: string;
 begin
   with ACanvas do
   begin
-    Font := self.Font;
+    Font := Self.Font;
     Brush.Style := bsSolid;
-    Brush.Color := self.Color;
+    Brush.Color := Self.Color;
     DrawThemedBackground(Self, Canvas, ARect);
     if (csDesigning in ComponentState) then
     begin
@@ -1013,13 +1024,13 @@ begin
     end;
   end;
   if Assigned(FOnPaint) then
-    FOnPaint(self, ACanvas, ARect);
+    FOnPaint(Self, ACanvas, ARect);
 end;
 
 function TJvCustomPage.GetPageIndex: Integer;
 begin
   if Assigned(FPageList) then
-    Result := FPageList.PageList.IndexOf(self)
+    Result := FPageList.PageList.IndexOf(Self)
   else
     Result := -1;
 end;
@@ -1040,26 +1051,26 @@ begin
   inherited ReadState(Reader);
 end;
 
-procedure TJvCustomPage.SetPageList(
-  const Value: TJvCustomPageList);
+procedure TJvCustomPage.SetPageList(Value: TJvCustomPageList);
 begin
   if FPageList <> Value then
   begin
     if Assigned(FPageList) then
-      FPageList.RemovePage(self);
+      FPageList.RemovePage(Self);
     FPageList := Value;
     Parent := FPageList;
     if FPageList <> nil then
-      FPageList.InsertPage(self);
+      FPageList.InsertPage(Self);
   end;
 end;
 
-procedure TJvCustomPage.SetPageIndex(const Value: Integer);
+procedure TJvCustomPage.SetPageIndex(Value: Integer);
 var
   OldIndex: Integer;
 begin
   OldIndex := PageIndex;
-  if Assigned(FPageList) and (Value <> OldIndex) and (Value >= 0) and (Value < FPageList.PageCount) then
+  if Assigned(FPageList) and (Value <> OldIndex) and (Value >= 0) and
+     (Value < FPageList.PageCount) then
     FPageList.PageList.Move(OldIndex, Value);
 end;
 
@@ -1116,15 +1127,15 @@ end;
 
 function TJvCustomPageList.CanChange(AIndex: Integer): Boolean;
 begin
-  Result := (AIndex >= 0) and (AIndex < getPageCount);
+  Result := (AIndex >= 0) and (AIndex < GetPageCount);
   if Result and Assigned(FOnChanging) then
-    FOnChanging(self, AIndex, Result);
+    FOnChanging(Self, AIndex, Result);
 end;
 
 procedure TJvCustomPageList.Change;
 begin
   if Assigned(FOnChange) then
-    FOnChange(self);
+    FOnChange(Self);
 end;
 
 procedure TJvCustomPageList.CMDesignHitTest(var Message: TCMDesignHitTest);
@@ -1149,7 +1160,8 @@ begin
 end;
 
 destructor TJvCustomPageList.Destroy;
-var i: Integer;
+var
+  i: Integer;
 begin
   for i := FPages.Count - 1 downto 0 do
     TJvCustomPage(FPages[i]).FPageList := nil;
@@ -1164,22 +1176,18 @@ var
   Control: TControl;
 begin
   for i := 0 to FPages.Count - 1 do
-  begin
     Proc(TComponent(FPages[i]));
-  end;
   for i := 0 to ControlCount - 1 do
   begin
     Control := Controls[i];
     if not (Control is TJvCustomPage) and (Control.Owner = Root) then
-    begin
       Proc(Control);
-    end;
   end;
 end;
 
-function TJvCustomPageList.getPageCaption(AIndex: Integer): string;
+function TJvCustomPageList.GetPageCaption(AIndex: Integer): string;
 begin
-  if (AIndex >= 0) and (AIndex < getPageCOunt) then
+  if (AIndex >= 0) and (AIndex < GetPageCount) then
     Result := TJvCustomPage(FPages[AIndex]).Caption
   else
     Result := '';
@@ -1190,7 +1198,7 @@ begin
   Result := TJvCustomPage;
 end;
 
-function TJvCustomPageList.getPageCount: Integer;
+function TJvCustomPageList.GetPageCount: Integer;
 begin
   if FPages = nil then
     Result := 0
@@ -1207,13 +1215,13 @@ end;
 procedure TJvCustomPageList.Loaded;
 begin
   inherited Loaded;
-  if getPageCount > 0 then
+  if GetPageCount > 0 then
     ActivePage := Pages[0];
 end;
 
 procedure TJvCustomPageList.Paint;
 begin
-  if (csDesigning in ComponentState) and (getPageCount = 0) then
+  if (csDesigning in ComponentState) and (GetPageCount = 0) then
     with Canvas do
     begin
       Pen.Color := clBlack;
@@ -1234,11 +1242,15 @@ begin
   APage.FPageList := nil;
   FPages.Remove(APage);
   SetActivePage(NextPage);
+ // (ahuser) In some cases SetActivePage does not change FActivePage
+ //          so we force FActivePage not to be "APage"
+  if FActivePage = APage then
+    FActivePage := nil;
 end;
 
 function TJvCustomPageList.GetPageFromIndex(AIndex: Integer): TJvCustomPage;
 begin
-  if (AIndex >= 0) and (AIndex < getPageCount) then
+  if (AIndex >= 0) and (AIndex < GetPageCount) then
     Result := TJvCustomPage(Pages[AIndex])
   else
     Result := nil;
@@ -1297,7 +1309,7 @@ begin
       Page.Refresh;
     end;
 
-    if ((Page <> nil) and CanChange(FPages.IndexOf(Page))) then
+    if (Page = nil) or CanChange(FPages.IndexOf(Page)) then
     begin
       if FActivePage <> nil then
         FActivePage.Visible := False;
@@ -1355,7 +1367,8 @@ end;
 
 function TJvCustomPageList.FindNextPage(CurPage: TJvCustomPage;
   GoForward, IncludeDisabled: Boolean): TJvCustomPage;
-var i, StartIndex: Integer;
+var
+  i, StartIndex: Integer;
 begin
   if PageCount <> 0 then
   begin
@@ -1403,14 +1416,14 @@ procedure TJvCustomPageList.UpdateEnabled;
   begin
     for i := 0 to AControl.ControlCount - 1 do
     begin
-      AControl.Controls[i].Enabled := self.Enabled;
+      AControl.Controls[i].Enabled := Self.Enabled;
       if AControl.Controls[i] is TWinControl then
         InternalSetEnabled(TWinControl(AControl.Controls[i]));
     end;
   end;
 begin
   if PropagateEnable then
-    InternalSetEnabled(self);
+    InternalSetEnabled(Self);
 end;
 
 function TJvCustomPageList.GetPage(Index: Integer): TJvCustomPage;
@@ -1472,7 +1485,7 @@ constructor TJvCustomSettingsTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FNodeImages := TJvSettingsTreeImages.Create;
-  FNodeImages.TreeView := self;
+  FNodeImages.TreeView := Self;
   AutoExpand := True;
   ShowButtons := False;
   ShowLines := False;
