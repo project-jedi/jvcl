@@ -1796,10 +1796,30 @@ begin
   Stream.Position := 0;
 end;
 
+function ColorItemTwiceInColorMap(Index: Integer; ColorMap: TGIFColorTable): Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+  I := 0;
+  while (I < ColorMap.Count) and not Result do
+  begin
+    if (I = Index) then
+    begin
+      Inc(I);
+    end
+    else
+    begin
+      Result := (ItemToRGB(ColorMap.Colors[Index]) = ItemToRGB(ColorMap.Colors[I]));
+    end;
+    Inc(I);
+  end;
+end;
+
 procedure TJvGIFFrame.LoadFromStream(Stream: TStream);
 var
   ImageDesc: TImageDescriptor;
-  I, TransIndex: Integer;
+  I, Offset, TransIndex: Integer;
 begin
   FImage.FImageData := TMemoryStream.Create;
   try
@@ -1831,7 +1851,22 @@ begin
             begin
               TransIndex := FExtRec.GCE.TransparentColorIndex;
               if FImage.FColorMap.Count > TransIndex then
+              begin
+                // Mantis 2135: Ensure that the transparent color does not appear
+                // twice in the palette or the second color index would end up
+                // being transparent as well
+                Offset := -1;
+                while ColorItemTwiceInColorMap(TransIndex, FImage.FColorMap) do
+                begin
+                  if FImage.FColorMap.Colors[TransIndex].Blue = 0 then
+                    Offset := 1
+                  else if FImage.FColorMap.Colors[TransIndex].Blue = 255 then
+                    Offset := -1;
+                  Inc(FImage.FColorMap.Colors[TransIndex].Blue, Offset);
+                end;
+
                 FTransparentColor := ItemToRGB(FImage.FColorMap.Colors[TransIndex]);
+              end;
             end
             else
               FTransparentColor := clNone;
