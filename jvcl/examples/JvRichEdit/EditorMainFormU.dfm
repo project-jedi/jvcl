@@ -108,7 +108,7 @@ object EditorMainForm: TEditorMainForm
     Left = 0
     Top = 88
     Width = 520
-    Height = 121
+    Height = 129
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -128,7 +128,7 @@ object EditorMainForm: TEditorMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 209
+    Top = 217
     Width = 520
     Height = 19
     Panels = <
@@ -142,6 +142,7 @@ object EditorMainForm: TEditorMainForm
       item
         Width = 50
       end>
+    SimplePanel = False
   end
   object SpeedBar: TJvSpeedBar
     Left = 0
@@ -314,9 +315,9 @@ object EditorMainForm: TEditorMainForm
       Alignment = taRightJustify
       ButtonKind = bkStandard
       Decimal = 0
-      MaxValue = 2147483647.000000000000000000
-      MinValue = 1.000000000000000000
-      Value = 8.000000000000000000
+      MaxValue = 2147483647
+      MinValue = 1
+      Value = 8
       TabOrder = 1
       OnChange = FontSizeChange
     end
@@ -710,22 +711,22 @@ object EditorMainForm: TEditorMainForm
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     Device = fdBoth
+    MinFontSize = 0
+    MaxFontSize = 0
     Left = 36
     Top = 100
   end
   object ColorMenu: TJvPopupMenu
-    Images = ToolbarImages
     OnPopup = ColorMenuPopup
     ImageMargin.Left = 0
     ImageMargin.Top = 0
     ImageMargin.Right = 0
     ImageMargin.Bottom = 0
-    ImageSize.Height = 0
-    ImageSize.Width = 0
-    MinTextOffset = 20
-    Style = msXP
-    TextMargin = 20
+    ImageSize.Height = 16
+    ImageSize.Width = 16
+    Style = msOwnerDraw
     OnDrawItem = ColorMenuDrawItem
+    OnMeasureItem = ColorMenuMeasureItem
     Left = 92
     Top = 128
   end
@@ -764,18 +765,16 @@ object EditorMainForm: TEditorMainForm
     end
   end
   object BackgroundMenu: TJvPopupMenu
-    Images = ToolbarImages
     OnPopup = BackgroundMenuPopup
     ImageMargin.Left = 0
     ImageMargin.Top = 0
     ImageMargin.Right = 0
     ImageMargin.Bottom = 0
-    ImageSize.Height = 0
-    ImageSize.Width = 0
-    MinTextOffset = 20
-    Style = msXP
-    TextMargin = 20
+    ImageSize.Height = 16
+    ImageSize.Width = 16
+    Style = msOwnerDraw
     OnDrawItem = ColorMenuDrawItem
+    OnMeasureItem = ColorMenuMeasureItem
     Left = 64
     Top = 128
   end
