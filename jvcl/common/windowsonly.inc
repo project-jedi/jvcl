@@ -25,17 +25,19 @@ Known Issues:
 // because the including unit can only be compiled
 // for the Windows platform anyway.
 
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
+{$IFDEF SUPPORTS_PLATFORM_WARNINGS}
+  {$WARN UNIT_PLATFORM OFF}
+  {$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF SUPPORTS_PLATFORM_WARNINGS}
 
 // Cause a compilation error for any platform except Windows.
 
 {$IFNDEF MSWINDOWS}
-{$IFDEF COMPILER6_UP}
-{$MESSAGE FATAL 'This unit is only supported on Windows!'}
-{$ELSE}
-This unit is only supported on Windows!
-{$ENDIF COMPILER6_UP}
+  {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
+    {$MESSAGE FATAL 'This unit is only supported on Windows!'}
+  {$ELSE}
+    {$IFDEF XPLATFORM_RTL}
+      'This unit is only supported on Windows!'
+    {$ENDIF XPLATFORM_RTL}
+  {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
 {$ENDIF !MSWINDOWS}

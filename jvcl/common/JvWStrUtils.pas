@@ -404,7 +404,7 @@ var
   NullWide: WideChar;
 begin
   Result := 0;
-  if (S1 = S2) then // "equal" and "nil" case
+  if S1 = S2 then // "equal" and "nil" case
     Exit;
   NullWide := #0;
 
@@ -1031,7 +1031,7 @@ begin
             Break;
         end;
       end;
-      if (P[0] <> WideChar(0)) then
+      if P[0] <> WideChar(0) then
         S := WideQuotedStr(S, AQuoteChar);
       Result := Result + S + ADelimiter;
     end;

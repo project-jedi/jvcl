@@ -24,21 +24,19 @@ Known Issues:
 
 // Suppress platform warnings which are irrelevant
 // because the including unit can only be compiled
-// for the Linux platform anyway.
-// No need for COMPILER6_UP IFDEFs because all Kylix
-// versions are implicitly COMPILER6_UP already.
+// for the Unixs platforms anyway.
 
-{$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
 
-// Cause a compilation error for any platform except Linux.
+// Cause a compilation error for non-Unix platforms.
 
-{$IFNDEF LINUX}
-{$IFDEF COMPILER6_UP}
-{$MESSAGE FATAL 'This unit is only supported on Linux!'}
-{$ELSE}
-This unit is only supported on Linux!
-{$ENDIF COMPILER6_UP}
-{$ENDIF !LINUX}
+{$IFNDEF UNIX}
+  {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
+    {$MESSAGE FATAL 'This unit is only supported on Unix!'}
+  {$ELSE}
+    {$IFDEF XPLATFORM_RTL}
+      'This unit is only supported on Unix!'
+    {$ENDIF XPLATFORM_RTL}
+  {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
+{$ENDIF !UNIX}
