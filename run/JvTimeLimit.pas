@@ -31,7 +31,13 @@ unit JvTimeLimit;
 interface
 
 uses
-  SysUtils, Classes, Controls, Dialogs, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls, Dialogs, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QDialogs, QForms,
+  {$ENDIF VisualCLX}
   JvComponent;
 
 {$HPPEMIT '#define TDate Controls::TDate'}

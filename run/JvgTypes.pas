@@ -32,9 +32,16 @@ unit JvgTypes;
 interface
 
 uses
+  {$IFDEF VCL}
   Graphics;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Graphics;
+  {$ENDIF VisualCLX}
 
 const
+  {$IFDEF MSWINDOWS}
+  {$IFDEF VCL}
   { OEM Resource Ordinal Numbers }
   OBM_CLOSE       = 32754;
   OBM_UPARROW     = 32753;
@@ -70,6 +77,8 @@ const
   OBM_OLD_REDUCE  = 32757;
   OBM_OLD_ZOOM    = 32756;
   OBM_OLD_RESTORE = 32755;
+  {$ENDIF VCL}
+  {$ENDIF MSWINDOWS}
 
 type
   TSpPercent = 1..99;
@@ -161,6 +170,8 @@ type
 const
   ALLGLSIDES = [fsdLeft, fsdTop, fsdRight, fsdBottom];
 
+// (rom) not very elegant should be removed
+
 var //...global variables
   glGlobalData: TglGlobalData;
 
@@ -170,7 +181,7 @@ var //...global variables
 implementation
 
 initialization
-  glGlobalData.fSuppressGradient := false;
+  glGlobalData.fSuppressGradient := False;
   glGlobalData.lp3DColors := nil;
 
 end.

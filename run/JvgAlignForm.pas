@@ -32,12 +32,16 @@ unit JvgAlignForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls,
+  Classes,
+  {$IFDEF VCL}
+  Controls, Forms, StdCtrls, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QStdCtrls, QExtCtrls,
+  {$ENDIF VisualCLX}
   JvgTypes, JvComponent;
 
 type
-
   TAlignForm = class(TJvForm)
     g_Horz: TRadioGroup;
     g_Vert: TRadioGroup;

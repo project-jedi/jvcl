@@ -54,7 +54,12 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
   Windows;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SysUtils;
+  {$ENDIF VisualCLX}
 
 procedure TJvImageDrawThread.Draw;
 begin
