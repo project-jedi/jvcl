@@ -152,12 +152,12 @@ uses
   QImgList;
   {$ENDIF VisualCLX}
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvDice.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvDice.res}
-{$ENDIF LINUX}
+{$IFDEF VCL}
+{$R ..\Resources\JvDice.Res}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$R ../Resources/JvDice.Res}
+{$ENDIF VisualCLX}
 
 constructor TJvDice.Create(AOwner: TComponent);
 var
