@@ -40,6 +40,11 @@ implementation
 uses
   Classes,
   JvDotNetControls, JvDBDotNetControls;
+  
+resourcestring
+  RsPaletteDotNet = 'Jv DotNet';
+  RsPaletteDotNetDB = 'Jv DotNet DB';
+
 
 procedure Register;
 begin

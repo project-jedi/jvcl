@@ -36,9 +36,7 @@ package JvXPCtrlsD5R;
 
 requires
   vcl50,
-  vclx50,
-  JvCoreD5R
-  ;
+  vclx50;
 
 contains
   JvXPBar in '..\..\run\JvXPBar.pas' ,

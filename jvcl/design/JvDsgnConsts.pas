@@ -83,7 +83,7 @@ resourcestring
   RsPaletteGlobusComponents2 = 'JVCL Globus Components 2';
   RsPaletteValidators = 'Jv Validators';
   RsPaletteWizard = 'Jv Wizard';
-  RsPaletteXPControls = 'JVCL XP Controls';
+  RsPaletteXPControls = 'Jv XP Controls';
   RsPaletteDocking = 'Jv Docking';
   RsPaletteDotNet = 'Jv DotNet';
   RsPaletteDotNetDB = 'Jv DotNet DB';

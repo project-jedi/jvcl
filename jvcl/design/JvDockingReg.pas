@@ -43,13 +43,14 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvDsgnConsts, JvDockGlobals, JvDockControlForm, JvDockPropertyEditors,
+  JvDockGlobals, JvDockControlForm, JvDockPropertyEditors,
   JvDockVIDStyle, JvDockDelphiStyle,
   JvDockVCStyle, JvDockVSNetStyle;
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteDocking, [TJvDockServer, TJvDockClient]);
+  RegisterComponents(RsDockProductName, [TJvDockServer, TJvDockClient,
+    TJvDockDelphiStyle,TJvDockVCStyle, TJvDockVIDStyle,TJvDockVSNetStyle]);
   {$IFNDEF USEJVCL}
   RegisterComponentEditor(TJvDockBaseControl, TJvDockControlEditor);
   RegisterComponentEditor(TJvDockBasicStyle, TJvDockStyleEditor);
@@ -57,14 +58,8 @@ begin
   RegisterComponentEditor(TJvDockVIDTabPageControl, TJvDockVIDTabPageControlEditor);
   RegisterComponentEditor(TJvDockVIDTabSheet, TJvDockVIDTabPageControlEditor);
 
-  RegisterComponents(RsDockProductName, [TJvDockDelphiStyle]);
-  RegisterComponents(RsDockProductName, [TJvDockVCStyle]);
-
-  RegisterComponents(RsDockProductName, [TJvDockVIDStyle]);
   RegisterNoIcon([TJvDockVIDTabSheet]);
   RegisterClass(TJvDockVIDTabSheet);
-
-  RegisterComponents(RsDockProductName, [TJvDockVSNetStyle]);
 end;
 
 end.

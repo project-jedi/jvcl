@@ -38,8 +38,7 @@ requires
   JvXPCtrlsD6R,
   rtl,
   vcl,
-  designide,
-  JvCoreD6D
+  designide
   ;
 
 contains

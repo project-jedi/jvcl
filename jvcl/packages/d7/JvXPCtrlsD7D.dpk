@@ -38,9 +38,7 @@ requires
   JvXPCtrlsD7R,
   rtl,
   vcl,
-  designide,
-  JvCoreD7D
-  ;
+  designide;
 
 contains
   JvXPCtrlsReg in '..\..\design\JvXPCtrlsReg.pas' ,

@@ -36,11 +36,7 @@ package JvXPCtrlsD5D;
 
 requires
   JvXPCtrlsD5R,
-  rtl,
-  vcl,
-  designide,
-  vcl50,
-  JvCoreD5D
+  vcl50
   ;
 
 contains

@@ -35,8 +35,6 @@ package JvDockingD6D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD6D,
-  JvCoreD6R,
   designide,
   JvDockingD6R
   ;
