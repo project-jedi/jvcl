@@ -30,9 +30,11 @@ del %TEMP%\dummy.bat
 
 
 : get rid of the quotes around ROOT, DCPDIR and JCLDIR
+if EXIST ..\devtools\bin\NoQuotes.exe then goto NoQuotesExists
 cd ..\devtools\NoQuotes
-if NOT EXIST ..\bin\NoQuotes.exe dcc32.exe NoQuotes.dpr
+dcc32.exe -e..\bin NoQuotes.dpr
 cd ..\bin
+:NoQuotesExists
 NoQuotes ROOT %ROOT%
 Call NoQuotesBatch.bat
 if not %DCPDIR%!==! NoQuotes DCPDIR %DCPDIR%
@@ -57,10 +59,15 @@ echo.
 cd ..\packages
 
 : ensure we have pg.exe
-cd ..\devtools
-if NOT EXIST bin\pg.exe %MAKE% pg.exe
-echo.
+if EXIST ..\devtools\bin\pg.exe goto PgExists
+cd ..\devtools\PackagesGenerator
+dcc32.exe -e..\bin -I"..\..\Common" -n"..\Dcu" -R"..\..\Run;..\..\Common;%JCLDIR%\source\common;%JCLDIR%\source\windows;..\..\..\jcl\source\vcl;..\..\..\jcl\sour
+ce\visclx;..\..\Archive;..\Dcu" -u"..\..\Run;..\Common;..\..\Common;..\..\..\jcl
+\source;..\..\..\jcl\source\common;..\..\..\jcl\source\windows;..\..\..\jcl\sour
+ce\vcl;..\..\..\jcl\source\visclx;..\..\Archive;..\Dcu" -q -w -h -m pg.dprecho.
 cd ..\packages
+
+:PgExists
 
 : copy the required files into the JCL packages dir
 copy /D /Y .\jcldcpdpk%VERSION%.tpl "%JCLDIR%\packages\c%VERSION%\template.dpk"
