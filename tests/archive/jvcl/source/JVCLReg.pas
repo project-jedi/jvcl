@@ -175,7 +175,12 @@ FiltEdit,
   JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBarEditor, JvSHFmt,
   JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl,
   // Fernando Silva
-  JvFooter, JvGroupHeader, JvNTEventLog;
+  JvFooter, JvGroupHeader, JvNTEventLog,
+
+  //JvPlugin
+  JvPlugin,
+  JvPluginMan,
+  JvPluginWizard;
 
 {******************************************************************************}
 
@@ -200,7 +205,11 @@ begin
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimeExProperty);
   RegisterPropertyEditor(typeinfo(integer), TJvCustomOutlookBar, 'ActivePageIndex', TOLBarActivePageEditor);
     {Thumbview.filter editor}
-  RegisterPropertyEditor(TypeInfo(string), TjvTHumbview, 'Filter', TFilterProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
+
+//JvPlugin
+//   RegisterPropertyEditor(TypeInfo(string), TJvPlugin, 'Version', TVersionEditor);
+//   RegisterPropertyEditor(TypeInfo(string), TJvPluginManager, 'Version', TVersionEditor);
 end;
 
 procedure RegCompEds;
@@ -603,6 +612,13 @@ begin
   RegisterCustomModule(TjvBandForm, TCustomModule);
   RegisterPackageWizard(TjvBandObjectDLLWizard.Create);
 
+
+   //JvPlugin
+  // ==========
+  RegisterComponents('Jv Plugin', [
+    TJvPluginManager
+      ]);
+
   // Jv Composites
   // =============
 {  RegisterComponents('Jv Composites', [
@@ -615,11 +631,17 @@ begin
 
 end;
 
+  procedure RegExperts;
+  begin
+   RegisterLibraryExpert(TJvPluginWizard.Create);
+  end;
+
 procedure Register;
 begin
   RegComps;
   RegPropEds;
   RegCompEds;
+  RegExperts;
   RegisterClass(TJvLookOutPage);
   RegisterClass(TJvFooterBtn);
 end;
