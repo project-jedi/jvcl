@@ -7062,10 +7062,10 @@ begin
       if Control <> nil then
         Perform(Control, WM_TIMER, Id, Longint(@TimerProc))
       else
-        Release; // Free; // Control no more exists
+        Free; // Control doesn't exist anymore
     end
     else
-      Release; // Free; // Timer is not used ( should not happen )
+      Free; // Timer is not used ( should not happen )
     Result := True;
     Exit;
   end;
