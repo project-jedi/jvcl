@@ -33,8 +33,8 @@ unit JvBDELoginDialog;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls,
-  ExtCtrls, DB, DBTables,
+  SysUtils, Classes, Controls, Forms, StdCtrls, ExtCtrls,
+  DB, DBTables,
   JvBDELists, JvLoginForm;
 
 type
@@ -331,9 +331,12 @@ begin
     FDialog.PasswordEdit.MaxLength := MaxPwdLen;
     FDialog.AttemptNumber := AttemptNumber;
     case FMode of
-      dmAppLogin: Result := ExecuteAppLogin;
-      dmDBLogin: Result := ExecuteDbLogin(LoginParams);
-      dmUnlock: Result := ExecuteUnlock;
+      dmAppLogin:
+        Result := ExecuteAppLogin;
+      dmDBLogin:
+        Result := ExecuteDbLogin(LoginParams);
+      dmUnlock:
+        Result := ExecuteUnlock;
     else
       Result := False;
     end;
@@ -364,7 +367,7 @@ end;
 procedure TJvDBLoginDialog.FillParams(LoginParams: TStrings);
 begin
   LoginParams.Values[szUSERNAME] := GetUserName;
-  LoginParams.Values['PASSWORD'] := FDialog.PasswordEdit.Text;
+  LoginParams.Values[szPASSWORD] := FDialog.PasswordEdit.Text;
   if CheckDatabaseChange then
   begin
     LoginParams.Values[szSERVERNAME] := Copy(FDialog.UserNameEdit.Text,
@@ -428,7 +431,7 @@ begin
     Result := True;
 end;
 
-{ Utility routines }
+//=== Utility routines =======================================================
 
 procedure OnLoginDialog(Database: TDatabase; LoginParams: TStrings;
   AttemptNumber: Integer; ShowDBName: Boolean);

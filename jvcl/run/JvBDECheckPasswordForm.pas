@@ -30,7 +30,8 @@ unit JvBDECheckPasswordForm;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, StdCtrls, Buttons, DBTables, DB,
+  Windows, SysUtils, Classes, Controls, Forms, StdCtrls, Buttons,
+  DBTables, DB,
   JvComponent;
 
 type

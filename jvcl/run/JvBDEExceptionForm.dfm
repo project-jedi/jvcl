@@ -88,7 +88,7 @@ object JvBdeErrorDlg: TJvBdeErrorDlg
     BevelInner = bvLowered
     BevelOuter = bvLowered
     TabOrder = 2
-    object BDELabel: TJvLabel
+    object BDELabel: TLabel
       Left = 87
       Top = 11
       Width = 121
@@ -96,7 +96,7 @@ object JvBdeErrorDlg: TJvBdeErrorDlg
       Alignment = taRightJustify
       AutoSize = False
     end
-    object NativeLabel: TJvLabel
+    object NativeLabel: TLabel
       Left = 87
       Top = 30
       Width = 121
