@@ -25,7 +25,7 @@ begin
   Stream.Seek(-sizeof(ASignature), soFromCurrent);
 end;
 
-procedure CleanDFM(Input, Output: TStream; SkipList: TStrings);
+function CleanDFM(Input, Output: TStream; SkipList: TStrings):boolean;
 var
   NestingLevel: Integer;
   SaveSeparator: Char;
@@ -335,10 +335,13 @@ var
     WriteStr(' = ');
     ConvertValue;
     WriteStr(sLineBreak);
-    // Check if the current property should be removed 
+    // Check if the current property should be removed
     if (SkipList <> nil) and ((SkipList.IndexOf(ClassName + '.' + PropName) >= 0) or
       (SkipList.IndexOf('*.' + PropName) >= 0)) then
+    begin
+      Result := true;
       Writer.Position := APos; // go back to previous position
+    end;
   end;
 
   procedure ConvertObject;
@@ -356,6 +359,7 @@ var
     WriteStr('end' + sLineBreak);
   end;
 begin
+  Result := false; // result is set to true in ConvertProperty if we skip anything
   tmpStream := TMemoryStream.Create;
   try
     // we don't want to rewrite everything in CleanDFM,
@@ -424,8 +428,7 @@ begin
     F := TFileStream.Create(Filename, fmOpenReadWrite or fmShareExclusive);
     F2 := TMemoryStream.Create;
     try
-      CleanDFM(F, F2, ASkipList);
-      if F2.Size <> F.Size then // only write if something changed
+      if CleanDFM(F, F2, ASkipList) then // only write if something changed
       begin
         Result := true;
         if ReplaceInline then
