@@ -52,6 +52,8 @@ type
     FDefaultSection: string;
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
+    function DefaultExtension : string; override;
+
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
@@ -553,6 +555,12 @@ begin
     TmpList.Free;
   end;
 end;
+
+function TJvCustomAppIniStorage.DefaultExtension : string;
+begin
+  Result := 'xml';
+end;
+
 
 //=== { TJvAppIniFileStorage } ===============================================
 
