@@ -3540,13 +3540,13 @@ begin
         end;
       ecToUpperCase:
         if not FReadOnly then
-          SelText := WideUpperCase(SelText);
+          SelText := AnsiUpperCase(SelText);
       ecToLowerCase:
         if not FReadOnly then
-          SelText := WideLowerCase(SelText);
+          SelText := AnsiLowerCase(SelText);
       ecChangeCase:
         if not FReadOnly then
-          SelText := WideChangeCase(SelText);
+          SelText := AnsiChangeCase(SelText);
       ecUndo:
         if not FReadOnly then
         begin
