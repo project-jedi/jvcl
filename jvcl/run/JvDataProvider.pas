@@ -36,16 +36,10 @@ interface
 {$ENDIF COMPILER6_UP}
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  QStdCtrls, // type TOwnerDrawState
-  {$ENDIF VisualCLX}
   Classes, Contnrs, Graphics, Controls, ImgList,
   JclBase,
   JvComponent, JvDataProviderIntf;
@@ -1277,6 +1271,7 @@ begin
   ACanvas.Font.Color := clGrayText;
   {$IFDEF VisualCLX}
   ACanvas.Start;
+  SetPainterFont(ACanvas.Handle, ACanvas.Font);
   {$ENDIF VisualCLX}
   DrawShadowText(ACanvas.Handle, PChar(Text), Length(Text), ARect, 0, 1, ColorToRGB(clBtnHighlight),
     spRightBottom);
