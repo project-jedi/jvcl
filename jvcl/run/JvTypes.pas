@@ -89,6 +89,15 @@ type
     RightShifted: Integer;
   end;
   }
+  
+  TJvPoint = class(TPersistent)
+  protected
+    Fx : Integer;
+    Fy : Integer;
+  published
+    property x : Integer read Fx write Fx;
+    property y : Integer read Fy write Fy;
+  end;
 
   TJvErrorEvent = procedure(Sender: TObject; ErrorMsg: string) of object;
   TJvWallpaperStyle = (wpTile, wpCenter, wpStretch);
