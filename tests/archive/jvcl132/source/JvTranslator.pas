@@ -50,6 +50,7 @@ type
     procedure Translate(const FileName: string);overload;
     procedure Translate(const FileName: string;const Form: TForm);overload;
     procedure Translate(const Form: TForm);overload;
+    function Translate(const Category, Item: string): string;overload;
   end;
 
   TJvTranslatorStrings = class(TJvComponent)
@@ -292,6 +293,24 @@ begin
   lElem := FXml.Root.Items.ItemNamed[st];
   if lElem<>nil then
     TranslateComponent(Form,lElem);
+end;
+{*******************************************************************}
+function TJvTranslator.Translate(const Category, Item: string): string;
+var
+ lElem: TJvSimpleXmlElem;
+begin
+  result := '';
+  lElem := FXml.Root.Items.ItemNamed[Category];
+  if lElem<>nil then
+  begin
+    lElem := lElem.Items.ItemNamed[Item];
+    if lElem<>nil then
+    begin
+      result := lElem.Value;
+      if result='' then
+        result := lElem.Properties.Value('Value');
+    end;
+  end;
 end;
 {*******************************************************************}
 
