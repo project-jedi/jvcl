@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ActnList, StdCtrls, JvToolEdit, Mask, ExtCtrls, JvComponent,
-  JvAppStore, JvAppRegistryStore;
+  JvAppStorage, JvAppRegistryStorage;
 
 type
   TEditPasCleanSwitch = (epcsDoCapitalization, epcsSortImplementation);
@@ -34,7 +34,7 @@ type
     ActionList1: TActionList;
     actCancel: TAction;
     actOK: TAction;
-    JvAppRegistryStore1: TJvAppRegistryStore;
+    JvAppRegistryStore1: TJvAppRegistryStorage;
     procedure actCancelExecute(Sender: TObject);
     procedure actOKExecute(Sender: TObject);
     procedure chbCapitalizationClick(Sender: TObject);

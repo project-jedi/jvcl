@@ -611,12 +611,11 @@ object frmDtxRename: TfrmDtxRename
       OnUpdate = DeleteHasItems
     end
   end
-  object JvAppRegistryStore1: TJvAppRegistryStore
-    StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+  object JvAppRegistryStore1: TJvAppRegistryStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     Root = 'Software\JVCL\GenDtx'
-    RegRoot = hkCurrentUser
-    SubStores = <>
+    SubStorages = <>
     Left = 296
     Top = 144
   end

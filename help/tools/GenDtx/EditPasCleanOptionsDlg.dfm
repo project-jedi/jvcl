@@ -50,6 +50,7 @@ object frmEditPasCleanOptions: TfrmEditPasCleanOptions
       Top = 40
       Width = 313
       Height = 21
+      AddQuotes = False
       ButtonFlat = False
       NumGlyphs = 1
       TabOrder = 1
@@ -129,9 +130,11 @@ object frmEditPasCleanOptions: TfrmEditPasCleanOptions
       OnExecute = actOKExecute
     end
   end
-  object JvAppRegistryStore1: TJvAppRegistryStore
+  object JvAppRegistryStore1: TJvAppRegistryStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     Root = 'Software\JVCL\GenDtx'
-    RegRoot = hkCurrentUser
+    SubStorages = <>
     Left = 264
     Top = 16
   end

@@ -7,8 +7,8 @@ uses
   Dialogs, StdCtrls, ActnList,
 
   ParserTypes, MainCtrl, Settings, JvComponent, JvProgressComponent,
-  ComCtrls, ToolWin, ExtCtrls, Menus, Buttons, JvFormPlacement, JvAppStore,
-  JvAppRegistryStore;
+  ComCtrls, ToolWin, ExtCtrls, Menus, Buttons, JvFormPlacement,
+  JvAppStorage, JvAppRegistryStorage;
 
 const
   CM_CheckDirectories = WM_APP + 1;
@@ -98,7 +98,7 @@ type
     GenerateClassStructure1: TMenuItem;
     actSortPas: TAction;
     SortImplPas1: TMenuItem;
-    JvAppRegistryStore1: TJvAppRegistryStore;
+    JvAppRegistryStore1: TJvAppRegistryStorage;
     JvFormStorage1: TJvFormStorage;
     actCheckDtxFilesDialog: TAction;
     CheckDtxFilesDialog1: TMenuItem;

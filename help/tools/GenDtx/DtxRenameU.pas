@@ -5,8 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ActnList, StdCtrls, ComCtrls, ExtCtrls,
-  DelphiParser, ParserTypes, ToolWin, JvComponent, JvAppStore,
-  JvAppRegistryStore, JvFormPlacement;
+  DelphiParser, ParserTypes, ToolWin, JvComponent, JvFormPlacement,
+  JvAppStorage, JvAppRegistryStorage;
 
 type
   TColorState = (csNotInPas, csNotInDtx, csBothInPasDtx, csBothInPasDtxOptional, csNotInDtxOptional);
@@ -233,7 +233,7 @@ type
     ToolButton1: TToolButton;
     actColors: TAction;
     ToolButton2: TToolButton;
-    JvAppRegistryStore1: TJvAppRegistryStore;
+    JvAppRegistryStore1: TJvAppRegistryStorage;
     JvFormStorage1: TJvFormStorage;
     lblNotInPasCount: TLabel;
     lblNotInDtxCount: TLabel;
@@ -1370,7 +1370,7 @@ begin
     for I := 0 to FDtxList.SkipList.Count - 1 do
       AddToSkipList_NF(FSourceList.IndexOf(FDtxList.SkipList[I]));
 
-    FOriginalSourceList.Assign(FSourceList);
+//    FOriginalSourceList.Assign(FSourceList);
 
     ConstructRenames;
   finally
