@@ -676,84 +676,86 @@ type
 
   TJvSpeedButton = class(TJvGraphicControl)
   private
-    FGroupIndex: Integer;
-    FStyle: TButtonStyle;
-    FGlyph: Pointer;
-    FDrawImage: TBitmap;
+    FAllowAllUp: Boolean;
+    FAllowTimer, FOver: Boolean;
     FDown: Boolean;
     FDragging: Boolean;
-    FFlat: Boolean;
-    FMouseInControl: Boolean;
-    FAllowAllUp: Boolean;
-    FLayout: TButtonLayout;
-    FSpacing: Integer;
-    FMargin: Integer;
-    FModalResult: TModalResult;
-    FTransparent: Boolean;
-    FMarkDropDown: Boolean;
+    FDrawImage: TBitmap;
     FDropDownMenu: TPopupMenu;
-    FMenuPosition: TJvDropDownMenuPos;
+    FFlat: Boolean;
+    FFontSave: TFont;
+    FGlyph: Pointer;
+    FGroupIndex: Integer;
+    FHintColor: TColor;
+    FHotGlyph: TBitmap;
+    FHotTrack: Boolean;
+    FHotTrackFont: TFont;
+    FHotTrackFontOptions: TJvTrackFontOptions;
     FInactiveGrayed: Boolean;
-    FMenuTracking: Boolean;
-    FRepeatTimer: TTimer;
-    FAllowTimer, FOver: Boolean;
     FInitRepeatPause: Word;
-    FRepeatPause: Word;
+    FLayout: TButtonLayout;
+    FMargin: Integer;
+    FMarkDropDown: Boolean;
+    FMenuPosition: TJvDropDownMenuPos;
+    FMenuTracking: Boolean;
+    FModalResult: TModalResult;
+    FMouseInControl: Boolean;
+    FOldGlyph: TBitmap;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FHotTrack: Boolean;
-    FHotGlyph: TBitmap;
-    FOldGlyph: TBitmap;
-    FHintColor: TColor;
-    FHotTrackFont: TFont;
-    FFontSave: TFont;
-    FSaved:TColor;
     FOnParentColorChanged: TNotifyEvent;
-    FHotTrackFontOptions: TJvTrackFontOptions;
-    procedure GlyphChanged(Sender: TObject);
-    procedure UpdateExclusive;
-    function GetGlyph: TBitmap;
-    procedure SetGlyph(Value: TBitmap);
-    function GetGrayNewStyle: Boolean;
-    procedure SetGrayNewStyle(const Value: Boolean);
-    function GetNumGlyphs: TJvNumGlyphs;
-    procedure SetNumGlyphs(Value: TJvNumGlyphs);
-    function GetWordWrap: Boolean;
-    procedure SetWordWrap(Value: Boolean);
+    FRepeatPause: Word;
+    FRepeatTimer: TTimer;
+    FSaved:TColor;
+    FSpacing: Integer;
+    FStyle: TButtonStyle;
+    FTransparent: Boolean;
     function GetAlignment: TAlignment;
+    function GetGlyph: TBitmap;
+    function GetGrayNewStyle: Boolean;
+    function GetNumGlyphs: TJvNumGlyphs;
+    function GetWordWrap: Boolean;
     procedure SetAlignment(Value: TAlignment);
-    procedure SetDown(Value: Boolean);
     procedure SetAllowAllUp(Value: Boolean);
-    procedure SetGroupIndex(Value: Integer);
-    procedure SetLayout(Value: TButtonLayout);
-    procedure SetSpacing(Value: Integer);
-    procedure SetMargin(Value: Integer);
+    procedure SetAllowTimer(Value: Boolean);
+    procedure SetDown(Value: Boolean);
     procedure SetDropDownMenu(Value: TPopupMenu);
     procedure SetFlat(Value: Boolean);
-    procedure SetStyle(Value: TButtonStyle);
+    procedure SetGlyph(Value: TBitmap);
+    procedure SetGrayNewStyle(const Value: Boolean);
+    procedure SetGroupIndex(Value: Integer);
+    procedure SetHotTrackFont(const Value: TFont);
+    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetInactiveGrayed(Value: Boolean);
-    procedure SetTransparent(Value: Boolean);
+    procedure SetLayout(Value: TButtonLayout);
+    procedure SetMargin(Value: Integer);
     procedure SetMarkDropDown(Value: Boolean);
-    procedure TimerExpired(Sender: TObject);
-    procedure SetAllowTimer(Value: Boolean);
+    procedure SetNumGlyphs(Value: TJvNumGlyphs);
+    procedure SetSpacing(Value: Integer);
+    procedure SetStyle(Value: TButtonStyle);
+    procedure SetTransparent(Value: Boolean);
+    procedure SetWordWrap(Value: Boolean);
+
     function CheckMenuDropDown(const Pos: TSmallPoint; Manual: Boolean): Boolean;
     procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure GlyphChanged(Sender: TObject);
+    procedure TimerExpired(Sender: TObject);
+    procedure UpdateExclusive;
+
     procedure CMButtonPressed(var Msg: TMessage); message CM_BUTTONPRESSED;
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK;
     procedure WMMouseMove(var Msg: TMessage); message WM_MOUSEMOVE;
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
     procedure WMRButtonUp(var Msg: TWMRButtonUp); message WM_RBUTTONUP;
-    procedure SetHotTrackFont(const Value: TFont);
-    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
     FState: TJvButtonState;
     //Polaris
@@ -785,44 +787,41 @@ type
     procedure UpdateTracking;
     property MouseInControl: Boolean read FMouseInControl;
   published
-    property FlatStandard: Boolean read FFlatStandard write SetFlatStandard default False;
     property Action;
-    property Anchors;
-    property BiDiMode;
-    property Constraints;
-    property DragKind;
-    property ParentBiDiMode;
-    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
-    property HotGlyph: TBitmap read FHotGlyph write SetGlyph;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-
     property Alignment: TAlignment read GetAlignment write SetAlignment default taCenter;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
     property AllowTimer: Boolean read FAllowTimer write SetAllowTimer default False;
-    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
-    { Ensure group index is declared before Down }
-    property Down: Boolean read FDown write SetDown default False;
-    property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropDownMenu;
-    property MenuPosition: TJvDropDownMenuPos read FMenuPosition write FMenuPosition
-      default dmpBottom;
+    property Anchors;
+    property BiDiMode;
     property Caption;
+    property Constraints;
+    { Ensure group index is declared before Down }
+    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
+    property Down: Boolean read FDown write SetDown default False;
     property DragCursor;
+    property DragKind;
     property DragMode;
+    property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropDownMenu;
     property Enabled;
     property Flat: Boolean read FFlat write SetFlat default False;
+    property FlatStandard: Boolean read FFlatStandard write SetFlatStandard default False;
     property Font;
     property Glyph: TBitmap read GetGlyph write SetGlyph;
-    property GrayedInactive: Boolean read FInactiveGrayed write SetInactiveGrayed
-      default True;
+    property GrayedInactive: Boolean read FInactiveGrayed write SetInactiveGrayed default True;
+    property GrayNewStyle: Boolean read GetGrayNewStyle write SetGrayNewStyle default True;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HotGlyph: TBitmap read FHotGlyph write SetGlyph;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
     property InitPause: Word read FInitRepeatPause write FInitRepeatPause default 500;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphTop;
     property Margin: Integer read FMargin write SetMargin default -1;
     property MarkDropDown: Boolean read FMarkDropDown write SetMarkDropDown default True;
+    property MenuPosition: TJvDropDownMenuPos read FMenuPosition write FMenuPosition default dmpBottom;
     property ModalResult: TModalResult read FModalResult write FModalResult default 0;
     property NumGlyphs: TJvNumGlyphs read GetNumGlyphs write SetNumGlyphs default 1;
-    property GrayNewStyle: Boolean read GetGrayNewStyle write SetGrayNewStyle default True;
+    property ParentBiDiMode;
     property ParentFont;
     property ParentShowHint default False;
     property RepeatInterval: Word read FRepeatPause write FRepeatPause default 100;
@@ -830,8 +829,9 @@ type
     property Spacing: Integer read FSpacing write SetSpacing default 1;
     property Style: TButtonStyle read FStyle write SetStyle default bsAutoDetect;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
-    property WordWrap: Boolean read GetWordWrap write SetWordWrap default False;
     property Visible;
+    property WordWrap: Boolean read GetWordWrap write SetWordWrap default False;
+
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -880,19 +880,19 @@ type
 
   TJvxButtonGlyph = class
   private
-    FOriginal: TBitmap;
-    FGlyphList: TImageList;
-    FIndexs: array[TJvButtonState] of Integer;
-    FTransparentColor: TColor;
-    FNumGlyphs: TJvNumGlyphs;
-    FGrayNewStyle: Boolean;
-    FWordWrap: Boolean;
     FAlignment: TAlignment;
+    FGlyphList: TImageList;
+    FGrayNewStyle: Boolean;
+    FIndexs: array[TJvButtonState] of Integer;
+    FNumGlyphs: TJvNumGlyphs;
     FOnChange: TNotifyEvent;
+    FOriginal: TBitmap;
+    FTransparentColor: TColor;
+    FWordWrap: Boolean;
     procedure GlyphChanged(Sender: TObject);
     procedure SetGlyph(Value: TBitmap);
-    procedure SetNumGlyphs(Value: TJvNumGlyphs);
     procedure SetGrayNewStyle(const Value: Boolean);
+    procedure SetNumGlyphs(Value: TJvNumGlyphs);
     function MapColor(Color: TColor): TColor;
   protected
     procedure MinimizeCaption(Canvas: TCanvas; const Caption: string;
@@ -925,8 +925,8 @@ type
       State: TJvButtonState; Flags: Word): TRect;
     property Alignment: TAlignment read FAlignment write FAlignment;
     property Glyph: TBitmap read FOriginal write SetGlyph;
-    property NumGlyphs: TJvNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property GrayNewStyle: Boolean read FGrayNewStyle write SetGrayNewStyle;
+    property NumGlyphs: TJvNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property WordWrap: Boolean read FWordWrap write FWordWrap;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -3992,410 +3992,6 @@ end;
 var
   GlyphCache: TJvGlyphCache = nil;
 
-constructor TJvxButtonGlyph.Create;
-var
-  I: TJvButtonState;
-begin
-  inherited Create;
-  FOriginal := TBitmap.Create;
-  FOriginal.OnChange := GlyphChanged;
-  FTransparentColor := clFuchsia;
-  FAlignment := taCenter;
-  FNumGlyphs := 1;
-  for I := Low(I) to High(I) do
-    FIndexs[I] := -1;
-  if GlyphCache = nil then
-    GlyphCache := TJvGlyphCache.Create;
-end;
-
-destructor TJvxButtonGlyph.Destroy;
-begin
-  FOriginal.Free;
-  Invalidate;
-  if Assigned(GlyphCache) and GlyphCache.Empty then
-  begin
-    GlyphCache.Free;
-    GlyphCache := nil;
-  end;
-  inherited Destroy;
-end;
-
-procedure TJvxButtonGlyph.Invalidate;
-var
-  I: TJvButtonState;
-begin
-  for I := Low(I) to High(I) do
-  begin
-    if Assigned(FGlyphList) then
-      if FIndexs[I] <> -1 then
-        TJvGlyphList(FGlyphList).Delete(FIndexs[I]);
-    FIndexs[I] := -1;
-  end;
-  GlyphCache.ReturnList(TJvGlyphList(FGlyphList));
-  FGlyphList := nil;
-end;
-
-procedure TJvxButtonGlyph.GlyphChanged(Sender: TObject);
-var
-  Glyphs: Integer;
-begin
-  if Sender = FOriginal then
-  begin
-    Invalidate;
-    if (FOriginal <> nil) and (FOriginal.Height > 0) then
-    begin
-      FTransparentColor := FOriginal.TransparentColor and not PaletteMask;
-      if FOriginal.Width mod FOriginal.Height = 0 then
-      begin
-        Glyphs := FOriginal.Width div FOriginal.Height;
-        if Glyphs > (Ord(High(TJvButtonState)) + 1) then
-          Glyphs := 1;
-        SetNumGlyphs(Glyphs);
-      end;
-    end;
-    if Assigned(FOnChange) then
-      FOnChange(Self);
-  end;
-end;
-
-procedure TJvxButtonGlyph.SetGlyph(Value: TBitmap);
-begin
-  Invalidate;
-  FOriginal.Assign(Value);
-end;
-
-procedure TJvxButtonGlyph.SetNumGlyphs(Value: TJvNumGlyphs);
-begin
-  if (Value <> FNumGlyphs) and (Value > 0) then
-  begin
-    Invalidate;
-    FNumGlyphs := Value;
-  end;
-end;
-
-procedure TJvxButtonGlyph.SetGrayNewStyle(const Value: Boolean);
-begin
-  if Value <> FGrayNewStyle then
-  begin
-    Invalidate;
-    FGrayNewStyle := Value;
-  end;
-end;
-
-function TJvxButtonGlyph.MapColor(Color: TColor): TColor;
-var
-  Index: Byte;
-begin
-  if (Color = FTransparentColor) or (ColorToRGB(Color) = ColorToRGB(clBtnFace)) then
-    Result := Color
-  else
-  begin
-    Color := ColorToRGB(Color);
-    Index := Byte(Longint(Word(GetRValue(Color)) * 77 +
-      Word(GetGValue(Color)) * 150 + Word(GetBValue(Color)) * 29) shr 8);
-    Result := RGB(Index, Index, Index);
-  end;
-end;
-
-function TJvxButtonGlyph.CreateImageGlyph(State: TJvButtonState;
-  Images: TImageList; Index: Integer): Integer;
-var
-  TmpImage, Mask: TBitmap;
-  IWidth, IHeight, X, Y: Integer;
-begin
-  if State = rbsDown then
-    State := rbsUp;
-  Result := FIndexs[State];
-  if (Result <> -1) or (Images.Width = 0) or (Images.Height = 0) or
-    (Images.Count = 0) then
-    Exit;
-  IWidth := Images.Width;
-  IHeight := Images.Height;
-  if FGlyphList = nil then
-  begin
-    if GlyphCache = nil then
-      GlyphCache := TJvGlyphCache.Create;
-    FGlyphList := GlyphCache.GetList(IWidth, IHeight);
-  end;
-  TmpImage := TBitmap.Create;
-  try
-    TmpImage.Width := IWidth;
-    TmpImage.Height := IHeight;
-    case State of
-      rbsUp, rbsDown, rbsExclusive:
-        begin
-          with TmpImage.Canvas do
-          begin
-            FillRect(Rect(0, 0, IWidth, IHeight));
-            ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_NORMAL);
-          end;
-          Mask := TBitmap.Create;
-          try
-            with Mask do
-            begin
-              Monochrome := True;
-              Height := IHeight;
-              Width := IWidth;
-            end;
-            with Mask.Canvas do
-            begin
-              FillRect(Rect(0, 0, IWidth, IHeight));
-              ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_MASK);
-            end;
-            FIndexs[State] := TJvGlyphList(FGlyphList).Add(TmpImage, Mask);
-          finally
-            Mask.Free;
-          end;
-        end;
-      rbsDisabled:
-        begin
-          TmpImage.Canvas.Brush.Color := clBtnFace;
-          TmpImage.Canvas.FillRect(Rect(0, 0, IWidth, IHeight));
-          ImageListDrawDisabled(Images, TmpImage.Canvas, 0, 0, Index,
-            clBtnHighlight, clBtnShadow, True);
-          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
-            ColorToRGB(clBtnFace));
-        end;
-      rbsInactive:
-        begin
-          TmpImage.Canvas.Brush.Color := clBtnFace;
-          TmpImage.Canvas.FillRect(Rect(0, 0, IWidth, IHeight));
-          ImageList_Draw(Images.Handle, Index, TmpImage.Canvas.Handle, 0, 0,
-            ILD_NORMAL);
-          with TmpImage do
-          begin
-            for X := 0 to Width - 1 do
-              for Y := 0 to Height - 1 do
-                Canvas.Pixels[X, Y] := MapColor(Canvas.Pixels[X, Y]);
-          end;
-          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
-            ColorToRGB(clBtnFace));
-        end;
-    end;
-  finally
-    TmpImage.Free;
-  end;
-  Result := FIndexs[State];
-end;
-
-function TJvxButtonGlyph.CreateButtonGlyph(State: TJvButtonState): Integer;
-var
-  TmpImage, MonoBmp: TBitmap;
-  IWidth, IHeight, X, Y: Integer;
-  IRect, ORect: TRect;
-  I: TJvButtonState;
-begin
-  if (State = rbsDown) and (NumGlyphs < 3) then
-    State := rbsUp;
-  Result := FIndexs[State];
-  if (Result <> -1) or (FOriginal.Width = 0) or (FOriginal.Height = 0) or
-    FOriginal.Empty then
-    Exit;
-  IWidth := FOriginal.Width div FNumGlyphs;
-  IHeight := FOriginal.Height;
-  if FGlyphList = nil then
-  begin
-    if GlyphCache = nil then
-      GlyphCache := TJvGlyphCache.Create;
-    FGlyphList := GlyphCache.GetList(IWidth, IHeight);
-  end;
-  TmpImage := TBitmap.Create;
-  try
-    TmpImage.Width := IWidth;
-    TmpImage.Height := IHeight;
-    IRect := Rect(0, 0, IWidth, IHeight);
-    TmpImage.Canvas.Brush.Color := clBtnFace;
-    I := State;
-    if Ord(I) >= NumGlyphs then
-      I := rbsUp;
-    ORect := Rect(Ord(I) * IWidth, 0, (Ord(I) + 1) * IWidth, IHeight);
-    case State of
-      rbsUp, rbsDown, rbsExclusive:
-        begin
-          TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
-            FTransparentColor);
-        end;
-      rbsDisabled:
-        if NumGlyphs > 1 then
-        begin
-          TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
-            FTransparentColor);
-        end
-        else
-        begin
-          if FGrayNewStyle then
-          begin
-            MonoBmp := CreateDisabledBitmap_NewStyle(FOriginal, FTransparentColor);
-            try
-              FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(MonoBmp,
-                FTransparentColor);
-            finally
-              MonoBmp.Free;
-            end;
-          end
-          else
-          begin
-            MonoBmp := CreateDisabledBitmap(FOriginal, clBlack);
-            try
-              FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(MonoBmp,
-                ColorToRGB(clBtnFace));
-            finally
-              MonoBmp.Free;
-            end;
-          end;
-        end;
-      rbsInactive:
-        if NumGlyphs > 4 then
-        begin
-          TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
-            FTransparentColor);
-        end
-        else
-        begin
-          with TmpImage do
-            for X := 0 to Width - 1 do
-              for Y := 0 to Height - 1 do
-                Canvas.Pixels[X, Y] := MapColor(FOriginal.Canvas.Pixels[X, Y]);
-          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
-            FTransparentColor);
-        end;
-    end;
-  finally
-    TmpImage.Free;
-  end;
-  Result := FIndexs[State];
-  FOriginal.Dormant;
-end;
-
-procedure TJvxButtonGlyph.DrawPopupMark(Canvas: TCanvas; X, Y: Integer;
-  State: TJvButtonState);
-var
-  AColor: TColor;
-
-  procedure DrawMark;
-  var
-    I: Integer;
-  begin
-    with Canvas do
-    begin
-      for I := 0 to 6 do
-      begin
-        Pixels[X + I, Y - 1] := AColor;
-        if (I > 0) and (I < 6) then
-        begin
-          Pixels[X + I, Y] := AColor;
-          if (I > 1) and (I < 5) then
-            Pixels[X + I, Y + 1] := AColor;
-        end;
-      end;
-      Pixels[X + 3, Y + 2] := AColor;
-    end;
-  end;
-
-begin
-  if State = rbsDisabled then
-  begin
-    AColor := clBtnHighlight;
-    Inc(X, 1);
-    Inc(Y, 1);
-    DrawMark;
-    Dec(X, 1);
-    Dec(Y, 1);
-    AColor := clBtnShadow;
-  end
-  else
-    AColor := clBtnText;
-  DrawMark;
-end;
-
-function TJvxButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; X, Y: Integer;
-  State: TJvButtonState): TPoint;
-var
-  Index: Integer;
-begin
-  Result := Point(0, 0);
-  if (FOriginal = nil) or (FOriginal.Width = 0) or (FOriginal.Height = 0) or
-    FOriginal.Empty then
-    Exit;
-  Index := CreateButtonGlyph(State);
-  if Index >= 0 then
-  begin
-    ImageList_Draw(FGlyphList.Handle, Index, Canvas.Handle, X, Y, ILD_NORMAL);
-    Result := Point(FGlyphList.Width, FGlyphList.Height);
-  end;
-end;
-
-function TJvxButtonGlyph.DrawButtonImage(Canvas: TCanvas; X, Y: Integer;
-  Images: TImageList; ImageIndex: Integer; State: TJvButtonState): TPoint;
-var
-  Index: Integer;
-begin
-  Result := Point(0, 0);
-  if (Images = nil) or (ImageIndex < 0) or (ImageIndex >= Images.Count) then
-    Exit;
-  if State = rbsDisabled then
-  begin
-    ImageListDrawDisabled(Images, Canvas, X, Y, ImageIndex, clBtnHighlight,
-      clBtnShadow, True);
-  end
-  else if State = rbsInactive then
-  begin
-    Index := CreateImageGlyph(State, Images, ImageIndex);
-    if Index >= 0 then
-      ImageList_Draw(FGlyphList.Handle, Index, Canvas.Handle, X, Y, ILD_NORMAL);
-  end
-  else
-    ImageList_Draw(Images.Handle, ImageIndex, Canvas.Handle, X, Y, ILD_NORMAL);
-  Result := Point(Images.Width, Images.Height);
-end;
-
-procedure TJvxButtonGlyph.MinimizeCaption(Canvas: TCanvas; const Caption: string;
-  Buffer: PChar; MaxLen, Width: Integer);
-var
-  I: Integer;
-  Lines: TStrings;
-begin
-  StrPLCopy(Buffer, Caption, MaxLen);
-  if FWordWrap then
-    Exit;
-  Lines := TStringList.Create;
-  try
-    Lines.Text := Caption;
-    for I := 0 to Lines.Count - 1 do
-      Lines[I] := MinimizeText(Lines[I], Canvas, Width);
-    StrPLCopy(Buffer, TrimRight(Lines.Text), MaxLen);
-  finally
-    Lines.Free;
-  end;
-end;
-
-procedure TJvxButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
-  TextBounds: TRect; State: TJvButtonState; Flags: Word);
-var
-  CString: array[0..255] of Char;
-begin
-  Canvas.Brush.Style := bsClear;
-  StrPLCopy(CString, Caption, SizeOf(CString) - 1);
-  Flags := DT_VCENTER or WordWraps[FWordWrap] or Flags;
-  if State = rbsDisabled then
-  begin
-    with Canvas do
-    begin
-      OffsetRect(TextBounds, 1, 1);
-      Font.Color := clBtnHighlight;
-      DrawText(Handle, CString, Length(Caption), TextBounds, Flags);
-      OffsetRect(TextBounds, -1, -1);
-      Font.Color := clBtnShadow;
-      DrawText(Handle, CString, Length(Caption), TextBounds, Flags);
-    end;
-  end
-  else
-    DrawText(Canvas.Handle, CString, -1, TextBounds, Flags);
-end;
-
 procedure TJvxButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
   var Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
   PopupMark: Boolean; var GlyphPos: TPoint; var TextBounds: TRect; Flags: Word;
@@ -4536,12 +4132,278 @@ begin
   OffsetRect(TextBounds, TextPos.X + Client.Left, TextPos.Y + Client.Top);
 end;
 
+constructor TJvxButtonGlyph.Create;
+var
+  I: TJvButtonState;
+begin
+  inherited Create;
+  FOriginal := TBitmap.Create;
+  FOriginal.OnChange := GlyphChanged;
+  FTransparentColor := clFuchsia;
+  FAlignment := taCenter;
+  FNumGlyphs := 1;
+  for I := Low(I) to High(I) do
+    FIndexs[I] := -1;
+  if GlyphCache = nil then
+    GlyphCache := TJvGlyphCache.Create;
+end;
+
+function TJvxButtonGlyph.CreateButtonGlyph(State: TJvButtonState): Integer;
+var
+  TmpImage, MonoBmp: TBitmap;
+  IWidth, IHeight, X, Y: Integer;
+  IRect, ORect: TRect;
+  I: TJvButtonState;
+begin
+  if (State = rbsDown) and (NumGlyphs < 3) then
+    State := rbsUp;
+  Result := FIndexs[State];
+  if (Result <> -1) or (FOriginal.Width = 0) or (FOriginal.Height = 0) or
+    FOriginal.Empty then
+    Exit;
+  IWidth := FOriginal.Width div FNumGlyphs;
+  IHeight := FOriginal.Height;
+  if FGlyphList = nil then
+  begin
+    if GlyphCache = nil then
+      GlyphCache := TJvGlyphCache.Create;
+    FGlyphList := GlyphCache.GetList(IWidth, IHeight);
+  end;
+  TmpImage := TBitmap.Create;
+  try
+    TmpImage.Width := IWidth;
+    TmpImage.Height := IHeight;
+    IRect := Rect(0, 0, IWidth, IHeight);
+    TmpImage.Canvas.Brush.Color := clBtnFace;
+    I := State;
+    if Ord(I) >= NumGlyphs then
+      I := rbsUp;
+    ORect := Rect(Ord(I) * IWidth, 0, (Ord(I) + 1) * IWidth, IHeight);
+    case State of
+      rbsUp, rbsDown, rbsExclusive:
+        begin
+          TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
+            FTransparentColor);
+        end;
+      rbsDisabled:
+        if NumGlyphs > 1 then
+        begin
+          TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
+            FTransparentColor);
+        end
+        else
+        begin
+          if FGrayNewStyle then
+          begin
+            MonoBmp := CreateDisabledBitmap_NewStyle(FOriginal, FTransparentColor);
+            try
+              FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(MonoBmp,
+                FTransparentColor);
+            finally
+              MonoBmp.Free;
+            end;
+          end
+          else
+          begin
+            MonoBmp := CreateDisabledBitmap(FOriginal, clBlack);
+            try
+              FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(MonoBmp,
+                ColorToRGB(clBtnFace));
+            finally
+              MonoBmp.Free;
+            end;
+          end;
+        end;
+      rbsInactive:
+        if NumGlyphs > 4 then
+        begin
+          TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
+            FTransparentColor);
+        end
+        else
+        begin
+          with TmpImage do
+            for X := 0 to Width - 1 do
+              for Y := 0 to Height - 1 do
+                Canvas.Pixels[X, Y] := MapColor(FOriginal.Canvas.Pixels[X, Y]);
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
+            FTransparentColor);
+        end;
+    end;
+  finally
+    TmpImage.Free;
+  end;
+  Result := FIndexs[State];
+  FOriginal.Dormant;
+end;
+
+function TJvxButtonGlyph.CreateImageGlyph(State: TJvButtonState;
+  Images: TImageList; Index: Integer): Integer;
+var
+  TmpImage, Mask: TBitmap;
+  IWidth, IHeight, X, Y: Integer;
+begin
+  if State = rbsDown then
+    State := rbsUp;
+  Result := FIndexs[State];
+  if (Result <> -1) or (Images.Width = 0) or (Images.Height = 0) or
+    (Images.Count = 0) then
+    Exit;
+  IWidth := Images.Width;
+  IHeight := Images.Height;
+  if FGlyphList = nil then
+  begin
+    if GlyphCache = nil then
+      GlyphCache := TJvGlyphCache.Create;
+    FGlyphList := GlyphCache.GetList(IWidth, IHeight);
+  end;
+  TmpImage := TBitmap.Create;
+  try
+    TmpImage.Width := IWidth;
+    TmpImage.Height := IHeight;
+    case State of
+      rbsUp, rbsDown, rbsExclusive:
+        begin
+          with TmpImage.Canvas do
+          begin
+            FillRect(Rect(0, 0, IWidth, IHeight));
+            ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_NORMAL);
+          end;
+          Mask := TBitmap.Create;
+          try
+            with Mask do
+            begin
+              Monochrome := True;
+              Height := IHeight;
+              Width := IWidth;
+            end;
+            with Mask.Canvas do
+            begin
+              FillRect(Rect(0, 0, IWidth, IHeight));
+              ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_MASK);
+            end;
+            FIndexs[State] := TJvGlyphList(FGlyphList).Add(TmpImage, Mask);
+          finally
+            Mask.Free;
+          end;
+        end;
+      rbsDisabled:
+        begin
+          TmpImage.Canvas.Brush.Color := clBtnFace;
+          TmpImage.Canvas.FillRect(Rect(0, 0, IWidth, IHeight));
+          ImageListDrawDisabled(Images, TmpImage.Canvas, 0, 0, Index,
+            clBtnHighlight, clBtnShadow, True);
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
+            ColorToRGB(clBtnFace));
+        end;
+      rbsInactive:
+        begin
+          TmpImage.Canvas.Brush.Color := clBtnFace;
+          TmpImage.Canvas.FillRect(Rect(0, 0, IWidth, IHeight));
+          ImageList_Draw(Images.Handle, Index, TmpImage.Canvas.Handle, 0, 0,
+            ILD_NORMAL);
+          with TmpImage do
+          begin
+            for X := 0 to Width - 1 do
+              for Y := 0 to Height - 1 do
+                Canvas.Pixels[X, Y] := MapColor(Canvas.Pixels[X, Y]);
+          end;
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
+            ColorToRGB(clBtnFace));
+        end;
+    end;
+  finally
+    TmpImage.Free;
+  end;
+  Result := FIndexs[State];
+end;
+
+destructor TJvxButtonGlyph.Destroy;
+begin
+  FOriginal.Free;
+  Invalidate;
+  if Assigned(GlyphCache) and GlyphCache.Empty then
+  begin
+    GlyphCache.Free;
+    GlyphCache := nil;
+  end;
+  inherited Destroy;
+end;
+
 function TJvxButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
   const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
   PopupMark: Boolean; State: TJvButtonState; Flags: Word): TRect;
 begin
   Result := DrawEx(Canvas, Client, Caption, Layout, Margin, Spacing,
     PopupMark, nil, -1, State, Flags);
+end;
+
+function TJvxButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; X, Y: Integer;
+  State: TJvButtonState): TPoint;
+var
+  Index: Integer;
+begin
+  Result := Point(0, 0);
+  if (FOriginal = nil) or (FOriginal.Width = 0) or (FOriginal.Height = 0) or
+    FOriginal.Empty then
+    Exit;
+  Index := CreateButtonGlyph(State);
+  if Index >= 0 then
+  begin
+    ImageList_Draw(FGlyphList.Handle, Index, Canvas.Handle, X, Y, ILD_NORMAL);
+    Result := Point(FGlyphList.Width, FGlyphList.Height);
+  end;
+end;
+
+function TJvxButtonGlyph.DrawButtonImage(Canvas: TCanvas; X, Y: Integer;
+  Images: TImageList; ImageIndex: Integer; State: TJvButtonState): TPoint;
+var
+  Index: Integer;
+begin
+  Result := Point(0, 0);
+  if (Images = nil) or (ImageIndex < 0) or (ImageIndex >= Images.Count) then
+    Exit;
+  if State = rbsDisabled then
+  begin
+    ImageListDrawDisabled(Images, Canvas, X, Y, ImageIndex, clBtnHighlight,
+      clBtnShadow, True);
+  end
+  else if State = rbsInactive then
+  begin
+    Index := CreateImageGlyph(State, Images, ImageIndex);
+    if Index >= 0 then
+      ImageList_Draw(FGlyphList.Handle, Index, Canvas.Handle, X, Y, ILD_NORMAL);
+  end
+  else
+    ImageList_Draw(Images.Handle, ImageIndex, Canvas.Handle, X, Y, ILD_NORMAL);
+  Result := Point(Images.Width, Images.Height);
+end;
+
+procedure TJvxButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
+  TextBounds: TRect; State: TJvButtonState; Flags: Word);
+var
+  CString: array[0..255] of Char;
+begin
+  Canvas.Brush.Style := bsClear;
+  StrPLCopy(CString, Caption, SizeOf(CString) - 1);
+  Flags := DT_VCENTER or WordWraps[FWordWrap] or Flags;
+  if State = rbsDisabled then
+  begin
+    with Canvas do
+    begin
+      OffsetRect(TextBounds, 1, 1);
+      Font.Color := clBtnHighlight;
+      DrawText(Handle, CString, Length(Caption), TextBounds, Flags);
+      OffsetRect(TextBounds, -1, -1);
+      Font.Color := clBtnShadow;
+      DrawText(Handle, CString, Length(Caption), TextBounds, Flags);
+    end;
+  end
+  else
+    DrawText(Canvas.Handle, CString, -1, TextBounds, Flags);
 end;
 
 function TJvxButtonGlyph.DrawEx(Canvas: TCanvas; const Client: TRect;
@@ -4587,6 +4449,144 @@ begin
       DrawPopupMark(Canvas, PopupPos.X, PopupPos.Y, State);
     end;
   Result := TextBounds;
+end;
+
+procedure TJvxButtonGlyph.DrawPopupMark(Canvas: TCanvas; X, Y: Integer;
+  State: TJvButtonState);
+var
+  AColor: TColor;
+
+  procedure DrawMark;
+  var
+    I: Integer;
+  begin
+    with Canvas do
+    begin
+      for I := 0 to 6 do
+      begin
+        Pixels[X + I, Y - 1] := AColor;
+        if (I > 0) and (I < 6) then
+        begin
+          Pixels[X + I, Y] := AColor;
+          if (I > 1) and (I < 5) then
+            Pixels[X + I, Y + 1] := AColor;
+        end;
+      end;
+      Pixels[X + 3, Y + 2] := AColor;
+    end;
+  end;
+
+begin
+  if State = rbsDisabled then
+  begin
+    AColor := clBtnHighlight;
+    Inc(X, 1);
+    Inc(Y, 1);
+    DrawMark;
+    Dec(X, 1);
+    Dec(Y, 1);
+    AColor := clBtnShadow;
+  end
+  else
+    AColor := clBtnText;
+  DrawMark;
+end;
+
+procedure TJvxButtonGlyph.GlyphChanged(Sender: TObject);
+var
+  Glyphs: Integer;
+begin
+  if Sender = FOriginal then
+  begin
+    Invalidate;
+    if (FOriginal <> nil) and (FOriginal.Height > 0) then
+    begin
+      FTransparentColor := FOriginal.TransparentColor and not PaletteMask;
+      if FOriginal.Width mod FOriginal.Height = 0 then
+      begin
+        Glyphs := FOriginal.Width div FOriginal.Height;
+        if Glyphs > (Ord(High(TJvButtonState)) + 1) then
+          Glyphs := 1;
+        SetNumGlyphs(Glyphs);
+      end;
+    end;
+    if Assigned(FOnChange) then
+      FOnChange(Self);
+  end;
+end;
+
+procedure TJvxButtonGlyph.Invalidate;
+var
+  I: TJvButtonState;
+begin
+  for I := Low(I) to High(I) do
+  begin
+    if Assigned(FGlyphList) then
+      if FIndexs[I] <> -1 then
+        TJvGlyphList(FGlyphList).Delete(FIndexs[I]);
+    FIndexs[I] := -1;
+  end;
+  GlyphCache.ReturnList(TJvGlyphList(FGlyphList));
+  FGlyphList := nil;
+end;
+
+function TJvxButtonGlyph.MapColor(Color: TColor): TColor;
+var
+  Index: Byte;
+begin
+  if (Color = FTransparentColor) or (ColorToRGB(Color) = ColorToRGB(clBtnFace)) then
+    Result := Color
+  else
+  begin
+    Color := ColorToRGB(Color);
+    Index := Byte(Longint(Word(GetRValue(Color)) * 77 +
+      Word(GetGValue(Color)) * 150 + Word(GetBValue(Color)) * 29) shr 8);
+    Result := RGB(Index, Index, Index);
+  end;
+end;
+
+procedure TJvxButtonGlyph.MinimizeCaption(Canvas: TCanvas; const Caption: string;
+  Buffer: PChar; MaxLen, Width: Integer);
+var
+  I: Integer;
+  Lines: TStrings;
+begin
+  StrPLCopy(Buffer, Caption, MaxLen);
+  if FWordWrap then
+    Exit;
+  Lines := TStringList.Create;
+  try
+    Lines.Text := Caption;
+    for I := 0 to Lines.Count - 1 do
+      Lines[I] := MinimizeText(Lines[I], Canvas, Width);
+    StrPLCopy(Buffer, TrimRight(Lines.Text), MaxLen);
+  finally
+    Lines.Free;
+  end;
+end;
+
+procedure TJvxButtonGlyph.SetGlyph(Value: TBitmap);
+begin
+  Invalidate;
+  FOriginal.Assign(Value);
+end;
+
+procedure TJvxButtonGlyph.SetGrayNewStyle(const Value: Boolean);
+begin
+  if Value <> FGrayNewStyle then
+  begin
+    Invalidate;
+    FGrayNewStyle := Value;
+  end;
+end;
+
+procedure TJvxButtonGlyph.SetNumGlyphs(Value: TJvNumGlyphs);
+begin
+  if (Value <> FNumGlyphs) and (Value > 0) then
+  begin
+    Invalidate;
+    FNumGlyphs := Value;
+  end;
 end;
 
 //=== TJvButtonImage =========================================================
@@ -4754,6 +4754,274 @@ end;
 
 //=== TJvSpeedButton ========================================================
 
+procedure TJvSpeedButton.ActionChange(Sender: TObject;
+  CheckDefaults: Boolean);
+
+  procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
+  begin
+    with Glyph do
+    begin
+      Width := ImageList.Width;
+      Height := ImageList.Height;
+      Canvas.Brush.Color := clFuchsia;
+      Canvas.FillRect(Rect(0, 0, Width, Height));
+      ImageList.Draw(Canvas, 0, 0, Index);
+      TransparentColor := clFuchsia;
+    end;
+  end;
+
+begin
+  inherited ActionChange(Sender, CheckDefaults);
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    begin
+      if (not CheckDefaults or (Self.Down = False)) and (FGroupIndex <> 0) then
+        Self.Down := Checked;
+      if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
+        (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
+        CopyImage(ActionList.Images, ImageIndex);
+    end;
+end;
+
+procedure TJvSpeedButton.ButtonClick;
+var
+  FirstTickCount, Now: Longint;
+begin
+  if FMenuTracking or (not Enabled) or (Assigned(FDropDownMenu) and
+    DropDownMenu.AutoPopup) then
+    Exit;
+  if not FDown then
+  begin
+    FState := rbsDown;
+    Repaint;
+  end;
+  try
+    FirstTickCount := GetTickCount;
+    repeat
+      Now := GetTickCount;
+    until (Now - FirstTickCount >= 20) or (Now < FirstTickCount);
+    if FGroupIndex = 0 then
+      Click;
+  finally
+    FState := rbsUp;
+    if FGroupIndex = 0 then
+      Repaint
+    else
+    begin
+      SetDown(not FDown);
+      Click;
+    end;
+  end;
+end;
+
+function TJvSpeedButton.CheckBtnMenuDropDown: Boolean;
+begin
+  Result := CheckMenuDropDown(PointToSmallPoint(GetDropDownMenuPos), True);
+end;
+
+function TJvSpeedButton.CheckMenuDropDown(const Pos: TSmallPoint;
+  Manual: Boolean): Boolean;
+var
+  Form: TCustomForm;
+begin
+  Result := False;
+  if csDesigning in ComponentState then
+    Exit;
+  if Assigned(FDropDownMenu) and (DropDownMenu.AutoPopup or Manual) then
+  begin
+    Form := GetParentForm(Self);
+    if Form <> nil then
+      Form.SendCancelMode(nil);
+    DropDownMenu.PopupComponent := Self;
+    with ClientToScreen(SmallPointToPoint(Pos)) do
+      DropDownMenu.Popup(X, Y);
+    Result := True;
+  end;
+end;
+
+procedure TJvSpeedButton.Click;
+var
+  Form: TCustomForm;
+begin
+  Form := GetParentForm(Self);
+  if Form <> nil then
+    Form.ModalResult := ModalResult;
+  inherited Click;
+end;
+
+procedure TJvSpeedButton.CMButtonPressed(var Msg: TMessage);
+var
+  Sender: TControl;
+begin
+  if (Msg.WParam = FGroupIndex) and Parent.HandleAllocated then
+  begin
+    Sender := TControl(Msg.LParam);
+    if (Sender <> nil) and (Sender is TJvSpeedButton) then
+      if Sender <> Self then
+      begin
+        if TJvSpeedButton(Sender).Down and FDown then
+        begin
+          FDown := False;
+          FState := rbsUp;
+          Repaint;
+        end;
+        FAllowAllUp := TJvSpeedButton(Sender).AllowAllUp;
+      end;
+  end;
+end;
+
+procedure TJvSpeedButton.CMDialogChar(var Msg: TCMDialogChar);
+begin
+  with Msg do
+    if IsAccel(CharCode, Caption) and Enabled then
+    begin
+      Click;
+      Result := 1;
+    end
+    else
+      inherited;
+end;
+
+procedure TJvSpeedButton.CMEnabledChanged(var Msg: TMessage);
+var
+  State: TJvButtonState;
+begin
+  inherited;
+  if Enabled then
+  begin
+    if Flat then
+      State := rbsInactive
+    else
+      State := rbsUp;
+  end
+  else
+    State := rbsDisabled;
+  TJvxButtonGlyph(FGlyph).CreateButtonGlyph(State);
+  UpdateTracking;
+  Repaint;
+end;
+
+procedure TJvSpeedButton.CMFontChanged(var Msg: TMessage);
+begin
+  UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
+  Invalidate;
+end;
+
+procedure TJvSpeedButton.CMMouseEnter(var Msg: TMessage);
+{$IFDEF JVCLThemesEnabled}
+var
+  NeedRepaint: Boolean;
+{$ENDIF}
+begin
+  inherited;
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if not FOver then
+  begin
+    FSaved := Application.HintColor;
+    Application.HintColor := FHintColor;
+    if not FHotGlyph.Empty then
+    begin
+      FOldGlyph.Assign(Glyph);
+      Glyph.Assign(FHotGlyph);
+    end;
+    if FHotTrack then
+    begin
+      FFontSave.Assign(Font);
+      Font.Assign(FHotTrackFont);
+    end;
+    FOver := True;
+  end;
+
+  {$IFDEF JVCLThemesEnabled}
+  { Don't draw a border if DragMode <> dmAutomatic since this button is meant to
+    be used as a dock client. }
+  NeedRepaint := FFlat and not FMouseInControl and Enabled and
+    (DragMode <> dmAutomatic) and (GetCapture = 0);
+
+  { Windows XP introduced hot states also for non-flat buttons. }
+  if (NeedRepaint or ThemeServices.ThemesEnabled) and not (csDesigning in ComponentState) then
+  begin
+    FMouseInControl := True;
+    if Enabled then
+      Repaint;
+  end;
+  {$ELSE}
+  if not FMouseInControl and Enabled and IsForegroundTask then
+  begin
+    FMouseInControl := True;
+    if FFlat then
+      Repaint;
+    MouseEnter;
+  end;
+  {$ENDIF JVCLThemesEnabled}
+end;
+
+procedure TJvSpeedButton.CMMouseLeave(var Msg: TMessage);
+{$IFDEF JVCLThemesEnabled}
+var
+  NeedRepaint: Boolean;
+{$ENDIF}
+begin
+  inherited;
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if FOver then
+  begin
+    Application.HintColor := FSaved;
+    if not FOldGlyph.Empty then
+      Glyph.Assign(FOldGlyph);
+    if FHotTrack then
+      Font.Assign(FFontSave);
+    FOver := False;
+  end;
+  {$IFDEF JVCLThemesEnabled}
+  NeedRepaint := FFlat and FMouseInControl and Enabled and not FDragging;
+  { Windows XP introduced hot states also for non-flat buttons. }
+  if NeedRepaint or ThemeServices.ThemesEnabled then
+  begin
+    FMouseInControl := False;
+    if Enabled then
+      Repaint;
+  end;
+  {$ELSE}
+  if FMouseInControl and Enabled and not FDragging then
+  begin
+    FMouseInControl := False;
+    if FFlat then
+      Invalidate;
+    MouseLeave;
+  end;
+  {$ENDIF JVCLThemesEnabled}
+end;
+
+procedure TJvSpeedButton.CMParentColorChanged(var Msg: TMessage);
+begin
+  inherited;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+procedure TJvSpeedButton.CMSysColorChange(var Msg: TMessage);
+begin
+  TJvxButtonGlyph(FGlyph).Invalidate;
+  Invalidate;
+end;
+
+procedure TJvSpeedButton.CMTextChanged(var Msg: TMessage);
+begin
+  Invalidate;
+end;
+
+procedure TJvSpeedButton.CMVisibleChanged(var Msg: TMessage);
+begin
+  inherited;
+  if Visible then
+    UpdateTracking;
+end;
+
 constructor TJvSpeedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -4802,6 +5070,108 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvSpeedButton.DoMouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  DoClick: Boolean;
+begin
+  if FDragging and (Button = mbLeft) then
+  begin
+    FDragging := False;
+    DoClick := (X >= 0) and (X < ClientWidth) and (Y >= 0) and (Y <= ClientHeight);
+    if FGroupIndex = 0 then
+    begin
+      FState := rbsUp;
+      FMouseInControl := False;
+      if DoClick and not (FState in [rbsExclusive, rbsDown]) then
+        Repaint
+      else
+        Invalidate;
+    end
+    else if DoClick then
+    begin
+      SetDown(not FDown);
+      if FDown then
+        Repaint;
+    end
+    else
+    begin
+      if FDown then
+        FState := rbsExclusive;
+      Repaint;
+    end;
+    if DoClick and not FMenuTracking then
+      Click;
+  end;
+  UpdateTracking;
+end;
+
+function TJvSpeedButton.GetAlignment: TAlignment;
+begin
+  Result := TJvxButtonGlyph(FGlyph).Alignment;
+end;
+
+function TJvSpeedButton.GetDropDownMenuPos: TPoint;
+begin
+  if Assigned(FDropDownMenu) then
+  begin
+    if MenuPosition = dmpBottom then
+    begin
+      case FDropDownMenu.Alignment of
+        paLeft:
+          Result := Point(-1, Height);
+        paRight:
+          Result := Point(Width + 1, Height);
+      else {paCenter}
+        Result := Point(Width div 2, Height);
+      end;
+    end
+    else { dmpRight }
+    begin
+      case FDropDownMenu.Alignment of
+        paLeft:
+          Result := Point(Width, -1);
+        paRight:
+          Result := Point(-1, -1);
+      else {paCenter}
+        Result := Point(Width div 2, Height);
+      end;
+    end;
+  end
+  else
+    Result := Point(0, 0);
+end;
+
+function TJvSpeedButton.GetGlyph: TBitmap;
+begin
+  Result := TJvxButtonGlyph(FGlyph).Glyph;
+end;
+
+function TJvSpeedButton.GetGrayNewStyle: Boolean;
+begin
+  Result := TJvxButtonGlyph(FGlyph).GrayNewStyle;
+end;
+
+function TJvSpeedButton.GetNumGlyphs: TJvNumGlyphs;
+begin
+  Result := TJvxButtonGlyph(FGlyph).NumGlyphs;
+end;
+
+function TJvSpeedButton.GetPalette: HPALETTE;
+begin
+  Result := Glyph.Palette;
+end;
+
+function TJvSpeedButton.GetWordWrap: Boolean;
+begin
+  Result := TJvxButtonGlyph(FGlyph).WordWrap;
+end;
+
+procedure TJvSpeedButton.GlyphChanged(Sender: TObject);
+begin
+  Invalidate;
+end;
+
 procedure TJvSpeedButton.Loaded;
 var
   State: TJvButtonState;
@@ -4819,13 +5189,108 @@ begin
   TJvxButtonGlyph(FGlyph).CreateButtonGlyph(State);
 end;
 
-procedure TJvSpeedButton.PaintGlyph(Canvas: TCanvas; ARect: TRect;
-  AState: TJvButtonState; DrawMark: Boolean);
+procedure TJvSpeedButton.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  P: TPoint;
+  Msg: TMsg;
 begin
-  if FFlatStandard and (AState = rbsInactive) then
-    AState := rbsExclusive; // Polaris
-  TJvxButtonGlyph(FGlyph).Draw(Canvas, ARect, Caption, FLayout,
-    FMargin, FSpacing, DrawMark, AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
+  if FMenuTracking then
+    Exit;
+  inherited MouseDown(Button, Shift, X, Y);
+  if (not FMouseInControl) and Enabled then
+  begin
+    FMouseInControl := True;
+    Repaint;
+  end;
+  if (Button = mbLeft) and Enabled {and not (ssDouble in Shift)} then
+  begin
+    if not FDown then
+    begin
+      FState := rbsDown;
+      Repaint;
+    end;
+    FDragging := True;
+    FMenuTracking := True;
+    try
+      P := GetDropDownMenuPos;
+      if CheckMenuDropDown(PointToSmallPoint(P), False) then
+        DoMouseUp(Button, Shift, X, Y);
+      if PeekMessage(Msg, 0, 0, 0, PM_NOREMOVE) then
+      begin
+        if (Msg.Message = WM_LBUTTONDOWN) or (Msg.Message = WM_LBUTTONDBLCLK) then
+        begin
+          P := ScreenToClient(Msg.Pt);
+          if (P.X >= 0) and (P.X < ClientWidth) and (P.Y >= 0)
+            and (P.Y <= ClientHeight) then
+            KillMessage(HWND_DESKTOP, Msg.Message);
+        end;
+      end;
+    finally
+      FMenuTracking := False;
+    end;
+    if FAllowTimer then
+    begin
+      if FRepeatTimer = nil then
+        FRepeatTimer := TTimer.Create(Self);
+      FRepeatTimer.Interval := InitPause;
+      FRepeatTimer.OnTimer := TimerExpired;
+      FRepeatTimer.Enabled := True;
+    end;
+  end;
+end;
+
+procedure TJvSpeedButton.MouseEnter;
+begin
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvSpeedButton.MouseLeave;
+begin
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+procedure TJvSpeedButton.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  NewState: TJvButtonState;
+begin
+  inherited MouseMove(Shift, X, Y);
+  if FDragging then
+  begin
+    if not FDown then
+      NewState := rbsUp
+    else
+      NewState := rbsExclusive;
+    if (X >= 0) and (X < ClientWidth) and (Y >= 0) and (Y <= ClientHeight) then
+      if FDown then
+        NewState := rbsExclusive
+      else
+        NewState := rbsDown;
+    if NewState <> FState then
+    begin
+      FState := NewState;
+      Repaint;
+    end;
+  end;
+end;
+
+procedure TJvSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  DoMouseUp(Button, Shift, X, Y);
+  if FRepeatTimer <> nil then
+    FRepeatTimer.Enabled := False;
+end;
+
+procedure TJvSpeedButton.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = DropDownMenu) and (Operation = opRemove) then
+    DropDownMenu := nil;
 end;
 
 procedure TJvSpeedButton.Paint;
@@ -4945,265 +5410,13 @@ begin
   end;
 end;
 
-procedure TJvSpeedButton.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvSpeedButton.PaintGlyph(Canvas: TCanvas; ARect: TRect;
+  AState: TJvButtonState; DrawMark: Boolean);
 begin
-  inherited Notification(AComponent, Operation);
-  if (AComponent = DropDownMenu) and (Operation = opRemove) then
-    DropDownMenu := nil;
-end;
-
-function TJvSpeedButton.GetDropDownMenuPos: TPoint;
-begin
-  if Assigned(FDropDownMenu) then
-  begin
-    if MenuPosition = dmpBottom then
-    begin
-      case FDropDownMenu.Alignment of
-        paLeft:
-          Result := Point(-1, Height);
-        paRight:
-          Result := Point(Width + 1, Height);
-      else {paCenter}
-        Result := Point(Width div 2, Height);
-      end;
-    end
-    else { dmpRight }
-    begin
-      case FDropDownMenu.Alignment of
-        paLeft:
-          Result := Point(Width, -1);
-        paRight:
-          Result := Point(-1, -1);
-      else {paCenter}
-        Result := Point(Width div 2, Height);
-      end;
-    end;
-  end
-  else
-    Result := Point(0, 0);
-end;
-
-function TJvSpeedButton.CheckBtnMenuDropDown: Boolean;
-begin
-  Result := CheckMenuDropDown(PointToSmallPoint(GetDropDownMenuPos), True);
-end;
-
-function TJvSpeedButton.CheckMenuDropDown(const Pos: TSmallPoint;
-  Manual: Boolean): Boolean;
-var
-  Form: TCustomForm;
-begin
-  Result := False;
-  if csDesigning in ComponentState then
-    Exit;
-  if Assigned(FDropDownMenu) and (DropDownMenu.AutoPopup or Manual) then
-  begin
-    Form := GetParentForm(Self);
-    if Form <> nil then
-      Form.SendCancelMode(nil);
-    DropDownMenu.PopupComponent := Self;
-    with ClientToScreen(SmallPointToPoint(Pos)) do
-      DropDownMenu.Popup(X, Y);
-    Result := True;
-  end;
-end;
-
-procedure TJvSpeedButton.MouseEnter;
-begin
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvSpeedButton.MouseLeave;
-begin
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
-procedure TJvSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-var
-  P: TPoint;
-  Msg: TMsg;
-begin
-  if FMenuTracking then
-    Exit;
-  inherited MouseDown(Button, Shift, X, Y);
-  if (not FMouseInControl) and Enabled then
-  begin
-    FMouseInControl := True;
-    Repaint;
-  end;
-  if (Button = mbLeft) and Enabled {and not (ssDouble in Shift)} then
-  begin
-    if not FDown then
-    begin
-      FState := rbsDown;
-      Repaint;
-    end;
-    FDragging := True;
-    FMenuTracking := True;
-    try
-      P := GetDropDownMenuPos;
-      if CheckMenuDropDown(PointToSmallPoint(P), False) then
-        DoMouseUp(Button, Shift, X, Y);
-      if PeekMessage(Msg, 0, 0, 0, PM_NOREMOVE) then
-      begin
-        if (Msg.Message = WM_LBUTTONDOWN) or (Msg.Message = WM_LBUTTONDBLCLK) then
-        begin
-          P := ScreenToClient(Msg.Pt);
-          if (P.X >= 0) and (P.X < ClientWidth) and (P.Y >= 0)
-            and (P.Y <= ClientHeight) then
-            KillMessage(HWND_DESKTOP, Msg.Message);
-        end;
-      end;
-    finally
-      FMenuTracking := False;
-    end;
-    if FAllowTimer then
-    begin
-      if FRepeatTimer = nil then
-        FRepeatTimer := TTimer.Create(Self);
-      FRepeatTimer.Interval := InitPause;
-      FRepeatTimer.OnTimer := TimerExpired;
-      FRepeatTimer.Enabled := True;
-    end;
-  end;
-end;
-
-procedure TJvSpeedButton.MouseMove(Shift: TShiftState; X, Y: Integer);
-var
-  NewState: TJvButtonState;
-begin
-  inherited MouseMove(Shift, X, Y);
-  if FDragging then
-  begin
-    if not FDown then
-      NewState := rbsUp
-    else
-      NewState := rbsExclusive;
-    if (X >= 0) and (X < ClientWidth) and (Y >= 0) and (Y <= ClientHeight) then
-      if FDown then
-        NewState := rbsExclusive
-      else
-        NewState := rbsDown;
-    if NewState <> FState then
-    begin
-      FState := NewState;
-      Repaint;
-    end;
-  end;
-end;
-
-procedure TJvSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  inherited MouseUp(Button, Shift, X, Y);
-  DoMouseUp(Button, Shift, X, Y);
-  if FRepeatTimer <> nil then
-    FRepeatTimer.Enabled := False;
-end;
-
-procedure TJvSpeedButton.DoMouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-var
-  DoClick: Boolean;
-begin
-  if FDragging and (Button = mbLeft) then
-  begin
-    FDragging := False;
-    DoClick := (X >= 0) and (X < ClientWidth) and (Y >= 0) and (Y <= ClientHeight);
-    if FGroupIndex = 0 then
-    begin
-      FState := rbsUp;
-      FMouseInControl := False;
-      if DoClick and not (FState in [rbsExclusive, rbsDown]) then
-        Repaint
-      else
-        Invalidate;
-    end
-    else if DoClick then
-    begin
-      SetDown(not FDown);
-      if FDown then
-        Repaint;
-    end
-    else
-    begin
-      if FDown then
-        FState := rbsExclusive;
-      Repaint;
-    end;
-    if DoClick and not FMenuTracking then
-      Click;
-  end;
-  UpdateTracking;
-end;
-
-procedure TJvSpeedButton.ButtonClick;
-var
-  FirstTickCount, Now: Longint;
-begin
-  if FMenuTracking or (not Enabled) or (Assigned(FDropDownMenu) and
-    DropDownMenu.AutoPopup) then
-    Exit;
-  if not FDown then
-  begin
-    FState := rbsDown;
-    Repaint;
-  end;
-  try
-    FirstTickCount := GetTickCount;
-    repeat
-      Now := GetTickCount;
-    until (Now - FirstTickCount >= 20) or (Now < FirstTickCount);
-    if FGroupIndex = 0 then
-      Click;
-  finally
-    FState := rbsUp;
-    if FGroupIndex = 0 then
-      Repaint
-    else
-    begin
-      SetDown(not FDown);
-      Click;
-    end;
-  end;
-end;
-
-procedure TJvSpeedButton.Click;
-var
-  Form: TCustomForm;
-begin
-  Form := GetParentForm(Self);
-  if Form <> nil then
-    Form.ModalResult := ModalResult;
-  inherited Click;
-end;
-
-function TJvSpeedButton.GetPalette: HPALETTE;
-begin
-  Result := Glyph.Palette;
-end;
-
-function TJvSpeedButton.GetWordWrap: Boolean;
-begin
-  Result := TJvxButtonGlyph(FGlyph).WordWrap;
-end;
-
-procedure TJvSpeedButton.SetWordWrap(Value: Boolean);
-begin
-  if Value <> WordWrap then
-  begin
-    TJvxButtonGlyph(FGlyph).WordWrap := Value;
-    Invalidate;
-  end;
-end;
-
-function TJvSpeedButton.GetAlignment: TAlignment;
-begin
-  Result := TJvxButtonGlyph(FGlyph).Alignment;
+  if FFlatStandard and (AState = rbsInactive) then
+    AState := rbsExclusive; // Polaris
+  TJvxButtonGlyph(FGlyph).Draw(Canvas, ARect, Caption, FLayout,
+    FMargin, FSpacing, DrawMark, AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
 end;
 
 procedure TJvSpeedButton.SetAlignment(Value: TAlignment);
@@ -5215,56 +5428,23 @@ begin
   end;
 end;
 
-function TJvSpeedButton.GetGlyph: TBitmap;
+procedure TJvSpeedButton.SetAllowAllUp(Value: Boolean);
 begin
-  Result := TJvxButtonGlyph(FGlyph).Glyph;
-end;
-
-procedure TJvSpeedButton.SetGlyph(Value: TBitmap);
-begin
-  TJvxButtonGlyph(FGlyph).Glyph := Value;
-  Invalidate;
-end;
-
-function TJvSpeedButton.GetGrayNewStyle: Boolean;
-begin
-  Result := TJvxButtonGlyph(FGlyph).GrayNewStyle;
-end;
-
-function TJvSpeedButton.GetNumGlyphs: TJvNumGlyphs;
-begin
-  Result := TJvxButtonGlyph(FGlyph).NumGlyphs;
-end;
-
-procedure TJvSpeedButton.SetNumGlyphs(Value: TJvNumGlyphs);
-begin
-  if Value < 0 then
-    Value := 1
-  else if Value > Ord(High(TJvButtonState)) + 1 then
-    Value := Ord(High(TJvButtonState)) + 1;
-  if Value <> TJvxButtonGlyph(FGlyph).NumGlyphs then
+  if FAllowAllUp <> Value then
   begin
-    TJvxButtonGlyph(FGlyph).NumGlyphs := Value;
-    Invalidate;
+    FAllowAllUp := Value;
+    UpdateExclusive;
   end;
 end;
 
-procedure TJvSpeedButton.GlyphChanged(Sender: TObject);
+procedure TJvSpeedButton.SetAllowTimer(Value: Boolean);
 begin
-  Invalidate;
-end;
-
-procedure TJvSpeedButton.UpdateExclusive;
-var
-  Msg: TMessage;
-begin
-  if (FGroupIndex <> 0) and (Parent <> nil) then
+  FAllowTimer := Value;
+  if not FAllowTimer and (FRepeatTimer <> nil) then
   begin
-    Msg.Msg := CM_JVBUTTONPRESSED;
-    Msg.WParam := FGroupIndex;
-    Msg.LParam := Longint(Self);
-    Msg.Result := 0;
-    Parent.Broadcast(Msg);
+    FRepeatTimer.Enabled := False;
+    FRepeatTimer.Free;
+    FRepeatTimer := nil;
   end;
 end;
 
@@ -5294,12 +5474,78 @@ begin
   end;
 end;
 
+procedure TJvSpeedButton.SetDropDownMenu(Value: TPopupMenu);
+begin
+  FDropDownMenu := Value;
+  if Value <> nil then
+    Value.FreeNotification(Self);
+  if FMarkDropDown then
+    Invalidate;
+end;
+
+procedure TJvSpeedButton.SetFlat(Value: Boolean);
+begin
+  if Value <> FFlat then
+  begin
+    FFlat := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvSpeedButton.SetFlatStandard(Value: Boolean);
+begin
+  { Polaris }
+  if FFlatStandard <> Value then
+  begin
+    FFlatStandard := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvSpeedButton.SetGlyph(Value: TBitmap);
+begin
+  TJvxButtonGlyph(FGlyph).Glyph := Value;
+  Invalidate;
+end;
+
+procedure TJvSpeedButton.SetGrayNewStyle(const Value: Boolean);
+begin
+  if GrayNewStyle <> Value then
+  begin
+    TJvxButtonGlyph(FGlyph).GrayNewStyle := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvSpeedButton.SetGroupIndex(Value: Integer);
 begin
   if FGroupIndex <> Value then
   begin
     FGroupIndex := Value;
     UpdateExclusive;
+  end;
+end;
+
+procedure TJvSpeedButton.SetHotTrackFont(const Value: TFont);
+begin
+  FHotTrackFont.Assign(Value);
+end;
+
+procedure TJvSpeedButton.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+begin
+  if FHotTrackFontOptions <> Value then
+  begin
+    FHotTrackFontOptions := Value;
+    UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
+  end;
+end;
+
+procedure TJvSpeedButton.SetInactiveGrayed(Value: Boolean);
+begin
+  if Value <> FInactiveGrayed then
+  begin
+    FInactiveGrayed := Value;
+    Invalidate;
   end;
 end;
 
@@ -5321,79 +5567,33 @@ begin
   end;
 end;
 
+procedure TJvSpeedButton.SetMarkDropDown(Value: Boolean);
+begin
+  if Value <> FMarkDropDown then
+  begin
+    FMarkDropDown := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvSpeedButton.SetNumGlyphs(Value: TJvNumGlyphs);
+begin
+  if Value < 0 then
+    Value := 1
+  else if Value > Ord(High(TJvButtonState)) + 1 then
+    Value := Ord(High(TJvButtonState)) + 1;
+  if Value <> TJvxButtonGlyph(FGlyph).NumGlyphs then
+  begin
+    TJvxButtonGlyph(FGlyph).NumGlyphs := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvSpeedButton.SetSpacing(Value: Integer);
 begin
   if Value <> FSpacing then
   begin
     FSpacing := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvSpeedButton.SetAllowAllUp(Value: Boolean);
-begin
-  if FAllowAllUp <> Value then
-  begin
-    FAllowAllUp := Value;
-    UpdateExclusive;
-  end;
-end;
-
-procedure TJvSpeedButton.SetAllowTimer(Value: Boolean);
-begin
-  FAllowTimer := Value;
-  if not FAllowTimer and (FRepeatTimer <> nil) then
-  begin
-    FRepeatTimer.Enabled := False;
-    FRepeatTimer.Free;
-    FRepeatTimer := nil;
-  end;
-end;
-
-procedure TJvSpeedButton.SetDropDownMenu(Value: TPopupMenu);
-begin
-  FDropDownMenu := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
-  if FMarkDropDown then
-    Invalidate;
-end;
-
-procedure TJvSpeedButton.SetInactiveGrayed(Value: Boolean);
-begin
-  if Value <> FInactiveGrayed then
-  begin
-    FInactiveGrayed := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvSpeedButton.SetFlat(Value: Boolean);
-begin
-  if Value <> FFlat then
-  begin
-    FFlat := Value;
-    Invalidate;
-  end;
-end;
-
-//>Polaris
-
-procedure TJvSpeedButton.SetFlatStandard(Value: Boolean);
-begin
-  if FFlatStandard <> Value then
-  begin
-    FFlatStandard := Value;
-    Invalidate;
-  end;
-end;
-//<Polaris
-
-procedure TJvSpeedButton.SetGrayNewStyle(const Value: Boolean);
-begin
-  if GrayNewStyle <> Value then
-  begin
-    TJvxButtonGlyph(FGlyph).GrayNewStyle := Value;
     Invalidate;
   end;
 end;
@@ -5407,15 +5607,6 @@ begin
   end;
 end;
 
-procedure TJvSpeedButton.SetMarkDropDown(Value: Boolean);
-begin
-  if Value <> FMarkDropDown then
-  begin
-    FMarkDropDown := Value;
-    Invalidate;
-  end;
-end;
-
 procedure TJvSpeedButton.SetTransparent(Value: Boolean);
 begin
   if Value <> FTransparent then
@@ -5425,197 +5616,39 @@ begin
   end;
 end;
 
-procedure TJvSpeedButton.WMRButtonDown(var Msg: TWMRButtonDown);
+procedure TJvSpeedButton.SetWordWrap(Value: Boolean);
 begin
-  inherited;
-  UpdateTracking;
-end;
-
-procedure TJvSpeedButton.WMRButtonUp(var Msg: TWMRButtonUp);
-begin
-  inherited;
-  UpdateTracking;
-end;
-
-procedure TJvSpeedButton.WMLButtonDblClk(var Msg: TWMLButtonDown);
-begin
-  if not FMenuTracking then
+  if Value <> WordWrap then
   begin
-    inherited;
-    if FDown then
-      DblClick;
+    TJvxButtonGlyph(FGlyph).WordWrap := Value;
+    Invalidate;
   end;
 end;
 
-procedure TJvSpeedButton.CMEnabledChanged(var Msg: TMessage);
+procedure TJvSpeedButton.TimerExpired(Sender: TObject);
+begin
+  FRepeatTimer.Interval := RepeatInterval;
+  if (FState = rbsDown) and MouseCapture then
+  try
+    Click;
+  except
+    FRepeatTimer.Enabled := False;
+    raise;
+  end;
+end;
+
+procedure TJvSpeedButton.UpdateExclusive;
 var
-  State: TJvButtonState;
+  Msg: TMessage;
 begin
-  inherited;
-  if Enabled then
+  if (FGroupIndex <> 0) and (Parent <> nil) then
   begin
-    if Flat then
-      State := rbsInactive
-    else
-      State := rbsUp;
-  end
-  else
-    State := rbsDisabled;
-  TJvxButtonGlyph(FGlyph).CreateButtonGlyph(State);
-  UpdateTracking;
-  Repaint;
-end;
-
-procedure TJvSpeedButton.CMVisibleChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Visible then
-    UpdateTracking;
-end;
-
-procedure TJvSpeedButton.CMMouseEnter(var Msg: TMessage);
-{$IFDEF JVCLThemesEnabled}
-var
-  NeedRepaint: Boolean;
-{$ENDIF}
-begin
-  inherited;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    if not FHotGlyph.Empty then
-    begin
-      FOldGlyph.Assign(Glyph);
-      Glyph.Assign(FHotGlyph);
-    end;
-    if FHotTrack then
-    begin
-      FFontSave.Assign(Font);
-      Font.Assign(FHotTrackFont);
-    end;
-    FOver := True;
+    Msg.Msg := CM_JVBUTTONPRESSED;
+    Msg.WParam := FGroupIndex;
+    Msg.LParam := Longint(Self);
+    Msg.Result := 0;
+    Parent.Broadcast(Msg);
   end;
-
-  {$IFDEF JVCLThemesEnabled}
-  { Don't draw a border if DragMode <> dmAutomatic since this button is meant to
-    be used as a dock client. }
-  NeedRepaint := FFlat and not FMouseInControl and Enabled and
-    (DragMode <> dmAutomatic) and (GetCapture = 0);
-
-  { Windows XP introduced hot states also for non-flat buttons. }
-  if (NeedRepaint or ThemeServices.ThemesEnabled) and not (csDesigning in ComponentState) then
-  begin
-    FMouseInControl := True;
-    if Enabled then
-      Repaint;
-  end;
-  {$ELSE}
-  if not FMouseInControl and Enabled and IsForegroundTask then
-  begin
-    FMouseInControl := True;
-    if FFlat then
-      Repaint;
-    MouseEnter;
-  end;
-  {$ENDIF JVCLThemesEnabled}
-end;
-
-procedure TJvSpeedButton.CMMouseLeave(var Msg: TMessage);
-{$IFDEF JVCLThemesEnabled}
-var
-  NeedRepaint: Boolean;
-{$ENDIF}
-begin
-  inherited;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
-  begin
-    Application.HintColor := FSaved;
-    if not FOldGlyph.Empty then
-      Glyph.Assign(FOldGlyph);
-    if FHotTrack then
-      Font.Assign(FFontSave);
-    FOver := False;
-  end;
-  {$IFDEF JVCLThemesEnabled}
-  NeedRepaint := FFlat and FMouseInControl and Enabled and not FDragging;
-  { Windows XP introduced hot states also for non-flat buttons. }
-  if NeedRepaint or ThemeServices.ThemesEnabled then
-  begin
-    FMouseInControl := False;
-    if Enabled then
-      Repaint;
-  end;
-  {$ELSE}
-  if FMouseInControl and Enabled and not FDragging then
-  begin
-    FMouseInControl := False;
-    if FFlat then
-      Invalidate;
-    MouseLeave;
-  end;
-  {$ENDIF JVCLThemesEnabled}
-end;
-
-procedure TJvSpeedButton.WMMouseMove(var Msg: TMessage);
-begin
-  inherited;
-end;
-
-procedure TJvSpeedButton.CMButtonPressed(var Msg: TMessage);
-var
-  Sender: TControl;
-begin
-  if (Msg.WParam = FGroupIndex) and Parent.HandleAllocated then
-  begin
-    Sender := TControl(Msg.LParam);
-    if (Sender <> nil) and (Sender is TJvSpeedButton) then
-      if Sender <> Self then
-      begin
-        if TJvSpeedButton(Sender).Down and FDown then
-        begin
-          FDown := False;
-          FState := rbsUp;
-          Repaint;
-        end;
-        FAllowAllUp := TJvSpeedButton(Sender).AllowAllUp;
-      end;
-  end;
-end;
-
-procedure TJvSpeedButton.CMDialogChar(var Msg: TCMDialogChar);
-begin
-  with Msg do
-    if IsAccel(CharCode, Caption) and Enabled then
-    begin
-      Click;
-      Result := 1;
-    end
-    else
-      inherited;
-end;
-
-procedure TJvSpeedButton.CMFontChanged(var Msg: TMessage);
-begin
-  UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
-  Invalidate;
-end;
-
-procedure TJvSpeedButton.CMTextChanged(var Msg: TMessage);
-begin
-  Invalidate;
-end;
-
-procedure TJvSpeedButton.CMSysColorChange(var Msg: TMessage);
-begin
-  TJvxButtonGlyph(FGlyph).Invalidate;
-  Invalidate;
 end;
 
 procedure TJvSpeedButton.UpdateTracking;
@@ -5642,66 +5675,31 @@ begin
     end;
 end;
 
-procedure TJvSpeedButton.TimerExpired(Sender: TObject);
+procedure TJvSpeedButton.WMLButtonDblClk(var Msg: TWMLButtonDown);
 begin
-  FRepeatTimer.Interval := RepeatInterval;
-  if (FState = rbsDown) and MouseCapture then
-  try
-    Click;
-  except
-    FRepeatTimer.Enabled := False;
-    raise;
-  end;
-end;
-
-
-procedure TJvSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
-
-  procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
+  if not FMenuTracking then
   begin
-    with Glyph do
-    begin
-      Width := ImageList.Width;
-      Height := ImageList.Height;
-      Canvas.Brush.Color := clFuchsia;
-      Canvas.FillRect(Rect(0, 0, Width, Height));
-      ImageList.Draw(Canvas, 0, 0, Index);
-      TransparentColor := clFuchsia;
-    end;
+    inherited;
+    if FDown then
+      DblClick;
   end;
-
-begin
-  inherited ActionChange(Sender, CheckDefaults);
-  if Sender is TCustomAction then
-    with TCustomAction(Sender) do
-    begin
-      if (not CheckDefaults or (Self.Down = False)) and (FGroupIndex <> 0) then
-        Self.Down := Checked;
-      if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
-        (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
-        CopyImage(ActionList.Images, ImageIndex);
-    end;
 end;
 
-procedure TJvSpeedButton.CMParentColorChanged(var Msg: TMessage);
+procedure TJvSpeedButton.WMMouseMove(var Msg: TMessage);
 begin
   inherited;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
-procedure TJvSpeedButton.SetHotTrackFont(const Value: TFont);
+procedure TJvSpeedButton.WMRButtonDown(var Msg: TWMRButtonDown);
 begin
-  FHotTrackFont.Assign(Value);
+  inherited;
+  UpdateTracking;
 end;
 
-procedure TJvSpeedButton.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+procedure TJvSpeedButton.WMRButtonUp(var Msg: TWMRButtonUp);
 begin
-  if FHotTrackFontOptions <> Value then
-  begin
-    FHotTrackFontOptions := Value;
-    UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
-  end;
+  inherited;
+  UpdateTracking;
 end;
 
 initialization
