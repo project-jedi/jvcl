@@ -91,7 +91,7 @@ destructor TJvFormMagnet.Destroy;
 begin
   if not (csDesigning in ComponentState) and (FForm <> nil) then
     UnregisterWndProcHook(FForm, NewWndProc, hoBeforeMsg);
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvFormMagnet.MagnetScreen(OldRect: TRect; var FormRect: TRect; ScreenRect: TRect);
@@ -120,10 +120,7 @@ var
 
   function OkayForAll(var Value: TDateTime): Boolean;
   begin
-    if Abs(Value - Now) > EncodeTime(0, 0, 0, 250) then
-      Result := True
-    else
-      Result := False;
+    Result := Abs(Value - Now) > EncodeTime(0, 0, 0, 250);
   end;
 
   function OkayForRight: Boolean;
@@ -306,7 +303,7 @@ begin
     if Abs(ScreenRect.Bottom - FormRect.Bottom) < Integer(FArea) then
       DockOnBottom;
 
-  //Magnet/UnMagnet Bottom, Magnet/UnMagnet Top
+  // Magnet/UnMagnet Bottom, Magnet/UnMagnet Top
   if MovingToBottom then
     if OkayForBottom then
     begin
@@ -334,19 +331,18 @@ procedure TJvFormMagnet.GlueForms(var FormRect: TRect);
 var
   I: Integer;
 begin
-  if FForm = nil then
-    Exit;
-  for I := 0 to Application.ComponentCount - 1 do
-    if Application.Components[I] is TForm then
-      with Application.Components[I] as TForm do
-        if (Left = FForm.Left + FForm.Width) or
-          (Top = FForm.Top + FForm.Height) or
-          (Left + Width = FForm.Left) or
-          (Top + Height = FForm.Top) then
-        begin
-          Left := Left + (FormRect.Left - FForm.Left);
-          Top := Top + (FormRect.Top - FForm.Top);
-        end;
+  if Assigned(FForm) then
+    for I := 0 to Application.ComponentCount - 1 do
+      if Application.Components[I] is TForm then
+        with Application.Components[I] as TForm do
+          if (Left = FForm.Left + FForm.Width) or
+            (Top = FForm.Top + FForm.Height) or
+            (Left + Width = FForm.Left) or
+            (Top + Height = FForm.Top) then
+          begin
+            Left := Left + (FormRect.Left - FForm.Left);
+            Top := Top + (FormRect.Top - FForm.Top);
+          end;
 end;
 
 procedure TJvFormMagnet.MagnetToMain(OldRect: TRect; var FormRect: TRect; MainRect: TRect);
@@ -601,29 +597,29 @@ end;
 
 procedure TJvFormMagnet.MoveTo(var SrcRect, Rect: TRect);
 var
-  R2, R3: TRect;
+  DesktopWorkRect, PreviousRect: TRect;
 begin
-  R3 := SrcRect;
+  PreviousRect := SrcRect;
 
-  // Move to an extremity of the desktop ?
+  // Move to a side of the desktop?
   if FScreenMagnet then
   begin
-    SystemParametersInfo(SPI_GETWORKAREA, 0, @R2, 0);
-    MagnetScreen(R3, Rect, R2);
+    SystemParametersInfo(SPI_GETWORKAREA, 0, @DesktopWorkRect, 0);
+    MagnetScreen(PreviousRect, Rect, DesktopWorkRect);
   end;
 
-  // Move another form too ?
+  // Move another form too?
   if FFormGlue then
     GlueForms(Rect);
 
-  // Magnet to main form ?
+  // Magnet to main form?
   if FMainFormMagnet and (Application.MainForm <> nil) then
   begin
-    R2.Left := Application.MainForm.Left;
-    R2.Top := Application.MainForm.Top;
-    R2.Right := Application.MainForm.Left + Application.MainForm.Width;
-    R2.Bottom := Application.MainForm.Top + Application.MainForm.Height;
-    MagnetToMain(R3, Rect, R2);
+    DesktopWorkRect.Left := Application.MainForm.Left;
+    DesktopWorkRect.Top := Application.MainForm.Top;
+    DesktopWorkRect.Right := Application.MainForm.Left + Application.MainForm.Width;
+    DesktopWorkRect.Bottom := Application.MainForm.Top + Application.MainForm.Height;
+    MagnetToMain(PreviousRect, Rect, DesktopWorkRect);
   end;
 end;
 

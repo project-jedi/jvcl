@@ -67,21 +67,20 @@ type
   TJvgLogicVariant = class;
   TJvgLogicProducer = class;
 
-  TOnTraceMessage = procedure(Sender: TJvgLogics; fStepResult: boolean; const
-    StepResult, ParsedResult, Msg: string) of object;
+  TOnTraceMessage = procedure(Sender: TJvgLogics; AStepResult: Boolean;
+    const StepResult, ParsedResult, Msg: string) of object;
 
   TJvgLogicProducer = class(TJvComponent)
   private
     FLogics: TJvgLogics;
     FCommentAreas: TJvgCommentAreas;
-    //    FIgnoreSpaces: boolean;
-
+    // FIgnoreSpaces: Boolean;
     procedure SetLogics(const Value: TJvgLogics);
     procedure SetDictionary(const Value: TStrings);
     function GetDictionary: TStrings;
     procedure SetCommentAreas(const Value: TJvgCommentAreas);
-    procedure SetIgnoreSpaces(const Value: boolean);
-    function GetIgnoreSpaces: boolean;
+    procedure SetIgnoreSpaces(const Value: Boolean);
+    function GetIgnoreSpaces: Boolean;
     procedure SetOnTraceMessage(const Value: TOnTraceMessage);
     function GetOnTraceMessage: TOnTraceMessage;
   public
@@ -90,39 +89,33 @@ type
     procedure Loaded; override;
   published
     property Logics: TJvgLogics read FLogics write SetLogics;
-    property CommentAreas: TJvgCommentAreas read FCommentAreas write
-      SetCommentAreas;
+    property CommentAreas: TJvgCommentAreas read FCommentAreas write SetCommentAreas;
     property Dictionary: TStrings read GetDictionary write SetDictionary;
-    property IgnoreSpaces: boolean read GetIgnoreSpaces write SetIgnoreSpaces;
-    property OnTraceMessage: TOnTraceMessage read GetOnTraceMessage write
-      SetOnTraceMessage;
+    property IgnoreSpaces: Boolean read GetIgnoreSpaces write SetIgnoreSpaces;
+    property OnTraceMessage: TOnTraceMessage read GetOnTraceMessage write SetOnTraceMessage;
   end;
 
   TJvgLogicElement = class(TCollectionItem)
   private
-    FNextElementID: integer;
-    FNextFalseElementID: integer;
-
-    //    FNextElement: TJvgLogicElement;
-    //    FNextFalseElement: TJvgLogicElement;
-
-    FLeft: integer;
-    FTop: integer;
+    FNextElementID: Integer;
+    FNextFalseElementID: Integer;
+    // FNextElement: TJvgLogicElement;
+    // FNextFalseElement: TJvgLogicElement;
+    FLeft: Integer;
+    FTop: Integer;
     FCaption: string;
-    FIsFirst: boolean;
+    FIsFirst: Boolean;
     FValue: string;
     FExpression: string;
     FRule: TLogicRule;
     FTrueResult: string;
     FFalseResult: string;
     FLogicVariants: TJvgLogicVariants;
-
+    FIsTrue: Boolean;
     function GetNextElement: TJvgLogicElement;
     function GetNextFalseElement: TJvgLogicElement;
-
     procedure SetCaption(const Value: string);
-    procedure SetIsFirst(const Value: boolean);
-
+    procedure SetIsFirst(const Value: Boolean);
     procedure SetNextElement(const Value: TJvgLogicElement);
     procedure SetNextFalseElement(const Value: TJvgLogicElement);
     procedure SetExpression(const Value: string);
@@ -132,84 +125,68 @@ type
     procedure SetTrueResult(const Value: string);
     procedure SetLogicVariants(const Value: TJvgLogicVariants);
   public
-    IsTrue: boolean;
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
     procedure Loaded;
-
-    property NextElement: TJvgLogicElement read GetNextElement write
-      SetNextElement;
-    property NextFalseElement: TJvgLogicElement read GetNextFalseElement write
-      SetNextFalseElement;
-
+    property NextElement: TJvgLogicElement read GetNextElement write SetNextElement;
+    property NextFalseElement: TJvgLogicElement read GetNextFalseElement write SetNextFalseElement;
+    property IsTrue: Boolean read FIsTrue write FIsTrue;
   published
     property ID;
-    property NextElementID: integer read FNextElementID write FNextElementID
-      default -1;
-    property NextFalseElementID: integer read FNextFalseElementID write
-      FNextFalseElementID default -1;
-
-    property Left: integer read FLeft write FLeft;
-    property Top: integer read FTop write FTop;
+    property NextElementID: Integer read FNextElementID write FNextElementID default -1;
+    property NextFalseElementID: Integer read FNextFalseElementID write FNextFalseElementID default -1;
+    property Left: Integer read FLeft write FLeft;
+    property Top: Integer read FTop write FTop;
     property Caption: string read FCaption write SetCaption;
-    property IsFirst: boolean read FIsFirst write SetIsFirst;
-
+    property IsFirst: Boolean read FIsFirst write SetIsFirst;
     property Expression: string read FExpression write SetExpression;
     property Rule: TLogicRule read FRule write SetRule;
     property Value: string read FValue write SetValue;
     property TrueResult: string read FTrueResult write SetTrueResult;
     property FalseResult: string read FFalseResult write SetFalseResult;
-    property LogicVariants: TJvgLogicVariants read FLogicVariants write
-      SetLogicVariants;
-
+    property LogicVariants: TJvgLogicVariants read FLogicVariants write SetLogicVariants;
   end;
 
   TJvgLogics = class(TOwnedCollection)
   private
     FResult: string;
     FDictionary: TStringList;
-    FIgnoreSpaces: boolean;
+    FIgnoreSpaces: Boolean;
     FOnTraceMessage: TOnTraceMessage;
-
+    FTraceItem: TJvgLogicElement;
     function GetItem(Index: Integer): TJvgLogicElement;
     procedure SetItem(Index: Integer; Value: TJvgLogicElement);
-    function GetItemResult(Item: TJvgLogicElement; var LogicVariant:
-      TJvgLogicVariant): boolean;
+    function GetItemResult(Item: TJvgLogicElement; var LogicVariant: TJvgLogicVariant): Boolean;
     function GetDictionary: TStrings;
     procedure SetDictionary(const Value: TStrings);
     function ParseExpression(const Value: string): string;
-
   public
-    TraceItem: TJvgLogicElement;
-
     constructor Create(AOwner:TPersistent; ItemClass: TCollectionItemClass);
     destructor Destroy; override;
     procedure Loaded;
-
     procedure Analyze;
     procedure AnalyzeStep;
     procedure StartAnalyze;
-    //    procedure Assign(StylePairs: TJvgLogics);
+    // procedure Assign(StylePairs: TJvgLogics);
     function Add: TJvgLogicElement;
     function Insert(Index: Integer): TJvgLogicElement;
-    property Items[Index: Integer]: TJvgLogicElement read GetItem write
-    SetItem; default;
+    property Items[Index: Integer]: TJvgLogicElement read GetItem write SetItem; default;
     property Result: string read FResult write FResult;
+    property TraceItem: TJvgLogicElement read FTraceItem write FTraceItem;
   published
     property Dictionary: TStrings read GetDictionary write SetDictionary;
-    property IgnoreSpaces: boolean read FIgnoreSpaces write FIgnoreSpaces;
-    property OnTraceMessage: TOnTraceMessage read FOnTraceMessage write
-      FOnTraceMessage;
+    property IgnoreSpaces: Boolean read FIgnoreSpaces write FIgnoreSpaces;
+    property OnTraceMessage: TOnTraceMessage read FOnTraceMessage write FOnTraceMessage;
   end;
 
   TJvgLogicVariant = class(TCollectionItem)
   private
-    //    FExpression: string;
+    // FExpression: string;
     FValue: string;
     FTrueResult: string;
     FFalseResult: string;
   published
-    //    property Expression: string read FExpression write FExpression;
+    // property Expression: string read FExpression write FExpression;
     property Value: string read FValue write FValue;
     property TrueResult: string read FTrueResult write FTrueResult;
     property FalseResult: string read FFalseResult write FFalseResult;
@@ -222,23 +199,22 @@ type
   public
     function Add: TJvgLogicVariant;
     function Insert(Index: Integer): TJvgLogicVariant;
-    property Items[Index: Integer]: TJvgLogicVariant read GetItem write
-    SetItem; default;
+    property Items[Index: Integer]: TJvgLogicVariant read GetItem write SetItem; default;
   end;
 
   TJvgCommentArea = class(TCollectionItem)
   private
-    FLeft: integer;
-    FTop: integer;
-    FWidth: integer;
-    FHeight: integer;
+    FLeft: Integer;
+    FTop: Integer;
+    FWidth: Integer;
+    FHeight: Integer;
     FText: string;
     FColor: TColor;
   published
-    property Left: integer read FLeft write FLeft;
-    property Top: integer read FTop write FTop;
-    property Width: integer read FWidth write FWidth;
-    property Height: integer read FHeight write FHeight;
+    property Left: Integer read FLeft write FLeft;
+    property Top: Integer read FTop write FTop;
+    property Width: Integer read FWidth write FWidth;
+    property Height: Integer read FHeight write FHeight;
     property Text: string read FText write FText;
     property Color: TColor read FColor write FColor;
   end;
@@ -250,8 +226,7 @@ type
   public
     function Add: TJvgCommentArea;
     function Insert(Index: Integer): TJvgCommentArea;
-    property Items[Index: Integer]: TJvgCommentArea read GetItem write
-    SetItem; default;
+    property Items[Index: Integer]: TJvgCommentArea read GetItem write SetItem; default;
   end;
 
 implementation
@@ -259,6 +234,8 @@ implementation
 uses
   JvConsts,
   JvgUtils;
+
+//=== TJvgLogicElement =======================================================
 
 constructor TJvgLogicElement.Create(Collection: TCollection);
 begin
@@ -272,7 +249,7 @@ end;
 destructor TJvgLogicElement.Destroy;
 begin
   FLogicVariants.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgLogicElement.Loaded;
@@ -280,51 +257,11 @@ begin
   if FLogicVariants.Count = 0 then
     with FLogicVariants.Add do
     begin
-      //    FExpression := self.FExpression;
-      FValue := self.FValue;
-      FTrueResult := self.FTrueResult;
-      FFalseResult := self.FFalseResult;
+      // FExpression := Self.FExpression;
+      FValue := Self.Value;
+      FTrueResult := Self.TrueResult;
+      FFalseResult := Self.FalseResult;
     end;
-end;
-
-constructor TJvgLogics.Create(AOwner:TPersistent; ItemClass: TCollectionItemClass);
-begin
-  inherited Create(AOwner, ItemClass);
-  FDictionary := TStringList.Create;
-end;
-
-destructor TJvgLogics.Destroy;
-begin
-  FDictionary.Free;
-  inherited;
-end;
-
-procedure TJvgLogics.Loaded;
-var
-  i: integer;
-begin
-  for i := 0 to Count - 1 do
-    Items[i].Loaded;
-end;
-
-function TJvgLogics.GetItem(Index: Integer): TJvgLogicElement;
-begin
-  Result := TJvgLogicElement(inherited Items[Index]);
-end;
-
-procedure TJvgLogics.SetItem(Index: Integer; Value: TJvgLogicElement);
-begin
-  Items[Index].Assign(Value);
-end;
-
-function TJvgLogics.Add: TJvgLogicElement;
-begin
-  Result := TJvgLogicElement(inherited Add);
-end;
-
-function TJvgLogics.Insert(Index: Integer): TJvgLogicElement;
-begin
-  Result := TJvgLogicElement(inherited Insert(Index));
 end;
 
 function TJvgLogicElement.GetNextElement: TJvgLogicElement;
@@ -352,7 +289,7 @@ begin
   FFalseResult := Value;
 end;
 
-procedure TJvgLogicElement.SetIsFirst(const Value: boolean);
+procedure TJvgLogicElement.SetIsFirst(const Value: Boolean);
 begin
   FIsFirst := Value;
 end;
@@ -378,19 +315,211 @@ begin
     FNextFalseElementID := Value.ID;
 end;
 
-{ TJvgLogicProducer }
+procedure TJvgLogicElement.SetRule(const Value: TLogicRule);
+begin
+  FRule := Value;
+end;
+
+procedure TJvgLogicElement.SetTrueResult(const Value: string);
+begin
+  FTrueResult := Value;
+end;
+
+procedure TJvgLogicElement.SetValue(const Value: string);
+begin
+  FValue := Value;
+end;
+
+//=== TJvgLogics =============================================================
+
+constructor TJvgLogics.Create(AOwner:TPersistent; ItemClass: TCollectionItemClass);
+begin
+  inherited Create(AOwner, ItemClass);
+  FDictionary := TStringList.Create;
+end;
+
+destructor TJvgLogics.Destroy;
+begin
+  FDictionary.Free;
+  inherited Destroy;
+end;
+
+procedure TJvgLogics.Loaded;
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+    Items[I].Loaded;
+end;
+
+function TJvgLogics.GetItem(Index: Integer): TJvgLogicElement;
+begin
+  Result := TJvgLogicElement(inherited Items[Index]);
+end;
+
+procedure TJvgLogics.SetItem(Index: Integer; Value: TJvgLogicElement);
+begin
+  Items[Index].Assign(Value);
+end;
+
+function TJvgLogics.Add: TJvgLogicElement;
+begin
+  Result := TJvgLogicElement(inherited Add);
+end;
+
+function TJvgLogics.Insert(Index: Integer): TJvgLogicElement;
+begin
+  Result := TJvgLogicElement(inherited Insert(Index));
+end;
+
+procedure TJvgLogics.StartAnalyze;
+begin
+  if Count > 0 then
+    TraceItem := Items[0]
+  else
+    TraceItem := nil;
+end;
+
+procedure TJvgLogics.AnalyzeStep;
+var
+  LogicVariant: TJvgLogicVariant;
+begin
+  LogicVariant := nil;
+  if Assigned(TraceItem) then
+  begin
+    TraceItem.IsTrue := True;
+    if GetItemResult(TraceItem, LogicVariant) then
+    begin
+      Result := Result + ParseExpression(LogicVariant.TrueResult);
+      TraceItem := TraceItem.NextElement;
+    end
+    else
+    begin
+      Result := Result + ParseExpression(LogicVariant.FalseResult);
+      TraceItem := TraceItem.NextFalseElement;
+    end;
+  end;
+end;
+
+procedure TJvgLogics.Analyze;
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+    Items[I].IsTrue := False;
+
+  Result := '';
+  I := 0;
+  TraceItem := Items[0];
+  while Assigned(TraceItem) and (I < 1000) do
+  begin
+    AnalyzeStep;
+    Inc(I);
+  end;
+end;
+
+function TJvgLogics.GetItemResult(Item: TJvgLogicElement;
+  var LogicVariant: TJvgLogicVariant): Boolean;
+var
+  Expr, Value: string;
+  I: Integer;
+begin
+  Result := False;
+  Expr := ParseExpression(Item.Expression);
+  if IgnoreSpaces then
+    Expr := Trim(Expr);
+
+  for I := 0 to Item.LogicVariants.Count - 1 do
+  begin
+    Value := ParseExpression(Item.LogicVariants[I].Value);
+
+    case Item.Rule of
+      lrEqual:
+        Result := Expr = Value;
+      lrBeginWith:
+        Result := Pos(Value, Expr) = 1;
+      lrEndWith:
+        Result := Copy(Expr, Length(Expr) - Length(Value) + 1, Length(Value)) = Value;
+      lrContains:
+        Result := Pos(Expr, Value) <> 1;
+      lrContainsIn:
+        Result := Pos(Value, Expr) <> 1;
+      ltNotEmpty:
+        Result := Length(Expr) > 0;
+    end;
+
+    LogicVariant := Item.LogicVariants[I];
+    if Result and (Item.LogicVariants[I].TrueResult > '') then
+      Break;
+    if not Result and (Item.LogicVariants[I].FalseResult > '') then
+      Break;
+  end;
+
+  if Assigned(FOnTraceMessage) then
+    FOnTraceMessage(Self, Result,
+      IIF(Result, Item.TrueResult, Item.FalseResult),
+      ParseExpression(IIF(Result, Item.TrueResult, Item.FalseResult)),
+      Item.Caption + '  :  ' + IIF(Result, 'TRUE', 'FALSE') +
+      '  :  ' + IIF(Result, Item.TrueResult, Item.FalseResult));
+end;
+
+function TJvgLogics.ParseExpression(const Value: string): string;
+var
+  I: Integer;
+begin
+  Result := Value;
+  Result := StringReplace(Result, '[RESULT]', Self.Result,
+    [rfReplaceAll, rfIgnoreCase]);
+  for I := 0 to Dictionary.Count - 1 do
+    Result := StringReplace(Result, '[' + Dictionary.Names[I] + ']',
+      Dictionary.Values[Dictionary.Names[I]], [rfReplaceAll, rfIgnoreCase]);
+
+  I := 1;
+  while I <= Length(Result) do
+  begin
+    if Result[I] = '[' then
+    begin
+      repeat
+        Result[I] := '[';
+        Inc(I);
+      until (I > Length(Result)) or (Result[I] = ']');
+      if (I <= Length(Result)) and (Result[I] = ']') then
+        Result[I] := '[';
+    end;
+    Inc(I);
+  end;
+  Result := StringReplace(Result, '[', '', [rfReplaceAll]);
+end;
+
+function TJvgLogics.GetDictionary: TStrings;
+begin
+  Result := FDictionary;
+end;
+
+procedure TJvgLogics.SetDictionary(const Value: TStrings);
+begin
+  FDictionary.Assign(Value);
+end;
+
+//=== TJvgLogicProducer ======================================================
 
 constructor TJvgLogicProducer.Create(AOwner: TComponent);
 begin
-  inherited;
-  FLogics := TJvgLogics.Create(self, TJvgLogicElement);
-  FCommentAreas := TJvgCommentAreas.Create(self, TJvgCommentArea);
+  inherited Create(AOwner);
+  FLogics := TJvgLogics.Create(Self, TJvgLogicElement);
+  FCommentAreas := TJvgCommentAreas.Create(Self, TJvgCommentArea);
 end;
 
 destructor TJvgLogicProducer.Destroy;
 begin
-  inherited;
   FLogics.Free;
+  inherited Destroy;
+end;
+
+procedure TJvgLogicProducer.Loaded;
+begin
+  inherited Loaded;
+  Logics.Loaded;
 end;
 
 function TJvgLogicProducer.GetDictionary: TStrings;
@@ -408,12 +537,12 @@ begin
   Logics.Dictionary.Assign(Value);
 end;
 
-procedure TJvgLogicProducer.SetIgnoreSpaces(const Value: boolean);
+procedure TJvgLogicProducer.SetIgnoreSpaces(const Value: Boolean);
 begin
   Logics.IgnoreSpaces := Value;
 end;
 
-function TJvgLogicProducer.GetIgnoreSpaces: boolean;
+function TJvgLogicProducer.GetIgnoreSpaces: Boolean;
 begin
   Result := Logics.IgnoreSpaces;
 end;
@@ -421,154 +550,6 @@ end;
 procedure TJvgLogicProducer.SetLogics(const Value: TJvgLogics);
 begin
   FLogics := Value;
-end;
-
-procedure TJvgLogicElement.SetRule(const Value: TLogicRule);
-begin
-  FRule := Value;
-end;
-
-procedure TJvgLogicElement.SetTrueResult(const Value: string);
-begin
-  FTrueResult := Value;
-end;
-
-procedure TJvgLogicElement.SetValue(const Value: string);
-begin
-  FValue := Value;
-end;
-
-procedure TJvgLogics.StartAnalyze;
-begin
-  if Count > 0 then
-    TraceItem := Items[0]
-  else
-    TraceItem := nil;
-end;
-
-procedure TJvgLogics.AnalyzeStep;
-var
-  f: boolean;
-  LogicVariant: TJvgLogicVariant;
-begin
-  LogicVariant := nil;
-
-  if Assigned(TraceItem) then
-  begin
-    TraceItem.IsTrue := true;
-    f := GetItemResult(TraceItem, LogicVariant);
-
-    if f then
-      Result := Result + ParseExpression(LogicVariant.TrueResult)
-    else
-      Result := Result + ParseExpression(LogicVariant.FalseResult);
-    if f then
-      TraceItem := TraceItem.NextElement
-    else
-      TraceItem := TraceItem.NextFalseElement;
-  end;
-end;
-
-procedure TJvgLogics.Analyze;
-var
-  i: integer;
-begin
-  for i := 0 to Count - 1 do
-    Items[i].IsTrue := false;
-
-  Result := '';
-  i := 0;
-  TraceItem := Items[0];
-  while Assigned(TraceItem) and (i < 1000) do
-  begin
-    AnalyzeStep;
-    inc(i);
-  end;
-end;
-
-function TJvgLogics.GetItemResult(Item: TJvgLogicElement; var LogicVariant:
-  TJvgLogicVariant): boolean;
-var
-  Expr, Value: string;
-  i: integer;
-begin
-  Result := false;
-  Expr := ParseExpression(Item.Expression);
-  if IgnoreSpaces then
-    Expr := trim(Expr);
-
-  for i := 0 to Item.LogicVariants.Count - 1 do
-  begin
-    Value := ParseExpression(Item.LogicVariants[i].Value);
-
-    case Item.Rule of
-      lrEqual: Result := Expr = Value;
-      lrBeginWith: Result := pos(Value, Expr) = 1;
-      lrEndWith: Result := copy(Expr, length(Expr) - length(Value) + 1,
-          length(Value)) = Value;
-      lrContains: Result := pos(Expr, Value) <> 1;
-      lrContainsIn: Result := pos(Value, Expr) <> 1;
-      ltNotEmpty: Result := length(Expr) > 0;
-    end;
-
-    LogicVariant := Item.LogicVariants[i];
-    if Result and (Item.LogicVariants[i].TrueResult > '') then
-      break;
-    if not Result and (Item.LogicVariants[i].FalseResult > '') then
-      break;
-
-  end;
-
-  if Assigned(OnTraceMessage) then
-    OnTraceMessage(self, Result, IIF(Result, Item.TrueResult,
-      Item.FalseResult), ParseExpression(IIF(Result, Item.TrueResult,
-      Item.FalseResult)), Item.Caption + '  :  ' + IIF(Result, 'TRUE', 'FALSE') +
-      '  :  ' + IIF(Result, Item.TrueResult, Item.FalseResult));
-
-end;
-
-function TJvgLogics.ParseExpression(const Value: string): string;
-var
-  i: integer;
-begin
-  Result := Value;
-  Result := StringReplace(Result, '[RESULT]', self.Result, [rfReplaceAll,
-    rfIgnoreCase]);
-  for i := 0 to Dictionary.Count - 1 do
-    Result := StringReplace(Result, '[' + Dictionary.Names[i] + ']',
-      Dictionary.Values[Dictionary.Names[i]], [rfReplaceAll, rfIgnoreCase]);
-
-  i := 1;
-  while i <= length(Result) do
-  begin
-    if Result[i] = '[' then
-    begin
-      repeat
-        Result[i] := '[';
-        inc(i);
-      until (i > length(Result)) or (Result[i] = ']');
-      if (i <= length(Result)) and (Result[i] = ']') then
-        Result[i] := '[';
-    end;
-    inc(i);
-  end;
-  Result := StringReplace(Result, '[', '', [rfReplaceAll]);
-end;
-
-function TJvgLogics.GetDictionary: TStrings;
-begin
-  Result := FDictionary;
-end;
-
-procedure TJvgLogics.SetDictionary(const Value: TStrings);
-begin
-  FDictionary.Assign(Value);
-end;
-
-procedure TJvgLogicProducer.Loaded;
-begin
-  inherited;
-  Logics.Loaded;
 end;
 
 procedure TJvgLogicProducer.SetOnTraceMessage(const Value: TOnTraceMessage);
@@ -581,7 +562,7 @@ begin
   Result := Logics.OnTraceMessage;
 end;
 
-{ TJvgCommentAreas }
+//=== TJvgCommentAreas =======================================================
 
 function TJvgCommentAreas.Add: TJvgCommentArea;
 begin
@@ -604,7 +585,7 @@ begin
   Items[Index].Assign(Value);
 end;
 
-{ TJvgLogicVariants }
+//=== TJvgLogicVariants ======================================================
 
 function TJvgLogicVariants.Add: TJvgLogicVariant;
 begin
