@@ -619,12 +619,11 @@ begin
           Bitmap.Assign(FHlGradient)
         else
           Bitmap.Assign(FFcGradient);
-        {$IFDEF VisualCLX}
-        Bitmap.Canvas.Start;
-        {$ENDIF VisualCLX}
+        {$IFDEF VCL}
         BitBlt(Handle, 1, 1, Width, Height, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
+        {$ENDIF VCL}
         {$IFDEF VisualCLX}
-        Bitmap.Canvas.Stop;
+        BitBlt(Canvas, 1, 1, Width, Height, Bitmap.Canvas, 0, 0, SRCCOPY);
         {$ENDIF VisualCLX}
       finally
         Bitmap.Free;
@@ -635,24 +634,23 @@ begin
     if not ((dsHighlight in DrawState) and (dsClicked in DrawState)) then
     begin
       Offset := 2 * Integer(IsSpecialDrawState);
-      {$IFDEF VisualCLX}
-      FBgGradient.Canvas.start;
-      {$ENDIF VisualCLX}
+      {$IFDEF VCL}
       BitBlt(Handle, 1 + Offset, 1 + Offset, Width - 3 * Offset, Height - 3 * Offset,
         FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
+      {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      FBgGradient.Canvas.Stop;
+      BitBlt(Canvas, 1 + Offset, 1 + Offset, Width - 3 * Offset, Height - 3 * Offset,
+        FBgGradient.Canvas, 0, 0, SRCCOPY);
       {$ENDIF VisualCLX}
     end
     // ...or click gradient.
     else
     begin
-      {$IFDEF VisualCLX}
-      FCkGradient.Canvas.Start;
-      {$ENDIF VisualCLX}
+      {$IFDEF VCL}
       BitBlt(Handle, 1, 1, Width, Height, FCkGradient.Canvas.Handle, 0, 0, SRCCOPY);
+      {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      FCkGradient.Canvas.Stop;
+      BitBlt(Canvas, 1, 1, Width, Height, FCkGradient.Canvas, 0, 0, SRCCOPY);
       {$ENDIF VisualCLX}
     end;
     // draw border lines.
@@ -754,9 +752,6 @@ begin
       end;
 
       // draw caption.
-      {$IFDEF VisualCLX}
-      SetPainterFont(Handle, Font);
-      {$ENDIF VisualCLX}
       SetBkMode(Handle, Transparent);
       JvXPRenderText(Self, Canvas, Caption, Font, Enabled, FShowAccelChar, Rect, Flags);
     finally
