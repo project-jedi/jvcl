@@ -31,12 +31,10 @@ interface
 
 uses
   SysUtils, Classes,
+  Graphics, Controls, Forms, ExtCtrls,
   {$IFDEF VCL}
-  Graphics, Controls, Forms, ExtCtrls, jpeg,
+  jpeg,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QExtCtrls,
-  {$ENDIF VisualCLX}
   JvBaseDlg, JvComponent, JvTypes;
 
 type

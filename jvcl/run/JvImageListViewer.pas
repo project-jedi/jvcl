@@ -27,14 +27,8 @@ interface
 {$I jvcl.inc}
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Controls,
+  SysUtils, Classes, Windows, Messages, Controls,
   Graphics, StdCtrls, ComCtrls, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QGraphics, QStdCtrls, QComCtrls, QImgList,
-  {$ENDIF VisualCLX}
   JvCustomItemViewer;
 
 type

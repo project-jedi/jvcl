@@ -29,13 +29,7 @@ unit JvHints;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, Types, QWindows,
-  {$ENDIF VisualCLX}
-  Classes,
+  Windows, Messages, Graphics, Controls, Forms, Classes,
   JvTypes;
 
 type

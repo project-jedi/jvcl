@@ -30,13 +30,7 @@ unit JvImageSquare;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, ImgList, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QImgList, QForms, QWindows, Types,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, ImgList, Forms,
   JvComponent;
 
 type

@@ -30,17 +30,7 @@ unit JvGroupBox;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, Qt, QWindows,
-  {$ENDIF VisualCLX}
-  Graphics, Controls, Forms, StdCtrls,
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, StdCtrls,
   JvThemes, JvExControls, JvExStdCtrls;
 
 type
