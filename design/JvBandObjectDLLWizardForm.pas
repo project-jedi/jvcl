@@ -16,13 +16,12 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2001-mm-dd
-
 You may retrieve the latest version of this file at the Project JEDI home page,
 located at http://www.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

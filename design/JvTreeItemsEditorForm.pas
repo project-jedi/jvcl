@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-01-01
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -27,6 +25,7 @@ Changes:
   Drawing of State images differs from normal images since they are 1-based:
   the 0-th item for the state imagelist isn't drawn to alert the user to this fact
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -12,13 +12,12 @@ The Original Code is: JvScheduleEditors.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are:
 
-Last Modified: 
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

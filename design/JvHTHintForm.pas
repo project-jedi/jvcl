@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s): 
 
-Last Modified: 2004-01-24
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -25,6 +23,7 @@ description : Design-time Hint Editor
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
