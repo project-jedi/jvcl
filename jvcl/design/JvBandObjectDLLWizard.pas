@@ -32,7 +32,7 @@ unit JvBandObjectDLLWizard;
 interface
 
 uses
-  ToolsApi, Windows;
+  Windows, ToolsApi;
 
 type
   TJvBandObjectDLLWizard = class(TInterfacedObject,
@@ -52,7 +52,7 @@ type
     function GetAuthor: string;
     function GetComment: string;
     function GetPage: string;
-    {$IFDEF COMPILER6_Up}
+    {$IFDEF COMPILER6_UP}
     function GetGlyph: Cardinal;
     {$ELSE}
     function GetGlyph: HICON;
@@ -195,7 +195,7 @@ begin
   Result := sCreatesABandObjectDLLProject;
 end;
 
-{$IFDEF COMPILER6_Up}
+{$IFDEF COMPILER6_UP}
 function TJvBandObjectDLLWizard.GetGlyph: Cardinal;
 {$ELSE}
 function TJvBandObjectDLLWizard.GetGlyph: HICON;

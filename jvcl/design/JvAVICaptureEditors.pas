@@ -26,32 +26,33 @@ Known Issues:
 
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
+
 unit JvAVICaptureEditors;
 
 interface
 
-uses Windows, VFW, JvAVICapture,
+uses
+  Windows, Classes, SysUtils, VFW, 
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  SysUtils, Classes;
+  JvAVICapture;
 
 type
   TJvDriverIndexEditor = class(TIntegerProperty)
   protected
-    FDrivers : TStringList;
-
+    FDrivers: TStringList;
     procedure EnumDrivers;
   public
-    constructor Create(const ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; APropCount: Integer); override;
+    constructor Create(const ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF}; APropCount: Integer);
+      override;
     destructor Destroy; override;
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
     function GetValue: string; override;
-
   end;
 
   TJvVirtualKeyEditor = class(TIntegerProperty)
@@ -62,20 +63,22 @@ type
     function GetValue: string; override;
   end;
 
-
 resourcestring
   sDisconnected = 'Disconnected';
   sdIsNotWithinTheValidRangeOfdd = '%d is not within the valid range of %d..%d';
 
 implementation
 
-uses JvVirtualKeyEditorForm, Controls;
+uses
+  Controls,
+  JvVirtualKeyEditorForm;
 
-{ TJvDriverIndexEditor }
+//=== TJvDriverIndexEditor ===================================================
 
-constructor TJvDriverIndexEditor.Create(const ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; APropCount: Integer);
+constructor TJvDriverIndexEditor.Create(const ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF};
+  APropCount: Integer);
 begin
-  inherited;
+  inherited Create(ADesigner, APropCount);
   FDrivers := TStringList.Create;
   EnumDrivers;
 end;
@@ -83,22 +86,19 @@ end;
 destructor TJvDriverIndexEditor.Destroy;
 begin
   FDrivers.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvDriverIndexEditor.EnumDrivers;
-var i : Integer;
-  deviceName : array [0..MAX_PATH] of char;
-  deviceVersion : array [0..MAX_PATH] of char;
+var
+  I: Integer;
+  DeviceName: array [0..MAX_PATH] of Char;
+  DeviceVersion: array [0..MAX_PATH] of Char;
 begin
   // no more than 10 drivers in the system (cf Win32 API)
-  for i := 0 to 9 do
-  begin
-    if capGetDriverDescription(i, deviceName, sizeof(deviceName), deviceVersion, sizeof(deviceVersion)) then
-    begin
-      FDrivers.Add(deviceName);
-    end;
-  end;
+  for I := 0 to 9 do
+    if capGetDriverDescription(I, DeviceName, SizeOf(DeviceName), DeviceVersion, SizeOf(DeviceVersion)) then
+      FDrivers.Add(DeviceName);
 end;
 
 function TJvDriverIndexEditor.GetAttributes: TPropertyAttributes;
@@ -107,7 +107,8 @@ begin
 end;
 
 function TJvDriverIndexEditor.GetValue: string;
-var Index : TJvDriverIndex;
+var
+  Index: TJvDriverIndex;
 begin
   Index := GetOrdValue;
   if Index = -1 then
@@ -117,47 +118,39 @@ begin
 end;
 
 procedure TJvDriverIndexEditor.GetValues(Proc: TGetStrProc);
-var i : Integer;
+var
+  I: Integer;
 begin
   Proc('-1 - ' + sDisconnected);
-  for i := 0 to FDrivers.Count-1 do
-  begin
-    Proc(IntToStr(i)+' - '+FDrivers[i]);
-  end;
+  for I := 0 to FDrivers.Count - 1 do
+    Proc(IntToStr(I) + ' - ' + FDrivers[I]);
 end;
 
 procedure TJvDriverIndexEditor.SetValue(const Value: string);
-var NewIndex : Integer;
+var
+  NewIndex: Integer;
 begin
   // only consider string until the first space
   // then convert it into a integer
-  NewIndex := StrToInt(Copy(Value, 1, Pos(' ', Value)-1));
+  NewIndex := StrToInt(Copy(Value, 1, Pos(' ', Value) - 1));
 
   // check its validity
-  if (NewIndex >= -1) and
-    (NewIndex < FDrivers.Count) then
-  begin
-    SetOrdValue(NewIndex);
-  end
+  if (NewIndex >= -1) and (NewIndex < FDrivers.Count) then
+    SetOrdValue(NewIndex)
   else
-  begin
-    raise ERangeError.CreateFmt(
-      sdIsNotWithinTheValidRangeOfdd,
-      [NewIndex, -1, FDrivers.Count-1]);
-  end;
+    raise ERangeError.CreateFmt(sdIsNotWithinTheValidRangeOfdd,
+      [NewIndex, -1, FDrivers.Count - 1]);
 end;
 
-{ TJvVirtualKeyEditor }
+//=== TJvVirtualKeyEditor =====================================================
 
 procedure TJvVirtualKeyEditor.Edit;
 begin
   with TfrmJvVirtualKeyEditor.Create(nil) do
   begin
     EditingFrame.CombinedKeyCode := GetOrdValue;
-    if ShowModal = mrOk then
-    begin
+    if ShowModal = mrOK then
       SetOrdValue(EditingFrame.CombinedKeyCode);
-    end;
     Free;
   end;
 end;
@@ -178,3 +171,4 @@ begin
 end;
 
 end.
+

@@ -33,13 +33,18 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  {$IFNDEF COMPILER7_UP}EditIntf, ToolIntf, {$ENDIF}TypInfo,
+  {$IFNDEF COMPILER7_UP}
+  EditIntf, ToolIntf,
+  {$ENDIF}
+  TypInfo,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  {$IFNDEF COMPILER7_UP}ExptIntf,{$ENDIF}
+  {$IFNDEF COMPILER7_UP}
+  ExptIntf,
+  {$ENDIF}
   JvBaseDlg;
 
 type
@@ -51,11 +56,10 @@ type
     procedure Edit; override;
   end;
 
+implementation
 
 resourcestring
-  sPreview = 'Preview...';
-
-implementation
+  SPreview = 'Preview...';
 
 procedure TJvBaseDlgEditor.Edit;
 begin
@@ -90,7 +94,7 @@ function TJvBaseDlgEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := sPreview;
+      Result := SPreview;
   end;
 end;
 

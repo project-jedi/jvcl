@@ -39,10 +39,8 @@ type
   TJvBaseDesign = class(TJvForm)
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
-    { Private declarations }
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHowingChanged;
   protected
-    { Protected declarations }
     { Determines the key to write the settings to or read from. Generally you don't need to override
       this method.
       Default will return (DELPHIRootKey)\Property Editors\(DesignerFormName)\(ClassName), where
@@ -65,7 +63,6 @@ type
       position and size information). }
     procedure RestoreSettings; dynamic;
   public
-    { Public declarations }
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
   end;
@@ -83,7 +80,7 @@ uses
 {$R *.DFM}
 
 var
-  DsgnFrmList: TList;
+  DsgnFrmList: TList = nil;
 
 function GetDesignerForm(CompareFunc: TCompareDsgFunc; const Args: array of const): TJvBaseDesign;
 var
@@ -149,10 +146,8 @@ begin
     Free;
   end;
   for I := 0 to ComponentCount - 1 do
-  begin
     if Components[I] is TfmeJvBaseDesign then
       TfmeJvBaseDesign(Components[I]).StoreSettings;
-  end;
 end;
 
 procedure TJvBaseDesign.RestoreSettings;
@@ -178,10 +173,8 @@ begin
     Free;
   end;
   for I := 0 to ComponentCount - 1 do
-  begin
     if Components[I] is TfmeJvBaseDesign then
       TfmeJvBaseDesign(Components[I]).RestoreSettings;
-  end;
 end;
 
 procedure TJvBaseDesign.AfterConstruction;
@@ -211,6 +204,7 @@ end;
 initialization
 
 finalization
-  FreeAndNil(DsgnFrmList)
+  FreeAndNil(DsgnFrmList);
+
 end.
  

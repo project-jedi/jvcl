@@ -30,15 +30,14 @@ unit JvCheckedItemsForm;
 interface
 
 uses
-  Windows,
-  SysUtils, Classes, Controls, Forms, Menus, Graphics,
-  StdCtrls,
+  Windows, SysUtils, Classes, Controls, Forms, Menus, Graphics,
+  StdCtrls, CheckLst,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, VCLEditors, DesignEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  CheckLst, JvComponent;
+  JvComponent;
 
 type
   TJvCheckItemEditor = class(TJvForm)
@@ -97,11 +96,6 @@ type
     procedure Edit; override;
   end;
 
-
-resourcestring
-  sItemEditor = 'Item editor';
-  sEnabled = 'Enabled';
-
 implementation
 
 {$R *.DFM}
@@ -110,8 +104,11 @@ implementation
 
 uses
   Consts,
-  JvStringsForm,
-  JvConsts, JvJVCLUtils, JvBoxProcs;
+  JvStringsForm, JvConsts, JvJVCLUtils, JvBoxProcs;
+
+resourcestring
+  sItemEditor = 'Item editor';
+  sEnabled = 'Enabled';
 
 //=== TJvCheckItemsProperty ==================================================
 
@@ -347,7 +344,7 @@ end;
 
 procedure TJvCheckItemsEditor.AddListBtnClick(Sender: TObject);
 var
-  I: LongInt;
+  I: Longint;
 begin
   with TJvStrEditDlg.Create(Application) do
   try
@@ -435,8 +432,8 @@ begin
   end;
 end;
 
-procedure TJvCheckItemsEditor.CheckListDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
+procedure TJvCheckItemsEditor.CheckListDragDrop(Sender, Source: TObject;
+  X, Y: Integer);
 begin
   if Source = CheckList then
   begin
@@ -445,8 +442,8 @@ begin
   end;
 end;
 
-procedure TJvCheckItemsEditor.CheckListDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TJvCheckItemsEditor.CheckListDragOver(Sender, Source: TObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   BoxDragOver(CheckList, Source, X, Y, State, Accept, CheckList.Sorted);
   if State = dsDragLeave then

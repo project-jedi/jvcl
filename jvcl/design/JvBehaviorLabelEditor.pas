@@ -1,14 +1,42 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvBandsReg.PAS, released on 2002-05-26.
+
+The Initial Developer of the Original Code is John Doe.
+Portions created by John Doe are Copyright (C) 2003 John Doe.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-11-09
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvBehaviorLabelEditor;
 
 interface
+
 uses
   Classes, SysUtils,
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf
+  DesignEditors, DesignIntf;
   {$ELSE}
-  DsgnIntf
-  {$ENDIF COMPILER6_UP};
+  DsgnIntf;
+  {$ENDIF COMPILER6_UP}
 
 type
   TJvLabelBehaviorProperty = class(TStringProperty)
@@ -21,17 +49,18 @@ type
 
 
 implementation
+
 uses
   JvBehaviorLabel;
 
 
-{ TJvLabelBehaviorProperty }
+//=== TJvLabelBehaviorProperty ===============================================
 
 function TJvLabelBehaviorProperty.AutoFill: Boolean;
 begin
   Result := inherited AutoFill;
   // if you want to fix the flickering when double-clicking a value, uncomment line below:
-//  Result := false;
+  // Result := False;
 end;
 
 function TJvLabelBehaviorProperty.GetAttributes: TPropertyAttributes;
@@ -40,29 +69,37 @@ begin
 end;
 
 procedure TJvLabelBehaviorProperty.GetValues(Proc: TGetStrProc);
-var S:TStringlist;i:integer;
+var
+  S: TStringList;
+  I: Integer;
 begin
-  S := TStringlist.Create;
+  S := TStringList.Create;
   try
     GetRegisteredLabelBehaviorOptions(S);
     S.Sort;
-    for i := 0 to S.Count -1 do
-      Proc(S[i]);
+    for I := 0 to S.Count -1 do
+      Proc(S[I]);
   finally
     S.Free;
   end;
 end;
 
 procedure TJvLabelBehaviorProperty.SetValue(const Value: string);
-var List:IDesignerSelections;ADesigner:{$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF};
+var
+  List: IDesignerSelections;
+  {$IFDEF COMPILER6_UP}
+  ADesigner: IDesigner;
+  {$ELSE}
+  ADesigner: IFormDesigner;
+  {$ENDIF COMPILER6_UP}
 begin
-  inherited;
+  inherited SetValue(Value);
   List := CreateSelectionList;
   Designer.GetSelections(List);
   ADesigner := Designer;  // keep Designer alive
   ADesigner.SetSelections(nil);
   ADesigner.SetSelections(List);
-//  Designer.Modified;
+  //Designer.Modified;
 end;
 
 end.
