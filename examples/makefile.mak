@@ -69,8 +69,8 @@ JvDotNetDemo.exe DSAExamples.exe MessageDlgEditor.exe JvEdits.exe JvErrorIndicat
 FindReplaceDemo.exe prjControls.exe BasicDemo.exe CollectionDemo.exe SimpleHIDWrite.exe \
 UsagesDemo.exe JvHtmlParserProj.exe JvID3v1Demo.exe JvID3v2Demo.exe Install2LabelDemo.exe \
 JvItemViewerDemo.exe JvLinkLabelDemo.exe ListCombDemo.exe JvLogFileDemo.exe MailExample.exe \
-JvMarkupLabelDemo.exe JvMenusExample.exe JvMouseGestureDemo.exe JvMruListDemo.exe JvMultiHTTPGrabberDemo.exe \
-EventViewer.exe JvObjPickerDemo.exe JvOLEDragCursorsDemo.exe OLBarDemo.exe pm.exe PageListDemo.exe \
+JvMarkupLabelDemo.exe JvMenusExample.exe JvMouseGestureDemo.exe JvMruListDemo.exe \
+EventViewer.exe JvObjPickerDemo.exe JvOLEDragCursorsDemo.exe OLBarDemo.exe pm.exe \
 JvPanelDemo.exe JvParameterListDemo.exe JvPlayListProj.exe JvPrvwDemo.exe ProfilerDemo.exe \
 JvProgressDialogDemo.exe RegEditDemo.exe JvRollOutDemo.exe RunDLL32Demo.exe JvScreenCaptureProj.exe \
 ScrollWinDemo.exe JvSearchFileProj.exe JvShellHookDemo.exe ShFileOpDemo.exe SpecialProgressTestPrj.exe \
@@ -80,6 +80,10 @@ TransparentButtonDemo.exe JvTrayIconDemo.exe JvTreeViewAsMenu.exe JvUninstallCtr
 JvUrlListGrabberDemo.exe JvFormatEditDemo.exe JvValidatorsDemo.exe JvWinDialogsDemo.exe \
 JvWindowsTitleProj.exe WndProcHookDemo.exe Hospital.exe WinXPBarDemo.exe SimpleDemo.exe \
 JvZLibMultipleDemo.exe JvZoomProj.exe LinkedConsumers.exe
+#
+# (rom) temporarily deactivated  does not compile
+# JvMultiHTTPGrabberDemo.exe
+# PageListDemo.exe
 #---------------------------------------------------------------------------------------------------
 Gl_demo.exe: "Globus\Visual Components Demo\Gl_demo.dpr"
   @cd Globus\Visual Components Demo
@@ -1011,5 +1015,3 @@ Rxdemo.exe: "RxLib\Rxdemo.dpr"
 clean: 
   -@del /Q /f "..\dcu\*.dcu" "..\bin\*.exe" "..\bin\*.dll" "..\bin\*.bpl" "..\bin\*.dcp"
 #---------------------------------------------------------------------------------------------------
-
-

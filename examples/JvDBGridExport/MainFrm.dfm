@@ -23,7 +23,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 672
-    Height = 248
+    Height = 245
     Align = alClient
     DataSource = DataSource1
     Font.Charset = ANSI_CHARSET
@@ -122,13 +122,13 @@ object frmMain: TfrmMain
         Title.Font.Height = -19
         Title.Font.Name = 'Comic Sans MS'
         Title.Font.Style = [fsUnderline]
-        Width = 100
+        Width = 152
         Visible = True
       end>
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 248
+    Top = 245
     Width = 672
     Height = 19
     Panels = <

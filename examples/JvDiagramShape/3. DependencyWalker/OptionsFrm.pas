@@ -33,7 +33,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvCombobox, JvColorCombo, ComCtrls, ActnList, ExtCtrls,
-  JvBaseDlg, JvBrowseFolder, PersistForm, PersistSettings, Menus;
+  JvBaseDlg, JvBrowseFolder, PersistForm, PersistSettings, Menus,
+  JvComponent, JvExStdCtrls;
 
 type
   // a TEdit that doesn't allow pasting of non-numeric text if Numeric is true
@@ -179,27 +180,19 @@ begin
   end;
 end;
 
-{$UNDEF RPLUS}
-{$IFOPT R+}
-{$R-}
-{$DEFINE RPLUS}                
-{$ENDIF}
 procedure TEdit.WMPaste(var Msg: TMessage);
-var S: string; V, C: integer;
+var
+  S: string;
 begin
   S := Text;
   inherited;
   if Numeric then
-  begin
-    Val(Text, V, C);
-    if C <> 0 then
+    try
+      StrToInt(Text);
+    except
       Text := S;
-  end;
+    end;
 end;
-{$IFDEF RPLUS}
-{$UNDEF RPLUS}
-{$R+}
-{$ENDIF}
 
 { TfrmOptions }
 
