@@ -1,7 +1,6 @@
 package JvGlobusD7D;
 
 {$R *.res}
-{$R '..\resources\JvGlobusReg.dcr'}
 {$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
@@ -28,6 +27,7 @@ package JvGlobusD7D;
 {$IMPLICITBUILD OFF}
 
 requires
+  rtl,
   vcl,
   Vclx,
   Vcldb,
@@ -36,31 +36,29 @@ requires
   vcljpg,
   vclie,
   designide,
-  JvGlobusD7R,
+  DJCL70,
+  JvCoreD7R,
   JvCustomD7R,
   JvCtrlsD7R,
-  JvMMD7R,
+  JvGlobusD7R,
   JvDlgsD7R,
-  rtl,
-  vclactnband,
-  JvCoreD7R,
-  DJCL70;
+  JvMMD7R;
 
 contains
   JvgRegLibDelphi in '..\..\design\JvgRegLibDelphi.pas',
   JvCompEditorTemplateForm in '..\..\design\JvCompEditorTemplateForm.pas' {JvgCompEditorTemplate},
   JvgLabelEditorForm in '..\..\design\JvgLabelEditorForm.pas' {JvgLabelEditorFormDlg},
-  JvgReportEditorForm in '..\..\design\JvgReportEditorForm.pas',
-  JvgReportParamsForm in '..\..\design\JvgReportParamsForm.pas',
-  JvgReportParamEditorForm in '..\..\design\JvgReportParamEditorForm.pas',
+  JvgReportEditorForm in '..\..\design\JvgReportEditorForm.pas' {JvgReportParamsForm},
+  JvgReportParamsForm in '..\..\design\JvgReportParamsForm.pas' {JvgReportParamsForm},
+  JvgReportParamEditorForm in '..\..\design\JvgReportParamEditorForm.pas' {ReportParamEditor},
   JvgShadowEditor in '..\..\design\JvgShadowEditor.pas',
   JvgCompDescription in '..\..\design\JvgCompDescription.pas',
-  JvgComponentListEditorForm in '..\..\design\JvgComponentListEditorForm.pas',
+  JvgComponentListEditorForm in '..\..\design\JvgComponentListEditorForm.pas' {JvgCompListEditor},
   JvgPropertyCenter in '..\..\design\JvgPropertyCenter.pas',
   JvgHelpPanelEditor in '..\..\design\JvgHelpPanelEditor.pas',
-  JvgRTFPreviewForm in '..\..\design\JvgRTFPreviewForm.pas',
-  JvgLogicsEditorForm in '..\..\design\JvgLogicsEditorForm.pas',
-  JvgLogicItemEditorForm in '..\..\design\JvgLogicItemEditorForm.pas',
+  JvgRTFPreviewForm in '..\..\design\JvgRTFPreviewForm.pas' {fRTFPreview},
+  JvgLogicsEditorForm in '..\..\design\JvgLogicsEditorForm.pas' {JvgLogicsEditor},
+  JvgLogicItemEditorForm in '..\..\design\JvgLogicItemEditorForm.pas' {JvgLogicItemEditor},
   JvgMultiResourceEditorForm in '..\..\design\JvgMultiResourceEditorForm.pas' {JvgMultipleResourceEdit},
   JvgMultiResources in '..\..\design\JvgMultiResources.pas';
 
