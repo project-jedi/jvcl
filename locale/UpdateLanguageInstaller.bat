@@ -11,7 +11,7 @@ if not exist %LANGUAGE%\LC_MESSAGES\JVCLInstall.po goto jvclponotfound
 
 : now that we are sure that all required files exist, process JVCLInstall.po
 echo Updating %LANGUAGE%...
-msgmerge --force-po -F -o %LANGUAGE%\LC_MESSAGES\JVCLInstall.po %LANGUAGE%\LC_MESSAGES\JVCLInstall.po JVCLInstall.po
+msgmerge --force-po --no-wrap -F -o %LANGUAGE%\LC_MESSAGES\JVCLInstall.po %LANGUAGE%\LC_MESSAGES\JVCLInstall.po JVCLInstall.po
 
 : set the headers to match JVCL ones
 ..\devtools\bin\SetPoHeader -t "JVCL localization template" -c "The Jedi Visual Component Library group" -p JVCL -v 3 -a "JVCL Group" -e "jvcl@sourceforge.net" %LANGUAGE%\LC_MESSAGES\JVCLInstall.po 
