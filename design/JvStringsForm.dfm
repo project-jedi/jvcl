@@ -25,16 +25,14 @@ object JvStrEditDlg: TJvStrEditDlg
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object Bevel1: TBevel
+  object BevelBorder: TBevel
     Left = 8
     Top = 8
     Width = 413
     Height = 229
-    Anchors = [akLeft, akTop, akRight, akBottom]
     Shape = bsFrame
   end
   object LineCount: TLabel
@@ -50,7 +48,6 @@ object JvStrEditDlg: TJvStrEditDlg
     Top = 28
     Width = 397
     Height = 201
-    Anchors = [akLeft, akTop, akRight, akBottom]
     ScrollBars = ssBoth
     TabOrder = 0
     OnChange = UpdateStatus
@@ -61,7 +58,6 @@ object JvStrEditDlg: TJvStrEditDlg
     Top = 245
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
     ModalResult = 1
@@ -72,7 +68,6 @@ object JvStrEditDlg: TJvStrEditDlg
     Top = 245
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -83,7 +78,6 @@ object JvStrEditDlg: TJvStrEditDlg
     Top = 245
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
     Caption = '&Help'
     TabOrder = 5
     OnClick = HelpBtnClick
@@ -93,7 +87,6 @@ object JvStrEditDlg: TJvStrEditDlg
     Top = 245
     Width = 75
     Height = 25
-    Anchors = [akLeft, akBottom]
     Caption = '&Load...'
     TabOrder = 1
     OnClick = FileOpen
@@ -103,7 +96,6 @@ object JvStrEditDlg: TJvStrEditDlg
     Top = 245
     Width = 75
     Height = 25
-    Anchors = [akLeft, akBottom]
     Caption = '&Save...'
     TabOrder = 2
     OnClick = FileSave

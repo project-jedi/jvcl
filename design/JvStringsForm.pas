@@ -58,6 +58,7 @@ type
     HelpBtn: TButton;
     LoadBtn: TButton;
     SaveBtn: TButton;
+    BevelBorder: TBevel;
     procedure FileOpen(Sender: TObject);
     procedure FileSave(Sender: TObject);
     procedure UpdateStatus(Sender: TObject);
@@ -134,6 +135,14 @@ begin
   {$ENDIF VCL}
   SingleLine := RsSingleLine;
   MultipleLines := RsMultipleLines;
+ // set anchors
+  BevelBorder.Anchors := [akLeft, akTop, akRight, akBottom];
+  Memo.Anchors := [akLeft, akTop, akRight, akBottom];
+  OKBtn.Anchors := [akRight, akBottom];
+  CancelBtn.Anchors := [akRight, akBottom];
+  HelpBtn.Anchors := [akRight, akBottom];
+  LoadBtn.Anchors := [akLeft, akBottom];
+  SaveBtn.Anchors := [akLeft, akBottom];
 end;
 
 procedure TJvStrEditDlg.MemoKeyDown(Sender: TObject; var Key: Word;
