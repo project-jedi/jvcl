@@ -113,13 +113,13 @@ type
     FSortedField: string;
     FHintWnd: THintWindow;
     FHintTimer: TTimer;
-    FAlternRowColor: boolean;
     FPostOnEnter: boolean;
     FSelectColumn: TSelectColumn;
     FTitleArrow: Boolean;
     FTitlePopUp: TPopUpMenu;
     FOnTitleHintEvent: TTitleHintEvent;
     FOnTitleArrowMenuEvent: TNotifyEvent;
+    FAlternateRowColor: TColor;
     // End Lionel
     function GetImageIndex(Field: TField): Integer; // Modified by Lionel
     procedure SetShowGlyphs(Value: Boolean);
@@ -153,9 +153,9 @@ type
     procedure GetBtnParams(Sender: TObject; Field: TField; AFont: TFont;
       var Background: TColor; var SortMarker: TSortMarker;
       IsDown: Boolean);
-    procedure SetAlternRowColor(const Value: boolean);
     procedure SetTitleArrow(const Value: Boolean);
     procedure ShowSelectColumnClick;
+    procedure SetAlternateRowColor(const Value: TColor);
     // End Lionel
   protected
     procedure MouseLeave(Control: TControl); override;
@@ -276,7 +276,7 @@ type
     property OnMouseWheelUp;
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default true; // WAP.
     // Lionel
-    property AlternRowColor: boolean read FAlternRowColor write SetAlternRowColor default false;
+    property AlternateRowColor:TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
     property PostOnEnter: boolean read FPostOnEnter write FPostOnEnter default false;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn default scDataBase;
     property SortedField: string read FSortedField write FSortedField;
@@ -406,7 +406,7 @@ begin
   FHintTimer.Enabled := false;
   FHintTimer.OnTimer := HintTimerTimer;
   Self.OnGetBtnParams := GetBtnParams;
-  FAlternRowColor := false;
+  FAlternateRowColor := clNone;
   FSelectColumn := scDataBase;
   FTitleArrow := false;
   FPostOnEnter := false;
@@ -960,30 +960,29 @@ end;
 procedure TJvDBGrid.GetCellProps(Field: TField; AFont: TFont;
   var Background: TColor; Highlight: Boolean);
 
+var
+  AColor, ABack: TColor;
   function IsAfterFixedCols: boolean;
   var
     i: integer;
   begin
-    result := true;
+    Result := true;
     for i := 0 to FixedCols - 1 do
       if Columns.Items[i].FieldName = Field.FieldName then
       begin
-        result := false;
+        Result := false;
         Break;
       end;
   end;
-
-var
-  AColor, ABack: TColor;
-  lID: integer;
 begin
-  // Lionel
-  if FAlternRowColor and IsAfterFixedCols then
+  if (FAlternateRowColor <> clNone) and (FAlternateRowColor <> Color) and IsAfterFixedCols then
   begin
-    lID := DataSource.DataSet.RecNo;
-    if not Odd(lID) then Background := $DDDDDD;
+    if Odd(DataLink.ActiveRecord) then
+      Background := AlternateRowColor
+    else
+      Background := Color;
   end;
-  // End Lionel
+
   if Assigned(FOnGetCellParams) then
     FOnGetCellParams(Self, Field, AFont, Background, Highlight)
   else if Assigned(FOnGetCellProps) then
@@ -1608,8 +1607,9 @@ var
 const
   EdgeFlag: array[Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
 begin
-  if gdFixed in AState then
-    Canvas.Brush.Color := FixedColor;
+//  if gdFixed in AState then
+//    Canvas.Brush.Color := FixedColor;
+
   inherited DrawCell(ACol, ARow, ARect, AState);
 
   // Lionel
@@ -1884,7 +1884,7 @@ type
     EndIndex: Integer;
   end;
   TColumnArray = array of TColumnInfo;
-  
+
 const
   Delims = [' ', ','];
 var
@@ -2063,12 +2063,6 @@ end;
 
 const
   cHintTimerStep = 100;
-
-procedure TJvDBGrid.SetAlternRowColor(const Value: boolean);
-begin
-  FAlternRowColor := Value;
-  Refresh;
-end;
 
 procedure TJvDBGrid.CellClick(Column: TColumn);
 begin
@@ -2437,6 +2431,15 @@ end;
 // ***********************************************************************
 // End Lionel
 // ***********************************************************************
+
+procedure TJvDBGrid.SetAlternateRowColor(const Value: TColor);
+begin
+  if FAlternateRowColor <> Value then
+  begin
+    FAlternateRowColor := Value;
+    Invalidate;
+  end;
+end;
 
 initialization
 
