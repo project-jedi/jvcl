@@ -63,14 +63,33 @@ type
   published
     property Enabled: Boolean read GetEnabled write SetEnabled default False;
     property Interval: Cardinal read GetInterval write SetInterval default 100;
-    property Animation: TJvAnimation read FAnimation write FAnimation;
-    property NumLock: Boolean read GetNumLock write SetNumLock;
-    property ScrollLock: Boolean read GetScroll write SetScroll;
-    property CapsLock: Boolean read GetCapsLock write SetCapsLock;
+    property Animation: TJvAnimation read FAnimation write FAnimation default anLeftRight;
+    property NumLock: Boolean read GetNumLock write SetNumLock stored False;
+    property ScrollLock: Boolean read GetScroll write SetScroll stored False;
+    property CapsLock: Boolean read GetCapsLock write SetCapsLock stored False;
     property SystemKeysEnabled: Boolean read FSystemKeysEnabled write SetSystemKeysEnabled;
   end;
 
 implementation
+
+constructor TJvKeyboardStates.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FTimer := TTimer.Create(Self);
+  FTimer.Enabled := False;
+  FTimer.Interval := 100;
+  FTimer.OnTimer := OnAnimation;
+  FSystemKeysEnabled := True;
+  FAnimation := anLeftRight;
+end;
+
+destructor TJvKeyboardStates.Destroy;
+begin
+  if FTimer.Enabled then
+    SetEnabled(False);
+  FTimer.Free;
+  inherited Destroy;
+end;
 
 procedure TJvKeyboardStates.OnAnimation(Sender: TObject);
 begin
@@ -111,27 +130,6 @@ begin
         SetScroll(FTimer.Tag > 0);
       end;
   end;
-end;
-
-constructor TJvKeyboardStates.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FTimer := TTimer.Create(Self);
-  FTimer.Enabled := False;
-  FTimer.Interval := 100;
-  FTimer.OnTimer := OnAnimation;
-  F1 := GetNumLock;
-  F2 := GetCapsLock;
-  F3 := GetScroll;
-  FSystemKeysEnabled := True;
-end;
-
-destructor TJvKeyboardStates.Destroy;
-begin
-  if FTimer.Enabled then
-    SetEnabled(False);
-  FTimer.Free;
-  inherited Destroy;
 end;
 
 procedure TJvKeyboardStates.SetSystemKeysEnabled(Value: Boolean);
@@ -192,8 +190,8 @@ procedure TJvKeyboardStates.SetState(Key: Integer; Value: Boolean);
 begin
   if Odd(GetAsyncKeyState(Key)) <> Value then
   begin
-    keybd_event(Key, MapVirtualkey(Key, 0), KEYEVENTF_EXTENDEDKEY, 0);
-    keybd_event(Key, MapVirtualkey(Key, 0), KEYEVENTF_EXTENDEDKEY or KEYEVENTF_KEYUP, 0);
+    keybd_event(Key, MapVirtualKey(Key, 0), KEYEVENTF_EXTENDEDKEY, 0);
+    keybd_event(Key, MapVirtualKey(Key, 0), KEYEVENTF_EXTENDEDKEY or KEYEVENTF_KEYUP, 0);
   end;
 end;
 

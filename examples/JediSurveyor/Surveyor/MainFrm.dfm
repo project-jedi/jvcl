@@ -853,11 +853,11 @@ object frmMain: TfrmMain
       ShortCut = 16463
       OnExecute = acLoadSurveyExecute
     end
-    object acSendMail: TJvSendMail
+    object acSendMail: TJvSendMailAction
       Caption = 'Send'
-      Mail.FindOptions = []
-      Mail.HtmlBody = False
-      Mail.LogonOptions = [loLogonUI]
+      MailOptions.FindOptions = []
+      MailOptions.HtmlBody = False
+      MailOptions.LogonOptions = [loLogonUI]
     end
     object acGotoJVCL: TJvWebAction
       Caption = 'Goto JVCL Web Site'

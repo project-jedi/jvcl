@@ -40,14 +40,16 @@ uses
 type
 
   TJvHint = class(TComponent)
+  private
+    FAutoHide: Boolean;
   protected
+    // (rom) definitely needs cleanup here  bad structuring
     R: TRect;
     Area: TRect;
     Txt: string;
     State: (tmBeginShow, tmShowing, tmStopped);
     HintWindow: THintWindow;
     TimerHint: TTimer;
-    FAutoHide: Boolean;
     FDelay: Integer;
     procedure TimerHintTimer(Sender: TObject);
   public
@@ -71,14 +73,13 @@ type
 
 procedure RegisterHtHints;
 
-
-resourcestring
-  sJvHint = 'Jv hint';
-
 implementation
 
 uses
   JvConsts;
+
+resourcestring
+  sJvHint = 'Jv hint';
 
 //=== TJvHint ================================================================
 
@@ -232,9 +233,10 @@ begin
   HtLabel.Caption := AHint;
   Result := Bounds(0, 0, HtLabel.Width + 6, HtLabel.Height + 2);
   if Application.HintHidePause > 0 then
-    Application.HintHidePause := Max(2500 {default},
+    Application.HintHidePause :=
+      Max(2500,  // default
       Length(ItemHtPlain(AHint)) *
-      (1000 div 20) { 20 symbols per second });
+      (1000 div 20)); // 20 symbols per second
 end;
 
 procedure RegisterHtHints;

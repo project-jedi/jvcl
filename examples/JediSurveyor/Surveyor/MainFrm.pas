@@ -609,23 +609,23 @@ end;
 
 procedure TfrmMain.DoSendMail(Sender: TObject);
 begin
-  acSendMail.Mail.Recipients := FSurvey.RecipientMail;
-  acSendMail.Mail.Subject := FSurvey.Title;
+  acSendMail.MailOptions.Recipients := FSurvey.RecipientMail;
+  acSendMail.MailOptions.Subject := FSurvey.Title;
   if edUserName <> nil then
     FSurvey.SurveyTaker.UserName := edUserName.Text;
   if edUserEMail <> nil then
     FSurvey.SurveyTaker.MailAddress := edUserEMail.Text;
   // create and attach response file
-  acSendMail.Mail.Attachments.Clear;
+  acSendMail.MailOptions.Attachments.Clear;
   if FTempSurveyFilename = '' then
     FTempSurveyFilename := GetTempSurveyFileName;
   if FSurvey.SurveyTaker.ID = '' then
     FSurvey.SurveyTaker.ID := CreateClassID;
   FSurvey.SaveToFile(FTempSurveyFilename,ffBinary);
-  acSendMail.Mail.Attachments.Add(FTempSurveyFilename);
+  acSendMail.MailOptions.Attachments.Add(FTempSurveyFilename);
 
-  acSendMail.Mail.ShowDialogs := true; // not acSendMail.Mail.UserLogged;
-  if acSendMail.Mail.Execute then
+  acSendMail.MailOptions.ShowDialogs := true; // not acSendMail.Mail.UserLogged;
+  if acSendMail.Execute then
     FCompletedSurvey := true;
 end;
 

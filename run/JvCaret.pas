@@ -50,7 +50,7 @@ type
     FGrayCaret: Boolean;
     FCaretOwner: TWinControl;
     FUpdatecount: Integer;
-    FChangedEvent: TNotifyEvent;
+    FOnChanged: TNotifyEvent;
     FCaretCreated: Boolean;
     procedure SetCaretBitmap(const Value: TBitmap);
     procedure SetCaretHeight(const Value: Integer);
@@ -74,7 +74,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
-    property OnChanged: TNotifyEvent read FChangedEvent write FChangedEvent;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
     { Note: streaming system does not deal properly with a published persistent
       property on another nested persistent. We use a pseudoproperty to save the
@@ -90,10 +90,13 @@ implementation
 uses
   JvJCLUtils;
 
+resourcestring
+  SInvalidCaretOwner = 'TJvCaret.Create: cannot be created without a valid Owner';
+
 constructor TJvCaret.Create(Owner: TWinControl);
 begin
   if not Assigned(Owner) then
-    raise EJVCLException.Create('TJvCaret.Create: cannot be created without valid Owner');
+    raise EJVCLException.Create(SInvalidCaretOwner);
   inherited Create;
   FCaretOwner := Owner;
   FCaretBitmap := TBitmap.Create;
@@ -131,8 +134,8 @@ end;
 
 procedure TJvCaret.Changed;
 begin
-  if Assigned(OnChanged) and (FUpdateCount = 0) then
-    OnChanged(Self);
+  if Assigned(FOnChanged) and (FUpdateCount = 0) then
+    FOnChanged(Self);
 end;
 
 function TJvCaret.UsingBitmap: Boolean;
@@ -157,10 +160,10 @@ begin
     else
     { Gray carets seem to be unsupported on Win95 at least, so if the create
       failed for the gray caret, try again with a standard black caret }
-    if not Windows.CreateCaret(FCaretOwner.handle, GrayHandles[Gray], Width, Height) then
-      OSCheck(Windows.CreateCaret(FCaretOwner.handle, 0, Width, Height));
+    if not Windows.CreateCaret(FCaretOwner.Handle, GrayHandles[Gray], Width, Height) then
+      OSCheck(Windows.CreateCaret(FCaretOwner.Handle, 0, Width, Height));
     FCaretCreated := True;
-    ShowCaret(FCaretOwner.handle);
+    ShowCaret(FCaretOwner.Handle);
   end;
 end;
 

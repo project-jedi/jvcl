@@ -31,7 +31,8 @@ unit JvDragDrop;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, ShellAPI, JvComponent;
+  Windows, Messages, SysUtils, Classes, Controls, ShellAPI,
+  JvComponent;
 
 type
   TJvDropEvent = procedure(Sender: TObject; Pos: TPoint; Value: TStrings) of object;
@@ -40,12 +41,13 @@ type
   private
     FAcceptDrag: Boolean;
     FStreamedAcceptDrag: Boolean;
-    FFiles: TStrings;
+    FFiles: TStringList;
     FOnDrop: TJvDropEvent;
     FIsHooked: Boolean;
     FTargetStrings: TStrings;
     FDropTarget: TWinControl;
     procedure DropFiles(Handle: HDROP);
+    function GetFiles: TStrings;
     procedure SetAcceptDrag(Value: Boolean);
     procedure SetDropTarget(const Value: TWinControl);
     function WndProc(var Msg: TMessage): Boolean;
@@ -57,7 +59,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Files: TStrings read FFiles;
+    property Files: TStrings read GetFiles;
     property TargetStrings: TStrings read FTargetStrings write FTargetStrings;
   published
     property AcceptDrag: Boolean read FAcceptDrag write SetAcceptDrag default True;
@@ -69,8 +71,6 @@ implementation
 
 uses
   JvWndProcHook;
-
-{ TJvDragDrop }
 
 constructor TJvDragDrop.Create(AOwner: TComponent);
 begin
@@ -185,6 +185,11 @@ begin
         UnHookControl;
     end;
   end;
+end;
+
+function TJvDragDrop.GetFiles: TStrings;
+begin
+  Result := FFiles;
 end;
 
 procedure TJvDragDrop.SetDropTarget(const Value: TWinControl);
