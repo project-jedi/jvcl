@@ -135,7 +135,7 @@ type
     procedure VisibleChanged; override;
 
     procedure DoDrawText(var Rect: TRect; Flags: Integer); virtual;
-    procedure AdjustBounds;
+    procedure AdjustBounds;override;
     {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean); override;
     {$ENDIF VCL}
