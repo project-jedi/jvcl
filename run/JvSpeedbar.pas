@@ -30,7 +30,7 @@ unit JvSpeedBar;
 interface
 
 uses
-  Windows, Registry, SysUtils, Classes, Messages, Menus, Buttons, Controls,
+  Windows, SysUtils, Classes, Messages, Menus, Buttons, Controls,
   Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids, IniFiles,
   {$IFDEF COMPILER6_UP}
   RTLConsts,

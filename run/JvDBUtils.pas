@@ -33,7 +33,7 @@ unit JvDBUtils;
 interface
 
 uses
-  Registry, Classes, SysUtils, DB, IniFiles,
+  Classes, SysUtils, DB, IniFiles,
   JvAppStore;
 
 type

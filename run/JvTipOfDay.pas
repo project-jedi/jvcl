@@ -158,10 +158,6 @@ uses
 
 {$R ..\resources\JvTipOfDay.res}
 
-//const
-  // (rom) Jedi registry keys need rework
-//  RsKeyStartup = 'Software\JEDI-VCL\TipsStartup';
-
 type
   TControlAccess = class(TControl);
   TButtonControlAccess = class(TButtonControl);
