@@ -8,10 +8,10 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvExMask.pas, released on 2004-01-04
+The Original Code is: JvQExStdCtrls.pas, released on 2004-09-21
 
-The Initial Developer of the Original Code is Andreas Hausladen [Andreas dott Hausladen att gmx dott de]
-Portions created by Andreas Hausladen are Copyright (C) 2004 Andreas Hausladen.
+The Initial Developer of the Original Code is André Snepvangers [asn att xs4all dott nl]
+Portions created by André Snepvangers are Copyright (C) 2004 André Snepvangers.
 All Rights Reserved.
 
 Contributor(s): -
