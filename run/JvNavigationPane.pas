@@ -329,6 +329,7 @@ type
     procedure DoColorsChange(Sender: TObject);
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
+    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
   protected
     procedure Paint; override;
     procedure TextChanged; override;
@@ -455,6 +456,7 @@ type
     function GetNavPage(Index: integer): TJvNavPanelPage;
     procedure WMNCPaint(var Message: TWMNCPaint); message WM_NCPAINT;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+
     procedure DoSplitterCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure DoColorsChange(Sender: TObject);
     procedure SetNavPanelFont(const Value: TFont);
@@ -948,7 +950,9 @@ begin
   begin
     TJvNavPanelPage(ActivePage).NavPanel.Down := True;
     TJvNavPanelPage(ActivePage).IconButton.Down := True;
-    ActivePage.Refresh;
+    TJvNavPanelPage(ActivePage).NavPanel.Invalidate;
+    TJvNavPanelPage(ActivePage).IconButton.Invalidate;
+    ActivePage.Invalidate;
   end;
 end;
 
@@ -1354,8 +1358,7 @@ begin
   begin
     Canvas.Font := Font;
     SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or
-      DT_EDITCONTROL);
+    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_EDITCONTROL);
   end;
   Canvas.Pen.Color := clGray;
   if Align = alBottom then
@@ -1413,6 +1416,17 @@ procedure TJvNavPanelButton.TextChanged;
 begin
   inherited;
   Invalidate;
+end;
+
+procedure TJvNavPanelButton.CMDialogChar(var Message: TCMDialogChar);
+begin
+  if IsAccel(Message.CharCode, Caption) then
+  begin
+    Message.Result := 1;
+    Click;
+  end
+  else
+    inherited;
 end;
 
 { TJvNavPanelColors }
