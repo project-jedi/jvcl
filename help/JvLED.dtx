@@ -1,73 +1,99 @@
-##Package: Ctrls
-##Status: Generated
+##Package: HMI
+##Status: Incomplete
 ----------------------------------------------------------------------------------------------------
-@@JvBlinkingLED.pas
+@@JvLED.pas
 Summary
-  Contains the TJvBlinkingLED component.
+  Contains the TJvLED component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Thomas Hensle (http://www.thensle.de)
 ----------------------------------------------------------------------------------------------------
-@@TJvBlinkingLED
-<TITLEIMG TJvBlinkingLED>
+@@TJvCustomLED
+Summary
+  Displays a LED in various colors.
+Description
+  Use TJvCustomLED descendant to display LED's in various colors. Use property Color to speciy the 
+  color of the LED.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLED.Active
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLED.Color
+Summary
+  Determines the color of the LED.
+Description
+  Color determines the color of the LED. This value can be one of the constants defined in the Graphics
+  unit (such as clBlue), or to an explicit RGB integer value.
+
+  Note that the Color property changes to the color specified by ColorOn or ColorOff depending on
+  the value of Status
+See Also
+  ColorOn, ColorOff, Status
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLED.ColorOff
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLED.ColorOn
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLED.Interval
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLED.SetBounds
+Summary
+  Write here a summary (1 line)
+  This is an overridden method, you don't have to describe these
+  if it does the same as the inherited method
+Description
+  Write here a description
+Parameters
+  ALeft   - Description for this parameter
+  ATop    - Description for this parameter
+  AWidth  - Description for this parameter
+  AHeight - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLED.Status
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLED
+<TITLEIMG TJvLED>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Graphics.Static
   FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvBlinkingLED.Active
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvBlinkingLED.ColorOff
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvBlinkingLED.ColorOn
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvBlinkingLED.Interval
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvBlinkingLED.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvBlinkingLED.Status
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
