@@ -1,0 +1,231 @@
+object Form1: TForm1
+  Left = 393
+  Top = 222
+  Width = 502
+  Height = 222
+  VertScrollBar.Range = 160
+  HorzScrollBar.Range = 241
+  ActiveControl = JvFooterBtn1
+  Caption = 'JvGroupHeader and JvFooter demo'
+  Color = clButton
+  Constraints.MinHeight = 150
+  Constraints.MinWidth = 200
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'Tahoma'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
+  ParentFont = False
+  Position = poDesktopCenter
+  Scaled = False
+  PixelsPerInch = 96
+  object JvGroupHeader1: TJvGroupHeader
+    Left = 16
+    Top = 8
+    Width = 225
+    Height = 17
+    Caption = 'JvGroupHeader1'
+    Font.Color = clText
+    Font.Height = 11
+    Font.Name = 'Tahoma'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    ParentFont = False
+  end
+  object JvGroupHeader2: TJvGroupHeader
+    Left = 16
+    Top = 32
+    Width = 225
+    Height = 17
+    Caption = 'JvGroupHeader2'
+    Font.Color = clText
+    Font.Height = 11
+    Font.Name = 'Tahoma'
+    Font.Pitch = fpVariable
+    Font.Style = [fsBold]
+    ParentFont = False
+    BevelOptions.Brush.Color = 11106843
+    BevelOptions.Height = 3
+    BevelOptions.Pen.Color = 14789952
+    BevelOptions.Style = bsShape
+  end
+  object JvFooter1: TJvFooter
+    Left = 0
+    Top = 185
+    Width = 502
+    Height = 37
+    DoubleBuffered = False
+    Align = alBottom
+    Color = clButton
+    object JvFooterBtn1: TJvFooterBtn
+      Left = 5
+      Top = 7
+      Width = 74
+      Height = 23
+      Anchors = [akLeft, akBottom]
+      Caption = 'Help'
+      TabOrder = 0
+      DoubleBuffered = False
+      HintColor = clBlack
+      HotTrackFont.Color = clText
+      HotTrackFont.Height = 11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Pitch = fpVariable
+      HotTrackFont.Style = []
+      HotTrackFont.Weight = 40
+      Alignment = taLeftJustify
+      ButtonIndex = 0
+      SpaceInterval = 6
+    end
+    object JvFooterBtn2: TJvFooterBtn
+      Left = 334
+      Top = 7
+      Width = 74
+      Height = 23
+      Anchors = [akRight, akBottom]
+      Caption = 'OK'
+      Default = True
+      TabOrder = 1
+      DoubleBuffered = False
+      HintColor = clBlack
+      HotTrackFont.Color = clText
+      HotTrackFont.Height = 11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Pitch = fpVariable
+      HotTrackFont.Style = []
+      HotTrackFont.Weight = 40
+      ButtonIndex = 1
+      SpaceInterval = 6
+    end
+    object JvFooterBtn3: TJvFooterBtn
+      Left = 415
+      Top = 7
+      Width = 74
+      Height = 23
+      Anchors = [akRight, akBottom]
+      Cancel = True
+      Caption = 'Cancel'
+      TabOrder = 2
+      DoubleBuffered = False
+      HintColor = clBlack
+      HotTrackFont.Color = clText
+      HotTrackFont.Height = 11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Pitch = fpVariable
+      HotTrackFont.Style = []
+      HotTrackFont.Weight = 40
+      ButtonIndex = 2
+      SpaceInterval = 6
+    end
+  end
+  object JvFooter2: TJvFooter
+    Left = 0
+    Top = 148
+    Width = 502
+    Height = 37
+    DoubleBuffered = False
+    Align = alBottom
+    Color = clButton
+    object JvFooterBtn4: TJvFooterBtn
+      Left = 260
+      Top = 7
+      Width = 74
+      Height = 23
+      Anchors = [akRight, akBottom]
+      Caption = 'Previous'
+      TabOrder = 0
+      DoubleBuffered = False
+      HintColor = clBlack
+      HotTrackFont.Color = clText
+      HotTrackFont.Height = 11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Pitch = fpVariable
+      HotTrackFont.Style = []
+      HotTrackFont.Weight = 40
+      ButtonIndex = 0
+      SpaceInterval = 0
+    end
+    object JvFooterBtn5: TJvFooterBtn
+      Left = 334
+      Top = 7
+      Width = 74
+      Height = 23
+      Anchors = [akRight, akBottom]
+      Caption = 'Next'
+      Default = True
+      TabOrder = 1
+      DoubleBuffered = False
+      HintColor = clBlack
+      HotTrackFont.Color = clText
+      HotTrackFont.Height = 11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Pitch = fpVariable
+      HotTrackFont.Style = []
+      HotTrackFont.Weight = 40
+      ButtonIndex = 1
+      SpaceInterval = 6
+    end
+    object JvFooterBtn6: TJvFooterBtn
+      Left = 415
+      Top = 7
+      Width = 74
+      Height = 23
+      Anchors = [akRight, akBottom]
+      Caption = 'Close'
+      TabOrder = 2
+      DoubleBuffered = False
+      HintColor = clBlack
+      HotTrackFont.Color = clText
+      HotTrackFont.Height = 11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Pitch = fpVariable
+      HotTrackFont.Style = []
+      HotTrackFont.Weight = 40
+      ButtonIndex = 2
+      SpaceInterval = 6
+    end
+  end
+  object JvFooter3: TJvFooter
+    Left = 0
+    Top = 111
+    Width = 502
+    Height = 37
+    DoubleBuffered = False
+    Align = alBottom
+    Color = clButton
+    object JvFooterBtn7: TJvFooterBtn
+      Left = 210
+      Top = 7
+      Width = 74
+      Height = 23
+      Anchors = [akBottom]
+      Caption = '&Close'
+      TabOrder = 0
+      NumGlyphs = 2
+      DoubleBuffered = False
+      HintColor = clBlack
+      HotTrackFont.Color = clText
+      HotTrackFont.Height = 11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Pitch = fpVariable
+      HotTrackFont.Style = []
+      HotTrackFont.Weight = 40
+      Alignment = taCenter
+      ButtonIndex = 0
+      SpaceInterval = 0
+    end
+  end
+end
