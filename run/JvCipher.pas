@@ -208,9 +208,9 @@ begin
   if Key <> '' then
   begin
     J := 1;
-    for I := 0 to Size - 1 do
+    for I := 1 to Size do
     begin
-      Buf[I+J-1] := Char(Ord(Buf[I+J-1]) xor Ord(Key[J]));
+      Buf[I-1] := Char(Ord(Buf[I-1]) xor Ord(Key[J]));
       J := (J mod Cardinal(Length(Key))) + 1;
     end;
   end;
