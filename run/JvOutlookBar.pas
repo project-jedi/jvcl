@@ -922,8 +922,8 @@ end;
 
 function TJvOutlookBarButton.GetOutlookBar: TJvCustomOutlookBar;
 begin
-  if Collection.Owner is TJvOutlookBarPage then
-    Result := TJvOutlookBarPage(Collection.Owner).GetOutlookBar
+  if TJvOutlookBarButtons(Collection).Owner is TJvOutlookBarPage then
+    Result := TJvOutlookBarPage(TJvOutlookBarButtons(Collection).Owner).GetOutlookBar
   else
     Result := nil;
 end;
@@ -1176,8 +1176,8 @@ end;
 
 function TJvOutlookBarPage.GetOutlookBar: TJvCustomOutlookBar;
 begin
-  if Collection.Owner is TJvCustomOutlookBar then
-    Result := TJvCustomOutlookBar(Collection.Owner)
+  if TJvOutlookBarPages(Collection).Owner is TJvCustomOutlookBar then
+    Result := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner)
   else
     Result := nil;
 end;
