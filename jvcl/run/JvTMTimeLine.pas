@@ -284,7 +284,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
-    property PopUpMenu;
+    property PopupMenu;
     property ShowHint;
     property TabOrder;
     property TabStop;
