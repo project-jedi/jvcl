@@ -1214,16 +1214,14 @@ begin
   if not (csDesigning in FControl.ComponentState) then
   begin
     FOrgWndProc := FControl.WindowProc;
-    if FControl is TGraphicControl then
-      FControl.FreeNotification(ThemeHookComponent);
+    FControl.FreeNotification(ThemeHookComponent);
     FControl.WindowProc := WndProc;
   end;
 end;
 
 destructor TThemeHook.Destroy;
 begin
-  if FControl is TGraphicControl then
-    FControl.RemoveFreeNotification(ThemeHookComponent);
+  FControl.RemoveFreeNotification(ThemeHookComponent);
   inherited Destroy;
 end;
 
@@ -1239,8 +1237,7 @@ begin
       FControl.WindowProc := FOrgWndProc
     else
       FDead := True; // keep WndProc
-    if FControl is TGraphicControl then
-      FControl.RemoveFreeNotification(ThemeHookComponent);
+    FControl.RemoveFreeNotification(ThemeHookComponent);
   end;
   if not FDead then
     ThemeHooks.RecreationList.Remove(FControl);
@@ -1335,8 +1332,8 @@ end;
 
 procedure TThemeHook.ThemedPaint(var Msg: TWMPaint; var Handled: Boolean);
 begin
-  if csParentBackground in ThemeStyle then
-    if Control is TGraphicControl then
+  if Control is TGraphicControl then
+    if csParentBackground in ThemeStyle then
       PerformEraseBackground(Control, Msg.DC);
 end;
 
