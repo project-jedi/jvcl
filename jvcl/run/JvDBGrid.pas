@@ -75,6 +75,8 @@ const
   JvGridResizeLastVisibleCol = -2;
 
 type
+  TJvDBGrid = class;
+
   TSelectColumn = (scDataBase, scGrid);
   TTitleClickEvent = procedure(Sender: TObject; ACol: Longint;
     Field: TField) of object;
@@ -114,8 +116,6 @@ type
     property OK: string read FOK write FOK;
     property NoSelectionWarning: string read FNoSelectionWarning write FNoSelectionWarning;
   end;
-
-  TJvDBGrid = class;
 
   TJvDBGridControl = class(TCollectionItem)
   private
@@ -258,7 +258,7 @@ type
     procedure ChangeBoolean(const FieldValueChange: Shortint);
     function DoKeyPress(var Msg: TWMChar): Boolean;
     procedure SetWordWrap(Value: Boolean);
-
+    procedure NotifyLayoutChange();
   protected
     FCurrentDrawRow: Integer;
     procedure MouseLeave(Control: TControl); override;
@@ -956,6 +956,13 @@ begin
   DoAutoSizeColumns;
 end;
 
+procedure TJvDBGrid.NotifyLayoutChange();
+begin
+  if FCurrentControl <> nil then
+    if FCurrentControl.Visible then
+      PlaceControl(FCurrentControl, Col, Row);
+end;
+
 procedure TJvDBGrid.ColWidthsChanged;
 var
   ACol: Longint;
@@ -1043,7 +1050,6 @@ end;
 procedure TJvDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
 var
   KeyDownEvent: TKeyEvent;
-  SelRect: TGridRect;
 
   procedure ClearSelections;
   begin
@@ -1185,7 +1191,6 @@ begin
     end
     else
     begin
-      if Shift * KeyboardShiftStates = [] then
       case Key of
         VK_LEFT:
           if (FixedCols > 0) and not (dgRowSelect in Options) then
@@ -1199,7 +1204,7 @@ begin
             Exit;
           end;
       end;
-      if (DataLink.DataSet.State = dsBrowse) and (Shift * KeyboardShiftStates = []) then
+      if DataLink.DataSet.State = dsBrowse then
         case Key of
           VK_UP:
             begin
@@ -1221,42 +1226,6 @@ begin
       if (Key = VK_TAB) and not (ssAlt in Shift) then
         CheckTab(not (ssShift in Shift));
     end;
-
-  if ssShift in Shift then
-  begin
-    // prevent TDBGrid from doubling the fixed cols.
-    case Key of
-      VK_LEFT:
-        begin
-          if ssCtrl in Shift then
-          begin
-            SelRect := Selection;
-            SelRect.Left := FixedCols + 1;
-            Col := FixedCols + 1;
-            if MultiSelect and not (dgRowSelect in Options) then
-              Selection := SelRect;
-            Exit;
-          end;
-          if Col <= FixedCols + 1 then
-            Exit;
-          if MultiSelect and not (dgRowSelect in Options) then
-          begin
-            SelRect := Selection;
-            SelRect.Left := Col - 1;
-            Selection := SelRect;
-          end;
-        end;
-      VK_HOME:
-        begin
-          SelRect := Selection;
-          SelRect.Left := FixedCols + 1;
-          Col := FixedCols + 1;
-          if MultiSelect and not (dgRowSelect in Options) then
-            Selection := SelRect;
-          Exit;
-        end;
-    end;
-  end;
 
   OnKeyDown := nil;
   try
@@ -1753,9 +1722,7 @@ begin
   if Assigned(FOnTopLeftChanged) then
     FOnTopLeftChanged(Self);
 
-  if FCurrentControl <> nil then
-    if FCurrentControl.Visible then
-      PlaceControl(FCurrentControl, Col, Row);
+  NotifyLayoutChange();
 end;
 
 procedure TJvDBGrid.StopTracking;
@@ -2102,6 +2069,8 @@ begin
   if (Key = Cr) and PostOnEnter and not ReadOnly then
     DataSource.DataSet.CheckBrowseMode;
 
+  inherited KeyPress(Key);
+
   if EditorMode then
   begin
     // Goal: Allow to go directly into the InplaceEditor when one types the first
@@ -2151,10 +2120,10 @@ begin
               if StringStartsWith(Strings[I], lWord) then
               begin
                 DataSet.Edit;
-                deb := Length(lWord);
 
                 InplaceEditor.EditText := Strings[I];
                 Columns[SelectedIndex].Field.Text := Strings[I];
+                deb := Length(lWord);
                 InplaceEditor.SelStart := deb;
                 InplaceEditor.SelLength := Length(Text) - deb;
                 FWord := lWord;
@@ -2941,8 +2910,6 @@ begin
 end;
 
 procedure TJvDBGrid.DoAutoSizeColumns;
-
-procedure DoIt;
 var
   TotalWidth, OrigWidth: Integer;
   I: Integer;
@@ -3026,14 +2993,6 @@ begin
     FInAutoSize := False;
     LeftCol := ALeftCol;
   end;
-end;
-
-begin
-  DoIt;
-
-  if FCurrentControl <> nil then
-    if FCurrentControl.Visible then
-      PlaceControl(FCurrentControl, Col, Row);
 end;
 
 procedure TJvDBGrid.DoMaxColWidth;
@@ -3176,6 +3135,8 @@ procedure TJvDBGrid.Resize;
 begin
   inherited Resize;
   DoAutoSizeColumns;
+
+  NotifyLayoutChange();
 end;
 
 procedure TJvDBGrid.Loaded;
@@ -3490,7 +3451,6 @@ var
 begin
   if Message.Msg = WM_CHAR then
   begin
-    inherited;
     if not DoKeyPress(TWMChar(Message)) then
       with TWMKey(Message) do
       begin
