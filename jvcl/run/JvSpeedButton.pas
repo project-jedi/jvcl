@@ -181,6 +181,8 @@ type
     property Style: TButtonStyle read FStyle write SetStyle default bsAutoDetect;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property WordWrap: Boolean read GetWordWrap write SetWordWrap default False;
+    property ParentColor default False;
+    property Color default clBtnFace;
 
     property OnMouseEnter;
     property OnMouseLeave;
@@ -254,6 +256,8 @@ type
     {$ENDIF VCL}
     property Caption;
     property Constraints;
+    property Color;
+    property ParentColor;
     { Ensure group index is declared before Down }
     property GroupIndex;
     property DoubleBuffered;
@@ -344,6 +348,8 @@ type
     {$ENDIF VCL}
     property Caption;
     property Constraints;
+    property Color;
+    property ParentColor;
     { Ensure group index is declared before Down }
     property GroupIndex;
     property DoubleBuffered;
@@ -483,10 +489,9 @@ type
 { DrawButtonFrame - returns the remaining usable area inside the Client rect }
 
 function DrawButtonFrame(Canvas: TCanvas; const Client: TRect;
-  IsDown, IsFlat: Boolean; Style: TButtonStyle): TRect;
-  
-implementation
+  IsDown, IsFlat: Boolean; Style: TButtonStyle; AColor: TColor): TRect;
 
+implementation
 uses
   Math;
 
@@ -534,16 +539,39 @@ var
 { DrawButtonFrame - returns the remaining usable area inside the Client rect }
 
 function DrawButtonFrame(Canvas: TCanvas; const Client: TRect;
-  IsDown, IsFlat: Boolean; Style: TButtonStyle): TRect;
+  IsDown, IsFlat: Boolean; Style: TButtonStyle; AColor: TColor): TRect;
 {$IFDEF VisualCLX}
 const
-  clWindowFrame = cl3DDkShadow; // clWindowFrame is a blue tone 
+  clWindowFrame = cl3DDkShadow; // clWindowFrame is a blue tone
 {$ENDIF VisualCLX}
 var
   NewStyle: Boolean;
+  FShadowColor, FHighlightColor: TColor;
+  // Honeymic
+  function GetHighlightColor(BaseColor: TColor): TColor;
+  begin
+   Result := RGB(
+      Min(GetRValue(ColorToRGB(BaseColor)) + 64, 255),
+      Min(GetGValue(ColorToRGB(BaseColor)) + 64, 255),
+      Min(GetBValue(ColorToRGB(BaseColor)) + 64, 255)
+     );
+  end;
+  // Honeymic
+  function GetShadowColor(BaseColor: TColor): TColor;
+  begin
+   Result := RGB(
+      Max(GetRValue(ColorToRGB(BaseColor)) - 64, 0),
+      Max(GetGValue(ColorToRGB(BaseColor)) - 64, 0),
+      Max(GetBValue(ColorToRGB(BaseColor)) - 64, 0)
+     );
+  end;
+  
 begin
   Result := Client;
   NewStyle := (Style = bsNew) or (NewStyleControls and (Style = bsAutoDetect));
+  FShadowColor    := GetShadowColor(AColor);     // Honeymic
+  FHighlightColor := GetHighlightColor(AColor);  // Honeymic
+
   if IsDown then
   begin
     if NewStyle then
@@ -554,20 +582,34 @@ begin
       //  Frame3D(Canvas, Result, clBtnShadow, clBtnFace, 1);
       if not IsFlat then
       begin
-        Frame3D(Canvas, Result, clWindowFrame, clBtnHighlight, 1);
-        Frame3D(Canvas, Result, clBtnShadow, clBtnFace, 1);
+//was        Frame3D(Canvas, Result, clWindowFrame, clBtnHighlight, 1);
+//was        Frame3D(Canvas, Result, clBtnShadow, clBtnFace, 1);
+        // Honeymic
+        Frame3D(Canvas, Result, clWindowFrame, FHighLightColor, 1);
+        Frame3D(Canvas, Result, FShadowColor, AColor, 1);
+
       end
       else
-        Frame3D(Canvas, Result, clBtnShadow, clBtnHighlight, 1);
+        begin
+//was          Frame3D(Canvas, Result, clBtnShadow, clBtnHighlight, 1);
+          // Honeymic
+          Frame3D(Canvas, Result, FShadowColor, FHighLightColor, 1);
+        end;
     end
     else
     begin
       if IsFlat then
-        // Frame3D(Canvas, Result, clBtnShadow, clBtnHighlight, 1)
-        Frame3D(Canvas, Result, clWindowFrame, clBtnHighlight, 1)
+        begin
+          // Frame3D(Canvas, Result, clBtnShadow, clBtnHighlight, 1)
+//was          Frame3D(Canvas, Result, clWindowFrame, clBtnHighlight, 1);
+          // Honeymic
+          Frame3D(Canvas, Result, clWindowFrame, FHighLightColor, 1);
+        end
       else
       begin
         Frame3D(Canvas, Result, clWindowFrame, clWindowFrame, 1);
+//was        Canvas.Pen.Color := FShadowColor;
+        // Honeymic
         Canvas.Pen.Color := clBtnShadow;
         Canvas.PolyLine([Point(Result.Left, Result.Bottom - 1),
           Point(Result.Left, Result.Top), Point(Result.Right, Result.Top)]);
@@ -579,21 +621,34 @@ begin
     if NewStyle then
     begin
       if IsFlat then
-        Frame3D(Canvas, Result, clBtnHighlight, clBtnShadow, 1)
+        begin
+//was          Frame3D(Canvas, Result, clBtnHighlight, clBtnShadow, 1);
+          // Honeymic
+          Frame3D(Canvas, Result, FHighLightColor, FShadowColor, 1);
+        end
       else
       begin
-        Frame3D(Canvas, Result, clBtnHighlight, clWindowFrame, 1);
-        Frame3D(Canvas, Result, clBtnFace, clBtnShadow, 1);
+//was        Frame3D(Canvas, Result, clBtnHighlight, clWindowFrame, 1);
+//was        Frame3D(Canvas, Result, clBtnFace, clBtnShadow, 1);
+        // Honeymic
+        Frame3D(Canvas, Result, FHighLightColor, clWindowFrame, 1);
+        Frame3D(Canvas, Result, AColor, FShadowColor, 1);
       end;
     end
     else
     begin
       if IsFlat then
-        Frame3D(Canvas, Result, clBtnHighlight, clWindowFrame, 1)
+        begin
+//          Frame3D(Canvas, Result, clBtnHighlight, clWindowFrame, 1);
+          // Honeymic
+          Frame3D(Canvas, Result, FHighLightColor, clWindowFrame, 1);
+        end
       else
       begin
         Frame3D(Canvas, Result, clWindowFrame, clWindowFrame, 1);
-        Frame3D(Canvas, Result, clBtnHighlight, clBtnShadow, 1);
+//was         Frame3D(Canvas, Result, clBtnHighlight, clBtnShadow, 1);
+        // Honeymic
+        Frame3D(Canvas, Result, FHighlightColor, FShadowColor, 1);
       end;
     end;
   end;
@@ -887,6 +942,8 @@ end;
 constructor TJvCustomSpeedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ParentColor := False;
+  Color := clBtnFace;
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
@@ -1267,13 +1324,13 @@ begin
         CopyParentImage(Self, Canvas)
       else
       begin
-        Brush.Color := clBtnFace;
+        Brush.Color := Self.Color;
         Brush.Style := bsSolid;
         FillRect(PaintRect);
       end;
       if (LState <> rbsInactive) or (FState = rbsExclusive) then
         PaintRect := DrawButtonFrame(Canvas, PaintRect,
-          FState in [rbsDown, rbsExclusive], FFlat, FStyle)
+          FState in [rbsDown, rbsExclusive], FFlat, FStyle, Color)
       else
       if FFlat then
         InflateRect(PaintRect, -2, -2);
@@ -1300,8 +1357,7 @@ begin
       Canvas.Font := Self.HotTrackFont
     else
       Canvas.Font := Self.Font;
-
-    PaintImage(Canvas, PaintRect, Offset, LState,
+  PaintImage(Canvas, PaintRect, Offset, LState,
       FMarkDropDown and Assigned(FDropDownMenu));
   end;
 end;
