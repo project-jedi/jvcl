@@ -815,9 +815,9 @@ function SafeStrToTime(const Ps: string): TDateTime;
 function StrDelete(const psSub, psMain: string): string;
 
 type
-  TTime = TDateTime;
+  TTime = type TDateTime;
   {$EXTERNALSYM TTime}
-  TDate = TDateTime;
+  TDate = type TDateTime;
   {$EXTERNALSYM TDate}
 
   { returns the fractional value of pcValue}
