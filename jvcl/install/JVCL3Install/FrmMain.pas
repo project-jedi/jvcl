@@ -42,9 +42,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, CheckLst, ExtCtrls, ComCtrls, ImgList, CommCtrl, ActnList, Buttons,
-  Menus, ShellAPI, FileCtrl, 
+  Menus, ShellAPI, FileCtrl,
 
-  CoreData, BuildHelpers;
+  HtHint, CoreData, BuildHelpers;
 
 type
   TFormMain = class(TForm)
@@ -127,6 +127,8 @@ type
     procedure BtnHppFilesBrowseClick(Sender: TObject);
     procedure LblBCBInstallationClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure ListViewPackagesInfoTip(Sender: TObject; Item: TListItem;
+      var InfoTip: String);
   private
     { Private-Deklarationen }
     FXPThemeSupportFirstClick: Boolean;
@@ -474,6 +476,9 @@ end;
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   imgProjectJEDI.Anchors := [akTop, akRight];
+  HintWindowClass := THtHintWindow;
+  Application.ShowHint := False;
+  Application.ShowHint := True;
 
 
   Application.HintHidePause := 10000;
@@ -853,6 +858,50 @@ end;
 procedure TFormMain.FormDestroy(Sender: TObject);
 begin
   TargetList.SaveToFile(ChangeFileExt(ParamStr(0), '.ini'));
+end;
+
+procedure TFormMain.ListViewPackagesInfoTip(Sender: TObject;
+  Item: TListItem; var InfoTip: String);
+var
+  Package: TPackageInfo;
+  i: Integer;
+  S: string;
+  Lines: TStrings;
+begin
+  Package := Item.Data;
+
+  Lines := TStringList.Create;
+  try
+    if (Package.RequireCount > 0) and (Package.ContainCount > 0) then
+    begin
+      Lines.Add('<b><c:red>' + Package.DisplayName + '</b><c:black>');
+      Lines.Add('<i>' + WordWrapString(Package.Description) + '</i>');
+      Lines.Add('');
+    end;
+
+    if Package.RequireCount > 0 then
+    begin
+      Lines.Add('<b>Requires:</b>');
+      S := '';
+      for i := 0 to Package.RequireCount - 1 do
+        S := S + Package.Requires[i].Name + ', ';
+      Delete(S, Length(S) - 1, 2);
+      Lines.Add(WordWrapString(S));
+      Lines.Add('');
+    end;
+    if Package.ContainCount > 0 then
+    begin
+      Lines.Add('<b>Contains:</b>');
+      S := '';
+      for i := 0 to Package.ContainCount - 1 do
+        S := S + ExtractFileName(Package.Contains[i].Name) + ', ';
+      Delete(S, Length(S) - 1, 2);
+      Lines.Add(WordWrapString(S));
+    end;
+    InfoTip := Lines.Text;
+  finally
+    Lines.Free;
+  end;
 end;
 
 initialization
