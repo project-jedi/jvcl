@@ -861,35 +861,16 @@ const
 procedure TColorPropertyEx.Edit;
 var
   ColorDialog: TColorDialog;
-  {$IFDEF MSWINDOWS}
   IniFile: TRegIniFile;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  IniFile: TJvRegistryIniFile;
-  {$ENDIF LINUX}
 
   procedure GetCustomColors;
   begin
-    {$IFDEF MSWINDOWS}
     IniFile := TRegIniFile.Create(sDelphiKey);
     try
       IniFile.ReadSectionValues(SCustomColors, ColorDialog.CustomColors);
     except
       { Ignore errors reading values }
     end;
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
-    IniFile := TJvRegistryIniFile.Create(sDelphiKey);
-    try
-      if IniFile.OpenKey(SCustomColors, false) then
-      begin
-        IniFile.ReadSectionValues(ColorDialog.CustomColors);
-        IniFile.CloseKey;
-      end;
-    except
-      { Ignore errors reading values }
-    end;
-    {$ENDIF LINUX}
   end;
 
   procedure SaveCustomColors;
@@ -899,10 +880,6 @@ var
   begin
     if IniFile <> nil then
       with ColorDialog do
-      {$IFDEF LINUX}
-      if IniFile.OpenKey(SCustomColors, true) then
-      begin
-      {$ENDIF LINUX}
         for I := 0 to CustomColors.Count - 1 do
         begin
           S := CustomColors.Strings[I];
@@ -910,21 +887,10 @@ var
           if P <> 0 then
           begin
             S := Copy(S, 1, P - 1);
-            {$IFDEF MSWINDOWS}
             IniFile.WriteString(SCustomColors, S,
               CustomColors.Values[S]);
-            {$ENDIF MSWINDOWS}
-            {$IFDEF LINUX}
-            IniFile.WriteString( S,
-              CustomColors.Values[S]);
-            {$ENDIF LINUX}
           end;
         end;
-      {$IFDEF LINUX}
-        IniFile.CloseKey;
-      end;
-      {$ENDIF LINUX}
-
   end;
 
 begin

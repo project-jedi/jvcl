@@ -139,7 +139,7 @@ type
   private
     FPropagateEnabled: Boolean;
   protected
-//    procedure EnabledChanged; override;
+    procedure EnabledChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -176,14 +176,12 @@ begin
   PropagateEnabled := True;
 end;
 
-(*
 procedure TGroupBox.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   if PropagateEnabled then
     Broadcast(Msg);
 end;
-*)
 
 //=== TfrmTreeViewItems ======================================================
 
@@ -196,10 +194,8 @@ begin
       tvItems.Selected.ImageIndex);
     tvItems.Selected.SelectedIndex := StrToIntDef(cbSelected.Text,
       tvItems.Selected.SelectedIndex);
-      (*
     tvItems.Selected.StateIndex := StrToIntDef(cbState.Text,
       tvItems.Selected.StateIndex);
-      *)
   end;
 end;
 
@@ -260,7 +256,7 @@ begin
     edNodeText.Text := Node.Text;
     cbImage.ItemIndex := AddCB(cbImage, Node.ImageIndex);
     cbSelected.ItemIndex := AddCB(cbSelected, Node.SelectedIndex);
-//    cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
+    cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
     edNodeText.OnChange := edNodeTextChange;
   end;
   gbProperties.Enabled := tvItems.Selected <> nil;
@@ -346,7 +342,7 @@ begin
       f.cbImage.Tag := Integer(il);
       f.cbSelected.Tag := Integer(il);
     end;
-    il := nil ; //THackTreeView(Treeview).StateImages;
+    il := THackTreeView(Treeview).StateImages;
     if il <> nil then
     begin
       f.cbState.Style := csOwnerDrawFixed;

@@ -38,13 +38,14 @@ interface
 {$DEFINE USEWINDOWS}
 {$ENDIF MSWINDOWS}
 
+
 procedure Register;
 
 implementation
 
 uses
-  Classes,
-  DesignEditors, DesignIntf,
+  Classes, 
+  DesignEditors, DesignIntf,  
   {$IFDEF USEWINDOWS}
   JvQUrlListGrabber, JvQUrlGrabbers, JvQUrlListGrabberEditors,
   {$ENDIF USEWINDOWS}
@@ -65,21 +66,21 @@ begin
     {$IFDEF USEWINDOWS}
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
     TJvLocalFileURLGrabber,
-    {$ENDIF USEWINDOWS}
-    TJvHTMLParser,
+    {$ENDIF USEWINDOWS} 
+    TJvHTMLParser, 
     {$IFDEF USEWINDOWS}
     TJvUrlListGrabber,
     {$ENDIF USEWINDOWS}
     TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML]);
+  {$IFDEF USEWINDOWS}
   RegisterPropertyEditor(TypeInfo(TJvParserInfoList),
     TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
-  {$IFDEF USEWINDOWS}
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberIndex),
     TJvUrlListGrabber, '', TJvUrlGrabberIndexProperty);
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberDefaultPropertiesList),
     TJvUrlListGrabber, '', TJvUrlGrabberDefaultPropertiesListEditor);
   RegisterPropertyEditor(TypeInfo(TJvCustomUrlGrabberDefaultProperties),
-    TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesEditor);
+    TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesEditor); 
   {$ENDIF USEWINDOWS}
 end;
 

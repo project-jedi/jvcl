@@ -49,7 +49,7 @@ type
 implementation
 
 uses
-  JvQJVCLAboutForm, JVCLXVer, JvQDsgnConsts;
+  JvQJVCLAboutForm, JVCLVer, JvQDsgnConsts;
 
 procedure TJVCLAboutDialogProperty.Edit;
 begin

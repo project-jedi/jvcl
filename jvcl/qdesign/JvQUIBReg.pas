@@ -64,11 +64,11 @@ uses
 
 
 procedure Register;
-begin
-  {$IFNDEF DelphiPersonalEdition}
+begin 
   GroupDescendentsWith(TJvUIBDataSet, TControl);
+  {$IFNDEF DelphiPersonalEdition}
   GroupDescendentsWith(TJvUIBCustomDataSet, TControl);
-  {$ENDIF DelphiPersonalEdition}
+  {$ENDIF DelphiPersonalEdition} 
 
   RegisterComponents(RsPaletteUIB, [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
     {$IFNDEF DelphiPersonalEdition} TJvUIBDataSet, {$ENDIF}

@@ -39,8 +39,8 @@ unit JvQCsvDataEditor;
 interface
 
 uses
-  SysUtils, Classes, Db,  
-  QWindows, QForms, QControls, QDialogs, QGraphics, Types,
+  SysUtils, Classes, Db,
+  QWindows, QMessages, QForms, QDialogs, Types, QGraphics, 
   DesignEditors, DesignIntf, 
   JvQCsvData;
 
@@ -85,9 +85,7 @@ function DoCsvDefDialog(OldValue: string): string;
 var
   Dialog: TJvCsvDefStrDialog;
   dlgResult: Integer;
-  {$IFDEF MSWINDOWS}
   WindowList: Pointer;
-  {$ENDIF MSWINDOWS}
 begin
   {$IFDEF MSWINDOWS}
   WindowList := DisableTaskWindows(0);
@@ -203,8 +201,6 @@ const
  //cTableName = 'TableName';
  cFileName = 'FileName';
 begin
-  GroupDescendentsWith(TJvCSVDataSet, TControl);
-  GroupDescendentsWith(TJvCustomCSVDataSet, TControl);
   RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cCsvFieldDef, TJvCsvDefStrProperty);
 // RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cTableName, TFileNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cFileName, TJvFileNameProperty);
