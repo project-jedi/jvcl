@@ -368,6 +368,7 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
+    procedure CreateWinControl(AParameterParent: TWinControl); override;
   published
     property Columns: Integer read FColumns write FColumns;
   end;
@@ -1312,6 +1313,10 @@ begin
     WinControl.Width := Width;
 end;
 
+procedure TJvRadioGroupParameter.CreateWinControl(AParameterParent: TWinControl);
+begin
+end;
+
 procedure TJvRadioGroupParameter.SetWinControlProperties;
 var
   ITmpRadioGroup: IJvDynControlRadioGroup;
@@ -2189,4 +2194,5 @@ begin
 end;
 
 end.
+
 
