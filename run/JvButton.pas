@@ -73,6 +73,9 @@ type
     procedure SetHotFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
+    procedure ButtonPressed(Sender:TJvCustomGraphicButton; AGroupIndex:integer);
+    procedure ForceSize(Sender:TJvCustomGraphicButton; AWidth, AHeight: integer);
+
     function DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean; virtual;
     procedure UpdateExclusive;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -458,6 +461,9 @@ procedure TJvCustomGraphicButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer
 var
   Form: TCustomForm;
   Msg: TCMForceSize;
+  {$IFDEF VisualClX}
+  I:Integer;
+  {$ENDIF VisualCLX}
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if ForceSameSize then
@@ -465,22 +471,23 @@ begin
     Form := GetParentForm(Self);
     if Assigned(Form) then
     begin
-      // (p3) what is this rect doing here?
       Msg.Msg := CM_FORCESIZE;
       Msg.Sender := Self;
       Msg.NewSize.X := AWidth;
       Msg.NewSize.Y := AHeight;
       Form.Broadcast(Msg);
+      {$IFDEF VisualClX}
+      for i := 0 to Form.ControlCount - 1 do
+        if Form.Controls[i] is TJvCustomGraphicButton then
+          TJvCustomGraphicButton(Form.Controls[i]).ForceSize(Self, AWidth, AHeight);
+      {$ENDIF VisualCLX}
     end;
   end;
 end;
 
 procedure TJvCustomGraphicButton.CMForceSize(var Msg: TCMForceSize);
 begin
-  with Msg do
-    if Sender <> Self then
-      with NewSize do
-        inherited SetBounds(Left, Top, X, Y);
+  ForceSize(TJvCustomGraphicButton(Msg.Sender), Msg.NewSize.x, Msg.NewSize.y);
 end;
 
 function TJvCustomGraphicButton.GetPattern: TBitmap;
@@ -509,6 +516,9 @@ end;
 procedure TJvCustomGraphicButton.UpdateExclusive;
 var
   Msg: TJvCMButtonPressed;
+  {$IFDEF VisualCLX}
+  I:Integer;
+  {$ENDIF VisualCLX}
 begin
   if (GroupIndex <> 0) and (Parent <> nil) then
   begin
@@ -517,27 +527,17 @@ begin
     Msg.Control := Self;
     Msg.Result := 0;
     Parent.Broadcast(Msg);
+    {$IFDEF VisualCLX}
+    for I := 0 to Parent.ControlCount - 1 do
+      if Parent.Controls[I] is TJvCustomGraphicButton then
+        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex);
+    {$ENDIF VisualCLX}
   end;
 end;
 
 procedure TJvCustomGraphicButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
-var
-  Sender: TJvCustomGraphicButton;
 begin
-  if Msg.Index = GroupIndex then
-  begin
-    Sender := TJvCustomGraphicButton(Msg.Control);
-    if Sender <> Self then
-    begin
-      if Sender.Down and Down then
-      begin
-        FDown := False;
-//        Exclude(FStates, bsMouseDown);
-        RepaintBackground;
-      end;
-      FAllowAllUp := Sender.AllowAllUp;
-    end;
-  end;
+  ButtonPressed(TJvCustomGraphicButton(Msg.Control),Msg.Index);
 end;
 
 procedure TJvCustomGraphicButton.SetHotFont(const Value: TFont);
@@ -812,6 +812,30 @@ begin
     else
       Down := True;
   end;
+end;
+
+procedure TJvCustomGraphicButton.ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: integer);
+begin
+  if AGroupIndex = GroupIndex then
+  begin
+    if Sender <> Self then
+    begin
+      if Sender.Down and Down then
+      begin
+        FDown := False;
+        Exclude(FStates, bsMouseDown);
+        RepaintBackground;
+      end;
+      FAllowAllUp := Sender.AllowAllUp;
+    end;
+  end;
+end;
+
+procedure TJvCustomGraphicButton.ForceSize(Sender: TJvCustomGraphicButton;
+  AWidth, AHeight: integer);
+begin
+  if Sender <> Self then
+    SetBounds(Left, Top, AWidth, AHeight);
 end;
 
 initialization
