@@ -1,6 +1,7 @@
 Changelog for JVCL 3.0
 ======================
 2004-05-27
+- reimplemented TJvXORCipher, TJvVigenereCipher and JvCaesarCipher from scratch in JvCipher.pas // (rom)
 - all components now have palette icons // (rom)
 - all palette icons checked and fixed // (rom)
 2004-05-24

@@ -17,8 +17,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jedi.inc}
-
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}

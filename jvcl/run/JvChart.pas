@@ -46,6 +46,7 @@ Known Issues:
   MARCH 2004 -JVCL3BETA- STILL IN DEVELOPMENT. REPORT PROBLEMS TO JEDI JVCL
   BUG TRACKING SYSTEM (AKA 'MANTIS') AND THE JEDI.VCL NEWSGROUP!
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -34,7 +34,8 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, StdCtrls,
   {$IFDEF VisualCLX}
-  Qt, JvQConsts,
+  Qt,
+  JvQConsts,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -125,7 +126,7 @@ begin
       Exit;
 
     if ((QKeyEvent_key(QKeyEventH(Event)) = Key_Enter) or
-        (QKeyEvent_key(QKeyEventH(Event)) = Key_Return) ) and EnterAsTab then
+      (QKeyEvent_key(QKeyEventH(Event)) = Key_Return) ) and EnterAsTab then
     begin
       ws := Tab;
 
