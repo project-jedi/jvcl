@@ -2832,8 +2832,9 @@ begin
 end;
 
 function TJvMiscInfo.GetNetBIOS: boolean;
+var P:_NCB;
 begin
-  Result := JclWin32.InitNetBIOS;
+  Result := RtdlNetBios(@P) <> NRC_OPENERR;
 end;
 
 function TJvMiscInfo.GetPattern: string;
