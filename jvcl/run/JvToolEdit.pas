@@ -172,6 +172,7 @@ type
     FNumGlyphs: Integer;
     FStreamedButtonWidth: Integer;
     FOnEnabledChanged: TNotifyEvent;
+    FHold: Boolean;
     function BtnWidthStored: Boolean;
     function GetButtonFlat: Boolean;
     function GetButtonHint: string;
@@ -192,7 +193,6 @@ type
     procedure SetButtonFlat(const Value: Boolean);
     procedure SetButtonHint(const Value: string);
     procedure SetButtonWidth(Value: Integer);
-    procedure SetEditRect;
     procedure SetGlyph(Value: TBitmap);
     procedure SetGlyphKind(Value: TGlyphKind);
     procedure SetImageIndex(const Value: TImageIndex);
@@ -224,13 +224,20 @@ type
     procedure DoClearText; override;
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
-    procedure DoBoundsChanged; override;
+    procedure AdjustSize; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure DoEnter; override;
+    procedure DoCtl3DChanged; virtual;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    { Repositions the child controls; button, checkbox }
+    procedure UpdateControls; virtual;
+    { Updates the margins of the edit box }
+    procedure UpdateMargins; dynamic;
+    { Returns the margins of the edit box }
+    procedure GetInternalMargins(var ALeft, ARight: Integer); virtual;
     {$IFDEF VisualCLX}
     procedure DoFlatChanged; override;
     procedure Paint; override;
@@ -300,15 +307,18 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
-  public
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
+    public
+    //    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+    //      AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoClick;
     procedure SelectAll;
     { Backwards compatibility; moved to public&published; eventually remove }
     property GlyphKind: TGlyphKind read GetGlyphKind write SetGlyphKind;
+  published
+    // testing
+    property Ctl3D;
   end;
 
   TJvComboEdit = class(TJvCustomComboEdit)
@@ -1500,7 +1510,7 @@ begin
   try
     ACanvas.Font := ed.Font;
 
-   // paint Border
+    // paint Border
     R := ed.ClientRect;
     Offset := 0;
     if (ed.BorderStyle = bsSingle) then
@@ -1769,8 +1779,13 @@ end;
 
 procedure TJvCustomComboEdit.CMCtl3DChanged(var Msg: TMessage);
 begin
+  { if Ctl3D is set to true, the window initially increases in size;
+    due to WM_NCCalcSize: the border is too big. FHold is used to delay
+    the WM_NCCalcSize increase of the border until the window
+    is recreated }
+  FHold := True;
   inherited;
-  UpdateBtnBounds;
+  DoCtl3DChanged;
 end;
 
 procedure TJvCustomComboEdit.CNCtlColor(var Msg: TMessage);
@@ -1809,10 +1824,12 @@ begin
   {$IFDEF VisualCLX}
   FBtnControl.Parent := Self.ClientArea;
   {$ENDIF VisualCLX}
+  FBtnControl.Anchors := [akRight, akTop, akBottom];
   FButton := TJvEditButton.Create(Self);
   FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
   FButton.Visible := True;
   FButton.Parent := FBtnControl;
+  FButton.Align := alClient;
   TJvEditButton(FButton).OnClick := EditButtonClick;
   Height := 21;
   (* ++ RDB ++ *)
@@ -1828,6 +1845,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
   Alignments: array [TAlignment] of LongWord = (ES_LEFT, ES_RIGHT, ES_CENTER);
@@ -1842,14 +1860,19 @@ end;
 procedure TJvCustomComboEdit.CreateWidget;
 begin
   inherited CreateWidget;
-  SetEditRect;
+  UpdateControls;
+  UpdateMargins;
+  //SetEditRect;
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvCustomComboEdit.CreateWnd;
 begin
+  FHold := False;
   inherited CreateWnd;
-  SetEditRect;
+  UpdateControls;
+  UpdateMargins;
+  //SetEditRect;
 end;
 {$ENDIF VCL}
 
@@ -1880,11 +1903,11 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomComboEdit.DoBoundsChanged;
+procedure TJvCustomComboEdit.AdjustSize;
 var
   MinHeight: Integer;
 begin
-  inherited DoBoundsChanged;
+  inherited AdjustSize;
   if not (csLoading in ComponentState) then
   begin
     MinHeight := GetMinHeight;
@@ -1901,7 +1924,7 @@ begin
     if (FPopup <> nil) and (csDesigning in ComponentState) then
       FPopup.SetBounds(0, Height + 1, 10, 10);
   end;
-  UpdateBtnBounds;
+  UpdateMargins;
 end;
 
 procedure TJvCustomComboEdit.DoChange;
@@ -1943,7 +1966,9 @@ end;
 procedure TJvCustomComboEdit.DoFlatChanged;
 begin
   inherited DoFlatChanged;
-  UpdateBtnBounds;
+  UpdateControls;
+  //UpdateBtnBounds;
+  UpdateMargins;
 end;
 {$ENDIF VisualCLX}
 
@@ -2001,7 +2026,8 @@ procedure TJvCustomComboEdit.FontChanged;
 begin
   inherited FontChanged;
   if HandleAllocated then
-    SetEditRect;
+    //SetEditRect;
+    UpdateMargins;
 end;
 
 function TJvCustomComboEdit.GetActionLinkClass: TControlActionLinkClass;
@@ -2037,6 +2063,14 @@ end;
 function TJvCustomComboEdit.GetGlyphKind: TGlyphKind;
 begin
   Result := TGlyphKind(FImageKind);
+end;
+
+procedure TJvCustomComboEdit.GetInternalMargins(var ALeft,
+  ARight: Integer);
+const
+  CPixelsBetweenEditAndButton = 2;
+begin
+  ARight := ARight + FBtnControl.Width + CPixelsBetweenEditAndButton;
 end;
 
 function TJvCustomComboEdit.GetMinHeight: Integer;
@@ -2193,7 +2227,10 @@ begin
   inherited Loaded;
   if FStreamedButtonWidth >= 0 then
     SetButtonWidth(FStreamedButtonWidth);
-  DoBoundsChanged;
+
+  { (rb) Should be removed }
+  UpdateControls;
+  UpdateMargins;
 end;
 
 procedure TJvCustomComboEdit.LocalKeyDown(Sender: TObject; var Key: Word;
@@ -2388,6 +2425,9 @@ begin
     FButton.ImageIndex := -1;
     FButton.NumGlyphs := 1;
   end;
+  {$IFDEF JVCLThemesEnabled}
+  FButton.FDrawThemedDropDownBtn := FImageKind = ikDropDown;
+  {$ENDIF JVCLThemesEnabled}
 
   case FImageKind of
     ikDropDown:
@@ -2447,13 +2487,14 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.SetBounds(ALeft, ATop, AWidth,
-  AHeight: Integer);
-begin
-  inherited SetBounds(ALeft, ATop, AWidth, AHeight); 
-  if HandleAllocated then
-    SetEditRect;
-end;
+//procedure TJvCustomComboEdit.SetBounds(ALeft, ATop, AWidth,
+//  AHeight: Integer);
+//begin
+//  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+//  if HandleAllocated then
+//    //SetEditRect;
+//    UpdateMargins;
+//end;
 
 procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
 begin
@@ -2484,7 +2525,7 @@ begin
     if csCreating in ControlState then
     begin
       FBtnControl.Width := Value;
-      FButton.Width := Value;
+      //FButton.Width := Value;
       with FButton do
         ControlStyle := ControlStyle - [csFixedWidth];
       RecreateGlyph;
@@ -2497,7 +2538,8 @@ begin
       ((Assigned(Parent) and (Value < ClientWidth)) or
       (not Assigned(Parent) and (Value < Width))) then
     begin
-      FButton.Width := Value;
+      FBtnControl.SetBounds(FBtnControl.Left + FBtnControl.Width - Value,
+        FBtnControl.Top, Value, FBtnControl.Height);
       with FButton do
         ControlStyle := ControlStyle - [csFixedWidth];
       if HandleAllocated then
@@ -2547,63 +2589,63 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.SetEditRect;
-const
-  CPixelsBetweenEditAndButton = 2;
-var
-  Loc: TRect;
-  LLeft: Integer;
-  LTop: Integer;
-  LRight: Integer;
-begin
-  AdjustHeight;
-
-  LTop := 0;
-  LLeft := 0;
-  LRight := 0;
-
-  {$IFDEF JVCLThemesEnabled}
-  { If flat and themes are enabled, move the left edge of the edit rectangle
-    to the right, otherwise the theme edge paints over the border }
-  if ThemeServices.ThemesEnabled then
-  begin
-    if BorderStyle = bsSingle then
-    begin
-      if not Ctl3D then
-        LLeft := 3
-      else
-      begin
-        LLeft := 1;
-        LTop := 1;
-      end;
-    end;
-  end;
-  {$ENDIF JVCLThemesEnabled}
-
-  if NewStyleControls and (BorderStyle = bsSingle) then
-  begin
-    {$IFDEF VCL}
-    if Ctl3D then
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    if not Flat then
-    {$ENDIF VisualCLX}
-      LRight := 1
-    else
-      LRight := 2;
-  end;
-
-  SetRect(Loc, LLeft, LTop, FBtnControl.Left + LRight - CPixelsBetweenEditAndButton, ClientHeight - 1);
-  {$IFDEF VCL}
-  SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SetEditorRect(@Loc);
-  {$ENDIF VisualCLX}
-
-  //Polaris
-  //  SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN, MakeLong(0, FBtnControl.Width));
-end;
+//procedure TJvCustomComboEdit.SetEditRect;
+//const
+//  CPixelsBetweenEditAndButton = 2;
+//var
+//  Loc: TRect;
+//  LLeft: Integer;
+//  LTop: Integer;
+//  LRight: Integer;
+//begin
+//  AdjustHeight;
+//
+//  LTop := 0;
+//  LLeft := 0;
+//  LRight := 0;
+//
+//  {$IFDEF JVCLThemesEnabled}
+//  { If flat and themes are enabled, move the left edge of the edit rectangle
+//    to the right, otherwise the theme edge paints over the border }
+//  if ThemeServices.ThemesEnabled then
+//  begin
+//    if BorderStyle = bsSingle then
+//    begin
+//      if not Ctl3D then
+//        LLeft := 3
+//      else
+//      begin
+//        LLeft := 1;
+//        LTop := 1;
+//      end;
+//    end;
+//  end;
+//  {$ENDIF JVCLThemesEnabled}
+//
+//  if NewStyleControls and (BorderStyle = bsSingle) then
+//  begin
+//    {$IFDEF VCL}
+//    if Ctl3D then
+//    {$ENDIF VCL}
+//    {$IFDEF VisualCLX}
+//    if not Flat then
+//    {$ENDIF VisualCLX}
+//      LRight := 1
+//    else
+//      LRight := 2;
+//  end;
+//
+//  SetRect(Loc, LLeft, LTop, FBtnControl.Left + LRight - CPixelsBetweenEditAndButton, ClientHeight - 1);
+//  {$IFDEF VCL}
+//  SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
+//  {$ENDIF VCL}
+//  {$IFDEF VisualCLX}
+//  SetEditorRect(@Loc);
+//  {$ENDIF VisualCLX}
+//
+//  //Polaris
+//  //  SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN, MakeLong(0, FBtnControl.Width));
+//end;
 
 procedure TJvCustomComboEdit.SetGlyph(Value: TBitmap);
 begin
@@ -2767,8 +2809,78 @@ begin
     BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
   with BtnRect do
     FBtnControl.SetBounds(Left, Top, Right - Left, Bottom - Top);
-  FButton.Height := FBtnControl.Height;
-  SetEditRect;
+  //FButton.Height := FBtnControl.Height;
+//  SetEditRect;
+end;
+
+procedure TJvCustomComboEdit.UpdateControls;
+begin
+  UpdateBtnBounds;
+end;
+
+procedure TJvCustomComboEdit.UpdateMargins;
+var
+  LLeft, LRight, LTop: Integer;
+  Loc: TRect;
+begin
+
+  {UpdateMargins gets called whenever the layout of child controls changes.
+   It uses GetInternalMargins to determine the left and right margins of the
+   actual text area.}
+
+  AdjustHeight;
+
+  //UpdateControls;
+
+  LTop := 0;
+  LLeft := 0;
+  LRight := 0;
+
+  {$IFDEF JVCLThemesEnabled}
+  { If flat and themes are enabled, move the left edge of the edit rectangle
+    to the right, otherwise the theme edge paints over the border }
+  { (rb) This was for a specific font/language; check if this is still necessary }
+  if ThemeServices.ThemesEnabled then
+  begin
+    if BorderStyle = bsSingle then
+    begin
+      if not Ctl3D then
+        LLeft := 3
+      else
+      begin
+        LLeft := 1;
+        LTop := 1;
+      end;
+    end;
+  end;
+  {$ENDIF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+  begin
+  if BorderStyle = bsSingle then
+    if Ctl3D then
+      LRight := 1
+    else
+      LRight := -1;
+  end
+  else
+  {$ENDIF}
+  begin
+    if (BorderStyle = bsSingle) and Ctl3D then
+      LRight := 3
+  end;
+
+  GetInternalMargins(LLeft, LRight);
+
+  SetRect(Loc, LLeft, LTop, Width - LRight, ClientHeight - 1);
+  {$IFDEF VCL}
+  SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
+  // (rb) EM_SETMARGINS necessary?
+  //SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN or EC_LEFTMARGIN, MakeLong(LLeft, LRight));
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SetEditorRect(@Loc);
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomComboEdit.UpdateGroup;
@@ -2794,7 +2906,7 @@ end;
 {$IFDEF JVCLThemesEnabled}
 procedure TJvCustomComboEdit.WMNCCalcSize(var Msg: TWMNCCalcSize);
 begin
-  if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) then
+  if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) and not FHold then
     with Msg.CalcSize_Params^ do
       InflateRect(rgrc[0], 1, 1);
   inherited;
@@ -2807,12 +2919,12 @@ var
   P: TPoint;
 begin
   inherited;
-  if Msg.Result = HTCLIENT then
+  if (Msg.Result = HTCLIENT) and not (csDesigning in ComponentState) then
   begin
     P := Point(FBtnControl.Left, FBtnControl.Top);
     Windows.ClientToScreen(Handle, P);
     if Msg.XPos > P.X then
-      Msg.Result := HTCAPTION;
+      Msg.Result := HTBORDER; {HTCAPTION;}
   end;
 end;
 {$ENDIF VCL}
@@ -4482,6 +4594,19 @@ begin
   Msg.Result := MA_NOACTIVATE;
 end;
 {$ENDIF VCL}
+
+procedure TJvCustomComboEdit.DoCtl3DChanged;
+begin
+  UpdateMargins;
+  UpdateControls;
+end;
+
+//procedure TJvCustomComboEdit.WMWindowPosChanged(
+//  var Message: TWMWindowPosChanged);
+//begin
+//  inherited;
+//  UpdateMargins;
+//end;
 
 initialization
 
