@@ -850,6 +850,24 @@ end;
 
 
 // used internally
+procedure MapPainterLPwh(Handle: QPainterH; var Width, Height: Integer); overload;
+var
+  Matrix: QWMatrixH;
+begin
+  if QPainter_hasWorldXForm(Handle) then
+  begin
+    Matrix := QPainter_worldMatrix(Handle);
+
+    Matrix := QWMatrix_create(QWMatrix_m11(Matrix), QWMatrix_m12(Matrix),
+      QWMatrix_m21(Matrix), QWMatrix_m22(Matrix), 0, 0);
+    try
+      QWMatrix_map(Matrix, Width, Height, @Width, @Height);
+    finally
+      QWMatrix_destroy(Matrix);
+    end;
+  end;
+end;
+
 procedure MapPainterLP(Handle: QPainterH; var x, y: Integer); overload;
 var
   Matrix: QWMatrixH;
@@ -1369,19 +1387,30 @@ end;
 
 function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
   XSrc, YSrc: Integer; Rop: RasterOp): LongBool;
+var
+  d_dx, d_dy, d_sx, d_sy, d_sw, d_sh, d_dw, d_dh: Integer;
 begin
   if (DestDC = nil) or (SrcDC = nil) then
     Result := False
   else
   begin
     Result := True;
-   // Windows's BitBlt uses logical units  
-    MapPainterLP(DestDC, X, Y);
-    MapPainterLP(SrcDC, XSrc, YSrc, Width, Height);
     try
-      Qt.bitBlt(QPainter_device(DestDC), X, Y, QPainter_device(SrcDC),
-        XSrc, YSrc, Width, Height, Rop,
-        True); // ignore the Mask because Windows's BitBlt does not use Masks
+     // Windows's BitBlt uses logical units
+      d_dx := X;d_dy := Y;d_dw := Width;d_dh := Height;
+      d_sx := XSrc; d_sy := YSrc;d_sw := Width; d_sh := Height;
+      MapPainterLP(DestDC, d_dx, d_dy);
+      MapPainterLPwh(DestDC, d_dw, d_dh);
+      MapPainterLP(SrcDC, d_sx, d_sy);
+      MapPainterLPwh(SrcDC, d_sw, d_sh);
+
+      if (d_dw = d_sw) and (d_dh = d_sh) then // device bitBlt possible
+        Qt.bitBlt(QPainter_device(DestDC), d_dx, d_dy, QPainter_device(SrcDC),
+          d_sx, d_sy, d_sw, d_sh, Rop,
+          True) // ignore the Mask because Windows's BitBlt does not use Masks
+      else
+        StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width, Height,
+          Rop);  
     except
       Result := False;
     end;
@@ -1405,39 +1434,47 @@ begin
   Result := False;
   if dst = nil then
     Exit;
+
  // Windows's StretchBlt uses logical units
   d_sx := sx;d_sy := sy;d_sw := sw;d_sh := sh;
   d_dx := dx;d_dy := dy;d_dw := dw;d_dh := dh;
-  MapPainterLP(dst, d_dx, d_dy, d_dw, d_dh);
-  MapPainterLP(src, d_sx, d_sy, d_sw, d_sh);
+  MapPainterLP(dst, d_dx, d_dy);
+  MapPainterLPwh(dst, d_dw, d_dh);
+  MapPainterLP(src, d_sx, d_sy);
+  MapPainterLPwh(src, d_sw, d_sh);
 
-  // written by André Snepvangers
-  // - supports same winrop as bitblt(..., winrop)
-  // - destination and source don't have to be compatible with one and another
-  try
-    bmp1 := nil;
-    bmp2 := nil;
+  if (d_dw = d_sw) and (d_dh = d_sh) then // device bitBlt possible
+    Result := BitBlt(dst, dx, dy, dw, dh, src, sx, sy, winrop)
+  else
+  begin
+    // written by André Snepvangers
+    // - supports same winrop as bitblt(..., winrop)
+    // - destination and source don't have to be compatible with one and another
     try
-     // temporary bitmaps are in device units
-      bmp1 := CreateCompatibleBitmap(src, d_sw, d_sh);
-      bmp2 := CreateCompatibleBitmap(dst, d_dw, d_dh);
-      Qt.bitBlt(bmp1, 0, 0, QPainter_device(Src), d_sx, d_sy, d_sw, d_sh,
-        RasterOp_CopyROP, True);
-      painter := QPainter_create(bmp2);
-      QPainter_save(painter);
-      QPainter_scale(painter, d_dw/d_sw, d_dh/d_sh);
-      QPainter_drawPixmap(painter, 0, 0, bmp1, 0, 0, d_sw, d_sh);
-      QPainter_restore(painter);
-      Result := BitBlt(dst, dx, dy, dw, dh, Painter, 0, 0, winrop); // maps logical units
-      QPainter_destroy(Painter);
-    finally
-      if Assigned(bmp1) then
-        QPixmap_destroy(bmp1);
-      if Assigned(bmp2) then
-        QPixmap_destroy(bmp2);
+      bmp1 := nil;
+      bmp2 := nil;
+      try
+       // temporary bitmaps are in device units
+        bmp1 := CreateCompatibleBitmap(src, d_sw, d_sh);
+        bmp2 := CreateCompatibleBitmap(dst, d_dw, d_dh);
+        Qt.bitBlt(bmp1, 0, 0, QPainter_device(Src), d_sx, d_sy, d_sw, d_sh,
+          RasterOp_CopyROP, True); // use device units
+        painter := QPainter_create(bmp2);
+        QPainter_save(painter);
+        QPainter_scale(painter, d_dw/d_sw, d_dh/d_sh);
+        QPainter_drawPixmap(painter, 0, 0, bmp1, 0, 0, d_sw, d_sh);
+        QPainter_restore(painter);
+        Result := BitBlt(dst, dx, dy, dw, dh, Painter, 0, 0, winrop); // maps logical units
+        QPainter_destroy(Painter);
+      finally
+        if Assigned(bmp1) then
+          QPixmap_destroy(bmp1);
+        if Assigned(bmp2) then
+          QPixmap_destroy(bmp2);
+      end;
+    except
+      Result := False;
     end;
-  except
-    Result := False;
   end;
 end;
 
@@ -3064,6 +3101,7 @@ begin
       try
         FillRect(TempDC, R, hbrFlickerFreeDraw);
         QPainter_drawPixmap(TempDC, 0, 0, hIcon, istepIfAniCur * W, 0, W, H);
+        MapPainterLP(Handle, X, Y);
         BitBlt(Handle, X, Y, W, H, TempDC, 0, 0, RasterOp_CopyRop);
         Result := True;
       except
@@ -3415,7 +3453,6 @@ begin
     Pixmap := QPainter_device(Handle); // get paintdevice
     if QPainter_isActive(Handle) then
       QPainter_end(Handle);
-
 
     IsCompatible := GetPainterInfo(Handle, P) and (P.IsCompatibleDC);
     if P <> nil then
