@@ -147,6 +147,13 @@ Known Issues:
      ChangeTopException function is not used anymore;
    - fixed bug: intefrace section was not processed correct
      (Thanks to Ivan Ravin);
+Upcoming JVCL 3.00
+   - interface (IInterface, IUnknown) method call support, see AddIntfGet
+   - fixed record bugs with Delphi 6
+   - fixed OLE bugs (with Delphi 6 at least)
+   - record declaration support
+   - major code cleanups
+}
 
 {.$DEFINE JvInterpreter_DEBUG}
 
@@ -221,6 +228,8 @@ type
     Assignment: Boolean; { internal }
     Obj: TObject;
     ObjTyp: Word; { varObject, varClass, varUnknown }
+    ObjRefHolder: Variant; { if ObjType is varDispatch or varUnknown,
+                              then we need to hold a reference to it }
 
     Indexed: Boolean; // if True then Args contain Indexes to Identifier
     ReturnIndexed: Boolean; // established by GetValue function, indicating
@@ -1616,7 +1625,7 @@ begin
   if Result <> nil then
     VarClear(Result^);
 {$IFDEF COMPILER3_UP}
-  DispatchInvoke(IDispatch(Dispatch), CallDesc, PDispIDList(@DispIDs[0]), @ParamTypes, Result);
+  DispatchInvoke(IDispatch(Dispatch), CallDesc, PDispIDList(@DispIDs[0]), ParamTypes, Result);
 {$ELSE}
   DispInvoke(Dispatch, CallDesc, PDispIDList(@DispIDs[0]), @ParamTypes, Result);
 {$ENDIF COMPILER3_UP}
@@ -2002,7 +2011,7 @@ begin
   begin
     if TVarData(V).VType = varInteger then
     begin
-      if (TVarData(V).VType = varType) then
+      if (TVarData(V).VType = VarType) then
         Result := Integer(V = True)
       else
         Result := Integer(V)
@@ -3981,14 +3990,14 @@ var
   Names: string;
   i: Integer;
 
-  procedure AddParam(Param: Variant);
+  procedure AddParam(const Param: Variant);
   var
     Int: Integer;
     Wrd: WordBool;
     Poin: Pointer;
     //TempDisp : IDispatch;
 
-    procedure AddParam1(Typ: Byte; ParamSize: Integer; var Param);
+    procedure AddParam1(Typ: Byte; ParamSize: Integer; const Param);
     begin
      { CallDesc.ArgTypes[Ptr] := Typ;
       Move(Param, ParamTypes[Ptr], ParamSize);
@@ -4244,6 +4253,7 @@ begin
   HasVars := False;
   Indexed := False;
   ReturnIndexed := False;
+  ObjRefHolder := Unassigned;
 end;
 
 destructor TJvInterpreterArgs.Destroy;
@@ -4935,6 +4945,7 @@ var
     C := Args.Count;
     Args.Obj := nil;
     Args.ObjTyp := 0;
+    Args.ObjRefHolder := Unassigned;
     Args.Count := 0;
     for i := 0 to C - 1 do
       if (Args.VarNames[i] <> '') and ((Args.Types[i] and varByRef) <> 0) then
@@ -4953,8 +4964,14 @@ begin
     Args.Count := 0;
   Args.Obj := Obj;
   Args.ObjTyp := ObjTyp;
+
   if (TTyp = ttColon) and AllowAssignment then
   begin
+    if (ObjTyp = varDispatch) then
+      Args.ObjRefHolder := IDispatch(Obj)
+    else if (ObjTyp = varUnknown) then
+      Args.ObjRefHolder := IUnknown(Obj);
+
     Back;
     Token1 := Identifier; {!!!!!!!!!!!!!!}
     { Args.Obj, Args.ObjTyp, Args.Count needed in caller }
@@ -4988,6 +5005,7 @@ begin
 
   Args.Obj := nil;
   Args.ObjTyp := 0;
+  Args.ObjRefHolder := Unassigned;
   Args.Count := 0;
   { Args.Obj, Args.ObjTyp, Args.Count NOT needed in caller }
 
@@ -5289,7 +5307,9 @@ var
       C := Args.Count;
       Args.Obj := nil;
       Args.ObjTyp := 0;
+      Args.ObjRefHolder := Unassigned;
       Args.Count := 0;
+
       for i := 0 to C - 1 do { Iterate }
         if (VarNames[i] <> '') and
           ((Args.Types[i] and varByRef) <> 0) then
