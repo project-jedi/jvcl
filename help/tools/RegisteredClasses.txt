@@ -1,4 +1,5 @@
 Tgl3DColors
+TJv7SegmentedLEDCharacterMapper
 TJvAddHardwareDialog
 TJvAddPrinterDialog
 TJvAirBrush
@@ -327,6 +328,7 @@ TJvScrollingWindow
 TJvScrollMax
 TJvScrollText
 TJvSearchFiles
+TJvSegmentedLEDDisplay
 TJvSelectDirectory
 TJvSerialMaker
 TJvSettingsTreeView
@@ -380,8 +382,6 @@ TJvTFWeeks
 TJvThread
 TJvThreadTimer
 TJvThumbImage
-TJvThumbnail
-TJvThumbView
 TJvTimeLimit
 TJvTimeLine
 TJvTimer
