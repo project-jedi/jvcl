@@ -74,6 +74,7 @@
   DELPHI4_UP   Defined when compiling with Delphi 4 or higher
   DELPHI5_UP   Defined when compiling with Delphi 5 or higher
   DELPHI6_UP   Defined when compiling with Delphi 6 or higher
+  DELPHI7_UP   Defined when compiling with Delphi 7 or higher
 
 - C++ Builder Versions
 
@@ -88,11 +89,13 @@
   BCB4         Defined when compiling with C++ Builder 4
   BCB5         Defined when compiling with C++ Builder 5
   BCB6         Defined when compiling with C++ Builder 6
+  BCB7         Defined when compiling with C++ Builder 7
   BCB1_UP      Defined when compiling with C++ Builder 1 or higher
   BCB3_UP      Defined when compiling with C++ Builder 3 or higher
   BCB4_UP      Defined when compiling with C++ Builder 4 or higher
   BCB5_UP      Defined when compiling with C++ Builder 5 or higher
   BCB6_UP      Defined when compiling with C++ Builder 6 or higher
+  BCB7_UP      Defined when compiling with C++ Builder 7 or higher
 
 - Compiler Versions
 
@@ -118,7 +121,8 @@
   COMPILER4_UP Defined when compiling with Delphi 4 or C++ Builder 4 or higher
   COMPILER5_UP Defined when compiling with Delphi 5 or C++ Builder 5 or higher
   COMPILER6_UP Defined when compiling with Delphi 6 or C++ Builder 6 or higher
-  
+  COMPILER7_UP Defined when compiling with Delphi 6 or C++ Builder 6 or higher
+
 - Feature Directives
 
   The features directives are used to test if the compiler supports specific
@@ -198,6 +202,17 @@
 // VERXXX to COMPILERX, DELPHIX and BCBX mappings
 //------------------------------------------------------------------------------
 
+{$IFDEF VER150}
+  {$DEFINE COMPILER7}
+  {$IFDEF BCB}
+    {$DEFINE BCB7}
+    {$DEFINE BCB}
+  {$ELSE}
+    {$DEFINE DELPHI7}
+    {$DEFINE DELPHI}
+  {$ENDIF}
+{$ENDIF}
+
 {$IFDEF VER140}
   {$DEFINE COMPILER6}
   {$IFDEF BCB}
@@ -265,6 +280,16 @@
 // DELPHIX_UP from DELPHIX mappings
 //------------------------------------------------------------------------------
 
+{$IFDEF DELPHI7}
+  {$DEFINE DELPHI7_UP}
+  {$DEFINE DELPHI6_UP}
+  {$DEFINE DELPHI5_UP}
+  {$DEFINE DELPHI4_UP}
+  {$DEFINE DELPHI3_UP}
+  {$DEFINE DELPHI2_UP}
+  {$DEFINE DELPHI1_UP}
+{$ENDIF}
+
 {$IFDEF DELPHI6}
   {$DEFINE DELPHI6_UP}
   {$DEFINE DELPHI5_UP}
@@ -308,6 +333,15 @@
 // BCBX_UP from BCBX mappings
 //------------------------------------------------------------------------------
 
+{$IFDEF BCB7}
+  {$DEFINE BCB7_UP}
+  {$DEFINE BCB6_UP}
+  {$DEFINE BCB5_UP}
+  {$DEFINE BCB4_UP}
+  {$DEFINE BCB3_UP}
+  {$DEFINE BCB1_UP}
+{$ENDIF}
+
 {$IFDEF BCB6}
   {$DEFINE BCB6_UP}
   {$DEFINE BCB5_UP}
@@ -342,6 +376,17 @@
 // COMPILERX_UP from COMPILERX mappings
 //------------------------------------------------------------------------------
 
+
+{$IFDEF COMPILER7}
+  {$DEFINE COMPILER7_UP}
+  {$DEFINE COMPILER6_UP}
+  {$DEFINE COMPILER5_UP}
+  {$DEFINE COMPILER4_UP}
+  {$DEFINE COMPILER35_UP}
+  {$DEFINE COMPILER3_UP}
+  {$DEFINE COMPILER2_UP}
+  {$DEFINE COMPILER1_UP}
+{$ENDIF}
 
 {$IFDEF COMPILER6}
   {$DEFINE COMPILER6_UP}
