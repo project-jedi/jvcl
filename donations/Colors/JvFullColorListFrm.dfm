@@ -1,6 +1,6 @@
 object JvFullColorListForm: TJvFullColorListForm
-  Left = 388
-  Top = 284
+  Left = 389
+  Top = 285
   BorderStyle = bsDialog
   Caption = 'Color list editor'
   ClientHeight = 398

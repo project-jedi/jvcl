@@ -32,7 +32,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ActnList, Buttons, ImgList,
-  FullColorFrm, ColorSpaces, ColorDialogs, ColorCtrls;
+  JvFullColorFrm, JvFullColorSpaces, JvFullColorDialogs, JvFullColorCtrls;
 
 type
   TJvFullColorListForm = class(TForm)
