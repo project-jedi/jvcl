@@ -4093,9 +4093,10 @@ constructor TJvDirectoryEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   {$IFDEF VCL}
-  FOptions := [];
+  FOptions := [sdAllowCreate];
   FAutoCompleteFileOptions := [acfFileSystem, acfFileSysDirs];
   {$ENDIF VCL}
+  FDialogKind := dkWin32;
 end;
 
 class function TJvDirectoryEdit.DefaultImageIndex: TImageIndex;
@@ -4201,8 +4202,7 @@ begin
   try
     {$IFDEF VCL}
     if NewStyleControls and (DialogKind = dkWin32) then
-      Action := BrowseForFolder(FDialogText, True, Temp, Self.HelpContext)
-        //BrowseDirectory(Temp, FDialogText, Self.HelpContext)
+      Action := BrowseForFolder(FDialogText, sdAllowCreate in DialogOptions, Temp, Self.HelpContext)
     else
       Action := SelectDirectory(Temp, FOptions, Self.HelpContext);
     {$ENDIF VCL}
