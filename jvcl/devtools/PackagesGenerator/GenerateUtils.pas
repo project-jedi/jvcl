@@ -569,7 +569,7 @@ begin
   Result := FileTimeToDateTime(fileTime);
 end;
 
-function CompareFiles(const FileName1, FileName2: string): Boolean;
+function FilesEqual(const FileName1, FileName2: string): Boolean;
 const
   MaxBufSize = 65356;
 var
@@ -578,7 +578,7 @@ var
   BufSize: Integer;
   Size: Integer;
 begin
-  Result := False;
+  Result := True;
 
   Stream1 := nil;
   Stream2 := nil;
@@ -588,7 +588,10 @@ begin
 
     Size := Stream1.Size;
     if Size <> Stream2.Size then
-      Exit;
+    begin
+      Result := False;
+      Exit;     // Note: the finally clause WILL be executed
+    end;
 
     BufSize := MaxBufSize;
     while Size > 0 do
@@ -602,34 +605,17 @@ begin
 
       Result := CompareMem(@Buffer1[0], @Buffer2[0], BufSize);
       if not Result then
-        Exit;
+        Exit;    // Note: the finally clause WILL be executed
     end;
   finally
     Stream1.Free;
     Stream2.Free;
   end;
-  Result := True;
 end;
 
-function StartsWith(const S, SubStr: string): Boolean;
-var
-  Len, i: Integer;
-begin
-  Len := Length(SubStr);
-  Result := False;
-  if (Len > 0) and (Length(S) >= Len) then
-  begin
-    for i := 1 to Len do
-      if S[i] <> SubStr[i] then
-        Exit;
-    Result := True;
-  end;
-end;
-
-function HasFileChanged(const OutFileName, TemplateFileName: string; OutLines: TStrings): Boolean;
+function HasFileChanged(const OutFileName, TemplateFileName: string; OutLines: TStrings; TimeStampLine: Integer): Boolean;
 var
   CurLines: TStrings;
-  i: Integer;
 begin
   Result := True;
   if not FileExists(OutFileName) then
@@ -638,7 +624,7 @@ begin
   if OutLines.Count = 0 then
   begin
     // binary file -> compare files
-    Result := not CompareFiles(OutFileName, TemplateFileName);
+    Result := not FilesEqual(OutFileName, TemplateFileName);
   end
   else
   begin
@@ -653,14 +639,11 @@ begin
         Exit;
       end;
 
-     // Replace the time stamp line by the new one to ensure that this wont
-     // break the comparison.
-      for i := 0 to CurLines.Count - 1 do
-        if StartsWith(TrimLeft(CurLines[i]), 'Last generated: ') then
-        begin
-          CurLines[i] := OutLines[i];
-          Break;
-        end;
+      // Replace the time stamp line by the new one to ensure that this
+      // won't break the comparison.
+      if TimeStampLine > -1 then
+        CurLines[TimeStampLine] := OutLines[TimeStampLine];
+
       Result := not CurLines.Equals(OutLines);
     finally
       CurLines.Free;
@@ -688,6 +671,7 @@ var
   bcbId : string;
   bcblibs : string;
   bcblibsList : TStringList;
+  TimeStampLine : Integer;
   containsSomething : Boolean; // true if package will contain something
   repeatSectionUsed : Boolean; // true if at least one repeat section was used
 begin
@@ -715,6 +699,9 @@ begin
     OutFileName := path + TargetToDir(target) + PathSeparator +
                    ExpandPackageName(OutFileName, target, prefix, format)+
                    Extension;
+
+    // The time stamp hasn't been found yet
+    TimeStampLine := -1;
 
     // get the nodes
     requiredNode := rootNode.Items.ItemNamed['requires'];
@@ -855,6 +842,9 @@ begin
       end
       else
       begin
+        if Pos(curLine, '%DATETIME%') > 0 then
+          TimeStampLine := I;
+
         StrReplace(curLine, '%NAME%',
                    PathExtractFileNameNoExt(OutFileName),
                    [rfReplaceAll]);
@@ -932,9 +922,7 @@ begin
     // Save the file, if it contains something, and it
     // doesn't exist or it's older than the most recent file
     if containsSomething and
-       (HasFileChanged(OutFileName, templateName, outFile)) then
-       {(not FileExists(OutFileName) or
-        (FileDateToDateTime(FileAge(OutFileName)) < mostRecentFileDate)) then}
+       (HasFileChanged(OutFileName, templateName, outFile, TimeStampLine)) then
     begin
       SendMsg(#9#9'Writing ' + ExtractFileName(OutFileName) + ' for ' + target);
 
