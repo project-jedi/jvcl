@@ -241,7 +241,7 @@ type
 implementation
 
 uses
-  JvJCLUtils;
+  JvConsts, JvJCLUtils;
 
 //=== { TJvControlAutoComplete } =============================================
 
@@ -369,14 +369,14 @@ begin
     FFilter := GetText;
 
   case Ord(Key) of
-    VK_ESCAPE:
+    Esc {VK_ESCAPE}:
       Exit;
-    VK_TAB:
+    Tab {VK_TAB}:
       begin
         DoValidateItems;
         DoDropDown;
       end;
-    VK_BACK:
+    BackSpace {VK_BACK}:
       begin
         DoValidateItems;
         if HasSelectedText(StartPos, EndPos) then
@@ -613,7 +613,7 @@ function TJvComboBoxAutoComplete.GetActive: Boolean;
 begin
   Result := inherited GetActive and (ComboBox <> nil);
   if ComboBox <> nil then
-    FListSearch := not (TCustomComboBoxAccess(ComboBox).Style in [csDropDown, csSimple]);
+    FListSearch := not (TCustomComboBoxAccess(ComboBox).Style in [csDropDown {$IFDEF VCL}, csSimple{$ENDIF}]);
 end;
 
 {$IFDEF VCL}
