@@ -1669,20 +1669,24 @@ begin
 
   // Iterate through filesystem
   more := FindFirst(Directory + '*', faAnyFile, sr) = 0;
-  while more do
-  begin
-    if (sr.Attr and faDirectory <> 0) and (sr.Name <> '.') and (sr.Name <> '..') then
+  try
+    while more do
     begin
-      Filename := Directory + sr.Name + PathDelim + 'LC_MESSAGES' +
-        PathDelim + domain + '.mo';
-      if FileExists(Filename) then
+      if (sr.Attr and faDirectory <> 0) and (sr.Name <> '.') and (sr.Name <> '..') then
       begin
-        LangCode := LowerCase(sr.Name);
-        if List.IndexOf(LangCode) = -1 then
-          List.Add(LangCode);
+        Filename := Directory + sr.Name + PathDelim + 'LC_MESSAGES' +
+          PathDelim + domain + '.mo';
+        if FileExists(Filename) then
+        begin
+          LangCode := LowerCase(sr.Name);
+          if List.IndexOf(LangCode) = -1 then
+            List.Add(LangCode);
+        end;
       end;
+      more := FindNext(sr) = 0;
     end;
-    more := FindNext(sr) = 0;
+  finally
+    FindClose(sr);
   end;
 
   // Iterate through embedded files
