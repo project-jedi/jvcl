@@ -1,6 +1,8 @@
 ##Package: StdCtrls
-##Status: Completed
+##Status: Check component descriptions.
 ##Skip: EComboEditError
+##Skip: IsInWordArray
+##Skip: LoadDefaultBitmap
 ##Skip: TCloseUpEvent
 ##Skip: TJvCustomComboEdit.SelectAll
 ##Skip: TJvCustomComboEditActionLink
@@ -33,32 +35,6 @@ Description
   by the Editor parameter.
 Parameters
   Editor - The edit control.
-----------------------------------------------------------------------------------------------------
-@@IsInWordArray
-<TITLE IsInWordArray function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-  A     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@LoadDefaultBitmap
-<TITLE LoadDefaultBitmap function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Bmp  - Description for this parameter
-  Item - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@PaintComboEdit
 <TITLE PaintComboEdit function>
@@ -204,7 +180,7 @@ See Also
 @@TJvComboEdit
 <TITLEIMG TJvComboEdit>
 JVCLInfo
-  GROUP=JVCL.EditsMemosAndCombos.Edits,JVCL.Buttons.Push
+  GROUP=JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push
   FLAG=Component
 Summary
   Edit control with a button.
@@ -451,9 +427,9 @@ See Also
 Summary
   Base class for the TJvDateEdit control.
 Description
-  Use TCommonCalendar as a base class when creating custom controls that represent dates in a
-  calendar-like format. Do not create instances of TCommonCalendar. Instead, to put a calendar
-  control on a form, use a TCommonCalendar descendant such as TDateTimePicker or TMonthCalendar.
+  Use TJvCustomDateEdit as a base class when creating custom combo edits that can be used for entering
+  dates. Do not create instances of TJvCustomDateEdit. Instead, to put a combo edit
+  control for entering dates on a form, use a TJvCustomDateEdit descendant such as TJvDateEdit.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.BlanksChar
 Summary
@@ -681,12 +657,12 @@ See Also
 @@TJvDateEdit
 <TITLEIMG TJvDateEdit>
 JVCLInfo
-  GROUP=JVCL.DateTime.EditsCombos,JVCL.EditsMemosAndCombos.Edits,JVCL.Buttons.Push
+  GROUP=JVCL.DateTime.EditsCombos,JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push
   FLAG=Component
 Summary
   Edit control with a button that displays a calendar.
 Description
-  TJvDateEdit is a button edit control designed specifically for entering dates or times.
+  TJvDateEdit is a button edit control designed specifically for entering dates.
 
   Pressing the button of the combo edit control displays a calendar, where users can
   select a date. But the user can also type a specific date in the edit box.
@@ -694,7 +670,7 @@ Description
 @@TJvDirectoryEdit
 <TITLEIMG TJvDirectoryEdit>
 JVCLInfo
-  GROUP=JVCL.EditsMemosAndCombos.Edits,JVCL.Buttons.Push
+  GROUP=JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push
   FLAG=Component
 Summary
   Edit control with a button that displays a directory selection dialog.
@@ -764,11 +740,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvFileDirEdit
 Summary
-  Base class for the controls TJvDirectoryEdit and TJvFilenameEdit.
+  Base class for the TJvFileDirEdit control.
 Description
-  Use TJvFileDirEdit as a base class when creating custom controls that represent dates in a
-  calendar-like format. Do not create instances of TJvFileDirEdit. Instead, to put a calendar
-  control on a form, use a TJvFileDirEdit descendant such as TJvDirectoryEdit or TJvFilenameEdit.
+  Use TJvFileDirEdit as a base class when creating custom combo edits that can be used for entering
+  file or directory names. Do not create instances of TJvFileDirEdit. Instead, to put a combo edit
+  control for entering file or directory names on a form, use a TJvFileDirEdit descendant such as 
+  TJvDirectoryEdit or TJvFilenameEdit.
 See Also
   TJvFilenameEdit, TJvDirectoryEdit
 ----------------------------------------------------------------------------------------------------
@@ -841,7 +818,7 @@ See Also
 @@TJvFilenameEdit
 <TITLEIMG TJvFilenameEdit>
 JVCLInfo
-  GROUP=JVCL.EditsMemosAndCombos.Edits,JVCL.Buttons.Push
+  GROUP=JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push
   FLAG=Component
 Summary
   Edit control with a button that displays a file selection dialog.
