@@ -99,8 +99,6 @@ end;
 
 procedure ShowHelp;
 begin
-  writeln('');
-  writeln('JEDI CR(LF) version 0.1: LF->CRLF and CRLF->LF converter.');
   writeln('===================================================');
   writeln('Usage:');
   writeln('crlf [options] <filemask> [options] <filemask> (etc)');
@@ -218,6 +216,8 @@ begin
   // -w - convert LF to CRLF (to windows)
   // -c - check content: only write if file has changed (default)
   // -u - never check content: always write
+  writeln('');
+  writeln('JEDI CR(LF) version 0.1: LF->CRLF and CRLF->LF converter.');
 
   Count := 0;
   if ParamCount = 0 then
