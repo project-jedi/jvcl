@@ -70,8 +70,10 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     function AcceptPosition(Value: Integer):Boolean;
     function CanChange: Boolean; override;
+    procedure SetPos(const Value: Integer);
   public
     constructor Create(AOwner: TComponent);override;
+    function AcceptInteger: Boolean;
   published
     property AlignButton:TJvAlignButton read FAlignButton write SetAlignButton default abRight;
     property HintColor:TColor read FColor write FColor default clInfoBk;
@@ -96,6 +98,7 @@ const
   UDM_SETPOS32  =          (WM_USER+113);
   UDM_GETPOS32  =          (WM_USER+114);
   UDS_HOTTRACK  =          $0100;
+
 
 {*****************************************************************}
 
@@ -143,7 +146,10 @@ function TJvUpDown.GetPosition: Integer;
 begin
   if HandleAllocated then
   begin
-    Result := SendMessage(Handle, UDM_GETPOS32, 0, 0);
+    if AcceptInteger then
+      Result := SendMessage(Handle, UDM_GETPOS32, 0, 0)
+    else
+      Result := SendMessage(Handle, UDM_GETPOS, 0, 0);
     FPosition := Result;
   end
   else
@@ -201,7 +207,7 @@ begin
     begin
       FPosition := Value;
       if HandleAllocated then
-        SendMessage(Handle, UDM_SETPOS32, 0, Value);
+        SetPos(Value);
       if (FAssociate<>nil) and (FAssociate is TCustomEdit) then
         TCustomEdit(FAssociate).Text := IntToStr(FPosition);
     end;
@@ -239,7 +245,7 @@ procedure TJvUpDown.CreateWnd;
 begin
   inherited;
   SendMessage(Handle, UDM_SETRANGE32, FMin, FMax);
-  SendMessage(Handle, UDM_SETPOS32, 0, FPosition);
+  SetPos(FPosition);
   SetAssociate(FAssociate);
   Increment := 1;
 end;
@@ -302,6 +308,47 @@ begin
         WM_COMMAND,
         MakeWParam(0, EN_CHANGE),
         Associate.handle);
+end;
+
+{**************************************************}
+
+function TJvUpDown.AcceptInteger: Boolean;
+var
+ Info: Pointer;
+ InfoSize: DWORD;
+ FileInfo: PVSFixedFileInfo;
+ FileInfoSize: DWORD;
+ Tmp: DWORD;
+ Major, Minor: Integer;
+begin
+  //SETPOS32 are only supported with comctl32.dll version 5.80 or later
+  result := false;
+  try
+    InfoSize := GetFileVersionInfoSize('comctl32.dll', Tmp);
+    if InfoSize = 0 then
+      Exit;
+    GetMem(Info, InfoSize);
+    try
+      GetFileVersionInfo('comctl32.dll', 0, InfoSize, Info);
+      VerQueryValue(Info, '\', Pointer(FileInfo), FileInfoSize);
+      Major := FileInfo^.dwFileVersionMS shr 16;
+      Minor := FileInfo^.dwFileVersionMS and $FFFF;
+      result := (Major>5) or ((Major=5) and (Minor>80));
+    finally
+      FreeMem(Info, FileInfoSize);
+    end;
+  except
+  end;
+end;
+
+{**************************************************}
+
+procedure TJvUpDown.SetPos(const Value: Integer);
+begin
+  if AcceptInteger then
+    SendMessage(Handle, UDM_SETPOS32, 0, Value)
+  else
+    SendMessage(Handle, UDM_SETPOS, 0, Value);
 end;
 
 end.
