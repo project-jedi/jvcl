@@ -8,18 +8,17 @@
 : ---------------------------------------------------------------------
 if %1!==! goto help
 
-MakeBCB "BCB6Per Packages" Bcb6Per %1
-del /f /q BCB6\*.mak
+MakeBCB "BCB5 Packages" Bcb5 %1
 
 goto end
 
 :help
-echo MakeBCB6Per.bat - Builds the JVCL for BCB6 Personal Edition
+echo MakeBCB5.bat - Builds the JVCL for BCB5
 echo.
-echo Usage:    MakeBCB6Per BCBDirectory [JCLDirectory] [LIBDirectory] [BPLDirectory]
+echo Usage:    MakeBCB5 BCBDirectory [JCLDirectory] [LIBDirectory] [BPLDirectory]
 echo.
-echo     BCBDirectory   The place where BCB6 is installed.
-echo                    e.g. "C:\Program Files\CBuilder6"
+echo     BCBDirectory   The place where BCB5 is installed.
+echo                    e.g. "C:\Program Files\CBuilder5"
 echo     JCLDirectory   The place where the JCL is installed. You must specify 
 echo                    this value if the JCL is not in ..\..\JCL
 echo     LIBDirectory   The place where to put the BPI and LIB files.
