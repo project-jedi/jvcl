@@ -160,6 +160,7 @@ type
     FPainter: TJvInspectorPainter;
     FPaintGen: Integer;
     FReadonly: Boolean;
+    FRelativeDivider: Boolean;
     FRoot: TJvCustomInspectorItem;
     FRowSizing: Boolean;
     FRowSizingItem: TJvCustomInspectorItem;
@@ -189,6 +190,7 @@ type
     function GetButtonRect(const ItemIndex: Integer): TRect; virtual;
     function GetCollapseButton: TBitmap; virtual;
     function GetDivider: Integer; virtual;
+    function GetDividerAbs: Integer; virtual;
     function GetExpandButton: TBitmap; virtual;
     function GetImageHeight: Integer; virtual;
     function GetItemHeight: Integer; virtual;
@@ -197,6 +199,7 @@ type
     function GetOnItemSelected: TNotifyEvent; virtual;
     function GetPainter: TJvInspectorPainter; virtual;
     function GetReadonly: Boolean; virtual;
+    function GetRelativeDivider: Boolean; virtual;
     function GetRoot: TJvCustomInspectorItem; virtual;
     function GetSelected: TJvCustomInspectorItem; virtual;
     function GetSelectedIndex: Integer; virtual;
@@ -230,12 +233,14 @@ type
     procedure SetBeforeSelection(const Value: TInspectorItemBeforeSelectEvent); virtual;
     procedure SetCollapseButton(const Value: TBitmap); virtual;
     procedure SetDivider(Value: Integer); virtual;
+    procedure SetDividerAbs(Value: Integer); virtual;
     procedure SetExpandButton(const Value: TBitmap); virtual;
     procedure SetItemHeight(Value: Integer); virtual;
     procedure SetLockCount(const Value: Integer); virtual;
     procedure SetOnItemSelected(const Value: TNotifyEvent); virtual;
     procedure SetPainter(const Value: TJvInspectorPainter); virtual;
     procedure SetReadonly(const Value: Boolean); virtual;
+    procedure SetRelativeDivider(Value: Boolean); virtual;
     procedure SetSelected(const Value: TJvCustomInspectorItem); virtual;
     procedure SetSelectedIndex(Value: Integer); virtual;
     procedure SetTopIndex(Value: Integer); virtual;
@@ -258,6 +263,7 @@ type
     property CollapseButton: TBitmap read GetCollapseButton write SetCollapseButton;
     property ExpandButton: TBitmap read GetExpandButton write SetExpandButton;
     property Divider: Integer read GetDivider write SetDivider;
+    property DividerAbs: Integer read GetDividerAbs write SetDividerAbs;
     property DraggingDivider: Boolean read FDraggingDivider write FDraggingDivider;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ImageHeight: Integer read GetImageHeight;
@@ -276,6 +282,7 @@ type
     property Painter: TJvInspectorPainter read GetPainter write SetPainter;
     property PaintGeneration: Integer read FPaintGen;
     property Readonly: Boolean read GetReadonly write SetReadonly;
+    property RelativeDivider: Boolean read GetRelativeDivider write SetRelativeDivider;
     property Root: TJvCustomInspectorItem read GetRoot;
     property RowSizing: Boolean read FRowSizing write FRowSizing;
     property RowSizingItem: TJvCustomInspectorItem read FRowSizingItem write
@@ -323,6 +330,7 @@ type
     property ItemHeight;
     property Painter;
     property Readonly;
+    property RelativeDivider;
     property UseBands;
     property WantTabs;
     property AfterDataCreate;
@@ -1967,6 +1975,21 @@ begin
   Result := FDivider;
 end;
 
+function TJvCustomInspector.GetDividerAbs: Integer;
+begin
+  if RelativeDivider then
+  begin
+    if UseBands then
+      Result := (FDivider * BandWidth) div 100
+    else if HandleAllocated then
+      Result := (FDivider * ClientWidth) div 100
+    else
+      Result := (FDivider * Width) div 100;
+  end
+  else
+    Result := FDivider;
+end;
+
 function TJvCustomInspector.GetExpandButton: TBitmap;
 begin
   Result := FExpandButton;
@@ -1999,6 +2022,11 @@ end;
 function TJvCustomInspector.GetLockCount: Integer;
 begin
   Result := FLockCount;
+end;
+
+function TJvCustomInspector.GetRelativeDivider: Boolean;
+begin
+  Result := FRelativeDivider;
 end;
 
 function TJvCustomInspector.GetRoot: TJvCustomInspectorItem;
@@ -2274,7 +2302,7 @@ begin
   if Button = mbLeft then
   begin
     // Check divider dragging
-    if (XB >= Pred(Divider)) and (XB <= Succ(Divider)) then
+    if (XB >= Pred(DividerAbs)) and (XB <= Succ(DividerAbs)) then
       DraggingDivider := True
     // Check row sizing
     else if (ItemIndex < VisibleCount) and (Y >= Pred(ItemRect.Bottom)) and
@@ -2305,7 +2333,7 @@ begin
         (iifExpanded in Item.Flags)) then
     begin
       if PtInRect(Item.Rects[iprBtnDstRect], Point(X, Y)) or
-        ((ssDouble in Shift) and (XB < Pred(Divider))) then
+        ((ssDouble in Shift) and (XB < Pred(DividerAbs))) then
       begin
         Item.Expanded := not Item.Expanded;
         Selecting := False;
@@ -2334,15 +2362,15 @@ begin
   end
   else
   begin
-    BWidth := MaxInt;
+    BWidth := ClientWidth;
     BandIdx := -1;
   end;
   XB := X mod BWidth;
   if DraggingDivider then
-    Divider := XB
+    DividerAbs := XB
   else if BandSizing then
     HandleBandResize(X)
-  else if (((XB >= Pred(Divider)) and (XB <= Succ(Divider))) or
+  else if (((XB >= Pred(DividerAbs)) and (XB <= Succ(DividerAbs))) or
       (UseBands and (XB >= BWidth - 3))) and (not UseBands or
       (BandIdx < BandStarts.Count)) then
     Cursor := crHSplit
@@ -2531,7 +2559,8 @@ begin
   if Value <> BandWidth then
   begin
     FBandWidth := Value;
-    Divider := Divider;
+    if not RelativeDivider then
+      DividerAbs := DividerAbs;
     if HandleAllocated then
     begin
       CalcImageHeight;
@@ -2565,6 +2594,24 @@ begin
 end;
 
 procedure TJvCustomInspector.SetDivider(Value: Integer);
+begin
+  if FDivider <> Value then
+  begin
+    if RelativeDivider then
+    begin
+      if UseBands then
+        DividerAbs := (Value * 100) div BandWidth
+      else if HandleAllocated then
+        DividerAbs := (Value * 100) div ClientWidth
+      else
+        DividerAbs := (Value * 100) div Width;
+    end
+    else
+      DividerAbs := Value;
+  end;
+end;
+
+procedure TJvCustomInspector.SetDividerAbs(Value: Integer);
 var
   W: Integer;
 begin
@@ -2578,12 +2625,22 @@ begin
     Value := W - 2 * ItemHeight;
   if Value < (2 * ItemHeight) then
     Value := 2 * ItemHeight;
-  if Divider <> Value then
-  begin
-    FDivider := Value;
+{  if DividerAbs <> Value then
+  begin}
+    if RelativeDivider then
+    begin
+      if UseBands then
+        FDivider := (Value * 100) div BandWidth
+      else if HandleAllocated then
+        FDivider := (Value * 100) div ClientWidth
+      else
+        FDivider := (Value * 100) div Width;
+    end
+    else
+      FDivider := Value;
     if HandleAllocated then
       UpdateScrollbars;
-  end;
+//  end;
 end;
 
 procedure TJvCustomInspector.SetExpandButton(const Value: TBitmap);
@@ -2649,6 +2706,18 @@ end;
 procedure TJvCustomInspector.SetReadonly(const Value: Boolean);
 begin
   FReadonly := Value;
+end;
+
+procedure TJvCustomInspector.SetRelativeDivider(Value: Boolean);
+var
+  OrgPos: Integer;
+begin
+  if Value <> RelativeDivider then
+  begin
+    OrgPos := DividerAbs;
+    FRelativeDivider := Value;
+    DividerAbs := OrgPos;
+  end;
 end;
 
 procedure TJvCustomInspector.SetSelected(const Value: TJvCustomInspectorItem);
@@ -2730,7 +2799,8 @@ begin
   if UseBands <> Value then
   begin
     FUseBands := Value;
-    Divider := Divider;
+    if not RelativeDivider then
+      DividerAbs := DividerAbs;
     FImageHeight := 0;
     if HandleAllocated then
       UpdateScrollbars;
@@ -3582,10 +3652,10 @@ begin
     Rects[iprValueArea] := Rect(0, 0, 0, 0)
   else
   begin
-    TmpRect.Right := ItemRect2.Left + Pred(Inspector.Divider);
+    TmpRect.Right := ItemRect2.Left + Pred(Inspector.DividerAbs);
     Rects[iprNameArea] := TmpRect;
     TmpRect := ItemRect2;
-    TmpRect.Left := ItemRect2.Left + Inspector.Divider + DividerWidth;
+    TmpRect.Left := ItemRect2.Left + Inspector.DividerAbs + DividerWidth;
     Rects[iprValueArea] := TmpRect;
   end;
   CalcButtonBasedRects;
@@ -3633,7 +3703,7 @@ begin
   begin
     // Draw divider line
     TmpRect := Rects[iprItem];
-    PaintDivider(TmpRect.Left + Inspector.Divider, Pred(TmpRect.Top), TmpRect.Bottom);
+    PaintDivider(TmpRect.Left + Inspector.DividerAbs, Pred(TmpRect.Top), TmpRect.Bottom);
   end;
 
   ApplyNameFont;
@@ -3747,7 +3817,7 @@ begin
   end;
   
   if not (Item is TJvInspectorCustomCategoryItem) or (Item.Level > 0) then
-    PaintDivider(Rects[iprItem].Left + Inspector.Divider, Pred(Rects[iprItem].Top),
+    PaintDivider(Rects[iprItem].Left + Inspector.DividerAbs, Pred(Rects[iprItem].Top),
       Rects[iprItem].Bottom);
 
   if (Item is TJvInspectorCustomCategoryItem) and (Item.Level = 0) then
