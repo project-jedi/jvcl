@@ -41,6 +41,7 @@ uses
 type
   TJvCheckListBox = class(TJvExCheckListBox)
   private
+    {$IFDEF VCL}
     FHotTrack: Boolean;
     FOnSelectCancel: TNotifyEvent;
     FMaxWidth: Integer;
@@ -48,16 +49,19 @@ type
     FOnHScroll: TNotifyEvent;
     FOnVScroll: TNotifyEvent;
     procedure SetHScroll(const Value: Boolean);
-    procedure RefreshH;
-    procedure SetHotTrack(const Value: Boolean);
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure LBNSelCancel(var Msg: TMessage); message LBN_SELCANCEL;
+    procedure RefreshH;
+    procedure SetHotTrack(const Value: Boolean);
+    {$ENDIF VCL}
   protected
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WndProc(var Msg: TMessage); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -65,7 +69,7 @@ type
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
-    procedure SelectAll; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SelectAll; {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
     procedure UnselectAll;
     procedure InvertSelection;
     procedure CheckAll;
@@ -73,22 +77,24 @@ type
     procedure InvertCheck;
     function GetChecked: TStringList;
     function GetUnChecked: TStringList;
-    procedure DeleteSelected; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure DeleteSelected; {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
     procedure SaveToFile(FileName: TFileName);
     procedure LoadFromFile(FileName: TFileName);
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
   published
     property MultiSelect;
-    property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
-    property HorScrollbar: Boolean read FScroll write SetHScroll default True;
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
+    {$IFDEF VCL}
+    property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
+    property HorScrollbar: Boolean read FScroll write SetHScroll default True;
     property OnSelectCancel: TNotifyEvent read FOnSelectCancel write FOnSelectCancel;
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
+    {$ENDIF VCL}
   end;
 
 implementation
@@ -103,12 +109,15 @@ type
 constructor TJvCheckListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FMaxWidth := 0;
+  {$IFDEF VCL}
   FHotTrack := False;
+  FMaxWidth := 0;
   FScroll := True;
+  {$ENDIF VCL}
   // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
+{$IFDEF VCL}
 procedure TJvCheckListBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -229,17 +238,18 @@ begin
   end;
 end;
 
-function TJvCheckListBox.SearchExactString(Value: string;
-  CaseSensitive: Boolean): Integer;
-begin
-  Result := TJvItemsSearchs.SearchExactString(Items, Value, CaseSensitive);
-end;
-
 procedure TJvCheckListBox.SetHotTrack(const Value: Boolean);
 begin
   FHotTrack := Value;
   if FHotTrack then
     Ctl3D := False;
+end;
+{$ENDIF VCL}
+
+function TJvCheckListBox.SearchExactString(Value: string;
+  CaseSensitive: Boolean): Integer;
+begin
+  Result := TJvItemsSearchs.SearchExactString(Items, Value, CaseSensitive);
 end;
 
 function TJvCheckListBox.SearchPrefix(Value: string; CaseSensitive: Boolean): Integer;
@@ -247,11 +257,13 @@ begin
   Result := TJvItemsSearchs.SearchPrefix(Items, Value, CaseSensitive);
 end;
 
+{$IFDEF VCL}
 procedure TJvCheckListBox.LBNSelCancel(var Msg: TMessage);
 begin
   if Assigned(FOnSelectCancel) then
     FOnSelectCancel(Self);
 end;
+{$ENDIF VCL}
 
 function TJvCheckListBox.SearchSubString(Value: string;
   CaseSensitive: Boolean): Integer;

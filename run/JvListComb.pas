@@ -38,12 +38,17 @@ unit JvListComb;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  ExtCtrls, StdCtrls, ImgList,
   {$IFDEF VCL}
-  JvJCLUtils,
+  Windows, Messages,
   {$ENDIF VCL}
-  JvComponent, JvComboBox, JvExControls, JvExStdCtrls;
+  SysUtils, Classes, Graphics, Controls, ExtCtrls, StdCtrls, ImgList,
+  {$IFDEF VisualCLX}
+  Qt, QWindows, 
+  {$ENDIF VisualCLX}
+  {$IFDEF VCL}
+  JvJCLUtils, JvComboBox,
+  {$ENDIF VCL}
+  JvComponent, JvExControls, JvExStdCtrls;
 
 type
   TJvButtonColors = (fsLighter, fsLight, fsMedium, fsDark, fsDarker);
@@ -126,13 +131,17 @@ type
     property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
   end;
 
+  {$IFDEF VCL}
   TJvImageComboBox = class(TJvCustomComboBox)
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  TJvImageComboBox = class(TCustomComboBox)
+  {$ENDIF VisualCLX}
   private
     FItems: TJvImageItems;
     FImageList: TCustomImageList;
     FDefaultIndent: Integer;
     FChangeLink: TChangeLink;
-    FCanvas: TControlCanvas;
     MouseInControl: Boolean;
     FImageWidth: Integer;
     FImageHeight: Integer;
@@ -140,17 +149,20 @@ type
     FColorHighlightText: TColor;
     FOnChange: TNotifyEvent;
     FButtonFrame: Boolean;
-    FDroppedWidth: Integer;
     FButtonStyle: TJvButtonColors;
     FIndentSelected: Boolean;
+    FDroppedWidth: Integer;
+    {$IFDEF VCL}
+    FCanvas: TControlCanvas;
     function GetCanvas: TCanvas;
+    {$ENDIF VCL}
+    function GetDroppedWidth: Integer;
+    procedure SetDroppedWidth(Value: Integer);
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorHighlightText(Value: TColor);
     procedure SetImageList(Value: TCustomImageList);
     procedure ResetItemHeight;
     procedure ImageListChange(Sender: TObject);
-    function GetDroppedWidth: Integer;
-    procedure SetDroppedWidth(Value: Integer);
     procedure SetDefaultIndent(const Value: Integer);
     procedure SetItems(const Value: TJvImageItems); reintroduce;
     procedure SetIndentSelected(const Value: Boolean);
@@ -159,13 +171,24 @@ type
     procedure MouseLeave(AControl: TControl); override;
     procedure FontChanged; override;
     procedure EnabledChanged; override;
-    procedure CreateWnd; override;
-    procedure RecreateWnd;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    {$IFDEF VCL}
+    procedure RecreateWnd;
+    procedure CreateWnd; override;
     procedure DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure RecreateWidget;
+    procedure CreateWidget; override;
+    function DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): boolean; override;
+    procedure MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+                          var Height, Width: Integer); override;
+    procedure SetParent(const AParent: TWidgetControl); override;
+    {$ENDIF VisualCLX}
+
     procedure Change; override;
 
     function GetImageWidth(Index: Integer): Integer;
@@ -173,13 +196,18 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    {$IFDEF VCL}
     property Canvas: TCanvas read GetCanvas;
+    {$ENDIF VCL}
     property Text;
   published
     property Align;
     property Color;
-    property DragMode;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF VCL}
+    property DroppedWidth: Integer read GetDroppedWidth write SetDroppedWidth;
+    property DragMode;
     property DropDownCount;
     property ImageHeight: Integer read FImageHeight write FImageHeight;
     property ImageWidth: Integer read FImageWidth write FImageWidth;
@@ -187,7 +215,6 @@ type
     property IndentSelected: Boolean read FIndentSelected write SetIndentSelected default False;
     property ItemIndex;
     property DefaultIndent: Integer read FDefaultIndent write SetDefaultIndent default 0;
-    property DroppedWidth: Integer read GetDroppedWidth write SetDroppedWidth;
     property Enabled;
     property ButtonFrame: Boolean read FButtonFrame write FButtonFrame default False;
     property ButtonStyle: TJvButtonColors read FButtonStyle write FButtonStyle;
@@ -224,14 +251,16 @@ type
     FImageList: TCustomImageList;
     FItems: TJvImageItems;
     FChangeLink: TChangeLink;
-    FCanvas: TControlCanvas;
     FImageWidth: Integer;
     FImageHeight: Integer;
     FAlignment: TAlignment;
     FColorHighlight, FColorHighlightText: TColor;
     FButtonFrame: Boolean;
     FButtonStyle: TJvButtonColors;
+    {$IFDEF VCL}
+    FCanvas: TControlCanvas;
     function GetCanvas: TCanvas;
+    {$ENDIF VCL}
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorHighlightText(Value: TColor);
     procedure ResetItemHeight;
@@ -244,12 +273,21 @@ type
   protected
     procedure FontChanged; override;
     procedure ImageListChange(Sender: TObject);
-    procedure CreateWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    {$IFDEF VCL}
+    procedure CreateWnd; override;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+//    procedure CreateWidget; override;
+    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState):boolean ; override;
+    procedure MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+                          var Height, Width: Integer); override;
+    procedure SetParent(const AParent: TWidgetControl); override;
+    {$ENDIF VisualCLX}
     procedure Resize; override;
 
     function GetImageWidth(Index: Integer): Integer;
@@ -257,7 +295,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    {$IFDEF VCL}
     property Canvas: TCanvas read GetCanvas;
+    {$ENDIF VCL}
   published
     {$IFDEF COMPILER6_UP}
     property Anchors;
@@ -267,7 +307,10 @@ type
     property BorderStyle;
     property Color;
     property DragMode;
+    {$IFDEF VCL}
     property DragCursor;
+    property IntegralHeight;
+    {$ENDIF VCL}
     property Enabled;
     property Font;
     property Items: TJvImageItems read FItems write SetItems;
@@ -279,7 +322,6 @@ type
     property ColorHighlightText: TColor read FColorHighlightText write SetColorHighlightText default clHighlightText;
     property Images: TCustomImageList read FImageList write SetImageList;
     property MultiSelect;
-    property IntegralHeight;
     property ItemHeight;
     property ParentColor;
     property ParentFont;
@@ -323,6 +365,7 @@ begin
   Result := GetSystemMetrics(SM_CXVSCROLL);
 end;
 }
+
 
 function GetItemHeight(Font: TFont): Integer;
 var
@@ -380,7 +423,7 @@ begin
   FListPropertiesUsed := AllListPropertiesUsed;
   FFont := nil;
   FColorHighlight := clHighlight;
-  FColorHighlightText := clHighlightText;  
+  FColorHighlightText := clHighlightText;
 end;
 
 destructor TJvImageItem.Destroy;
@@ -558,9 +601,11 @@ begin
   Color := clWindow;
   FColorHighlight := clHighlight;
   FColorHighlightText := clHighlightText;
+  {$IFDEF VCL}
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
   ResetItemHeight;
+  {$ENDIF VCL}
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := ImageListChange;
 end;
@@ -570,14 +615,18 @@ begin
   FItems.Free;
   FChangeLink.Free;
   inherited Destroy;
+  {$IFDEF VCL}
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
+  {$ENDIF VCL}
 end;
 
+{$IFDEF VCL}
 function TJvImageComboBox.GetCanvas: TCanvas;
 begin
   Result := FCanvas;
 end;
+{$ENDIF VCL}
 
 procedure TJvImageComboBox.ImageListChange(Sender: TObject);
 begin
@@ -605,11 +654,17 @@ begin
       FWidth := 0;
       FHeight := 0;
     end; }
+    {$IFDEF VCL}
     ResetItemHeight;
     RecreateWnd;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    RecreateWidget;
+    {$ENDIF VisualCLX}
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvImageComboBox.CreateWnd;
 begin
   inherited CreateWnd;
@@ -621,6 +676,24 @@ begin
   inherited RecreateWnd;
   SetDroppedWidth(FDroppedWidth);
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvImageComboBox.CreateWidget;
+begin
+  inherited CreateWidget;
+  SetDroppedWidth(FDroppedWidth);
+end;
+
+procedure TJvImageComboBox.RecreateWidget;
+begin
+  inherited RecreateWidget;
+  SetDroppedWidth(FDroppedWidth);
+end;
+{$ENDIF VisualCLX}
+
+
+
 
 procedure TJvImageComboBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
@@ -629,6 +702,7 @@ begin
     FImageList := nil;
 end;
 
+{$IFDEF VCL}
 procedure TJvImageComboBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
@@ -670,6 +744,10 @@ begin
 end;
 
 procedure TJvImageComboBox.DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function TJvImageComboBox.DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): boolean;
+{$ENDIF VisualCLX}
 var
   Offset, Tmp: Integer;
   TmpCol: TColor;
@@ -678,12 +756,27 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  SavedColor := FCanvas.Font.Color;
-  FCanvas.Font.Assign(Items[Index].Font);
+  {$IFDEF VisualCLX}
+  Result := True; // handled
+  if odSelected in State then
+  begin
+    Canvas.Brush.Color := FColorHighlight;
+    Canvas.Font.Color := FColorHighlightText;
+  end;
+  {$ENDIF VisualCLX}
+  SavedColor := Canvas.Font.Color;
+  Canvas.Font.Assign(Items[Index].Font);
+
+  if odSelected in State then
+  begin
+    Canvas.Brush.Color := FColorHighlight;
+    Canvas.Font.Color := FColorHighlightText;
+  end;
+
   if State <> [] then
-    FCanvas.Font.Color := SavedColor;
+    Canvas.Font.Color := SavedColor;
   OrigR := R;
-  with FCanvas do
+  with Canvas do
   begin
     TmpCol := Brush.Color;
     Brush.Color := Color;
@@ -697,12 +790,12 @@ begin
     begin
       Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
 
-      FCanvas.Draw(R.Left + 2, R.Top + Offset, Items[Index].Glyph);
+      Canvas.Draw(R.Left + 2, R.Top + Offset, Items[Index].Glyph);
 
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((odFocused in State) and
+        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((odFocused in State) and
           not (odComboBoxEdit in State)), TmpR);
       end;
 
@@ -715,18 +808,23 @@ begin
       Tmp := Items[Index].ImageIndex;
       //      R.Left := R.Left + Items[Index].Indent;
       Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
+      {$IFDEF VCL}
       // PRY 2002.06.04
       //FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
       {$IFDEF COMPILER6_UP}
-      FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
+      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
       {$ELSE}
-      FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp);
+      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp);
       {$ENDIF COMPILER6_UP}
       // PRY END
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp);
+      {$ENDIF VisualCLX}
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odFocused in State) and
+        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odFocused in State) and
           not (odComboBoxEdit in State)), TmpR);
       end;
       Inc(R.Left, GetImageWidth(Index) + 8);
@@ -740,7 +838,7 @@ begin
       Inc(R.Right,2);
       FillRect(R);
       Inc(R.Left, 2);
-      DrawText(FCanvas, Items[Index].Text, Length(Items[Index].Text), R,
+      DrawText(Canvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
@@ -755,12 +853,30 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvImageComboBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
   Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + (Ord(ButtonFrame) * 4));
   if Assigned(FImageList) then
     Height := Max(Height,FImageList.Height);
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvImageComboBox.MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+                          var Height, Width: Integer);
+begin
+  Height := GetItemHeight(Font) + 4 ;
+  if Assigned(FImageList) then
+    Height := Max(Height, FImageList.Height + 4);
+end;
+
+procedure TJvImageComboBox.SetParent(const AParent: TWidgetControl);
+begin
+  inherited SetParent(AParent);
+  ResetItemHeight;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvImageComboBox.SetColorHighlight(Value: TColor);
 begin
@@ -780,6 +896,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 function TJvImageComboBox.GetDroppedWidth: Integer;
 begin
   HandleNeeded;
@@ -791,12 +908,33 @@ begin
   HandleNeeded;
   FDroppedWidth := SendMessage(Handle, CB_SETDROPPEDWIDTH, Value, 0);
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+function TJvImageComboBox.GetDroppedWidth: Integer;
+begin
+  HandleNeeded;
+  Result := QWidget_width(QCombobox_listBox(Handle));
+end;
+
+procedure TJvImageComboBox.SetDroppedWidth(Value: Integer);
+begin
+  HandleNeeded;
+  QWidget_setFixedWidth(QCombobox_listBox(Handle), Value);
+  FDroppedWidth := GetDroppedWidth;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvImageComboBox.FontChanged;
 begin
   inherited FontChanged;
   ResetItemHeight;
+  {$IFDEF VCL}
   RecreateWnd;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  RecreateWidget;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvImageComboBox.ResetItemHeight;
@@ -810,7 +948,6 @@ begin
     if GetImageHeight(I) > MaxImageHeight then
       MaxImageHeight := GetImageHeight(I);
   end;
-
   ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + 4);
 end;
 
@@ -820,6 +957,7 @@ begin
     FOnChange(Self);
 end;
 
+{$IFDEF VCL}
 procedure TJvImageComboBox.CNCommand(var Msg: TWMCommand);
 begin
   inherited;
@@ -828,6 +966,7 @@ begin
       Change;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvImageComboBox.EnabledChanged;
 const
@@ -913,11 +1052,13 @@ begin
 
   FButtonFrame := False;
   Style := lbOwnerDrawFixed;
+  {$IFDEF VCL}
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
+  ResetItemHeight;
+  {$ENDIF VCL}
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := ImageListChange;
-  ResetItemHeight;
 end;
 
 destructor TJvImageListBox.Destroy;
@@ -925,14 +1066,18 @@ begin
   FItems.Free;
   FChangeLink.Free;
   inherited Destroy;
+  {$IFDEF VCL}
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
+  {$ENDIF VCL}
 end;
 
+{$IFDEF VCL}
 function TJvImageListBox.GetCanvas: TCanvas;
 begin
   Result := FCanvas;
 end;
+{$ENDIF VCL}
 
 procedure TJvImageListBox.ImageListChange;
 begin
@@ -961,7 +1106,12 @@ begin
       FHeight := 0;
     end;}
     ResetItemHeight;
+    {$IFDEF VCL}
     RecreateWnd;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    RecreateWidget;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -974,11 +1124,13 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvImageListBox.CreateWnd;
 begin
   inherited CreateWnd;
   SetBkMode(FCanvas.Handle, TRANSPARENT);
 end;
+{$ENDIF VCL}
 
 procedure TJvImageListBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
@@ -1005,6 +1157,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvImageListBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
@@ -1047,15 +1200,27 @@ begin
 end;
 
 procedure TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): boolean;
+{$ENDIF VisualCLX}
 var
   SavedColor: TColor;
 begin
   if csDestroying in ComponentState then
     Exit;
-  SavedColor := FCanvas.Font.Color;
-  FCanvas.Font.Assign(Items[Index].Font);
+  {$IFDEF VisualCLX}
+  Result := true;
+  if odSelected in State then
+  begin
+    Canvas.Brush.Color := Items[Index].ColorHighlight;
+    Canvas.Font.Color := Items[Index].ColorHighlightText;
+  end;
+  {$ENDIF VisualCLX}
+  SavedColor := Canvas.Font.Color;
+  Canvas.Font.Assign(Items[Index].Font);
   if State <> [] then
-    FCanvas.Font.Color := SavedColor;
+    Canvas.Font.Color := SavedColor;
   case FAlignment of
     taLeftJustify:
       DrawLeftGlyph(Index, Rect, State);
@@ -1075,7 +1240,7 @@ begin
   if csDestroying in ComponentState then
     Exit;
   OrigR := R;
-  with FCanvas do
+  with Canvas do
   begin
     TmpCol := Brush.Color;
     Brush.Color := Color;
@@ -1091,7 +1256,7 @@ begin
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left + Tmp - 2, R.Top + 2, R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State), TmpR);
+        DrawBtnFrame(Canvas, FButtonStyle, Color, not (odSelected in State), TmpR);
       end;
       InflateRect(R, 1, -4);
     end
@@ -1100,18 +1265,23 @@ begin
     begin
       Tmp := ((R.Right - R.Left) - GetImageWidth(Index)) div 2;
       Tmp2 := Items[Index].ImageIndex;
+      {$IFDEF VCL}
       // PRY 2002.06.04
       //FImageList.Draw(FCanvas, R.Left + Tmp, R.Top + 2, Tmp2, dsTransparent, itImage);
       {$IFDEF COMPILER6_UP}
-      FImageList.Draw(FCanvas, R.Left + Tmp, R.Top + 2, Tmp2, dsTransparent, itImage);
+      FImageList.Draw(Canvas, R.Left + Tmp, R.Top + 2, Tmp2, dsTransparent, itImage);
       {$ELSE}
-      FImageList.Draw(FCanvas, R.Left + Tmp, R.Top + 2, Tmp2);
+      FImageList.Draw(Canvas, R.Left + Tmp, R.Top + 2, Tmp2);
       {$ENDIF COMPILER6_UP}
       // PRY END
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FImageList.Draw(Canvas, R.Left + Tmp, R.Top + 2, Tmp2);
+      {$ENDIF VisualCLX}
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left + Tmp - 2, R.Top + 2, R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp2 in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
+        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp2 in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
       end;
       InflateRect(R, 1, -4);
     end;
@@ -1121,7 +1291,7 @@ begin
     if Length(Items[Index].Text) > 0 then
     begin
       FillRect(R);
-      DrawText(FCanvas, Items[Index].Text, Length(Items[Index].Text), R,
+      DrawText(Canvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_CENTER or DT_BOTTOM);
       if (odSelected in State) and (Color <> FColorHighlight) then
         DrawFocusRect(R);
@@ -1144,7 +1314,7 @@ begin
   if csDestroying in ComponentState then
     Exit;
   OrigR := R;
-  with FCanvas do
+  with Canvas do
   begin
     TmpCol := Brush.Color;
     Brush.Color := Color;
@@ -1160,7 +1330,7 @@ begin
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State), TmpR);
+        DrawBtnFrame(Canvas, FButtonStyle, Color, not (odSelected in State), TmpR);
       end;
 
       Inc(R.Left, GetImageWidth(Index) + 8);
@@ -1171,18 +1341,23 @@ begin
     begin
       Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
       Tmp := Items[Index].ImageIndex;
+      {$IFDEF VCL}
       // PRY 2002.06.04
       //FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
       {$IFDEF COMPILER6_UP}
-      FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
+      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
       {$ELSE}
-      FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp);
+      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp);
       {$ENDIF COMPILER6_UP}
       // PRY END
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp);
+      {$ENDIF VisualCLX}
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
+        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
       end;
       Inc(R.Left, GetImageWidth(Index) + 8);
       OrigR.Left := R.Left;
@@ -1195,7 +1370,7 @@ begin
       Inc(R.Right, 2);
       FillRect(R);
       Inc(R.Left, 2);
-      DrawText(FCanvas, Items[Index].Text, Length(Items[Index].Text), R,
+      DrawText(Canvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
@@ -1219,7 +1394,7 @@ begin
   if csDestroying in ComponentState then
     Exit;
   OrigR := R;
-  with FCanvas do
+  with Canvas do
   begin
     TmpCol := Brush.Color;
     Brush.Color := Color;
@@ -1235,7 +1410,7 @@ begin
       if FButtonFrame then
       begin
         TmpR := Rect(R.Right - (FImageList.Width + 2) - 2, R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height + 2);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State), TmpR);
+        DrawBtnFrame(Canvas, FButtonStyle, Color, not (odSelected in State), TmpR);
       end;
 
       Dec(R.Right, FImageList.Width + 4);
@@ -1247,18 +1422,23 @@ begin
       Tmp := Items[Index].ImageIndex;
 
       Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
+      {$IFDEF VCL}
       // PRY 2002.06.04
       //FImageList.Draw(FCanvas, R.Right - (FWidth + 2), R.Top + Offset, Tmp, dsTransparent, itImage);
       {$IFDEF COMPILER6_UP}
-      FImageList.Draw(FCanvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp, dsTransparent, itImage);
+      FImageList.Draw(Canvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp, dsTransparent, itImage);
       {$ELSE}
-      FImageList.Draw(FCanvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp);
+      FImageList.Draw(Canvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp);
       {$ENDIF COMPILER6_UP}
       // PRY END
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FImageList.Draw(Canvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp);
+      {$ENDIF VisualCLX}
       if FButtonFrame then
       begin
         TmpR := Rect(R.Right - (FImageList.Width + 2) - 2, R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height + 2);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
+        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
       end;
       Dec(R.Right, FImageList.Width + 4);
       OrigR.Right := R.Right;
@@ -1271,7 +1451,7 @@ begin
     begin
       Dec(R.Right, 2);
       FillRect(R);
-      DrawText(FCanvas, Items[Index].Text, Length(Items[Index].Text), R,
+      DrawText(Canvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER or DT_RIGHT);
       Inc(R.Right, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
@@ -1286,16 +1466,36 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvImageListBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
   Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + 4);
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvImageListBox.SetParent(const AParent: TWidgetControl);
+begin
+  inherited SetParent(AParent);
+  ResetItemHeight;
+end;
+
+procedure TJvImageListBox.MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+                          var Height, Width: Integer);
+begin
+  Height := Max(GetItemHeight(Font) + 4, FImageList.Height + 4);
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvImageListBox.FontChanged;
 begin
   inherited FontChanged;
   ResetItemHeight;
+  {$IFDEF VCL}
   RecreateWnd;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  RecreateWidget;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvImageListBox.ResetItemHeight;
@@ -1309,7 +1509,6 @@ begin
     if GetImageHeight(I) > MaxImageHeight then
       MaxImageHeight := GetImageHeight(I);
   end;
-
   case FAlignment of
     taLeftJustify, taRightJustify:
       ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + 4);
@@ -1319,6 +1518,7 @@ begin
   Invalidate;
 end;
 
+{$IFDEF VCL}
 procedure TJvImageListBox.CNCommand(var Msg: TWMCommand);
 begin
   inherited;
@@ -1330,6 +1530,7 @@ begin
       end;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvImageListBox.Resize;
 begin
