@@ -3172,7 +3172,7 @@ end;
 {$IFDEF JVCLThemesEnabled}
 procedure TJvDBLookupCombo.MouseEnter(Control: TControl);
 begin
-  if csDesigning in Component then
+  if csDesigning in ComponentState then
     Exit;
   inherited MouseEnter(Control);
   {Windows XP themes use hot track states, hence we have to update the drop down button.}
