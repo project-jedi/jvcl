@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-12
+Last Modified: 2004-02-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -344,7 +344,9 @@ begin
     Item := GetDataItem(lvProvider.Selected.Index)
   else
     Item := nil;
-  Provider.Slave.ItemSelected(Item);
+  if Provider.Slave <> nil then
+    Provider.Slave.ItemSelected(Item);
+  Provider.ItemSelected(Item);
 end;
 
 procedure TfmeJvProviderTreeList.UpdateSelectedItem;

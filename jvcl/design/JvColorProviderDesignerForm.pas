@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-12
+Last Modified: 2004-01-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -171,7 +171,7 @@ begin
     with ColorSettings.StandardColorSettings do
     begin
       Active := True;
-      Caption := RsStandardColors;
+      Caption := RsStandardColors;                             
       ShowHeader := True;
     end;
     with ColorSettings.CustomColorSettings do
@@ -200,6 +200,10 @@ begin
     if (dpContexts as IJvDataProvider).GetItems.GetCount > 0 then
       fmeContexts.SelectItemID((dpContexts as IJvDataProvider).GetItems.GetItem(0).GetID);
   end;
+  if Supports(Provider, IInterfaceComponentReference, ICR) then
+    Caption := Format(RsDesigning, [ICR.GetComponent.Name])
+  else
+    Caption := Format(RsDesigning, [RsNone]);
 end;
 
 procedure TfrmJvColorProviderDesigner.SetDesigner(Value: IJvFormDesigner);
@@ -298,7 +302,12 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (Provider <> nil) and
       Supports(Provider, IInterfaceComponentReference, ICR) and (ICR.GetComponent = AComponent) then
+  begin
     Provider := nil;
+    SendMessage(btnOK.Handle, WM_LBUTTONDOWN, 0, $1010);
+    SendMessage(btnOK.Handle, WM_LBUTTONUP, 0, $1010);
+//    Close;
+  end;
 end;
 
 destructor TfrmJvColorProviderDesigner.Destroy;
