@@ -31,7 +31,7 @@ unit JvWStrUtils;
 interface
 
 uses
-  SysUtils, Classes;
+  Classes, SysUtils;
 
 const
   BOM_LSB_FIRST = WideChar($FEFF);
@@ -45,7 +45,7 @@ type
    );
   TWideFileOptions = set of TWideFileOptionsType;
 
-  {$IFDEF VisualCLX}
+  // (rom) IFDEF VisualCLX removed
   TSearchFlag = (
     sfCaseSensitive,    // match letter case
     sfIgnoreNonSpacing, // ignore non-spacing characters in search
@@ -54,8 +54,6 @@ type
     sfWholeWordOnly     // match only text at end/start and/or surrounded by white spaces
   );
   TSearchFlags = set of TSearchFlag;
-  {$ENDIF VisualCLX}
-
 
   TWStrings = class;
   TWStringList = class;
@@ -249,12 +247,11 @@ function TrimRightLengthW(const S: WideString): Integer;
 implementation
 
 uses
-  {$IFNDEF COMPILER6_UP}
-  Windows,
-  Consts,
-  {$ELSE}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF !COMPILER6_UP}
+  {$ELSE}
+  Windows, Consts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   Math;
 
 {$IFDEF COMPILER5}
@@ -269,7 +266,7 @@ begin
   else
     Result := 0;
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 procedure SwapWordByteOrder(P: PChar; Len: Cardinal);
 var
