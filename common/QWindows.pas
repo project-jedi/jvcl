@@ -4053,6 +4053,10 @@ var
 begin
   FontSaved := nil;
   FontSet := nil;
+  if len > 0 then
+    Caption := LeftStr(Text, len)
+  else
+    Caption := Text;
   if WinFlags and DT_INTERNAL <> 0 then
   begin
     FontSaved := QPainter_Font(Handle);
@@ -4063,37 +4067,40 @@ begin
   if WinFlags and DT_PREFIXONLY <> 0 then
   begin
     Flags := Flags or ShowPrefix;
-    Caption := OnlyPrefix(Text);
+    Caption := OnlyPrefix(Caption);
   end
   else if WinFlags and DT_HIDEPREFIX <> 0 then
   begin
     Flags := Flags and not ShowPrefix;
-    Caption := HidePrefix(Text);
+    Caption := HidePrefix(Caption);
   end;
   if Flags and CalcRect = 0 then
   begin
     if Flags and ClipName <> 0 then
-      Caption := NameEllipsis(Text, Handle, R.Right - R.Left)
+      Caption := NameEllipsis(Caption, Handle, R.Right - R.Left)
     else if Flags and ClipPath <> 0 then
-      Caption := FileEllipsis(Text, Handle, R.Right - R.Left)
+      Caption := FileEllipsis(Caption, Handle, R.Right - R.Left)
     else if Flags and ClipToWord <> 0 then
-      Caption := WordEllipsis(Text, Handle, R, flags)
-    else
-      Caption := Text;
+      Caption := WordEllipsis(Caption, Handle, R, flags);
     QPainter_save(Handle);
     if Flags and DontClip = 0 then // clipping
       IntersectClipRect(Handle, R); // QPainter::drawText() does not clip left/top border
-    QPainter_DrawText(Handle, @R, Flags, PWideString(@Caption), Len, @R2, nil);
+    QPainter_DrawText(Handle, @R, Flags, PWideString(@Caption), -1, @R2, nil);
     QPainter_restore(Handle);
     if ModifyString and Flags <> 0 then
+    begin
+      if len > 0 then
+        Caption := Caption + RightStr(Text, Length(Text)-len);
       Text := Caption;
+    end;
     Result := R2.Bottom - R2.Top;
   end
   else
   begin
     R2.Left := R.Left;
     R2.Top := R.Top;
-    QPainter_boundingRect(Handle, @R, @R, Flags and not $3F{Alignment}, PWideString(@Text), -1, nil);
+    QPainter_boundingRect(Handle, @R, @R, Flags and not $3F{Alignment},
+                          PWideString(@Caption), -1, nil);
     OffsetRect(R, R2.Left, R2.Top);
     Result := R.Bottom - R.Top;
   end;
@@ -4125,9 +4132,7 @@ begin
   Result := DrawText(Handle, WText, Len, R, WinFlags);
   if (DT_MODIFYSTRING and WinFlags <> 0) and (Text <> nil) then
   begin
-// asn: Length returns the # bytes
-//    Move(WText[1], Text^, Length(WText) * SizeOf(WideChar));
-    Move(WText[1], Text^, Length(WText));
+    Move(WText[1], Text^, Length(WText) * SizeOf(WideChar));
     //WStrCopy(Text, PChar(AText));
   end;
 end;
@@ -5505,8 +5510,14 @@ end;
 
 function IsCharAlpha(Ch: Char): LongBool;
 begin
-  // (ahuser) What about other languages than English ?
-  Result := Ch in ['A'..'Z', 'a'..'z'];
+  {$IFDEF MSWINDOWS}
+  Result := Windows.IsCharAlpha(Ch);
+  {$ENDIF}
+  {$IFDEF LINUX}
+// (ahuser) What about other languages than English ?
+//  Result := Ch in ['A'..'Z', 'a'..'z'];
+  Result := IsAlpha(ch) <> 0 ;
+  {$ENDIF}
 end;
 
 function IsCharAlphaNumeric(Ch: Char): LongBool;
