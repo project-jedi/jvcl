@@ -171,8 +171,8 @@ end;
 function TJvMemDataSetEditor.CopyStructure(Source, Dest: TDataSet): Boolean;
 begin
   Result := Dest is TJvMemoryData;
-  if Result then
-    TJvMemoryData(Dest).CopyStructure(Source);
+  if Result then                           //------ Added by CFZ 2004/10/25 ------
+    TJvMemoryData(Dest).CopyStructure(Source,TJvMemoryData(Dest).AutoIncAsInteger);
 end;
 
 end.
