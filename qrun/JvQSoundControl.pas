@@ -40,6 +40,17 @@ uses
   JvQTypes, JvQComponent;
 
 type
+  TBalance = 0..100;
+
+  TJvVolumeRec = record
+  case Byte of
+    0:
+      (LongVolume: Longint);
+    1:
+      (LeftVolume: Word;
+       RightVolume: Word);
+  end;
+
   TJvSoundValue = class(TPersistent)
   private
     FHandle: Integer;

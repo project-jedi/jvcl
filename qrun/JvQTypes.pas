@@ -64,7 +64,6 @@ type
   //  TAngle = 0..360;
   TJvOutputMode = (omFile, omStream);
   //  TLabelDirection = (sdLeftToRight, sdRightToLeft); // JvScrollingLabel
-  TJvLabelRotateAngle = 0..360;
 
   TJvDoneFileEvent = procedure(Sender: TObject; FileName: string; FileSize: Integer; Url: string) of object;
   TJvDoneStreamEvent = procedure(Sender: TObject; Stream: TStream; StreamSize: Integer; Url: string) of object;
@@ -91,10 +90,7 @@ type
     Result: Longint;
   end;
 
-  
-  
   TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
-  
 
   PJvRGBArray = ^TJvRGBArray;
   TJvRGBArray = array [0..MaxPixelCount - 1] of TJvRGBTriple;
@@ -102,17 +98,6 @@ type
   TRGBQuadArray = array [0..MaxPixelCount - 1] of TRGBQuad;
   PRGBPalette = ^TRGBPalette;
   TRGBPalette = array [Byte] of TRGBQuad;
-
-  TBalance = 0..100;
-
-  TJvVolumeRec = record
-  case Byte of
-    0:
-      (LongVolume: Longint);
-    1:
-      (LeftVolume: Word;
-       RightVolume: Word);
-  end;
 
   { (rom) unused
   TJvPoint = class(TPersistent)
@@ -152,9 +137,7 @@ type
     TakeText: Integer;
   end;
 
-  
-
-  TJvGradStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
+  TJvGradientStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
   //  TOnDelete = procedure(Sender: TObject; Path: string) of object;
   TJvParentEvent = procedure(Sender: TObject; ParentWindow: THandle) of object;
   //  TOnImage = procedure(Sender: TObject; Image: TBitmap) of object; // JvClipboardViewer
@@ -186,11 +169,8 @@ type
   //  TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
   TJvNotifyParamsEvent = procedure(Sender: TObject; Params: Pointer) of object;
 
-  
-
   TJvAnimation = (anLeftRight, anRightLeft, anRightAndLeft, anLeftVumeter, anRightVumeter);
   TJvAnimations = set of TJvAnimation;
-  TJvDropEvent = procedure(Sender: TObject; Pos: TPoint; Value: TStringList) of object;
   //   TOnFound = procedure(Sender: TObject; Path: string) of object; // JvSearchFile
   //  TOnChangedDir = procedure(Sender: TObject; Directory: string) of object; // JvSearchFile
   //  TOnAlarm = procedure(Sender: TObject; Keyword: string) of object; // JvAlarm
@@ -201,7 +181,8 @@ type
   } // JvAlarm
 
   // Bianconi - Moved from JvAlarms.pas
-  TJvTriggerKind = (tkOneShot, tkEachSecond, tkEachMinute, tkEachHour, tkEachDay, tkEachMonth, tkEachYear);
+  TJvTriggerKind =
+    (tkOneShot, tkEachSecond, tkEachMinute, tkEachHour, tkEachDay, tkEachMonth, tkEachYear);
   // End of Bianconi
 
   TJvFourCC = array [0..3] of Char;
@@ -272,6 +253,16 @@ type
 const
   DefaultTrackFontOptions = [hoFollowFont, hoPreserveColor, hoPreserveStyle];
 
+type
+
+
+
+
+
+  THintString = WideString;
+  THintStringList = TWideStringList;
+
+  
 type
   // from JvListView.pas
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
