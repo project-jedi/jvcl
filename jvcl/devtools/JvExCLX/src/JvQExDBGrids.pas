@@ -39,13 +39,15 @@ uses
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 type
-  JV_WINCONTROL(CustomDBGrid)
-  JV_WINCONTROL(DBGrid)
+  JV_CONTROL(CustomDBGrid)
+  JV_CONTROL(DBGrid)
 
 implementation
 
-JV_WINCONTROL_IMPL(CustomDBGrid)
-JV_WINCONTROL_IMPL(DBGrid)
+JV_CONTROL_IMPL(CustomDBGrid)
+JV_CONTROL_IMPL(DBGrid)
+
+{$DEFINE UnitName 'JvQExDBGrids.pas'}
 
 UNITVERSION
 

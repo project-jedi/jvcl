@@ -71,6 +71,7 @@ JV_WINCONTROL_IMPL(PopupDataList)
 JV_WINCONTROL_IMPL(DBLookupComboBox)
 JV_CONTROL_IMPL(NavButton)
 
+{$DEFINE UnitName 'JvQExDBCtrls.pas'}
 UNITVERSION
 
 end.

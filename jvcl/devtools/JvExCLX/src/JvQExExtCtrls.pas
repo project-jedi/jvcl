@@ -43,12 +43,13 @@ type
   JV_CONTROL(PaintBox)
   JV_CONTROL(Image)
   JV_CONTROL(Bevel)
-  JV_CUSTOMCONTROL_BEGIN(CustomControlBar)
-    function HitTest(X, Y: Integer): Boolean; reintroduce;
-  JV_CUSTOMCONTROL_END(CustomControlBar)
-  JV_CUSTOMCONTROL_BEGIN(ControlBar)
-    function HitTest(X, Y: Integer): Boolean; reintroduce;
-  JV_CUSTOMCONTROL_END(ControlBar)
+
+  {$UNDEF HITTEST_DECL}
+  {$DEFINE HITTEST_DECL reintroduce}
+  JV_CUSTOMCONTROL(CustomControlBar)
+  JV_CUSTOMCONTROL(ControlBar)
+  {$UNDEF HITTEST_DECL}
+  {$DEFINE HITTEST_DECL override}
   JV_CUSTOMCONTROL(CustomPanel)
   JV_CUSTOMCONTROL(Panel)
   JV_WINCONTROL(CustomRadioGroup)
@@ -57,50 +58,25 @@ type
   JV_CUSTOMCONTROL(Notebook)
 
   JV_CONTROL_BEGIN(Splitter)
-//  JV_CONSTRUCTOR
   private
     FText: string;
   protected
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
-//  protected
-//    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   JV_CONTROL_END(Splitter)
 
-//  JV_CUSTOMCONTROL_BEGIN(TCustomControlBar)
-//  JV_CONSTRUCTOR
-//  protected
-//    function HitTest(X, Y: Integer): Boolean; override;
-//  JV_CUSTOMCONTROL_END(CustomControlBar)
-
-//  JV_CUSTOMCONTROL(Header)
-(*
-// SplitterMouseDownFix fixes a bug in the VCL that causes the splitter to no
-// more work with the control in the left/top of it when the control has a size
-// of 0. This is actually a TWinControl.AlignControl bug.
-procedure SplitterMouseDownFix(Splitter: TSplitter);
-*)
 implementation
 
 JV_CONTROL_IMPL(Shape)
 JV_CONTROL_IMPL(PaintBox)
 JV_CONTROL_IMPL(Image)
 JV_CONTROL_IMPL(Bevel)
-
-function TJvExCustomControlBar.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
-
+{$UNDEF HITTEST_CODE}
+{$DEFINE HITTEST_CODE Handled := (XPos >= 0) and (YPos >= 0) and (XPos < Width) and (YPos < Height);}
 JV_CUSTOMCONTROL_IMPL(CustomControlBar)
-
-function TJvExControlBar.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
-
 JV_CUSTOMCONTROL_IMPL(ControlBar)
-
+{$UNDEF HITTEST_CODE}
+{$DEFINE HITTEST_CODE Handled := inherited HitTest(XPos, YPos);}
 JV_CUSTOMCONTROL_IMPL(Notebook)
 JV_CUSTOMCONTROL_IMPL(CustomPanel)
 JV_CUSTOMCONTROL_IMPL(Panel)
@@ -235,7 +211,9 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 end;
 *)
+{$DEFINE UnitName 'JvQExExtCtrls.pas'}
 
 UNITVERSION
+
 
 end.

@@ -95,6 +95,8 @@ JV_EDITCONTROL_IMPL(MaskEdit)
 
 {$UNDEF CREATE_CUSTOMCODE} // undefine at file end
 
+{$DEFINE UnitName 'JvQExMask.pas'}
+
 UNITVERSION
 
 end.

@@ -39,12 +39,12 @@ uses
   JvQTypes, JvQThemes, JVCLXVer;
 
 type
-  HWND = QWindows.HWND;
   {$EXTERNALSYM HWND}
-  HDC = QWindows.HDC;
+  HWND = QWindows.HWND;
   {$EXTERNALSYM HDC}
-  TJvMessage = JvTypes.TJvMessage;
+  HDC = QWindows.HDC;
   {$EXTERNALSYM TJvMessage}
+  TJvMessage = JvQTypes.TJvMessage;
 
   { Add IJvDenySubClassing to the base class list if the control should not
     be themed by the ThemeManager (www.delphi-gems.de).
@@ -64,6 +64,80 @@ type
 
 const
   CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
+//
+//  VCL control message IDs
+//
+  CM_VCLBASE                = CM_BASE + 10;
+//  CM_ACTIVATE               = CM_VCLBASE + 0;
+//  CM_DEACTIVATE             = CM_VCLBASE + 1;
+//  CM_GOTFOCUS               = CM_VCLBASE + 2;
+//  CM_LOSTFOCUS              = CM_VCLBASE + 3;
+//  CM_CANCELMODE             = CM_VCLBASE + 4;
+  CM_DIALOGKEY              = CM_VCLBASE + 5;
+  CM_DIALOGCHAR             = CM_VCLBASE + 6;
+  CM_FOCUSCHANGED           = CM_VCLBASE + 7;
+//  CM_PARENTFONTCHANGED      = CM_VCLBASE + 8; native VisualCLX message
+//  CM_PARENTCOLORCHANGED     = CM_VCLBASE + 9; native VisualCLX message
+  CM_HITTEST               = CM_VCLBASE + 10;
+  CM_VISIBLECHANGED        = CM_VCLBASE + 11;
+  CM_ENABLEDCHANGED        = CM_VCLBASE + 12;
+  CM_COLORCHANGED          = CM_VCLBASE + 13;
+  CM_FONTCHANGED           = CM_VCLBASE + 14;
+  CM_CURSORCHANGED         = CM_VCLBASE + 15;
+  CM_TEXTCHANGED           = CM_VCLBASE + 18;
+  CM_MOUSEENTER            = CM_VCLBASE + 19;
+  CM_MOUSELEAVE            = CM_VCLBASE + 20;
+//  CM_MENUCHANGED           = CM_VCLBASE + 21;
+//  CM_APPKEYDOWN            = CM_VCLBASE + 22;
+//  CM_APPSYSCOMMAND         = CM_VCLBASE + 23;
+//  CM_BUTTONPRESSED         = CM_VCLBASE + 24;  native VisualCLX message
+  CM_SHOWINGCHANGED        = CM_VCLBASE + 25;
+  CM_ENTER                 = CM_VCLBASE + 26;
+  CM_EXIT                  = CM_VCLBASE + 27;
+  CM_DESIGNHITTEST         = CM_VCLBASE + 28;
+//  CM_ICONCHANGED           = CM_VCLBASE + 29;
+//  CM_WANTSPECIALKEY        = CM_VCLBASE + 30;
+//  CM_INVOKEHELP            = CM_VCLBASE + 31;
+//  CM_WINDOWHOOK            = CM_VCLBASE + 32;
+//  CM_RELEASE               = CM_VCLBASE + 33;
+  CM_SHOWHINTCHANGED       = CM_VCLBASE + 34;
+//  CM_PARENTSHOWHINTCHANGED = CM_VCLBASE + 35;  native VisualCLX message
+  CM_SYSCOLORCHANGE        = CM_VCLBASE + 36;  // -> application palette changed
+//  CM_FONTCHANGE            = CM_VCLBASE + 38;
+//  CM_TIMECHANGE            = CM_VCLBASE + 39;
+//  CM_TABSTOPCHANGED        = CM_VCLBASE + 40;
+//  CM_UIACTIVATE            = CM_VCLBASE + 41;
+//  CM_UIDEACTIVATE          = CM_VCLBASE + 42;
+//  CM_DOCWINDOWACTIVATE     = CM_VCLBASE + 43;
+//  CM_CONTROLLISTCHANGE     = CM_VCLBASE + 44;
+  CM_GETDATALINK           = CM_VCLBASE + 45;
+//  CM_CHILDKEY              = CM_VCLBASE + 46;
+//  CM_DRAG                  = CM_VCLBASE + 47;
+  CM_HINTSHOW              = CM_VCLBASE + 48;
+//  CM_DIALOGHANDLE          = CM_VCLBASE + 49;
+//  CM_ISTOOLCONTROL         = CM_VCLBASE + 50;
+  CM_RECREATEWND           = CM_RECREATEWINDOW; // native clx message
+//  CM_INVALIDATE            = CM_VCLBASE + 52;
+  CM_SYSFONTCHANGED        = CM_VCLBASE + 53;   // application font changed
+//  CM_CONTROLCHANGE         = CM_VCLBASE + 54;
+//  CM_CHANGED               = CM_VCLBASE + 55;
+//  CM_DOCKCLIENT            = CM_VCLBASE + 56;
+//  CM_UNDOCKCLIENT          = CM_VCLBASE + 57;
+//  CM_FLOAT                 = CM_VCLBASE + 58;
+  CM_BORDERCHANGED         = CM_VCLBASE + 59;
+//  CM_ACTIONUPDATE          = CM_VCLBASE + 63;
+//  CM_ACTIONEXECUTE         = CM_VCLBASE + 64;
+//  CM_HINTSHOWPAUSE         = CM_VCLBASE + 65;
+  CM_MOUSEWHEEL            = CM_VCLBASE + 67;
+//  CM_ISSHORTCUT            = CM_VCLBASE + 68;
+{$IFDEF LINUX}
+//  CM_RAWX11EVENT           = CM_VCLBASE + 69;
+{$ENDIF}
+
+  { CM_HITTEST }
+  HTNOWHERE = 0;
+  HTCLIENT = 1;
+
 
 type
   JV_CONTROL(Control)
@@ -128,7 +202,7 @@ begin
   begin
     PI := GetPropInfo(Instance, 'DoubleBuffered');
     if PI <> nil then
-      Result := GetEnumProp(Instance, PI) <> 0;
+      Result := GetOrdProp(Instance, PI) <> 0;
   end;
 end;
 
@@ -224,46 +298,19 @@ begin
     end;
 end;
 
-type
-  TJvCLXFilters = class(TComponent)
-  private
-    FHook: QObject_hookH;
-  protected
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; cdecl;
-  public
-    constructor Create(AOwner: TComponent) ; override;
-    destructor Destroy; override;
-  end;
-
-constructor TJvCLXFilters.Create(AOwner: TComponent);
-var
-  Method: TMethod;
-begin
-  inherited Create(AOwner);
-  FHook := QObject_hook_create(Application.Handle);
-  TEventFilterMethod(Method) := EventFilter;
-  Qt_hook_hook_events(FHook, Method);
-end;
-
-destructor TJvCLXFilters.Destroy;
-begin
-  if Assigned(FHook) then
-    QObject_hook_destroy(FHook);
-  inherited Destroy;
-end;
 
 {
   - Handles Qt Events
 }
-function TJvCLXFilters.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function AppEventFilter(App: TApplication; Receiver: QObjectH; Event: QEventH): Boolean;
 var
   PixMap: QPixmapH;
   Mesg: TMessage;
   R: TRect;
   Canvas: TCanvas;
   Instance: TWidgetControl;
-
 begin
+  Result := False;
   Instance := FindControl(QWidgetH(Receiver));
   if not Assigned(Instance) then
     Exit;
@@ -274,7 +321,6 @@ begin
     QEventType_ApplicationFontChange    : PostMessage(Instance, CM_SYSFONTCHANGED, 0, 0);
     QEventType_Enter                    : Perform(Instance, CM_MOUSEENTER, 0, 0);
     QEventType_Leave                    : Perform(Instance, CM_MOUSELEAVE, 0, 0);
-
     QEventType_Paint:
     begin
       with Event as QPaintEventH do
@@ -333,6 +379,34 @@ begin
   end;
 end;
 
+type
+  TJvCLXFilters = class(TComponent)
+  private
+    FHook: QObject_hookH;
+  public
+    constructor Create(AOwner: TComponent) ; override;
+    destructor Destroy; override;
+  end;
+
+constructor TJvCLXFilters.Create(AOwner: TComponent);
+var
+  Method: TMethod;
+begin
+  inherited Create(AOwner);
+  Method.Code := @AppEventFilter;
+  Method.Data := Application;
+  FHook := QObject_hook_create(Application.Handle);
+  Qt_hook_hook_events(FHook, Method);
+end;
+
+destructor TJvCLXFilters.Destroy;
+begin
+  if Assigned(FHook) then
+    QObject_hook_destroy(FHook);
+  inherited Destroy;
+end;
+
+
 JV_CONTROL_IMPL(Control)
 JV_WINCONTROL_IMPL(WinControl)
 JV_CUSTOMCONTROL_IMPL(CustomControl)
@@ -375,7 +449,13 @@ begin
   Result := QWindows.ColorToRGB(Value, Parent);
 end;
 
-UNITVERSION
+Initialization
+  OutputDebugString('Loading JvExControls.pas');
+  TJvCLXFilters.Create(Application);
+
+Finalization
+  OutputDebugString('Unloading JvExControls.pas');
+
 
 end.
 

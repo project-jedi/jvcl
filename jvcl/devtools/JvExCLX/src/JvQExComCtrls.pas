@@ -33,9 +33,9 @@ WARNINGHEADER
 interface
 
 uses
+  Classes, SysUtils,
   QGraphics, QControls, QForms, QComCtrls, QExtCtrls,
   Qt, QWindows, QMessages,
-  Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 type
@@ -87,6 +87,7 @@ JV_CUSTOMCONTROL_IMPL(ToolBar)
 JV_CUSTOMCONTROL_IMPL(ToolButton)
 JV_WINCONTROL_IMPL(TrackBar)
 
+{$DEFINE UnitName 'JvQExComCtrls.pas'}
 UNITVERSION
 
 end.

@@ -42,38 +42,40 @@ type
   // VisualCLX does not have TEditStyle
   TEditStyle = (esSimple, esEllipsis, esPickList);
 
-  JV_WINCONTROL(InplaceEdit)
-  JV_CUSTOMCONTROL(CustomGrid)
+  JV_CONTROL(InplaceEdit)
+  JV_CONTROL(CustomGrid)
 
-  JV_CUSTOMCONTROL_BEGIN(DrawGrid)
+  JV_CONTROL_BEGIN(DrawGrid)
   protected
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
-  JV_CUSTOMCONTROL_END(DrawGrid)
+  JV_CONTROL_END(DrawGrid)
 
-  JV_CUSTOMCONTROL_BEGIN(StringGrid)
+  JV_CONTROL_BEGIN(StringGrid)
   protected
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
-  JV_CUSTOMCONTROL_END(StringGrid)
+  JV_CONTROL_END(StringGrid)
 
 implementation
 
-JV_WINCONTROL_IMPL(InplaceEdit)
+JV_CONTROL_IMPL(InplaceEdit)
 
-JV_CUSTOMCONTROL_IMPL(CustomGrid)
+JV_CONTROL_IMPL(CustomGrid)
 
 function TJvExDrawGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
 begin
   Result := esSimple;
 end;
 
-JV_CUSTOMCONTROL_IMPL(DrawGrid)
+JV_CONTROL_IMPL(DrawGrid)
 
 function TJvExStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
 begin
   Result := esSimple;
 end;
 
-JV_CUSTOMCONTROL_IMPL(StringGrid)
+JV_CONTROL_IMPL(StringGrid)
+
+{$DEFINE UnitName 'JvQExGrids.pas'}
 
 UNITVERSION
 
