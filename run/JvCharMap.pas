@@ -484,6 +484,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+
 //=== { TShadowWindow } ======================================================
 
 type
@@ -599,6 +600,7 @@ begin
     SetWindowPos(Handle, TWinControl(Owner).Handle, 0, 0, 0, 0,
       SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE or SWP_NOOWNERZORDER);
 end;
+
 {$ENDIF MSWINDOWS}
 
 //=== { TJvCustomCharMap } ===================================================
@@ -1253,6 +1255,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TCharZoomPanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -1277,6 +1280,7 @@ begin
     end;
   end;
 end;
+
 {$ENDIF VCL}
 
 procedure TCharZoomPanel.KeyDown(var Key: Word; Shift: TShiftState);
@@ -1399,6 +1403,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TCharZoomPanel.CreateHandle;
 begin
   inherited CreateHandle;
@@ -1410,7 +1415,9 @@ begin
   inherited;
   UpdateShadow;
 end;
+
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 procedure TCharZoomPanel.BoundsChanged;
 begin
