@@ -37,7 +37,7 @@ uses
   Buttons, StdCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QButtons, QStdCtrls,
+  Types, QGraphics, QControls, QForms, QDialogs, QButtons, QStdCtrls,
   {$ENDIF VisualCLX}
   JvColorProvider, JvDataProvider, JvDataProviderIntf, JvTypes;
 
