@@ -3,23 +3,24 @@
 :    WARNING   WARNING    WARNING    WARNING    WARNING    WARNING
 :
 : Please read the help before using this batch file as there are
-: some compulsory parameters
+: some special parameters
 :
 : ---------------------------------------------------------------------
-if %1!==! goto help
+SET BCBDIR=%1
+if %BCBDIR%!==! SET BCBDIR=C:\Program Files\CBuilder6
 
-MakeBCB "BCB6Per Packages" Bcb6Per %1
-del /f /q BCB6\*.mak
+MakeBCB "BCB6Per Packages" Bcb6Per %BCBDIR%
+del /f /q BCB6\*.cfg
 
 goto end
 
 :help
 echo MakeBCB6Per.bat - Builds the JVCL for BCB6 Personal Edition
 echo.
-echo Usage:    MakeBCB6Per BCBDirectory [JCLDirectory] [LIBDirectory] [BPLDirectory]
+echo Usage:    MakeBCB6Per [BCBDirectory] [JCLDirectory] [LIBDirectory] [BPLDirectory]
 echo.
 echo     BCBDirectory   The place where BCB6 is installed.
-echo                    e.g. "C:\Program Files\CBuilder6"
+echo                    Defaults to "C:\Program Files\CBuilder6"
 echo     JCLDirectory   The place where the JCL is installed. You must specify 
 echo                    this value if the JCL is not in ..\..\JCL
 echo     LIBDirectory   The place where to put the BPI and LIB files.

@@ -13,10 +13,6 @@ SET PACKAGE=%1
 SET DIR=%2
 SET ROOT=%3
 
-
-: ---------------------------------------------------------------------
-: You shouldn't have to change anything below this line
-: ---------------------------------------------------------------------
 SET JCLDIR=%4
 
 if %5!==! SET BPILIBDIR=%ROOT%\Projects\Lib
