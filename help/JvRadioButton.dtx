@@ -83,10 +83,12 @@ Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
   the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
   changes in Font are copied to HotTrackFont except Color changes.
+  
   Note that hoFollowFont must be included for any properties to be copied at all.
+  
   To implement the HotTrackFontOptions property in a new control, you should perform the following steps:
     * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default value
+    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default value
       to be DefaultTrackFontOptions (defined in JvTypes).
     * Set the default value in the constructor.
     * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in JvJVCLUtils)

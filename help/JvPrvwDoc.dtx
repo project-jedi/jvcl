@@ -345,7 +345,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPreviewControl.OnScrollHint
 Summary
-  Occurs when the control needs to update it's scrollbar hint window content.
+  Occurs when the control needs to update its scrollbar hint window content.
 Description
   Write a handler for the OnScrollHint event to update the scrollbar hint.
 Parameters
@@ -390,12 +390,12 @@ See Also
 Summary
   Sends a range of pages to the IJvPrinter implementation.
 Description
-  Call PrintRange to send the preview pages to a IJvPrinter implementer with options. Depending on the
+  Call PrintRange to send the preview pages to an IJvPrinter implementer with options. Depending on the
   implementer of IJvPrinter, the pages could be printed to any device like a printer but it could
   also be sent to other devices, like PDF files etc.
 
   If you are using the TJvPreviewPrinter (it implements IJvPrinter), you do not need to call PrintRange.
-  Instead, set the properties of TJvPreviewPrinter and call it's <LINK TJvPreviewPrinter.Print, Print> method.
+  Instead, set the properties of TJvPreviewPrinter and call its <LINK TJvPreviewPrinter.Print, Print> method.
   \Print will call PrintRange with the correct parameters, sending a pointer to itself in the APrinter
   parameter. 
 Parameters
@@ -405,7 +405,7 @@ Parameters
   Copies    - The number of copies to print
   Collate   - Set to true to collate (sort) the pages, false otherwise.
 Note
-  TJvCustomPreviewControl implements it's own routines for StartPage, EndPage, Copies and Collate so the
+  TJvCustomPreviewControl implements its own routines for StartPage, EndPage, Copies and Collate so the
   output device does not have to support this since it is handled internally.
 See Also
   IJvPrinter
@@ -470,7 +470,7 @@ Description
 Summary
   Class used for the <LINK TJvCustomPreviewControl.DeviceInfo, DeviceInfo> property of TJvCustomPreviewControl
 Description
-  TJvDeviceInfo maintains and updates the values of it's properties when the ReferenceHandle changes.
+  TJvDeviceInfo maintains and updates the values of its properties when the ReferenceHandle changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvDeviceInfo.InchToXPx
 Summary
@@ -778,7 +778,7 @@ JVCLInfo
 Summary
   Control that can display a print preview.
 Description
-  TJvPreviewControl is derived from TJvCustomPreviewControl and publishes most of it's properties
+  TJvPreviewControl is derived from TJvCustomPreviewControl and publishes most of its properties
   but does not add any new functionality.
 
   To use a print preview on a form, you must:
@@ -901,7 +901,7 @@ Description
 @@TJvPreviewScaleMode.smFullPage
   Display a single page. The page is scaled to fit inside the client area of the control.
 @@TJvPreviewScaleMode.smPageWidth
-  Display a page so that it's width fills the entire client width of the control.
+  Display a page so that its width fills the entire client width of the control.
 @@TJvPreviewScaleMode.smScale
   Use the <LINK TJvPreviewPageOptions.Scale, Scale> property to determine the size of the page(s)
   but also use <LINK TJvPreviewPageOptions.Cols, Cols> and <LINK TJvPreviewPageOptions.Rows, Rows>.

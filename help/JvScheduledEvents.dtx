@@ -211,7 +211,7 @@ Summary
 Description
   CountMissedEvents determines if events that should have occured since the start of the schedule or
   since the last saved state should be counted. This could potentionally influence the ending of the
-  schedule if it's end type is set to a specific day count and/or trigger count.
+  schedule if its end type is set to a specific day count and/or trigger count.
   
   If set to True events that should have occured are counted when determining the end of the
   schedule.
@@ -263,7 +263,7 @@ Description
   Name represents the name of the scheduled event. It's main purpose is to identify different events
   at design time, but could be used also at run time to identify the various events.
   
-  At design time when a new event is added it's given a unique name <within the component> based on
+  At design time when a new event is added it is given a unique name <within the component> based on
   the format <B>Event<I>n</I></B> when <I>n</I> is the lowest number (larger than 0) that makes the
   name unique.
 ----------------------------------------------------------------------------------------------------
@@ -278,7 +278,7 @@ Description
   If a snooze request has been issued NextFire will hold the timestamp at which the snooze interval
   has passed.
 
-  If the schedule has not ended NextFire will hold the timestamp fo the next event.
+  If the schedule has not ended NextFire will hold the timestamp for the next event.
 See Also
   NextScheduleFire, Snooze
 ----------------------------------------------------------------------------------------------------
@@ -416,7 +416,7 @@ Description
   like the recurring appointments/tasks in Microsoft® Outlook® or the replication/job scheduler in
   Microsoft® SQL Server.
   
-  The component uses the JclSchedule unit and it's interface to generate the execution times. For
+  The component uses the JclSchedule unit and its interface to generate the execution times. For
   more information on scheduling posibilities, check out the help for JclSchedule.
   
   Components usage:
@@ -463,5 +463,5 @@ See Also
   The scheduled event is paused. The event will not execute until the schedule is resumed using the
   Start method.
 @@TScheduledEventState.sesEnded
-  The schedule for the scheduled event has reached it's end condition and no snooze requests have
+  The schedule for the scheduled event has reached its end condition and no snooze requests have
   been posted.

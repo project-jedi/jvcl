@@ -48,7 +48,7 @@ Description
   </CODE>
   </AUTOLINK ON>
 
-  * if you stream out the RTF content of the rich edit control, the bitmaps
+  * If you stream out the RTF content of the rich edit control, the bitmaps
       are <i>not</i> included. Use <LINK TJvCustomRichEdit.InsertBitmap,InsertBitmap> if
       you want the bitmaps to be included in the streamed out RTF data.
   * <LINK TJvRichEdit.AllowObjects> must be set to true.
@@ -79,13 +79,13 @@ Description
   Windows 2000      Includes Rich Edit 3.0 with a Rich Edit 1.0 emulator.
   Windows NT 4.0    Includes Rich Edit 1.0 and 2.0.
   Windows 98        Includes Rich Edit 1.0 and 2.0.
-  Windows 95        Includes only Rich Edit 1.0. However, Riched20.dll is compatible with Windows 95 and
+  Windows 95        Includes only Rich Edit 1.0; however, Riched20.dll is compatible with Windows 95 and
                      may be installed by an application that requires it.
   </TABLE>
   But there are more versions of the Rich Edit, for example v4.0 that is included in
   Microsoft Visual Studio .NET.
 Note
-  TJvRichEdit does <i>not</i> support Rich Edit 4.1, which is an unicode only version.
+  TJvRichEdit does <i>not</i> support Rich Edit 4.1, which is a unicode only version.
 ----------------------------------------------------------------------------------------------------
 @@THeadingStyle
 <TITLE THeadingStyle type>
@@ -145,7 +145,13 @@ Description
 Summary
   Converts rich text data or plain text from one encoding format to another.
 Description
-  A TJvRichEdit control will call the methods of the a conversion object in the following order:
+  Write a TJvConversion descendant to convert rich text data or plain text from one specific encoding 
+  format to another. Register the object with a call to
+  <LINK TJvCustomRichEdit.RegisterConversionFormat,RegisterConversionFormat>. Registered conversion
+  objects are used by TJvRichEdit when either the LoadFromFile, LoadFromStream, SaveToFile or SaveToStream method
+  of its <LINK TJvCustomRichEdit.Lines,Lines> property called.
+
+  A TJvRichEdit control will call the methods of a conversion object in the following order:
 
   * <LINK TJvConversion.Init,Init>, to initialize the converter.
   * CanHandle, to determine whether the converter can handle a specific extension.
@@ -162,7 +168,7 @@ Description
   Class                 Function
   -----                 --------
   TJvRTFConversion      Reads or writes rich text data.
-  TJvTextConversion     Reads or writes plaint text.
+  TJvTextConversion     Reads or writes plain text.
   TJvStreamConversion   Base class for stream converters.
   TJvOEMConversion      Converts rich text data from and to OEM formatted text.
   TJvMSTextConversion   Wrapper for a MS Text conversion dll.
@@ -176,9 +182,9 @@ Description
   converter can import or export files with an extension as specified by AExtension.
   
   TJvRichEdit will call CanHandle to determine whether the converter can either import or export
-  files and streams; and whether it can import or export files with a particular extension.
+  files and streams, and whether it can import or export files with a particular extension.
   
-  As implemented in TJvConversion, CanHandle always returns True. Override this method in a 
+  As implemented in TJvConversion, CanHandle always returns true. Override this method in a 
   descendant class to indicate that the converter can only operate on files with a particular
   extension.
 Parameters
@@ -213,7 +219,7 @@ Summary
 Description
   A TJvRichEdit control calls ConvertWrite multiple times during an export operaration. Each time this 
   method is called the converter should read the data in Buffer, convert it, and write it to 
-  the destionation file or stream.
+  the destination file or stream.
 Parameters
   Buffer  - A buffer to read from. The buffer contains data from the control that the converter
              writes to some storage. 
@@ -231,19 +237,19 @@ Description
 
   TJvRichEdit calls Done after a conversion operation is finished,
   to permit the converter to perform any necessary finalization.
+
+  A TJvRichEdit control garantees that method Done is called after procedure Init is called.
 See Also
   Init
 ----------------------------------------------------------------------------------------------------
 @@TJvConversion.Error
 Summary
   Returns whether an error occurred during the conversion.
-  Specifies the MCI error code returned by the media control method.
 Description
-  Error specifies the MCI error code returned by the most recent media control method (Back, Close, Eject, Next, Open, Pause, PauseOnly, Play, Previous, StartRecording, Resume, Rewind, Step, or Stop). The ErrorMessage property describes the Error.
+  Error returns whether an error occurred during the conversion. The ErrorStr method describes the error.
 
-  The error code returned by media control methods are the same error code returned by the mciSendCommand function. The message describing the error code is stored in the ErrorMessage property.
-
-  The value of Error is zero if the most recent media control method didn't cause an error. If a method results in an error, a value other than zero is stored in Error. If the error occurs during the opening of the device, an EMCIDeviceError exception occurs.
+  As implemented in TJvConversion, Error always returns false. Override this method in a 
+  descendant class to return a meaningful value.
 Return value
   Returns true if an error occurred during the conversion, otherwise false.
 See Also
@@ -257,8 +263,11 @@ Description
   Call Error to determine whether an error occurred.
   
   TJvRichEdit uses this method to raise an exception after a failed conversion.
+
+  As implemented in TJvConversion, ErrorStr always returns the empty string. Override this method in a 
+  descendant class to return a meaningful value.
 Return value
-  Returns true on success, false on failure.
+  Returns text describing the error that occurred during the conversion.
 See Also
   Error, UserCancel
 ----------------------------------------------------------------------------------------------------
@@ -269,6 +278,9 @@ Description
   Call Filter to retrieve a file mask of the files that can be imported or exported by the
   converter. For example, you can use the return value of a Filter call to set the
   \Filter property of a TOpenDialog component.
+
+  As implemented in TJvConversion, Filter always returns an empty string. Override this method in a 
+  descendant class to return a meaningful value.
 Return value
   Returns the file masks of the registered converters.
 ----------------------------------------------------------------------------------------------------
@@ -299,7 +311,7 @@ Description
   TJvRichEdit will call IsFormatCorrect to determine whether the converter recognizes and can convert 
   the contents of a file or stream. 
 
-  As implemented in TJvConversion, IsFormatCorrect always returns True. Override this method in a 
+  As implemented in TJvConversion, IsFormatCorrect always returns true. Override this method in a 
   descendant class to check files or streams before the actual import operation.
 Parameters
   AFileName - The file to import.
@@ -369,14 +381,14 @@ Summary
   Returns whether the conversion process can be retried.
 Description
   TJvRichEdit calls Retry after a failed import or export process. If the converter indicates that
-  the import or export process can be retried (by returning True) the rich edit control will start
-  the import or export process once again, but now switches the source or target format of it's 
+  the import or export process can be retried (by returning true) the rich edit control will start
+  the import or export process once again, but now switches the source or target format of its 
   content from RTF to plaintext or vice versa.
   
   For example if a plain text file is imported as a RTF file, an error will occur. Retrying to import
   the file but now as plain text will then succeed.
 
-  As implemented in TJvConversion, Retry always returns False. Override this method in a 
+  As implemented in TJvConversion, Retry always returns false. Override this method in a 
   descendant class to allow retrying of a conversion process.
 Return value
   Returns true if the current conversion process can be retried, false otherwise.
@@ -476,7 +488,7 @@ See Also
 Summary
   Specifies whether to support in-place activation of objects.
 Description
-  Set AllowInPlace to True to support in-place activation of objects.
+  Set AllowInPlace to true to support in-place activation of objects.
 
   In-place activation allows an object within a container application to be edited without leaving
   the application. For instance, in a rich edit control's document you might want to open a spreadsheet
@@ -498,12 +510,12 @@ See Also
 Summary
   Specifies whether to automatically turn on AdvancedTypography when needed.
 Description
-  If AutoAdvancedTypography is True, AdvancedTypography is turned on in the following situations:
+  If AutoAdvancedTypography is true, AdvancedTypography is turned on in the following situations:
   
   * Property <LINK TJvParaAttributes.TabAlignment,TabAlignment> of <LINK TJvRichEdit.Paragraph,Paragraph>
-    is set to an value other than taOrdinary.
+    is set to a value other than taOrdinary.
   * Property <LINK TJvParaAttributes.TabLeader,TabLeader> of <LINK TJvRichEdit.Paragraph,Paragraph>
-    is set to an value other than tlNone.
+    is set to a value other than tlNone.
   * Property <LINK TJvParaAttributes.Alignment,Alignment> of <LINK TJvRichEdit.Paragraph,Paragraph>
     is set to paJustify.
 Note
@@ -543,7 +555,7 @@ See Also
 Summary
   Indicates whether to automatically display a verb menu when the user right-clicks an object.
 Description
-  Set AutoVerbMenu to True, to automatically display a menu listing the verbs available for an object
+  Set AutoVerbMenu to true, to automatically display a menu listing the verbs available for an object
   if the user right-clicks or otherwise invokes a popup menu for that object in the rich edit control.
 
   If the user selects a verb from the popup menu, the rich edit control executes the action associated
@@ -555,7 +567,7 @@ See Also
 Summary
   Indicates whether the performed search can be repeated.
 Description
-  \Read CanFindNext to determine whether the search, initiated by a call to FindDialog can be repeated.
+  \Read CanFindNext to determine whether the search, initiated by a call to FindDialog, can be repeated.
   For example, you can use CanFindNext to disable or enable a 'Find Next' menu item.
 See Also
   FindNext, <LINK TJvCustomRichEdit.FindText,FindText>
@@ -568,10 +580,10 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.CanRedo
 Summary
-  Indicates whether there are any actions in the control \redo queue.
+  Indicates whether there are any actions in the control's \redo queue.
 Description
-  If CanRedo is True, there are actions in the control \redo queue. If CanRedo is False, the \redo queue
-  is empty
+  If CanRedo is true, there are actions in the control's \redo queue. If CanRedo is false, the \redo queue
+  is empty.
 
   To \redo the most recent undo operation, call Redo.
 See Also
@@ -604,7 +616,7 @@ Description
   Use DefaultConverter to specify the type of conversion to use when streaming text to or from files
   that do not have a registered extension. If DefaultConverter is not set, TJvCustomRichEdit uses
   TJvConversion, which performs no actual conversion. TJvCustomRichEdit encodes text attributes in
-  rich-text format (RTF). Thus, unrecognized file extensions lead to no conversion, which works
+  rich-text format (RTF); thus, unrecognized file extensions lead to no conversion, which works
   for files that contain plain text or any subset of RTF format.
 
   To support streaming to or from files that encode rich text characteristics in some other format,
@@ -638,9 +650,9 @@ Description
   search string is found the rich edit control selects the found string. If the search string is <i>not</i>
   found an OnTextNotFound event is fired. If the user closes the dialog an OnCloseFindDialog is fired.
 Note
-  If HideSelection is set to True (as is the default), you won't see the highlighted string, because
-  the Find Text dialog will have the focus. You might want to set HideSelection to False before calling
-  FindDialog, and set it to it's old value in an OnCloseFindDialog event handler.
+  If HideSelection is set to true (as is the default), you won't see the highlighted string, because
+  the Find Text dialog will have the focus. You might want to set HideSelection to false before calling
+  FindDialog, and set it to its old value in an OnCloseFindDialog event handler.
 Parameters
   SearchStr - Default search string that appears in the edit box when the dialog opens.
 Return value
@@ -662,7 +674,7 @@ Description
   dialog is displayed, calling \FindNext doesn't perform a replace operation, it just searches for the
   next string. Also note that if the user closes the dialog, a find next operation can still be performed.
 Return value
-  \Returns True if the search text could be found, otherwise returns False.
+  \Returns true if the search text could be found, otherwise returns false.
 See Also
   <LINK TJvCustomRichEdit.CanFindNext,CanFindNext>,
   <LINK TJvCustomRichEdit.FindDialog,FindDialog>,
@@ -785,10 +797,10 @@ See Also
 Summary
   Specifies whether to hide or disable scroll bars when they are not needed.
 Description
-  Set HideScrollBars to True to hide the scroll bars when they are not needed. Set HideScrollBars to
-  False to disable them when they are not needed.
+  Set HideScrollBars to true to hide the scroll bars when they are not needed. Set HideScrollBars to
+  false to disable them when they are not needed.
 
-  HideScrollBars is default set to True.
+  HideScrollBars is default set to true.
 See Also
   HideSelection, SelectionBar
 ----------------------------------------------------------------------------------------------------
@@ -799,10 +811,10 @@ Description
   The default behavior of a rich edit control is to hide the selection when the control loses the input
   focus and to invert the selection when the control receives the input focus.
 
-  Set HideSelection to False, to override this default behavior and to keep the selected text inverted,
+  Set HideSelection to false, to override this default behavior and to keep the selected text inverted,
   if the control does not have the focus.
 
-  HideSelection is default set to True.
+  HideSelection is default set to true.
 See Also
   HideScrollBars, SelectionBar
 ----------------------------------------------------------------------------------------------------
@@ -820,9 +832,9 @@ Summary
 Description
   Call InsertBitmap to insert a bitmap at the current cursor position.
   
-  If parameter Sizeable is set to False, but property OLEDragDrop is True, then the user can 
-  drag and drop the image, and then resize the image. Set OLEDragDrop to False to completly prevent
-  the user from resizing the image. Another way is to set ReadOnly to True.
+  If parameter Sizeable is set to false, but property OLEDragDrop is true, then the user can 
+  drag and drop the image, and then resize the image. Set OLEDragDrop to false to completly prevent
+  the user from resizing the image. Another way is to set ReadOnly to true.
 Note
   InsertBitmap is slower than <LINK BitmapToRTF> and <LINK BitmapToRTF2>, but only with InsertBitmap
   you can stream out RTF content that includes the inserted bitmaps.
@@ -843,7 +855,7 @@ Note
 Parameters
   Index - The cursor position where the text will be inserted. If Index < 0, the text is inserted
            at the current SelStart position.
-  S     - Specifies the string to insert
+  S     - Specifies the string to insert.
   AFont - Specifies the font to use. If AFont = nil, then the current attributes at the insertion
            point are used.
 See Also
@@ -856,10 +868,10 @@ Description
   Call InsertObjectDialog to display the standard \Insert Object dialog box, which allows the user to
   select an object source and class name, as well as the option of displaying the object as itself or as an icon.
 Note
-  Property AllowObjects must be set to True, otherwise no dialog will be displayed.
+  Property AllowObjects must be set to true, otherwise no dialog will be displayed.
 Return value
-  \Returns True if the dialog could be displayed and the user pressed the OK button,
-  otherwise returns False.
+  \Returns true if the dialog could be displayed and the user pressed the OK button,
+  otherwise returns false.
 See Also
   AllowObjects, ObjectPropertiesDialog, PasteSpecialDialog
 ----------------------------------------------------------------------------------------------------
@@ -909,10 +921,10 @@ Description
   Call ObjectPropertiesDialog to display the Object Properties dialog box, which displays General,
   View, and Link information about an object.
 Note
-  Property AllowObjects must be set to True, otherwise no dialog will be displayed.
+  Property AllowObjects must be set to true, otherwise no dialog will be displayed.
 Return value
-  \Returns True if the dialog could be displayed and the user pressed the OK button,
-  otherwise returns False.
+  \Returns true if the dialog could be displayed and the user pressed the OK button,
+  otherwise returns false.
 See Also
   AllowObjects, InsertObjectDialog, PasteSpecialDialog
 ----------------------------------------------------------------------------------------------------
@@ -958,11 +970,8 @@ See Also
 Summary
   Occurs when a rich edit control is importing or exporting.
 Description
-  For certain descendants of TJvConversion, OnProgress occurs during import or export operations. 
-  OnProgress allows applications to provide feedback to the user about the progress of the slow process.  
-
-  Component writers can generate OnProgress events for new descendants of TJvConversion by calling the
-  protected DoProgress method. These events are propagated to the TJvRichEdit control.
+  For certain descendants of TJvConversion, OnConversionProgress occurs during import or export operations. 
+  OnConversionProgress allows applications to provide feedback to the user about the progress of the slow process.  
 Parameters
   Sender      - Rich Edit control that has fired this event.
   PercentDone - PercentDone is an approximation of how much of the operation has completed. Use 
@@ -989,7 +998,7 @@ Description
   \Write an OnProtectChange event handler to allow modification of text with the protected attribute.
   The StartPos and EndPos parameters indicate the beginning and end of the range of text that would
   be affected by the modification, where 0 is the first character in the text. To allow modification
-  of protected text, set AllowChange to True.
+  of protected text, set AllowChange to true.
 
   To set or unset the protected attribute for a section of text, select the text and use the Protected
   property of the rich edit control’s <LINK TJvCustomRichEdit.SelAttributes,SelAttributes> property.
@@ -1006,7 +1015,7 @@ Summary
 Description
   \Write an OnProtectChange event handler to allow modification of text with the protected attribute.
 
-  To allow modification of protected text, set AllowChange to True.
+  To allow modification of protected text, set AllowChange to true.
 
   To set or unset the protected attribute for a section of text, select the text and use the Protected
   property of the rich edit control’s <LINK TJvCustomRichEdit.SelAttributes,SelAttributes> property.
@@ -1040,7 +1049,7 @@ Description
   control is about to be destroyed and the Clipboard needs information from the control.
   The parameter NumObjects is the number of objects on the Clipboard, and NumChars is the number
   of characters on the Clipboard. To clear all information about the rich edit control from the Clipboard,
-  set SaveClipboard to False.
+  set SaveClipboard to false.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnSelectionChange
 Summary
@@ -1055,9 +1064,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnTextNotFound
 Summary
-  Occurs when the text entered by an user in a Find or Replace dialog could not be found.
+  Occurs when the text entered by a user in a Find or Replace dialog could not be found.
 Description
-  \Write an OnTextNotFound event handler to respond when the text entered by an user - specified by
+  \Write an OnTextNotFound event handler to respond when the text entered by a user - specified by
   parameter FindText - in a Find or Replace dialog could not be found.
 
   \Example:
@@ -1091,7 +1100,7 @@ Description
   <LINK TJvTextAttributes.Link,Link> property of the rich edit control’s
   <LINK TJvCustomRichEdit.SelAttributes,SelAttributes> property.
 
-  If you set AutoURLDetect to True to enable automatic URL detection, the rich edit control
+  If you set AutoURLDetect to true to enable automatic URL detection, the rich edit control
   automatically sets the link attribute for modified text that it identifies as a URL.
 
   \Example:
@@ -1159,13 +1168,13 @@ Description
   With applications that support OLE, the user can initiate the transfer from either the server or
   the container. For example, the server can copy data to the clipboard in the server application,
   then switch to the container application and choose Paste Special/Embedded Object or an equivalent
-  menu command to create a new embedded object from the selected data. Or, the user can drag the
+  menu command to create a new embedded object from the selected data. Or the user can drag the
   data from one application to the other. The process is similar for creating a linked object.
 Note
-  Property AllowObjects must be set to True, otherwise no dialog will be displayed.
+  Property AllowObjects must be set to true, otherwise no dialog will be displayed.
 Return value
-  \Returns True if the dialog could be displayed and the user pressed the OK button,
-  otherwise returns False.
+  \Returns true if the dialog could be displayed and the user pressed the OK button,
+  otherwise returns false.
 See Also
   AllowObjects, InsertObjectDialog, ObjectPropertiesDialog
 ----------------------------------------------------------------------------------------------------
@@ -1173,7 +1182,7 @@ See Also
 Summary
   Indicates whether the rich edit control's text is formatted or not.
 Description
-  Set PlainText to True to transform the rich edit control's text to plain unformatted text.
+  Set PlainText to true to transform the rich edit control's text to plain unformatted text.
 See Also
   StreamFormat, StreamMode
 ----------------------------------------------------------------------------------------------------
@@ -1239,13 +1248,12 @@ Description
   attempts to stream between a file with that extension and a rich edit control automatically invoke
   the appropriate converter.
   
-  RegisterMSTextConverters registers for each found converter in
+  RegisterMSTextConverters registers a TJvMSTextConversion instance for each item found in:
   <AUTOLINK OFF>
   <CODE>
-  HKEY_LOCAL_MACHINE\Software\Microsoft\Shared Tools\Text Converters
+  HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Shared Tools\\Text Converters
   </CODE>
   <AUTOLINK ON>
-  a TJvMSTextConversion instance, which is a wrapper for the actual dll.
 Note
   Registered converters apply to <i>all</i> rich edit controls.
 See Also
@@ -1266,9 +1274,9 @@ Parameters
 Return value
   \Returns a reference to the created Replace Text dialog.
 Note
-  If HideSelection is set to True (as is the default), you won't see the highlighted string, because
-  the Replace Text dialog will have the focus. You might want to set HideSelection To False before calling
-  ReplaceDialog, and set it to it's old value in an OnCloseFindDialog event handler.
+  If HideSelection is set to true (as is the default), you won't see the highlighted string, because
+  the Replace Text dialog will have the focus. You might want to set HideSelection To false before calling
+  ReplaceDialog, and set it to its old value in an OnCloseFindDialog event handler.
 See Also
   <LINK TJvCustomRichEdit.FindDialog,FindDialog>, HideSelection, OnCloseFindDialog, OnTextNotFound
 ----------------------------------------------------------------------------------------------------
@@ -1319,7 +1327,7 @@ Summary
   Specifies whether to show the selection bar.
 Description
   The selection bar is an unmarked area to the left of each paragraph that when clicked, selects the line.
-  Set SelectionBar to True to show the selection bar, set it to False, to hide it.
+  Set SelectionBar to true to show the selection bar, set it to false, to hide it.
 See Also
   HideScrollBars, HideSelection
 ----------------------------------------------------------------------------------------------------
@@ -1401,12 +1409,12 @@ Description
 
   * Only replace the contents of the current selection when loading a stream, and to only stream out
     the contents of the current selection, when saving to a stream.
-  * Stream only keywords common to all languages in and out, ie ignore all language-specific RTF keywords.
+  * Stream only keywords common to all languages in and out, i.e., ignore all language-specific RTF keywords.
   * Replace COM objects with spaces when streaming out.
   * Stream unicode text in and out.
 
   Some flags are ignored depending on the value of StreamFormat. For example you must set StreamFormat to
-  sfPlainText, or PlainText to True and StreamFormat to sfDefault to be able to stream unicode text in or out.)
+  sfPlainText, or PlainText to true and StreamFormat to sfDefault to be able to stream unicode text in or out.)
 Note
   Rich edit controls do not directly support streaming. Use the Lines property to stream to or from a
   file, For example to save the selected text as unicode to a file:
@@ -1427,12 +1435,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.Title
 Summary
-  Specifies the caption of the window, that is displayed when an user selects to edit an embedded object.
+  Specifies the caption of the window, that is displayed when a user selects to edit an embedded object.
 Description
   Use Title to specify a string that is displayed in the title bar of the window, displayed when
   a user opens an object for editing.
 Note
-  Property AllowObjects must be set to True, otherwise setting Title has no effect.
+  Property AllowObjects must be set to true, otherwise setting Title has no effect.
 See Also
   AllowObjects
 ----------------------------------------------------------------------------------------------------
@@ -1517,8 +1525,8 @@ See Also
 Summary
   Specifies whether automatic selection of word on double-click is enabled.
 Description
-  Set WordSelection to True, to enable automatic selection of word on double-click. Set WordSelection
-  to False to disable it.
+  Set WordSelection to true, to enable automatic selection of word on double-click. Set WordSelection
+  to false to disable it.
 See Also
   HideSelection, SelectionBar
 ----------------------------------------------------------------------------------------------------
@@ -1661,7 +1669,7 @@ Description
 Note
   For paJustify you need RichEdit 3.0 and 
   <LINK TJvCustomRichEdit.AdvancedTypography,AdvancedTypography> or 
-  <LINK TJvCustomRichEdit.AutoAdvancedTypography,AutoAdvancedTypography> must be True.
+  <LINK TJvCustomRichEdit.AutoAdvancedTypography,AutoAdvancedTypography> must be true.
 See Also
   TJvCustomRichEdit.AdvancedTypography, LeftIndent, RichEditVersion, RightIndent
 ----------------------------------------------------------------------------------------------------
@@ -1720,13 +1728,13 @@ Description
   <TABLE>
   LineSpacingRule        LineSpacing
   ---------------        -----------
-  lsSpecifiedOrMore      Specifies the spacing from one line to the next, in points. However, if
+  lsSpecifiedOrMore      Specifies the spacing from one line to the next, in points; however, if
                           LineSpacing specifies a value that is less than single spacing, the control
                           displays single-spaced text.
   lsSpecified            Specifies the spacing from one line to the next, in points. The control uses
                           the exact spacing specified, even if LineSpacing specifies a value that is
                           less than single spacing.
-  lsMultiple             Specifies the spacing, in lines, from one line to the next. Thus, setting LineSpacing
+  lsMultiple             Specifies the spacing, in lines, from one line to the next; thus, setting LineSpacing
                           to 1 produces single-spaced text, 2 is double spaced, 3 is triple spaced, and so on.
   Other                  Vaule of LineSpacing is ignored.
   </TABLE>
@@ -1738,7 +1746,7 @@ Summary
   Specifies the type of line spacing.
 Description
   Use LineSpacingRule to specify the type of line spacing. LineSpacingRule determines the meaning of
-  property LineSpacing, if it's value is used, whether the value specified by LineSpacing is in
+  property LineSpacing, if its value is used, whether the value specified by LineSpacing is in
   points, or in lines etc.
 See Also
   LineSpacing
@@ -1750,7 +1758,7 @@ Description
   Use Numbering to specify whether the paragraph is one of a set of bulleted or numbered paragraphs.
   Use property NumberingStyle to specify the numbering style for the paragraph.
 Note
-  You can use the number hot key (CTRL+L, capital L) to cycle through numbering options available,
+  You can use the number hot key (Ctrl-L, capital L) to cycle through numbering options available,
   starting with bullet.
 See Also
   NumberingStyle, NumberingTab
@@ -1829,7 +1837,7 @@ Parameters
   Index - The index of the tab, where 0 is the first tab.
 Note
   RichEdit 3.0 and <LINK TJvCustomRichEdit.AdvancedTypography,AdvancedTypography> or 
-  <LINK TJvCustomRichEdit.AutoAdvancedTypography,AutoAdvancedTypography> needs to be True.
+  <LINK TJvCustomRichEdit.AutoAdvancedTypography,AutoAdvancedTypography> needs to be true.
 See Also
   TJvCustomRichEdit.AdvancedTypography, RichEditVersion, Tab, TabCount, TabLeader
 ----------------------------------------------------------------------------------------------------
@@ -1850,7 +1858,7 @@ Parameters
   Index - The index of the tab, where 0 is the first tab.
 Note
   RichEdit 3.0 and <LINK TJvCustomRichEdit.AdvancedTypography,AdvancedTypography> or 
-  <LINK TJvCustomRichEdit.AutoAdvancedTypography,AutoAdvancedTypography> needs to be True.
+  <LINK TJvCustomRichEdit.AutoAdvancedTypography,AutoAdvancedTypography> needs to be true.
 See Also
   TJvCustomRichEdit.AdvancedTypography, RichEditVersion, Tab, TabAlignment, TabCount
 ----------------------------------------------------------------------------------------------------
@@ -1906,7 +1914,7 @@ Description
 
   With a few exceptions, Rich Edit 2.0 uses the same functions, structures, and properties as Rich Edit 1.0
   (supported by the standard TRichEdit control).
-  \Note, however, the following differences:
+  But note the following differences:
   <TABLE>
   Property                                                   Description
   -------                                                    -----------
@@ -2004,7 +2012,7 @@ See Also
 @@TJvTabAlignment.taRight
   Right-aligned tab.
 @@TJvTabAlignment.taDecimal
-  Decimal tab. (Aligns a decimal point at the tab stop; text or numbers without a decimal point extend
+  Decimal tab. (Aligns a decimal point at the tab stop: text or numbers without a decimal point extend
   to the left of the tab stop) 
 @@TJvTabAlignment.taVertical
   Word bar tab (vertical bar).
@@ -2036,16 +2044,16 @@ Summary
 Description
   TJvTextAttributes is a wrapper for the CHARFORMAT2 structure, that contains information about character
   formatting in a rich edit control. The TJvTextAttributes class is an extension of the TTextAttributes
-  class, ie it can do the same and more:
+  class, i.e., it can do the same and more:
 
   \New properties that affects the text represented by the TJvTextAttributes:
   <TABLE>
   Property           Description
   ----------         -----------
   BackColor          Sets the background color of the text.
-  Disabled           Enables or disables the text; if the text is disabled, it can't be changed by the user.
+  Disabled           Enables or disables the text. If the text is disabled, it can't be changed by the user.
   Hidden             Hides the text for the user.
-  Link               Indicates whether the text is a link; if the user clicks such link an
+  Link               Indicates whether the text is a link. If the user clicks such link an
                       <LINK TJvCustomRichEdit.OnURLClick,OnURLClick> event is fired.
   Offset             Specifies the character Offset from the baseline, in points.
   RevAuthorIndex     Identifies the author making a revision.
@@ -2137,32 +2145,30 @@ See Also
 Summary
   Specifies the character Offset from the baseline, in points.
 Description
-  Use Offset to specify the character Offset from the baseline, in points. If the value of Offset is
+  Use Offset to specify the character Offset from the baseline in points. If the value of Offset is
   positive, the character is a superscript; if the value is negative, the character is a subscript.
 
   Alternatively, you can use property SubscriptStyle to specify whether the text is made of subscript
   and superscript characters.
 Note
-  = is equals
-  ~ is approx.
+  (= is equals; ~ is approx.)
   
   1 point = 20 twips. (A twip is a TWenthIeth of a Point)
   
   For printing: 
   
-  72 points = 1 physical inch.
-  1440 twips = 1 physical inch.
-  1 inch ~ 25,40 mm, thus
-  2,83 points ~ 1 mm
+  72 points = 1 physical inch.<p>
+  1440 twips = 1 physical inch.<p>
+  1 inch ~ 25,40 mm, thus<p>
+  2,83 points ~ 1 mm<p>
   56,7 twips ~ 1 mm
 
   For screen:
   
-  72 points ~ 1 logical inch.
+  72 points ~ 1 logical inch.<p>
   1440 twips ~ 1 logical inch.
   
   The relation between a logical inch and a physical inch depends on your monitor/video driver.
-
   Windows typically uses 96 pixels per logical inch for small fonts and 120 pixels per logical
   inch for large fonts.
   So, if 1 logical inch = 96 pixels, then
@@ -2250,7 +2256,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTextConversion
 Summary
-  Reads or writes plaint text.
+  Reads or writes plain text.
 Description
   The TJvTextConversion is an "empty" converter used to read or write to text files. Empty means that
   TJvTextConversion does not perform any conversion of the plain text it imports or exports.
@@ -2269,7 +2275,7 @@ Description
   Double spacing.
 @@TLineSpacingRule.lsSpecifiedOrMore
   Property <LINK TJvCustomRichEdit.LineSpacing,LineSpacing> of a TJvCustomRichEdit specifies the
-  spacing from one line to the next, in points. However, if <LINK TJvCustomRichEdit.LineSpacing,
+  spacing from one line to the next, in points; however, if <LINK TJvCustomRichEdit.LineSpacing,
   LineSpacing> specifies a value that is less than single spacing, the control displays single-spaced text.
 @@TLineSpacingRule.lsSpecified
   Property <LINK TJvCustomRichEdit.LineSpacing,LineSpacing> of a TJvCustomRichEdit specifies the
@@ -2277,7 +2283,7 @@ Description
   if <LINK TJvCustomRichEdit.LineSpacing,LineSpacing> specifies a value that is less than single spacing.
 @@TLineSpacingRule.lsMultiple
   Property <LINK TJvCustomRichEdit.LineSpacing,LineSpacing> of a TJvCustomRichEdit specifies the
-  spacing, in lines, from one line to the next. Thus, setting <LINK TJvCustomRichEdit.LineSpacing,
+  spacing, in lines, from one line to the next; thus, setting <LINK TJvCustomRichEdit.LineSpacing,
   LineSpacing> to 1 produces single-spaced text, 2 is double spaced, 3 is triple spaced, and so on.
 ----------------------------------------------------------------------------------------------------
 @@TParaAlignment

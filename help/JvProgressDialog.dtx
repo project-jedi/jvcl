@@ -22,7 +22,7 @@ Description
 
   Depending on your needs, the dialog can be shown either modally or non-modally. When shown modally,
   the message loop of the program is actually taken over by the dialog and thus your program might not
-  be able to perform it's intended work (unless it is done in a separate thread). For example, the following code
+  be able to perform its intended work (unless it is done in a separate thread). For example, the following code
   would not work when displaying the dialog modally.
   <AUTOLINK OFF>
   <CODE>
@@ -105,7 +105,7 @@ Summary
   Specifies an image on the dialog.
 Description
   Assign an image to this property to have it displayed in the dialog. The form will automatically
-  adjust it's size to the image if it is larger than the default size of the dialog.
+  adjust its size to the image if it is larger than the default size of the dialog.
 
   The Image property can be changed while the dialog is shown, either directly (if the dialog was shown using Show)
   or in the OnProgress event (if the dialog was shown using ShowModal).
@@ -237,7 +237,7 @@ Description
   any necessary updates within it. For example, you can change Min, Max or Position to update the progress bar,
   Text and Caption to update the visual cues or Image to create a simulation of an animation.
 
-  Use ShowModal when the process is performed in it's own thread or when the process is suitable to be performed
+  Use ShowModal when the process is performed in its own thread or when the process is suitable to be performed
   in short intervals (like attempting to connect to a service). If the process is time-intensive and executed within
   the main thread, consider using Show instead.
 Return value
