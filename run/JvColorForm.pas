@@ -21,12 +21,13 @@ Last Modified: 2002-05-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Color form for the @link(TJvColorButton) component
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{ Color form for the @link(TJvColorButton) component }
 
 unit JvColorForm;
 
@@ -34,7 +35,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, ExtCtrls, JvColorBox;
+  Buttons, ExtCtrls,
+  JvColorBox;
 
 const
   cButtonWidth = 22;
@@ -53,29 +55,53 @@ type
   private
     FOwner: TControl;
     FCDVisible: Boolean;
-    CS:TJvColorSquare;
-    FButtonSize: integer;
+    FCS: TJvColorSquare;
+    FButtonSize: Integer;
+    FColorDialog: TColorDialog;
+    FSelectedColor: TColor;
     procedure ShowCD(Sender: TObject);
     procedure HideCD(Sender: TObject);
     procedure WMActivate(var Msg: TWMActivate); message WM_ACTIVATE;
-    procedure SetButtonSize(const Value: integer);
+    procedure SetButtonSize(const Value: Integer);
   protected
     procedure CreateWnd; override;
   public
-    SelectedColor: TColor;
-    CD: TColorDialog;
-    property ButtonSize:integer read FButtonSize write SetButtonSize default cButtonWidth;
+    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     procedure MakeColorButtons;
     procedure SetButton(Button: TControl);
-    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0);
-      override;
+    property ButtonSize: Integer read FButtonSize write SetButtonSize default cButtonWidth;
+    property ColorDialog: TColorDialog read FColorDialog write FColorDialog;
+    property SelectedColor: TColor read FSelectedColor write FSelectedColor default clBlack;
   end;
 
 implementation
+
 uses
   JvColorButton, JvTypes;
 
 {.$R *.dfm}
+
+constructor TJvClrFrm.CreateNew(AOwner: TComponent; Dummy: Integer);
+begin
+  inherited CreateNew(AOwner, Dummy);
+  FButtonSize := cButtonWidth;
+  FSelectedColor := clBlack;
+  BorderIcons := [];
+  BorderStyle := bsDialog;
+  // (rom) this is not a standard Windows font
+  Font.Name := 'MS Shell Dlg 2';
+  FormStyle := fsStayOnTop;
+  KeyPreview := True;
+  OnActivate := FormActivate;
+  OnClose := FormClose;
+  OnKeyUp := FormKeyUp;
+
+  FColorDialog := TColorDialog.Create(Self);
+  FCDVisible := False;
+  FColorDialog.OnShow := ShowCD;
+  FColorDialog.OnClose := HideCD;
+  MakeColorButtons;
+end;
 
 procedure TJvClrFrm.SetButton(Button: TControl);
 begin
@@ -96,13 +122,13 @@ procedure TJvClrFrm.OtherBtnClick(Sender: TObject);
 begin
   if Assigned(FOwner) and (FOwner is TJvColorButton) then
     TJvColorButton(FOwner).Color := SelectedColor;
-  CD.Color := SelectedColor;
-  if CD.Execute then
+  FColorDialog.Color := SelectedColor;
+  if FColorDialog.Execute then
   begin
-    CS.Color := CD.Color;
+    FCS.Color := FColorDialog.Color;
     if FOwner is TJvColorButton then
     begin
-      TJvColorButton(FOwner).CustomColors.Assign(CD.CustomColors);
+      TJvColorButton(FOwner).CustomColors.Assign(FColorDialog.CustomColors);
       TJvColorButton(FOwner).Color := SelectedColor;
     end;
     ModalResult := mrOK;
@@ -134,7 +160,7 @@ end;
 
 procedure TJvClrFrm.DoColorChange(Sender: TObject);
 begin
-  SelectedColor := CS.Color;
+  SelectedColor := FCS.Color;
   if Assigned(FOwner) and (FOwner is TJvColorButton) then
     TJvColorButton(FOwner).Color := SelectedColor;
 end;
@@ -180,90 +206,69 @@ begin
     if FOwner is TJvColorButton then
       SelectedColor := TJvColorButton(FOwner).Color;
   end;
-  ClientWidth := CS.Left + CS.Width;
+  ClientWidth := FCS.Left + FCS.Width;
   Height := OtherBtn.Top + OtherBtn.Height + 8;
 end;
 
-constructor TJvClrFrm.CreateNew(AOwner: TComponent; Dummy: Integer);
-begin
-  inherited;
-  FButtonSize := cButtonWidth;
-  BorderIcons := [];
-  BorderStyle := bsDialog;
-  Font.Name := 'MS Shell Dlg 2';
-  FormStyle := fsStayOnTop;
-  KeyPreview := true;
-  OnActivate := FormActivate;
-  OnClose := FormClose;
-  OnKeyUp := FormKeyUp;
-
-  CD := TColorDialog.Create(self);
-  FCDVisible := False;
-  CD.OnShow := ShowCD;
-  CD.OnClose := HideCD;
-  MakeColorButtons;
-end;
-
-
 procedure TJvClrFrm.MakeColorButtons;
 const
-  cColorArray: array [0..19] of TColor =
-  (clWhite, clBlack, clSilver, clGray,
-   clRed, clMaroon, clYellow, clOlive,
-   clLime, clGreen, clAqua, clTeal,
-   clBlue, clNavy, clFuchsia, clPurple,
-   clMoneyGreen, clSkyBlue, clCream, clMedGray);
+  cColorArray: array[0..19] of TColor =
+   (clWhite, clBlack, clSilver, clGray,
+    clRed, clMaroon, clYellow, clOlive,
+    clLime, clGreen, clAqua, clTeal,
+    clBlue, clNavy, clFuchsia, clPurple,
+    clMoneyGreen, clSkyBlue, clCream, clMedGray);
 var
-  i,X,Y:integer;
+  I, X, Y: Integer;
 begin
-  for i := ControlCount - 1 downto 0 do
-    if (Controls[i] is TJvColorSquare) or (Controls[i] is TBevel) then
-      Controls[i].Free;
+  for I := ControlCount - 1 downto 0 do
+    if (Controls[I] is TJvColorSquare) or (Controls[I] is TBevel) then
+      Controls[I].Free;
   X := 0;
   Y := 0;
-  for i := 0 to 19 do
+  for I := 0 to 19 do
   begin
-    CS := TJvColorSquare.Create(self);
-    CS.SetBounds(X, Y, FButtonSize,FButtonSize);
-    CS.Color := cColorArray[i];
-    CS.OnClick := DoColorClick;
-    CS.Parent := self;
-    CS.BorderStyle := bsSingle;
+    FCS := TJvColorSquare.Create(Self);
+    FCS.SetBounds(X, Y, FButtonSize, FButtonSize);
+    FCS.Color := cColorArray[I];
+    FCS.OnClick := DoColorClick;
+    FCS.Parent := Self;
+    FCS.BorderStyle := bsSingle;
     Inc(X, FButtonSize);
-    if (i + 1) mod 4 = 0 then
+    if (I + 1) mod 4 = 0 then
     begin
-      Inc(Y,FButtonSize);
+      Inc(Y, FButtonSize);
       X := 0;
     end;
   end;
   if OtherBtn = nil then
-    OtherBtn := TSpeedButton.Create(self);
+    OtherBtn := TSpeedButton.Create(Self);
   with OtherBtn do
   begin
-    SetBounds(0, Y + 6,FButtonSize * 3,FButtonSize);
-    Parent := self;
+    SetBounds(0, Y + 6, FButtonSize * 3, FButtonSize);
+    Parent := Self;
 //    Caption := SOtherCaption;
     OnClick := OtherBtnClick;
   end;
-  CS := TJvColorSquare.Create(self);
-  CS.Color := cColorArray[0];
-  CS.OnClick := DoColorClick;
-  CS.OnChange := DoColorChange;
-  CS.Parent := self;
-  CS.BorderStyle := bsSingle;
-  CS.SetBounds(FButtonSize * 3, Y + 6, FButtonSize,FButtonSize);
-  self.ClientWidth := CS.Left + CS.Width;
-  self.ClientHeight := OtherBtn.Top + OtherBtn.Height;
-  with TBevel.Create(self) do
+  FCS := TJvColorSquare.Create(Self);
+  FCS.Color := cColorArray[0];
+  FCS.OnClick := DoColorClick;
+  FCS.OnChange := DoColorChange;
+  FCS.Parent := Self;
+  FCS.BorderStyle := bsSingle;
+  FCS.SetBounds(FButtonSize * 3, Y + 6, FButtonSize, FButtonSize);
+  Self.ClientWidth := FCS.Left + FCS.Width;
+  Self.ClientHeight := OtherBtn.Top + OtherBtn.Height;
+  with TBevel.Create(Self) do
   begin
-    Parent := self;
+    Parent := Self;
     Shape := bsTopLine;
-    SetBounds(2,Y, self.Width - 4,4);
+    SetBounds(2, Y, Self.Width - 4, 4);
     Anchors := [akLeft, akBottom, akRight];
   end;
 end;
 
-procedure TJvClrFrm.SetButtonSize(const Value: integer);
+procedure TJvClrFrm.SetButtonSize(const Value: Integer);
 begin
   if FButtonSize <> Value then
   begin
