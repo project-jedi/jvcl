@@ -527,7 +527,8 @@ uses
   JvDockAdvTree,
   {$ENDIF JVCLThemesEnabled}
   Consts, SysUtils, Math,
-  JvDockControlForm, JvDockSupportProc, JvDockGlobals, JvDockVSNetStyle;
+  JvDockControlForm, JvDockSupportProc, JvDockGlobals, JvDockVSNetStyle,
+  JvDockAdvTree;
 
 type
   TWinControlAccessProtected = class(TWinControl);

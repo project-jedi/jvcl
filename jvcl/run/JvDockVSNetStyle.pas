@@ -309,7 +309,7 @@ type
   public
     // Can't put 'override' this one because signature is different!
     // But it MUST have DockStyle in the constructor now! -Wpostma!
-    constructor Create(AOwner: TComponent;DockStyle:TComponent); // WARNING UNAVOIDABLE. IGNORE WARNING.
+    constructor Create(AOwner: TComponent;DockStyle:TComponent); reintroduce; // WARNING UNAVOIDABLE. IGNORE WARNING.
     procedure ShowDockPanel(MakeVisible: Boolean; Client: TControl;
       PanelSizeFrom: TJvDockSetDockPanelSizeFrom); override;
     { Dirty override; solve with virtual method? }
