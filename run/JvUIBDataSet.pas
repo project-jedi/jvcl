@@ -145,8 +145,8 @@ type
   TJvUIBDataSet = class(TJvUIBCustomDataSet)
   public
     property Params;
-  published
     property RowsAffected;
+  published
     property BufferChunks;
     property Transaction;
     property Database;
