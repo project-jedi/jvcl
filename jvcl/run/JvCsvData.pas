@@ -286,6 +286,8 @@ type
     FValidateHeaderRow: Boolean;
     FExtendedHeaderInfo: boolean;
     procedure SetSeparator(const Value: char);
+    procedure InternalQuickSort(SortList: PPointerList; L, R: Integer; SortColumns:TArrayOfPCsvColumn; ACount:integer;Ascending: Boolean);
+    procedure QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn; ACount: integer; Ascending:boolean);
   protected
     FTempBuffer: PChar;
     FInitialWorkingDirectory: string; // Current working dir may change in a delphi app, causing us trouble.
@@ -351,7 +353,7 @@ type
     function InternalLoadFileStrings: Boolean;
     // Internal methods used by sorting:
     function InternalFieldCompare(Column: PCsvColumn; Left, Right: PCsvRow): Integer;
-    function InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: Integer; Left, Right: PCsvRow): Integer;
+    function InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: Integer; Left, Right: PCsvRow;Ascending:boolean): Integer;
 
     // key uniqueness needs this:
     function InternalFindByKey(row: PCsvRow): Integer;
@@ -2385,7 +2387,7 @@ begin
   Result := -1;
   for t := 0 to FData.Count - 1 do
   begin
-    if InternalCompare(FCsvKeyFields, FCsvKeyCount, {Left} row, {Right} FData.Items[t]) = 0 then
+    if InternalCompare(FCsvKeyFields, FCsvKeyCount, {Left} row, {Right} FData.Items[t], true) = 0 then
     begin
       Result := t;
       Break;
@@ -2843,7 +2845,7 @@ end;
 // Returns 0 if Left=Right, 1 if Left>Right, -1 if Left<Right
 
 function TJvCustomCsvDataSet.InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: Integer; Left,
-  Right: PCsvRow): Integer;
+  Right: PCsvRow;Ascending:boolean): Integer;
 var
   t: Integer;
 begin
@@ -2859,6 +2861,8 @@ begin
     Result := InternalFieldCompare(SortColumns[t], Left, Right);
     if Result <> 0 then
     begin
+      if not Ascending then
+        Result := -Result;
            // XXX REPEAT result := InternalFieldCompare( SortColumns[t],Left,Right);
       Exit; // found greater or less than condition
     end;
@@ -2867,23 +2871,61 @@ begin
   // equal, and result is already set to 0.
 end;
 
+procedure TJvCustomCsvDataSet.InternalQuickSort(SortList: PPointerList;
+  L, R: Integer; SortColumns:TArrayOfPCsvColumn; ACount:integer;Ascending: Boolean);
+var
+  I, J: Integer;
+  P, T: Pointer;
+begin
+  // TODO: optimization (median of three, insertion sort when Count < 20 etc)
+  repeat
+    I := L;
+    J := R;
+    P := SortList^[(L + R) shr 1];
+    repeat
+      while InternalCompare(SortColumns, ACount, SortList^[I], P, Ascending) < 0 do
+        Inc(I);
+      while InternalCompare(SortColumns, ACount, SortList^[J], P, Ascending) > 0 do
+        Dec(J);
+      if I <= J then
+      begin
+        T := SortList^[I];
+        SortList^[I] := SortList^[J];
+        SortList^[J] := T;
+        Inc(I);
+        Dec(J);
+      end;
+    until I > J;
+    if L < J then
+      InternalQuickSort(SortList, L, J, SortColumns, ACount, Ascending);
+    L := I;
+  until I >= R;
+end;
+
+procedure TJvCustomCsvDataSet.QuickSort(AList:TList; SortColumns:TArrayOfPCsvColumn; ACount:integer; Ascending:boolean);
+begin
+  if (AList <> nil) and (AList.Count > 1) then
+    InternalQuickSort(AList.List, 0, AList.Count - 1, SortColumns, ACount, Ascending);
+end;
+
 procedure TJvCustomCsvDataSet.Sort(SortFields: string; Ascending: Boolean);
 var
-  Index: array of Pointer;
-  swap: Pointer;
+//  Index: array of Pointer;
+//  swap: Pointer;
   SortFieldNames: array of string;
   SortColumns: TArrayOfPCsvColumn;
   SortColumnCount: Integer;
-  comparison, t, u, l: Integer;
+//  comparison, t, u, l: Integer;
+  t:integer;
 begin
   // Create an indexed list which can be sorted more easily than
   // doing an item swap:
-  l := FData.Count;
-  SetLength(Index, l);
-  for t := 0 to l - 1 do
-  begin
-    Index[t] := FData.Items[t]; // Initial values.
-  end;
+//  l := FData.Count;
+//  SetLength(Index, l);
+//  for t := 0 to l - 1 do
+//  begin
+//    Index[t] := FData.Items[t]; // Initial values.
+//  end;
 
   SetLength(SortFieldNames, FCsvColumns.Count);
   SortColumnCount := StrSplit(SortFields, Separator, {Chr(0)=No Quoting} Chr(0), SortFieldNames, FCsvColumns.Count);
@@ -2900,9 +2942,11 @@ begin
     if not Assigned(SortColumns[t]) then
       JvCsvDatabaseError(FTableName, Format(RsESortFailedInvalidFieldNameInList, [SortFieldNames[t]]));
   end;
+  QuickSort(FData, SortColumns, SortColumnCount, AScending);
 
   //  bubble sort, compare in the middle,
   //  yes I'm feeling lazy today, yes I know a qsort would be better. - WP
+(*
   for t := 0 to l - 2 do
   begin
     for u := t + 1 to l - 1 do
@@ -2928,6 +2972,7 @@ begin
   begin
     FData.Items[t] := Index[t]; // Rewrite pointers to new order!
   end;
+  *)
   FFileDirty := True;
   First; // reposition!
 end;
